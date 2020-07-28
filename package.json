@@ -1,0 +1,45 @@
+{
+  "name": "tanatloc",
+  "version": "1.0.0",
+  "private": true,
+  "homepage": "./",
+  "scripts": {
+    "prettier": "prettier -l '{pages, styles}/**/*.{js,json,md,css}'",
+    "prettier:write": "prettier --write '{pages, styles}/**/*.{js,json,md,css}'",
+    "dev": "next",
+    "build": "next build",
+    "start": "next start",
+    "export": "yarn build && next export"
+  },
+  "dependencies": {
+    "@ant-design/icons": "4.2.1",
+    "@zeit/next-css": "^1.0.1",
+    "@zeit/next-less": "^1.0.1",
+    "antd": "4.3.0",
+    "babel-plugin-import": "1.13.0",
+    "drei": "^0.0.66",
+    "less": "^3.12.2",
+    "less-vars-to-js": "^1.3.0",
+    "next": "latest",
+    "next-redux-wrapper": "^6.0.2",
+    "next-transpile-modules": "^3.3.0",
+    "null-loader": "^4.0.0",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "react-redux": "7.1.3",
+    "react-three-fiber": "^4.2.17",
+    "redux": "^4.0.5",
+    "redux-devtools-extension": "2.13.8",
+    "redux-persist": "^6.0.0",
+    "redux-thunk": "2.3.0",
+    "three": "^0.118.3"
+  },
+  "browser": {
+    "fs": false,
+    "path": false
+  },
+  "devDependencies": {
+    "electron": "^9.1.1",
+    "prettier": "^2.0.5"
+  }
+}

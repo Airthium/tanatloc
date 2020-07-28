@@ -1,0 +1,24 @@
+.Login {
+  margin: auto !important;
+  width: 400px;
+}
+
+.Login img {
+  display: block;
+  max-width: 75%;
+  margin: auto;
+}
+
+.Login-forgot {
+  float: right;
+}
+
+.Login-submit button {
+  width: 50%;
+  margin-left: 25%;
+  margin-right: 25%;
+}
+
+.Login-submit a {
+  margin-left: 25%;
+}

@@ -1,1 +1,0 @@
-{"ast":null,"code":"import user from '../../../src/lib/user';\nexport default (async ({\n  body: {\n    username,\n    password\n  }\n}, res) => {\n  const auth = await user.login(username, password);\n  res.statusCode = 200;\n  res.setHeader('Content-Type', 'application/json');\n  res.end(JSON.stringify(auth));\n});","map":null,"metadata":{},"sourceType":"module"}

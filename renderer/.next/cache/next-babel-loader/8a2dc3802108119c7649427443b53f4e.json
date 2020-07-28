@@ -1,1 +1,0 @@
-{"ast":null,"code":"export default (async (route, parameters) => {\n  const response = await fetch(route, parameters);\n  const res = await response.json();\n  return res;\n});","map":null,"metadata":{},"sourceType":"module"}

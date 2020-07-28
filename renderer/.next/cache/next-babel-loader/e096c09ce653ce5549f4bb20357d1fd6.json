@@ -1,1 +1,0 @@
-{"ast":null,"code":"export var authActionTypes = {\n  LOGIN: 'LOGIN',\n  LOGOUT: 'LOGOUT'\n};\nexport var login = function login(user) {\n  return {\n    type: authActionTypes.LOGIN,\n    user: user\n  };\n};\nexport var logout = function logout() {\n  return {\n    type: authActionTypes.LOGOUT\n  };\n};","map":null,"metadata":{},"sourceType":"module"}

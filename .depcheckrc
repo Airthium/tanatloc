@@ -1,0 +1,2 @@
+ignores: ["null-loader", "drei", "react-three-fiber", "three"]
+skip-missing: true

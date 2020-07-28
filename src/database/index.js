@@ -1,12 +1,14 @@
 import { Pool } from 'pg'
 
+import config from '../../config/db'
+
 const startdB = () => {
   const p = new Pool({
-    user: 'tanatlocuser',
-    host: 'localhost',
-    database: 'tanatloc',
-    password: 'tanatloc',
-    port: 5432
+    user: config.USER,
+    host: config.HOST,
+    database: config.DATABASE,
+    password: config.PASSWORD,
+    port: config.PORT
   })
 
   p.connect().catch((err) => {

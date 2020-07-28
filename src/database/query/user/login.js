@@ -1,8 +1,11 @@
 import query from '../..'
+import { databases } from '../../../../config/db'
 
 export default async (user) => {
   const response = await query(
-    'SELECT id FROM tanatloc_users WHERE email = $1 AND password = crypt($2, password)',
+    'SELECT id FROM ' +
+      databases.USERS +
+      ' WHERE email = $1 AND password = crypt($2, password)',
     [user.username, user.password]
   )
 

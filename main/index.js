@@ -16,8 +16,8 @@ app.on('ready', async () => {
     height: 600,
     webPreferences: {
       nodeIntegration: false,
-      preload: join(__dirname, 'preload.js'),
-    },
+      preload: join(__dirname, 'preload.js')
+    }
   })
 
   const url = isDev
@@ -25,7 +25,7 @@ app.on('ready', async () => {
     : format({
         pathname: join(__dirname, '../renderer/out/index.html'),
         protocol: 'file:',
-        slashes: true,
+        slashes: true
       })
 
   mainWindow.loadURL(url)

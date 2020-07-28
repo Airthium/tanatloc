@@ -9,5 +9,9 @@ export default () => {
     router.push('/login')
   }
 
-  return <Layout><Button onClick={handleClick}>Login</Button></Layout>
+  return (
+    <Layout>
+      <Button onClick={handleClick}>Login</Button>
+    </Layout>
+  )
 }

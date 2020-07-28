@@ -1,5 +1,5 @@
 export default () => {
-    return (<div></div>)
+  return <div></div>
 }
 
 // // import { useRef } from 'react'

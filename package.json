@@ -5,14 +5,14 @@
   "homepage": "./",
   "main": "main/index.js",
   "scripts": {
-    "prettier": "prettier -l '{pages, styles}/**/*.{js,json,md,css}'",
-    "prettier:write": "prettier --write '{pages, styles}/**/*.{js,json,md,css}'",
+    "prettier": "prettier -l '**/*.{js,json,md,css}'",
+    "prettier:write": "prettier --write '**/*.{js,json,md,css}'",
     "dev": "next renderer",
     "build": "next build renderer",
     "start": "next start renderer",
     "export": "yarn build && next export renderer",
-    "electron-start": "electron .",
-    "electron-dist": "yarn export && electron-builder"
+    "electron-dev": "electron .",
+    "electron-build": "yarn export && electron-builder"
   },
   "build": {
     "asar": true,

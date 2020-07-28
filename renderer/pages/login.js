@@ -11,7 +11,7 @@ import {
   Space
 } from 'antd'
 
-import login from '../src/lib/api/user/login'
+import login from '../../src/lib/api/user/login'
 
 import { useDispatch, useSelector } from 'react-redux'
 import { login as reduxLogin } from '../store/auth/action'

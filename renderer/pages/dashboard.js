@@ -54,7 +54,6 @@ export default () => {
 
   // Props
   const { user } = useSelector((store) => store.auth)
-  console.log(user)
   if (typeof window !== 'undefined' && !user.id) {
     // Go to login
     router.push('/login')

@@ -1,4 +1,4 @@
-export default {
+module.exports = {
   USER: process.env.DB_USER || 'tanatlocuser',
   HOST: process.env.DB_HOST || 'localhost',
   PORT: process.env.DB_PORT || 5432,
@@ -6,7 +6,7 @@ export default {
   PASSWORD: process.env.DB_PASSWORD || 'tanatloc'
 }
 
-export const databases = {
+module.exports.databases = {
   USERS: 'tanatloc_users',
   WORKSPACES: 'tanatloc_workspaces',
   PROJECTS: 'tanatloc_projects',

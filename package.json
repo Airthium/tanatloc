@@ -3,13 +3,23 @@
   "version": "1.0.0",
   "private": true,
   "homepage": "./",
+  "main": "main/index.js",
   "scripts": {
     "prettier": "prettier -l '{pages, styles}/**/*.{js,json,md,css}'",
     "prettier:write": "prettier --write '{pages, styles}/**/*.{js,json,md,css}'",
-    "dev": "next",
-    "build": "next build",
-    "start": "next start",
-    "export": "yarn build && next export"
+    "dev": "next renderer",
+    "build": "next build renderer",
+    "start": "next start renderer",
+    "export": "yarn build && next export renderer",
+    "electron-start": "electron .",
+    "electron-dist": "yarn export && electron-builder"
+  },
+  "build": {
+    "asar": true,
+    "files": [
+      "main",
+      "renderer/out"
+    ]
   },
   "dependencies": {
     "@ant-design/icons": "4.2.1",
@@ -18,6 +28,8 @@
     "antd": "4.3.0",
     "babel-plugin-import": "1.13.0",
     "drei": "^0.0.66",
+    "electron-next": "^3.1.5",
+    "is-electron": "^2.2.0",
     "less": "^3.12.2",
     "less-vars-to-js": "^1.3.0",
     "next": "latest",
@@ -40,6 +52,7 @@
   },
   "devDependencies": {
     "electron": "^9.1.1",
+    "electron-builder": "^22.8.0",
     "prettier": "^2.0.5"
   }
 }

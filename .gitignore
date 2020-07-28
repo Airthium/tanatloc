@@ -9,11 +9,11 @@
 /coverage
 
 # next.js
-/.next/
-/out/
+renderer/.next/
+renderer/out
 
 # production
-/build
+renderer/build
 
 # misc
 .DS_Store
@@ -32,3 +32,6 @@ yarn-error.log*
 
 # vercel
 .vercel
+
+# Electron
+dist

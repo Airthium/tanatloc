@@ -1,0 +1,1 @@
+{"ast":null,"code":"import call from '../call';\nexport default (async ({\n  username,\n  password\n}) => {\n  return await call('api/user/login', {\n    method: 'POST',\n    body: JSON.stringify({\n      username: username,\n      password: password\n    })\n  });\n});","map":null,"metadata":{},"sourceType":"module"}

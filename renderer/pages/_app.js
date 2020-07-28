@@ -3,9 +3,8 @@ import { Provider } from 'react-redux'
 import { persistStore } from 'redux-persist'
 import { PersistGate } from 'redux-persist/integration/react'
 
-import 'antd/dist/antd.css'
-import '../styles/global.css'
-import '../styles/Login.css'
+import '../styles/antd.less'
+import '../styles/global.less'
 
 const App = ({ Component, pageProps }) => {
   const store = useStore(pageProps.initialReduxState)

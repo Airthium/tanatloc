@@ -20,8 +20,6 @@ jobs:
         run: yarn build
       - name: Server build
         run: yarn server-build
-      - name: Electron
-        run: yarn electron-build
       - name: SonarCloud scan
         uses: sonarsource/sonarcloud-github-action@master
         env:

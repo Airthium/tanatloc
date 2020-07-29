@@ -3,5 +3,6 @@ renderer/.next
 renderer/out
 
 # Dist
+app
 dist
 dist-server

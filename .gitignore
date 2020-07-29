@@ -34,5 +34,6 @@ yarn-error.log*
 .vercel
 
 # Electron
+app
 dist
 dist-server

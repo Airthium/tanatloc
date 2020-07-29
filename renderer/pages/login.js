@@ -66,7 +66,7 @@ export default () => {
     <Layout>
       <Card className="Login">
         <Space direction="vertical" size="large">
-          <img src="banner.png" />
+          <img src="/images/banner.png" />
           <Form initialValues={{ remember: true }} onFinish={onLogin}>
             <Form.Item
               name="username"

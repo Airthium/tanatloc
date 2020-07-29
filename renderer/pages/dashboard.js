@@ -85,7 +85,7 @@ export default () => {
         onCollapse={onCollapse}
       >
         <div className="logo">
-          <img src="logo.svg" />
+          <img src="/images/logo.svg" />
         </div>
 
         <Menu

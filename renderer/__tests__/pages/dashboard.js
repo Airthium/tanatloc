@@ -1,4 +1,4 @@
-import Dashboard from '../dashboard'
+import Dashboard from '../../pages/dashboard'
 import { shallow } from 'enzyme'
 
 jest.mock('../../components/project/list', () => 'list')

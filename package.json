@@ -43,7 +43,7 @@
     "babel-plugin-import": "1.13.0",
     "cookie-parser": "1.4.5",
     "cors": "2.8.5",
-    "depcheck": "^1.0.0",
+    "depcheck": "1.0.0",
     "drei": "0.0.66",
     "electron-next": "3.1.5",
     "express": "4.17.1",

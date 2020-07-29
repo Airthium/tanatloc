@@ -14,17 +14,17 @@
     "path": false
   },
   "scripts": {
-    "build": "next build renderer",
-    "clean": "rimraf dist/ dist-server/ renderer/out/ renderer/.next/",
-    "depcheck": "depcheck",
-    "dev": "next renderer",
-    "electron-build": "yarn server-build && nextron build && electron-builder install-app-deps",
-    "electron-dev": "yarn server-build && nextron",
-    "export": "yarn build && next export renderer",
     "prettier": "prettier -l '**/*.{js,json,md,css}'",
     "prettier:write": "prettier --write '**/*.{js,json,md,css}'",
+    "depcheck": "depcheck",
+    "dev": "next renderer",
+    "build": "next build renderer",
+    "export": "yarn build && next export renderer",
+    "start": "next start renderer",
     "server-build": "babel . --only config,renderer/pages/api,server,src --out-dir dist-server",
-    "start": "next start renderer"
+    "electron-build": "yarn server-build && nextron build && electron-builder install-app-deps",
+    "electron-dev": "yarn server-build && nextron",
+    "clean": "rimraf dist/ dist-server/ renderer/out/ renderer/.next/"
   },
   "dependencies": {
     "electron-serve": "1.0.0",

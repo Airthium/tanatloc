@@ -1,5 +1,10 @@
 {
   "name": "tanatloc",
+  "description": "Tanatloc",
+  "author": {
+    "name": "Airthium",
+    "url": "https://github.com/orgs/Airthium/people"
+  },
   "version": "1.0.0",
   "private": true,
   "homepage": "./",
@@ -13,7 +18,7 @@
     "start": "next start renderer",
     "export": "yarn build && next export renderer",
     "server-build": "babel . --only config,renderer/pages/api,server,src --out-dir dist-server",
-    "electron-dev": "electron .",
+    "electron-dev": "yarn server-build && electron .",
     "electron-build": "yarn export && yarn server-build && electron-builder"
   },
   "build": {
@@ -22,6 +27,9 @@
       "main",
       "src",
       "renderer/out"
+    ],
+    "extraResources": [
+      "./dist-server/**"
     ]
   },
   "dependencies": {
@@ -34,9 +42,12 @@
     "antd": "4.5.1",
     "babel-plugin-import": "1.13.0",
     "cookie-parser": "^1.4.5",
+    "cors": "^2.8.5",
     "drei": "0.0.66",
     "electron-next": "3.1.5",
     "express": "^4.17.1",
+    "http-errors": "^1.8.0",
+    "is-electron": "^2.2.0",
     "less": "3.12.2",
     "next": "latest",
     "next-transpile-modules": "4.0.0",

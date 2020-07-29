@@ -25,12 +25,10 @@
   "build": {
     "asar": true,
     "files": [
+      "dist-server",
       "main",
-      "src",
-      "renderer/out"
-    ],
-    "extraResources": [
-      "./dist-server/**"
+      "renderer/out",
+      "src"
     ]
   },
   "dependencies": {

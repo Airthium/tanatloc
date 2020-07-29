@@ -1,0 +1,24 @@
+name: Node
+on: [push]
+
+jopbs:
+  build:
+    if: "!contains(github.event.commits[0].message, '[skip ci]')"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '14.x'
+      - name: Install
+        run: yarn install
+      - name: Depcheck
+        run: yarn depcheck
+      - name: Lint
+        run: yarn prettier
+      - name: Build
+        run: yarn build
+      - name: Server build
+        run: yarn server-build
+      - name: Electron
+        run: yarn electron-build

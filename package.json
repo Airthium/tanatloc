@@ -1,37 +1,36 @@
 {
   "name": "tanatloc",
+  "version": "1.0.0",
+  "private": true,
   "description": "Tanatloc",
+  "homepage": "./",
   "author": {
     "name": "Airthium",
     "url": "https://github.com/orgs/Airthium/people"
   },
-  "version": "1.0.0",
-  "private": true,
-  "homepage": "./",
-  "main": "main/index.js",
+  "main": "app/background.js",
+  "browser": {
+    "fs": false,
+    "path": false
+  },
   "scripts": {
     "prettier": "prettier -l '**/*.{js,json,md,css}'",
     "prettier:write": "prettier --write '**/*.{js,json,md,css}'",
     "depcheck": "depcheck",
     "dev": "next renderer",
     "build": "next build renderer",
-    "start": "next start renderer",
     "export": "yarn build && next export renderer",
+    "start": "next start renderer",
     "server-build": "babel . --only config,renderer/pages/api,server,src --out-dir dist-server",
-    "electron-dev": "yarn server-build && electron .",
-    "electron-build": "yarn export && yarn server-build && electron-builder && electron-builder install-app-deps",
+    "electron-dev": "yarn server-build && nextron",
+    "electron-build": "yarn server-build && nextron build && electron-builder install-app-deps",
     "clean": "rimraf dist/ dist-server/ renderer/out/ renderer/.next/"
   },
-  "build": {
-    "asar": true,
-    "files": [
-      "dist-server",
-      "main",
-      "renderer/out",
-      "src"
-    ]
-  },
   "dependencies": {
+    "electron-serve": "1.0.0",
+    "electron-store": "6.0.0"
+  },
+  "devDependencies": {
     "@ant-design/icons": "4.2.1",
     "@babel/cli": "7.10.5",
     "@babel/core": "7.10.5",
@@ -39,19 +38,24 @@
     "@zeit/next-css": "1.0.1",
     "@zeit/next-less": "1.0.1",
     "antd": "4.5.1",
+    "babel-loader": "8.1.0",
     "babel-plugin-import": "1.13.0",
     "cookie-parser": "1.4.5",
     "cors": "2.8.5",
     "depcheck": "1.0.0",
     "drei": "0.0.66",
-    "electron-next": "3.1.5",
+    "electron": "9.1.2",
+    "electron-builder": "22.8.0",
     "express": "4.17.1",
     "http-errors": "1.8.0",
     "is-electron": "2.2.0",
     "less": "3.12.2",
     "next": "latest",
     "next-transpile-modules": "4.0.1",
+    "nextron": "5.15.0",
     "pg": "8.3.0",
+    "pg-native": "3.0.0",
+    "prettier": "2.0.5",
     "react": "16.13.1",
     "react-dom": "16.13.1",
     "react-redux": "7.2.1",
@@ -59,16 +63,7 @@
     "redux": "4.0.5",
     "redux-devtools-extension": "2.13.8",
     "redux-persist": "6.0.0",
+    "rimraf": "3.0.2",
     "three": "0.118.3"
-  },
-  "browser": {
-    "fs": false,
-    "path": false
-  },
-  "devDependencies": {
-    "electron": "9.1.2",
-    "electron-builder": "22.8.0",
-    "prettier": "2.0.5",
-    "rimraf": "3.0.2"
   }
 }

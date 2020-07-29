@@ -1,3 +1,5 @@
+![Node](https://github.com/Airthium/tanatloc-ssr/workflows/Node/badge.svg)
+
 # Tanatloc
 
 Using server-side rendering (SSR).
@@ -7,14 +9,14 @@ Using server-side rendering (SSR).
 Browser:
 
 ```
-yarn
+yarn install
 yarn dev
 ```
 
 Electron:
 
 ```
-yarn
+yarn install
 yarn electron-dev
 ```
 
@@ -23,7 +25,7 @@ yarn electron-dev
 Browser:
 
 ```
-yarn
+yarn install
 yarn build
 yarn start
 ```
@@ -31,13 +33,13 @@ yarn start
 Browser (static build):
 
 ```
-yarn
+yarn install
 yarn export
 ```
 
 Electron
 
 ```
-yarn
+yarn install
 yarn electron-build
 ```

@@ -19,7 +19,8 @@
     "export": "yarn build && next export renderer",
     "server-build": "babel . --only config,renderer/pages/api,server,src --out-dir dist-server",
     "electron-dev": "yarn server-build && electron .",
-    "electron-build": "yarn export && yarn server-build && electron-builder"
+    "electron-build": "yarn export && yarn server-build && electron-builder && electron-builder install-app-deps",
+    "clean": "rimraf dist/ dist-server/ renderer/out/ renderer/.next/"
   },
   "build": {
     "asar": true,
@@ -69,6 +70,7 @@
   "devDependencies": {
     "electron": "9.1.2",
     "electron-builder": "22.8.0",
-    "prettier": "2.0.5"
+    "prettier": "2.0.5",
+    "rimraf": "^3.0.2"
   }
 }

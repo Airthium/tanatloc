@@ -4,7 +4,8 @@ export const authInitialState = {
   user: {}
 }
 
-export default function reducer(state = authInitialState, action) {
+export default function reducer(state, action) {
+  if (!state) state = authInitialState
   switch (action.type) {
     case authActionTypes.LOGIN:
       return {

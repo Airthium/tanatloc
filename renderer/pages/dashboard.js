@@ -60,8 +60,8 @@ export default () => {
   }
 
   // Collpase
-  const onCollapse = (collapsed) => {
-    setCollapsed(collapsed)
+  const onCollapse = (isCollapsed) => {
+    setCollapsed(isCollapsed)
   }
 
   const onSelect = ({ key }) => {

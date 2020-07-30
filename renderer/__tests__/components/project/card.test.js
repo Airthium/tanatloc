@@ -1,12 +1,10 @@
-import List from '../list'
+import Card from '../../../components/project/card'
 import { shallow } from 'enzyme'
-
-jest.mock('../card', () => 'card')
 
 let wrapper
 describe('component/project/card', () => {
   beforeEach(() => {
-    wrapper = shallow(<List />)
+    wrapper = shallow(<Card />)
   })
 
   afterEach(() => {
@@ -15,5 +13,11 @@ describe('component/project/card', () => {
 
   it('render', () => {
     expect(wrapper).toBeDefined()
+  })
+
+  it('handle buttons', () => {
+    wrapper.find({ type: 'primary' }).forEach((button) => {
+      button.simulate('click')
+    })
   })
 })

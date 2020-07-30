@@ -1,5 +1,3 @@
 {
-  "include": ["server/", "src/", "renderer/pages/api/"],
-  "ignore": ["node_modules/"],
-  "presets": ["@babel/preset-env"]
+  "presets": ["next/babel"]
 }

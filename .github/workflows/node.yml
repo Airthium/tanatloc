@@ -16,6 +16,8 @@ jobs:
         run: yarn depcheck
       - name: Lint
         run: yarn prettier
+      - name: Tests
+        run: yarn test
       - name: Build
         run: yarn build
       - name: Server build

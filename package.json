@@ -66,6 +66,7 @@
     "react-three-fiber": "4.2.18",
     "redux": "4.0.5",
     "redux-devtools-extension": "2.13.8",
+    "redux-mock-store": "1.5.4",
     "redux-persist": "6.0.0",
     "rimraf": "3.0.2",
     "three": "0.118.3"

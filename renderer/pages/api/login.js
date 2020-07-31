@@ -1,9 +1,11 @@
-import login from '../../../src/lib/login'
+import nextConnect from 'next-connect'
+import auth from '../../../middleware/auth'
+import passport from '../../../src/auth/passport'
 
-export default async ({ body: { username, password } }, res) => {
-  const auth = await login({ username, password })
+const handler = nextConnect()
 
-  res.statusCode = 200
-  res.setHeader('Content-Type', 'application/json')
-  res.send(auth)
-}
+handler.use(auth).post(passport.authenticate('local'), (req, res) => {
+  res.json({ user: req.user })
+})
+
+export default handler

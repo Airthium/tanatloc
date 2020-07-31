@@ -3,7 +3,7 @@ import express, { json, urlencoded } from 'express'
 import cookieParser from 'cookie-parser'
 import cors from 'cors'
 
-import login from '../renderer/pages/api/user/login'
+import login from '../renderer/pages/api/login'
 
 const app = express()
 
@@ -12,7 +12,7 @@ app.use(json())
 app.use(urlencoded({ extended: false }))
 app.use(cookieParser())
 
-app.post('/api/user/login', (req, res) => {
+app.post('/api/login', (req, res) => {
   login(req, res)
 })
 

@@ -1,12 +1,12 @@
-import Dashboard from '../../pages/dashboard'
+import Index from '../../pages/index'
 import { shallow } from 'enzyme'
 
-jest.mock('../../components/dashboard', () => 'dashboard')
+jest.mock('../../components/index', () => 'index')
 
 let wrapper
-describe('pages/dashboard', () => {
+describe('pages/index', () => {
   beforeEach(() => {
-    wrapper = shallow(<Dashboard />)
+    wrapper = shallow(<Index />)
   })
 
   afterEach(() => {

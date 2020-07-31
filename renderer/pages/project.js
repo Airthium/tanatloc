@@ -1,5 +1,7 @@
+import Project from '../components/project'
+
 export default () => {
-  return <div></div>
+  return <Project />
 }
 
 // // import { useRef } from 'react'

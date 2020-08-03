@@ -1,8 +1,9 @@
 import login from '../login'
 
+let mockReturn = () => [{}]
 jest.mock('../../..', () => {
   return async () => ({
-    rows: [{}]
+    rows: mockReturn()
   })
 })
 
@@ -14,7 +15,13 @@ jest.mock('../../../../../config/db', () => {
 
 describe('database/query/user', () => {
   it('login', async () => {
-    const res = await login({})
-    expect(res).toEqual([{}])
+    const res = await login({ username: 'username', password: 'password' })
+    expect(res).toEqual({ username: 'username' })
+  })
+
+  it('login failed', async () => {
+    mockReturn = () => []
+    const res = await login({ username: 'username', password: 'password' })
+    expect(res).toEqual(null)
   })
 })

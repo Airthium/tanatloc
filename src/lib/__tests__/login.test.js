@@ -1,7 +1,7 @@
-import user from '..'
+import login from '../login'
 
 let mockReturn = () => []
-jest.mock('../../../database/query/user/login', () => {
+jest.mock('../../database/query/user/login', () => {
   return async () => mockReturn()
 })
 
@@ -10,7 +10,7 @@ describe('lib/user', () => {
     let res
 
     // Empty list
-    res = await user.login()
+    res = await login()
     expect(res).toEqual({
       authorized: false,
       id: 0
@@ -22,7 +22,7 @@ describe('lib/user', () => {
         id: 'id'
       }
     ]
-    res = await user.login()
+    res = await login()
     expect(res).toEqual({
       authorized: true,
       id: 'id'
@@ -35,7 +35,7 @@ describe('lib/user', () => {
       },
       {}
     ]
-    res = await user.login()
+    res = await login()
     expect(res).toEqual({
       authorized: false,
       id: 0

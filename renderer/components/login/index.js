@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import {
   message,
   Button,
@@ -11,31 +11,20 @@ import {
   Space
 } from 'antd'
 
-import login from '../../../src/lib/api/user/login'
-
-import { useDispatch, useSelector } from 'react-redux'
-import { login as reduxLogin } from '../../store/auth/action'
+import login from '../../../src/api/login'
+import { useUser } from '../../../src/auth/useUser'
 
 const errors = {
-  BAD_CREDENTIALS: 'Bad credentials. Please check your username and password'
+  BAD_CREDENTIALS: 'Login failed. Please check your username and password'
 }
 
-export default () => {
+const LoginPage = () => {
   // State
   const [checking, setChecking] = useState(false)
+  const [user, { mutate }] = useUser()
 
   // Router
   const router = useRouter()
-
-  // Redux
-  const dispatch = useDispatch()
-
-  // Check user
-  const { user } = useSelector((store) => store.auth)
-  if (typeof window !== 'undefined' && user.id) {
-    // Go to dashboard
-    router.push('/dashboard')
-  }
 
   // On login
   const onLogin = async (values) => {
@@ -43,16 +32,9 @@ export default () => {
     setChecking(true)
 
     // Check
-    const check = await login(values)
-
-    // Authorized or not
-    if (check.authorized) {
-      dispatch(
-        reduxLogin({
-          username: values.username,
-          id: check.id
-        })
-      )
+    const loggedUser = await login(values)
+    if (loggedUser) {
+      mutate(loggedUser)
       router.push('/dashboard')
     } else {
       message.error(errors.BAD_CREDENTIALS)
@@ -60,12 +42,18 @@ export default () => {
     }
   }
 
+  useEffect(() => {
+    if (user) router.push('/dashboard')
+  }, [user])
+
   // Render
   return (
-    <Layout>
+    <Layout className="tanatloc-gradient">
       <Card className="Login">
-        <Space direction="vertical" size="large">
-          <img src="/images/banner.png" />
+        <Space direction="vertical" style={{ width: '100%' }}>
+          <div className="logo">
+            <img src="/images/logo.svg" />
+          </div>
           <Form initialValues={{ remember: true }} onFinish={onLogin}>
             <Form.Item
               name="username"
@@ -107,3 +95,5 @@ export default () => {
     </Layout>
   )
 }
+
+export default LoginPage

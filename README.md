@@ -4,6 +4,16 @@
 
 Using server-side rendering (SSR).
 
+## Env
+
+PASSPORT_SECRET
+
+DB_USER
+DB_HOST
+DB_PORT
+DB_DATABASE
+DB_PASSWORD
+
 ## Dev
 
 Browser:

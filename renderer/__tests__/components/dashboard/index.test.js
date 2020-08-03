@@ -1,33 +1,28 @@
 import Dashboard from '../../../components/dashboard'
-import { shallow } from 'enzyme'
+import { shallow, mount } from 'enzyme'
 
 import '../../../../config/jest/matchMediaMock'
 
 const mockRouter = jest.fn()
 jest.mock('next/router', () => ({
   useRouter: () => ({
-    push: mockRouter
+    replace: mockRouter
   })
 }))
 
 jest.mock('../../../components/project/list', () => 'list')
 
-let mockSelector = () => ({ user: { id: 'id' } })
-jest.mock('react-redux', () => ({
-  useDispatch: jest.fn(() => jest.fn),
-  useSelector: jest.fn((callback) => {
-    callback({})
-    return mockSelector()
-  })
+let mockUser = () => ({})
+jest.mock('../../../../src/auth/useUser', () => ({
+  useUser: () => [mockUser(), { mutate: jest.fn(), loading: false }]
 }))
 
-jest.mock('../../../store/auth/action', () => ({
-  logout: jest.fn()
-}))
+jest.mock('../../../../src/api/logout', () => async () => {})
 
 let wrapper
 describe('components/dashboard', () => {
   beforeEach(() => {
+    mockRouter.mockReset()
     wrapper = shallow(<Dashboard />)
   })
 
@@ -39,83 +34,34 @@ describe('components/dashboard', () => {
     expect(wrapper).toBeDefined()
   })
 
-  it('user', () => {
-    wrapper.unmount()
-    mockSelector = () => ({
-      user: {}
-    })
-    wrapper = shallow(<Dashboard />)
-    expect(mockRouter).toHaveBeenCalledTimes(1)
-    mockSelector = () => ({
-      user: { id: 'id' }
-    })
-  })
-
-  it('collapse', () => {
-    wrapper.find('Sider').props().onCollapse()
-  })
-
   it('onSelect', () => {
     // Empty
     wrapper.find('Menu').props().onSelect({})
 
-    // Name
-    wrapper.find('Menu').props().onSelect({ key: '0' })
-
-    // Projects
+    // Workspaces
     wrapper.find('Menu').props().onSelect({ key: '1' })
 
-    // Account
+    // Shared
     wrapper.find('Menu').props().onSelect({ key: '2' })
 
-    // Help
+    // Account
     wrapper.find('Menu').props().onSelect({ key: '3' })
 
-    // Logout
+    // Help
     wrapper.find('Menu').props().onSelect({ key: '4' })
+
+    // Logout
+    wrapper.find('Menu').props().onSelect({ key: '5' })
+  })
+
+  it('user', () => {
+    let mWrapper = mount(<Dashboard />)
+    expect(mockRouter).toHaveBeenCalledTimes(0)
+    mWrapper.unmount()
+
+    mockUser = () => {}
+    mWrapper = mount(<Dashboard />)
+    expect(mockRouter).toHaveBeenCalledTimes(1)
+    mWrapper.unmount()
   })
 })
-// import { Provider } from 'react-redux'
-// import configureStore from 'redux-mock-store'
-// import { mount } from 'enzyme'
-
-// jest.mock('next/router', () => {
-//   return {
-//     useRouter: () => ({
-//       push: jest.fn()
-//     })
-//   }
-// })
-// jest.mock('../../components/project/list', () => 'list')
-
-// let wrapper
-// describe('pages/Dashbaord', () => {
-//   beforeEach(() => {
-//     const mockStore = configureStore()
-//     const store = mockStore({
-//       auth: {
-//         user: {
-//           id: 'id'
-//         }
-//       }
-//     })
-//     wrapper = mount(
-//       <Provider store={store}>
-//         <Dashboard />
-//       </Provider>
-//     )
-//   })
-
-//   afterEach(() => {
-//     wrapper.unmount()
-//   })
-
-//   it('render', () => {
-//     expect(wrapper).toBeDefined()
-//   })
-
-//   it('account', () => {
-//     // console.log(wrapper.find({ label: 2 }).length)
-//     // console.log(wrapper.html())
-//   })
-// })

@@ -2,7 +2,7 @@ import { useRouter } from 'next/router'
 
 import { Layout, Button } from 'antd'
 
-export default () => {
+const IndexPage = () => {
   const router = useRouter()
 
   const handleClick = () => {
@@ -15,3 +15,5 @@ export default () => {
     </Layout>
   )
 }
+
+export default IndexPage

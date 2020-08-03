@@ -12,6 +12,8 @@ const globalInitialState = {
   auth: authInitialState
 }
 
+// TODO auth is deprecated (now passport)
+
 // COMBINE
 const combinedReducers = combineReducers({
   auth

@@ -7,9 +7,7 @@ import {
   CloudSyncOutlined
 } from '@ant-design/icons'
 
-import './index.css'
-
-export default () => {
+const ProjectCard = () => {
   const [title, setTitle] = useState('title')
   const [description, setDescription] = useState('')
 
@@ -24,6 +22,7 @@ export default () => {
     <Col>
       <Card
         className="ProjectCard"
+        hoverable
         bodyStyle={{ flexGrow: 10 }}
         extra={
           <Typography.Title
@@ -59,25 +58,12 @@ export default () => {
 
         <Row gutter={[24, 0]}>
           <Col span={12}>
-            <Button
-              block
-              type="primary"
-              size="large"
-              icon={<FormOutlined />}
-              onClick={onOpen}
-            >
+            <Button type="primary" icon={<FormOutlined />} onClick={onOpen}>
               Open
             </Button>
           </Col>
           <Col span={12}>
-            <Button
-              block
-              type="primary"
-              size="large"
-              danger
-              icon={<DeleteOutlined />}
-              onClick={onDelete}
-            >
+            <Button danger icon={<DeleteOutlined />} onClick={onDelete}>
               Delete
             </Button>
           </Col>
@@ -86,3 +72,5 @@ export default () => {
     </Col>
   )
 }
+
+export default ProjectCard

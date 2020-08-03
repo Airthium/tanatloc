@@ -1,103 +1,100 @@
 import { useRouter } from 'next/router'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Layout, Menu } from 'antd'
 import {
   AppstoreTwoTone,
   LogoutOutlined,
   QuestionCircleTwoTone,
-  SettingTwoTone
+  SettingTwoTone,
+  ShareAltOutlined
 } from '@ant-design/icons'
 import ProjectList from '../../components/project/list'
 
-import { useDispatch, useSelector } from 'react-redux'
-import { logout as reduxLogout } from '../../store/auth/action'
+import { useUser } from '../../../src/auth/useUser'
+import logout from '../../../src/api/logout'
 
 const menuItems = {
-  projects: {
-    label: 'My Projects',
+  workspaces: {
+    label: 'My Workspaces',
     key: '1'
+  },
+  shared: {
+    label: 'Shared With Me',
+    key: '2'
   },
   account: {
     label: 'Account Settings',
-    key: '2'
+    key: '3'
   },
   help: {
     label: 'I Need Help',
-    key: '3'
+    key: '4'
   },
   logout: {
     label: 'Logout',
-    key: '4'
+    key: '5'
   }
 }
 
 // TODO
-const Account = () => {
-  return <div>Account</div>
-}
+const Account = 'account'
 
 // TODO
-const Help = () => {
-  return <div>Help</div>
-}
+const Help = 'help'
 
-export default () => {
+const DashboardPage = () => {
   // State
-  const [collapsed, setCollapsed] = useState(false)
-  const [current, setCurrent] = useState(menuItems.projects.key)
+  const [current, setCurrent] = useState(menuItems.workspaces.key)
+
+  const [user, { mutate, loading }] = useUser()
 
   // Router
   const router = useRouter()
 
-  // Redux
-  const dispatch = useDispatch()
-
-  // Props
-  const { user } = useSelector((store) => store.auth)
-  if (typeof window !== 'undefined' && !user.id) {
-    // Go to login
-    router.push('/login')
-  }
-
-  // Collpase
-  const onCollapse = (isCollapsed) => {
-    setCollapsed(isCollapsed)
-  }
-
   const onSelect = ({ key }) => {
-    if (key === '0') return
-
-    if (key === menuItems.logout.key) logout()
+    if (key === menuItems.logout.key) handleLogout()
     else setCurrent(key)
   }
 
-  const logout = () => {
-    dispatch(reduxLogout())
-    router.push('/')
+  const handleLogout = async () => {
+    await logout()
+    mutate({ user: null })
   }
+
+  useEffect(() => {
+    if (!loading && !user) router.replace('/login')
+  }, [user, loading])
 
   return (
     <Layout>
-      <Layout.Sider
-        theme="light"
-        collapsible
-        collapsed={collapsed}
-        onCollapse={onCollapse}
-      >
+      <Layout.Sider theme="light">
         <div className="logo">
           <img src="/images/logo.svg" />
         </div>
 
         <Menu
           theme="light"
-          defaultSelectedKeys={['projects']}
           onSelect={onSelect}
+          defaultSelectedKeys={['workspace1']}
+          defaultOpenKeys={['1']}
+          mode="inline"
         >
-          <Menu.Item key={'0'}>Hello {user.username}</Menu.Item>
-          <Menu.Divider />
-          <Menu.Item key={menuItems.projects.key} icon={<AppstoreTwoTone />}>
-            {menuItems.projects.label}
-          </Menu.Item>
+          <Menu.SubMenu
+            key={menuItems.workspaces.key}
+            icon={<AppstoreTwoTone />}
+            title={menuItems.workspaces.label}
+          >
+            <Menu.Item key="workspace1">Home</Menu.Item>
+            <Menu.Item key="workspace2">Airthium</Menu.Item>
+          </Menu.SubMenu>
+          <Menu.SubMenu
+            key={menuItems.shared.key}
+            icon={<ShareAltOutlined />}
+            title={menuItems.shared.label}
+          >
+            <Menu.Item key="workspace3">Denso</Menu.Item>
+            <Menu.Item key="workspace4">Micado Micado Nicado</Menu.Item>
+          </Menu.SubMenu>
           <Menu.Item key={menuItems.account.key} icon={<SettingTwoTone />}>
             {menuItems.account.label}
           </Menu.Item>
@@ -112,14 +109,17 @@ export default () => {
           >
             {menuItems.logout.label}
           </Menu.Item>
+          <Menu.Divider />
         </Menu>
       </Layout.Sider>
 
-      <Layout className="bg-yellow no-scroll">
-        {current === menuItems.projects.key && <ProjectList />}
+      <Layout.Content className="no-scroll">
+        {current === menuItems.workspaces.key && <ProjectList />}
         {current === menuItems.account.key && <Account />}
         {current === menuItems.help.key && <Help />}
-      </Layout>
+      </Layout.Content>
     </Layout>
   )
 }
+
+export default DashboardPage

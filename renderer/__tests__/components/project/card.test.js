@@ -16,7 +16,7 @@ describe('component/project/card', () => {
   })
 
   it('handle buttons', () => {
-    wrapper.find({ type: 'primary' }).forEach((button) => {
+    wrapper.find('Button').forEach((button) => {
       button.simulate('click')
     })
   })

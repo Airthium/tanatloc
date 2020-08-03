@@ -1,5 +1,5 @@
 import Login from '../../../components/login'
-import { shallow } from 'enzyme'
+import { shallow, mount } from 'enzyme'
 
 import '../../../../config/jest/matchMediaMock'
 
@@ -10,62 +10,48 @@ jest.mock('next/router', () => ({
   })
 }))
 
-let mockLogin = () => ({})
-jest.mock('../../../../src/lib/api/user/login', () => {
+let mockLogin = () => {}
+jest.mock('../../../../src/api/login', () => {
   return async () => mockLogin()
 })
 
-let mockSelector = () => ({ user: {} })
-jest.mock('react-redux', () => ({
-  useDispatch: jest.fn(() => jest.fn),
-  useSelector: jest.fn((callback) => {
-    callback({})
-    return mockSelector()
-  })
+let mockUser = () => {}
+jest.mock('../../../../src/auth/useUser', () => ({
+  useUser: () => [mockUser(), { mutate: jest.fn() }]
 }))
 
-jest.mock('../../../store/auth/action', () => ({
-  login: jest.fn()
-}))
-
+let wrapper
 describe('components/login', () => {
-  it('render', () => {
-    const wrapper = shallow(<Login />)
-    expect(wrapper).toBeDefined()
+  beforeEach(() => {
+    mockRouter.mockReset()
+    wrapper = shallow(<Login />)
+  })
+
+  afterEach(() => {
     wrapper.unmount()
   })
 
-  it('user', () => {
-    mockSelector = () => ({
-      user: {
-        id: 'id'
-      }
-    })
-    const wrapper = shallow(<Login />)
-    expect(mockRouter).toHaveBeenCalledTimes(1)
-    wrapper.unmount()
-
-    mockSelector = () => ({
-      user: {}
-    })
+  it('render', () => {
+    expect(wrapper).toBeDefined()
   })
 
   it('onLogin', async () => {
-    const wrapper = shallow(<Login />)
-
-    mockRouter.mockReset()
-
-    // non authorized
     await wrapper.find('ForwardRef(InternalForm)').props().onFinish({})
-    expect(mockRouter).toHaveBeenCalledTimes(0)
 
-    // authorized
-    mockLogin = () => ({
-      authorized: true
-    })
+    mockLogin = () => ({})
     await wrapper.find('ForwardRef(InternalForm)').props().onFinish({})
     expect(mockRouter).toHaveBeenCalledTimes(1)
+  })
 
-    wrapper.unmount()
+  it('user', () => {
+    // Use mount to launch useEffect()
+    let mWrapper = mount(<Login />)
+    expect(mockRouter).toHaveBeenCalledTimes(0)
+    mWrapper.unmount()
+
+    mockUser = () => ({})
+    mWrapper = mount(<Login />)
+    expect(mockRouter).toHaveBeenCalledTimes(1)
+    mWrapper.unmount()
   })
 })

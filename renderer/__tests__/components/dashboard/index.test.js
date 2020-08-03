@@ -32,83 +32,23 @@ describe('components/dashboard', () => {
     expect(wrapper).toBeDefined()
   })
 
-  // it('user', () => {
-  //   wrapper.unmount()
-  //   mockSelector = () => ({
-  //     user: {}
-  //   })
-  //   wrapper = shallow(<Dashboard />)
-  //   expect(mockRouter).toHaveBeenCalledTimes(1)
-  //   mockSelector = () => ({
-  //     user: { id: 'id' }
-  //   })
-  // })
+  it('onSelect', () => {
+    // Empty
+    wrapper.find('Menu').props().onSelect({})
 
-  // it('collapse', () => {
-  //   wrapper.find('Sider').props().onCollapse()
-  // })
+    // Workspaces
+    wrapper.find('Menu').props().onSelect({ key: '1' })
 
-  // it('onSelect', () => {
-  //   // Empty
-  //   wrapper.find('Menu').props().onSelect({})
+    // Shared
+    wrapper.find('Menu').props().onSelect({ key: '2' })
 
-  //   // Name
-  //   wrapper.find('Menu').props().onSelect({ key: '0' })
+    // Account
+    wrapper.find('Menu').props().onSelect({ key: '3' })
 
-  //   // Projects
-  //   wrapper.find('Menu').props().onSelect({ key: '1' })
+    // Help
+    wrapper.find('Menu').props().onSelect({ key: '4' })
 
-  //   // Account
-  //   wrapper.find('Menu').props().onSelect({ key: '2' })
-
-  //   // Help
-  //   wrapper.find('Menu').props().onSelect({ key: '3' })
-
-  //   // Logout
-  //   wrapper.find('Menu').props().onSelect({ key: '4' })
-  // })
+    // Logout
+    wrapper.find('Menu').props().onSelect({ key: '5' })
+  })
 })
-// import { Provider } from 'react-redux'
-// import configureStore from 'redux-mock-store'
-// import { mount } from 'enzyme'
-
-// jest.mock('next/router', () => {
-//   return {
-//     useRouter: () => ({
-//       push: jest.fn()
-//     })
-//   }
-// })
-// jest.mock('../../components/project/list', () => 'list')
-
-// let wrapper
-// describe('pages/Dashbaord', () => {
-//   beforeEach(() => {
-//     const mockStore = configureStore()
-//     const store = mockStore({
-//       auth: {
-//         user: {
-//           id: 'id'
-//         }
-//       }
-//     })
-//     wrapper = mount(
-//       <Provider store={store}>
-//         <Dashboard />
-//       </Provider>
-//     )
-//   })
-
-//   afterEach(() => {
-//     wrapper.unmount()
-//   })
-
-//   it('render', () => {
-//     expect(wrapper).toBeDefined()
-//   })
-
-//   it('account', () => {
-//     // console.log(wrapper.find({ label: 2 }).length)
-//     // console.log(wrapper.html())
-//   })
-// })

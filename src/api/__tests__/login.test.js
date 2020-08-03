@@ -1,15 +1,26 @@
 import login from '../login'
 
+let mockCall = () => ({
+  status: 200,
+  json: async () => 'res'
+})
 jest.mock('../call', () => {
-  return async () => ({
-    staus: 200,
-    json: async () => 'res'
-  })
+  return async () => {
+    return mockCall()
+  }
 })
 
-describe('lib/api/user', () => {
+describe('src/api/user', () => {
   it('login', async () => {
     const res = await login({})
-    // expect(res).toBe('res')
+    expect(res).toBe('res')
+  })
+
+  it('login failed', async () => {
+    mockCall = () => ({
+      status: 404
+    })
+    const res = await login({})
+    expect(res).toBe(null)
   })
 })

@@ -37,14 +37,10 @@ const menuItems = {
 }
 
 // TODO
-const Account = () => {
-  return <div>Account</div>
-}
+const Account = 'account'
 
 // TODO
-const Help = () => {
-  return <div>Help</div>
-}
+const Help = 'help'
 
 const DashboardPage = () => {
   // State

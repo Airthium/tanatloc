@@ -1,5 +1,5 @@
 import Login from '../../../components/login'
-import { shallow } from 'enzyme'
+import { shallow, mount } from 'enzyme'
 
 import '../../../../config/jest/matchMediaMock'
 
@@ -15,8 +15,9 @@ jest.mock('../../../../src/api/login', () => {
   return async () => mockLogin()
 })
 
+let mockUser = () => {}
 jest.mock('../../../../src/auth/useUser', () => ({
-  useUser: () => [{}, { mutate: jest.fn() }]
+  useUser: () => [mockUser(), { mutate: jest.fn() }]
 }))
 
 let wrapper
@@ -43,6 +44,14 @@ describe('components/login', () => {
   })
 
   it('user', () => {
-    // TODO useEffect
+    // Use mount to launch useEffect()
+    let mWrapper = mount(<Login />)
+    expect(mockRouter).toHaveBeenCalledTimes(0)
+    mWrapper.unmount()
+
+    mockUser = () => ({})
+    mWrapper = mount(<Login />)
+    expect(mockRouter).toHaveBeenCalledTimes(1)
+    mWrapper.unmount()
   })
 })

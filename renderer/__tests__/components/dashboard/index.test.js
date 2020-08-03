@@ -1,19 +1,20 @@
 import Dashboard from '../../../components/dashboard'
-import { shallow } from 'enzyme'
+import { shallow, mount } from 'enzyme'
 
 import '../../../../config/jest/matchMediaMock'
 
 const mockRouter = jest.fn()
 jest.mock('next/router', () => ({
   useRouter: () => ({
-    push: mockRouter
+    replace: mockRouter
   })
 }))
 
 jest.mock('../../../components/project/list', () => 'list')
 
+let mockUser = () => ({})
 jest.mock('../../../../src/auth/useUser', () => ({
-  useUser: () => [{}, { mutate: jest.fn(), loading: true }]
+  useUser: () => [mockUser(), { mutate: jest.fn(), loading: false }]
 }))
 
 jest.mock('../../../../src/api/logout', () => async () => {})
@@ -21,6 +22,7 @@ jest.mock('../../../../src/api/logout', () => async () => {})
 let wrapper
 describe('components/dashboard', () => {
   beforeEach(() => {
+    mockRouter.mockReset()
     wrapper = shallow(<Dashboard />)
   })
 
@@ -50,5 +52,16 @@ describe('components/dashboard', () => {
 
     // Logout
     wrapper.find('Menu').props().onSelect({ key: '5' })
+  })
+
+  it('user', () => {
+    let mWrapper = mount(<Dashboard />)
+    expect(mockRouter).toHaveBeenCalledTimes(0)
+    mWrapper.unmount()
+
+    mockUser = () => {}
+    mWrapper = mount(<Dashboard />)
+    expect(mockRouter).toHaveBeenCalledTimes(1)
+    mWrapper.unmount()
   })
 })

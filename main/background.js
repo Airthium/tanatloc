@@ -10,7 +10,7 @@ if (isProd) {
   app.setPath('userData', `${app.getPath('userData')} (development)`)
 }
 
-;(async () => {
+const start = async () => {
   console.info('Starting Tanatloc')
   await app.whenReady()
 
@@ -33,7 +33,8 @@ if (isProd) {
     await mainWindow.loadURL(`http://localhost:${port}/`)
     mainWindow.webContents.openDevTools()
   }
-})()
+}
+start()
 
 app.on('window-all-closed', () => {
   app.quit()

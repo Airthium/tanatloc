@@ -2,9 +2,9 @@ import nextConnect from 'next-connect'
 import auth from '../../../middleware/auth'
 // import { deleteUser, updateUserByUsername } from '../../../../src/lib/db'
 
-const handler = nextConnect()
+const user = nextConnect()
 
-handler
+user
   .use(auth)
   .get((req, res) => {
     // You do not generally want to return the whole user object
@@ -24,10 +24,11 @@ handler
   })
   .put((req, res) => {
     // const { name } = req.body
-    const user = {}
+    // const user = {}
     // TODO
     // const user = updateUserByUsername(req, req.user.username, { name })
-    res.json({ user })
+    // res.json({ user })
+    res.json()
   })
   .delete((req, res) => {
     // deleteUser(req)
@@ -35,4 +36,4 @@ handler
     res.status(204).end()
   })
 
-export default handler
+export default user

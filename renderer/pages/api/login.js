@@ -2,10 +2,10 @@ import nextConnect from 'next-connect'
 import auth from '../../../middleware/auth'
 import passport from '../../../src/auth/passport'
 
-const handler = nextConnect()
+const login = nextConnect()
 
-handler.use(auth).post(passport.authenticate('local'), (req, res) => {
+login.use(auth).post(passport.authenticate('local'), (req, res) => {
   res.json({ user: req.user })
 })
 
-export default handler
+export default login

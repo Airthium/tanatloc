@@ -12,19 +12,6 @@ jest.mock('next/router', () => ({
 
 jest.mock('../../../components/project/list', () => 'list')
 
-let mockSelector = () => ({ user: { id: 'id' } })
-jest.mock('react-redux', () => ({
-  useDispatch: jest.fn(() => jest.fn),
-  useSelector: jest.fn((callback) => {
-    callback({})
-    return mockSelector()
-  })
-}))
-
-jest.mock('../../../store/auth/action', () => ({
-  logout: jest.fn()
-}))
-
 let wrapper
 describe('components/dashboard', () => {
   beforeEach(() => {

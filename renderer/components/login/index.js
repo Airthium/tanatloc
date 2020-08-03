@@ -51,7 +51,7 @@ const LoginPage = () => {
     <Layout>
       <Card className="Login">
         <Space direction="vertical" size="large">
-          <img src="/images/banner.png" />
+          <img src="/images/logo.svg" />
           <Form initialValues={{ remember: true }} onFinish={onLogin}>
             <Form.Item
               name="username"

@@ -1,11 +1,14 @@
 import { useRouter } from 'next/router'
+
 import { useState, useEffect } from 'react'
-import { Layout, Menu } from 'antd'
+import { Layout, Menu, Typography } from 'antd'
+
 import {
   AppstoreTwoTone,
   LogoutOutlined,
   QuestionCircleTwoTone,
-  SettingTwoTone
+  SettingTwoTone,
+  ShareAltOutlined
 } from '@ant-design/icons'
 import ProjectList from '../../components/project/list'
 
@@ -14,21 +17,25 @@ import { useUser } from '../../../src/auth/useUser'
 import logout from '../../../src/api/logout'
 
 const menuItems = {
-  projects: {
-    label: 'My Projects',
+  workspaces: {
+    label: 'My Workspaces',
     key: '1'
+  },
+  shared: {
+    label: 'Shared With Me',
+    key: '2'
   },
   account: {
     label: 'Account Settings',
-    key: '2'
+    key: '3'
   },
   help: {
     label: 'I Need Help',
-    key: '3'
+    key: '4'
   },
   logout: {
     label: 'Logout',
-    key: '4'
+    key: '5'
   }
 }
 
@@ -42,20 +49,21 @@ const Help = () => {
   return <div>Help</div>
 }
 
+const redColor = '#0096C7'
+
 const DashboardPage = () => {
   // State
-  const [collapsed, setCollapsed] = useState(false)
-  const [current, setCurrent] = useState(menuItems.projects.key)
+  const [current, setCurrent] = useState(menuItems.workspaces.key)
 
   const [user, { mutate, loading }] = useUser()
 
   // Router
   const router = useRouter()
 
-  // Collpase
-  const onCollapse = (isCollapsed) => {
-    setCollapsed(isCollapsed)
-  }
+  // // Collpase
+  // const onCollapse = (isCollapsed) => {
+  //   setCollapsed(isCollapsed)
+  // }
 
   const onSelect = ({ key }) => {
     if (key === '0') return
@@ -75,26 +83,34 @@ const DashboardPage = () => {
 
   return (
     <Layout>
-      <Layout.Sider
-        theme="light"
-        collapsible
-        collapsed={collapsed}
-        onCollapse={onCollapse}
-      >
+      <Layout.Sider theme="light">
         <div className="logo">
           <img src="/images/logo.svg" />
         </div>
 
         <Menu
           theme="light"
-          defaultSelectedKeys={['projects']}
           onSelect={onSelect}
+          defaultSelectedKeys={['workspace1']}
+          defaultOpenKeys={['1']}
+          mode="inline"
         >
-          <Menu.Item key={'0'}>Hello {user && user.username}</Menu.Item>
-          <Menu.Divider />
-          <Menu.Item key={menuItems.projects.key} icon={<AppstoreTwoTone />}>
-            {menuItems.projects.label}
-          </Menu.Item>
+          <Menu.SubMenu
+            key={menuItems.workspaces.key}
+            icon={<AppstoreTwoTone twoToneColor={redColor} />}
+            title={menuItems.workspaces.label}
+          >
+            <Menu.Item key="workspace1">Home</Menu.Item>
+            <Menu.Item key="workspace2">Airthium</Menu.Item>
+          </Menu.SubMenu>
+          <Menu.SubMenu
+            key={menuItems.shared.key}
+            icon={<ShareAltOutlined />}
+            title={menuItems.shared.label}
+          >
+            <Menu.Item key="workspace3">Denso</Menu.Item>
+            <Menu.Item key="workspace4">Micado Micado Nicado</Menu.Item>
+          </Menu.SubMenu>
           <Menu.Item key={menuItems.account.key} icon={<SettingTwoTone />}>
             {menuItems.account.label}
           </Menu.Item>
@@ -109,11 +125,12 @@ const DashboardPage = () => {
           >
             {menuItems.logout.label}
           </Menu.Item>
+          <Menu.Divider />
         </Menu>
       </Layout.Sider>
 
-      <Layout className="bg-yellow no-scroll">
-        {current === menuItems.projects.key && <ProjectList />}
+      <Layout className="no-scroll">
+        {current === menuItems.workspaces.key && <ProjectList />}
         {current === menuItems.account.key && <Account />}
         {current === menuItems.help.key && <Help />}
       </Layout>

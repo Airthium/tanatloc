@@ -5,7 +5,7 @@ export default function session({ name, secret, cookie: cookieOpts }) {
   return async (req, res, next) => {
     const cookie = req.headers.cookie ? parse(req.headers.cookie) : null
     let unsealed
-    if (cookie[name]) {
+    if (cookie && cookie[name]) {
       try {
         // the cookie needs to be unsealed using the password `secret`
         unsealed = await Iron.unseal(cookie[name], secret, Iron.defaults)

@@ -19,6 +19,7 @@ describe('lib/api/call', () => {
     await call('route', {})
     expect(mockRoute).toBe('http://localhost:3000/route')
     expect(mockParameters).toEqual({
+      method: 'GET',
       headers: {
         'Content-Type': 'application/json'
       }
@@ -30,6 +31,7 @@ describe('lib/api/call', () => {
     await call('route', {})
     expect(mockRoute).toBe('route')
     expect(mockParameters).toEqual({
+      method: 'GET',
       headers: {
         'Content-Type': 'application/json'
       }

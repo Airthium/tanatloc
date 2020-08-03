@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import {
   message,
   Button,
@@ -12,30 +12,19 @@ import {
 } from 'antd'
 
 import login from '../../../src/api/login'
-
-import { useDispatch, useSelector } from 'react-redux'
-import { login as reduxLogin } from '../../store/auth/action'
+import { useUser } from '../../../src/auth/useUser'
 
 const errors = {
-  BAD_CREDENTIALS: 'Bad credentials. Please check your username and password'
+  BAD_CREDENTIALS: 'Login failed. Please check your username and password'
 }
 
-export default () => {
+const LoginPage = () => {
   // State
   const [checking, setChecking] = useState(false)
+  const [user, { mutate }] = useUser()
 
   // Router
   const router = useRouter()
-
-  // Redux
-  const dispatch = useDispatch()
-
-  // Check user
-  const { user } = useSelector((store) => store.auth)
-  if (typeof window !== 'undefined' && user.id) {
-    // Go to dashboard
-    router.push('/dashboard')
-  }
 
   // On login
   const onLogin = async (values) => {
@@ -43,22 +32,19 @@ export default () => {
     setChecking(true)
 
     // Check
-    const check = await login(values)
-
-    // Authorized or not
-    if (check.authorized) {
-      dispatch(
-        reduxLogin({
-          username: values.username,
-          id: check.id
-        })
-      )
+    const loggedUser = await login(values)
+    if (loggedUser) {
+      mutate(loggedUser)
       router.push('/dashboard')
     } else {
       message.error(errors.BAD_CREDENTIALS)
       setChecking(false)
     }
   }
+
+  useEffect(() => {
+    if (user) router.push('/dashboard')
+  }, [user])
 
   // Render
   return (
@@ -107,3 +93,5 @@ export default () => {
     </Layout>
   )
 }
+
+export default LoginPage

@@ -1,7 +1,7 @@
 import login from '../login'
 
 let mockReturn = () => []
-jest.mock('../../../database/query/user/login', () => {
+jest.mock('../../database/query/user/login', () => {
   return async () => mockReturn()
 })
 

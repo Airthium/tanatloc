@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Layout, Menu } from 'antd'
 import {
   AppstoreTwoTone,
@@ -9,8 +9,9 @@ import {
 } from '@ant-design/icons'
 import ProjectList from '../../components/project/list'
 
-import { useDispatch, useSelector } from 'react-redux'
-import { logout as reduxLogout } from '../../store/auth/action'
+import { useUser } from '../../../src/auth/useUser'
+
+import logout from '../../../src/api/logout'
 
 const menuItems = {
   projects: {
@@ -41,23 +42,15 @@ const Help = () => {
   return <div>Help</div>
 }
 
-export default () => {
+const DashboardPage = () => {
   // State
   const [collapsed, setCollapsed] = useState(false)
   const [current, setCurrent] = useState(menuItems.projects.key)
 
+  const [user, { mutate, loading }] = useUser()
+
   // Router
   const router = useRouter()
-
-  // Redux
-  const dispatch = useDispatch()
-
-  // Props
-  const { user } = useSelector((store) => store.auth)
-  if (typeof window !== 'undefined' && !user.id) {
-    // Go to login
-    router.push('/login')
-  }
 
   // Collpase
   const onCollapse = (isCollapsed) => {
@@ -67,14 +60,18 @@ export default () => {
   const onSelect = ({ key }) => {
     if (key === '0') return
 
-    if (key === menuItems.logout.key) logout()
+    if (key === menuItems.logout.key) handleLogout()
     else setCurrent(key)
   }
 
-  const logout = () => {
-    dispatch(reduxLogout())
-    router.push('/')
+  const handleLogout = async () => {
+    await logout()
+    mutate({ user: null })
   }
+
+  useEffect(() => {
+    if (!loading && !user) router.replace('/login')
+  }, [user, loading])
 
   return (
     <Layout>
@@ -93,7 +90,7 @@ export default () => {
           defaultSelectedKeys={['projects']}
           onSelect={onSelect}
         >
-          <Menu.Item key={'0'}>Hello {user.username}</Menu.Item>
+          <Menu.Item key={'0'}>Hello {user && user.username}</Menu.Item>
           <Menu.Divider />
           <Menu.Item key={menuItems.projects.key} icon={<AppstoreTwoTone />}>
             {menuItems.projects.label}
@@ -123,3 +120,5 @@ export default () => {
     </Layout>
   )
 }
+
+export default DashboardPage

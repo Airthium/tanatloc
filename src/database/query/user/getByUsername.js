@@ -1,16 +1,16 @@
 import query from '../..'
 import { databases } from '../../../../config/db'
 
-export default async ({ email }) => {
+export default async (username) => {
   const response = await query(
     'SELECT (id) FROM ' + databases.USERS + ' WHERE email = $1',
-    [email]
+    [username]
   )
 
   const result = response.rows[0]
   const user = {
-    id: result.id,
-    username: email
+    ...result,
+    username
   }
   return user
 }

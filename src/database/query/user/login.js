@@ -10,6 +10,8 @@ export default async ({ username, password }) => {
   )
 
   const result = response.rows[0]
+  if (!result) return null
+
   const user = {
     ...result,
     username: username

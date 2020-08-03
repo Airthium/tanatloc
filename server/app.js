@@ -4,6 +4,7 @@ import cookieParser from 'cookie-parser'
 import cors from 'cors'
 
 import login from '../renderer/pages/api/login'
+import logout from '../renderer/pages/api/logout'
 
 const app = express()
 
@@ -12,8 +13,13 @@ app.use(json())
 app.use(urlencoded({ extended: false }))
 app.use(cookieParser())
 
+// Routes
 app.post('/api/login', (req, res) => {
   login(req, res)
+})
+
+app.post('/api/logout', (req, res) => {
+  logout(req, res)
 })
 
 /**

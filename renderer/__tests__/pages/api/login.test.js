@@ -1,19 +1,21 @@
-import login from '../../../../pages/api/user/login'
+import login from '../../../pages/api/login'
 
-jest.mock('../../../../../src/lib/user', () => ({
-  login: async () => ({
-    id: 'id'
+jest.mock('next-connect', () => () => ({
+  use: () => ({
+    post: (param, callback) => {
+      if (typeof callback === 'function') callback({}, { json: () => 'json' })
+    }
   })
 }))
 
-describe('pages/api/user/login', () => {
-  it('login', async () => {
-    let result
-    const res = {
-      setHeader: jest.fn(),
-      send: (content) => (result = content)
-    }
-    await login({ body: { username: 'username', password: 'password' } }, res)
-    expect(result).toEqual({ id: 'id' })
+jest.mock('../../../../middleware/auth', () => {})
+
+jest.mock('../../../../src/auth/passport', () => ({
+  authenticate: jest.fn()
+}))
+
+describe('pages/api', () => {
+  it('login', () => {
+    login.use().post()
   })
 })

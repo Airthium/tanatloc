@@ -1,8 +1,6 @@
 import { useRouter } from 'next/router'
-
 import { useState, useEffect } from 'react'
-import { Layout, Menu, Typography } from 'antd'
-
+import { Layout, Menu } from 'antd'
 import {
   AppstoreTwoTone,
   LogoutOutlined,
@@ -13,7 +11,6 @@ import {
 import ProjectList from '../../components/project/list'
 
 import { useUser } from '../../../src/auth/useUser'
-
 import logout from '../../../src/api/logout'
 
 const menuItems = {
@@ -49,8 +46,6 @@ const Help = () => {
   return <div>Help</div>
 }
 
-const redColor = '#0096C7'
-
 const DashboardPage = () => {
   // State
   const [current, setCurrent] = useState(menuItems.workspaces.key)
@@ -60,14 +55,7 @@ const DashboardPage = () => {
   // Router
   const router = useRouter()
 
-  // // Collpase
-  // const onCollapse = (isCollapsed) => {
-  //   setCollapsed(isCollapsed)
-  // }
-
   const onSelect = ({ key }) => {
-    if (key === '0') return
-
     if (key === menuItems.logout.key) handleLogout()
     else setCurrent(key)
   }
@@ -97,7 +85,7 @@ const DashboardPage = () => {
         >
           <Menu.SubMenu
             key={menuItems.workspaces.key}
-            icon={<AppstoreTwoTone twoToneColor={redColor} />}
+            icon={<AppstoreTwoTone />}
             title={menuItems.workspaces.label}
           >
             <Menu.Item key="workspace1">Home</Menu.Item>
@@ -129,11 +117,11 @@ const DashboardPage = () => {
         </Menu>
       </Layout.Sider>
 
-      <Layout className="no-scroll">
+      <Layout.Content className="no-scroll">
         {current === menuItems.workspaces.key && <ProjectList />}
         {current === menuItems.account.key && <Account />}
         {current === menuItems.help.key && <Help />}
-      </Layout>
+      </Layout.Content>
     </Layout>
   )
 }

@@ -36,7 +36,8 @@ jest.mock('express', () => ({
 jest.mock('cookie-parser', () => () => {})
 jest.mock('cors', () => () => {})
 
-jest.mock('../../renderer/pages/api/user/login', () => () => {})
+jest.mock('../../renderer/pages/api/login', () => () => {})
+jest.mock('../../renderer/pages/api/logout', () => () => {})
 
 describe('server/app', () => {
   it('app', () => {

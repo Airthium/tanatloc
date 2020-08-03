@@ -48,10 +48,12 @@ const LoginPage = () => {
 
   // Render
   return (
-    <Layout>
+    <Layout className="tanatloc-gradient">
       <Card className="Login">
-        <Space direction="vertical" size="large">
-          <img src="/images/logo.svg" />
+        <Space direction="vertical" style={{ width: '100%' }}>
+          <div className="logo">
+            <img src="/images/logo.svg" />
+          </div>
           <Form initialValues={{ remember: true }} onFinish={onLogin}>
             <Form.Item
               name="username"

@@ -24,6 +24,7 @@ export default () => {
     <Col>
       <Card
         className="ProjectCard"
+        hoverable
         bodyStyle={{ flexGrow: 10 }}
         extra={
           <Typography.Title
@@ -62,7 +63,7 @@ export default () => {
             <Button
               block
               type="primary"
-              size="large"
+              size="default"
               icon={<FormOutlined />}
               onClick={onOpen}
             >
@@ -72,8 +73,7 @@ export default () => {
           <Col span={12}>
             <Button
               block
-              type="primary"
-              size="large"
+              size="default"
               danger
               icon={<DeleteOutlined />}
               onClick={onDelete}

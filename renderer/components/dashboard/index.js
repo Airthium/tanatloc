@@ -1,11 +1,14 @@
 import { useRouter } from 'next/router'
 import { useState } from 'react'
-import { Layout, Menu } from 'antd'
+import { Layout, Menu, Typography } from 'antd'
+const { SubMenu } = Menu;
+const { Title } = Typography;
 import {
   AppstoreTwoTone,
   LogoutOutlined,
   QuestionCircleTwoTone,
-  SettingTwoTone
+  SettingTwoTone,
+  ShareAltOutlined
 } from '@ant-design/icons'
 import ProjectList from '../../components/project/list'
 
@@ -13,21 +16,25 @@ import { useDispatch, useSelector } from 'react-redux'
 import { logout as reduxLogout } from '../../store/auth/action'
 
 const menuItems = {
-  projects: {
-    label: 'My Projects',
+  workspaces: {
+    label: 'My Workspaces',
     key: '1'
+  },
+  shared: {
+    label: 'Shared With Me',
+    key: '2'
   },
   account: {
     label: 'Account Settings',
-    key: '2'
+    key: '3'
   },
   help: {
     label: 'I Need Help',
-    key: '3'
+    key: '4'
   },
   logout: {
     label: 'Logout',
-    key: '4'
+    key: '5'
   }
 }
 
@@ -41,10 +48,11 @@ const Help = () => {
   return <div>Help</div>
 }
 
+const redColor = '#0096C7'
+
 export default () => {
   // State
-  const [collapsed, setCollapsed] = useState(false)
-  const [current, setCurrent] = useState(menuItems.projects.key)
+  const [current, setCurrent] = useState(menuItems.workspaces.key)
 
   // Router
   const router = useRouter()
@@ -57,11 +65,6 @@ export default () => {
   if (typeof window !== 'undefined' && !user.id) {
     // Go to login
     router.push('/login')
-  }
-
-  // Collpase
-  const onCollapse = (isCollapsed) => {
-    setCollapsed(isCollapsed)
   }
 
   const onSelect = ({ key }) => {
@@ -80,9 +83,6 @@ export default () => {
     <Layout>
       <Layout.Sider
         theme="light"
-        collapsible
-        collapsed={collapsed}
-        onCollapse={onCollapse}
       >
         <div className="logo">
           <img src="/images/logo.svg" />
@@ -90,14 +90,19 @@ export default () => {
 
         <Menu
           theme="light"
-          defaultSelectedKeys={['projects']}
           onSelect={onSelect}
+          defaultSelectedKeys={['workspace1']}
+          defaultOpenKeys={['1']}
+          mode="inline"
         >
-          <Menu.Item key={'0'}>Hello {user.username}</Menu.Item>
-          <Menu.Divider />
-          <Menu.Item key={menuItems.projects.key} icon={<AppstoreTwoTone />}>
-            {menuItems.projects.label}
-          </Menu.Item>
+          <SubMenu key={menuItems.workspaces.key} icon={<AppstoreTwoTone twoToneColor={redColor}/>} title={menuItems.workspaces.label}>
+            <Menu.Item key="workspace1">Home</Menu.Item>
+            <Menu.Item key="workspace2">Airthium</Menu.Item>
+          </SubMenu>
+          <SubMenu key={menuItems.shared.key} icon={<ShareAltOutlined />} title={menuItems.shared.label}>
+            <Menu.Item key="workspace3">Denso</Menu.Item>
+            <Menu.Item key="workspace4">Micado Micado Nicado</Menu.Item>
+          </SubMenu>
           <Menu.Item key={menuItems.account.key} icon={<SettingTwoTone />}>
             {menuItems.account.label}
           </Menu.Item>
@@ -112,11 +117,12 @@ export default () => {
           >
             {menuItems.logout.label}
           </Menu.Item>
+          <Menu.Divider />
         </Menu>
       </Layout.Sider>
 
-      <Layout className="bg-yellow no-scroll">
-        {current === menuItems.projects.key && <ProjectList />}
+      <Layout className="no-scroll">
+        {current === menuItems.workspaces.key && <ProjectList />}
         {current === menuItems.account.key && <Account />}
         {current === menuItems.help.key && <Help />}
       </Layout>

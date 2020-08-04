@@ -1,5 +1,7 @@
 import Index from '../components/index'
 
-export default () => {
+const IndexPage = () => {
   return <Index />
 }
+
+export default IndexPage

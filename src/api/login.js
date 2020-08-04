@@ -1,7 +1,7 @@
 import call from './call'
 
 export default async ({ username, password }) => {
-  const res = await call('api/login', {
+  const res = await call('/api/login', {
     method: 'POST',
     body: JSON.stringify({ username: username, password: password })
   })

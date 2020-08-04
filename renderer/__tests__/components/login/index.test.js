@@ -16,7 +16,7 @@ jest.mock('../../../../src/api/login', () => {
 })
 
 let mockUser = () => {}
-jest.mock('../../../../src/auth/useUser', () => ({
+jest.mock('../../../../src/api/user/useUser', () => ({
   useUser: () => [mockUser(), { mutate: jest.fn() }]
 }))
 

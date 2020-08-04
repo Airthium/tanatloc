@@ -1,8 +1,7 @@
 import useSWR from 'swr'
+import fetcher from '../call'
 
-export const fetcher = (url) => fetch(url).then((r) => r.json())
-
-export function useUser() {
+export default () => {
   const { data, mutate } = useSWR('/api/user', fetcher)
   const loading = !data
   const user = data && data.user

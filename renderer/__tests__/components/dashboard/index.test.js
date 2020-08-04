@@ -13,7 +13,7 @@ jest.mock('next/router', () => ({
 jest.mock('../../../components/project/list', () => 'list')
 
 let mockUser = () => ({})
-jest.mock('../../../../src/auth/useUser', () => ({
+jest.mock('../../../../src/api/user/useUser', () => ({
   useUser: () => [mockUser(), { mutate: jest.fn(), loading: false }]
 }))
 

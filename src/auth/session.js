@@ -10,7 +10,7 @@ export default function session({ name, secret, cookie: cookieOpts }) {
         // the cookie needs to be unsealed using the password `secret`
         unsealed = await Iron.unseal(cookie[name], secret, Iron.defaults)
       } catch (e) {
-        // To cookie is invalid, do nothing
+        // cookie is invalid, do nothing
       }
     }
 

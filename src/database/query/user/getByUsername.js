@@ -3,7 +3,7 @@ import { databases } from '../../../../config/db'
 
 export default async (username) => {
   const response = await query(
-    'SELECT (id) FROM ' + databases.USERS + ' WHERE email = $1',
+    'SELECT id FROM ' + databases.USERS + ' WHERE email = $1',
     [username]
   )
 

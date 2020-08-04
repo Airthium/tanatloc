@@ -20,8 +20,12 @@ import {
 import Add from './add'
 import ProjectList from '../project/list'
 
+// import useUser from '../../../src/api/user/useUser'
+
 const WorkspacePage = (props) => {
-  console.log(props.workspace)
+  const workspace = props.workspace || {}
+  // const [user] = useUser() // TODO get specific user
+
   return (
     <Layout className="Workspace no-scroll">
       <PageHeader
@@ -32,7 +36,7 @@ const WorkspacePage = (props) => {
               <AppstoreOutlined />
               <span>My Workspace</span>
             </Breadcrumb.Item>
-            <Breadcrumb.Item>Home</Breadcrumb.Item>
+            <Breadcrumb.Item>{workspace.name}</Breadcrumb.Item>
           </Breadcrumb>
         }
         extra={[
@@ -63,22 +67,31 @@ const WorkspacePage = (props) => {
           </>
         }
       >
-        <div className="Workspace-share">
-          <span style={{ marginRight: '10px' }}>
-            This workspace is shared with:
-          </span>
-          <Avatar.Group>
-            <Tooltip title="Marie" placement="bottom">
-              <Avatar style={{ backgroundColor: '#023E8A' }}>M</Avatar>
-            </Tooltip>
+        {workspace.users && (
+          <div className="Workspace-share">
+            <span style={{ marginRight: '10px' }}>
+              This workspace is shared with:
+            </span>
+            <Avatar.Group>
+              {workspace.users.map((user) => {
+                return (
+                  <Tooltip key={user} title={user} placement="bottom">
+                    <Avatar style={{ backgroundColor: '#023E8A' }}>
+                      {user}
+                    </Avatar>
+                  </Tooltip>
+                )
+              })}
+              {/* 
             <Tooltip title="Franck" placement="bottom">
               <Avatar style={{ backgroundColor: '#0077B6' }}>F</Avatar>
             </Tooltip>
             <Tooltip title="Karim" placement="bottom">
               <Avatar style={{ backgroundColor: '#0096C7' }}>K</Avatar>
-            </Tooltip>
-          </Avatar.Group>
-        </div>
+            </Tooltip> */}
+            </Avatar.Group>
+          </div>
+        )}
       </PageHeader>
 
       <Layout.Content className="scroll">

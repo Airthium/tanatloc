@@ -26,6 +26,9 @@ jest.mock('express', () => ({
         }
       }
     }),
+    get: jest.fn((param, callback) => {
+      callback()
+    }),
     post: jest.fn((param, callback) => {
       callback()
     })
@@ -33,7 +36,6 @@ jest.mock('express', () => ({
   json: jest.fn(),
   urlencoded: jest.fn()
 }))
-jest.mock('cookie-parser', () => () => {})
 jest.mock('cors', () => () => {})
 
 jest.mock('../../renderer/pages/api/login', () => () => {})

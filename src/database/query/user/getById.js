@@ -1,16 +1,23 @@
 import query from '../..'
 import { databases } from '../../../../config/db'
 
-export default async (id) => {
+/**
+ * Get user by id
+ * @param {string} id Id
+ * @param {Array} data Data
+ */
+export default async (id, data = ['email']) => {
   const response = await query(
-    'SELECT (email) FROM ' + databases.USERS + ' WHERE id = $1',
+    'SELECT ' + data.join(',') + ' FROM ' + databases.USERS + ' WHERE id = $1',
     [id]
   )
 
   const result = response.rows[0]
+  result.username = result.email
+  delete result.email
   const user = {
     id: id,
-    username: result.email
+    ...result
   }
   return user
 }

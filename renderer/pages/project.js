@@ -1,8 +1,10 @@
 import Project from '../components/project'
 
-export default () => {
+const ProjectPage = () => {
   return <Project />
 }
+
+export default ProjectPage
 
 // // import { useRef } from 'react'
 

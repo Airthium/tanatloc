@@ -1,16 +1,18 @@
 import { useRouter } from 'next/router'
 import { useState, useEffect } from 'react'
-import { Layout, Menu } from 'antd'
+import { Avatar, Layout, Menu } from 'antd'
 import {
+  UserOutlined,
   AppstoreTwoTone,
   LogoutOutlined,
   QuestionCircleTwoTone,
   SettingTwoTone,
   ShareAltOutlined
 } from '@ant-design/icons'
-import ProjectList from '../../components/project/list'
+import WorkspacePage from '../../components/workspace'
 
-import { useUser } from '../../../src/auth/useUser'
+import useUser from '../../../src/api/user/useUser'
+import useWorkspace from '../../../src/api/workspace/useWorkspace'
 import logout from '../../../src/api/logout'
 
 const menuItems = {
@@ -44,30 +46,64 @@ const Help = 'help'
 
 const DashboardPage = () => {
   // State
-  const [current, setCurrent] = useState(menuItems.workspaces.key)
+  const [currentView, setCurrentView] = useState(menuItems.workspaces.key)
+  const [currentWorkspace, setCurrentWorkspace] = useState()
 
   const [user, { mutate, loading }] = useUser()
+  const [workspaces] = useWorkspace()
 
   // Router
   const router = useRouter()
 
-  const onSelect = ({ key }) => {
-    if (key === menuItems.logout.key) handleLogout()
-    else setCurrent(key)
+  // Menu
+  const onSelect = ({ item, key }) => {
+    const subMenuKey = item.props.subMenuKey.replace('-menu-', '')
+
+    // In a submenu
+    if (parseInt(subMenuKey)) {
+      setCurrentView(subMenuKey)
+      if (subMenuKey === '1') {
+        // My workspaces
+        const workspace = myWorkspaces[key]
+        setCurrentWorkspace(workspace)
+      } else if (subMenuKey === '2') {
+        // Shared with me workspaces
+        const workspace = sharedWorkspaces[key]
+        setCurrentWorkspace(workspace)
+      }
+    } else {
+      if (key === menuItems.logout.key) handleLogout()
+      else setCurrentView(key)
+    }
   }
 
+  // Logout
   const handleLogout = async () => {
     await logout()
     mutate({ user: null })
   }
 
+  // Effect
   useEffect(() => {
     if (!loading && !user) router.replace('/login')
   }, [user, loading])
 
+  // Workspaces
+  let myWorkspaces = []
+  let sharedWorkspaces = []
+  if (workspaces && user) {
+    myWorkspaces = workspaces.filter(
+      (workspace) => workspace.owners && workspace.owners.includes(user.id)
+    )
+    sharedWorkspaces = workspaces.filter(
+      (workspace) => workspace.users && workspace.users.includes(user.id)
+    )
+  }
+
+  // Render
   return (
     <Layout>
-      <Layout.Sider theme="light">
+      <Layout.Sider theme="light" className="Dashboard-sider">
         <div className="logo">
           <img src="/images/logo.svg" />
         </div>
@@ -84,16 +120,18 @@ const DashboardPage = () => {
             icon={<AppstoreTwoTone />}
             title={menuItems.workspaces.label}
           >
-            <Menu.Item key="workspace1">Home</Menu.Item>
-            <Menu.Item key="workspace2">Airthium</Menu.Item>
+            {myWorkspaces.map((workspace, index) => {
+              return <Menu.Item key={index}>{workspace.name}</Menu.Item>
+            })}
           </Menu.SubMenu>
           <Menu.SubMenu
             key={menuItems.shared.key}
             icon={<ShareAltOutlined />}
             title={menuItems.shared.label}
           >
-            <Menu.Item key="workspace3">Denso</Menu.Item>
-            <Menu.Item key="workspace4">Micado Micado Nicado</Menu.Item>
+            {sharedWorkspaces.map((workspace, index) => {
+              return <Menu.Item key={index}>{workspace.name}</Menu.Item>
+            })}
           </Menu.SubMenu>
           <Menu.Item key={menuItems.account.key} icon={<SettingTwoTone />}>
             {menuItems.account.label}
@@ -111,12 +149,23 @@ const DashboardPage = () => {
           </Menu.Item>
           <Menu.Divider />
         </Menu>
+
+        <div className="Dashboard-profile">
+          <Avatar size="large" icon={<UserOutlined />} />
+          <p>{user && user.username}</p>
+          <p>
+            {user && user.firstname} {user && user.lastname}
+          </p>
+        </div>
       </Layout.Sider>
 
       <Layout.Content className="no-scroll">
-        {current === menuItems.workspaces.key && <ProjectList />}
-        {current === menuItems.account.key && <Account />}
-        {current === menuItems.help.key && <Help />}
+        {(currentView === menuItems.workspaces.key ||
+          currentView === menuItems.shared.key) && (
+          <WorkspacePage workspace={currentWorkspace} />
+        )}
+        {currentView === menuItems.account.key && <Account />}
+        {currentView === menuItems.help.key && <Help />}
       </Layout.Content>
     </Layout>
   )

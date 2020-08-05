@@ -1,26 +1,24 @@
 import nextConnect from 'next-connect'
 import auth from '../../../middleware/auth'
-// import { deleteUser, updateUserByUsername } from '../../../../src/lib/db'
+import getById from '../../../src/database/query/user/getById'
 
 const user = nextConnect()
 
 user
   .use(auth)
-  .get((req, res) => {
-    // You do not generally want to return the whole user object
-    // because it may contain sensitive field such as !!password!! Only return what needed
-    // const { name, username, favoriteColor } = req.user
-    // res.json({ user: { name, username, favoriteColor } })
-    res.json({ user: req.user })
-  })
   .use((req, res, next) => {
-    // handlers after this (PUT, DELETE) all require an authenticated user
-    // This middleware to check if user is authenticated before continuing
     if (!req.user) {
-      res.status(401).send('unauthenticated')
+      res
+        .status(401)
+        .send({ stauts: 'error', err: { message: 'unauthenticated' } })
     } else {
       next()
     }
+  })
+  .get((req, res) => {
+    getById(req.user.id, ['email', 'firstname', 'lastname']).then((user) => {
+      res.json({ user })
+    })
   })
   .put((req, res) => {
     // const { name } = req.body

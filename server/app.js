@@ -1,25 +1,32 @@
 import createError from 'http-errors'
 import express, { json, urlencoded } from 'express'
-import cookieParser from 'cookie-parser'
 import cors from 'cors'
 
 import login from '../renderer/pages/api/login'
 import logout from '../renderer/pages/api/logout'
+import user from '../renderer/pages/api/user'
+import workspace from '../renderer/pages/api/workspace'
 
 const app = express()
 
 app.use(cors())
 app.use(json())
 app.use(urlencoded({ extended: false }))
-app.use(cookieParser())
 
-// Routes
 app.post('/api/login', (req, res) => {
   login(req, res)
 })
 
-app.post('/api/logout', (req, res) => {
+app.get('/api/logout', (req, res) => {
   logout(req, res)
+})
+
+app.get('/api/user', (req, res) => {
+  user(req, res)
+})
+
+app.get('/api/workspace', (req, res) => {
+  workspace(req, res)
 })
 
 /**
@@ -45,7 +52,7 @@ app.use((err, req, res, next) => {
 
   // render the error page
   res.status(err.status || 500)
-  res.send({ status: 'error' })
+  res.send({ status: 'error', err: err })
 })
 
 export default app

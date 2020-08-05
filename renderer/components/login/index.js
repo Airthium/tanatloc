@@ -12,7 +12,7 @@ import {
 } from 'antd'
 
 import login from '../../../src/api/login'
-import { useUser } from '../../../src/auth/useUser'
+import useUser from '../../../src/api/user/useUser'
 
 const errors = {
   BAD_CREDENTIALS: 'Login failed. Please check your username and password'

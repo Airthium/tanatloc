@@ -1,5 +1,7 @@
-import call from './call'
+import isElectron from 'is-electron'
+
+const base = isElectron() ? 'http://localhost:3000' : ''
 
 export default async () => {
-  await call('/api/logout')
+  await fetch(base + '/api/logout')
 }

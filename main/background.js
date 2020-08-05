@@ -16,7 +16,7 @@ const start = async () => {
 
   // Server
   console.info('Starting server')
-  require('../dist-server/server/bin/www')
+  // require('../dist-server/server/bin/www')
 
   // Client
   console.info('Starting client')

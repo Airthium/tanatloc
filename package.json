@@ -35,7 +35,7 @@
     "@ant-design/icons": "4.2.1",
     "@babel/cli": "7.10.5",
     "@babel/core": "7.11.0",
-    "@babel/preset-typescript": "^7.10.4",
+    "@babel/preset-typescript": "7.10.4",
     "@hapi/iron": "6.0.0",
     "@zeit/next-css": "1.0.1",
     "@zeit/next-less": "1.0.1",

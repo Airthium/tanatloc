@@ -8,7 +8,9 @@ user
   .use(auth)
   .use((req, res, next) => {
     if (!req.user) {
-      res.status(401).send('unauthenticated')
+      res
+        .status(401)
+        .send({ stauts: 'error', err: { message: 'unauthenticated' } })
     } else {
       next()
     }

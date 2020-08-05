@@ -1,6 +1,5 @@
 import createError from 'http-errors'
 import express, { json, urlencoded } from 'express'
-import cookieParser from 'cookie-parser'
 import cors from 'cors'
 
 import login from '../renderer/pages/api/login'
@@ -13,7 +12,6 @@ const app = express()
 app.use(cors())
 app.use(json())
 app.use(urlencoded({ extended: false }))
-app.use(cookieParser())
 
 app.post('/api/login', (req, res) => {
   login(req, res)

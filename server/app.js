@@ -15,7 +15,7 @@ app.use(json())
 app.use(urlencoded({ extended: false }))
 app.use(cookieParser())
 
-app.get('/api/login', (req, res) => {
+app.post('/api/login', (req, res) => {
   login(req, res)
 })
 

@@ -6,13 +6,14 @@ Using server-side rendering (SSR).
 
 ## Env
 
-PASSPORT_SECRET
-
-DB_USER
-DB_HOST
-DB_PORT
-DB_DATABASE
-DB_PASSWORD
+| Variable        | Default      | Comment           |
+| --------------- | ------------ | ----------------- |
+| PASSPORT_SECRET | aa...        | Passport password |
+| DB_USER         | tanatlocuser | Database user     |
+| DB_HOST         | localhost    | Database host     |
+| DB_PORT         | 5432         | Database port     |
+| DB_DATABASE     | tanatloc     | Database name     |
+| DB_PASSWORD     | tanatloc     | Database password |
 
 ## Dev
 

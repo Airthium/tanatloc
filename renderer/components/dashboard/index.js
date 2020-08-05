@@ -91,7 +91,7 @@ const DashboardPage = () => {
   // Workspaces
   let myWorkspaces = []
   let sharedWorkspaces = []
-  if (workspaces) {
+  if (workspaces && user) {
     myWorkspaces = workspaces.filter(
       (workspace) => workspace.owners && workspace.owners.includes(user.id)
     )

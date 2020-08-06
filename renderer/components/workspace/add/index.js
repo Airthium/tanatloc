@@ -1,16 +1,28 @@
 import React, { useState } from 'react'
 import { Button, Form, Input, Modal } from 'antd'
 
+import addWorkspace from '../../../../src/api/workspace/addWorkspace'
+
 const AddPage = () => {
   const [form] = Form.useForm()
   const [visible, setVisible] = useState(false)
+  const [loading, setLoading] = useState(false)
 
   const toggleVisible = () => {
     setVisible(!visible)
   }
 
   const onOk = (values) => {
-    toggleVisible()
+    setLoading(true)
+    addWorkspace(values)
+      .then(() => {
+        setLoading(false)
+        toggleVisible()
+      })
+      .catch((err) => {
+        console.error(err)
+        setLoading(true)
+      })
   }
 
   const onCancel = () => {
@@ -38,6 +50,7 @@ const AddPage = () => {
               console.log('Validate Failed:', info)
             })
         }}
+        confirmLoading={loading}
       >
         <Form form={form}>
           <Form.Item

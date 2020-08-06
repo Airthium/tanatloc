@@ -1,5 +1,5 @@
 import useSWR from 'swr'
-import fetcher from '../call'
+import { fetcher } from '../call'
 
 export default () => {
   const { data, mutate } = useSWR('/api/workspace', fetcher)

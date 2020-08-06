@@ -25,7 +25,6 @@ passport.use(localStrategy)
 export const loginRoute = async (req, res) => {
   try {
     const user = await authenticate('local', req, res)
-    console.log(user)
     if (!user) {
       throw new Error('Bad credentials')
     }

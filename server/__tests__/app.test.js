@@ -38,8 +38,12 @@ jest.mock('express', () => ({
 }))
 jest.mock('cors', () => () => {})
 
-jest.mock('../../renderer/pages/api/login', () => () => {})
+jest.mock('../../renderer/pages/api/login', () => ({
+  loginRoute: () => {}
+}))
 jest.mock('../../renderer/pages/api/logout', () => () => {})
+jest.mock('../../renderer/pages/api/user', () => () => {})
+jest.mock('../../renderer/pages/api/workspace', () => () => {})
 
 describe('server/app', () => {
   it('app', () => {

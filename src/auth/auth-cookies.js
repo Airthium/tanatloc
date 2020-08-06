@@ -1,5 +1,12 @@
 import { serialize, parse } from 'cookie'
 
+import isElectron from 'is-electron'
+// import storage from 'electron-json-storage'
+import ElectronStore from 'electron-store'
+
+let storage
+if (isElectron()) storage = new ElectronStore()
+
 const TOKEN_NAME = 'token'
 const MAX_AGE = 60 * 60 * 8 // 8 hours
 
@@ -12,7 +19,9 @@ export function setTokenCookie(res, token) {
     path: '/',
     sameSite: 'lax'
   })
-  res.setHeader('Set-Cookie', cookie)
+
+  if (isElectron()) storage.set('auth-token', cookie)
+  else res.setHeader('Set-Cookie', cookie)
 }
 
 export function removeTokenCookie(res) {
@@ -21,16 +30,22 @@ export function removeTokenCookie(res) {
     path: '/'
   })
 
-  res.setHeader('Set-Cookie', cookie)
+  if (isElectron()) storage.delete('auth-token')
+  else res.setHeader('Set-Cookie', cookie)
 }
 
 export function parseCookies(req) {
   // For API Routes we don't need to parse the cookies.
-  if (req.cookies) return req.cookies
+  if (isElectron()) {
+    const cookie = storage.get('auth-token')
+    return parse(cookie || '')
+  } else {
+    if (req.cookies) return req.cookies
 
-  // For pages we do need to parse the cookies.
-  const cookie = req.headers && req.headers.cookie
-  return parse(cookie || '')
+    // For pages we do need to parse the cookies.
+    const cookie = req.headers && req.headers.cookie
+    return parse(cookie || '')
+  }
 }
 
 export function getTokenCookie(req) {

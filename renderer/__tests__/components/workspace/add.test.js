@@ -1,4 +1,4 @@
-import Add from '../../../../components/workspace/add'
+import Add from '../../../components/workspace/add'
 import { shallow } from 'enzyme'
 
 let wrapper

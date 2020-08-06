@@ -5,6 +5,10 @@ jest.mock('cookie', () => ({
   parse: (cookie) => cookie
 }))
 
+jest.mock('is-electron', () => () => false)
+
+jest.mock('electron-store', () => {})
+
 describe('src/auth/auth-cookies', () => {
   it('setTokenCookie', () => {
     let header

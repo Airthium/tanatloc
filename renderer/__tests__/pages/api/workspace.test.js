@@ -16,7 +16,9 @@ jest.mock(
 )
 
 describe('pages/api/workspace', () => {
-  const req = {}
+  const req = {
+    method: 'GET'
+  }
   let response
   const res = {
     status: () => ({

@@ -1,6 +1,7 @@
 import { getSession } from '../../../src/auth/iron'
 import getByUserId from '../../../src/database/query/workspace/getByUserId'
 import add from '../../../src/database/query/workspace/add'
+import del from '../../../src/database/query/workspace/delete'
 
 export default async function (req, res) {
   const session = await getSession(req)
@@ -16,15 +17,22 @@ export default async function (req, res) {
       })
       break
     case 'POST':
-      const workspace = req.body
-      add(session.id, workspace)
+      add(session.id, req.body)
         .then((workspace) => res.status(200).json({ workspace }))
         .catch((err) => {
           console.error(err)
           res.status(500).json({ message: err.message })
         })
       break
+    case 'DELETE':
+      del(session.id, req.body)
+        .then(() => res.status(200).json({ done: true }))
+        .catch((err) => {
+          console.error(err)
+          res.status(500).json({ message: err.message })
+        })
+      break
     default:
-      res.status(405).json({ message: 'Method not allowed' })
+      res.status(405).json({ message: 'Method ' + req.method + ' not allowed' })
   }
 }

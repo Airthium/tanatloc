@@ -18,6 +18,7 @@ import {
 } from '@ant-design/icons'
 
 import Add from './add'
+import Delete from './delete'
 import ProjectList from '../project/list'
 
 // import useUser from '../../../src/api/user/useUser'
@@ -44,9 +45,7 @@ const Workspace = (props) => {
           <Button key="share" icon={<ShareAltOutlined />}>
             Share it
           </Button>,
-          <Button key="delete" size="default" danger icon={<DeleteOutlined />}>
-            Delete it
-          </Button>
+          <Delete key="delete" id={workspace.id} />
         ]}
         footer={
           <>

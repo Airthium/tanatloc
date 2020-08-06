@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Button, Form, Input, Modal } from 'antd'
+import { message, Button, Form, Input, Modal } from 'antd'
 
 import addWorkspace from '../../../../src/api/workspace/addWorkspace'
 
@@ -18,10 +18,11 @@ const AddPage = () => {
       .then(() => {
         setLoading(false)
         toggleVisible()
+        form.resetFields()
       })
       .catch((err) => {
-        console.error(err)
-        setLoading(true)
+        message.error(err.message)
+        setLoading(false)
       })
   }
 
@@ -43,7 +44,6 @@ const AddPage = () => {
           form
             .validateFields()
             .then((values) => {
-              form.resetFields()
               onOk(values)
             })
             .catch((info) => {

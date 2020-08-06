@@ -1,7 +1,7 @@
-import Dashboard from '../components/dashboard'
+import DashboardPage from '../components/dashboard'
 
-const DashboardPage = () => {
-  return <Dashboard />
+const Dashboard = () => {
+  return <DashboardPage />
 }
 
-export default DashboardPage
+export default Dashboard

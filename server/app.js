@@ -2,9 +2,6 @@ import createError from 'http-errors'
 import express, { json, urlencoded } from 'express'
 import cors from 'cors'
 
-import passport from 'passport'
-import { localStrategy } from '../src/auth/password-local'
-
 import { loginRoute } from '../renderer/pages/api/login'
 import logout from '../renderer/pages/api/logout'
 import user from '../renderer/pages/api/user'
@@ -19,10 +16,6 @@ app.use(
 )
 app.use(json())
 app.use(urlencoded({ extended: false }))
-
-app.use(passport.initialize())
-
-passport.use(localStrategy)
 
 app.post('/api/login', async (req, res) => {
   await loginRoute(req, res)

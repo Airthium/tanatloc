@@ -22,7 +22,7 @@ app.use(passport.initialize())
 
 passport.use(localStrategy)
 
-app.post('/api/login', async (req, res) => {
+export const loginRoute = async (req, res) => {
   try {
     const user = await authenticate('local', req, res)
     console.log(user)
@@ -39,6 +39,8 @@ app.post('/api/login', async (req, res) => {
     console.error(error)
     res.status(401).send(error.message)
   }
-})
+}
+
+app.post('/api/login', loginRoute)
 
 export default app

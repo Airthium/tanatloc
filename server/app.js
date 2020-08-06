@@ -2,32 +2,37 @@ import createError from 'http-errors'
 import express, { json, urlencoded } from 'express'
 import cors from 'cors'
 
-import login from '../renderer/pages/api/login'
+import passport from 'passport'
+import { localStrategy } from '../src/auth/password-local'
+
+import { loginRoute } from '../renderer/pages/api/login'
 import logout from '../renderer/pages/api/logout'
 import user from '../renderer/pages/api/user'
 import workspace from '../renderer/pages/api/workspace'
 
 const app = express()
 
-app.use(cors())
+app.use(
+  cors({
+    origin: 'http://localhost:8888'
+  })
+)
 app.use(json())
 app.use(urlencoded({ extended: false }))
 
-app.post('/api/login', (req, res) => {
-  login(req, res)
+app.use(passport.initialize())
+
+passport.use(localStrategy)
+
+app.post('/api/login', async (req, res) => {
+  await loginRoute(req, res)
 })
 
-app.get('/api/logout', (req, res) => {
-  logout(req, res)
-})
+app.get('/api/logout', logout)
 
-app.get('/api/user', (req, res) => {
-  user(req, res)
-})
+app.get('/api/user', user)
 
-app.get('/api/workspace', (req, res) => {
-  workspace(req, res)
-})
+app.get('/api/workspace', workspace)
 
 /**
  * Catch 404 and forward to error handler

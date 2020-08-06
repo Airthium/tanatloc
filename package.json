@@ -22,7 +22,7 @@
     "build": "next build renderer",
     "export": "yarn build && next export renderer",
     "start": "next start renderer",
-    "server-build": "babel . --only config,middleware,renderer/pages/api,server,src --out-dir dist-server",
+    "server-build": "babel . --only config,renderer/pages/api,server,src --out-dir dist-server",
     "electron-dev": "yarn server-build && nextron",
     "electron-build": "yarn server-build && nextron build && electron-builder install-app-deps",
     "clean": "rimraf dist/ dist-server/ renderer/out/ renderer/.next/"

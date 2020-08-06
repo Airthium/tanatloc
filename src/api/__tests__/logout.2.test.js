@@ -1,9 +1,10 @@
 import logout from '../logout'
 
-// jest.mock('../call', () => async () => {})
+jest.mock('is-electron', () => () => false)
 
 describe('src/api/logout', () => {
   it('logout', async () => {
-    // await logout()
+    global.fetch = async () => {}
+    await logout()
   })
 })

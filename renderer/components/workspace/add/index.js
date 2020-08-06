@@ -10,7 +10,6 @@ const AddPage = () => {
   }
 
   const onOk = (values) => {
-    console.log(values)
     toggleVisible()
   }
 

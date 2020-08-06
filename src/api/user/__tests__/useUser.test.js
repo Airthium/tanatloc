@@ -1,9 +1,12 @@
 import useUser from '../useUser'
 
-jest.mock('swr', () => () => ({ data: {}, mutate: jest.fn() }))
+jest.mock('swr', () => () => ({ data: { user: {} }, mutate: jest.fn() }))
 
-describe('src/auth', () => {
+describe('src/api/user', () => {
   it('useUser', () => {
-    useUser()
+    const [user, { mutate, loading }] = useUser()
+    expect(user).toEqual({})
+    expect(mutate).toBeDefined()
+    expect(loading).toBe(false)
   })
 })

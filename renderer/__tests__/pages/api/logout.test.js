@@ -1,25 +1,13 @@
 import logout from '../../../pages/api/logout'
 
-jest.mock('next-connect', () => () => ({
-  use: () => ({
-    get: (callback) => {
-      if (typeof callback === 'function')
-        callback(
-          { logOut: jest.fn() },
-          {
-            status: () => ({
-              end: jest.fn()
-            })
-          }
-        )
-    }
-  })
+const mockRemove = jest.fn()
+jest.mock('../../../../src/auth/auth-cookies', () => ({
+  removeTokenCookie: () => mockRemove()
 }))
-
-jest.mock('../../../../middleware/auth', () => {})
 
 describe('pages/api', () => {
   it('logout', () => {
-    logout.use().get()
+    logout({}, { end: () => {} })
+    expect(mockRemove).toHaveBeenCalledTimes(1)
   })
 })

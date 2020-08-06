@@ -1,17 +1,21 @@
-import user from '../../../pages/api/user'
+import workspace from '../../../pages/api/workspace'
 
 let mockSession = () => ({})
 jest.mock('../../../../src/auth/iron', () => ({
   getSession: () => mockSession()
 }))
 
-jest.mock('../../../../src/database/query/user/getById', () => async () => ({
-  email: 'email',
-  firstname: 'firstname',
-  lastname: 'lastname'
-}))
+jest.mock(
+  '../../../../src/database/query/workspace/getByUserId',
+  () => async () => [
+    {
+      name: 'name',
+      owners: ['owner']
+    }
+  ]
+)
 
-describe('pages/api/user', () => {
+describe('pages/api/workspace', () => {
   const req = {}
   let response
   const res = {
@@ -23,19 +27,20 @@ describe('pages/api/user', () => {
   }
 
   it('no session', async () => {
-    await user(req, res)
+    await workspace(req, res)
     expect(response).toEqual({ message: 'Unauthorized' })
   })
 
   it('session', async () => {
     mockSession = () => ({ id: 'id' })
-    await user(req, res)
+    await workspace(req, res)
     expect(response).toEqual({
-      user: {
-        email: 'email',
-        firstname: 'firstname',
-        lastname: 'lastname'
-      }
+      workspaces: [
+        {
+          name: 'name',
+          owners: ['owner']
+        }
+      ]
     })
   })
 })

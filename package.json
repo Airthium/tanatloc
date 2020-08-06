@@ -22,7 +22,7 @@
     "build": "next build renderer",
     "export": "yarn build && next export renderer",
     "start": "next start renderer",
-    "server-build": "babel . --only config,middleware,renderer/pages/api,server,src --out-dir dist-server",
+    "server-build": "babel . --only config,renderer/pages/api,server,src --out-dir dist-server",
     "electron-dev": "yarn server-build && nextron",
     "electron-build": "yarn server-build && nextron build && electron-builder install-app-deps",
     "clean": "rimraf dist/ dist-server/ renderer/out/ renderer/.next/"
@@ -57,7 +57,6 @@
     "jest": "26.2.2",
     "less": "3.12.2",
     "next": "9.5.1",
-    "next-connect": "0.8.1",
     "next-transpile-modules": "4.0.2",
     "nextron": "5.15.0",
     "passport": "0.4.1",

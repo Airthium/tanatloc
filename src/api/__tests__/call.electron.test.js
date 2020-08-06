@@ -1,6 +1,6 @@
 import call from '../call'
 
-jest.mock('is-electron', () => () => false)
+jest.mock('is-electron', () => () => true)
 
 let mockRoute
 global.fetch = async (route) => {
@@ -11,8 +11,8 @@ global.fetch = async (route) => {
 }
 
 describe('src/api/call', () => {
-  it('no electron', () => {
+  it('electron', () => {
     call('/route')
-    expect(mockRoute).toBe('/route')
+    expect(mockRoute).toBe('http://localhost:3000/route')
   })
 })

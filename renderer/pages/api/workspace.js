@@ -1,26 +1,14 @@
-import nextConnect from 'next-connect'
-import auth from '../../../middleware/auth'
+import { getSession } from '../../../src/auth/iron'
 import getByUserId from '../../../src/database/query/workspace/getByUserId'
 
-const workspace = nextConnect()
+export default async function (req, res) {
+  const session = await getSession(req)
+  if (!session || !session.id) {
+    res.status(401).json({ message: 'Unauthorized' })
+    return
+  }
 
-workspace
-  .use(auth)
-  .use((req, res, next) => {
-    if (!req.user) {
-      res
-        .status(401)
-        .send({ stauts: 'error', err: { message: 'unauthenticated' } })
-    } else {
-      next()
-    }
+  getByUserId(session.id).then((workspaces) => {
+    res.status(200).json({ workspaces })
   })
-  .get((req, res) => {
-    getByUserId(req.user.id).then((workspaces) => {
-      res.json({ workspaces })
-    })
-  })
-  .put((req, res) => {})
-  .delete((req, res) => {})
-
-export default workspace
+}

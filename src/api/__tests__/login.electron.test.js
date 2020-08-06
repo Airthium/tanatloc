@@ -1,6 +1,6 @@
 import login from '../login'
 
-jest.mock('is-electron', () => () => false)
+jest.mock('is-electron', () => () => true)
 
 describe('src/api/user', () => {
   it('login', async () => {

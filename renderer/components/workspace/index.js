@@ -22,7 +22,7 @@ import ProjectList from '../project/list'
 
 // import useUser from '../../../src/api/user/useUser'
 
-const WorkspacePage = (props) => {
+const Workspace = (props) => {
   const workspace = props.workspace || {}
   // const [user] = useUser() // TODO get specific user
 
@@ -101,4 +101,4 @@ const WorkspacePage = (props) => {
   )
 }
 
-export default WorkspacePage
+export default Workspace

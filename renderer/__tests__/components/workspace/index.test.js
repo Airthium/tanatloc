@@ -5,6 +5,8 @@ jest.mock('../../../components/workspace/add', () => 'add')
 
 jest.mock('../../../components/project/list', () => 'list')
 
+jest.mock('../../../../src/api/workspace/update', () => async () => {})
+
 let wrapper
 describe('components/workspace', () => {
   beforeEach(() => {
@@ -17,6 +19,13 @@ describe('components/workspace', () => {
 
   it('render', () => {
     expect(wrapper).toBeDefined()
+  })
+
+  it('setName', () => {
+    wrapper
+      .find('PageHeader')
+      .props()
+      .title.props.children[1].props.children.props.editable.onChange()
   })
 
   it('with users', () => {

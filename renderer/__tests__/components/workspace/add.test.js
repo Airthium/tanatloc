@@ -1,9 +1,26 @@
 import Add from '../../../components/workspace/add'
 import { shallow } from 'enzyme'
 
+jest.unmock('antd')
+import antd from 'antd'
+
+jest.mock('../../../../src/api/workspace/add', () => {
+  let count = 0
+  return async () => {
+    count++
+    if (count === 1) throw new Error('test')
+  }
+})
+
 let wrapper
 describe('components/workspace/add', () => {
   beforeEach(() => {
+    antd.Form.useForm = () => [
+      {
+        validateFields: async () => {},
+        resetFields: () => {}
+      }
+    ]
     wrapper = shallow(<Add />)
   })
 
@@ -22,6 +39,16 @@ describe('components/workspace/add', () => {
   })
 
   it('onOk', () => {
+    wrapper.find('Modal').props().onOk()
+    wrapper.find('Modal').props().onOk()
+
+    antd.Form.useForm = () => [
+      {
+        validateFields: async () => {
+          throw new Error()
+        }
+      }
+    ]
     wrapper.find('Modal').props().onOk()
   })
 

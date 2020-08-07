@@ -68,41 +68,51 @@ describe('components/dashboard', () => {
     wrapper
       .find('Menu')
       .props()
-      .onSelect({ item: { props: { subMenuKey: '-menu-1' } }, key: '1' })
+      .onSelect({
+        item: { props: { subMenuKey: 'my_workspaces-menu-' } },
+        key: 'my_workspaces1'
+      })
 
     // Shared with me
     wrapper
       .find('Menu')
       .props()
-      .onSelect({ item: { props: { subMenuKey: '-menu-2' } }, key: '1' })
+      .onSelect({
+        item: { props: { subMenuKey: 'shared-menu-' } },
+        key: 'shared1'
+      })
 
     // Unknown
     wrapper
       .find('Menu')
       .props()
-      .onSelect({ item: { props: { subMenuKey: '-menu-3' } }, key: '1' })
+      .onSelect({
+        item: { props: { subMenuKey: 'unknown-menu-' } },
+        key: 'unknown1'
+      })
 
     // Account
     wrapper
       .find('Menu')
       .props()
-      .onSelect({ item: { props: { subMenuKey: '-menu-0' } }, key: '3' })
+      .onSelect({ item: { props: { subMenuKey: '-menu-0' } }, key: 'account' })
 
     // Help
     wrapper
       .find('Menu')
       .props()
-      .onSelect({ item: { props: { subMenuKey: '-menu-0' } }, key: '4' })
+      .onSelect({ item: { props: { subMenuKey: '-menu-0' } }, key: 'help' })
 
     // Logout
     wrapper
       .find('Menu')
       .props()
-      .onSelect({ item: { props: { subMenuKey: '-menu-0' } }, key: '5' })
+      .onSelect({ item: { props: { subMenuKey: '-menu-0' } }, key: 'logout' })
     expect(mockLogout).toHaveBeenCalledTimes(1)
   })
 
-  it('user', () => {
+  it('effects', () => {
+    // User
     let mWrapper = mount(<Dashboard />)
     expect(mockRouter).toHaveBeenCalledTimes(1)
     mWrapper.unmount()
@@ -111,5 +121,21 @@ describe('components/dashboard', () => {
     mWrapper = mount(<Dashboard />)
     expect(mockRouter).toHaveBeenCalledTimes(1)
     mWrapper.unmount()
+
+    // // Current workspace
+    // mockWorkspace = () => [{}]
+    // mWrapper = mount(<Dashboard />)
+    // expect(mockRouter).toHaveBeenCalledTimes(1)
+    // mWrapper.unmount()
+
+    // mockWorkspace = () => [{ owners: ['id'] }]
+    // mWrapper = mount(<Dashboard />)
+    // expect(mockRouter).toHaveBeenCalledTimes(1)
+    // mWrapper.unmount()
+
+    // mockWorkspace = () => [{ users: ['id'] }]
+    // mWrapper = mount(<Dashboard />)
+    // expect(mockRouter).toHaveBeenCalledTimes(1)
+    // mWrapper.unmount()
   })
 })

@@ -8,12 +8,12 @@ import {
   Col,
   Input,
   Avatar,
-  Tooltip
+  Tooltip,
+  Typography
 } from 'antd'
 import {
   AppstoreOutlined,
   PlusCircleTwoTone,
-  DeleteOutlined,
   ShareAltOutlined
 } from '@ant-design/icons'
 
@@ -22,10 +22,15 @@ import Delete from './delete'
 import ProjectList from '../project/list'
 
 // import useUser from '../../../src/api/user/useUser'
+import update from '../../../src/api/workspace/update'
 
 const Workspace = (props) => {
   const workspace = props.workspace || {}
   // const [user] = useUser() // TODO get specific user
+
+  const setName = (name) => {
+    update(workspace, { name })
+  }
 
   return (
     <Layout className="Workspace no-scroll">
@@ -35,9 +40,16 @@ const Workspace = (props) => {
           <Breadcrumb>
             <Breadcrumb.Item>
               <AppstoreOutlined />
-              <span>My Workspace</span>
+              <span>My Workspaces</span>
             </Breadcrumb.Item>
-            <Breadcrumb.Item>{workspace.name}</Breadcrumb.Item>
+            <Breadcrumb.Item>
+              <Typography.Text
+                className="Workspace-name"
+                editable={{ onChange: setName }}
+              >
+                {workspace.name}
+              </Typography.Text>
+            </Breadcrumb.Item>
           </Breadcrumb>
         }
         extra={[

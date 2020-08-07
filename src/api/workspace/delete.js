@@ -5,5 +5,6 @@ export default async (workspace) => {
     method: 'DELETE',
     body: JSON.stringify(workspace)
   })
+
   return res
 }

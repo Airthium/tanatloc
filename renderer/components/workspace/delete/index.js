@@ -1,7 +1,7 @@
 import { message, Button, Popconfirm } from 'antd'
 import { DeleteOutlined } from '@ant-design/icons'
 
-import deleteWorkspace from '../../../../src/api/workspace/deleteWorkspace'
+import deleteWorkspace from '../../../../src/api/workspace/delete'
 
 const DeletePage = (props) => {
   const id = props.id

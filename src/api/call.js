@@ -6,14 +6,16 @@ export const fetcher = (url) => fetch(base + url).then((r) => r.json())
 
 export const call = async (route, param) => {
   const response = await fetch(base + route, {
-    method: param.method || 'GET',
+    method: (param && param.method) || 'GET',
+    ...param,
     headers: {
-      'Content-Type': 'application/json',
-      ...(param && param.headers)
-    },
-    ...param
+      ...(param && param.headers),
+      'Content-Type': 'application/json'
+    }
   })
 
-  const res = await response.json()
-  return res
+  if (param && param.headers && param.headers.Accept === 'application/json') {
+    const res = await response.json()
+    return res
+  }
 }

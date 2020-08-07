@@ -1,4 +1,5 @@
 import {
+  message,
   Button,
   Breadcrumb,
   Divider,
@@ -8,23 +9,40 @@ import {
   Col,
   Input,
   Avatar,
-  Tooltip
+  Tooltip,
+  Typography
 } from 'antd'
 import {
   AppstoreOutlined,
   PlusCircleTwoTone,
-  DeleteOutlined,
   ShareAltOutlined
 } from '@ant-design/icons'
 
 import Add from './add'
+import Delete from './delete'
 import ProjectList from '../project/list'
 
 // import useUser from '../../../src/api/user/useUser'
+import useWorkspace from '../../../src/api/workspace/useWorkspace'
+import update from '../../../src/api/workspace/update'
 
 const Workspace = (props) => {
   const workspace = props.workspace || {}
   // const [user] = useUser() // TODO get specific user
+  const [workspaces, { mutateWorkspace }] = useWorkspace()
+
+  const setName = (name) => {
+    update(workspace, { name }).catch((err) => {
+      message.error(err.message)
+    })
+
+    // Mutate workspace
+    const newWorkspaces = workspaces.map((w) => {
+      if (w.id === workspace.id) w.name = name
+      return w
+    })
+    mutateWorkspace({ workspace: newWorkspaces })
+  }
 
   return (
     <Layout className="Workspace no-scroll">
@@ -34,9 +52,16 @@ const Workspace = (props) => {
           <Breadcrumb>
             <Breadcrumb.Item>
               <AppstoreOutlined />
-              <span>My Workspace</span>
+              <span>{workspace.type}</span>
             </Breadcrumb.Item>
-            <Breadcrumb.Item>{workspace.name}</Breadcrumb.Item>
+            <Breadcrumb.Item>
+              <Typography.Text
+                className="Workspace-name"
+                editable={{ onChange: setName }}
+              >
+                {workspace.name}
+              </Typography.Text>
+            </Breadcrumb.Item>
           </Breadcrumb>
         }
         extra={[
@@ -44,9 +69,7 @@ const Workspace = (props) => {
           <Button key="share" icon={<ShareAltOutlined />}>
             Share it
           </Button>,
-          <Button key="delete" size="default" danger icon={<DeleteOutlined />}>
-            Delete it
-          </Button>
+          <Delete key="delete" id={workspace.id} />
         ]}
         footer={
           <>

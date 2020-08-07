@@ -1,12 +1,15 @@
 import useWorkspace from '../useWorkspace'
 
-jest.mock('swr', () => () => ({ data: { workspaces: {} }, mutate: jest.fn() }))
+jest.mock('swr', () => () => ({
+  data: { workspaces: {} },
+  mutate: jest.fn()
+}))
 
 describe('src/api/workspace', () => {
   it('useWorkspace', () => {
-    const [workspaces, { mutate, loading }] = useWorkspace()
+    const [workspaces, { mutateWorkspace, loadingWorkspace }] = useWorkspace()
     expect(workspaces).toEqual({})
-    expect(mutate).toBeDefined()
-    expect(loading).toBe(false)
+    expect(mutateWorkspace).toBeDefined()
+    expect(loadingWorkspace).toBe(false)
   })
 })

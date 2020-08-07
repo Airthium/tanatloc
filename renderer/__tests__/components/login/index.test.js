@@ -16,7 +16,7 @@ jest.mock('..∕../../../src/api/login', () => async () => mockLogin())
 let mockUser = () => {}
 jest.mock('../../../../src/api/user/useUser', () => () => [
   mockUser(),
-  { mutate: () => {}, loading: false }
+  { mutateUser: () => {}, loadingUser: false }
 ])
 
 let wrapper

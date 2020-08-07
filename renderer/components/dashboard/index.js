@@ -18,23 +18,23 @@ import logout from '../../../src/api/logout'
 const menuItems = {
   workspaces: {
     label: 'My Workspaces',
-    key: '1'
+    key: 'my_workspaces'
   },
   shared: {
     label: 'Shared With Me',
-    key: '2'
+    key: 'shared'
   },
   account: {
     label: 'Account Settings',
-    key: '3'
+    key: 'account'
   },
   help: {
     label: 'I Need Help',
-    key: '4'
+    key: 'help'
   },
   logout: {
     label: 'Logout',
-    key: '5'
+    key: 'logout'
   }
 }
 
@@ -48,29 +48,55 @@ const DashboardPage = () => {
   // State
   const [currentView, setCurrentView] = useState(menuItems.workspaces.key)
   const [currentWorkspace, setCurrentWorkspace] = useState()
+  const [myWorkspaces, setMyWorkspaces] = useState([])
+  const [sharedWorkspaces, setSharedWorkspaces] = useState([])
 
-  const [user, { mutate, loading }] = useUser()
+  const [user, { mutateUser, loadingUser }] = useUser()
   const [workspaces] = useWorkspace()
 
   // Router
   const router = useRouter()
+
+  // Workspaces
+  const sortWorkspaces = () => {
+    if (workspaces && user) {
+      setMyWorkspaces(
+        workspaces.filter(
+          (workspace) => workspace.owners && workspace.owners.includes(user.id)
+        )
+      )
+      setSharedWorkspaces(
+        workspaces.filter(
+          (workspace) => workspace.users && workspace.users.includes(user.id)
+        )
+      )
+    }
+  }
 
   // Menu
   const onSelect = ({ item, key }) => {
     const subMenuKey = item.props.subMenuKey.replace('-menu-', '')
 
     // In a submenu
-    if (parseInt(subMenuKey)) {
+    if (subMenuKey === menuItems.workspaces.key) {
       setCurrentView(subMenuKey)
-      if (subMenuKey === '1') {
-        // My workspaces
-        const workspace = myWorkspaces[key]
-        setCurrentWorkspace(workspace)
-      } else if (subMenuKey === '2') {
-        // Shared with me workspaces
-        const workspace = sharedWorkspaces[key]
-        setCurrentWorkspace(workspace)
-      }
+      const workspaceKey = key.replace(menuItems.workspaces.key, '')
+      const workspace = myWorkspaces[workspaceKey]
+      setCurrentWorkspace({
+        index: workspaceKey,
+        type: menuItems.workspaces.label,
+        ...workspace
+      })
+    } else if (subMenuKey === menuItems.shared.key) {
+      // Shared with me workspaces
+      setCurrentView(subMenuKey)
+      const sharedKey = key.replace(menuItems.shared.key, '')
+      const workspace = sharedWorkspaces[sharedKey]
+      setCurrentWorkspace({
+        index: sharedKey,
+        type: menuItems.shared.label,
+        ...workspace
+      })
     } else {
       if (key === menuItems.logout.key) handleLogout()
       else setCurrentView(key)
@@ -80,25 +106,57 @@ const DashboardPage = () => {
   // Logout
   const handleLogout = async () => {
     await logout()
-    mutate({ user: null })
+    mutateUser({ user: null })
   }
 
-  // Effect
+  // Not logged
   useEffect(() => {
-    if (!loading && !user) router.replace('/login')
-  }, [user, loading])
+    console.log('login effect')
+    if (!loadingUser && !user) router.replace('/login')
+  }, [user, loadingUser])
 
-  // Workspaces
-  let myWorkspaces = []
-  let sharedWorkspaces = []
-  if (workspaces && user) {
-    myWorkspaces = workspaces.filter(
-      (workspace) => workspace.owners && workspace.owners.includes(user.id)
-    )
-    sharedWorkspaces = workspaces.filter(
-      (workspace) => workspace.users && workspace.users.includes(user.id)
-    )
-  }
+  // Workspace
+  useEffect(() => {
+    console.log('workspace effect')
+    sortWorkspaces()
+  }, [workspaces, user])
+
+  // Default workspace
+  useEffect(() => {
+    if (!currentWorkspace) {
+      if (myWorkspaces.length) {
+        setCurrentView(menuItems.workspaces.key)
+        setCurrentWorkspace({
+          index: 0,
+          type: menuItems.workspaces.label,
+          ...myWorkspaces[0]
+        })
+      } else if (sharedWorkspaces.length) {
+        setCurrentView(menuItems.shared.key)
+        setCurrentWorkspace({
+          index: 0,
+          type: menuItems.shared.label,
+          ...sharedWorkspaces[0]
+        })
+      }
+    } else {
+      const index = currentWorkspace.index
+      const type = currentWorkspace.type
+      let testWorkspace
+      if (type === menuItems.workspaces.label) {
+        testWorkspace = myWorkspaces[index]
+      } else if (type === menuItems.shared.label) {
+        testWorkspace = sharedWorkspaces[index]
+      }
+
+      if (currentWorkspace !== testWorkspace)
+        setCurrentWorkspace({
+          index: index,
+          type: type,
+          ...testWorkspace
+        })
+    }
+  }, [myWorkspaces, sharedWorkspaces])
 
   // Render
   return (
@@ -111,8 +169,7 @@ const DashboardPage = () => {
         <Menu
           theme="light"
           onSelect={onSelect}
-          defaultSelectedKeys={['workspace1']}
-          defaultOpenKeys={['1']}
+          defaultOpenKeys={[menuItems.workspaces.key, menuItems.shared.key]}
           mode="inline"
         >
           <Menu.SubMenu
@@ -121,7 +178,11 @@ const DashboardPage = () => {
             title={menuItems.workspaces.label}
           >
             {myWorkspaces.map((workspace, index) => {
-              return <Menu.Item key={index}>{workspace.name}</Menu.Item>
+              return (
+                <Menu.Item key={menuItems.workspaces.key + index}>
+                  {workspace.name}
+                </Menu.Item>
+              )
             })}
           </Menu.SubMenu>
           <Menu.SubMenu
@@ -130,7 +191,11 @@ const DashboardPage = () => {
             title={menuItems.shared.label}
           >
             {sharedWorkspaces.map((workspace, index) => {
-              return <Menu.Item key={index}>{workspace.name}</Menu.Item>
+              return (
+                <Menu.Item key={menuItems.shared.key + index}>
+                  {workspace.name}
+                </Menu.Item>
+              )
             })}
           </Menu.SubMenu>
           <Menu.Item key={menuItems.account.key} icon={<SettingTwoTone />}>

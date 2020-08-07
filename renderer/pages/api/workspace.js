@@ -1,5 +1,8 @@
 import { getSession } from '../../../src/auth/iron'
 import getByUserId from '../../../src/database/query/workspace/getByUserId'
+import add from '../../../src/database/query/workspace/add'
+import update from '../../../src/database/query/workspace/update'
+import del from '../../../src/database/query/workspace/delete'
 
 export default async function (req, res) {
   const session = await getSession(req)
@@ -8,7 +11,44 @@ export default async function (req, res) {
     return
   }
 
-  getByUserId(session.id).then((workspaces) => {
-    res.status(200).json({ workspaces })
-  })
+  switch (req.method) {
+    case 'GET':
+      try {
+        const workspaces = await getByUserId(session.id)
+        res.status(200).json({ workspaces })
+      } catch (err) {
+        console.error(err)
+        res.status(500).json({ message: err.message })
+      }
+      break
+    case 'POST':
+      try {
+        const workspace = await add(session.id, req.body)
+        res.status(200).json({ workspace })
+      } catch (err) {
+        console.error(err)
+        res.status(500).json({ message: err.message })
+      }
+      break
+    case 'PUT':
+      try {
+        await update(req.body)
+        res.status(200).end()
+      } catch (err) {
+        console.error(err)
+        res.status(204).json({ message: err.message })
+      }
+      break
+    case 'DELETE':
+      try {
+        await del(session.id, req.body)
+        res.status(200).end()
+      } catch (err) {
+        console.error(err)
+        res.status(500).json({ message: err.message })
+      }
+      break
+    default:
+      res.status(405).json({ message: 'Method ' + req.method + ' not allowed' })
+  }
 }

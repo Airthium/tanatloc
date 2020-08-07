@@ -1,4 +1,4 @@
-import call from '../call'
+import { fetcher } from '../call'
 
 jest.mock('is-electron', () => () => true)
 
@@ -12,7 +12,7 @@ global.fetch = async (route) => {
 
 describe('src/api/call', () => {
   it('electron', () => {
-    call('/route')
+    fetcher('/route')
     expect(mockRoute).toBe('http://localhost:3000/route')
   })
 })

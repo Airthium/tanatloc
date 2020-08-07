@@ -10,15 +10,18 @@ jest.mock('next/router', () => ({
   })
 }))
 
+jest.mock('../../../components/workspace', () => 'workspace')
+
 let mockUser = () => {}
 jest.mock('../../../../src/api/user/useUser', () => () => [
   mockUser(),
-  { mutate: () => {}, loading: false }
+  { mutateUser: () => {}, loadingUser: false }
 ])
 
 let mockWorkspace = () => {}
 jest.mock('../../../../src/api/workspace/useWorkspace', () => () => [
-  mockWorkspace()
+  mockWorkspace(),
+  { mutateWorkspace: () => {} }
 ])
 
 const mockLogout = jest.fn()
@@ -42,74 +45,91 @@ describe('components/dashboard', () => {
     expect(wrapper).toBeDefined()
   })
 
-  it('user and workspaces', () => {
-    mockUser = () => ({
-      id: 'id',
-      username: 'username'
-    })
-    mockWorkspace = () => [
-      {
-        id: 'id',
-        name: 'name',
-        owners: ['id']
-      },
-      {
-        id: 'id',
-        name: 'name',
-        users: ['id']
-      }
-    ]
-    wrapper.unmount()
-    wrapper = shallow(<Dashboard />)
-  })
-
   it('onSelect', () => {
     // My workspaces
     wrapper
       .find('Menu')
       .props()
-      .onSelect({ item: { props: { subMenuKey: '-menu-1' } }, key: '1' })
+      .onSelect({
+        item: { props: { subMenuKey: 'my_workspaces-menu-' } },
+        key: 'my_workspaces1'
+      })
 
     // Shared with me
     wrapper
       .find('Menu')
       .props()
-      .onSelect({ item: { props: { subMenuKey: '-menu-2' } }, key: '1' })
+      .onSelect({
+        item: { props: { subMenuKey: 'shared-menu-' } },
+        key: 'shared1'
+      })
 
     // Unknown
     wrapper
       .find('Menu')
       .props()
-      .onSelect({ item: { props: { subMenuKey: '-menu-3' } }, key: '1' })
+      .onSelect({
+        item: { props: { subMenuKey: 'unknown-menu-' } },
+        key: 'unknown1'
+      })
 
     // Account
     wrapper
       .find('Menu')
       .props()
-      .onSelect({ item: { props: { subMenuKey: '-menu-0' } }, key: '3' })
+      .onSelect({ item: { props: { subMenuKey: '-menu-0' } }, key: 'account' })
 
     // Help
     wrapper
       .find('Menu')
       .props()
-      .onSelect({ item: { props: { subMenuKey: '-menu-0' } }, key: '4' })
+      .onSelect({ item: { props: { subMenuKey: '-menu-0' } }, key: 'help' })
 
     // Logout
     wrapper
       .find('Menu')
       .props()
-      .onSelect({ item: { props: { subMenuKey: '-menu-0' } }, key: '5' })
+      .onSelect({ item: { props: { subMenuKey: '-menu-0' } }, key: 'logout' })
     expect(mockLogout).toHaveBeenCalledTimes(1)
   })
 
-  it('user', () => {
-    let mWrapper = mount(<Dashboard />)
+  it('user effect', () => {
+    let mWrapper
+
+    // Without user
+    mWrapper = mount(<Dashboard />)
     expect(mockRouter).toHaveBeenCalledTimes(1)
     mWrapper.unmount()
 
+    // With user
     mockUser = () => ({ user: { id: 'id' } })
     mWrapper = mount(<Dashboard />)
     expect(mockRouter).toHaveBeenCalledTimes(1)
     mWrapper.unmount()
+  })
+
+  it('workspaces effect', () => {
+    let mWrapper
+
+    // With user
+    mockUser = () => ({ user: { id: 'id' } })
+    mWrapper = mount(<Dashboard />)
+    mWrapper.unmount()
+
+    // // With workspaces
+    // mockWorkspace = () => [
+    //   {
+    //     id: 'id',
+    //     name: 'name',
+    //     owners: ['id']
+    //   },
+    //   {
+    //     id: 'id',
+    //     name: 'name',
+    //     users: ['id']
+    //   }
+    // ]
+    // mWrapper = mount(<Dashboard />)
+    // mWrapper.unmount()
   })
 })

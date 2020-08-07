@@ -121,21 +121,5 @@ describe('components/dashboard', () => {
     mWrapper = mount(<Dashboard />)
     expect(mockRouter).toHaveBeenCalledTimes(1)
     mWrapper.unmount()
-
-    // // Current workspace
-    // mockWorkspace = () => [{}]
-    // mWrapper = mount(<Dashboard />)
-    // expect(mockRouter).toHaveBeenCalledTimes(1)
-    // mWrapper.unmount()
-
-    // mockWorkspace = () => [{ owners: ['id'] }]
-    // mWrapper = mount(<Dashboard />)
-    // expect(mockRouter).toHaveBeenCalledTimes(1)
-    // mWrapper.unmount()
-
-    // mockWorkspace = () => [{ users: ['id'] }]
-    // mWrapper = mount(<Dashboard />)
-    // expect(mockRouter).toHaveBeenCalledTimes(1)
-    // mWrapper.unmount()
   })
 })

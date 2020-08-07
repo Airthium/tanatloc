@@ -83,11 +83,6 @@ const DashboardPage = () => {
     mutate({ user: null })
   }
 
-  // Not logged
-  useEffect(() => {
-    if (!loading && !user) router.replace('/login')
-  }, [user, loading])
-
   // Workspaces
   let myWorkspaces = []
   let sharedWorkspaces = []
@@ -99,6 +94,11 @@ const DashboardPage = () => {
       (workspace) => workspace.users && workspace.users.includes(user.id)
     )
   }
+
+  // Not logged
+  useEffect(() => {
+    if (!loading && !user) router.replace('/login')
+  }, [user, loading])
 
   // Default workspace
   useEffect(() => {

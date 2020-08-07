@@ -1,4 +1,5 @@
 import {
+  message,
   Button,
   Breadcrumb,
   Divider,
@@ -22,14 +23,25 @@ import Delete from './delete'
 import ProjectList from '../project/list'
 
 // import useUser from '../../../src/api/user/useUser'
+import useWorkspace from '../../../src/api/workspace/useWorkspace'
 import update from '../../../src/api/workspace/update'
 
 const Workspace = (props) => {
   const workspace = props.workspace || {}
   // const [user] = useUser() // TODO get specific user
+  const [workspaces, { mutateWorkspace }] = useWorkspace()
 
   const setName = (name) => {
-    update(workspace, { name })
+    update(workspace, { name }).catch((err) => {
+      message.error(err.message)
+    })
+
+    // Mutate workspace
+    const newWorkspaces = workspaces.map((w) => {
+      if (w.id === workspace.id) w.name = name
+      return w
+    })
+    mutateWorkspace({ workspace: newWorkspaces })
   }
 
   return (
@@ -40,7 +52,7 @@ const Workspace = (props) => {
           <Breadcrumb>
             <Breadcrumb.Item>
               <AppstoreOutlined />
-              <span>My Workspaces</span>
+              <span>{workspace.type}</span>
             </Breadcrumb.Item>
             <Breadcrumb.Item>
               <Typography.Text

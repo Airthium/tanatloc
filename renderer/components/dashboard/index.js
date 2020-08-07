@@ -48,12 +48,30 @@ const DashboardPage = () => {
   // State
   const [currentView, setCurrentView] = useState(menuItems.workspaces.key)
   const [currentWorkspace, setCurrentWorkspace] = useState()
+  const [myWorkspaces, setMyWorkspaces] = useState([])
+  const [sharedWorkspaces, setSharedWorkspaces] = useState([])
 
-  const [user, { mutate, loading }] = useUser()
+  const [user, { mutateUser, loadingUser }] = useUser()
   const [workspaces] = useWorkspace()
 
   // Router
   const router = useRouter()
+
+  // Workspaces
+  const sortWorkspaces = () => {
+    if (workspaces && user) {
+      setMyWorkspaces(
+        workspaces.filter(
+          (workspace) => workspace.owners && workspace.owners.includes(user.id)
+        )
+      )
+      setSharedWorkspaces(
+        workspaces.filter(
+          (workspace) => workspace.users && workspace.users.includes(user.id)
+        )
+      )
+    }
+  }
 
   // Menu
   const onSelect = ({ item, key }) => {
@@ -64,13 +82,21 @@ const DashboardPage = () => {
       setCurrentView(subMenuKey)
       const workspaceKey = key.replace(menuItems.workspaces.key, '')
       const workspace = myWorkspaces[workspaceKey]
-      setCurrentWorkspace(workspace)
+      setCurrentWorkspace({
+        index: workspaceKey,
+        type: menuItems.workspaces.label,
+        ...workspace
+      })
     } else if (subMenuKey === menuItems.shared.key) {
       // Shared with me workspaces
       setCurrentView(subMenuKey)
       const sharedKey = key.replace(menuItems.shared.key, '')
       const workspace = sharedWorkspaces[sharedKey]
-      setCurrentWorkspace(workspace)
+      setCurrentWorkspace({
+        index: sharedKey,
+        type: menuItems.shared.label,
+        ...workspace
+      })
     } else {
       if (key === menuItems.logout.key) handleLogout()
       else setCurrentView(key)
@@ -80,38 +106,55 @@ const DashboardPage = () => {
   // Logout
   const handleLogout = async () => {
     await logout()
-    mutate({ user: null })
-  }
-
-  // Workspaces
-  let myWorkspaces = []
-  let sharedWorkspaces = []
-  if (workspaces && user) {
-    myWorkspaces = workspaces.filter(
-      (workspace) => workspace.owners && workspace.owners.includes(user.id)
-    )
-    sharedWorkspaces = workspaces.filter(
-      (workspace) => workspace.users && workspace.users.includes(user.id)
-    )
+    mutateUser({ user: null })
   }
 
   // Not logged
   useEffect(() => {
-    if (!loading && !user) router.replace('/login')
-  }, [user, loading])
+    if (!loadingUser && !user) router.replace('/login')
+  }, [user, loadingUser])
+
+  // Workspace
+  useEffect(() => {
+    sortWorkspaces()
+  }, [workspaces, user])
 
   // Default workspace
   useEffect(() => {
     if (!currentWorkspace) {
       if (myWorkspaces.length) {
         setCurrentView(menuItems.workspaces.key)
-        setCurrentWorkspace(myWorkspaces[0])
+        setCurrentWorkspace({
+          index: 0,
+          type: menuItems.workspaces.label,
+          ...myWorkspaces[0]
+        })
       } else if (sharedWorkspaces.length) {
         setCurrentView(menuItems.shared.key)
-        setCurrentWorkspace(sharedWorkspaces[0])
+        setCurrentWorkspace({
+          index: 0,
+          type: menuItems.shared.label,
+          ...sharedWorkspaces[0]
+        })
       }
+    } else {
+      const index = currentWorkspace.index
+      const type = currentWorkspace.type
+      let testWorkspace
+      if (type === menuItems.workspaces.label) {
+        testWorkspace = myWorkspaces[index]
+      } else if (type === menuItems.shared.label) {
+        testWorkspace = sharedWorkspaces[index]
+      }
+
+      if (currentWorkspace !== testWorkspace)
+        setCurrentWorkspace({
+          index: index,
+          type: type,
+          ...testWorkspace
+        })
     }
-  }, [currentWorkspace, setCurrentView, setCurrentWorkspace])
+  }, [myWorkspaces, sharedWorkspaces])
 
   // Render
   return (

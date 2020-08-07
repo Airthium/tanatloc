@@ -21,7 +21,7 @@ const errors = {
 const LoginPage = () => {
   // State
   const [checking, setChecking] = useState(false)
-  const [user, { mutate }] = useUser()
+  const [user, { mutateUser }] = useUser()
 
   // Router
   const router = useRouter()
@@ -34,7 +34,7 @@ const LoginPage = () => {
     // Check
     const loggedUser = await login(values)
     if (loggedUser) {
-      mutate(loggedUser)
+      mutateUser(loggedUser)
       router.push('/dashboard')
     } else {
       message.error(errors.BAD_CREDENTIALS)

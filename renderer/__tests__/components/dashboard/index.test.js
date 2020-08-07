@@ -10,15 +10,18 @@ jest.mock('next/router', () => ({
   })
 }))
 
+jest.mock('../../../components/workspace', () => 'workspace')
+
 let mockUser = () => {}
 jest.mock('../../../../src/api/user/useUser', () => () => [
   mockUser(),
-  { mutate: () => {}, loading: false }
+  { mutateUser: () => {}, loadingUser: false }
 ])
 
 let mockWorkspace = () => {}
 jest.mock('../../../../src/api/workspace/useWorkspace', () => () => [
-  mockWorkspace()
+  mockWorkspace(),
+  { mutateWorkspace: () => {} }
 ])
 
 const mockLogout = jest.fn()
@@ -40,27 +43,6 @@ describe('components/dashboard', () => {
 
   it('render', () => {
     expect(wrapper).toBeDefined()
-  })
-
-  it('user and workspaces', () => {
-    mockUser = () => ({
-      id: 'id',
-      username: 'username'
-    })
-    mockWorkspace = () => [
-      {
-        id: 'id',
-        name: 'name',
-        owners: ['id']
-      },
-      {
-        id: 'id',
-        name: 'name',
-        users: ['id']
-      }
-    ]
-    wrapper.unmount()
-    wrapper = shallow(<Dashboard />)
   })
 
   it('onSelect', () => {
@@ -111,15 +93,43 @@ describe('components/dashboard', () => {
     expect(mockLogout).toHaveBeenCalledTimes(1)
   })
 
-  it('effects', () => {
-    // User
-    let mWrapper = mount(<Dashboard />)
+  it('user effect', () => {
+    let mWrapper
+
+    // Without user
+    mWrapper = mount(<Dashboard />)
     expect(mockRouter).toHaveBeenCalledTimes(1)
     mWrapper.unmount()
 
+    // With user
     mockUser = () => ({ user: { id: 'id' } })
     mWrapper = mount(<Dashboard />)
     expect(mockRouter).toHaveBeenCalledTimes(1)
     mWrapper.unmount()
+  })
+
+  it('workspaces effect', () => {
+    let mWrapper
+
+    // With user
+    mockUser = () => ({ user: { id: 'id' } })
+    mWrapper = mount(<Dashboard />)
+    mWrapper.unmount()
+
+    // // With workspaces
+    // mockWorkspace = () => [
+    //   {
+    //     id: 'id',
+    //     name: 'name',
+    //     owners: ['id']
+    //   },
+    //   {
+    //     id: 'id',
+    //     name: 'name',
+    //     users: ['id']
+    //   }
+    // ]
+    // mWrapper = mount(<Dashboard />)
+    // mWrapper.unmount()
   })
 })

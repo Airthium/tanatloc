@@ -1,5 +1,5 @@
 import Local from 'passport-local'
-import login from '../database/query/user/login'
+import { login } from '../database/user'
 
 export const localStrategy = new Local.Strategy(function (
   username,

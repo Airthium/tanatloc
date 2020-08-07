@@ -11,8 +11,8 @@ import {
 } from '@ant-design/icons'
 import WorkspacePage from '../../components/workspace'
 
-import useUser from '../../../src/api/user/useUser'
-import useWorkspace from '../../../src/api/workspace/useWorkspace'
+import { useUser } from '../../../src/api/user'
+import { useWorkspace } from '../../../src/api/workspace'
 import logout from '../../../src/api/logout'
 
 const menuItems = {

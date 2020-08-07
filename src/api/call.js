@@ -1,10 +1,22 @@
+/** @module src/api */
+
 import isElectron from 'is-electron'
 
 const base = isElectron() ? 'http://localhost:3000' : ''
 
-export const fetcher = (url) => fetch(base + url).then((r) => r.json())
+/**
+ * Fetcher (for SWR)
+ * @param {string} url URL
+ */
+const fetcher = (url) => fetch(base + url).then((r) => r.json())
 
-export const call = async (route, param) => {
+/**
+ * API call
+ * @param {string} route Route
+ * @param {Object} param Parameters
+ * @returns {?Object} Response
+ */
+const call = async (route, param) => {
   const response = await fetch(base + route, {
     method: (param && param.method) || 'GET',
     ...param,
@@ -19,3 +31,5 @@ export const call = async (route, param) => {
     return res
   }
 }
+
+export { fetcher, call }

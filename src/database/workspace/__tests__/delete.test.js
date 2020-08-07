@@ -1,6 +1,6 @@
 import del from '../delete'
 
-jest.mock('../../..', () => async () => {})
+jest.mock('../..', () => async () => {})
 
 describe('src/database/quary/workspace/delete', () => {
   it('delete', async () => {

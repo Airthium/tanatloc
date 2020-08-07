@@ -1,7 +1,13 @@
+/** @module src/database */
+
 import { Pool } from 'pg'
 
 import config from '../../config/db'
 
+/**
+ * Start database
+ * @returns {Object} Pool
+ */
 const startdB = () => {
   const p = new Pool({
     user: config.USER,
@@ -21,7 +27,14 @@ const startdB = () => {
 
 const pool = startdB()
 
-export default async (query, args) => {
+/**
+ * PostgreSQL query
+ * @param {string} query Query
+ * @param {Array} args Arguments
+ */
+const query = async (query, args) => {
   const res = await pool.query(query, args)
   return res
 }
+
+export default query

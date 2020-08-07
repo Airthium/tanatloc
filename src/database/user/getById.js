@@ -1,12 +1,14 @@
-import query from '../..'
-import { databases } from '../../../../config/db'
+import query from '..'
+import { databases } from '../../../config/db'
 
 /**
  * Get user by id
+ * @memberof module:src/database/user
  * @param {string} id Id
  * @param {Array} data Data
+ * @returns {Object} User
  */
-export default async (id, data = ['email']) => {
+const getById = async (id, data = ['email']) => {
   const response = await query(
     'SELECT ' + data.join(',') + ' FROM ' + databases.USERS + ' WHERE id = $1',
     [id]
@@ -21,3 +23,5 @@ export default async (id, data = ['email']) => {
   }
   return user
 }
+
+export default getById

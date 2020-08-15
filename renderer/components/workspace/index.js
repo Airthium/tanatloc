@@ -1,7 +1,6 @@
 import {
   message,
   Button,
-  Breadcrumb,
   Divider,
   Layout,
   PageHeader,
@@ -12,6 +11,7 @@ import {
   Tooltip,
   Typography
 } from 'antd'
+
 import {
   AppstoreOutlined,
   PlusCircleTwoTone,
@@ -49,20 +49,13 @@ const Workspace = (props) => {
       <PageHeader
         backIcon={false}
         title={
-          <Breadcrumb>
-            <Breadcrumb.Item>
-              <AppstoreOutlined />
-              <span>{workspace.type}</span>
-            </Breadcrumb.Item>
-            <Breadcrumb.Item>
-              <Typography.Text
+              <Typography.Title
+                level={3}
                 className="Workspace-name"
                 editable={{ onChange: setName }}
               >
-                {workspace.name}
-              </Typography.Text>
-            </Breadcrumb.Item>
-          </Breadcrumb>
+                /*hello{workspace.name}*/
+              </Typography.Title>
         }
         extra={[
           <Add key="add" />,
@@ -105,7 +98,7 @@ const Workspace = (props) => {
                   </Tooltip>
                 )
               })}
-              {/* 
+              {/*
             <Tooltip title="Franck" placement="bottom">
               <Avatar style={{ backgroundColor: '#0077B6' }}>F</Avatar>
             </Tooltip>
@@ -116,7 +109,6 @@ const Workspace = (props) => {
           </div>
         )}
       </PageHeader>
-
       <Layout.Content className="scroll">
         <ProjectList />
       </Layout.Content>

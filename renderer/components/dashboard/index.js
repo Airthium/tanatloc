@@ -171,6 +171,7 @@ const DashboardPage = () => {
           onSelect={onSelect}
           defaultOpenKeys={[menuItems.workspaces.key, menuItems.shared.key]}
           mode="inline"
+          style={{width:"200px", height:"100%", overflowX:"hidden"}}
         >
           <Menu.SubMenu
             key={menuItems.workspaces.key}
@@ -212,16 +213,7 @@ const DashboardPage = () => {
           >
             {menuItems.logout.label}
           </Menu.Item>
-          <Menu.Divider />
         </Menu>
-
-        <div className="Dashboard-profile">
-          <Avatar size="large" icon={<UserOutlined />} />
-          <p>{user && user.username}</p>
-          <p>
-            {user && user.firstname} {user && user.lastname}
-          </p>
-        </div>
       </Layout.Sider>
 
       <Layout.Content className="no-scroll">

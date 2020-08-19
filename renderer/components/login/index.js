@@ -50,7 +50,7 @@ const LoginPage = () => {
   return (
     <Layout className="tanatloc-gradient">
       <Card className="Login">
-        <Space direction="vertical" style={{ width: '100%' }}>
+        <Space direction="vertical" size="large" style={{ width: '100%' }}>
           <div className="logo">
             <img src="/images/logo.svg" />
           </div>

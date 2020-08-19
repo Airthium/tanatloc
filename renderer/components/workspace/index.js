@@ -14,7 +14,7 @@ import {
 
 import {
   AppstoreOutlined,
-  PlusCircleTwoTone,
+  PlusCircleOutlined,
   ShareAltOutlined
 } from '@ant-design/icons'
 
@@ -75,7 +75,7 @@ const Workspace = (props) => {
                 />
               </Col>
               <Col>
-                <Button type="primary" icon={<PlusCircleTwoTone />}>
+                <Button type="primary" icon={<PlusCircleOutlined />}>
                   Create a new project
                 </Button>
               </Col>

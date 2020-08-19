@@ -94,7 +94,7 @@ const ProjectList = () => {
         render={(text, record) => (
           <Space size="middle">
             <Button key="share" icon={<ShareAltOutlined />}>Share</Button>
-            <Button danger icon={<DeleteOutlined />}>Delete</Button>
+            <Button icon={<DeleteOutlined />}>Delete</Button>
           </Space>
         )}
       />

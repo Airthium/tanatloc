@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
 import { message, Button, Form, Input, Modal } from 'antd'
 
+import { PlusCircleOutlined } from '@ant-design/icons'
+
 import addWorkspace from '../../../../src/api/workspace/add'
 
 const AddPage = () => {
@@ -32,7 +34,7 @@ const AddPage = () => {
 
   return (
     <>
-      <Button onClick={toggleVisible}>Create a new workspace</Button>
+      <Button onClick={toggleVisible} icon={<PlusCircleOutlined />}>Create a new workspace</Button>
       <Modal
         title="Add a workspace"
         visible={visible}

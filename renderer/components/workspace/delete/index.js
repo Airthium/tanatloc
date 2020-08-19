@@ -1,10 +1,31 @@
-import { message, Button, Popconfirm } from 'antd'
-import { DeleteOutlined } from '@ant-design/icons'
+import { message, Button, Modal } from 'antd'
+import { DeleteOutlined, ExclamationCircleOutlined } from '@ant-design/icons'
+
+const { confirm } = Modal;
 
 import deleteWorkspace from '../../../../src/api/workspace/delete'
 
 const DeletePage = (props) => {
   const id = props.id
+
+  const showDeleteConfirm = () => {
+    confirm({
+      className: 'Workspace-delete',
+      title: 'Delete this workspace?',
+      icon: <ExclamationCircleOutlined />,
+      content: 'The projects contained in this workspace will be lost.',
+      okText: 'Delete',
+      autoFocusButton: 'null',
+      maskClosable: 'true',
+      cancelText: 'Cancel',
+      onOk() {
+        handleDelete()
+      },
+      onCancel() {
+        console.log('Cancel') // TODO
+      },
+    })
+  }
 
   const handleDelete = () => {
     deleteWorkspace({ id }).catch((err) => {
@@ -14,15 +35,9 @@ const DeletePage = (props) => {
 
   return (
     <>
-      <Popconfirm
-        title="Are you sure delete this workspace?"
-        icon={<DeleteOutlined />}
-        onConfirm={handleDelete}
-      >
-        <Button danger icon={<DeleteOutlined />}>
-          Delete it
-        </Button>
-      </Popconfirm>
+      <Button onClick={showDeleteConfirm} icon={<DeleteOutlined />}>
+        Delete
+      </Button>
     </>
   )
 }

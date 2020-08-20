@@ -50,11 +50,11 @@ const Workspace = (props) => {
         backIcon={false}
         title={
               <Typography.Title
-                level={3}
+                level={4}
                 className="Workspace-name"
                 editable={{ onChange: setName }}
               >
-                /*hello{workspace.name}*/
+                hello{workspace.name} test test test test test1 test2 test3 test4 test5 test6 test7 test8
               </Typography.Title>
         }
         extra={[

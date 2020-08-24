@@ -9,12 +9,11 @@ jest.mock('passport-local', () => ({
   }
 }))
 
-jest.mock(
-  '../../database/query/user/login',
-  () => async ({ username, password }) => {
+jest.mock('../../database/user', () => ({
+  login: async ({ username, password }) => {
     if (!username) throw new Error()
   }
-)
+}))
 
 describe('src/auth/password-local', () => {
   it('localStrategy', () => {

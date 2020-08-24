@@ -1,6 +1,6 @@
 import add from '../add'
 
-jest.mock('../../..', () => async () => {
+jest.mock('../..', () => async () => {
   return { rows: [{ id: 'id' }] }
 })
 

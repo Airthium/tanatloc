@@ -1,7 +1,13 @@
-import query from '../..'
-import { databases } from '../../../../config/db'
+import query from '..'
+import { databases } from '../../../config/db'
 
-export default async ({ username, password }) => {
+/**
+ * Login
+ * @memberof module:src/database/user
+ * @param {Object} user User { username, password }
+ * @returns {Object} User
+ */
+const login = async ({ username, password }) => {
   const response = await query(
     'SELECT id FROM ' +
       databases.USERS +
@@ -18,3 +24,5 @@ export default async ({ username, password }) => {
   }
   return user
 }
+
+export default login

@@ -1,16 +1,10 @@
 import login from '../login'
 
 let mockReturn = () => [{}]
-jest.mock('../../..', () => {
+jest.mock('../..', () => {
   return async () => ({
     rows: mockReturn()
   })
-})
-
-jest.mock('../../../../../config/db', () => {
-  return {
-    databases: {}
-  }
 })
 
 describe('database/query/user', () => {

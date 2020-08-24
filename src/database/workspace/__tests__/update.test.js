@@ -1,6 +1,6 @@
 import update from '../update'
 
-jest.mock('../../..', () => async () => {})
+jest.mock('../..', () => async () => {})
 
 describe('src/database/quary/workspace/update', () => {
   it('update', async () => {

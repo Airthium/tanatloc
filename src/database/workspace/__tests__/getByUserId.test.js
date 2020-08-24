@@ -1,7 +1,7 @@
 import GetByUserId from '../getByUserId'
 import getByUserId from '../getByUserId'
 
-jest.mock('../../../', () => {
+jest.mock('../../', () => {
   return async (query) => {
     if (query.includes('SELECT workspaces'))
       return { rows: [{ workspaces: ['id'] }] }

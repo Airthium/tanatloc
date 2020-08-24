@@ -1,7 +1,12 @@
-import query from '../..'
-import { databases } from '../../../../config/db'
+import query from '..'
+import { databases } from '../../../config/db'
 
-export default async (id) => {
+/**
+ * Get by user id
+ * @memberof module:src/database/workspace
+ * @param {string} id User id
+ */
+const getByUserId = async (id) => {
   const response = await query(
     'SELECT workspaces FROM ' + databases.USERS + ' WHERE id = $1',
     [id]
@@ -25,3 +30,5 @@ export default async (id) => {
 
   return workspaces
 }
+
+export default getByUserId

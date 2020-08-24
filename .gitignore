@@ -8,6 +8,9 @@
 # testing
 /coverage
 
+# doc
+/doc
+
 # next.js
 renderer/.next/
 renderer/out

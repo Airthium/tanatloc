@@ -23,8 +23,7 @@ import Delete from './delete'
 import ProjectList from '../project/list'
 
 // import useUser from '../../../src/api/user/useUser'
-import useWorkspace from '../../../src/api/workspace/useWorkspace'
-import update from '../../../src/api/workspace/update'
+import { useWorkspace, update } from '../../../src/api/workspace'
 
 const Workspace = (props) => {
   const workspace = props.workspace || {}

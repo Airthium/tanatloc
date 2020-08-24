@@ -1,5 +1,10 @@
-import { getSession } from '../../../src/auth/iron'
-import { getByUserId, add, update, del } from '../../../src/database/workspace/'
+import { getSession } from '../../../../src/auth/iron'
+import {
+  getByUserId,
+  add,
+  update,
+  del
+} from '../../../../src/database/workspace'
 
 export default async function (req, res) {
   const session = await getSession(req)

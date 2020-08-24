@@ -1,5 +1,5 @@
-import { getSession } from '../../../src/auth/iron'
-import { getById } from '../../../src/database/user'
+import { getSession } from '../../../../src/auth/iron'
+import { getById } from '../../../../src/database/user'
 
 export default async function (req, res) {
   const session = await getSession(req)

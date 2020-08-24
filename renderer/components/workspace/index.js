@@ -20,7 +20,6 @@ import Add from './add'
 import Delete from './delete'
 import ProjectList from '../project/list'
 
-// import useUser from '../../../src/api/user/useUser'
 import { useWorkspaces, update } from '../../../src/api/workspace'
 
 /**
@@ -32,7 +31,6 @@ const Workspace = (props) => {
   const workspace = props.workspace || {}
 
   // Data
-  // const [user] = useUser() // TODO get specific user
   const [workspaces, { mutateWorkspaces }] = useWorkspaces()
 
   /**
@@ -116,7 +114,7 @@ const Workspace = (props) => {
         )}
       </PageHeader>
       <Layout.Content className="scroll">
-        <ProjectList />
+        <ProjectList projects={workspace.projects} />
       </Layout.Content>
     </Layout>
   )

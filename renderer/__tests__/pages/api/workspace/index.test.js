@@ -1,11 +1,11 @@
-import workspace from '../../../pages/api/workspace'
+import workspace from '../../../../pages/api/workspace'
 
 let mockSession = () => ({})
-jest.mock('../../../../src/auth/iron', () => ({
+jest.mock('../../../../../src/auth/iron', () => ({
   getSession: () => mockSession()
 }))
 
-jest.mock('../../../../src/database/workspace', () => {
+jest.mock('../../../../../src/database/workspace', () => {
   let countG = 0
   let countA = 0
   let countU = 0

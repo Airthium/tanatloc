@@ -58,7 +58,7 @@ const Dashboard = () => {
 
   // Data
   const [user, { mutateUser, loadingUser }] = useUser()
-  const [workspaces, { loadingWorkspaces }] = useWorkspaces()
+  const [workspaces] = useWorkspaces()
 
   // Router
   const router = useRouter()

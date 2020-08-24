@@ -1,11 +1,11 @@
-import user from '../../../pages/api/user'
+import user from '../../../../pages/api/user'
 
 let mockSession = () => ({})
-jest.mock('../../../../src/auth/iron', () => ({
+jest.mock('../../../../../src/auth/iron', () => ({
   getSession: () => mockSession()
 }))
 
-jest.mock('../../../../src/database/user', () => ({
+jest.mock('../../../../../src/database/user', () => ({
   getById: async () => ({
     email: 'email',
     firstname: 'firstname',

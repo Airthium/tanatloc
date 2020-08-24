@@ -23,11 +23,22 @@ import ProjectList from '../project/list'
 // import useUser from '../../../src/api/user/useUser'
 import { useWorkspaces, update } from '../../../src/api/workspace'
 
+/**
+ * Workspace
+ * @param {Object} props Props
+ */
 const Workspace = (props) => {
+  // Props
   const workspace = props.workspace || {}
+
+  // Data
   // const [user] = useUser() // TODO get specific user
   const [workspaces, { mutateWorkspaces }] = useWorkspaces()
 
+  /**
+   * Set name
+   * @param {string} name Name
+   */
   const setName = (name) => {
     update(workspace, { name })
       .then(() => {
@@ -43,6 +54,9 @@ const Workspace = (props) => {
       })
   }
 
+  /**
+   * Render
+   */
   return (
     <Layout className="Workspace no-scroll">
       <PageHeader

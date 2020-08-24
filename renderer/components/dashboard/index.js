@@ -1,3 +1,5 @@
+/** @module renderer/components/dashboard */
+
 import { useRouter } from 'next/router'
 import { useState, useEffect } from 'react'
 import { Layout, Menu } from 'antd'
@@ -14,6 +16,9 @@ import { useUser } from '../../../src/api/user'
 import { useWorkspaces } from '../../../src/api/workspace'
 import logout from '../../../src/api/logout'
 
+/**
+ * Menu items
+ */
 const menuItems = {
   workspaces: {
     label: 'My Workspaces',
@@ -43,11 +48,15 @@ const Account = 'account'
 // TODO
 const Help = 'help'
 
-const DashboardPage = () => {
+/**
+ * Dashboard
+ */
+const Dashboard = () => {
   // State
   const [currentView, setCurrentView] = useState(menuItems.workspaces.key)
   const [currentWorkspace, setCurrentWorkspace] = useState()
 
+  // Data
   const [user, { mutateUser, loadingUser }] = useUser()
   const [workspaces, { loadingWorkspaces }] = useWorkspaces()
 
@@ -77,7 +86,10 @@ const DashboardPage = () => {
     }
   }, [workspaces])
 
-  // Menu
+  /**
+   * Menu selection
+   * @param {Object} data {item, key}
+   */
   const onSelect = ({ item, key }) => {
     const subMenuKey = item.props.subMenuKey.replace('-menu-', '')
 
@@ -95,13 +107,17 @@ const DashboardPage = () => {
     }
   }
 
-  // Logout
+  /**
+   * Logout
+   */
   const handleLogout = async () => {
     await logout()
     mutateUser({ user: null })
   }
 
-  // Render
+  /**
+   * Render
+   */
   return (
     <Layout>
       <Layout.Sider theme="light" className="Dashboard-sider">
@@ -121,8 +137,8 @@ const DashboardPage = () => {
             icon={<AppstoreTwoTone />}
             title={menuItems.workspaces.label}
           >
-            {!loadingUser &&
-              !loadingWorkspaces &&
+            {user &&
+              workspaces &&
               workspaces.map((workspace, index) => {
                 if (workspace.owners && workspace.owners.includes(user.id))
                   return <Menu.Item key={index}>{workspace.name}</Menu.Item>
@@ -133,8 +149,8 @@ const DashboardPage = () => {
             icon={<ShareAltOutlined />}
             title={menuItems.shared.label}
           >
-            {!loadingUser &&
-              !loadingWorkspaces &&
+            {user &&
+              workspaces &&
               workspaces.map((workspace, index) => {
                 if (workspace.users && workspace.users.includes(user.id))
                   return <Menu.Item key={index}>{workspace.name}</Menu.Item>
@@ -169,4 +185,4 @@ const DashboardPage = () => {
   )
 }
 
-export default DashboardPage
+export default Dashboard

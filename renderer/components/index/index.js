@@ -1,10 +1,19 @@
+/** @module renderer/components/index */
+
 import { useRouter } from 'next/router'
 
 import { Layout, Button } from 'antd'
 
-const IndexPage = () => {
+/**
+ * Index
+ */
+const Index = () => {
+  // Router
   const router = useRouter()
 
+  /**
+   * Handle click
+   */
   const handleClick = () => {
     router.push('/login')
   }
@@ -16,4 +25,4 @@ const IndexPage = () => {
   )
 }
 
-export default IndexPage
+export default Index

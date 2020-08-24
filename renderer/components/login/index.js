@@ -1,3 +1,5 @@
+/** @module renderer/components/login */
+
 import { useRouter } from 'next/router'
 import { useState, useEffect } from 'react'
 import {
@@ -14,19 +16,35 @@ import {
 import login from '../../../src/api/login'
 import { useUser } from '../../../src/api/user'
 
+/**
+ * Login errors
+ */
 const errors = {
   BAD_CREDENTIALS: 'Login failed. Please check your username and password'
 }
 
-const LoginPage = () => {
+/**
+ * Login
+ */
+const Login = () => {
   // State
   const [checking, setChecking] = useState(false)
+
+  // Data
   const [user, { mutateUser }] = useUser()
 
   // Router
   const router = useRouter()
 
-  // On login
+  // Already connected
+  useEffect(() => {
+    if (user) router.push('/dashboard')
+  }, [user])
+
+  /**
+   * Handle login
+   * @param {Object} values Values {username, password}
+   */
   const onLogin = async (values) => {
     // State
     setChecking(true)
@@ -34,19 +52,19 @@ const LoginPage = () => {
     // Check
     const loggedUser = await login(values)
     if (loggedUser) {
+      // Logger
       mutateUser(loggedUser)
       router.push('/dashboard')
     } else {
+      // Bad
       message.error(errors.BAD_CREDENTIALS)
       setChecking(false)
     }
   }
 
-  useEffect(() => {
-    if (user) router.push('/dashboard')
-  }, [user])
-
-  // Render
+  /**
+   * Render
+   */
   return (
     <Layout className="tanatloc-gradient">
       <Card className="Login">
@@ -96,4 +114,4 @@ const LoginPage = () => {
   )
 }
 
-export default LoginPage
+export default Login

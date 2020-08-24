@@ -77,7 +77,14 @@ const data = [
   }
 ]
 
+/**
+ * Projects' list
+ * @memberof module:renderer/components/project
+ */
 const ProjectList = () => {
+  /**
+   * Render
+   */
   return (
     <Table
       tableLayout="auto"

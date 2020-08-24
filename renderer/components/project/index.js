@@ -1,5 +1,13 @@
-const ProjectPage = () => {
+/** @module renderer/components/project */
+
+/**
+ * Project
+ */
+const Project = () => {
+  /**
+   * Render
+   */
   return <div></div>
 }
 
-export default ProjectPage
+export default Project

@@ -1,7 +1,8 @@
+/** @module renderer/components/workspace */
+
 import {
   message,
   Button,
-  Breadcrumb,
   Divider,
   Layout,
   PageHeader,
@@ -12,11 +13,8 @@ import {
   Tooltip,
   Typography
 } from 'antd'
-import {
-  AppstoreOutlined,
-  PlusCircleTwoTone,
-  ShareAltOutlined
-} from '@ant-design/icons'
+
+import { PlusCircleOutlined, ShareAltOutlined } from '@ant-design/icons'
 
 import Add from './add'
 import Delete from './delete'
@@ -48,20 +46,13 @@ const Workspace = (props) => {
       <PageHeader
         backIcon={false}
         title={
-          <Breadcrumb>
-            <Breadcrumb.Item>
-              <AppstoreOutlined />
-              <span>{workspace.type}</span>
-            </Breadcrumb.Item>
-            <Breadcrumb.Item>
-              <Typography.Text
-                className="Workspace-name"
-                editable={{ onChange: setName }}
-              >
-                {workspace.name}
-              </Typography.Text>
-            </Breadcrumb.Item>
-          </Breadcrumb>
+          <Typography.Title
+            level={4}
+            className="Workspace-name"
+            editable={{ onChange: setName }}
+          >
+            {workspace.name}
+          </Typography.Title>
         }
         extra={[
           <Add key="add" />,
@@ -81,7 +72,7 @@ const Workspace = (props) => {
                 />
               </Col>
               <Col>
-                <Button type="primary" icon={<PlusCircleTwoTone />}>
+                <Button type="primary" icon={<PlusCircleOutlined />}>
                   Create a new project
                 </Button>
               </Col>
@@ -104,18 +95,10 @@ const Workspace = (props) => {
                   </Tooltip>
                 )
               })}
-              {/* 
-            <Tooltip title="Franck" placement="bottom">
-              <Avatar style={{ backgroundColor: '#0077B6' }}>F</Avatar>
-            </Tooltip>
-            <Tooltip title="Karim" placement="bottom">
-              <Avatar style={{ backgroundColor: '#0096C7' }}>K</Avatar>
-            </Tooltip> */}
             </Avatar.Group>
           </div>
         )}
       </PageHeader>
-
       <Layout.Content className="scroll">
         <ProjectList />
       </Layout.Content>

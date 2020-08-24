@@ -21,7 +21,13 @@ describe('pages/workspace/delete', () => {
     expect(wrapper).toBeDefined()
   })
 
+  it('toggleConfirm', () => {
+    const visible = wrapper.find('Modal').props().visible
+    wrapper.find('Button').props().onClick()
+    expect(wrapper.find('Modal').props().visible).toBe(!visible)
+  })
+
   it('handleDelete', () => {
-    wrapper.find('ForwardRef').props().onConfirm()
+    wrapper.find('Modal').props().onOk()
   })
 })

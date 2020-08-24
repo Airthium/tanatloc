@@ -1,17 +1,29 @@
 import React, { useState } from 'react'
 import { message, Button, Form, Input, Modal } from 'antd'
+import { PlusCircleOutlined } from '@ant-design/icons'
 
 import { add } from '../../../../src/api/workspace'
 
-const AddPage = () => {
+/**
+ * Add workspace
+ * @memberof module:renderer/components/workspace
+ */
+const Add = () => {
   const [form] = Form.useForm()
   const [visible, setVisible] = useState(false)
   const [loading, setLoading] = useState(false)
 
+  /**
+   * Toggle form visibility
+   */
   const toggleVisible = () => {
     setVisible(!visible)
   }
 
+  /**
+   * On confirm
+   * @param {Object} values Values
+   */
   const onOk = (values) => {
     setLoading(true)
     add(values)
@@ -26,13 +38,21 @@ const AddPage = () => {
       })
   }
 
+  /**
+   * On cancel
+   */
   const onCancel = () => {
     toggleVisible()
   }
 
+  /**
+   * Render
+   */
   return (
     <>
-      <Button onClick={toggleVisible}>Create a new workspace</Button>
+      <Button onClick={toggleVisible} icon={<PlusCircleOutlined />}>
+        Create a new workspace
+      </Button>
       <Modal
         title="Add a workspace"
         visible={visible}
@@ -66,4 +86,4 @@ const AddPage = () => {
   )
 }
 
-export default AddPage
+export default Add

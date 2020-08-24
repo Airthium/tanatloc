@@ -1,30 +1,62 @@
-import { message, Button, Popconfirm } from 'antd'
-import { DeleteOutlined } from '@ant-design/icons'
+import { useState } from 'react'
+import { message, Button, Modal, Space } from 'antd'
+import { DeleteOutlined, ExclamationCircleTwoTone } from '@ant-design/icons'
 
 import { del } from '../../../../src/api/workspace'
 
-const DeletePage = (props) => {
+/**
+ * Delete workspace
+ * @memberof module:renderer/components/workspace
+ * @param {Object} props Props
+ */
+const Delete = (props) => {
   const id = props.id
 
+  const [visible, setVisible] = useState(false)
+
+  /**
+   * Toggle confirm delete
+   */
+  const toggleConfirm = () => {
+    setVisible(!visible)
+  }
+
+  /**
+   * Handle delete
+   */
   const handleDelete = () => {
     del({ id }).catch((err) => {
       message.error(err.message)
     })
+    toggleConfirm()
   }
 
+  /**
+   * Render
+   */
   return (
     <>
-      <Popconfirm
-        title="Are you sure delete this workspace?"
-        icon={<DeleteOutlined />}
-        onConfirm={handleDelete}
+      <Button onClick={toggleConfirm} icon={<DeleteOutlined />}>
+        Delete
+      </Button>
+      <Modal
+        className="WorkspaceDelete-confirm"
+        okText={'Delete'}
+        closable={false}
+        onOk={handleDelete}
+        onCancel={toggleConfirm}
+        visible={visible}
       >
-        <Button danger icon={<DeleteOutlined />}>
-          Delete it
-        </Button>
-      </Popconfirm>
+        <Space size="middle">
+          <ExclamationCircleTwoTone
+            twoToneColor="#faad14"
+            style={{ fontSize: '1.5em' }}
+          />
+          The projects contained in this workspace will be lost.
+        </Space>
+      </Modal>
     </>
   )
 }
 
-export default DeletePage
+export default Delete

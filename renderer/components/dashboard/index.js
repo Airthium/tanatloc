@@ -1,8 +1,7 @@
 import { useRouter } from 'next/router'
 import { useState, useEffect } from 'react'
-import { Avatar, Layout, Menu } from 'antd'
+import { Layout, Menu } from 'antd'
 import {
-  UserOutlined,
   AppstoreTwoTone,
   LogoutOutlined,
   QuestionCircleTwoTone,
@@ -165,6 +164,7 @@ const DashboardPage = () => {
         </div>
 
         <Menu
+          className="Dashboard-menu"
           theme="light"
           onSelect={onSelect}
           defaultOpenKeys={[menuItems.workspaces.key, menuItems.shared.key]}
@@ -210,16 +210,7 @@ const DashboardPage = () => {
           >
             {menuItems.logout.label}
           </Menu.Item>
-          <Menu.Divider />
         </Menu>
-
-        <div className="Dashboard-profile">
-          <Avatar size="large" icon={<UserOutlined />} />
-          <p>{user && user.username}</p>
-          <p>
-            {user && user.firstname} {user && user.lastname}
-          </p>
-        </div>
       </Layout.Sider>
 
       <Layout.Content className="no-scroll">

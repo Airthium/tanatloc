@@ -1,10 +1,8 @@
 import List from '../../../components/project/list'
 import { shallow } from 'enzyme'
 
-jest.mock('../../../components/project/card', () => 'card')
-
 let wrapper
-describe('component/project/card', () => {
+describe('component/project/list', () => {
   beforeEach(() => {
     wrapper = shallow(<List />)
   })
@@ -15,5 +13,22 @@ describe('component/project/card', () => {
 
   it('render', () => {
     expect(wrapper).toBeDefined()
+  })
+
+  it('onCell', () => {
+    const func = wrapper.find('Column').at(0).props().onCell('record')
+    func.onClick()
+  })
+
+  it('render', () => {
+    const render = wrapper.find('Column').at(4).props().render()
+    // expect(render).toBe(
+    //   <Space size="middle">
+    //     <Button key="share" icon={<ShareAltOutlined />}>
+    //       Share
+    //     </Button>
+    //     <Button icon={<DeleteOutlined />}>Delete</Button>
+    //   </Space>
+    // )
   })
 })

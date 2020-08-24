@@ -41,7 +41,10 @@ describe('components/workspace/add', () => {
   it('onOk', () => {
     wrapper.find('Modal').props().onOk()
     wrapper.find('Modal').props().onOk()
+  })
 
+  it('onOk - validateFields', () => {
+    wrapper.unmount()
     antd.Form.useForm = () => [
       {
         validateFields: async () => {
@@ -49,6 +52,7 @@ describe('components/workspace/add', () => {
         }
       }
     ]
+    wrapper = shallow(<Add />)
     wrapper.find('Modal').props().onOk()
   })
 

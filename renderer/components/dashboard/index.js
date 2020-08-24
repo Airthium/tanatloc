@@ -59,6 +59,7 @@ const DashboardPage = () => {
   // Workspaces
   const sortWorkspaces = () => {
     if (workspaces && user) {
+      console.log(workspaces)
       setMyWorkspaces(
         workspaces.filter(
           (workspace) => workspace.owners && workspace.owners.includes(user.id)

@@ -49,8 +49,7 @@ const Workspace = (props) => {
             className="Workspace-name"
             editable={{ onChange: setName }}
           >
-            hello{workspace.name} test test test test test1 test2 test3 test4
-            test5 test6 test7 test8
+            {workspace.name}
           </Typography.Title>
         }
         extra={[
@@ -94,13 +93,6 @@ const Workspace = (props) => {
                   </Tooltip>
                 )
               })}
-              {/*
-            <Tooltip title="Franck" placement="bottom">
-              <Avatar style={{ backgroundColor: '#0077B6' }}>F</Avatar>
-            </Tooltip>
-            <Tooltip title="Karim" placement="bottom">
-              <Avatar style={{ backgroundColor: '#0096C7' }}>K</Avatar>
-            </Tooltip> */}
             </Avatar.Group>
           </div>
         )}

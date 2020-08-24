@@ -1,8 +1,7 @@
 import { useRouter } from 'next/router'
 import { useState, useEffect } from 'react'
-import { Avatar, Layout, Menu } from 'antd'
+import { Layout, Menu } from 'antd'
 import {
-  UserOutlined,
   AppstoreTwoTone,
   LogoutOutlined,
   QuestionCircleTwoTone,

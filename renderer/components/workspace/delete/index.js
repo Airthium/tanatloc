@@ -1,15 +1,13 @@
 import { message, Button, Modal } from 'antd'
 import { DeleteOutlined, ExclamationCircleOutlined } from '@ant-design/icons'
 
-const { confirm } = Modal;
-
 import deleteWorkspace from '../../../../src/api/workspace/delete'
 
 const DeletePage = (props) => {
   const id = props.id
 
   const showDeleteConfirm = () => {
-    confirm({
+    Modal.confirm({
       className: 'Workspace-delete',
       title: 'Delete this workspace?',
       icon: <ExclamationCircleOutlined />,
@@ -18,12 +16,7 @@ const DeletePage = (props) => {
       autoFocusButton: 'null',
       maskClosable: 'true',
       cancelText: 'Cancel',
-      onOk() {
-        handleDelete()
-      },
-      onCancel() {
-        console.log('Cancel') // TODO
-      },
+      onOk: handleDelete
     })
   }
 
@@ -34,11 +27,9 @@ const DeletePage = (props) => {
   }
 
   return (
-    <>
-      <Button onClick={showDeleteConfirm} icon={<DeleteOutlined />}>
-        Delete
-      </Button>
-    </>
+    <Button onClick={showDeleteConfirm} icon={<DeleteOutlined />}>
+      Delete
+    </Button>
   )
 }
 

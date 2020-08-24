@@ -167,11 +167,11 @@ const DashboardPage = () => {
         </div>
 
         <Menu
+          className="Dashboard-menu"
           theme="light"
           onSelect={onSelect}
           defaultOpenKeys={[menuItems.workspaces.key, menuItems.shared.key]}
           mode="inline"
-          style={{width:"200px", height:"100%", overflowX:"hidden"}}
         >
           <Menu.SubMenu
             key={menuItems.workspaces.key}

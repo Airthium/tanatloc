@@ -34,7 +34,9 @@ const AddPage = () => {
 
   return (
     <>
-      <Button onClick={toggleVisible} icon={<PlusCircleOutlined />}>Create a new workspace</Button>
+      <Button onClick={toggleVisible} icon={<PlusCircleOutlined />}>
+        Create a new workspace
+      </Button>
       <Modal
         title="Add a workspace"
         visible={visible}

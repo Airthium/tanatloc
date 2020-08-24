@@ -1,10 +1,10 @@
 import List from '../../../components/project/list'
 import { shallow } from 'enzyme'
 
-jest.mock('../../../components/project/card', () => 'card')
+// jest.mock('../../../components/project/card', () => 'card')
 
 let wrapper
-describe('component/project/card', () => {
+describe('component/project/list', () => {
   beforeEach(() => {
     wrapper = shallow(<List />)
   })

@@ -20,6 +20,6 @@ describe('pages/workspace/delete', () => {
   })
 
   it('handleDelete', () => {
-    wrapper.find('ForwardRef').props().onConfirm()
+    wrapper.find('Button').props().onClick()
   })
 })

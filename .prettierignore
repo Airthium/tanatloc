@@ -9,3 +9,6 @@ renderer/out
 app
 dist
 dist-server
+
+# Doc
+doc/

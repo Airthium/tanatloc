@@ -1,3 +1,5 @@
+/** @module renderer/components/workspace */
+
 import {
   message,
   Button,

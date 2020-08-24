@@ -38,10 +38,13 @@ describe('components/workspace/add', () => {
     expect(wrapper.find('Modal').props().visible).toBe(!visible)
   })
 
-  it('onOk', async () => {
-    await wrapper.find('Modal').props().onOk()
-    await wrapper.find('Modal').props().onOk()
+  it('onOk', () => {
+    wrapper.find('Modal').props().onOk()
+    wrapper.find('Modal').props().onOk()
+  })
 
+  it('onOk - validateFields', () => {
+    wrapper.unmount()
     antd.Form.useForm = () => [
       {
         validateFields: async () => {
@@ -49,7 +52,8 @@ describe('components/workspace/add', () => {
         }
       }
     ]
-    await wrapper.find('Modal').props().onOk()
+    wrapper = shallow(<Add />)
+    wrapper.find('Modal').props().onOk()
   })
 
   it('onCancel', () => {

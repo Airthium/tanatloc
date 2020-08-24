@@ -11,7 +11,7 @@ import {
 import WorkspacePage from '../../components/workspace'
 
 import { useUser } from '../../../src/api/user'
-import { useWorkspace } from '../../../src/api/workspace'
+import { useWorkspaces } from '../../../src/api/workspace'
 import logout from '../../../src/api/logout'
 
 const menuItems = {
@@ -51,7 +51,7 @@ const DashboardPage = () => {
   const [sharedWorkspaces, setSharedWorkspaces] = useState([])
 
   const [user, { mutateUser, loadingUser }] = useUser()
-  const [workspaces] = useWorkspace()
+  const [workspaces] = useWorkspaces()
 
   // Router
   const router = useRouter()

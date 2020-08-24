@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { message, Button, Modal, Space } from 'antd'
 import { DeleteOutlined, ExclamationCircleTwoTone } from '@ant-design/icons'
 
-import { del } from '../../../../src/api/workspace'
+import { useWorkspaces, del } from '../../../../src/api/workspace'
 
 /**
  * Delete workspace
@@ -13,6 +13,7 @@ const Delete = (props) => {
   const id = props.id
 
   const [visible, setVisible] = useState(false)
+  const [workspaces, { mutateWorkspaces }] = useWorkspaces()
 
   /**
    * Toggle confirm delete
@@ -25,10 +26,19 @@ const Delete = (props) => {
    * Handle delete
    */
   const handleDelete = () => {
-    del({ id }).catch((err) => {
-      message.error(err.message)
-    })
-    toggleConfirm()
+    del({ id })
+      .then(() => {
+        // Mutate
+        const newWorkspaces = workspaces.filter(
+          (workspace) => workspace.id !== id
+        )
+        mutateWorkspaces({ workspaces: newWorkspaces })
+
+        toggleConfirm()
+      })
+      .catch((err) => {
+        message.error(err.message)
+      })
   }
 
   /**

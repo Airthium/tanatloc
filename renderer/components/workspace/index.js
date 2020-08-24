@@ -21,12 +21,12 @@ import Delete from './delete'
 import ProjectList from '../project/list'
 
 // import useUser from '../../../src/api/user/useUser'
-import { useWorkspace, update } from '../../../src/api/workspace'
+import { useWorkspaces, update } from '../../../src/api/workspace'
 
 const Workspace = (props) => {
   const workspace = props.workspace || {}
   // const [user] = useUser() // TODO get specific user
-  const [workspaces, { mutateWorkspace }] = useWorkspace()
+  const [workspaces, { mutateWorkspaces }] = useWorkspaces()
 
   const setName = (name) => {
     update(workspace, { name }).catch((err) => {
@@ -38,7 +38,7 @@ const Workspace = (props) => {
       if (w.id === workspace.id) w.name = name
       return w
     })
-    mutateWorkspace({ workspace: newWorkspaces })
+    mutateWorkspaces({ workspaces: newWorkspaces })
   }
 
   return (

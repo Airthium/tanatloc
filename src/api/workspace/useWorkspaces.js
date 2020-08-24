@@ -4,13 +4,13 @@ import { fetcher } from '../call'
 /**
  * Use a workspace (SWR)
  * @memberof module:src/api/workspace
- * @returns {Array} [workspace, {mutate function, loading status}]
+ * @returns {Array} [workspaces, {mutateWorkspaces function, loadingWorkspaces status}]
  */
-const useWorkspace = () => {
+const useWorkspaces = () => {
   const { data, mutate } = useSWR('/api/workspace', fetcher)
   const loading = !data
   const workspaces = data && data.workspaces
-  return [workspaces, { mutateWorkspace: mutate, loadingWorkspace: loading }]
+  return [workspaces, { mutateWorkspaces: mutate, loadingWorkspaces: loading }]
 }
 
-export default useWorkspace
+export default useWorkspaces

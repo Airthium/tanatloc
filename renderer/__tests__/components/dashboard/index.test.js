@@ -19,9 +19,9 @@ jest.mock('../../../../src/api/user/useUser', () => () => [
 ])
 
 let mockWorkspace = () => {}
-jest.mock('../../../../src/api/workspace/useWorkspace', () => () => [
+jest.mock('../../../../src/api/workspace/useWorkspaces', () => () => [
   mockWorkspace(),
-  { mutateWorkspace: () => {} }
+  { mutateWorkspaces: () => {} }
 ])
 
 const mockLogout = jest.fn()

@@ -4,11 +4,15 @@ import { shallow } from 'enzyme'
 jest.unmock('antd')
 import antd from 'antd'
 
-jest.mock('../../../../src/api/workspace/add', () => {
+jest.mock('../../../../src/api/workspace', () => {
   let count = 0
-  return async () => {
-    count++
-    if (count === 1) throw new Error('test')
+  return {
+    add: async () => {
+      count++
+      if (count === 1) throw new Error('test')
+      return { id: 'id' }
+    },
+    useWorkspaces: () => [[{}, { id: 'id1' }], { mutateWorkspaces: jest.fn() }]
   }
 })
 

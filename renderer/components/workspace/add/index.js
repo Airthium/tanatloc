@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { message, Button, Form, Input, Modal } from 'antd'
 import { PlusCircleOutlined } from '@ant-design/icons'
 
-import { add } from '../../../../src/api/workspace'
+import { useWorkspaces, add } from '../../../../src/api/workspace'
 
 /**
  * Add workspace
@@ -12,6 +12,7 @@ const Add = () => {
   const [form] = Form.useForm()
   const [visible, setVisible] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [workspaces, { mutateWorkspaces }] = useWorkspaces()
 
   /**
    * Toggle form visibility
@@ -27,7 +28,11 @@ const Add = () => {
   const onOk = (values) => {
     setLoading(true)
     add(values)
-      .then(() => {
+      .then((workspace) => {
+        // Mutate
+        workspaces.push(workspace)
+        mutateWorkspaces({ workspaces: workspaces })
+
         setLoading(false)
         toggleVisible()
         form.resetFields()

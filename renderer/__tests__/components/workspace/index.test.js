@@ -5,9 +5,9 @@ jest.mock('../../../components/workspace/add', () => 'add')
 
 jest.mock('../../../components/project/list', () => 'list')
 
-jest.mock('../../../../src/api/workspace/useWorkspace', () => () => [
+jest.mock('../../../../src/api/workspace/useWorkspaces', () => () => [
   [{}, { id: 'id1' }],
-  { mutateWorkspace: jest.fn() }
+  { mutateWorkspaces: jest.fn() }
 ])
 
 jest.mock('../../../../src/api/workspace/update', () => {

@@ -29,16 +29,18 @@ const Workspace = (props) => {
   const [workspaces, { mutateWorkspaces }] = useWorkspaces()
 
   const setName = (name) => {
-    update(workspace, { name }).catch((err) => {
-      message.error(err.message)
-    })
-
-    // Mutate workspace
-    const newWorkspaces = workspaces.map((w) => {
-      if (w.id === workspace.id) w.name = name
-      return w
-    })
-    mutateWorkspaces({ workspaces: newWorkspaces })
+    update(workspace, { name })
+      .then(() => {
+        // Mutate workspace
+        const newWorkspaces = workspaces.map((w) => {
+          if (w.id === workspace.id) w.name = name
+          return w
+        })
+        mutateWorkspaces({ workspaces: newWorkspaces })
+      })
+      .catch((err) => {
+        message.error(err.message)
+      })
   }
 
   return (

@@ -18,10 +18,10 @@ jest.mock('../../../../src/api/user/useUser', () => () => [
   { mutateUser: () => {}, loadingUser: false }
 ])
 
-let mockWorkspace = () => {}
+let mockWorkspaces = () => []
 jest.mock('../../../../src/api/workspace/useWorkspaces', () => () => [
-  mockWorkspace(),
-  { mutateWorkspaces: () => {} }
+  mockWorkspaces(),
+  { mutateWorkspaces: () => {}, loadingWorkspace: false }
 ])
 
 const mockLogout = jest.fn()
@@ -33,7 +33,7 @@ describe('components/dashboard', () => {
     mockRouter.mockReset()
     mockLogout.mockReset()
     mockUser = () => {}
-    mockWorkspace = () => {}
+    mockWorkspaces = () => []
     wrapper = shallow(<Dashboard />)
   })
 
@@ -43,6 +43,35 @@ describe('components/dashboard', () => {
 
   it('render', () => {
     expect(wrapper).toBeDefined()
+  })
+
+  it('with workspaces', () => {
+    mockUser = () => ({
+      id: 'id'
+    })
+    mockWorkspaces = () => [
+      {
+        id: 'id',
+        name: 'name',
+        owners: ['id']
+      },
+      {
+        id: 'id',
+        name: 'name',
+        users: ['id']
+      }
+    ]
+    wrapper.unmount()
+    wrapper = shallow(<Dashboard />)
+
+    expect(
+      wrapper.find({ title: 'My Workspaces' }).props().children.length
+    ).toBe(2)
+    // one is undefined
+    expect(
+      wrapper.find({ title: 'Shared With Me' }).props().children.length
+    ).toBe(2)
+    // one is undefined
   })
 
   it('onSelect', () => {
@@ -108,28 +137,44 @@ describe('components/dashboard', () => {
     mWrapper.unmount()
   })
 
-  it('workspaces effect', () => {
+  it('default workspaces effect', () => {
     let mWrapper
 
     // With user
-    mockUser = () => ({ user: { id: 'id' } })
+    mockUser = () => ({ id: 'id' })
     mWrapper = mount(<Dashboard />)
     mWrapper.unmount()
 
-    // // With workspaces
-    // mockWorkspace = () => [
-    //   {
-    //     id: 'id',
-    //     name: 'name',
-    //     owners: ['id']
-    //   },
-    //   {
-    //     id: 'id',
-    //     name: 'name',
-    //     users: ['id']
-    //   }
-    // ]
-    // mWrapper = mount(<Dashboard />)
-    // mWrapper.unmount()
+    // With workspaces (owner)
+    mockWorkspaces = () => [
+      {
+        id: 'id',
+        name: 'name',
+        owners: ['id']
+      }
+    ]
+    mWrapper = mount(<Dashboard />)
+    mWrapper.unmount()
+
+    // With workspaces (user)
+    mockWorkspaces = () => [
+      {
+        id: 'id',
+        name: 'name',
+        users: ['id']
+      }
+    ]
+    mWrapper = mount(<Dashboard />)
+    mWrapper.unmount()
+
+    // With workspaces (undefined)
+    mockWorkspaces = () => [
+      {
+        id: 'id',
+        name: 'name'
+      }
+    ]
+    mWrapper = mount(<Dashboard />)
+    mWrapper.unmount()
   })
 })

@@ -1,9 +1,16 @@
 import useSWR from 'swr'
 import { fetcher } from '../call'
 
-export default () => {
+/**
+ * Use a user
+ * @memberof module:src/api/user
+ * @returns {Array} [user, {mutate function, loading status}]]
+ */
+const useUser = () => {
   const { data, mutate } = useSWR('/api/user', fetcher)
   const loading = !data
   const user = data && data.user
   return [user, { mutateUser: mutate, loadingUser: loading }]
 }
+
+export default useUser

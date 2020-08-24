@@ -1,4 +1,4 @@
-import del from '../delete'
+import del from '../del'
 
 jest.mock('../../call', () => ({
   call: async () => 'res'

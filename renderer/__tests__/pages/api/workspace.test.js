@@ -5,42 +5,35 @@ jest.mock('../../../../src/auth/iron', () => ({
   getSession: () => mockSession()
 }))
 
-jest.mock('../../../../src/database/query/workspace/getByUserId', () => {
-  let count = 0
-  return async () => {
-    count++
-    if (count === 1) throw new Error('test')
-    return [
-      {
-        name: 'name',
-        owners: ['owner']
-      }
-    ]
-  }
-})
-
-jest.mock('../../../../src/database/query/workspace/add', () => {
-  let count = 0
-  return async () => {
-    count++
-    if (count === 1) throw new Error('test')
-    return { id: 'id' }
-  }
-})
-
-jest.mock('../../../../src/database/query/workspace/update', () => {
-  let count = 0
-  return async () => {
-    count++
-    if (count === 1) throw new Error('test')
-  }
-})
-
-jest.mock('../../../../src/database/query/workspace/delete', () => {
-  let count = 0
-  return async () => {
-    count++
-    if (count === 1) throw new Error('test')
+jest.mock('../../../../src/database/workspace', () => {
+  let countG = 0
+  let countA = 0
+  let countU = 0
+  let countD = 0
+  return {
+    getByUserId: async () => {
+      countG++
+      if (countG === 1) throw new Error('test')
+      return [
+        {
+          name: 'name',
+          owners: ['owner']
+        }
+      ]
+    },
+    add: async () => {
+      countA++
+      if (countA === 1) throw new Error('test')
+      return { id: 'id' }
+    },
+    update: async () => {
+      countU++
+      if (countU === 1) throw new Error('test')
+    },
+    del: async () => {
+      countD++
+      if (countD === 1) throw new Error('test')
+    }
   }
 })
 

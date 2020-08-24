@@ -5,10 +5,12 @@ jest.mock('../../../../src/auth/iron', () => ({
   getSession: () => mockSession()
 }))
 
-jest.mock('../../../../src/database/query/user/getById', () => async () => ({
-  email: 'email',
-  firstname: 'firstname',
-  lastname: 'lastname'
+jest.mock('../../../../src/database/user', () => ({
+  getById: async () => ({
+    email: 'email',
+    firstname: 'firstname',
+    lastname: 'lastname'
+  })
 }))
 
 describe('pages/api/user', () => {

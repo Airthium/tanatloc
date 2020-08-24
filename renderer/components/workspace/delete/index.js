@@ -1,7 +1,7 @@
 import { message, Button, Modal } from 'antd'
 import { DeleteOutlined, ExclamationCircleOutlined } from '@ant-design/icons'
 
-import deleteWorkspace from '../../../../src/api/workspace/delete'
+import { del } from '../../../../src/api/workspace'
 
 const DeletePage = (props) => {
   const id = props.id
@@ -21,7 +21,7 @@ const DeletePage = (props) => {
   }
 
   const handleDelete = () => {
-    deleteWorkspace({ id }).catch((err) => {
+    del({ id }).catch((err) => {
       message.error(err.message)
     })
   }

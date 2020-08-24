@@ -1,7 +1,13 @@
-import query from '../..'
-import { databases } from '../../../../config/db'
+import query from '..'
+import { databases } from '../../../config/db'
 
-export default async (id, { name }) => {
+/**
+ * Add
+ * @memberof module:src/database/workspace
+ * @param {string} id User id
+ * @param {Object} workspace Workspace { name }
+ */
+const add = async (id, { name }) => {
   const response = await query(
     'INSERT INTO ' +
       databases.WORKSPACES +
@@ -20,3 +26,5 @@ export default async (id, { name }) => {
 
   return workspace
 }
+
+export default add

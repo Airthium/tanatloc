@@ -44,6 +44,7 @@ module.exports = {
     '/dist-server/',
     '/doc/',
     '/coverage/',
+    '/doc/',
     '/jest.config.js',
     '/config/jest/'
   ]

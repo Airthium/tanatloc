@@ -2,7 +2,13 @@ import isElectron from 'is-electron'
 
 const base = isElectron() ? 'http://localhost:3000' : ''
 
-export default async ({ username, password }) => {
+/**
+ * Login
+ * @memberof module:src/api
+ * @param {Object} user User { username, password }
+ * @returns {?Object} User
+ */
+const login = async ({ username, password }) => {
   const res = await fetch(base + '/api/login', {
     method: 'POST',
     headers: {
@@ -19,3 +25,5 @@ export default async ({ username, password }) => {
     return null
   }
 }
+
+export default login

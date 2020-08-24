@@ -1,6 +1,9 @@
 # Coverage
 coverage/
 
+# Doc
+doc
+
 # Build
 renderer/.next
 renderer/out

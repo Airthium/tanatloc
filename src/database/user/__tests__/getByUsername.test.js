@@ -1,15 +1,9 @@
 import getByUsername from '../getByUsername'
 
-jest.mock('../../..', () => {
+jest.mock('../..', () => {
   return async () => ({
     rows: [{ id: 'id' }]
   })
-})
-
-jest.mock('../../../../../config/db', () => {
-  return {
-    databases: {}
-  }
 })
 
 describe('database/query/user', () => {

@@ -1,9 +1,11 @@
 import Delete from '../../../components/workspace/delete'
 import { shallow } from 'enzyme'
 
-jest.mock('../../../../src/api/workspace/delete', () => async () => {
-  throw new Error('test')
-})
+jest.mock('../../../../src/api/workspace', () => ({
+  del: async () => {
+    throw new Error('test')
+  }
+}))
 
 let wrapper
 describe('pages/workspace/delete', () => {

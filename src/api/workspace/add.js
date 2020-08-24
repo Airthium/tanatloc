@@ -1,6 +1,11 @@
 import { call } from '../call'
 
-export default async (workspace) => {
+/**
+ * Add a workspace
+ * @memberof module:src/api/workspace
+ * @param {Object} workspace Workspace { name }
+ */
+const add = async (workspace) => {
   const res = await call('/api/workspace', {
     method: 'POST',
     headers: {
@@ -11,3 +16,5 @@ export default async (workspace) => {
 
   return res
 }
+
+export default add

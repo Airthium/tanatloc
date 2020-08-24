@@ -1,0 +1,19 @@
+{
+  "source": {
+    "include": ["."],
+    "exclude": [
+      "app",
+      "coverage",
+      "dist-server",
+      "dist",
+      "doc",
+      "node_modules",
+      "renderer/.next",
+      "renderer/out"
+    ]
+  },
+  "opts": {
+    "destination": "./doc",
+    "recurse": true
+  }
+}

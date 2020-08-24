@@ -1,9 +1,8 @@
 import React, { useState } from 'react'
 import { message, Button, Form, Input, Modal } from 'antd'
-
 import { PlusCircleOutlined } from '@ant-design/icons'
 
-import addWorkspace from '../../../../src/api/workspace/add'
+import { add } from '../../../../src/api/workspace'
 
 const AddPage = () => {
   const [form] = Form.useForm()
@@ -16,7 +15,7 @@ const AddPage = () => {
 
   const onOk = (values) => {
     setLoading(true)
-    addWorkspace(values)
+    add(values)
       .then(() => {
         setLoading(false)
         toggleVisible()

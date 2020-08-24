@@ -1,9 +1,14 @@
-import query from '../..'
-import { databases } from '../../../../config/db'
+import query from '..'
+import { databases } from '../../../config/db'
 
 // TODO manage different types
 
-export default async ({ workspace, data }) => {
+/**
+ * Update
+ * @memberof module:src/database/workspace
+ * @param {Object} body { workspace { id }, data {key: value } }
+ */
+const update = async ({ workspace, data }) => {
   Promise.all(
     Object.keys(data).map(async (key) => {
       return await query(
@@ -17,3 +22,5 @@ export default async ({ workspace, data }) => {
     })
   )
 }
+
+export default update

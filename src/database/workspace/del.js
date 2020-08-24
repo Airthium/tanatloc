@@ -8,10 +8,12 @@ import { databases } from '../../../config/db'
  * @param {object} workspace Workspace { id }
  */
 const del = async (id, workspace) => {
+  // Delete workspace
   await query('DELETE FROM ' + databases.WORKSPACES + ' WHERE id = $1', [
     workspace.id
   ])
 
+  // Delete workspace reference in user
   await query(
     'UPDATE ' +
       databases.USERS +

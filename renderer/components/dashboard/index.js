@@ -111,13 +111,11 @@ const DashboardPage = () => {
 
   // Not logged
   useEffect(() => {
-    console.log('login effect')
     if (!loadingUser && !user) router.replace('/login')
   }, [user, loadingUser])
 
   // Workspace
   useEffect(() => {
-    console.log('workspace effect')
     sortWorkspaces()
   }, [workspaces, user])
 

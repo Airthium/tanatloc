@@ -29,11 +29,11 @@ const pool = startdB()
 
 /**
  * PostgreSQL query
- * @param {string} query Query
+ * @param {string} command Command
  * @param {Array} args Arguments
  */
-const query = async (query, args) => {
-  const res = await pool.query(query, args)
+const query = async (command, args) => {
+  const res = await pool.query(command, args)
   return res
 }
 

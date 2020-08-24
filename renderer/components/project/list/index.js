@@ -1,5 +1,4 @@
 import { Table, Button, Tag, Space, Avatar, Tooltip } from 'antd'
-
 import {
   ShareAltOutlined,
   DeleteOutlined,
@@ -90,9 +89,9 @@ const ProjectList = () => {
       <Table.Column
         title=""
         dataIndex="snapshot"
-        onCell={(record, rowIndex) => {
+        onCell={(record) => {
           return {
-            onClick: (event) => {
+            onClick: () => {
               console.log(record) //it should only open if the user click on the snapshot
             }
           }
@@ -105,7 +104,7 @@ const ProjectList = () => {
         title="Actions"
         dataIndex="actions"
         align="center"
-        render={(text, record) => (
+        render={() => (
           <Space size="middle">
             <Button key="share" icon={<ShareAltOutlined />}>
               Share

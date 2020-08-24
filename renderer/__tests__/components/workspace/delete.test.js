@@ -21,7 +21,7 @@ describe('pages/workspace/delete', () => {
     expect(wrapper).toBeDefined()
   })
 
-  it('handleDelete', () => {
+  it('showDeleteConfirm', () => {
     wrapper.find('Button').props().onClick()
   })
 })

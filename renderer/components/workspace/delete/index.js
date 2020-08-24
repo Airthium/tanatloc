@@ -7,7 +7,7 @@ const DeletePage = (props) => {
   const id = props.id
 
   const showDeleteConfirm = () => {
-    Modal.confirm({
+    return Modal.confirm({
       className: 'Workspace-delete',
       title: 'Delete this workspace?',
       icon: <ExclamationCircleOutlined />,

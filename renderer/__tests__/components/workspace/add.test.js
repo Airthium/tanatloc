@@ -38,9 +38,9 @@ describe('components/workspace/add', () => {
     expect(wrapper.find('Modal').props().visible).toBe(!visible)
   })
 
-  it('onOk', () => {
-    wrapper.find('Modal').props().onOk()
-    wrapper.find('Modal').props().onOk()
+  it('onOk', async () => {
+    await wrapper.find('Modal').props().onOk()
+    await wrapper.find('Modal').props().onOk()
 
     antd.Form.useForm = () => [
       {
@@ -49,7 +49,7 @@ describe('components/workspace/add', () => {
         }
       }
     ]
-    wrapper.find('Modal').props().onOk()
+    await wrapper.find('Modal').props().onOk()
   })
 
   it('onCancel', () => {

@@ -15,9 +15,12 @@ export default async function (req, res) {
   }
 
   // Id
-  const {
-    query: { id }
-  } = req
+  //TODO check here
+  let id = req.query.id
+  if (!id) {
+    // Electron
+    id = req.params.id
+  }
 
   switch (req.method) {
     case 'GET':

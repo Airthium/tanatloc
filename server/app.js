@@ -1,3 +1,5 @@
+/** @module server/app */
+
 import createError from 'http-errors'
 import express, { json, urlencoded } from 'express'
 import cors from 'cors'
@@ -6,6 +8,7 @@ import { loginRoute } from '../renderer/pages/api/login'
 import logout from '../renderer/pages/api/logout'
 import user from '../renderer/pages/api/user'
 import workspace from '../renderer/pages/api/workspace'
+import project from '../renderer/pages/api/project/[id]'
 
 const app = express()
 
@@ -26,6 +29,8 @@ app.get('/api/logout', logout)
 app.get('/api/user', user)
 
 app.get('/api/workspace', workspace)
+
+app.get('/api/project/:id', project)
 
 /**
  * Catch 404 and forward to error handler

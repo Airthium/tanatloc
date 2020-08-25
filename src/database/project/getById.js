@@ -4,6 +4,11 @@ import { databases } from '../../../config/db'
 import { readAvatar } from '../../lib/avatar'
 import { getUser } from '../../lib/user'
 
+/**
+ * Get project by id
+ * @memberof module:src/database/project
+ * @param {string} id Id
+ */
 const getById = async (id) => {
   const response = await query(
     'SELECT title, description, avatar, owners, users FROM ' +

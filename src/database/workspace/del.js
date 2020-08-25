@@ -5,7 +5,7 @@ import { databases } from '../../../config/db'
  * Delete
  * @memberof module:src/database/workspace
  * @param {string} id User id
- * @param {object} workspace Workspace { id }
+ * @param {Object} workspace Workspace { id }
  */
 const del = async (id, workspace) => {
   // Delete workspace

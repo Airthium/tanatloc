@@ -83,7 +83,7 @@ const Add = () => {
             name="name"
             rules={[{ required: true, message: 'Please fill the name' }]}
           >
-            <Input placeholder="Workspace name" />
+            <Input placeholder="Workspace's name" />
           </Form.Item>
         </Form>
       </Modal>

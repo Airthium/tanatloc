@@ -14,10 +14,12 @@ import {
   Typography
 } from 'antd'
 
-import { PlusCircleOutlined, ShareAltOutlined } from '@ant-design/icons'
+import { ShareAltOutlined } from '@ant-design/icons'
 
 import Add from './add'
 import Delete from './delete'
+
+import ProjectAdd from '../project/add'
 import ProjectList from '../project/list'
 
 import { useWorkspaces, update } from '../../../src/api/workspace'
@@ -86,9 +88,7 @@ const Workspace = (props) => {
                 />
               </Col>
               <Col>
-                <Button type="primary" icon={<PlusCircleOutlined />}>
-                  Create a new project
-                </Button>
+                <ProjectAdd />
               </Col>
             </Row>
           </>

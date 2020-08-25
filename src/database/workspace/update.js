@@ -1,15 +1,13 @@
 import query from '..'
 import { databases } from '../../../config/db'
 
-// TODO manage different types
-
 /**
  * Update
  * @memberof module:src/database/workspace
  * @param {Object} body { workspace { id }, data {key: value } }
  */
 const update = async ({ workspace, data }) => {
-  Promise.all(
+  await Promise.all(
     Object.keys(data).map(async (key) => {
       return await query(
         'UPDATE ' +

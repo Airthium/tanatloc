@@ -65,4 +65,21 @@ describe('pages/api/project/[id]', () => {
     await id(req, res)
     expect(response).toEqual({ message: 'Method POST not allowed' })
   })
+
+  it('electron', async () => {
+    mockSession = () => ({ id: 'id' })
+    req.method = 'GET'
+    req.query.id = undefined
+    req.params = { id: 'id' }
+    await id(req, res)
+    expect(response).toEqual({
+      project: {
+        title: 'title',
+        description: 'description',
+        avatar: 'avatar',
+        owners: ['id1'],
+        users: ['id2']
+      }
+    })
+  })
 })

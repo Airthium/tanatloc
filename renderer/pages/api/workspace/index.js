@@ -6,6 +6,12 @@ import {
   del
 } from '../../../../src/database/workspace'
 
+/**
+ * Workspace API
+ * @memberof module:api
+ * @param {Object} req Request
+ * @param {Object} res Response
+ */
 export default async function (req, res) {
   const session = await getSession(req)
   if (!session || !session.id) {

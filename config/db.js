@@ -1,3 +1,8 @@
+/** @module config/db */
+
+/**
+ * Database configuration
+ */
 module.exports = {
   USER: process.env.DB_USER || 'tanatlocuser',
   HOST: process.env.DB_HOST || 'localhost',
@@ -6,6 +11,9 @@ module.exports = {
   PASSWORD: process.env.DB_PASSWORD || 'tanatloc'
 }
 
+/**
+ * Tables names
+ */
 module.exports.databases = {
   USERS: 'tanatloc_users',
   WORKSPACES: 'tanatloc_workspaces',

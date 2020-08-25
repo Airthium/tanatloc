@@ -1,6 +1,12 @@
 import { getSession } from '../../../../src/auth/iron'
 import { getById } from '../../../../src/database/project'
 
+/**
+ * Project API
+ * @memberof module:api
+ * @param {Object} req Request
+ * @param {Object} res Response
+ */
 export default async function (req, res) {
   const session = await getSession(req)
   if (!session || !session.id) {
@@ -8,6 +14,7 @@ export default async function (req, res) {
     return
   }
 
+  // Id
   const {
     query: { id }
   } = req

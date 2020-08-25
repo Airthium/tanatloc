@@ -1,4 +1,4 @@
-import { Table, Button, Tag, Space, Avatar, Tooltip } from 'antd'
+import { Table, Button, /*Tag,*/ Space, Avatar, Tooltip } from 'antd'
 import {
   ShareAltOutlined,
   DeleteOutlined
@@ -33,6 +33,11 @@ import {
 
 import { useProject } from '../../../../src/api/project'
 
+/**
+ * Generate color (HEX format) from string
+ * @memberof module:renderer/components/project
+ * @param {string} str String
+ */
 const stringToHex = (str) => {
   let hash = 0
   for (let i = 0; i < str.length; ++i) {
@@ -53,6 +58,8 @@ const stringToHex = (str) => {
 const ProjectList = (props) => {
   // Props
   const projects = props.projects || []
+
+  // Load projects
   const data = projects.map((id) => {
     const [project] = useProject(id)
 

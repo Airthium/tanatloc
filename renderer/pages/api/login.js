@@ -1,3 +1,5 @@
+/** @module api */
+
 import express from 'express'
 import passport from 'passport'
 import { localStrategy } from '../../../src/auth/password-local'
@@ -22,6 +24,11 @@ app.use(passport.initialize())
 
 passport.use(localStrategy)
 
+/**
+ * Login API
+ * @param {Object} req Request
+ * @param {Object} res Response
+ */
 export const loginRoute = async (req, res) => {
   try {
     const user = await authenticate('local', req, res)

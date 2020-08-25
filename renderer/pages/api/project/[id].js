@@ -12,8 +12,6 @@ export default async function (req, res) {
     query: { id }
   } = req
 
-  console.log(id)
-
   switch (req.method) {
     case 'GET':
       try {

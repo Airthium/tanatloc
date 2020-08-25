@@ -6,7 +6,7 @@ jest.mock('../..', () => {
   })
 })
 
-describe('database/query/user', () => {
+describe('database/user', () => {
   it('getById', async () => {
     const res = await getById('id')
     expect(res).toEqual({ id: 'id', username: 'username' })

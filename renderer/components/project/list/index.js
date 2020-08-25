@@ -1,18 +1,10 @@
 import { Table, Button, Tag, Space, Avatar, Tooltip } from 'antd'
 import {
   ShareAltOutlined,
-  DeleteOutlined,
-  SyncOutlined,
-  CloudSyncOutlined
+  DeleteOutlined
+  // SyncOutlined,
+  // CloudSyncOutlined
 } from '@ant-design/icons'
-
-// const img = (
-//   <img
-//     style={{ width: 150, height: 100 }}
-//     alt="example"
-//     src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png"
-//   />
-// )
 
 // const tags = (
 //   <Space>
@@ -39,45 +31,20 @@ import {
 //   </Avatar.Group>
 // )
 
-// const actions = 'hello'
-
-// const data = [
-//   {
-//     key: '1',
-//     snapshot: img,
-//     projectName: 'Salty Jesus',
-//     tags: tags,
-//     sharedWith: sharedWith,
-//     actions: actions
-//   },
-//   {
-//     key: '2',
-//     snapshot: img,
-//     projectName: 'Sweet Jesus',
-//     tags: tags,
-//     sharedWith: sharedWith,
-//     actions: actions
-//   },
-//   {
-//     key: '3',
-//     snapshot: img,
-//     projectName: 'Raptor Jesus',
-//     tags: tags,
-//     sharedWith: sharedWith,
-//     actions: actions
-//   },
-//   {
-//     key: '4',
-//     snapshot: img,
-//     projectName:
-//       'What’s the difference between the real Jesus and a picture of him ? It only takes one nail to hang up the picture.',
-//     tags: tags,
-//     sharedWith: sharedWith,
-//     actions: actions
-//   }
-// ]
-
 import { useProject } from '../../../../src/api/project'
+
+const stringToHex = (str) => {
+  let hash = 0
+  for (let i = 0; i < str.length; ++i) {
+    hash = str.charCodeAt(i) + ((hash << 5) - hash)
+  }
+  let colour = '#'
+  for (let i = 0; i < 3; i++) {
+    const value = (hash >> (i * 8)) & 0xff
+    colour += ('00' + value.toString(16)).substr(-2)
+  }
+  return colour
+}
 
 /**
  * Projects' list
@@ -86,11 +53,53 @@ import { useProject } from '../../../../src/api/project'
 const ProjectList = (props) => {
   // Props
   const projects = props.projects || []
-  console.log(projects)
-
   const data = projects.map((id) => {
     const [project] = useProject(id)
-    console.log(project)
+
+    // Snapshot
+    const snapshot = (
+      <img src={project && project.avatar} width="100" height="100" />
+    )
+
+    // Owners avatars
+    const owners =
+      project &&
+      project.owners &&
+      project.owners.map((owner) => {
+        const first = owner.firstname || 'No'
+        const last = owner.lastname || 'Name'
+        return (
+          <Tooltip key={owner.id} title={first + ' ' + last}>
+            <Avatar style={{ backgroundColor: stringToHex(first + last) }}>
+              {(first[0] + last[0]).toUpperCase()}
+            </Avatar>
+          </Tooltip>
+        )
+      })
+
+    // Users avatars
+    const users =
+      project &&
+      project.users &&
+      project.users.map((user) => {
+        const first = user.firstname || 'No'
+        const last = user.lastname || 'Name'
+        return (
+          <Tooltip key={user.id} title={first + ' ' + last}>
+            <Avatar style={{ backgroundColor: stringToHex(first + last) }}>
+              {(first[0] + last[0]).toUpperCase()}
+            </Avatar>
+          </Tooltip>
+        )
+      })
+
+    return {
+      ...project,
+      key: id,
+      snapshot: snapshot,
+      owners: <Avatar.Group>{owners}</Avatar.Group>,
+      users: <Avatar.Group>{users}</Avatar.Group>
+    }
   })
 
   /**
@@ -115,12 +124,12 @@ const ProjectList = (props) => {
           }
         }}
       />
-      <Table.Column title="Project Name" dataIndex="projectName" />
+      <Table.Column title="Project Name" dataIndex="title" />
       <Table.Column title="Status" dataIndex="tags" align="center" />
-      <Table.Column title="Shared With" dataIndex="sharedWith" align="center" />
+      <Table.Column title="Administrators" dataIndex="owners" align="center" />
+      <Table.Column title="Shared With" dataIndex="users" align="center" />
       <Table.Column
         title="Actions"
-        dataIndex="actions"
         align="center"
         render={() => (
           <Space size="middle">

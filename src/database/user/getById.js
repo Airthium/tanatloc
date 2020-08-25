@@ -15,7 +15,7 @@ const getById = async (id, data = ['email']) => {
   )
 
   const result = response.rows[0]
-  result.username = result.email
+  result.username = result.email // TODO modify the dB for that
   delete result.email
   const user = {
     id: id,

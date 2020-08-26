@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/router'
 
-import { Layout, Button } from 'antd'
+import { Button, Layout } from 'antd'
 
 /**
  * Index
@@ -18,6 +18,9 @@ const Index = () => {
     router.push('/login')
   }
 
+  /**
+   * Render
+   */
   return (
     <Layout>
       <Button onClick={handleClick}>Login</Button>

@@ -13,6 +13,8 @@ import {
   Space
 } from 'antd'
 
+import Loading from '../loading'
+
 import login from '../../../src/api/login'
 import { useUser } from '../../../src/api/user'
 
@@ -31,7 +33,7 @@ const Login = () => {
   const [checking, setChecking] = useState(false)
 
   // Data
-  const [user, { mutateUser }] = useUser()
+  const [user, { mutateUser, loadingUser }] = useUser()
 
   // Router
   const router = useRouter()
@@ -43,7 +45,7 @@ const Login = () => {
 
   /**
    * Handle login
-   * @param {Object} values Values {username, password}
+   * @param {Object} values Values { username, password }
    */
   const onLogin = async (values) => {
     // State
@@ -52,7 +54,7 @@ const Login = () => {
     // Check
     const loggedUser = await login(values)
     if (loggedUser) {
-      // Logger
+      // Logged
       mutateUser(loggedUser)
       router.push('/dashboard')
     } else {
@@ -66,51 +68,57 @@ const Login = () => {
    * Render
    */
   return (
-    <Layout className="tanatloc-gradient">
-      <Card className="Login">
-        <Space direction="vertical" size="large" style={{ width: '100%' }}>
-          <div className="logo">
-            <img src="/images/logo.svg" />
-          </div>
-          <Form initialValues={{ remember: true }} onFinish={onLogin}>
-            <Form.Item
-              name="username"
-              rules={[
-                { required: true, message: 'Please fill your Username!' }
-              ]}
-            >
-              <Input placeholder="username" autoComplete="username" />
-            </Form.Item>
-            <Form.Item
-              name="password"
-              rules={[
-                { required: true, message: 'Please fill your Password!' }
-              ]}
-            >
-              <Input.Password
-                placeholder="password"
-                autoComplete="current-password"
-              />
-            </Form.Item>
-            <Form.Item>
-              <Form.Item name="remember" valuePropName="checked" noStyle>
-                <Checkbox>remember me</Checkbox>
-              </Form.Item>
+    <>
+      {loadingUser || user ? (
+        <Loading />
+      ) : (
+        <Layout className="tanatloc-gradient">
+          <Card className="Login">
+            <Space direction="vertical" size="large" style={{ width: '100%' }}>
+              <div className="logo">
+                <img src="/images/logo.svg" />
+              </div>
+              <Form initialValues={{ remember: true }} onFinish={onLogin}>
+                <Form.Item
+                  name="username"
+                  rules={[
+                    { required: true, message: 'Please fill your Username!' }
+                  ]}
+                >
+                  <Input placeholder="username" autoComplete="username" />
+                </Form.Item>
+                <Form.Item
+                  name="password"
+                  rules={[
+                    { required: true, message: 'Please fill your Password!' }
+                  ]}
+                >
+                  <Input.Password
+                    placeholder="password"
+                    autoComplete="current-password"
+                  />
+                </Form.Item>
+                <Form.Item>
+                  <Form.Item name="remember" valuePropName="checked" noStyle>
+                    <Checkbox>remember me</Checkbox>
+                  </Form.Item>
 
-              <a className="Login-forgot" href="">
-                forgot password
-              </a>
-            </Form.Item>
-            <Form.Item className="Login-submit">
-              <Button type="primary" loading={checking} htmlType="submit">
-                Log in
-              </Button>
-              <a href="">or register now!</a>
-            </Form.Item>
-          </Form>
-        </Space>
-      </Card>
-    </Layout>
+                  <a className="Login-forgot" href="">
+                    forgot password
+                  </a>
+                </Form.Item>
+                <Form.Item className="Login-submit">
+                  <Button type="primary" loading={checking} htmlType="submit">
+                    Log in
+                  </Button>
+                  <a href="">or register now!</a>
+                </Form.Item>
+              </Form>
+            </Space>
+          </Card>
+        </Layout>
+      )}
+    </>
   )
 }
 

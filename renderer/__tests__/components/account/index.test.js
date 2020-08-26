@@ -1,10 +1,10 @@
-import Project from '../../../components/project'
+import Account from '../../../components/dashboard'
 import { shallow } from 'enzyme'
 
 let wrapper
-describe('components/project', () => {
+describe('renderer/components/account', () => {
   beforeEach(() => {
-    wrapper = shallow(<Project />)
+    wrapper = shallow(<Account />)
   })
 
   afterEach(() => {

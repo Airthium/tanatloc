@@ -1,10 +1,17 @@
 import { useState } from 'react'
-import { message, Button, Modal, Space } from 'antd'
-import { DeleteOutlined, ExclamationCircleTwoTone } from '@ant-design/icons'
+import { message, Button } from 'antd'
+import { DeleteOutlined } from '@ant-design/icons'
+
+import { DeleteDialog } from '../../assets/dialog'
 
 import { useProjects, del } from '../../../../src/api/project'
 import { useWorkspaces } from '../../../../src/api/workspace'
 
+/**
+ * Delete project
+ * @memberof module:renderer/components/project
+ * @param {Object} props Props
+ */
 const Delete = (props) => {
   // Props
   const workspace = props.workspace
@@ -13,47 +20,46 @@ const Delete = (props) => {
 
   // Sate
   const [visible, setVisible] = useState(false)
+  const [loading, setLoading] = useState(false)
 
   // Data
   const [projects, { mutateProjects }] = useProjects(projectsIds)
   const [workspaces, { mutateWorkspaces }] = useWorkspaces()
 
   /**
-   * Toggle confirm delete
+   * Toggle dialog delete
    */
-  const toggleConfirm = () => {
+  const toggleDialog = () => {
     setVisible(!visible)
   }
 
   /**
    * Handle delete
    */
-  const handleDelete = () => {
-    del(workspace, project)
-      .then(() => {
-        // Mutate workspaces
-        const newWorkspaces = workspaces.map((w) => {
-          if (w.id === workspace.id) {
-            //remove project
-            const index = w.projects.findIndex((p) => p === project.id)
-            w.projects = [
-              ...w.projects.slice(0, index),
-              ...w.projects.slice(index + 1)
-            ]
-          }
-          return w
-        })
-        mutateWorkspaces({ workspaces: newWorkspaces })
+  const handleDelete = async () => {
+    setLoading(true)
+    try {
+      await del(workspace, project)
 
-        // Mutate projects
-        const newProjects = projects.filter((p) => p.id !== project.id)
-        mutateProjects({ projects: newProjects })
+      // Mutate workspaces
+      const newWorkspaces = workspaces.map((w, index) => {
+        if (w.id === workspace.id) {
+          w.projects = [
+            ...w.projects.slice(0, index),
+            ...w.projects.slice(index + 1)
+          ]
+        }
+        return w
+      })
+      mutateWorkspaces({ workspaces: newWorkspaces })
 
-        toggleConfirm()
-      })
-      .catch((err) => {
-        message.error(err.message)
-      })
+      // Mutate projects
+      const newProjects = projects.filter((p) => p.id !== project.id)
+      mutateProjects({ projects: newProjects })
+    } catch (err) {
+      message.error(err.message)
+      setLoading(false)
+    }
   }
 
   /**
@@ -61,25 +67,17 @@ const Delete = (props) => {
    */
   return (
     <>
-      <Button onClick={toggleConfirm} icon={<DeleteOutlined />}>
+      <Button onClick={toggleDialog} icon={<DeleteOutlined />}>
         Delete
       </Button>
-      <Modal
-        className="ProjectDelete-confirm"
-        okText={'Delete'}
-        closable={false}
-        onOk={handleDelete}
-        onCancel={toggleConfirm}
+      <DeleteDialog
         visible={visible}
+        onCancel={toggleDialog}
+        onOk={handleDelete}
+        loading={loading}
       >
-        <Space size="middle">
-          <ExclamationCircleTwoTone
-            twoToneColor="#faad14"
-            style={{ fontSize: '1.5em' }}
-          />
-          <span>Delete {project.title}.</span>
-        </Space>
-      </Modal>
+        Delete {project.title}
+      </DeleteDialog>
     </>
   )
 }

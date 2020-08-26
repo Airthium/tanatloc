@@ -10,7 +10,11 @@ import {
   SettingTwoTone,
   ShareAltOutlined
 } from '@ant-design/icons'
-import WorkspacePage from '../../components/workspace'
+
+import Loading from '../../components/loading'
+import Workspace from '../../components/workspace'
+import Account from '../../components/account'
+import Help from '../../components/help'
 
 import { useUser } from '../../../src/api/user'
 import { useWorkspaces } from '../../../src/api/workspace'
@@ -41,12 +45,6 @@ const menuItems = {
     key: 'logout'
   }
 }
-
-// TODO
-const Account = 'account'
-
-// TODO
-const Help = 'help'
 
 /**
  * Dashboard
@@ -115,73 +113,86 @@ const Dashboard = () => {
     mutateUser({ user: null })
   }
 
+  // My / Shared workspaces
+  let myWorkspaces = []
+  let sharedWorkspaces = []
+  if (user && workspaces) {
+    workspaces.forEach((workspace, index) => {
+      if (workspace.owners && workspace.owners.includes(user.id))
+        myWorkspaces.push(<Menu.Item key={index}>{workspace.name}</Menu.Item>)
+      else if (workspace.users && workspace.users.includes(user.id))
+        sharedWorkspaces.push(
+          <Menu.Item key={index}>{workspace.name}</Menu.Item>
+        )
+    })
+  }
+
   /**
    * Render
    */
   return (
-    <Layout>
-      <Layout.Sider theme="light" className="Dashboard-sider">
-        <div className="logo">
-          <img src="/images/logo.svg" />
-        </div>
+    <>
+      {loadingUser || !user ? (
+        <Loading />
+      ) : (
+        <Layout>
+          <Layout.Sider theme="light" className="Dashboard-sider">
+            <div className="logo">
+              <img src="/images/logo.svg" />
+            </div>
 
-        <Menu
-          className="Dashboard-menu"
-          theme="light"
-          onSelect={onSelect}
-          defaultOpenKeys={[menuItems.workspaces.key, menuItems.shared.key]}
-          mode="inline"
-        >
-          <Menu.SubMenu
-            key={menuItems.workspaces.key}
-            icon={<AppstoreTwoTone />}
-            title={menuItems.workspaces.label}
-          >
-            {user &&
-              workspaces &&
-              workspaces.map((workspace, index) => {
-                if (workspace.owners && workspace.owners.includes(user.id))
-                  return <Menu.Item key={index}>{workspace.name}</Menu.Item>
-              })}
-          </Menu.SubMenu>
-          <Menu.SubMenu
-            key={menuItems.shared.key}
-            icon={<ShareAltOutlined />}
-            title={menuItems.shared.label}
-          >
-            {user &&
-              workspaces &&
-              workspaces.map((workspace, index) => {
-                if (workspace.users && workspace.users.includes(user.id))
-                  return <Menu.Item key={index}>{workspace.name}</Menu.Item>
-              })}
-          </Menu.SubMenu>
-          <Menu.Item key={menuItems.account.key} icon={<SettingTwoTone />}>
-            {menuItems.account.label}
-          </Menu.Item>
-          <Menu.Item key={menuItems.help.key} icon={<QuestionCircleTwoTone />}>
-            {menuItems.help.label}
-          </Menu.Item>
-          <Menu.Divider />
-          <Menu.Item
-            key={menuItems.logout.key}
-            danger={true}
-            icon={<LogoutOutlined />}
-          >
-            {menuItems.logout.label}
-          </Menu.Item>
-        </Menu>
-      </Layout.Sider>
+            <Menu
+              className="Dashboard-menu"
+              theme="light"
+              onSelect={onSelect}
+              defaultOpenKeys={[menuItems.workspaces.key, menuItems.shared.key]}
+              mode="inline"
+            >
+              <Menu.SubMenu
+                key={menuItems.workspaces.key}
+                icon={<AppstoreTwoTone />}
+                title={menuItems.workspaces.label}
+              >
+                {myWorkspaces}
+              </Menu.SubMenu>
+              <Menu.SubMenu
+                key={menuItems.shared.key}
+                icon={<ShareAltOutlined />}
+                title={menuItems.shared.label}
+              >
+                {sharedWorkspaces}
+              </Menu.SubMenu>
+              <Menu.Item key={menuItems.account.key} icon={<SettingTwoTone />}>
+                {menuItems.account.label}
+              </Menu.Item>
+              <Menu.Item
+                key={menuItems.help.key}
+                icon={<QuestionCircleTwoTone />}
+              >
+                {menuItems.help.label}
+              </Menu.Item>
+              <Menu.Divider />
+              <Menu.Item
+                key={menuItems.logout.key}
+                danger={true}
+                icon={<LogoutOutlined />}
+              >
+                {menuItems.logout.label}
+              </Menu.Item>
+            </Menu>
+          </Layout.Sider>
 
-      <Layout.Content className="no-scroll">
-        {(currentView === menuItems.workspaces.key ||
-          currentView === menuItems.shared.key) && (
-          <WorkspacePage workspace={currentWorkspace} />
-        )}
-        {currentView === menuItems.account.key && <Account />}
-        {currentView === menuItems.help.key && <Help />}
-      </Layout.Content>
-    </Layout>
+          <Layout.Content className="no-scroll">
+            {(currentView === menuItems.workspaces.key ||
+              currentView === menuItems.shared.key) && (
+              <Workspace workspace={currentWorkspace} />
+            )}
+            {currentView === menuItems.account.key && <Account />}
+            {currentView === menuItems.help.key && <Help />}
+          </Layout.Content>
+        </Layout>
+      )}
+    </>
   )
 }
 

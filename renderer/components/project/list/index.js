@@ -1,10 +1,10 @@
-import { Table, Button, /*Tag,*/ Space, Avatar, Tooltip } from 'antd'
-import {
-  ShareAltOutlined,
-  DeleteOutlined
-  // SyncOutlined,
-  // CloudSyncOutlined
-} from '@ant-design/icons'
+import { Empty, Table, /*Button, /*Tag,*/ Space, Avatar, Tooltip } from 'antd'
+// import {
+//   ShareAltOutlined,
+//   DeleteOutlined
+//   // SyncOutlined,
+//   // CloudSyncOutlined
+// } from '@ant-design/icons'
 
 // const tags = (
 //   <Space>
@@ -69,8 +69,13 @@ const ProjectList = (props) => {
     ? []
     : projects.map((project) => {
         // Snapshot
-        const snapshot = (
+        const snapshot = project.avatar ? (
           <img src={project && project.avatar} width="100" height="100" />
+        ) : (
+          <Empty
+            image={Empty.PRESENTED_IMAGE_SIMPLE}
+            description={'No preview'}
+          />
         )
 
         // Owners avatars

@@ -72,9 +72,9 @@ const Workspace = (props) => {
         }
         extra={[
           <Add key="add" />,
-          <Button key="share" icon={<ShareAltOutlined />}>
-            Share it
-          </Button>,
+          // <Button key="share" icon={<ShareAltOutlined />}>
+          //   Share it
+          // </Button>,
           <Delete key="delete" id={workspace.id} />
         ]}
         footer={
@@ -88,7 +88,7 @@ const Workspace = (props) => {
                 />
               </Col>
               <Col>
-                <ProjectAdd />
+                <ProjectAdd workspace={workspace} />
               </Col>
             </Row>
           </>
@@ -114,7 +114,7 @@ const Workspace = (props) => {
         )}
       </PageHeader>
       <Layout.Content className="scroll">
-        <ProjectList projects={workspace.projects} />
+        <ProjectList workspace={workspace} />
       </Layout.Content>
     </Layout>
   )

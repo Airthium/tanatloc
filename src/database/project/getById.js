@@ -44,6 +44,7 @@ const getById = async (id) => {
     project.users = users
   }
 
+  project.id = id
   return project
 }
 

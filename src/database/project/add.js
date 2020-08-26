@@ -4,16 +4,15 @@ import { databases } from '../../../config/db'
 /**
  * Add
  * @memberof module:src/database/project
- * @param {string} id Workspace id
- * @param {Object} project Project
+ * @param {string} user User id
+ * @param {Object} param2 { id: Workspace id, project: { title, description } }
  */
-const add = async (user, { id, project }) => {
-  // TODO do the same things as workspace add
+const add = async (user, { id, project: { title, description } }) => {
   const response = await query(
     'INSERT INTO ' +
-      databases.PROJECT +
-      ' (title, description, owners) VALUES ($1, $2) RETURNING id',
-    [project.title, project.description, [user]]
+      databases.PROJECTS +
+      ' (title, description, public, createdDate, lastAccess, owners) VALUES ($1, $2, $3, to_timestamp($4), to_timestamp($4), $5) RETURNING id',
+    [title, description || '', false, Date.now() / 1000, [user]]
   )
 
   const p = response.rows[0]
@@ -25,7 +24,11 @@ const add = async (user, { id, project }) => {
     [id, p.id]
   )
 
-  return p
+  return {
+    ...p,
+    title,
+    description
+  }
 }
 
 export default add

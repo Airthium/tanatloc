@@ -2,17 +2,27 @@ import { useState } from 'react'
 import { message, Button, Form, Input, Modal } from 'antd'
 import { PlusCircleOutlined } from '@ant-design/icons'
 
-//TODO
-// import { add } from '../../../../src/api/project'
+import { useProjects, add } from '../../../../src/api/project'
+import { useWorkspaces } from '../../../../src/api/workspace'
 
 /**
  * Add project
  * @memberof module:renderer/components/project
  */
-const Add = () => {
-  const [form] = Form.useForm()
+const Add = (props) => {
+  // Props
+  const workspace = props.workspace || {}
+
+  // State
   const [visible, setVisible] = useState()
   const [loading, setLoading] = useState()
+
+  // Data
+  const [projects, { mutateProjects }] = useProjects(workspace.projects)
+  const [workspaces, { mutateWorkspaces }] = useWorkspaces()
+
+  // Form
+  const [form] = Form.useForm()
 
   /**
    * Toggle form visibility
@@ -27,20 +37,31 @@ const Add = () => {
    */
   const onOk = (values) => {
     setLoading(true)
-    // add(values)
-    //   .then((workspace) => {
-    //     // // Mutate
-    //     // workspaces.push(workspace)
-    //     // mutateWorkspaces({ workspaces: workspaces })
+    add({ id: workspace.id }, values)
+      .then((project) => {
+        // Mutate projects
+        console.log(project)
+        const newProjects = projects.map((p) => {
+          if (p.id === project.id) p.push(project)
+          return p
+        })
+        mutateProjects({ projects: newProjects })
 
-    //     setLoading(false)
-    //     toggleVisible()
-    //     form.resetFields()
-    //   })
-    //   .catch((err) => {
-    //     message.error(err.message)
-    //     setLoading(false)
-    //   })
+        // Mutate workspaces
+        const newWorkspaces = workspaces.map((w) => {
+          if (w.id === workspace.id) w.projects.push(project.id)
+          return w
+        })
+        mutateWorkspaces({ workspaces: newWorkspaces })
+
+        setLoading(false)
+        toggleVisible()
+        form.resetFields()
+      })
+      .catch((err) => {
+        message.error(err.message)
+        setLoading(false)
+      })
   }
 
   /**

@@ -31,7 +31,9 @@ import {
 //   </Avatar.Group>
 // )
 
-import { useProject } from '../../../../src/api/project'
+import Delete from '../delete'
+
+import { useProjects } from '../../../../src/api/project'
 
 /**
  * Generate color (HEX format) from string
@@ -57,57 +59,60 @@ const stringToHex = (str) => {
  */
 const ProjectList = (props) => {
   // Props
-  const projects = props.projects || []
+  const workspace = props.workspace || {}
+  const projectsIds = workspace.projects || []
 
   // Load projects
-  const data = projects.map((id) => {
-    const [project] = useProject(id)
+  const [projects] = useProjects(projectsIds)
 
-    // Snapshot
-    const snapshot = (
-      <img src={project && project.avatar} width="100" height="100" />
-    )
-
-    // Owners avatars
-    const owners =
-      project &&
-      project.owners &&
-      project.owners.map((owner) => {
-        const first = owner.firstname || 'No'
-        const last = owner.lastname || 'Name'
-        return (
-          <Tooltip key={owner.id} title={first + ' ' + last}>
-            <Avatar style={{ backgroundColor: stringToHex(first + last) }}>
-              {(first[0] + last[0]).toUpperCase()}
-            </Avatar>
-          </Tooltip>
+  const data = !projects
+    ? []
+    : projects.map((project) => {
+        // Snapshot
+        const snapshot = (
+          <img src={project && project.avatar} width="100" height="100" />
         )
-      })
 
-    // Users avatars
-    const users =
-      project &&
-      project.users &&
-      project.users.map((user) => {
-        const first = user.firstname || 'No'
-        const last = user.lastname || 'Name'
-        return (
-          <Tooltip key={user.id} title={first + ' ' + last}>
-            <Avatar style={{ backgroundColor: stringToHex(first + last) }}>
-              {(first[0] + last[0]).toUpperCase()}
-            </Avatar>
-          </Tooltip>
-        )
-      })
+        // Owners avatars
+        const owners =
+          project &&
+          project.owners &&
+          project.owners.map((owner) => {
+            const first = owner.firstname || 'No'
+            const last = owner.lastname || 'Name'
+            return (
+              <Tooltip key={owner.id} title={first + ' ' + last}>
+                <Avatar style={{ backgroundColor: stringToHex(first + last) }}>
+                  {(first[0] + last[0]).toUpperCase()}
+                </Avatar>
+              </Tooltip>
+            )
+          })
 
-    return {
-      ...project,
-      key: id,
-      snapshot: snapshot,
-      owners: <Avatar.Group>{owners}</Avatar.Group>,
-      users: <Avatar.Group>{users}</Avatar.Group>
-    }
-  })
+        // Users avatars
+        const users =
+          project &&
+          project.users &&
+          project.users.map((user) => {
+            const first = user.firstname || 'No'
+            const last = user.lastname || 'Name'
+            return (
+              <Tooltip key={user.id} title={first + ' ' + last}>
+                <Avatar style={{ backgroundColor: stringToHex(first + last) }}>
+                  {(first[0] + last[0]).toUpperCase()}
+                </Avatar>
+              </Tooltip>
+            )
+          })
+
+        return {
+          ...project,
+          key: project.id,
+          snapshot: snapshot,
+          owners: <Avatar.Group>{owners}</Avatar.Group>,
+          users: <Avatar.Group>{users}</Avatar.Group>
+        }
+      })
 
   /**
    * Render
@@ -134,16 +139,16 @@ const ProjectList = (props) => {
       <Table.Column title="Project Name" dataIndex="title" />
       <Table.Column title="Status" dataIndex="tags" align="center" />
       <Table.Column title="Administrators" dataIndex="owners" align="center" />
-      <Table.Column title="Shared With" dataIndex="users" align="center" />
+      {/* <Table.Column title="Shared With" dataIndex="users" align="center" /> */}
       <Table.Column
         title="Actions"
         align="center"
-        render={() => (
+        render={(value) => (
           <Space size="middle">
-            <Button key="share" icon={<ShareAltOutlined />}>
+            {/* <Button key="share" icon={<ShareAltOutlined />}>
               Share
-            </Button>
-            <Button icon={<DeleteOutlined />}>Delete</Button>
+            </Button> */}
+            <Delete workspace={workspace} project={value} />
           </Space>
         )}
       />

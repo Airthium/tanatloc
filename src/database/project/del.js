@@ -6,9 +6,11 @@ import { databases } from '../../../config/db'
  * @memberof module:src/database/project
  * @param {Object} param0 { workspaceId, project }
  */
-const del = async ({ id, project }) => {
+const del = async ({ id }, project) => {
   // Delete project
-  await query('DELETE FROM ' + databases.PROJECTS + ' WHERE id = $1', [id])
+  await query('DELETE FROM ' + databases.PROJECTS + ' WHERE id = $1', [
+    project.id
+  ])
 
   // Delete project reference in workspace
   await query(

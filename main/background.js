@@ -1,3 +1,5 @@
+/** @module main */
+
 import { app, ipcMain } from 'electron'
 import serve from 'electron-serve'
 import { createWindow } from './helpers'
@@ -10,6 +12,9 @@ if (isProd) {
   app.setPath('userData', `${app.getPath('userData')} (development)`)
 }
 
+/**
+ * Start electron
+ */
 const start = async () => {
   console.info('Starting Tanatloc')
   await app.whenReady()

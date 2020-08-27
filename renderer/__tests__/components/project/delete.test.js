@@ -50,6 +50,12 @@ describe('renderer/components/project/delete', () => {
     expect(wrapper).toBeDefined()
   })
 
+  it('without props', () => {
+    wrapper.unmount()
+    wrapper = shallow(<Delete />)
+    expect(wrapper).toBeDefined()
+  })
+
   it('toggleDialog', () => {
     const visible = wrapper.find('deleteDialog').props().visible
     wrapper.find('Button').props().onClick()

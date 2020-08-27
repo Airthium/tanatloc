@@ -1,16 +1,20 @@
 import List from '../../../components/project/list'
 import { shallow } from 'enzyme'
 
-let mockProject = () => ({})
+jest.mock('../../../components/project/data', () => () => 'data')
+
+jest.mock('../../../components/project/delete', () => 'delete')
+
+let mockProjects = () => []
 jest.mock('../../../../src/api/project', () => ({
-  useProject: () => [mockProject()]
+  useProjects: () => [mockProjects()]
 }))
 
 let wrapper
 describe('component/project/list', () => {
   beforeEach(() => {
-    mockProject = () => {}
-    wrapper = shallow(<List />)
+    mockProjects = () => []
+    wrapper = shallow(<List workspace={{}} />)
   })
 
   afterEach(() => {
@@ -21,36 +25,17 @@ describe('component/project/list', () => {
     expect(wrapper).toBeDefined()
   })
 
+  it('without props', () => {
+    wrapper.unmount()
+    wrapper = shallow(<List />)
+    expect(wrapper).toBeDefined()
+  })
+
   it('projects', () => {
     wrapper.unmount()
-    const projects = ['id']
-    wrapper = shallow(<List projects={projects} />)
-
-    wrapper.unmount()
-    mockProject = () => ({
-      avatar: 'avatar',
-      owners: [{}],
-      users: [{}]
-    })
-    wrapper = shallow(<List projects={projects} />)
-
-    wrapper.unmount()
-    mockProject = () => ({
-      avatar: 'avatar',
-      owners: [
-        {
-          firstname: 'firstname',
-          lastname: 'lastname'
-        }
-      ],
-      users: [
-        {
-          firstname: 'firstname',
-          lastname: 'lastname'
-        }
-      ]
-    })
-    wrapper = shallow(<List projects={projects} />)
+    mockProjects = () => [{}, {}]
+    wrapper = shallow(<List workspace={{}} />)
+    expect(wrapper.find('Table').props().dataSource).toEqual(['data', 'data'])
   })
 
   it('onCell', () => {
@@ -59,6 +44,7 @@ describe('component/project/list', () => {
   })
 
   it('render', () => {
-    const render = wrapper.find('Column').at(5).props().render()
+    // TODO must be at(5) if shared is enable
+    const render = wrapper.find('Column').at(4).props().render()
   })
 })

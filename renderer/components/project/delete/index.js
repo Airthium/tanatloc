@@ -14,16 +14,15 @@ import { useWorkspaces } from '../../../../src/api/workspace'
  */
 const Delete = (props) => {
   // Props
-  const workspace = props.workspace
-  const projectsIds = workspace.projects
-  const project = props.project
+  const workspace = props.workspace || {}
+  const project = props.project || {}
 
   // Sate
   const [visible, setVisible] = useState(false)
   const [loading, setLoading] = useState(false)
 
   // Data
-  const [projects, { mutateProjects }] = useProjects(projectsIds)
+  const [projects, { mutateProjects }] = useProjects(workspace.projects)
   const [workspaces, { mutateWorkspaces }] = useWorkspaces()
 
   /**

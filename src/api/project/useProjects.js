@@ -13,7 +13,7 @@ const useProjects = (ids) => {
     fetcher
   )
   const loading = !data
-  const projects = data && data.projects
+  const projects = (data && data.projects) || []
   return [projects, { mutateProjects: mutate, loadingProjects: loading }]
 }
 

@@ -11,7 +11,7 @@ describe('src/api/workspace', () => {
       workspaces,
       { mutateWorkspaces, loadingWorkspaces }
     ] = useWorkspaces()
-    expect(workspaces).toEqual({})
+    expect(workspaces).toEqual([])
     expect(mutateWorkspaces).toBeDefined()
     expect(loadingWorkspaces).toBe(false)
   })

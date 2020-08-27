@@ -1,4 +1,4 @@
-import { readAvatar } from '../avatar'
+import { read } from '../avatar'
 
 jest.mock('fs', () => {
   let count = 0
@@ -22,13 +22,13 @@ jest.mock('../../database', () => async () => ({
 }))
 
 describe('src/lib/avatar', () => {
-  it('readAvatar - error', async () => {
-    const avatar = await readAvatar('id')
+  it('read - error', async () => {
+    const avatar = await read('id')
     expect(avatar).toBe(undefined)
   })
 
-  it('readAvatar', async () => {
-    const avatar = await readAvatar('id')
+  it('read', async () => {
+    const avatar = await read('id')
     expect(avatar).toBe('avatar')
   })
 })

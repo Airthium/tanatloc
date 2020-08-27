@@ -1,29 +1,17 @@
-import { getUser } from '../user'
-import ErrorBoundary from 'antd/lib/alert/ErrorBoundary'
+import { get } from '../user'
 
-jest.mock('../../database', () => {
-  let count = 0
-  return async () => {
-    count++
-    if (count === 1) throw new Error()
-    return {
-      rows: [
-        {
-          email: 'username'
-        }
-      ]
-    }
+jest.mock('../../database/user', () => {
+  return {
+    get: async () => ({
+      id: 'id',
+      username: 'username'
+    })
   }
 })
 
 describe('src/lib/user', () => {
-  it('getUser - error', async () => {
-    const user = await getUser('id')
-    expect(user).toBe(undefined)
-  })
-
-  it('getUser', async () => {
-    const user = await getUser('id')
+  it('get', async () => {
+    const user = await get('id')
     expect(user).toEqual({ id: 'id', username: 'username' })
   })
 })

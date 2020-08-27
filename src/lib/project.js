@@ -12,11 +12,14 @@ import { get as getUser } from './user'
 import { update as updateWorkspace } from './workspace'
 
 /**
- *
- * @param {string} user User id
- * @param {Object} param1 { id, project: { title, description } } - id: Workspace id
+ * Add project
+ * @param {Object} user User { id }
+ * @param {Object} data { workspace: { id }, project: { title, description } }
  */
-const add = async (user, { id, project: { title, description } }) => {
+const add = async (
+  user,
+  { workspace: { id }, project: { title, description } }
+) => {
   const project = await dBadd(user, { title, description })
 
   // Add project reference in workspace
@@ -37,7 +40,7 @@ const add = async (user, { id, project: { title, description } }) => {
 const get = async (id) => {
   const project = await dBget(id, [
     'title',
-    'descripion',
+    'description',
     'avatar',
     'owners',
     'users'
@@ -53,7 +56,12 @@ const get = async (id) => {
   if (project.owners) {
     const owners = await Promise.all(
       project.owners.map(async (owner) => {
-        return await getUser(owner)
+        return await getUser(owner, [
+          'lastname',
+          'firstname',
+          'email',
+          'avatar'
+        ])
       })
     )
     project.owners = owners
@@ -63,7 +71,7 @@ const get = async (id) => {
   if (project.users) {
     const users = await Promise.all(
       project.users.map(async (user) => {
-        return await getUser(user)
+        return await getUser(user, ['lastname', 'firstname', 'email', 'avatar'])
       })
     )
     project.users = users
@@ -74,7 +82,7 @@ const get = async (id) => {
 
 /**
  * Update project
- * @param {Object} param0 { project: { id }, data: [{ type, method, key, value }] }
+ * @param {Object} data { project: { id }, data: [{ type, method, key, value }] }
  */
 const update = async ({ project, data }) => {
   await dBupdate({ project, data })
@@ -82,7 +90,7 @@ const update = async ({ project, data }) => {
 
 /**
  *
- * @param {Object} param0 { id } - Workspace id
+ * @param {Object} workspace Workspace { id }
  * @param {Object} project Project { id }
  */
 const del = async ({ id }, project) => {

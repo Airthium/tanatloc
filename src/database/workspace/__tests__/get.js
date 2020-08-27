@@ -2,13 +2,13 @@ import get from '../get'
 
 jest.mock('../..', () => ({
   getter: async () => ({
-    rows: [{ email: 'username' }]
+    rows: [{ name: 'name' }]
   })
 }))
 
-describe('database/user/get', () => {
+describe('database/workspace/get', () => {
   it('call', async () => {
     const res = await get('id')
-    expect(res).toEqual({ id: 'id', email: 'username' })
+    expect(res).toEqual({ id: 'id', name: 'name' })
   })
 })

@@ -9,7 +9,7 @@ jest.mock('../../../lib/workspace', () => {
   let countU = 0
   let countD = 0
   return {
-    get: async () => {
+    getByUser: async () => {
       countG++
       if (countG === 1) throw new Error('test')
       return [

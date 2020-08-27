@@ -37,6 +37,13 @@ const query = async (command, args) => {
   return res
 }
 
+/**
+ * Get from dB
+ * @param {string} db Database
+ * @param {string} id Id, or key
+ * @param {Array} data Data
+ * @param {string} key Key override id
+ */
 const getter = async (db, id, data, key = 'id') => {
   return await query(
     'SELECT ' + data.join(',') + ' FROM ' + db + ' WHERE ' + key + ' = $1',
@@ -44,6 +51,12 @@ const getter = async (db, id, data, key = 'id') => {
   )
 }
 
+/**
+ * Update from dB
+ * @param {string} db Database
+ * @param {string} id Id
+ * @param {Object} data Data { type, method, key, value }
+ */
 const updater = async (db, id, data) => {
   if (data.type === 'array') {
     if (data.method === 'append') {
@@ -83,6 +96,11 @@ const updater = async (db, id, data) => {
   }
 }
 
+/**
+ * Delete from dB
+ * @param {string} db Database
+ * @param {string} id Id
+ */
 const deleter = async (db, id) => {
   await query('DELETE FROM ' + db + ' WHERE id = $1', [id])
 }

@@ -2,7 +2,6 @@
 
 import {
   message,
-  Button,
   Divider,
   Layout,
   PageHeader,
@@ -14,7 +13,7 @@ import {
   Typography
 } from 'antd'
 
-import { ShareAltOutlined } from '@ant-design/icons'
+// import { ShareAltOutlined } from '@ant-design/icons'
 
 import Add from './add'
 import Delete from './delete'

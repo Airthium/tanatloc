@@ -31,7 +31,7 @@ describe('src/lib/project', () => {
   })
 
   it('add', async () => {
-    const project = await add({}, { project: {} })
+    const project = await add({}, { workspace: {}, project: {} })
     expect(project).toEqual({ id: 'add' })
     expect(mockWorkspace).toHaveBeenCalledTimes(1)
   })

@@ -8,12 +8,12 @@ import { add } from '../../lib/project'
  */
 export default async function (req, res) {
   // Check session
-  const sessionId = await getSessionId(req)
+  const sessionId = await getSessionId(req, res)
   if (!sessionId) return
 
   if (req.method === 'POST') {
     try {
-      const project = await add(sessionId, req.body)
+      const project = await add({ id: sessionId }, req.body)
       res.status(200).json(project)
     } catch (err) {
       console.error(err)

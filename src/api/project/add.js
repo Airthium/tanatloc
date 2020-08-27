@@ -12,7 +12,7 @@ const add = async (workspace, project) => {
     headers: {
       Accept: 'application/json'
     },
-    body: JSON.stringify({ id: workspace.id, project: project })
+    body: JSON.stringify({ workspace: { id: workspace.id }, project: project })
   })
 
   return res

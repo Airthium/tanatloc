@@ -2,7 +2,7 @@ import { getter } from '..'
 import { databases } from '../../../config/db'
 
 /**
- *
+ * Get user
  * @param {string} id Id (or key value)
  * @param {string} key Key (override id selector)
  */
@@ -11,8 +11,8 @@ const get = async (id, data, key = 'id') => {
 
   const user = response.rows[0]
 
-  user.username = user.email
-  delete user.email
+  // user.username = user.email
+  // delete user.email
 
   user[key] = id
 

@@ -1,7 +1,7 @@
 import route from '../../../../src/route/project/[id]'
 
 /**
- * Project API
+ * Project API from [id]
  * @memberof module:api
  * @param {Object} req Request
  * @param {Object} res Response

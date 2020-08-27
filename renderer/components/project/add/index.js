@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { message, Button, Form, Input, Modal } from 'antd'
+import { message, Button, Form, Input } from 'antd'
 import { PlusCircleOutlined } from '@ant-design/icons'
 
 import Dialog from '../../assets/dialog'

@@ -8,7 +8,7 @@ import { get, update, del } from '../../lib/project'
  */
 export default async (req, res) => {
   // Check session
-  const sessionId = await getSessionId(req)
+  const sessionId = await getSessionId(req, res)
   if (!sessionId) return
 
   // Id

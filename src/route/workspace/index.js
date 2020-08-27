@@ -1,10 +1,5 @@
 import getSessionId from '../session'
-import {
-  add as dBadd,
-  get as dBget,
-  update as dBupdate,
-  del as dBdel
-} from '../../lib/workspace'
+import { add, getByUser, update, del } from '../../lib/workspace'
 
 /**
  * Workspace API
@@ -14,13 +9,13 @@ import {
  */
 export default async function (req, res) {
   // Check session
-  const sessionId = await getSessionId(req)
+  const sessionId = await getSessionId(req, res)
   if (!sessionId) return
 
   switch (req.method) {
     case 'GET':
       try {
-        const workspaces = await dBget(sessionId)
+        const workspaces = await getByUser({ id: sessionId })
         res.status(200).json({ workspaces })
       } catch (err) {
         console.error(err)
@@ -29,7 +24,7 @@ export default async function (req, res) {
       break
     case 'POST':
       try {
-        const workspace = await dBadd(sessionId, req.body)
+        const workspace = await add({ id: sessionId }, req.body)
         res.status(200).json(workspace)
       } catch (err) {
         console.error(err)
@@ -38,7 +33,7 @@ export default async function (req, res) {
       break
     case 'PUT':
       try {
-        await dBupdate(req.body)
+        await update(req.body)
         res.status(200).end()
       } catch (err) {
         console.error(err)
@@ -47,7 +42,7 @@ export default async function (req, res) {
       break
     case 'DELETE':
       try {
-        await dBdel(sessionId, req.body)
+        await del({ id: sessionId }, req.body)
         res.status(200).end()
       } catch (err) {
         console.error(err)

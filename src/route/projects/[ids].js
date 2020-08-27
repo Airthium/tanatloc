@@ -8,7 +8,7 @@ import { get } from '../../lib/project'
  */
 export default async function (req, res) {
   // Check session
-  const sessionId = await getSessionId(req)
+  const sessionId = await getSessionId(req, res)
   if (!sessionId) return
 
   try {

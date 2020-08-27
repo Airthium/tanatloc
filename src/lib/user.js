@@ -1,9 +1,13 @@
 /** @module src/lib/user */
 
-import { get as dBget, getByUsernameAndPassword } from '../database/user'
+import {
+  get as dBget,
+  getByUsernameAndPassword,
+  update as dBupdate
+} from '../database/user'
 
-const get = async (id) => {
-  const user = await dBget(id, ['lastname, firstname, email, avatar'])
+const get = async (id, data) => {
+  const user = await dBget(id, data)
   return user
 }
 
@@ -18,4 +22,12 @@ const login = async ({ username, password }) => {
   }
 }
 
-export { login, get }
+/**
+ * Update user
+ * @param {Object} data { user: { id }, data: [{ type, method, key, value }] }
+ */
+const update = async ({ user, data }) => {
+  await dBupdate({ user, data })
+}
+
+export { login, get, update }

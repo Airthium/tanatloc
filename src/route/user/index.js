@@ -8,9 +8,9 @@ import { get } from '../../lib/user'
  */
 export default async function (req, res) {
   // Check session
-  const sessionId = await getSessionId(req)
+  const sessionId = await getSessionId(req, res)
   if (!sessionId) return
 
-  const user = await get(sessionId)
+  const user = await get(sessionId, ['lastname', 'firstname', 'email'])
   res.status(200).json({ user })
 }

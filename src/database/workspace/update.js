@@ -1,4 +1,4 @@
-import query from '..'
+import { updater } from '..'
 import { databases } from '../../../config/db'
 
 /**
@@ -8,15 +8,8 @@ import { databases } from '../../../config/db'
  */
 const update = async ({ workspace, data }) => {
   await Promise.all(
-    Object.keys(data).map(async (key) => {
-      return await query(
-        'UPDATE ' +
-          databases.WORKSPACES +
-          ' SET ' +
-          key +
-          ' = $2 WHERE id = $1',
-        [workspace.id, data[key]]
-      )
+    data.map(async (d) => {
+      return await updater(databases.WORKSPACES, workspace.id, d)
     })
   )
 }

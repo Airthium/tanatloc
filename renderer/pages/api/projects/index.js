@@ -1,8 +1,11 @@
+import route from '../../../../src/route/projects'
+
 /**
  * Empty projects list route
- * @param {*} req
- * @param {*} res
+ * @memberof module:api
+ * @param {Object} req Request
+ * @param {Object} res Response
  */
 export default async function (req, res) {
-  res.send(200)
+  await route(req, res)
 }

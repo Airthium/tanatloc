@@ -1,4 +1,4 @@
-import query from '..'
+import { deleter } from '..'
 import { databases } from '../../../config/db'
 
 /**
@@ -6,19 +6,8 @@ import { databases } from '../../../config/db'
  * @memberof module:src/database/project
  * @param {Object} param0 { workspaceId, project }
  */
-const del = async ({ id }, project) => {
-  // Delete project
-  await query('DELETE FROM ' + databases.PROJECTS + ' WHERE id = $1', [
-    project.id
-  ])
-
-  // Delete project reference in workspace
-  await query(
-    'UPDATE ' +
-      databases.WORKSPACES +
-      ' SET projects = array_remove(projects, $2) WHERE id = $1',
-    [id, project.id]
-  )
+const del = async (project) => {
+  await deleter(databases.PROJECTS, project.id)
 }
 
 export default del

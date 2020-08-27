@@ -5,9 +5,9 @@ import { databases } from '../../../config/db'
  * Add
  * @memberof module:src/database/project
  * @param {string} user User id
- * @param {Object} param2 { id: Workspace id, project: { title, description } }
+ * @param {Object} param2 { title, description }
  */
-const add = async (user, { id, project: { title, description } }) => {
+const add = async (user, { title, description }) => {
   const response = await query(
     'INSERT INTO ' +
       databases.PROJECTS +
@@ -15,20 +15,11 @@ const add = async (user, { id, project: { title, description } }) => {
     [title, description || '', false, Date.now() / 1000, [user]]
   )
 
-  const p = response.rows[0]
+  const project = response.rows[0]
+  project.title = title
+  project.description = description
 
-  await query(
-    'UPDATE ' +
-      databases.WORKSPACES +
-      ' SET projects = array_append(projects, $2) WHERE id = $1',
-    [id, p.id]
-  )
-
-  return {
-    ...p,
-    title,
-    description
-  }
+  return project
 }
 
 export default add

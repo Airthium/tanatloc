@@ -37,4 +37,55 @@ const query = async (command, args) => {
   return res
 }
 
+const getter = async (db, id, data) => {
+  return await query(
+    'SELECT ' + data.join(',') + ' FROM ' + db + ' WHERE id = $1',
+    [id]
+  )
+}
+
+const updater = async (db, id, data) => {
+  if (data.type === 'array') {
+    if (data.method === 'append') {
+      await query(
+        'UPDATE ' +
+          db +
+          ' SET ' +
+          data.key +
+          ' = array_append(' +
+          data.key +
+          ', $2) WHERE id = $1',
+        [id, data.value]
+      )
+    } else if (data.method === 'replace') {
+      //TODO
+    } else if (data.method === 'remove') {
+      await query(
+        'UPDATE ' +
+          db +
+          ' SET ' +
+          data.key +
+          ' = array_remove(' +
+          data.key +
+          ', $2) WHERE id = $1',
+        [id, data.value]
+      )
+    } else if (data.method === 'switch') {
+      //TODO
+    } else {
+      //TODO
+    }
+  } else {
+    await query('UPDATE ' + db + ' SET ' + data.key + ' = $2 WHERE id = $1', [
+      id,
+      data.value
+    ])
+  }
+}
+
+const deleter = async (db, id) => {
+  await query('DELETE FROM ' + db + ' WHERE id = $1', [id])
+}
+
 export default query
+export { getter, updater, deleter }

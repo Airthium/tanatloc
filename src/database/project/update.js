@@ -1,18 +1,15 @@
-import query from '..'
+import { updater } from '..'
 import { databases } from '../../../config/db'
 
 /**
  * Update
  * @memberof module:src/database/project
- * @param {Object} param0 { projject {id }, data: { key: value }}
+ * @param {Object} param0 { project { id }, data: [{ type: type, method: method, key: key, value: value }] }
  */
 const update = async ({ project, data }) => {
   await Promise.all(
-    Object.keys(data).map(async (key) => {
-      return await query(
-        'UPDATE ' + databases.PROJECTS + ' SET ' + key + ' = $2 WHERE id = $1',
-        [project.id, data[key]]
-      )
+    data.map(async (d) => {
+      return await updater(databases.PROJECTS, project.id, d)
     })
   )
 }

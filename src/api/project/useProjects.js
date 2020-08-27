@@ -7,7 +7,6 @@ import { fetcher } from '../call'
  * @param {Array} ids [Project's ids]
  */
 const useProjects = (ids) => {
-  // console.log(ids)
   const { data, mutate } = useSWR(
     '/api/projects/' + (ids && ids.join('&')),
     fetcher

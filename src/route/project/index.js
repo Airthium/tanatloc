@@ -3,7 +3,6 @@ import { add } from '../../lib/project'
 
 /**
  * Project API
- * @memberof module:api
  * @param {Object} req Request
  * @param {Object} res Response
  */

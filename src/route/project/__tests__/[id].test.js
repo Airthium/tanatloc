@@ -3,12 +3,12 @@ import id from '../[id]'
 let mockSession = () => false
 jest.mock('../../session', () => () => mockSession())
 
-jest.mock('../../../database/project', () => {
+jest.mock('../../../lib/project', () => {
   let countG = 0
   let countU = 0
   let countD = 0
   return {
-    getById: async () => {
+    get: async () => {
       countG++
       if (countG === 1) throw new Error()
       return {

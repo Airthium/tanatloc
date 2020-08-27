@@ -1,26 +1,21 @@
-import query from '../database'
-import { databases } from '../../config/db'
+/** @module src/lib/user */
 
-const getUser = async (id) => {
-  try {
-    const response = await query(
-      'SELECT lastname, firstname, email, avatar FROM ' +
-        databases.USERS +
-        ' WHERE id = $1',
-      [id]
-    )
+import { get as dBget, getByUsernameAndPassword } from '../database/user'
 
-    const result = response.rows[0]
-    result.username = result.email // TODO modify the dB for that
-    delete result.email
-    const user = {
-      id: id,
-      ...result
-    }
-    return user
-  } catch (err) {
-    console.error(err)
+const get = async (id) => {
+  const user = await dBget(id, ['lastname, firstname, email, avatar'])
+  return user
+}
+
+const login = async ({ username, password }) => {
+  const user = await getByUsernameAndPassword({ username, password })
+
+  if (!user) return null
+
+  return {
+    ...user,
+    username: username
   }
 }
 
-export { getUser }
+export { login, get }

@@ -3,7 +3,7 @@ import { promises as fs } from 'fs'
 import query from '../database'
 import { databases } from '../../config/db'
 
-const readAvatar = async (id) => {
+const read = async (id) => {
   try {
     const response = await query(
       'SELECT path FROM ' + databases.AVATARS + ' WHERE id = $1',
@@ -20,4 +20,4 @@ const readAvatar = async (id) => {
   }
 }
 
-export { readAvatar }
+export { read }

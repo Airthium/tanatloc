@@ -1,7 +1,6 @@
 /** @module src/database/user */
 
-import login from './login'
-import getById from './getById'
-import getByUsername from './getByUsername'
+import get from './get'
+import getByUsernameAndPassword from './getByUsernameAndPassword'
 
-export { login, getById, getByUsername }
+export { get, getByUsernameAndPassword }

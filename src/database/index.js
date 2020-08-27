@@ -37,9 +37,9 @@ const query = async (command, args) => {
   return res
 }
 
-const getter = async (db, id, data) => {
+const getter = async (db, id, data, key = 'id') => {
   return await query(
-    'SELECT ' + data.join(',') + ' FROM ' + db + ' WHERE id = $1',
+    'SELECT ' + data.join(',') + ' FROM ' + db + ' WHERE ' + key + ' = $1',
     [id]
   )
 }

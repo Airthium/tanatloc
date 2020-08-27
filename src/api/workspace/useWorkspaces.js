@@ -9,7 +9,7 @@ import { fetcher } from '../call'
 const useWorkspaces = () => {
   const { data, mutate } = useSWR('/api/workspace', fetcher)
   const loading = !data
-  const workspaces = data && data.workspaces
+  const workspaces = (data && data.workspaces) || []
   return [workspaces, { mutateWorkspaces: mutate, loadingWorkspaces: loading }]
 }
 

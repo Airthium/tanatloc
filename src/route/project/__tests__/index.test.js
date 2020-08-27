@@ -3,7 +3,7 @@ import project from '../'
 let mockSession = () => false
 jest.mock('../../session', () => () => mockSession())
 
-jest.mock('../../../database/project', () => {
+jest.mock('../../../lib/project', () => {
   let count = 0
   return {
     add: async () => {

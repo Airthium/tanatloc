@@ -1,9 +1,22 @@
 import useProject from '../useProject'
 
-jest.mock('swr', () => () => ({ data: { project: {} }, mutate: jest.fn() }))
+let mockProject
+jest.mock('swr', () => () => ({
+  data: { project: mockProject() },
+  mutate: jest.fn()
+}))
 
-describe('src/api/project', () => {
-  it('useProject', () => {
+describe('src/api/project/useProject', () => {
+  it('with project', () => {
+    mockProject = () => ({})
+    const [project, { mutateProject, loadingProject }] = useProject()
+    expect(project).toEqual({})
+    expect(mutateProject).toBeDefined()
+    expect(loadingProject).toBe(false)
+  })
+
+  it('with project', () => {
+    mockProject = () => {}
     const [project, { mutateProject, loadingProject }] = useProject()
     expect(project).toEqual({})
     expect(mutateProject).toBeDefined()

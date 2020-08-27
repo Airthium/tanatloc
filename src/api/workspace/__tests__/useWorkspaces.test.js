@@ -1,7 +1,7 @@
 import useWorkspaces from '../useWorkspaces'
 
 jest.mock('swr', () => () => ({
-  data: { workspaces: {} },
+  data: { workspaces: [] },
   mutate: jest.fn()
 }))
 

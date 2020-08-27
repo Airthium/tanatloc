@@ -6,14 +6,8 @@ import { databases } from '../../../config/db'
  * @memberof module:src/database/project
  * @param {string} id Id
  */
-const get = async (id) => {
-  const response = await getter(databases.PROJECTS, id, [
-    'title',
-    'description',
-    'avatar',
-    'owners',
-    'users'
-  ])
+const get = async (id, data) => {
+  const response = await getter(databases.PROJECTS, id, data)
   const project = response.rows[0]
   project.id = id
 

@@ -20,7 +20,7 @@ const Delete = (props) => {
   const [loading, setLoading] = useState(false)
 
   // Data
-  const [[], { delOneWorkspace }] = useWorkspaces()
+  const [, { delOneWorkspace }] = useWorkspaces()
 
   /**
    * Toggle dialog delete

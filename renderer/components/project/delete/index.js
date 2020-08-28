@@ -22,8 +22,8 @@ const Delete = (props) => {
   const [loading, setLoading] = useState(false)
 
   // Data
-  const [[], { delOneProject }] = useProjects(workspace.projects)
-  const [[], { mutateOneWorkspace }] = useWorkspaces()
+  const [, { delOneProject }] = useProjects(workspace.projects)
+  const [, { mutateOneWorkspace }] = useWorkspaces()
 
   /**
    * Toggle dialog delete

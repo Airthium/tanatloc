@@ -21,8 +21,8 @@ const Add = (props) => {
   const [loading, setLoading] = useState(false)
 
   // Data
-  const [[], { addOneProject }] = useProjects(workspace.projects)
-  const [[], { mutateOneWorkspace }] = useWorkspaces()
+  const [, { addOneProject }] = useProjects(workspace.projects)
+  const [, { mutateOneWorkspace }] = useWorkspaces()
 
   /**
    * Toggle dialog

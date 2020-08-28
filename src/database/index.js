@@ -17,11 +17,6 @@ const startdB = () => {
     port: config.PORT
   })
 
-  p.connect().catch((err) => {
-    console.error(err)
-    p.end()
-  })
-
   return p
 }
 
@@ -33,7 +28,9 @@ const pool = startdB()
  * @param {Array} args Arguments
  */
 const query = async (command, args) => {
-  const res = await pool.query(command, args)
+  const client = await pool.connect()
+  const res = await client.query(command, args)
+  client.release()
   return res
 }
 

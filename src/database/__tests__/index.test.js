@@ -4,9 +4,10 @@ jest.mock('pg', () => {
   return {
     Pool: class PoolMock {
       constructor() {
-        this.connect = async () => {
-          throw new Error()
-        }
+        this.connect = async () => ({
+          query: async () => 'query',
+          release: () => {}
+        })
         this.query = async () => 'query'
         this.end = jest.fn()
       }

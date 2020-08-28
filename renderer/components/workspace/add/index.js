@@ -16,7 +16,7 @@ const Add = () => {
   const [loading, setLoading] = useState(false)
 
   // Data
-  const [[], { addOneWorkspace }] = useWorkspaces()
+  const [, { addOneWorkspace }] = useWorkspaces()
 
   /**
    * Toggle dialog

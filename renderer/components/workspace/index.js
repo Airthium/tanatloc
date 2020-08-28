@@ -32,7 +32,7 @@ const Workspace = (props) => {
   const workspace = props.workspace || {}
 
   // Data
-  const [[], { mutateOneWorkspace }] = useWorkspaces()
+  const [, { mutateOneWorkspace }] = useWorkspaces()
 
   /**
    * Set name

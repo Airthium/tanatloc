@@ -44,6 +44,7 @@ jest.mock('../../renderer/pages/api/login', () => ({
 jest.mock('../../renderer/pages/api/logout', () => () => {})
 jest.mock('../../renderer/pages/api/user', () => () => {})
 jest.mock('../../renderer/pages/api/workspace', () => () => {})
+jest.mock('../../renderer/pages/api/project/[id]', () => () => {})
 
 describe('server/app', () => {
   it('app', () => {

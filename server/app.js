@@ -8,7 +8,10 @@ import { loginRoute } from '../renderer/pages/api/login'
 import logout from '../renderer/pages/api/logout'
 import user from '../renderer/pages/api/user'
 import workspace from '../renderer/pages/api/workspace'
-import project from '../renderer/pages/api/project/[id]'
+import project from '../renderer/pages/api/project'
+import projectId from '../renderer/pages/api/project/[id]'
+import projects from '../renderer/pages/api/projects'
+import projectsIds from '../renderer/pages/api/projects/[ids]'
 
 const app = express()
 
@@ -30,7 +33,11 @@ app.get('/api/user', user)
 
 app.get('/api/workspace', workspace)
 
-app.get('/api/project/:id', project)
+app.get('/api/project', project)
+app.get('/api/project/:id', projectId)
+
+app.get('/api/projects', projects)
+app.get('/api/projects/:ids', projectsIds)
 
 /**
  * Catch 404 and forward to error handler

@@ -1,8 +1,10 @@
 import { useState } from 'react'
-import { message, Button, Modal, Space } from 'antd'
-import { DeleteOutlined, ExclamationCircleTwoTone } from '@ant-design/icons'
+import { message, Button } from 'antd'
+import { DeleteOutlined } from '@ant-design/icons'
 
-import { del } from '../../../../src/api/workspace'
+import { DeleteDialog } from '../../assets/dialog'
+
+import { useWorkspaces, del } from '../../../../src/api/workspace'
 
 /**
  * Delete workspace
@@ -10,25 +12,42 @@ import { del } from '../../../../src/api/workspace'
  * @param {Object} props Props
  */
 const Delete = (props) => {
-  const id = props.id
+  // Props
+  const workspace = props.workspace
 
+  // Sate
   const [visible, setVisible] = useState(false)
+  const [loading, setLoading] = useState(false)
+
+  // Data
+  const [, { delOneWorkspace }] = useWorkspaces()
 
   /**
-   * Toggle confirm delete
+   * Toggle dialog delete
    */
-  const toggleConfirm = () => {
+  const toggleDialog = () => {
     setVisible(!visible)
   }
 
   /**
    * Handle delete
    */
-  const handleDelete = () => {
-    del({ id }).catch((err) => {
+  const handleDelete = async () => {
+    setLoading(true)
+    try {
+      // Delete
+      await del({ id: workspace.id })
+
+      // Mutate
+      delOneWorkspace({ id: workspace.id })
+
+      setLoading(false)
+      toggleDialog()
+    } catch (err) {
       message.error(err.message)
-    })
-    toggleConfirm()
+      console.error(err)
+      setLoading(false)
+    }
   }
 
   /**
@@ -36,25 +55,17 @@ const Delete = (props) => {
    */
   return (
     <>
-      <Button onClick={toggleConfirm} icon={<DeleteOutlined />}>
+      <Button onClick={toggleDialog} icon={<DeleteOutlined />}>
         Delete
       </Button>
-      <Modal
-        className="WorkspaceDelete-confirm"
-        okText={'Delete'}
-        closable={false}
-        onOk={handleDelete}
-        onCancel={toggleConfirm}
+      <DeleteDialog
         visible={visible}
+        onCancel={toggleDialog}
+        onOk={handleDelete}
+        loading={loading}
       >
-        <Space size="middle">
-          <ExclamationCircleTwoTone
-            twoToneColor="#faad14"
-            style={{ fontSize: '1.5em' }}
-          />
-          The projects contained in this workspace will be lost.
-        </Space>
-      </Modal>
+        The projects contained in this workspace will be lost.
+      </DeleteDialog>
     </>
   )
 }

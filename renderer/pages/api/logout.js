@@ -1,6 +1,11 @@
-import { removeTokenCookie } from '../../../src/auth/auth-cookies'
+import route from '../../../src/route/logout'
 
+/**
+ * Logout API
+ * @memberof module:api
+ * @param {Object} req Request
+ * @param {Object} res Response
+ */
 export default async function (req, res) {
-  removeTokenCookie(res)
-  res.end()
+  await route(req, res)
 }

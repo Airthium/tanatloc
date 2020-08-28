@@ -1,6 +1,12 @@
 import { screen, BrowserWindow } from 'electron'
 import * as Store from 'electron-store'
 
+/**
+ * Create electron window
+ * @memberof module:main
+ * @param {string} windowName Window name
+ * @param {Object} options Options
+ */
 export default function createWindow(windowName, options) {
   const key = 'window-state'
   const name = `window-state-${windowName}`

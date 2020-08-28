@@ -1,8 +1,8 @@
 /** @module src/database/workspace */
 
-import getByUserId from './getByUserId'
+import get from './get'
 import add from './add'
 import update from './update'
 import del from './del'
 
-export { getByUserId, add, update, del }
+export { add, get, update, del }

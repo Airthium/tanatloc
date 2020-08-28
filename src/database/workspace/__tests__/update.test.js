@@ -1,9 +1,11 @@
 import update from '../update'
 
-jest.mock('../..', () => async () => {})
+jest.mock('../..', () => ({
+  updater: async () => {}
+}))
 
-describe('src/database/quary/workspace/update', () => {
+describe('src/database/workspace/update', () => {
   it('update', async () => {
-    await update({ workspace: {}, data: { test: 'test' } })
+    await update({ workspace: {}, data: [{ key: 'test', value: 'test' }] })
   })
 })

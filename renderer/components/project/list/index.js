@@ -1,83 +1,28 @@
-import { Table, Button, Tag, Space, Avatar, Tooltip } from 'antd'
-import {
-  ShareAltOutlined,
-  DeleteOutlined,
-  SyncOutlined,
-  CloudSyncOutlined
-} from '@ant-design/icons'
+import { Space, Table } from 'antd'
 
-const img = (
-  <img
-    style={{ width: 150, height: 100 }}
-    alt="example"
-    src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png"
-  />
-)
+import Data from '../data'
+import Delete from '../delete'
 
-const tags = (
-  <Space>
-    <Tag icon={<SyncOutlined spin />} color="processing">
-      Running
-    </Tag>
-    <Tag icon={<CloudSyncOutlined />} color="success">
-      Backed-up in the cloud
-    </Tag>
-  </Space>
-)
+import { useProjects } from '../../../../src/api/project'
 
-const sharedWith = (
-  <Avatar.Group
-    maxCount={3}
-    maxStyle={{ color: '#f56a00', backgroundColor: '#fde3cf' }}
-  >
-    <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
-    <Avatar style={{ backgroundColor: '#f56a00' }}>K</Avatar>
-    <Tooltip title="Ant User" placement="top">
-      <Avatar style={{ backgroundColor: '#87d068' }}>F</Avatar>
-    </Tooltip>
-    <Avatar style={{ backgroundColor: '#1890ff' }}>S</Avatar>
-  </Avatar.Group>
-)
+/**
+ * Projects' list
+ * @memberof module:renderer/components/project
+ */
+const ProjectList = (props) => {
+  // Props
+  const workspace = props.workspace || {}
 
-const actions = 'hello'
+  // Load projects
+  const [projects] = useProjects(workspace.projects)
 
-const data = [
-  {
-    key: '1',
-    snapshot: img,
-    projectName: 'Salty Jesus',
-    tags: tags,
-    sharedWith: sharedWith,
-    actions: actions
-  },
-  {
-    key: '2',
-    snapshot: img,
-    projectName: 'Sweet Jesus',
-    tags: tags,
-    sharedWith: sharedWith,
-    actions: actions
-  },
-  {
-    key: '3',
-    snapshot: img,
-    projectName: 'Raptor Jesus',
-    tags: tags,
-    sharedWith: sharedWith,
-    actions: actions
-  },
-  {
-    key: '4',
-    snapshot: img,
-    projectName:
-      'What’s the difference between the real Jesus and a picture of him ? It only takes one nail to hang up the picture.',
-    tags: tags,
-    sharedWith: sharedWith,
-    actions: actions
-  }
-]
+  const data = projects.map((project) => {
+    return Data(project)
+  })
 
-const ProjectList = () => {
+  /**
+   * Render
+   */
   return (
     <Table
       tableLayout="auto"
@@ -97,19 +42,19 @@ const ProjectList = () => {
           }
         }}
       />
-      <Table.Column title="Project Name" dataIndex="projectName" />
+      <Table.Column title="Project Name" dataIndex="title" />
       <Table.Column title="Status" dataIndex="tags" align="center" />
-      <Table.Column title="Shared With" dataIndex="sharedWith" align="center" />
+      <Table.Column title="Administrators" dataIndex="owners" align="center" />
+      {/* <Table.Column title="Shared With" dataIndex="users" align="center" /> */}
       <Table.Column
         title="Actions"
-        dataIndex="actions"
         align="center"
-        render={() => (
+        render={(value) => (
           <Space size="middle">
-            <Button key="share" icon={<ShareAltOutlined />}>
+            {/* <Button key="share" icon={<ShareAltOutlined />}>
               Share
-            </Button>
-            <Button icon={<DeleteOutlined />}>Delete</Button>
+            </Button> */}
+            <Delete workspace={workspace} project={value} />
           </Space>
         )}
       />

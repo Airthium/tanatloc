@@ -1,22 +1,27 @@
-import React, { useState } from 'react'
-import { message, Button, Form, Input, Modal } from 'antd'
+import { useState } from 'react'
+import { message, Button, Form, Input } from 'antd'
 import { PlusCircleOutlined } from '@ant-design/icons'
 
-import { add } from '../../../../src/api/workspace'
+import Dialog from '../../assets/dialog'
+
+import { useWorkspaces, add } from '../../../../src/api/workspace'
 
 /**
  * Add workspace
  * @memberof module:renderer/components/workspace
  */
 const Add = () => {
-  const [form] = Form.useForm()
+  // Sate
   const [visible, setVisible] = useState(false)
   const [loading, setLoading] = useState(false)
 
+  // Data
+  const [, { addOneWorkspace }] = useWorkspaces()
+
   /**
-   * Toggle form visibility
+   * Toggle dialog
    */
-  const toggleVisible = () => {
+  const toggleDialog = () => {
     setVisible(!visible)
   }
 
@@ -24,25 +29,29 @@ const Add = () => {
    * On confirm
    * @param {Object} values Values
    */
-  const onOk = (values) => {
+  const onOk = async (values) => {
     setLoading(true)
-    add(values)
-      .then(() => {
-        setLoading(false)
-        toggleVisible()
-        form.resetFields()
-      })
-      .catch((err) => {
-        message.error(err.message)
-        setLoading(false)
-      })
+    try {
+      // Add
+      const workspace = add(values)
+
+      // Mutate
+      addOneWorkspace(workspace)
+
+      setLoading(false)
+      toggleDialog()
+    } catch (err) {
+      message.error(err.message)
+      console.error(err)
+      setLoading(false)
+    }
   }
 
   /**
    * On cancel
    */
   const onCancel = () => {
-    toggleVisible()
+    toggleDialog()
   }
 
   /**
@@ -50,38 +59,24 @@ const Add = () => {
    */
   return (
     <>
-      <Button onClick={toggleVisible} icon={<PlusCircleOutlined />}>
+      <Button onClick={toggleDialog} icon={<PlusCircleOutlined />}>
         Create a new workspace
       </Button>
-      <Modal
+      <Dialog
         title="Add a workspace"
         visible={visible}
-        onCancel={() => {
-          form.resetFields()
-          onCancel()
-        }}
-        onOk={() => {
-          form
-            .validateFields()
-            .then((values) => {
-              onOk(values)
-            })
-            .catch((info) => {
-              console.log('Validate Failed:', info)
-            })
-        }}
+        onCancel={onCancel}
+        onOk={onOk}
         confirmLoading={loading}
       >
-        <Form form={form}>
-          <Form.Item
-            label="Name"
-            name="name"
-            rules={[{ required: true, message: 'Please fill the name' }]}
-          >
-            <Input placeholder="Workspace name" />
-          </Form.Item>
-        </Form>
-      </Modal>
+        <Form.Item
+          label="Name"
+          name="name"
+          rules={[{ required: true, message: 'Please fill the name' }]}
+        >
+          <Input placeholder="Workspace's name" />
+        </Form.Item>
+      </Dialog>
     </>
   )
 }

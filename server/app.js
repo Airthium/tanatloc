@@ -1,3 +1,5 @@
+/** @module server/app */
+
 import createError from 'http-errors'
 import express, { json, urlencoded } from 'express'
 import cors from 'cors'
@@ -6,6 +8,10 @@ import { loginRoute } from '../renderer/pages/api/login'
 import logout from '../renderer/pages/api/logout'
 import user from '../renderer/pages/api/user'
 import workspace from '../renderer/pages/api/workspace'
+import project from '../renderer/pages/api/project'
+import projectId from '../renderer/pages/api/project/[id]'
+import projects from '../renderer/pages/api/projects'
+import projectsIds from '../renderer/pages/api/projects/[ids]'
 
 const app = express()
 
@@ -23,9 +29,15 @@ app.post('/api/login', async (req, res) => {
 
 app.get('/api/logout', logout)
 
-app.get('/api/user', user)
+app.all('/api/user', user)
 
-app.get('/api/workspace', workspace)
+app.all('/api/workspace', workspace)
+
+app.all('/api/project', project)
+app.all('/api/project/:id', projectId)
+
+app.all('/api/projects', projects)
+app.all('/api/projects/:ids', projectsIds)
 
 /**
  * Catch 404 and forward to error handler

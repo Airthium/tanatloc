@@ -1,3 +1,5 @@
+/** @module server/bin/www */
+
 /**
  * Module dependencies.
  */

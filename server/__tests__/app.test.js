@@ -29,6 +29,9 @@ jest.mock('express', () => ({
     get: jest.fn((param, callback) => {
       callback()
     }),
+    all: jest.fn((param, callback) => {
+      callback()
+    }),
     post: jest.fn((param, callback) => {
       callback()
     })
@@ -44,6 +47,10 @@ jest.mock('../../renderer/pages/api/login', () => ({
 jest.mock('../../renderer/pages/api/logout', () => () => {})
 jest.mock('../../renderer/pages/api/user', () => () => {})
 jest.mock('../../renderer/pages/api/workspace', () => () => {})
+jest.mock('../../renderer/pages/api/project', () => () => {})
+jest.mock('../../renderer/pages/api/project/[id]', () => () => {})
+jest.mock('../../renderer/pages/api/projects', () => () => {})
+jest.mock('../../renderer/pages/api/projects/[ids]', () => () => {})
 
 describe('server/app', () => {
   it('app', () => {

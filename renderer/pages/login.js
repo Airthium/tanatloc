@@ -1,7 +1,13 @@
 import LoginPage from '../components/login'
 
-// Login page
+/**
+ * Login
+ * @memberof module:pages
+ */
 const Login = () => {
+  /**
+   * Render
+   */
   return <LoginPage />
 }
 

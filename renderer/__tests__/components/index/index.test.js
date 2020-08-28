@@ -10,17 +10,22 @@ jest.mock('next/router', () => ({
   })
 }))
 
-describe('components/index', () => {
-  it('render', () => {
-    const wrapper = shallow(<Index />)
-    expect(wrapper).toBeDefined()
+let wrapper
+describe('renderer/components/index', () => {
+  beforeEach(() => {
+    wrapper = shallow(<Index />)
+  })
+
+  afterEach(() => {
     wrapper.unmount()
   })
 
+  it('render', () => {
+    expect(wrapper).toBeDefined()
+  })
+
   it('handleClick', () => {
-    const wrapper = shallow(<Index />)
     wrapper.find('Button').props().onClick()
     expect(mockRouter).toHaveBeenCalledTimes(1)
-    wrapper.unmount()
   })
 })

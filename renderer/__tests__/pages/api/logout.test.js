@@ -1,13 +1,9 @@
 import logout from '../../../pages/api/logout'
 
-const mockRemove = jest.fn()
-jest.mock('../../../../src/auth/auth-cookies', () => ({
-  removeTokenCookie: () => mockRemove()
-}))
+jest.mock('../../../../src/route/logout', () => () => {})
 
-describe('pages/api', () => {
-  it('logout', () => {
-    logout({}, { end: () => {} })
-    expect(mockRemove).toHaveBeenCalledTimes(1)
+describe('pages/api/logout', () => {
+  it('call', async () => {
+    await logout()
   })
 })

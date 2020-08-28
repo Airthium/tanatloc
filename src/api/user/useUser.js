@@ -4,7 +4,7 @@ import { fetcher } from '../call'
 /**
  * Use a user
  * @memberof module:src/api/user
- * @returns {Array} [user, {mutate function, loading status}]]
+ * @returns {Array} [user, {mutateUser function, loadingUser status}]]
  */
 const useUser = () => {
   const { data, mutate } = useSWR('/api/user', fetcher)

@@ -10,13 +10,16 @@ jest.mock('next/router', () => ({
   })
 }))
 
+jest.mock('../../../components/loading', () => 'loading')
+
 let mockLogin = () => {}
 jest.mock('..∕../../../src/api/login', () => async () => mockLogin())
 
 let mockUser = () => {}
+let mockUserLoading = () => false
 jest.mock('../../../../src/api/user/useUser', () => () => [
   mockUser(),
-  { mutateUser: () => {}, loadingUser: false }
+  { mutateUser: () => {}, loadingUser: mockUserLoading() }
 ])
 
 let wrapper
@@ -24,6 +27,8 @@ describe('components/login', () => {
   beforeEach(() => {
     mockRouter.mockReset()
     mockLogin = () => {}
+    mockUser = () => {}
+    mockUserLoading = () => false
     wrapper = shallow(<Login />)
   })
 
@@ -35,15 +40,15 @@ describe('components/login', () => {
     expect(wrapper).toBeDefined()
   })
 
-  it('onLogin', async () => {
-    await wrapper.find('ForwardRef(InternalForm)').props().onFinish({})
+  it('loading', () => {
+    wrapper.unmount()
 
-    mockLogin = () => ({})
-    await wrapper.find('ForwardRef(InternalForm)').props().onFinish({})
-    expect(mockRouter).toHaveBeenCalledTimes(1)
+    mockUserLoading = () => true
+    wrapper = shallow(<Login />)
+    expect(wrapper.find('loading').length).toBe(1)
   })
 
-  it('user', () => {
+  it('user effect', () => {
     let mWrapper = mount(<Login />)
     expect(mockRouter).toHaveBeenCalledTimes(0)
     mWrapper.unmount()
@@ -52,5 +57,14 @@ describe('components/login', () => {
     mWrapper = mount(<Login />)
     expect(mockRouter).toHaveBeenCalledTimes(1)
     mWrapper.unmount()
+  })
+
+  it('onLogin', async () => {
+    await wrapper.find('ForwardRef(InternalForm)').props().onFinish({})
+    expect(mockRouter).toHaveBeenCalledTimes(0)
+
+    mockLogin = () => ({})
+    await wrapper.find('ForwardRef(InternalForm)').props().onFinish({})
+    expect(mockRouter).toHaveBeenCalledTimes(1)
   })
 })

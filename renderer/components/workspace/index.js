@@ -2,7 +2,6 @@
 
 import {
   message,
-  Button,
   Divider,
   Layout,
   PageHeader,
@@ -14,33 +13,46 @@ import {
   Typography
 } from 'antd'
 
-import { PlusCircleOutlined, ShareAltOutlined } from '@ant-design/icons'
+// import { ShareAltOutlined } from '@ant-design/icons'
 
 import Add from './add'
 import Delete from './delete'
+
+import ProjectAdd from '../project/add'
 import ProjectList from '../project/list'
 
-// import useUser from '../../../src/api/user/useUser'
-import { useWorkspace, update } from '../../../src/api/workspace'
+import { useWorkspaces, update } from '../../../src/api/workspace'
 
+/**
+ * Workspace
+ * @param {Object} props Props
+ */
 const Workspace = (props) => {
+  // Props
   const workspace = props.workspace || {}
-  // const [user] = useUser() // TODO get specific user
-  const [workspaces, { mutateWorkspace }] = useWorkspace()
 
+  // Data
+  const [, { mutateOneWorkspace }] = useWorkspaces()
+
+  /**
+   * Set name
+   * @param {string} name Name
+   */
   const setName = (name) => {
-    update(workspace, { name }).catch((err) => {
-      message.error(err.message)
-    })
-
-    // Mutate workspace
-    const newWorkspaces = workspaces.map((w) => {
-      if (w.id === workspace.id) w.name = name
-      return w
-    })
-    mutateWorkspace({ workspace: newWorkspaces })
+    update(workspace, [{ key: 'name', value: name }])
+      .then(() => {
+        // Mutate workspace
+        mutateOneWorkspace(workspace)
+      })
+      .catch((err) => {
+        message.error(err.message)
+        console.error(err)
+      })
   }
 
+  /**
+   * Render
+   */
   return (
     <Layout className="Workspace no-scroll">
       <PageHeader
@@ -56,10 +68,10 @@ const Workspace = (props) => {
         }
         extra={[
           <Add key="add" />,
-          <Button key="share" icon={<ShareAltOutlined />}>
-            Share it
-          </Button>,
-          <Delete key="delete" id={workspace.id} />
+          // <Button key="share" icon={<ShareAltOutlined />}>
+          //   Share it
+          // </Button>,
+          <Delete key="delete" workspace={workspace} />
         ]}
         footer={
           <>
@@ -72,9 +84,7 @@ const Workspace = (props) => {
                 />
               </Col>
               <Col>
-                <Button type="primary" icon={<PlusCircleOutlined />}>
-                  Create a new project
-                </Button>
+                <ProjectAdd workspace={workspace} />
               </Col>
             </Row>
           </>
@@ -100,7 +110,7 @@ const Workspace = (props) => {
         )}
       </PageHeader>
       <Layout.Content className="scroll">
-        <ProjectList />
+        <ProjectList workspace={workspace} />
       </Layout.Content>
     </Layout>
   )

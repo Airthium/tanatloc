@@ -1,4 +1,4 @@
-import Account from '../../../components/dashboard'
+import Account from '../../../components/account'
 import { shallow } from 'enzyme'
 
 let wrapper

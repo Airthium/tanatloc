@@ -24,16 +24,14 @@ const Dialog = (props) => {
         form.resetFields()
         onCancel()
       }}
-      onOk={() => {
-        form
-          .validateFields()
-          .then(async (values) => {
-            await onOk(values)
-            form.resetFields()
-          })
-          .catch((info) => {
-            console.log('Validate Failed:', info)
-          })
+      onOk={async () => {
+        try {
+          const values = await form.validateFields()
+          await onOk(values)
+          form.resetFields()
+        } catch (info) {
+          console.log('Validate Failed:', info)
+        }
       }}
       confirmLoading={loading}
     >

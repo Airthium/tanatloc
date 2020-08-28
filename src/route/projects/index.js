@@ -1,8 +1,8 @@
 /**
  * Empty projects list route
- * @param {*} req
- * @param {*} res
+ * @param {Object} req Request
+ * @param {Object} res Response
  */
 export default async function (req, res) {
-  res.send(200)
+  res.status(200).end()
 }

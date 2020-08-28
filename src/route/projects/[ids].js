@@ -20,11 +20,12 @@ export default async function (req, res) {
     }
 
     if (ids === 'undefined' || ids === 'null') {
-      res.send(200)
+      res.status(200).end()
       return
     }
 
     const list = ids.split('&')
+    console.log(list)
 
     const projectsTmp = await Promise.all(
       list.map(async (id) => {

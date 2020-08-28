@@ -29,15 +29,15 @@ app.post('/api/login', async (req, res) => {
 
 app.get('/api/logout', logout)
 
-app.get('/api/user', user)
+app.all('/api/user', user)
 
-app.get('/api/workspace', workspace)
+app.all('/api/workspace', workspace)
 
-app.get('/api/project', project)
-app.get('/api/project/:id', projectId)
+app.all('/api/project', project)
+app.all('/api/project/:id', projectId)
 
-app.get('/api/projects', projects)
-app.get('/api/projects/:ids', projectsIds)
+app.all('/api/projects', projects)
+app.all('/api/projects/:ids', projectsIds)
 
 /**
  * Catch 404 and forward to error handler

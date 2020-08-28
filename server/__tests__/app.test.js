@@ -29,6 +29,9 @@ jest.mock('express', () => ({
     get: jest.fn((param, callback) => {
       callback()
     }),
+    all: jest.fn((param, callback) => {
+      callback()
+    }),
     post: jest.fn((param, callback) => {
       callback()
     })

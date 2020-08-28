@@ -11,8 +11,8 @@ const add = async ({ id }, { name }) => {
   const response = await query(
     'INSERT INTO ' +
       databases.WORKSPACES +
-      ' (name, owners) VALUES ($1, $2) RETURNING id',
-    [name, [id]]
+      ' (name, owners, projects) VALUES ($1, $2, $3) RETURNING id',
+    [name, [id], []]
   )
 
   const workspace = response.rows[0]

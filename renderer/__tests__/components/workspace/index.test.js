@@ -3,7 +3,11 @@ import { shallow } from 'enzyme'
 
 jest.mock('../../../components/workspace/add', () => 'add')
 
-jest.mock('../../../components/project/list', () => 'list')
+jest.mock('../../../components/workspace/delete', () => 'delete')
+
+jest.mock('../../../components/project/add', () => 'projectAdd')
+
+jest.mock('../../../components/project/list', () => 'projectList')
 
 jest.mock('../../../../src/api/workspace/useWorkspaces', () => () => [
   [{}, { id: 'id1' }],

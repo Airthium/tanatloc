@@ -32,24 +32,21 @@ const Workspace = (props) => {
   const workspace = props.workspace || {}
 
   // Data
-  const [workspaces, { mutateWorkspaces }] = useWorkspaces()
+  const [[], { mutateOneWorkspace }] = useWorkspaces()
 
   /**
    * Set name
    * @param {string} name Name
    */
   const setName = (name) => {
-    update(workspace, { name })
+    update(workspace, [{ key: 'name', value: name }])
       .then(() => {
         // Mutate workspace
-        const newWorkspaces = workspaces.map((w) => {
-          if (w.id === workspace.id) w.name = name
-          return w
-        })
-        mutateWorkspaces({ workspaces: newWorkspaces })
+        mutateOneWorkspace(workspace)
       })
       .catch((err) => {
         message.error(err.message)
+        console.error(err)
       })
   }
 
@@ -74,7 +71,7 @@ const Workspace = (props) => {
           // <Button key="share" icon={<ShareAltOutlined />}>
           //   Share it
           // </Button>,
-          <Delete key="delete" id={workspace.id} />
+          <Delete key="delete" workspace={workspace} />
         ]}
         footer={
           <>

@@ -21,8 +21,8 @@ const Add = (props) => {
   const [loading, setLoading] = useState(false)
 
   // Data
-  const [projects, { mutateProjects }] = useProjects(workspace.projects)
-  const [workspaces, { mutateWorkspaces }] = useWorkspaces()
+  const [[], { addOneProject }] = useProjects(workspace.projects)
+  const [[], { mutateOneWorkspace }] = useWorkspaces()
 
   /**
    * Toggle dialog
@@ -38,23 +38,21 @@ const Add = (props) => {
   const onOk = async (values) => {
     setLoading(true)
     try {
+      // Add
       const project = await add({ id: workspace.id }, values)
 
       // Mutate projects
-      projects.push(project)
-      mutateProjects({ projects: projects })
+      addOneProject(project)
 
       // Mutate workspaces
-      const newWorkspaces = workspaces.map((w) => {
-        if (w.id === workspace.id) w.projects.push(project.id)
-        return w
-      })
-      mutateWorkspaces({ workspaces: newWorkspaces })
+      workspace.projects.push(project.id)
+      mutateOneWorkspace(workspace)
 
       setLoading(false)
       toggleDialog()
     } catch (err) {
       message.error(err.message)
+      console.error(err)
       setLoading(false)
     }
   }

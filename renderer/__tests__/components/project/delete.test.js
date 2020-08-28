@@ -6,39 +6,19 @@ jest.mock('../../../components/assets/dialog', () => ({
 }))
 
 jest.mock('../../../../src/api/project', () => ({
-  useProjects: () => [[{ id: 'id' }], { mutateProjects: () => {} }],
+  useProjects: () => [[], { delOneProject: () => {} }],
   del: async () => {}
 }))
 
-let mockWorkspaces = () => [
-  {
-    id: 'id',
-    prjects: []
-  },
-  {
-    id: 'id2',
-    projects: []
-  }
-]
 jest.mock('../../../../src/api/workspace', () => ({
-  useWorkspaces: () => [mockWorkspaces(), { mutateWorkspaces: () => {} }]
+  useWorkspaces: () => [[], { mutateOneWorkspace: () => {} }]
 }))
 
 let wrapper
 describe('renderer/components/project/delete', () => {
   beforeEach(() => {
-    mockWorkspaces = () => [
-      {
-        id: 'id',
-        projects: []
-      },
-      {
-        id: 'id2',
-        projects: []
-      }
-    ]
     wrapper = shallow(
-      <Delete workspace={{ id: 'id' }} project={{ id: 'id' }} />
+      <Delete workspace={{ id: 'id', projects: [{}] }} project={{ id: 'id' }} />
     )
   })
 
@@ -67,11 +47,6 @@ describe('renderer/components/project/delete', () => {
     expect(wrapper.find('deleteDialog').props().loading).toBe(true)
 
     wrapper.unmount()
-    mockWorkspaces = () => [
-      {
-        id: 'id'
-      }
-    ]
     wrapper = shallow(
       <Delete workspace={{ id: 'id' }} project={{ id: 'id' }} />
     )

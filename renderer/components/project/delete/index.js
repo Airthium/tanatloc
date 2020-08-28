@@ -22,8 +22,8 @@ const Delete = (props) => {
   const [loading, setLoading] = useState(false)
 
   // Data
-  const [projects, { mutateProjects }] = useProjects(workspace.projects)
-  const [workspaces, { mutateWorkspaces }] = useWorkspaces()
+  const [[], { delOneProject }] = useProjects(workspace.projects)
+  const [[], { mutateOneWorkspace }] = useWorkspaces()
 
   /**
    * Toggle dialog delete
@@ -38,25 +38,22 @@ const Delete = (props) => {
   const handleDelete = async () => {
     setLoading(true)
     try {
+      // Delete
       await del(workspace, project)
 
       // Mutate workspaces
-      const newWorkspaces = workspaces.map((w, index) => {
-        if (w.id === workspace.id) {
-          w.projects = [
-            ...w.projects.slice(0, index),
-            ...w.projects.slice(index + 1)
-          ]
-        }
-        return w
-      })
-      mutateWorkspaces({ workspaces: newWorkspaces })
+      const index = workspace.projects.findIndex((p) => p.id === project.id)
+      workspace.projects = [
+        ...workspace.projects.slice(0, index),
+        ...workspace.projects.slice(index + 1)
+      ]
+      mutateOneWorkspace(workspace)
 
       // Mutate projects
-      const newProjects = projects.filter((p) => p.id !== project.id)
-      mutateProjects({ projects: newProjects })
+      delOneProject({ id: project.id })
     } catch (err) {
       message.error(err.message)
+      console.error(err)
       setLoading(false)
     }
   }

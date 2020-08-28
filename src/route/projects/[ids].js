@@ -25,7 +25,6 @@ export default async function (req, res) {
     }
 
     const list = ids.split('&')
-    console.log(list)
 
     const projectsTmp = await Promise.all(
       list.map(async (id) => {

@@ -1,6 +1,6 @@
 import useProjects from '../useProjects'
 
-let mockProjects = () => []
+let mockProjects = () => [{ id: 'id' }, {}]
 jest.mock('swr', () => () => ({
   data: { projects: mockProjects() },
   mutate: jest.fn()
@@ -8,30 +8,36 @@ jest.mock('swr', () => () => ({
 
 describe('src/api/project/useProjects', () => {
   it('without ids', () => {
-    const [projects, { mutateProjects, loadingProjects }] = useProjects()
-    expect(projects).toEqual([])
+    const [
+      projects,
+      {
+        mutateProjects,
+        addOneProject,
+        delOneProject,
+        mutateOneProject,
+        loadingProjects
+      }
+    ] = useProjects()
+    expect(projects).toEqual([{ id: 'id' }, {}])
     expect(mutateProjects).toBeDefined()
+    expect(addOneProject).toBeDefined()
+    expect(delOneProject).toBeDefined()
+    expect(mutateOneProject).toBeDefined()
     expect(loadingProjects).toBe(false)
+
+    addOneProject({ id: 'id' })
+    delOneProject({ id: 'id' })
+    mutateOneProject({ id: 'id' })
   })
 
   it('with ids', () => {
-    const [projects, { mutateProjects, loadingProjects }] = useProjects([
-      'id1',
-      'id2'
-    ])
-    expect(projects).toEqual([])
-    expect(mutateProjects).toBeDefined()
-    expect(loadingProjects).toBe(false)
+    const [projects] = useProjects(['id1', 'id2'])
+    expect(projects).toEqual([{ id: 'id' }, {}])
   })
 
   it('withtout projects', () => {
     mockProjects = () => {}
-    const [projects, { mutateProjects, loadingProjects }] = useProjects([
-      'id1',
-      'id2'
-    ])
+    const [projects] = useProjects(['id1', 'id2'])
     expect(projects).toEqual([])
-    expect(mutateProjects).toBeDefined()
-    expect(loadingProjects).toBe(false)
   })
 })

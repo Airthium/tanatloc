@@ -11,6 +11,9 @@ const Loading = () => {
    */
   return (
     <Layout className="tanatloc-gradient">
+      <div className="logo">
+        <img src="/images/logo.svg" />
+      </div>
       <Card className="Loading">
         <Space>
           <Spin size="large" />

@@ -3,34 +3,26 @@ import { shallow } from 'enzyme'
 
 jest.mock('../../../components/assets/dialog', () => 'dialog')
 
-const mockMutateProjects = jest.fn()
+const mockAddOneProject = jest.fn()
 jest.mock('../../../../src/api/project', () => ({
-  useProjects: () => [[], { mutateProjects: () => mockMutateProjects() }],
+  useProjects: () => [[], { addOneProject: () => mockAddOneProject() }],
   add: async () => ({ id: 'id' })
 }))
 
-let mockWorkspaces = () => [
-  { id: 'id', projects: [] },
-  { id: 'id2', projects: [] }
-]
-const mockMutateWorkspaces = jest.fn()
+const mockMutateOneWorkspace = jest.fn()
 jest.mock('../../../../src/api/workspace', () => ({
   useWorkspaces: () => [
-    mockWorkspaces(),
-    { mutateWorkspaces: () => mockMutateWorkspaces() }
+    [],
+    { mutateOneWorkspace: () => mockMutateOneWorkspace() }
   ]
 }))
 
 let wrapper
 describe('renderer/components/project/add', () => {
   beforeEach(() => {
-    mockMutateProjects.mockReset()
-    mockWorkspaces = () => [
-      { id: 'id', projects: [] },
-      { id: 'id2', projects: [] }
-    ]
-    mockMutateWorkspaces.mockReset()
-    wrapper = shallow(<Add workspace={{ id: 'id' }} />)
+    mockAddOneProject.mockReset()
+    mockMutateOneWorkspace.mockReset()
+    wrapper = shallow(<Add workspace={{ id: 'id', projects: [{}] }} />)
   })
 
   afterEach(() => {
@@ -55,16 +47,15 @@ describe('renderer/components/project/add', () => {
 
   it('onOk', async () => {
     await wrapper.find('dialog').props().onOk()
-    expect(mockMutateProjects).toHaveBeenCalledTimes(1)
-    expect(mockMutateWorkspaces).toHaveBeenCalledTimes(1)
+    expect(mockAddOneProject).toHaveBeenCalledTimes(1)
+    expect(mockMutateOneWorkspace).toHaveBeenCalledTimes(1)
 
     // Error
     wrapper.unmount()
-    mockWorkspaces = () => [{ id: 'id' }]
     wrapper = shallow(<Add workspace={{ id: 'id' }} />)
     await wrapper.find('dialog').props().onOk()
-    expect(mockMutateProjects).toHaveBeenCalledTimes(2)
-    expect(mockMutateWorkspaces).toHaveBeenCalledTimes(1)
+    expect(mockAddOneProject).toHaveBeenCalledTimes(2)
+    expect(mockMutateOneWorkspace).toHaveBeenCalledTimes(1)
   })
 
   it('onCancel', () => {

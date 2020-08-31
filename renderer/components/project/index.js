@@ -5,7 +5,8 @@ import { useRef, useState } from 'react'
 import { Layout } from 'antd'
 import { extend, Canvas, useThree, useFrame } from 'react-three-fiber'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
-extend({ OrbitControls })
+import { TrackballControls } from 'three/examples/jsm/controls/TrackballControls'
+extend({ OrbitControls, TrackballControls })
 
 const CameraControls = () => {
   const {
@@ -18,6 +19,7 @@ const CameraControls = () => {
   useFrame(() => controls.current.update())
 
   return <orbitControls ref={controls} args={[camera, domElement]} />
+  //trackballControls rotateSpeed={3}
 }
 
 const Box = (props) => {

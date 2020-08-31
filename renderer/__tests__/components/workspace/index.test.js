@@ -25,7 +25,7 @@ jest.mock('../../../../src/api/workspace/update', () => {
 let wrapper
 describe('components/workspace', () => {
   beforeEach(() => {
-    wrapper = shallow(<Workspace />)
+    wrapper = shallow(<Workspace workspace={{}} />)
   })
 
   afterEach(() => {

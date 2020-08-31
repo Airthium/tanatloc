@@ -1,6 +1,6 @@
 {
   "name": "tanatloc",
-  "version": "1.0.0",
+  "version": "0.9.0",
   "private": true,
   "description": "Tanatloc",
   "homepage": "./",
@@ -14,6 +14,7 @@
     "path": false
   },
   "scripts": {
+    "install": "babel . --only config,install,src/database/index.js --out-dir dist-install && node dist-install/install",
     "prettier": "prettier -l '**/*.{js,json,md,css}'",
     "prettier:write": "prettier --write '**/*.{js,json,md,css}'",
     "depcheck": "depcheck",

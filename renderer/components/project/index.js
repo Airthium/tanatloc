@@ -101,11 +101,12 @@ const Project = () => {
   const { id } = router.query
   console.log('project id: ' + id)
 
-  console.log(window.devicePixelRatio)
+  let pixelRatio = 1
+  if (typeof window !== 'undefined') pixelRatio = window.devicePixelRatio
 
   return (
     <Layout>
-      <Canvas colorManagement pixelRatio={window.devicePixelRatio}>
+      <Canvas colorManagement pixelRatio={pixelRatio}>
         <CameraControls />
         <ambientLight />
         <pointLight position={[10, 10, 10]} />

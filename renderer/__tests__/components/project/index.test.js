@@ -7,14 +7,7 @@ jest.mock('next/router', () => ({
   })
 }))
 
-jest.mock('react-three-fiber', () => ({
-  extend: () => {},
-  Canvas: 'canvas',
-  useThree: () => [],
-  useFrame: () => {}
-}))
-
-jest.mock('../../../../src/lib/three/TrackballControls', () => ({}))
+jest.mock('../../../components/project/view', () => 'view')
 
 let wrapper
 describe('components/project', () => {

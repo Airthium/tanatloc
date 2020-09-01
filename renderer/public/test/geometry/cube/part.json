@@ -1,0 +1,42 @@
+{
+	"type": "geometry",
+	"solids": [
+		{
+			"name": "solid_0",
+			"path": "solid_0.json",
+			"number": "0"
+		}
+	],
+	"faces": [
+		{
+			"name": "face_0",
+			"path": "face_0.json",
+			"number": "0"
+		},
+		{
+			"name": "face_1",
+			"path": "face_1.json",
+			"number": "1"
+		},
+		{
+			"name": "face_2",
+			"path": "face_2.json",
+			"number": "2"
+		},
+		{
+			"name": "face_3",
+			"path": "face_3.json",
+			"number": "3"
+		},
+		{
+			"name": "face_4",
+			"path": "face_4.json",
+			"number": "4"
+		},
+		{
+			"name": "face_5",
+			"path": "face_5.json",
+			"number": "5"
+		}
+	]
+}

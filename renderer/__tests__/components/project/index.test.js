@@ -14,7 +14,7 @@ jest.mock('react-three-fiber', () => ({
   useFrame: () => {}
 }))
 
-jest.mock('three/examples/jsm/controls/OrbitControls', () => ({}))
+jest.mock('../../../../src/lib/three/TrackballControls', () => ({}))
 
 let wrapper
 describe('components/project', () => {

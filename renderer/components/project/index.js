@@ -1,12 +1,10 @@
-/** @module renderer/components/project */
+// /** @module renderer/components/project */
 
 import { useRouter } from 'next/router'
 import { useRef, useState } from 'react'
-import { Layout } from 'antd'
-import { extend, Canvas, useThree, useFrame } from 'react-three-fiber'
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
-import { TrackballControls } from 'three/examples/jsm/controls/TrackballControls'
-extend({ OrbitControls, TrackballControls })
+import { extend, Canvas, useFrame, useThree } from 'react-three-fiber'
+import { TrackballControls } from '../../../src/lib/three/TrackballControls'
+extend({ TrackballControls })
 
 const CameraControls = () => {
   const {
@@ -18,8 +16,13 @@ const CameraControls = () => {
 
   useFrame(() => controls.current.update())
 
-  return <orbitControls ref={controls} args={[camera, domElement]} />
-  //trackballControls rotateSpeed={3}
+  return (
+    <trackballControls
+      ref={controls}
+      args={[camera, domElement]}
+      rotation={4}
+    />
+  )
 }
 
 const Box = (props) => {
@@ -101,22 +104,21 @@ const Project = () => {
   const { id } = router.query
   console.log('project id: ' + id)
 
+  // Pixel ratio
   let pixelRatio = 1
   if (typeof window !== 'undefined') pixelRatio = window.devicePixelRatio
 
   return (
-    <Layout>
-      <Canvas colorManagement pixelRatio={pixelRatio}>
-        <CameraControls />
-        <ambientLight />
-        <pointLight position={[10, 10, 10]} />
-        <Box position={[-1.2, 0, 0]} />
-        <Box position={[1.2, 0, 0]} />
-        <SphereMesh position={[0, -1.2, 0]} />
-        <SphereMesh position={[0, 1.2, 0]} />
-        <Sphere position={[0, 0, -1.2]} />
-      </Canvas>
-    </Layout>
+    <Canvas colorManagement pixelRatio={pixelRatio}>
+      <CameraControls />
+      <ambientLight />
+      <pointLight position={[10, 10, 10]} />
+      <Box position={[-1.2, 0, 0]} />
+      <Box position={[1.2, 0, 0]} />
+      <SphereMesh position={[0, -1.2, 0]} />
+      <SphereMesh position={[0, 1.2, 0]} />
+      <Sphere position={[0, 0, -1.2]} />
+    </Canvas>
   )
 }
 

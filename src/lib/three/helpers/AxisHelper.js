@@ -43,7 +43,7 @@ const AxisHelper = () => {
     canvas.width = 256
     canvas.height = 256
     const context = canvas.getContext('2d')
-    context.fillStyle = '#808080'
+    context.fillStyle = 'black'
     context.font = '256px sans-serif'
     context.textAlign = 'center'
     context.textBaseline = 'middle'

@@ -64,7 +64,7 @@ const Vis = () => {
     const axisHelper = new AxisHelper()
     const axisHelperScene = new Scene()
     axisHelperScene.add(axisHelper)
-    const axisHelperCamera = new OrthographicCamera()
+    const axisHelperCamera = new OrthographicCamera(-1.2, 1.2, -1.2, 1.2, -1, 1)
 
     // Controls
     controls.current = new TrackballControls(camera.current, mount.current)
@@ -83,7 +83,8 @@ const Vis = () => {
       renderer.current.render(scene.current, camera.current)
 
       renderer.current.setViewport(0, 0, 128, 128)
-      renderer.current.render(axisHelperScene, camera.current)
+      axisHelperCamera.rotation.setFromVector3(camera.current.rotation)
+      renderer.current.render(axisHelperScene, axisHelperCamera)
     }
 
     /**

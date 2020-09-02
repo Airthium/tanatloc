@@ -3,7 +3,7 @@
 import { useRouter } from 'next/router'
 import { Layout } from 'antd'
 
-import View from './view'
+import View from './view_three_2'
 
 const Project = () => {
   // Router
@@ -13,10 +13,7 @@ const Project = () => {
 
   return (
     <Layout>
-      Project page TODO
-      <Layout>
-        <View />
-      </Layout>
+      <View />
     </Layout>
   )
 }

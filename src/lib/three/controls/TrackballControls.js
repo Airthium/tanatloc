@@ -420,7 +420,7 @@ var TrackballControls = function (object, domElement) {
 
   function onMouseDown(event) {
     event.preventDefault()
-    // event.stopPropagation();
+    event.stopPropagation()
 
     if (_state === STATE.NONE) {
       switch (event.button) {
@@ -463,7 +463,7 @@ var TrackballControls = function (object, domElement) {
     if (isMouseDown === false) return
 
     event.preventDefault()
-    // event.stopPropagation();
+    event.stopPropagation()
 
     var state = _keyState !== STATE.NONE ? _keyState : _state
 
@@ -479,7 +479,7 @@ var TrackballControls = function (object, domElement) {
 
   function onMouseUp(event) {
     event.preventDefault()
-    // event.stopPropagation();
+    event.stopPropagation()
 
     _state = STATE.NONE
 
@@ -514,6 +514,7 @@ var TrackballControls = function (object, domElement) {
     }
 
     scope.dispatchEvent(startEvent)
+    scope.dispatchEvent(changeEvent)
     scope.dispatchEvent(endEvent)
   }
 

@@ -1,7 +1,8 @@
-import { useEffect, useRef } from 'react'
+import { useRef, useState } from 'react'
+import { Button } from 'antd'
 import { DoubleSide } from 'three'
 import { extend, Canvas, useThree, useFrame } from 'react-three-fiber'
-import { TrackballControls } from '../../../../src/lib/three/TrackballControls'
+import { TrackballControls } from '../../../../src/lib/three/controls/TrackballControls'
 extend({ TrackballControls })
 
 import solid0 from '../../../public/test/geometry/cube/solid_0'
@@ -26,12 +27,21 @@ const CameraControls = () => {
 }
 
 const Geometry = (props) => {
+  const [hovered, setHover] = useState(false)
+  const [active, setActive] = useState(false)
+
   const position = new Float32Array(solid0.data.attributes.position.array)
   const normal = new Float32Array(solid0.data.attributes.normal.array)
   const color = new Float32Array(solid0.data.attributes.color.array)
 
   return (
-    <mesh {...props}>
+    <mesh
+      {...props}
+      scale={active ? [1.5, 1.5, 1.5] : [1, 1, 1]}
+      onClick={() => setActive(!active)}
+      onPointerOver={() => setHover(true)}
+      onPointerOut={() => setHover(false)}
+    >
       <bufferGeometry attach="geometry">
         <bufferAttribute
           attachObject={['attributes', 'position']}
@@ -52,7 +62,11 @@ const Geometry = (props) => {
           itemSize={3}
         />
       </bufferGeometry>
-      <meshStandardMaterial side={DoubleSide} attach="material" />
+      <meshStandardMaterial
+        side={DoubleSide}
+        attach="material"
+        color={hovered ? 'purple' : 'orange'}
+      />
     </mesh>
   )
 }
@@ -111,13 +125,30 @@ const View = () => {
   let pixelRatio = 1
   if (typeof window !== 'undefined') pixelRatio = window.devicePixelRatio
 
+  // const canvasRef = useRef()
+
+  // const zoomToFit = () => {
+  //   const canvas = canvasRef.current
+  //   console.log(canvas)
+  // }
+
+  const geometries = []
+
+  const addGeometry = () => {
+    geometries.push(<Geometry />)
+    console.log(geometries)
+  }
+
   return (
-    <Canvas camera={{ far: 100000 }} colorManagement pixelRatio={pixelRatio}>
-      {cameraControls}
-      <ambientLight />
-      <pointLight position={[10, 10, 10]} />
-      <Geometry />
-    </Canvas>
+    <>
+      <Button onClick={addGeometry}>add geometry</Button>
+      <Canvas camera={{ far: 100000 }} colorManagement pixelRatio={pixelRatio}>
+        <CameraControls />
+        <ambientLight />
+        <pointLight position={[10, 10, 10]} />
+        {geometries}
+      </Canvas>
+    </>
   )
 }
 

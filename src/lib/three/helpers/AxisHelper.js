@@ -9,24 +9,33 @@ import {
 import Arrow from './ArrowHelper'
 import Label from './LabelHelper'
 
-// X-axis color
-const xColor = 'red'
-// Y-axis color
-const yColor = 'green'
-// Z-axis color
-const zColor = 'blue'
-// Base sphere color
-const baseColor = 'black'
-
-// Default width in viewport
-const defaultWidth = 150
-// Default height in viewport
-const defaultHeight = 150
-
 /**
  * Axis helper
  */
-const AxisHelper = () => {
+const AxisHelper = (
+  renderer,
+  camera,
+  { offsetWidth, offsetHeight, width, height } = {
+    offsetWidth: 0,
+    offsetHeight: 0,
+    width: defaultWidth,
+    height: defaultHeight
+  }
+) => {
+  // X-axis color
+  const xColor = 'red'
+  // Y-axis color
+  const yColor = 'green'
+  // Z-axis color
+  const zColor = 'blue'
+  // Base sphere color
+  const baseColor = 'black'
+
+  // Default width in viewport
+  const defaultWidth = 150
+  // Default height in viewport
+  const defaultHeight = 150
+
   // X
   const x = new Arrow(xColor)
   x.rotateZ(-Math.PI / 2)
@@ -72,21 +81,8 @@ const AxisHelper = () => {
 
   /**
    * Render
-   * @param {Object} renderer Renderer
-   * @param {Object} camera Camera
-   * @param {number} width Width
-   * @param {number} height Height
    */
-  const render = (
-    renderer,
-    camera,
-    { offsetWidth, offsetHeight, width, height } = {
-      offsetWidth: 0,
-      offsetHeight: 0,
-      width: defaultWidth,
-      height: defaultHeight
-    }
-  ) => {
+  const render = () => {
     renderer.setViewport(offsetWidth, offsetHeight, width, height)
     localCamera.rotation.copy(camera.rotation)
     renderer.render(localScene, localCamera)

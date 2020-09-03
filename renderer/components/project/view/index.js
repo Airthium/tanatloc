@@ -1,20 +1,28 @@
-import { useRef, useEffect, useState } from 'react'
-import { Layout, Button } from 'antd'
-import { CompressOutlined } from '@ant-design/icons'
+import { useRef, useState, useEffect } from 'react'
+import { Button, Divider, Drawer, Layout, Tooltip } from 'antd'
+import {
+  CloseOutlined,
+  CompressOutlined,
+  ControlOutlined,
+  ZoomInOutlined,
+  ZoomOutOutlined
+} from '@ant-design/icons'
 import {
   AmbientLight,
+  BoxGeometry,
+  Mesh,
+  MeshStandardMaterial,
+  PCFShadowMap,
+  PerspectiveCamera,
   PointLight,
   Scene,
-  PerspectiveCamera,
-  WebGLRenderer,
-  BoxGeometry,
-  MeshStandardMaterial,
-  Mesh,
-  Sphere
+  Sphere,
+  WebGLRenderer
 } from 'three'
-// import { TrackballControls } from '../../../../src/lib/three/controls/TrackballControls'
-import { TrackballControls } from 'three/examples/jsm/controls/TrackballControls'
+import { TrackballControls } from '../../../../src/lib/three/controls/TrackballControls'
 import { AxisHelper } from '../../../../src/lib/three/helpers/AxisHelper'
+import { NavigationHelper } from '../../../../src/lib/three/helpers/NavigationHelper'
+// import { ZoomSelectionHelper } from '../../../../src/lib/three/helpers/ZoomSelectionHelper'
 
 const Vis = () => {
   const mount = useRef(null)
@@ -22,6 +30,10 @@ const Vis = () => {
   const camera = useRef()
   const renderer = useRef()
   const controls = useRef()
+
+  const [controlVisible, setControlVisible] = useState(false)
+
+  const zoomFactor = 0.01
 
   // Mount
   useEffect(() => {
@@ -48,16 +60,39 @@ const Vis = () => {
 
     // Renderer
     renderer.current = new WebGLRenderer({
-      antialias: true
+      antialias: true,
+      alpha: true
     })
     renderer.current.setClearColor('#ffffff')
     renderer.current.setSize(width, height)
     renderer.current.setPixelRatio(window.devicePixelRatio || 1)
     renderer.current.autoClear = false
+    // renderer.current.shadowMap.enabled = true
+    // renderer.current.shadowMap.type = PCFShadowMap
     mount.current.appendChild(renderer.current.domElement)
 
     // Axis
-    const axisHelper = new AxisHelper()
+    const axisHelper = new AxisHelper(renderer.current, camera.current, {
+      offsetWidth: width - 150,
+      offsetHeight: 0,
+      width: 150,
+      height: 150
+    })
+
+    // NavigationHelper
+    const navigationHelper = new NavigationHelper(
+      renderer.current,
+      camera.current,
+      {
+        offsetWidth: width - 150,
+        offsetHeight: height - 210,
+        width: 150,
+        height: 150
+      }
+    )
+
+    // ZoomSelectionHelper
+    // const zoomSelectionHelper = new ZoomSelectionHelper(renderer.current)
 
     // Controls
     controls.current = new TrackballControls(camera.current, mount.current)
@@ -75,12 +110,9 @@ const Vis = () => {
       renderer.current.setViewport(0, 0, width, height)
       renderer.current.render(scene.current, camera.current)
 
-      axisHelper.render(renderer.current, camera.current, {
-        offsetWidth: width - 200,
-        offsetHeight: 0,
-        width: 200,
-        height: 200
-      })
+      axisHelper.render()
+
+      navigationHelper.render()
     }
 
     /**
@@ -140,6 +172,36 @@ const Vis = () => {
       })
     }
   }, [])
+
+  const zoom = (direction) => {
+    const targetDistance = controls.current.object.position.distanceTo(
+      controls.current.target
+    )
+    const zoomDistance = targetDistance * direction * zoomFactor
+    const translation = controls.current.target
+      .clone()
+      .sub(camera.current.position)
+      .normalize()
+      .multiplyScalar(zoomDistance)
+
+    camera.current.position.add(translation)
+  }
+
+  let zoomInProgress = null
+  const zoomIn = () => {
+    zoom(1)
+    zoomInProgress = requestAnimationFrame(zoomIn)
+  }
+
+  const zoomOut = () => {
+    zoom(-1)
+    zoomInProgress = requestAnimationFrame(zoomOut)
+  }
+
+  const zoomStop = () => {
+    cancelAnimationFrame(zoomInProgress)
+    zoomInProgress = null
+  }
 
   const zoomToFit = () => {
     const meshes = scene.current.children
@@ -203,12 +265,63 @@ const Vis = () => {
       style={{ position: 'fixed', top: 0, right: 0, bottom: 0, left: 0 }}
       ref={mount}
     >
-      <Layout style={{ position: 'absolute' }}>
-        <Button icon={<CompressOutlined />} onClick={zoomToFit}>
-          Zoom to fit
-        </Button>
-        <Button onClick={addCube}>Add cube</Button>
-        <Button onClick={removeCube}>Remove last</Button>
+      <Layout
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          height: '60px',
+          width: '100%',
+          display: 'flex',
+          justifyContent: 'center',
+          padding: '0 10px',
+          backgroundColor: 'transparent'
+        }}
+      >
+        <Tooltip title="Controls">
+          <Button
+            icon={<ControlOutlined />}
+            onClick={() => setControlVisible(!controlVisible)}
+          />
+        </Tooltip>
+        <Drawer
+          visible={controlVisible}
+          closable={false}
+          mask={false}
+          maskClosable={false}
+          placement="right"
+          getContainer={false}
+          style={{ position: 'absolute' }}
+          bodyStyle={{
+            display: 'flex',
+            alignItems: 'center',
+            padding: '0 10px'
+          }}
+          width="100%"
+        >
+          <Button
+            icon={<CloseOutlined />}
+            onClick={() => setControlVisible(!controlVisible)}
+          />
+          <Divider type="vertical" />
+          <Button
+            icon={<ZoomOutOutlined />}
+            onMouseDown={zoomOut}
+            onMouseUp={zoomStop}
+            onMouseOut={zoomStop}
+          />
+          <Button icon={<CompressOutlined />} onClick={zoomToFit} />
+          <Button
+            icon={<ZoomInOutlined />}
+            onMouseDown={zoomIn}
+            onMouseUp={zoomStop}
+            onMouseOut={zoomStop}
+          />
+          <Divider type="vertical" />
+          <Button onClick={addCube}>Add cube</Button>
+          <Divider type="vertical" />
+          <Button onClick={removeCube}>Remove last</Button>
+        </Drawer>
       </Layout>
     </div>
   )

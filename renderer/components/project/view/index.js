@@ -4,7 +4,6 @@ import { CompressOutlined } from '@ant-design/icons'
 import {
   AmbientLight,
   PointLight,
-  AxesHelper,
   Scene,
   PerspectiveCamera,
   WebGLRenderer,
@@ -13,25 +12,22 @@ import {
   Mesh,
   Sphere
 } from 'three'
-import { TrackballControls } from '../../../../src/lib/three/controls/TrackballControls'
+// import { TrackballControls } from '../../../../src/lib/three/controls/TrackballControls'
+import { TrackballControls } from 'three/examples/jsm/controls/TrackballControls'
 import { AxisHelper } from '../../../../src/lib/three/helpers/AxisHelper'
-import { OrthographicCamera } from 'three/build/three.module'
 
 const Vis = () => {
   const mount = useRef(null)
-  // const [isAnimating, setAnimating] = useState(true)
-  const [zoomToFit, setZoomToFit] = useState(false)
-  const [add, addCube] = useState(false)
-  const [remove, removeCube] = useState(false)
-
   const scene = useRef()
   const camera = useRef()
   const renderer = useRef()
   const controls = useRef()
+
+  // Mount
   useEffect(() => {
     let width = mount.current.clientWidth
     let height = mount.current.clientHeight
-    // let frameId
+    let frameId
 
     // Scene
     scene.current = new Scene()
@@ -62,9 +58,6 @@ const Vis = () => {
 
     // Axis
     const axisHelper = new AxisHelper()
-    const axisHelperScene = new Scene()
-    axisHelperScene.add(axisHelper)
-    const axisHelperCamera = new OrthographicCamera(-1.2, 1.2, -1.2, 1.2, -1, 1)
 
     // Controls
     controls.current = new TrackballControls(camera.current, mount.current)
@@ -82,9 +75,7 @@ const Vis = () => {
       renderer.current.setViewport(0, 0, width, height)
       renderer.current.render(scene.current, camera.current)
 
-      renderer.current.setViewport(0, 0, 128, 128)
-      axisHelperCamera.rotation.setFromVector3(camera.current.rotation)
-      renderer.current.render(axisHelperScene, axisHelperCamera)
+      axisHelper.render(renderer.current, camera.current)
     }
 
     /**
@@ -104,52 +95,48 @@ const Vis = () => {
      */
     const animate = () => {
       renderScene()
-      /*frameId = */ requestAnimationFrame(animate)
+      frameId = requestAnimationFrame(animate)
     }
 
-    // const start = () => {
-    //   if (!frameId) {
-    //     frameId = requestAnimationFrame(animate)
-    //   }
-    // }
+    /**
+     * Start animate
+     */
+    const start = () => {
+      if (!frameId) {
+        frameId = requestAnimationFrame(animate)
+      }
+    }
 
-    // const stop = () => {
-    //   cancelAnimationFrame(frameId)
-    //   frameId = null
-    // }
+    /**
+     * Stop animate
+     */
+    const stop = () => {
+      cancelAnimationFrame(frameId)
+      frameId = null
+    }
 
     // Event listeners
     window.addEventListener('resize', handleResize)
 
-    // controls.addEventListener('start', () => {
-    //   console.log('start')
-    //   start()
-    // })
-    // controls.addEventListener('end', () => {
-    //   console.log('stop')
-    //   stop()
-    // })
-    // controls.addEventListener('change', () => {
-    //   console.log('change')
-    // })
-
-    // Start rendering
-    animate()
+    // First rendering
+    start()
 
     // Unmount
     return () => {
       stop()
+
       window.removeEventListener('resize', handleResize)
+
       mount.current.removeChild(renderer.current.domElement)
 
-      // scene.current.remove(cube)
-      // geometry.dispose()
-      // material.dispose()
+      // Clean scene
+      scene.current.children.forEach((child) => {
+        scene.current.remove(child)
+      })
     }
   }, [])
 
-  // Zoom to fit
-  useEffect(() => {
+  const zoomToFit = () => {
     const meshes = scene.current.children
     const sphere = new Sphere()
 
@@ -160,6 +147,7 @@ const Vis = () => {
         mesh.type === 'AxisHelper'
       )
         return
+
       const boundingSphere = mesh.geometry.boundingSphere
       sphere.radius = Math.max(sphere.radius, boundingSphere.radius)
       sphere.center = sphere.center
@@ -188,30 +176,22 @@ const Vis = () => {
     // Camera
     camera.current.position.copy(center).sub(direction)
     camera.current.updateProjectionMatrix()
-  }, [zoomToFit])
+  }
 
-  /**
-   * Add cube
-   */
-  useEffect(() => {
+  const addCube = () => {
     const geometry = new BoxGeometry(
       10 * Math.random(),
       10 * Math.random(),
       10 * Math.random()
     )
-    const material = new MeshStandardMaterial({
-      /*wireframe: true,*/ color: 0xff00ff
-    })
+    const material = new MeshStandardMaterial({ color: 0xff00ff })
     const cube = new Mesh(geometry, material)
     scene.current.add(cube)
-  }, [add])
+  }
 
-  /**
-   * remove cube
-   */
-  useEffect(() => {
-    scene.current.children.pop()
-  }, [remove])
+  const removeCube = () => {
+    if (scene.current.children.length > 3) scene.current.children.pop()
+  }
 
   return (
     <div
@@ -219,14 +199,11 @@ const Vis = () => {
       ref={mount}
     >
       <Layout style={{ position: 'absolute' }}>
-        <Button
-          icon={<CompressOutlined />}
-          onClick={() => setZoomToFit(!zoomToFit)}
-        >
+        <Button icon={<CompressOutlined />} onClick={zoomToFit}>
           Zoom to fit
         </Button>
-        <Button onClick={() => addCube(!add)}>Add cube</Button>
-        <Button onClick={() => removeCube(!remove)}>Remove last</Button>
+        <Button onClick={addCube}>Add cube</Button>
+        <Button onClick={removeCube}>Remove last</Button>
       </Layout>
     </div>
   )

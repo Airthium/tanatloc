@@ -85,7 +85,7 @@ const Vis = () => {
       camera.current,
       {
         offsetWidth: width - 150,
-        offsetHeight: height - 210,
+        offsetHeight: height - 150,
         width: 150,
         height: 150
       }

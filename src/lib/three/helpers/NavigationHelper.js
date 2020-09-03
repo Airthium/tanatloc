@@ -33,6 +33,7 @@ const NavigationHelper = (
   // Text color
   const textColor = '#000000'
 
+  const size = 100
   const corner = 0.25
 
   const faces = [
@@ -44,13 +45,16 @@ const NavigationHelper = (
     { text: 'DOWN', position: new Vector3(0, -1, 0) }
   ]
 
-  const faceGeometry = new PlaneGeometry(1 - corner, 1 - corner)
+  const faceGeometry = new PlaneGeometry(
+    size * (1 - corner),
+    size * (1 - corner)
+  )
 
   const edgeGeometry = new EdgesGeometry(faceGeometry)
   const edgeMaterial = new LineBasicMaterial({ color: edgeColor })
 
   const hemisphereGeometry = new SphereGeometry(
-    (1 - corner) / 2,
+    (size * (1 - corner)) / 2,
     10,
     10,
     0,
@@ -100,11 +104,11 @@ const NavigationHelper = (
 
     // Group
     const faceGroup = new Group()
-    faceGroup.add(frontMesh, backMesh, edgeMesh, hemisphereMesh)
+    faceGroup.add(frontMesh, backMesh, /* edgeMesh,*/ hemisphereMesh)
 
     // Orientation
     faceGroup.lookAt(face.position)
-    faceGroup.translateZ(1 / 2)
+    faceGroup.translateZ(size / 2)
 
     // Enter / click / out
     faceGroup.enter = () => console.log('enter')
@@ -119,7 +123,15 @@ const NavigationHelper = (
   localScene.add(cube)
 
   // Camera
-  const localCamera = new OrthographicCamera(-1.2, 1.2, 1.2, -1.2, -2, 2)
+  const localCamera = new OrthographicCamera(
+    -size,
+    size,
+    size,
+    -size,
+    -size,
+    size
+  )
+  localCamera.position.z = 2
 
   // Raycatser
   const raycaster = new Raycaster()
@@ -138,18 +150,56 @@ const NavigationHelper = (
     return mouse
   }
 
+  const isIn = (mouse) => {
+    if (mouse.x > -1 && mouse.x < 1 && mouse.y > -1 && mouse.y < 1) return true
+    return false
+  }
+
   const intersect = (mouse) => {
     raycaster.setFromCamera(mouse, localCamera)
 
-    const intersects = raycaster.intersectObjects(localScene.children, true)
+    const intersects = raycaster.intersectObjects(
+      localScene.children[0].children,
+      true
+    )
+
+    // console.log(intersects)
 
     return intersects.length && intersects[0].object.parent
   }
 
+  let previouslyHighlighted = null
+  const highlightGroup = (group) => {
+    // group && group.material && (group.material.color = new Color('#90ee90'))
+    group &&
+      group.children.forEach((object) => {
+        if (object.material && object.material.color) {
+          object.material.previousColor = object.material.color
+          object.material.color = new Color('#90ee90')
+        }
+      })
+  }
+
+  const unhighlightGroup = (group) => {
+    // group && group.material && (group.material.color = new Color(cubeColor))
+    group &&
+      group.children.forEach((object) => {
+        if (object.material && object.material.color) {
+          object.material.color = new Color(cubeColor)
+        }
+      })
+  }
+
   const onMouseMove = (event) => {
     const mouse = globalToLocal({ X: event.clientX, Y: event.clientY })
-    const group = intersect(mouse)
+    if (isIn(mouse)) {
+      const group = intersect(mouse)
 
+      highlightGroup(group)
+      unhighlightGroup(previouslyHighlighted)
+
+      previouslyHighlighted = group
+    }
     // group &&
     //   group.children.forEach((object) => {
     //     if (object.material && object.material.color)

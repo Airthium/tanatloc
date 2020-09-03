@@ -1,4 +1,5 @@
 import {
+  Color,
   EdgesGeometry,
   Group,
   Mesh,
@@ -140,16 +141,20 @@ const NavigationHelper = (
   const intersect = (mouse) => {
     raycaster.setFromCamera(mouse, localCamera)
 
-    const intersects = raycaster.intersectObjects(
-      localScene.children[0].children
-    )
+    const intersects = raycaster.intersectObjects(localScene.children, true)
 
-    console.log(intersects)
+    return intersects.length && intersects[0].object.parent
   }
 
   const onMouseMove = (event) => {
     const mouse = globalToLocal({ X: event.clientX, Y: event.clientY })
-    intersect(mouse)
+    const group = intersect(mouse)
+
+    // group &&
+    //   group.children.forEach((object) => {
+    //     if (object.material && object.material.color)
+    //       object.material.color = new Color('#90ee90')
+    //   })
   }
 
   /**

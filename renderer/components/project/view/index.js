@@ -75,7 +75,12 @@ const Vis = () => {
       renderer.current.setViewport(0, 0, width, height)
       renderer.current.render(scene.current, camera.current)
 
-      axisHelper.render(renderer.current, camera.current)
+      axisHelper.render(renderer.current, camera.current, {
+        offsetWidth: width - 200,
+        offsetHeight: 0,
+        width: 200,
+        height: 200
+      })
     }
 
     /**

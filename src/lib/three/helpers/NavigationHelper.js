@@ -13,7 +13,8 @@ import {
   LineSegments,
   SphereGeometry,
   Vector2,
-  Raycaster
+  Raycaster,
+  Quaternion
 } from 'three/build/three.module'
 
 /**
@@ -53,12 +54,12 @@ const NavigationHelper = (
 
   // Faces
   const faces = [
-    { text: 'FRONT', normal: new Vector3(0, 0, 1) },
-    { text: 'BACK', normal: new Vector3(0, 0, -1) },
-    { text: 'RIGHT', normal: new Vector3(1, 0, 0) },
-    { text: 'LEFT', normal: new Vector3(-1, 0, 0) },
-    { text: 'UP', normal: new Vector3(0, 1, 0) },
-    { text: 'DOWN', normal: new Vector3(0, -1, 0) }
+    { text: 'FRONT', normal: new Vector3(0, 0, 1), up: new Vector3(0, 1, 0) },
+    { text: 'BACK', normal: new Vector3(0, 0, -1), up: new Vector3(0, 1, 0) },
+    { text: 'RIGHT', normal: new Vector3(1, 0, 0), up: new Vector3(0, 1, 0) },
+    { text: 'LEFT', normal: new Vector3(-1, 0, 0), up: new Vector3(0, 1, 0) },
+    { text: 'UP', normal: new Vector3(0, 1, 0), up: new Vector3(0, 0, -1) },
+    { text: 'DOWN', normal: new Vector3(0, -1, 0), up: new Vector3(0, 0, 1) }
   ]
 
   // Face geometry
@@ -130,6 +131,7 @@ const NavigationHelper = (
     faceGroup.lookAt(face.normal)
     faceGroup.translateZ(size / 2)
     faceGroup.normal = face.normal
+    faceGroup.up = face.up
 
     // Add
     cube.add(faceGroup)
@@ -155,7 +157,7 @@ const NavigationHelper = (
 
   // Events
   document.addEventListener('mousemove', (e) => onMouseMove(e))
-  // document.addEventListener('mousedown', (e) => onMouseDown(e))
+  document.addEventListener('mousedown', (e) => onMouseDown(e))
 
   /**
    * On mouse move
@@ -243,45 +245,24 @@ const NavigationHelper = (
       })
   }
 
-  // /**
-  //  * On mouse down
-  //  */
-  // const onMouseDown = (event) => {
-  //   if (currentlyHighlighted) {
-  //     // Position
-  //     const normal = currentlyHighlighted.normal
-  //     const distance = camera.position.distanceTo(controls.target)
-  //     camera.position.copy(normal).multiplyScalar(distance)
+  /**
+   * On mouse down
+   * @param {Object} event Event
+   */
+  const onMouseDown = (event) => {
+    if (currentlyHighlighted) {
+      const normal = currentlyHighlighted.normal
+      const up = currentlyHighlighted.up
 
-  //     // Rotation
-  //     const direction = new Vector3()
-  //     camera.getWorldDirection(direction)
-  //     console.log(direction)
+      // Camera
+      const distance = camera.position.distanceTo(controls.target)
+      camera.position.copy(normal).multiplyScalar(distance)
+      camera.up.copy(up)
 
-  //     // const xAngle = direction.angleTo(new Vector3(1, 0, 0))
-  //     // const yAngle = direction.angleTo(new Vector3(0, 1, 0))
-  //     // const zAngle = direction.angleTo(new Vector3(0, 0, 1))
-  //     // console.log(xAngle)
-  //     // console.log(yAngle)
-  //     // console.log(zAngle)
-  //     // const direction = camera.position.clone().sub(controls.target)
-  //     // const x = direction.cross(new Vector3(1, 0, 0))
-  //     // const y = direction.cross(new Vector3(0, 1, 0))
-  //     // const z = direction.cross(new Vector3(0, 0, 1))
-  //     // console.log(x)
-  //     // console.log(y)
-  //     // console.log(z)
-  //     // const xAngle = normal.angleTo(new Vector3(1, 0, 0))
-  //     // const yAngle = normal.angleTo(new Vector3(0, 1, 0))
-  //     // const zAngle = normal.angleTo(new Vector3(0, 0, 1))
-  //     // console.log(xAngle)
-  //     // console.log(yAngle)
-  //     // console.log(zAngle)
-
-  //     // // camera.lookAt(controls.target)
-  //     // camera.quaternion.set(0, 0, 0, 0)
-  //   }
-  // }
+      // Mouse move
+      onMouseMove(event)
+    }
+  }
 
   /**
    * Resize
@@ -298,7 +279,6 @@ const NavigationHelper = (
    * Render
    */
   const render = () => {
-    // console.log(renderer)
     renderer.setViewport(offsetWidth, offsetHeight, width, height)
     localCamera.rotation.copy(camera.rotation)
     renderer.render(localScene, localCamera)

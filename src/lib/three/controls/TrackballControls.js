@@ -331,6 +331,11 @@ var TrackballControls = function (object, domElement) {
     }
   }
 
+  this.stop = function () {
+    _state = STATE.NONE
+    _keyState = STATE.NONE
+  }
+
   this.reset = function () {
     _state = STATE.NONE
     _keyState = STATE.NONE

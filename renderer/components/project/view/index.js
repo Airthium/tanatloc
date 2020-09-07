@@ -5,7 +5,8 @@ import {
   CompressOutlined,
   ControlOutlined,
   ZoomInOutlined,
-  ZoomOutOutlined
+  ZoomOutOutlined,
+  SelectOutlined
 } from '@ant-design/icons'
 import {
   AmbientLight,
@@ -22,14 +23,15 @@ import {
 import { TrackballControls } from '../../../../src/lib/three/controls/TrackballControls'
 import { AxisHelper } from '../../../../src/lib/three/helpers/AxisHelper'
 import { NavigationHelper } from '../../../../src/lib/three/helpers/NavigationHelper'
-// import { ZoomSelectionHelper } from '../../../../src/lib/three/helpers/ZoomSelectionHelper'
+import { SelectionHelper } from '../../../../src/lib/three/helpers/SelectionHelper'
 
-const Vis = () => {
+const ThreeView = () => {
   const mount = useRef(null)
   const scene = useRef()
   const camera = useRef()
   const renderer = useRef()
   const controls = useRef()
+  const selectionHelper = useRef()
 
   const [controlVisible, setControlVisible] = useState(false)
 
@@ -46,7 +48,7 @@ const Vis = () => {
 
     // Camera
     camera.current = new PerspectiveCamera(50, width / height, 0.1, 1000)
-    camera.current.position.z = 4
+    camera.current.position.z = 10
 
     // Light
     const ambientLight = new AmbientLight('#999999')
@@ -97,8 +99,13 @@ const Vis = () => {
       }
     )
 
-    // ZoomSelectionHelper
-    // const zoomSelectionHelper = new ZoomSelectionHelper(renderer.current)
+    // SelectionHelper
+    selectionHelper.current = new SelectionHelper(
+      renderer.current,
+      camera.current,
+      scene.current,
+      controls.current
+    )
 
     /**
      * Render scene
@@ -267,10 +274,16 @@ const Vis = () => {
       10 * Math.random(),
       10 * Math.random()
     )
+    geometry.computeBoundingSphere()
     const material = new MeshStandardMaterial({ color: 0xff00ff })
     const cube = new Mesh(geometry, material)
     scene.current.add(cube)
   }
+
+  useEffect(() => {
+    addCube()
+    zoomToFit()
+  }, [])
 
   const removeCube = () => {
     if (scene.current.children.length > 3) scene.current.children.pop()
@@ -337,6 +350,11 @@ const Vis = () => {
           <Button onClick={addCube}>Add cube</Button>
           <Divider type="vertical" />
           <Button onClick={removeCube}>Remove last</Button>
+          <Divider type="vertical" />
+          <Button
+            icon={<SelectOutlined />}
+            onClick={() => selectionHelper.current.enable()}
+          />
         </Drawer>
       </Layout>
     </div>
@@ -344,7 +362,7 @@ const Vis = () => {
 }
 
 const View = () => {
-  return <Vis />
+  return <ThreeView />
 }
 
 export default View

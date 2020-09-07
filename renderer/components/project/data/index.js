@@ -29,9 +29,18 @@ const Data = (project) => {
 
   // Snapshot
   const snapshot = project.avatar ? (
-    <img src={project && project.avatar} width="100" height="100" />
+    <img
+      src={project && project.avatar}
+      style={{ cursor: 'pointer' }}
+      width="100"
+      height="100"
+    />
   ) : (
-    <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={'No preview'} />
+    <Empty
+      image={Empty.PRESENTED_IMAGE_SIMPLE}
+      style={{ cursor: 'pointer' }}
+      description={'No preview'}
+    />
   )
 
   // Owners avatars

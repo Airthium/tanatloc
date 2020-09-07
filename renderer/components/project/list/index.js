@@ -26,7 +26,6 @@ const ProjectList = (props) => {
 
   // Open project
   const openProject = (project) => {
-    console.log(project)
     router.push('/project/' + project.id)
   }
 

@@ -11,6 +11,9 @@ import Label from './LabelHelper'
 
 /**
  * Axis helper
+ * @param {Object} renderer Renderer
+ * @param {Object} camera Camera
+ * @param {Object} dimensions Dimensions
  */
 const AxisHelper = (
   renderer,
@@ -80,6 +83,17 @@ const AxisHelper = (
   const localCamera = new OrthographicCamera(-1.2, 1.2, 1.2, -1.2, -2, 2)
 
   /**
+   * Resize
+   * @param {Object} dimensions Dimensions
+   */
+  const resize = ({ newOffsetWidth, newOffsetHeight, newWidth, newHeight }) => {
+    offsetWidth = newOffsetWidth
+    offsetHeight = newOffsetHeight
+    width = newWidth
+    height = newHeight
+  }
+
+  /**
    * Render
    */
   const render = () => {
@@ -88,7 +102,7 @@ const AxisHelper = (
     renderer.render(localScene, localCamera)
   }
 
-  return { render }
+  return { resize, render }
 }
 
 export { AxisHelper }

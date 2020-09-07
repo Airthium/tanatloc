@@ -71,6 +71,11 @@ const Vis = () => {
     // renderer.current.shadowMap.type = PCFShadowMap
     mount.current.appendChild(renderer.current.domElement)
 
+    // Controls
+    controls.current = new TrackballControls(camera.current, mount.current)
+    controls.current.rotateSpeed = 3
+    controls.current.panSpeed = 0.1
+
     // Axis
     const axisHelper = new AxisHelper(renderer.current, camera.current, {
       offsetWidth: width - 150,
@@ -83,6 +88,7 @@ const Vis = () => {
     const navigationHelper = new NavigationHelper(
       renderer.current,
       camera.current,
+      controls.current,
       {
         offsetWidth: width - 150,
         offsetHeight: height - 150,
@@ -93,11 +99,6 @@ const Vis = () => {
 
     // ZoomSelectionHelper
     // const zoomSelectionHelper = new ZoomSelectionHelper(renderer.current)
-
-    // Controls
-    controls.current = new TrackballControls(camera.current, mount.current)
-    controls.current.rotateSpeed = 3
-    controls.current.panSpeed = 0.1
 
     /**
      * Render scene
@@ -124,6 +125,21 @@ const Vis = () => {
       renderer.current.setSize(width, height)
       camera.current.aspect = width / height
       camera.current.updateProjectionMatrix()
+
+      axisHelper.resize({
+        newOffsetWidth: width - 150,
+        newOffsetHeight: 0,
+        newWidth: 150,
+        newHeight: 150
+      })
+
+      navigationHelper.resize({
+        newOffsetWidth: width - 150,
+        newOffsetHeight: height - 150,
+        newWidth: 150,
+        newHeight: 150
+      })
+
       renderScene()
     }
 

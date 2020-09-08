@@ -1,5 +1,12 @@
-import { Box2, Vector2, Raycaster } from 'three/build/three.module'
+import { Box2, Raycaster, Vector2, Vector3 } from 'three/build/three.module'
 
+/**
+ * Selection helper
+ * @param {Object} renderer Renderer
+ * @param {Object} camera Camera
+ * @param {Object} scene Scene
+ * @param {Object} controls Controls
+ */
 const SelectionHelper = (renderer, camera, scene, controls) => {
   // Selector element
   const element = document.createElement('div')
@@ -41,14 +48,24 @@ const SelectionHelper = (renderer, camera, scene, controls) => {
     onSelectEnd(event)
   })
 
-  const enable = () => {
+  /**
+   * Start selection
+   */
+  const start = () => {
     enabled = true
   }
 
-  const disable = () => {
+  /**
+   * End selection
+   */
+  const end = () => {
     enabled = false
   }
 
+  /**
+   * Selection start
+   * @param {Object} event Event
+   */
   const onSelectStart = (event) => {
     controls.enabled = false
     controls.stop()
@@ -64,6 +81,10 @@ const SelectionHelper = (renderer, camera, scene, controls) => {
     startPoint.y = event.clientY
   }
 
+  /**
+   * Selection move
+   * @param {Object} event Event
+   */
   const onSelectMove = (event) => {
     pointBottomRight.x = Math.max(startPoint.x, event.clientX)
     pointBottomRight.y = Math.max(startPoint.y, event.clientY)
@@ -77,6 +98,10 @@ const SelectionHelper = (renderer, camera, scene, controls) => {
     element.style.height = pointBottomRight.y - pointTopLeft.y + 'px'
   }
 
+  /**
+   * Selection end
+   * @param {Object} event Event
+   */
   const onSelectEnd = (event) => {
     controls.enabled = true
 
@@ -88,42 +113,66 @@ const SelectionHelper = (renderer, camera, scene, controls) => {
     const selectionRect = new Box2(startPoint, endPoint)
     zoomToRect(selectionRect)
 
-    disable()
-    //TODO zoom with it
+    end()
   }
 
+  /**
+   * Zoom to rectangle
+   * @param {Object} rect Rectangle
+   */
   const zoomToRect = (rect) => {
+    // Center
     const center = new Vector2(
       (rect.max.x + rect.min.x) / 2,
       (rect.max.y + rect.min.y) / 2
     )
-    console.log(center)
 
-    const size = new Vector2()
-    renderer.getSize(size)
+    const parentSize = new Vector2()
+    renderer.getSize(parentSize)
     const raycasterCenter = new Vector2(
-      (center.x / size.x) * 2 - 1,
-      -(center.y / size.y) * 2 + 1
+      (center.x / parentSize.x) * 2 - 1,
+      -(center.y / parentSize.y) * 2 + 1
     )
-    console.log(raycasterCenter)
 
+    // Intersection
     raycaster.setFromCamera(raycasterCenter, camera)
     const intersects = raycaster.intersectObjects(scene.children, true)
 
+    // Set center
     if (intersects.length) {
       controls.target.copy(intersects[0].point)
     } else {
-      //TODO
+      // Distance
+      const distance = camera.position.distanceTo(controls.target)
+
+      // Focus point
+      const focusPoint = new Vector3()
+      focusPoint.set(raycasterCenter.x, raycasterCenter.y, 0)
+      focusPoint.unproject(camera)
+      focusPoint.sub(camera.position).normalize()
+      focusPoint.multiplyScalar(distance)
+
+      controls.target.copy(camera.position).add(focusPoint)
     }
 
-    // TODO Get intersection with surface
+    // Zoom
+    const size = new Vector2(rect.max.x - rect.min.x, rect.max.y - rect.min.y)
+    const ratio = new Vector2(size.x / parentSize.x, size.y / parentSize.y)
+    const maxRatio = Math.max(ratio.x, ratio.y)
+    const zoomFactor = 1 - maxRatio
 
-    // TODO Zoom camera
+    const distance = camera.position.distanceTo(controls.target)
+    const zoomDistance = distance * zoomFactor
+    const translation = controls.target
+      .clone()
+      .sub(camera.position)
+      .normalize()
+      .multiplyScalar(zoomDistance)
 
-    // camera.
+    camera.position.add(translation)
   }
 
-  return { enable }
+  return { start }
 }
 
 export { SelectionHelper }

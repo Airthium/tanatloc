@@ -9,9 +9,6 @@ document.createElement = () => ({
 
 document.addEventListener = (type, callback) => {
   callback({})
-  callback({ clientX: 75, clientY: 75 })
-  callback({ clientX: 50, clientY: 50 })
-  callback({ clientX: 25, clientY: 25 })
 }
 
 describe('src/lib/three/helpers/NavigationHelper', () => {
@@ -37,6 +34,18 @@ describe('src/lib/three/helpers/NavigationHelper', () => {
   const controls = {}
 
   it('call', () => {
+    const navigation = NavigationHelper(renderer, camera, controls)
+    expect(navigation).toBeDefined()
+  })
+
+  it('event', () => {
+    document.addEventListener = (type, callback) => {
+      callback({})
+      callback({ clientX: 500, clientY: 500 })
+      callback({ clientX: 75, clientY: 75 })
+      callback({ clientX: 50, clientY: 50 })
+      callback({ clientX: 25, clientY: 25 })
+    }
     const navigation = NavigationHelper(renderer, camera, controls)
     expect(navigation).toBeDefined()
   })

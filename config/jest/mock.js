@@ -8,6 +8,13 @@
 
 // THREEJS
 
+class MockBox2 {
+  constructor() {
+    this.min = {}
+    this.max = {}
+  }
+}
+
 class MockCanvasTexture {}
 
 class MockColor {}
@@ -58,23 +65,25 @@ class MockOrthographicCamera {
 
 class MockPlaneGeometry {}
 
-class MockRaycaster {
+export class MockRaycaster {
   constructor() {
     this.set = () => {}
-    this.intersectObjects = () => [
-      {
-        object: {
-          parent: {
-            children: [
-              {},
-              {
-                material: { color: 'color' }
-              }
-            ]
-          }
-        }
-      }
-    ]
+    this.setFromCamera = () => {}
+    this.intersectObjects = () => []
+    //   {
+    //     object: {
+    //       parent: {
+    //         uuid: 'id',
+    //         children: [
+    //           {},
+    //           {
+    //             material: { color: 'color' }
+    //           }
+    //         ]
+    //       }
+    //     }
+    //   }
+    // ]
   }
 }
 
@@ -102,10 +111,15 @@ class MockVector2 {
 class MockVector3 {
   constructor() {
     this.unproject = () => {}
+    this.set = () => {}
+    this.sub = () => new MockVector3()
+    this.multiplyScalar = () => {}
+    this.normalize = () => new MockVector3()
   }
 }
 
 jest.mock('three/build/three.module', () => ({
+  Box2: MockBox2,
   CanvasTexture: MockCanvasTexture,
   Color: MockColor,
   ConeGeometry: MockConeGeometry,

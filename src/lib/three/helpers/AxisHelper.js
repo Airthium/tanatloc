@@ -9,6 +9,11 @@ import {
 import Arrow from './ArrowHelper'
 import Label from './LabelHelper'
 
+// Default width in viewport
+const defaultWidth = 150
+// Default height in viewport
+const defaultHeight = 150
+
 /**
  * Axis helper
  * @param {Object} renderer Renderer
@@ -33,11 +38,6 @@ const AxisHelper = (
   const zColor = 'blue'
   // Base sphere color
   const baseColor = 'black'
-
-  // Default width in viewport
-  const defaultWidth = 150
-  // Default height in viewport
-  const defaultHeight = 150
 
   // X
   const x = new Arrow(xColor)

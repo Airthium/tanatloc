@@ -13,8 +13,7 @@ import {
   LineSegments,
   SphereGeometry,
   Vector2,
-  Raycaster,
-  Quaternion
+  Raycaster
 } from 'three/build/three.module'
 
 /**
@@ -181,12 +180,12 @@ const NavigationHelper = (
    * @param {Object} event Event
    */
   const globalToLocal = ({ X, Y }) => {
-    const size = new Vector2()
-    renderer.getSize(size)
+    const parentSize = new Vector2()
+    renderer.getSize(parentSize)
 
     const mouse = new Vector2()
     mouse.x = ((X - offsetWidth) / width) * 2 - 1
-    mouse.y = -((Y + height - size.y + offsetHeight) / height) * 2 + 1
+    mouse.y = -((Y + height - parentSize.y + offsetHeight) / height) * 2 + 1
 
     return mouse
   }

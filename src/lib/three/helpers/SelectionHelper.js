@@ -143,14 +143,14 @@ const SelectionHelper = (renderer, camera, scene, controls) => {
       controls.target.copy(intersects[0].point)
     } else {
       // Distance
-      const distance = camera.position.distanceTo(controls.target)
+      const tmpDistance = camera.position.distanceTo(controls.target)
 
       // Focus point
       const focusPoint = new Vector3()
       focusPoint.set(raycasterCenter.x, raycasterCenter.y, 0)
       focusPoint.unproject(camera)
       focusPoint.sub(camera.position).normalize()
-      focusPoint.multiplyScalar(distance)
+      focusPoint.multiplyScalar(tmpDistance)
 
       controls.target.copy(camera.position).add(focusPoint)
     }

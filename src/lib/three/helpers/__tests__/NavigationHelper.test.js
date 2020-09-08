@@ -11,6 +11,22 @@ document.addEventListener = (type, callback) => {
   callback({})
 }
 
+global.MockRaycaster.intersectObjects = [
+  {
+    object: {
+      parent: {
+        uuid: 'id',
+        children: [
+          {},
+          {
+            material: { color: 'color' }
+          }
+        ]
+      }
+    }
+  }
+]
+
 describe('src/lib/three/helpers/NavigationHelper', () => {
   const renderer = {
     getSize: (vector) => {

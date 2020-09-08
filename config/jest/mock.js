@@ -1,17 +1,21 @@
-// global.console = {
-//   debug: jest.fn(),
-//   log: jest.fn(),
-//   info: jest.fn(),
-//   warn: jest.fn(),
-//   error: jest.fn()
-// }
-
 // THREEJS
+
+class MockAmbientLight {}
 
 class MockBox2 {
   constructor() {
     this.min = {}
     this.max = {}
+  }
+}
+
+class MockBoxGeometry {
+  constructor() {
+    this.computeBoundingSphere = () => {}
+    this.boundingSphere = {
+      center: new MockVector3(),
+      radius: 1
+    }
   }
 }
 
@@ -48,48 +52,60 @@ class MockLineSegments {}
 class MockMesh {
   constructor() {
     this.rotateY = () => {}
+    this.geometry = new MockBoxGeometry()
+    this.material = new MockMeshBasicMaterial()
   }
 }
 
 class MockMeshBasicMaterial {}
 
+class MockMeshStandardMaterial {}
+
 class MockOrthographicCamera {
   constructor() {
-    this.rotation = {
-      copy: () => {}
-    }
-    this.position = {}
+    this.rotation = new MockVector3()
+    this.position = new MockVector3()
     this.getWorldDirection = () => {}
+  }
+}
+
+class MockPerspectiveCamera {
+  constructor() {
+    this.position = new MockVector3()
+    this.updateProjectionMatrix = () => {}
   }
 }
 
 class MockPlaneGeometry {}
 
-export class MockRaycaster {
+class MockPointLight {
+  constructor() {
+    this.position = new MockVector3()
+  }
+}
+
+global.MockRaycaster = {
+  intersectObjects: []
+}
+class MockRaycaster {
   constructor() {
     this.set = () => {}
     this.setFromCamera = () => {}
-    this.intersectObjects = () => []
-    //   {
-    //     object: {
-    //       parent: {
-    //         uuid: 'id',
-    //         children: [
-    //           {},
-    //           {
-    //             material: { color: 'color' }
-    //           }
-    //         ]
-    //       }
-    //     }
-    //   }
-    // ]
+    this.intersectObjects = () => global.MockRaycaster.intersectObjects
   }
 }
 
 class MockScene {
   constructor() {
     this.add = () => {}
+    this.remove = () => {}
+    this.children = [new MockMesh()]
+  }
+}
+
+class MockSphere {
+  constructor() {
+    this.center = new MockVector3()
   }
 }
 
@@ -115,11 +131,25 @@ class MockVector3 {
     this.sub = () => new MockVector3()
     this.multiplyScalar = () => {}
     this.normalize = () => new MockVector3()
+    this.add = () => new MockVector3()
+    this.copy = () => new MockVector3()
   }
 }
 
-jest.mock('three/build/three.module', () => ({
+class MockWebGLRenderer {
+  constructor() {
+    this.setClearColor = () => {}
+    this.setSize = () => {}
+    this.setPixelRatio = () => {}
+    this.setViewport = () => {}
+    this.render = () => {}
+  }
+}
+
+const MockThree = {
+  AmbientLight: MockAmbientLight,
   Box2: MockBox2,
+  BoxGeometry: MockBoxGeometry,
   CanvasTexture: MockCanvasTexture,
   Color: MockColor,
   ConeGeometry: MockConeGeometry,
@@ -130,14 +160,23 @@ jest.mock('three/build/three.module', () => ({
   LineSegments: MockLineSegments,
   Mesh: MockMesh,
   MeshBasicMaterial: MockMeshBasicMaterial,
+  MeshStandardMaterial: MockMeshStandardMaterial,
   OrthographicCamera: MockOrthographicCamera,
+  PerspectiveCamera: MockPerspectiveCamera,
   PlaneGeometry: MockPlaneGeometry,
+  PointLight: MockPointLight,
   Raycaster: MockRaycaster,
   Scene: MockScene,
+  Sphere: MockSphere,
   SphereGeometry: MockSphereGeometry,
   Sprite: MockSprite,
   SpriteMaterial: MockSpriteMaterial,
   Texture: MockTexture,
   Vector2: MockVector2,
-  Vector3: MockVector3
-}))
+  Vector3: MockVector3,
+  WebGLRenderer: MockWebGLRenderer
+}
+
+jest.mock('three/build/three.module', () => MockThree)
+
+export default MockThree

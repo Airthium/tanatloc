@@ -80,6 +80,7 @@ describe('src/lib/three/helpers/SelectionHelper', () => {
   })
 
   it('raycaster', () => {
+    global.MockRaycaster.intersectObjects = [{}]
     const selection = SelectionHelper(renderer, camera, scene, controls)
     selection.start()
     mouseDown({ button: 0 })

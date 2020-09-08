@@ -24,7 +24,7 @@ import {
   Scene,
   Sphere,
   WebGLRenderer
-} from 'three'
+} from 'three/build/three.module'
 import { TrackballControls } from '../../../../src/lib/three/controls/TrackballControls'
 import { AxisHelper } from '../../../../src/lib/three/helpers/AxisHelper'
 import { NavigationHelper } from '../../../../src/lib/three/helpers/NavigationHelper'
@@ -81,7 +81,8 @@ const ThreeView = () => {
     renderer.current.setSize(width, height)
     renderer.current.setPixelRatio(window.devicePixelRatio || 1)
     renderer.current.autoClear = false
-    mount.current.appendChild(renderer.current.domElement)
+    // mount.current.appendChild(renderer.current.domElement)
+    //TODO restore that
 
     // Controls
     controls.current = new TrackballControls(camera.current, mount.current)
@@ -122,8 +123,6 @@ const ThreeView = () => {
      */
     const renderScene = () => {
       controls.current.update()
-
-      renderer.current.clear()
 
       renderer.current.setViewport(0, 0, width, height)
       renderer.current.render(scene.current, camera.current)
@@ -197,7 +196,8 @@ const ThreeView = () => {
 
       window.removeEventListener('resize', handleResize)
 
-      mount.current.removeChild(renderer.current.domElement)
+      // mount.current.removeChild(renderer.current.domElement)
+      // TODO restore that
 
       // Clean scene
       scene.current.children.forEach((child) => {
@@ -308,10 +308,7 @@ const ThreeView = () => {
         <Tooltip title="Menu">
           <Button
             icon={<MenuOutlined />}
-            onClick={(e) => {
-              e.stopPropagation()
-              setMenuVisible(!menuVisible)
-            }}
+            onClick={() => setMenuVisible(!menuVisible)}
           />
         </Tooltip>
         <Drawer

@@ -68,6 +68,10 @@ const Dashboard = () => {
 
   // Default workspace
   useEffect(() => {
+    if ((!workspaces || workspaces.length === 0) && currentWorkspace) {
+      setCurrentWorkspace(undefined)
+    }
+
     if (user && workspaces && !currentWorkspace) {
       const firstWorkspace = workspaces[0]
 

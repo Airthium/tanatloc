@@ -1,3 +1,4 @@
+import { useRouter } from 'next/router'
 import { Space, Table } from 'antd'
 
 import Data from '../data'
@@ -13,12 +14,20 @@ const ProjectList = (props) => {
   // Props
   const workspace = props.workspace || {}
 
+  // Router
+  const router = useRouter()
+
   // Load projects
   const [projects] = useProjects(workspace.projects)
 
   const data = projects.map((project) => {
     return Data(project)
   })
+
+  // Open project
+  const openProject = (project) => {
+    router.push('/project/' + project.id)
+  }
 
   /**
    * Render
@@ -34,11 +43,9 @@ const ProjectList = (props) => {
       <Table.Column
         title=""
         dataIndex="snapshot"
-        onCell={(record) => {
+        onCell={(project) => {
           return {
-            onClick: () => {
-              console.log(record) //it should only open if the user click on the snapshot
-            }
+            onClick: () => openProject(project)
           }
         }}
       />

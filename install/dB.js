@@ -1,9 +1,8 @@
-import config, { databases } from '../config/db'
+import { databases } from '../config/db'
 import query from '../src/database'
 
 const createTables = async () => {
   console.info('Create dB tables')
-  console.info('   dB: ' + config.DATABASE)
   try {
     // Avatars
     console.info(' + Avatar table')

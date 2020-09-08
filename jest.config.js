@@ -48,6 +48,7 @@ module.exports = {
     '/coverage/',
     '/doc/',
     '/jest.config.js',
-    '/config/jest/'
+    '/config/jest/',
+    '/src/lib/three/controls/'
   ]
 }

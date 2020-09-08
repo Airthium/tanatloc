@@ -1,4 +1,4 @@
-import ProjectPage from '../components/project'
+import ProjectPage from '../../components/project'
 
 /**
  * Project

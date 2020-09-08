@@ -1,0 +1,31 @@
+{
+	"metadata": {
+		"version": 4.4,
+		"type": "BufferGeometry",
+		"generator": "Tanatloc"
+	},
+	"uuid": "840deae61ceb8a7ceff333cbeb8d7072",
+	"minSize": "0",
+	"maxSize": "0",
+	"label": "2",
+	"type": "BufferGeometry",
+	"data": {
+		"attributes": {
+			"position": {
+				"itemSize": 3,
+				"type": "Float32Array",
+				"array": [0,0,0,500,0,5000,0,0,5000,500,0,0,500,0,5000,0,0,0]
+			},
+			"normal": {
+				"itemSize": 3,
+				"type": "Float32Array",
+				"array": [-0,-1,-0,0,-1,0,-0,-1,-0,0,-1,0,0,-1,0,-0,-1,-0]
+			},
+			"color": {
+				"itemSize": 3,
+				"type": "Float32Array",
+				"array": [0.75,0.75,0.75]
+			}
+		}
+	}
+}

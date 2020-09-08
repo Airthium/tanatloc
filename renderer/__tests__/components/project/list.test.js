@@ -1,6 +1,10 @@
 import List from '../../../components/project/list'
 import { shallow } from 'enzyme'
 
+jest.mock('next/router', () => ({
+  useRouter: () => [{ push: () => {} }]
+}))
+
 jest.mock('../../../components/project/data', () => () => 'data')
 
 jest.mock('../../../components/project/delete', () => 'delete')

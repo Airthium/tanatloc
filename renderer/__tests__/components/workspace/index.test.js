@@ -1,6 +1,8 @@
 import Workspace from '../../../components/workspace'
 import { shallow } from 'enzyme'
 
+jest.mock('../../../components/workspace/empty', () => 'empty')
+
 jest.mock('../../../components/workspace/add', () => 'add')
 
 jest.mock('../../../components/workspace/delete', () => 'delete')
@@ -47,5 +49,11 @@ describe('components/workspace', () => {
     wrapper = shallow(<Workspace workspace={{ users: users }} />)
 
     expect(wrapper.find('Avatar').length).not.toBe(0)
+  })
+
+  it('empty', () => {
+    wrapper.unmount()
+    wrapper = shallow(<Workspace />)
+    expect(wrapper.find('empty').length).toBe(1)
   })
 })

@@ -6,27 +6,40 @@ Using server-side rendering (SSR).
 
 ## Env
 
-| Variable        | Default      | Comment           |
-| --------------- | ------------ | ----------------- |
-| PASSPORT_SECRET | aa...        | Passport password |
-| DB_USER         | tanatlocuser | Database user     |
-| DB_HOST         | localhost    | Database host     |
-| DB_PORT         | 5432         | Database port     |
-| DB_DATABASE     | tanatloc     | Database name     |
-| DB_PASSWORD     | tanatloc     | Database password |
+| Variable    | Default      | Comment           |
+| ----------- | ------------ | ----------------- |
+| DB_USER     | tanatlocuser | Database user     |
+| DB_HOST     | localhost    | Database host     |
+| DB_PORT     | 5432         | Database port     |
+| DB_DATABASE | tanatloc     | Database name     |
+| DB_PASSWORD | tanatloc     | Database password |
+
+## Database
+
+```shell
+sudo -u postgres psql
+```
+
+```sql
+CREATE DATABASE tanatloc;
+CREATE USER tanatlocuser WITH ENCRYPTED PASSWORD 'tanatloc';
+GRANT ALL PRIVILEGES ON DATABASE tanatloc TO tanatlocuser;
+\c tanatloc
+CREATE EXTENSION pgcrypto;
+```
 
 ## Dev
 
 Browser:
 
-```
+```shell
 yarn install
 yarn dev
 ```
 
 Electron:
 
-```
+```shell
 yarn install
 yarn electron-dev
 ```
@@ -35,7 +48,7 @@ yarn electron-dev
 
 Browser:
 
-```
+```shell
 yarn install
 yarn build
 yarn start
@@ -43,14 +56,14 @@ yarn start
 
 Browser (static build):
 
-```
+```shell
 yarn install
 yarn export
 ```
 
 Electron
 
-```
+```shell
 yarn install
 yarn electron-build
 ```

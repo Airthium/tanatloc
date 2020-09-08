@@ -2,17 +2,20 @@
 coverage/
 
 # Doc
-doc
+doc/
 
 # Build
 renderer/.next
 renderer/out
 
 # Dist
-app
-dist
-dist-server
-dist-install
+app/
+dist/
+dist-server/
+dist-install/
 
 # Doc
 doc/
+
+# Public
+renderer/public/

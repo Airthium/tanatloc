@@ -1,4 +1,4 @@
-// /** @module renderer/components/project */
+/** @module renderer/components/project */
 
 import { useRouter } from 'next/router'
 import { Layout } from 'antd'

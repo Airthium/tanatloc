@@ -1,19 +1,24 @@
+/** @module renderer/components/project/view */
+
+import { useRouter } from 'next/router'
 import { useRef, useState, useEffect } from 'react'
 import { Button, Divider, Drawer, Layout, Tooltip } from 'antd'
 import {
-  CloseOutlined,
   CompressOutlined,
   ControlOutlined,
   ZoomInOutlined,
   ZoomOutOutlined,
-  SelectOutlined
+  SelectOutlined,
+  PlusOutlined,
+  MinusOutlined,
+  ArrowLeftOutlined,
+  MenuOutlined
 } from '@ant-design/icons'
 import {
   AmbientLight,
   BoxGeometry,
   Mesh,
   MeshStandardMaterial,
-  PCFShadowMap,
   PerspectiveCamera,
   PointLight,
   Scene,
@@ -26,6 +31,7 @@ import { NavigationHelper } from '../../../../src/lib/three/helpers/NavigationHe
 import { SelectionHelper } from '../../../../src/lib/three/helpers/SelectionHelper'
 
 const ThreeView = () => {
+  // Ref
   const mount = useRef(null)
   const scene = useRef()
   const camera = useRef()
@@ -33,8 +39,14 @@ const ThreeView = () => {
   const controls = useRef()
   const selectionHelper = useRef()
 
+  // Router
+  const router = useRouter()
+
+  // State
+  const [menuVisible, setMenuVisible] = useState(false)
   const [controlVisible, setControlVisible] = useState(false)
 
+  // Zoom factor
   const zoomFactor = 0.01
 
   // Mount
@@ -69,8 +81,6 @@ const ThreeView = () => {
     renderer.current.setSize(width, height)
     renderer.current.setPixelRatio(window.devicePixelRatio || 1)
     renderer.current.autoClear = false
-    // renderer.current.shadowMap.enabled = true
-    // renderer.current.shadowMap.type = PCFShadowMap
     mount.current.appendChild(renderer.current.domElement)
 
     // Controls
@@ -92,8 +102,8 @@ const ThreeView = () => {
       camera.current,
       controls.current,
       {
-        offsetWidth: width - 150,
-        offsetHeight: height - 150,
+        offsetWidth: 0,
+        offsetHeight: 0,
         width: 150,
         height: 150
       }
@@ -141,8 +151,8 @@ const ThreeView = () => {
       })
 
       navigationHelper.resize({
-        newOffsetWidth: width - 150,
-        newOffsetHeight: height - 150,
+        newOffsetWidth: 0,
+        newOffsetHeight: 0,
         newWidth: 150,
         newHeight: 150
       })
@@ -294,19 +304,51 @@ const ThreeView = () => {
       style={{ position: 'fixed', top: 0, right: 0, bottom: 0, left: 0 }}
       ref={mount}
     >
-      <Layout
-        style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          height: '60px',
-          width: '100%',
-          display: 'flex',
-          justifyContent: 'center',
-          padding: '0 10px',
-          backgroundColor: 'transparent'
-        }}
-      >
+      <Layout className="View-menu">
+        <Tooltip title="Menu">
+          <Button
+            icon={<MenuOutlined />}
+            onClick={(e) => {
+              e.stopPropagation()
+              setMenuVisible(!menuVisible)
+            }}
+          />
+        </Tooltip>
+        <Drawer
+          className="View-menu-drawer"
+          title="Menu"
+          visible={menuVisible}
+          onClose={() => setMenuVisible(!menuVisible)}
+          mask={false}
+          maskClosable={false}
+          placement="left"
+          getContainer={false}
+          bodyStyle={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            padding: '10px'
+          }}
+          width="100%"
+        >
+          <div className="View-drawer-group">
+            <Tooltip title="Dashboard">
+              <Button
+                icon={<ArrowLeftOutlined />}
+                onClick={() => router.push('/dashboard')}
+              />
+            </Tooltip>
+          </div>
+          <Divider />
+          <div className="View-drawer-group">
+            <Tooltip title="New simulation">
+              <Button icon={<PlusOutlined />} />
+            </Tooltip>
+          </div>
+        </Drawer>
+      </Layout>
+
+      <Layout className="View-controls">
         <Tooltip title="Controls">
           <Button
             icon={<ControlOutlined />}
@@ -314,47 +356,57 @@ const ThreeView = () => {
           />
         </Tooltip>
         <Drawer
+          className="View-controls-drawer"
+          title="Controls"
           visible={controlVisible}
-          closable={false}
+          onClose={() => setControlVisible(!controlVisible)}
           mask={false}
           maskClosable={false}
           placement="right"
           getContainer={false}
-          style={{ position: 'absolute' }}
           bodyStyle={{
             display: 'flex',
-            alignItems: 'center',
-            padding: '0 10px'
+            flexDirection: 'column',
+            padding: '10px'
           }}
           width="100%"
         >
-          <Button
-            icon={<CloseOutlined />}
-            onClick={() => setControlVisible(!controlVisible)}
-          />
-          <Divider type="vertical" />
-          <Button
-            icon={<ZoomOutOutlined />}
-            onMouseDown={zoomOut}
-            onMouseUp={zoomStop}
-            onMouseOut={zoomStop}
-          />
-          <Button icon={<CompressOutlined />} onClick={zoomToFit} />
-          <Button
-            icon={<ZoomInOutlined />}
-            onMouseDown={zoomIn}
-            onMouseUp={zoomStop}
-            onMouseOut={zoomStop}
-          />
-          <Divider type="vertical" />
-          <Button onClick={addCube}>Add cube</Button>
-          <Divider type="vertical" />
-          <Button onClick={removeCube}>Remove last</Button>
-          <Divider type="vertical" />
-          <Button
-            icon={<SelectOutlined />}
-            onClick={() => selectionHelper.current.enable()}
-          />
+          <div className="View-drawer-group">
+            <div className="View-drawer-subgroup">
+              <Tooltip title="Zoom out">
+                <Button
+                  icon={<ZoomOutOutlined />}
+                  onMouseDown={zoomOut}
+                  onMouseUp={zoomStop}
+                  onMouseOut={zoomStop}
+                />
+              </Tooltip>
+              <Tooltip title="Zoom to fit">
+                <Button icon={<CompressOutlined />} onClick={zoomToFit} />
+              </Tooltip>
+              <Tooltip title="Zoom in">
+                <Button
+                  icon={<ZoomInOutlined />}
+                  onMouseDown={zoomIn}
+                  onMouseUp={zoomStop}
+                  onMouseOut={zoomStop}
+                />
+              </Tooltip>
+            </div>
+            <div className="View-drawer-subgroup">
+              <Tooltip title="Zoom to selection">
+                <Button
+                  icon={<SelectOutlined />}
+                  onClick={() => selectionHelper.current.start()}
+                />
+              </Tooltip>
+            </div>
+          </div>
+          <Divider />
+          <div className="View-drawer-group">
+            <Button icon={<PlusOutlined />} onClick={addCube} />
+            <Button icon={<MinusOutlined />} onClick={removeCube} />
+          </div>
         </Drawer>
       </Layout>
     </div>

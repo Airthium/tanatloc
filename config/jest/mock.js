@@ -10,6 +10,8 @@
 
 class MockCanvasTexture {}
 
+class MockColor {}
+
 class MockConeGeometry {
   constructor() {
     this.translate = () => {}
@@ -50,12 +52,31 @@ class MockOrthographicCamera {
       copy: () => {}
     }
     this.position = {}
+    this.getWorldDirection = () => {}
   }
 }
 
 class MockPlaneGeometry {}
 
-class MockRaycaster {}
+class MockRaycaster {
+  constructor() {
+    this.set = () => {}
+    this.intersectObjects = () => [
+      {
+        object: {
+          parent: {
+            children: [
+              {},
+              {
+                material: { color: 'color' }
+              }
+            ]
+          }
+        }
+      }
+    ]
+  }
+}
 
 class MockScene {
   constructor() {
@@ -71,10 +92,22 @@ class MockSpriteMaterial {}
 
 class MockTexture {}
 
-class MockVector3 {}
+class MockVector2 {
+  constructor() {
+    this.x = 0
+    this.y = 0
+  }
+}
+
+class MockVector3 {
+  constructor() {
+    this.unproject = () => {}
+  }
+}
 
 jest.mock('three/build/three.module', () => ({
   CanvasTexture: MockCanvasTexture,
+  Color: MockColor,
   ConeGeometry: MockConeGeometry,
   CylinderGeometry: MockCylinderGeometry,
   EdgesGeometry: MockEdgesGeometry,
@@ -91,5 +124,6 @@ jest.mock('three/build/three.module', () => ({
   Sprite: MockSprite,
   SpriteMaterial: MockSpriteMaterial,
   Texture: MockTexture,
+  Vector2: MockVector2,
   Vector3: MockVector3
 }))

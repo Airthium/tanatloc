@@ -154,10 +154,6 @@ const NavigationHelper = (
   // Raycatser
   const raycaster = new Raycaster()
 
-  // Events
-  document.addEventListener('mousemove', (e) => onMouseMove(e))
-  document.addEventListener('mousedown', (e) => onMouseDown(e))
-
   /**
    * On mouse move
    * @param {Object} event Event
@@ -262,6 +258,10 @@ const NavigationHelper = (
       onMouseMove(event)
     }
   }
+
+  // Events
+  document.addEventListener('mousemove', (e) => onMouseMove(e))
+  document.addEventListener('mousedown', (e) => onMouseDown(e))
 
   /**
    * Resize

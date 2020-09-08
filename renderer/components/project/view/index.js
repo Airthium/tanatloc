@@ -89,7 +89,7 @@ const ThreeView = () => {
     controls.current.panSpeed = 0.1
 
     // Axis
-    const axisHelper = new AxisHelper(renderer.current, camera.current, {
+    const axisHelper = AxisHelper(renderer.current, camera.current, {
       offsetWidth: width - 150,
       offsetHeight: 0,
       width: 150,
@@ -97,7 +97,7 @@ const ThreeView = () => {
     })
 
     // NavigationHelper
-    const navigationHelper = new NavigationHelper(
+    const navigationHelper = NavigationHelper(
       renderer.current,
       camera.current,
       controls.current,
@@ -110,7 +110,7 @@ const ThreeView = () => {
     )
 
     // SelectionHelper
-    selectionHelper.current = new SelectionHelper(
+    selectionHelper.current = SelectionHelper(
       renderer.current,
       camera.current,
       scene.current,

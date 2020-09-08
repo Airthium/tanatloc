@@ -40,22 +40,22 @@ const AxisHelper = (
   const baseColor = 'black'
 
   // X
-  const x = new Arrow(xColor)
+  const x = Arrow(xColor)
   x.rotateZ(-Math.PI / 2)
-  const xLabel = new Label('X')
+  const xLabel = Label('X')
   xLabel.scale.setScalar(0.2)
   xLabel.position.set(1.1, 0, 0)
 
   // Y
-  const y = new Arrow(yColor)
-  const yLabel = new Label('Y')
+  const y = Arrow(yColor)
+  const yLabel = Label('Y')
   yLabel.scale.setScalar(0.2)
   yLabel.position.set(0, 1.1, 0)
 
   // Z
-  const z = new Arrow(zColor)
+  const z = Arrow(zColor)
   z.rotateX(Math.PI / 2)
-  const zLabel = new Label('Z')
+  const zLabel = Label('Z')
   zLabel.scale.setScalar(0.2)
   zLabel.position.set(0, 0, 1.1)
 

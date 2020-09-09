@@ -1,2 +1,2 @@
-ignores: ["babel-loader", "@babel/preset-typescript", "pg-native", "drei", "react-three-fiber", "three"]
+ignores: ["babel-loader", "@babel/preset-typescript", "pg-native"]
 skip-missing: true

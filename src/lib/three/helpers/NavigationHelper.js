@@ -254,6 +254,9 @@ const NavigationHelper = (
       camera.position.copy(normal).multiplyScalar(distance)
       camera.up.copy(up)
 
+      currentlyHighlighted = 0
+      unhighlight()
+
       // Mouse move
       onMouseMove(event)
     }

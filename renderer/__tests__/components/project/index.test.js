@@ -3,7 +3,8 @@ import { shallow } from 'enzyme'
 
 jest.mock('next/router', () => ({
   useRouter: () => ({
-    query: {}
+    query: {},
+    push: () => {}
   })
 }))
 
@@ -21,5 +22,20 @@ describe('components/project', () => {
 
   it('render', () => {
     expect(wrapper).toBeDefined()
+  })
+
+  it('buttons', () => {
+    wrapper.find('Button').forEach((button) => {
+      button.props().onClick()
+    })
+
+    // One a simulation is added
+    wrapper.find('Button').forEach((button) => {
+      button.props().onClick()
+    })
+  })
+
+  it('onClose', () => {
+    wrapper.find('withConfigConsumer(Drawer)').props().onClose()
   })
 })

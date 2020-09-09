@@ -1,5 +1,6 @@
 /** @module renderer/components/workspace */
 
+import { useState } from 'react'
 import {
   message,
   Divider,
@@ -30,7 +31,7 @@ import { useWorkspaces, update } from '../../../src/api/workspace'
  */
 const Workspace = (props) => {
   // Props
-  const workspace = props.workspace
+  const [workspace, setWorkspace] = useState(props.workspace)
 
   // Data
   const [, { mutateOneWorkspace }] = useWorkspaces()
@@ -42,6 +43,13 @@ const Workspace = (props) => {
   const setName = (name) => {
     update(workspace, [{ key: 'name', value: name }])
       .then(() => {
+        // Update workspace
+        const newWorkspace = {
+          ...workspace,
+          name: name
+        }
+        setWorkspace(newWorkspace)
+
         // Mutate workspace
         mutateOneWorkspace(workspace)
       })

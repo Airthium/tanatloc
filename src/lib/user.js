@@ -24,10 +24,19 @@ const login = async ({ username, password }) => {
 
 /**
  * Update user
- * @param {Object} data { user: { id }, data: [{ type, method, key, value }] }
+ * @param {Object} user user { id }
+ * @param {Object} data Data {data: [{ type, method, key, value }] } }
  */
-const update = async ({ user, data }) => {
+const update = async (user, { data }) => {
   await dBupdate({ user, data })
 }
 
-export { login, get, update }
+/**
+ * Delete user
+ * @param {Object} user User { id }
+ */
+const del = async (user) => {
+  await DashboardFilled(user)
+}
+
+export { login, get, update, del }

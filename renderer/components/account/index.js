@@ -1,8 +1,11 @@
 /** @module renderer/components/account */
 
-import { Button, Card, Form, Input, Layout, Space } from 'antd'
+import { message, Button, Card, Form, Input, Layout, Space } from 'antd'
+import { DeleteOutlined } from '@ant-design/icons'
 
-import { useUser } from '../../../src/api/user'
+import Delete from './delete'
+
+import { useUser, update } from '../../../src/api/user'
 
 /**
  * Account
@@ -10,10 +13,48 @@ import { useUser } from '../../../src/api/user'
 const Account = () => {
   // Data
   const [form] = Form.useForm()
-  const [user] = useUser()
+  const [user, { mutateUser }] = useUser()
+
+  const onFinish = (data) => {
+    const toUpdate = []
+    // TODO disable for now
+    // if (data.username !== user.email)
+    //   toUpdate.push({ key: 'email', value: data.username })
+    if (data.firstname !== user.firstname)
+      toUpdate.push({ key: 'firstname', value: data.firstname })
+    if (data.lastname !== user.lastname)
+      toUpdate.push({ key: 'lastname', value: data.lastname })
+    if (data.email !== user.email)
+      toUpdate.push({ key: 'email', value: data.email })
+
+    update(toUpdate)
+      .then(() => {
+        // // Update user
+        // user.firstname = firstname
+        // user.lastname = lastname
+        // user.email = email
+        // // Mutate user
+        // mutateUser(user)
+        // TODO cause a logout / login
+      })
+      .catch((err) => {
+        message.error(err.message)
+        console.error(err)
+      })
+  }
 
   const onCancel = () => {
     form.resetFields()
+  }
+
+  const onPasswordFinish = (data) => {
+    console.log(data)
+    if (data.newPassword === data.passwordConfirm) {
+      // Check current password
+      //update password
+    } else {
+      message.error('Password and confirmation mismatch')
+    }
   }
 
   // Layout
@@ -40,9 +81,10 @@ const Account = () => {
             lastname: user.lastname,
             email: user.email
           }}
+          onFinish={onFinish}
         >
           <Form.Item label="User name" name="username">
-            <Input />
+            <Input disabled={true} />
           </Form.Item>
           <Form.Item label="First name" name="firstname">
             <Input />
@@ -62,14 +104,20 @@ const Account = () => {
             </Space>
           </Form.Item>
         </Form>
+
         <Form
           {...layout}
           initialValues={{
             password: '******',
+            newPassword: '******',
             passwordConfirm: '*******'
           }}
+          onFinish={onPasswordFinish}
         >
-          <Form.Item label="Password" name="password">
+          <Form.Item label="Current password" name="password">
+            <Input.Password />
+          </Form.Item>
+          <Form.Item label="New password" name="newPassword">
             <Input.Password />
           </Form.Item>
           <Form.Item label="Password confirmation" name="passwordConfirm">
@@ -84,6 +132,7 @@ const Account = () => {
           </Form.Item>
         </Form>
       </Card>
+      <Delete />
     </Layout>
   )
 }

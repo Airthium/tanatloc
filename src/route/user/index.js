@@ -1,5 +1,5 @@
 import getSessionId from '../session'
-import { get } from '../../lib/user'
+import { get, update, del } from '../../lib/user'
 
 /**
  * User API
@@ -11,6 +11,43 @@ export default async function (req, res) {
   const sessionId = await getSessionId(req, res)
   if (!sessionId) return
 
-  const user = await get(sessionId, ['lastname', 'firstname', 'email'])
-  res.status(200).json({ user })
+  switch (req.method) {
+    case 'GET':
+      try {
+        const user = await get(sessionId, ['lastname', 'firstname', 'email'])
+        res.status(200).json({ user })
+      } catch (err) {
+        console.error(err)
+        res.status(500).json({ message: err.message })
+      }
+      break
+    case 'POST':
+      try {
+        // TODO add
+      } catch (err) {
+        console.error(err)
+        res.status(500).json({ message: err.message })
+      }
+      break
+    case 'PUT':
+      try {
+        await update({ id: sessionId }, req.body)
+        res.status(200).end()
+      } catch (err) {
+        console.error(err)
+        res.status(500).json({ message: err.message })
+      }
+      break
+    case 'DELETE':
+      try {
+        await del({ id: sessionId })
+        res.status(200).end()
+      } catch (err) {
+        console.error(err)
+        res.status(500).json({ message: err.message })
+      }
+      break
+    default:
+      res.status(405).json({ message: 'Method ' + req.method + ' not allowed' })
+  }
 }

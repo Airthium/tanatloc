@@ -81,8 +81,7 @@ const ThreeView = () => {
     renderer.current.setSize(width, height)
     renderer.current.setPixelRatio(window.devicePixelRatio || 1)
     renderer.current.autoClear = false
-    // mount.current.appendChild(renderer.current.domElement)
-    //TODO restore that
+    mount.current.appendChild(renderer.current.domElement)
 
     // Controls
     controls.current = new TrackballControls(camera.current, mount.current)
@@ -196,8 +195,7 @@ const ThreeView = () => {
 
       window.removeEventListener('resize', handleResize)
 
-      // mount.current.removeChild(renderer.current.domElement)
-      // TODO restore that
+      mount.current.removeChild(renderer.current.domElement)
 
       // Clean scene
       scene.current.children.forEach((child) => {
@@ -290,6 +288,7 @@ const ThreeView = () => {
     scene.current.add(cube)
   }
 
+  // TODO to remove
   useEffect(() => {
     addCube()
     zoomToFit()

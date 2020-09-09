@@ -1,4 +1,5 @@
 import View from '../../../../components/project/view'
+import React from 'react'
 import { act } from 'react-dom/test-utils'
 import { mount } from 'enzyme'
 
@@ -30,18 +31,21 @@ jest.mock('../../../../../src/lib/three/controls/TrackballControls', () => ({
     }
   }
 }))
+
 jest.mock('../../../../../src/lib/three/helpers/AxisHelper', () => ({
   AxisHelper: () => ({
     render: () => {},
     resize: () => {}
   })
 }))
+
 jest.mock('../../../../../src/lib/three/helpers/NavigationHelper', () => ({
   NavigationHelper: () => ({
     render: () => {},
     resize: () => {}
   })
 }))
+
 jest.mock('../../../../../src/lib/three/helpers/SelectionHelper', () => ({
   SelectionHelper: () => ({
     start: () => {}

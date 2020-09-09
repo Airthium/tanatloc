@@ -68,6 +68,15 @@ const Dashboard = () => {
 
   // Default workspace
   useEffect(() => {
+    // Update current workspace
+    if (workspaces && workspaces.length && currentWorkspace) {
+      const index = workspaces.findIndex((w) => w.id === currentWorkspace.id)
+      if (index !== -1) {
+        if (workspaces[index] !== currentWorkspace[index])
+          setCurrentWorkspace(workspaces[index])
+      }
+    }
+
     if ((!workspaces || workspaces.length === 0) && currentWorkspace) {
       setCurrentWorkspace(undefined)
     }

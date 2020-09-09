@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/router'
 import { useState } from 'react'
-import { Button, Divider, Drawer, Layout, Steps, Tooltip } from 'antd'
+import { Button, Divider, Drawer, Layout, Tooltip } from 'antd'
 import {
   ArrowLeftOutlined,
   MenuOutlined,
@@ -27,11 +27,14 @@ const Project = () => {
    * Add simulation
    */
   const addSimulation = () => {
-    const id = simulations.length
+    const simulationId = simulations.length
 
     simulations.push(
-      <Button key={id} onClick={() => setSimulation({ id: id })}>
-        {id}
+      <Button
+        key={simulationId}
+        onClick={() => setSimulation({ id: simulationId })}
+      >
+        {simulationId}
       </Button>
     )
     setSimulations(simulations)

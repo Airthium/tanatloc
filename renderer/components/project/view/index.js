@@ -1,6 +1,5 @@
 /** @module renderer/components/project/view */
 
-import { useRouter } from 'next/router'
 import { useRef, useState, useEffect } from 'react'
 import { Button, Divider, Drawer, Layout, Tooltip } from 'antd'
 import {
@@ -36,9 +35,6 @@ const ThreeView = () => {
   const renderer = useRef()
   const controls = useRef()
   const selectionHelper = useRef()
-
-  // Router
-  const router = useRouter()
 
   // State
   const [controlVisible, setControlVisible] = useState(false)

@@ -10,9 +10,7 @@ import {
   ZoomOutOutlined,
   SelectOutlined,
   PlusOutlined,
-  MinusOutlined,
-  ArrowLeftOutlined,
-  MenuOutlined
+  MinusOutlined
 } from '@ant-design/icons'
 import {
   AmbientLight,
@@ -43,7 +41,6 @@ const ThreeView = () => {
   const router = useRouter()
 
   // State
-  const [menuVisible, setMenuVisible] = useState(false)
   const [controlVisible, setControlVisible] = useState(false)
 
   // Zoom factor
@@ -303,47 +300,6 @@ const ThreeView = () => {
       style={{ position: 'fixed', top: 0, right: 0, bottom: 0, left: 0 }}
       ref={mount}
     >
-      <Layout className="View-menu">
-        <Tooltip title="Menu">
-          <Button
-            icon={<MenuOutlined />}
-            onClick={() => setMenuVisible(!menuVisible)}
-          />
-        </Tooltip>
-        <Drawer
-          className="View-menu-drawer"
-          title="Menu"
-          visible={menuVisible}
-          onClose={() => setMenuVisible(!menuVisible)}
-          mask={false}
-          maskClosable={false}
-          placement="left"
-          getContainer={false}
-          bodyStyle={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            padding: '10px'
-          }}
-          width="100%"
-        >
-          <div className="View-drawer-group">
-            <Tooltip title="Dashboard">
-              <Button
-                icon={<ArrowLeftOutlined />}
-                onClick={() => router.push('/dashboard')}
-              />
-            </Tooltip>
-          </div>
-          <Divider />
-          <div className="View-drawer-group">
-            <Tooltip title="New simulation">
-              <Button icon={<PlusOutlined />} />
-            </Tooltip>
-          </div>
-        </Drawer>
-      </Layout>
-
       <Layout className="View-controls">
         <Tooltip title="Controls">
           <Button
@@ -367,8 +323,8 @@ const ThreeView = () => {
           }}
           width="100%"
         >
-          <div className="View-drawer-group">
-            <div className="View-drawer-subgroup">
+          <div className="drawer-group">
+            <div className="drawer-subgroup">
               <Tooltip title="Zoom out">
                 <Button
                   icon={<ZoomOutOutlined />}
@@ -389,7 +345,7 @@ const ThreeView = () => {
                 />
               </Tooltip>
             </div>
-            <div className="View-drawer-subgroup">
+            <div className="drawer-subgroup">
               <Tooltip title="Zoom to selection">
                 <Button
                   icon={<SelectOutlined />}
@@ -399,7 +355,7 @@ const ThreeView = () => {
             </div>
           </div>
           <Divider />
-          <div className="View-drawer-group">
+          <div className="drawer-group">
             <Button icon={<PlusOutlined />} onClick={addCube} />
             <Button icon={<MinusOutlined />} onClick={removeCube} />
           </div>

@@ -37,8 +37,6 @@ const Project = () => {
     setSimulations(simulations)
   }
 
-  console.log(simulation)
-
   return (
     <Layout>
       <Layout className="Project-menu">

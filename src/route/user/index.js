@@ -1,5 +1,5 @@
 import getSessionId from '../session'
-import { get, update, del } from '../../lib/user'
+import { add, get, update, del } from '../../lib/user'
 
 /**
  * User API
@@ -23,7 +23,9 @@ export default async function (req, res) {
       break
     case 'POST':
       try {
-        // TODO add
+        // TODO
+        const user = await add()
+        res.status(200).json({ user })
       } catch (err) {
         console.error(err)
         res.status(500).json({ message: err.message })

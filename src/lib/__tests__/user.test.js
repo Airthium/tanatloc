@@ -1,9 +1,11 @@
-import { login, get, update } from '../user'
+import { login, add, get, update, del } from '../user'
 
 const mockUpdate = jest.fn()
+const mockDel = jest.fn()
 jest.mock('../../database/user', () => {
   let count = 0
   return {
+    add: async () => {},
     get: async () => ({
       id: 'id',
       username: 'username'
@@ -13,7 +15,8 @@ jest.mock('../../database/user', () => {
       if (count === 1) return
       return { id: 'id' }
     },
-    update: async () => mockUpdate()
+    update: async () => mockUpdate(),
+    del: async () => mockDel()
   }
 })
 
@@ -35,8 +38,17 @@ describe('src/lib/user', () => {
     expect(user).toEqual({ id: 'id', username: 'username' })
   })
 
+  it('add', async () => {
+    await add()
+  })
+
   it('update', async () => {
-    await update({})
+    await update({}, { data: [] })
     expect(mockUpdate).toHaveBeenCalledTimes(1)
+  })
+
+  it('del', async () => {
+    await del({})
+    expect(mockDel).toHaveBeenCalledTimes(1)
   })
 })

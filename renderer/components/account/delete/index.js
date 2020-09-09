@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Button, Card } from 'antd'
+import { message, Button, Card } from 'antd'
 import { DeleteOutlined } from '@ant-design/icons'
 
 import { DeleteDialog } from '../../assets/dialog'

@@ -48,7 +48,6 @@ const Account = () => {
   }
 
   const onPasswordFinish = (data) => {
-    console.log(data)
     if (data.newPassword === data.passwordConfirm) {
       // Check current password
       //update password
@@ -82,6 +81,7 @@ const Account = () => {
             email: user.email
           }}
           onFinish={onFinish}
+          name="personalForm"
         >
           <Form.Item label="User name" name="username">
             <Input disabled={true} />
@@ -113,6 +113,7 @@ const Account = () => {
             passwordConfirm: '*******'
           }}
           onFinish={onPasswordFinish}
+          name="passwordForm"
         >
           <Form.Item label="Current password" name="password">
             <Input.Password />

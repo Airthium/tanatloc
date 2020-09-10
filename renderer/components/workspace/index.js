@@ -1,6 +1,5 @@
 /** @module renderer/components/workspace */
 
-import { useState } from 'react'
 import {
   message,
   Divider,
@@ -40,14 +39,11 @@ const Workspace = ({ workspace }) => {
   const setName = (name) => {
     update(workspace, [{ key: 'name', value: name }])
       .then(() => {
-        // Update workspace
-        const newWorkspace = {
-          ...workspace,
-          name: name
-        }
-
         // Mutate workspace
-        mutateOneWorkspace(workspace)
+        mutateOneWorkspace({
+          ...workspace,
+          name
+        })
       })
       .catch((err) => {
         message.error(err.message)

@@ -67,6 +67,14 @@ const Dashboard = () => {
     if (!loadingUser && !user) router.replace('/login')
   }, [user, loadingUser])
 
+  // Update workspace
+  useEffect(() => {
+    if (workspaces.length && currentWorkspace) {
+      const workspace = workspaces.find((w) => w.id === currentWorkspace.id)
+      if (workspace !== currentWorkspace) setCurrentWorkspace(workspace)
+    }
+  }, [workspaces])
+
   /**
    * Menu selection
    * @param {Object} data {item, key}

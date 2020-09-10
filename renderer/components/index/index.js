@@ -1,8 +1,15 @@
 /** @module renderer/components/index */
 
 import { useRouter } from 'next/router'
+import { Divider, Layout, Menu } from 'antd'
+import { DashboardOutlined, LoginOutlined } from '@ant-design/icons'
 
-import { Button, Layout } from 'antd'
+import { useUser } from '../../../src/api/user'
+
+const menuKeys = {
+  dashboard: 'dashboard',
+  login: 'login'
+}
 
 /**
  * Index
@@ -11,10 +18,30 @@ const Index = () => {
   // Router
   const router = useRouter()
 
+  // Data
+  const [user] = useUser()
+  console.log(user)
+
   /**
-   * Handle click
+   * On select
+   * @param {data} data { item, key }
    */
-  const handleClick = () => {
+  const onSelect = ({ item, key }) => {
+    if (key === menuKeys.dashboard) handleDashboard()
+    if (key === menuKeys.login) handleLogin()
+  }
+
+  /**
+   * Handle dashboard
+   */
+  const handleDashboard = () => {
+    router.push('/dashboard')
+  }
+
+  /**
+   * Handle login
+   */
+  const handleLogin = () => {
     router.push('/login')
   }
 
@@ -22,8 +49,23 @@ const Index = () => {
    * Render
    */
   return (
-    <Layout>
-      <Button onClick={handleClick}>Login</Button>
+    <Layout className="Index">
+      <Layout.Header className="Index-header">
+        <img src="/images/logo.svg" />
+        <Menu onSelect={onSelect} selectedkeys={[]}>
+          {user ? (
+            <Menu.Item key={menuKeys.dashboard} icon={<DashboardOutlined />}>
+              Dashboard
+            </Menu.Item>
+          ) : (
+            <Menu.Item key={menuKeys.login} icon={<LoginOutlined />}>
+              Login
+            </Menu.Item>
+          )}
+        </Menu>
+      </Layout.Header>
+      <Divider className="Index-divider" />
+      <Layout.Content></Layout.Content>
     </Layout>
   )
 }

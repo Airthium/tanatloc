@@ -15,11 +15,13 @@ const Account = () => {
    */
   return (
     <Layout className="Account">
-      <Card title="Personal information">
-        <Information />
-        <Password />
-      </Card>
-      <Delete />
+      <Layout.Content>
+        <Card title="Personal information">
+          <Information />
+          <Password />
+        </Card>
+        <Delete />
+      </Layout.Content>
     </Layout>
   )
 }

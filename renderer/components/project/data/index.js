@@ -1,4 +1,4 @@
-import { Avatar, Empty, Tooltip } from 'antd'
+import { message, Avatar, Empty, Tooltip, Typography } from 'antd'
 
 /**
  * Generate color (HEX format) from string
@@ -22,8 +22,9 @@ const stringToHex = (str) => {
  * Project data
  * @memberof module:renderer/components/project
  * @param {Object} project Project
+ * @param {Function} setTitle Set title
  */
-const Data = (project) => {
+const Data = (project, setTitle) => {
   // Check
   if (!project) return null
 
@@ -41,6 +42,13 @@ const Data = (project) => {
       style={{ cursor: 'pointer' }}
       description={'No preview'}
     />
+  )
+
+  // Title
+  const title = (
+    <Typography.Paragraph editable={{ maxLength: 50, onChange: setTitle }}>
+      {project.title}
+    </Typography.Paragraph>
   )
 
   // Owners avatars
@@ -82,6 +90,7 @@ const Data = (project) => {
     ...project,
     key: project.id,
     snapshot: snapshot,
+    title: title,
     owners: <Avatar.Group>{owners}</Avatar.Group>,
     users: <Avatar.Group>{users}</Avatar.Group>
   }

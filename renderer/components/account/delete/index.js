@@ -5,6 +5,7 @@ import { DeleteOutlined } from '@ant-design/icons'
 import { DeleteDialog } from '../../assets/dialog'
 
 import { useUser, del } from '../../../../src/api/user'
+import logout from '../../../../src/api/logout'
 
 /**
  * Delete account
@@ -15,7 +16,6 @@ const Delete = () => {
   const [visible, setVisible] = useState(false)
   const [loading, setLoading] = useState(false)
 
-  // Data
   const [, { mutateUser }] = useUser()
 
   /**
@@ -27,9 +27,11 @@ const Delete = () => {
       // Delete
       await del()
 
+      // Logout
+      await logout()
+
       // Mutate
-      mutateUser(null)
-      // TODO logout ?
+      mutateUser({})
 
       setLoading(false)
     } catch (err) {

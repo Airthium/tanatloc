@@ -66,36 +66,37 @@ const Dashboard = () => {
     if (!loadingUser && !user) router.replace('/login')
   }, [user, loadingUser])
 
-  // Default workspace
-  useEffect(() => {
-    // Update current workspace
-    if (workspaces && workspaces.length && currentWorkspace) {
-      const index = workspaces.findIndex((w) => w.id === currentWorkspace.id)
-      if (index !== -1) {
-        if (workspaces[index] !== currentWorkspace[index])
-          setCurrentWorkspace(workspaces[index])
-      }
-    }
+  // TODO to review
+  // // Default workspace
+  // useEffect(() => {
+  //   // Update current workspace
+  //   if (workspaces && workspaces.length && currentWorkspace) {
+  //     const index = workspaces.findIndex((w) => w.id === currentWorkspace.id)
+  //     if (index !== -1) {
+  //       if (workspaces[index] !== currentWorkspace[index])
+  //         setCurrentWorkspace(workspaces[index])
+  //     }
+  //   }
 
-    if ((!workspaces || workspaces.length === 0) && currentWorkspace) {
-      setCurrentWorkspace(undefined)
-    }
+  //   if ((!workspaces || workspaces.length === 0) && currentWorkspace) {
+  //     setCurrentWorkspace(undefined)
+  //   }
 
-    if (user && workspaces && !currentWorkspace) {
-      const firstWorkspace = workspaces[0]
+  //   if (user && workspaces && !currentWorkspace) {
+  //     const firstWorkspace = workspaces[0]
 
-      if (!firstWorkspace) return
+  //     if (!firstWorkspace) return
 
-      let view
-      if (firstWorkspace.owners && firstWorkspace.owners.includes(user.id))
-        view = menuItems.workspaces.key
-      else if (firstWorkspace.users && firstWorkspace.users.includes(user.id))
-        view = menuItems.shared.key
+  //     let view
+  //     if (firstWorkspace.owners && firstWorkspace.owners.includes(user.id))
+  //       view = menuItems.workspaces.key
+  //     else if (firstWorkspace.users && firstWorkspace.users.includes(user.id))
+  //       view = menuItems.shared.key
 
-      setCurrentView(view)
-      setCurrentWorkspace(firstWorkspace)
-    }
-  }, [workspaces])
+  //     setCurrentView(view)
+  //     setCurrentWorkspace(firstWorkspace)
+  //   }
+  // }, [workspaces])
 
   /**
    * Menu selection

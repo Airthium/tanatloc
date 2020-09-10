@@ -4,4 +4,6 @@ import useUser from './useUser'
 import update from './update'
 import del from './del'
 
-export { useUser, update, del }
+import check from './check'
+
+export { useUser, update, del, check }

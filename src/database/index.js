@@ -55,7 +55,16 @@ const getter = async (db, id, data, key = 'id') => {
  * @param {Object} data Data { type, method, key, value }
  */
 const updater = async (db, id, data) => {
-  if (data.type === 'array') {
+  if (data.type === 'crypt') {
+    await query(
+      'UPDATE ' +
+        db +
+        ' SET ' +
+        data.key +
+        " = crypt($2, gen_salt('bf')) WHERE id = $1",
+      [id, data.value]
+    )
+  } else if (data.type === 'array') {
     if (data.method === 'append') {
       await query(
         'UPDATE ' +

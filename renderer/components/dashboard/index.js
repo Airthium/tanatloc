@@ -12,6 +12,7 @@ import {
 } from '@ant-design/icons'
 
 import Loading from '../../components/loading'
+import Welcome from './welcome'
 import Workspace from '../../components/workspace'
 import Account from '../../components/account'
 import Help from '../../components/help'
@@ -51,7 +52,7 @@ const menuItems = {
  */
 const Dashboard = () => {
   // State
-  const [currentView, setCurrentView] = useState(menuItems.workspaces.key)
+  const [currentView, setCurrentView] = useState()
   const [currentWorkspace, setCurrentWorkspace] = useState()
 
   // Data
@@ -65,38 +66,6 @@ const Dashboard = () => {
   useEffect(() => {
     if (!loadingUser && !user) router.replace('/login')
   }, [user, loadingUser])
-
-  // TODO to review
-  // // Default workspace
-  // useEffect(() => {
-  //   // Update current workspace
-  //   if (workspaces && workspaces.length && currentWorkspace) {
-  //     const index = workspaces.findIndex((w) => w.id === currentWorkspace.id)
-  //     if (index !== -1) {
-  //       if (workspaces[index] !== currentWorkspace[index])
-  //         setCurrentWorkspace(workspaces[index])
-  //     }
-  //   }
-
-  //   if ((!workspaces || workspaces.length === 0) && currentWorkspace) {
-  //     setCurrentWorkspace(undefined)
-  //   }
-
-  //   if (user && workspaces && !currentWorkspace) {
-  //     const firstWorkspace = workspaces[0]
-
-  //     if (!firstWorkspace) return
-
-  //     let view
-  //     if (firstWorkspace.owners && firstWorkspace.owners.includes(user.id))
-  //       view = menuItems.workspaces.key
-  //     else if (firstWorkspace.users && firstWorkspace.users.includes(user.id))
-  //       view = menuItems.shared.key
-
-  //     setCurrentView(view)
-  //     setCurrentWorkspace(firstWorkspace)
-  //   }
-  // }, [workspaces])
 
   /**
    * Menu selection
@@ -139,6 +108,22 @@ const Dashboard = () => {
           <Menu.Item key={index}>{workspace.name}</Menu.Item>
         )
     })
+  }
+
+  let displayed
+  switch (currentView) {
+    case menuItems.workspaces.key:
+    case menuItems.shared.key:
+      displayed = <Workspace workspace={currentWorkspace} />
+      break
+    case menuItems.account.key:
+      displayed = <Account />
+      break
+    case menuItems.help.key:
+      displayed = <Help />
+      break
+    default:
+      displayed = <Welcome />
   }
 
   /**
@@ -196,14 +181,7 @@ const Dashboard = () => {
             </Menu>
           </Layout.Sider>
 
-          <Layout.Content className="no-scroll">
-            {(currentView === menuItems.workspaces.key ||
-              currentView === menuItems.shared.key) && (
-              <Workspace workspace={currentWorkspace} />
-            )}
-            {currentView === menuItems.account.key && <Account />}
-            {currentView === menuItems.help.key && <Help />}
-          </Layout.Content>
+          <Layout.Content className="no-scroll">{displayed}</Layout.Content>
         </Layout>
       )}
     </>

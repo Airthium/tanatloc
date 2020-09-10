@@ -31,6 +31,8 @@ const Information = () => {
    * @param {Object} data Data
    */
   const onFinish = (data) => {
+    setLoading(true)
+
     const toUpdate = []
     // TODO disable for now
     // if (data.username !== user.email)
@@ -53,10 +55,13 @@ const Information = () => {
             email: data.email
           }
         })
+
+        setLoading(false)
       })
       .catch((err) => {
         message.error(err.message)
         console.error(err)
+        setLoading(false)
       })
   }
 
@@ -67,6 +72,9 @@ const Information = () => {
     form.resetFields()
   }
 
+  /**
+   * Render
+   */
   return (
     <Form
       {...layout}

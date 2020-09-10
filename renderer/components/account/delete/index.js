@@ -6,6 +6,10 @@ import { DeleteDialog } from '../../assets/dialog'
 
 import { useUser, del } from '../../../../src/api/user'
 
+/**
+ * Delete account
+ * @memberof module:renderer/components/account
+ */
 const Delete = () => {
   // State
   const [visible, setVisible] = useState(false)
@@ -14,6 +18,9 @@ const Delete = () => {
   // Data
   const [, { mutateUser }] = useUser()
 
+  /**
+   * Handle delete
+   */
   const handleDelete = async () => {
     setLoading(true)
     try {
@@ -22,6 +29,7 @@ const Delete = () => {
 
       // Mutate
       mutateUser(null)
+      // TODO logout ?
 
       setLoading(false)
     } catch (err) {
@@ -29,10 +37,11 @@ const Delete = () => {
       console.error(err)
       setLoading(false)
     }
-
-    //TODO
   }
 
+  /**
+   * Render
+   */
   return (
     <Card title="Remove">
       <Button

@@ -2,7 +2,7 @@ import getSessionId from '../session'
 import { login } from '../../lib/user'
 
 /**
- * User API
+ * User check API
  * @param {Object} req Request
  * @param {Object} res Response
  */

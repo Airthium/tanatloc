@@ -156,16 +156,16 @@ const ThreeView = () => {
      */
     const animate = () => {
       renderScene()
-      frameId = requestAnimationFrame(animate)
+      /*frameId = */ requestAnimationFrame(animate)
     }
 
     /**
      * Start animate
      */
     const start = () => {
-      if (!frameId) {
-        frameId = requestAnimationFrame(animate)
-      }
+      // if (!frameId) {
+      frameId = requestAnimationFrame(animate)
+      // }
     }
 
     /**

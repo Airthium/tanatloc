@@ -95,11 +95,14 @@ class MockRaycaster {
   }
 }
 
+global.MockScene = {
+  children: []
+}
 class MockScene {
   constructor() {
     this.add = () => {}
     this.remove = () => {}
-    this.children = [new MockMesh()]
+    this.children = global.MockScene.children
   }
 }
 

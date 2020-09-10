@@ -57,6 +57,17 @@ window.requestAnimationFrame = (callback) => {
   if (mockAnimationCount === 1) callback()
 }
 
+global.MockScene.children = [
+  { type: 'AmbientLight' },
+  { type: 'PointLight' },
+  { type: 'AxisHelper' },
+  {
+    geometry: {
+      boundingSphere: {}
+    }
+  }
+]
+
 let wrapper
 describe('components/project/view', () => {
   beforeEach(() => {
@@ -74,6 +85,13 @@ describe('components/project/view', () => {
   it('buttons', () => {
     act(() => {
       const event = {}
+      wrapper.find('Button').forEach((button) => {
+        if (button.props().onClick) button.props().onClick(event)
+        if (button.props().onMouseDown) button.props().onMouseDown(event)
+        if (button.props().onMouseMove) button.props().onMouseMove(event)
+        if (button.props().onMouseUp) button.props().onMouseUp(event)
+      })
+
       wrapper.find('Button').forEach((button) => {
         if (button.props().onClick) button.props().onClick(event)
         if (button.props().onMouseDown) button.props().onMouseDown(event)

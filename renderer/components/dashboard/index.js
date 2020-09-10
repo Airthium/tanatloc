@@ -69,11 +69,12 @@ const Dashboard = () => {
 
   // Update workspace
   useEffect(() => {
-    if (workspaces.length && currentWorkspace) {
+    if (workspaces && workspaces.length && currentWorkspace) {
       const workspace = workspaces.find((w) => w.id === currentWorkspace.id)
-      if (workspace !== currentWorkspace) setCurrentWorkspace(workspace)
+      if (workspace && workspace !== currentWorkspace)
+        setCurrentWorkspace(workspace)
     }
-  }, [workspaces])
+  }, [workspaces, currentWorkspace])
 
   /**
    * Menu selection

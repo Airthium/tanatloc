@@ -21,13 +21,13 @@ jest.mock('../../../components/help', () => 'help')
 let mockUser = () => ({
   id: 'id'
 })
-let mockUserLoading = () => false
+let mockUserLoading
 jest.mock('../../../../src/api/user/useUser', () => () => [
   mockUser(),
   { mutateUser: () => {}, loadingUser: mockUserLoading() }
 ])
 
-let mockWorkspaces = () => [{}]
+let mockWorkspaces
 jest.mock('../../../../src/api/workspace/useWorkspaces', () => () => [
   mockWorkspaces()
 ])
@@ -105,6 +105,13 @@ describe('renderer/components/dashboard', () => {
     mWrapper = mount(<Dashboard />)
     expect(mockRouter).toHaveBeenCalledTimes(1)
     mWrapper.unmount()
+  })
+
+  it('workspace effect', () => {
+    wrapper.unmount()
+
+    mockWorkspaces = () => [{}, { id: 'id' }]
+    wrapper = mount(<Dashboard />)
   })
 
   it('onSelect', () => {

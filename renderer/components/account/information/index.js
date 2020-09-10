@@ -30,39 +30,40 @@ const Information = () => {
    * On finish
    * @param {Object} data Data
    */
-  const onFinish = (data) => {
+  const onFinish = async (data) => {
     setLoading(true)
 
-    const toUpdate = []
-    // TODO disable for now
-    // if (data.username !== user.email)
-    //   toUpdate.push({ key: 'email', value: data.username })
-    if (data.firstname !== user.firstname)
-      toUpdate.push({ key: 'firstname', value: data.firstname })
-    if (data.lastname !== user.lastname)
-      toUpdate.push({ key: 'lastname', value: data.lastname })
-    if (data.email !== user.email)
-      toUpdate.push({ key: 'email', value: data.email })
+    try {
+      const toUpdate = []
+      // TODO disable for now
+      // if (data.username !== user.email)
+      //   toUpdate.push({ key: 'email', value: data.username })
+      if (data.firstname !== user.firstname)
+        toUpdate.push({ key: 'firstname', value: data.firstname })
+      if (data.lastname !== user.lastname)
+        toUpdate.push({ key: 'lastname', value: data.lastname })
+      if (data.email !== user.email)
+        toUpdate.push({ key: 'email', value: data.email })
 
-    update(toUpdate)
-      .then(() => {
-        // Mutate user
-        mutateUser({
-          user: {
-            ...user,
-            firstname: data.firstname,
-            lastname: data.lastname,
-            email: data.email
-          }
-        })
+      // Update
+      await update(toUpdate)
 
-        setLoading(false)
+      // Mutate user
+      mutateUser({
+        user: {
+          ...user,
+          firstname: data.firstname,
+          lastname: data.lastname,
+          email: data.email
+        }
       })
-      .catch((err) => {
-        message.error(err.message)
-        console.error(err)
-        setLoading(false)
-      })
+
+      setLoading(false)
+    } catch (err) {
+      message.error(err.message)
+      console.error(err)
+      setLoading(false)
+    }
   }
 
   /**

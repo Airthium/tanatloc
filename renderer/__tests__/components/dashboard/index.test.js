@@ -75,6 +75,10 @@ describe('renderer/components/dashboard', () => {
         id: 'id',
         name: 'name',
         users: ['id']
+      },
+      {
+        id: 'id',
+        name: 'name'
       }
     ]
     wrapper = shallow(<Dashboard />)
@@ -100,53 +104,6 @@ describe('renderer/components/dashboard', () => {
     mockUser = () => {}
     mWrapper = mount(<Dashboard />)
     expect(mockRouter).toHaveBeenCalledTimes(1)
-    mWrapper.unmount()
-  })
-
-  it('default workspaces effect', () => {
-    let mWrapper
-
-    // With workspaces (owner)
-    mockWorkspaces = () => [
-      {
-        id: 'id',
-        name: 'name',
-        owners: ['id']
-      }
-    ]
-    mWrapper = mount(<Dashboard />)
-    expect(mWrapper.find('workspace').props().workspace).toEqual({
-      id: 'id',
-      name: 'name',
-      owners: ['id']
-    })
-    mWrapper.unmount()
-
-    // With workspaces (user)
-    mockWorkspaces = () => [
-      {
-        id: 'id',
-        name: 'name',
-        users: ['id']
-      }
-    ]
-    mWrapper = mount(<Dashboard />)
-    expect(mWrapper.find('workspace').props().workspace).toEqual({
-      id: 'id',
-      name: 'name',
-      users: ['id']
-    })
-    mWrapper.unmount()
-
-    // With workspaces (undefined)
-    mockWorkspaces = () => [
-      {
-        id: 'id',
-        name: 'name'
-      }
-    ]
-    mWrapper = mount(<Dashboard />)
-    expect(mWrapper.find('workspace').length).toBe(0)
     mWrapper.unmount()
   })
 

@@ -10,6 +10,8 @@ const update = async (data) => {
     method: 'PUT',
     body: JSON.stringify({ data: data })
   })
+
+  return res
 }
 
 export default update

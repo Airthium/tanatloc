@@ -1,7 +1,6 @@
 /** @module renderer/components/account */
 
 import { message, Button, Card, Form, Input, Layout, Space } from 'antd'
-import { DeleteOutlined } from '@ant-design/icons'
 
 import Delete from './delete'
 

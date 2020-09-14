@@ -20,7 +20,6 @@ const Index = () => {
 
   // Data
   const [user] = useUser()
-  console.log(user)
 
   /**
    * On select

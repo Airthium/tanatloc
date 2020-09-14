@@ -4,20 +4,21 @@ import createError from 'http-errors'
 import express, { json, urlencoded } from 'express'
 import cors from 'cors'
 
-import { loginRoute } from '../renderer/pages/api/login'
-import logout from '../renderer/pages/api/logout'
-import user from '../renderer/pages/api/user'
-import workspace from '../renderer/pages/api/workspace'
-import project from '../renderer/pages/api/project'
-import projectId from '../renderer/pages/api/project/[id]'
-import projects from '../renderer/pages/api/projects'
-import projectsIds from '../renderer/pages/api/projects/[ids]'
+import { loginRoute } from '../src/route/login'
+import logout from '../src/route/logout'
+import user from '../src/route/user'
+import userCheck from '../src/route/user/check'
+import workspace from '../src/route/workspace'
+import project from '../src/route/project'
+import projectId from '../src/route/project/[id]'
+import projects from '../src/route/projects'
+import projectsIds from '../src/route/projects/[ids]'
 
 const app = express()
 
 app.use(
   cors({
-    origin: 'http://localhost:8888'
+    origin: ['http://localhost:8888', 'app://.']
   })
 )
 app.use(json())
@@ -30,6 +31,7 @@ app.post('/api/login', async (req, res) => {
 app.get('/api/logout', logout)
 
 app.all('/api/user', user)
+app.post('/api/user/check', userCheck)
 
 app.all('/api/workspace', workspace)
 

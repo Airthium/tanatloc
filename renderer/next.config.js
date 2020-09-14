@@ -1,4 +1,5 @@
 const path = require('path')
+
 const withTM = require('next-transpile-modules')([
   'drei',
   'three',
@@ -6,17 +7,36 @@ const withTM = require('next-transpile-modules')([
 ])
 const withLess = require('@zeit/next-less')
 const withCSS = require('@zeit/next-css')
+const withSourceMaps = require('@zeit/next-source-maps')
+
+const SentryWebpackPlugin = require('@sentry/webpack-plugin')
 
 module.exports = {
-  webpack: (config) =>
-    Object.assign(config, {
-      target: 'electron-renderer'
-    }),
-  ...withLess({
-    paths: [path.resolve(__dirname, 'node_modules')],
-    lessLoaderOptions: {
-      javascriptEnabled: true
+  webpack: (config, options) => {
+    config.target = 'electron-renderer'
+    if (!options.isServer) {
+      config.resolve.alis['@sentry/node'] = '@sentry/browser'
+    }
+    config.plugins.push(
+      new SentryWebpackPlugin({
+        include: '.next',
+        ignore: ['node_modules'],
+        stripPrefix: ['webpack://_N_E/'],
+        urlPrefix: `~${basePath}/_next`
+      })
+    )
+    return config
+  },
+  ...withSourceMaps({
+    serverRunTime: {
+      rootDir: __dirname
     },
-    ...withCSS(withTM())
+    ...withLess({
+      paths: [path.resolve(__dirname, 'node_modules')],
+      lessLoaderOptions: {
+        javascriptEnabled: true
+      },
+      ...withCSS(withTM())
+    })
   })
 }

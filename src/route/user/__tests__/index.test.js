@@ -14,6 +14,10 @@ jest.mock('../../../lib/user', () => ({
   del: () => mockDel()
 }))
 
+jest.mock('../../../lib/sentry', () => ({
+  captureException: () => {}
+}))
+
 describe('src/route/user', () => {
   const req = {
     method: 'GET'

@@ -1,6 +1,8 @@
 import getSessionId from '../session'
 import { add, get, update, del } from '../../lib/user'
 
+import Sentry from '../../lib/sentry'
+
 /**
  * User API
  * @param {Object} req Request
@@ -19,6 +21,7 @@ export default async function (req, res) {
       } catch (err) {
         console.error(err)
         res.status(500).json({ message: err.message })
+        Sentry.captureException(err)
       }
       break
     case 'POST':
@@ -29,6 +32,7 @@ export default async function (req, res) {
       } catch (err) {
         console.error(err)
         res.status(500).json({ message: err.message })
+        Sentry.captureException(err)
       }
       break
     case 'PUT':
@@ -38,6 +42,7 @@ export default async function (req, res) {
       } catch (err) {
         console.error(err)
         res.status(500).json({ message: err.message })
+        Sentry.captureException(err)
       }
       break
     case 'DELETE':
@@ -47,9 +52,12 @@ export default async function (req, res) {
       } catch (err) {
         console.error(err)
         res.status(500).json({ message: err.message })
+        Sentry.captureException(err)
       }
       break
     default:
-      res.status(405).json({ message: 'Method ' + req.method + ' not allowed' })
+      const err = new Error('Method ' + req.method + ' not allowed')
+      res.status(405).json({ message: err.message })
+      Sentry.captureException(err)
   }
 }

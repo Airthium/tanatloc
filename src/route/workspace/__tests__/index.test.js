@@ -35,6 +35,10 @@ jest.mock('../../../lib/workspace', () => {
   }
 })
 
+jest.mock('../../../lib/sentry', () => ({
+  captureException: () => {}
+}))
+
 describe('pages/api/workspace', () => {
   const req = {
     method: 'GET'

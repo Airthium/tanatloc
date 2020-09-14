@@ -1,7 +1,7 @@
 /** renderer/components/notfound */
 
 import { useRouter } from 'next/router'
-import { Button, Layout, Typography } from 'antd'
+import { Layout, Typography } from 'antd'
 
 /**
  * 404

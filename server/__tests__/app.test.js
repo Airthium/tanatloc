@@ -41,16 +41,17 @@ jest.mock('express', () => ({
 }))
 jest.mock('cors', () => () => {})
 
-jest.mock('../../renderer/pages/api/login', () => ({
+jest.mock('../../src/route/login', () => ({
   loginRoute: () => {}
 }))
-jest.mock('../../renderer/pages/api/logout', () => () => {})
-jest.mock('../../renderer/pages/api/user', () => () => {})
-jest.mock('../../renderer/pages/api/workspace', () => () => {})
-jest.mock('../../renderer/pages/api/project', () => () => {})
-jest.mock('../../renderer/pages/api/project/[id]', () => () => {})
-jest.mock('../../renderer/pages/api/projects', () => () => {})
-jest.mock('../../renderer/pages/api/projects/[ids]', () => () => {})
+jest.mock('../../src/route/logout', () => () => {})
+jest.mock('../../src/route/user', () => () => {})
+jest.mock('../../src/route/user/check', () => () => {})
+jest.mock('../../src/route/workspace', () => () => {})
+jest.mock('../../src/route/project', () => () => {})
+jest.mock('../../src/route/project/[id]', () => () => {})
+jest.mock('../../src/route/projects', () => () => {})
+jest.mock('../../src/route/projects/[ids]', () => () => {})
 
 describe('server/app', () => {
   it('app', () => {

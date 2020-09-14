@@ -33,6 +33,8 @@ describe('database', () => {
   it('updater', async () => {
     await updater('db', 'id', {})
 
+    await updater('db', 'id', { type: 'crypt' })
+
     await updater('db', 'id', { type: 'array' })
 
     await updater('db', 'id', { type: 'array', method: 'append' })

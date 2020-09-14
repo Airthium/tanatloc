@@ -1,10 +1,10 @@
 import { useRouter } from 'next/router'
-import { Space, Table } from 'antd'
+import { message, Space, Table } from 'antd'
 
 import Data from '../data'
 import Delete from '../delete'
 
-import { useProjects } from '../../../../src/api/project'
+import { useProjects, update } from '../../../../src/api/project'
 
 /**
  * Projects' list
@@ -18,15 +18,44 @@ const ProjectList = (props) => {
   const router = useRouter()
 
   // Load projects
-  const [projects] = useProjects(workspace.projects)
+  const [projects, { mutateOneProject }] = useProjects(workspace.projects)
 
+  // Data
   const data = projects.map((project) => {
-    return Data(project)
+    return Data(project, (title) => setTitle(project, title))
   })
 
   // Open project
   const openProject = (project) => {
     router.push('/project/' + project.id)
+  }
+
+  /**
+   * Set title
+   * @param {string} project Project { id }
+   * @param {string} title Title
+   */
+  const setTitle = async (project, title) => {
+    try {
+      // Update
+      await update({ id: project.id }, [
+        {
+          key: 'title',
+          value: title
+        }
+      ])
+
+      // Update project
+      project.title = title
+
+      // Mutate project
+      mutateOneProject(project)
+
+      // Todo reload data ?
+    } catch (err) {
+      message.error(err.message)
+      console.error(err)
+    }
   }
 
   /**

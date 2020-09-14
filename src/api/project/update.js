@@ -7,7 +7,7 @@ import { call } from '../call'
  * @param {Object} data Data { key: value }
  */
 const update = async (project, data) => {
-  const res = await call('/api/project', {
+  const res = await call('/api/project/' + project.id, {
     method: 'PUT',
     body: JSON.stringify({ project: project, data: data })
   })

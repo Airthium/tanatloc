@@ -3,7 +3,8 @@
 import {
   get as dBget,
   getByUsernameAndPassword,
-  update as dBupdate
+  update as dBupdate,
+  del as dBdel
 } from '../database/user'
 
 const get = async (id, data) => {
@@ -22,12 +23,23 @@ const login = async ({ username, password }) => {
   }
 }
 
+const add = () => {}
+
 /**
  * Update user
- * @param {Object} data { user: { id }, data: [{ type, method, key, value }] }
+ * @param {Object} user user { id }
+ * @param {Object} data Data {data: [{ type, method, key, value }] } }
  */
-const update = async ({ user, data }) => {
+const update = async (user, { data }) => {
   await dBupdate({ user, data })
 }
 
-export { login, get, update }
+/**
+ * Delete user
+ * @param {Object} user User { id }
+ */
+const del = async (user) => {
+  await dBdel(user)
+}
+
+export { login, add, get, update, del }

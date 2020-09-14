@@ -1,6 +1,10 @@
 import Account from '../../../components/account'
 import { shallow } from 'enzyme'
 
+jest.mock('../../../components/account/information', () => 'information')
+jest.mock('../../../components/account/password', () => 'password')
+jest.mock('../../../components/account/delete', () => 'delete')
+
 let wrapper
 describe('renderer/components/account', () => {
   beforeEach(() => {

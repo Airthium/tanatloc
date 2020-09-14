@@ -1,5 +1,7 @@
 /** @module renderer/components/help */
 
+import { Card, Layout } from 'antd'
+
 /**
  * Help
  */
@@ -7,7 +9,14 @@ const Help = () => {
   /**
    * Render
    */
-  return <div>Help</div>
+  return (
+    <Layout className="Help">
+      <Layout.Content>
+        <Card title="Documentation"></Card>
+        <Card title="Support"></Card>
+      </Layout.Content>
+    </Layout>
+  )
 }
 
 export default Help

@@ -1,4 +1,5 @@
 import Dashboard from '../../../components/dashboard'
+import { act } from 'react-dom/test-utils'
 import { shallow, mount } from 'enzyme'
 
 import '../../../../config/jest/matchMediaMock'
@@ -12,6 +13,8 @@ jest.mock('next/router', () => ({
 
 jest.mock('../../../components/loading', () => 'loading')
 
+jest.mock('../../../components/dashboard/welcome', () => 'welcome')
+
 jest.mock('../../../components/workspace', () => 'workspace')
 
 jest.mock('../../../components/account', () => 'account')
@@ -21,13 +24,13 @@ jest.mock('../../../components/help', () => 'help')
 let mockUser = () => ({
   id: 'id'
 })
-let mockUserLoading = () => false
+let mockUserLoading
 jest.mock('../../../../src/api/user/useUser', () => () => [
   mockUser(),
   { mutateUser: () => {}, loadingUser: mockUserLoading() }
 ])
 
-let mockWorkspaces = () => [{}]
+let mockWorkspaces
 jest.mock('../../../../src/api/workspace/useWorkspaces', () => () => [
   mockWorkspaces()
 ])
@@ -75,6 +78,10 @@ describe('renderer/components/dashboard', () => {
         id: 'id',
         name: 'name',
         users: ['id']
+      },
+      {
+        id: 'id',
+        name: 'name'
       }
     ]
     wrapper = shallow(<Dashboard />)
@@ -103,51 +110,31 @@ describe('renderer/components/dashboard', () => {
     mWrapper.unmount()
   })
 
-  it('default workspaces effect', () => {
-    let mWrapper
+  it('workspace effect', () => {
+    wrapper.unmount()
 
-    // With workspaces (owner)
-    mockWorkspaces = () => [
-      {
-        id: 'id',
-        name: 'name',
-        owners: ['id']
-      }
-    ]
-    mWrapper = mount(<Dashboard />)
-    expect(mWrapper.find('workspace').props().workspace).toEqual({
-      id: 'id',
-      name: 'name',
-      owners: ['id']
+    let name = () => 'name'
+    mockWorkspaces = () => [{}, { id: 'id', name: name() }]
+    wrapper = mount(<Dashboard />)
+
+    act(() => {
+      wrapper
+        .find('InternalMenu')
+        .props()
+        .onSelect({
+          item: { props: { subMenuKey: 'my_workspaces-menu-' } },
+          key: '1'
+        })
+
+      name = () => 'name1'
+      wrapper
+        .find('InternalMenu')
+        .props()
+        .onSelect({
+          item: { props: { subMenuKey: 'my_workspaces-menu-' } },
+          key: '1'
+        })
     })
-    mWrapper.unmount()
-
-    // With workspaces (user)
-    mockWorkspaces = () => [
-      {
-        id: 'id',
-        name: 'name',
-        users: ['id']
-      }
-    ]
-    mWrapper = mount(<Dashboard />)
-    expect(mWrapper.find('workspace').props().workspace).toEqual({
-      id: 'id',
-      name: 'name',
-      users: ['id']
-    })
-    mWrapper.unmount()
-
-    // With workspaces (undefined)
-    mockWorkspaces = () => [
-      {
-        id: 'id',
-        name: 'name'
-      }
-    ]
-    mWrapper = mount(<Dashboard />)
-    expect(mWrapper.find('workspace').length).toBe(0)
-    mWrapper.unmount()
   })
 
   it('onSelect', () => {
@@ -157,7 +144,7 @@ describe('renderer/components/dashboard', () => {
       .props()
       .onSelect({
         item: { props: { subMenuKey: 'my_workspaces-menu-' } },
-        key: 'my_workspaces1'
+        key: '1'
       })
     expect(wrapper.find('workspace').length).toBe(1)
 
@@ -167,7 +154,7 @@ describe('renderer/components/dashboard', () => {
       .props()
       .onSelect({
         item: { props: { subMenuKey: 'shared-menu-' } },
-        key: 'shared1'
+        key: '1'
       })
     expect(wrapper.find('workspace').length).toBe(1)
 

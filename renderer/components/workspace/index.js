@@ -28,10 +28,7 @@ import { useWorkspaces, update } from '../../../src/api/workspace'
  * Workspace
  * @param {Object} props Props
  */
-const Workspace = (props) => {
-  // Props
-  const workspace = props.workspace
-
+const Workspace = ({ workspace }) => {
   // Data
   const [, { mutateOneWorkspace }] = useWorkspaces()
 
@@ -43,7 +40,10 @@ const Workspace = (props) => {
     update(workspace, [{ key: 'name', value: name }])
       .then(() => {
         // Mutate workspace
-        mutateOneWorkspace(workspace)
+        mutateOneWorkspace({
+          ...workspace,
+          name
+        })
       })
       .catch((err) => {
         message.error(err.message)

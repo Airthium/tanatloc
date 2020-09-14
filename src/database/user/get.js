@@ -11,10 +11,8 @@ const get = async (id, data, key = 'id') => {
 
   const user = response.rows[0]
 
-  // user.username = user.email
-  // delete user.email
-
-  user[key] = id
+  user && (user.username = user.email) // TODO to replace
+  user && (user[key] = id)
 
   return user
 }

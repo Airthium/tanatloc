@@ -1,4 +1,4 @@
-import { message, Avatar, Empty, Tooltip, Typography } from 'antd'
+import { Avatar, Empty, Tooltip, Typography } from 'antd'
 
 /**
  * Generate color (HEX format) from string

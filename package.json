@@ -58,7 +58,7 @@
     "jest": "26.4.2",
     "jsdoc": "3.6.5",
     "less": "3.12.2",
-    "next": "9.5.3",
+    "next": "9.3.6",
     "next-transpile-modules": "4.1.0",
     "nextron": "5.15.1",
     "passport": "0.4.1",

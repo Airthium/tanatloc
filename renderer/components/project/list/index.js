@@ -32,11 +32,10 @@ const ProjectList = (props) => {
 
   /**
    * Set title
-   * @param {string} project Project
+   * @param {string} project Project { id }
    * @param {string} title Title
    */
   const setTitle = async (project, title) => {
-    console.log(title)
     try {
       // Update
       await update({ id: project.id }, [

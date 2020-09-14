@@ -1,4 +1,5 @@
 import Dashboard from '../../../components/dashboard'
+import { act } from 'react-dom/test-utils'
 import { shallow, mount } from 'enzyme'
 
 import '../../../../config/jest/matchMediaMock'
@@ -11,6 +12,8 @@ jest.mock('next/router', () => ({
 }))
 
 jest.mock('../../../components/loading', () => 'loading')
+
+jest.mock('../../../components/dashboard/welcome', () => 'welcome')
 
 jest.mock('../../../components/workspace', () => 'workspace')
 
@@ -110,8 +113,28 @@ describe('renderer/components/dashboard', () => {
   it('workspace effect', () => {
     wrapper.unmount()
 
-    mockWorkspaces = () => [{}, { id: 'id' }]
+    let name = () => 'name'
+    mockWorkspaces = () => [{}, { id: 'id', name: name() }]
     wrapper = mount(<Dashboard />)
+
+    act(() => {
+      wrapper
+        .find('InternalMenu')
+        .props()
+        .onSelect({
+          item: { props: { subMenuKey: 'my_workspaces-menu-' } },
+          key: '1'
+        })
+
+      name = () => 'name1'
+      wrapper
+        .find('InternalMenu')
+        .props()
+        .onSelect({
+          item: { props: { subMenuKey: 'my_workspaces-menu-' } },
+          key: '1'
+        })
+    })
   })
 
   it('onSelect', () => {
@@ -121,7 +144,7 @@ describe('renderer/components/dashboard', () => {
       .props()
       .onSelect({
         item: { props: { subMenuKey: 'my_workspaces-menu-' } },
-        key: 'my_workspaces1'
+        key: '1'
       })
     expect(wrapper.find('workspace').length).toBe(1)
 
@@ -131,7 +154,7 @@ describe('renderer/components/dashboard', () => {
       .props()
       .onSelect({
         item: { props: { subMenuKey: 'shared-menu-' } },
-        key: 'shared1'
+        key: '1'
       })
     expect(wrapper.find('workspace').length).toBe(1)
 

@@ -71,7 +71,10 @@ const Dashboard = () => {
   useEffect(() => {
     if (workspaces && workspaces.length && currentWorkspace) {
       const workspace = workspaces.find((w) => w.id === currentWorkspace.id)
-      if (workspace && workspace !== currentWorkspace)
+      if (
+        workspace &&
+        JSON.stringify(workspace) !== JSON.stringify(currentWorkspace)
+      )
         setCurrentWorkspace(workspace)
     }
   }, [workspaces, currentWorkspace])

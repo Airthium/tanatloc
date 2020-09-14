@@ -11,6 +11,8 @@ jest.mock('../../../../src/api/user', () => ({
   del: async () => {}
 }))
 
+jest.mock('../../../../src/api/logout', () => async () => {})
+
 let wrapper
 describe('components/account/delete', () => {
   beforeEach(() => {

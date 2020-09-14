@@ -5,6 +5,8 @@ Sentry.init({
   dsn: config.DSN
 })
 
-Sentry.configureScope((scope) => {})
+Sentry.configureScope((scope) => {
+  scope.setTag('Tanatloc')
+})
 
 export default Sentry

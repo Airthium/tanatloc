@@ -1,5 +1,6 @@
 import { promises as fs } from 'fs'
 
+// import { NodeSentry } from './sentry'
 import query from '../database'
 import { databases } from '../../config/db'
 
@@ -17,6 +18,7 @@ const read = async (id) => {
     return avatar.toString()
   } catch (err) {
     console.error(err)
+    // NodeSentry.captureException(err)
   }
 }
 

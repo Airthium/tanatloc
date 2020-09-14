@@ -7,6 +7,7 @@ import {
   del as dBdel
 } from '../database/project'
 
+// import { NodeSentry } from './sentry'
 import { read as readAvatar } from './avatar'
 import { get as getUser } from './user'
 import { update as updateWorkspace } from './workspace'

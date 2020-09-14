@@ -43,3 +43,6 @@ yarn-error.log*
 app
 dist
 dist-server
+
+# Source
+source.sh

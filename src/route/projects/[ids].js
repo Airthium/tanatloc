@@ -30,13 +30,12 @@ export default async function (req, res) {
 
     const projectsTmp = await Promise.all(
       list.map(async (id) => {
-        let project
         try {
-          project = await get(id)
+          return await get(id)
         } catch (err) {
-          console.error(err)
+          console.warn(err)
+          return null
         }
-        return project
       })
     )
 

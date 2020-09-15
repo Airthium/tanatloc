@@ -52,7 +52,8 @@ const get = async (id) => {
       const avatar = await readAvatar(project.avatar)
       project.avatar = avatar
     } catch (err) {
-      console.error(err)
+      console.warn(err)
+      project.avatar = undefined
     }
   }
 

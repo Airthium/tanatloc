@@ -26,6 +26,7 @@ const Delete = () => {
   const handleDelete = async () => {
     setLoading(true)
     try {
+      throw new Error('browser test')
       // Delete
       await del()
 
@@ -37,6 +38,7 @@ const Delete = () => {
 
       setLoading(false)
     } catch (err) {
+      console.log(Sentry)
       message.error(err.message)
       console.error(err)
       Sentry.captureException(err)

@@ -43,6 +43,11 @@ const Login = () => {
     if (user) router.push('/dashboard')
   }, [user])
 
+  // Prefetch
+  useEffect(() => {
+    router.prefetch('/dashboard')
+  }, [])
+
   /**
    * Handle login
    * @param {Object} values Values { username, password }

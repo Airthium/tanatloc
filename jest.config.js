@@ -9,19 +9,19 @@ module.exports = {
     '!**/node_modules/**'
   ],
   testPathIgnorePatterns: [
-    '/node_modules/',
-    '/renderer/.next/',
-    'renderer/out/',
-    'renderer/next.config.js',
-    '/main/',
-    '/app/',
-    '/dist/',
-    '/dist-server/',
-    '/dist-install/',
-    '/doc/',
-    '/coverage/',
-    '/jest.config.js',
-    '/config/jest/'
+    '<rootDir>/node_modules/',
+    '<rootDir>/renderer/.next/',
+    '<rootDir>/renderer/out/',
+    '<rootDir>/renderer/next.config.js',
+    '<rootDir>/main/',
+    '<rootDir>/app/',
+    '<rootDir>/dist/',
+    '<rootDir>/dist-server/',
+    '<rootDir>/dist-install/',
+    '<rootDir>/doc/',
+    '<rootDir>/coverage/',
+    '<rootDir>/jest.config.js',
+    '<rootDir>/config/jest/'
   ],
   transform: {
     '^.+\\.(js|jsx|ts|tsx)$': '<rootDir>/node_modules/babel-jest',
@@ -35,20 +35,20 @@ module.exports = {
     '^.+\\.module\\.(css|sass|scss)$': 'identity-obj-proxy'
   },
   coveragePathIgnorePatterns: [
-    '/node_modules/',
-    '/renderer/.next/',
-    'renderer/out/',
-    'renderer/next.config.js',
-    '/main/',
-    '/app/',
-    '/dist/',
-    '/dist-server/',
-    '/dist-install/',
-    '/doc/',
-    '/coverage/',
-    '/doc/',
-    '/jest.config.js',
-    '/config/jest/',
-    '/src/lib/three/controls/'
+    '<rootDir>/node_modules/',
+    '<rootDir>/renderer/.next/',
+    '<rootDir>/renderer/out/',
+    '<rootDir>/renderer/next.config.js',
+    '<rootDir>/main/',
+    '<rootDir>/app/',
+    '<rootDir>/dist/',
+    '<rootDir>/dist-server/',
+    '<rootDir>/dist-install/',
+    '<rootDir>/doc/',
+    '<rootDir>/coverage/',
+    '<rootDir>/doc/',
+    '<rootDir>/jest.config.js',
+    '<rootDir>/config/jest/',
+    '<rootDir>/src/lib/three/controls/'
   ]
 }

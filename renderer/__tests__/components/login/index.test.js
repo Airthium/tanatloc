@@ -6,6 +6,7 @@ import '../../../../config/jest/matchMediaMock'
 const mockRouter = jest.fn()
 jest.mock('next/router', () => ({
   useRouter: () => ({
+    prefetch: () => {},
     push: mockRouter
   })
 }))

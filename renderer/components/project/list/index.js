@@ -29,7 +29,7 @@ const ProjectList = (props) => {
 
   // Open project
   const openProject = (project) => {
-    router.push('/project/' + project.id)
+    router.push('/project?id=' + project.id, 'project/' + project.id)
   }
 
   /**

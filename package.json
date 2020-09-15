@@ -28,7 +28,8 @@
     "prettier:write": "prettier --write '**/*.{js,json,md,css}'",
     "server-build": "babel . --only config,renderer/pages/api,server,src --out-dir dist-server",
     "start": "next start renderer",
-    "test": "jest --coverage --silent"
+    "test": "jest --coverage --silent",
+    "workflow": ".github/workflows/node.local.sh"
   },
   "dependencies": {
     "electron-serve": "1.0.0",

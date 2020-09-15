@@ -26,7 +26,7 @@ const Delete = () => {
   const handleDelete = async () => {
     setLoading(true)
     try {
-      throw new Error('browser test')
+      // throw new Error('browser test')
       // Delete
       await del()
 

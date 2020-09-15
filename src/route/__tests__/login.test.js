@@ -43,6 +43,9 @@ jest.mock('../../auth/auth-cookies', () => ({
 }))
 
 jest.mock('../../lib/sentry', () => ({
+  configureScope: (callback) => {
+    callback({ setUser: () => {} })
+  },
   captureException: () => {}
 }))
 

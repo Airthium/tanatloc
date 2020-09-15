@@ -11,6 +11,10 @@ jest.mock('../../../../src/api/workspace', () => ({
   useWorkspaces: () => [[], { delOneWorkspace: mockDelOneWorkspace }]
 }))
 
+jest.mock('../../../../src/lib/sentry', () => ({
+  captureException: () => {}
+}))
+
 let wrapper
 describe('pages/workspace/delete', () => {
   beforeEach(() => {

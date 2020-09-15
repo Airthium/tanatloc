@@ -24,6 +24,8 @@ import ProjectList from '../project/list'
 
 import { useWorkspaces, update } from '../../../src/api/workspace'
 
+import Sentry from '../../../src/lib/sentry'
+
 /**
  * Workspace
  * @param {Object} props Props
@@ -48,6 +50,7 @@ const Workspace = ({ workspace }) => {
       .catch((err) => {
         message.error(err.message)
         console.error(err)
+        Sentry.captureException(err)
       })
   }
 

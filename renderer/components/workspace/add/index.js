@@ -6,6 +6,8 @@ import Dialog from '../../assets/dialog'
 
 import { useWorkspaces, add } from '../../../../src/api/workspace'
 
+import Sentry from '../../../../src/lib/sentry'
+
 /**
  * Add workspace
  * @memberof module:renderer/components/workspace
@@ -43,6 +45,8 @@ const Add = () => {
     } catch (err) {
       message.error(err.message)
       console.error(err)
+      Sentry.captureException(err)
+
       setLoading(false)
     }
   }

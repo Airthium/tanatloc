@@ -7,6 +7,8 @@ import { DeleteDialog } from '../../assets/dialog'
 import { useProjects, del } from '../../../../src/api/project'
 import { useWorkspaces } from '../../../../src/api/workspace'
 
+import Sentry from '../../../../src/lib/sentry'
+
 /**
  * Delete project
  * @memberof module:renderer/components/project
@@ -54,6 +56,8 @@ const Delete = (props) => {
     } catch (err) {
       message.error(err.message)
       console.error(err)
+      Sentry.captureException(err)
+
       setLoading(false)
     }
   }

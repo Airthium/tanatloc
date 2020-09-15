@@ -17,6 +17,10 @@ jest.mock('../../../../src/api/workspace', () => ({
   ]
 }))
 
+jest.mock('../../../../src/lib/sentry', () => ({
+  captureException: () => {}
+}))
+
 let wrapper
 describe('renderer/components/project/add', () => {
   beforeEach(() => {

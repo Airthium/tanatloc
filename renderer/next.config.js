@@ -4,6 +4,8 @@ const withTM = require('next-transpile-modules')(['three', 'postprocessing'])
 const withLess = require('@zeit/next-less')
 const withCSS = require('@zeit/next-css')
 
+const sentryConfig = require('../config/sentry')
+
 const basePath = ''
 
 module.exports = withLess({
@@ -18,6 +20,9 @@ module.exports = withLess({
           config.resolve.alias['@sentry/node'] = '@sentry/browser'
         }
         return config
+      },
+      env: {
+        SENTRY_DSN: sentryConfig.DSN
       },
       basePath
     })

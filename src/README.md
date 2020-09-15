@@ -14,7 +14,7 @@ Database queries, server side
 
 ## Lib
 
-Library, server side
+Library, server side (expect `sentry`)
 
 ## Route
 

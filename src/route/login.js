@@ -52,6 +52,9 @@ export const loginRoute = async (req, res) => {
       })
     })
     Sentry.captureException(err)
+    Sentry.configureScope((scope) => {
+      scope.setUser(null)
+    })
   }
 }
 

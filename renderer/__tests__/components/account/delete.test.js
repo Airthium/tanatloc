@@ -13,6 +13,10 @@ jest.mock('../../../../src/api/user', () => ({
 
 jest.mock('../../../../src/api/logout', () => async () => {})
 
+jest.mock('../../../../src/lib/sentry', () => ({
+  captureException: () => {}
+}))
+
 let wrapper
 describe('components/account/delete', () => {
   beforeEach(() => {

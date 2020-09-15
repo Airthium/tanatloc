@@ -7,7 +7,7 @@ import { DeleteDialog } from '../../assets/dialog'
 import { useUser, del } from '../../../../src/api/user'
 import logout from '../../../../src/api/logout'
 
-// import { BrowserSentry } from '../../../../src/lib/sentry'
+import Sentry from '../../../../src/lib/sentry'
 
 /**
  * Delete account
@@ -39,7 +39,8 @@ const Delete = () => {
     } catch (err) {
       message.error(err.message)
       console.error(err)
-      // BrowserSentry.captureException(err)
+      Sentry.captureException(err)
+
       setLoading(false)
     }
   }

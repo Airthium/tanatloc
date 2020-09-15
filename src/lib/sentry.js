@@ -1,10 +1,21 @@
-import config from '../../config/sentry'
+import sentryConfig from '../../config/sentry'
 import * as Sentry from '@sentry/node'
-import { Integrations } from '@sentry/tracing'
+import { RewriteFrames } from '@sentry/integrations'
+import getConfig from 'next/config'
+
+const config = getConfig()
+const distDir = `${config.serverRuntimeConfig.rootDir}/.next`
 
 Sentry.init({
-  dsn: config.DSN,
-  integrations: [new Integrations.BrowserTracing()]
+  dsn: sentryConfig.DSN,
+  integrations: [
+    new RewriteFrames({
+      iteratee: (frame) => {
+        frame.filename = frame.filename.replace(distDir, 'app:///_next')
+        return frame
+      }
+    })
+  ]
 })
 
 Sentry.configureScope((scope) => {

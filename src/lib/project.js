@@ -7,7 +7,6 @@ import {
   del as dBdel
 } from '../database/project'
 
-// import { NodeSentry } from './sentry'
 import { read as readAvatar } from './avatar'
 import { get as getUser } from './user'
 import { update as updateWorkspace } from './workspace'
@@ -47,10 +46,14 @@ const get = async (id) => {
     'users'
   ])
 
-  // Get avatar
+  // Get avatar (not mandatory)
   if (project.avatar) {
-    const avatar = await readAvatar(project.avatar)
-    project.avatar = avatar
+    try {
+      const avatar = await readAvatar(project.avatar)
+      project.avatar = avatar
+    } catch (err) {
+      console.error(err)
+    }
   }
 
   // Get owners

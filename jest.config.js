@@ -46,7 +46,6 @@ module.exports = {
     '<rootDir>/dist-install/',
     '<rootDir>/doc/',
     '<rootDir>/coverage/',
-    '<rootDir>/doc/',
     '<rootDir>/jest.config.js',
     '<rootDir>/config/jest/',
     '<rootDir>/src/lib/three/controls/'

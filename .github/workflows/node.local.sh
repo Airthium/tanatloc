@@ -1,3 +1,7 @@
+#!/bin/bash
+
+set -e
+
 # Install
 yarn
 
@@ -8,6 +12,7 @@ yarn depcheck
 yarn prettier
 
 # Test
+rm -Rf dist/
 yarn test
 
 # Build

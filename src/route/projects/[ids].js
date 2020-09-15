@@ -1,6 +1,8 @@
 import getSessionId from '../session'
 import { get } from '../../lib/project'
 
+import Sentry from '../../lib/sentry'
+
 /**
  * Projects API
  * @param {Object} req Request
@@ -44,5 +46,6 @@ export default async function (req, res) {
   } catch (err) {
     console.error(err)
     res.status(500).json({ message: err.message })
+    Sentry.captureException(err)
   }
 }

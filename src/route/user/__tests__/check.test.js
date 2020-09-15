@@ -8,6 +8,11 @@ jest.mock('../../../lib/user', () => ({
   login: () => mockLogin()
 }))
 
+const mockSentry = jest.fn()
+jest.mock('../../../lib/sentry', () => ({
+  captureException: () => mockSentry()
+}))
+
 describe('src/route/user/check', () => {
   const req = {}
   let response
@@ -36,5 +41,13 @@ describe('src/route/user/check', () => {
     mockLogin = async () => {}
     await check(req, res)
     expect(response).toEqual({ valid: false })
+  })
+
+  it('error', async () => {
+    mockLogin = async () => {
+      throw new Error()
+    }
+    await check(req, res)
+    expect(mockSentry).toHaveBeenCalledTimes(1)
   })
 })

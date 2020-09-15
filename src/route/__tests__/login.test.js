@@ -42,6 +42,10 @@ jest.mock('../../auth/auth-cookies', () => ({
   setTokenCookie: () => {}
 }))
 
+jest.mock('../../lib/sentry', () => ({
+  captureException: () => {}
+}))
+
 describe('src/route/login', () => {
   it('login', () => {
     expect(login).toBeDefined()

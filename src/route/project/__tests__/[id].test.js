@@ -26,6 +26,10 @@ jest.mock('../../../lib/project', () => {
   }
 })
 
+jest.mock('../../../lib/sentry', () => ({
+  captureException: () => {}
+}))
+
 describe('src/route/project/[id]', () => {
   const req = {
     method: 'GET',

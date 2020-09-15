@@ -1,2 +1,2 @@
-ignores: ["babel-loader", "@babel/preset-typescript", "pg-native"]
+ignores: ["babel-loader", "@babel/preset-typescript", "pg-native", "@sentry/browser"]
 skip-missing: true

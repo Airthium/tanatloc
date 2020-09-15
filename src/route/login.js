@@ -6,6 +6,8 @@ import { localStrategy } from '../auth/password-local'
 import { encryptSession } from '../auth/iron'
 import { setTokenCookie } from '../auth/auth-cookies'
 
+import Sentry from '../lib/sentry'
+
 const app = express()
 const authenticate = (method, req, res) =>
   new Promise((resolve, reject) => {
@@ -41,9 +43,18 @@ export const loginRoute = async (req, res) => {
     setTokenCookie(res, token)
 
     res.status(200).send({ done: true })
-  } catch (error) {
-    console.error(error)
-    res.status(401).send(error.message)
+  } catch (err) {
+    console.error(err)
+    res.status(401).send(err.message)
+    Sentry.configureScope((scope) => {
+      scope.setUser({
+        username: req.username
+      })
+    })
+    Sentry.captureException(err)
+    Sentry.configureScope((scope) => {
+      scope.setUser(null)
+    })
   }
 }
 

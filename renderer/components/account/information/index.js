@@ -3,6 +3,8 @@ import { message, Button, Form, Input, Space } from 'antd'
 
 import { useUser, update } from '../../../../src/api/user'
 
+import Sentry from '../../../../src/lib/sentry'
+
 /**
  * Information
  * @memberof module:renderer/components/account
@@ -62,6 +64,8 @@ const Information = () => {
     } catch (err) {
       message.error(err.message)
       console.error(err)
+      Sentry.captureException(err)
+
       setLoading(false)
     }
   }

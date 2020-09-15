@@ -24,6 +24,10 @@ jest.mock('../../../../src/api/workspace/update', () => {
   }
 })
 
+jest.mock('../../../../src/lib/sentry', () => ({
+  captureException: () => {}
+}))
+
 let wrapper
 describe('components/workspace', () => {
   beforeEach(() => {

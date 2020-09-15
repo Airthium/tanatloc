@@ -7,6 +7,8 @@ import { DeleteDialog } from '../../assets/dialog'
 import { useUser, del } from '../../../../src/api/user'
 import logout from '../../../../src/api/logout'
 
+import Sentry from '../../../../src/lib/sentry'
+
 /**
  * Delete account
  * @memberof module:renderer/components/account
@@ -37,6 +39,8 @@ const Delete = () => {
     } catch (err) {
       message.error(err.message)
       console.error(err)
+      Sentry.captureException(err)
+
       setLoading(false)
     }
   }

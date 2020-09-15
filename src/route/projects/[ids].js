@@ -1,6 +1,8 @@
 import getSessionId from '../session'
 import { get } from '../../lib/project'
 
+import Sentry from '../../lib/sentry'
+
 /**
  * Projects API
  * @param {Object} req Request
@@ -28,13 +30,12 @@ export default async function (req, res) {
 
     const projectsTmp = await Promise.all(
       list.map(async (id) => {
-        let project
         try {
-          project = await get(id)
+          return await get(id)
         } catch (err) {
-          console.error(err)
+          console.warn(err)
+          return null
         }
-        return project
       })
     )
 
@@ -44,5 +45,6 @@ export default async function (req, res) {
   } catch (err) {
     console.error(err)
     res.status(500).json({ message: err.message })
+    Sentry.captureException(err)
   }
 }

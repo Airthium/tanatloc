@@ -10,8 +10,9 @@ jest.mock('../../database/project', () => ({
   del: async () => mockDelete()
 }))
 
+let mockAvatar
 jest.mock('../avatar', () => ({
-  read: async (val) => val
+  read: async (val) => mockAvatar(val)
 }))
 
 jest.mock('../user', () => ({
@@ -25,6 +26,7 @@ jest.mock('../workspace', () => ({
 
 describe('src/lib/project', () => {
   beforeEach(() => {
+    mockAvatar = (val) => val
     mockUpdate.mockReset()
     mockDelete.mockReset()
     mockWorkspace.mockReset()
@@ -53,6 +55,17 @@ describe('src/lib/project', () => {
     project = await get()
     expect(project).toEqual({
       avatar: 'avatar',
+      owners: ['owner'],
+      users: ['user']
+    })
+
+    // With avatar error
+    mockAvatar = async () => {
+      throw new Error()
+    }
+    project = await get()
+    expect(project).toEqual({
+      avatar: undefined,
       owners: ['owner'],
       users: ['user']
     })

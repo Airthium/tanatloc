@@ -1,6 +1,8 @@
 import getSessionId from '../session'
 import { add } from '../../lib/project'
 
+import Sentry from '../../lib/sentry'
+
 /**
  * Project API
  * @param {Object} req Request
@@ -18,8 +20,11 @@ export default async function (req, res) {
     } catch (err) {
       console.error(err)
       res.status(500).json({ message: err.message })
+      Sentry.captureException(err)
     }
   } else {
-    res.status(405).json({ message: 'Method ' + req.method + ' not allowed' })
+    const err = new Error('Method ' + req.method + ' not allowed')
+    res.status(405).json({ message: err.message })
+    Sentry.captureException(err)
   }
 }

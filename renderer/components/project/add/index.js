@@ -7,6 +7,8 @@ import Dialog from '../../assets/dialog'
 import { useProjects, add } from '../../../../src/api/project'
 import { useWorkspaces } from '../../../../src/api/workspace'
 
+import Sentry from '../../../../src/lib/sentry'
+
 /**
  * Add project
  * @memberof module:renderer/components/project
@@ -53,6 +55,8 @@ const Add = (props) => {
     } catch (err) {
       message.error(err.message)
       console.error(err)
+      Sentry.captureException(err)
+
       setLoading(false)
     }
   }

@@ -19,6 +19,10 @@ jest.mock('../../../../src/api/project', () => ({
   update: () => mockUpdate()
 }))
 
+jest.mock('../../../../src/lib/sentry', () => ({
+  captureException: () => {}
+}))
+
 let wrapper
 describe('component/project/list', () => {
   beforeEach(() => {

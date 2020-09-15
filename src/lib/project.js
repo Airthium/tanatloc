@@ -46,10 +46,15 @@ const get = async (id) => {
     'users'
   ])
 
-  // Get avatar
+  // Get avatar (not mandatory)
   if (project.avatar) {
-    const avatar = await readAvatar(project.avatar)
-    project.avatar = avatar
+    try {
+      const avatar = await readAvatar(project.avatar)
+      project.avatar = avatar
+    } catch (err) {
+      console.warn(err)
+      project.avatar = undefined
+    }
   }
 
   // Get owners

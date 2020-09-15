@@ -9,6 +9,10 @@ jest.mock('../../../../src/api/workspace', () => ({
   useWorkspaces: () => [[], { addOneWorkspace: mockAddOneWorkspace }]
 }))
 
+jest.mock('../../../../src/lib/sentry', () => ({
+  captureException: () => {}
+}))
+
 let wrapper
 describe('components/workspace/add', () => {
   beforeEach(() => {

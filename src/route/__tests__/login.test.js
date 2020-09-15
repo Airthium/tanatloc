@@ -42,6 +42,13 @@ jest.mock('../../auth/auth-cookies', () => ({
   setTokenCookie: () => {}
 }))
 
+jest.mock('../../lib/sentry', () => ({
+  configureScope: (callback) => {
+    callback({ setUser: () => {} })
+  },
+  captureException: () => {}
+}))
+
 describe('src/route/login', () => {
   it('login', () => {
     expect(login).toBeDefined()

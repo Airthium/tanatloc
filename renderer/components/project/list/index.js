@@ -6,6 +6,8 @@ import Delete from '../delete'
 
 import { useProjects, update } from '../../../../src/api/project'
 
+import Sentry from '../../../../src/lib/sentry'
+
 /**
  * Projects' list
  * @memberof module:renderer/components/project
@@ -55,6 +57,7 @@ const ProjectList = (props) => {
     } catch (err) {
       message.error(err.message)
       console.error(err)
+      Sentry.captureException(err)
     }
   }
 

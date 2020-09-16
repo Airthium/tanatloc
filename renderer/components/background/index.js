@@ -7,10 +7,15 @@ import {
   PerspectiveCamera,
   Scene,
   TetrahedronGeometry,
+  Vector3,
   WebGLRenderer
 } from 'three/build/three.module'
 
 const Background = () => {
+  // Parameters
+  const numberOfTetrahedra = 100
+  const rotationSpeed = 0.005
+
   // Ref
   const mount = useRef(null)
 
@@ -45,21 +50,29 @@ const Background = () => {
     const rotationX = []
     const rotationY = []
     const rotationZ = []
-    // Visible height
+    // Visible height & width
     const offset = camera.position.z
     const hFOV = (camera.fov * Math.PI) / 180
     const h = 2 * Math.tan(hFOV / 2) * offset
     const w = h * camera.aspect
-    for (let i = 0; i < 100; ++i) {
+    // Build tetra
+    for (let i = 0; i < numberOfTetrahedra; ++i) {
       const geometry = new TetrahedronGeometry(0.1 * Math.random())
       geometry.translate(
-        -w / 2 + w * Math.random(),
-        -h / 2 + h * Math.random(),
+        (-1.2 * w) / 2 + 1.2 * w * Math.random(),
+        (-1.2 * h) / 2 + 1.2 * h * Math.random(),
         0
       )
-      rotationX.push(-0.005 + 0.01 * Math.random())
-      rotationY.push(-0.005 + 0.01 * Math.random())
-      rotationZ.push(-0.005 + 0.01 * Math.random())
+      geometry.lookAt(
+        new Vector3(
+          -1 + 2 * Math.random(),
+          -1 + 2 * Math.random(),
+          -1 + 2 * Math.random()
+        )
+      )
+      rotationX.push(-rotationSpeed / 2 + rotationSpeed * Math.random())
+      rotationY.push(-rotationSpeed / 2 + rotationSpeed * Math.random())
+      rotationZ.push(-rotationSpeed / 2 + rotationSpeed * Math.random())
       const material = new MeshDepthMaterial({
         wireframe: true,
         transparent: true,
@@ -73,13 +86,11 @@ const Background = () => {
      * Resize
      */
     const resize = () => {
-      if (mount.current) {
-        width = mount.current.clientWidth
-        height = mount.current.clientHeight
-        renderer.setSize(width, height)
-        camera.aspect = width / height
-        camera.updateProjectionMatrix()
-      }
+      width = mount.current.clientWidth
+      height = mount.current.clientHeight
+      renderer.setSize(width, height)
+      camera.aspect = width / height
+      camera.updateProjectionMatrix()
     }
 
     /**

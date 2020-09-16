@@ -123,6 +123,7 @@ class MockSpriteMaterial {}
 class MockTetrahedronGeometry {
   constructor() {
     this.translate = () => {}
+    this.lookAt = () => {}
   }
 }
 

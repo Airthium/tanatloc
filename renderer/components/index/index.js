@@ -4,6 +4,8 @@ import { useRouter } from 'next/router'
 import { Divider, Layout, Menu } from 'antd'
 import { DashboardOutlined, LoginOutlined } from '@ant-design/icons'
 
+import Background from '../background'
+
 import { useUser } from '../../../src/api/user'
 
 const menuKeys = {
@@ -49,6 +51,7 @@ const Index = () => {
    */
   return (
     <Layout className="Index">
+      <Background />
       <Layout.Header className="Index-header">
         <img src="/images/logo.svg" />
         <Menu onSelect={onSelect} selectedkeys={[]}>

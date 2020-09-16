@@ -14,6 +14,7 @@ import {
 } from 'antd'
 
 import Loading from '../loading'
+import Background from '../background'
 
 import login from '../../../src/api/login'
 import { useUser } from '../../../src/api/user'
@@ -78,6 +79,7 @@ const Login = () => {
         <Loading />
       ) : (
         <Layout className="tanatloc-gradient">
+          <Background />
           <Card className="Login">
             <Space direction="vertical" size="large" style={{ width: '100%' }}>
               <div className="logo">

@@ -10,6 +10,8 @@ jest.mock('next/router', () => ({
   })
 }))
 
+jest.mock('../../../components/background', () => 'background')
+
 let mockUser
 jest.mock('../../../../src/api/user', () => ({
   useUser: () => [mockUser()]

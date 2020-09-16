@@ -13,6 +13,8 @@ jest.mock('next/router', () => ({
 
 jest.mock('../../../components/loading', () => 'loading')
 
+jest.mock('../../../components/background', () => 'background')
+
 let mockLogin = () => {}
 jest.mock('..∕../../../src/api/login', () => async () => mockLogin())
 

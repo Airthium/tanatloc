@@ -62,6 +62,14 @@ describe('components/login', () => {
     mWrapper.unmount()
   })
 
+  it('onSelect', () => {
+    wrapper.find('Menu').props().onSelect({})
+    expect(mockRouter).toHaveBeenCalledTimes(0)
+
+    wrapper.find('Menu').props().onSelect({ key: 'home' })
+    expect(mockRouter).toHaveBeenCalledTimes(1)
+  })
+
   it('onLogin', async () => {
     await wrapper.find('ForwardRef(InternalForm)').props().onFinish({})
     expect(mockRouter).toHaveBeenCalledTimes(0)

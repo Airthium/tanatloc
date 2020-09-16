@@ -2,6 +2,8 @@
 
 import { Card, Layout, Space, Spin } from 'antd'
 
+import Background from '../background'
+
 /**
  * Loading
  */
@@ -11,6 +13,7 @@ const Loading = () => {
    */
   return (
     <Layout className="tanatloc-gradient">
+      <Background />
       <div className="logo">
         <img src="/images/logo.svg" />
       </div>

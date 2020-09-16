@@ -59,6 +59,8 @@ class MockMesh {
 
 class MockMeshBasicMaterial {}
 
+class MockMeshDepthMaterial {}
+
 class MockMeshStandardMaterial {}
 
 class MockOrthographicCamera {
@@ -118,6 +120,13 @@ class MockSprite {}
 
 class MockSpriteMaterial {}
 
+class MockTetrahedronGeometry {
+  constructor() {
+    this.translate = () => {}
+    this.lookAt = () => {}
+  }
+}
+
 class MockTexture {}
 
 class MockVector2 {
@@ -164,6 +173,7 @@ const MockThree = {
   LineSegments: MockLineSegments,
   Mesh: MockMesh,
   MeshBasicMaterial: MockMeshBasicMaterial,
+  MeshDepthMaterial: MockMeshDepthMaterial,
   MeshStandardMaterial: MockMeshStandardMaterial,
   OrthographicCamera: MockOrthographicCamera,
   PerspectiveCamera: MockPerspectiveCamera,
@@ -175,6 +185,7 @@ const MockThree = {
   SphereGeometry: MockSphereGeometry,
   Sprite: MockSprite,
   SpriteMaterial: MockSpriteMaterial,
+  TetrahedronGeometry: MockTetrahedronGeometry,
   Texture: MockTexture,
   Vector2: MockVector2,
   Vector3: MockVector3,

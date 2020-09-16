@@ -13,6 +13,8 @@ jest.mock('next/router', () => ({
 
 jest.mock('../../../components/loading', () => 'loading')
 
+jest.mock('../../../components/background', () => 'background')
+
 let mockLogin = () => {}
 jest.mock('..∕../../../src/api/login', () => async () => mockLogin())
 
@@ -58,6 +60,14 @@ describe('components/login', () => {
     mWrapper = mount(<Login />)
     expect(mockRouter).toHaveBeenCalledTimes(1)
     mWrapper.unmount()
+  })
+
+  it('onSelect', () => {
+    wrapper.find('Menu').props().onSelect({})
+    expect(mockRouter).toHaveBeenCalledTimes(0)
+
+    wrapper.find('Menu').props().onSelect({ key: 'home' })
+    expect(mockRouter).toHaveBeenCalledTimes(1)
   })
 
   it('onLogin', async () => {

@@ -10,10 +10,13 @@ import {
   Form,
   Input,
   Layout,
+  Menu,
   Space
 } from 'antd'
+import { HomeOutlined } from '@ant-design/icons'
 
 import Loading from '../loading'
+import Background from '../background'
 
 import login from '../../../src/api/login'
 import { useUser } from '../../../src/api/user'
@@ -23,6 +26,10 @@ import { useUser } from '../../../src/api/user'
  */
 const errors = {
   BAD_CREDENTIALS: 'Login failed. Please check your username and password'
+}
+
+const menuKeys = {
+  home: 'home'
 }
 
 /**
@@ -47,6 +54,14 @@ const Login = () => {
   useEffect(() => {
     router.prefetch('/dashboard')
   }, [])
+
+  const onSelect = ({ item, key }) => {
+    if (key === menuKeys.home) handleHome()
+  }
+
+  const handleHome = () => {
+    router.push('/')
+  }
 
   /**
    * Handle login
@@ -78,6 +93,14 @@ const Login = () => {
         <Loading />
       ) : (
         <Layout className="tanatloc-gradient">
+          <Background />
+          <Layout.Header className="Login-header">
+            <Menu onSelect={onSelect} selectedkeys={[]}>
+              <Menu.Item key={menuKeys.home} icon={<HomeOutlined />}>
+                Home
+              </Menu.Item>
+            </Menu>
+          </Layout.Header>
           <Card className="Login">
             <Space direction="vertical" size="large" style={{ width: '100%' }}>
               <div className="logo">

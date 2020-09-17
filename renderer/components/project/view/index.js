@@ -298,7 +298,7 @@ const ThreeView = () => {
       -5 + 10 * Math.random(),
       -5 + 10 * Math.random(),
       -5 + 10 * Math.random()
-    ) //TODO introduce bug in navcube
+    )
     geometry.computeBoundingBox()
     geometry.computeBoundingSphere()
     const material = new MeshStandardMaterial({ color: 0xff00ff })

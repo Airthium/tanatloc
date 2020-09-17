@@ -246,7 +246,6 @@ const NavigationHelper = (
    * @param {Object} event Event
    */
   const onMouseDown = (event) => {
-    // TODO wrong way
     if (currentlyHighlighted) {
       const normal = currentlyHighlighted.normal
       const up = currentlyHighlighted.up

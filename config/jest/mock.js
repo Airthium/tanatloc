@@ -13,6 +13,9 @@ class MockGeometry {
       center: new MockVector3(),
       radius: 1
     }
+    this.vertices = {
+      push: () => {}
+    }
   }
 }
 
@@ -55,9 +58,16 @@ class MockGroup {
   constructor() {
     this.add = () => {}
     this.lookAt = () => {}
+    this.translateX = () => {}
+    this.translateY = () => {}
     this.translateZ = () => {}
+    this.rotateX = () => {}
+    this.rotateY = () => {}
+    this.rotateZ = () => {}
   }
 }
+
+class MockLine {}
 
 class MockLineBasicMaterial extends MockMaterial {}
 
@@ -145,8 +155,12 @@ class MockVector2 {
   }
 }
 
+global.MockVector3 = { x: 0, y: 0, z: 0 }
 class MockVector3 {
   constructor() {
+    this.x = global.MockVector3.x
+    this.y = global.MockVector3.y
+    this.z = global.MockVector3.z
     this.unproject = () => {}
     this.set = () => {}
     this.sub = () => new MockVector3()
@@ -169,6 +183,9 @@ class MockWebGLRenderer {
 }
 
 const MockThree = {
+  Geometry: MockGeometry,
+  Material: MockMaterial,
+
   AmbientLight: MockAmbientLight,
   Box2: MockBox2,
   Box3: MockBox3,
@@ -179,6 +196,7 @@ const MockThree = {
   CylinderGeometry: MockCylinderGeometry,
   EdgesGeometry: MockEdgesGeometry,
   Group: MockGroup,
+  Line: MockLine,
   LineBasicMaterial: MockLineBasicMaterial,
   LineSegments: MockLineSegments,
   Mesh: MockMesh,

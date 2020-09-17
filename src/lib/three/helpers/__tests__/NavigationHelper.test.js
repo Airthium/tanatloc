@@ -16,6 +16,11 @@ global.MockRaycaster.intersectObjects = [
     object: {
       parent: {
         uuid: 'id',
+        normal: {
+          clone: () => ({
+            multiplyScalar: () => {}
+          })
+        },
         children: [
           {},
           {
@@ -36,7 +41,11 @@ describe('src/lib/three/helpers/NavigationHelper', () => {
     setViewport: () => {},
     render: () => {}
   }
-  const scene = {}
+  const scene = {
+    boundingBox: {
+      getCenter: () => {}
+    }
+  }
   const camera = {
     position: {
       copy: () => ({

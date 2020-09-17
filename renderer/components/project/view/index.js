@@ -25,6 +25,7 @@ import {
 import { TrackballControls } from '../../../../src/lib/three/controls/TrackballControls'
 import { AxisHelper } from '../../../../src/lib/three/helpers/AxisHelper'
 import { NavigationHelper } from '../../../../src/lib/three/helpers/NavigationHelper'
+import { GridHelper } from '../../../../src/lib/three/helpers/GridHelper'
 import { SelectionHelper } from '../../../../src/lib/three/helpers/SelectionHelper'
 
 const ThreeView = () => {
@@ -100,6 +101,14 @@ const ThreeView = () => {
         width: 150,
         height: 150
       }
+    )
+
+    // GridHelper
+    const gridHelper = GridHelper(
+      renderer.current,
+      scene.current,
+      camera.current,
+      controls.current
     )
 
     // SelectionHelper
@@ -235,7 +244,8 @@ const ThreeView = () => {
       if (
         mesh.type === 'AmbientLight' ||
         mesh.type === 'PointLight' ||
-        mesh.type === 'AxisHelper'
+        mesh.type === 'AxisHelper' ||
+        mesh.type === 'GridHelper'
       )
         return
 
@@ -288,7 +298,9 @@ const ThreeView = () => {
   }, [])
 
   const removeCube = () => {
-    if (scene.current.children.length > 3) scene.current.children.pop()
+    // TODO do it better
+    // do not remove light, axis, grid
+    if (scene.current.children.length > 4) scene.current.children.pop()
   }
 
   return (

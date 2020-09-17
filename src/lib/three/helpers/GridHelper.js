@@ -113,7 +113,7 @@ const GridHelper = (scene) => {
 
     maxSize = Math.max(size.x, size.y, size.z)
 
-    const divisions = getDivisions(size, maxSize)
+    const divisions = getDivisions(size)
 
     const grid = new Group()
 

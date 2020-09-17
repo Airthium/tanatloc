@@ -251,14 +251,23 @@ const NavigationHelper = (
       const normal = currentlyHighlighted.normal
       const up = currentlyHighlighted.up
 
+      // Scene
+      const center = new Vector3()
+      scene.boundingBox.getCenter(center)
+
       // Camera
       const distance = camera.position.distanceTo(controls.target)
-      camera.position.copy(normal).multiplyScalar(distance)
+
+      const interval = normal.clone().multiplyScalar(distance)
+      const newPosition = center.add(interval)
+
+      camera.position.copy(newPosition)
       camera.up.copy(up)
 
       // Unhighlight
       currentlyHighlighted = 0
       unhighlight()
+
       // Mouse move
       onMouseMove(event)
     }

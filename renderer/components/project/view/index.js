@@ -1,7 +1,7 @@
 /** @module renderer/components/project/view */
 
 import { useRef, useState, useEffect } from 'react'
-import { Button, Divider, Drawer, Layout, Tooltip } from 'antd'
+import { Button, Divider, Drawer, Layout, Switch, Tooltip } from 'antd'
 import {
   CompressOutlined,
   ControlOutlined,
@@ -13,6 +13,7 @@ import {
 } from '@ant-design/icons'
 import {
   AmbientLight,
+  Box3,
   BoxGeometry,
   Mesh,
   MeshStandardMaterial,
@@ -20,6 +21,7 @@ import {
   PointLight,
   Scene,
   Sphere,
+  Vector3,
   WebGLRenderer
 } from 'three/build/three.module'
 import { TrackballControls } from '../../../../src/lib/three/controls/TrackballControls'
@@ -35,6 +37,7 @@ const ThreeView = () => {
   const camera = useRef()
   const renderer = useRef()
   const controls = useRef()
+  const gridHelper = useRef()
   const selectionHelper = useRef()
 
   // State
@@ -104,7 +107,7 @@ const ThreeView = () => {
     )
 
     // GridHelper
-    const gridHelper = GridHelper(
+    gridHelper.current = GridHelper(
       renderer.current,
       scene.current,
       camera.current,
@@ -206,6 +209,32 @@ const ThreeView = () => {
     }
   }, [])
 
+  const computeSceneBoundingSphere = () => {
+    const box = new Box3()
+    scene.current.children.forEach((child) => {
+      if (child.visible && child.type === 'Mesh') {
+        const childBox = child.geometry.boundingBox
+        const min = new Vector3(
+          Math.min(box.min.x, childBox.min.x),
+          Math.min(box.min.y, childBox.min.y),
+          Math.min(box.min.z, childBox.min.z)
+        )
+        const max = new Vector3(
+          Math.max(box.max.x, childBox.max.x),
+          Math.max(box.max.y, childBox.max.y),
+          Math.max(box.max.z, childBox.max.z)
+        )
+        box.set(min, max)
+      }
+    })
+
+    const sphere = new Sphere()
+    box.getBoundingSphere(sphere)
+
+    scene.current.boundingBox = box
+    scene.current.boundingSphere = sphere
+  }
+
   const zoom = (direction) => {
     const targetDistance = controls.current.object.position.distanceTo(
       controls.current.target
@@ -237,24 +266,8 @@ const ThreeView = () => {
   }
 
   const zoomToFit = () => {
-    const meshes = scene.current.children
-    const sphere = new Sphere()
-
-    meshes.forEach((mesh) => {
-      if (
-        mesh.type === 'AmbientLight' ||
-        mesh.type === 'PointLight' ||
-        mesh.type === 'AxisHelper' ||
-        mesh.type === 'GridHelper'
-      )
-        return
-
-      const boundingSphere = mesh.geometry.boundingSphere
-      sphere.radius = Math.max(sphere.radius, boundingSphere.radius)
-      sphere.center = sphere.center
-        .add(boundingSphere.center)
-        .multiplyScalar(1 / 2)
-    })
+    const sphere = scene.current.boundingSphere
+    if (!sphere) return
 
     // Center
     const center = sphere.center
@@ -285,22 +298,39 @@ const ThreeView = () => {
       10 * Math.random(),
       10 * Math.random()
     )
+    // geometry.translate(
+    //   -5 + 10 * Math.random(),
+    //   -5 + 10 * Math.random(),
+    //   -5 + 10 * Math.random()
+    // )//TODO introduce bug in navcube
+    geometry.computeBoundingBox()
     geometry.computeBoundingSphere()
     const material = new MeshStandardMaterial({ color: 0xff00ff })
     const cube = new Mesh(geometry, material)
     scene.current.add(cube)
+
+    computeSceneBoundingSphere()
+    gridHelper.current.update()
   }
 
-  // TODO to remove
+  // // TODO to remove
   useEffect(() => {
     addCube()
     zoomToFit()
   }, [])
 
   const removeCube = () => {
-    // TODO do it better
-    // do not remove light, axis, grid
-    if (scene.current.children.length > 4) scene.current.children.pop()
+    const children = scene.current.children.filter(
+      (child) => child.type === 'Mesh'
+    )
+    scene.current.remove(children.pop())
+
+    computeSceneBoundingSphere()
+    gridHelper.current.update()
+  }
+
+  const toggleGrid = (checked) => {
+    gridHelper.current.setVisible(checked)
   }
 
   return (
@@ -331,6 +361,10 @@ const ThreeView = () => {
           }}
           width="100%"
         >
+          <div className="drawer-group">
+            <Switch defaultChecked onChange={toggleGrid} /> Grid
+          </div>
+          <Divider />
           <div className="drawer-group">
             <div className="drawer-subgroup">
               <Tooltip title="Zoom out">

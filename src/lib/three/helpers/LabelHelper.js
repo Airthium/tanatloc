@@ -3,15 +3,16 @@ import { Sprite, SpriteMaterial, Texture } from 'three/build/three.module'
 /**
  * LabelHelper
  * @param {string} text Text
+ * @param {number} fontSize Font size
  */
-const LabelHelper = (text) => {
+const LabelHelper = (text, fontColor = 'black', fontSize = 256) => {
   // Canvas
   const canvas = document.createElement('canvas')
   canvas.width = 256
   canvas.height = 256
   const context = canvas.getContext('2d')
-  context.fillStyle = 'black'
-  context.font = '256px sans-serif'
+  context.fillStyle = fontColor
+  context.font = fontSize + 'px sans-serif'
   context.textAlign = 'center'
   context.textBaseline = 'middle'
   context.fillText(text, canvas.width / 2, canvas.height / 2)

@@ -45,6 +45,13 @@ jest.mock('../../../../../src/lib/three/helpers/NavigationHelper', () => ({
   })
 }))
 
+jest.mock('../../../../../src/lib/three/helpers/GridHelper', () => ({
+  GridHelper: () => ({
+    update: () => {},
+    setVisible: () => {}
+  })
+}))
+
 jest.mock('../../../../../src/lib/three/helpers/SelectionHelper', () => ({
   SelectionHelper: () => ({
     start: () => {}
@@ -62,7 +69,16 @@ global.MockScene.children = [
   { type: 'PointLight' },
   { type: 'AxisHelper' },
   {
+    type: 'Mesh'
+  },
+  {
+    visible: true,
+    type: 'Mesh',
     geometry: {
+      boundingBox: {
+        min: { x: 0, y: 0, z: 0 },
+        max: { x: 1, y: 1, z: 1 }
+      },
       boundingSphere: {}
     }
   }
@@ -118,5 +134,10 @@ describe('components/project/view', () => {
     wrapper.unmount()
     window.devicePixelRatio = undefined
     wrapper = mount(<View />)
+  })
+
+  it('grid visible', () => {
+    wrapper.find('Switch').at(0).props().onChange(true)
+    wrapper.find('Switch').at(0).props().onChange(false)
   })
 })

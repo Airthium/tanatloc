@@ -1,17 +1,14 @@
 // THREEJS
 
-class MockAmbientLight {}
+// Bases classes
 
-class MockBox2 {
+class MockGeometry {
   constructor() {
-    this.min = {}
-    this.max = {}
-  }
-}
-
-class MockBoxGeometry {
-  constructor() {
+    this.computeBoundingBox = () => {}
     this.computeBoundingSphere = () => {}
+    this.lookAt = () => {}
+    this.translate = () => {}
+
     this.boundingSphere = {
       center: new MockVector3(),
       radius: 1
@@ -19,23 +16,40 @@ class MockBoxGeometry {
   }
 }
 
+class MockMaterial {}
+
+// Child classes
+
+class MockAmbientLight {}
+
+class MockBox2 {
+  constructor() {
+    this.min = new MockVector2()
+    this.max = new MockVector2()
+  }
+}
+
+class MockBox3 {
+  constructor() {
+    this.getBoundingSphere = () => new MockSphere()
+    this.set = () => {}
+
+    this.min = new MockVector3()
+    this.max = new MockVector3()
+  }
+}
+
+class MockBoxGeometry extends MockGeometry {}
+
 class MockCanvasTexture {}
 
 class MockColor {}
 
-class MockConeGeometry {
-  constructor() {
-    this.translate = () => {}
-  }
-}
+class MockConeGeometry extends MockGeometry {}
 
-class MockCylinderGeometry {
-  constructor() {
-    this.translate = () => {}
-  }
-}
+class MockCylinderGeometry extends MockGeometry {}
 
-class MockEdgesGeometry {}
+class MockEdgesGeometry extends MockGeometry {}
 
 class MockGroup {
   constructor() {
@@ -45,23 +59,23 @@ class MockGroup {
   }
 }
 
-class MockLineBasicMaterial {}
+class MockLineBasicMaterial extends MockMaterial {}
 
 class MockLineSegments {}
 
 class MockMesh {
   constructor() {
     this.rotateY = () => {}
-    this.geometry = new MockBoxGeometry()
-    this.material = new MockMeshBasicMaterial()
+    this.geometry = new MockGeometry()
+    this.material = new MockMaterial()
   }
 }
 
-class MockMeshBasicMaterial {}
+class MockMeshBasicMaterial extends MockMaterial {}
 
-class MockMeshDepthMaterial {}
+class MockMeshDepthMaterial extends MockMaterial {}
 
-class MockMeshStandardMaterial {}
+class MockMeshStandardMaterial extends MockMaterial {}
 
 class MockOrthographicCamera {
   constructor() {
@@ -78,7 +92,7 @@ class MockPerspectiveCamera {
   }
 }
 
-class MockPlaneGeometry {}
+class MockPlaneGeometry extends MockGeometry {}
 
 class MockPointLight {
   constructor() {
@@ -114,18 +128,13 @@ class MockSphere {
   }
 }
 
-class MockSphereGeometry {}
+class MockSphereGeometry extends MockGeometry {}
 
 class MockSprite {}
 
-class MockSpriteMaterial {}
+class MockSpriteMaterial extends MockMaterial {}
 
-class MockTetrahedronGeometry {
-  constructor() {
-    this.translate = () => {}
-    this.lookAt = () => {}
-  }
-}
+class MockTetrahedronGeometry extends MockGeometry {}
 
 class MockTexture {}
 
@@ -162,6 +171,7 @@ class MockWebGLRenderer {
 const MockThree = {
   AmbientLight: MockAmbientLight,
   Box2: MockBox2,
+  Box3: MockBox3,
   BoxGeometry: MockBoxGeometry,
   CanvasTexture: MockCanvasTexture,
   Color: MockColor,

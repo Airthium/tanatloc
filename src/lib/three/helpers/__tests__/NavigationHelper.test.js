@@ -36,6 +36,7 @@ describe('src/lib/three/helpers/NavigationHelper', () => {
     setViewport: () => {},
     render: () => {}
   }
+  const scene = {}
   const camera = {
     position: {
       copy: () => ({
@@ -62,12 +63,12 @@ describe('src/lib/three/helpers/NavigationHelper', () => {
       callback({ clientX: 50, clientY: 50 })
       callback({ clientX: 25, clientY: 25 })
     }
-    const navigation = NavigationHelper(renderer, camera, controls)
+    const navigation = NavigationHelper(renderer, scene, camera, controls)
     expect(navigation).toBeDefined()
   })
 
   it('resize', () => {
-    const navigation = NavigationHelper(renderer, camera, controls)
+    const navigation = NavigationHelper(renderer, scene, camera, controls)
     navigation.resize({
       newOffsetWidth: 0,
       newOffsetHeight: 0,
@@ -77,7 +78,7 @@ describe('src/lib/three/helpers/NavigationHelper', () => {
   })
 
   it('render', () => {
-    const navigation = NavigationHelper(renderer, camera, controls)
+    const navigation = NavigationHelper(renderer, scene, camera, controls)
     navigation.render()
   })
 })

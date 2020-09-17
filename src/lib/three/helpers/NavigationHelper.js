@@ -25,6 +25,7 @@ import {
  */
 const NavigationHelper = (
   renderer,
+  scene,
   camera,
   controls,
   { offsetWidth, offsetHeight, width, height } = {
@@ -245,6 +246,7 @@ const NavigationHelper = (
    * @param {Object} event Event
    */
   const onMouseDown = (event) => {
+    // TODO wrong way
     if (currentlyHighlighted) {
       const normal = currentlyHighlighted.normal
       const up = currentlyHighlighted.up
@@ -254,9 +256,9 @@ const NavigationHelper = (
       camera.position.copy(normal).multiplyScalar(distance)
       camera.up.copy(up)
 
+      // Unhighlight
       currentlyHighlighted = 0
       unhighlight()
-
       // Mouse move
       onMouseMove(event)
     }

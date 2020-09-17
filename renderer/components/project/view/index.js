@@ -96,6 +96,7 @@ const ThreeView = () => {
     // NavigationHelper
     const navigationHelper = NavigationHelper(
       renderer.current,
+      scene.current,
       camera.current,
       controls.current,
       {
@@ -107,12 +108,7 @@ const ThreeView = () => {
     )
 
     // GridHelper
-    gridHelper.current = GridHelper(
-      renderer.current,
-      scene.current,
-      camera.current,
-      controls.current
-    )
+    gridHelper.current = GridHelper(scene.current)
 
     // SelectionHelper
     selectionHelper.current = SelectionHelper(
@@ -302,7 +298,7 @@ const ThreeView = () => {
     //   -5 + 10 * Math.random(),
     //   -5 + 10 * Math.random(),
     //   -5 + 10 * Math.random()
-    // )//TODO introduce bug in navcube
+    // ) //TODO introduce bug in navcube
     geometry.computeBoundingBox()
     geometry.computeBoundingSphere()
     const material = new MeshStandardMaterial({ color: 0xff00ff })
@@ -313,7 +309,7 @@ const ThreeView = () => {
     gridHelper.current.update()
   }
 
-  // // TODO to remove
+  // TODO to remove
   useEffect(() => {
     addCube()
     zoomToFit()

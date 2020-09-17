@@ -9,7 +9,7 @@ import {
 
 import Label from './LabelHelper'
 
-const GridHelper = (renderer, scene, camera, controls) => {
+const GridHelper = (scene) => {
   // Grid color
   const gridColor = '#888888'
   // Min divisions
@@ -42,7 +42,15 @@ const GridHelper = (renderer, scene, camera, controls) => {
     return new Vector3(xDiv, yDiv, zDiv)
   }
 
-  const createGrid = ({ width, height, wDiv, hDiv, rotate, translation }) => {
+  const createGrid = ({
+    offsetWidth,
+    width,
+    height,
+    wDiv,
+    hDiv,
+    rotate,
+    translation
+  }) => {
     const grid = new Group()
     const material = new LineBasicMaterial({ color: gridColor })
 
@@ -60,7 +68,7 @@ const GridHelper = (renderer, scene, camera, controls) => {
 
       const fontSize = (100 * maxSize) / 10
 
-      const label1 = Label(0, 'grey', fontSize)
+      const label1 = Label(offsetWidth.toFixed(2), 'grey', fontSize)
       label1.translateX(-width / 2)
       label1.translateY(height / 2 + overflowGrid * maxSize)
       const label2 = Label(width.toFixed(2), 'grey', fontSize)
@@ -110,6 +118,7 @@ const GridHelper = (renderer, scene, camera, controls) => {
     const grid = new Group()
 
     const gridXY = createGrid({
+      offsetWidth: boundingBox.min.x,
       width: size.x + maxSize * overflowGrid,
       height: size.y + maxSize * overflowGrid,
       wDiv: divisions.x,
@@ -122,18 +131,20 @@ const GridHelper = (renderer, scene, camera, controls) => {
       )
     })
     const gridZX = createGrid({
+      offsetWidth: boundingBox.min.z,
       width: size.z + maxSize * overflowGrid,
       height: size.x + maxSize * overflowGrid,
       wDiv: divisions.z,
       hDiv: divisions.x,
       rotate: new Vector3(-Math.PI / 2, 0, -Math.PI / 2),
       translation: new Vector3(
-        center.z,
+        center.x,
         center.y - (size.y + overspaceGrid * maxSize) / 2,
-        center.x
+        center.z
       )
     })
     const gridYZ = createGrid({
+      offsetWidth: boundingBox.min.y,
       width: size.y + maxSize * overflowGrid,
       height: size.z + maxSize * overflowGrid,
       wDiv: divisions.y,

@@ -15,6 +15,7 @@ import Sentry from '../../../../src/lib/sentry'
 const ProjectList = (props) => {
   // Props
   const workspace = props.workspace || {}
+  const filter = props.filter
 
   // Router
   const router = useRouter()
@@ -23,9 +24,11 @@ const ProjectList = (props) => {
   const [projects, { mutateOneProject }] = useProjects(workspace.projects)
 
   // Data
-  const data = projects.map((project) => {
-    return Data(project, (title) => setTitle(project, title))
-  })
+  const data = projects
+    .map((project) => {
+      return Data(project, filter, (title) => setTitle(project, title))
+    })
+    .filter((d) => d)
 
   // Open project
   const openProject = (project) => {

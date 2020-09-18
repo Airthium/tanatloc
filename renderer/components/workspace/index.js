@@ -1,5 +1,6 @@
 /** @module renderer/components/workspace */
 
+import { useState } from 'react'
 import {
   message,
   Divider,
@@ -31,6 +32,9 @@ import Sentry from '../../../src/lib/sentry'
  * @param {Object} props Props
  */
 const Workspace = ({ workspace }) => {
+  // State
+  const [filter, setFilter] = useState()
+
   // Data
   const [, { mutateOneWorkspace }] = useWorkspaces()
 
@@ -52,6 +56,10 @@ const Workspace = ({ workspace }) => {
         console.error(err)
         Sentry.captureException(err)
       })
+  }
+
+  const onSearch = (e) => {
+    setFilter(e.target.value)
   }
 
   /**
@@ -86,7 +94,9 @@ const Workspace = ({ workspace }) => {
                   <Col span={12}>
                     <Input
                       addonBefore="Search"
-                      placeholder="Enter a project name"
+                      placeholder="Enter a project name (case sensitive)"
+                      value={filter}
+                      onChange={onSearch}
                     />
                   </Col>
                   <Col>
@@ -116,7 +126,7 @@ const Workspace = ({ workspace }) => {
             )}
           </PageHeader>
           <Layout.Content className="scroll">
-            <ProjectList workspace={workspace} />
+            <ProjectList workspace={workspace} filter={filter} />
           </Layout.Content>
         </>
       ) : (

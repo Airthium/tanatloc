@@ -3,12 +3,14 @@
 import { useRef, useState, useEffect } from 'react'
 import { Button, Divider, Drawer, Layout, Switch, Tooltip } from 'antd'
 import {
+  BorderlessTableOutlined,
   CompressOutlined,
   ControlOutlined,
   ZoomInOutlined,
   ZoomOutOutlined,
   SelectOutlined,
   PlusOutlined,
+  RadiusUprightOutlined,
   MinusOutlined
 } from '@ant-design/icons'
 import {
@@ -42,6 +44,7 @@ const ThreeView = () => {
 
   // State
   const [controlVisible, setControlVisible] = useState(false)
+  const [transparent, setTransparent] = useState(false)
 
   // Zoom factor
   const zoomFactor = 0.01
@@ -301,7 +304,11 @@ const ThreeView = () => {
     )
     geometry.computeBoundingBox()
     geometry.computeBoundingSphere()
-    const material = new MeshStandardMaterial({ color: 0xff00ff })
+    const material = new MeshStandardMaterial({
+      color: 0xff00ff,
+      opacity: transparent ? 0.5 : 1,
+      depthWrite: !transparent
+    })
     const cube = new Mesh(geometry, material)
     scene.current.add(cube)
 
@@ -328,6 +335,15 @@ const ThreeView = () => {
   const toggleGrid = (checked) => {
     gridHelper.current.setVisible(checked)
   }
+
+  useEffect(() => {
+    scene.current.children.forEach((child) => {
+      if (child.type === 'Mesh') {
+        child.material.opacity = transparent ? 0.5 : 1
+        child.material.depthWrite = !transparent
+      }
+    })
+  }, [transparent, scene.current])
 
   return (
     <div
@@ -358,7 +374,26 @@ const ThreeView = () => {
           width="100%"
         >
           <div className="drawer-group">
-            <Switch defaultChecked onChange={toggleGrid} /> Grid
+            <div className="drawer-subgroup">
+              <Tooltip title="Display grid">
+                <Switch
+                  defaultChecked
+                  checkedChildren={<BorderlessTableOutlined />}
+                  unCheckedChildren={<BorderlessTableOutlined />}
+                  onChange={toggleGrid}
+                />
+              </Tooltip>
+            </div>
+            <div className="drawer-subgroup">
+              <Tooltip title="Set transparency">
+                <Switch
+                  checked={transparent}
+                  checkedChildren={<RadiusUprightOutlined />}
+                  unCheckedChildren={<RadiusUprightOutlined />}
+                  onChange={(checked) => setTransparent(checked)}
+                />
+              </Tooltip>
+            </div>
           </div>
           <Divider />
           <div className="drawer-group">

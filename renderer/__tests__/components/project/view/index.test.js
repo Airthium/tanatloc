@@ -58,6 +58,15 @@ jest.mock('../../../../../src/lib/three/helpers/SelectionHelper', () => ({
   })
 }))
 
+jest.mock('../../../../../src/lib/three/helpers/SectionViewHelper', () => ({
+  SectionViewHelper: () => ({
+    getClippingPlane: () => {},
+    start: () => {},
+    update: () => {},
+    stop: () => {}
+  })
+}))
+
 let mockAnimationCount = 0
 window.requestAnimationFrame = (callback) => {
   mockAnimationCount++
@@ -69,7 +78,8 @@ global.MockScene.children = [
   { type: 'PointLight' },
   { type: 'AxisHelper' },
   {
-    type: 'Mesh'
+    type: 'Mesh',
+    material: {}
   },
   {
     visible: true,
@@ -80,7 +90,8 @@ global.MockScene.children = [
         max: { x: 1, y: 1, z: 1 }
       },
       boundingSphere: {}
-    }
+    },
+    material: {}
   }
 ]
 
@@ -139,5 +150,23 @@ describe('components/project/view', () => {
   it('grid visible', () => {
     wrapper.find('Switch').at(0).props().onChange(true)
     wrapper.find('Switch').at(0).props().onChange(false)
+  })
+
+  it('transparent', () => {
+    act(() => {
+      const event = {}
+
+      wrapper.find('Switch').at(2).props().onChange(false)
+      // To add a geometry
+      wrapper.find('Button').forEach((button) => {
+        if (button.props().onClick) button.props().onClick(event)
+      })
+
+      wrapper.find('Switch').at(2).props().onChange(true)
+      // To add a geometry
+      wrapper.find('Button').forEach((button) => {
+        if (button.props().onClick) button.props().onClick(event)
+      })
+    })
   })
 })

@@ -3,11 +3,11 @@ import { Box2, Raycaster, Vector2, Vector3 } from 'three/build/three.module'
 /**
  * Selection helper
  * @param {Object} renderer Renderer
- * @param {Object} camera Camera
  * @param {Object} scene Scene
+ * @param {Object} camera Camera
  * @param {Object} controls Controls
  */
-const SelectionHelper = (renderer, camera, scene, controls) => {
+const SelectionHelper = (renderer, scene, camera, controls) => {
   // Selector element
   const element = document.createElement('div')
   element.style.pointerEvents = 'none'

@@ -6,12 +6,16 @@ import {
   BorderlessTableOutlined,
   CompressOutlined,
   ControlOutlined,
+  EyeInvisibleOutlined,
   ZoomInOutlined,
   ZoomOutOutlined,
   SelectOutlined,
   PlusOutlined,
   RadiusUprightOutlined,
-  MinusOutlined
+  MinusOutlined,
+  ScissorOutlined,
+  StopOutlined,
+  RetweetOutlined
 } from '@ant-design/icons'
 import {
   AmbientLight,
@@ -31,6 +35,7 @@ import { AxisHelper } from '../../../../src/lib/three/helpers/AxisHelper'
 import { NavigationHelper } from '../../../../src/lib/three/helpers/NavigationHelper'
 import { GridHelper } from '../../../../src/lib/three/helpers/GridHelper'
 import { SelectionHelper } from '../../../../src/lib/three/helpers/SelectionHelper'
+import { SectionViewHelper } from '../../../../src/lib/three/helpers/SectionViewHelper'
 
 const ThreeView = () => {
   // Ref
@@ -41,10 +46,12 @@ const ThreeView = () => {
   const controls = useRef()
   const gridHelper = useRef()
   const selectionHelper = useRef()
+  const sectionViewHelper = useRef()
 
   // State
   const [controlVisible, setControlVisible] = useState(false)
   const [transparent, setTransparent] = useState(false)
+  const [sectionView, setSectionView] = useState(false)
 
   // Zoom factor
   const zoomFactor = 0.01
@@ -116,9 +123,17 @@ const ThreeView = () => {
     // SelectionHelper
     selectionHelper.current = SelectionHelper(
       renderer.current,
+      scene.current,
+      camera.current,
+      controls.current
+    )
+
+    // SectionViewHelper
+    sectionViewHelper.current = SectionViewHelper(
+      renderer.current,
       camera.current,
       scene.current,
-      controls.current
+      controls.curent
     )
 
     /**
@@ -307,7 +322,8 @@ const ThreeView = () => {
     const material = new MeshStandardMaterial({
       color: 0xff00ff,
       opacity: transparent ? 0.5 : 1,
-      depthWrite: !transparent
+      depthWrite: !transparent,
+      clippingPlanes: [sectionViewHelper.current.getClippingPlane()]
     })
     const cube = new Mesh(geometry, material)
     scene.current.add(cube)
@@ -344,6 +360,14 @@ const ThreeView = () => {
       }
     })
   }, [transparent, scene.current])
+
+  const toggleSectionView = () => {
+    const active = !sectionView
+    setSectionView(active)
+    active
+      ? sectionViewHelper.current.start()
+      : sectionViewHelper.current.stop()
+  }
 
   return (
     <div
@@ -431,6 +455,55 @@ const ThreeView = () => {
           <div className="drawer-group">
             <Button icon={<PlusOutlined />} onClick={addCube} />
             <Button icon={<MinusOutlined />} onClick={removeCube} />
+          </div>
+
+          <Divider />
+          <div className="drawer-group">
+            {sectionView ? (
+              <>
+                <div className="drawer-subgroup">
+                  <Button icon={<StopOutlined />} onClick={toggleSectionView} />
+                </div>
+                <div className="drawer-subgroup">
+                  <Button
+                    icon={<EyeInvisibleOutlined />}
+                    onClick={() => sectionViewHelper.current.toggleVisible()}
+                  />
+                  <Button
+                    onClick={() =>
+                      sectionViewHelper.current.toAxis(new Vector3(1, 0, 0))
+                    }
+                  >
+                    X
+                  </Button>
+                  <Button
+                    onClick={() =>
+                      sectionViewHelper.current.toAxis(new Vector3(0, 1, 0))
+                    }
+                  >
+                    Y
+                  </Button>
+                  <Button
+                    onClick={() =>
+                      sectionViewHelper.current.toAxis(new Vector3(0, 0, 1))
+                    }
+                  >
+                    Z
+                  </Button>
+                  <Button
+                    onClick={() => sectionViewHelper.current.flip()}
+                    icon={<RetweetOutlined />}
+                  />
+                </div>
+              </>
+            ) : (
+              <Tooltip titl="Section view">
+                <Button
+                  icon={<ScissorOutlined />}
+                  onClick={toggleSectionView}
+                />
+              </Tooltip>
+            )}
           </div>
         </Drawer>
       </Layout>

@@ -48,12 +48,12 @@ describe('src/lib/three/helpers/SelectionHelper', () => {
   }
 
   it('call', () => {
-    const selection = SelectionHelper(renderer, camera, scene, controls)
+    const selection = SelectionHelper(renderer, scene, camera, controls)
     expect(selection).toBeDefined()
   })
 
   it('events', () => {
-    const selection = SelectionHelper(renderer, camera, scene, controls)
+    const selection = SelectionHelper(renderer, scene, camera, controls)
     mouseDown()
     mouseMove()
     mouseUp()
@@ -73,7 +73,7 @@ describe('src/lib/three/helpers/SelectionHelper', () => {
         removeChild: () => {}
       }
     })
-    const selection = SelectionHelper(renderer, camera, scene, controls)
+    const selection = SelectionHelper(renderer, scene, camera, controls)
     selection.start()
     mouseDown({ button: 0 })
     mouseUp({})
@@ -81,7 +81,7 @@ describe('src/lib/three/helpers/SelectionHelper', () => {
 
   it('raycaster', () => {
     global.MockRaycaster.intersectObjects = [{}]
-    const selection = SelectionHelper(renderer, camera, scene, controls)
+    const selection = SelectionHelper(renderer, scene, camera, controls)
     selection.start()
     mouseDown({ button: 0 })
     mouseUp({})

@@ -5,11 +5,11 @@ import { Sprite, SpriteMaterial, Texture } from 'three/build/three.module'
  * @param {string} text Text
  * @param {number} fontSize Font size
  */
-const LabelHelper = (text, fontColor = 'black', fontSize = 256) => {
+const LabelHelper = (text, fontColor = 'black', fontSize = 512) => {
   // Canvas
   const canvas = document.createElement('canvas')
-  canvas.width = 256
-  canvas.height = 256
+  canvas.width = 512
+  canvas.height = 512
   const context = canvas.getContext('2d')
   context.fillStyle = fontColor
   context.font = fontSize + 'px sans-serif'

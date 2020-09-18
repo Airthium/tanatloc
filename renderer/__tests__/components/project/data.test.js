@@ -36,4 +36,14 @@ describe('renderer/components/project/data', () => {
     })
     expect(data).toBeDefined()
   })
+
+  it('filter', () => {
+    const data = Data(
+      {
+        title: 'title'
+      },
+      'not'
+    )
+    expect(data).toBe(null)
+  })
 })

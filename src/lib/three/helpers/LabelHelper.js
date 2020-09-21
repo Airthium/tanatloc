@@ -27,6 +27,17 @@ const LabelHelper = (text, fontColor = 'black', fontSize = 512) => {
     transparent: true
   })
   const label = new Sprite(material)
+  label.type = 'LabelHelper'
+
+  /**
+   * Dispose
+   */
+  const dispose = () => {
+    texture.dispose()
+    material.dispose()
+  }
+
+  label.dispose = dispose
 
   return label
 }

@@ -33,20 +33,9 @@ const SelectionHelper = (renderer, scene, camera, controls) => {
   const raycaster = new Raycaster()
 
   // Event listeners
-  renderer.domElement.addEventListener('mousedown', (event) => {
-    if (!enabled || event.button !== 0) return
-    down = true
-    onSelectStart(event)
-  })
-  renderer.domElement.addEventListener('mousemove', (event) => {
-    if (!enabled || event.button !== 0) return
-    if (down) onSelectMove(event)
-  })
-  renderer.domElement.addEventListener('mouseup', (event) => {
-    down = false
-    if (!enabled) return
-    onSelectEnd(event)
-  })
+  renderer.domElement.addEventListener('mousedown', onMouseDown)
+  renderer.domElement.addEventListener('mousemove', onMouseMove)
+  renderer.domElement.addEventListener('mouseup', onMouseUp)
 
   /**
    * Start selection
@@ -60,6 +49,35 @@ const SelectionHelper = (renderer, scene, camera, controls) => {
    */
   const end = () => {
     enabled = false
+  }
+
+  /**
+   * Mouse down
+   * @param {Object} event Event
+   */
+  const onMouseDown = (event) => {
+    if (!enabled || event.button !== 0) return
+    down = true
+    onSelectStart(event)
+  }
+
+  /**
+   * Mouse move
+   * @param {Object} event Event
+   */
+  const onMouseMove = (event) => {
+    if (!enabled || event.button !== 0) return
+    if (down) onSelectMove(event)
+  }
+
+  /**
+   * Mouse up
+   * @param {Object} event Event
+   */
+  const onMouseUp = (event) => {
+    down = false
+    if (!enabled) return
+    onSelectEnd(event)
   }
 
   /**
@@ -172,7 +190,17 @@ const SelectionHelper = (renderer, scene, camera, controls) => {
     camera.position.add(translation)
   }
 
-  return { start }
+  /**
+   * Dispose
+   */
+  const dispose = () => {
+    // Event listeners
+    renderer.domElement.removeEventListener('mousedown', onMouseDown)
+    renderer.domElement.removeEventListener('mousemove', onMouseMove)
+    renderer.domElement.removeEventListener('mouseup', onMouseUp)
+  }
+
+  return { start, dispose }
 }
 
 export { SelectionHelper }

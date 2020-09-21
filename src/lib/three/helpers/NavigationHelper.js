@@ -273,8 +273,8 @@ const NavigationHelper = (
   }
 
   // Events
-  document.addEventListener('mousemove', (e) => onMouseMove(e))
-  document.addEventListener('mousedown', (e) => onMouseDown(e))
+  document.addEventListener('mousemove', onMouseMove)
+  document.addEventListener('mousedown', onMouseDown)
 
   /**
    * Resize
@@ -296,7 +296,27 @@ const NavigationHelper = (
     renderer.render(localScene, localCamera)
   }
 
-  return { resize, render }
+  /**
+   * Dispose
+   */
+  const dispose = () => {
+    // Event listeners
+    document.removeEventListener('mousemove', onMouseMove)
+    document.removeEventListener('mousedown', onMouseDown)
+
+    // Cube
+    cube.children.forEach((group) => {
+      group.children.forEach((child) => {
+        child.geometry.dispose()
+        child.material.dispose()
+      })
+    })
+
+    // Scene
+    localScene.remove(cube)
+  }
+
+  return { resize, render, dispose }
 }
 
 export { NavigationHelper }

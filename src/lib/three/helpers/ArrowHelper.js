@@ -25,8 +25,22 @@ const ArrowHelper = (color) => {
 
   // Arrow
   const arrow = new Group()
+  arrow.type = 'ArrowHelper'
   arrow.add(cylinder)
   arrow.add(cone)
+
+  /**
+   * Dispose
+   */
+  const dispose = () => {
+    cylinderGeometry.dispose()
+    cylinderMaterial.dispose()
+
+    coneGeometry.dispose()
+    coneMaterial.dispose()
+  }
+
+  arrow.dispose = dispose
 
   return arrow
 }

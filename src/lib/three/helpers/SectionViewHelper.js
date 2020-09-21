@@ -2,8 +2,6 @@ import {
   Color,
   DoubleSide,
   Group,
-  LineBasicMaterial,
-  LineSegments,
   Mesh,
   MeshBasicMaterial,
   Plane,
@@ -11,8 +9,8 @@ import {
   Raycaster,
   SphereGeometry,
   TorusGeometry,
-  Vector3,
-  WireframeGeometry
+  Vector2,
+  Vector3
 } from 'three/build/three.module'
 
 const SectionViewHelper = (renderer, camera, scene, controls) => {
@@ -20,7 +18,7 @@ const SectionViewHelper = (renderer, camera, scene, controls) => {
   const borderColor = new Color('darkblue')
   const hoverColor = new Color('lightgreen')
 
-  const clippingPlane = new Plane(new Vector3(0, 0, 1))
+  const clippingPlane = new Plane(new Vector3(0, 0, -1))
 
   const buildPlane = () => {
     const geometry = new PlaneGeometry()
@@ -28,18 +26,9 @@ const SectionViewHelper = (renderer, camera, scene, controls) => {
       color: baseColor,
       side: DoubleSide,
       transparent: true,
-      opacity: 0.8
+      opacity: 0.5
     })
     const mesh = new Mesh(geometry, material)
-
-    const borderGeometry = new WireframeGeometry(geometry)
-    const borderMaterial = new LineBasicMaterial({
-      color: borderColor,
-      transparent: true,
-      opacity: 0.8
-    })
-    const border = new LineSegments(borderGeometry, borderMaterial)
-    mesh.add(border)
 
     return mesh
   }
@@ -50,7 +39,7 @@ const SectionViewHelper = (renderer, camera, scene, controls) => {
       color: baseColor,
       side: DoubleSide,
       transparent: true,
-      opacity: 0.8
+      opacity: 0.5
     })
     const mesh1 = new Mesh(geometry1, material1)
     mesh1.rotateX(Math.PI / 2)
@@ -60,7 +49,7 @@ const SectionViewHelper = (renderer, camera, scene, controls) => {
       color: baseColor,
       side: DoubleSide,
       transparent: true,
-      opacity: 0.8
+      opacity: 0.5
     })
     const mesh2 = new Mesh(geometry2, material2)
     mesh2.rotateX(Math.PI / 2)
@@ -75,7 +64,7 @@ const SectionViewHelper = (renderer, camera, scene, controls) => {
       color: baseColor,
       side: DoubleSide,
       transparent: true,
-      opacity: 0.8
+      opacity: 0.5
     })
     const mesh = new Mesh(geometry, material)
 
@@ -111,7 +100,7 @@ const SectionViewHelper = (renderer, camera, scene, controls) => {
     scene.boundingBox.getCenter(center)
     controllers.position.copy(center)
 
-    const normal = new Vector3(0, 0, 1)
+    const normal = new Vector3(0, 0, -1)
 
     // Set scale
     const size = new Vector3()
@@ -139,12 +128,13 @@ const SectionViewHelper = (renderer, camera, scene, controls) => {
     scene.boundingBox.getCenter(center)
     controllers.position.copy(center)
 
-    // Look at
-    const lookAt = new Vector3().copy(controllers.position).add(normal)
-    controllers.lookAt(lookAt)
-
     // Clipping plane
     clippingPlane.setFromNormalAndCoplanarPoint(normal, controllers.position)
+
+    // Look at
+    normal.multiplyScalar(-1)
+    const lookAt = new Vector3().copy(controllers.position).add(normal)
+    controllers.lookAt(lookAt)
   }
 
   const flip = () => {
@@ -156,12 +146,104 @@ const SectionViewHelper = (renderer, camera, scene, controls) => {
     clippingPlane.setFromNormalAndCoplanarPoint(normal, controllers.position)
   }
 
-  //   const raycaster = new Raycaster()
-  //   const onMouseMove = () => {}
+  const raycaster = new Raycaster()
+  let currentlyHighlighted = null
+  let previouslyHighlited = null
+  let isDown = false
 
-  //   window.addEventListener('move', onMouseMove)
+  /**
+   *  Global coordinates to local [-1, 1]^2
+   * @param {Object} event Event
+   */
+  const globalToLocal = ({ X, Y }) => {
+    const parentSize = new Vector2()
+    renderer.getSize(parentSize)
 
-  return { getClippingPlane, start, update, toggleVisible, toAxis, flip, stop }
+    const mouse = new Vector2()
+    mouse.x = (X / parentSize.x) * 2 - 1
+    mouse.y = -(Y / parentSize.y) * 2 + 1
+
+    return mouse
+  }
+
+  const onMouseDown = () => {
+    if (!controllers.visible) return
+    if (!currentlyHighlighted) return
+
+    controls.enabled = false
+
+    isDown = true
+  }
+
+  const onMouseMove = (event) => {
+    if (!controllers.visible) return
+
+    const mouse = globalToLocal({ X: event.clientX, Y: event.clientY })
+    raycaster.setFromCamera(mouse, camera)
+
+    if (isDown) {
+      // TODO
+    } else {
+      const intersects = raycaster.intersectObjects(controllers.children)
+      if (intersects.length > 0) {
+        previouslyHighlited = currentlyHighlighted
+        console.log(previouslyHighlited)
+        unhighlight()
+
+        currentlyHighlighted = intersects[0].object
+        console.log(currentlyHighlighted)
+        higlight()
+      } else {
+        previouslyHighlited = currentlyHighlighted
+        unhighlight()
+
+        currentlyHighlighted = null
+      }
+    }
+  }
+
+  const onMouseUp = () => {
+    isDown = false
+
+    controls.enabled = true
+    controls.stop()
+  }
+
+  const higlight = () => {
+    if (currentlyHighlighted) currentlyHighlighted.material.color = hoverColor
+  }
+
+  const unhighlight = () => {
+    if (previouslyHighlited) previouslyHighlited.material.color = baseColor
+  }
+
+  renderer.domElement.addEventListener('mousemove', onMouseMove)
+  renderer.domElement.addEventListener('mousedown', onMouseDown)
+  renderer.domElement.addEventListener('mouseup', onMouseUp)
+
+  const dispose = () => {
+    // Event listeners
+    renderer.domElement.removeEventListener('mousemove', onMouseMove)
+    renderer.domElement.removeEventListener('mousedown', onMouseDown)
+    renderer.domElement.removeEventListener('mouseup', onMouseUp)
+
+    // Meshes
+    controllers.children.forEach((child) => {
+      child.geometry.dispose()
+      child.material.dispose()
+    })
+  }
+
+  return {
+    getClippingPlane,
+    start,
+    update,
+    toggleVisible,
+    toAxis,
+    flip,
+    stop,
+    dispose
+  }
 }
 
 export { SectionViewHelper }

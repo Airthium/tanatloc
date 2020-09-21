@@ -9,6 +9,10 @@ import {
 
 import Label from './LabelHelper'
 
+/**
+ * GridHelper
+ * @param {Object} scene Scene
+ */
 const GridHelper = (scene) => {
   // Grid color
   const gridColor = '#888888'
@@ -25,6 +29,10 @@ const GridHelper = (scene) => {
   let maxSize
   let gridHelper
 
+  /**
+   * Get number of division for each axis
+   * @param {Object} size Size
+   */
   const getDivisions = (size) => {
     const xDiv = Math.max(
       Math.ceil((size.x / maxSize) * maxDivisions),
@@ -42,6 +50,10 @@ const GridHelper = (scene) => {
     return new Vector3(xDiv, yDiv, zDiv)
   }
 
+  /**
+   * Create grid
+   * @param {Object} dimensions Dimensions
+   */
   const createGrid = ({
     offsetWidth,
     width,
@@ -101,6 +113,9 @@ const GridHelper = (scene) => {
     return grid
   }
 
+  /**
+   * Build grid
+   */
   const build = () => {
     const boundingBox = scene.boundingBox
     const center = scene.boundingSphere.center
@@ -162,24 +177,47 @@ const GridHelper = (scene) => {
     grid.add(gridYZ)
 
     grid.type = 'GridHelper'
+    grid.dispose = dispose
 
     return grid
   }
 
+  /**
+   * Update
+   */
   const update = () => {
     scene.children.forEach((child) => {
-      if (child.type === 'GridHelper') scene.remove(child)
+      if (child.type === 'GridHelper') {
+        scene.remove(child)
+        child.dispose()
+      }
     })
 
     gridHelper = build()
     scene.add(gridHelper)
   }
 
+  /**
+   * Set visible
+   * @param {boolean} visible Visible
+   */
   const setVisible = (visible) => {
     gridHelper.visible = visible
   }
 
-  return { update, setVisible }
+  /**
+   * Dispose
+   */
+  const dispose = () => {
+    gridHelper.children.forEach((group) => {
+      group.children.forEach((child) => {
+        child.geometry.dispose()
+        child.material.dispose()
+      })
+    })
+  }
+
+  return { update, setVisible, dispose }
 }
 
 export { GridHelper }

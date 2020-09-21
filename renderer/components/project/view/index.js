@@ -133,7 +133,7 @@ const ThreeView = () => {
       renderer.current,
       camera.current,
       scene.current,
-      controls.curent
+      controls.current
     )
 
     /**
@@ -220,6 +220,13 @@ const ThreeView = () => {
       scene.current.children.forEach((child) => {
         scene.current.remove(child)
       })
+
+      // Dispose
+      axisHelper.dispose()
+      navigationHelper.dispose()
+      gridHelper.current.dispose()
+      sectionViewHelper.current.dispose()
+      selectionHelper.current.dispose()
     }
   }, [])
 

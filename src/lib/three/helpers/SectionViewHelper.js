@@ -16,11 +16,11 @@ import {
 /**
  * SectionViewHelper
  * @param {Object} renderer Renderer
- * @param {Object} camera Camera
  * @param {Object} scene Scene
+ * @param {Object} camera Camera
  * @param {Object} controls Controls
  */
-const SectionViewHelper = (renderer, camera, scene, controls) => {
+const SectionViewHelper = (renderer, scene, camera, controls) => {
   // Base color
   const baseColor = new Color('orange')
   // Hover color

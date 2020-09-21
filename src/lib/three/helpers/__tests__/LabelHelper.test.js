@@ -11,4 +11,9 @@ describe('src/lib/three/helpers/LabelHelper', () => {
     const label = LabelHelper('text')
     expect(label).toBeDefined()
   })
+
+  it('dispose', () => {
+    const label = LabelHelper('text')
+    label.dispose()
+  })
 })

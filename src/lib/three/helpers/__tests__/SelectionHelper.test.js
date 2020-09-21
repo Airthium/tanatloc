@@ -15,6 +15,7 @@ describe('src/lib/three/helpers/SelectionHelper', () => {
         else if (type === 'mousemove') mouseMove = callback
         else if (type === 'mouseup') mouseUp = callback
       },
+      removeEventListener: () => {},
       parentElement: {
         appendChild: () => {}
       }
@@ -85,5 +86,10 @@ describe('src/lib/three/helpers/SelectionHelper', () => {
     selection.start()
     mouseDown({ button: 0 })
     mouseUp({})
+  })
+
+  it('dispose', () => {
+    const selection = SelectionHelper(renderer, scene, camera, controls)
+    selection.dispose()
   })
 })

@@ -131,8 +131,8 @@ const ThreeView = () => {
     // SectionViewHelper
     sectionViewHelper.current = SectionViewHelper(
       renderer.current,
-      camera.current,
       scene.current,
+      camera.current,
       controls.current
     )
 

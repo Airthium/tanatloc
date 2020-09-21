@@ -50,4 +50,24 @@ describe('src/lib/three/helpers/GridHelper', () => {
     grid.update()
     grid.setVisible(true)
   })
+
+  it('dispose', () => {
+    global.MockGroup.children = [
+      {
+        children: [
+          {
+            geometry: {
+              dispose: () => {}
+            },
+            material: {
+              dispose: () => {}
+            }
+          }
+        ]
+      }
+    ]
+    const grid = GridHelper(scene)
+    grid.update()
+    grid.dispose()
+  })
 })

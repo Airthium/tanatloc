@@ -90,4 +90,23 @@ describe('src/lib/three/helpers/NavigationHelper', () => {
     const navigation = NavigationHelper(renderer, scene, camera, controls)
     navigation.render()
   })
+
+  it('dispose', () => {
+    global.MockGroup.children = [
+      {
+        children: [
+          {
+            geometry: {
+              dispose: () => {}
+            },
+            material: {
+              dispose: () => {}
+            }
+          }
+        ]
+      }
+    ]
+    const navigation = NavigationHelper(renderer, scene, camera, controls)
+    navigation.dispose()
+  })
 })

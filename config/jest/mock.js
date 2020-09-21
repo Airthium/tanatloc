@@ -6,6 +6,7 @@ class MockGeometry {
   constructor() {
     this.computeBoundingBox = () => {}
     this.computeBoundingSphere = () => {}
+    this.dispose = () => {}
     this.lookAt = () => {}
     this.translate = () => {}
 
@@ -19,7 +20,11 @@ class MockGeometry {
   }
 }
 
-class MockMaterial {}
+class MockMaterial {
+  constructor() {
+    this.dispose = () => {}
+  }
+}
 
 // Child classes
 
@@ -54,6 +59,9 @@ class MockCylinderGeometry extends MockGeometry {}
 
 class MockEdgesGeometry extends MockGeometry {}
 
+global.MockGroup = {
+  children: []
+}
 class MockGroup {
   constructor() {
     this.add = () => {}
@@ -64,6 +72,10 @@ class MockGroup {
     this.rotateX = () => {}
     this.rotateY = () => {}
     this.rotateZ = () => {}
+
+    this.children = global.MockGroup.children
+    this.position = new MockVector3()
+    this.scale = new MockVector3()
   }
 }
 
@@ -75,6 +87,7 @@ class MockLineSegments {}
 
 class MockMesh {
   constructor() {
+    this.rotateX = () => {}
     this.rotateY = () => {}
     this.geometry = new MockGeometry()
     this.material = new MockMaterial()
@@ -99,6 +112,13 @@ class MockPerspectiveCamera {
   constructor() {
     this.position = new MockVector3()
     this.updateProjectionMatrix = () => {}
+  }
+}
+
+class MockPlane {
+  constructor() {
+    this.setFromNormalAndCoplanarPoint = () => {}
+    this.normal = new MockVector3()
   }
 }
 
@@ -146,7 +166,13 @@ class MockSpriteMaterial extends MockMaterial {}
 
 class MockTetrahedronGeometry extends MockGeometry {}
 
-class MockTexture {}
+class MockTexture {
+  constructor() {
+    this.dispose = () => {}
+  }
+}
+
+class MockTorusGeometry extends MockGeometry {}
 
 class MockVector2 {
   constructor() {
@@ -168,6 +194,7 @@ class MockVector3 {
     this.normalize = () => new MockVector3()
     this.add = () => new MockVector3()
     this.copy = () => new MockVector3()
+    this.setScalar = () => new MockVector3()
   }
 }
 
@@ -205,6 +232,7 @@ const MockThree = {
   MeshStandardMaterial: MockMeshStandardMaterial,
   OrthographicCamera: MockOrthographicCamera,
   PerspectiveCamera: MockPerspectiveCamera,
+  Plane: MockPlane,
   PlaneGeometry: MockPlaneGeometry,
   PointLight: MockPointLight,
   Raycaster: MockRaycaster,
@@ -215,6 +243,7 @@ const MockThree = {
   SpriteMaterial: MockSpriteMaterial,
   TetrahedronGeometry: MockTetrahedronGeometry,
   Texture: MockTexture,
+  TorusGeometry: MockTorusGeometry,
   Vector2: MockVector2,
   Vector3: MockVector3,
   WebGLRenderer: MockWebGLRenderer

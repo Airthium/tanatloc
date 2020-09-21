@@ -14,7 +14,8 @@ describe('src/lib/three/helpers/GridHelper', () => {
         type: 'Mesh'
       },
       {
-        type: 'GridHelper'
+        type: 'GridHelper',
+        dispose: () => {}
       }
     ],
     boundingBox: {

@@ -32,11 +32,6 @@ const SelectionHelper = (renderer, scene, camera, controls) => {
   // Raycatser
   const raycaster = new Raycaster()
 
-  // Event listeners
-  renderer.domElement.addEventListener('mousedown', onMouseDown)
-  renderer.domElement.addEventListener('mousemove', onMouseMove)
-  renderer.domElement.addEventListener('mouseup', onMouseUp)
-
   /**
    * Start selection
    */
@@ -79,6 +74,11 @@ const SelectionHelper = (renderer, scene, camera, controls) => {
     if (!enabled) return
     onSelectEnd(event)
   }
+
+  // Event listeners
+  renderer.domElement.addEventListener('mousedown', onMouseDown)
+  renderer.domElement.addEventListener('mousemove', onMouseMove)
+  renderer.domElement.addEventListener('mouseup', onMouseUp)
 
   /**
    * Selection start

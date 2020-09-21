@@ -34,27 +34,31 @@ jest.mock('../../../../../src/lib/three/controls/TrackballControls', () => ({
 jest.mock('../../../../../src/lib/three/helpers/AxisHelper', () => ({
   AxisHelper: () => ({
     render: () => {},
-    resize: () => {}
+    resize: () => {},
+    dispose: () => {}
   })
 }))
 
 jest.mock('../../../../../src/lib/three/helpers/NavigationHelper', () => ({
   NavigationHelper: () => ({
     render: () => {},
-    resize: () => {}
+    resize: () => {},
+    dispose: () => {}
   })
 }))
 
 jest.mock('../../../../../src/lib/three/helpers/GridHelper', () => ({
   GridHelper: () => ({
     update: () => {},
-    setVisible: () => {}
+    setVisible: () => {},
+    dispose: () => {}
   })
 }))
 
 jest.mock('../../../../../src/lib/three/helpers/SelectionHelper', () => ({
   SelectionHelper: () => ({
-    start: () => {}
+    start: () => {},
+    dispose: () => {}
   })
 }))
 
@@ -62,8 +66,8 @@ jest.mock('../../../../../src/lib/three/helpers/SectionViewHelper', () => ({
   SectionViewHelper: () => ({
     getClippingPlane: () => {},
     start: () => {},
-    update: () => {},
-    stop: () => {}
+    stop: () => {},
+    dispose: () => {}
   })
 }))
 

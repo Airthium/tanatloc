@@ -13,13 +13,25 @@ import {
   Vector3
 } from 'three/build/three.module'
 
+/**
+ * SectionViewHelper
+ * @param {Object} renderer Renderer
+ * @param {Object} camera Camera
+ * @param {Object} scene Scene
+ * @param {Object} controls Controls
+ */
 const SectionViewHelper = (renderer, camera, scene, controls) => {
+  // Base color
   const baseColor = new Color('orange')
-  const borderColor = new Color('darkblue')
+  // Hover color
   const hoverColor = new Color('lightgreen')
 
+  // Clipping plane
   const clippingPlane = new Plane(new Vector3(0, 0, -1))
 
+  /**
+   * Build plane
+   */
   const buildPlane = () => {
     const geometry = new PlaneGeometry()
     const material = new MeshBasicMaterial({
@@ -33,6 +45,9 @@ const SectionViewHelper = (renderer, camera, scene, controls) => {
     return mesh
   }
 
+  /**
+   * Build arcs
+   */
   const buildArcs = () => {
     const geometry1 = new TorusGeometry(0.25, 0.05, 32, 32, Math.PI)
     const material1 = new MeshBasicMaterial({
@@ -58,6 +73,9 @@ const SectionViewHelper = (renderer, camera, scene, controls) => {
     return [mesh1, mesh2]
   }
 
+  /**
+   * Build dome
+   */
   const buildDome = () => {
     const geometry = new SphereGeometry(0.15, 32, 32, Math.PI, -Math.PI)
     const material = new MeshBasicMaterial({
@@ -84,17 +102,20 @@ const SectionViewHelper = (renderer, camera, scene, controls) => {
 
   scene.add(controllers)
 
+  /**
+   * Get clipping plane
+   */
   const getClippingPlane = () => {
     return clippingPlane
   }
 
+  /**
+   * Start
+   */
   const start = () => {
     controllers.visible = true
     renderer.localClippingEnabled = true
-    update()
-  }
 
-  const update = () => {
     // Set center
     const center = new Vector3()
     scene.boundingBox.getCenter(center)
@@ -112,16 +133,26 @@ const SectionViewHelper = (renderer, camera, scene, controls) => {
     clippingPlane.setFromNormalAndCoplanarPoint(normal, controllers.position)
   }
 
+  /**
+   * Stop
+   */
   const stop = () => {
     controllers.visible = false
     renderer.localClippingEnabled = false
   }
 
+  /**
+   * Toogle visible
+   */
   const toggleVisible = () => {
     const visible = controllers.visible
     controllers.visible = !visible
   }
 
+  /**
+   * To axis
+   * @param {Object} normal Normal
+   */
   const toAxis = (normal) => {
     // Set center
     const center = new Vector3()
@@ -137,6 +168,9 @@ const SectionViewHelper = (renderer, camera, scene, controls) => {
     controllers.lookAt(lookAt)
   }
 
+  /**
+   * Flip
+   */
   const flip = () => {
     // Controllers
     controllers.rotateX(Math.PI)
@@ -166,6 +200,9 @@ const SectionViewHelper = (renderer, camera, scene, controls) => {
     return mouse
   }
 
+  /**
+   * Mouse down
+   */
   const onMouseDown = () => {
     if (!controllers.visible) return
     if (!currentlyHighlighted) return
@@ -175,6 +212,10 @@ const SectionViewHelper = (renderer, camera, scene, controls) => {
     isDown = true
   }
 
+  /**
+   * Mouse move
+   * @param {Object} event Event
+   */
   const onMouseMove = (event) => {
     if (!controllers.visible) return
 
@@ -182,16 +223,14 @@ const SectionViewHelper = (renderer, camera, scene, controls) => {
     raycaster.setFromCamera(mouse, camera)
 
     if (isDown) {
-      // TODO
+      // Move
     } else {
       const intersects = raycaster.intersectObjects(controllers.children)
       if (intersects.length > 0) {
         previouslyHighlited = currentlyHighlighted
-        console.log(previouslyHighlited)
         unhighlight()
 
         currentlyHighlighted = intersects[0].object
-        console.log(currentlyHighlighted)
         higlight()
       } else {
         previouslyHighlited = currentlyHighlighted
@@ -202,6 +241,9 @@ const SectionViewHelper = (renderer, camera, scene, controls) => {
     }
   }
 
+  /**
+   * Mouse up
+   */
   const onMouseUp = () => {
     isDown = false
 
@@ -209,10 +251,16 @@ const SectionViewHelper = (renderer, camera, scene, controls) => {
     controls.stop()
   }
 
+  /**
+   * Highliht
+   */
   const higlight = () => {
     if (currentlyHighlighted) currentlyHighlighted.material.color = hoverColor
   }
 
+  /**
+   * Unhighlight
+   */
   const unhighlight = () => {
     if (previouslyHighlited) previouslyHighlited.material.color = baseColor
   }
@@ -221,6 +269,9 @@ const SectionViewHelper = (renderer, camera, scene, controls) => {
   renderer.domElement.addEventListener('mousedown', onMouseDown)
   renderer.domElement.addEventListener('mouseup', onMouseUp)
 
+  /**
+   * Dispose
+   */
   const dispose = () => {
     // Event listeners
     renderer.domElement.removeEventListener('mousemove', onMouseMove)
@@ -237,7 +288,6 @@ const SectionViewHelper = (renderer, camera, scene, controls) => {
   return {
     getClippingPlane,
     start,
-    update,
     toggleVisible,
     toAxis,
     flip,

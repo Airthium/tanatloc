@@ -418,6 +418,7 @@ const ThreeView = () => {
             <div className="drawer-subgroup">
               <Tooltip title="Set transparency">
                 <Switch
+                  className="transparent"
                   checked={transparent}
                   checkedChildren={<RadiusUprightOutlined />}
                   unCheckedChildren={<RadiusUprightOutlined />}

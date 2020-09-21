@@ -1,11 +1,17 @@
 import View from '../../../../components/project/view'
 import { act } from 'react-dom/test-utils'
+import React, { useState as mockUseState } from 'react'
 import { mount } from 'enzyme'
 
 jest.mock('next/router', () => ({
   useRouter: () => ({
     push: () => {}
   })
+}))
+
+jest.mock('react', () => ({
+  ...jest.requireActual('react'),
+  useState: jest.fn()
 }))
 
 jest.mock('../../../../../src/lib/three/controls/TrackballControls', () => ({
@@ -66,6 +72,9 @@ jest.mock('../../../../../src/lib/three/helpers/SectionViewHelper', () => ({
   SectionViewHelper: () => ({
     getClippingPlane: () => {},
     start: () => {},
+    toggleVisible: () => {},
+    toAxis: () => {},
+    flip: () => {},
     stop: () => {},
     dispose: () => {}
   })
@@ -99,9 +108,13 @@ global.MockScene.children = [
   }
 ]
 
+let mockState = false
+mockUseState.mockImplementation(() => [mockState, () => {}])
+
 let wrapper
 describe('components/project/view', () => {
   beforeEach(() => {
+    mockState = false
     wrapper = mount(<View />)
   })
 
@@ -157,20 +170,23 @@ describe('components/project/view', () => {
   })
 
   it('transparent', () => {
-    act(() => {
-      const event = {}
+    const event = {}
+    mockState = false
+    wrapper.find('Button').at(5).props().onClick()
+    wrapper.find('Switch').at(3).props().onChange(true)
 
-      wrapper.find('Switch').at(2).props().onChange(false)
-      // To add a geometry
-      wrapper.find('Button').forEach((button) => {
-        if (button.props().onClick) button.props().onClick(event)
-      })
+    wrapper.unmount()
+    mockState = true
+    wrapper = mount(<View />)
+    wrapper.find('Button').at(5).props().onClick()
+  })
 
-      wrapper.find('Switch').at(2).props().onChange(true)
-      // To add a geometry
-      wrapper.find('Button').forEach((button) => {
-        if (button.props().onClick) button.props().onClick(event)
-      })
+  it('sectionView', () => {
+    wrapper.unmount()
+    mockState = true
+    wrapper = mount(<View />)
+    wrapper.find('Button').forEach((button) => {
+      if (button.props().onClick) button.props().onClick()
     })
   })
 })

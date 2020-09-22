@@ -209,7 +209,7 @@ const GridHelper = (scene) => {
    * Dispose
    */
   const dispose = () => {
-    gridHelper.children.forEach((group) => {
+    gridHelper?.children.forEach((group) => {
       group.children.forEach((child) => {
         child.geometry.dispose()
         child.material.dispose()

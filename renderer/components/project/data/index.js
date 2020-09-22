@@ -24,9 +24,12 @@ const stringToHex = (str) => {
  * @param {Object} project Project
  * @param {Function} setTitle Set title
  */
-const Data = (project, setTitle) => {
+const Data = (project, filter, setTitle) => {
   // Check
   if (!project) return null
+
+  // Filter
+  if (filter && !project.title.includes(filter)) return null
 
   // Snapshot
   const snapshot = project.avatar ? (

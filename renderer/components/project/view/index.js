@@ -1,18 +1,27 @@
 /** @module renderer/components/project/view */
 
 import { useRef, useState, useEffect } from 'react'
-import { Button, Divider, Drawer, Layout, Tooltip } from 'antd'
+import { Button, Divider, Drawer, Layout, Radio, Switch, Tooltip } from 'antd'
 import {
+  BorderlessTableOutlined,
   CompressOutlined,
   ControlOutlined,
+  DragOutlined,
+  EyeInvisibleOutlined,
   ZoomInOutlined,
   ZoomOutOutlined,
   SelectOutlined,
   PlusOutlined,
-  MinusOutlined
+  RadiusUprightOutlined,
+  MinusOutlined,
+  ScissorOutlined,
+  StopOutlined,
+  SyncOutlined,
+  RetweetOutlined
 } from '@ant-design/icons'
 import {
   AmbientLight,
+  Box3,
   BoxGeometry,
   Mesh,
   MeshStandardMaterial,
@@ -20,12 +29,15 @@ import {
   PointLight,
   Scene,
   Sphere,
+  Vector3,
   WebGLRenderer
 } from 'three/build/three.module'
 import { TrackballControls } from '../../../../src/lib/three/controls/TrackballControls'
 import { AxisHelper } from '../../../../src/lib/three/helpers/AxisHelper'
 import { NavigationHelper } from '../../../../src/lib/three/helpers/NavigationHelper'
+import { GridHelper } from '../../../../src/lib/three/helpers/GridHelper'
 import { SelectionHelper } from '../../../../src/lib/three/helpers/SelectionHelper'
+import { SectionViewHelper } from '../../../../src/lib/three/helpers/SectionViewHelper'
 
 const ThreeView = () => {
   // Ref
@@ -34,10 +46,15 @@ const ThreeView = () => {
   const camera = useRef()
   const renderer = useRef()
   const controls = useRef()
+  const gridHelper = useRef()
   const selectionHelper = useRef()
+  const sectionViewHelper = useRef()
 
   // State
   const [controlVisible, setControlVisible] = useState(false)
+  const [transparent, setTransparent] = useState(false)
+  const [sectionView, setSectionView] = useState(false)
+  const [transform, setTransform] = useState('translate')
 
   // Zoom factor
   const zoomFactor = 0.01
@@ -92,6 +109,7 @@ const ThreeView = () => {
     // NavigationHelper
     const navigationHelper = NavigationHelper(
       renderer.current,
+      scene.current,
       camera.current,
       controls.current,
       {
@@ -102,11 +120,22 @@ const ThreeView = () => {
       }
     )
 
+    // GridHelper
+    gridHelper.current = GridHelper(scene.current)
+
     // SelectionHelper
     selectionHelper.current = SelectionHelper(
       renderer.current,
-      camera.current,
       scene.current,
+      camera.current,
+      controls.current
+    )
+
+    // SectionViewHelper
+    sectionViewHelper.current = SectionViewHelper(
+      renderer.current,
+      scene.current,
+      camera.current,
       controls.current
     )
 
@@ -194,8 +223,41 @@ const ThreeView = () => {
       scene.current.children.forEach((child) => {
         scene.current.remove(child)
       })
+
+      // Dispose
+      axisHelper.dispose()
+      navigationHelper.dispose()
+      gridHelper.current.dispose()
+      sectionViewHelper.current.dispose()
+      selectionHelper.current.dispose()
     }
   }, [])
+
+  const computeSceneBoundingSphere = () => {
+    const box = new Box3()
+    scene.current.children.forEach((child) => {
+      if (child.visible && child.type === 'Mesh') {
+        const childBox = child.geometry.boundingBox
+        const min = new Vector3(
+          Math.min(box.min.x, childBox.min.x),
+          Math.min(box.min.y, childBox.min.y),
+          Math.min(box.min.z, childBox.min.z)
+        )
+        const max = new Vector3(
+          Math.max(box.max.x, childBox.max.x),
+          Math.max(box.max.y, childBox.max.y),
+          Math.max(box.max.z, childBox.max.z)
+        )
+        box.set(min, max)
+      }
+    })
+
+    const sphere = new Sphere()
+    box.getBoundingSphere(sphere)
+
+    scene.current.boundingBox = box
+    scene.current.boundingSphere = sphere
+  }
 
   const zoom = (direction) => {
     const targetDistance = controls.current.object.position.distanceTo(
@@ -228,23 +290,8 @@ const ThreeView = () => {
   }
 
   const zoomToFit = () => {
-    const meshes = scene.current.children
-    const sphere = new Sphere()
-
-    meshes.forEach((mesh) => {
-      if (
-        mesh.type === 'AmbientLight' ||
-        mesh.type === 'PointLight' ||
-        mesh.type === 'AxisHelper'
-      )
-        return
-
-      const boundingSphere = mesh.geometry.boundingSphere
-      sphere.radius = Math.max(sphere.radius, boundingSphere.radius)
-      sphere.center = sphere.center
-        .add(boundingSphere.center)
-        .multiplyScalar(1 / 2)
-    })
+    const sphere = scene.current.boundingSphere
+    if (!sphere) return
 
     // Center
     const center = sphere.center
@@ -275,20 +322,69 @@ const ThreeView = () => {
       10 * Math.random(),
       10 * Math.random()
     )
+    geometry.translate(
+      -5 + 10 * Math.random(),
+      -5 + 10 * Math.random(),
+      -5 + 10 * Math.random()
+    )
+    geometry.computeBoundingBox()
     geometry.computeBoundingSphere()
-    const material = new MeshStandardMaterial({ color: 0xff00ff })
+    const material = new MeshStandardMaterial({
+      color: 0xff00ff,
+      opacity: transparent ? 0.5 : 1,
+      depthWrite: !transparent,
+      clippingPlanes: [sectionViewHelper.current.getClippingPlane()]
+    })
     const cube = new Mesh(geometry, material)
     scene.current.add(cube)
+
+    computeSceneBoundingSphere()
+    gridHelper.current.update()
   }
 
-  // TODO to remove
-  useEffect(() => {
-    addCube()
-    zoomToFit()
-  }, [])
+  // // TODO to remove
+  // useEffect(() => {
+  //   addCube()
+  //   zoomToFit()
+  // }, [])
 
   const removeCube = () => {
-    if (scene.current.children.length > 3) scene.current.children.pop()
+    const children = scene.current.children.filter(
+      (child) => child.type === 'Mesh'
+    )
+    scene.current.remove(children.pop())
+
+    computeSceneBoundingSphere()
+    gridHelper.current.update()
+  }
+
+  const toggleGrid = (checked) => {
+    gridHelper.current.setVisible(checked)
+  }
+
+  useEffect(() => {
+    scene.current.children.forEach((child) => {
+      if (child.type === 'Mesh') {
+        child.material.opacity = transparent ? 0.5 : 1
+        child.material.depthWrite = !transparent
+      }
+    })
+  }, [transparent, scene.current])
+
+  const toggleSectionView = () => {
+    const active = !sectionView
+    setSectionView(active)
+    active
+      ? sectionViewHelper.current.start()
+      : sectionViewHelper.current.stop()
+  }
+
+  const handleTransform = (event) => {
+    const mode = event.target.value
+
+    setTransform(mode)
+
+    sectionViewHelper.current.setMode(mode)
   }
 
   return (
@@ -319,6 +415,30 @@ const ThreeView = () => {
           }}
           width="100%"
         >
+          <div className="drawer-group">
+            <div className="drawer-subgroup">
+              <Tooltip title="Display grid">
+                <Switch
+                  defaultChecked
+                  checkedChildren={<BorderlessTableOutlined />}
+                  unCheckedChildren={<BorderlessTableOutlined />}
+                  onChange={toggleGrid}
+                />
+              </Tooltip>
+            </div>
+            <div className="drawer-subgroup">
+              <Tooltip title="Set transparency">
+                <Switch
+                  className="transparent"
+                  checked={transparent}
+                  checkedChildren={<RadiusUprightOutlined />}
+                  unCheckedChildren={<RadiusUprightOutlined />}
+                  onChange={(checked) => setTransparent(checked)}
+                />
+              </Tooltip>
+            </div>
+          </div>
+          <Divider />
           <div className="drawer-group">
             <div className="drawer-subgroup">
               <Tooltip title="Zoom out">
@@ -354,6 +474,93 @@ const ThreeView = () => {
           <div className="drawer-group">
             <Button icon={<PlusOutlined />} onClick={addCube} />
             <Button icon={<MinusOutlined />} onClick={removeCube} />
+          </div>
+
+          <Divider />
+          <div className="drawer-group">
+            {sectionView ? (
+              <>
+                <div className="drawer-subgroup">
+                  <Tooltip title="Stop">
+                    <Button
+                      icon={<StopOutlined />}
+                      onClick={toggleSectionView}
+                    />
+                  </Tooltip>
+                  <Radio.Group
+                    onChange={handleTransform}
+                    value={transform}
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      marginTop: '10px'
+                    }}
+                  >
+                    <Tooltip title="Translate">
+                      <Radio value="translate">
+                        <DragOutlined />
+                      </Radio>
+                    </Tooltip>
+                    <Tooltip title="Rotate">
+                      <Radio value="rotate">
+                        <SyncOutlined />
+                      </Radio>
+                    </Tooltip>
+                  </Radio.Group>
+                </div>
+                <div className="drawer-subgroup">
+                  <Tooltip title="Hide plane">
+                    <Button
+                      icon={<EyeInvisibleOutlined />}
+                      onClick={() => sectionViewHelper.current.toggleVisible()}
+                    />
+                  </Tooltip>
+                  <Tooltip title="Snap to X">
+                    <Button
+                      className="ant-btn-icon-only"
+                      onClick={() =>
+                        sectionViewHelper.current.toAxis(new Vector3(1, 0, 0))
+                      }
+                    >
+                      X
+                    </Button>
+                  </Tooltip>
+                  <Tooltip title="Snap to Y">
+                    <Button
+                      className="ant-btn-icon-only"
+                      onClick={() =>
+                        sectionViewHelper.current.toAxis(new Vector3(0, 1, 0))
+                      }
+                    >
+                      Y
+                    </Button>
+                  </Tooltip>
+                  <Tooltip title="Snap to Z">
+                    <Button
+                      className="ant-btn-icon-only"
+                      onClick={() =>
+                        sectionViewHelper.current.toAxis(new Vector3(0, 0, 1))
+                      }
+                    >
+                      Z
+                    </Button>
+                  </Tooltip>
+                  <Tooltip title="Flip">
+                    <Button
+                      onClick={() => sectionViewHelper.current.flip()}
+                      icon={<RetweetOutlined />}
+                    />
+                  </Tooltip>
+                </div>
+              </>
+            ) : (
+              <Tooltip title="Section view">
+                <Button
+                  icon={<ScissorOutlined />}
+                  onClick={toggleSectionView}
+                />
+              </Tooltip>
+            )}
           </div>
         </Drawer>
       </Layout>

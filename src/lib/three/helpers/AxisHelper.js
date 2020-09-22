@@ -102,7 +102,22 @@ const AxisHelper = (
     renderer.render(localScene, localCamera)
   }
 
-  return { resize, render }
+  /**
+   * Dispose
+   */
+  const dispose = () => {
+    sphereGeometry.dispose()
+    sphereMaterial.dispose()
+
+    mesh.children.forEach((child) => {
+      if (child.type === 'ArrowHelper' || child.type === 'LabelHelper')
+        child.dispose()
+    })
+
+    localScene.remove(mesh)
+  }
+
+  return { resize, render, dispose }
 }
 
 export { AxisHelper }

@@ -5,9 +5,12 @@ jest.mock('next/router', () => ({
   useRouter: () => [{ push: () => {} }]
 }))
 
-jest.mock('../../../components/project/data', () => (project, title) => {
-  return title
-})
+jest.mock(
+  '../../../components/project/data',
+  () => (project, filter, title) => {
+    return title
+  }
+)
 
 jest.mock('../../../components/project/delete', () => 'delete')
 
@@ -29,7 +32,7 @@ describe('component/project/list', () => {
     mockProjects = () => []
     mockMutate = () => {}
     mockUpdate.mockReset()
-    wrapper = shallow(<List workspace={{}} />)
+    wrapper = shallow(<List workspace={{}} filter={''} />)
   })
 
   afterEach(() => {

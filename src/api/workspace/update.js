@@ -4,7 +4,7 @@ import { call } from '../call'
  * Update a workspace
  * @memberof module:src/api/workspace
  * @param {Object} workspace Workspace { id }
- * @param {Object} data Data { key: value }
+ * @param {Array} data Data [{ key: value }, ...]
  */
 const update = async (workspace, data) => {
   const res = await call('/api/workspace', {

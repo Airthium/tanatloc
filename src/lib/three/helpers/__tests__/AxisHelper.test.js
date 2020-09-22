@@ -35,4 +35,10 @@ describe('src/lib/three/helpers/AxisHelper', () => {
     const axis = AxisHelper(renderer, camera)
     axis.render()
   })
+
+  it('dispose', () => {
+    global.MockGroup.children = [{}, { type: 'ArrowHelper', dispose: () => {} }]
+    const axis = AxisHelper(renderer, camera)
+    axis.dispose()
+  })
 })

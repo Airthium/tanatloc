@@ -1,7 +1,7 @@
 /** @module renderer/components/project */
 
 import { useRouter } from 'next/router'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Button, Divider, Drawer, Layout, Tooltip } from 'antd'
 import {
   ArrowLeftOutlined,
@@ -12,6 +12,8 @@ import {
 import View from './view'
 import Simulation from './simulation'
 
+import { useUser } from '../../../src/api/user'
+
 const Project = () => {
   // Router
   const router = useRouter()
@@ -21,8 +23,16 @@ const Project = () => {
   // State
   const [menuVisible, setMenuVisible] = useState(false)
   const [simulation, setSimulation] = useState()
-
   const [simulations, setSimulations] = useState([])
+
+  // Data
+  const [user, { loadingUser }] = useUser()
+
+  // Not logged -> go to login page
+  useEffect(() => {
+    if (!loadingUser && !user) router.replace('/login')
+  }, [user, loadingUser])
+
   /**
    * Add simulation
    */

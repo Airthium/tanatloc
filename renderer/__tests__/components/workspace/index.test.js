@@ -1,5 +1,6 @@
 import Workspace from '../../../components/workspace'
-import { shallow } from 'enzyme'
+import { shallow, mount } from 'enzyme'
+import '../../../../config/jest/matchMediaMock'
 
 jest.mock('../../../components/workspace/empty', () => 'empty')
 
@@ -53,6 +54,15 @@ describe('components/workspace', () => {
     wrapper = shallow(<Workspace workspace={{ users: users }} />)
 
     expect(wrapper.find('Avatar').length).not.toBe(0)
+  })
+
+  it('onSearch', () => {
+    wrapper.unmount()
+    wrapper = mount(<Workspace workspace={{}} />)
+    wrapper
+      .find('Input')
+      .props()
+      .onChange({ target: { value: 'value' } })
   })
 
   it('empty', () => {

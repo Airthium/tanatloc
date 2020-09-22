@@ -18,6 +18,8 @@ jobs:
         run: yarn prettier
       - name: Tests
         run: yarn test
+      - name: Unsubscribe
+        run: yarn next telemetry disable
       - name: Build
         run: yarn build
       - name: Server build

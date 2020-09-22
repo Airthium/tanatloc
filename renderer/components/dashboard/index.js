@@ -106,6 +106,8 @@ const Dashboard = () => {
   const handleLogout = async () => {
     await logout()
     mutateUser({ user: null })
+
+    router.push('/')
   }
 
   // My / Shared workspaces

@@ -7,7 +7,8 @@ import '../../../../config/jest/matchMediaMock'
 const mockRouter = jest.fn()
 jest.mock('next/router', () => ({
   useRouter: () => ({
-    replace: mockRouter
+    replace: mockRouter,
+    push: () => {}
   })
 }))
 
@@ -98,12 +99,12 @@ describe('renderer/components/dashboard', () => {
   it('user effect', () => {
     let mWrapper
 
-    // Without user
+    // With user
     mWrapper = mount(<Dashboard />)
     expect(mockRouter).toHaveBeenCalledTimes(0)
     mWrapper.unmount()
 
-    // With user
+    // Without user
     mockUser = () => {}
     mWrapper = mount(<Dashboard />)
     expect(mockRouter).toHaveBeenCalledTimes(1)

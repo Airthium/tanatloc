@@ -5,4 +5,9 @@ describe('src/lib/three/helpers/ArrowHelper', () => {
     const arrow = ArrowHelper('red')
     expect(arrow).toBeDefined()
   })
+
+  it('dispose', () => {
+    const arrow = ArrowHelper('red')
+    arrow.dispose()
+  })
 })

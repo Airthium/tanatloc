@@ -9,10 +9,22 @@ window.requestAnimationFrame = (callback) => {
 
 global.MockScene.children = [
   {
-    rotation: {}
+    rotation: {},
+    geometry: {
+      dispose: () => {}
+    },
+    material: {
+      dispose: () => {}
+    }
   },
   {
-    rotation: {}
+    rotation: {},
+    geometry: {
+      dispose: () => {}
+    },
+    material: {
+      dispose: () => {}
+    }
   }
 ]
 

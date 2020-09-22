@@ -56,6 +56,11 @@ const Background = () => {
     const h = 2 * Math.tan(hFOV / 2) * offset
     const w = h * camera.aspect
     // Build tetra
+    const material = new MeshDepthMaterial({
+      wireframe: true,
+      transparent: true,
+      opacity: 0.2
+    })
     for (let i = 0; i < numberOfTetrahedra; ++i) {
       const geometry = new TetrahedronGeometry(0.1 * Math.random())
       geometry.translate(
@@ -73,11 +78,7 @@ const Background = () => {
       rotationX.push(-rotationSpeed / 2 + rotationSpeed * Math.random())
       rotationY.push(-rotationSpeed / 2 + rotationSpeed * Math.random())
       rotationZ.push(-rotationSpeed / 2 + rotationSpeed * Math.random())
-      const material = new MeshDepthMaterial({
-        wireframe: true,
-        transparent: true,
-        opacity: 0.2
-      })
+
       const mesh = new Mesh(geometry, material)
       scene.add(mesh)
     }
@@ -139,7 +140,11 @@ const Background = () => {
       mount.current.removeChild(renderer.domElement)
 
       // Clear scene
-      scene.children.forEach((child) => scene.remove(child))
+      scene.children.forEach((child) => {
+        child.geometry.dispose()
+        child.material.dispose()
+        scene.remove(child)
+      })
     }
   }, [])
 

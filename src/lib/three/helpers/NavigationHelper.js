@@ -25,6 +25,7 @@ import {
  */
 const NavigationHelper = (
   renderer,
+  scene,
   camera,
   controls,
   { offsetWidth, offsetHeight, width, height } = {
@@ -249,11 +250,20 @@ const NavigationHelper = (
       const normal = currentlyHighlighted.normal
       const up = currentlyHighlighted.up
 
+      // Scene
+      const center = new Vector3()
+      scene.boundingBox.getCenter(center)
+
       // Camera
       const distance = camera.position.distanceTo(controls.target)
-      camera.position.copy(normal).multiplyScalar(distance)
+
+      const interval = normal.clone().multiplyScalar(distance)
+      const newPosition = center.add(interval)
+
+      camera.position.copy(newPosition)
       camera.up.copy(up)
 
+      // Unhighlight
       currentlyHighlighted = 0
       unhighlight()
 
@@ -263,8 +273,8 @@ const NavigationHelper = (
   }
 
   // Events
-  document.addEventListener('mousemove', (e) => onMouseMove(e))
-  document.addEventListener('mousedown', (e) => onMouseDown(e))
+  document.addEventListener('mousemove', onMouseMove)
+  document.addEventListener('mousedown', onMouseDown)
 
   /**
    * Resize
@@ -286,7 +296,27 @@ const NavigationHelper = (
     renderer.render(localScene, localCamera)
   }
 
-  return { resize, render }
+  /**
+   * Dispose
+   */
+  const dispose = () => {
+    // Event listeners
+    document.removeEventListener('mousemove', onMouseMove)
+    document.removeEventListener('mousedown', onMouseDown)
+
+    // Cube
+    cube.children.forEach((group) => {
+      group.children.forEach((child) => {
+        child.geometry.dispose()
+        child.material.dispose()
+      })
+    })
+
+    // Scene
+    localScene.remove(cube)
+  }
+
+  return { resize, render, dispose }
 }
 
 export { NavigationHelper }

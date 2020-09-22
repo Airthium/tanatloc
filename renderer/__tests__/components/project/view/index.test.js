@@ -1,11 +1,17 @@
 import View from '../../../../components/project/view'
 import { act } from 'react-dom/test-utils'
+import React, { useState as mockUseState } from 'react'
 import { mount } from 'enzyme'
 
 jest.mock('next/router', () => ({
   useRouter: () => ({
     push: () => {}
   })
+}))
+
+jest.mock('react', () => ({
+  ...jest.requireActual('react'),
+  useState: jest.fn()
 }))
 
 jest.mock('../../../../../src/lib/three/controls/TrackballControls', () => ({
@@ -34,20 +40,44 @@ jest.mock('../../../../../src/lib/three/controls/TrackballControls', () => ({
 jest.mock('../../../../../src/lib/three/helpers/AxisHelper', () => ({
   AxisHelper: () => ({
     render: () => {},
-    resize: () => {}
+    resize: () => {},
+    dispose: () => {}
   })
 }))
 
 jest.mock('../../../../../src/lib/three/helpers/NavigationHelper', () => ({
   NavigationHelper: () => ({
     render: () => {},
-    resize: () => {}
+    resize: () => {},
+    dispose: () => {}
+  })
+}))
+
+jest.mock('../../../../../src/lib/three/helpers/GridHelper', () => ({
+  GridHelper: () => ({
+    update: () => {},
+    setVisible: () => {},
+    dispose: () => {}
   })
 }))
 
 jest.mock('../../../../../src/lib/three/helpers/SelectionHelper', () => ({
   SelectionHelper: () => ({
-    start: () => {}
+    start: () => {},
+    dispose: () => {}
+  })
+}))
+
+jest.mock('../../../../../src/lib/three/helpers/SectionViewHelper', () => ({
+  SectionViewHelper: () => ({
+    getClippingPlane: () => {},
+    start: () => {},
+    toggleVisible: () => {},
+    toAxis: () => {},
+    flip: () => {},
+    setMode: () => {},
+    stop: () => {},
+    dispose: () => {}
   })
 }))
 
@@ -62,15 +92,30 @@ global.MockScene.children = [
   { type: 'PointLight' },
   { type: 'AxisHelper' },
   {
+    type: 'Mesh',
+    material: {}
+  },
+  {
+    visible: true,
+    type: 'Mesh',
     geometry: {
+      boundingBox: {
+        min: { x: 0, y: 0, z: 0 },
+        max: { x: 1, y: 1, z: 1 }
+      },
       boundingSphere: {}
-    }
+    },
+    material: {}
   }
 ]
+
+let mockState = false
+mockUseState.mockImplementation(() => [mockState, () => {}])
 
 let wrapper
 describe('components/project/view', () => {
   beforeEach(() => {
+    mockState = false
     wrapper = mount(<View />)
   })
 
@@ -85,6 +130,7 @@ describe('components/project/view', () => {
   it('buttons', () => {
     act(() => {
       const event = {}
+
       wrapper.find('Button').forEach((button) => {
         if (button.props().onClick) button.props().onClick(event)
         if (button.props().onMouseDown) button.props().onMouseDown(event)
@@ -118,5 +164,45 @@ describe('components/project/view', () => {
     wrapper.unmount()
     window.devicePixelRatio = undefined
     wrapper = mount(<View />)
+  })
+
+  it('grid visible', () => {
+    wrapper.find('Switch').at(0).props().onChange(true)
+    wrapper.find('Switch').at(0).props().onChange(false)
+  })
+
+  it('transparent', () => {
+    mockState = false
+    wrapper.find('Button').at(5).props().onClick()
+    wrapper.find('Switch').at(3).props().onChange(true)
+
+    wrapper.unmount()
+    mockState = true
+    wrapper = mount(<View />)
+    wrapper.find('Button').at(5).props().onClick()
+  })
+
+  it('sectionView', () => {
+    wrapper.unmount()
+    mockState = true
+    wrapper = mount(<View />)
+    wrapper.find('Button').forEach((button) => {
+      if (button.props().onClick) button.props().onClick()
+    })
+  })
+
+  it('handleTransform', () => {
+    wrapper.unmount()
+    mockState = true
+    wrapper = mount(<View />)
+    wrapper
+      .find('.ant-radio-group')
+      .parent()
+      .props()
+      .onChange({
+        target: {
+          value: 'value'
+        }
+      })
   })
 })

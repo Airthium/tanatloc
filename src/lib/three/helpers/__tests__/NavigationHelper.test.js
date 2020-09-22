@@ -16,6 +16,11 @@ global.MockRaycaster.intersectObjects = [
     object: {
       parent: {
         uuid: 'id',
+        normal: {
+          clone: () => ({
+            multiplyScalar: () => {}
+          })
+        },
         children: [
           {},
           {
@@ -35,6 +40,11 @@ describe('src/lib/three/helpers/NavigationHelper', () => {
     },
     setViewport: () => {},
     render: () => {}
+  }
+  const scene = {
+    boundingBox: {
+      getCenter: () => {}
+    }
   }
   const camera = {
     position: {
@@ -62,12 +72,12 @@ describe('src/lib/three/helpers/NavigationHelper', () => {
       callback({ clientX: 50, clientY: 50 })
       callback({ clientX: 25, clientY: 25 })
     }
-    const navigation = NavigationHelper(renderer, camera, controls)
+    const navigation = NavigationHelper(renderer, scene, camera, controls)
     expect(navigation).toBeDefined()
   })
 
   it('resize', () => {
-    const navigation = NavigationHelper(renderer, camera, controls)
+    const navigation = NavigationHelper(renderer, scene, camera, controls)
     navigation.resize({
       newOffsetWidth: 0,
       newOffsetHeight: 0,
@@ -77,7 +87,26 @@ describe('src/lib/three/helpers/NavigationHelper', () => {
   })
 
   it('render', () => {
-    const navigation = NavigationHelper(renderer, camera, controls)
+    const navigation = NavigationHelper(renderer, scene, camera, controls)
     navigation.render()
+  })
+
+  it('dispose', () => {
+    global.MockGroup.children = [
+      {
+        children: [
+          {
+            geometry: {
+              dispose: () => {}
+            },
+            material: {
+              dispose: () => {}
+            }
+          }
+        ]
+      }
+    ]
+    const navigation = NavigationHelper(renderer, scene, camera, controls)
+    navigation.dispose()
   })
 })

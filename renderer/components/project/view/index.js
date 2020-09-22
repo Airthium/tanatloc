@@ -291,7 +291,7 @@ const ThreeView = () => {
 
   const zoomToFit = () => {
     const sphere = scene.current.boundingSphere
-    if (!sphere) return
+    if (!sphere || sphere.radius === 0) return
 
     // Center
     const center = sphere.center

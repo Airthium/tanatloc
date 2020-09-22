@@ -252,7 +252,7 @@ const NavigationHelper = (
 
       // Scene
       const center = new Vector3()
-      scene.boundingBox.getCenter(center)
+      scene.boundingBox?.getCenter(center)
 
       // Camera
       const distance = camera.position.distanceTo(controls.target)

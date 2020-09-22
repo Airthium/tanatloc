@@ -1,15 +1,11 @@
-import { HighlightFilled } from '@ant-design/icons'
 import {
   Color,
   DoubleSide,
-  Group,
   Mesh,
   MeshBasicMaterial,
   Plane,
   PlaneGeometry,
   Raycaster,
-  SphereGeometry,
-  TorusGeometry,
   Vector2,
   Vector3
 } from 'three/build/three.module'

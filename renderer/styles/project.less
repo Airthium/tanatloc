@@ -2,9 +2,9 @@
   position: absolute;
   top: 0;
   left: 0;
-  width: 140px;
-  height: 100%;
+  min-width: 140px;
   display: flex;
+  flex-direction: row;
   justify-content: flex-start;
   align-items: flex-start;
   padding: 10px;
@@ -14,6 +14,21 @@
 
 .Project-menu-drawer {
   position: absolute;
+  max-width: 140px;
+  height: 100vh;
+}
+
+.Project-title {
+  margin-left: 10px;
+}
+
+.Project-title .ant-typography-edit {
+  font-size: 0.9em !important;
+}
+
+.Project-title.ant-typography-edit-content {
+  left: 0 !important;
+  margin-top: 0 !important;
 }
 
 .drawer-switch {

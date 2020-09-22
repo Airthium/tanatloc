@@ -13,16 +13,30 @@ jest.mock('next/router', () => ({
 jest.mock('../../../components/project/view', () => 'view')
 
 let mockUser
-jest.mock('../../../../src/api/user/useUser', () => () => [
-  mockUser(),
-  { loadingUser: false }
-])
+jest.mock('../../../../src/api/user', () => ({
+  useUser: () => [mockUser(), { loadingUser: false }]
+}))
+
+let mockProject
+let mockMutateProject
+const mockUpdate = jest.fn()
+jest.mock('../../../../src/api/project', () => ({
+  useProject: () => [mockProject(), { mutateProject: mockMutateProject }],
+  update: async () => mockUpdate()
+}))
+
+jest.mock('../../../../src/lib/sentry', () => ({
+  captureException: () => {}
+}))
 
 let wrapper
 describe('components/project', () => {
   beforeEach(() => {
     mockRouter.mockReset()
     mockUser = () => ({ id: 'id' })
+    mockProject = () => ({ title: 'title' })
+    mockMutateProject = jest.fn()
+    mockUpdate.mockReset()
     wrapper = shallow(<Project />)
   })
 
@@ -32,6 +46,19 @@ describe('components/project', () => {
 
   it('render', () => {
     expect(wrapper).toBeDefined()
+  })
+
+  it('handleTitle', async () => {
+    await wrapper.find('Title').props().editable.onChange('title')
+    expect(mockUpdate).toHaveBeenCalledTimes(1)
+    expect(mockMutateProject).toHaveBeenCalledTimes(1)
+
+    wrapper.unmount()
+    mockMutateProject = () => {
+      throw new Error()
+    }
+    wrapper = shallow(<Project />)
+    await wrapper.find('Title').props().editable.onChange('title')
   })
 
   it('buttons', () => {

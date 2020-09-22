@@ -2,7 +2,15 @@
 
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
-import { Button, Divider, Drawer, Layout, Tooltip } from 'antd'
+import {
+  message,
+  Button,
+  Divider,
+  Drawer,
+  Layout,
+  Tooltip,
+  Typography
+} from 'antd'
 import {
   ArrowLeftOutlined,
   MenuOutlined,
@@ -13,12 +21,14 @@ import View from './view'
 import Simulation from './simulation'
 
 import { useUser } from '../../../src/api/user'
+import { useProject, update } from '../../../src/api/project'
+
+import Sentry from '../../../src/lib/sentry'
 
 const Project = () => {
   // Router
   const router = useRouter()
   const { id } = router.query
-  console.log('project id: ' + id)
 
   // State
   const [menuVisible, setMenuVisible] = useState(false)
@@ -27,11 +37,33 @@ const Project = () => {
 
   // Data
   const [user, { loadingUser }] = useUser()
+  const [project, { mutateProject }] = useProject(id || '')
 
   // Not logged -> go to login page
   useEffect(() => {
     if (!loadingUser && !user) router.replace('/login')
   }, [user, loadingUser])
+
+  /**
+   * Handle title
+   * @param {srting} title Title
+   */
+  const handleTitle = async (title) => {
+    try {
+      // Update
+      await update({ id }, [{ key: 'title', value: title }])
+
+      // Mutate
+      mutateProject({
+        ...project,
+        title
+      })
+    } catch (err) {
+      message.error(err.message)
+      console.error(err)
+      Sentry.captureException(err)
+    }
+  }
 
   /**
    * Add simulation
@@ -48,6 +80,7 @@ const Project = () => {
       </Button>
     )
     setSimulations(simulations)
+    setSimulation({ id: simulationId })
   }
 
   return (
@@ -59,6 +92,16 @@ const Project = () => {
             onClick={() => setMenuVisible(!menuVisible)}
           />
         </Tooltip>
+        <Typography.Title
+          className="Project-title"
+          level={2}
+          editable={{
+            onChange: handleTitle,
+            maxLength: 50
+          }}
+        >
+          {project.title}
+        </Typography.Title>
         <Drawer
           className="Project-menu-drawer"
           title="Menu"

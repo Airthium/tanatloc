@@ -26,11 +26,12 @@ import { TransformControls } from 'three/examples/jsm/controls/TransformControls
 const SectionViewHelper = (renderer, scene, camera, controls) => {
   // Base color
   const baseColor = new Color('orange')
-  // Hover color
-  const hoverColor = new Color('lightgreen')
-
+  // Ray caster
+  const raycaster = new Raycaster()
+  // Down
+  let isDown = false
   // Clipping plane
-  const clippingPlane = new Plane(new Vector3(0, 0, -1))
+  const clippingPlane = new Plane(new Vector3(0, 0, 1))
 
   // Transform controls
   const transformControls = new TransformControls(camera, renderer.domElement)
@@ -49,72 +50,15 @@ const SectionViewHelper = (renderer, scene, camera, controls) => {
       opacity: 0.5
     })
     const mesh = new Mesh(geometry, material)
+    mesh.clippingPlane = clippingPlane
 
     return mesh
   }
 
-  // /**
-  //  * Build arcs
-  //  */
-  // const buildArcs = () => {
-  //   const geometry1 = new TorusGeometry(0.25, 0.05, 32, 32, Math.PI)
-  //   const material1 = new MeshBasicMaterial({
-  //     color: baseColor,
-  //     side: DoubleSide,
-  //     transparent: true,
-  //     opacity: 0.5
-  //   })
-  //   const mesh1 = new Mesh(geometry1, material1)
-  //   mesh1.type = 'SectionViewHelper-ArcX'
-  //   mesh1.rotateX(Math.PI / 2)
-
-  //   const geometry2 = new TorusGeometry(0.25, 0.05, 32, 32, Math.PI)
-  //   const material2 = new MeshBasicMaterial({
-  //     color: baseColor,
-  //     side: DoubleSide,
-  //     transparent: true,
-  //     opacity: 0.5
-  //   })
-  //   const mesh2 = new Mesh(geometry2, material2)
-  //   mesh2.rotateX(Math.PI / 2)
-  //   mesh2.rotateY(Math.PI / 2)
-  //   mesh2.type = 'SectionViewHelper-ArcY'
-
-  //   return [mesh1, mesh2]
-  // }
-
-  // /**
-  //  * Build dome
-  //  */
-  // const buildDome = () => {
-  //   const geometry = new SphereGeometry(0.15, 32, 32, Math.PI, -Math.PI)
-  //   const material = new MeshBasicMaterial({
-  //     color: baseColor,
-  //     side: DoubleSide,
-  //     transparent: true,
-  //     opacity: 0.5
-  //   })
-  //   const mesh = new Mesh(geometry, material)
-  //   mesh.type = 'SectionViewHelper-Dome'
-
-  //   return mesh
-  // }
-
-  // const controllers = new Group()
-  // const planeController = buildPlane()
-  // const arcControllers = buildArcs()
-  // const domeController = buildDome()
-
-  // controllers.add(planeController)
-  // controllers.add(...arcControllers)
-  // controllers.add(domeController)
-  // controllers.visible = false
-  // controllers.type = 'SectionViewHelper'
   const controller = buildPlane()
   controller.visible = false
   controller.type = 'SectionViewHelper'
 
-  // scene.add(controllers)
   scene.add(controller)
 
   /**
@@ -131,12 +75,16 @@ const SectionViewHelper = (renderer, scene, camera, controls) => {
     controller.visible = true
     renderer.localClippingEnabled = true
 
+    const normal = new Vector3(0, 0, 1)
+
+    // LookAt
+    controller.position.copy(new Vector3(0, 0, 0))
+    controller.lookAt(normal)
+
     // Set center
     const center = new Vector3()
     scene.boundingBox.getCenter(center)
     controller.position.copy(center)
-
-    const normal = new Vector3(0, 0, -1)
 
     // Set scale
     const size = new Vector3()
@@ -145,14 +93,8 @@ const SectionViewHelper = (renderer, scene, camera, controls) => {
     controller.scale.setScalar(maxSize * 1.2)
 
     // Clipping plane
+    normal.multiplyScalar(-1)
     clippingPlane.setFromNormalAndCoplanarPoint(normal, controller.position)
-
-    // // Transform controls
-    // transformControls.enabled = true
-    // transformControls.attach(planeController)
-    // transformControls.setMode('rotate')
-
-    // controls.enabled = false
   }
 
   /**
@@ -161,6 +103,8 @@ const SectionViewHelper = (renderer, scene, camera, controls) => {
   const stop = () => {
     controller.visible = false
     renderer.localClippingEnabled = false
+
+    transformStop()
   }
 
   /**
@@ -202,11 +146,9 @@ const SectionViewHelper = (renderer, scene, camera, controls) => {
     clippingPlane.setFromNormalAndCoplanarPoint(normal, controller.position)
   }
 
-  const raycaster = new Raycaster()
-  // let currentlyHighlighted = null
-  // let intersectionPoint = null
-  // let previouslyHighlited = null
-  // let isDown = false
+  const setMode = (mode) => {
+    transformControls.setMode(mode)
+  }
 
   /**
    *  Global coordinates to local [-1, 1]^2
@@ -223,22 +165,15 @@ const SectionViewHelper = (renderer, scene, camera, controls) => {
     return mouse
   }
 
-  // /**
-  //  * Mouse down
-  //  */
-  // const onMouseDown = () => {
-  //   if (!controllers.visible) return
-  //   if (!currentlyHighlighted) return
+  /**
+   * Mouse down
+   * @param {Object} event Event
+   */
+  const onMouseDown = (event) => {
+    if (!controller.visible) return
 
-  //   controls.enabled = false
-  //   transformControls.enabled = true
-  //   transformControls.attach(currentlyHighlighted)
-
-  //   // if (currentlyHighlighted.type === 'SectionViewHelper-Plane')
-  //   //   transformControls.setMode('translate')
-
-  //   isDown = true
-  // }
+    isDown = true
+  }
 
   /**
    * Mouse move
@@ -246,22 +181,21 @@ const SectionViewHelper = (renderer, scene, camera, controls) => {
    */
   const onMouseMove = (event) => {
     if (!controller.visible) return
+    if (isDown) return
 
     const mouse = globalToLocal({ X: event.clientX, Y: event.clientY })
     raycaster.setFromCamera(mouse, camera)
-
     const intersects = raycaster.intersectObject(controller)
     if (intersects.length > 0) {
-      highlight()
-      transformStart()
+      if (!transformControls.enabled) transformStart()
     } else {
-      unhighlight()
-      transformStop()
+      if (transformControls.enabled) transformStop()
     }
   }
 
-  // TODO button (switch?) to drag or to rotate ?
-
+  /**
+   * Start transform (stop controls)
+   */
   const transformStart = () => {
     controls.enabled = false
 
@@ -269,6 +203,9 @@ const SectionViewHelper = (renderer, scene, camera, controls) => {
     transformControls.attach(controller)
   }
 
+  /**
+   * Stop transform (start controls)
+   */
   const transformStop = () => {
     controls.enabled = true
     controls.stop()
@@ -277,44 +214,32 @@ const SectionViewHelper = (renderer, scene, camera, controls) => {
     transformControls.detach()
   }
 
-  // /**
-  //  * Mouse up
-  //  */
-  // const onMouseUp = () => {
-  //   isDown = false
-
-  //   controls.enabled = true
-  //   controls.stop()
-
-  //   transformControls.enabled = false
-  // }
-
   /**
-   * Highliht
+   * Mouse up
    */
-  const highlight = () => {
-    controller.material.color = hoverColor
+  const onMouseUp = () => {
+    if (!controller.visible) return
+    isDown = false
+
+    if (!transformControls.enabled) return
+
+    const normal = new Vector3(0, 0, 1)
+    normal.applyQuaternion(controller.quaternion).multiplyScalar(-1)
+
+    clippingPlane.setFromNormalAndCoplanarPoint(normal, controller.position)
   }
 
-  /**
-   * Unhighlight
-   */
-  const unhighlight = () => {
-    controller.material.color = baseColor
-  }
-
+  // Event listener
+  renderer.domElement.addEventListener('mousedown', onMouseDown)
   renderer.domElement.addEventListener('mousemove', onMouseMove)
-  // renderer.domElement.addEventListener('mousedown', onMouseDown)
-  // renderer.domElement.addEventListener('mouseup', onMouseUp)
+  renderer.domElement.addEventListener('mouseup', onMouseUp)
 
   /**
    * Dispose
    */
   const dispose = () => {
-    // // Event listeners
-    // renderer.domElement.removeEventListener('mousemove', onMouseMove)
-    // renderer.domElement.removeEventListener('mousedown', onMouseDown)
-    // renderer.domElement.removeEventListener('mouseup', onMouseUp)
+    // Event listener
+    renderer.domElement.removeEventListener('mousemove', onMouseMove)
 
     // Meshes
     controller.geometry.dispose()
@@ -327,6 +252,7 @@ const SectionViewHelper = (renderer, scene, camera, controls) => {
     toggleVisible,
     toAxis,
     flip,
+    setMode,
     stop,
     dispose
   }

@@ -1,11 +1,12 @@
 /** @module renderer/components/project/view */
 
 import { useRef, useState, useEffect } from 'react'
-import { Button, Divider, Drawer, Layout, Switch, Tooltip } from 'antd'
+import { Button, Divider, Drawer, Layout, Radio, Switch, Tooltip } from 'antd'
 import {
   BorderlessTableOutlined,
   CompressOutlined,
   ControlOutlined,
+  DragOutlined,
   EyeInvisibleOutlined,
   ZoomInOutlined,
   ZoomOutOutlined,
@@ -15,6 +16,7 @@ import {
   MinusOutlined,
   ScissorOutlined,
   StopOutlined,
+  SyncOutlined,
   RetweetOutlined
 } from '@ant-design/icons'
 import {
@@ -52,6 +54,7 @@ const ThreeView = () => {
   const [controlVisible, setControlVisible] = useState(false)
   const [transparent, setTransparent] = useState(false)
   const [sectionView, setSectionView] = useState(false)
+  const [transform, setTransform] = useState('translate')
 
   // Zoom factor
   const zoomFactor = 0.01
@@ -376,6 +379,14 @@ const ThreeView = () => {
       : sectionViewHelper.current.stop()
   }
 
+  const handleTransform = (event) => {
+    const mode = event.target.value
+
+    setTransform(mode)
+
+    sectionViewHelper.current.setMode(mode)
+  }
+
   return (
     <div
       style={{ position: 'fixed', top: 0, right: 0, bottom: 0, left: 0 }}
@@ -470,42 +481,81 @@ const ThreeView = () => {
             {sectionView ? (
               <>
                 <div className="drawer-subgroup">
-                  <Button icon={<StopOutlined />} onClick={toggleSectionView} />
+                  <Tooltip title="Stop">
+                    <Button
+                      icon={<StopOutlined />}
+                      onClick={toggleSectionView}
+                    />
+                  </Tooltip>
+                  <Radio.Group
+                    onChange={handleTransform}
+                    value={transform}
+                    size="middle"
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      marginTop: '10px'
+                    }}
+                  >
+                    <Tooltip title="Translate">
+                      <Radio value="translate">
+                        <DragOutlined />
+                      </Radio>
+                    </Tooltip>
+                    <Tooltip title="Rotate">
+                      <Radio value="rotate">
+                        <SyncOutlined />
+                      </Radio>
+                    </Tooltip>
+                  </Radio.Group>
                 </div>
                 <div className="drawer-subgroup">
-                  <Button
-                    icon={<EyeInvisibleOutlined />}
-                    onClick={() => sectionViewHelper.current.toggleVisible()}
-                  />
-                  <Button
-                    onClick={() =>
-                      sectionViewHelper.current.toAxis(new Vector3(1, 0, 0))
-                    }
-                  >
-                    X
-                  </Button>
-                  <Button
-                    onClick={() =>
-                      sectionViewHelper.current.toAxis(new Vector3(0, 1, 0))
-                    }
-                  >
-                    Y
-                  </Button>
-                  <Button
-                    onClick={() =>
-                      sectionViewHelper.current.toAxis(new Vector3(0, 0, 1))
-                    }
-                  >
-                    Z
-                  </Button>
-                  <Button
-                    onClick={() => sectionViewHelper.current.flip()}
-                    icon={<RetweetOutlined />}
-                  />
+                  <Tooltip title="Hide plane">
+                    <Button
+                      icon={<EyeInvisibleOutlined />}
+                      onClick={() => sectionViewHelper.current.toggleVisible()}
+                    />
+                  </Tooltip>
+                  <Tooltip title="Snap to X">
+                    <Button
+                      className="ant-btn-icon-only"
+                      onClick={() =>
+                        sectionViewHelper.current.toAxis(new Vector3(1, 0, 0))
+                      }
+                    >
+                      X
+                    </Button>
+                  </Tooltip>
+                  <Tooltip title="Snap to Y">
+                    <Button
+                      className="ant-btn-icon-only"
+                      onClick={() =>
+                        sectionViewHelper.current.toAxis(new Vector3(0, 1, 0))
+                      }
+                    >
+                      Y
+                    </Button>
+                  </Tooltip>
+                  <Tooltip title="Snap to Z">
+                    <Button
+                      className="ant-btn-icon-only"
+                      onClick={() =>
+                        sectionViewHelper.current.toAxis(new Vector3(0, 0, 1))
+                      }
+                    >
+                      Z
+                    </Button>
+                  </Tooltip>
+                  <Tooltip title="Flip">
+                    <Button
+                      onClick={() => sectionViewHelper.current.flip()}
+                      icon={<RetweetOutlined />}
+                    />
+                  </Tooltip>
                 </div>
               </>
             ) : (
-              <Tooltip titl="Section view">
+              <Tooltip title="Section view">
                 <Button
                   icon={<ScissorOutlined />}
                   onClick={toggleSectionView}

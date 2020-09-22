@@ -1,6 +1,14 @@
 import { SectionViewHelper } from '../SectionViewHelper'
 import { Vector3 } from 'three/build/three.module'
 
+jest.mock('three/examples/jsm/controls/TransformControls', () => ({
+  TransformControls: class {
+    attach() {}
+    detach() {}
+    setMode() {}
+  }
+}))
+
 describe('src/lib/three/helpers/SectionViewHelper', () => {
   let mouseDown
   let mouseMove
@@ -58,6 +66,11 @@ describe('src/lib/three/helpers/SectionViewHelper', () => {
     sectionView.flip()
   })
 
+  it('setMode', () => {
+    const sectionView = SectionViewHelper(renderer, scene, camera, controls)
+    sectionView.setMode('mode')
+  })
+
   it('mouse', () => {
     const sectionView = SectionViewHelper(renderer, scene, camera, controls)
     mouseDown({})
@@ -65,30 +78,40 @@ describe('src/lib/three/helpers/SectionViewHelper', () => {
     mouseUp({})
 
     sectionView.start()
+    mouseMove({})
+
+    global.MockRaycaster.intersectObject = [{}]
+    mouseMove({})
+    mouseMove({})
+
     mouseDown({})
     mouseMove({})
     mouseUp({})
 
-    global.MockRaycaster.intersectObjects = [
-      {
-        object: {
-          material: {
-            color: 'color'
-          }
-        }
-      }
-    ]
-    mouseMove({})
-    mouseDown({})
-
-    global.MockRaycaster.intersectObjects = [
-      {
-        object: null
-      }
-    ]
+    global.MockRaycaster.intersectObject = []
     mouseMove({})
     mouseUp({})
-    mouseMove({})
+
+    // global.MockRaycaster.intersectObjects = [
+    //   {
+    //     object: {
+    //       material: {
+    //         color: 'color'
+    //       }
+    //     }
+    //   }
+    // ]
+    // mouseMove({})
+    // mouseDown({})
+
+    // global.MockRaycaster.intersectObjects = [
+    //   {
+    //     object: null
+    //   }
+    // ]
+    // mouseMove({})
+    // mouseUp({})
+    // mouseMove({})
   })
 
   it('stop', () => {

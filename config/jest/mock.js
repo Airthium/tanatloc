@@ -87,10 +87,13 @@ class MockLineSegments {}
 
 class MockMesh {
   constructor() {
+    this.lookAt = () => {}
     this.rotateX = () => {}
     this.rotateY = () => {}
     this.geometry = new MockGeometry()
     this.material = new MockMaterial()
+    this.position = new MockVector3()
+    this.scale = new MockVector3()
   }
 }
 
@@ -131,13 +134,15 @@ class MockPointLight {
 }
 
 global.MockRaycaster = {
-  intersectObjects: []
+  intersectObjects: [],
+  intersectObject: []
 }
 class MockRaycaster {
   constructor() {
     this.set = () => {}
     this.setFromCamera = () => {}
     this.intersectObjects = () => global.MockRaycaster.intersectObjects
+    this.intersectObject = () => global.MockRaycaster.intersectObject
   }
 }
 
@@ -187,10 +192,11 @@ class MockVector3 {
     this.x = global.MockVector3.x
     this.y = global.MockVector3.y
     this.z = global.MockVector3.z
-    this.unproject = () => {}
-    this.set = () => {}
+    this.applyQuaternion = () => new MockVector3()
+    this.unproject = () => new MockVector3()
+    this.set = () => new MockVector3()
     this.sub = () => new MockVector3()
-    this.multiplyScalar = () => {}
+    this.multiplyScalar = () => new MockVector3()
     this.normalize = () => new MockVector3()
     this.add = () => new MockVector3()
     this.copy = () => new MockVector3()

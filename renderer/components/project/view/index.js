@@ -342,11 +342,11 @@ const ThreeView = () => {
     gridHelper.current.update()
   }
 
-  // TODO to remove
-  useEffect(() => {
-    addCube()
-    zoomToFit()
-  }, [])
+  // // TODO to remove
+  // useEffect(() => {
+  //   addCube()
+  //   zoomToFit()
+  // }, [])
 
   const removeCube = () => {
     const children = scene.current.children.filter(
@@ -490,7 +490,6 @@ const ThreeView = () => {
                   <Radio.Group
                     onChange={handleTransform}
                     value={transform}
-                    size="middle"
                     style={{
                       display: 'flex',
                       flexDirection: 'column',

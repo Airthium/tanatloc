@@ -75,6 +75,7 @@ jest.mock('../../../../../src/lib/three/helpers/SectionViewHelper', () => ({
     toggleVisible: () => {},
     toAxis: () => {},
     flip: () => {},
+    setMode: () => {},
     stop: () => {},
     dispose: () => {}
   })
@@ -129,6 +130,7 @@ describe('components/project/view', () => {
   it('buttons', () => {
     act(() => {
       const event = {}
+
       wrapper.find('Button').forEach((button) => {
         if (button.props().onClick) button.props().onClick(event)
         if (button.props().onMouseDown) button.props().onMouseDown(event)
@@ -170,7 +172,6 @@ describe('components/project/view', () => {
   })
 
   it('transparent', () => {
-    const event = {}
     mockState = false
     wrapper.find('Button').at(5).props().onClick()
     wrapper.find('Switch').at(3).props().onChange(true)
@@ -188,5 +189,20 @@ describe('components/project/view', () => {
     wrapper.find('Button').forEach((button) => {
       if (button.props().onClick) button.props().onClick()
     })
+  })
+
+  it('handleTransform', () => {
+    wrapper.unmount()
+    mockState = true
+    wrapper = mount(<View />)
+    wrapper
+      .find('.ant-radio-group')
+      .parent()
+      .props()
+      .onChange({
+        target: {
+          value: 'value'
+        }
+      })
   })
 })

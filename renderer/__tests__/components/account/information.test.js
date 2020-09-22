@@ -45,4 +45,40 @@ describe('renderer/components/account/information', () => {
   it('onCancel', () => {
     wrapper.find('Button').at(0).props().onClick()
   })
+
+  it('beforeUpload', () => {
+    let res
+
+    res = wrapper
+      .find('Upload')
+      .props()
+      .beforeUpload({ type: 'default', size: 5.1e7 })
+    expect(res).toBe(false)
+
+    res = wrapper
+      .find('Upload')
+      .props()
+      .beforeUpload({ type: 'image/jpeg', size: 1024 })
+    expect(res).toBe(true)
+  })
+
+  it('onChange', () => {
+    wrapper
+      .find('Upload')
+      .props()
+      .onChange({
+        file: {
+          status: 'uploading'
+        }
+      })
+
+    wrapper
+      .find('Upload')
+      .props()
+      .onChange({
+        file: {
+          status: 'done'
+        }
+      })
+  })
 })

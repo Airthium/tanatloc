@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { message, Button, Form, Input, Space } from 'antd'
+import { message, Button, Form, Input, Space, Upload } from 'antd'
+import { LoadingOutlined, PlusOutlined } from '@ant-design/icons'
 
 import { useUser, update } from '../../../../src/api/user'
 
@@ -12,6 +13,7 @@ import Sentry from '../../../../src/lib/sentry'
 const Information = () => {
   // State
   const [loading, setLoading] = useState(false)
+  const [uploading, setUploading] = useState(false)
 
   // Form
   const [form] = Form.useForm()
@@ -24,9 +26,20 @@ const Information = () => {
     labelCol: { span: 4 },
     wrapperCol: { span: 16 }
   }
+  const avatarLayout = {
+    wrapperCol: { offset: 10, span: 6 }
+  }
   const buttonLayout = {
     wrapperCol: { offset: 14, span: 6 }
   }
+
+  // Upload button
+  const uploadButton = (
+    <div>
+      {uploading ? <LoadingOutlined /> : <PlusOutlined />}
+      <div style={{ marginTop: 8 }}>Upload</div>
+    </div>
+  )
 
   /**
    * On finish
@@ -78,6 +91,36 @@ const Information = () => {
   }
 
   /**
+   * Before upload
+   * @param {File} file File
+   */
+  const beforeUpload = (file) => {
+    const goodFormat = file.type === 'image/jpeg' || file.type === 'image/png'
+    if (!goodFormat) message.error('Supported format: jpg, png')
+
+    const goodSize = file.size / 1024 / 1024 < 5
+    if (!goodSize) message.error('Image must be smaller than 5MB')
+
+    return goodFormat && goodSize
+  }
+
+  /**
+   * On avatar change
+   * @param {Object} info Info
+   */
+  const onChange = (info) => {
+    if (info.file.status === 'uploading') {
+      setUploading(true)
+    }
+
+    if (info.file.status === 'done') {
+      setUploading(false)
+      console.log(info)
+      //TODO
+    }
+  }
+
+  /**
    * Render
    */
   return (
@@ -93,6 +136,18 @@ const Information = () => {
       onFinish={onFinish}
       name="personalForm"
     >
+      <Form.Item {...avatarLayout}>
+        <Upload
+          className="Account-avatar"
+          accept={'.jpg,.png'}
+          listType="picture-card"
+          showUploadList={false}
+          beforeUpload={beforeUpload}
+          onChange={onChange}
+        >
+          {uploadButton}
+        </Upload>
+      </Form.Item>
       <Form.Item label="User name" name="username">
         <Input disabled={true} />
         {/* Disabled for now (add username in dB) */}

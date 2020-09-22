@@ -14,8 +14,8 @@ const Account = () => {
    * Render
    */
   return (
-    <Layout className="Account">
-      <Layout.Content>
+    <Layout className="Account no-scroll">
+      <Layout.Content className="scroll">
         <Card title="Personal information">
           <Information />
           <Password />

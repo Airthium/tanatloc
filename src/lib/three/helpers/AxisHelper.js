@@ -1,4 +1,4 @@
-/** @module src/lib/three/AxisHelper */
+/** @module src/lib/three/helpers/AxisHelper */
 
 import {
   Group,

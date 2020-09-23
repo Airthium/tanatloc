@@ -1,3 +1,5 @@
+/** @module src/lib/three/loaders/PartLoader */
+
 import {
   BufferGeometryLoader,
   Color,

@@ -1,4 +1,4 @@
-/** @module src/lib/three/GridHelper */
+/** @module src/lib/three/helpers/GridHelper */
 
 import {
   Geometry,

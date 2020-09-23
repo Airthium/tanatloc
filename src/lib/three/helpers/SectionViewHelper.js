@@ -1,4 +1,4 @@
-/** @module src/lib/three/SectionViewHelper */
+/** @module src/lib/three/helpers/SectionViewHelper */
 
 import {
   Color,

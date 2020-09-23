@@ -2,7 +2,10 @@ import { GridHelper } from '../GridHelper'
 
 jest.mock('../LabelHelper', () => () => ({
   translateX: () => {},
-  translateY: () => {}
+  translateY: () => {},
+  scale: {
+    setScalar: () => {}
+  }
 }))
 
 global.MockVector3 = { x: 3, y: 3, z: 3 }

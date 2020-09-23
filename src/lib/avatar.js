@@ -1,19 +1,51 @@
+import path from 'path'
 import { promises as fs } from 'fs'
 
-import query from '../database'
-import { databases } from '../../config/db'
+import { AVATAR } from '../../config/storage'
 
-const read = async (id) => {
-  const response = await query(
-    'SELECT path FROM ' + databases.AVATARS + ' WHERE id = $1',
-    [id]
-  )
+import { add as dBadd, get as dBget, del as dBdel } from '../database/avatar'
+import { get as getUser, update as updateUser } from './user'
 
-  const path = response.rows[0].path
+const add = async (user, file) => {
+  // Write file
+  const avatarPath = path.join(AVATAR, file.uid)
+  await fs.writeFile(avatarPath, file.data)
 
-  // Read file
-  const avatar = await fs.readFile(path)
-  return avatar.toString()
+  // Add
+  const avatar = await dBadd({ name: file.name, path: avatarPath })
+
+  // Check existing avatar in user
+  const userData = await getUser(user.id, ['avatar'])
+  if (userData.avatar) await del(user, userData.avatar)
+
+  // Update user
+  await updateUser(user, { data: [{ key: 'avatar', value: avatar.id }] })
+
+  return avatar
 }
 
-export { read }
+const read = async (id) => {
+  // Get path
+  const avatar = await dBget(id, ['path'])
+
+  // Read file
+  const content = await fs.readFile(avatar.path)
+  return content.toString()
+}
+
+const del = async (user, id) => {
+  // Delete avatar
+  await dBdel(id)
+
+  // Update user
+  await updateUser(user.id, {
+    data: [
+      {
+        key: 'avatar',
+        value: null
+      }
+    ]
+  })
+}
+
+export { add, read, del }

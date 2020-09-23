@@ -16,7 +16,12 @@ export default async function (req, res) {
   switch (req.method) {
     case 'GET':
       try {
-        const user = await get(sessionId, ['lastname', 'firstname', 'email'])
+        const user = await get(sessionId, [
+          'lastname',
+          'firstname',
+          'email',
+          'avatar'
+        ])
         res.status(200).json({ user })
       } catch (err) {
         console.error(err)

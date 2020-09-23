@@ -6,9 +6,16 @@ import {
   update as dBupdate,
   del as dBdel
 } from '../database/user'
+import { read as readAvatar } from './avatar'
 
 const get = async (id, data) => {
   const user = await dBget(id, data)
+
+  if (user.avatar) {
+    const avatar = await readAvatar(user.avatar)
+    user.avatar = avatar
+  }
+
   return user
 }
 

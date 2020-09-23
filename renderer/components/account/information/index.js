@@ -1,8 +1,9 @@
 import { useState } from 'react'
-import { message, Button, Form, Input, Space, Upload } from 'antd'
-import { LoadingOutlined, PlusOutlined } from '@ant-design/icons'
+import { message, Avatar, Button, Form, Input, Space, Upload } from 'antd'
+import { UploadOutlined } from '@ant-design/icons'
 
 import { useUser, update } from '../../../../src/api/user'
+import { add } from '../../../../src/api/avatar'
 
 import Sentry from '../../../../src/lib/sentry'
 
@@ -32,14 +33,6 @@ const Information = () => {
   const buttonLayout = {
     wrapperCol: { offset: 14, span: 6 }
   }
-
-  // Upload button
-  const uploadButton = (
-    <div>
-      {uploading ? <LoadingOutlined /> : <PlusOutlined />}
-      <div style={{ marginTop: 8 }}>Upload</div>
-    </div>
-  )
 
   /**
    * On finish
@@ -108,16 +101,52 @@ const Information = () => {
    * On avatar change
    * @param {Object} info Info
    */
-  const onChange = (info) => {
+  const onChange = async (info) => {
     if (info.file.status === 'uploading') {
       setUploading(true)
     }
 
     if (info.file.status === 'done') {
+      try {
+        // Read image
+        const img = await getBase64(info.file.originFileObj)
+
+        // Add avatar
+        await add({
+          name: info.file.name,
+          uid: info.file.uid,
+          data: img
+        })
+
+        // Mutate user
+        mutateUser({
+          user: {
+            ...user,
+            avatar: img
+          }
+        })
+      } catch (err) {
+        message.error(err.message)
+        console.error(err)
+        Sentry.captureException(err)
+      }
       setUploading(false)
-      console.log(info)
-      //TODO
     }
+  }
+
+  /**
+   * Read base64 image
+   * @param {File} file File
+   */
+  const getBase64 = async (file) => {
+    const reader = new FileReader()
+    const img = await new Promise((resolve) => {
+      reader.addEventListener('load', () => {
+        resolve(reader.result)
+      })
+      reader.readAsDataURL(file)
+    })
+    return img
   }
 
   /**
@@ -137,16 +166,19 @@ const Information = () => {
       name="personalForm"
     >
       <Form.Item {...avatarLayout}>
-        <Upload
-          className="Account-avatar"
-          accept={'.jpg,.png'}
-          listType="picture-card"
-          showUploadList={false}
-          beforeUpload={beforeUpload}
-          onChange={onChange}
-        >
-          {uploadButton}
-        </Upload>
+        <Space direction="vertical">
+          <Avatar size={128} src={user.avatar} />
+          <Upload
+            accept={'.jpg,.png'}
+            showUploadList={false}
+            beforeUpload={beforeUpload}
+            onChange={onChange}
+          >
+            <Button icon={<UploadOutlined />} loading={uploading}>
+              Upload new
+            </Button>
+          </Upload>
+        </Space>
       </Form.Item>
       <Form.Item label="User name" name="username">
         <Input disabled={true} />

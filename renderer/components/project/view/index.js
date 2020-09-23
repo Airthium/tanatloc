@@ -83,9 +83,9 @@ const ThreeView = () => {
     // Light
     const ambientLight = new AmbientLight('#999999')
     const pointLight1 = new PointLight('#ffffff')
-    pointLight1.position.set(10, 50, 0)
+    pointLight1.position.set(1, 5, 0)
     const pointLight2 = new PointLight('#ffffff')
-    pointLight2.position.set(-10, -50, 0)
+    pointLight2.position.set(-1, -5, 0)
     scene.current.add(ambientLight)
     scene.current.add(pointLight1)
     scene.current.add(pointLight2)
@@ -320,8 +320,6 @@ const ThreeView = () => {
     const sphere = scene.current.boundingSphere
     if (!sphere) return
 
-    console.log(sphere)
-
     // Center
     const center = sphere.center
 
@@ -342,53 +340,22 @@ const ThreeView = () => {
 
     // Camera
     camera.current.position.copy(center).sub(direction)
+    camera.current.near = distance / 100
+    camera.current.far = distance * 100
     camera.current.updateProjectionMatrix()
+
+    // Lights
+    scene.current.children.forEach((child) => {
+      if (child.type === 'PointLight')
+        child.position.normalize().multiplyScalar(2 * distance)
+    })
   }
 
-  // const addCube = () => {
-  //   const geometry = new BoxGeometry(
-  //     10 * Math.random(),
-  //     10 * Math.random(),
-  //     10 * Math.random()
-  //   )
-  //   geometry.translate(
-  //     -5 + 10 * Math.random(),
-  //     -5 + 10 * Math.random(),
-  //     -5 + 10 * Math.random()
-  //   )
-  //   geometry.computeBoundingBox()
-  //   geometry.computeBoundingSphere()
-  //   const material = new MeshStandardMaterial({
-  //     color: 0xff00ff,
-  //     opacity: transparent ? 0.5 : 1,
-  //     depthWrite: !transparent,
-  //     clippingPlanes: [sectionViewHelper.current.getClippingPlane()]
-  //   })
-  //   const cube = new Mesh(geometry, material)
-  //   scene.current.add(cube)
-
-  //   computeSceneBoundingSphere()
-  //   gridHelper.current.update()
-  // }
-
-  // // TODO to remove
-  // useEffect(() => {
-  //   addCube()
-  //   zoomToFit()
-  // }, [])
-
-  // const removeCube = () => {
-  //   const children = scene.current.children.filter(
-  //     (child) => child.type === 'Mesh'
-  //   )
-  //   scene.current.remove(children.pop())
-
-  //   computeSceneBoundingSphere()
-  //   gridHelper.current.update()
-  // }
-
+  /**
+   * Load part
+   * TODO WIP
+   */
   const loadPart = async () => {
-    console.log(Solid)
     const part = {
       solids: [Solid]
     }
@@ -400,13 +367,13 @@ const ThreeView = () => {
       transparent,
       sectionViewHelper.current.getClippingPlane()
     )
+
+    // Scene
     scene.current.add(mesh)
-
     computeSceneBoundingSphere()
-    gridHelper.current.update()
 
-    // TODO
-    // Update near / far of the camera
+    // Grid
+    gridHelper.current.update()
   }
 
   // TODO remove that after

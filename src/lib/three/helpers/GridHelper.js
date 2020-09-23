@@ -80,14 +80,17 @@ const GridHelper = (scene) => {
       )
       const line = new Line(lineGeometry, material)
 
-      const fontSize = (100 * maxSize) / 10
+      const size = maxSize / 5
+      const fontSize = maxSize / 50
 
-      const label1 = Label(offsetWidth.toFixed(2), 'grey', fontSize)
+      const label1 = Label(offsetWidth.toFixed(2), size, 'grey', fontSize)
       label1.translateX(-width / 2)
       label1.translateY(height / 2 + overflowGrid * maxSize)
-      const label2 = Label(width.toFixed(2), 'grey', fontSize)
+      label1.scale.setScalar(size)
+      const label2 = Label(width.toFixed(2), size, 'grey', fontSize)
       label2.translateX(width / 2)
       label2.translateY(height / 2 + overflowGrid * maxSize)
+      label2.scale.setScalar(size)
 
       grid.add(line)
       grid.add(label1)

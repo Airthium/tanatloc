@@ -1,3 +1,5 @@
+/** @module src/lib/three/SectionViewHelper */
+
 import {
   Color,
   DoubleSide,

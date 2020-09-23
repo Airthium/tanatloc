@@ -1,9 +1,19 @@
 import { useState } from 'react'
-import { message, Button, Form, Input, Space } from 'antd'
+import { message, Avatar, Button, Form, Input, Space, Upload } from 'antd'
+import { UploadOutlined } from '@ant-design/icons'
 
 import { useUser, update } from '../../../../src/api/user'
+import { add } from '../../../../src/api/avatar'
 
 import Sentry from '../../../../src/lib/sentry'
+
+/**
+ * Errors
+ */
+const errors = {
+  badFormat: 'Supported format: jpg, png',
+  badSize: 'Image must be smaller than 5MB'
+}
 
 /**
  * Information
@@ -12,6 +22,7 @@ import Sentry from '../../../../src/lib/sentry'
 const Information = () => {
   // State
   const [loading, setLoading] = useState(false)
+  const [uploading, setUploading] = useState(false)
 
   // Form
   const [form] = Form.useForm()
@@ -23,6 +34,9 @@ const Information = () => {
   const layout = {
     labelCol: { span: 4 },
     wrapperCol: { span: 16 }
+  }
+  const avatarLayout = {
+    wrapperCol: { offset: 10, span: 6 }
   }
   const buttonLayout = {
     wrapperCol: { offset: 14, span: 6 }
@@ -59,13 +73,11 @@ const Information = () => {
           email: data.email
         }
       })
-
-      setLoading(false)
     } catch (err) {
       message.error(err.message)
       console.error(err)
       Sentry.captureException(err)
-
+    } finally {
       setLoading(false)
     }
   }
@@ -75,6 +87,73 @@ const Information = () => {
    */
   const onCancel = () => {
     form.resetFields()
+  }
+
+  /**
+   * Before upload
+   * @param {File} file File
+   */
+  const beforeUpload = (file) => {
+    const goodFormat = file.type === 'image/jpeg' || file.type === 'image/png'
+    if (!goodFormat) message.error(errors.badFormat)
+
+    const goodSize = file.size / 1024 / 1024 < 5
+    if (!goodSize) message.error(errors.badSize)
+
+    return goodFormat && goodSize
+  }
+
+  /**
+   * On avatar change
+   * @param {Object} info Info
+   */
+  const onChange = async (info) => {
+    if (info.file.status === 'uploading') {
+      setUploading(true)
+    }
+
+    if (info.file.status === 'done') {
+      try {
+        // Read image
+        const img = await getBase64(info.file.originFileObj)
+
+        // Add avatar
+        await add({
+          name: info.file.name,
+          uid: info.file.uid,
+          data: img
+        })
+
+        // Mutate user
+        mutateUser({
+          user: {
+            ...user,
+            avatar: img
+          }
+        })
+      } catch (err) {
+        message.error(err.message)
+        console.error(err)
+        Sentry.captureException(err)
+      } finally {
+        setUploading(false)
+      }
+    }
+  }
+
+  /**
+   * Read base64 image
+   * @param {File} file File
+   */
+  const getBase64 = async (file) => {
+    const reader = new FileReader()
+    const img = await new Promise((resolve) => {
+      reader.addEventListener('load', () => {
+        resolve(reader.result)
+      })
+      reader.readAsDataURL(file)
+    })
+    return img
   }
 
   /**
@@ -93,6 +172,21 @@ const Information = () => {
       onFinish={onFinish}
       name="personalForm"
     >
+      <Form.Item {...avatarLayout}>
+        <Space direction="vertical" className="Account-avatar">
+          <Avatar size={128} src={user.avatar} />
+          <Upload
+            accept={'.jpg,.png'}
+            showUploadList={false}
+            beforeUpload={beforeUpload}
+            onChange={onChange}
+          >
+            <Button size="small" icon={<UploadOutlined />} loading={uploading}>
+              Upload new
+            </Button>
+          </Upload>
+        </Space>
+      </Form.Item>
       <Form.Item label="User name" name="username">
         <Input disabled={true} />
         {/* Disabled for now (add username in dB) */}

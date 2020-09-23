@@ -1,3 +1,5 @@
+/** @module src/lib/three/AxisHelper */
+
 import {
   Group,
   Mesh,

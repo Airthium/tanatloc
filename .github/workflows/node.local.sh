@@ -11,6 +11,9 @@ yarn depcheck
 # Lint
 yarn prettier
 
+# Doc
+yarn doc
+
 # Test
 rm -Rf dist/
 yarn test

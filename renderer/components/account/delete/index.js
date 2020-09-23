@@ -34,13 +34,11 @@ const Delete = () => {
 
       // Mutate
       mutateUser({})
-
-      setLoading(false)
     } catch (err) {
       message.error(err.message)
       console.error(err)
       Sentry.captureException(err)
-
+    } finally {
       setLoading(false)
     }
   }

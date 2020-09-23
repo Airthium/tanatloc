@@ -9,6 +9,10 @@ jest.mock('../../../../src/api/user', () => ({
   check: () => mockCheck()
 }))
 
+jest.mock('../../../../src/lib/sentry', () => ({
+  captureException: () => {}
+}))
+
 let wrapper
 describe('renderer/components/account/information', () => {
   beforeEach(() => {
@@ -50,5 +54,16 @@ describe('renderer/components/account/information', () => {
       passwordConfirm: 'password'
     })
     expect(mockUpdate).toHaveBeenCalledTimes(1)
+
+    mockCheck = () => ({
+      valid: true
+    })
+    mockUpdate = () => {
+      throw new Error()
+    }
+    await wrapper.find('ForwardRef(InternalForm)').props().onFinish({
+      newPassword: 'password',
+      passwordConfirm: 'password'
+    })
   })
 })

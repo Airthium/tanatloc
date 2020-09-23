@@ -1,3 +1,5 @@
+/** @module src/lib/three/GridHelper */
+
 import {
   Geometry,
   Group,

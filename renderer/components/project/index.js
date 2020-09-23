@@ -14,6 +14,9 @@ import Simulation from './simulation'
 
 import { useUser } from '../../../src/api/user'
 
+/**
+ * Project
+ */
 const Project = () => {
   // Router
   const router = useRouter()
@@ -50,6 +53,9 @@ const Project = () => {
     setSimulations(simulations)
   }
 
+  /**
+   * Render
+   */
   return (
     <Layout>
       <Layout className="Project-menu">

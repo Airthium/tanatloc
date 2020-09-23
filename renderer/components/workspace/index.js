@@ -42,22 +42,27 @@ const Workspace = ({ workspace }) => {
    * Set name
    * @param {string} name Name
    */
-  const setName = (name) => {
-    update(workspace, [{ key: 'name', value: name }])
-      .then(() => {
-        // Mutate workspace
-        mutateOneWorkspace({
-          ...workspace,
-          name
-        })
+  const setName = async (name) => {
+    try {
+      // Update
+      await update(workspace, [{ key: 'name', value: name }])
+
+      // Mutate workspace
+      mutateOneWorkspace({
+        ...workspace,
+        name
       })
-      .catch((err) => {
-        message.error(err.message)
-        console.error(err)
-        Sentry.captureException(err)
-      })
+    } catch (err) {
+      message.error(err.message)
+      console.error(err)
+      Sentry.captureException(err)
+    }
   }
 
+  /**
+   * On search
+   * @param {Object} e Event
+   */
   const onSearch = (e) => {
     setFilter(e.target.value)
   }

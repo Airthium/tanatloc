@@ -28,6 +28,9 @@ const errors = {
   BAD_CREDENTIALS: 'Login failed. Please check your username and password'
 }
 
+/**
+ * Menu keys
+ */
 const menuKeys = {
   home: 'home'
 }
@@ -55,10 +58,17 @@ const Login = () => {
     router.prefetch('/dashboard')
   }, [])
 
+  /**
+   * On select
+   * @param {Object} data Data { item, key }
+   */
   const onSelect = ({ item, key }) => {
     if (key === menuKeys.home) handleHome()
   }
 
+  /**
+   * Handle home
+   */
   const handleHome = () => {
     router.push('/')
   }

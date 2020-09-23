@@ -18,7 +18,7 @@
     "clean": "rimraf dist/ dist-server/ renderer/out/ renderer/.next/",
     "depcheck": "depcheck",
     "dev": "next renderer",
-    "doc": "jsdoc -c config/jsdoc/conf.json",
+    "doc": "jsdoc -c config/jsdoc/conf.json --readme README.md",
     "electron-build": "yarn server-build && nextron build && electron-builder install-app-deps",
     "electron-dev": "yarn server-build && nextron",
     "export": "yarn build && next export renderer",

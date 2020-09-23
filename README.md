@@ -6,6 +6,8 @@ Using server-side rendering (SSR).
 
 ## Env
 
+### Database
+
 | Variable    | Default      | Comment           |
 | ----------- | ------------ | ----------------- |
 | DB_USER     | tanatlocuser | Database user     |
@@ -13,6 +15,19 @@ Using server-side rendering (SSR).
 | DB_PORT     | 5432         | Database port     |
 | DB_DATABASE | tanatloc     | Database name     |
 | DB_PASSWORD | tanatloc     | Database password |
+
+### Sentry
+
+| Variable   | Default | Comment    |
+| ---------- | ------- | ---------- |
+| SENTRY_DSN |         | Sentry DSN |
+
+### Storage
+
+| Variable | Default       | Comment                               |
+| -------- | ------------- | ------------------------------------- |
+| STORAGE  | /tmp/tanatloc | Absolute storage path                 |
+| AVATAR   | avatar        | Relative avatar path (from (STORAGE)) |
 
 ## Database
 

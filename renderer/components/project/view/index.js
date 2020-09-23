@@ -32,12 +32,17 @@ import {
   Vector3,
   WebGLRenderer
 } from 'three/build/three.module'
+
 import { TrackballControls } from '../../../../src/lib/three/controls/TrackballControls'
 import { AxisHelper } from '../../../../src/lib/three/helpers/AxisHelper'
 import { NavigationHelper } from '../../../../src/lib/three/helpers/NavigationHelper'
 import { GridHelper } from '../../../../src/lib/three/helpers/GridHelper'
 import { SelectionHelper } from '../../../../src/lib/three/helpers/SelectionHelper'
 import { SectionViewHelper } from '../../../../src/lib/three/helpers/SectionViewHelper'
+
+import { PartLoader } from '../../../../src/lib/three/loaders/PartLoader'
+
+import Solid from '../../../public/test/geometry/cube/solid_0.json'
 
 /**
  * ThreeView
@@ -315,6 +320,8 @@ const ThreeView = () => {
     const sphere = scene.current.boundingSphere
     if (!sphere) return
 
+    console.log(sphere)
+
     // Center
     const center = sphere.center
 
@@ -338,31 +345,31 @@ const ThreeView = () => {
     camera.current.updateProjectionMatrix()
   }
 
-  const addCube = () => {
-    const geometry = new BoxGeometry(
-      10 * Math.random(),
-      10 * Math.random(),
-      10 * Math.random()
-    )
-    geometry.translate(
-      -5 + 10 * Math.random(),
-      -5 + 10 * Math.random(),
-      -5 + 10 * Math.random()
-    )
-    geometry.computeBoundingBox()
-    geometry.computeBoundingSphere()
-    const material = new MeshStandardMaterial({
-      color: 0xff00ff,
-      opacity: transparent ? 0.5 : 1,
-      depthWrite: !transparent,
-      clippingPlanes: [sectionViewHelper.current.getClippingPlane()]
-    })
-    const cube = new Mesh(geometry, material)
-    scene.current.add(cube)
+  // const addCube = () => {
+  //   const geometry = new BoxGeometry(
+  //     10 * Math.random(),
+  //     10 * Math.random(),
+  //     10 * Math.random()
+  //   )
+  //   geometry.translate(
+  //     -5 + 10 * Math.random(),
+  //     -5 + 10 * Math.random(),
+  //     -5 + 10 * Math.random()
+  //   )
+  //   geometry.computeBoundingBox()
+  //   geometry.computeBoundingSphere()
+  //   const material = new MeshStandardMaterial({
+  //     color: 0xff00ff,
+  //     opacity: transparent ? 0.5 : 1,
+  //     depthWrite: !transparent,
+  //     clippingPlanes: [sectionViewHelper.current.getClippingPlane()]
+  //   })
+  //   const cube = new Mesh(geometry, material)
+  //   scene.current.add(cube)
 
-    computeSceneBoundingSphere()
-    gridHelper.current.update()
-  }
+  //   computeSceneBoundingSphere()
+  //   gridHelper.current.update()
+  // }
 
   // // TODO to remove
   // useEffect(() => {
@@ -370,15 +377,42 @@ const ThreeView = () => {
   //   zoomToFit()
   // }, [])
 
-  const removeCube = () => {
-    const children = scene.current.children.filter(
-      (child) => child.type === 'Mesh'
+  // const removeCube = () => {
+  //   const children = scene.current.children.filter(
+  //     (child) => child.type === 'Mesh'
+  //   )
+  //   scene.current.remove(children.pop())
+
+  //   computeSceneBoundingSphere()
+  //   gridHelper.current.update()
+  // }
+
+  const loadPart = async () => {
+    console.log(Solid)
+    const part = {
+      solids: [Solid]
+    }
+
+    //load
+    const loader = PartLoader()
+    const mesh = loader.load(
+      part,
+      transparent,
+      sectionViewHelper.current.getClippingPlane()
     )
-    scene.current.remove(children.pop())
+    scene.current.add(mesh)
 
     computeSceneBoundingSphere()
     gridHelper.current.update()
+
+    // TODO
+    // Update near / far of the camera
   }
+
+  // TODO remove that after
+  useEffect(() => {
+    loadPart()
+  }, [])
 
   /**
    * Toggle grid
@@ -388,16 +422,15 @@ const ThreeView = () => {
     gridHelper.current.setVisible(checked)
   }
 
-  // Transparency
-  // TODO useEffect or function ?
-  useEffect(() => {
+  const toggleTransparent = (checked) => {
+    setTransparent(checked)
     scene.current.children.forEach((child) => {
       if (child.type === 'Mesh') {
-        child.material.opacity = transparent ? 0.5 : 1
-        child.material.depthWrite = !transparent
+        child.material.opacity = checked ? 0.5 : 1
+        child.material.depthWrite = !checked
       }
     })
-  }, [transparent, scene.current])
+  }
 
   /**
    * Toggle section view
@@ -471,7 +504,7 @@ const ThreeView = () => {
                   checked={transparent}
                   checkedChildren={<RadiusUprightOutlined />}
                   unCheckedChildren={<RadiusUprightOutlined />}
-                  onChange={(checked) => setTransparent(checked)}
+                  onChange={toggleTransparent}
                 />
               </Tooltip>
             </div>
@@ -508,11 +541,11 @@ const ThreeView = () => {
               </Tooltip>
             </div>
           </div>
-          <Divider />
+          {/* <Divider />
           <div className="drawer-group">
             <Button icon={<PlusOutlined />} onClick={addCube} />
             <Button icon={<MinusOutlined />} onClick={removeCube} />
-          </div>
+          </div> */}
 
           <Divider />
           <div className="drawer-group">

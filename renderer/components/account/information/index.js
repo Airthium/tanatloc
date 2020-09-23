@@ -98,7 +98,7 @@ const Information = () => {
     if (!goodFormat) message.error(errors.badFormat)
 
     const goodSize = file.size / 1024 / 1024 < 5
-    if (!goodSize) message.error(error.badSize)
+    if (!goodSize) message.error(errors.badSize)
 
     return goodFormat && goodSize
   }

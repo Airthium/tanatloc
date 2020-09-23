@@ -1,15 +1,16 @@
 import { login, add, get, update, del } from '../user'
 
+let mockGet = () => ({
+  id: 'id',
+  username: 'username'
+})
 const mockUpdate = jest.fn()
 const mockDel = jest.fn()
 jest.mock('../../database/user', () => {
   let count = 0
   return {
     add: async () => {},
-    get: async () => ({
-      id: 'id',
-      username: 'username'
-    }),
+    get: async () => mockGet(),
     getByUsernameAndPassword: async () => {
       count++
       if (count === 1) return
@@ -20,10 +21,24 @@ jest.mock('../../database/user', () => {
   }
 })
 
+jest.mock('../avatar', () => ({
+  read: async () => 'read'
+}))
+
 describe('src/lib/user', () => {
   it('get', async () => {
-    const user = await get('id')
+    let user
+
+    user = await get('id')
     expect(user).toEqual({ id: 'id', username: 'username' })
+
+    mockGet = () => ({
+      id: 'id',
+      username: 'username',
+      avatar: 'avatar'
+    })
+    user = await get('id')
+    expect(user).toEqual({ id: 'id', username: 'username', avatar: 'read' })
   })
 
   it('login', async () => {

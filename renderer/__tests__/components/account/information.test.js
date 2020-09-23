@@ -10,10 +10,27 @@ jest.mock('../../../../src/api/user', () => ({
   update: () => mockUpdate()
 }))
 
+let mockAdd
+jest.mock('../../../../src/api/avatar', () => ({
+  add: async () => mockAdd()
+}))
+
+jest.mock('../../../../src/lib/sentry', () => ({
+  captureException: () => {}
+}))
+
+global.FileReader = class {
+  addEventListener(type, callback) {
+    callback()
+  }
+  readAsDataURL() {}
+}
+
 let wrapper
 describe('renderer/components/account/information', () => {
   beforeEach(() => {
     mockUpdate = jest.fn()
+    mockAdd = () => {}
     wrapper = shallow(<Information />)
   })
 
@@ -62,8 +79,8 @@ describe('renderer/components/account/information', () => {
     expect(res).toBe(true)
   })
 
-  it('onChange', () => {
-    wrapper
+  it('onChange', async () => {
+    await wrapper
       .find('Upload')
       .props()
       .onChange({
@@ -72,12 +89,26 @@ describe('renderer/components/account/information', () => {
         }
       })
 
-    wrapper
+    await wrapper
       .find('Upload')
       .props()
       .onChange({
         file: {
-          status: 'done'
+          status: 'done',
+          originFileObj: 'content'
+        }
+      })
+
+    mockAdd = () => {
+      throw new Error()
+    }
+    await wrapper
+      .find('Upload')
+      .props()
+      .onChange({
+        file: {
+          status: 'done',
+          originFileObj: 'content'
         }
       })
   })

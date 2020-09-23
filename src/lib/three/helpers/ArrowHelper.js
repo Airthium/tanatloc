@@ -1,3 +1,5 @@
+/** @module src/lib/three/ArrowHelper */
+
 import {
   ConeGeometry,
   CylinderGeometry,

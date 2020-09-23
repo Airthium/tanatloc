@@ -3,6 +3,7 @@ import { databases } from '../../../config/db'
 
 /**
  * Add avatar
+ * @memberof module:src/database/avatar
  * @param {Object} data Data { name, path }
  */
 const add = async ({ name, path }) => {

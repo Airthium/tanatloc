@@ -1,8 +1,15 @@
+/** @module src/route/avatar */
+
 import getSessionId from '../session'
 import { add, del } from '../../lib/avatar'
 
 import Sentry from '../../lib/sentry'
 
+/**
+ * Avatar API
+ * @param {Object} req Request
+ * @param {Object} res Result
+ */
 export default async (req, res) => {
   // Check session
   const sessionId = await getSessionId(req, res)

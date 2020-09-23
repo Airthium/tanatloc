@@ -1,3 +1,5 @@
+/** @module src/lib/avatar */
+
 import path from 'path'
 import { promises as fs } from 'fs'
 
@@ -6,6 +8,11 @@ import { AVATAR } from '../../config/storage'
 import { add as dBadd, get as dBget, del as dBdel } from '../database/avatar'
 import { get as getUser, update as updateUser } from './user'
 
+/**
+ * Add avatar
+ * @param {Object} user User { id }
+ * @param {File} file File
+ */
 const add = async (user, file) => {
   // Write file
   const avatarPath = path.join(AVATAR, file.uid)
@@ -24,6 +31,10 @@ const add = async (user, file) => {
   return avatar
 }
 
+/**
+ * Read avatar
+ * @param {string} id Id
+ */
 const read = async (id) => {
   // Get path
   const avatar = await dBget(id, ['path'])
@@ -33,6 +44,11 @@ const read = async (id) => {
   return content.toString()
 }
 
+/**
+ * Delete avatar
+ * @param {Object} user User { id }
+ * @param {string} id Id
+ */
 const del = async (user, id) => {
   // Delete avatar
   await dBdel(id)

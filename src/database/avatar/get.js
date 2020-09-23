@@ -3,6 +3,7 @@ import { databases } from '../../../config/db'
 
 /**
  * Get avatar by id
+ * @memberof module:src/database/avatar
  * @param {string} id Id
  * @param {Object} data Data
  */

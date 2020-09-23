@@ -1,3 +1,5 @@
+/** @module src/route/project */
+
 import getSessionId from '../session'
 import { add } from '../../lib/project'
 

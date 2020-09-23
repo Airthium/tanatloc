@@ -8,6 +8,11 @@ import {
 } from '../database/user'
 import { read as readAvatar } from './avatar'
 
+/**
+ * Get user
+ * @param {string} id Id
+ * @param {Array} data Data
+ */
 const get = async (id, data) => {
   const user = await dBget(id, data)
 
@@ -19,6 +24,10 @@ const get = async (id, data) => {
   return user
 }
 
+/**
+ * Login
+ * @param {Object} data Data { username, password }
+ */
 const login = async ({ username, password }) => {
   const user = await getByUsernameAndPassword({ username, password })
 
@@ -30,6 +39,9 @@ const login = async ({ username, password }) => {
   }
 }
 
+/**
+ * Add user (TODO)
+ */
 const add = () => {}
 
 /**

@@ -3,6 +3,8 @@ import { message, Button, Form, Input, Space } from 'antd'
 
 import { useUser, update, check } from '../../../../src/api/user'
 
+import Sentry from '../../../../src/lib/sentry'
+
 /**
  * Errors
  */

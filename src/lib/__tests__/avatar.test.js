@@ -6,12 +6,10 @@ jest.mock('fs', () => ({
   }
 }))
 
-jest.mock('../../database', () => async () => ({
-  rows: [
-    {
-      path: 'path'
-    }
-  ]
+jest.mock('../../database/avatar', () => ({
+  get: async () => ({
+    path: 'path'
+  })
 }))
 
 describe('src/lib/avatar', () => {

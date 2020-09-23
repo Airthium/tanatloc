@@ -166,7 +166,7 @@ const Information = () => {
       name="personalForm"
     >
       <Form.Item {...avatarLayout}>
-        <Space direction="vertical">
+        <Space direction="vertical" className="Account-avatar">
           <Avatar size={128} src={user.avatar} />
           <Upload
             accept={'.jpg,.png'}
@@ -174,7 +174,7 @@ const Information = () => {
             beforeUpload={beforeUpload}
             onChange={onChange}
           >
-            <Button icon={<UploadOutlined />} loading={uploading}>
+            <Button size="small" icon={<UploadOutlined />} loading={uploading}>
               Upload new
             </Button>
           </Upload>

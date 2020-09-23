@@ -8,6 +8,7 @@ import { loginRoute } from '../src/route/login'
 import logout from '../src/route/logout'
 import user from '../src/route/user'
 import userCheck from '../src/route/user/check'
+import avatar from '../src/route/avatar'
 import workspace from '../src/route/workspace'
 import project from '../src/route/project'
 import projectId from '../src/route/project/[id]'
@@ -21,8 +22,8 @@ app.use(
     origin: ['http://localhost:8888', 'app://.']
   })
 )
-app.use(json())
-app.use(urlencoded({ extended: false }))
+app.use(json({ limit: '150mb' }))
+app.use(urlencoded({ extended: false, limit: '150mb' }))
 
 app.post('/api/login', async (req, res) => {
   await loginRoute(req, res)
@@ -32,6 +33,8 @@ app.get('/api/logout', logout)
 
 app.all('/api/user', user)
 app.post('/api/user/check', userCheck)
+
+app.all('/api/avatar', avatar)
 
 app.all('/api/workspace', workspace)
 

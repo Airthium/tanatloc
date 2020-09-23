@@ -21,6 +21,7 @@ const Project = () => {
   // Router
   const router = useRouter()
   const { id } = router.query
+  console.log('project id: ' + id)
 
   // State
   const [menuVisible, setMenuVisible] = useState(false)

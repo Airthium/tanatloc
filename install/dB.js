@@ -1,8 +1,12 @@
 import { databases } from '../config/db'
 import query from '../src/database'
 
+/**
+ * Create tables from config
+ * @memberof module:install
+ */
 const createTables = async () => {
-  console.info('Create dB tables')
+  console.info(' == Create dB tables == ')
   try {
     // Avatars
     console.info(' + Avatar table')
@@ -42,29 +46,61 @@ const createTables = async () => {
 
     // Administrator
     await createAdmin()
+
+    console.log('')
   } catch (err) {
     console.error('dB tables creation failed!')
     console.error(err)
   }
 }
 
+/**
+ * Check if table exists
+ * @memberof module:install
+ * @param {string} table Table
+ */
+const checkTable = async (table) => {
+  const res = await query(
+    'SELECT EXISTS (SELECT FROM pg_tables WHERE tablename = $1)',
+    [table]
+  )
+
+  const exists = res.rows[0].exists
+  if (exists)
+    console.warn(
+      ' ⚠ Table ' + table + ' already exists - Scheme is not verified for now'
+    )
+
+  return exists
+}
+
+/**
+ * Create avatar table
+ * @memberof module:install
+ */
 const createAvatarTable = async () => {
-  await query(
-    `CREATE TABLE IF NOT EXISTS ` +
-      databases.AVATARS +
-      ` (
+  !(await checkTable(databases.AVATARS)) &&
+    (await query(
+      `CREATE TABLE IF NOT EXISTS ` +
+        databases.AVATARS +
+        ` (
           id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
           name TEXT NOT NULL,
           path TEXT NOT NULL
         )`
-  )
+    ))
 }
 
+/**
+ * Create user table
+ * @memberof module:install
+ */
 const createUsersTable = async () => {
-  await query(
-    `CREATE TABLE IF NOT EXISTS ` +
-      databases.USERS +
-      ` (
+  !(await checkTable(databases.USERS)) &&
+    (await query(
+      `CREATE TABLE IF NOT EXISTS ` +
+        databases.USERS +
+        ` (
           id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
           lastName TEXT,
           firstName TEXT,
@@ -72,21 +108,26 @@ const createUsersTable = async () => {
           passwordLastChanged TIMESTAMP,
           email TEXT NOT NULL UNIQUE,
           avatar uuid REFERENCES ` +
-      databases.AVATARS +
-      `(id) ON DELETE SET NULL,
+        databases.AVATARS +
+        `(id) ON DELETE SET NULL,
           workspaces uuid[],
           isValidated BOOLEAN NOT NULL,
           lastModificationDate TIMESTAMP NOT NULL,
           superuser BOOLEAN NOT NULL
         )`
-  )
+    ))
 }
 
+/**
+ * Create workspace table
+ * @memberof module:install
+ */
 const createWorkspaceTable = async () => {
-  await query(
-    `CREATE TABLE IF NOT EXISTS ` +
-      databases.WORKSPACES +
-      ` (
+  !(await checkTable(databases.WORKSPACES)) &&
+    (await query(
+      `CREATE TABLE IF NOT EXISTS ` +
+        databases.WORKSPACES +
+        ` (
           id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
           name TEXT NOT NULL,
           owners uuid[],
@@ -97,20 +138,25 @@ const createWorkspaceTable = async () => {
           permissions jsonb,
           usersPermissions jsonb[]
         )`
-  )
+    ))
 }
 
+/**
+ * Create project table
+ * @memberof module:install
+ */
 const createProjectTable = async () => {
-  await query(
-    `CREATE TABLE IF NOT EXISTS ` +
-      databases.PROJECTS +
-      ` (
+  !(await checkTable(databases.PROJECTS)) &&
+    (await query(
+      `CREATE TABLE IF NOT EXISTS ` +
+        databases.PROJECTS +
+        ` (
           id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
           title TEXT NOT NULL,
           description TEXT NOT NULL,
           avatar uuid REFERENCES ` +
-      databases.AVATARS +
-      `(id) ON DELETE SET NULL,
+        databases.AVATARS +
+        `(id) ON DELETE SET NULL,
           public BOOLEAN NOT NULL,
           history jsonb,
           createdDate TIMESTAMP NOT NULL,
@@ -125,28 +171,37 @@ const createProjectTable = async () => {
           usersPermissions jsonb[],
           tasks uuid[]
         )`
-  )
+    ))
 }
 
+/**
+ * Create geometry table
+ */
 const createGeometryTable = async () => {
-  await query(
-    `CREATE TABLE IF NOT EXISTS ` +
-      databases.GEOMETRIES +
-      ` (
+  !(await checkTable(databases.GEOMETRIES)) &&
+    (await query(
+      `CREATE TABLE IF NOT EXISTS ` +
+        databases.GEOMETRIES +
+        ` (
           id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
           name TEXT NOT NULL,
           file TEXT,
           dimension smallint,
           part TEXT
         )`
-  )
+    ))
 }
 
+/**
+ * Create mesh table
+ * @memberof module:install
+ */
 const createMeshTable = async () => {
-  await query(
-    `CREATE TABLE IF NOT EXISTS ` +
-      databases.MESHES +
-      ` (
+  !(await checkTable(databases.MESHES)) &&
+    (await query(
+      `CREATE TABLE IF NOT EXISTS ` +
+        databases.MESHES +
+        ` (
           id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
           name TEXT NOT NULL,
           origin jsonb,
@@ -154,27 +209,37 @@ const createMeshTable = async () => {
           part TEXT,
           parameters jsonb
         )`
-  )
+    ))
 }
 
+/**
+ * Create simulation table
+ * @memberof module:install
+ */
 const createSimulationTable = async () => {
-  await query(
-    `CREATE TABLE IF NOT EXISTS ` +
-      databases.SIMULATIONS +
-      ` (
+  !(await checkTable(databases.SIMULATIONS)) &&
+    (await query(
+      `CREATE TABLE IF NOT EXISTS ` +
+        databases.SIMULATIONS +
+        ` (
           id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
           name TEXT NOT NULL,
           configuration jsonb,
           algorithm TEXT NOT NULL
         )`
-  )
+    ))
 }
 
+/**
+ * Create result table
+ * @memberof module:install
+ */
 const createResultTable = async () => {
-  await query(
-    `CREATE TABLE IF NOT EXISTS ` +
-      databases.RESULTS +
-      ` (
+  !(await checkTable(databases.RESULTS)) &&
+    (await query(
+      `CREATE TABLE IF NOT EXISTS ` +
+        databases.RESULTS +
+        ` (
           id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
           name TEXT NOT NULL,
           simulation uuid NOT NULL,
@@ -182,14 +247,19 @@ const createResultTable = async () => {
           configuration jsonb,
           files TEXT[]
         )`
-  )
+    ))
 }
 
+/**
+ * Create task table
+ * @memberof module:install
+ */
 const createTaskTable = async () => {
-  await query(
-    `CREATE TABLE IF NOT EXISTS ` +
-      databases.TASKS +
-      ` (
+  !(await checkTable(databases.TASKS)) &&
+    (await query(
+      `CREATE TABLE IF NOT EXISTS ` +
+        databases.TASKS +
+        ` (
           id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
           name TEXT NOT NULL,
           target uuid,
@@ -202,9 +272,13 @@ const createTaskTable = async () => {
           log TEXT NOT NULL,
           pid TEXT
         )`
-  )
+    ))
 }
 
+/**
+ * Password generator
+ * @memberof module:install
+ */
 const passwordGenerator = () => {
   const length = 8
   const charset =
@@ -216,10 +290,14 @@ const passwordGenerator = () => {
   return password
 }
 
+/**
+ * Create administrator
+ * @memberof module:install
+ */
 const createAdmin = async () => {
   const { rows } = await query('SELECT id FROM ' + databases.USERS)
   if (rows.length === 0) {
-    console.info('*** Create Administrator ***')
+    console.info(' *** Create Administrator *** ')
 
     const password = passwordGenerator()
 
@@ -229,9 +307,9 @@ const createAdmin = async () => {
         " (email, password, workspaces, isValidated, lastModificationDate, superuser) VALUES ($1, crypt($2, gen_salt('bf')), $3, $4, to_timestamp($5), $6)",
       ['admin', password, [], true, Date.now() / 1000, true]
     )
-    console.info('Administrator account:')
-    console.info('- username: admin')
-    console.info('- password: ' + password)
+    console.info(' Administrator account:')
+    console.info(' - username: admin')
+    console.info(' - password: ' + password)
   }
 }
 

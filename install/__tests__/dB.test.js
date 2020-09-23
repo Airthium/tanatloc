@@ -1,17 +1,20 @@
 import createTables from '../dB'
 
-let mockQuery = () => ({ rows: [] })
+let mockQuery = () => ({ rows: [{}] })
 jest.mock('../../src/database', () => {
-  return async () => mockQuery()
+  return async (query) => mockQuery(query)
 })
 
-describe('dB install', () => {
+describe('install/dB', () => {
   it('empty', async () => {
     await createTables()
   })
 
-  it('admin', async () => {
-    mockQuery = () => ({ rows: [{}] })
+  it('admin & exists', async () => {
+    mockQuery = (query) => {
+      if (query.includes('SELECT id FROM')) return { rows: [] }
+      else return { rows: [{ exists: true }] }
+    }
     await createTables()
   })
 

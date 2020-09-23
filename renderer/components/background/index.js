@@ -11,6 +11,9 @@ import {
   WebGLRenderer
 } from 'three/build/three.module'
 
+/**
+ * Background
+ */
 const Background = () => {
   // Parameters
   const numberOfTetrahedra = 100

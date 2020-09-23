@@ -4,6 +4,14 @@ import { message, Button, Form, Input, Space } from 'antd'
 import { useUser, update, check } from '../../../../src/api/user'
 
 /**
+ * Errors
+ */
+const errors = {
+  mismatch: 'Password and confirmation mismatch',
+  invalid: 'Current password not valid'
+}
+
+/**
  * Password
  * @memeberof module:renderer/components/account
  */
@@ -39,18 +47,24 @@ const Password = () => {
     if (current.valid) {
       // Change password
       if (data.newPassword === data.passwordConfirm) {
-        update([
-          {
-            type: 'crypt',
-            key: 'password',
-            value: data.newPassword
-          }
-        ])
+        try {
+          await update([
+            {
+              type: 'crypt',
+              key: 'password',
+              value: data.newPassword
+            }
+          ])
+        } catch (err) {
+          message.error(err.message)
+          console.error(err)
+          Sentry.captureException(err)
+        }
       } else {
-        message.error('Password and confirmation mismatch')
+        message.error(errors.mismatch)
       }
     } else {
-      message.error('Current password not valid')
+      message.error(errors.invalid)
     }
 
     setLoading(false)

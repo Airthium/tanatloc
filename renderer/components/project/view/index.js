@@ -39,6 +39,9 @@ import { GridHelper } from '../../../../src/lib/three/helpers/GridHelper'
 import { SelectionHelper } from '../../../../src/lib/three/helpers/SelectionHelper'
 import { SectionViewHelper } from '../../../../src/lib/three/helpers/SectionViewHelper'
 
+/**
+ * ThreeView
+ */
 const ThreeView = () => {
   // Ref
   const mount = useRef(null)
@@ -233,6 +236,9 @@ const ThreeView = () => {
     }
   }, [])
 
+  /**
+   * Compute scene bounding box
+   */
   const computeSceneBoundingSphere = () => {
     const box = new Box3()
     scene.current.children.forEach((child) => {
@@ -259,6 +265,10 @@ const ThreeView = () => {
     scene.current.boundingSphere = sphere
   }
 
+  /**
+   * Zoom
+   * @param {Object} direction Direction
+   */
   const zoom = (direction) => {
     const targetDistance = controls.current.object.position.distanceTo(
       controls.current.target
@@ -274,21 +284,33 @@ const ThreeView = () => {
   }
 
   let zoomInProgress = null
+  /**
+   * Zoom in
+   */
   const zoomIn = () => {
     zoom(1)
     zoomInProgress = requestAnimationFrame(zoomIn)
   }
 
+  /**
+   * Zoom out
+   */
   const zoomOut = () => {
     zoom(-1)
     zoomInProgress = requestAnimationFrame(zoomOut)
   }
 
+  /**
+   * Zoom stop
+   */
   const zoomStop = () => {
     cancelAnimationFrame(zoomInProgress)
     zoomInProgress = null
   }
 
+  /**
+   * Zoom to fit
+   */
   const zoomToFit = () => {
     const sphere = scene.current.boundingSphere
     if (!sphere) return
@@ -358,10 +380,16 @@ const ThreeView = () => {
     gridHelper.current.update()
   }
 
+  /**
+   * Toggle grid
+   * @param {boolean} checked Checked
+   */
   const toggleGrid = (checked) => {
     gridHelper.current.setVisible(checked)
   }
 
+  // Transparency
+  // TODO useEffect or function ?
   useEffect(() => {
     scene.current.children.forEach((child) => {
       if (child.type === 'Mesh') {
@@ -371,6 +399,9 @@ const ThreeView = () => {
     })
   }, [transparent, scene.current])
 
+  /**
+   * Toggle section view
+   */
   const toggleSectionView = () => {
     const active = !sectionView
     setSectionView(active)
@@ -379,6 +410,10 @@ const ThreeView = () => {
       : sectionViewHelper.current.stop()
   }
 
+  /**
+   * Handle transform mode
+   * @param {Object} event Event
+   */
   const handleTransform = (event) => {
     const mode = event.target.value
 
@@ -387,6 +422,9 @@ const ThreeView = () => {
     sectionViewHelper.current.setMode(mode)
   }
 
+  /**
+   * Render
+   */
   return (
     <div
       style={{ position: 'fixed', top: 0, right: 0, bottom: 0, left: 0 }}

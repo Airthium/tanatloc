@@ -8,6 +8,14 @@ import { add } from '../../../../src/api/avatar'
 import Sentry from '../../../../src/lib/sentry'
 
 /**
+ * Errors
+ */
+const errors = {
+  badFormat: 'Supported format: jpg, png',
+  badSize: 'Image must be smaller than 5MB'
+}
+
+/**
  * Information
  * @memberof module:renderer/components/account
  */
@@ -65,13 +73,11 @@ const Information = () => {
           email: data.email
         }
       })
-
-      setLoading(false)
     } catch (err) {
       message.error(err.message)
       console.error(err)
       Sentry.captureException(err)
-
+    } finally {
       setLoading(false)
     }
   }
@@ -89,10 +95,10 @@ const Information = () => {
    */
   const beforeUpload = (file) => {
     const goodFormat = file.type === 'image/jpeg' || file.type === 'image/png'
-    if (!goodFormat) message.error('Supported format: jpg, png')
+    if (!goodFormat) message.error(errors.badFormat)
 
     const goodSize = file.size / 1024 / 1024 < 5
-    if (!goodSize) message.error('Image must be smaller than 5MB')
+    if (!goodSize) message.error(error.badSize)
 
     return goodFormat && goodSize
   }
@@ -129,8 +135,9 @@ const Information = () => {
         message.error(err.message)
         console.error(err)
         Sentry.captureException(err)
+      } finally {
+        setUploading(false)
       }
-      setUploading(false)
     }
   }
 

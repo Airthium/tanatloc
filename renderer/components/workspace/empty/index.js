@@ -2,7 +2,14 @@ import { PageHeader } from 'antd'
 
 import Add from '../add'
 
+/**
+ * Empty
+ * @memberof module:renderer/components/workspace
+ */
 const Empty = () => {
+  /**
+   * Render
+   */
   return (
     <>
       <PageHeader

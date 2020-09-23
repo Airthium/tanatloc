@@ -50,13 +50,12 @@ const Add = (props) => {
       workspace.projects.push(project.id)
       mutateOneWorkspace(workspace)
 
-      setLoading(false)
       toggleDialog()
     } catch (err) {
       message.error(err.message)
       console.error(err)
       Sentry.captureException(err)
-
+    } finally {
       setLoading(false)
     }
   }
@@ -68,6 +67,9 @@ const Add = (props) => {
     toggleDialog()
   }
 
+  /**
+   * Render
+   */
   return (
     <>
       <Button

@@ -4655,7 +4655,7 @@ flush-write-stream@^1.0.0:
     inherits "^2.0.3"
     readable-stream "^2.3.6"
 
-foodoc@^0.0.9:
+foodoc@0.0.9:
   version "0.0.9"
   resolved "https://registry.yarnpkg.com/foodoc/-/foodoc-0.0.9.tgz#73822ab01bf3446efe86cdd97e86ee64966d563f"
   integrity sha1-c4IqsBvzRG7+hs3ZfobuZJZtVj8=

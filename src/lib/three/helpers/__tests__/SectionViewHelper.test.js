@@ -54,6 +54,7 @@ describe('src/lib/three/helpers/SectionViewHelper', () => {
   it('toogleVisible', () => {
     const sectionView = SectionViewHelper(renderer, scene, camera, controls)
     sectionView.toggleVisible()
+    sectionView.toggleVisible()
   })
 
   it('toAxis', () => {

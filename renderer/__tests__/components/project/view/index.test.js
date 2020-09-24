@@ -81,6 +81,12 @@ jest.mock('../../../../../src/lib/three/helpers/SectionViewHelper', () => ({
   })
 }))
 
+jest.mock('../../../../../src/lib/three/loaders/PartLoader', () => ({
+  PartLoader: () => ({
+    load: () => {}
+  })
+}))
+
 let mockAnimationCount = 0
 window.requestAnimationFrame = (callback) => {
   mockAnimationCount++
@@ -89,23 +95,37 @@ window.requestAnimationFrame = (callback) => {
 
 global.MockScene.children = [
   { type: 'AmbientLight' },
-  { type: 'PointLight' },
+  {
+    type: 'PointLight',
+    position: {
+      normalize: () => ({
+        multiplyScalar: () => {}
+      })
+    }
+  },
   { type: 'AxisHelper' },
   {
-    type: 'Mesh',
-    material: {}
+    type: 'Part',
+    boundingBox: {
+      min: { x: 0, y: 0, z: 0 },
+      max: { x: 1, y: 1, z: 1 }
+    },
+    material: {},
+    setTransparent: () => {},
+    startSelection: () => {},
+    stopSelection: () => {}
   },
   {
     visible: true,
-    type: 'Mesh',
-    geometry: {
-      boundingBox: {
-        min: { x: 0, y: 0, z: 0 },
-        max: { x: 1, y: 1, z: 1 }
-      },
-      boundingSphere: {}
+    type: 'Part',
+    boundingBox: {
+      min: { x: 0, y: 0, z: 0 },
+      max: { x: 1, y: 1, z: 1 }
     },
-    material: {}
+    material: {},
+    setTransparent: () => {},
+    startSelection: () => {},
+    stopSelection: () => {}
   }
 ]
 
@@ -172,14 +192,8 @@ describe('components/project/view', () => {
   })
 
   it('transparent', () => {
-    mockState = false
-    wrapper.find('Button').at(5).props().onClick()
     wrapper.find('Switch').at(3).props().onChange(true)
-
-    wrapper.unmount()
-    mockState = true
-    wrapper = mount(<View />)
-    wrapper.find('Button').at(5).props().onClick()
+    wrapper.find('Switch').at(3).props().onChange(false)
   })
 
   it('sectionView', () => {

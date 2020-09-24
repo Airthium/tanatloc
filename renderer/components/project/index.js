@@ -25,6 +25,9 @@ import { useProject, update } from '../../../src/api/project'
 
 import Sentry from '../../../src/lib/sentry'
 
+/**
+ * Project
+ */
 const Project = () => {
   // Router
   const router = useRouter()
@@ -83,6 +86,9 @@ const Project = () => {
     setSimulation({ id: simulationId })
   }
 
+  /**
+   * Render
+   */
   return (
     <Layout>
       <Layout className="Project-menu">

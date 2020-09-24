@@ -6,12 +6,33 @@ import {
   update as dBupdate,
   del as dBdel
 } from '../database/user'
+import { read as readAvatar } from './avatar'
 
+/**
+ * Get user
+ * @param {string} id Id
+ * @param {Array} data Data
+ */
 const get = async (id, data) => {
   const user = await dBget(id, data)
+
+  if (user.avatar) {
+    try {
+      const avatar = await readAvatar(user.avatar)
+      user.avatar = avatar
+    } catch (err) {
+      console.warn(err)
+      user.avatar = undefined
+    }
+  }
+
   return user
 }
 
+/**
+ * Login
+ * @param {Object} data Data { username, password }
+ */
 const login = async ({ username, password }) => {
   const user = await getByUsernameAndPassword({ username, password })
 
@@ -23,6 +44,9 @@ const login = async ({ username, password }) => {
   }
 }
 
+/**
+ * Add user (TODO)
+ */
 const add = () => {}
 
 /**

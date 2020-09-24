@@ -1,6 +1,11 @@
 import { Modal, Space } from 'antd'
 import { ExclamationCircleTwoTone } from '@ant-design/icons'
 
+/**
+ * DeleteDialog
+ * @memberof module:renderer/components/assets/dialog
+ * @param {Object} props Props
+ */
 const DeleteDialog = (props) => {
   // Props
   const visible = props.visible

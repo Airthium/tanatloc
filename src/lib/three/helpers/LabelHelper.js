@@ -1,3 +1,5 @@
+/** @module src/lib/three/helpers/LabelHelper */
+
 import { Sprite, SpriteMaterial, Texture } from 'three/build/three.module'
 
 /**
@@ -5,11 +7,11 @@ import { Sprite, SpriteMaterial, Texture } from 'three/build/three.module'
  * @param {string} text Text
  * @param {number} fontSize Font size
  */
-const LabelHelper = (text, fontColor = 'black', fontSize = 512) => {
+const LabelHelper = (text, size = 512, fontColor = 'black', fontSize = 512) => {
   // Canvas
   const canvas = document.createElement('canvas')
-  canvas.width = 512
-  canvas.height = 512
+  canvas.width = size
+  canvas.height = size
   const context = canvas.getContext('2d')
   context.fillStyle = fontColor
   context.font = fontSize + 'px sans-serif'

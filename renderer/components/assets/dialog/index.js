@@ -1,7 +1,13 @@
+/** @module renderer/components/assets/dialog */
+
 import { Form, Modal } from 'antd'
 
 import DeleteDialog from './delete'
 
+/**
+ * Dialog
+ * @param {Object} props Props
+ */
 const Dialog = (props) => {
   // Props
   const title = props.title

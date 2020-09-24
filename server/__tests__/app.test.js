@@ -47,6 +47,7 @@ jest.mock('../../src/route/login', () => ({
 jest.mock('../../src/route/logout', () => () => {})
 jest.mock('../../src/route/user', () => () => {})
 jest.mock('../../src/route/user/check', () => () => {})
+jest.mock('../../src/route/avatar', () => () => {})
 jest.mock('../../src/route/workspace', () => () => {})
 jest.mock('../../src/route/project', () => () => {})
 jest.mock('../../src/route/project/[id]', () => () => {})

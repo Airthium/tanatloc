@@ -1,4 +1,4 @@
-/** @module api */
+/** @module src/route */
 
 import express from 'express'
 import passport from 'passport'

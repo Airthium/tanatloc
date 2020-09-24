@@ -5,6 +5,7 @@ import Sentry from '../../lib/sentry'
 
 /**
  * Projects API
+ * @memberof module:src/route/projects
  * @param {Object} req Request
  * @param {Object} res Response
  */

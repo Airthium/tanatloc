@@ -1,3 +1,5 @@
+/** @module src/lib/three/helpers/NavigationHelper */
+
 import {
   Color,
   EdgesGeometry,

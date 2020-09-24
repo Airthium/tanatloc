@@ -11,9 +11,7 @@ import {
   ZoomInOutlined,
   ZoomOutOutlined,
   SelectOutlined,
-  PlusOutlined,
   RadiusUprightOutlined,
-  MinusOutlined,
   ScissorOutlined,
   StopOutlined,
   SyncOutlined,
@@ -22,9 +20,6 @@ import {
 import {
   AmbientLight,
   Box3,
-  BoxGeometry,
-  Mesh,
-  MeshStandardMaterial,
   PerspectiveCamera,
   PointLight,
   Scene,
@@ -32,6 +27,7 @@ import {
   Vector3,
   WebGLRenderer
 } from 'three/build/three.module'
+
 import { TrackballControls } from '../../../../src/lib/three/controls/TrackballControls'
 import { AxisHelper } from '../../../../src/lib/three/helpers/AxisHelper'
 import { NavigationHelper } from '../../../../src/lib/three/helpers/NavigationHelper'
@@ -39,6 +35,20 @@ import { GridHelper } from '../../../../src/lib/three/helpers/GridHelper'
 import { SelectionHelper } from '../../../../src/lib/three/helpers/SelectionHelper'
 import { SectionViewHelper } from '../../../../src/lib/three/helpers/SectionViewHelper'
 
+import { PartLoader } from '../../../../src/lib/three/loaders/PartLoader'
+
+import Part from '../../../public/test/geometry/cube/part.json'
+import Solid from '../../../public/test/geometry/cube/solid_0.json'
+import Face0 from '../../../public/test/geometry/cube/face_0.json'
+import Face1 from '../../../public/test/geometry/cube/face_1.json'
+import Face2 from '../../../public/test/geometry/cube/face_2.json'
+import Face3 from '../../../public/test/geometry/cube/face_3.json'
+import Face4 from '../../../public/test/geometry/cube/face_4.json'
+import Face5 from '../../../public/test/geometry/cube/face_5.json'
+
+/**
+ * ThreeView
+ */
 const ThreeView = () => {
   // Ref
   const mount = useRef(null)
@@ -75,9 +85,11 @@ const ThreeView = () => {
     // Light
     const ambientLight = new AmbientLight('#999999')
     const pointLight1 = new PointLight('#ffffff')
-    pointLight1.position.set(10, 50, 0)
+    pointLight1.decay = 2
+    pointLight1.position.set(5, 1, 1)
     const pointLight2 = new PointLight('#ffffff')
-    pointLight2.position.set(-10, -50, 0)
+    pointLight2.decay = 2
+    pointLight2.position.set(-5, 1, 1)
     scene.current.add(ambientLight)
     scene.current.add(pointLight1)
     scene.current.add(pointLight2)
@@ -233,11 +245,14 @@ const ThreeView = () => {
     }
   }, [])
 
+  /**
+   * Compute scene bounding box
+   */
   const computeSceneBoundingSphere = () => {
     const box = new Box3()
     scene.current.children.forEach((child) => {
-      if (child.visible && child.type === 'Mesh') {
-        const childBox = child.geometry.boundingBox
+      if (child.visible && child.type === 'Part') {
+        const childBox = child.boundingBox
         const min = new Vector3(
           Math.min(box.min.x, childBox.min.x),
           Math.min(box.min.y, childBox.min.y),
@@ -259,6 +274,10 @@ const ThreeView = () => {
     scene.current.boundingSphere = sphere
   }
 
+  /**
+   * Zoom
+   * @param {Object} direction Direction
+   */
   const zoom = (direction) => {
     const targetDistance = controls.current.object.position.distanceTo(
       controls.current.target
@@ -274,21 +293,33 @@ const ThreeView = () => {
   }
 
   let zoomInProgress = null
+  /**
+   * Zoom in
+   */
   const zoomIn = () => {
     zoom(1)
     zoomInProgress = requestAnimationFrame(zoomIn)
   }
 
+  /**
+   * Zoom out
+   */
   const zoomOut = () => {
     zoom(-1)
     zoomInProgress = requestAnimationFrame(zoomOut)
   }
 
+  /**
+   * Zoom stop
+   */
   const zoomStop = () => {
     cancelAnimationFrame(zoomInProgress)
     zoomInProgress = null
   }
 
+  /**
+   * Zoom to fit
+   */
   const zoomToFit = () => {
     const sphere = scene.current.boundingSphere
     if (!sphere || sphere.radius === 0) return
@@ -313,64 +344,87 @@ const ThreeView = () => {
 
     // Camera
     camera.current.position.copy(center).sub(direction)
+    camera.current.near = distance / 100
+    camera.current.far = distance * 100
     camera.current.updateProjectionMatrix()
-  }
 
-  const addCube = () => {
-    const geometry = new BoxGeometry(
-      10 * Math.random(),
-      10 * Math.random(),
-      10 * Math.random()
-    )
-    geometry.translate(
-      -5 + 10 * Math.random(),
-      -5 + 10 * Math.random(),
-      -5 + 10 * Math.random()
-    )
-    geometry.computeBoundingBox()
-    geometry.computeBoundingSphere()
-    const material = new MeshStandardMaterial({
-      color: 0xff00ff,
-      opacity: transparent ? 0.5 : 1,
-      depthWrite: !transparent,
-      clippingPlanes: [sectionViewHelper.current.getClippingPlane()]
+    // Lights
+    scene.current.children.forEach((child) => {
+      if (child.type === 'PointLight')
+        child.position.normalize().multiplyScalar(1.5 * distance)
     })
-    const cube = new Mesh(geometry, material)
-    scene.current.add(cube)
-
-    computeSceneBoundingSphere()
-    gridHelper.current.update()
   }
 
-  // // TODO to remove
-  // useEffect(() => {
-  //   addCube()
-  //   zoomToFit()
-  // }, [])
+  /**
+   * Load part
+   * TODO WIP
+   */
+  const loadPart = async () => {
+    Part.solids[0].buffer = Solid
+    delete Part.solids[0].path
 
-  const removeCube = () => {
-    const children = scene.current.children.filter(
-      (child) => child.type === 'Mesh'
+    Part.faces[0].buffer = Face0
+    delete Part.faces[0].path
+
+    Part.faces[1].buffer = Face1
+    delete Part.faces[1].path
+
+    Part.faces[2].buffer = Face2
+    delete Part.faces[2].path
+
+    Part.faces[3].buffer = Face3
+    delete Part.faces[3].path
+
+    Part.faces[4].buffer = Face4
+    delete Part.faces[4].path
+
+    Part.faces[5].buffer = Face5
+    delete Part.faces[5].path
+
+    //load
+    const loader = PartLoader()
+    const mesh = loader.load(
+      Part,
+      transparent,
+      sectionViewHelper.current.getClippingPlane()
     )
-    scene.current.remove(children.pop())
 
+    // Scene
+    scene.current.add(mesh)
     computeSceneBoundingSphere()
+
+    // Grid
     gridHelper.current.update()
+
+    // Zoom
+    zoomToFit()
   }
 
+  // TODO remove that after
+  useEffect(() => {
+    loadPart()
+  }, [])
+
+  /**
+   * Toggle grid
+   * @param {boolean} checked Checked
+   */
   const toggleGrid = (checked) => {
     gridHelper.current.setVisible(checked)
   }
 
-  useEffect(() => {
+  const toggleTransparent = (checked) => {
+    setTransparent(checked)
     scene.current.children.forEach((child) => {
-      if (child.type === 'Mesh') {
-        child.material.opacity = transparent ? 0.5 : 1
-        child.material.depthWrite = !transparent
+      if (child.type === 'Part') {
+        child.setTransparent(checked)
       }
     })
-  }, [transparent, scene.current])
+  }
 
+  /**
+   * Toggle section view
+   */
   const toggleSectionView = () => {
     const active = !sectionView
     setSectionView(active)
@@ -379,6 +433,10 @@ const ThreeView = () => {
       : sectionViewHelper.current.stop()
   }
 
+  /**
+   * Handle transform mode
+   * @param {Object} event Event
+   */
   const handleTransform = (event) => {
     const mode = event.target.value
 
@@ -387,6 +445,9 @@ const ThreeView = () => {
     sectionViewHelper.current.setMode(mode)
   }
 
+  /**
+   * Render
+   */
   return (
     <div
       style={{ position: 'fixed', top: 0, right: 0, bottom: 0, left: 0 }}
@@ -433,12 +494,14 @@ const ThreeView = () => {
                   checked={transparent}
                   checkedChildren={<RadiusUprightOutlined />}
                   unCheckedChildren={<RadiusUprightOutlined />}
-                  onChange={(checked) => setTransparent(checked)}
+                  onChange={toggleTransparent}
                 />
               </Tooltip>
             </div>
           </div>
+
           <Divider />
+
           <div className="drawer-group">
             <div className="drawer-subgroup">
               <Tooltip title="Zoom out">
@@ -470,13 +533,9 @@ const ThreeView = () => {
               </Tooltip>
             </div>
           </div>
-          <Divider />
-          <div className="drawer-group">
-            <Button icon={<PlusOutlined />} onClick={addCube} />
-            <Button icon={<MinusOutlined />} onClick={removeCube} />
-          </div>
 
           <Divider />
+
           <div className="drawer-group">
             {sectionView ? (
               <>
@@ -561,6 +620,29 @@ const ThreeView = () => {
                 />
               </Tooltip>
             )}
+          </div>
+
+          <Divider />
+
+          <div className="drawer-group">
+            <Button
+              onClick={() =>
+                scene.current.children
+                  .filter((c) => c.type === 'Part')[0]
+                  .startSelection(renderer.current, camera.current, 'face')
+              }
+            >
+              Start
+            </Button>
+            <Button
+              onClick={() =>
+                scene.current.children
+                  .filter((c) => c.type === 'Part')[0]
+                  .stopSelection()
+              }
+            >
+              Stop
+            </Button>
           </div>
         </Drawer>
       </Layout>

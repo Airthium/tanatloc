@@ -1,3 +1,5 @@
+/** @module src/route/projects */
+
 /**
  * Empty projects list route
  * @param {Object} req Request

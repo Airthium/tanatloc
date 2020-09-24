@@ -4,7 +4,7 @@ import { databases } from '../../../config/db'
 /**
  * Delete project
  * @memberof module:src/database/project
- * @param {Object} param0 { workspaceId, project }
+ * @param {Object} project { id }
  */
 const del = async (project) => {
   await deleter(databases.PROJECTS, project.id)

@@ -1,3 +1,5 @@
+/** @module src/route/workspace */
+
 import getSessionId from '../session'
 import { add, getByUser, update, del } from '../../lib/workspace'
 

@@ -33,6 +33,11 @@ const add = async (user, { name }) => {
   return workspace
 }
 
+/**
+ *
+ * @param {string} id Id
+ * @param {Array} data Data [{ key, value, ... }]
+ */
 const get = async (id, data) => {
   const workspace = await dBget(id, data)
   return workspace

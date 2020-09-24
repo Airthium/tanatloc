@@ -1,15 +1,25 @@
+/** @module renderer/components/project/simulation */
+
 import { useState, useEffect } from 'react'
 import { Drawer, Steps } from 'antd'
 
+/**
+ * Simulation
+ * @param {Object} props Props
+ */
 const Simulation = ({ simulation }) => {
   // State
   const [visible, setVisible] = useState()
 
+  // Simualtion
   useEffect(() => {
     if (simulation) setVisible(true)
     else setVisible(false)
   }, [simulation])
 
+  /**
+   * Render
+   */
   return (
     <Drawer
       visible={visible}

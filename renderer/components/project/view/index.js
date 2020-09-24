@@ -11,9 +11,7 @@ import {
   ZoomInOutlined,
   ZoomOutOutlined,
   SelectOutlined,
-  PlusOutlined,
   RadiusUprightOutlined,
-  MinusOutlined,
   ScissorOutlined,
   StopOutlined,
   SyncOutlined,
@@ -22,9 +20,6 @@ import {
 import {
   AmbientLight,
   Box3,
-  BoxGeometry,
-  Mesh,
-  MeshStandardMaterial,
   PerspectiveCamera,
   PointLight,
   Scene,
@@ -42,7 +37,14 @@ import { SectionViewHelper } from '../../../../src/lib/three/helpers/SectionView
 
 import { PartLoader } from '../../../../src/lib/three/loaders/PartLoader'
 
+import Part from '../../../public/test/geometry/cube/part.json'
 import Solid from '../../../public/test/geometry/cube/solid_0.json'
+import Face0 from '../../../public/test/geometry/cube/face_0.json'
+import Face1 from '../../../public/test/geometry/cube/face_1.json'
+import Face2 from '../../../public/test/geometry/cube/face_2.json'
+import Face3 from '../../../public/test/geometry/cube/face_3.json'
+import Face4 from '../../../public/test/geometry/cube/face_4.json'
+import Face5 from '../../../public/test/geometry/cube/face_5.json'
 
 /**
  * ThreeView
@@ -247,8 +249,8 @@ const ThreeView = () => {
   const computeSceneBoundingSphere = () => {
     const box = new Box3()
     scene.current.children.forEach((child) => {
-      if (child.visible && child.type === 'Mesh') {
-        const childBox = child.geometry.boundingBox
+      if (child.visible && child.type === 'Part') {
+        const childBox = child.boundingBox
         const min = new Vector3(
           Math.min(box.min.x, childBox.min.x),
           Math.min(box.min.y, childBox.min.y),
@@ -356,14 +358,31 @@ const ThreeView = () => {
    * TODO WIP
    */
   const loadPart = async () => {
-    const part = {
-      solids: [Solid]
-    }
+    Part.solids[0].buffer = Solid
+    delete Part.solids[0].path
+
+    Part.faces[0].buffer = Face0
+    delete Part.faces[0].path
+
+    Part.faces[1].buffer = Face1
+    delete Part.faces[1].path
+
+    Part.faces[2].buffer = Face2
+    delete Part.faces[2].path
+
+    Part.faces[3].buffer = Face3
+    delete Part.faces[3].path
+
+    Part.faces[4].buffer = Face4
+    delete Part.faces[4].path
+
+    Part.faces[5].buffer = Face5
+    delete Part.faces[5].path
 
     //load
     const loader = PartLoader()
     const mesh = loader.load(
-      part,
+      Part,
       transparent,
       sectionViewHelper.current.getClippingPlane()
     )
@@ -374,6 +393,9 @@ const ThreeView = () => {
 
     // Grid
     gridHelper.current.update()
+
+    // Zoom
+    zoomToFit()
   }
 
   // TODO remove that after
@@ -392,9 +414,8 @@ const ThreeView = () => {
   const toggleTransparent = (checked) => {
     setTransparent(checked)
     scene.current.children.forEach((child) => {
-      if (child.type === 'Mesh') {
-        child.material.opacity = checked ? 0.5 : 1
-        child.material.depthWrite = !checked
+      if (child.type === 'Part') {
+        child.setTransparent(checked)
       }
     })
   }
@@ -476,7 +497,9 @@ const ThreeView = () => {
               </Tooltip>
             </div>
           </div>
+
           <Divider />
+
           <div className="drawer-group">
             <div className="drawer-subgroup">
               <Tooltip title="Zoom out">
@@ -508,13 +531,9 @@ const ThreeView = () => {
               </Tooltip>
             </div>
           </div>
-          {/* <Divider />
-          <div className="drawer-group">
-            <Button icon={<PlusOutlined />} onClick={addCube} />
-            <Button icon={<MinusOutlined />} onClick={removeCube} />
-          </div> */}
 
           <Divider />
+
           <div className="drawer-group">
             {sectionView ? (
               <>
@@ -599,6 +618,29 @@ const ThreeView = () => {
                 />
               </Tooltip>
             )}
+          </div>
+
+          <Divider />
+
+          <div className="drawer-group">
+            <Button
+              onClick={() =>
+                scene.current.children
+                  .filter((c) => c.type === 'Part')[0]
+                  .startSelection(renderer.current, camera.current, 'face')
+              }
+            >
+              Start
+            </Button>
+            <Button
+              onClick={() =>
+                scene.current.children
+                  .filter((c) => c.type === 'Part')[0]
+                  .stopSelection()
+              }
+            >
+              Stop
+            </Button>
           </div>
         </Drawer>
       </Layout>

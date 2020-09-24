@@ -2,23 +2,11 @@
 
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
-import {
-  message,
-  Button,
-  Divider,
-  Drawer,
-  Layout,
-  Tooltip,
-  Typography
-} from 'antd'
-import {
-  ArrowLeftOutlined,
-  MenuOutlined,
-  PlusOutlined
-} from '@ant-design/icons'
+import { message, Button, Divider, Layout, Tooltip, Typography } from 'antd'
+import { ArrowLeftOutlined, PlusOutlined } from '@ant-design/icons'
 
 import View from './view'
-import Simulation from './simulation'
+// import Simulation from './simulation'
 
 import { useUser } from '../../../src/api/user'
 import { useProject, update } from '../../../src/api/project'
@@ -34,7 +22,6 @@ const Project = () => {
   const { id } = router.query
 
   // State
-  const [menuVisible, setMenuVisible] = useState(false)
   const [simulation, setSimulation] = useState()
   const [simulations, setSimulations] = useState([])
 
@@ -91,13 +78,18 @@ const Project = () => {
    */
   return (
     <Layout>
-      <Layout className="Project-menu">
-        <Tooltip title="Menu">
-          <Button
-            icon={<MenuOutlined />}
-            onClick={() => setMenuVisible(!menuVisible)}
-          />
-        </Tooltip>
+      <Layout.Sider theme="light" style={{ borderRight: '1px solid black' }}>
+        <div className="group">
+          <Tooltip title="Dashboard">
+            <Button
+              icon={<ArrowLeftOutlined />}
+              onClick={() => router.push('/dashboard')}
+            />
+          </Tooltip>
+        </div>
+
+        <Divider />
+
         <Typography.Title
           className="Project-title"
           level={2}
@@ -108,42 +100,20 @@ const Project = () => {
         >
           {project.title}
         </Typography.Title>
-        <Drawer
-          className="Project-menu-drawer"
-          title="Menu"
-          visible={menuVisible}
-          onClose={() => setMenuVisible(!menuVisible)}
-          mask={false}
-          maskClosable={false}
-          placement="left"
-          getContainer={false}
-          bodyStyle={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            padding: '10px'
-          }}
-          width="100%"
-        >
-          <div className="drawer-group">
-            <Tooltip title="Dashboard">
-              <Button
-                icon={<ArrowLeftOutlined />}
-                onClick={() => router.push('/dashboard')}
-              />
-            </Tooltip>
-          </div>
-          <Divider />
-          <div className="drawer-group">
-            <Tooltip title="New simulation">
-              <Button icon={<PlusOutlined />} onClick={addSimulation} />
-            </Tooltip>
-            <div className="drawer-subgroup">{simulations}</div>
-          </div>
-        </Drawer>
-      </Layout>
-      <Simulation simulation={simulation} />
-      <View />
+
+        <Divider />
+
+        <div className="group">
+          <Tooltip title="New simulation">
+            <Button icon={<PlusOutlined />} onClick={addSimulation} />
+          </Tooltip>
+          <div className="subgroup">{simulations}</div>
+        </div>
+      </Layout.Sider>
+      <Layout.Content>
+        {/* <Simulation simulation={simulation} /> */}
+        <View />
+      </Layout.Content>
     </Layout>
   )
 }

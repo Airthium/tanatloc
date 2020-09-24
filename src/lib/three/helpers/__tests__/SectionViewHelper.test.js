@@ -75,44 +75,23 @@ describe('src/lib/three/helpers/SectionViewHelper', () => {
   it('mouse', () => {
     const sectionView = SectionViewHelper(renderer, scene, camera, controls)
     mouseDown({})
-    mouseMove({})
+    mouseMove({ target: { getBoundingClientRect: () => ({}) } })
     mouseUp({})
 
     sectionView.start()
-    mouseMove({})
+    mouseMove({ target: { getBoundingClientRect: () => ({}) } })
 
     global.MockRaycaster.intersectObject = [{}]
-    mouseMove({})
-    mouseMove({})
+    mouseMove({ target: { getBoundingClientRect: () => ({}) } })
+    mouseMove({ target: { getBoundingClientRect: () => ({}) } })
 
     mouseDown({})
-    mouseMove({})
+    mouseMove({ target: { getBoundingClientRect: () => ({}) } })
     mouseUp({})
 
     global.MockRaycaster.intersectObject = []
-    mouseMove({})
+    mouseMove({ target: { getBoundingClientRect: () => ({}) } })
     mouseUp({})
-
-    // global.MockRaycaster.intersectObjects = [
-    //   {
-    //     object: {
-    //       material: {
-    //         color: 'color'
-    //       }
-    //     }
-    //   }
-    // ]
-    // mouseMove({})
-    // mouseDown({})
-
-    // global.MockRaycaster.intersectObjects = [
-    //   {
-    //     object: null
-    //   }
-    // ]
-    // mouseMove({})
-    // mouseUp({})
-    // mouseMove({})
   })
 
   it('stop', () => {

@@ -449,11 +449,9 @@ const ThreeView = () => {
    * Render
    */
   return (
-    <div
-      style={{ position: 'fixed', top: 0, right: 0, bottom: 0, left: 0 }}
-      ref={mount}
-    >
-      <Layout className="View-controls">
+    <Layout className="View">
+      <div ref={mount} className="View-canvas" />
+      <Layout.Content className="View-controls">
         <Tooltip title="Controls">
           <Button
             icon={<ControlOutlined />}
@@ -476,8 +474,8 @@ const ThreeView = () => {
           }}
           width="100%"
         >
-          <div className="drawer-group">
-            <div className="drawer-subgroup">
+          <div className="group">
+            <div className="subgroup">
               <Tooltip title="Display grid">
                 <Switch
                   defaultChecked
@@ -487,7 +485,7 @@ const ThreeView = () => {
                 />
               </Tooltip>
             </div>
-            <div className="drawer-subgroup">
+            <div className="subgroup">
               <Tooltip title="Set transparency">
                 <Switch
                   className="transparent"
@@ -502,8 +500,8 @@ const ThreeView = () => {
 
           <Divider />
 
-          <div className="drawer-group">
-            <div className="drawer-subgroup">
+          <div className="group">
+            <div className="subgroup">
               <Tooltip title="Zoom out">
                 <Button
                   icon={<ZoomOutOutlined />}
@@ -524,7 +522,7 @@ const ThreeView = () => {
                 />
               </Tooltip>
             </div>
-            <div className="drawer-subgroup">
+            <div className="subgroup">
               <Tooltip title="Zoom to selection">
                 <Button
                   icon={<SelectOutlined />}
@@ -536,10 +534,10 @@ const ThreeView = () => {
 
           <Divider />
 
-          <div className="drawer-group">
+          <div className="group">
             {sectionView ? (
               <>
-                <div className="drawer-subgroup">
+                <div className="subgroup">
                   <Tooltip title="Stop">
                     <Button
                       icon={<StopOutlined />}
@@ -567,7 +565,7 @@ const ThreeView = () => {
                     </Tooltip>
                   </Radio.Group>
                 </div>
-                <div className="drawer-subgroup">
+                <div className="subgroup">
                   <Tooltip title="Hide plane">
                     <Button
                       icon={<EyeInvisibleOutlined />}
@@ -624,7 +622,7 @@ const ThreeView = () => {
 
           <Divider />
 
-          <div className="drawer-group">
+          <div className="group">
             <Button
               onClick={() =>
                 scene.current.children
@@ -645,8 +643,8 @@ const ThreeView = () => {
             </Button>
           </div>
         </Drawer>
-      </Layout>
-    </div>
+      </Layout.Content>
+    </Layout>
   )
 }
 

@@ -34,6 +34,60 @@ global.MockRaycaster.intersectObjects = [
 
 describe('src/lib/three/helpers/NavigationHelper', () => {
   const renderer = {
+    domElement: {
+      addEventListener: (type, callback) => {
+        callback({ target: { getBoundingClientRect: () => ({}) } })
+        callback({
+          clientX: 500,
+          clientY: 500,
+          target: {
+            getBoundingClientRect: () => ({
+              width: 150,
+              height: 150,
+              x: 0,
+              y: 0
+            })
+          }
+        })
+        callback({
+          clientX: 75,
+          clientY: 75,
+          target: {
+            getBoundingClientRect: () => ({
+              width: 150,
+              height: 150,
+              x: 0,
+              y: 0
+            })
+          }
+        })
+        callback({
+          clientX: 50,
+          clientY: 50,
+          target: {
+            getBoundingClientRect: () => ({
+              width: 150,
+              height: 150,
+              x: 0,
+              y: 0
+            })
+          }
+        })
+        callback({
+          clientX: 25,
+          clientY: 25,
+          target: {
+            getBoundingClientRect: () => ({
+              width: 150,
+              height: 150,
+              x: 0,
+              y: 0
+            })
+          }
+        })
+      },
+      removeEventListener: () => {}
+    },
     getSize: (vector) => {
       vector.x = 150
       vector.y = 150
@@ -65,13 +119,6 @@ describe('src/lib/three/helpers/NavigationHelper', () => {
   })
 
   it('event', () => {
-    document.addEventListener = (type, callback) => {
-      callback({})
-      callback({ clientX: 500, clientY: 500 })
-      callback({ clientX: 75, clientY: 75 })
-      callback({ clientX: 50, clientY: 50 })
-      callback({ clientX: 25, clientY: 25 })
-    }
     const navigation = NavigationHelper(renderer, scene, camera, controls)
     expect(navigation).toBeDefined()
   })

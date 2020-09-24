@@ -162,7 +162,7 @@ const NavigationHelper = (
    * @param {Object} event Event
    */
   const onMouseMove = (event) => {
-    const mouse = globalToLocal({ X: event.clientX, Y: event.clientY })
+    const mouse = globalToLocal(event)
     if (isIn(mouse)) {
       currentlyHighlighted = intersect(mouse)
       highlight()
@@ -178,13 +178,15 @@ const NavigationHelper = (
    *  Global coordinates to local [-1, 1]^2
    * @param {Object} event Event
    */
-  const globalToLocal = ({ X, Y }) => {
-    const parentSize = new Vector2()
-    renderer.getSize(parentSize)
+  const globalToLocal = (event) => {
+    const rect = event.target.getBoundingClientRect()
+
+    const X = event.clientX - rect.left
+    const Y = event.clientY - rect.top
 
     const mouse = new Vector2()
     mouse.x = ((X - offsetWidth) / width) * 2 - 1
-    mouse.y = -((Y + height - parentSize.y + offsetHeight) / height) * 2 + 1
+    mouse.y = -((Y + height - rect.height + offsetHeight) / height) * 2 + 1
 
     return mouse
   }
@@ -275,8 +277,8 @@ const NavigationHelper = (
   }
 
   // Events
-  document.addEventListener('mousemove', onMouseMove)
-  document.addEventListener('mousedown', onMouseDown)
+  renderer.domElement.addEventListener('mousemove', onMouseMove)
+  renderer.domElement.addEventListener('mousedown', onMouseDown)
 
   /**
    * Resize
@@ -303,8 +305,8 @@ const NavigationHelper = (
    */
   const dispose = () => {
     // Event listeners
-    document.removeEventListener('mousemove', onMouseMove)
-    document.removeEventListener('mousedown', onMouseDown)
+    renderer.domElement.removeEventListener('mousemove', onMouseMove)
+    renderer.domElement.removeEventListener('mousedown', onMouseDown)
 
     // Cube
     cube.children.forEach((group) => {

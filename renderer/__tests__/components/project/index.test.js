@@ -72,10 +72,6 @@ describe('components/project', () => {
     })
   })
 
-  it('onClose', () => {
-    wrapper.find('withConfigConsumer(Drawer)').props().onClose()
-  })
-
   it('user effect', () => {
     wrapper.unmount()
 

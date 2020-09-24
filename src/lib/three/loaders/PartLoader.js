@@ -178,6 +178,7 @@ const PartLoader = () => {
     currentlyHighlighted = {}
     previouslyHighlighted = {}
 
+    selection.forEach((s) => unselect(s))
     selection.length = 0
   }
 

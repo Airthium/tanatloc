@@ -85,9 +85,11 @@ const ThreeView = () => {
     // Light
     const ambientLight = new AmbientLight('#999999')
     const pointLight1 = new PointLight('#ffffff')
-    pointLight1.position.set(1, 5, 0)
+    pointLight1.decay = 2
+    pointLight1.position.set(5, 1, 1)
     const pointLight2 = new PointLight('#ffffff')
-    pointLight2.position.set(-1, -5, 0)
+    pointLight2.decay = 2
+    pointLight2.position.set(-5, 1, 1)
     scene.current.add(ambientLight)
     scene.current.add(pointLight1)
     scene.current.add(pointLight2)
@@ -349,7 +351,7 @@ const ThreeView = () => {
     // Lights
     scene.current.children.forEach((child) => {
       if (child.type === 'PointLight')
-        child.position.normalize().multiplyScalar(2 * distance)
+        child.position.normalize().multiplyScalar(1.5 * distance)
     })
   }
 

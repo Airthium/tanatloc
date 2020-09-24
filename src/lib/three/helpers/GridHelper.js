@@ -23,7 +23,7 @@ const GridHelper = (scene) => {
   // Max divisions
   const maxDivisions = 6
   // Grid overflow (% of maxsize)
-  const overflowGrid = 0.05
+  const overflowGrid = 0
   // Grid separation (% of maxsize)
   const overspaceGrid = 0.15
 

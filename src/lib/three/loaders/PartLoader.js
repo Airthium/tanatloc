@@ -89,6 +89,7 @@ const PartLoader = () => {
     const material = new MeshStandardMaterial({
       color: color,
       side: DoubleSide,
+      transparent: transparent,
       opacity: transparent ? 0.5 : 1,
       depthWrite: !transparent,
       clippingPlanes: [clippingPlane]
@@ -135,6 +136,7 @@ const PartLoader = () => {
   const setTransparent = (part, transparent) => {
     part.children.forEach((group) => {
       group.children?.forEach((child) => {
+        child.material.transparent = transparent
         child.material.opacity = transparent ? 0.5 : 1
         child.material.depthWrite = !transparent
       })

@@ -15,7 +15,13 @@ describe('src/lib/three/loaders/PartLoader', () => {
         }
       ]
     },
-    { children: [] }
+    {
+      children: [
+        {
+          material: {}
+        }
+      ]
+    }
   ]
   const part = {
     solids: [
@@ -90,6 +96,11 @@ describe('src/lib/three/loaders/PartLoader', () => {
 
     global.MockRaycaster.intersectObjects = [{ object: mesh1 }]
     mouseMove({})
+
+    mesh.stopSelection()
+    mesh.startSelection(renderer, camera, 'solid')
+    mesh.stopSelection()
+    mesh.startSelection(renderer, camera, 'other')
   })
 
   it('stopSelection', () => {

@@ -13,6 +13,8 @@ import {
   Vector3
 } from 'three/build/three.module'
 
+// TODO edges not supported for now
+
 /**
  * PartLoader
  */
@@ -64,7 +66,7 @@ const PartLoader = () => {
     object.setTransparent = (transparent) => setTransparent(object, transparent)
     object.startSelection = (renderer, camera, type) =>
       startSelection(object, renderer, camera, type)
-    object.stopSelection = stopSelection
+    object.stopSelection = () => stopSelection(object)
     object.highlight = highlight
     object.unhighlight = unhighlight
     object.select = select
@@ -143,6 +145,28 @@ const PartLoader = () => {
     })
   }
 
+  /**
+   * Set solids visible
+   * @param {Object} part Part
+   * @param {boolean} visible Visible
+   */
+  const setSolidsVisible = (part, visible) => {
+    part.children[0].children.forEach((solid) => {
+      solid.visible = true
+    })
+  }
+
+  /**
+   * Set faces visible
+   * @param {Object} part Part
+   * @param {boolean} visible Visible
+   */
+  const setFacesVisible = (part, visible) => {
+    part.children[1].children.forEach((face) => {
+      face.visible = true
+    })
+  }
+
   // highlight / selection Variables
   let raycaster = new Raycaster()
   let selectionPart = null
@@ -153,20 +177,42 @@ const PartLoader = () => {
   let previouslyHighlighted = {}
   const selection = []
 
+  /**
+   *
+   * @param {Object} part Part
+   * @param {Object} renderer Renderer
+   * @param {Object} camera Camera
+   * @param {string} type Type (solid, face)
+   */
   const startSelection = (part, renderer, camera, type) => {
     selectionPart = part
     selectionRenderer = renderer
     selectionCamera = camera
-    selectionType = type
     currentlyHighlighted = {}
     previouslyHighlighted = {}
     selection.length = 0
+
+    if (type === 'solid') {
+      setSolidsVisible(part, true)
+      setFacesVisible(part, false)
+
+      selectionType = 0
+    } else if (type === 'face') {
+      setSolidsVisible(part, false)
+      setFacesVisible(part, true)
+
+      selectionType = 1
+    }
 
     selectionRenderer.domElement.addEventListener('mousemove', mouseMove)
     selectionRenderer.domElement.addEventListener('mousedown', mouseDown)
   }
 
-  const stopSelection = () => {
+  /**
+   * Stop selection
+   * @param {Object} part Part
+   */
+  const stopSelection = (part) => {
     selectionRenderer?.domElement.removeEventListener('mousemove', mouseMove)
     selectionRenderer?.domElement.removeEventListener('mousedown', mouseDown)
 
@@ -174,6 +220,9 @@ const PartLoader = () => {
     selectionRenderer = null
     selectionCamera = null
     selectionType = null
+
+    setSolidsVisible(part, false)
+    setFacesVisible(part, true)
 
     unhighlight(currentlyHighlighted)
     unhighlight(previouslyHighlighted)
@@ -199,12 +248,16 @@ const PartLoader = () => {
     return mouse
   }
 
+  /**
+   * Mouse move
+   * @param {Object} event Event
+   */
   const mouseMove = (event) => {
     const mouse = globalToLocal({ X: event.clientX, Y: event.clientY })
     raycaster.setFromCamera(mouse, selectionCamera)
     const intersects = raycaster.intersectObjects(
-      selectionPart.children[1].children
-    ) //this is faces
+      selectionPart.children[selectionType].children
+    )
     if (intersects.length > 0) {
       currentlyHighlighted = intersects[0].object
       highlight(currentlyHighlighted)
@@ -217,10 +270,18 @@ const PartLoader = () => {
     }
   }
 
+  /**
+   * Highlight
+   * @param {Object} mesh Mesh
+   */
   const highlight = (mesh) => {
     mesh && mesh.material && (mesh.material.color = highlightColor)
   }
 
+  /**
+   * Unhighlight
+   * @param {Object} mesh Mesh
+   */
   const unhighlight = (mesh) => {
     if (mesh && mesh.material) {
       const index = selection.findIndex((m) => m === mesh)
@@ -228,6 +289,9 @@ const PartLoader = () => {
     }
   }
 
+  /**
+   * Mouse down
+   */
   const mouseDown = () => {
     const index = selection.findIndex((p) => p === currentlyHighlighted)
     if (index === -1) {
@@ -239,10 +303,18 @@ const PartLoader = () => {
     }
   }
 
+  /**
+   * Select
+   * @param {Object} mesh Mesh
+   */
   const select = (mesh) => {
     mesh && mesh.material && (mesh.material.color = selectColor)
   }
 
+  /**
+   * Unselect
+   * @param {Object} mesh Mesh
+   */
   const unselect = (mesh) => {
     mesh && mesh.material && (mesh.material.color = solidColor)
   }

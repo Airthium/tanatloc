@@ -111,6 +111,10 @@ const SectionViewHelper = (renderer, scene, camera, controls) => {
   const toggleVisible = () => {
     const visible = controller.visible
     controller.visible = !visible
+
+    if (!controller.visible) {
+      transformStop()
+    }
   }
 
   /**

@@ -1,5 +1,3 @@
-import { HighlightFilled } from '@ant-design/icons'
-import { render } from 'less'
 /** @module src/lib/three/loaders/PartLoader */
 
 import {
@@ -145,7 +143,6 @@ const PartLoader = () => {
 
   // highlight / selection Variables
   let raycaster = new Raycaster()
-  let selectionOn = false
   let selectionPart = null
   let selectionRenderer = null
   let selectionCamera = null
@@ -155,7 +152,6 @@ const PartLoader = () => {
   const selection = []
 
   const startSelection = (part, renderer, camera, type) => {
-    selectionOn = true
     selectionPart = part
     selectionRenderer = renderer
     selectionCamera = camera
@@ -172,7 +168,6 @@ const PartLoader = () => {
     selectionRenderer?.domElement.removeEventListener('mousemove', mouseMove)
     selectionRenderer?.domElement.removeEventListener('mousedown', mouseDown)
 
-    selectionOn = false
     selectionPart = null
     selectionRenderer = null
     selectionCamera = null

@@ -1,4 +1,4 @@
-/** @module src/lib/three/NavigationHelper */
+/** @module src/lib/three/helpers/NavigationHelper */
 
 import {
   Color,

@@ -49,6 +49,12 @@ class MockBox3 {
 
 class MockBoxGeometry extends MockGeometry {}
 
+class MockBufferGeometryLoader {
+  constructor() {
+    this.parse = () => new MockGeometry()
+  }
+}
+
 class MockCanvasTexture {}
 
 class MockColor {}
@@ -222,6 +228,7 @@ const MockThree = {
   AmbientLight: MockAmbientLight,
   Box2: MockBox2,
   Box3: MockBox3,
+  BufferGeometryLoader: MockBufferGeometryLoader,
   BoxGeometry: MockBoxGeometry,
   CanvasTexture: MockCanvasTexture,
   Color: MockColor,

@@ -1,4 +1,4 @@
-/** @module src/lib/three/SectionViewHelper */
+/** @module src/lib/three/helpers/SectionViewHelper */
 
 import {
   Color,
@@ -111,6 +111,10 @@ const SectionViewHelper = (renderer, scene, camera, controls) => {
   const toggleVisible = () => {
     const visible = controller.visible
     controller.visible = !visible
+
+    if (!controller.visible) {
+      transformStop()
+    }
   }
 
   /**

@@ -17,8 +17,13 @@ const get = async (id, data) => {
   const user = await dBget(id, data)
 
   if (user.avatar) {
-    const avatar = await readAvatar(user.avatar)
-    user.avatar = avatar
+    try {
+      const avatar = await readAvatar(user.avatar)
+      user.avatar = avatar
+    } catch (err) {
+      console.warn(err)
+      user.avatar = undefined
+    }
   }
 
   return user

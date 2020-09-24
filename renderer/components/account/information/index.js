@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { message, Avatar, Button, Form, Input, Space, Upload } from 'antd'
-import { UploadOutlined } from '@ant-design/icons'
+import { UploadOutlined, UserOutlined } from '@ant-design/icons'
 
 import { useUser, update } from '../../../../src/api/user'
 import { add } from '../../../../src/api/avatar'
@@ -174,7 +174,7 @@ const Information = () => {
     >
       <Form.Item {...avatarLayout}>
         <Space direction="vertical" className="Account-avatar">
-          <Avatar size={128} src={user.avatar} />
+          <Avatar size={128} src={user.avatar} icon={<UserOutlined />} />
           <Upload
             accept={'.jpg,.png'}
             showUploadList={false}

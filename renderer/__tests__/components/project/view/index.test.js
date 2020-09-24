@@ -105,20 +105,27 @@ global.MockScene.children = [
   },
   { type: 'AxisHelper' },
   {
-    type: 'Mesh',
-    material: {}
+    type: 'Part',
+    boundingBox: {
+      min: { x: 0, y: 0, z: 0 },
+      max: { x: 1, y: 1, z: 1 }
+    },
+    material: {},
+    setTransparent: () => {},
+    startSelection: () => {},
+    stopSelection: () => {}
   },
   {
     visible: true,
-    type: 'Mesh',
-    geometry: {
-      boundingBox: {
-        min: { x: 0, y: 0, z: 0 },
-        max: { x: 1, y: 1, z: 1 }
-      },
-      boundingSphere: {}
+    type: 'Part',
+    boundingBox: {
+      min: { x: 0, y: 0, z: 0 },
+      max: { x: 1, y: 1, z: 1 }
     },
-    material: {}
+    material: {},
+    setTransparent: () => {},
+    startSelection: () => {},
+    stopSelection: () => {}
   }
 ]
 

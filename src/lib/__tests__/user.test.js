@@ -21,8 +21,9 @@ jest.mock('../../database/user', () => {
   }
 })
 
+let mockRead = () => 'read'
 jest.mock('../avatar', () => ({
-  read: async () => 'read'
+  read: async () => mockRead()
 }))
 
 describe('src/lib/user', () => {
@@ -39,6 +40,12 @@ describe('src/lib/user', () => {
     })
     user = await get('id')
     expect(user).toEqual({ id: 'id', username: 'username', avatar: 'read' })
+
+    mockRead = () => {
+      throw new Error()
+    }
+    user = await get('id')
+    expect(user).toEqual({ id: 'id', username: 'username', avatar: undefined })
   })
 
   it('login', async () => {

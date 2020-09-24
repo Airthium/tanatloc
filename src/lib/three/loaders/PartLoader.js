@@ -69,6 +69,8 @@ const PartLoader = () => {
     object.stopSelection = stopSelection
     object.highlight = highlight
     object.unhighlight = unhighlight
+    object.select = select
+    object.unselect = unselect
 
     return object
   }
@@ -167,8 +169,8 @@ const PartLoader = () => {
   }
 
   const stopSelection = () => {
-    selectionRenderer.domElement.removeEventListener('mousemove', mouseMove)
-    selectionRenderer.domElement.removeEventListener('mousedown', mouseDown)
+    selectionRenderer?.domElement.removeEventListener('mousemove', mouseMove)
+    selectionRenderer?.domElement.removeEventListener('mousedown', mouseDown)
 
     selectionOn = false
     selectionPart = null
@@ -229,15 +231,13 @@ const PartLoader = () => {
   }
 
   const mouseDown = () => {
-    if (currentlyHighlighted) {
-      const index = selection.findIndex((p) => p === currentlyHighlighted)
-      if (index === -1) {
-        selection.push(currentlyHighlighted)
-        select(currentlyHighlighted)
-      } else {
-        selection.splice(index, 1)
-        unselect(currentlyHighlighted)
-      }
+    const index = selection.findIndex((p) => p === currentlyHighlighted)
+    if (index === -1) {
+      selection.push(currentlyHighlighted)
+      select(currentlyHighlighted)
+    } else {
+      selection.splice(index, 1)
+      unselect(currentlyHighlighted)
     }
   }
 

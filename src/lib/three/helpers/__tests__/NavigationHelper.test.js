@@ -44,8 +44,8 @@ describe('src/lib/three/helpers/NavigationHelper', () => {
             getBoundingClientRect: () => ({
               width: 150,
               height: 150,
-              x: 0,
-              y: 0
+              top: 0,
+              left: 0
             })
           }
         })
@@ -56,8 +56,8 @@ describe('src/lib/three/helpers/NavigationHelper', () => {
             getBoundingClientRect: () => ({
               width: 150,
               height: 150,
-              x: 0,
-              y: 0
+              top: 0,
+              left: 0
             })
           }
         })
@@ -68,8 +68,8 @@ describe('src/lib/three/helpers/NavigationHelper', () => {
             getBoundingClientRect: () => ({
               width: 150,
               height: 150,
-              x: 0,
-              y: 0
+              top: 0,
+              left: 0
             })
           }
         })
@@ -80,8 +80,8 @@ describe('src/lib/three/helpers/NavigationHelper', () => {
             getBoundingClientRect: () => ({
               width: 150,
               height: 150,
-              x: 0,
-              y: 0
+              top: 0,
+              left: 0
             })
           }
         })
@@ -114,7 +114,7 @@ describe('src/lib/three/helpers/NavigationHelper', () => {
   const controls = {}
 
   it('call', () => {
-    const navigation = NavigationHelper(renderer, camera, controls)
+    const navigation = NavigationHelper(renderer, scene, camera, controls)
     expect(navigation).toBeDefined()
   })
 

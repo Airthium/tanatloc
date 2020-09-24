@@ -21,6 +21,7 @@ import {
 /**
  * Navigation helper
  * @param {Object} renderer Renderer
+ * @param {Object} scene Scene
  * @param {Object} camera Camera
  * @param {Object} controls Controls
  * @param {Object} dimensions Dimensions

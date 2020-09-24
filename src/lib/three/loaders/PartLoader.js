@@ -63,7 +63,7 @@ const PartLoader = () => {
     object.add(edges)
 
     object.boundingBox = computeBoundingBox(object)
-    object.setTransparent = (transparent) => setTransparent(object, transparent)
+    object.setTransparent = (transp) => setTransparent(object, transp)
     object.startSelection = (renderer, camera, type) =>
       startSelection(object, renderer, camera, type)
     object.stopSelection = () => stopSelection(object)

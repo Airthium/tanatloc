@@ -34,8 +34,7 @@ const Project = () => {
   // State
   const [selectorVisible, setSelectorVisible] = useState(false)
   const [simulations, setSimulations] = useState([])
-  const [simulationType, setSimulationType] = useState()
-  const [simulationScheme, setSimulationScheme] = useState()
+  const [simulation, setSimulation] = useState()
 
   // Data
   const [user, { loadingUser }] = useUser()
@@ -115,7 +114,6 @@ const Project = () => {
       )
     })
     setSimulations(simulations)
-
     setSelectorVisible(false)
   }
 
@@ -129,14 +127,16 @@ const Project = () => {
     const type = descriptor[2]
 
     const scheme = simulations[index].scheme
+    const subScheme = scheme.children.find((s) => s.key === type)
 
-    setSimulationType(type)
-    setSimulationScheme(scheme)
+    setSimulation({
+      type: type,
+      scheme: subScheme
+    })
   }
 
   const onSimulationClose = () => {
-    setSimulationType()
-    setSimulationScheme()
+    setSimulation()
   }
 
   /**
@@ -174,11 +174,7 @@ const Project = () => {
           onOk={onSelectorOk}
           onCancel={onSelectorCancel}
         />
-        <Simulation
-          type={simulationType}
-          scheme={simulationScheme}
-          onClose={onSimulationClose}
-        />
+        <Simulation simulation={simulation} onClose={onSimulationClose} />
         <View />
       </Layout.Content>
     </Layout>

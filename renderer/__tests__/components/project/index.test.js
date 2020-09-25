@@ -11,6 +11,13 @@ jest.mock('next/router', () => ({
 }))
 
 jest.mock('../../../components/project/view', () => 'view')
+// jest.mock('../../../components/project/simulation', () => {
+//   return class {
+//     constructor() {
+//       this.Selector = 'selector'
+//     }
+//   }
+// })
 
 let mockUser
 jest.mock('../../../../src/api/user', () => ({

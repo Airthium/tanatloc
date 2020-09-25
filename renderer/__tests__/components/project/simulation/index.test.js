@@ -19,14 +19,18 @@ describe('components/project/simulation', () => {
   //   wrapper.find('withConfigConsumer(Drawer)').props().onClose()
   // })
 
-  it('mount', () => {
-    const mWrapper = mount(<Simulation />)
-    expect(mWrapper).toBeDefined()
-    mWrapper.unmount()
-  })
+  // it('mount', () => {
+  //   const mWrapper = mount(
+  //     <Simulation simulation={{ scheme: { title: 'title' } }} />
+  //   )
+  //   expect(mWrapper).toBeDefined()
+  //   mWrapper.unmount()
+  // })
 
   it('mount with simulation', () => {
-    const mWrapper = mount(<Simulation simulation={{ id: 'id' }} />)
+    const mWrapper = mount(
+      <Simulation simulation={{ scheme: { title: 'title' } }} />
+    )
     expect(mWrapper).toBeDefined()
     mWrapper.unmount()
   })

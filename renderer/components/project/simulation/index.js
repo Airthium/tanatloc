@@ -1,7 +1,7 @@
 /** @module renderer/components/project/simulation */
 
 import { useState, useEffect } from 'react'
-import { Drawer, Layout, Menu, Modal, Steps } from 'antd'
+import { Layout, Menu, Modal } from 'antd'
 
 import Panel from '../panel'
 
@@ -65,18 +65,14 @@ const Selector = ({ visible, onOk, onCancel }) => {
  * Simulation
  * @param {Object} props Props
  */
-const Simulation = ({ type, scheme, onClose }) => {
+const Simulation = ({ simulation, onClose }) => {
   const [visible, setVisible] = useState()
   const [title, setTitle] = useState()
 
   useEffect(() => {
-    setVisible(type)
-
-    if (type && scheme) {
-      const subScheme = scheme.children.filter((s) => s.key === type)[0]
-      setTitle(subScheme.title)
-    }
-  }, [type, scheme])
+    setVisible(simulation)
+    setTitle(simulation?.scheme.title)
+  }, [simulation])
 
   return <Panel visible={visible} title={title} onClose={onClose}></Panel>
   // // State

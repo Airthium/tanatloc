@@ -469,15 +469,19 @@ const ThreeView = () => {
           maskClosable={false}
           placement="right"
           getContainer={false}
+          headerStyle={{
+            borderLeft: '1px solid #f0f0f0'
+          }}
           bodyStyle={{
             display: 'flex',
             flexDirection: 'column',
-            padding: '10px'
+            padding: '10px',
+            borderLeft: '1px solid #f0f0f0'
           }}
           width="100%"
         >
-          <div className="group">
-            <div className="subgroup">
+          <div className="drawer-group">
+            <div className="drawer-subgroup">
               <Tooltip title="Display grid">
                 <Switch
                   defaultChecked
@@ -487,7 +491,7 @@ const ThreeView = () => {
                 />
               </Tooltip>
             </div>
-            <div className="subgroup">
+            <div className="drawer-subgroup">
               <Tooltip title="Set transparency">
                 <Switch
                   className="transparent"
@@ -502,9 +506,9 @@ const ThreeView = () => {
 
           <Divider />
 
-          <div className="group">
-            <div className="subgroup">
-              <Tooltip title="Zoom out">
+          <div className="drawer-group">
+            <div className="drawer-subgroup">
+              <Tooltip title="Zoom out" placement="left">
                 <Button
                   icon={<ZoomOutOutlined />}
                   onMouseDown={zoomOut}
@@ -512,10 +516,10 @@ const ThreeView = () => {
                   onMouseOut={zoomStop}
                 />
               </Tooltip>
-              <Tooltip title="Zoom to fit">
+              <Tooltip title="Zoom to fit" placement="left">
                 <Button icon={<CompressOutlined />} onClick={zoomToFit} />
               </Tooltip>
-              <Tooltip title="Zoom in">
+              <Tooltip title="Zoom in" placement="left">
                 <Button
                   icon={<ZoomInOutlined />}
                   onMouseDown={zoomIn}
@@ -524,8 +528,8 @@ const ThreeView = () => {
                 />
               </Tooltip>
             </div>
-            <div className="subgroup">
-              <Tooltip title="Zoom to selection">
+            <div className="drawer-subgroup">
+              <Tooltip title="Zoom to selection" placement="left">
                 <Button
                   icon={<SelectOutlined />}
                   onClick={() => selectionHelper.current.start()}
@@ -536,11 +540,11 @@ const ThreeView = () => {
 
           <Divider />
 
-          <div className="group">
+          <div className="drawer-group">
             {sectionView ? (
               <>
-                <div className="subgroup">
-                  <Tooltip title="Stop">
+                <div className="drawer-subgroup">
+                  <Tooltip title="Stop" placement="left">
                     <Button
                       icon={<StopOutlined />}
                       onClick={toggleSectionView}
@@ -555,26 +559,26 @@ const ThreeView = () => {
                       marginTop: '10px'
                     }}
                   >
-                    <Tooltip title="Translate">
+                    <Tooltip title="Translate" placement="left">
                       <Radio value="translate">
                         <DragOutlined />
                       </Radio>
                     </Tooltip>
-                    <Tooltip title="Rotate">
+                    <Tooltip title="Rotate" placement="left">
                       <Radio value="rotate">
                         <SyncOutlined />
                       </Radio>
                     </Tooltip>
                   </Radio.Group>
                 </div>
-                <div className="subgroup">
-                  <Tooltip title="Hide plane">
+                <div className="drawer-subgroup">
+                  <Tooltip title="Hide plane" placement="left">
                     <Button
                       icon={<EyeInvisibleOutlined />}
                       onClick={() => sectionViewHelper.current.toggleVisible()}
                     />
                   </Tooltip>
-                  <Tooltip title="Snap to X">
+                  <Tooltip title="Snap to X" placement="left">
                     <Button
                       className="ant-btn-icon-only"
                       onClick={() =>
@@ -584,7 +588,7 @@ const ThreeView = () => {
                       X
                     </Button>
                   </Tooltip>
-                  <Tooltip title="Snap to Y">
+                  <Tooltip title="Snap to Y" placement="left">
                     <Button
                       className="ant-btn-icon-only"
                       onClick={() =>
@@ -594,7 +598,7 @@ const ThreeView = () => {
                       Y
                     </Button>
                   </Tooltip>
-                  <Tooltip title="Snap to Z">
+                  <Tooltip title="Snap to Z" placement="left">
                     <Button
                       className="ant-btn-icon-only"
                       onClick={() =>
@@ -604,7 +608,7 @@ const ThreeView = () => {
                       Z
                     </Button>
                   </Tooltip>
-                  <Tooltip title="Flip">
+                  <Tooltip title="Flip" placement="left">
                     <Button
                       onClick={() => sectionViewHelper.current.flip()}
                       icon={<RetweetOutlined />}
@@ -624,7 +628,7 @@ const ThreeView = () => {
 
           <Divider />
 
-          <div className="group">
+          <div className="drawer-group">
             <Button
               onClick={() =>
                 scene.current.children

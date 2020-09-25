@@ -2,16 +2,12 @@
 
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
+import { message, Layout, Menu, Typography } from 'antd'
 import {
-  message,
-  Breadcrumb,
-  Button,
-  Divider,
-  Layout,
-  Tooltip,
-  Typography
-} from 'antd'
-import { ArrowLeftOutlined, PlusOutlined } from '@ant-design/icons'
+  ArrowLeftOutlined,
+  CalculatorOutlined,
+  PlusOutlined
+} from '@ant-design/icons'
 
 import View from './view'
 // import Simulation from './simulation'
@@ -20,6 +16,34 @@ import { useUser } from '../../../src/api/user'
 import { useProject, update } from '../../../src/api/project'
 
 import Sentry from '../../../src/lib/sentry'
+
+const menuKeys = {
+  dashboard: 'dashboard',
+  newSimulation: 'new-simulation',
+  simulation: 'simulation'
+}
+
+const simulationScheme = {
+  title: 'A simulation',
+  children: [
+    {
+      title: 'Geometry',
+      key: 'geometry'
+    },
+    {
+      title: 'Parameters',
+      key: 'parameters'
+    },
+    {
+      title: 'Run',
+      key: 'run'
+    },
+    {
+      title: 'Results',
+      key: 'results'
+    }
+  ]
+}
 
 /**
  * Project
@@ -63,19 +87,42 @@ const Project = () => {
     }
   }
 
+  const onMenuClick = ({ key }) => {
+    console.log(key)
+    if (key === menuKeys.dashboard) handleDashboard()
+    if (key === menuKeys.newSimulation) addSimulation()
+  }
+
+  const handleDashboard = () => {
+    router.push('/dashboard')
+  }
+
+  const onTitleClick = ({ key }) => {
+    console.log(key)
+  }
+
   /**
    * Add simulation
    */
   const addSimulation = () => {
     const simulationId = simulations.length
-
     simulations.push(
-      <Button
-        key={simulationId}
-        onClick={() => setSimulation({ id: simulationId })}
+      <Menu.SubMenu
+        key={menuKeys.simulation + simulationId}
+        icon={<CalculatorOutlined />}
+        title={simulationScheme.title}
+        onTitleClick={onTitleClick}
       >
-        {simulationId}
-      </Button>
+        {simulationScheme.children.map((child) => {
+          return (
+            <Menu.Item
+              key={menuKeys.simulation + '-' + simulationId + '-' + child.key}
+            >
+              {child.title}
+            </Menu.Item>
+          )
+        })}
+      </Menu.SubMenu>
     )
     setSimulations(simulations)
     setSimulation({ id: simulationId })
@@ -86,20 +133,12 @@ const Project = () => {
    */
   return (
     <Layout hasSider={true}>
-      <Layout.Sider
-        theme="light"
-        style={{ borderRight: '1px solid black', padding: '5px' }}
-      >
-        <Breadcrumb>
-          <Breadcrumb.Item
-            onClick={() => router.push('/dashboard')}
-            style={{ cursor: 'pointer' }}
-          >
+      <Layout.Sider theme="light" className="Project-sider">
+        <Menu onClick={onMenuClick}>
+          <Menu.Item key={menuKeys.dashboard} icon={<ArrowLeftOutlined />}>
             Dashboard
-          </Breadcrumb.Item>
-          <Breadcrumb.Item>Project</Breadcrumb.Item>
-        </Breadcrumb>
-
+          </Menu.Item>
+        </Menu>
         <Typography.Title
           className="Project-title"
           level={4}
@@ -111,14 +150,12 @@ const Project = () => {
           {project.title}
         </Typography.Title>
 
-        <Divider />
-
-        <div className="group">
-          <Tooltip title="New simulation">
-            <Button icon={<PlusOutlined />} onClick={addSimulation} />
-          </Tooltip>
-          <div className="subgroup">{simulations}</div>
-        </div>
+        <Menu mode="inline" onClick={onMenuClick}>
+          <Menu.Item key={menuKeys.newSimulation} icon={<PlusOutlined />}>
+            New simulation
+          </Menu.Item>
+          {simulations}
+        </Menu>
       </Layout.Sider>
       <Layout.Content className="no-scroll">
         {/* <Simulation simulation={simulation} /> */}

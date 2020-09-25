@@ -29,7 +29,7 @@ Using server-side rendering (SSR).
 | STORAGE  | /tmp/tanatloc | Absolute storage path                 |
 | AVATAR   | avatar        | Relative avatar path (from (STORAGE)) |
 
-## Database
+<!-- ## Database
 
 ```shell
 sudo -u postgres psql
@@ -41,7 +41,7 @@ CREATE USER tanatlocuser WITH ENCRYPTED PASSWORD 'tanatloc';
 GRANT ALL PRIVILEGES ON DATABASE tanatloc TO tanatlocuser;
 \c tanatloc
 CREATE EXTENSION pgcrypto;
-```
+``` -->
 
 ## Dev
 

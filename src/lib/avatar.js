@@ -54,7 +54,7 @@ const del = async (user, id) => {
   await dBdel(id)
 
   // Update user
-  await updateUser(user.id, {
+  await updateUser(user, {
     data: [
       {
         key: 'avatar',

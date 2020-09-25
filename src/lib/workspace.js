@@ -18,8 +18,7 @@ const add = async (user, { name }) => {
   const workspace = await dBadd(user, { name })
 
   // Add workspace to user
-  await updateUser({
-    user,
+  await updateUser(user, {
     data: [
       {
         type: 'array',
@@ -80,17 +79,19 @@ const del = async ({ id }, workspace) => {
   await dBdel(workspace)
 
   // Delete workspace reference in user
-  await updateUser({
-    user: { id },
-    data: [
-      {
-        type: 'array',
-        method: 'remove',
-        key: 'workspaces',
-        value: workspace.id
-      }
-    ]
-  })
+  await updateUser(
+    { id },
+    {
+      data: [
+        {
+          type: 'array',
+          method: 'remove',
+          key: 'workspaces',
+          value: workspace.id
+        }
+      ]
+    }
+  )
 }
 
 export { add, get, getByUser, update, del }

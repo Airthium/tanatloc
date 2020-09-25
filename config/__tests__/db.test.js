@@ -5,7 +5,7 @@ describe('config/db', () => {
     expect(config.USER).toBe('tanatlocuser')
     expect(config.HOST).toBe('localhost')
     expect(config.PORT).toBe(5432)
-    expect(config.DATABASE).toBe('tanatloc')
+    expect(config.DATABASE).toBe('tanatloc2')
     expect(config.PASSWORD).toBe('tanatloc')
   })
 

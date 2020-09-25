@@ -85,7 +85,7 @@ const Project = () => {
    * Render
    */
   return (
-    <Layout>
+    <Layout hasSider={true}>
       <Layout.Sider
         theme="light"
         style={{ borderRight: '1px solid black', padding: '5px' }}
@@ -120,7 +120,7 @@ const Project = () => {
           <div className="subgroup">{simulations}</div>
         </div>
       </Layout.Sider>
-      <Layout.Content>
+      <Layout.Content className="no-scroll">
         {/* <Simulation simulation={simulation} /> */}
         <View />
       </Layout.Content>

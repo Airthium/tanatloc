@@ -1,6 +1,11 @@
 .View {
   width: 100%;
   height: 100%;
+}
+
+.View-content {
+  width: 100%;
+  height: 100%;
   position: relative;
 }
 
@@ -17,12 +22,14 @@
   top: 0;
   right: 0;
   min-width: 140px;
+  height: 100%;
   display: flex;
   justify-content: flex-end;
-  align-items: flex-end;
+  align-items: flex-start;
   padding: 10px;
   background-color: transparent;
   z-index: 1;
+  overflow: hidden;
 }
 
 .View-controls-drawer {

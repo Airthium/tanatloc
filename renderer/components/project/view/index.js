@@ -449,9 +449,11 @@ const ThreeView = () => {
    * Render
    */
   return (
-    <Layout className="View">
-      <div ref={mount} className="View-canvas" />
-      <Layout.Content className="View-controls">
+    <Layout className="View no-scroll">
+      <Layout.Content className="View-content no-scroll">
+        <div ref={mount} className="View-canvas" />
+      </Layout.Content>
+      <div className="View-controls">
         <Tooltip title="Controls">
           <Button
             icon={<ControlOutlined />}
@@ -643,7 +645,7 @@ const ThreeView = () => {
             </Button>
           </div>
         </Drawer>
-      </Layout.Content>
+      </div>
     </Layout>
   )
 }

@@ -2,7 +2,15 @@
 
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
-import { message, Button, Divider, Layout, Tooltip, Typography } from 'antd'
+import {
+  message,
+  Breadcrumb,
+  Button,
+  Divider,
+  Layout,
+  Tooltip,
+  Typography
+} from 'antd'
 import { ArrowLeftOutlined, PlusOutlined } from '@ant-design/icons'
 
 import View from './view'
@@ -78,21 +86,23 @@ const Project = () => {
    */
   return (
     <Layout>
-      <Layout.Sider theme="light" style={{ borderRight: '1px solid black' }}>
-        <div className="group">
-          <Tooltip title="Dashboard">
-            <Button
-              icon={<ArrowLeftOutlined />}
-              onClick={() => router.push('/dashboard')}
-            />
-          </Tooltip>
-        </div>
-
-        <Divider />
+      <Layout.Sider
+        theme="light"
+        style={{ borderRight: '1px solid black', padding: '5px' }}
+      >
+        <Breadcrumb>
+          <Breadcrumb.Item
+            onClick={() => router.push('/dashboard')}
+            style={{ cursor: 'pointer' }}
+          >
+            Dashboard
+          </Breadcrumb.Item>
+          <Breadcrumb.Item>Project</Breadcrumb.Item>
+        </Breadcrumb>
 
         <Typography.Title
           className="Project-title"
-          level={2}
+          level={4}
           editable={{
             onChange: handleTitle,
             maxLength: 50

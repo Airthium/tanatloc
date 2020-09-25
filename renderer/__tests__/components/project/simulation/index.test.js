@@ -15,9 +15,9 @@ describe('components/project/simulation', () => {
     expect(wrapper).toBeDefined()
   })
 
-  it('onClose', () => {
-    wrapper.find('withConfigConsumer(Drawer)').props().onClose()
-  })
+  // it('onClose', () => {
+  //   wrapper.find('withConfigConsumer(Drawer)').props().onClose()
+  // })
 
   it('mount', () => {
     const mWrapper = mount(<Simulation />)

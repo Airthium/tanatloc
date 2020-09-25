@@ -37,15 +37,6 @@ import { SectionViewHelper } from '../../../../src/lib/three/helpers/SectionView
 
 import { PartLoader } from '../../../../src/lib/three/loaders/PartLoader'
 
-import Part from '../../../public/test/geometry/cube/part.json'
-import Solid from '../../../public/test/geometry/cube/solid_0.json'
-import Face0 from '../../../public/test/geometry/cube/face_0.json'
-import Face1 from '../../../public/test/geometry/cube/face_1.json'
-import Face2 from '../../../public/test/geometry/cube/face_2.json'
-import Face3 from '../../../public/test/geometry/cube/face_3.json'
-import Face4 from '../../../public/test/geometry/cube/face_4.json'
-import Face5 from '../../../public/test/geometry/cube/face_5.json'
-
 /**
  * ThreeView
  */
@@ -360,50 +351,36 @@ const ThreeView = () => {
    * TODO WIP
    */
   const loadPart = async () => {
-    Part.solids[0].buffer = Solid
-    delete Part.solids[0].path
-
-    Part.faces[0].buffer = Face0
-    delete Part.faces[0].path
-
-    Part.faces[1].buffer = Face1
-    delete Part.faces[1].path
-
-    Part.faces[2].buffer = Face2
-    delete Part.faces[2].path
-
-    Part.faces[3].buffer = Face3
-    delete Part.faces[3].path
-
-    Part.faces[4].buffer = Face4
-    delete Part.faces[4].path
-
-    Part.faces[5].buffer = Face5
-    delete Part.faces[5].path
-
-    //load
-    const loader = PartLoader()
-    const mesh = loader.load(
-      Part,
-      transparent,
-      sectionViewHelper.current.getClippingPlane()
-    )
-
-    // Scene
-    scene.current.add(mesh)
-    computeSceneBoundingSphere()
-
-    // Grid
-    gridHelper.current.update()
-
-    // Zoom
-    zoomToFit()
+    // TODO
+    // Part.solids[0].buffer = Solid
+    // delete Part.solids[0].path
+    // Part.faces[0].buffer = Face0
+    // delete Part.faces[0].path
+    // Part.faces[1].buffer = Face1
+    // delete Part.faces[1].path
+    // Part.faces[2].buffer = Face2
+    // delete Part.faces[2].path
+    // Part.faces[3].buffer = Face3
+    // delete Part.faces[3].path
+    // Part.faces[4].buffer = Face4
+    // delete Part.faces[4].path
+    // Part.faces[5].buffer = Face5
+    // delete Part.faces[5].path
+    // //load
+    // const loader = PartLoader()
+    // const mesh = loader.load(
+    //   Part,
+    //   transparent,
+    //   sectionViewHelper.current.getClippingPlane()
+    // )
+    // // Scene
+    // scene.current.add(mesh)
+    // computeSceneBoundingSphere()
+    // // Grid
+    // gridHelper.current.update()
+    // // Zoom
+    // zoomToFit()
   }
-
-  // TODO remove that after
-  useEffect(() => {
-    loadPart()
-  }, [])
 
   /**
    * Toggle grid

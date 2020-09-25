@@ -10,7 +10,7 @@ import {
 } from '@ant-design/icons'
 
 import View from './view'
-// import Simulation from './simulation'
+import Simulation from './simulation'
 
 import { useUser } from '../../../src/api/user'
 import { useProject, update } from '../../../src/api/project'
@@ -23,28 +23,6 @@ const menuKeys = {
   simulation: 'simulation'
 }
 
-const simulationScheme = {
-  title: 'A simulation',
-  children: [
-    {
-      title: 'Geometry',
-      key: 'geometry'
-    },
-    {
-      title: 'Parameters',
-      key: 'parameters'
-    },
-    {
-      title: 'Run',
-      key: 'run'
-    },
-    {
-      title: 'Results',
-      key: 'results'
-    }
-  ]
-}
-
 /**
  * Project
  */
@@ -54,8 +32,10 @@ const Project = () => {
   const { id } = router.query
 
   // State
-  const [simulation, setSimulation] = useState()
+  const [selectorVisible, setSelectorVisible] = useState(false)
   const [simulations, setSimulations] = useState([])
+  const [simulationType, setSimulationType] = useState()
+  const [simulationScheme, setSimulationScheme] = useState()
 
   // Data
   const [user, { loadingUser }] = useUser()
@@ -88,44 +68,75 @@ const Project = () => {
   }
 
   const onMenuClick = ({ key }) => {
-    console.log(key)
     if (key === menuKeys.dashboard) handleDashboard()
-    if (key === menuKeys.newSimulation) addSimulation()
+    else if (key === menuKeys.newSimulation) addSimulation()
+    else if (key.includes(menuKeys.simulation)) selectSimulation(key)
   }
 
   const handleDashboard = () => {
     router.push('/dashboard')
   }
 
-  const onTitleClick = ({ key }) => {
-    console.log(key)
-  }
+  // const onTitleClick = ({ key }) => {
+  //   console.log('menuClick')
+  //   console.log(key)
+  // }
 
   /**
    * Add simulation
    */
   const addSimulation = () => {
+    setSelectorVisible(true)
+  }
+
+  const onSelectorOk = (scheme) => {
+    // TODO Add in dB
+
     const simulationId = simulations.length
-    simulations.push(
-      <Menu.SubMenu
-        key={menuKeys.simulation + simulationId}
-        icon={<CalculatorOutlined />}
-        title={simulationScheme.title}
-        onTitleClick={onTitleClick}
-      >
-        {simulationScheme.children.map((child) => {
-          return (
-            <Menu.Item
-              key={menuKeys.simulation + '-' + simulationId + '-' + child.key}
-            >
-              {child.title}
-            </Menu.Item>
-          )
-        })}
-      </Menu.SubMenu>
-    )
+    simulations.push({
+      scheme: scheme,
+      render: (
+        <Menu.SubMenu
+          key={menuKeys.simulation + simulationId}
+          icon={<CalculatorOutlined />}
+          title={scheme.title}
+          // onTitleClick={onTitleClick}
+        >
+          {scheme.children.map((child) => {
+            return (
+              <Menu.Item
+                key={menuKeys.simulation + '-' + simulationId + '-' + child.key}
+              >
+                {child.title}
+              </Menu.Item>
+            )
+          })}
+        </Menu.SubMenu>
+      )
+    })
     setSimulations(simulations)
-    setSimulation({ id: simulationId })
+
+    setSelectorVisible(false)
+  }
+
+  const onSelectorCancel = () => {
+    setSelectorVisible(false)
+  }
+
+  const selectSimulation = (key) => {
+    const descriptor = key.split('-')
+    const index = descriptor[1]
+    const type = descriptor[2]
+
+    const scheme = simulations[index].scheme
+
+    setSimulationType(type)
+    setSimulationScheme(scheme)
+  }
+
+  const onSimulationClose = () => {
+    setSimulationType()
+    setSimulationScheme()
   }
 
   /**
@@ -154,11 +165,20 @@ const Project = () => {
           <Menu.Item key={menuKeys.newSimulation} icon={<PlusOutlined />}>
             New simulation
           </Menu.Item>
-          {simulations}
+          {simulations.map((simu) => simu.render)}
         </Menu>
       </Layout.Sider>
-      <Layout.Content className="no-scroll">
-        {/* <Simulation simulation={simulation} /> */}
+      <Layout.Content className="no-scroll relative">
+        <Simulation.Selector
+          visible={selectorVisible}
+          onOk={onSelectorOk}
+          onCancel={onSelectorCancel}
+        />
+        <Simulation
+          type={simulationType}
+          scheme={simulationScheme}
+          onClose={onSimulationClose}
+        />
         <View />
       </Layout.Content>
     </Layout>

@@ -5,19 +5,17 @@ const mockRouter = jest.fn()
 jest.mock('next/router', () => ({
   useRouter: () => ({
     query: {},
-    push: () => {},
+    push: () => mockRouter(),
     replace: () => mockRouter()
   })
 }))
 
 jest.mock('../../../components/project/view', () => 'view')
-// jest.mock('../../../components/project/simulation', () => {
-//   return class {
-//     constructor() {
-//       this.Selector = 'selector'
-//     }
-//   }
-// })
+jest.mock('../../../components/project/simulation', () => {
+  const Simulation = () => 'simulation'
+  Simulation.Selector = 'selector'
+  return Simulation
+})
 
 let mockUser
 jest.mock('../../../../src/api/user', () => ({
@@ -30,6 +28,10 @@ const mockUpdate = jest.fn()
 jest.mock('../../../../src/api/project', () => ({
   useProject: () => [mockProject(), { mutateProject: mockMutateProject }],
   update: async () => mockUpdate()
+}))
+
+jest.mock('../../../../src/api/simulation', () => ({
+  add: async () => ({ id: 'id' })
 }))
 
 jest.mock('../../../../src/lib/sentry', () => ({
@@ -68,17 +70,6 @@ describe('components/project', () => {
     await wrapper.find('Title').props().editable.onChange('title')
   })
 
-  it('buttons', () => {
-    wrapper.find('Button').forEach((button) => {
-      button.props().onClick()
-    })
-
-    // One a simulation is added
-    wrapper.find('Button').forEach((button) => {
-      button.props().onClick()
-    })
-  })
-
   it('user effect', () => {
     wrapper.unmount()
 
@@ -91,5 +82,54 @@ describe('components/project', () => {
     mockUser = () => {}
     wrapper = mount(<Project />)
     expect(mockRouter).toHaveBeenCalledTimes(1)
+  })
+
+  it('dashboard', () => {
+    wrapper.find('Menu').at(0).props().onClick({ key: 'dashboard' })
+    expect(mockRouter).toHaveBeenCalledTimes(1)
+  })
+
+  it('add simulation', () => {
+    wrapper.find('Menu').at(1).props().onClick({ key: 'new-simulation' })
+    expect(wrapper.find('selector').props().visible).toBe(true)
+  })
+
+  it('selector ok', async () => {
+    await wrapper
+      .find('selector')
+      .props()
+      .onOk({ children: [{}] })
+
+    expect(wrapper.find('Menu').at(1).props().children[1].length).toBe(1)
+  })
+
+  it('selector cancel', () => {
+    wrapper.find('selector').props().onCancel()
+    expect(wrapper.find('selector').props().visible).toBe(false)
+  })
+
+  it('select simulation', async () => {
+    // Add simulation first
+    await wrapper
+      .find('selector')
+      .props()
+      .onOk({
+        children: [
+          {
+            type: 'geometry'
+          }
+        ]
+      })
+
+    wrapper.find('Menu').at(1).props().onClick({ key: 'simulation-0-geometry' })
+  })
+
+  it('unknow key', () => {
+    wrapper.find('Menu').at(1).props().onClick({ key: 'unknow' })
+  })
+
+  it('simulation close', () => {
+    wrapper.find('Simulation').props().onClose()
+    expect(wrapper.find('Simulation').props().simulation).toBe(undefined)
   })
 })

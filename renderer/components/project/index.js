@@ -14,6 +14,7 @@ import Simulation from './simulation'
 
 import { useUser } from '../../../src/api/user'
 import { useProject, update } from '../../../src/api/project'
+import { add } from '../../../src/api/simulation'
 
 import Sentry from '../../../src/lib/sentry'
 
@@ -66,12 +67,19 @@ const Project = () => {
     }
   }
 
+  /**
+   * On menu click
+   * @param {Object} data Data { key }
+   */
   const onMenuClick = ({ key }) => {
     if (key === menuKeys.dashboard) handleDashboard()
     else if (key === menuKeys.newSimulation) addSimulation()
     else if (key.includes(menuKeys.simulation)) selectSimulation(key)
   }
 
+  /**
+   * Handle dashboard
+   */
   const handleDashboard = () => {
     router.push('/dashboard')
   }
@@ -88,15 +96,20 @@ const Project = () => {
     setSelectorVisible(true)
   }
 
-  const onSelectorOk = (scheme) => {
-    // TODO Add in dB
+  /**
+   * On selector ok
+   * @param {Object} scheme Simulation scheme
+   */
+  const onSelectorOk = async (scheme) => {
+    // Add in dB
+    const simulation = await add({ name: scheme.title, scheme })
 
-    const simulationId = simulations.length
+    // State
     simulations.push({
       scheme: scheme,
       render: (
         <Menu.SubMenu
-          key={menuKeys.simulation + simulationId}
+          key={menuKeys.simulation + simulation.id}
           icon={<CalculatorOutlined />}
           title={scheme.title}
           // onTitleClick={onTitleClick}
@@ -104,7 +117,9 @@ const Project = () => {
           {scheme.children.map((child) => {
             return (
               <Menu.Item
-                key={menuKeys.simulation + '-' + simulationId + '-' + child.key}
+                key={
+                  menuKeys.simulation + '-' + simulation.id + '-' + child.key
+                }
               >
                 {child.title}
               </Menu.Item>
@@ -117,10 +132,17 @@ const Project = () => {
     setSelectorVisible(false)
   }
 
+  /**
+   * On selector cancel
+   */
   const onSelectorCancel = () => {
     setSelectorVisible(false)
   }
 
+  /**
+   * On simulation select
+   * @param {string} key Key
+   */
   const selectSimulation = (key) => {
     const descriptor = key.split('-')
     const index = descriptor[1]
@@ -135,6 +157,9 @@ const Project = () => {
     })
   }
 
+  /**
+   * On simulation close
+   */
   const onSimulationClose = () => {
     setSimulation()
   }

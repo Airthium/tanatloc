@@ -28,17 +28,32 @@ const simulationScheme = {
   ]
 }
 
+/**
+ * Simulation Selector
+ * @param {Object} props Props
+ */
 const Selector = ({ visible, onOk, onCancel }) => {
+  // State
   const [current, setCurrent] = useState()
 
+  /**
+   * On select
+   * @param {Object} data Data { key }
+   */
   const onSelect = ({ key }) => {
     setCurrent(key)
   }
 
+  /**
+   * On create
+   */
   const onCreate = () => {
     if (current) onOk(simulationScheme)
   }
 
+  /**
+   * Render
+   */
   return (
     <Modal
       visible={visible}
@@ -66,9 +81,13 @@ const Selector = ({ visible, onOk, onCancel }) => {
  * @param {Object} props Props
  */
 const Simulation = ({ simulation, onClose }) => {
+  // State
   const [visible, setVisible] = useState()
   const [title, setTitle] = useState()
 
+  /**
+   * Simulation effect
+   */
   useEffect(() => {
     setVisible(simulation)
     setTitle(simulation?.scheme.title)

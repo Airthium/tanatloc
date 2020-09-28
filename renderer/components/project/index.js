@@ -102,14 +102,14 @@ const Project = () => {
    */
   const onSelectorOk = async (scheme) => {
     // Add in dB
-    const simulation = await add({ name: scheme.title, scheme })
+    const simulationData = await add({ name: scheme.title, scheme })
 
     // State
     simulations.push({
       scheme: scheme,
       render: (
         <Menu.SubMenu
-          key={menuKeys.simulation + simulation.id}
+          key={menuKeys.simulation + simulationData.id}
           icon={<CalculatorOutlined />}
           title={scheme.title}
           // onTitleClick={onTitleClick}
@@ -118,7 +118,11 @@ const Project = () => {
             return (
               <Menu.Item
                 key={
-                  menuKeys.simulation + '-' + simulation.id + '-' + child.key
+                  menuKeys.simulation +
+                  '-' +
+                  simulationData.id +
+                  '-' +
+                  child.key
                 }
               >
                 {child.title}

@@ -44,9 +44,9 @@ const get = async (id, data) => {
 /**
  * Update simulation
  * @param {Object} simulation Simulation { id }
- * @param {Object} data Data { data: [{...}] }
+ * @param {Object} data Data [{...}]
  */
-const update = async (simulation, { data }) => {
+const update = async (simulation, data) => {
   await dBupdate(simulation, data)
 }
 

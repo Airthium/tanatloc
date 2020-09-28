@@ -4,7 +4,7 @@ import { databases } from '../../../config/db'
 /**
  * Add
  * @memberof module:src/database/project
- * @param {string} user User id
+ * @param {Object} user User { id }
  * @param {Object} param2 { title, description }
  */
 const add = async ({ id }, { title, description }) => {

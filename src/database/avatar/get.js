@@ -4,7 +4,7 @@ import { databases } from '../../../config/db'
 /**
  * Get avatar by id
  * @memberof module:src/database/avatar
- * @param {string} id Id
+ * @param {string} id Avatar's id
  * @param {Object} data Data
  */
 const get = async (id, data) => {

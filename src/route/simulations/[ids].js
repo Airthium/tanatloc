@@ -1,14 +1,8 @@
 import getSessionId from '../session'
-import { get } from '../../lib/project'
+import { get } from '../../lib/simulation'
 
-import Sentry from '../../lib/sentry'
+import Sentry from '../.../lib/sentry'
 
-/**
- * Projects API
- * @memberof module:src/route/projects
- * @param {Object} req Request
- * @param {Object} res Response
- */
 export default async (req, res) => {
   // Check session
   const sessionId = await getSessionId(req, res)
@@ -29,7 +23,7 @@ export default async (req, res) => {
 
     const list = ids.split('&')
 
-    const projectsTmp = await Promise.all(
+    const simulationsTmp = await Promise.all(
       list.map(async (id) => {
         try {
           return await get(id)
@@ -40,9 +34,9 @@ export default async (req, res) => {
       })
     )
 
-    const projects = projectsTmp.filter((p) => p)
+    const simulations = simulationsTmp.filter((p) => p)
 
-    res.status(200).json({ projects })
+    res.status(200).json({ simulations })
   } catch (err) {
     console.error(err)
     res.status(500).json({ message: err.message })

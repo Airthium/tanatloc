@@ -1,7 +1,7 @@
-/** @module src/route/projects */
+/** @module src/route/simulations */
 
 /**
- * Empty projects list route
+ * Empty simulations list route
  * @param {Object} req Request
  * @param {Object} res Response
  */

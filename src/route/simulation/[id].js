@@ -1,13 +1,11 @@
-/** @module src/route/workspace */
-
 import getSessionId from '../session'
-import { add, getByUser, update, del } from '../../lib/workspace'
+import { get, update, del } from '../../lib/simulation'
 
 import Sentry from '../../lib/sentry'
 
 /**
- * Workspace API
- * @memberof module:api
+ * Simulation API by [id]
+ * @memberof module:src/route/simulation
  * @param {Object} req Request
  * @param {Object} res Response
  */
@@ -16,21 +14,18 @@ export default async (req, res) => {
   const sessionId = await getSessionId(req, res)
   if (!sessionId) return
 
+  // Id
+  let id = req.query.id
+  if (!id) {
+    // Electron
+    id = req.params.id
+  }
+
   switch (req.method) {
     case 'GET':
       try {
-        const workspaces = await getByUser({ id: sessionId })
-        res.status(200).json({ workspaces })
-      } catch (err) {
-        console.error(err)
-        res.status(500).json({ message: err.message })
-        Sentry.captureException(err)
-      }
-      break
-    case 'POST':
-      try {
-        const workspace = await add({ id: sessionId }, req.body)
-        res.status(200).json(workspace)
+        const simulation = await get(id)
+        res.status(200).json({ simulation })
       } catch (err) {
         console.error(err)
         res.status(500).json({ message: err.message })
@@ -39,7 +34,7 @@ export default async (req, res) => {
       break
     case 'PUT':
       try {
-        await update(req.body)
+        await update({ simulation: { id }, data: req.body })
         res.status(200).end()
       } catch (err) {
         console.error(err)
@@ -49,7 +44,7 @@ export default async (req, res) => {
       break
     case 'DELETE':
       try {
-        await del({ id: sessionId }, req.body)
+        await del(req.body, { id })
         res.status(200).end()
       } catch (err) {
         console.error(err)

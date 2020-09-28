@@ -34,7 +34,7 @@ export default async (req, res) => {
       break
     case 'PUT':
       try {
-        await update(req.body)
+        await update({ project: { id }, data: req.body })
         res.status(200).end()
       } catch (err) {
         console.error(err)

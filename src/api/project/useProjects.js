@@ -14,16 +14,31 @@ const useProjects = (ids) => {
   const loading = !data
   const projects = (data && data.projects) || []
 
+  /**
+   * Add one (useProjects)
+   * @memberof module:src/api/project
+   * @param {Object} project Project
+   */
   const addOne = (project) => {
     const newProjects = [...projects, project]
     mutate({ projects: newProjects })
   }
 
+  /**
+   * Delete one (useProjects)
+   * @memberof module:src/api/project
+   * @param {Object} project project
+   */
   const delOne = (project) => {
     const filteredProjects = projects.filter((p) => p.id !== project.id)
     mutate({ projects: filteredProjects })
   }
 
+  /**
+   * Mutate one (useProjects)
+   * @memberof module:src/api/project
+   * @param {Object} project Project
+   */
   const mutateOne = (project) => {
     const mutatedProjects = projects.map((p) => {
       if (p.id === project.id) p = { ...p, ...project }

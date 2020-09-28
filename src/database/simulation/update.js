@@ -1,0 +1,17 @@
+import { updater } from '..'
+import { databases } from '../../../config/db'
+
+/**
+ * Update simulation
+ * @memberof module:src/database/simulation
+ * @param {Object} data { simulation: { id }, data: [{...}] }
+ */
+const update = async ({ simulation, data }) => {
+  await Promise.all(
+    data.map(async (d) => {
+      return await updater(databases.SIMULATIONS, simulation.id, d)
+    })
+  )
+}
+
+export default update

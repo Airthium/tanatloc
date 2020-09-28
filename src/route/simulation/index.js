@@ -1,16 +1,16 @@
-/** @module src/route/project */
+/** @module src/route/simulation */
 
 import getSessionId from '../session'
-import { add } from '../../lib/project'
+import { add } from '../../lib/simulation'
 
 import Sentry from '../../lib/sentry'
 
 /**
- * Project API
+ * Simulation API
  * @param {Object} req Request
  * @param {Object} res Response
  */
-export default async = (req, res) => {
+export default async (req, res) => {
   // Check session
   const sessionId = await getSessionId(req, res)
   if (!sessionId) return
@@ -21,8 +21,8 @@ export default async = (req, res) => {
       break
     case 'POST':
       try {
-        const project = await add({ id: sessionId }, req.body)
-        res.status(200).json(project)
+        const simulation = await add(req.body)
+        res.status(200).json(simulation)
       } catch (err) {
         console.error(err)
         res.status(500).json({ message: err.message })

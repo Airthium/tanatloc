@@ -72,6 +72,7 @@ const Simulation = ({ simulation, onClose }) => {
   useEffect(() => {
     setVisible(simulation)
     setTitle(simulation?.scheme.title)
+    // console.log(simulation)
   }, [simulation])
 
   return <Panel visible={visible} title={title} onClose={onClose}></Panel>

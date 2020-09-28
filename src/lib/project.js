@@ -37,14 +37,8 @@ const add = async (
  * Get project by id
  * @param {string} id Id
  */
-const get = async (id) => {
-  const project = await dBget(id, [
-    'title',
-    'description',
-    'avatar',
-    'owners',
-    'users'
-  ])
+const get = async (id, data) => {
+  const project = await dBget(id, data)
 
   // Get avatar (not mandatory)
   if (project.avatar) {

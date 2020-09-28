@@ -26,7 +26,7 @@ export default async (req, res) => {
     const simulationsTmp = await Promise.all(
       list.map(async (id) => {
         try {
-          return await get(id)
+          return await get(id, ['name', 'scheme'])
         } catch (err) {
           console.warn(err)
           return null

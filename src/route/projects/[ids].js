@@ -32,7 +32,14 @@ export default async (req, res) => {
     const projectsTmp = await Promise.all(
       list.map(async (id) => {
         try {
-          return await get(id)
+          return await get(id, [
+            'title',
+            'description',
+            'avatar',
+            'owners',
+            'users',
+            'simulations'
+          ])
         } catch (err) {
           console.warn(err)
           return null

@@ -14,7 +14,7 @@ import { update as updateProject } from './project'
  * @param {Object} project Project { id }
  * @param {Object} simualtion Simulation { name, scheme }
  */
-const add = async (project, simulation) => {
+const add = async ({ project, simulation }) => {
   // Add simulation
   const simulationData = await dBadd(simulation)
 

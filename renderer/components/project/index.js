@@ -14,7 +14,7 @@ import Simulation from './simulation'
 
 import { useUser } from '../../../src/api/user'
 import { useProject, update } from '../../../src/api/project'
-import { add } from '../../../src/api/simulation'
+import { add, useSimulations } from '../../../src/api/simulation'
 
 import Sentry from '../../../src/lib/sentry'
 
@@ -34,12 +34,14 @@ const Project = () => {
 
   // State
   const [selectorVisible, setSelectorVisible] = useState(false)
-  const [simulations, setSimulations] = useState([])
-  const [simulation, setSimulation] = useState()
+  const [currentSimulation, setCurrentSimulation] = useState()
 
   // Data
   const [user, { loadingUser }] = useUser()
   const [project, { mutateProject }] = useProject(id || '')
+  const [simulations, { addOneSimulation }] = useSimulations(
+    project.simulations
+  )
 
   // Not logged -> go to login page
   useEffect(() => {
@@ -84,10 +86,7 @@ const Project = () => {
     router.push('/dashboard')
   }
 
-  // const onTitleClick = ({ key }) => {
-  //   console.log('menuClick')
-  //   console.log(key)
-  // }
+  // const onTitleClick = ({ key }) => {}
 
   /**
    * Add simulation
@@ -101,39 +100,27 @@ const Project = () => {
    * @param {Object} scheme Simulation scheme
    */
   const onSelectorOk = async (scheme) => {
-    // Add in dB
-    const simulationData = await add({ name: scheme.title, scheme })
-
-    // State
-    simulations.push({
-      scheme: scheme,
-      render: (
-        <Menu.SubMenu
-          key={menuKeys.simulation + simulationData.id}
-          icon={<CalculatorOutlined />}
-          title={scheme.title}
-          // onTitleClick={onTitleClick}
-        >
-          {scheme.children.map((child) => {
-            return (
-              <Menu.Item
-                key={
-                  menuKeys.simulation +
-                  '-' +
-                  simulationData.id +
-                  '-' +
-                  child.key
-                }
-              >
-                {child.title}
-              </Menu.Item>
-            )
-          })}
-        </Menu.SubMenu>
+    try {
+      // Add in dB
+      const simulation = await add(
+        { id: project.id },
+        { name: scheme.title, scheme }
       )
-    })
-    setSimulations(simulations)
-    setSelectorVisible(false)
+
+      // Mutate
+      addOneSimulation(simulation)
+      mutateProject({
+        ...project,
+        simulations: [...project.simulations, simulation]
+      })
+
+      // Close selector
+      setSelectorVisible(false)
+    } catch (err) {
+      message.error(err.message)
+      console.error(err)
+      Sentry.captureException(err)
+    }
   }
 
   /**
@@ -148,14 +135,16 @@ const Project = () => {
    * @param {string} key Key
    */
   const selectSimulation = (key) => {
-    const descriptor = key.split('-')
-    const index = descriptor[1]
+    const descriptor = key.split('&')
+    const id = descriptor[1]
     const type = descriptor[2]
 
-    const scheme = simulations[index].scheme
+    const simulation = simulations.find((s) => s.id === id)
+
+    const scheme = simulation.scheme
     const subScheme = scheme.children.find((s) => s.key === type)
 
-    setSimulation({
+    setCurrentSimulation({
       type: type,
       scheme: subScheme
     })
@@ -165,8 +154,27 @@ const Project = () => {
    * On simulation close
    */
   const onSimulationClose = () => {
-    setSimulation()
+    setCurrentSimulation()
   }
+
+  const simulationsRender = simulations.map((s) => {
+    return (
+      <Menu.SubMenu
+        key={menuKeys.simulation + s.id}
+        icon={<CalculatorOutlined />}
+        title={s.name}
+        // onTitleClick={onTitleClick}
+      >
+        {s.scheme.children.map((child) => {
+          return (
+            <Menu.Item key={menuKeys.simulation + '&' + s.id + '&' + child.key}>
+              {child.title}
+            </Menu.Item>
+          )
+        })}
+      </Menu.SubMenu>
+    )
+  })
 
   /**
    * Render
@@ -194,7 +202,7 @@ const Project = () => {
           <Menu.Item key={menuKeys.newSimulation} icon={<PlusOutlined />}>
             New simulation
           </Menu.Item>
-          {simulations.map((simu) => simu.render)}
+          {simulationsRender}
         </Menu>
       </Layout.Sider>
       <Layout.Content className="no-scroll relative">
@@ -203,7 +211,10 @@ const Project = () => {
           onOk={onSelectorOk}
           onCancel={onSelectorCancel}
         />
-        <Simulation simulation={simulation} onClose={onSimulationClose} />
+        <Simulation
+          simulation={currentSimulation}
+          onClose={onSimulationClose}
+        />
         <View />
       </Layout.Content>
     </Layout>

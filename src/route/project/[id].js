@@ -24,7 +24,14 @@ export default async (req, res) => {
   switch (req.method) {
     case 'GET':
       try {
-        const project = await get(id)
+        const project = await get(id, [
+          'title',
+          'description',
+          'avatar',
+          'owners',
+          'users',
+          'simulations'
+        ])
         res.status(200).json({ project })
       } catch (err) {
         console.error(err)

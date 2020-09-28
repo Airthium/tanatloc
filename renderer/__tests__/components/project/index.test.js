@@ -30,8 +30,10 @@ jest.mock('../../../../src/api/project', () => ({
   update: async () => mockUpdate()
 }))
 
+let mockSimulations
 jest.mock('../../../../src/api/simulation', () => ({
-  add: async () => ({ id: 'id' })
+  add: async () => ({ id: 'id' }),
+  useSimulations: () => [mockSimulations(), { addOneSimulation: () => {} }]
 }))
 
 jest.mock('../../../../src/lib/sentry', () => ({
@@ -43,9 +45,16 @@ describe('components/project', () => {
   beforeEach(() => {
     mockRouter.mockReset()
     mockUser = () => ({ id: 'id' })
-    mockProject = () => ({ title: 'title' })
+    mockProject = () => ({ title: 'title', simulations: [{}] })
     mockMutateProject = jest.fn()
     mockUpdate.mockReset()
+    mockSimulations = () => [
+      {
+        scheme: {
+          children: [{}]
+        }
+      }
+    ]
     wrapper = shallow(<Project />)
   })
 
@@ -101,6 +110,17 @@ describe('components/project', () => {
       .onOk({ children: [{}] })
 
     expect(wrapper.find('Menu').at(1).props().children[1].length).toBe(1)
+
+    // Error
+    wrapper.unmount()
+    mockMutateProject = () => {
+      throw new Error()
+    }
+    wrapper = shallow(<Project />)
+    await wrapper
+      .find('selector')
+      .props()
+      .onOk({ children: [{}] })
   })
 
   it('selector cancel', () => {

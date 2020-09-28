@@ -30,8 +30,8 @@ export default async (req, res) => {
       }
       break
     default:
-      const err = new Error('Method ' + req.method + ' not allowed')
-      res.status(405).json({ message: err.message })
-      Sentry.captureException(err)
+      const error = new Error('Method ' + req.method + ' not allowed')
+      res.status(405).json({ message: error.message })
+      Sentry.captureException(error)
   }
 }

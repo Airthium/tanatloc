@@ -1,4 +1,3 @@
-import { format } from 'prettier'
 import { getter } from '..'
 import { databases } from '../../../config/db'
 

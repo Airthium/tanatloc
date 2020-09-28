@@ -1,6 +1,5 @@
 import useSWR from 'swr'
 import { fetcher } from '../call'
-import useSimulations from './useSimulations'
 
 /**
  * Use simulation

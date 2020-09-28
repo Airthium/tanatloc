@@ -1,7 +1,7 @@
 import getSessionId from '../session'
 import { get } from '../../lib/simulation'
 
-import Sentry from '../.../lib/sentry'
+import Sentry from '../../lib/sentry'
 
 export default async (req, res) => {
   // Check session

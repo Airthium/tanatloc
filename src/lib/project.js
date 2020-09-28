@@ -87,10 +87,11 @@ const get = async (id) => {
 
 /**
  * Update project
- * @param {Object} data { project: { id }, data: [{ type, method, key, value }] }
+ * @param {Object} Project { id }
+ * @param {Object} data Data { data: [{ type, method, key, value }] }
  */
-const update = async ({ project, data }) => {
-  await dBupdate({ project, data })
+const update = async (project, { data }) => {
+  await dBupdate(project, data)
 }
 
 /**

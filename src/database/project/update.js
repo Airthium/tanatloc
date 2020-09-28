@@ -4,9 +4,10 @@ import { databases } from '../../../config/db'
 /**
  * Update
  * @memberof module:src/database/project
- * @param {Object} param0 { project: { id }, data: [{ type: type, method: method, key: key, value: value }] }
+ * @param {Object} project Project { id }
+ * @param {Object} data Data [{ type: type, method: method, key: key, value: value }]
  */
-const update = async ({ project, data }) => {
+const update = async (project, data) => {
   await Promise.all(
     data.map(async (d) => {
       return await updater(databases.PROJECTS, project.id, d)

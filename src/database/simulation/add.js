@@ -4,10 +4,9 @@ import { databases } from '../../../config/db'
 /**
  * Add
  * @memberof module:src/database/simulation
- * @param {Object} project Project { id }
  * @param {Object} simulation Simulation { name, scheme }
  */
-const add = async ({ id }, { name, scheme }) => {
+const add = async ({ name, scheme }) => {
   const response = await query(
     'INSERT INTO ' +
       databases.SIMULATIONS +

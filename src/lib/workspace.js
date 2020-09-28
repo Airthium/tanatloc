@@ -33,7 +33,7 @@ const add = async (user, { name }) => {
 }
 
 /**
- *
+ * Get workspace
  * @param {string} id Id
  * @param {Array} data Data [{ key, value, ... }]
  */

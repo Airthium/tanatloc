@@ -7,7 +7,7 @@ jest.mock('../..', () => ({
 
 describe('src/database/project/update', () => {
   it('call', async () => {
-    const res = await update({ project: {}, data: [{}] })
+    await update({}, [{}])
     expect(mockUpdate).toHaveBeenCalledTimes(1)
   })
 })

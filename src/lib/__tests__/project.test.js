@@ -72,7 +72,7 @@ describe('src/lib/project', () => {
   })
 
   it('update', async () => {
-    await update({})
+    await update({}, {})
     expect(mockUpdate).toHaveBeenCalledTimes(1)
   })
 

@@ -30,6 +30,9 @@ describe('src/route/project', () => {
     status: () => ({
       json: (obj) => {
         response = obj
+      },
+      end: () => {
+        response = 'end'
       }
     })
   }
@@ -51,9 +54,15 @@ describe('src/route/project', () => {
     })
   })
 
-  it('bad method', async () => {
+  it('get', async () => {
     req.method = 'GET'
     await project(req, res)
-    expect(response).toEqual({ message: 'Method GET not allowed' })
+    expect(response).toBe('end')
+  })
+
+  it('bad method', async () => {
+    req.method = 'OTHER'
+    await project(req, res)
+    expect(response).toEqual({ message: 'Method OTHER not allowed' })
   })
 })

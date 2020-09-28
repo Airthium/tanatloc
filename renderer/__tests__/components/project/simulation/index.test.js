@@ -29,7 +29,7 @@ describe('components/project/simulation', () => {
 
   it('mount with simulation', () => {
     const mWrapper = mount(
-      <Simulation simulation={{ scheme: { title: 'title' } }} />
+      <Simulation simulation={{ scheme: { title: 'title', children: [{}] } }} />
     )
     expect(mWrapper).toBeDefined()
     mWrapper.unmount()

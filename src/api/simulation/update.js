@@ -9,7 +9,7 @@ import { call } from '../call'
 const update = async (simulation, data) => {
   const res = await call('/api/simulation/' + simulation.id, {
     method: 'PUT',
-    body: JSON.stringify({ simulation: simulation, data: data })
+    body: JSON.stringify(data)
   })
 
   return res

@@ -8,7 +8,7 @@ import { fetcher } from '../call'
  */
 const useProjects = (ids) => {
   const { data, mutate } = useSWR(
-    '/api/projects/' + (ids && ids.join('&')),
+    '/api/projects' + (ids && ids.length ? '/' + ids.join('&') : ''),
     fetcher
   )
   const loading = !data

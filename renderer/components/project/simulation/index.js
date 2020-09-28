@@ -5,9 +5,13 @@ import { Layout, Menu, Modal } from 'antd'
 
 import Panel from '../panel'
 
+import Geometry from './geometry'
+import About from './about'
+
 // TODO test data only
 const simulationScheme = {
-  title: 'A simulation',
+  algorithm: 'Laplacian',
+  category: 'academic',
   children: [
     {
       title: 'Geometry',
@@ -35,6 +39,7 @@ const simulationScheme = {
 const Selector = ({ visible, onOk, onCancel }) => {
   // State
   const [current, setCurrent] = useState()
+  const [loading, setLoading] = useState(false)
 
   /**
    * On select
@@ -47,8 +52,10 @@ const Selector = ({ visible, onOk, onCancel }) => {
   /**
    * On create
    */
-  const onCreate = () => {
+  const onCreate = async () => {
+    setLoading(true)
     if (current) onOk(simulationScheme)
+    setLoading(false)
   }
 
   /**
@@ -59,6 +66,7 @@ const Selector = ({ visible, onOk, onCancel }) => {
       visible={visible}
       title="Create simulation"
       okText="Create"
+      okButtonProps={{ loading: loading }}
       onOk={onCreate}
       onCancel={onCancel}
     >
@@ -80,7 +88,7 @@ const Selector = ({ visible, onOk, onCancel }) => {
  * Simulation
  * @param {Object} props Props
  */
-const Simulation = ({ simulation, onClose }) => {
+const Simulation = ({ project, simulation, type, onClose }) => {
   // State
   const [visible, setVisible] = useState()
   const [title, setTitle] = useState()
@@ -90,10 +98,17 @@ const Simulation = ({ simulation, onClose }) => {
    */
   useEffect(() => {
     setVisible(simulation)
-    setTitle(simulation?.scheme.title)
-  }, [simulation])
+    const subScheme = simulation?.scheme.children.find((c) => c.key === type)
+    const title = type === 'about' ? 'About' : subScheme?.title
+    setTitle(title)
+  }, [simulation, type])
 
-  return <Panel visible={visible} title={title} onClose={onClose}></Panel>
+  return (
+    <Panel visible={visible} title={title} onClose={onClose}>
+      {type === 'about' && <About project={project} simulation={simulation} />}
+      {type === 'geometry' && <Geometry />}
+    </Panel>
+  )
   // // State
   // const [visible, setVisible] = useState()
 

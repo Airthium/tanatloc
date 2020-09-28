@@ -35,6 +35,7 @@ const Project = () => {
   // State
   const [selectorVisible, setSelectorVisible] = useState(false)
   const [currentSimulation, setCurrentSimulation] = useState()
+  const [currentType, setCurrentType] = useState()
 
   // Data
   const [user, { loadingUser }] = useUser()
@@ -47,6 +48,13 @@ const Project = () => {
   useEffect(() => {
     if (!loadingUser && !user) router.replace('/login')
   }, [user, loadingUser])
+
+  // Modified simulation
+  useEffect(() => {
+    const simulation = simulations.find((s) => s.id === currentSimulation?.id)
+    if (JSON.stringify(simulation) !== JSON.stringify(currentSimulation))
+      setCurrentSimulation(simulation)
+  }, [simulations])
 
   /**
    * Handle title
@@ -104,7 +112,7 @@ const Project = () => {
       // Add in dB
       const simulation = await add(
         { id: project.id },
-        { name: scheme.title, scheme }
+        { name: scheme.algorithm, scheme }
       )
 
       // Mutate
@@ -136,18 +144,13 @@ const Project = () => {
    */
   const selectSimulation = (key) => {
     const descriptor = key.split('&')
-    const id = descriptor[1]
+    const simulationId = descriptor[1]
     const type = descriptor[2]
 
-    const simulation = simulations.find((s) => s.id === id)
+    const simulation = simulations.find((s) => s.id === simulationId)
 
-    const scheme = simulation.scheme
-    const subScheme = scheme.children.find((s) => s.key === type)
-
-    setCurrentSimulation({
-      type: type,
-      scheme: subScheme
-    })
+    setCurrentSimulation(simulation)
+    setCurrentType(type)
   }
 
   /**
@@ -155,6 +158,7 @@ const Project = () => {
    */
   const onSimulationClose = () => {
     setCurrentSimulation()
+    setCurrentType()
   }
 
   const simulationsRender = simulations.map((s) => {
@@ -165,6 +169,9 @@ const Project = () => {
         title={s.name}
         // onTitleClick={onTitleClick}
       >
+        <Menu.Item key={menuKeys.simulation + '&' + s.id + '&about'}>
+          About
+        </Menu.Item>
         {s.scheme.children.map((child) => {
           return (
             <Menu.Item key={menuKeys.simulation + '&' + s.id + '&' + child.key}>
@@ -212,7 +219,9 @@ const Project = () => {
           onCancel={onSelectorCancel}
         />
         <Simulation
+          project={{ id: project.id, simulations: project.simulations }}
           simulation={currentSimulation}
+          type={currentType}
           onClose={onSimulationClose}
         />
         <View />

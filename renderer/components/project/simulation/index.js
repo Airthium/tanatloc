@@ -12,24 +12,24 @@ import About from './about'
 const simulationScheme = {
   algorithm: 'Laplacian',
   category: 'academic',
-  children: [
-    {
-      title: 'Geometry',
-      key: 'geometry'
+  categories: {
+    geometry: {
+      index: 1,
+      title: 'Geometry'
     },
-    {
-      title: 'Parameters',
-      key: 'parameters'
+    parameters: {
+      index: 2,
+      title: 'Parameters'
     },
-    {
-      title: 'Run',
-      key: 'run'
+    run: {
+      index: 3,
+      title: 'Run'
     },
-    {
-      title: 'Results',
-      key: 'results'
+    results: {
+      index: 4,
+      title: 'Results'
     }
-  ]
+  }
 }
 
 /**
@@ -98,15 +98,15 @@ const Simulation = ({ project, simulation, type, onClose }) => {
    */
   useEffect(() => {
     setVisible(simulation)
-    const subScheme = simulation?.scheme.children.find((c) => c.key === type)
-    const title = type === 'about' ? 'About' : subScheme?.title
+    const subScheme = simulation?.scheme.categories[type]
+    const title = subScheme ? subScheme.title : 'About'
     setTitle(title)
   }, [simulation, type])
 
   return (
     <Panel visible={visible} title={title} onClose={onClose}>
       {type === 'about' && <About project={project} simulation={simulation} />}
-      {type === 'geometry' && <Geometry />}
+      {type === 'geometry' && <Geometry simulation={simulation} />}
     </Panel>
   )
   // // State

@@ -94,8 +94,6 @@ const Project = () => {
     router.push('/dashboard')
   }
 
-  // const onTitleClick = ({ key }) => {}
-
   /**
    * Add simulation
    */
@@ -162,23 +160,25 @@ const Project = () => {
   }
 
   const simulationsRender = simulations.map((s) => {
+    const categories = []
+    Object.keys(s.scheme.categories).forEach((key) => {
+      const child = s.scheme.categories[key]
+      categories[child.index] = (
+        <Menu.Item key={menuKeys.simulation + '&' + s.id + '&' + key}>
+          {child.title}
+        </Menu.Item>
+      )
+    })
     return (
       <Menu.SubMenu
         key={menuKeys.simulation + s.id}
         icon={<CalculatorOutlined />}
         title={s.name}
-        // onTitleClick={onTitleClick}
       >
         <Menu.Item key={menuKeys.simulation + '&' + s.id + '&about'}>
           About
         </Menu.Item>
-        {s.scheme.children.map((child) => {
-          return (
-            <Menu.Item key={menuKeys.simulation + '&' + s.id + '&' + child.key}>
-              {child.title}
-            </Menu.Item>
-          )
-        })}
+        {categories}
       </Menu.SubMenu>
     )
   })
@@ -224,7 +224,7 @@ const Project = () => {
           type={currentType}
           onClose={onSimulationClose}
         />
-        <View />
+        <View simulation={currentSimulation} type={currentType} />
       </Layout.Content>
     </Layout>
   )

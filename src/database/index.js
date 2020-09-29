@@ -94,6 +94,27 @@ const updater = async (db, id, data) => {
     } else {
       //TODO
     }
+  } else if (data.type === 'json') {
+    if (data.method === 'diff') {
+      // Get existing json
+      const res = await query('SELECT ' + data.key + ' FROM ' + db)
+      const json = res.rows[0][data.key]
+
+      // Set json
+      const set = (object, path, value) => {
+        const last = path.pop()
+        const subObj = path.reduce((obj, key) => obj[key], object)
+        subObj[last] = {
+          ...subObj[last],
+          ...value
+        }
+      }
+
+      set(json, data.path, data.value)
+
+      // Update
+      await updater(db, id, { key: data.key, value: json })
+    }
   } else {
     await query('UPDATE ' + db + ' SET ' + data.key + ' = $2 WHERE id = $1', [
       id,

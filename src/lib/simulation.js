@@ -1,5 +1,9 @@
 /** @module src/lib/simulation */
 
+import path from 'path'
+
+import storage from '../../config/storage'
+
 import {
   add as dBadd,
   get as dBget,
@@ -8,6 +12,7 @@ import {
 } from '../database/simulation'
 
 import { update as updateProject } from './project'
+import { writeFile, convert } from './tools'
 
 /**
  * Add simulation
@@ -38,6 +43,7 @@ const add = async ({ project, simulation }) => {
  */
 const get = async (id, data) => {
   const simulation = dBget(id, data)
+
   return simulation
 }
 
@@ -47,6 +53,33 @@ const get = async (id, data) => {
  * @param {Object} data Data [{...}]
  */
 const update = async (simulation, data) => {
+  // Check for file
+  await Promise.all(
+    data.map(async (d) => {
+      if (d.value.file) {
+        //Write file
+        const location = path.join(storage.SIMULATION, simulation.id, d.path[1])
+        const file = d.value.file
+        const fileName = await writeFile(location, file)
+
+        // Update object
+        d.value.file.originPath = d.path[1]
+        d.value.file.origin = fileName
+
+        // Convert file
+        const part = await convert(location, file)
+        d.value.file.partPath = path.join(d.path[1], part.path)
+        d.value.file.part = part.part
+
+        // remove unused
+        delete d.value.file.uid
+        delete d.value.file.buffer
+      }
+      return
+    })
+  )
+
+  // Update
   await dBupdate(simulation, data)
 }
 

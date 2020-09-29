@@ -37,10 +37,12 @@ import { SectionViewHelper } from '../../../../src/lib/three/helpers/SectionView
 
 import { PartLoader } from '../../../../src/lib/three/loaders/PartLoader'
 
+import get from '../../../../src/api/part/get'
+
 /**
  * ThreeView
  */
-const ThreeView = () => {
+const ThreeView = ({ part }) => {
   // Ref
   const mount = useRef(null)
   const scene = useRef()
@@ -236,6 +238,18 @@ const ThreeView = () => {
     }
   }, [])
 
+  useEffect(() => {
+    // Clean scene
+    scene.current.children.forEach((child) => {
+      if (child.type === 'Part') {
+        child.dispose()
+        scene.current.remove(child)
+      }
+    })
+
+    if (part) loadPart(part)
+  }, [part])
+
   /**
    * Compute scene bounding box
    */
@@ -350,36 +364,21 @@ const ThreeView = () => {
    * Load part
    * TODO WIP
    */
-  const loadPart = async () => {
-    // TODO
-    // Part.solids[0].buffer = Solid
-    // delete Part.solids[0].path
-    // Part.faces[0].buffer = Face0
-    // delete Part.faces[0].path
-    // Part.faces[1].buffer = Face1
-    // delete Part.faces[1].path
-    // Part.faces[2].buffer = Face2
-    // delete Part.faces[2].path
-    // Part.faces[3].buffer = Face3
-    // delete Part.faces[3].path
-    // Part.faces[4].buffer = Face4
-    // delete Part.faces[4].path
-    // Part.faces[5].buffer = Face5
-    // delete Part.faces[5].path
-    // //load
-    // const loader = PartLoader()
-    // const mesh = loader.load(
-    //   Part,
-    //   transparent,
-    //   sectionViewHelper.current.getClippingPlane()
-    // )
-    // // Scene
-    // scene.current.add(mesh)
-    // computeSceneBoundingSphere()
-    // // Grid
-    // gridHelper.current.update()
-    // // Zoom
-    // zoomToFit()
+  const loadPart = async (part) => {
+    //load
+    const loader = PartLoader()
+    const mesh = loader.load(
+      part,
+      transparent,
+      sectionViewHelper.current.getClippingPlane()
+    )
+    // Scene
+    scene.current.add(mesh)
+    computeSceneBoundingSphere()
+    // Grid
+    gridHelper.current.update()
+    // Zoom
+    zoomToFit()
   }
 
   /**
@@ -631,8 +630,24 @@ const ThreeView = () => {
   )
 }
 
-const View = () => {
-  return <ThreeView />
+const View = ({ simulation, type }) => {
+  const [part, setPart] = useState()
+
+  useEffect(() => {
+    const scheme = simulation?.scheme
+    const subScheme = scheme?.categories[type]
+
+    if (subScheme?.file?.part) {
+      loadPart(subScheme.file)
+    }
+  }, [simulation, type])
+
+  const loadPart = async (file) => {
+    const part = await get({ id: simulation.id }, file)
+    setPart(part)
+  }
+
+  return <ThreeView part={part} />
 }
 
 export default View

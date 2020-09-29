@@ -63,6 +63,7 @@ const PartLoader = () => {
     object.add(edges)
 
     object.boundingBox = computeBoundingBox(object)
+    object.dispose = () => dispose(object)
     object.setTransparent = (transp) => setTransparent(object, transp)
     object.startSelection = (renderer, camera, type) =>
       startSelection(object, renderer, camera, type)
@@ -84,7 +85,8 @@ const PartLoader = () => {
    */
   const loadElement = (element, color, transparent, clippingPlane) => {
     const loader = new BufferGeometryLoader()
-    const geometry = loader.parse(element.buffer)
+    const buffer = JSON.parse(Buffer.from(element.buffer).toString())
+    const geometry = loader.parse(buffer)
     geometry.computeBoundingBox()
     geometry.computeBoundingSphere()
 
@@ -98,7 +100,7 @@ const PartLoader = () => {
     })
 
     const mesh = new Mesh(geometry, material)
-    mesh.uuid = element.buffer.uuid
+    mesh.uuid = buffer.uuid
 
     return mesh
   }
@@ -128,6 +130,19 @@ const PartLoader = () => {
     })
 
     return box
+  }
+
+  /**
+   * Dispose
+   * @param {Object} part Part
+   */
+  const dispose = (part) => {
+    part.children.forEach((group) => {
+      group.children.forEach((child) => {
+        child.geometry.dispose()
+        child.material.dispose()
+      })
+    })
   }
 
   /**

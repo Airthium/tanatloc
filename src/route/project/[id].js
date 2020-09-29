@@ -23,6 +23,7 @@ export default async (req, res) => {
 
   switch (req.method) {
     case 'GET':
+      // Get project
       try {
         const project = await get(id, [
           'title',
@@ -40,6 +41,7 @@ export default async (req, res) => {
       }
       break
     case 'PUT':
+      // Update project
       try {
         await update({ id }, req.body)
         res.status(200).end()
@@ -50,6 +52,7 @@ export default async (req, res) => {
       }
       break
     case 'DELETE':
+      // Delete project
       try {
         await del(req.body, { id })
         res.status(200).end()
@@ -60,6 +63,7 @@ export default async (req, res) => {
       }
       break
     default:
+      // Unauthorized method
       const error = new Error('Method ' + req.method + ' not allowed')
       res.status(405).json({ message: error.message })
       Sentry.captureException(error)

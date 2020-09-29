@@ -17,9 +17,11 @@ export default async (req, res) => {
 
   switch (req.method) {
     case 'GET':
+      // Empty route
       res.status(200).end()
       break
     case 'POST':
+      // Add project
       try {
         const project = await add({ id: sessionId }, req.body)
         res.status(200).json(project)
@@ -30,6 +32,7 @@ export default async (req, res) => {
       }
       break
     default:
+      // Unauthorized method
       const error = new Error('Method ' + req.method + ' not allowed')
       res.status(405).json({ message: error.message })
       Sentry.captureException(error)

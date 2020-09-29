@@ -17,7 +17,7 @@ import { writeFile, convert } from './tools'
 /**
  * Add simulation
  * @param {Object} project Project { id }
- * @param {Object} simualtion Simulation { name, scheme }
+ * @param {Object} simulation Simulation { name, scheme }
  */
 const add = async ({ project, simulation }) => {
   // Add simulation
@@ -33,6 +33,7 @@ const add = async ({ project, simulation }) => {
     }
   ])
 
+  // Return
   return simulationData
 }
 
@@ -50,17 +51,22 @@ const get = async (id, data) => {
 /**
  * Update simulation
  * @param {Object} simulation Simulation { id }
- * @param {Object} data Data [{...}]
+ * @param {Object} data Data [{ key, value, ... }, ...]
  */
 const update = async (simulation, data) => {
   // Check for file
+  // TODO remove at override ? (for example geometry)
   await Promise.all(
     data.map(async (d) => {
       if (d.value.file) {
         //Write file
         const location = path.join(storage.SIMULATION, simulation.id, d.path[1])
         const file = d.value.file
-        const fileName = await writeFile(location, file)
+        const fileName = await writeFile(
+          location,
+          file.name,
+          Buffer.from(file.buffer).toString()
+        )
 
         // Update object
         d.value.file.originPath = d.path[1]

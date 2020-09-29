@@ -52,7 +52,7 @@ const getter = async (db, id, data, key = 'id') => {
  * Update from dB
  * @param {string} db Database
  * @param {string} id Id
- * @param {Object} data Data { type, method, key, value }
+ * @param {Object} data Data { type, method, key, path, value }
  */
 const updater = async (db, id, data) => {
   if (data.type === 'crypt') {

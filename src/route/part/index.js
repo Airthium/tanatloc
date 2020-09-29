@@ -1,10 +1,5 @@
-import path from 'path'
-
-import storage from '../../../config/storage'
-
 import getSessionId from '../session'
-
-import { loadPart } from '../../lib/tools'
+import { get } from '../../lib/part'
 
 import Sentry from '../../lib/sentry'
 
@@ -14,12 +9,9 @@ export default async (req, res) => {
   if (!sessionId) return
 
   if (req.method === 'POST') {
+    // Get part
     try {
-      const { simulation, file } = req.body
-      const part = await loadPart(
-        path.join(storage.SIMULATION, simulation.id, file.partPath),
-        file.part
-      )
+      const part = await get(req.body)
       res.status(200).json(part)
     } catch (err) {
       console.error(err)
@@ -27,6 +19,7 @@ export default async (req, res) => {
       Sentry.captureException(err)
     }
   } else {
+    // Unauthorized method
     const error = new Error('Method ' + req.method + ' not allowed')
     res.status(405).json({ message: error.message })
     Sentry.captureException(error)

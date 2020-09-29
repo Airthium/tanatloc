@@ -6,14 +6,9 @@ export const createPath = async (path) => {
   await fs.mkdir(path, { recursive: true })
 }
 
-export const writeFile = async (location, file) => {
+export const writeFile = async (location, name, content) => {
   await createPath(location)
-  const name = file.name
-  await fs.writeFile(
-    Path.join(location, name),
-    Buffer.from(file.buffer).toString()
-  )
-  return name
+  await fs.writeFile(Path.join(location, name), content)
 }
 
 export const convert = async (location, file) => {

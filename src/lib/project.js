@@ -14,7 +14,7 @@ import { update as updateWorkspace } from './workspace'
 /**
  * Add project
  * @param {Object} user User { id }
- * @param {Object} data { workspace: { id }, project: { title, description } }
+ * @param {Object} data Data { workspace: { id }, project: { title, description } }
  */
 const add = async (
   user,
@@ -34,13 +34,14 @@ const add = async (
 }
 
 /**
- * Get project by id
- * @param {string} id Id
+ * Get project
+ * @param {string} id Project's id
+ * @param {Array} data Data
  */
 const get = async (id, data) => {
   const project = await dBget(id, data)
 
-  // Get avatar (not mandatory)
+  // Get avatar
   if (project.avatar) {
     try {
       const avatar = await readAvatar(project.avatar)
@@ -82,14 +83,14 @@ const get = async (id, data) => {
 /**
  * Update project
  * @param {Object} Project { id }
- * @param {Object} data Data [{ type, method, key, value }]
+ * @param {Object} data Data [{ key, value, ...}, ...]
  */
 const update = async (project, data) => {
   await dBupdate(project, data)
 }
 
 /**
- *
+ * Delete project
  * @param {Object} workspace Workspace { id }
  * @param {Object} project Project { id }
  */
@@ -97,12 +98,9 @@ const del = async ({ id }, project) => {
   await dBdel(project)
 
   // Delete project reference in workspace
-  await updateWorkspace({
-    workspace: { id },
-    data: [
-      { type: 'array', method: 'remove', key: 'projects', value: project.id }
-    ]
-  })
+  await updateWorkspace({ id }, [
+    { type: 'array', method: 'remove', key: 'projects', value: project.id }
+  ])
 }
 
 export { add, get, update, del }

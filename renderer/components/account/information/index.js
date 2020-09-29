@@ -174,7 +174,11 @@ const Information = () => {
     >
       <Form.Item {...avatarLayout}>
         <Space direction="vertical" className="Account-avatar">
-          <Avatar size={128} src={user.avatar} icon={<UserOutlined />} />
+          <Avatar
+            size={128}
+            src={user.avatar && Buffer.from(user.avatar).toString()}
+            icon={<UserOutlined />}
+          />
           <Upload
             accept={'.jpg,.png'}
             showUploadList={false}

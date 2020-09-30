@@ -83,7 +83,8 @@ jest.mock('../../../../../src/lib/three/helpers/SectionViewHelper', () => ({
 
 jest.mock('../../../../../src/lib/three/loaders/PartLoader', () => ({
   PartLoader: () => ({
-    load: () => {}
+    load: () => {},
+    dispose: () => {}
   })
 }))
 
@@ -111,6 +112,7 @@ global.MockScene.children = [
       max: { x: 1, y: 1, z: 1 }
     },
     material: {},
+    dispose: () => {},
     setTransparent: () => {},
     startSelection: () => {},
     stopSelection: () => {}
@@ -123,6 +125,7 @@ global.MockScene.children = [
       max: { x: 1, y: 1, z: 1 }
     },
     material: {},
+    dispose: () => {},
     setTransparent: () => {},
     startSelection: () => {},
     stopSelection: () => {}

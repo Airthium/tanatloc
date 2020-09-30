@@ -178,6 +178,7 @@ const createUsersTable = async () => {
           id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
           lastName TEXT,
           firstName TEXT,
+          username TEXT NOT NULL UNIQUE,
           password TEXT,
           passwordLastChanged TIMESTAMP,
           email TEXT NOT NULL UNIQUE,

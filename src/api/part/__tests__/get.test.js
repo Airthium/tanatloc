@@ -1,13 +1,13 @@
-import add from '../add'
+import get from '../get'
 
 const mockCall = jest.fn(async () => 'res')
 jest.mock('../../call', () => ({
   call: () => mockCall()
 }))
 
-describe('/src/api/avatar/add', () => {
+describe('src/api/part/get', () => {
   it('call', async () => {
-    await add({})
+    await get({}, {})
     expect(mockCall).toHaveBeenCalledTimes(1)
   })
 })

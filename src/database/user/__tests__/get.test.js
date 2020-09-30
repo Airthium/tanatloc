@@ -1,5 +1,7 @@
 import get from '../get'
 
+// TODO review at username replace
+
 jest.mock('../..', () => ({
   getter: async () => ({
     rows: [{ email: 'username' }]

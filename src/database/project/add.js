@@ -17,7 +17,7 @@ const add = async ({ id }, { title, description }) => {
 
   const project = response.rows[0]
   project.title = title
-  project.description = description
+  project.description = description || ''
 
   return project
 }

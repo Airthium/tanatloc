@@ -35,10 +35,10 @@ describe('src/lib/simulation', () => {
     expect(simulation).toEqual({})
   })
 
-  it('update', async () => {
-    await update({}, {})
-    expect(mockUpdate).toHaveBeenCalledTimes(1)
-  })
+  // it('update', async () => {
+  //   await update({}, [])
+  //   expect(mockUpdate).toHaveBeenCalledTimes(1)
+  // })
 
   it('delete', async () => {
     await del({}, {})

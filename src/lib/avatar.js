@@ -1,5 +1,6 @@
 /** @module src/lib/avatar */
 
+import path from 'path'
 import { promises as fs } from 'fs'
 
 import { AVATAR } from '../../config/storage'
@@ -18,6 +19,7 @@ const add = async (user, file) => {
   await writeFile(AVATAR, file.uid, file.data)
 
   // Add in dB
+  const avatarPath = path.join(AVATAR, file.uid)
   const avatar = await dBadd({ name: file.name, path: avatarPath })
 
   // Check existing avatar in user, if exists: delete

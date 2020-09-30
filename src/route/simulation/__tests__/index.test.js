@@ -3,16 +3,10 @@ import simulation from '../'
 let mockSession = () => false
 jest.mock('../../session', () => () => mockSession())
 
+let mockAdd
 jest.mock('../../../lib/simulation', () => {
-  let count = 0
   return {
-    add: async () => {
-      count++
-      if (count === 1) throw new Error()
-      return {
-        id: 'id'
-      }
-    }
+    add: async () => mockAdd()
   }
 })
 
@@ -37,24 +31,34 @@ describe('src/route/simulation', () => {
     })
   }
 
+  beforeEach(() => {
+    mockAdd = () => ({
+      id: 'id'
+    })
+  })
+
   it('no session', async () => {
     await simulation(req, res)
     expect(response).toBe(undefined)
   })
 
-  it('session', async () => {
+  it('POST', async () => {
     mockSession = () => true
-
-    await simulation(req, res)
-    expect(response).toEqual({ message: '' })
 
     await simulation(req, res)
     expect(response).toEqual({
       id: 'id'
     })
+
+    // Error
+    mockAdd = () => {
+      throw new Error()
+    }
+    await simulation(req, res)
+    expect(response).toEqual({ message: '' })
   })
 
-  it('get', async () => {
+  it('GET', async () => {
     req.method = 'GET'
     await simulation(req, res)
     expect(response).toBe('end')

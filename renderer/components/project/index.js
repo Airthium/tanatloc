@@ -159,6 +159,7 @@ const Project = () => {
     setCurrentType()
   }
 
+  // Simulations render build
   const simulationsRender = simulations.map((s) => {
     const categories = []
     Object.keys(s.scheme.categories).forEach((key) => {

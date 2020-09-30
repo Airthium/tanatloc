@@ -44,6 +44,8 @@ describe('database', () => {
     await updater('db', 'id', { type: 'array', method: 'remove' })
 
     await updater('db', 'id', { type: 'array', method: 'switch' })
+
+    // await updater('db', 'id', { type: 'json', method: 'diff' })
   })
 
   it('deleter', async () => {

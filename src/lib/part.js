@@ -1,4 +1,4 @@
-import Path from 'path'
+import path from 'path'
 
 import storage from '../../config/storage'
 
@@ -10,7 +10,7 @@ import { loadPart } from './tools'
  */
 const get = async ({ simulation, file }) => {
   const part = await loadPart(
-    Path.join(storage.SIMULATION, simulation.id, file.partPath),
+    path.join(storage.SIMULATION, simulation.id, file.partPath),
     file.part
   )
 

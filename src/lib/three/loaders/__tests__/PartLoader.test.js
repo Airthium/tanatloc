@@ -26,17 +26,17 @@ describe('src/lib/three/loaders/PartLoader', () => {
   const part = {
     solids: [
       {
-        buffer: {}
+        buffer: '{ "uuid": "id" }'
       }
     ],
     faces: [
       {
-        buffer: {}
+        buffer: '{ "uuid": "id" }'
       }
     ],
     edges: [
       {
-        buffer: {}
+        buffer: '{ "uuid": "id" }'
       }
     ]
   }

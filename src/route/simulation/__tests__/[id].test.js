@@ -3,26 +3,14 @@ import id from '../[id]'
 let mockSession = () => false
 jest.mock('../../session', () => () => mockSession())
 
+let mockGet
+let mockUpdate
+let mockDel
 jest.mock('../../../lib/simulation', () => {
-  let countG = 0
-  let countU = 0
-  let countD = 0
   return {
-    get: async () => {
-      countG++
-      if (countG === 1) throw new Error()
-      return {
-        name: 'name'
-      }
-    },
-    update: async () => {
-      countU++
-      if (countU === 1) throw new Error()
-    },
-    del: () => {
-      countD++
-      if (countD === 1) throw new Error()
-    }
+    get: async () => mockGet(),
+    update: async () => mockUpdate(),
+    del: () => mockDel()
   }
 })
 
@@ -47,16 +35,21 @@ describe('src/route/simulation/[id]', () => {
     })
   }
 
+  beforeEach(() => {
+    mockGet = () => ({
+      name: 'name'
+    })
+    mockUpdate = () => {}
+    mockDel = () => {}
+  })
+
   it('no session', async () => {
     await id(req, res)
     expect(response).toBe(undefined)
   })
 
-  it('session', async () => {
+  it('GET', async () => {
     mockSession = () => true
-
-    await id(req, res)
-    expect(response).toEqual({ message: '' })
 
     await id(req, res)
     expect(response).toEqual({
@@ -64,6 +57,13 @@ describe('src/route/simulation/[id]', () => {
         name: 'name'
       }
     })
+
+    // Error
+    mockGet = () => {
+      throw new Error()
+    }
+    await id(req, res)
+    expect(response).toEqual({ message: '' })
   })
 
   it('electron', async () => {
@@ -78,7 +78,7 @@ describe('src/route/simulation/[id]', () => {
     })
   })
 
-  it('POST', async () => {
+  it('wrong method', async () => {
     mockSession = () => true
     req.method = 'POST'
     await id(req, res)
@@ -90,10 +90,14 @@ describe('src/route/simulation/[id]', () => {
     req.method = 'PUT'
 
     await id(req, res)
-    expect(response).toEqual({ message: '' })
-
-    await id(req, res)
     expect(response).toBe('end')
+
+    // Error
+    mockUpdate = () => {
+      throw new Error()
+    }
+    await id(req, res)
+    expect(response).toEqual({ message: '' })
   })
 
   it('DELETE', async () => {
@@ -101,9 +105,13 @@ describe('src/route/simulation/[id]', () => {
     req.method = 'DELETE'
 
     await id(req, res)
-    expect(response).toEqual({ message: '' })
-
-    await id(req, res)
     expect(response).toBe('end')
+
+    // Error
+    mockDel = () => {
+      throw new Error()
+    }
+    await id(req, res)
+    expect(response).toEqual({ message: '' })
   })
 })

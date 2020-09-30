@@ -3,16 +3,10 @@ import ids from '../[ids]'
 let mockSession = () => false
 jest.mock('../../session', () => () => mockSession())
 
+let mockGet
 jest.mock('../../../lib/simulation', () => {
-  let countG = 0
   return {
-    get: async () => {
-      countG++
-      if (countG === 1) throw new Error()
-      return {
-        name: 'name'
-      }
-    }
+    get: async () => mockGet()
   }
 })
 
@@ -22,6 +16,7 @@ jest.mock('../../../lib/sentry', () => ({
 
 describe('src/route/simulations/ids', () => {
   const req = {
+    method: 'GET',
     query: {},
     params: {}
   }
@@ -37,12 +32,18 @@ describe('src/route/simulations/ids', () => {
     })
   }
 
+  beforeEach(() => {
+    mockGet = () => ({
+      name: 'name'
+    })
+  })
+
   it('no session', async () => {
     await ids(req, res)
     expect(response).toBe(undefined)
   })
 
-  it('session', async () => {
+  it('GET', async () => {
     mockSession = () => true
 
     // No ids
@@ -53,7 +54,16 @@ describe('src/route/simulations/ids', () => {
     // Normal
     req.query = { ids: 'id1&id2' }
     await ids(req, res)
-    expect(response).toEqual({ simulations: [{ name: 'name' }] })
+    expect(response).toEqual({
+      simulations: [{ name: 'name' }, { name: 'name' }]
+    })
+
+    // Get error
+    mockGet = () => {
+      throw new Error()
+    }
+    await ids(req, res)
+    expect(response).toEqual({ simulations: [] })
 
     // Error
     req.query = undefined
@@ -71,5 +81,12 @@ describe('src/route/simulations/ids', () => {
     expect(response).toEqual({
       simulations: [{ name: 'name' }, { name: 'name' }]
     })
+  })
+
+  it('wrong method', async () => {
+    mockSession = () => true
+    req.method = 'POST'
+    await ids(req, res)
+    expect(response).toEqual({ message: 'Method POST not allowed' })
   })
 })

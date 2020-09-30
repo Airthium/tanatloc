@@ -54,7 +54,11 @@ describe('components/project', () => {
     mockSimulations = () => [
       {
         scheme: {
-          categories: {}
+          categories: {
+            geometry: {
+              title: 'Geometry'
+            }
+          }
         }
       }
     ]
@@ -69,90 +73,84 @@ describe('components/project', () => {
     expect(wrapper).toBeDefined()
   })
 
-  // it('handleTitle', async () => {
-  //   await wrapper.find('Title').props().editable.onChange('title')
-  //   expect(mockUpdate).toHaveBeenCalledTimes(1)
-  //   expect(mockMutateProject).toHaveBeenCalledTimes(1)
+  it('handleTitle', async () => {
+    await wrapper.find('Title').props().editable.onChange('title')
+    expect(mockUpdate).toHaveBeenCalledTimes(1)
+    expect(mockMutateProject).toHaveBeenCalledTimes(1)
 
-  //   wrapper.unmount()
-  //   mockMutateProject = () => {
-  //     throw new Error()
-  //   }
-  //   wrapper = shallow(<Project />)
-  //   await wrapper.find('Title').props().editable.onChange('title')
-  // })
+    wrapper.unmount()
+    mockMutateProject = () => {
+      throw new Error()
+    }
+    wrapper = shallow(<Project />)
+    await wrapper.find('Title').props().editable.onChange('title')
+  })
 
-  // it('user effect', () => {
-  //   wrapper.unmount()
+  it('handleDashboard', () => {
+    wrapper.find('Menu').at(0).props().onClick({ key: 'dashboard' })
+    expect(mockRouter).toHaveBeenCalledTimes(1)
+  })
 
-  //   // With user
-  //   wrapper = mount(<Project />)
-  //   expect(mockRouter).toHaveBeenCalledTimes(0)
-  //   wrapper.unmount()
+  it('addSimulation', () => {
+    wrapper.find('Menu').at(1).props().onClick({ key: 'new-simulation' })
+    expect(wrapper.find('selector').props().visible).toBe(true)
+  })
 
-  //   // Without user
-  //   mockUser = () => {}
-  //   wrapper = mount(<Project />)
-  //   expect(mockRouter).toHaveBeenCalledTimes(1)
-  // })
+  it('selectorOk', async () => {
+    await wrapper.find('selector').props().onOk({ categories: {} })
 
-  // it('dashboard', () => {
-  //   wrapper.find('Menu').at(0).props().onClick({ key: 'dashboard' })
-  //   expect(mockRouter).toHaveBeenCalledTimes(1)
-  // })
+    expect(wrapper.find('Menu').at(1).props().children[1].length).toBe(1)
 
-  // it('add simulation', () => {
-  //   wrapper.find('Menu').at(1).props().onClick({ key: 'new-simulation' })
-  //   expect(wrapper.find('selector').props().visible).toBe(true)
-  // })
+    // Error
+    wrapper.unmount()
+    mockMutateProject = () => {
+      throw new Error()
+    }
+    wrapper = shallow(<Project />)
+    await wrapper.find('selector').props().onOk({ categories: {} })
+  })
 
-  // it('selector ok', async () => {
-  //   await wrapper
-  //     .find('selector')
-  //     .props()
-  //     .onOk({ children: [{}] })
+  it('selector cancel', () => {
+    wrapper.find('selector').props().onCancel()
+    expect(wrapper.find('selector').props().visible).toBe(false)
+  })
 
-  //   expect(wrapper.find('Menu').at(1).props().children[1].length).toBe(1)
+  it('select simulation', async () => {
+    // Add simulation first
+    await wrapper
+      .find('selector')
+      .props()
+      .onOk({
+        children: [
+          {
+            type: 'geometry'
+          }
+        ]
+      })
 
-  //   // Error
-  //   wrapper.unmount()
-  //   mockMutateProject = () => {
-  //     throw new Error()
-  //   }
-  //   wrapper = shallow(<Project />)
-  //   await wrapper
-  //     .find('selector')
-  //     .props()
-  //     .onOk({ children: [{}] })
-  // })
+    wrapper.find('Menu').at(1).props().onClick({ key: 'simulation-0-geometry' })
+  })
 
-  // it('selector cancel', () => {
-  //   wrapper.find('selector').props().onCancel()
-  //   expect(wrapper.find('selector').props().visible).toBe(false)
-  // })
+  it('unknow key', () => {
+    wrapper.find('Menu').at(1).props().onClick({ key: 'unknow' })
+  })
 
-  // it('select simulation', async () => {
-  //   // Add simulation first
-  //   await wrapper
-  //     .find('selector')
-  //     .props()
-  //     .onOk({
-  //       children: [
-  //         {
-  //           type: 'geometry'
-  //         }
-  //       ]
-  //     })
+  it('simulation close', () => {
+    wrapper.find('Simulation').props().onClose()
+    expect(wrapper.find('Simulation').props().simulation).toBe(undefined)
+  })
 
-  //   wrapper.find('Menu').at(1).props().onClick({ key: 'simulation-0-geometry' })
-  // })
+  it('user effect', () => {
+    wrapper.unmount()
 
-  // it('unknow key', () => {
-  //   wrapper.find('Menu').at(1).props().onClick({ key: 'unknow' })
-  // })
+    // With user
+    wrapper = mount(<Project />)
+    expect(mockRouter).toHaveBeenCalledTimes(0)
+    wrapper.unmount()
 
-  // it('simulation close', () => {
-  //   wrapper.find('Simulation').props().onClose()
-  //   expect(wrapper.find('Simulation').props().simulation).toBe(undefined)
-  // })
+    // Without user
+    mockUser = () => {}
+    wrapper = mount(<Project />)
+    expect(mockRouter).toHaveBeenCalledTimes(1)
+  })
 })

@@ -1,14 +1,6 @@
 /** @module renderer/components/account */
 
-import {
-  Card,
-  Layout,
-  PageHeader,
-  Typography,
-  Divider,
-  Tabs,
-  Space
-} from 'antd'
+import { Layout, PageHeader, Typography, Divider, Tabs, Space } from 'antd'
 
 import Information from './information'
 import Password from './password'

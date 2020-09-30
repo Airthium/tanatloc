@@ -8,7 +8,7 @@ import Sentry from '../../../../../src/lib/sentry'
 
 const About = ({ project, simulation }) => {
   // Data
-  const [, { mutateOneSimulation }] = useSimulations(project.simulations)
+  const [, { mutateOneSimulation }] = useSimulations(project?.simulations)
 
   /**
    * Handle name

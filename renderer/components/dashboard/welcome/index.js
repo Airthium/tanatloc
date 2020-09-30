@@ -11,7 +11,12 @@ const Welcome = () => {
         <PageHeader
           backIcon={false}
           title={
-            <Typography.Title level={2}>Welcome on board</Typography.Title>
+            <Typography.Title
+              level={4}
+              className="pageheader-name"
+            >
+              Welcome on board
+            </Typography.Title>
           }
           footer={<Divider className="Welcome-divider" />}
         />

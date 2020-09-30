@@ -47,13 +47,16 @@ const Delete = () => {
    * Render
    */
   return (
-    <Card title="Remove">
+    <Card
+      title="Delete your account"
+      bodyStyle={{textAlign: 'center'}}
+    >
       <Button
         icon={<DeleteOutlined />}
         type="danger"
         onClick={() => setVisible(true)}
       >
-        Remove your account
+        Delete your account
       </Button>
       <DeleteDialog
         visible={visible}
@@ -61,7 +64,7 @@ const Delete = () => {
         onOk={handleDelete}
         loading={loading}
       >
-        All workspace and projects from your account will be lost.
+        This action cannot be undone. If you delete your account, you will permanently lose your workspaces and projects.
       </DeleteDialog>
     </Card>
   )

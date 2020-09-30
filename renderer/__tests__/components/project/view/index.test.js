@@ -88,6 +88,10 @@ jest.mock('../../../../../src/lib/three/loaders/PartLoader', () => ({
   })
 }))
 
+jest.mock('../../../../../src/api/part', () => ({
+  get: async () => {}
+}))
+
 let mockAnimationCount = 0
 window.requestAnimationFrame = (callback) => {
   mockAnimationCount++
@@ -221,5 +225,18 @@ describe('components/project/view', () => {
           value: 'value'
         }
       })
+  })
+
+  it('effect', () => {
+    wrapper.unmount()
+
+    wrapper = mount(
+      <View
+        simulation={{
+          scheme: { categories: { geometry: { file: { part: {} } } } }
+        }}
+        type="geometry"
+      />
+    )
   })
 })

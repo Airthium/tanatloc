@@ -6,19 +6,27 @@ describe('src/lib/three/loaders/PartLoader', () => {
       children: [
         {
           geometry: {
+            dispose: () => {},
             boundingBox: {
               min: { x: 0, y: 0, z: 0 },
               max: { x: 1, y: 1, z: 1 }
             }
           },
-          material: {}
+          material: {
+            dispose: () => {}
+          }
         }
       ]
     },
     {
       children: [
         {
-          material: {}
+          geometry: {
+            dispose: () => {}
+          },
+          material: {
+            dispose: () => {}
+          }
         }
       ]
     }
@@ -64,6 +72,12 @@ describe('src/lib/three/loaders/PartLoader', () => {
     partLoader.load(part)
 
     partLoader.load(part, true)
+  })
+
+  it('dispose', () => {
+    const partLoader = PartLoader()
+    const mesh = partLoader.load(part)
+    mesh.dispose()
   })
 
   it('setTransparent', () => {

@@ -2,15 +2,30 @@ import path from 'path'
 import { promises as fs } from 'fs'
 import { exec } from 'child_process'
 
-export const createPath = async (path) => {
-  await fs.mkdir(path, { recursive: true })
+/**
+ * Create path (recursive)
+ * @param {string} location Location path
+ */
+export const createPath = async (location) => {
+  await fs.mkdir(location, { recursive: true })
 }
 
+/**
+ * Write file
+ * @param {string} location Location
+ * @param {string} name File name
+ * @param {Object} content Content
+ */
 export const writeFile = async (location, name, content) => {
   await createPath(location)
   await fs.writeFile(path.join(location, name), content)
 }
 
+/**
+ * Convert file
+ * @param {string} location Location
+ * @param {Object} file File
+ */
 export const convert = async (location, file) => {
   const partPath = file.name.replace(/\.[^/.]+$/, '')
   const origin = path.join(location, file.name)
@@ -38,8 +53,13 @@ export const convert = async (location, file) => {
   }
 }
 
-export const loadPart = async (target, file) => {
-  const partFile = path.join(target, file)
+/**
+ * Load part
+ * @param {string} location Location
+ * @param {string} name File name
+ */
+export const loadPart = async (location, name) => {
+  const partFile = path.join(location, name)
   const partData = await fs.readFile(partFile)
   const part = JSON.parse(partData)
 
@@ -47,7 +67,7 @@ export const loadPart = async (target, file) => {
   if (part.solids) {
     await Promise.all(
       part.solids.map(async (solid) => {
-        const file = path.join(target, solid.path)
+        const file = path.join(location, solid.path)
         solid.buffer = await fs.readFile(file)
         delete solid.path
       })
@@ -58,7 +78,7 @@ export const loadPart = async (target, file) => {
   if (part.faces) {
     await Promise.all(
       part.faces.map(async (face) => {
-        const file = path.join(target, face.path)
+        const file = path.join(location, face.path)
         face.buffer = await fs.readFile(file)
         delete face.path
       })
@@ -69,7 +89,7 @@ export const loadPart = async (target, file) => {
   if (part.edges) {
     await Promise.all(
       part.edges.map(async (edge) => {
-        const file = path.join(target, edge.path)
+        const file = path.join(location, edge.path)
         edge.buffer = await fs.readFile(file)
         delete edge.path
       })

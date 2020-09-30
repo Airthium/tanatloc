@@ -37,7 +37,7 @@ import { SectionViewHelper } from '../../../../src/lib/three/helpers/SectionView
 
 import { PartLoader } from '../../../../src/lib/three/loaders/PartLoader'
 
-import get from '../../../../src/api/part/get'
+import { get } from '../../../../src/api/part'
 
 /**
  * ThreeView
@@ -364,7 +364,7 @@ const ThreeView = ({ part }) => {
    * Load part
    * TODO WIP
    */
-  const loadPart = async (part) => {
+  const loadPart = async () => {
     //load
     const loader = PartLoader()
     const mesh = loader.load(
@@ -636,6 +636,8 @@ const View = ({ simulation, type }) => {
   useEffect(() => {
     const scheme = simulation?.scheme
     const subScheme = scheme?.categories[type]
+
+    console.log(subScheme)
 
     if (subScheme?.file?.part) {
       loadPart(subScheme.file)

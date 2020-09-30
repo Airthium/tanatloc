@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { message, Button, Form, Input, Space } from 'antd'
+import { message, Button, Form, Input, Space, Card } from 'antd'
 
 import { useUser, update, check } from '../../../../src/api/user'
 
@@ -26,11 +26,11 @@ const Password = () => {
 
   // Layout
   const layout = {
-    labelCol: { span: 4 },
-    wrapperCol: { span: 16 }
+    labelCol: { offset: 4, span: 4 },
+    wrapperCol: { span: 8 }
   }
   const buttonLayout = {
-    wrapperCol: { offset: 14, span: 6 }
+    wrapperCol: { offset: 10, span: 6 }
   }
 
   /**
@@ -76,33 +76,35 @@ const Password = () => {
    * Render
    */
   return (
-    <Form
-      {...layout}
-      initialValues={{
-        password: '******',
-        newPassword: '******',
-        passwordConfirm: '******'
-      }}
-      onFinish={onFinish}
-      name="passwordForm"
-    >
-      <Form.Item label="Current password" name="password">
-        <Input.Password />
-      </Form.Item>
-      <Form.Item label="New password" name="newPassword">
-        <Input.Password />
-      </Form.Item>
-      <Form.Item label="Password confirmation" name="passwordConfirm">
-        <Input.Password />
-      </Form.Item>
-      <Form.Item {...buttonLayout} style={{ textAlign: 'right' }}>
-        <Space>
-          <Button type="primary" htmlType="submit" loading={loading}>
-            Modify password
-          </Button>
-        </Space>
-      </Form.Item>
-    </Form>
+    <Card title="Your Password">
+      <Form
+        {...layout}
+        initialValues={{
+          password: '******',
+          newPassword: '******',
+          passwordConfirm: '******'
+        }}
+        onFinish={onFinish}
+        name="passwordForm"
+      >
+        <Form.Item label="Current password" name="password">
+          <Input.Password />
+        </Form.Item>
+        <Form.Item label="New password" name="newPassword">
+          <Input.Password />
+        </Form.Item>
+        <Form.Item label="Password confirmation" name="passwordConfirm">
+          <Input.Password />
+        </Form.Item>
+        <Form.Item {...buttonLayout} style={{ textAlign: 'right', marginBottom: 'unset' }}>
+          <Space>
+            <Button type="primary" htmlType="submit" loading={loading}>
+              Modify password
+            </Button>
+          </Space>
+        </Form.Item>
+      </Form>
+    </Card>
   )
 }
 

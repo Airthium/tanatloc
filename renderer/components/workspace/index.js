@@ -79,7 +79,7 @@ const Workspace = ({ workspace }) => {
             title={
               <Typography.Title
                 level={4}
-                className="Workspace-name"
+                className="pageheader-name"
                 editable={{ onChange: setName }}
               >
                 {workspace.name}

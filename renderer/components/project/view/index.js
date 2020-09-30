@@ -247,7 +247,7 @@ const ThreeView = ({ part }) => {
       }
     })
 
-    if (part) loadPart(part)
+    if (part) loadPart()
   }, [part])
 
   /**
@@ -637,16 +637,14 @@ const View = ({ simulation, type }) => {
     const scheme = simulation?.scheme
     const subScheme = scheme?.categories[type]
 
-    console.log(subScheme)
-
     if (subScheme?.file?.part) {
       loadPart(subScheme.file)
     }
   }, [simulation, type])
 
   const loadPart = async (file) => {
-    const part = await get({ id: simulation.id }, file)
-    setPart(part)
+    const partContent = await get({ id: simulation.id }, file)
+    setPart(partContent)
   }
 
   return <ThreeView part={part} />

@@ -96,7 +96,10 @@ const Password = () => {
         <Form.Item label="Password confirmation" name="passwordConfirm">
           <Input.Password />
         </Form.Item>
-        <Form.Item {...buttonLayout} style={{ textAlign: 'right', marginBottom: 'unset' }}>
+        <Form.Item
+          {...buttonLayout}
+          style={{ textAlign: 'right', marginBottom: 'unset' }}
+        >
           <Space>
             <Button type="primary" htmlType="submit" loading={loading}>
               Modify password

@@ -13,10 +13,7 @@ const Welcome = () => {
         <PageHeader
           backIcon={false}
           title={
-            <Typography.Title
-              level={4}
-              className="pageheader-name"
-            >
+            <Typography.Title level={4} className="pageheader-name">
               Welcome on board
             </Typography.Title>
           }

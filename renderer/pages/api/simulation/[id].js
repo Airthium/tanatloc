@@ -9,3 +9,11 @@ import route from '../../../../src/route/simulation/[id]'
 export default async (req, res) => {
   await route(req, res)
 }
+
+export const config = {
+  api: {
+    bodyParser: {
+      sizeLimit: '150mb'
+    }
+  }
+}

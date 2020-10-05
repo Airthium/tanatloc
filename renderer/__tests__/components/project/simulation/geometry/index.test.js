@@ -45,10 +45,10 @@ describe('renderer/components/project/simulation/geometry', () => {
     expect(wrapper).toBeDefined()
   })
 
-  it('onDelete', async () => {
-    await wrapper.find('Button').props().onClick()
-    expect(mockUpdate).toHaveBeenCalledTimes(1)
-  })
+  // it('onDelete', async () => {
+  //   await wrapper.find('Button').props().onClick()
+  //   expect(mockUpdate).toHaveBeenCalledTimes(1)
+  // })
 
   it('upload', async () => {
     let res

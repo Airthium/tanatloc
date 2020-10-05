@@ -22,6 +22,15 @@ export const writeFile = async (location, name, content) => {
 }
 
 /**
+ * Read file
+ * @param {string} file File name
+ */
+export const readFile = async (file) => {
+  const content = await fs.readFile(file)
+  return content
+}
+
+/**
  * Convert file
  * @param {string} location Location
  * @param {Object} file File
@@ -99,10 +108,18 @@ export const loadPart = async (location, name) => {
   return part
 }
 
+/**
+ * Remove file
+ * @param {string} file File name
+ */
 export const removeFile = async (file) => {
   await fs.unlink(file)
 }
 
+/**
+ * Remove directory
+ * @param {string} dir Directory
+ */
 export const removeDirectory = async (dir) => {
   await fs.rmdir(dir, { recursive: true })
 }

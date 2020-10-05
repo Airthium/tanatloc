@@ -1,12 +1,15 @@
 import { useState, useEffect } from 'react'
-import { Button, Layout, Upload } from 'antd'
+import { Button, Layout, Popconfirm, Upload } from 'antd'
 import {
   DeleteOutlined,
+  DownloadOutlined,
   LoadingOutlined,
-  PlusOutlined
+  PlusOutlined,
+  QuestionCircleOutlined
 } from '@ant-design/icons'
 
 import { update, useSimulations } from '../../../../../src/api/simulation'
+import { get } from '../../../../../src/api/file'
 
 const Geometry = ({ project, simulation }) => {
   // State
@@ -132,6 +135,22 @@ const Geometry = ({ project, simulation }) => {
     })
   }
 
+  const onDownload = async () => {
+    const file = {
+      origin: simulation.scheme.categories.geometry.file.origin,
+      originPath: simulation.scheme.categories.geometry.file.originPath
+    }
+    const content = await get({ id: simulation.id }, file)
+
+    const data = new File([Buffer.from(content.buffer).toString()], file.origin)
+    const url = window.URL.createObjectURL(data)
+    const link = document.createElement('a')
+    link.href = url
+    link.setAttribute('download', file.origin)
+    link.click()
+    link.remove()
+  }
+
   /**
    * Render
    */
@@ -159,10 +178,15 @@ const Geometry = ({ project, simulation }) => {
           </>
         ) : (
           <>
-            <p>
-              {currentFile?.name}{' '}
-              <Button icon={<DeleteOutlined />} onClick={onDelete} />
-            </p>
+            <p>File: {currentFile?.name} </p>
+            <Button icon={<DownloadOutlined />} onClick={onDownload} />
+            <Popconfirm
+              title="Are you sure"
+              icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
+              onConfirm={onDelete}
+            >
+              <Button type="danger" icon={<DeleteOutlined />} />
+            </Popconfirm>
           </>
         )}
       </Layout.Content>

@@ -4,6 +4,7 @@ jest.mock('http-errors', () => () => {})
 jest.mock('express', () => ({
   __esModule: true,
   default: () => ({
+    disable: () => {},
     use: jest.fn((callback) => {
       if (typeof callback === 'function') {
         if (callback.length === 3) callback({}, {}, jest.fn())

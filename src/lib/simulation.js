@@ -12,7 +12,7 @@ import {
 } from '../database/simulation'
 
 import { update as updateProject } from './project'
-import { writeFile, convert } from './tools'
+import { writeFile, convert, removeFile, removeDirectory } from './tools'
 
 /**
  * Add simulation
@@ -49,41 +49,85 @@ const get = async (id, data) => {
 }
 
 /**
- * Update simulation
+ * Check files in update
  * @param {Object} simulation Simulation { id }
- * @param {Object} data Data [{ key, value, ... }, ...]
+ * @param {Array} data Data
  */
-const update = async (simulation, data) => {
-  // Check for file
-  // TODO remove at override ? (for example geometry)
+const checkFiles = async (simulation, data) => {
   await Promise.all(
     data.map(async (d) => {
-      if (d.value.file) {
-        //Write file
-        const location = path.join(storage.SIMULATION, simulation.id, d.path[1])
+      // No scheme
+      if (d.key !== 'scheme') return
+      // No file
+      if (!d.value.file) return
+
+      // Current data in dB
+      const prevData = await get(simulation.id, ['scheme'])
+
+      // Sub object from d.path
+      const subObj = d.path.reduce((obj, key) => obj[key], prevData.scheme)
+
+      // Remove old file
+      if (subObj.file) {
+        if (subObj.file.origin) {
+          const originFile = path.join(
+            storage.SIMULATION,
+            simulation.id,
+            subObj.file.originPath,
+            subObj.file.origin
+          )
+          await removeFile(originFile)
+        }
+        if (subObj.file.part) {
+          const partDirectory = path.join(
+            storage.SIMULATION,
+            simulation.id,
+            subObj.file.partPath
+          )
+          await removeDirectory(partDirectory)
+        }
+      }
+
+      if (d.value.file === 'remove') {
+        d.value.file = undefined
+      } else {
+        // Write new file
+        const subDir = d.path.slice(-1).pop()
+        const location = path.join(storage.SIMULATION, simulation.id, subDir)
         const file = d.value.file
-        const fileName = await writeFile(
+        await writeFile(
           location,
           file.name,
           Buffer.from(file.buffer).toString()
         )
 
         // Update object
-        d.value.file.originPath = d.path[1]
-        d.value.file.origin = fileName
+        d.value.file.originPath = subDir
+        d.value.file.origin = file.name
 
         // Convert file
         const part = await convert(location, file)
-        d.value.file.partPath = path.join(d.path[1], part.path)
+        d.value.file.partPath = path.join(subDir, part.path)
         d.value.file.part = part.part
 
-        // remove unused
+        // Remove unused
         delete d.value.file.uid
         delete d.value.file.buffer
       }
+
       return
     })
   )
+}
+
+/**
+ * Update simulation
+ * @param {Object} simulation Simulation { id }
+ * @param {Object} data Data [{ key, value, ... }, ...]
+ */
+const update = async (simulation, data) => {
+  // Check for files
+  await checkFiles(simulation, data)
 
   // Update
   await dBupdate(simulation, data)

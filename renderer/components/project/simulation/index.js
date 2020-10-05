@@ -108,7 +108,9 @@ const Simulation = ({ project, simulation, type, onClose }) => {
   return (
     <Panel visible={visible} title={title} onClose={onClose}>
       {type === 'about' && <About project={project} simulation={simulation} />}
-      {type === 'geometry' && <Geometry simulation={simulation} />}
+      {type === 'geometry' && (
+        <Geometry project={project} simulation={simulation} />
+      )}
     </Panel>
   )
 }

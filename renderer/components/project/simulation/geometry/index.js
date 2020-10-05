@@ -1,13 +1,21 @@
 import { useState, useEffect } from 'react'
-import { Layout, Upload } from 'antd'
-import { LoadingOutlined, PlusOutlined } from '@ant-design/icons'
+import { Button, Layout, Upload } from 'antd'
+import {
+  DeleteOutlined,
+  LoadingOutlined,
+  PlusOutlined
+} from '@ant-design/icons'
 
-import { update } from '../../../../../src/api/simulation'
+import { update, useSimulations } from '../../../../../src/api/simulation'
 
-const Geometry = ({ simulation }) => {
+const Geometry = ({ project, simulation }) => {
+  // State
   const [upload, setUpload] = useState(false)
   const [loading, setLoading] = useState(false)
   const [file, setFile] = useState()
+
+  // Data
+  const [, { mutateOneSimulation }] = useSimulations(project?.simulations)
 
   useEffect(() => {
     const file = simulation?.scheme.categories.geometry.file
@@ -52,6 +60,14 @@ const Geometry = ({ simulation }) => {
         }
       ])
 
+      // Mutate simulation
+      mutateOneSimulation(
+        {
+          ...simulation
+        },
+        true
+      )
+
       setLoading(false)
     }
   }
@@ -67,13 +83,48 @@ const Geometry = ({ simulation }) => {
     return buffer
   }
 
+  const onDelete = async () => {
+    // Diff scheme
+    const diff = {
+      file: 'remove'
+    }
+
+    // Update simulation
+    await update({ id: simulation.id }, [
+      {
+        key: 'scheme',
+        type: 'json',
+        method: 'diff',
+        path: ['categories', 'geometry'],
+        value: diff
+      }
+    ])
+
+    // Mutate
+    mutateOneSimulation({
+      ...simulation,
+      scheme: {
+        ...simulation.scheme,
+        categories: {
+          ...simulation.scheme.categories,
+          geometry: {
+            ...simulation.scheme.categories.geometry,
+            file: undefined
+          }
+        }
+      }
+    })
+  }
+
   return (
     <Layout>
       <Layout.Content>
         {upload ? (
           <>
-            <p>Upload a geometry</p>
-            <p>(STEP file or DXF file)</p>
+            <p>
+              <b>Upload a geometry</b>
+            </p>
+            <p>STEP (3D) of DXF (2D) file</p>
             <Upload
               accept=".stp,.step,.dxf"
               showUploadList={false}
@@ -89,7 +140,10 @@ const Geometry = ({ simulation }) => {
           </>
         ) : (
           <>
-            <p>{file?.name}</p>
+            <p>
+              {file?.name}{' '}
+              <Button icon={<DeleteOutlined />} onClick={onDelete} />
+            </p>
           </>
         )}
       </Layout.Content>

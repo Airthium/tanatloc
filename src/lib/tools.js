@@ -98,3 +98,11 @@ export const loadPart = async (location, name) => {
 
   return part
 }
+
+export const removeFile = async (file) => {
+  await fs.unlink(file)
+}
+
+export const removeDirectory = async (dir) => {
+  await fs.rmdir(dir, { recursive: true })
+}

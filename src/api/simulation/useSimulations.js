@@ -41,12 +41,12 @@ const useSimulations = (ids) => {
    * @memberof module:src/api/simulation
    * @param {Object} simulation Simulation
    */
-  const mutateOne = (simulation) => {
+  const mutateOne = (simulation, revalidate) => {
     const mutatedSimulations = simulations.map((s) => {
       if (s.id === simulation.id) s = { ...s, ...simulation }
       return s
     })
-    mutate({ simulations: mutatedSimulations })
+    mutate({ simulations: mutatedSimulations }, revalidate)
   }
 
   return [

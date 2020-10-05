@@ -1,6 +1,6 @@
 import createDatabase from '../dB'
 
-let mockQuery = () => ({ rows: [{}] })
+let mockQuery
 jest.mock('../../src/database', () => {
   return async (query) => mockQuery(query)
 })
@@ -23,6 +23,7 @@ describe('install/dB', () => {
       }),
       release: () => {}
     })
+    mockQuery = () => ({ rows: [{}] })
   })
 
   it('alreadyExists', async () => {
@@ -57,5 +58,16 @@ describe('install/dB', () => {
       throw new Error()
     }
     await createDatabase()
+  })
+
+  it('MacOS', async () => {
+    const original = process.platform
+    Object.defineProperty(process, 'platform', {
+      value: 'darwin'
+    })
+    await createDatabase()
+    Object.defineProperty(process, 'platform', {
+      value: original
+    })
   })
 })

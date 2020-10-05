@@ -21,6 +21,7 @@ import simulationsIds from '../src/route/simulations/[ids]'
 import part from '../src/route/part'
 
 const app = express()
+app.disable('x-powered-by')
 
 app.use(
   cors({

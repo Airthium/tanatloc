@@ -53,6 +53,11 @@ jest.mock('../../src/route/project', () => () => {})
 jest.mock('../../src/route/project/[id]', () => () => {})
 jest.mock('../../src/route/projects', () => () => {})
 jest.mock('../../src/route/projects/[ids]', () => () => {})
+jest.mock('../../src/route/simulation', () => () => {})
+jest.mock('../../src/route/simulation/[id]', () => () => {})
+jest.mock('../../src/route/simulations', () => () => {})
+jest.mock('../../src/route/simulations/[ids]', () => () => {})
+jest.mock('../../src/route/part', () => () => {})
 
 describe('server/app', () => {
   it('app', () => {

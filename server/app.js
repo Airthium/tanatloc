@@ -14,6 +14,11 @@ import project from '../src/route/project'
 import projectId from '../src/route/project/[id]'
 import projects from '../src/route/projects'
 import projectsIds from '../src/route/projects/[ids]'
+import simulation from '../src/route/simulation'
+import simulationId from '../src/route/simulation/[id]'
+import simulations from '../src/route/simulations'
+import simulationsIds from '../src/route/simulations/[ids]'
+import part from '../src/route/part'
 
 const app = express()
 
@@ -43,6 +48,14 @@ app.all('/api/project/:id', projectId)
 
 app.all('/api/projects', projects)
 app.all('/api/projects/:ids', projectsIds)
+
+app.all('/api/simulation', simulation)
+app.all('/api/simulation/:id', simulationId)
+
+app.all('/api/simulations', simulations)
+app.all('/api/simulations/:ids', simulationsIds)
+
+app.all('/api/part', part)
 
 /**
  * Catch 404 and forward to error handler

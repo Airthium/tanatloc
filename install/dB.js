@@ -16,7 +16,7 @@ const createDatabase = async () => {
       host: config.HOST,
       port: config.PORT,
       user: user,
-      database: user
+      database: 'postgres'
     })
     client = await pool.connect()
 
@@ -378,8 +378,8 @@ const createAdmin = async () => {
     await query(
       'INSERT INTO ' +
         databases.USERS +
-        " (email, password, workspaces, isValidated, lastModificationDate, superuser) VALUES ($1, crypt($2, gen_salt('bf')), $3, $4, to_timestamp($5), $6)",
-      ['admin', password, [], true, Date.now() / 1000, true]
+        " (email, username, password, workspaces, isValidated, lastModificationDate, superuser) VALUES ($1, crypt($2, gen_salt('bf')), $3, $4, to_timestamp($5), $6)",
+      ['admin', 'admin', password, [], true, Date.now() / 1000, true]
     )
     console.info(' Administrator account:')
     console.info(' - username: admin')

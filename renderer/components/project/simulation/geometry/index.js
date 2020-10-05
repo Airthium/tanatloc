@@ -17,6 +17,7 @@ const Geometry = ({ project, simulation }) => {
   // Data
   const [, { mutateOneSimulation }] = useSimulations(project?.simulations)
 
+  // Effect
   useEffect(() => {
     const file = simulation?.scheme.categories.geometry.file
     setFile(file)
@@ -27,14 +28,22 @@ const Geometry = ({ project, simulation }) => {
     }
   }, [simulation])
 
+  /**
+   * Upload check
+   * @param {Object} file File
+   */
   const beforeUpload = (file) => {
     const goodFormat =
-      file.name.includes('.stp') ||
-      file.name.includes('.step') ||
-      file.name.includes('.dxf')
+      file.name.toLowerCase().includes('.stp') ||
+      file.name.toLowerCase().includes('.step') ||
+      file.name.toLowerCase().includes('.dxf')
     return goodFormat
   }
 
+  /**
+   * On upload
+   * @param {object} info Info
+   */
   const onChange = async (info) => {
     if (info.file.status === 'uploading') setLoading(true)
 
@@ -72,6 +81,10 @@ const Geometry = ({ project, simulation }) => {
     }
   }
 
+  /**
+   * Get file
+   * @param {Object} file File
+   */
   const getFile = async (file) => {
     const reader = new FileReader()
     const buffer = await new Promise((resolve) => {
@@ -83,6 +96,9 @@ const Geometry = ({ project, simulation }) => {
     return buffer
   }
 
+  /**
+   * On delete
+   */
   const onDelete = async () => {
     // Diff scheme
     const diff = {
@@ -116,6 +132,9 @@ const Geometry = ({ project, simulation }) => {
     })
   }
 
+  /**
+   * Render
+   */
   return (
     <Layout>
       <Layout.Content>

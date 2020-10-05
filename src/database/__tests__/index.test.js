@@ -1,11 +1,12 @@
 import query, { getter, updater, deleter } from '..'
 
+let mockQuery = () => 'query'
 jest.mock('pg', () => {
   return {
     Pool: class PoolMock {
       constructor() {
         this.connect = async () => ({
-          query: async () => 'query',
+          query: async () => mockQuery(),
           release: () => {}
         })
         this.query = async () => 'query'
@@ -45,7 +46,28 @@ describe('database', () => {
 
     await updater('db', 'id', { type: 'array', method: 'switch' })
 
-    // await updater('db', 'id', { type: 'json', method: 'diff' })
+    mockQuery = () => ({
+      rows: [
+        {
+          scheme: {
+            first: {
+              second: {}
+            }
+          }
+        }
+      ]
+    })
+    await updater('db', 'id', {
+      type: 'json',
+      method: 'diff',
+      key: 'scheme',
+      path: ['first', 'second']
+    })
+
+    await updater('db', 'id', {
+      type: 'json',
+      method: 'other'
+    })
   })
 
   it('deleter', async () => {

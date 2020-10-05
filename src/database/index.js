@@ -77,7 +77,7 @@ const updater = async (db, id, data) => {
         [id, data.value]
       )
     } else if (data.method === 'replace') {
-      //TODO
+      //TODO if necessary
     } else if (data.method === 'remove') {
       await query(
         'UPDATE ' +
@@ -90,7 +90,7 @@ const updater = async (db, id, data) => {
         [id, data.value]
       )
     } else if (data.method === 'switch') {
-      //TODO
+      //TODO if necessary
     } else {
       //TODO
     }
@@ -114,6 +114,8 @@ const updater = async (db, id, data) => {
 
       // Update
       await updater(db, id, { key: data.key, value: json })
+    } else {
+      // TODO
     }
   } else {
     await query('UPDATE ' + db + ' SET ' + data.key + ' = $2 WHERE id = $1', [

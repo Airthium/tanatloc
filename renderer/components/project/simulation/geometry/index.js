@@ -12,7 +12,7 @@ const Geometry = ({ project, simulation }) => {
   // State
   const [upload, setUpload] = useState(false)
   const [loading, setLoading] = useState(false)
-  const [file, setFile] = useState()
+  const [currentFile, setCurrentFile] = useState()
 
   // Data
   const [, { mutateOneSimulation }] = useSimulations(project?.simulations)
@@ -20,7 +20,7 @@ const Geometry = ({ project, simulation }) => {
   // Effect
   useEffect(() => {
     const file = simulation?.scheme.categories.geometry.file
-    setFile(file)
+    setCurrentFile(file)
     if (file) {
       setUpload(false)
     } else {
@@ -160,7 +160,7 @@ const Geometry = ({ project, simulation }) => {
         ) : (
           <>
             <p>
-              {file?.name}{' '}
+              {currentFile?.name}{' '}
               <Button icon={<DeleteOutlined />} onClick={onDelete} />
             </p>
           </>

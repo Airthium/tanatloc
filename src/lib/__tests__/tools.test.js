@@ -1,6 +1,7 @@
 import {
   createPath,
   writeFile,
+  readFile,
   convert,
   loadPart,
   removeFile,
@@ -13,7 +14,7 @@ jest.mock('path', () => ({
 
 const mockMkdir = jest.fn()
 const mockWriteFile = jest.fn()
-const mockReadFile = jest.fn(() => 'readFile')
+const mockReadFile = jest.fn()
 const mockUnlink = jest.fn()
 const mockRmdir = jest.fn()
 jest.mock('fs', () => ({
@@ -34,6 +35,15 @@ jest.mock('child_process', () => ({
 }))
 
 describe('src/lib/tools', () => {
+  beforeEach(() => {
+    mockMkdir.mockReset()
+    mockWriteFile.mockReset()
+    mockReadFile.mockReset()
+    mockReadFile.mockImplementation(() => 'readFile')
+    mockUnlink.mockReset()
+    mockRmdir.mockReset()
+  })
+
   it('createPath', async () => {
     await createPath('location')
     expect(mockMkdir).toHaveBeenCalledTimes(1)
@@ -41,8 +51,14 @@ describe('src/lib/tools', () => {
 
   it('writeFile', async () => {
     await writeFile('location', {})
-    expect(mockMkdir).toHaveBeenCalledTimes(2)
+    expect(mockMkdir).toHaveBeenCalledTimes(1)
     expect(mockWriteFile).toHaveBeenCalledTimes(1)
+  })
+
+  it('readFile', async () => {
+    const content = await readFile('file')
+    expect(mockReadFile).toHaveBeenCalledTimes(1)
+    expect(content).toBe('readFile')
   })
 
   it('convert', async () => {

@@ -8,6 +8,11 @@ jest.mock('../../../../../../src/api/simulation', () => ({
   useSimulations: () => [[], { mutateOneSimulation: mockMutate }]
 }))
 
+const mockGet = jest.fn()
+jest.mock('../../../../../../src/api/file', () => ({
+  get: async () => mockGet()
+}))
+
 global.FileReader = class {
   constructor() {
     this.result = 'result'
@@ -23,6 +28,7 @@ describe('renderer/components/project/simulation/geometry', () => {
   beforeEach(() => {
     mockUpdate.mockReset()
     mockMutate.mockReset()
+    mockGet.mockReset()
     wrapper = shallow(
       <Geometry
         project={{}}
@@ -45,10 +51,11 @@ describe('renderer/components/project/simulation/geometry', () => {
     expect(wrapper).toBeDefined()
   })
 
-  // it('onDelete', async () => {
-  //   await wrapper.find('Button').props().onClick()
-  //   expect(mockUpdate).toHaveBeenCalledTimes(1)
-  // })
+  it('onDelete', async () => {
+    console.log(wrapper.debug())
+    await wrapper.find('ForwardRef').props().onConfirm()
+    expect(mockUpdate).toHaveBeenCalledTimes(1)
+  })
 
   it('upload', async () => {
     let res
@@ -125,5 +132,34 @@ describe('renderer/components/project/simulation/geometry', () => {
         }}
       />
     )
+  })
+
+  it('download', async () => {
+    wrapper.unmount()
+    wrapper = mount(
+      <Geometry
+        project={{}}
+        simulation={{
+          scheme: {
+            categories: {
+              geometry: {
+                file: {
+                  origin: 'origin',
+                  originPath: 'originPath'
+                }
+              }
+            }
+          }
+        }}
+      />
+    )
+    mockGet.mockImplementation(() => ({
+      buffer: ['buffer']
+    }))
+
+    window.URL.createObjectURL = () => 'url'
+
+    await wrapper.find('Button').at(0).props().onClick()
+    expect(mockGet).toHaveBeenCalledTimes(1)
   })
 })

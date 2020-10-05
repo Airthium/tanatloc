@@ -19,16 +19,14 @@ const add = async (user, { name }) => {
   const workspace = await dBadd(user, { name })
 
   // Add workspace to user
-  await updateUser(user, {
-    data: [
-      {
-        type: 'array',
-        method: 'append',
-        key: 'workspaces',
-        value: workspace.id
-      }
-    ]
-  })
+  await updateUser(user, [
+    {
+      type: 'array',
+      method: 'append',
+      key: 'workspaces',
+      value: workspace.id
+    }
+  ])
 
   // Return
   return workspace

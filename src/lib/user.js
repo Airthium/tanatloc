@@ -9,13 +9,19 @@ import {
 import { read as readAvatar } from './avatar'
 
 /**
+ * Add user (TODO)
+ */
+const add = () => {}
+
+/**
  * Get user
- * @param {string} id Id
+ * @param {string} id User's id
  * @param {Array} data Data
  */
 const get = async (id, data) => {
   const user = await dBget(id, data)
 
+  // Get avatar
   if (user.avatar) {
     try {
       const avatar = await readAvatar(user.avatar)
@@ -26,6 +32,7 @@ const get = async (id, data) => {
     }
   }
 
+  // Return
   return user
 }
 
@@ -36,8 +43,10 @@ const get = async (id, data) => {
 const login = async ({ username, password }) => {
   const user = await getByUsernameAndPassword({ username, password })
 
+  // Check user
   if (!user) return null
 
+  // Return
   return {
     ...user,
     username: username
@@ -45,17 +54,12 @@ const login = async ({ username, password }) => {
 }
 
 /**
- * Add user (TODO)
- */
-const add = () => {}
-
-/**
  * Update user
  * @param {Object} user user { id }
- * @param {Object} data Data {data: [{ type, method, key, value }] } }
+ * @param {Object} data Data [{ key, value, ... }, ...]
  */
-const update = async (user, { data }) => {
-  await dBupdate({ user, data })
+const update = async (user, data) => {
+  await dBupdate(user, data)
 }
 
 /**

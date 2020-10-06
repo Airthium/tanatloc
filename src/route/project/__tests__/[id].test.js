@@ -3,26 +3,14 @@ import id from '../[id]'
 let mockSession = () => false
 jest.mock('../../session', () => () => mockSession())
 
+let mockGet
+let mockUpdate
+let mockDel
 jest.mock('../../../lib/project', () => {
-  let countG = 0
-  let countU = 0
-  let countD = 0
   return {
-    get: async () => {
-      countG++
-      if (countG === 1) throw new Error()
-      return {
-        title: 'title'
-      }
-    },
-    update: async () => {
-      countU++
-      if (countU === 1) throw new Error()
-    },
-    del: () => {
-      countD++
-      if (countD === 1) throw new Error()
-    }
+    get: async () => mockGet(),
+    update: async () => mockUpdate(),
+    del: async () => mockDel()
   }
 })
 
@@ -47,16 +35,21 @@ describe('src/route/project/[id]', () => {
     })
   }
 
+  beforeEach(() => {
+    mockGet = () => ({
+      title: 'title'
+    })
+    mockUpdate = () => {}
+    mockDel = () => {}
+  })
+
   it('no session', async () => {
     await id(req, res)
     expect(response).toBe(undefined)
   })
 
-  it('session', async () => {
+  it('GET', async () => {
     mockSession = () => true
-
-    await id(req, res)
-    expect(response).toEqual({ message: '' })
 
     await id(req, res)
     expect(response).toEqual({
@@ -64,6 +57,12 @@ describe('src/route/project/[id]', () => {
         title: 'title'
       }
     })
+
+    mockGet = () => {
+      throw new Error()
+    }
+    await id(req, res)
+    expect(response).toEqual({ message: '' })
   })
 
   it('electron', async () => {
@@ -78,22 +77,19 @@ describe('src/route/project/[id]', () => {
     })
   })
 
-  it('POST', async () => {
-    mockSession = () => true
-    req.method = 'POST'
-    await id(req, res)
-    expect(response).toEqual({ message: 'Method POST not allowed' })
-  })
-
   it('PUT', async () => {
     mockSession = () => true
     req.method = 'PUT'
 
     await id(req, res)
-    expect(response).toEqual({ message: '' })
-
-    await id(req, res)
     expect(response).toBe('end')
+
+    // Error
+    mockUpdate = () => {
+      throw new Error()
+    }
+    await id(req, res)
+    expect(response).toEqual({ message: '' })
   })
 
   it('DELETE', async () => {
@@ -101,9 +97,20 @@ describe('src/route/project/[id]', () => {
     req.method = 'DELETE'
 
     await id(req, res)
-    expect(response).toEqual({ message: '' })
-
-    await id(req, res)
     expect(response).toBe('end')
+
+    // Error
+    mockDel = () => {
+      throw new Error()
+    }
+    await id(req, res)
+    expect(response).toEqual({ message: '' })
+  })
+
+  it('Wrong route', async () => {
+    mockSession = () => true
+    req.method = 'POST'
+    await id(req, res)
+    expect(response).toEqual({ message: 'Method POST not allowed' })
   })
 })

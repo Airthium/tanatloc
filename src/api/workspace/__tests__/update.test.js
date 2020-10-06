@@ -1,12 +1,13 @@
 import update from '../update'
 
+const mockCall = jest.fn(async () => 'res')
 jest.mock('../../call', () => ({
-  call: async () => 'res'
+  call: () => mockCall()
 }))
 
 describe('src/api/workspace/update', () => {
   it('update', async () => {
-    const res = await update({})
-    expect(res).toBe('res')
+    await update({})
+    expect(mockCall).toHaveBeenCalledTimes(1)
   })
 })

@@ -5,7 +5,6 @@ import { databases } from '../../../config/db'
  * Get by username and password
  * @memberof module:src/database/user
  * @param {Object} user User { username, password }
- * @returns {Object} User
  */
 const getByUsernameAndPassword = async ({ username, password }) => {
   const response = await query(

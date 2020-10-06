@@ -3,16 +3,10 @@ import ids from '../[ids]'
 let mockSession = () => false
 jest.mock('../../session', () => () => mockSession())
 
+let mockGet
 jest.mock('../../../lib/project', () => {
-  let countG = 0
   return {
-    get: async () => {
-      countG++
-      if (countG === 1) throw new Error()
-      return {
-        title: 'title'
-      }
-    }
+    get: async () => mockGet()
   }
 })
 
@@ -22,6 +16,7 @@ jest.mock('../../../lib/sentry', () => ({
 
 describe('src/route/projects/ids', () => {
   const req = {
+    method: 'GET',
     query: {},
     params: {}
   }
@@ -37,12 +32,18 @@ describe('src/route/projects/ids', () => {
     })
   }
 
+  beforeEach(() => {
+    mockGet = () => ({
+      title: 'title'
+    })
+  })
+
   it('no session', async () => {
     await ids(req, res)
     expect(response).toBe(undefined)
   })
 
-  it('session', async () => {
+  it('GET', async () => {
     mockSession = () => true
 
     // No ids
@@ -53,7 +54,18 @@ describe('src/route/projects/ids', () => {
     // Normal
     req.query = { ids: 'id1&id2' }
     await ids(req, res)
-    expect(response).toEqual({ projects: [{ title: 'title' }] })
+    expect(response).toEqual({
+      projects: [{ title: 'title' }, { title: 'title' }]
+    })
+
+    // Get error
+    mockGet = () => {
+      throw new Error()
+    }
+    await ids(req, res)
+    expect(response).toEqual({
+      projects: []
+    })
 
     // Error
     req.query = undefined
@@ -71,5 +83,11 @@ describe('src/route/projects/ids', () => {
     expect(response).toEqual({
       projects: [{ title: 'title' }, { title: 'title' }]
     })
+  })
+
+  it('wrong route', async () => {
+    req.method = 'SOMETHING'
+    await ids(req, res)
+    expect(response).toEqual({ message: 'Method SOMETHING not allowed' })
   })
 })

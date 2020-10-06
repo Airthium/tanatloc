@@ -8,7 +8,7 @@ import { call } from '../call'
 const update = async (data) => {
   const res = await call('/api/user', {
     method: 'PUT',
-    body: JSON.stringify({ data })
+    body: JSON.stringify(data)
   })
 
   return res

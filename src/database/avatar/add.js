@@ -15,6 +15,8 @@ const add = async ({ name, path }) => {
   )
 
   const avatar = response.rows[0]
+  avatar.name = name
+
   return avatar
 }
 

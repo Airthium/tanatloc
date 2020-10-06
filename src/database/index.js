@@ -52,7 +52,7 @@ const getter = async (db, id, data, key = 'id') => {
  * Update from dB
  * @param {string} db Database
  * @param {string} id Id
- * @param {Object} data Data { type, method, key, value }
+ * @param {Object} data Data { type, method, key, path, value }
  */
 const updater = async (db, id, data) => {
   if (data.type === 'crypt') {
@@ -77,7 +77,7 @@ const updater = async (db, id, data) => {
         [id, data.value]
       )
     } else if (data.method === 'replace') {
-      //TODO
+      //TODO if necessary
     } else if (data.method === 'remove') {
       await query(
         'UPDATE ' +
@@ -90,9 +90,32 @@ const updater = async (db, id, data) => {
         [id, data.value]
       )
     } else if (data.method === 'switch') {
-      //TODO
+      //TODO if necessary
     } else {
       //TODO
+    }
+  } else if (data.type === 'json') {
+    if (data.method === 'diff') {
+      // Get existing json
+      const res = await query('SELECT ' + data.key + ' FROM ' + db)
+      const json = res.rows[0][data.key]
+
+      // Set json
+      const set = (object, path, value) => {
+        const last = path.pop()
+        const subObj = path.reduce((obj, key) => obj[key], object)
+        subObj[last] = {
+          ...subObj[last],
+          ...value
+        }
+      }
+
+      set(json, data.path, data.value)
+
+      // Update
+      await updater(db, id, { key: data.key, value: json })
+    } else {
+      // TODO
     }
   } else {
     await query('UPDATE ' + db + ' SET ' + data.key + ' = $2 WHERE id = $1', [

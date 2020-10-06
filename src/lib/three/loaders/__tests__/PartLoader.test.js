@@ -6,19 +6,27 @@ describe('src/lib/three/loaders/PartLoader', () => {
       children: [
         {
           geometry: {
+            dispose: () => {},
             boundingBox: {
               min: { x: 0, y: 0, z: 0 },
               max: { x: 1, y: 1, z: 1 }
             }
           },
-          material: {}
+          material: {
+            dispose: () => {}
+          }
         }
       ]
     },
     {
       children: [
         {
-          material: {}
+          geometry: {
+            dispose: () => {}
+          },
+          material: {
+            dispose: () => {}
+          }
         }
       ]
     }
@@ -26,17 +34,17 @@ describe('src/lib/three/loaders/PartLoader', () => {
   const part = {
     solids: [
       {
-        buffer: {}
+        buffer: '{ "uuid": "id" }'
       }
     ],
     faces: [
       {
-        buffer: {}
+        buffer: '{ "uuid": "id" }'
       }
     ],
     edges: [
       {
-        buffer: {}
+        buffer: '{ "uuid": "id" }'
       }
     ]
   }
@@ -66,6 +74,12 @@ describe('src/lib/three/loaders/PartLoader', () => {
     partLoader.load(part, true)
   })
 
+  it('dispose', () => {
+    const partLoader = PartLoader()
+    const mesh = partLoader.load(part)
+    mesh.dispose()
+  })
+
   it('setTransparent', () => {
     const partLoader = PartLoader()
     const mesh = partLoader.load(part)
@@ -78,24 +92,24 @@ describe('src/lib/three/loaders/PartLoader', () => {
     const mesh = partLoader.load(part)
     mesh.startSelection(renderer, camera, 'face')
 
-    mouseMove({})
+    mouseMove({ target: { getBoundingClientRect: () => ({}) } })
     mouseDown({})
 
     const mesh1 = { uuid: 'uuid', material: {} }
     const mesh2 = { uuid: 'uuid2', material: {} }
     global.MockRaycaster.intersectObjects = [{ object: mesh1 }]
-    mouseMove({})
-    mouseMove({})
+    mouseMove({ target: { getBoundingClientRect: () => ({}) } })
+    mouseMove({ target: { getBoundingClientRect: () => ({}) } })
 
     mouseDown({})
     mouseDown({})
     mouseDown({})
 
     global.MockRaycaster.intersectObjects = [{ object: mesh2 }]
-    mouseMove({})
+    mouseMove({ target: { getBoundingClientRect: () => ({}) } })
 
     global.MockRaycaster.intersectObjects = [{ object: mesh1 }]
-    mouseMove({})
+    mouseMove({ target: { getBoundingClientRect: () => ({}) } })
 
     mesh.stopSelection()
     mesh.startSelection(renderer, camera, 'solid')

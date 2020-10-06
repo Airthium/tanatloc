@@ -7,7 +7,7 @@ jest.mock('../..', () => ({
 
 describe('src/database/project/delete', () => {
   it('call', async () => {
-    const res = await del({})
+    await del({})
     expect(mockDelete).toHaveBeenCalledTimes(1)
   })
 })

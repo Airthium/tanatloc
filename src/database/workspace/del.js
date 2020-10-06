@@ -1,4 +1,4 @@
-import query from '..'
+import { deleter } from '..'
 import { databases } from '../../../config/db'
 
 /**
@@ -8,9 +8,7 @@ import { databases } from '../../../config/db'
  */
 const del = async (workspace) => {
   // Delete workspace
-  await query('DELETE FROM ' + databases.WORKSPACES + ' WHERE id = $1', [
-    workspace.id
-  ])
+  await deleter(databases.WORKSPACES, workspace.id)
 }
 
 export default del

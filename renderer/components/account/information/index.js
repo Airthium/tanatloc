@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { message, Avatar, Button, Form, Input, Space, Upload } from 'antd'
+import { message, Avatar, Button, Form, Input, Space, Upload, Card } from 'antd'
 import { UploadOutlined, UserOutlined } from '@ant-design/icons'
 
 import { useUser, update } from '../../../../src/api/user'
@@ -32,14 +32,14 @@ const Information = () => {
 
   // Layout
   const layout = {
-    labelCol: { span: 4 },
-    wrapperCol: { span: 16 }
+    labelCol: { offset: 4, span: 4 },
+    wrapperCol: { span: 8 }
   }
   const avatarLayout = {
-    wrapperCol: { offset: 10, span: 6 }
+    wrapperCol: { offset: 11, span: 2 }
   }
   const buttonLayout = {
-    wrapperCol: { offset: 14, span: 6 }
+    wrapperCol: { offset: 10, span: 6 }
   }
 
   /**
@@ -160,55 +160,68 @@ const Information = () => {
    * Render
    */
   return (
-    <Form
-      {...layout}
-      form={form}
-      initialValues={{
-        username: user.email,
-        firstname: user.firstname,
-        lastname: user.lastname,
-        email: user.email
-      }}
-      onFinish={onFinish}
-      name="personalForm"
-    >
-      <Form.Item {...avatarLayout}>
-        <Space direction="vertical" className="Account-avatar">
-          <Avatar size={128} src={user.avatar} icon={<UserOutlined />} />
-          <Upload
-            accept={'.jpg,.png'}
-            showUploadList={false}
-            beforeUpload={beforeUpload}
-            onChange={onChange}
-          >
-            <Button size="small" icon={<UploadOutlined />} loading={uploading}>
-              Upload new
+    <Card title="Contact Details">
+      <Form
+        {...layout}
+        form={form}
+        initialValues={{
+          username: user.email,
+          firstname: user.firstname,
+          lastname: user.lastname,
+          email: user.email
+        }}
+        onFinish={onFinish}
+        name="personalForm"
+      >
+        <Form.Item {...avatarLayout}>
+          <Space direction="vertical" className="Account-avatar">
+            <Avatar
+              size={128}
+              src={user.avatar && Buffer.from(user.avatar).toString()}
+              icon={<UserOutlined />}
+            />
+            <Upload
+              accept={'.jpg,.png'}
+              showUploadList={false}
+              beforeUpload={beforeUpload}
+              onChange={onChange}
+            >
+              <Button
+                size="small"
+                icon={<UploadOutlined />}
+                loading={uploading}
+              >
+                Upload new
+              </Button>
+            </Upload>
+          </Space>
+        </Form.Item>
+        <Form.Item label="User name" name="username">
+          <Input disabled={true} />
+          {/* Disabled for now (add username in dB) */}
+        </Form.Item>
+        <Form.Item label="First name" name="firstname">
+          <Input />
+        </Form.Item>
+        <Form.Item label="Last name" name="lastname">
+          <Input />
+        </Form.Item>
+        <Form.Item label="Email" name="email">
+          <Input />
+        </Form.Item>
+        <Form.Item
+          {...buttonLayout}
+          style={{ textAlign: 'right', marginBottom: 'unset' }}
+        >
+          <Space>
+            <Button onClick={onCancel}>Cancel</Button>
+            <Button type="primary" htmlType="submit" loading={loading}>
+              Apply changes
             </Button>
-          </Upload>
-        </Space>
-      </Form.Item>
-      <Form.Item label="User name" name="username">
-        <Input disabled={true} />
-        {/* Disabled for now (add username in dB) */}
-      </Form.Item>
-      <Form.Item label="First name" name="firstname">
-        <Input />
-      </Form.Item>
-      <Form.Item label="Last name" name="lastname">
-        <Input />
-      </Form.Item>
-      <Form.Item label="Email" name="email">
-        <Input />
-      </Form.Item>
-      <Form.Item {...buttonLayout} style={{ textAlign: 'right' }}>
-        <Space>
-          <Button onClick={onCancel}>Cancel</Button>
-          <Button type="primary" htmlType="submit" loading={loading}>
-            Apply changes
-          </Button>
-        </Space>
-      </Form.Item>
-    </Form>
+          </Space>
+        </Form.Item>
+      </Form>
+    </Card>
   )
 }
 

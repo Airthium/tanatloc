@@ -26,9 +26,10 @@ jest.mock('../workspace', () => ({
 
 describe('src/lib/project', () => {
   beforeEach(() => {
-    mockAvatar = (val) => val
+    mockGet = () => ({})
     mockUpdate.mockReset()
     mockDelete.mockReset()
+    mockAvatar = (val) => val
     mockWorkspace.mockReset()
   })
 
@@ -42,7 +43,6 @@ describe('src/lib/project', () => {
     let project
 
     // Empty
-    mockGet = () => ({})
     project = await get()
     expect(project).toEqual({})
 
@@ -72,7 +72,7 @@ describe('src/lib/project', () => {
   })
 
   it('update', async () => {
-    await update({})
+    await update({}, {})
     expect(mockUpdate).toHaveBeenCalledTimes(1)
   })
 

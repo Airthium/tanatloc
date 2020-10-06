@@ -1,10 +1,15 @@
 import Information from '../../../components/account/information'
 import { shallow } from 'enzyme'
 
-let mockUpdate
+const mockUpdate = jest.fn()
 jest.mock('../../../../src/api/user', () => ({
   useUser: () => [
-    { firstname: 'firstname', lastname: 'lastname', email: 'email' },
+    {
+      firstname: 'firstname',
+      lastname: 'lastname',
+      email: 'email',
+      avatar: ['avatar']
+    },
     { mutateUser: () => {} }
   ],
   update: () => mockUpdate()
@@ -29,7 +34,7 @@ global.FileReader = class {
 let wrapper
 describe('renderer/components/account/information', () => {
   beforeEach(() => {
-    mockUpdate = jest.fn()
+    mockUpdate.mockReset()
     mockAdd = () => {}
     wrapper = shallow(<Information />)
   })
@@ -53,9 +58,9 @@ describe('renderer/components/account/information', () => {
     })
     expect(mockUpdate).toHaveBeenCalledTimes(2)
 
-    mockUpdate = () => {
+    mockUpdate.mockImplementation(() => {
       throw new Error()
-    }
+    })
     await wrapper.find('ForwardRef(InternalForm)').props().onFinish({})
   })
 

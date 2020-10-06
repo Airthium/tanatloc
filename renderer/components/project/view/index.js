@@ -37,19 +37,12 @@ import { SectionViewHelper } from '../../../../src/lib/three/helpers/SectionView
 
 import { PartLoader } from '../../../../src/lib/three/loaders/PartLoader'
 
-import Part from '../../../public/test/geometry/cube/part.json'
-import Solid from '../../../public/test/geometry/cube/solid_0.json'
-import Face0 from '../../../public/test/geometry/cube/face_0.json'
-import Face1 from '../../../public/test/geometry/cube/face_1.json'
-import Face2 from '../../../public/test/geometry/cube/face_2.json'
-import Face3 from '../../../public/test/geometry/cube/face_3.json'
-import Face4 from '../../../public/test/geometry/cube/face_4.json'
-import Face5 from '../../../public/test/geometry/cube/face_5.json'
+import { get } from '../../../../src/api/part'
 
 /**
  * ThreeView
  */
-const ThreeView = () => {
+const ThreeView = ({ part }) => {
   // Ref
   const mount = useRef(null)
   const scene = useRef()
@@ -245,6 +238,18 @@ const ThreeView = () => {
     }
   }, [])
 
+  useEffect(() => {
+    // Clean scene
+    scene.current.children.forEach((child) => {
+      if (child.type === 'Part') {
+        child.dispose()
+        scene.current.remove(child)
+      }
+    })
+
+    if (part) loadPart()
+  }, [part])
+
   /**
    * Compute scene bounding box
    */
@@ -322,7 +327,7 @@ const ThreeView = () => {
    */
   const zoomToFit = () => {
     const sphere = scene.current.boundingSphere
-    if (!sphere) return
+    if (!sphere || sphere.radius === 0) return
 
     // Center
     const center = sphere.center
@@ -360,50 +365,21 @@ const ThreeView = () => {
    * TODO WIP
    */
   const loadPart = async () => {
-    Part.solids[0].buffer = Solid
-    delete Part.solids[0].path
-
-    Part.faces[0].buffer = Face0
-    delete Part.faces[0].path
-
-    Part.faces[1].buffer = Face1
-    delete Part.faces[1].path
-
-    Part.faces[2].buffer = Face2
-    delete Part.faces[2].path
-
-    Part.faces[3].buffer = Face3
-    delete Part.faces[3].path
-
-    Part.faces[4].buffer = Face4
-    delete Part.faces[4].path
-
-    Part.faces[5].buffer = Face5
-    delete Part.faces[5].path
-
     //load
     const loader = PartLoader()
     const mesh = loader.load(
-      Part,
+      part,
       transparent,
       sectionViewHelper.current.getClippingPlane()
     )
-
     // Scene
     scene.current.add(mesh)
     computeSceneBoundingSphere()
-
     // Grid
     gridHelper.current.update()
-
     // Zoom
     zoomToFit()
   }
-
-  // TODO remove that after
-  useEffect(() => {
-    loadPart()
-  }, [])
 
   /**
    * Toggle grid
@@ -449,11 +425,11 @@ const ThreeView = () => {
    * Render
    */
   return (
-    <div
-      style={{ position: 'fixed', top: 0, right: 0, bottom: 0, left: 0 }}
-      ref={mount}
-    >
-      <Layout className="View-controls">
+    <Layout className="View no-scroll">
+      <Layout.Content className="View-content no-scroll">
+        <div ref={mount} className="View-canvas" />
+      </Layout.Content>
+      <div className="View-controls">
         <Tooltip title="Controls">
           <Button
             icon={<ControlOutlined />}
@@ -469,10 +445,14 @@ const ThreeView = () => {
           maskClosable={false}
           placement="right"
           getContainer={false}
+          headerStyle={{
+            borderLeft: '1px solid #f0f0f0'
+          }}
           bodyStyle={{
             display: 'flex',
             flexDirection: 'column',
-            padding: '10px'
+            padding: '10px',
+            borderLeft: '1px solid #f0f0f0'
           }}
           width="100%"
         >
@@ -504,7 +484,7 @@ const ThreeView = () => {
 
           <div className="drawer-group">
             <div className="drawer-subgroup">
-              <Tooltip title="Zoom out">
+              <Tooltip title="Zoom out" placement="left">
                 <Button
                   icon={<ZoomOutOutlined />}
                   onMouseDown={zoomOut}
@@ -512,10 +492,10 @@ const ThreeView = () => {
                   onMouseOut={zoomStop}
                 />
               </Tooltip>
-              <Tooltip title="Zoom to fit">
+              <Tooltip title="Zoom to fit" placement="left">
                 <Button icon={<CompressOutlined />} onClick={zoomToFit} />
               </Tooltip>
-              <Tooltip title="Zoom in">
+              <Tooltip title="Zoom in" placement="left">
                 <Button
                   icon={<ZoomInOutlined />}
                   onMouseDown={zoomIn}
@@ -525,7 +505,7 @@ const ThreeView = () => {
               </Tooltip>
             </div>
             <div className="drawer-subgroup">
-              <Tooltip title="Zoom to selection">
+              <Tooltip title="Zoom to selection" placement="left">
                 <Button
                   icon={<SelectOutlined />}
                   onClick={() => selectionHelper.current.start()}
@@ -540,7 +520,7 @@ const ThreeView = () => {
             {sectionView ? (
               <>
                 <div className="drawer-subgroup">
-                  <Tooltip title="Stop">
+                  <Tooltip title="Stop" placement="left">
                     <Button
                       icon={<StopOutlined />}
                       onClick={toggleSectionView}
@@ -555,12 +535,12 @@ const ThreeView = () => {
                       marginTop: '10px'
                     }}
                   >
-                    <Tooltip title="Translate">
+                    <Tooltip title="Translate" placement="left">
                       <Radio value="translate">
                         <DragOutlined />
                       </Radio>
                     </Tooltip>
-                    <Tooltip title="Rotate">
+                    <Tooltip title="Rotate" placement="left">
                       <Radio value="rotate">
                         <SyncOutlined />
                       </Radio>
@@ -568,13 +548,13 @@ const ThreeView = () => {
                   </Radio.Group>
                 </div>
                 <div className="drawer-subgroup">
-                  <Tooltip title="Hide plane">
+                  <Tooltip title="Hide plane" placement="left">
                     <Button
                       icon={<EyeInvisibleOutlined />}
                       onClick={() => sectionViewHelper.current.toggleVisible()}
                     />
                   </Tooltip>
-                  <Tooltip title="Snap to X">
+                  <Tooltip title="Snap to X" placement="left">
                     <Button
                       className="ant-btn-icon-only"
                       onClick={() =>
@@ -584,7 +564,7 @@ const ThreeView = () => {
                       X
                     </Button>
                   </Tooltip>
-                  <Tooltip title="Snap to Y">
+                  <Tooltip title="Snap to Y" placement="left">
                     <Button
                       className="ant-btn-icon-only"
                       onClick={() =>
@@ -594,7 +574,7 @@ const ThreeView = () => {
                       Y
                     </Button>
                   </Tooltip>
-                  <Tooltip title="Snap to Z">
+                  <Tooltip title="Snap to Z" placement="left">
                     <Button
                       className="ant-btn-icon-only"
                       onClick={() =>
@@ -604,7 +584,7 @@ const ThreeView = () => {
                       Z
                     </Button>
                   </Tooltip>
-                  <Tooltip title="Flip">
+                  <Tooltip title="Flip" placement="left">
                     <Button
                       onClick={() => sectionViewHelper.current.flip()}
                       icon={<RetweetOutlined />}
@@ -645,13 +625,66 @@ const ThreeView = () => {
             </Button>
           </div>
         </Drawer>
-      </Layout>
-    </div>
+      </div>
+    </Layout>
   )
 }
 
-const View = () => {
-  return <ThreeView />
+const View = ({ simulation, type, setPartSummary }) => {
+  const [part, setPart] = useState()
+
+  useEffect(() => {
+    const scheme = simulation?.scheme
+    const subScheme = scheme?.categories[type]
+
+    if (subScheme?.file?.part) {
+      loadPart(subScheme.file)
+    }
+  }, [simulation, type])
+
+  const loadPart = async (file) => {
+    const partContent = await get({ id: simulation.id }, file)
+
+    // Convert buffers
+    partContent.solids?.forEach((solid) => {
+      solid.buffer = JSON.parse(Buffer.from(solid.buffer).toString())
+    })
+    partContent.faces?.forEach((face) => {
+      face.buffer = JSON.parse(Buffer.from(face.buffer).toString())
+    })
+    partContent.edges?.forEach((edge) => {
+      edge.buffer = JSON.parse(Buffer.from(edge.buffer).toString())
+    })
+
+    const summary = {
+      solids: partContent.solids?.map((solid) => {
+        return {
+          name: solid.name,
+          number: solid.number,
+          uuid: solid.buffer.uuid
+        }
+      }),
+      faces: partContent.faces?.map((face) => {
+        return {
+          name: face.name,
+          number: face.number,
+          uuid: face.buffer.uuid
+        }
+      }),
+      edges: partContent.edges?.map((edge) => {
+        return {
+          name: face.name,
+          number: face.number,
+          uuid: face.buffer.uuid
+        }
+      })
+    }
+
+    setPart(partContent)
+    setPartSummary(summary)
+  }
+
+  return <ThreeView part={part} />
 }
 
 export default View

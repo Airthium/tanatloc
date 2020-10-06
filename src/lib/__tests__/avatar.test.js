@@ -1,22 +1,17 @@
 import { add, read, del } from '../avatar'
 
 jest.mock('path', () => ({
-  join: () => 'join'
+  join: () => 'path'
 }))
 
 jest.mock('fs', () => ({
   promises: {
-    readFile: async () => 'avatar',
-    writeFile: async () => {}
+    readFile: async () => 'avatar'
   }
 }))
 
-let mockAdd = () => ({
-  id: 'id'
-})
-let mockGet = () => ({
-  path: 'path'
-})
+let mockAdd
+let mockGet
 const mockDel = jest.fn()
 jest.mock('../../database/avatar', () => ({
   add: async () => mockAdd(),
@@ -24,17 +19,28 @@ jest.mock('../../database/avatar', () => ({
   del: async () => mockDel()
 }))
 
-let mockGetUser = () => ({})
+let mockGetUser
 const mockUpdateUser = jest.fn()
 jest.mock('../user', () => ({
   get: async () => mockGetUser(),
   update: async () => mockUpdateUser()
 }))
 
+jest.mock('../tools', () => ({
+  writeFile: async () => {}
+}))
+
 describe('src/lib/avatar', () => {
   beforeEach(() => {
     mockDel.mockReset()
     mockUpdateUser.mockReset()
+    mockAdd = () => ({
+      id: 'id'
+    })
+    mockGet = () => ({
+      path: 'path'
+    })
+    mockGetUser = () => ({})
   })
 
   it('add', async () => {

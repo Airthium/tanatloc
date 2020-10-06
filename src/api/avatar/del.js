@@ -3,7 +3,7 @@ import { call } from '../call'
 /**
  * Delete avatar
  * @memberof module:src/api/avatar
- * @param {Object} avatar Avatar
+ * @param {Object} avatar Avatar { id }
  */
 const del = async (avatar) => {
   const res = await call('/api/avatar', {

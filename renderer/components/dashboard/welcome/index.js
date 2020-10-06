@@ -1,5 +1,7 @@
 import { Divider, Layout, PageHeader, Typography } from 'antd'
 
+import Add from '../../workspace/add'
+
 /**
  * Welcome
  * @memberof module:renderer/components/dashboard
@@ -11,11 +13,15 @@ const Welcome = () => {
         <PageHeader
           backIcon={false}
           title={
-            <Typography.Title level={2}>Welcome on board</Typography.Title>
+            <Typography.Title level={4} className="pageheader-name">
+              Welcome on board
+            </Typography.Title>
           }
           footer={<Divider className="Welcome-divider" />}
         />
-        <p>Select a workspace to start</p>
+        <p>
+          Select a workspace to start, or <Add />
+        </p>
       </Layout.Content>
     </Layout>
   )

@@ -4,8 +4,8 @@ import { databases } from '../../../config/db'
 /**
  * Add
  * @memberof module:src/database/project
- * @param {string} user User id
- * @param {Object} param2 { title, description }
+ * @param {Object} user User { id }
+ * @param {Object} project Project { title, description }
  */
 const add = async ({ id }, { title, description }) => {
   const response = await query(
@@ -17,7 +17,7 @@ const add = async ({ id }, { title, description }) => {
 
   const project = response.rows[0]
   project.title = title
-  project.description = description
+  project.description = description || ''
 
   return project
 }

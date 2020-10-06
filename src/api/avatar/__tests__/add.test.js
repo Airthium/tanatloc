@@ -7,7 +7,7 @@ jest.mock('../../call', () => ({
 
 describe('/src/api/avatar/add', () => {
   it('call', async () => {
-    await add({}, {})
+    await add({})
     expect(mockCall).toHaveBeenCalledTimes(1)
   })
 })

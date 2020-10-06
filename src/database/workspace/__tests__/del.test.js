@@ -1,9 +1,13 @@
 import del from '../del'
 
-jest.mock('../..', () => async () => {})
+const mockDelete = jest.fn()
+jest.mock('../..', () => ({
+  deleter: async () => mockDelete()
+}))
 
 describe('src/database/quary/workspace/delete', () => {
   it('delete', async () => {
-    await del('id', {})
+    await del({})
+    expect(mockDelete).toHaveBeenCalledTimes(1)
   })
 })

@@ -147,11 +147,13 @@ const SelectionHelper = (renderer, scene, camera, controls) => {
       (rect.max.y + rect.min.y) / 2
     )
 
-    const parentSize = new Vector2()
-    renderer.getSize(parentSize)
+    const parentRect = renderer.domElement.getBoundingClientRect()
+    const X = center.x - parentRect.left
+    const Y = center.y - parentRect.top
+
     const raycasterCenter = new Vector2(
-      (center.x / parentSize.x) * 2 - 1,
-      -(center.y / parentSize.y) * 2 + 1
+      (X / parentRect.width) * 2 - 1,
+      -(Y / parentRect.height) * 2 + 1
     )
 
     // Intersection
@@ -177,7 +179,10 @@ const SelectionHelper = (renderer, scene, camera, controls) => {
 
     // Zoom
     const size = new Vector2(rect.max.x - rect.min.x, rect.max.y - rect.min.y)
-    const ratio = new Vector2(size.x / parentSize.x, size.y / parentSize.y)
+    const ratio = new Vector2(
+      size.x / parentRect.width,
+      size.y / parentRect.height
+    )
     const maxRatio = Math.max(ratio.x, ratio.y)
     const zoomFactor = 1 - maxRatio
 

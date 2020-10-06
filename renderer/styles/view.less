@@ -1,16 +1,49 @@
+.View {
+  width: 100%;
+  height: 100%;
+}
+
+.View-content {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.View-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+}
+
 .View-controls {
   position: absolute;
   top: 0;
   right: 0;
-  width: 140px;
+  min-width: 140px;
   height: 100%;
   display: flex;
-  justify-content: flex-start;
-  align-items: flex-end;
+  justify-content: flex-end;
+  align-items: flex-start;
   padding: 10px;
   background-color: transparent;
+  z-index: 1;
+  overflow: hidden;
 }
 
 .View-controls-drawer {
   position: absolute;
+  max-width: 140px;
+  height: 100vh;
+}
+
+.drawer-group {
+  display: flex;
+  justify-content: space-around;
+}
+
+.drawer-subgroup {
+  display: flex;
+  flex-direction: column;
 }

@@ -7,7 +7,7 @@ module.exports = {
   USER: process.env.DB_USER || 'tanatlocuser',
   HOST: process.env.DB_HOST || 'localhost',
   PORT: process.env.DB_PORT || 5432,
-  DATABASE: process.env.DB_DATABASE || 'tanatloc',
+  DATABASE: process.env.DB_DATABASE || 'tanatloc2',
   PASSWORD: process.env.DB_PASSWORD || 'tanatloc'
 }
 

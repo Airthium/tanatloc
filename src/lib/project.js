@@ -23,12 +23,9 @@ const add = async (
   const project = await dBadd(user, { title, description })
 
   // Add project reference in workspace
-  await updateWorkspace({
-    workspace: { id },
-    data: [
-      { type: 'array', method: 'append', key: 'projects', value: project.id }
-    ]
-  })
+  await updateWorkspace({ id }, [
+    { type: 'array', method: 'append', key: 'projects', value: project.id }
+  ])
 
   return project
 }

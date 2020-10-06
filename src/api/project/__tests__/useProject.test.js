@@ -15,9 +15,17 @@ describe('src/api/project/useProject', () => {
     expect(loadingProject).toBe(false)
   })
 
-  it('with project', () => {
+  it('without project', () => {
     mockProject = () => {}
     const [project, { mutateProject, loadingProject }] = useProject()
+    expect(project).toEqual({})
+    expect(mutateProject).toBeDefined()
+    expect(loadingProject).toBe(false)
+  })
+
+  it('with id', () => {
+    mockProject = () => {}
+    const [project, { mutateProject, loadingProject }] = useProject('id')
     expect(project).toEqual({})
     expect(mutateProject).toBeDefined()
     expect(loadingProject).toBe(false)

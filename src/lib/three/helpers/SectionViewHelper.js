@@ -156,13 +156,15 @@ const SectionViewHelper = (renderer, scene, camera, controls) => {
    *  Global coordinates to local [-1, 1]^2
    * @param {Object} event Event
    */
-  const globalToLocal = ({ X, Y }) => {
-    const parentSize = new Vector2()
-    renderer.getSize(parentSize)
+  const globalToLocal = (event) => {
+    const rect = event.target.getBoundingClientRect()
+
+    const X = event.clientX - rect.left
+    const Y = event.clientY - rect.top
 
     const mouse = new Vector2()
-    mouse.x = (X / parentSize.x) * 2 - 1
-    mouse.y = -(Y / parentSize.y) * 2 + 1
+    mouse.x = (X / rect.width) * 2 - 1
+    mouse.y = -(Y / rect.height) * 2 + 1
 
     return mouse
   }
@@ -185,7 +187,7 @@ const SectionViewHelper = (renderer, scene, camera, controls) => {
     if (!controller.visible) return
     if (isDown) return
 
-    const mouse = globalToLocal({ X: event.clientX, Y: event.clientY })
+    const mouse = globalToLocal(event)
     raycaster.setFromCamera(mouse, camera)
     const intersects = raycaster.intersectObject(controller)
     if (intersects.length > 0) {

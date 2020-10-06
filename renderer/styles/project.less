@@ -1,32 +1,22 @@
-.Project-menu {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 140px;
-  height: 100%;
-  display: flex;
-  justify-content: flex-start;
-  align-items: flex-start;
-  padding: 10px;
-  background-color: transparent;
-  z-index: 1;
+.Project-sider {
+  border-right: 1px solid #f0f0f0;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
-.Project-menu-drawer {
-  position: absolute;
+.Project-sider > div {
+  margin-right: -1px;
 }
 
-.drawer-switch {
-  display: flex;
-  padding-top: 5px;
+.Project-title {
+  margin-left: 10px;
 }
 
-.drawer-group {
-  display: flex;
-  justify-content: space-around;
+.Project-title .ant-typography-edit {
+  font-size: 0.9em !important;
 }
 
-.drawer-subgroup {
-  display: flex;
-  flex-direction: column;
+.Project-title.ant-typography-edit-content {
+  left: 0 !important;
+  margin-top: 0 !important;
 }

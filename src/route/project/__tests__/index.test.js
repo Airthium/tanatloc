@@ -3,16 +3,10 @@ import project from '../'
 let mockSession = () => false
 jest.mock('../../session', () => () => mockSession())
 
+let mockAdd
 jest.mock('../../../lib/project', () => {
-  let count = 0
   return {
-    add: async () => {
-      count++
-      if (count === 1) throw new Error()
-      return {
-        id: 'id'
-      }
-    }
+    add: async () => mockAdd()
   }
 })
 
@@ -30,9 +24,18 @@ describe('src/route/project', () => {
     status: () => ({
       json: (obj) => {
         response = obj
+      },
+      end: () => {
+        response = 'end'
       }
     })
   }
+
+  beforeEach(() => {
+    mockAdd = () => ({
+      id: 'id'
+    })
+  })
 
   it('no session', async () => {
     await project(req, res)
@@ -43,17 +46,27 @@ describe('src/route/project', () => {
     mockSession = () => true
 
     await project(req, res)
-    expect(response).toEqual({ message: '' })
-
-    await project(req, res)
     expect(response).toEqual({
       id: 'id'
     })
+
+    // Error
+    mockAdd = () => {
+      throw new Error()
+    }
+    await project(req, res)
+    expect(response).toEqual({ message: '' })
+  })
+
+  it('get', async () => {
+    req.method = 'GET'
+    await project(req, res)
+    expect(response).toBe('end')
   })
 
   it('bad method', async () => {
-    req.method = 'GET'
+    req.method = 'OTHER'
     await project(req, res)
-    expect(response).toEqual({ message: 'Method GET not allowed' })
+    expect(response).toEqual({ message: 'Method OTHER not allowed' })
   })
 })

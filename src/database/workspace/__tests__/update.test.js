@@ -1,11 +1,13 @@
 import update from '../update'
 
+const mockUpdate = jest.fn()
 jest.mock('../..', () => ({
-  updater: async () => {}
+  updater: async () => mockUpdate()
 }))
 
 describe('src/database/workspace/update', () => {
   it('update', async () => {
-    await update({ workspace: {}, data: [{ key: 'test', value: 'test' }] })
+    await update({}, [{ key: 'test', value: 'test' }])
+    expect(mockUpdate).toHaveBeenCalledTimes(1)
   })
 })

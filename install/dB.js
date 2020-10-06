@@ -1,5 +1,82 @@
-import { databases } from '../config/db'
+import { Pool } from 'pg'
+
+import config, { databases } from '../config/db'
 import query from '../src/database'
+
+const createDatabase = async () => {
+  console.info(' == Create dB == ')
+  try {
+    let pool, client
+
+    // Set user (MacOS specific 😠)
+    const user = process.platform === 'darwin' ? process.env.USER : 'postgres'
+
+    // Pool
+    pool = new Pool({
+      host: config.HOST,
+      port: config.PORT,
+      user: user,
+      database: 'postgres'
+    })
+    client = await pool.connect()
+
+    // Database
+    console.info(' + Create database')
+    const checkDatabase = await client.query(
+      "SELECT FROM pg_database WHERE datname = '" + config.DATABASE + "'"
+    )
+    if (checkDatabase.rowCount === 0)
+      await client.query('CREATE DATABASE ' + config.DATABASE)
+
+    // User
+    console.info(' + Create user')
+    const checkUser = await client.query(
+      "SELECT FROM pg_user WHERE usename = '" + config.USER + "'"
+    )
+    if (checkUser.rowCount === 0)
+      await client.query(
+        'CREATE USER ' +
+          config.USER +
+          " WITH ENCRYPTED PASSWORD '" +
+          config.PASSWORD +
+          "'"
+      )
+
+    // Privileges
+    await client.query(
+      'GRANT ALL PRIVILEGES ON DATABASE ' +
+        config.DATABASE +
+        ' TO ' +
+        config.USER
+    )
+
+    // Close
+    client.release()
+    pool.end()
+
+    // New pool
+    pool = new Pool({
+      host: config.HOST,
+      port: config.PORT,
+      database: config.DATABASE,
+      user: 'postgres'
+    })
+    client = await pool.connect()
+
+    // Crypto
+    console.info(' + Install pgcrypto extension')
+    await client.query('CREATE EXTENSION IF NOT EXISTS pgcrypto')
+
+    // Close
+    client.release()
+    pool.end()
+
+    await createTables()
+  } catch (err) {
+    console.error('dB creation failed!')
+    console.error(err)
+  }
+}
 
 /**
  * Create tables from config
@@ -24,25 +101,25 @@ const createTables = async () => {
     console.info(' + Project table')
     await createProjectTable()
 
-    // Geometries
-    console.info(' + Geometry table')
-    await createGeometryTable()
+    // // Geometries
+    // console.info(' + Geometry table')
+    // await createGeometryTable()
 
-    // Meshes
-    console.info(' + Mesh table')
-    await createMeshTable()
+    // // Meshes
+    // console.info(' + Mesh table')
+    // await createMeshTable()
 
     // Simulations
     console.info(' + Simulation table')
     await createSimulationTable()
 
-    // Results
-    console.info(' + Result table')
-    await createResultTable()
+    // // Results
+    // console.info(' + Result table')
+    // await createResultTable()
 
-    // Tasks
-    console.info(' + Task table')
-    await createTaskTable()
+    // // Tasks
+    // console.info(' + Task table')
+    // await createTaskTable()
 
     // Administrator
     await createAdmin()
@@ -104,6 +181,7 @@ const createUsersTable = async () => {
           id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
           lastName TEXT,
           firstName TEXT,
+          username TEXT NOT NULL UNIQUE,
           password TEXT,
           passwordLastChanged TIMESTAMP,
           email TEXT NOT NULL UNIQUE,
@@ -161,10 +239,7 @@ const createProjectTable = async () => {
           history jsonb,
           createdDate TIMESTAMP NOT NULL,
           lastAccess TIMESTAMP NOT NULL,
-          geometries uuid[],
-          meshes uuid[],
           simulations uuid[],
-          results uuid[],
           owners uuid[] NOT NULL,
           users uuid[],
           permissions jsonb,
@@ -174,43 +249,43 @@ const createProjectTable = async () => {
     ))
 }
 
-/**
- * Create geometry table
- */
-const createGeometryTable = async () => {
-  !(await checkTable(databases.GEOMETRIES)) &&
-    (await query(
-      `CREATE TABLE IF NOT EXISTS ` +
-        databases.GEOMETRIES +
-        ` (
-          id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-          name TEXT NOT NULL,
-          file TEXT,
-          dimension smallint,
-          part TEXT
-        )`
-    ))
-}
+// /**
+//  * Create geometry table
+//  */
+// const createGeometryTable = async () => {
+//   !(await checkTable(databases.GEOMETRIES)) &&
+//     (await query(
+//       `CREATE TABLE IF NOT EXISTS ` +
+//         databases.GEOMETRIES +
+//         ` (
+//           id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+//           name TEXT NOT NULL,
+//           file TEXT,
+//           dimension smallint,
+//           part TEXT
+//         )`
+//     ))
+// }
 
-/**
- * Create mesh table
- * @memberof module:install
- */
-const createMeshTable = async () => {
-  !(await checkTable(databases.MESHES)) &&
-    (await query(
-      `CREATE TABLE IF NOT EXISTS ` +
-        databases.MESHES +
-        ` (
-          id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-          name TEXT NOT NULL,
-          origin jsonb,
-          file TEXT,
-          part TEXT,
-          parameters jsonb
-        )`
-    ))
-}
+// /**
+//  * Create mesh table
+//  * @memberof module:install
+//  */
+// const createMeshTable = async () => {
+//   !(await checkTable(databases.MESHES)) &&
+//     (await query(
+//       `CREATE TABLE IF NOT EXISTS ` +
+//         databases.MESHES +
+//         ` (
+//           id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+//           name TEXT NOT NULL,
+//           origin jsonb,
+//           file TEXT,
+//           part TEXT,
+//           parameters jsonb
+//         )`
+//     ))
+// }
 
 /**
  * Create simulation table
@@ -224,56 +299,55 @@ const createSimulationTable = async () => {
         ` (
           id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
           name TEXT NOT NULL,
-          configuration jsonb,
-          algorithm TEXT NOT NULL
+          scheme jsonb
         )`
     ))
 }
 
-/**
- * Create result table
- * @memberof module:install
- */
-const createResultTable = async () => {
-  !(await checkTable(databases.RESULTS)) &&
-    (await query(
-      `CREATE TABLE IF NOT EXISTS ` +
-        databases.RESULTS +
-        ` (
-          id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-          name TEXT NOT NULL,
-          simulation uuid NOT NULL,
-          task uuid NOT NULL,
-          configuration jsonb,
-          files TEXT[]
-        )`
-    ))
-}
+// /**
+//  * Create result table
+//  * @memberof module:install
+//  */
+// const createResultTable = async () => {
+//   !(await checkTable(databases.RESULTS)) &&
+//     (await query(
+//       `CREATE TABLE IF NOT EXISTS ` +
+//         databases.RESULTS +
+//         ` (
+//           id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+//           name TEXT NOT NULL,
+//           simulation uuid NOT NULL,
+//           task uuid NOT NULL,
+//           configuration jsonb,
+//           files TEXT[]
+//         )`
+//     ))
+// }
 
-/**
- * Create task table
- * @memberof module:install
- */
-const createTaskTable = async () => {
-  !(await checkTable(databases.TASKS)) &&
-    (await query(
-      `CREATE TABLE IF NOT EXISTS ` +
-        databases.TASKS +
-        ` (
-          id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-          name TEXT NOT NULL,
-          target uuid,
-          result uuid,
-          date TIMESTAMP NOT NULL,
-          type TEXT NOT NULL,
-          status TEXT NOT NULL,
-          system TEXT NOT NULL,
-          token uuid,
-          log TEXT NOT NULL,
-          pid TEXT
-        )`
-    ))
-}
+// /**
+//  * Create task table
+//  * @memberof module:install
+//  */
+// const createTaskTable = async () => {
+//   !(await checkTable(databases.TASKS)) &&
+//     (await query(
+//       `CREATE TABLE IF NOT EXISTS ` +
+//         databases.TASKS +
+//         ` (
+//           id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+//           name TEXT NOT NULL,
+//           target uuid,
+//           result uuid,
+//           date TIMESTAMP NOT NULL,
+//           type TEXT NOT NULL,
+//           status TEXT NOT NULL,
+//           system TEXT NOT NULL,
+//           token uuid,
+//           log TEXT NOT NULL,
+//           pid TEXT
+//         )`
+//     ))
+// }
 
 /**
  * Password generator
@@ -304,8 +378,8 @@ const createAdmin = async () => {
     await query(
       'INSERT INTO ' +
         databases.USERS +
-        " (email, password, workspaces, isValidated, lastModificationDate, superuser) VALUES ($1, crypt($2, gen_salt('bf')), $3, $4, to_timestamp($5), $6)",
-      ['admin', password, [], true, Date.now() / 1000, true]
+        " (email, username, password, workspaces, isValidated, lastModificationDate, superuser) VALUES ($1, $2, crypt($3, gen_salt('bf')), $4, $5, to_timestamp($6), $7)",
+      ['admin', 'admin', password, [], true, Date.now() / 1000, true]
     )
     console.info(' Administrator account:')
     console.info(' - username: admin')
@@ -313,4 +387,4 @@ const createAdmin = async () => {
   }
 }
 
-module.exports = createTables
+module.exports = createDatabase

@@ -63,6 +63,7 @@ const PartLoader = () => {
     object.add(edges)
 
     object.boundingBox = computeBoundingBox(object)
+    object.dispose = () => dispose(object)
     object.setTransparent = (transp) => setTransparent(object, transp)
     object.startSelection = (renderer, camera, type) =>
       startSelection(object, renderer, camera, type)
@@ -84,7 +85,8 @@ const PartLoader = () => {
    */
   const loadElement = (element, color, transparent, clippingPlane) => {
     const loader = new BufferGeometryLoader()
-    const geometry = loader.parse(element.buffer)
+    const buffer = element.buffer
+    const geometry = loader.parse(buffer)
     geometry.computeBoundingBox()
     geometry.computeBoundingSphere()
 
@@ -98,7 +100,7 @@ const PartLoader = () => {
     })
 
     const mesh = new Mesh(geometry, material)
-    mesh.uuid = element.buffer.uuid
+    mesh.uuid = buffer.uuid
 
     return mesh
   }
@@ -128,6 +130,19 @@ const PartLoader = () => {
     })
 
     return box
+  }
+
+  /**
+   * Dispose
+   * @param {Object} part Part
+   */
+  const dispose = (part) => {
+    part.children.forEach((group) => {
+      group.children.forEach((child) => {
+        child.geometry.dispose()
+        child.material.dispose()
+      })
+    })
   }
 
   /**
@@ -237,13 +252,15 @@ const PartLoader = () => {
    *  Global coordinates to local [-1, 1]^2
    * @param {Object} event Event
    */
-  const globalToLocal = ({ X, Y }) => {
-    const parentSize = new Vector2()
-    selectionRenderer.getSize(parentSize)
+  const globalToLocal = (event) => {
+    const rect = event.target.getBoundingClientRect()
+
+    const X = event.clientX - rect.left
+    const Y = event.clientY - rect.top
 
     const mouse = new Vector2()
-    mouse.x = (X / parentSize.x) * 2 - 1
-    mouse.y = -(Y / parentSize.y) * 2 + 1
+    mouse.x = (X / rect.width) * 2 - 1
+    mouse.y = -(Y / rect.height) * 2 + 1
 
     return mouse
   }
@@ -253,7 +270,7 @@ const PartLoader = () => {
    * @param {Object} event Event
    */
   const mouseMove = (event) => {
-    const mouse = globalToLocal({ X: event.clientX, Y: event.clientY })
+    const mouse = globalToLocal(event)
     raycaster.setFromCamera(mouse, selectionCamera)
     const intersects = raycaster.intersectObjects(
       selectionPart.children[selectionType].children

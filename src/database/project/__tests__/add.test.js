@@ -15,7 +15,7 @@ describe('src/database/project/add', () => {
   })
 
   it('without description', async () => {
-    const res = await add({}, { title: 'title', description: '' })
+    const res = await add({}, { title: 'title' })
     expect(res).toEqual({
       id: 'id',
       title: 'title',

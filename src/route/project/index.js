@@ -10,23 +10,31 @@ import Sentry from '../../lib/sentry'
  * @param {Object} req Request
  * @param {Object} res Response
  */
-export default async function (req, res) {
+export default async (req, res) => {
   // Check session
   const sessionId = await getSessionId(req, res)
   if (!sessionId) return
 
-  if (req.method === 'POST') {
-    try {
-      const project = await add({ id: sessionId }, req.body)
-      res.status(200).json(project)
-    } catch (err) {
-      console.error(err)
-      res.status(500).json({ message: err.message })
-      Sentry.captureException(err)
-    }
-  } else {
-    const err = new Error('Method ' + req.method + ' not allowed')
-    res.status(405).json({ message: err.message })
-    Sentry.captureException(err)
+  switch (req.method) {
+    case 'GET':
+      // Empty route
+      res.status(200).end()
+      break
+    case 'POST':
+      // Add project
+      try {
+        const project = await add({ id: sessionId }, req.body)
+        res.status(200).json(project)
+      } catch (err) {
+        console.error(err)
+        res.status(500).json({ message: err.message })
+        Sentry.captureException(err)
+      }
+      break
+    default:
+      // Unauthorized method
+      const error = new Error('Method ' + req.method + ' not allowed')
+      res.status(405).json({ message: error.message })
+      Sentry.captureException(error)
   }
 }

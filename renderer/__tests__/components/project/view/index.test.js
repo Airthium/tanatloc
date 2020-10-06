@@ -83,8 +83,14 @@ jest.mock('../../../../../src/lib/three/helpers/SectionViewHelper', () => ({
 
 jest.mock('../../../../../src/lib/three/loaders/PartLoader', () => ({
   PartLoader: () => ({
-    load: () => {}
+    load: () => {},
+    dispose: () => {}
   })
+}))
+
+const mockGet = jest.fn()
+jest.mock('../../../../../src/api/part', () => ({
+  get: async () => mockGet()
 }))
 
 let mockAnimationCount = 0
@@ -111,6 +117,7 @@ global.MockScene.children = [
       max: { x: 1, y: 1, z: 1 }
     },
     material: {},
+    dispose: () => {},
     setTransparent: () => {},
     startSelection: () => {},
     stopSelection: () => {}
@@ -123,6 +130,7 @@ global.MockScene.children = [
       max: { x: 1, y: 1, z: 1 }
     },
     material: {},
+    dispose: () => {},
     setTransparent: () => {},
     startSelection: () => {},
     stopSelection: () => {}
@@ -135,6 +143,7 @@ mockUseState.mockImplementation(() => [mockState, () => {}])
 let wrapper
 describe('components/project/view', () => {
   beforeEach(() => {
+    mockGet.mockReset()
     mockState = false
     wrapper = mount(<View />)
   })
@@ -218,5 +227,49 @@ describe('components/project/view', () => {
           value: 'value'
         }
       })
+  })
+
+  it('effect', () => {
+    wrapper.unmount()
+    const setPartSummary = jest.fn()
+
+    mockGet.mockImplementation(() => ({}))
+    wrapper = mount(
+      <View
+        simulation={{
+          scheme: { categories: { geometry: { file: { part: {} } } } }
+        }}
+        type="geometry"
+        setPartSummary={setPartSummary}
+      />
+    )
+    wrapper.unmount()
+
+    mockGet.mockImplementation(() => ({
+      solids: [
+        {
+          buffer: '{"uuid": "uuid"}'
+        }
+      ],
+      faces: [
+        {
+          buffer: '{"uuid": "uuid"}'
+        }
+      ],
+      edges: [
+        {
+          buffer: '{"uuid": "uuid"}'
+        }
+      ]
+    }))
+    wrapper = mount(
+      <View
+        simulation={{
+          scheme: { categories: { geometry: { file: { part: {} } } } }
+        }}
+        type="geometry"
+        setPartSummary={setPartSummary}
+      />
+    )
   })
 })

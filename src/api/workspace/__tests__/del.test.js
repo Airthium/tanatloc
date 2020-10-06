@@ -1,12 +1,13 @@
 import del from '../del'
 
+const mockCall = jest.fn(async () => 'res')
 jest.mock('../../call', () => ({
-  call: async () => 'res'
+  call: () => mockCall()
 }))
 
 describe('src/api/workspace/delete', () => {
   it('delete', async () => {
-    const res = await del({})
-    expect(res).toBe('res')
+    await del({})
+    expect(mockCall).toHaveBeenCalledTimes(1)
   })
 })

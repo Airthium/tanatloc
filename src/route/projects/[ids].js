@@ -9,43 +9,58 @@ import Sentry from '../../lib/sentry'
  * @param {Object} req Request
  * @param {Object} res Response
  */
-export default async function (req, res) {
+export default async (req, res) => {
   // Check session
   const sessionId = await getSessionId(req, res)
   if (!sessionId) return
 
-  try {
-    // Ids
-    let ids = req.query.ids
-    if (!ids) {
-      // Electron
-      ids = req.params.ids
+  if (req.method === 'GET') {
+    // Get projects list
+    try {
+      // Ids
+      let ids = req.query.ids
+      if (!ids) {
+        // Electron
+        ids = req.params.ids
+      }
+
+      if (ids === 'undefined' || ids === 'null') {
+        res.status(200).end()
+        return
+      }
+
+      const list = ids.split('&')
+
+      const projectsTmp = await Promise.all(
+        list.map(async (id) => {
+          try {
+            return await get(id, [
+              'title',
+              'description',
+              'avatar',
+              'owners',
+              'users',
+              'simulations'
+            ])
+          } catch (err) {
+            console.warn(err)
+            return null
+          }
+        })
+      )
+
+      const projects = projectsTmp.filter((p) => p)
+
+      res.status(200).json({ projects })
+    } catch (err) {
+      console.error(err)
+      res.status(500).json({ message: err.message })
+      Sentry.captureException(err)
     }
-
-    if (ids === 'undefined' || ids === 'null') {
-      res.status(200).end()
-      return
-    }
-
-    const list = ids.split('&')
-
-    const projectsTmp = await Promise.all(
-      list.map(async (id) => {
-        try {
-          return await get(id)
-        } catch (err) {
-          console.warn(err)
-          return null
-        }
-      })
-    )
-
-    const projects = projectsTmp.filter((p) => p)
-
-    res.status(200).json({ projects })
-  } catch (err) {
-    console.error(err)
-    res.status(500).json({ message: err.message })
-    Sentry.captureException(err)
+  } else {
+    // Unauthorized method
+    const error = new Error('Method ' + req.method + ' not allowed')
+    res.status(405).json({ message: error.message })
+    Sentry.captureException(error)
   }
 }

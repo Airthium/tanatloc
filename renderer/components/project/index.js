@@ -6,6 +6,8 @@ import { message, Layout, Menu, Typography } from 'antd'
 import {
   ArrowLeftOutlined,
   CalculatorOutlined,
+  CheckCircleOutlined,
+  ExclamationCircleOutlined,
   PlusOutlined
 } from '@ant-design/icons'
 
@@ -36,6 +38,7 @@ const Project = () => {
   const [selectorVisible, setSelectorVisible] = useState(false)
   const [currentSimulation, setCurrentSimulation] = useState()
   const [currentType, setCurrentType] = useState()
+  const [partSummary, setPartSummary] = useState()
 
   // Data
   const [user, { loadingUser }] = useUser()
@@ -165,7 +168,16 @@ const Project = () => {
     Object.keys(s.scheme.categories).forEach((key) => {
       const child = s.scheme.categories[key]
       categories[child.index] = (
-        <Menu.Item key={menuKeys.simulation + '&' + s.id + '&' + key}>
+        <Menu.Item
+          key={menuKeys.simulation + '&' + s.id + '&' + key}
+          icon={
+            child.done ? (
+              <CheckCircleOutlined style={{ color: 'green' }} />
+            ) : (
+              <ExclamationCircleOutlined style={{ color: 'orange' }} />
+            )
+          }
+        >
           {child.title}
         </Menu.Item>
       )
@@ -176,7 +188,10 @@ const Project = () => {
         icon={<CalculatorOutlined />}
         title={s.name}
       >
-        <Menu.Item key={menuKeys.simulation + '&' + s.id + '&about'}>
+        <Menu.Item
+          key={menuKeys.simulation + '&' + s.id + '&about'}
+          icon={<CheckCircleOutlined style={{ color: 'green' }} />}
+        >
           About
         </Menu.Item>
         {categories}
@@ -223,9 +238,14 @@ const Project = () => {
           project={{ id: project.id, simulations: project.simulations }}
           simulation={currentSimulation}
           type={currentType}
+          part={partSummary}
           onClose={onSimulationClose}
         />
-        <View simulation={currentSimulation} type={currentType} />
+        <View
+          simulation={currentSimulation}
+          type={currentType}
+          setPartSummary={setPartSummary}
+        />
       </Layout.Content>
     </Layout>
   )

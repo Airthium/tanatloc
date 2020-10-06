@@ -630,7 +630,7 @@ const ThreeView = ({ part }) => {
   )
 }
 
-const View = ({ simulation, type }) => {
+const View = ({ simulation, type, setPartSummary }) => {
   const [part, setPart] = useState()
 
   useEffect(() => {
@@ -645,6 +645,13 @@ const View = ({ simulation, type }) => {
   const loadPart = async (file) => {
     const partContent = await get({ id: simulation.id }, file)
     setPart(partContent)
+
+    const summary = {
+      solids: partContent.solids?.length,
+      faces: partContent.faces?.length,
+      edges: partContent.edges?.length
+    }
+    setPartSummary(summary)
   }
 
   return <ThreeView part={part} />

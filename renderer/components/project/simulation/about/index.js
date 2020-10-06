@@ -35,12 +35,6 @@ const About = ({ project, simulation }) => {
     <Layout>
       <Layout.Content>
         <Space direction="vertical">
-          <Typography.Text>
-            Category: {simulation?.scheme.category}
-          </Typography.Text>
-          <Typography.Text>
-            Algorihtm: {simulation?.scheme.algorithm}
-          </Typography.Text>
           <Typography.Title
             level={4}
             editable={{
@@ -50,7 +44,15 @@ const About = ({ project, simulation }) => {
           >
             {simulation?.name}
           </Typography.Title>
+          <Typography.Text>
+            <b>Category:</b> {simulation?.scheme.category}
+          </Typography.Text>
+          <Typography.Text>
+            <b>Algorihtm:</b> {simulation?.scheme.algorithm}
+          </Typography.Text>
+
           <p>{simulation?.scheme.description}</p>
+
           <Delete
             project={project}
             simulation={{ id: simulation?.id, name: simulation?.name }}

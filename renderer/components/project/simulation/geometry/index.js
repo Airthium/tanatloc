@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Button, Layout, Popconfirm, Upload } from 'antd'
+import { Button, Card, Layout, Popconfirm, Space, Spin, Upload } from 'antd'
 import {
   DeleteOutlined,
   DownloadOutlined,
@@ -11,7 +11,7 @@ import {
 import { update, useSimulations } from '../../../../../src/api/simulation'
 import { get } from '../../../../../src/api/file'
 
-const Geometry = ({ project, simulation }) => {
+const Geometry = ({ project, simulation, part }) => {
   // State
   const [upload, setUpload] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -58,7 +58,8 @@ const Geometry = ({ project, simulation }) => {
         file: {
           name: info.file.name,
           buffer: Buffer.from(buffer)
-        }
+        },
+        done: true
       }
 
       // Update simulation
@@ -105,7 +106,8 @@ const Geometry = ({ project, simulation }) => {
   const onDelete = async () => {
     // Diff scheme
     const diff = {
-      file: 'remove'
+      file: 'remove',
+      done: false
     }
 
     // Update simulation
@@ -128,7 +130,8 @@ const Geometry = ({ project, simulation }) => {
           ...simulation.scheme.categories,
           geometry: {
             ...simulation.scheme.categories.geometry,
-            file: undefined
+            file: undefined,
+            done: false
           }
         }
       }
@@ -178,15 +181,43 @@ const Geometry = ({ project, simulation }) => {
           </>
         ) : (
           <>
-            <p>File: {currentFile?.name} </p>
-            <Button icon={<DownloadOutlined />} onClick={onDownload} />
-            <Popconfirm
-              title="Are you sure"
-              icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
-              onConfirm={onDelete}
-            >
-              <Button type="danger" icon={<DeleteOutlined />} />
-            </Popconfirm>
+            <Card title="Informations">
+              <p>
+                <b>File:</b> {currentFile?.name}{' '}
+              </p>
+
+              {part ? (
+                <>
+                  {part.solids && (
+                    <p>
+                      <b>Number of solids:</b> {part.solids}
+                    </p>
+                  )}
+                  {part.faces && (
+                    <p>
+                      <b>Number of faces:</b> {part.faces}
+                    </p>
+                  )}
+                  {part.edges && (
+                    <p>
+                      <b>Number of edges:</b> {part.edges}
+                    </p>
+                  )}
+                </>
+              ) : (
+                <Spin />
+              )}
+            </Card>
+            <Space style={{ marginTop: '10px' }}>
+              <Button icon={<DownloadOutlined />} onClick={onDownload} />
+              <Popconfirm
+                title="Are you sure"
+                icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
+                onConfirm={onDelete}
+              >
+                <Button type="danger" icon={<DeleteOutlined />} />
+              </Popconfirm>
+            </Space>
           </>
         )}
       </Layout.Content>

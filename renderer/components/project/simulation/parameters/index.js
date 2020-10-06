@@ -30,7 +30,8 @@ const Parameters = ({ project, simulation }) => {
 
     // Diff
     const diff = {
-      ...newSimulation.scheme.categories.parameters
+      ...newSimulation.scheme.categories.parameters,
+      done: true
     }
 
     // Update
@@ -70,7 +71,7 @@ const Parameters = ({ project, simulation }) => {
   const parameters = []
   const advanced = []
   Object.keys(subScheme).forEach((key) => {
-    if (key === 'index' || key === 'title') return
+    if (key === 'index' || key === 'title' || key == 'done') return
 
     const parameter = subScheme[key]
 

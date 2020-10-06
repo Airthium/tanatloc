@@ -8,11 +8,12 @@ import Panel from '../panel'
 import About from './about'
 import Geometry from './geometry'
 import Parameters from './parameters'
+import BoundaryConditions from './boundaryConditions'
 
 // TODO test data only
 const simulationScheme = {
   algorithm: 'Laplacian',
-  category: 'academic',
+  category: 'Academic',
   description: 'Laplacian algorithm (TODO)',
   categories: {
     geometry: {
@@ -71,13 +72,33 @@ const simulationScheme = {
         ]
       }
     },
-    run: {
+    boundaryConditions: {
       index: 3,
-      title: 'Run'
+      title: 'Boundary conditions',
+      dirichlet: {
+        label: 'Dirichlet',
+        children: [
+          {
+            label: 'u',
+            htmlEntity: 'formula',
+            default: 0
+          }
+        ]
+      },
+      neumann: {
+        label: 'Neumann',
+        children: [
+          {
+            label: 'du/dn',
+            htmlEntity: 'formula',
+            default: 0
+          }
+        ]
+      }
     },
-    results: {
+    run: {
       index: 4,
-      title: 'Results'
+      title: 'Run'
     }
   }
 }
@@ -138,7 +159,7 @@ const Selector = ({ visible, onOk, onCancel }) => {
  * Simulation
  * @param {Object} props Props
  */
-const Simulation = ({ project, simulation, type, onClose }) => {
+const Simulation = ({ project, simulation, type, part, onClose }) => {
   // State
   const [visible, setVisible] = useState()
   const [title, setTitle] = useState()
@@ -159,10 +180,13 @@ const Simulation = ({ project, simulation, type, onClose }) => {
     <Panel visible={visible} title={title} onClose={onClose}>
       {type === 'about' && <About project={project} simulation={simulation} />}
       {type === 'geometry' && (
-        <Geometry project={project} simulation={simulation} />
+        <Geometry project={project} simulation={simulation} part={part} />
       )}
       {type === 'parameters' && (
         <Parameters project={project} simulation={simulation} />
+      )}
+      {type === 'boundaryConditions' && (
+        <BoundaryConditions project={project} simulation={simulation} />
       )}
     </Panel>
   )

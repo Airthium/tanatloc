@@ -57,6 +57,9 @@ describe('components/project', () => {
           categories: {
             geometry: {
               title: 'Geometry'
+            },
+            something: {
+              done: true
             }
           }
         }

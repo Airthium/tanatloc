@@ -1,16 +1,16 @@
-import About from '../../../../components/project/simulation/about'
+import About from '../../../../../components/project/simulation/about'
 import { shallow } from 'enzyme'
 
-jest.mock('../../../../components/project/simulation/delete', () => 'delete')
+jest.mock('../../../../../components/project/simulation/delete', () => 'delete')
 
 const mockMutate = jest.fn()
 let mockUpdate
-jest.mock('../../../../../src/api/simulation', () => ({
+jest.mock('../../../../../../src/api/simulation', () => ({
   useSimulations: () => [[], { mutateOneSimulation: mockMutate }],
   update: async () => mockUpdate()
 }))
 
-jest.mock('../../../../../src/lib/sentry', () => ({
+jest.mock('../../../../../../src/lib/sentry', () => ({
   captureException: () => {}
 }))
 

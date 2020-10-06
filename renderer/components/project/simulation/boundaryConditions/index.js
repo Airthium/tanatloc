@@ -73,8 +73,8 @@ const BoundaryConditions = ({ project, simulation, part, setVisible }) => {
           )}
           <div>
             {part &&
-              part.faces?.map((face) => {
-                return <Card>{face.name}</Card>
+              part.faces?.map((face, index) => {
+                return <Card key={index}>{face.name}</Card>
               })}
           </div>
           <Space>

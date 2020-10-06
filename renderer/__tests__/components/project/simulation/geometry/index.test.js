@@ -162,4 +162,40 @@ describe('renderer/components/project/simulation/geometry', () => {
     await wrapper.find('Button').at(0).props().onClick()
     expect(mockGet).toHaveBeenCalledTimes(1)
   })
+
+  it('with part', () => {
+    wrapper.unmount()
+    wrapper = shallow(
+      <Geometry
+        project={{}}
+        simulation={{
+          scheme: {
+            categories: {
+              geometry: {}
+            }
+          }
+        }}
+        part={{}}
+      />
+    )
+
+    wrapper.unmount()
+    wrapper = shallow(
+      <Geometry
+        project={{}}
+        simulation={{
+          scheme: {
+            categories: {
+              geometry: {}
+            }
+          }
+        }}
+        part={{
+          solids: [{}],
+          faces: [{}],
+          edges: [{}]
+        }}
+      />
+    )
+  })
 })

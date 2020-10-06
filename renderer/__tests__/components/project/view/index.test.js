@@ -88,8 +88,9 @@ jest.mock('../../../../../src/lib/three/loaders/PartLoader', () => ({
   })
 }))
 
+const mockGet = jest.fn()
 jest.mock('../../../../../src/api/part', () => ({
-  get: async () => {}
+  get: async () => mockGet()
 }))
 
 let mockAnimationCount = 0
@@ -142,6 +143,7 @@ mockUseState.mockImplementation(() => [mockState, () => {}])
 let wrapper
 describe('components/project/view', () => {
   beforeEach(() => {
+    mockGet.mockReset()
     mockState = false
     wrapper = mount(<View />)
   })
@@ -229,13 +231,44 @@ describe('components/project/view', () => {
 
   it('effect', () => {
     wrapper.unmount()
+    const setPartSummary = jest.fn()
 
+    mockGet.mockImplementation(() => ({}))
     wrapper = mount(
       <View
         simulation={{
           scheme: { categories: { geometry: { file: { part: {} } } } }
         }}
         type="geometry"
+        setPartSummary={setPartSummary}
+      />
+    )
+    wrapper.unmount()
+
+    mockGet.mockImplementation(() => ({
+      solids: [
+        {
+          buffer: '{"uuid": "uuid"}'
+        }
+      ],
+      faces: [
+        {
+          buffer: '{"uuid": "uuid"}'
+        }
+      ],
+      edges: [
+        {
+          buffer: '{"uuid": "uuid"}'
+        }
+      ]
+    }))
+    wrapper = mount(
+      <View
+        simulation={{
+          scheme: { categories: { geometry: { file: { part: {} } } } }
+        }}
+        type="geometry"
+        setPartSummary={setPartSummary}
       />
     )
   })

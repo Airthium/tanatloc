@@ -12,6 +12,10 @@ jest.mock(
   '../../../../components/project/simulation/parameters',
   () => 'parameters'
 )
+jest.mock(
+  '../../../../components/project/simulation/boundaryConditions',
+  () => 'boundaryConditions'
+)
 
 let wrapper
 describe('components/project/simulation', () => {
@@ -51,6 +55,12 @@ describe('components/project/simulation', () => {
     wrapper.unmount()
     wrapper = shallow(<Simulation type="parameters" />)
     expect(wrapper.find('parameters').length).toBe(1)
+  })
+
+  it('boundaryConditions', () => {
+    wrapper.unmount()
+    wrapper = shallow(<Simulation type="boundaryConditions" />)
+    expect(wrapper.find('boundaryConditions').length).toBe(1)
   })
 
   it('simulation effect', () => {

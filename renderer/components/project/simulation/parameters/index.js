@@ -13,6 +13,7 @@ const Parameters = ({ project, simulation }) => {
   const subScheme = simulation?.scheme.categories.parameters
   const [, { mutateOneSimulation }] = useSimulations(project?.simulations)
 
+  // Effect
   useEffect(() => {
     const newSimulation = { ...simulation }
 
@@ -53,7 +54,7 @@ const Parameters = ({ project, simulation }) => {
    * @param {number} index Children index
    * @param {string} value Value
    */
-  const onChange = async (key, index, value) => {
+  const onChange = (key, index, value) => {
     const deepValues = values[key] || []
     deepValues[index] = value
 
@@ -65,6 +66,7 @@ const Parameters = ({ project, simulation }) => {
     setValues(newValues)
   }
 
+  // Build parameters
   const parameters = []
   const advanced = []
   Object.keys(subScheme).forEach((key) => {
@@ -112,6 +114,9 @@ const Parameters = ({ project, simulation }) => {
     }
   })
 
+  /**
+   * Render
+   */
   return (
     <Layout>
       <Layout.Content>

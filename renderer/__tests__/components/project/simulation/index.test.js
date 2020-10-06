@@ -3,11 +3,15 @@ import { shallow, mount } from 'enzyme'
 
 jest.mock('../../../../components/project/panel', () => 'panel')
 
+jest.mock('../../../../components/project/simulation/about', () => 'about')
 jest.mock(
   '../../../../components/project/simulation/geometry',
   () => 'geometry'
 )
-jest.mock('../../../../components/project/simulation/about', () => 'about')
+jest.mock(
+  '../../../../components/project/simulation/parameters',
+  () => 'parameters'
+)
 
 let wrapper
 describe('components/project/simulation', () => {
@@ -41,6 +45,12 @@ describe('components/project/simulation', () => {
     wrapper.unmount()
     wrapper = shallow(<Simulation type="geometry" />)
     expect(wrapper.find('geometry').length).toBe(1)
+  })
+
+  it('parameters', () => {
+    wrapper.unmount()
+    wrapper = shallow(<Simulation type="parameters" />)
+    expect(wrapper.find('parameters').length).toBe(1)
   })
 
   it('simulation effect', () => {

@@ -85,7 +85,7 @@ const PartLoader = () => {
    */
   const loadElement = (element, color, transparent, clippingPlane) => {
     const loader = new BufferGeometryLoader()
-    const buffer = JSON.parse(Buffer.from(element.buffer).toString())
+    const buffer = element.buffer
     const geometry = loader.parse(buffer)
     geometry.computeBoundingBox()
     geometry.computeBoundingSphere()

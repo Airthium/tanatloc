@@ -190,17 +190,17 @@ const Geometry = ({ project, simulation, part }) => {
                 <>
                   {part.solids && (
                     <p>
-                      <b>Number of solids:</b> {part.solids}
+                      <b>Number of solids:</b> {part.solids?.length}
                     </p>
                   )}
                   {part.faces && (
                     <p>
-                      <b>Number of faces:</b> {part.faces}
+                      <b>Number of faces:</b> {part.faces?.length}
                     </p>
                   )}
                   {part.edges && (
                     <p>
-                      <b>Number of edges:</b> {part.edges}
+                      <b>Number of edges:</b> {part.edges?.length}
                     </p>
                   )}
                 </>

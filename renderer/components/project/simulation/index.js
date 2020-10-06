@@ -80,7 +80,6 @@ const simulationScheme = {
         children: [
           {
             label: 'u',
-            htmlEntity: 'formula',
             default: 0
           }
         ]
@@ -90,7 +89,6 @@ const simulationScheme = {
         children: [
           {
             label: 'du/dn',
-            htmlEntity: 'formula',
             default: 0
           }
         ]
@@ -186,7 +184,12 @@ const Simulation = ({ project, simulation, type, part, onClose }) => {
         <Parameters project={project} simulation={simulation} />
       )}
       {type === 'boundaryConditions' && (
-        <BoundaryConditions project={project} simulation={simulation} />
+        <BoundaryConditions
+          project={project}
+          simulation={simulation}
+          part={part}
+          setVisible={setVisible}
+        />
       )}
     </Panel>
   )

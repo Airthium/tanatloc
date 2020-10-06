@@ -644,13 +644,43 @@ const View = ({ simulation, type, setPartSummary }) => {
 
   const loadPart = async (file) => {
     const partContent = await get({ id: simulation.id }, file)
-    setPart(partContent)
+
+    // Convert buffers
+    partContent.solids?.forEach((solid) => {
+      solid.buffer = JSON.parse(Buffer.from(solid.buffer).toString())
+    })
+    partContent.faces?.forEach((face) => {
+      face.buffer = JSON.parse(Buffer.from(face.buffer).toString())
+    })
+    partContent.edges?.forEach((edge) => {
+      edge.buffer = JSON.parse(Buffer.from(edge.buffer).toString())
+    })
 
     const summary = {
-      solids: partContent.solids?.length,
-      faces: partContent.faces?.length,
-      edges: partContent.edges?.length
+      solids: partContent.solids?.map((solid) => {
+        return {
+          name: solid.name,
+          number: solid.number,
+          uuid: solid.buffer.uuid
+        }
+      }),
+      faces: partContent.faces?.map((face) => {
+        return {
+          name: face.name,
+          number: face.number,
+          uuid: face.buffer.uuid
+        }
+      }),
+      edges: partContent.edges?.map((edge) => {
+        return {
+          name: face.name,
+          number: face.number,
+          uuid: face.buffer.uuid
+        }
+      })
     }
+
+    setPart(partContent)
     setPartSummary(summary)
   }
 

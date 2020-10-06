@@ -50,6 +50,7 @@ const About = ({ project, simulation }) => {
           >
             {simulation?.name}
           </Typography.Title>
+          <p>{simulation?.scheme.description}</p>
           <Delete
             project={project}
             simulation={{ id: simulation?.id, name: simulation?.name }}

@@ -5,13 +5,15 @@ import { Layout, Menu, Modal } from 'antd'
 
 import Panel from '../panel'
 
-import Geometry from './geometry'
 import About from './about'
+import Geometry from './geometry'
+import Parameters from './parameters'
 
 // TODO test data only
 const simulationScheme = {
   algorithm: 'Laplacian',
   category: 'academic',
+  description: 'Laplacian algorithm (TODO)',
   categories: {
     geometry: {
       index: 1,
@@ -19,7 +21,55 @@ const simulationScheme = {
     },
     parameters: {
       index: 2,
-      title: 'Parameters'
+      title: 'Parameters',
+      rightHandSide: {
+        label: 'Right hand side',
+        children: [
+          {
+            label: 'External force',
+            htmlEntity: 'formula',
+            default: 0
+          }
+        ]
+      },
+      finiteElementSpace: {
+        advanced: true,
+        label: 'Finite element space',
+        children: [
+          {
+            label: 'u',
+            htmlEntity: 'select',
+            options: [
+              {
+                label: 'P1',
+                value: 'P1'
+              },
+              {
+                label: 'P2',
+                value: 'P2'
+              }
+            ],
+            default: 'P1',
+            name: 'Uh'
+          }
+        ]
+      },
+      solver: {
+        advanced: true,
+        label: 'Solver',
+        children: [
+          {
+            label: 'System resolution',
+            htmlEntity: 'select',
+            options: [
+              { label: 'GMRES', value: 'GMRES' },
+              { label: 'MUMPS', value: 'MUMPS' },
+              { label: 'UMFPACK', value: 'UMFPACK' }
+            ],
+            default: 'MUMPS'
+          }
+        ]
+      }
     },
     run: {
       index: 3,
@@ -110,6 +160,9 @@ const Simulation = ({ project, simulation, type, onClose }) => {
       {type === 'about' && <About project={project} simulation={simulation} />}
       {type === 'geometry' && (
         <Geometry project={project} simulation={simulation} />
+      )}
+      {type === 'parameters' && (
+        <Parameters project={project} simulation={simulation} />
       )}
     </Panel>
   )

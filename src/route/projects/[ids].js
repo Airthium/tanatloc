@@ -30,7 +30,7 @@ export default async (req, res) => {
       }
 
       const list = ids.split('&')
-
+      //todo check users/owners
       const projectsTmp = await Promise.all(
         list.map(async (id) => {
           try {

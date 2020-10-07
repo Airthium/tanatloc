@@ -21,6 +21,26 @@ export default async (req, res) => {
     id = req.params.id
   }
 
+  // Check authorization
+  try {
+    const projectAuth = await get(id, ['owners', 'users'])
+
+    if (
+      projectAuth.owners &&
+      !projectAuth.owners.includes(sessionId) &&
+      projectAuth.users &&
+      !projectAuth.users.includes(sessionId)
+    ) {
+      res.status(401).json({ message: 'Unauthorized' })
+      return
+    }
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({ message: err.message })
+    Sentry.captureException(err)
+    return
+  }
+
   switch (req.method) {
     case 'GET':
       // Get project
@@ -34,17 +54,7 @@ export default async (req, res) => {
           'simulations'
         ])
 
-        // Check authorization
-        if (
-          project.owners &&
-          !project.owners.includes(sessionId) &&
-          project.users &&
-          !project.users.includes(sessionId)
-        ) {
-          res.status(401).json({ message: 'Unauthorized' })
-        } else {
-          res.status(200).json({ project })
-        }
+        res.status(200).json({ project })
       } catch (err) {
         console.error(err)
         res.status(500).json({ message: err.message })

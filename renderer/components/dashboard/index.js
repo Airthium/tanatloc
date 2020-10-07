@@ -22,7 +22,7 @@ import { useWorkspaces } from '../../../src/api/workspace'
 import logout from '../../../src/api/logout'
 
 /**
- * Menu items
+ * Dashboard menu items
  */
 const menuItems = {
   workspaces: {
@@ -102,6 +102,11 @@ const Dashboard = () => {
       subMenuKey === menuItems.shared.key
     ) {
       setCurrentView(subMenuKey)
+      router.replace({
+        pathname: '/dashboard',
+        query: { page: subMenuKey }
+      })
+
       const workspace = workspaces[key]
       setCurrentWorkspace(workspace)
     } else {

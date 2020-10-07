@@ -113,7 +113,7 @@ describe('renderer/components/dashboard', () => {
     wrapper
       .find('Menu')
       .props()
-      .onSelect({
+      .onClick({
         item: { props: { subMenuKey: 'my_workspaces-menu-' } },
         key: '1'
       })
@@ -123,7 +123,7 @@ describe('renderer/components/dashboard', () => {
     wrapper
       .find('Menu')
       .props()
-      .onSelect({
+      .onClick({
         item: { props: { subMenuKey: 'shared-menu-' } },
         key: '1'
       })
@@ -133,28 +133,28 @@ describe('renderer/components/dashboard', () => {
     wrapper
       .find('Menu')
       .props()
-      .onSelect({ item: { props: { subMenuKey: '-menu-0' } }, key: 'account' })
+      .onClick({ item: { props: { subMenuKey: '-menu-0' } }, key: 'account' })
     expect(wrapper.find('account').length).toBe(1)
 
     // Help
     wrapper
       .find('Menu')
       .props()
-      .onSelect({ item: { props: { subMenuKey: '-menu-0' } }, key: 'help' })
+      .onClick({ item: { props: { subMenuKey: '-menu-0' } }, key: 'help' })
     expect(wrapper.find('help').length).toBe(1)
 
     // Logout
     wrapper
       .find('Menu')
       .props()
-      .onSelect({ item: { props: { subMenuKey: '-menu-0' } }, key: 'logout' })
+      .onClick({ item: { props: { subMenuKey: '-menu-0' } }, key: 'logout' })
     expect(mockLogout).toHaveBeenCalledTimes(1)
 
     // Unknown
     wrapper
       .find('Menu')
       .props()
-      .onSelect({
+      .onClick({
         item: { props: { subMenuKey: 'unknown-menu-' } },
         key: 'unknown1'
       })
@@ -192,7 +192,7 @@ describe('renderer/components/dashboard', () => {
       wrapper
         .find('InternalMenu')
         .props()
-        .onSelect({
+        .onClick({
           item: { props: { subMenuKey: 'my_workspaces-menu-' } },
           key: '1'
         })
@@ -201,7 +201,7 @@ describe('renderer/components/dashboard', () => {
       wrapper
         .find('InternalMenu')
         .props()
-        .onSelect({
+        .onClick({
           item: { props: { subMenuKey: 'my_workspaces-menu-' } },
           key: '1'
         })

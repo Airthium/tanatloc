@@ -33,7 +33,18 @@ export default async (req, res) => {
           'users',
           'simulations'
         ])
-        res.status(200).json({ project })
+
+        // Check authorization
+        if (
+          project.owners &&
+          !project.owners.includes(sessionId) &&
+          project.users &&
+          !project.users.includes(sessionId)
+        ) {
+          res.status(401).json({ message: 'Unauthorized' })
+        } else {
+          res.status(200).json({ project })
+        }
       } catch (err) {
         console.error(err)
         res.status(500).json({ message: err.message })

@@ -61,6 +61,7 @@ const Dashboard = () => {
 
   // Router
   const router = useRouter()
+  const { page } = router.query
 
   // Not logged -> go to login page
   useEffect(() => {
@@ -69,15 +70,24 @@ const Dashboard = () => {
 
   // Update workspace
   useEffect(() => {
-    if (workspaces && workspaces.length && currentWorkspace) {
-      const workspace = workspaces.find((w) => w.id === currentWorkspace.id)
-      if (
-        workspace &&
-        JSON.stringify(workspace) !== JSON.stringify(currentWorkspace)
+    if (currentWorkspace) {
+      const workspaceIndex = workspaces?.findIndex(
+        (w) => w.id === currentWorkspace.id
       )
-        setCurrentWorkspace(workspace)
+      if (workspaceIndex !== -1) {
+        const workspace = workspaces[workspaceIndex]
+        if (JSON.stringify(workspace) !== JSON.stringify(currentWorkspace))
+          setCurrentWorkspace(workspace)
+      } else {
+        setCurrentWorkspace()
+      }
     }
   }, [workspaces, currentWorkspace])
+
+  // Page effect
+  useEffect(() => {
+    if (page) setCurrentView(page)
+  }, [page])
 
   /**
    * Menu selection
@@ -96,7 +106,13 @@ const Dashboard = () => {
       setCurrentWorkspace(workspace)
     } else {
       if (key === menuItems.logout.key) handleLogout()
-      else setCurrentView(key)
+      else {
+        setCurrentView(key)
+        router.replace({
+          pathname: '/dashboard',
+          query: { page: key }
+        })
+      }
     }
   }
 
@@ -122,6 +138,12 @@ const Dashboard = () => {
           <Menu.Item key={index}>{workspace.name}</Menu.Item>
         )
     })
+  }
+
+  const onWorkspaces = () => {
+    if (!myWorkspaces?.length) {
+      setCurrentView()
+    }
   }
 
   let displayed
@@ -165,6 +187,7 @@ const Dashboard = () => {
                 key={menuItems.workspaces.key}
                 icon={<AppstoreTwoTone />}
                 title={menuItems.workspaces.label}
+                onTitleClick={onWorkspaces}
               >
                 {myWorkspaces}
               </Menu.SubMenu>

@@ -42,9 +42,6 @@ const Delete = (props) => {
 
       // Mutate
       delOneWorkspace({ id: workspace.id })
-
-      setLoading(false)
-      toggleDialog()
     } catch (err) {
       message.error(err.message)
       console.error(err)

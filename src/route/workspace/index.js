@@ -39,7 +39,8 @@ export default async (req, res) => {
       break
     case 'PUT':
       try {
-        await update(req.body)
+        const { workspace, data } = req.body
+        await update(workspace, data)
         res.status(200).end()
       } catch (err) {
         console.error(err)

@@ -11,7 +11,7 @@ const get = async (id, data) => {
   const response = await getter(databases.AVATARS, id, data)
 
   const avatar = response.rows[0]
-  avatar.id = id
+  avatar && (avatar.id = id)
 
   return avatar
 }

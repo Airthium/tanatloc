@@ -61,7 +61,7 @@ const Dashboard = () => {
 
   // Router
   const router = useRouter()
-  const { page } = router.query
+  const { page, workspaceId } = router.query
 
   // Not logged -> go to login page
   useEffect(() => {
@@ -83,11 +83,6 @@ const Dashboard = () => {
       }
     }
   }, [workspaces, currentWorkspace])
-
-  // Page effect
-  useEffect(() => {
-    if (page) setCurrentView(page)
-  }, [page])
 
   /**
    * Menu selection
@@ -134,8 +129,8 @@ const Dashboard = () => {
   // My / Shared workspaces
   let myWorkspaces = []
   let sharedWorkspaces = []
-  if (user && workspaces) {
-    workspaces.forEach((workspace, index) => {
+  if (user) {
+    workspaces?.forEach((workspace, index) => {
       if (workspace.owners && workspace.owners.includes(user.id))
         myWorkspaces.push(<Menu.Item key={index}>{workspace.name}</Menu.Item>)
       else if (workspace.users && workspace.users.includes(user.id))
@@ -150,6 +145,22 @@ const Dashboard = () => {
       setCurrentView()
     }
   }
+
+  // Page effect
+  useEffect(() => {
+    if (workspaceId) {
+      const workspace = workspaces?.find((w) => w.id === workspaceId)
+      if (workspace) {
+        if (workspace.owners && workspace.owners.includes(user.id))
+          setCurrentView(menuItems.workspaces.key)
+        else if (workspace.users && workspace.users.includes(user.id))
+          setCurrentView(menuItems.shared.key)
+        setCurrentWorkspace(workspace)
+      }
+    } else if (page) {
+      setCurrentView(page)
+    }
+  }, [page, workspaceId, workspaces])
 
   let displayed
   switch (currentView) {
@@ -184,7 +195,7 @@ const Dashboard = () => {
             <Menu
               className="Dashboard-menu"
               theme="light"
-              onSelect={onSelect}
+              onClick={onSelect}
               defaultOpenKeys={[menuItems.workspaces.key, menuItems.shared.key]}
               mode="inline"
             >

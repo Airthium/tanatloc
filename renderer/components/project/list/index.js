@@ -31,7 +31,7 @@ const ProjectList = ({ workspace, filter }) => {
   const openProject = (project) => {
     router.push({
       pathname: '/project',
-      query: { id: project.id }
+      query: { workspaceId: workspace.id, projectId: project.id }
     })
   }
 

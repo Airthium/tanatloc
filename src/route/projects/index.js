@@ -7,5 +7,5 @@
  */
 export default async (req, res) => {
   // Empty route
-  res.status(200).end()
+  res.status(200).json({ projects: [] })
 }

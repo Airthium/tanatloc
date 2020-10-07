@@ -52,7 +52,6 @@ describe('renderer/components/project/simulation/geometry', () => {
   })
 
   it('onDelete', async () => {
-    console.log(wrapper.debug())
     await wrapper.find('ForwardRef').props().onConfirm()
     expect(mockUpdate).toHaveBeenCalledTimes(1)
   })

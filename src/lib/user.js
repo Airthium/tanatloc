@@ -22,7 +22,7 @@ const get = async (id, data) => {
   const user = await dBget(id, data)
 
   // Get avatar
-  if (user.avatar) {
+  if (user && user.avatar) {
     try {
       const avatar = await readAvatar(user.avatar)
       user.avatar = avatar

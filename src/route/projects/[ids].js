@@ -30,11 +30,10 @@ export default async (req, res) => {
       }
 
       const list = ids.split('&')
-      //todo check users/owners
       const projectsTmp = await Promise.all(
         list.map(async (id) => {
           try {
-            return await get(id, [
+            const project = await get(id, [
               'title',
               'description',
               'avatar',
@@ -42,6 +41,18 @@ export default async (req, res) => {
               'users',
               'simulations'
             ])
+
+            // Check authorization
+            if (
+              project.owners &&
+              !project.owners.includes(sessionId) &&
+              project.users &&
+              !project.users.includes(sessionId)
+            ) {
+              return
+            }
+
+            return project
           } catch (err) {
             console.warn(err)
             return null

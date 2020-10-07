@@ -11,7 +11,7 @@ const get = async (id, data) => {
   const response = await getter(databases.PROJECTS, id, data)
 
   const project = response.rows[0]
-  project.id = id
+  project && (project.id = id)
 
   return project
 }

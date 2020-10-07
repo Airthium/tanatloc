@@ -39,7 +39,7 @@ const get = async (id, data) => {
   const project = await dBget(id, data)
 
   // Get avatar
-  if (project.avatar) {
+  if (project && project.avatar) {
     try {
       const avatar = await readAvatar(project.avatar)
       project.avatar = avatar
@@ -50,7 +50,7 @@ const get = async (id, data) => {
   }
 
   // Get owners
-  if (project.owners) {
+  if (project && project.owners) {
     const owners = await Promise.all(
       project.owners.map(async (owner) => {
         return await getUser(owner, [

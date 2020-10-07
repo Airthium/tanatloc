@@ -1,13 +1,12 @@
 /** @module src/lib/avatar */
 
 import path from 'path'
-import { promises as fs } from 'fs'
 
 import { AVATAR } from '../../config/storage'
 
 import { add as dBadd, get as dBget, del as dBdel } from '../database/avatar'
 import { get as getUser, update as updateUser } from './user'
-import { writeFile } from './tools'
+import { readFile, writeFile } from './tools'
 
 /**
  * Add avatar
@@ -42,7 +41,7 @@ const read = async (id) => {
   const avatar = await dBget(id, ['path'])
 
   // Read file
-  const content = await fs.readFile(avatar.path)
+  const content = await readFile(avatar.path)
 
   // Return
   return content

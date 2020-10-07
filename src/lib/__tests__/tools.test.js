@@ -8,8 +8,9 @@ import {
   removeDirectory
 } from '../tools'
 
+const mockPath = jest.fn()
 jest.mock('path', () => ({
-  join: () => 'path'
+  join: () => mockPath()
 }))
 
 const mockMkdir = jest.fn()

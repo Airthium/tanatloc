@@ -1,25 +1,20 @@
 import simulation from '../'
 
-let mockSession = () => false
+const mockSession = jest.fn()
 jest.mock('../../session', () => () => mockSession())
 
-let mockAdd
-jest.mock('../../../lib/simulation', () => {
-  return {
-    add: async () => mockAdd()
-  }
-})
+const mockAdd = jest.fn()
+jest.mock('../../../lib/simulation', () => ({
+  add: async () => mockAdd()
+}))
 
+const mockSentry = jest.fn()
 jest.mock('../../../lib/sentry', () => ({
-  captureException: () => {}
+  captureException: () => mockSentry()
 }))
 
 describe('src/route/simulation', () => {
-  const req = {
-    method: 'POST',
-    body: { title: 'title' }
-  }
-  let response
+  let req, response
   const res = {
     status: () => ({
       json: (obj) => {
@@ -32,41 +27,75 @@ describe('src/route/simulation', () => {
   }
 
   beforeEach(() => {
-    mockAdd = () => ({
-      id: 'id'
-    })
+    mockSession.mockReset()
+    mockSession.mockImplementation(() => false)
+
+    mockAdd.mockReset()
+    mockAdd.mockImplementation(() => ({
+      id: 'id',
+      name: 'name'
+    }))
+
+    mockSentry.mockReset()
+
+    req = {
+      method: 'GET'
+    }
+    response = undefined
   })
 
   it('no session', async () => {
     await simulation(req, res)
+    expect(mockSession).toHaveBeenCalledTimes(1)
+    expect(mockAdd).toHaveBeenCalledTimes(0)
+    expect(mockSentry).toHaveBeenCalledTimes(0)
     expect(response).toBe(undefined)
   })
 
-  it('POST', async () => {
-    mockSession = () => true
-
-    await simulation(req, res)
-    expect(response).toEqual({
-      id: 'id'
-    })
-
-    // Error
-    mockAdd = () => {
-      throw new Error()
-    }
-    await simulation(req, res)
-    expect(response).toEqual({ message: '' })
-  })
-
   it('GET', async () => {
-    req.method = 'GET'
+    mockSession.mockImplementation(() => 'id')
+
     await simulation(req, res)
+    expect(mockSession).toHaveBeenCalledTimes(1)
+    expect(mockAdd).toHaveBeenCalledTimes(0)
+    expect(mockSentry).toHaveBeenCalledTimes(0)
     expect(response).toBe('end')
   })
 
-  it('bad method', async () => {
-    req.method = 'OTHER'
+  it('POST', async () => {
+    req.method = 'POST'
+
+    mockSession.mockImplementation(() => 'id')
+
     await simulation(req, res)
-    expect(response).toEqual({ message: 'Method OTHER not allowed' })
+    expect(mockSession).toHaveBeenCalledTimes(1)
+    expect(mockAdd).toHaveBeenCalledTimes(1)
+    expect(mockSentry).toHaveBeenCalledTimes(0)
+    expect(response).toEqual({
+      id: 'id',
+      name: 'name'
+    })
+
+    // Error
+    mockAdd.mockImplementation(() => {
+      throw new Error('test')
+    })
+    await simulation(req, res)
+    expect(mockSession).toHaveBeenCalledTimes(2)
+    expect(mockAdd).toHaveBeenCalledTimes(2)
+    expect(mockSentry).toHaveBeenCalledTimes(1)
+    expect(response).toEqual({ message: 'test' })
+  })
+
+  it('wrong method', async () => {
+    req.method = 'SOMETHING'
+
+    mockSession.mockImplementation(() => true)
+
+    await simulation(req, res)
+    expect(mockSession).toHaveBeenCalledTimes(1)
+    expect(mockAdd).toHaveBeenCalledTimes(0)
+    expect(mockSentry).toHaveBeenCalledTimes(1)
+    expect(response).toEqual({ message: 'Method SOMETHING not allowed' })
   })
 })

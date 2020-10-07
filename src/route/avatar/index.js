@@ -1,6 +1,7 @@
 /** @module src/route/avatar */
 
 import getSessionId from '../session'
+
 import { add, del } from '../../lib/avatar'
 
 import Sentry from '../../lib/sentry'

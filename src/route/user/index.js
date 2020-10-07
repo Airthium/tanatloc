@@ -1,6 +1,7 @@
 /** @module src/route/user */
 
 import getSessionId from '../session'
+
 import { add, get, update, del } from '../../lib/user'
 
 import Sentry from '../../lib/sentry'

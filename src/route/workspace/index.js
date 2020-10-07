@@ -1,6 +1,8 @@
 /** @module src/route/workspace */
 
 import getSessionId from '../session'
+import auth from '../auth'
+
 import { add, get, getByUser, update, del } from '../../lib/workspace'
 
 import Sentry from '../../lib/sentry'
@@ -17,17 +19,12 @@ export default async (req, res) => {
   if (!sessionId) return
 
   /**
-   *
+   * Check authorization
    * @param {Object} workspace Workspace { id }
    */
   const checkAuth = async (workspace) => {
     const workspaceAuth = await get(workspace.id, ['owners', 'users'])
-    if (
-      workspaceAuth.owners &&
-      !workspaceAuth.owners.includes(sessionId) &&
-      workspaceAuth.users &&
-      !workspaceAuth.users.includes(sessionId)
-    ) {
+    if (!auth(workspaceAuth, sessionId)) {
       throw new Error('Access denied')
     }
   }

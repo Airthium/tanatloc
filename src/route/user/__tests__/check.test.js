@@ -1,11 +1,11 @@
 import check from '../check'
 
-let mockSession = () => false
+const mockSession = jest.fn()
 jest.mock('../../session', () => () => mockSession())
 
-let mockLogin
+const mockLogin = jest.fn()
 jest.mock('../../../lib/user', () => ({
-  login: () => mockLogin()
+  login: async () => mockLogin()
 }))
 
 const mockSentry = jest.fn()
@@ -14,8 +14,7 @@ jest.mock('../../../lib/sentry', () => ({
 }))
 
 describe('src/route/user/check', () => {
-  const req = {}
-  let response
+  let req, response
   const res = {
     status: () => ({
       json: (obj) => {
@@ -24,30 +23,56 @@ describe('src/route/user/check', () => {
     })
   }
 
+  beforeEach(() => {
+    mockSession.mockReset()
+    mockSession.mockImplementation(() => false)
+
+    mockLogin.mockReset()
+
+    mockSentry.mockReset()
+
+    req = {}
+    response = undefined
+  })
+
   it('no session', async () => {
     await check(req, res)
+    expect(mockSession).toHaveBeenCalledTimes(1)
+    expect(mockLogin).toHaveBeenCalledTimes(0)
+    expect(mockSentry).toHaveBeenCalledTimes(0)
     expect(response).toBe(undefined)
   })
 
   it('session', async () => {
-    mockSession = () => true
-    mockLogin = async () => ({})
+    mockSession.mockImplementation(() => true)
+    mockLogin.mockImplementation(() => ({}))
+
     await check(req, res)
+    expect(mockSession).toHaveBeenCalledTimes(1)
+    expect(mockLogin).toHaveBeenCalledTimes(1)
+    expect(mockSentry).toHaveBeenCalledTimes(0)
     expect(response).toEqual({ valid: true })
   })
 
   it('not authorized', async () => {
-    mockSession = () => true
-    mockLogin = async () => {}
+    mockSession.mockImplementation(() => true)
+
     await check(req, res)
+    expect(mockSession).toHaveBeenCalledTimes(1)
+    expect(mockLogin).toHaveBeenCalledTimes(1)
+    expect(mockSentry).toHaveBeenCalledTimes(0)
     expect(response).toEqual({ valid: false })
   })
 
   it('error', async () => {
-    mockLogin = async () => {
-      throw new Error()
-    }
+    mockSession.mockImplementation(() => true)
+    mockLogin.mockImplementation(() => {
+      throw new Error('test')
+    })
+
     await check(req, res)
+    expect(mockSession).toHaveBeenCalledTimes(1)
+    expect(mockLogin).toHaveBeenCalledTimes(1)
     expect(mockSentry).toHaveBeenCalledTimes(1)
   })
 })

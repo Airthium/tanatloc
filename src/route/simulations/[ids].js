@@ -1,4 +1,6 @@
 import getSessionId from '../session'
+import auth from '../auth'
+
 import { get } from '../../lib/simulation'
 import { get as getProject } from '../../lib/project'
 
@@ -20,7 +22,7 @@ export default async (req, res) => {
       }
 
       if (ids === 'undefined' || ids === 'null') {
-        res.status(200).end()
+        res.status(200).json({ simulations: [] })
         return
       }
 
@@ -36,12 +38,7 @@ export default async (req, res) => {
               'owners',
               'users'
             ])
-            if (
-              projectAuth.owners &&
-              !projectAuth.owners.includes(sessionId) &&
-              projectAuth.users &&
-              !projectAuth.users.includes(sessionId)
-            ) {
+            if (!auth(projectAuth, sessionId)) {
               return
             }
 

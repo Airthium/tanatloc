@@ -3,56 +3,36 @@ import workspace from '..'
 const mockSession = jest.fn()
 jest.mock('../../session', () => () => mockSession())
 
+const mockAuth = jest.fn()
+jest.mock('../../auth', () => () => mockAuth())
+
 const mockGetByUser = jest.fn()
+const mockGet = jest.fn()
 const mockAdd = jest.fn()
 const mockUpdate = jest.fn()
 const mockDel = jest.fn()
-jest.mock('../../../lib/workspace', () => {
-  return {
-    getByUser: async () => mockGetByUser(),
-    // async () => {
-    //   countG++
-    //   if (countG === 1) throw new Error('test')
-    //   return [
-    //     {
-    //       name: 'name',
-    //       owners: ['owner']
-    //     }
-    //   ]
-    // },
-    add: async () => mockAdd(),
-    // {
-    //   countA++
-    //   if (countA === 1) throw new Error('test')
-    //   return { id: 'id' }
-    // },
-    update: async () => mockUpdate(),
-    //   countU++
-    //   if (countU === 1) throw new Error('test')
-    // },
-    del: async () => mockDel()
-    //   countD++
-    //   if (countD === 1) throw new Error('test')
-    // }
-  }
-})
+jest.mock('../../../lib/workspace', () => ({
+  getByUser: async () => mockGetByUser(),
+  get: async () => mockGet(),
+  add: async () => mockAdd(),
+  update: async () => mockUpdate(),
+  del: async () => mockDel()
+}))
 
+const mockSentry = jest.fn()
 jest.mock('../../../lib/sentry', () => ({
-  captureException: () => {}
+  captureException: () => mockSentry()
 }))
 
 describe('pages/api/workspace', () => {
-  const req = {
-    method: 'GET'
-  }
-  let response
+  let req, response
   const res = {
     status: () => ({
       json: (obj) => {
         response = obj
       },
       end: () => {
-        response = null
+        response = 'end'
       }
     })
   }
@@ -61,32 +41,56 @@ describe('pages/api/workspace', () => {
     mockSession.mockReset()
     mockSession.mockImplementation(() => false)
 
+    mockAuth.mockReset()
+    mockAuth.mockImplementation(() => false)
+
     mockGetByUser.mockReset()
+    mockGetByUser.mockImplementation(() => [{ id: 'id', name: 'name' }])
+    mockGet.mockReset()
     mockAdd.mockReset()
+    mockAdd.mockImplementation(() => ({
+      id: 'id'
+    }))
     mockUpdate.mockReset()
     mockDel.mockReset()
+
+    mockSentry.mockReset()
+
+    req = {
+      method: 'GET'
+    }
   })
 
   it('no session', async () => {
     await workspace(req, res)
+    expect(mockSession).toHaveBeenCalledTimes(1)
+    expect(mockAuth).toHaveBeenCalledTimes(0)
+    expect(mockGetByUser).toHaveBeenCalledTimes(0)
+    expect(mockGet).toHaveBeenCalledTimes(0)
+    expect(mockAdd).toHaveBeenCalledTimes(0)
+    expect(mockUpdate).toHaveBeenCalledTimes(0)
+    expect(mockDel).toHaveBeenCalledTimes(0)
+    expect(mockSentry).toHaveBeenCalledTimes(0)
     expect(response).toBe(undefined)
   })
 
   it('GET', async () => {
     mockSession.mockImplementation(() => true)
 
-    mockGetByUser.mockImplementation(() => [
-      {
-        name: 'name',
-        owners: ['owner']
-      }
-    ])
     await workspace(req, res)
+    expect(mockSession).toHaveBeenCalledTimes(1)
+    expect(mockAuth).toHaveBeenCalledTimes(0)
+    expect(mockGetByUser).toHaveBeenCalledTimes(1)
+    expect(mockGet).toHaveBeenCalledTimes(0)
+    expect(mockAdd).toHaveBeenCalledTimes(0)
+    expect(mockUpdate).toHaveBeenCalledTimes(0)
+    expect(mockDel).toHaveBeenCalledTimes(0)
+    expect(mockSentry).toHaveBeenCalledTimes(0)
     expect(response).toEqual({
       workspaces: [
         {
-          name: 'name',
-          owners: ['owner']
+          id: 'id',
+          name: 'name'
         }
       ]
     })
@@ -96,6 +100,14 @@ describe('pages/api/workspace', () => {
       throw new Error('test')
     })
     await workspace(req, res)
+    expect(mockSession).toHaveBeenCalledTimes(2)
+    expect(mockAuth).toHaveBeenCalledTimes(0)
+    expect(mockGetByUser).toHaveBeenCalledTimes(2)
+    expect(mockGet).toHaveBeenCalledTimes(0)
+    expect(mockAdd).toHaveBeenCalledTimes(0)
+    expect(mockUpdate).toHaveBeenCalledTimes(0)
+    expect(mockDel).toHaveBeenCalledTimes(0)
+    expect(mockSentry).toHaveBeenCalledTimes(1)
     expect(response).toEqual({ message: 'test' })
   })
 
@@ -104,10 +116,15 @@ describe('pages/api/workspace', () => {
 
     mockSession.mockImplementation(() => true)
 
-    mockAdd.mockImplementation(() => ({
-      id: 'id'
-    }))
     await workspace(req, res)
+    expect(mockSession).toHaveBeenCalledTimes(1)
+    expect(mockAuth).toHaveBeenCalledTimes(0)
+    expect(mockGetByUser).toHaveBeenCalledTimes(0)
+    expect(mockGet).toHaveBeenCalledTimes(0)
+    expect(mockAdd).toHaveBeenCalledTimes(1)
+    expect(mockUpdate).toHaveBeenCalledTimes(0)
+    expect(mockDel).toHaveBeenCalledTimes(0)
+    expect(mockSentry).toHaveBeenCalledTimes(0)
     expect(response).toEqual({ id: 'id' })
 
     // Error
@@ -115,48 +132,128 @@ describe('pages/api/workspace', () => {
       throw new Error('test')
     })
     await workspace(req, res)
+    expect(mockSession).toHaveBeenCalledTimes(2)
+    expect(mockAuth).toHaveBeenCalledTimes(0)
+    expect(mockGetByUser).toHaveBeenCalledTimes(0)
+    expect(mockGet).toHaveBeenCalledTimes(0)
+    expect(mockAdd).toHaveBeenCalledTimes(2)
+    expect(mockUpdate).toHaveBeenCalledTimes(0)
+    expect(mockDel).toHaveBeenCalledTimes(0)
+    expect(mockSentry).toHaveBeenCalledTimes(1)
     expect(response).toEqual({ message: 'test' })
   })
 
   it('PUT', async () => {
     req.method = 'PUT'
-    req.body = {}
+    req.body = {
+      workspace: {},
+      data: []
+    }
 
     mockSession.mockImplementation(() => true)
 
+    // Not authorized
     await workspace(req, res)
-    expect(response).toBe(null)
+    expect(mockSession).toHaveBeenCalledTimes(1)
+    expect(mockAuth).toHaveBeenCalledTimes(1)
+    expect(mockGetByUser).toHaveBeenCalledTimes(0)
+    expect(mockGet).toHaveBeenCalledTimes(1)
+    expect(mockAdd).toHaveBeenCalledTimes(0)
+    expect(mockUpdate).toHaveBeenCalledTimes(0)
+    expect(mockDel).toHaveBeenCalledTimes(0)
+    expect(mockSentry).toHaveBeenCalledTimes(1)
+    expect(response).toEqual({ message: 'Access denied' })
+
+    // Authorized
+    mockAuth.mockImplementation(() => true)
+    await workspace(req, res)
+    expect(mockSession).toHaveBeenCalledTimes(2)
+    expect(mockAuth).toHaveBeenCalledTimes(2)
+    expect(mockGetByUser).toHaveBeenCalledTimes(0)
+    expect(mockGet).toHaveBeenCalledTimes(2)
+    expect(mockAdd).toHaveBeenCalledTimes(0)
+    expect(mockUpdate).toHaveBeenCalledTimes(1)
+    expect(mockDel).toHaveBeenCalledTimes(0)
+    expect(mockSentry).toHaveBeenCalledTimes(1)
+    expect(response).toBe('end')
 
     // Error
     mockUpdate.mockImplementation(() => {
       throw new Error('test')
     })
     await workspace(req, res)
+    expect(mockSession).toHaveBeenCalledTimes(3)
+    expect(mockAuth).toHaveBeenCalledTimes(3)
+    expect(mockGetByUser).toHaveBeenCalledTimes(0)
+    expect(mockGet).toHaveBeenCalledTimes(3)
+    expect(mockAdd).toHaveBeenCalledTimes(0)
+    expect(mockUpdate).toHaveBeenCalledTimes(2)
+    expect(mockDel).toHaveBeenCalledTimes(0)
+    expect(mockSentry).toHaveBeenCalledTimes(2)
     expect(response).toEqual({ message: 'test' })
   })
 
   it('DELETE', async () => {
     req.method = 'DELETE'
+    req.body = {}
 
     mockSession.mockImplementation(() => true)
 
+    // Not authorized
     await workspace(req, res)
-    expect(response).toBe(null)
+    expect(mockSession).toHaveBeenCalledTimes(1)
+    expect(mockAuth).toHaveBeenCalledTimes(1)
+    expect(mockGetByUser).toHaveBeenCalledTimes(0)
+    expect(mockGet).toHaveBeenCalledTimes(1)
+    expect(mockAdd).toHaveBeenCalledTimes(0)
+    expect(mockUpdate).toHaveBeenCalledTimes(0)
+    expect(mockDel).toHaveBeenCalledTimes(0)
+    expect(mockSentry).toHaveBeenCalledTimes(1)
+    expect(response).toEqual({ message: 'Access denied' })
+
+    // Authorized
+    mockAuth.mockImplementation(() => true)
+    await workspace(req, res)
+    expect(mockSession).toHaveBeenCalledTimes(2)
+    expect(mockAuth).toHaveBeenCalledTimes(2)
+    expect(mockGetByUser).toHaveBeenCalledTimes(0)
+    expect(mockGet).toHaveBeenCalledTimes(2)
+    expect(mockAdd).toHaveBeenCalledTimes(0)
+    expect(mockUpdate).toHaveBeenCalledTimes(0)
+    expect(mockDel).toHaveBeenCalledTimes(1)
+    expect(mockSentry).toHaveBeenCalledTimes(1)
+    expect(response).toBe('end')
 
     // Error
     mockDel.mockImplementation(() => {
       throw new Error('test')
     })
     await workspace(req, res)
+    expect(mockSession).toHaveBeenCalledTimes(3)
+    expect(mockAuth).toHaveBeenCalledTimes(3)
+    expect(mockGetByUser).toHaveBeenCalledTimes(0)
+    expect(mockGet).toHaveBeenCalledTimes(3)
+    expect(mockAdd).toHaveBeenCalledTimes(0)
+    expect(mockUpdate).toHaveBeenCalledTimes(0)
+    expect(mockDel).toHaveBeenCalledTimes(2)
+    expect(mockSentry).toHaveBeenCalledTimes(2)
     expect(response).toEqual({ message: 'test' })
   })
 
-  it('DEFAULT', async () => {
-    req.method = 'DEFAULT'
+  it('wrong method', async () => {
+    req.method = 'SOMETHING'
 
     mockSession.mockImplementation(() => true)
 
     await workspace(req, res)
-    expect(response).toEqual({ message: 'Method DEFAULT not allowed' })
+    expect(mockSession).toHaveBeenCalledTimes(1)
+    expect(mockAuth).toHaveBeenCalledTimes(0)
+    expect(mockGetByUser).toHaveBeenCalledTimes(0)
+    expect(mockGet).toHaveBeenCalledTimes(0)
+    expect(mockAdd).toHaveBeenCalledTimes(0)
+    expect(mockUpdate).toHaveBeenCalledTimes(0)
+    expect(mockDel).toHaveBeenCalledTimes(0)
+    expect(mockSentry).toHaveBeenCalledTimes(1)
+    expect(response).toEqual({ message: 'Method SOMETHING not allowed' })
   })
 })

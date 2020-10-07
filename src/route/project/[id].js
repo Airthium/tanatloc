@@ -1,4 +1,6 @@
 import getSessionId from '../session'
+import auth from '../auth'
+
 import { get, update, del } from '../../lib/project'
 
 import Sentry from '../../lib/sentry'
@@ -24,13 +26,7 @@ export default async (req, res) => {
   // Check authorization
   try {
     const projectAuth = await get(id, ['owners', 'users'])
-
-    if (
-      projectAuth.owners &&
-      !projectAuth.owners.includes(sessionId) &&
-      projectAuth.users &&
-      !projectAuth.users.includes(sessionId)
-    ) {
+    if (!auth(projectAuth, sessionId)) {
       res.status(401).json({ message: 'Unauthorized' })
       return
     }

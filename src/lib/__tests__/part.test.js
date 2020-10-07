@@ -1,16 +1,25 @@
 import { get } from '../part'
 
+const mockPath = jest.fn()
 jest.mock('path', () => ({
-  join: () => 'path'
+  join: () => mockPath()
 }))
 
+jest.mock('../../../config/storage', () => ({}))
+
+const mockLoadPart = jest.fn(() => 'part')
 jest.mock('../tools', () => ({
-  loadPart: async () => ({})
+  loadPart: async () => mockLoadPart()
 }))
 
-describe('src/lib/part', () => {
+describe('src/lib/file', () => {
   it('get', async () => {
-    const part = await get({ simulation: {}, file: {} })
-    expect(part).toEqual({})
+    const content = await get(
+      { id: 'id' },
+      { origin: 'origin', originPath: 'originPath' }
+    )
+    expect(mockPath).toHaveBeenCalledTimes(1)
+    expect(mockLoadPart).toHaveBeenCalledTimes(1)
+    expect(content).toEqual('part')
   })
 })

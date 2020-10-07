@@ -1,6 +1,6 @@
 import getSessionId from '../session'
 
-let mockSession
+const mockSession = jest.fn()
 jest.mock('../../auth/iron', () => ({
   getSession: () => mockSession()
 }))
@@ -13,9 +13,16 @@ describe('src/route/session', () => {
     })
   }
 
+  beforeEach(() => {
+    mockSession.mockReset()
+    mockSession.mockImplementation(() => false)
+  })
+
   it('ok', async () => {
-    mockSession = () => ({ id: 'id' })
+    mockSession.mockImplementation(() => ({ id: 'id' }))
+
     const id = await getSessionId(req, res)
+    expect(mockSession).toHaveBeenCalledTimes(1)
     expect(id).toBe('id')
   })
 
@@ -23,13 +30,15 @@ describe('src/route/session', () => {
     let id
 
     // No id
-    mockSession = () => ({})
+    mockSession.mockImplementation(() => ({}))
     id = await getSessionId(req, res)
+    expect(mockSession).toHaveBeenCalledTimes(1)
     expect(id).toBe(null)
 
     // Empty
-    mockSession = () => {}
+    mockSession.mockImplementation(() => {})
     id = await getSessionId(req, res)
+    expect(mockSession).toHaveBeenCalledTimes(2)
     expect(id).toBe(null)
   })
 })

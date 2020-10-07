@@ -1,26 +1,28 @@
 import ids from '../[ids]'
 
-let mockSession = () => false
+const mockSession = jest.fn()
 jest.mock('../../session', () => () => mockSession())
 
-let mockGet
-jest.mock('../../../lib/simulation', () => {
-  return {
-    get: async () => mockGet()
-  }
-})
+const mockAuth = jest.fn()
+jest.mock('../../auth', () => () => mockAuth())
 
-jest.mock('../../../lib/sentry', () => ({
-  captureException: () => {}
+const mockGet = jest.fn()
+jest.mock('../../../lib/simulation', () => ({
+  get: async () => mockGet()
 }))
 
-describe('src/route/simulations/ids', () => {
-  const req = {
-    method: 'GET',
-    query: {},
-    params: {}
-  }
-  let response
+const mockGetProject = jest.fn()
+jest.mock('../../../lib/project', () => ({
+  get: async () => mockGetProject()
+}))
+
+const mockSentry = jest.fn()
+jest.mock('../../../lib/sentry', () => ({
+  captureException: () => mockSentry()
+}))
+
+describe('src/route/projects/ids', () => {
+  let req, response
   const res = {
     status: () => ({
       json: (obj) => {
@@ -33,60 +35,132 @@ describe('src/route/simulations/ids', () => {
   }
 
   beforeEach(() => {
-    mockGet = () => ({
+    mockSession.mockReset()
+    mockSession.mockImplementation(() => false)
+
+    mockAuth.mockReset()
+    mockAuth.mockImplementation(() => false)
+
+    mockGet.mockReset()
+    mockGet.mockImplementation(() => ({
+      id: 'id',
       name: 'name'
-    })
+    }))
+
+    mockGetProject.mockReset()
+
+    mockSentry.mockReset()
+
+    req = {
+      method: 'GET',
+      query: { ids: 'id1&id2' }
+    }
+    response = undefined
   })
 
   it('no session', async () => {
     await ids(req, res)
+    expect(mockSession).toHaveBeenCalledTimes(1)
+    expect(mockAuth).toHaveBeenCalledTimes(0)
+    expect(mockGet).toHaveBeenCalledTimes(0)
+    expect(mockSentry).toHaveBeenCalledTimes(0)
     expect(response).toBe(undefined)
   })
 
+  it('electron', async () => {
+    mockSession.mockImplementation(() => true)
+    mockAuth.mockImplementation(() => true)
+
+    req.query = {}
+    req.params = { ids: 'id1&id2' }
+
+    await ids(req, res)
+    expect(mockSession).toHaveBeenCalledTimes(1)
+    expect(mockAuth).toHaveBeenCalledTimes(2)
+    expect(mockGet).toHaveBeenCalledTimes(2)
+    expect(mockGetProject).toHaveBeenCalledTimes(2)
+    expect(mockSentry).toHaveBeenCalledTimes(0)
+    expect(response).toEqual({
+      simulations: [
+        { id: 'id', name: 'name' },
+        { id: 'id', name: 'name' }
+      ]
+    })
+  })
+
   it('GET', async () => {
-    mockSession = () => true
+    mockSession.mockImplementation(() => 'id')
 
     // No ids
-    req.query = { ids: 'undefined' }
+    req.query.ids = 'undefined'
     await ids(req, res)
-    expect(response).toBe('end')
+    expect(mockSession).toHaveBeenCalledTimes(1)
+    expect(mockAuth).toHaveBeenCalledTimes(0)
+    expect(mockGet).toHaveBeenCalledTimes(0)
+    expect(mockGetProject).toHaveBeenCalledTimes(0)
+    expect(mockSentry).toHaveBeenCalledTimes(0)
+    expect(response).toEqual({ simulations: [] })
+
+    // No authorization
+    req.query.ids = 'id1&id2'
+    await ids(req, res)
+    expect(mockSession).toHaveBeenCalledTimes(2)
+    expect(mockAuth).toHaveBeenCalledTimes(2)
+    expect(mockGet).toHaveBeenCalledTimes(2)
+    expect(mockGetProject).toHaveBeenCalledTimes(2)
+    expect(mockSentry).toHaveBeenCalledTimes(0)
+    expect(response).toEqual({ simulations: [] })
 
     // Normal
-    req.query = { ids: 'id1&id2' }
+    mockAuth.mockImplementation(() => true)
     await ids(req, res)
+    expect(mockSession).toHaveBeenCalledTimes(3)
+    expect(mockAuth).toHaveBeenCalledTimes(4)
+    expect(mockGet).toHaveBeenCalledTimes(4)
+    expect(mockGetProject).toHaveBeenCalledTimes(4)
+    expect(mockSentry).toHaveBeenCalledTimes(0)
     expect(response).toEqual({
-      simulations: [{ name: 'name' }, { name: 'name' }]
+      simulations: [
+        { id: 'id', name: 'name' },
+        { id: 'id', name: 'name' }
+      ]
     })
 
-    // Get error
-    mockGet = () => {
-      throw new Error()
-    }
+    // get error
+    mockGet.mockImplementation(() => {
+      throw new Error('test')
+    })
     await ids(req, res)
+    expect(mockSession).toHaveBeenCalledTimes(4)
+    expect(mockAuth).toHaveBeenCalledTimes(4)
+    expect(mockGet).toHaveBeenCalledTimes(6)
+    expect(mockGetProject).toHaveBeenCalledTimes(4)
+    expect(mockSentry).toHaveBeenCalledTimes(0)
     expect(response).toEqual({ simulations: [] })
 
     // Error
-    req.query = undefined
+    req.query = {}
     await ids(req, res)
+    expect(mockSession).toHaveBeenCalledTimes(5)
+    expect(mockAuth).toHaveBeenCalledTimes(4)
+    expect(mockGet).toHaveBeenCalledTimes(6)
+    expect(mockGetProject).toHaveBeenCalledTimes(4)
+    expect(mockSentry).toHaveBeenCalledTimes(1)
     expect(response).toEqual({
       message: "Cannot read property 'ids' of undefined"
     })
   })
 
-  it('electron', async () => {
-    mockSession = () => true
-    req.query = {}
-    req.params = { ids: 'id1&id2' }
-    await ids(req, res)
-    expect(response).toEqual({
-      simulations: [{ name: 'name' }, { name: 'name' }]
-    })
-  })
-
   it('wrong method', async () => {
-    mockSession = () => true
-    req.method = 'POST'
+    req.method = 'SOMETHING'
+
+    mockSession.mockImplementation(() => true)
+
     await ids(req, res)
-    expect(response).toEqual({ message: 'Method POST not allowed' })
+    expect(mockSession).toHaveBeenCalledTimes(1)
+    expect(mockAuth).toHaveBeenCalledTimes(0)
+    expect(mockGet).toHaveBeenCalledTimes(0)
+    expect(mockSentry).toHaveBeenCalledTimes(1)
+    expect(response).toEqual({ message: 'Method SOMETHING not allowed' })
   })
 })

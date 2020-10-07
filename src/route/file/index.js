@@ -1,4 +1,7 @@
+/** @module src/route/file */
+
 import getSessionId from '../session'
+import auth from '../auth'
 
 import { get } from '../../lib/file'
 import { get as getSimulation } from '../../lib/simulation'
@@ -22,12 +25,7 @@ export default async (req, res) => {
         'owners',
         'users'
       ])
-      if (
-        projectAuth.owners &&
-        !projectAuth.owners.includes(sessionId) &&
-        projectAuth.users &&
-        !projectAuth.users.includes(sessionId)
-      ) {
+      if (!auth(projectAuth, sessionId)) {
         res.status(401).json({ message: 'Unauthorized' })
         return
       }

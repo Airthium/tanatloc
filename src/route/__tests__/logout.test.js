@@ -1,6 +1,6 @@
 import logout from '../logout'
 
-let mockRemove = jest.fn()
+const mockRemove = jest.fn()
 jest.mock('../../auth/auth-cookies', () => ({
   removeTokenCookie: () => mockRemove()
 }))
@@ -17,9 +17,9 @@ describe('src/route/api', () => {
   })
 
   it('error', async () => {
-    mockRemove = () => {
+    mockRemove.mockImplementation(() => {
       throw new Error()
-    }
+    })
     await logout(
       {},
       {

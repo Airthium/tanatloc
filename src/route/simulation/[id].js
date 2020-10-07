@@ -1,4 +1,6 @@
 import getSessionId from '../session'
+import auth from '../auth'
+
 import { get, update, del } from '../../lib/simulation'
 import { get as getProject } from '../../lib/project'
 
@@ -30,12 +32,7 @@ export default async (req, res) => {
       'users'
     ])
 
-    if (
-      projectAuth.owners &&
-      !projectAuth.owners.includes(sessionId) &&
-      projectAuth.users &&
-      !projectAuth.users.includes(sessionId)
-    ) {
+    if (!auth(projectAuth, sessionId)) {
       res.status(401).json({ message: 'Unauthorized' })
       return
     }

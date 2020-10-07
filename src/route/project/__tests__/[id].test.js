@@ -1,29 +1,27 @@
 import id from '../[id]'
 
-let mockSession = () => false
+const mockSession = jest.fn()
 jest.mock('../../session', () => () => mockSession())
 
-let mockGet
-let mockUpdate
-let mockDel
-jest.mock('../../../lib/project', () => {
-  return {
-    get: async () => mockGet(),
-    update: async () => mockUpdate(),
-    del: async () => mockDel()
-  }
-})
+const mockAuth = jest.fn()
+jest.mock('../../auth', () => () => mockAuth())
 
+const mockGet = jest.fn()
+const mockUpdate = jest.fn()
+const mockDel = jest.fn()
+jest.mock('../../../lib/project', () => ({
+  get: async (id, data) => mockGet(id, data),
+  update: async () => mockUpdate(),
+  del: async () => mockDel()
+}))
+
+const mockSentry = jest.fn()
 jest.mock('../../../lib/sentry', () => ({
-  captureException: () => {}
+  captureException: () => mockSentry()
 }))
 
 describe('src/route/project/[id]', () => {
-  const req = {
-    method: 'GET',
-    query: { id: 'id' }
-  }
-  let response
+  let req, response
   const res = {
     status: () => ({
       json: (obj) => {
@@ -36,81 +34,191 @@ describe('src/route/project/[id]', () => {
   }
 
   beforeEach(() => {
-    mockGet = () => ({
+    mockSession.mockReset()
+    mockSession.mockImplementation(() => false)
+
+    mockAuth.mockReset()
+    mockAuth.mockImplementation(() => false)
+
+    mockGet.mockReset()
+    mockGet.mockImplementation(() => ({
+      id: 'id',
       title: 'title'
-    })
-    mockUpdate = () => {}
-    mockDel = () => {}
+    }))
+    mockUpdate.mockReset()
+    mockDel.mockReset()
+
+    mockSentry.mockReset()
+
+    req = {
+      method: 'GET',
+      query: { id: 'id' }
+    }
+    response = undefined
   })
 
   it('no session', async () => {
     await id(req, res)
+    expect(mockSession).toHaveBeenCalledTimes(1)
+    expect(mockAuth).toHaveBeenCalledTimes(0)
+    expect(mockGet).toHaveBeenCalledTimes(0)
+    expect(mockUpdate).toHaveBeenCalledTimes(0)
+    expect(mockDel).toHaveBeenCalledTimes(0)
+    expect(mockSentry).toHaveBeenCalledTimes(0)
     expect(response).toBe(undefined)
   })
 
-  it('GET', async () => {
-    mockSession = () => true
+  it('no authorization', async () => {
+    mockSession.mockImplementation(() => 'id')
 
     await id(req, res)
-    expect(response).toEqual({
-      project: {
-        title: 'title'
-      }
+    expect(mockSession).toHaveBeenCalledTimes(1)
+    expect(mockAuth).toHaveBeenCalledTimes(1)
+    expect(mockGet).toHaveBeenCalledTimes(1)
+    expect(mockUpdate).toHaveBeenCalledTimes(0)
+    expect(mockDel).toHaveBeenCalledTimes(0)
+    expect(mockSentry).toHaveBeenCalledTimes(0)
+    expect(response).toEqual({ message: 'Unauthorized' })
+
+    // Error
+    mockAuth.mockImplementation(() => {
+      throw new Error('test')
     })
-
-    mockGet = () => {
-      throw new Error()
-    }
     await id(req, res)
-    expect(response).toEqual({ message: '' })
+    expect(mockSession).toHaveBeenCalledTimes(2)
+    expect(mockAuth).toHaveBeenCalledTimes(2)
+    expect(mockGet).toHaveBeenCalledTimes(2)
+    expect(mockUpdate).toHaveBeenCalledTimes(0)
+    expect(mockDel).toHaveBeenCalledTimes(0)
+    expect(mockSentry).toHaveBeenCalledTimes(1)
+    expect(response).toEqual({ message: 'test' })
   })
 
   it('electron', async () => {
-    mockSession = () => true
     req.query.id = undefined
     req.params = { id: 'id' }
+
+    mockSession.mockImplementation(() => true)
+    mockAuth.mockImplementation(() => true)
+
     await id(req, res)
+    expect(mockSession).toHaveBeenCalledTimes(1)
+    expect(mockAuth).toHaveBeenCalledTimes(1)
+    expect(mockGet).toHaveBeenCalledTimes(2)
+    expect(mockUpdate).toHaveBeenCalledTimes(0)
+    expect(mockDel).toHaveBeenCalledTimes(0)
+    expect(mockSentry).toHaveBeenCalledTimes(0)
     expect(response).toEqual({
       project: {
+        id: 'id',
         title: 'title'
       }
     })
   })
 
-  it('PUT', async () => {
-    mockSession = () => true
-    req.method = 'PUT'
+  it('GET', async () => {
+    mockSession.mockImplementation(() => true)
+    mockAuth.mockImplementation(() => true)
 
     await id(req, res)
+    expect(mockSession).toHaveBeenCalledTimes(1)
+    expect(mockAuth).toHaveBeenCalledTimes(1)
+    expect(mockGet).toHaveBeenCalledTimes(2)
+    expect(mockUpdate).toHaveBeenCalledTimes(0)
+    expect(mockDel).toHaveBeenCalledTimes(0)
+    expect(mockSentry).toHaveBeenCalledTimes(0)
+    expect(response).toEqual({
+      project: {
+        id: 'id',
+        title: 'title'
+      }
+    })
+
+    // Error
+    mockGet.mockImplementation((id, data) => {
+      if (data.includes('title')) throw new Error('test')
+    })
+    await id(req, res)
+    expect(mockSession).toHaveBeenCalledTimes(2)
+    expect(mockAuth).toHaveBeenCalledTimes(2)
+    expect(mockGet).toHaveBeenCalledTimes(4)
+    expect(mockUpdate).toHaveBeenCalledTimes(0)
+    expect(mockDel).toHaveBeenCalledTimes(0)
+    expect(mockSentry).toHaveBeenCalledTimes(1)
+    expect(response).toEqual({ message: 'test' })
+  })
+
+  it('PUT', async () => {
+    req.method = 'PUT'
+
+    mockSession.mockImplementation(() => true)
+    mockAuth.mockImplementation(() => true)
+
+    await id(req, res)
+    expect(mockSession).toHaveBeenCalledTimes(1)
+    expect(mockAuth).toHaveBeenCalledTimes(1)
+    expect(mockGet).toHaveBeenCalledTimes(1)
+    expect(mockUpdate).toHaveBeenCalledTimes(1)
+    expect(mockDel).toHaveBeenCalledTimes(0)
+    expect(mockSentry).toHaveBeenCalledTimes(0)
     expect(response).toBe('end')
 
     // Error
-    mockUpdate = () => {
-      throw new Error()
-    }
+    mockUpdate.mockImplementation(() => {
+      throw new Error('test')
+    })
     await id(req, res)
-    expect(response).toEqual({ message: '' })
+    expect(mockSession).toHaveBeenCalledTimes(2)
+    expect(mockAuth).toHaveBeenCalledTimes(2)
+    expect(mockGet).toHaveBeenCalledTimes(2)
+    expect(mockUpdate).toHaveBeenCalledTimes(2)
+    expect(mockDel).toHaveBeenCalledTimes(0)
+    expect(mockSentry).toHaveBeenCalledTimes(1)
+    expect(response).toEqual({ message: 'test' })
   })
 
   it('DELETE', async () => {
-    mockSession = () => true
     req.method = 'DELETE'
 
+    mockSession.mockImplementation(() => true)
+    mockAuth.mockImplementation(() => true)
+
     await id(req, res)
+    expect(mockSession).toHaveBeenCalledTimes(1)
+    expect(mockAuth).toHaveBeenCalledTimes(1)
+    expect(mockGet).toHaveBeenCalledTimes(1)
+    expect(mockUpdate).toHaveBeenCalledTimes(0)
+    expect(mockDel).toHaveBeenCalledTimes(1)
+    expect(mockSentry).toHaveBeenCalledTimes(0)
     expect(response).toBe('end')
 
     // Error
-    mockDel = () => {
-      throw new Error()
-    }
+    mockDel.mockImplementation(() => {
+      throw new Error('test')
+    })
     await id(req, res)
-    expect(response).toEqual({ message: '' })
+    expect(mockSession).toHaveBeenCalledTimes(2)
+    expect(mockAuth).toHaveBeenCalledTimes(2)
+    expect(mockGet).toHaveBeenCalledTimes(2)
+    expect(mockUpdate).toHaveBeenCalledTimes(0)
+    expect(mockDel).toHaveBeenCalledTimes(2)
+    expect(mockSentry).toHaveBeenCalledTimes(1)
+    expect(response).toEqual({ message: 'test' })
   })
 
-  it('Wrong route', async () => {
-    mockSession = () => true
-    req.method = 'POST'
+  it('wrong method', async () => {
+    req.method = 'SOMETHING'
+
+    mockSession.mockImplementation(() => true)
+    mockAuth.mockImplementation(() => true)
+
     await id(req, res)
-    expect(response).toEqual({ message: 'Method POST not allowed' })
+    expect(mockSession).toHaveBeenCalledTimes(1)
+    expect(mockAuth).toHaveBeenCalledTimes(1)
+    expect(mockGet).toHaveBeenCalledTimes(1)
+    expect(mockUpdate).toHaveBeenCalledTimes(0)
+    expect(mockDel).toHaveBeenCalledTimes(0)
+    expect(mockSentry).toHaveBeenCalledTimes(1)
+    expect(response).toEqual({ message: 'Method SOMETHING not allowed' })
   })
 })

@@ -1,6 +1,7 @@
 /** @module src/route/simulation */
 
 import getSessionId from '../session'
+
 import { add } from '../../lib/simulation'
 
 import Sentry from '../../lib/sentry'

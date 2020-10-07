@@ -1,4 +1,6 @@
 import getSessionId from '../session'
+import auth from '../auth'
+
 import { get } from '../../lib/project'
 
 import Sentry from '../../lib/sentry'
@@ -25,7 +27,7 @@ export default async (req, res) => {
       }
 
       if (ids === 'undefined' || ids === 'null') {
-        res.status(200).end()
+        res.status(200).json({ projects: [] })
         return
       }
 
@@ -43,12 +45,7 @@ export default async (req, res) => {
             ])
 
             // Check authorization
-            if (
-              project.owners &&
-              !project.owners.includes(sessionId) &&
-              project.users &&
-              !project.users.includes(sessionId)
-            ) {
+            if (!auth(project, sessionId)) {
               return
             }
 

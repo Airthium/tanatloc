@@ -11,17 +11,14 @@ import Sentry from '../../../../src/lib/sentry'
 /**
  * Projects' list
  * @memberof module:renderer/components/project
+ * @param {Object} props Props
  */
-const ProjectList = (props) => {
-  // Props
-  const workspace = props.workspace || {}
-  const filter = props.filter
-
+const ProjectList = ({ workspace, filter }) => {
   // Router
   const router = useRouter()
 
   // Load projects
-  const [projects, { mutateOneProject }] = useProjects(workspace.projects)
+  const [projects, { mutateOneProject }] = useProjects(workspace?.projects)
 
   // Data
   const data = projects
@@ -53,13 +50,11 @@ const ProjectList = (props) => {
         }
       ])
 
-      // Update project
-      project.title = title
-
       // Mutate project
-      mutateOneProject(project)
-
-      // Todo reload data ?
+      mutateOneProject({
+        ...project,
+        title: title
+      })
     } catch (err) {
       message.error(err.message)
       console.error(err)

@@ -47,8 +47,10 @@ const Add = (props) => {
       addOneProject(project)
 
       // Mutate workspaces
-      workspace.projects.push(project.id)
-      mutateOneWorkspace(workspace)
+      mutateOneWorkspace({
+        ...workspace,
+        projects: [...workspace.projects, project.id]
+      })
 
       toggleDialog()
     } catch (err) {

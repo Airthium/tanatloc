@@ -24,9 +24,13 @@ import {
   PointLight,
   Scene,
   Sphere,
+  Vector2,
   Vector3,
   WebGLRenderer
 } from 'three/build/three.module'
+import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass'
+import { OutlinePass } from 'three/examples/jsm/postprocessing/OutlinePass'
+import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer'
 
 import { TrackballControls } from '../../../../src/lib/three/controls/TrackballControls'
 import { AxisHelper } from '../../../../src/lib/three/helpers/AxisHelper'
@@ -48,6 +52,8 @@ const ThreeView = ({ part }) => {
   const scene = useRef()
   const camera = useRef()
   const renderer = useRef()
+  const outlinePass = useRef()
+  const effectComposer = useRef()
   const controls = useRef()
   const gridHelper = useRef()
   const selectionHelper = useRef()
@@ -97,6 +103,23 @@ const ThreeView = ({ part }) => {
     renderer.current.setPixelRatio(window.devicePixelRatio || 1)
     renderer.current.autoClear = false
     mount.current.appendChild(renderer.current.domElement)
+
+    // Render pass
+    const renderPass = new RenderPass(scene.current, camera.current)
+
+    // Outline pass
+    outlinePass.current = new OutlinePass(
+      new Vector2(width, height),
+      scene.current,
+      camera.current
+    )
+    outlinePass.current.visibleEdgeColor.set('#0096C7')
+    outlinePass.current.hiddenEdgeColor.set('#0096C7')
+
+    // Effect composer
+    effectComposer.current = new EffectComposer(renderer.current)
+    effectComposer.current.addPass(renderPass)
+    effectComposer.current.addPass(outlinePass.current)
 
     // Controls
     controls.current = new TrackballControls(camera.current, mount.current)
@@ -152,6 +175,8 @@ const ThreeView = ({ part }) => {
 
       renderer.current.setViewport(0, 0, width, height)
       renderer.current.render(scene.current, camera.current)
+
+      effectComposer.current.render()
 
       axisHelper.render()
 
@@ -370,7 +395,8 @@ const ThreeView = ({ part }) => {
     const mesh = loader.load(
       part,
       transparent,
-      sectionViewHelper.current.getClippingPlane()
+      sectionViewHelper.current.getClippingPlane(),
+      outlinePass.current
     )
     // Scene
     scene.current.add(mesh)
@@ -609,7 +635,12 @@ const ThreeView = ({ part }) => {
               onClick={() =>
                 scene.current.children
                   .filter((c) => c.type === 'Part')[0]
-                  .startSelection(renderer.current, camera.current, 'face')
+                  .startSelection(
+                    renderer.current,
+                    camera.current,
+                    outlinePass.current,
+                    'face'
+                  )
               }
             >
               Start

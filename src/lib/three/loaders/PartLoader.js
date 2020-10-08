@@ -65,8 +65,8 @@ const PartLoader = () => {
     object.boundingBox = computeBoundingBox(object)
     object.dispose = () => dispose(object)
     object.setTransparent = (transp) => setTransparent(object, transp)
-    object.startSelection = (renderer, camera, type) =>
-      startSelection(object, renderer, camera, type)
+    object.startSelection = (renderer, camera, outlinePass, type) =>
+      startSelection(object, renderer, camera, outlinePass, type)
     object.stopSelection = () => stopSelection(object)
     object.highlight = highlight
     object.unhighlight = unhighlight
@@ -197,6 +197,7 @@ const PartLoader = () => {
   let selectionPart = null
   let selectionRenderer = null
   let selectionCamera = null
+  let selectionOutlinePass = null
   let selectionType = null
   let currentlyHighlighted = {}
   let previouslyHighlighted = {}
@@ -207,12 +208,14 @@ const PartLoader = () => {
    * @param {Object} part Part
    * @param {Object} renderer Renderer
    * @param {Object} camera Camera
+   * @param {Object} outlinePass OutlinePass
    * @param {string} type Type (solid, face)
    */
-  const startSelection = (part, renderer, camera, type) => {
+  const startSelection = (part, renderer, camera, outlinePass, type) => {
     selectionPart = part
     selectionRenderer = renderer
     selectionCamera = camera
+    selectionOutlinePass = outlinePass
     currentlyHighlighted = {}
     previouslyHighlighted = {}
     selection.length = 0
@@ -253,6 +256,8 @@ const PartLoader = () => {
     unhighlight(previouslyHighlighted)
     currentlyHighlighted = {}
     previouslyHighlighted = {}
+
+    selectionOutlinePass = null
 
     selection.forEach((s) => unselect(s))
     selection.length = 0
@@ -303,6 +308,7 @@ const PartLoader = () => {
    */
   const highlight = (mesh) => {
     if (mesh && mesh.material) {
+      selectionOutlinePass.selectedObjects = [mesh]
       mesh.material.color = highlightColor
     }
   }
@@ -313,6 +319,7 @@ const PartLoader = () => {
    */
   const unhighlight = (mesh) => {
     if (mesh && mesh.material) {
+      selectionOutlinePass.selectedObjects = []
       const index = selection.findIndex((m) => m === mesh)
       mesh.material.color =
         index === -1 ? mesh.material.originalColor : selectColor

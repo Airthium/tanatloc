@@ -71,18 +71,25 @@ const Dashboard = () => {
   // Update workspace
   useEffect(() => {
     if (currentWorkspace) {
-      const workspaceIndex = workspaces?.findIndex(
-        (w) => w.id === currentWorkspace.id
-      )
-      if (workspaceIndex !== -1) {
-        const workspace = workspaces[workspaceIndex]
-        if (JSON.stringify(workspace) !== JSON.stringify(currentWorkspace))
-          setCurrentWorkspace(workspace)
-      } else {
-        setCurrentWorkspace()
-      }
+      const workspace = workspaces?.find((w) => w.id === currentWorkspace.id)
+      if (JSON.stringify(workspace) !== JSON.stringify(currentWorkspace))
+        setCurrentWorkspace(workspace)
     }
   }, [workspaces, currentWorkspace])
+
+  // Page effect
+  useEffect(() => {
+    if (workspaceId) {
+      const workspace = workspaces?.find((w) => w.id === workspaceId)
+      if (workspace?.owners?.find((o) => o.id === user.id))
+        setCurrentView(menuItems.workspaces.key)
+      else if (workspace?.users?.find((u) => u.id === user.id))
+        setCurrentView(menuItems.shared.key)
+      setCurrentWorkspace(workspace)
+    } else if (page) {
+      setCurrentView(page)
+    }
+  }, [page, workspaceId])
 
   /**
    * Menu selection
@@ -131,9 +138,9 @@ const Dashboard = () => {
   let sharedWorkspaces = []
   if (user) {
     workspaces?.forEach((workspace, index) => {
-      if (workspace.owners && workspace.owners.includes(user.id))
+      if (workspace.owners && workspace.owners.find((o) => o.id === user.id))
         myWorkspaces.push(<Menu.Item key={index}>{workspace.name}</Menu.Item>)
-      else if (workspace.users && workspace.users.includes(user.id))
+      else if (workspace.users && workspace.users.find((u) => u.id === user.id))
         sharedWorkspaces.push(
           <Menu.Item key={index}>{workspace.name}</Menu.Item>
         )
@@ -145,22 +152,6 @@ const Dashboard = () => {
       setCurrentView()
     }
   }
-
-  // Page effect
-  useEffect(() => {
-    if (workspaceId) {
-      const workspace = workspaces?.find((w) => w.id === workspaceId)
-      if (workspace) {
-        if (workspace.owners && workspace.owners.includes(user.id))
-          setCurrentView(menuItems.workspaces.key)
-        else if (workspace.users && workspace.users.includes(user.id))
-          setCurrentView(menuItems.shared.key)
-        setCurrentWorkspace(workspace)
-      }
-    } else if (page) {
-      setCurrentView(page)
-    }
-  }, [page, workspaceId, workspaces])
 
   let displayed
   switch (currentView) {

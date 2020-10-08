@@ -46,10 +46,12 @@ describe('src/lib/workspace', () => {
   })
 
   it('get', async () => {
+    let workspace
+
     mockGet.mockImplementation(() => ({
       name: 'name'
     }))
-    const workspace = await get()
+    workspace = await get()
     expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockGet).toHaveBeenCalledTimes(1)
     expect(mockUpdate).toHaveBeenCalledTimes(0)
@@ -57,6 +59,28 @@ describe('src/lib/workspace', () => {
     expect(mockUserGet).toHaveBeenCalledTimes(0)
     expect(mockUserUpdate).toHaveBeenCalledTimes(0)
     expect(workspace).toEqual({ name: 'name' })
+
+    // With owners and users
+    mockGet.mockImplementation(() => ({
+      name: 'name',
+      owners: ['id'],
+      users: ['id']
+    }))
+    mockUserGet.mockImplementation(() => ({
+      username: 'username'
+    }))
+    workspace = await get()
+    expect(mockAdd).toHaveBeenCalledTimes(0)
+    expect(mockGet).toHaveBeenCalledTimes(2)
+    expect(mockUpdate).toHaveBeenCalledTimes(0)
+    expect(mockDelete).toHaveBeenCalledTimes(0)
+    expect(mockUserGet).toHaveBeenCalledTimes(2)
+    expect(mockUserUpdate).toHaveBeenCalledTimes(0)
+    expect(workspace).toEqual({
+      name: 'name',
+      owners: [{ username: 'username' }],
+      users: [{ username: 'username' }]
+    })
   })
 
   it('getByUser', async () => {

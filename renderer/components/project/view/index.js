@@ -673,9 +673,9 @@ const View = ({ simulation, type, setPartSummary }) => {
       }),
       edges: partContent.edges?.map((edge) => {
         return {
-          name: face.name,
-          number: face.number,
-          uuid: face.buffer.uuid
+          name: edge.name,
+          number: edge.number,
+          uuid: edge.buffer.uuid
         }
       })
     }

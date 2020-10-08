@@ -82,12 +82,12 @@ describe('renderer/components/dashboard', () => {
       {
         id: 'id',
         name: 'name',
-        owners: ['id']
+        owners: [{ id: 'id' }]
       },
       {
         id: 'id',
         name: 'name',
-        users: ['id']
+        users: [{ id: 'id' }]
       },
       {
         id: 'id',
@@ -212,6 +212,27 @@ describe('renderer/components/dashboard', () => {
     wrapper.unmount()
 
     mockQuery.mockImplementation(() => ({ page: 'page' }))
+    wrapper = mount(<Dashboard />)
+    wrapper.unmount()
+
+    mockQuery.mockImplementation(() => ({ page: 'page', workspaceId: 'id' }))
+    wrapper = mount(<Dashboard />)
+    wrapper.unmount()
+
+    mockWorkspaces.mockImplementation(() => [
+      {
+        id: 'id',
+        owners: [{ id: 'id' }]
+      }
+    ])
+    wrapper = mount(<Dashboard />)
+
+    mockWorkspaces.mockImplementation(() => [
+      {
+        id: 'id',
+        users: [{ id: 'id' }]
+      }
+    ])
     wrapper = mount(<Dashboard />)
   })
 })

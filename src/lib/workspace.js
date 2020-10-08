@@ -39,6 +39,32 @@ const add = async (user, { name }) => {
  */
 const get = async (id, data) => {
   const workspace = await dBget(id, data)
+
+  // Get owners
+  if (workspace && workspace.owners) {
+    const owners = await Promise.all(
+      workspace.owners.map(async (owner) => {
+        return await getUser(owner, [
+          'lastname',
+          'firstname',
+          'email',
+          'avatar'
+        ])
+      })
+    )
+    workspace.owners = owners
+  }
+
+  // Get users
+  if (workspace.users) {
+    const users = await Promise.all(
+      workspace.users.map(async (user) => {
+        return await getUser(user, ['lastname', 'firstname', 'email', 'avatar'])
+      })
+    )
+    workspace.users = users
+  }
+
   return workspace
 }
 

@@ -104,6 +104,12 @@ describe('components/project', () => {
 
     expect(wrapper.find('Menu').at(1).props().children[1].length).toBe(1)
 
+    //Empty
+    wrapper.unmount()
+    mockProject = () => ({})
+    wrapper = shallow(<Project />)
+    await wrapper.find('selector').props().onOk({ categories: {} })
+
     // Error
     wrapper.unmount()
     mockMutateProject = () => {

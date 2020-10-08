@@ -32,7 +32,7 @@ const menuKeys = {
 const Project = () => {
   // Router
   const router = useRouter()
-  const { id } = router.query
+  const { workspaceId, projectId } = router.query
 
   // State
   const [selectorVisible, setSelectorVisible] = useState(false)
@@ -42,7 +42,7 @@ const Project = () => {
 
   // Data
   const [user, { loadingUser }] = useUser()
-  const [project, { mutateProject }] = useProject(id || '')
+  const [project, { mutateProject }] = useProject(projectId || '')
   const [simulations, { addOneSimulation }] = useSimulations(
     project.simulations
   )
@@ -66,7 +66,7 @@ const Project = () => {
   const handleTitle = async (title) => {
     try {
       // Update
-      await update({ id }, [{ key: 'title', value: title }])
+      await update({ id: project.id }, [{ key: 'title', value: title }])
 
       // Mutate
       mutateProject({
@@ -94,7 +94,10 @@ const Project = () => {
    * Handle dashboard
    */
   const handleDashboard = () => {
-    router.push('/dashboard')
+    router.push({
+      pathname: '/dashboard',
+      query: { workspaceId }
+    })
   }
 
   /**
@@ -120,7 +123,7 @@ const Project = () => {
       addOneSimulation(simulation)
       mutateProject({
         ...project,
-        simulations: [...project.simulations, simulation]
+        simulations: [...(project.simulations || []), simulation]
       })
 
       // Close selector

@@ -21,7 +21,10 @@ import { writeFile, convert, removeFile, removeDirectory } from './tools'
  */
 const add = async ({ project, simulation }) => {
   // Add simulation
-  const simulationData = await dBadd(simulation)
+  const simulationData = await dBadd({
+    ...simulation,
+    project: project.id
+  })
 
   // Add simulation reference in project
   await updateProject(project, [

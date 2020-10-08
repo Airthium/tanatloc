@@ -6,9 +6,10 @@ import { loadPart } from './tools'
 
 /**
  * Get part
- * @param {Object} data Data { simulation: { id }, file: { part, partPath } }
+ * @param {Object} simulation Simulation { id }
+ * @param {Object} file File { part, partPath }
  */
-const get = async ({ simulation, file }) => {
+const get = async (simulation, file) => {
   const part = await loadPart(
     path.join(storage.SIMULATION, simulation.id, file.partPath),
     file.part

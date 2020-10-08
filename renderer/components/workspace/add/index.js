@@ -35,7 +35,7 @@ const Add = () => {
     setLoading(true)
     try {
       // Add
-      const workspace = add(values)
+      const workspace = await add(values)
 
       // Mutate
       addOneWorkspace(workspace)

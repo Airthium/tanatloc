@@ -1,4 +1,6 @@
 import getSessionId from '../session'
+import auth from '../auth'
+
 import { get, update, del } from '../../lib/project'
 
 import Sentry from '../../lib/sentry'
@@ -21,6 +23,20 @@ export default async (req, res) => {
     id = req.params.id
   }
 
+  // Check authorization
+  try {
+    const projectAuth = await get(id, ['owners', 'users'])
+    if (!auth(projectAuth, sessionId)) {
+      res.status(401).json({ message: 'Unauthorized' })
+      return
+    }
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({ message: err.message })
+    Sentry.captureException(err)
+    return
+  }
+
   switch (req.method) {
     case 'GET':
       // Get project
@@ -33,6 +49,7 @@ export default async (req, res) => {
           'users',
           'simulations'
         ])
+
         res.status(200).json({ project })
       } catch (err) {
         console.error(err)

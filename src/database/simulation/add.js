@@ -4,14 +4,14 @@ import { databases } from '../../../config/db'
 /**
  * Add
  * @memberof module:src/database/simulation
- * @param {Object} simulation Simulation { name, scheme }
+ * @param {Object} simulation Simulation { name, scheme, project }
  */
-const add = async ({ name, scheme }) => {
+const add = async ({ name, scheme, project }) => {
   const response = await query(
     'INSERT INTO ' +
       databases.SIMULATIONS +
-      ' (name, scheme) VALUES ($1, $2) RETURNING id',
-    [name, scheme]
+      ' (name, scheme, project) VALUES ($1, $2, $3) RETURNING id',
+    [name, scheme, project]
   )
 
   const simulation = response.rows[0]

@@ -6,9 +6,10 @@ import { readFile } from './tools'
 
 /**
  * Get file
- * @param {Object} data Data { simulation: { id }, file: { origin, originPath }}
+ * @param {Object} simulation Simulation { id }
+ * @param {Object} file File { origin, originPath }
  */
-const get = async ({ simulation, file }) => {
+const get = async (simulation, file) => {
   const content = await readFile(
     path.join(storage.SIMULATION, simulation.id, file.originPath, file.origin)
   )

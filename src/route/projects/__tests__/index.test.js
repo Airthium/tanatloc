@@ -1,16 +1,18 @@
 import projects from '..'
 
 describe('src/route/projects', () => {
+  let response
   const req = {}
-  const end = jest.fn()
   const res = {
     status: () => ({
-      end: end
+      json: (obj) => {
+        response = obj
+      }
     })
   }
 
   it('call', async () => {
     await projects(req, res)
-    expect(end).toHaveBeenCalledTimes(1)
+    expect(response).toEqual({ projects: [] })
   })
 })

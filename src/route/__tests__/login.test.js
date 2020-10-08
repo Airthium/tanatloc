@@ -16,6 +16,7 @@ jest.mock('express', () => () => ({
   }
 }))
 
+const mockPassport = jest.fn()
 jest.mock('passport', () => {
   let count = 0
   return {

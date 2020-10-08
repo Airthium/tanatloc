@@ -1,7 +1,9 @@
 /** @module src/route/workspace */
 
 import getSessionId from '../session'
-import { add, getByUser, update, del } from '../../lib/workspace'
+import auth from '../auth'
+
+import { add, get, getByUser, update, del } from '../../lib/workspace'
 
 import Sentry from '../../lib/sentry'
 
@@ -15,6 +17,17 @@ export default async (req, res) => {
   // Check session
   const sessionId = await getSessionId(req, res)
   if (!sessionId) return
+
+  /**
+   * Check authorization
+   * @param {Object} workspace Workspace { id }
+   */
+  const checkAuth = async (workspace) => {
+    const workspaceAuth = await get(workspace.id, ['owners', 'users'])
+    if (!auth(workspaceAuth, sessionId)) {
+      throw new Error('Access denied')
+    }
+  }
 
   switch (req.method) {
     case 'GET':
@@ -39,7 +52,11 @@ export default async (req, res) => {
       break
     case 'PUT':
       try {
-        await update(req.body)
+        const { workspace, data } = req.body
+        // Check authorization
+        await checkAuth(workspace)
+
+        await update(workspace, data)
         res.status(200).end()
       } catch (err) {
         console.error(err)
@@ -49,6 +66,10 @@ export default async (req, res) => {
       break
     case 'DELETE':
       try {
+        const workspace = req.body
+        // Check authorization
+        await checkAuth(workspace)
+
         await del({ id: sessionId }, req.body)
         res.status(200).end()
       } catch (err) {

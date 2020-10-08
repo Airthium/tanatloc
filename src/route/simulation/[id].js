@@ -1,5 +1,8 @@
 import getSessionId from '../session'
+import auth from '../auth'
+
 import { get, update, del } from '../../lib/simulation'
+import { get as getProject } from '../../lib/project'
 
 import Sentry from '../../lib/sentry'
 
@@ -19,6 +22,25 @@ export default async (req, res) => {
   if (!id) {
     // Electron
     id = req.params.id
+  }
+
+  // Check authorization
+  try {
+    const simulationAuth = await get(id, ['project'])
+    const projectAuth = await getProject(simulationAuth.project, [
+      'owners',
+      'users'
+    ])
+
+    if (!auth(projectAuth, sessionId)) {
+      res.status(401).json({ message: 'Unauthorized' })
+      return
+    }
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({ message: err.message })
+    Sentry.captureException(err)
+    return
   }
 
   switch (req.method) {

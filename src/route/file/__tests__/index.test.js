@@ -1,25 +1,33 @@
 import file from '../'
 
-let mockSession = () => false
+const mockSession = jest.fn()
 jest.mock('../../session', () => () => mockSession())
 
-let mockGet = () => 'file'
-jest.mock('../../../lib/file', () => {
-  return {
-    get: async () => mockGet()
-  }
-})
+const mockAuth = jest.fn()
+jest.mock('../../auth', () => () => mockAuth())
 
+const mockGet = jest.fn()
+jest.mock('../../../lib/file', () => ({
+  get: async () => mockGet()
+}))
+
+const mockGetSimulation = jest.fn()
+jest.mock('../../../lib/simulation', () => ({
+  get: async () => mockGetSimulation()
+}))
+
+const mockGetProject = jest.fn()
+jest.mock('../../../lib/project', () => ({
+  get: async () => mockGetProject()
+}))
+
+const mockSentry = jest.fn()
 jest.mock('../../../lib/sentry', () => ({
-  captureException: () => {}
+  captureException: () => mockSentry()
 }))
 
 describe('src/route/file', () => {
-  const req = {
-    method: 'POST',
-    body: {}
-  }
-  let response
+  let req, response
   const res = {
     status: () => ({
       json: (obj) => {
@@ -31,28 +39,98 @@ describe('src/route/file', () => {
     })
   }
 
+  beforeEach(() => {
+    mockSession.mockReset()
+    mockSession.mockImplementation(() => false)
+
+    mockAuth.mockReset()
+    mockAuth.mockImplementation(() => false)
+
+    mockGet.mockReset()
+    mockGet.mockImplementation(() => 'file')
+
+    mockGetSimulation.mockReset()
+    mockGetSimulation.mockImplementation(() => ({
+      project: {}
+    }))
+
+    mockGetProject.mockReset()
+
+    mockSentry.mockReset()
+
+    req = {
+      method: 'POST',
+      body: {}
+    }
+    response = undefined
+  })
+
   it('no session', async () => {
     await file(req, res)
+    expect(mockSession).toHaveBeenCalledTimes(1)
+    expect(mockGetSimulation).toHaveBeenCalledTimes(0)
+    expect(mockGetProject).toHaveBeenCalledTimes(0)
+    expect(mockAuth).toHaveBeenCalledTimes(0)
+    expect(mockGet).toHaveBeenCalledTimes(0)
+    expect(mockSentry).toHaveBeenCalledTimes(0)
     expect(response).toBe(undefined)
   })
 
-  it('session (POST)', async () => {
-    mockSession = () => true
+  it('POST', async () => {
+    req.body = {
+      simulation: {},
+      file: {}
+    }
 
+    mockSession.mockImplementation(() => 'id')
+
+    // Not authorized
     await file(req, res)
+    expect(mockSession).toHaveBeenCalledTimes(1)
+    expect(mockGetSimulation).toHaveBeenCalledTimes(1)
+    expect(mockGetProject).toHaveBeenCalledTimes(1)
+    expect(mockAuth).toHaveBeenCalledTimes(1)
+    expect(mockGet).toHaveBeenCalledTimes(0)
+    expect(mockSentry).toHaveBeenCalledTimes(0)
+    expect(response).toEqual({ message: 'Unauthorized' })
+
+    // Authorized
+    mockAuth.mockImplementation(() => true)
+    await file(req, res)
+    expect(mockSession).toHaveBeenCalledTimes(2)
+    expect(mockGetSimulation).toHaveBeenCalledTimes(2)
+    expect(mockGetProject).toHaveBeenCalledTimes(2)
+    expect(mockAuth).toHaveBeenCalledTimes(2)
+    expect(mockGet).toHaveBeenCalledTimes(1)
+    expect(mockSentry).toHaveBeenCalledTimes(0)
     expect(response).toBe('file')
 
     // Error
-    mockGet = () => {
-      throw new Error()
-    }
+    mockGet.mockImplementation(() => {
+      throw new Error('test')
+    })
     await file(req, res)
-    expect(response).toEqual({ message: '' })
+    expect(mockSession).toHaveBeenCalledTimes(3)
+    expect(mockGetSimulation).toHaveBeenCalledTimes(3)
+    expect(mockGetProject).toHaveBeenCalledTimes(3)
+    expect(mockAuth).toHaveBeenCalledTimes(3)
+    expect(mockGet).toHaveBeenCalledTimes(2)
+    expect(mockSentry).toHaveBeenCalledTimes(1)
+    expect(response).toEqual({ message: 'test' })
   })
 
-  it('bad method', async () => {
+  it('wrong method', async () => {
     req.method = 'SOMETHING'
+
+    mockSession.mockImplementation(() => 'id')
+
     await file(req, res)
+    expect(mockSession).toHaveBeenCalledTimes(1)
+    expect(mockGetSimulation).toHaveBeenCalledTimes(0)
+    expect(mockGetProject).toHaveBeenCalledTimes(0)
+    expect(mockAuth).toHaveBeenCalledTimes(0)
+    expect(mockGet).toHaveBeenCalledTimes(0)
+    expect(mockSentry).toHaveBeenCalledTimes(1)
     expect(response).toEqual({ message: 'Method SOMETHING not allowed' })
   })
 })

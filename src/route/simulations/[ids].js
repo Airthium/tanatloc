@@ -1,5 +1,8 @@
 import getSessionId from '../session'
+import auth from '../auth'
+
 import { get } from '../../lib/simulation'
+import { get as getProject } from '../../lib/project'
 
 import Sentry from '../../lib/sentry'
 
@@ -19,7 +22,7 @@ export default async (req, res) => {
       }
 
       if (ids === 'undefined' || ids === 'null') {
-        res.status(200).end()
+        res.status(200).json({ simulations: [] })
         return
       }
 
@@ -28,7 +31,18 @@ export default async (req, res) => {
       const simulationsTmp = await Promise.all(
         list.map(async (id) => {
           try {
-            return await get(id, ['name', 'scheme'])
+            const simulation = await get(id, ['name', 'scheme', 'project'])
+
+            // Check authorization
+            const projectAuth = await getProject(simulation.project, [
+              'owners',
+              'users'
+            ])
+            if (!auth(projectAuth, sessionId)) {
+              return
+            }
+
+            return simulation
           } catch (err) {
             console.warn(err)
             return null

@@ -1,16 +1,18 @@
 import simulations from '..'
 
 describe('src/route/simulations', () => {
+  let response
   const req = {}
-  const end = jest.fn()
   const res = {
     status: () => ({
-      end: end
+      json: (obj) => {
+        response = obj
+      }
     })
   }
 
   it('call', async () => {
     await simulations(req, res)
-    expect(end).toHaveBeenCalledTimes(1)
+    expect(response).toEqual({ simulations: [] })
   })
 })

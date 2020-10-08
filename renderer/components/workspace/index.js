@@ -45,7 +45,7 @@ const Workspace = ({ workspace }) => {
   const setName = async (name) => {
     try {
       // Update
-      await update(workspace, [{ key: 'name', value: name }])
+      await update({ id: workspace.id }, [{ key: 'name', value: name }])
 
       // Mutate workspace
       mutateOneWorkspace({

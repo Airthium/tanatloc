@@ -96,7 +96,7 @@ jest.mock('../../../../../src/api/part', () => ({
 let mockAnimationCount = 0
 window.requestAnimationFrame = (callback) => {
   mockAnimationCount++
-  if (mockAnimationCount === 1) callback()
+  if (mockAnimationCount < 10) callback()
 }
 
 global.MockScene.children = [

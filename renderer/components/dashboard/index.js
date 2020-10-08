@@ -22,7 +22,7 @@ import { useWorkspaces } from '../../../src/api/workspace'
 import logout from '../../../src/api/logout'
 
 /**
- * Menu items
+ * Dashboard menu items
  */
 const menuItems = {
   workspaces: {
@@ -61,6 +61,7 @@ const Dashboard = () => {
 
   // Router
   const router = useRouter()
+  const { page, workspaceId } = router.query
 
   // Not logged -> go to login page
   useEffect(() => {
@@ -69,15 +70,26 @@ const Dashboard = () => {
 
   // Update workspace
   useEffect(() => {
-    if (workspaces && workspaces.length && currentWorkspace) {
-      const workspace = workspaces.find((w) => w.id === currentWorkspace.id)
-      if (
-        workspace &&
-        JSON.stringify(workspace) !== JSON.stringify(currentWorkspace)
-      )
+    if (currentWorkspace) {
+      const workspace = workspaces?.find((w) => w.id === currentWorkspace.id)
+      if (JSON.stringify(workspace) !== JSON.stringify(currentWorkspace))
         setCurrentWorkspace(workspace)
     }
   }, [workspaces, currentWorkspace])
+
+  // Page effect
+  useEffect(() => {
+    if (workspaceId) {
+      const workspace = workspaces?.find((w) => w.id === workspaceId)
+      if (workspace?.owners?.find((o) => o.id === user.id))
+        setCurrentView(menuItems.workspaces.key)
+      else if (workspace?.users?.find((u) => u.id === user.id))
+        setCurrentView(menuItems.shared.key)
+      setCurrentWorkspace(workspace)
+    } else if (page) {
+      setCurrentView(page)
+    }
+  }, [page, workspaceId])
 
   /**
    * Menu selection
@@ -92,11 +104,22 @@ const Dashboard = () => {
       subMenuKey === menuItems.shared.key
     ) {
       setCurrentView(subMenuKey)
+      router.replace({
+        pathname: '/dashboard',
+        query: { page: subMenuKey }
+      })
+
       const workspace = workspaces[key]
       setCurrentWorkspace(workspace)
     } else {
       if (key === menuItems.logout.key) handleLogout()
-      else setCurrentView(key)
+      else {
+        setCurrentView(key)
+        router.replace({
+          pathname: '/dashboard',
+          query: { page: key }
+        })
+      }
     }
   }
 
@@ -113,15 +136,21 @@ const Dashboard = () => {
   // My / Shared workspaces
   let myWorkspaces = []
   let sharedWorkspaces = []
-  if (user && workspaces) {
-    workspaces.forEach((workspace, index) => {
-      if (workspace.owners && workspace.owners.includes(user.id))
+  if (user) {
+    workspaces?.forEach((workspace, index) => {
+      if (workspace.owners && workspace.owners.find((o) => o.id === user.id))
         myWorkspaces.push(<Menu.Item key={index}>{workspace.name}</Menu.Item>)
-      else if (workspace.users && workspace.users.includes(user.id))
+      else if (workspace.users && workspace.users.find((u) => u.id === user.id))
         sharedWorkspaces.push(
           <Menu.Item key={index}>{workspace.name}</Menu.Item>
         )
     })
+  }
+
+  const onWorkspaces = () => {
+    if (!myWorkspaces?.length) {
+      setCurrentView()
+    }
   }
 
   let displayed
@@ -157,7 +186,7 @@ const Dashboard = () => {
             <Menu
               className="Dashboard-menu"
               theme="light"
-              onSelect={onSelect}
+              onClick={onSelect}
               defaultOpenKeys={[menuItems.workspaces.key, menuItems.shared.key]}
               mode="inline"
             >
@@ -165,6 +194,7 @@ const Dashboard = () => {
                 key={menuItems.workspaces.key}
                 icon={<AppstoreTwoTone />}
                 title={menuItems.workspaces.label}
+                onTitleClick={onWorkspaces}
               >
                 {myWorkspaces}
               </Menu.SubMenu>

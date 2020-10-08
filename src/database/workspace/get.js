@@ -11,7 +11,7 @@ const get = async (id, data) => {
   const response = await getter(databases.WORKSPACES, id, data)
 
   const workspace = response.rows[0]
-  workspace.id = id
+  workspace && (workspace.id = id)
 
   return workspace
 }

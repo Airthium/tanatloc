@@ -65,8 +65,8 @@ const PartLoader = () => {
     object.boundingBox = computeBoundingBox(object)
     object.dispose = () => dispose(object)
     object.setTransparent = (transp) => setTransparent(object, transp)
-    object.startSelection = (renderer, camera, type) =>
-      startSelection(object, renderer, camera, type)
+    object.startSelection = (renderer, camera, outlinePass, type) =>
+      startSelection(object, renderer, camera, outlinePass, type)
     object.stopSelection = () => stopSelection(object)
     object.highlight = highlight
     object.unhighlight = unhighlight
@@ -90,6 +90,15 @@ const PartLoader = () => {
     geometry.computeBoundingBox()
     geometry.computeBoundingSphere()
 
+    const colorAttribute = geometry.getAttribute('color')
+    if (colorAttribute) {
+      color = new Color(
+        colorAttribute.array[0],
+        colorAttribute.array[1],
+        colorAttribute.array[2]
+      )
+    }
+
     const material = new MeshStandardMaterial({
       color: color,
       side: DoubleSide,
@@ -98,6 +107,7 @@ const PartLoader = () => {
       depthWrite: !transparent,
       clippingPlanes: [clippingPlane]
     })
+    material.originalColor = color
 
     const mesh = new Mesh(geometry, material)
     mesh.uuid = buffer.uuid
@@ -167,7 +177,7 @@ const PartLoader = () => {
    */
   const setSolidsVisible = (part, visible) => {
     part.children[0].children.forEach((solid) => {
-      solid.visible = true
+      solid.visible = visible
     })
   }
 
@@ -178,7 +188,7 @@ const PartLoader = () => {
    */
   const setFacesVisible = (part, visible) => {
     part.children[1].children.forEach((face) => {
-      face.visible = true
+      face.visible = visible
     })
   }
 
@@ -187,6 +197,7 @@ const PartLoader = () => {
   let selectionPart = null
   let selectionRenderer = null
   let selectionCamera = null
+  let selectionOutlinePass = null
   let selectionType = null
   let currentlyHighlighted = {}
   let previouslyHighlighted = {}
@@ -197,12 +208,14 @@ const PartLoader = () => {
    * @param {Object} part Part
    * @param {Object} renderer Renderer
    * @param {Object} camera Camera
+   * @param {Object} outlinePass OutlinePass
    * @param {string} type Type (solid, face)
    */
-  const startSelection = (part, renderer, camera, type) => {
+  const startSelection = (part, renderer, camera, outlinePass, type) => {
     selectionPart = part
     selectionRenderer = renderer
     selectionCamera = camera
+    selectionOutlinePass = outlinePass
     currentlyHighlighted = {}
     previouslyHighlighted = {}
     selection.length = 0
@@ -243,6 +256,8 @@ const PartLoader = () => {
     unhighlight(previouslyHighlighted)
     currentlyHighlighted = {}
     previouslyHighlighted = {}
+
+    selectionOutlinePass = null
 
     selection.forEach((s) => unselect(s))
     selection.length = 0
@@ -292,7 +307,10 @@ const PartLoader = () => {
    * @param {Object} mesh Mesh
    */
   const highlight = (mesh) => {
-    mesh && mesh.material && (mesh.material.color = highlightColor)
+    if (mesh && mesh.material) {
+      selectionOutlinePass.selectedObjects = [mesh]
+      mesh.material.color = highlightColor
+    }
   }
 
   /**
@@ -301,8 +319,10 @@ const PartLoader = () => {
    */
   const unhighlight = (mesh) => {
     if (mesh && mesh.material) {
+      selectionOutlinePass.selectedObjects = []
       const index = selection.findIndex((m) => m === mesh)
-      mesh.material.color = index === -1 ? solidColor : selectColor
+      mesh.material.color =
+        index === -1 ? mesh.material.originalColor : selectColor
     }
   }
 
@@ -325,7 +345,7 @@ const PartLoader = () => {
    * @param {Object} mesh Mesh
    */
   const select = (mesh) => {
-    mesh && mesh.material && (mesh.material.color = selectColor)
+    if (mesh && mesh.material) mesh.material.color = selectColor
   }
 
   /**
@@ -333,7 +353,7 @@ const PartLoader = () => {
    * @param {Object} mesh Mesh
    */
   const unselect = (mesh) => {
-    mesh && mesh.material && (mesh.material.color = solidColor)
+    if (mesh && mesh.material) mesh.material.color = mesh.material.originalColor
   }
 
   return { load }

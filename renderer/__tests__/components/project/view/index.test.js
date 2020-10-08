@@ -14,6 +14,32 @@ jest.mock('react', () => ({
   useState: jest.fn()
 }))
 
+jest.mock('three/examples/jsm/postprocessing/RenderPass', () => ({
+  RenderPass: class MockRenderPass {}
+}))
+
+jest.mock('three/examples/jsm/postprocessing/OutlinePass', () => ({
+  OutlinePass: class MockRenderPass {
+    constructor() {
+      this.visibleEdgeColor = {
+        set: () => {}
+      }
+      this.hiddenEdgeColor = {
+        set: () => {}
+      }
+    }
+  }
+}))
+
+jest.mock('three/examples/jsm/postprocessing/EffectComposer', () => ({
+  EffectComposer: class MockEffectComposer {
+    constructor() {
+      this.addPass = () => {}
+      this.render = () => {}
+    }
+  }
+}))
+
 jest.mock('../../../../../src/lib/three/controls/TrackballControls', () => ({
   TrackballControls: class MockTrackballControls {
     constructor() {

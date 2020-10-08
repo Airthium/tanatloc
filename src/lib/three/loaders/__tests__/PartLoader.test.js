@@ -61,6 +61,7 @@ describe('src/lib/three/loaders/PartLoader', () => {
     getSize: () => {}
   }
   const camera = {}
+  const outlinePass = {}
 
   it('call', () => {
     const partLoader = PartLoader()
@@ -72,6 +73,12 @@ describe('src/lib/three/loaders/PartLoader', () => {
     partLoader.load(part)
 
     partLoader.load(part, true)
+
+    // With color
+    global.MockGeometry.getAttribute = {
+      array: [0.1, 0.2, 0.3]
+    }
+    partLoader.load(part)
   })
 
   it('dispose', () => {
@@ -90,7 +97,7 @@ describe('src/lib/three/loaders/PartLoader', () => {
   it('startSelection', () => {
     const partLoader = PartLoader()
     const mesh = partLoader.load(part)
-    mesh.startSelection(renderer, camera, 'face')
+    mesh.startSelection(renderer, camera, outlinePass, 'face')
 
     mouseMove({ target: { getBoundingClientRect: () => ({}) } })
     mouseDown({})
@@ -112,9 +119,9 @@ describe('src/lib/three/loaders/PartLoader', () => {
     mouseMove({ target: { getBoundingClientRect: () => ({}) } })
 
     mesh.stopSelection()
-    mesh.startSelection(renderer, camera, 'solid')
+    mesh.startSelection(renderer, camera, outlinePass, 'solid')
     mesh.stopSelection()
-    mesh.startSelection(renderer, camera, 'other')
+    mesh.startSelection(renderer, camera, outlinePass, 'other')
   })
 
   it('stopSelection', () => {
@@ -126,6 +133,8 @@ describe('src/lib/three/loaders/PartLoader', () => {
   it('highlight', () => {
     const partLoader = PartLoader()
     const mesh = partLoader.load(part)
+    mesh.startSelection(renderer, camera, outlinePass, 'face')
+
     mesh.highlight({})
     mesh.highlight({ material: {} })
   })

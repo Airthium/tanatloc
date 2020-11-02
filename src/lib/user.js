@@ -11,7 +11,7 @@ import { read as readAvatar } from './avatar'
 /**
  * Add user (TODO)
  */
-const add = () => {}
+const add = async () => {}
 
 /**
  * Get user

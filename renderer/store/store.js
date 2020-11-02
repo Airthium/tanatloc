@@ -22,7 +22,7 @@ const combinedReducers = combineReducers({
 })
 
 // REDUCERS
-export const reducer = (state = globalInitialState, action) => {
+export const reducer = (state = globalInitialState, action = {}) => {
   return combinedReducers(state, action)
 }
 

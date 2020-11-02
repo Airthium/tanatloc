@@ -56,7 +56,7 @@ describe('renderer/components/project/simulation/parameters', () => {
 
   it('onChange', () => {
     wrapper.find('formula').props().onChange()
-    wrapper.find('Select').props().onChange()
+    wrapper.find('ForwardRef(InternalSelect)').props().onChange()
   })
 
   it('effect', () => {

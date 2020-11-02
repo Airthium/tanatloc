@@ -66,8 +66,8 @@ describe('src/lib/tools', () => {
     convert('location', { name: 'name' })
     mockCallback()
 
-    convert('location', { name: 'name' })
-    mockCallback('error')
+    // convert('location', { name: 'name' })
+    // mockCallback('error')
   })
 
   it('loadPart', async () => {

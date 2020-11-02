@@ -70,8 +70,10 @@ const ThreeView = ({ part }) => {
 
   // Mount
   useEffect(() => {
-    let width = mount.current.clientWidth
-    let height = mount.current.clientHeight
+    const currentMount = mount.current
+
+    let width = currentMount.clientWidth
+    let height = currentMount.clientHeight
     let frameId
 
     // Scene
@@ -102,7 +104,7 @@ const ThreeView = ({ part }) => {
     renderer.current.setSize(width, height)
     renderer.current.setPixelRatio(window.devicePixelRatio || 1)
     renderer.current.autoClear = false
-    mount.current.appendChild(renderer.current.domElement)
+    currentMount.appendChild(renderer.current.domElement)
 
     // Render pass
     const renderPass = new RenderPass(scene.current, camera.current)
@@ -122,7 +124,7 @@ const ThreeView = ({ part }) => {
     effectComposer.current.addPass(outlinePass.current)
 
     // Controls
-    controls.current = new TrackballControls(camera.current, mount.current)
+    controls.current = new TrackballControls(camera.current, currentMount)
     controls.current.rotateSpeed = 3
     controls.current.panSpeed = 0.1
 
@@ -187,8 +189,8 @@ const ThreeView = ({ part }) => {
      * Handle resize
      */
     const handleResize = () => {
-      width = mount.current.clientWidth
-      height = mount.current.clientHeight
+      width = currentMount.clientWidth
+      height = currentMount.clientHeight
       renderer.current.setSize(width, height)
       camera.current.aspect = width / height
       camera.current.updateProjectionMatrix()
@@ -247,7 +249,7 @@ const ThreeView = ({ part }) => {
 
       window.removeEventListener('resize', handleResize)
 
-      mount.current.removeChild(renderer.current.domElement)
+      currentMount.removeChild(renderer.current.domElement)
 
       // Clean scene
       scene.current.children.forEach((child) => {

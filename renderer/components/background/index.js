@@ -24,10 +24,12 @@ const Background = () => {
 
   // Mount
   useEffect(() => {
+    const div = mount.current
+
     let frameId
 
-    let width = mount.current.clientWidth
-    let height = mount.current.clientHeight
+    let width = div.clientWidth
+    let height = div.clientHeight
 
     // Scene
     const scene = new Scene()
@@ -46,7 +48,7 @@ const Background = () => {
     renderer.setPixelRatio(window.devicePixelRatio || 1)
 
     // Mount
-    mount.current.appendChild(renderer.domElement)
+    div.appendChild(renderer.domElement)
 
     // Tetrahedra
     // Rotations
@@ -90,8 +92,8 @@ const Background = () => {
      * Resize
      */
     const resize = () => {
-      width = mount.current.clientWidth
-      height = mount.current.clientHeight
+      width = div.clientWidth
+      height = div.clientHeight
       renderer.setSize(width, height)
       camera.aspect = width / height
       camera.updateProjectionMatrix()
@@ -140,7 +142,7 @@ const Background = () => {
       window.removeEventListener('resize', resize)
 
       // Unmount renderer
-      mount.current.removeChild(renderer.domElement)
+      div.removeChild(renderer.domElement)
 
       // Clear scene
       scene.children.forEach((child) => {

@@ -7,7 +7,7 @@ import { call } from '../call'
  * @param {Object} simulation Simulation { name, scheme }
  */
 const add = async (project, simulation) => {
-  const res = await call('/api/simulation', {
+  return call('/api/simulation', {
     method: 'POST',
     headers: {
       Accept: 'application/json'
@@ -17,8 +17,6 @@ const add = async (project, simulation) => {
       simulation: simulation
     })
   })
-
-  return res
 }
 
 export default add

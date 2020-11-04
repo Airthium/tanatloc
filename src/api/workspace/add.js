@@ -6,15 +6,13 @@ import { call } from '../call'
  * @param {Object} workspace Workspace { name }
  */
 const add = async (workspace) => {
-  const res = await call('/api/workspace', {
+  return call('/api/workspace', {
     method: 'POST',
     headers: {
       Accept: 'application/json'
     },
     body: JSON.stringify(workspace)
   })
-
-  return res
 }
 
 export default add

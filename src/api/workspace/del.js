@@ -6,12 +6,10 @@ import { call } from '../call'
  * @param {Object} workspace Workspace { id }
  */
 const del = async (workspace) => {
-  const res = await call('/api/workspace', {
+  return call('/api/workspace', {
     method: 'DELETE',
     body: JSON.stringify(workspace)
   })
-
-  return res
 }
 
 export default del

@@ -6,11 +6,9 @@ import { call } from '../call'
  * @param {Object} avatar Avatar { id }
  */
 const del = async (avatar) => {
-  const res = await call('/api/avatar', {
+  return call('/api/avatar', {
     method: 'DELETE',
     body: JSON.stringify(avatar)
   })
-
-  return res
 }
 export default del

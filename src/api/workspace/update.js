@@ -7,12 +7,10 @@ import { call } from '../call'
  * @param {Array} data Data [{ key: value }, ...]
  */
 const update = async (workspace, data) => {
-  const res = await call('/api/workspace', {
+  return call('/api/workspace', {
     method: 'PUT',
     body: JSON.stringify({ workspace: workspace, data: data })
   })
-
-  return res
 }
 
 export default update

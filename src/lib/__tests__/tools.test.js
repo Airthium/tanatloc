@@ -28,10 +28,12 @@ jest.mock('fs', () => ({
   }
 }))
 
-let mockCallback
+let mockCallback = 0
 jest.mock('child_process', () => ({
   exec: (command, callback) => {
-    mockCallback = callback
+    mockCallback++
+    if (mockCallback === 1) callback()
+    else callback('error')
   }
 }))
 
@@ -63,11 +65,14 @@ describe('src/lib/tools', () => {
   })
 
   it('convert', async () => {
-    convert('location', { name: 'name' })
-    mockCallback()
+    await convert('location', { name: 'name' })
 
-    // convert('location', { name: 'name' })
-    // mockCallback('error')
+    try {
+      await convert('location', { name: 'name' })
+      expect(false).toBe(true)
+    } catch (err) {
+      expect(true).toBe(true)
+    }
   })
 
   it('loadPart', async () => {

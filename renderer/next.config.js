@@ -16,6 +16,12 @@ module.exports = withLess({
   ...withCSS(
     withTM({
       webpack: (config, options) => {
+        config.module.rules.push({
+         test: /\.(woff|woff2|eot|ttf|otf)$/,
+         use: [
+           'url-loader',
+         ],
+       })
         if (!options.isServer) {
           config.resolve.alias['@sentry/node'] = '@sentry/browser'
         }

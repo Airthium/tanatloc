@@ -71,7 +71,7 @@ const Workspace = ({ workspace }) => {
    * Render
    */
   return (
-    <Layout className="Workspace no-scroll">
+    <Layout className="Workspace">
       {workspace ? (
         <>
           <PageHeader
@@ -130,7 +130,7 @@ const Workspace = ({ workspace }) => {
               </div>
             )}
           </PageHeader>
-          <Layout.Content className="scroll">
+          <Layout.Content>
             <ProjectList workspace={workspace} filter={filter} />
           </Layout.Content>
         </>

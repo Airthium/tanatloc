@@ -78,7 +78,7 @@ const Workspace = ({ workspace }) => {
             backIcon={false}
             title={
               <Typography.Title
-                level={4}
+                level={2}
                 className="pageheader-name"
                 editable={{ onChange: setName }}
               >
@@ -86,7 +86,7 @@ const Workspace = ({ workspace }) => {
               </Typography.Title>
             }
             extra={[
-              <Add key="add" />,
+              //<Add key="add" />,
               // <Button key="share" icon={<ShareAltOutlined />}>
               //   Share it
               // </Button>,

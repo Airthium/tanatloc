@@ -62,6 +62,8 @@ const PartLoader = () => {
     const edges = new Group()
     object.add(edges)
 
+    object.uuid = part.uuid
+
     object.boundingBox = computeBoundingBox(object)
     object.dispose = () => dispose(object)
     object.setTransparent = (transp) => setTransparent(object, transp)

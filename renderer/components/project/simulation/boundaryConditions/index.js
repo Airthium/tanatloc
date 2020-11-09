@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Button, Card, Drawer, Layout, Radio, Space } from 'antd'
 import { PlusCircleOutlined } from '@ant-design/icons'
 
@@ -6,6 +6,9 @@ import Formula from '../../../assets/formula'
 
 import { useSelector, useDispatch } from 'react-redux'
 import {
+  clear,
+  setType,
+  setPart,
   highlight,
   unhighlight,
   select,
@@ -35,6 +38,20 @@ const BoundaryConditions = ({ project, simulation, part, setVisible }) => {
       }
     })
     .filter((r) => r)
+
+  // First
+  useEffect(() => {
+    // Unmount
+    return () => {
+      clear()
+    }
+  })
+
+  // Selection
+  useEffect(() => {
+    dispatch(setType('face'))
+    dispatch(setPart(part?.uuid))
+  }, [part])
 
   const toggleBoundaryCondition = () => {
     setVisible(bcVisible)

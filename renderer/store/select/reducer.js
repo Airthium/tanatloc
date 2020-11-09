@@ -1,6 +1,8 @@
 import { selectActionTypes } from './action'
 
 export const selectInitialState = {
+  type: '',
+  part: '',
   highlighted: {},
   previouslyHighlighted: {},
   selected: []
@@ -9,6 +11,18 @@ export const selectInitialState = {
 const reducer = (state, action) => {
   if (!state) state = selectInitialState
   switch (action.type) {
+    case selectActionTypes.CLEAR:
+      return selectInitialState
+    case selectActionTypes.SETTYPE:
+      return {
+        ...state,
+        type: action.object
+      }
+    case selectActionTypes.SETPART:
+      return {
+        ...state,
+        uuid: action.uuid
+      }
     case selectActionTypes.HIGHLIGHT:
       return {
         ...state,

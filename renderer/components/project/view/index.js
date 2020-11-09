@@ -69,13 +69,19 @@ const ThreeView = ({ part }) => {
   const [transform, setTransform] = useState('translate')
 
   // Store
-  const { highlighted, previouslyHighlighted, selected } = useSelector(
-    (state) => ({
-      highlighted: state.select.highlighted,
-      previouslyHighlighted: state.select.previouslyHighlighted,
-      selected: state.select.selected
-    })
-  )
+  const {
+    type,
+    uuid,
+    highlighted,
+    previouslyHighlighted,
+    selected
+  } = useSelector((state) => ({
+    type: state.select.type,
+    uuid: state.select.uuid,
+    highlighted: state.select.highlighted,
+    previouslyHighlighted: state.select.previouslyHighlighted,
+    selected: state.select.selected
+  }))
   const dispatch = useDispatch()
 
   // Zoom factor
@@ -291,28 +297,30 @@ const ThreeView = ({ part }) => {
   }, [part])
 
   useEffect(() => {
-    // Highlight
-    // TODO not optimized, too restrictive
     scene.current.children.forEach((child) => {
       if (child.type === 'Part') {
-        if (!child.selectionEnabled())
-          child.startSelection(
-            renderer.current,
-            camera.current,
-            outlinePass.current,
-            'face'
-          )
+        if (child.uuid === uuid) {
+          if (!child.selectionEnabled()) {
+            console.log('enable selection')
+            child.startSelection(
+              renderer.current,
+              camera.current,
+              outlinePass.current,
+              type
+            )
+          }
 
-        selected.forEach((select) => {
-          const selectedObject = child.find(select.uuid)
-          if (selectedObject) child.select(selectedObject)
-        })
+          selected.forEach((select) => {
+            const selectedObject = child.find(select.uuid)
+            if (selectedObject) child.select(selectedObject)
+          })
 
-        const previousObject = child.find(previouslyHighlighted.uuid)
-        if (previousObject) child.unhighlight(previousObject)
+          const previousObject = child.find(previouslyHighlighted.uuid)
+          if (previousObject) child.unhighlight(previousObject)
 
-        const object = child.find(highlighted.uuid)
-        if (object) child.highlight(object)
+          const object = child.find(highlighted.uuid)
+          if (object) child.highlight(object)
+        }
       }
     })
   }, [highlighted, previouslyHighlighted, selected])
@@ -730,6 +738,7 @@ const View = ({ simulation, setPartSummary }) => {
     })
 
     const summary = {
+      uuid: partContent.uuid,
       solids: partContent.solids?.map((solid) => {
         return {
           name: solid.name,

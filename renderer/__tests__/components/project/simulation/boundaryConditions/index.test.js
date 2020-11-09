@@ -3,6 +3,11 @@ import { shallow } from 'enzyme'
 
 jest.mock('../../../../../components/assets/formula', () => 'formula')
 
+jest.mock('react-redux', () => ({
+  useSelector: () => {},
+  useDispatch: () => {}
+}))
+
 let wrapper
 describe('renderer/components/project/simulation/boundaryConditions', () => {
   const project = {}

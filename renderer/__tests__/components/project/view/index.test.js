@@ -119,6 +119,11 @@ jest.mock('../../../../../src/api/part', () => ({
   get: async () => mockGet()
 }))
 
+jest.mock('react-redux', () => ({
+  useSelector: () => ({ highlighted: {}, previouslyHighlighted: {} }),
+  useDispatch: () => {}
+}))
+
 let mockAnimationCount = 0
 window.requestAnimationFrame = (callback) => {
   mockAnimationCount++
@@ -145,8 +150,10 @@ global.MockScene.children = [
     material: {},
     dispose: () => {},
     setTransparent: () => {},
+    find: () => {},
     startSelection: () => {},
-    stopSelection: () => {}
+    stopSelection: () => {},
+    selectionEnabled: () => true
   },
   {
     visible: true,
@@ -158,8 +165,10 @@ global.MockScene.children = [
     material: {},
     dispose: () => {},
     setTransparent: () => {},
+    find: () => {},
     startSelection: () => {},
-    stopSelection: () => {}
+    stopSelection: () => {},
+    selectionEnabled: () => true
   }
 ]
 

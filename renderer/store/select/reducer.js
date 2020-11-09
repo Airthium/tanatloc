@@ -26,8 +26,16 @@ const reducer = (state, action) => {
         selected: [...state.selected, action.part]
       }
     case selectActionTypes.UNSELECT:
-      //TODO
-      return state
+      const index = state.selected.findIndex((s) => s.uuid === action.part.uuid)
+      if (index !== -1) {
+        return {
+          ...state,
+          selected: [
+            ...state.selected.splice(0, index),
+            ...state.selected.splice(index + 1)
+          ]
+        }
+      } else return state
     default:
       return state
   }

@@ -14,6 +14,7 @@ import {
 import Loading from '../../components/loading'
 import Welcome from './welcome'
 import Workspace from '../../components/workspace'
+import Add from '../../components/workspace/add'
 import Account from '../../components/account'
 import Help from '../../components/help'
 
@@ -178,7 +179,7 @@ const Dashboard = () => {
         <Loading />
       ) : (
         <Layout>
-          <Layout.Sider theme="light" className="Dashboard-sider">
+          <Layout.Sider theme="light" width="300" className="Dashboard-sider">
             <div className="logo">
               <img src="/images/logo.svg" />
             </div>
@@ -197,6 +198,9 @@ const Dashboard = () => {
                 onTitleClick={onWorkspaces}
               >
                 {myWorkspaces}
+                <li id="Add-workspace-button">
+                  <Add key="add" />
+                </li>
               </Menu.SubMenu>
               <Menu.SubMenu
                 key={menuItems.shared.key}

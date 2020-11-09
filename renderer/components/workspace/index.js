@@ -17,7 +17,6 @@ import {
 // import { ShareAltOutlined } from '@ant-design/icons'
 
 import Empty from './empty'
-import Add from './add'
 import Delete from './delete'
 
 import ProjectAdd from '../project/add'
@@ -86,7 +85,6 @@ const Workspace = ({ workspace }) => {
               </Typography.Title>
             }
             extra={[
-              //<Add key="add" />,
               // <Button key="share" icon={<ShareAltOutlined />}>
               //   Share it
               // </Button>,

@@ -71,7 +71,7 @@ const ProjectList = ({ workspace, filter }) => {
       dataSource={data}
       bordered={true}
       size="small"
-      scroll={{ y: 'calc(100vh - 232px)'}}
+      scroll={{ y: 'calc(100vh - 232px)' }}
     >
       <Table.Column
         title=""

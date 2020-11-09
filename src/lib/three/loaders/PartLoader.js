@@ -69,6 +69,7 @@ const PartLoader = () => {
       startSelection(object, renderer, camera, outlinePass, type)
     object.stopSelection = () => stopSelection(object)
     object.find = (uuid) => findObject(object, uuid)
+    object.selectionEnabled = selectionEnabled
     object.highlight = highlight
     object.unhighlight = unhighlight
     object.select = select
@@ -262,6 +263,13 @@ const PartLoader = () => {
 
     selection.forEach((s) => unselect(s))
     selection.length = 0
+  }
+
+  /**
+   * Selection enabled
+   */
+  const selectionEnabled = () => {
+    return selectionPart !== null
   }
 
   /**

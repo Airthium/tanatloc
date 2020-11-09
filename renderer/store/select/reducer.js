@@ -2,6 +2,7 @@ import { selectActionTypes } from './action'
 
 export const selectInitialState = {
   highlighted: {},
+  previouslyHighlighted: {},
   selected: []
 }
 
@@ -16,7 +17,8 @@ const reducer = (state, action) => {
     case selectActionTypes.UNHIGHLIGHT:
       return {
         ...state,
-        highlighted: {}
+        highlighted: {},
+        previouslyHighlighted: state.highlighted
       }
     case selectActionTypes.SELECT:
       return {

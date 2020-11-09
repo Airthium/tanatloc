@@ -69,7 +69,10 @@ const ThreeView = ({ part }) => {
   const [transform, setTransform] = useState('translate')
 
   // Store
-  const highlighted = useSelector((state) => state.select.highlighted)
+  const { highlighted, previouslyHighlighted } = useSelector((state) => ({
+    highlighted: state.select.highlighted,
+    previouslyHighlighted: state.select.previouslyHighlighted
+  }))
   const dispatch = useDispatch()
 
   // Zoom factor
@@ -289,22 +292,22 @@ const ThreeView = ({ part }) => {
     // TODO not optimized, too restrictive
     scene.current.children.forEach((child) => {
       if (child.type === 'Part') {
-        child.startSelection(
-          renderer.current,
-          camera.current,
-          outlinePass.current,
-          'face'
-        )
+        if (!child.selectionEnabled())
+          child.startSelection(
+            renderer.current,
+            camera.current,
+            outlinePass.current,
+            'face'
+          )
+
+        const previousObject = child.find(previouslyHighlighted.uuid)
+        if (previousObject) child.unhighlight(previousObject)
 
         const object = child.find(highlighted.uuid)
-        if (object) {
-          child.highlight(object)
-        } else {
-          child.unhighlight()
-        }
+        if (object) child.highlight(object)
       }
     })
-  }, [highlighted])
+  }, [highlighted, previouslyHighlighted])
 
   /**
    * Compute scene bounding box

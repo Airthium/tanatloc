@@ -69,10 +69,13 @@ const ThreeView = ({ part }) => {
   const [transform, setTransform] = useState('translate')
 
   // Store
-  const { highlighted, previouslyHighlighted } = useSelector((state) => ({
-    highlighted: state.select.highlighted,
-    previouslyHighlighted: state.select.previouslyHighlighted
-  }))
+  const { highlighted, previouslyHighlighted, selected } = useSelector(
+    (state) => ({
+      highlighted: state.select.highlighted,
+      previouslyHighlighted: state.select.previouslyHighlighted,
+      selected: state.select.selected
+    })
+  )
   const dispatch = useDispatch()
 
   // Zoom factor
@@ -300,6 +303,11 @@ const ThreeView = ({ part }) => {
             'face'
           )
 
+        selected.forEach((select) => {
+          const selectedObject = child.find(select.uuid)
+          if (selectedObject) child.select(selectedObject)
+        })
+
         const previousObject = child.find(previouslyHighlighted.uuid)
         if (previousObject) child.unhighlight(previousObject)
 
@@ -307,7 +315,7 @@ const ThreeView = ({ part }) => {
         if (object) child.highlight(object)
       }
     })
-  }, [highlighted, previouslyHighlighted])
+  }, [highlighted, previouslyHighlighted, selected])
 
   /**
    * Compute scene bounding box

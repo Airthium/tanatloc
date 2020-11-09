@@ -5,7 +5,12 @@ import { PlusCircleOutlined } from '@ant-design/icons'
 import Formula from '../../../assets/formula'
 
 import { useSelector, useDispatch } from 'react-redux'
-import { highlight, unhighlight } from '../../../../store/select/action'
+import {
+  highlight,
+  unhighlight,
+  select,
+  unselect
+} from '../../../../store/select/action'
 
 const BoundaryConditions = ({ project, simulation, part, setVisible }) => {
   // State
@@ -13,7 +18,10 @@ const BoundaryConditions = ({ project, simulation, part, setVisible }) => {
   const [bcType, setBcType] = useState()
 
   // Store
-  const highlighted = useSelector((state) => state.select.highlighted)
+  const { highlighted, selected } = useSelector((state) => ({
+    highlighted: state.select.highlighted,
+    selected: state.select.selected
+  }))
   const dispatch = useDispatch()
 
   // Data
@@ -48,6 +56,11 @@ const BoundaryConditions = ({ project, simulation, part, setVisible }) => {
 
   const onUnhighlight = () => {
     dispatch(unhighlight())
+  }
+
+  const onSelect = (face) => {
+    if (selected.includes(face)) dispatch(unselect(face))
+    else dispatch(select(face))
   }
 
   return (
@@ -94,15 +107,23 @@ const BoundaryConditions = ({ project, simulation, part, setVisible }) => {
                     hoverable
                     key={index}
                     style={{
-                      marginBottom: highlighted === face ? '5px' : '7px',
+                      marginBottom:
+                        highlighted === face
+                          ? '5px'
+                          : selected.includes(face)
+                          ? '5px'
+                          : '7px',
                       border:
                         highlighted === face
                           ? '2px solid #0096C7'
+                          : selected.includes(face)
+                          ? '2px solid #c73100'
                           : '1px solid grey'
                     }}
                     bodyStyle={{ padding: '10px' }}
                     onMouseOver={() => onHighlight(face)}
-                    onMouseOut={() => onUnhighlight(face)}
+                    onMouseOut={onUnhighlight}
+                    onClick={() => onSelect(face)}
                   >
                     {face.name}
                   </Card>

@@ -244,11 +244,7 @@ const Project = () => {
           part={partSummary}
           onClose={onSimulationClose}
         />
-        <View
-          simulation={currentSimulation}
-          type={currentType}
-          setPartSummary={setPartSummary}
-        />
+        <View simulation={currentSimulation} setPartSummary={setPartSummary} />
       </Layout.Content>
     </Layout>
   )

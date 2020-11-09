@@ -4,10 +4,17 @@ import { PlusCircleOutlined } from '@ant-design/icons'
 
 import Formula from '../../../assets/formula'
 
+import { useSelector, useDispatch } from 'react-redux'
+import { highlight, unhighlight } from '../../../../store/select/action'
+
 const BoundaryConditions = ({ project, simulation, part, setVisible }) => {
   // State
   const [bcVisible, setBcVisible] = useState(false)
   const [bcType, setBcType] = useState()
+
+  // Store
+  const highlighted = useSelector((state) => state.select.highlighted)
+  const dispatch = useDispatch()
 
   // Data
   const subScheme = simulation?.scheme.categories.boundaryConditions
@@ -33,6 +40,14 @@ const BoundaryConditions = ({ project, simulation, part, setVisible }) => {
   const onType = (event) => {
     const type = event.target.value
     setBcType(subScheme[type])
+  }
+
+  const onHighlight = (face) => {
+    dispatch(highlight(face))
+  }
+
+  const onUnhighlight = () => {
+    dispatch(unhighlight())
   }
 
   return (
@@ -74,7 +89,24 @@ const BoundaryConditions = ({ project, simulation, part, setVisible }) => {
           <div>
             {part &&
               part.faces?.map((face, index) => {
-                return <Card key={index}>{face.name}</Card>
+                return (
+                  <Card
+                    hoverable
+                    key={index}
+                    style={{
+                      marginBottom: highlighted === face ? '5px' : '7px',
+                      border:
+                        highlighted === face
+                          ? '2px solid #0096C7'
+                          : '1px solid grey'
+                    }}
+                    bodyStyle={{ padding: '10px' }}
+                    onMouseOver={() => onHighlight(face)}
+                    onMouseOut={() => onUnhighlight(face)}
+                  >
+                    {face.name}
+                  </Card>
+                )
               })}
           </div>
           <Space>

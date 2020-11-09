@@ -6,19 +6,17 @@ import { composeWithDevTools } from 'redux-devtools-extension'
 import { persistReducer } from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
 
-import auth, { authInitialState } from './auth/reducer'
+import select, { selectInitialState } from './select/reducer'
 
 let store
 
 const globalInitialState = {
-  auth: authInitialState
+  select: selectInitialState
 }
-
-// TODO auth is deprecated (now passport)
 
 // COMBINE
 const combinedReducers = combineReducers({
-  auth
+  select
 })
 
 // REDUCERS
@@ -30,12 +28,12 @@ export const reducer = (state = globalInitialState, action = {}) => {
 const persistConfig = {
   key: 'primary',
   storage
-  // whitelist: ['auth'] // place to select which state you want to persist
+  // whitelist: ['select'] // place to select which state you want to persist
 }
 
 const persistedReducer = persistReducer(persistConfig, reducer)
 
-function makeStore(initialState = globalInitialState) {
+const makeStore = (initialState = globalInitialState) => {
   return createStore(
     persistedReducer,
     initialState,

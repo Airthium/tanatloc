@@ -68,6 +68,7 @@ const PartLoader = () => {
     object.startSelection = (renderer, camera, outlinePass, type) =>
       startSelection(object, renderer, camera, outlinePass, type)
     object.stopSelection = () => stopSelection(object)
+    object.find = (uuid) => findObject(object, uuid)
     object.highlight = highlight
     object.unhighlight = unhighlight
     object.select = select
@@ -261,6 +262,28 @@ const PartLoader = () => {
 
     selection.forEach((s) => unselect(s))
     selection.length = 0
+  }
+
+  /**
+   * Find object in part
+   * @param {Object} part Part
+   * @param {string} uuid UUID
+   */
+  const findObject = (part, uuid) => {
+    // Search in solids
+    const solids = part.children[0]
+    for (const solid of solids.children) {
+      if (solid.uuid === uuid) return solid
+    }
+
+    // Search in faces
+    const faces = part.children[1]
+    for (const face of faces.children) {
+      if (face.uuid === uuid) return face
+    }
+
+    // Search in edges
+    // TODO
   }
 
   /**

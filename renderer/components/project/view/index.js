@@ -43,6 +43,9 @@ import { PartLoader } from '../../../../src/lib/three/loaders/PartLoader'
 
 import { get } from '../../../../src/api/part'
 
+import { useSelector, useDispatch } from 'react-redux'
+import { highlight, unhighlight } from '../../../store/select/action'
+
 /**
  * ThreeView
  */
@@ -64,6 +67,10 @@ const ThreeView = ({ part }) => {
   const [transparent, setTransparent] = useState(false)
   const [sectionView, setSectionView] = useState(false)
   const [transform, setTransform] = useState('translate')
+
+  // Store
+  const highlighted = useSelector((state) => state.select.highlighted)
+  const dispatch = useDispatch()
 
   // Zoom factor
   const zoomFactor = 0.01
@@ -276,6 +283,28 @@ const ThreeView = ({ part }) => {
 
     if (part) loadPart()
   }, [part])
+
+  useEffect(() => {
+    // Highlight
+    // TODO not optimized, too restrictive
+    scene.current.children.forEach((child) => {
+      if (child.type === 'Part') {
+        child.startSelection(
+          renderer.current,
+          camera.current,
+          outlinePass.current,
+          'face'
+        )
+
+        const object = child.find(highlighted.uuid)
+        if (object) {
+          child.highlight(object)
+        } else {
+          child.unhighlight()
+        }
+      }
+    })
+  }, [highlighted])
 
   /**
    * Compute scene bounding box
@@ -663,17 +692,17 @@ const ThreeView = ({ part }) => {
   )
 }
 
-const View = ({ simulation, type, setPartSummary }) => {
+const View = ({ simulation, setPartSummary }) => {
   const [part, setPart] = useState()
 
   useEffect(() => {
     const scheme = simulation?.scheme
-    const subScheme = scheme?.categories[type]
+    const geometry = scheme?.categories['geometry']
 
-    if (subScheme?.file?.part) {
-      loadPart(subScheme.file)
+    if (geometry?.file?.part) {
+      loadPart(geometry.file)
     }
-  }, [simulation, type])
+  }, [simulation])
 
   const loadPart = async (file) => {
     const partContent = await get({ id: simulation.id }, file)

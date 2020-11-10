@@ -6,6 +6,7 @@ import Formula from '../../../assets/formula'
 
 import { useSelector, useDispatch } from 'react-redux'
 import {
+  enable,
   clear,
   setType,
   setPart,
@@ -25,6 +26,8 @@ const BoundaryConditions = ({ project, simulation, part, setVisible }) => {
     highlighted: state.select.highlighted,
     selected: state.select.selected
   }))
+  console.log(highlighted)
+  console.log(selected)
   const dispatch = useDispatch()
 
   // Data
@@ -39,14 +42,6 @@ const BoundaryConditions = ({ project, simulation, part, setVisible }) => {
     })
     .filter((r) => r)
 
-  // First
-  useEffect(() => {
-    // Unmount
-    return () => {
-      clear()
-    }
-  })
-
   // Selection
   useEffect(() => {
     dispatch(setType('face'))
@@ -54,6 +49,9 @@ const BoundaryConditions = ({ project, simulation, part, setVisible }) => {
   }, [part])
 
   const toggleBoundaryCondition = () => {
+    if (bcVisible) dispatch(clear())
+    else dispatch(enable())
+
     setVisible(bcVisible)
     setBcVisible(!bcVisible)
   }
@@ -68,16 +66,16 @@ const BoundaryConditions = ({ project, simulation, part, setVisible }) => {
   }
 
   const onHighlight = (face) => {
-    dispatch(highlight(face))
+    dispatch(highlight(face?.uuid))
   }
 
   const onUnhighlight = () => {
-    dispatch(unhighlight())
+    // dispatch(unhighlight())
   }
 
   const onSelect = (face) => {
-    if (selected.includes(face)) dispatch(unselect(face))
-    else dispatch(select(face))
+    // if (selected.includes(face)) dispatch(unselect(face))
+    // else dispatch(select(face))
   }
 
   return (
@@ -125,15 +123,15 @@ const BoundaryConditions = ({ project, simulation, part, setVisible }) => {
                     key={index}
                     style={{
                       marginBottom:
-                        highlighted === face
+                        highlighted === face.uuid
                           ? '5px'
-                          : selected.includes(face)
+                          : selected.includes(face.uuid)
                           ? '5px'
                           : '7px',
                       border:
-                        highlighted === face
+                        highlighted === face.uuid
                           ? '2px solid #0096C7'
-                          : selected.includes(face)
+                          : selected.includes(face.uuid)
                           ? '2px solid #c73100'
                           : '1px solid grey'
                     }}

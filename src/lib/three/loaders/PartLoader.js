@@ -76,7 +76,6 @@ const PartLoader = (
       startSelection(object, renderer, camera, outlinePass, type)
     object.stopSelection = () => stopSelection(object)
     object.find = (uuid) => findObject(object, uuid)
-    object.selectionEnabled = selectionEnabled
     object.highlight = highlight
     object.unhighlight = unhighlight
     object.select = select
@@ -253,9 +252,6 @@ const PartLoader = (
     selectionRenderer?.domElement.removeEventListener('mousemove', mouseMove)
     selectionRenderer?.domElement.removeEventListener('mousedown', mouseDown)
 
-    selectionPart = null
-    selectionRenderer = null
-    selectionCamera = null
     selectionType = null
 
     setSolidsVisible(part, false)
@@ -264,20 +260,19 @@ const PartLoader = (
     unhighlight()
     previouslyHighlighted = currentlyHighlighted
     unhighlight()
-    currentlyHighlighted = {}
-    previouslyHighlighted = {}
+    previouslyHighlighted = null
 
-    selectionOutlinePass = null
-
-    selection.forEach((s) => unselect(s))
+    selection.forEach((s) => {
+      currentlyHighlighted = s
+      unselect()
+    })
     selection.length = 0
-  }
+    currentlyHighlighted = null
 
-  /**
-   * Selection enabled
-   */
-  const selectionEnabled = () => {
-    return selectionPart !== null
+    selectionPart = null
+    selectionRenderer = null
+    selectionCamera = null
+    selectionOutlinePass = null
   }
 
   /**
@@ -331,8 +326,8 @@ const PartLoader = (
     )
     if (intersects.length > 0) {
       highlight(intersects[0].object)
-      if (previouslyHighlighted) unhighlight()
     } else {
+      unhighlight()
       previouslyHighlighted = currentlyHighlighted
       currentlyHighlighted = null
       unhighlight()
@@ -344,16 +339,20 @@ const PartLoader = (
    * @param {Object} mesh Mesh
    */
   const highlight = (mesh) => {
-    if (mesh === currentlyHighlighted) return
+    if (mesh) {
+      if (mesh.uuid === currentlyHighlighted) return
 
-    if (mesh && mesh.material) {
-      selectionOutlinePass.selectedObjects = [mesh]
-      mesh.material.color = highlightColor
+      if (mesh.material) {
+        selectionOutlinePass.selectedObjects = [mesh]
+        mesh.material.color = highlightColor
 
-      previouslyHighlighted = currentlyHighlighted
-      currentlyHighlighted = mesh
+        previouslyHighlighted = currentlyHighlighted
+        unhighlight()
 
-      highlightEvent({ mesh })
+        currentlyHighlighted = mesh.uuid
+
+        highlightEvent(mesh)
+      }
     }
   }
 
@@ -363,11 +362,11 @@ const PartLoader = (
   const unhighlight = () => {
     if (!previouslyHighlighted) return
 
-    const mesh = previouslyHighlighted
+    const mesh = findObject(selectionPart, previouslyHighlighted)
     if (mesh && mesh.material) {
       // Check selection
       selectionOutlinePass.selectedObjects = []
-      const index = selection.findIndex((m) => m === mesh)
+      const index = selection.findIndex((m) => m === previouslyHighlighted)
 
       // Unhighlight
       mesh.material.color =
@@ -386,34 +385,34 @@ const PartLoader = (
     const index = selection.findIndex((p) => p === currentlyHighlighted)
     if (index === -1) {
       selection.push(currentlyHighlighted)
-      select(currentlyHighlighted)
+      select()
     } else {
       selection.splice(index, 1)
-      unselect(currentlyHighlighted)
+      unselect()
     }
   }
 
   /**
    * Select
-   * @param {Object} mesh Mesh
    */
-  const select = (mesh) => {
+  const select = () => {
+    const mesh = findObject(selectionPart, currentlyHighlighted)
     if (mesh && mesh.material) {
       mesh.material.color = selectColor
 
-      selectEvent({ mesh })
+      selectEvent(mesh)
     }
   }
 
   /**
    * Unselect
-   * @param {Object} mesh Mesh
    */
-  const unselect = (mesh) => {
+  const unselect = () => {
+    const mesh = findObject(selectionPart, currentlyHighlighted)
     if (mesh && mesh.material) {
       mesh.material.color = mesh.material.originalColor
 
-      unselectEvent({ mesh })
+      unselectEvent(mesh)
     }
   }
 

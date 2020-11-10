@@ -1,4 +1,6 @@
 export const selectActionTypes = {
+  ENABLE: 'ENABLE',
+  DISABLE: 'DISABLE',
   CLEAR: 'CLEAR',
   SETTYPE: 'SETTYPE',
   SETPART: 'SETPART',
@@ -7,6 +9,14 @@ export const selectActionTypes = {
   SELECT: 'SELECT',
   UNSELECT: 'UNSELECT'
 }
+
+export const enable = () => ({
+  type: selectActionTypes.ENABLE
+})
+
+export const disable = () => ({
+  type: selectActionTypes.DISABLE
+})
 
 export const clear = () => ({
   type: selectActionTypes.CLEAR

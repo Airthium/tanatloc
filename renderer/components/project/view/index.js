@@ -45,9 +45,6 @@ import { get } from '../../../../src/api/part'
 
 import { useSelector, useDispatch } from 'react-redux'
 import {
-  clear,
-  setType,
-  setPart,
   highlight,
   unhighlight,
   select,
@@ -78,17 +75,19 @@ const ThreeView = ({ part }) => {
 
   // Store
   const {
-    type,
-    uuid,
-    highlighted,
-    previouslyHighlighted,
-    selected
+    selectEnabled,
+    selectType,
+    selectUuid,
+    selectHighlighted,
+    selectPreviouslyHighlighted,
+    selectSelected
   } = useSelector((state) => ({
-    type: state.select.type,
-    uuid: state.select.uuid,
-    highlighted: state.select.highlighted,
-    previouslyHighlighted: state.select.previouslyHighlighted,
-    selected: state.select.selected
+    selectEnabled: state.select.enabled,
+    selectType: state.select.type,
+    selectUuid: state.select.uuid,
+    selectHighlighted: state.select.highlighted,
+    selectPreviouslyHighlighted: state.select.previouslyHighlighted,
+    selectSelected: state.select.selected
   }))
   const dispatch = useDispatch()
 
@@ -304,34 +303,58 @@ const ThreeView = ({ part }) => {
     if (part) loadPart()
   }, [part])
 
+  // Enable / disable selection
   useEffect(() => {
     scene.current.children.forEach((child) => {
-      if (child.type === 'Part') {
-        if (child.uuid === uuid) {
-          if (!child.selectionEnabled()) {
-            console.log('enable selection')
-            child.startSelection(
-              renderer.current,
-              camera.current,
-              outlinePass.current,
-              type
-            )
-          }
-
-          selected.forEach((select) => {
-            const selectedObject = child.find(select.uuid)
-            if (selectedObject) child.select(selectedObject)
-          })
-
-          const previousObject = child.find(previouslyHighlighted.uuid)
-          if (previousObject) child.unhighlight(previousObject)
-
-          const object = child.find(highlighted.uuid)
-          if (object) child.highlight(object)
-        }
+      if (child.type === 'Part' && child.uuid === selectUuid) {
+        if (selectEnabled)
+          child.startSelection(
+            renderer.current,
+            camera.current,
+            outlinePass.current,
+            selectType
+          )
+        else child.stopSelection()
       }
     })
-  }, [highlighted, previouslyHighlighted, selected])
+  }, [selectEnabled, selectUuid, selectType])
+
+  useEffect(() => {
+    scene.current.children.forEach((child) => {
+      if (child.type === 'Part' && child.uuid === selectUuid) {
+        const mesh = child.find(selectHighlighted)
+        child.highlight(mesh)
+      }
+    })
+
+    //   scene.current.children.forEach((child) => {
+    //     if (child.type === 'Part') {
+    //       if (child.uuid === uuid) {
+    //         if (!child.selectionEnabled()) {
+    //           child.startSelection(
+    //             renderer.current,
+    //             camera.current,
+    //             outlinePass.current,
+    //             type
+    //           )
+    //         }
+
+    //         // // Select
+    //         // selected.forEach((select) => {
+    //         //   const selectedObject = child.find(select.uuid)
+    //         //   if (selectedObject) child.select(selectedObject)
+    //         // })
+
+    //         // Highlight
+    //         if (!highlighted) child.unhighlight()
+    //         else {
+    //           const object = child.find(highlighted.uuid)
+    //           if (object) child.highlight(object)
+    //         }
+    //       }
+    //     }
+    //   })
+  }, [selectHighlighted])
 
   /**
    * Compute scene bounding box
@@ -448,19 +471,41 @@ const ThreeView = ({ part }) => {
    * TODO WIP
    */
   const loadPart = async () => {
-    //load
-    const loader = PartLoader()
+    // Events
+    const highlightEvent = (mesh) => {
+      dispatch(highlight(mesh?.uuid))
+    }
+    const unhighlightEvent = () => {
+      dispatch(unhighlight())
+    }
+    const selectEvent = (mesh) => {
+      dispatch(select(mesh?.uuid))
+    }
+    const unselectEvent = (mesh) => {
+      dispatch(unselect(mesh?.uuid))
+    }
+
+    // Load
+    const loader = PartLoader(
+      highlightEvent,
+      unhighlightEvent,
+      selectEvent,
+      unselectEvent
+    )
     const mesh = loader.load(
       part,
       transparent,
       sectionViewHelper.current.getClippingPlane(),
       outlinePass.current
     )
+
     // Scene
     scene.current.add(mesh)
     computeSceneBoundingSphere()
+
     // Grid
     gridHelper.current.update()
+
     // Zoom
     zoomToFit()
   }
@@ -688,7 +733,7 @@ const ThreeView = ({ part }) => {
 
           <Divider />
 
-          <div className="drawer-group">
+          {/* <div className="drawer-group">
             <Button
               onClick={() =>
                 scene.current.children
@@ -712,7 +757,7 @@ const ThreeView = ({ part }) => {
             >
               Stop
             </Button>
-          </div>
+          </div> */}
         </Drawer>
       </div>
     </Layout>

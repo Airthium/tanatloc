@@ -47,7 +47,11 @@ const Delete = () => {
    * Render
    */
   return (
-    <Card title="Delete your account" bodyStyle={{ textAlign: 'center' }}>
+    <Card
+      title="Delete your account"
+      bodyStyle={{ textAlign: 'center' }}
+      className="Vertical-gutter"
+    >
       <Button
         icon={<DeleteOutlined />}
         type="danger"

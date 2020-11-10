@@ -179,7 +179,7 @@ const Dashboard = () => {
         <Loading />
       ) : (
         <Layout>
-          <Layout.Sider theme="light" width="300" className="Dashboard-sider">
+          <Layout.Sider theme="light" width="250" className="Dashboard-sider">
             <div className="logo">
               <img src="/images/logo.svg" />
             </div>

@@ -18,7 +18,12 @@ import {
 /**
  * PartLoader
  */
-const PartLoader = () => {
+const PartLoader = (
+  highlightEvent,
+  unhighlightEvent,
+  selectEvent,
+  unselectEvent
+) => {
   // Solid color
   const solidColor = new Color('gray')
   // Face color
@@ -203,8 +208,8 @@ const PartLoader = () => {
   let selectionCamera = null
   let selectionOutlinePass = null
   let selectionType = null
-  let currentlyHighlighted = {}
-  let previouslyHighlighted = {}
+  let currentlyHighlighted = null
+  let previouslyHighlighted = null
   const selection = []
 
   /**
@@ -220,8 +225,8 @@ const PartLoader = () => {
     selectionRenderer = renderer
     selectionCamera = camera
     selectionOutlinePass = outlinePass
-    currentlyHighlighted = {}
-    previouslyHighlighted = {}
+    currentlyHighlighted = null
+    previouslyHighlighted = null
     selection.length = 0
 
     if (type === 'solid') {
@@ -256,8 +261,9 @@ const PartLoader = () => {
     setSolidsVisible(part, false)
     setFacesVisible(part, true)
 
-    unhighlight(currentlyHighlighted)
-    unhighlight(previouslyHighlighted)
+    unhighlight()
+    previouslyHighlighted = currentlyHighlighted
+    unhighlight()
     currentlyHighlighted = {}
     previouslyHighlighted = {}
 
@@ -324,14 +330,12 @@ const PartLoader = () => {
       selectionPart.children[selectionType].children
     )
     if (intersects.length > 0) {
-      currentlyHighlighted = intersects[0].object
-      highlight(currentlyHighlighted)
-      if (currentlyHighlighted.uuid !== previouslyHighlighted.uuid)
-        unhighlight(previouslyHighlighted)
-      previouslyHighlighted = currentlyHighlighted
+      highlight(intersects[0].object)
+      if (previouslyHighlighted) unhighlight()
     } else {
-      unhighlight(currentlyHighlighted)
-      currentlyHighlighted = {}
+      previouslyHighlighted = currentlyHighlighted
+      currentlyHighlighted = null
+      unhighlight()
     }
   }
 
@@ -340,22 +344,38 @@ const PartLoader = () => {
    * @param {Object} mesh Mesh
    */
   const highlight = (mesh) => {
+    if (mesh === currentlyHighlighted) return
+
     if (mesh && mesh.material) {
       selectionOutlinePass.selectedObjects = [mesh]
       mesh.material.color = highlightColor
+
+      previouslyHighlighted = currentlyHighlighted
+      currentlyHighlighted = mesh
+
+      highlightEvent({ mesh })
     }
   }
 
   /**
    * Unhighlight
-   * @param {Object} mesh Mesh
    */
-  const unhighlight = (mesh) => {
+  const unhighlight = () => {
+    if (!previouslyHighlighted) return
+
+    const mesh = previouslyHighlighted
     if (mesh && mesh.material) {
+      // Check selection
       selectionOutlinePass.selectedObjects = []
       const index = selection.findIndex((m) => m === mesh)
+
+      // Unhighlight
       mesh.material.color =
         index === -1 ? mesh.material.originalColor : selectColor
+
+      previouslyHighlighted = null
+
+      unhighlightEvent()
     }
   }
 
@@ -378,7 +398,11 @@ const PartLoader = () => {
    * @param {Object} mesh Mesh
    */
   const select = (mesh) => {
-    if (mesh && mesh.material) mesh.material.color = selectColor
+    if (mesh && mesh.material) {
+      mesh.material.color = selectColor
+
+      selectEvent({ mesh })
+    }
   }
 
   /**
@@ -386,7 +410,11 @@ const PartLoader = () => {
    * @param {Object} mesh Mesh
    */
   const unselect = (mesh) => {
-    if (mesh && mesh.material) mesh.material.color = mesh.material.originalColor
+    if (mesh && mesh.material) {
+      mesh.material.color = mesh.material.originalColor
+
+      unselectEvent({ mesh })
+    }
   }
 
   return { load }

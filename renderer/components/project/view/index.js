@@ -324,6 +324,14 @@ const ThreeView = ({ part }) => {
       if (child.type === 'Part' && child.uuid === selectUuid) {
         const mesh = child.find(selectHighlighted)
         child.highlight(mesh)
+
+        console.log(child.selection())
+
+        selectSelected.forEach((select) => {
+          const selectedObject = child.find(select)
+          console.log(selectedObject)
+          child.select(selectedObject)
+        })
       }
     })
 
@@ -354,7 +362,7 @@ const ThreeView = ({ part }) => {
     //       }
     //     }
     //   })
-  }, [selectHighlighted])
+  }, [selectHighlighted, selectSelected])
 
   /**
    * Compute scene bounding box

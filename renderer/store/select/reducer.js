@@ -49,13 +49,13 @@ const reducer = (state, action) => {
         selected: [...state.selected, action.part]
       }
     case selectActionTypes.UNSELECT:
-      const index = state.selected.findIndex((s) => s.uuid === action.part.uuid)
+      const index = state.selected.findIndex((s) => s === action.part)
       if (index !== -1) {
         return {
           ...state,
           selected: [
-            ...state.selected.splice(0, index),
-            ...state.selected.splice(index + 1)
+            ...state.selected.slice(0, index),
+            ...state.selected.slice(index + 1)
           ]
         }
       } else return state

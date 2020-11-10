@@ -80,6 +80,7 @@ const PartLoader = (
     object.unhighlight = unhighlight
     object.select = select
     object.unselect = unselect
+    object.selection = () => selection
 
     return object
   }
@@ -263,8 +264,8 @@ const PartLoader = (
     previouslyHighlighted = null
 
     selection.forEach((s) => {
-      currentlyHighlighted = s
-      unselect()
+      const mesh = findObject(selectionPart, s)
+      unselect(mesh)
     })
     selection.length = 0
     currentlyHighlighted = null
@@ -326,11 +327,13 @@ const PartLoader = (
     )
     if (intersects.length > 0) {
       highlight(intersects[0].object)
+      highlightEvent(intersects[0].object)
     } else {
       unhighlight()
       previouslyHighlighted = currentlyHighlighted
       currentlyHighlighted = null
       unhighlight()
+      unhighlightEvent()
     }
   }
 
@@ -350,9 +353,11 @@ const PartLoader = (
         unhighlight()
 
         currentlyHighlighted = mesh.uuid
-
-        highlightEvent(mesh)
       }
+    } else {
+      previouslyHighlighted = currentlyHighlighted
+      currentlyHighlighted = null
+      unhighlight()
     }
   }
 
@@ -373,8 +378,6 @@ const PartLoader = (
         index === -1 ? mesh.material.originalColor : selectColor
 
       previouslyHighlighted = null
-
-      unhighlightEvent()
     }
   }
 
@@ -382,37 +385,38 @@ const PartLoader = (
    * Mouse down
    */
   const mouseDown = () => {
+    const mesh = findObject(selectionPart, currentlyHighlighted)
+    if (!mesh) return
+
     const index = selection.findIndex((p) => p === currentlyHighlighted)
     if (index === -1) {
-      selection.push(currentlyHighlighted)
-      select()
+      select(mesh)
+      selectEvent(mesh)
     } else {
       selection.splice(index, 1)
-      unselect()
+      unselect(mesh)
+      unselectEvent(mesh)
     }
   }
 
   /**
    * Select
+   * @param {Object} mesh Mesh
    */
-  const select = () => {
-    const mesh = findObject(selectionPart, currentlyHighlighted)
+  const select = (mesh) => {
+    selection.push(mesh)
     if (mesh && mesh.material) {
       mesh.material.color = selectColor
-
-      selectEvent(mesh)
     }
   }
 
   /**
    * Unselect
+   * @param {Object} mesh Mesh
    */
-  const unselect = () => {
-    const mesh = findObject(selectionPart, currentlyHighlighted)
+  const unselect = (mesh) => {
     if (mesh && mesh.material) {
       mesh.material.color = mesh.material.originalColor
-
-      unselectEvent(mesh)
     }
   }
 

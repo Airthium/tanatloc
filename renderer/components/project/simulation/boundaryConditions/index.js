@@ -26,8 +26,6 @@ const BoundaryConditions = ({ project, simulation, part, setVisible }) => {
     highlighted: state.select.highlighted,
     selected: state.select.selected
   }))
-  console.log(highlighted)
-  console.log(selected)
   const dispatch = useDispatch()
 
   // Data
@@ -70,12 +68,12 @@ const BoundaryConditions = ({ project, simulation, part, setVisible }) => {
   }
 
   const onUnhighlight = () => {
-    // dispatch(unhighlight())
+    dispatch(unhighlight())
   }
 
   const onSelect = (face) => {
-    // if (selected.includes(face)) dispatch(unselect(face))
-    // else dispatch(select(face))
+    if (selected.includes(face.uuid)) dispatch(unselect(face.uuid))
+    else dispatch(select(face.uuid))
   }
 
   return (

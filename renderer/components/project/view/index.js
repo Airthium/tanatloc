@@ -44,7 +44,15 @@ import { PartLoader } from '../../../../src/lib/three/loaders/PartLoader'
 import { get } from '../../../../src/api/part'
 
 import { useSelector, useDispatch } from 'react-redux'
-import { highlight, unhighlight } from '../../../store/select/action'
+import {
+  clear,
+  setType,
+  setPart,
+  highlight,
+  unhighlight,
+  select,
+  unselect
+} from '../../../store/select/action'
 
 /**
  * ThreeView

@@ -176,7 +176,6 @@ const Information = () => {
         {...layout}
         form={form}
         initialValues={{
-          username: user.email,
           firstname: user.firstname,
           lastname: user.lastname,
           email: user.email

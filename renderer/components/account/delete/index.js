@@ -1,7 +1,5 @@
 import { useState } from 'react'
-
 import { message, Button, Card, Row, Col, Typography } from 'antd'
-const { Title } = Typography
 
 import { DeleteOutlined } from '@ant-design/icons'
 
@@ -59,12 +57,12 @@ const Delete = () => {
     >
       <Row align="middle">
         <Col span={4}>
-          <Title
+          <Typography.Title
             level={5}
             style={{ padding: '16px 0', margin: 0, fontWeight: 500 }}
           >
             Delete your account
-          </Title>
+          </Typography.Title>
         </Col>
 
         <Col span={20}>

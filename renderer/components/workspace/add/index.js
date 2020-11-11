@@ -68,6 +68,7 @@ const Add = () => {
       </Button>
       <Dialog
         title="Create a new workspace"
+        closable={false}
         visible={visible}
         onCancel={onCancel}
         onOk={onOk}

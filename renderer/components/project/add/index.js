@@ -83,6 +83,7 @@ const Add = (props) => {
       </Button>
       <Dialog
         title="Create a new project"
+        closable={false}
         visible={visible}
         onCancel={onCancel}
         onOk={onOk}

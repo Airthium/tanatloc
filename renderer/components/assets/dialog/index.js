@@ -19,6 +19,12 @@ const Dialog = (props) => {
   // Form
   const [form] = Form.useForm()
 
+  // Layout
+  const layout = {
+    labelCol: { span: 5 },
+    wrapperCol: { span: 18 }
+  }
+
   /**
    * Render
    */
@@ -36,12 +42,14 @@ const Dialog = (props) => {
           await onOk(values)
           form.resetFields()
         } catch (info) {
-          console.log('Validate Failed:', info)
+          console.log('Validation Failed:', info)
         }
       }}
       confirmLoading={loading}
     >
-      <Form form={form}>{props.children}</Form>
+      <Form form={form} {...layout}>
+        {props.children}
+      </Form>
     </Modal>
   )
 }

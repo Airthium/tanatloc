@@ -82,18 +82,18 @@ const Add = (props) => {
         Create a new project
       </Button>
       <Dialog
-        title="Add a project"
+        title="Create a new project"
         visible={visible}
         onCancel={onCancel}
         onOk={onOk}
         loading={loading}
       >
         <Form.Item
-          label="Title"
+          label="Name"
           name="title"
-          rules={[{ required: true, message: 'Please fill the title' }]}
+          rules={[{ required: true, message: "Please enter a project's name" }]}
         >
-          <Input placeholder="Project's title" />
+          <Input placeholder="Project's name" />
         </Form.Item>
         <Form.Item label="Description" name="description">
           <Input.TextArea placeholder="Project's description" />

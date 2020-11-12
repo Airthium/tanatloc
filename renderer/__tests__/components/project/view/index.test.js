@@ -120,7 +120,8 @@ jest.mock('../../../../../src/api/part', () => ({
 }))
 
 jest.mock('react-redux', () => ({
-  useSelector: () => ({ highlighted: {}, previouslyHighlighted: {} }),
+  useSelector: (callback) =>
+    callback({ select: { highlighted: {}, selected: [{}] } }),
   useDispatch: () => {}
 }))
 
@@ -150,10 +151,12 @@ global.MockScene.children = [
     material: {},
     dispose: () => {},
     setTransparent: () => {},
-    find: () => {},
     startSelection: () => {},
     stopSelection: () => {},
-    selectionEnabled: () => true
+    getSelected: () => [{}],
+    highlight: () => {},
+    select: () => {},
+    unselect: () => {}
   },
   {
     visible: true,
@@ -165,10 +168,12 @@ global.MockScene.children = [
     material: {},
     dispose: () => {},
     setTransparent: () => {},
-    find: () => {},
     startSelection: () => {},
     stopSelection: () => {},
-    selectionEnabled: () => true
+    getSelected: () => [{}],
+    highlight: () => {},
+    select: () => {},
+    unselect: () => {}
   }
 ]
 

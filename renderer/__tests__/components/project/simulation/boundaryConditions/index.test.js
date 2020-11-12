@@ -4,8 +4,9 @@ import { shallow } from 'enzyme'
 jest.mock('../../../../../components/assets/formula', () => 'formula')
 
 jest.mock('react-redux', () => ({
-  useSelector: () => {},
-  useDispatch: () => {}
+  useSelector: (callback) =>
+    callback({ select: { highlighted: {}, selected: [{}] } }),
+  useDispatch: () => () => {}
 }))
 
 let wrapper

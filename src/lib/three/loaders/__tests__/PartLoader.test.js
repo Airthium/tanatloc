@@ -34,17 +34,23 @@ describe('src/lib/three/loaders/PartLoader', () => {
   const part = {
     solids: [
       {
-        buffer: '{ "uuid": "id" }'
+        buffer: '{ "uuid": "uuid"}'
       }
     ],
     faces: [
       {
-        buffer: '{ "uuid": "id" }'
+        buffer: '{ "uuid": "uuid", material: {} }'
+      },
+      {
+        buffer: '{ "uuid": "uuid2", material: {} }'
+      },
+      {
+        buffer: '{ "uuid": "uuid3" }'
       }
     ],
     edges: [
       {
-        buffer: '{ "uuid": "id" }'
+        buffer: '{ "uuid": "uuid" }'
       }
     ]
   }
@@ -62,6 +68,8 @@ describe('src/lib/three/loaders/PartLoader', () => {
   }
   const camera = {}
   const outlinePass = {}
+  const mouseMoveEvent = jest.fn()
+  const mouseDownEvent = jest.fn()
 
   it('call', () => {
     const partLoader = PartLoader()
@@ -95,7 +103,7 @@ describe('src/lib/three/loaders/PartLoader', () => {
   })
 
   it('startSelection', () => {
-    const partLoader = PartLoader()
+    const partLoader = PartLoader(mouseMoveEvent, mouseDownEvent)
     const mesh = partLoader.load(part)
     mesh.startSelection(renderer, camera, outlinePass, 'face')
 
@@ -120,6 +128,7 @@ describe('src/lib/three/loaders/PartLoader', () => {
 
     mesh.stopSelection()
     mesh.startSelection(renderer, camera, outlinePass, 'solid')
+    mesh.select(mesh1)
     mesh.stopSelection()
     mesh.startSelection(renderer, camera, outlinePass, 'other')
   })
@@ -130,13 +139,29 @@ describe('src/lib/three/loaders/PartLoader', () => {
     mesh.stopSelection()
   })
 
+  it('getHighlighted', () => {
+    const partLoader = PartLoader(mouseMoveEvent, mouseDownEvent)
+    const mesh = partLoader.load(part)
+    const highlighted = mesh.getHighlighted()
+    expect(highlighted).toBe(null)
+  })
+
+  it('getSelected', () => {
+    const partLoader = PartLoader(mouseMoveEvent, mouseDownEvent)
+    const mesh = partLoader.load(part)
+    const selected = mesh.getSelected()
+    expect(selected).toEqual([])
+  })
+
   it('highlight', () => {
     const partLoader = PartLoader()
     const mesh = partLoader.load(part)
     mesh.startSelection(renderer, camera, outlinePass, 'face')
 
-    mesh.highlight({})
-    mesh.highlight({ material: {} })
+    mesh.highlight('uuid')
+    mesh.highlight('uuid')
+    mesh.highlight('uuid2')
+    mesh.highlight('uuid3')
   })
 
   it('select', () => {

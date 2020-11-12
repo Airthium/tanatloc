@@ -108,10 +108,32 @@ jest.mock('../../../../../src/lib/three/helpers/SectionViewHelper', () => ({
 }))
 
 jest.mock('../../../../../src/lib/three/loaders/PartLoader', () => ({
-  PartLoader: () => ({
-    load: () => {},
-    dispose: () => {}
-  })
+  PartLoader: (mouseMove, mouseDown) => {
+    mouseMove(
+      {
+        highlight: () => {}
+      },
+      'uuid'
+    )
+    mouseDown(
+      {
+        getSelected: () => ['uuid'],
+        unselect: () => {}
+      },
+      'uuid'
+    )
+    mouseDown(
+      {
+        getSelected: () => ['uuid2'],
+        select: () => {}
+      },
+      'uuid'
+    )
+    return {
+      load: () => {},
+      dispose: () => {}
+    }
+  }
 }))
 
 const mockGet = jest.fn()
@@ -119,10 +141,19 @@ jest.mock('../../../../../src/api/part', () => ({
   get: async () => mockGet()
 }))
 
+const mockEnabled = jest.fn(() => false)
 jest.mock('react-redux', () => ({
   useSelector: (callback) =>
-    callback({ select: { highlighted: {}, selected: [{}] } }),
-  useDispatch: () => {}
+    callback({
+      select: { enabled: mockEnabled(), highlighted: {}, selected: [{}] }
+    }),
+  useDispatch: () => () => {}
+}))
+
+jest.mock('../../../../store/select/action', () => ({
+  highlight: jest.fn(),
+  select: jest.fn(),
+  unselect: jest.fn()
 }))
 
 let mockAnimationCount = 0
@@ -302,6 +333,18 @@ describe('components/project/view', () => {
         }
       ]
     }))
+    wrapper = mount(
+      <View
+        simulation={{
+          scheme: { categories: { geometry: { file: { part: {} } } } }
+        }}
+        type="geometry"
+        setPartSummary={setPartSummary}
+      />
+    )
+    wrapper.unmount()
+
+    mockEnabled.mockImplementation(() => true)
     wrapper = mount(
       <View
         simulation={{

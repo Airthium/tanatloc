@@ -15,12 +15,10 @@ describe('renderer/store/select/action', () => {
   })
 
   it('highlight', () => {
-    const res = highlight({ id: 'id' })
+    const res = highlight('id')
     expect(res).toEqual({
       type: selectActionTypes.HIGHLIGHT,
-      part: {
-        id: 'id'
-      }
+      uuid: 'id'
     })
   })
 
@@ -32,22 +30,18 @@ describe('renderer/store/select/action', () => {
   })
 
   it('select', () => {
-    const res = select({ id: 'id' })
+    const res = select('id')
     expect(res).toEqual({
       type: selectActionTypes.SELECT,
-      part: {
-        id: 'id'
-      }
+      uuid: 'id'
     })
   })
 
   it('unselect', () => {
-    const res = unselect({ id: 'id' })
+    const res = unselect('id')
     expect(res).toEqual({
       type: selectActionTypes.UNSELECT,
-      part: {
-        id: 'id'
-      }
+      uuid: 'id'
     })
   })
 })

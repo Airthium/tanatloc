@@ -72,13 +72,13 @@ const ThreeView = ({ part }) => {
   const {
     selectEnabled,
     selectType,
-    selectUuid,
+    selectPart,
     selectHighlighted,
     selectSelected
   } = useSelector((state) => ({
     selectEnabled: state.select.enabled,
     selectType: state.select.type,
-    selectUuid: state.select.uuid,
+    selectPart: state.select.part,
     selectHighlighted: state.select.highlighted,
     selectSelected: state.select.selected
   }))
@@ -299,7 +299,7 @@ const ThreeView = ({ part }) => {
   // Enable / disable selection
   useEffect(() => {
     scene.current.children.forEach((child) => {
-      if (child.type === 'Part' && child.uuid === selectUuid) {
+      if (child.type === 'Part' && child.uuid === selectPart) {
         if (selectEnabled)
           child.startSelection(
             renderer.current,
@@ -312,11 +312,11 @@ const ThreeView = ({ part }) => {
         }
       }
     })
-  }, [selectEnabled, selectUuid, selectType])
+  }, [selectEnabled, selectPart, selectType])
 
   useEffect(() => {
     scene.current.children.forEach((child) => {
-      if (child.type === 'Part' && child.uuid === selectUuid) {
+      if (child.type === 'Part' && child.uuid === selectPart) {
         // Highlight
         child.highlight(selectHighlighted)
 

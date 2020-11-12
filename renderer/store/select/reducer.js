@@ -33,7 +33,7 @@ const reducer = (state, action) => {
     case selectActionTypes.SETPART:
       return {
         ...state,
-        uuid: action.uuid
+        part: action.uuid
       }
     case selectActionTypes.HIGHLIGHT:
       return {

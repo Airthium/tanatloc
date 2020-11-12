@@ -25,9 +25,10 @@ import { useUser } from '../../../src/api/user'
 const Signup = () => {
   // State
   const [checking, setChecking] = useState(false)
+  setChecking(false)
 
   // Data
-  const [user, { mutateUser, loadingUser }] = useUser()
+  const [user, { loadingUser }] = useUser()
 
   // Router
   const router = useRouter()

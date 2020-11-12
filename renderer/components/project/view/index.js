@@ -455,16 +455,16 @@ const ThreeView = ({ part }) => {
     // Events
     const mouseMoveEvent = (child, uuid) => {
       child.highlight(uuid)
-      dispatch(highlight(uuid))
+      setTimeout(() => dispatch(highlight(uuid)), 1)
     }
     const mouseDownEvent = (child, uuid) => {
       const selected = child.getSelected()
       if (selected.includes(uuid)) {
         child.unselect(uuid)
-        dispatch(unselect(uuid))
+        setTimeout(() => dispatch(unselect(uuid)), 1)
       } else {
         child.select(uuid)
-        dispatch(select(uuid))
+        setTimeout(() => dispatch(select(uuid)), 1)
       }
     }
 

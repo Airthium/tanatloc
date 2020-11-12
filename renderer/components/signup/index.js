@@ -1,7 +1,7 @@
 /** @module renderer/components/signup */
 
 import { useRouter } from 'next/router'
-import { useState, useEffect } from 'react'
+import { /*useState,*/ useEffect } from 'react'
 import {
   Button,
   Card,

@@ -332,7 +332,7 @@ const PartLoader = (mouseMoveEvent, mouseDownEvent) => {
    */
   const highlight = (uuid) => {
     if (uuid === highlighted) return
-    if (uuid !== highlighted) unhighlight()
+    else unhighlight()
 
     const mesh = findObject(selectionPart, uuid)
     if (mesh && mesh.material) {

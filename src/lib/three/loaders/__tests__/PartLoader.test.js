@@ -5,6 +5,7 @@ describe('src/lib/three/loaders/PartLoader', () => {
     {
       children: [
         {
+          uuid: 'solid_uuid',
           geometry: {
             dispose: () => {},
             boundingBox: {
@@ -21,6 +22,7 @@ describe('src/lib/three/loaders/PartLoader', () => {
     {
       children: [
         {
+          uuid: 'face_uuid',
           geometry: {
             dispose: () => {}
           },
@@ -39,13 +41,7 @@ describe('src/lib/three/loaders/PartLoader', () => {
     ],
     faces: [
       {
-        buffer: '{ "uuid": "uuid", material: {} }'
-      },
-      {
-        buffer: '{ "uuid": "uuid2", material: {} }'
-      },
-      {
-        buffer: '{ "uuid": "uuid3" }'
+        buffer: '{ "uuid": "uuid" }'
       }
     ],
     edges: [
@@ -107,36 +103,48 @@ describe('src/lib/three/loaders/PartLoader', () => {
     const mesh = partLoader.load(part)
     mesh.startSelection(renderer, camera, outlinePass, 'face')
 
-    mouseMove({ target: { getBoundingClientRect: () => ({}) } })
-    mouseDown({})
-
-    const mesh1 = { uuid: 'uuid', material: {} }
-    const mesh2 = { uuid: 'uuid2', material: {} }
-    global.MockRaycaster.intersectObjects = [{ object: mesh1 }]
-    mouseMove({ target: { getBoundingClientRect: () => ({}) } })
-    mouseMove({ target: { getBoundingClientRect: () => ({}) } })
-
-    mouseDown({})
-    mouseDown({})
-    mouseDown({})
-
-    global.MockRaycaster.intersectObjects = [{ object: mesh2 }]
-    mouseMove({ target: { getBoundingClientRect: () => ({}) } })
-
-    global.MockRaycaster.intersectObjects = [{ object: mesh1 }]
-    mouseMove({ target: { getBoundingClientRect: () => ({}) } })
-
-    mesh.select('uuid')
-
-    mesh.stopSelection()
     mesh.startSelection(renderer, camera, outlinePass, 'solid')
-    mesh.stopSelection()
+
     mesh.startSelection(renderer, camera, outlinePass, 'other')
   })
+
+  //   mouseMove({ target: { getBoundingClientRect: () => ({}) } })
+  //   mouseDown({})
+
+  //   const mesh1 = { uuid: 'uuid', material: {} }
+  //   const mesh2 = { uuid: 'uuid2', material: {} }
+  //   global.MockRaycaster.intersectObjects = [{ object: mesh1 }]
+  //   mouseMove({ target: { getBoundingClientRect: () => ({}) } })
+  //   mouseMove({ target: { getBoundingClientRect: () => ({}) } })
+
+  //   mouseDown({})
+  //   mouseDown({})
+  //   mouseDown({})
+
+  //   global.MockRaycaster.intersectObjects = [{ object: mesh2 }]
+  //   mouseMove({ target: { getBoundingClientRect: () => ({}) } })
+
+  //   global.MockRaycaster.intersectObjects = [{ object: mesh1 }]
+  //   mouseMove({ target: { getBoundingClientRect: () => ({}) } })
+
+  //   mesh.stopSelection()
+  //   mesh.startSelection(renderer, camera, outlinePass, 'solid')
+  //   mesh.stopSelection()
+  //   mesh.startSelection(renderer, camera, outlinePass, 'other')
+  // })
 
   it('stopSelection', () => {
     const partLoader = PartLoader()
     const mesh = partLoader.load(part)
+    mesh.stopSelection()
+
+    // Add selection
+    mesh.startSelection(renderer, camera, outlinePass, 'face')
+    mesh.select('face_uuid')
+    mesh.stopSelection()
+
+    mesh.startSelection(renderer, camera, outlinePass, 'solid')
+    mesh.select('solid_uuid')
     mesh.stopSelection()
   })
 
@@ -154,28 +162,77 @@ describe('src/lib/three/loaders/PartLoader', () => {
     expect(selected).toEqual([])
   })
 
+  it('mouseMove', () => {
+    let current
+    mouseMoveEvent.mockImplementation((part, uuid) => (current = uuid))
+    const partLoader = PartLoader(mouseMoveEvent, mouseDownEvent)
+    const mesh = partLoader.load(part)
+    mesh.startSelection(renderer, camera, outlinePass, 'face')
+
+    mouseMove({ target: { getBoundingClientRect: () => ({}) } })
+
+    global.MockRaycaster.intersectObjects = [{ object: { uuid: 'uuid' } }]
+    mouseMove({ target: { getBoundingClientRect: () => ({}) } })
+    expect(current).toBe('uuid')
+  })
+
   it('highlight', () => {
     const partLoader = PartLoader()
     const mesh = partLoader.load(part)
     mesh.startSelection(renderer, camera, outlinePass, 'face')
 
+    mesh.highlight('face_uuid')
+    mesh.highlight('face_uuid')
     mesh.highlight('uuid')
-    mesh.highlight('uuid')
-    mesh.highlight('uuid2')
-    mesh.highlight('uuid3')
+  })
+
+  it('unhighlight', () => {
+    const partLoader = PartLoader()
+    const mesh = partLoader.load(part)
+    mesh.startSelection(renderer, camera, outlinePass, 'face')
+
+    mesh.unhighlight()
+
+    // With selected
+    mesh.select('face_uuid')
+    mesh.highlight('face_uuid')
+    mesh.unhighlight()
+  })
+
+  it('mouseDown', () => {
+    let current
+    mouseDownEvent.mockImplementation((part, uuid) => (current = uuid))
+    const partLoader = PartLoader(mouseMoveEvent, mouseDownEvent)
+    const mesh = partLoader.load(part)
+    mesh.startSelection(renderer, camera, outlinePass, 'face')
+
+    mouseDown()
+    expect(mouseDownEvent).toHaveBeenCalledTimes(0)
+
+    mesh.highlight('face_uuid')
+    mouseDown()
+    expect(mouseDownEvent).toHaveBeenCalledTimes(1)
+    expect(current).toBe('face_uuid')
   })
 
   it('select', () => {
     const partLoader = PartLoader()
     const mesh = partLoader.load(part)
-    mesh.select({})
-    mesh.select({ material: {} })
+    mesh.startSelection(renderer, camera, outlinePass, 'face')
+
+    mesh.select('face_uuid')
+    mesh.select('uuid')
+
+    expect(mesh.getSelected()).toEqual(['face_uuid'])
   })
 
   it('unselect', () => {
     const partLoader = PartLoader()
     const mesh = partLoader.load(part)
-    mesh.unselect({})
-    mesh.unselect({ material: {} })
+    mesh.startSelection(renderer, camera, outlinePass, 'face')
+
+    mesh.select('face_uuid')
+    mesh.unselect('uuid')
+    mesh.unselect('face_uuid')
   })
 })

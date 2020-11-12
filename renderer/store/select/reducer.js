@@ -19,7 +19,9 @@ const reducer = (state, action) => {
     case selectActionTypes.DISABLE:
       return {
         ...state,
-        enabled: false
+        enabled: false,
+        highlighted: null,
+        selected: []
       }
     case selectActionTypes.CLEAR:
       return selectInitialState
@@ -36,7 +38,7 @@ const reducer = (state, action) => {
     case selectActionTypes.HIGHLIGHT:
       return {
         ...state,
-        highlighted: action.part
+        highlighted: action.uuid
       }
     case selectActionTypes.UNHIGHLIGHT:
       return {
@@ -46,10 +48,10 @@ const reducer = (state, action) => {
     case selectActionTypes.SELECT:
       return {
         ...state,
-        selected: [...state.selected, action.part]
+        selected: [...state.selected, action.uuid]
       }
     case selectActionTypes.UNSELECT:
-      const index = state.selected.findIndex((s) => s === action.part)
+      const index = state.selected.findIndex((s) => s === action.uuid)
       if (index !== -1) {
         return {
           ...state,

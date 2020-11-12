@@ -44,12 +44,7 @@ import { PartLoader } from '../../../../src/lib/three/loaders/PartLoader'
 import { get } from '../../../../src/api/part'
 
 import { useSelector, useDispatch } from 'react-redux'
-import {
-  highlight,
-  unhighlight,
-  select,
-  unselect
-} from '../../../store/select/action'
+import { highlight, select, unselect } from '../../../store/select/action'
 
 /**
  * ThreeView
@@ -312,7 +307,9 @@ const ThreeView = ({ part }) => {
             outlinePass.current,
             selectType
           )
-        else child.stopSelection()
+        else {
+          child.stopSelection()
+        }
       }
     })
   }, [selectEnabled, selectUuid, selectType])
@@ -333,9 +330,9 @@ const ThreeView = ({ part }) => {
         })
 
         // Select
-        const add = selectSelected.filter((s) => !selected.includes(s))
-        add.forEach((a) => {
-          child.select(a)
+        const plus = selectSelected.filter((s) => !selected.includes(s))
+        plus.forEach((p) => {
+          child.select(p)
         })
       }
     })
@@ -456,12 +453,19 @@ const ThreeView = ({ part }) => {
    */
   const loadPart = async () => {
     // Events
-    const mouseMoveEvent = (uuid) => {
+    const mouseMoveEvent = (child, uuid) => {
+      child.highlight(uuid)
       dispatch(highlight(uuid))
     }
-    const mouseDownEvent = (uuid) => {
-      if (selectSelected.includes(uuid)) dispatch(unselect(uuid))
-      else dispatch(select(uuid))
+    const mouseDownEvent = (child, uuid) => {
+      const selected = child.getSelected()
+      if (selected.includes(uuid)) {
+        child.unselect(uuid)
+        dispatch(unselect(uuid))
+      } else {
+        child.select(uuid)
+        dispatch(select(uuid))
+      }
     }
 
     // Load

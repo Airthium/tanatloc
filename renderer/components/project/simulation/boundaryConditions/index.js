@@ -7,7 +7,7 @@ import Formula from '../../../assets/formula'
 import { useSelector, useDispatch } from 'react-redux'
 import {
   enable,
-  clear,
+  disable,
   setType,
   setPart,
   highlight,
@@ -47,7 +47,7 @@ const BoundaryConditions = ({ project, simulation, part, setVisible }) => {
   }, [part])
 
   const toggleBoundaryCondition = () => {
-    if (bcVisible) dispatch(clear())
+    if (bcVisible) dispatch(disable())
     else dispatch(enable())
 
     setVisible(bcVisible)

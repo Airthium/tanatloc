@@ -321,7 +321,9 @@ const PartLoader = (mouseMoveEvent, mouseDownEvent) => {
       selectionPart.children[selectionType].children
     )
 
-    if (intersects.length) mouseMoveEvent(intersects[0].object.uuid)
+    if (intersects.length)
+      mouseMoveEvent(selectionPart, intersects[0].object.uuid)
+    else mouseMoveEvent(selectionPart)
   }
 
   /**
@@ -362,7 +364,7 @@ const PartLoader = (mouseMoveEvent, mouseDownEvent) => {
    * Mouse down
    */
   const mouseDown = () => {
-    mouseDownEvent(highlighted)
+    if (highlighted) mouseDownEvent(selectionPart, highlighted)
   }
 
   /**

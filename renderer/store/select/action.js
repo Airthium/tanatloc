@@ -32,21 +32,21 @@ export const setPart = (uuid) => ({
   uuid
 })
 
-export const highlight = (part) => ({
+export const highlight = (uuid) => ({
   type: selectActionTypes.HIGHLIGHT,
-  part
+  uuid
 })
 
 export const unhighlight = () => ({
   type: selectActionTypes.UNHIGHLIGHT
 })
 
-export const select = (part) => ({
+export const select = (uuid) => ({
   type: selectActionTypes.SELECT,
-  part
+  uuid
 })
 
-export const unselect = (part) => ({
+export const unselect = (uuid) => ({
   type: selectActionTypes.UNSELECT,
-  part
+  uuid
 })

@@ -20,6 +20,8 @@ jest.mock('../../../components/dashboard/welcome', () => 'welcome')
 
 jest.mock('../../../components/workspace', () => 'workspace')
 
+jest.mock('../../../components/workspace/add', () => 'add')
+
 jest.mock('../../../components/account', () => 'account')
 
 jest.mock('../../../components/help', () => 'help')
@@ -98,7 +100,7 @@ describe('renderer/components/dashboard', () => {
 
     const myWorkspaces = wrapper.find({ title: 'My Workspaces' }).props()
       .children
-    expect(myWorkspaces.filter((w) => w).length).toBe(1)
+    expect(myWorkspaces.filter((w) => w).length).toBe(2)
 
     const sharedWorkspaces = wrapper.find({ title: 'Shared With Me' }).props()
       .children

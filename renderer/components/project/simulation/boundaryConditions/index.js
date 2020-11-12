@@ -1,13 +1,32 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Button, Card, Drawer, Layout, Radio, Space } from 'antd'
 import { PlusCircleOutlined } from '@ant-design/icons'
 
 import Formula from '../../../assets/formula'
 
+import { useSelector, useDispatch } from 'react-redux'
+import {
+  enable,
+  disable,
+  setType,
+  setPart,
+  highlight,
+  unhighlight,
+  select,
+  unselect
+} from '../../../../store/select/action'
+
 const BoundaryConditions = ({ project, simulation, part, setVisible }) => {
   // State
   const [bcVisible, setBcVisible] = useState(false)
   const [bcType, setBcType] = useState()
+
+  // Store
+  const { highlighted, selected } = useSelector((state) => ({
+    highlighted: state.select.highlighted,
+    selected: state.select.selected
+  }))
+  const dispatch = useDispatch()
 
   // Data
   const subScheme = simulation?.scheme.categories.boundaryConditions
@@ -21,7 +40,16 @@ const BoundaryConditions = ({ project, simulation, part, setVisible }) => {
     })
     .filter((r) => r)
 
+  // Selection
+  useEffect(() => {
+    dispatch(setType('face'))
+    dispatch(setPart(part?.uuid))
+  }, [part])
+
   const toggleBoundaryCondition = () => {
+    if (bcVisible) dispatch(disable())
+    else dispatch(enable())
+
     setVisible(bcVisible)
     setBcVisible(!bcVisible)
   }
@@ -33,6 +61,19 @@ const BoundaryConditions = ({ project, simulation, part, setVisible }) => {
   const onType = (event) => {
     const type = event.target.value
     setBcType(subScheme[type])
+  }
+
+  const onHighlight = (uuid) => {
+    dispatch(highlight(uuid))
+  }
+
+  const onUnhighlight = () => {
+    dispatch(unhighlight())
+  }
+
+  const onSelect = (uuid) => {
+    if (selected.includes(uuid)) dispatch(unselect(uuid))
+    else dispatch(select(uuid))
   }
 
   return (
@@ -74,7 +115,32 @@ const BoundaryConditions = ({ project, simulation, part, setVisible }) => {
           <div>
             {part &&
               part.faces?.map((face, index) => {
-                return <Card key={index}>{face.name}</Card>
+                return (
+                  <Card
+                    hoverable
+                    key={index}
+                    style={{
+                      marginBottom:
+                        highlighted === face.uuid
+                          ? '5px'
+                          : selected.includes(face.uuid)
+                          ? '5px'
+                          : '7px',
+                      border:
+                        highlighted === face.uuid
+                          ? '2px solid #0096C7'
+                          : selected.includes(face.uuid)
+                          ? '2px solid #c73100'
+                          : '1px solid grey'
+                    }}
+                    bodyStyle={{ padding: '10px' }}
+                    onMouseOver={() => onHighlight(face.uuid)}
+                    onMouseOut={onUnhighlight}
+                    onClick={() => onSelect(face.uuid)}
+                  >
+                    {face.name}
+                  </Card>
+                )
               })}
           </div>
           <Space>

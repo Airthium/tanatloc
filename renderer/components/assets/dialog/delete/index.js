@@ -18,6 +18,7 @@ const DeleteDialog = (props) => {
    */
   return (
     <Modal
+      title="Delete your account"
       okText="Delete"
       closable={false}
       visible={visible}

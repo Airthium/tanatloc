@@ -43,6 +43,9 @@ import { PartLoader } from '../../../../src/lib/three/loaders/PartLoader'
 
 import { get } from '../../../../src/api/part'
 
+import { useSelector, useDispatch } from 'react-redux'
+import { highlight, select, unselect } from '../../../store/select/action'
+
 /**
  * ThreeView
  */
@@ -64,6 +67,22 @@ const ThreeView = ({ part }) => {
   const [transparent, setTransparent] = useState(false)
   const [sectionView, setSectionView] = useState(false)
   const [transform, setTransform] = useState('translate')
+
+  // Store
+  const {
+    selectEnabled,
+    selectType,
+    selectPart,
+    selectHighlighted,
+    selectSelected
+  } = useSelector((state) => ({
+    selectEnabled: state.select.enabled,
+    selectType: state.select.type,
+    selectPart: state.select.part,
+    selectHighlighted: state.select.highlighted,
+    selectSelected: state.select.selected
+  }))
+  const dispatch = useDispatch()
 
   // Zoom factor
   const zoomFactor = 0.01
@@ -277,6 +296,48 @@ const ThreeView = ({ part }) => {
     if (part) loadPart()
   }, [part])
 
+  // Enable / disable selection
+  useEffect(() => {
+    scene.current.children.forEach((child) => {
+      if (child.type === 'Part' && child.uuid === selectPart) {
+        if (selectEnabled)
+          child.startSelection(
+            renderer.current,
+            camera.current,
+            outlinePass.current,
+            selectType
+          )
+        else {
+          child.stopSelection()
+        }
+      }
+    })
+  }, [selectEnabled, selectPart, selectType])
+
+  useEffect(() => {
+    scene.current.children.forEach((child) => {
+      if (child.type === 'Part' && child.uuid === selectPart) {
+        // Highlight
+        child.highlight(selectHighlighted)
+
+        // Selection
+        const selected = child.getSelected()
+
+        // Unselect
+        const minus = selected.filter((s) => !selectSelected.includes(s))
+        minus.forEach((m) => {
+          child.unselect(m)
+        })
+
+        // Select
+        const plus = selectSelected.filter((s) => !selected.includes(s))
+        plus.forEach((p) => {
+          child.select(p)
+        })
+      }
+    })
+  }, [selectHighlighted, selectSelected])
+
   /**
    * Compute scene bounding box
    */
@@ -389,22 +450,40 @@ const ThreeView = ({ part }) => {
 
   /**
    * Load part
-   * TODO WIP
    */
   const loadPart = async () => {
-    //load
-    const loader = PartLoader()
+    // Events
+    const mouseMoveEvent = (child, uuid) => {
+      child.highlight(uuid)
+      setTimeout(() => dispatch(highlight(uuid)), 1)
+    }
+    const mouseDownEvent = (child, uuid) => {
+      const selected = child.getSelected()
+      if (selected.includes(uuid)) {
+        child.unselect(uuid)
+        setTimeout(() => dispatch(unselect(uuid)), 1)
+      } else {
+        child.select(uuid)
+        setTimeout(() => dispatch(select(uuid)), 1)
+      }
+    }
+
+    // Load
+    const loader = PartLoader(mouseMoveEvent, mouseDownEvent)
     const mesh = loader.load(
       part,
       transparent,
       sectionViewHelper.current.getClippingPlane(),
       outlinePass.current
     )
+
     // Scene
     scene.current.add(mesh)
     computeSceneBoundingSphere()
+
     // Grid
     gridHelper.current.update()
+
     // Zoom
     zoomToFit()
   }
@@ -631,49 +710,23 @@ const ThreeView = ({ part }) => {
           </div>
 
           <Divider />
-
-          <div className="drawer-group">
-            <Button
-              onClick={() =>
-                scene.current.children
-                  .filter((c) => c.type === 'Part')[0]
-                  .startSelection(
-                    renderer.current,
-                    camera.current,
-                    outlinePass.current,
-                    'face'
-                  )
-              }
-            >
-              Start
-            </Button>
-            <Button
-              onClick={() =>
-                scene.current.children
-                  .filter((c) => c.type === 'Part')[0]
-                  .stopSelection()
-              }
-            >
-              Stop
-            </Button>
-          </div>
         </Drawer>
       </div>
     </Layout>
   )
 }
 
-const View = ({ simulation, type, setPartSummary }) => {
+const View = ({ simulation, setPartSummary }) => {
   const [part, setPart] = useState()
 
   useEffect(() => {
     const scheme = simulation?.scheme
-    const subScheme = scheme?.categories[type]
+    const geometry = scheme?.categories['geometry']
 
-    if (subScheme?.file?.part) {
-      loadPart(subScheme.file)
+    if (geometry?.file?.part) {
+      loadPart(geometry.file)
     }
-  }, [simulation, type])
+  }, [simulation])
 
   const loadPart = async (file) => {
     const partContent = await get({ id: simulation.id }, file)
@@ -690,6 +743,7 @@ const View = ({ simulation, type, setPartSummary }) => {
     })
 
     const summary = {
+      uuid: partContent.uuid,
       solids: partContent.solids?.map((solid) => {
         return {
           name: solid.name,

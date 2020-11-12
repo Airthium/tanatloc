@@ -67,7 +67,8 @@ const Add = () => {
         Create a new workspace
       </Button>
       <Dialog
-        title="Add a workspace"
+        title="Create a new workspace"
+        closable={false}
         visible={visible}
         onCancel={onCancel}
         onOk={onOk}
@@ -76,7 +77,9 @@ const Add = () => {
         <Form.Item
           label="Name"
           name="name"
-          rules={[{ required: true, message: 'Please fill the name' }]}
+          rules={[
+            { required: true, message: "Please enter a workspace's name" }
+          ]}
         >
           <Input placeholder="Workspace's name" />
         </Form.Item>

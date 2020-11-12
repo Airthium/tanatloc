@@ -67,11 +67,11 @@ const ProjectList = ({ workspace, filter }) => {
    */
   return (
     <Table
-      tableLayout="auto"
       pagination={false}
       dataSource={data}
-      bordered={false}
+      bordered={true}
       size="small"
+      scroll={{ y: 'calc(100vh - 232px)' }}
     >
       <Table.Column
         title=""

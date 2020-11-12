@@ -65,7 +65,7 @@ describe('renderer/components/account/information', () => {
   })
 
   it('onCancel', () => {
-    wrapper.find('Button').at(1).props().onClick()
+    wrapper.find('Button').at(2).props().onClick()
   })
 
   it('beforeUpload', () => {

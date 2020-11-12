@@ -17,7 +17,6 @@ import {
 // import { ShareAltOutlined } from '@ant-design/icons'
 
 import Empty from './empty'
-import Add from './add'
 import Delete from './delete'
 
 import ProjectAdd from '../project/add'
@@ -71,14 +70,14 @@ const Workspace = ({ workspace }) => {
    * Render
    */
   return (
-    <Layout className="Workspace no-scroll">
+    <Layout className="Workspace">
       {workspace ? (
         <>
           <PageHeader
             backIcon={false}
             title={
               <Typography.Title
-                level={4}
+                level={2}
                 className="pageheader-name"
                 editable={{ onChange: setName }}
               >
@@ -86,7 +85,6 @@ const Workspace = ({ workspace }) => {
               </Typography.Title>
             }
             extra={[
-              <Add key="add" />,
               // <Button key="share" icon={<ShareAltOutlined />}>
               //   Share it
               // </Button>,
@@ -130,7 +128,7 @@ const Workspace = ({ workspace }) => {
               </div>
             )}
           </PageHeader>
-          <Layout.Content className="scroll">
+          <Layout.Content>
             <ProjectList workspace={workspace} filter={filter} />
           </Layout.Content>
         </>

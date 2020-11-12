@@ -61,14 +61,14 @@ describe('components/login', () => {
     expect(mockRouter).toHaveBeenCalledTimes(1)
     mWrapper.unmount()
   })
-
-  it('onSelect', () => {
-    wrapper.find('Menu').props().onSelect({})
-    expect(mockRouter).toHaveBeenCalledTimes(0)
-
-    wrapper.find('Menu').props().onSelect({ key: 'home' })
-    expect(mockRouter).toHaveBeenCalledTimes(1)
-  })
+  // TODO Deactivated because I removed the home button from the login page (not useful)
+  // it('onSelect', () => {
+  //   wrapper.find('Menu').props().onSelect({})
+  //   expect(mockRouter).toHaveBeenCalledTimes(0)
+  //
+  //   wrapper.find('Menu').props().onSelect({ key: 'home' })
+  //   expect(mockRouter).toHaveBeenCalledTimes(1)
+  // })
 
   it('onLogin', async () => {
     await wrapper.find('ForwardRef(InternalForm)').props().onFinish({})

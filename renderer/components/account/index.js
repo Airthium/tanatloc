@@ -1,6 +1,6 @@
 /** @module renderer/components/account */
 
-import { Layout, PageHeader, Typography, Divider, Tabs, Space } from 'antd'
+import { Layout, PageHeader, Typography, Divider, Tabs } from 'antd'
 
 import Information from './information'
 import Password from './password'
@@ -14,11 +14,11 @@ const Account = () => {
    * Render
    */
   return (
-    <Layout className="Account Workspace no-scroll">
+    <Layout className="Workspace">
       <PageHeader
         backIcon={false}
         title={
-          <Typography.Title level={4} className="pageheader-name">
+          <Typography.Title level={2} className="pageheader-name">
             Account Settings
           </Typography.Title>
         }
@@ -28,13 +28,11 @@ const Account = () => {
           </div>
         }
       />
-      <Layout.Content className="scroll">
+      <Layout.Content>
         <Tabs defaultActiveKey="1">
           <Tabs.TabPane tab="Personal Information" key="1">
-            <Space direction="vertical" style={{ width: '100%' }}>
-              <Information />
-              <Delete />
-            </Space>
+            <Information />
+            <Delete />
           </Tabs.TabPane>
           <Tabs.TabPane tab="Security" key="2">
             <Password />

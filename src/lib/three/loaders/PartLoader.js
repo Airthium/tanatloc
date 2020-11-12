@@ -17,8 +17,10 @@ import {
 
 /**
  * PartLoader
+ * @param {Function} mouseMoveEvent Mouse move event
+ * @param {Function} mouseDownEvent Mouse down event
  */
-const PartLoader = () => {
+const PartLoader = (mouseMoveEvent, mouseDownEvent) => {
   // Solid color
   const solidColor = new Color('gray')
   // Face color
@@ -62,12 +64,18 @@ const PartLoader = () => {
     const edges = new Group()
     object.add(edges)
 
+    object.uuid = part.uuid
+
     object.boundingBox = computeBoundingBox(object)
     object.dispose = () => dispose(object)
+
     object.setTransparent = (transp) => setTransparent(object, transp)
+
     object.startSelection = (renderer, camera, outlinePass, type) =>
       startSelection(object, renderer, camera, outlinePass, type)
     object.stopSelection = () => stopSelection(object)
+    object.getHighlighted = () => highlighted
+    object.getSelected = () => selected
     object.highlight = highlight
     object.unhighlight = unhighlight
     object.select = select
@@ -199,9 +207,8 @@ const PartLoader = () => {
   let selectionCamera = null
   let selectionOutlinePass = null
   let selectionType = null
-  let currentlyHighlighted = {}
-  let previouslyHighlighted = {}
-  const selection = []
+  let highlighted = null
+  let selected = []
 
   /**
    *
@@ -216,9 +223,8 @@ const PartLoader = () => {
     selectionRenderer = renderer
     selectionCamera = camera
     selectionOutlinePass = outlinePass
-    currentlyHighlighted = {}
-    previouslyHighlighted = {}
-    selection.length = 0
+    highlighted = null
+    selected.length = 0
 
     if (type === 'solid') {
       setSolidsVisible(part, true)
@@ -244,23 +250,47 @@ const PartLoader = () => {
     selectionRenderer?.domElement.removeEventListener('mousemove', mouseMove)
     selectionRenderer?.domElement.removeEventListener('mousedown', mouseDown)
 
-    selectionPart = null
-    selectionRenderer = null
-    selectionCamera = null
     selectionType = null
 
     setSolidsVisible(part, false)
     setFacesVisible(part, true)
 
-    unhighlight(currentlyHighlighted)
-    unhighlight(previouslyHighlighted)
-    currentlyHighlighted = {}
-    previouslyHighlighted = {}
+    unhighlight()
+    highlighted = null
 
+    selected.forEach((s) => {
+      unselect(s)
+    })
+    selected.length = 0
+
+    selectionPart = null
+    selectionRenderer = null
+    selectionCamera = null
     selectionOutlinePass = null
+  }
 
-    selection.forEach((s) => unselect(s))
-    selection.length = 0
+  /**
+   * Find object in part
+   * @param {Object} part Part
+   * @param {string} uuid UUID
+   */
+  const findObject = (part, uuid) => {
+    if (!part) return
+
+    // Search in solids
+    const solids = part.children[0]
+    for (const solid of solids.children) {
+      if (solid.uuid === uuid) return solid
+    }
+
+    // Search in faces
+    const faces = part.children[1]
+    for (const face of faces.children) {
+      if (face.uuid === uuid) return face
+    }
+
+    // Search in edges
+    // TODO
   }
 
   /**
@@ -290,24 +320,23 @@ const PartLoader = () => {
     const intersects = raycaster.intersectObjects(
       selectionPart.children[selectionType].children
     )
-    if (intersects.length > 0) {
-      currentlyHighlighted = intersects[0].object
-      highlight(currentlyHighlighted)
-      if (currentlyHighlighted.uuid !== previouslyHighlighted.uuid)
-        unhighlight(previouslyHighlighted)
-      previouslyHighlighted = currentlyHighlighted
-    } else {
-      unhighlight(currentlyHighlighted)
-      currentlyHighlighted = {}
-    }
+
+    if (intersects.length)
+      mouseMoveEvent(selectionPart, intersects[0].object.uuid)
+    else mouseMoveEvent(selectionPart)
   }
 
   /**
    * Highlight
-   * @param {Object} mesh Mesh
+   * @param {Object} uuid Mesh uuid
    */
-  const highlight = (mesh) => {
+  const highlight = (uuid) => {
+    if (uuid === highlighted) return
+    else unhighlight()
+
+    const mesh = findObject(selectionPart, uuid)
     if (mesh && mesh.material) {
+      highlighted = mesh.uuid
       selectionOutlinePass.selectedObjects = [mesh]
       mesh.material.color = highlightColor
     }
@@ -315,45 +344,54 @@ const PartLoader = () => {
 
   /**
    * Unhighlight
-   * @param {Object} mesh Mesh
    */
-  const unhighlight = (mesh) => {
+  const unhighlight = () => {
+    const mesh = findObject(selectionPart, highlighted)
+
     if (mesh && mesh.material) {
       selectionOutlinePass.selectedObjects = []
-      const index = selection.findIndex((m) => m === mesh)
+      // Check selection
+      const index = selected.findIndex((m) => m === mesh.uuid)
+      // Unhighlight
       mesh.material.color =
         index === -1 ? mesh.material.originalColor : selectColor
     }
+
+    highlighted = null
   }
 
   /**
    * Mouse down
    */
   const mouseDown = () => {
-    const index = selection.findIndex((p) => p === currentlyHighlighted)
-    if (index === -1) {
-      selection.push(currentlyHighlighted)
-      select(currentlyHighlighted)
-    } else {
-      selection.splice(index, 1)
-      unselect(currentlyHighlighted)
-    }
+    if (highlighted) mouseDownEvent(selectionPart, highlighted)
   }
 
   /**
    * Select
-   * @param {Object} mesh Mesh
+   * @param {Object} uuid Mesh uuid
    */
-  const select = (mesh) => {
-    if (mesh && mesh.material) mesh.material.color = selectColor
+  const select = (uuid) => {
+    const mesh = findObject(selectionPart, uuid)
+    if (mesh && mesh.material) {
+      selected.push(uuid)
+      mesh.material.color = selectColor
+    }
   }
 
   /**
    * Unselect
-   * @param {Object} mesh Mesh
+   * @param {Object} uuid Mesh uuid
    */
-  const unselect = (mesh) => {
-    if (mesh && mesh.material) mesh.material.color = mesh.material.originalColor
+  const unselect = (uuid) => {
+    const mesh = findObject(selectionPart, uuid)
+    if (mesh && mesh.material) {
+      mesh.material.color = mesh.material.originalColor
+    }
+
+    const index = selected.findIndex((s) => s === uuid)
+    if (index !== -1)
+      selected = [...selected.slice(0, index), ...selected.slice(index + 1)]
   }
 
   return { load }

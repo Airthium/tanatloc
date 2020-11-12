@@ -126,9 +126,10 @@ describe('src/lib/three/loaders/PartLoader', () => {
     global.MockRaycaster.intersectObjects = [{ object: mesh1 }]
     mouseMove({ target: { getBoundingClientRect: () => ({}) } })
 
+    mesh.select('uuid')
+
     mesh.stopSelection()
     mesh.startSelection(renderer, camera, outlinePass, 'solid')
-    mesh.select(mesh1)
     mesh.stopSelection()
     mesh.startSelection(renderer, camera, outlinePass, 'other')
   })

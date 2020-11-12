@@ -1,5 +1,10 @@
 import {
   selectActionTypes,
+  enable,
+  disable,
+  clear,
+  setType,
+  setPart,
   highlight,
   unhighlight,
   select,
@@ -8,10 +13,52 @@ import {
 
 describe('renderer/store/select/action', () => {
   it('action types', () => {
+    expect(selectActionTypes.ENABLE).toBe('ENABLE')
+    expect(selectActionTypes.DISABLE).toBe('DISABLE')
+    expect(selectActionTypes.CLEAR).toBe('CLEAR')
+    expect(selectActionTypes.SETTYPE).toBe('SETTYPE')
+    expect(selectActionTypes.SETPART).toBe('SETPART')
     expect(selectActionTypes.HIGHLIGHT).toBe('HIGHLIGHT')
     expect(selectActionTypes.UNHIGHLIGHT).toBe('UNHIGHLIGHT')
     expect(selectActionTypes.SELECT).toBe('SELECT')
     expect(selectActionTypes.UNSELECT).toBe('UNSELECT')
+  })
+
+  it('enable', () => {
+    const res = enable()
+    expect(res).toEqual({
+      type: selectActionTypes.ENABLE
+    })
+  })
+
+  it('disable', () => {
+    const res = disable()
+    expect(res).toEqual({
+      type: selectActionTypes.DISABLE
+    })
+  })
+
+  it('clear', () => {
+    const res = clear()
+    expect(res).toEqual({
+      type: selectActionTypes.CLEAR
+    })
+  })
+
+  it('setType', () => {
+    const res = setType('type')
+    expect(res).toEqual({
+      type: selectActionTypes.SETTYPE,
+      object: 'type'
+    })
+  })
+
+  it('setPart', () => {
+    const res = setPart('uuid')
+    expect(res).toEqual({
+      type: selectActionTypes.SETPART,
+      uuid: 'uuid'
+    })
   })
 
   it('highlight', () => {

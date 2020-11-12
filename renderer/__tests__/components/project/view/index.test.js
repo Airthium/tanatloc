@@ -211,6 +211,10 @@ global.MockScene.children = [
 let mockState = false
 mockUseState.mockImplementation(() => [mockState, () => {}])
 
+window.setTimeout = (callback) => {
+  if (callback.name !== '_flushCallback') callback()
+}
+
 let wrapper
 describe('components/project/view', () => {
   beforeEach(() => {

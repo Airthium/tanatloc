@@ -79,14 +79,12 @@ const ThreeView = ({ part }) => {
     selectType,
     selectUuid,
     selectHighlighted,
-    selectPreviouslyHighlighted,
     selectSelected
   } = useSelector((state) => ({
     selectEnabled: state.select.enabled,
     selectType: state.select.type,
     selectUuid: state.select.uuid,
     selectHighlighted: state.select.highlighted,
-    selectPreviouslyHighlighted: state.select.previouslyHighlighted,
     selectSelected: state.select.selected
   }))
   const dispatch = useDispatch()
@@ -322,46 +320,25 @@ const ThreeView = ({ part }) => {
   useEffect(() => {
     scene.current.children.forEach((child) => {
       if (child.type === 'Part' && child.uuid === selectUuid) {
-        const mesh = child.find(selectHighlighted)
-        child.highlight(mesh)
+        // Highlight
+        child.highlight(selectHighlighted)
 
-        console.log(child.selection())
+        // Selection
+        const selected = child.getSelected()
 
-        selectSelected.forEach((select) => {
-          const selectedObject = child.find(select)
-          console.log(selectedObject)
-          child.select(selectedObject)
+        // Unselect
+        const minus = selected.filter((s) => !selectSelected.includes(s))
+        minus.forEach((m) => {
+          child.unselect(m)
+        })
+
+        // Select
+        const add = selectSelected.filter((s) => !selected.includes(s))
+        add.forEach((a) => {
+          child.select(a)
         })
       }
     })
-
-    //   scene.current.children.forEach((child) => {
-    //     if (child.type === 'Part') {
-    //       if (child.uuid === uuid) {
-    //         if (!child.selectionEnabled()) {
-    //           child.startSelection(
-    //             renderer.current,
-    //             camera.current,
-    //             outlinePass.current,
-    //             type
-    //           )
-    //         }
-
-    //         // // Select
-    //         // selected.forEach((select) => {
-    //         //   const selectedObject = child.find(select.uuid)
-    //         //   if (selectedObject) child.select(selectedObject)
-    //         // })
-
-    //         // Highlight
-    //         if (!highlighted) child.unhighlight()
-    //         else {
-    //           const object = child.find(highlighted.uuid)
-    //           if (object) child.highlight(object)
-    //         }
-    //       }
-    //     }
-    //   })
   }, [selectHighlighted, selectSelected])
 
   /**
@@ -476,30 +453,19 @@ const ThreeView = ({ part }) => {
 
   /**
    * Load part
-   * TODO WIP
    */
   const loadPart = async () => {
     // Events
-    const highlightEvent = (mesh) => {
-      dispatch(highlight(mesh?.uuid))
+    const mouseMoveEvent = (uuid) => {
+      dispatch(highlight(uuid))
     }
-    const unhighlightEvent = () => {
-      dispatch(unhighlight())
-    }
-    const selectEvent = (mesh) => {
-      dispatch(select(mesh?.uuid))
-    }
-    const unselectEvent = (mesh) => {
-      dispatch(unselect(mesh?.uuid))
+    const mouseDownEvent = (uuid) => {
+      if (selectSelected.includes(uuid)) dispatch(unselect(uuid))
+      else dispatch(select(uuid))
     }
 
     // Load
-    const loader = PartLoader(
-      highlightEvent,
-      unhighlightEvent,
-      selectEvent,
-      unselectEvent
-    )
+    const loader = PartLoader(mouseMoveEvent, mouseDownEvent)
     const mesh = loader.load(
       part,
       transparent,
@@ -740,32 +706,6 @@ const ThreeView = ({ part }) => {
           </div>
 
           <Divider />
-
-          {/* <div className="drawer-group">
-            <Button
-              onClick={() =>
-                scene.current.children
-                  .filter((c) => c.type === 'Part')[0]
-                  .startSelection(
-                    renderer.current,
-                    camera.current,
-                    outlinePass.current,
-                    'face'
-                  )
-              }
-            >
-              Start
-            </Button>
-            <Button
-              onClick={() =>
-                scene.current.children
-                  .filter((c) => c.type === 'Part')[0]
-                  .stopSelection()
-              }
-            >
-              Stop
-            </Button>
-          </div> */}
         </Drawer>
       </div>
     </Layout>

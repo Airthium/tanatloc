@@ -17,13 +17,10 @@ import {
 
 /**
  * PartLoader
+ * @param {Function} mouseMoveEvent Mouse move event
+ * @param {Function} mouseDownEvent Mouse down event
  */
-const PartLoader = (
-  highlightEvent,
-  unhighlightEvent,
-  selectEvent,
-  unselectEvent
-) => {
+const PartLoader = (mouseMoveEvent, mouseDownEvent) => {
   // Solid color
   const solidColor = new Color('gray')
   // Face color
@@ -71,16 +68,18 @@ const PartLoader = (
 
     object.boundingBox = computeBoundingBox(object)
     object.dispose = () => dispose(object)
+
     object.setTransparent = (transp) => setTransparent(object, transp)
+
     object.startSelection = (renderer, camera, outlinePass, type) =>
       startSelection(object, renderer, camera, outlinePass, type)
     object.stopSelection = () => stopSelection(object)
-    object.find = (uuid) => findObject(object, uuid)
+    object.getHighlighted = () => highlighted
+    object.getSelected = () => selected
     object.highlight = highlight
     object.unhighlight = unhighlight
     object.select = select
     object.unselect = unselect
-    object.selection = () => selection
 
     return object
   }
@@ -208,9 +207,8 @@ const PartLoader = (
   let selectionCamera = null
   let selectionOutlinePass = null
   let selectionType = null
-  let currentlyHighlighted = null
-  let previouslyHighlighted = null
-  const selection = []
+  let highlighted = null
+  let selected = []
 
   /**
    *
@@ -225,9 +223,8 @@ const PartLoader = (
     selectionRenderer = renderer
     selectionCamera = camera
     selectionOutlinePass = outlinePass
-    currentlyHighlighted = null
-    previouslyHighlighted = null
-    selection.length = 0
+    highlighted = null
+    selected.length = 0
 
     if (type === 'solid') {
       setSolidsVisible(part, true)
@@ -259,16 +256,12 @@ const PartLoader = (
     setFacesVisible(part, true)
 
     unhighlight()
-    previouslyHighlighted = currentlyHighlighted
-    unhighlight()
-    previouslyHighlighted = null
+    highlighted = null
 
-    selection.forEach((s) => {
-      const mesh = findObject(selectionPart, s)
-      unselect(mesh)
+    selected.forEach((s) => {
+      unselect(s)
     })
-    selection.length = 0
-    currentlyHighlighted = null
+    selected.length = 0
 
     selectionPart = null
     selectionRenderer = null
@@ -282,6 +275,8 @@ const PartLoader = (
    * @param {string} uuid UUID
    */
   const findObject = (part, uuid) => {
+    if (!part) return
+
     // Search in solids
     const solids = part.children[0]
     for (const solid of solids.children) {
@@ -325,39 +320,23 @@ const PartLoader = (
     const intersects = raycaster.intersectObjects(
       selectionPart.children[selectionType].children
     )
-    if (intersects.length > 0) {
-      highlight(intersects[0].object)
-      highlightEvent(intersects[0].object)
-    } else {
-      unhighlight()
-      previouslyHighlighted = currentlyHighlighted
-      currentlyHighlighted = null
-      unhighlight()
-      unhighlightEvent()
-    }
+
+    if (intersects.length) mouseMoveEvent(intersects[0].object.uuid)
   }
 
   /**
    * Highlight
-   * @param {Object} mesh Mesh
+   * @param {Object} uuid Mesh uuid
    */
-  const highlight = (mesh) => {
-    if (mesh) {
-      if (mesh.uuid === currentlyHighlighted) return
+  const highlight = (uuid) => {
+    if (uuid === highlighted) return
+    if (uuid !== highlighted) unhighlight()
 
-      if (mesh.material) {
-        selectionOutlinePass.selectedObjects = [mesh]
-        mesh.material.color = highlightColor
-
-        previouslyHighlighted = currentlyHighlighted
-        unhighlight()
-
-        currentlyHighlighted = mesh.uuid
-      }
-    } else {
-      previouslyHighlighted = currentlyHighlighted
-      currentlyHighlighted = null
-      unhighlight()
+    const mesh = findObject(selectionPart, uuid)
+    if (mesh && mesh.material) {
+      highlighted = mesh.uuid
+      selectionOutlinePass.selectedObjects = [mesh]
+      mesh.material.color = highlightColor
     }
   }
 
@@ -365,59 +344,52 @@ const PartLoader = (
    * Unhighlight
    */
   const unhighlight = () => {
-    if (!previouslyHighlighted) return
+    const mesh = findObject(selectionPart, highlighted)
 
-    const mesh = findObject(selectionPart, previouslyHighlighted)
     if (mesh && mesh.material) {
-      // Check selection
       selectionOutlinePass.selectedObjects = []
-      const index = selection.findIndex((m) => m === previouslyHighlighted)
-
+      // Check selection
+      const index = selected.findIndex((m) => m === mesh.uuid)
       // Unhighlight
       mesh.material.color =
         index === -1 ? mesh.material.originalColor : selectColor
-
-      previouslyHighlighted = null
     }
+
+    highlighted = null
   }
 
   /**
    * Mouse down
    */
   const mouseDown = () => {
-    const mesh = findObject(selectionPart, currentlyHighlighted)
-    if (!mesh) return
-
-    const index = selection.findIndex((p) => p === currentlyHighlighted)
-    if (index === -1) {
-      select(mesh)
-      selectEvent(mesh)
-    } else {
-      selection.splice(index, 1)
-      unselect(mesh)
-      unselectEvent(mesh)
-    }
+    mouseDownEvent(highlighted)
   }
 
   /**
    * Select
-   * @param {Object} mesh Mesh
+   * @param {Object} uuid Mesh uuid
    */
-  const select = (mesh) => {
-    selection.push(mesh)
+  const select = (uuid) => {
+    const mesh = findObject(selectionPart, uuid)
     if (mesh && mesh.material) {
+      selected.push(uuid)
       mesh.material.color = selectColor
     }
   }
 
   /**
    * Unselect
-   * @param {Object} mesh Mesh
+   * @param {Object} uuid Mesh uuid
    */
-  const unselect = (mesh) => {
+  const unselect = (uuid) => {
+    const mesh = findObject(selectionPart, uuid)
     if (mesh && mesh.material) {
       mesh.material.color = mesh.material.originalColor
     }
+
+    const index = selected.findIndex((s) => s === uuid)
+    if (index !== -1)
+      selected = [...selected.slice(0, index), ...selected.slice(index + 1)]
   }
 
   return { load }

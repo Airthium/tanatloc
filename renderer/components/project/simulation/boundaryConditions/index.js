@@ -63,17 +63,17 @@ const BoundaryConditions = ({ project, simulation, part, setVisible }) => {
     setBcType(subScheme[type])
   }
 
-  const onHighlight = (face) => {
-    dispatch(highlight(face?.uuid))
+  const onHighlight = (uuid) => {
+    dispatch(highlight(uuid))
   }
 
   const onUnhighlight = () => {
     dispatch(unhighlight())
   }
 
-  const onSelect = (face) => {
-    if (selected.includes(face.uuid)) dispatch(unselect(face.uuid))
-    else dispatch(select(face.uuid))
+  const onSelect = (uuid) => {
+    if (selected.includes(uuid)) dispatch(unselect(uuid))
+    else dispatch(select(uuid))
   }
 
   return (
@@ -134,9 +134,9 @@ const BoundaryConditions = ({ project, simulation, part, setVisible }) => {
                           : '1px solid grey'
                     }}
                     bodyStyle={{ padding: '10px' }}
-                    onMouseOver={() => onHighlight(face)}
+                    onMouseOver={() => onHighlight(face.uuid)}
                     onMouseOut={onUnhighlight}
-                    onClick={() => onSelect(face)}
+                    onClick={() => onSelect(face.uuid)}
                   >
                     {face.name}
                   </Card>

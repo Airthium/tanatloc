@@ -24,8 +24,8 @@ import { useUser } from '../../../src/api/user'
  */
 const Signup = () => {
   // State
-  const [checking, setChecking] = useState(false)
-  setChecking(false)
+  // const [checking, setChecking] = useState(false)
+  const checking = false
 
   // Data
   const [user, { loadingUser }] = useUser()

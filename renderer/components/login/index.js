@@ -3,7 +3,6 @@
 import { useRouter } from 'next/router'
 import { useState, useEffect } from 'react'
 import {
-  message,
   Button,
   Card,
   Form,
@@ -24,7 +23,7 @@ import { useUser } from '../../../src/api/user'
  * Login errors
  */
 const errors = {
-  BAD_CREDENTIALS: 'Login failed. Please check your username and password'
+  BAD_CREDENTIALS: 'Incorrect credentials.'
 }
 
 /**
@@ -33,6 +32,7 @@ const errors = {
 const Login = () => {
   // State
   const [checking, setChecking] = useState(false)
+  const [loginOk, setLoginOk] = useState(true)
 
   // Data
   const [user, { mutateUser, loadingUser }] = useUser()
@@ -66,7 +66,7 @@ const Login = () => {
       router.push('/dashboard')
     } else {
       // Bad
-      message.error(errors.BAD_CREDENTIALS)
+      setLoginOk(false)
       setChecking(false)
     }
   }
@@ -79,7 +79,7 @@ const Login = () => {
       {loadingUser || user ? (
         <Loading />
       ) : (
-        <Layout className="">
+        <Layout>
           {/*<Background />*/}
           <Card bordered={false} className="Login">
             <Space direction="vertical" size="large" style={{ width: '100%' }}>
@@ -96,36 +96,35 @@ const Login = () => {
               </div>
               <Form
                 initialValues={{ remember: true }}
+                requiredMark="optional"
                 onFinish={onLogin}
                 layout="vertical"
               >
                 <Alert
-                  message="Incorrect credentials."
+                  message={errors.BAD_CREDENTIALS}
                   type="error"
                   showIcon
-                  style={{ marginBottom: '16px' }}
+                  style={{
+                    marginBottom: '16px',
+                    display: loginOk ? 'none' : 'block'
+                  }}
                 />
-                {/*
-                TODO We have 2 cases to handle
-              1) The user forgot to enter a value in the email or password field => validateStatus=error
-              2) The user enters the wrong credentials => the fields keep the default border color and we show an Alert component
-              */}
                 <Form.Item
                   name="username"
                   label="Your email address"
-                  rules={[{ message: 'Please enter your email' }]}
-                  hasFeedback
-                  validateStatus="error"
+                  rules={[
+                    { required: true, message: 'Please enter your email' }
+                  ]}
                 >
                   <Input placeholder="Email address" autoComplete="email" />
                 </Form.Item>
                 <Form.Item
                   name="password"
                   label="Your password"
-                  rules={[{ message: 'Please enter your Password' }]}
+                  rules={[
+                    { required: true, message: 'Please enter your Password' }
+                  ]}
                   style={{ marginBottom: '14px' }}
-                  hasFeedback
-                  validateStatus="error"
                 >
                   <Input.Password
                     placeholder="Password"

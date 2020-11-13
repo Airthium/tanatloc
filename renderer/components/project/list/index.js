@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router'
-import { message, Space, Table } from 'antd'
+import { message, Space, Table, Empty } from 'antd'
 
 import Data from '../data'
 import Delete from '../delete'
@@ -72,6 +72,14 @@ const ProjectList = ({ workspace, filter }) => {
       bordered={true}
       size="small"
       scroll={{ y: 'calc(100vh - 232px)' }}
+      locale={{
+        emptyText: (
+          <Empty
+            image={Empty.PRESENTED_IMAGE_SIMPLE}
+            description="No projects yet."
+          />
+        )
+      }}
     >
       <Table.Column
         title=""

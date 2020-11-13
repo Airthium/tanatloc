@@ -44,6 +44,8 @@ const Data = (project, filter, setTitle) => {
       image={Empty.PRESENTED_IMAGE_SIMPLE}
       style={{ cursor: 'pointer' }}
       description={'No preview'}
+      imageStyle={{ width: 150 }}
+      description={<span>No projects yet</span>}
     />
   )
 

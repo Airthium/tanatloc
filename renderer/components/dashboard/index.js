@@ -4,11 +4,11 @@ import { useRouter } from 'next/router'
 import { useState, useEffect } from 'react'
 import { Layout, Menu } from 'antd'
 import {
-  AppstoreTwoTone,
-  LogoutOutlined,
-  QuestionCircleTwoTone,
-  SettingTwoTone,
-  ShareAltOutlined
+  AppstoreFilled,
+  ShareAltOutlined,
+  SettingFilled,
+  QuestionCircleFilled,
+  LogoutOutlined
 } from '@ant-design/icons'
 
 import Loading from '../../components/loading'
@@ -181,7 +181,7 @@ const Dashboard = () => {
         <Layout>
           <Layout.Sider theme="light" width="250" className="Dashboard-sider">
             <div className="logo">
-              <img src="/images/logo.svg" />
+              <img src="/images/logo_enora.svg" />
             </div>
 
             <Menu
@@ -193,7 +193,7 @@ const Dashboard = () => {
             >
               <Menu.SubMenu
                 key={menuItems.workspaces.key}
-                icon={<AppstoreTwoTone />}
+                icon={<AppstoreFilled />}
                 title={menuItems.workspaces.label}
                 onTitleClick={onWorkspaces}
               >
@@ -209,12 +209,12 @@ const Dashboard = () => {
               >
                 {sharedWorkspaces}
               </Menu.SubMenu>
-              <Menu.Item key={menuItems.account.key} icon={<SettingTwoTone />}>
+              <Menu.Item key={menuItems.account.key} icon={<SettingFilled />}>
                 {menuItems.account.label}
               </Menu.Item>
               <Menu.Item
                 key={menuItems.help.key}
-                icon={<QuestionCircleTwoTone />}
+                icon={<QuestionCircleFilled />}
               >
                 {menuItems.help.label}
               </Menu.Item>

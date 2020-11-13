@@ -17,7 +17,7 @@ const Welcome = () => {
               Welcome on board
             </Typography.Title>
           }
-          footer={<Divider className="Welcome-divider" />}
+          footer={<Divider className="Tanatloc-divider" />}
         />
         <p>
           Select a workspace to start, or <Add />

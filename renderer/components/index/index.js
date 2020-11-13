@@ -66,7 +66,7 @@ const Index = () => {
           )}
         </Menu>
       </Layout.Header>
-      <Divider className="Index-divider" />
+      <Divider className="Tanatloc-divider" />
       <Layout.Content></Layout.Content>
     </Layout>
   )

@@ -24,7 +24,7 @@ const Account = () => {
         }
         footer={
           <div>
-            <Divider className="Welcome-divider" />
+            <Divider className="Tanatloc-divider" />
           </div>
         }
       />

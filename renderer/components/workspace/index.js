@@ -92,7 +92,7 @@ const Workspace = ({ workspace }) => {
             ]}
             footer={
               <>
-                <Divider className="Workspace-divider" />
+                <Divider className="Tanatloc-divider" />
                 <Row gutter={[16, 16]} justify="center">
                   <Col span={12}>
                     <Input

@@ -61,13 +61,54 @@
 // @font-family: saira, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
 //   'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
 //   'Noto Color Emoji';
+@tanatloc-primary-color: #fae600;
 
 @border-radius-base: 4px;
 
-@height-base: 40px;
+@btn-primary-color: rgba(0, 0, 0, 0.85);
+@btn-primary-bg: @tanatloc-primary-color;
 
-@input-bg: #fff;
+@btn-shadow: 0;
+@btn-primary-shadow: 0;
+@btn-text-shadow: 0;
 
+@outline-color: @tanatloc-primary-color;
+@input-hover-border-color: @tanatloc-primary-color;
+
+.ant-tabs-nav::before {
+  border-bottom: 0 !important;
+}
+@tabs-ink-bar-color: @tanatloc-primary-color;
+@tabs-highlight-color: @heading-color;
+@tabs-hover-color: @heading-color;
+@tabs-active-color: @heading-color;
+
+.ant-btn:hover:not(.ant-btn-primary),
+.ant-btn:focus:not(.ant-btn-primary) {
+  color: @heading-color;
+  background: #fff429;
+  border-color: #fff429;
+}
+
+.ant-btn:hover:not(.ant-btn-primary) .anticon svg,
+.ant-btn:focus:not(.ant-btn-primary) .anticon svg {
+  fill: @heading-color;
+}
+
+@menu-item-color: @heading-color;
+@menu-highlight-color: @heading-color;
+@menu-item-active-bg: none;
+.ant-menu-item {
+  transition: none !important;
+}
+.ant-menu-item-selected {
+  border: 1px solid #fae600;
+}
+.ant-menu-inline .ant-menu-item::after {
+  border-right: 3px solid @tanatloc-primary-color;
+}
+
+// DEFAULT COLORS NOT YET MODIFIED
 //@layout-body-background: #fafafa;
 @layout-body-background: #fff;
 
@@ -84,34 +125,3 @@
 @border-color-base: #d9d9d9; // major border color
 @box-shadow-base: 0 3px 6px -4px rgba(0, 0, 0, 0.12),
   0 6px 16px 0 rgba(0, 0, 0, 0.08), 0 9px 28px 8px rgba(0, 0, 0, 0.05); // major shadow for layers
-
-@tanatloc-gradient-to-right: linear-gradient(
-  to right,
-  #023e8a,
-  #004993,
-  #00539c,
-  #005ea4,
-  #0069ac,
-  #0070b1,
-  #0078b6,
-  #007fbb,
-  #0085be,
-  #008bc1,
-  #0090c4,
-  #0096c7
-);
-@tanatloc-gradient-to-left: linear-gradient(
-  to left,
-  #023e8a,
-  #004993,
-  #00539c,
-  #005ea4,
-  #0069ac,
-  #0070b1,
-  #0078b6,
-  #007fbb,
-  #0085be,
-  #008bc1,
-  #0090c4,
-  #0096c7
-);

@@ -61,12 +61,22 @@ const Data = (project, filter, setTitle) => {
     project &&
     project.owners &&
     project.owners.map((owner) => {
-      const first = owner.firstname || 'No'
-      const last = owner.lastname || 'Name'
+      let title = ''
+      let abbrev = ''
+      if (owner.firstname || owner.lastname) {
+        title = owner.firstname + ' ' + owner.lastname
+        abbrev =
+          (owner.firstname && owner.firstname[0]) +
+          (owner.lastname && owner.lastname[0])
+      } else {
+        title = owner.email
+        abbrev = owner.email[0]
+      }
+
       return (
-        <Tooltip key={owner.id} title={first + ' ' + last}>
-          <Avatar style={{ backgroundColor: stringToHex(first + last) }}>
-            {(first[0] + last[0]).toUpperCase()}
+        <Tooltip key={owner.id} title={title}>
+          <Avatar style={{ backgroundColor: stringToHex(title) }}>
+            {abbrev.toUpperCase()}
           </Avatar>
         </Tooltip>
       )
@@ -77,8 +87,18 @@ const Data = (project, filter, setTitle) => {
     project &&
     project.users &&
     project.users.map((user) => {
-      const first = user.firstname || 'No'
-      const last = user.lastname || 'Name'
+      let title = ''
+      let abbrev = ''
+      if (user.firstname || user.lastname) {
+        title = user.firstname + ' ' + user.lastname
+        abbrev =
+          (user.firstname && user.firstname[0]) +
+          (user.lastname && user.lastname[0])
+      } else {
+        title = user.email
+        abbrev = user.email[0]
+      }
+
       return (
         <Tooltip key={user.id} title={first + ' ' + last}>
           <Avatar style={{ backgroundColor: stringToHex(first + last) }}>

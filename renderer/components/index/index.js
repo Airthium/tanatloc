@@ -1,6 +1,7 @@
 /** @module renderer/components/index */
 
 import { useRouter } from 'next/router'
+import { useEffect } from 'react'
 import { Divider, Layout, Menu } from 'antd'
 import { DashboardOutlined, LoginOutlined } from '@ant-design/icons'
 
@@ -10,6 +11,7 @@ import { useUser } from '../../../src/api/user'
 
 const menuKeys = {
   dashboard: 'dashboard',
+  signup: 'signup',
   login: 'login'
 }
 
@@ -23,12 +25,20 @@ const Index = () => {
   // Data
   const [user] = useUser()
 
+  // Prefetch
+  useEffect(() => {
+    router.prefetch('/dashboard')
+    router.prefetch('/signup')
+    router.prefetch('/login')
+  }, [])
+
   /**
    * On select
    * @param {data} data { item, key }
    */
   const onSelect = ({ item, key }) => {
     if (key === menuKeys.dashboard) handleDashboard()
+    if (key == menuKeys.signup) handleSignup()
     if (key === menuKeys.login) handleLogin()
   }
 
@@ -37,6 +47,13 @@ const Index = () => {
    */
   const handleDashboard = () => {
     router.push('/dashboard')
+  }
+
+  /**
+   * Handle signup
+   */
+  const handleSignup = () => {
+    router.push('/signup')
   }
 
   /**
@@ -54,15 +71,18 @@ const Index = () => {
       <Background />
       <Layout.Header className="Index-header">
         <img src="/images/logo.svg" />
-        <Menu onSelect={onSelect} selectedkeys={[]}>
+        <Menu onSelect={onSelect} selectedkeys={[]} mode="horizontal">
           {user ? (
             <Menu.Item key={menuKeys.dashboard} icon={<DashboardOutlined />}>
               Dashboard
             </Menu.Item>
           ) : (
-            <Menu.Item key={menuKeys.login} icon={<LoginOutlined />}>
-              Login
-            </Menu.Item>
+            <>
+              <Menu.Item key={menuKeys.signup}>Signup</Menu.Item>
+              <Menu.Item key={menuKeys.login} icon={<LoginOutlined />}>
+                Login
+              </Menu.Item>
+            </>
           )}
         </Menu>
       </Layout.Header>

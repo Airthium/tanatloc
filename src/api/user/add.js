@@ -11,7 +11,7 @@ const add = async (user) => {
     headers: {
       Accept: 'application/json'
     },
-    body: JSON.stringify({ user: user })
+    body: JSON.stringify(user)
   })
 }
 

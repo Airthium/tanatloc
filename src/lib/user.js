@@ -1,6 +1,7 @@
 /** @module src/lib/user */
 
 import {
+  add as dBadd,
   get as dBget,
   getByUsernameAndPassword,
   update as dBupdate,
@@ -10,8 +11,13 @@ import { read as readAvatar } from './avatar'
 
 /**
  * Add user (TODO)
+ * @param {Object} user { username, password }
  */
-const add = async () => {}
+const add = async ({ username, password }) => {
+  const user = await dBadd({ username, password })
+
+  return user
+}
 
 /**
  * Get user

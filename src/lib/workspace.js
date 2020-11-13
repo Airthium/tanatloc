@@ -77,18 +77,27 @@ const getByUser = async ({ id }) => {
   const user = await getUser(id, ['workspaces'])
 
   // Get workspaces data
-  const workspaces = await Promise.all(
-    user.workspaces.map(async (workspace) => {
-      const data = await get(workspace, ['name', 'owners', 'users', 'projects'])
-      return {
-        ...data,
-        id: workspace
-      }
-    })
-  )
+  if (user.workspaces) {
+    const workspaces = await Promise.all(
+      user.workspaces.map(async (workspace) => {
+        const data = await get(workspace, [
+          'name',
+          'owners',
+          'users',
+          'projects'
+        ])
+        return {
+          ...data,
+          id: workspace
+        }
+      })
+    )
 
-  // Return
-  return workspaces
+    // Return
+    return workspaces
+  }
+
+  return []
 }
 
 /**

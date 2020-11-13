@@ -1,8 +1,9 @@
 /** @module src/database/user */
 
+import add from './add'
 import get from './get'
 import getByUsernameAndPassword from './getByUsernameAndPassword'
 import update from './update'
 import del from './del'
 
-export { get, getByUsernameAndPassword, update, del }
+export { add, get, getByUsernameAndPassword, update, del }

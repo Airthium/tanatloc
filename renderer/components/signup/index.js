@@ -10,19 +10,19 @@ import {
   Input,
   Layout,
   Space,
-  Typography,
-  Popover
+  Typography
 } from 'antd'
 
 import Loading from '../loading'
-import Background from '../background'
+// import Background from '../background'
 
-// import signup from '../../../src/api/signup'
-import { useUser } from '../../../src/api/user'
+import login from '../../../src/api/login'
+import { useUser, add } from '../../../src/api/user'
 
 const errors = {
   INTERNAL_ERROR: 'Server issue : try again shortly.',
-  ALREADY_EXISTS: 'This email is already registered'
+  ALREADY_EXISTS: 'This email is already registered',
+  PASSSWORDS_MISMATCH: 'Passwords mismatch'
 }
 
 /**
@@ -31,11 +31,13 @@ const errors = {
 const Signup = () => {
   // State
   const [checking, setChecking] = useState(false)
+  const [passwordErr, setPasswordErr] = useState(false)
   const [signupErr, setSignupErr] = useState(false)
+  const [loginErr, setLoginErr] = useState(false)
   const [internalErr, setInternalError] = useState(false)
 
   // Data
-  const [user, { loadingUser }] = useUser()
+  const [user, { loadingUser, mutateUser }] = useUser()
 
   // Router
   const router = useRouter()
@@ -55,15 +57,29 @@ const Signup = () => {
    * Handle signup
    * @param {Object} values { username, password, passwordConfirmation }
    */
-  const onSignup = () => {
+  const onSignup = async ({ username, password, passwordConfirmation }) => {
     // State
     setChecking(true)
-    setSignupErr(true)
+    setSignupErr(false)
     setInternalError(false)
+
+    // Check passwords
+    if (password !== passwordConfirmation) {
+      setPasswordErr(true)
+      setChecking(false)
+      return
+    }
 
     // Signup
     try {
-      setTimeout(() => setChecking(false), 1000)
+      const newUser = await add({ username, password })
+      if (newUser.alreadyExists) {
+        setSignupErr(true)
+        setChecking(true)
+        return
+      }
+
+      router.push('/login')
     } catch (err) {
       setInternalError(true)
       setChecking(false)
@@ -71,6 +87,9 @@ const Signup = () => {
     }
   }
 
+  /**
+   * Go to login
+   */
   const login = () => {
     router.push('/login')
   }
@@ -84,7 +103,7 @@ const Signup = () => {
         <Loading />
       ) : (
         <Layout>
-          <Background />
+          {/* <Background /> */}
           <Card bordered={false} className="Signup">
             <Space direction="vertical" size="large" style={{ width: '100%' }}>
               <div>
@@ -140,6 +159,7 @@ const Signup = () => {
                   rules={[
                     { required: true, message: 'Please enter your Password' }
                   ]}
+                  validateStatus={passwordErr && 'warning'}
                   style={{ marginBottom: '14px' }}
                 >
                   <Input.Password
@@ -153,6 +173,14 @@ const Signup = () => {
                   rules={[
                     { required: true, message: 'Please enter your Password' }
                   ]}
+                  validateStatus={passwordErr && 'warning'}
+                  extra={
+                    passwordErr && (
+                      <Typography.Text type="warning">
+                        {errors.PASSSWORDS_MISMATCH}
+                      </Typography.Text>
+                    )
+                  }
                   style={{ marginBottom: '14px' }}
                 >
                   <Input.Password

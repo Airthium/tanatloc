@@ -100,9 +100,9 @@ const Data = (project, filter, setTitle) => {
       }
 
       return (
-        <Tooltip key={user.id} title={first + ' ' + last}>
-          <Avatar style={{ backgroundColor: stringToHex(first + last) }}>
-            {(first[0] + last[0]).toUpperCase()}
+        <Tooltip key={user.id} title={title}>
+          <Avatar style={{ backgroundColor: stringToHex(title) }}>
+            {abbrev.toUpperCase()}
           </Avatar>
         </Tooltip>
       )

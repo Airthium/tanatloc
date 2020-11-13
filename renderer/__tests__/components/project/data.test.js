@@ -10,12 +10,22 @@ describe('renderer/components/project/data', () => {
     const data = Data({
       id: 'id',
       owners: [
-        { id: 'id1' },
-        { id: 'id2', firstname: 'firstname', lastname: 'lastname' }
+        { id: 'id1', email: 'email' },
+        {
+          id: 'id2',
+          email: 'email',
+          firstname: 'firstname',
+          lastname: 'lastname'
+        }
       ],
       users: [
-        { id: 'id1' },
-        { id: 'id2', firstname: 'firstname', lastname: 'lastname' }
+        { id: 'id1', email: 'email' },
+        {
+          id: 'id2',
+          email: 'email',
+          firstname: 'firstname',
+          lastname: 'lastname'
+        }
       ]
     })
     expect(data).toBeDefined()
@@ -26,12 +36,22 @@ describe('renderer/components/project/data', () => {
       id: 'id',
       avatar: 'avatar',
       owners: [
-        { id: 'id1' },
-        { id: 'id2', firstname: 'firstname', lastname: 'lastname' }
+        { id: 'id1', email: 'email' },
+        {
+          id: 'id2',
+          email: 'email',
+          firstname: 'firstname',
+          lastname: 'lastname'
+        }
       ],
       users: [
-        { id: 'id1' },
-        { id: 'id2', firstname: 'firstname', lastname: 'lastname' }
+        { id: 'id1', email: 'email' },
+        {
+          id: 'id2',
+          email: 'email',
+          firstname: 'firstname',
+          lastname: 'lastname'
+        }
       ]
     })
     expect(data).toBeDefined()

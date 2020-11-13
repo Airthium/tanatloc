@@ -90,7 +90,7 @@ describe('src/lib/workspace', () => {
     mockGet.mockImplementation(() => ({
       name: 'name'
     }))
-    const workspaces = await getByUser({})
+    let workspaces = await getByUser({})
     expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockGet).toHaveBeenCalledTimes(2)
     expect(mockUpdate).toHaveBeenCalledTimes(0)
@@ -101,6 +101,17 @@ describe('src/lib/workspace', () => {
       { id: 'id', name: 'name' },
       { id: 'id', name: 'name' }
     ])
+
+    // Without workspaces
+    mockUserGet.mockImplementation(() => ({}))
+    workspaces = await getByUser({})
+    expect(mockAdd).toHaveBeenCalledTimes(0)
+    expect(mockGet).toHaveBeenCalledTimes(2)
+    expect(mockUpdate).toHaveBeenCalledTimes(0)
+    expect(mockDelete).toHaveBeenCalledTimes(0)
+    expect(mockUserGet).toHaveBeenCalledTimes(2)
+    expect(mockUserUpdate).toHaveBeenCalledTimes(0)
+    expect(workspaces).toEqual([])
   })
 
   it('update', async () => {

@@ -1,18 +1,20 @@
 import Index from '../../../components/index'
-import { shallow } from 'enzyme'
+import { shallow, mount } from 'enzyme'
 
 import '../../../../config/jest/matchMediaMock'
 
-const mockRouter = jest.fn()
+const mockPrefetch = jest.fn()
+const mockPush = jest.fn()
 jest.mock('next/router', () => ({
   useRouter: () => ({
-    push: mockRouter
+    prefetch: mockPrefetch,
+    push: mockPush
   })
 }))
 
 jest.mock('../../../components/background', () => 'background')
 
-let mockUser
+const mockUser = jest.fn()
 jest.mock('../../../../src/api/user', () => ({
   useUser: () => [mockUser()]
 }))
@@ -20,7 +22,9 @@ jest.mock('../../../../src/api/user', () => ({
 let wrapper
 describe('renderer/components/index', () => {
   beforeEach(() => {
-    mockUser = () => ({})
+    mockPrefetch.mockReset()
+    mockPush.mockReset()
+    mockUser.mockReset()
     wrapper = shallow(<Index />)
   })
 
@@ -33,20 +37,36 @@ describe('renderer/components/index', () => {
   })
 
   it('onSelect', () => {
+    // Handle nothing
     wrapper.find('Menu').props().onSelect({ item: 'item', key: 'key' })
-    expect(mockRouter).toHaveBeenCalledTimes(0)
+    expect(mockPush).toHaveBeenCalledTimes(0)
 
+    // Handle dashboard
     wrapper.find('Menu').props().onSelect({ item: 'item', key: 'dashboard' })
-    expect(mockRouter).toHaveBeenCalledTimes(1)
+    expect(mockPush).toHaveBeenCalledTimes(1)
 
+    // Handle signup
+    wrapper.find('Menu').props().onSelect({ item: 'item', key: 'signup' })
+    expect(mockPush).toHaveBeenCalledTimes(2)
+
+    // Handle login
     wrapper.find('Menu').props().onSelect({ item: 'item', key: 'login' })
-    expect(mockRouter).toHaveBeenCalledTimes(2)
+    expect(mockPush).toHaveBeenCalledTimes(3)
   })
 
-  it('without user', () => {
+  it('with user', () => {
     wrapper.unmount()
-    mockUser = () => {}
+    mockUser.mockImplementation(() => ({}))
     wrapper = shallow(<Index />)
-    expect(wrapper.find('Menu').props().children.props.children).toBe('Login')
+    expect(wrapper.find('Menu').props().children.props.children).toBe(
+      'Dashboard'
+    )
+  })
+
+  it('effect', () => {
+    wrapper.unmount()
+
+    wrapper = mount(<Index />)
+    expect(mockPrefetch).toHaveBeenCalledTimes(3)
   })
 })

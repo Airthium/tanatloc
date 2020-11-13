@@ -6,7 +6,7 @@ const mockUpdate = jest.fn()
 const mockDel = jest.fn()
 jest.mock('../../database/user', () => {
   return {
-    add: async () => {},
+    add: async () => ({ id: 'id' }),
     get: async () => mockGet(),
     getByUsernameAndPassword: async () => mockGetByUsernameAndPassword(),
     update: async () => mockUpdate(),
@@ -29,8 +29,8 @@ describe('src/lib/user', () => {
   })
 
   it('add', async () => {
-    // TODO
-    await add()
+    const user = await add({ username: 'username', password: 'password' })
+    expect(user).toEqual({ id: 'id' })
   })
 
   it('get', async () => {

@@ -99,27 +99,23 @@ describe('src/route/user', () => {
   it('POST', async () => {
     req.method = 'POST'
 
-    mockSession.mockImplementation(() => true)
-
     await user(req, res)
-    expect(mockSession).toHaveBeenCalledTimes(1)
+    expect(mockSession).toHaveBeenCalledTimes(0)
     expect(mockAdd).toHaveBeenCalledTimes(1)
     expect(mockGet).toHaveBeenCalledTimes(0)
     expect(mockUpdate).toHaveBeenCalledTimes(0)
     expect(mockDel).toHaveBeenCalledTimes(0)
     expect(mockSentry).toHaveBeenCalledTimes(0)
     expect(response).toEqual({
-      user: {
-        id: 'id'
-      }
+      id: 'id'
     })
 
-    // Error
+    // // Error
     mockAdd.mockImplementation(() => {
       throw new Error('test')
     })
     await user(req, res)
-    expect(mockSession).toHaveBeenCalledTimes(2)
+    expect(mockSession).toHaveBeenCalledTimes(0)
     expect(mockAdd).toHaveBeenCalledTimes(2)
     expect(mockGet).toHaveBeenCalledTimes(0)
     expect(mockUpdate).toHaveBeenCalledTimes(0)

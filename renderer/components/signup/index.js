@@ -79,7 +79,8 @@ const Signup = () => {
         return
       }
 
-      router.push('/login')
+      await login({ username, password })
+      router.push('/dashboard')
     } catch (err) {
       setInternalError(true)
       setChecking(false)
@@ -90,7 +91,7 @@ const Signup = () => {
   /**
    * Go to login
    */
-  const login = () => {
+  const onLogin = () => {
     router.push('/login')
   }
 
@@ -144,7 +145,7 @@ const Signup = () => {
                         headStyle={{ color: '#faad14' }}
                       >
                         We know you!{' '}
-                        <Button type="link" onClick={login}>
+                        <Button type="link" onClick={onLogin}>
                           Log in ?
                         </Button>
                       </Card>

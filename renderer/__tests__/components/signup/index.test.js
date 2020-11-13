@@ -14,10 +14,15 @@ jest.mock('next/router', () => ({
 
 jest.mock('../../../components/loading', () => 'loading')
 
+const mockLogin = jest.fn()
+jest.mock('../../../../src/api/login', () => async () => mockLogin())
+
 const mockUser = jest.fn()
 const mockLoading = jest.fn()
+const mockAdd = jest.fn()
 jest.mock('../../../../src/api/user', () => ({
-  useUser: () => [mockUser(), { loadingUser: mockLoading() }]
+  useUser: () => [mockUser(), { loadingUser: mockLoading() }],
+  add: async () => mockAdd()
 }))
 
 let wrapper
@@ -27,6 +32,8 @@ describe('renderer/components/signup', () => {
     mockPush.mockReset()
     mockUser.mockReset()
     mockLoading.mockReset()
+    mockAdd.mockReset()
+    mockLogin.mockReset()
     wrapper = shallow(<Signup />)
   })
 
@@ -45,16 +52,71 @@ describe('renderer/components/signup', () => {
     wrapper = shallow(<Signup />)
   })
 
+  it('onSignup', async () => {
+    // Password mismatch
+    await wrapper.find('ForwardRef(InternalForm)').props().onFinish({
+      username: 'username',
+      password: 'password',
+      passwordConfirmation: 'other_password'
+    })
+
+    // Error
+    mockAdd.mockImplementation(() => {
+      throw new Error()
+    })
+    await wrapper.find('ForwardRef(InternalForm)').props().onFinish({
+      username: 'username',
+      password: 'password',
+      passwordConfirmation: 'password'
+    })
+
+    // Already exists
+    mockAdd.mockImplementation(() => ({
+      alreadyExists: true
+    }))
+    await wrapper.find('ForwardRef(InternalForm)').props().onFinish({
+      username: 'username',
+      password: 'password',
+      passwordConfirmation: 'password'
+    })
+
+    // Normal
+    mockAdd.mockImplementation(() => ({}))
+    await wrapper.find('ForwardRef(InternalForm)').props().onFinish({
+      username: 'username',
+      password: 'password',
+      passwordConfirmation: 'password'
+    })
+    expect(mockLogin).toHaveBeenCalledTimes(1)
+  })
+
+  it('login', async () => {
+    mockAdd.mockImplementation(() => ({
+      alreadyExists: true
+    }))
+    await wrapper.find('ForwardRef(InternalForm)').props().onFinish({
+      username: 'username',
+      password: 'password',
+      passwordConfirmation: 'password'
+    })
+
+    wrapper
+      .find({ name: 'username' })
+      .props()
+      .extra.props.children[2].props.onClick()
+    expect(mockPush).toHaveBeenCalledTimes(1)
+  })
+
   it('effect', () => {
     wrapper.unmount()
     wrapper = mount(<Signup />)
-    expect(mockPrefetch).toHaveBeenCalledTimes(1)
+    expect(mockPrefetch).toHaveBeenCalledTimes(2)
     expect(mockPush).toHaveBeenCalledTimes(0)
 
     wrapper.unmount()
     mockUser.mockImplementation(() => ({}))
     wrapper = mount(<Signup />)
-    expect(mockPrefetch).toHaveBeenCalledTimes(2)
+    expect(mockPrefetch).toHaveBeenCalledTimes(4)
     expect(mockPush).toHaveBeenCalledTimes(1)
   })
 })

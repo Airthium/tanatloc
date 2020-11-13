@@ -34,9 +34,9 @@ const Index = () => {
 
   /**
    * On select
-   * @param {data} data { item, key }
+   * @param {data} data { key }
    */
-  const onSelect = ({ item, key }) => {
+  const onSelect = ({ key }) => {
     if (key === menuKeys.dashboard) handleDashboard()
     if (key == menuKeys.signup) handleSignup()
     if (key === menuKeys.login) handleLogin()

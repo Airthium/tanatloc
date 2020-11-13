@@ -41,7 +41,8 @@ const Background = () => {
     // Renderer
     const renderer = new WebGLRenderer({
       antialias: true,
-      alpha: true
+      alpha: true,
+      powerPreference: 'low-power'
     })
     renderer.setClearColor('#ffffff', 0)
     renderer.setSize(width, height)

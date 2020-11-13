@@ -14,9 +14,8 @@ import {
 } from 'antd'
 
 import Loading from '../loading'
-//import Background from '../background'
+import Background from '../background'
 
-//import login from '../../../src/api/login'
 import { useUser } from '../../../src/api/user'
 
 /**
@@ -51,8 +50,8 @@ const Signup = () => {
       {loadingUser || user ? (
         <Loading />
       ) : (
-        <Layout className="">
-          {/*<Background />*/}
+        <Layout>
+          <Background />
           <Card bordered={false} className="Signup">
             <Space direction="vertical" size="large" style={{ width: '100%' }}>
               <div>

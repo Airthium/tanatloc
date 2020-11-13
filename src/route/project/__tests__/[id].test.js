@@ -78,7 +78,7 @@ describe('src/route/project/[id]', () => {
     expect(mockUpdate).toHaveBeenCalledTimes(0)
     expect(mockDel).toHaveBeenCalledTimes(0)
     expect(mockSentry).toHaveBeenCalledTimes(0)
-    expect(response).toEqual({ message: 'Unauthorized' })
+    expect(response).toEqual({ project: 'Unauthorized' })
 
     // Error
     mockAuth.mockImplementation(() => {

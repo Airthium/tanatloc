@@ -76,6 +76,12 @@ describe('components/project', () => {
     expect(wrapper).toBeDefined()
   })
 
+  it('Unauthorized', () => {
+    wrapper.unmount()
+    mockProject = () => 'Unauthorized'
+    wrapper = shallow(<Project />)
+  })
+
   it('handleTitle', async () => {
     await wrapper.find('Title').props().editable.onChange('title')
     expect(mockUpdate).toHaveBeenCalledTimes(1)

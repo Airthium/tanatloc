@@ -19,9 +19,13 @@ jest.mock('../../../../src/api/login', () => async () => mockLogin())
 
 const mockUser = jest.fn()
 const mockLoading = jest.fn()
+const mockMutate = jest.fn()
 const mockAdd = jest.fn()
 jest.mock('../../../../src/api/user', () => ({
-  useUser: () => [mockUser(), { loadingUser: mockLoading() }],
+  useUser: () => [
+    mockUser(),
+    { loadingUser: mockLoading(), mutateUser: mockMutate }
+  ],
   add: async () => mockAdd()
 }))
 
@@ -32,6 +36,7 @@ describe('renderer/components/signup', () => {
     mockPush.mockReset()
     mockUser.mockReset()
     mockLoading.mockReset()
+    mockMutate.mockReset()
     mockAdd.mockReset()
     mockLogin.mockReset()
     wrapper = shallow(<Signup />)

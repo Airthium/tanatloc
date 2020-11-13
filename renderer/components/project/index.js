@@ -207,45 +207,54 @@ const Project = () => {
    */
   return (
     <Layout hasSider={true}>
-      <Layout.Sider theme="light" className="Project-sider">
-        <Menu onClick={onMenuClick}>
-          <Menu.Item key={menuKeys.dashboard} icon={<ArrowLeftOutlined />}>
-            Dashboard
-          </Menu.Item>
-        </Menu>
-        <Typography.Title
-          className="Project-title"
-          level={4}
-          editable={{
-            onChange: handleTitle,
-            maxLength: 50
-          }}
-        >
-          {project.title}
-        </Typography.Title>
+      {project === 'Unauthorized' ? (
+        'You are not authorized to open this project'
+      ) : (
+        <>
+          <Layout.Sider theme="light" className="Project-sider">
+            <Menu onClick={onMenuClick}>
+              <Menu.Item key={menuKeys.dashboard} icon={<ArrowLeftOutlined />}>
+                Dashboard
+              </Menu.Item>
+            </Menu>
+            <Typography.Title
+              className="Project-title"
+              level={4}
+              editable={{
+                onChange: handleTitle,
+                maxLength: 50
+              }}
+            >
+              {project.title}
+            </Typography.Title>
 
-        <Menu mode="inline" onClick={onMenuClick}>
-          <Menu.Item key={menuKeys.newSimulation} icon={<PlusOutlined />}>
-            New simulation
-          </Menu.Item>
-          {simulationsRender}
-        </Menu>
-      </Layout.Sider>
-      <Layout.Content className="no-scroll relative">
-        <Simulation.Selector
-          visible={selectorVisible}
-          onOk={onSelectorOk}
-          onCancel={onSelectorCancel}
-        />
-        <Simulation
-          project={{ id: project.id, simulations: project.simulations }}
-          simulation={currentSimulation}
-          type={currentType}
-          part={partSummary}
-          onClose={onSimulationClose}
-        />
-        <View simulation={currentSimulation} setPartSummary={setPartSummary} />
-      </Layout.Content>
+            <Menu mode="inline" onClick={onMenuClick}>
+              <Menu.Item key={menuKeys.newSimulation} icon={<PlusOutlined />}>
+                New simulation
+              </Menu.Item>
+              {simulationsRender}
+            </Menu>
+          </Layout.Sider>
+          <Layout.Content className="no-scroll relative">
+            <Simulation.Selector
+              visible={selectorVisible}
+              onOk={onSelectorOk}
+              onCancel={onSelectorCancel}
+            />
+            <Simulation
+              project={{ id: project.id, simulations: project.simulations }}
+              simulation={currentSimulation}
+              type={currentType}
+              part={partSummary}
+              onClose={onSimulationClose}
+            />
+            <View
+              simulation={currentSimulation}
+              setPartSummary={setPartSummary}
+            />
+          </Layout.Content>
+        </>
+      )}
     </Layout>
   )
 }

@@ -27,7 +27,7 @@ export default async (req, res) => {
   try {
     const projectAuth = await get(id, ['owners', 'users'])
     if (!auth(projectAuth, sessionId)) {
-      res.status(401).json({ message: 'Unauthorized' })
+      res.status(401).json({ project: 'Unauthorized' })
       return
     }
   } catch (err) {

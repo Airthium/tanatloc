@@ -116,7 +116,6 @@ const Login = () => {
                 </Typography.Text>
               </div>
               <Form
-                initialValues={{ remember: true }}
                 requiredMark="optional"
                 onFinish={onLogin}
                 layout="vertical"

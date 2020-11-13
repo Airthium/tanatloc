@@ -1,8 +1,9 @@
 /** @module renderer/components/signup */
 
 import { useRouter } from 'next/router'
-import { /*useState,*/ useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import {
+  Alert,
   Button,
   Card,
   Form,
@@ -16,15 +17,22 @@ import {
 import Loading from '../loading'
 import Background from '../background'
 
+// import signup from '../../../src/api/signup'
 import { useUser } from '../../../src/api/user'
+
+const errors = {
+  INTERNAL_ERROR: 'Server issue : try again shortly.',
+  ALREADY_EXISTS: 'This email is already registered'
+}
 
 /**
  * Signup
  */
 const Signup = () => {
   // State
-  // const [checking, setChecking] = useState(false)
-  const checking = false
+  const [checking, setChecking] = useState(false)
+  const [signupErr, setSignupErr] = useState(false)
+  const [internalErr, setInternalError] = useState(false)
 
   // Data
   const [user, { loadingUser }] = useUser()
@@ -40,7 +48,32 @@ const Signup = () => {
   // Prefetch
   useEffect(() => {
     router.prefetch('/dashboard')
+    router.prefetch('/login')
   }, [])
+
+  /**
+   * Handle signup
+   * @param {Object} values { username, password, passwordConfirmation }
+   */
+  const onSignup = () => {
+    // State
+    setChecking(true)
+    setSignupErr(true)
+    setInternalError(false)
+
+    // Signup
+    try {
+      setTimeout(() => setChecking(false), 1000)
+    } catch (err) {
+      setInternalError(true)
+      setChecking(false)
+      console.error(err)
+    }
+  }
+
+  const login = () => {
+    router.push('/login')
+  }
 
   /**
    * Render
@@ -62,40 +95,52 @@ const Signup = () => {
                   Sign Up
                 </Typography.Title>
               </div>
-              <Form initialValues={{ remember: true }} layout="vertical">
-                {/*
-                TODO We have 2 cases to handle
-              1) The user forgot to enter a value in the email or password field => validateStatus=error
-              2) The user enters the wrong credentials => the fields keep the default border color and we show an Alert component
-              */}
+              <Form
+                requiredMark="optional"
+                onFinish={onSignup}
+                layout="vertical"
+              >
+                {internalErr && (
+                  <Alert
+                    message={errors.INTERNAL_ERROR}
+                    type="error"
+                    showIcon
+                    style={{
+                      marginBottom: '16px'
+                    }}
+                  />
+                )}
                 <Form.Item
                   name="username"
                   label="Enter your email address"
-                  rules={[{ message: 'Please enter your email' }]}
-                  hasFeedback
-                  validateStatus="warning"
+                  rules={[
+                    { required: true, message: 'Please enter your email' }
+                  ]}
+                  validateStatus={signupErr && 'warning'}
+                  extra={
+                    signupErr && (
+                      <Card
+                        size="small"
+                        title="This email is already registered"
+                        headStyle={{ color: '#faad14' }}
+                      >
+                        We know you!{' '}
+                        <Button type="link" onClick={login}>
+                          Log in ?
+                        </Button>
+                      </Card>
+                    )
+                  }
                 >
-                  <Popover
-                    placement="right"
-                    content={
-                      <span>
-                        We know you! <a>Log in ?</a>
-                      </span>
-                    }
-                    title="This email is already registered"
-                    trigger="click"
-                    visible={true}
-                  >
-                    <Input placeholder="Email address" autoComplete="email" />
-                  </Popover>
+                  <Input placeholder="Email address" autoComplete="email" />
                 </Form.Item>
                 <Form.Item
                   name="password"
                   label="Choose your password"
-                  rules={[{ message: 'Please enter your Password' }]}
+                  rules={[
+                    { required: true, message: 'Please enter your Password' }
+                  ]}
                   style={{ marginBottom: '14px' }}
-                  hasFeedback
-                  validateStatus="error"
                 >
                   <Input.Password
                     placeholder="Password"
@@ -103,12 +148,12 @@ const Signup = () => {
                   />
                 </Form.Item>
                 <Form.Item
-                  name="password-confirmation"
+                  name="passwordConfirmation"
                   label="Confirm your password"
-                  rules={[{ message: 'Please enter your Password' }]}
+                  rules={[
+                    { required: true, message: 'Please enter your Password' }
+                  ]}
                   style={{ marginBottom: '14px' }}
-                  hasFeedback
-                  validateStatus="error"
                 >
                   <Input.Password
                     placeholder="Password"

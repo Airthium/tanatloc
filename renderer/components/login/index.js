@@ -49,6 +49,7 @@ const Login = () => {
 
   // Prefetch
   useEffect(() => {
+    router.prefetch('/signup')
     router.prefetch('/dashboard')
   }, [])
 
@@ -82,6 +83,13 @@ const Login = () => {
   }
 
   /**
+   * Go to signup
+   */
+  const signUp = () => {
+    router.push('/signup')
+  }
+
+  /**
    * Render
    */
   return (
@@ -101,7 +109,10 @@ const Login = () => {
                   Log In
                 </Typography.Title>
                 <Typography.Text>
-                  Your first time ? <Button type="link">Sign up</Button>
+                  Your first time ?{' '}
+                  <Button type="link" onClick={signUp}>
+                    Sign up
+                  </Button>
                 </Typography.Text>
               </div>
               <Form
@@ -143,7 +154,9 @@ const Login = () => {
                     autoComplete="current-password"
                   />
                 </Form.Item>
-                <Button type="link">Forgot your password ?</Button>
+                <Typography.Text>
+                  <Button type="link">Forgot your password ?</Button>
+                </Typography.Text>
                 <Form.Item className="Login-submit">
                   <Button type="primary" loading={checking} htmlType="submit">
                     Log in

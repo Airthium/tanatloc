@@ -56,13 +56,13 @@ describe('components/login', () => {
 
   it('user effect', () => {
     let mWrapper = mount(<Login />)
-    expect(mockPrefetch).toHaveBeenCalledTimes(1)
+    expect(mockPrefetch).toHaveBeenCalledTimes(2)
     expect(mockPush).toHaveBeenCalledTimes(0)
     mWrapper.unmount()
 
     mockUser.mockImplementation(() => ({ user: { id: 'id' } }))
     mWrapper = mount(<Login />)
-    expect(mockPrefetch).toHaveBeenCalledTimes(2)
+    expect(mockPrefetch).toHaveBeenCalledTimes(4)
     expect(mockPush).toHaveBeenCalledTimes(1)
     mWrapper.unmount()
   })
@@ -79,6 +79,11 @@ describe('components/login', () => {
       throw new Error()
     })
     await wrapper.find('ForwardRef(InternalForm)').props().onFinish({})
+    expect(mockPush).toHaveBeenCalledTimes(1)
+  })
+
+  it('signup', () => {
+    wrapper.find({ type: 'link' }).at(0).props().onClick()
     expect(mockPush).toHaveBeenCalledTimes(1)
   })
 })

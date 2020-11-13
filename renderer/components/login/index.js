@@ -101,7 +101,7 @@ const Login = () => {
                   Log In
                 </Typography.Title>
                 <Typography.Text>
-                  Your first time ? <a href="">Sign up</a>
+                  Your first time ? <Button type="link">Sign up</Button>
                 </Typography.Text>
               </div>
               <Form
@@ -143,9 +143,7 @@ const Login = () => {
                     autoComplete="current-password"
                   />
                 </Form.Item>
-                <Typography.Text>
-                  <a href="">Forgot your password ?</a>
-                </Typography.Text>
+                <Button type="link">Forgot your password ?</Button>
                 <Form.Item className="Login-submit">
                   <Button type="primary" loading={checking} htmlType="submit">
                     Log in

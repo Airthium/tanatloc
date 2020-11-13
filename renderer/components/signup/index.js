@@ -33,7 +33,6 @@ const Signup = () => {
   const [checking, setChecking] = useState(false)
   const [passwordErr, setPasswordErr] = useState(false)
   const [signupErr, setSignupErr] = useState(false)
-  const [loginErr, setLoginErr] = useState(false)
   const [internalErr, setInternalError] = useState(false)
 
   // Data
@@ -79,7 +78,8 @@ const Signup = () => {
         return
       }
 
-      await login({ username, password })
+      const loggedUser = await login({ username, password })
+      mutateUser(loggedUser)
       router.push('/dashboard')
     } catch (err) {
       setInternalError(true)

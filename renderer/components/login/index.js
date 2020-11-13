@@ -23,6 +23,7 @@ import { useUser } from '../../../src/api/user'
  * Login errors
  */
 const errors = {
+  INTERNAL_ERROR: 'Server issue : try again shortly.',
   BAD_CREDENTIALS: 'Incorrect credentials.'
 }
 
@@ -32,7 +33,8 @@ const errors = {
 const Login = () => {
   // State
   const [checking, setChecking] = useState(false)
-  const [loginOk, setLoginOk] = useState(true)
+  const [loginErr, setLoginErr] = useState(false)
+  const [internalErr, setInternalErr] = useState(false)
 
   // Data
   const [user, { mutateUser, loadingUser }] = useUser()
@@ -57,17 +59,25 @@ const Login = () => {
   const onLogin = async (values) => {
     // State
     setChecking(true)
+    setLoginErr(false)
+    setInternalErr(false)
 
     // Check
-    const loggedUser = await login(values)
-    if (loggedUser) {
-      // Logged
-      mutateUser(loggedUser)
-      router.push('/dashboard')
-    } else {
-      // Bad
-      setLoginOk(false)
+    try {
+      const loggedUser = await login(values)
+      if (loggedUser) {
+        // Logged
+        mutateUser(loggedUser)
+        router.push('/dashboard')
+      } else {
+        // Bad
+        setLoginErr(true)
+        setChecking(false)
+      }
+    } catch (err) {
+      setInternalErr(true)
       setChecking(false)
+      console.error(err)
     }
   }
 
@@ -101,12 +111,14 @@ const Login = () => {
                 layout="vertical"
               >
                 <Alert
-                  message={errors.BAD_CREDENTIALS}
+                  message={
+                    internalErr ? errors.INTERNAL_ERROR : errors.BAD_CREDENTIALS
+                  }
                   type="error"
                   showIcon
                   style={{
                     marginBottom: '16px',
-                    display: loginOk ? 'none' : 'block'
+                    display: loginErr || internalErr ? 'block' : 'none'
                   }}
                 />
                 <Form.Item

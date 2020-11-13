@@ -3,23 +3,24 @@ import { shallow, mount } from 'enzyme'
 
 import '../../../../config/jest/matchMediaMock'
 
-const mockRouter = jest.fn()
+const mockPrefetch = jest.fn()
+const mockPush = jest.fn()
 jest.mock('next/router', () => ({
   useRouter: () => ({
-    prefetch: () => {},
-    push: mockRouter
+    prefetch: mockPrefetch,
+    push: mockPush
   })
 }))
 
 jest.mock('../../../components/loading', () => 'loading')
 
-jest.mock('../../../components/background', () => 'background')
+// jest.mock('../../../components/background', () => 'background')
 
-let mockLogin = () => {}
+const mockLogin = jest.fn()
 jest.mock('..∕../../../src/api/login', () => async () => mockLogin())
 
-let mockUser = () => {}
-let mockUserLoading = () => false
+const mockUser = jest.fn()
+const mockUserLoading = jest.fn()
 jest.mock('../../../../src/api/user/useUser', () => () => [
   mockUser(),
   { mutateUser: () => {}, loadingUser: mockUserLoading() }
@@ -28,10 +29,12 @@ jest.mock('../../../../src/api/user/useUser', () => () => [
 let wrapper
 describe('components/login', () => {
   beforeEach(() => {
-    mockRouter.mockReset()
-    mockLogin = () => {}
-    mockUser = () => {}
-    mockUserLoading = () => false
+    mockPrefetch.mockReset()
+    mockPush.mockReset()
+    mockLogin.mockReset()
+    mockUser.mockReset()
+    mockUserLoading.mockReset()
+    mockUserLoading.mockImplementation(() => false)
     wrapper = shallow(<Login />)
   })
 
@@ -46,36 +49,36 @@ describe('components/login', () => {
   it('loading', () => {
     wrapper.unmount()
 
-    mockUserLoading = () => true
+    mockUserLoading.mockImplementation(() => true)
     wrapper = shallow(<Login />)
     expect(wrapper.find('loading').length).toBe(1)
   })
 
   it('user effect', () => {
     let mWrapper = mount(<Login />)
-    expect(mockRouter).toHaveBeenCalledTimes(0)
+    expect(mockPrefetch).toHaveBeenCalledTimes(1)
+    expect(mockPush).toHaveBeenCalledTimes(0)
     mWrapper.unmount()
 
-    mockUser = () => ({ user: { id: 'id' } })
+    mockUser.mockImplementation(() => ({ user: { id: 'id' } }))
     mWrapper = mount(<Login />)
-    expect(mockRouter).toHaveBeenCalledTimes(1)
+    expect(mockPrefetch).toHaveBeenCalledTimes(2)
+    expect(mockPush).toHaveBeenCalledTimes(1)
     mWrapper.unmount()
   })
-  // TODO Deactivated because I removed the home button from the login page (not useful)
-  // it('onSelect', () => {
-  //   wrapper.find('Menu').props().onSelect({})
-  //   expect(mockRouter).toHaveBeenCalledTimes(0)
-  //
-  //   wrapper.find('Menu').props().onSelect({ key: 'home' })
-  //   expect(mockRouter).toHaveBeenCalledTimes(1)
-  // })
 
   it('onLogin', async () => {
     await wrapper.find('ForwardRef(InternalForm)').props().onFinish({})
-    expect(mockRouter).toHaveBeenCalledTimes(0)
+    expect(mockPush).toHaveBeenCalledTimes(0)
 
-    mockLogin = () => ({})
+    mockLogin.mockImplementation(() => ({}))
     await wrapper.find('ForwardRef(InternalForm)').props().onFinish({})
-    expect(mockRouter).toHaveBeenCalledTimes(1)
+    expect(mockPush).toHaveBeenCalledTimes(1)
+
+    mockLogin.mockImplementation(() => {
+      throw new Error()
+    })
+    await wrapper.find('ForwardRef(InternalForm)').props().onFinish({})
+    expect(mockPush).toHaveBeenCalledTimes(1)
   })
 })

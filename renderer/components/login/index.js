@@ -144,7 +144,7 @@ const Login = () => {
                   name="password"
                   label="Your password"
                   rules={[
-                    { required: true, message: 'Please enter your Password' }
+                    { required: true, message: 'Please enter your password' }
                   ]}
                   style={{ marginBottom: '14px' }}
                 >

@@ -61,7 +61,7 @@
 // @font-family: saira, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
 //   'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
 //   'Noto Color Emoji';
-@tanatloc-primary-color: #fae600;
+@tanatloc-primary-color: #fad114;
 
 @border-radius-base: 4px;
 
@@ -72,38 +72,51 @@
 @btn-primary-shadow: 0;
 @btn-text-shadow: 0;
 
+.ant-btn:hover:not(.ant-btn-primary):not(.ant-btn-link),
+.ant-btn:focus:not(.ant-btn-primary):not(.ant-btn-link) {
+  color: @heading-color;
+  background: #ffde00;
+  border-color: #ffde00;
+}
+
+.ant-btn:hover:not(.ant-btn-primary):not(.ant-btn-link) .anticon svg,
+.ant-btn:focus:not(.ant-btn-primary):not(.ant-btn-link) .anticon svg {
+  fill: @heading-color;
+}
+
+.ant-btn-link {
+  color: @blue-6 !important;
+  padding: 0;
+}
+
+.ant-btn-link:focus, .ant-btn-link:hover {
+  color: @blue-5 !important;
+}
+
+.ant-btn-link:active {
+  color: @blue-7 !important;
+}
+
 @outline-color: @tanatloc-primary-color;
 @input-hover-border-color: @tanatloc-primary-color;
 
 .ant-tabs-nav::before {
   border-bottom: 0 !important;
 }
+
 @tabs-ink-bar-color: @tanatloc-primary-color;
 @tabs-highlight-color: @heading-color;
 @tabs-hover-color: @heading-color;
 @tabs-active-color: @heading-color;
 
-.ant-btn:hover:not(.ant-btn-primary),
-.ant-btn:focus:not(.ant-btn-primary) {
-  color: @heading-color;
-  background: #fff429;
-  border-color: #fff429;
-}
-
-.ant-btn:hover:not(.ant-btn-primary) .anticon svg,
-.ant-btn:focus:not(.ant-btn-primary) .anticon svg {
-  fill: @heading-color;
-}
-
 @menu-item-color: @heading-color;
 @menu-highlight-color: @heading-color;
-@menu-item-active-bg: none;
+@menu-item-active-bg: #fff3d1;
+
 .ant-menu-item {
   transition: none !important;
 }
-.ant-menu-item-selected {
-  border: 1px solid #fae600;
-}
+
 .ant-menu-inline .ant-menu-item::after {
   border-right: 3px solid @tanatloc-primary-color;
 }

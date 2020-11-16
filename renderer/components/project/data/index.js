@@ -29,7 +29,8 @@ const Data = (project, filter, setTitle) => {
   if (!project) return null
 
   // Filter
-  if (filter && !project.title.includes(filter)) return null
+  if (filter && !project.title?.toLowerCase()?.includes(filter.toLowerCase()))
+    return null
 
   // Snapshot
   const snapshot = project.avatar ? (

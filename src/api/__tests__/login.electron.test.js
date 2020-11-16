@@ -23,6 +23,6 @@ describe('src/api/user', () => {
     }
 
     const res = await login({})
-    expect(res).toBe(null)
+    expect(res).toBe(undefined)
   })
 })

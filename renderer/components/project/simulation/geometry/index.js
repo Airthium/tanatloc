@@ -203,8 +203,10 @@ const Geometry = ({ project, simulation, part }) => {
                     description={
                       <>
                         Unable to load part TODO Franck
-                        <Collapse>
-                          <Collapse.Panel>{part.message}</Collapse.Panel>
+                        <Collapse ghost={true}>
+                          <Collapse.Panel header="Error">
+                            {part.message}
+                          </Collapse.Panel>
                         </Collapse>
                       </>
                     }

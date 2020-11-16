@@ -24,7 +24,7 @@ export default async (req, res) => {
         res.status(200).json(avatar)
       } catch (err) {
         console.error(err)
-        res.status(500).json({ message: err.message })
+        res.status(500).json({ error: true, message: err.message })
         Sentry.captureException(err)
       }
       break
@@ -35,14 +35,14 @@ export default async (req, res) => {
         res.status(200).end()
       } catch (err) {
         console.error(err)
-        res.status(500).json({ message: err.message })
+        res.status(500).json({ error: true, message: err.message })
         Sentry.captureException(err)
       }
       break
     default:
       // Unauthorized method
       const error = new Error('Method ' + req.method + ' not allowed')
-      res.status(405).json({ message: error.message })
+      res.status(405).json({ error: true, message: error.message })
       Sentry.captureException(error)
   }
 }

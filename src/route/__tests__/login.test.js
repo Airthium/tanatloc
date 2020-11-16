@@ -7,7 +7,8 @@ jest.mock('express', () => () => ({
     const req = {}
     const res = {
       status: () => ({
-        send: () => {}
+        send: () => {},
+        json: () => {}
       })
     }
     func(req, res)

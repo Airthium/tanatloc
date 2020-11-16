@@ -45,7 +45,7 @@ export const loginRoute = async (req, res) => {
     res.status(200).send({ done: true })
   } catch (err) {
     console.error(err)
-    res.status(401).send(err.message)
+    res.status(401).json({ error: true, message: err.message })
     Sentry.configureScope((scope) => {
       scope.setUser({
         username: req.username

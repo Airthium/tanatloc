@@ -92,7 +92,7 @@ describe('src/route/part', () => {
     expect(mockAuth).toHaveBeenCalledTimes(1)
     expect(mockGet).toHaveBeenCalledTimes(0)
     expect(mockSentry).toHaveBeenCalledTimes(0)
-    expect(response).toEqual({ message: 'Unauthorized' })
+    expect(response).toEqual({ error: true, message: 'Unauthorized' })
 
     // Authorized
     mockAuth.mockImplementation(() => true)
@@ -116,7 +116,7 @@ describe('src/route/part', () => {
     expect(mockAuth).toHaveBeenCalledTimes(3)
     expect(mockGet).toHaveBeenCalledTimes(2)
     expect(mockSentry).toHaveBeenCalledTimes(1)
-    expect(response).toEqual({ message: 'test' })
+    expect(response).toEqual({ error: true, message: 'test' })
   })
 
   it('wrong method', async () => {
@@ -131,6 +131,9 @@ describe('src/route/part', () => {
     expect(mockAuth).toHaveBeenCalledTimes(0)
     expect(mockGet).toHaveBeenCalledTimes(0)
     expect(mockSentry).toHaveBeenCalledTimes(1)
-    expect(response).toEqual({ message: 'Method SOMETHING not allowed' })
+    expect(response).toEqual({
+      error: true,
+      message: 'Method SOMETHING not allowed'
+    })
   })
 })

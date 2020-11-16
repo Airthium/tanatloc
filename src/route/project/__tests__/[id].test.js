@@ -91,7 +91,7 @@ describe('src/route/project/[id]', () => {
     expect(mockUpdate).toHaveBeenCalledTimes(0)
     expect(mockDel).toHaveBeenCalledTimes(0)
     expect(mockSentry).toHaveBeenCalledTimes(1)
-    expect(response).toEqual({ message: 'test' })
+    expect(response).toEqual({ error: true, message: 'test' })
   })
 
   it('electron', async () => {
@@ -145,7 +145,7 @@ describe('src/route/project/[id]', () => {
     expect(mockUpdate).toHaveBeenCalledTimes(0)
     expect(mockDel).toHaveBeenCalledTimes(0)
     expect(mockSentry).toHaveBeenCalledTimes(1)
-    expect(response).toEqual({ message: 'test' })
+    expect(response).toEqual({ error: true, message: 'test' })
   })
 
   it('PUT', async () => {
@@ -174,7 +174,7 @@ describe('src/route/project/[id]', () => {
     expect(mockUpdate).toHaveBeenCalledTimes(2)
     expect(mockDel).toHaveBeenCalledTimes(0)
     expect(mockSentry).toHaveBeenCalledTimes(1)
-    expect(response).toEqual({ message: 'test' })
+    expect(response).toEqual({ error: true, message: 'test' })
   })
 
   it('DELETE', async () => {
@@ -203,7 +203,7 @@ describe('src/route/project/[id]', () => {
     expect(mockUpdate).toHaveBeenCalledTimes(0)
     expect(mockDel).toHaveBeenCalledTimes(2)
     expect(mockSentry).toHaveBeenCalledTimes(1)
-    expect(response).toEqual({ message: 'test' })
+    expect(response).toEqual({ error: true, message: 'test' })
   })
 
   it('wrong method', async () => {
@@ -219,6 +219,9 @@ describe('src/route/project/[id]', () => {
     expect(mockUpdate).toHaveBeenCalledTimes(0)
     expect(mockDel).toHaveBeenCalledTimes(0)
     expect(mockSentry).toHaveBeenCalledTimes(1)
-    expect(response).toEqual({ message: 'Method SOMETHING not allowed' })
+    expect(response).toEqual({
+      error: true,
+      message: 'Method SOMETHING not allowed'
+    })
   })
 })

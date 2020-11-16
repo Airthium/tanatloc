@@ -134,6 +134,7 @@ describe('src/route/projects/ids', () => {
     expect(mockGet).toHaveBeenCalledTimes(6)
     expect(mockSentry).toHaveBeenCalledTimes(1)
     expect(response).toEqual({
+      error: true,
       message: "Cannot read property 'ids' of undefined"
     })
   })
@@ -148,6 +149,9 @@ describe('src/route/projects/ids', () => {
     expect(mockAuth).toHaveBeenCalledTimes(0)
     expect(mockGet).toHaveBeenCalledTimes(0)
     expect(mockSentry).toHaveBeenCalledTimes(1)
-    expect(response).toEqual({ message: 'Method SOMETHING not allowed' })
+    expect(response).toEqual({
+      error: true,
+      message: 'Method SOMETHING not allowed'
+    })
   })
 })

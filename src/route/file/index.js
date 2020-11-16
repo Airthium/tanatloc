@@ -26,7 +26,7 @@ export default async (req, res) => {
         'users'
       ])
       if (!auth(projectAuth, sessionId)) {
-        res.status(401).json({ message: 'Unauthorized' })
+        res.status(401).json({ error: true, message: 'Unauthorized' })
         return
       }
 
@@ -34,13 +34,13 @@ export default async (req, res) => {
       res.status(200).json(part)
     } catch (err) {
       console.error(err)
-      res.status(500).json({ message: err.message })
+      res.status(500).json({ error: true, message: err.message })
       Sentry.captureException(err)
     }
   } else {
     // Unauthorized method
     const error = new Error('Method ' + req.method + ' not allowed')
-    res.status(405).json({ message: error.message })
+    res.status(405).json({ error: true, message: error.message })
     Sentry.captureException(error)
   }
 }

@@ -87,7 +87,7 @@ describe('src/route/simulation/[id]', () => {
     expect(mockDel).toHaveBeenCalledTimes(0)
     expect(mockGetProject).toHaveBeenCalledTimes(1)
     expect(mockSentry).toHaveBeenCalledTimes(0)
-    expect(response).toEqual({ message: 'Unauthorized' })
+    expect(response).toEqual({ error: true, message: 'Unauthorized' })
 
     // Error
     mockAuth.mockImplementation(() => {
@@ -101,7 +101,7 @@ describe('src/route/simulation/[id]', () => {
     expect(mockDel).toHaveBeenCalledTimes(0)
     expect(mockGetProject).toHaveBeenCalledTimes(2)
     expect(mockSentry).toHaveBeenCalledTimes(1)
-    expect(response).toEqual({ message: 'test' })
+    expect(response).toEqual({ error: true, message: 'test' })
   })
 
   it('electron', async () => {
@@ -159,7 +159,7 @@ describe('src/route/simulation/[id]', () => {
     expect(mockDel).toHaveBeenCalledTimes(0)
     expect(mockGetProject).toHaveBeenCalledTimes(2)
     expect(mockSentry).toHaveBeenCalledTimes(1)
-    expect(response).toEqual({ message: 'test' })
+    expect(response).toEqual({ error: true, message: 'test' })
   })
 
   it('PUT', async () => {
@@ -190,7 +190,7 @@ describe('src/route/simulation/[id]', () => {
     expect(mockDel).toHaveBeenCalledTimes(0)
     expect(mockGetProject).toHaveBeenCalledTimes(2)
     expect(mockSentry).toHaveBeenCalledTimes(1)
-    expect(response).toEqual({ message: 'test' })
+    expect(response).toEqual({ error: true, message: 'test' })
   })
 
   it('DELETE', async () => {
@@ -221,7 +221,7 @@ describe('src/route/simulation/[id]', () => {
     expect(mockDel).toHaveBeenCalledTimes(2)
     expect(mockGetProject).toHaveBeenCalledTimes(2)
     expect(mockSentry).toHaveBeenCalledTimes(1)
-    expect(response).toEqual({ message: 'test' })
+    expect(response).toEqual({ error: true, message: 'test' })
   })
 
   it('wrong method', async () => {
@@ -238,6 +238,9 @@ describe('src/route/simulation/[id]', () => {
     expect(mockDel).toHaveBeenCalledTimes(0)
     expect(mockGetProject).toHaveBeenCalledTimes(1)
     expect(mockSentry).toHaveBeenCalledTimes(1)
-    expect(response).toEqual({ message: 'Method SOMETHING not allowed' })
+    expect(response).toEqual({
+      error: true,
+      message: 'Method SOMETHING not allowed'
+    })
   })
 })

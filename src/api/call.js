@@ -30,6 +30,8 @@ const call = async (route, param) => {
     const res = await response.json()
     return res
   }
+
+  return response
 }
 
 export { fetcher, call }

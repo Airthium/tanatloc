@@ -79,7 +79,11 @@ const checkFiles = async (simulation, data) => {
             subObj.file.originPath,
             subObj.file.origin
           )
-          await removeFile(originFile)
+          try {
+            await removeFile(originFile)
+          } catch (err) {
+            console.warn(err)
+          }
         }
         if (subObj.file.part) {
           const partDirectory = path.join(
@@ -87,7 +91,11 @@ const checkFiles = async (simulation, data) => {
             simulation.id,
             subObj.file.partPath
           )
-          await removeDirectory(partDirectory)
+          try {
+            await removeDirectory(partDirectory)
+          } catch (err) {
+            console.warn(err)
+          }
         }
       }
 
@@ -154,6 +162,14 @@ const del = async ({ id }, simulation) => {
       value: simulation.id
     }
   ])
+
+  // Delete folder
+  const simulationDirectory = path.join(storage.SIMULATION, simulation.id)
+  try {
+    await removeDirectory(simulationDirectory)
+  } catch (err) {
+    console.warn(err)
+  }
 }
 
 export { add, get, update, del }

@@ -3,6 +3,10 @@ import { useRouter } from 'next/router'
 import { Button, Card, Layout } from 'antd'
 import { AlertOutlined } from '@ant-design/icons'
 
+const errors = {
+  NOT_ALLOWED: 'You are not authorized to be there.'
+}
+
 const NotAuthorized = () => {
   // Data
   const router = useRouter()
@@ -27,8 +31,7 @@ const NotAuthorized = () => {
       <Layout.Content>
         <Card title="Not allowed">
           <p>
-            <AlertOutlined style={{ color: 'red' }} /> You are not authorized to
-            be there.
+            <AlertOutlined style={{ color: 'red' }} /> {errors.NOT_ALLOWED}
           </p>
           <p>
             Go back

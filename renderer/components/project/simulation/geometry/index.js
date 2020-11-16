@@ -21,6 +21,10 @@ import {
 import { update, useSimulations } from '../../../../../src/api/simulation'
 import { get } from '../../../../../src/api/file'
 
+const errors = {
+  UNABLE_TO_LOAD: 'Unable to load part TODO Franck'
+}
+
 const Geometry = ({ project, simulation, part }) => {
   // State
   const [upload, setUpload] = useState(false)
@@ -202,7 +206,7 @@ const Geometry = ({ project, simulation, part }) => {
                     message="Error"
                     description={
                       <>
-                        Unable to load part TODO Franck
+                        {errors.UNABLE_TO_LOAD}
                         <Collapse ghost={true}>
                           <Collapse.Panel header="Error">
                             {part.message}

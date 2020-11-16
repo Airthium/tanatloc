@@ -216,6 +216,38 @@ describe('src/lib/simulation', () => {
     expect(mockRemoveFile).toHaveBeenCalledTimes(1)
     expect(mockRemoveDirectory).toHaveBeenCalledTimes(1)
 
+    // Remove error
+    mockRemoveFile.mockImplementation(() => {
+      throw new Error()
+    })
+    mockRemoveDirectory.mockImplementation(() => {
+      throw new Error()
+    })
+    await update({ id: 'id' }, [
+      {
+        key: 'scheme',
+        path: ['categories', 'geometry'],
+        value: {
+          file: {
+            buffer: ['buffer']
+          }
+        }
+      }
+    ])
+    expect(mockPath).toHaveBeenCalledTimes(10)
+    expect(mockAdd).toHaveBeenCalledTimes(0)
+    expect(mockGet).toHaveBeenCalledTimes(3)
+    expect(mockUpdate).toHaveBeenCalledTimes(7)
+    expect(mockDelete).toHaveBeenCalledTimes(0)
+    expect(mockUpdateProject).toHaveBeenCalledTimes(0)
+    expect(mockWriteFile).toHaveBeenCalledTimes(3)
+    expect(mockConvert).toHaveBeenCalledTimes(3)
+    expect(mockRemoveFile).toHaveBeenCalledTimes(2)
+    expect(mockRemoveDirectory).toHaveBeenCalledTimes(2)
+
+    mockRemoveFile.mockImplementation(() => {})
+    mockRemoveDirectory.mockImplementation(() => {})
+
     // With empty old file
     mockGet.mockImplementation(() => ({
       scheme: {
@@ -237,16 +269,16 @@ describe('src/lib/simulation', () => {
         }
       }
     ])
-    expect(mockPath).toHaveBeenCalledTimes(8)
+    expect(mockPath).toHaveBeenCalledTimes(12)
     expect(mockAdd).toHaveBeenCalledTimes(0)
-    expect(mockGet).toHaveBeenCalledTimes(3)
-    expect(mockUpdate).toHaveBeenCalledTimes(7)
+    expect(mockGet).toHaveBeenCalledTimes(4)
+    expect(mockUpdate).toHaveBeenCalledTimes(8)
     expect(mockDelete).toHaveBeenCalledTimes(0)
     expect(mockUpdateProject).toHaveBeenCalledTimes(0)
-    expect(mockWriteFile).toHaveBeenCalledTimes(3)
-    expect(mockConvert).toHaveBeenCalledTimes(3)
-    expect(mockRemoveFile).toHaveBeenCalledTimes(1)
-    expect(mockRemoveDirectory).toHaveBeenCalledTimes(1)
+    expect(mockWriteFile).toHaveBeenCalledTimes(4)
+    expect(mockConvert).toHaveBeenCalledTimes(4)
+    expect(mockRemoveFile).toHaveBeenCalledTimes(2)
+    expect(mockRemoveDirectory).toHaveBeenCalledTimes(2)
 
     // With file to remove
     await update({ id: 'id' }, [
@@ -258,21 +290,21 @@ describe('src/lib/simulation', () => {
         }
       }
     ])
-    expect(mockPath).toHaveBeenCalledTimes(8)
+    expect(mockPath).toHaveBeenCalledTimes(12)
     expect(mockAdd).toHaveBeenCalledTimes(0)
-    expect(mockGet).toHaveBeenCalledTimes(4)
-    expect(mockUpdate).toHaveBeenCalledTimes(8)
+    expect(mockGet).toHaveBeenCalledTimes(5)
+    expect(mockUpdate).toHaveBeenCalledTimes(9)
     expect(mockDelete).toHaveBeenCalledTimes(0)
     expect(mockUpdateProject).toHaveBeenCalledTimes(0)
-    expect(mockWriteFile).toHaveBeenCalledTimes(3)
-    expect(mockConvert).toHaveBeenCalledTimes(3)
-    expect(mockRemoveFile).toHaveBeenCalledTimes(1)
-    expect(mockRemoveDirectory).toHaveBeenCalledTimes(1)
+    expect(mockWriteFile).toHaveBeenCalledTimes(4)
+    expect(mockConvert).toHaveBeenCalledTimes(4)
+    expect(mockRemoveFile).toHaveBeenCalledTimes(2)
+    expect(mockRemoveDirectory).toHaveBeenCalledTimes(2)
   })
 
   it('delete', async () => {
     await del({}, {})
-    expect(mockPath).toHaveBeenCalledTimes(0)
+    expect(mockPath).toHaveBeenCalledTimes(1)
     expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockGet).toHaveBeenCalledTimes(0)
     expect(mockUpdate).toHaveBeenCalledTimes(0)
@@ -281,6 +313,22 @@ describe('src/lib/simulation', () => {
     expect(mockWriteFile).toHaveBeenCalledTimes(0)
     expect(mockConvert).toHaveBeenCalledTimes(0)
     expect(mockRemoveFile).toHaveBeenCalledTimes(0)
-    expect(mockRemoveDirectory).toHaveBeenCalledTimes(0)
+    expect(mockRemoveDirectory).toHaveBeenCalledTimes(1)
+
+    // Remove directory error
+    mockRemoveDirectory.mockImplementation(() => {
+      throw new Error()
+    })
+    await del({}, {})
+    expect(mockPath).toHaveBeenCalledTimes(2)
+    expect(mockAdd).toHaveBeenCalledTimes(0)
+    expect(mockGet).toHaveBeenCalledTimes(0)
+    expect(mockUpdate).toHaveBeenCalledTimes(0)
+    expect(mockDelete).toHaveBeenCalledTimes(2)
+    expect(mockUpdateProject).toHaveBeenCalledTimes(2)
+    expect(mockWriteFile).toHaveBeenCalledTimes(0)
+    expect(mockConvert).toHaveBeenCalledTimes(0)
+    expect(mockRemoveFile).toHaveBeenCalledTimes(0)
+    expect(mockRemoveDirectory).toHaveBeenCalledTimes(2)
   })
 })

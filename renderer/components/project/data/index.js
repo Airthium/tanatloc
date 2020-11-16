@@ -62,6 +62,7 @@ const Data = (project, filter, setTitle) => {
     project &&
     project.owners &&
     project.owners.map((owner) => {
+      let avatar = owner.avatar && Buffer.from(owner.avatar).toString()
       let name = ''
       let abbrev = ''
       if (owner.firstname || owner.lastname) {
@@ -76,7 +77,7 @@ const Data = (project, filter, setTitle) => {
 
       return (
         <Tooltip key={owner.id} title={name}>
-          <Avatar style={{ backgroundColor: stringToHex(name) }}>
+          <Avatar src={avatar} style={{ backgroundColor: stringToHex(name) }}>
             {abbrev.toUpperCase()}
           </Avatar>
         </Tooltip>
@@ -88,6 +89,7 @@ const Data = (project, filter, setTitle) => {
     project &&
     project.users &&
     project.users.map((user) => {
+      let avatar = user.avatar && Buffer.from(user.avatar).toString()
       let name = ''
       let abbrev = ''
       if (user.firstname || user.lastname) {
@@ -102,7 +104,7 @@ const Data = (project, filter, setTitle) => {
 
       return (
         <Tooltip key={user.id} title={name}>
-          <Avatar style={{ backgroundColor: stringToHex(name) }}>
+          <Avatar src={avatar} style={{ backgroundColor: stringToHex(name) }}>
             {abbrev.toUpperCase()}
           </Avatar>
         </Tooltip>

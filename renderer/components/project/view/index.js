@@ -732,7 +732,7 @@ const View = ({ simulation, setPartSummary }) => {
     const partContent = await get({ id: simulation.id }, file)
 
     if (partContent.error) {
-      setPartSummary({ error: true })
+      setPartSummary({ error: true, message: partContent.message })
       return
     }
 

@@ -3,6 +3,7 @@ import {
   Alert,
   Button,
   Card,
+  Collapse,
   Layout,
   Popconfirm,
   Space,
@@ -201,7 +202,14 @@ const Geometry = ({ project, simulation, part }) => {
                 part.error ? (
                   <Alert
                     message="Error"
-                    description="Unable to load part TODO Franck"
+                    description={
+                      <>
+                        Unable to load part TODO Franck
+                        <Collapse>
+                          <Collapse.Panel>{part.message}</Collapse.Panel>
+                        </Collapse>
+                      </>
+                    }
                     type="error"
                   />
                 ) : (

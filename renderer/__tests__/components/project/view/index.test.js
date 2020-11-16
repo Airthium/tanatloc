@@ -308,6 +308,18 @@ describe('components/project/view', () => {
     wrapper.unmount()
     const setPartSummary = jest.fn()
 
+    mockGet.mockImplementation(() => ({ error: true }))
+    wrapper = mount(
+      <View
+        simulation={{
+          scheme: { categories: { geometry: { file: { part: {} } } } }
+        }}
+        type="geometry"
+        setPartSummary={setPartSummary}
+      />
+    )
+    wrapper.unmount()
+
     mockGet.mockImplementation(() => ({}))
     wrapper = mount(
       <View

@@ -31,6 +31,7 @@ const errors = {
 const Signup = () => {
   // State
   const [checking, setChecking] = useState(false)
+  const [formErr, setFormErr] = useState(false)
   const [passwordErr, setPasswordErr] = useState(false)
   const [signupErr, setSignupErr] = useState(false)
   const [internalErr, setInternalError] = useState(false)
@@ -88,6 +89,10 @@ const Signup = () => {
     }
   }
 
+  const onSignupFailed = () => {
+    setFormErr(true)
+  }
+
   /**
    * Go to login
    */
@@ -118,6 +123,7 @@ const Signup = () => {
               <Form
                 requiredMark="optional"
                 onFinish={onSignup}
+                onFinishFailed={onSignupFailed}
                 layout="vertical"
               >
                 {internalErr && (
@@ -136,7 +142,7 @@ const Signup = () => {
                   rules={[
                     { required: true, message: 'Please enter your email' }
                   ]}
-                  validateStatus={signupErr && 'warning'}
+                  validateStatus={formErr ? 'error' : signupErr && 'warning'}
                   extra={
                     signupErr && (
                       <Card
@@ -160,7 +166,7 @@ const Signup = () => {
                   rules={[
                     { required: true, message: 'Please enter your Password' }
                   ]}
-                  validateStatus={passwordErr && 'warning'}
+                  validateStatus={formErr ? 'error' : passwordErr && 'warning'}
                   style={{ marginBottom: '14px' }}
                 >
                   <Input.Password
@@ -174,7 +180,7 @@ const Signup = () => {
                   rules={[
                     { required: true, message: 'Please enter your Password' }
                   ]}
-                  validateStatus={passwordErr && 'warning'}
+                  validateStatus={formErr ? 'error' : passwordErr && 'warning'}
                   extra={
                     passwordErr && (
                       <Typography.Text type="warning">

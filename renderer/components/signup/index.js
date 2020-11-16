@@ -53,8 +53,6 @@ const Signup = () => {
     router.prefetch('/login')
   }, [])
 
-  const checkPasswordConfirmation = (rule, value) => {}
-
   /**
    * Handle signup
    * @param {Object} values { username, password, passwordConfirmation }
@@ -74,6 +72,7 @@ const Signup = () => {
         return
       }
 
+      // Login
       const loggedUser = await login({ username, password })
       mutateUser(loggedUser)
       router.push('/dashboard')

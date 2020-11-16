@@ -58,13 +58,6 @@ describe('renderer/components/signup', () => {
   })
 
   it('onSignup', async () => {
-    // Password mismatch
-    await wrapper.find('ForwardRef(InternalForm)').props().onFinish({
-      username: 'username',
-      password: 'password',
-      passwordConfirmation: 'other_password'
-    })
-
     // Error
     mockAdd.mockImplementation(() => {
       throw new Error()
@@ -93,6 +86,27 @@ describe('renderer/components/signup', () => {
       passwordConfirmation: 'password'
     })
     expect(mockLogin).toHaveBeenCalledTimes(1)
+  })
+
+  it('mismatch passwords rule', async () => {
+    // Match
+    await wrapper
+      .find({ name: 'passwordConfirmation' })
+      .props()
+      .rules[1]({ getFieldValue: () => 'password' })
+      .validator({}, 'password')
+
+    // Mismatch
+    try {
+      await wrapper
+        .find({ name: 'passwordConfirmation' })
+        .props()
+        .rules[1]({ getFieldValue: () => 'password' })
+        .validator({}, 'other_password')
+      expect(true).toBe(false)
+    } catch (err) {
+      expect(true).toBe(true)
+    }
   })
 
   it('login', async () => {

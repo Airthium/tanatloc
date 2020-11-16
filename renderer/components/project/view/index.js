@@ -731,6 +731,11 @@ const View = ({ simulation, setPartSummary }) => {
   const loadPart = async (file) => {
     const partContent = await get({ id: simulation.id }, file)
 
+    if (partContent.error) {
+      setPartSummary({ error: true })
+      return
+    }
+
     // Convert buffers
     partContent.solids?.forEach((solid) => {
       solid.buffer = JSON.parse(Buffer.from(solid.buffer).toString())

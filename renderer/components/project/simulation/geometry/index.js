@@ -1,5 +1,14 @@
 import { useState, useEffect } from 'react'
-import { Button, Card, Layout, Popconfirm, Space, Spin, Upload } from 'antd'
+import {
+  Alert,
+  Button,
+  Card,
+  Layout,
+  Popconfirm,
+  Space,
+  Spin,
+  Upload
+} from 'antd'
 import {
   DeleteOutlined,
   DownloadOutlined,
@@ -16,6 +25,8 @@ const Geometry = ({ project, simulation, part }) => {
   const [upload, setUpload] = useState(false)
   const [loading, setLoading] = useState(false)
   const [currentFile, setCurrentFile] = useState()
+
+  console.log(part)
 
   // Data
   const [, { mutateOneSimulation }] = useSimulations(project?.simulations)
@@ -187,23 +198,31 @@ const Geometry = ({ project, simulation, part }) => {
               </p>
 
               {part ? (
-                <>
-                  {part.solids && (
-                    <p>
-                      <b>Number of solids:</b> {part.solids?.length}
-                    </p>
-                  )}
-                  {part.faces && (
-                    <p>
-                      <b>Number of faces:</b> {part.faces?.length}
-                    </p>
-                  )}
-                  {part.edges && (
-                    <p>
-                      <b>Number of edges:</b> {part.edges?.length}
-                    </p>
-                  )}
-                </>
+                part.error ? (
+                  <Alert
+                    message="Error"
+                    description="Unable to load part TODO Franck"
+                    type="error"
+                  />
+                ) : (
+                  <>
+                    {part.solids && (
+                      <p>
+                        <b>Number of solids:</b> {part.solids?.length}
+                      </p>
+                    )}
+                    {part.faces && (
+                      <p>
+                        <b>Number of faces:</b> {part.faces?.length}
+                      </p>
+                    )}
+                    {part.edges && (
+                      <p>
+                        <b>Number of edges:</b> {part.edges?.length}
+                      </p>
+                    )}
+                  </>
+                )
               ) : (
                 <Spin />
               )}

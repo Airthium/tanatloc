@@ -95,6 +95,14 @@ describe('renderer/components/signup', () => {
     expect(mockLogin).toHaveBeenCalledTimes(1)
   })
 
+  it('onSignupFailed', () => {
+    wrapper.find('ForwardRef(InternalForm)').props().onFinishFailed({
+      username: 'username',
+      password: 'password',
+      passwordConfirmation: 'other_password'
+    })
+  })
+
   it('login', async () => {
     mockAdd.mockImplementation(() => ({
       alreadyExists: true

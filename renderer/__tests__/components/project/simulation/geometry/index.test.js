@@ -196,5 +196,23 @@ describe('renderer/components/project/simulation/geometry', () => {
         }}
       />
     )
+
+    wrapper.unmount()
+    wrapper = shallow(
+      <Geometry
+        project={{}}
+        simulation={{
+          scheme: {
+            categories: {
+              geometry: {}
+            }
+          }
+        }}
+        part={{
+          error: true,
+          message: 'Error message'
+        }}
+      />
+    )
   })
 })

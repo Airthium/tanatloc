@@ -27,8 +27,6 @@ const Geometry = ({ project, simulation, part }) => {
   const [loading, setLoading] = useState(false)
   const [currentFile, setCurrentFile] = useState()
 
-  console.log(part)
-
   // Data
   const [, { mutateOneSimulation }] = useSimulations(project?.simulations)
 

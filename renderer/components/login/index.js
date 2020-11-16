@@ -120,17 +120,20 @@ const Login = () => {
                 onFinish={onLogin}
                 layout="vertical"
               >
-                <Alert
-                  message={
-                    internalErr ? errors.INTERNAL_ERROR : errors.BAD_CREDENTIALS
-                  }
-                  type="error"
-                  showIcon
-                  style={{
-                    marginBottom: '16px',
-                    display: loginErr || internalErr ? 'block' : 'none'
-                  }}
-                />
+                {(loginErr || internalErr) && (
+                  <Alert
+                    message={
+                      internalErr
+                        ? errors.INTERNAL_ERROR
+                        : errors.BAD_CREDENTIALS
+                    }
+                    type="error"
+                    showIcon
+                    style={{
+                      marginBottom: '16px'
+                    }}
+                  />
+                )}
                 <Form.Item
                   name="username"
                   label="Your email address"

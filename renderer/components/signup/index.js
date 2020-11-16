@@ -22,6 +22,8 @@ import { useUser, add } from '../../../src/api/user'
 const errors = {
   INTERNAL_ERROR: 'Server issue : try again shortly.',
   ALREADY_EXISTS: 'This email is already registered',
+  PASSWORD_TOO_SMALL: 'Your password is too small',
+  PASSWORD_TOO_LONG: 'Your password is too long',
   PASSSWORDS_MISMATCH: 'Passwords mismatch'
 }
 
@@ -31,8 +33,6 @@ const errors = {
 const Signup = () => {
   // State
   const [checking, setChecking] = useState(false)
-  const [formErr, setFormErr] = useState(false)
-  const [passwordErr, setPasswordErr] = useState(false)
   const [signupErr, setSignupErr] = useState(false)
   const [internalErr, setInternalError] = useState(false)
 
@@ -53,6 +53,8 @@ const Signup = () => {
     router.prefetch('/login')
   }, [])
 
+  const checkPasswordConfirmation = (rule, value) => {}
+
   /**
    * Handle signup
    * @param {Object} values { username, password, passwordConfirmation }
@@ -63,19 +65,12 @@ const Signup = () => {
     setSignupErr(false)
     setInternalError(false)
 
-    // Check passwords
-    if (password !== passwordConfirmation) {
-      setPasswordErr(true)
-      setChecking(false)
-      return
-    }
-
     // Signup
     try {
       const newUser = await add({ username, password })
       if (newUser.alreadyExists) {
         setSignupErr(true)
-        setChecking(true)
+        setChecking(false)
         return
       }
 
@@ -87,10 +82,6 @@ const Signup = () => {
       setChecking(false)
       console.error(err)
     }
-  }
-
-  const onSignupFailed = () => {
-    setFormErr(true)
   }
 
   /**
@@ -123,13 +114,25 @@ const Signup = () => {
               <Form
                 requiredMark="optional"
                 onFinish={onSignup}
-                onFinishFailed={onSignupFailed}
                 layout="vertical"
               >
-                {internalErr && (
+                {(signupErr || internalErr) && (
                   <Alert
-                    message={errors.INTERNAL_ERROR}
-                    type="error"
+                    message={
+                      internalErr ? (
+                        errors.INTERNAL_ERROR
+                      ) : (
+                        <>
+                          <b type="warning">{errors.ALREADY_EXISTS}</b>
+                          <br />
+                          We know you!{' '}
+                          <Button type="link" onClick={onLogin}>
+                            Log in ?
+                          </Button>
+                        </>
+                      )
+                    }
+                    type={internalErr ? 'error' : 'warning'}
                     showIcon
                     style={{
                       marginBottom: '16px'
@@ -142,21 +145,6 @@ const Signup = () => {
                   rules={[
                     { required: true, message: 'Please enter your email' }
                   ]}
-                  validateStatus={formErr ? 'error' : signupErr && 'warning'}
-                  extra={
-                    signupErr && (
-                      <Card
-                        size="small"
-                        title="This email is already registered"
-                        headStyle={{ color: '#faad14' }}
-                      >
-                        We know you!{' '}
-                        <Button type="link" onClick={onLogin}>
-                          Log in ?
-                        </Button>
-                      </Card>
-                    )
-                  }
                 >
                   <Input placeholder="Email address" autoComplete="email" />
                 </Form.Item>
@@ -164,9 +152,10 @@ const Signup = () => {
                   name="password"
                   label="Choose your password"
                   rules={[
-                    { required: true, message: 'Please enter your Password' }
+                    { required: true, message: 'Please enter your Password' },
+                    { min: 6, message: errors.PASSWORD_TOO_SMALL },
+                    { max: 16, message: errors.PASSWORD_TOO_LONG }
                   ]}
-                  validateStatus={formErr ? 'error' : passwordErr && 'warning'}
                   style={{ marginBottom: '14px' }}
                 >
                   <Input.Password
@@ -178,16 +167,16 @@ const Signup = () => {
                   name="passwordConfirmation"
                   label="Confirm your password"
                   rules={[
-                    { required: true, message: 'Please enter your Password' }
+                    { required: true, message: 'Please enter your Password' },
+                    ({ getFieldValue }) => ({
+                      validator(rule, value) {
+                        if (!value || getFieldValue('password') === value) {
+                          return Promise.resolve()
+                        }
+                        return Promise.reject(errors.PASSSWORDS_MISMATCH)
+                      }
+                    })
                   ]}
-                  validateStatus={formErr ? 'error' : passwordErr && 'warning'}
-                  extra={
-                    passwordErr && (
-                      <Typography.Text type="warning">
-                        {errors.PASSSWORDS_MISMATCH}
-                      </Typography.Text>
-                    )
-                  }
                   style={{ marginBottom: '14px' }}
                 >
                   <Input.Password

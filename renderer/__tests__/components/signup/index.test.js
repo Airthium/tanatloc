@@ -95,14 +95,6 @@ describe('renderer/components/signup', () => {
     expect(mockLogin).toHaveBeenCalledTimes(1)
   })
 
-  it('onSignupFailed', () => {
-    wrapper.find('ForwardRef(InternalForm)').props().onFinishFailed({
-      username: 'username',
-      password: 'password',
-      passwordConfirmation: 'other_password'
-    })
-  })
-
   it('login', async () => {
     mockAdd.mockImplementation(() => ({
       alreadyExists: true
@@ -113,10 +105,7 @@ describe('renderer/components/signup', () => {
       passwordConfirmation: 'password'
     })
 
-    wrapper
-      .find({ name: 'username' })
-      .props()
-      .extra.props.children[2].props.onClick()
+    wrapper.find('Alert').props().message.props.children[4].props.onClick()
     expect(mockPush).toHaveBeenCalledTimes(1)
   })
 

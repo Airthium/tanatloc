@@ -77,7 +77,9 @@ const BoundaryConditions = ({ project, simulation, part, setVisible }) => {
   }
 
   const onAdd = () => {
-    toggleBoundaryCondition()
+    // toggleBoundaryCondition()
+    console.log(selected)
+    console.log(bcType)
   }
 
   return (

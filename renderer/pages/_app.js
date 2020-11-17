@@ -1,7 +1,9 @@
-import { useStore } from '../store/store'
+import Head from 'next/head'
 import { Provider } from 'react-redux'
 import { persistStore } from 'redux-persist'
 import { PersistGate } from 'redux-persist/integration/react'
+
+import { useStore } from '../store/store'
 
 import '../styles/global.less'
 
@@ -21,6 +23,10 @@ const App = ({ Component, pageProps }) => {
   return (
     <Provider store={store}>
       <PersistGate loading={<Component {...pageProps} />} persistor={persistor}>
+        <Head>
+          <title>Tanatloc</title>
+          <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+        </Head>
         <Component {...pageProps} />
       </PersistGate>
     </Provider>

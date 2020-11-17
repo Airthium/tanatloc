@@ -17,6 +17,19 @@ jest.mock(
   () => 'boundaryConditions'
 )
 
+jest.mock('../../../../../models', () => [
+  {
+    name: 'Name',
+    algorithm: 'algorithm',
+    description: 'description'
+  },
+  {
+    name: 'Name2',
+    algorithm: 'algorithm2',
+    description: 'description2'
+  }
+])
+
 let wrapper
 describe('components/project/simulation', () => {
   beforeEach(() => {
@@ -97,15 +110,16 @@ describe('components/project/simulation.Selector', () => {
   })
 
   it('onSelect', () => {
-    wrapper.find('Menu').props().onSelect({ key: 'selector key' })
-    expect(wrapper.find('Content').props().children).toBe('selector key')
+    wrapper.find('Menu').props().onSelect({ key: 'algorithm' })
+    const subWrapper = shallow(wrapper.find('Content').props().children)
+    expect(subWrapper.html()).toEqual('<div>description</div>')
   })
 
   it('onCreate', async () => {
     await wrapper.find('Modal').props().onOk()
 
     // With current
-    wrapper.find('Menu').props().onSelect({ key: 'selector key' })
+    wrapper.find('Menu').props().onSelect({ key: 'algorithm' })
     await wrapper.find('Modal').props().onOk()
     expect(onOk).toHaveBeenCalledTimes(1)
   })

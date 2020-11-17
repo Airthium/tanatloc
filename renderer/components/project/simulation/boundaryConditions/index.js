@@ -76,6 +76,10 @@ const BoundaryConditions = ({ project, simulation, part, setVisible }) => {
     else dispatch(select(uuid))
   }
 
+  const onAdd = () => {
+    toggleBoundaryCondition()
+  }
+
   return (
     <Layout>
       <Layout.Content>
@@ -147,7 +151,7 @@ const BoundaryConditions = ({ project, simulation, part, setVisible }) => {
             <Button type="danger" onClick={toggleBoundaryCondition}>
               Cancel
             </Button>
-            <Button onClick={toggleBoundaryCondition}>Add</Button>
+            <Button onClick={onAdd}>Add</Button>
           </Space>
         </Drawer>
       </Layout.Content>

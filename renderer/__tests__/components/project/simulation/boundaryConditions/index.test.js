@@ -86,6 +86,10 @@ describe('renderer/components/project/simulation/boundaryConditions', () => {
       })
   })
 
+  it('onAdd', () => {
+    wrapper.find('Button').at(2).props().onClick()
+  })
+
   it('type', () => {
     wrapper
       .find({ buttonStyle: 'solid' })

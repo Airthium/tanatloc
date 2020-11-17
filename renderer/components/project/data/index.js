@@ -62,7 +62,7 @@ const Data = (project, filter, setTitle) => {
     project &&
     project.owners &&
     project.owners.map((owner) => {
-      let avatar = owner.avatar && Buffer.from(owner.avatar).toString()
+      const avatar = owner.avatar && Buffer.from(owner.avatar).toString()
       let name = ''
       let abbrev = ''
       if (owner.firstname || owner.lastname) {
@@ -89,7 +89,7 @@ const Data = (project, filter, setTitle) => {
     project &&
     project.users &&
     project.users.map((user) => {
-      let avatar = user.avatar && Buffer.from(user.avatar).toString()
+      const avatar = user.avatar && Buffer.from(user.avatar).toString()
       let name = ''
       let abbrev = ''
       if (user.firstname || user.lastname) {

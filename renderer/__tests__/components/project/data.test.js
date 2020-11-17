@@ -6,11 +6,11 @@ describe('renderer/components/project/data', () => {
     expect(data).toBe(null)
   })
 
-  it('without avatar', () => {
+  it('avatar', () => {
     const data = Data({
       id: 'id',
       owners: [
-        { id: 'id1', email: 'email' },
+        { id: 'id1', avatar: 'avatar', email: 'email' },
         {
           id: 'id2',
           email: 'email',
@@ -19,7 +19,7 @@ describe('renderer/components/project/data', () => {
         }
       ],
       users: [
-        { id: 'id1', email: 'email' },
+        { id: 'id1', avatar: 'avatar', email: 'email' },
         {
           id: 'id2',
           email: 'email',

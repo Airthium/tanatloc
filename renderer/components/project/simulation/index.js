@@ -9,6 +9,7 @@ import About from './about'
 import Geometry from './geometry'
 import Parameters from './parameters'
 import BoundaryConditions from './boundaryConditions'
+import Run from './run'
 
 import models from '../../../../models'
 
@@ -112,6 +113,7 @@ const Simulation = ({ project, simulation, type, part, onClose }) => {
           setVisible={setVisible}
         />
       )}
+      {type === 'run' && <Run project={project} simulation={simulation} />}
     </Panel>
   )
 }

@@ -171,20 +171,48 @@ const Project = () => {
     const categories = []
     Object.keys(s.scheme.categories).forEach((key) => {
       const child = s.scheme.categories[key]
-      categories[child.index] = (
-        <Menu.Item
-          key={menuKeys.simulation + '&' + s.id + '&' + key}
-          icon={
-            child.done ? (
-              <CheckCircleOutlined style={{ color: 'green' }} />
-            ) : (
-              <ExclamationCircleOutlined style={{ color: 'orange' }} />
-            )
-          }
-        >
-          {child.title}
-        </Menu.Item>
-      )
+      if (!child.subMenus?.length) {
+        categories[child.index] = (
+          <Menu.Item
+            key={menuKeys.simulation + '&' + s.id + '&' + key}
+            icon={
+              child.done ? (
+                <CheckCircleOutlined style={{ color: 'green' }} />
+              ) : (
+                <ExclamationCircleOutlined style={{ color: 'orange' }} />
+              )
+            }
+          >
+            {child.title}
+          </Menu.Item>
+        )
+      } else {
+        const subMenus = child.subMenus.map((subMenu, index) => {
+          return (
+            <Menu.Item
+              key={menuKeys.simulation + '&' + s.id + '&' + key + '&' + index}
+            >
+              {subMenu.title}
+            </Menu.Item>
+          )
+        })
+        categories[child.index] = (
+          <Menu.SubMenu
+            key={menuKeys.simulation + '&' + s.id + '&' + key}
+            icon={
+              child.done ? (
+                <CheckCircleOutlined style={{ color: 'green' }} />
+              ) : (
+                <ExclamationCircleOutlined style={{ color: 'orange' }} />
+              )
+            }
+            title={child.title}
+            onTitleClick={onMenuClick}
+          >
+            {subMenus}
+          </Menu.SubMenu>
+        )
+      }
     })
     return (
       <Menu.SubMenu

@@ -105,14 +105,14 @@ const ThreeView = ({ part }) => {
     // Light
     const ambientLight = new AmbientLight('#999999')
     const pointLight1 = new PointLight('#ffffff')
-    pointLight1.decay = 2
+    pointLight1.decay = 5
     pointLight1.position.set(5, 5, 5)
     const pointLight2 = new PointLight('#ffffff')
-    pointLight2.decay = 2
+    pointLight2.decay = 5
     pointLight2.position.set(-5, -5, -5)
     scene.current.add(ambientLight)
     scene.current.add(pointLight1)
-    // scene.current.add(pointLight2)
+    scene.current.add(pointLight2)
 
     // Renderer
     renderer.current = new WebGLRenderer({
@@ -443,8 +443,14 @@ const ThreeView = ({ part }) => {
 
     // Lights
     scene.current.children.forEach((child) => {
-      if (child.type === 'PointLight')
-        child.position.normalize().multiplyScalar(1.5 * distance)
+      if (child.type === 'PointLight') {
+        const position = child.position
+        const max = Math.max(
+          Math.max(Math.abs(position.x), Math.abs(position.y)),
+          Math.abs(position.z)
+        )
+        child.position.multiplyScalar((1.5 * distance) / max)
+      }
     })
   }
 

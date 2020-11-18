@@ -106,13 +106,13 @@ const ThreeView = ({ part }) => {
     const ambientLight = new AmbientLight('#999999')
     const pointLight1 = new PointLight('#ffffff')
     pointLight1.decay = 2
-    pointLight1.position.set(5, 1, 1)
+    pointLight1.position.set(5, 5, 5)
     const pointLight2 = new PointLight('#ffffff')
     pointLight2.decay = 2
-    pointLight2.position.set(-5, 1, 1)
+    pointLight2.position.set(-5, -5, -5)
     scene.current.add(ambientLight)
     scene.current.add(pointLight1)
-    scene.current.add(pointLight2)
+    // scene.current.add(pointLight2)
 
     // Renderer
     renderer.current = new WebGLRenderer({

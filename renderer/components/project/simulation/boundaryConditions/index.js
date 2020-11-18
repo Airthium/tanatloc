@@ -40,7 +40,13 @@ const BoundaryConditions = ({ project, simulation, part, setVisible }) => {
     .map((key) => {
       if (key === 'index' || key === 'title' || key === 'done') return
       return boundaryConditions[key].values?.map((child, index) => {
-        return <div key={index}>{child.name}</div>
+        return (
+          <Card key={index}>
+            {child.name}
+            <Button>Edit</Button>
+            <Button>Delete</Button>
+          </Card>
+        )
       })
     })
     .filter((l) => l)

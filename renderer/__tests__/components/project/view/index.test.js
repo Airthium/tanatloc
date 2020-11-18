@@ -167,9 +167,7 @@ global.MockScene.children = [
   {
     type: 'PointLight',
     position: {
-      normalize: () => ({
-        multiplyScalar: () => {}
-      })
+      multiplyScalar: () => {}
     }
   },
   { type: 'AxisHelper' },

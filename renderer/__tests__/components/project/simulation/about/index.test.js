@@ -1,5 +1,5 @@
 import About from '../../../../../components/project/simulation/about'
-import { shallow } from 'enzyme'
+import { shallow, mount } from 'enzyme'
 
 jest.mock('../../../../../components/project/simulation/delete', () => 'delete')
 
@@ -42,5 +42,11 @@ describe('renderer/components/project/simulation/about', () => {
     }
     await wrapper.find('Title').props().editable.onChange('name')
     expect(mockMutate).toHaveBeenCalledTimes(1)
+  })
+
+  it('effect', () => {
+    wrapper.unmount()
+
+    wrapper = mount(<About />)
   })
 })

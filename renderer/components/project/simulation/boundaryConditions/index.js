@@ -21,7 +21,7 @@ import { update, useSimulations } from '../../../../../src/api/simulation'
 const BoundaryConditions = ({ project, simulation, part, setVisible }) => {
   // State
   const [bcVisible, setBcVisible] = useState(false)
-  const [faces, setFaces] = useState([])
+  const [faces, setFaces] = useState(part?.faces || [])
   const [type, setType] = useState()
   const [boundaryCondition, setBoundaryCondition] = useState()
   const [values, setValues] = useState([])

@@ -24,6 +24,13 @@ jest.mock('../../../../../store/select/action', () => ({
   unselect: jest.fn()
 }))
 
+const mockUpdate = jest.fn()
+const mockMutate = jest.fn()
+jest.mock('../../../../../../src/api/simulation', () => ({
+  update: async () => mockUpdate(),
+  useSimulations: () => [[], { mutateOneSimulation: mockMutate }]
+}))
+
 let wrapper
 describe('renderer/components/project/simulation/boundaryConditions', () => {
   const project = {}
@@ -34,7 +41,8 @@ describe('renderer/components/project/simulation/boundaryConditions', () => {
           index: 1,
           title: 'title',
           dirichlet: {
-            children: [{}]
+            children: [{}],
+            values: [{}]
           }
         }
       }
@@ -44,6 +52,11 @@ describe('renderer/components/project/simulation/boundaryConditions', () => {
   const setVisible = jest.fn()
 
   beforeEach(() => {
+    mockHighlighted.mockReset()
+    mockSelected.mockReset()
+    mockSelected.mockImplementation(() => [])
+    mockUpdate.mockReset()
+    mockMutate.mockReset()
     setVisible.mockReset()
     wrapper = shallow(
       <BoundaryConditions
@@ -81,12 +94,58 @@ describe('renderer/components/project/simulation/boundaryConditions', () => {
       .props()
       .onChange({
         target: {
-          value: 'value'
+          value: 'dirichlet'
         }
       })
   })
 
   it('onAdd', () => {
+    wrapper.unmount()
+
+    simulation.scheme.categories.boundaryConditions.dirichlet.values = undefined
+    wrapper = shallow(
+      <BoundaryConditions
+        project={project}
+        simulation={simulation}
+        part={part}
+        setVisible={setVisible}
+      />
+    )
+
+    wrapper
+      .find({ buttonStyle: 'solid' })
+      .props()
+      .onChange({
+        target: {
+          value: 'dirichlet'
+        }
+      })
+
+    wrapper.find('Button').at(2).props().onClick()
+
+    wrapper.unmount()
+
+    mockSelected.mockImplementation(() => ['uuid'])
+    part.faces = [{ uuid: 'uuid1' }, { uuid: 'uuid' }]
+    simulation.scheme.categories.boundaryConditions.dirichlet.values = []
+    wrapper = shallow(
+      <BoundaryConditions
+        project={project}
+        simulation={simulation}
+        part={part}
+        setVisible={setVisible}
+      />
+    )
+
+    wrapper
+      .find({ buttonStyle: 'solid' })
+      .props()
+      .onChange({
+        target: {
+          value: 'dirichlet'
+        }
+      })
+
     wrapper.find('Button').at(2).props().onClick()
   })
 
@@ -169,6 +228,17 @@ describe('renderer/components/project/simulation/boundaryConditions', () => {
   it('effect', () => {
     wrapper.unmount()
 
+    wrapper = mount(
+      <BoundaryConditions
+        project={project}
+        simulation={simulation}
+        part={part}
+        setVisible={setVisible}
+      />
+    )
+
+    wrapper.unmount()
+    part.faces = undefined
     wrapper = mount(
       <BoundaryConditions
         project={project}

@@ -1,5 +1,5 @@
 import Formula from '../../../../components/assets/formula'
-import { shallow } from 'enzyme'
+import { shallow, mount } from 'enzyme'
 
 const onChange = jest.fn()
 
@@ -7,7 +7,7 @@ let wrapper
 describe('renderer/components/assets/formula', () => {
   beforeEach(() => {
     onChange.mockReset()
-    wrapper = shallow(<Formula defaultValue="value" onChange={onChange} />)
+    wrapper = shallow(<Formula value="value" onChange={onChange} />)
   })
 
   afterEach(() => {
@@ -31,5 +31,11 @@ describe('renderer/components/assets/formula', () => {
       })
     expect(onChange).toHaveBeenCalledTimes(1)
     expect(value).toBe('newValue')
+  })
+
+  it('effect', () => {
+    wrapper.unmount()
+
+    wrapper = mount(<Formula value="value" onChange={() => {}} />)
   })
 })

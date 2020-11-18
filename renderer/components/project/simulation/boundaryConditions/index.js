@@ -82,11 +82,11 @@ const BoundaryConditions = ({ project, simulation, part, setVisible }) => {
 
   const onType = (event) => {
     // Type
-    const type = event.target.value
-    setType(type)
+    const currentType = event.target.value
+    setType(currentType)
 
     // Boundary condition
-    const currentBoundaryCondition = boundaryConditions[type]
+    const currentBoundaryCondition = boundaryConditions[currentType]
     setBoundaryCondition(currentBoundaryCondition)
 
     // Initial values

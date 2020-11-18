@@ -17,6 +17,8 @@ jest.mock(
   () => 'boundaryConditions'
 )
 
+jest.mock('../../../../components/project/simulation/run', () => 'run')
+
 jest.mock('../../../../../models', () => [
   {
     name: 'Name',
@@ -74,6 +76,12 @@ describe('components/project/simulation', () => {
     wrapper.unmount()
     wrapper = shallow(<Simulation type="boundaryConditions" />)
     expect(wrapper.find('boundaryConditions').length).toBe(1)
+  })
+
+  it('run', () => {
+    wrapper.unmount()
+    wrapper = shallow(<Simulation type="run" />)
+    expect(wrapper.find('run').length).toBe(1)
   })
 
   it('simulation effect', () => {

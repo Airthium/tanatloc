@@ -76,6 +76,37 @@ describe('components/project', () => {
     expect(wrapper).toBeDefined()
   })
 
+  it('with subMenus', () => {
+    wrapper.unmount()
+    mockSimulations = () => [
+      {
+        scheme: {
+          categories: {
+            geometry: {
+              title: 'Geometry',
+              subMenus: [
+                {
+                  title: 'title1'
+                },
+                { title: 'title2' }
+              ]
+            },
+            something: {
+              done: true,
+              subMenus: [
+                {
+                  title: 'title1'
+                },
+                { title: 'title2' }
+              ]
+            }
+          }
+        }
+      }
+    ]
+    wrapper = shallow(<Project />)
+  })
+
   it('Unauthorized', () => {
     wrapper.unmount()
     mockProject = () => 'Unauthorized'

@@ -13,7 +13,11 @@ const Run = ({ project, simulation }) => {
     const newSimulation = { ...simulation }
 
     // Update local
-    newSimulation.scheme.categories.run.subMenus = [{ title: 'Run 1' }]
+    if (!newSimulation.scheme.categories.run.subMenus)
+      newSimulation.scheme.categories.run.subMenus = []
+    newSimulation.scheme.categories.run.subMenus.push({
+      title: 'Run ' + (subScheme.subMenus.length + 1)
+    })
 
     // Diff
     const diff = {

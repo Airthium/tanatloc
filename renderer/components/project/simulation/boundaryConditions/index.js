@@ -39,8 +39,8 @@ const BoundaryConditions = ({ project, simulation, part, setVisible }) => {
   const list = Object.keys(boundaryConditions)
     .map((key) => {
       if (key === 'index' || key === 'title' || key === 'done') return
-      return boundaryConditions[key].values?.map((child) => {
-        return <div>{child.name}</div>
+      return boundaryConditions[key].values?.map((child, index) => {
+        return <div key={index}>{child.name}</div>
       })
     })
     .filter((l) => l)

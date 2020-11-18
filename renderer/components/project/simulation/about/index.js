@@ -60,13 +60,11 @@ const About = ({ project, simulation }) => {
             <b>Algorihtm:</b> {simulation?.scheme.algorithm}
           </Typography.Text>
 
-          <p>
-            <div
-              dangerouslySetInnerHTML={{
-                __html: simulation?.scheme.description
-              }}
-            />
-          </p>
+          <div
+            dangerouslySetInnerHTML={{
+              __html: simulation?.scheme.description
+            }}
+          />
 
           <Delete
             project={project}

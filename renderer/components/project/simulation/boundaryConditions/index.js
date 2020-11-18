@@ -116,6 +116,8 @@ const BoundaryConditions = ({ project, simulation, part, setVisible }) => {
   }
 
   const onAdd = () => {
+    if (!boundaryCondition.values) boundaryCondition.values = []
+
     // Selected
     const selectedFaces = faces
       .map((f) => {
@@ -125,7 +127,10 @@ const BoundaryConditions = ({ project, simulation, part, setVisible }) => {
 
     // New boundary condition
     const newBoundaryCondition = {
-      name: 'Boundary condition ' + (boundaryConditions.length + 1),
+      name:
+        boundaryCondition.label +
+        ' boundary condition ' +
+        (boundaryCondition.values.length + 1),
       selected: selectedFaces,
       values: values
     }
@@ -135,7 +140,7 @@ const BoundaryConditions = ({ project, simulation, part, setVisible }) => {
 
     // Update local
     newSimulation.scheme.categories.boundaryConditions[type].values = [
-      ...(boundaryCondition.values || []),
+      ...boundaryCondition.values,
       newBoundaryCondition
     ]
 

@@ -123,4 +123,10 @@ describe('components/project/simulation.Selector', () => {
     await wrapper.find('Modal').props().onOk()
     expect(onOk).toHaveBeenCalledTimes(1)
   })
+
+  it('effect', () => {
+    wrapper.unmount()
+
+    wrapper = mount(<Simulation.Selector />)
+  })
 })

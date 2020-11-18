@@ -6,20 +6,25 @@ import Formula from '../../../assets/formula'
 
 import { useSelector, useDispatch } from 'react-redux'
 import {
-  enable,
-  disable,
-  setType,
-  setPart,
-  highlight,
-  unhighlight,
-  select,
-  unselect
+  enable as selectorEnable,
+  disable as selectorDisable,
+  setType as selectorSetType,
+  setPart as selectorSetPart,
+  highlight as selectorHighlight,
+  unhighlight as selectorUnhighlight,
+  select as selectorSelect,
+  unselect as selectorUnselect
 } from '../../../../store/select/action'
+
+import { update, useSimulations } from '../../../../../src/api/simulation'
 
 const BoundaryConditions = ({ project, simulation, part, setVisible }) => {
   // State
   const [bcVisible, setBcVisible] = useState(false)
-  const [bcType, setBcType] = useState()
+  const [faces, setFaces] = useState([])
+  const [type, setType] = useState()
+  const [boundaryCondition, setBoundaryCondition] = useState()
+  const [values, setValues] = useState([])
 
   // Store
   const { highlighted, selected } = useSelector((state) => ({
@@ -29,26 +34,43 @@ const BoundaryConditions = ({ project, simulation, part, setVisible }) => {
   const dispatch = useDispatch()
 
   // Data
-  const subScheme = simulation?.scheme.categories.boundaryConditions
-  const radios = Object.keys(subScheme)
+  const [, { mutateOneSimulation }] = useSimulations(project?.simulations)
+  const boundaryConditions = simulation?.scheme.categories.boundaryConditions
+  const list = Object.keys(boundaryConditions)
+    .map((key) => {
+      if (key === 'index' || key === 'title' || key === 'done') return
+      return boundaryConditions[key].values?.map((child) => {
+        return <div>{child.name}</div>
+      })
+    })
+    .filter((l) => l)
+  const radios = Object.keys(boundaryConditions)
     .map((key) => {
       if (key === 'index' || key === 'title' || key === 'done') return
       return {
         key,
-        ...subScheme[key]
+        ...boundaryConditions[key]
       }
     })
     .filter((r) => r)
 
+  // Cleanup
+  useEffect(() => {
+    setBoundaryCondition()
+    setValues([])
+  }, [bcVisible])
+
   // Selection
   useEffect(() => {
-    dispatch(setType('face'))
-    dispatch(setPart(part?.uuid))
+    dispatch(selectorSetType('face'))
+    dispatch(selectorSetPart(part?.uuid))
+
+    setFaces(part?.faces || [])
   }, [part])
 
   const toggleBoundaryCondition = () => {
-    if (bcVisible) dispatch(disable())
-    else dispatch(enable())
+    if (bcVisible) dispatch(selectorDisable())
+    else dispatch(selectorEnable())
 
     setVisible(bcVisible)
     setBcVisible(!bcVisible)
@@ -59,33 +81,92 @@ const BoundaryConditions = ({ project, simulation, part, setVisible }) => {
   }
 
   const onType = (event) => {
+    // Type
     const type = event.target.value
-    setBcType(subScheme[type])
+    setType(type)
+
+    // Boundary condition
+    const currentBoundaryCondition = boundaryConditions[type]
+    setBoundaryCondition(currentBoundaryCondition)
+
+    // Initial values
+    const initialValues = new Array(
+      currentBoundaryCondition.children.length
+    ).fill(0)
+    setValues(initialValues)
+  }
+
+  const onChange = (value, index) => {
+    const currentValues = [...values]
+    currentValues[index] = value
+    setValues(currentValues)
   }
 
   const onHighlight = (uuid) => {
-    dispatch(highlight(uuid))
+    dispatch(selectorHighlight(uuid))
   }
 
   const onUnhighlight = () => {
-    dispatch(unhighlight())
+    dispatch(selectorUnhighlight())
   }
 
   const onSelect = (uuid) => {
-    if (selected.includes(uuid)) dispatch(unselect(uuid))
-    else dispatch(select(uuid))
+    if (selected.includes(uuid)) dispatch(selectorUnselect(uuid))
+    else dispatch(selectorSelect(uuid))
   }
 
   const onAdd = () => {
-    // toggleBoundaryCondition()
-    console.log(selected)
-    console.log(bcType)
+    // Selected
+    const selectedFaces = faces
+      .map((f) => {
+        if (selected.includes(f.uuid)) return f.number
+      })
+      .filter((f) => f)
+
+    // New boundary condition
+    const newBoundaryCondition = {
+      name: 'Boundary condition ' + (boundaryConditions.length + 1),
+      selected: selectedFaces,
+      values: values
+    }
+
+    // New simulation
+    const newSimulation = { ...simulation }
+
+    // Update local
+    newSimulation.scheme.categories.boundaryConditions[type].values = [
+      ...(boundaryCondition.values || []),
+      newBoundaryCondition
+    ]
+
+    // Diff
+    const diff = {
+      ...boundaryConditions,
+      done: true
+    }
+
+    // Update
+    update({ id: simulation.id }, [
+      {
+        key: 'scheme',
+        type: 'json',
+        method: 'diff',
+        path: ['categories', 'boundaryConditions'],
+        value: diff
+      }
+    ]).then(() => {
+      // Mutate
+      mutateOneSimulation(newSimulation)
+    })
+
+    toggleBoundaryCondition()
   }
 
   return (
     <Layout>
       <Layout.Content>
         <Button icon={<PlusCircleOutlined />} onClick={addBoundaryCondition} />
+        {list}
         <Drawer
           title="Boundary condition"
           placement="left"
@@ -106,54 +187,62 @@ const BoundaryConditions = ({ project, simulation, part, setVisible }) => {
               })}
             </Radio.Group>
           </Card>
-          {bcType && (
+          {boundaryCondition && (
             <Card>
-              {bcType.children?.map((child, index) => {
+              {boundaryCondition.children?.map((child, index) => {
                 return (
                   <div key={index}>
                     {child.label}:
-                    <Formula defaultValue={child.default} onChange={() => {}} />
+                    <Formula
+                      value={
+                        values[index] === undefined
+                          ? child.default
+                          : values[index]
+                      }
+                      onChange={(value) => onChange(value, index)}
+                    />
                   </div>
                 )
               })}
             </Card>
           )}
           <div>
-            {part &&
-              part.faces?.map((face, index) => {
-                return (
-                  <Card
-                    hoverable
-                    key={index}
-                    style={{
-                      marginBottom:
-                        highlighted === face.uuid
-                          ? '5px'
-                          : selected.includes(face.uuid)
-                          ? '5px'
-                          : '7px',
-                      border:
-                        highlighted === face.uuid
-                          ? '2px solid #0096C7'
-                          : selected.includes(face.uuid)
-                          ? '2px solid #c73100'
-                          : '1px solid grey'
-                    }}
-                    bodyStyle={{ padding: '10px' }}
-                    onMouseOver={() => onHighlight(face.uuid)}
-                    onMouseOut={onUnhighlight}
-                    onClick={() => onSelect(face.uuid)}
-                  >
-                    {face.name}
-                  </Card>
-                )
-              })}
+            {faces?.map((face, index) => {
+              return (
+                <Card
+                  hoverable
+                  key={index}
+                  style={{
+                    marginBottom:
+                      highlighted === face.uuid
+                        ? '5px'
+                        : selected.includes(face.uuid)
+                        ? '5px'
+                        : '7px',
+                    border:
+                      highlighted === face.uuid
+                        ? '2px solid #0096C7'
+                        : selected.includes(face.uuid)
+                        ? '2px solid #c73100'
+                        : '1px solid grey'
+                  }}
+                  bodyStyle={{ padding: '10px' }}
+                  onMouseOver={() => onHighlight(face.uuid)}
+                  onMouseOut={onUnhighlight}
+                  onClick={() => onSelect(face.uuid)}
+                >
+                  {face.name}
+                </Card>
+              )
+            })}
           </div>
           <Space>
             <Button type="danger" onClick={toggleBoundaryCondition}>
               Cancel
             </Button>
-            <Button onClick={onAdd}>Add</Button>
+            <Button disabled={!boundaryCondition} onClick={onAdd}>
+              Add
+            </Button>
           </Space>
         </Drawer>
       </Layout.Content>

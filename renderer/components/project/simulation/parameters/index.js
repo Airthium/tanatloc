@@ -28,6 +28,8 @@ const Parameters = ({ project, simulation }) => {
       })
     })
 
+    // TODO set this one async
+
     // Diff
     const diff = {
       ...newSimulation.scheme.categories.parameters,
@@ -81,7 +83,7 @@ const Parameters = ({ project, simulation }) => {
           <div key={key + '&' + index}>
             {child.label}:
             <Formula
-              defaultValue={child.value || child.default}
+              value={child.value === undefined ? child.default : child.value}
               onChange={(value) => onChange(key, index, value)}
             />
           </div>

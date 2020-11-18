@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { message, Layout, Space, Typography } from 'antd'
 
 import Delete from '../delete'
@@ -31,6 +32,14 @@ const About = ({ project, simulation }) => {
     }
   }
 
+  // MathJax
+  /**
+   * MatJax
+   */
+  useEffect(() => {
+    window.MathJax?.typeset()
+  }, [simulation?.scheme.description])
+
   return (
     <Layout>
       <Layout.Content>
@@ -51,7 +60,13 @@ const About = ({ project, simulation }) => {
             <b>Algorihtm:</b> {simulation?.scheme.algorithm}
           </Typography.Text>
 
-          <p>{simulation?.scheme.description}</p>
+          <p>
+            <div
+              dangerouslySetInnerHTML={{
+                __html: simulation?.scheme.description
+              }}
+            />
+          </p>
 
           <Delete
             project={project}

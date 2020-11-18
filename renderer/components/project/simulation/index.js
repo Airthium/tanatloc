@@ -27,7 +27,7 @@ const Selector = ({ visible, onOk, onCancel }) => {
    */
   const onSelect = ({ key }) => {
     const model = models.find((m) => m.algorithm === key)
-    setCurrent(model?.description)
+    setCurrent(model)
   }
 
   /**
@@ -35,7 +35,7 @@ const Selector = ({ visible, onOk, onCancel }) => {
    */
   const onCreate = async () => {
     setLoading(true)
-    if (current) onOk(/*simulationScheme*/) // TODO
+    if (current) onOk(current)
     setLoading(false)
   }
 
@@ -67,7 +67,7 @@ const Selector = ({ visible, onOk, onCancel }) => {
           </Menu>
         </Layout.Sider>
         <Layout.Content>
-          <div dangerouslySetInnerHTML={{ __html: current }} />
+          <div dangerouslySetInnerHTML={{ __html: current?.description }} />
         </Layout.Content>
       </Layout>
     </Modal>

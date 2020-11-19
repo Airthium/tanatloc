@@ -14,12 +14,18 @@ const globalInitialState = {
   select: selectInitialState
 }
 
-// COMBINE
+/**
+ * Combine reducers
+ */
 const combinedReducers = combineReducers({
   select
 })
 
-// REDUCERS
+/**
+ * Global reducer
+ * @param {Object} state Redux state
+ * @param {Object} action Redux action
+ */
 export const reducer = (state = globalInitialState, action = {}) => {
   return combinedReducers(state, action)
 }

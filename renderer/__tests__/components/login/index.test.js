@@ -71,7 +71,11 @@ describe('components/login', () => {
     await wrapper.find('ForwardRef(InternalForm)').props().onFinish({})
     expect(mockPush).toHaveBeenCalledTimes(0)
 
-    mockLogin.mockImplementation(() => ({}))
+    mockLogin.mockImplementation(() => ({ ok: true }))
+    await wrapper.find('ForwardRef(InternalForm)').props().onFinish({})
+    expect(mockPush).toHaveBeenCalledTimes(1)
+
+    mockLogin.mockImplementation(() => ({ ok: false }))
     await wrapper.find('ForwardRef(InternalForm)').props().onFinish({})
     expect(mockPush).toHaveBeenCalledTimes(1)
 

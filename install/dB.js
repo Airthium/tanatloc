@@ -124,7 +124,7 @@ const createTables = async () => {
     // Administrator
     await createAdmin()
 
-    console.log('')
+    console.info('')
   } catch (err) {
     console.error('dB tables creation failed!')
     console.error(err)

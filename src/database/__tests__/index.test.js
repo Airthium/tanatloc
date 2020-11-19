@@ -1,6 +1,6 @@
 import query, { getter, updater, deleter } from '..'
 
-let mockQuery = () => 'query'
+const mockQuery = jest.fn(() => 'query')
 jest.mock('pg', () => {
   return {
     Pool: class PoolMock {
@@ -46,7 +46,7 @@ describe('database', () => {
 
     await updater('db', 'id', { type: 'array', method: 'switch' })
 
-    mockQuery = () => ({
+    mockQuery.mockImplementation(() => ({
       rows: [
         {
           scheme: {
@@ -56,7 +56,7 @@ describe('database', () => {
           }
         }
       ]
-    })
+    }))
     await updater('db', 'id', {
       type: 'json',
       method: 'diff',

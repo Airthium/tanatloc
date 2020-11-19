@@ -2,20 +2,20 @@
 
 ## API
 
-API calls, client side
+Client API calls
 
 ## Auth
 
-Authentication methods, server side
+Server authentication methods
 
 ## Database
 
-Database queries, server side
+Server database queries
 
 ## Lib
 
-Library, server and client side
+Server & client libraries
 
 ## Route
 
-API routes, server side
+Server API routes

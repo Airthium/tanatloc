@@ -9,6 +9,10 @@ jest.mock('../auth-cookies', () => ({
   getTokenCookie: () => 'cookie'
 }))
 
+jest.mock('../../../config/auth', () => ({
+  SECRET: 'auth_secret'
+}))
+
 describe('src/auth/iron', () => {
   it('encryptSession', () => {
     const res = iron.encryptSession()

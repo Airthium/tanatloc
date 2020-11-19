@@ -1,5 +1,6 @@
 /**
  * Poisson equation
+ * @memberof module:models
  */
 const Poisson = {
   category: 'Academic',

@@ -1,7 +1,6 @@
 import { serialize, parse } from 'cookie'
 
 import isElectron from 'is-electron'
-// import storage from 'electron-json-storage'
 import ElectronStore from 'electron-store'
 
 let storage

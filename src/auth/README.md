@@ -1,1 +1,1 @@
-Server authentication
+# Server authentication methods

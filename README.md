@@ -26,7 +26,7 @@ Using server-side rendering (SSR).
 
 | Variable                 | Default       | Comment                                 |
 | ------------------------ | ------------- | --------------------------------------- |
-| STORAGE                  | /tmp/tanatloc | Absolute storage path                   |
+| STORAGE_PATH             | /tmp/tanatloc | Absolute storage path                   |
 | AVATAR_RELATIVE_PATH     | avatar        | Relative avatar path (from STORAGE)     |
 | SIMULATION_RELATIVE_PATH | simulation    | Realtive simulation path (from STORAGE) |
 

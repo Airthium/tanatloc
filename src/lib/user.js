@@ -10,7 +10,7 @@ import {
 import { read as readAvatar } from './avatar'
 
 /**
- * Add user (TODO)
+ * Add user
  * @param {Object} user { username, password }
  */
 const add = async ({ username, password }) => {

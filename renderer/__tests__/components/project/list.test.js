@@ -75,6 +75,6 @@ describe('component/project/list', () => {
   it('render', () => {
     // TODO must be at(5) if shared is enable
     const render = wrapper.find('Column').at(4).props().render()
-    // TODO expect render to Equal JSX
+    expect(shallow(render).html().includes('delete')).toBe(true)
   })
 })

@@ -35,7 +35,7 @@ const BoundaryConditions = ({ project, simulation, part, setVisible }) => {
 
   // Data
   const [, { mutateOneSimulation }] = useSimulations(project?.simulations)
-  const boundaryConditions = simulation?.scheme.categories.boundaryConditions
+  const boundaryConditions = simulation?.scheme.configuration.boundaryConditions
   const list = Object.keys(boundaryConditions)
     .map((key) => {
       if (key === 'index' || key === 'title' || key === 'done') return
@@ -145,7 +145,7 @@ const BoundaryConditions = ({ project, simulation, part, setVisible }) => {
     const newSimulation = { ...simulation }
 
     // Update local
-    newSimulation.scheme.categories.boundaryConditions[type].values = [
+    newSimulation.scheme.configuration.boundaryConditions[type].values = [
       ...boundaryCondition.values,
       newBoundaryCondition
     ]
@@ -162,7 +162,7 @@ const BoundaryConditions = ({ project, simulation, part, setVisible }) => {
         key: 'scheme',
         type: 'json',
         method: 'diff',
-        path: ['categories', 'boundaryConditions'],
+        path: ['configuration', 'boundaryConditions'],
         value: diff
       }
     ]).then(() => {

@@ -36,7 +36,7 @@ const Geometry = ({ project, simulation, part }) => {
 
   // Effect
   useEffect(() => {
-    const file = simulation?.scheme.categories.geometry.file
+    const file = simulation?.scheme.configuration.geometry.file
     setCurrentFile(file)
     if (file) {
       setUpload(false)
@@ -82,7 +82,7 @@ const Geometry = ({ project, simulation, part }) => {
           key: 'scheme',
           type: 'json',
           method: 'diff',
-          path: ['categories', 'geometry'],
+          path: ['configuration', 'geometry'],
           value: diff
         }
       ])
@@ -130,7 +130,7 @@ const Geometry = ({ project, simulation, part }) => {
         key: 'scheme',
         type: 'json',
         method: 'diff',
-        path: ['categories', 'geometry'],
+        path: ['configuration', 'geometry'],
         value: diff
       }
     ])
@@ -140,10 +140,10 @@ const Geometry = ({ project, simulation, part }) => {
       ...simulation,
       scheme: {
         ...simulation.scheme,
-        categories: {
-          ...simulation.scheme.categories,
+        configuration: {
+          ...simulation.scheme.configuration,
           geometry: {
-            ...simulation.scheme.categories.geometry,
+            ...simulation.scheme.configuration.geometry,
             file: undefined,
             done: false
           }
@@ -154,8 +154,8 @@ const Geometry = ({ project, simulation, part }) => {
 
   const onDownload = async () => {
     const file = {
-      origin: simulation.scheme.categories.geometry.file.origin,
-      originPath: simulation.scheme.categories.geometry.file.originPath
+      origin: simulation.scheme.configuration.geometry.file.origin,
+      originPath: simulation.scheme.configuration.geometry.file.originPath
     }
     const content = await get({ id: simulation.id }, file)
 

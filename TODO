@@ -1,2 +1,5 @@
 ThreeJS :
 - rendering order for sprites
+
+Converters:
+- Support geometry names with space

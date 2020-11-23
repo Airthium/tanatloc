@@ -1,50 +1,72 @@
-import { Button, Layout } from 'antd'
+import { useState } from 'react'
+import { message, Button, Layout } from 'antd'
 import { PlusCircleOutlined } from '@ant-design/icons'
 
-import { update, useSimulations } from '../../../../../src/api/simulation'
+import {
+  run /*update, useSimulations*/
+} from '../../../../../src/api/simulation'
+
+import Sentry from '../../../../../src/lib/sentry'
 
 const Run = ({ project, simulation }) => {
+  // State
+  const [running, setRunning] = useState(false)
+
   // Data
-  const subScheme = simulation?.scheme.categories.run
-  const [, { mutateOneSimulation }] = useSimulations(project?.simulations)
+  // const subScheme = simulation?.scheme.categories.run
+  // const [, { mutateOneSimulation }] = useSimulations(project?.simulations)
 
-  const addRun = () => {
-    // TODO just for test
-    const newSimulation = { ...simulation }
+  // const addRun = () => {
+  //   // TODO just for test
+  //   const newSimulation = { ...simulation }
 
-    // Update local
-    if (!newSimulation.scheme.categories.run.subMenus)
-      newSimulation.scheme.categories.run.subMenus = []
-    newSimulation.scheme.categories.run.subMenus.push({
-      title: 'Run ' + (subScheme.subMenus.length + 1)
-    })
+  //   // Update local
+  //   if (!newSimulation.scheme.categories.run.subMenus)
+  //     newSimulation.scheme.categories.run.subMenus = []
+  //   newSimulation.scheme.categories.run.subMenus.push({
+  //     title: 'Run ' + (subScheme.subMenus.length + 1)
+  //   })
 
-    // Diff
-    const diff = {
-      ...newSimulation.scheme.categories.run,
-      done: true
+  //   // Diff
+  //   const diff = {
+  //     ...newSimulation.scheme.categories.run,
+  //     done: true
+  //   }
+
+  //   // Update
+  //   update({ id: simulation.id }, [
+  //     {
+  //       key: 'scheme',
+  //       type: 'json',
+  //       method: 'diff',
+  //       path: ['categories', 'run'],
+  //       value: diff
+  //     }
+  //   ]).then(() => {
+  //     // Mutate
+  //     mutateOneSimulation(newSimulation)
+  //   })
+  // }
+
+  const onRun = async () => {
+    setRunning(true)
+
+    try {
+      await run({ id: simulation.id })
+    } catch (err) {
+      message.error(err.message)
+      console.error(err)
+      Sentry.captureException(err)
+    } finally {
+      setRunning(false)
     }
-
-    // Update
-    update({ id: simulation.id }, [
-      {
-        key: 'scheme',
-        type: 'json',
-        method: 'diff',
-        path: ['categories', 'run'],
-        value: diff
-      }
-    ]).then(() => {
-      // Mutate
-      mutateOneSimulation(newSimulation)
-    })
   }
 
   return (
     <Layout>
       <Layout.Content>
-        <Button icon={<PlusCircleOutlined />} onClick={addRun}>
-          Add a run
+        <Button icon={<PlusCircleOutlined />} loading={running} onClick={onRun}>
+          Run
         </Button>
       </Layout.Content>
     </Layout>

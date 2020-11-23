@@ -169,8 +169,9 @@ const Project = () => {
   // Simulations render build
   const simulationsRender = simulations.map((s) => {
     const categories = []
-    Object.keys(s.scheme.categories).forEach((key) => {
-      const child = s.scheme.categories[key]
+    const configuration = s?.scheme?.configuration || {}
+    Object.keys(configuration).forEach((key) => {
+      const child = configuration[key]
       if (!child.subMenus?.length) {
         categories[child.index] = (
           <Menu.Item

@@ -727,7 +727,7 @@ const View = ({ simulation, setPartSummary }) => {
 
   useEffect(() => {
     const scheme = simulation?.scheme
-    const geometry = scheme?.categories['geometry']
+    const geometry = scheme?.configuration?.['geometry']
 
     if (geometry?.file?.part) {
       loadPart(geometry.file)

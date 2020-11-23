@@ -172,4 +172,13 @@ const del = async ({ id }, simulation) => {
   }
 }
 
-export { add, get, update, del }
+/**
+ * Run simulation
+ * @param {Object} simulation Simulation { id }
+ */
+const run = async ({ id }) => {
+  const simulation = await get(id, ['scheme'])
+  console.log(simulation)
+}
+
+export { add, get, update, del, run }

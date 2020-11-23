@@ -10,7 +10,7 @@ const Parameters = ({ project, simulation }) => {
   const [values, setValues] = useState({})
 
   // Data
-  const subScheme = simulation?.scheme.categories.parameters
+  const subScheme = simulation?.scheme.configuration.parameters
   const [, { mutateOneSimulation }] = useSimulations(project?.simulations)
 
   // Effect
@@ -22,7 +22,7 @@ const Parameters = ({ project, simulation }) => {
       const deepValues = values[key]
       deepValues.forEach((value, index) => {
         if (value)
-          newSimulation.scheme.categories.parameters[key].children[
+          newSimulation.scheme.configuration.parameters[key].children[
             index
           ].value = value
       })
@@ -32,7 +32,7 @@ const Parameters = ({ project, simulation }) => {
 
     // Diff
     const diff = {
-      ...newSimulation.scheme.categories.parameters,
+      ...newSimulation.scheme.configuration.parameters,
       done: true
     }
 
@@ -42,7 +42,7 @@ const Parameters = ({ project, simulation }) => {
         key: 'scheme',
         type: 'json',
         method: 'diff',
-        path: ['categories', 'parameters'],
+        path: ['configuration', 'parameters'],
         value: diff
       }
     ]).then(() => {

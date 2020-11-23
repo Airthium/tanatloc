@@ -18,7 +18,7 @@ const Poisson = {
         <a target="_blank" href="https://en.wikipedia.org/wiki/Poisson%27s_equation">Wikipedia page</a>
     </p>
   `,
-  categories: {
+  configuration: {
     geometry: {
       index: 1,
       title: 'Geometry'

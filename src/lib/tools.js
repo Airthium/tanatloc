@@ -50,7 +50,7 @@ export const convert = async (location, file) => {
         ' ' +
         target,
       (error, stdout, stderr) => {
-        if (error) reject(error)
+        if (error) reject({ error, stdout, stderr })
         resolve(stdout)
       }
     )

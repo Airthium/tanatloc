@@ -1,5 +1,10 @@
+/** @module renderer/store/select */
+
 import { selectActionTypes } from './action'
 
+/**
+ * Select initial state
+ */
 export const selectInitialState = {
   enabled: false,
   type: null,
@@ -8,6 +13,11 @@ export const selectInitialState = {
   selected: []
 }
 
+/**
+ * Select reducer
+ * @param {Object} state Redux state
+ * @param {Object} action Action
+ */
 const reducer = (state, action) => {
   if (!state) state = selectInitialState
   switch (action.type) {

@@ -1,1 +1,27 @@
-Server database
+# Server database queries
+
+- Avatar:
+  - Add
+  - Del
+  - Get
+- Project:
+  - Add
+  - Del
+  - Get
+  - Update
+- Simulation:
+  - Add
+  - Del
+  - Get
+  - Update
+- User:
+  - Add
+  - Del
+  - Get
+  - GetByUsernameAndPassword
+  - Update
+- Workspace:
+  - Add
+  - Del
+  - Get
+  - Update

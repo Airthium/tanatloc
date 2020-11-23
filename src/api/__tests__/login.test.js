@@ -23,6 +23,6 @@ describe('src/api/user', () => {
     }
 
     const res = await login({})
-    expect(res).toBe(undefined)
+    expect(res).toEqual({ status: 401 })
   })
 })

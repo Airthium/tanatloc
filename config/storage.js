@@ -1,5 +1,10 @@
 const path = require('path')
 
+if (!process.env.STORAGE_PATH)
+  console.warn(
+    ' ⚠ No storage path configured, your data will not be persistent'
+  )
+
 const storagePath = process.env.STORAGE_PATH || '/tmp/tanatloc'
 
 module.exports = {

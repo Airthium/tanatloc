@@ -1,5 +1,15 @@
-# API routes
+# Server API routes
 
-Used in the server side.
-
-All routes must be secured (using `try`/`catch` and `sentry` report).
+- Auth
+- Login
+- Logout
+- Session
+- Avatar
+- File
+- Part
+- Project
+- Projects
+- Simulation
+- Simulations
+- User
+- Workspace

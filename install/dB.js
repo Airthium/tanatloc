@@ -101,30 +101,14 @@ const createTables = async () => {
     console.info(' + Project table')
     await createProjectTable()
 
-    // // Geometries
-    // console.info(' + Geometry table')
-    // await createGeometryTable()
-
-    // // Meshes
-    // console.info(' + Mesh table')
-    // await createMeshTable()
-
     // Simulations
     console.info(' + Simulation table')
     await createSimulationTable()
 
-    // // Results
-    // console.info(' + Result table')
-    // await createResultTable()
-
-    // // Tasks
-    // console.info(' + Task table')
-    // await createTaskTable()
-
     // Administrator
     await createAdmin()
 
-    console.log('')
+    console.info('')
   } catch (err) {
     console.error('dB tables creation failed!')
     console.error(err)
@@ -249,44 +233,6 @@ const createProjectTable = async () => {
     ))
 }
 
-// /**
-//  * Create geometry table
-//  */
-// const createGeometryTable = async () => {
-//   !(await checkTable(databases.GEOMETRIES)) &&
-//     (await query(
-//       `CREATE TABLE IF NOT EXISTS ` +
-//         databases.GEOMETRIES +
-//         ` (
-//           id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-//           name TEXT NOT NULL,
-//           file TEXT,
-//           dimension smallint,
-//           part TEXT
-//         )`
-//     ))
-// }
-
-// /**
-//  * Create mesh table
-//  * @memberof module:install
-//  */
-// const createMeshTable = async () => {
-//   !(await checkTable(databases.MESHES)) &&
-//     (await query(
-//       `CREATE TABLE IF NOT EXISTS ` +
-//         databases.MESHES +
-//         ` (
-//           id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-//           name TEXT NOT NULL,
-//           origin jsonb,
-//           file TEXT,
-//           part TEXT,
-//           parameters jsonb
-//         )`
-//     ))
-// }
-
 /**
  * Create simulation table
  * @memberof module:install
@@ -304,51 +250,6 @@ const createSimulationTable = async () => {
         )`
     ))
 }
-
-// /**
-//  * Create result table
-//  * @memberof module:install
-//  */
-// const createResultTable = async () => {
-//   !(await checkTable(databases.RESULTS)) &&
-//     (await query(
-//       `CREATE TABLE IF NOT EXISTS ` +
-//         databases.RESULTS +
-//         ` (
-//           id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-//           name TEXT NOT NULL,
-//           simulation uuid NOT NULL,
-//           task uuid NOT NULL,
-//           configuration jsonb,
-//           files TEXT[]
-//         )`
-//     ))
-// }
-
-// /**
-//  * Create task table
-//  * @memberof module:install
-//  */
-// const createTaskTable = async () => {
-//   !(await checkTable(databases.TASKS)) &&
-//     (await query(
-//       `CREATE TABLE IF NOT EXISTS ` +
-//         databases.TASKS +
-//         ` (
-//           id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-//           name TEXT NOT NULL,
-//           target uuid,
-//           result uuid,
-//           date TIMESTAMP NOT NULL,
-//           type TEXT NOT NULL,
-//           status TEXT NOT NULL,
-//           system TEXT NOT NULL,
-//           token uuid,
-//           log TEXT NOT NULL,
-//           pid TEXT
-//         )`
-//     ))
-// }
 
 /**
  * Password generator

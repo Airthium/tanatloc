@@ -42,7 +42,7 @@ const Dialog = (props) => {
           await onOk(values)
           form.resetFields()
         } catch (info) {
-          console.log('Validation Failed:', info)
+          console.warn('Validation Failed:', info)
         }
       }}
       confirmLoading={loading}

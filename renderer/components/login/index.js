@@ -66,7 +66,7 @@ const Login = () => {
     // Check
     try {
       const loggedUser = await login(values)
-      if (loggedUser) {
+      if (loggedUser.ok) {
         // Logged
         mutateUser(loggedUser)
         router.push('/dashboard')

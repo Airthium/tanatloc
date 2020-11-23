@@ -10,6 +10,9 @@ const NotFound = () => {
   // Router
   const router = useRouter()
 
+  /**
+   * Render
+   */
   return (
     <Layout>
       <Layout.Content className="NotFound">

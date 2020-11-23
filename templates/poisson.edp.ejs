@@ -1,0 +1,92 @@
+<%# Dimension -%>
+<%- include(`blobs/dimensioning.edp.ejs`, {
+	dimension: dimension
+}); -%>
+
+<%# Mesh -%>
+<%
+const mesh1 = mesh.children[0]
+-%>
+<%- include(`blobs/mesh.edp.ejs`, {
+	dimension: dimension,
+	mesh: mesh1
+}); -%>
+
+<%# Finite element space -%>
+<% const finiteElementSpace1 = finiteElementSpace.children[0] -%>
+<%- include(`blobs/fespace.edp.ejs`, {
+	mesh: mesh1,
+	finiteElementSpace: finiteElementSpace1
+}); -%>
+
+<%# Finite element function -%>
+<%- include(`blobs/fespaceFunction.edp.ejs`, {
+	finiteElementSpace: finiteElementSpace1,
+	finiteElementFunction: ['u']
+}); -%>
+
+<%# Macro -%>
+<%- include(`blobs/macro.edp.ejs`, {
+	dimension,
+	type: ['scalarGradient']
+}); -%>
+
+<%# Problem -%>
+<%
+const dirichlet = boundaryCondition.children[0].values
+const neumann = boundaryCondition.children[1].values
+const rhs = rightHandSide.children[0]
+const rhsValue = rhs.value || rhs.default
+-%>
+// Problem
+cout << "Define the problem..." << endl;
+varf vLaplacian (u, uh)
+	= intN(Th)(
+		grad(u)' * grad(uh)
+	)
+<% for (const d of dirichlet) { -%>
+	+ on(<%= d.labels.join() -%>, u=0)
+<% } -%>
+	;
+
+varf vLaplacianRHS (u, uh)
+	= intN(Th)(
+		(<%- rhsValue -%>) * uh
+	)
+<% for (const n of neumann) { -%>
+<% const labels = n.selected.map(s => {
+	return s.label
+}) -%>
+	- intN1(Th, <%= labels.join() %>) {
+		(<%- n.value[0] %>) * uh
+	}
+<% } -%>
+<% for (const d of dirichlet) { -%>
+	+ on(<%= d.labels.join() -%>, u=<%- d.value[0] -%>)
+<% } -%>
+	;
+
+<%# Solver -%>
+<% const solver1 = solver.children[0] -%>
+<%- include(`blobs/solver.edp.ejs`, {
+	solver: solver1
+}) -%>
+
+<%# Solve -%>
+// Solve
+cout << "Solve the problem..." << endl;
+matrix Laplacian = vLaplacian(<%= finiteElementSpace1.name -%>, <%= finiteElementSpace1.name -%>, solver=solver);
+real[int] LaplacianRHS = vLaplacianRHS(0, <%= finiteElementSpace1.name -%>);
+u[] = Laplacian^-1 * LaplacianRHS;
+
+<%# Save -%>
+<%- include(`blobs/save.edp.ejs`, {
+	solution: {
+		path: `${result.path}`,
+		name: '"Result"',
+		mesh: mesh1.name,
+		sol: ['u'],
+		dataName: ['u'],
+		order: [1]
+	}
+}); -%>

@@ -5,7 +5,7 @@
 const Poisson = {
   category: 'Academic',
   name: "Poisson's equation",
-  algorithm: 'Poisson',
+  algorithm: 'poisson',
   code: 'FreeFEM',
   description: `
     <p>

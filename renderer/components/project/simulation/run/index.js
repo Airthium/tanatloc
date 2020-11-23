@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { message, Button, Layout } from 'antd'
+import { message, Button, Layout, Steps } from 'antd'
 import { PlusCircleOutlined } from '@ant-design/icons'
 
 import {
@@ -68,6 +68,10 @@ const Run = ({ project, simulation }) => {
         <Button icon={<PlusCircleOutlined />} loading={running} onClick={onRun}>
           Run
         </Button>
+        <Steps direction="vertical" percent="45">
+          <Steps.Step title="Meshing" status="process" />
+          <Steps.Step title="Simulating" status="wait" />
+        </Steps>
       </Layout.Content>
     </Layout>
   )

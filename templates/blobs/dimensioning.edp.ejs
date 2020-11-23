@@ -1,0 +1,10 @@
+// Dimension macros
+<% if (dimension === 2)  { -%>
+macro meshN()mesh//
+macro intN()int2d//
+macro intN1()int1d//
+<% } else { -%>
+macro meshN()mesh3//
+macro intN()int3d//
+macro intN1()int2d//
+<% } -%>

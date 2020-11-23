@@ -1,0 +1,5 @@
+<% if (dimension === 2) { -%>
+macro grad(A) [dx(A), dy(A)] //
+<% } else { -%>
+macro grad(A) [dx(A), dy(A), dz(A)] //
+<% } -%>

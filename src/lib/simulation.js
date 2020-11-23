@@ -1,6 +1,7 @@
 /** @module src/lib/simulation */
 
 import path from 'path'
+import { exec } from 'child_process'
 
 import storage from '../../config/storage'
 
@@ -13,6 +14,9 @@ import {
 
 import { update as updateProject } from './project'
 import { writeFile, convert, removeFile, removeDirectory } from './tools'
+
+import { build as buildMesh } from './mesh'
+import { render } from './template'
 
 /**
  * Add simulation
@@ -178,7 +182,101 @@ const del = async ({ id }, simulation) => {
  */
 const run = async ({ id }) => {
   const simulation = await get(id, ['scheme'])
+
   console.log(simulation)
+  const globalPath = path.join(storage.SIMULATION, simulation.id)
+  const geometry = simulation.scheme.configuration.geometry
+
+  // Build the mesh
+  const mesh = await buildMesh({ id: simulation.id }, geometry, {
+    size: 'auto',
+    fineness: 'normal'
+  })
+
+  // Build the simulation script
+  const computePath = path.join(storage.SIMULATION, simulation.id, 'run')
+  // try {
+  //TODO
+  await render(
+    './templates/poisson.edp.ejs',
+    {
+      dimension: 3,
+      mesh: {
+        children: [
+          {
+            name: 'Th',
+            path: path.join(globalPath, 'mesh/cube.step.msh')
+          }
+        ]
+      },
+      finiteElementSpace: {
+        children: [
+          {
+            name: 'Uh',
+            value: 'P2'
+          }
+        ]
+      },
+      boundaryCondition: {
+        children: [
+          {
+            values: [
+              {
+                labels: ['1'],
+                value: [1]
+              },
+              {
+                labels: ['2', '3', '4', '5', '6'],
+                value: [0]
+              }
+            ]
+          },
+          {
+            values: []
+          }
+        ]
+      },
+      rightHandSide: {
+        children: [
+          {
+            value: '0'
+          }
+        ]
+      },
+      solver: {
+        children: ['MUMPS']
+      },
+      result: {
+        path: path.join(globalPath, 'run')
+      }
+    },
+    {
+      location: computePath,
+      name: 'poisson.edp'
+    }
+  )
+  // } catch (err) {
+  //   console.log(err)
+  // }
+
+  await new Promise((resolve, reject) => {
+    exec(
+      'docker run --rm -v ' +
+        globalPath +
+        ':' +
+        globalPath +
+        ' -u $(id -u):$(id -g) freefem/freefem:latest FreeFem++ ' +
+        path.join(computePath, 'poisson.edp'),
+      (error, stdout, stderr) => {
+        if (error) reject({ error, stdout, stderr })
+        resolve(stdout)
+      }
+    )
+  })
+
+  // Run the simulation
+  // TODO
+  // console.log(simulation)
 }
 
 export { add, get, update, del, run }

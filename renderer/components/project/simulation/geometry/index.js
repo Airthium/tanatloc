@@ -71,6 +71,7 @@ const Geometry = ({ project, simulation, part }) => {
       const diff = {
         file: {
           name: info.file.name,
+          uid: info.file.uid,
           buffer: Buffer.from(buffer)
         },
         done: true

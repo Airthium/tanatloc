@@ -93,7 +93,7 @@ describe('components/project/simulation', () => {
     wrapper = mount(
       <Simulation
         simulation={{
-          scheme: { categories: { geometry: { title: 'Geometry' } } }
+          scheme: { configuration: { geometry: { title: 'Geometry' } } }
         }}
         type="geometry"
       />

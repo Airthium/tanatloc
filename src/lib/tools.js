@@ -36,8 +36,8 @@ export const readFile = async (file) => {
  * @param {Object} file File
  */
 export const convert = async (location, file) => {
-  const partPath = file.name.replace(/\.[^/.]+$/, '')
-  const origin = path.join(location, file.name)
+  const partPath = file.uid
+  const origin = path.join(location, file.fileName)
   const target = path.join(location, partPath)
   await new Promise((resolve, reject) => {
     exec(

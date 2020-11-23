@@ -6,12 +6,7 @@ import { readFile, writeFile } from './tools'
 
 const render = async (file, parameters, save) => {
   // Render
-  let script
-  // try {
-  script = await ejs.renderFile(file, parameters)
-  // } catch (err) {
-  //   console.log(err)
-  // }
+  const script = await ejs.renderFile(file, parameters)
 
   // Save
   if (save) await writeFile(save.location, save.name, script)

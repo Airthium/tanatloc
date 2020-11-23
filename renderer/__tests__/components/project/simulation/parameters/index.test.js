@@ -15,7 +15,7 @@ describe('renderer/components/project/simulation/parameters', () => {
   const project = {}
   const simulation = {
     scheme: {
-      categories: {
+      configuration: {
         parameters: {
           index: 0,
           title: 'title',
@@ -57,7 +57,7 @@ describe('renderer/components/project/simulation/parameters', () => {
   it('with value', () => {
     wrapper.unmount()
 
-    simulation.scheme.categories.parameters.param1.children[0].value = 0
+    simulation.scheme.configuration.parameters.param1.children[0].value = 0
     wrapper = shallow(<Parameters project={project} simulation={simulation} />)
   })
 

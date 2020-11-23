@@ -76,12 +76,12 @@ const checkFiles = async (simulation, data) => {
 
       // Remove old file
       if (subObj.file) {
-        if (subObj.file.origin) {
+        if (subObj.file.fileName) {
           const originFile = path.join(
             storage.SIMULATION,
             simulation.id,
             subObj.file.originPath,
-            subObj.file.origin
+            subObj.file.fileName
           )
           try {
             await removeFile(originFile)
@@ -89,7 +89,7 @@ const checkFiles = async (simulation, data) => {
             console.warn(err)
           }
         }
-        if (subObj.file.part) {
+        if (subObj.file.partPath) {
           const partDirectory = path.join(
             storage.SIMULATION,
             simulation.id,
@@ -110,15 +110,15 @@ const checkFiles = async (simulation, data) => {
         const subDir = d.path.slice(-1).pop()
         const location = path.join(storage.SIMULATION, simulation.id, subDir)
         const file = d.value.file
+
+        file.originPath = subDir
+        file.extension = file.name.split('.').pop()
+        file.fileName = file.uid + '.' + file.extension
         await writeFile(
           location,
-          file.name,
+          file.fileName,
           Buffer.from(file.buffer).toString()
         )
-
-        // Update object
-        d.value.file.originPath = subDir
-        d.value.file.origin = file.name
 
         // Convert file
         const part = await convert(location, file)
@@ -126,8 +126,7 @@ const checkFiles = async (simulation, data) => {
         d.value.file.part = part.part
 
         // Remove unused
-        delete d.value.file.uid
-        delete d.value.file.buffer
+        delete file.buffer
       }
 
       return
@@ -183,90 +182,127 @@ const del = async ({ id }, simulation) => {
 const run = async ({ id }) => {
   const simulation = await get(id, ['scheme'])
 
-  console.log(simulation)
-  const globalPath = path.join(storage.SIMULATION, simulation.id)
-  const geometry = simulation.scheme.configuration.geometry
+  // Global
+  const simulationPath = path.join(storage.SIMULATION, simulation.id)
+  const configuration = simulation.scheme.configuration
 
-  // Build the mesh
-  const mesh = await buildMesh({ id: simulation.id }, geometry, {
-    size: 'auto',
-    fineness: 'normal'
-  })
+  // Meshing
+  await Promise.all(
+    Object.keys(configuration).map(async (key) => {
+      if (configuration[key].meshable) {
+        const geometry = configuration[key]
+
+        // Build mesh
+        const mesh = await buildMesh(
+          simulationPath,
+          {
+            path: path.join('..', geometry.file.originPath),
+            file: geometry.file.fileName
+          },
+          {
+            path: path.join(geometry.file.originPath + '_mesh'),
+            parameters: {
+              size: 'auto',
+              fineness: 'veryfine'
+            }
+          }
+        )
+
+        // Save mesh name
+        configuration[key].mesh = mesh
+      }
+    })
+  )
 
   // Build the simulation script
-  const computePath = path.join(storage.SIMULATION, simulation.id, 'run')
-  // try {
-  //TODO
   await render(
     './templates/poisson.edp.ejs',
     {
+      ...configuration,
       dimension: 3,
-      mesh: {
-        children: [
-          {
-            name: 'Th',
-            path: path.join(globalPath, 'mesh/cube.step.msh')
-          }
-        ]
-      },
-      finiteElementSpace: {
-        children: [
-          {
-            name: 'Uh',
-            value: 'P2'
-          }
-        ]
-      },
-      boundaryCondition: {
-        children: [
-          {
-            values: [
-              {
-                labels: ['1'],
-                value: [1]
-              },
-              {
-                labels: ['2', '3', '4', '5', '6'],
-                value: [0]
-              }
-            ]
-          },
-          {
-            values: []
-          }
-        ]
-      },
-      rightHandSide: {
-        children: [
-          {
-            value: '0'
-          }
-        ]
-      },
-      solver: {
-        children: ['MUMPS']
-      },
       result: {
-        path: path.join(globalPath, 'run')
+        path: 'run'
       }
     },
     {
-      location: computePath,
-      name: 'poisson.edp'
+      location: path.join(simulationPath, 'run'),
+      name: simulation.id + '.edp'
     }
   )
-  // } catch (err) {
-  //   console.log(err)
-  // }
+
+  // // try {
+  // //TODO
+  // await render(
+  //   './templates/poisson.edp.ejs',
+  //   {
+  //     dimension: 3,
+  //     mesh: {
+  //       children: [
+  //         {
+  //           name: 'Th',
+  //           path: path.join(globalPath, 'mesh/OZ_racing_4H.STEP.msh')
+  //         }
+  //       ]
+  //     },
+  //     finiteElementSpace: {
+  //       children: [
+  //         {
+  //           name: 'Uh',
+  //           value: 'P2'
+  //         }
+  //       ]
+  //     },
+  //     boundaryCondition: {
+  //       children: [
+  //         {
+  //           values: [
+  //             {
+  //               labels: ['1'],
+  //               value: [1]
+  //             },
+  //             {
+  //               labels: ['25'],
+  //               value: [0]
+  //             }
+  //           ]
+  //         },
+  //         {
+  //           values: []
+  //         }
+  //       ]
+  //     },
+  //     rightHandSide: {
+  //       children: [
+  //         {
+  //           value: '0'
+  //         }
+  //       ]
+  //     },
+  //     solver: {
+  //       children: ['MUMPS']
+  //     },
+  //     result: {
+  //       path: path.join(globalPath, 'run')
+  //     }
+  //   },
+  //   {
+  //     location: computePath,
+  //     name: 'poisson.edp'
+  //   }
+  // )
+  // // } catch (err) {
+  // //   console.log(err)
+  // // }
 
   await new Promise((resolve, reject) => {
     exec(
       'docker run --rm -v ' +
-        globalPath +
+        simulationPath +
         ':' +
-        globalPath +
+        '/run' +
+        ' -w /run' +
         ' -u $(id -u):$(id -g) freefem/freefem:latest FreeFem++ ' +
-        path.join(computePath, 'poisson.edp'),
+        path.join('run', simulation.id + '.edp'),
       (error, stdout, stderr) => {
         if (error) reject({ error, stdout, stderr })
         resolve(stdout)
@@ -274,9 +310,9 @@ const run = async ({ id }) => {
     )
   })
 
-  // Run the simulation
-  // TODO
-  // console.log(simulation)
+  // // Run the simulation
+  // // TODO
+  // // console.log(simulation)
 }
 
 export { add, get, update, del, run }

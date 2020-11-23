@@ -34,7 +34,7 @@ describe('renderer/components/project/simulation/geometry', () => {
         project={{}}
         simulation={{
           scheme: {
-            categories: {
+            configuration: {
               geometry: {}
             }
           }
@@ -66,7 +66,7 @@ describe('renderer/components/project/simulation/geometry', () => {
         project={{}}
         simulation={{
           scheme: {
-            categories: {
+            configuration: {
               geometry: {}
             }
           }
@@ -122,7 +122,7 @@ describe('renderer/components/project/simulation/geometry', () => {
         project={{}}
         simulation={{
           scheme: {
-            categories: {
+            configuration: {
               geometry: {
                 file: {}
               }
@@ -140,7 +140,7 @@ describe('renderer/components/project/simulation/geometry', () => {
         project={{}}
         simulation={{
           scheme: {
-            categories: {
+            configuration: {
               geometry: {
                 file: {
                   origin: 'origin',
@@ -169,7 +169,7 @@ describe('renderer/components/project/simulation/geometry', () => {
         project={{}}
         simulation={{
           scheme: {
-            categories: {
+            configuration: {
               geometry: {}
             }
           }
@@ -184,7 +184,7 @@ describe('renderer/components/project/simulation/geometry', () => {
         project={{}}
         simulation={{
           scheme: {
-            categories: {
+            configuration: {
               geometry: {}
             }
           }
@@ -203,7 +203,7 @@ describe('renderer/components/project/simulation/geometry', () => {
         project={{}}
         simulation={{
           scheme: {
-            categories: {
+            configuration: {
               geometry: {}
             }
           }

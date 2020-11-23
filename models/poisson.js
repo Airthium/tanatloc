@@ -21,7 +21,8 @@ const Poisson = {
   configuration: {
     geometry: {
       index: 1,
-      title: 'Geometry'
+      title: 'Geometry',
+      meshable: true
     },
     parameters: {
       index: 2,
@@ -53,8 +54,7 @@ const Poisson = {
                 value: 'P2'
               }
             ],
-            default: 'P1',
-            name: 'Uh'
+            default: 'P1'
           }
         ]
       },

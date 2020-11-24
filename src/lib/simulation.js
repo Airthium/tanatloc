@@ -1,22 +1,16 @@
 /** @module src/lib/simulation */
 
 import path from 'path'
-import { exec } from 'child_process'
 
 import storage from '../../config/storage'
 
-import {
-  add as dBadd,
-  get as dBget,
-  update as dBupdate,
-  del as dBdel
-} from '../database/simulation'
+import SimulationDB from '../database/simulation'
 
-import { update as updateProject } from './project'
-import { writeFile, convert, removeFile, removeDirectory } from './tools'
-
-import { build as buildMesh } from './mesh'
-import { render } from './template'
+import Project from './project'
+import Tools from './tools'
+import Mesh from './mesh'
+import Template from './template'
+import Services from '../services'
 
 /**
  * Add simulation
@@ -25,13 +19,13 @@ import { render } from './template'
  */
 const add = async ({ project, simulation }) => {
   // Add simulation
-  const simulationData = await dBadd({
+  const simulationData = await SimulationDB.add({
     ...simulation,
     project: project.id
   })
 
   // Add simulation reference in project
-  await updateProject(project, [
+  await Project.update(project, [
     {
       type: 'array',
       method: 'append',
@@ -50,7 +44,7 @@ const add = async ({ project, simulation }) => {
  * @param {Array} data Data
  */
 const get = async (id, data) => {
-  const simulation = dBget(id, data)
+  const simulation = SimulationDB.get(id, data)
 
   return simulation
 }
@@ -84,7 +78,7 @@ const checkFiles = async (simulation, data) => {
             subObj.file.fileName
           )
           try {
-            await removeFile(originFile)
+            await Tools.removeFile(originFile)
           } catch (err) {
             console.warn(err)
           }
@@ -96,7 +90,7 @@ const checkFiles = async (simulation, data) => {
             subObj.file.partPath
           )
           try {
-            await removeDirectory(partDirectory)
+            await Tools.removeDirectory(partDirectory)
           } catch (err) {
             console.warn(err)
           }
@@ -114,14 +108,14 @@ const checkFiles = async (simulation, data) => {
         file.originPath = subDir
         file.extension = file.name.split('.').pop()
         file.fileName = file.uid + '.' + file.extension
-        await writeFile(
+        await Tools.writeFile(
           location,
           file.fileName,
           Buffer.from(file.buffer).toString()
         )
 
         // Convert file
-        const part = await convert(location, file)
+        const part = await Tools.convert(location, file)
         d.value.file.partPath = path.join(subDir, part.path)
         d.value.file.part = part.part
 
@@ -144,7 +138,7 @@ const update = async (simulation, data) => {
   await checkFiles(simulation, data)
 
   // Update
-  await dBupdate(simulation, data)
+  await SimulationDB.update(simulation, data)
 }
 
 /**
@@ -154,10 +148,10 @@ const update = async (simulation, data) => {
  */
 const del = async ({ id }, simulation) => {
   // Delete simulation
-  await dBdel(simulation)
+  await SimulationDB.del(simulation)
 
   // Delete simulation reference in project
-  await updateProject({ id }, [
+  await Project.update({ id }, [
     {
       type: 'array',
       method: 'remove',
@@ -169,7 +163,7 @@ const del = async ({ id }, simulation) => {
   // Delete folder
   const simulationDirectory = path.join(storage.SIMULATION, simulation.id)
   try {
-    await removeDirectory(simulationDirectory)
+    await Tools.removeDirectory(simulationDirectory)
   } catch (err) {
     console.warn(err)
   }
@@ -193,7 +187,7 @@ const run = async ({ id }) => {
         const geometry = configuration[key]
 
         // Build mesh
-        const mesh = await buildMesh(
+        const mesh = await Mesh.build(
           simulationPath,
           {
             path: path.join('..', geometry.file.originPath),
@@ -215,7 +209,7 @@ const run = async ({ id }) => {
   )
 
   // Build the simulation script
-  await render(
+  await Template.render(
     './templates/poisson.edp.ejs',
     {
       ...configuration,
@@ -294,25 +288,31 @@ const run = async ({ id }) => {
   // //   console.log(err)
   // // }
 
-  await new Promise((resolve, reject) => {
-    exec(
-      'docker run --rm -v ' +
-        simulationPath +
-        ':' +
-        '/run' +
-        ' -w /run' +
-        ' -u $(id -u):$(id -g) freefem/freefem:latest FreeFem++ ' +
-        path.join('run', simulation.id + '.edp'),
-      (error, stdout, stderr) => {
-        if (error) reject({ error, stdout, stderr })
-        resolve(stdout)
-      }
-    )
-  })
+  const log = await Services.freefem(
+    simulationPath,
+    path.join('run', simulation.id + '.edp')
+  )
+  // const log = await new Promise((resolve, reject) => {
+  //   exec(
+  //     'docker run --rm -v ' +
+  //       simulationPath +
+  //       ':' +
+  //       '/run' +
+  //       ' -w /run' +
+  //       ' -u $(id -u):$(id -g) freefem/freefem:latest FreeFem++ ' +
+  //       path.join('run', simulation.id + '.edp'),
+  //     (error, stdout, stderr) => {
+  //       if (error) reject({ error, stdout, stderr })
+  //       resolve(stdout + '\n' + stderr)
+  //     }
+  //   )
+  // })
+
+  console.log(log)
 
   // // Run the simulation
   // // TODO
   // // console.log(simulation)
 }
 
-export { add, get, update, del, run }
+export default { add, get, update, del, run }

@@ -18,8 +18,8 @@ import Add from '../../components/workspace/add'
 import Account from '../../components/account'
 import Help from '../../components/help'
 
-import { useUser } from '../../../src/api/user'
-import { useWorkspaces } from '../../../src/api/workspace'
+import UserAPI from '../../../src/api/user'
+import WorkspaceAPI from '../../../src/api/workspace'
 import logout from '../../../src/api/logout'
 
 /**
@@ -57,8 +57,8 @@ const Dashboard = () => {
   const [currentWorkspace, setCurrentWorkspace] = useState()
 
   // Data
-  const [user, { mutateUser, loadingUser }] = useUser()
-  const [workspaces] = useWorkspaces()
+  const [user, { mutateUser, loadingUser }] = UserAPI.useUser()
+  const [workspaces] = WorkspaceAPI.useWorkspaces()
 
   // Router
   const router = useRouter()

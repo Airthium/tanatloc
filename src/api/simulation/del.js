@@ -1,4 +1,4 @@
-import { call } from '../call'
+import Caller from '../call'
 
 /**
  * Delete simulation
@@ -7,7 +7,7 @@ import { call } from '../call'
  * @param {Object} simulation Simulation {id }
  */
 const del = async (project, simulation) => {
-  return call('/api/simulation/' + simulation.id, {
+  return Caller.call('/api/simulation/' + simulation.id, {
     method: 'DELETE',
     body: JSON.stringify({ id: project.id })
   })

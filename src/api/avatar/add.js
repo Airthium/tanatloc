@@ -1,4 +1,4 @@
-import { call } from '../call'
+import Caller from '../call'
 
 /**
  * Add avatar
@@ -6,7 +6,7 @@ import { call } from '../call'
  * @param {File} file File { name, uid, data }
  */
 const add = async (file) => {
-  return call('/api/avatar', {
+  return Caller.call('/api/avatar', {
     method: 'POST',
     headers: {
       Accept: 'application/json'

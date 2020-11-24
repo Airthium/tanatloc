@@ -3,9 +3,9 @@
 import getSessionId from '../session'
 import auth from '../auth'
 
-import { get } from '../../lib/file'
-import { get as getSimulation } from '../../lib/simulation'
-import { get as getProject } from '../../lib/project'
+import Filelib from '../../lib/file'
+import SimulationLib from '../../lib/simulation'
+import ProjectLib from '../../lib/project'
 
 import Sentry from '../../lib/sentry'
 
@@ -20,8 +20,8 @@ export default async (req, res) => {
       const { simulation, file } = req.body
 
       // Check authorization
-      const simulationAuth = await getSimulation(simulation.id, ['project'])
-      const projectAuth = await getProject(simulationAuth.project, [
+      const simulationAuth = await SimulationLib.get(simulation.id, ['project'])
+      const projectAuth = await ProjectLib.get(simulationAuth.project, [
         'owners',
         'users'
       ])
@@ -30,7 +30,7 @@ export default async (req, res) => {
         return
       }
 
-      const part = await get(simulation, file)
+      const part = await FileLib.get(simulation, file)
       res.status(200).json(part)
     } catch (err) {
       console.error(err)

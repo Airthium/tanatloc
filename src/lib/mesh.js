@@ -1,9 +1,9 @@
 /** @module src/lib/mesh */
 
 import path from 'path'
-import { exec } from 'child_process'
 
-import { render } from './template'
+import Template from './template'
+import Services from '../services'
 
 /**
  * Build mesh
@@ -13,7 +13,7 @@ const build = async (globalPath, geometry, mesh) => {
   const mshFile = geometry.file + '.msh'
 
   // Render template
-  await render(
+  await Template.render(
     './templates/gmsh3D.geo.ejs',
     {
       ...mesh.parameters,
@@ -25,25 +25,30 @@ const build = async (globalPath, geometry, mesh) => {
     }
   )
 
-  const log = await new Promise((resolve, reject) => {
-    exec(
-      'docker run --rm -v ' +
-        globalPath +
-        ':' +
-        '/mesh' +
-        ' -w /mesh' +
-        ' -u $(id -u):$(id -g) tanatloc/converters:latest gmsh ' +
-        ' -3 ' +
-        path.join(mesh.path, geoFile) +
-        ' -o ' +
-        path.join(mesh.path, mshFile) +
-        ' -format msh2',
-      (error, stdout, stderr) => {
-        if (error) reject({ error, stdout, stderr })
-        resolve(stdout + '\n' + stderr)
-      }
-    )
-  })
+  const log = await Services.gmsh(
+    globalPath,
+    path.join(mesh.path, geoFile),
+    path.join(mesh.path, mshFile)
+  )
+  // new Promise((resolve, reject) => {
+  //   exec(
+  //     'docker run --rm -v ' +
+  //       globalPath +
+  //       ':' +
+  //       '/mesh' +
+  //       ' -w /mesh' +
+  //       ' -u $(id -u):$(id -g) tanatloc/converters:latest gmsh ' +
+  //       ' -3 ' +
+  //       path.join(mesh.path, geoFile) +
+  //       ' -o ' +
+  //       path.join(mesh.path, mshFile) +
+  //       ' -format msh2',
+  //     (error, stdout, stderr) => {
+  //       if (error) reject({ error, stdout, stderr })
+  //       resolve(stdout + '\n' + stderr)
+  //     }
+  //   )
+  // })
 
   return {
     path: mesh.path,
@@ -52,4 +57,4 @@ const build = async (globalPath, geometry, mesh) => {
   }
 }
 
-export { build }
+export default { build }

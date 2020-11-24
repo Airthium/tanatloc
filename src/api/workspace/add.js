@@ -1,4 +1,4 @@
-import { call } from '../call'
+import Caller from '../call'
 
 /**
  * Add a workspace
@@ -6,7 +6,7 @@ import { call } from '../call'
  * @param {Object} workspace Workspace { name }
  */
 const add = async (workspace) => {
-  return call('/api/workspace', {
+  return Caller.call('/api/workspace', {
     method: 'POST',
     headers: {
       Accept: 'application/json'

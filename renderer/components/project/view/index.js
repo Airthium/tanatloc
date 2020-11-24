@@ -41,7 +41,7 @@ import { SectionViewHelper } from '../../../../src/lib/three/helpers/SectionView
 
 import { PartLoader } from '../../../../src/lib/three/loaders/PartLoader'
 
-import { get } from '../../../../src/api/part'
+import PartAPI from '../../../../src/api/part'
 
 import { useSelector, useDispatch } from 'react-redux'
 import { highlight, select, unselect } from '../../../store/select/action'
@@ -735,7 +735,7 @@ const View = ({ simulation, setPartSummary }) => {
   }, [simulation])
 
   const loadPart = async (file) => {
-    const partContent = await get({ id: simulation.id }, file)
+    const partContent = await PartAPI.get({ id: simulation.id }, file)
 
     if (partContent.error) {
       setPartSummary({ error: true, message: partContent.message })

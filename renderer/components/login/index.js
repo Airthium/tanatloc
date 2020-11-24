@@ -17,7 +17,7 @@ import Loading from '../loading'
 //import Background from '../background'
 
 import login from '../../../src/api/login'
-import { useUser } from '../../../src/api/user'
+import UserAPI from '../../../src/api/user'
 
 /**
  * Login errors
@@ -37,7 +37,7 @@ const Login = () => {
   const [internalErr, setInternalErr] = useState(false)
 
   // Data
-  const [user, { mutateUser, loadingUser }] = useUser()
+  const [user, { mutateUser, loadingUser }] = UserAPI.useUser()
 
   // Router
   const router = useRouter()

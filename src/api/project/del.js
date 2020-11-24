@@ -1,4 +1,4 @@
-import { call } from '../call'
+import Caller from '../call'
 
 /**
  * Delete project
@@ -7,7 +7,7 @@ import { call } from '../call'
  * @param {Object} project Project { id }
  */
 const del = async (workspace, project) => {
-  return call('/api/project/' + project.id, {
+  return Caller.call('/api/project/' + project.id, {
     method: 'DELETE',
     body: JSON.stringify({ id: workspace.id })
   })

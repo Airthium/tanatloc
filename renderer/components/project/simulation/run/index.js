@@ -2,9 +2,7 @@ import { useState } from 'react'
 import { message, Button, Layout, Steps } from 'antd'
 import { PlusCircleOutlined } from '@ant-design/icons'
 
-import {
-  run /*update, useSimulations*/
-} from '../../../../../src/api/simulation'
+import SimulationAPI from '../../../../../src/api/simulation'
 
 import Sentry from '../../../../../src/lib/sentry'
 
@@ -52,7 +50,7 @@ const Run = ({ project, simulation }) => {
     setRunning(true)
 
     try {
-      await run({ id: simulation.id })
+      await SimulationAPI.run({ id: simulation.id })
     } catch (err) {
       message.error(err.message)
       console.error(err)

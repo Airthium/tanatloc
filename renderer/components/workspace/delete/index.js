@@ -4,7 +4,7 @@ import { DeleteOutlined } from '@ant-design/icons'
 
 import { DeleteDialog } from '../../assets/dialog'
 
-import { useWorkspaces, del } from '../../../../src/api/workspace'
+import WorkspaceAPI from '../../../../src/api/workspace'
 
 import Sentry from '../../../../src/lib/sentry'
 
@@ -22,7 +22,7 @@ const Delete = (props) => {
   const [loading, setLoading] = useState(false)
 
   // Data
-  const [, { delOneWorkspace }] = useWorkspaces()
+  const [, { delOneWorkspace }] = WorkspaceAPI.useWorkspaces()
 
   /**
    * Toggle dialog delete
@@ -38,7 +38,7 @@ const Delete = (props) => {
     setLoading(true)
     try {
       // Delete
-      await del({ id: workspace.id })
+      await WorkspaceAPI.del({ id: workspace.id })
 
       // Mutate
       delOneWorkspace({ id: workspace.id })

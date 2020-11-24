@@ -18,8 +18,8 @@ import {
   QuestionCircleOutlined
 } from '@ant-design/icons'
 
-import { update, useSimulations } from '../../../../../src/api/simulation'
-import { get } from '../../../../../src/api/file'
+import SimulationAPI from '../../../../../src/api/simulation'
+import FileAPI from '../../../../../src/api/file'
 
 const errors = {
   UNABLE_TO_LOAD: 'Unable to load part TODO Franck'
@@ -32,7 +32,9 @@ const Geometry = ({ project, simulation, part }) => {
   const [currentFile, setCurrentFile] = useState()
 
   // Data
-  const [, { mutateOneSimulation }] = useSimulations(project?.simulations)
+  const [, { mutateOneSimulation }] = SimulationAPI.useSimulations(
+    project?.simulations
+  )
 
   // Effect
   useEffect(() => {
@@ -78,7 +80,7 @@ const Geometry = ({ project, simulation, part }) => {
       }
 
       // Update simulation
-      await update({ id: simulation.id }, [
+      await SimulationAPI.update({ id: simulation.id }, [
         {
           key: 'scheme',
           type: 'json',
@@ -126,7 +128,7 @@ const Geometry = ({ project, simulation, part }) => {
     }
 
     // Update simulation
-    await update({ id: simulation.id }, [
+    await SimulationAPI.update({ id: simulation.id }, [
       {
         key: 'scheme',
         type: 'json',
@@ -158,7 +160,7 @@ const Geometry = ({ project, simulation, part }) => {
       origin: simulation.scheme.configuration.geometry.file.origin,
       originPath: simulation.scheme.configuration.geometry.file.originPath
     }
-    const content = await get({ id: simulation.id }, file)
+    const content = await FileAPI.get({ id: simulation.id }, file)
 
     const data = new File([Buffer.from(content.buffer).toString()], file.origin)
     const url = window.URL.createObjectURL(data)

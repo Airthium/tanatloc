@@ -1,7 +1,7 @@
 import getSessionId from '../session'
 import auth from '../auth'
 
-import { get, update, del } from '../../lib/project'
+import ProjectLib from '../../lib/project'
 
 import Sentry from '../../lib/sentry'
 
@@ -25,7 +25,7 @@ export default async (req, res) => {
 
   // Check authorization
   try {
-    const projectAuth = await get(id, ['owners', 'users'])
+    const projectAuth = await ProjectLib.get(id, ['owners', 'users'])
     if (!auth(projectAuth, sessionId)) {
       res.status(401).json({ project: 'Unauthorized' })
       return
@@ -41,7 +41,7 @@ export default async (req, res) => {
     case 'GET':
       // Get project
       try {
-        const project = await get(id, [
+        const project = await ProjectLib.get(id, [
           'title',
           'description',
           'avatar',
@@ -60,7 +60,7 @@ export default async (req, res) => {
     case 'PUT':
       // Update project
       try {
-        await update({ id }, req.body)
+        await ProjectLib.update({ id }, req.body)
         res.status(200).end()
       } catch (err) {
         console.error(err)
@@ -71,7 +71,7 @@ export default async (req, res) => {
     case 'DELETE':
       // Delete project
       try {
-        await del(req.body, { id })
+        await ProjectLib.del(req.body, { id })
         res.status(200).end()
       } catch (err) {
         console.error(err)

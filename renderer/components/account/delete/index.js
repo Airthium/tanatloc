@@ -5,7 +5,7 @@ import { DeleteOutlined } from '@ant-design/icons'
 
 import { DeleteDialog } from '../../assets/dialog'
 
-import { useUser, del } from '../../../../src/api/user'
+import UserAPI from '../../../../src/api/user'
 import logout from '../../../../src/api/logout'
 
 import Sentry from '../../../../src/lib/sentry'
@@ -19,7 +19,7 @@ const Delete = () => {
   const [visible, setVisible] = useState(false)
   const [loading, setLoading] = useState(false)
 
-  const [, { mutateUser }] = useUser()
+  const [, { mutateUser }] = UserAPI.useUser()
 
   /**
    * Handle delete
@@ -28,7 +28,7 @@ const Delete = () => {
     setLoading(true)
     try {
       // Delete
-      await del()
+      await UserAPI.del()
 
       // Logout
       await logout()

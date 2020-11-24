@@ -16,7 +16,7 @@ import {
   unselect as selectorUnselect
 } from '../../../../store/select/action'
 
-import { update, useSimulations } from '../../../../../src/api/simulation'
+import SimulationAPI from '../../../../../src/api/simulation'
 
 const BoundaryConditions = ({ project, simulation, part, setVisible }) => {
   // State
@@ -34,7 +34,9 @@ const BoundaryConditions = ({ project, simulation, part, setVisible }) => {
   const dispatch = useDispatch()
 
   // Data
-  const [, { mutateOneSimulation }] = useSimulations(project?.simulations)
+  const [, { mutateOneSimulation }] = SimulationAPI.useSimulations(
+    project?.simulations
+  )
   const boundaryConditions = simulation?.scheme.configuration.boundaryConditions
   const list = Object.keys(boundaryConditions)
     .map((key) => {
@@ -157,7 +159,7 @@ const BoundaryConditions = ({ project, simulation, part, setVisible }) => {
     }
 
     // Update
-    update({ id: simulation.id }, [
+    Simulation.update({ id: simulation.id }, [
       {
         key: 'scheme',
         type: 'json',

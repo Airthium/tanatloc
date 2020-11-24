@@ -1,5 +1,5 @@
 import useSWR from 'swr'
-import { fetcher } from '../call'
+import Caller from '../call'
 
 /**
  * Use projects
@@ -9,7 +9,7 @@ import { fetcher } from '../call'
 const useProjects = (ids) => {
   const { data, mutate } = useSWR(
     '/api/projects' + (ids && ids.length ? '/' + ids.join('&') : ''),
-    fetcher
+    Caller.fetcher
   )
   const loading = !data
   const projects = (data && data.projects) || []

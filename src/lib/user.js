@@ -1,20 +1,15 @@
 /** @module src/lib/user */
 
-import {
-  add as dBadd,
-  get as dBget,
-  getByUsernameAndPassword,
-  update as dBupdate,
-  del as dBdel
-} from '../database/user'
-import { read as readAvatar } from './avatar'
+import UserDB from '../database/user'
+
+import Avatar from './avatar'
 
 /**
  * Add user
  * @param {Object} user { username, password }
  */
 const add = async ({ username, password }) => {
-  const user = await dBadd({ username, password })
+  const user = await UserDB.add({ username, password })
 
   return user
 }
@@ -25,12 +20,12 @@ const add = async ({ username, password }) => {
  * @param {Array} data Data
  */
 const get = async (id, data) => {
-  const user = await dBget(id, data)
+  const user = await UserDB.get(id, data)
 
   // Get avatar
   if (user && user.avatar) {
     try {
-      const avatar = await readAvatar(user.avatar)
+      const avatar = await Avatar.read(user.avatar)
       user.avatar = avatar
     } catch (err) {
       console.warn(err)
@@ -47,7 +42,7 @@ const get = async (id, data) => {
  * @param {Object} data Data { username, password }
  */
 const login = async ({ username, password }) => {
-  const user = await getByUsernameAndPassword({ username, password })
+  const user = await UserDB.getByUsernameAndPassword({ username, password })
 
   // Check user
   if (!user) return null
@@ -65,7 +60,7 @@ const login = async ({ username, password }) => {
  * @param {Object} data Data [{ key, value, ... }, ...]
  */
 const update = async (user, data) => {
-  await dBupdate(user, data)
+  await UserDB.update(user, data)
 }
 
 /**
@@ -73,7 +68,7 @@ const update = async (user, data) => {
  * @param {Object} user User { id }
  */
 const del = async (user) => {
-  await dBdel(user)
+  await UserDB.del(user)
 }
 
-export { login, add, get, update, del }
+export default { login, add, get, update, del }

@@ -3,7 +3,7 @@ import { Card, Collapse, Layout, Select } from 'antd'
 
 import Formula from '../../../assets/formula'
 
-import { update, useSimulations } from '../../../../../src/api/simulation'
+import SimulationAPI from '../../../../../src/api/simulation'
 
 const Parameters = ({ project, simulation }) => {
   // State
@@ -11,7 +11,9 @@ const Parameters = ({ project, simulation }) => {
 
   // Data
   const subScheme = simulation?.scheme.configuration.parameters
-  const [, { mutateOneSimulation }] = useSimulations(project?.simulations)
+  const [, { mutateOneSimulation }] = SimulationAPI.useSimulations(
+    project?.simulations
+  )
 
   // Effect
   useEffect(() => {
@@ -37,7 +39,7 @@ const Parameters = ({ project, simulation }) => {
     }
 
     // Update
-    update({ id: simulation.id }, [
+    SimulationAPI.update({ id: simulation.id }, [
       {
         key: 'scheme',
         type: 'json',

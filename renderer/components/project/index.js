@@ -15,9 +15,9 @@ import NotAuthorized from '../notauthorized'
 import View from './view'
 import Simulation from './simulation'
 
-import { useUser } from '../../../src/api/user'
-import { useProject, update } from '../../../src/api/project'
-import { add, useSimulations } from '../../../src/api/simulation'
+import UserAPI from '../../../src/api/user'
+import ProjectAPI from '../../../src/api/project'
+import SimulationAPI from '../../../src/api/simulation'
 
 import Sentry from '../../../src/lib/sentry'
 
@@ -42,9 +42,9 @@ const Project = () => {
   const [partSummary, setPartSummary] = useState()
 
   // Data
-  const [user, { loadingUser }] = useUser()
-  const [project, { mutateProject }] = useProject(projectId || '')
-  const [simulations, { addOneSimulation }] = useSimulations(
+  const [user, { loadingUser }] = UserAPI.useUser()
+  const [project, { mutateProject }] = ProjectAPI.useProject(projectId || '')
+  const [simulations, { addOneSimulation }] = SimulationAPI.useSimulations(
     project.simulations
   )
 
@@ -67,7 +67,9 @@ const Project = () => {
   const handleTitle = async (title) => {
     try {
       // Update
-      await update({ id: project.id }, [{ key: 'title', value: title }])
+      await ProjectAPI.update({ id: project.id }, [
+        { key: 'title', value: title }
+      ])
 
       // Mutate
       mutateProject({
@@ -115,7 +117,7 @@ const Project = () => {
   const onSelectorOk = async (scheme) => {
     try {
       // Add in dB
-      const simulation = await add(
+      const simulation = await SimulationAPI.add(
         { id: project.id },
         { name: scheme.algorithm, scheme }
       )

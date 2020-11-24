@@ -34,4 +34,4 @@ const call = async (route, param) => {
   return response
 }
 
-export { fetcher, call }
+export default { fetcher, call }

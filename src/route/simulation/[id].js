@@ -1,8 +1,8 @@
 import getSessionId from '../session'
 import auth from '../auth'
 
-import { get, update, del } from '../../lib/simulation'
-import { get as getProject } from '../../lib/project'
+import SimulationLib from '../../lib/simulation'
+import ProjectLib from '../../lib/project'
 
 import Sentry from '../../lib/sentry'
 
@@ -26,8 +26,8 @@ export default async (req, res) => {
 
   // Check authorization
   try {
-    const simulationAuth = await get(id, ['project'])
-    const projectAuth = await getProject(simulationAuth.project, [
+    const simulationAuth = await SimulationLib.get(id, ['project'])
+    const projectAuth = await ProjectLib.get(simulationAuth.project, [
       'owners',
       'users'
     ])
@@ -47,7 +47,7 @@ export default async (req, res) => {
     case 'GET':
       // Get simulation
       try {
-        const simulation = await get(id, ['name', 'scheme'])
+        const simulation = await SimulationLib.get(id, ['name', 'scheme'])
         res.status(200).json({ simulation })
       } catch (err) {
         console.error(err)
@@ -58,7 +58,7 @@ export default async (req, res) => {
     case 'PUT':
       // Update simulation
       try {
-        await update({ id }, req.body)
+        await SimulationLib.update({ id }, req.body)
         res.status(200).end()
       } catch (err) {
         console.error(err)
@@ -69,7 +69,7 @@ export default async (req, res) => {
     case 'DELETE':
       // Delete simulation
       try {
-        await del(req.body, { id })
+        await SimulationLib.del(req.body, { id })
         res.status(200).end()
       } catch (err) {
         console.error(err)

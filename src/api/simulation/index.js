@@ -7,4 +7,4 @@ import update from './update'
 import del from './del'
 import run from './run'
 
-export { useSimulations, useSimulation, add, update, del, run }
+export default { useSimulations, useSimulation, add, update, del, run }

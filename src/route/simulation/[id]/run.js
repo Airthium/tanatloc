@@ -1,8 +1,8 @@
 import getSessionId from '../../session'
 import auth from '../../auth'
 
-import { get, run } from '../../../lib/simulation'
-import { get as getProject } from '../../../lib/project'
+import SimulationLib from '../../../lib/simulation'
+import ProjectLib from '../../../lib/project'
 
 import Sentry from '../../../lib/sentry'
 
@@ -20,8 +20,8 @@ export default async (req, res) => {
 
   // Check authorization
   try {
-    const simulationAuth = await get(id, ['project'])
-    const projectAuth = await getProject(simulationAuth.project, [
+    const simulationAuth = await SimulationLib.get(id, ['project'])
+    const projectAuth = await ProjectLib.get(simulationAuth.project, [
       'owners',
       'users'
     ])
@@ -40,7 +40,7 @@ export default async (req, res) => {
   if (req.method === 'GET') {
     // Run simulation
     try {
-      await run({ id })
+      await SimulationLib.run({ id })
       res.status(200).json({ ok: true })
     } catch (err) {
       console.error(err)

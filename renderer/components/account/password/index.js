@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { message, Button, Form, Input, Space, Card, Row, Col } from 'antd'
 
-import { useUser, update, check } from '../../../../src/api/user'
+import UserAPI from '../../../../src/api/user'
 
 import Sentry from '../../../../src/lib/sentry'
 
@@ -22,7 +22,7 @@ const Password = () => {
   const [loading, setLoading] = useState(false)
 
   // Data
-  const [user] = useUser()
+  const [user] = UserAPI.useUser()
 
   // Layout
   const layout = {
@@ -41,7 +41,7 @@ const Password = () => {
     setLoading(true)
 
     // Check current password
-    const current = await check({
+    const current = await UserAPI.check({
       username: user.email,
       password: data.password
     })
@@ -50,7 +50,7 @@ const Password = () => {
       // Change password
       if (data.newPassword === data.passwordConfirm) {
         try {
-          await update([
+          await UserAPI.update([
             {
               type: 'crypt',
               key: 'password',

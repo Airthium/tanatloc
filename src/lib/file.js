@@ -2,7 +2,7 @@ import path from 'path'
 
 import storage from '../../config/storage'
 
-import { readFile } from './tools'
+import Tools from './tools'
 
 /**
  * Get file
@@ -10,7 +10,7 @@ import { readFile } from './tools'
  * @param {Object} file File { origin, originPath }
  */
 const get = async (simulation, file) => {
-  const content = await readFile(
+  const content = await Tools.readFile(
     path.join(storage.SIMULATION, simulation.id, file.originPath, file.origin)
   )
 
@@ -19,4 +19,4 @@ const get = async (simulation, file) => {
   }
 }
 
-export { get }
+export default { get }

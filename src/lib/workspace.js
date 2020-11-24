@@ -1,13 +1,8 @@
 /** @module src/lib/workspace */
 
-import {
-  add as dBadd,
-  get as dBget,
-  update as updatedB,
-  del as dBdel
-} from '../database/workspace'
+import WorkspaceDB from '../database/workspace'
 
-import { get as getUser, update as updateUser } from './user'
+import User from './user'
 
 /**
  * Add workspace
@@ -16,10 +11,10 @@ import { get as getUser, update as updateUser } from './user'
  */
 const add = async (user, { name }) => {
   // Add workspace
-  const workspace = await dBadd(user, { name })
+  const workspace = await WorkspaceDB.add(user, { name })
 
   // Add workspace to user
-  await updateUser(user, [
+  await User.update(user, [
     {
       type: 'array',
       method: 'append',
@@ -38,13 +33,13 @@ const add = async (user, { name }) => {
  * @param {Array} data Data
  */
 const get = async (id, data) => {
-  const workspace = await dBget(id, data)
+  const workspace = await WorkspaceDB.get(id, data)
 
   // Get owners
   if (workspace && workspace.owners) {
     const owners = await Promise.all(
       workspace.owners.map(async (owner) => {
-        return await getUser(owner, [
+        return await User.get(owner, [
           'lastname',
           'firstname',
           'email',
@@ -59,7 +54,12 @@ const get = async (id, data) => {
   if (workspace.users) {
     const users = await Promise.all(
       workspace.users.map(async (user) => {
-        return await getUser(user, ['lastname', 'firstname', 'email', 'avatar'])
+        return await User.get(user, [
+          'lastname',
+          'firstname',
+          'email',
+          'avatar'
+        ])
       })
     )
     workspace.users = users
@@ -74,7 +74,7 @@ const get = async (id, data) => {
  */
 const getByUser = async ({ id }) => {
   // Get workspaces'ids
-  const user = await getUser(id, ['workspaces'])
+  const user = await User.get(id, ['workspaces'])
 
   // Get workspaces data
   if (user.workspaces) {
@@ -106,7 +106,7 @@ const getByUser = async ({ id }) => {
  * @param {Object} data Data [{ key, value, ... }, ...]
  */
 const update = async (workspace, data) => {
-  await updatedB(workspace, data)
+  await WorkspaceDB.update(workspace, data)
 }
 
 /**
@@ -115,10 +115,10 @@ const update = async (workspace, data) => {
  * @param {Object} workspace Workspace { id }
  */
 const del = async (user, workspace) => {
-  await dBdel(workspace)
+  await WorkspaceDB.del(workspace)
 
   // Delete workspace reference in user
-  await updateUser(user, [
+  await User.update(user, [
     {
       type: 'array',
       method: 'remove',
@@ -128,4 +128,4 @@ const del = async (user, workspace) => {
   ])
 }
 
-export { add, get, getByUser, update, del }
+export default { add, get, getByUser, update, del }

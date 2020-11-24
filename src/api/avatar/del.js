@@ -1,4 +1,4 @@
-import { call } from '../call'
+import Caller from '../call'
 
 /**
  * Delete avatar
@@ -6,7 +6,7 @@ import { call } from '../call'
  * @param {Object} avatar Avatar { id }
  */
 const del = async (avatar) => {
-  return call('/api/avatar', {
+  return Caller.call('/api/avatar', {
     method: 'DELETE',
     body: JSON.stringify(avatar)
   })

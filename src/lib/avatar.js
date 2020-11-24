@@ -4,9 +4,10 @@ import path from 'path'
 
 import { AVATAR } from '../../config/storage'
 
-import { add as dBadd, get as dBget, del as dBdel } from '../database/avatar'
-import { get as getUser, update as updateUser } from './user'
-import { readFile, writeFile } from './tools'
+import AvatarDB from '../database/avatar'
+
+import User from './user'
+import Tools from './tools'
 
 /**
  * Add avatar
@@ -15,18 +16,18 @@ import { readFile, writeFile } from './tools'
  */
 const add = async (user, file) => {
   // Write file
-  await writeFile(AVATAR, file.uid, file.data)
+  await Tools.writeFile(AVATAR, file.uid, file.data)
 
   // Add in dB
   const avatarPath = path.join(AVATAR, file.uid)
-  const avatar = await dBadd({ name: file.name, path: avatarPath })
+  const avatar = await AvatarDB.add({ name: file.name, path: avatarPath })
 
   // Check existing avatar in user, if exists: delete
-  const userData = await getUser(user.id, ['avatar'])
+  const userData = await User.get(user.id, ['avatar'])
   if (userData.avatar) await del(user, userData.avatar)
 
   // Update user
-  await updateUser(user, [{ key: 'avatar', value: avatar.id }])
+  await User.updateUser(user, [{ key: 'avatar', value: avatar.id }])
 
   // Return avatar
   return avatar
@@ -38,10 +39,10 @@ const add = async (user, file) => {
  */
 const read = async (id) => {
   // Get path
-  const avatar = await dBget(id, ['path'])
+  const avatar = await AvatarDB.get(id, ['path'])
 
   // Read file
-  const content = await readFile(avatar.path)
+  const content = await Tools.readFile(avatar.path)
 
   // Return
   return content
@@ -54,10 +55,10 @@ const read = async (id) => {
  */
 const del = async (user, id) => {
   // Delete avatar
-  await dBdel(id)
+  await AvatarDB.del(id)
 
   // Update user
-  await updateUser(user, {
+  await User.updateUser(user, {
     data: [
       {
         key: 'avatar',
@@ -67,4 +68,4 @@ const del = async (user, id) => {
   })
 }
 
-export { add, read, del }
+export default { add, read, del }

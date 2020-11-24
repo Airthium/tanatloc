@@ -159,7 +159,7 @@ const BoundaryConditions = ({ project, simulation, part, setVisible }) => {
     }
 
     // Update
-    Simulation.update({ id: simulation.id }, [
+    SimulationAPI.update({ id: simulation.id }, [
       {
         key: 'scheme',
         type: 'json',

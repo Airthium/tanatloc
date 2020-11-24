@@ -1,4 +1,4 @@
-import { fetcher, call } from '../call'
+import Caller from '../call'
 
 jest.mock('is-electron', () => () => false)
 
@@ -14,14 +14,14 @@ global.fetch = async (route, param) => {
 
 describe('src/api/call', () => {
   it('fetcher', () => {
-    fetcher('/route')
+    Caller.fetcher('/route')
     expect(mockRoute).toBe('/route')
   })
 
   it('call', async () => {
     mockJSON.mockClear()
 
-    await call('/route')
+    await Caller.call('/route')
     expect(mockRoute).toBe('/route')
     expect(mockParam).toEqual({
       method: 'GET',
@@ -30,7 +30,7 @@ describe('src/api/call', () => {
       }
     })
 
-    await call('/route', {
+    await Caller.call('/route', {
       method: 'TEST',
       headers: {
         'Test-Header': 'Test-Header'
@@ -46,7 +46,7 @@ describe('src/api/call', () => {
       body: 'something'
     })
 
-    const res = await call('/route', {
+    const res = await Caller.call('/route', {
       headers: {
         Accept: 'application/json'
       }

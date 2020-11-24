@@ -15,7 +15,7 @@ export default async (req, res) => {
   // Without authorization
   if (req.method === 'POST') {
     try {
-      const user = await add(req.body)
+      const user = await UserLib.add(req.body)
       res.status(200).json(user)
     } catch (err) {
       console.error(err)

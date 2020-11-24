@@ -27,7 +27,7 @@ const add = async (user, file) => {
   if (userData.avatar) await del(user, userData.avatar)
 
   // Update user
-  await User.updateUser(user, [{ key: 'avatar', value: avatar.id }])
+  await User.update(user, [{ key: 'avatar', value: avatar.id }])
 
   // Return avatar
   return avatar
@@ -58,7 +58,7 @@ const del = async (user, id) => {
   await AvatarDB.del(id)
 
   // Update user
-  await User.updateUser(user, {
+  await User.update(user, {
     data: [
       {
         key: 'avatar',

@@ -125,6 +125,7 @@ const removeDirectory = async (dir) => {
 }
 
 export default {
+  createPath,
   writeFile,
   readFile,
   convert,

@@ -1,4 +1,4 @@
-import { add, get, update, del } from '../project'
+import Project from '../project'
 
 const mockAdd = jest.fn()
 const mockGet = jest.fn()
@@ -47,7 +47,7 @@ describe('src/lib/project', () => {
 
   it('add', async () => {
     mockAdd.mockImplementation(() => ({ id: 'id' }))
-    const project = await add({}, { workspace: {}, project: {} })
+    const project = await Project.add({}, { workspace: {}, project: {} })
     expect(mockAdd).toHaveBeenCalledTimes(1)
     expect(mockGet).toHaveBeenCalledTimes(0)
     expect(mockUpdate).toHaveBeenCalledTimes(0)
@@ -63,7 +63,7 @@ describe('src/lib/project', () => {
 
     // Empty
     mockGet.mockImplementation(() => ({}))
-    project = await get()
+    project = await Project.get()
     expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockGet).toHaveBeenCalledTimes(1)
     expect(mockUpdate).toHaveBeenCalledTimes(0)
@@ -81,7 +81,7 @@ describe('src/lib/project', () => {
     }))
     mockAvatar.mockImplementation((val) => val)
     mockGetUser.mockImplementation((val) => val)
-    project = await get()
+    project = await Project.get()
     expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockGet).toHaveBeenCalledTimes(2)
     expect(mockUpdate).toHaveBeenCalledTimes(0)
@@ -99,7 +99,7 @@ describe('src/lib/project', () => {
     mockAvatar.mockImplementation(() => {
       throw new Error()
     })
-    project = await get()
+    project = await Project.get()
     expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockGet).toHaveBeenCalledTimes(3)
     expect(mockUpdate).toHaveBeenCalledTimes(0)
@@ -115,7 +115,7 @@ describe('src/lib/project', () => {
   })
 
   it('update', async () => {
-    await update({}, {})
+    await Project.update({}, {})
     expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockGet).toHaveBeenCalledTimes(0)
     expect(mockUpdate).toHaveBeenCalledTimes(1)
@@ -126,7 +126,7 @@ describe('src/lib/project', () => {
   })
 
   it('delete', async () => {
-    await del({}, {})
+    await Project.del({}, {})
     expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockGet).toHaveBeenCalledTimes(0)
     expect(mockUpdate).toHaveBeenCalledTimes(0)

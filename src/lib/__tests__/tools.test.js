@@ -1,12 +1,4 @@
-import {
-  createPath,
-  writeFile,
-  readFile,
-  convert,
-  loadPart,
-  removeFile,
-  removeDirectory
-} from '../tools'
+import Tools from '../tools'
 
 const mockPath = jest.fn()
 jest.mock('path', () => ({
@@ -48,27 +40,27 @@ describe('src/lib/tools', () => {
   })
 
   it('createPath', async () => {
-    await createPath('location')
+    await Tools.createPath('location')
     expect(mockMkdir).toHaveBeenCalledTimes(1)
   })
 
   it('writeFile', async () => {
-    await writeFile('location', {})
+    await Tools.writeFile('location', {})
     expect(mockMkdir).toHaveBeenCalledTimes(1)
     expect(mockWriteFile).toHaveBeenCalledTimes(1)
   })
 
   it('readFile', async () => {
-    const content = await readFile('file')
+    const content = await Tools.readFile('file')
     expect(mockReadFile).toHaveBeenCalledTimes(1)
     expect(content).toBe('readFile')
   })
 
   it('convert', async () => {
-    await convert('location', { name: 'name' })
+    await Tools.convert('location', { name: 'name' })
 
     try {
-      await convert('location', { name: 'name' })
+      await Tools.convert('location', { name: 'name' })
       expect(false).toBe(true)
     } catch (err) {
       expect(true).toBe(true)
@@ -84,7 +76,7 @@ describe('src/lib/tools', () => {
       faces: [{}],
       edges: [{}]
     })
-    part = await loadPart('target', 'file')
+    part = await Tools.loadPart('target', 'file')
     expect(part).toEqual({
       solids: [{ buffer: 'readFile' }],
       faces: [{ buffer: 'readFile' }],
@@ -94,18 +86,18 @@ describe('src/lib/tools', () => {
 
     // Empty
     JSON.parse = () => ({})
-    part = await loadPart('target', 'file')
+    part = await Tools.loadPart('target', 'file')
     expect(part).toEqual({})
     expect(mockReadFile).toHaveBeenCalledTimes(4 + 1)
   })
 
   it('removeFile', async () => {
-    await removeFile('file')
+    await Tools.removeFile('file')
     expect(mockUnlink).toHaveBeenCalledTimes(1)
   })
 
   it('removeDirectory', async () => {
-    await removeDirectory('directory')
+    await Tools.removeDirectory('directory')
     expect(mockRmdir).toHaveBeenCalledTimes(1)
   })
 })

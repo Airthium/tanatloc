@@ -1,4 +1,4 @@
-import { add, get, update, del } from '../simulation'
+import Simulation from '../simulation'
 
 const mockPath = jest.fn()
 jest.mock('path', () => ({
@@ -52,7 +52,7 @@ describe('src/lib/simulation', () => {
     mockAdd.mockImplementation(() => ({
       id: 'id'
     }))
-    const simulation = await add({
+    const simulation = await Simulation.add({
       project: { id: 'id' },
       simulation: { name: 'name', scheme: 'scheme' }
     })
@@ -71,7 +71,7 @@ describe('src/lib/simulation', () => {
 
   it('get', async () => {
     mockGet.mockImplementation(() => ({}))
-    const simulation = await get('id', [])
+    const simulation = await Simulation.get('id', [])
     expect(mockPath).toHaveBeenCalledTimes(0)
     expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockGet).toHaveBeenCalledTimes(1)
@@ -303,7 +303,7 @@ describe('src/lib/simulation', () => {
   // })
 
   it('delete', async () => {
-    await del({}, {})
+    await Simulation.del({}, {})
     expect(mockPath).toHaveBeenCalledTimes(1)
     expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockGet).toHaveBeenCalledTimes(0)
@@ -319,7 +319,7 @@ describe('src/lib/simulation', () => {
     mockRemoveDirectory.mockImplementation(() => {
       throw new Error()
     })
-    await del({}, {})
+    await Simulation.del({}, {})
     expect(mockPath).toHaveBeenCalledTimes(2)
     expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockGet).toHaveBeenCalledTimes(0)

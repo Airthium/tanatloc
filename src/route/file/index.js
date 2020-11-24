@@ -3,7 +3,7 @@
 import getSessionId from '../session'
 import auth from '../auth'
 
-import Filelib from '../../lib/file'
+import FileLib from '../../lib/file'
 import SimulationLib from '../../lib/simulation'
 import ProjectLib from '../../lib/project'
 

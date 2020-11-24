@@ -1,4 +1,4 @@
-import { add, get, getByUser, update, del } from '../workspace'
+import Workspace from '../workspace'
 
 const mockAdd = jest.fn()
 const mockGet = jest.fn()
@@ -35,7 +35,7 @@ describe('src/lib/workspace', () => {
     mockAdd.mockImplementation(() => ({
       id: 'id'
     }))
-    const workspace = await add({}, {})
+    const workspace = await Workspace.add({}, {})
     expect(mockAdd).toHaveBeenCalledTimes(1)
     expect(mockGet).toHaveBeenCalledTimes(0)
     expect(mockUpdate).toHaveBeenCalledTimes(0)
@@ -51,7 +51,7 @@ describe('src/lib/workspace', () => {
     mockGet.mockImplementation(() => ({
       name: 'name'
     }))
-    workspace = await get()
+    workspace = await Workspace.get()
     expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockGet).toHaveBeenCalledTimes(1)
     expect(mockUpdate).toHaveBeenCalledTimes(0)
@@ -69,7 +69,7 @@ describe('src/lib/workspace', () => {
     mockUserGet.mockImplementation(() => ({
       username: 'username'
     }))
-    workspace = await get()
+    workspace = await Workspace.get()
     expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockGet).toHaveBeenCalledTimes(2)
     expect(mockUpdate).toHaveBeenCalledTimes(0)
@@ -90,7 +90,7 @@ describe('src/lib/workspace', () => {
     mockGet.mockImplementation(() => ({
       name: 'name'
     }))
-    let workspaces = await getByUser({})
+    let workspaces = await Workspace.getByUser({})
     expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockGet).toHaveBeenCalledTimes(2)
     expect(mockUpdate).toHaveBeenCalledTimes(0)
@@ -104,7 +104,7 @@ describe('src/lib/workspace', () => {
 
     // Without workspaces
     mockUserGet.mockImplementation(() => ({}))
-    workspaces = await getByUser({})
+    workspaces = await Workspace.getByUser({})
     expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockGet).toHaveBeenCalledTimes(2)
     expect(mockUpdate).toHaveBeenCalledTimes(0)
@@ -115,7 +115,7 @@ describe('src/lib/workspace', () => {
   })
 
   it('update', async () => {
-    await update({ workspace: {} })
+    await Workspace.update({ workspace: {} })
     expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockGet).toHaveBeenCalledTimes(0)
     expect(mockUpdate).toHaveBeenCalledTimes(1)
@@ -125,7 +125,7 @@ describe('src/lib/workspace', () => {
   })
 
   it('del', async () => {
-    await del({}, {})
+    await Workspace.del({}, {})
     expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockGet).toHaveBeenCalledTimes(0)
     expect(mockUpdate).toHaveBeenCalledTimes(0)

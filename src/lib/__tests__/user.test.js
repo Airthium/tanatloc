@@ -1,4 +1,4 @@
-import { login, add, get, update, del } from '../user'
+import User from '../user'
 
 const mockGet = jest.fn()
 const mockGetByUsernameAndPassword = jest.fn()
@@ -29,7 +29,7 @@ describe('src/lib/user', () => {
   })
 
   it('add', async () => {
-    const user = await add({ username: 'username', password: 'password' })
+    const user = await User.add({ username: 'username', password: 'password' })
     expect(user).toEqual({ id: 'id' })
   })
 
@@ -41,7 +41,7 @@ describe('src/lib/user', () => {
       id: 'id',
       username: 'username'
     }))
-    user = await get('id', [])
+    user = await User.get('id', [])
     expect(mockGet).toHaveBeenCalledTimes(1)
     expect(mockGetByUsernameAndPassword).toHaveBeenCalledTimes(0)
     expect(mockUpdate).toHaveBeenCalledTimes(0)
@@ -56,7 +56,7 @@ describe('src/lib/user', () => {
       avatar: 'avatar'
     }))
     mockReadAvatar.mockImplementation(() => 'avatar')
-    user = await get('id')
+    user = await User.get('id')
     expect(mockGet).toHaveBeenCalledTimes(2)
     expect(mockGetByUsernameAndPassword).toHaveBeenCalledTimes(0)
     expect(mockUpdate).toHaveBeenCalledTimes(0)
@@ -67,7 +67,7 @@ describe('src/lib/user', () => {
     mockReadAvatar.mockImplementation(() => {
       throw new Error('test')
     })
-    user = await get('id')
+    user = await User.get('id')
     expect(mockGet).toHaveBeenCalledTimes(3)
     expect(mockGetByUsernameAndPassword).toHaveBeenCalledTimes(0)
     expect(mockUpdate).toHaveBeenCalledTimes(0)
@@ -80,7 +80,7 @@ describe('src/lib/user', () => {
     let user
 
     // Empty
-    user = await login({ username: 'username' })
+    user = await User.login({ username: 'username' })
     expect(mockGet).toHaveBeenCalledTimes(0)
     expect(mockGetByUsernameAndPassword).toHaveBeenCalledTimes(1)
     expect(mockUpdate).toHaveBeenCalledTimes(0)
@@ -93,7 +93,7 @@ describe('src/lib/user', () => {
       id: 'id',
       username: 'username'
     }))
-    user = await login({ username: 'username' })
+    user = await User.login({ username: 'username' })
     expect(mockGet).toHaveBeenCalledTimes(0)
     expect(mockGetByUsernameAndPassword).toHaveBeenCalledTimes(2)
     expect(mockUpdate).toHaveBeenCalledTimes(0)
@@ -103,7 +103,7 @@ describe('src/lib/user', () => {
   })
 
   it('update', async () => {
-    await update({}, [])
+    await User.update({}, [])
     expect(mockGet).toHaveBeenCalledTimes(0)
     expect(mockGetByUsernameAndPassword).toHaveBeenCalledTimes(0)
     expect(mockUpdate).toHaveBeenCalledTimes(1)
@@ -112,7 +112,7 @@ describe('src/lib/user', () => {
   })
 
   it('del', async () => {
-    await del({})
+    await User.del({})
     expect(mockGet).toHaveBeenCalledTimes(0)
     expect(mockGetByUsernameAndPassword).toHaveBeenCalledTimes(0)
     expect(mockUpdate).toHaveBeenCalledTimes(0)

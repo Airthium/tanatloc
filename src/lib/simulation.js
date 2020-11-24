@@ -177,7 +177,7 @@ const run = async ({ id }) => {
   const simulation = await get(id, ['scheme'])
 
   // Global
-  const simulationPath = path.join(storage.SIMULATION, simulation.id)
+  const simulationPath = path.join(storage.SIMULATION, id)
   const configuration = simulation.scheme.configuration
 
   // Meshing
@@ -220,99 +220,16 @@ const run = async ({ id }) => {
     },
     {
       location: path.join(simulationPath, 'run'),
-      name: simulation.id + '.edp'
+      name: id + '.edp'
     }
   )
 
-  // // try {
-  // //TODO
-  // await render(
-  //   './templates/poisson.edp.ejs',
-  //   {
-  //     dimension: 3,
-  //     mesh: {
-  //       children: [
-  //         {
-  //           name: 'Th',
-  //           path: path.join(globalPath, 'mesh/OZ_racing_4H.STEP.msh')
-  //         }
-  //       ]
-  //     },
-  //     finiteElementSpace: {
-  //       children: [
-  //         {
-  //           name: 'Uh',
-  //           value: 'P2'
-  //         }
-  //       ]
-  //     },
-  //     boundaryCondition: {
-  //       children: [
-  //         {
-  //           values: [
-  //             {
-  //               labels: ['1'],
-  //               value: [1]
-  //             },
-  //             {
-  //               labels: ['25'],
-  //               value: [0]
-  //             }
-  //           ]
-  //         },
-  //         {
-  //           values: []
-  //         }
-  //       ]
-  //     },
-  //     rightHandSide: {
-  //       children: [
-  //         {
-  //           value: '0'
-  //         }
-  //       ]
-  //     },
-  //     solver: {
-  //       children: ['MUMPS']
-  //     },
-  //     result: {
-  //       path: path.join(globalPath, 'run')
-  //     }
-  //   },
-  //   {
-  //     location: computePath,
-  //     name: 'poisson.edp'
-  //   }
-  // )
-  // // } catch (err) {
-  // //   console.log(err)
-  // // }
-
   const log = await Services.freefem(
     simulationPath,
-    path.join('run', simulation.id + '.edp')
+    path.join('run', id + '.edp')
   )
-  // const log = await new Promise((resolve, reject) => {
-  //   exec(
-  //     'docker run --rm -v ' +
-  //       simulationPath +
-  //       ':' +
-  //       '/run' +
-  //       ' -w /run' +
-  //       ' -u $(id -u):$(id -g) freefem/freefem:latest FreeFem++ ' +
-  //       path.join('run', simulation.id + '.edp'),
-  //     (error, stdout, stderr) => {
-  //       if (error) reject({ error, stdout, stderr })
-  //       resolve(stdout + '\n' + stderr)
-  //     }
-  //   )
-  // })
 
   console.log(log)
-
-  // // Run the simulation
-  // // TODO
-  // // console.log(simulation)
 }
 
 export default { add, get, update, del, run }

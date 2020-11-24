@@ -76,6 +76,13 @@ describe('components/project', () => {
     expect(wrapper).toBeDefined()
   })
 
+  it('without configuration', () => {
+    wrapper.unmount()
+    mockSimulations = () => [{ scheme: {} }]
+    wrapper = shallow(<Project />)
+    expect(wrapper).toBeDefined()
+  })
+
   it('with subMenus', () => {
     wrapper.unmount()
     mockSimulations = () => [

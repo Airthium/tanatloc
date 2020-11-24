@@ -1,15 +1,22 @@
 import Run from '../../../../../components/project/simulation/run'
 import { shallow, mount } from 'enzyme'
 
+const mockRun = jest.fn()
 const mockUpdate = jest.fn()
 const mockMutate = jest.fn()
 jest.mock('../../../../../../src/api/simulation', () => ({
+  run: async () => mockRun(),
   update: async () => mockUpdate(),
   useSimulations: () => [[], { mutateOneSimulation: mockMutate }]
 }))
 
+const mockSentry = jest.fn()
+jest.mock('../../../../../../src/lib/sentry', () => ({
+  captureException: () => mockSentry()
+}))
+
 let wrapper
-describe('renderer/components/project/simulation/parameters', () => {
+describe('renderer/components/project/simulation/run', () => {
   const project = {}
   const simulation = {
     scheme: {
@@ -20,8 +27,10 @@ describe('renderer/components/project/simulation/parameters', () => {
   }
 
   beforeEach(() => {
+    mockRun.mockReset()
     mockUpdate.mockReset()
     mockMutate.mockReset()
+    mockSentry.mockReset()
     wrapper = shallow(<Run project={project} simulation={simulation} />)
   })
 
@@ -33,16 +42,17 @@ describe('renderer/components/project/simulation/parameters', () => {
     expect(wrapper).toBeDefined()
   })
 
-  // // it('addRun', () => {
-  // //   wrapper.find('Button').props().onClick()
-  // //   expect(mockUpdate).toHaveBeenCalledTimes(1)
-  // // })
+  it('onRun', async () => {
+    await wrapper.find('Button').props().onClick()
+    expect(mockRun).toHaveBeenCalledTimes(1)
+    expect(mockSentry).toHaveBeenCalledTimes(0)
 
-  // it('with subMenus', () => {
-  //   wrapper.unmount()
-  //   simulation.scheme.configuration.run.subMenus = [{ title: 'title' }]
-  //   wrapper = shallow(<Run project={project} simulation={simulation} />)
-  //   wrapper.find('Button').props().onClick()
-  //   expect(mockUpdate).toHaveBeenCalledTimes(1)
-  // })
+    // Error
+    mockRun.mockImplementation(() => {
+      throw new Error()
+    })
+    await wrapper.find('Button').props().onClick()
+    expect(mockRun).toHaveBeenCalledTimes(2)
+    expect(mockSentry).toHaveBeenCalledTimes(1)
+  })
 })

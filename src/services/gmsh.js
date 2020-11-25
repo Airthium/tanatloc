@@ -1,7 +1,7 @@
 import { spawn } from 'child_process'
 
 const gmsh = async (path, fileIn, fileOut) => {
-  const code = await new Promise((resolve, reject) => {
+  const returnCode = await new Promise((resolve, reject) => {
     const process = spawn('docker', [
       'run',
       '-v=' + path + ':/mesh',
@@ -33,7 +33,7 @@ const gmsh = async (path, fileIn, fileOut) => {
     })
   })
 
-  return code
+  return returnCode
 }
 
 export default gmsh

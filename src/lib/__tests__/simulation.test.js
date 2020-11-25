@@ -34,19 +34,9 @@ jest.mock('../tools', () => ({
   removeDirectory: async () => mockRemoveDirectory()
 }))
 
-const mockBuild = jest.fn()
-jest.mock('../mesh', () => ({
-  build: async () => mockBuild()
-}))
-
-const mockRender = jest.fn()
-jest.mock('../template', () => ({
-  render: async () => mockRender()
-}))
-
-const mockFreefem = jest.fn()
-jest.mock('../../services', () => ({
-  freefem: async () => mockFreefem()
+const mockCompute = jest.fn()
+jest.mock('../compute', () => ({
+  computeSimulation: async () => mockCompute()
 }))
 
 describe('src/lib/simulation', () => {
@@ -61,9 +51,7 @@ describe('src/lib/simulation', () => {
     mockConvert.mockReset()
     mockRemoveFile.mockReset()
     mockRemoveDirectory.mockReset()
-    mockBuild.mockReset()
-    mockRender.mockReset()
-    mockFreefem.mockReset()
+    mockCompute.mockReset()
   })
 
   it('add', async () => {
@@ -356,16 +344,14 @@ describe('src/lib/simulation', () => {
   })
 
   it('run', async () => {
-    // No meshe
+    // Normal
     mockGet.mockImplementation(() => ({
       scheme: {
-        configuration: {
-          key: {}
-        }
+        configuration: {}
       }
     }))
     await Simulation.run({})
-    expect(mockPath).toHaveBeenCalledTimes(3)
+    expect(mockPath).toHaveBeenCalledTimes(1)
     expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockGet).toHaveBeenCalledTimes(1)
     expect(mockUpdate).toHaveBeenCalledTimes(0)
@@ -375,36 +361,6 @@ describe('src/lib/simulation', () => {
     expect(mockConvert).toHaveBeenCalledTimes(0)
     expect(mockRemoveFile).toHaveBeenCalledTimes(0)
     expect(mockRemoveDirectory).toHaveBeenCalledTimes(0)
-    expect(mockBuild).toHaveBeenCalledTimes(0)
-    expect(mockRender).toHaveBeenCalledTimes(1)
-    expect(mockFreefem).toHaveBeenCalledTimes(1)
-
-    // With meshes
-    mockGet.mockImplementation(() => ({
-      scheme: {
-        configuration: {
-          geometry: {
-            meshable: true,
-            file: {}
-          }
-        }
-      }
-    }))
-
-    // Empty
-    await Simulation.run({})
-    expect(mockPath).toHaveBeenCalledTimes(8)
-    expect(mockAdd).toHaveBeenCalledTimes(0)
-    expect(mockGet).toHaveBeenCalledTimes(2)
-    expect(mockUpdate).toHaveBeenCalledTimes(0)
-    expect(mockDelete).toHaveBeenCalledTimes(0)
-    expect(mockUpdateProject).toHaveBeenCalledTimes(0)
-    expect(mockWriteFile).toHaveBeenCalledTimes(0)
-    expect(mockConvert).toHaveBeenCalledTimes(0)
-    expect(mockRemoveFile).toHaveBeenCalledTimes(0)
-    expect(mockRemoveDirectory).toHaveBeenCalledTimes(0)
-    expect(mockBuild).toHaveBeenCalledTimes(1)
-    expect(mockRender).toHaveBeenCalledTimes(2)
-    expect(mockFreefem).toHaveBeenCalledTimes(2)
+    expect(mockCompute).toHaveBeenCalledTimes(1)
   })
 })

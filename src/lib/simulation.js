@@ -8,9 +8,7 @@ import SimulationDB from '../database/simulation'
 
 import Project from './project'
 import Tools from './tools'
-import Mesh from './mesh'
-import Template from './template'
-import Services from '../services'
+import Compute from './compute'
 
 /**
  * Add simulation
@@ -180,51 +178,7 @@ const run = async ({ id }) => {
   const simulationPath = path.join(storage.SIMULATION, id)
   const configuration = simulation.scheme.configuration
 
-  // Meshing
-  await Promise.all(
-    Object.keys(configuration).map(async (key) => {
-      if (configuration[key].meshable) {
-        const geometry = configuration[key]
-
-        // Build mesh
-        const mesh = await Mesh.build(
-          simulationPath,
-          {
-            path: path.join('..', geometry.file.originPath),
-            file: geometry.file.fileName
-          },
-          {
-            path: path.join(geometry.file.originPath + '_mesh'),
-            parameters: {
-              size: 'auto',
-              fineness: 'coarse'
-            }
-          }
-        )
-
-        // Save mesh name
-        configuration[key].mesh = mesh
-      }
-    })
-  )
-
-  // Build the simulation script
-  await Template.render(
-    './templates/poisson.edp.ejs',
-    {
-      ...configuration,
-      dimension: 3,
-      result: {
-        path: 'run'
-      }
-    },
-    {
-      location: path.join(simulationPath, 'run'),
-      name: id + '.edp'
-    }
-  )
-
-  await Services.freefem(simulationPath, path.join('run', id + '.edp'))
+  await Compute.computeSimulation(id, simulationPath, configuration)
 }
 
 export default { add, get, update, del, run }

@@ -227,8 +227,7 @@ const createProjectTable = async () => {
           owners uuid[] NOT NULL,
           users uuid[],
           permissions jsonb,
-          usersPermissions jsonb[],
-          tasks uuid[]
+          usersPermissions jsonb[]
         )`
     ))
 }

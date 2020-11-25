@@ -1,37 +1,57 @@
 import gmsh from '../gmsh'
 
-const mockExec = jest.fn()
+const mockSpawn = jest.fn()
 jest.mock('child_process', () => ({
-  exec: async (command, callback) => mockExec(command, callback)
+  spawn: () => mockSpawn()
 }))
 
 describe('src/services/gmsh', () => {
   beforeEach(() => {
-    mockExec.mockReset()
+    mockSpawn.mockReset()
   })
 
   it('gmsh', async () => {
-    let log
+    let code
 
     // Normal
-    mockExec.mockImplementation((command, callback) => {
-      callback(undefined, 'stdout', 'stderr')
-    })
-    log = await gmsh()
-    expect(mockExec).toHaveBeenCalledTimes(1)
-    expect(log).toBe('stdout\nstderr')
+    mockSpawn.mockImplementation(() => ({
+      stdout: {
+        on: (data, callback) => {
+          callback('stdout')
+        }
+      },
+      stderr: {
+        on: (data, callback) => {
+          callback('stderr')
+        }
+      },
+      on: (arg, callback) => {
+        if (arg === 'close') callback(0)
+      }
+    }))
+    code = await gmsh()
+    expect(mockSpawn).toHaveBeenCalledTimes(1)
+    expect(code).toBe(0)
 
     // Error
     try {
-      mockExec.mockImplementation((command, callback) => {
-        callback(new Error())
-      })
-      log = await gmsh()
+      mockSpawn.mockImplementation(() => ({
+        stdout: {
+          on: () => {}
+        },
+        stderr: {
+          on: () => {}
+        },
+        on: (arg, callback) => {
+          if (arg === 'error') callback('error')
+        }
+      }))
+      code = await gmsh()
       expect(true).toBe(false)
     } catch (err) {
       expect(true).toBe(true)
     } finally {
-      expect(mockExec).toHaveBeenCalledTimes(2)
+      expect(mockSpawn).toHaveBeenCalledTimes(2)
     }
   })
 })

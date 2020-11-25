@@ -30,25 +30,6 @@ const build = async (globalPath, geometry, mesh) => {
     path.join(mesh.path, geoFile),
     path.join(mesh.path, mshFile)
   )
-  // new Promise((resolve, reject) => {
-  //   exec(
-  //     'docker run --rm -v ' +
-  //       globalPath +
-  //       ':' +
-  //       '/mesh' +
-  //       ' -w /mesh' +
-  //       ' -u $(id -u):$(id -g) tanatloc/converters:latest gmsh ' +
-  //       ' -3 ' +
-  //       path.join(mesh.path, geoFile) +
-  //       ' -o ' +
-  //       path.join(mesh.path, mshFile) +
-  //       ' -format msh2',
-  //     (error, stdout, stderr) => {
-  //       if (error) reject({ error, stdout, stderr })
-  //       resolve(stdout + '\n' + stderr)
-  //     }
-  //   )
-  // })
 
   return {
     path: mesh.path,

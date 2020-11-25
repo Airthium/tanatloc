@@ -197,7 +197,7 @@ const run = async ({ id }) => {
             path: path.join(geometry.file.originPath + '_mesh'),
             parameters: {
               size: 'auto',
-              fineness: 'veryfine'
+              fineness: 'coarse'
             }
           }
         )
@@ -224,12 +224,7 @@ const run = async ({ id }) => {
     }
   )
 
-  const log = await Services.freefem(
-    simulationPath,
-    path.join('run', id + '.edp')
-  )
-
-  console.log(log)
+  await Services.freefem(simulationPath, path.join('run', id + '.edp'))
 }
 
 export default { add, get, update, del, run }

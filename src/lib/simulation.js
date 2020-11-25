@@ -175,10 +175,11 @@ const run = async ({ id }) => {
   const simulation = await get(id, ['scheme'])
 
   // Global
-  const simulationPath = path.join(storage.SIMULATION, id)
   const configuration = simulation.scheme.configuration
 
-  Compute.computeSimulation(id, simulationPath, configuration)
+  Compute.computeSimulation({ id }, configuration).catch((err) => {
+    console.log(err)
+  })
 }
 
 export default { add, get, update, del, run }

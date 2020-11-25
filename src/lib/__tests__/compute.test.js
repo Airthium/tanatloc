@@ -5,6 +5,13 @@ jest.mock('path', () => ({
   join: () => mockPath()
 }))
 
+jest.mock('../../../config/storage', () => ({}))
+
+const mockUpdate = jest.fn()
+jest.mock('../../database/simulation', () => ({
+  update: async () => mockUpdate()
+}))
+
 const mockRender = jest.fn()
 jest.mock('../template', () => ({
   render: async () => mockRender()
@@ -13,13 +20,15 @@ jest.mock('../template', () => ({
 const mockGmsh = jest.fn()
 const mockFreefem = jest.fn()
 jest.mock('../../services', () => ({
-  gmsh: async () => mockGmsh(),
-  freefem: async () => mockFreefem()
+  gmsh: async (path, mesh, geometry, callback) =>
+    mockGmsh(path, mesh, geometry, callback),
+  freefem: async (path, script, callback) => mockFreefem(path, script, callback)
 }))
 
 describe('src/lib/compute', () => {
   beforeEach(() => {
     mockPath.mockReset()
+    mockUpdate.mockReset()
     mockRender.mockReset()
     mockGmsh.mockReset()
     mockFreefem.mockReset()
@@ -49,24 +58,32 @@ describe('src/lib/compute', () => {
   })
 
   it('computeSimulation', async () => {
-    mockFreefem.mockImplementation(() => 0)
-    mockGmsh.mockImplementation(() => 0)
+    mockFreefem.mockImplementation((path, script, callback) => {
+      callback({ data: 'data' })
+      callback({ error: 'data' })
+      return 0
+    })
+    mockGmsh.mockImplementation((path, mesh, geometry, callback) => {
+      callback({ data: 'data' })
+      callback({ error: 'data' })
+      return 0
+    })
 
     // Empty
-    await Compute.computeSimulation('id', 'path', {})
+    await Compute.computeSimulation('id', {})
 
     // With keys
-    await Compute.computeSimulation('id', 'path', { key: {} })
+    await Compute.computeSimulation('id', { key: {} })
 
     // With mesh
-    await Compute.computeSimulation('id', 'path', {
+    await Compute.computeSimulation('id', {
       key: { meshable: true, file: {} }
     })
 
     // Error
     mockFreefem.mockReset()
     try {
-      await Compute.computeSimulation('id', 'path', {})
+      await Compute.computeSimulation('id', {})
       expect(true).toBe(false)
     } catch (err) {
       expect(true).toBe(true)

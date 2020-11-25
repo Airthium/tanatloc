@@ -245,7 +245,8 @@ const createSimulationTable = async () => {
           id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
           name TEXT NOT NULL,
           scheme jsonb,
-          project uuid NOT NULL
+          project uuid NOT NULL,
+          tasks jsonb[]
         )`
     ))
 }

@@ -1,6 +1,12 @@
 import { spawn } from 'child_process'
 
-const freefem = async (path, script) => {
+/**
+ * FreeFEM service
+ * @param {string} path Path
+ * @param {string} script Script
+ * @param {Function} callback Callback
+ */
+const freefem = async (path, script, callback) => {
   const returnCode = await new Promise((resolve, reject) => {
     const process = spawn('docker', [
       'run',
@@ -13,11 +19,11 @@ const freefem = async (path, script) => {
     ])
 
     process.stdout.on('data', (data) => {
-      console.log(`stdout: ${data}`)
+      callback({ data })
     })
 
     process.stderr.on('data', (data) => {
-      console.log(`stderr: ${data}`)
+      callback({ error: data })
     })
 
     process.on('close', (code) => {

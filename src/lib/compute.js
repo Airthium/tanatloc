@@ -1,5 +1,9 @@
 import path from 'path'
 
+import storage from '../../config/storage'
+
+import SimulationDB from '../database/simulation'
+
 import Template from './template'
 import Services from '../services'
 
@@ -9,7 +13,7 @@ import Services from '../services'
  * @param {Object} geometry Geometry
  * @param {Object} mesh Mesh
  */
-const computeMesh = async (simulationPath, geometry, mesh) => {
+const computeMesh = async (simulationPath, geometry, mesh, callback) => {
   const geoFile = geometry.file + '.geo'
   const mshFile = geometry.file + '.msh'
 
@@ -30,7 +34,8 @@ const computeMesh = async (simulationPath, geometry, mesh) => {
   const code = await Services.gmsh(
     simulationPath,
     path.join(mesh.path, geoFile),
-    path.join(mesh.path, mshFile)
+    path.join(mesh.path, mshFile),
+    callback
   )
 
   if (code !== 0) {
@@ -43,12 +48,31 @@ const computeMesh = async (simulationPath, geometry, mesh) => {
   }
 }
 
-const computeSimulation = async (id, simulationPath, configuration) => {
+/**
+ * Compute simulation
+ * @param {string} simulation Simulation { id }
+ * @param {string} simulationPath Simulation path
+ * @param {Object} configuration Configuration
+ */
+const computeSimulation = async ({ id }, configuration) => {
+  // Path
+  const simulationPath = path.join(storage.SIMULATION, id)
+
+  // Create tasks
+  const tasks = []
+
   // Meshing
   await Promise.all(
     Object.keys(configuration).map(async (key) => {
       if (configuration[key].meshable) {
         const geometry = configuration[key]
+
+        // Task
+        const meshingTask = {
+          type: 'mesh',
+          log: ''
+        }
+        tasks.push(meshingTask)
 
         // Build mesh
         const mesh = await computeMesh(
@@ -63,6 +87,17 @@ const computeSimulation = async (id, simulationPath, configuration) => {
               size: 'auto',
               fineness: 'coarse'
             }
+          },
+          ({ error, data }) => {
+            error && (meshingTask.log += `Error: ${error}\n`)
+            data && (meshingTask.log += `${data}\n`)
+
+            SimulationDB.update({ id }, [
+              {
+                key: 'tasks',
+                value: tasks
+              }
+            ])
           }
         )
 
@@ -88,10 +123,28 @@ const computeSimulation = async (id, simulationPath, configuration) => {
     }
   )
 
+  // Task
+  const simulationTask = {
+    type: 'simulation',
+    log: ''
+  }
+  tasks.push(simulationTask)
+
   // Compute simulation
   const code = await Services.freefem(
     simulationPath,
-    path.join('run', id + '.edp')
+    path.join('run', id + '.edp'),
+    ({ error, data }) => {
+      error && (simulationTask.log += `Error: ${error}\n`)
+      data && (simulationTask.log += `${data}\n`)
+
+      SimulationDB.update({ id }, [
+        {
+          key: 'tasks',
+          value: tasks
+        }
+      ])
+    }
   )
 
   if (code !== 0) {

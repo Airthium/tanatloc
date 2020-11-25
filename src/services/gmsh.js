@@ -1,6 +1,13 @@
 import { spawn } from 'child_process'
 
-const gmsh = async (path, fileIn, fileOut) => {
+/**
+ * Gmsh service
+ * @param {string} path Path
+ * @param {string} fileIn In file
+ * @param {string} fileOut Out file
+ * @param {Function} callback Callback
+ */
+const gmsh = async (path, fileIn, fileOut, callback) => {
   const returnCode = await new Promise((resolve, reject) => {
     const process = spawn('docker', [
       'run',
@@ -17,11 +24,11 @@ const gmsh = async (path, fileIn, fileOut) => {
     ])
 
     process.stdout.on('data', (data) => {
-      console.log(`stdout: ${data}`)
+      callback({ data })
     })
 
     process.stderr.on('data', (data) => {
-      console.log(`stderr: ${data}`)
+      callback({ error: data })
     })
 
     process.on('close', (code) => {

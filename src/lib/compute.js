@@ -7,6 +7,23 @@ import SimulationDB from '../database/simulation'
 import Template from './template'
 import Services from '../services'
 
+// dB update delay
+const updateDelay = 1000 // ms
+
+/**
+ * Update tasks
+ * @param {string} id Id
+ * @param {Array} tasks Tasks
+ */
+const updateTasks = (id, tasks) => {
+  SimulationDB.update({ id }, [
+    {
+      key: 'tasks',
+      value: tasks
+    }
+  ])
+}
+
 /**
  * Compute mesh
  * @param {string} simulationPath Simulation path
@@ -55,6 +72,9 @@ const computeMesh = async (simulationPath, geometry, mesh, callback) => {
  * @param {Object} configuration Configuration
  */
 const computeSimulation = async ({ id }, configuration) => {
+  // Time
+  const start = Date.now()
+
   // Path
   const simulationPath = path.join(storage.SIMULATION, id)
 
@@ -70,39 +90,49 @@ const computeSimulation = async ({ id }, configuration) => {
         // Task
         const meshingTask = {
           type: 'mesh',
-          log: ''
+          log: '',
+          status: 'wait'
         }
         tasks.push(meshingTask)
+        updateTasks(id, tasks)
 
         // Build mesh
-        const mesh = await computeMesh(
-          simulationPath,
-          {
-            path: path.join('..', geometry.file.originPath),
-            file: geometry.file.fileName
-          },
-          {
-            path: path.join(geometry.file.originPath + '_mesh'),
-            parameters: {
-              size: 'auto',
-              fineness: 'coarse'
-            }
-          },
-          ({ error, data }) => {
-            error && (meshingTask.log += `Error: ${error}\n`)
-            data && (meshingTask.log += `${data}\n`)
-
-            SimulationDB.update({ id }, [
-              {
-                key: 'tasks',
-                value: tasks
+        try {
+          const mesh = await computeMesh(
+            simulationPath,
+            {
+              path: path.join('..', geometry.file.originPath),
+              file: geometry.file.fileName
+            },
+            {
+              path: path.join(geometry.file.originPath + '_mesh'),
+              parameters: {
+                size: 'auto',
+                fineness: 'coarse'
               }
-            ])
-          }
-        )
+            },
+            ({ error, data }) => {
+              meshingTask.status = 'process'
+              error && (meshingTask.log += `Error: ${error}\n`)
+              data && (meshingTask.log += `${data}\n`)
+              if ((Date.now() - start) % updateDelay === 0)
+                updateTasks(id, tasks)
+            }
+          )
+          // Task
+          meshingTask.status = 'finish'
+          updateTasks(id, tasks)
 
-        // Save mesh name
-        configuration[key].mesh = mesh
+          // Save mesh name
+          configuration[key].mesh = mesh
+        } catch (err) {
+          // Task
+          meshingTask.status = 'error'
+          meshingTask.log += 'Fatal error: ' + err.message
+          updateTasks(id, tasks)
+
+          throw err
+        }
       }
     })
   )
@@ -126,29 +156,39 @@ const computeSimulation = async ({ id }, configuration) => {
   // Task
   const simulationTask = {
     type: 'simulation',
-    log: ''
+    log: '',
+    status: 'wait'
   }
   tasks.push(simulationTask)
+  updateTasks(id, tasks)
 
-  // Compute simulation
-  const code = await Services.freefem(
-    simulationPath,
-    path.join('run', id + '.edp'),
-    ({ error, data }) => {
-      error && (simulationTask.log += `Error: ${error}\n`)
-      data && (simulationTask.log += `${data}\n`)
+  try {
+    // Compute simulation
+    const code = await Services.freefem(
+      simulationPath,
+      path.join('run', id + '.edp'),
+      ({ error, data }) => {
+        simulationTask.status = 'process'
+        error && (simulationTask.log += `Error: ${error}\n`)
+        data && (simulationTask.log += `${data}\n`)
+        if ((Date.now() - start) % updateDelay === 0) updateTasks(id, tasks)
+      }
+    )
 
-      SimulationDB.update({ id }, [
-        {
-          key: 'tasks',
-          value: tasks
-        }
-      ])
+    // Task
+    simulationTask.status = 'finish'
+    updateTasks(id, tasks)
+
+    // check code
+    if (code !== 0) {
+      throw new Error('Simulating process failed. Code ' + code)
     }
-  )
+  } catch (err) {
+    simulationTask.status = 'error'
+    simulationTask.log += 'Fatal error: ' + err.message
+    updateTasks(id, tasks)
 
-  if (code !== 0) {
-    throw new Error('Simulating process failed. Code ' + code)
+    throw err
   }
 }
 

@@ -47,7 +47,11 @@ export default async (req, res) => {
     case 'GET':
       // Get simulation
       try {
-        const simulation = await SimulationLib.get(id, ['name', 'scheme'])
+        const simulation = await SimulationLib.get(id, [
+          'name',
+          'scheme',
+          'tasks'
+        ])
         res.status(200).json({ simulation })
       } catch (err) {
         console.error(err)

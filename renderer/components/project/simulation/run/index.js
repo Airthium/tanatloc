@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import { message, Button, Layout, Steps } from 'antd'
-import { PlusCircleOutlined } from '@ant-design/icons'
+import { message, Button, Drawer, Layout, Space, Steps, Tabs } from 'antd'
+import { FileTextOutlined, PlusCircleOutlined } from '@ant-design/icons'
 
 import SimulationAPI from '../../../../../src/api/simulation'
 
@@ -9,43 +9,21 @@ import Sentry from '../../../../../src/lib/sentry'
 const Run = ({ project, simulation }) => {
   // State
   const [running, setRunning] = useState(false)
+  const [logVisible, setLogVisible] = useState(false)
+  const [logContent, setLogContent] = useState()
 
   // Data
-  // const subScheme = simulation?.scheme.categories.run
-  // const [, { mutateOneSimulation }] = useSimulations(project?.simulations)
+  const [currentSimulation] = SimulationAPI.useSimulation(simulation.id)
+  const meshingTasks = currentSimulation?.tasks?.filter(
+    (t) => t.type === 'mesh'
+  )
+  const simulatingTasks = currentSimulation?.tasks?.filter(
+    (t) => t.type === 'simulation'
+  )
 
-  // const addRun = () => {
-  //   // TODO just for test
-  //   const newSimulation = { ...simulation }
-
-  //   // Update local
-  //   if (!newSimulation.scheme.categories.run.subMenus)
-  //     newSimulation.scheme.categories.run.subMenus = []
-  //   newSimulation.scheme.categories.run.subMenus.push({
-  //     title: 'Run ' + (subScheme.subMenus.length + 1)
-  //   })
-
-  //   // Diff
-  //   const diff = {
-  //     ...newSimulation.scheme.categories.run,
-  //     done: true
-  //   }
-
-  //   // Update
-  //   update({ id: simulation.id }, [
-  //     {
-  //       key: 'scheme',
-  //       type: 'json',
-  //       method: 'diff',
-  //       path: ['categories', 'run'],
-  //       value: diff
-  //     }
-  //   ]).then(() => {
-  //     // Mutate
-  //     mutateOneSimulation(newSimulation)
-  //   })
-  // }
-
+  /**
+   * On run
+   */
   const onRun = async () => {
     setRunning(true)
 
@@ -60,16 +38,86 @@ const Run = ({ project, simulation }) => {
     }
   }
 
+  /**
+   * On log
+   * @param {Array} tasks Tasks
+   */
+  const onLog = (tasks) => {
+    // Content
+    const content = tasks.map((t, index) => (
+      <Tabs.TabPane key={index} tab={'Mesh ' + (index + 1)}>
+        <div
+          dangerouslySetInnerHTML={{ __html: t.log.replace(/\n/g, '<br />') }}
+        />
+      </Tabs.TabPane>
+    ))
+    setLogContent(<Tabs>{content}</Tabs>)
+
+    // Open
+    toggleLog()
+  }
+
+  /**
+   * Toogle log visibility
+   */
+  const toggleLog = () => {
+    setLogVisible(!logVisible)
+  }
+
+  /**
+   * Render
+   */
   return (
     <Layout>
       <Layout.Content>
-        <Button icon={<PlusCircleOutlined />} loading={running} onClick={onRun}>
-          Run
-        </Button>
-        <Steps direction="vertical" percent="45">
-          <Steps.Step title="Meshing" status="process" />
-          <Steps.Step title="Simulating" status="wait" />
-        </Steps>
+        <Drawer
+          title="Log"
+          visible={logVisible}
+          onClose={toggleLog}
+          width={512}
+        >
+          {logContent}
+        </Drawer>
+        <Space direction="vertical">
+          <Button
+            icon={<PlusCircleOutlined />}
+            loading={running}
+            onClick={onRun}
+          >
+            Run
+          </Button>
+
+          <Steps direction="vertical">
+            <Steps.Step
+              title="Meshing"
+              description={
+                <Button
+                  icon={
+                    <FileTextOutlined onClick={() => onLog(meshingTasks)} />
+                  }
+                  size="small"
+                />
+              }
+              subTitle={'(' + meshingTasks?.length + ')'}
+              disabled={!meshingTasks?.length}
+              status="finish"
+            />
+            <Steps.Step
+              title="Simulating"
+              description={
+                <Button
+                  icon={
+                    <FileTextOutlined onClick={() => onLog(simulatingTasks)} />
+                  }
+                  size="small"
+                />
+              }
+              subTitle={'(' + simulatingTasks?.length + ')'}
+              disabled={!simulatingTasks?.length}
+              status={'finish'}
+            />
+          </Steps>
+        </Space>
       </Layout.Content>
     </Layout>
   )

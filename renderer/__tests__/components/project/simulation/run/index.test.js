@@ -3,11 +3,11 @@ import { shallow, mount } from 'enzyme'
 
 const mockRun = jest.fn()
 const mockUpdate = jest.fn()
-const mockMutate = jest.fn()
+const mockSimulation = jest.fn()
 jest.mock('../../../../../../src/api/simulation', () => ({
   run: async () => mockRun(),
   update: async () => mockUpdate(),
-  useSimulations: () => [[], { mutateOneSimulation: mockMutate }]
+  useSimulation: () => [mockSimulation()]
 }))
 
 const mockSentry = jest.fn()
@@ -29,7 +29,17 @@ describe('renderer/components/project/simulation/run', () => {
   beforeEach(() => {
     mockRun.mockReset()
     mockUpdate.mockReset()
-    mockMutate.mockReset()
+    mockSimulation.mockReset()
+    mockSimulation.mockImplementation(() => ({
+      tasks: [
+        {
+          type: 'mesh'
+        },
+        {
+          type: 'simulation'
+        }
+      ]
+    }))
     mockSentry.mockReset()
     wrapper = shallow(<Run project={project} simulation={simulation} />)
   })
@@ -54,5 +64,13 @@ describe('renderer/components/project/simulation/run', () => {
     await wrapper.find('Button').props().onClick()
     expect(mockRun).toHaveBeenCalledTimes(2)
     expect(mockSentry).toHaveBeenCalledTimes(1)
+  })
+
+  it('onLog', () => {
+    // Mesh log
+    wrapper.find('Step').at(0).props().description.props.icon.props.onClick()
+
+    // Simulation log
+    wrapper.find('Step').at(1).props().description.props.icon.props.onClick()
   })
 })

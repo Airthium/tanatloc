@@ -80,7 +80,19 @@ describe('src/lib/compute', () => {
       key: { meshable: true, file: {} }
     })
 
+    // Mesh error
+    mockGmsh.mockImplementation(() => -1)
+    try {
+      await Compute.computeSimulation('id', {
+        key: { meshable: true, file: {} }
+      })
+      expect(true).toBe(false)
+    } catch (err) {
+      expect(true).toBe(true)
+    }
+
     // Error
+    mockGmsh.mockImplementation(() => 0)
     mockFreefem.mockReset()
     try {
       await Compute.computeSimulation('id', {})

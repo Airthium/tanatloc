@@ -47,7 +47,7 @@ const Run = ({ project, simulation }) => {
     const content = tasks.map((t, index) => (
       <Tabs.TabPane key={index} tab={'Mesh ' + (index + 1)}>
         <div
-          dangerouslySetInnerHTML={{ __html: t.log.replace(/\n/g, '<br />') }}
+          dangerouslySetInnerHTML={{ __html: t?.log?.replace(/\n/g, '<br />') }}
         />
       </Tabs.TabPane>
     ))

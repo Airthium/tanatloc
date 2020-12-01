@@ -26,6 +26,11 @@ jest.mock('../workspace', () => ({
   update: async () => mockUpdateWorkspace()
 }))
 
+const mockDelSimulation = jest.fn()
+jest.mock('../simulation', () => ({
+  del: async () => mockDelSimulation()
+}))
+
 describe('src/lib/project', () => {
   beforeEach(() => {
     mockAdd.mockReset()
@@ -38,11 +43,8 @@ describe('src/lib/project', () => {
     mockGetUser.mockReset()
 
     mockUpdateWorkspace.mockReset()
-    // mockGet = () => ({})
-    // mockUpdate.mockReset()
-    // mockDelete.mockReset()
-    // mockAvatar = (val) => val
-    // mockWorkspace.mockReset()
+
+    mockDelSimulation.mockReset()
   })
 
   it('add', async () => {
@@ -55,6 +57,7 @@ describe('src/lib/project', () => {
     expect(mockAvatar).toHaveBeenCalledTimes(0)
     expect(mockGetUser).toHaveBeenCalledTimes(0)
     expect(mockUpdateWorkspace).toHaveBeenCalledTimes(1)
+    expect(mockDelSimulation).toHaveBeenCalledTimes(0)
     expect(project).toEqual({ id: 'id' })
   })
 
@@ -71,6 +74,7 @@ describe('src/lib/project', () => {
     expect(mockAvatar).toHaveBeenCalledTimes(0)
     expect(mockGetUser).toHaveBeenCalledTimes(0)
     expect(mockUpdateWorkspace).toHaveBeenCalledTimes(0)
+    expect(mockDelSimulation).toHaveBeenCalledTimes(0)
     expect(project).toEqual({})
 
     // With avatar, owners, users
@@ -89,6 +93,7 @@ describe('src/lib/project', () => {
     expect(mockAvatar).toHaveBeenCalledTimes(1)
     expect(mockGetUser).toHaveBeenCalledTimes(2)
     expect(mockUpdateWorkspace).toHaveBeenCalledTimes(0)
+    expect(mockDelSimulation).toHaveBeenCalledTimes(0)
     expect(project).toEqual({
       avatar: 'avatar',
       owners: ['owner'],
@@ -107,6 +112,7 @@ describe('src/lib/project', () => {
     expect(mockAvatar).toHaveBeenCalledTimes(2)
     expect(mockGetUser).toHaveBeenCalledTimes(4)
     expect(mockUpdateWorkspace).toHaveBeenCalledTimes(0)
+    expect(mockDelSimulation).toHaveBeenCalledTimes(0)
     expect(project).toEqual({
       avatar: undefined,
       owners: ['owner'],
@@ -123,16 +129,32 @@ describe('src/lib/project', () => {
     expect(mockAvatar).toHaveBeenCalledTimes(0)
     expect(mockGetUser).toHaveBeenCalledTimes(0)
     expect(mockUpdateWorkspace).toHaveBeenCalledTimes(0)
+    expect(mockDelSimulation).toHaveBeenCalledTimes(0)
   })
 
   it('delete', async () => {
+    // Without simulations
+    mockGet.mockImplementation(() => ({}))
     await Project.del({}, {})
     expect(mockAdd).toHaveBeenCalledTimes(0)
-    expect(mockGet).toHaveBeenCalledTimes(0)
+    expect(mockGet).toHaveBeenCalledTimes(1)
     expect(mockUpdate).toHaveBeenCalledTimes(0)
     expect(mockDelete).toHaveBeenCalledTimes(1)
     expect(mockAvatar).toHaveBeenCalledTimes(0)
     expect(mockGetUser).toHaveBeenCalledTimes(0)
     expect(mockUpdateWorkspace).toHaveBeenCalledTimes(1)
+    expect(mockDelSimulation).toHaveBeenCalledTimes(0)
+
+    // With simulations
+    mockGet.mockImplementation(() => ({ simulations: ['id'] }))
+    await Project.del({}, {})
+    expect(mockAdd).toHaveBeenCalledTimes(0)
+    expect(mockGet).toHaveBeenCalledTimes(2)
+    expect(mockUpdate).toHaveBeenCalledTimes(0)
+    expect(mockDelete).toHaveBeenCalledTimes(2)
+    expect(mockAvatar).toHaveBeenCalledTimes(0)
+    expect(mockGetUser).toHaveBeenCalledTimes(0)
+    expect(mockUpdateWorkspace).toHaveBeenCalledTimes(2)
+    expect(mockDelSimulation).toHaveBeenCalledTimes(1)
   })
 })

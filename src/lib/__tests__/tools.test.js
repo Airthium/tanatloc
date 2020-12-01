@@ -20,13 +20,10 @@ jest.mock('fs', () => ({
   }
 }))
 
-let mockCallback = 0
-jest.mock('child_process', () => ({
-  exec: (command, callback) => {
-    mockCallback++
-    if (mockCallback === 1) callback()
-    else callback('error')
-  }
+const mockToThree = jest.fn()
+jest.mock('../../services', () => ({
+  toThree: async (path, fileIn, pathOut, callback) =>
+    mockToThree(path, fileIn, pathOut, callback)
 }))
 
 describe('src/lib/tools', () => {
@@ -37,6 +34,7 @@ describe('src/lib/tools', () => {
     mockReadFile.mockImplementation(() => 'readFile')
     mockUnlink.mockReset()
     mockRmdir.mockReset()
+    mockToThree.mockReset()
   })
 
   it('createPath', async () => {
@@ -57,11 +55,16 @@ describe('src/lib/tools', () => {
   })
 
   it('convert', async () => {
+    mockToThree.mockImplementation((path, fileIn, pathOut, callback) => {
+      callback({ error: 'error', data: 'data' })
+      return 0
+    })
     await Tools.convert('location', { name: 'name' })
 
     try {
+      mockToThree.mockImplementation(() => -1)
       await Tools.convert('location', { name: 'name' })
-      expect(false).toBe(true)
+      expect(true).toBe(false)
     } catch (err) {
       expect(true).toBe(true)
     }

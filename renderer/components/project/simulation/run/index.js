@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { message, Button, Drawer, Layout, Space, Steps, Tabs } from 'antd'
 import { FileTextOutlined, PlusCircleOutlined } from '@ant-design/icons'
 
@@ -20,6 +20,14 @@ const Run = ({ project, simulation }) => {
   const simulatingTasks = currentSimulation?.tasks?.filter(
     (t) => t.type === 'simulation'
   )
+
+  // Check running
+  useEffect(() => {
+    const runningTasks = currentSimulation?.tasks?.filter(
+      (t) => t.status !== 'finish' || t.status !== 'error'
+    )
+    if (runningTasks?.length) setRunning(true)
+  }, [currentSimulation])
 
   /**
    * On run
@@ -88,34 +96,48 @@ const Run = ({ project, simulation }) => {
           </Button>
 
           <Steps direction="vertical">
-            <Steps.Step
-              title="Meshing"
-              description={
-                <Button
-                  icon={
-                    <FileTextOutlined onClick={() => onLog(meshingTasks)} />
+            {meshingTasks?.map((task, index) => {
+              return (
+                <Steps.Step
+                  key={task}
+                  title="Meshing"
+                  description={
+                    <Button
+                      icon={
+                        <FileTextOutlined onClick={() => onLog(meshingTasks)} />
+                      }
+                      size="small"
+                    />
                   }
-                  size="small"
-                />
-              }
-              subTitle={'(' + meshingTasks?.length + ')'}
-              disabled={!meshingTasks?.length}
-              status="finish"
-            />
-            <Steps.Step
-              title="Simulating"
-              description={
-                <Button
-                  icon={
-                    <FileTextOutlined onClick={() => onLog(simulatingTasks)} />
+                  subTitle={
+                    '(' + (index + 1) + '/' + meshingTasks?.length + ')'
                   }
-                  size="small"
+                  status={task.status}
                 />
-              }
-              subTitle={'(' + simulatingTasks?.length + ')'}
-              disabled={!simulatingTasks?.length}
-              status={'finish'}
-            />
+              )
+            })}
+            {simulatingTasks?.map((task, index) => {
+              return (
+                <Steps.Step
+                  key={task}
+                  title="Simulating"
+                  description={
+                    <Button
+                      icon={
+                        <FileTextOutlined
+                          onClick={() => onLog(simulatingTasks)}
+                        />
+                      }
+                      size="small"
+                    />
+                  }
+                  subTitle={
+                    '(' + (index + 1) + '/' + simulatingTasks?.length + ')'
+                  }
+                  status={task.status}
+                />
+              )
+            })}
           </Steps>
         </Space>
       </Layout.Content>

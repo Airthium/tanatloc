@@ -3,6 +3,7 @@
 import WorkspaceDB from '../database/workspace'
 
 import User from './user'
+import Project from './project'
 
 /**
  * Add workspace
@@ -115,6 +116,19 @@ const update = async (workspace, data) => {
  * @param {Object} workspace Workspace { id }
  */
 const del = async (user, workspace) => {
+  // Get data
+  const data = await get(workspace.id, ['projects'])
+
+  // Delete projects
+  if (data.projects) {
+    await Promise.all(
+      data.projects.map(async (project) => {
+        await Project.del(workspace, { id: project })
+      })
+    )
+  }
+
+  // Delete workspace
   await WorkspaceDB.del(workspace)
 
   // Delete workspace reference in user

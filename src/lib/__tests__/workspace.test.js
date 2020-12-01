@@ -20,6 +20,11 @@ jest.mock('../user', () => ({
   update: async () => mockUserUpdate()
 }))
 
+const mockDelProject = jest.fn()
+jest.mock('../project', () => ({
+  del: async () => mockDelProject()
+}))
+
 describe('src/lib/workspace', () => {
   beforeEach(() => {
     mockAdd.mockReset()
@@ -29,6 +34,7 @@ describe('src/lib/workspace', () => {
 
     mockUserGet.mockReset()
     mockUserUpdate.mockReset()
+    mockDelProject.mockReset()
   })
 
   it('add', async () => {
@@ -42,6 +48,7 @@ describe('src/lib/workspace', () => {
     expect(mockDelete).toHaveBeenCalledTimes(0)
     expect(mockUserGet).toHaveBeenCalledTimes(0)
     expect(mockUserUpdate).toHaveBeenCalledTimes(1)
+    expect(mockDelProject).toHaveBeenCalledTimes(0)
     expect(workspace).toEqual({ id: 'id' })
   })
 
@@ -58,6 +65,7 @@ describe('src/lib/workspace', () => {
     expect(mockDelete).toHaveBeenCalledTimes(0)
     expect(mockUserGet).toHaveBeenCalledTimes(0)
     expect(mockUserUpdate).toHaveBeenCalledTimes(0)
+    expect(mockDelProject).toHaveBeenCalledTimes(0)
     expect(workspace).toEqual({ name: 'name' })
 
     // With owners and users
@@ -76,6 +84,7 @@ describe('src/lib/workspace', () => {
     expect(mockDelete).toHaveBeenCalledTimes(0)
     expect(mockUserGet).toHaveBeenCalledTimes(2)
     expect(mockUserUpdate).toHaveBeenCalledTimes(0)
+    expect(mockDelProject).toHaveBeenCalledTimes(0)
     expect(workspace).toEqual({
       name: 'name',
       owners: [{ username: 'username' }],
@@ -97,6 +106,7 @@ describe('src/lib/workspace', () => {
     expect(mockDelete).toHaveBeenCalledTimes(0)
     expect(mockUserGet).toHaveBeenCalledTimes(1)
     expect(mockUserUpdate).toHaveBeenCalledTimes(0)
+    expect(mockDelProject).toHaveBeenCalledTimes(0)
     expect(workspaces).toEqual([
       { id: 'id', name: 'name' },
       { id: 'id', name: 'name' }
@@ -111,6 +121,7 @@ describe('src/lib/workspace', () => {
     expect(mockDelete).toHaveBeenCalledTimes(0)
     expect(mockUserGet).toHaveBeenCalledTimes(2)
     expect(mockUserUpdate).toHaveBeenCalledTimes(0)
+    expect(mockDelProject).toHaveBeenCalledTimes(0)
     expect(workspaces).toEqual([])
   })
 
@@ -122,15 +133,30 @@ describe('src/lib/workspace', () => {
     expect(mockDelete).toHaveBeenCalledTimes(0)
     expect(mockUserGet).toHaveBeenCalledTimes(0)
     expect(mockUserUpdate).toHaveBeenCalledTimes(0)
+    expect(mockDelProject).toHaveBeenCalledTimes(0)
   })
 
   it('del', async () => {
+    // Without users
+    mockGet.mockImplementation(() => ({}))
     await Workspace.del({}, {})
     expect(mockAdd).toHaveBeenCalledTimes(0)
-    expect(mockGet).toHaveBeenCalledTimes(0)
+    expect(mockGet).toHaveBeenCalledTimes(1)
     expect(mockUpdate).toHaveBeenCalledTimes(0)
     expect(mockDelete).toHaveBeenCalledTimes(1)
     expect(mockUserGet).toHaveBeenCalledTimes(0)
     expect(mockUserUpdate).toHaveBeenCalledTimes(1)
+    expect(mockDelProject).toHaveBeenCalledTimes(0)
+
+    // With users
+    mockGet.mockImplementation(() => ({ projects: ['id'] }))
+    await Workspace.del({}, {})
+    expect(mockAdd).toHaveBeenCalledTimes(0)
+    expect(mockGet).toHaveBeenCalledTimes(2)
+    expect(mockUpdate).toHaveBeenCalledTimes(0)
+    expect(mockDelete).toHaveBeenCalledTimes(2)
+    expect(mockUserGet).toHaveBeenCalledTimes(0)
+    expect(mockUserUpdate).toHaveBeenCalledTimes(2)
+    expect(mockDelProject).toHaveBeenCalledTimes(1)
   })
 })

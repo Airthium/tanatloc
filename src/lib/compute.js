@@ -55,9 +55,7 @@ const computeMesh = async (simulationPath, geometry, mesh, callback) => {
     callback
   )
 
-  if (code !== 0) {
-    throw new Error('Meshing process failed. Code ' + code)
-  }
+  if (code !== 0) throw new Error('Meshing process failed. Code ' + code)
 
   return {
     path: mesh.path,
@@ -80,6 +78,13 @@ const computeSimulation = async ({ id }, configuration) => {
 
   // Create tasks
   const tasks = []
+  const simulationTask = {
+    type: 'simulation',
+    log: '',
+    status: 'wait'
+  }
+  tasks.push(simulationTask)
+  updateTasks(id, tasks)
 
   // Meshing
   await Promise.all(
@@ -108,7 +113,7 @@ const computeSimulation = async ({ id }, configuration) => {
               path: path.join(geometry.file.originPath + '_mesh'),
               parameters: {
                 size: 'auto',
-                fineness: 'coarse'
+                fineness: 'normal'
               }
             },
             ({ error, data }) => {
@@ -121,6 +126,7 @@ const computeSimulation = async ({ id }, configuration) => {
           )
           // Task
           meshingTask.status = 'finish'
+          meshingTask.mesh = mesh
           updateTasks(id, tasks)
 
           // Save mesh name
@@ -153,15 +159,6 @@ const computeSimulation = async ({ id }, configuration) => {
     }
   )
 
-  // Task
-  const simulationTask = {
-    type: 'simulation',
-    log: '',
-    status: 'wait'
-  }
-  tasks.push(simulationTask)
-  updateTasks(id, tasks)
-
   try {
     // Compute simulation
     const code = await Services.freefem(
@@ -180,9 +177,7 @@ const computeSimulation = async ({ id }, configuration) => {
     updateTasks(id, tasks)
 
     // check code
-    if (code !== 0) {
-      throw new Error('Simulating process failed. Code ' + code)
-    }
+    if (code !== 0) throw new Error('Simulating process failed. Code ' + code)
   } catch (err) {
     simulationTask.status = 'error'
     simulationTask.log += 'Fatal error: ' + err.message

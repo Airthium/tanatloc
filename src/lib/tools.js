@@ -1,6 +1,7 @@
 import path from 'path'
 import { promises as fs } from 'fs'
-import { exec } from 'child_process'
+
+import Services from '../services'
 
 /**
  * Create path (recursive)
@@ -36,28 +37,23 @@ const readFile = async (file) => {
  * @param {Object} file File
  */
 const convert = async (location, file) => {
-  const partPath = file.uid
-  const origin = path.join(location, file.fileName)
-  const target = path.join(location, partPath)
-  await new Promise((resolve, reject) => {
-    exec(
-      'docker run --rm -v ' +
-        location +
-        ':' +
-        location +
-        ' -u $(id -u):$(id -g) tanatloc/converters:latest StepToThreeJS ' +
-        origin +
-        ' ' +
-        target,
-      (error, stdout, stderr) => {
-        if (error) reject({ error, stdout, stderr })
-        resolve(stdout)
-      }
-    )
-  })
+  const origin = file.fileName
+  const target = file.uid
+
+  const code = await Services.toThree(
+    location,
+    origin,
+    target,
+    ({ error, data }) => {
+      console.log(`${error}`)
+      console.log(`${data}`)
+    }
+  )
+  // TODO data, error
+  if (code !== 0) throw new Error('Conversion process failed. Code ' + code)
 
   return {
-    path: partPath,
+    path: target,
     part: 'part.json'
   }
 }

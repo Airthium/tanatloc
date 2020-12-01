@@ -3,6 +3,7 @@
 import UserDB from '../database/user'
 
 import Avatar from './avatar'
+import Workspace from './workspace'
 
 /**
  * Add user
@@ -68,6 +69,22 @@ const update = async (user, data) => {
  * @param {Object} user User { id }
  */
 const del = async (user) => {
+  // Get data
+  const data = await get(user.id, 'workspaces')
+
+  // Delete workspaces
+  if (data.workspaces) {
+    await Promise.all(
+      data.workspaces.map(async (workspace) => {
+        await Workspace.del(user, { id: workspace })
+      })
+    )
+  }
+
+  // Delete avatar
+  // TODO
+
+  // Delete user
   await UserDB.del(user)
 }
 

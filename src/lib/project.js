@@ -5,6 +5,7 @@ import ProjectDB from '../database/project'
 import Avatar from './avatar'
 import User from './user'
 import Workspace from './workspace'
+import Simulation from './simulation'
 
 /**
  * Add project
@@ -60,7 +61,7 @@ const get = async (id, data) => {
   }
 
   // Get users
-  if (project.users) {
+  if (project && project.users) {
     const users = await Promise.all(
       project.users.map(async (user) => {
         return await User.get(user, [
@@ -92,6 +93,19 @@ const update = async (project, data) => {
  * @param {Object} project Project { id }
  */
 const del = async ({ id }, project) => {
+  // Get data
+  const data = await get(project.id, ['simulations'])
+
+  // Delete simulation
+  if (data.simulations) {
+    await Promise.all(
+      data.simulations.map(async (simulation) => {
+        await Simulation.del(project, { id: simulation })
+      })
+    )
+  }
+
+  // Delete project
   await ProjectDB.del(project)
 
   // Delete project reference in workspace

@@ -1,7 +1,9 @@
 import gmsh from '../gmsh'
 
+const mockExecSync = jest.fn()
 const mockSpawn = jest.fn()
 jest.mock('child_process', () => ({
+  execSync: () => mockExecSync(),
   spawn: () => mockSpawn()
 }))
 
@@ -9,6 +11,8 @@ describe('src/services/gmsh', () => {
   const mockCallback = jest.fn()
 
   beforeEach(() => {
+    mockExecSync.mockReset()
+    mockExecSync.mockImplementation(() => '')
     mockSpawn.mockReset()
     mockCallback.mockReset()
   })
@@ -33,6 +37,7 @@ describe('src/services/gmsh', () => {
       }
     }))
     code = await gmsh('path', 'fileIn', 'fileOut', mockCallback)
+    expect(mockExecSync).toHaveBeenCalledTimes(2)
     expect(mockSpawn).toHaveBeenCalledTimes(1)
     expect(code).toBe(0)
 
@@ -54,6 +59,7 @@ describe('src/services/gmsh', () => {
     } catch (err) {
       expect(true).toBe(true)
     } finally {
+      expect(mockExecSync).toHaveBeenCalledTimes(4)
       expect(mockSpawn).toHaveBeenCalledTimes(2)
     }
   })

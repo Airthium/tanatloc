@@ -1,4 +1,4 @@
-import { spawn } from 'child_process'
+import { execSync, spawn } from 'child_process'
 
 /**
  * FreeFEM service
@@ -8,29 +8,32 @@ import { spawn } from 'child_process'
  */
 const freefem = async (path, script, callback) => {
   const returnCode = await new Promise((resolve, reject) => {
-    const process = spawn('docker', [
+    const user = execSync('id -u').toString().trim()
+    const group = execSync('id -g').toString().trim()
+    const run = spawn('docker', [
       'run',
       '--rm',
-      '-v=' + path + ':/run',
+      '--volume=' + path + ':/run',
+      '--user=' + user + ':' + group,
       '-w=/run',
       'freefem/freefem:latest',
       'FreeFem++',
       script
     ])
 
-    process.stdout.on('data', (data) => {
+    run.stdout.on('data', (data) => {
       callback({ data })
     })
 
-    process.stderr.on('data', (data) => {
+    run.stderr.on('data', (data) => {
       callback({ error: data })
     })
 
-    process.on('close', (code) => {
+    run.on('close', (code) => {
       resolve(code)
     })
 
-    process.on('error', (err) => {
+    run.on('error', (err) => {
       reject(err)
     })
   })

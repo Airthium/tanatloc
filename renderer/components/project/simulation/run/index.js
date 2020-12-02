@@ -24,7 +24,7 @@ const Run = ({ project, simulation }) => {
   // Check running
   useEffect(() => {
     const runningTasks = currentSimulation?.tasks?.filter(
-      (t) => t.status !== 'finish' || t.status !== 'error'
+      (t) => t.status !== 'finish' && t.status !== 'error'
     )
     if (runningTasks?.length) setRunning(true)
   }, [currentSimulation])

@@ -1,6 +1,8 @@
 import Run from '../../../../../components/project/simulation/run'
 import { shallow, mount } from 'enzyme'
 
+import '../../../../../../config/jest/matchMediaMock'
+
 const mockRun = jest.fn()
 const mockUpdate = jest.fn()
 const mockSimulation = jest.fn()
@@ -72,5 +74,42 @@ describe('renderer/components/project/simulation/run', () => {
 
     // Simulation log
     wrapper.find('Step').at(1).props().description.props.icon.props.onClick()
+  })
+
+  it('effect', () => {
+    wrapper.unmount()
+
+    // No tasks
+    mockSimulation.mockImplementation(() => ({
+      tasks: [
+        {
+          type: 'mesh',
+          status: 'finish'
+        },
+        {
+          type: 'simulation',
+          status: 'finish'
+        }
+      ]
+    }))
+    wrapper = mount(<Run project={project} simulation={simulation} />)
+    expect(wrapper).toBeDefined()
+
+    // With tasks
+    wrapper.unmount()
+    mockSimulation.mockImplementation(() => ({
+      tasks: [
+        {
+          type: 'mesh',
+          status: 'finish'
+        },
+        {
+          type: 'simulation',
+          status: 'process'
+        }
+      ]
+    }))
+    wrapper = mount(<Run project={project} simulation={simulation} />)
+    expect(wrapper).toBeDefined()
   })
 })

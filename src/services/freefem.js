@@ -18,6 +18,8 @@ const freefem = async (path, script, callback) => {
       '-w=/run',
       'freefem/freefem:latest',
       'FreeFem++',
+      '-nw',
+      '-ns',
       script
     ])
 

@@ -50,13 +50,16 @@ const Run = ({ project, simulation }) => {
   /**
    * On log
    * @param {Array} tasks Tasks
+   * @param {string} title Tabs title
    */
-  const onLog = (tasks) => {
+  const onLog = (tasks, title) => {
     // Content
     const content = tasks.map((t, index) => (
-      <Tabs.TabPane key={index} tab={'Mesh ' + (index + 1)}>
+      <Tabs.TabPane key={index} tab={title + ' ' + (index + 1)}>
         <div
-          dangerouslySetInnerHTML={{ __html: t?.log?.replace(/\n/g, '<br />') }}
+          dangerouslySetInnerHTML={{
+            __html: t?.log?.replace(/\n\n/g, '\n').replace(/\n/g, '<br />')
+          }}
         />
       </Tabs.TabPane>
     ))
@@ -105,7 +108,9 @@ const Run = ({ project, simulation }) => {
                   description={
                     <Button
                       icon={
-                        <FileTextOutlined onClick={() => onLog(meshingTasks)} />
+                        <FileTextOutlined
+                          onClick={() => onLog(meshingTasks, 'Mesh')}
+                        />
                       }
                       size="small"
                     />
@@ -126,7 +131,7 @@ const Run = ({ project, simulation }) => {
                     <Button
                       icon={
                         <FileTextOutlined
-                          onClick={() => onLog(simulatingTasks)}
+                          onClick={() => onLog(simulatingTasks, 'Simulation')}
                         />
                       }
                       size="small"

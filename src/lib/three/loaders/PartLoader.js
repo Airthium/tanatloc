@@ -44,20 +44,22 @@ const PartLoader = (mouseMoveEvent, mouseDownEvent) => {
 
     // Solids
     const solids = new Group()
-    part.solids?.forEach((solid) => {
-      const mesh = loadElement(solid, solidColor, transparent, clippingPlane)
-      mesh.visible = false
-      solids.add(mesh)
-    })
+    part.solids &&
+      part.solids.forEach((solid) => {
+        const mesh = loadElement(solid, solidColor, transparent, clippingPlane)
+        mesh.visible = false
+        solids.add(mesh)
+      })
     object.add(solids)
 
     // Faces
     const faces = new Group()
-    part.faces?.forEach((face) => {
-      const mesh = loadElement(face, faceColor, transparent, clippingPlane)
-      mesh.visible = true
-      faces.add(mesh)
-    })
+    part.faces &&
+      part.faces.forEach((face) => {
+        const mesh = loadElement(face, faceColor, transparent, clippingPlane)
+        mesh.visible = true
+        faces.add(mesh)
+      })
     object.add(faces)
 
     // Edges
@@ -132,20 +134,21 @@ const PartLoader = (mouseMoveEvent, mouseDownEvent) => {
 
     // Solids
     const solids = part.children[0]
-    solids.children?.forEach((solid) => {
-      const childBox = solid.geometry.boundingBox
-      const min = new Vector3(
-        Math.min(box.min.x, childBox.min.x),
-        Math.min(box.min.y, childBox.min.y),
-        Math.min(box.min.z, childBox.min.z)
-      )
-      const max = new Vector3(
-        Math.max(box.max.x, childBox.max.x),
-        Math.max(box.max.y, childBox.max.y),
-        Math.max(box.max.z, childBox.max.z)
-      )
-      box.set(min, max)
-    })
+    solids.children &&
+      solids.children.forEach((solid) => {
+        const childBox = solid.geometry.boundingBox
+        const min = new Vector3(
+          Math.min(box.min.x, childBox.min.x),
+          Math.min(box.min.y, childBox.min.y),
+          Math.min(box.min.z, childBox.min.z)
+        )
+        const max = new Vector3(
+          Math.max(box.max.x, childBox.max.x),
+          Math.max(box.max.y, childBox.max.y),
+          Math.max(box.max.z, childBox.max.z)
+        )
+        box.set(min, max)
+      })
 
     return box
   }
@@ -170,11 +173,12 @@ const PartLoader = (mouseMoveEvent, mouseDownEvent) => {
    */
   const setTransparent = (part, transparent) => {
     part.children.forEach((group) => {
-      group.children?.forEach((child) => {
-        child.material.transparent = transparent
-        child.material.opacity = transparent ? 0.5 : 1
-        child.material.depthWrite = !transparent
-      })
+      group.children &&
+        group.children.forEach((child) => {
+          child.material.transparent = transparent
+          child.material.opacity = transparent ? 0.5 : 1
+          child.material.depthWrite = !transparent
+        })
     })
   }
 
@@ -247,8 +251,10 @@ const PartLoader = (mouseMoveEvent, mouseDownEvent) => {
    * @param {Object} part Part
    */
   const stopSelection = (part) => {
-    selectionRenderer?.domElement.removeEventListener('mousemove', mouseMove)
-    selectionRenderer?.domElement.removeEventListener('mousedown', mouseDown)
+    selectionRenderer &&
+      selectionRenderer.domElement.removeEventListener('mousemove', mouseMove)
+    selectionRenderer &&
+      selectionRenderer.domElement.removeEventListener('mousedown', mouseDown)
 
     selectionType = null
 

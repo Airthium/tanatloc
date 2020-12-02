@@ -215,12 +215,13 @@ const GridHelper = (scene) => {
    * Dispose
    */
   const dispose = () => {
-    gridHelper?.children.forEach((group) => {
-      group.children.forEach((child) => {
-        child.geometry.dispose()
-        child.material.dispose()
+    gridHelper &&
+      gridHelper.children.forEach((group) => {
+        group.children.forEach((child) => {
+          child.geometry.dispose()
+          child.material.dispose()
+        })
       })
-    })
   }
 
   return { update, setVisible, dispose }

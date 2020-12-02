@@ -11,23 +11,28 @@ const Run = ({ project, simulation }) => {
   const [running, setRunning] = useState(false)
   const [logVisible, setLogVisible] = useState(false)
   const [logContent, setLogContent] = useState()
+  const [meshingTasks, setMeshingTasks] = useState()
+  const [simulatingTasks, setSimulatingTasks] = useState()
 
   // Data
-  const [currentSimulation] = SimulationAPI.useSimulation(simulation.id)
-  const meshingTasks = currentSimulation?.tasks?.filter(
-    (t) => t.type === 'mesh'
-  )
-  const simulatingTasks = currentSimulation?.tasks?.filter(
-    (t) => t.type === 'simulation'
-  )
+  const [currentSimulation] = SimulationAPI.useSimulation(simulation.id, 500)
 
-  // Check running
+  // Check tasks
   useEffect(() => {
+    const meshing = currentSimulation?.tasks?.filter((t) => t.type === 'mesh')
+    setMeshingTasks(meshing)
+
+    const simulating = currentSimulation?.tasks?.filter(
+      (t) => t.type === 'simulation'
+    )
+    setSimulatingTasks(simulating)
+
     const runningTasks = currentSimulation?.tasks?.filter(
       (t) => t.status !== 'finish' && t.status !== 'error'
     )
     if (runningTasks?.length) setRunning(true)
-  }, [currentSimulation])
+    else setRunning(false)
+  }, [JSON.stringify(currentSimulation)])
 
   /**
    * On run
@@ -35,15 +40,11 @@ const Run = ({ project, simulation }) => {
   const onRun = async () => {
     setRunning(true)
 
-    try {
-      await SimulationAPI.run({ id: simulation.id })
-    } catch (err) {
+    SimulationAPI.run({ id: simulation.id }).catch((err) => {
       message.error(err.message)
       console.error(err)
       Sentry.captureException(err)
-    } finally {
-      setRunning(false)
-    }
+    })
   }
 
   /**

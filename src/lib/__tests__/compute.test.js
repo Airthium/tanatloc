@@ -19,10 +19,14 @@ jest.mock('../template', () => ({
 
 const mockGmsh = jest.fn()
 const mockFreefem = jest.fn()
+const mockToThree = jest.fn()
 jest.mock('../../services', () => ({
   gmsh: async (path, mesh, geometry, callback) =>
     mockGmsh(path, mesh, geometry, callback),
-  freefem: async (path, script, callback) => mockFreefem(path, script, callback)
+  freefem: async (path, script, callback) =>
+    mockFreefem(path, script, callback),
+  toThree: async (path, fileIn, pathOut, callback) =>
+    mockToThree(path, fileIn, pathOut, callback)
 }))
 
 describe('src/lib/compute', () => {
@@ -32,20 +36,40 @@ describe('src/lib/compute', () => {
     mockRender.mockReset()
     mockGmsh.mockReset()
     mockFreefem.mockReset()
+    mockToThree.mockReset()
   })
 
   it('computeMesh', async () => {
     // Normal
+    mockPath.mockImplementation(() => 'partPath')
     mockGmsh.mockImplementation(() => 0)
+    mockToThree.mockImplementation((path, fileIn, pathOut, callback) => {
+      callback({ error: 'error' })
+      callback({ data: 'data' })
+      return 0
+    })
     const data = await Compute.computeMesh(
       'path',
       { file: 'file' },
       { path: 'path' }
     )
     expect(data).toEqual({
-      file: 'file.msh',
-      path: 'path'
+      originPath: 'path',
+      fileName: 'file.msh',
+      part: 'part.json',
+      partPath: 'partPath'
     })
+
+    // Convert error
+    mockToThree.mockImplementation(() => {})
+    try {
+      await Compute.computeMesh('path', { file: 'file' }, { path: 'path' })
+      expect(true).toBe(false)
+    } catch (err) {
+      expect(true).toBe(true)
+    } finally {
+      mockToThree.mockImplementation(() => 0)
+    }
 
     // Error
     mockGmsh.mockReset()
@@ -68,6 +92,7 @@ describe('src/lib/compute', () => {
       callback({ error: 'data' })
       return 0
     })
+    mockToThree.mockImplementation(() => 0)
 
     // Empty
     await Compute.computeSimulation('id', {})

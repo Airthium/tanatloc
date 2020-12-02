@@ -69,6 +69,9 @@ describe('renderer/components/project/simulation/run', () => {
   })
 
   it('onLog', () => {
+    wrapper.unmount()
+    wrapper = mount(<Run project={project} simulation={simulation} />)
+
     // Mesh log
     wrapper.find('Step').at(0).props().description.props.icon.props.onClick()
 

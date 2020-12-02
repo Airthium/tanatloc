@@ -33,6 +33,7 @@ const updateTasks = (id, tasks) => {
 const computeMesh = async (simulationPath, geometry, mesh, callback) => {
   const geoFile = geometry.file + '.geo'
   const mshFile = geometry.file + '.msh'
+  const partPath = geometry.file
 
   // Render template
   await Template.render(
@@ -48,7 +49,7 @@ const computeMesh = async (simulationPath, geometry, mesh, callback) => {
   )
 
   // Compute mesh
-  const code = await Services.gmsh(
+  let code = await Services.gmsh(
     simulationPath,
     path.join(mesh.path, geoFile),
     path.join(mesh.path, mshFile),
@@ -57,9 +58,25 @@ const computeMesh = async (simulationPath, geometry, mesh, callback) => {
 
   if (code !== 0) throw new Error('Meshing process failed. Code ' + code)
 
+  // Convert mesh
+  code = await Services.toThree(
+    simulationPath,
+    path.join(mesh.path, mshFile),
+    path.join(mesh.path, partPath),
+    ({ error, data }) => {
+      console.log(`${error}`)
+      console.log(`${data}`)
+    }
+  )
+
+  if (code !== 0)
+    throw new Error('Mesh converting process failed. Code ' + code)
+
   return {
-    path: mesh.path,
-    file: mshFile
+    fileName: mshFile,
+    originPath: mesh.path,
+    part: 'part.json',
+    partPath: path.join(mesh.path, partPath)
   }
 }
 

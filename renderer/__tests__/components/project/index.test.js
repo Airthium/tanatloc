@@ -60,6 +60,9 @@ describe('components/project', () => {
             },
             something: {
               done: true
+            },
+            somethingElse: {
+              error: true
             }
           }
         }

@@ -354,7 +354,7 @@ describe('src/lib/simulation', () => {
     expect(mockPath).toHaveBeenCalledTimes(0)
     expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockGet).toHaveBeenCalledTimes(1)
-    expect(mockUpdate).toHaveBeenCalledTimes(0)
+    expect(mockUpdate).toHaveBeenCalledTimes(1)
     expect(mockDelete).toHaveBeenCalledTimes(0)
     expect(mockUpdateProject).toHaveBeenCalledTimes(0)
     expect(mockWriteFile).toHaveBeenCalledTimes(0)
@@ -364,6 +364,7 @@ describe('src/lib/simulation', () => {
     expect(mockCompute).toHaveBeenCalledTimes(1)
 
     // Error
+    mockUpdate.mockReset()
     mockCompute.mockImplementation(() => {
       throw new Error()
     })
@@ -371,7 +372,7 @@ describe('src/lib/simulation', () => {
     expect(mockPath).toHaveBeenCalledTimes(0)
     expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockGet).toHaveBeenCalledTimes(2)
-    expect(mockUpdate).toHaveBeenCalledTimes(0)
+    expect(mockUpdate).toHaveBeenCalledTimes(2)
     expect(mockDelete).toHaveBeenCalledTimes(0)
     expect(mockUpdateProject).toHaveBeenCalledTimes(0)
     expect(mockWriteFile).toHaveBeenCalledTimes(0)

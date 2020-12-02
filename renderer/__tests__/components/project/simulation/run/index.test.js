@@ -6,10 +6,12 @@ import '../../../../../../config/jest/matchMediaMock'
 const mockRun = jest.fn()
 const mockUpdate = jest.fn()
 const mockSimulation = jest.fn()
+const mockMutateOneSimulation = jest.fn()
 jest.mock('../../../../../../src/api/simulation', () => ({
   run: async () => mockRun(),
   update: async () => mockUpdate(),
-  useSimulation: () => [mockSimulation()]
+  useSimulation: () => [mockSimulation()],
+  useSimulations: () => [, { mutateOneSimulation: mockMutateOneSimulation }]
 }))
 
 const mockSentry = jest.fn()
@@ -33,6 +35,7 @@ describe('renderer/components/project/simulation/run', () => {
     mockUpdate.mockReset()
     mockSimulation.mockReset()
     mockSimulation.mockImplementation(() => ({
+      scheme: { configuration: { run: { done: true } } },
       tasks: [
         {
           type: 'mesh'
@@ -84,6 +87,7 @@ describe('renderer/components/project/simulation/run', () => {
 
     // No tasks
     mockSimulation.mockImplementation(() => ({
+      scheme: { configuration: { run: {} } },
       tasks: [
         {
           type: 'mesh',
@@ -101,6 +105,7 @@ describe('renderer/components/project/simulation/run', () => {
     // With tasks
     wrapper.unmount()
     mockSimulation.mockImplementation(() => ({
+      scheme: { configuration: { run: {} } },
       tasks: [
         {
           type: 'mesh',

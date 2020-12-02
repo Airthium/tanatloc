@@ -16,6 +16,9 @@ const Run = ({ project, simulation }) => {
 
   // Data
   const [currentSimulation] = SimulationAPI.useSimulation(simulation.id, 500)
+  const [, { mutateOneSimulation }] = SimulationAPI.useSimulations(
+    project?.simulations
+  )
 
   // Check tasks
   useEffect(() => {
@@ -32,6 +35,14 @@ const Run = ({ project, simulation }) => {
     )
     if (runningTasks?.length) setRunning(true)
     else setRunning(false)
+
+    if (
+      currentSimulation.scheme.configuration.run.done !==
+        simulation.scheme.configuration.run.done ||
+      currentSimulation.scheme.configuration.run.error !==
+        simulation.scheme.configuration.run.error
+    )
+      mutateOneSimulation(currentSimulation)
   }, [JSON.stringify(currentSimulation)])
 
   /**

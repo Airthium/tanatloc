@@ -7,6 +7,7 @@ import {
   ArrowLeftOutlined,
   CalculatorOutlined,
   CheckCircleOutlined,
+  CloseCircleOutlined,
   ExclamationCircleOutlined,
   PlusOutlined
 } from '@ant-design/icons'
@@ -179,7 +180,9 @@ const Project = () => {
           <Menu.Item
             key={menuKeys.simulation + '&' + s.id + '&' + key}
             icon={
-              child.done ? (
+              child.error ? (
+                <CloseCircleOutlined style={{ color: 'red' }} />
+              ) : child.done ? (
                 <CheckCircleOutlined style={{ color: 'green' }} />
               ) : (
                 <ExclamationCircleOutlined style={{ color: 'orange' }} />

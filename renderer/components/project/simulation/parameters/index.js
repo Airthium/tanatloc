@@ -30,8 +30,6 @@ const Parameters = ({ project, simulation }) => {
       })
     })
 
-    // TODO set this one async
-
     // Diff
     const diff = {
       ...newSimulation.scheme.configuration.parameters,

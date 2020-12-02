@@ -22,7 +22,7 @@ import SimulationAPI from '../../../../../src/api/simulation'
 import FileAPI from '../../../../../src/api/file'
 
 const errors = {
-  UNABLE_TO_LOAD: 'Unable to load part TODO Franck'
+  UNABLE_TO_LOAD: 'Unable to load geometry'
 }
 
 const Geometry = ({ project, simulation, part }) => {

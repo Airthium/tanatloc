@@ -88,6 +88,13 @@ describe('src/lib/compute', () => {
       key: { meshable: true, file: {} }
     })
 
+    global.Date = {
+      now: () => Math.random()
+    }
+    await Compute.computeSimulation('id', {
+      key: { meshable: true, file: {} }
+    })
+
     // Mesh error
     mockGmsh.mockImplementation(() => -1)
     try {

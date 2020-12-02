@@ -1,8 +1,8 @@
 import getSessionId from '../session'
 import auth from '../auth'
 
-import { get } from '../../lib/simulation'
-import { get as getProject } from '../../lib/project'
+import SimulationLib from '../../lib/simulation'
+import ProjectLib from '../../lib/project'
 
 import Sentry from '../../lib/sentry'
 
@@ -31,10 +31,14 @@ export default async (req, res) => {
       const simulationsTmp = await Promise.all(
         list.map(async (id) => {
           try {
-            const simulation = await get(id, ['name', 'scheme', 'project'])
+            const simulation = await SimulationLib.get(id, [
+              'name',
+              'scheme',
+              'project'
+            ])
 
             // Check authorization
-            const projectAuth = await getProject(simulation.project, [
+            const projectAuth = await ProjectLib.get(simulation.project, [
               'owners',
               'users'
             ])

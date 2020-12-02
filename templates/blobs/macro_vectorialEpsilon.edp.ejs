@@ -1,0 +1,12 @@
+real sqrt2 = sqrt(2.);
+<% if (dimension === 2) { -%>
+macro Epsilon(U) [
+  dx(U#x), dy(U#y),
+  (dy(U#x)+dx(U#y))/sqrt2] //
+<% } else { -%>
+macro Epsilon(U) [
+  dx(U#x), dy(U#y), dz(U#z),
+	(dz(U#y)+dy(U#z))/sqrt2,
+	(dz(U#x)+dx(U#z))/sqrt2,
+	(dy(U#x)+dx(U#y))/sqrt2] //
+<% } -%>

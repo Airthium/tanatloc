@@ -3,4 +3,4 @@
 import add from './add'
 import del from './del'
 
-export { add, del }
+export default { add, del }

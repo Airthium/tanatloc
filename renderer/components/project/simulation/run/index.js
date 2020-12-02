@@ -1,51 +1,146 @@
-import { Button, Layout } from 'antd'
-import { PlusCircleOutlined } from '@ant-design/icons'
+import { useState, useEffect } from 'react'
+import { message, Button, Drawer, Layout, Space, Steps, Tabs } from 'antd'
+import { FileTextOutlined, PlusCircleOutlined } from '@ant-design/icons'
 
-import { update, useSimulations } from '../../../../../src/api/simulation'
+import SimulationAPI from '../../../../../src/api/simulation'
+
+import Sentry from '../../../../../src/lib/sentry'
 
 const Run = ({ project, simulation }) => {
+  // State
+  const [running, setRunning] = useState(false)
+  const [logVisible, setLogVisible] = useState(false)
+  const [logContent, setLogContent] = useState()
+  const [meshingTasks, setMeshingTasks] = useState()
+  const [simulatingTasks, setSimulatingTasks] = useState()
+
   // Data
-  const subScheme = simulation?.scheme.categories.run
-  const [, { mutateOneSimulation }] = useSimulations(project?.simulations)
+  const [currentSimulation] = SimulationAPI.useSimulation(simulation.id, 500)
 
-  const addRun = () => {
-    // TODO just for test
-    const newSimulation = { ...simulation }
+  // Check tasks
+  useEffect(() => {
+    const meshing = currentSimulation?.tasks?.filter((t) => t.type === 'mesh')
+    setMeshingTasks(meshing)
 
-    // Update local
-    if (!newSimulation.scheme.categories.run.subMenus)
-      newSimulation.scheme.categories.run.subMenus = []
-    newSimulation.scheme.categories.run.subMenus.push({
-      title: 'Run ' + (subScheme.subMenus.length + 1)
-    })
+    const simulating = currentSimulation?.tasks?.filter(
+      (t) => t.type === 'simulation'
+    )
+    setSimulatingTasks(simulating)
 
-    // Diff
-    const diff = {
-      ...newSimulation.scheme.categories.run,
-      done: true
-    }
+    const runningTasks = currentSimulation?.tasks?.filter(
+      (t) => t.status !== 'finish' && t.status !== 'error'
+    )
+    if (runningTasks?.length) setRunning(true)
+    else setRunning(false)
+  }, [JSON.stringify(currentSimulation)])
 
-    // Update
-    update({ id: simulation.id }, [
-      {
-        key: 'scheme',
-        type: 'json',
-        method: 'diff',
-        path: ['categories', 'run'],
-        value: diff
-      }
-    ]).then(() => {
-      // Mutate
-      mutateOneSimulation(newSimulation)
+  /**
+   * On run
+   */
+  const onRun = async () => {
+    setRunning(true)
+
+    SimulationAPI.run({ id: simulation.id }).catch((err) => {
+      message.error(err.message)
+      console.error(err)
+      Sentry.captureException(err)
     })
   }
 
+  /**
+   * On log
+   * @param {Array} tasks Tasks
+   */
+  const onLog = (tasks) => {
+    // Content
+    const content = tasks.map((t, index) => (
+      <Tabs.TabPane key={index} tab={'Mesh ' + (index + 1)}>
+        <div
+          dangerouslySetInnerHTML={{ __html: t?.log?.replace(/\n/g, '<br />') }}
+        />
+      </Tabs.TabPane>
+    ))
+    setLogContent(<Tabs>{content}</Tabs>)
+
+    // Open
+    toggleLog()
+  }
+
+  /**
+   * Toogle log visibility
+   */
+  const toggleLog = () => {
+    setLogVisible(!logVisible)
+  }
+
+  /**
+   * Render
+   */
   return (
     <Layout>
       <Layout.Content>
-        <Button icon={<PlusCircleOutlined />} onClick={addRun}>
-          Add a run
-        </Button>
+        <Drawer
+          title="Log"
+          visible={logVisible}
+          onClose={toggleLog}
+          width={512}
+        >
+          {logContent}
+        </Drawer>
+        <Space direction="vertical">
+          <Button
+            icon={<PlusCircleOutlined />}
+            loading={running}
+            onClick={onRun}
+          >
+            Run
+          </Button>
+
+          <Steps direction="vertical">
+            {meshingTasks?.map((task, index) => {
+              return (
+                <Steps.Step
+                  key={task}
+                  title="Meshing"
+                  description={
+                    <Button
+                      icon={
+                        <FileTextOutlined onClick={() => onLog(meshingTasks)} />
+                      }
+                      size="small"
+                    />
+                  }
+                  subTitle={
+                    '(' + (index + 1) + '/' + meshingTasks?.length + ')'
+                  }
+                  status={task.status}
+                />
+              )
+            })}
+            {simulatingTasks?.map((task, index) => {
+              return (
+                <Steps.Step
+                  key={task}
+                  title="Simulating"
+                  description={
+                    <Button
+                      icon={
+                        <FileTextOutlined
+                          onClick={() => onLog(simulatingTasks)}
+                        />
+                      }
+                      size="small"
+                    />
+                  }
+                  subTitle={
+                    '(' + (index + 1) + '/' + simulatingTasks?.length + ')'
+                  }
+                  status={task.status}
+                />
+              )
+            })}
+          </Steps>
+        </Space>
       </Layout.Content>
     </Layout>
   )

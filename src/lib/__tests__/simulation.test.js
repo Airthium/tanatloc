@@ -1,4 +1,4 @@
-import { add, get, update, del } from '../simulation'
+import Simulation from '../simulation'
 
 const mockPath = jest.fn()
 jest.mock('path', () => ({
@@ -34,6 +34,11 @@ jest.mock('../tools', () => ({
   removeDirectory: async () => mockRemoveDirectory()
 }))
 
+const mockCompute = jest.fn()
+jest.mock('../compute', () => ({
+  computeSimulation: async () => mockCompute()
+}))
+
 describe('src/lib/simulation', () => {
   beforeEach(() => {
     mockPath.mockReset()
@@ -46,13 +51,14 @@ describe('src/lib/simulation', () => {
     mockConvert.mockReset()
     mockRemoveFile.mockReset()
     mockRemoveDirectory.mockReset()
+    mockCompute.mockReset()
   })
 
   it('add', async () => {
     mockAdd.mockImplementation(() => ({
       id: 'id'
     }))
-    const simulation = await add({
+    const simulation = await Simulation.add({
       project: { id: 'id' },
       simulation: { name: 'name', scheme: 'scheme' }
     })
@@ -71,7 +77,7 @@ describe('src/lib/simulation', () => {
 
   it('get', async () => {
     mockGet.mockImplementation(() => ({}))
-    const simulation = await get('id', [])
+    const simulation = await Simulation.get('id', [])
     expect(mockPath).toHaveBeenCalledTimes(0)
     expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockGet).toHaveBeenCalledTimes(1)
@@ -95,7 +101,7 @@ describe('src/lib/simulation', () => {
     }))
 
     // Empty
-    await update({}, [])
+    await Simulation.update({}, [])
     expect(mockPath).toHaveBeenCalledTimes(0)
     expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockGet).toHaveBeenCalledTimes(0)
@@ -108,7 +114,7 @@ describe('src/lib/simulation', () => {
     expect(mockRemoveDirectory).toHaveBeenCalledTimes(0)
 
     // With not a file
-    await update({}, [{}])
+    await Simulation.update({}, [{}])
     expect(mockPath).toHaveBeenCalledTimes(0)
     expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockGet).toHaveBeenCalledTimes(0)
@@ -121,7 +127,7 @@ describe('src/lib/simulation', () => {
     expect(mockRemoveDirectory).toHaveBeenCalledTimes(0)
 
     // Without scheme
-    await update({}, [{}])
+    await Simulation.update({}, [{}])
     expect(mockPath).toHaveBeenCalledTimes(0)
     expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockGet).toHaveBeenCalledTimes(0)
@@ -134,7 +140,7 @@ describe('src/lib/simulation', () => {
     expect(mockRemoveDirectory).toHaveBeenCalledTimes(0)
 
     // With undefined file
-    await update({}, [
+    await Simulation.update({}, [
       {
         key: 'scheme',
         value: {
@@ -157,12 +163,13 @@ describe('src/lib/simulation', () => {
     mockConvert.mockImplementation(() => ({
       path: 'path'
     }))
-    await update({ id: 'id' }, [
+    await Simulation.update({ id: 'id' }, [
       {
         key: 'scheme',
         path: ['categories', 'geometry'],
         value: {
           file: {
+            name: 'name',
             buffer: ['buffer']
           }
         }
@@ -185,6 +192,7 @@ describe('src/lib/simulation', () => {
         categories: {
           geometry: {
             file: {
+              fileName: 'name',
               part: 'part',
               partPath: 'path',
               origin: 'origin',
@@ -194,12 +202,13 @@ describe('src/lib/simulation', () => {
         }
       }
     }))
-    await update({ id: 'id' }, [
+    await Simulation.update({ id: 'id' }, [
       {
         key: 'scheme',
         path: ['categories', 'geometry'],
         value: {
           file: {
+            name: 'name',
             buffer: ['buffer']
           }
         }
@@ -223,12 +232,13 @@ describe('src/lib/simulation', () => {
     mockRemoveDirectory.mockImplementation(() => {
       throw new Error()
     })
-    await update({ id: 'id' }, [
+    await Simulation.update({ id: 'id' }, [
       {
         key: 'scheme',
         path: ['categories', 'geometry'],
         value: {
           file: {
+            name: 'name',
             buffer: ['buffer']
           }
         }
@@ -258,12 +268,13 @@ describe('src/lib/simulation', () => {
         }
       }
     }))
-    await update({ id: 'id' }, [
+    await Simulation.update({ id: 'id' }, [
       {
         key: 'scheme',
         path: ['categories', 'geometry'],
         value: {
           file: {
+            name: 'name',
             buffer: ['buffer']
           }
         }
@@ -281,7 +292,7 @@ describe('src/lib/simulation', () => {
     expect(mockRemoveDirectory).toHaveBeenCalledTimes(2)
 
     // With file to remove
-    await update({ id: 'id' }, [
+    await Simulation.update({ id: 'id' }, [
       {
         key: 'scheme',
         path: ['categories', 'geometry'],
@@ -303,7 +314,7 @@ describe('src/lib/simulation', () => {
   })
 
   it('delete', async () => {
-    await del({}, {})
+    await Simulation.del({}, {})
     expect(mockPath).toHaveBeenCalledTimes(1)
     expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockGet).toHaveBeenCalledTimes(0)
@@ -319,7 +330,7 @@ describe('src/lib/simulation', () => {
     mockRemoveDirectory.mockImplementation(() => {
       throw new Error()
     })
-    await del({}, {})
+    await Simulation.del({}, {})
     expect(mockPath).toHaveBeenCalledTimes(2)
     expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockGet).toHaveBeenCalledTimes(0)
@@ -330,5 +341,43 @@ describe('src/lib/simulation', () => {
     expect(mockConvert).toHaveBeenCalledTimes(0)
     expect(mockRemoveFile).toHaveBeenCalledTimes(0)
     expect(mockRemoveDirectory).toHaveBeenCalledTimes(2)
+  })
+
+  it('run', async () => {
+    // Normal
+    mockGet.mockImplementation(() => ({
+      scheme: {
+        configuration: {}
+      }
+    }))
+    await Simulation.run({})
+    expect(mockPath).toHaveBeenCalledTimes(0)
+    expect(mockAdd).toHaveBeenCalledTimes(0)
+    expect(mockGet).toHaveBeenCalledTimes(1)
+    expect(mockUpdate).toHaveBeenCalledTimes(0)
+    expect(mockDelete).toHaveBeenCalledTimes(0)
+    expect(mockUpdateProject).toHaveBeenCalledTimes(0)
+    expect(mockWriteFile).toHaveBeenCalledTimes(0)
+    expect(mockConvert).toHaveBeenCalledTimes(0)
+    expect(mockRemoveFile).toHaveBeenCalledTimes(0)
+    expect(mockRemoveDirectory).toHaveBeenCalledTimes(0)
+    expect(mockCompute).toHaveBeenCalledTimes(1)
+
+    // Error
+    mockCompute.mockImplementation(() => {
+      throw new Error()
+    })
+    await Simulation.run({})
+    expect(mockPath).toHaveBeenCalledTimes(0)
+    expect(mockAdd).toHaveBeenCalledTimes(0)
+    expect(mockGet).toHaveBeenCalledTimes(2)
+    expect(mockUpdate).toHaveBeenCalledTimes(0)
+    expect(mockDelete).toHaveBeenCalledTimes(0)
+    expect(mockUpdateProject).toHaveBeenCalledTimes(0)
+    expect(mockWriteFile).toHaveBeenCalledTimes(0)
+    expect(mockConvert).toHaveBeenCalledTimes(0)
+    expect(mockRemoveFile).toHaveBeenCalledTimes(0)
+    expect(mockRemoveDirectory).toHaveBeenCalledTimes(0)
+    expect(mockCompute).toHaveBeenCalledTimes(2)
   })
 })

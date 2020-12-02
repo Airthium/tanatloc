@@ -2,7 +2,7 @@
 
 import getSessionId from '../session'
 
-import { add } from '../../lib/simulation'
+import SimulationLib from '../../lib/simulation'
 
 import Sentry from '../../lib/sentry'
 
@@ -24,7 +24,7 @@ export default async (req, res) => {
     case 'POST':
       // Add simulation
       try {
-        const simulation = await add(req.body)
+        const simulation = await SimulationLib.add(req.body)
         res.status(200).json(simulation)
       } catch (err) {
         console.error(err)

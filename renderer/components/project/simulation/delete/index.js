@@ -4,8 +4,8 @@ import { DeleteOutlined } from '@ant-design/icons'
 
 import { DeleteDialog } from '../../../assets/dialog'
 
-import { useSimulations, del } from '../../../../../src/api/simulation'
-import { useProject } from '../../../../../src/api/project'
+import SimulationAPI from '../../../../../src/api/simulation'
+import ProjectAPI from '../../../../../src/api/project'
 
 import Sentry from '../../../../../src/lib/sentry'
 
@@ -15,8 +15,10 @@ const Delete = ({ project, simulation }) => {
   const [loading, setLoading] = useState(false)
 
   // Data
-  const [, { delOneSimulation }] = useSimulations(project?.simulations)
-  const [, { mutateProject }] = useProject(project?.id)
+  const [, { delOneSimulation }] = SimulationAPI.useSimulations(
+    project?.simulations
+  )
+  const [, { mutateProject }] = ProjectAPI.useProject(project?.id)
 
   const toggleDialog = () => {
     setVisible(!visible)
@@ -26,7 +28,7 @@ const Delete = ({ project, simulation }) => {
     setLoading(true)
     try {
       // Delete
-      await del(project, simulation)
+      await SimulationAPI.del(project, simulation)
 
       // Mutate project
       const index = project.simulations.findIndex((s) => s.id === simulation.id)

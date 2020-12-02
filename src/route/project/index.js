@@ -2,7 +2,7 @@
 
 import getSessionId from '../session'
 
-import { add } from '../../lib/project'
+import ProjectLib from '../../lib/project'
 
 import Sentry from '../../lib/sentry'
 
@@ -24,7 +24,7 @@ export default async (req, res) => {
     case 'POST':
       // Add project
       try {
-        const project = await add({ id: sessionId }, req.body)
+        const project = await ProjectLib.add({ id: sessionId }, req.body)
         res.status(200).json(project)
       } catch (err) {
         console.error(err)

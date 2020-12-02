@@ -2,7 +2,7 @@ import path from 'path'
 
 import storage from '../../config/storage'
 
-import { loadPart } from './tools'
+import Tools from './tools'
 
 /**
  * Get part
@@ -10,7 +10,7 @@ import { loadPart } from './tools'
  * @param {Object} file File { part, partPath }
  */
 const get = async (simulation, file) => {
-  const part = await loadPart(
+  const part = await Tools.loadPart(
     path.join(storage.SIMULATION, simulation.id, file.partPath),
     file.part
   )
@@ -18,4 +18,4 @@ const get = async (simulation, file) => {
   return part
 }
 
-export { get }
+export default { get }

@@ -15,10 +15,12 @@
     - PartLoader
 - Avatar (Server)
 - File (Server)
+- Mesh (Server)
 - Part (Server)
 - Project (Server)
 - Sentry (Server & client)
 - Simulation (Server)
+- Template (Server)
 - Tools (Server)
 - User (Server)
 - Workspace (Server)

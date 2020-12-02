@@ -1,0 +1,6 @@
+// Materials
+cout << "Define materials..." << endl;
+<% materials.children.map(child => { -%>
+<% const value = child.value || child.default -%>
+real <%= child.name %> = <%- value -%>;
+<% }) -%>

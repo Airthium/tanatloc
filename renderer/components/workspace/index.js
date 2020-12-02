@@ -22,7 +22,7 @@ import Delete from './delete'
 import ProjectAdd from '../project/add'
 import ProjectList from '../project/list'
 
-import { useWorkspaces, update } from '../../../src/api/workspace'
+import WorkspaceAPI from '../../../src/api/workspace'
 
 import Sentry from '../../../src/lib/sentry'
 
@@ -35,7 +35,7 @@ const Workspace = ({ workspace }) => {
   const [filter, setFilter] = useState()
 
   // Data
-  const [, { mutateOneWorkspace }] = useWorkspaces()
+  const [, { mutateOneWorkspace }] = WorkspaceAPI.useWorkspaces()
 
   /**
    * Set name
@@ -44,7 +44,9 @@ const Workspace = ({ workspace }) => {
   const setName = async (name) => {
     try {
       // Update
-      await update({ id: workspace.id }, [{ key: 'name', value: name }])
+      await WorkspaceAPI.update({ id: workspace.id }, [
+        { key: 'name', value: name }
+      ])
 
       // Mutate workspace
       mutateOneWorkspace({

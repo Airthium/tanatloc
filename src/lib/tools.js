@@ -1,12 +1,13 @@
 import path from 'path'
 import { promises as fs } from 'fs'
-import { exec } from 'child_process'
+
+import Services from '../services'
 
 /**
  * Create path (recursive)
  * @param {string} location Location path
  */
-export const createPath = async (location) => {
+const createPath = async (location) => {
   await fs.mkdir(location, { recursive: true })
 }
 
@@ -16,7 +17,7 @@ export const createPath = async (location) => {
  * @param {string} name File name
  * @param {Object} content Content
  */
-export const writeFile = async (location, name, content) => {
+const writeFile = async (location, name, content) => {
   await createPath(location)
   await fs.writeFile(path.join(location, name), content)
 }
@@ -25,7 +26,7 @@ export const writeFile = async (location, name, content) => {
  * Read file
  * @param {string} file File name
  */
-export const readFile = async (file) => {
+const readFile = async (file) => {
   const content = await fs.readFile(file)
   return content
 }
@@ -35,29 +36,24 @@ export const readFile = async (file) => {
  * @param {string} location Location
  * @param {Object} file File
  */
-export const convert = async (location, file) => {
-  const partPath = file.name.replace(/\.[^/.]+$/, '')
-  const origin = path.join(location, file.name)
-  const target = path.join(location, partPath)
-  await new Promise((resolve, reject) => {
-    exec(
-      'docker run --rm -v ' +
-        location +
-        ':' +
-        location +
-        ' -u $(id -u):$(id -g) tanatloc/converters:latest StepToThreeJS ' +
-        origin +
-        ' ' +
-        target,
-      (error, stdout, stderr) => {
-        if (error) reject(error)
-        resolve(stdout)
-      }
-    )
-  })
+const convert = async (location, file) => {
+  const origin = file.fileName
+  const target = file.uid
+
+  const code = await Services.toThree(
+    location,
+    origin,
+    target,
+    ({ error, data }) => {
+      console.log(`${error}`)
+      console.log(`${data}`)
+    }
+  )
+  // TODO data, error
+  if (code !== 0) throw new Error('Conversion process failed. Code ' + code)
 
   return {
-    path: partPath,
+    path: target,
     part: 'part.json'
   }
 }
@@ -67,7 +63,7 @@ export const convert = async (location, file) => {
  * @param {string} location Location
  * @param {string} name File name
  */
-export const loadPart = async (location, name) => {
+const loadPart = async (location, name) => {
   const partFile = path.join(location, name)
   const partData = await fs.readFile(partFile)
   const part = JSON.parse(partData)
@@ -112,7 +108,7 @@ export const loadPart = async (location, name) => {
  * Remove file
  * @param {string} file File name
  */
-export const removeFile = async (file) => {
+const removeFile = async (file) => {
   await fs.unlink(file)
 }
 
@@ -120,6 +116,16 @@ export const removeFile = async (file) => {
  * Remove directory
  * @param {string} dir Directory
  */
-export const removeDirectory = async (dir) => {
+const removeDirectory = async (dir) => {
   await fs.rmdir(dir, { recursive: true })
+}
+
+export default {
+  createPath,
+  writeFile,
+  readFile,
+  convert,
+  loadPart,
+  removeFile,
+  removeDirectory
 }

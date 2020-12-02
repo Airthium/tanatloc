@@ -5,7 +5,7 @@
 const Poisson = {
   category: 'Academic',
   name: "Poisson's equation",
-  algorithm: 'Poisson',
+  algorithm: 'poisson',
   code: 'FreeFEM',
   description: `
     <p>
@@ -18,10 +18,11 @@ const Poisson = {
         <a target="_blank" href="https://en.wikipedia.org/wiki/Poisson%27s_equation">Wikipedia page</a>
     </p>
   `,
-  categories: {
+  configuration: {
     geometry: {
       index: 1,
-      title: 'Geometry'
+      title: 'Geometry',
+      meshable: true
     },
     parameters: {
       index: 2,
@@ -53,8 +54,7 @@ const Poisson = {
                 value: 'P2'
               }
             ],
-            default: 'P1',
-            name: 'Uh'
+            default: 'P1'
           }
         ]
       },

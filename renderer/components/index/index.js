@@ -7,7 +7,7 @@ import { DashboardOutlined, LoginOutlined } from '@ant-design/icons'
 
 import Background from '../background'
 
-import { useUser } from '../../../src/api/user'
+import UserAPI from '../../../src/api/user'
 
 const menuKeys = {
   dashboard: 'dashboard',
@@ -23,7 +23,7 @@ const Index = () => {
   const router = useRouter()
 
   // Data
-  const [user] = useUser()
+  const [user] = UserAPI.useUser()
 
   // Prefetch
   useEffect(() => {

@@ -54,7 +54,7 @@ describe('components/project', () => {
     mockSimulations = () => [
       {
         scheme: {
-          categories: {
+          configuration: {
             geometry: {
               title: 'Geometry'
             },
@@ -76,12 +76,19 @@ describe('components/project', () => {
     expect(wrapper).toBeDefined()
   })
 
+  it('without configuration', () => {
+    wrapper.unmount()
+    mockSimulations = () => [{ scheme: {} }]
+    wrapper = shallow(<Project />)
+    expect(wrapper).toBeDefined()
+  })
+
   it('with subMenus', () => {
     wrapper.unmount()
     mockSimulations = () => [
       {
         scheme: {
-          categories: {
+          configuration: {
             geometry: {
               title: 'Geometry',
               subMenus: [
@@ -137,7 +144,7 @@ describe('components/project', () => {
   })
 
   it('selectorOk', async () => {
-    await wrapper.find('selector').props().onOk({ categories: {} })
+    await wrapper.find('selector').props().onOk({ configuration: {} })
 
     expect(wrapper.find('Menu').at(1).props().children[1].length).toBe(1)
 
@@ -145,7 +152,7 @@ describe('components/project', () => {
     wrapper.unmount()
     mockProject = () => ({})
     wrapper = shallow(<Project />)
-    await wrapper.find('selector').props().onOk({ categories: {} })
+    await wrapper.find('selector').props().onOk({ configuration: {} })
 
     // Error
     wrapper.unmount()
@@ -153,7 +160,7 @@ describe('components/project', () => {
       throw new Error()
     }
     wrapper = shallow(<Project />)
-    await wrapper.find('selector').props().onOk({ categories: {} })
+    await wrapper.find('selector').props().onOk({ configuration: {} })
   })
 
   it('selector cancel', () => {

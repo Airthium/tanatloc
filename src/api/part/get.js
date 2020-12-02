@@ -1,4 +1,4 @@
-import { call } from '../call'
+import Caller from '../call'
 
 /**
  * Get part
@@ -7,7 +7,7 @@ import { call } from '../call'
  * @param {Object} file File { part, partPath }
  */
 const get = async (simulation, file) => {
-  return call('/api/part', {
+  return Caller.call('/api/part', {
     method: 'POST',
     headers: {
       Accept: 'application/json'

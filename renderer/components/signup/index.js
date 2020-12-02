@@ -17,7 +17,7 @@ import Loading from '../loading'
 // import Background from '../background'
 
 import login from '../../../src/api/login'
-import { useUser, add } from '../../../src/api/user'
+import UserAPI from '../../../src/api/user'
 
 const errors = {
   INTERNAL_ERROR: 'Server issue : try again shortly.',
@@ -37,7 +37,7 @@ const Signup = () => {
   const [internalErr, setInternalError] = useState(false)
 
   // Data
-  const [user, { loadingUser, mutateUser }] = useUser()
+  const [user, { loadingUser, mutateUser }] = UserAPI.useUser()
 
   // Router
   const router = useRouter()
@@ -65,7 +65,7 @@ const Signup = () => {
 
     // Signup
     try {
-      const newUser = await add({ username, password })
+      const newUser = await UserAPI.add({ username, password })
       if (newUser.alreadyExists) {
         setSignupErr(true)
         setChecking(false)

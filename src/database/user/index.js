@@ -6,4 +6,4 @@ import getByUsernameAndPassword from './getByUsernameAndPassword'
 import update from './update'
 import del from './del'
 
-export { add, get, getByUsernameAndPassword, update, del }
+export default { add, get, getByUsernameAndPassword, update, del }

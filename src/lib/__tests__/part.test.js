@@ -1,4 +1,4 @@
-import { get } from '../part'
+import Part from '../part'
 
 const mockPath = jest.fn()
 jest.mock('path', () => ({
@@ -14,7 +14,7 @@ jest.mock('../tools', () => ({
 
 describe('src/lib/file', () => {
   it('get', async () => {
-    const content = await get(
+    const content = await Part.get(
       { id: 'id' },
       { origin: 'origin', originPath: 'originPath' }
     )

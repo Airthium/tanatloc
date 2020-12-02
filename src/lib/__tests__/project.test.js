@@ -1,4 +1,4 @@
-import { add, get, update, del } from '../project'
+import Project from '../project'
 
 const mockAdd = jest.fn()
 const mockGet = jest.fn()
@@ -26,6 +26,11 @@ jest.mock('../workspace', () => ({
   update: async () => mockUpdateWorkspace()
 }))
 
+const mockDelSimulation = jest.fn()
+jest.mock('../simulation', () => ({
+  del: async () => mockDelSimulation()
+}))
+
 describe('src/lib/project', () => {
   beforeEach(() => {
     mockAdd.mockReset()
@@ -38,16 +43,13 @@ describe('src/lib/project', () => {
     mockGetUser.mockReset()
 
     mockUpdateWorkspace.mockReset()
-    // mockGet = () => ({})
-    // mockUpdate.mockReset()
-    // mockDelete.mockReset()
-    // mockAvatar = (val) => val
-    // mockWorkspace.mockReset()
+
+    mockDelSimulation.mockReset()
   })
 
   it('add', async () => {
     mockAdd.mockImplementation(() => ({ id: 'id' }))
-    const project = await add({}, { workspace: {}, project: {} })
+    const project = await Project.add({}, { workspace: {}, project: {} })
     expect(mockAdd).toHaveBeenCalledTimes(1)
     expect(mockGet).toHaveBeenCalledTimes(0)
     expect(mockUpdate).toHaveBeenCalledTimes(0)
@@ -55,6 +57,7 @@ describe('src/lib/project', () => {
     expect(mockAvatar).toHaveBeenCalledTimes(0)
     expect(mockGetUser).toHaveBeenCalledTimes(0)
     expect(mockUpdateWorkspace).toHaveBeenCalledTimes(1)
+    expect(mockDelSimulation).toHaveBeenCalledTimes(0)
     expect(project).toEqual({ id: 'id' })
   })
 
@@ -63,7 +66,7 @@ describe('src/lib/project', () => {
 
     // Empty
     mockGet.mockImplementation(() => ({}))
-    project = await get()
+    project = await Project.get()
     expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockGet).toHaveBeenCalledTimes(1)
     expect(mockUpdate).toHaveBeenCalledTimes(0)
@@ -71,6 +74,7 @@ describe('src/lib/project', () => {
     expect(mockAvatar).toHaveBeenCalledTimes(0)
     expect(mockGetUser).toHaveBeenCalledTimes(0)
     expect(mockUpdateWorkspace).toHaveBeenCalledTimes(0)
+    expect(mockDelSimulation).toHaveBeenCalledTimes(0)
     expect(project).toEqual({})
 
     // With avatar, owners, users
@@ -81,7 +85,7 @@ describe('src/lib/project', () => {
     }))
     mockAvatar.mockImplementation((val) => val)
     mockGetUser.mockImplementation((val) => val)
-    project = await get()
+    project = await Project.get()
     expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockGet).toHaveBeenCalledTimes(2)
     expect(mockUpdate).toHaveBeenCalledTimes(0)
@@ -89,6 +93,7 @@ describe('src/lib/project', () => {
     expect(mockAvatar).toHaveBeenCalledTimes(1)
     expect(mockGetUser).toHaveBeenCalledTimes(2)
     expect(mockUpdateWorkspace).toHaveBeenCalledTimes(0)
+    expect(mockDelSimulation).toHaveBeenCalledTimes(0)
     expect(project).toEqual({
       avatar: 'avatar',
       owners: ['owner'],
@@ -99,7 +104,7 @@ describe('src/lib/project', () => {
     mockAvatar.mockImplementation(() => {
       throw new Error()
     })
-    project = await get()
+    project = await Project.get()
     expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockGet).toHaveBeenCalledTimes(3)
     expect(mockUpdate).toHaveBeenCalledTimes(0)
@@ -107,6 +112,7 @@ describe('src/lib/project', () => {
     expect(mockAvatar).toHaveBeenCalledTimes(2)
     expect(mockGetUser).toHaveBeenCalledTimes(4)
     expect(mockUpdateWorkspace).toHaveBeenCalledTimes(0)
+    expect(mockDelSimulation).toHaveBeenCalledTimes(0)
     expect(project).toEqual({
       avatar: undefined,
       owners: ['owner'],
@@ -115,7 +121,7 @@ describe('src/lib/project', () => {
   })
 
   it('update', async () => {
-    await update({}, {})
+    await Project.update({}, {})
     expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockGet).toHaveBeenCalledTimes(0)
     expect(mockUpdate).toHaveBeenCalledTimes(1)
@@ -123,16 +129,32 @@ describe('src/lib/project', () => {
     expect(mockAvatar).toHaveBeenCalledTimes(0)
     expect(mockGetUser).toHaveBeenCalledTimes(0)
     expect(mockUpdateWorkspace).toHaveBeenCalledTimes(0)
+    expect(mockDelSimulation).toHaveBeenCalledTimes(0)
   })
 
   it('delete', async () => {
-    await del({}, {})
+    // Without simulations
+    mockGet.mockImplementation(() => ({}))
+    await Project.del({}, {})
     expect(mockAdd).toHaveBeenCalledTimes(0)
-    expect(mockGet).toHaveBeenCalledTimes(0)
+    expect(mockGet).toHaveBeenCalledTimes(1)
     expect(mockUpdate).toHaveBeenCalledTimes(0)
     expect(mockDelete).toHaveBeenCalledTimes(1)
     expect(mockAvatar).toHaveBeenCalledTimes(0)
     expect(mockGetUser).toHaveBeenCalledTimes(0)
     expect(mockUpdateWorkspace).toHaveBeenCalledTimes(1)
+    expect(mockDelSimulation).toHaveBeenCalledTimes(0)
+
+    // With simulations
+    mockGet.mockImplementation(() => ({ simulations: ['id'] }))
+    await Project.del({}, {})
+    expect(mockAdd).toHaveBeenCalledTimes(0)
+    expect(mockGet).toHaveBeenCalledTimes(2)
+    expect(mockUpdate).toHaveBeenCalledTimes(0)
+    expect(mockDelete).toHaveBeenCalledTimes(2)
+    expect(mockAvatar).toHaveBeenCalledTimes(0)
+    expect(mockGetUser).toHaveBeenCalledTimes(0)
+    expect(mockUpdateWorkspace).toHaveBeenCalledTimes(2)
+    expect(mockDelSimulation).toHaveBeenCalledTimes(1)
   })
 })

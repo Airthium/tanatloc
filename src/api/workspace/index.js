@@ -5,4 +5,4 @@ import add from './add'
 import update from './update'
 import del from './del'
 
-export { useWorkspaces, add, update, del }
+export default { useWorkspaces, add, update, del }

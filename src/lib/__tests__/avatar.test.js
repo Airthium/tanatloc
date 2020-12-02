@@ -1,4 +1,4 @@
-import { add, read, del } from '../avatar'
+import Avatar from '../avatar'
 
 const mockPath = jest.fn()
 jest.mock('path', () => ({
@@ -58,7 +58,10 @@ describe('src/lib/avatar', () => {
   it('add', async () => {
     let avatar
 
-    avatar = await add({ id: 'id' }, { name: 'name', uid: 'uid', data: 'data' })
+    avatar = await Avatar.add(
+      { id: 'id' },
+      { name: 'name', uid: 'uid', data: 'data' }
+    )
     expect(mockPath).toHaveBeenCalledTimes(1)
     expect(mockAdd).toHaveBeenCalledTimes(1)
     expect(mockGet).toHaveBeenCalledTimes(0)
@@ -73,7 +76,10 @@ describe('src/lib/avatar', () => {
     mockGetUser.mockImplementation(() => ({
       avatar: 'avatar'
     }))
-    avatar = await add({ id: 'id' }, { name: 'name', uid: 'uid', data: 'data' })
+    avatar = await Avatar.add(
+      { id: 'id' },
+      { name: 'name', uid: 'uid', data: 'data' }
+    )
     expect(mockPath).toHaveBeenCalledTimes(2)
     expect(mockAdd).toHaveBeenCalledTimes(2)
     expect(mockGet).toHaveBeenCalledTimes(0)
@@ -86,7 +92,7 @@ describe('src/lib/avatar', () => {
   })
 
   it('read', async () => {
-    const avatar = await read('id')
+    const avatar = await Avatar.read('id')
     expect(mockPath).toHaveBeenCalledTimes(0)
     expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockGet).toHaveBeenCalledTimes(1)
@@ -99,7 +105,7 @@ describe('src/lib/avatar', () => {
   })
 
   it('del', async () => {
-    await del({ id: 'id' }, 'id')
+    await Avatar.del({ id: 'id' }, 'id')
     expect(mockPath).toHaveBeenCalledTimes(0)
     expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockGet).toHaveBeenCalledTimes(0)

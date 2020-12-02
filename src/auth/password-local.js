@@ -1,8 +1,8 @@
 import Local from 'passport-local'
-import { getByUsernameAndPassword } from '../database/user'
+import UserDB from '../database/user'
 
 export const localStrategy = new Local.Strategy((username, password, done) => {
-  getByUsernameAndPassword({ username, password })
+  UserDB.getByUsernameAndPassword({ username, password })
     .then((user) => {
       done(null, user)
     })

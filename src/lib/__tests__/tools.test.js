@@ -1,12 +1,4 @@
-import {
-  createPath,
-  writeFile,
-  readFile,
-  convert,
-  loadPart,
-  removeFile,
-  removeDirectory
-} from '../tools'
+import Tools from '../tools'
 
 const mockPath = jest.fn()
 jest.mock('path', () => ({
@@ -28,13 +20,10 @@ jest.mock('fs', () => ({
   }
 }))
 
-let mockCallback = 0
-jest.mock('child_process', () => ({
-  exec: (command, callback) => {
-    mockCallback++
-    if (mockCallback === 1) callback()
-    else callback('error')
-  }
+const mockToThree = jest.fn()
+jest.mock('../../services', () => ({
+  toThree: async (path, fileIn, pathOut, callback) =>
+    mockToThree(path, fileIn, pathOut, callback)
 }))
 
 describe('src/lib/tools', () => {
@@ -45,31 +34,37 @@ describe('src/lib/tools', () => {
     mockReadFile.mockImplementation(() => 'readFile')
     mockUnlink.mockReset()
     mockRmdir.mockReset()
+    mockToThree.mockReset()
   })
 
   it('createPath', async () => {
-    await createPath('location')
+    await Tools.createPath('location')
     expect(mockMkdir).toHaveBeenCalledTimes(1)
   })
 
   it('writeFile', async () => {
-    await writeFile('location', {})
+    await Tools.writeFile('location', {})
     expect(mockMkdir).toHaveBeenCalledTimes(1)
     expect(mockWriteFile).toHaveBeenCalledTimes(1)
   })
 
   it('readFile', async () => {
-    const content = await readFile('file')
+    const content = await Tools.readFile('file')
     expect(mockReadFile).toHaveBeenCalledTimes(1)
     expect(content).toBe('readFile')
   })
 
   it('convert', async () => {
-    await convert('location', { name: 'name' })
+    mockToThree.mockImplementation((path, fileIn, pathOut, callback) => {
+      callback({ error: 'error', data: 'data' })
+      return 0
+    })
+    await Tools.convert('location', { name: 'name' })
 
     try {
-      await convert('location', { name: 'name' })
-      expect(false).toBe(true)
+      mockToThree.mockImplementation(() => -1)
+      await Tools.convert('location', { name: 'name' })
+      expect(true).toBe(false)
     } catch (err) {
       expect(true).toBe(true)
     }
@@ -84,7 +79,7 @@ describe('src/lib/tools', () => {
       faces: [{}],
       edges: [{}]
     })
-    part = await loadPart('target', 'file')
+    part = await Tools.loadPart('target', 'file')
     expect(part).toEqual({
       solids: [{ buffer: 'readFile' }],
       faces: [{ buffer: 'readFile' }],
@@ -94,18 +89,18 @@ describe('src/lib/tools', () => {
 
     // Empty
     JSON.parse = () => ({})
-    part = await loadPart('target', 'file')
+    part = await Tools.loadPart('target', 'file')
     expect(part).toEqual({})
     expect(mockReadFile).toHaveBeenCalledTimes(4 + 1)
   })
 
   it('removeFile', async () => {
-    await removeFile('file')
+    await Tools.removeFile('file')
     expect(mockUnlink).toHaveBeenCalledTimes(1)
   })
 
   it('removeDirectory', async () => {
-    await removeDirectory('directory')
+    await Tools.removeDirectory('directory')
     expect(mockRmdir).toHaveBeenCalledTimes(1)
   })
 })

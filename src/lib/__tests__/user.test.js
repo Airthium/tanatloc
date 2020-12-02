@@ -1,4 +1,4 @@
-import { login, add, get, update, del } from '../user'
+import User from '../user'
 
 const mockGet = jest.fn()
 const mockGetByUsernameAndPassword = jest.fn()
@@ -19,6 +19,11 @@ jest.mock('../avatar', () => ({
   read: async () => mockReadAvatar()
 }))
 
+const mockDelWorkspace = jest.fn()
+jest.mock('../workspace', () => ({
+  del: async () => mockDelWorkspace()
+}))
+
 describe('src/lib/user', () => {
   beforeEach(() => {
     mockGet.mockReset()
@@ -26,10 +31,11 @@ describe('src/lib/user', () => {
     mockUpdate.mockReset()
     mockDel.mockReset()
     mockReadAvatar.mockReset()
+    mockDelWorkspace.mockReset()
   })
 
   it('add', async () => {
-    const user = await add({ username: 'username', password: 'password' })
+    const user = await User.add({ username: 'username', password: 'password' })
     expect(user).toEqual({ id: 'id' })
   })
 
@@ -41,12 +47,13 @@ describe('src/lib/user', () => {
       id: 'id',
       username: 'username'
     }))
-    user = await get('id', [])
+    user = await User.get('id', [])
     expect(mockGet).toHaveBeenCalledTimes(1)
     expect(mockGetByUsernameAndPassword).toHaveBeenCalledTimes(0)
     expect(mockUpdate).toHaveBeenCalledTimes(0)
     expect(mockDel).toHaveBeenCalledTimes(0)
     expect(mockReadAvatar).toHaveBeenCalledTimes(0)
+    expect(mockDelWorkspace).toHaveBeenCalledTimes(0)
     expect(user).toEqual({ id: 'id', username: 'username' })
 
     // With avatar
@@ -56,23 +63,25 @@ describe('src/lib/user', () => {
       avatar: 'avatar'
     }))
     mockReadAvatar.mockImplementation(() => 'avatar')
-    user = await get('id')
+    user = await User.get('id')
     expect(mockGet).toHaveBeenCalledTimes(2)
     expect(mockGetByUsernameAndPassword).toHaveBeenCalledTimes(0)
     expect(mockUpdate).toHaveBeenCalledTimes(0)
     expect(mockDel).toHaveBeenCalledTimes(0)
     expect(mockReadAvatar).toHaveBeenCalledTimes(1)
+    expect(mockDelWorkspace).toHaveBeenCalledTimes(0)
     expect(user).toEqual({ id: 'id', username: 'username', avatar: 'avatar' })
 
     mockReadAvatar.mockImplementation(() => {
       throw new Error('test')
     })
-    user = await get('id')
+    user = await User.get('id')
     expect(mockGet).toHaveBeenCalledTimes(3)
     expect(mockGetByUsernameAndPassword).toHaveBeenCalledTimes(0)
     expect(mockUpdate).toHaveBeenCalledTimes(0)
     expect(mockDel).toHaveBeenCalledTimes(0)
     expect(mockReadAvatar).toHaveBeenCalledTimes(2)
+    expect(mockDelWorkspace).toHaveBeenCalledTimes(0)
     expect(user).toEqual({ id: 'id', username: 'username', avatar: undefined })
   })
 
@@ -80,12 +89,13 @@ describe('src/lib/user', () => {
     let user
 
     // Empty
-    user = await login({ username: 'username' })
+    user = await User.login({ username: 'username' })
     expect(mockGet).toHaveBeenCalledTimes(0)
     expect(mockGetByUsernameAndPassword).toHaveBeenCalledTimes(1)
     expect(mockUpdate).toHaveBeenCalledTimes(0)
     expect(mockDel).toHaveBeenCalledTimes(0)
     expect(mockReadAvatar).toHaveBeenCalledTimes(0)
+    expect(mockDelWorkspace).toHaveBeenCalledTimes(0)
     expect(user).toBe(null)
 
     // Logged
@@ -93,30 +103,45 @@ describe('src/lib/user', () => {
       id: 'id',
       username: 'username'
     }))
-    user = await login({ username: 'username' })
+    user = await User.login({ username: 'username' })
     expect(mockGet).toHaveBeenCalledTimes(0)
     expect(mockGetByUsernameAndPassword).toHaveBeenCalledTimes(2)
     expect(mockUpdate).toHaveBeenCalledTimes(0)
     expect(mockDel).toHaveBeenCalledTimes(0)
     expect(mockReadAvatar).toHaveBeenCalledTimes(0)
+    expect(mockDelWorkspace).toHaveBeenCalledTimes(0)
     expect(user).toEqual({ id: 'id', username: 'username' })
   })
 
   it('update', async () => {
-    await update({}, [])
+    await User.update({}, [])
     expect(mockGet).toHaveBeenCalledTimes(0)
     expect(mockGetByUsernameAndPassword).toHaveBeenCalledTimes(0)
     expect(mockUpdate).toHaveBeenCalledTimes(1)
     expect(mockDel).toHaveBeenCalledTimes(0)
     expect(mockReadAvatar).toHaveBeenCalledTimes(0)
+    expect(mockDelWorkspace).toHaveBeenCalledTimes(0)
   })
 
   it('del', async () => {
-    await del({})
-    expect(mockGet).toHaveBeenCalledTimes(0)
+    // Without workspaces
+    mockGet.mockImplementation(() => ({}))
+    await User.del({})
+    expect(mockGet).toHaveBeenCalledTimes(1)
     expect(mockGetByUsernameAndPassword).toHaveBeenCalledTimes(0)
     expect(mockUpdate).toHaveBeenCalledTimes(0)
     expect(mockDel).toHaveBeenCalledTimes(1)
     expect(mockReadAvatar).toHaveBeenCalledTimes(0)
+    expect(mockDelWorkspace).toHaveBeenCalledTimes(0)
+
+    // With workspaces
+    mockGet.mockImplementation(() => ({ workspaces: ['id'] }))
+    await User.del({})
+    expect(mockGet).toHaveBeenCalledTimes(2)
+    expect(mockGetByUsernameAndPassword).toHaveBeenCalledTimes(0)
+    expect(mockUpdate).toHaveBeenCalledTimes(0)
+    expect(mockDel).toHaveBeenCalledTimes(2)
+    expect(mockReadAvatar).toHaveBeenCalledTimes(0)
+    expect(mockDelWorkspace).toHaveBeenCalledTimes(1)
   })
 })

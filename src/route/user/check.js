@@ -1,5 +1,5 @@
 import getSessionId from '../session'
-import { login } from '../../lib/user'
+import UserLib from '../../lib/user'
 
 import Sentry from '../../lib/sentry'
 
@@ -15,7 +15,7 @@ export default async (req, res) => {
   if (!sessionId) return
 
   try {
-    const user = await login(req.body)
+    const user = await UserLib.login(req.body)
     if (user) {
       res.status(200).json({ valid: true })
     } else {

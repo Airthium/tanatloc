@@ -1,4 +1,4 @@
-import { call } from '../call'
+import Caller from '../call'
 
 /**
  * Update a workspace
@@ -7,7 +7,7 @@ import { call } from '../call'
  * @param {Array} data Data [{ key: value }, ...]
  */
 const update = async (workspace, data) => {
-  return call('/api/workspace', {
+  return Caller.call('/api/workspace', {
     method: 'PUT',
     body: JSON.stringify({ workspace: workspace, data: data })
   })

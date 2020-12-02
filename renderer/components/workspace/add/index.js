@@ -4,7 +4,7 @@ import { PlusCircleOutlined } from '@ant-design/icons'
 
 import Dialog from '../../assets/dialog'
 
-import { useWorkspaces, add } from '../../../../src/api/workspace'
+import WorkspaceAPI from '../../../../src/api/workspace'
 
 import Sentry from '../../../../src/lib/sentry'
 
@@ -18,7 +18,7 @@ const Add = () => {
   const [loading, setLoading] = useState(false)
 
   // Data
-  const [, { addOneWorkspace }] = useWorkspaces()
+  const [, { addOneWorkspace }] = WorkspaceAPI.useWorkspaces()
 
   /**
    * Toggle dialog
@@ -35,7 +35,7 @@ const Add = () => {
     setLoading(true)
     try {
       // Add
-      const workspace = await add(values)
+      const workspace = await WorkspaceAPI.add(values)
 
       // Mutate
       addOneWorkspace(workspace)

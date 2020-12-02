@@ -1,4 +1,4 @@
-import { call } from '../call'
+import Caller from '../call'
 
 /**
  * Add a simulation
@@ -7,7 +7,7 @@ import { call } from '../call'
  * @param {Object} simulation Simulation { name, scheme }
  */
 const add = async (project, simulation) => {
-  return call('/api/simulation', {
+  return Caller.call('/api/simulation', {
     method: 'POST',
     headers: {
       Accept: 'application/json'

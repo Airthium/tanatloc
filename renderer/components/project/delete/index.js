@@ -4,8 +4,8 @@ import { DeleteOutlined } from '@ant-design/icons'
 
 import { DeleteDialog } from '../../assets/dialog'
 
-import { useProjects, del } from '../../../../src/api/project'
-import { useWorkspaces } from '../../../../src/api/workspace'
+import ProjectAPI from '../../../../src/api/project'
+import WorkspaceAPI from '../../../../src/api/workspace'
 
 import Sentry from '../../../../src/lib/sentry'
 
@@ -24,8 +24,8 @@ const Delete = (props) => {
   const [loading, setLoading] = useState(false)
 
   // Data
-  const [, { delOneProject }] = useProjects(workspace.projects)
-  const [, { mutateOneWorkspace }] = useWorkspaces()
+  const [, { delOneProject }] = ProjectAPI.useProjects(workspace.projects)
+  const [, { mutateOneWorkspace }] = WorkspaceAPI.useWorkspaces()
 
   /**
    * Toggle dialog delete
@@ -41,7 +41,7 @@ const Delete = (props) => {
     setLoading(true)
     try {
       // Delete
-      await del(workspace, project)
+      await ProjectAPI.del(workspace, project)
 
       // Mutate workspaces
       const index = workspace.projects.findIndex((p) => p.id === project.id)

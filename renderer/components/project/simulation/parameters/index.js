@@ -3,15 +3,17 @@ import { Card, Collapse, Layout, Select } from 'antd'
 
 import Formula from '../../../assets/formula'
 
-import { update, useSimulations } from '../../../../../src/api/simulation'
+import SimulationAPI from '../../../../../src/api/simulation'
 
 const Parameters = ({ project, simulation }) => {
   // State
   const [values, setValues] = useState({})
 
   // Data
-  const subScheme = simulation?.scheme.categories.parameters
-  const [, { mutateOneSimulation }] = useSimulations(project?.simulations)
+  const subScheme = simulation?.scheme.configuration.parameters
+  const [, { mutateOneSimulation }] = SimulationAPI.useSimulations(
+    project?.simulations
+  )
 
   // Effect
   useEffect(() => {
@@ -22,27 +24,25 @@ const Parameters = ({ project, simulation }) => {
       const deepValues = values[key]
       deepValues.forEach((value, index) => {
         if (value)
-          newSimulation.scheme.categories.parameters[key].children[
+          newSimulation.scheme.configuration.parameters[key].children[
             index
           ].value = value
       })
     })
 
-    // TODO set this one async
-
     // Diff
     const diff = {
-      ...newSimulation.scheme.categories.parameters,
+      ...newSimulation.scheme.configuration.parameters,
       done: true
     }
 
     // Update
-    update({ id: simulation.id }, [
+    SimulationAPI.update({ id: simulation.id }, [
       {
         key: 'scheme',
         type: 'json',
         method: 'diff',
-        path: ['categories', 'parameters'],
+        path: ['configuration', 'parameters'],
         value: diff
       }
     ]).then(() => {

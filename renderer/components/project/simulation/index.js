@@ -89,7 +89,7 @@ const Simulation = ({ project, simulation, type, part, onClose }) => {
    */
   useEffect(() => {
     setVisible(simulation)
-    const subScheme = simulation?.scheme.categories[type]
+    const subScheme = simulation?.scheme?.configuration?.[type]
     setTitle(subScheme ? subScheme.title : 'About')
   }, [simulation, type])
 

@@ -7,4 +7,4 @@ import del from './del'
 
 import check from './check'
 
-export { useUser, add, update, del, check }
+export default { useUser, add, update, del, check }

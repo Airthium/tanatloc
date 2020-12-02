@@ -4,7 +4,7 @@ import { message, Space, Table, Empty } from 'antd'
 import Data from '../data'
 import Delete from '../delete'
 
-import { useProjects, update } from '../../../../src/api/project'
+import ProjectAPI from '../../../../src/api/project'
 
 import Sentry from '../../../../src/lib/sentry'
 
@@ -18,7 +18,9 @@ const ProjectList = ({ workspace, filter }) => {
   const router = useRouter()
 
   // Load projects
-  const [projects, { mutateOneProject }] = useProjects(workspace?.projects)
+  const [projects, { mutateOneProject }] = ProjectAPI.useProjects(
+    workspace?.projects
+  )
 
   // Data
   const data = projects
@@ -43,7 +45,7 @@ const ProjectList = ({ workspace, filter }) => {
   const setTitle = async (project, title) => {
     try {
       // Update
-      await update({ id: project.id }, [
+      await ProjectAPI.update({ id: project.id }, [
         {
           key: 'title',
           value: title

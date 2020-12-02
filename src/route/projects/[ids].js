@@ -1,7 +1,7 @@
 import getSessionId from '../session'
 import auth from '../auth'
 
-import { get } from '../../lib/project'
+import ProjectLib from '../../lib/project'
 
 import Sentry from '../../lib/sentry'
 
@@ -35,7 +35,7 @@ export default async (req, res) => {
       const projectsTmp = await Promise.all(
         list.map(async (id) => {
           try {
-            const project = await get(id, [
+            const project = await ProjectLib.get(id, [
               'title',
               'description',
               'avatar',

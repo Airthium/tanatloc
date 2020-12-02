@@ -4,15 +4,11 @@ import path from 'path'
 
 import storage from '../../config/storage'
 
-import {
-  add as dBadd,
-  get as dBget,
-  update as dBupdate,
-  del as dBdel
-} from '../database/simulation'
+import SimulationDB from '../database/simulation'
 
-import { update as updateProject } from './project'
-import { writeFile, convert, removeFile, removeDirectory } from './tools'
+import Project from './project'
+import Tools from './tools'
+import Compute from './compute'
 
 /**
  * Add simulation
@@ -21,13 +17,13 @@ import { writeFile, convert, removeFile, removeDirectory } from './tools'
  */
 const add = async ({ project, simulation }) => {
   // Add simulation
-  const simulationData = await dBadd({
+  const simulationData = await SimulationDB.add({
     ...simulation,
     project: project.id
   })
 
   // Add simulation reference in project
-  await updateProject(project, [
+  await Project.update(project, [
     {
       type: 'array',
       method: 'append',
@@ -46,7 +42,7 @@ const add = async ({ project, simulation }) => {
  * @param {Array} data Data
  */
 const get = async (id, data) => {
-  const simulation = dBget(id, data)
+  const simulation = SimulationDB.get(id, data)
 
   return simulation
 }
@@ -72,27 +68,27 @@ const checkFiles = async (simulation, data) => {
 
       // Remove old file
       if (subObj.file) {
-        if (subObj.file.origin) {
+        if (subObj.file.fileName) {
           const originFile = path.join(
             storage.SIMULATION,
             simulation.id,
             subObj.file.originPath,
-            subObj.file.origin
+            subObj.file.fileName
           )
           try {
-            await removeFile(originFile)
+            await Tools.removeFile(originFile)
           } catch (err) {
             console.warn(err)
           }
         }
-        if (subObj.file.part) {
+        if (subObj.file.partPath) {
           const partDirectory = path.join(
             storage.SIMULATION,
             simulation.id,
             subObj.file.partPath
           )
           try {
-            await removeDirectory(partDirectory)
+            await Tools.removeDirectory(partDirectory)
           } catch (err) {
             console.warn(err)
           }
@@ -106,24 +102,23 @@ const checkFiles = async (simulation, data) => {
         const subDir = d.path.slice(-1).pop()
         const location = path.join(storage.SIMULATION, simulation.id, subDir)
         const file = d.value.file
-        await writeFile(
+
+        file.originPath = subDir
+        file.extension = file.name.split('.').pop()
+        file.fileName = file.uid + '.' + file.extension
+        await Tools.writeFile(
           location,
-          file.name,
+          file.fileName,
           Buffer.from(file.buffer).toString()
         )
 
-        // Update object
-        d.value.file.originPath = subDir
-        d.value.file.origin = file.name
-
         // Convert file
-        const part = await convert(location, file)
+        const part = await Tools.convert(location, file)
         d.value.file.partPath = path.join(subDir, part.path)
         d.value.file.part = part.part
 
         // Remove unused
-        delete d.value.file.uid
-        delete d.value.file.buffer
+        delete file.buffer
       }
 
       return
@@ -141,7 +136,7 @@ const update = async (simulation, data) => {
   await checkFiles(simulation, data)
 
   // Update
-  await dBupdate(simulation, data)
+  await SimulationDB.update(simulation, data)
 }
 
 /**
@@ -151,10 +146,10 @@ const update = async (simulation, data) => {
  */
 const del = async ({ id }, simulation) => {
   // Delete simulation
-  await dBdel(simulation)
+  await SimulationDB.del(simulation)
 
   // Delete simulation reference in project
-  await updateProject({ id }, [
+  await Project.update({ id }, [
     {
       type: 'array',
       method: 'remove',
@@ -166,10 +161,25 @@ const del = async ({ id }, simulation) => {
   // Delete folder
   const simulationDirectory = path.join(storage.SIMULATION, simulation.id)
   try {
-    await removeDirectory(simulationDirectory)
+    await Tools.removeDirectory(simulationDirectory)
   } catch (err) {
     console.warn(err)
   }
 }
 
-export { add, get, update, del }
+/**
+ * Run simulation
+ * @param {Object} simulation Simulation { id }
+ */
+const run = async ({ id }) => {
+  const simulation = await get(id, ['scheme'])
+
+  // Global
+  const configuration = simulation.scheme.configuration
+
+  Compute.computeSimulation({ id }, configuration).catch((err) => {
+    console.log(err)
+  })
+}
+
+export default { add, get, update, del, run }

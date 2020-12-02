@@ -5,8 +5,8 @@
  */
 const auth = (object, id) => {
   if (
-    (object.owners && object.owners.find((o) => o.id === id)) ||
-    (object.users && object.users.find((u) => u.id === id))
+    (object && object.owners && object.owners.find((o) => o.id === id)) ||
+    (object && object.users && object.users.find((u) => u.id === id))
   ) {
     return true
   }

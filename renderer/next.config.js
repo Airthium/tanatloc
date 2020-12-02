@@ -1,6 +1,6 @@
 const path = require('path')
 
-const withTM = require('next-transpile-modules')(['three', 'postprocessing'])
+const withTM = require('next-transpile-modules')(['three'])
 const withLess = require('@zeit/next-less')
 const withCSS = require('@zeit/next-css')
 

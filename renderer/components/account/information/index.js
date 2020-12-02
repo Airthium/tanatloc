@@ -13,8 +13,8 @@ import {
 } from 'antd'
 import { UploadOutlined, UserOutlined } from '@ant-design/icons'
 
-import { useUser, update } from '../../../../src/api/user'
-import { add } from '../../../../src/api/avatar'
+import UserAPI from '../../../../src/api/user'
+import AvatarAPI from '../../../../src/api/avatar'
 
 import Sentry from '../../../../src/lib/sentry'
 
@@ -39,7 +39,7 @@ const Information = () => {
   const [form] = Form.useForm()
 
   // Data
-  const [user, { mutateUser }] = useUser()
+  const [user, { mutateUser }] = UserAPI.useUser()
 
   // Layout
   const avatarLayout = {
@@ -73,7 +73,7 @@ const Information = () => {
         toUpdate.push({ key: 'email', value: data.email })
 
       // Update
-      await update(toUpdate)
+      await UserAPI.update(toUpdate)
 
       // Mutate user
       mutateUser({
@@ -129,7 +129,7 @@ const Information = () => {
         const img = await getBase64(info.file.originFileObj)
 
         // Add avatar
-        await add({
+        await AvatarAPI.add({
           name: info.file.name,
           uid: info.file.uid,
           data: img

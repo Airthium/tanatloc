@@ -3,7 +3,7 @@
 import getSessionId from '../session'
 import auth from '../auth'
 
-import { add, get, getByUser, update, del } from '../../lib/workspace'
+import WorkspaceLib from '../../lib/workspace'
 
 import Sentry from '../../lib/sentry'
 
@@ -23,7 +23,10 @@ export default async (req, res) => {
    * @param {Object} workspace Workspace { id }
    */
   const checkAuth = async (workspace) => {
-    const workspaceAuth = await get(workspace.id, ['owners', 'users'])
+    const workspaceAuth = await WorkspaceLib.get(workspace.id, [
+      'owners',
+      'users'
+    ])
     if (!auth(workspaceAuth, sessionId)) {
       throw new Error('Access denied')
     }
@@ -32,7 +35,7 @@ export default async (req, res) => {
   switch (req.method) {
     case 'GET':
       try {
-        const workspaces = await getByUser({ id: sessionId })
+        const workspaces = await WorkspaceLib.getByUser({ id: sessionId })
         res.status(200).json({ workspaces })
       } catch (err) {
         console.error(err)
@@ -42,7 +45,7 @@ export default async (req, res) => {
       break
     case 'POST':
       try {
-        const workspace = await add({ id: sessionId }, req.body)
+        const workspace = await WorkspaceLib.add({ id: sessionId }, req.body)
         res.status(200).json(workspace)
       } catch (err) {
         console.error(err)
@@ -56,7 +59,7 @@ export default async (req, res) => {
         // Check authorization
         await checkAuth(workspace)
 
-        await update(workspace, data)
+        await WorkspaceLib.update(workspace, data)
         res.status(200).end()
       } catch (err) {
         console.error(err)
@@ -70,7 +73,7 @@ export default async (req, res) => {
         // Check authorization
         await checkAuth(workspace)
 
-        await del({ id: sessionId }, req.body)
+        await WorkspaceLib.del({ id: sessionId }, req.body)
         res.status(200).end()
       } catch (err) {
         console.error(err)

@@ -1,4 +1,4 @@
-import { call } from '../call'
+import Caller from '../call'
 
 /**
  * Add a project
@@ -7,7 +7,7 @@ import { call } from '../call'
  * @param {Object} project Project { title, description }
  */
 const add = async (workspace, project) => {
-  return call('/api/project', {
+  return Caller.call('/api/project', {
     method: 'POST',
     headers: {
       Accept: 'application/json'

@@ -3,13 +3,15 @@ import { message, Layout, Space, Typography } from 'antd'
 
 import Delete from '../delete'
 
-import { useSimulations, update } from '../../../../../src/api/simulation'
+import SimulationAPI from '../../../../../src/api/simulation'
 
 import Sentry from '../../../../../src/lib/sentry'
 
 const About = ({ project, simulation }) => {
   // Data
-  const [, { mutateOneSimulation }] = useSimulations(project?.simulations)
+  const [, { mutateOneSimulation }] = SimulationAPI.useSimulations(
+    project?.simulations
+  )
 
   /**
    * Handle name
@@ -18,7 +20,9 @@ const About = ({ project, simulation }) => {
   const handleName = async (name) => {
     try {
       // Update simulation
-      await update({ id: simulation.id }, [{ key: 'name', value: name }])
+      await SimulationAPI.update({ id: simulation.id }, [
+        { key: 'name', value: name }
+      ])
 
       // Mutate simulation
       mutateOneSimulation({

@@ -36,7 +36,7 @@ describe('renderer/components/project/simulation/boundaryConditions', () => {
   const project = {}
   const simulation = {
     scheme: {
-      categories: {
+      configuration: {
         boundaryConditions: {
           index: 1,
           title: 'title',
@@ -102,7 +102,7 @@ describe('renderer/components/project/simulation/boundaryConditions', () => {
   it('onAdd', () => {
     wrapper.unmount()
 
-    simulation.scheme.categories.boundaryConditions.dirichlet.values = undefined
+    simulation.scheme.configuration.boundaryConditions.dirichlet.values = undefined
     wrapper = shallow(
       <BoundaryConditions
         project={project}
@@ -127,7 +127,7 @@ describe('renderer/components/project/simulation/boundaryConditions', () => {
 
     mockSelected.mockImplementation(() => ['uuid'])
     part.faces = [{ uuid: 'uuid1' }, { uuid: 'uuid' }]
-    simulation.scheme.categories.boundaryConditions.dirichlet.values = []
+    simulation.scheme.configuration.boundaryConditions.dirichlet.values = []
     wrapper = shallow(
       <BoundaryConditions
         project={project}

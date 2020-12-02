@@ -1,0 +1,6 @@
+<%- include('macro_scalarGradient.edp.ejs'); -%>
+<% if (dimension === 2) { -%>
+macro Grad(A) [grad(A#x), grad(A#y)] //
+<% } else { -%>
+macro Grad(A) [grad(A#x), grad(A#y), grad(A#z)] //
+<% } -%>

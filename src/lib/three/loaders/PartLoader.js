@@ -75,8 +75,10 @@ const PartLoader = (mouseMoveEvent, mouseDownEvent) => {
           transparent,
           clippingPlane
         )
-        mesh.visible = true
-        faces.add(mesh)
+        if (mesh) {
+          mesh.visible = true
+          faces.add(mesh)
+        }
       })
     object.add(faces)
 

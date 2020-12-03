@@ -6,6 +6,10 @@ import SimulationAPI from '../../../../../src/api/simulation'
 
 import Sentry from '../../../../../src/lib/sentry'
 
+const errors = {
+  runError: 'Unable to run the simulation'
+}
+
 const Run = ({ project, simulation }) => {
   // State
   const [running, setRunning] = useState(false)
@@ -52,7 +56,7 @@ const Run = ({ project, simulation }) => {
     setRunning(true)
 
     SimulationAPI.run({ id: simulation.id }).catch((err) => {
-      message.error(err.message)
+      message.error(errors.runError)
       console.error(err)
       Sentry.captureException(err)
     })

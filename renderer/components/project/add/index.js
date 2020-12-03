@@ -10,6 +10,14 @@ import WorkspaceAPI from '../../../../src/api/workspace'
 import Sentry from '../../../../src/lib/sentry'
 
 /**
+ * Errors project/add
+ * @memberof module:renderer/components/project
+ */
+const errors = {
+  addError: 'Unable to add a project'
+}
+
+/**
  * Add project
  * @memberof module:renderer/components/project
  * @param {Object} props Props
@@ -54,7 +62,7 @@ const Add = (props) => {
 
       toggleDialog()
     } catch (err) {
-      message.error(err.message)
+      message.error(errors.addError)
       console.error(err)
       Sentry.captureException(err)
     } finally {

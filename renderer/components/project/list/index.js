@@ -9,6 +9,14 @@ import ProjectAPI from '../../../../src/api/project'
 import Sentry from '../../../../src/lib/sentry'
 
 /**
+ * Errors project/list
+ * @memberof module:renderer/components/project
+ */
+const errors = {
+  updateError: 'Unable to update the project'
+}
+
+/**
  * Projects' list
  * @memberof module:renderer/components/project
  * @param {Object} props Props
@@ -58,7 +66,7 @@ const ProjectList = ({ workspace, filter }) => {
         title: title
       })
     } catch (err) {
-      message.error(err.message)
+      message.error(errors.updateError)
       console.error(err)
       Sentry.captureException(err)
     }

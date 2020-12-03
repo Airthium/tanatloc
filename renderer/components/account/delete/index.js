@@ -11,6 +11,14 @@ import logout from '../../../../src/api/logout'
 import Sentry from '../../../../src/lib/sentry'
 
 /**
+ * Errors account/delete
+ * @memberof module:renderer/components/account
+ */
+const errors = {
+  delError: 'Unable to delete the user'
+}
+
+/**
  * Delete account
  * @memberof module:renderer/components/account
  */
@@ -36,7 +44,7 @@ const Delete = () => {
       // Mutate
       mutateUser({})
     } catch (err) {
-      message.error(err.message)
+      message.error(errors.delError)
       console.error(err)
       Sentry.captureException(err)
     } finally {

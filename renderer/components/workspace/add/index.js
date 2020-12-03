@@ -8,6 +8,10 @@ import WorkspaceAPI from '../../../../src/api/workspace'
 
 import Sentry from '../../../../src/lib/sentry'
 
+const errors = {
+  addError: 'Unable to add the workspace'
+}
+
 /**
  * Add workspace
  * @memberof module:renderer/components/workspace
@@ -40,13 +44,12 @@ const Add = () => {
       // Mutate
       addOneWorkspace(workspace)
 
-      setLoading(false)
       toggleDialog()
     } catch (err) {
-      message.error(err.message)
+      message.error(errors.addError)
       console.error(err)
       Sentry.captureException(err)
-
+    } finally {
       setLoading(false)
     }
   }

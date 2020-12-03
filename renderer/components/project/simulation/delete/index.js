@@ -9,6 +9,17 @@ import ProjectAPI from '../../../../../src/api/project'
 
 import Sentry from '../../../../../src/lib/sentry'
 
+/**
+ * Errors
+ */
+const errors = {
+  delError: 'Unable to delete the simulation'
+}
+
+/**
+ * Delete
+ * @param {Object} props Props
+ */
 const Delete = ({ project, simulation }) => {
   // State
   const [visible, setVisible] = useState(false)
@@ -43,7 +54,7 @@ const Delete = ({ project, simulation }) => {
 
       toggleDialog()
     } catch (err) {
-      message.error(err.message)
+      message.error(errors.delError)
       console.error(err)
       Sentry.captureException(err)
     } finally {

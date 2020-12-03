@@ -22,6 +22,15 @@ import UserAPI from '../../../src/api/user'
 import WorkspaceAPI from '../../../src/api/workspace'
 import logout from '../../../src/api/logout'
 
+import Sentry from '../../../src/lib/sentry'
+
+/**
+ * Errors
+ */
+const errors = {
+  logoutError: 'Unable to logout'
+}
+
 /**
  * Dashboard menu items
  */
@@ -128,10 +137,16 @@ const Dashboard = () => {
    * Logout
    */
   const handleLogout = async () => {
-    await logout()
-    mutateUser({ user: null })
+    try {
+      await logout()
+      mutateUser({ user: null })
 
-    router.push('/')
+      router.push('/')
+    } catch (err) {
+      message.error(errors.logoutError)
+      console.error(err)
+      Sentry.captureException(err)
+    }
   }
 
   // My / Shared workspaces

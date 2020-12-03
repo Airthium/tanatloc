@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Button, Card, Drawer, Layout, Radio, Space } from 'antd'
+import { message, Button, Card, Drawer, Layout, Radio, Space } from 'antd'
 import { PlusCircleOutlined } from '@ant-design/icons'
 
 import Formula from '../../../assets/formula'
@@ -18,6 +18,19 @@ import {
 
 import SimulationAPI from '../../../../../src/api/simulation'
 
+import Sentry from '../../../../../src/lib/sentry'
+
+/**
+ * Errors
+ */
+const errors = {
+  updateError: 'Unable to update the simulation'
+}
+
+/**
+ * Boundary condition
+ * @param {Object} props Props
+ */
 const BoundaryConditions = ({ project, simulation, part, setVisible }) => {
   // State
   const [bcVisible, setBcVisible] = useState(false)
@@ -167,10 +180,16 @@ const BoundaryConditions = ({ project, simulation, part, setVisible }) => {
         path: ['configuration', 'boundaryConditions'],
         value: diff
       }
-    ]).then(() => {
-      // Mutate
-      mutateOneSimulation(newSimulation)
-    })
+    ])
+      .then(() => {
+        // Mutate
+        mutateOneSimulation(newSimulation)
+      })
+      .catch((err) => {
+        message.error(errors.updateError)
+        console.error(err)
+        Sentry.captureException(err)
+      })
 
     toggleBoundaryCondition()
   }

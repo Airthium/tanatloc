@@ -26,6 +26,10 @@ import WorkspaceAPI from '../../../src/api/workspace'
 
 import Sentry from '../../../src/lib/sentry'
 
+const errors = {
+  updateError: 'Unable to update the workspace'
+}
+
 /**
  * Workspace
  * @param {Object} props Props
@@ -54,7 +58,7 @@ const Workspace = ({ workspace }) => {
         name
       })
     } catch (err) {
-      message.error(err.message)
+      message.error(errors.updateError)
       console.error(err)
       Sentry.captureException(err)
     }

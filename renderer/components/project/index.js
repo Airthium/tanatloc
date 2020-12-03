@@ -29,6 +29,14 @@ const menuKeys = {
 }
 
 /**
+ * Errors
+ */
+const errors = {
+  updateError: 'Unable to update the project',
+  addError: 'Unable to add a simulation'
+}
+
+/**
  * Project
  */
 const Project = () => {
@@ -78,7 +86,7 @@ const Project = () => {
         title
       })
     } catch (err) {
-      message.error(err.message)
+      message.error(errors.updateError)
       console.error(err)
       Sentry.captureException(err)
     }
@@ -133,7 +141,7 @@ const Project = () => {
       // Close selector
       setSelectorVisible(false)
     } catch (err) {
-      message.error(err.message)
+      message.error(errors.addError)
       console.error(err)
       Sentry.captureException(err)
     }

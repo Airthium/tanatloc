@@ -6,9 +6,11 @@ import UserAPI from '../../../../src/api/user'
 import Sentry from '../../../../src/lib/sentry'
 
 /**
- * Errors
+ * Errors account/password
+ * @memeberof module:renderer/components/account
  */
 const errors = {
+  updateError: 'Unable to update the password',
   mismatch: 'Password and confirmation mismatch',
   invalid: 'Current password not valid'
 }
@@ -40,16 +42,16 @@ const Password = () => {
   const onFinish = async (data) => {
     setLoading(true)
 
-    // Check current password
-    const current = await UserAPI.check({
-      username: user.email,
-      password: data.password
-    })
+    try {
+      // Check current password
+      const current = await UserAPI.check({
+        username: user.email,
+        password: data.password
+      })
 
-    if (current.valid) {
-      // Change password
-      if (data.newPassword === data.passwordConfirm) {
-        try {
+      if (current.valid) {
+        // Change password
+        if (data.newPassword === data.passwordConfirm) {
           await UserAPI.update([
             {
               type: 'crypt',
@@ -57,19 +59,19 @@ const Password = () => {
               value: data.newPassword
             }
           ])
-        } catch (err) {
-          message.error(err.message)
-          console.error(err)
-          Sentry.captureException(err)
+        } else {
+          message.error(errors.mismatch)
         }
       } else {
-        message.error(errors.mismatch)
+        message.error(errors.invalid)
       }
-    } else {
-      message.error(errors.invalid)
+    } catch (err) {
+      message.error(errors.updateError)
+      console.error(err)
+      Sentry.captureException(err)
+    } finally {
+      setLoading(false)
     }
-
-    setLoading(false)
   }
 
   /**

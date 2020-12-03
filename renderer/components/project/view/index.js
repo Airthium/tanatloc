@@ -1,7 +1,16 @@
 /** @module renderer/components/project/view */
 
 import { useRef, useState, useEffect } from 'react'
-import { Button, Divider, Drawer, Layout, Radio, Switch, Tooltip } from 'antd'
+import {
+  message,
+  Button,
+  Divider,
+  Drawer,
+  Layout,
+  Radio,
+  Switch,
+  Tooltip
+} from 'antd'
 import {
   BorderlessTableOutlined,
   CompressOutlined,
@@ -45,6 +54,15 @@ import PartAPI from '../../../../src/api/part'
 
 import { useSelector, useDispatch } from 'react-redux'
 import { highlight, select, unselect } from '../../../store/select/action'
+
+import Sentry from '../../../../src/lib/sentry'
+
+/**
+ * Errors
+ */
+const errors = {
+  partError: 'Unable to load part'
+}
 
 /**
  * ThreeView
@@ -735,51 +753,57 @@ const View = ({ simulation, setPartSummary }) => {
   }, [simulation])
 
   const loadPart = async (file) => {
-    const partContent = await PartAPI.get({ id: simulation.id }, file)
+    try {
+      const partContent = await PartAPI.get({ id: simulation.id }, file)
 
-    if (partContent.error) {
-      setPartSummary({ error: true, message: partContent.message })
-      return
-    }
+      if (partContent.error) {
+        setPartSummary({ error: true, message: partContent.message })
+        return
+      }
 
-    // Convert buffers
-    partContent.solids?.forEach((solid) => {
-      solid.buffer = JSON.parse(Buffer.from(solid.buffer).toString())
-    })
-    partContent.faces?.forEach((face) => {
-      face.buffer = JSON.parse(Buffer.from(face.buffer).toString())
-    })
-    partContent.edges?.forEach((edge) => {
-      edge.buffer = JSON.parse(Buffer.from(edge.buffer).toString())
-    })
-
-    const summary = {
-      uuid: partContent.uuid,
-      solids: partContent.solids?.map((solid) => {
-        return {
-          name: solid.name,
-          number: solid.number,
-          uuid: solid.buffer.uuid
-        }
-      }),
-      faces: partContent.faces?.map((face) => {
-        return {
-          name: face.name,
-          number: face.number,
-          uuid: face.buffer.uuid
-        }
-      }),
-      edges: partContent.edges?.map((edge) => {
-        return {
-          name: edge.name,
-          number: edge.number,
-          uuid: edge.buffer.uuid
-        }
+      // Convert buffers
+      partContent.solids?.forEach((solid) => {
+        solid.buffer = JSON.parse(Buffer.from(solid.buffer).toString())
       })
-    }
+      partContent.faces?.forEach((face) => {
+        face.buffer = JSON.parse(Buffer.from(face.buffer).toString())
+      })
+      partContent.edges?.forEach((edge) => {
+        edge.buffer = JSON.parse(Buffer.from(edge.buffer).toString())
+      })
 
-    setPart(partContent)
-    setPartSummary(summary)
+      const summary = {
+        uuid: partContent.uuid,
+        solids: partContent.solids?.map((solid) => {
+          return {
+            name: solid.name,
+            number: solid.number,
+            uuid: solid.buffer.uuid
+          }
+        }),
+        faces: partContent.faces?.map((face) => {
+          return {
+            name: face.name,
+            number: face.number,
+            uuid: face.buffer.uuid
+          }
+        }),
+        edges: partContent.edges?.map((edge) => {
+          return {
+            name: edge.name,
+            number: edge.number,
+            uuid: edge.buffer.uuid
+          }
+        })
+      }
+
+      setPart(partContent)
+      setPartSummary(summary)
+    } catch (err) {
+      message.error(errors.partError)
+      console.error(err)
+      Sentry.captureException(err)
+    }
   }
 
   return <ThreeView part={part} />

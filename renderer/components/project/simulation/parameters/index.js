@@ -1,9 +1,15 @@
 import { useState, useEffect } from 'react'
-import { Card, Collapse, Layout, Select } from 'antd'
+import { message, Card, Collapse, Layout, Select } from 'antd'
 
 import Formula from '../../../assets/formula'
 
 import SimulationAPI from '../../../../../src/api/simulation'
+
+import Sentry from '../../../../../src/lib/sentry'
+
+const errors = {
+  updateError: 'Unable to update the simulation'
+}
 
 const Parameters = ({ project, simulation }) => {
   // State
@@ -36,19 +42,25 @@ const Parameters = ({ project, simulation }) => {
       done: true
     }
 
-    // Update
-    SimulationAPI.update({ id: simulation.id }, [
-      {
-        key: 'scheme',
-        type: 'json',
-        method: 'diff',
-        path: ['configuration', 'parameters'],
-        value: diff
-      }
-    ]).then(() => {
-      // Mutate
-      mutateOneSimulation(newSimulation)
-    })
+    try {
+      // Update
+      SimulationAPI.update({ id: simulation.id }, [
+        {
+          key: 'scheme',
+          type: 'json',
+          method: 'diff',
+          path: ['configuration', 'parameters'],
+          value: diff
+        }
+      ]).then(() => {
+        // Mutate
+        mutateOneSimulation(newSimulation)
+      })
+    } catch (err) {
+      message.error(errors.updateError)
+      console.error(err)
+      Sentry.captureException(err)
+    }
   }, [values])
 
   /**

@@ -7,6 +7,17 @@ import SimulationAPI from '../../../../../src/api/simulation'
 
 import Sentry from '../../../../../src/lib/sentry'
 
+/**
+ * Errors
+ */
+const errors = {
+  updateError: 'Unable to update the simulation'
+}
+
+/**
+ * About
+ * @param {Object} props Props
+ */
 const About = ({ project, simulation }) => {
   // Data
   const [, { mutateOneSimulation }] = SimulationAPI.useSimulations(
@@ -30,7 +41,7 @@ const About = ({ project, simulation }) => {
         name: name
       })
     } catch (err) {
-      message.error(err.message)
+      message.error(errors.updateError)
       console.error(err)
       Sentry.captureException(err)
     }

@@ -19,7 +19,7 @@
     "depcheck": "depcheck",
     "dev": "next renderer",
     "doc": "jsdoc -c config/jsdoc/conf.json",
-    "electron-build": "patch-package && yarn server-build && nextron build && electron-builder install-app-deps",
+    "electron-build": "yarn server-build && nextron build && electron-builder install-app-deps",
     "electron-dev": "yarn server-build && nextron",
     "export": "yarn build && next export renderer",
     "postinstall": "babel . --only config,install,src/database/index.js --out-dir dist-install && node dist-install/install",

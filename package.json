@@ -68,7 +68,6 @@
     "nextron": "6.0.1",
     "passport": "0.4.1",
     "passport-local": "1.0.0",
-    "patch-package": "6.2.2",
     "pg": "8.5.1",
     "pg-native": "3.0.0",
     "prettier": "2.2.1",

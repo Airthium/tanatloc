@@ -16,6 +16,7 @@ import projects from '../src/route/projects'
 import projectsIds from '../src/route/projects/[ids]'
 import simulation from '../src/route/simulation'
 import simulationId from '../src/route/simulation/[id]'
+import simulationIdRun from '../src/route/simulation/[id]/run'
 import simulations from '../src/route/simulations'
 import simulationsIds from '../src/route/simulations/[ids]'
 import part from '../src/route/part'
@@ -52,6 +53,7 @@ app.all('/api/projects/:ids', projectsIds)
 
 app.all('/api/simulation', simulation)
 app.all('/api/simulation/:id', simulationId)
+app.all('/api/simulation/:id/run', simulationIdRun)
 
 app.all('/api/simulations', simulations)
 app.all('/api/simulations/:ids', simulationsIds)

@@ -157,11 +157,8 @@ const Run = ({ project, simulation }) => {
                   title="Simulating"
                   description={
                     <Button
-                      icon={
-                        <FileTextOutlined
-                          onClick={() => onLog(simulatingTasks, 'Simulation')}
-                        />
-                      }
+                      icon={<FileTextOutlined />}
+                      onClick={() => onLog(simulatingTasks, 'Simulation')}
                       size="small"
                     />
                   }

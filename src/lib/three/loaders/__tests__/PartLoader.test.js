@@ -34,6 +34,7 @@ describe('src/lib/three/loaders/PartLoader', () => {
     }
   ]
   const part = {
+    type: 'geometry',
     solids: [
       {
         buffer: '{ "uuid": "uuid"}'
@@ -82,6 +83,10 @@ describe('src/lib/three/loaders/PartLoader', () => {
     global.MockGeometry.getAttribute = {
       array: [0.1, 0.2, 0.3]
     }
+    partLoader.load(part)
+
+    // Mesh
+    part.type = 'mesh'
     partLoader.load(part)
   })
 

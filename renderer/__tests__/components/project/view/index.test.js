@@ -312,7 +312,7 @@ describe('components/project/view', () => {
     wrapper = mount(
       <View
         simulation={{
-          scheme: { configuration: { geometry: { file: { part: {} } } } }
+          scheme: { configuration: { part: {} } }
         }}
         type="geometry"
         setPartSummary={setPartSummary}
@@ -324,7 +324,7 @@ describe('components/project/view', () => {
     wrapper = mount(
       <View
         simulation={{
-          scheme: { configuration: { geometry: { file: { part: {} } } } }
+          scheme: { configuration: { part: {} } }
         }}
         type="geometry"
         setPartSummary={setPartSummary}
@@ -336,7 +336,7 @@ describe('components/project/view', () => {
     wrapper = mount(
       <View
         simulation={{
-          scheme: { configuration: { geometry: { file: { part: {} } } } }
+          scheme: { configuration: { part: {} } }
         }}
         type="geometry"
         setPartSummary={setPartSummary}
@@ -364,7 +364,7 @@ describe('components/project/view', () => {
     wrapper = mount(
       <View
         simulation={{
-          scheme: { configuration: { geometry: { file: { part: {} } } } }
+          scheme: { configuration: { part: {} } }
         }}
         type="geometry"
         setPartSummary={setPartSummary}
@@ -376,7 +376,7 @@ describe('components/project/view', () => {
     wrapper = mount(
       <View
         simulation={{
-          scheme: { configuration: { geometry: { file: { part: {} } } } }
+          scheme: { configuration: { part: {} } }
         }}
         type="geometry"
         setPartSummary={setPartSummary}

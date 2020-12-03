@@ -91,6 +91,8 @@ class MockGroup {
 
 class MockLine {}
 
+class MockWireframeGeometry extends MockGeometry {}
+
 class MockLineBasicMaterial extends MockMaterial {}
 
 class MockLineSegments {}
@@ -263,7 +265,8 @@ const MockThree = {
   TorusGeometry: MockTorusGeometry,
   Vector2: MockVector2,
   Vector3: MockVector3,
-  WebGLRenderer: MockWebGLRenderer
+  WebGLRenderer: MockWebGLRenderer,
+  WireframeGeometry: MockWireframeGeometry
 }
 
 jest.mock('three/build/three.module', () => MockThree)

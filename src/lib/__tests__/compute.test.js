@@ -51,7 +51,8 @@ describe('src/lib/compute', () => {
     const data = await Compute.computeMesh(
       'path',
       { file: 'file' },
-      { path: 'path' }
+      { path: 'path' },
+      jest.fn()
     )
     expect(data).toEqual({
       originPath: 'path',
@@ -63,7 +64,12 @@ describe('src/lib/compute', () => {
     // Convert error
     mockToThree.mockImplementation(() => {})
     try {
-      await Compute.computeMesh('path', { file: 'file' }, { path: 'path' })
+      await Compute.computeMesh(
+        'path',
+        { file: 'file' },
+        { path: 'path' },
+        jest.fn()
+      )
       expect(true).toBe(false)
     } catch (err) {
       expect(true).toBe(true)
@@ -74,7 +80,12 @@ describe('src/lib/compute', () => {
     // Error
     mockGmsh.mockReset()
     try {
-      await Compute.computeMesh('path', { file: 'file' }, { path: 'path' })
+      await Compute.computeMesh(
+        'path',
+        { file: 'file' },
+        { path: 'path' },
+        jest.fn()
+      )
       expect(true).toBe(false)
     } catch (err) {
       expect(true).toBe(true)

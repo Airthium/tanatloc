@@ -76,10 +76,26 @@ describe('renderer/components/project/simulation/run', () => {
     wrapper = mount(<Run project={project} simulation={simulation} />)
 
     // Mesh log
-    wrapper.find('Step').at(0).props().description.props.icon.props.onClick()
+    wrapper
+      .find('Step')
+      .at(0)
+      .props()
+      .description.props.children[0].props.onClick()
 
     // Simulation log
-    wrapper.find('Step').at(1).props().description.props.icon.props.onClick()
+    wrapper.find('Step').at(1).props().description.props.onClick()
+  })
+
+  it('setPart', () => {
+    wrapper.unmount()
+    wrapper = mount(<Run project={project} simulation={simulation} />)
+
+    // Mesh part
+    wrapper
+      .find('Step')
+      .at(0)
+      .props()
+      .description.props.children[1].props.onClick()
   })
 
   it('effect', () => {

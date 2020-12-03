@@ -1,6 +1,10 @@
 import { useState, useEffect } from 'react'
 import { message, Button, Drawer, Layout, Space, Steps, Tabs } from 'antd'
-import { FileTextOutlined, PlusCircleOutlined } from '@ant-design/icons'
+import {
+  EyeOutlined,
+  FileTextOutlined,
+  PlusCircleOutlined
+} from '@ant-design/icons'
 
 import SimulationAPI from '../../../../../src/api/simulation'
 
@@ -91,6 +95,11 @@ const Run = ({ project, simulation }) => {
     setLogVisible(!logVisible)
   }
 
+  const setPart = (file) => {
+    currentSimulation.scheme.configuration.part = file
+    mutateOneSimulation(currentSimulation)
+  }
+
   /**
    * Render
    */
@@ -121,14 +130,18 @@ const Run = ({ project, simulation }) => {
                   key={task}
                   title="Meshing"
                   description={
-                    <Button
-                      icon={
-                        <FileTextOutlined
-                          onClick={() => onLog(meshingTasks, 'Mesh')}
-                        />
-                      }
-                      size="small"
-                    />
+                    <>
+                      <Button
+                        icon={<FileTextOutlined />}
+                        onClick={() => onLog(meshingTasks, 'Mesh')}
+                        size="small"
+                      />
+                      <Button
+                        icon={<EyeOutlined />}
+                        size="small"
+                        onClick={() => setPart(task.file)}
+                      />
+                    </>
                   }
                   subTitle={
                     '(' + (index + 1) + '/' + meshingTasks?.length + ')'

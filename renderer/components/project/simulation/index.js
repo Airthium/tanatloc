@@ -89,7 +89,12 @@ const Simulation = ({ project, simulation, type, part, onClose }) => {
    */
   useEffect(() => {
     setVisible(simulation)
-    const subScheme = simulation?.scheme?.configuration?.[type]
+    const configuration = simulation?.scheme?.configuration
+
+    if (configuration && !configuration.part)
+      configuration.part = configuration.geometry?.file
+
+    const subScheme = configuration?.[type]
     setTitle(subScheme ? subScheme.title : 'About')
   }, [simulation, type])
 

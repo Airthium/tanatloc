@@ -63,10 +63,7 @@ const computeMesh = async (simulationPath, geometry, mesh, callback) => {
     simulationPath,
     path.join(mesh.path, mshFile),
     path.join(mesh.path, partPath),
-    ({ error, data }) => {
-      console.log(`${error}`)
-      console.log(`${data}`)
-    }
+    callback
   )
 
   if (code !== 0)
@@ -143,7 +140,7 @@ const computeSimulation = async ({ id }, configuration) => {
           )
           // Task
           meshingTask.status = 'finish'
-          meshingTask.mesh = mesh
+          meshingTask.file = mesh
           updateTasks(id, tasks)
 
           // Save mesh name

@@ -6,11 +6,14 @@ import {
   Color,
   DoubleSide,
   Group,
+  LineBasicMaterial,
+  LineSegments,
   Mesh,
   MeshStandardMaterial,
   Raycaster,
   Vector2,
-  Vector3
+  Vector3,
+  WireframeGeometry
 } from 'three/build/three.module'
 
 // TODO edges not supported for now
@@ -39,14 +42,23 @@ const PartLoader = (mouseMoveEvent, mouseDownEvent) => {
    * @param {Object} clippingPlane Clipping plane
    */
   const load = (part, transparent, clippingPlane) => {
+    const partType = part.type
+
     const object = new Group()
     object.type = 'Part'
 
     // Solids
     const solids = new Group()
-    part.solids &&
+    partType === 'geometry' &&
+      part.solids &&
       part.solids.forEach((solid) => {
-        const mesh = loadElement(solid, solidColor, transparent, clippingPlane)
+        const mesh = loadElement(
+          partType,
+          solid,
+          solidColor,
+          transparent,
+          clippingPlane
+        )
         mesh.visible = false
         solids.add(mesh)
       })
@@ -56,7 +68,13 @@ const PartLoader = (mouseMoveEvent, mouseDownEvent) => {
     const faces = new Group()
     part.faces &&
       part.faces.forEach((face) => {
-        const mesh = loadElement(face, faceColor, transparent, clippingPlane)
+        const mesh = loadElement(
+          partType,
+          face,
+          faceColor,
+          transparent,
+          clippingPlane
+        )
         mesh.visible = true
         faces.add(mesh)
       })
@@ -64,6 +82,12 @@ const PartLoader = (mouseMoveEvent, mouseDownEvent) => {
 
     // Edges
     const edges = new Group()
+    //   part.edges &&
+    //   part.edges.forEach((edge) => {
+    //     const mesh = loadElement(partType, edge, edgeColor, transparent, clippingPlane)
+    //     mesh.visible = true
+    //     edge.add(mesh)
+    //   })
     object.add(edges)
 
     object.uuid = part.uuid
@@ -88,12 +112,19 @@ const PartLoader = (mouseMoveEvent, mouseDownEvent) => {
 
   /**
    * Load element
+   * @param {string} partType Part type
    * @param {Object} element Element
    * @param {Object} color Color
    * @param {boolean} transparent Transparent
    * @param {Object} clippingPlane Clipping plane
    */
-  const loadElement = (element, color, transparent, clippingPlane) => {
+  const loadElement = (
+    partType,
+    element,
+    color,
+    transparent,
+    clippingPlane
+  ) => {
     const loader = new BufferGeometryLoader()
     const buffer = element.buffer
     const geometry = loader.parse(buffer)
@@ -109,20 +140,37 @@ const PartLoader = (mouseMoveEvent, mouseDownEvent) => {
       )
     }
 
-    const material = new MeshStandardMaterial({
-      color: color,
-      side: DoubleSide,
-      transparent: transparent,
-      opacity: transparent ? 0.5 : 1,
-      depthWrite: !transparent,
-      clippingPlanes: [clippingPlane]
-    })
-    material.originalColor = color
+    if (partType === 'geometry') {
+      const material = new MeshStandardMaterial({
+        color: color,
+        side: DoubleSide,
+        transparent: transparent,
+        opacity: transparent ? 0.5 : 1,
+        depthWrite: !transparent,
+        clippingPlanes: [clippingPlane]
+      })
+      material.originalColor = color
 
-    const mesh = new Mesh(geometry, material)
-    mesh.uuid = buffer.uuid
+      const mesh = new Mesh(geometry, material)
+      mesh.uuid = buffer.uuid
 
-    return mesh
+      return mesh
+    } else if (partType === 'mesh') {
+      const wireframe = new WireframeGeometry(geometry)
+      const material = new LineBasicMaterial({
+        color: color,
+        linewidth: 1,
+        transparent: transparent,
+        opacity: transparent ? 0.5 : 1,
+        depthWrite: !transparent,
+        clippingPlanes: [clippingPlane]
+      })
+      material.originalColor = color
+
+      const mesh = new LineSegments(wireframe, material)
+      mesh.uuid = buffer.uuid
+      return mesh
+    }
   }
 
   /**

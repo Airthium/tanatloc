@@ -744,12 +744,9 @@ const View = ({ simulation, setPartSummary }) => {
   const [part, setPart] = useState()
 
   useEffect(() => {
-    const scheme = simulation?.scheme
-    const geometry = scheme?.configuration?.['geometry']
+    const configuration = simulation?.scheme?.configuration
 
-    if (geometry?.file?.part) {
-      loadPart(geometry.file)
-    }
+    if (configuration?.part) loadPart(configuration.part)
   }, [simulation])
 
   const loadPart = async (file) => {

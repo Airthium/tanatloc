@@ -1,9 +1,13 @@
 const config = require('../storage')
 
+jest.mock('os', () => ({
+  homedir: () => '/homedir'
+}))
+
 describe('config/storage', () => {
   it('global', () => {
-    expect(config.STORAGE).toBe('/tmp/tanatloc')
-    expect(config.AVATAR).toBe('/tmp/tanatloc/avatar')
-    expect(config.SIMULATION).toBe('/tmp/tanatloc/simulation')
+    expect(config.STORAGE).toBe('/homedir/tanatloc')
+    expect(config.AVATAR).toBe('/homedir/tanatloc/avatar')
+    expect(config.SIMULATION).toBe('/homedir/tanatloc/simulation')
   })
 })

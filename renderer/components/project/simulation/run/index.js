@@ -41,10 +41,10 @@ const Run = ({ project, simulation }) => {
     else setRunning(false)
 
     if (
-      currentSimulation.scheme.configuration.run.done !==
-        simulation.scheme.configuration.run.done ||
-      currentSimulation.scheme.configuration.run.error !==
-        simulation.scheme.configuration.run.error
+      currentSimulation?.scheme?.configuration.run.done !==
+        simulation?.scheme?.configuration.run.done ||
+      currentSimulation?.scheme?.configuration.run.error !==
+        simulation?.scheme?.configuration.run.error
     )
       mutateOneSimulation(currentSimulation)
   }, [JSON.stringify(currentSimulation)])

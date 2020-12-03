@@ -41,6 +41,11 @@ jest.mock('../../../../src/api/workspace/useWorkspaces', () => () => [
 const mockLogout = jest.fn()
 jest.mock('../../../../src/api/logout', () => () => mockLogout())
 
+const mockSentry = jest.fn()
+jest.mock('../../../../src/lib/sentry', () => ({
+  captureException: () => mockSentry()
+}))
+
 let wrapper
 describe('renderer/components/dashboard', () => {
   beforeEach(() => {
@@ -57,6 +62,8 @@ describe('renderer/components/dashboard', () => {
     mockWorkspaces.mockImplementation(() => [])
 
     mockLogout.mockReset()
+
+    mockSentry.mockReset()
 
     wrapper = shallow(<Dashboard />)
   })
@@ -151,6 +158,16 @@ describe('renderer/components/dashboard', () => {
       .props()
       .onClick({ item: { props: { subMenuKey: '-menu-0' } }, key: 'logout' })
     expect(mockLogout).toHaveBeenCalledTimes(1)
+
+    mockLogout.mockImplementation(() => {
+      throw new Error()
+    })
+    wrapper
+      .find('Menu')
+      .props()
+      .onClick({ item: { props: { subMenuKey: '-menu-0' } }, key: 'logout' })
+    expect(mockLogout).toHaveBeenCalledTimes(2)
+    expect(mockSentry).toHaveBeenCalledTimes(1)
 
     // Unknown
     wrapper

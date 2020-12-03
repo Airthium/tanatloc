@@ -41,4 +41,13 @@ describe('src/route/session', () => {
     expect(mockSession).toHaveBeenCalledTimes(2)
     expect(id).toBe(null)
   })
+
+  it('error', async () => {
+    mockSession.mockImplementation(() => {
+      throw new Error()
+    })
+    const id = await getSessionId(req, res)
+    expect(mockSession).toHaveBeenCalledTimes(1)
+    expect(id).toBe(null)
+  })
 })

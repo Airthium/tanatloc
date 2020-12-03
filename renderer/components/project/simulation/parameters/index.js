@@ -42,25 +42,25 @@ const Parameters = ({ project, simulation }) => {
       done: true
     }
 
-    try {
-      // Update
-      SimulationAPI.update({ id: simulation.id }, [
-        {
-          key: 'scheme',
-          type: 'json',
-          method: 'diff',
-          path: ['configuration', 'parameters'],
-          value: diff
-        }
-      ]).then(() => {
+    // Update
+    SimulationAPI.update({ id: simulation.id }, [
+      {
+        key: 'scheme',
+        type: 'json',
+        method: 'diff',
+        path: ['configuration', 'parameters'],
+        value: diff
+      }
+    ])
+      .then(() => {
         // Mutate
         mutateOneSimulation(newSimulation)
       })
-    } catch (err) {
-      message.error(errors.updateError)
-      console.error(err)
-      Sentry.captureException(err)
-    }
+      .catch((err) => {
+        message.error(errors.updateError)
+        console.error(err)
+        Sentry.captureException(err)
+      })
   }, [values])
 
   /**

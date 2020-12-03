@@ -72,6 +72,14 @@ describe('renderer/components/project/simulation/parameters', () => {
     wrapper = mount(<Parameters project={project} simulation={simulation} />)
 
     wrapper.find('formula').props().onChange()
+    expect(mockUpdate).toHaveBeenCalledTimes(1)
+
+    wrapper.find('formula').props().onChange('new value')
+    expect(mockUpdate).toHaveBeenCalledTimes(2)
+
+    mockUpdate.mockImplementation(() => {
+      throw new Error()
+    })
     wrapper.find('formula').props().onChange('new value')
   })
 })

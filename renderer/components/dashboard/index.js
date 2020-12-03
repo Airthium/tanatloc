@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/router'
 import { useState, useEffect } from 'react'
-import { Layout, Menu } from 'antd'
+import { message, Layout, Menu } from 'antd'
 import {
   AppstoreFilled,
   ShareAltOutlined,

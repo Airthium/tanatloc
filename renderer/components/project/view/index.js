@@ -8,6 +8,7 @@ import {
   Drawer,
   Layout,
   Radio,
+  Spin,
   Switch,
   Tooltip
 } from 'antd'
@@ -17,6 +18,7 @@ import {
   ControlOutlined,
   DragOutlined,
   EyeInvisibleOutlined,
+  LoadingOutlined,
   ZoomInOutlined,
   ZoomOutOutlined,
   SelectOutlined,
@@ -314,10 +316,6 @@ const ThreeView = ({ loading, part }) => {
     if (part) loadPart()
   }, [part])
 
-  useEffect(() => {
-    // TODO loading
-  }, [loading])
-
   // Enable / disable selection
   useEffect(() => {
     scene.current.children.forEach((child) => {
@@ -562,6 +560,12 @@ const ThreeView = ({ loading, part }) => {
   return (
     <Layout className="View no-scroll">
       <Layout.Content className="View-content no-scroll">
+        <div
+          style={{ display: loading ? 'flex' : 'none' }}
+          className="View-loading"
+        >
+          <Spin indicator={<LoadingOutlined style={{ fontSize: 60 }} spin />} />
+        </div>
         <div ref={mount} className="View-canvas" />
       </Layout.Content>
       <div className="View-controls">

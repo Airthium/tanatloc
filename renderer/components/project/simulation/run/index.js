@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { message, Button, Drawer, Layout, Space, Steps, Tabs } from 'antd'
 import {
   EyeOutlined,
+  EyeInvisibleOutlined,
   FileTextOutlined,
   PlusCircleOutlined
 } from '@ant-design/icons'
@@ -11,7 +12,8 @@ import SimulationAPI from '../../../../../src/api/simulation'
 import Sentry from '../../../../../src/lib/sentry'
 
 const errors = {
-  runError: 'Unable to run the simulation'
+  runError: 'Unable to run the simulation',
+  updateError: 'Unable to update the simulation'
 }
 
 const Run = ({ project, simulation }) => {
@@ -21,6 +23,9 @@ const Run = ({ project, simulation }) => {
   const [logContent, setLogContent] = useState()
   const [meshingTasks, setMeshingTasks] = useState()
   const [simulatingTasks, setSimulatingTasks] = useState()
+
+  const [configuration, setConfiguration] = useState()
+  const [currentConfiguration, setCurrentConfiguration] = useState()
 
   // Data
   const [currentSimulation] = SimulationAPI.useSimulation(simulation.id, 500)
@@ -45,13 +50,19 @@ const Run = ({ project, simulation }) => {
     else setRunning(false)
 
     if (
-      currentSimulation?.scheme?.configuration.run.done !==
-        simulation?.scheme?.configuration.run.done ||
-      currentSimulation?.scheme?.configuration.run.error !==
-        simulation?.scheme?.configuration.run.error
+      currentConfiguration?.run.done !== configuration?.run.done ||
+      currentConfiguration?.run.error !== configuration?.run.error
     )
       mutateOneSimulation(currentSimulation)
   }, [JSON.stringify(currentSimulation)])
+
+  useEffect(() => {
+    setConfiguration(simulation?.scheme?.configuration)
+  }, [simulation])
+
+  useEffect(() => {
+    setCurrentConfiguration(currentSimulation?.scheme?.configuration)
+  }, [currentSimulation])
 
   /**
    * On run
@@ -95,9 +106,29 @@ const Run = ({ project, simulation }) => {
     setLogVisible(!logVisible)
   }
 
-  const setPart = (file) => {
-    currentSimulation.scheme.configuration.part = file
-    mutateOneSimulation(currentSimulation)
+  const setPart = async (file) => {
+    // Update local
+    currentConfiguration.part = file
+
+    try {
+      // Update simulation
+      await SimulationAPI.update({ id: simulation.id }, [
+        {
+          key: 'scheme',
+          type: 'json',
+          method: 'diff',
+          path: ['configuration', 'part'],
+          value: file
+        }
+      ])
+
+      // Mutate
+      mutateOneSimulation(currentSimulation)
+    } catch (err) {
+      message.error(errors.updateError)
+      console.error(err)
+      Sentry.captureException(err)
+    }
   }
 
   /**
@@ -137,9 +168,23 @@ const Run = ({ project, simulation }) => {
                         size="small"
                       />
                       <Button
-                        icon={<EyeOutlined />}
+                        icon={
+                          currentConfiguration.part?.fileName ===
+                          task.file?.fileName ? (
+                            <EyeInvisibleOutlined />
+                          ) : (
+                            <EyeOutlined />
+                          )
+                        }
                         size="small"
-                        onClick={() => setPart(task.file)}
+                        onClick={() =>
+                          setPart(
+                            currentConfiguration.part?.fileName ===
+                              task.file?.fileName
+                              ? null
+                              : task.file
+                          )
+                        }
                       />
                     </>
                   }

@@ -182,6 +182,7 @@ const Project = () => {
     const categories = []
     const configuration = s?.scheme?.configuration || {}
     Object.keys(configuration).forEach((key) => {
+      if (key === 'part') return
       const child = configuration[key]
       if (!child.subMenus?.length) {
         categories[child.index] = (

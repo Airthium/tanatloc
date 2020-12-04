@@ -1,3 +1,5 @@
+/** @module src/auth/auth-cookies */
+
 import { serialize, parse } from 'cookie'
 
 import isElectron from 'is-electron'
@@ -9,6 +11,11 @@ if (isElectron()) storage = new ElectronStore()
 const TOKEN_NAME = 'token'
 const MAX_AGE = 60 * 60 * 8 // 8 hours
 
+/**
+ * Set token cookie
+ * @param {Object} res Response
+ * @param {string} token Token
+ */
 export function setTokenCookie(res, token) {
   const cookie = serialize(TOKEN_NAME, token, {
     maxAge: MAX_AGE,
@@ -23,6 +30,10 @@ export function setTokenCookie(res, token) {
   else res.setHeader('Set-Cookie', cookie)
 }
 
+/**
+ * Remove token cookie
+ * @param {Object} res Reponse
+ */
 export function removeTokenCookie(res) {
   const cookie = serialize(TOKEN_NAME, '', {
     maxAge: -1,
@@ -33,6 +44,10 @@ export function removeTokenCookie(res) {
   else res.setHeader('Set-Cookie', cookie)
 }
 
+/**
+ * Parse cookie
+ * @param {Object} req Response
+ */
 export function parseCookies(req) {
   // For API Routes we don't need to parse the cookies.
   if (isElectron()) {

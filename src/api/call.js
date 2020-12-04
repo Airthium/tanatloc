@@ -14,7 +14,7 @@ const fetcher = (url) => fetch(base + url).then((r) => r.json())
  * API call
  * @param {string} route Route
  * @param {Object} param Parameters
- * @returns {?Object} Response
+ * @returns {Object} Response
  */
 const call = async (route, param) => {
   const response = await fetch(base + route, {

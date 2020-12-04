@@ -3,6 +3,10 @@ import { Pool } from 'pg'
 import config, { databases } from '../config/db'
 import query from '../src/database'
 
+/**
+ * Create database
+ * @memberof module:install
+ */
 const createDatabase = async () => {
   console.info(' == Create dB == ')
   try {

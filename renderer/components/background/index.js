@@ -154,6 +154,9 @@ const Background = () => {
     }
   }, [])
 
+  /**
+   * Render
+   */
   return <div className="Background" ref={mount} />
 }
 

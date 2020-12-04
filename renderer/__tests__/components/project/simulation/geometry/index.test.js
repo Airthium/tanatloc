@@ -54,6 +54,12 @@ describe('renderer/components/project/simulation/geometry', () => {
   it('onDelete', async () => {
     await wrapper.find('ForwardRef').props().onConfirm()
     expect(mockUpdate).toHaveBeenCalledTimes(1)
+
+    mockUpdate.mockImplementation(() => {
+      throw new Error()
+    })
+    await wrapper.find('ForwardRef').props().onConfirm()
+    expect(mockUpdate).toHaveBeenCalledTimes(2)
   })
 
   it('upload', async () => {
@@ -112,6 +118,21 @@ describe('renderer/components/project/simulation/geometry', () => {
       })
     expect(mockUpdate).toHaveBeenCalledTimes(1)
     expect(mockMutate).toHaveBeenCalledTimes(1)
+
+    mockUpdate.mockImplementation(() => {
+      throw new Error()
+    })
+    await wrapper
+      .find('Upload')
+      .at(0)
+      .props()
+      .onChange({
+        file: {
+          status: 'done'
+        }
+      })
+    expect(mockUpdate).toHaveBeenCalledTimes(2)
+    expect(mockMutate).toHaveBeenCalledTimes(1)
   })
 
   it('mount with file', async () => {
@@ -160,6 +181,12 @@ describe('renderer/components/project/simulation/geometry', () => {
 
     await wrapper.find('Button').at(0).props().onClick()
     expect(mockGet).toHaveBeenCalledTimes(1)
+
+    mockGet.mockImplementation(() => {
+      throw new Error()
+    })
+    await wrapper.find('Button').at(0).props().onClick()
+    expect(mockGet).toHaveBeenCalledTimes(2)
   })
 
   it('with part', () => {

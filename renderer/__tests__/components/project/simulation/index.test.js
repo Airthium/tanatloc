@@ -19,6 +19,13 @@ jest.mock(
 
 jest.mock('../../../../components/project/simulation/run', () => 'run')
 
+const mockMutate = jest.fn()
+const mockUpdate = jest.fn()
+jest.mock('../../../../../src/api/simulation', () => ({
+  useSimulations: () => [[], { mutateOneSimulation: mockMutate }],
+  update: async () => mockUpdate()
+}))
+
 jest.mock('../../../../../models', () => [
   {
     name: 'Name',
@@ -35,6 +42,8 @@ jest.mock('../../../../../models', () => [
 let wrapper
 describe('components/project/simulation', () => {
   beforeEach(() => {
+    mockMutate.mockReset()
+    mockUpdate.mockReset()
     wrapper = shallow(<Simulation />)
   })
 
@@ -93,7 +102,26 @@ describe('components/project/simulation', () => {
     wrapper = mount(
       <Simulation
         simulation={{
-          scheme: { configuration: { geometry: { title: 'Geometry' } } }
+          scheme: {
+            configuration: { geometry: { title: 'Geometry', file: {} } }
+          }
+        }}
+        type="geometry"
+      />
+    )
+    expect(wrapper.find('panel').props().title).toBe('Geometry')
+
+    // Error
+    wrapper.unmount()
+    mockUpdate.mockImplementation(() => {
+      throw new Error()
+    })
+    wrapper = mount(
+      <Simulation
+        simulation={{
+          scheme: {
+            configuration: { geometry: { title: 'Geometry', file: {} } }
+          }
         }}
         type="geometry"
       />

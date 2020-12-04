@@ -10,6 +10,14 @@ import WorkspaceAPI from '../../../../src/api/workspace'
 import Sentry from '../../../../src/lib/sentry'
 
 /**
+ * Errors project/del
+ * @memberof module:renderer/components/project
+ */
+const errors = {
+  delError: 'Unable to delete the project'
+}
+
+/**
  * Delete project
  * @memberof module:renderer/components/project
  * @param {Object} props Props
@@ -54,7 +62,7 @@ const Delete = (props) => {
       // Mutate projects
       delOneProject({ id: project.id })
     } catch (err) {
-      message.error(err.message)
+      message.error(errors.delError)
       console.error(err)
       Sentry.captureException(err)
 

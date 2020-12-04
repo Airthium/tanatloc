@@ -2,6 +2,7 @@ import { execSync, spawn } from 'child_process'
 
 /**
  * Gmsh service
+ * @memberof module:src/services
  * @param {string} path Path
  * @param {string} fileIn In file
  * @param {string} fileOut Out file

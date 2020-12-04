@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import {
+  message,
   Alert,
   Button,
   Card,
@@ -21,10 +22,23 @@ import {
 import SimulationAPI from '../../../../../src/api/simulation'
 import FileAPI from '../../../../../src/api/file'
 
+import Sentry from '../../../../../src/lib/sentry'
+
+/**
+ * Errors simulation/geometry
+ * @memberof module:renderer/components/project/simulation
+ */
 const errors = {
+  updateError: 'Unable to update the simulation',
+  downloadError: 'Unable to download the file',
   UNABLE_TO_LOAD: 'Unable to load geometry'
 }
 
+/**
+ * Geometry
+ * @memberof module:renderer/components/project/simulation
+ * @param {Object} props Props
+ */
 const Geometry = ({ project, simulation, part }) => {
   // State
   const [upload, setUpload] = useState(false)
@@ -79,26 +93,32 @@ const Geometry = ({ project, simulation, part }) => {
         done: true
       }
 
-      // Update simulation
-      await SimulationAPI.update({ id: simulation.id }, [
-        {
-          key: 'scheme',
-          type: 'json',
-          method: 'diff',
-          path: ['configuration', 'geometry'],
-          value: diff
-        }
-      ])
+      try {
+        // Update simulation
+        await SimulationAPI.update({ id: simulation.id }, [
+          {
+            key: 'scheme',
+            type: 'json',
+            method: 'diff',
+            path: ['configuration', 'geometry'],
+            value: diff
+          }
+        ])
 
-      // Mutate simulation
-      mutateOneSimulation(
-        {
-          ...simulation
-        },
-        true
-      )
-
-      setLoading(false)
+        // Mutate simulation
+        mutateOneSimulation(
+          {
+            ...simulation
+          },
+          true
+        )
+      } catch (err) {
+        message.error(errors.updateError)
+        console.error(err)
+        Sentry.captureException(err)
+      } finally {
+        setLoading(false)
+      }
     }
   }
 
@@ -127,32 +147,38 @@ const Geometry = ({ project, simulation, part }) => {
       done: false
     }
 
-    // Update simulation
-    await SimulationAPI.update({ id: simulation.id }, [
-      {
-        key: 'scheme',
-        type: 'json',
-        method: 'diff',
-        path: ['configuration', 'geometry'],
-        value: diff
-      }
-    ])
+    try {
+      // Update simulation
+      await SimulationAPI.update({ id: simulation.id }, [
+        {
+          key: 'scheme',
+          type: 'json',
+          method: 'diff',
+          path: ['configuration', 'geometry'],
+          value: diff
+        }
+      ])
 
-    // Mutate
-    mutateOneSimulation({
-      ...simulation,
-      scheme: {
-        ...simulation.scheme,
-        configuration: {
-          ...simulation.scheme.configuration,
-          geometry: {
-            ...simulation.scheme.configuration.geometry,
-            file: undefined,
-            done: false
+      // Mutate
+      mutateOneSimulation({
+        ...simulation,
+        scheme: {
+          ...simulation.scheme,
+          configuration: {
+            ...simulation.scheme.configuration,
+            geometry: {
+              ...simulation.scheme.configuration.geometry,
+              file: undefined,
+              done: false
+            }
           }
         }
-      }
-    })
+      })
+    } catch (err) {
+      message.error(errors.updateError)
+      console.error(err)
+      Sentry.captureException(err)
+    }
   }
 
   const onDownload = async () => {
@@ -160,15 +186,25 @@ const Geometry = ({ project, simulation, part }) => {
       origin: simulation.scheme.configuration.geometry.file.origin,
       originPath: simulation.scheme.configuration.geometry.file.originPath
     }
-    const content = await FileAPI.get({ id: simulation.id }, file)
 
-    const data = new File([Buffer.from(content.buffer).toString()], file.origin)
-    const url = window.URL.createObjectURL(data)
-    const link = document.createElement('a')
-    link.href = url
-    link.setAttribute('download', file.origin)
-    link.click()
-    link.remove()
+    try {
+      const content = await FileAPI.get({ id: simulation.id }, file)
+
+      const data = new File(
+        [Buffer.from(content.buffer).toString()],
+        file.origin
+      )
+      const url = window.URL.createObjectURL(data)
+      const link = document.createElement('a')
+      link.href = url
+      link.setAttribute('download', file.origin)
+      link.click()
+      link.remove()
+    } catch (err) {
+      message.error(errors.downloadError)
+      console.error(err)
+      Sentry.captureException(err)
+    }
   }
 
   /**

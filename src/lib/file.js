@@ -1,3 +1,5 @@
+/** @module src/lib/file */
+
 import path from 'path'
 
 import storage from '../../config/storage'

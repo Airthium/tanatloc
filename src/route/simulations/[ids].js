@@ -6,6 +6,12 @@ import ProjectLib from '../../lib/project'
 
 import Sentry from '../../lib/sentry'
 
+/**
+ * Simulations by ids
+ * @memberof module:src/route/simulations
+ * @param {Object} req Request
+ * @param {Object} res Response
+ */
 export default async (req, res) => {
   // Check session
   const sessionId = await getSessionId(req, res)

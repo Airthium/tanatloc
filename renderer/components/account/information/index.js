@@ -19,9 +19,11 @@ import AvatarAPI from '../../../../src/api/avatar'
 import Sentry from '../../../../src/lib/sentry'
 
 /**
- * Errors
+ * Errors account/information
+ * @memberof module:renderer/components/account
  */
 const errors = {
+  updateError: 'Unable to update informations',
   badFormat: 'Supported format: jpg, png',
   badSize: 'Image must be smaller than 5MB'
 }
@@ -85,7 +87,7 @@ const Information = () => {
         }
       })
     } catch (err) {
-      message.error(err.message)
+      message.error(errors.updateError)
       console.error(err)
       Sentry.captureException(err)
     } finally {

@@ -101,7 +101,6 @@ describe('renderer/components/project/simulation/boundaryConditions', () => {
 
   it('onAdd', () => {
     wrapper.unmount()
-
     simulation.scheme.configuration.boundaryConditions.dirichlet.values = undefined
     wrapper = shallow(
       <BoundaryConditions
@@ -124,7 +123,34 @@ describe('renderer/components/project/simulation/boundaryConditions', () => {
     wrapper.find('Button').at(2).props().onClick()
 
     wrapper.unmount()
+    mockSelected.mockImplementation(() => ['uuid'])
+    part.faces = [{ uuid: 'uuid1' }, { uuid: 'uuid' }]
+    simulation.scheme.configuration.boundaryConditions.dirichlet.values = []
+    wrapper = shallow(
+      <BoundaryConditions
+        project={project}
+        simulation={simulation}
+        part={part}
+        setVisible={setVisible}
+      />
+    )
 
+    wrapper
+      .find({ buttonStyle: 'solid' })
+      .props()
+      .onChange({
+        target: {
+          value: 'dirichlet'
+        }
+      })
+
+    wrapper.find('Button').at(2).props().onClick()
+
+    // Error
+    wrapper.unmount()
+    mockUpdate.mockImplementation(() => {
+      throw new Error()
+    })
     mockSelected.mockImplementation(() => ['uuid'])
     part.faces = [{ uuid: 'uuid1' }, { uuid: 'uuid' }]
     simulation.scheme.configuration.boundaryConditions.dirichlet.values = []

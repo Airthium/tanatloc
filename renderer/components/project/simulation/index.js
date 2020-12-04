@@ -1,7 +1,7 @@
 /** @module renderer/components/project/simulation */
 
 import { useState, useEffect } from 'react'
-import { Layout, Menu, Modal } from 'antd'
+import { message, Layout, Menu, Modal } from 'antd'
 
 import Panel from '../panel'
 
@@ -11,7 +11,18 @@ import Parameters from './parameters'
 import BoundaryConditions from './boundaryConditions'
 import Run from './run'
 
+import SimulationAPI from '../../../../src/api/simulation'
+
+import Sentry from '../../../../src/lib/sentry'
+
 import models from '../../../../models'
+
+/**
+ * Errors
+ */
+const errors = {
+  updateError: 'Unable to update the simulation'
+}
 
 /**
  * Simulation Selector
@@ -84,12 +95,47 @@ const Simulation = ({ project, simulation, type, part, onClose }) => {
   const [visible, setVisible] = useState()
   const [title, setTitle] = useState()
 
+  // Data
+  const [, { mutateOneSimulation }] = SimulationAPI.useSimulations(
+    project?.simulations
+  )
+
   /**
    * Simulation effect
    */
   useEffect(() => {
     setVisible(simulation)
-    const subScheme = simulation?.scheme?.configuration?.[type]
+    const configuration = simulation?.scheme?.configuration
+
+    // Check if a part is visible
+    if (configuration && !configuration.part && configuration.geometry?.file) {
+      const newSimulation = { ...simulation }
+
+      // Update local
+      newSimulation.scheme.configuration.part = configuration.geometry.file
+
+      // Update simulation
+      SimulationAPI.update({ id: simulation.id }, [
+        {
+          key: 'scheme',
+          type: 'json',
+          method: 'diff',
+          path: ['configuration', 'part'],
+          value: configuration.geometry.file
+        }
+      ])
+        .then(() => {
+          // Mutate
+          mutateOneSimulation(newSimulation)
+        })
+        .catch((err) => {
+          message.error(errors.updateError)
+          console.error(err)
+          Sentry.captureException(err)
+        })
+    }
+
+    const subScheme = configuration?.[type]
     setTitle(subScheme ? subScheme.title : 'About')
   }, [simulation, type])
 

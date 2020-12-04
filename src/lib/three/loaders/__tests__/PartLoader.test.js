@@ -24,7 +24,11 @@ describe('src/lib/three/loaders/PartLoader', () => {
         {
           uuid: 'face_uuid',
           geometry: {
-            dispose: () => {}
+            dispose: () => {},
+            boundingBox: {
+              min: { x: 0, y: 0, z: 0 },
+              max: { x: 1, y: 1, z: 1 }
+            }
           },
           material: {
             dispose: () => {}
@@ -34,6 +38,7 @@ describe('src/lib/three/loaders/PartLoader', () => {
     }
   ]
   const part = {
+    type: 'geometry',
     solids: [
       {
         buffer: '{ "uuid": "uuid"}'
@@ -83,6 +88,17 @@ describe('src/lib/three/loaders/PartLoader', () => {
       array: [0.1, 0.2, 0.3]
     }
     partLoader.load(part)
+
+    // No type
+    part.type = 'other'
+    partLoader.load(part)
+
+    // Mesh
+    part.type = 'mesh'
+    partLoader.load(part)
+
+    global.MockBox3.isEmpty = true
+    partLoader.load(part, true)
   })
 
   it('dispose', () => {
@@ -107,31 +123,6 @@ describe('src/lib/three/loaders/PartLoader', () => {
 
     mesh.startSelection(renderer, camera, outlinePass, 'other')
   })
-
-  //   mouseMove({ target: { getBoundingClientRect: () => ({}) } })
-  //   mouseDown({})
-
-  //   const mesh1 = { uuid: 'uuid', material: {} }
-  //   const mesh2 = { uuid: 'uuid2', material: {} }
-  //   global.MockRaycaster.intersectObjects = [{ object: mesh1 }]
-  //   mouseMove({ target: { getBoundingClientRect: () => ({}) } })
-  //   mouseMove({ target: { getBoundingClientRect: () => ({}) } })
-
-  //   mouseDown({})
-  //   mouseDown({})
-  //   mouseDown({})
-
-  //   global.MockRaycaster.intersectObjects = [{ object: mesh2 }]
-  //   mouseMove({ target: { getBoundingClientRect: () => ({}) } })
-
-  //   global.MockRaycaster.intersectObjects = [{ object: mesh1 }]
-  //   mouseMove({ target: { getBoundingClientRect: () => ({}) } })
-
-  //   mesh.stopSelection()
-  //   mesh.startSelection(renderer, camera, outlinePass, 'solid')
-  //   mesh.stopSelection()
-  //   mesh.startSelection(renderer, camera, outlinePass, 'other')
-  // })
 
   it('stopSelection', () => {
     const partLoader = PartLoader()

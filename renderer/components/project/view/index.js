@@ -1,13 +1,24 @@
 /** @module renderer/components/project/view */
 
 import { useRef, useState, useEffect } from 'react'
-import { Button, Divider, Drawer, Layout, Radio, Switch, Tooltip } from 'antd'
+import {
+  message,
+  Button,
+  Divider,
+  Drawer,
+  Layout,
+  Radio,
+  Spin,
+  Switch,
+  Tooltip
+} from 'antd'
 import {
   BorderlessTableOutlined,
   CompressOutlined,
   ControlOutlined,
   DragOutlined,
   EyeInvisibleOutlined,
+  LoadingOutlined,
   ZoomInOutlined,
   ZoomOutOutlined,
   SelectOutlined,
@@ -46,10 +57,19 @@ import PartAPI from '../../../../src/api/part'
 import { useSelector, useDispatch } from 'react-redux'
 import { highlight, select, unselect } from '../../../store/select/action'
 
+import Sentry from '../../../../src/lib/sentry'
+
+/**
+ * Errors
+ */
+const errors = {
+  partError: 'Unable to load part'
+}
+
 /**
  * ThreeView
  */
-const ThreeView = ({ part }) => {
+const ThreeView = ({ loading, part }) => {
   // Ref
   const mount = useRef(null)
   const scene = useRef()
@@ -540,6 +560,12 @@ const ThreeView = ({ part }) => {
   return (
     <Layout className="View no-scroll">
       <Layout.Content className="View-content no-scroll">
+        <div
+          style={{ display: loading ? 'flex' : 'none' }}
+          className="View-loading"
+        >
+          <Spin indicator={<LoadingOutlined style={{ fontSize: 60 }} spin />} />
+        </div>
         <div ref={mount} className="View-canvas" />
       </Layout.Content>
       <div className="View-controls">
@@ -722,67 +748,89 @@ const ThreeView = ({ part }) => {
   )
 }
 
+/**
+ * View
+ * @param {Object} Props props
+ */
 const View = ({ simulation, setPartSummary }) => {
+  // State
   const [part, setPart] = useState()
+  const [loading, setLoading] = useState(false)
 
+  // Part
   useEffect(() => {
-    const scheme = simulation?.scheme
-    const geometry = scheme?.configuration?.['geometry']
+    const configuration = simulation?.scheme?.configuration
 
-    if (geometry?.file?.part) {
-      loadPart(geometry.file)
-    }
+    if (configuration?.part) loadPart(configuration.part)
   }, [simulation])
 
+  /**
+   * Load part
+   * @param {Object} file File
+   */
   const loadPart = async (file) => {
-    const partContent = await PartAPI.get({ id: simulation.id }, file)
+    setLoading(true)
+    try {
+      // Load
+      const partContent = await PartAPI.get({ id: simulation.id }, file)
 
-    if (partContent.error) {
-      setPartSummary({ error: true, message: partContent.message })
-      return
-    }
+      if (partContent.error) {
+        setPartSummary({ error: true, message: partContent.message })
+        return
+      }
 
-    // Convert buffers
-    partContent.solids?.forEach((solid) => {
-      solid.buffer = JSON.parse(Buffer.from(solid.buffer).toString())
-    })
-    partContent.faces?.forEach((face) => {
-      face.buffer = JSON.parse(Buffer.from(face.buffer).toString())
-    })
-    partContent.edges?.forEach((edge) => {
-      edge.buffer = JSON.parse(Buffer.from(edge.buffer).toString())
-    })
-
-    const summary = {
-      uuid: partContent.uuid,
-      solids: partContent.solids?.map((solid) => {
-        return {
-          name: solid.name,
-          number: solid.number,
-          uuid: solid.buffer.uuid
-        }
-      }),
-      faces: partContent.faces?.map((face) => {
-        return {
-          name: face.name,
-          number: face.number,
-          uuid: face.buffer.uuid
-        }
-      }),
-      edges: partContent.edges?.map((edge) => {
-        return {
-          name: edge.name,
-          number: edge.number,
-          uuid: edge.buffer.uuid
-        }
+      // Convert buffers
+      partContent.solids?.forEach((solid) => {
+        solid.buffer = JSON.parse(Buffer.from(solid.buffer).toString())
       })
-    }
+      partContent.faces?.forEach((face) => {
+        face.buffer = JSON.parse(Buffer.from(face.buffer).toString())
+      })
+      partContent.edges?.forEach((edge) => {
+        edge.buffer = JSON.parse(Buffer.from(edge.buffer).toString())
+      })
 
-    setPart(partContent)
-    setPartSummary(summary)
+      // Summary
+      const summary = {
+        uuid: partContent.uuid,
+        solids: partContent.solids?.map((solid) => {
+          return {
+            name: solid.name,
+            number: solid.number,
+            uuid: solid.buffer.uuid
+          }
+        }),
+        faces: partContent.faces?.map((face) => {
+          return {
+            name: face.name,
+            number: face.number,
+            uuid: face.buffer.uuid
+          }
+        }),
+        edges: partContent.edges?.map((edge) => {
+          return {
+            name: edge.name,
+            number: edge.number,
+            uuid: edge.buffer.uuid
+          }
+        })
+      }
+
+      setPart(partContent)
+      setPartSummary(summary)
+    } catch (err) {
+      message.error(errors.partError)
+      console.error(err)
+      Sentry.captureException(err)
+    } finally {
+      setLoading(false)
+    }
   }
 
-  return <ThreeView part={part} />
+  /**
+   * Render
+   */
+  return <ThreeView loading={loading} part={part} />
 }
 
 export default View

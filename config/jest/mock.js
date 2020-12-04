@@ -41,10 +41,14 @@ class MockBox2 {
   }
 }
 
+global.MockBox3 = {
+  isEmpty: false
+}
 class MockBox3 {
   constructor() {
     this.getBoundingSphere = () => new MockSphere()
     this.set = () => {}
+    this.isEmpty = () => global.MockBox3.isEmpty
 
     this.min = new MockVector3()
     this.max = new MockVector3()
@@ -90,6 +94,8 @@ class MockGroup {
 }
 
 class MockLine {}
+
+class MockWireframeGeometry extends MockGeometry {}
 
 class MockLineBasicMaterial extends MockMaterial {}
 
@@ -263,7 +269,8 @@ const MockThree = {
   TorusGeometry: MockTorusGeometry,
   Vector2: MockVector2,
   Vector3: MockVector3,
-  WebGLRenderer: MockWebGLRenderer
+  WebGLRenderer: MockWebGLRenderer,
+  WireframeGeometry: MockWireframeGeometry
 }
 
 jest.mock('three/build/three.module', () => MockThree)

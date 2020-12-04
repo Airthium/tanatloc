@@ -19,8 +19,10 @@ import Loading from '../loading'
 import login from '../../../src/api/login'
 import UserAPI from '../../../src/api/user'
 
+import Sentry from '../../../src/lib/sentry'
+
 /**
- * Login errors
+ * Errors
  */
 const errors = {
   INTERNAL_ERROR: 'Server issue : try again shortly.',
@@ -79,6 +81,7 @@ const Login = () => {
       setInternalErr(true)
       setChecking(false)
       console.error(err)
+      Sentry.captureException(err)
     }
   }
 

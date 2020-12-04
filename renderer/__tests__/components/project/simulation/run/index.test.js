@@ -6,10 +6,12 @@ import '../../../../../../config/jest/matchMediaMock'
 const mockRun = jest.fn()
 const mockUpdate = jest.fn()
 const mockSimulation = jest.fn()
+const mockMutateOneSimulation = jest.fn()
 jest.mock('../../../../../../src/api/simulation', () => ({
   run: async () => mockRun(),
   update: async () => mockUpdate(),
-  useSimulation: () => [mockSimulation()]
+  useSimulation: () => [mockSimulation()],
+  useSimulations: () => [, { mutateOneSimulation: mockMutateOneSimulation }]
 }))
 
 const mockSentry = jest.fn()
@@ -23,7 +25,9 @@ describe('renderer/components/project/simulation/run', () => {
   const simulation = {
     scheme: {
       configuration: {
-        run: {}
+        run: {
+          done: true
+        }
       }
     }
   }
@@ -33,6 +37,7 @@ describe('renderer/components/project/simulation/run', () => {
     mockUpdate.mockReset()
     mockSimulation.mockReset()
     mockSimulation.mockImplementation(() => ({
+      scheme: { configuration: { run: { done: true } } },
       tasks: [
         {
           type: 'mesh'
@@ -73,10 +78,36 @@ describe('renderer/components/project/simulation/run', () => {
     wrapper = mount(<Run project={project} simulation={simulation} />)
 
     // Mesh log
-    wrapper.find('Step').at(0).props().description.props.icon.props.onClick()
+    wrapper
+      .find('Step')
+      .at(0)
+      .props()
+      .description.props.children[0].props.onClick()
 
     // Simulation log
-    wrapper.find('Step').at(1).props().description.props.icon.props.onClick()
+    wrapper.find('Step').at(1).props().description.props.onClick()
+  })
+
+  it('setPart', () => {
+    wrapper.unmount()
+    wrapper = mount(<Run project={project} simulation={simulation} />)
+
+    // Mesh part
+    wrapper
+      .find('Step')
+      .at(0)
+      .props()
+      .description.props.children[1].props.onClick()
+
+    // Error
+    mockUpdate.mockImplementation(() => {
+      throw new Error()
+    })
+    wrapper
+      .find('Step')
+      .at(0)
+      .props()
+      .description.props.children[1].props.onClick()
   })
 
   it('effect', () => {
@@ -84,6 +115,9 @@ describe('renderer/components/project/simulation/run', () => {
 
     // No tasks
     mockSimulation.mockImplementation(() => ({
+      scheme: {
+        configuration: { part: { fileName: 'fileName' }, run: {} }
+      },
       tasks: [
         {
           type: 'mesh',
@@ -101,10 +135,14 @@ describe('renderer/components/project/simulation/run', () => {
     // With tasks
     wrapper.unmount()
     mockSimulation.mockImplementation(() => ({
+      scheme: { configuration: { run: { done: true } } },
       tasks: [
         {
           type: 'mesh',
-          status: 'finish'
+          status: 'finish',
+          file: {
+            fileName: 'fileName'
+          }
         },
         {
           type: 'simulation',
@@ -114,5 +152,11 @@ describe('renderer/components/project/simulation/run', () => {
     }))
     wrapper = mount(<Run project={project} simulation={simulation} />)
     expect(wrapper).toBeDefined()
+
+    wrapper
+      .find('Step')
+      .at(0)
+      .props()
+      .description.props.children[1].props.onClick()
   })
 })

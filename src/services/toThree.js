@@ -3,6 +3,7 @@ import { execSync, spawn } from 'child_process'
 /**
  * toThree service
  * Convert mesh to threeJS
+ * @memberof module:src/services
  * @param {string} path Path
  * @param {string} fileIn In file
  * @param {string} pathOut Out path
@@ -11,6 +12,7 @@ import { execSync, spawn } from 'child_process'
 const toThree = async (path, fileIn, pathOut, callback) => {
   let conversionCode = ''
 
+  // Check extension
   const extension = fileIn.split('.').pop()
   switch (extension.toLowerCase()) {
     case 'step':
@@ -26,6 +28,7 @@ const toThree = async (path, fileIn, pathOut, callback) => {
       throw new Error('Unknown conversion code')
   }
 
+  // Convert
   const returnCode = await new Promise((resolve, reject) => {
     const user = execSync('id -u').toString().trim()
     const group = execSync('id -g').toString().trim()

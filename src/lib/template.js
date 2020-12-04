@@ -4,6 +4,12 @@ import ejs from 'ejs'
 
 import Tools from './tools'
 
+/**
+ * Render template
+ * @param {string} file File name
+ * @param {Object} parameters Parameters
+ * @param {Object} save Save
+ */
 const render = async (file, parameters, save) => {
   // Render
   const script = await ejs.renderFile(file, parameters)

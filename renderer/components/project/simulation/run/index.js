@@ -1,11 +1,30 @@
 import { useState, useEffect } from 'react'
 import { message, Button, Drawer, Layout, Space, Steps, Tabs } from 'antd'
-import { FileTextOutlined, PlusCircleOutlined } from '@ant-design/icons'
+import {
+  EyeOutlined,
+  EyeInvisibleOutlined,
+  FileTextOutlined,
+  PlusCircleOutlined
+} from '@ant-design/icons'
 
 import SimulationAPI from '../../../../../src/api/simulation'
 
 import Sentry from '../../../../../src/lib/sentry'
 
+/**
+ * Errors simulation/run
+ * @memberof module:renderer/components/project/simulation
+ */
+const errors = {
+  runError: 'Unable to run the simulation',
+  updateError: 'Unable to update the simulation'
+}
+
+/**
+ * Run
+ * @memberof module:renderer/components/project/simulation
+ * @param {Object} props Props
+ */
 const Run = ({ project, simulation }) => {
   // State
   const [running, setRunning] = useState(false)
@@ -14,8 +33,16 @@ const Run = ({ project, simulation }) => {
   const [meshingTasks, setMeshingTasks] = useState()
   const [simulatingTasks, setSimulatingTasks] = useState()
 
+  const [configuration, setConfiguration] = useState(
+    simulation?.scheme?.configuration
+  )
+  const [currentConfiguration, setCurrentConfiguration] = useState()
+
   // Data
   const [currentSimulation] = SimulationAPI.useSimulation(simulation.id, 500)
+  const [, { mutateOneSimulation }] = SimulationAPI.useSimulations(
+    project?.simulations
+  )
 
   // Check tasks
   useEffect(() => {
@@ -34,6 +61,22 @@ const Run = ({ project, simulation }) => {
     else setRunning(false)
   }, [JSON.stringify(currentSimulation)])
 
+  useEffect(() => {
+    setConfiguration(simulation?.scheme?.configuration)
+  }, [JSON.stringify(simulation)])
+
+  useEffect(() => {
+    setCurrentConfiguration(currentSimulation?.scheme?.configuration)
+  }, [JSON.stringify(currentSimulation)])
+
+  useEffect(() => {
+    if (
+      currentConfiguration?.run.done !== configuration?.run.done ||
+      currentConfiguration?.run.error !== configuration?.run.error
+    )
+      mutateOneSimulation(currentSimulation)
+  }, [JSON.stringify(configuration), JSON.stringify(currentConfiguration)])
+
   /**
    * On run
    */
@@ -41,7 +84,7 @@ const Run = ({ project, simulation }) => {
     setRunning(true)
 
     SimulationAPI.run({ id: simulation.id }).catch((err) => {
-      message.error(err.message)
+      message.error(errors.runError)
       console.error(err)
       Sentry.captureException(err)
     })
@@ -50,13 +93,16 @@ const Run = ({ project, simulation }) => {
   /**
    * On log
    * @param {Array} tasks Tasks
+   * @param {string} title Tabs title
    */
-  const onLog = (tasks) => {
+  const onLog = (tasks, title) => {
     // Content
     const content = tasks.map((t, index) => (
-      <Tabs.TabPane key={index} tab={'Mesh ' + (index + 1)}>
+      <Tabs.TabPane key={index} tab={title + ' ' + (index + 1)}>
         <div
-          dangerouslySetInnerHTML={{ __html: t?.log?.replace(/\n/g, '<br />') }}
+          dangerouslySetInnerHTML={{
+            __html: t?.log?.replace(/\n\n/g, '\n').replace(/\n/g, '<br />')
+          }}
         />
       </Tabs.TabPane>
     ))
@@ -71,6 +117,31 @@ const Run = ({ project, simulation }) => {
    */
   const toggleLog = () => {
     setLogVisible(!logVisible)
+  }
+
+  const setPart = async (file) => {
+    // Update local
+    currentConfiguration.part = file
+
+    try {
+      // Update simulation
+      await SimulationAPI.update({ id: simulation.id }, [
+        {
+          key: 'scheme',
+          type: 'json',
+          method: 'diff',
+          path: ['configuration', 'part'],
+          value: file
+        }
+      ])
+
+      // Mutate
+      mutateOneSimulation(currentSimulation)
+    } catch (err) {
+      message.error(errors.updateError)
+      console.error(err)
+      Sentry.captureException(err)
+    }
   }
 
   /**
@@ -103,12 +174,32 @@ const Run = ({ project, simulation }) => {
                   key={task}
                   title="Meshing"
                   description={
-                    <Button
-                      icon={
-                        <FileTextOutlined onClick={() => onLog(meshingTasks)} />
-                      }
-                      size="small"
-                    />
+                    <>
+                      <Button
+                        icon={<FileTextOutlined />}
+                        onClick={() => onLog(meshingTasks, 'Mesh')}
+                        size="small"
+                      />
+                      <Button
+                        icon={
+                          currentConfiguration.part?.fileName ===
+                          task.file?.fileName ? (
+                            <EyeInvisibleOutlined />
+                          ) : (
+                            <EyeOutlined />
+                          )
+                        }
+                        size="small"
+                        onClick={() =>
+                          setPart(
+                            currentConfiguration.part?.fileName ===
+                              task.file?.fileName
+                              ? null
+                              : task.file
+                          )
+                        }
+                      />
+                    </>
                   }
                   subTitle={
                     '(' + (index + 1) + '/' + meshingTasks?.length + ')'
@@ -124,11 +215,8 @@ const Run = ({ project, simulation }) => {
                   title="Simulating"
                   description={
                     <Button
-                      icon={
-                        <FileTextOutlined
-                          onClick={() => onLog(simulatingTasks)}
-                        />
-                      }
+                      icon={<FileTextOutlined />}
+                      onClick={() => onLog(simulatingTasks, 'Simulation')}
                       size="small"
                     />
                   }

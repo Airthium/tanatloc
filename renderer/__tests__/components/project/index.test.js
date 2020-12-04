@@ -55,11 +55,15 @@ describe('components/project', () => {
       {
         scheme: {
           configuration: {
+            part: 'part',
             geometry: {
               title: 'Geometry'
             },
             something: {
               done: true
+            },
+            somethingElse: {
+              error: true
             }
           }
         }

@@ -1,5 +1,6 @@
 /**
  * Check authorization
+ * @memberof module:src/route
  * @param {Object} object Object (Project || Workspace)
  * @param {string} id User's id
  */

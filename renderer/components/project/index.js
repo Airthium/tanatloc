@@ -7,6 +7,7 @@ import {
   ArrowLeftOutlined,
   CalculatorOutlined,
   CheckCircleOutlined,
+  CloseCircleOutlined,
   ExclamationCircleOutlined,
   PlusOutlined
 } from '@ant-design/icons'
@@ -21,10 +22,21 @@ import SimulationAPI from '../../../src/api/simulation'
 
 import Sentry from '../../../src/lib/sentry'
 
+/**
+ * Menu keys
+ */
 const menuKeys = {
   dashboard: 'dashboard',
   newSimulation: 'new-simulation',
   simulation: 'simulation'
+}
+
+/**
+ * Errors
+ */
+const errors = {
+  updateError: 'Unable to update the project',
+  addError: 'Unable to add a simulation'
 }
 
 /**
@@ -77,7 +89,7 @@ const Project = () => {
         title
       })
     } catch (err) {
-      message.error(err.message)
+      message.error(errors.updateError)
       console.error(err)
       Sentry.captureException(err)
     }
@@ -132,7 +144,7 @@ const Project = () => {
       // Close selector
       setSelectorVisible(false)
     } catch (err) {
-      message.error(err.message)
+      message.error(errors.addError)
       console.error(err)
       Sentry.captureException(err)
     }
@@ -173,13 +185,16 @@ const Project = () => {
     const categories = []
     const configuration = s?.scheme?.configuration || {}
     Object.keys(configuration).forEach((key) => {
+      if (key === 'part') return
       const child = configuration[key]
       if (!child.subMenus?.length) {
         categories[child.index] = (
           <Menu.Item
             key={menuKeys.simulation + '&' + s.id + '&' + key}
             icon={
-              child.done ? (
+              child.error ? (
+                <CloseCircleOutlined style={{ color: 'red' }} />
+              ) : child.done ? (
                 <CheckCircleOutlined style={{ color: 'green' }} />
               ) : (
                 <ExclamationCircleOutlined style={{ color: 'orange' }} />

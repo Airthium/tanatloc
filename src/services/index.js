@@ -1,3 +1,5 @@
+/** @module src/services */
+
 import toThree from './toThree'
 import gmsh from './gmsh'
 import freefem from './freefem'

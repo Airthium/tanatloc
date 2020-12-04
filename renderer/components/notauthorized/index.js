@@ -1,3 +1,5 @@
+/** @module renderer/components/notauthorized */
+
 import { useEffect } from 'react'
 import { useRouter } from 'next/router'
 import { Button, Card, Layout } from 'antd'

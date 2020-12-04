@@ -306,11 +306,25 @@ describe('components/project/view', () => {
     wrapper.unmount()
     const setPartSummary = jest.fn()
 
+    mockGet.mockImplementation(() => {
+      throw new Error()
+    })
+    wrapper = mount(
+      <View
+        simulation={{
+          scheme: { configuration: { part: {} } }
+        }}
+        type="geometry"
+        setPartSummary={setPartSummary}
+      />
+    )
+    wrapper.unmount()
+
     mockGet.mockImplementation(() => ({ error: true }))
     wrapper = mount(
       <View
         simulation={{
-          scheme: { configuration: { geometry: { file: { part: {} } } } }
+          scheme: { configuration: { part: {} } }
         }}
         type="geometry"
         setPartSummary={setPartSummary}
@@ -322,7 +336,7 @@ describe('components/project/view', () => {
     wrapper = mount(
       <View
         simulation={{
-          scheme: { configuration: { geometry: { file: { part: {} } } } }
+          scheme: { configuration: { part: {} } }
         }}
         type="geometry"
         setPartSummary={setPartSummary}
@@ -350,7 +364,7 @@ describe('components/project/view', () => {
     wrapper = mount(
       <View
         simulation={{
-          scheme: { configuration: { geometry: { file: { part: {} } } } }
+          scheme: { configuration: { part: {} } }
         }}
         type="geometry"
         setPartSummary={setPartSummary}
@@ -362,7 +376,7 @@ describe('components/project/view', () => {
     wrapper = mount(
       <View
         simulation={{
-          scheme: { configuration: { geometry: { file: { part: {} } } } }
+          scheme: { configuration: { part: {} } }
         }}
         type="geometry"
         setPartSummary={setPartSummary}

@@ -1,5 +1,5 @@
 /**
- * Poisson equation
+ * Poisson's equation
  * @memberof module:models
  */
 const Poisson = {

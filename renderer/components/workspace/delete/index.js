@@ -8,6 +8,10 @@ import WorkspaceAPI from '../../../../src/api/workspace'
 
 import Sentry from '../../../../src/lib/sentry'
 
+const errors = {
+  delError: 'Unable to delete the workspace'
+}
+
 /**
  * Delete workspace
  * @memberof module:renderer/components/workspace
@@ -43,7 +47,7 @@ const Delete = (props) => {
       // Mutate
       delOneWorkspace({ id: workspace.id })
     } catch (err) {
-      message.error(err.message)
+      message.error(errors.delError)
       console.error(err)
       Sentry.captureException(err)
 

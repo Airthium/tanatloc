@@ -19,6 +19,11 @@ import Loading from '../loading'
 import login from '../../../src/api/login'
 import UserAPI from '../../../src/api/user'
 
+import Sentry from '../../../src/lib/sentry'
+
+/**
+ * Errors
+ */
 const errors = {
   INTERNAL_ERROR: 'Server issue : try again shortly.',
   ALREADY_EXISTS: 'This email is already registered',
@@ -80,6 +85,7 @@ const Signup = () => {
       setInternalError(true)
       setChecking(false)
       console.error(err)
+      Sentry.captureException(err)
     }
   }
 

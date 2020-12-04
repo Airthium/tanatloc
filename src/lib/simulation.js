@@ -177,9 +177,51 @@ const run = async ({ id }) => {
   // Global
   const configuration = simulation.scheme.configuration
 
-  Compute.computeSimulation({ id }, configuration).catch((err) => {
-    console.log(err)
-  })
+  // Update status
+  await update({ id }, [
+    {
+      key: 'scheme',
+      type: 'json',
+      method: 'diff',
+      path: ['configuration', 'run'],
+      value: {
+        ...configuration.run,
+        done: undefined,
+        error: undefined
+      }
+    }
+  ])
+
+  // Compute
+  Compute.computeSimulation({ id }, configuration)
+    .then(() => {
+      update({ id }, [
+        {
+          key: 'scheme',
+          type: 'json',
+          method: 'diff',
+          path: ['configuration', 'run'],
+          value: {
+            ...configuration.run,
+            done: true
+          }
+        }
+      ])
+    })
+    .catch((err) => {
+      update({ id }, [
+        {
+          key: 'scheme',
+          type: 'json',
+          method: 'diff',
+          path: ['configuration', 'run'],
+          value: {
+            ...configuration.run,
+            error: err
+          }
+        }
+      ])
+    })
 }
 
 export default { add, get, update, del, run }

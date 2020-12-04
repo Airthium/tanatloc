@@ -2,6 +2,7 @@ import { execSync, spawn } from 'child_process'
 
 /**
  * FreeFEM service
+ * @memberof module:src/services
  * @param {string} path Path
  * @param {string} script Script
  * @param {Function} callback Callback
@@ -18,6 +19,8 @@ const freefem = async (path, script, callback) => {
       '-w=/run',
       'freefem/freefem:latest',
       'FreeFem++',
+      '-nw',
+      '-ns',
       script
     ])
 

@@ -25,7 +25,9 @@ describe('renderer/components/project/simulation/run', () => {
   const simulation = {
     scheme: {
       configuration: {
-        run: {}
+        run: {
+          done: true
+        }
       }
     }
   }
@@ -96,6 +98,16 @@ describe('renderer/components/project/simulation/run', () => {
       .at(0)
       .props()
       .description.props.children[1].props.onClick()
+
+    // Error
+    mockUpdate.mockImplementation(() => {
+      throw new Error()
+    })
+    wrapper
+      .find('Step')
+      .at(0)
+      .props()
+      .description.props.children[1].props.onClick()
   })
 
   it('effect', () => {
@@ -103,7 +115,9 @@ describe('renderer/components/project/simulation/run', () => {
 
     // No tasks
     mockSimulation.mockImplementation(() => ({
-      scheme: { configuration: { run: {} } },
+      scheme: {
+        configuration: { part: { fileName: 'fileName' }, run: {} }
+      },
       tasks: [
         {
           type: 'mesh',
@@ -121,11 +135,14 @@ describe('renderer/components/project/simulation/run', () => {
     // With tasks
     wrapper.unmount()
     mockSimulation.mockImplementation(() => ({
-      scheme: { configuration: { run: {} } },
+      scheme: { configuration: { run: { done: true } } },
       tasks: [
         {
           type: 'mesh',
-          status: 'finish'
+          status: 'finish',
+          file: {
+            fileName: 'fileName'
+          }
         },
         {
           type: 'simulation',
@@ -135,5 +152,11 @@ describe('renderer/components/project/simulation/run', () => {
     }))
     wrapper = mount(<Run project={project} simulation={simulation} />)
     expect(wrapper).toBeDefined()
+
+    wrapper
+      .find('Step')
+      .at(0)
+      .props()
+      .description.props.children[1].props.onClick()
   })
 })

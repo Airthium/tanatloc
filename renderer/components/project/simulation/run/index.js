@@ -24,7 +24,9 @@ const Run = ({ project, simulation }) => {
   const [meshingTasks, setMeshingTasks] = useState()
   const [simulatingTasks, setSimulatingTasks] = useState()
 
-  const [configuration, setConfiguration] = useState()
+  const [configuration, setConfiguration] = useState(
+    simulation?.scheme?.configuration
+  )
   const [currentConfiguration, setCurrentConfiguration] = useState()
 
   // Data
@@ -48,21 +50,23 @@ const Run = ({ project, simulation }) => {
     )
     if (runningTasks?.length) setRunning(true)
     else setRunning(false)
+  }, [JSON.stringify(currentSimulation)])
 
+  useEffect(() => {
+    setConfiguration(simulation?.scheme?.configuration)
+  }, [JSON.stringify(simulation)])
+
+  useEffect(() => {
+    setCurrentConfiguration(currentSimulation?.scheme?.configuration)
+  }, [JSON.stringify(currentSimulation)])
+
+  useEffect(() => {
     if (
       currentConfiguration?.run.done !== configuration?.run.done ||
       currentConfiguration?.run.error !== configuration?.run.error
     )
       mutateOneSimulation(currentSimulation)
-  }, [JSON.stringify(currentSimulation)])
-
-  useEffect(() => {
-    setConfiguration(simulation?.scheme?.configuration)
-  }, [simulation])
-
-  useEffect(() => {
-    setCurrentConfiguration(currentSimulation?.scheme?.configuration)
-  }, [currentSimulation])
+  }, [JSON.stringify(configuration), JSON.stringify(currentConfiguration)])
 
   /**
    * On run

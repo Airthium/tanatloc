@@ -67,7 +67,7 @@ const errors = {
 /**
  * ThreeView
  */
-const ThreeView = ({ part }) => {
+const ThreeView = ({ loading, part }) => {
   // Ref
   const mount = useRef(null)
   const scene = useRef()
@@ -313,6 +313,10 @@ const ThreeView = ({ part }) => {
 
     if (part) loadPart()
   }, [part])
+
+  useEffect(() => {
+    // TODO loading
+  }, [loading])
 
   // Enable / disable selection
   useEffect(() => {
@@ -742,6 +746,7 @@ const ThreeView = ({ part }) => {
 
 const View = ({ simulation, setPartSummary }) => {
   const [part, setPart] = useState()
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     const configuration = simulation?.scheme?.configuration
@@ -750,6 +755,7 @@ const View = ({ simulation, setPartSummary }) => {
   }, [simulation])
 
   const loadPart = async (file) => {
+    setLoading(true)
     try {
       const partContent = await PartAPI.get({ id: simulation.id }, file)
 
@@ -800,10 +806,12 @@ const View = ({ simulation, setPartSummary }) => {
       message.error(errors.partError)
       console.error(err)
       Sentry.captureException(err)
+    } finally {
+      setLoading(false)
     }
   }
 
-  return <ThreeView part={part} />
+  return <ThreeView loading={loading} part={part} />
 }
 
 export default View

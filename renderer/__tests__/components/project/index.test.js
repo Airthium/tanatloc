@@ -55,6 +55,7 @@ describe('components/project', () => {
       {
         scheme: {
           configuration: {
+            part: 'part',
             geometry: {
               title: 'Geometry'
             },

@@ -191,17 +191,7 @@ const PartLoader = (mouseMoveEvent, mouseDownEvent) => {
     solids.children &&
       solids.children.forEach((solid) => {
         const childBox = solid.geometry.boundingBox
-        const min = new Vector3(
-          Math.min(box.min.x, childBox.min.x),
-          Math.min(box.min.y, childBox.min.y),
-          Math.min(box.min.z, childBox.min.z)
-        )
-        const max = new Vector3(
-          Math.max(box.max.x, childBox.max.x),
-          Math.max(box.max.y, childBox.max.y),
-          Math.max(box.max.z, childBox.max.z)
-        )
-        box.set(min, max)
+        mergeBox(box, childBox)
       })
 
     if (box.isEmpty()) {
@@ -210,21 +200,30 @@ const PartLoader = (mouseMoveEvent, mouseDownEvent) => {
       faces.children &&
         faces.children.forEach((face) => {
           const childBox = face.geometry.boundingBox
-          const min = new Vector3(
-            Math.min(box.min.x, childBox.min.x),
-            Math.min(box.min.y, childBox.min.y),
-            Math.min(box.min.z, childBox.min.z)
-          )
-          const max = new Vector3(
-            Math.max(box.max.x, childBox.max.x),
-            Math.max(box.max.y, childBox.max.y),
-            Math.max(box.max.z, childBox.max.z)
-          )
-          box.set(min, max)
+          mergeBox(box, childBox)
         })
     }
 
     return box
+  }
+
+  /**
+   * Merge boxes
+   * @param {Object} box1 Box
+   * @param {Object} box2 Box
+   */
+  const mergeBox = (box1, box2) => {
+    const min = new Vector3(
+      Math.min(box1.min.x, box2.min.x),
+      Math.min(box1.min.y, box2.min.y),
+      Math.min(box1.min.z, box2.min.z)
+    )
+    const max = new Vector3(
+      Math.max(box1.max.x, box2.max.x),
+      Math.max(box1.max.y, box2.max.y),
+      Math.max(box1.max.z, box2.max.z)
+    )
+    box1.set(min, max)
   }
 
   /**

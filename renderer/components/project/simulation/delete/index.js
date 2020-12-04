@@ -10,7 +10,8 @@ import ProjectAPI from '../../../../../src/api/project'
 import Sentry from '../../../../../src/lib/sentry'
 
 /**
- * Errors
+ * Errors simulation/delete
+ * @memberof module:renderer/components/project/simulation
  */
 const errors = {
   delError: 'Unable to delete the simulation'
@@ -18,6 +19,7 @@ const errors = {
 
 /**
  * Delete
+ * @memberof module:renderer/components/project/simulation
  * @param {Object} props Props
  */
 const Delete = ({ project, simulation }) => {

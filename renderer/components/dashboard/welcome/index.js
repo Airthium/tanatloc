@@ -7,6 +7,9 @@ import Add from '../../workspace/add'
  * @memberof module:renderer/components/dashboard
  */
 const Welcome = () => {
+  /**
+   * Render
+   */
   return (
     <Layout>
       <Layout.Content className="Welcome no-scroll">

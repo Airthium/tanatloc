@@ -163,6 +163,9 @@ const Dashboard = () => {
     })
   }
 
+  /**
+   * On workspaces
+   */
   const onWorkspaces = () => {
     if (!myWorkspaces?.length) {
       setCurrentView()

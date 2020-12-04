@@ -748,19 +748,30 @@ const ThreeView = ({ loading, part }) => {
   )
 }
 
+/**
+ * View
+ * @param {Object} Props props
+ */
 const View = ({ simulation, setPartSummary }) => {
+  // State
   const [part, setPart] = useState()
   const [loading, setLoading] = useState(false)
 
+  // Part
   useEffect(() => {
     const configuration = simulation?.scheme?.configuration
 
     if (configuration?.part) loadPart(configuration.part)
   }, [simulation])
 
+  /**
+   * Load part
+   * @param {Object} file File
+   */
   const loadPart = async (file) => {
     setLoading(true)
     try {
+      // Load
       const partContent = await PartAPI.get({ id: simulation.id }, file)
 
       if (partContent.error) {
@@ -779,6 +790,7 @@ const View = ({ simulation, setPartSummary }) => {
         edge.buffer = JSON.parse(Buffer.from(edge.buffer).toString())
       })
 
+      // Summary
       const summary = {
         uuid: partContent.uuid,
         solids: partContent.solids?.map((solid) => {
@@ -815,6 +827,9 @@ const View = ({ simulation, setPartSummary }) => {
     }
   }
 
+  /**
+   * Render
+   */
   return <ThreeView loading={loading} part={part} />
 }
 

@@ -11,11 +11,20 @@ import SimulationAPI from '../../../../../src/api/simulation'
 
 import Sentry from '../../../../../src/lib/sentry'
 
+/**
+ * Errors simulation/run
+ * @memberof module:renderer/components/project/simulation
+ */
 const errors = {
   runError: 'Unable to run the simulation',
   updateError: 'Unable to update the simulation'
 }
 
+/**
+ * Run
+ * @memberof module:renderer/components/project/simulation
+ * @param {Object} props Props
+ */
 const Run = ({ project, simulation }) => {
   // State
   const [running, setRunning] = useState(false)

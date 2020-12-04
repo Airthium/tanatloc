@@ -2,6 +2,7 @@ import Caller from '../call'
 
 /**
  * Run simulation
+ * @memberof module:src/api/simulation
  * @param {Object} simulation Simulation { id }
  */
 const run = async (simulation) => {

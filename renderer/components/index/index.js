@@ -9,6 +9,9 @@ import Background from '../background'
 
 import UserAPI from '../../../src/api/user'
 
+/**
+ * Menu keys
+ */
 const menuKeys = {
   dashboard: 'dashboard',
   signup: 'signup',

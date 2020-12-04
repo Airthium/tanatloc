@@ -1,3 +1,5 @@
+/** @module src/lib/compute */
+
 import path from 'path'
 
 import storage from '../../config/storage'

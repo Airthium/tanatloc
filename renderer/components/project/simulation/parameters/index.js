@@ -7,10 +7,19 @@ import SimulationAPI from '../../../../../src/api/simulation'
 
 import Sentry from '../../../../../src/lib/sentry'
 
+/**
+ * Errors simulation/parameters
+ * @memberof module:renderer/components/project/simulation
+ */
 const errors = {
   updateError: 'Unable to update the simulation'
 }
 
+/**
+ * Parameters
+ * @memberof module:renderer/components/project/simulation
+ * @param {Object} props Props
+ */
 const Parameters = ({ project, simulation }) => {
   // State
   const [values, setValues] = useState({})

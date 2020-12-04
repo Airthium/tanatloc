@@ -21,7 +21,8 @@ import SimulationAPI from '../../../../../src/api/simulation'
 import Sentry from '../../../../../src/lib/sentry'
 
 /**
- * Errors
+ * Errors simulation/boundaryConditions
+ * @memberof module:renderer/components/project/simulation
  */
 const errors = {
   updateError: 'Unable to update the simulation'
@@ -29,6 +30,7 @@ const errors = {
 
 /**
  * Boundary condition
+ * @memberof module:renderer/components/project/simulation
  * @param {Object} props Props
  */
 const BoundaryConditions = ({ project, simulation, part, setVisible }) => {

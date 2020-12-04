@@ -25,7 +25,8 @@ import FileAPI from '../../../../../src/api/file'
 import Sentry from '../../../../../src/lib/sentry'
 
 /**
- * Errors
+ * Errors simulation/geometry
+ * @memberof module:renderer/components/project/simulation
  */
 const errors = {
   updateError: 'Unable to update the simulation',
@@ -35,6 +36,7 @@ const errors = {
 
 /**
  * Geometry
+ * @memberof module:renderer/components/project/simulation
  * @param {Object} props Props
  */
 const Geometry = ({ project, simulation, part }) => {

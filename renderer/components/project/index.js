@@ -22,6 +22,9 @@ import SimulationAPI from '../../../src/api/simulation'
 
 import Sentry from '../../../src/lib/sentry'
 
+/**
+ * Menu keys
+ */
 const menuKeys = {
   dashboard: 'dashboard',
   newSimulation: 'new-simulation',

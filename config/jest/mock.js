@@ -41,10 +41,14 @@ class MockBox2 {
   }
 }
 
+global.MockBox3 = {
+  isEmpty: false
+}
 class MockBox3 {
   constructor() {
     this.getBoundingSphere = () => new MockSphere()
     this.set = () => {}
+    this.isEmpty = () => global.MockBox3.isEmpty
 
     this.min = new MockVector3()
     this.max = new MockVector3()

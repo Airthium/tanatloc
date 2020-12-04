@@ -24,7 +24,11 @@ describe('src/lib/three/loaders/PartLoader', () => {
         {
           uuid: 'face_uuid',
           geometry: {
-            dispose: () => {}
+            dispose: () => {},
+            boundingBox: {
+              min: { x: 0, y: 0, z: 0 },
+              max: { x: 1, y: 1, z: 1 }
+            }
           },
           material: {
             dispose: () => {}
@@ -92,6 +96,8 @@ describe('src/lib/three/loaders/PartLoader', () => {
     // Mesh
     part.type = 'mesh'
     partLoader.load(part)
+
+    global.MockBox3.isEmpty = true
     partLoader.load(part, true)
   })
 

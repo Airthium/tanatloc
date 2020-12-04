@@ -130,8 +130,6 @@ const PartLoader = (mouseMoveEvent, mouseDownEvent) => {
     const loader = new BufferGeometryLoader()
     const buffer = element.buffer
     const geometry = loader.parse(buffer)
-    geometry.computeBoundingBox()
-    geometry.computeBoundingSphere()
 
     const colorAttribute = geometry.getAttribute('color')
     if (colorAttribute) {
@@ -143,6 +141,9 @@ const PartLoader = (mouseMoveEvent, mouseDownEvent) => {
     }
 
     if (partType === 'geometry') {
+      geometry.computeBoundingBox()
+      geometry.computeBoundingSphere()
+
       const material = new MeshStandardMaterial({
         color: color,
         side: DoubleSide,
@@ -159,6 +160,9 @@ const PartLoader = (mouseMoveEvent, mouseDownEvent) => {
       return mesh
     } else if (partType === 'mesh') {
       const wireframe = new WireframeGeometry(geometry)
+      wireframe.computeBoundingBox()
+      wireframe.computeBoundingSphere()
+
       const material = new LineBasicMaterial({
         color: color,
         linewidth: 1,
@@ -199,6 +203,26 @@ const PartLoader = (mouseMoveEvent, mouseDownEvent) => {
         )
         box.set(min, max)
       })
+
+    if (box.isEmpty()) {
+      // Try faces
+      const faces = part.children[1]
+      faces.children &&
+        faces.children.forEach((face) => {
+          const childBox = face.geometry.boundingBox
+          const min = new Vector3(
+            Math.min(box.min.x, childBox.min.x),
+            Math.min(box.min.y, childBox.min.y),
+            Math.min(box.min.z, childBox.min.z)
+          )
+          const max = new Vector3(
+            Math.max(box.max.x, childBox.max.x),
+            Math.max(box.max.y, childBox.max.y),
+            Math.max(box.max.z, childBox.max.z)
+          )
+          box.set(min, max)
+        })
+    }
 
     return box
   }

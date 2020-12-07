@@ -52,7 +52,7 @@ varf vLaplacian (u, uh)
 		grad(u)' * grad(uh)
 	)
 <% for (const d of dirichlet) { -%>
-	+ on(<%= d.selected.join() -%>, u=0)
+	+ on(<%= d.selected.map(s => { return s.label}).filter(s => s).join() -%>, u=0)
 <% } -%>
 	;
 
@@ -61,12 +61,12 @@ varf vLaplacianRHS (u, uh)
 		(<%- rhsValue -%>) * uh
 	)
 <% for (const n of neumann) { -%>
-	- intN1(Th, <%= selected.join() %>) {
+	- intN1(Th, <%= selected.map(s => { return s.label}).filter(s => s).join() %>) {
 		(<%- n.values[0] %>) * uh
 	}
 <% } -%>
 <% for (const d of dirichlet) { -%>
-	+ on(<%= d.selected.join() -%>, u=<%- d.values[0] -%>)
+	+ on(<%= d.selected.map(s => { return s.label}).filter(s => s).join() -%>, u=<%- d.values[0] -%>)
 <% } -%>
 	;
 

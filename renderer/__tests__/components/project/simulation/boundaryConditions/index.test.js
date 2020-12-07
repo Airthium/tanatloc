@@ -42,7 +42,11 @@ describe('renderer/components/project/simulation/boundaryConditions', () => {
           title: 'title',
           dirichlet: {
             children: [{}],
-            values: [{}]
+            values: [
+              {
+                selected: ['uuid']
+              }
+            ]
           }
         }
       }
@@ -249,6 +253,68 @@ describe('renderer/components/project/simulation/boundaryConditions', () => {
       />
     )
     wrapper.find('Card').at(2).props().onClick('uuid')
+  })
+
+  it('highlightCurrent', () => {
+    wrapper = shallow(
+      <BoundaryConditions
+        project={project}
+        simulation={simulation}
+        part={part}
+        setVisible={setVisible}
+      />
+    )
+    wrapper.find('Card').at(0).props().onMouseEnter('dirichlet', 0)
+  })
+
+  it('unhighlightCurrent', () => {
+    wrapper = shallow(
+      <BoundaryConditions
+        project={project}
+        simulation={simulation}
+        part={part}
+        setVisible={setVisible}
+      />
+    )
+    wrapper.find('Card').at(0).props().onMouseLeave()
+  })
+
+  it('onEdit', () => {
+    wrapper = shallow(
+      <BoundaryConditions
+        project={project}
+        simulation={simulation}
+        part={part}
+        setVisible={setVisible}
+      />
+    )
+    wrapper.find('Card').at(0).props().children[1].props.onClick('dirichlet', 0)
+  })
+
+  it('onDelete', () => {
+    wrapper = shallow(
+      <BoundaryConditions
+        project={project}
+        simulation={simulation}
+        part={part}
+        setVisible={setVisible}
+      />
+    )
+    wrapper
+      .find('Card')
+      .at(0)
+      .props()
+      .children[2].props.onConfirm('dirichlet', 0)
+
+    // Error
+    mockUpdate.mockImplementation(() => {
+      throw new Error()
+    })
+    wrapper
+      .find('Card')
+      .at(0)
+      .props()
+      .children[2].props.onConfirm('dirichlet', 0)
   })
 
   it('effect', () => {

@@ -41,6 +41,7 @@ const List = ({ project, simulation }) => {
     .map((type) => {
       if (type === 'index' || type === 'title' || type === 'done') return
       return boundaryConditions[type].values?.map((child, index) => {
+        console.log(boundaryConditions[type])
         return (
           <Card
             key={index}

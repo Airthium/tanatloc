@@ -1,22 +1,9 @@
 import { useState, useEffect } from 'react'
-import {
-  message,
-  Button,
-  Card,
-  Drawer,
-  Layout,
-  Popconfirm,
-  Radio,
-  Space
-} from 'antd'
-import {
-  DeleteOutlined,
-  EditOutlined,
-  PlusCircleOutlined,
-  QuestionCircleOutlined
-} from '@ant-design/icons'
+import { message, Button, Card, Drawer, Layout, Radio, Space } from 'antd'
+import { EditOutlined, PlusCircleOutlined } from '@ant-design/icons'
 
-import Formula from '../../../assets/formula'
+import Add from './add'
+import List from './list'
 
 import { useSelector, useDispatch } from 'react-redux'
 import {
@@ -33,6 +20,7 @@ import {
 import SimulationAPI from '../../../../../src/api/simulation'
 
 import Sentry from '../../../../../src/lib/sentry'
+import BoundaryCondition from './boundaryCondition'
 
 /**
  * Errors simulation/boundaryConditions
@@ -49,7 +37,9 @@ const errors = {
  */
 const BoundaryConditions = ({ project, simulation, part, setVisible }) => {
   // State
-  const [bcVisible, setBcVisible] = useState(false)
+  const [boundaryConditionVisible, setBoundaryConditionVisible] = useState(
+    false
+  )
   const [faces, setFaces] = useState(part?.faces || [])
   const [type, setType] = useState()
   const [boundaryCondition, setBoundaryCondition] = useState()
@@ -67,35 +57,6 @@ const BoundaryConditions = ({ project, simulation, part, setVisible }) => {
     project?.simulations
   )
   const boundaryConditions = simulation?.scheme.configuration.boundaryConditions
-  const list = Object.keys(boundaryConditions)
-    .map((key) => {
-      if (key === 'index' || key === 'title' || key === 'done') return
-      return boundaryConditions[key].values?.map((child, index) => {
-        return (
-          <Card
-            key={index}
-            hoverable
-            style={{ marginTop: '5px' }}
-            onMouseEnter={() => highlightCurrent(key, index)}
-            onMouseLeave={() => unhighlightCurrent()}
-          >
-            {child.name}
-            <Button
-              icon={<EditOutlined />}
-              onClick={() => onEdit(key, index)}
-            />
-            <Popconfirm
-              title="Are you sure"
-              icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
-              onConfirm={() => onDelete(key, index)}
-            >
-              <Button icon={<DeleteOutlined />} />
-            </Popconfirm>
-          </Card>
-        )
-      })
-    })
-    .filter((l) => l)
   const radios = Object.keys(boundaryConditions)
     .map((key) => {
       if (key === 'index' || key === 'title' || key === 'done') return
@@ -106,12 +67,12 @@ const BoundaryConditions = ({ project, simulation, part, setVisible }) => {
     })
     .filter((r) => r)
 
-  // Cleanup
-  useEffect(() => {
-    setBoundaryCondition()
-    setValues([])
-    setType()
-  }, [bcVisible])
+  // // Cleanup
+  // useEffect(() => {
+  //   setBoundaryCondition()
+  //   setValues([])
+  //   setType()
+  // }, [bcVisible])
 
   // Selection
   useEffect(() => {
@@ -121,16 +82,16 @@ const BoundaryConditions = ({ project, simulation, part, setVisible }) => {
     setFaces(part?.faces || [])
   }, [part])
 
-  /**
-   * Toggle boundary condition
-   */
-  const toggleBoundaryCondition = () => {
-    if (bcVisible) dispatch(selectorDisable())
-    else dispatch(selectorEnable())
+  // /**
+  //  * Toggle boundary condition
+  //  */
+  // const toggleBoundaryCondition = () => {
+  //   if (bcVisible) dispatch(selectorDisable())
+  //   else dispatch(selectorEnable())
 
-    setVisible(bcVisible)
-    setBcVisible(!bcVisible)
-  }
+  //   setVisible(bcVisible)
+  //   setBcVisible(!bcVisible)
+  // }
 
   /**
    * Add boundary condition
@@ -260,26 +221,6 @@ const BoundaryConditions = ({ project, simulation, part, setVisible }) => {
   }
 
   /**
-   * Highlight current
-   * @param {string} key Key
-   * @param {number} index Index
-   */
-  const highlightCurrent = (key, index) => {
-    dispatch(selectorEnable())
-    const selected = boundaryConditions[key]?.values[index]?.selected
-    selected.forEach((s) => {
-      dispatch(selectorSelect(s.uuid))
-    })
-  }
-
-  /**
-   * Unhighlight current
-   */
-  const unhighlightCurrent = () => {
-    dispatch(selectorDisable())
-  }
-
-  /**
    * On delete
    * @param {number} index Index
    */
@@ -288,15 +229,11 @@ const BoundaryConditions = ({ project, simulation, part, setVisible }) => {
     const newSimulation = { ...simulation }
 
     // Update local
-    newSimulation.scheme.configuration.boundaryConditions[key].values = [
-      ...simulation.scheme.configuration.boundaryConditions[key].values.slice(
-        0,
-        index
-      ),
-      ...simulation.scheme.configuration.boundaryConditions[key].values.slice(
-        index + 1
-      )
+    boundaryConditions[key].values = [
+      ...boundaryConditions[key].values.slice(0, index),
+      ...boundaryConditions[key].values.slice(index + 1)
     ]
+    newSimulation.scheme.configuration.boundaryConditions = boundaryConditions
 
     // Diff
     const diff = {
@@ -325,13 +262,21 @@ const BoundaryConditions = ({ project, simulation, part, setVisible }) => {
       })
   }
 
-  /**
-   * On edit
-   * @param {number} index Index
-   */
-  const onEdit = (key, index) => {
-    console.log(boundaryCondition)
-  }
+  // /**
+  //  * On edit
+  //  * @param {number} index Index
+  //  */
+  // const onEdit = (key, index) => {
+  //   setBoundaryCondition(boundaryConditions[key])
+  //   setValues(boundaryConditions[key].values[index].values)
+  //   setType(key)
+
+  //   // boundaryConditions[key].values[index].selected.forEach((s) => {
+  //   //   dispatch(selectorSelect(s.uuid))
+  //   // })
+
+  //   toggleBoundaryCondition()
+  // }
 
   /**
    * Render
@@ -339,86 +284,12 @@ const BoundaryConditions = ({ project, simulation, part, setVisible }) => {
   return (
     <Layout>
       <Layout.Content>
-        <Button icon={<PlusCircleOutlined />} onClick={addBoundaryCondition} />
-        {list}
-        <Drawer
-          title="Boundary condition"
-          placement="left"
-          closable={false}
-          visible={bcVisible}
-          mask={false}
-          maskClosable={false}
-          width={300}
-        >
-          <Card title="Boundary condition type">
-            <Radio.Group buttonStyle="solid" onChange={onType}>
-              {radios.map((radio) => {
-                return (
-                  <Radio.Button key={radio.key} value={radio.key}>
-                    {radio.label}
-                  </Radio.Button>
-                )
-              })}
-            </Radio.Group>
-          </Card>
-          {boundaryCondition && (
-            <Card>
-              {boundaryCondition.children?.map((child, index) => {
-                return (
-                  <div key={index}>
-                    {child.label}:
-                    <Formula
-                      value={
-                        values[index] === undefined
-                          ? child.default
-                          : values[index]
-                      }
-                      onChange={(value) => onChange(value, index)}
-                    />
-                  </div>
-                )
-              })}
-            </Card>
-          )}
-          <div>
-            {faces?.map((face, index) => {
-              return (
-                <Card
-                  hoverable
-                  key={index}
-                  style={{
-                    marginBottom:
-                      highlighted === face.uuid
-                        ? '5px'
-                        : selected.includes(face.uuid)
-                        ? '5px'
-                        : '7px',
-                    border:
-                      highlighted === face.uuid
-                        ? '2px solid #0096C7'
-                        : selected.includes(face.uuid)
-                        ? '2px solid #c73100'
-                        : '1px solid grey'
-                  }}
-                  bodyStyle={{ padding: '10px' }}
-                  onMouseOver={() => onHighlight(face.uuid)}
-                  onMouseOut={onUnhighlight}
-                  onClick={() => onSelect(face.uuid)}
-                >
-                  {face.name}
-                </Card>
-              )
-            })}
-          </div>
-          <Space>
-            <Button type="danger" onClick={toggleBoundaryCondition}>
-              Cancel
-            </Button>
-            <Button disabled={!boundaryCondition} onClick={onAdd}>
-              Add
-            </Button>
-          </Space>
-        </Drawer>
+        <Add onAdd={() => setBoundaryConditionVisible(true)} />
+        <List project={project} simulation={simulation} />
+        <BoundaryCondition
+          visible={boundaryConditionVisible}
+          boundaryConditions={boundaryConditions}
+        />
       </Layout.Content>
     </Layout>
   )

@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react'
 import { Button, Layout } from 'antd'
+import { PlusCircleOutlined } from '@ant-design/icons'
 
 import List from './list'
+import BoundaryCondition from './boundaryCondition'
 
 import { useDispatch } from 'react-redux'
 import {
@@ -10,9 +12,6 @@ import {
   setType,
   setPart
 } from '../../../../store/select/action'
-
-import BoundaryCondition from './boundaryCondition'
-import { PlusCircleOutlined } from '@ant-design/icons'
 
 /**
  * Errors simulation/boundaryConditions

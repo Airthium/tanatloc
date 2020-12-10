@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
-import { Layout } from 'antd'
+import { Button, Layout } from 'antd'
 
-import Add from './add'
 import List from './list'
 
 import { useDispatch } from 'react-redux'
@@ -13,6 +12,7 @@ import {
 } from '../../../../store/select/action'
 
 import BoundaryCondition from './boundaryCondition'
+import { PlusCircleOutlined } from '@ant-design/icons'
 
 /**
  * Errors simulation/boundaryConditions
@@ -30,7 +30,6 @@ const errors = {
 const BoundaryConditions = ({ project, simulation, part, setVisible }) => {
   // State
   const [boundaryCondition, setBoundaryCondition] = useState()
-  const [boundaryConditionType, setBoundaryConditionType] = useState()
   const [boundaryConditionVisible, setBoundaryConditionVisible] = useState(
     false
   )
@@ -50,7 +49,6 @@ const BoundaryConditions = ({ project, simulation, part, setVisible }) => {
 
   const onAdd = () => {
     setBoundaryCondition()
-    setBoundaryConditionType()
 
     setBoundaryConditionVisible(true)
     setVisible(false)
@@ -60,7 +58,6 @@ const BoundaryConditions = ({ project, simulation, part, setVisible }) => {
   const onEdit = (type, index) => {
     const boundaryConditionToEdit = boundaryConditions[type].values[index]
     setBoundaryCondition(boundaryConditionToEdit)
-    setBoundaryConditionType(type)
 
     setBoundaryConditionVisible(true)
     setVisible(false)
@@ -69,7 +66,6 @@ const BoundaryConditions = ({ project, simulation, part, setVisible }) => {
 
   const onClose = () => {
     setBoundaryConditionVisible(false)
-    setBoundaryConditionType()
 
     setVisible(true)
     setBoundaryCondition()
@@ -82,15 +78,16 @@ const BoundaryConditions = ({ project, simulation, part, setVisible }) => {
   return (
     <Layout>
       <Layout.Content>
-        <Add onAdd={onAdd} />
+        <Button icon={<PlusCircleOutlined />} onClick={onAdd} />
         <List project={project} simulation={simulation} onEdit={onEdit} />
         <BoundaryCondition
+          project={project}
+          simulation={simulation}
           visible={boundaryConditionVisible}
-          close={onClose}
           part={part}
           boundaryConditions={boundaryConditions}
           boundaryCondition={boundaryCondition}
-          boundaryConditionType={boundaryConditionType}
+          close={onClose}
         />
       </Layout.Content>
     </Layout>

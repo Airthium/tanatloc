@@ -1,68 +1,98 @@
 import { useState, useEffect } from 'react'
-import { Button, Card, Drawer, Radio, Space } from 'antd'
+import { Button, Card, Drawer, Input, Radio, Space } from 'antd'
 
 import Formula from '../../../../assets/formula'
 import Selector from '../selector'
+import Add from '../add'
+import Edit from '../edit'
 
 /**
  * Boundary condition
  * @param {Object} props Props
  */
 const BoundaryCondition = ({
+  project,
+  simulation,
   visible,
-  close,
   part,
   boundaryConditions,
   boundaryCondition,
-  boundaryConditionType
+  close
 }) => {
-  const [type, setType] = useState()
-  const [current, setCurrent] = useState()
+  const [current, setCurrent] = useState({
+    name: 'New boundary condition'
+  })
   const [disabled, setDisabled] = useState(true)
 
   // Data
   const types = Object.keys(boundaryConditions)
-    .map((key) => {
-      if (key === 'index' || key === 'title' || key === 'done') return
+    .map((type) => {
+      if (type === 'index' || type === 'title' || type === 'done') return
       return {
-        key,
-        label: boundaryConditions[key].label,
-        children: boundaryConditions[key].children
+        key: type,
+        label: boundaryConditions[type].label,
+        children: boundaryConditions[type].children
       }
     })
     .filter((t) => t)
 
-  // Current
+  // Edit
   useEffect(() => {
-    if (current?.name) return
+    if (boundaryCondition) setCurrent(boundaryCondition)
+  }, [boundaryCondition])
 
-    if (boundaryCondition) {
-      setCurrent(boundaryCondition)
-      setType({
-        key: boundaryConditionType,
-        label: boundaryConditions[boundaryConditionType].label,
-        children: boundaryConditions[boundaryConditionType].children
-      })
-    } else if (type) {
-      const typedBoundaryConditions = boundaryConditions[type.key]
-      const newBoundaryCondition = {
-        name:
-          typedBoundaryConditions.label +
-          ' boundary condition ' +
-          (typedBoundaryConditions.values.length + 1),
-        selected: current?.selected || [],
-        values: new Array(typedBoundaryConditions.children.length).fill(0)
-      }
-      setCurrent(newBoundaryCondition)
-    }
-  }, [type, boundaryCondition, boundaryConditions])
+  // // Current
+  // useEffect(() => {
+  //   if (current?.name) return
+
+  //   if (boundaryCondition) {
+  //     setCurrent(boundaryCondition)
+  //     if (!type)
+  //       setType({
+  //         key: boundaryConditionType,
+  //         label: boundaryConditions[boundaryConditionType].label,
+  //         children: boundaryConditions[boundaryConditionType].children
+  //       })
+  //   } else if (type) {
+  //     const typedBoundaryConditions = boundaryConditions[type.key]
+  //     const newBoundaryCondition = {
+  //       name:
+  //         current?.name ||
+  //         typedBoundaryConditions.label +
+  //           ' boundary condition ' +
+  //           (typedBoundaryConditions.values
+  //             ? typedBoundaryConditions.values.length + 1
+  //             : '1'),
+  //       selected: current?.selected || [],
+  //       values: new Array(typedBoundaryConditions.children.length).fill(0)
+  //     }
+  //     setCurrent(newBoundaryCondition)
+  //   }
+  // }, [type, boundaryCondition, boundaryConditions])
 
   // Disabled
   useEffect(() => {
-    if (!current || !current.selected?.length || !current.values?.length)
+    if (
+      !current ||
+      !current.name ||
+      !current.selected?.length ||
+      !current.values?.length
+    )
       setDisabled(true)
     else setDisabled(false)
   }, [current])
+
+  /**
+   * On name
+   * @param {Object} event Event
+   */
+  const onName = (event) => {
+    const name = event.target.value
+    setCurrent({
+      ...current,
+      name: name
+    })
+  }
 
   /**
    * On type
@@ -70,8 +100,12 @@ const BoundaryCondition = ({
    */
   const onType = (event) => {
     const key = event.target.value
-    const currentType = types.find((t) => t.key === key)
-    setType(currentType)
+    const type = types.find((t) => t.key === key)
+    setCurrent({
+      ...current,
+      type: type,
+      values: new Array(boundaryConditions[key].children.length).fill(0)
+    })
   }
 
   /**
@@ -105,8 +139,9 @@ const BoundaryCondition = ({
    * On close
    */
   const onClose = () => {
-    setType()
-    setCurrent()
+    setCurrent({
+      name: 'New boundary condition'
+    })
     close()
   }
 
@@ -123,8 +158,15 @@ const BoundaryCondition = ({
       maskClosable={false}
       width={300}
     >
+      <Card title="Boundary condition name">
+        <Input value={current?.name || ''} onChange={onName} />
+      </Card>
       <Card title="Boundary condition type">
-        <Radio.Group buttonStyle="solid" value={type?.key} onChange={onType}>
+        <Radio.Group
+          buttonStyle="solid"
+          value={current?.type?.key}
+          onChange={onType}
+        >
           {types?.map((type) => {
             return (
               <Radio.Button key={type.key} value={type.key}>
@@ -134,14 +176,18 @@ const BoundaryCondition = ({
           })}
         </Radio.Group>
       </Card>
-      {type && (
+      {current?.type && (
         <Card>
-          {type.children?.map((child, index) => {
+          {current?.type?.children?.map((child, index) => {
             return (
               <div key={index}>
                 {child.label}
                 <Formula
-                  value={current?.values?.[index]}
+                  value={
+                    current?.values?.[index] === undefined
+                      ? current?.type?.children?.[index]?.default
+                      : current?.values?.[index]
+                  }
                   onChange={(value) => onChange(index, value)}
                 />
               </div>
@@ -154,9 +200,25 @@ const BoundaryCondition = ({
         <Button type="danger" onClick={onClose}>
           Cancel
         </Button>
-        <Button disabled={disabled} onClick={() => {}}>
-          {boundaryCondition ? 'Edit' : 'Add'}
-        </Button>
+        {boundaryCondition ? (
+          <Edit
+            disabled={disabled}
+            boundaryCondition={current}
+            project={project}
+            simulation={simulation}
+            part={part}
+            close={onClose}
+          />
+        ) : (
+          <Add
+            disabled={disabled}
+            boundaryCondition={current}
+            project={project}
+            simulation={simulation}
+            part={part}
+            close={onClose}
+          />
+        )}
       </Space>
     </Drawer>
   )

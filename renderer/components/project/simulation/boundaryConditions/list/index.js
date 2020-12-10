@@ -1,10 +1,10 @@
 import { useState } from 'react'
-import { Card } from 'antd'
+import { Button, Card } from 'antd'
+import { EditOutlined } from '@ant-design/icons'
 
 import { useDispatch } from 'react-redux'
 import { enable, disable, select } from '../../../../../store/select/action'
 
-import Edit from '../edit'
 import Delete from '../delete'
 
 const List = ({ project, simulation, onEdit }) => {
@@ -52,10 +52,10 @@ const List = ({ project, simulation, onEdit }) => {
             }}
           >
             {child.name}
-            <Edit
-              type={type}
-              index={index}
-              onEdit={() => {
+            <br />
+            <Button
+              icon={<EditOutlined />}
+              onClick={() => {
                 setEnabled(false)
                 onEdit(type, index)
                 setTimeout(() => setEnabled(true), 500)

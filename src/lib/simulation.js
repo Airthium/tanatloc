@@ -178,6 +178,11 @@ const run = async ({ id }) => {
   const configuration = simulation.scheme.configuration
 
   // Update status
+  configuration.run = {
+    ...configuration.run,
+    done: null,
+    error: null
+  }
   await update({ id }, [
     {
       key: 'scheme',
@@ -186,8 +191,8 @@ const run = async ({ id }) => {
       path: ['configuration', 'run'],
       value: {
         ...configuration.run,
-        done: undefined,
-        error: undefined
+        done: null,
+        error: null
       }
     }
   ])
@@ -195,6 +200,10 @@ const run = async ({ id }) => {
   // Compute
   Compute.computeSimulation({ id }, configuration)
     .then(() => {
+      configuration.run = {
+        ...configuration.run,
+        done: true
+      }
       update({ id }, [
         {
           key: 'scheme',
@@ -209,6 +218,10 @@ const run = async ({ id }) => {
       ])
     })
     .catch((err) => {
+      configuration.run = {
+        ...configuration.run,
+        error: err
+      }
       update({ id }, [
         {
           key: 'scheme',

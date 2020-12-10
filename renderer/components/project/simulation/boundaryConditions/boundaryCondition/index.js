@@ -204,6 +204,7 @@ const BoundaryCondition = ({
           <Edit
             disabled={disabled}
             boundaryCondition={current}
+            oldBoundaryCondition={boundaryCondition}
             project={project}
             simulation={simulation}
             part={part}

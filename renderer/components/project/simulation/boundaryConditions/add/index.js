@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { message, Button } from 'antd'
+import { v4 as uuid } from 'uuid'
 
 import SimulationAPI from '../../../../../../src/api/simulation'
 
@@ -27,6 +28,7 @@ const Add = ({
 }) => {
   // State
   const [loading, setLoading] = useState()
+
   // Data
   const [, { mutateOneSimulation }] = SimulationAPI.useSimulations(
     project?.simulations
@@ -53,6 +55,9 @@ const Add = ({
         })
         .filter((s) => s)
       boundaryCondition.selected = selection
+
+      // Set uuid
+      boundaryCondition.uuid = uuid()
 
       // New simulation
       const newSimulation = { ...simulation }
@@ -83,7 +88,10 @@ const Add = ({
       ])
 
       // Mutate
-      mutateOneSimulation[newSimulation]
+      mutateOneSimulation(newSimulation)
+
+      // Stop loading
+      setLoading(false)
 
       // Close
       close()
@@ -91,7 +99,6 @@ const Add = ({
       message.error(errors.updateError)
       console.error(err)
       Sentry.captureException(err)
-    } finally {
       setLoading(false)
     }
   }

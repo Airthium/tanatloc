@@ -1,6 +1,7 @@
+import { useEffect } from 'react'
 import { Card } from 'antd'
-import { useSelector, useDispatch } from 'react-redux'
 
+import { useSelector, useDispatch } from 'react-redux'
 import {
   highlight,
   unhighlight,
@@ -12,13 +13,18 @@ import {
  * Selector
  * @param {Object} props Props
  */
-const Selector = ({ part }) => {
+const Selector = ({ part, updateSelected }) => {
   // Store
   const { highlighted, selected } = useSelector((state) => ({
     highlighted: state.select.highlighted,
     selected: state.select.selected
   }))
   const dispatch = useDispatch()
+
+  // Selected
+  useEffect(() => {
+    updateSelected(selected)
+  }, [selected])
 
   /**
    * On highglight

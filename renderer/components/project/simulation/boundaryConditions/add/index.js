@@ -4,6 +4,7 @@ import { PlusCircleOutlined } from '@ant-design/icons'
 /**
  * Add boundary condition
  * @memberof module:renderer/components/project/simulation
+ * @param {Object} props Props
  */
 const Add = ({ onAdd }) => {
   /**

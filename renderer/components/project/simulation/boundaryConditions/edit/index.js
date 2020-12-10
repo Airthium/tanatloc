@@ -4,13 +4,9 @@ import { EditOutlined } from '@ant-design/icons'
 /**
  * Edit boundary condition
  * @memberof module:renderer/components/project/simulation
+ * @param {Object} props Props
  */
-const Edit = () => {
-  /**
-   * On edit
-   */
-  const onEdit = () => {}
-
+const Edit = ({ onEdit }) => {
   /**
    * Render
    */

@@ -1,16 +1,16 @@
+import { useState } from 'react'
 import { Card } from 'antd'
 
 import { useDispatch } from 'react-redux'
-import {
-  enable as selectorEnable,
-  disable as selectorDisable,
-  select as selectorSelect
-} from '../../../../../store/select/action'
+import { enable, disable, select } from '../../../../../store/select/action'
 
 import Edit from '../edit'
 import Delete from '../delete'
 
-const List = ({ project, simulation }) => {
+const List = ({ project, simulation, onEdit }) => {
+  // State
+  const [enabled, setEnabled] = useState(true)
+
   // Data
   const boundaryConditions =
     simulation?.scheme?.configuration?.boundaryConditions || {}
@@ -22,10 +22,10 @@ const List = ({ project, simulation }) => {
    * @param {number} index Index
    */
   const highlight = (key, index) => {
-    dispatch(selectorEnable())
+    dispatch(enable())
     const currentSelected = boundaryConditions[key]?.values[index]?.selected
     currentSelected.forEach((s) => {
-      dispatch(selectorSelect(s.uuid))
+      dispatch(select(s.uuid))
     })
   }
 
@@ -33,7 +33,7 @@ const List = ({ project, simulation }) => {
    * Unhighlight current
    */
   const unhighlight = () => {
-    dispatch(selectorDisable())
+    dispatch(disable())
   }
 
   // List
@@ -41,17 +41,26 @@ const List = ({ project, simulation }) => {
     .map((type) => {
       if (type === 'index' || type === 'title' || type === 'done') return
       return boundaryConditions[type].values?.map((child, index) => {
-        console.log(boundaryConditions[type])
         return (
           <Card
             key={index}
             hoverable
             style={{ marginTop: '5px' }}
             onMouseEnter={() => highlight(type, index)}
-            onMouseLeave={() => unhighlight()}
+            onMouseLeave={() => {
+              enabled && unhighlight()
+            }}
           >
             {child.name}
-            <Edit type={type} index={index} />
+            <Edit
+              type={type}
+              index={index}
+              onEdit={() => {
+                setEnabled(false)
+                onEdit(type, index)
+                setTimeout(() => setEnabled(true), 500)
+              }}
+            />
             <Delete
               project={project}
               simulation={simulation}

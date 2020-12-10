@@ -13,11 +13,12 @@ const BoundaryCondition = ({
   close,
   part,
   boundaryConditions,
-  boundaryCondition
+  boundaryCondition,
+  boundaryConditionType
 }) => {
-  // State
   const [type, setType] = useState()
   const [current, setCurrent] = useState()
+  const [disabled, setDisabled] = useState(true)
 
   // Data
   const types = Object.keys(boundaryConditions)
@@ -33,9 +34,35 @@ const BoundaryCondition = ({
 
   // Current
   useEffect(() => {
-    if (boundaryCondition) setCurrent(boundaryCondition)
-    // else setCurrent(boundaryConditions?.[type]?.value)
-  }, [boundaryCondition, boundaryConditions])
+    if (current?.name) return
+
+    if (boundaryCondition) {
+      setCurrent(boundaryCondition)
+      setType({
+        key: boundaryConditionType,
+        label: boundaryConditions[boundaryConditionType].label,
+        children: boundaryConditions[boundaryConditionType].children
+      })
+    } else if (type) {
+      const typedBoundaryConditions = boundaryConditions[type.key]
+      const newBoundaryCondition = {
+        name:
+          typedBoundaryConditions.label +
+          ' boundary condition ' +
+          (typedBoundaryConditions.values.length + 1),
+        selected: current?.selected || [],
+        values: new Array(typedBoundaryConditions.children.length).fill(0)
+      }
+      setCurrent(newBoundaryCondition)
+    }
+  }, [type, boundaryCondition, boundaryConditions])
+
+  // Disabled
+  useEffect(() => {
+    if (!current || !current.selected?.length || !current.values?.length)
+      setDisabled(true)
+    else setDisabled(false)
+  }, [current])
 
   /**
    * On type
@@ -48,10 +75,38 @@ const BoundaryCondition = ({
   }
 
   /**
+   * On change
+   * @param {number} index Index
+   * @param {string} value Value
+   */
+  const onChange = (index, value) => {
+    setCurrent({
+      ...current,
+      values: [
+        ...current.values.slice(0, index),
+        value,
+        ...current.values.slice(index + 1)
+      ]
+    })
+  }
+
+  /**
+   * On selected
+   * @param {Array} selected Selected
+   */
+  const onSelected = (selected) => {
+    setCurrent({
+      ...current,
+      selected: selected
+    })
+  }
+
+  /**
    * On close
    */
   const onClose = () => {
     setType()
+    setCurrent()
     close()
   }
 
@@ -86,7 +141,7 @@ const BoundaryCondition = ({
               <div key={index}>
                 {child.label}
                 <Formula
-                  value={0}
+                  value={current?.values?.[index]}
                   onChange={(value) => onChange(index, value)}
                 />
               </div>
@@ -94,12 +149,12 @@ const BoundaryCondition = ({
           })}
         </Card>
       )}
-      <Selector part={part} />
+      <Selector part={part} updateSelected={onSelected} />
       <Space>
         <Button type="danger" onClick={onClose}>
           Cancel
         </Button>
-        <Button disabled={!false} onClick={() => {}}>
+        <Button disabled={disabled} onClick={() => {}}>
           {boundaryCondition ? 'Edit' : 'Add'}
         </Button>
       </Space>

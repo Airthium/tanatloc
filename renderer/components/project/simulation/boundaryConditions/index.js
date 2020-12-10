@@ -30,6 +30,7 @@ const errors = {
 const BoundaryConditions = ({ project, simulation, part, setVisible }) => {
   // State
   const [boundaryCondition, setBoundaryCondition] = useState()
+  const [boundaryConditionType, setBoundaryConditionType] = useState()
   const [boundaryConditionVisible, setBoundaryConditionVisible] = useState(
     false
   )
@@ -47,30 +48,49 @@ const BoundaryConditions = ({ project, simulation, part, setVisible }) => {
     dispatch(setPart(part?.uuid))
   }, [part])
 
+  const onAdd = () => {
+    setBoundaryCondition()
+    setBoundaryConditionType()
+
+    setBoundaryConditionVisible(true)
+    setVisible(false)
+    dispatch(enable())
+  }
+
+  const onEdit = (type, index) => {
+    const boundaryConditionToEdit = boundaryConditions[type].values[index]
+    setBoundaryCondition(boundaryConditionToEdit)
+    setBoundaryConditionType(type)
+
+    setBoundaryConditionVisible(true)
+    setVisible(false)
+    dispatch(enable())
+  }
+
+  const onClose = () => {
+    setBoundaryConditionVisible(false)
+    setBoundaryConditionType()
+
+    setVisible(true)
+    setBoundaryCondition()
+    dispatch(disable())
+  }
+
   /**
    * Render
    */
   return (
     <Layout>
       <Layout.Content>
-        <Add
-          onAdd={() => {
-            setBoundaryConditionVisible(true)
-            setVisible(false)
-            dispatch(enable())
-          }}
-        />
-        <List project={project} simulation={simulation} />
+        <Add onAdd={onAdd} />
+        <List project={project} simulation={simulation} onEdit={onEdit} />
         <BoundaryCondition
           visible={boundaryConditionVisible}
-          close={() => {
-            setBoundaryConditionVisible(false)
-            setVisible(true)
-            dispatch(disable())
-          }}
+          close={onClose}
           part={part}
           boundaryConditions={boundaryConditions}
           boundaryCondition={boundaryCondition}
+          boundaryConditionType={boundaryConditionType}
         />
       </Layout.Content>
     </Layout>

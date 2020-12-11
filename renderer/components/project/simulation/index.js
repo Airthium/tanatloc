@@ -39,7 +39,8 @@ const Selector = ({ visible, onOk, onCancel }) => {
    */
   const onSelect = ({ key }) => {
     const model = models.find((m) => m.algorithm === key)
-    setCurrent(model)
+    setCurrent({ ...model })
+    // TODO review that
   }
 
   /**

@@ -61,12 +61,11 @@ const Add = ({
 
       // New simulation
       const newSimulation = { ...simulation }
-
       // Update local
       const boundaryConditions =
         newSimulation.scheme.configuration.boundaryConditions
       boundaryConditions[type].values = [
-        ...boundaryConditions[type].values,
+        ...(boundaryConditions[type].values || []),
         boundaryCondition
       ]
 

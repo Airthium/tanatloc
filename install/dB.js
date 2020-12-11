@@ -1,4 +1,5 @@
 import { Pool } from 'pg'
+import Crypto from 'crypto'
 
 import config, { databases } from '../config/db'
 import query from '../src/database'
@@ -260,14 +261,8 @@ const createSimulationTable = async () => {
  * @memberof module:install
  */
 const passwordGenerator = () => {
-  const length = 8
-  const charset =
-    'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
-  let password = ''
-  for (let i = 0, n = charset.length; i < length; ++i) {
-    password += charset.charAt(Math.floor(Math.random() * n))
-  }
-  return password
+  const buffer = Crypto.randomBytes(256)
+  return buffer.toString('hex')
 }
 
 /**

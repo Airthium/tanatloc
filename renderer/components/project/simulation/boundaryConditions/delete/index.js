@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { message, Button, Popconfirm } from 'antd'
 import { DeleteOutlined, QuestionCircleOutlined } from '@ant-design/icons'
 
@@ -22,6 +23,9 @@ const errors = {
  * @param {Object} props Props
  */
 const Delete = ({ project, simulation, type, index }) => {
+  // State
+  const [loading, setLoading] = useState()
+
   // Data
   const [, { mutateOneSimulation }] = SimulationAPI.useSimulations(
     project?.simulations
@@ -32,32 +36,34 @@ const Delete = ({ project, simulation, type, index }) => {
    * On delete
    */
   const onDelete = async () => {
-    // New simulation
-    const newSimulation = { ...simulation }
-
-    // Update local
-    const boundaryConditions =
-      newSimulation.scheme.configuration.boundaryConditions
-    const typedBoundaryCondition = boundaryConditions[type]
-
-    // (unselect)
-    const boundaryCondition = typedBoundaryCondition.values[index]
-    boundaryCondition.selected.forEach((s) => {
-      dispatch(unselect(s.uuid))
-    })
-
-    typedBoundaryCondition.values = [
-      ...typedBoundaryCondition.values.slice(0, index),
-      ...typedBoundaryCondition.values.slice(index + 1)
-    ]
-
-    // Diff
-    const diff = {
-      ...boundaryConditions,
-      done: !!boundaryConditions.length
-    }
+    setLoading(true)
 
     try {
+      // New simulation
+      const newSimulation = { ...simulation }
+
+      // Update local
+      const boundaryConditions =
+        newSimulation.scheme.configuration.boundaryConditions
+      const typedBoundaryCondition = boundaryConditions[type]
+
+      // (unselect)
+      const boundaryCondition = typedBoundaryCondition.values[index]
+      boundaryCondition.selected.forEach((s) => {
+        dispatch(unselect(s.uuid))
+      })
+
+      typedBoundaryCondition.values = [
+        ...typedBoundaryCondition.values.slice(0, index),
+        ...typedBoundaryCondition.values.slice(index + 1)
+      ]
+
+      // Diff
+      const diff = {
+        ...boundaryConditions,
+        done: !!boundaryConditions.length
+      }
+
       // Update
       await SimulationAPI.update({ id: simulation.id }, [
         {
@@ -74,6 +80,7 @@ const Delete = ({ project, simulation, type, index }) => {
       message.error(errors.updateError)
       console.error(err)
       Sentry.captureException(err)
+      setLoading(false)
     }
   }
 
@@ -86,7 +93,7 @@ const Delete = ({ project, simulation, type, index }) => {
       icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
       onConfirm={onDelete}
     >
-      <Button icon={<DeleteOutlined />} />
+      <Button loading={loading} icon={<DeleteOutlined />} />
     </Popconfirm>
   )
 }

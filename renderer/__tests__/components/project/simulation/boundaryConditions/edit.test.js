@@ -1,4 +1,4 @@
-import Add from '../../../../../components/project/simulation/boundaryConditions/add'
+import Edit from '../../../../../components/project/simulation/boundaryConditions/edit'
 import { shallow } from 'enzyme'
 
 const mockUpdate = jest.fn()
@@ -14,12 +14,18 @@ jest.mock('../../../../../../src/lib/sentry', () => ({
 }))
 
 let wrapper
-describe('renderer/components/project/simulation/boundaryConditions/add', () => {
+describe('renderer/components/project/simulation/boundaryConditions/edit', () => {
   const boundaryCondition = {
     type: {
       key: 'key'
     },
     selected: ['uuid1', 'uuid3']
+  }
+  const oldBoundaryCondition = {
+    type: {
+      key: 'key'
+    },
+    selected: ['uuid1', 'uuid2']
   }
   const project = {}
   const simulation = {
@@ -27,7 +33,10 @@ describe('renderer/components/project/simulation/boundaryConditions/add', () => 
       configuration: {
         boundaryConditions: {
           key: {
-            values: []
+            values: [{}]
+          },
+          otherKey: {
+            values: [{}]
           }
         }
       }
@@ -45,9 +54,10 @@ describe('renderer/components/project/simulation/boundaryConditions/add', () => 
     close.mockReset()
 
     wrapper = shallow(
-      <Add
+      <Edit
         disabled={false}
         boundaryCondition={boundaryCondition}
+        oldBoundaryCondition={oldBoundaryCondition}
         project={project}
         simulation={simulation}
         part={part}
@@ -64,7 +74,7 @@ describe('renderer/components/project/simulation/boundaryConditions/add', () => 
     expect(wrapper).toBeDefined()
   })
 
-  it('onAdd', async () => {
+  it('onEdit', async () => {
     await wrapper.find('Button').props().onClick()
     expect(mockUpdate).toHaveBeenCalledTimes(1)
     expect(mockMutate).toHaveBeenCalledTimes(1)
@@ -80,5 +90,27 @@ describe('renderer/components/project/simulation/boundaryConditions/add', () => 
     expect(mockMutate).toHaveBeenCalledTimes(1)
     expect(close).toHaveBeenCalledTimes(1)
     expect(mockSentry).toHaveBeenCalledTimes(1)
+  })
+
+  it('onEdit (different old type)', async () => {
+    wrapper.unmount()
+
+    oldBoundaryCondition.type.key = 'otherKey'
+    wrapper = shallow(
+      <Edit
+        disabled={false}
+        boundaryCondition={boundaryCondition}
+        oldBoundaryCondition={oldBoundaryCondition}
+        project={project}
+        simulation={simulation}
+        part={part}
+        close={close}
+      />
+    )
+    await wrapper.find('Button').props().onClick()
+    expect(mockUpdate).toHaveBeenCalledTimes(1)
+    expect(mockMutate).toHaveBeenCalledTimes(1)
+    expect(close).toHaveBeenCalledTimes(1)
+    expect(mockSentry).toHaveBeenCalledTimes(0)
   })
 })

@@ -10,8 +10,6 @@ jest.mock(
   () => 'BoundaryCondition'
 )
 
-const mockHighlighted = jest.fn()
-const mockSelected = jest.fn(() => [])
 jest.mock('react-redux', () => ({
   // useSelector: (callback) =>
   //   callback({
@@ -62,10 +60,6 @@ describe('renderer/components/project/simulation/boundaryConditions', () => {
   const setVisible = jest.fn()
 
   beforeEach(() => {
-    mockHighlighted.mockReset()
-    mockSelected.mockReset()
-    mockSelected.mockImplementation(() => [])
-
     mockEnable.mockReset()
     mockDisable.mockReset()
     mockSetType.mockReset()

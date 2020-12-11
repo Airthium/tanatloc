@@ -68,4 +68,27 @@ describe('renderer/components/project/simulation/boundaryConditions/delete', () 
   it('render', () => {
     expect(wrapper).toBeDefined()
   })
+
+  it('onDelete', async () => {
+    await wrapper.find('ForwardRef').props().onConfirm()
+    expect(mockUnselect).toHaveBeenCalledTimes(1)
+    expect(mockUpdate).toHaveBeenCalledTimes(1)
+    expect(mockMutate).toHaveBeenCalledTimes(1)
+    expect(mockSentry).toHaveBeenCalledTimes(0)
+
+    // Error
+    simulation.scheme.configuration.boundaryConditions.key.values = [
+      {
+        selected: ['uuid']
+      }
+    ]
+    mockUpdate.mockImplementation(() => {
+      throw new Error()
+    })
+    await wrapper.find('ForwardRef').props().onConfirm()
+    expect(mockUnselect).toHaveBeenCalledTimes(2)
+    expect(mockUpdate).toHaveBeenCalledTimes(2)
+    expect(mockMutate).toHaveBeenCalledTimes(1)
+    expect(mockSentry).toHaveBeenCalledTimes(1)
+  })
 })

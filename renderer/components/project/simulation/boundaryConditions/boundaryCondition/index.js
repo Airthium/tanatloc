@@ -41,35 +41,6 @@ const BoundaryCondition = ({
     if (boundaryCondition) setCurrent(boundaryCondition)
   }, [boundaryCondition])
 
-  // // Current
-  // useEffect(() => {
-  //   if (current?.name) return
-
-  //   if (boundaryCondition) {
-  //     setCurrent(boundaryCondition)
-  //     if (!type)
-  //       setType({
-  //         key: boundaryConditionType,
-  //         label: boundaryConditions[boundaryConditionType].label,
-  //         children: boundaryConditions[boundaryConditionType].children
-  //       })
-  //   } else if (type) {
-  //     const typedBoundaryConditions = boundaryConditions[type.key]
-  //     const newBoundaryCondition = {
-  //       name:
-  //         current?.name ||
-  //         typedBoundaryConditions.label +
-  //           ' boundary condition ' +
-  //           (typedBoundaryConditions.values
-  //             ? typedBoundaryConditions.values.length + 1
-  //             : '1'),
-  //       selected: current?.selected || [],
-  //       values: new Array(typedBoundaryConditions.children.length).fill(0)
-  //     }
-  //     setCurrent(newBoundaryCondition)
-  //   }
-  // }, [type, boundaryCondition, boundaryConditions])
-
   // Disabled
   useEffect(() => {
     if (
@@ -106,6 +77,7 @@ const BoundaryCondition = ({
       type: type,
       values: new Array(boundaryConditions[key].children.length).fill(0)
     })
+    //TODO no fill(0) but use default
   }
 
   /**
@@ -227,50 +199,4 @@ const BoundaryCondition = ({
 
 export default BoundaryCondition
 
-//   {boundaryCondition && (
-//     <Card>
-//       {boundaryCondition.children?.map((child, index) => {
-//         return (
-//           <div key={index}>
-//             {child.label}:
-//             <Formula
-//               value={
-//                 values[index] === undefined ? child.default : values[index]
-//               }
-//               onChange={(value) => onChange(value, index)}
-//             />
-//           </div>
-//         )
-//       })}
-//     </Card>
-//   )}
-//   <div>
-//     {faces?.map((face, index) => {
-//       return (
-//         <Card
-//           hoverable
-//           key={index}
-//   style={{
-//     marginBottom:
-//       highlighted === face.uuid
-//         ? '5px'
-//         : selected.includes(face.uuid)
-//         ? '5px'
-//         : '7px',
-//     border:
-//       highlighted === face.uuid
-//         ? '2px solid #0096C7'
-//         : selected.includes(face.uuid)
-//         ? '2px solid #c73100'
-//         : '1px solid grey'
-//   }}
-//           bodyStyle={{ padding: '10px' }}
-//           onMouseOver={() => onHighlight(face.uuid)}
-//           onMouseOut={onUnhighlight}
-//           onClick={() => onSelect(face.uuid)}
-//         >
-//           {face.name}
-//         </Card>
-//       )
-//     })}
-//   </div>
+//   {boundar

@@ -75,8 +75,8 @@ const Selector = ({ part, updateSelected }) => {
                 : '1px solid grey'
           }}
           bodyStyle={{ padding: '10px' }}
-          onMouseOver={() => onHighlight(face.uuid)}
-          onMouseOut={onUnhighlight}
+          onMouseEnter={() => onHighlight(face.uuid)}
+          onMouseLeave={onUnhighlight}
           onClick={() => onSelect(face.uuid)}
         >
           {face.name}

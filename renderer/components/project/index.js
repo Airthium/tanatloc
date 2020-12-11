@@ -162,6 +162,8 @@ const Project = () => {
    * @param {string} key Key
    */
   const selectSimulation = (key) => {
+    setCurrentType()
+
     const descriptor = key.split('&')
     const simulationId = descriptor[1]
     const type = descriptor[2]

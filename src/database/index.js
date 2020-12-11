@@ -97,7 +97,10 @@ const updater = async (db, id, data) => {
   } else if (data.type === 'json') {
     if (data.method === 'diff') {
       // Get existing json
-      const res = await query('SELECT ' + data.key + ' FROM ' + db)
+      const res = await query(
+        'SELECT ' + data.key + ' FROM ' + db + ' WHERE id = $1',
+        [id]
+      )
       const json = res.rows[0][data.key]
 
       // Set json

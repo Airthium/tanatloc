@@ -53,37 +53,36 @@ const Selector = ({ part, updateSelected }) => {
   /**
    * Render
    */
-  return (
-    part?.faces &&
-    part.faces.map((face, index) => {
-      return (
-        <Card
-          key={index}
-          hoverable
-          style={{
-            marginBottom:
-              highlighted === face.uuid
-                ? '5px'
-                : selected.includes(face.uuid)
-                ? '5px'
-                : '7px',
-            border:
-              highlighted === face.uuid
-                ? '2px solid #0096C7'
-                : selected.includes(face.uuid)
-                ? '2px solid #c73100'
-                : '1px solid grey'
-          }}
-          bodyStyle={{ padding: '10px' }}
-          onMouseEnter={() => onHighlight(face.uuid)}
-          onMouseLeave={onUnhighlight}
-          onClick={() => onSelect(face.uuid)}
-        >
-          {face.name}
-        </Card>
-      )
-    })
-  )
+  return part?.faces
+    ? part.faces.map((face, index) => {
+        return (
+          <Card
+            key={index}
+            hoverable
+            style={{
+              marginBottom:
+                highlighted === face.uuid
+                  ? '5px'
+                  : selected.includes(face.uuid)
+                  ? '5px'
+                  : '7px',
+              border:
+                highlighted === face.uuid
+                  ? '2px solid #0096C7'
+                  : selected.includes(face.uuid)
+                  ? '2px solid #c73100'
+                  : '1px solid grey'
+            }}
+            bodyStyle={{ padding: '10px' }}
+            onMouseEnter={() => onHighlight(face.uuid)}
+            onMouseLeave={onUnhighlight}
+            onClick={() => onSelect(face.uuid)}
+          >
+            {face.name}
+          </Card>
+        )
+      })
+    : []
 }
 
 export default Selector

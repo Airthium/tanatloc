@@ -83,7 +83,7 @@ const Poisson = {
         children: [
           {
             label: 'u',
-            default: 1
+            default: 0
           }
         ]
       },

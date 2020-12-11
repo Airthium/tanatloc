@@ -72,12 +72,15 @@ const BoundaryCondition = ({
   const onType = (event) => {
     const key = event.target.value
     const type = types.find((t) => t.key === key)
+    const values = new Array(boundaryConditions[key].children.length)
+    values.forEach((v) => {
+      v = boundaryConditions[key].children.default
+    })
     setCurrent({
       ...current,
       type: type,
-      values: new Array(boundaryConditions[key].children.length).fill(0)
+      values: values
     })
-    //TODO no fill(0) but use default
   }
 
   /**

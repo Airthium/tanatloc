@@ -59,6 +59,12 @@ describe('renderer/components/project/simulation/boundaryConditions/selector', (
     expect(wrapper).toBeDefined()
   })
 
+  it('empty render', () => {
+    wrapper.unmount()
+    wrapper = shallow(<Selector part={{}} updateSelected={updateSelected} />)
+    expect(wrapper).toBeDefined()
+  })
+
   it('onHighlight', () => {
     wrapper.find('Card').at(0).props().onMouseEnter('uuid')
     expect(mockHighlight).toHaveBeenCalledTimes(1)

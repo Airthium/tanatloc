@@ -24,7 +24,11 @@ describe('renderer/components/project/simulation/boundaryConditions/boundaryCond
     title: 'title',
     key: {
       label: 'label',
-      children: []
+      children: [
+        {
+          default: 0
+        }
+      ]
     }
   }
   let boundaryCondition = undefined

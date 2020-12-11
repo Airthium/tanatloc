@@ -71,14 +71,29 @@ describe('renderer/components/project/simulation/boundaryConditions/add', () => 
     expect(close).toHaveBeenCalledTimes(1)
     expect(mockSentry).toHaveBeenCalledTimes(0)
 
+    // Without values
+    wrapper.unmount()
+    simulation.scheme.configuration.boundaryConditions.key = {}
+    wrapper = shallow(
+      <Add
+        disabled={false}
+        boundaryCondition={boundaryCondition}
+        project={project}
+        simulation={simulation}
+        part={part}
+        close={close}
+      />
+    )
+    await wrapper.find('Button').props().onClick()
+
     // Error
     mockUpdate.mockImplementation(() => {
       throw new Error()
     })
     await wrapper.find('Button').props().onClick()
-    expect(mockUpdate).toHaveBeenCalledTimes(2)
-    expect(mockMutate).toHaveBeenCalledTimes(1)
-    expect(close).toHaveBeenCalledTimes(1)
+    expect(mockUpdate).toHaveBeenCalledTimes(3)
+    expect(mockMutate).toHaveBeenCalledTimes(2)
+    expect(close).toHaveBeenCalledTimes(2)
     expect(mockSentry).toHaveBeenCalledTimes(1)
   })
 })

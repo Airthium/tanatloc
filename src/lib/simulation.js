@@ -218,6 +218,8 @@ const run = async ({ id }) => {
       ])
     })
     .catch((err) => {
+      console.error(err)
+
       configuration.run = {
         ...configuration.run,
         error: err

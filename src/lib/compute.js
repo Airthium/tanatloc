@@ -160,12 +160,14 @@ const computeSimulation = async ({ id }, configuration) => {
   )
 
   // Build the simulation script
+  console.log(configuration.run)
   await Template.render(
     './templates/poisson.edp.ejs',
     {
       ...configuration,
       dimension: 3,
-      result: {
+      run: {
+        ...configuration.run,
         path: 'run'
       }
     },
@@ -195,6 +197,7 @@ const computeSimulation = async ({ id }, configuration) => {
     // check code
     if (code !== 0) throw new Error('Simulating process failed. Code ' + code)
   } catch (err) {
+    // Task
     simulationTask.status = 'error'
     simulationTask.log += 'Fatal error: ' + err.message
     updateTasks(id, tasks)

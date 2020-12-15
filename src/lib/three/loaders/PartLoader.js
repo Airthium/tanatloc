@@ -5,6 +5,7 @@ import {
   BufferGeometryLoader,
   Color,
   DoubleSide,
+  Float32BufferAttribute,
   Group,
   LineBasicMaterial,
   LineSegments,
@@ -13,6 +14,7 @@ import {
   Raycaster,
   Vector2,
   Vector3,
+  VertexColors,
   WireframeGeometry
 } from 'three/build/three.module'
 
@@ -53,13 +55,14 @@ const PartLoader = (mouseMoveEvent, mouseDownEvent) => {
       part.solids &&
       part.solids.forEach((solid) => {
         const mesh = loadElement(
-          partType,
+          // partType,
+          'result',
           solid,
           solidColor,
           transparent,
           clippingPlane
         )
-        mesh.visible = false
+        mesh.visible = true
         solids.add(mesh)
       })
     object.add(solids)
@@ -76,7 +79,7 @@ const PartLoader = (mouseMoveEvent, mouseDownEvent) => {
           clippingPlane
         )
         if (mesh) {
-          mesh.visible = true
+          mesh.visible = false
           faces.add(mesh)
         }
       })
@@ -174,6 +177,36 @@ const PartLoader = (mouseMoveEvent, mouseDownEvent) => {
       material.originalColor = color
 
       const mesh = new LineSegments(wireframe, material)
+      mesh.uuid = buffer.uuid
+      return mesh
+    } else if (partType === 'result') {
+      geometry.computeBoundingBox()
+      geometry.computeBoundingSphere()
+
+      const data = geometry.attributes.data
+      const min = Math.min(...data.array)
+      const max = Math.max(...data.array)
+
+      const color = []
+      data.array.forEach((d) => {
+        const c = (d - min) / (max - min)
+        color.push(c)
+        color.push(0)
+        color.push(0)
+      })
+
+      geometry.setAttribute('color', new Float32BufferAttribute(color, 3))
+
+      const material = new MeshStandardMaterial({
+        vertexColors: VertexColors,
+        side: DoubleSide,
+        transparent: transparent,
+        opacity: transparent ? 0.5 : 1,
+        depthWrite: !transparent,
+        clippingPlanes: [clippingPlane]
+      })
+
+      const mesh = new Mesh(geometry, material)
       mesh.uuid = buffer.uuid
       return mesh
     }

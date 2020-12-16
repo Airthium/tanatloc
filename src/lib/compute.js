@@ -182,6 +182,29 @@ const computeSimulation = async ({ id }, configuration) => {
       simulationPath,
       path.join('run', id + '.edp'),
       ({ error, data }) => {
+        // New result
+        if (data.toString().includes('PROCESS VTU FILE')) {
+          const resFile = data.toString().replace('PROCESS VTU FILE', '').trim()
+          const partPath = resFile.replace('.vtu', '')
+
+          Services.toThree(
+            simulationPath,
+            path.join('run', resFile),
+            path.join('run', partPath),
+            ({ resError, resData }) => {
+              console.error(`Error: ${resError}\n`)
+              console.log(`${resData}\n`)
+            }
+          )
+            .then((resCode) => {
+              if (resCode !== 0)
+                console.warn('Result converting process failed. Code ' + code)
+            })
+            .catch((err) => {
+              console.error(err)
+            })
+        }
+
         simulationTask.status = 'process'
         error && (simulationTask.log += `Error: ${error}\n`)
         data && (simulationTask.log += `${data}\n`)

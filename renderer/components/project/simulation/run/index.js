@@ -161,7 +161,7 @@ const Run = ({ project, simulation }) => {
         <Space direction="vertical">
           <Button
             icon={<PlusCircleOutlined />}
-            loading={running}
+            // loading={running}
             onClick={onRun}
           >
             Run

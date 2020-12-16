@@ -24,6 +24,8 @@ const toThree = async (path, fileIn, pathOut, callback) => {
     case 'msh':
       conversionCode = 'GmshToThreeJS'
       break
+    case 'vtu':
+      conversionCode = 'VTUToThreeJS'
     default:
       throw new Error('Unknown conversion code')
   }

@@ -160,7 +160,6 @@ const computeSimulation = async ({ id }, configuration) => {
   )
 
   // Build the simulation script
-  console.log(configuration.run)
   await Template.render(
     './templates/poisson.edp.ejs',
     {

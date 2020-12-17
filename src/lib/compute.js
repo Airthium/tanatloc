@@ -203,7 +203,6 @@ const computeSimulation = async ({ id }, configuration) => {
                 if (data) {
                   try {
                     const jsonData = JSON.parse(data)
-                    console.log(jsonData)
                     results.push(jsonData)
                   } catch (err) {
                     console.error(err)

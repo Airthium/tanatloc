@@ -1,5 +1,17 @@
 import { PartLoader } from '../PartLoader'
 
+jest.mock('three/examples/jsm/math/Lut', () => ({
+  Lut: class {
+    setMin = () => {}
+    setMax = () => {}
+    getColor = () => ({
+      r: 0,
+      g: 0,
+      b: 0
+    })
+  }
+}))
+
 describe('src/lib/three/loaders/PartLoader', () => {
   global.MockGroup.children = [
     {

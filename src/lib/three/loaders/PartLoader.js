@@ -2,7 +2,6 @@
 
 import {
   Box3,
-  BufferAttribute,
   BufferGeometryLoader,
   Color,
   DoubleSide,
@@ -303,7 +302,7 @@ const PartLoader = (mouseMoveEvent, mouseDownEvent) => {
       group.children.forEach((child) => {
         if (child.geometry) child.geometry.dispose()
         if (child.material) child.material.dispose()
-        if (child.children.length) {
+        if (child.children && child.children.length) {
           // This is a result
           child.children[0].geometry.dispose()
           child.children[0].material.dispose()
@@ -326,7 +325,7 @@ const PartLoader = (mouseMoveEvent, mouseDownEvent) => {
             child.material.opacity = transparent ? 0.5 : 1
             child.material.depthWrite = !transparent
           }
-          if (child.children.length) {
+          if (child.children && child.children.length) {
             // This is a result
             child.children[0].material.transparent = transparent
             child.children[0].material.opacity = transparent ? 0.5 : 1

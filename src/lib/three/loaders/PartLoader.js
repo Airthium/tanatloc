@@ -261,7 +261,13 @@ const PartLoader = (mouseMoveEvent, mouseDownEvent) => {
       const faces = part.children[1]
       faces.children &&
         faces.children.forEach((face) => {
-          const childBox = face.geometry.boundingBox
+          let childBox
+          if (face.type === 'Group') {
+            // This is a result
+            childBox = face.boundingBox
+          } else {
+            childBox = face.geometry.boundingBox
+          }
           mergeBox(box, childBox)
         })
     }

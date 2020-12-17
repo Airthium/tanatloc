@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react'
-import { message, Button, Drawer, Layout, Space, Steps, Tabs } from 'antd'
+import { message, Button, Card, Drawer, Layout, Space, Steps, Tabs } from 'antd'
 import {
   EyeOutlined,
   EyeInvisibleOutlined,
   FileTextOutlined,
-  PlusCircleOutlined
+  RocketOutlined
 } from '@ant-design/icons'
 
 import SimulationAPI from '../../../../../src/api/simulation'
@@ -144,6 +144,11 @@ const Run = ({ project, simulation }) => {
     }
   }
 
+  const resultFiles = []
+  simulatingTasks?.forEach((task) => {
+    resultFiles.push(...(task.files || []))
+  })
+
   /**
    * Render
    */
@@ -159,11 +164,7 @@ const Run = ({ project, simulation }) => {
           {logContent}
         </Drawer>
         <Space direction="vertical">
-          <Button
-            icon={<PlusCircleOutlined />}
-            // loading={running}
-            onClick={onRun}
-          >
+          <Button icon={<RocketOutlined />} onClick={onRun}>
             Run
           </Button>
 
@@ -228,6 +229,35 @@ const Run = ({ project, simulation }) => {
               )
             })}
           </Steps>
+          {resultFiles.length ? (
+            <Card title="Results">
+              {resultFiles.map((result) => {
+                return (
+                  <Space>
+                    <Button
+                      icon={
+                        currentConfiguration.part?.fileName ===
+                        result?.fileName ? (
+                          <EyeInvisibleOutlined />
+                        ) : (
+                          <EyeOutlined />
+                        )
+                      }
+                      onClick={() =>
+                        setPart(
+                          currentConfiguration.part?.fileName ===
+                            result?.fileName
+                            ? null
+                            : result
+                        )
+                      }
+                    />
+                    {result.name}
+                  </Space>
+                )
+              })}
+            </Card>
+          ) : null}
         </Space>
       </Layout.Content>
     </Layout>

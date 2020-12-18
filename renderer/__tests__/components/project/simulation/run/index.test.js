@@ -43,7 +43,8 @@ describe('renderer/components/project/simulation/run', () => {
           type: 'mesh'
         },
         {
-          type: 'simulation'
+          type: 'simulation',
+          files: [{ name: 'name', fileName: 'resultFileName' }]
         }
       ]
     }))
@@ -108,12 +109,15 @@ describe('renderer/components/project/simulation/run', () => {
       .at(0)
       .props()
       .description.props.children[1].props.onClick()
+
+    // Simulation result
+    wrapper.find({ title: 'Results' }).find('Button').props().onClick()
   })
 
   it('effect', () => {
     wrapper.unmount()
 
-    // No tasks
+    // No file
     mockSimulation.mockImplementation(() => ({
       scheme: {
         configuration: { part: { fileName: 'fileName' }, run: {} }
@@ -132,10 +136,12 @@ describe('renderer/components/project/simulation/run', () => {
     wrapper = mount(<Run project={project} simulation={simulation} />)
     expect(wrapper).toBeDefined()
 
-    // With tasks
+    // With files
     wrapper.unmount()
     mockSimulation.mockImplementation(() => ({
-      scheme: { configuration: { run: { done: true } } },
+      scheme: {
+        configuration: { run: { done: true } }
+      },
       tasks: [
         {
           type: 'mesh',
@@ -146,7 +152,13 @@ describe('renderer/components/project/simulation/run', () => {
         },
         {
           type: 'simulation',
-          status: 'process'
+          status: 'process',
+          files: [
+            {
+              name: 'name',
+              fileName: 'fileName'
+            }
+          ]
         }
       ]
     }))
@@ -158,5 +170,44 @@ describe('renderer/components/project/simulation/run', () => {
       .at(0)
       .props()
       .description.props.children[1].props.onClick()
+
+    wrapper.unmount()
+    mockSimulation.mockImplementation(() => ({
+      scheme: {
+        configuration: { part: { fileName: 'fileName' }, run: { done: true } }
+      },
+      tasks: [
+        {
+          type: 'mesh',
+          status: 'finish',
+          file: {
+            fileName: 'fileName'
+          }
+        },
+        {
+          type: 'simulation',
+          status: 'process',
+          files: [
+            {
+              name: 'name',
+              fileName: 'fileName'
+            }
+          ]
+        }
+      ]
+    }))
+    wrapper = mount(<Run project={project} simulation={simulation} />)
+    expect(wrapper).toBeDefined()
+
+    wrapper
+      .find('Step')
+      .at(0)
+      .props()
+      .description.props.children[1].props.onClick()
+
+    wrapper.unmount()
+    wrapper = mount(<Run project={project} simulation={simulation} />)
+    expect(wrapper).toBeDefined()
+    wrapper.find({ title: 'Results' }).find('Button').props().onClick()
   })
 })

@@ -197,15 +197,15 @@ const computeSimulation = async ({ id }, configuration) => {
               simulationPath,
               path.join('run', resFile),
               path.join('run', partPath),
-              ({ error, data }) => {
-                if (error) {
-                  simulationTask.log += 'Warning: ' + error
+              ({ error: resError, data: resData }) => {
+                if (resError) {
+                  simulationTask.log += 'Warning: ' + resError
                   updateTasks(id, tasks)
                 }
 
-                if (data) {
+                if (resData) {
                   try {
-                    const jsonData = JSON.parse(data)
+                    const jsonData = JSON.parse(resData)
                     results.push(jsonData)
                   } catch (err) {
                     simulationTask.log += 'Warning: ' + err.message

@@ -185,9 +185,9 @@ const computeSimulation = async ({ id }, configuration) => {
         simulationTask.status = 'process'
         error && (simulationTask.log += 'Error: ' + error + '\n')
 
-        if (data && data.toString().includes('PROCESS VTU FILE')) {
+        if (data && data.includes('PROCESS VTU FILE')) {
           // New result
-          const resFile = data.toString().replace('PROCESS VTU FILE', '').trim()
+          const resFile = data.replace('PROCESS VTU FILE', '').trim()
           const partPath = resFile.replace('.vtu', '')
 
           const results = []
@@ -237,7 +237,7 @@ const computeSimulation = async ({ id }, configuration) => {
             simulationTask.log += 'Warning: ' + err.message
             updateTasks(id, tasks)
           }
-        } else if (data) {
+        } else {
           // This is just some log
           data && (simulationTask.log += data + '\n')
         }

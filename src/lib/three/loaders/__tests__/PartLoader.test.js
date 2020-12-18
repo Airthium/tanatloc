@@ -97,6 +97,7 @@ describe('src/lib/three/loaders/PartLoader', () => {
 
     // With color
     global.MockGeometry.getAttribute = {
+      count: 3,
       array: [0.1, 0.2, 0.3]
     }
     partLoader.load(part)
@@ -104,10 +105,17 @@ describe('src/lib/three/loaders/PartLoader', () => {
     // No type
     part.type = 'other'
     partLoader.load(part)
+    partLoader.load(part, true)
 
     // Mesh
     part.type = 'mesh'
     partLoader.load(part)
+    partLoader.load(part, true)
+
+    // Result
+    part.type = 'result'
+    partLoader.load(part)
+    partLoader.load(part, true)
 
     global.MockBox3.isEmpty = true
     partLoader.load(part, true)
@@ -121,7 +129,7 @@ describe('src/lib/three/loaders/PartLoader', () => {
 
   it('setTransparent', () => {
     const partLoader = PartLoader()
-    const mesh = partLoader.load(part)
+    let mesh = partLoader.load(part)
     mesh.setTransparent(true)
     mesh.setTransparent(false)
   })
@@ -237,5 +245,45 @@ describe('src/lib/three/loaders/PartLoader', () => {
     mesh.select('face_uuid')
     mesh.unselect('uuid')
     mesh.unselect('face_uuid')
+  })
+
+  it('result specific', () => {
+    part.type = 'result'
+    part.solids = []
+
+    global.MockGroup.children = [
+      { children: [] },
+      {
+        children: [
+          {
+            type: 'Group',
+            boundingBox: {
+              min: { x: 0, y: 0, z: 0 },
+              max: { x: 1, y: 1, z: 1 }
+            },
+            children: [
+              {
+                uuid: 'face_uuid',
+                geometry: {
+                  dispose: () => {}
+                },
+                material: {
+                  dispose: () => {}
+                }
+              },
+              {}
+            ]
+          }
+        ]
+      }
+    ]
+
+    const partLoader = PartLoader()
+    const mesh = partLoader.load(part)
+
+    mesh.setTransparent(true)
+    mesh.setTransparent(false)
+
+    mesh.dispose()
   })
 })

@@ -61,7 +61,7 @@ describe('src/lib/compute', () => {
       partPath: 'partPath'
     })
 
-    // Convert error
+    // Mesh convert error
     mockToThree.mockImplementation(() => {})
     try {
       await Compute.computeMesh(
@@ -94,6 +94,7 @@ describe('src/lib/compute', () => {
 
   it('computeSimulation', async () => {
     mockFreefem.mockImplementation((path, script, callback) => {
+      callback({ data: 'PROCESS VTU FILE run/result.vtu' })
       callback({ data: 'data' })
       callback({ error: 'data' })
       return 0
@@ -103,7 +104,12 @@ describe('src/lib/compute', () => {
       callback({ error: 'data' })
       return 0
     })
-    mockToThree.mockImplementation(() => 0)
+    mockToThree.mockImplementation((path, fileIn, partPath, callback) => {
+      callback({ data: 'file' })
+      callback({ data: '{ "name": "name", "path": "path" }' })
+      callback({ error: 'error' })
+      return 0
+    })
 
     // Empty
     await Compute.computeSimulation('id', {})
@@ -141,6 +147,19 @@ describe('src/lib/compute', () => {
     } catch (err) {
       expect(true).toBe(true)
     }
+
+    // Result error
+    mockToThree.mockImplementation(() => -1)
+    await Compute.computeSimulation('id', {
+      key: { file: {} }
+    })
+
+    mockToThree.mockImplementation(() => {
+      throw new Error()
+    })
+    await Compute.computeSimulation('id', {
+      key: { file: {} }
+    })
 
     // Error
     mockGmsh.mockImplementation(() => 0)

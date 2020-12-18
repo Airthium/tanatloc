@@ -303,12 +303,14 @@ const PartLoader = (mouseMoveEvent, mouseDownEvent) => {
   const dispose = (part) => {
     part.children.forEach((group) => {
       group.children.forEach((child) => {
-        if (child.geometry) child.geometry.dispose()
-        if (child.material) child.material.dispose()
         if (child.children && child.children.length) {
           // This is a result
           child.children[0].geometry.dispose()
           child.children[0].material.dispose()
+        } else {
+          // This is a geometry or a mesh
+          child.geometry.dispose()
+          child.material.dispose()
         }
       })
     })

@@ -3,7 +3,7 @@
 import { useRef, useEffect } from 'react'
 import {
   Mesh,
-  MeshDepthMaterial,
+  MeshBasicMaterial,
   PerspectiveCamera,
   Scene,
   TetrahedronGeometry,
@@ -62,7 +62,8 @@ const Background = () => {
     const h = 2 * Math.tan(hFOV / 2) * offset
     const w = h * camera.aspect
     // Build tetra
-    const material = new MeshDepthMaterial({
+    const material = new MeshBasicMaterial({
+      color: 0x0096c7,
       wireframe: true,
       transparent: true,
       opacity: 0.2

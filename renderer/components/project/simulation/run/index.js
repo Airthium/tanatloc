@@ -164,7 +164,7 @@ const Run = ({ project, simulation }) => {
           {logContent}
         </Drawer>
         <Space direction="vertical">
-          <Button icon={<RocketOutlined />} onClick={onRun}>
+          <Button icon={<RocketOutlined />} loading={running} onClick={onRun}>
             Run
           </Button>
 
@@ -233,7 +233,7 @@ const Run = ({ project, simulation }) => {
             <Card title="Results">
               {resultFiles.map((result) => {
                 return (
-                  <Space>
+                  <Space key={result.name}>
                     <Button
                       icon={
                         currentConfiguration.part?.fileName ===

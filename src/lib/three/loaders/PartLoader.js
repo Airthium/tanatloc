@@ -197,14 +197,17 @@ const PartLoader = (mouseMoveEvent, mouseDownEvent) => {
       lut.setMin(min)
       lut.setMax(max)
 
-      const colors = new Float32Array(data.count * 3)
+      const vertexColors = new Float32Array(data.count * 3)
       for (let i = 0; i < data.count; ++i) {
-        const color = lut.getColor(data.array[i])
-        colors[3 * i + 0] = color.r
-        colors[3 * i + 1] = color.g
-        colors[3 * i + 2] = color.b
+        const vertexColor = lut.getColor(data.array[i])
+        vertexColors[3 * i + 0] = vertexColor.r
+        vertexColors[3 * i + 1] = vertexColor.g
+        vertexColors[3 * i + 2] = vertexColor.b
       }
-      geometry.setAttribute('color', new Float32BufferAttribute(colors, 3))
+      geometry.setAttribute(
+        'color',
+        new Float32BufferAttribute(vertexColors, 3)
+      )
 
       const material = new LineBasicMaterial({
         vertexColors: VertexColors,

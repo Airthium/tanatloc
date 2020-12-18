@@ -185,8 +185,8 @@ const computeSimulation = async ({ id }, configuration) => {
         simulationTask.status = 'process'
         error && (simulationTask.log += 'Error: ' + error + '\n')
 
-        // New result
         if (data && data.toString().includes('PROCESS VTU FILE')) {
+          // New result
           const resFile = data.toString().replace('PROCESS VTU FILE', '').trim()
           const partPath = resFile.replace('.vtu', '')
 
@@ -198,22 +198,28 @@ const computeSimulation = async ({ id }, configuration) => {
               path.join('run', resFile),
               path.join('run', partPath),
               ({ error, data }) => {
-                error && console.error(error)
+                if (error) {
+                  simulationTask.log += 'Warning: ' + error
+                  updateTasks(id, tasks)
+                }
 
                 if (data) {
                   try {
                     const jsonData = JSON.parse(data)
                     results.push(jsonData)
                   } catch (err) {
-                    console.error(err)
+                    simulationTask.log += 'Warning: ' + err.message
+                    updateTasks(id, tasks)
                   }
                 }
               }
             )
 
-            if (resCode !== 0)
-              console.warn('Result converting process failed. Code ' + resCode)
-            else {
+            if (resCode !== 0) {
+              simulationTask.log +=
+                'Warning: Result converting process failed. Code ' + resCode
+              updateTasks(id, tasks)
+            } else {
               simulationTask.files = [
                 ...(simulationTask.files || []),
                 ...results.map((result) => ({
@@ -228,9 +234,11 @@ const computeSimulation = async ({ id }, configuration) => {
               updateTasks(id, tasks)
             }
           } catch (err) {
-            console.error(err)
+            simulationTask.log += 'Warning: ' + err.message
+            updateTasks(id, tasks)
           }
         } else if (data) {
+          // This is just some log
           data && (simulationTask.log += data + '\n')
         }
 

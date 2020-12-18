@@ -11,6 +11,7 @@ class MockGeometry {
     this.computeBoundingSphere = () => {}
     this.dispose = () => {}
     this.getAttribute = () => global.MockGeometry.getAttribute
+    this.setAttribute = () => {}
     this.lookAt = () => {}
     this.translate = () => {}
 
@@ -29,6 +30,8 @@ class MockMaterial {
     this.dispose = () => {}
   }
 }
+
+class mockFloat32BufferAttribute {}
 
 // Child classes
 
@@ -234,6 +237,7 @@ class MockWebGLRenderer {
 const MockThree = {
   Geometry: MockGeometry,
   Material: MockMaterial,
+  Float32BufferAttribute: mockFloat32BufferAttribute,
 
   AmbientLight: MockAmbientLight,
   Box2: MockBox2,

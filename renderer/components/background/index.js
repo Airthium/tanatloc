@@ -62,13 +62,15 @@ const Background = () => {
     const h = 2 * Math.tan(hFOV / 2) * offset
     const w = h * camera.aspect
     // Build tetra
-    const material = new MeshBasicMaterial({
-      color: 0x0096c7,
-      wireframe: true,
-      transparent: true,
-      opacity: 0.2
-    })
     for (let i = 0; i < numberOfTetrahedra; ++i) {
+      const rand = Math.random()
+      const material = new MeshBasicMaterial({
+        color: rand * 0x0096c7 + (1 - rand) * 0xffffff,
+        wireframe: true,
+        transparent: true,
+        opacity: 0.2
+      })
+
       const geometry = new TetrahedronGeometry(0.1 * Math.random())
       geometry.translate(
         (-1.2 * w) / 2 + 1.2 * w * Math.random(),

@@ -25,11 +25,11 @@ const freefem = async (path, script, callback) => {
     ])
 
     run.stdout.on('data', (data) => {
-      callback({ data })
+      callback({ data: data.toString() })
     })
 
     run.stderr.on('data', (data) => {
-      callback({ error: data })
+      callback({ error: data.toString() })
     })
 
     run.on('close', (code) => {

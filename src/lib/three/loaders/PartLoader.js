@@ -5,6 +5,7 @@ import {
   BufferGeometryLoader,
   Color,
   DoubleSide,
+  Float32BufferAttribute,
   Group,
   LineBasicMaterial,
   LineSegments,
@@ -13,8 +14,10 @@ import {
   Raycaster,
   Vector2,
   Vector3,
+  VertexColors,
   WireframeGeometry
 } from 'three/build/three.module'
+import { Lut } from 'three/examples/jsm/math/Lut'
 
 // TODO edges not supported for now
 
@@ -176,6 +179,67 @@ const PartLoader = (mouseMoveEvent, mouseDownEvent) => {
       const mesh = new LineSegments(wireframe, material)
       mesh.uuid = buffer.uuid
       return mesh
+    } else if (partType === 'result') {
+      const group = new Group()
+
+      geometry.computeBoundingBox()
+      geometry.computeBoundingSphere()
+
+      group.boundingBox = geometry.boundingBox
+      group.boundingSphere = geometry.boundingSphere
+      group.uuid = buffer.uuid
+
+      const data = geometry.getAttribute('data')
+      const min = Math.min(...data.array)
+      const max = Math.max(...data.array)
+
+      const lut = new Lut()
+      lut.setMin(min)
+      lut.setMax(max)
+
+      const vertexColors = new Float32Array(data.count * 3)
+      for (let i = 0; i < data.count; ++i) {
+        const vertexColor = lut.getColor(data.array[i])
+        vertexColors[3 * i + 0] = vertexColor.r
+        vertexColors[3 * i + 1] = vertexColor.g
+        vertexColors[3 * i + 2] = vertexColor.b
+      }
+      geometry.setAttribute(
+        'color',
+        new Float32BufferAttribute(vertexColors, 3)
+      )
+
+      const material = new LineBasicMaterial({
+        vertexColors: VertexColors,
+        color: color,
+        side: DoubleSide,
+        transparent: transparent,
+        opacity: transparent ? 0.5 : 1,
+        depthWrite: !transparent,
+        clippingPlanes: [clippingPlane]
+      })
+      material.originalColor = color
+
+      const mesh = new Mesh(geometry, material)
+
+      const wireframeGeometry = new WireframeGeometry(geometry)
+      const wireframeMaterial = new LineBasicMaterial({
+        color: color,
+        linewidth: 1,
+        transparent: transparent,
+        opacity: transparent ? 0.5 : 1,
+        depthWrite: !transparent,
+        clippingPlanes: [clippingPlane]
+      })
+      material.originalColor = color
+
+      const wireframe = new LineSegments(wireframeGeometry, wireframeMaterial)
+      wireframe.visible = transparent
+
+      group.add(mesh)
+      group.add(wireframe)
+
+      return group
     }
   }
 
@@ -199,7 +263,13 @@ const PartLoader = (mouseMoveEvent, mouseDownEvent) => {
       const faces = part.children[1]
       faces.children &&
         faces.children.forEach((face) => {
-          const childBox = face.geometry.boundingBox
+          let childBox
+          if (face.type === 'Group') {
+            // This is a result
+            childBox = face.boundingBox
+          } else {
+            childBox = face.geometry.boundingBox
+          }
           mergeBox(box, childBox)
         })
     }
@@ -233,8 +303,15 @@ const PartLoader = (mouseMoveEvent, mouseDownEvent) => {
   const dispose = (part) => {
     part.children.forEach((group) => {
       group.children.forEach((child) => {
-        child.geometry.dispose()
-        child.material.dispose()
+        if (child.children && child.children.length) {
+          // This is a result
+          child.children[0].geometry.dispose()
+          child.children[0].material.dispose()
+        } else {
+          // This is a geometry or a mesh
+          child.geometry.dispose()
+          child.material.dispose()
+        }
       })
     })
   }
@@ -248,9 +325,19 @@ const PartLoader = (mouseMoveEvent, mouseDownEvent) => {
     part.children.forEach((group) => {
       group.children &&
         group.children.forEach((child) => {
-          child.material.transparent = transparent
-          child.material.opacity = transparent ? 0.5 : 1
-          child.material.depthWrite = !transparent
+          if (child.material) {
+            child.material.transparent = transparent
+            child.material.opacity = transparent ? 0.5 : 1
+            child.material.depthWrite = !transparent
+          }
+          if (child.children && child.children.length) {
+            // This is a result
+            child.children[0].material.transparent = transparent
+            child.children[0].material.opacity = transparent ? 0.5 : 1
+            child.children[0].material.depthWrite = !transparent
+
+            child.children[1].visible = transparent
+          }
         })
     })
   }
@@ -464,6 +551,7 @@ const PartLoader = (mouseMoveEvent, mouseDownEvent) => {
    */
   const unselect = (uuid) => {
     const mesh = findObject(selectionPart, uuid)
+
     if (mesh && mesh.material) {
       mesh.material.color = mesh.material.originalColor
     }

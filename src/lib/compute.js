@@ -134,8 +134,8 @@ const computeSimulation = async ({ id }, configuration) => {
             },
             ({ error, data }) => {
               meshingTask.status = 'process'
-              error && (meshingTask.log += `Error: ${error}\n`)
-              data && (meshingTask.log += `${data}\n`)
+              error && (meshingTask.log += 'Error: ' + error + '\n')
+              data && (meshingTask.log += data + '\n')
               if ((Date.now() - start) % updateDelay === 0)
                 updateTasks(id, tasks)
             }
@@ -165,7 +165,8 @@ const computeSimulation = async ({ id }, configuration) => {
     {
       ...configuration,
       dimension: 3,
-      result: {
+      run: {
+        ...configuration.run,
         path: 'run'
       }
     },
@@ -180,10 +181,67 @@ const computeSimulation = async ({ id }, configuration) => {
     const code = await Services.freefem(
       simulationPath,
       path.join('run', id + '.edp'),
-      ({ error, data }) => {
+      async ({ error, data }) => {
         simulationTask.status = 'process'
-        error && (simulationTask.log += `Error: ${error}\n`)
-        data && (simulationTask.log += `${data}\n`)
+        error && (simulationTask.log += 'Error: ' + error + '\n')
+
+        if (data && data.includes('PROCESS VTU FILE')) {
+          // New result
+          const resFile = data.replace('PROCESS VTU FILE', '').trim()
+          const partPath = resFile.replace('.vtu', '')
+
+          const results = []
+
+          try {
+            const resCode = await Services.toThree(
+              simulationPath,
+              path.join('run', resFile),
+              path.join('run', partPath),
+              ({ error: resError, data: resData }) => {
+                if (resError) {
+                  simulationTask.log += 'Warning: ' + resError
+                  updateTasks(id, tasks)
+                }
+
+                if (resData) {
+                  try {
+                    const jsonData = JSON.parse(resData)
+                    results.push(jsonData)
+                  } catch (err) {
+                    simulationTask.log += 'Warning: ' + err.message
+                    updateTasks(id, tasks)
+                  }
+                }
+              }
+            )
+
+            if (resCode !== 0) {
+              simulationTask.log +=
+                'Warning: Result converting process failed. Code ' + resCode
+              updateTasks(id, tasks)
+            } else {
+              simulationTask.files = [
+                ...(simulationTask.files || []),
+                ...results.map((result) => ({
+                  fileName: resFile,
+                  originPath: 'run',
+                  name: result.name,
+                  part: 'part.json',
+                  partPath: result.path
+                }))
+              ]
+
+              updateTasks(id, tasks)
+            }
+          } catch (err) {
+            simulationTask.log += 'Warning: ' + err.message
+            updateTasks(id, tasks)
+          }
+        } else {
+          // This is just some log
+          data && (simulationTask.log += data + '\n')
+        }
+
         if ((Date.now() - start) % updateDelay === 0) updateTasks(id, tasks)
       }
     )
@@ -195,6 +253,7 @@ const computeSimulation = async ({ id }, configuration) => {
     // check code
     if (code !== 0) throw new Error('Simulating process failed. Code ' + code)
   } catch (err) {
+    // Task
     simulationTask.status = 'error'
     simulationTask.log += 'Fatal error: ' + err.message
     updateTasks(id, tasks)

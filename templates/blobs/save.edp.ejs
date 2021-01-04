@@ -20,3 +20,7 @@ load "iovtk"
 
 	savevtk("<%= solution.path %>" + "/" + <%- solution.name %> + ".vtu", <%= solution.mesh -%>, <% for (var i = 0; i < solution.sol.length; i++) { if (Array.isArray(solution.sol[i])) { -%>[<% for (var j = 0; j < solution.sol[i].length; j++) { -%><% if (solution.sol[i][j] === '0') { -%>0<% } else { -%><%= solution.sol[i][j] -%><%= solution.sol[i][j] -%><% } -%><% if (j != solution.sol[i].length-1) { -%>, <% } -%><% } -%>]<% } else {-%><%= solution.sol[i] -%><%= solution.sol[i] -%><% } if (i != solution.sol.length-1) { -%>, <% } -%><% } -%>, dataname=DataName, order=Order, bin=false);
 }
+
+cout.flush;
+cout << "PROCESS VTU FILE " << <%- solution.name %> << ".vtu" << endl;
+cout.flush;

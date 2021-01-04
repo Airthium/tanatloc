@@ -47,8 +47,8 @@ const convert = async (location, file) => {
     origin,
     target,
     ({ error, data }) => {
-      console.log(`${error}`)
-      console.log(`${data}`)
+      console.log(error)
+      console.log(data)
     }
   )
   // TODO data, error

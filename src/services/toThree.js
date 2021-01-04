@@ -24,6 +24,9 @@ const toThree = async (path, fileIn, pathOut, callback) => {
     case 'msh':
       conversionCode = 'GmshToThreeJS'
       break
+    case 'vtu':
+      conversionCode = 'VTUToThreeJS'
+      break
     default:
       throw new Error('Unknown conversion code')
   }
@@ -44,11 +47,11 @@ const toThree = async (path, fileIn, pathOut, callback) => {
     ])
 
     run.stdout.on('data', (data) => {
-      callback({ data })
+      callback({ data: data.toString() })
     })
 
     run.stderr.on('data', (data) => {
-      callback({ error: data })
+      callback({ error: data.toString() })
     })
 
     run.on('close', (code) => {

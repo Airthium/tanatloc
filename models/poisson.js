@@ -99,7 +99,12 @@ const Poisson = {
     },
     run: {
       index: 4,
-      title: 'Run'
+      title: 'Run',
+      results: [
+        {
+          name: 'u'
+        }
+      ]
     }
   }
 }

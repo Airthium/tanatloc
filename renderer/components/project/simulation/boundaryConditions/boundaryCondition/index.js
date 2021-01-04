@@ -72,9 +72,9 @@ const BoundaryCondition = ({
   const onType = (event) => {
     const key = event.target.value
     const type = types.find((t) => t.key === key)
-    const values = boundaryConditions[key].children.map(
-      (child) => child.default
-    )
+    const values = boundaryConditions[key].children
+      ? boundaryConditions[key].children.map((child) => child.default)
+      : [0]
     setCurrent({
       ...current,
       type: type,
@@ -150,7 +150,7 @@ const BoundaryCondition = ({
           })}
         </Radio.Group>
       </Card>
-      {current?.type && (
+      {current?.type && current?.type?.children && (
         <Card>
           {current?.type?.children?.map((child, index) => {
             return (

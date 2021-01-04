@@ -20,11 +20,13 @@ const LinearElasticity = {
       children: [
         {
           label: "Young's modulus",
+          name: 'E',
           htmlEntity: '',
           default: 1e9
         },
         {
           label: "Poisson's ratio",
+          name: 'Nu',
           htmlEntity: '',
           default: 0.4
         }
@@ -95,8 +97,7 @@ const LinearElasticity = {
       index: 4,
       title: 'Boundary conditions',
       fixed: {
-        label: 'Fixed',
-        children: []
+        label: 'Fixed'
       },
       displacement: {
         label: 'Displacement',
@@ -126,7 +127,7 @@ const LinearElasticity = {
       }
     },
     run: {
-      index: 4,
+      index: 5,
       title: 'Run',
       results: [
         {

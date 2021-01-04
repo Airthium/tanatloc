@@ -176,6 +176,7 @@ const run = async ({ id }) => {
 
   // Global
   const configuration = simulation.scheme.configuration
+  const algorithm = simulation.scheme.algorithm
 
   // Update status
   configuration.run = {
@@ -198,7 +199,7 @@ const run = async ({ id }) => {
   ])
 
   // Compute
-  Compute.computeSimulation({ id }, configuration)
+  Compute.computeSimulation({ id }, algorithm, configuration)
     .then(() => {
       configuration.run = {
         ...configuration.run,

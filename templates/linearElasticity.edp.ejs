@@ -18,6 +18,7 @@ mesh.name = 'Th'
 
 <%# Material -%>
 
+
 <%# Finite element space -%>
 <%
 const finiteElementSpace = parameters.finiteElementSpace.children[0]
@@ -29,6 +30,10 @@ finiteElementSpace.name = 'Uh'
 }); -%>
 
 <%# Finite element function -%>
+<%
+const unknownFunction = '[Ux, Uy, Uz]'
+const testFunction = '[Uhx, Uhy, Uhz]'
+-%>
 <%- include(`blobs/fespaceFunction.edp.ejs`, {
 	finiteElementSpace,
 	finiteElementFunction: ['Ux', 'Uy', 'Uz']
@@ -37,7 +42,82 @@ finiteElementSpace.name = 'Uh'
 <%# Macro -%>
 <%- include(`blobs/macro.edp.ejs`, {
 	dimension,
-	type: ['scalarGradient']
+	type: ['vectorialDivergence', 'vectorialEpsilon']
 }); -%>
 
+// Variables
+real Mu = E/(2.*(1.+Nu));
+real Lambda = E*Nu/((1.+ Nu)*(1.-2.*Nu));
+
 <%# Problem -%>
+<%
+const fixed = boundaryConditions.fixed.values || []
+const displacement = boundaryConditions.displacement.values || []
+const pressure = boundaryConditions.pressure.values || []
+const rhs = parameters.rightHandSide.children
+const rhsX = rhs[0].value || rhs[0].default
+const rhsY = rhs[1].value || rhs[1].default
+const rhsZ = rhs[2].value || rhs[2].default
+-%>
+// Problem
+cout << "Define the problem..." << endl;
+varf vLinearElasticity (<%= unknownFunction -%>, <%= testFunction -%>)
+	= intN(Th)(
+		  Lambda * Div(U) * Div(Uh)
+		+ 2. * Mu * (
+			Epsilon(U)' * Epsilon(Uh)
+		)
+	)
+<% for (const d of displacement) { -%>
+	+ on(<%= d.selected.map(s => { return s.label}).filter(s => s).join() -%><% if (d.checked[0]) { -%>, Ux=0<% } -%><% if (d.checked[1]) { -%>, Uy=0<% } -%><% if (d.checked[2]) { -%>, Uz=0<% } -%>)
+<% } -%>
+<% for (const f of fixed) { -%>
+	+ on(<%= f.selected.map(s => { return s.label}).filter(s => s).join() -%>, Ux=0, Uy=0, Uz=0)
+<% } -%>
+	;
+
+varf vLinearElasticityRHS (<%= unknownFunction -%>, <%= testFunction -%>)
+	= intN(Th)(
+<% if (dimension === 2) { -%>
+		[<%- rhsX -%>, <%- rhsY -%>]' * <%= testFunction %>
+<% } else { -%>
+		[<%- rhsX -%>, <%- rhsY -%>, <%- rhsZ -%>]' * <%= testFunction %>
+<% } -%>
+	)
+	<% for (const p of pressure) { -%>
+	- intN1(Th, <%= p.selected.map(s => { return s.label}).filter(s => s).join() -%>)(
+		(<%- p.value[0] -%>) * <%= N -%>' * <%= Uh -%>
+	)
+<% } -%>
+<% for (const d of displacement) { -%>
+	+ on(<%= d.selected.map(s => { return s.label}).filter(s => s).join() -%><% if (d.checked[0]) { -%>, Ux=<%- d.value[0] -%><% } -%><% if (d.checked[1]) { -%>, Uy=<%- d.value[1] -%><% } -%><% if (d.checked[2]) { -%>, Uz=<%- d.value[2] -%><% } -%>)
+<% } -%>
+<% for (const f of fixed) { -%>
+	+ on(<%= f.selected.map(s => { return s.label}).filter(s => s).join() -%>, Ux=0, Uy=0, Uz=0)
+<% } -%>
+	;
+
+<%# Solver -%>
+<% const solver = parameters.solver.children[0].value || parameters.solver.children[0].default -%>
+<%- include(`blobs/solver.edp.ejs`, {
+	solver
+}) -%>
+
+<%# Solve -%>
+// Solve
+cout << "Solve the problem..." << endl;
+matrix LinearElasticity = vLinearElasticity(<%= finiteElementSpace.name -%>, <%= finiteElementSpace.name -%>, solver=solver);
+real[int] LinearElasticityRHS = vLinearElasticityRHS(0, <%= finiteElementSpace.name -%>);
+Ux[] = LinearElasticity^-1 * LinearElasticityRHS;
+
+<%# Save -%>
+<%- include(`blobs/save.edp.ejs`, {
+	solution: {
+		path: `${run.path}`,
+		name: '"Result"',
+		mesh: mesh.name,
+		sol: ['u'],
+		dataName: [`${run.results.map(r => r.name)}`],
+		order: [1]
+	}
+}); -%>

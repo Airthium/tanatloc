@@ -61,7 +61,7 @@ varf vLaplacianRHS (u, uh)
 		(<%- rhsValue -%>) * uh
 	)
 <% for (const n of neumann) { -%>
-	- intN1(Th, <%= selected.map(s => { return s.label}).filter(s => s).join() %>) {
+	- intN1(Th, <%= n.selected.map(s => { return s.label}).filter(s => s).join() %>) {
 		(<%- n.values[0] %>) * uh
 	}
 <% } -%>

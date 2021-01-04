@@ -82,10 +82,10 @@ const computeMesh = async (simulationPath, geometry, mesh, callback) => {
 /**
  * Compute simulation
  * @param {string} simulation Simulation { id }
- * @param {string} simulationPath Simulation path
+ * @param {string} algorithm Algorithm
  * @param {Object} configuration Configuration
  */
-const computeSimulation = async ({ id }, configuration) => {
+const computeSimulation = async ({ id }, algorithm, configuration) => {
   // Time
   const start = Date.now()
 
@@ -161,7 +161,7 @@ const computeSimulation = async ({ id }, configuration) => {
 
   // Build the simulation script
   await Template.render(
-    './templates/poisson.edp.ejs',
+    './templates/' + algorithm + '.edp.ejs',
     {
       ...configuration,
       dimension: 3,

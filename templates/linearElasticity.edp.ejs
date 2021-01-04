@@ -1,0 +1,43 @@
+<%# Headers -%>
+<%- include('blobs/headers.edp.ejs') -%>
+
+<%# Dimension -%>
+<%- include(`blobs/dimensioning.edp.ejs`, {
+	dimension
+}); -%>
+
+<%# Mesh -%>
+<%
+const mesh = geometry.mesh
+mesh.name = 'Th'
+-%>
+<%- include(`blobs/mesh.edp.ejs`, {
+	dimension,
+	mesh
+}); -%>
+
+<%# Material -%>
+
+<%# Finite element space -%>
+<%
+const finiteElementSpace = parameters.finiteElementSpace.children[0]
+finiteElementSpace.name = 'Uh'
+-%>
+<%- include(`blobs/fespace.edp.ejs`, {
+	mesh,
+	finiteElementSpace
+}); -%>
+
+<%# Finite element function -%>
+<%- include(`blobs/fespaceFunction.edp.ejs`, {
+	finiteElementSpace,
+	finiteElementFunction: ['Ux', 'Uy', 'Uz']
+}); -%>
+
+<%# Macro -%>
+<%- include(`blobs/macro.edp.ejs`, {
+	dimension,
+	type: ['scalarGradient']
+}); -%>
+
+<%# Problem -%>

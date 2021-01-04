@@ -95,7 +95,8 @@ const LinearElasticity = {
       index: 4,
       title: 'Boundary conditions',
       fixed: {
-        label: 'Fixed'
+        label: 'Fixed',
+        children: []
       },
       displacement: {
         label: 'Displacement',
@@ -129,7 +130,7 @@ const LinearElasticity = {
       title: 'Run',
       results: [
         {
-          name: 'u'
+          name: 'U, Sigma'
         }
       ]
     }

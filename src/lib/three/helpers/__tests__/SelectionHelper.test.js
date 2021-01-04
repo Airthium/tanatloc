@@ -89,6 +89,11 @@ describe('src/lib/three/helpers/SelectionHelper', () => {
     mouseUp({})
   })
 
+  it('isEnabled', () => {
+    const selection = SelectionHelper(renderer, scene, camera, controls)
+    expect(selection.isEnabled()).toBe(false)
+  })
+
   it('dispose', () => {
     const selection = SelectionHelper(renderer, scene, camera, controls)
     selection.dispose()

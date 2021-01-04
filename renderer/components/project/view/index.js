@@ -647,7 +647,11 @@ const ThreeView = ({ loading, part }) => {
               <Tooltip title="Zoom to selection" placement="left">
                 <Button
                   icon={<SelectOutlined />}
-                  onClick={() => selectionHelper.current.start()}
+                  onClick={() =>
+                    selectionHelper.current.isEnabled()
+                      ? selectionHelper.current.end()
+                      : selectionHelper.current.start()
+                  }
                 />
               </Tooltip>
             </div>

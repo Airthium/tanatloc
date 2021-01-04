@@ -87,9 +87,12 @@ jest.mock('../../../../../src/lib/three/helpers/GridHelper', () => ({
   })
 }))
 
+const mockSelectionEnabled = jest.fn()
 jest.mock('../../../../../src/lib/three/helpers/SelectionHelper', () => ({
   SelectionHelper: () => ({
     start: () => {},
+    end: () => {},
+    isEnabled: () => mockSelectionEnabled(),
     dispose: () => {}
   })
 }))
@@ -282,6 +285,17 @@ describe('components/project/view', () => {
     wrapper.unmount()
     mockState = true
     wrapper = mount(<View />)
+    wrapper.find('Button').forEach((button) => {
+      if (button.props().onClick) button.props().onClick()
+    })
+  })
+
+  it('selection', () => {
+    wrapper.find('Button').forEach((button) => {
+      if (button.props().onClick) button.props().onClick()
+    })
+
+    mockSelectionEnabled.mockImplementation(() => true)
     wrapper.find('Button').forEach((button) => {
       if (button.props().onClick) button.props().onClick()
     })

@@ -2,10 +2,7 @@ import BoundaryCondition from '../../../../../components/project/simulation/boun
 import { shallow, mount } from 'enzyme'
 
 jest.mock('../../../../../components/assets/formula', () => 'Formula')
-jest.mock(
-  '../../../../../components/project/simulation/boundaryConditions/selector',
-  () => 'Selector'
-)
+jest.mock('../../../../../components/assets/selector', () => 'Selector')
 jest.mock(
   '../../../../../components/project/simulation/boundaryConditions/add',
   () => 'Add'

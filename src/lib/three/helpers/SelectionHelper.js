@@ -48,6 +48,10 @@ const SelectionHelper = (renderer, scene, camera, controls) => {
     enabled = false
   }
 
+  const isEnabled = () => {
+    return enabled
+  }
+
   /**
    * Mouse down
    * @param {Object} event Event
@@ -207,7 +211,7 @@ const SelectionHelper = (renderer, scene, camera, controls) => {
     renderer.domElement.removeEventListener('mouseup', onMouseUp)
   }
 
-  return { start, dispose }
+  return { start, isEnabled, end, dispose }
 }
 
 export { SelectionHelper }

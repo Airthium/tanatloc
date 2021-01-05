@@ -1,4 +1,5 @@
-import { Button, Drawer, Space } from 'antd'
+import { useState } from 'react'
+import { Button, Card, Drawer, Space } from 'antd'
 
 import DataBase from '../database'
 import Selector from '../../../../assets/selector'
@@ -12,7 +13,21 @@ const Material = ({
   material,
   close
 }) => {
-  const onSelected = () => {}
+  const [current, setCurrent] = useState()
+
+  const onMaterialSelect = (material) => {
+    setCurrent({
+      ...current,
+      material
+    })
+  }
+
+  const onSelected = (selected) => {
+    setCurrent({
+      ...current,
+      selected
+    })
+  }
 
   const onClose = () => {
     close()
@@ -28,7 +43,10 @@ const Material = ({
       maskClosable={false}
       width={300}
     >
-      <DataBase />
+      <Card>
+        <DataBase onSelect={onMaterialSelect} />
+        {current?.material?.label}
+      </Card>
       <Selector part={part} updateSelected={onSelected} />
       <Space>
         <Button type="danger" onClick={onClose}>

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Button, Card, Collapse, Layout, List, Menu, Modal } from 'antd'
+import { Button, Collapse, Layout, List, Menu, Modal } from 'antd'
 import { DatabaseOutlined, SelectOutlined } from '@ant-design/icons'
 
 const dataBase = {
@@ -25,7 +25,10 @@ const dataBase = {
   }
 }
 
-const DataBase = () => {
+/**
+ * Material database
+ */
+const DataBase = ({ onSelect }) => {
   const [visible, setVisible] = useState()
   const [current, setCurrent] = useState()
 
@@ -34,14 +37,19 @@ const DataBase = () => {
       return (
         <List.Item
           key={material.label}
-          extra={<Button icon={<SelectOutlined />} />}
+          extra={
+            <Button
+              icon={<SelectOutlined />}
+              onClick={() => onMaterialSelect(material)}
+            />
+          }
         >
           {material.label}
           <Collapse>
             <Collapse.Panel>
               {material.children.map((value) => {
                 return (
-                  <div>
+                  <div key={value.label}>
                     {value.label}: {value.symbol} = {value.value}{' '}
                   </div>
                 )
@@ -55,17 +63,21 @@ const DataBase = () => {
     setCurrent(<List itemLayout="vertical">{materials}</List>)
   }
 
+  const onMaterialSelect = (material) => {
+    onSelect(material)
+    setVisible(false)
+  }
+
   return (
-    <Card>
+    <>
       <Button icon={<DatabaseOutlined />} onClick={() => setVisible(true)}>
         Material database
       </Button>
       <Modal
         visible={visible}
         title="Material database"
-        okText="Select"
-        onOk={() => {}}
         onCancel={() => setVisible(false)}
+        okButtonProps={{ style: { display: 'none' } }}
       >
         <Layout>
           <Layout.Sider theme="light">
@@ -78,7 +90,7 @@ const DataBase = () => {
           <Layout.Content>{current}</Layout.Content>
         </Layout>
       </Modal>
-    </Card>
+    </>
   )
 }
 

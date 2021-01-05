@@ -200,5 +200,3 @@ const BoundaryCondition = ({
 }
 
 export default BoundaryCondition
-
-//   {boundar

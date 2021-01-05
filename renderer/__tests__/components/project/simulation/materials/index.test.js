@@ -72,6 +72,10 @@ describe('renderer/components/project/simulation/materials', () => {
     expect(mockEnable).toHaveBeenCalledTimes(1)
   })
 
+  it('onEdit', () => {
+    wrapper.find('List').props().onEdit()
+  })
+
   it('onClose', () => {
     wrapper.find('Material').props().close()
     expect(mockDisable).toHaveBeenCalledTimes(1)

@@ -68,7 +68,7 @@ describe('renderer/components/project/simulation/materials/add', () => {
 
     // Without values
     wrapper.unmount()
-    simulation.scheme.configuration.material = {}
+    simulation.scheme.configuration.materials = {}
     wrapper = shallow(
       <Add
         disabled={false}

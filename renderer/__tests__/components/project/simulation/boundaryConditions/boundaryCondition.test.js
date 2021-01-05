@@ -70,6 +70,30 @@ describe('renderer/components/project/simulation/boundaryConditions/boundaryCond
       .at(1)
       .props()
       .children.props.onChange({ target: { value: 'key' } })
+
+    // Without children
+    wrapper.unmount()
+    wrapper = shallow(
+      <BoundaryCondition
+        project={project}
+        simulation={simulation}
+        visible={true}
+        part={part}
+        boundaryConditions={{
+          title: 'title',
+          key: {
+            label: 'label'
+          }
+        }}
+        boundaryCondition={boundaryCondition}
+        close={close}
+      />
+    )
+    wrapper
+      .find('Card')
+      .at(1)
+      .props()
+      .children.props.onChange({ target: { value: 'key' } })
   })
 
   it('onSelected', () => {

@@ -1,3 +1,5 @@
+/** @module renderer/components/assets/selector */
+
 import { useEffect } from 'react'
 import { Card } from 'antd'
 

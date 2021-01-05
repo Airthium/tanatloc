@@ -3,6 +3,7 @@ import { Button, Card, Drawer, Space } from 'antd'
 
 import DataBase from '../database'
 import Selector from '../../../../assets/selector'
+import Add from '../add'
 
 const Material = ({
   project,
@@ -13,7 +14,9 @@ const Material = ({
   material,
   close
 }) => {
+  // State
   const [current, setCurrent] = useState()
+  const [disabled, setDisabled] = useState(true)
 
   const onMaterialSelect = (material) => {
     setCurrent({
@@ -52,6 +55,14 @@ const Material = ({
         <Button type="danger" onClick={onClose}>
           Cancel
         </Button>
+        <Add
+          disabled={disabled}
+          material={current}
+          oriject={project}
+          simulation={simulation}
+          part={part}
+          close={onClose}
+        />
       </Space>
     </Drawer>
   )

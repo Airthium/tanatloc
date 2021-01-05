@@ -164,10 +164,7 @@ const Run = ({ project, simulation }) => {
           {logContent}
         </Drawer>
         <Space direction="vertical">
-          <Button
-            icon={<RocketOutlined />}
-            /*loading={running}*/ onClick={onRun}
-          >
+          <Button icon={<RocketOutlined />} loading={running} onClick={onRun}>
             Run
           </Button>
 

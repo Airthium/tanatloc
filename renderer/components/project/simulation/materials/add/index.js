@@ -7,25 +7,17 @@ import SimulationAPI from '../../../../../../src/api/simulation'
 import Sentry from '../../../../../../src/lib/sentry'
 
 /**
- * Errors boundaryCondition/add
+ * Errors material/add
  */
 const errors = {
-  updateError: 'Unable to add the boundary condition'
+  updateError: 'Unable to add the material'
 }
 
 /**
- * Add boundary condition
- * @memberof module:renderer/components/project/simulation
+ * Add material
  * @param {Object} props Props
  */
-const Add = ({
-  disabled,
-  boundaryCondition,
-  project,
-  simulation,
-  part,
-  close
-}) => {
+const Add = ({ material, project, simulation, part, close }) => {
   // State
   const [loading, setLoading] = useState()
 
@@ -35,44 +27,37 @@ const Add = ({
   )
 
   /**
-   * on Add
+   * On add
    */
   const onAdd = async () => {
     setLoading(true)
 
     try {
-      // Get type key
-      const type = boundaryCondition.type.key
-
       // Modify selection
-      const selection = part.faces
-        .map((f) => {
-          if (boundaryCondition.selected.includes(f.uuid))
+      const selection = part.solids
+        .map((s) => {
+          if (material.selected.includes(s.uuid))
             return {
-              uuid: f.uuid,
-              label: f.number
+              uuid: s.uuid,
+              label: s.number
             }
         })
         .filter((s) => s)
-      boundaryCondition.selected = selection
+      material.selected = selection
 
       // Set uuid
-      boundaryCondition.uuid = uuid()
+      material.uuid = uuid()
 
       // New simulation
       const newSimulation = { ...simulation }
 
       // Update local
-      const boundaryConditions =
-        newSimulation.scheme.configuration.boundaryConditions
-      boundaryConditions[type].values = [
-        ...(boundaryConditions[type].values || []),
-        boundaryCondition
-      ]
+      const materials = newSimulation.scheme.configuration.materials
+      materials.values = [...(materials.values || []), material]
 
       // Diff
       const diff = {
-        ...boundaryConditions,
+        ...materials,
         done: true
       }
 
@@ -82,7 +67,7 @@ const Add = ({
           key: 'scheme',
           type: 'json',
           method: 'diff',
-          path: ['configuration', 'boundaryConditions'],
+          path: ['configuration', 'materials'],
           value: diff
         }
       ])
@@ -107,7 +92,7 @@ const Add = ({
    * Render
    */
   return (
-    <Button loading={loading} disabled={disabled} onClick={onAdd}>
+    <Button loading={loading} onClick={onAdd}>
       Add
     </Button>
   )

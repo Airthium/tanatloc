@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { Button, Layout } from 'antd'
 import { PlusCircleOutlined } from '@ant-design/icons'
 
+import List from './list'
 import Material from './material'
 
 import { useDispatch } from 'react-redux'
@@ -40,6 +41,11 @@ const Materials = ({ project, simulation, part, setVisible }) => {
   }
 
   /**
+   * On edit
+   */
+  const onEdit = () => {}
+
+  /**
    * On close
    */
   const onClose = () => {
@@ -53,6 +59,7 @@ const Materials = ({ project, simulation, part, setVisible }) => {
     <Layout>
       <Layout.Content>
         <Button icon={<PlusCircleOutlined />} onClick={onAdd} />
+        <List project={project} simulation={simulation} onEdit={onEdit} />
         <Material
           project={project}
           simulation={simulation}

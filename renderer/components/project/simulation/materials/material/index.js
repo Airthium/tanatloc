@@ -1,5 +1,6 @@
 import { Button, Drawer, Space } from 'antd'
 
+import DataBase from '../database'
 import Selector from '../../../../assets/selector'
 
 const Material = ({
@@ -27,6 +28,7 @@ const Material = ({
       maskClosable={false}
       width={300}
     >
+      <DataBase />
       <Selector part={part} updateSelected={onSelected} />
       <Space>
         <Button type="danger" onClick={onClose}>

@@ -66,7 +66,7 @@ const List = ({ project, simulation, onEdit }) => {
   /**
    * Render
    */
-  return list
+  return list || null
 }
 
 export default List

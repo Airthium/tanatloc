@@ -11,6 +11,8 @@ const Material = ({
   material,
   close
 }) => {
+  const onSelected = () => {}
+
   const onClose = () => {
     close()
   }
@@ -25,7 +27,7 @@ const Material = ({
       maskClosable={false}
       width={300}
     >
-      Material
+      <Selector part={part} updateSelected={onSelected} />
       <Space>
         <Button type="danger" onClick={onClose}>
           Cancel

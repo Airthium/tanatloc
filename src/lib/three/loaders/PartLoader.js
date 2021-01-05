@@ -390,12 +390,12 @@ const PartLoader = (mouseMoveEvent, mouseDownEvent) => {
     highlighted = null
     selected.length = 0
 
-    if (type === 'solid') {
+    if (type === 'solids') {
       setSolidsVisible(part, true)
       setFacesVisible(part, false)
 
       selectionType = 0
-    } else if (type === 'face') {
+    } else if (type === 'faces') {
       setSolidsVisible(part, false)
       setFacesVisible(part, true)
 

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { Button, Card, Drawer, Input, Radio, Space } from 'antd'
 
 import Formula from '../../../../assets/formula'
-import Selector from '../selector'
+import Selector from '../../../../assets/selector'
 import Add from '../add'
 import Edit from '../edit'
 

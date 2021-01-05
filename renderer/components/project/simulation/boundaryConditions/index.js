@@ -42,7 +42,7 @@ const BoundaryConditions = ({ project, simulation, part, setVisible }) => {
 
   // Part
   useEffect(() => {
-    dispatch(setType('face'))
+    dispatch(setType('faces'))
     dispatch(setPart(part?.uuid))
   }, [part])
 

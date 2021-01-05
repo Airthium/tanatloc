@@ -25,7 +25,7 @@ const Materials = ({ project, simulation, part, setVisible }) => {
 
   // Part
   useEffect(() => {
-    dispatch(setType('solid'))
+    dispatch(setType('solids'))
     dispatch(setPart(part?.uuid))
   }, [part])
 

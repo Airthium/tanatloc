@@ -64,4 +64,38 @@ describe('renderer/components/project/simulation/materials/material', () => {
     wrapper.find('Add').props().close()
     expect(close).toHaveBeenCalledTimes(1)
   })
+
+  it('effect', () => {
+    // Without material
+    material = null
+    wrapper = mount(
+      <Material
+        project={project}
+        simulation={simulation}
+        visible={true}
+        part={part}
+        materials={materials}
+        material={material}
+        close={close}
+      />
+    )
+
+    // Enable
+    wrapper.unmount()
+    material = {
+      selected: [{ uuid: 'uuid', label: 1 }],
+      material: {}
+    }
+    wrapper = mount(
+      <Material
+        project={project}
+        simulation={simulation}
+        visible={true}
+        part={part}
+        materials={materials}
+        material={material}
+        close={close}
+      />
+    )
+  })
 })

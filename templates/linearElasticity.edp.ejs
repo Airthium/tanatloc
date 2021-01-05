@@ -112,10 +112,25 @@ matrix LinearElasticity = vLinearElasticity(<%= finiteElementSpace.name -%>, <%=
 real[int] LinearElasticityRHS = vLinearElasticityRHS(0, <%= finiteElementSpace.name -%>);
 Ux[] = LinearElasticity^-1 * LinearElasticityRHS;
 
-<%# von Mises stree -%>
+<%# von Mises stress -%>
 fespace Sh(Th, P2);
-Sh Sigma = x*y;
-// TODO
+Sh epsilon11 = dx(Ux);
+Sh epsilon22 = dy(Uy);
+Sh epsilon33 = dz(Uz);
+Sh epsilon12 = 0.5*(dy(Ux) + dx(Uy));
+Sh epsilon13 = 0.5*(dz(Ux) + dx(Uz));
+Sh epsilon23 = 0.5*(dy(Uz) + dz(Uy));
+
+Sh traceEpsilon = epsilon11 + epsilon22 + epsilon33;
+
+Sh gamma11 = 2.*Mu * epsilon11 + Lambda * traceEpsilon;
+Sh gamma22 = 2.*Mu * epsilon22 + Lambda * traceEpsilon;
+Sh gamma33 = 2.*Mu * epsilon33 + Lambda * traceEpsilon;
+Sh gamma12 = 2.*Mu * epsilon12;
+Sh gamma13 = 2.*Mu * epsilon13;
+Sh gamma23 = 2.*Mu * epsilon23;
+
+Sh Sigma = sqrt(0.5 * ((gamma11 - gamma22)^2 + (gamma22 - gamma33)^2 + (gamma33 - gamma11)^2) + 3.*(gamma12^2 + gamma23^2 + gamma13^2));
 
 <%# Save -%>
 <%- include('blobs/save.edp.ejs', {

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Button, Card, Drawer, Space } from 'antd'
 
 import DataBase from '../database'
@@ -18,10 +18,22 @@ const Material = ({
   const [current, setCurrent] = useState()
   const [disabled, setDisabled] = useState(true)
 
-  const onMaterialSelect = (material) => {
+  // Edit
+  useEffect(() => {
+    if (material) setCurrent(material)
+  }, [material])
+
+  // Disabled
+  useEffect(() => {
+    if (!current || !current.material || !current.selected?.length)
+      setDisabled(true)
+    else setDisabled(false)
+  }, [current])
+
+  const onMaterialSelect = (currentMaterial) => {
     setCurrent({
       ...current,
-      material
+      material: currentMaterial
     })
   }
 

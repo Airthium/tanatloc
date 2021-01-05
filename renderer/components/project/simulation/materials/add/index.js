@@ -17,7 +17,7 @@ const errors = {
  * Add material
  * @param {Object} props Props
  */
-const Add = ({ material, project, simulation, part, close }) => {
+const Add = ({ material, project, simulation, part, disabled, close }) => {
   // State
   const [loading, setLoading] = useState()
 
@@ -92,7 +92,7 @@ const Add = ({ material, project, simulation, part, close }) => {
    * Render
    */
   return (
-    <Button loading={loading} onClick={onAdd}>
+    <Button loading={loading} disabled={disabled} onClick={onAdd}>
       Add
     </Button>
   )

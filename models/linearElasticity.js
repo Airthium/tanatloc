@@ -131,7 +131,10 @@ const LinearElasticity = {
       title: 'Run',
       results: [
         {
-          name: 'U, Sigma'
+          name: 'U'
+        },
+        {
+          name: 'Sigma'
         }
       ]
     }

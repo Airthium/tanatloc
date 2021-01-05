@@ -112,14 +112,19 @@ matrix LinearElasticity = vLinearElasticity(<%= finiteElementSpace.name -%>, <%=
 real[int] LinearElasticityRHS = vLinearElasticityRHS(0, <%= finiteElementSpace.name -%>);
 Ux[] = LinearElasticity^-1 * LinearElasticityRHS;
 
+<%# von Mises stree -%>
+fespace Sh(Th, P2);
+Sh Sigma = x*y;
+// TODO
+
 <%# Save -%>
 <%- include('blobs/save.edp.ejs', {
 	solution: {
 		path: `${run.path}`,
 		name: '"Result"',
 		mesh: mesh.name,
-		sol: [['Ux', 'Uy', 'Uz']],
+		sol: [['Ux', 'Uy', 'Uz'], 'Sigma'],
 		dataName: [`${run.results.map(r => r.name)}`],
-		order: [1]
+		order: [1, 1]
 	}
 }); -%>

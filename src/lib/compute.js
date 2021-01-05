@@ -159,8 +159,6 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
     })
   )
 
-  console.log(configuration.materials)
-
   // Build the simulation script
   await Template.render(
     './templates/' + algorithm + '.edp.ejs',

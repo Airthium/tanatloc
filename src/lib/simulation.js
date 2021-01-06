@@ -57,6 +57,8 @@ const checkFiles = async (simulation, data) => {
     data.map(async (d) => {
       // No scheme
       if (d.key !== 'scheme') return
+      // No value
+      if (!d.value) return
       // No file
       if (!d.value.file) return
 

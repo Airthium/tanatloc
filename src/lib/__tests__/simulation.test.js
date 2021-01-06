@@ -139,6 +139,23 @@ describe('src/lib/simulation', () => {
     expect(mockRemoveFile).toHaveBeenCalledTimes(0)
     expect(mockRemoveDirectory).toHaveBeenCalledTimes(0)
 
+    // Without value
+    await Simulation.update({}, [
+      {
+        key: 'scheme'
+      }
+    ])
+    expect(mockPath).toHaveBeenCalledTimes(0)
+    expect(mockAdd).toHaveBeenCalledTimes(0)
+    expect(mockGet).toHaveBeenCalledTimes(0)
+    expect(mockUpdate).toHaveBeenCalledTimes(4)
+    expect(mockDelete).toHaveBeenCalledTimes(0)
+    expect(mockUpdateProject).toHaveBeenCalledTimes(0)
+    expect(mockWriteFile).toHaveBeenCalledTimes(0)
+    expect(mockConvert).toHaveBeenCalledTimes(0)
+    expect(mockRemoveFile).toHaveBeenCalledTimes(0)
+    expect(mockRemoveDirectory).toHaveBeenCalledTimes(0)
+
     // With undefined file
     await Simulation.update({}, [
       {
@@ -151,7 +168,7 @@ describe('src/lib/simulation', () => {
     expect(mockPath).toHaveBeenCalledTimes(0)
     expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockGet).toHaveBeenCalledTimes(0)
-    expect(mockUpdate).toHaveBeenCalledTimes(4)
+    expect(mockUpdate).toHaveBeenCalledTimes(5)
     expect(mockDelete).toHaveBeenCalledTimes(0)
     expect(mockUpdateProject).toHaveBeenCalledTimes(0)
     expect(mockWriteFile).toHaveBeenCalledTimes(0)
@@ -178,7 +195,7 @@ describe('src/lib/simulation', () => {
     expect(mockPath).toHaveBeenCalledTimes(2)
     expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockGet).toHaveBeenCalledTimes(1)
-    expect(mockUpdate).toHaveBeenCalledTimes(5)
+    expect(mockUpdate).toHaveBeenCalledTimes(6)
     expect(mockDelete).toHaveBeenCalledTimes(0)
     expect(mockUpdateProject).toHaveBeenCalledTimes(0)
     expect(mockWriteFile).toHaveBeenCalledTimes(1)
@@ -217,7 +234,7 @@ describe('src/lib/simulation', () => {
     expect(mockPath).toHaveBeenCalledTimes(6)
     expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockGet).toHaveBeenCalledTimes(2)
-    expect(mockUpdate).toHaveBeenCalledTimes(6)
+    expect(mockUpdate).toHaveBeenCalledTimes(7)
     expect(mockDelete).toHaveBeenCalledTimes(0)
     expect(mockUpdateProject).toHaveBeenCalledTimes(0)
     expect(mockWriteFile).toHaveBeenCalledTimes(2)
@@ -247,7 +264,7 @@ describe('src/lib/simulation', () => {
     expect(mockPath).toHaveBeenCalledTimes(10)
     expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockGet).toHaveBeenCalledTimes(3)
-    expect(mockUpdate).toHaveBeenCalledTimes(7)
+    expect(mockUpdate).toHaveBeenCalledTimes(8)
     expect(mockDelete).toHaveBeenCalledTimes(0)
     expect(mockUpdateProject).toHaveBeenCalledTimes(0)
     expect(mockWriteFile).toHaveBeenCalledTimes(3)
@@ -283,7 +300,7 @@ describe('src/lib/simulation', () => {
     expect(mockPath).toHaveBeenCalledTimes(12)
     expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockGet).toHaveBeenCalledTimes(4)
-    expect(mockUpdate).toHaveBeenCalledTimes(8)
+    expect(mockUpdate).toHaveBeenCalledTimes(9)
     expect(mockDelete).toHaveBeenCalledTimes(0)
     expect(mockUpdateProject).toHaveBeenCalledTimes(0)
     expect(mockWriteFile).toHaveBeenCalledTimes(4)
@@ -304,7 +321,7 @@ describe('src/lib/simulation', () => {
     expect(mockPath).toHaveBeenCalledTimes(12)
     expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockGet).toHaveBeenCalledTimes(5)
-    expect(mockUpdate).toHaveBeenCalledTimes(9)
+    expect(mockUpdate).toHaveBeenCalledTimes(10)
     expect(mockDelete).toHaveBeenCalledTimes(0)
     expect(mockUpdateProject).toHaveBeenCalledTimes(0)
     expect(mockWriteFile).toHaveBeenCalledTimes(4)

@@ -86,11 +86,11 @@ u[] = Laplacian^-1 * LaplacianRHS;
 <%# Save -%>
 <%- include('blobs/save.edp.ejs', {
 	solution: {
-		path: `${run.path}`,
+		path: run.path,
 		name: '"Result"',
 		mesh: mesh.name,
 		sol: ['u'],
-		dataName: [`${run.results.map(r => r.name)}`],
+		dataName: run.results.map(r => r.name),
 		order: [1]
 	}
 }); -%>

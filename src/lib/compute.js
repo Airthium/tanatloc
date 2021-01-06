@@ -129,7 +129,7 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
               path: path.join(geometry.file.originPath + '_mesh'),
               parameters: {
                 size: 'auto',
-                fineness: 'normal'
+                fineness: 'fine'
               }
             },
             ({ error, data }) => {

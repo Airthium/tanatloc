@@ -135,11 +135,11 @@ Sh Sigma = sqrt(0.5 * ((gamma11 - gamma22)^2 + (gamma22 - gamma33)^2 + (gamma33 
 <%# Save -%>
 <%- include('blobs/save.edp.ejs', {
 	solution: {
-		path: `${run.path}`,
+		path: run.path,
 		name: '"Result"',
 		mesh: mesh.name,
 		sol: [['Ux', 'Uy', 'Uz'], 'Sigma'],
-		dataName: [`${run.results.map(r => r.name)}`],
+		dataName: run.results.map(r => r.name),
 		order: [1, 1]
 	}
 }); -%>

@@ -2,6 +2,11 @@ import PropTypes from 'prop-types'
 import { Button, Popconfirm } from 'antd'
 import { DeleteOutlined, QuestionCircleOutlined } from '@ant-design/icons'
 
+/**
+ * Delete button
+ * @memberof module:@memberof module:renderer/components/assets/button
+ * @param {Object} props Props
+ */
 const DeleteButton = ({ loading, onDelete }) => {
   /**
    * Render

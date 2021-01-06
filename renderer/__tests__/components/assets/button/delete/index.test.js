@@ -1,4 +1,4 @@
-import DeleteButton from '../../../../components/assets/button/delete'
+import DeleteButton from '../../../../../components/assets/button/delete'
 import { shallow } from 'enzyme'
 
 let wrapper
@@ -18,5 +18,11 @@ describe('renderer/components/assets/button/delete', () => {
 
   it('render', () => {
     expect(wrapper).toBeDefined()
+    expect(wrapper.find('Button').props().loading).toBe(false)
+  })
+
+  it('onDelete', () => {
+    wrapper.find('ForwardRef').props().onConfirm()
+    expect(mockOnDelete).toHaveBeenCalledTimes(1)
   })
 })

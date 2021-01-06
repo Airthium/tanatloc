@@ -1,3 +1,6 @@
+/** @module renderer/components/assets/button */
+
+import AddButton from './add'
 import DeleteButton from './delete'
 
-export { DeleteButton }
+export { AddButton, DeleteButton }

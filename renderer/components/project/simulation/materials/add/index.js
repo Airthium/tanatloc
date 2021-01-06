@@ -1,6 +1,8 @@
 import { useState } from 'react'
-import { message, Button } from 'antd'
+import { message } from 'antd'
 import { v4 as uuid } from 'uuid'
+
+import { AddButton } from '../../../../assets/button'
 
 import SimulationAPI from '../../../../../../src/api/simulation'
 
@@ -19,7 +21,7 @@ const errors = {
  */
 const Add = ({ material, project, simulation, part, disabled, close }) => {
   // State
-  const [loading, setLoading] = useState()
+  const [loading, setLoading] = useState(false)
 
   // Data
   const [, { mutateOneSimulation }] = SimulationAPI.useSimulations(
@@ -91,11 +93,7 @@ const Add = ({ material, project, simulation, part, disabled, close }) => {
   /**
    * Render
    */
-  return (
-    <Button loading={loading} disabled={disabled} onClick={onAdd}>
-      Add
-    </Button>
-  )
+  return <AddButton disabled={disabled} loading={loading} onAdd={onAdd} />
 }
 
 export default Add

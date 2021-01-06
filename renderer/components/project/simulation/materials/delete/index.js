@@ -1,6 +1,7 @@
 import { useState } from 'react'
-import { message, Button, Popconfirm } from 'antd'
-import { DeleteOutlined, QuestionCircleOutlined } from '@ant-design/icons'
+import { message } from 'antd'
+
+import { DeleteButton } from '../../../../assets/button'
 
 import { useDispatch } from 'react-redux'
 import { unselect } from '../../../../../store/select/action'
@@ -19,7 +20,7 @@ const errors = {
  */
 const Delete = ({ project, simulation, index }) => {
   // State
-  const [loading, setLoading] = useState()
+  const [loading, setLoading] = useState(false)
 
   // Data
   const [, { mutateOneSimulation }] = SimulationAPI.useSimulations(
@@ -81,15 +82,7 @@ const Delete = ({ project, simulation, index }) => {
   /**
    * Render
    */
-  return (
-    <Popconfirm
-      title="Are you sure"
-      icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
-      onConfirm={onDelete}
-    >
-      <Button type="danger" loading={loading} icon={<DeleteOutlined />} />
-    </Popconfirm>
-  )
+  return <DeleteButton loading={loading} onDelete={onDelete} />
 }
 
 export default Delete

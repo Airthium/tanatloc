@@ -5,6 +5,10 @@ jest.mock('react-redux', () => ({
   useDispatch: () => () => {}
 }))
 
+jest.mock('../../../../../components/assets/button', () => ({
+  DeleteButton: 'DeleteButton'
+}))
+
 const mockUnselect = jest.fn()
 jest.mock('../../../../../store/select/action', () => ({
   unselect: () => mockUnselect()
@@ -62,7 +66,7 @@ describe('renderer/components/project/simulation/materials/delete', () => {
   })
 
   it('onDelete', async () => {
-    await wrapper.find('ForwardRef').props().onConfirm()
+    await wrapper.find('DeleteButton').props().onDelete()
     expect(mockUnselect).toHaveBeenCalledTimes(1)
     expect(mockUpdate).toHaveBeenCalledTimes(1)
     expect(mockMutate).toHaveBeenCalledTimes(1)
@@ -77,7 +81,7 @@ describe('renderer/components/project/simulation/materials/delete', () => {
     mockUpdate.mockImplementation(() => {
       throw new Error()
     })
-    await wrapper.find('ForwardRef').props().onConfirm()
+    await wrapper.find('DeleteButton').props().onDelete()
     expect(mockUnselect).toHaveBeenCalledTimes(2)
     expect(mockUpdate).toHaveBeenCalledTimes(2)
     expect(mockMutate).toHaveBeenCalledTimes(1)

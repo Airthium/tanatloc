@@ -22,13 +22,15 @@ const LinearElasticity = {
           label: "Young's modulus",
           name: 'E',
           htmlEntity: '',
-          default: 1e9
+          default: 1e9,
+          unit: 'Pa'
         },
         {
           label: "Poisson's ratio",
           name: 'Nu',
           htmlEntity: '',
-          default: 0.4
+          default: 0.4,
+          unit: '1'
         }
       ]
     },
@@ -105,15 +107,18 @@ const LinearElasticity = {
         children: [
           {
             label: 'Ux',
-            default: 0
+            default: 0,
+            unit: 'm'
           },
           {
             label: 'Uy',
-            default: 0
+            default: 0,
+            unit: 'm'
           },
           {
             label: 'Uz',
-            default: 0
+            default: 0,
+            unit: 'm'
           }
         ],
         refineFactor: 10
@@ -122,7 +127,7 @@ const LinearElasticity = {
         label: 'Pressure',
         children: [
           {
-            label: 'U * N',
+            label: 'd(U)/d(N)',
             default: 0
           }
         ],

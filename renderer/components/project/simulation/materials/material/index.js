@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react'
-import { Button, Card, Drawer, Space } from 'antd'
+import { Button, Card, Drawer, Radio, Space } from 'antd'
 
 import DataBase from '../database'
+import Formula from '../../../../assets/formula'
 import Selector from '../../../../assets/selector'
 import Add from '../add'
 
@@ -48,6 +49,8 @@ const Material = ({
     close()
   }
 
+  console.log(materials)
+
   return (
     <Drawer
       title="Material"
@@ -59,8 +62,32 @@ const Material = ({
       width={300}
     >
       <Card>
-        <DataBase onSelect={onMaterialSelect} />
-        {current?.material?.label}
+        <Radio.Group>
+          <Radio value={1}>
+            <div>
+              <DataBase onSelect={onMaterialSelect} />
+              {current?.material?.label}
+            </div>
+          </Radio>
+          <Radio value={2}>
+            <div>
+              <p>Custom material:</p>
+              {materials.children.map((m) => {
+                return (
+                  <div>
+                    <p>{m.label}</p>
+                    {m.symbol}:
+                    <Formula
+                      defaultValue={m.default}
+                      onChange={() => console.log('TODO')}
+                    ></Formula>
+                    {m.unit}
+                  </div>
+                )
+              })}
+            </div>
+          </Radio>
+        </Radio.Group>
       </Card>
       <Selector part={part} updateSelected={onSelected} />
       <Space>

@@ -3,6 +3,3 @@ ThreeJS :
 
 Converters:
 - Support geometry names with space
-
-UI:
-- Bug on parameters, try -9.81

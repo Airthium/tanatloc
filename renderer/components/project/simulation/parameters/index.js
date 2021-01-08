@@ -81,7 +81,6 @@ const Parameters = ({ project, simulation }) => {
   const onChange = (key, index, value) => {
     const deepValues = values[key] || []
     deepValues[index] = value
-
     const newValues = {
       ...values,
       [key]: deepValues

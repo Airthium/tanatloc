@@ -122,6 +122,30 @@ describe('src/lib/compute', () => {
       key: { meshable: true, file: {} }
     })
 
+    // With boundary condition (empty)
+    await Compute.computeSimulation('id', 'algorithm', {
+      key: { meshable: true, file: {} },
+      boundaryConditions: {
+        index: 2,
+        key: {}
+      }
+    })
+
+    // With refinement
+    await Compute.computeSimulation('id', 'algorithm', {
+      key: { meshable: true, file: {} },
+      boundaryConditions: {
+        key: {
+          refineFactor: 2,
+          values: [
+            {
+              selected: ['uuid']
+            }
+          ]
+        }
+      }
+    })
+
     // Date
     global.Date = {
       now: () => 0

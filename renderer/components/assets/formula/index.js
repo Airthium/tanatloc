@@ -10,9 +10,9 @@ const saveDelay = 1000
  * Formula
  * @param {Object} props Props
  */
-const Formula = ({ value, onChange }) => {
+const Formula = ({ defaultValue, onChange }) => {
   // State
-  const [internalValue, setInternalValue] = useState(value)
+  const [internalValue, setInternalValue] = useState(defaultValue)
   const [autoSave, setAutoSave] = useState(false)
   const [disabled, setDisabled] = useState(true)
   const [loading, setLoading] = useState(false)

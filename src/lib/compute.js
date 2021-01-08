@@ -119,17 +119,18 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
 
         // Check refinements
         const refinements = []
-        Object.keys(configuration.boundaryConditions).forEach((key) => {
-          if (key === 'index' || key === 'title' || key === 'done') return
-          const boundaryCondition = configuration.boundaryConditions[key]
-          if (boundaryCondition.values && boundaryCondition.refineFactor) {
-            refinements.push({
-              size: 'factor',
-              factor: boundaryCondition.refineFactor,
-              selected: boundaryCondition.values.flatMap((v) => v.selected)
-            })
-          }
-        })
+        configuration.boundaryConditions &&
+          Object.keys(configuration.boundaryConditions).forEach((key) => {
+            if (key === 'index' || key === 'title' || key === 'done') return
+            const boundaryCondition = configuration.boundaryConditions[key]
+            if (boundaryCondition.values && boundaryCondition.refineFactor) {
+              refinements.push({
+                size: 'factor',
+                factor: boundaryCondition.refineFactor,
+                selected: boundaryCondition.values.flatMap((v) => v.selected)
+              })
+            }
+          })
 
         // Mesh parameters
         const parameters = {

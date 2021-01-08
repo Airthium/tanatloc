@@ -49,7 +49,7 @@ const Material = ({
     close()
   }
 
-  console.log(materials)
+  // TODO take custom into account
 
   return (
     <Drawer
@@ -74,14 +74,14 @@ const Material = ({
               <p>Custom material:</p>
               {materials.children.map((m) => {
                 return (
-                  <div>
+                  <div key={m.label}>
                     <p>{m.label}</p>
                     {m.symbol}:
                     <Formula
                       defaultValue={m.default}
                       onChange={() => console.log('TODO')}
+                      unit={m.unit}
                     ></Formula>
-                    {m.unit}
                   </div>
                 )
               })}

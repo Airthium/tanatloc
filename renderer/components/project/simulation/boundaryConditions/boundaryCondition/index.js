@@ -163,6 +163,7 @@ const BoundaryCondition = ({
                       : current?.values?.[index]
                   }
                   onChange={(value) => onChange(index, value)}
+                  unit={child.unit}
                 />
               </div>
             )

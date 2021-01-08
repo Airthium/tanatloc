@@ -10,7 +10,7 @@ const saveDelay = 1000
  * Formula
  * @param {Object} props Props
  */
-const Formula = ({ defaultValue, onChange }) => {
+const Formula = ({ defaultValue, onChange, unit }) => {
   // State
   const [internalValue, setInternalValue] = useState(defaultValue)
   const [autoSave, setAutoSave] = useState(false)
@@ -49,7 +49,7 @@ const Formula = ({ defaultValue, onChange }) => {
    */
   return (
     <Space>
-      <Input value={internalValue} onChange={onInputChange} />
+      <Input value={internalValue} onChange={onInputChange} addonAfter={unit} />
       <Button disabled={disabled} loading={loading} icon={<SaveOutlined />} />
     </Space>
   )

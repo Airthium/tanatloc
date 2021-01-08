@@ -6,3 +6,9 @@ Converters:
 
 Result:
 - Bas file name sometimes
+
+Materials:
+- dirty UI
+
+Models:
+- compare current model with loaded one (without values)

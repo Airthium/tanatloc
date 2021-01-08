@@ -1,6 +1,7 @@
 import Material from '../../../../../components/project/simulation/materials/material'
 import { shallow, mount } from 'enzyme'
 
+jest.mock('../../../../../components/assets/formula', () => 'Formula')
 jest.mock('../../../../../components/assets/selector', () => 'Selector')
 jest.mock(
   '../../../../../components/project/simulation/materials/database',
@@ -54,6 +55,10 @@ describe('renderer/components/project/simulation/materials/material', () => {
 
   it('onMaterialSelect', () => {
     wrapper.find('database').props().onSelect()
+  })
+
+  it('custom', () => {
+    wrapper.find('Formula').props().onChange()
   })
 
   it('onSelected', () => {

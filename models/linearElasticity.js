@@ -43,17 +43,20 @@ const LinearElasticity = {
           {
             label: 'External force (x)',
             htmlEntity: 'formula',
-            default: 0
+            default: 0,
+            unit: 'unit'
           },
           {
             label: 'External force (y)',
             htmlEntity: 'formula',
-            default: 0
+            default: 0,
+            unit: 'unit'
           },
           {
             label: 'External force (z)',
             htmlEntity: 'formula',
-            default: 0
+            default: 0,
+            unit: 'unit'
           }
         ]
       },
@@ -128,7 +131,8 @@ const LinearElasticity = {
         children: [
           {
             label: 'd(U)/d(N)',
-            default: 0
+            default: 0,
+            unit: 'unit'
           }
         ],
         refineFactor: 5

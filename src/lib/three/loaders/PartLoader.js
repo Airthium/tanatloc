@@ -134,6 +134,12 @@ const PartLoader = (mouseMoveEvent, mouseDownEvent) => {
     const buffer = element.buffer
     const geometry = loader.parse(buffer)
 
+    // Convert mm to m
+    const position = geometry.getAttribute('position')
+    position.array = position.array.map((p) => p * 1e-3)
+    geometry.setAttribute('position', position)
+
+    // Color
     const colorAttribute = geometry.getAttribute('color')
     if (colorAttribute) {
       color = new Color(

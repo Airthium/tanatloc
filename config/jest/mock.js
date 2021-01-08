@@ -3,14 +3,15 @@
 // Bases classes
 
 global.MockGeometry = {
-  getAttribute: undefined
+  getAttribute: () => {}
 }
 class MockGeometry {
   constructor() {
     this.computeBoundingBox = () => {}
     this.computeBoundingSphere = () => {}
     this.dispose = () => {}
-    this.getAttribute = () => global.MockGeometry.getAttribute
+    this.getAttribute = (attribute) =>
+      global.MockGeometry.getAttribute(attribute)
     this.setAttribute = () => {}
     this.lookAt = () => {}
     this.translate = () => {}

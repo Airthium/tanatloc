@@ -7,6 +7,7 @@ import Panel from '../panel'
 
 import About from './about'
 import Geometry from './geometry'
+import Materials from './materials'
 import Parameters from './parameters'
 import BoundaryConditions from './boundaryConditions'
 import Run from './run'
@@ -151,6 +152,14 @@ const Simulation = ({ project, simulation, type, part, onClose }) => {
       )}
       {type === 'parameters' && (
         <Parameters project={project} simulation={simulation} />
+      )}
+      {type === 'materials' && (
+        <Materials
+          project={project}
+          simulation={simulation}
+          part={part}
+          setVisible={setVisible}
+        />
       )}
       {type === 'boundaryConditions' && (
         <BoundaryConditions

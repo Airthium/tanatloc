@@ -137,11 +137,11 @@ describe('src/lib/three/loaders/PartLoader', () => {
   it('startSelection', () => {
     const partLoader = PartLoader(mouseMoveEvent, mouseDownEvent)
     const mesh = partLoader.load(part)
-    mesh.startSelection(renderer, camera, outlinePass, 'face')
+    mesh.startSelection(renderer, camera, outlinePass, 'faces')
 
-    mesh.startSelection(renderer, camera, outlinePass, 'solid')
+    mesh.startSelection(renderer, camera, outlinePass, 'solids')
 
-    mesh.startSelection(renderer, camera, outlinePass, 'other')
+    mesh.startSelection(renderer, camera, outlinePass, 'others')
   })
 
   it('stopSelection', () => {
@@ -150,11 +150,11 @@ describe('src/lib/three/loaders/PartLoader', () => {
     mesh.stopSelection()
 
     // Add selection
-    mesh.startSelection(renderer, camera, outlinePass, 'face')
+    mesh.startSelection(renderer, camera, outlinePass, 'faces')
     mesh.select('face_uuid')
     mesh.stopSelection()
 
-    mesh.startSelection(renderer, camera, outlinePass, 'solid')
+    mesh.startSelection(renderer, camera, outlinePass, 'solids')
     mesh.select('solid_uuid')
     mesh.stopSelection()
   })
@@ -178,7 +178,7 @@ describe('src/lib/three/loaders/PartLoader', () => {
     mouseMoveEvent.mockImplementation((part, uuid) => (current = uuid))
     const partLoader = PartLoader(mouseMoveEvent, mouseDownEvent)
     const mesh = partLoader.load(part)
-    mesh.startSelection(renderer, camera, outlinePass, 'face')
+    mesh.startSelection(renderer, camera, outlinePass, 'faces')
 
     mouseMove({ target: { getBoundingClientRect: () => ({}) } })
 
@@ -190,7 +190,7 @@ describe('src/lib/three/loaders/PartLoader', () => {
   it('highlight', () => {
     const partLoader = PartLoader()
     const mesh = partLoader.load(part)
-    mesh.startSelection(renderer, camera, outlinePass, 'face')
+    mesh.startSelection(renderer, camera, outlinePass, 'faces')
 
     mesh.highlight('face_uuid')
     mesh.highlight('face_uuid')
@@ -200,7 +200,7 @@ describe('src/lib/three/loaders/PartLoader', () => {
   it('unhighlight', () => {
     const partLoader = PartLoader()
     const mesh = partLoader.load(part)
-    mesh.startSelection(renderer, camera, outlinePass, 'face')
+    mesh.startSelection(renderer, camera, outlinePass, 'faces')
 
     mesh.unhighlight()
 
@@ -215,7 +215,7 @@ describe('src/lib/three/loaders/PartLoader', () => {
     mouseDownEvent.mockImplementation((part, uuid) => (current = uuid))
     const partLoader = PartLoader(mouseMoveEvent, mouseDownEvent)
     const mesh = partLoader.load(part)
-    mesh.startSelection(renderer, camera, outlinePass, 'face')
+    mesh.startSelection(renderer, camera, outlinePass, 'faces')
 
     mouseDown()
     expect(mouseDownEvent).toHaveBeenCalledTimes(0)
@@ -229,7 +229,7 @@ describe('src/lib/three/loaders/PartLoader', () => {
   it('select', () => {
     const partLoader = PartLoader()
     const mesh = partLoader.load(part)
-    mesh.startSelection(renderer, camera, outlinePass, 'face')
+    mesh.startSelection(renderer, camera, outlinePass, 'faces')
 
     mesh.select('face_uuid')
     mesh.select('uuid')
@@ -240,7 +240,7 @@ describe('src/lib/three/loaders/PartLoader', () => {
   it('unselect', () => {
     const partLoader = PartLoader()
     const mesh = partLoader.load(part)
-    mesh.startSelection(renderer, camera, outlinePass, 'face')
+    mesh.startSelection(renderer, camera, outlinePass, 'faces')
 
     mesh.select('face_uuid')
     mesh.unselect('uuid')

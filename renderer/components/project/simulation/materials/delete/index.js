@@ -10,20 +10,15 @@ import SimulationAPI from '../../../../../../src/api/simulation'
 
 import Sentry from '../../../../../../src/lib/sentry'
 
-/**
- * Errors boundaryConditions/delete
- * @memberof module:renderer/components/project/simulation
- */
 const errors = {
-  updateError: 'Unable to delete the boundary condition'
+  updateError: 'Unable to delete the material'
 }
 
 /**
- * Delete boundary condition
- * @memberof module:renderer/components/project/simulation
+ * Delete material
  * @param {Object} props Props
  */
-const Delete = ({ project, simulation, type, index }) => {
+const Delete = ({ project, simulation, index }) => {
   // State
   const [loading, setLoading] = useState(false)
 
@@ -44,25 +39,23 @@ const Delete = ({ project, simulation, type, index }) => {
       const newSimulation = { ...simulation }
 
       // Update local
-      const boundaryConditions =
-        newSimulation.scheme.configuration.boundaryConditions
-      const typedBoundaryCondition = boundaryConditions[type]
+      const materials = newSimulation?.scheme?.configuration?.materials
+      const material = materials.values[index]
 
       // (unselect)
-      const boundaryCondition = typedBoundaryCondition.values[index]
-      boundaryCondition.selected.forEach((s) => {
+      material.selected.forEach((s) => {
         dispatch(unselect(s.uuid))
       })
 
-      typedBoundaryCondition.values = [
-        ...typedBoundaryCondition.values.slice(0, index),
-        ...typedBoundaryCondition.values.slice(index + 1)
+      materials.values = [
+        ...materials.values.slice(0, index),
+        ...materials.values.slice(index + 1)
       ]
 
       // Diff
       const diff = {
-        ...boundaryConditions,
-        done: !!boundaryConditions.length
+        ...materials,
+        done: !!materials.length
       }
 
       // Update
@@ -71,11 +64,12 @@ const Delete = ({ project, simulation, type, index }) => {
           key: 'scheme',
           type: 'json',
           method: 'diff',
-          path: ['configuration', 'boundaryConditions'],
+          path: ['configuration', 'materials'],
           value: diff
         }
       ])
 
+      // Mutate
       mutateOneSimulation(newSimulation)
     } catch (err) {
       message.error(errors.updateError)

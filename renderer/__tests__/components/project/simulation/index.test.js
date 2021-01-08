@@ -9,6 +9,10 @@ jest.mock(
   () => 'geometry'
 )
 jest.mock(
+  '../../../../components/project/simulation/materials',
+  () => 'materials'
+)
+jest.mock(
   '../../../../components/project/simulation/parameters',
   () => 'parameters'
 )
@@ -73,6 +77,12 @@ describe('components/project/simulation', () => {
     wrapper.unmount()
     wrapper = shallow(<Simulation type="geometry" />)
     expect(wrapper.find('geometry').length).toBe(1)
+  })
+
+  it('materials', () => {
+    wrapper.unmount()
+    wrapper = shallow(<Simulation type="materials" />)
+    expect(wrapper.find('materials').length).toBe(1)
   })
 
   it('parameters', () => {

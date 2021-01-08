@@ -82,10 +82,10 @@ const computeMesh = async (simulationPath, geometry, mesh, callback) => {
 /**
  * Compute simulation
  * @param {string} simulation Simulation { id }
- * @param {string} simulationPath Simulation path
+ * @param {string} algorithm Algorithm
  * @param {Object} configuration Configuration
  */
-const computeSimulation = async ({ id }, configuration) => {
+const computeSimulation = async ({ id }, algorithm, configuration) => {
   // Time
   const start = Date.now()
 
@@ -117,6 +117,36 @@ const computeSimulation = async ({ id }, configuration) => {
         tasks.push(meshingTask)
         updateTasks(id, tasks)
 
+        // Check refinements
+        const refinements = []
+        configuration.boundaryConditions &&
+          Object.keys(configuration.boundaryConditions).forEach(
+            (boundaryKey) => {
+              if (
+                boundaryKey === 'index' ||
+                boundaryKey === 'title' ||
+                boundaryKey === 'done'
+              )
+                return
+              const boundaryCondition =
+                configuration.boundaryConditions[boundaryKey]
+              if (boundaryCondition.values && boundaryCondition.refineFactor) {
+                refinements.push({
+                  size: 'factor',
+                  factor: boundaryCondition.refineFactor,
+                  selected: boundaryCondition.values.flatMap((v) => v.selected)
+                })
+              }
+            }
+          )
+
+        // Mesh parameters
+        const parameters = {
+          size: 'auto',
+          fineness: 'normal',
+          refinements: refinements
+        }
+
         // Build mesh
         try {
           const mesh = await computeMesh(
@@ -127,10 +157,7 @@ const computeSimulation = async ({ id }, configuration) => {
             },
             {
               path: path.join(geometry.file.originPath + '_mesh'),
-              parameters: {
-                size: 'auto',
-                fineness: 'normal'
-              }
+              parameters
             },
             ({ error, data }) => {
               meshingTask.status = 'process'
@@ -161,7 +188,7 @@ const computeSimulation = async ({ id }, configuration) => {
 
   // Build the simulation script
   await Template.render(
-    './templates/poisson.edp.ejs',
+    './templates/' + algorithm + '.edp.ejs',
     {
       ...configuration,
       dimension: 3,

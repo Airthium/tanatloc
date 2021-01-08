@@ -14,6 +14,7 @@ const toThree = async (path, fileIn, pathOut, callback) => {
 
   // Check extension
   const extension = fileIn.split('.').pop()
+  console.log(extension) //TODO fail sometime
   switch (extension.toLowerCase()) {
     case 'step':
       conversionCode = 'StepToThreeJS'

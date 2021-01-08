@@ -2,10 +2,7 @@ import BoundaryCondition from '../../../../../components/project/simulation/boun
 import { shallow, mount } from 'enzyme'
 
 jest.mock('../../../../../components/assets/formula', () => 'Formula')
-jest.mock(
-  '../../../../../components/project/simulation/boundaryConditions/selector',
-  () => 'Selector'
-)
+jest.mock('../../../../../components/assets/selector', () => 'Selector')
 jest.mock(
   '../../../../../components/project/simulation/boundaryConditions/add',
   () => 'Add'
@@ -68,6 +65,30 @@ describe('renderer/components/project/simulation/boundaryConditions/boundaryCond
   })
 
   it('onType', () => {
+    wrapper
+      .find('Card')
+      .at(1)
+      .props()
+      .children.props.onChange({ target: { value: 'key' } })
+
+    // Without children
+    wrapper.unmount()
+    wrapper = shallow(
+      <BoundaryCondition
+        project={project}
+        simulation={simulation}
+        visible={true}
+        part={part}
+        boundaryConditions={{
+          title: 'title',
+          key: {
+            label: 'label'
+          }
+        }}
+        boundaryCondition={boundaryCondition}
+        close={close}
+      />
+    )
     wrapper
       .find('Card')
       .at(1)

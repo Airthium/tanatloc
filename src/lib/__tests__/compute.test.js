@@ -112,35 +112,59 @@ describe('src/lib/compute', () => {
     })
 
     // Empty
-    await Compute.computeSimulation('id', {})
+    await Compute.computeSimulation('id', 'algorithm', {})
 
     // With keys
-    await Compute.computeSimulation('id', { key: {} })
+    await Compute.computeSimulation('id', 'algorithm', { key: {} })
 
     // With mesh
-    await Compute.computeSimulation('id', {
+    await Compute.computeSimulation('id', 'algorithm', {
       key: { meshable: true, file: {} }
+    })
+
+    // With boundary condition (empty)
+    await Compute.computeSimulation('id', 'algorithm', {
+      key: { meshable: true, file: {} },
+      boundaryConditions: {
+        index: 2,
+        key: {}
+      }
+    })
+
+    // With refinement
+    await Compute.computeSimulation('id', 'algorithm', {
+      key: { meshable: true, file: {} },
+      boundaryConditions: {
+        key: {
+          refineFactor: 2,
+          values: [
+            {
+              selected: ['uuid']
+            }
+          ]
+        }
+      }
     })
 
     // Date
     global.Date = {
       now: () => 0
     }
-    await Compute.computeSimulation('id', {
+    await Compute.computeSimulation('id', 'algorithm', {
       key: { meshable: true, file: {} }
     })
 
     global.Date = {
       now: () => Math.random()
     }
-    await Compute.computeSimulation('id', {
+    await Compute.computeSimulation('id', 'algorithm', {
       key: { meshable: true, file: {} }
     })
 
     // Mesh error
     mockGmsh.mockImplementation(() => -1)
     try {
-      await Compute.computeSimulation('id', {
+      await Compute.computeSimulation('id', 'algorithm', {
         key: { meshable: true, file: {} }
       })
       expect(true).toBe(false)
@@ -150,14 +174,14 @@ describe('src/lib/compute', () => {
 
     // Result error
     mockToThree.mockImplementation(() => -1)
-    await Compute.computeSimulation('id', {
+    await Compute.computeSimulation('id', 'algorithm', {
       key: { file: {} }
     })
 
     mockToThree.mockImplementation(() => {
       throw new Error()
     })
-    await Compute.computeSimulation('id', {
+    await Compute.computeSimulation('id', 'algorithm', {
       key: { file: {} }
     })
 
@@ -165,7 +189,7 @@ describe('src/lib/compute', () => {
     mockGmsh.mockImplementation(() => 0)
     mockFreefem.mockReset()
     try {
-      await Compute.computeSimulation('id', {})
+      await Compute.computeSimulation('id', 'algorithm', {})
       expect(true).toBe(false)
     } catch (err) {
       expect(true).toBe(true)

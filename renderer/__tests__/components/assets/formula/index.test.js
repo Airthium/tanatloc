@@ -3,6 +3,11 @@ import { shallow, mount } from 'enzyme'
 
 const onChange = jest.fn()
 
+global.setTimeout = (callback) => {
+  callback()
+  return 1
+}
+
 let wrapper
 describe('renderer/components/assets/formula', () => {
   beforeEach(() => {
@@ -18,7 +23,7 @@ describe('renderer/components/assets/formula', () => {
     expect(wrapper).toBeDefined()
   })
 
-  it('onChange', () => {
+  it('onInputChange', () => {
     let value
     onChange.mockImplementation((val) => (value = val))
     wrapper
@@ -31,6 +36,15 @@ describe('renderer/components/assets/formula', () => {
       })
     expect(onChange).toHaveBeenCalledTimes(1)
     expect(value).toBe('newValue')
+
+    wrapper
+      .find('Input')
+      .props()
+      .onChange({
+        target: {
+          value: 'newValue'
+        }
+      })
   })
 
   it('effect', () => {

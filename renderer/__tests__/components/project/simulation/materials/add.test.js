@@ -1,4 +1,4 @@
-import Add from '../../../../../components/project/simulation/boundaryConditions/add'
+import Add from '../../../../../components/project/simulation/materials/add'
 import { shallow } from 'enzyme'
 
 jest.mock('../../../../../components/assets/button', () => ({
@@ -18,26 +18,21 @@ jest.mock('../../../../../../src/lib/sentry', () => ({
 }))
 
 let wrapper
-describe('renderer/components/project/simulation/boundaryConditions/add', () => {
-  const boundaryCondition = {
-    type: {
-      key: 'key'
-    },
+describe('renderer/components/project/simulation/materials/add', () => {
+  const material = {
     selected: ['uuid1', 'uuid3']
   }
   const project = {}
   const simulation = {
     scheme: {
       configuration: {
-        boundaryConditions: {
-          key: {
-            values: []
-          }
+        materials: {
+          values: []
         }
       }
     }
   }
-  const part = { faces: [{ uuid: 'uuid1' }, { uuid: 'uuid2' }] }
+  const part = { solids: [{ uuid: 'uuid1' }, { uuid: 'uuid2' }] }
   const close = jest.fn()
 
   beforeEach(() => {
@@ -51,7 +46,7 @@ describe('renderer/components/project/simulation/boundaryConditions/add', () => 
     wrapper = shallow(
       <Add
         disabled={false}
-        boundaryCondition={boundaryCondition}
+        material={material}
         project={project}
         simulation={simulation}
         part={part}
@@ -77,11 +72,11 @@ describe('renderer/components/project/simulation/boundaryConditions/add', () => 
 
     // Without values
     wrapper.unmount()
-    simulation.scheme.configuration.boundaryConditions.key = {}
+    simulation.scheme.configuration.materials = {}
     wrapper = shallow(
       <Add
         disabled={false}
-        boundaryCondition={boundaryCondition}
+        material={material}
         project={project}
         simulation={simulation}
         part={part}

@@ -1,4 +1,4 @@
-import Delete from '../../../../../components/project/simulation/boundaryConditions/delete'
+import Delete from '../../../../../components/project/simulation/materials/delete'
 import { shallow } from 'enzyme'
 
 jest.mock('react-redux', () => ({
@@ -27,24 +27,21 @@ jest.mock('../../../../../../src/lib/sentry', () => ({
 }))
 
 let wrapper
-describe('renderer/components/project/simulation/boundaryConditions/delete', () => {
+describe('renderer/components/project/simulation/materials/delete', () => {
   const project = {}
   const simulation = {
     scheme: {
       configuration: {
-        boundaryConditions: {
-          key: {
-            values: [
-              {
-                selected: ['uuid']
-              }
-            ]
-          }
+        materials: {
+          values: [
+            {
+              selected: ['uuid']
+            }
+          ]
         }
       }
     }
   }
-  const type = 'key'
   const index = 0
 
   beforeEach(() => {
@@ -56,12 +53,7 @@ describe('renderer/components/project/simulation/boundaryConditions/delete', () 
     mockSentry.mockReset()
 
     wrapper = shallow(
-      <Delete
-        project={project}
-        simulation={simulation}
-        type={type}
-        index={index}
-      />
+      <Delete project={project} simulation={simulation} index={index} />
     )
   })
 
@@ -81,7 +73,7 @@ describe('renderer/components/project/simulation/boundaryConditions/delete', () 
     expect(mockSentry).toHaveBeenCalledTimes(0)
 
     // Error
-    simulation.scheme.configuration.boundaryConditions.key.values = [
+    simulation.scheme.configuration.materials.values = [
       {
         selected: ['uuid']
       }

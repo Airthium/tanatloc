@@ -174,7 +174,10 @@ describe('renderer/components/project/simulation/run', () => {
     wrapper.unmount()
     mockSimulation.mockImplementation(() => ({
       scheme: {
-        configuration: { part: { fileName: 'fileName' }, run: { done: true } }
+        configuration: {
+          part: { name: 'name', fileName: 'fileName' },
+          run: { done: true }
+        }
       },
       tasks: [
         {

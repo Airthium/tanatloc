@@ -1,3 +1,5 @@
+/** @module renderer/components/assets/selector */
+
 import { useEffect } from 'react'
 import { Card } from 'antd'
 
@@ -7,7 +9,7 @@ import {
   unhighlight,
   select,
   unselect
-} from '../../../../../store/select/action'
+} from '../../../store/select/action'
 
 /**
  * Selector
@@ -15,7 +17,8 @@ import {
  */
 const Selector = ({ part, updateSelected }) => {
   // Store
-  const { highlighted, selected } = useSelector((state) => ({
+  const { type, highlighted, selected } = useSelector((state) => ({
+    type: state.select.type,
     highlighted: state.select.highlighted,
     selected: state.select.selected
   }))
@@ -53,32 +56,32 @@ const Selector = ({ part, updateSelected }) => {
   /**
    * Render
    */
-  return part?.faces
-    ? part.faces.map((face, index) => {
+  return part?.[type]
+    ? part[type].map((element, index) => {
         return (
           <Card
             key={index}
             hoverable
             style={{
               marginBottom:
-                highlighted === face.uuid
+                highlighted === element.uuid
                   ? '5px'
-                  : selected.includes(face.uuid)
+                  : selected.includes(element.uuid)
                   ? '5px'
                   : '7px',
               border:
-                highlighted === face.uuid
+                highlighted === element.uuid
                   ? '2px solid #0096C7'
-                  : selected.includes(face.uuid)
+                  : selected.includes(element.uuid)
                   ? '2px solid #c73100'
                   : '1px solid grey'
             }}
             bodyStyle={{ padding: '10px' }}
-            onMouseEnter={() => onHighlight(face.uuid)}
+            onMouseEnter={() => onHighlight(element.uuid)}
             onMouseLeave={onUnhighlight}
-            onClick={() => onSelect(face.uuid)}
+            onClick={() => onSelect(element.uuid)}
           >
-            {face.name}
+            {element.name}
           </Card>
         )
       })

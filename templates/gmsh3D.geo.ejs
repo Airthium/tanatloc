@@ -44,28 +44,40 @@ lmin = lmin / 10.;
 Printf("Minimal distance on the bounding box = %f", lmin);
 Printf("Maximal distance on the bounding box = %f", lmax);
 
+max = (lmax / 2. < lmin * 10.) ? lmax / 2. : lmin * 10.;
+min = lmin / 10.;
+
+veryCoarse = max - 0. * (max - min);
+coarse = max - 0.25 * (max - min);
+normal = max - 0.5 * (max - min);
+fine = max - 0.75 * (max - min);
+veryFine = max - 1. * (max - min);
+
 // Global size
-<% if (size === 'manual') { // Manual size -%>
-globalMinSize = <%= values[0] %>;
-globalMaxSize = <%= values[1] %>;
-<% } else { // Auto size -%>
-<% if (fineness === 'verycoarse') { -%>
-globalMinSize = lmax/10. + (lmin/10. - lmax/10.)*0.;
-globalMaxSize = lmax/2. + (lmin/2. - lmax/2.)*0.;
-<% } else if (fineness === 'coarse') { -%>
-globalMinSize = lmax/10. + (lmin/10. - lmax/10.)*0.25;
-globalMaxSize = lmax/2. + (lmin/2. - lmax/2.)*0.25;
-<% } else if (fineness === 'fine') { -%>
-globalMinSize = lmax/10. + (lmin/10. - lmax/10.)*0.75;
-globalMaxSize = lmax/2. + (lmin/2. - lmax/2.)*0.75;
-<% } else if (fineness === 'veryfine') { -%>
-globalMinSize = lmax/10. + (lmin/10. - lmax/10.)*1.;
-globalMaxSize = lmax/2. + (lmin/2. - lmax/2.)*1.;
+<% if (size === 'manual') { -%>
+// Manual size
+globalSize = <%= value %>;
 <% } else { -%>
-globalMinSize = lmax/10. + (lmin/10. - lmax/10.)*0.5;
-globalMaxSize = lmax/2. + (lmin/2. - lmax/2.)*0.5;
+// Automatic size
+<% if (fineness === 'verycoarse') { -%>
+// Very coarse size
+globalSize = veryCoarse;
+<% } else if (fineness === 'coarse') { -%>
+// Coarse size
+globalSize = coarse;
+<% } else if (fineness === 'fine') { -%>
+// Fine size
+globalSize = fine;
+<% } else if (fineness === 'veryfine') { -%>
+// Very fine size
+globalSize = veryFine;
+<% } else { -%>
+// Normal size
+globalSize = normal;
 <% } -%>
 <% } -%>
+globalMinSize = globalSize;
+globalMaxSize = globalSize;
 // End global size
 
 // Physical labels for each volumes & surfaces
@@ -83,48 +95,52 @@ For i In {0:#V[]-1}
 	EndFor
 
 	P() = PointsOf { Surface{S[]}; };
-	Characteristic Length { P[] } = globalMinSize;
+	Characteristic Length { P[] } = globalSize;
 EndFor
 // End physical labels
 
 // Refinements
 <% if (typeof refinements !== 'undefined') { -%>
 <% refinements.forEach(refinement => {
-	const selected = refinement.selection.selected.map(selected => selected.label)
-	if (refinement.selection.type === 'solids') {
+	const selected = refinement.selected.map(selected => selected.label)
+	if (0){//refinement.selection.type === 'solids') {
 -%>
 P() = PointsOf { Volume{<%= selected.join('') %>}; };
 <% } else { -%>
 P() = PointsOf { Surface{<%= selected.join(',') %>}; };
 <% } -%>
-<% if (refinement.size === 'manual') { // Manual size -%>
-localMinSize = <%= refinement.values[0] %>;
-localMaxSize = <%= refinement.values[1] %>;
-<% } else { -%>
+<% if (refinement.size === 'manual') { -%>
+// Manual refinement size
+localSize = <%= refinement.value %>;
+<% } else if (refinement.size === 'auto') { -%>
+// Automatic refinement size
 <% if (refinement.fineness === 'verycoarse') { -%>
-localMinSize = lmax/10. + (lmin/10. - lmax/10.)*0.;
-localMaxSize = lmax/2. + (lmin/2. - lmax/2.)*0.;
+// Very coarse
+localSize = veryCoarse;
 <% } else if (refinement.fineness === 'coarse') { -%>
-localMinSize = lmax/10. + (lmin/10. - lmax/10.)*0.25;
-localMaxSize = lmax/2. + (lmin/2. - lmax/2.)*0.25;
+// Coarse
+localSize = coarse;
 <% } else if (refinement.fineness === 'fine') { -%>
-localMinSize = lmax/10. + (lmin/10. - lmax/10.)*0.75;
-localMaxSize = lmax/2. + (lmin/2. - lmax/2.)*0.75;
+// Fine
+localSize = fine;
 <% } else if (refinement.fineness === 'veryfine') { -%>
-localMinSize = lmax/10. + (lmin/10. - lmax/10.)*1.;
-localMaxSize = lmax/2. + (lmin/2. - lmax/2.)*1.;
+// Very fine
+localSize = veryFine;
 <% } else { -%>
-localMinSize = lmax/10. + (lmin/10. - lmax/10.)*0.5;
-localMaxSize = lmax/2. + (lmin/2. - lmax/2.)*0.5;
+// Normal
+localSize = normal;
 <% } -%>
+<% } else if (refinement.size === 'factor') {-%>
+// Factor refinement size
+localSize = globalSize / <%= refinement.factor -%>;
 <% } -%>
-Characteristic Length { P[] } = localMinSize;
+Characteristic Length { P[] } = localSize;
 
-If (globalMinSize > localMinSize)
-	globalMinSize = localMinSize;
+If (globalSize > localSize)
+	globalMinSize = localSize;
 EndIf
-If (globalMaxSize < localMaxSize)
-	globalMaxSize = localMaxSize;
+If (globalSize < localSize)
+	globalMaxSize = localSize;
 EndIf
 <% }) -%>
 <% } -%>

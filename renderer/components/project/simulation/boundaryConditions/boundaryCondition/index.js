@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { Button, Card, Drawer, Input, Radio, Space } from 'antd'
 
 import Formula from '../../../../assets/formula'
-import Selector from '../selector'
+import Selector from '../../../../assets/selector'
 import Add from '../add'
 import Edit from '../edit'
 
@@ -72,9 +72,9 @@ const BoundaryCondition = ({
   const onType = (event) => {
     const key = event.target.value
     const type = types.find((t) => t.key === key)
-    const values = boundaryConditions[key].children.map(
-      (child) => child.default
-    )
+    const values = boundaryConditions[key].children
+      ? boundaryConditions[key].children.map((child) => child.default)
+      : [0]
     setCurrent({
       ...current,
       type: type,
@@ -150,14 +150,14 @@ const BoundaryCondition = ({
           })}
         </Radio.Group>
       </Card>
-      {current?.type && (
+      {current?.type && current?.type?.children && (
         <Card>
           {current?.type?.children?.map((child, index) => {
             return (
               <div key={index}>
                 {child.label}
                 <Formula
-                  value={
+                  defaultValue={
                     current?.values?.[index] === undefined
                       ? current?.type?.children?.[index]?.default
                       : current?.values?.[index]
@@ -200,5 +200,3 @@ const BoundaryCondition = ({
 }
 
 export default BoundaryCondition
-
-//   {boundar

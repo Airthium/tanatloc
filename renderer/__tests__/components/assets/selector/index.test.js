@@ -1,12 +1,17 @@
-import Selector from '../../../../../components/project/simulation/boundaryConditions/selector'
+import Selector from '../../../../components/assets/selector'
 import { shallow, mount } from 'enzyme'
 
+const mockType = jest.fn()
 const mockHighlighted = jest.fn()
 const mockSelected = jest.fn()
 jest.mock('react-redux', () => ({
   useSelector: (callback) =>
     callback({
-      select: { highlighted: mockHighlighted(), selected: mockSelected() }
+      select: {
+        type: mockType(),
+        highlighted: mockHighlighted(),
+        selected: mockSelected()
+      }
     }),
   useDispatch: () => () => {}
 }))
@@ -15,7 +20,7 @@ const mockHighlight = jest.fn()
 const mockUnhighlight = jest.fn()
 const mockSelect = jest.fn()
 const mockUnselect = jest.fn()
-jest.mock('../../../../../store/select/action', () => ({
+jest.mock('../../../../store/select/action', () => ({
   highlight: () => mockHighlight(),
   unhighlight: () => mockUnhighlight(),
   select: () => mockSelect(),
@@ -23,7 +28,7 @@ jest.mock('../../../../../store/select/action', () => ({
 }))
 
 let wrapper
-describe('renderer/components/project/simulation/boundaryConditions/selector', () => {
+describe('renderer/components/assets/selector', () => {
   const part = {
     faces: [
       {
@@ -37,6 +42,8 @@ describe('renderer/components/project/simulation/boundaryConditions/selector', (
   const updateSelected = jest.fn()
 
   beforeEach(() => {
+    mockType.mockReset()
+    mockType.mockImplementation(() => 'faces')
     mockHighlighted.mockReset()
     mockSelected.mockReset()
     mockSelected.mockImplementation(() => [])

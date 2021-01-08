@@ -81,7 +81,6 @@ const Parameters = ({ project, simulation }) => {
   const onChange = (key, index, value) => {
     const deepValues = values[key] || []
     deepValues[index] = value
-
     const newValues = {
       ...values,
       [key]: deepValues
@@ -104,7 +103,9 @@ const Parameters = ({ project, simulation }) => {
           <div key={key + '&' + index}>
             {child.label}:
             <Formula
-              value={child.value === undefined ? child.default : child.value}
+              defaultValue={
+                child.value === undefined ? child.default : child.value
+              }
               onChange={(value) => onChange(key, index, value)}
             />
           </div>

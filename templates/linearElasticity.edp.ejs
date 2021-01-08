@@ -1,0 +1,145 @@
+<%# Headers -%>
+<%- include('blobs/headers.edp.ejs') -%>
+
+<%# Dimension -%>
+<%- include('blobs/dimensioning.edp.ejs', {
+	dimension
+}); -%>
+
+<%# Mesh -%>
+<%
+const mesh = geometry.mesh
+mesh.name = 'Th'
+-%>
+<%- include('blobs/mesh.edp.ejs', {
+	dimension,
+	mesh
+}); -%>
+
+<%# Material -%>
+<%- include('blobs/materials.edp.ejs', {
+	materials
+}) -%>
+
+<%# Finite element space -%>
+<%
+const finiteElementSpace = parameters.finiteElementSpace.children[0]
+finiteElementSpace.name = 'Uh'
+-%>
+<%- include('blobs/fespace.edp.ejs', {
+	mesh,
+	finiteElementSpace
+}); -%>
+
+<%# Finite element function -%>
+<%
+const unknownFunction = '[Ux, Uy, Uz]'
+const testFunction = '[Uhx, Uhy, Uhz]'
+-%>
+<%- include('blobs/fespaceFunction.edp.ejs', {
+	finiteElementSpace,
+	finiteElementFunction: ['Ux', 'Uy', 'Uz']
+}); -%>
+
+<%# Macro -%>
+<%- include('blobs/macro.edp.ejs', {
+	dimension,
+	type: ['vectorialDivergence', 'vectorialEpsilon']
+}); -%>
+
+// Variables
+real Mu = E/(2.*(1.+Nu));
+real Lambda = E*Nu/((1.+ Nu)*(1.-2.*Nu));
+
+<%# Problem -%>
+<%
+const fixed = boundaryConditions.fixed.values || []
+const displacement = boundaryConditions.displacement.values || []
+const pressure = boundaryConditions.pressure.values || []
+const rhs = parameters.rightHandSide.children
+const rhsX = rhs[0].value || rhs[0].default
+const rhsY = rhs[1].value || rhs[1].default
+const rhsZ = rhs[2].value || rhs[2].default
+-%>
+// Problem
+cout << "Define the problem..." << endl;
+varf vLinearElasticity (<%= unknownFunction -%>, <%= testFunction -%>)
+	= intN(Th)(
+		  Lambda * Div(U) * Div(Uh)
+		+ 2. * Mu * (
+			Epsilon(U)' * Epsilon(Uh)
+		)
+	)
+<% for (const d of displacement) { -%>
+	+ on(<%= d.selected.map(s => { return s.label}).filter(s => s).join() -%><% if (d.checked[0]) { -%>, Ux=0<% } -%><% if (d.checked[1]) { -%>, Uy=0<% } -%><% if (d.checked[2]) { -%>, Uz=0<% } -%>)
+<% } -%>
+<% for (const f of fixed) { -%>
+	+ on(<%= f.selected.map(s => { return s.label}).filter(s => s).join() -%>, Ux=0, Uy=0, Uz=0)
+<% } -%>
+	;
+
+varf vLinearElasticityRHS (<%= unknownFunction -%>, <%= testFunction -%>)
+	= intN(Th)(
+<% if (dimension === 2) { -%>
+		[<%- rhsX -%>, <%- rhsY -%>]' * <%= testFunction %>
+<% } else { -%>
+		[<%- rhsX -%>, <%- rhsY -%>, <%- rhsZ -%>]' * <%= testFunction %>
+<% } -%>
+	)
+	<% for (const p of pressure) { -%>
+	- intN1(Th, <%= p.selected.map(s => { return s.label}).filter(s => s).join() -%>)(
+		(<%- p.value[0] -%>) * <%= N -%>' * <%= Uh -%>
+	)
+<% } -%>
+<% for (const d of displacement) { -%>
+	+ on(<%= d.selected.map(s => { return s.label}).filter(s => s).join() -%><% if (d.checked[0]) { -%>, Ux=<%- d.value[0] -%><% } -%><% if (d.checked[1]) { -%>, Uy=<%- d.value[1] -%><% } -%><% if (d.checked[2]) { -%>, Uz=<%- d.value[2] -%><% } -%>)
+<% } -%>
+<% for (const f of fixed) { -%>
+	+ on(<%= f.selected.map(s => { return s.label}).filter(s => s).join() -%>, Ux=0, Uy=0, Uz=0)
+<% } -%>
+	;
+
+<%# Solver -%>
+<% const solver = parameters.solver.children[0].value || parameters.solver.children[0].default -%>
+<%- include('blobs/solver.edp.ejs', {
+	solver
+}) -%>
+
+<%# Solve -%>
+// Solve
+cout << "Solve the problem..." << endl;
+matrix LinearElasticity = vLinearElasticity(<%= finiteElementSpace.name -%>, <%= finiteElementSpace.name -%>, solver=solver);
+real[int] LinearElasticityRHS = vLinearElasticityRHS(0, <%= finiteElementSpace.name -%>);
+Ux[] = LinearElasticity^-1 * LinearElasticityRHS;
+
+<%# von Mises stress -%>
+fespace Sh(Th, P2);
+Sh epsilon11 = dx(Ux);
+Sh epsilon22 = dy(Uy);
+Sh epsilon33 = dz(Uz);
+Sh epsilon12 = 0.5*(dy(Ux) + dx(Uy));
+Sh epsilon13 = 0.5*(dz(Ux) + dx(Uz));
+Sh epsilon23 = 0.5*(dy(Uz) + dz(Uy));
+
+Sh traceEpsilon = epsilon11 + epsilon22 + epsilon33;
+
+Sh gamma11 = 2.*Mu * epsilon11 + Lambda * traceEpsilon;
+Sh gamma22 = 2.*Mu * epsilon22 + Lambda * traceEpsilon;
+Sh gamma33 = 2.*Mu * epsilon33 + Lambda * traceEpsilon;
+Sh gamma12 = 2.*Mu * epsilon12;
+Sh gamma13 = 2.*Mu * epsilon13;
+Sh gamma23 = 2.*Mu * epsilon23;
+
+Sh Sigma = sqrt(0.5 * ((gamma11 - gamma22)^2 + (gamma22 - gamma33)^2 + (gamma33 - gamma11)^2) + 3.*(gamma12^2 + gamma23^2 + gamma13^2));
+
+<%# Save -%>
+<%- include('blobs/save.edp.ejs', {
+	solution: {
+		path: run.path,
+		name: '"Result"',
+		mesh: mesh.name,
+		sol: [['Ux', 'Uy', 'Uz'], 'Sigma'],
+		dataName: run.results.map(r => r.name),
+		order: [1, 1]
+	}
+}); -%>

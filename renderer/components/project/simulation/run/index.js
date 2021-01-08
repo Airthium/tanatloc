@@ -231,31 +231,35 @@ const Run = ({ project, simulation }) => {
           </Steps>
           {resultFiles.length ? (
             <Card title="Results">
-              {resultFiles.map((result) => {
-                return (
-                  <Space key={result.name}>
-                    <Button
-                      icon={
-                        currentConfiguration.part?.fileName ===
-                        result?.fileName ? (
-                          <EyeInvisibleOutlined />
-                        ) : (
-                          <EyeOutlined />
-                        )
-                      }
-                      onClick={() =>
-                        setPart(
+              <Space direction="vertical">
+                {resultFiles.map((result) => {
+                  return (
+                    <Space key={result.name}>
+                      <Button
+                        icon={
                           currentConfiguration.part?.fileName ===
-                            result?.fileName
-                            ? null
-                            : result
-                        )
-                      }
-                    />
-                    {result.name}
-                  </Space>
-                )
-              })}
+                            result?.fileName &&
+                          currentConfiguration.part?.name === result?.name ? (
+                            <EyeInvisibleOutlined />
+                          ) : (
+                            <EyeOutlined />
+                          )
+                        }
+                        onClick={() =>
+                          setPart(
+                            currentConfiguration.part?.fileName ===
+                              result?.fileName &&
+                              currentConfiguration.part?.name === result?.name
+                              ? null
+                              : result
+                          )
+                        }
+                      />
+                      {result.name}
+                    </Space>
+                  )
+                })}
+              </Space>
             </Card>
           ) : null}
         </Space>

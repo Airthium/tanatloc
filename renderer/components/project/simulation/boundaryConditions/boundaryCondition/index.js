@@ -157,7 +157,7 @@ const BoundaryCondition = ({
               <div key={index}>
                 {child.label}
                 <Formula
-                  value={
+                  defaultValue={
                     current?.values?.[index] === undefined
                       ? current?.type?.children?.[index]?.default
                       : current?.values?.[index]

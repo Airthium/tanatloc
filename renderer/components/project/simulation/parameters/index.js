@@ -103,7 +103,9 @@ const Parameters = ({ project, simulation }) => {
           <div key={key + '&' + index}>
             {child.label}:
             <Formula
-              value={child.value === undefined ? child.default : child.value}
+              defaultValue={
+                child.value === undefined ? child.default : child.value
+              }
               onChange={(value) => onChange(key, index, value)}
             />
           </div>

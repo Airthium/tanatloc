@@ -97,7 +97,8 @@ const LinearElasticity = {
       index: 4,
       title: 'Boundary conditions',
       fixed: {
-        label: 'Fixed'
+        label: 'Fixed',
+        refineFactor: 10
       },
       displacement: {
         label: 'Displacement',
@@ -114,7 +115,8 @@ const LinearElasticity = {
             label: 'Uz',
             default: 0
           }
-        ]
+        ],
+        refineFactor: 10
       },
       pressure: {
         label: 'Pressure',
@@ -123,7 +125,8 @@ const LinearElasticity = {
             label: 'U * N',
             default: 0
           }
-        ]
+        ],
+        refineFactor: 5
       }
     },
     run: {

@@ -1,6 +1,10 @@
 import Edit from '../../../../../components/project/simulation/materials/edit'
 import { shallow } from 'enzyme'
 
+jest.mock('../../../../../components/assets/button', () => ({
+  EditButton: 'EditButton'
+}))
+
 const mockUpdate = jest.fn()
 const mockMutate = jest.fn()
 jest.mock('../../../../../../src/api/simulation', () => ({
@@ -60,7 +64,7 @@ describe('renderer/components/project/simulation/materials/edit', () => {
   })
 
   it('onEdit', async () => {
-    await wrapper.find('Button').props().onClick()
+    await wrapper.find('EditButton').props().onEdit()
     expect(mockUpdate).toHaveBeenCalledTimes(1)
     expect(mockMutate).toHaveBeenCalledTimes(1)
     expect(close).toHaveBeenCalledTimes(1)
@@ -69,7 +73,7 @@ describe('renderer/components/project/simulation/materials/edit', () => {
     mockUpdate.mockImplementation(() => {
       throw new Error()
     })
-    await wrapper.find('Button').props().onClick()
+    await wrapper.find('EditButton').props().onEdit()
     expect(mockUpdate).toHaveBeenCalledTimes(2)
     expect(mockMutate).toHaveBeenCalledTimes(1)
     expect(close).toHaveBeenCalledTimes(1)

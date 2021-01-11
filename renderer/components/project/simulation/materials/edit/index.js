@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { message, Button } from 'antd'
 
+import { EditButton } from '../../../../assets/button'
+
 import SimulationAPI from '../../../../../../src/api/simulation'
 
 import Sentry from '../../../../../../src/lib/sentry'
@@ -91,11 +93,7 @@ const Edit = ({ disabled, material, project, simulation, part, close }) => {
   /**
    * Render
    */
-  return (
-    <Button loading={loading} disabled={disabled} onClick={onEdit}>
-      Edit
-    </Button>
-  )
+  return <EditButton disabled={disabled} loading={loading} onEdit={onEdit} />
 }
 
 export default Edit

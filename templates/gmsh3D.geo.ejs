@@ -1,4 +1,6 @@
 SetFactory("OpenCASCADE");
+
+Geometry.OCCScaling = 1.e-3;
 V() = ShapeFromFile("<%= geometry %>");
 
 Mesh.Optimize = 1;

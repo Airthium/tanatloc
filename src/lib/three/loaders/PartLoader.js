@@ -135,9 +135,12 @@ const PartLoader = (mouseMoveEvent, mouseDownEvent) => {
     const geometry = loader.parse(buffer)
 
     // Convert mm to m
-    const position = geometry.getAttribute('position')
-    position.array = position.array.map((p) => p * 1e-3)
-    geometry.setAttribute('position', position)
+    // Meshes and results are already converted
+    if (partType === 'geometry') {
+      const position = geometry.getAttribute('position')
+      position.array = position.array.map((p) => p * 1e-3)
+      geometry.setAttribute('position', position)
+    }
 
     // Color
     const colorAttribute = geometry.getAttribute('color')

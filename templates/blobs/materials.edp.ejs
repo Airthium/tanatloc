@@ -1,5 +1,7 @@
 // Materials
 cout << "Define materials..." << endl;
+cout.flush;
+
 <% materials.children.map(child => { -%>
 <% const value = child.value || child.default -%>
 real <%= child.name %> = <%- value -%>;

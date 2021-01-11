@@ -1,4 +1,6 @@
 // Fespaces
 cout << "Define finie element space..." << endl;
+cout.flush;
+
 <% const FESpace = finiteElementSpace.value || finiteElementSpace.default; -%>
 fespace <%= finiteElementSpace.name -%>(<%= mesh.name -%>, [<%= FESpace.split(',') -%>]);

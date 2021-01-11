@@ -1,13 +1,9 @@
 // Mesh
 cout << "Read mesh..." << endl;
-<%# if (mesh.type === "gmsh") { -%>
+cout.flush;
+
 <%- include('./gmshMesh.edp.ejs', {
   dimension,
   mesh
 }); -%>
-<%# } else { -%>
-<%#- include('./meshMesh.edp.ejs', {
-  dimension,
-  mesh
-}); -%>
-<%# } -%>
+

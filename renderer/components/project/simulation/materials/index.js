@@ -44,7 +44,14 @@ const Materials = ({ project, simulation, part, setVisible }) => {
   /**
    * On edit
    */
-  const onEdit = () => {}
+  const onEdit = (index) => {
+    const materialToEdit = materials.values[index]
+    setMaterial(materialToEdit)
+
+    setMaterialVisible(true)
+    setVisible(false)
+    dispatch(enable())
+  }
 
   /**
    * On close

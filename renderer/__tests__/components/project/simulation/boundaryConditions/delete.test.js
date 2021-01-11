@@ -33,11 +33,14 @@ describe('renderer/components/project/simulation/boundaryConditions/delete', () 
     scheme: {
       configuration: {
         boundaryConditions: {
+          index: 3,
+          firstKey: {},
           key: {
             values: [
               {
                 selected: ['uuid']
-              }
+              },
+              {}
             ]
           }
         }

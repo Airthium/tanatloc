@@ -22,7 +22,7 @@ const List = ({ project, simulation, onEdit }) => {
   const highlight = (index) => {
     dispatch(enable())
     const currentSelected = materials?.values[index]?.selected
-    currentSelected.forEach((s) => {
+    currentSelected?.forEach((s) => {
       dispatch(select(s.uuid))
     })
   }

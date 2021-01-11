@@ -5,6 +5,7 @@ import DataBase from '../database'
 import Formula from '../../../../assets/formula'
 import Selector from '../../../../assets/selector'
 import Add from '../add'
+import Edit from '../edit'
 
 const Material = ({
   project,
@@ -97,14 +98,25 @@ const Material = ({
         <Button type="danger" onClick={onClose}>
           Cancel
         </Button>
-        <Add
-          disabled={disabled}
-          material={current}
-          oriject={project}
-          simulation={simulation}
-          part={part}
-          close={onClose}
-        />
+        {material ? (
+          <Edit
+            disabled={disabled}
+            material={current}
+            project={project}
+            simulation={simulation}
+            part={part}
+            close={onClose}
+          />
+        ) : (
+          <Add
+            disabled={disabled}
+            material={current}
+            project={project}
+            simulation={simulation}
+            part={part}
+            close={onClose}
+          />
+        )}
       </Space>
     </Drawer>
   )

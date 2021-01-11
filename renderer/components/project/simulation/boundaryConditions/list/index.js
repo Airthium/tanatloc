@@ -24,7 +24,7 @@ const List = ({ project, simulation, onEdit }) => {
   const highlight = (key, index) => {
     dispatch(enable())
     const currentSelected = boundaryConditions[key]?.values[index]?.selected
-    currentSelected.forEach((s) => {
+    currentSelected?.forEach((s) => {
       dispatch(select(s.uuid))
     })
   }

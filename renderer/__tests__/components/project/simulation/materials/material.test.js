@@ -11,6 +11,10 @@ jest.mock(
   '../../../../../components/project/simulation/materials/add',
   () => 'Add'
 )
+jest.mock(
+  '../../../../../components/project/simulation/materials/edit',
+  () => 'Edit'
+)
 
 let wrapper
 describe('renderer/components/project/simulation/materials/material', () => {

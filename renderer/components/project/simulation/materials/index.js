@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Button, Layout } from 'antd'
+import { Layout } from 'antd'
 import { PlusCircleOutlined } from '@ant-design/icons'
 
 import { AddButton } from '../../../assets/button'

@@ -7,7 +7,7 @@ const LinearElasticity = {
   name: 'Linear elasticity',
   algorithm: 'linearElasticity',
   code: 'FreeFEM',
-  description: '',
+  description: 'Linear elasticity',
   configuration: {
     geometry: {
       index: 1,
@@ -21,14 +21,14 @@ const LinearElasticity = {
         {
           label: "Young's modulus",
           name: 'E',
-          htmlEntity: '',
+          htmlEntity: 'formula',
           default: 1e9,
           unit: 'Pa'
         },
         {
           label: "Poisson's ratio",
           name: 'Nu',
-          htmlEntity: '',
+          htmlEntity: 'formula',
           default: 0.4,
           unit: '1'
         }
@@ -44,19 +44,19 @@ const LinearElasticity = {
             label: 'External force (x)',
             htmlEntity: 'formula',
             default: 0,
-            unit: 'unit'
+            unit: 'N.m^-3'
           },
           {
             label: 'External force (y)',
             htmlEntity: 'formula',
             default: 0,
-            unit: 'unit'
+            unit: 'N.m^-3'
           },
           {
             label: 'External force (z)',
             htmlEntity: 'formula',
             default: 0,
-            unit: 'unit'
+            unit: 'N.m^-3'
           }
         ]
       },
@@ -110,16 +110,19 @@ const LinearElasticity = {
         children: [
           {
             label: 'Ux',
+            htmlEntity: 'formula',
             default: 0,
             unit: 'm'
           },
           {
             label: 'Uy',
+            htmlEntity: 'formula',
             default: 0,
             unit: 'm'
           },
           {
             label: 'Uz',
+            htmlEntity: 'formula',
             default: 0,
             unit: 'm'
           }
@@ -131,8 +134,9 @@ const LinearElasticity = {
         children: [
           {
             label: 'd(U)/d(N)',
+            htmlEntity: 'formula',
             default: 0,
-            unit: 'unit'
+            unit: 'N.m^-2'
           }
         ],
         refineFactor: 5

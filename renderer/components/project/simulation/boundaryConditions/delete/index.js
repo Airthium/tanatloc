@@ -61,9 +61,9 @@ const Delete = ({ project, simulation, type, index }) => {
 
       // Diff
       let done = false
-      Object.keys(boundaryConditions).forEach((type) => {
-        if (type === 'index' || type === 'title' || type === 'done') return
-        if (boundaryConditions[type].values?.length) done = true
+      Object.keys(boundaryConditions).forEach((t) => {
+        if (t === 'index' || t === 'title' || t === 'done') return
+        if (boundaryConditions[t].values?.length) done = true
       })
       const diff = {
         ...boundaryConditions,

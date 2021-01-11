@@ -1,7 +1,10 @@
 /** @module renderer/components/project/simulation */
 
 import { useState, useEffect } from 'react'
-import { message, Layout, Menu, Modal } from 'antd'
+import { message, Layout, Menu, Modal, Space, Typography } from 'antd'
+import { WarningOutlined } from '@ant-design/icons'
+import { addedDiff, updatedDiff } from 'deep-object-diff'
+import merge from 'lodash.merge'
 
 import Panel from '../panel'
 
@@ -94,13 +97,31 @@ const Selector = ({ visible, onOk, onCancel }) => {
  */
 const Simulation = ({ project, simulation, type, part, onClose }) => {
   // State
-  const [visible, setVisible] = useState()
+  const [needUpdate, setNeedUpdate] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [visible, setVisible] = useState(false)
   const [title, setTitle] = useState()
 
   // Data
   const [, { mutateOneSimulation }] = SimulationAPI.useSimulations(
     project?.simulations
   )
+
+  // Check model update
+  useEffect(() => {
+    const currentModel = models.find(
+      (m) => m.algorithm === simulation?.scheme?.algorithm
+    )
+
+    if (currentModel && simulation?.scheme) {
+      const added = addedDiff(simulation.scheme, currentModel)
+      const updated = updatedDiff(simulation.scheme, currentModel)
+
+      if (Object.keys(added).length || Object.keys(updated).length)
+        setNeedUpdate(true)
+      else setNeedUpdate(false)
+    }
+  }, [simulation])
 
   /**
    * Simulation effect
@@ -142,35 +163,96 @@ const Simulation = ({ project, simulation, type, part, onClose }) => {
   }, [simulation, type])
 
   /**
+   * On update
+   */
+  const onUpdate = async () => {
+    setLoading(true)
+
+    try {
+      // Current model
+      const currentModel = models.find(
+        (m) => m.algorithm === simulation?.scheme?.algorithm
+      )
+
+      // New simulation
+      const newSimulation = { ...simulation }
+
+      // Merge
+      merge(newSimulation.scheme, currentModel)
+
+      // Update simulation
+      await SimulationAPI.update({ id: simulation.id }, [
+        {
+          key: 'scheme',
+          value: newSimulation.scheme
+        }
+      ])
+
+      // Mutate
+      mutateOneSimulation(newSimulation)
+    } catch (err) {
+      message.error(errors.updateError)
+      console.error(err)
+      Sentry.captureException(err)
+    }
+
+    setLoading(false)
+    setNeedUpdate(false)
+  }
+
+  /**
    * Render
    */
   return (
-    <Panel visible={visible} title={title} onClose={onClose}>
-      {type === 'about' && <About project={project} simulation={simulation} />}
-      {type === 'geometry' && (
-        <Geometry project={project} simulation={simulation} part={part} />
-      )}
-      {type === 'parameters' && (
-        <Parameters project={project} simulation={simulation} />
-      )}
-      {type === 'materials' && (
-        <Materials
-          project={project}
-          simulation={simulation}
-          part={part}
-          setVisible={setVisible}
-        />
-      )}
-      {type === 'boundaryConditions' && (
-        <BoundaryConditions
-          project={project}
-          simulation={simulation}
-          part={part}
-          setVisible={setVisible}
-        />
-      )}
-      {type === 'run' && <Run project={project} simulation={simulation} />}
-    </Panel>
+    <>
+      <Modal
+        title={
+          <>
+            <WarningOutlined style={{ color: 'orange', marginRight: '5px' }} />
+            Update
+          </>
+        }
+        visible={needUpdate}
+        onOk={onUpdate}
+        okText="Yes"
+        confirmLoading={loading}
+        onCancel={() => setNeedUpdate(false)}
+        cancelText="No"
+      >
+        <Space direction="vertical">
+          <Typography.Text>Your model needs an update!</Typography.Text>
+          <Typography.Text strong>Update now?</Typography.Text>
+        </Space>
+      </Modal>
+      <Panel visible={visible} title={title} onClose={onClose}>
+        {type === 'about' && (
+          <About project={project} simulation={simulation} />
+        )}
+        {type === 'geometry' && (
+          <Geometry project={project} simulation={simulation} part={part} />
+        )}
+        {type === 'parameters' && (
+          <Parameters project={project} simulation={simulation} />
+        )}
+        {type === 'materials' && (
+          <Materials
+            project={project}
+            simulation={simulation}
+            part={part}
+            setVisible={setVisible}
+          />
+        )}
+        {type === 'boundaryConditions' && (
+          <BoundaryConditions
+            project={project}
+            simulation={simulation}
+            part={part}
+            setVisible={setVisible}
+          />
+        )}
+        {type === 'run' && <Run project={project} simulation={simulation} />}
+      </Panel>
+    </>
   )
 }
 

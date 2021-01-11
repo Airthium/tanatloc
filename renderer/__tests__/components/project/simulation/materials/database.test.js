@@ -30,6 +30,6 @@ describe('renderer/components/project/simulation/materials/database', () => {
     wrapper.find('Menu').props().onClick({ key: 'metal' })
     expect(wrapper.find('List').length).toBe(1)
 
-    console.log(wrapper.find('CollapsePanel').props().extra.props.onClick())
+    wrapper.find('CollapsePanel').props().extra.props.onClick()
   })
 })

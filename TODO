@@ -3,6 +3,3 @@ ThreeJS :
 
 Converters:
 - Support geometry names with space
-
-Models:
-- compare current model with loaded one (without values)

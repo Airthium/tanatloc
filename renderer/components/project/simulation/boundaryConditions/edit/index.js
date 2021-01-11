@@ -112,15 +112,13 @@ const Edit = ({
       // Mutate
       mutateOneSimulation(newSimulation)
 
-      // Stop loading
-      setLoading(false)
-
       // Close
       close()
     } catch (err) {
       message.error(errors.updateError)
       console.error(err)
       Sentry.captureException(err)
+    } finally {
       setLoading(false)
     }
   }

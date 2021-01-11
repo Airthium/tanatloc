@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Button, Card, Drawer, Radio, Space } from 'antd'
+import { Button, Card, Drawer, Space, Typography } from 'antd'
 
 import DataBase from '../database'
 import Formula from '../../../../assets/formula'
@@ -31,6 +31,10 @@ const Material = ({
     else setDisabled(false)
   }, [current])
 
+  /**
+   *
+   * @param {Object} currentMaterial Current material
+   */
   const onMaterialSelect = (currentMaterial) => {
     setCurrent({
       ...current,
@@ -38,6 +42,10 @@ const Material = ({
     })
   }
 
+  /**
+   * On select
+   * @param {Object} selected Selected
+   */
   const onSelected = (selected) => {
     setCurrent({
       ...current,
@@ -45,11 +53,12 @@ const Material = ({
     })
   }
 
+  /**
+   * On close
+   */
   const onClose = () => {
     close()
   }
-
-  // TODO take custom into account
 
   return (
     <Drawer
@@ -62,32 +71,26 @@ const Material = ({
       width={300}
     >
       <Card>
-        <Radio.Group>
-          <Radio value={1}>
-            <div>
-              <DataBase onSelect={onMaterialSelect} />
-              {current?.material?.label}
-            </div>
-          </Radio>
-          <Radio value={2}>
-            <div>
-              <p>Custom material:</p>
-              {materials.children.map((m) => {
-                return (
-                  <div key={m.label}>
-                    <p>{m.label}</p>
-                    {m.symbol}:
-                    <Formula
-                      defaultValue={m.default}
-                      onChange={() => console.log('TODO')}
-                      unit={m.unit}
-                    ></Formula>
-                  </div>
-                )
-              })}
-            </div>
-          </Radio>
-        </Radio.Group>
+        <Space direction="vertical">
+          <DataBase onSelect={onMaterialSelect} />
+          <Typography.Text>{current?.material?.label}</Typography.Text>
+          {materials?.children?.map((child) => {
+            const m = current?.material?.children?.find(
+              (c) => c.symbol === child.name
+            )
+            if (m)
+              return (
+                <Formula
+                  key={m.symbol}
+                  defaultValue={m.value}
+                  unit={child.unit}
+                  onChange={(val) => {
+                    m.value = val
+                  }}
+                />
+              )
+          })}
+        </Space>
       </Card>
       <Selector part={part} updateSelected={onSelected} />
       <Space>

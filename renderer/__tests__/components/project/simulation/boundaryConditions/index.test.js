@@ -1,6 +1,10 @@
 import BoundaryConditions from '../../../../../components/project/simulation/boundaryConditions'
 import { shallow, mount } from 'enzyme'
 
+jest.mock('../../../../../components/assets/button', () => ({
+  AddButton: 'AddButton'
+}))
+
 jest.mock(
   '../../../../../components/project/simulation/boundaryConditions/list',
   () => 'List'
@@ -11,10 +15,6 @@ jest.mock(
 )
 
 jest.mock('react-redux', () => ({
-  // useSelector: (callback) =>
-  //   callback({
-  //     select: { highlighted: mockHighlighted(), selected: mockSelected() }
-  //   }),
   useDispatch: () => () => {}
 }))
 
@@ -27,18 +27,7 @@ jest.mock('../../../../../store/select/action', () => ({
   disable: () => mockDisable(),
   setType: () => mockSetType(),
   setPart: () => mockSetPart()
-  // highlight: jest.fn(),
-  // unhighlight: jest.fn(),
-  // select: jest.fn(),
-  // unselect: jest.fn()
 }))
-
-// const mockUpdate = jest.fn()
-// const mockMutate = jest.fn()
-// jest.mock('../../../../../../src/api/simulation', () => ({
-//   update: async () => mockUpdate(),
-//   useSimulations: () => [[], { mutateOneSimulation: mockMutate }]
-// }))
 
 let wrapper
 describe('renderer/components/project/simulation/boundaryConditions', () => {
@@ -85,7 +74,7 @@ describe('renderer/components/project/simulation/boundaryConditions', () => {
   })
 
   it('onAdd', () => {
-    wrapper.find('Button').props().onClick()
+    wrapper.find('AddButton').props().onAdd()
     expect(mockEnable).toHaveBeenCalledTimes(1)
   })
 

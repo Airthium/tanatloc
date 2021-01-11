@@ -1,5 +1,13 @@
 import { useState, useEffect } from 'react'
-import { message, Card, Collapse, Layout, Select } from 'antd'
+import {
+  message,
+  Card,
+  Collapse,
+  Layout,
+  Select,
+  Space,
+  Typography
+} from 'antd'
 
 import Formula from '../../../assets/formula'
 
@@ -100,8 +108,8 @@ const Parameters = ({ project, simulation }) => {
     const components = parameter?.children.map((child, index) => {
       if (child.htmlEntity === 'formula') {
         return (
-          <div key={key + '&' + index}>
-            {child.label}:
+          <Typography.Text key={key + '&' + index}>
+            {child.label}:<br />
             <Formula
               defaultValue={
                 child.value === undefined ? child.default : child.value
@@ -109,18 +117,18 @@ const Parameters = ({ project, simulation }) => {
               onChange={(value) => onChange(key, index, value)}
               unit={child.unit}
             />
-          </div>
+          </Typography.Text>
         )
       } else if (child.htmlEntity === 'select') {
         return (
-          <div key={key + '&' + index}>
-            {child.label}:
+          <Typography.Text key={key + '&' + index}>
+            {child.label}:<br />
             <Select
               options={child.options}
               defaultValue={child.value || child.default}
               onChange={(value) => onChange(key, index, value)}
             />
-          </div>
+          </Typography.Text>
         )
       }
     })
@@ -128,13 +136,13 @@ const Parameters = ({ project, simulation }) => {
     if (parameter?.advanced) {
       advanced.push(
         <Card key={key} title={parameter?.label}>
-          {components}
+          <Space direction="vertical">{components}</Space>
         </Card>
       )
     } else {
       parameters.push(
         <Card key={key} title={parameter?.label}>
-          {components}
+          <Space direction="vertical">{components}</Space>
         </Card>
       )
     }

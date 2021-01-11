@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { Button, Layout } from 'antd'
 import { PlusCircleOutlined } from '@ant-design/icons'
 
+import { AddButton } from '../../../assets/button'
 import List from './list'
 import Material from './material'
 
@@ -58,7 +59,9 @@ const Materials = ({ project, simulation, part, setVisible }) => {
   return (
     <Layout>
       <Layout.Content>
-        <Button icon={<PlusCircleOutlined />} onClick={onAdd} />
+        <AddButton icon={<PlusCircleOutlined />} onAdd={onAdd}>
+          Add material
+        </AddButton>
         <List project={project} simulation={simulation} onEdit={onEdit} />
         <Material
           project={project}

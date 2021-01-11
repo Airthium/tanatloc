@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Button, Card } from 'antd'
+import { Button, Card, Space, Typography } from 'antd'
 import { EditOutlined } from '@ant-design/icons'
 
 import { useDispatch } from 'react-redux'
@@ -51,22 +51,25 @@ const List = ({ project, simulation, onEdit }) => {
               enabled && unhighlight()
             }}
           >
-            {child.name}
-            <br />
-            <Button
-              icon={<EditOutlined />}
-              onClick={() => {
-                setEnabled(false)
-                onEdit(type, index)
-                setTimeout(() => setEnabled(true), 500)
-              }}
-            />
-            <Delete
-              project={project}
-              simulation={simulation}
-              type={type}
-              index={index}
-            />
+            <Space direction="vertical">
+              <Typography.Text>{child.name}</Typography.Text>
+              <Space>
+                <Button
+                  icon={<EditOutlined />}
+                  onClick={() => {
+                    setEnabled(false)
+                    onEdit(type, index)
+                    setTimeout(() => setEnabled(true), 500)
+                  }}
+                />
+                <Delete
+                  project={project}
+                  simulation={simulation}
+                  type={type}
+                  index={index}
+                />
+              </Space>
+            </Space>
           </Card>
         )
       })

@@ -6,21 +6,23 @@ import { Button } from 'antd'
  * @memberof module:renderer/components/assets/button
  * @param {Object} props Props
  */
-const AddButton = ({ loading, disabled, onAdd }) => {
+const AddButton = ({ disabled, loading, icon, onAdd, children }) => {
   /**
    * Render
    */
   return (
-    <Button disabled={disabled} loading={loading} onClick={onAdd}>
-      Add
+    <Button disabled={disabled} loading={loading} icon={icon} onClick={onAdd}>
+      {children || 'Add'}
     </Button>
   )
 }
 
 AddButton.propTypes = {
   disabled: PropTypes.bool,
-  loading: PropTypes.bool.isRequired,
-  onAdd: PropTypes.func.isRequired
+  loading: PropTypes.bool,
+  icon: PropTypes.node,
+  onAdd: PropTypes.func.isRequired,
+  children: PropTypes.node
 }
 
 export default AddButton

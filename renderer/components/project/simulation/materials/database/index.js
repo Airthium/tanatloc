@@ -1,5 +1,14 @@
 import { useState } from 'react'
-import { Button, Collapse, Layout, List, Menu, Modal } from 'antd'
+import {
+  Button,
+  Collapse,
+  Layout,
+  List,
+  Menu,
+  Modal,
+  Space,
+  Typography
+} from 'antd'
 import { DatabaseOutlined, SelectOutlined } from '@ant-design/icons'
 
 const dataBase = {
@@ -35,25 +44,26 @@ const DataBase = ({ onSelect }) => {
   const onMenuClick = ({ key }) => {
     const materials = dataBase[key].children.map((material) => {
       return (
-        <List.Item
-          key={material.label}
-          extra={
-            <Button
-              icon={<SelectOutlined />}
-              onClick={() => onMaterialSelect(material)}
-            />
-          }
-        >
-          {material.label}
+        <List.Item key={material.label}>
           <Collapse>
-            <Collapse.Panel>
-              {material.children.map((value) => {
-                return (
-                  <div key={value.label}>
-                    {value.label}: {value.symbol} = {value.value}{' '}
-                  </div>
-                )
-              })}
+            <Collapse.Panel
+              header={material.label}
+              extra={
+                <Button
+                  icon={<SelectOutlined />}
+                  onClick={() => onMaterialSelect(material)}
+                />
+              }
+            >
+              <Space direction="vertical">
+                {material.children.map((value) => {
+                  return (
+                    <Typography.Text key={value.label}>
+                      {value.label}: {value.symbol} = {value.value}
+                    </Typography.Text>
+                  )
+                })}
+              </Space>
             </Collapse.Panel>
           </Collapse>
         </List.Item>

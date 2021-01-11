@@ -5,10 +5,7 @@ Converters:
 - Support geometry names with space
 
 Result:
-- Bas file name sometimes
-
-Materials:
-- dirty UI
+- Bad file name sometimes
 
 Models:
 - compare current model with loaded one (without values)

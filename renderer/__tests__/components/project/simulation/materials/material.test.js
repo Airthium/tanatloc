@@ -5,7 +5,7 @@ jest.mock('../../../../../components/assets/formula', () => 'Formula')
 jest.mock('../../../../../components/assets/selector', () => 'Selector')
 jest.mock(
   '../../../../../components/project/simulation/materials/database',
-  () => 'database'
+  () => 'Database'
 )
 jest.mock(
   '../../../../../components/project/simulation/materials/add',
@@ -21,6 +21,7 @@ describe('renderer/components/project/simulation/materials/material', () => {
     label: 'label',
     children: [
       {
+        name: 'Test',
         default: 0
       }
     ]
@@ -54,11 +55,7 @@ describe('renderer/components/project/simulation/materials/material', () => {
   })
 
   it('onMaterialSelect', () => {
-    wrapper.find('database').props().onSelect()
-  })
-
-  it('custom', () => {
-    wrapper.find('Formula').props().onChange()
+    wrapper.find('Database').props().onSelect()
   })
 
   it('onSelected', () => {
@@ -89,7 +86,13 @@ describe('renderer/components/project/simulation/materials/material', () => {
     wrapper.unmount()
     material = {
       selected: [{ uuid: 'uuid', label: 1 }],
-      material: {}
+      material: {
+        children: [
+          {
+            symbol: 'Test'
+          }
+        ]
+      }
     }
     wrapper = mount(
       <Material
@@ -102,5 +105,7 @@ describe('renderer/components/project/simulation/materials/material', () => {
         close={close}
       />
     )
+
+    wrapper.find('Formula').props().onChange()
   })
 })

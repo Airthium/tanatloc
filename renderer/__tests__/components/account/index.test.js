@@ -4,6 +4,7 @@ import { shallow } from 'enzyme'
 jest.mock('../../../components/account/information', () => 'information')
 jest.mock('../../../components/account/password', () => 'password')
 jest.mock('../../../components/account/delete', () => 'delete')
+jest.mock('../../../components/account/hpc', () => 'hpc')
 
 let wrapper
 describe('renderer/components/account', () => {

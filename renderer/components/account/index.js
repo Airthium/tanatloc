@@ -5,6 +5,7 @@ import { Layout, PageHeader, Typography, Divider, Tabs } from 'antd'
 import Information from './information'
 import Password from './password'
 import Delete from './delete'
+import HPC from './hpc'
 
 /**
  * Account
@@ -37,7 +38,9 @@ const Account = () => {
           <Tabs.TabPane tab="Security" key="2">
             <Password />
           </Tabs.TabPane>
-          <Tabs.TabPane tab="HPC Providers" key="3"></Tabs.TabPane>
+          <Tabs.TabPane tab="HPC Providers" key="3">
+            <HPC />
+          </Tabs.TabPane>
         </Tabs>
       </Layout.Content>
     </Layout>

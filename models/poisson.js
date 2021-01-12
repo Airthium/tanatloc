@@ -15,7 +15,7 @@ const Poisson = {
         \\]
     </p>
     <p>
-        <a target="_blank" href="https://en.wikipedia.org/wiki/Poisson%27s_equation">Wikipedia page</a>
+        <a target="_blank" href="https://en.wikipedia.org/wiki/Poisson%27s_equation">Wikipedia</a>
     </p>
   `,
   configuration: {

@@ -47,6 +47,8 @@ const rhsValue = rhs.value || rhs.default
 -%>
 // Problem
 cout << "Define the problem..." << endl;
+cout.flush;
+
 varf vLaplacian (u, uh)
 	= intN(Th)(
 		grad(u)' * grad(uh)
@@ -79,6 +81,8 @@ varf vLaplacianRHS (u, uh)
 <%# Solve -%>
 // Solve
 cout << "Solve the problem..." << endl;
+cout.flush;
+
 matrix Laplacian = vLaplacian(<%= finiteElementSpace.name -%>, <%= finiteElementSpace.name -%>, solver=solver);
 real[int] LaplacianRHS = vLaplacianRHS(0, <%= finiteElementSpace.name -%>);
 u[] = Laplacian^-1 * LaplacianRHS;
@@ -94,3 +98,5 @@ u[] = Laplacian^-1 * LaplacianRHS;
 		order: [1]
 	}
 }); -%>
+
+cout.flush;

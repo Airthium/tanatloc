@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react'
-import { Button, Layout } from 'antd'
+import { Layout } from 'antd'
 import { PlusCircleOutlined } from '@ant-design/icons'
 
+import { AddButton } from '../../../assets/button'
 import List from './list'
 import Material from './material'
 
@@ -43,7 +44,14 @@ const Materials = ({ project, simulation, part, setVisible }) => {
   /**
    * On edit
    */
-  const onEdit = () => {}
+  const onEdit = (index) => {
+    const materialToEdit = materials.values[index]
+    setMaterial(materialToEdit)
+
+    setMaterialVisible(true)
+    setVisible(false)
+    dispatch(enable())
+  }
 
   /**
    * On close
@@ -58,7 +66,9 @@ const Materials = ({ project, simulation, part, setVisible }) => {
   return (
     <Layout>
       <Layout.Content>
-        <Button icon={<PlusCircleOutlined />} onClick={onAdd} />
+        <AddButton icon={<PlusCircleOutlined />} onAdd={onAdd}>
+          Add material
+        </AddButton>
         <List project={project} simulation={simulation} onEdit={onEdit} />
         <Material
           project={project}

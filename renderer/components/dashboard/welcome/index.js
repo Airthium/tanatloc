@@ -22,9 +22,9 @@ const Welcome = () => {
           }
           footer={<Divider className="Tanatloc-divider" />}
         />
-        <p>
+        <Typography.Text>
           Select a workspace to start, or <Add />
-        </p>
+        </Typography.Text>
       </Layout.Content>
     </Layout>
   )

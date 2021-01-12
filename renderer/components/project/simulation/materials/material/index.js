@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react'
-import { Button, Card, Drawer, Space } from 'antd'
+import { Button, Card, Drawer, Space, Typography } from 'antd'
 
 import DataBase from '../database'
+import Formula from '../../../../assets/formula'
 import Selector from '../../../../assets/selector'
 import Add from '../add'
+import Edit from '../edit'
 
 const Material = ({
   project,
@@ -30,6 +32,10 @@ const Material = ({
     else setDisabled(false)
   }, [current])
 
+  /**
+   *
+   * @param {Object} currentMaterial Current material
+   */
   const onMaterialSelect = (currentMaterial) => {
     setCurrent({
       ...current,
@@ -37,6 +43,10 @@ const Material = ({
     })
   }
 
+  /**
+   * On select
+   * @param {Object} selected Selected
+   */
   const onSelected = (selected) => {
     setCurrent({
       ...current,
@@ -44,6 +54,9 @@ const Material = ({
     })
   }
 
+  /**
+   * On close
+   */
   const onClose = () => {
     close()
   }
@@ -59,22 +72,51 @@ const Material = ({
       width={300}
     >
       <Card>
-        <DataBase onSelect={onMaterialSelect} />
-        {current?.material?.label}
+        <Space direction="vertical">
+          <DataBase onSelect={onMaterialSelect} />
+          <Typography.Text>{current?.material?.label}</Typography.Text>
+          {materials?.children?.map((child) => {
+            const m = current?.material?.children?.find(
+              (c) => c.symbol === child.name
+            )
+            if (m)
+              return (
+                <Formula
+                  key={m.symbol}
+                  defaultValue={m.value}
+                  unit={child.unit}
+                  onChange={(val) => {
+                    m.value = val
+                  }}
+                />
+              )
+          })}
+        </Space>
       </Card>
       <Selector part={part} updateSelected={onSelected} />
       <Space>
         <Button type="danger" onClick={onClose}>
           Cancel
         </Button>
-        <Add
-          disabled={disabled}
-          material={current}
-          oriject={project}
-          simulation={simulation}
-          part={part}
-          close={onClose}
-        />
+        {material ? (
+          <Edit
+            disabled={disabled}
+            material={current}
+            project={project}
+            simulation={simulation}
+            part={part}
+            close={onClose}
+          />
+        ) : (
+          <Add
+            disabled={disabled}
+            material={current}
+            project={project}
+            simulation={simulation}
+            part={part}
+            close={onClose}
+          />
+        )}
       </Space>
     </Drawer>
   )

@@ -49,6 +49,7 @@ import { NavigationHelper } from '../../../../src/lib/three/helpers/NavigationHe
 import { GridHelper } from '../../../../src/lib/three/helpers/GridHelper'
 import { SelectionHelper } from '../../../../src/lib/three/helpers/SelectionHelper'
 import { SectionViewHelper } from '../../../../src/lib/three/helpers/SectionViewHelper'
+import { ColorbarHelper } from '../../../../src/lib/three/helpers/ColorbarHelper'
 
 import { PartLoader } from '../../../../src/lib/three/loaders/PartLoader'
 
@@ -81,6 +82,7 @@ const ThreeView = ({ loading, part }) => {
   const gridHelper = useRef()
   const selectionHelper = useRef()
   const sectionViewHelper = useRef()
+  const colorbarHelper = useRef()
 
   // State
   const [controlVisible, setControlVisible] = useState(false)
@@ -208,6 +210,10 @@ const ThreeView = ({ loading, part }) => {
       controls.current
     )
 
+    // ColorbarHelper
+    colorbarHelper.current = ColorbarHelper(renderer.current, scene.current)
+    colorbarHelper.current.setVisible(false)
+
     /**
      * Render scene
      */
@@ -222,6 +228,8 @@ const ThreeView = ({ loading, part }) => {
       axisHelper.render()
 
       navigationHelper.render()
+
+      colorbarHelper.current.render()
     }
 
     /**
@@ -512,6 +520,14 @@ const ThreeView = ({ loading, part }) => {
 
     // Zoom
     zoomToFit()
+
+    // Colorbar
+    if (mesh?.children[1]?.children[0]?.lut) {
+      colorbarHelper.current.setLUT(mesh.children[1].children[0].lut)
+      colorbarHelper.current.setVisible(true)
+    } else {
+      colorbarHelper.current.setVisible(false)
+    }
   }
 
   /**

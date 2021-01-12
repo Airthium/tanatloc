@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react'
 import { useRouter } from 'next/router'
-import { Button, Card, Layout } from 'antd'
+import { Button, Card, Layout, Space, Typography } from 'antd'
 import { AlertOutlined } from '@ant-design/icons'
 
 const errors = {
@@ -32,15 +32,17 @@ const NotAuthorized = () => {
     <Layout>
       <Layout.Content>
         <Card title="Not allowed">
-          <p>
-            <AlertOutlined style={{ color: 'red' }} /> {errors.NOT_ALLOWED}
-          </p>
-          <p>
-            Go back
-            <Button type="link" onClick={home}>
-              home
-            </Button>
-          </p>
+          <Space direction="vertical">
+            <Typography.Text>
+              <AlertOutlined style={{ color: 'red' }} /> {errors.NOT_ALLOWED}
+            </Typography.Text>
+            <Typography.Text>
+              Go back
+              <Button type="link" onClick={home}>
+                home
+              </Button>
+            </Typography.Text>
+          </Space>
         </Card>
       </Layout.Content>
     </Layout>

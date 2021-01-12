@@ -7,7 +7,14 @@ const LinearElasticity = {
   name: 'Linear elasticity',
   algorithm: 'linearElasticity',
   code: 'FreeFEM',
-  description: '',
+  description: `
+  <p>
+    Linear elasticity
+  </p>
+  <p>
+    <a target="_blank" href="https://en.wikipedia.org/wiki/Linear_elasticity">Wikipedia</a>
+  </p>
+  `,
   configuration: {
     geometry: {
       index: 1,
@@ -21,14 +28,16 @@ const LinearElasticity = {
         {
           label: "Young's modulus",
           name: 'E',
-          htmlEntity: '',
-          default: 1e9
+          htmlEntity: 'formula',
+          default: 1e9,
+          unit: '\\(Pa\\)'
         },
         {
           label: "Poisson's ratio",
           name: 'Nu',
-          htmlEntity: '',
-          default: 0.4
+          htmlEntity: 'formula',
+          default: 0.4,
+          unit: '\\(1\\)'
         }
       ]
     },
@@ -41,17 +50,20 @@ const LinearElasticity = {
           {
             label: 'External force (x)',
             htmlEntity: 'formula',
-            default: 0
+            default: 0,
+            unit: '\\(N.m^{-3}\\)'
           },
           {
             label: 'External force (y)',
             htmlEntity: 'formula',
-            default: 0
+            default: 0,
+            unit: '\\(N.m^{-3}\\)'
           },
           {
             label: 'External force (z)',
             htmlEntity: 'formula',
-            default: 0
+            default: 0,
+            unit: '\\(N.m^{-3}\\)'
           }
         ]
       },
@@ -105,25 +117,33 @@ const LinearElasticity = {
         children: [
           {
             label: 'Ux',
-            default: 0
+            htmlEntity: 'formula',
+            default: 0,
+            unit: '\\(m\\)'
           },
           {
             label: 'Uy',
-            default: 0
+            htmlEntity: 'formula',
+            default: 0,
+            unit: '\\(m\\)'
           },
           {
             label: 'Uz',
-            default: 0
+            htmlEntity: 'formula',
+            default: 0,
+            unit: '\\(m\\)'
           }
         ],
         refineFactor: 10
       },
       pressure: {
-        label: 'Pressure',
+        label: 'Surface force',
         children: [
           {
-            label: 'U * N',
-            default: 0
+            label: 'd(U)/d(N)',
+            htmlEntity: 'formula',
+            default: 0,
+            unit: '\\(N.m^{-2}\\)'
           }
         ],
         refineFactor: 5

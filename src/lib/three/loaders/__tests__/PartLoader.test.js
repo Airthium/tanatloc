@@ -13,6 +13,9 @@ jest.mock('three/examples/jsm/math/Lut', () => ({
 }))
 
 describe('src/lib/three/loaders/PartLoader', () => {
+  global.MockGeometry.getAttribute = (attribute) => {
+    if (attribute === 'position') return { array: [] }
+  }
   global.MockGroup.children = [
     {
       children: [
@@ -96,10 +99,10 @@ describe('src/lib/three/loaders/PartLoader', () => {
     partLoader.load(part, true)
 
     // With color
-    global.MockGeometry.getAttribute = {
+    global.MockGeometry.getAttribute = () => ({
       count: 3,
       array: [0.1, 0.2, 0.3]
-    }
+    })
     partLoader.load(part)
 
     // No type

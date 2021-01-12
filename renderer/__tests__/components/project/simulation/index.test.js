@@ -1,6 +1,16 @@
 import Simulation from '../../../../components/project/simulation'
 import { shallow, mount } from 'enzyme'
 
+const mockAddedDiff = jest.fn()
+const mockUpdatedDiff = jest.fn()
+jest.mock('deep-object-diff', () => ({
+  addedDiff: () => mockAddedDiff(),
+  updatedDiff: () => mockUpdatedDiff()
+}))
+
+const mockMerge = jest.fn()
+jest.mock('lodash.merge', () => () => mockMerge())
+
 jest.mock('../../../../components/project/panel', () => 'panel')
 
 jest.mock('../../../../components/project/simulation/about', () => 'about')
@@ -22,6 +32,10 @@ jest.mock(
 )
 
 jest.mock('../../../../components/project/simulation/run', () => 'run')
+
+jest.mock('../../../../../src/lib/sentry', () => ({
+  captureException: () => {}
+}))
 
 const mockMutate = jest.fn()
 const mockUpdate = jest.fn()
@@ -46,9 +60,14 @@ jest.mock('../../../../../models', () => [
 let wrapper
 describe('components/project/simulation', () => {
   beforeEach(() => {
+    mockAddedDiff.mockReset()
+    mockAddedDiff.mockImplementation(() => ({}))
+    mockUpdatedDiff.mockReset()
+    mockUpdatedDiff.mockImplementation(() => ({}))
+    mockMerge.mockReset()
     mockMutate.mockReset()
     mockUpdate.mockReset()
-    wrapper = shallow(<Simulation />)
+    wrapper = shallow(<Simulation simulation={{}} />)
   })
 
   afterEach(() => {
@@ -65,6 +84,26 @@ describe('components/project/simulation', () => {
     wrapper = shallow(<Simulation onClose={onClose} />)
     wrapper.find('panel').props().onClose()
     expect(onClose).toHaveBeenCalledTimes(1)
+  })
+
+  it('onUpdate', async () => {
+    // Cancel
+    wrapper.find('Modal').props().onCancel()
+
+    // Normal
+    await wrapper.find('Modal').props().onOk()
+    expect(mockMerge).toHaveBeenCalledTimes(1)
+    expect(mockUpdate).toHaveBeenCalledTimes(1)
+    expect(mockMutate).toHaveBeenCalledTimes(1)
+
+    // Error
+    mockMerge.mockImplementation(() => {
+      throw new Error()
+    })
+    await wrapper.find('Modal').props().onOk()
+    expect(mockMerge).toHaveBeenCalledTimes(2)
+    expect(mockUpdate).toHaveBeenCalledTimes(1)
+    expect(mockMutate).toHaveBeenCalledTimes(1)
   })
 
   it('about', () => {
@@ -113,7 +152,28 @@ describe('components/project/simulation', () => {
       <Simulation
         simulation={{
           scheme: {
-            configuration: { geometry: { title: 'Geometry', file: {} } }
+            algorithm: 'algorithm',
+            configuration: {
+              geometry: { title: 'Geometry', file: {} }
+            }
+          }
+        }}
+        type="geometry"
+      />
+    )
+    expect(wrapper.find('panel').props().title).toBe('Geometry')
+
+    // With changes
+    wrapper.unmount()
+    mockAddedDiff.mockImplementation(() => ({ something: { test: 'test' } }))
+    wrapper = mount(
+      <Simulation
+        simulation={{
+          scheme: {
+            algorithm: 'algorithm',
+            configuration: {
+              geometry: { title: 'Geometry', file: {} }
+            }
           }
         }}
         type="geometry"

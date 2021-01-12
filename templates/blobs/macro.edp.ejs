@@ -1,5 +1,7 @@
 // Macro
 cout << "Define macros..." << endl;
+cout.flush;
+
 <% for (const macro of type) { -%>
 <%- include(`./macro_${macro}.edp.ejs`) -%>
 <% } -%>

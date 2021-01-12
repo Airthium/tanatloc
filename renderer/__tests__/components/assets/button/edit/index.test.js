@@ -1,18 +1,18 @@
-import AddButton from '../../../../../components/assets/button/add'
+import EditButton from '../../../../../components/assets/button/edit'
 import { shallow } from 'enzyme'
 
 let wrapper
 describe('renderer/components/assets/button/add', () => {
   const mockDisabled = jest.fn(() => false)
   const mockLoading = jest.fn(() => false)
-  const mockOnAdd = jest.fn()
+  const mockOnEdit = jest.fn()
 
   beforeEach(() => {
     wrapper = shallow(
-      <AddButton
+      <EditButton
         disabled={mockDisabled()}
         loading={mockLoading()}
-        onAdd={mockOnAdd}
+        onEdit={mockOnEdit}
       />
     )
   })
@@ -27,8 +27,8 @@ describe('renderer/components/assets/button/add', () => {
     expect(wrapper.find('Button').props().loading).toBe(false)
   })
 
-  it('onAdd', () => {
+  it('onEdit', () => {
     wrapper.find('Button').props().onClick()
-    expect(mockOnAdd).toHaveBeenCalledTimes(1)
+    expect(mockOnEdit).toHaveBeenCalledTimes(1)
   })
 })

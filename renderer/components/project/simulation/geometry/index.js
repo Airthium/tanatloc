@@ -9,6 +9,7 @@ import {
   Popconfirm,
   Space,
   Spin,
+  Typography,
   Upload
 } from 'antd'
 import {
@@ -207,6 +208,10 @@ const Geometry = ({ project, simulation, part }) => {
     }
   }
 
+  useEffect(() => {
+    window.MathJax?.typeset()
+  }, [])
+
   /**
    * Render
    */
@@ -214,11 +219,11 @@ const Geometry = ({ project, simulation, part }) => {
     <Layout>
       <Layout.Content>
         {upload ? (
-          <>
-            <p>
+          <Space direction="vertical">
+            <Typography.Text>
               <b>Upload a geometry</b>
-            </p>
-            <p>STEP (3D) of DXF (2D) file</p>
+            </Typography.Text>
+            <Typography.Text>STEP (3D) of DXF (2D) file</Typography.Text>
             <Upload
               accept=".stp,.step,.dxf"
               showUploadList={false}
@@ -231,52 +236,56 @@ const Geometry = ({ project, simulation, part }) => {
                 <div style={{ marginTop: 8 }}>Upload</div>
               </div>
             </Upload>
-          </>
+          </Space>
         ) : (
           <>
             <Card title="Informations">
-              <p>
-                <b>File:</b> {currentFile?.name}{' '}
-              </p>
-
-              {part ? (
-                part.error ? (
-                  <Alert
-                    message="Error"
-                    description={
-                      <>
-                        {errors.UNABLE_TO_LOAD}
-                        <Collapse ghost={true}>
-                          <Collapse.Panel header="Error">
-                            {part.message}
-                          </Collapse.Panel>
-                        </Collapse>
-                      </>
-                    }
-                    type="error"
-                  />
+              <Space direction="vertical">
+                <Typography.Text>
+                  <b>File:</b> {currentFile?.name}{' '}
+                </Typography.Text>
+                <Typography.Text>
+                  <b>Unit:</b> \(m\)
+                </Typography.Text>
+                {part ? (
+                  part.error ? (
+                    <Alert
+                      message="Error"
+                      description={
+                        <>
+                          {errors.UNABLE_TO_LOAD}
+                          <Collapse ghost={true}>
+                            <Collapse.Panel header="Error">
+                              {part.message}
+                            </Collapse.Panel>
+                          </Collapse>
+                        </>
+                      }
+                      type="error"
+                    />
+                  ) : (
+                    <>
+                      {part.solids && (
+                        <Typography.Text>
+                          <b>Number of solids:</b> {part.solids?.length}
+                        </Typography.Text>
+                      )}
+                      {part.faces && (
+                        <Typography.Text>
+                          <b>Number of faces:</b> {part.faces?.length}
+                        </Typography.Text>
+                      )}
+                      {part.edges && (
+                        <Typography.Text>
+                          <b>Number of edges:</b> {part.edges?.length}
+                        </Typography.Text>
+                      )}
+                    </>
+                  )
                 ) : (
-                  <>
-                    {part.solids && (
-                      <p>
-                        <b>Number of solids:</b> {part.solids?.length}
-                      </p>
-                    )}
-                    {part.faces && (
-                      <p>
-                        <b>Number of faces:</b> {part.faces?.length}
-                      </p>
-                    )}
-                    {part.edges && (
-                      <p>
-                        <b>Number of edges:</b> {part.edges?.length}
-                      </p>
-                    )}
-                  </>
-                )
-              ) : (
-                <Spin />
-              )}
+                  <Spin />
+                )}
+              </Space>
             </Card>
             <Space style={{ marginTop: '10px' }}>
               <Button icon={<DownloadOutlined />} onClick={onDownload} />

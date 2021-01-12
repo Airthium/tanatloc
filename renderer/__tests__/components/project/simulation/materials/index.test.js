@@ -1,6 +1,10 @@
 import Materials from '../../../../../components/project/simulation/materials'
 import { shallow, mount } from 'enzyme'
 
+jest.mock('../../../../../components/assets/button', () => ({
+  AddButton: 'AddButton'
+}))
+
 jest.mock(
   '../../../../../components/project/simulation/materials/list',
   () => 'List'
@@ -68,7 +72,7 @@ describe('renderer/components/project/simulation/materials', () => {
   })
 
   it('onAdd', () => {
-    wrapper.find('Button').props().onClick()
+    wrapper.find('AddButton').props().onAdd()
     expect(mockEnable).toHaveBeenCalledTimes(1)
   })
 

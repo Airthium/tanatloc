@@ -63,6 +63,8 @@ const rhsZ = rhs[2].value || rhs[2].default
 -%>
 // Problem
 cout << "Define the problem..." << endl;
+cout.flush;
+
 varf vLinearElasticity (<%= unknownFunction -%>, <%= testFunction -%>)
 	= intN(Th)(
 		  Lambda * Div(U) * Div(Uh)
@@ -108,6 +110,8 @@ varf vLinearElasticityRHS (<%= unknownFunction -%>, <%= testFunction -%>)
 <%# Solve -%>
 // Solve
 cout << "Solve the problem..." << endl;
+cout.flush;
+
 matrix LinearElasticity = vLinearElasticity(<%= finiteElementSpace.name -%>, <%= finiteElementSpace.name -%>, solver=solver);
 real[int] LinearElasticityRHS = vLinearElasticityRHS(0, <%= finiteElementSpace.name -%>);
 Ux[] = LinearElasticity^-1 * LinearElasticityRHS;
@@ -130,7 +134,10 @@ Sh gamma12 = 2.*Mu * epsilon12;
 Sh gamma13 = 2.*Mu * epsilon13;
 Sh gamma23 = 2.*Mu * epsilon23;
 
-Sh Sigma = sqrt(0.5 * ((gamma11 - gamma22)^2 + (gamma22 - gamma33)^2 + (gamma33 - gamma11)^2) + 3.*(gamma12^2 + gamma23^2 + gamma13^2));
+Sh Sigma = sqrt(
+	0.5 * ((gamma11 - gamma22)^2 + (gamma22 - gamma33)^2 + (gamma33 - gamma11)^2)
+	+ 3.*(gamma12^2 + gamma23^2 + gamma13^2)
+);
 
 <%# Save -%>
 <%- include('blobs/save.edp.ejs', {
@@ -143,3 +150,5 @@ Sh Sigma = sqrt(0.5 * ((gamma11 - gamma22)^2 + (gamma22 - gamma33)^2 + (gamma33 
 		order: [1, 1]
 	}
 }); -%>
+
+cout.flush;

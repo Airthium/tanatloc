@@ -1,5 +1,7 @@
 import { useState } from 'react'
-import { message, Button } from 'antd'
+import { message } from 'antd'
+
+import { EditButton } from '../../../../assets/button'
 
 import SimulationAPI from '../../../../../../src/api/simulation'
 
@@ -110,26 +112,20 @@ const Edit = ({
       // Mutate
       mutateOneSimulation(newSimulation)
 
-      // Stop loading
-      setLoading(false)
-
       // Close
       close()
     } catch (err) {
       message.error(errors.updateError)
       console.error(err)
       Sentry.captureException(err)
+    } finally {
       setLoading(false)
     }
   }
   /**
    * Render
    */
-  return (
-    <Button loading={loading} disabled={disabled} onClick={onEdit}>
-      Edit
-    </Button>
-  )
+  return <EditButton disabled={disabled} loading={loading} onEdit={onEdit} />
 }
 
 export default Edit

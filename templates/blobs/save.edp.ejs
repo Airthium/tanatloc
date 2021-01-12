@@ -1,5 +1,7 @@
 //Save
 cout << "Save result..." << endl;
+cout.flush;
+
 load "iovtk"
 {
 	fespace PV(<%= solution.mesh -%>, P1);

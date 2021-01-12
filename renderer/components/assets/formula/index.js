@@ -1,6 +1,6 @@
 /** @module renderer/components/assets/formula */
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Button, Input, Space } from 'antd'
 import { SaveOutlined } from '@ant-design/icons'
 
@@ -10,12 +10,17 @@ const saveDelay = 1000
  * Formula
  * @param {Object} props Props
  */
-const Formula = ({ defaultValue, onChange }) => {
+const Formula = ({ defaultValue, onChange, unit }) => {
   // State
   const [internalValue, setInternalValue] = useState(defaultValue)
   const [autoSave, setAutoSave] = useState(false)
   const [disabled, setDisabled] = useState(true)
   const [loading, setLoading] = useState(false)
+
+  // Units LaTeX
+  useEffect(() => {
+    window.MathJax?.typeset()
+  }, [unit])
 
   /**
    * On input change
@@ -49,7 +54,7 @@ const Formula = ({ defaultValue, onChange }) => {
    */
   return (
     <Space>
-      <Input value={internalValue} onChange={onInputChange} />
+      <Input value={internalValue} onChange={onInputChange} addonAfter={unit} />
       <Button disabled={disabled} loading={loading} icon={<SaveOutlined />} />
     </Space>
   )

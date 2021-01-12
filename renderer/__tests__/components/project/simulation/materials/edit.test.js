@@ -1,17 +1,8 @@
-import Delete from '../../../../../components/project/simulation/boundaryConditions/delete'
+import Edit from '../../../../../components/project/simulation/materials/edit'
 import { shallow } from 'enzyme'
 
-jest.mock('react-redux', () => ({
-  useDispatch: () => () => {}
-}))
-
 jest.mock('../../../../../components/assets/button', () => ({
-  DeleteButton: 'DeleteButton'
-}))
-
-const mockUnselect = jest.fn()
-jest.mock('../../../../../store/select/action', () => ({
-  unselect: () => mockUnselect()
+  EditButton: 'EditButton'
 }))
 
 const mockUpdate = jest.fn()
@@ -27,43 +18,39 @@ jest.mock('../../../../../../src/lib/sentry', () => ({
 }))
 
 let wrapper
-describe('renderer/components/project/simulation/boundaryConditions/delete', () => {
+describe('renderer/components/project/simulation/materials/edit', () => {
+  const material = {
+    selected: ['uuid1', 'uuid3']
+  }
   const project = {}
   const simulation = {
     scheme: {
       configuration: {
-        boundaryConditions: {
-          index: 3,
-          firstKey: {},
-          key: {
-            values: [
-              {
-                selected: ['uuid']
-              },
-              {}
-            ]
-          }
+        materials: {
+          values: [{}]
         }
       }
     }
   }
-  const type = 'key'
-  const index = 0
+  const part = { solids: [{ uuid: 'uuid1' }, { uuid: 'uuid2' }] }
+  const close = jest.fn()
 
   beforeEach(() => {
-    mockUnselect.mockReset()
-
     mockUpdate.mockReset()
     mockMutate.mockReset()
 
     mockSentry.mockReset()
 
+    close.mockReset()
+
     wrapper = shallow(
-      <Delete
+      <Edit
+        disabled={false}
+        material={material}
         project={project}
         simulation={simulation}
-        type={type}
-        index={index}
+        part={part}
+        close={close}
       />
     )
   })
@@ -76,26 +63,20 @@ describe('renderer/components/project/simulation/boundaryConditions/delete', () 
     expect(wrapper).toBeDefined()
   })
 
-  it('onDelete', async () => {
-    await wrapper.find('DeleteButton').props().onDelete()
-    expect(mockUnselect).toHaveBeenCalledTimes(1)
+  it('onEdit', async () => {
+    await wrapper.find('EditButton').props().onEdit()
     expect(mockUpdate).toHaveBeenCalledTimes(1)
     expect(mockMutate).toHaveBeenCalledTimes(1)
+    expect(close).toHaveBeenCalledTimes(1)
     expect(mockSentry).toHaveBeenCalledTimes(0)
 
-    // Error
-    simulation.scheme.configuration.boundaryConditions.key.values = [
-      {
-        selected: ['uuid']
-      }
-    ]
     mockUpdate.mockImplementation(() => {
       throw new Error()
     })
-    await wrapper.find('DeleteButton').props().onDelete()
-    expect(mockUnselect).toHaveBeenCalledTimes(2)
+    await wrapper.find('EditButton').props().onEdit()
     expect(mockUpdate).toHaveBeenCalledTimes(2)
     expect(mockMutate).toHaveBeenCalledTimes(1)
+    expect(close).toHaveBeenCalledTimes(1)
     expect(mockSentry).toHaveBeenCalledTimes(1)
   })
 })

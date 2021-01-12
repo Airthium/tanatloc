@@ -134,6 +134,15 @@ const PartLoader = (mouseMoveEvent, mouseDownEvent) => {
     const buffer = element.buffer
     const geometry = loader.parse(buffer)
 
+    // Convert mm to m
+    // Meshes and results are already converted
+    if (partType === 'geometry') {
+      const position = geometry.getAttribute('position')
+      position.array = position.array.map((p) => p * 1e-3)
+      geometry.setAttribute('position', position)
+    }
+
+    // Color
     const colorAttribute = geometry.getAttribute('color')
     if (colorAttribute) {
       color = new Color(
@@ -235,6 +244,8 @@ const PartLoader = (mouseMoveEvent, mouseDownEvent) => {
 
       const wireframe = new LineSegments(wireframeGeometry, wireframeMaterial)
       wireframe.visible = transparent
+
+      group.lut = lut
 
       group.add(mesh)
       group.add(wireframe)

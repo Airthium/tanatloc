@@ -1,5 +1,12 @@
 import { ColorbarHelper } from '../ColorbarHelper'
 
+jest.mock('../LabelHelper', () => () => ({
+  scale: {},
+  position: {
+    set: jest.fn()
+  }
+}))
+
 describe('src/lib/three/helpers/ColorbarHelper', () => {
   const renderer = {
     domElement: {

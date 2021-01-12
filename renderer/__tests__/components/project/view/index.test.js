@@ -110,34 +110,47 @@ jest.mock('../../../../../src/lib/three/helpers/SectionViewHelper', () => ({
   })
 }))
 
-jest.mock('../../../../../src/lib/three/loaders/PartLoader', () => ({
-  PartLoader: (mouseMove, mouseDown) => {
-    mouseMove(
-      {
-        highlight: () => {}
-      },
-      'uuid'
-    )
-    mouseDown(
-      {
-        getSelected: () => ['uuid'],
-        unselect: () => {}
-      },
-      'uuid'
-    )
-    mouseDown(
-      {
-        getSelected: () => ['uuid2'],
-        select: () => {}
-      },
-      'uuid'
-    )
-    return {
-      load: () => {},
-      dispose: () => {}
+jest.mock('../../../../../src/lib/three/helpers/ColorbarHelper', () => ({
+  ColorbarHelper: () => ({
+    setVisible: () => {},
+    setLUT: () => {},
+    render: () => {}
+  })
+}))
+
+jest.mock('../../../../../src/lib/three/loaders/PartLoader', () => {
+  let count = 0
+  return {
+    PartLoader: (mouseMove, mouseDown) => {
+      mouseMove(
+        {
+          highlight: () => {}
+        },
+        'uuid'
+      )
+      mouseDown(
+        {
+          getSelected: () => ['uuid'],
+          unselect: () => {}
+        },
+        'uuid'
+      )
+      mouseDown(
+        {
+          getSelected: () => ['uuid2'],
+          select: () => {}
+        },
+        'uuid'
+      )
+      return {
+        load: () => ({
+          children: [{}, { children: [{ lut: count++ === 1 ? null : {} }] }]
+        }),
+        dispose: () => {}
+      }
     }
   }
-}))
+})
 
 const mockGet = jest.fn()
 jest.mock('../../../../../src/api/part', () => ({

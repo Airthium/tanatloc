@@ -522,7 +522,7 @@ const ThreeView = ({ loading, part }) => {
     zoomToFit()
 
     // Colorbar
-    if (mesh.children[1].children[0].lut) {
+    if (mesh?.children[1]?.children[0]?.lut) {
       colorbarHelper.current.setLUT(mesh.children[1].children[0].lut)
       colorbarHelper.current.setVisible(true)
     } else {

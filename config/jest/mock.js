@@ -185,7 +185,7 @@ class MockSphere {
 
 class MockSphereGeometry extends MockGeometry {}
 
-class MockSprite {}
+class MockSprite extends MockMesh {}
 
 class MockSpriteMaterial extends MockMaterial {}
 

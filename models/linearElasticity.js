@@ -7,7 +7,14 @@ const LinearElasticity = {
   name: 'Linear elasticity',
   algorithm: 'linearElasticity',
   code: 'FreeFEM',
-  description: 'Linear elasticity',
+  description: `
+  <p>
+    Linear elasticity
+  </p>
+  <p>
+    <a target="_blank" href="https://en.wikipedia.org/wiki/Linear_elasticity">Wikipedia</a>
+  </p>
+  `,
   configuration: {
     geometry: {
       index: 1,

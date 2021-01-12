@@ -18,7 +18,6 @@ import Label from './LabelHelper'
 const ColorbarHelper = (renderer, scene) => {
   const width = 50
   const height = 500
-  const ratio = width / height
 
   const colorScene = new Scene()
   const colorCamera = new OrthographicCamera(-1, 1, 1, -1, 1, 2)
@@ -41,8 +40,8 @@ const ColorbarHelper = (renderer, scene) => {
    */
   const clearScene = () => {
     colorScene.children.forEach((child) => {
-      child.material.dispose()
       colorScene.remove(child)
+      child.dispose()
     })
   }
 
@@ -59,23 +58,27 @@ const ColorbarHelper = (renderer, scene) => {
     sprite.scale.x = 0.2
     sprite.scale.y = 2
     sprite.position.set(-1, 0, 0)
+    sprite.dispose = sprite.material.dispose
     colorScene.add(sprite)
 
     setLabels(lut)
   }
 
+  /**
+   * Set labels
+   * @param {Object} lut LUT
+   */
   const setLabels = (lut) => {
-    // TODO rescale using pow(3, 6, 9, ...)
-    const min = Math.trunc(lut.minV)
-    const max = Math.trunc(lut.maxV)
+    const min = lut.minV.toExponential(2)
+    const max = lut.maxV.toExponential(2)
 
     const minLabel = Label(min, 512, 'gray', 128)
     minLabel.scale.x = 1
-    minLabel.scale.y = 0.4
+    minLabel.scale.y = 0.3
     minLabel.position.set(-0.3, -0.9, 0)
     const maxLabel = Label(max, 512, 'gray', 128)
     maxLabel.scale.x = 1
-    maxLabel.scale.y = 0.4
+    maxLabel.scale.y = 0.3
     maxLabel.position.set(-0.3, 0.9, 0)
 
     colorScene.add(minLabel)

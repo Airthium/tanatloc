@@ -19,9 +19,7 @@ describe('src/lib/three/helpers/ColorbarHelper', () => {
 
   global.MockScene.children = [
     {
-      material: {
-        dispose: jest.fn()
-      }
+      dispose: jest.fn()
     }
   ]
 
@@ -38,7 +36,9 @@ describe('src/lib/three/helpers/ColorbarHelper', () => {
   it('setLUT', () => {
     const colorbarHelper = ColorbarHelper(renderer, scene)
     colorbarHelper.setLUT({
-      createCanvas: jest.fn()
+      createCanvas: jest.fn(),
+      minV: 1,
+      maxV: 1
     })
   })
 

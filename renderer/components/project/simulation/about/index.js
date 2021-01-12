@@ -50,9 +50,6 @@ const About = ({ project, simulation }) => {
   }
 
   // MathJax
-  /**
-   * MatJax
-   */
   useEffect(() => {
     window.MathJax?.typeset()
   }, [simulation?.scheme.description])

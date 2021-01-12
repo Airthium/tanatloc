@@ -208,6 +208,10 @@ const Geometry = ({ project, simulation, part }) => {
     }
   }
 
+  useEffect(() => {
+    window.MathJax?.typeset()
+  }, [])
+
   /**
    * Render
    */
@@ -241,9 +245,8 @@ const Geometry = ({ project, simulation, part }) => {
                   <b>File:</b> {currentFile?.name}{' '}
                 </Typography.Text>
                 <Typography.Text>
-                  <b>Unit:</b> m
+                  <b>Unit:</b> \(m\)
                 </Typography.Text>
-
                 {part ? (
                   part.error ? (
                     <Alert

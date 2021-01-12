@@ -23,14 +23,14 @@ const LinearElasticity = {
           name: 'E',
           htmlEntity: 'formula',
           default: 1e9,
-          unit: 'Pa'
+          unit: '\\(Pa\\)'
         },
         {
           label: "Poisson's ratio",
           name: 'Nu',
           htmlEntity: 'formula',
           default: 0.4,
-          unit: '1'
+          unit: '\\(1\\)'
         }
       ]
     },
@@ -44,19 +44,19 @@ const LinearElasticity = {
             label: 'External force (x)',
             htmlEntity: 'formula',
             default: 0,
-            unit: 'N.m^-3'
+            unit: '\\(N.m^{-3}\\)'
           },
           {
             label: 'External force (y)',
             htmlEntity: 'formula',
             default: 0,
-            unit: 'N.m^-3'
+            unit: '\\(N.m^{-3}\\)'
           },
           {
             label: 'External force (z)',
             htmlEntity: 'formula',
             default: 0,
-            unit: 'N.m^-3'
+            unit: '\\(N.m^{-3}\\)'
           }
         ]
       },
@@ -112,31 +112,31 @@ const LinearElasticity = {
             label: 'Ux',
             htmlEntity: 'formula',
             default: 0,
-            unit: 'm'
+            unit: '\\(m\\)'
           },
           {
             label: 'Uy',
             htmlEntity: 'formula',
             default: 0,
-            unit: 'm'
+            unit: '\\(m\\)'
           },
           {
             label: 'Uz',
             htmlEntity: 'formula',
             default: 0,
-            unit: 'm'
+            unit: '\\(m\\)'
           }
         ],
         refineFactor: 10
       },
       pressure: {
-        label: 'Pressure',
+        label: 'Surface force',
         children: [
           {
             label: 'd(U)/d(N)',
             htmlEntity: 'formula',
             default: 0,
-            unit: 'N.m^-2'
+            unit: '\\(N.m^{-2}\\)'
           }
         ],
         refineFactor: 5

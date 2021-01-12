@@ -7,7 +7,6 @@ import {
   SpriteMaterial,
   Sprite
 } from 'three/build/three.module'
-import { Lut } from 'three/examples/jsm/math/Lut'
 
 /**
  * Colorbar helper
@@ -15,8 +14,6 @@ import { Lut } from 'three/examples/jsm/math/Lut'
  * @param {Object} scene Scene
  */
 const ColorbarHelper = (renderer, scene) => {
-  const parentRect = renderer.domElement.getBoundingClientRect()
-
   const width = 50
   const height = 500
   const ratio = width / height
@@ -27,18 +24,30 @@ const ColorbarHelper = (renderer, scene) => {
 
   let sprite
 
+  /**
+   * Set visible
+   * @param {bool} visible Visible
+   */
   const setVisible = (visible) => {
     colorScene.children.forEach((child) => {
       child.visible = visible
     })
   }
 
+  /**
+   * Clean scene (local)
+   */
   const clearScene = () => {
     colorScene.children.forEach((child) => {
+      child.material.dispose()
       colorScene.remove(child)
     })
   }
 
+  /**
+   * Set LUT
+   * @param {Object} lut LUT
+   */
   const setLUT = (lut) => {
     clearScene()
 
@@ -50,10 +59,14 @@ const ColorbarHelper = (renderer, scene) => {
     colorScene.add(sprite)
   }
 
+  /**
+   * Render
+   */
   const render = () => {
+    const rect = renderer.domElement.getBoundingClientRect()
     renderer.setViewport(
-      parentRect.width - width - 100,
-      parentRect.height / 2 - height / 2,
+      rect.width - width - 100,
+      rect.height / 2 - height / 2,
       width,
       height
     )

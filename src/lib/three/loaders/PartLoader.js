@@ -245,6 +245,8 @@ const PartLoader = (mouseMoveEvent, mouseDownEvent) => {
       const wireframe = new LineSegments(wireframeGeometry, wireframeMaterial)
       wireframe.visible = transparent
 
+      group.lut = lut
+
       group.add(mesh)
       group.add(wireframe)
 

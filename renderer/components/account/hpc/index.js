@@ -1,8 +1,10 @@
-import { useState } from 'react'
-import { message, Button, Card, Form, Input, Select } from 'antd'
+import { useState, useEffect } from 'react'
+import { message, Button, Card, Form, Input, Select, Spin } from 'antd'
+import { v4 as uuid } from 'uuid'
+
 import Plugins from '../../../../plugin'
 
-import UserAPI from '../../../../src/api/user'
+import PluginAPI from '../../../../src/api/plugin'
 
 import Sentry from '../../../../src/lib/sentry'
 
@@ -16,9 +18,14 @@ const errors = {
 const HPC = () => {
   // State
   const [loading, setLoading] = useState(false)
+  const [list, setList] = useState([])
+  const [add, setAdd] = useState()
 
   // Data
-  const [user, { mutateUser }] = UserAPI.useUser()
+  const [
+    plugins,
+    { addOnePlugin, delOnePlugin, mutateOnePlugin, loadingPlugins }
+  ] = PluginAPI.usePlugins()
 
   const layout = {
     labelCol: { span: 2 },
@@ -26,6 +33,123 @@ const HPC = () => {
   }
   const tailLayout = {
     wrapperCol: { offset: 2, span: 8 }
+  }
+
+  // Plugins list
+  useEffect(() => {
+    if (loadingPlugins) return
+
+    // HPC only
+    const HPCPlugins = Object.keys(Plugins)
+      .map((key) => {
+        const plugin = Plugins[key]
+        if (plugin.category === 'HPC') return plugin
+      })
+      .filter((p) => p)
+
+    // List
+    const pluginsList = HPCPlugins.map((plugin) => {
+      const existingPlugin = plugins.filter((p) => p.key === plugin.key)
+
+      return (
+        <Card key={plugin.name} title={plugin.name}>
+          {plugin.logo && (
+            <img src={plugin.logo} style={{ width: '10%', margin: '10px' }} />
+          )}
+          <div dangerouslySetInnerHTML={{ __html: plugin.description }} />
+
+          {add === plugin.key ? (
+            plugin.configuration && (
+              <Form {...layout} onFinish={(values) => onFinish(plugin, values)}>
+                {Object.keys(plugin.configuration).map((key) => {
+                  const item = plugin.configuration[key]
+                  if (item.type === 'input') return inputItem(item, key)
+                  else if (item.type === 'password')
+                    return passwordItem(item, key)
+                  else if (item.type === 'select') return selectItem(item, key)
+                })}
+                <Form.Item {...tailLayout}>
+                  <Button loading={loading} type="primary" htmlType="submit">
+                    Add
+                  </Button>
+                </Form.Item>
+              </Form>
+            )
+          ) : (
+            <Button type="primary" onClick={() => onAdd(plugin.key)}>
+              Add
+            </Button>
+          )}
+
+          {existingPlugin.map((existing, index) => {
+            return (
+              <Card key={index} title={existing.configuration.name.value}>
+                {Object.keys(existing.configuration).map((key) => {
+                  if (key !== 'name')
+                    return (
+                      <div>
+                        {existing.configuration[key].label}:{' '}
+                        {existing.configuration[key].type === 'password'
+                          ? '******'
+                          : existing.configuration[key].value}
+                      </div>
+                    )
+                })}
+                <Button onClick={onEdit}>Edit</Button>
+                <Button type="danger" onClick={() => onDelete(existing)}>
+                  Delete
+                </Button>
+              </Card>
+            )
+          })}
+        </Card>
+      )
+    })
+
+    setList(pluginsList)
+  }, [loadingPlugins, plugins, add])
+
+  const onAdd = (key) => {
+    setAdd(key)
+  }
+
+  const onEdit = () => {
+    console.log('TODO')
+  }
+
+  const onDelete = async (plugin) => {
+    try {
+      const index = plugins.findIndex((p) => p.uuid === plugin.uuid)
+      if (index !== -1) {
+        const newPlugins = [
+          ...plugins.slice(0, index),
+          ...plugins.slice(index + 1)
+        ]
+
+        // API
+        await PluginAPI.update(newPlugins)
+
+        // Mutate
+        delOnePlugin(plugin)
+      } else throw new Error('error not found')
+    } catch (err) {}
+  }
+
+  const inputItem = (item, key) => {
+    return (
+      <Form.Item
+        {...layout}
+        key={item.label}
+        name={key}
+        label={item.label}
+        htmlFor={'input-' + key}
+        rules={[
+          { required: true, message: "'" + item.label + "' is required" }
+        ]}
+      >
+        <Input id={'input-' + key} />
+      </Form.Item>
+    )
   }
 
   /**
@@ -89,24 +213,20 @@ const HPC = () => {
         plugin.configuration[key].value = values[key]
       })
 
-      // New user
-      const newUser = { ...user }
+      // Remove logo
+      plugin.logo && delete plugin.logo
 
-      // Update local
-      const index = newUser.plugins?.find((p) => p.key === plugin.key)
-      if (index)
-        newUser.plugins = [
-          ...newUser.plugins.slice(0, index),
-          plugin,
-          ...newUser.plugins.slice(index + 1)
-        ]
-      else newUser.plugins = [...(newUser.plugins || []), plugin]
+      // Set uuid
+      plugin.uuid = uuid()
+
+      // New plugins
+      const newPlugins = [...plugins, plugin]
 
       // API
-      await UserAPI.update([{ key: 'plugins', value: newUser.plugins }])
+      await PluginAPI.update(newPlugins)
 
       // Mutate
-      mutateUser({ user: newUser })
+      mutateOnePlugin(plugin)
     } catch (err) {
       message.error(errors.updateError)
       console.error(err)
@@ -116,54 +236,10 @@ const HPC = () => {
     }
   }
 
-  // Plugins list
-  const HPCPlugins = Object.keys(Plugins)
-    .map((key) => {
-      const plugin = Plugins[key]
-      if (plugin.category === 'HPC') return plugin
-    })
-    .filter((p) => p)
-
-  const plugins = HPCPlugins.map((plugin) => {
-    const existingPlugin = user.plugins?.find((p) => p.key === plugin.key)
-    const initialValues = {}
-    existingPlugin?.configuration &&
-      Object.keys(existingPlugin.configuration).forEach((key) => {
-        initialValues[key] = existingPlugin.configuration[key].value
-      })
-    return (
-      <Card key={plugin.name} title={plugin.name}>
-        {plugin.logo && (
-          <img src={plugin.logo} style={{ width: '10%', margin: '10px' }} />
-        )}
-        <div dangerouslySetInnerHTML={{ __html: plugin.description }} />
-
-        {plugin.configuration && (
-          <Form
-            {...layout}
-            onFinish={(values) => onFinish(plugin, values)}
-            initialValues={initialValues}
-          >
-            {Object.keys(plugin.configuration).map((key) => {
-              const item = plugin.configuration[key]
-              if (item.type === 'password') return passwordItem(item, key)
-              else if (item.type === 'select') return selectItem(item, key)
-            })}
-            <Form.Item {...tailLayout}>
-              <Button loading={loading} type="primary" htmlType="submit">
-                Save
-              </Button>
-            </Form.Item>
-          </Form>
-        )}
-      </Card>
-    )
-  })
-
   /**
    * Render
    */
-  return <>{plugins}</>
+  return <>{loadingPlugins ? <Spin /> : list}</>
 }
 
 export default HPC

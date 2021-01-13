@@ -8,6 +8,10 @@ const Rescale = {
   description:
     '<p><a target="_blank" href="https://www.rescale.com/">Rescale</a>: Intelligent HPC Platform</p>',
   configuration: {
+    name: {
+      label: 'Name',
+      type: 'input'
+    },
     token: {
       label: 'Token',
       type: 'password'

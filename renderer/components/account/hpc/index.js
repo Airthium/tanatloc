@@ -1,39 +1,75 @@
-import { Button, Card, Form, Input } from 'antd'
+import { Button, Card, Form, Input, Select } from 'antd'
 import Plugins from '../../../../plugin'
-console.log(Plugins)
+
+/**
+ * HPC plugins
+ */
 const HPC = () => {
-  return (
-    <>
-      {Object.keys(Plugins).map((pluginKey) => {
-        const plugin = Plugins[pluginKey]
-        if (plugin.category !== 'HPC') return
-        return (
-          <Card key={plugin.name} title={plugin.name}>
-            <div dangerouslySetInnerHTML={{ __html: plugin.description }} />
-            {Object.keys(plugin.configuration).map((configurationKey) => {
-              const item = plugin.configuration[configurationKey]
-              if (item.type === 'password')
-                return (
-                  <Form onFinish={(values) => console.log(values)}>
-                    <Form.Item
-                      name={item.label}
-                      label={item.label}
-                      htmlFor={'input-' + configurationKey}
-                      rules={[{ required: true }]}
-                    >
-                      <Input id={'input-' + configurationKey} type="password" />
-                    </Form.Item>
-                    <Form.Item>
-                      <Button htmlType="submit">Save</Button>
-                    </Form.Item>
-                  </Form>
-                )
+  const HPCPlugins = Object.keys(Plugins)
+    .map((key) => {
+      const plugin = Plugins[key]
+      if (plugin.category === 'HPC') return plugin
+    })
+    .filter((p) => p)
+
+  const passwordItem = (item, key) => {
+    return (
+      <Form.Item
+        key={item.label}
+        name={item.label}
+        label={item.label}
+        htmlFor={'input-' + key}
+        rules={[{ required: true }]}
+      >
+        <Input id={'input-' + key} type="password" />
+      </Form.Item>
+    )
+  }
+
+  const selectItem = (item, key) => {
+    return (
+      <Form.Item
+        key={item.label}
+        name={item.label}
+        label={item.label}
+        htmlFor={'select-' + key}
+        rules={[{ required: true }]}
+      >
+        <Select id={'select-' + key}>
+          {item.options.map((option) => {
+            return (
+              <Select.Option key={option} value={option}>
+                {option}
+              </Select.Option>
+            )
+          })}
+        </Select>
+      </Form.Item>
+    )
+  }
+
+  const plugins = HPCPlugins.map((plugin) => {
+    return (
+      <Card key={plugin.name} title={plugin.name}>
+        <div dangerouslySetInnerHTML={{ __html: plugin.description }} />
+
+        {plugin.configuration && (
+          <Form onFinish={(values) => console.log(values)}>
+            {Object.keys(plugin.configuration).map((key) => {
+              const item = plugin.configuration[key]
+              if (item.type === 'password') return passwordItem(item, key)
+              else if (item.type === 'select') return selectItem(item, key)
             })}
-          </Card>
-        )
-      })}
-    </>
-  )
+            <Form.Item>
+              <Button htmlType="submit">Save</Button>
+            </Form.Item>
+          </Form>
+        )}
+      </Card>
+    )
+  })
+
+  return <>{plugins}</>
 }
 
 export default HPC

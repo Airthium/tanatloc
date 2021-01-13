@@ -4,6 +4,8 @@ import { v4 as uuid } from 'uuid'
 
 import Plugins from '../../../../plugin'
 
+import Delete from './delete'
+
 import PluginAPI from '../../../../src/api/plugin'
 
 import Sentry from '../../../../src/lib/sentry'
@@ -24,7 +26,7 @@ const HPC = () => {
   // Data
   const [
     plugins,
-    { addOnePlugin, delOnePlugin, mutateOnePlugin, loadingPlugins }
+    { addOnePlugin, mutateOnePlugin, loadingPlugins }
   ] = PluginAPI.usePlugins()
 
   const layout = {
@@ -96,9 +98,7 @@ const HPC = () => {
                     )
                 })}
                 <Button onClick={onEdit}>Edit</Button>
-                <Button type="danger" onClick={() => onDelete(existing)}>
-                  Delete
-                </Button>
+                <Delete plugin={existing} />
               </Card>
             )
           })}
@@ -115,24 +115,6 @@ const HPC = () => {
 
   const onEdit = () => {
     console.log('TODO')
-  }
-
-  const onDelete = async (plugin) => {
-    try {
-      const index = plugins.findIndex((p) => p.uuid === plugin.uuid)
-      if (index !== -1) {
-        const newPlugins = [
-          ...plugins.slice(0, index),
-          ...plugins.slice(index + 1)
-        ]
-
-        // API
-        await PluginAPI.update(newPlugins)
-
-        // Mutate
-        delOnePlugin(plugin)
-      } else throw new Error('error not found')
-    } catch (err) {}
   }
 
   const inputItem = (item, key) => {

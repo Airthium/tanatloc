@@ -29,14 +29,6 @@ const HPC = () => {
     { addOnePlugin, mutateOnePlugin, loadingPlugins }
   ] = PluginAPI.usePlugins()
 
-  const layout = {
-    labelCol: { span: 2 },
-    wrapperCol: { span: 8 }
-  }
-  const tailLayout = {
-    wrapperCol: { offset: 2, span: 8 }
-  }
-
   // Plugins list
   useEffect(() => {
     if (loadingPlugins) return

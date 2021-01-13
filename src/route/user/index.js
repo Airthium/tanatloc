@@ -34,7 +34,8 @@ export default async (req, res) => {
             'lastname',
             'firstname',
             'email',
-            'avatar'
+            'avatar',
+            'plugins'
           ])
           res.status(200).json({ user })
         } catch (err) {

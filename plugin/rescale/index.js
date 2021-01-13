@@ -1,6 +1,10 @@
+import logo from './logo.svg'
+
 const Rescale = {
   category: 'HPC',
+  key: 'rescale',
   name: 'Rescale plugin',
+  logo: logo,
   description:
     '<p><a target="_blank" href="https://www.rescale.com/">Rescale</a>: Intelligent HPC Platform</p>',
   configuration: {
@@ -11,7 +15,7 @@ const Rescale = {
     platform: {
       label: 'Platform',
       type: 'select',
-      options: ['platfrom.rescale.com', 'eu.rescale.com', 'platform.rescale.jp']
+      options: ['platform.rescale.com', 'eu.rescale.com', 'platform.rescale.jp']
     }
   }
 }

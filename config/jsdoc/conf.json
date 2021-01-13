@@ -22,7 +22,7 @@
     "systemName": "Tanatloc documentation",
     "systemSummary": "See the world the way it really is!",
     "systemLogo": "./renderer/public/images/icon.png",
-    "copyright": "Tanatloc Copyright © 2020",
+    "copyright": "Tanatloc Copyright © 2021",
     "favicon": "./renderer/public/images/icon.png"
   }
 }

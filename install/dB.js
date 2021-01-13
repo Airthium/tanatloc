@@ -178,6 +178,7 @@ const createUsersTable = async () => {
         databases.AVATARS +
         `(id) ON DELETE SET NULL,
           workspaces uuid[],
+          plugins jsonb[],
           isValidated BOOLEAN NOT NULL,
           lastModificationDate TIMESTAMP NOT NULL,
           superuser BOOLEAN NOT NULL

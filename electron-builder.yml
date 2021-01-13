@@ -1,6 +1,6 @@
 appId: com.tanatloc.nextron
 productName: Tanatloc
-copyright: Copyright © 2020 Airthium
+copyright: Copyright © 2021 Airthium
 directories:
   output: dist
   buildResources: resources

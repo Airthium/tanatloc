@@ -1,6 +1,8 @@
 import HPC from '../../../components/account/hpc'
 import { shallow } from 'enzyme'
 
+jest.mock('../../../components/account/hpc/plugin', () => 'Plugin')
+
 jest.mock('../../../../plugin', () => ({
   NonHPCPlugin: {
     category: 'Other'
@@ -31,18 +33,11 @@ jest.mock('../../../../plugin', () => ({
   }
 }))
 
-const mockUser = jest.fn()
-const mockMutateUser = jest.fn()
-const mockUpdate = jest.fn()
-jest.mock('../../../../src/api/user', () => ({
-  useUser: () => [mockUser(), { mutateUser: mockMutateUser }],
-  update: () => mockUpdate()
-}))
-
-const mockSentry = jest.fn()
-jest.mock('../../../../src/lib/sentry', () => ({
-  captureException: () => mockSentry()
-}))
+// const mockUser = jest.fn()
+// const mockLoading = jest.fn()
+// jest.mock('../../../../src/api/user', () => ({
+//   useUser: () => [mockUser(), { loadingUser: mockLoading() }]
+// }))
 
 let wrapper
 describe('renderer/components/account/hpc', () => {

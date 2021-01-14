@@ -1,10 +1,13 @@
 import { useState } from 'react'
-import { Button } from 'antd'
+import { message, Button } from 'antd'
 
 import PluginAPI from '../../../../src/api/plugin'
 
 import Sentry from '../../../../src/lib/sentry'
 
+/**
+ * Errors (hpc/delete)
+ */
 const errors = {
   updateError: 'Unable to delete plugin'
 }
@@ -27,7 +30,9 @@ const Delete = ({ plugin }) => {
     setLoading(true)
 
     try {
-      const index = plugins.findIndex((p) => p.uuid === plugin.index)
+      console.log(plugins)
+      console.log(plugin)
+      const index = plugins.findIndex((p) => p.uuid === plugin.uuid)
 
       if (index === -1) throw new Error('Unable to find the plugin')
 
@@ -46,6 +51,8 @@ const Delete = ({ plugin }) => {
       message.error(errors.updateError)
       console.error(err)
       Sentry.captureException(err)
+    } finally {
+      setLoading(false)
     }
   }
 

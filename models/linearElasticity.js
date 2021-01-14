@@ -157,7 +157,7 @@ const LinearElasticity = {
           name: 'U'
         },
         {
-          name: 'Sigma'
+          name: 'vonMises'
         }
       ]
     }

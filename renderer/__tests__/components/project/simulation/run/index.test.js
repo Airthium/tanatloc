@@ -3,6 +3,11 @@ import { shallow, mount } from 'enzyme'
 
 import '../../../../../../config/jest/matchMediaMock'
 
+jest.mock(
+  '../../../../../components/project/simulation/run/cloudServer',
+  () => 'CloudServer'
+)
+
 const mockRun = jest.fn()
 const mockUpdate = jest.fn()
 const mockSimulation = jest.fn()
@@ -61,7 +66,7 @@ describe('renderer/components/project/simulation/run', () => {
   })
 
   it('onRun', async () => {
-    await wrapper.find('Button').props().onClick()
+    await wrapper.find('Button').at(1).props().onClick()
     expect(mockRun).toHaveBeenCalledTimes(1)
     expect(mockSentry).toHaveBeenCalledTimes(0)
 
@@ -69,7 +74,7 @@ describe('renderer/components/project/simulation/run', () => {
     mockRun.mockImplementation(() => {
       throw new Error()
     })
-    await wrapper.find('Button').props().onClick()
+    await wrapper.find('Button').at(1).props().onClick()
     expect(mockRun).toHaveBeenCalledTimes(2)
     expect(mockSentry).toHaveBeenCalledTimes(1)
   })

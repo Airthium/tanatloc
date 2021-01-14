@@ -1,11 +1,14 @@
 import { useState, useEffect } from 'react'
 import { message, Button, Card, Drawer, Layout, Space, Steps, Tabs } from 'antd'
 import {
+  CloudServerOutlined,
   EyeOutlined,
   EyeInvisibleOutlined,
   FileTextOutlined,
   RocketOutlined
 } from '@ant-design/icons'
+
+import CloudServer from './cloudServer'
 
 import SimulationAPI from '../../../../../src/api/simulation'
 
@@ -27,6 +30,8 @@ const errors = {
  */
 const Run = ({ project, simulation }) => {
   // State
+  const [disabled, setDisabled] = useState(false)
+  const [cloudServerVisible, setCloudServerVisible] = useState(false)
   const [running, setRunning] = useState(false)
   const [logVisible, setLogVisible] = useState(false)
   const [logContent, setLogContent] = useState()
@@ -45,6 +50,17 @@ const Run = ({ project, simulation }) => {
   )
 
   // Check tasks
+  useEffect(() => {
+    let done = true
+    configuration &&
+      Object.keys(configuration).forEach((key) => {
+        if (key === 'part' || key === 'run') return
+        if (!configuration[key].done) done = false
+      })
+    if (!configuration.run.cloudServer) done = false
+    setDisabled(!done)
+  }, configuration)
+
   useEffect(() => {
     const meshing = currentSimulation?.tasks?.filter((t) => t.type === 'mesh')
     setMeshingTasks(meshing)
@@ -119,6 +135,10 @@ const Run = ({ project, simulation }) => {
     setLogVisible(!logVisible)
   }
 
+  /**
+   * Set part
+   * @param {Object} file File
+   */
   const setPart = async (file) => {
     // Update local
     currentConfiguration.part = file
@@ -155,6 +175,10 @@ const Run = ({ project, simulation }) => {
   return (
     <Layout>
       <Layout.Content>
+        <CloudServer
+          visible={cloudServerVisible}
+          onCancel={() => setCloudServerVisible(false)}
+        />
         <Drawer
           title="Log"
           visible={logVisible}
@@ -164,9 +188,20 @@ const Run = ({ project, simulation }) => {
           {logContent}
         </Drawer>
         <Space direction="vertical">
-          <Button icon={<RocketOutlined />} loading={running} onClick={onRun}>
-            Run
-          </Button>
+          <Space>
+            <Button
+              icon={<CloudServerOutlined />}
+              onClick={() => setCloudServerVisible(true)}
+            />
+            <Button
+              disabled={disabled}
+              icon={<RocketOutlined />}
+              loading={running}
+              onClick={onRun}
+            >
+              Run
+            </Button>
+          </Space>
 
           <Steps direction="vertical">
             {meshingTasks?.map((task, index) => {

@@ -1,10 +1,10 @@
 import Caller from '../call'
 
-const update = async (plugin) => {
+const add = async (plugin) => {
   return Caller.call('/api/plugin', {
-    method: 'PUT',
+    method: 'POST',
     body: JSON.stringify(plugin)
   })
 }
 
-export default update
+export default add

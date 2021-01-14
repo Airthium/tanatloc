@@ -25,7 +25,7 @@ const Plugin = ({ plugin }) => {
   const [add, setAdd] = useState(false)
 
   // Data
-  const [plugins, { addOnePlugin }] = PluginAPI.usePlugins()
+  const [, { addOnePlugin }] = PluginAPI.usePlugins()
 
   /**
    * On finish
@@ -44,11 +44,8 @@ const Plugin = ({ plugin }) => {
       // Set uuid
       plugin.uuid = uuid()
 
-      // New plugins
-      const newPlugins = [...plugins, plugin]
-
       // API
-      await PluginAPI.update(newPlugins)
+      await PluginAPI.add(plugin)
 
       // Mutate
       addOnePlugin(plugin)

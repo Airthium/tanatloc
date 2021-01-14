@@ -21,7 +21,7 @@ const Delete = ({ plugin }) => {
   const [loading, setLoading] = useState(false)
 
   // Data
-  const [plugins, { delOnePlugin }] = PluginAPI.usePlugins()
+  const [, { delOnePlugin }] = PluginAPI.usePlugins()
 
   /**
    * On delete
@@ -30,18 +30,8 @@ const Delete = ({ plugin }) => {
     setLoading(true)
 
     try {
-      const index = plugins.findIndex((p) => p.uuid === plugin.uuid)
-
-      if (index === -1) throw new Error('Unable to find the plugin')
-
-      // Update
-      const newPlugins = [
-        ...plugins.slice(0, index),
-        ...plugins.slice(index + 1)
-      ]
-
       // API
-      await PluginAPI.update(newPlugins)
+      await PluginAPI.del(plugin)
 
       // Mutate
       delOnePlugin(plugin)

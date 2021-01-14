@@ -87,16 +87,8 @@ const List = ({ plugin }) => {
         initialPlugin.configuration[key].value = values[key]
       })
 
-      //New plugins
-      const index = plugins.findIndex((p) => p.uuid === initialPlugin.uuid)
-      const newPlugins = [
-        ...plugins.slice(0, index),
-        initialPlugin,
-        ...plugins.slice(index + 1)
-      ]
-
       // API
-      await PluginAPI.update(newPlugins)
+      await PluginAPI.update(initialPlugin)
 
       // Mutate
       mutateOnePlugin(initialPlugin)

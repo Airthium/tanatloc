@@ -7,10 +7,10 @@ jest.mock('../../../../components/account/hpc/list', () => 'List')
 
 const mockPlugins = jest.fn()
 const mockAddOnePlugin = jest.fn()
-const mockUpdate = jest.fn()
+const mockAdd = jest.fn()
 jest.mock('../../../../../src/api/plugin', () => ({
   usePlugins: () => [mockPlugins(), { addOnePlugin: mockAddOnePlugin }],
-  update: () => mockUpdate()
+  add: () => mockAdd()
 }))
 
 const mockSentry = jest.fn()
@@ -31,7 +31,7 @@ describe('renderer/component/account/hpc/plugin', () => {
     mockPlugins.mockReset()
     mockPlugins.mockImplementation(() => [])
     mockAddOnePlugin.mockReset()
-    mockUpdate.mockReset()
+    mockAdd.mockReset()
 
     mockSentry.mockReset()
 
@@ -61,18 +61,18 @@ describe('renderer/component/account/hpc/plugin', () => {
     wrapper.find('Button').props().onClick()
 
     await wrapper.find('PluginForm').props().onFinish({ value: 'value' })
-    expect(mockUpdate).toHaveBeenCalledTimes(1)
+    expect(mockAdd).toHaveBeenCalledTimes(1)
     expect(mockAddOnePlugin).toHaveBeenCalledTimes(1)
     expect(mockSentry).toHaveBeenCalledTimes(0)
 
     // Error
     wrapper.find('Button').props().onClick()
 
-    mockUpdate.mockImplementation(() => {
+    mockAdd.mockImplementation(() => {
       throw new Error()
     })
     await wrapper.find('PluginForm').props().onFinish({ value: 'value' })
-    expect(mockUpdate).toHaveBeenCalledTimes(2)
+    expect(mockAdd).toHaveBeenCalledTimes(2)
     expect(mockAddOnePlugin).toHaveBeenCalledTimes(1)
     expect(mockSentry).toHaveBeenCalledTimes(1)
   })

@@ -3,10 +3,10 @@ import { shallow } from 'enzyme'
 
 const mockPlugins = jest.fn()
 const mockDelOnePlugin = jest.fn()
-const mockUpdate = jest.fn()
+const mockDelete = jest.fn()
 jest.mock('../../../../../src/api/plugin', () => ({
   usePlugins: () => [mockPlugins(), { delOnePlugin: mockDelOnePlugin }],
-  update: () => mockUpdate()
+  del: () => mockDelete()
 }))
 
 const mockSentry = jest.fn()
@@ -22,7 +22,7 @@ describe('renderer/components/account/hpc/delete', () => {
     mockPlugins.mockReset()
     mockPlugins.mockImplementation(() => [])
     mockDelOnePlugin.mockReset()
-    mockUpdate.mockReset()
+    mockDelete.mockReset()
 
     mockSentry.mockReset()
 
@@ -38,19 +38,19 @@ describe('renderer/components/account/hpc/delete', () => {
   })
 
   it('onDelete', async () => {
-    // Not found
-    await wrapper.find('Button').props().onClick()
-    expect(mockUpdate).toHaveBeenCalledTimes(0)
-    expect(mockDelOnePlugin).toHaveBeenCalledTimes(0)
-    expect(mockSentry).toHaveBeenCalledTimes(1)
-
     // Normal
-    wrapper.unmount()
-    mockPlugins.mockImplementation(() => [{ uuid: 'uuid' }])
-    wrapper = shallow(<Delete plugin={plugin} />)
+    await wrapper.find('Button').props().onClick()
+    expect(mockDelete).toHaveBeenCalledTimes(1)
+    expect(mockDelOnePlugin).toHaveBeenCalledTimes(1)
+    expect(mockSentry).toHaveBeenCalledTimes(0)
+
+    // Error
+    mockDelete.mockImplementation(() => {
+      throw new Error()
+    })
 
     await wrapper.find('Button').props().onClick()
-    expect(mockUpdate).toHaveBeenCalledTimes(1)
+    expect(mockDelete).toHaveBeenCalledTimes(2)
     expect(mockDelOnePlugin).toHaveBeenCalledTimes(1)
     expect(mockSentry).toHaveBeenCalledTimes(1)
   })

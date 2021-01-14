@@ -21,6 +21,11 @@ const Rescale = {
       type: 'select',
       options: ['platform.rescale.com', 'eu.rescale.com', 'platform.rescale.jp']
     }
+  },
+  needInit: true,
+  inUseConfiguration: {
+    coreTypes: {},
+    numberOfCores: {}
   }
 }
 

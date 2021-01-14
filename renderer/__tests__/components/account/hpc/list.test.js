@@ -1,6 +1,12 @@
 import List from '../../../../components/account/hpc/list'
-import { shallow, mount } from 'enzyme'
+import { shallow } from 'enzyme'
+import React, { useEffect as mockUseEffect } from 'react'
 import { act } from 'react-dom/test-utils'
+
+jest.mock('react', () => ({
+  ...jest.requireActual('react'),
+  useEffect: jest.fn()
+}))
 
 jest.mock('../../../../components/account/hpc/pluginForm', () => 'PluginForm')
 
@@ -31,6 +37,7 @@ describe('renderer/components/account/hpc/list', () => {
 
     mockSentry.mockReset()
 
+    mockUseEffect.mockImplementationOnce((f) => f())
     wrapper = shallow(<List plugin={plugin} />)
   })
 
@@ -55,18 +62,39 @@ describe('renderer/components/account/hpc/list', () => {
       }
     ])
 
-    wrapper = mount(<List plugin={plugin} />)
+    mockUseEffect.mockImplementationOnce((f) => f())
+    wrapper = shallow(<List plugin={plugin} />)
   })
 
-  it('onEdit', async () => {
+  it('onEdit / onCancel', async () => {
     wrapper.unmount()
     mockPlugins.mockImplementation(() => [
-      { key: 'other' },
-      { key: 'key', configuration: { name: 'name', item: {} } }
+      { uuid: 'uuid1', key: 'other' },
+      { uuid: 'uuid2', key: 'key', configuration: { name: 'name', item: {} } }
     ])
 
-    wrapper = mount(<List plugin={plugin} />)
+    mockUseEffect.mockImplementationOnce((f) => f())
+    wrapper = shallow(<List plugin={plugin} />)
 
-    act(() => wrapper.find('Button').props().onClick())
+    mockUseEffect.mockImplementationOnce((f) => f())
+    wrapper.find('Button').props().onClick()
+
+    // Normal
+    await wrapper.find('PluginForm').props().onFinish({ item: 'value' })
+    expect(mockUpdate).toHaveBeenCalledTimes(1)
+    expect(mockMutateOnePlugin).toHaveBeenCalledTimes(1)
+    expect(mockSentry).toHaveBeenCalledTimes(0)
+
+    // Error
+    mockUpdate.mockImplementation(() => {
+      throw new Error()
+    })
+    await wrapper.find('PluginForm').props().onFinish({ item: 'value' })
+    expect(mockUpdate).toHaveBeenCalledTimes(2)
+    expect(mockMutateOnePlugin).toHaveBeenCalledTimes(1)
+    expect(mockSentry).toHaveBeenCalledTimes(1)
+
+    // Cancel
+    wrapper.find('PluginForm').props().onCancel()
   })
 })

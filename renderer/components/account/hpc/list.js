@@ -89,8 +89,6 @@ const List = ({ plugin }) => {
 
       //New plugins
       const index = plugins.findIndex((p) => p.uuid === initialPlugin.uuid)
-      if (index === -1) throw new Error('Unable to find the plugin')
-
       const newPlugins = [
         ...plugins.slice(0, index),
         initialPlugin,
@@ -115,7 +113,7 @@ const List = ({ plugin }) => {
   /**
    * Render
    */
-  return list
+  return <>{list}</>
 }
 
 export default List

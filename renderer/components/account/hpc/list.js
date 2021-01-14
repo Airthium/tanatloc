@@ -27,8 +27,11 @@ const List = ({ plugin }) => {
   // Data
   const [plugins, { mutateOnePlugin }] = PluginAPI.usePlugins()
 
+  console.log(edit)
+
   // List
   useEffect(() => {
+    console.log(edit)
     const pluginsList = plugins.map((p) => {
       if (p.key !== plugin.key) return
 
@@ -40,7 +43,11 @@ const List = ({ plugin }) => {
           style={{ marginTop: '10px' }}
         >
           {edit ? (
-            <PluginForm plugin={p} onFinish={(values) => onEdit(p, values)} />
+            <PluginForm
+              plugin={p}
+              onFinish={(values) => onEdit(p, values)}
+              onCancel={() => setEdit(false)}
+            />
           ) : (
             Object.keys(configuration).map((key) => {
               if (key === 'name') return
@@ -69,7 +76,7 @@ const List = ({ plugin }) => {
     })
 
     setList(pluginsList)
-  }, [plugins, plugin, edit])
+  }, [JSON.stringify(plugins), plugin, edit])
 
   /**
    * On edit

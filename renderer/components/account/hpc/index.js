@@ -15,7 +15,7 @@ const HPC = () => {
   const [list, setList] = useState([])
 
   // Data
-  const [plugins, { loadingPlugins }] = PluginAPI.usePlugins()
+  const [, { loadingPlugins }] = PluginAPI.usePlugins()
 
   // Plugins list
   useEffect(() => {
@@ -39,7 +39,7 @@ const HPC = () => {
     })
 
     setList(pluginsList)
-  }, [loadingPlugins, plugins])
+  }, [loadingPlugins])
 
   /**
    * Render

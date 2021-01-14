@@ -68,7 +68,11 @@ const Plugin = ({ plugin }) => {
   return (
     <>
       {add ? (
-        <PluginForm plugin={plugin} onFinish={onFinish} />
+        <PluginForm
+          plugin={plugin}
+          onFinish={onFinish}
+          onCancel={() => setAdd(false)}
+        />
       ) : (
         <Button type="primary" onClick={() => setAdd(true)}>
           Add

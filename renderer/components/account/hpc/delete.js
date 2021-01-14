@@ -30,8 +30,6 @@ const Delete = ({ plugin }) => {
     setLoading(true)
 
     try {
-      console.log(plugins)
-      console.log(plugin)
       const index = plugins.findIndex((p) => p.uuid === plugin.uuid)
 
       if (index === -1) throw new Error('Unable to find the plugin')

@@ -1,11 +1,11 @@
 import { useState } from 'react'
-import { Button, Form, Input, Select } from 'antd'
+import { Button, Form, Input, Select, Space } from 'antd'
 
 /**
  * Plugin form
  * @param {Object} props Props
  */
-const PluginForm = ({ plugin, onFinish }) => {
+const PluginForm = ({ plugin, onFinish, onCancel }) => {
   // State
   const [loading, setLoading] = useState(false)
 
@@ -110,7 +110,6 @@ const PluginForm = ({ plugin, onFinish }) => {
   // Initial values
   const initialValues = {}
   Object.keys(plugin.configuration).forEach((key) => {
-    console.log(plugin.configuration[key])
     initialValues[key] = plugin.configuration[key].value
   })
 
@@ -131,9 +130,12 @@ const PluginForm = ({ plugin, onFinish }) => {
         else if (item.type === 'select') return selectItem(item, key)
       })}
       <Form.Item {...tailLayout}>
-        <Button loading={loading} type="primary" htmlType="submit">
-          Save
-        </Button>
+        <Space>
+          <Button loading={loading} type="primary" htmlType="submit">
+            Save
+          </Button>
+          <Button onClick={onCancel}>Cancel</Button>
+        </Space>
       </Form.Item>
     </Form>
   )

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { message, Button, Form, Input, Select } from 'antd'
+import { message, Button } from 'antd'
 import { v4 as uuid } from 'uuid'
 
 import PluginForm from './pluginForm'

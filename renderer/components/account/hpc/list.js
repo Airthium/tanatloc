@@ -27,11 +27,8 @@ const List = ({ plugin }) => {
   // Data
   const [plugins, { mutateOnePlugin }] = PluginAPI.usePlugins()
 
-  console.log(edit)
-
   // List
   useEffect(() => {
-    console.log(edit)
     const pluginsList = plugins.map((p) => {
       if (p.key !== plugin.key) return
 
@@ -80,23 +77,23 @@ const List = ({ plugin }) => {
 
   /**
    * On edit
-   * @param {Object} plugin Plugin
+   * @param {Object} initialPlugin Plugin
    * @param {Object} values Values
    */
-  const onEdit = async (plugin, values) => {
+  const onEdit = async (initialPlugin, values) => {
     try {
       // Set values
       Object.keys(values).forEach((key) => {
-        plugin.configuration[key].value = values[key]
+        initialPlugin.configuration[key].value = values[key]
       })
 
       //New plugins
-      const index = plugins.findIndex((p) => p.uuid === plugin.uuid)
+      const index = plugins.findIndex((p) => p.uuid === initialPlugin.uuid)
       if (index === -1) throw new Error('Unable to find the plugin')
 
       const newPlugins = [
         ...plugins.slice(0, index),
-        plugin,
+        initialPlugin,
         ...plugins.slice(index + 1)
       ]
 
@@ -104,7 +101,7 @@ const List = ({ plugin }) => {
       await PluginAPI.update(newPlugins)
 
       // Mutate
-      mutateOnePlugin(plugin)
+      mutateOnePlugin(initialPlugin)
 
       // Finish
       setEdit(false)

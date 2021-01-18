@@ -1,13 +1,11 @@
 import { useState } from 'react'
-import { message, Button } from 'antd'
+import { Button } from 'antd'
 import { DeleteOutlined } from '@ant-design/icons'
 
 import { Error } from '../../assets/notification'
 import { DeleteDialog } from '../../assets/dialog'
 
 import WorkspaceAPI from '../../../../src/api/workspace'
-
-import Sentry from '../../../../src/lib/sentry'
 
 const errors = {
   delError: 'Unable to delete the workspace'

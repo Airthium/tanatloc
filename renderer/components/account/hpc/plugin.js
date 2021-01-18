@@ -3,12 +3,11 @@ import { Button } from 'antd'
 import { v4 as uuid } from 'uuid'
 
 import { Error } from '../../assets/notification'
+
 import PluginForm from './pluginForm'
 import List from './list'
 
 import PluginAPI from '../../../../src/api/plugin'
-
-import Sentry from '../../../../src/lib/sentry'
 
 /**
  * Errors hpc/plugin

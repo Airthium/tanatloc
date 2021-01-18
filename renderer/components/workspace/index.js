@@ -2,7 +2,6 @@
 
 import { useState } from 'react'
 import {
-  message,
   Divider,
   Layout,
   PageHeader,
@@ -25,8 +24,6 @@ import ProjectAdd from '../project/add'
 import ProjectList from '../project/list'
 
 import WorkspaceAPI from '../../../src/api/workspace'
-
-import Sentry from '../../../src/lib/sentry'
 
 const errors = {
   updateError: 'Unable to update the workspace'

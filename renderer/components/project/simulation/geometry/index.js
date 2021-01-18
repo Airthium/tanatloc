@@ -25,8 +25,6 @@ import { Error } from '../../../assets/notification'
 import SimulationAPI from '../../../../../src/api/simulation'
 import FileAPI from '../../../../../src/api/file'
 
-import Sentry from '../../../../../src/lib/sentry'
-
 /**
  * Errors simulation/geometry
  * @memberof module:renderer/components/project/simulation

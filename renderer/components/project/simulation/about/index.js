@@ -7,8 +7,6 @@ import Delete from '../delete'
 
 import SimulationAPI from '../../../../../src/api/simulation'
 
-import Sentry from '../../../../../src/lib/sentry'
-
 /**
  * Errors simulation/about
  * @memberof module:renderer/components/project/simulation

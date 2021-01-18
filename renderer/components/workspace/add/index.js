@@ -1,13 +1,11 @@
 import { useState } from 'react'
-import { message, Button, Form, Input } from 'antd'
+import { Button, Form, Input } from 'antd'
 import { PlusCircleOutlined } from '@ant-design/icons'
 
 import { Error } from '../../assets/notification'
 import Dialog from '../../assets/dialog'
 
 import WorkspaceAPI from '../../../../src/api/workspace'
-
-import Sentry from '../../../../src/lib/sentry'
 
 const errors = {
   addError: 'Unable to add the workspace'

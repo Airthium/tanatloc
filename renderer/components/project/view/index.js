@@ -2,7 +2,6 @@
 
 import { useRef, useState, useEffect } from 'react'
 import {
-  message,
   Button,
   Divider,
   Drawer,
@@ -60,8 +59,6 @@ import PartAPI from '../../../../src/api/part'
 
 import { useSelector, useDispatch } from 'react-redux'
 import { highlight, select, unselect } from '../../../store/select/action'
-
-import Sentry from '../../../../src/lib/sentry'
 
 /**
  * Errors

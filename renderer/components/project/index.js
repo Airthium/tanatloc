@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
-import { message, Layout, Menu, Typography } from 'antd'
+import { Layout, Menu, Typography } from 'antd'
 import {
   ArrowLeftOutlined,
   CalculatorOutlined,
@@ -21,8 +21,6 @@ import Simulation from './simulation'
 import UserAPI from '../../../src/api/user'
 import ProjectAPI from '../../../src/api/project'
 import SimulationAPI from '../../../src/api/simulation'
-
-import Sentry from '../../../src/lib/sentry'
 
 /**
  * Menu keys

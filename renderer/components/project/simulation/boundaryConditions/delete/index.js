@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { message } from 'antd'
 
 import { Error } from '../../../../assets/notification'
 import { DeleteButton } from '../../../../assets/button'
@@ -8,8 +7,6 @@ import { useDispatch } from 'react-redux'
 import { unselect } from '../../../../../store/select/action'
 
 import SimulationAPI from '../../../../../../src/api/simulation'
-
-import Sentry from '../../../../../../src/lib/sentry'
 
 /**
  * Errors boundaryConditions/delete

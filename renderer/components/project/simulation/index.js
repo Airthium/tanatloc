@@ -19,8 +19,6 @@ import Run from './run'
 
 import SimulationAPI from '../../../../src/api/simulation'
 
-import Sentry from '../../../../src/lib/sentry'
-
 import models from '../../../../models'
 
 /**

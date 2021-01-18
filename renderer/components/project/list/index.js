@@ -8,8 +8,6 @@ import Delete from '../delete'
 
 import ProjectAPI from '../../../../src/api/project'
 
-import Sentry from '../../../../src/lib/sentry'
-
 /**
  * Errors project/list
  * @memberof module:renderer/components/project

@@ -8,8 +8,6 @@ import Dialog from '../../assets/dialog'
 import ProjectAPI from '../../../../src/api/project'
 import WorkspaceAPI from '../../../../src/api/workspace'
 
-import Sentry from '../../../../src/lib/sentry'
-
 /**
  * Errors project/add
  * @memberof module:renderer/components/project

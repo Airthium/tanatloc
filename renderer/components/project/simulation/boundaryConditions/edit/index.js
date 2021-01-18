@@ -1,12 +1,9 @@
 import { useState } from 'react'
-import { message } from 'antd'
 
 import { Error } from '../../../../assets/notification'
 import { EditButton } from '../../../../assets/button'
 
 import SimulationAPI from '../../../../../../src/api/simulation'
-
-import Sentry from '../../../../../../src/lib/sentry'
 
 /**
  * Errors boundaryCondition/edit

@@ -1,20 +1,10 @@
 import { useState, useEffect } from 'react'
-import {
-  message,
-  Card,
-  Collapse,
-  Layout,
-  Select,
-  Space,
-  Typography
-} from 'antd'
+import { Card, Collapse, Layout, Select, Space, Typography } from 'antd'
 
 import { Error } from '../../../assets/notification'
 import Formula from '../../../assets/formula'
 
 import SimulationAPI from '../../../../../src/api/simulation'
-
-import Sentry from '../../../../../src/lib/sentry'
 
 /**
  * Errors simulation/parameters

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { message, Button } from 'antd'
+import { Button } from 'antd'
 import { DeleteOutlined } from '@ant-design/icons'
 
 import { Error } from '../../../assets/notification'
@@ -7,8 +7,6 @@ import { DeleteDialog } from '../../../assets/dialog'
 
 import SimulationAPI from '../../../../../src/api/simulation'
 import ProjectAPI from '../../../../../src/api/project'
-
-import Sentry from '../../../../../src/lib/sentry'
 
 /**
  * Errors simulation/delete

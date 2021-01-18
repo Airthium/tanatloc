@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { message, Button, Card, Drawer, Layout, Space, Steps, Tabs } from 'antd'
+import { Button, Card, Drawer, Layout, Space, Steps, Tabs } from 'antd'
 import {
   CloudServerOutlined,
   EyeOutlined,
@@ -13,8 +13,6 @@ import { Error } from '../../../assets/notification'
 import CloudServer from './cloudServer'
 
 import SimulationAPI from '../../../../../src/api/simulation'
-
-import Sentry from '../../../../../src/lib/sentry'
 
 /**
  * Errors simulation/run

@@ -8,8 +8,6 @@ import { DeleteDialog } from '../../assets/dialog'
 import ProjectAPI from '../../../../src/api/project'
 import WorkspaceAPI from '../../../../src/api/workspace'
 
-import Sentry from '../../../../src/lib/sentry'
-
 /**
  * Errors project/del
  * @memberof module:renderer/components/project

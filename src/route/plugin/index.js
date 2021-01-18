@@ -19,6 +19,7 @@ export default async (req, res) => {
         res.status(500).json({ error: true, message: err.message })
         Sentry.captureException(err)
       }
+      break
     case 'GET':
       try {
         const plugins = await PluginLib.getByUser({ id: sessionId })
@@ -48,6 +49,7 @@ export default async (req, res) => {
         res.status(500).json({ error: true, message: err.message })
         Sentry.captureException(err)
       }
+      break
     default:
       const error = new Error('Method ' + req.method + ' not allowed')
       res.status(405).json({ error: true, message: error.message })

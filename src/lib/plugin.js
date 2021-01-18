@@ -1,5 +1,7 @@
 import User from './user'
 
+import APIs from '../../plugin/api'
+
 /**
  * Add plugin
  * @param {Object} user User { id }
@@ -14,7 +16,8 @@ const add = async ({ id }, plugin) => {
 
   // Plugin initialization
   if (plugin.needInit) {
-    //TODO load plugin and init it
+    const API = APIs[plugin.key]
+    if (API) await API.init(plugin.configuration)
   }
 
   // Update

@@ -10,6 +10,7 @@ const init = async (configuration) => {
     route: 'coretypes/?page_size=50'
   })
 
+  // Check token
   if (coreTypes.detail === 'Invalid token.') throw new Error(coreTypes.detail)
 
   console.log(coreTypes.results)
@@ -19,7 +20,7 @@ const init = async (configuration) => {
       coreTypes: {
         options: coreTypes.results.map((r) => ({
           value: r.code,
-          label: r.name
+          label: r.name + ' (' + r.cores.pop() + ' cores)'
         }))
       }
     }

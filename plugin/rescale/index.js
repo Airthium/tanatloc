@@ -38,6 +38,20 @@ const Rescale = {
       label: 'Number of nodes',
       type: 'number',
       default: 1
+    },
+    lowPriority: {
+      label: 'On-Demand',
+      type: 'radio',
+      options: [
+        {
+          label: 'On-Demand',
+          value: true
+        },
+        {
+          label: 'On-Demand Pro',
+          value: false
+        }
+      ]
     }
   }
 }

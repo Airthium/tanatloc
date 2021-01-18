@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { message } from 'antd'
 
+import { Error } from '../../../../assets/notification'
 import { DeleteButton } from '../../../../assets/button'
 
 import { useDispatch } from 'react-redux'
@@ -83,9 +84,7 @@ const Delete = ({ project, simulation, type, index }) => {
 
       mutateOneSimulation(newSimulation)
     } catch (err) {
-      message.error(errors.updateError)
-      console.error(err)
-      Sentry.captureException(err)
+      Error(errors.updateError, err)
       setLoading(false)
     }
   }

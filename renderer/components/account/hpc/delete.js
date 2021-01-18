@@ -1,9 +1,8 @@
 import { useState } from 'react'
-import { message, Button } from 'antd'
+import { Button } from 'antd'
 
+import { Error } from '../../assets/notification'
 import PluginAPI from '../../../../src/api/plugin'
-
-import Sentry from '../../../../src/lib/sentry'
 
 /**
  * Errors (hpc/delete)
@@ -36,9 +35,7 @@ const Delete = ({ plugin }) => {
       // Mutate
       delOnePlugin(plugin)
     } catch (err) {
-      message.error(errors.updateError)
-      console.error(err)
-      Sentry.captureException(err)
+      Error(errors.updateError, err)
     } finally {
       setLoading(false)
     }

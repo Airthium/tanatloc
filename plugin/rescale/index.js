@@ -24,8 +24,21 @@ const Rescale = {
   },
   needInit: true,
   inUseConfiguration: {
-    coreTypes: {},
-    numberOfCores: {}
+    more: {
+      label:
+        'More information on <a href="https://www.rescale.com/infrastructure/" target="_blank">Rescale website</a>.',
+      type: 'label'
+    },
+    coreTypes: {
+      label: 'Core type',
+      type: 'select',
+      options: []
+    },
+    numberOfNodes: {
+      label: 'Number of nodes',
+      type: 'number',
+      default: 1
+    }
   }
 }
 

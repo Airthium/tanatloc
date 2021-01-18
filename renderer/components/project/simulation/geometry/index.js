@@ -20,6 +20,8 @@ import {
   QuestionCircleOutlined
 } from '@ant-design/icons'
 
+import { Error } from '../../../assets/notification'
+
 import SimulationAPI from '../../../../../src/api/simulation'
 import FileAPI from '../../../../../src/api/file'
 
@@ -114,9 +116,7 @@ const Geometry = ({ project, simulation, part }) => {
           true
         )
       } catch (err) {
-        message.error(errors.updateError)
-        console.error(err)
-        Sentry.captureException(err)
+        Error(errors.updateError, err)
       } finally {
         setLoading(false)
       }
@@ -176,9 +176,7 @@ const Geometry = ({ project, simulation, part }) => {
         }
       })
     } catch (err) {
-      message.error(errors.updateError)
-      console.error(err)
-      Sentry.captureException(err)
+      Error(errors.updateError, err)
     }
   }
 
@@ -202,9 +200,7 @@ const Geometry = ({ project, simulation, part }) => {
       link.click()
       link.remove()
     } catch (err) {
-      message.error(errors.downloadError)
-      console.error(err)
-      Sentry.captureException(err)
+      Error(errors.downloadError, err)
     }
   }
 

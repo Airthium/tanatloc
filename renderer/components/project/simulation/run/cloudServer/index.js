@@ -22,6 +22,7 @@ const CloudServer = ({ visible, onCancel }) => {
           </Space>
         </Card>
         {plugins?.map((plugin) => {
+          console.log(plugin)
           return (
             <Card key={plugin.uuid} title={plugin.name}>
               <Space>

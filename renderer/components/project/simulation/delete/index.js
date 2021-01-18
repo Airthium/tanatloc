@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { message, Button } from 'antd'
 import { DeleteOutlined } from '@ant-design/icons'
 
+import { Error } from '../../../assets/notification'
 import { DeleteDialog } from '../../../assets/dialog'
 
 import SimulationAPI from '../../../../../src/api/simulation'
@@ -56,9 +57,7 @@ const Delete = ({ project, simulation }) => {
 
       toggleDialog()
     } catch (err) {
-      message.error(errors.delError)
-      console.error(err)
-      Sentry.captureException(err)
+      Error(errors.delError, err)
     } finally {
       setLoading(false)
     }

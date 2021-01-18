@@ -1,3 +1,5 @@
+import merge from 'lodash.merge'
+
 import User from './user'
 
 import APIs from '../../plugin/api'
@@ -17,7 +19,10 @@ const add = async ({ id }, plugin) => {
   // Plugin initialization
   if (plugin.needInit) {
     const API = APIs[plugin.key]
-    if (API) await API.init(plugin.configuration)
+    if (API) {
+      const init = await API.init(plugin.configuration)
+      merge(plugin, init)
+    }
   }
 
   // Update

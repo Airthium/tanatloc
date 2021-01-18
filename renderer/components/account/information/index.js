@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import {
-  message,
+  notification,
   Avatar,
   Button,
   Form,
@@ -13,10 +13,10 @@ import {
 } from 'antd'
 import { UploadOutlined, UserOutlined } from '@ant-design/icons'
 
+import { Error } from '../../assets/notification'
+
 import UserAPI from '../../../../src/api/user'
 import AvatarAPI from '../../../../src/api/avatar'
-
-import Sentry from '../../../../src/lib/sentry'
 
 /**
  * Errors account/information
@@ -87,9 +87,7 @@ const Information = () => {
         }
       })
     } catch (err) {
-      message.error(errors.updateError)
-      console.error(err)
-      Sentry.captureException(err)
+      Error(errors.updateError, err)
     } finally {
       setLoading(false)
     }
@@ -108,10 +106,10 @@ const Information = () => {
    */
   const beforeUpload = (file) => {
     const goodFormat = file.type === 'image/jpeg' || file.type === 'image/png'
-    if (!goodFormat) message.error(errors.badFormat)
+    if (!goodFormat) notification.error({ message: errors.badFormat })
 
     const goodSize = file.size / 1024 / 1024 < 5
-    if (!goodSize) message.error(errors.badSize)
+    if (!goodSize) notification.error({ message: errors.badSize })
 
     return goodFormat && goodSize
   }
@@ -145,9 +143,7 @@ const Information = () => {
           }
         })
       } catch (err) {
-        message.error(err.message)
-        console.error(err)
-        Sentry.captureException(err)
+        Error(err.message, err)
       } finally {
         setUploading(false)
       }

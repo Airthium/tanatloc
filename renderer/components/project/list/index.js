@@ -1,5 +1,7 @@
 import { useRouter } from 'next/router'
-import { message, Space, Table, Empty } from 'antd'
+import { Space, Table, Empty } from 'antd'
+
+import { Error } from '../../assets/notification'
 
 import Data from '../data'
 import Delete from '../delete'
@@ -66,9 +68,7 @@ const ProjectList = ({ workspace, filter }) => {
         title: title
       })
     } catch (err) {
-      message.error(errors.updateError)
-      console.error(err)
-      Sentry.captureException(err)
+      Error(errors.updateError, err)
     }
   }
 

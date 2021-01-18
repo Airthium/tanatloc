@@ -12,12 +12,15 @@ const init = async (configuration) => {
 
   if (coreTypes.detail === 'Invalid token.') throw new Error(coreTypes.detail)
 
+  console.log(coreTypes.results)
+
   return {
     inUseConfiguration: {
       coreTypes: {
-        label: 'Core type',
-        type: 'select',
-        options: coreTypes.results.map((r) => r.code)
+        options: coreTypes.results.map((r) => ({
+          value: r.code,
+          label: r.name
+        }))
       }
     }
   }

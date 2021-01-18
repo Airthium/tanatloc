@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { message, Button, Form, Input } from 'antd'
 import { PlusCircleOutlined } from '@ant-design/icons'
 
+import { Error } from '../../assets/notification'
 import Dialog from '../../assets/dialog'
 
 import WorkspaceAPI from '../../../../src/api/workspace'
@@ -46,9 +47,7 @@ const Add = () => {
 
       toggleDialog()
     } catch (err) {
-      message.error(errors.addError)
-      console.error(err)
-      Sentry.captureException(err)
+      Error(errors.addError, err)
     } finally {
       setLoading(false)
     }

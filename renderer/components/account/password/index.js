@@ -1,9 +1,9 @@
 import { useState } from 'react'
-import { message, Button, Form, Input, Space, Card, Row, Col } from 'antd'
+import { notification, Button, Form, Input, Space, Card, Row, Col } from 'antd'
+
+import { Error } from '../../assets/notification'
 
 import UserAPI from '../../../../src/api/user'
-
-import Sentry from '../../../../src/lib/sentry'
 
 /**
  * Errors account/password
@@ -60,15 +60,13 @@ const Password = () => {
             }
           ])
         } else {
-          message.error(errors.mismatch)
+          notification.error({ message: errors.mismatch })
         }
       } else {
-        message.error(errors.invalid)
+        notificaton.error({ message: errors.invalid })
       }
     } catch (err) {
-      message.error(errors.updateError)
-      console.error(err)
-      Sentry.captureException(err)
+      Error(errors.updateError, err)
     } finally {
       setLoading(false)
     }

@@ -1,10 +1,12 @@
 /** @module renderer/components/project/simulation */
 
 import { useState, useEffect } from 'react'
-import { message, Layout, Menu, Modal, Space, Typography } from 'antd'
+import { Layout, Menu, Modal, Space, Typography } from 'antd'
 import { WarningOutlined } from '@ant-design/icons'
 import { addedDiff, updatedDiff } from 'deep-object-diff'
 import merge from 'lodash.merge'
+
+import { Error } from '../../assets/notification'
 
 import Panel from '../panel'
 
@@ -152,9 +154,7 @@ const Simulation = ({ project, simulation, type, part, onClose }) => {
           mutateOneSimulation(newSimulation)
         })
         .catch((err) => {
-          message.error(errors.updateError)
-          console.error(err)
-          Sentry.captureException(err)
+          Error(errors.updateError, err)
         })
     }
 
@@ -191,9 +191,7 @@ const Simulation = ({ project, simulation, type, part, onClose }) => {
       // Mutate
       mutateOneSimulation(newSimulation)
     } catch (err) {
-      message.error(errors.updateError)
-      console.error(err)
-      Sentry.captureException(err)
+      Error(errors.updateError, err)
     }
 
     setLoading(false)

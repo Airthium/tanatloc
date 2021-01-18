@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { message } from 'antd'
 
+import { Error } from '../../../../assets/notification'
 import { EditButton } from '../../../../assets/button'
 
 import SimulationAPI from '../../../../../../src/api/simulation'
@@ -81,9 +82,7 @@ const Edit = ({ disabled, material, project, simulation, part, close }) => {
       // Close
       close()
     } catch (err) {
-      message.error(errors.updateError)
-      console.error(err)
-      Sentry.captureException(err)
+      Error(errors.updateError, err)
     } finally {
       setLoading(false)
     }

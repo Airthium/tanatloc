@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { message } from 'antd'
 import { v4 as uuid } from 'uuid'
 
+import { Error } from '../../../../assets/notification'
 import { AddButton } from '../../../../assets/button'
 
 import SimulationAPI from '../../../../../../src/api/simulation'
@@ -83,9 +84,7 @@ const Add = ({ material, project, simulation, part, disabled, close }) => {
       // Close
       close()
     } catch (err) {
-      message.error(errors.updateError)
-      console.error(err)
-      Sentry.captureException(err)
+      Error(errors.updateError, err)
       setLoading(false)
     }
   }

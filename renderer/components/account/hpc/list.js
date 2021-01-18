@@ -1,12 +1,11 @@
 import { useState, useEffect } from 'react'
-import { message, Button, Card, Space, Typography } from 'antd'
+import { Button, Card, Space, Typography } from 'antd'
 
+import { Error } from '../../assets/notification'
 import PluginForm from './pluginForm'
 import Delete from './delete'
 
 import PluginAPI from '../../../../src/api/plugin'
-
-import Sentry from '../../../../src/lib/sentry'
 
 /**
  * Errors hpc/list
@@ -96,9 +95,7 @@ const List = ({ plugin }) => {
       // Finish
       setEdit(false)
     } catch (err) {
-      message.error(errors.updateError)
-      console.error(err)
-      Sentry.captureException(err)
+      Error(errors.updateError, err)
     }
   }
 

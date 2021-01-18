@@ -1,7 +1,8 @@
 import { useState } from 'react'
-import { message, Button } from 'antd'
+import { Button } from 'antd'
 import { v4 as uuid } from 'uuid'
 
+import { Error } from '../../assets/notification'
 import PluginForm from './pluginForm'
 import List from './list'
 
@@ -53,9 +54,7 @@ const Plugin = ({ plugin }) => {
       // Finish
       setAdd(false)
     } catch (err) {
-      message.error(errors.updateError)
-      console.error(err)
-      Sentry.captureException(err)
+      Error(errors.updateError, err)
     }
   }
 

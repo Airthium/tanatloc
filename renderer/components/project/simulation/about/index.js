@@ -1,5 +1,7 @@
 import { useEffect } from 'react'
-import { message, Layout, Space, Typography } from 'antd'
+import { Layout, Space, Typography } from 'antd'
+
+import { Error } from '../../../assets/notification'
 
 import Delete from '../delete'
 
@@ -43,9 +45,7 @@ const About = ({ project, simulation }) => {
         name: name
       })
     } catch (err) {
-      message.error(errors.updateError)
-      console.error(err)
-      Sentry.captureException(err)
+      Error(errors.updateError, err)
     }
   }
 

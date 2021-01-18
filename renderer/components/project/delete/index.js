@@ -1,7 +1,8 @@
 import { useState } from 'react'
-import { message, Button } from 'antd'
+import { Button } from 'antd'
 import { DeleteOutlined } from '@ant-design/icons'
 
+import { Error } from '../../assets/notification'
 import { DeleteDialog } from '../../assets/dialog'
 
 import ProjectAPI from '../../../../src/api/project'
@@ -62,9 +63,7 @@ const Delete = (props) => {
       // Mutate projects
       delOneProject({ id: project.id })
     } catch (err) {
-      message.error(errors.delError)
-      console.error(err)
-      Sentry.captureException(err)
+      Error(errors.delError, err)
 
       setLoading(false)
     }

@@ -8,6 +8,8 @@ import {
   RocketOutlined
 } from '@ant-design/icons'
 
+import { Error } from '../../../assets/notification'
+
 import CloudServer from './cloudServer'
 
 import SimulationAPI from '../../../../../src/api/simulation'
@@ -100,9 +102,7 @@ const Run = ({ project, simulation }) => {
     setRunning(true)
 
     SimulationAPI.run({ id: simulation.id }).catch((err) => {
-      message.error(errors.runError)
-      console.error(err)
-      Sentry.captureException(err)
+      Error(errors.runError, err)
     })
   }
 
@@ -158,9 +158,7 @@ const Run = ({ project, simulation }) => {
       // Mutate
       mutateOneSimulation(currentSimulation)
     } catch (err) {
-      message.error(errors.updateError)
-      console.error(err)
-      Sentry.captureException(err)
+      Error(errors.updateError, err)
     }
   }
 

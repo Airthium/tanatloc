@@ -1,14 +1,13 @@
 import { useState } from 'react'
-import { message, Button, Card, Row, Col, Typography } from 'antd'
+import { Button, Card, Row, Col, Typography } from 'antd'
 
 import { DeleteOutlined } from '@ant-design/icons'
 
+import { Error } from '../../assets/notification'
 import { DeleteDialog } from '../../assets/dialog'
 
 import UserAPI from '../../../../src/api/user'
 import logout from '../../../../src/api/logout'
-
-import Sentry from '../../../../src/lib/sentry'
 
 /**
  * Errors account/delete
@@ -44,9 +43,7 @@ const Delete = () => {
       // Mutate
       mutateUser({})
     } catch (err) {
-      message.error(errors.delError)
-      console.error(err)
-      Sentry.captureException(err)
+      Error(errors.delError, err)
     } finally {
       setLoading(false)
     }

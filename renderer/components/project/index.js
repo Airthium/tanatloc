@@ -12,6 +12,8 @@ import {
   PlusOutlined
 } from '@ant-design/icons'
 
+import { Error } from '../assets/notification'
+
 import NotAuthorized from '../notauthorized'
 import View from './view'
 import Simulation from './simulation'
@@ -89,9 +91,7 @@ const Project = () => {
         title
       })
     } catch (err) {
-      message.error(errors.updateError)
-      console.error(err)
-      Sentry.captureException(err)
+      Error(errors.updateError, err)
     }
   }
 
@@ -144,9 +144,7 @@ const Project = () => {
       // Close selector
       setSelectorVisible(false)
     } catch (err) {
-      message.error(errors.addError)
-      console.error(err)
-      Sentry.captureException(err)
+      Error(errors.addError, err)
     }
   }
 

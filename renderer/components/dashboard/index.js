@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/router'
 import { useState, useEffect } from 'react'
-import { message, Layout, Menu } from 'antd'
+import { Layout, Menu } from 'antd'
 import {
   AppstoreFilled,
   ShareAltOutlined,
@@ -10,6 +10,8 @@ import {
   QuestionCircleFilled,
   LogoutOutlined
 } from '@ant-design/icons'
+
+import { Error } from '../assets/notification'
 
 import Loading from '../../components/loading'
 import Welcome from './welcome'
@@ -21,8 +23,6 @@ import Help from '../../components/help'
 import UserAPI from '../../../src/api/user'
 import WorkspaceAPI from '../../../src/api/workspace'
 import logout from '../../../src/api/logout'
-
-import Sentry from '../../../src/lib/sentry'
 
 /**
  * Errors
@@ -143,9 +143,7 @@ const Dashboard = () => {
 
       router.push('/')
     } catch (err) {
-      message.error(errors.logoutError)
-      console.error(err)
-      Sentry.captureException(err)
+      Error(errors.logoutError, err)
     }
   }
 

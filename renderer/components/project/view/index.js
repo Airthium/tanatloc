@@ -39,6 +39,9 @@ import {
   Vector3,
   WebGLRenderer
 } from 'three/build/three.module'
+
+import { Error } from '../../assets/notification'
+
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass'
 import { OutlinePass } from 'three/examples/jsm/postprocessing/OutlinePass'
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer'
@@ -839,9 +842,7 @@ const View = ({ simulation, setPartSummary }) => {
       setPart(partContent)
       setPartSummary(summary)
     } catch (err) {
-      message.error(errors.partError)
-      console.error(err)
-      Sentry.captureException(err)
+      Error(errors.partError, err)
     } finally {
       setLoading(false)
     }

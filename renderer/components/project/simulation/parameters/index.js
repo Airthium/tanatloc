@@ -9,6 +9,7 @@ import {
   Typography
 } from 'antd'
 
+import { Error } from '../../../assets/notification'
 import Formula from '../../../assets/formula'
 
 import SimulationAPI from '../../../../../src/api/simulation'
@@ -74,9 +75,7 @@ const Parameters = ({ project, simulation }) => {
         mutateOneSimulation(newSimulation)
       })
       .catch((err) => {
-        message.error(errors.updateError)
-        console.error(err)
-        Sentry.captureException(err)
+        Error(errors.updateError, err)
       })
   }, [values])
 

@@ -14,6 +14,8 @@ import {
   Typography
 } from 'antd'
 
+import { Error } from '../assets/notification'
+
 // import { ShareAltOutlined } from '@ant-design/icons'
 
 import Empty from './empty'
@@ -58,9 +60,7 @@ const Workspace = ({ workspace }) => {
         name
       })
     } catch (err) {
-      message.error(errors.updateError)
-      console.error(err)
-      Sentry.captureException(err)
+      Error(errors.updateError, err)
     }
   }
 

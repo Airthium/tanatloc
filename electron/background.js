@@ -1,4 +1,4 @@
-/** @module main */
+/** @module electron */
 
 import { app, ipcMain } from 'electron'
 import serve from 'electron-serve'

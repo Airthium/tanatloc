@@ -3,7 +3,7 @@ import { Card, Spin } from 'antd'
 
 import Plugin from './plugin'
 
-import Plugins from '../../../../plugin'
+import Plugins from '../../../plugin'
 
 import PluginAPI from '../../../../src/api/plugin'
 

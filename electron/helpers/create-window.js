@@ -3,7 +3,7 @@ import * as Store from 'electron-store'
 
 /**
  * Create electron window
- * @memberof module:main
+ * @memberof module:electron
  * @param {string} windowName Window name
  * @param {Object} options Options
  */

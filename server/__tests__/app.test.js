@@ -60,6 +60,7 @@ jest.mock('../../src/route/simulation/[id]/run', () => () => {})
 jest.mock('../../src/route/simulations', () => () => {})
 jest.mock('../../src/route/simulations/[ids]', () => () => {})
 jest.mock('../../src/route/part', () => () => {})
+jest.mock('../../src/route/plugin', () => () => {})
 
 describe('server/app', () => {
   it('app', () => {

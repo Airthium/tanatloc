@@ -20,6 +20,7 @@ import simulationIdRun from '../src/route/simulation/[id]/run'
 import simulations from '../src/route/simulations'
 import simulationsIds from '../src/route/simulations/[ids]'
 import part from '../src/route/part'
+import plugin from '../src/route/plugin'
 
 const app = express()
 app.disable('x-powered-by')
@@ -59,6 +60,8 @@ app.all('/api/simulations', simulations)
 app.all('/api/simulations/:ids', simulationsIds)
 
 app.all('/api/part', part)
+
+app.all('/api/plugin', plugin)
 
 /**
  * Catch 404 and forward to error handler

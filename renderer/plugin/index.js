@@ -1,3 +1,3 @@
 import Rescale from './rescale'
 
-export default { Rescale }
+export default { [Rescale.key]: Rescale }

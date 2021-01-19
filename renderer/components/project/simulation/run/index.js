@@ -31,7 +31,6 @@ const errors = {
 const Run = ({ project, simulation }) => {
   // State
   const [disabled, setDisabled] = useState(false)
-  const [cloudServerVisible, setCloudServerVisible] = useState(false)
   const [running, setRunning] = useState(false)
   const [logVisible, setLogVisible] = useState(false)
   const [logContent, setLogContent] = useState()
@@ -44,7 +43,10 @@ const Run = ({ project, simulation }) => {
   const [currentConfiguration, setCurrentConfiguration] = useState()
 
   // Data
-  const [currentSimulation] = SimulationAPI.useSimulation(simulation?.id, 500)
+  const [currentSimulation, { mutateSimulation }] = SimulationAPI.useSimulation(
+    simulation?.id,
+    500
+  )
   const [, { mutateOneSimulation }] = SimulationAPI.useSimulations(
     project?.simulations
   )
@@ -92,6 +94,38 @@ const Run = ({ project, simulation }) => {
     )
       mutateOneSimulation(currentSimulation)
   }, [JSON.stringify(configuration), JSON.stringify(currentConfiguration)])
+
+  /**
+   * On cloud server
+   * @param {Object} cloudServer Cloud server
+   */
+  const onCloudServer = async (cloudServer) => {
+    try {
+      // New simulation
+      const newSimulation = { ...currentSimulation }
+
+      // Update local
+      currentConfiguration.run.cloudServer = cloudServer
+      newSimulation.scheme.configuration = currentConfiguration
+
+      // Update simulation
+      await SimulationAPI.update({ id: simulation.id }, [
+        {
+          key: 'scheme',
+          type: 'json',
+          method: 'diff',
+          path: ['configuration', 'run'],
+          value: currentConfiguration.run
+        }
+      ])
+
+      // Mutate
+      mutateOneSimulation(currentSimulation)
+      mutateSimulation(newSimulation)
+    } catch (err) {
+      Error(errors.updateError, err)
+    }
+  }
 
   /**
    * On run
@@ -171,10 +205,6 @@ const Run = ({ project, simulation }) => {
   return (
     <Layout>
       <Layout.Content>
-        <CloudServer
-          visible={cloudServerVisible}
-          onCancel={() => setCloudServerVisible(false)}
-        />
         <Drawer
           title="Log"
           visible={logVisible}
@@ -184,20 +214,18 @@ const Run = ({ project, simulation }) => {
           {logContent}
         </Drawer>
         <Space direction="vertical">
-          <Space>
-            <Button
-              icon={<CloudServerOutlined />}
-              onClick={() => setCloudServerVisible(true)}
-            />
-            <Button
-              disabled={disabled}
-              icon={<RocketOutlined />}
-              loading={running}
-              onClick={onRun}
-            >
-              Run
-            </Button>
-          </Space>
+          <CloudServer
+            cloudServer={currentConfiguration?.run?.cloudServer}
+            onOk={onCloudServer}
+          />
+          <Button
+            disabled={disabled}
+            icon={<RocketOutlined />}
+            loading={running}
+            onClick={onRun}
+          >
+            Run
+          </Button>
 
           <Steps direction="vertical">
             {meshingTasks?.map((task, index) => {

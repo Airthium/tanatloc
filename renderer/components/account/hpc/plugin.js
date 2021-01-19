@@ -33,22 +33,28 @@ const Plugin = ({ plugin }) => {
    */
   const onFinish = async (values) => {
     try {
+      // New plugin
+      const newPlugin = { ...plugin }
+
       // Set values
       Object.keys(values).forEach((key) => {
-        plugin.configuration[key].value = values[key]
+        newPlugin.configuration[key].value = values[key]
       })
 
       // Remove logo
-      plugin.logo && delete plugin.logo
+      newPlugin.logo && delete newPlugin.logo
+
+      // Remove renderer
+      newPlugin.renderer && delete newPlugin.renderer
 
       // Set uuid
-      plugin.uuid = uuid()
+      newPlugin.uuid = uuid()
 
       // API
-      await PluginAPI.add(plugin)
+      await PluginAPI.add(newPlugin)
 
       // Mutate
-      addOnePlugin(plugin)
+      addOnePlugin(newPlugin)
 
       // Finish
       setAdd(false)

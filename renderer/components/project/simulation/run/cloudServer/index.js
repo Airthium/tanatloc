@@ -1,85 +1,81 @@
-import {
-  Button,
-  Card,
-  Form,
-  InputNumber,
-  Modal,
-  Radio,
-  Select,
-  Space,
-  Typography
-} from 'antd'
-import { SelectOutlined } from '@ant-design/icons'
+import { useState } from 'react'
+import { Button, Card, Modal, Space, Typography } from 'antd'
+import { CloudServerOutlined } from '@ant-design/icons'
+import merge from 'lodash.merge'
+
+import Plugins from '../../../../../plugin'
 
 import PluginAPI from '../../../../../../src/api/plugin'
 
-const CloudServer = ({ visible, onCancel }) => {
+const CloudServer = ({ cloudServer, onOk }) => {
+  // State
+  const [visible, setVisible] = useState(false)
+
   // Data
   const [plugins] = PluginAPI.usePlugins()
 
+  const close = () => {
+    setVisible(false)
+  }
+
+  const onMerge = (plugin, diff) => {
+    // Merge
+    merge(plugin, diff)
+
+    // Ok
+    onOk(plugin)
+
+    // Close
+    close()
+  }
+
   return (
-    <Modal
-      visible={visible}
-      title="Cloud server"
-      onOk={() => {}}
-      onCancel={onCancel}
-    >
-      <Space align="start" direction="horizontal">
-        <Card title="Local">
-          <Space>
-            <Typography.Text>For desktop version only!</Typography.Text>
-            <Button disabled={true} type="primary" icon={<SelectOutlined />} />
-          </Space>
-        </Card>
-        {plugins?.map((plugin) => {
-          console.log(plugin)
-          return (
-            <Card key={plugin.uuid} title={plugin.name}>
-              <Space>
-                <Space direction="vertical">
-                  {plugin.configuration.name.value}
-                  <Form>
-                    {Object.keys(plugin.inUseConfiguration).map((key) => {
-                      const item = plugin.inUseConfiguration[key]
-                      console.log(item)
-                      if (item.type === 'label')
-                        return (
-                          <div
-                            dangerouslySetInnerHTML={{ __html: item.label }}
-                          />
-                        )
-                      else if (item.type === 'number')
-                        return (
-                          <Form.Item htmlFor={key} label={item.label}>
-                            <InputNumber id={key} defaultValue={item.default} />
-                          </Form.Item>
-                        )
-                      else if (item.type === 'select')
-                        return (
-                          <Form.Item label={item.label}>
-                            <Select id={key} options={item.options} />
-                          </Form.Item>
-                        )
-                      else if (item.type === 'radio')
-                        return (
-                          <Form.Item label={item.label} htmlFor={key}>
-                            <Radio.Group id={key}>
-                              {item.options.map((o) => (
-                                <Radio value={o.value}>{o.label}</Radio>
-                              ))}
-                            </Radio.Group>
-                          </Form.Item>
-                        )
-                    })}
-                  </Form>
+    <Card>
+      <Modal
+        visible={visible}
+        title="Cloud server"
+        onOk={() => {}}
+        okButtonProps={{
+          disabled: true,
+          style: { display: 'none' }
+        }}
+        onCancel={close}
+      >
+        <Space align="start" direction="horizontal">
+          {plugins?.map((plugin) => {
+            const base = Plugins[plugin.key]
+            return (
+              <Card key={plugin.uuid} title={plugin.name}>
+                <base.renderer
+                  data={plugin.data}
+                  onSelect={(diff) => onMerge(plugin, diff)}
+                />
+              </Card>
+            )
+          })}
+        </Space>
+      </Modal>
+      <Space direction="vertical">
+        <Button
+          icon={<CloudServerOutlined />}
+          onClick={() => setVisible(true)}
+        />
+        {cloudServer && (
+          <>
+            <Typography.Text strong={true}>{cloudServer.name}</Typography.Text>
+            {Object.keys(cloudServer.inUseConfiguration).map((key) => {
+              const item = cloudServer.inUseConfiguration[key]
+              return (
+                <Space>
+                  <Typography.Text strong={true}>{item.label}:</Typography.Text>
+                  <Typography.Text>{String(item.value)}</Typography.Text>
                 </Space>
-                <Button type="primary" icon={<SelectOutlined />} />
-              </Space>
-            </Card>
-          )
-        })}
+              )
+            })}
+          </>
+        )}
       </Space>
-    </Modal>
+    </Card>
   )
 }
 

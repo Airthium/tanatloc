@@ -1,4 +1,7 @@
 import logo from './logo.svg'
+import Renderer from './renderer'
+
+console.log(Renderer)
 
 const Rescale = {
   category: 'HPC',
@@ -24,6 +27,7 @@ const Rescale = {
   },
   needInit: true,
   inUseConfiguration: {
+    renderer: Renderer,
     more: {
       label:
         'More information on <a href="https://www.rescale.com/infrastructure/" target="_blank">Rescale website</a>.',

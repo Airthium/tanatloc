@@ -44,7 +44,7 @@ const Run = ({ project, simulation }) => {
   const [currentConfiguration, setCurrentConfiguration] = useState()
 
   // Data
-  const [currentSimulation] = SimulationAPI.useSimulation(simulation.id, 500)
+  const [currentSimulation] = SimulationAPI.useSimulation(simulation?.id, 500)
   const [, { mutateOneSimulation }] = SimulationAPI.useSimulations(
     project?.simulations
   )

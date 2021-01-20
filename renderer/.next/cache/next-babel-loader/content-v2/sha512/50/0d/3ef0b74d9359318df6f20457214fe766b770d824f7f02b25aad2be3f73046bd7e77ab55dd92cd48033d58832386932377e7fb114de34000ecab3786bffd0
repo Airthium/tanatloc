@@ -1,1 +1,0 @@
-{"ast":null,"code":"import { jsx as _jsx } from \"react/jsx-runtime\";\n\nvar Rescale = function Rescale() {\n  return /*#__PURE__*/_jsx(\"div\", {\n    children: \"test\"\n  });\n};\n\nexport default Rescale;","map":null,"metadata":{},"sourceType":"module"}

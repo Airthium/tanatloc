@@ -1,1 +1,0 @@
-{"ast":null,"code":"import { jsx as _jsx } from \"react/jsx-runtime\";\nimport DashboardPage from '../components/dashboard';\n/**\n * Dashboard\n * @memberof module:pages\n */\n\nconst Dashboard = () => {\n  /**\n   * Render\n   */\n  return /*#__PURE__*/_jsx(DashboardPage, {});\n};\n\nexport default Dashboard;","map":null,"metadata":{},"sourceType":"module"}

@@ -1,1 +1,0 @@
-{"ast":null,"code":"import Rescale from './rescale';\nexport default {\n  Rescale\n};","map":null,"metadata":{},"sourceType":"module"}

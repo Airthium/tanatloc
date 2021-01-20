@@ -1,1 +1,0 @@
-{"ast":null,"code":"import RescaleAPI from './rescale/src/lib';\nexport default {\n  [RescaleAPI.key]: RescaleAPI\n};","map":null,"metadata":{},"sourceType":"module"}

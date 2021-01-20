@@ -5,10 +5,10 @@ jest.mock('path', () => ({
   join: () => mockPath()
 }))
 
-jest.mock('../../../config/storage', () => ({}))
+jest.mock('@/config/storage', () => ({}))
 
 const mockUpdate = jest.fn()
-jest.mock('../../database/simulation', () => ({
+jest.mock('@/database/simulation', () => ({
   update: async () => mockUpdate()
 }))
 
@@ -20,7 +20,7 @@ jest.mock('../template', () => ({
 const mockGmsh = jest.fn()
 const mockFreefem = jest.fn()
 const mockToThree = jest.fn()
-jest.mock('../../services', () => ({
+jest.mock('@/services', () => ({
   gmsh: async (path, mesh, geometry, callback) =>
     mockGmsh(path, mesh, geometry, callback),
   freefem: async (path, script, callback) =>

@@ -1,7 +1,7 @@
 import { Pool } from 'pg'
 import Crypto from 'crypto'
 
-import config, { databases } from '@/config/db'
+import config, { databases } from '../config/db'
 import query from '@/database'
 
 /**

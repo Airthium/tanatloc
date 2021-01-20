@@ -1,7 +1,7 @@
 import createDatabase from '../dB'
 
 let mockQuery
-jest.mock('../../src/database', () => {
+jest.mock('@/database', () => {
   return async (query) => mockQuery(query)
 })
 

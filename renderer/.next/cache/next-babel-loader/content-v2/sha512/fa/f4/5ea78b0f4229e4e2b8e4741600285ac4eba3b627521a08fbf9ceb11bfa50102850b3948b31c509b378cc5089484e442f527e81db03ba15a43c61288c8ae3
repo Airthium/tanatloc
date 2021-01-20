@@ -1,1 +1,0 @@
-{"ast":null,"code":"import { jsx as _jsx } from \"react/jsx-runtime\";\nimport LoginPage from '../components/login';\n/**\n * Login\n * @memberof module:pages\n */\n\nconst Login = () => {\n  /**\n   * Render\n   */\n  return /*#__PURE__*/_jsx(LoginPage, {});\n};\n\nexport default Login;","map":null,"metadata":{},"sourceType":"module"}

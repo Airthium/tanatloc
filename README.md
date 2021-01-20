@@ -97,10 +97,6 @@ Global configuration (server + client side).
 
 Electron configuration (using [Nextron](https://github.com/saltyshiomix/nextron)).
 
-### Renderer
-
-Client side with API routes, see [Next.js](https://github.com/vercel/next.js/) for more information.
-
 ### Resources
 
 Electron resources, typically icons.
@@ -111,4 +107,4 @@ Custom server for the electron build (as Next.js does not support builded server
 
 ### Src
 
-Global sources (server + client), including `api`, `lib`, ...
+Global sources (server + client), including `api`, `components`, `lib`, ...

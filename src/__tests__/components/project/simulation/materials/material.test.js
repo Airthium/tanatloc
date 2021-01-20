@@ -1,23 +1,17 @@
-import Material from '../../../../../components/project/simulation/materials/material'
+import Material from '@/components/project/simulation/materials/material'
 import { shallow, mount } from 'enzyme'
 
-jest.mock('../../../../../components/assets/formula', () => 'Formula')
-jest.mock('../../../../../components/assets/selector', () => 'Selector')
+jest.mock('@/components/assets/formula', () => 'Formula')
+jest.mock('@/components/assets/selector', () => 'Selector')
 jest.mock(
-  '../../../../../components/project/simulation/materials/database',
+  '@/components/project/simulation/materials/database',
   () => 'Database'
 )
-jest.mock(
-  '../../../../../components/project/simulation/materials/add',
-  () => 'Add'
-)
-jest.mock(
-  '../../../../../components/project/simulation/materials/edit',
-  () => 'Edit'
-)
+jest.mock('@/components/project/simulation/materials/add', () => 'Add')
+jest.mock('@/components/project/simulation/materials/edit', () => 'Edit')
 
 let wrapper
-describe('renderer/components/project/simulation/materials/material', () => {
+describe('src/components/project/simulation/materials/material', () => {
   const project = {}
   const simulation = {}
   const part = {}

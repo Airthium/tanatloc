@@ -1,25 +1,25 @@
-import Plugin from '../../../../components/account/hpc/plugin'
+import Plugin from '@/components/account/hpc/plugin'
 import { shallow } from 'enzyme'
 
-jest.mock('../../../../components/account/hpc/pluginForm', () => 'PluginForm')
+jest.mock('@/components/account/hpc/pluginForm', () => 'PluginForm')
 
-jest.mock('../../../../components/account/hpc/list', () => 'List')
+jest.mock('@/components/account/hpc/list', () => 'List')
 
 const mockPlugins = jest.fn()
 const mockAddOnePlugin = jest.fn()
 const mockAdd = jest.fn()
-jest.mock('../../../../../src/api/plugin', () => ({
+jest.mock('@/api/plugin', () => ({
   usePlugins: () => [mockPlugins(), { addOnePlugin: mockAddOnePlugin }],
   add: () => mockAdd()
 }))
 
 const mockSentry = jest.fn()
-jest.mock('../../../../../src/lib/sentry', () => ({
+jest.mock('@/lib/sentry', () => ({
   captureException: () => mockSentry()
 }))
 
 let wrapper
-describe('renderer/component/account/hpc/plugin', () => {
+describe('src/component/account/hpc/plugin', () => {
   const plugin = {
     logo: 'logo',
     configuration: {

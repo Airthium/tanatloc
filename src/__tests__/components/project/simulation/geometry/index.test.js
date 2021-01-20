@@ -1,15 +1,15 @@
-import Geometry from '../../../../../components/project/simulation/geometry'
+import Geometry from '@/components/project/simulation/geometry'
 import { shallow, mount } from 'enzyme'
 
 const mockUpdate = jest.fn()
 const mockMutate = jest.fn()
-jest.mock('../../../../../../src/api/simulation', () => ({
+jest.mock('@/api/simulation', () => ({
   update: async () => mockUpdate(),
   useSimulations: () => [[], { mutateOneSimulation: mockMutate }]
 }))
 
 const mockGet = jest.fn()
-jest.mock('../../../../../../src/api/file', () => ({
+jest.mock('@/api/file', () => ({
   get: async () => mockGet()
 }))
 
@@ -24,7 +24,7 @@ global.FileReader = class {
 }
 
 let wrapper
-describe('renderer/components/project/simulation/geometry', () => {
+describe('src/components/project/simulation/geometry', () => {
   beforeEach(() => {
     mockUpdate.mockReset()
     mockMutate.mockReset()

@@ -1,4 +1,4 @@
-/** @module renderer/components/project/simulation */
+/** @module 'src/components/project/simulation */
 
 import { useState, useEffect } from 'react'
 import { Layout, Menu, Modal, Space, Typography } from 'antd'

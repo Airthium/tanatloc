@@ -1,4 +1,4 @@
-/** @module renderer/components/help */
+/** @module 'src/components/help */
 
 import { Card, Layout } from 'antd'
 

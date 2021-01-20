@@ -2,7 +2,7 @@ import { Avatar, Empty, Tooltip, Typography } from 'antd'
 
 /**
  * Generate color (HEX format) from string
- * @memberof module:renderer/components/project
+ * @memberof module:'src/components/project
  * @param {string} str String
  */
 const stringToHex = (str) => {
@@ -20,7 +20,7 @@ const stringToHex = (str) => {
 
 /**
  * Project data
- * @memberof module:renderer/components/project
+ * @memberof module:'src/components/project
  * @param {Object} project Project
  * @param {Function} setTitle Set title
  */

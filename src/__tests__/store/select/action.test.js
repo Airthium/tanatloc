@@ -9,9 +9,9 @@ import {
   unhighlight,
   select,
   unselect
-} from '../../../store/select/action'
+} from '@/store/select/action'
 
-describe('renderer/store/select/action', () => {
+describe('src/store/select/action', () => {
   it('action types', () => {
     expect(selectActionTypes.ENABLE).toBe('ENABLE')
     expect(selectActionTypes.DISABLE).toBe('DISABLE')

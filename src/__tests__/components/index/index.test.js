@@ -1,7 +1,7 @@
-import Index from '../../../components/index'
+import Index from '@/components/index'
 import { shallow, mount } from 'enzyme'
 
-import '../../../../config/jest/matchMediaMock'
+import '@/config/jest/matchMediaMock'
 
 const mockPrefetch = jest.fn()
 const mockPush = jest.fn()
@@ -12,15 +12,15 @@ jest.mock('next/router', () => ({
   })
 }))
 
-jest.mock('../../../components/background', () => 'background')
+jest.mock('@/components/background', () => 'background')
 
 const mockUser = jest.fn()
-jest.mock('../../../../src/api/user', () => ({
+jest.mock('@/api/user', () => ({
   useUser: () => [mockUser()]
 }))
 
 let wrapper
-describe('renderer/components/index', () => {
+describe('src/components/index', () => {
   beforeEach(() => {
     mockPrefetch.mockReset()
     mockPush.mockReset()

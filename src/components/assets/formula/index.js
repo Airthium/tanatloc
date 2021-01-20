@@ -1,4 +1,4 @@
-/** @module renderer/components/assets/formula */
+/** @module 'src/components/assets/formula */
 
 import { useState, useEffect } from 'react'
 import { Button, Input, Space } from 'antd'

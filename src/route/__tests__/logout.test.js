@@ -1,12 +1,12 @@
 import logout from '../logout'
 
 const mockRemove = jest.fn()
-jest.mock('../../auth/auth-cookies', () => ({
+jest.mock('@/auth/auth-cookies', () => ({
   removeTokenCookie: () => mockRemove()
 }))
 
 const mockSentry = jest.fn()
-jest.mock('../../lib/sentry', () => ({
+jest.mock('@/lib/sentry', () => ({
   captureException: () => mockSentry()
 }))
 

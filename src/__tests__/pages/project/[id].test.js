@@ -1,7 +1,7 @@
-import Project from '../../../pages/project/[id]'
+import Project from '@/pages/project/[id]'
 import { shallow } from 'enzyme'
 
-jest.mock('../../../components/project', () => 'project')
+jest.mock('@/components/project', () => 'project')
 
 let wrapper
 describe('pages/project', () => {

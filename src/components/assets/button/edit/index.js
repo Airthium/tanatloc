@@ -3,7 +3,7 @@ import { Button } from 'antd'
 
 /**
  * Edit button
- * @memberof module:renderer/components/assets/button
+ * @memberof module:'src/components/assets/button
  * @param {Object} props Props
  */
 const EditButton = ({ disabled, loading, icon, onEdit, children }) => {

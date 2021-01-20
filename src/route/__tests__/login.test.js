@@ -32,19 +32,19 @@ jest.mock('passport', () => {
   }
 })
 
-jest.mock('../../auth/password-local', () => ({
+jest.mock('@/auth/password-local', () => ({
   localStrategy: {}
 }))
 
-jest.mock('../../auth/iron', () => ({
+jest.mock('@/auth/iron', () => ({
   encryptSession: () => {}
 }))
 
-jest.mock('../../auth/auth-cookies', () => ({
+jest.mock('@/auth/auth-cookies', () => ({
   setTokenCookie: () => {}
 }))
 
-jest.mock('../../lib/sentry', () => ({
+jest.mock('@/lib/sentry', () => ({
   configureScope: (callback) => {
     callback({ setUser: () => {} })
   },

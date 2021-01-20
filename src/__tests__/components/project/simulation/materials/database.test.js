@@ -1,8 +1,8 @@
-import DataBase from '../../../../../components/project/simulation/materials/database'
+import DataBase from '@/components/project/simulation/materials/database'
 import { shallow } from 'enzyme'
 
 let wrapper
-describe('renderer/components/project/simulation/materials/database', () => {
+describe('src/components/project/simulation/materials/database', () => {
   const mockOnSelect = jest.fn()
 
   beforeEach(() => {

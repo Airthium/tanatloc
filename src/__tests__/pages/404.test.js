@@ -1,7 +1,7 @@
-import NotFound from '../../pages/404'
+import NotFound from '@/pages/404'
 import { shallow } from 'enzyme'
 
-jest.mock('../../components/notfound', () => 'notfound')
+jest.mock('@/components/notfound', () => 'notfound')
 
 let wrapper
 describe('pages/404', () => {

@@ -1,17 +1,17 @@
-import Delete from '../../../components/workspace/delete'
+import Delete from '@/components/workspace/delete'
 import { shallow } from 'enzyme'
 
-jest.mock('../../../components/assets/dialog', () => ({
+jest.mock('@/components/assets/dialog', () => ({
   DeleteDialog: 'deleteDialog'
 }))
 
 let mockDelOneWorkspace = jest.fn()
-jest.mock('../../../../src/api/workspace', () => ({
+jest.mock('@/api/workspace', () => ({
   del: async () => {},
   useWorkspaces: () => [[], { delOneWorkspace: mockDelOneWorkspace }]
 }))
 
-jest.mock('../../../../src/lib/sentry', () => ({
+jest.mock('@/lib/sentry', () => ({
   captureException: () => {}
 }))
 

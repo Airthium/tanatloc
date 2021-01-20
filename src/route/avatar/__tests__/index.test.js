@@ -5,13 +5,13 @@ jest.mock('../../session', () => () => mockSession())
 
 const mockAdd = jest.fn()
 const mockDel = jest.fn()
-jest.mock('../../../lib/avatar', () => ({
+jest.mock('@/lib/avatar', () => ({
   add: async () => mockAdd(),
   del: async () => mockDel()
 }))
 
 const mockSentry = jest.fn()
-jest.mock('../../../lib/sentry', () => ({
+jest.mock('@/lib/sentry', () => ({
   captureException: () => mockSentry()
 }))
 

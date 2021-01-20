@@ -1,7 +1,7 @@
-import App from '../../pages/_app'
+import App from '@/pages/_app'
 import { shallow } from 'enzyme'
 
-jest.mock('../../store/store', () => ({
+jest.mock('@/store/store', () => ({
   useStore: jest.fn()
 }))
 
@@ -17,8 +17,8 @@ jest.mock('redux-persist/integration/react', () => ({
   PersistGate: 'persistGate'
 }))
 
-jest.mock('../../styles/antd.less', () => '')
-jest.mock('../../styles/global.less', () => '')
+jest.mock('@/styles/antd.less', () => '')
+jest.mock('@/styles/global.less', () => '')
 
 let wrapper
 describe('pages/_app', () => {

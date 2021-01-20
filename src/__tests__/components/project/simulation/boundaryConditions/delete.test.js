@@ -1,33 +1,33 @@
-import Delete from '../../../../../components/project/simulation/boundaryConditions/delete'
+import Delete from '@/components/project/simulation/boundaryConditions/delete'
 import { shallow } from 'enzyme'
 
 jest.mock('react-redux', () => ({
   useDispatch: () => () => {}
 }))
 
-jest.mock('../../../../../components/assets/button', () => ({
+jest.mock('@/components/assets/button', () => ({
   DeleteButton: 'DeleteButton'
 }))
 
 const mockUnselect = jest.fn()
-jest.mock('../../../../../store/select/action', () => ({
+jest.mock('@/store/select/action', () => ({
   unselect: () => mockUnselect()
 }))
 
 const mockUpdate = jest.fn()
 const mockMutate = jest.fn()
-jest.mock('../../../../../../src/api/simulation', () => ({
+jest.mock('@/api/simulation', () => ({
   update: async () => mockUpdate(),
   useSimulations: () => [[], { mutateOneSimulation: mockMutate }]
 }))
 
 const mockSentry = jest.fn()
-jest.mock('../../../../../../src/lib/sentry', () => ({
+jest.mock('@/lib/sentry', () => ({
   captureException: () => mockSentry()
 }))
 
 let wrapper
-describe('renderer/components/project/simulation/boundaryConditions/delete', () => {
+describe('src/components/project/simulation/boundaryConditions/delete', () => {
   const project = {}
   const simulation = {
     scheme: {

@@ -9,7 +9,7 @@ import SimulationAPI from '@/api/simulation'
 
 /**
  * Errors simulation/about
- * @memberof module:renderer/components/project/simulation
+ * @memberof module:'src/components/project/simulation
  */
 const errors = {
   updateError: 'Unable to update the simulation'
@@ -17,7 +17,7 @@ const errors = {
 
 /**
  * About
- * @memberof module:renderer/components/project/simulation
+ * @memberof module:'src/components/project/simulation
  * @param {Object} props Props
  */
 const About = ({ project, simulation }) => {

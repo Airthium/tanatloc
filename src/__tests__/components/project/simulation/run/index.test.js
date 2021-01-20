@@ -1,31 +1,35 @@
-import Run from '../../../../../components/project/simulation/run'
+import Run from '@/components/project/simulation/run'
 import { shallow, mount } from 'enzyme'
 
-import '../../../../../../config/jest/matchMediaMock'
+import '@/config/jest/matchMediaMock'
 
 jest.mock(
-  '../../../../../components/project/simulation/run/cloudServer',
+  '@/components/project/simulation/run/cloudServer',
   () => 'CloudServer'
 )
 
 const mockRun = jest.fn()
 const mockUpdate = jest.fn()
 const mockSimulation = jest.fn()
+const mockMutateSimulation = jest.fn()
 const mockMutateOneSimulation = jest.fn()
-jest.mock('../../../../../../src/api/simulation', () => ({
+jest.mock('@/api/simulation', () => ({
   run: async () => mockRun(),
   update: async () => mockUpdate(),
-  useSimulation: () => [mockSimulation()],
+  useSimulation: () => [
+    mockSimulation(),
+    { mutateSimulation: mockMutateSimulation }
+  ],
   useSimulations: () => [, { mutateOneSimulation: mockMutateOneSimulation }]
 }))
 
 const mockSentry = jest.fn()
-jest.mock('../../../../../../src/lib/sentry', () => ({
+jest.mock('@/lib/sentry', () => ({
   captureException: () => mockSentry()
 }))
 
 let wrapper
-describe('renderer/components/project/simulation/run', () => {
+describe('src/components/project/simulation/run', () => {
   const project = {}
   const simulation = {
     scheme: {
@@ -65,19 +69,19 @@ describe('renderer/components/project/simulation/run', () => {
     expect(wrapper).toBeDefined()
   })
 
-  it('onRun', async () => {
-    await wrapper.find('Button').at(1).props().onClick()
-    expect(mockRun).toHaveBeenCalledTimes(1)
-    expect(mockSentry).toHaveBeenCalledTimes(0)
+  // it('onRun', async () => {
+  //   await wrapper.find('Button').at(1).props().onClick()
+  //   expect(mockRun).toHaveBeenCalledTimes(1)
+  //   expect(mockSentry).toHaveBeenCalledTimes(0)
 
-    // Error
-    mockRun.mockImplementation(() => {
-      throw new Error()
-    })
-    await wrapper.find('Button').at(1).props().onClick()
-    expect(mockRun).toHaveBeenCalledTimes(2)
-    expect(mockSentry).toHaveBeenCalledTimes(1)
-  })
+  //   // Error
+  //   mockRun.mockImplementation(() => {
+  //     throw new Error()
+  //   })
+  //   await wrapper.find('Button').at(1).props().onClick()
+  //   expect(mockRun).toHaveBeenCalledTimes(2)
+  //   expect(mockSentry).toHaveBeenCalledTimes(1)
+  // })
 
   it('onLog', () => {
     wrapper.unmount()

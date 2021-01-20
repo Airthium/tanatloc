@@ -1,32 +1,31 @@
-import List from '../../../../components/account/hpc/list'
+import List from '@/components/account/hpc/list'
 import { shallow } from 'enzyme'
 import React, { useEffect as mockUseEffect } from 'react'
-import { act } from 'react-dom/test-utils'
 
 jest.mock('react', () => ({
   ...jest.requireActual('react'),
   useEffect: jest.fn()
 }))
 
-jest.mock('../../../../components/account/hpc/pluginForm', () => 'PluginForm')
+jest.mock('@/components/account/hpc/pluginForm', () => 'PluginForm')
 
-jest.mock('../../../../components/account/hpc/delete', () => 'Delete')
+jest.mock('@/components/account/hpc/delete', () => 'Delete')
 
 const mockPlugins = jest.fn()
 const mockMutateOnePlugin = jest.fn()
 const mockUpdate = jest.fn()
-jest.mock('../../../../../src/api/plugin', () => ({
+jest.mock('@/api/plugin', () => ({
   usePlugins: () => [mockPlugins(), { mutateOnePlugin: mockMutateOnePlugin }],
   update: () => mockUpdate()
 }))
 
 const mockSentry = jest.fn()
-jest.mock('../../../../../src/lib/sentry', () => ({
+jest.mock('@/lib/sentry', () => ({
   captureException: () => mockSentry()
 }))
 
 let wrapper
-describe('renderer/components/account/hpc/list', () => {
+describe('src/components/account/hpc/list', () => {
   const plugin = { key: 'key' }
 
   beforeEach(() => {

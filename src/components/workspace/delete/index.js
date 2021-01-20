@@ -13,7 +13,7 @@ const errors = {
 
 /**
  * Delete workspace
- * @memberof module:renderer/components/workspace
+ * @memberof module:'src/components/workspace
  * @param {Object} props Props
  */
 const Delete = (props) => {

@@ -1,24 +1,24 @@
-import Add from '../../../../../components/project/simulation/boundaryConditions/add'
+import Add from '@/components/project/simulation/boundaryConditions/add'
 import { shallow } from 'enzyme'
 
-jest.mock('../../../../../components/assets/button', () => ({
+jest.mock('@/components/assets/button', () => ({
   AddButton: 'AddButton'
 }))
 
 const mockUpdate = jest.fn()
 const mockMutate = jest.fn()
-jest.mock('../../../../../../src/api/simulation', () => ({
+jest.mock('@/api/simulation', () => ({
   update: async () => mockUpdate(),
   useSimulations: () => [[], { mutateOneSimulation: mockMutate }]
 }))
 
 const mockSentry = jest.fn()
-jest.mock('../../../../../../src/lib/sentry', () => ({
+jest.mock('@/lib/sentry', () => ({
   captureException: () => mockSentry()
 }))
 
 let wrapper
-describe('renderer/components/project/simulation/boundaryConditions/add', () => {
+describe('src/components/project/simulation/boundaryConditions/add', () => {
   const boundaryCondition = {
     type: {
       key: 'key'

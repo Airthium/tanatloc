@@ -7,22 +7,22 @@ const mockAuth = jest.fn()
 jest.mock('../../auth', () => () => mockAuth())
 
 const mockGet = jest.fn()
-jest.mock('../../../lib/file', () => ({
+jest.mock('@/lib/file', () => ({
   get: async () => mockGet()
 }))
 
 const mockGetSimulation = jest.fn()
-jest.mock('../../../lib/simulation', () => ({
+jest.mock('@/lib/simulation', () => ({
   get: async () => mockGetSimulation()
 }))
 
 const mockGetProject = jest.fn()
-jest.mock('../../../lib/project', () => ({
+jest.mock('@/lib/project', () => ({
   get: async () => mockGetProject()
 }))
 
 const mockSentry = jest.fn()
-jest.mock('../../../lib/sentry', () => ({
+jest.mock('@/lib/sentry', () => ({
   captureException: () => mockSentry()
 }))
 

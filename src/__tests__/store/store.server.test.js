@@ -2,7 +2,7 @@
  * @jest-environment node
  */
 
-import { initializeStore } from '../../store/store'
+import { initializeStore } from '@/store/store'
 
 jest.mock('redux', () => ({
   createStore: jest.fn(() => ({

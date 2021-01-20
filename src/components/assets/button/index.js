@@ -1,4 +1,4 @@
-/** @module renderer/components/assets/button */
+/** @module 'src/components/assets/button */
 
 import AddButton from './add'
 import EditButton from './edit'

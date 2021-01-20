@@ -1,6 +1,6 @@
-import logout from '../../../pages/api/logout'
+import logout from '@/pages/api/logout'
 
-jest.mock('../../../../src/route/logout', () => () => {})
+jest.mock('@/route/logout', () => () => {})
 
 describe('pages/api/logout', () => {
   it('call', async () => {

@@ -1,16 +1,13 @@
-import Materials from '../../../../../components/project/simulation/materials'
+import Materials from '@/components/project/simulation/materials'
 import { shallow, mount } from 'enzyme'
 
-jest.mock('../../../../../components/assets/button', () => ({
+jest.mock('@/components/assets/button', () => ({
   AddButton: 'AddButton'
 }))
 
+jest.mock('@/components/project/simulation/materials/list', () => 'List')
 jest.mock(
-  '../../../../../components/project/simulation/materials/list',
-  () => 'List'
-)
-jest.mock(
-  '../../../../../components/project/simulation/materials/material',
+  '@/components/project/simulation/materials/material',
   () => 'Material'
 )
 
@@ -22,7 +19,7 @@ const mockEnable = jest.fn()
 const mockDisable = jest.fn()
 const mockSetType = jest.fn()
 const mockSetPart = jest.fn()
-jest.mock('../../../../../store/select/action', () => ({
+jest.mock('@/store/select/action', () => ({
   enable: () => mockEnable(),
   disable: () => mockDisable(),
   setType: () => mockSetType(),
@@ -30,7 +27,7 @@ jest.mock('../../../../../store/select/action', () => ({
 }))
 
 let wrapper
-describe('renderer/components/project/simulation/materials', () => {
+describe('src/components/project/simulation/materials', () => {
   const project = {}
   const simulation = {
     scheme: {

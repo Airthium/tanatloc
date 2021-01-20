@@ -1,4 +1,4 @@
-import Simulation from '../../../../components/project/simulation'
+import Simulation from '@/components/project/simulation'
 import { shallow, mount } from 'enzyme'
 
 const mockAddedDiff = jest.fn()
@@ -11,40 +11,31 @@ jest.mock('deep-object-diff', () => ({
 const mockMerge = jest.fn()
 jest.mock('lodash.merge', () => () => mockMerge())
 
-jest.mock('../../../../components/project/panel', () => 'panel')
+jest.mock('@/components/project/panel', () => 'panel')
 
-jest.mock('../../../../components/project/simulation/about', () => 'about')
+jest.mock('@/components/project/simulation/about', () => 'about')
+jest.mock('@/components/project/simulation/geometry', () => 'geometry')
+jest.mock('@/components/project/simulation/materials', () => 'materials')
+jest.mock('@/components/project/simulation/parameters', () => 'parameters')
 jest.mock(
-  '../../../../components/project/simulation/geometry',
-  () => 'geometry'
-)
-jest.mock(
-  '../../../../components/project/simulation/materials',
-  () => 'materials'
-)
-jest.mock(
-  '../../../../components/project/simulation/parameters',
-  () => 'parameters'
-)
-jest.mock(
-  '../../../../components/project/simulation/boundaryConditions',
+  '@/components/project/simulation/boundaryConditions',
   () => 'boundaryConditions'
 )
 
-jest.mock('../../../../components/project/simulation/run', () => 'run')
+jest.mock('@/components/project/simulation/run', () => 'run')
 
-jest.mock('../../../../../src/lib/sentry', () => ({
+jest.mock('@/lib/sentry', () => ({
   captureException: () => {}
 }))
 
 const mockMutate = jest.fn()
 const mockUpdate = jest.fn()
-jest.mock('../../../../../src/api/simulation', () => ({
+jest.mock('@/api/simulation', () => ({
   useSimulations: () => [[], { mutateOneSimulation: mockMutate }],
   update: async () => mockUpdate()
 }))
 
-jest.mock('../../../../../models', () => [
+jest.mock('@/models', () => [
   {
     name: 'Name',
     algorithm: 'algorithm',

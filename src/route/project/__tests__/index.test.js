@@ -4,12 +4,12 @@ const mockSession = jest.fn()
 jest.mock('../../session', () => () => mockSession())
 
 const mockAdd = jest.fn()
-jest.mock('../../../lib/project', () => ({
+jest.mock('@/lib/project', () => ({
   add: async () => mockAdd()
 }))
 
 const mockSentry = jest.fn()
-jest.mock('../../../lib/sentry', () => ({
+jest.mock('@/lib/sentry', () => ({
   captureException: () => mockSentry()
 }))
 

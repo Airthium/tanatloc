@@ -11,7 +11,7 @@ import { enable, disable, setType, setPart } from '@/store/select/action'
 
 /**
  * Errors simulation/boundaryConditions
- * @memberof module:renderer/components/project/simulation
+ * @memberof module:'src/components/project/simulation
  */
 const errors = {
   updateError: 'Unable to update the simulation'
@@ -19,7 +19,7 @@ const errors = {
 
 /**
  * Boundary condition
- * @memberof module:renderer/components/project/simulation
+ * @memberof module:'src/components/project/simulation
  * @param {Object} props Props
  */
 const BoundaryConditions = ({ project, simulation, part, setVisible }) => {

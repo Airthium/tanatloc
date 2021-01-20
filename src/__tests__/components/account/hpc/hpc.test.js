@@ -1,9 +1,9 @@
-import HPC from '../../../../components/account/hpc'
+import HPC from '@/components/account/hpc'
 import { mount } from 'enzyme'
 
-jest.mock('../../../../components/account/hpc/plugin', () => 'Plugin')
+jest.mock('@/components/account/hpc/plugin', () => 'Plugin')
 
-jest.mock('../../../../plugin', () => ({
+jest.mock('@/plugin', () => ({
   NonHPCPlugin: {
     category: 'Other'
   },
@@ -15,12 +15,12 @@ jest.mock('../../../../plugin', () => ({
 }))
 
 const mockLoading = jest.fn()
-jest.mock('../../../../../src/api/plugin', () => ({
+jest.mock('@/api/plugin', () => ({
   usePlugins: () => [[], { loadingPlugins: mockLoading() }]
 }))
 
 let wrapper
-describe('renderer/components/account/hpc', () => {
+describe('src/components/account/hpc', () => {
   beforeEach(() => {
     mockLoading.mockReset()
     mockLoading.mockImplementation(() => false)

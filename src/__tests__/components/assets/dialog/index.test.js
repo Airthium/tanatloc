@@ -1,4 +1,4 @@
-import Dialog from '../../../../components/assets/dialog'
+import Dialog from '@/components/assets/dialog'
 import { shallow } from 'enzyme'
 
 jest.unmock('antd')
@@ -8,7 +8,7 @@ let wrapper
 const mockResetFields = jest.fn()
 const mockOnOk = jest.fn()
 const mockOnCancel = jest.fn()
-describe('renderer/components/assets/dialog', () => {
+describe('src/components/assets/dialog', () => {
   beforeEach(() => {
     mockResetFields.mockReset()
     mockOnCancel.mockReset()

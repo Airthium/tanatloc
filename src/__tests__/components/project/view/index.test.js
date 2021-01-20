@@ -1,4 +1,4 @@
-import View from '../../../../components/project/view'
+import View from '@/components/project/view'
 import { act } from 'react-dom/test-utils'
 import React, { useState as mockUseState } from 'react'
 import { mount } from 'enzyme'
@@ -40,7 +40,7 @@ jest.mock('three/examples/jsm/postprocessing/EffectComposer', () => ({
   }
 }))
 
-jest.mock('../../../../../src/lib/three/controls/TrackballControls', () => ({
+jest.mock('@/lib/three/controls/TrackballControls', () => ({
   TrackballControls: class MockTrackballControls {
     constructor() {
       this.target = {
@@ -63,7 +63,7 @@ jest.mock('../../../../../src/lib/three/controls/TrackballControls', () => ({
   }
 }))
 
-jest.mock('../../../../../src/lib/three/helpers/AxisHelper', () => ({
+jest.mock('@/lib/three/helpers/AxisHelper', () => ({
   AxisHelper: () => ({
     render: () => {},
     resize: () => {},
@@ -71,7 +71,7 @@ jest.mock('../../../../../src/lib/three/helpers/AxisHelper', () => ({
   })
 }))
 
-jest.mock('../../../../../src/lib/three/helpers/NavigationHelper', () => ({
+jest.mock('@/lib/three/helpers/NavigationHelper', () => ({
   NavigationHelper: () => ({
     render: () => {},
     resize: () => {},
@@ -79,7 +79,7 @@ jest.mock('../../../../../src/lib/three/helpers/NavigationHelper', () => ({
   })
 }))
 
-jest.mock('../../../../../src/lib/three/helpers/GridHelper', () => ({
+jest.mock('@/lib/three/helpers/GridHelper', () => ({
   GridHelper: () => ({
     update: () => {},
     setVisible: () => {},
@@ -88,7 +88,7 @@ jest.mock('../../../../../src/lib/three/helpers/GridHelper', () => ({
 }))
 
 const mockSelectionEnabled = jest.fn()
-jest.mock('../../../../../src/lib/three/helpers/SelectionHelper', () => ({
+jest.mock('@/lib/three/helpers/SelectionHelper', () => ({
   SelectionHelper: () => ({
     start: () => {},
     end: () => {},
@@ -97,7 +97,7 @@ jest.mock('../../../../../src/lib/three/helpers/SelectionHelper', () => ({
   })
 }))
 
-jest.mock('../../../../../src/lib/three/helpers/SectionViewHelper', () => ({
+jest.mock('@/lib/three/helpers/SectionViewHelper', () => ({
   SectionViewHelper: () => ({
     getClippingPlane: () => {},
     start: () => {},
@@ -110,7 +110,7 @@ jest.mock('../../../../../src/lib/three/helpers/SectionViewHelper', () => ({
   })
 }))
 
-jest.mock('../../../../../src/lib/three/helpers/ColorbarHelper', () => ({
+jest.mock('@/lib/three/helpers/ColorbarHelper', () => ({
   ColorbarHelper: () => ({
     setVisible: () => {},
     setLUT: () => {},
@@ -118,7 +118,7 @@ jest.mock('../../../../../src/lib/three/helpers/ColorbarHelper', () => ({
   })
 }))
 
-jest.mock('../../../../../src/lib/three/loaders/PartLoader', () => {
+jest.mock('@/lib/three/loaders/PartLoader', () => {
   let count = 0
   return {
     PartLoader: (mouseMove, mouseDown) => {
@@ -153,7 +153,7 @@ jest.mock('../../../../../src/lib/three/loaders/PartLoader', () => {
 })
 
 const mockGet = jest.fn()
-jest.mock('../../../../../src/api/part', () => ({
+jest.mock('@/api/part', () => ({
   get: async () => mockGet()
 }))
 
@@ -166,7 +166,7 @@ jest.mock('react-redux', () => ({
   useDispatch: () => () => {}
 }))
 
-jest.mock('../../../../store/select/action', () => ({
+jest.mock('@/store/select/action', () => ({
   highlight: jest.fn(),
   select: jest.fn(),
   unselect: jest.fn()

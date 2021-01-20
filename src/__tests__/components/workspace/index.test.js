@@ -1,23 +1,23 @@
-import Workspace from '../../../components/workspace'
+import Workspace from '@/components/workspace'
 import { shallow, mount } from 'enzyme'
-import '../../../../config/jest/matchMediaMock'
+import '@/config/jest/matchMediaMock'
 
-jest.mock('../../../components/workspace/empty', () => 'empty')
+jest.mock('@/components/workspace/empty', () => 'empty')
 
-jest.mock('../../../components/workspace/add', () => 'add')
+jest.mock('@/components/workspace/add', () => 'add')
 
-jest.mock('../../../components/workspace/delete', () => 'delete')
+jest.mock('@/components/workspace/delete', () => 'delete')
 
-jest.mock('../../../components/project/add', () => 'projectAdd')
+jest.mock('@/components/project/add', () => 'projectAdd')
 
-jest.mock('../../../components/project/list', () => 'projectList')
+jest.mock('@/components/project/list', () => 'projectList')
 
-jest.mock('../../../../src/api/workspace/useWorkspaces', () => () => [
+jest.mock('@/api/workspace/useWorkspaces', () => () => [
   [{}, { id: 'id1' }],
   { mutateWorkspaces: jest.fn() }
 ])
 
-jest.mock('../../../../src/api/workspace/update', () => {
+jest.mock('@/api/workspace/update', () => {
   let count = 0
   return async () => {
     count++
@@ -25,7 +25,7 @@ jest.mock('../../../../src/api/workspace/update', () => {
   }
 })
 
-jest.mock('../../../../src/lib/sentry', () => ({
+jest.mock('@/lib/sentry', () => ({
   captureException: () => {}
 }))
 

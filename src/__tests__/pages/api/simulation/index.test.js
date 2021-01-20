@@ -1,6 +1,6 @@
-import simulation from '../../../../pages/api/simulation'
+import simulation from '@/pages/api/simulation'
 
-jest.mock('../../../../../src/route/simulation', () => () => {})
+jest.mock('@/route/simulation', () => () => {})
 
 describe('pages/api/simulation', () => {
   it('call', async () => {

@@ -1,8 +1,8 @@
-import Help from '../../../components/help'
+import Help from '@/components/help'
 import { shallow } from 'enzyme'
 
 let wrapper
-describe('renderer/components/help', () => {
+describe('src/components/help', () => {
   beforeEach(() => {
     wrapper = shallow(<Help />)
   })

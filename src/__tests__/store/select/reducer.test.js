@@ -1,9 +1,9 @@
 import reducer, {
   selectActionTypes,
   selectInitialState
-} from '../../../store/select/reducer'
+} from '@/store/select/reducer'
 
-jest.mock('../../../store/select/action', () => ({
+jest.mock('@/store/select/action', () => ({
   selectActionTypes: {
     ENABLE: 'ENABLE',
     DISABLE: 'DISABLE',
@@ -17,7 +17,7 @@ jest.mock('../../../store/select/action', () => ({
   }
 }))
 
-describe('renderer/store/select/reducer', () => {
+describe('src/store/select/reducer', () => {
   it('initial state', () => {
     expect(selectInitialState).toEqual({
       enabled: false,

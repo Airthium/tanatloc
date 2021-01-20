@@ -5,13 +5,13 @@ jest.mock('path', () => ({
   join: () => mockPath()
 }))
 
-jest.mock('../../../config/storage', () => ({}))
+jest.mock('@/config/storage', () => ({}))
 
 const mockAdd = jest.fn()
 const mockGet = jest.fn()
 const mockUpdate = jest.fn()
 const mockDelete = jest.fn()
-jest.mock('../../database/simulation', () => ({
+jest.mock('@/database/simulation', () => ({
   add: async () => mockAdd(),
   get: async () => mockGet(),
   update: async () => mockUpdate(),

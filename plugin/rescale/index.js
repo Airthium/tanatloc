@@ -1,5 +1,5 @@
 import logo from './logo.svg'
-import Renderer from './renderer'
+import Renderer from './src/components'
 
 const Rescale = {
   category: 'HPC',

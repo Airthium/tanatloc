@@ -1,4 +1,4 @@
-import NotAuthorized from '../../../components/notauthorized'
+import NotAuthorized from '@/components/notauthorized'
 import { mount, shallow } from 'enzyme'
 
 const mockPrefetch = jest.fn()
@@ -11,7 +11,7 @@ jest.mock('next/router', () => ({
 }))
 
 let wrapper
-describe('renderer/components/notfound', () => {
+describe('src/components/notfound', () => {
   beforeEach(() => {
     mockPrefetch.mockReset()
     mockPush.mockReset()

@@ -1,4 +1,4 @@
-/** @module renderer/components/notauthorized */
+/** @module 'src/components/notauthorized */
 
 import { useEffect } from 'react'
 import { useRouter } from 'next/router'

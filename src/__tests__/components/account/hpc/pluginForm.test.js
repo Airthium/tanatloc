@@ -1,8 +1,8 @@
-import PluginForm from '../../../../components/account/hpc/pluginForm'
+import PluginForm from '@/components/account/hpc/pluginForm'
 import { shallow } from 'enzyme'
 
 let wrapper
-describe('renderer/components/account/hpc/pluginForm', () => {
+describe('src/components/account/hpc/pluginForm', () => {
   const plugin = {
     configuration: {
       input: {

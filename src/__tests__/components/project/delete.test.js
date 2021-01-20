@@ -1,25 +1,25 @@
-import Delete from '../../../components/project/delete'
+import Delete from '@/components/project/delete'
 import { shallow } from 'enzyme'
 
-jest.mock('../../../components/assets/dialog', () => ({
+jest.mock('@/components/assets/dialog', () => ({
   DeleteDialog: 'deleteDialog'
 }))
 
-jest.mock('../../../../src/api/project', () => ({
+jest.mock('@/api/project', () => ({
   useProjects: () => [[], { delOneProject: () => {} }],
   del: async () => {}
 }))
 
-jest.mock('../../../../src/api/workspace', () => ({
+jest.mock('@/api/workspace', () => ({
   useWorkspaces: () => [[], { mutateOneWorkspace: () => {} }]
 }))
 
-jest.mock('../../../../src/lib/sentry', () => ({
+jest.mock('@/lib/sentry', () => ({
   captureException: () => {}
 }))
 
 let wrapper
-describe('renderer/components/project/delete', () => {
+describe('src/components/project/delete', () => {
   beforeEach(() => {
     wrapper = shallow(
       <Delete workspace={{ id: 'id', projects: [{}] }} project={{ id: 'id' }} />

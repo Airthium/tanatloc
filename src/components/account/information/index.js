@@ -20,7 +20,7 @@ import AvatarAPI from '@/api/avatar'
 
 /**
  * Errors account/information
- * @memberof module:renderer/components/account
+ * @memberof module:'src/components/account
  */
 const errors = {
   updateError: 'Unable to update informations',
@@ -30,7 +30,7 @@ const errors = {
 
 /**
  * Information
- * @memberof module:renderer/components/account
+ * @memberof module:'src/components/account
  */
 const Information = () => {
   // State

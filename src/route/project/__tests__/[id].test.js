@@ -9,14 +9,14 @@ jest.mock('../../auth', () => () => mockAuth())
 const mockGet = jest.fn()
 const mockUpdate = jest.fn()
 const mockDel = jest.fn()
-jest.mock('../../../lib/project', () => ({
+jest.mock('@/lib/project', () => ({
   get: async (id, data) => mockGet(id, data),
   update: async () => mockUpdate(),
   del: async () => mockDel()
 }))
 
 const mockSentry = jest.fn()
-jest.mock('../../../lib/sentry', () => ({
+jest.mock('@/lib/sentry', () => ({
   captureException: () => mockSentry()
 }))
 

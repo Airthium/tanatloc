@@ -1,6 +1,6 @@
-import login from '../../../pages/api/login'
+import login from '@/pages/api/login'
 
-jest.mock('../../../../src/route/login', () => () => {})
+jest.mock('@/route/login', () => () => {})
 
 describe('pages/api/login', () => {
   it('call', async () => {

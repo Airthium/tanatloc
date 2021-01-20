@@ -1,8 +1,8 @@
-import user from '../../../../pages/api/user/check'
+import user from '@/pages/api/user/check'
 
-jest.mock('../../../../../src/route/user/check', () => () => {})
+jest.mock('@/route/user/check', () => () => {})
 
-describe('renderer/pages/api/user/check', () => {
+describe('src/pages/api/user/check', () => {
   it('call', async () => {
     await user()
   })

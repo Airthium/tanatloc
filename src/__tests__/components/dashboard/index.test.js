@@ -1,8 +1,8 @@
-import Dashboard from '../../../components/dashboard'
+import Dashboard from '@/components/dashboard'
 import { act } from 'react-dom/test-utils'
 import { shallow, mount } from 'enzyme'
 
-import '../../../../config/jest/matchMediaMock'
+import '@/config/jest/matchMediaMock'
 
 const mockRouter = jest.fn()
 const mockQuery = jest.fn()
@@ -14,40 +14,38 @@ jest.mock('next/router', () => ({
   })
 }))
 
-jest.mock('../../../components/loading', () => 'loading')
+jest.mock('@/components/loading', () => 'loading')
 
-jest.mock('../../../components/dashboard/welcome', () => 'welcome')
+jest.mock('@/components/dashboard/welcome', () => 'welcome')
 
-jest.mock('../../../components/workspace', () => 'workspace')
+jest.mock('@/components/workspace', () => 'workspace')
 
-jest.mock('../../../components/workspace/add', () => 'add')
+jest.mock('@/components/workspace/add', () => 'add')
 
-jest.mock('../../../components/account', () => 'account')
+jest.mock('@/components/account', () => 'account')
 
-jest.mock('../../../components/help', () => 'help')
+jest.mock('@/components/help', () => 'help')
 
 const mockUser = jest.fn()
 const mockUserLoading = jest.fn()
-jest.mock('../../../../src/api/user/useUser', () => () => [
+jest.mock('@/api/user/useUser', () => () => [
   mockUser(),
   { mutateUser: () => {}, loadingUser: mockUserLoading() }
 ])
 
 const mockWorkspaces = jest.fn()
-jest.mock('../../../../src/api/workspace/useWorkspaces', () => () => [
-  mockWorkspaces()
-])
+jest.mock('@/api/workspace/useWorkspaces', () => () => [mockWorkspaces()])
 
 const mockLogout = jest.fn()
-jest.mock('../../../../src/api/logout', () => () => mockLogout())
+jest.mock('@/api/logout', () => () => mockLogout())
 
 const mockSentry = jest.fn()
-jest.mock('../../../../src/lib/sentry', () => ({
+jest.mock('@/lib/sentry', () => ({
   captureException: () => mockSentry()
 }))
 
 let wrapper
-describe('renderer/components/dashboard', () => {
+describe('src/components/dashboard', () => {
   beforeEach(() => {
     mockRouter.mockReset()
     mockQuery.mockReset()

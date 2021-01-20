@@ -1,28 +1,28 @@
-import Delete from '../../../../components/project/simulation/delete'
+import Delete from '@/components/project/simulation/delete'
 import { shallow } from 'enzyme'
 
-jest.mock('../../../../components/assets/dialog', () => ({
+jest.mock('@/components/assets/dialog', () => ({
   DeleteDialog: 'deleteDialog'
 }))
 
 const mockMutateSimulation = jest.fn()
 let mockDel
-jest.mock('../../../../../src/api/simulation', () => ({
+jest.mock('@/api/simulation', () => ({
   useSimulations: () => [[], { delOneSimulation: mockMutateSimulation }],
   del: async () => mockDel()
 }))
 
 const mockMutateProject = jest.fn()
-jest.mock('../../../../../src/api/project', () => ({
+jest.mock('@/api/project', () => ({
   useProject: () => [{}, { mutateProject: mockMutateProject }]
 }))
 
-jest.mock('../../../../../src/lib/sentry', () => ({
+jest.mock('@/lib/sentry', () => ({
   captureException: () => {}
 }))
 
 let wrapper
-describe('renderer/components/project/simulation/delete', () => {
+describe('src/components/project/simulation/delete', () => {
   beforeEach(() => {
     mockMutateSimulation.mockReset()
     mockDel = () => {}

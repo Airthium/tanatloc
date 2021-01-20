@@ -8,18 +8,18 @@ jest.mock('../../../auth', () => () => mockAuth())
 
 const mockSimulationGet = jest.fn()
 const mockSimulationRun = jest.fn()
-jest.mock('../../../../lib/simulation', () => ({
+jest.mock('@/lib/simulation', () => ({
   get: async () => mockSimulationGet(),
   run: async () => mockSimulationRun()
 }))
 
 const mockProjectGet = jest.fn()
-jest.mock('../../../../lib/project', () => ({
+jest.mock('@/lib/project', () => ({
   get: async () => mockProjectGet()
 }))
 
 const mockSentry = jest.fn()
-jest.mock('../../../../lib/sentry', () => ({
+jest.mock('@/lib/sentry', () => ({
   captureException: () => mockSentry()
 }))
 

@@ -1,28 +1,28 @@
-import Add from '../../../components/project/add'
+import Add from '@/components/project/add'
 import { shallow } from 'enzyme'
 
-jest.mock('../../../components/assets/dialog', () => 'dialog')
+jest.mock('@/components/assets/dialog', () => 'dialog')
 
 const mockAddOneProject = jest.fn()
-jest.mock('../../../../src/api/project', () => ({
+jest.mock('@/api/project', () => ({
   useProjects: () => [[], { addOneProject: () => mockAddOneProject() }],
   add: async () => ({ id: 'id' })
 }))
 
 const mockMutateOneWorkspace = jest.fn()
-jest.mock('../../../../src/api/workspace', () => ({
+jest.mock('@/api/workspace', () => ({
   useWorkspaces: () => [
     [],
     { mutateOneWorkspace: () => mockMutateOneWorkspace() }
   ]
 }))
 
-jest.mock('../../../../src/lib/sentry', () => ({
+jest.mock('@/lib/sentry', () => ({
   captureException: () => {}
 }))
 
 let wrapper
-describe('renderer/components/project/add', () => {
+describe('src/components/project/add', () => {
   beforeEach(() => {
     mockAddOneProject.mockReset()
     mockMutateOneWorkspace.mockReset()

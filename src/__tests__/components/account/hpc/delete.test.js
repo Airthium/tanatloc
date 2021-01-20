@@ -1,21 +1,21 @@
-import Delete from '../../../../components/account/hpc/delete'
+import Delete from '@/components/account/hpc/delete'
 import { shallow } from 'enzyme'
 
 const mockPlugins = jest.fn()
 const mockDelOnePlugin = jest.fn()
 const mockDelete = jest.fn()
-jest.mock('../../../../../src/api/plugin', () => ({
+jest.mock('@/api/plugin', () => ({
   usePlugins: () => [mockPlugins(), { delOnePlugin: mockDelOnePlugin }],
   del: () => mockDelete()
 }))
 
 const mockSentry = jest.fn()
-jest.mock('../../../../../src/lib/sentry', () => ({
+jest.mock('@/lib/sentry', () => ({
   captureException: () => mockSentry()
 }))
 
 let wrapper
-describe('renderer/components/account/hpc/delete', () => {
+describe('src/components/account/hpc/delete', () => {
   const plugin = { uuid: 'uuid' }
 
   beforeEach(() => {

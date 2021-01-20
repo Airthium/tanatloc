@@ -16,7 +16,7 @@ jest.mock('pg', () => {
   }
 })
 
-jest.mock('../../../config/db', () => {
+jest.mock('@/config/db', () => {
   return {}
 })
 

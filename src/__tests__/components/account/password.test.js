@@ -1,20 +1,20 @@
-import Password from '../../../components/account/password'
+import Password from '@/components/account/password'
 import { shallow } from 'enzyme'
 
 let mockUpdate
 let mockCheck
-jest.mock('../../../../src/api/user', () => ({
+jest.mock('@/api/user', () => ({
   useUser: () => [{}, { mutateUser: () => {} }],
   update: () => mockUpdate(),
   check: () => mockCheck()
 }))
 
-jest.mock('../../../../src/lib/sentry', () => ({
+jest.mock('@/lib/sentry', () => ({
   captureException: () => {}
 }))
 
 let wrapper
-describe('renderer/components/account/information', () => {
+describe('src/components/account/information', () => {
   beforeEach(() => {
     mockUpdate = jest.fn()
     mockCheck = jest.fn()

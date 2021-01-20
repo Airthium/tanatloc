@@ -1,6 +1,6 @@
-import id from '../../../../pages/api/project/[id]'
+import id from '@/pages/api/project/[id]'
 
-jest.mock('../../../../../src/route/project/[id]', () => () => {})
+jest.mock('@/route/project/[id]', () => () => {})
 
 describe('pages/api/project/[id]', () => {
   it('call', async () => {

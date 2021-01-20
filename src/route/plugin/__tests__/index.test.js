@@ -5,13 +5,13 @@ jest.mock('../../session', () => () => mockSession())
 
 const mockGetByUser = jest.fn()
 const mockUpdate = jest.fn()
-jest.mock('../../../lib/plugin', () => ({
+jest.mock('@/lib/plugin', () => ({
   getByUser: async () => mockGetByUser(),
   update: async () => mockUpdate()
 }))
 
 const mockSentry = jest.fn()
-jest.mock('../../../lib/sentry', () => ({
+jest.mock('@/lib/sentry', () => ({
   captureException: () => mockSentry()
 }))
 

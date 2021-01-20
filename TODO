@@ -3,3 +3,5 @@ ThreeJS :
 
 Converters:
 - Support geometry names with space
+
+"postinstall": "babel . --only config,install,src/database/index.js --out-dir dist-install && node dist-install/install",

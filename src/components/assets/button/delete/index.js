@@ -4,7 +4,7 @@ import { DeleteOutlined, QuestionCircleOutlined } from '@ant-design/icons'
 
 /**
  * Delete button
- * @memberof module:@memberof module:renderer/components/assets/button
+ * @memberof module:@memberof module:'src/components/assets/button
  * @param {Object} props Props
  */
 const DeleteButton = ({ loading, onDelete }) => {

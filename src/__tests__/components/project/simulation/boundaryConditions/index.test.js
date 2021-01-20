@@ -1,16 +1,16 @@
-import BoundaryConditions from '../../../../../components/project/simulation/boundaryConditions'
+import BoundaryConditions from '@/components/project/simulation/boundaryConditions'
 import { shallow, mount } from 'enzyme'
 
-jest.mock('../../../../../components/assets/button', () => ({
+jest.mock('@/components/assets/button', () => ({
   AddButton: 'AddButton'
 }))
 
 jest.mock(
-  '../../../../../components/project/simulation/boundaryConditions/list',
+  '@/components/project/simulation/boundaryConditions/list',
   () => 'List'
 )
 jest.mock(
-  '../../../../../components/project/simulation/boundaryConditions/boundaryCondition',
+  '@/components/project/simulation/boundaryConditions/boundaryCondition',
   () => 'BoundaryCondition'
 )
 
@@ -22,7 +22,7 @@ const mockEnable = jest.fn()
 const mockDisable = jest.fn()
 const mockSetType = jest.fn()
 const mockSetPart = jest.fn()
-jest.mock('../../../../../store/select/action', () => ({
+jest.mock('@/store/select/action', () => ({
   enable: () => mockEnable(),
   disable: () => mockDisable(),
   setType: () => mockSetType(),
@@ -30,7 +30,7 @@ jest.mock('../../../../../store/select/action', () => ({
 }))
 
 let wrapper
-describe('renderer/components/project/simulation/boundaryConditions', () => {
+describe('src/components/project/simulation/boundaryConditions', () => {
   const project = {}
   const simulation = {
     scheme: {

@@ -10,7 +10,7 @@ import SimulationAPI from '@/api/simulation'
 
 /**
  * Errors boundaryConditions/delete
- * @memberof module:renderer/components/project/simulation
+ * @memberof module:'src/components/project/simulation
  */
 const errors = {
   updateError: 'Unable to delete the boundary condition'
@@ -18,7 +18,7 @@ const errors = {
 
 /**
  * Delete boundary condition
- * @memberof module:renderer/components/project/simulation
+ * @memberof module:'src/components/project/simulation
  * @param {Object} props Props
  */
 const Delete = ({ project, simulation, type, index }) => {

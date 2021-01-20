@@ -1,19 +1,16 @@
-import BoundaryCondition from '../../../../../components/project/simulation/boundaryConditions/boundaryCondition'
+import BoundaryCondition from '@/components/project/simulation/boundaryConditions/boundaryCondition'
 import { shallow, mount } from 'enzyme'
 
-jest.mock('../../../../../components/assets/formula', () => 'Formula')
-jest.mock('../../../../../components/assets/selector', () => 'Selector')
+jest.mock('@/components/assets/formula', () => 'Formula')
+jest.mock('@/components/assets/selector', () => 'Selector')
+jest.mock('@/components/project/simulation/boundaryConditions/add', () => 'Add')
 jest.mock(
-  '../../../../../components/project/simulation/boundaryConditions/add',
-  () => 'Add'
-)
-jest.mock(
-  '../../../../../components/project/simulation/boundaryConditions/edit',
+  '@/components/project/simulation/boundaryConditions/edit',
   () => 'Edit'
 )
 
 let wrapper
-describe('renderer/components/project/simulation/boundaryConditions/boundaryCondition', () => {
+describe('src/components/project/simulation/boundaryConditions/boundaryCondition', () => {
   const project = {}
   const simulation = {}
   const part = {}

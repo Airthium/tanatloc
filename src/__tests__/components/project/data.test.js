@@ -1,6 +1,6 @@
-import Data from '../../../components/project/data'
+import Data from '@/components/project/data'
 
-describe('renderer/components/project/data', () => {
+describe('src/components/project/data', () => {
   it('empty', () => {
     const data = Data()
     expect(data).toBe(null)

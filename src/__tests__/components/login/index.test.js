@@ -1,7 +1,7 @@
-import Login from '../../../components/login'
+import Login from '@/components/login'
 import { shallow, mount } from 'enzyme'
 
-import '../../../../config/jest/matchMediaMock'
+import '@/config/jest/matchMediaMock'
 
 const mockPrefetch = jest.fn()
 const mockPush = jest.fn()
@@ -12,16 +12,16 @@ jest.mock('next/router', () => ({
   })
 }))
 
-jest.mock('../../../components/loading', () => 'loading')
+jest.mock('@/components/loading', () => 'loading')
 
-// jest.mock('../../../components/background', () => 'background')
+// jest.mock('@/components/background', () => 'background')
 
 const mockLogin = jest.fn()
-jest.mock('..∕../../../src/api/login', () => async () => mockLogin())
+jest.mock('@/api/login', () => async () => mockLogin())
 
 const mockUser = jest.fn()
 const mockUserLoading = jest.fn()
-jest.mock('../../../../src/api/user/useUser', () => () => [
+jest.mock('@/api/user/useUser', () => () => [
   mockUser(),
   { mutateUser: () => {}, loadingUser: mockUserLoading() }
 ])

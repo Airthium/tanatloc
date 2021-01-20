@@ -1,4 +1,4 @@
-import Selector from '../../../../components/assets/selector'
+import Selector from '@/components/assets/selector'
 import { shallow, mount } from 'enzyme'
 
 const mockType = jest.fn()
@@ -20,7 +20,7 @@ const mockHighlight = jest.fn()
 const mockUnhighlight = jest.fn()
 const mockSelect = jest.fn()
 const mockUnselect = jest.fn()
-jest.mock('../../../../store/select/action', () => ({
+jest.mock('@/store/select/action', () => ({
   highlight: () => mockHighlight(),
   unhighlight: () => mockUnhighlight(),
   select: () => mockSelect(),
@@ -28,7 +28,7 @@ jest.mock('../../../../store/select/action', () => ({
 }))
 
 let wrapper
-describe('renderer/components/assets/selector', () => {
+describe('src/components/assets/selector', () => {
   const part = {
     faces: [
       {

@@ -1,15 +1,15 @@
-import Add from '../../../components/workspace/add'
+import Add from '@/components/workspace/add'
 import { shallow } from 'enzyme'
 
-jest.mock('../../../components/assets/dialog', () => 'dialog')
+jest.mock('@/components/assets/dialog', () => 'dialog')
 
 let mockAddOneWorkspace = jest.fn()
-jest.mock('../../../../src/api/workspace', () => ({
+jest.mock('@/api/workspace', () => ({
   add: async () => ({ id: 'id' }),
   useWorkspaces: () => [[], { addOneWorkspace: mockAddOneWorkspace }]
 }))
 
-jest.mock('../../../../src/lib/sentry', () => ({
+jest.mock('@/lib/sentry', () => ({
   captureException: () => {}
 }))
 

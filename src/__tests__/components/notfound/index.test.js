@@ -1,4 +1,4 @@
-import NotFound from '../../../components/notfound'
+import NotFound from '@/components/notfound'
 import { shallow } from 'enzyme'
 
 let mockRouter = jest.fn()
@@ -9,7 +9,7 @@ jest.mock('next/router', () => ({
 }))
 
 let wrapper
-describe('renderer/components/notfound', () => {
+describe('src/components/notfound', () => {
   beforeEach(() => {
     mockRouter.mockReset()
     wrapper = shallow(<NotFound />)

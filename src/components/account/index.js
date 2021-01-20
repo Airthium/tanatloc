@@ -1,4 +1,4 @@
-/** @module renderer/components/account */
+/** @module 'src/components/account */
 
 import { Layout, PageHeader, Typography, Divider, Tabs } from 'antd'
 

@@ -3,7 +3,7 @@ import { Button } from 'antd'
 
 /**
  * Add button
- * @memberof module:renderer/components/assets/button
+ * @memberof module:'src/components/assets/button
  * @param {Object} props Props
  */
 const AddButton = ({ disabled, loading, icon, onAdd, children }) => {

@@ -1,6 +1,6 @@
-import avatar from '../../../../pages/api/file'
+import avatar from '@/pages/api/file'
 
-jest.mock('../../../../../src/route/file', () => () => {})
+jest.mock('@/route/file', () => () => {})
 
 describe('pages/api/file', () => {
   it('call', async () => {

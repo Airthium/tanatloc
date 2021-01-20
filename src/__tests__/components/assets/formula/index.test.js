@@ -1,4 +1,4 @@
-import Formula from '../../../../components/assets/formula'
+import Formula from '@/components/assets/formula'
 import { shallow, mount } from 'enzyme'
 
 const onChange = jest.fn()
@@ -9,7 +9,7 @@ global.setTimeout = (callback) => {
 }
 
 let wrapper
-describe('renderer/components/assets/formula', () => {
+describe('src/components/assets/formula', () => {
   beforeEach(() => {
     onChange.mockReset()
     wrapper = shallow(<Formula value="value" onChange={onChange} />)

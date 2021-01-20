@@ -1,6 +1,6 @@
-import project from '../../../../pages/api/projects'
+import project from '@/pages/api/projects'
 
-jest.mock('../../../../../src/route/projects', () => () => {})
+jest.mock('@/route/projects', () => () => {})
 
 describe('pages/api/projects', () => {
   it('call', async () => {

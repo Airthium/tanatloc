@@ -1,4 +1,4 @@
-import Project from '../../../components/project'
+import Project from '@/components/project'
 import { shallow, mount } from 'enzyme'
 
 const mockRouter = jest.fn()
@@ -10,33 +10,33 @@ jest.mock('next/router', () => ({
   })
 }))
 
-jest.mock('../../../components/project/view', () => 'view')
-jest.mock('../../../components/project/simulation', () => {
+jest.mock('@/components/project/view', () => 'view')
+jest.mock('@/components/project/simulation', () => {
   const Simulation = () => 'simulation'
   Simulation.Selector = 'selector'
   return Simulation
 })
 
 let mockUser
-jest.mock('../../../../src/api/user', () => ({
+jest.mock('@/api/user', () => ({
   useUser: () => [mockUser(), { loadingUser: false }]
 }))
 
 let mockProject
 let mockMutateProject
 const mockUpdate = jest.fn()
-jest.mock('../../../../src/api/project', () => ({
+jest.mock('@/api/project', () => ({
   useProject: () => [mockProject(), { mutateProject: mockMutateProject }],
   update: async () => mockUpdate()
 }))
 
 let mockSimulations
-jest.mock('../../../../src/api/simulation', () => ({
+jest.mock('@/api/simulation', () => ({
   add: async () => ({ id: 'id' }),
   useSimulations: () => [mockSimulations(), { addOneSimulation: () => {} }]
 }))
 
-jest.mock('../../../../src/lib/sentry', () => ({
+jest.mock('@/lib/sentry', () => ({
   captureException: () => {}
 }))
 

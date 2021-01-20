@@ -1,4 +1,4 @@
-import List from '../../../../../components/project/simulation/materials/list'
+import List from '@/components/project/simulation/materials/list'
 import { shallow } from 'enzyme'
 
 jest.mock('react-redux', () => ({
@@ -8,14 +8,14 @@ jest.mock('react-redux', () => ({
 const mockEnable = jest.fn()
 const mockDisable = jest.fn()
 const mockSelect = jest.fn()
-jest.mock('../../../../../store/select/action', () => ({
+jest.mock('@/store/select/action', () => ({
   enable: () => mockEnable(),
   disable: () => mockDisable(),
   select: () => mockSelect()
 }))
 
 let wrapper
-describe('renderer/components/project/simulation/materials/list', () => {
+describe('src/components/project/simulation/materials/list', () => {
   const project = {}
   const simulation = {
     scheme: {

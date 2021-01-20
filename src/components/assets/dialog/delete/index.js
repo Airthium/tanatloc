@@ -3,7 +3,7 @@ import { ExclamationCircleTwoTone } from '@ant-design/icons'
 
 /**
  * DeleteDialog
- * @memberof module:renderer/components/assets/dialog
+ * @memberof module:'src/components/assets/dialog
  * @param {Object} props Props
  */
 const DeleteDialog = (props) => {

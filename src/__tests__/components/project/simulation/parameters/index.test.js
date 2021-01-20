@@ -1,17 +1,17 @@
-import Parameters from '../../../../../components/project/simulation/parameters'
+import Parameters from '@/components/project/simulation/parameters'
 import { shallow, mount } from 'enzyme'
 
-jest.mock('../../../../../components/assets/formula', () => 'formula')
+jest.mock('@/components/assets/formula', () => 'formula')
 
 const mockUpdate = jest.fn()
 const mockMutate = jest.fn()
-jest.mock('../../../../../../src/api/simulation', () => ({
+jest.mock('@/api/simulation', () => ({
   update: async () => mockUpdate(),
   useSimulations: () => [[], { mutateOneSimulation: mockMutate }]
 }))
 
 let wrapper
-describe('renderer/components/project/simulation/parameters', () => {
+describe('src/components/project/simulation/parameters', () => {
   const project = {}
   const simulation = {
     scheme: {

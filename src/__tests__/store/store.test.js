@@ -1,4 +1,4 @@
-import { useStore, reducer, initializeStore } from '../../store/store'
+import { useStore, reducer, initializeStore } from '@/store/store'
 
 jest.mock('react', () => ({
   useMemo: jest.fn((callback) => {

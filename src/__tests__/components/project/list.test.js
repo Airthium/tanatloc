@@ -1,28 +1,25 @@
-import List from '../../../components/project/list'
+import List from '@/components/project/list'
 import { shallow } from 'enzyme'
 
 jest.mock('next/router', () => ({
   useRouter: () => [{ push: () => {} }]
 }))
 
-jest.mock(
-  '../../../components/project/data',
-  () => (project, filter, title) => {
-    return title
-  }
-)
+jest.mock('@/components/project/data', () => (project, filter, title) => {
+  return title
+})
 
-jest.mock('../../../components/project/delete', () => 'delete')
+jest.mock('@/components/project/delete', () => 'delete')
 
 let mockProjects
 let mockMutate
 const mockUpdate = jest.fn()
-jest.mock('../../../../src/api/project', () => ({
+jest.mock('@/api/project', () => ({
   useProjects: () => [mockProjects(), { mutateOneProject: () => mockMutate() }],
   update: () => mockUpdate()
 }))
 
-jest.mock('../../../../src/lib/sentry', () => ({
+jest.mock('@/lib/sentry', () => ({
   captureException: () => {}
 }))
 

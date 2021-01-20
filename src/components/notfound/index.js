@@ -1,4 +1,4 @@
-/** @module renderer/components/notfound */
+/** @module 'src/components/notfound */
 
 import { useRouter } from 'next/router'
 import { Layout, Typography } from 'antd'

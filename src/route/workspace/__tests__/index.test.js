@@ -11,7 +11,7 @@ const mockGet = jest.fn()
 const mockAdd = jest.fn()
 const mockUpdate = jest.fn()
 const mockDel = jest.fn()
-jest.mock('../../../lib/workspace', () => ({
+jest.mock('@/lib/workspace', () => ({
   getByUser: async () => mockGetByUser(),
   get: async () => mockGet(),
   add: async () => mockAdd(),
@@ -20,7 +20,7 @@ jest.mock('../../../lib/workspace', () => ({
 }))
 
 const mockSentry = jest.fn()
-jest.mock('../../../lib/sentry', () => ({
+jest.mock('@/lib/sentry', () => ({
   captureException: () => mockSentry()
 }))
 

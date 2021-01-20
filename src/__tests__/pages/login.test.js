@@ -1,7 +1,7 @@
-import Login from '../../pages/login'
+import Login from '@/pages/login'
 import { shallow } from 'enzyme'
 
-jest.mock('../../components/login', () => 'login')
+jest.mock('@/components/login', () => 'login')
 
 let wrapper
 describe('pages/login', () => {

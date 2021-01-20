@@ -9,7 +9,7 @@ jest.mock('passport-local', () => ({
   }
 }))
 
-jest.mock('../../database/user', () => ({
+jest.mock('@/database/user', () => ({
   getByUsernameAndPassword: async ({ username, password }) => {
     if (!username) throw new Error()
   }

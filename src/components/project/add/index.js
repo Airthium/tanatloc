@@ -10,7 +10,7 @@ import WorkspaceAPI from '@/api/workspace'
 
 /**
  * Errors project/add
- * @memberof module:renderer/components/project
+ * @memberof module:'src/components/project
  */
 const errors = {
   addError: 'Unable to add a project'
@@ -18,7 +18,7 @@ const errors = {
 
 /**
  * Add project
- * @memberof module:renderer/components/project
+ * @memberof module:'src/components/project
  * @param {Object} props Props
  */
 const Add = (props) => {

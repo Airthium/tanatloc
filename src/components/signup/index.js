@@ -1,4 +1,4 @@
-/** @module renderer/components/signup */
+/** @module 'src/components/signup */
 
 import { useRouter } from 'next/router'
 import { useState, useEffect } from 'react'

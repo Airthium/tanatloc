@@ -1,6 +1,6 @@
-import workspace from '../../../../pages/api/workspace'
+import workspace from '@/pages/api/workspace'
 
-jest.mock('../../../../../src/route/workspace', () => () => {})
+jest.mock('@/route/workspace', () => () => {})
 
 describe('pages/api/workspace', () => {
   it('call', async () => {

@@ -1,4 +1,4 @@
-import Delete from '../../../components/account/delete'
+import Delete from '@/components/account/delete'
 import { shallow } from 'enzyme'
 
 jest.mock('@/components/assets/dialog', () => ({

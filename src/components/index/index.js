@@ -1,4 +1,4 @@
-/** @module renderer/components/index */
+/** @module 'src/components/index */
 
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'

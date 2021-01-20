@@ -11,7 +11,7 @@ import logout from '@/api/logout'
 
 /**
  * Errors account/delete
- * @memberof module:renderer/components/account
+ * @memberof module:'src/components/account
  */
 const errors = {
   delError: 'Unable to delete the user'
@@ -19,7 +19,7 @@ const errors = {
 
 /**
  * Delete account
- * @memberof module:renderer/components/account
+ * @memberof module:'src/components/account
  */
 const Delete = () => {
   // State

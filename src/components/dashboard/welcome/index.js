@@ -4,7 +4,7 @@ import Add from '@/components/workspace/add'
 
 /**
  * Welcome
- * @memberof module:renderer/components/dashboard
+ * @memberof module:'src/components/dashboard
  */
 const Welcome = () => {
   /**

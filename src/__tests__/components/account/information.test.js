@@ -1,8 +1,8 @@
-import Information from '../../../components/account/information'
+import Information from '@/components/account/information'
 import { shallow } from 'enzyme'
 
 const mockUpdate = jest.fn()
-jest.mock('../../../../src/api/user', () => ({
+jest.mock('@/api/user', () => ({
   useUser: () => [
     {
       firstname: 'firstname',
@@ -16,11 +16,11 @@ jest.mock('../../../../src/api/user', () => ({
 }))
 
 let mockAdd
-jest.mock('../../../../src/api/avatar', () => ({
+jest.mock('@/api/avatar', () => ({
   add: async () => mockAdd()
 }))
 
-jest.mock('../../../../src/lib/sentry', () => ({
+jest.mock('@/lib/sentry', () => ({
   captureException: () => {}
 }))
 
@@ -32,7 +32,7 @@ global.FileReader = class {
 }
 
 let wrapper
-describe('renderer/components/account/information', () => {
+describe('src/components/account/information', () => {
   beforeEach(() => {
     mockUpdate.mockReset()
     mockAdd = () => {}

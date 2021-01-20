@@ -1,8 +1,8 @@
-import Welcome from '../../../components/dashboard/welcome'
+import Welcome from '@/components/dashboard/welcome'
 import { shallow } from 'enzyme'
 
 let wrapper
-describe('renderer/components/dashboard/welcome', () => {
+describe('src/components/dashboard/welcome', () => {
   beforeEach(() => {
     wrapper = shallow(<Welcome />)
   })

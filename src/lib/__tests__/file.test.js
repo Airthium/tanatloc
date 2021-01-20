@@ -5,7 +5,7 @@ jest.mock('path', () => ({
   join: () => mockPath()
 }))
 
-jest.mock('../../../config/storage', () => ({}))
+jest.mock('@/config/storage', () => ({}))
 
 const mockReadFile = jest.fn(() => 'readFile')
 jest.mock('../tools', () => ({

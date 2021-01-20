@@ -10,7 +10,7 @@ import WorkspaceAPI from '@/api/workspace'
 
 /**
  * Errors project/del
- * @memberof module:renderer/components/project
+ * @memberof module:'src/components/project
  */
 const errors = {
   delError: 'Unable to delete the project'
@@ -18,7 +18,7 @@ const errors = {
 
 /**
  * Delete project
- * @memberof module:renderer/components/project
+ * @memberof module:'src/components/project
  * @param {Object} props Props
  */
 const Delete = (props) => {

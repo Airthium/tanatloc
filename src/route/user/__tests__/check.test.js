@@ -4,12 +4,12 @@ const mockSession = jest.fn()
 jest.mock('../../session', () => () => mockSession())
 
 const mockLogin = jest.fn()
-jest.mock('../../../lib/user', () => ({
+jest.mock('@/lib/user', () => ({
   login: async () => mockLogin()
 }))
 
 const mockSentry = jest.fn()
-jest.mock('../../../lib/sentry', () => ({
+jest.mock('@/lib/sentry', () => ({
   captureException: () => mockSentry()
 }))
 

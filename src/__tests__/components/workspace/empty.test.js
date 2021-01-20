@@ -1,7 +1,7 @@
-import Empty from '../../../components/workspace/empty'
+import Empty from '@/components/workspace/empty'
 import { shallow } from 'enzyme'
 
-jest.mock('../../../components/workspace/add', () => 'add')
+jest.mock('@/components/workspace/add', () => 'add')
 
 let wrapper
 describe('components/workspace/empty', () => {

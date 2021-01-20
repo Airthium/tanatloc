@@ -7,7 +7,7 @@ import UserAPI from '@/api/user'
 
 /**
  * Errors account/password
- * @memeberof module:renderer/components/account
+ * @memeberof module:'src/components/account
  */
 const errors = {
   updateError: 'Unable to update the password',
@@ -17,7 +17,7 @@ const errors = {
 
 /**
  * Password
- * @memeberof module:renderer/components/account
+ * @memeberof module:'src/components/account
  */
 const Password = () => {
   // State

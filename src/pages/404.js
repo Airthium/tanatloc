@@ -4,11 +4,11 @@ import NotFoundPage from '@/components/notfound'
  * 404 page
  * @memberof module:pages
  */
-const NotFound = () => {
+const _404 = () => {
   /**
    * Render
    */
   return <NotFoundPage />
 }
 
-export default NotFound
+export default _404

@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Button, Card, Drawer, Layout, Space, Steps, Tabs } from 'antd'
 import {
-  CloudServerOutlined,
   EyeOutlined,
   EyeInvisibleOutlined,
   FileTextOutlined,

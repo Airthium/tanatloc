@@ -2,9 +2,9 @@
 
 import path from 'path'
 
-import { AVATAR } from '../../config/storage'
+import { AVATAR } from '@/config/storage'
 
-import AvatarDB from '../database/avatar'
+import AvatarDB from '@/database/avatar'
 
 import User from './user'
 import Tools from './tools'

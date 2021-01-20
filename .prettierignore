@@ -5,8 +5,8 @@ coverage/
 doc/
 
 # Build
-renderer/.next
-renderer/out
+/.next
+/out
 
 # Dist
 app/
@@ -18,4 +18,4 @@ dist-install/
 doc/
 
 # Public
-renderer/public/
+/public/

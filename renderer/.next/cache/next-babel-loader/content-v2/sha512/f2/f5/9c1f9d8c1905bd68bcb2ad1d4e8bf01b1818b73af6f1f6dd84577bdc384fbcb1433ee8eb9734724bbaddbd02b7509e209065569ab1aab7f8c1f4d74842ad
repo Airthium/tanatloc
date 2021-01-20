@@ -1,0 +1,1 @@
+{"ast":null,"code":"/** @module renderer/components/assets/button */\nimport AddButton from './add';\nimport EditButton from './edit';\nimport DeleteButton from './delete';\nexport { AddButton, EditButton, DeleteButton };","map":null,"metadata":{},"sourceType":"module"}

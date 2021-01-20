@@ -1,5 +1,5 @@
 import useSWR from 'swr'
-import Caller from '../call'
+import Caller from '@/api/call'
 
 const usePlugins = () => {
   const { data, mutate } = useSWR('/api/plugin', Caller.fetcher)

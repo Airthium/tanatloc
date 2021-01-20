@@ -1,0 +1,1 @@
+{"ast":null,"code":"import { jsx as _jsx } from \"react/jsx-runtime\";\nimport NotFoundPage from '../components/notfound';\n/**\n * 404 page\n * @memberof module:pages\n */\n\nconst NotFound = () => {\n  /**\n   * Render\n   */\n  return /*#__PURE__*/_jsx(NotFoundPage, {});\n};\n\nexport default NotFound;","map":null,"metadata":{},"sourceType":"module"}

@@ -1,6 +1,6 @@
 import { promises as fs } from 'fs'
 
-import config from '../config/storage'
+import config from '@/config/storage'
 
 /**
  * Create paths from config

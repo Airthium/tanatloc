@@ -1,6 +1,6 @@
 /** @module src/lib/workspace */
 
-import WorkspaceDB from '../database/workspace'
+import WorkspaceDB from '@/database/workspace'
 
 import User from './user'
 import Project from './project'

@@ -2,12 +2,13 @@
 
 import path from 'path'
 
-import storage from '../../config/storage'
+import storage from '@/config/storage'
 
-import SimulationDB from '../database/simulation'
+import SimulationDB from '@/database/simulation'
+
+import Services from '@/services'
 
 import Template from './template'
-import Services from '../services'
 
 // dB update delay
 const updateDelay = 1000 // ms

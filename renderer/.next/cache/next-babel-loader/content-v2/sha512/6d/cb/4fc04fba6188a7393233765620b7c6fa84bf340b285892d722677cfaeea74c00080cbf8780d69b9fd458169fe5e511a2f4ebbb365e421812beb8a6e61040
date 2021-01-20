@@ -1,0 +1,1 @@
+{"ast":null,"code":"import { jsx as _jsx } from \"react/jsx-runtime\";\nimport ProjectPage from '../components/project';\n/**\n * Project\n * @memberof module:pages\n */\n\nvar Project = function Project() {\n  /**\n   * Render\n   */\n  return /*#__PURE__*/_jsx(ProjectPage, {});\n};\n\nexport default Project;","map":null,"metadata":{},"sourceType":"module"}

@@ -1,4 +1,4 @@
-import Caller from '../call'
+import Caller from '@/api/call'
 
 const add = async (plugin) => {
   return Caller.call('/api/plugin', {

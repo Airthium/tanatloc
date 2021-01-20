@@ -1,7 +1,7 @@
 /** @module src/auth/password-local */
 
 import Local from 'passport-local'
-import UserDB from '../database/user'
+import UserDB from '@/database/user'
 
 export const localStrategy = new Local.Strategy((username, password, done) => {
   UserDB.getByUsernameAndPassword({ username, password })

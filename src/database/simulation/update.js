@@ -1,5 +1,5 @@
 import { updater } from '..'
-import { databases } from '../../../config/db'
+import { databases } from '@/config/db'
 
 /**
  * Update simulation

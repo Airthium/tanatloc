@@ -1,6 +1,6 @@
 /** @module src/lib/user */
 
-import UserDB from '../database/user'
+import UserDB from '@/database/user'
 
 import Avatar from './avatar'
 import Workspace from './workspace'

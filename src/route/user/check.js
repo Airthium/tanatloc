@@ -1,7 +1,8 @@
 import getSessionId from '../session'
-import UserLib from '../../lib/user'
 
-import Sentry from '../../lib/sentry'
+import UserLib from '@/lib/user'
+
+import Sentry from '@/lib/sentry'
 
 /**
  * User check API

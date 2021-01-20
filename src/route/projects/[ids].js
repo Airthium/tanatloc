@@ -1,9 +1,9 @@
 import getSessionId from '../session'
 import auth from '../auth'
 
-import ProjectLib from '../../lib/project'
+import ProjectLib from '@/lib/project'
 
-import Sentry from '../../lib/sentry'
+import Sentry from '@/lib/sentry'
 
 /**
  * Projects API

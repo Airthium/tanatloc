@@ -1,5 +1,5 @@
 import query from '..'
-import { databases } from '../../../config/db'
+import { databases } from '@/config/db'
 
 /**
  * Get by username and password

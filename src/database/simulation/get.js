@@ -1,5 +1,5 @@
 import { getter } from '..'
-import { databases } from '../../../config/db'
+import { databases } from '@/config/db'
 
 /**
  * Get simulation by id

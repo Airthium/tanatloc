@@ -2,11 +2,11 @@
 
 import express from 'express'
 import passport from 'passport'
-import { localStrategy } from '../auth/password-local'
-import { encryptSession } from '../auth/iron'
-import { setTokenCookie } from '../auth/auth-cookies'
+import { localStrategy } from '@/auth/password-local'
+import { encryptSession } from '@/auth/iron'
+import { setTokenCookie } from '@/auth/auth-cookies'
 
-import Sentry from '../lib/sentry'
+import Sentry from '@/lib/sentry'
 
 const app = express()
 const authenticate = (method, req, res) =>

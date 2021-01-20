@@ -2,9 +2,9 @@
 
 import getSessionId from '../session'
 
-import AvatarLib from '../../lib/avatar'
+import AvatarLib from '@/lib/avatar'
 
-import Sentry from '../../lib/sentry'
+import Sentry from '@/lib/sentry'
 
 /**
  * Avatar API

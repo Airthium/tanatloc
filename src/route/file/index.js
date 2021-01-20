@@ -3,11 +3,11 @@
 import getSessionId from '../session'
 import auth from '../auth'
 
-import FileLib from '../../lib/file'
-import SimulationLib from '../../lib/simulation'
-import ProjectLib from '../../lib/project'
+import FileLib from '@/lib/file'
+import SimulationLib from '@/lib/simulation'
+import ProjectLib from '@/lib/project'
 
-import Sentry from '../../lib/sentry'
+import Sentry from '@/lib/sentry'
 
 export default async (req, res) => {
   // Check session

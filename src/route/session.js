@@ -1,4 +1,4 @@
-import { getSession } from '../auth/iron'
+import { getSession } from '@/auth/iron'
 
 /**
  * Session

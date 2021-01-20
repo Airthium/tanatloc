@@ -2,9 +2,9 @@
 
 import path from 'path'
 
-import storage from '../../config/storage'
+import storage from '@/config/storage'
 
-import SimulationDB from '../database/simulation'
+import SimulationDB from '@/database/simulation'
 
 import Project from './project'
 import Tools from './tools'

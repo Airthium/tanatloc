@@ -1,0 +1,1 @@
+{"ast":null,"code":"import route from '../../../../src/route/workspace';\n/**\n * Workspace API\n * @memberof module:api\n * @param {Object} req Request\n * @param {Object} res Response\n */\n\nexport default (async (req, res) => {\n  await route(req, res);\n});","map":null,"metadata":{},"sourceType":"module"}

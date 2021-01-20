@@ -1,8 +1,8 @@
 import getSessionId from '../session'
 
-import PluginLib from '../../lib/plugin'
+import PluginLib from '@/lib/plugin'
 
-import Sentry from '../../lib/sentry'
+import Sentry from '@/lib/sentry'
 
 export default async (req, res) => {
   // Check session

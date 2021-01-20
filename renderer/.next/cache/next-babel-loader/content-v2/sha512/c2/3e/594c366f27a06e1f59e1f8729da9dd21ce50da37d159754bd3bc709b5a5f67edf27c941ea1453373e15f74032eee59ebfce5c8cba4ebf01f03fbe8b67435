@@ -1,0 +1,1 @@
+{"ast":null,"code":"import Error from './error';\nexport { Error };","map":{"version":3,"sources":["/home/simon/Documents/Git/Airthium/tanatloc-ssr/renderer/components/assets/notification/index.js"],"names":["Error"],"mappings":"AAAA,OAAOA,KAAP,MAAkB,SAAlB;AAEA,SAASA,KAAT","sourcesContent":["import Error from './error'\n\nexport { Error }\n"]},"metadata":{},"sourceType":"module"}

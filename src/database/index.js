@@ -2,7 +2,7 @@
 
 import { Pool } from 'pg'
 
-import config from '../../config/db'
+import config from '@/config/db'
 
 /**
  * Start database

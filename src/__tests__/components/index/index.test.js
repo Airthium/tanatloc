@@ -1,4 +1,4 @@
-import Index from '@/components/index'
+import Index from '@/components/index/index'
 import { shallow, mount } from 'enzyme'
 
 import '@/config/jest/matchMediaMock'

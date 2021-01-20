@@ -65,5 +65,21 @@ describe('src/api/call', () => {
     })
     expect(mockJSON).toHaveBeenCalledTimes(1)
     expect(res).toBe('json')
+
+    mockJSON.mockImplementation(() => ({
+      error: {
+        message: 'test'
+      }
+    }))
+    try {
+      await Caller.call('/route', {
+        headers: {
+          Accept: 'application/json'
+        }
+      })
+      expect(true).toBe(false)
+    } catch (err) {
+      expect(true).toBe(true)
+    }
   })
 })

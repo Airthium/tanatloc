@@ -3,11 +3,15 @@ import plugin from '../'
 const mockSession = jest.fn()
 jest.mock('../../session', () => () => mockSession())
 
+const mockAdd = jest.fn()
 const mockGetByUser = jest.fn()
 const mockUpdate = jest.fn()
+const mockDel = jest.fn()
 jest.mock('@/lib/plugin', () => ({
+  add: async () => mockAdd(),
   getByUser: async () => mockGetByUser(),
-  update: async () => mockUpdate()
+  update: async () => mockUpdate(),
+  del: async () => mockDel()
 }))
 
 const mockSentry = jest.fn()
@@ -32,9 +36,11 @@ describe('src/route/plugin', () => {
     mockSession.mockReset()
     mockSession.mockImplementation(() => false)
 
+    mockAdd.mockReset()
     mockGetByUser.mockReset()
     mockGetByUser.mockImplementation(() => [])
     mockUpdate.mockReset()
+    mockDel.mockReset()
 
     mockSentry.mockReset()
 
@@ -46,18 +52,52 @@ describe('src/route/plugin', () => {
     await plugin(req, res)
     expect(mockSession).toHaveBeenCalledTimes(1)
     expect(mockGetByUser).toHaveBeenCalledTimes(0)
+    expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockUpdate).toHaveBeenCalledTimes(0)
+    expect(mockDel).toHaveBeenCalledTimes(0)
     expect(mockSentry).toHaveBeenCalledTimes(0)
     expect(response).toBe(undefined)
   })
 
-  it('GET', async () => {
+  it('POST', async () => {
+    req.method = 'POST'
+
     mockSession.mockImplementation(() => true)
 
     await plugin(req, res)
     expect(mockSession).toHaveBeenCalledTimes(1)
+    expect(mockAdd).toHaveBeenCalledTimes(1)
+    expect(mockGetByUser).toHaveBeenCalledTimes(0)
+    expect(mockUpdate).toHaveBeenCalledTimes(0)
+    expect(mockDel).toHaveBeenCalledTimes(0)
+    expect(mockSentry).toHaveBeenCalledTimes(0)
+    expect(response).toBe('end')
+
+    // Error
+    mockAdd.mockImplementation(() => {
+      throw new Error()
+    })
+    await plugin(req, res)
+    expect(mockSession).toHaveBeenCalledTimes(2)
+    expect(mockAdd).toHaveBeenCalledTimes(2)
+    expect(mockGetByUser).toHaveBeenCalledTimes(0)
+    expect(mockUpdate).toHaveBeenCalledTimes(0)
+    expect(mockDel).toHaveBeenCalledTimes(0)
+    expect(mockSentry).toHaveBeenCalledTimes(1)
+    expect(response).toEqual({ error: true, message: '' })
+  })
+
+  it('GET', async () => {
+    req.method = 'GET'
+
+    mockSession.mockImplementation(() => true)
+
+    await plugin(req, res)
+    expect(mockSession).toHaveBeenCalledTimes(1)
+    expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockGetByUser).toHaveBeenCalledTimes(1)
     expect(mockUpdate).toHaveBeenCalledTimes(0)
+    expect(mockDel).toHaveBeenCalledTimes(0)
     expect(mockSentry).toHaveBeenCalledTimes(0)
     expect(response).toEqual({ plugins: [] })
 
@@ -67,8 +107,10 @@ describe('src/route/plugin', () => {
     })
     await plugin(req, res)
     expect(mockSession).toHaveBeenCalledTimes(2)
+    expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockGetByUser).toHaveBeenCalledTimes(2)
     expect(mockUpdate).toHaveBeenCalledTimes(0)
+    expect(mockDel).toHaveBeenCalledTimes(0)
     expect(mockSentry).toHaveBeenCalledTimes(1)
     expect(response).toEqual({ error: true, message: '' })
   })
@@ -79,8 +121,10 @@ describe('src/route/plugin', () => {
 
     await plugin(req, res)
     expect(mockSession).toHaveBeenCalledTimes(1)
+    expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockGetByUser).toHaveBeenCalledTimes(0)
     expect(mockUpdate).toHaveBeenCalledTimes(1)
+    expect(mockDel).toHaveBeenCalledTimes(0)
     expect(mockSentry).toHaveBeenCalledTimes(0)
     expect(response).toBe('end')
 
@@ -90,8 +134,38 @@ describe('src/route/plugin', () => {
     })
     await plugin(req, res)
     expect(mockSession).toHaveBeenCalledTimes(2)
+    expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockGetByUser).toHaveBeenCalledTimes(0)
     expect(mockUpdate).toHaveBeenCalledTimes(2)
+    expect(mockDel).toHaveBeenCalledTimes(0)
+    expect(mockSentry).toHaveBeenCalledTimes(1)
+    expect(response).toEqual({ error: true, message: '' })
+  })
+
+  it('DELETE', async () => {
+    req.method = 'DELETE'
+
+    mockSession.mockImplementation(() => true)
+
+    await plugin(req, res)
+    expect(mockSession).toHaveBeenCalledTimes(1)
+    expect(mockAdd).toHaveBeenCalledTimes(0)
+    expect(mockGetByUser).toHaveBeenCalledTimes(0)
+    expect(mockUpdate).toHaveBeenCalledTimes(0)
+    expect(mockDel).toHaveBeenCalledTimes(1)
+    expect(mockSentry).toHaveBeenCalledTimes(0)
+    expect(response).toBe('end')
+
+    // Error
+    mockDel.mockImplementation(() => {
+      throw new Error()
+    })
+    await plugin(req, res)
+    expect(mockSession).toHaveBeenCalledTimes(2)
+    expect(mockAdd).toHaveBeenCalledTimes(0)
+    expect(mockGetByUser).toHaveBeenCalledTimes(0)
+    expect(mockUpdate).toHaveBeenCalledTimes(0)
+    expect(mockDel).toHaveBeenCalledTimes(2)
     expect(mockSentry).toHaveBeenCalledTimes(1)
     expect(response).toEqual({ error: true, message: '' })
   })
@@ -102,8 +176,10 @@ describe('src/route/plugin', () => {
 
     await plugin(req, res)
     expect(mockSession).toHaveBeenCalledTimes(1)
+    expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockGetByUser).toHaveBeenCalledTimes(0)
     expect(mockUpdate).toHaveBeenCalledTimes(0)
+    expect(mockDel).toHaveBeenCalledTimes(0)
     expect(mockSentry).toHaveBeenCalledTimes(1)
     expect(response).toEqual({
       error: true,

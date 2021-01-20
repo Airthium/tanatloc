@@ -10,6 +10,8 @@ const init = async (configuration) => {
     route: 'coretypes/?page_size=50'
   })
 
+  console.log(coreTypes)
+
   // Check token
   if (coreTypes.detail === 'Invalid token.') throw new Error(coreTypes.detail)
 

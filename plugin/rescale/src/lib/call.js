@@ -26,12 +26,13 @@ const call = async (configuration) => {
     const json = await response.json()
 
     if (json.next) {
-      const nextResponse = await call({
+      const nextJson = await call({
         ...configuration,
         route: json.next
       })
 
-      const nextJson = await nextResponse.json()
+      // TODO to check
+      // const nextJson = await nextResponse.json()
 
       json.results = [...json.results, ...nextJson.results]
     }

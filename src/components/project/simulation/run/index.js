@@ -55,12 +55,12 @@ const Run = ({ project, simulation }) => {
     let done = true
     configuration &&
       Object.keys(configuration).forEach((key) => {
-        if (key === 'part' || key === 'run') return
-        if (!configuration[key].done) done = false
+        if (key !== 'part' && key !== 'run' && !configuration[key].done)
+          done = false
       })
     if (!configuration.run.cloudServer) done = false
     setDisabled(!done)
-  }, configuration)
+  }, [configuration])
 
   useEffect(() => {
     const meshing = currentSimulation?.tasks?.filter((t) => t.type === 'mesh')

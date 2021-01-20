@@ -34,6 +34,12 @@ describe('src/components/project/simulation/run', () => {
   const simulation = {
     scheme: {
       configuration: {
+        about: {
+          done: true
+        },
+        parameters: {
+          done: false
+        },
         run: {
           done: true
         }
@@ -69,19 +75,23 @@ describe('src/components/project/simulation/run', () => {
     expect(wrapper).toBeDefined()
   })
 
-  // it('onRun', async () => {
-  //   await wrapper.find('Button').at(1).props().onClick()
-  //   expect(mockRun).toHaveBeenCalledTimes(1)
-  //   expect(mockSentry).toHaveBeenCalledTimes(0)
+  it('onRun', async () => {
+    await wrapper.find('Button').props().onClick()
+    expect(mockRun).toHaveBeenCalledTimes(1)
+    expect(mockSentry).toHaveBeenCalledTimes(0)
 
-  //   // Error
-  //   mockRun.mockImplementation(() => {
-  //     throw new Error()
-  //   })
-  //   await wrapper.find('Button').at(1).props().onClick()
-  //   expect(mockRun).toHaveBeenCalledTimes(2)
-  //   expect(mockSentry).toHaveBeenCalledTimes(1)
-  // })
+    // Error
+    mockRun.mockImplementation(() => {
+      throw new Error()
+    })
+    await wrapper.find('Button').props().onClick()
+    expect(mockRun).toHaveBeenCalledTimes(2)
+    expect(mockSentry).toHaveBeenCalledTimes(1)
+  })
+
+  it('onCloudServer', async () => {
+    await wrapper.find('CloudServer').props().onOk({})
+  })
 
   it('onLog', () => {
     wrapper.unmount()
@@ -129,7 +139,10 @@ describe('src/components/project/simulation/run', () => {
     // No file
     mockSimulation.mockImplementation(() => ({
       scheme: {
-        configuration: { part: { fileName: 'fileName' }, run: {} }
+        configuration: {
+          part: { fileName: 'fileName' },
+          run: {}
+        }
       },
       tasks: [
         {
@@ -147,6 +160,7 @@ describe('src/components/project/simulation/run', () => {
 
     // With files
     wrapper.unmount()
+    simulation.scheme.configuration.run.cloudServer = {}
     mockSimulation.mockImplementation(() => ({
       scheme: {
         configuration: { run: { done: true } }

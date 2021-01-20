@@ -22,6 +22,7 @@ let wrapper
 describe('src/component/account/hpc/plugin', () => {
   const plugin = {
     logo: 'logo',
+    renderer: 'renderer',
     configuration: {
       value: {}
     }

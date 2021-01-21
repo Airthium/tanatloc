@@ -8,7 +8,7 @@ import Caller from '@/api/call'
  */
 const useSimulation = (id, refresh) => {
   const { data, mutate } = useSWR(
-    'api/simulation' + (id ? '/' + id : ''),
+    '/api/simulation' + (id ? '/' + id : ''),
     Caller.fetcher,
     { refreshInterval: refresh || 0 }
   )

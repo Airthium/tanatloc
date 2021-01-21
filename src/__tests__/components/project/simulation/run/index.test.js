@@ -89,6 +89,10 @@ describe('src/components/project/simulation/run', () => {
     expect(mockSentry).toHaveBeenCalledTimes(1)
   })
 
+  it('onStop', async () => {
+    wrapper.find('Button').at(1).props().onClick()
+  })
+
   it('onCloudServer', async () => {
     // Normal
     await wrapper.find('CloudServer').props().onOk({})

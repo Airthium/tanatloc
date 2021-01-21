@@ -73,8 +73,10 @@ const Run = ({ project, simulation }) => {
     setSimulatingTasks(simulating)
 
     const runningTasks = currentSimulation?.tasks?.filter(
-      (t) => t.status !== 'finish' && t.status !== 'error'
+      (t) =>
+        t.status !== 'finish' && t.status !== 'error' && t.status !== 'wait'
     )
+
     if (runningTasks?.length) setRunning(true)
     else setRunning(false)
   }, [JSON.stringify(currentSimulation)])
@@ -136,6 +138,13 @@ const Run = ({ project, simulation }) => {
     SimulationAPI.run({ id: simulation.id }).catch((err) => {
       Error(errors.runError, err)
     })
+  }
+
+  /**
+   * On stop
+   */
+  const onStop = async () => {
+    // TODO
   }
 
   /**
@@ -228,7 +237,11 @@ const Run = ({ project, simulation }) => {
               >
                 Run
               </Button>
-              <Button disabled={true} icon={<StopOutlined />} />
+              <Button
+                disabled={!running}
+                icon={<StopOutlined />}
+                onClick={onStop}
+              />
             </Space>
           </Card>
 

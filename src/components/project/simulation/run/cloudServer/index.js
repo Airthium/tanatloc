@@ -66,7 +66,7 @@ const CloudServer = ({ cloudServer, onOk }) => {
             {Object.keys(cloudServer.inUseConfiguration).map((key) => {
               const item = cloudServer.inUseConfiguration[key]
               return (
-                <Space>
+                <Space key={key}>
                   <Typography.Text strong={true}>{item.label}:</Typography.Text>
                   <Typography.Text>{String(item.value)}</Typography.Text>
                 </Space>

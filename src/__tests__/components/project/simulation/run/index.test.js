@@ -90,7 +90,22 @@ describe('src/components/project/simulation/run', () => {
   })
 
   it('onCloudServer', async () => {
+    // Normal
     await wrapper.find('CloudServer').props().onOk({})
+    expect(mockUpdate).toHaveBeenCalledTimes(1)
+    expect(mockMutateOneSimulation).toHaveBeenCalledTimes(1)
+    expect(mockMutateSimulation).toHaveBeenCalledTimes(1)
+    expect(mockSentry).toHaveBeenCalledTimes(0)
+
+    // Error
+    mockUpdate.mockImplementation(() => {
+      throw new Error()
+    })
+    await wrapper.find('CloudServer').props().onOk({})
+    expect(mockUpdate).toHaveBeenCalledTimes(2)
+    expect(mockMutateOneSimulation).toHaveBeenCalledTimes(1)
+    expect(mockMutateSimulation).toHaveBeenCalledTimes(1)
+    expect(mockSentry).toHaveBeenCalledTimes(1)
   })
 
   it('onLog', () => {
@@ -160,7 +175,7 @@ describe('src/components/project/simulation/run', () => {
 
     // With files
     wrapper.unmount()
-    simulation.scheme.configuration.run.cloudServer = {}
+    simulation.scheme.configuration.run.cloudServer = undefined
     mockSimulation.mockImplementation(() => ({
       scheme: {
         configuration: { run: { done: true } }

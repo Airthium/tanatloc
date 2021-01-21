@@ -93,7 +93,7 @@ This project is based on [Next.js](https://github.com/vercel/next.js/).
 
 Global configuration (server + client side).
 
-### Main
+### Electron
 
 Electron configuration (using [Nextron](https://github.com/saltyshiomix/nextron)).
 

@@ -104,8 +104,8 @@ const Run = ({ project, simulation }) => {
       const newSimulation = { ...currentSimulation }
 
       // Update local
-      currentConfiguration.run.cloudServer = cloudServer
-      newSimulation.scheme.configuration = currentConfiguration
+      configuration.run.cloudServer = cloudServer
+      newSimulation.scheme.configuration = configuration
 
       // Update simulation
       await SimulationAPI.update({ id: simulation.id }, [
@@ -114,7 +114,7 @@ const Run = ({ project, simulation }) => {
           type: 'json',
           method: 'diff',
           path: ['configuration', 'run'],
-          value: currentConfiguration.run
+          value: configuration.run
         }
       ])
 

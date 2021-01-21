@@ -56,4 +56,8 @@ describe('src/components/project/simulation/run/cloudServer', () => {
     wrapper.find('Renderer').props().onSelect()
     expect(onOk).toHaveBeenCalledTimes(1)
   })
+
+  it('onOk', () => {
+    wrapper.find('Modal').props().onOk()
+  })
 })

@@ -10,16 +10,32 @@ const init = async (configuration) => {
     route: 'coretypes/?page_size=50'
   })
 
-  console.log(coreTypes)
-
   // Check token
   if (coreTypes.detail === 'Invalid token.') throw new Error(coreTypes.detail)
 
+  const freefem = await getFreeFEM(configuration)
+
   return {
     data: {
-      coreTypes: coreTypes.results
+      coreTypes: coreTypes.results,
+      freefem: freefem
     }
   }
+}
+
+const getFreeFEM = async (configuration) => {
+  // Get "analyses"
+  const analyses = await call({
+    platform: configuration.platform.value,
+    token: configuration.token.value,
+    route: 'analyses/'
+  })
+
+  const freefem = analyses.results.find(
+    (analysis) => analysis.code === 'freefem'
+  )
+
+  return freefem
 }
 
 export default { key, init }

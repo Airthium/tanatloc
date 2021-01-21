@@ -15,7 +15,10 @@ describe('plugin/rescale/src/components/index', () => {
         price: 5000,
         lowPriorityPrice: 1000
       }
-    ]
+    ],
+    freefem: {
+      versions: [{}]
+    }
   }
   const onSelect = jest.fn()
 
@@ -109,6 +112,17 @@ describe('plugin/rescale/src/components/index', () => {
     // Down
     wrapper.find('ForwardRef').props().onStep(2, { type: 'down' })
     wrapper.find('ForwardRef').props().onStep(0, { type: 'down' })
+  })
+
+  it('onVersionChange', () => {
+    // Got to step 2
+    wrapper
+      .find('Table')
+      .props()
+      .rowSelection.onChange('key', [{ fullCores: [1, 2, 4] }])
+    wrapper.find('Modal').props().onOk()
+
+    wrapper.find('ForwardRef(InternalSelect)').props().onChange()
   })
 
   it('setVisible', () => {

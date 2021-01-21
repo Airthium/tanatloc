@@ -4,7 +4,8 @@ import {
   EyeOutlined,
   EyeInvisibleOutlined,
   FileTextOutlined,
-  RocketOutlined
+  RocketOutlined,
+  StopOutlined
 } from '@ant-design/icons'
 
 import { Error } from '@/components/assets/notification'
@@ -217,14 +218,19 @@ const Run = ({ project, simulation }) => {
             cloudServer={currentConfiguration?.run?.cloudServer}
             onOk={onCloudServer}
           />
-          <Button
-            disabled={disabled}
-            icon={<RocketOutlined />}
-            loading={running}
-            onClick={onRun}
-          >
-            Run
-          </Button>
+          <Card>
+            <Space>
+              <Button
+                disabled={disabled}
+                icon={<RocketOutlined />}
+                loading={running}
+                onClick={onRun}
+              >
+                Run
+              </Button>
+              <Button disabled={true} icon={<StopOutlined />} />
+            </Space>
+          </Card>
 
           <Steps direction="vertical">
             {meshingTasks?.map((task, index) => {

@@ -6,12 +6,12 @@ jest.mock('../call', () => async () => mockCall())
 describe('plugin/rescale/src/lib', () => {
   it('init', async () => {
     // Normal
-    mockCall.mockImplementation(() => ({}))
+    mockCall.mockImplementation(() => ({ results: [{}] }))
     const res = await Rescale.init({
       platform: {},
       token: {}
     })
-    expect(mockCall).toHaveBeenCalledTimes(1)
+    expect(mockCall).toHaveBeenCalledTimes(2)
 
     // Invalid token
     mockCall.mockImplementation(() => ({ detail: 'Invalid token.' }))

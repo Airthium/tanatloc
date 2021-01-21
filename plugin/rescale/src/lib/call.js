@@ -7,7 +7,9 @@ const call = async (configuration) => {
   const token = configuration.token
   const route = configuration.route
 
-  const url = urlJoin('https://', platform, api, route)
+  const absoluteRoute = configuration.absoluteRoute
+
+  const url = absoluteRoute || urlJoin('https://', platform, api, route)
 
   const response = await new Promise((resolve, reject) => {
     fetch(url, {
@@ -28,11 +30,8 @@ const call = async (configuration) => {
     if (json.next) {
       const nextJson = await call({
         ...configuration,
-        route: json.next
+        absoluteRoute: json.next
       })
-
-      // TODO to check
-      // const nextJson = await nextResponse.json()
 
       json.results = [...json.results, ...nextJson.results]
     }

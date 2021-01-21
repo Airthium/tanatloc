@@ -2,9 +2,11 @@ import { useState, useEffect } from 'react'
 import {
   Avatar,
   Button,
+  Form,
   InputNumber,
   Modal,
   Radio,
+  Select,
   Space,
   Table,
   Typography
@@ -19,6 +21,7 @@ const Rescale = ({ data, onSelect }) => {
   const [lowPriority, setLowPriority] = useState(true)
   const [coresError, setCoresError] = useState()
   const [numberOfCores, setNumberOfCores] = useState()
+  const [version, setVersion] = useState()
   const [price, setPrice] = useState(0)
   const [loading, setLoading] = useState(false)
 
@@ -26,6 +29,11 @@ const Rescale = ({ data, onSelect }) => {
   data.coreTypes.forEach((d) => {
     d.key = d.name
   })
+
+  const options = data.freefem.versions.map((version) => ({
+    label: version.version,
+    value: version.id
+  }))
 
   const columns = [
     {
@@ -151,6 +159,10 @@ const Rescale = ({ data, onSelect }) => {
           },
           lowPriority: {
             value: lowPriority
+          },
+          freefemVersion: {
+            value: version?.label,
+            id: version?.value
           }
         }
       })
@@ -195,6 +207,10 @@ const Rescale = ({ data, onSelect }) => {
     }
   }
 
+  const onVersionChange = (value, option) => {
+    setVersion(option)
+  }
+
   return (
     <>
       <Modal
@@ -224,25 +240,7 @@ const Rescale = ({ data, onSelect }) => {
           </Space>
         )}
         {step === 2 && (
-          <Space>
-            <Space direction="vertical">
-              <Radio.Group
-                onChange={(e) => setLowPriority(e.target.value)}
-                value={lowPriority}
-              >
-                <Radio value={false}>On-Demand Pro</Radio>
-                <Radio value={true}>On-Demand</Radio>
-              </Radio.Group>
-              <Typography.Text strong={true}>Number of cores:</Typography.Text>
-              <InputNumber
-                min={selected.fullCores[0]}
-                max={selected.fullCores[selected.fullCores.length - 1]}
-                value={numberOfCores}
-                onChange={onCoresChange}
-                onStep={onCoresStep}
-                style={{ border: coresError && '1px solid red' }}
-              />
-            </Space>
+          <>
             <Space direction="vertical">
               <Typography.Text strong={true}>Informations:</Typography.Text>
               <Typography.Text>
@@ -250,7 +248,35 @@ const Rescale = ({ data, onSelect }) => {
               </Typography.Text>
               <Typography.Text>Price: {price} / hour</Typography.Text>
             </Space>
-          </Space>
+            <Form labelCol={{ span: 8 }} wrapperCol={{ span: 8 }}>
+              <Form.Item label="Priority">
+                <Radio.Group
+                  onChange={(e) => setLowPriority(e.target.value)}
+                  value={lowPriority}
+                >
+                  <Radio value={false}>On-Demand Pro</Radio>
+                  <Radio value={true}>On-Demand</Radio>
+                </Radio.Group>
+              </Form.Item>
+              <Form.Item label="Number of cores">
+                <InputNumber
+                  min={selected.fullCores[0]}
+                  max={selected.fullCores[selected.fullCores.length - 1]}
+                  value={numberOfCores}
+                  onChange={onCoresChange}
+                  onStep={onCoresStep}
+                  style={{ border: coresError && '1px solid red' }}
+                />
+              </Form.Item>
+              <Form.Item label="FreeFEM version">
+                <Select
+                  options={options}
+                  value={version?.value}
+                  onChange={onVersionChange}
+                ></Select>
+              </Form.Item>
+            </Form>
+          </>
         )}
       </Modal>
       <Space>

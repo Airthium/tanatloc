@@ -37,6 +37,9 @@ const Rescale = {
     },
     lowPriority: {
       label: 'Low priority'
+    },
+    freefemVersion: {
+      label: 'FreeFEM version'
     }
   }
 }

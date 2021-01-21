@@ -62,7 +62,12 @@ const update = async ({ id }, plugin) => {
 
   // Re-init
   if (plugin.needReInit) {
-    //TODO re-init the plugin
+    const API = APIs[plugin.key]
+    if (API) {
+      const init = await API.init(plugin.configuration)
+      merge(plugin, init)
+    }
+    plugin.needReInit = false
   }
 
   // Update

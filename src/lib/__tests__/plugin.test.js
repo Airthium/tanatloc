@@ -56,10 +56,6 @@ describe('src/lib/plugin', () => {
   })
 
   it('update', async () => {
-    await Plugin.update({ id: 'id' }, [])
-  })
-
-  it('update', async () => {
     // No plugins
     await Plugin.update({ id: 'id' }, { uuid: 'uuid' })
     expect(mockGet).toHaveBeenCalledTimes(1)
@@ -75,14 +71,24 @@ describe('src/lib/plugin', () => {
     mockGet.mockImplementation(() => ({
       plugins: [{ uuid: 'uuid' }]
     }))
-    await Plugin.update({ id: 'id' }, { uuid: 'uuid', needReInit: true })
+    await Plugin.update(
+      { id: 'id' },
+      { key: 'nokey', uuid: 'uuid', needReInit: true }
+    )
     expect(mockGet).toHaveBeenCalledTimes(3)
     expect(mockUpdate).toHaveBeenCalledTimes(2)
 
+    await Plugin.update(
+      { id: 'id' },
+      { key: 'key', uuid: 'uuid', needReInit: true }
+    )
+    expect(mockGet).toHaveBeenCalledTimes(4)
+    expect(mockUpdate).toHaveBeenCalledTimes(3)
+
     // Not found
     await Plugin.update({ id: 'id' }, { uuid: 'nouuid', needReInit: true })
-    expect(mockGet).toHaveBeenCalledTimes(4)
-    expect(mockUpdate).toHaveBeenCalledTimes(2)
+    expect(mockGet).toHaveBeenCalledTimes(5)
+    expect(mockUpdate).toHaveBeenCalledTimes(3)
   })
 
   it('del', async () => {

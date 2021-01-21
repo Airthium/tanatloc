@@ -76,7 +76,7 @@ describe('src/components/project/simulation/run', () => {
   })
 
   it('onRun', async () => {
-    await wrapper.find('Button').props().onClick()
+    await wrapper.find('Button').at(0).props().onClick()
     expect(mockRun).toHaveBeenCalledTimes(1)
     expect(mockSentry).toHaveBeenCalledTimes(0)
 
@@ -84,7 +84,7 @@ describe('src/components/project/simulation/run', () => {
     mockRun.mockImplementation(() => {
       throw new Error()
     })
-    await wrapper.find('Button').props().onClick()
+    await wrapper.find('Button').at(0).props().onClick()
     expect(mockRun).toHaveBeenCalledTimes(2)
     expect(mockSentry).toHaveBeenCalledTimes(1)
   })

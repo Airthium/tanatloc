@@ -87,6 +87,8 @@ const List = ({ plugin }) => {
         initialPlugin.configuration[key].value = values[key]
       })
 
+      initialPlugin.needReInit = true
+
       // API
       await PluginAPI.update(initialPlugin)
 

@@ -4,11 +4,11 @@ import ProjectPage from '@/components/project'
  * Project
  * @memberof module:pages
  */
-const id = () => {
+const Project = () => {
   /**
    * Render
    */
   return <ProjectPage />
 }
 
-export default id
+export default Project

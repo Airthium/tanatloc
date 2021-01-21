@@ -30,9 +30,9 @@ const Rescale = ({ data, onSelect }) => {
     d.key = d.name
   })
 
-  const options = data.freefem.versions.map((version) => ({
-    label: version.version,
-    value: version.id
+  const options = data.freefem.versions.map((v) => ({
+    label: v.version,
+    value: v.id
   }))
 
   const columns = [

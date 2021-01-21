@@ -20,6 +20,7 @@ import simulationIdRun from '@/route/simulation/[id]/run'
 import simulations from '@/route/simulations'
 import simulationsIds from '@/route/simulations/[ids]'
 import part from '@/route/part'
+import file from '@/route/file'
 import plugin from '@/route/plugin'
 
 const app = express()
@@ -60,6 +61,8 @@ app.all('/api/simulations', simulations)
 app.all('/api/simulations/:ids', simulationsIds)
 
 app.all('/api/part', part)
+
+app.all('/api/file', file)
 
 app.all('/api/plugin', plugin)
 

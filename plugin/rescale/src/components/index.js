@@ -26,15 +26,18 @@ const Rescale = ({ data, onSelect }) => {
   const [loading, setLoading] = useState(false)
 
   // Data
+  // Set keys
   data.coreTypes.forEach((d) => {
     d.key = d.name
   })
 
+  // Get version options
   const options = data.freefem.versions.map((v) => ({
     label: v.version,
     value: v.id
   }))
 
+  // Table
   const columns = [
     {
       title: 'Name',
@@ -192,6 +195,11 @@ const Rescale = ({ data, onSelect }) => {
     }
   }
 
+  /**
+   * On corest step
+   * @param {number} value Value
+   * @param {Object} info Info
+   */
   const onCoresStep = (value, info) => {
     if (info.type === 'up') {
       const sorted = selected.fullCores.filter((c) => c >= value)
@@ -207,10 +215,18 @@ const Rescale = ({ data, onSelect }) => {
     }
   }
 
+  /**
+   * On version change
+   * @param {string} value Value
+   * @param {Object} option Option
+   */
   const onVersionChange = (value, option) => {
     setVersion(option)
   }
 
+  /**
+   * Render
+   */
   return (
     <>
       <Modal
@@ -223,7 +239,6 @@ const Rescale = ({ data, onSelect }) => {
           loading: loading
         }}
         onOk={onOk}
-        width="auto"
       >
         {step === 1 && (
           <Space direction="vertical">

@@ -1,3 +1,4 @@
+import Local from './local'
 import Rescale from './rescale'
 
-export default { [Rescale.key]: Rescale }
+export default { [Local.key]: Local, [Rescale.key]: Rescale }

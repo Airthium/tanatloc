@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import {
   Avatar,
   Button,
+  Card,
   Form,
   InputNumber,
   Modal,
@@ -13,19 +14,25 @@ import {
 } from 'antd'
 import { SelectOutlined } from '@ant-design/icons'
 
+import { Error } from '@/components/assets/notification'
+
+const errors = {
+  validateError: 'Missing values'
+}
+
 const Rescale = ({ data, onSelect }) => {
   // State
   const [visible, setVisible] = useState(false)
   const [step, setStep] = useState(1)
   const [selected, setSelected] = useState()
-  const [lowPriority, setLowPriority] = useState(true)
   const [coresError, setCoresError] = useState()
   const [numberOfCores, setNumberOfCores] = useState()
-  const [version, setVersion] = useState()
   const [price, setPrice] = useState(0)
   const [loading, setLoading] = useState(false)
 
   // Data
+  const [form] = Form.useForm()
+
   // Set keys
   data.coreTypes.forEach((d) => {
     d.key = d.name
@@ -105,16 +112,8 @@ const Rescale = ({ data, onSelect }) => {
 
   // Set price
   useEffect(() => {
-    let currentPrice =
-      numberOfCores *
-      (lowPriority ? selected?.lowPriorityPrice : selected?.price)
-
-    currentPrice *= 100
-    currentPrice = Math.round(currentPrice)
-    currentPrice /= 100
-
-    setPrice(currentPrice.toFixed(2))
-  }, [selected, numberOfCores, lowPriority])
+    if (step > 1) computePrice()
+  }, [step])
 
   /**
    * On row change
@@ -140,37 +139,51 @@ const Rescale = ({ data, onSelect }) => {
     setVisible(false)
     setStep(1)
     setSelected()
-    setLowPriority(true)
+    setCoresError(false)
+    setNumberOfCores()
+    setPrice(0)
+    setLoading(false)
   }
 
   /**
    * On ok
    */
-  const onOk = () => {
+  const onOk = async () => {
     if (step === 1) {
       setNumberOfCores(selected.fullCores[0])
       setStep(step + 1)
     } else {
       setLoading(true)
-      onSelect({
-        inUseConfiguration: {
-          coreTypes: {
-            value: selected.code
-          },
-          numberOfCores: {
-            value: numberOfCores
-          },
-          lowPriority: {
-            value: lowPriority
-          },
-          freefemVersion: {
-            value: version?.label,
-            id: version?.value
+
+      try {
+        const values = await form.validateFields()
+
+        const freefem = options.find((o) => o.value === values.version)
+
+        onSelect({
+          inUseConfiguration: {
+            coreTypes: {
+              value: selected.code
+            },
+            numberOfCores: {
+              value: values.numberOfCores
+            },
+            lowPriority: {
+              value: values.lowPriority
+            },
+            freefemVersion: {
+              value: freefem.label,
+              id: freefem.value
+            }
           }
-        }
-      })
-      setLoading(false)
-      close()
+        })
+
+        close()
+      } catch (err) {
+        Error(errors.validateError, err)
+      } finally {
+        setLoading(false)
+      }
     }
   }
 
@@ -188,40 +201,75 @@ const Rescale = ({ data, onSelect }) => {
   const onCoresChange = (value) => {
     if (!selected.fullCores.includes(value)) {
       setCoresError(true)
-      setNumberOfCores(value)
     } else {
       setCoresError(false)
-      setNumberOfCores(value)
     }
+    return value
   }
 
   /**
    * On corest step
    * @param {number} value Value
-   * @param {Object} info Info
+   * @param {string} type Type
    */
-  const onCoresStep = (value, info) => {
-    if (info.type === 'up') {
+  const onCoresStep = (value, type) => {
+    if (type === 'up') {
       const sorted = selected.fullCores.filter((c) => c >= value)
 
-      if (sorted.length) onCoresChange(sorted[0])
-      else onCoresChange(selected.fullCores[selected.fullCores.length - 1])
+      return onCoresChange(
+        sorted.length
+          ? sorted[0]
+          : selected.fullCores[selected.fullCores.length - 1]
+      )
     } else {
       // down
       const sorted = selected.fullCores.filter((c) => c <= value)
 
-      if (sorted.length) onCoresChange(sorted.pop())
-      else onCoresChange(selected.fullCores[0])
+      return onCoresChange(sorted.length ? sorted.pop() : selected.fullCores[0])
     }
   }
 
   /**
-   * On version change
-   * @param {string} value Value
-   * @param {Object} option Option
+   *
+   * @param {Object} changedValues Changed values
+   * @param {Object} allValues All values
    */
-  const onVersionChange = (value, option) => {
-    setVersion(option)
+  const onValuesChange = (changedValues, allValues) => {
+    if (changedValues.numberOfCores) {
+      const newNumberOfCores = changedValues.numberOfCores
+
+      // Check number of cores
+      let correctedNumberOfCores
+      if (newNumberOfCores > numberOfCores)
+        correctedNumberOfCores = onCoresStep(newNumberOfCores, 'up')
+      else correctedNumberOfCores = onCoresStep(newNumberOfCores, 'down')
+
+      // Force from
+      allValues.numberOfCores = correctedNumberOfCores
+      form.setFieldsValue(allValues)
+
+      setNumberOfCores(correctedNumberOfCores)
+    }
+
+    // Compute price
+    computePrice()
+  }
+
+  /**
+   * Compute price
+   */
+  const computePrice = () => {
+    const values = form.getFieldsValue(['lowPriority', 'numberOfCores'])
+
+    let currentPrice =
+      values.numberOfCores *
+      (values.lowPriority ? selected?.lowPriorityPrice : selected?.price)
+
+    currentPrice *= 100
+    currentPrice = Math.round(currentPrice)
+    currentPrice /= 100
+
+    setPrice(currentPrice.toFixed(2))
   }
 
   /**
@@ -241,8 +289,8 @@ const Rescale = ({ data, onSelect }) => {
         onOk={onOk}
       >
         {step === 1 && (
-          <Space direction="vertical">
-            <Typography.Text strong={true}>Select a coretype:</Typography.Text>
+          <Space direction="vertical" style={{ width: '100%' }}>
+            <Typography.Title level={5}>Select a coretype</Typography.Title>
             <Table
               dataSource={data.coreTypes}
               columns={columns}
@@ -255,43 +303,64 @@ const Rescale = ({ data, onSelect }) => {
           </Space>
         )}
         {step === 2 && (
-          <>
-            <Space direction="vertical">
-              <Typography.Text strong={true}>Informations:</Typography.Text>
-              <Typography.Text>
-                {selected.name} Core (x{numberOfCores})
-              </Typography.Text>
-              <Typography.Text>Price: {price} / hour</Typography.Text>
-            </Space>
-            <Form labelCol={{ span: 8 }} wrapperCol={{ span: 8 }}>
-              <Form.Item label="Priority">
-                <Radio.Group
-                  onChange={(e) => setLowPriority(e.target.value)}
-                  value={lowPriority}
-                >
+          <Space direction="vertical" style={{ width: '100%' }}>
+            <Card title="Informations">
+              <Space direction="vertical">
+                <Typography.Text>
+                  {selected.name} Core (x{form.getFieldValue('numberOfCores')})
+                </Typography.Text>
+                <Typography.Text>Price: {price} / hour</Typography.Text>
+              </Space>
+            </Card>
+            <Form
+              form={form}
+              labelCol={{ span: 8 }}
+              wrapperCol={{ span: 8 }}
+              initialValues={{
+                lowPriority: true,
+                numberOfCores: selected.fullCores[0],
+                version: options[0].value
+              }}
+              onValuesChange={onValuesChange}
+            >
+              <Form.Item
+                name="lowPriority"
+                label="Priority"
+                htmlFor="lowPriority"
+                rules={[{ required: true, message: '"Priority" is required' }]}
+              >
+                <Radio.Group id="lowPriority">
                   <Radio value={false}>On-Demand Pro</Radio>
                   <Radio value={true}>On-Demand</Radio>
                 </Radio.Group>
               </Form.Item>
-              <Form.Item label="Number of cores">
+              <Form.Item
+                name="numberOfCores"
+                label="Number of cores"
+                htmlFor="numberOfCores"
+                rules={[
+                  { required: true, message: '"Number of cores" is required' }
+                ]}
+              >
                 <InputNumber
+                  id="numberOfCores"
                   min={selected.fullCores[0]}
                   max={selected.fullCores[selected.fullCores.length - 1]}
-                  value={numberOfCores}
-                  onChange={onCoresChange}
-                  onStep={onCoresStep}
                   style={{ border: coresError && '1px solid red' }}
                 />
               </Form.Item>
-              <Form.Item label="FreeFEM version">
-                <Select
-                  options={options}
-                  value={version?.value}
-                  onChange={onVersionChange}
-                ></Select>
+              <Form.Item
+                name="version"
+                label="FreeFEM version"
+                htmlFor="version"
+                rules={[
+                  { required: true, message: '"FreeFEM version" is required' }
+                ]}
+              >
+                <Select id="version" options={options}></Select>
               </Form.Item>
             </Form>
-          </>
+          </Space>
         )}
       </Modal>
       <Space>

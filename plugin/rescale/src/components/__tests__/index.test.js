@@ -40,16 +40,19 @@ describe('plugin/rescale/src/components/index', () => {
     wrapper.find('Table').props().rowSelection.onChange('key', [{}])
   })
 
-  it('onOk', () => {
+  it('onOk', async () => {
     // Step 1
     wrapper
       .find('Table')
       .props()
       .rowSelection.onChange('key', [{ fullCores: [] }])
-    wrapper.find('Modal').props().onOk()
+    await wrapper.find('Modal').props().onOk()
 
     // Step 2
-    wrapper.find('Modal').props().onOk()
+    await wrapper.find('Modal').props().onOk()
+
+    // Error
+    // TODO
   })
 
   it('onCancel', () => {
@@ -60,74 +63,57 @@ describe('plugin/rescale/src/components/index', () => {
     wrapper.find('Table').props().rowSelection.getCheckboxProps({})
   })
 
-  it('setLowPriority', () => {
+  it('onValuesChange', () => {
     // Got to step 2
     wrapper
       .find('Table')
       .props()
-      .rowSelection.onChange('key', [{ fullCores: [] }])
+      .rowSelection.onChange('key', [{ fullCores: [1, 2, 4, 8] }])
     wrapper.find('Modal').props().onOk()
 
+    wrapper.find('ForwardRef(InternalForm)').props().onValuesChange({}, {})
+
     wrapper
-      .find('Radio')
-      .at(0)
-      .parent()
+      .find('ForwardRef(InternalForm)')
       .props()
-      .onChange({ target: { value: true } })
-  })
+      .onValuesChange({ numberOfCores: 2 }, { numberOfCores: 2 })
 
-  it('onCoresChange', () => {
-    // Got to step 2
     wrapper
-      .find('Table')
+      .find('ForwardRef(InternalForm)')
       .props()
-      .rowSelection.onChange('key', [{ fullCores: [1, 2, 4] }])
-    wrapper.find('Modal').props().onOk()
+      .onValuesChange({ numberOfCores: 7 }, { numberOfCores: 7 })
 
-    // Wrong
-    wrapper.find('ForwardRef').props().onChange(3)
-    expect(wrapper.find('ForwardRef').props().style).toEqual({
-      border: '1px solid red'
-    })
-
-    // Good
-    wrapper.find('ForwardRef').props().onChange(4)
-    expect(wrapper.find('ForwardRef').props().style).not.toEqual({
-      border: '1px solid red'
-    })
-  })
-
-  it('onCoresStep', () => {
-    // Got to step 2
     wrapper
-      .find('Table')
+      .find('ForwardRef(InternalForm)')
       .props()
-      .rowSelection.onChange('key', [{ fullCores: [1, 2, 4] }])
-    wrapper.find('Modal').props().onOk()
+      .onValuesChange({ numberOfCores: 1000 }, { numberOfCores: 1000 })
 
-    // Up
-    wrapper.find('ForwardRef').props().onStep(2, { type: 'up' })
-    wrapper.find('ForwardRef').props().onStep(8, { type: 'up' })
-
-    // Down
-    wrapper.find('ForwardRef').props().onStep(2, { type: 'down' })
-    wrapper.find('ForwardRef').props().onStep(0, { type: 'down' })
-  })
-
-  it('onVersionChange', () => {
-    // Got to step 2
     wrapper
-      .find('Table')
+      .find('ForwardRef(InternalForm)')
       .props()
-      .rowSelection.onChange('key', [{ fullCores: [1, 2, 4] }])
-    wrapper.find('Modal').props().onOk()
+      .onValuesChange({ numberOfCores: 3 }, { numberOfCores: 3 })
 
-    wrapper.find('ForwardRef(InternalSelect)').props().onChange()
+    wrapper
+      .find('ForwardRef(InternalForm)')
+      .props()
+      .onValuesChange({ numberOfCores: 0 }, { numberOfCores: 0 })
   })
 
   it('setVisible', () => {
     wrapper.find('Button').props().onClick()
     expect(wrapper.find('Modal').props().visible).toBe(true)
+  })
+
+  it('parser', () => {
+    // Got to step 2
+    wrapper
+      .find('Table')
+      .props()
+      .rowSelection.onChange('key', [{ fullCores: [1, 2, 4, 8] }])
+    wrapper.find('Modal').props().onOk()
+
+    console.log(wrapper.debug())
+    wrapper.find({ id: 'numberOfCores' }).props().parser()
   })
 
   it('render', () => {
@@ -162,10 +148,9 @@ describe('plugin/rescale/src/components/index', () => {
     // Set low priority
     act(() =>
       wrapper
-        .find('ForwardRef')
-        .at(1)
+        .find('ForwardRef(InternalForm)')
         .props()
-        .onChange({ target: { value: false } })
+        .onValuesChange({ lowPriority: false })
     )
     wrapper.update()
   })

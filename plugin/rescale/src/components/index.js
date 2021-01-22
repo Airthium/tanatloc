@@ -25,7 +25,6 @@ const Rescale = ({ data, onSelect }) => {
   const [visible, setVisible] = useState(false)
   const [step, setStep] = useState(1)
   const [selected, setSelected] = useState()
-  const [coresError, setCoresError] = useState()
   const [numberOfCores, setNumberOfCores] = useState()
   const [price, setPrice] = useState(0)
   const [loading, setLoading] = useState(false)
@@ -139,7 +138,6 @@ const Rescale = ({ data, onSelect }) => {
     setVisible(false)
     setStep(1)
     setSelected()
-    setCoresError(false)
     setNumberOfCores()
     setPrice(0)
     setLoading(false)
@@ -195,20 +193,7 @@ const Rescale = ({ data, onSelect }) => {
   }
 
   /**
-   * On cores change
-   * @param {number} value Value
-   */
-  const onCoresChange = (value) => {
-    if (!selected.fullCores.includes(value)) {
-      setCoresError(true)
-    } else {
-      setCoresError(false)
-    }
-    return value
-  }
-
-  /**
-   * On corest step
+   * On cores step
    * @param {number} value Value
    * @param {string} type Type
    */
@@ -216,16 +201,14 @@ const Rescale = ({ data, onSelect }) => {
     if (type === 'up') {
       const sorted = selected.fullCores.filter((c) => c >= value)
 
-      return onCoresChange(
-        sorted.length
-          ? sorted[0]
-          : selected.fullCores[selected.fullCores.length - 1]
-      )
+      return sorted.length
+        ? sorted[0]
+        : selected.fullCores[selected.fullCores.length - 1]
     } else {
       // down
       const sorted = selected.fullCores.filter((c) => c <= value)
 
-      return onCoresChange(sorted.length ? sorted.pop() : selected.fullCores[0])
+      return sorted.length ? sorted.pop() : selected.fullCores[0]
     }
   }
 
@@ -235,9 +218,8 @@ const Rescale = ({ data, onSelect }) => {
    * @param {Object} allValues All values
    */
   const onValuesChange = (changedValues, allValues) => {
-    if (changedValues.numberOfCores) {
-      const newNumberOfCores = changedValues.numberOfCores
-
+    const newNumberOfCores = changedValues.numberOfCores
+    if (newNumberOfCores !== undefined) {
       // Check number of cores
       let correctedNumberOfCores
       if (newNumberOfCores > numberOfCores)
@@ -287,6 +269,7 @@ const Rescale = ({ data, onSelect }) => {
           loading: loading
         }}
         onOk={onOk}
+        maskClosable={false}
       >
         {step === 1 && (
           <Space direction="vertical" style={{ width: '100%' }}>
@@ -346,7 +329,9 @@ const Rescale = ({ data, onSelect }) => {
                   id="numberOfCores"
                   min={selected.fullCores[0]}
                   max={selected.fullCores[selected.fullCores.length - 1]}
-                  style={{ border: coresError && '1px solid red' }}
+                  parser={() => {
+                    return numberOfCores
+                  }}
                 />
               </Form.Item>
               <Form.Item

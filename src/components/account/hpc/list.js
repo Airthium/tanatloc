@@ -36,7 +36,7 @@ const List = ({ plugin }) => {
       return (
         <Card
           key={p.uuid}
-          title={configuration.name.value}
+          title={configuration.name?.value}
           style={{ marginTop: '10px' }}
         >
           {edit ? (

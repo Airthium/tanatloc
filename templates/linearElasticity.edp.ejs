@@ -60,6 +60,8 @@ const rhs = parameters.rightHandSide.children
 const rhsX = rhs[0].value || rhs[0].default
 const rhsY = rhs[1].value || rhs[1].default
 const rhsZ = rhs[2].value || rhs[2].default
+
+const N = '[N.x, N.y, N.z]'
 -%>
 // Problem
 cout << "Define the problem..." << endl;
@@ -88,13 +90,13 @@ varf vLinearElasticityRHS (<%= unknownFunction -%>, <%= testFunction -%>)
 		[<%- rhsX -%>, <%- rhsY -%>, <%- rhsZ -%>]' * <%= testFunction %>
 <% } -%>
 	)
-	<% for (const p of pressure) { -%>
+<% for (const p of pressure) { -%>
 	- intN1(Th, <%= p.selected.map(s => { return s.label}).filter(s => s).join() -%>)(
-		(<%- p.value[0] -%>) * <%= N -%>' * <%= Uh -%>
+		(<%- p.values[0] -%>) * <%= N -%>' * <%= testFunction -%>
 	)
 <% } -%>
 <% for (const d of displacement) { -%>
-	+ on(<%= d.selected.map(s => { return s.label}).filter(s => s).join() -%><% if (d.checked[0]) { -%>, Ux=<%- d.value[0] -%><% } -%><% if (d.checked[1]) { -%>, Uy=<%- d.value[1] -%><% } -%><% if (d.checked[2]) { -%>, Uz=<%- d.value[2] -%><% } -%>)
+	+ on(<%= d.selected.map(s => { return s.label}).filter(s => s).join() -%><% if (d.checked[0]) { -%>, Ux=<%- d.values[0] -%><% } -%><% if (d.checked[1]) { -%>, Uy=<%- d.values[1] -%><% } -%><% if (d.checked[2]) { -%>, Uz=<%- d.values[2] -%><% } -%>)
 <% } -%>
 <% for (const f of fixed) { -%>
 	+ on(<%= f.selected.map(s => { return s.label}).filter(s => s).join() -%>, Ux=0, Uy=0, Uz=0)

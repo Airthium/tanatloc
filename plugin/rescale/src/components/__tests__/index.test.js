@@ -4,6 +4,11 @@ import { act } from 'react-dom/test-utils'
 
 import '@/config/jest/matchMediaMock'
 
+const mockError = jest.fn()
+jest.mock('@/components/assets/notification', () => ({
+  Error: () => mockError()
+}))
+
 let wrapper
 describe('plugin/rescale/src/components/index', () => {
   const data = {
@@ -23,6 +28,8 @@ describe('plugin/rescale/src/components/index', () => {
   const onSelect = jest.fn()
 
   beforeEach(() => {
+    mockError.mockReset()
+
     onSelect.mockReset()
 
     wrapper = shallow(<Rescale data={data} onSelect={onSelect} />)
@@ -51,8 +58,20 @@ describe('plugin/rescale/src/components/index', () => {
     // Step 2
     await wrapper.find('Modal').props().onOk()
 
+    // Step 1
+    wrapper
+      .find('Table')
+      .props()
+      .rowSelection.onChange('key', [{ fullCores: [] }])
+    await wrapper.find('Modal').props().onOk()
+
     // Error
-    // TODO
+    const form = wrapper.find('ForwardRef(InternalForm)').props().form
+    form.validateFields = () => {
+      throw new Error()
+    }
+    await wrapper.find('Modal').props().onOk()
+    expect(mockError).toHaveBeenCalledTimes(1)
   })
 
   it('onCancel', () => {
@@ -112,7 +131,6 @@ describe('plugin/rescale/src/components/index', () => {
       .rowSelection.onChange('key', [{ fullCores: [1, 2, 4, 8] }])
     wrapper.find('Modal').props().onOk()
 
-    console.log(wrapper.debug())
     wrapper.find({ id: 'numberOfCores' }).props().parser()
   })
 
@@ -122,7 +140,7 @@ describe('plugin/rescale/src/components/index', () => {
     wrapper.find('Table').props().columns[2].render(5000)
   })
 
-  it('useEffect', () => {
+  it('useEffect', async () => {
     wrapper.unmount()
 
     wrapper = mount(<Rescale data={data} onSelect={onSelect} />)
@@ -142,7 +160,7 @@ describe('plugin/rescale/src/components/index', () => {
     wrapper.update()
 
     // Step 2
-    act(() => wrapper.find('Modal').props().onOk())
+    await act(async () => await wrapper.find('Modal').props().onOk())
     wrapper.update()
 
     // Set low priority

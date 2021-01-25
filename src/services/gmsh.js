@@ -24,7 +24,9 @@ const gmsh = async (path, fileIn, fileOut, callback) => {
       '-o',
       fileOut,
       '-format',
-      'msh2'
+      'msh2',
+      '-clcurv',
+      '10'
     ])
 
     run.stdout.on('data', (data) => {

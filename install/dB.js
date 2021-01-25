@@ -21,7 +21,8 @@ const createDatabase = async () => {
       host: config.HOST,
       port: config.PORT,
       user: user,
-      database: 'postgres'
+      database: 'postgres',
+      password: 'password'
     })
     client = await pool.connect()
 
@@ -64,7 +65,8 @@ const createDatabase = async () => {
       host: config.HOST,
       port: config.PORT,
       database: config.DATABASE,
-      user: 'postgres'
+      user: 'postgres',
+      password: 'password'
     })
     client = await pool.connect()
 

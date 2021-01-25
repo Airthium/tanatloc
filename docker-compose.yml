@@ -1,0 +1,29 @@
+services:
+  app:
+    image: tanatloc
+    build: .
+    depends_on:
+      - postgres
+      - converters
+    ports:
+      - '3000:3000'
+    environment:
+      - DB_HOST=postgres
+    volumes:
+      - tdata:/root/tanatloc
+
+  postgres:
+    image: postgres
+    environment:
+      - POSTGRES_PASSWORD=password
+    ports:
+      - '5432:5432'
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  converters:
+    image: tanatloc/converters
+
+volumes:
+  pgdata:
+  tdata:

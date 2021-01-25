@@ -61,7 +61,7 @@ const update = async ({ id }, plugin) => {
   ]
 
   // Re-init
-  if (plugin.needReInit) {
+  if (plugin.needInit && plugin.needReInit) {
     const API = APIs[plugin.key]
     if (API) {
       const init = await API.init(plugin.configuration)

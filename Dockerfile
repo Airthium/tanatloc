@@ -65,16 +65,14 @@ WORKDIR ${INSTALL_PATH}
 
 # Build
 RUN yarn install --ignore-scripts
-RUN yarn build
 RUN yarn babel . --only config,install,src/database/index.js --out-dir dist-install
+RUN yarn build
 
 # Workdir
 WORKDIR ${APP_PATH}
 
 # Keep essential
 COPY docker/package.json ${APP_PATH}/package.json
-COPY docker/start.sh ${APP_PATH}/start.sh
-RUN chmod +x {APP_PATH}/start.sh
 
 RUN mv ${INSTALL_PATH}/dist-install ${APP_PATH}/dist-install
 
@@ -82,5 +80,11 @@ RUN mv ${INSTALL_PATH}/public ${APP_PATH}/public
 RUN mv ${INSTALL_PATH}/.next ${APP_PATH}/.next
 RUN yarn
 
+COPY docker/start.sh ${APP_PATH}/start.sh
+RUN chmod +x ${APP_PATH}/start.sh
+
 # Clean
 RUN rm -Rf ${APP_PATH}/install
+
+## START
+CMD ${APP_PATH}/start.sh

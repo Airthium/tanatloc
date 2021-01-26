@@ -2,7 +2,10 @@ FROM ubuntu:20.10
 
 LABEL maintainer="https://github.com/orgs/Airthium/people"
 
+## ENV
 ENV DEBIAN_FRONTEND noninteractive
+ENV INSTALL_PATH /home/app/install
+ENV APP_PATH /home/app
 
 ## INSTALL
 # Start
@@ -31,24 +34,49 @@ RUN apt autoremove \
     && apt clean
 
 ## BUILD
-ENV DB_HOST='postgres'
+ARG DB_HOST
+ENV DB_HOST $DB_HOST
+
+ARG DB_PORT
+ENV DB_PORT $DB_PORT
 
 # Copy
-COPY . /home/app/install
+COPY config ${INSTALL_PATH}/config
+COPY install ${INSTALL_PATH}/install
+COPY models ${INSTALL_PATH}/models
+COPY plugin ${INSTALL_PATH}/plugin
+COPY public ${INSTALL_PATH}/public
+COPY resources ${INSTALL_PATH}/resources
+COPY src ${INSTALL_PATH}/src
+COPY templates ${INSTALL_PATH}/templates
+COPY .babelrc ${INSTALL_PATH}/.babelrc
+COPY next.config.js ${INSTALL_PATH}/next.config.js
+COPY package.json ${INSTALL_PATH}/package.json
+COPY yarn.lock ${INSTALL_PATH}/yarn.lock
 
 # Workdir
-WORKDIR /home/app/install
+WORKDIR ${INSTALL_PATH}
 
 # Build
-RUN yarn
-RUN yarn postinstall
+RUN yarn install --ignore-scripts
 RUN yarn build
+RUN yarn babel . --only config,install,src/database/index.js --out-dir dist-install
 
-# # Keep essential
-# RUN mv /home/app/install/build /home/app/.next
+# Workdir
+WORKDIR ${APP_PATH}
 
-# # Clean
-# RUN rm -Rf /home/app/install
+# Keep essential
+COPY docker/package.json ${APP_PATH}/package.json
+COPY docker/start.sh ${APP_PATH}/start.sh
+
+RUN mv ${INSTALL_PATH}/dist-install ${APP_PATH}/dist-install
+
+RUN mv ${INSTALL_PATH}/public ${APP_PATH}/public
+RUN mv ${INSTALL_PATH}/.next ${APP_PATH}/.next
+RUN yarn
+
+# Clean
+RUN rm -Rf ${APP_PATH}/install
 
 ## START
-CMD cd /home/app && yarn start
+CMD sh start.sh

@@ -21,7 +21,7 @@ export function setTokenCookie(res, token) {
     maxAge: MAX_AGE,
     expires: new Date(Date.now() + MAX_AGE * 1000),
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
+    secure: false,
     path: '/',
     sameSite: 'lax'
   })

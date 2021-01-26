@@ -1,6 +1,6 @@
 /** @module src/route */
 
-import express from 'express'
+import nextConnect from 'next-connect'
 import passport from 'passport'
 import { localStrategy } from '@/auth/password-local'
 import { encryptSession } from '@/auth/iron'
@@ -8,7 +8,6 @@ import { setTokenCookie } from '@/auth/auth-cookies'
 
 import Sentry from '@/lib/sentry'
 
-const app = express()
 const authenticate = (method, req, res) =>
   new Promise((resolve, reject) => {
     passport.authenticate(method, { session: false }, (error, token) => {
@@ -19,10 +18,6 @@ const authenticate = (method, req, res) =>
       }
     })(req, res)
   })
-
-app.disable('x-powered-by')
-
-app.use(passport.initialize())
 
 passport.use(localStrategy)
 
@@ -58,6 +53,10 @@ export const loginRoute = async (req, res) => {
   }
 }
 
-app.post('/api/login', loginRoute)
+// const nC = nextConnect()
+//   .use(passport.initialize())
+//   .post(async (req, res) => loginRoute(req, res))
 
-export default app
+export default nextConnect()
+  .use(passport.initialize())
+  .post(async (req, res) => loginRoute(req, res))

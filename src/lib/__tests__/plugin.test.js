@@ -73,20 +73,23 @@ describe('src/lib/plugin', () => {
     }))
     await Plugin.update(
       { id: 'id' },
-      { key: 'nokey', uuid: 'uuid', needReInit: true }
+      { key: 'nokey', uuid: 'uuid', needInit: true, needReInit: true }
     )
     expect(mockGet).toHaveBeenCalledTimes(3)
     expect(mockUpdate).toHaveBeenCalledTimes(2)
 
     await Plugin.update(
       { id: 'id' },
-      { key: 'key', uuid: 'uuid', needReInit: true }
+      { key: 'key', uuid: 'uuid', needInit: true, needReInit: true }
     )
     expect(mockGet).toHaveBeenCalledTimes(4)
     expect(mockUpdate).toHaveBeenCalledTimes(3)
 
     // Not found
-    await Plugin.update({ id: 'id' }, { uuid: 'nouuid', needReInit: true })
+    await Plugin.update(
+      { id: 'id' },
+      { uuid: 'nouuid', needInit: true, needReInit: true }
+    )
     expect(mockGet).toHaveBeenCalledTimes(5)
     expect(mockUpdate).toHaveBeenCalledTimes(3)
   })

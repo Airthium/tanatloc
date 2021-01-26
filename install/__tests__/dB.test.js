@@ -59,15 +59,4 @@ describe('install/dB', () => {
     }
     await createDatabase()
   })
-
-  it('MacOS', async () => {
-    const original = process.platform
-    Object.defineProperty(process, 'platform', {
-      value: 'darwin'
-    })
-    await createDatabase()
-    Object.defineProperty(process, 'platform', {
-      value: original
-    })
-  })
 })

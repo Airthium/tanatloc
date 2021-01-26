@@ -1,11 +1,11 @@
 Object.defineProperty(process, 'platform', {
-  value: 'linux'
+  value: 'darwin'
 })
 const config = require('../db')
 
 describe('config/db', () => {
   it('global', () => {
-    expect(config.ADMIN).toBe('postgres')
+    expect(config.ADMIN).toBe(process.env.USER)
     expect(config.ADMIN_DATABASE).toBe('postgres')
     expect(config.ADMIN_PASSWORD).toBe('')
     expect(config.USER).toBe('tanatlocuser')

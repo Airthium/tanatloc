@@ -8,13 +8,16 @@ Using server-side rendering (SSR).
 
 ### Database
 
-| Variable    | Default      | Comment           |
-| ----------- | ------------ | ----------------- |
-| DB_USER     | tanatlocuser | Database user     |
-| DB_HOST     | localhost    | Database host     |
-| DB_PORT     | 5432         | Database port     |
-| DB_DATABASE | tanatloc     | Database name     |
-| DB_PASSWORD | tanatloc     | Database password |
+| Variable          | Default           | Comment           |
+| ----------------- | ----------------- | ----------------- |
+| DB_ADMIN          | $USER or postgres | Admin user        |
+| DB_ADMIN_DATABASE | postgres          | Admin database    |
+| DB_ADMIN_PASSWORD |                   | Admin password    |
+| DB_USER           | tanatlocuser      | Database user     |
+| DB_HOST           | localhost         | Database host     |
+| DB_PORT           | 5432              | Database port     |
+| DB_DATABASE       | tanatloc          | Database name     |
+| DB_PASSWORD       | tanatloc          | Database password |
 
 ### Sentry
 

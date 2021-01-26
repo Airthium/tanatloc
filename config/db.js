@@ -4,6 +4,12 @@
  * Database configuration
  */
 module.exports = {
+  ADMIN:
+    process.env.DB_ADMIN || process.platform === 'darwin'
+      ? process.env.USER
+      : 'postgres',
+  ADMIN_DATABASE: process.env.DB_ADMIN_DATABASE || 'postgres',
+  ADMIN_PASSWORD: process.env.DB_ADMIN_PASSWORD || '',
   USER: process.env.DB_USER || 'tanatlocuser',
   HOST: process.env.DB_HOST || 'localhost',
   PORT: process.env.DB_PORT || 5432,

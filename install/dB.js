@@ -13,16 +13,13 @@ const createDatabase = async () => {
   try {
     let pool, client
 
-    // Set user (MacOS specific 😠)
-    const user = process.platform === 'darwin' ? process.env.USER : 'postgres'
-
     // Pool
     pool = new Pool({
       host: config.HOST,
       port: config.PORT,
-      user: user,
-      database: 'postgres',
-      password: 'password'
+      user: config.ADMIN,
+      database: config.ADMIN_DATABASE,
+      password: config.ADMIN_PASSWORD
     })
     client = await pool.connect()
 
@@ -65,8 +62,8 @@ const createDatabase = async () => {
       host: config.HOST,
       port: config.PORT,
       database: config.DATABASE,
-      user: 'postgres',
-      password: 'password'
+      user: config.USER,
+      password: config.PASSWORD
     })
     client = await pool.connect()
 

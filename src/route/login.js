@@ -1,6 +1,6 @@
 /** @module src/route */
 
-import nextConnect from 'next-connect'
+import express from 'express'
 import passport from 'passport'
 import { localStrategy } from '@/auth/password-local'
 import { encryptSession } from '@/auth/iron'
@@ -53,10 +53,9 @@ export const loginRoute = async (req, res) => {
   }
 }
 
-// const nC = nextConnect()
-//   .use(passport.initialize())
-//   .post(async (req, res) => loginRoute(req, res))
+const app = express()
+app.disable('x-powered-by')
+app.use(passport.initialize())
+app.post('/api/login', loginRoute)
 
-export default nextConnect()
-  .use(passport.initialize())
-  .post(async (req, res) => loginRoute(req, res))
+export default app

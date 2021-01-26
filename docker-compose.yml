@@ -17,6 +17,7 @@ services:
       - DB_PORT=5432
     volumes:
       - tdata:/root/tanatloc
+    command: ['./start.sh', 'database:5432']
 
   database:
     image: postgres

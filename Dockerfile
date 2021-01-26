@@ -74,6 +74,7 @@ WORKDIR ${APP_PATH}
 # Keep essential
 COPY docker/package.json ${APP_PATH}/package.json
 COPY docker/start.sh ${APP_PATH}/start.sh
+RUN chmod +x {APP_PATH}/start.sh
 
 RUN mv ${INSTALL_PATH}/dist-install ${APP_PATH}/dist-install
 
@@ -83,6 +84,3 @@ RUN yarn
 
 # Clean
 RUN rm -Rf ${APP_PATH}/install
-
-## START
-CMD sh start.sh

@@ -1,4 +1,4 @@
-import { Button } from 'antd'
+import { Button, Typography } from 'antd'
 import { SelectOutlined } from '@ant-design/icons'
 
 const Local = ({ onSelect }) => {
@@ -6,7 +6,12 @@ const Local = ({ onSelect }) => {
     onSelect()
   }
 
-  return <Button onClick={onClick} icon={<SelectOutlined />} />
+  return (
+    <>
+      <Typography.Text>Local computing</Typography.Text>
+      <Button onClick={onClick} icon={<SelectOutlined />} />
+    </>
+  )
 }
 
 export default Local

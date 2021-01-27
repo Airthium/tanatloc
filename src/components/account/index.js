@@ -1,5 +1,6 @@
 /** @module 'src/components/account */
 
+import { useRouter } from 'next/router'
 import { Layout, PageHeader, Typography, Divider, Tabs } from 'antd'
 
 import Information from './information'
@@ -11,6 +12,21 @@ import HPC from './hpc'
  * Account
  */
 const Account = () => {
+  // Data
+  const router = useRouter()
+  const { tab } = router.query
+
+  /**
+   * On change
+   * @param {string} key Key
+   */
+  const onChange = (key) => {
+    router.replace({
+      pathname: '/dashboard',
+      query: { page: 'account', tab: key }
+    })
+  }
+
   /**
    * Render
    */
@@ -30,15 +46,15 @@ const Account = () => {
         }
       />
       <Layout.Content>
-        <Tabs defaultActiveKey="1">
-          <Tabs.TabPane tab="Personal Information" key="1">
+        <Tabs defaultActiveKey={tab || 'personal'} onChange={onChange}>
+          <Tabs.TabPane tab="Personal Information" key="personal">
             <Information />
             <Delete />
           </Tabs.TabPane>
-          <Tabs.TabPane tab="Security" key="2">
+          <Tabs.TabPane tab="Security" key="security">
             <Password />
           </Tabs.TabPane>
-          <Tabs.TabPane tab="HPC Providers" key="3">
+          <Tabs.TabPane tab="HPC Providers" key="hpc">
             <HPC />
           </Tabs.TabPane>
         </Tabs>

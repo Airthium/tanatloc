@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useRouter } from 'next/router'
 import { Button, Card, Modal, Space, Typography } from 'antd'
 import { CloudServerOutlined } from '@ant-design/icons'
 import merge from 'lodash.merge'
@@ -12,6 +13,7 @@ const CloudServer = ({ cloudServer, onOk }) => {
   const [visible, setVisible] = useState(false)
 
   // Data
+  const router = useRouter()
   const [plugins] = PluginAPI.usePlugins()
 
   const close = () => {
@@ -30,7 +32,7 @@ const CloudServer = ({ cloudServer, onOk }) => {
   }
 
   return (
-    <Card>
+    <Card title="Cloud server">
       <Modal
         visible={visible}
         title="Cloud server"
@@ -41,18 +43,33 @@ const CloudServer = ({ cloudServer, onOk }) => {
         }}
         onCancel={close}
       >
-        <Space align="start" direction="horizontal">
-          {plugins?.map((plugin) => {
-            const base = Plugins[plugin.key]
-            return (
-              <Card key={plugin.uuid} title={plugin.name}>
-                <base.renderer
-                  data={plugin.data}
-                  onSelect={(diff) => onMerge(plugin, diff)}
-                />
-              </Card>
-            )
-          })}
+        <Space direction="vertical">
+          <Typography.Text>
+            Your cloud server does not appear in this list? Create one in your
+            <Button
+              onClick={() =>
+                router.push({
+                  pathname: '/dashboard',
+                  query: { page: 'account', tab: 'hpc' }
+                })
+              }
+            >
+              account settings
+            </Button>
+          </Typography.Text>
+          <Space align="start" direction="horizontal">
+            {plugins?.map((plugin) => {
+              const base = Plugins[plugin.key]
+              return (
+                <Card key={plugin.uuid} title={plugin.name}>
+                  <base.renderer
+                    data={plugin.data}
+                    onSelect={(diff) => onMerge(plugin, diff)}
+                  />
+                </Card>
+              )
+            })}
+          </Space>
         </Space>
       </Modal>
       <Space direction="vertical">

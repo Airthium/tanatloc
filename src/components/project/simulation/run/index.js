@@ -227,85 +227,87 @@ const Run = ({ project, simulation }) => {
             cloudServer={currentConfiguration?.run?.cloudServer}
             onOk={onCloudServer}
           />
-          <Card>
-            <Space>
-              <Button
-                disabled={disabled}
-                icon={<RocketOutlined />}
-                loading={running}
-                onClick={onRun}
-              >
-                Run
-              </Button>
-              <Button
-                disabled={!running}
-                icon={<StopOutlined />}
-                onClick={onStop}
-              />
+          <Card title="Run">
+            <Space direction="vertical">
+              <Space>
+                <Button
+                  disabled={disabled}
+                  icon={<RocketOutlined />}
+                  loading={running}
+                  onClick={onRun}
+                >
+                  Run
+                </Button>
+                <Button
+                  disabled={!running}
+                  icon={<StopOutlined />}
+                  onClick={onStop}
+                />
+              </Space>
+              <Steps direction="vertical">
+                {meshingTasks?.map((task, index) => {
+                  return (
+                    <Steps.Step
+                      key={task}
+                      title="Meshing"
+                      description={
+                        <>
+                          <Button
+                            icon={<FileTextOutlined />}
+                            onClick={() => onLog(meshingTasks, 'Mesh')}
+                            size="small"
+                          />
+                          <Button
+                            icon={
+                              currentConfiguration.part?.fileName ===
+                              task.file?.fileName ? (
+                                <EyeInvisibleOutlined />
+                              ) : (
+                                <EyeOutlined />
+                              )
+                            }
+                            size="small"
+                            onClick={() =>
+                              setPart(
+                                currentConfiguration.part?.fileName ===
+                                  task.file?.fileName
+                                  ? null
+                                  : task.file
+                              )
+                            }
+                          />
+                        </>
+                      }
+                      subTitle={
+                        '(' + (index + 1) + '/' + meshingTasks?.length + ')'
+                      }
+                      status={task.status}
+                    />
+                  )
+                })}
+                {simulatingTasks?.map((task, index) => {
+                  return (
+                    <Steps.Step
+                      key={task}
+                      title="Simulating"
+                      description={
+                        <Button
+                          icon={<FileTextOutlined />}
+                          onClick={() => onLog(simulatingTasks, 'Simulation')}
+                          size="small"
+                        />
+                      }
+                      subTitle={
+                        '(' + (index + 1) + '/' + simulatingTasks?.length + ')'
+                      }
+                      status={task.status}
+                    />
+                  )
+                })}
+              </Steps>
             </Space>
           </Card>
 
-          <Steps direction="vertical">
-            {meshingTasks?.map((task, index) => {
-              return (
-                <Steps.Step
-                  key={task}
-                  title="Meshing"
-                  description={
-                    <>
-                      <Button
-                        icon={<FileTextOutlined />}
-                        onClick={() => onLog(meshingTasks, 'Mesh')}
-                        size="small"
-                      />
-                      <Button
-                        icon={
-                          currentConfiguration.part?.fileName ===
-                          task.file?.fileName ? (
-                            <EyeInvisibleOutlined />
-                          ) : (
-                            <EyeOutlined />
-                          )
-                        }
-                        size="small"
-                        onClick={() =>
-                          setPart(
-                            currentConfiguration.part?.fileName ===
-                              task.file?.fileName
-                              ? null
-                              : task.file
-                          )
-                        }
-                      />
-                    </>
-                  }
-                  subTitle={
-                    '(' + (index + 1) + '/' + meshingTasks?.length + ')'
-                  }
-                  status={task.status}
-                />
-              )
-            })}
-            {simulatingTasks?.map((task, index) => {
-              return (
-                <Steps.Step
-                  key={task}
-                  title="Simulating"
-                  description={
-                    <Button
-                      icon={<FileTextOutlined />}
-                      onClick={() => onLog(simulatingTasks, 'Simulation')}
-                      size="small"
-                    />
-                  }
-                  subTitle={
-                    '(' + (index + 1) + '/' + simulatingTasks?.length + ')'
-                  }
-                  status={task.status}
-                />
-              )
-            })}
-          </Steps>
           {resultFiles.length ? (
             <Card title="Results">
               <Space direction="vertical">

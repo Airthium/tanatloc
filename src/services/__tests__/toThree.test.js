@@ -7,6 +7,9 @@ jest.mock('child_process', () => ({
   spawn: () => mockSpawn()
 }))
 
+const mockDocker = jest.fn()
+jest.mock('is-docker', () => () => mockDocker())
+
 describe('src/services/toThree', () => {
   const mockCallback = jest.fn()
 
@@ -14,6 +17,9 @@ describe('src/services/toThree', () => {
     mockExecSync.mockReset()
     mockExecSync.mockImplementation(() => '')
     mockSpawn.mockReset()
+
+    mockDocker.mockReset()
+
     mockCallback.mockReset()
   })
 
@@ -93,5 +99,29 @@ describe('src/services/toThree', () => {
       expect(mockExecSync).toHaveBeenCalledTimes(10)
       expect(mockSpawn).toHaveBeenCalledTimes(5)
     }
+  })
+
+  it('isDocker', async () => {
+    mockDocker.mockImplementation(() => true)
+
+    mockSpawn.mockImplementation(() => ({
+      stdout: {
+        on: (data, callback) => {
+          callback('stdout')
+        }
+      },
+      stderr: {
+        on: (data, callback) => {
+          callback('stderr')
+        }
+      },
+      on: (arg, callback) => {
+        if (arg === 'close') callback(0)
+      }
+    }))
+    const code = await toThree('path', 'file.step', 'pathour', mockCallback)
+    expect(mockExecSync).toHaveBeenCalledTimes(0)
+    expect(mockSpawn).toHaveBeenCalledTimes(1)
+    expect(code).toBe(0)
   })
 })

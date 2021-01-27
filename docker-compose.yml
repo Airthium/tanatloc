@@ -1,6 +1,5 @@
 services:
-  app:
-    image: tanatloc
+  tanatloc:
     build:
       context: .
       args:
@@ -11,6 +10,7 @@ services:
     depends_on:
       - database
       - converters
+      - freefem
     ports:
       - '3000:3000'
     environment:
@@ -19,7 +19,9 @@ services:
       - DB_HOST=database
       - DB_PORT=5432
     volumes:
-      - tdata:/root/tanatloc
+      - tanatlocData:/root/tanatloc
+      - convertersBin:/root/converters
+      - freefemBin:/root/freefem
 
   database:
     image: postgres
@@ -28,11 +30,20 @@ services:
     ports:
       - '5433:5432'
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - postgresData:/var/lib/postgresql/data
 
   converters:
     image: tanatloc/converters
+    volumes:
+      - convertersBin:/root/converters
+
+  freefem:
+    image: freefem/freefem
+    volumes:
+      - freefemBin:/usr/freefem/bin
 
 volumes:
-  pgdata:
-  tdata:
+  postgresData:
+  tanatlocData:
+  convertersBin:
+  freefemBin:

@@ -15,10 +15,13 @@ module.exports = withLess({
   },
   ...withImages(
     withTM({
-      webpack: (config, options) => {
-        if (!options.isServer) {
+      webpack: (config, { isServer, webpack }) => {
+        if (!isServer) {
           config.resolve.alias['@sentry/node'] = '@sentry/browser'
         }
+
+        config.plugins.push(new webpack.IgnorePlugin(/\/__tests__\//))
+
         return config
       },
       env: {

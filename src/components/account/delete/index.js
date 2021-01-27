@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { Button, Card, Row, Col, Typography } from 'antd'
-
 import { DeleteOutlined } from '@ant-design/icons'
 
 import { Error } from '@/components/assets/notification'

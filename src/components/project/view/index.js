@@ -41,11 +41,11 @@ import {
 
 import { Error } from '@/components/assets/notification'
 
+import { TrackballControls } from 'three/examples/jsm/controls/TrackballControls'
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass'
 import { OutlinePass } from 'three/examples/jsm/postprocessing/OutlinePass'
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer'
 
-import { TrackballControls } from '@/lib/three/controls/TrackballControls'
 import { AxisHelper } from '@/lib/three/helpers/AxisHelper'
 import { NavigationHelper } from '@/lib/three/helpers/NavigationHelper'
 import { GridHelper } from '@/lib/three/helpers/GridHelper'

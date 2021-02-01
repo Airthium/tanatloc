@@ -1,7 +1,7 @@
 /** @module src/lib/three/helpers/GridHelper */
 
 import {
-  Geometry,
+  BufferGeometry,
   Group,
   Line,
   LineBasicMaterial,
@@ -73,11 +73,10 @@ const GridHelper = (scene) => {
     const yStep = height / (hDiv - 1)
 
     for (let i = 0; i < hDiv; ++i) {
-      const lineGeometry = new Geometry()
-      lineGeometry.vertices.push(
+      const lineGeometry = new BufferGeometry().setFromPoints([
         new Vector3(origin.x, origin.y + i * yStep, 0),
         new Vector3(origin.x + width, origin.y + i * yStep)
-      )
+      ])
       const line = new Line(lineGeometry, material)
 
       const size = 512

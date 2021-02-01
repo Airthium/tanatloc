@@ -98,11 +98,10 @@ const GridHelper = (scene) => {
     }
 
     for (let i = 0; i < wDiv; ++i) {
-      const lineGeometry = new Geometry()
-      lineGeometry.vertices.push(
+      const lineGeometry = new BufferGeometry().setFromPoints([
         new Vector3(origin.x + i * xStep, origin.y, 0),
         new Vector3(origin.x + i * xStep, origin.y + height)
-      )
+      ])
       const line = new Line(lineGeometry, material)
       grid.add(line)
     }

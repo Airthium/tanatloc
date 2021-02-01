@@ -5,7 +5,7 @@
 global.MockGeometry = {
   getAttribute: () => {}
 }
-class MockGeometry {
+class MockBufferGeometry {
   constructor() {
     this.computeBoundingBox = () => {}
     this.computeBoundingSphere = () => {}
@@ -59,11 +59,11 @@ class MockBox3 {
   }
 }
 
-class MockBoxGeometry extends MockGeometry {}
+class MockBoxGeometry extends MockBufferGeometry {}
 
 class MockBufferGeometryLoader {
   constructor() {
-    this.parse = () => new MockGeometry()
+    this.parse = () => new MockBufferGeometry()
   }
 }
 
@@ -71,11 +71,11 @@ class MockCanvasTexture {}
 
 class MockColor {}
 
-class MockConeGeometry extends MockGeometry {}
+class MockConeGeometry extends MockBufferGeometry {}
 
-class MockCylinderGeometry extends MockGeometry {}
+class MockCylinderGeometry extends MockBufferGeometry {}
 
-class MockEdgesGeometry extends MockGeometry {}
+class MockEdgesGeometry extends MockBufferGeometry {}
 
 global.MockGroup = {
   children: []
@@ -99,7 +99,7 @@ class MockGroup {
 
 class MockLine {}
 
-class MockWireframeGeometry extends MockGeometry {}
+class MockWireframeGeometry extends MockBufferGeometry {}
 
 class MockLineBasicMaterial extends MockMaterial {}
 
@@ -110,7 +110,7 @@ class MockMesh {
     this.lookAt = () => {}
     this.rotateX = () => {}
     this.rotateY = () => {}
-    this.geometry = new MockGeometry()
+    this.geometry = new MockBufferGeometry()
     this.material = new MockMaterial()
     this.position = new MockVector3()
     this.scale = new MockVector3()
@@ -145,7 +145,7 @@ class MockPlane {
   }
 }
 
-class MockPlaneGeometry extends MockGeometry {}
+class MockPlaneGeometry extends MockBufferGeometry {}
 
 class MockPointLight {
   constructor() {
@@ -183,13 +183,13 @@ class MockSphere {
   }
 }
 
-class MockSphereGeometry extends MockGeometry {}
+class MockSphereGeometry extends MockBufferGeometry {}
 
 class MockSprite extends MockMesh {}
 
 class MockSpriteMaterial extends MockMaterial {}
 
-class MockTetrahedronGeometry extends MockGeometry {}
+class MockTetrahedronGeometry extends MockBufferGeometry {}
 
 class MockTexture {
   constructor() {
@@ -197,7 +197,7 @@ class MockTexture {
   }
 }
 
-class MockTorusGeometry extends MockGeometry {}
+class MockTorusGeometry extends MockBufferGeometry {}
 
 class MockVector2 {
   constructor() {
@@ -236,7 +236,7 @@ class MockWebGLRenderer {
 }
 
 export const MockThree = {
-  Geometry: MockGeometry,
+  BufferGeometry: MockBufferGeometry,
   Material: MockMaterial,
   Float32BufferAttribute: mockFloat32BufferAttribute,
 

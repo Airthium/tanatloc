@@ -15,6 +15,7 @@ class MockBufferGeometry {
     this.setAttribute = () => {}
     this.lookAt = () => {}
     this.translate = () => {}
+    this.setFromPoints = () => {}
 
     this.boundingSphere = {
       center: new MockVector3(),

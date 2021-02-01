@@ -7,6 +7,13 @@ jest.mock('path', () => ({
 
 jest.mock('@/config/storage', () => ({}))
 
+const mockCompute = jest.fn()
+jest.mock('@/plugin/api', () => ({
+  key: {
+    computeSimulation: async () => mockCompute()
+  }
+}))
+
 const mockAdd = jest.fn()
 const mockGet = jest.fn()
 const mockUpdate = jest.fn()
@@ -34,10 +41,10 @@ jest.mock('../tools', () => ({
   removeDirectory: async () => mockRemoveDirectory()
 }))
 
-const mockCompute = jest.fn()
-jest.mock('../compute', () => ({
-  computeSimulation: async () => mockCompute()
-}))
+// const mockCompute = jest.fn()
+// jest.mock('../compute', () => ({
+//   computeSimulation: async () => mockCompute()
+// }))
 
 describe('src/lib/simulation', () => {
   beforeEach(() => {
@@ -364,7 +371,13 @@ describe('src/lib/simulation', () => {
     // Normal
     mockGet.mockImplementation(() => ({
       scheme: {
-        configuration: {}
+        configuration: {
+          run: {
+            cloudServer: {
+              key: 'key'
+            }
+          }
+        }
       }
     }))
     await Simulation.run({})

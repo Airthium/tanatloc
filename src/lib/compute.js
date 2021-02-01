@@ -1,4 +1,5 @@
 /** @module src/lib/compute */
+/** @deprecated */
 
 import path from 'path'
 

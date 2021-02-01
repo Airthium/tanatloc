@@ -4,11 +4,13 @@ import path from 'path'
 
 import storage from '@/config/storage'
 
+import PluginAPIs from '@/plugin/api'
+
 import SimulationDB from '@/database/simulation'
 
 import Project from './project'
 import Tools from './tools'
-import Compute from './compute'
+// import Compute from './compute'
 
 /**
  * Add simulation
@@ -200,8 +202,12 @@ const run = async ({ id }) => {
     }
   ])
 
+  // Find plugin
+  const plugin = PluginAPIs[configuration.run.cloudServer.key]
+
   // Compute
-  Compute.computeSimulation({ id }, algorithm, configuration)
+  plugin
+    .computeSimulation({ id }, algorithm, configuration)
     .then(() => {
       configuration.run = {
         ...configuration.run,

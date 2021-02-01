@@ -15,7 +15,7 @@ const gmsh = async (path, fileIn, fileOut, callback) => {
 
     if (isDocker()) {
       run = spawn(
-        'root/converters/gmsh',
+        'gmsh',
         ['-3', fileIn, '-o', fileOut, '-format', 'msh2', '-clcurv', '10'],
         {
           cwd: path

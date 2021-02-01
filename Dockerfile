@@ -1,4 +1,4 @@
-FROM ubuntu:20.10
+FROM tanatloc/converters
 
 LABEL maintainer="https://github.com/orgs/Airthium/people"
 
@@ -31,7 +31,8 @@ RUN apt update \
 
 # Clean
 RUN apt autoremove \
-    && apt clean
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 ## BUILD
 ARG DB_ADMIN

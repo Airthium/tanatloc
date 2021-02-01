@@ -37,7 +37,7 @@ const toThree = async (path, fileIn, pathOut, callback) => {
     let run
 
     if (isDocker()) {
-      run = spawn('/root/converters/' + conversionCode, [fileIn, pathOut], {
+      run = spawn(conversionCode, [fileIn, pathOut], {
         cwd: path
       })
     } else {

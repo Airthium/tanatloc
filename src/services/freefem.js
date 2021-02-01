@@ -13,7 +13,7 @@ const freefem = async (path, script, callback) => {
     let run
 
     if (isDocker()) {
-      run = spawn('/root/freefem/FreeFem++', ['-nw', '-ns', script], {
+      run = spawn('FreeFem++', ['-nw', '-ns', script], {
         cwd: path
       })
     } else {

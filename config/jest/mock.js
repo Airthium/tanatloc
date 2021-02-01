@@ -235,7 +235,7 @@ class MockWebGLRenderer {
   }
 }
 
-const MockThree = {
+export const MockThree = {
   Geometry: MockGeometry,
   Material: MockMaterial,
   Float32BufferAttribute: mockFloat32BufferAttribute,
@@ -279,5 +279,3 @@ const MockThree = {
 }
 
 jest.mock('three/build/three.module', () => MockThree)
-
-export default MockThree

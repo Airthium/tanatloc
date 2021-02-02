@@ -12,9 +12,9 @@ jest.mock('@/api/simulation', () => ({
   useSimulations: () => [[], { mutateOneSimulation: mockMutate }]
 }))
 
-const mockSentry = jest.fn()
-jest.mock('@/lib/sentry', () => ({
-  captureException: () => mockSentry()
+const mockError = jest.fn()
+jest.mock('@/components/assets/notification', () => ({
+  Error: () => mockError()
 }))
 
 let wrapper
@@ -39,7 +39,7 @@ describe('src/components/project/simulation/materials/edit', () => {
     mockUpdate.mockReset()
     mockMutate.mockReset()
 
-    mockSentry.mockReset()
+    mockError.mockReset()
 
     close.mockReset()
 
@@ -68,7 +68,7 @@ describe('src/components/project/simulation/materials/edit', () => {
     expect(mockUpdate).toHaveBeenCalledTimes(1)
     expect(mockMutate).toHaveBeenCalledTimes(1)
     expect(close).toHaveBeenCalledTimes(1)
-    expect(mockSentry).toHaveBeenCalledTimes(0)
+    expect(mockError).toHaveBeenCalledTimes(0)
 
     mockUpdate.mockImplementation(() => {
       throw new Error()
@@ -77,6 +77,6 @@ describe('src/components/project/simulation/materials/edit', () => {
     expect(mockUpdate).toHaveBeenCalledTimes(2)
     expect(mockMutate).toHaveBeenCalledTimes(1)
     expect(close).toHaveBeenCalledTimes(1)
-    expect(mockSentry).toHaveBeenCalledTimes(1)
+    expect(mockError).toHaveBeenCalledTimes(1)
   })
 })

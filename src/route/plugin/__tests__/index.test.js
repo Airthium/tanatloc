@@ -14,9 +14,9 @@ jest.mock('@/lib/plugin', () => ({
   del: async () => mockDel()
 }))
 
-const mockSentry = jest.fn()
+const mockError = jest.fn()
 jest.mock('@/lib/sentry', () => ({
-  captureException: () => mockSentry()
+  captureException: () => mockError()
 }))
 
 describe('src/route/plugin', () => {
@@ -42,7 +42,7 @@ describe('src/route/plugin', () => {
     mockUpdate.mockReset()
     mockDel.mockReset()
 
-    mockSentry.mockReset()
+    mockError.mockReset()
 
     req = { method: 'GET' }
     response = undefined
@@ -55,7 +55,7 @@ describe('src/route/plugin', () => {
     expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockUpdate).toHaveBeenCalledTimes(0)
     expect(mockDel).toHaveBeenCalledTimes(0)
-    expect(mockSentry).toHaveBeenCalledTimes(0)
+    expect(mockError).toHaveBeenCalledTimes(0)
     expect(response).toBe(undefined)
   })
 
@@ -70,7 +70,7 @@ describe('src/route/plugin', () => {
     expect(mockGetByUser).toHaveBeenCalledTimes(0)
     expect(mockUpdate).toHaveBeenCalledTimes(0)
     expect(mockDel).toHaveBeenCalledTimes(0)
-    expect(mockSentry).toHaveBeenCalledTimes(0)
+    expect(mockError).toHaveBeenCalledTimes(0)
     expect(response).toBe('end')
 
     // Error
@@ -83,7 +83,7 @@ describe('src/route/plugin', () => {
     expect(mockGetByUser).toHaveBeenCalledTimes(0)
     expect(mockUpdate).toHaveBeenCalledTimes(0)
     expect(mockDel).toHaveBeenCalledTimes(0)
-    expect(mockSentry).toHaveBeenCalledTimes(1)
+    expect(mockError).toHaveBeenCalledTimes(1)
     expect(response).toEqual({ error: true, message: '' })
   })
 
@@ -98,7 +98,7 @@ describe('src/route/plugin', () => {
     expect(mockGetByUser).toHaveBeenCalledTimes(1)
     expect(mockUpdate).toHaveBeenCalledTimes(0)
     expect(mockDel).toHaveBeenCalledTimes(0)
-    expect(mockSentry).toHaveBeenCalledTimes(0)
+    expect(mockError).toHaveBeenCalledTimes(0)
     expect(response).toEqual({ plugins: [] })
 
     // Error
@@ -111,7 +111,7 @@ describe('src/route/plugin', () => {
     expect(mockGetByUser).toHaveBeenCalledTimes(2)
     expect(mockUpdate).toHaveBeenCalledTimes(0)
     expect(mockDel).toHaveBeenCalledTimes(0)
-    expect(mockSentry).toHaveBeenCalledTimes(1)
+    expect(mockError).toHaveBeenCalledTimes(1)
     expect(response).toEqual({ error: true, message: '' })
   })
 
@@ -125,7 +125,7 @@ describe('src/route/plugin', () => {
     expect(mockGetByUser).toHaveBeenCalledTimes(0)
     expect(mockUpdate).toHaveBeenCalledTimes(1)
     expect(mockDel).toHaveBeenCalledTimes(0)
-    expect(mockSentry).toHaveBeenCalledTimes(0)
+    expect(mockError).toHaveBeenCalledTimes(0)
     expect(response).toBe('end')
 
     // Error
@@ -138,7 +138,7 @@ describe('src/route/plugin', () => {
     expect(mockGetByUser).toHaveBeenCalledTimes(0)
     expect(mockUpdate).toHaveBeenCalledTimes(2)
     expect(mockDel).toHaveBeenCalledTimes(0)
-    expect(mockSentry).toHaveBeenCalledTimes(1)
+    expect(mockError).toHaveBeenCalledTimes(1)
     expect(response).toEqual({ error: true, message: '' })
   })
 
@@ -153,7 +153,7 @@ describe('src/route/plugin', () => {
     expect(mockGetByUser).toHaveBeenCalledTimes(0)
     expect(mockUpdate).toHaveBeenCalledTimes(0)
     expect(mockDel).toHaveBeenCalledTimes(1)
-    expect(mockSentry).toHaveBeenCalledTimes(0)
+    expect(mockError).toHaveBeenCalledTimes(0)
     expect(response).toBe('end')
 
     // Error
@@ -166,7 +166,7 @@ describe('src/route/plugin', () => {
     expect(mockGetByUser).toHaveBeenCalledTimes(0)
     expect(mockUpdate).toHaveBeenCalledTimes(0)
     expect(mockDel).toHaveBeenCalledTimes(2)
-    expect(mockSentry).toHaveBeenCalledTimes(1)
+    expect(mockError).toHaveBeenCalledTimes(1)
     expect(response).toEqual({ error: true, message: '' })
   })
 
@@ -180,7 +180,7 @@ describe('src/route/plugin', () => {
     expect(mockGetByUser).toHaveBeenCalledTimes(0)
     expect(mockUpdate).toHaveBeenCalledTimes(0)
     expect(mockDel).toHaveBeenCalledTimes(0)
-    expect(mockSentry).toHaveBeenCalledTimes(1)
+    expect(mockError).toHaveBeenCalledTimes(1)
     expect(response).toEqual({
       error: true,
       message: 'Method SOMETHING not allowed'

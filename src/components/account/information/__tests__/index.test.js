@@ -1,6 +1,11 @@
 import Information from '..'
 import { shallow } from 'enzyme'
 
+const mockError = jest.fn()
+jest.mock('@/components/assets/notification', () => ({
+  Error: () => mockError()
+}))
+
 const mockUpdate = jest.fn()
 const mockMutate = jest.fn()
 jest.mock('@/api/user', () => ({
@@ -21,11 +26,6 @@ jest.mock('@/api/avatar', () => ({
   add: async () => mockAdd()
 }))
 
-const mockSentry = jest.fn()
-jest.mock('@/lib/sentry', () => ({
-  captureException: () => mockSentry()
-}))
-
 global.FileReader = class {
   addEventListener(type, callback) {
     callback()
@@ -36,12 +36,12 @@ global.FileReader = class {
 let wrapper
 describe('src/components/account/information', () => {
   beforeEach(() => {
+    mockError.mockReset()
+
     mockUpdate.mockReset()
     mockMutate.mockReset()
 
     mockAdd.mockReset()
-
-    mockSentry.mockReset()
 
     wrapper = shallow(<Information />)
   })
@@ -59,7 +59,7 @@ describe('src/components/account/information', () => {
     await wrapper.find('ForwardRef(InternalForm)').props().onFinish({})
     expect(mockMutate).toHaveBeenCalledTimes(1)
     expect(mockUpdate).toHaveBeenCalledTimes(1)
-    expect(mockSentry).toHaveBeenCalledTimes(0)
+    expect(mockError).toHaveBeenCalledTimes(0)
 
     await wrapper.find('ForwardRef(InternalForm)').props().onFinish({
       firstname: 'firstname',
@@ -68,7 +68,7 @@ describe('src/components/account/information', () => {
     })
     expect(mockMutate).toHaveBeenCalledTimes(2)
     expect(mockUpdate).toHaveBeenCalledTimes(2)
-    expect(mockSentry).toHaveBeenCalledTimes(0)
+    expect(mockError).toHaveBeenCalledTimes(0)
 
     // Error
     mockUpdate.mockImplementation(() => {
@@ -77,7 +77,7 @@ describe('src/components/account/information', () => {
     await wrapper.find('ForwardRef(InternalForm)').props().onFinish({})
     expect(mockMutate).toHaveBeenCalledTimes(2)
     expect(mockUpdate).toHaveBeenCalledTimes(3)
-    expect(mockSentry).toHaveBeenCalledTimes(1)
+    expect(mockError).toHaveBeenCalledTimes(1)
   })
 
   it('onCancel', () => {
@@ -114,7 +114,7 @@ describe('src/components/account/information', () => {
       })
     expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockMutate).toHaveBeenCalledTimes(0)
-    expect(mockSentry).toHaveBeenCalledTimes(0)
+    expect(mockError).toHaveBeenCalledTimes(0)
 
     // Done
     await wrapper
@@ -128,7 +128,7 @@ describe('src/components/account/information', () => {
       })
     expect(mockAdd).toHaveBeenCalledTimes(1)
     expect(mockMutate).toHaveBeenCalledTimes(1)
-    expect(mockSentry).toHaveBeenCalledTimes(0)
+    expect(mockError).toHaveBeenCalledTimes(0)
 
     // Error
     mockAdd.mockImplementation(() => {
@@ -145,6 +145,6 @@ describe('src/components/account/information', () => {
       })
     expect(mockAdd).toHaveBeenCalledTimes(2)
     expect(mockMutate).toHaveBeenCalledTimes(1)
-    expect(mockSentry).toHaveBeenCalledTimes(1)
+    expect(mockError).toHaveBeenCalledTimes(1)
   })
 })

@@ -21,9 +21,9 @@ jest.mock('@/api/simulation', () => ({
   useSimulations: () => [[], { mutateOneSimulation: mockMutate }]
 }))
 
-const mockSentry = jest.fn()
-jest.mock('@/lib/sentry', () => ({
-  captureException: () => mockSentry()
+const mockError = jest.fn()
+jest.mock('@/components/assets/notification', () => ({
+  Error: () => mockError()
 }))
 
 let wrapper
@@ -56,7 +56,7 @@ describe('src/components/project/simulation/boundaryConditions/delete', () => {
     mockUpdate.mockReset()
     mockMutate.mockReset()
 
-    mockSentry.mockReset()
+    mockError.mockReset()
 
     wrapper = shallow(
       <Delete
@@ -81,7 +81,7 @@ describe('src/components/project/simulation/boundaryConditions/delete', () => {
     expect(mockUnselect).toHaveBeenCalledTimes(1)
     expect(mockUpdate).toHaveBeenCalledTimes(1)
     expect(mockMutate).toHaveBeenCalledTimes(1)
-    expect(mockSentry).toHaveBeenCalledTimes(0)
+    expect(mockError).toHaveBeenCalledTimes(0)
 
     // Error
     simulation.scheme.configuration.boundaryConditions.key.values = [
@@ -96,6 +96,6 @@ describe('src/components/project/simulation/boundaryConditions/delete', () => {
     expect(mockUnselect).toHaveBeenCalledTimes(2)
     expect(mockUpdate).toHaveBeenCalledTimes(2)
     expect(mockMutate).toHaveBeenCalledTimes(1)
-    expect(mockSentry).toHaveBeenCalledTimes(1)
+    expect(mockError).toHaveBeenCalledTimes(1)
   })
 })

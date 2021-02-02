@@ -9,8 +9,9 @@ jest.mock('@/api/workspace', () => ({
   useWorkspaces: () => [[], { addOneWorkspace: mockAddOneWorkspace }]
 }))
 
-jest.mock('@/lib/sentry', () => ({
-  captureException: () => {}
+const mockError = jest.fn()
+jest.mock('@/components/assets/notification', () => ({
+  Error: () => mockError()
 }))
 
 let wrapper

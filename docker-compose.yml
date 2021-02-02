@@ -9,8 +9,6 @@ services:
         - DB_PORT=5432
     depends_on:
       - database
-      - converters
-      - freefem
     ports:
       - '3000:3000'
     environment:
@@ -27,12 +25,6 @@ services:
       - POSTGRES_PASSWORD=password
     volumes:
       - postgresData:/var/lib/postgresql/data
-
-  converters:
-    image: tanatloc/converters
-
-  freefem:
-    image: freefem/freefem
 
 volumes:
   postgresData:

@@ -5,9 +5,9 @@ jest.mock('@/auth/auth-cookies', () => ({
   removeTokenCookie: () => mockRemove()
 }))
 
-const mockSentry = jest.fn()
+const mockError = jest.fn()
 jest.mock('@/lib/sentry', () => ({
-  captureException: () => mockSentry()
+  captureException: () => mockError()
 }))
 
 describe('src/route/api', () => {
@@ -28,6 +28,6 @@ describe('src/route/api', () => {
         })
       }
     )
-    expect(mockSentry).toHaveBeenCalledTimes(1)
+    expect(mockError).toHaveBeenCalledTimes(1)
   })
 })

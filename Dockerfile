@@ -78,6 +78,7 @@ COPY docker/package.json ${APP_PATH}/package.json
 RUN mv ${INSTALL_PATH}/dist-install ${APP_PATH}/dist-install
 
 RUN mv ${INSTALL_PATH}/public ${APP_PATH}/public
+RUN mv ${INSTALL_PATH}/templates ${APP_PATH}/templates
 RUN mv ${INSTALL_PATH}/.next ${APP_PATH}/.next
 RUN yarn
 

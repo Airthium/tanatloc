@@ -23,9 +23,9 @@ jest.mock('@/api/simulation', () => ({
   useSimulations: () => [, { mutateOneSimulation: mockMutateOneSimulation }]
 }))
 
-const mockSentry = jest.fn()
-jest.mock('@/lib/sentry', () => ({
-  captureException: () => mockSentry()
+const mockError = jest.fn()
+jest.mock('@/components/assets/notification', () => ({
+  Error: () => mockError()
 }))
 
 let wrapper
@@ -63,7 +63,7 @@ describe('src/components/project/simulation/run', () => {
         }
       ]
     }))
-    mockSentry.mockReset()
+    mockError.mockReset()
     wrapper = shallow(<Run project={project} simulation={simulation} />)
   })
 
@@ -78,7 +78,7 @@ describe('src/components/project/simulation/run', () => {
   it('onRun', async () => {
     await wrapper.find('Button').at(0).props().onClick()
     expect(mockRun).toHaveBeenCalledTimes(1)
-    expect(mockSentry).toHaveBeenCalledTimes(0)
+    expect(mockError).toHaveBeenCalledTimes(0)
 
     // Error
     mockRun.mockImplementation(() => {
@@ -86,7 +86,7 @@ describe('src/components/project/simulation/run', () => {
     })
     await wrapper.find('Button').at(0).props().onClick()
     expect(mockRun).toHaveBeenCalledTimes(2)
-    expect(mockSentry).toHaveBeenCalledTimes(1)
+    expect(mockError).toHaveBeenCalledTimes(1)
   })
 
   it('onStop', async () => {
@@ -99,7 +99,7 @@ describe('src/components/project/simulation/run', () => {
     expect(mockUpdate).toHaveBeenCalledTimes(1)
     expect(mockMutateOneSimulation).toHaveBeenCalledTimes(1)
     expect(mockMutateSimulation).toHaveBeenCalledTimes(1)
-    expect(mockSentry).toHaveBeenCalledTimes(0)
+    expect(mockError).toHaveBeenCalledTimes(0)
 
     // Error
     mockUpdate.mockImplementation(() => {
@@ -109,7 +109,7 @@ describe('src/components/project/simulation/run', () => {
     expect(mockUpdate).toHaveBeenCalledTimes(2)
     expect(mockMutateOneSimulation).toHaveBeenCalledTimes(1)
     expect(mockMutateSimulation).toHaveBeenCalledTimes(1)
-    expect(mockSentry).toHaveBeenCalledTimes(1)
+    expect(mockError).toHaveBeenCalledTimes(1)
   })
 
   it('onLog', () => {

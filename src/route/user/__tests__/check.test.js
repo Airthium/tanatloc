@@ -8,9 +8,9 @@ jest.mock('@/lib/user', () => ({
   login: async () => mockLogin()
 }))
 
-const mockSentry = jest.fn()
+const mockError = jest.fn()
 jest.mock('@/lib/sentry', () => ({
-  captureException: () => mockSentry()
+  captureException: () => mockError()
 }))
 
 describe('src/route/user/check', () => {
@@ -29,7 +29,7 @@ describe('src/route/user/check', () => {
 
     mockLogin.mockReset()
 
-    mockSentry.mockReset()
+    mockError.mockReset()
 
     req = {}
     response = undefined
@@ -39,7 +39,7 @@ describe('src/route/user/check', () => {
     await check(req, res)
     expect(mockSession).toHaveBeenCalledTimes(1)
     expect(mockLogin).toHaveBeenCalledTimes(0)
-    expect(mockSentry).toHaveBeenCalledTimes(0)
+    expect(mockError).toHaveBeenCalledTimes(0)
     expect(response).toBe(undefined)
   })
 
@@ -50,7 +50,7 @@ describe('src/route/user/check', () => {
     await check(req, res)
     expect(mockSession).toHaveBeenCalledTimes(1)
     expect(mockLogin).toHaveBeenCalledTimes(1)
-    expect(mockSentry).toHaveBeenCalledTimes(0)
+    expect(mockError).toHaveBeenCalledTimes(0)
     expect(response).toEqual({ valid: true })
   })
 
@@ -60,7 +60,7 @@ describe('src/route/user/check', () => {
     await check(req, res)
     expect(mockSession).toHaveBeenCalledTimes(1)
     expect(mockLogin).toHaveBeenCalledTimes(1)
-    expect(mockSentry).toHaveBeenCalledTimes(0)
+    expect(mockError).toHaveBeenCalledTimes(0)
     expect(response).toEqual({ valid: false })
   })
 
@@ -73,6 +73,6 @@ describe('src/route/user/check', () => {
     await check(req, res)
     expect(mockSession).toHaveBeenCalledTimes(1)
     expect(mockLogin).toHaveBeenCalledTimes(1)
-    expect(mockSentry).toHaveBeenCalledTimes(1)
+    expect(mockError).toHaveBeenCalledTimes(1)
   })
 })

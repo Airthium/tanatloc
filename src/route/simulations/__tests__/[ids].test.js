@@ -16,9 +16,9 @@ jest.mock('@/lib/project', () => ({
   get: async () => mockGetProject()
 }))
 
-const mockSentry = jest.fn()
+const mockError = jest.fn()
 jest.mock('@/lib/sentry', () => ({
-  captureException: () => mockSentry()
+  captureException: () => mockError()
 }))
 
 describe('src/route/projects/ids', () => {
@@ -49,7 +49,7 @@ describe('src/route/projects/ids', () => {
 
     mockGetProject.mockReset()
 
-    mockSentry.mockReset()
+    mockError.mockReset()
 
     req = {
       method: 'GET',
@@ -63,7 +63,7 @@ describe('src/route/projects/ids', () => {
     expect(mockSession).toHaveBeenCalledTimes(1)
     expect(mockAuth).toHaveBeenCalledTimes(0)
     expect(mockGet).toHaveBeenCalledTimes(0)
-    expect(mockSentry).toHaveBeenCalledTimes(0)
+    expect(mockError).toHaveBeenCalledTimes(0)
     expect(response).toBe(undefined)
   })
 
@@ -79,7 +79,7 @@ describe('src/route/projects/ids', () => {
     expect(mockAuth).toHaveBeenCalledTimes(2)
     expect(mockGet).toHaveBeenCalledTimes(2)
     expect(mockGetProject).toHaveBeenCalledTimes(2)
-    expect(mockSentry).toHaveBeenCalledTimes(0)
+    expect(mockError).toHaveBeenCalledTimes(0)
     expect(response).toEqual({
       simulations: [
         { id: 'id', name: 'name' },
@@ -98,7 +98,7 @@ describe('src/route/projects/ids', () => {
     expect(mockAuth).toHaveBeenCalledTimes(0)
     expect(mockGet).toHaveBeenCalledTimes(0)
     expect(mockGetProject).toHaveBeenCalledTimes(0)
-    expect(mockSentry).toHaveBeenCalledTimes(0)
+    expect(mockError).toHaveBeenCalledTimes(0)
     expect(response).toEqual({ simulations: [] })
 
     // No authorization
@@ -108,7 +108,7 @@ describe('src/route/projects/ids', () => {
     expect(mockAuth).toHaveBeenCalledTimes(2)
     expect(mockGet).toHaveBeenCalledTimes(2)
     expect(mockGetProject).toHaveBeenCalledTimes(2)
-    expect(mockSentry).toHaveBeenCalledTimes(0)
+    expect(mockError).toHaveBeenCalledTimes(0)
     expect(response).toEqual({ simulations: [] })
 
     // Normal
@@ -118,7 +118,7 @@ describe('src/route/projects/ids', () => {
     expect(mockAuth).toHaveBeenCalledTimes(4)
     expect(mockGet).toHaveBeenCalledTimes(4)
     expect(mockGetProject).toHaveBeenCalledTimes(4)
-    expect(mockSentry).toHaveBeenCalledTimes(0)
+    expect(mockError).toHaveBeenCalledTimes(0)
     expect(response).toEqual({
       simulations: [
         { id: 'id', name: 'name' },
@@ -135,7 +135,7 @@ describe('src/route/projects/ids', () => {
     expect(mockAuth).toHaveBeenCalledTimes(4)
     expect(mockGet).toHaveBeenCalledTimes(6)
     expect(mockGetProject).toHaveBeenCalledTimes(4)
-    expect(mockSentry).toHaveBeenCalledTimes(0)
+    expect(mockError).toHaveBeenCalledTimes(0)
     expect(response).toEqual({ simulations: [] })
 
     // Error
@@ -145,7 +145,7 @@ describe('src/route/projects/ids', () => {
     expect(mockAuth).toHaveBeenCalledTimes(4)
     expect(mockGet).toHaveBeenCalledTimes(6)
     expect(mockGetProject).toHaveBeenCalledTimes(4)
-    expect(mockSentry).toHaveBeenCalledTimes(1)
+    expect(mockError).toHaveBeenCalledTimes(1)
     expect(response).toEqual({
       error: true,
       message: "Cannot read property 'ids' of undefined"
@@ -161,7 +161,7 @@ describe('src/route/projects/ids', () => {
     expect(mockSession).toHaveBeenCalledTimes(1)
     expect(mockAuth).toHaveBeenCalledTimes(0)
     expect(mockGet).toHaveBeenCalledTimes(0)
-    expect(mockSentry).toHaveBeenCalledTimes(1)
+    expect(mockError).toHaveBeenCalledTimes(1)
     expect(response).toEqual({
       error: true,
       message: 'Method SOMETHING not allowed'

@@ -18,9 +18,9 @@ jest.mock('@/lib/project', () => ({
   get: async () => mockProjectGet()
 }))
 
-const mockSentry = jest.fn()
+const mockError = jest.fn()
 jest.mock('@/lib/sentry', () => ({
-  captureException: () => mockSentry()
+  captureException: () => mockError()
 }))
 
 describe('src/route/simulation/[id]/run', () => {
@@ -44,7 +44,7 @@ describe('src/route/simulation/[id]/run', () => {
     mockSimulationRun.mockReset()
     mockProjectGet.mockReset()
 
-    mockSentry.mockReset()
+    mockError.mockReset()
 
     req = {
       method: 'GET',
@@ -60,7 +60,7 @@ describe('src/route/simulation/[id]/run', () => {
     expect(mockSimulationGet).toHaveBeenCalledTimes(0)
     expect(mockSimulationRun).toHaveBeenCalledTimes(0)
     expect(mockProjectGet).toHaveBeenCalledTimes(0)
-    expect(mockSentry).toHaveBeenCalledTimes(0)
+    expect(mockError).toHaveBeenCalledTimes(0)
   })
 
   it('no authorization', async () => {
@@ -73,7 +73,7 @@ describe('src/route/simulation/[id]/run', () => {
     expect(mockSimulationGet).toHaveBeenCalledTimes(1)
     expect(mockSimulationRun).toHaveBeenCalledTimes(0)
     expect(mockProjectGet).toHaveBeenCalledTimes(1)
-    expect(mockSentry).toHaveBeenCalledTimes(0)
+    expect(mockError).toHaveBeenCalledTimes(0)
     expect(response).toEqual({ error: true, message: 'Unauthorized' })
 
     // Error
@@ -86,7 +86,7 @@ describe('src/route/simulation/[id]/run', () => {
     expect(mockSimulationGet).toHaveBeenCalledTimes(2)
     expect(mockSimulationRun).toHaveBeenCalledTimes(0)
     expect(mockProjectGet).toHaveBeenCalledTimes(2)
-    expect(mockSentry).toHaveBeenCalledTimes(1)
+    expect(mockError).toHaveBeenCalledTimes(1)
     expect(response).toEqual({ error: true, message: 'test' })
   })
 
@@ -104,7 +104,7 @@ describe('src/route/simulation/[id]/run', () => {
     expect(mockSimulationGet).toHaveBeenCalledTimes(1)
     expect(mockSimulationRun).toHaveBeenCalledTimes(1)
     expect(mockProjectGet).toHaveBeenCalledTimes(1)
-    expect(mockSentry).toHaveBeenCalledTimes(0)
+    expect(mockError).toHaveBeenCalledTimes(0)
     expect(response).toEqual({ ok: true })
 
     // Run error
@@ -117,7 +117,7 @@ describe('src/route/simulation/[id]/run', () => {
     expect(mockSimulationGet).toHaveBeenCalledTimes(2)
     expect(mockSimulationRun).toHaveBeenCalledTimes(2)
     expect(mockProjectGet).toHaveBeenCalledTimes(2)
-    expect(mockSentry).toHaveBeenCalledTimes(1)
+    expect(mockError).toHaveBeenCalledTimes(1)
     expect(response).toEqual({ error: true, message: 'test' })
   })
 
@@ -134,7 +134,7 @@ describe('src/route/simulation/[id]/run', () => {
     expect(mockSimulationGet).toHaveBeenCalledTimes(1)
     expect(mockSimulationRun).toHaveBeenCalledTimes(0)
     expect(mockProjectGet).toHaveBeenCalledTimes(1)
-    expect(mockSentry).toHaveBeenCalledTimes(1)
+    expect(mockError).toHaveBeenCalledTimes(1)
     expect(response).toEqual({
       error: true,
       message: 'Method SOMETHING not allowed'

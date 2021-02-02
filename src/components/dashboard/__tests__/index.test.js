@@ -14,6 +14,11 @@ jest.mock('next/router', () => ({
   })
 }))
 
+const mockError = jest.fn()
+jest.mock('@/components/assets/notification', () => ({
+  Error: () => mockError()
+}))
+
 jest.mock('@/components/loading', () => 'loading')
 
 jest.mock('@/components/dashboard/welcome', () => 'welcome')
@@ -39,11 +44,6 @@ jest.mock('@/api/workspace/useWorkspaces', () => () => [mockWorkspaces()])
 const mockLogout = jest.fn()
 jest.mock('@/api/logout', () => () => mockLogout())
 
-const mockSentry = jest.fn()
-jest.mock('@/lib/sentry', () => ({
-  captureException: () => mockSentry()
-}))
-
 let wrapper
 describe('src/components/dashboard', () => {
   beforeEach(() => {
@@ -61,7 +61,7 @@ describe('src/components/dashboard', () => {
 
     mockLogout.mockReset()
 
-    mockSentry.mockReset()
+    mockError.mockReset()
 
     wrapper = shallow(<Dashboard />)
   })
@@ -165,7 +165,7 @@ describe('src/components/dashboard', () => {
       .props()
       .onClick({ item: { props: { subMenuKey: '-menu-0' } }, key: 'logout' })
     expect(mockLogout).toHaveBeenCalledTimes(2)
-    expect(mockSentry).toHaveBeenCalledTimes(1)
+    expect(mockError).toHaveBeenCalledTimes(1)
 
     // Unknown
     wrapper

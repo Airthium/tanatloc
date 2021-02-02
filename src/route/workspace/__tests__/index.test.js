@@ -19,9 +19,9 @@ jest.mock('@/lib/workspace', () => ({
   del: async () => mockDel()
 }))
 
-const mockSentry = jest.fn()
+const mockError = jest.fn()
 jest.mock('@/lib/sentry', () => ({
-  captureException: () => mockSentry()
+  captureException: () => mockError()
 }))
 
 describe('pages/api/workspace', () => {
@@ -54,7 +54,7 @@ describe('pages/api/workspace', () => {
     mockUpdate.mockReset()
     mockDel.mockReset()
 
-    mockSentry.mockReset()
+    mockError.mockReset()
 
     req = {
       method: 'GET'
@@ -70,7 +70,7 @@ describe('pages/api/workspace', () => {
     expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockUpdate).toHaveBeenCalledTimes(0)
     expect(mockDel).toHaveBeenCalledTimes(0)
-    expect(mockSentry).toHaveBeenCalledTimes(0)
+    expect(mockError).toHaveBeenCalledTimes(0)
     expect(response).toBe(undefined)
   })
 
@@ -85,7 +85,7 @@ describe('pages/api/workspace', () => {
     expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockUpdate).toHaveBeenCalledTimes(0)
     expect(mockDel).toHaveBeenCalledTimes(0)
-    expect(mockSentry).toHaveBeenCalledTimes(0)
+    expect(mockError).toHaveBeenCalledTimes(0)
     expect(response).toEqual({
       workspaces: [
         {
@@ -107,7 +107,7 @@ describe('pages/api/workspace', () => {
     expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockUpdate).toHaveBeenCalledTimes(0)
     expect(mockDel).toHaveBeenCalledTimes(0)
-    expect(mockSentry).toHaveBeenCalledTimes(1)
+    expect(mockError).toHaveBeenCalledTimes(1)
     expect(response).toEqual({ error: true, message: 'test' })
   })
 
@@ -124,7 +124,7 @@ describe('pages/api/workspace', () => {
     expect(mockAdd).toHaveBeenCalledTimes(1)
     expect(mockUpdate).toHaveBeenCalledTimes(0)
     expect(mockDel).toHaveBeenCalledTimes(0)
-    expect(mockSentry).toHaveBeenCalledTimes(0)
+    expect(mockError).toHaveBeenCalledTimes(0)
     expect(response).toEqual({ id: 'id' })
 
     // Error
@@ -139,7 +139,7 @@ describe('pages/api/workspace', () => {
     expect(mockAdd).toHaveBeenCalledTimes(2)
     expect(mockUpdate).toHaveBeenCalledTimes(0)
     expect(mockDel).toHaveBeenCalledTimes(0)
-    expect(mockSentry).toHaveBeenCalledTimes(1)
+    expect(mockError).toHaveBeenCalledTimes(1)
     expect(response).toEqual({ error: true, message: 'test' })
   })
 
@@ -161,7 +161,7 @@ describe('pages/api/workspace', () => {
     expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockUpdate).toHaveBeenCalledTimes(0)
     expect(mockDel).toHaveBeenCalledTimes(0)
-    expect(mockSentry).toHaveBeenCalledTimes(1)
+    expect(mockError).toHaveBeenCalledTimes(1)
     expect(response).toEqual({ error: true, message: 'Access denied' })
 
     // Authorized
@@ -174,7 +174,7 @@ describe('pages/api/workspace', () => {
     expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockUpdate).toHaveBeenCalledTimes(1)
     expect(mockDel).toHaveBeenCalledTimes(0)
-    expect(mockSentry).toHaveBeenCalledTimes(1)
+    expect(mockError).toHaveBeenCalledTimes(1)
     expect(response).toBe('end')
 
     // Error
@@ -189,7 +189,7 @@ describe('pages/api/workspace', () => {
     expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockUpdate).toHaveBeenCalledTimes(2)
     expect(mockDel).toHaveBeenCalledTimes(0)
-    expect(mockSentry).toHaveBeenCalledTimes(2)
+    expect(mockError).toHaveBeenCalledTimes(2)
     expect(response).toEqual({ error: true, message: 'test' })
   })
 
@@ -208,7 +208,7 @@ describe('pages/api/workspace', () => {
     expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockUpdate).toHaveBeenCalledTimes(0)
     expect(mockDel).toHaveBeenCalledTimes(0)
-    expect(mockSentry).toHaveBeenCalledTimes(1)
+    expect(mockError).toHaveBeenCalledTimes(1)
     expect(response).toEqual({ error: true, message: 'Access denied' })
 
     // Authorized
@@ -221,7 +221,7 @@ describe('pages/api/workspace', () => {
     expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockUpdate).toHaveBeenCalledTimes(0)
     expect(mockDel).toHaveBeenCalledTimes(1)
-    expect(mockSentry).toHaveBeenCalledTimes(1)
+    expect(mockError).toHaveBeenCalledTimes(1)
     expect(response).toBe('end')
 
     // Error
@@ -236,7 +236,7 @@ describe('pages/api/workspace', () => {
     expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockUpdate).toHaveBeenCalledTimes(0)
     expect(mockDel).toHaveBeenCalledTimes(2)
-    expect(mockSentry).toHaveBeenCalledTimes(2)
+    expect(mockError).toHaveBeenCalledTimes(2)
     expect(response).toEqual({ error: true, message: 'test' })
   })
 
@@ -253,7 +253,7 @@ describe('pages/api/workspace', () => {
     expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockUpdate).toHaveBeenCalledTimes(0)
     expect(mockDel).toHaveBeenCalledTimes(0)
-    expect(mockSentry).toHaveBeenCalledTimes(1)
+    expect(mockError).toHaveBeenCalledTimes(1)
     expect(response).toEqual({
       error: true,
       message: 'Method SOMETHING not allowed'

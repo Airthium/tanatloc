@@ -24,8 +24,9 @@ jest.mock(
 
 jest.mock('@/components/project/simulation/run', () => 'run')
 
-jest.mock('@/lib/sentry', () => ({
-  captureException: () => {}
+const mockError = jest.fn()
+jest.mock('@/components/assets/notification', () => ({
+  Error: () => mockError()
 }))
 
 const mockMutate = jest.fn()

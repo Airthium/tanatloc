@@ -10,7 +10,6 @@ import SimulationDB from '@/database/simulation'
 
 import Project from './project'
 import Tools from './tools'
-// import Compute from './compute'
 
 /**
  * Add simulation

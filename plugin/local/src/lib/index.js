@@ -106,9 +106,9 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
 
   // Meshing
   await Promise.all(
-    Object.keys(configuration).map(async (key) => {
-      if (configuration[key].meshable) {
-        const geometry = configuration[key]
+    Object.keys(configuration).map(async (ckey) => {
+      if (configuration[ckey].meshable) {
+        const geometry = configuration[ckey]
 
         // Task
         const meshingTask = {
@@ -175,7 +175,7 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
           updateTasks(id, tasks)
 
           // Save mesh name
-          configuration[key].mesh = mesh
+          configuration[ckey].mesh = mesh
         } catch (err) {
           // Task
           meshingTask.status = 'error'

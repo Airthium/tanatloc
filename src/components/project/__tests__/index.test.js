@@ -17,20 +17,20 @@ jest.mock('@/components/project/simulation', () => {
   return Simulation
 })
 
-let mockUser
+const mockUser = jest.fn()
 jest.mock('@/api/user', () => ({
   useUser: () => [mockUser(), { loadingUser: false }]
 }))
 
-let mockProject
-let mockMutateProject
+const mockProject = jest.fn()
+const mockMutateProject = jest.fn()
 const mockUpdate = jest.fn()
 jest.mock('@/api/project', () => ({
   useProject: () => [mockProject(), { mutateProject: mockMutateProject }],
   update: async () => mockUpdate()
 }))
 
-let mockSimulations
+const mockSimulations = jest.fn()
 jest.mock('@/api/simulation', () => ({
   add: async () => ({ id: 'id' }),
   useSimulations: () => [mockSimulations(), { addOneSimulation: () => {} }]
@@ -44,14 +44,20 @@ let wrapper
 describe('components/project', () => {
   beforeEach(() => {
     mockRouter.mockReset()
-    mockUser = () => ({ id: 'id' })
-    mockProject = () => ({
+
+    mockUser.mockReset()
+    mockUser.mockImplementation(() => ({ id: 'id' }))
+
+    mockProject.mockReset()
+    mockProject.mockImplementation(() => ({
       title: 'title',
       simulations: ['id', 'id']
-    })
-    mockMutateProject = jest.fn()
+    }))
+    mockMutateProject.mockReset()
     mockUpdate.mockReset()
-    mockSimulations = () => [
+
+    mockSimulations.mockReset()
+    mockSimulations.mockImplementation(() => [
       {
         scheme: {
           configuration: {
@@ -68,7 +74,8 @@ describe('components/project', () => {
           }
         }
       }
-    ]
+    ])
+
     wrapper = shallow(<Project />)
   })
 
@@ -82,14 +89,14 @@ describe('components/project', () => {
 
   it('without configuration', () => {
     wrapper.unmount()
-    mockSimulations = () => [{ scheme: {} }]
+    mockSimulations.mockImplementation(() => [{ scheme: {} }])
     wrapper = shallow(<Project />)
     expect(wrapper).toBeDefined()
   })
 
   it('with subMenus', () => {
     wrapper.unmount()
-    mockSimulations = () => [
+    mockSimulations.mockImplementation(() => [
       {
         scheme: {
           configuration: {
@@ -114,13 +121,13 @@ describe('components/project', () => {
           }
         }
       }
-    ]
+    ])
     wrapper = shallow(<Project />)
   })
 
   it('Unauthorized', () => {
     wrapper.unmount()
-    mockProject = () => 'Unauthorized'
+    mockProject.mockImplementation(() => 'Unauthorized')
     wrapper = shallow(<Project />)
   })
 
@@ -130,9 +137,9 @@ describe('components/project', () => {
     expect(mockMutateProject).toHaveBeenCalledTimes(1)
 
     wrapper.unmount()
-    mockMutateProject = () => {
+    mockMutateProject.mockImplementation(() => {
       throw new Error()
-    }
+    })
     wrapper = shallow(<Project />)
     await wrapper.find('Title').props().editable.onChange('title')
   })
@@ -154,15 +161,15 @@ describe('components/project', () => {
 
     //Empty
     wrapper.unmount()
-    mockProject = () => ({})
+    mockProject.mockImplementation(() => ({}))
     wrapper = shallow(<Project />)
     await wrapper.find('selector').props().onOk({ configuration: {} })
 
     // Error
     wrapper.unmount()
-    mockMutateProject = () => {
+    mockMutateProject.mockImplementation(() => {
       throw new Error()
-    }
+    })
     wrapper = shallow(<Project />)
     await wrapper.find('selector').props().onOk({ configuration: {} })
   })
@@ -206,7 +213,7 @@ describe('components/project', () => {
     wrapper.unmount()
 
     // Without user
-    mockUser = () => {}
+    mockUser.mockImplementation(() => {})
     wrapper = mount(<Project />)
     expect(mockRouter).toHaveBeenCalledTimes(1)
   })

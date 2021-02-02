@@ -4,7 +4,7 @@ import { shallow, mount } from 'enzyme'
 jest.mock('@/components/project/simulation/delete', () => 'delete')
 
 const mockMutate = jest.fn()
-let mockUpdate
+const mockUpdate = jest.fn()
 jest.mock('@/api/simulation', () => ({
   useSimulations: () => [[], { mutateOneSimulation: mockMutate }],
   update: async () => mockUpdate()
@@ -18,7 +18,9 @@ let wrapper
 describe('src/components/project/simulation/about', () => {
   beforeEach(() => {
     mockMutate.mockReset()
-    mockUpdate = () => {}
+    mockUpdate.mockReset()
+    mockUpdate.mockImplementation(() => {})
+
     wrapper = shallow(<About simulation={{ scheme: {} }} />)
   })
 
@@ -31,15 +33,14 @@ describe('src/components/project/simulation/about', () => {
   })
 
   it('handleName', async () => {
-    mockUpdate = jest.fn()
     await wrapper.find('Title').props().editable.onChange('name')
     expect(mockMutate).toHaveBeenCalledTimes(1)
     expect(mockUpdate).toHaveBeenCalledTimes(1)
 
     // Error
-    mockUpdate = () => {
+    mockUpdate.mockImplementation(() => {
       throw new Error()
-    }
+    })
     await wrapper.find('Title').props().editable.onChange('name')
     expect(mockMutate).toHaveBeenCalledTimes(1)
   })

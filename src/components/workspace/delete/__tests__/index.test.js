@@ -5,7 +5,7 @@ jest.mock('@/components/assets/dialog', () => ({
   DeleteDialog: 'deleteDialog'
 }))
 
-let mockDelOneWorkspace = jest.fn()
+const mockDelOneWorkspace = jest.fn()
 jest.mock('@/api/workspace', () => ({
   del: async () => {},
   useWorkspaces: () => [[], { delOneWorkspace: mockDelOneWorkspace }]
@@ -18,6 +18,8 @@ jest.mock('@/lib/sentry', () => ({
 let wrapper
 describe('pages/workspace/delete', () => {
   beforeEach(() => {
+    mockDelOneWorkspace.mockReset()
+
     wrapper = shallow(<Delete workspace={{ id: 'id' }} />)
   })
 
@@ -41,9 +43,9 @@ describe('pages/workspace/delete', () => {
 
     // Error
     wrapper.unmount()
-    mockDelOneWorkspace = () => {
+    mockDelOneWorkspace.mockImplementation(() => {
       throw new Error()
-    }
+    })
     wrapper = shallow(<Delete />)
     await wrapper.find('deleteDialog').props().onOk()
   })

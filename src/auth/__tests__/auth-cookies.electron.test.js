@@ -9,7 +9,7 @@ jest.mock('is-electron', () => () => true)
 
 let mockSet
 let mockDelete
-let mockGet = () => {}
+const mockGet = jest.fn()
 jest.mock(
   'electron-store',
   () =>
@@ -44,7 +44,7 @@ describe('src/auth/auth-cookies', () => {
     res = auth.parseCookies(req)
     expect(res).toBe('')
 
-    mockGet = () => 'cookie'
+    mockGet.mockImplementation(() => 'cookie')
     res = auth.parseCookies(req)
     expect(res).toBe('cookie')
   })

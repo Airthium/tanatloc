@@ -1,6 +1,6 @@
 import useWorkspaces from '../useWorkspaces'
 
-let mockWorkspaces = () => [{ id: 'id' }, {}]
+const mockWorkspaces = jest.fn()
 jest.mock('swr', () => () => ({
   data: { workspaces: mockWorkspaces() },
   mutate: jest.fn()
@@ -8,6 +8,7 @@ jest.mock('swr', () => () => ({
 
 describe('src/api/workspace/useWorkspaces', () => {
   it('call', () => {
+    mockWorkspaces.mockImplementation(() => [{ id: 'id' }, {}])
     const [
       workspaces,
       {
@@ -31,7 +32,7 @@ describe('src/api/workspace/useWorkspaces', () => {
   })
 
   it('without workspace', () => {
-    mockWorkspaces = () => {}
+    mockWorkspaces.mockImplementation(() => {})
     const [workspaces] = useWorkspaces()
     expect(workspaces).toEqual([])
   })

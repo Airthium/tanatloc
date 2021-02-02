@@ -3,7 +3,7 @@ import { shallow } from 'enzyme'
 
 jest.mock('@/components/assets/dialog', () => 'dialog')
 
-let mockAddOneWorkspace = jest.fn()
+const mockAddOneWorkspace = jest.fn()
 jest.mock('@/api/workspace', () => ({
   add: async () => ({ id: 'id' }),
   useWorkspaces: () => [[], { addOneWorkspace: mockAddOneWorkspace }]
@@ -16,6 +16,8 @@ jest.mock('@/lib/sentry', () => ({
 let wrapper
 describe('components/workspace/add', () => {
   beforeEach(() => {
+    mockAddOneWorkspace.mockReset()
+
     wrapper = shallow(<Add />)
   })
 
@@ -39,9 +41,9 @@ describe('components/workspace/add', () => {
 
     // Error
     wrapper.unmount()
-    mockAddOneWorkspace = () => {
+    mockAddOneWorkspace.mockImplementation(() => {
       throw new Error()
-    }
+    })
     wrapper = shallow(<Add />)
     await wrapper.find('dialog').props().onOk()
   })

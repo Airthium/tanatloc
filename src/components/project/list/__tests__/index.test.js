@@ -11,8 +11,8 @@ jest.mock('@/components/project/data', () => (project, filter, title) => {
 
 jest.mock('@/components/project/delete', () => 'delete')
 
-let mockProjects
-let mockMutate
+const mockProjects = jest.fn()
+const mockMutate = jest.fn()
 const mockUpdate = jest.fn()
 jest.mock('@/api/project', () => ({
   useProjects: () => [mockProjects(), { mutateOneProject: () => mockMutate() }],
@@ -26,9 +26,12 @@ jest.mock('@/lib/sentry', () => ({
 let wrapper
 describe('component/project/list', () => {
   beforeEach(() => {
-    mockProjects = () => []
-    mockMutate = () => {}
+    mockProjects.mockReset()
+    mockProjects.mockImplementation(() => [])
+    mockMutate.mockReset()
+    mockMutate.mockImplementation(() => {})
     mockUpdate.mockReset()
+
     wrapper = shallow(<List workspace={{}} filter={''} />)
   })
 
@@ -48,7 +51,7 @@ describe('component/project/list', () => {
 
   it('projects', () => {
     wrapper.unmount()
-    mockProjects = () => [{}, {}]
+    mockProjects.mockImplementation(() => [{}, {}])
     wrapper = shallow(<List workspace={{}} />)
 
     const data = wrapper.find('Table').props().dataSource
@@ -57,9 +60,9 @@ describe('component/project/list', () => {
     data[0]()
     expect(mockUpdate).toHaveBeenCalledTimes(1)
 
-    mockMutate = () => {
+    mockMutate.mockImplementation(() => {
       throw new Error()
-    }
+    })
     data[0]()
     expect(mockUpdate).toHaveBeenCalledTimes(2)
   })

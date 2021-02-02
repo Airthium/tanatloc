@@ -1,6 +1,6 @@
 import useSimulation from '../useSimulation'
 
-let mockSimulation
+const mockSimulation = jest.fn()
 jest.mock('swr', () => () => ({
   data: { simulation: mockSimulation() },
   mutate: jest.fn()
@@ -8,7 +8,7 @@ jest.mock('swr', () => () => ({
 
 describe('src/api/simulation/useSimulation', () => {
   it('with simulation', () => {
-    mockSimulation = () => ({})
+    mockSimulation.mockImplementation(() => ({}))
     const [
       simulation,
       { mutateSimulation, loadingSimulation }
@@ -19,7 +19,7 @@ describe('src/api/simulation/useSimulation', () => {
   })
 
   it('without simulation', () => {
-    mockSimulation = () => {}
+    mockSimulation.mockImplementation(() => {})
     const [
       simulation,
       { mutateSimulation, loadingSimulation }
@@ -30,7 +30,7 @@ describe('src/api/simulation/useSimulation', () => {
   })
 
   it('with id', () => {
-    mockSimulation = () => {}
+    mockSimulation.mockImplementation(() => {})
     const [simulation, { mutateSimulation, loadingSimulation }] = useSimulation(
       'id'
     )

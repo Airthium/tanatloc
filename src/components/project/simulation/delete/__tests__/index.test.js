@@ -6,7 +6,7 @@ jest.mock('@/components/assets/dialog', () => ({
 }))
 
 const mockMutateSimulation = jest.fn()
-let mockDel
+const mockDel = jest.fn()
 jest.mock('@/api/simulation', () => ({
   useSimulations: () => [[], { delOneSimulation: mockMutateSimulation }],
   del: async () => mockDel()
@@ -25,7 +25,9 @@ let wrapper
 describe('src/components/project/simulation/delete', () => {
   beforeEach(() => {
     mockMutateSimulation.mockReset()
-    mockDel = () => {}
+    mockDel.mockReset()
+    mockDel.mockImplementation(() => {})
+
     mockMutateProject.mockReset()
     wrapper = shallow(
       <Delete project={{ simulations: [{}] }} simulation={{}} />
@@ -47,16 +49,15 @@ describe('src/components/project/simulation/delete', () => {
   })
 
   it('handleDelete', async () => {
-    mockDel = jest.fn()
     await wrapper.find('deleteDialog').props().onOk()
     expect(mockDel).toHaveBeenCalledTimes(1)
     expect(mockMutateProject).toHaveBeenCalledTimes(1)
     expect(mockMutateSimulation).toHaveBeenCalledTimes(1)
 
     // Error
-    mockDel = () => {
+    mockDel.mockImplementation(() => {
       throw new Error()
-    }
+    })
     await wrapper.find('deleteDialog').props().onOk()
     expect(mockMutateProject).toHaveBeenCalledTimes(1)
     expect(mockMutateSimulation).toHaveBeenCalledTimes(1)

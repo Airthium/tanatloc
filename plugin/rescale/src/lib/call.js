@@ -13,9 +13,11 @@ const call = async (configuration) => {
 
   const response = await new Promise((resolve, reject) => {
     fetch(url, {
+      method: configuration.method || 'GET',
       headers: {
         Authorization: 'Token ' + token
-      }
+      },
+      body: configuration.body
     })
       .then((res) => resolve(res))
       .catch((err) => reject(err))

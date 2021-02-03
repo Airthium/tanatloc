@@ -1,40 +1,34 @@
-FROM tanatloc/converters
+## BUILDER ##
+FROM tanatloc/worker as builder
 
-LABEL maintainer="https://github.com/orgs/Airthium/people"
-
-## ENV
 ENV DEBIAN_FRONTEND noninteractive
+
 ENV INSTALL_PATH /home/app/install
 ENV APP_PATH /home/app
 
-## INSTALL
-# Start
+# Install packages
 RUN apt update \
     && apt upgrade -yq
 
-# Base
 RUN apt install -yq \
         apt-utils curl \
         gnupg g++ libpq-dev \
         make python3
 
-# Node
 RUN apt install -yq \
         nodejs node-gyp
 
-# Yarn
 RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
 RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
 RUN apt update \
     && apt install -yq \
         yarn
 
-# Clean
 RUN apt autoremove \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-## BUILD
+# Build
 ARG DB_ADMIN
 ENV DB_ADMIN $DB_ADMIN
 
@@ -47,7 +41,6 @@ ENV DB_HOST $DB_HOST
 ARG DB_PORT
 ENV DB_PORT $DB_PORT
 
-# Copy
 COPY config ${INSTALL_PATH}/config
 COPY install ${INSTALL_PATH}/install
 COPY models ${INSTALL_PATH}/models
@@ -61,32 +54,66 @@ COPY next.config.js ${INSTALL_PATH}/next.config.js
 COPY package.json ${INSTALL_PATH}/package.json
 COPY yarn.lock ${INSTALL_PATH}/yarn.lock
 
-# Workdir
 WORKDIR ${INSTALL_PATH}
 
-# Build
 RUN yarn install --ignore-scripts
 RUN yarn babel . --only config,install,src/database/index.js --out-dir dist-install
 RUN yarn build
 
-# Workdir
+## RELEASE ##
+FROM tanatloc/worker
+
+ENV DEBIAN_FRONTEND noninteractive
+
+ENV INSTALL_PATH /home/app/install
+ENV APP_PATH /home/app
+
+ARG DB_ADMIN
+ENV DB_ADMIN $DB_ADMIN
+
+ARG DB_ADMIN_PASSWORD
+ENV DB_ADMIN_PASSWORD $DB_ADMIN_PASSWORD
+
+ARG DB_HOST
+ENV DB_HOST $DB_HOST
+
+ARG DB_PORT
+ENV DB_PORT $DB_PORT
+
+# Install packages
+RUN apt update \
+    && apt upgrade -yq
+
+RUN apt install -yq \
+        curl gnupg g++ libpq-dev \
+        make postgresql python3
+
+RUN apt install -yq \
+        nodejs node-gyp
+
+RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
+RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
+RUN apt update \
+    && apt install -yq \
+        yarn
+
+RUN apt autoremove \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+# Copy
 WORKDIR ${APP_PATH}
 
-# Keep essential
-COPY docker/package.json ${APP_PATH}/package.json
+COPY docker/package.json package.json
 
-RUN mv ${INSTALL_PATH}/dist-install ${APP_PATH}/dist-install
-
-RUN mv ${INSTALL_PATH}/public ${APP_PATH}/public
-RUN mv ${INSTALL_PATH}/templates ${APP_PATH}/templates
-RUN mv ${INSTALL_PATH}/.next ${APP_PATH}/.next
+COPY --from=builder ${INSTALL_PATH}/dist-install dist-install
+COPY --from=builder ${INSTALL_PATH}/public public
+COPY --from=builder ${INSTALL_PATH}/templates templates
+COPY --from=builder ${INSTALL_PATH}/.next .next
 RUN yarn
 
-COPY docker/start.sh ${APP_PATH}/start.sh
-RUN chmod +x ${APP_PATH}/start.sh
-
-# Clean
-RUN rm -Rf ${APP_PATH}/install
+COPY docker/start.sh start.sh
+RUN chmod +x start.sh
 
 ## START
-CMD ${APP_PATH}/start.sh
+CMD ${APP_PATH}/start.sh $DB_ADMIN $DB_ADMIN_PASSWORD

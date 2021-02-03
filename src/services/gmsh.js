@@ -29,7 +29,7 @@ const gmsh = async (path, fileIn, fileOut, callback) => {
         '--volume=' + path + ':/mesh',
         '--user=' + user + ':' + group,
         '-w=/mesh',
-        'tanatloc/converters:latest',
+        'tanatloc/worker:latest',
         'gmsh',
         '-3',
         fileIn,

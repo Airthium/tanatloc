@@ -94,6 +94,9 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
   // Path
   const simulationPath = path.join(storage.SIMULATION, id)
 
+  // Cloud configuration
+  const cloudConfiguration = configuration.run.cloudServer.configuration
+
   // Create tasks
   const tasks = []
   const simulationTask = {
@@ -137,15 +140,12 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
   )
 
   // Upload files
-  await uploadFile(
-    configuration.run.cloudServer.configuration,
-    { id },
-    path.join('run', id + '.edp')
-  )
+  await uploadFile(cloudConfiguration, { id }, path.join('run', id + '.edp'))
 }
 
 /**
- *
+ * Upload file
+ * @param {Object} configuration Configuration
  * @param {Object} simulation Simulation { id }
  * @param {string} fileName File name
  */

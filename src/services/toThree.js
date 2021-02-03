@@ -48,7 +48,7 @@ const toThree = async (path, fileIn, pathOut, callback) => {
         '--volume=' + path + ':/three',
         '--user=' + user + ':' + group,
         '-w=/three',
-        'tanatloc/converters:latest',
+        'tanatloc/worker:latest',
         conversionCode,
         fileIn,
         pathOut

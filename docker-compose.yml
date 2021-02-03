@@ -1,4 +1,14 @@
 services:
+  database:
+    image: postgres
+    environment:
+      - POSTGRES_PASSWORD=password
+    # TO OPEN DATABASE TO HOST
+    # ports:
+    # - 5432:5432
+    volumes:
+      - postgresData:/var/lib/postgresql/data
+
   tanatloc:
     build:
       context: .
@@ -18,13 +28,6 @@ services:
       - DB_PORT=5432
     volumes:
       - tanatlocData:/root/tanatloc
-
-  database:
-    image: postgres
-    environment:
-      - POSTGRES_PASSWORD=password
-    volumes:
-      - postgresData:/var/lib/postgresql/data
 
 volumes:
   postgresData:

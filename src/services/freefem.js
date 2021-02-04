@@ -25,7 +25,7 @@ const freefem = async (path, script, callback) => {
         '--volume=' + path + ':/run',
         '--user=' + user + ':' + group,
         '-w=/run',
-        'tanatloc/worker:lastest',
+        'tanatloc/worker:latest',
         'FreeFem++',
         '-nw',
         '-ns',

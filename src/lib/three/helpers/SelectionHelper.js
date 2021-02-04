@@ -205,9 +205,9 @@ const SelectionHelper = (renderer, scene, camera, controls) => {
    */
   const dispose = () => {
     // Event listeners
-    renderer.domElement.removeEventListener('mousedown', onMouseDown)
-    renderer.domElement.removeEventListener('mousemove', onMouseMove)
-    renderer.domElement.removeEventListener('mouseup', onMouseUp)
+    renderer.domElement.removeEventListener('pointerdown', onMouseDown)
+    renderer.domElement.removeEventListener('pointermove', onMouseMove)
+    renderer.domElement.removeEventListener('pointerup', onMouseUp)
   }
 
   return { start, isEnabled, end, dispose }

@@ -5,8 +5,6 @@ import storage from '@/config/storage'
 
 import SimulationDB from '@/database/simulation'
 
-import Services from '@/services'
-
 import Template from '@/lib/template'
 import Tools from '@/lib/tools'
 
@@ -96,6 +94,7 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
 
   // Cloud configuration
   const cloudConfiguration = configuration.run.cloudServer.configuration
+  const cloudParameters = configuration.run.cloudServer.inUseConfiguration
 
   // Create tasks
   const tasks = []
@@ -106,6 +105,23 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
   }
   tasks.push(simulationTask)
   updateTasks(id, tasks)
+
+  // Upload geometries
+  const geometries = []
+  await Promise.all(
+    Object.keys(configuration).map(async (ckey) => {
+      if (configuration[ckey].meshable !== undefined) {
+        const geometry = configuration[ckey]
+        const file = await uploadFile(
+          cloudConfiguration,
+          { id },
+          path.join(ckey, geometry.file.fileName)
+        )
+
+        geometries.push(file)
+      }
+    })
+  )
 
   // Meshing
   // TODO, not needed for Denso
@@ -140,7 +156,21 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
   )
 
   // Upload files
-  await uploadFile(cloudConfiguration, { id }, path.join('run', id + '.edp'))
+  const edp = await uploadFile(
+    cloudConfiguration,
+    { id },
+    path.join('run', id + '.edp')
+  )
+
+  // Create job
+  const jobId = await createJob(
+    algorithm,
+    cloudConfiguration,
+    cloudParameters,
+    geometries,
+    edp
+  )
+  console.log(jobId)
 }
 
 /**
@@ -164,7 +194,65 @@ const uploadFile = async (configuration, { id }, fileName) => {
     body: formData
   })
 
-  console.log(file)
+  // RESCALE API BUG
+  // response content type is text/plain but the correct type is application/json
+  const fileJson = JSON.parse(file)
+
+  return {
+    id: fileJson.id,
+    name: fileJson.name
+  }
+}
+
+/**
+ * Create job
+ * @param {string} algorithm Algorithm
+ * @param {Object} configuration Configuration
+ * @param {Object} parameters Parameters
+ * @param {Array} geometries Geometries
+ * @param {Object} edp Edp
+ */
+const createJob = async (
+  algorithm,
+  configuration,
+  parameters,
+  geometries,
+  edp
+) => {
+  const name = 'Tanatloc - ' + algorithm
+  const coreType = parameters.coreTypes.value
+  const lowPriority = parameters.lowPriority.value
+  const numberOfCores = parameters.numberOfCores.value
+  const freefemVersion = parameters.freefemVersion.value
+  const job = await call({
+    platform: configuration.platform.value,
+    token: configuration.token.value,
+    route: 'jobs/',
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      name,
+      isLowPriority: lowPriority,
+      jobanalyses: [
+        {
+          analysis: {
+            code: 'freefem',
+            versionName: freefemVersion
+          },
+          hardware: {
+            coreType: coreType,
+            coresPerSlot: numberOfCores
+          },
+          command: 'FreeFem++ ' + edp.name,
+          inputFiles: [...geometries.map((g) => ({ id: g.id })), { id: edp.id }]
+        }
+      ]
+    })
+  })
+
+  return job.id
 }
 
 export default { key, init, computeMesh, computeSimulation }

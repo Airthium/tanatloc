@@ -15,7 +15,8 @@ const call = async (configuration) => {
     fetch(url, {
       method: configuration.method || 'GET',
       headers: {
-        Authorization: 'Token ' + token
+        Authorization: 'Token ' + token,
+        ...configuration.headers
       },
       body: configuration.body
     })
@@ -39,6 +40,9 @@ const call = async (configuration) => {
     }
 
     return json
+  } else if (contentType === 'text/plain') {
+    const text = await response.text()
+    return text
   }
 
   return response

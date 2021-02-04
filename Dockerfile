@@ -1,6 +1,8 @@
 ## BUILDER ##
 FROM tanatloc/worker as builder
 
+USER root
+
 ENV DEBIAN_FRONTEND noninteractive
 
 ENV INSTALL_PATH /home/app/install
@@ -62,6 +64,8 @@ RUN yarn build
 
 ## RELEASE ##
 FROM tanatloc/worker
+
+USER root
 
 ENV DEBIAN_FRONTEND noninteractive
 

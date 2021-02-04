@@ -34,20 +34,6 @@ Using server-side rendering (SSR).
 | AVATAR_RELATIVE_PATH     | avatar        | Relative avatar path (from STORAGE)     |
 | SIMULATION_RELATIVE_PATH | simulation    | Realtive simulation path (from STORAGE) |
 
-<!-- ## Database
-
-```shell
-sudo -u postgres psql
-```
-
-```sql
-CREATE DATABASE tanatloc;
-CREATE USER tanatlocuser WITH ENCRYPTED PASSWORD 'tanatloc';
-GRANT ALL PRIVILEGES ON DATABASE tanatloc TO tanatlocuser;
-\c tanatloc
-CREATE EXTENSION pgcrypto;
-``` -->
-
 ## Dev
 
 Browser:
@@ -86,6 +72,13 @@ Electron
 ```shell
 yarn install
 yarn electron-build
+```
+
+Docker
+
+```shell
+docker-compose build
+docker-compose up
 ```
 
 ## Architecture

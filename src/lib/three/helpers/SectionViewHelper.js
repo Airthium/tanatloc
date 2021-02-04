@@ -212,7 +212,6 @@ const SectionViewHelper = (renderer, scene, camera, controls) => {
    */
   const transformStop = () => {
     controls.enabled = true
-    controls.stop()
 
     transformControls.enabled = false
     transformControls.detach()

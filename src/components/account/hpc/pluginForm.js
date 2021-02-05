@@ -11,11 +11,11 @@ const PluginForm = ({ plugin, onFinish, onCancel }) => {
 
   // Data
   const layout = {
-    labelCol: { span: 2 },
+    labelCol: { span: 6 },
     wrapperCol: { span: 8 }
   }
   const tailLayout = {
-    wrapperCol: { offset: 2, span: 8 }
+    wrapperCol: { offset: 6, span: 8 }
   }
 
   /**
@@ -32,7 +32,10 @@ const PluginForm = ({ plugin, onFinish, onCancel }) => {
         label={item.label}
         htmlFor={'input-' + key}
         rules={[
-          { required: true, message: "'" + item.label + "' is required" }
+          {
+            required: item.required,
+            message: "'" + item.label + "' is required"
+          }
         ]}
       >
         <Input id={'input-' + key} autoComplete="off" />
@@ -54,7 +57,10 @@ const PluginForm = ({ plugin, onFinish, onCancel }) => {
         label={item.label}
         htmlFor={'input-' + key}
         rules={[
-          { required: true, message: "'" + item.label + "' is required" }
+          {
+            required: item.required,
+            message: "'" + item.label + "' is required"
+          }
         ]}
       >
         <Input id={'input-' + key} type="password" autoComplete="off" />
@@ -76,7 +82,10 @@ const PluginForm = ({ plugin, onFinish, onCancel }) => {
         label={item.label}
         htmlFor={'select-' + key}
         rules={[
-          { required: true, message: "'" + item.label + "' is required" }
+          {
+            required: item.required,
+            message: "'" + item.label + "' is required"
+          }
         ]}
       >
         <Select id={'select-' + key}>

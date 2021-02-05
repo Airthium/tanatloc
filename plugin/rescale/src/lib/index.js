@@ -124,16 +124,31 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
   )
 
   // Meshing
+  const meshes = []
   // TODO, not needed for Denso
   await Promise.all(
     Object.keys(configuration).map(async (ckey) => {
       if (configuration[ckey].meshable) {
+        // TODO build mesh
         configuration[ckey].mesh = {
-          fileName: 'fileName',
-          originPath: 'originPath',
+          fileName: 'rc-upload-1611321997697-6.STEP.msh',
+          originPath: 'geometry_mesh',
           part: 'part',
           partPath: 'partPath'
         }
+
+        // Upload
+        const file = await uploadFile(
+          cloudConfiguration,
+          { id },
+          path.join(
+            configuration[ckey].mesh.originPath,
+            configuration[ckey].mesh.fileName
+          )
+        )
+        meshes.push(file)
+
+        configuration[ckey].mesh.originPath = '.'
       }
     })
   )
@@ -146,7 +161,7 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
       dimension: 3,
       run: {
         ...configuration.run,
-        path: '.'
+        path: 'result'
       }
     },
     {
@@ -168,9 +183,12 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
     cloudConfiguration,
     cloudParameters,
     geometries,
+    meshes,
     edp
   )
-  console.log(jobId)
+
+  // Submit job
+  await submitJob(cloudConfiguration, jobId)
 }
 
 /**
@@ -210,6 +228,7 @@ const uploadFile = async (configuration, { id }, fileName) => {
  * @param {Object} configuration Configuration
  * @param {Object} parameters Parameters
  * @param {Array} geometries Geometries
+ * @param {Array} meshes Meshes
  * @param {Object} edp Edp
  */
 const createJob = async (
@@ -217,6 +236,7 @@ const createJob = async (
   configuration,
   parameters,
   geometries,
+  meshes,
   edp
 ) => {
   const name = 'Tanatloc - ' + algorithm
@@ -245,14 +265,57 @@ const createJob = async (
             coreType: coreType,
             coresPerSlot: numberOfCores
           },
-          command: 'FreeFem++ ' + edp.name,
-          inputFiles: [...geometries.map((g) => ({ id: g.id })), { id: edp.id }]
+          command:
+            'mpirun -np ' + numberOfCores + ' FreeFem++-mpi -ns ' + edp.name,
+          inputFiles: [
+            ...geometries.map((g) => ({ id: g.id })),
+            ...meshes.map((m) => ({ id: m.id })),
+            { id: edp.id }
+          ]
         }
       ]
     })
   })
 
+  // Assign project if any
+  if (configuration.organization && configuration.project) {
+    try {
+      const response = await call({
+        platform: configuration.platform.value,
+        token: configuration.token.value,
+        route:
+          'organizations/' +
+          configuration.organization.value +
+          '/jobs/' +
+          job.id +
+          '/project-assignment/',
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ projectId: configuration.project.value })
+      })
+    } catch (err) {
+      console.warn(err)
+      //TODO sentry
+    }
+  }
+
   return job.id
+}
+
+/**
+ * Submit job
+ * @param {Object} configuration Configuration
+ * @param {string} id Job id
+ */
+const submitJob = async (configuration, id) => {
+  await call({
+    platform: configuration.platform.value,
+    token: configuration.token.value,
+    route: 'jobs/' + id + '/submit/',
+    method: 'POST'
+  })
 }
 
 export default { key, init, computeMesh, computeSimulation }

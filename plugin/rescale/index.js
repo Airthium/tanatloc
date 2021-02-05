@@ -10,17 +10,28 @@ const Rescale = {
     '<p><a target="_blank" href="https://www.rescale.com/">Rescale</a>: Intelligent HPC Platform</p>',
   configuration: {
     name: {
+      required: true,
       label: 'Name',
       type: 'input'
     },
     token: {
+      required: true,
       label: 'Token',
       type: 'password'
     },
     platform: {
+      required: true,
       label: 'Platform',
       type: 'select',
       options: ['platform.rescale.com', 'eu.rescale.com', 'platform.rescale.jp']
+    },
+    organization: {
+      label: 'Organization name',
+      type: 'input'
+    },
+    project: {
+      label: 'Project id',
+      type: 'input'
     }
   },
   needInit: true,

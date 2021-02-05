@@ -112,12 +112,19 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
     Object.keys(configuration).map(async (ckey) => {
       if (configuration[ckey].meshable !== undefined) {
         const geometry = configuration[ckey]
+
+        // Task
+        simulationTask.log += 'Uploading geometry...'
+        updateTasks(id, tasks)
+
+        // Upload
         const file = await uploadFile(
           cloudConfiguration,
           { id },
           path.join(ckey, geometry.file.fileName)
         )
 
+        // Save
         geometries.push(file)
       }
     })
@@ -129,8 +136,19 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
   await Promise.all(
     Object.keys(configuration).map(async (ckey) => {
       if (configuration[ckey].meshable) {
+        // const geometry = configuration[ckey]
+
+        // Task
+        const meshingTask = {
+          type: 'mesh',
+          log: '',
+          status: 'wait'
+        }
+        tasks.push(meshingTask)
+        updateTasks(id, tasks)
+
         // TODO build mesh
-        configuration[ckey].mesh = {
+        const mesh = {
           fileName: 'rc-upload-1611321997697-6.STEP.msh',
           originPath: 'geometry_mesh',
           part: 'part',
@@ -138,17 +156,24 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
         }
 
         // Upload
+        meshingTask.log += 'Uploading...'
+        updateTasks(id, tasks)
+
         const file = await uploadFile(
           cloudConfiguration,
           { id },
-          path.join(
-            configuration[ckey].mesh.originPath,
-            configuration[ckey].mesh.fileName
-          )
+          path.join(mesh.originPath, mesh.fileName)
         )
         meshes.push(file)
 
-        configuration[ckey].mesh.originPath = '.'
+        // Task
+        meshingTask.stauts = 'finish'
+        meshingTask.file = mesh
+        updateTasks(id, tasks)
+
+        // Save mesh name
+        mesh.originPath = '.' // TODO put that in simulation script render
+        configuration[ckey].mesh = mesh
       }
     })
   )
@@ -171,6 +196,10 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
   )
 
   // Upload files
+  // Task
+  simulationTask.log += 'Uploading script...'
+  updateTasks(id, tasks)
+
   const edp = await uploadFile(
     cloudConfiguration,
     { id },
@@ -178,6 +207,8 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
   )
 
   // Create job
+  simulationTask.log += 'Create job...'
+  updateTasks(id, tasks)
   const jobId = await createJob(
     algorithm,
     cloudConfiguration,
@@ -188,7 +219,11 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
   )
 
   // Submit job
+  simulationTask.log += 'Submit job...'
+  updateTasks(id, tasks)
   await submitJob(cloudConfiguration, jobId)
+  simulationTask.log += 'Starting cluster...'
+  updateTasks(id, tasks)
 }
 
 /**
@@ -266,7 +301,10 @@ const createJob = async (
             coresPerSlot: numberOfCores
           },
           command:
-            'mpirun -np ' + numberOfCores + ' FreeFem++-mpi -ns ' + edp.name,
+            'mkdir -p result && mpirun -np ' +
+            numberOfCores +
+            ' FreeFem++-mpi -ns ' +
+            edp.name,
           inputFiles: [
             ...geometries.map((g) => ({ id: g.id })),
             ...meshes.map((m) => ({ id: m.id })),
@@ -280,7 +318,7 @@ const createJob = async (
   // Assign project if any
   if (configuration.organization && configuration.project) {
     try {
-      const response = await call({
+      await call({
         platform: configuration.platform.value,
         token: configuration.token.value,
         route:

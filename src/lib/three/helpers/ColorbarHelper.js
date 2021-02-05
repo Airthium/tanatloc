@@ -73,13 +73,13 @@ const ColorbarHelper = (renderer, scene) => {
     const max = lut.maxV.toExponential(2)
 
     const minLabel = Label(min, 512, 'gray', 128)
-    minLabel.scale.x = 1
-    minLabel.scale.y = 0.3
-    minLabel.position.set(-0.3, -0.9, 0)
+    minLabel.scale.x = 0.75
+    minLabel.scale.y = 0.225
+    minLabel.position.set(-0.5, -0.95, 0)
     const maxLabel = Label(max, 512, 'gray', 128)
-    maxLabel.scale.x = 1
-    maxLabel.scale.y = 0.3
-    maxLabel.position.set(-0.3, 0.9, 0)
+    maxLabel.scale.x = 0.75
+    maxLabel.scale.y = 0.225
+    maxLabel.position.set(-0.5, 0.95, 0)
 
     colorScene.add(minLabel)
     colorScene.add(maxLabel)

@@ -278,8 +278,8 @@ const NavigationHelper = (
   }
 
   // Events
-  renderer.domElement.addEventListener('mousemove', onMouseMove)
-  renderer.domElement.addEventListener('mousedown', onMouseDown)
+  renderer.domElement.addEventListener('pointermove', onMouseMove)
+  renderer.domElement.addEventListener('pointerdown', onMouseDown)
 
   /**
    * Resize
@@ -306,8 +306,8 @@ const NavigationHelper = (
    */
   const dispose = () => {
     // Event listeners
-    renderer.domElement.removeEventListener('mousemove', onMouseMove)
-    renderer.domElement.removeEventListener('mousedown', onMouseDown)
+    renderer.domElement.removeEventListener('pointermove', onMouseMove)
+    renderer.domElement.removeEventListener('pointerdown', onMouseDown)
 
     // Cube
     cube.children.forEach((group) => {

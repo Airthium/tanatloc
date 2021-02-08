@@ -73,8 +73,7 @@ const Run = ({ project, simulation }) => {
     setSimulatingTasks(simulating)
 
     const runningTasks = currentSimulation?.tasks?.filter(
-      (t) =>
-        t.status !== 'finish' && t.status !== 'error' && t.status !== 'wait'
+      (t) => t.status !== 'finish' && t.status !== 'error'
     )
 
     if (runningTasks?.length) setRunning(true)

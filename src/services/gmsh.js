@@ -42,6 +42,8 @@ const gmsh = async (path, fileIn, fileOut, callback) => {
       ])
     }
 
+    callback({ pid: run.pid })
+
     run.stdout.on('data', (data) => {
       callback({ data: data.toString() })
     })

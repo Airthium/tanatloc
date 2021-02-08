@@ -33,6 +33,30 @@ describe('plugin/rescale/src/lib/call', () => {
     await call({})
   })
 
+  it('text/plain', async () => {
+    mockFetch.mockImplementation(() => {
+      return {
+        headers: {
+          get: () => 'text/plain'
+        },
+        text: async () => 'text'
+      }
+    })
+    await call({})
+  })
+
+  it('application/octet-stream', async () => {
+    mockFetch.mockImplementation(() => {
+      return {
+        headers: {
+          get: () => 'application/octet-stream'
+        },
+        text: async () => 'text'
+      }
+    })
+    await call({})
+  })
+
   it('non json', async () => {
     mockFetch.mockImplementation(() => ({
       headers: {

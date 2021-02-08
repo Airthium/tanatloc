@@ -33,6 +33,8 @@ const freefem = async (path, script, callback) => {
       ])
     }
 
+    callback({ pid: run.pid })
+
     run.stdout.on('data', (data) => {
       callback({ data: data.toString() })
     })

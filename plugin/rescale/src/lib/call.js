@@ -40,7 +40,10 @@ const call = async (configuration) => {
     }
 
     return json
-  } else if (contentType === 'text/plain') {
+  } else if (
+    contentType === 'text/plain' ||
+    contentType === 'application/octet-stream'
+  ) {
     const text = await response.text()
     return text
   }

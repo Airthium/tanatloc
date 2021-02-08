@@ -48,6 +48,7 @@ describe('plugin/local/src/lib', () => {
     mockPath.mockImplementation(() => 'partPath')
     mockGmsh.mockImplementation(() => 0)
     mockToThree.mockImplementation((path, fileIn, pathOut, callback) => {
+      callback({ pid: 'pid' })
       callback({ error: 'error' })
       callback({ data: 'data' })
       return 0
@@ -98,6 +99,7 @@ describe('plugin/local/src/lib', () => {
 
   it('computeSimulation', async () => {
     mockFreefem.mockImplementation((path, script, callback) => {
+      callback({ pid: 'pid' })
       callback({ data: 'PROCESS VTU FILE run/result.vtu' })
       callback({ data: 'data' })
       callback({ error: 'data' })

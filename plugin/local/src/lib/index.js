@@ -161,10 +161,15 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
               path: path.join(geometry.file.originPath + '_mesh'),
               parameters
             },
-            ({ error, data }) => {
+            ({ pid, error, data }) => {
               meshingTask.status = 'process'
+
+              pid && (meshingTask.pid = pid)
+
               error && (meshingTask.log += 'Error: ' + error + '\n')
+
               data && (meshingTask.log += data + '\n')
+
               if ((Date.now() - start) % updateDelay === 0)
                 updateTasks(id, tasks)
             }
@@ -210,8 +215,11 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
     const code = await Services.freefem(
       simulationPath,
       path.join('run', id + '.edp'),
-      async ({ error, data }) => {
+      async ({ pid, error, data }) => {
         simulationTask.status = 'process'
+
+        pid && (simulationTask.pid = pid)
+
         error && (simulationTask.log += 'Error: ' + error + '\n')
 
         if (data && data.includes('PROCESS VTU FILE')) {

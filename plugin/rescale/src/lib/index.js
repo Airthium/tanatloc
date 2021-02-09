@@ -207,7 +207,7 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
             geoFile +
             ' -o ' +
             meshFile +
-            ' -format msh2 -clcurv 10'
+            ' -format msh2 -clcurv 10 '
 
           // // // Task
           // // const meshingTask = {
@@ -226,19 +226,6 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
             part: 'part.json',
             partPath: path.join(meshPath, partPath)
           }
-
-          // // TODO check renderPath originPath
-
-          // // // Upload
-          // // meshingTask.log += 'Uploading...\n'
-          // // updateTasks(id, tasks)
-
-          // const file = await uploadFile(
-          //   cloudConfiguration,
-          //   { id },
-          //   path.join(mesh.originPath, mesh.fileName)
-          // )
-          // meshes.push(file)
 
           // // // Task
           // // meshingTask.status = 'finish'

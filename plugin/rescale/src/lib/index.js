@@ -307,22 +307,12 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
         const logFile = inRunFiles.find((f) => f.path === logFileName)
         if (logFile) {
           const log = await getInRunFile(cloudConfiguration, logFile)
-          simulationTask.log = currentLog + log
+          simulationTask.log = currentLog + log.replace(/\[.*\]: /g, '')
         }
 
+        // TODO
+        // Warning: be sure that the files are full and finish
         // Results
-        // const resultFiles = inRunFiles.filter((f) => f.path.includes('result/'))
-        // await Promise.all(
-        //   resultFiles.map(async (resultFile) => {
-        //     const result = await getFile(cloudConfiguration, resultFile.id)
-        //     const fileName = resultFile.path.replace('result/')
-        //     await Tools.writeFile(
-        //       path.join(storage.SIMULATION, id, 'run'),
-        //       fileName,
-        //       result
-        //     )
-        //   })
-        // )
       } else if (status === 'Completed') {
         const files = await getFiles(cloudConfiguration, jobId)
 
@@ -330,7 +320,7 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
         const logFile = files.find((f) => f.relativePath === logFileName)
         if (logFile) {
           const log = await getFile(cloudConfiguration, logFile.id)
-          simulationTask.log = currentLog + log
+          simulationTask.log = currentLog + log.replace(/\[.*\]: /g, '')
         }
 
         // Results
@@ -347,6 +337,7 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
               result
             )
 
+            // Convert VTU
             if (fileName.includes('.vtu')) {
               const resFile = fileName
               const partPath = resFile.replace('.vtu')
@@ -403,12 +394,14 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
         )
       }
 
+      // Task
       updateTasks(id, tasks)
       await new Promise((resolve) => {
         setTimeout(resolve, updateDelay)
       })
     }
 
+    // Task
     simulationTask.status = 'finish'
     updateTasks(id, tasks)
   } catch (err) {

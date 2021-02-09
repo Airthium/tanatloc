@@ -373,12 +373,12 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
                 } else {
                   simulationTask.files = [
                     ...(simulationTask.files || []),
-                    ...results.map((result) => ({
+                    ...results.map((r) => ({
                       fileName: resFile,
                       originPath: 'run',
-                      name: result.name,
+                      name: r.name,
                       part: 'part.json',
-                      partPath: result.path
+                      partPath: r.path
                     }))
                   ]
 

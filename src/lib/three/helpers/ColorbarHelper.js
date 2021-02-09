@@ -69,8 +69,8 @@ const ColorbarHelper = (renderer, scene) => {
    * @param {Object} lut LUT
    */
   const setLabels = (lut) => {
-    const min = '0.00e+000' //lut.minV.toExponential(2)
-    const max = '0' //lut.maxV.toExponential(2)
+    const min = lut.minV.toExponential(2)
+    const max = lut.maxV.toExponential(2)
 
     const minLabel = Label(min, 768, 'gray', 128)
     minLabel.scale.x = 1

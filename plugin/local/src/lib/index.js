@@ -76,6 +76,7 @@ const computeMesh = async (simulationPath, geometry, mesh, callback) => {
   return {
     fileName: mshFile,
     originPath: mesh.path,
+    renderPath: mesh.path,
     part: 'part.json',
     partPath: path.join(mesh.path, partPath)
   }

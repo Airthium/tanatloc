@@ -61,6 +61,7 @@ describe('plugin/local/src/lib', () => {
     )
     expect(data).toEqual({
       originPath: 'path',
+      renderPath: 'path',
       fileName: 'file.msh',
       part: 'part.json',
       partPath: 'partPath'

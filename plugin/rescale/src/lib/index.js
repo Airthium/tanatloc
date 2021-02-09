@@ -80,11 +80,6 @@ const updateTasks = (id, tasks) => {
 }
 
 /**
- * Compute mesh
- */
-const computeMesh = async () => {}
-
-/**
  * Compute simulation
  * @param {Object} simulation Simulation { id }
  * @param {string} algorithm Algorithm
@@ -107,6 +102,9 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
     // Cloud configuration
     const cloudConfiguration = configuration.run.cloudServer.configuration
     const cloudParameters = configuration.run.cloudServer.inUseConfiguration
+
+    // Command
+    let command = 'mkdir -p result && mkdir -p data '
 
     // Update tasks
     updateTasks(id, tasks)
@@ -136,48 +134,118 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
     )
 
     // Meshing
-    const meshes = []
-    // TODO, not needed for Denso
+    const geoFiles = []
     await Promise.all(
       Object.keys(configuration).map(async (ckey) => {
         if (configuration[ckey].meshable) {
-          // const geometry = configuration[ckey]
+          const geometry = configuration[ckey]
 
-          // Task
-          const meshingTask = {
-            type: 'mesh',
-            log: '',
-            status: 'wait'
+          const geoFile = geometry.file.fileName + '.geo'
+          const meshFile = geometry.file.fileName + '.msh'
+          const meshPath = geometry.file.originPath + '_mesh'
+          const partPath = geometry.file.fileName
+
+          // Check refinements
+          const refinements = []
+          configuration.boundaryConditions &&
+            Object.keys(configuration.boundaryConditions).forEach(
+              (boundaryKey) => {
+                if (
+                  boundaryKey === 'index' ||
+                  boundaryKey === 'title' ||
+                  boundaryKey === 'done'
+                )
+                  return
+                const boundaryCondition =
+                  configuration.boundaryConditions[boundaryKey]
+                if (
+                  boundaryCondition.values &&
+                  boundaryCondition.refineFactor
+                ) {
+                  refinements.push({
+                    size: 'factor',
+                    factor: boundaryCondition.refineFactor,
+                    selected: boundaryCondition.values.flatMap(
+                      (v) => v.selected
+                    )
+                  })
+                }
+              }
+            )
+
+          // Mesh parameters
+          const parameters = {
+            size: 'auto',
+            fineness: 'normal',
+            refinements: refinements
           }
-          tasks.push(meshingTask)
-          updateTasks(id, tasks)
 
-          // TODO build mesh
-          const mesh = {
-            fileName: 'rc-upload-1611321997697-6.STEP.msh',
-            originPath: 'geometry_mesh',
-            part: 'part',
-            partPath: 'partPath'
-          }
+          // Render template
+          await Template.render(
+            './templates/gmsh3D.geo.ejs',
+            {
+              ...parameters,
+              geometry: geometry.file.fileName
+            },
+            {
+              location: path.join(simulationPath, meshPath),
+              name: geoFile
+            }
+          )
 
-          // Upload
-          meshingTask.log += 'Uploading...\n'
-          updateTasks(id, tasks)
-
-          const file = await uploadFile(
+          // Upload script
+          const geo = await uploadFile(
             cloudConfiguration,
             { id },
-            path.join(mesh.originPath, mesh.fileName)
+            path.join(meshPath, geoFile)
           )
-          meshes.push(file)
+          geoFiles.push(geo)
 
-          // Task
-          meshingTask.status = 'finish'
-          meshingTask.file = mesh
-          updateTasks(id, tasks)
+          // Update command
+          command +=
+            '&& gmsh -3 ' +
+            geoFile +
+            ' -o ' +
+            meshFile +
+            ' -format msh2 -clcurv 10'
 
-          // Save mesh name
-          mesh.originPath = '.' // TODO put that in simulation script render
+          // // // Task
+          // // const meshingTask = {
+          // //   type: 'mesh',
+          // //   log: '',
+          // //   status: 'wait'
+          // // }
+          // // tasks.push(meshingTask)
+          // // updateTasks(id, tasks)
+
+          // Mesh
+          const mesh = {
+            fileName: meshFile,
+            originPath: 'geometry_mesh',
+            renderPath: '.',
+            part: 'part.json',
+            partPath: path.join(meshPath, partPath)
+          }
+
+          // // TODO check renderPath originPath
+
+          // // // Upload
+          // // meshingTask.log += 'Uploading...\n'
+          // // updateTasks(id, tasks)
+
+          // const file = await uploadFile(
+          //   cloudConfiguration,
+          //   { id },
+          //   path.join(mesh.originPath, mesh.fileName)
+          // )
+          // meshes.push(file)
+
+          // // // Task
+          // // meshingTask.status = 'finish'
+          // // meshingTask.file = mesh
+          // // updateTasks(id, tasks)
+
+          // Save mesh
           configuration[ckey].mesh = mesh
         }
       })
@@ -211,6 +279,11 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
       path.join('run', id + '.edp')
     )
 
+    // Update command
+    const numberOfCores = cloudParameters.numberOfCores.value
+    command +=
+      '&& mpirun -np ' + numberOfCores + ' FreeFem++-mpi -ns ' + edp.name
+
     // Create job
     simulationTask.log += 'Create job...\n'
     updateTasks(id, tasks)
@@ -218,8 +291,9 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
       algorithm,
       cloudConfiguration,
       cloudParameters,
+      command,
       geometries,
-      meshes,
+      geoFiles,
       edp
     )
 
@@ -294,7 +368,7 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
 
               try {
                 const resCode = await Services.toThree(
-                  path.join(storage.SIMULATION, id),
+                  simulationPath,
                   path.join('run', resFile),
                   path.join('run', partPath),
                   ({ error: resError, data: resData }) => {
@@ -396,6 +470,7 @@ const uploadFile = async (configuration, { id }, fileName) => {
  * @param {string} algorithm Algorithm
  * @param {Object} configuration Configuration
  * @param {Object} parameters Parameters
+ * @param {string} command Command
  * @param {Array} geometries Geometries
  * @param {Array} meshes Meshes
  * @param {Object} edp Edp
@@ -404,6 +479,7 @@ const createJob = async (
   algorithm,
   configuration,
   parameters,
+  command,
   geometries,
   meshes,
   edp
@@ -434,12 +510,7 @@ const createJob = async (
             coreType: coreType,
             coresPerSlot: numberOfCores
           },
-          command:
-            'mkdir -p result && mkdir -p data && mpirun -np ' +
-            numberOfCores +
-            ' FreeFem++-mpi -ns ' +
-            edp.name +
-            ' unknowncommand',
+          command: command,
           inputFiles: [
             ...geometries.map((g) => ({ id: g.id })),
             ...meshes.map((m) => ({ id: m.id })),
@@ -571,4 +642,4 @@ const getFile = async (configuration, id) => {
   return content
 }
 
-export default { key, init, computeMesh, computeSimulation }
+export default { key, init, computeSimulation }

@@ -61,10 +61,6 @@ describe('plugin/rescale/src/lib', () => {
     }
   })
 
-  it('computeMesh', async () => {
-    await Rescale.computeMesh()
-  })
-
   it('computeSimulation', async () => {
     mockReadFile.mockImplementation(() => 'readFile')
     mockCall.mockImplementation((param) => {

@@ -297,7 +297,6 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
     const currentLog = simulationTask.log
     while (status !== 'Completed') {
       status = await getStatus(cloudConfiguration, jobId)
-      console.log(status)
 
       if (status === 'Executing') {
         // Check in-run files
@@ -586,8 +585,6 @@ const getInRunFile = async (configuration, file) => {
     token: configuration.token.value,
     route
   })
-
-  console.log(content)
 
   return content
 }

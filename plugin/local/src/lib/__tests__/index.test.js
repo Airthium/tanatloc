@@ -107,11 +107,13 @@ describe('plugin/local/src/lib', () => {
       return 0
     })
     mockGmsh.mockImplementation((path, mesh, geometry, callback) => {
+      callback({ pid: 'pid' })
       callback({ data: 'data' })
       callback({ error: 'data' })
       return 0
     })
     mockToThree.mockImplementation((path, fileIn, partPath, callback) => {
+      callback({ pid: 'pid' })
       callback({ data: 'file' })
       callback({ data: '{ "name": "name", "path": "path" }' })
       callback({ error: 'error' })

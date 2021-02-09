@@ -50,15 +50,11 @@ const Plugin = ({ plugin }) => {
       // Set uuid
       newPlugin.uuid = uuid()
 
-      console.log(newPlugin)
-
       // API
       await PluginAPI.add(newPlugin)
 
       // Mutate
       addOnePlugin(newPlugin)
-
-      console.log(newPlugin)
 
       // Finish
       setAdd(false)

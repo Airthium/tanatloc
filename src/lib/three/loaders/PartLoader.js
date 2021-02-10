@@ -413,8 +413,8 @@ const PartLoader = (mouseMoveEvent, mouseDownEvent) => {
       selectionType = 1
     }
 
-    selectionRenderer.domElement.addEventListener('mousemove', mouseMove)
-    selectionRenderer.domElement.addEventListener('mousedown', mouseDown)
+    selectionRenderer.domElement.addEventListener('pointermove', mouseMove)
+    selectionRenderer.domElement.addEventListener('pointerdown', mouseDown)
   }
 
   /**
@@ -423,9 +423,9 @@ const PartLoader = (mouseMoveEvent, mouseDownEvent) => {
    */
   const stopSelection = (part) => {
     selectionRenderer &&
-      selectionRenderer.domElement.removeEventListener('mousemove', mouseMove)
+      selectionRenderer.domElement.removeEventListener('pointermove', mouseMove)
     selectionRenderer &&
-      selectionRenderer.domElement.removeEventListener('mousedown', mouseDown)
+      selectionRenderer.domElement.removeEventListener('pointerdown', mouseDown)
 
     selectionType = null
 

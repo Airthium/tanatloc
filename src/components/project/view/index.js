@@ -813,6 +813,7 @@ const View = ({ simulation, setPartSummary }) => {
       // Summary
       const summary = {
         uuid: partContent.uuid,
+        type: partContent.type,
         solids: partContent.solids?.map((solid) => {
           return {
             name: solid.name,

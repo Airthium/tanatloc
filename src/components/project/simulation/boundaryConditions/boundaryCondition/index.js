@@ -39,7 +39,11 @@ const BoundaryCondition = ({
 
   // Edit
   useEffect(() => {
-    if (boundaryCondition) setCurrent(boundaryCondition)
+    if (boundaryCondition)
+      setCurrent({
+        ...boundaryCondition,
+        selected: boundaryCondition.selected.map((s) => s.uuid)
+      })
   }, [boundaryCondition])
 
   // Disabled

@@ -1,16 +1,18 @@
 /** @module 'src/components/assets/selector */
 
 import { useEffect } from 'react'
-import { Card } from 'antd'
+import { Card, Space, Tag } from 'antd'
 
 import { useSelector, useDispatch } from 'react-redux'
 import { highlight, unhighlight, select, unselect } from '@/store/select/action'
+
+import Utils from '@/lib/utils'
 
 /**
  * Selector
  * @param {Object} props Props
  */
-const Selector = ({ part, updateSelected }) => {
+const Selector = ({ part, alreadySelected, updateSelected }) => {
   // Store
   const { type, highlighted, selected } = useSelector((state) => ({
     type: state.select.type,
@@ -76,7 +78,15 @@ const Selector = ({ part, updateSelected }) => {
             onMouseLeave={onUnhighlight}
             onClick={() => onSelect(element.uuid)}
           >
-            {element.name}
+            <Space>
+              {element.name}
+              {alreadySelected?.map((a) => {
+                if (a.selected.find((s) => s.uuid === element.uuid))
+                  return (
+                    <Tag color={Utils.stringToColor(a.label)}>{a.label}</Tag>
+                  )
+              })}
+            </Space>
           </Card>
         )
       })

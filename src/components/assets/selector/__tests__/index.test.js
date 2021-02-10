@@ -27,6 +27,10 @@ jest.mock('@/store/select/action', () => ({
   unselect: () => mockUnselect()
 }))
 
+jest.mock('@/lib/utils', () => ({
+  stringToColor: () => {}
+}))
+
 let wrapper
 describe('src/components/assets/selector', () => {
   const part = {
@@ -39,6 +43,12 @@ describe('src/components/assets/selector', () => {
       }
     ]
   }
+  const alreadySelected = [
+    {
+      label: 'label',
+      selected: [{ uuid: 'uuid' }]
+    }
+  ]
   const updateSelected = jest.fn()
 
   beforeEach(() => {
@@ -55,7 +65,13 @@ describe('src/components/assets/selector', () => {
 
     updateSelected.mockReset()
 
-    wrapper = shallow(<Selector part={part} updateSelected={updateSelected} />)
+    wrapper = shallow(
+      <Selector
+        part={part}
+        alreadySelected={alreadySelected}
+        updateSelected={updateSelected}
+      />
+    )
   })
 
   afterEach(() => {

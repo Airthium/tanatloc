@@ -1,5 +1,9 @@
 import Data from '@/components/project/data'
 
+jest.mock('@/lib/utils', () => ({
+  stringToColor: () => {}
+}))
+
 describe('src/components/project/data', () => {
   it('empty', () => {
     const data = Data()

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Button, Card, Drawer, Layout, Space, Steps, Tabs } from 'antd'
 import {
+  DownloadOutlined,
   EyeOutlined,
   EyeInvisibleOutlined,
   FileTextOutlined,
@@ -57,7 +58,7 @@ const Run = ({ project, simulation }) => {
         if (key !== 'part' && key !== 'run' && !configuration[key].done)
           done = false
       })
-    if (!configuration.run.cloudServer) done = false
+    if (!configuration?.run?.cloudServer) done = false
     setDisabled(!done)
   }, [configuration])
 
@@ -232,6 +233,7 @@ const Run = ({ project, simulation }) => {
                   disabled={!running}
                   icon={<StopOutlined />}
                   onClick={onStop}
+                  style={{ backgroundColor: 'blue', color: 'red' }}
                 />
               </Space>
               <Steps direction="vertical">
@@ -269,7 +271,16 @@ const Run = ({ project, simulation }) => {
           </Card>
 
           {resultFiles.length ? (
-            <Card title="Results">
+            <Card
+              title="Results"
+              extra={
+                <Button
+                  icon={<DownloadOutlined />}
+                  style={{ backgroundColor: 'blue', color: 'red' }}
+                  disabled={true}
+                />
+              }
+            >
               <Space direction="vertical">
                 {resultFiles.map((result) => {
                   return (

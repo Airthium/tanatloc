@@ -133,13 +133,13 @@ describe('src/components/project/simulation/run', () => {
     wrapper.unmount()
     wrapper = mount(<Run project={project} simulation={simulation} />)
 
-    wrapper.find({ title: 'Results' }).find('Button').props().onClick()
+    wrapper.find({ title: 'Results' }).find('Button').at(1).props().onClick()
 
     // Error
     mockUpdate.mockImplementation(() => {
       throw new Error()
     })
-    wrapper.find({ title: 'Results' }).find('Button').props().onClick()
+    wrapper.find({ title: 'Results' }).find('Button').at(1).props().onClick()
   })
 
   it('effect', () => {

@@ -143,10 +143,12 @@ const Parameters = ({ project, simulation }) => {
   return (
     <Layout>
       <Layout.Content>
-        {parameters}
-        <Collapse>
-          <Collapse.Panel header="Advanced">{advanced}</Collapse.Panel>
-        </Collapse>
+        <Space direction="vertical">
+          {parameters}
+          <Collapse className="no-padding">
+            <Collapse.Panel header="Advanced">{advanced}</Collapse.Panel>
+          </Collapse>
+        </Space>
       </Layout.Content>
     </Layout>
   )

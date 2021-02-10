@@ -173,6 +173,7 @@ global.MockScene = {
 class MockScene {
   constructor() {
     this.add = () => {}
+    this.clear = () => {}
     this.remove = () => {}
     this.children = global.MockScene.children
   }

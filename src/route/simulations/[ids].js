@@ -1,10 +1,10 @@
 import getSessionId from '../session'
 import auth from '../auth'
 
-import SimulationLib from '../../lib/simulation'
-import ProjectLib from '../../lib/project'
+import SimulationLib from '@/lib/simulation'
+import ProjectLib from '@/lib/project'
 
-import Sentry from '../../lib/sentry'
+import Sentry from '@/lib/sentry'
 
 /**
  * Simulations by ids

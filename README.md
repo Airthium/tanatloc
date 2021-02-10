@@ -8,13 +8,16 @@ Using server-side rendering (SSR).
 
 ### Database
 
-| Variable    | Default      | Comment           |
-| ----------- | ------------ | ----------------- |
-| DB_USER     | tanatlocuser | Database user     |
-| DB_HOST     | localhost    | Database host     |
-| DB_PORT     | 5432         | Database port     |
-| DB_DATABASE | tanatloc     | Database name     |
-| DB_PASSWORD | tanatloc     | Database password |
+| Variable          | Default           | Comment           |
+| ----------------- | ----------------- | ----------------- |
+| DB_ADMIN          | $USER or postgres | Admin user        |
+| DB_ADMIN_DATABASE | postgres          | Admin database    |
+| DB_ADMIN_PASSWORD |                   | Admin password    |
+| DB_USER           | tanatlocuser      | Database user     |
+| DB_HOST           | localhost         | Database host     |
+| DB_PORT           | 5432              | Database port     |
+| DB_DATABASE       | tanatloc          | Database name     |
+| DB_PASSWORD       | tanatloc          | Database password |
 
 ### Sentry
 
@@ -30,20 +33,6 @@ Using server-side rendering (SSR).
 | STORAGE_PATH             | /tmp/tanatloc | Absolute storage path                   |
 | AVATAR_RELATIVE_PATH     | avatar        | Relative avatar path (from STORAGE)     |
 | SIMULATION_RELATIVE_PATH | simulation    | Realtive simulation path (from STORAGE) |
-
-<!-- ## Database
-
-```shell
-sudo -u postgres psql
-```
-
-```sql
-CREATE DATABASE tanatloc;
-CREATE USER tanatlocuser WITH ENCRYPTED PASSWORD 'tanatloc';
-GRANT ALL PRIVILEGES ON DATABASE tanatloc TO tanatlocuser;
-\c tanatloc
-CREATE EXTENSION pgcrypto;
-``` -->
 
 ## Dev
 
@@ -85,6 +74,13 @@ yarn install
 yarn electron-build
 ```
 
+Docker
+
+```shell
+docker-compose build
+docker-compose up
+```
+
 ## Architecture
 
 This project is based on [Next.js](https://github.com/vercel/next.js/).
@@ -93,13 +89,9 @@ This project is based on [Next.js](https://github.com/vercel/next.js/).
 
 Global configuration (server + client side).
 
-### Main
+### Electron
 
 Electron configuration (using [Nextron](https://github.com/saltyshiomix/nextron)).
-
-### Renderer
-
-Client side with API routes, see [Next.js](https://github.com/vercel/next.js/) for more information.
 
 ### Resources
 
@@ -111,4 +103,4 @@ Custom server for the electron build (as Next.js does not support builded server
 
 ### Src
 
-Global sources (server + client), including `api`, `lib`, ...
+Global sources (server + client), including `api`, `components`, `lib`, ...

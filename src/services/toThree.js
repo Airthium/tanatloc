@@ -1,4 +1,5 @@
 import { execSync, spawn } from 'child_process'
+import isDocker from 'is-docker'
 
 /**
  * toThree service
@@ -33,18 +34,26 @@ const toThree = async (path, fileIn, pathOut, callback) => {
 
   // Convert
   const returnCode = await new Promise((resolve, reject) => {
-    const user = execSync('id -u').toString().trim()
-    const group = execSync('id -g').toString().trim()
-    const run = spawn('docker', [
-      'run',
-      '--volume=' + path + ':/three',
-      '--user=' + user + ':' + group,
-      '-w=/three',
-      'tanatloc/converters:latest',
-      conversionCode,
-      fileIn,
-      pathOut
-    ])
+    let run
+
+    if (isDocker()) {
+      run = spawn(conversionCode, [fileIn, pathOut], {
+        cwd: path
+      })
+    } else {
+      const user = execSync('id -u').toString().trim()
+      const group = execSync('id -g').toString().trim()
+      run = spawn('docker', [
+        'run',
+        '--volume=' + path + ':/three',
+        '--user=' + user + ':' + group,
+        '-w=/three',
+        'tanatloc/worker:latest',
+        conversionCode,
+        fileIn,
+        pathOut
+      ])
+    }
 
     run.stdout.on('data', (data) => {
       callback({ data: data.toString() })

@@ -21,7 +21,7 @@ jest.mock('fs', () => ({
 }))
 
 const mockToThree = jest.fn()
-jest.mock('../../services', () => ({
+jest.mock('@/services', () => ({
   toThree: async (path, fileIn, pathOut, callback) =>
     mockToThree(path, fileIn, pathOut, callback)
 }))

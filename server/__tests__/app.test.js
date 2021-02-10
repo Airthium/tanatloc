@@ -42,24 +42,26 @@ jest.mock('express', () => ({
 }))
 jest.mock('cors', () => () => {})
 
-jest.mock('../../src/route/login', () => ({
+jest.mock('@/route/login', () => ({
   loginRoute: () => {}
 }))
-jest.mock('../../src/route/logout', () => () => {})
-jest.mock('../../src/route/user', () => () => {})
-jest.mock('../../src/route/user/check', () => () => {})
-jest.mock('../../src/route/avatar', () => () => {})
-jest.mock('../../src/route/workspace', () => () => {})
-jest.mock('../../src/route/project', () => () => {})
-jest.mock('../../src/route/project/[id]', () => () => {})
-jest.mock('../../src/route/projects', () => () => {})
-jest.mock('../../src/route/projects/[ids]', () => () => {})
-jest.mock('../../src/route/simulation', () => () => {})
-jest.mock('../../src/route/simulation/[id]', () => () => {})
-jest.mock('../../src/route/simulation/[id]/run', () => () => {})
-jest.mock('../../src/route/simulations', () => () => {})
-jest.mock('../../src/route/simulations/[ids]', () => () => {})
-jest.mock('../../src/route/part', () => () => {})
+jest.mock('@/route/logout', () => () => {})
+jest.mock('@/route/user', () => () => {})
+jest.mock('@/route/user/check', () => () => {})
+jest.mock('@/route/avatar', () => () => {})
+jest.mock('@/route/workspace', () => () => {})
+jest.mock('@/route/project', () => () => {})
+jest.mock('@/route/project/[id]', () => () => {})
+jest.mock('@/route/projects', () => () => {})
+jest.mock('@/route/projects/[ids]', () => () => {})
+jest.mock('@/route/simulation', () => () => {})
+jest.mock('@/route/simulation/[id]', () => () => {})
+jest.mock('@/route/simulation/[id]/run', () => () => {})
+jest.mock('@/route/simulations', () => () => {})
+jest.mock('@/route/simulations/[ids]', () => () => {})
+jest.mock('@/route/part', () => () => {})
+jest.mock('@/route/file', () => () => {})
+jest.mock('@/route/plugin', () => () => {})
 
 describe('server/app', () => {
   it('app', () => {

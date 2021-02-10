@@ -2,9 +2,9 @@
 
 import getSessionId from '../session'
 
-import UserLib from '../../lib/user'
+import UserLib from '@/lib/user'
 
-import Sentry from '../../lib/sentry'
+import Sentry from '@/lib/sentry'
 
 /**
  * User API
@@ -34,7 +34,8 @@ export default async (req, res) => {
             'lastname',
             'firstname',
             'email',
-            'avatar'
+            'avatar',
+            'plugins'
           ])
           res.status(200).json({ user })
         } catch (err) {

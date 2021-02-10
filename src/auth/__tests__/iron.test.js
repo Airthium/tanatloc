@@ -9,7 +9,7 @@ jest.mock('../auth-cookies', () => ({
   getTokenCookie: () => 'cookie'
 }))
 
-jest.mock('../../../config/auth', () => ({
+jest.mock('@/config/auth', () => ({
   SECRET: 'auth_secret'
 }))
 

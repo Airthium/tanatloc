@@ -4,11 +4,15 @@ jest.mock('is-electron', () => () => false)
 
 let mockRoute, mockParam
 const mockJSON = jest.fn(async () => 'json')
+const mockGet = jest.fn(() => '')
 global.fetch = async (route, param) => {
   mockRoute = route
   mockParam = param
   return {
-    json: mockJSON
+    json: mockJSON,
+    headers: {
+      get: () => mockGet()
+    }
   }
 }
 
@@ -46,6 +50,7 @@ describe('src/api/call', () => {
       body: 'something'
     })
 
+    mockGet.mockImplementation(() => 'application/json')
     const res = await Caller.call('/route', {
       headers: {
         Accept: 'application/json'
@@ -60,5 +65,21 @@ describe('src/api/call', () => {
     })
     expect(mockJSON).toHaveBeenCalledTimes(1)
     expect(res).toBe('json')
+
+    mockJSON.mockImplementation(() => ({
+      error: {
+        message: 'test'
+      }
+    }))
+    try {
+      await Caller.call('/route', {
+        headers: {
+          Accept: 'application/json'
+        }
+      })
+      expect(true).toBe(false)
+    } catch (err) {
+      expect(true).toBe(true)
+    }
   })
 })

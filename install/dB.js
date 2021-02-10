@@ -2,7 +2,7 @@ import { Pool } from 'pg'
 import Crypto from 'crypto'
 
 import config, { databases } from '../config/db'
-import query from '../src/database'
+import query from '@/database'
 
 /**
  * Create database
@@ -13,15 +13,13 @@ const createDatabase = async () => {
   try {
     let pool, client
 
-    // Set user (MacOS specific 😠)
-    const user = process.platform === 'darwin' ? process.env.USER : 'postgres'
-
     // Pool
     pool = new Pool({
       host: config.HOST,
       port: config.PORT,
-      user: user,
-      database: 'postgres'
+      user: config.ADMIN,
+      database: config.ADMIN_DATABASE,
+      password: config.ADMIN_PASSWORD
     })
     client = await pool.connect()
 
@@ -64,7 +62,8 @@ const createDatabase = async () => {
       host: config.HOST,
       port: config.PORT,
       database: config.DATABASE,
-      user: 'postgres'
+      user: config.USER,
+      password: config.PASSWORD
     })
     client = await pool.connect()
 
@@ -178,6 +177,7 @@ const createUsersTable = async () => {
         databases.AVATARS +
         `(id) ON DELETE SET NULL,
           workspaces uuid[],
+          plugins jsonb[],
           isValidated BOOLEAN NOT NULL,
           lastModificationDate TIMESTAMP NOT NULL,
           superuser BOOLEAN NOT NULL

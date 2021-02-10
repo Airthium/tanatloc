@@ -2,13 +2,12 @@
 
 import express from 'express'
 import passport from 'passport'
-import { localStrategy } from '../auth/password-local'
-import { encryptSession } from '../auth/iron'
-import { setTokenCookie } from '../auth/auth-cookies'
+import { localStrategy } from '@/auth/password-local'
+import { encryptSession } from '@/auth/iron'
+import { setTokenCookie } from '@/auth/auth-cookies'
 
-import Sentry from '../lib/sentry'
+import Sentry from '@/lib/sentry'
 
-const app = express()
 const authenticate = (method, req, res) =>
   new Promise((resolve, reject) => {
     passport.authenticate(method, { session: false }, (error, token) => {
@@ -19,10 +18,6 @@ const authenticate = (method, req, res) =>
       }
     })(req, res)
   })
-
-app.disable('x-powered-by')
-
-app.use(passport.initialize())
 
 passport.use(localStrategy)
 
@@ -58,6 +53,9 @@ export const loginRoute = async (req, res) => {
   }
 }
 
+const app = express()
+app.disable('x-powered-by')
+app.use(passport.initialize())
 app.post('/api/login', loginRoute)
 
 export default app

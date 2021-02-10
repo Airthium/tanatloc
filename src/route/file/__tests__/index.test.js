@@ -7,23 +7,23 @@ const mockAuth = jest.fn()
 jest.mock('../../auth', () => () => mockAuth())
 
 const mockGet = jest.fn()
-jest.mock('../../../lib/file', () => ({
+jest.mock('@/lib/file', () => ({
   get: async () => mockGet()
 }))
 
 const mockGetSimulation = jest.fn()
-jest.mock('../../../lib/simulation', () => ({
+jest.mock('@/lib/simulation', () => ({
   get: async () => mockGetSimulation()
 }))
 
 const mockGetProject = jest.fn()
-jest.mock('../../../lib/project', () => ({
+jest.mock('@/lib/project', () => ({
   get: async () => mockGetProject()
 }))
 
-const mockSentry = jest.fn()
-jest.mock('../../../lib/sentry', () => ({
-  captureException: () => mockSentry()
+const mockError = jest.fn()
+jest.mock('@/lib/sentry', () => ({
+  captureException: () => mockError()
 }))
 
 describe('src/route/file', () => {
@@ -56,7 +56,7 @@ describe('src/route/file', () => {
 
     mockGetProject.mockReset()
 
-    mockSentry.mockReset()
+    mockError.mockReset()
 
     req = {
       method: 'POST',
@@ -72,7 +72,7 @@ describe('src/route/file', () => {
     expect(mockGetProject).toHaveBeenCalledTimes(0)
     expect(mockAuth).toHaveBeenCalledTimes(0)
     expect(mockGet).toHaveBeenCalledTimes(0)
-    expect(mockSentry).toHaveBeenCalledTimes(0)
+    expect(mockError).toHaveBeenCalledTimes(0)
     expect(response).toBe(undefined)
   })
 
@@ -91,7 +91,7 @@ describe('src/route/file', () => {
     expect(mockGetProject).toHaveBeenCalledTimes(1)
     expect(mockAuth).toHaveBeenCalledTimes(1)
     expect(mockGet).toHaveBeenCalledTimes(0)
-    expect(mockSentry).toHaveBeenCalledTimes(0)
+    expect(mockError).toHaveBeenCalledTimes(0)
     expect(response).toEqual({ error: true, message: 'Unauthorized' })
 
     // Authorized
@@ -102,7 +102,7 @@ describe('src/route/file', () => {
     expect(mockGetProject).toHaveBeenCalledTimes(2)
     expect(mockAuth).toHaveBeenCalledTimes(2)
     expect(mockGet).toHaveBeenCalledTimes(1)
-    expect(mockSentry).toHaveBeenCalledTimes(0)
+    expect(mockError).toHaveBeenCalledTimes(0)
     expect(response).toBe('file')
 
     // Error
@@ -115,7 +115,7 @@ describe('src/route/file', () => {
     expect(mockGetProject).toHaveBeenCalledTimes(3)
     expect(mockAuth).toHaveBeenCalledTimes(3)
     expect(mockGet).toHaveBeenCalledTimes(2)
-    expect(mockSentry).toHaveBeenCalledTimes(1)
+    expect(mockError).toHaveBeenCalledTimes(1)
     expect(response).toEqual({ error: true, message: 'test' })
   })
 
@@ -130,7 +130,7 @@ describe('src/route/file', () => {
     expect(mockGetProject).toHaveBeenCalledTimes(0)
     expect(mockAuth).toHaveBeenCalledTimes(0)
     expect(mockGet).toHaveBeenCalledTimes(0)
-    expect(mockSentry).toHaveBeenCalledTimes(1)
+    expect(mockError).toHaveBeenCalledTimes(1)
     expect(response).toEqual({
       error: true,
       message: 'Method SOMETHING not allowed'

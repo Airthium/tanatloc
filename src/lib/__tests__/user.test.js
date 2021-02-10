@@ -4,7 +4,7 @@ const mockGet = jest.fn()
 const mockGetByUsernameAndPassword = jest.fn()
 const mockUpdate = jest.fn()
 const mockDel = jest.fn()
-jest.mock('../../database/user', () => {
+jest.mock('@/database/user', () => {
   return {
     add: async () => ({ id: 'id' }),
     get: async () => mockGet(),

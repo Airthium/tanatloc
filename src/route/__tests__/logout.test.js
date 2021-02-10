@@ -1,13 +1,13 @@
 import logout from '../logout'
 
 const mockRemove = jest.fn()
-jest.mock('../../auth/auth-cookies', () => ({
+jest.mock('@/auth/auth-cookies', () => ({
   removeTokenCookie: () => mockRemove()
 }))
 
-const mockSentry = jest.fn()
-jest.mock('../../lib/sentry', () => ({
-  captureException: () => mockSentry()
+const mockError = jest.fn()
+jest.mock('@/lib/sentry', () => ({
+  captureException: () => mockError()
 }))
 
 describe('src/route/api', () => {
@@ -28,6 +28,6 @@ describe('src/route/api', () => {
         })
       }
     )
-    expect(mockSentry).toHaveBeenCalledTimes(1)
+    expect(mockError).toHaveBeenCalledTimes(1)
   })
 })

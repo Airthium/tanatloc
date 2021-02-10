@@ -4,22 +4,24 @@ import createError from 'http-errors'
 import express, { json, urlencoded } from 'express'
 import cors from 'cors'
 
-import { loginRoute } from '../src/route/login'
-import logout from '../src/route/logout'
-import user from '../src/route/user'
-import userCheck from '../src/route/user/check'
-import avatar from '../src/route/avatar'
-import workspace from '../src/route/workspace'
-import project from '../src/route/project'
-import projectId from '../src/route/project/[id]'
-import projects from '../src/route/projects'
-import projectsIds from '../src/route/projects/[ids]'
-import simulation from '../src/route/simulation'
-import simulationId from '../src/route/simulation/[id]'
-import simulationIdRun from '../src/route/simulation/[id]/run'
-import simulations from '../src/route/simulations'
-import simulationsIds from '../src/route/simulations/[ids]'
-import part from '../src/route/part'
+import { loginRoute } from '@/route/login'
+import logout from '@/route/logout'
+import user from '@/route/user'
+import userCheck from '@/route/user/check'
+import avatar from '@/route/avatar'
+import workspace from '@/route/workspace'
+import project from '@/route/project'
+import projectId from '@/route/project/[id]'
+import projects from '@/route/projects'
+import projectsIds from '@/route/projects/[ids]'
+import simulation from '@/route/simulation'
+import simulationId from '@/route/simulation/[id]'
+import simulationIdRun from '@/route/simulation/[id]/run'
+import simulations from '@/route/simulations'
+import simulationsIds from '@/route/simulations/[ids]'
+import part from '@/route/part'
+import file from '@/route/file'
+import plugin from '@/route/plugin'
 
 const app = express()
 app.disable('x-powered-by')
@@ -59,6 +61,10 @@ app.all('/api/simulations', simulations)
 app.all('/api/simulations/:ids', simulationsIds)
 
 app.all('/api/part', part)
+
+app.all('/api/file', file)
+
+app.all('/api/plugin', plugin)
 
 /**
  * Catch 404 and forward to error handler

@@ -1,4 +1,5 @@
 import { execSync, spawn } from 'child_process'
+import isDocker from 'is-docker'
 
 /**
  * FreeFEM service
@@ -9,20 +10,30 @@ import { execSync, spawn } from 'child_process'
  */
 const freefem = async (path, script, callback) => {
   const returnCode = await new Promise((resolve, reject) => {
-    const user = execSync('id -u').toString().trim()
-    const group = execSync('id -g').toString().trim()
-    const run = spawn('docker', [
-      'run',
-      '--rm',
-      '--volume=' + path + ':/run',
-      '--user=' + user + ':' + group,
-      '-w=/run',
-      'freefem/freefem:latest',
-      'FreeFem++',
-      '-nw',
-      '-ns',
-      script
-    ])
+    let run
+
+    if (isDocker()) {
+      run = spawn('FreeFem++', ['-nw', '-ns', script], {
+        cwd: path
+      })
+    } else {
+      const user = execSync('id -u').toString().trim()
+      const group = execSync('id -g').toString().trim()
+      run = spawn('docker', [
+        'run',
+        '--rm',
+        '--volume=' + path + ':/run',
+        '--user=' + user + ':' + group,
+        '-w=/run',
+        'tanatloc/worker:latest',
+        'FreeFem++',
+        '-nw',
+        '-ns',
+        script
+      ])
+    }
+
+    callback({ pid: run.pid })
 
     run.stdout.on('data', (data) => {
       callback({ data: data.toString() })

@@ -1,12 +1,16 @@
 import useSimulations from '../useSimulations'
 
-let mockSimulations = () => [{ id: 'id' }, {}]
+const mockSimulations = jest.fn()
 jest.mock('swr', () => () => ({
   data: { simulations: mockSimulations() },
   mutate: jest.fn()
 }))
 
 describe('src/api/simulation/useSimulations', () => {
+  beforeEach(() => {
+    mockSimulations.mockImplementation(() => [{ id: 'id' }, {}])
+  })
+
   it('without ids', () => {
     const [
       simulations,
@@ -36,7 +40,7 @@ describe('src/api/simulation/useSimulations', () => {
   })
 
   it('withtout simulations', () => {
-    mockSimulations = () => {}
+    mockSimulations.mockImplementation(() => {})
     const [simulations] = useSimulations(['id1', 'id2'])
     expect(simulations).toEqual([])
   })

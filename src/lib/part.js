@@ -2,7 +2,7 @@
 
 import path from 'path'
 
-import storage from '../../config/storage'
+import storage from '@/config/storage'
 
 import Tools from './tools'
 

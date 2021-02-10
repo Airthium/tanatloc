@@ -4,13 +4,13 @@ const mockSession = jest.fn()
 jest.mock('../../session', () => () => mockSession())
 
 const mockAdd = jest.fn()
-jest.mock('../../../lib/simulation', () => ({
+jest.mock('@/lib/simulation', () => ({
   add: async () => mockAdd()
 }))
 
-const mockSentry = jest.fn()
-jest.mock('../../../lib/sentry', () => ({
-  captureException: () => mockSentry()
+const mockError = jest.fn()
+jest.mock('@/lib/sentry', () => ({
+  captureException: () => mockError()
 }))
 
 describe('src/route/simulation', () => {
@@ -36,7 +36,7 @@ describe('src/route/simulation', () => {
       name: 'name'
     }))
 
-    mockSentry.mockReset()
+    mockError.mockReset()
 
     req = {
       method: 'GET'
@@ -48,7 +48,7 @@ describe('src/route/simulation', () => {
     await simulation(req, res)
     expect(mockSession).toHaveBeenCalledTimes(1)
     expect(mockAdd).toHaveBeenCalledTimes(0)
-    expect(mockSentry).toHaveBeenCalledTimes(0)
+    expect(mockError).toHaveBeenCalledTimes(0)
     expect(response).toBe(undefined)
   })
 
@@ -58,7 +58,7 @@ describe('src/route/simulation', () => {
     await simulation(req, res)
     expect(mockSession).toHaveBeenCalledTimes(1)
     expect(mockAdd).toHaveBeenCalledTimes(0)
-    expect(mockSentry).toHaveBeenCalledTimes(0)
+    expect(mockError).toHaveBeenCalledTimes(0)
     expect(response).toBe('end')
   })
 
@@ -70,7 +70,7 @@ describe('src/route/simulation', () => {
     await simulation(req, res)
     expect(mockSession).toHaveBeenCalledTimes(1)
     expect(mockAdd).toHaveBeenCalledTimes(1)
-    expect(mockSentry).toHaveBeenCalledTimes(0)
+    expect(mockError).toHaveBeenCalledTimes(0)
     expect(response).toEqual({
       id: 'id',
       name: 'name'
@@ -83,7 +83,7 @@ describe('src/route/simulation', () => {
     await simulation(req, res)
     expect(mockSession).toHaveBeenCalledTimes(2)
     expect(mockAdd).toHaveBeenCalledTimes(2)
-    expect(mockSentry).toHaveBeenCalledTimes(1)
+    expect(mockError).toHaveBeenCalledTimes(1)
     expect(response).toEqual({ error: true, message: 'test' })
   })
 
@@ -95,7 +95,7 @@ describe('src/route/simulation', () => {
     await simulation(req, res)
     expect(mockSession).toHaveBeenCalledTimes(1)
     expect(mockAdd).toHaveBeenCalledTimes(0)
-    expect(mockSentry).toHaveBeenCalledTimes(1)
+    expect(mockError).toHaveBeenCalledTimes(1)
     expect(response).toEqual({
       error: true,
       message: 'Method SOMETHING not allowed'

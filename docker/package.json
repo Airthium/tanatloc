@@ -1,0 +1,35 @@
+{
+  "name": "tanatloc-build",
+  "description": "Tanatloc",
+  "private": true,
+  "license": "UNLICENSED",
+  "scripts": {
+    "start": "next start"
+  },
+  "dependencies": {
+    "@hapi/iron": "6.0.0",
+    "@sentry/node": "5.29.2",
+    "@zeit/next-less": "1.0.1",
+    "cookie": "0.4.1",
+    "ejs": "3.1.5",
+    "electron": "11.1.1",
+    "electron-store": "6.0.1",
+    "express": "4.17.1",
+    "is-electron": "2.2.0",
+    "is-docker": "2.1.1",
+    "lodash.merge": "4.6.2",
+    "next": "10.0.5",
+    "node-fetch": "2.6.1",
+    "passport": "0.4.1",
+    "passport-local": "1.0.0",
+    "pg": "8.5.1",
+    "pg-native": "3.0.0",
+    "react": "17.0.1",
+    "react-dom": "17.0.1",
+    "react-redux": "7.2.2",
+    "redux": "4.0.5",
+    "redux-devtools-extension": "2.13.8",
+    "redux-persist": "6.0.0",
+    "url-join": "4.0.1"
+  }
+}

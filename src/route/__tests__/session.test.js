@@ -1,7 +1,7 @@
 import getSessionId from '../session'
 
 const mockSession = jest.fn()
-jest.mock('../../auth/iron', () => ({
+jest.mock('@/auth/iron', () => ({
   getSession: () => mockSession()
 }))
 

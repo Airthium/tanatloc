@@ -67,7 +67,7 @@ const SelectionHelper = (renderer, scene, camera, controls) => {
    * @param {Object} event Event
    */
   const onMouseMove = (event) => {
-    if (!enabled || event.button !== 0) return
+    if (!enabled) return
     if (down) onSelectMove(event)
   }
 
@@ -82,9 +82,9 @@ const SelectionHelper = (renderer, scene, camera, controls) => {
   }
 
   // Event listeners
-  renderer.domElement.addEventListener('mousedown', onMouseDown)
-  renderer.domElement.addEventListener('mousemove', onMouseMove)
-  renderer.domElement.addEventListener('mouseup', onMouseUp)
+  renderer.domElement.addEventListener('pointerdown', onMouseDown)
+  renderer.domElement.addEventListener('pointermove', onMouseMove)
+  renderer.domElement.addEventListener('pointerup', onMouseUp)
 
   /**
    * Selection start
@@ -92,7 +92,6 @@ const SelectionHelper = (renderer, scene, camera, controls) => {
    */
   const onSelectStart = (event) => {
     controls.enabled = false
-    controls.stop()
 
     renderer.domElement.parentElement.appendChild(element)
 
@@ -206,9 +205,9 @@ const SelectionHelper = (renderer, scene, camera, controls) => {
    */
   const dispose = () => {
     // Event listeners
-    renderer.domElement.removeEventListener('mousedown', onMouseDown)
-    renderer.domElement.removeEventListener('mousemove', onMouseMove)
-    renderer.domElement.removeEventListener('mouseup', onMouseUp)
+    renderer.domElement.removeEventListener('pointerdown', onMouseDown)
+    renderer.domElement.removeEventListener('pointermove', onMouseMove)
+    renderer.domElement.removeEventListener('pointerup', onMouseUp)
   }
 
   return { start, isEnabled, end, dispose }

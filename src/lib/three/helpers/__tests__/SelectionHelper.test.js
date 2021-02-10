@@ -12,9 +12,9 @@ describe('src/lib/three/helpers/SelectionHelper', () => {
     domElement: {
       getBoundingClientRect: () => ({}),
       addEventListener: (type, callback) => {
-        if (type === 'mousedown') mouseDown = callback
-        else if (type === 'mousemove') mouseMove = callback
-        else if (type === 'mouseup') mouseUp = callback
+        if (type === 'pointerdown') mouseDown = callback
+        else if (type === 'pointermove') mouseMove = callback
+        else if (type === 'pointerup') mouseUp = callback
       },
       removeEventListener: () => {},
       parentElement: {

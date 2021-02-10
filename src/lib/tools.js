@@ -3,7 +3,7 @@
 import path from 'path'
 import { promises as fs } from 'fs'
 
-import Services from '../services'
+import Services from '@/services'
 
 /**
  * Create path (recursive)

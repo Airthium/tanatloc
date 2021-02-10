@@ -3,3 +3,12 @@ ThreeJS :
 
 Converters:
 - Support geometry names with space
+
+Simulation weak coupling
+
+Plugins:
+- Stop a job
+
+Rescale:
+- delete job & files
+- real-time results

@@ -3,9 +3,9 @@
 import getSessionId from '../session'
 import auth from '../auth'
 
-import WorkspaceLib from '../../lib/workspace'
+import WorkspaceLib from '@/lib/workspace'
 
-import Sentry from '../../lib/sentry'
+import Sentry from '@/lib/sentry'
 
 /**
  * Workspace API

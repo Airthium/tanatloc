@@ -2,9 +2,9 @@
 
 import getSessionId from '../session'
 
-import SimulationLib from '../../lib/simulation'
+import SimulationLib from '@/lib/simulation'
 
-import Sentry from '../../lib/sentry'
+import Sentry from '@/lib/sentry'
 
 /**
  * Simulation API

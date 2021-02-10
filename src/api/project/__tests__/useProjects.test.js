@@ -1,6 +1,6 @@
 import useProjects from '../useProjects'
 
-let mockProjects = () => [{ id: 'id' }, {}]
+const mockProjects = jest.fn()
 jest.mock('swr', () => () => ({
   data: { projects: mockProjects() },
   mutate: jest.fn()
@@ -8,6 +8,7 @@ jest.mock('swr', () => () => ({
 
 describe('src/api/project/useProjects', () => {
   it('without ids', () => {
+    mockProjects.mockImplementation(() => [{ id: 'id' }, {}])
     const [
       projects,
       {
@@ -31,12 +32,13 @@ describe('src/api/project/useProjects', () => {
   })
 
   it('with ids', () => {
+    mockProjects.mockImplementation(() => [{ id: 'id' }, {}])
     const [projects] = useProjects(['id1', 'id2'])
     expect(projects).toEqual([{ id: 'id' }, {}])
   })
 
   it('withtout projects', () => {
-    mockProjects = () => {}
+    mockProjects.mockImplementation(() => {})
     const [projects] = useProjects(['id1', 'id2'])
     expect(projects).toEqual([])
   })

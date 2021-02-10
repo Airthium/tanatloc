@@ -7,6 +7,9 @@ jest.mock('child_process', () => ({
   spawn: () => mockSpawn()
 }))
 
+const mockDocker = jest.fn()
+jest.mock('is-docker', () => () => mockDocker())
+
 describe('src/services/freefem', () => {
   const mockCallback = jest.fn()
 
@@ -14,6 +17,9 @@ describe('src/services/freefem', () => {
     mockExecSync.mockReset()
     mockExecSync.mockImplementation(() => '')
     mockSpawn.mockReset()
+
+    mockDocker.mockReset()
+
     mockCallback.mockReset()
   })
 
@@ -62,5 +68,29 @@ describe('src/services/freefem', () => {
       expect(mockExecSync).toHaveBeenCalledTimes(4)
       expect(mockSpawn).toHaveBeenCalledTimes(2)
     }
+  })
+
+  it('isDocker', async () => {
+    mockDocker.mockImplementation(() => true)
+
+    mockSpawn.mockImplementation(() => ({
+      stdout: {
+        on: (data, callback) => {
+          callback('stdout')
+        }
+      },
+      stderr: {
+        on: (data, callback) => {
+          callback('stderr')
+        }
+      },
+      on: (arg, callback) => {
+        if (arg === 'close') callback(0)
+      }
+    }))
+    const code = await freefem('path', 'script', mockCallback)
+    expect(mockExecSync).toHaveBeenCalledTimes(0)
+    expect(mockSpawn).toHaveBeenCalledTimes(1)
+    expect(code).toBe(0)
   })
 })

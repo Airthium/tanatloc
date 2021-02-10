@@ -15,11 +15,11 @@ dist-install
 /doc
 
 # next.js
-renderer/.next/
-renderer/out
+/.next/
+/out
 
 # production
-renderer/build
+/build
 
 # misc
 .DS_Store

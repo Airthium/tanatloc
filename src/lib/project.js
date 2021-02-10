@@ -1,6 +1,6 @@
 /** @module src/lib/project */
 
-import ProjectDB from '../database/project'
+import ProjectDB from '@/database/project'
 
 import Avatar from './avatar'
 import User from './user'

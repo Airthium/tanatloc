@@ -4,7 +4,7 @@ const mockAdd = jest.fn()
 const mockGet = jest.fn()
 const mockUpdate = jest.fn()
 const mockDelete = jest.fn()
-jest.mock('../../database/workspace', () => {
+jest.mock('@/database/workspace', () => {
   return {
     add: async () => mockAdd(),
     get: async () => mockGet(),

@@ -1,6 +1,6 @@
-import { removeTokenCookie } from '../auth/auth-cookies'
+import { removeTokenCookie } from '@/auth/auth-cookies'
 
-import Sentry from '../lib/sentry'
+import Sentry from '@/lib/sentry'
 
 /**
  * Logout API

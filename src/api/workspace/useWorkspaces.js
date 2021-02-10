@@ -1,5 +1,5 @@
 import useSWR from 'swr'
-import Caller from '../call'
+import Caller from '@/api/call'
 
 /**
  * Use a workspace (SWR)

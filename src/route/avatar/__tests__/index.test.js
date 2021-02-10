@@ -5,14 +5,14 @@ jest.mock('../../session', () => () => mockSession())
 
 const mockAdd = jest.fn()
 const mockDel = jest.fn()
-jest.mock('../../../lib/avatar', () => ({
+jest.mock('@/lib/avatar', () => ({
   add: async () => mockAdd(),
   del: async () => mockDel()
 }))
 
-const mockSentry = jest.fn()
-jest.mock('../../../lib/sentry', () => ({
-  captureException: () => mockSentry()
+const mockError = jest.fn()
+jest.mock('@/lib/sentry', () => ({
+  captureException: () => mockError()
 }))
 
 describe('src/route/avatar', () => {
@@ -36,7 +36,7 @@ describe('src/route/avatar', () => {
     mockAdd.mockImplementation(() => 'avatar')
     mockDel.mockReset()
 
-    mockSentry.mockReset()
+    mockError.mockReset()
 
     req = {
       method: 'POST',
@@ -50,7 +50,7 @@ describe('src/route/avatar', () => {
     expect(mockSession).toHaveBeenCalledTimes(1)
     expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockDel).toHaveBeenCalledTimes(0)
-    expect(mockSentry).toHaveBeenCalledTimes(0)
+    expect(mockError).toHaveBeenCalledTimes(0)
     expect(response).toBe(undefined)
   })
 
@@ -61,7 +61,7 @@ describe('src/route/avatar', () => {
     expect(mockSession).toHaveBeenCalledTimes(1)
     expect(mockAdd).toHaveBeenCalledTimes(1)
     expect(mockDel).toHaveBeenCalledTimes(0)
-    expect(mockSentry).toHaveBeenCalledTimes(0)
+    expect(mockError).toHaveBeenCalledTimes(0)
     expect(response).toBe('avatar')
 
     // Error
@@ -72,7 +72,7 @@ describe('src/route/avatar', () => {
     expect(mockSession).toHaveBeenCalledTimes(2)
     expect(mockAdd).toHaveBeenCalledTimes(2)
     expect(mockDel).toHaveBeenCalledTimes(0)
-    expect(mockSentry).toHaveBeenCalledTimes(1)
+    expect(mockError).toHaveBeenCalledTimes(1)
     expect(response).toEqual({ error: true, message: 'test' })
   })
 
@@ -85,7 +85,7 @@ describe('src/route/avatar', () => {
     expect(mockSession).toHaveBeenCalledTimes(1)
     expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockDel).toHaveBeenCalledTimes(1)
-    expect(mockSentry).toHaveBeenCalledTimes(0)
+    expect(mockError).toHaveBeenCalledTimes(0)
     expect(response).toBe('end')
 
     // Error
@@ -96,7 +96,7 @@ describe('src/route/avatar', () => {
     expect(mockSession).toHaveBeenCalledTimes(2)
     expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockDel).toHaveBeenCalledTimes(2)
-    expect(mockSentry).toHaveBeenCalledTimes(1)
+    expect(mockError).toHaveBeenCalledTimes(1)
     expect(response).toEqual({ error: true, message: 'test' })
   })
 
@@ -109,7 +109,7 @@ describe('src/route/avatar', () => {
     expect(mockSession).toHaveBeenCalledTimes(1)
     expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockDel).toHaveBeenCalledTimes(0)
-    expect(mockSentry).toHaveBeenCalledTimes(1)
+    expect(mockError).toHaveBeenCalledTimes(1)
     expect(response).toEqual({
       error: true,
       message: 'Method SOMETHING not allowed'

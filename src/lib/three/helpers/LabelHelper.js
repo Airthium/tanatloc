@@ -5,6 +5,8 @@ import { Sprite, SpriteMaterial, Texture } from 'three/build/three.module'
 /**
  * LabelHelper
  * @param {string} text Text
+ * @param {number} size Size
+ * @param {string} fontColor Font color
  * @param {number} fontSize Font size
  */
 const LabelHelper = (text, size = 512, fontColor = 'black', fontSize = 512) => {

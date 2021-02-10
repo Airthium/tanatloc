@@ -212,7 +212,6 @@ const SectionViewHelper = (renderer, scene, camera, controls) => {
    */
   const transformStop = () => {
     controls.enabled = true
-    controls.stop()
 
     transformControls.enabled = false
     transformControls.detach()
@@ -243,7 +242,9 @@ const SectionViewHelper = (renderer, scene, camera, controls) => {
    */
   const dispose = () => {
     // Event listener
+    renderer.domElement.removeEventListener('mousedown', onMouseDown)
     renderer.domElement.removeEventListener('mousemove', onMouseMove)
+    renderer.domElement.removeEventListener('mouseup', onMouseUp)
 
     // Meshes
     controller.geometry.dispose()

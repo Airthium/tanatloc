@@ -1,6 +1,6 @@
 import createPaths from '../storage'
 
-let mockMkdir = () => {}
+const mockMkdir = jest.fn()
 jest.mock('fs', () => ({
   promises: {
     mkdir: async () => mockMkdir()
@@ -13,16 +13,16 @@ describe('install/storage', () => {
   })
 
   it('exists', async () => {
-    mockMkdir = () => {
+    mockMkdir.mockImplementation(() => {
       throw { code: 'EEXIST' }
-    }
+    })
     await createPaths()
   })
 
   it('error', async () => {
-    mockMkdir = () => {
+    mockMkdir.mockImplementation(() => {
       throw new Error()
-    }
+    })
     await createPaths()
   })
 })

@@ -1,11 +1,11 @@
 import createDatabase from '../dB'
 
-let mockQuery
-jest.mock('../../src/database', () => {
+const mockQuery = jest.fn()
+jest.mock('@/database', () => {
   return async (query) => mockQuery(query)
 })
 
-let mockClient
+const mockClient = jest.fn()
 jest.mock('pg', () => ({
   Pool: class {
     constructor() {
@@ -17,27 +17,27 @@ jest.mock('pg', () => ({
 
 describe('install/dB', () => {
   beforeEach(() => {
-    mockClient = () => ({
+    mockClient.mockImplementation(() => ({
       query: async () => ({
         rowCount: 0
       }),
       release: () => {}
-    })
-    mockQuery = () => ({ rows: [{}] })
+    }))
+    mockQuery.mockImplementation(() => ({ rows: [{}] }))
   })
 
   it('alreadyExists', async () => {
-    mockClient = () => ({
+    mockClient.mockImplementation(() => ({
       query: async () => ({
         rowCount: 1
       }),
       release: () => {}
-    })
+    }))
     await createDatabase()
   })
 
   it('database error', async () => {
-    mockClient = () => ({})
+    mockClient.mockImplementation(() => ({}))
     await createDatabase()
   })
 
@@ -46,28 +46,17 @@ describe('install/dB', () => {
   })
 
   it('admin & exists', async () => {
-    mockQuery = (query) => {
+    mockQuery.mockImplementation((query) => {
       if (query.includes('SELECT id FROM')) return { rows: [] }
       else return { rows: [{ exists: true }] }
-    }
+    })
     await createDatabase()
   })
 
   it('tables error', async () => {
-    mockQuery = () => {
+    mockQuery.mockImplementation(() => {
       throw new Error()
-    }
-    await createDatabase()
-  })
-
-  it('MacOS', async () => {
-    const original = process.platform
-    Object.defineProperty(process, 'platform', {
-      value: 'darwin'
     })
     await createDatabase()
-    Object.defineProperty(process, 'platform', {
-      value: original
-    })
   })
 })

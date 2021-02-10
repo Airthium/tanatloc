@@ -26,8 +26,11 @@ const call = async (route, param) => {
     }
   })
 
-  if (param && param.headers && param.headers.Accept === 'application/json') {
+  const contentType = response.headers.get('Content-Type')
+  if (contentType && contentType.includes('application/json')) {
     const res = await response.json()
+
+    if (res.error) throw new Error(res.message)
     return res
   }
 

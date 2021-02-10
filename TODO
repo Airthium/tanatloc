@@ -1,10 +1,8 @@
-ThreeJS :
+ThreeJS:
 - rendering order for sprites
 
-Converters:
-- Support geometry names with space
-
-Simulation weak coupling
+Simulation:
+- weak coupling
 
 Plugins:
 - Stop a job

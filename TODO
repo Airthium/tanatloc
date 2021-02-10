@@ -12,3 +12,7 @@ Plugins:
 Rescale:
 - delete job & files
 - real-time results
+
+Results:
+- download a result
+- download an archive

@@ -34,8 +34,6 @@ const Run = ({ project, simulation }) => {
   const [running, setRunning] = useState(false)
   const [logVisible, setLogVisible] = useState(false)
   const [logContent, setLogContent] = useState()
-  const [meshingTasks, setMeshingTasks] = useState()
-  const [simulatingTasks, setSimulatingTasks] = useState()
 
   const [configuration, setConfiguration] = useState(
     simulation?.scheme?.configuration
@@ -64,14 +62,6 @@ const Run = ({ project, simulation }) => {
   }, [configuration])
 
   useEffect(() => {
-    const meshing = currentSimulation?.tasks?.filter((t) => t.type === 'mesh')
-    setMeshingTasks(meshing)
-
-    const simulating = currentSimulation?.tasks?.filter(
-      (t) => t.type === 'simulation'
-    )
-    setSimulatingTasks(simulating)
-
     const runningTasks = currentSimulation?.tasks?.filter(
       (t) => t.status !== 'finish' && t.status !== 'error'
     )
@@ -148,20 +138,20 @@ const Run = ({ project, simulation }) => {
 
   /**
    * On log
-   * @param {Array} tasks Tasks
-   * @param {string} title Tabs title
+   * @param {Object} task Task
+   * @param {string} title Tab title
    */
-  const onLog = (tasks, title) => {
+  const onLog = (task, title) => {
     // Content
-    const content = tasks.map((t, index) => (
-      <Tabs.TabPane key={index} tab={title + ' ' + (index + 1)}>
+    const content = (
+      <Tabs.TabPane tab={title}>
         <div
           dangerouslySetInnerHTML={{
-            __html: t?.log?.replace(/\n\n/g, '\n').replace(/\n/g, '<br />')
+            __html: task?.log?.replace(/\n\n/g, '\n').replace(/\n/g, '<br />')
           }}
         />
       </Tabs.TabPane>
-    ))
+    )
     setLogContent(<Tabs>{content}</Tabs>)
 
     // Open
@@ -203,8 +193,9 @@ const Run = ({ project, simulation }) => {
   }
 
   const resultFiles = []
-  simulatingTasks?.forEach((task) => {
-    resultFiles.push(...(task.files || []))
+  currentSimulation?.tasks?.forEach((task) => {
+    if (task.file) resultFiles.push(task.file)
+    if (task.files) resultFiles.push(...task.files)
   })
 
   /**
@@ -244,65 +235,35 @@ const Run = ({ project, simulation }) => {
                 />
               </Space>
               <Steps direction="vertical">
-                {meshingTasks?.map((task, index) => {
-                  return (
-                    <Steps.Step
-                      key={task}
-                      title="Meshing"
-                      description={
-                        <>
+                {currentSimulation?.tasks
+                  ?.sort((a, b) => {
+                    if (a.index === -1) return 1
+                    if (b.index === -1) return -1
+                    return a.index - b.index
+                  })
+                  .map((task, index) => {
+                    return (
+                      <Steps.Step
+                        key={task}
+                        title={task.label}
+                        description={
                           <Button
                             icon={<FileTextOutlined />}
-                            onClick={() => onLog(meshingTasks, 'Mesh')}
+                            onClick={() => onLog(task, task.label)}
                             size="small"
                           />
-                          <Button
-                            icon={
-                              currentConfiguration.part?.fileName ===
-                              task.file?.fileName ? (
-                                <EyeInvisibleOutlined />
-                              ) : (
-                                <EyeOutlined />
-                              )
-                            }
-                            size="small"
-                            onClick={() =>
-                              setPart(
-                                currentConfiguration.part?.fileName ===
-                                  task.file?.fileName
-                                  ? null
-                                  : task.file
-                              )
-                            }
-                          />
-                        </>
-                      }
-                      subTitle={
-                        '(' + (index + 1) + '/' + meshingTasks?.length + ')'
-                      }
-                      status={task.status}
-                    />
-                  )
-                })}
-                {simulatingTasks?.map((task, index) => {
-                  return (
-                    <Steps.Step
-                      key={task}
-                      title="Simulating"
-                      description={
-                        <Button
-                          icon={<FileTextOutlined />}
-                          onClick={() => onLog(simulatingTasks, 'Simulation')}
-                          size="small"
-                        />
-                      }
-                      subTitle={
-                        '(' + (index + 1) + '/' + simulatingTasks?.length + ')'
-                      }
-                      status={task.status}
-                    />
-                  )
-                })}
+                        }
+                        subTitle={
+                          '(' +
+                          (index + 1) +
+                          '/' +
+                          currentSimulation.tasks.length +
+                          ')'
+                        }
+                        status={task.status}
+                      />
+                    )
+                  })}
               </Steps>
             </Space>
           </Card>
@@ -315,9 +276,9 @@ const Run = ({ project, simulation }) => {
                     <Space key={result.name}>
                       <Button
                         icon={
-                          currentConfiguration.part?.fileName ===
+                          currentConfiguration?.part?.fileName ===
                             result?.fileName &&
-                          currentConfiguration.part?.name === result?.name ? (
+                          currentConfiguration?.part?.name === result?.name ? (
                             <EyeInvisibleOutlined />
                           ) : (
                             <EyeOutlined />
@@ -325,9 +286,9 @@ const Run = ({ project, simulation }) => {
                         }
                         onClick={() =>
                           setPart(
-                            currentConfiguration.part?.fileName ===
+                            currentConfiguration?.part?.fileName ===
                               result?.fileName &&
-                              currentConfiguration.part?.name === result?.name
+                              currentConfiguration?.part?.name === result?.name
                               ? null
                               : result
                           )

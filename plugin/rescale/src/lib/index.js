@@ -89,7 +89,7 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
   // Create tasks
   const tasks = []
   const simulationTask = {
-    type: 'simulation',
+    label: 'Rescale',
     log: '',
     status: 'wait'
   }

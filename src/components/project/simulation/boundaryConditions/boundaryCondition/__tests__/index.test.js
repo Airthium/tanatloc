@@ -22,7 +22,8 @@ describe('src/components/project/simulation/boundaryConditions/boundaryCondition
         {
           default: 0
         }
-      ]
+      ],
+      values: [{}]
     }
   }
   let boundaryCondition = undefined

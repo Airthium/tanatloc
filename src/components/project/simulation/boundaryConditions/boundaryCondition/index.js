@@ -37,6 +37,17 @@ const BoundaryCondition = ({
     })
     .filter((t) => t)
 
+  const alreadySelected = Object.keys(boundaryConditions)
+    .map((type) => {
+      if (type === 'index' || type === 'title' || type === 'done') return
+      return boundaryConditions[type]?.values?.map((b) => ({
+        label: b.name,
+        selected: b.selected
+      }))
+    })
+    .filter((a) => a)
+    .flat()
+
   // Edit
   useEffect(() => {
     if (boundaryCondition)
@@ -175,7 +186,11 @@ const BoundaryCondition = ({
           })}
         </Card>
       )}
-      <Selector part={part} updateSelected={onSelected} />
+      <Selector
+        part={part}
+        alreadySelected={alreadySelected}
+        updateSelected={onSelected}
+      />
       <Space>
         <Button type="danger" onClick={onClose}>
           Cancel

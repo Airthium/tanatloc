@@ -1,22 +1,6 @@
 import { Avatar, Empty, Tooltip, Typography } from 'antd'
 
-/**
- * Generate color (HEX format) from string
- * @memberof module:'src/components/project
- * @param {string} str String
- */
-const stringToHex = (str) => {
-  let hash = 0
-  for (let i = 0; i < str.length; ++i) {
-    hash = str.charCodeAt(i) + ((hash << 5) - hash)
-  }
-  let colour = '#'
-  for (let i = 0; i < 3; i++) {
-    const value = (hash >> (i * 8)) & 0xff
-    colour += ('00' + value.toString(16)).substr(-2)
-  }
-  return colour
-}
+import Utils from '@/lib/utils'
 
 /**
  * Project data
@@ -77,7 +61,10 @@ const Data = (project, filter, setTitle) => {
 
       return (
         <Tooltip key={owner.id} title={name}>
-          <Avatar src={avatar} style={{ backgroundColor: stringToHex(name) }}>
+          <Avatar
+            src={avatar}
+            style={{ backgroundColor: Utils.stringToColor(name) }}
+          >
             {abbrev.toUpperCase()}
           </Avatar>
         </Tooltip>
@@ -104,7 +91,10 @@ const Data = (project, filter, setTitle) => {
 
       return (
         <Tooltip key={user.id} title={name}>
-          <Avatar src={avatar} style={{ backgroundColor: stringToHex(name) }}>
+          <Avatar
+            src={avatar}
+            style={{ backgroundColor: Utils.stringToColor(name) }}
+          >
             {abbrev.toUpperCase()}
           </Avatar>
         </Tooltip>

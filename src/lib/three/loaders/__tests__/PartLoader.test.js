@@ -75,8 +75,8 @@ describe('src/lib/three/loaders/PartLoader', () => {
   const renderer = {
     domElement: {
       addEventListener: (type, callback) => {
-        if (type === 'mousemove') mouseMove = callback
-        else if (type === 'mousedown') mouseDown = callback
+        if (type === 'pointermove') mouseMove = callback
+        else if (type === 'pointerdown') mouseDown = callback
       },
       removeEventListener: () => {}
     },

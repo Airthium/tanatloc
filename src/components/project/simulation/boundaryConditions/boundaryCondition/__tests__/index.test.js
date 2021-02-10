@@ -122,7 +122,7 @@ describe('src/components/project/simulation/boundaryConditions/boundaryCondition
   it('effect', () => {
     // With boundaryCondition
     wrapper.unmount()
-    boundaryCondition = {}
+    boundaryCondition = { selected: [{ uuid: 'uuid', label: 1 }] }
     wrapper = mount(
       <BoundaryCondition
         project={project}

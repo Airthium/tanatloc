@@ -55,11 +55,17 @@ describe('src/components/project/simulation/run', () => {
       scheme: { configuration: { run: { done: true } } },
       tasks: [
         {
-          type: 'mesh'
+          label: 'Mesh',
+          index: 1
         },
         {
-          type: 'simulation',
+          label: 'Simulation',
+          index: -1,
           files: [{ name: 'name', fileName: 'resultFileName' }]
+        },
+        {
+          label: 'Mesh2',
+          index: 2
         }
       ]
     }))
@@ -117,11 +123,7 @@ describe('src/components/project/simulation/run', () => {
     wrapper = mount(<Run project={project} simulation={simulation} />)
 
     // Mesh log
-    wrapper
-      .find('Step')
-      .at(0)
-      .props()
-      .description.props.children[0].props.onClick()
+    wrapper.find('Step').at(0).props().description.props.onClick()
 
     // Simulation log
     wrapper.find('Step').at(1).props().description.props.onClick()
@@ -131,24 +133,12 @@ describe('src/components/project/simulation/run', () => {
     wrapper.unmount()
     wrapper = mount(<Run project={project} simulation={simulation} />)
 
-    // Mesh part
-    wrapper
-      .find('Step')
-      .at(0)
-      .props()
-      .description.props.children[1].props.onClick()
+    wrapper.find({ title: 'Results' }).find('Button').props().onClick()
 
     // Error
     mockUpdate.mockImplementation(() => {
       throw new Error()
     })
-    wrapper
-      .find('Step')
-      .at(0)
-      .props()
-      .description.props.children[1].props.onClick()
-
-    // Simulation result
     wrapper.find({ title: 'Results' }).find('Button').props().onClick()
   })
 
@@ -165,11 +155,11 @@ describe('src/components/project/simulation/run', () => {
       },
       tasks: [
         {
-          type: 'mesh',
+          label: 'Mesh',
           status: 'finish'
         },
         {
-          type: 'simulation',
+          label: 'Simulation',
           status: 'finish'
         }
       ]
@@ -207,11 +197,7 @@ describe('src/components/project/simulation/run', () => {
     wrapper = mount(<Run project={project} simulation={simulation} />)
     expect(wrapper).toBeDefined()
 
-    wrapper
-      .find('Step')
-      .at(0)
-      .props()
-      .description.props.children[1].props.onClick()
+    wrapper.find('Step').at(0).props().description.props.onClick()
 
     wrapper.unmount()
     mockSimulation.mockImplementation(() => ({
@@ -244,15 +230,11 @@ describe('src/components/project/simulation/run', () => {
     wrapper = mount(<Run project={project} simulation={simulation} />)
     expect(wrapper).toBeDefined()
 
-    wrapper
-      .find('Step')
-      .at(0)
-      .props()
-      .description.props.children[1].props.onClick()
+    wrapper.find('Step').at(0).props().description.props.onClick()
 
     wrapper.unmount()
     wrapper = mount(<Run project={project} simulation={simulation} />)
     expect(wrapper).toBeDefined()
-    wrapper.find({ title: 'Results' }).find('Button').props().onClick()
+    wrapper.find({ title: 'Results' }).find('Button').at(1).props().onClick()
   })
 })

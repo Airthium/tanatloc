@@ -40,9 +40,9 @@ const ColorbarHelper = (renderer, scene) => {
    */
   const clearScene = () => {
     colorScene.children.forEach((child) => {
-      colorScene.remove(child)
       child.dispose()
     })
+    colorScene.clear()
   }
 
   /**

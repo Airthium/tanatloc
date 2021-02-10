@@ -173,6 +173,24 @@ describe('components/project/simulation', () => {
     )
     expect(wrapper.find('panel').props().title).toBe('Geometry')
 
+    // Materials
+    wrapper.unmount()
+    wrapper = mount(
+      <Simulation
+        simulation={{
+          scheme: {
+            algorithm: 'algorithm',
+            configuration: {
+              materials: { title: 'Materials' }
+            }
+          }
+        }}
+        type="materials"
+        part={{ type: 'result' }}
+      />
+    )
+    expect(wrapper.find('panel').props().title).toBe('Materials')
+
     // Error
     wrapper.unmount()
     mockUpdate.mockImplementation(() => {

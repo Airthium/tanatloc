@@ -131,7 +131,12 @@ const Simulation = ({ project, simulation, type, part, onClose }) => {
     const configuration = simulation?.scheme?.configuration
 
     // Check if a part is visible
-    if (configuration && !configuration.part && configuration.geometry?.file) {
+    if (
+      (((type === 'materials' || type === 'boundaryConditions') &&
+        part.type !== 'geometry') ||
+        !configuration?.part) &&
+      configuration?.geometry?.file
+    ) {
       const newSimulation = { ...simulation }
 
       // Update local

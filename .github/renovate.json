@@ -1,4 +1,5 @@
 {
+  "baseBranches": ["dev"],
   "extends": ["config:base"],
   "groupName": "all dependencies",
   "separateMajorMinor": false,

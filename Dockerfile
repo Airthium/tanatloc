@@ -46,7 +46,7 @@ ENV DB_PORT $DB_PORT
 COPY config ${INSTALL_PATH}/config
 COPY install ${INSTALL_PATH}/install
 COPY models ${INSTALL_PATH}/models
-COPY plugin ${INSTALL_PATH}/plugin
+COPY plugins ${INSTALL_PATH}/plugins
 COPY public ${INSTALL_PATH}/public
 COPY resources ${INSTALL_PATH}/resources
 COPY src ${INSTALL_PATH}/src
@@ -112,7 +112,7 @@ COPY docker/package.json package.json
 
 COPY --from=builder ${INSTALL_PATH}/dist-install dist-install
 COPY --from=builder ${INSTALL_PATH}/public public
-COPY --from=builder ${INSTALL_PATH}/templates templates
+# COPY --from=builder ${INSTALL_PATH}/templates templates
 COPY --from=builder ${INSTALL_PATH}/.next .next
 RUN yarn
 

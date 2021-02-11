@@ -6,6 +6,7 @@ import SimulationDB from '@/database/simulation'
 
 import Services from '@/services'
 
+import Tools from '@/lib/tools'
 import Template from '@/lib/template'
 
 // Plugin key
@@ -41,7 +42,7 @@ const computeMesh = async (simulationPath, geometry, mesh, callback) => {
 
   // Render template
   await Template.render(
-    './templates/gmsh3D.geo.ejs',
+    'gmsh3D',
     {
       ...mesh.parameters,
       geometry: path.join(geometry.path, geometry.file)
@@ -196,24 +197,29 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
     })
   )
 
-  // Build the simulation script
-  await Template.render(
-    './templates/' + algorithm + '.edp.ejs',
-    {
-      ...configuration,
-      dimension: 3,
-      run: {
-        ...configuration.run,
-        path: 'run'
-      }
-    },
-    {
-      location: path.join(simulationPath, 'run'),
-      name: id + '.edp'
-    }
-  )
-
   try {
+    // Build the simulation script
+    await Template.render(
+      algorithm,
+      {
+        ...configuration,
+        dimension: 3,
+        run: {
+          ...configuration.run,
+          resultPath: 'run/result',
+          dataPath: 'run/data'
+        }
+      },
+      {
+        location: path.join(simulationPath, 'run'),
+        name: id + '.edp'
+      }
+    )
+
+    // Create paths
+    await Tools.createPath(path.join(simulationPath, 'run/result'))
+    await Tools.createPath(path.join(simulationPath, 'run/data'))
+
     // Compute simulation
     const code = await Services.freefem(
       simulationPath,
@@ -235,8 +241,8 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
           try {
             const resCode = await Services.toThree(
               simulationPath,
-              path.join('run', resFile),
-              path.join('run', partPath),
+              path.join('run/result', resFile),
+              path.join('run/result', partPath),
               ({ error: resError, data: resData }) => {
                 if (resError) {
                   simulationTask.log += 'Warning: ' + resError
@@ -264,7 +270,7 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
                 ...(simulationTask.files || []),
                 ...results.map((result) => ({
                   fileName: resFile,
-                  originPath: 'run',
+                  originPath: 'run/result',
                   name: result.name,
                   part: 'part.json',
                   partPath: result.path

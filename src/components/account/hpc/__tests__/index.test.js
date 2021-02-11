@@ -3,7 +3,7 @@ import { mount } from 'enzyme'
 
 jest.mock('@/components/account/hpc/plugin', () => 'Plugin')
 
-jest.mock('@/plugin', () => ({
+jest.mock('@/plugins', () => ({
   NonHPCPlugin: {
     category: 'Other'
   },

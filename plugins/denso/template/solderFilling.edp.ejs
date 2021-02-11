@@ -1,0 +1,2644 @@
+// mpirun -np 12 FreeFem++-mpi SolderFilling.edp
+// to find extremal of the energy with double well potentialt0
+// J(u)=1/2 \int \kappa |\nabla u|^2 + (u-1)^2*(u+1)^2
+// two constranits : \nabla u / |\nabla u|\cdot u = cos \tehta, \int u = c
+// Copyright : Atsushi Suzuki : 19 Oct. 2020 : Crank-Nicoslon + Newton
+//                           -> 8  Feb. 2021 
+//                           -> 11 Feb. 2021 : backward Euler + Newton
+// update in printing volume with both \int (\varphi+1)/2 and  \int H(\varphi)
+// improved treatment for surface integration of contact angle condition
+// constant volume increment from the first increment given by ratio
+// Atsushi.Suzuki@cas.cmc.osaka-u.ac.jp
+load "msh3"
+load "distance"
+load "gmsh"
+load "mshmet"
+load "mmg"
+load "iovtk"
+load "hpddm"
+
+load "interfaceneighbors"
+load "eulerchar"                    // C++ version
+load "gmsherror"
+
+macro dimension()3// EOM            // 2D or 3D
+include "macro_ddm.idp"             // additional DDM functions
+macro def(i)i// EOM                         // scalar field definition
+macro init(i)i// EOM                        // scalar field initialization
+
+macro reinitialize(pphigg, mmagg, ffout) {
+  if(debugvtk && mpirank == 0) {
+    ffout << "L26 : reinitialize " << mmagg << endl;
+    ffout.flush;
+  }
+  pphigg = ((pphigg * mmagg > 1.0) ? 1.0 :
+	    ((pphigg * mmagg) < (-1.0) ? (-1.0): (pphigg * mmagg)));
+} //
+int verbosity0 = verbosity;
+
+int verbositylevel = <%= parameters.verbosityLevel.children[0].value || parameters.verbosityLevel.children[0].default -%>;
+string stepfile = "<%= geometry.file.fileName -%>";
+<%
+const wet = boundaryConditions.wet.values
+const wall = boundaryConditions.wall.values
+const liquid = boundaryConditions.liquid.values
+const interface = boundaryConditions.interface.values
+const wetLabels = wet?.[0]?.selected.map(s => {
+  return s.label
+}) || [0]
+const wallLabels = wall?.[0]?.selected.map(s => {
+  return s.label
+}) || [0]
+const liquidLabels = liquid?.[0]?.selected.map(s => {
+  return s.label
+}) || [0]
+const interfaceLabels = interface?.[0]?.selected.map(s => {
+  return s.label
+}) || [0]
+-%>
+
+int[int] wet=[<%=wetLabels-%>];
+int[int] wall=[<%=wallLabels-%>];
+int[int] liquid=[<%=liquidLabels-%>];
+int[int] intrfc=[<%=interfaceLabels-%>];
+string jobname = "";
+real kappa1 = <%= parameters.kappa.children[0].value || parameters.kappa.children[0].default -%>;
+int nrestart = <%= parameters.nrestart.children[0].value || parameters.nrestart.children[0].default -%>;
+real volmag1 = <%= parameters.volume.children[0].value || parameters.volume.children[0].default -%>; // 1.1
+real volmag0 = <%= parameters.volume.children[1].value || parameters.volume.children[1].default -%>; // 1.012
+int countsweep = <%= parameters.countsweep.children[0].value || parameters.countsweep.children[0].default -%>;
+int continueflag =  <%= parameters.continueflag.children[0].value || parameters.continueflag.children[0].default -%>;
+//
+int itrnewton0 = <%= parameters.newton.children[0].value || parameters.newton.children[0].default -%>;
+int itrnewton1 = <%= parameters.newton.children[1].value || parameters.newton.children[1].default -%>;
+real Tmax0 = <%= parameters.time.children[0].value || parameters.time.children[0].default -%>;
+real Tmax1 = <%= parameters.time.children[1].value || parameters.time.children[1].default -%>;
+real cangle = <%= parameters.cangle.children[0].value || parameters.cangle.children[0].default -%>;
+real pointsize0 = <%= parameters.pointsize.children[0].value || parameters.pointsize.children[0].default -%>;
+real canglerestarted = <%= parameters.canglerestarted.children[0].value || parameters.canglerestarted.children[0].default -%>;
+// internal settings
+int countbisect = 1; //
+real kappa0 = kappa1 * 10.0;
+real shrinkinterior =  0.075; // getARGV("-shrink", 0.075);
+real GeometryTol = 5e-5;
+real voldelta;
+real voldelta0 = 1.0e-3;
+int refine0 = 5; 
+int refine1 = 3; 
+int delangle = (-10);
+real hsize0 = -1.0;   // automatic
+real hsizemag = 1.5;
+real largestmeshmag = 3.0;
+real pointsize00 = pointsize0 / 2.0;
+real phigmax = 20.0;
+real phigconvdel = 0.01;
+real phigdiverge = 0.5;
+real volstarted = 0.0;
+//
+int itrnewton2 = 10; //
+int itrGMRES0 = 25; //getARGV("-GMRES0", 25);
+int itrGMRES1 = 150; //getARGV("-GMRES1", 150);
+real dt0 = 0.5; // getARGV("-dt0", 0.5);
+real dt1 = 0.25; // getARGV("-dt1", 0.25);
+real dtmax = 2048.0; // getARGV("-Dtmax", 32.0);
+real tolenlarge = 10.0; // parameter to controle enlarge time step
+real toldiverge = 1000.0; // threshold to break Newton iteration
+//
+int gmshmax = 2; // getARGV("-gmshmax", 2);
+int nlayer = 10;
+// for HPDDM
+int s = 1; // getARGV("-split", 1); 
+int p = 1; // getARGV("-hpddm_level_2_p", 1);
+
+bool debugvtk = (verbositylevel >= 2 ? true : false);
+bool debugvtk0 = (verbositylevel >= 1 ? true : false);
+
+mpiComm comm(mpiCommWorld,0,0);// trick : make a no split mpiWorld 
+
+int npart=mpiSize(comm); // total number of partion
+int vtkcount = 0;
+int gmshcount = 0;
+int[int] vtkorder = [1];
+int refine;
+real size = 0.4;
+real dt;
+real kappa = kappa1;
+real reps = 1.e-2;
+real costheta = cos(cangle*pi/180.0);
+real vol00, vol01, vol0, vol, lambda;
+real epsnewton = 1e-6;
+real epsGMRES=1e-11;
+//real theta = 0.501;
+int DOFmin = 1500000;
+//int[int] arrayIntersection;              // ranks of neighboring subdomains
+int[int][int] intersection(0);   // local-to-neighbors renumbering
+//int[int] arrayIntersection0;              // ranks of neighboring subdomains
+int[int][int] intersection0(0);   // local-to-neighbors renumbering
+int[int][int] intersection1(0);   // local-to-neighbors renumbering
+real[int] D, D0, D1;                    // partition of unity
+
+meshN ThGlobal;
+meshN ThG0, ThG1, ThG10, Tha0;
+meshN ThG0i;
+fespace VhG0(ThG0, P1);
+//fespace VhG0i(ThG0i, P1);
+//fespace Vha0(Tha0, P1); // formal definition
+matrix R0gl, D0h;
+meshN Tha, Tha1;
+fespace Vha(Tha, P2); // formal definition
+matrix Rgl,Dh;
+fespace VhG1(ThG1, P1);
+fespace Vha1(Tha1, P1); // formal definition
+matrix R1gl,D1h;
+
+meshN ThGsaved0, ThGsaved1, Thasaved0, Thasaved1;
+matrix Rglsaved0, Rglsaved1, Dhsaved0, Dhsaved1;
+int totaldof, localdof;
+int totaldoff, localdoff;
+bool flagrestarted = (nrestart == 0 ? false : true);
+//bool refineflag1st = true;
+bool refineskip = true;
+bool flaganiso = false;
+int solvercount = 0;
+int[int] surfacelist(1000), surfaceerr(1), nsurfaceerr(1);
+int nsurfaces = 0;
+int[int] surfacelist0(1000);
+int nsurfaces0 = 0;
+//
+real etime00, etime01;
+
+string resultpath = "<%= run.presultPath %>/";
+string workingpath = "<%= run.dataPath -%>/";
+if (mpirank == 0) {
+  exec("mkdir -p " + workingpath);
+  exec("mkdir -p " + resultpath);
+}
+
+func int outputjson(int mmm, real vvol00, int nnnliquid,
+		    int nnnair, int nnneulerc)
+{
+  // Save data
+  {
+    ofstream data(resultpath+"vol00_" + mmm + ".dat");
+    data << "{\"name\": \"volume\",";
+    data << "\"index\": 1,";
+    data << "\"t\": " << mmm << ",";
+    data << "\"value\": " << vvol00 << "}";
+  }
+  {
+    ofstream data(resultpath+"nnliquid_" + mmm + ".dat");
+    data << "{\"name\": \"# Liquid\",";
+    data << "\"index\": 2,";
+    data << "\"t\": " << mmm << ",";
+    data << "\"value\": " << nnnliquid << "}";
+  }
+  {
+    ofstream data(resultpath+"nnair_" + mmm + ".dat");
+    data << "{\"name\": \"# Air\",";
+    data << "\"index\": 3,";
+    data << "\"t\": " << mmm << ",";
+    data << "\"value\": " << nnnair << "}";
+  }
+  {
+    ofstream data(resultpath+"nneulerc" + mmm + ".dat");
+    data << "{\"name\": \"# Eulerc\",";
+    data << "\"index\": 4,";
+    data << "\"t\": " << mmm << ",";
+    data << "\"value\": " << nnneulerc << "}";
+  }
+}
+// end of js renred variables
+
+ofstream fout(mpirank == 0 ? (workingpath + jobname + ".log") : "/dev/null");
+ofstream gout(mpirank == 0 ? (workingpath + jobname + ".csv") : "/dev/null");
+
+mpiBarrier(comm);
+if (mpirank == 0) {
+  fout << ":: SolderFilling.edp :: parameters ::" << endl;
+  fout << "** verbositylevel = " << verbositylevel << endl;
+  fout << "** continueflag = " << continueflag << endl; // 0
+  fout << "** stepfile = " << stepfile << endl;
+  fout << "** jobname = " << jobname << endl;
+  fout << "** kappa = " << kappa1 << endl;    // 1e-3
+  fout << ":: shrinkinterior = " << shrinkinterior << endl;
+  fout << "** nrestart = " << nrestart << endl;       // 0
+  fout << ":: volmag1 = " << volmag1 << endl;         // 1.1
+  fout << ":: volmag0 = " << volmag0 << endl;         // 1.012
+  fout << "** countsweep = " << countsweep << endl;   // 100
+  fout << "** countbisect = " << countbisect << endl; // 1
+  fout << ":: refine0 = " << refine0 << endl;         // 5
+  fout << ":: refine1 = " << refine1 << endl;         // 3
+  fout << "** itrnewton0 = " << itrnewton0 << endl;   // 20
+  fout << "** itrnewton1 = " << itrnewton1 << endl;   // 50
+  fout << ":: itrnewton2 = " << itrnewton2 << endl;   // 10
+  fout << "** Tmax0 = " << Tmax0 << endl;             // 1000
+  fout << "** Tmax1 = " << Tmax1 << endl;             // 10
+  fout << "** cangle = " << cangle << endl;           // 45.0
+  fout << "** pointsize0 = " << pointsize0 << endl;   // 0.1
+  fout << ":: pointsize00 = " << pointsize00 << endl; // 0.05
+  fout << ":: itrGMRES0 = " << itrGMRES0 << endl;     // 25
+  fout << ":: itrGMRES1 = " << itrGMRES1 << endl;     // 150
+  fout << ":: dt0 = " << dt0 << endl;                 // 0.5
+  fout << ":: dt1 = " << dt1 << endl;                 // 0.25
+  fout << ":: dtmax = " << dtmax << endl;             // 64.0
+  fout << ":: gmshmax = " << gmshmax << endl;         // 2
+  fout << ":: epsnewton = " << epsnewton << endl;     // 1e-6
+  fout << ":: epsGMRES = " << epsGMRES << endl;       // 1e-11
+  fout << "** Wet = " <<  wet << endl;
+  fout << "** Wall = " << wall << endl;
+  fout << "** Liquid = " << liquid << endl;
+  fout.flush;
+}
+
+meshN stackThG0, stackThG1, stackThG2;
+meshN stackThb0, stackThb1, stackThb2;
+matrix stackRgl0, stackRgl1, stackRgl2;
+matrix stackDh0, stackDh1, stackDh2;
+real[int] stacku0(1), stacku1(1), stacku2(1); 
+int stackdata = 0;
+func int pushdata(meshN &Thh, meshN &Thbb, matrix &Rgll, matrix &Dhh,
+		  real[int] &uu){
+  if (stackdata > 1) {
+    stackThG2 = stackThG1;
+    stackThb2 = stackThb1;
+    stacku2.resize(stacku1.n);
+    stacku2 = stacku1; 
+    stackRgl2 = stackRgl1;
+    stackDh2 = stackDh1;
+  }
+  if (stackdata > 0) {
+    stackThG1 = stackThG0;
+    stackThb1 = stackThb0;
+    stacku1.resize(stacku0.n);
+    stacku1 = stacku0; 
+    stackRgl1 = stackRgl0;
+    stackDh1 = stackDh0;
+  }
+  stackThG0 = Thh;
+  stackThb0 = Thbb;
+  stacku0.resize(uu.n);
+  stacku0 = uu;
+  stackRgl0 = Rgll;
+  stackDh0 = Dhh;
+
+  stackdata++;
+  return stackdata;
+}
+
+func int popdata2(meshN &Thh, meshN &Thbb, matrix &Rgll, matrix &Dhh,
+		 real[int] &uu){
+  if (stackdata > 1) {
+    Thh = stackThG2;
+    Thbb = stackThb2;
+    uu.resize(stacku2.n);
+    uu = stacku2;
+    Rgll = stackRgl2;
+    Dhh = stackDh2;
+  }
+  else {
+    Thh = stackThG1;
+    Thbb = stackThb1;
+    uu.resize(stacku1.n);
+    uu = stacku1;
+    Rgll = stackRgl1;
+    Dhh = stackDh1;
+  }    
+  return 1;
+}
+
+func int gengeofile(string fname, string sstepfile, real ppointsize,
+		    int[int] &wwet, int[int] &wwall,
+		    int nnsurfaces, int[int] &ssurfacelist, bool domainflag,
+		    bool onlybackground)
+{
+    ofstream ff(fname);
+    ff << "Geometry.Tolerance = " << GeometryTol << ";" << endl;
+    if (onlybackground) {
+      ff << "Mesh.CharacteristicLengthExtendFromBoundary = 0;" << endl;
+      ff << "Mesh.CharacteristicLengthFromPoints = 0;" << endl;
+      ff << "Mesh.CharacteristicLengthFromCurvature = 0;" << endl;
+      ff << "Mesh.CharacteristicLengthMax = " << ppointsize << ";" << endl;
+    }
+    ff << "cl__1 = " << ppointsize << ";" << endl;  
+    ff << "SetFactory(\"OpenCASCADE\");"  << endl;
+    ff << "a() = ShapeFromFile(\"../"+sstepfile+"\");" << endl;
+    //    ff << "Mesh.CharacteristicLengthFromPoints = 0;" << endl;
+    //    ff << "Mesh.AngleToleranceFacetOverlap=0.005;" << endl;
+    if (domainflag) {
+      ff << "Recursive Delete {Volume{2:#a()}; }"  << endl;
+      ff << "Delete {Volume{1}; }"  << endl;
+    }
+    else {
+      ff << "Recursive Delete {Volume{1}; }"  << endl;
+    }
+    for (int i = 0; i < nnsurfaces; i++) {
+      ff << "c" << ssurfacelist[i] << "() = Boundary{ Surface{"
+	 << ssurfacelist[i] << "}; };" << endl;
+      ff << "Recursive Delete { Surface{" << ssurfacelist[i] << "}; }" << endl;
+      ff << "Line Loop(" << ssurfacelist[i] << ") ={ c"
+	 << ssurfacelist[i] << "[] };" << endl;
+      ff << "Surface(" << ssurfacelist[i] << ") ={"
+	<< ssurfacelist[i] << "};" << endl;
+    }
+    // bd = 1
+    ff << "wa[] = {";
+    for (int i = 0; i < wwall.n; i++) {
+      if (i > 0) {
+	ff << ",";
+      }
+      ff << wwall[i];
+    }
+    ff << "};" << endl;
+    // bd = 2    
+    ff << "we[] = {";    
+    for (int i = 0; i < wwet.n; i++) {
+      if (i > 0) {
+	ff << ",";
+      }
+      ff << wwet[i];
+    }
+    ff << "};" << endl;    
+    //
+    ff << "Physical Surface(\"wall\") = { wa[] };" << endl;
+    ff << "Physical Surface(\"wet\") = { we[] };" << endl;
+    if (domainflag) {
+      ff << "Surface Loop(1111) = { wa[], we[] };" << endl;
+      ff << "Volume(1) = {1111};" << endl;
+      ff << " Characteristic Length{ PointsOf {Volume{1}; } } = cl__1;" << endl;
+      ff << "Physical Volume(3) = {1};" << endl;
+    }
+    else {
+      ff << " Characteristic Length{ PointsOf {Volume{2:#a()}; } } = cl__1;"
+	 << endl;
+      ff << "Physical Volume(3) = {2:#a()};" << endl;
+    }
+  return 1;
+    
+}
+
+func int geninifile(string fname, string sstepfile, real ppointsize)
+{
+  ofstream ff(fname);
+  ff << "Geometry.Tolerance = " << GeometryTol << ";" << endl;  
+  ff << "cl__1 = " << ppointsize << ";" << endl;
+  ff << "SetFactory(\"OpenCASCADE\");"  << endl;
+  ff << "a() = ShapeFromFile(\"../"+sstepfile+"\");" << endl;
+  ff << "BooleanDifference(10) = { Volume{1}; Delete; } {Volume{2:#a()}; };"
+     << endl;
+  ff << "b1() =  Boundary{ Volume{10}; };" << endl;
+  ff << "Printf(\"# of air %g\", #b1[]);" << endl;
+  ff << "b2() =  Boundary{ Volume{2:#a()}; };" << endl;
+  ff << "Printf(\"# of liquid %g\", #b2[]);" << endl;
+  ff << "c() = BooleanIntersection{ Surface{ b1()}; }{ Surface{ b2()}; };"
+     << endl;
+  ff << "For k In {0:#b2[] -1}" << endl;
+  ff << "  nn3[k] = 0;" << endl;
+  ff << "EndFor" << endl;
+  ff << "n1 = 0;" << endl;
+  ff << "n2 = 0;" << endl;
+  ff << "If (#c[] > 0) " << endl;
+  ff << "  Printf(\"# of intrfc %g found\", #c[]);" << endl;
+  ff << "  For k In {0:#c[] - 1}" << endl;
+  ff << "    Printf(\"surface %g\", c[k]);	" << endl;
+  ff << "    For j In {0:#b2[] - 1}" << endl;
+  ff << "      d() = BooleanUnion { Surface{ c[k] };}{ Surface{b2[j] };};"
+     << endl;
+  ff << "      If (#d[] == 1)" << endl;
+  ff << "        Printf(\"intrfc %g <=> %g found\", c[k], b2[j]);" << endl;
+  ff << "        nn2[n2++] = b2[j];" << endl;
+  ff << "        nn3[j] = 1;" << endl;
+  ff << "      EndIf" << endl;
+  ff << "    EndFor" << endl;
+  ff << "  EndFor" << endl;
+  ff << "Else" << endl;
+  ff << "  For k In {0:#b1[]-1}" << endl;
+  ff << "    v1() = Boundary{ Surface{b1[k]}; };" << endl;
+  ff << "    Printf(\"surface %g \", b1[k]);" << endl;
+  ff << "    For j In {0:#b2[]-1}" << endl;
+  ff << "      v2() = Boundary{ Surface{b2[j]}; };" << endl;
+  ff << "      b3() = BooleanUnion {Surface{b1[k]};}{Surface{b2[j]};};" << endl;
+  ff << "      If (#b3[] == 0)" << endl;
+  ff << "        Printf(\"intrfc %g <=> %g found\", b1[k], b2[j]);" << endl;
+  ff << "        nn2[n2++] = b2[j];" << endl;
+  ff << "        nn3[j] = 1;" << endl;
+  ff << "      EndIf" << endl;
+  ff << "    EndFor" << endl;
+  ff << "  EndFor" << endl;
+  ff << "EndIf" << endl;
+  ff << "For k In {0:#b2[] - 1}" << endl;
+  ff << "  If (nn3[k] == 0)" << endl;
+  ff << "    nn1[n1++] = b2[k];" << endl;
+  ff << "  EndIf" << endl;
+  ff << "EndFor" << endl;
+  ff << "Printf(\"intrfc %g\", #nn2[]);" << endl;
+  ff << "Printf(\"original %g\", #nn1[]);" << endl;
+  ff << "Physical Surface(\"intrfc\") = { nn2[] }; " << endl;
+  ff << "Physical Surface(\"orig\") = { nn1[] };" << endl;
+  ff << "Characteristic Length{ PointsOf {Volume{2:#a()}; } } = cl__1;" << endl;
+  ff << "Physical Volume(3) = {2:#a()};" << endl;
+}
+
+func int generatebackgroundmesh(real ppointsizee)
+{
+  if (mpirank == 0) {
+    
+    gengeofile(workingpath+"out.geo", stepfile, ppointsizee, wet, wall,
+	       nsurfaces, surfacelist, true, false);
+    exec("gmsh -2 "+ workingpath + "out.geo -format msh2 -o "
+	 + workingpath + "out.msh -log "
+	 + workingpath + "gmsh.log > /dev/null");
+    gmsherror(workingpath+"gmsh.log", nsurfaceerr, surfaceerr);
+    fout << "gmsh error = " << nsurfaceerr[0] << endl;  
+    if (nsurfaceerr[0] > 0) {
+      for (int i = 0; i < nsurfaceerr[0]; i++) {
+	fout << surfaceerr[i] << " " << endl;
+	surfacelist[nsurfaces++] = surfaceerr[i];
+      }
+      fout << endl;
+      fout.flush;
+      //      nsurfaces += nsurfaceerr[0];
+    }
+    
+    bool gmshflag = false;
+    gmshcount = 0;
+    while (!gmshflag || gmshcount < gmshmax) {
+      gengeofile(workingpath+"out.geo", stepfile, ppointsizee, wet, wall,
+		 nsurfaces, surfacelist, true, false);
+      exec("gmsh -3 " + workingpath + "out.geo -format msh2 -o "
+	   + workingpath + "out.msh -log "
+	   + workingpath + "gmsh.log > /dev/null");
+      gmsherror(workingpath+"gmsh.log", nsurfaceerr, surfaceerr);
+      fout << "gmsh error = " << nsurfaceerr[0] << endl;  
+      if (nsurfaceerr[0] > 0) {
+	for (int i = 0; i < nsurfaceerr[0]; i++) {
+	  fout << surfaceerr[i] << " " << endl;
+	  surfacelist[nsurfaces++] = surfaceerr[i];
+	}
+	fout << endl;
+	//      nsurfaces += nsurfaceerr[0];
+      }
+      else {
+	gmshflag = true;
+	break;
+      }
+      fout.flush;
+      gmshcount++;
+    }
+    if (gmshcount >= gmshmax && gmshflag == false) {
+      fout << "L673: gmsh error " << endl;
+      exit(-1);
+    }
+    ThG0 = gmshload3(workingpath+"out.msh");         // fine mesh for background
+    fout << ThG0.nv << " " << ThG0.nt << endl;
+    if(debugvtk0) {
+      savevtk(workingpath+"background."+vtkcount+".vtu", ThG0,
+	      bin = false);
+      fout << "L1478: vtu = " << vtkcount << endl;
+      fout.flush;
+      vtkcount++;
+    }
+  }  // if (mpirank == 0)
+  broadcast(processor(0, comm), ThG0);
+
+  meshN Th = ThG0; // dummy mesh for initialization
+  meshN ThBorder;
+  fespace Vh(Th, P1);
+  {
+    build(Th, s, intersection0, D0, P1, comm);    
+  }
+  Tha0 = Th; 
+  //
+  R0gl = interpolate(Vh, VhG0);
+  D0h = [D0]; // diagonal matrix
+  
+}
+
+func int refinemesh(mesh3 &ThG11, mesh3 &ThG00, mesh3 &Tha00,
+		    matrix &D00h, matrix &R00gl, real[int] &pphig, int nnlayer,
+		    ofstream &ffout, bool fflaganisoo, bool morerefine,
+		    bool updatepu)
+{
+  int nlayer = nnlayer;  
+  mesh3 ThGrefined;
+  fespace VhGrefined(ThGrefined, P2);  
+  fespace VhG11(ThG11, P2);
+  real vol = int3d(ThG0)(1.0) / ThG0.nt;
+  real hsize = hsize0 * hsizemag; // exp(log(vol) / 3.0) 
+  real hhsize = hsize * sqrt(sqrt(kappa / kappa0)); // 0.1^(1/4) = 0.56234
+  real hsizemax = hsize * largestmeshmag; //6.0;  
+  real kappaeps = sqrt(kappa0) * sqrt(sqrt(kappa / kappa0));
+  
+  VhG11 phigg;
+  phigg[] = pphig;  // to access FE value from an array
+  if (mpirank == 0) {
+    ffout << "L406 : refinemesh " << nnlayer << " " << fflaganisoo << endl;
+    ffout.flush;
+  }
+  if(fflaganisoo) {
+    if (mpirank == 0){
+      //      real hsize = ThG0.hmax;
+      fespace Mh(ThG11, [P1,P1,P1,P1,P1,P1]);
+      Mh [m11, m21, m22, m31, m32, m33] = [0, 0, 0, 0, 0, 0];
+      int nv0 = ThG11.nv;
+      if (nnlayer == -3) {
+	real hsizeb = hsizemax;
+	real hsizes = hhsize / 16.0;
+	real[int] met = mshmet(ThG11, phigg, hmax=hsizeb, hmin=hsizes, aniso=1);
+	m11[] = met;
+	ThG11=mmg3d(ThG11,metric=m11[],hgrad = 1.25);
+      }
+      else {
+	real hsizeb = hsize * (largestmeshmag / 2.0);	 // * 2.0
+	real hsizes = hhsize / 64.0;  // 48.0
+	real[int] met = mshmet(ThG11, phigg, hmax=hsizeb, hmin=hsizes, aniso=1);
+	m11[] = met;
+	ThG11=mmg3d(ThG11,metric=m11[],hgrad = 1.5);	// 2.0
+      }
+      ffout << "mmg3d an-isotropic mesh refinement " << nv0 << " -> " << ThG1.nv
+	   << endl;
+      ffout.flush;
+    }
+  }
+  else {
+    fespace VhG00(ThG00, P1);
+    fespace Vha0(Tha00, P1);
+    //    fespace Vhaa(Tha, P1);
+    VhG00 u, reff, reff0, up1;
+    real[int] ua(Tha00.nv);
+    VhG0 uu, rreff;
+    real [int] uua(Tha.nv);
+    if (mpirank == 0) {
+      ffout << "## refinemesh : based on ThG1 with P2 : hsize =" << hsize
+	    << endl;
+      if(debugvtk) {
+	savevtk(workingpath+"refined."+vtkcount+".vtu", ThG11,
+		phigg, order = vtkorder, bin = false);
+	ffout << "## L109 : vtu = " << vtkcount << endl;
+	ffout.flush;
+	vtkcount++;            
+      }
+    }
+    searchMethod = 0;     // searchMethod = 1 is acculate
+    etime00 = mpiWtime();
+    //ua = phigg; // interpolation from adapted P2 to fine P1
+    distance(Tha00, phigg, ua, distmax = 100);
+    verbosity = verbosity0;
+    etime01 = mpiWtime();
+    searchMethod = 1;
+  
+    real[int] w(ThG00.nv), wwi(Tha00.nv);
+    wwi = D00h * ua; 
+
+    w = R00gl'* wwi; //'
+    
+    mpiAllReduce(w, reff0[], comm, mpiSUM); // variable in the whole domain
+    mpiBarrier(comm);
+
+    searchMethod = 0;     // searchMethod = 1 is acculate
+    distance(Tha0, phigg, uua, distmax = 100);
+    searchMethod = 1;  
+    
+    real[int] w0(ThG0.nv), wwi0(Tha0.nv);    
+    wwi0 = D0h * uua; 
+    w0 = R0gl'* wwi0; //'
+    mpiAllReduce(w0, rreff[], comm, mpiSUM); // variable in the whole domain
+
+    if (mpirank == 0) {
+      ffout << "## background mesh "<< endl;
+      if(debugvtk) {
+	savevtk(workingpath+"background."+vtkcount+".vtu", ThG00,
+		reff0, order = vtkorder, bin = false);
+	ffout << "## L456 : vtu = " << vtkcount << endl;
+	ffout.flush;
+	vtkcount++;            
+      }
+    }
+
+    if (mpirank == 0) {
+      interfaceneighbors(ThG00, reff0[], 1, 17, u[], 1);
+      interfaceneighbors(ThG0, rreff[], 1, 17, uu[], 1);
+      {
+	if (nlayer == -1) {
+	  reff = (u < 1.01 ? hsize * 0.5 :
+		  (u < 3.01 ? hsize : hsize * 6.0)); //);
+	}
+	else if (nlayer == -2) {
+	  reff = (((u < 2.01) ? (hhsize * 0.25) :
+		   (uu < 4.01 ? (hsize * 0.5) :  
+		    (uu < 6.01 ? (2.0 * hsize) : hsizemax))));
+	}
+	else if (nlayer == -3) {
+	  reff = 
+	    ((abs(reff0) < (kappaeps * 1.5)) ? (hhsize * 0.125) : // u < 2.01
+	     (uu < 2.01 ? (hsize * 0.25) :  	     
+	      (uu < 4.01 ? (hsize * 0.5) :  
+	       (uu < 10.01 ? (2.0 * hsize) : hsizemax))));
+	}
+	else if (nlayer == -4) {
+	  reff = 
+	    ((abs(phigg) < 0.9) ? (hhsize * 0.125) : // u < 2.01
+	     (uu < 2.01 ? (hsize * 0.25) :  	     
+	      (uu < 4.01 ? (hsize * 0.5) :  
+	       (uu < 10.01 ? (2.0 * hsize) : hsizemax))));
+	}
+	else if (nlayer == -5) {
+	  reff =
+	    ((abs(phigg) < 0.6) ? (hhsize * 0.0625) : // u < 2.01	    
+	     ((abs(phigg) < 0.9) ? (hhsize * 0.125) : // u < 2.01
+	      (uu < 2.01 ? (hsize * 0.25) :  	     	      
+	       (uu < 4.01 ? (hsize * 0.5) :  
+		(uu < 10.01 ? (2.0 * hsize) : hsizemax)))));
+	}
+	else if (nlayer == -6) {  // refined closed to zero-isosurface
+	  reff = ((abs(reff0) < (kappaeps * 1.5)) ? (hhsize * 0.125) : //
+		  (((u < 8.01) && (up1 < (0.5 * hsize)))? (hhsize * 0.25) : //
+		   (uu < 3.01 ? (hsize * 0.5) :  // for the whole domain
+		    (uu < 6.01 ? (2.0 * hsize) : hsizemax))));
+	}
+	else if (nlayer == -7) {
+	  reff = ((abs(reff0) < (kappaeps * 0.75)) ? (hhsize * 0.0625) : //
+		  ((abs(reff0) < (kappaeps * 1.5)) ? (hhsize * 0.125) : //
+		   (((u < 8.01) && (up1 < (0.5 * hsize)))? (hhsize * 0.25) : //
+		    (uu < 3.01 ? (hsize * 0.5) :  // for the whole domain
+		     (uu < 6.01 ? (2.0 * hsize) : hsizemax)))));
+	}
+	ffout << "## background data "<< endl;
+	if(debugvtk) {
+	  savevtk(workingpath+"reff."+vtkcount+".vtu", ThG00,
+		  reff, order = vtkorder, bin = false);
+	  ffout << "## L559 : vtu = " << vtkcount << endl;
+	  ffout.flush;
+	  vtkcount++;            
+	}
+
+	ffout << "L445: creating pos file for background mesh " << nlayer;
+	{
+	  ofstream ff(workingpath+"bgm.pos");
+	  ff << "View \"backgournd mesh\" {" << endl;
+	  for (int k = 0; k < ThG00.nt; k++) {
+	    ff << "SS(";
+	    for (int i = 0; i < 3; i++) {
+	      ff << ThG00[k][i].x << ","
+		 << ThG00[k][i].y << ","
+		 << ThG00[k][i].z << ",";
+	    }
+	    ff << ThG00[k][3].x << ","
+	       << ThG00[k][3].y << ","
+	       << ThG00[k][3].z << "){";
+	    ff << reff[][ThG00[k][0]] << ","
+	       << reff[][ThG00[k][1]] << ","
+	       << reff[][ThG00[k][2]] << ","
+	       << reff[][ThG00[k][3]] << "};" << endl;
+	  }
+	  ff << "};" << endl;
+	}
+	ffout << "... end " << endl;
+	ffout.flush;
+	//
+	bool gmshflag = false;
+	gmshcount = 0;
+	while (!gmshflag || gmshcount < gmshmax) {
+	  gengeofile(workingpath+"out.geo", stepfile, hsizemax, wet, wall,
+		     nsurfaces, surfacelist, true, true);
+	  exec("gmsh -3 "+workingpath+"out.geo -format msh2 -o "
+	       + workingpath + "out.msh -bgm "
+	       + workingpath + "bgm.pos -log "
+	       + workingpath + "gmsh.log > /dev/null");
+	  gmsherror(workingpath+"gmsh.log", nsurfaceerr, surfaceerr);
+	  ffout << "L474: gmsh error = " << nsurfaceerr[0] << endl;
+	  if (nsurfaceerr[0] > 0) {
+	    for (int i = 0; i < nsurfaceerr[0]; i++) {
+	      fout << surfaceerr[i] << " " << endl;
+	      surfacelist[nsurfaces++] = surfaceerr[i];	  
+	    }
+	    ffout << endl;
+	    //	  nsurfaces += nsurfaceerr[0];
+	  }
+	  else {
+	    gmshflag = true;
+	    break;
+	  }
+	  ffout.flush;
+	  gmshcount++;
+	}
+	//	gmsherror("gmsh.log", nsurfaceerr, surfaceerr);
+	ThGrefined = gmshload3(workingpath+"out.msh");
+	ffout << "L593 nv = " << ThGrefined.nv << " nt = "
+	      << ThGrefined.nt << " DOFs = " << VhGrefined.ndof << endl;
+	ffout.flush;
+     }
+     ThG11 = ThGrefined;      
+    } // mpirank == 0
+  }
+  broadcast(processor(0, comm), ThG11);
+  if ((nnlayer == -2)) {
+    if ((VhG11.ndof > DOFmin * 2)) {
+      if (mpirank == 0) {
+	ffout << "#L650 too large DOF : mesh size enlarged " << hsize0
+	      << " -> " << hsize0 * 2.0 << endl;
+	ffout.flush;
+      }
+      if (VhG11.ndof < DOFmin * 3) {
+	hsize0 *= 1.5;   // too large DOF, enlarge mesh size
+      }
+      else {
+	hsize0 *= 2.0;
+      }
+    }
+    else if (VhG11.ndof < DOFmin * 0.25) {
+      if (mpirank == 0) {
+	ffout << "#L664 too small DOF : mesh size shrinked " << hsize0
+	      << " -> " << hsize0 / 1.5 << endl;
+	ffout.flush;
+      }
+      hsize0 /= 1.5;
+    }
+  }
+
+  if (updatepu) {
+    meshN Th = ThG11;
+    {
+      build(Th, s, intersection0, D1, P1, comm);    
+    }
+    Tha00 = Th;
+    ThG00 = ThG11;
+    fespace VhG00(ThG00, P1);
+    fespace Vha0(Tha00, P1);
+    //
+    R00gl = interpolate(Vha0, VhG00);
+    D00h = [D1]; // diagonal matrix
+    cout << "L567 : " << mpirank << " : " << D00h.n << " " << D00h.m << " : "
+	 << R00gl.n  << " " << R00gl.m  << endl;
+    
+  }
+
+  return -6; //nlayer;
+}
+
+func int findneighbor(mesh3 &ThG11, real[int] &pphig,
+		      real[int] &layerg0, int nlayer0,
+		      real[int] &layerg1, int nlayer1,
+		      ofstream &ffout)
+{
+  if(mpirank == 0) {
+    fespace VhG11(ThG11, P2);    
+    VhG11 layerg, layergg;
+    interfaceneighbors(ThG11, pphig, 2, nlayer1, layerg[], 2);
+    layergg = layerg > (nlayer0 - 0.9) ? 1.0 : 0.0;
+    layerg0 = layergg[];
+    layerg1 = layerg[];
+  }
+  broadcast(processor(0, comm), layerg0);
+  broadcast(processor(0, comm), layerg1);  
+  return 1;
+}
+
+func real volumeofliquid(mesh3 &Thbb, matrix &Rgll, matrix &Dhh,
+			 real[int] &phiglobal, int flag)
+{
+  fespace Vh(Thbb, P2);
+  Vh work, philocal;
+  etime00 = mpiWtime();
+  work[] = Rgll * phiglobal;
+  if (flag == 1) {
+    work = (work + 1.0) / 2.0;
+  }
+  else if (flag == 2) {
+    work = work > 0.0 ? 1.0 : 0.0;
+  }
+  else if (flag == 3) {
+    work = work > 0.0 ? work : 0.0;    
+  }
+  
+  philocal[] = Dhh * work[]; // Dh : partition of the unity
+  real localsum, globalsum;
+  localsum = int3d(Thbb)(philocal);
+  mpiAllReduce(localsum, globalsum, comm, mpiSUM); //
+  etime01 = mpiWtime();
+  if (mpirank == 0) {
+    fout << "L580: volume integration " << etime01 - etime00 << " sec."
+	 << endl;
+    fout.flush;
+  }
+  return globalsum;
+}
+
+func int increasevol(mesh3 &ThG11, mesh3 &ThG1b,  matrix &Rgll, matrix &Dhh,
+		     real vol, real vol0, real rreps, real[int] &phigg,
+		     int volflag)
+{
+  fespace Vhg(ThG11, P2);
+  Vhg pphig, oldphig, udist;
+  pphig[] = phigg;
+
+  real vmag, vol1;
+  bool flag = false;
+  real vmag0 = 1.0, vmag1 = 2.0;
+  for (int i = 0; i < 10; i++) { // bisection
+    vmag = (vmag1 + vmag0) / 2.0;
+    etime00 = mpiWtime();
+    oldphig = pphig > 0.0 ? pphig * vmag : pphig;    
+    etime01 = mpiWtime();		
+    fout << mpirank << " L454 " << etime01 - etime00 << " sec." << endl;
+    fout.flush;
+    vol1 = volumeofliquid(ThG1b, Rgll, Dhh, oldphig[], volflag);
+    if (vol1 > vol0) {
+      vmag1 = vmag;
+    }
+    else {
+      vmag0 = vmag;
+    }
+    if (mpirank == 0) {
+      fout << "increasevol:" << i << " vmag= " << vmag << "vol = "
+	   << vol << " vol0 = "
+	   << vol0 << "vol1 = " << vol1 << endl;
+      fout.flush;
+    }
+  }
+  
+  phigg = oldphig[];
+  return 1;
+}
+
+func int decreasevol(mesh3 &ThG11, mesh3 &ThG1b,  matrix &Rgll, matrix &Dhh,
+		     real vol, real vol0, real rreps, real[int] &phigg,
+		     int volflag)
+{
+  fespace Vhg(ThG11, P2);
+  Vhg pphig, oldphig, udist;
+  pphig[] = phigg;
+
+  real vmag, vol1;
+  bool flag = false;
+  real vmag0 = 1.0, vmag1 = 1.25;
+  for (int i = 0; i < 10; i++) { // bisection
+    vmag = (vmag1 + vmag0) / 2.0;    
+    etime00 = mpiWtime();
+    oldphig = pphig < 0.0 ? pphig * vmag : pphig;    
+    etime01 = mpiWtime();		
+    fout << mpirank << " L454 " << etime01 - etime00 << " sec." << endl;
+    fout.flush;
+    vol1 = volumeofliquid(ThG1b, Rgll, Dhh, oldphig[], volflag);
+    if (vol1 < vol0) {
+      vmag1 = vmag;
+    }
+    else {
+      vmag0 = vmag;
+    }
+    if (mpirank == 0) {
+      fout << "decreasevol:" << i << " vmag= " << vmag << "vol = "
+	   << vol << " vol0 = "
+	   << vol0 << "vol1 = " << vol1 << endl;
+      fout.flush;
+    }
+  }
+  
+  phigg = oldphig[];
+  return 1;
+}
+
+func int setinitial(mesh3 &TThG0i, mesh3 &TThG1, real[int] &pphig11, bool first)
+{
+  fespace VhG0i(TThG0i, P1);
+  VhG0i phigib;  
+  phigib = 1.0;  
+  for (int k = 0; k < TThG0i.nbe; k++) { //inside = 1, boundary = 0, outsize < 0
+    if (TThG0i.be(k).label == 1) {
+      int kk = TThG0i.be(k).Element;
+      int i0 = TThG0i.be(k).whoinElement;      
+      for (int i = 1; i < 4; i++) {
+	int ii = VhG0i(kk, (i0 + i) % 4);   // boundary index -> P1 index
+	phigib[][ii] = 0.0;	
+      }
+    }
+  }
+  if (debugvtk0) {
+    savevtk(workingpath+"ini."+vtkcount+".vtu", TThG0i, phigib,
+	    order = vtkorder, bin = false);
+    fout << "## L754 : vtu = " << vtkcount << endl;
+    fout.flush;	
+    vtkcount++;
+  }
+  int[int] ww(VhG0i.ndof);
+  fespace VVhGP0(TThG1, P0);
+  fespace VVhG1(TThG1, P1);      
+  VVhGP0 nuT;
+  for (int i = 0; i < TThG1.nt; i++) {
+    nuT[][i] = i + 1.0;
+  }
+  fespace VVhGP0i(TThG0i, P0);
+  VVhGP0i nuTi;
+  for (int i = 0; i < TThG0i.nt; i++) {
+    nuTi[][i] = i + 1.0;
+  }
+  
+  VVhG1 vv, phigdebug;
+
+  int[int] pphig0(VVhG1.ndof), pphig1(VVhG1.ndof);
+  int[int] uuu(VVhG1.ndof);
+  int[int] masksurface(TThG0i.nbe);
+  masksurface = 0;
+  pphig1 = 0;
+  for (int kkk = 0; kkk < TThG0i.nbe; kkk++) {  //
+    if (TThG0i.be(kkk).label == 1) {
+      int kk = TThG0i.be(kkk).Element;
+      int ii = TThG0i.be(kkk).whoinElement;
+      real[int] xxx(4), yyy(4), zzz(4);
+      for (int l = 0; l < 4; l++) {
+	xxx[l] = TThG0i[kk][l].x;
+	yyy[l] = TThG0i[kk][l].y;
+	zzz[l] = TThG0i[kk][l].z;
+      }
+      for (int i = 1; i < 4; i++) {
+	int ll0 = (ii + i) % 4;
+	real xx = xxx[ll0] * (1.0 - 3.0 * shrinkinterior);
+	real yy = yyy[ll0] * (1.0 - 3.0 * shrinkinterior);
+	real zz = zzz[ll0] * (1.0 - 3.0 * shrinkinterior);	    	    
+	for (int j = 0; j < 3; j++) {
+	  int ll1 = (ii + i + j + 1) % 4;
+	  xx +=  xxx[ll1] * shrinkinterior;
+	  yy +=  yyy[ll1] * shrinkinterior;
+	  zz +=  zzz[ll1] * shrinkinterior;
+	}
+	{
+	  real tk = nuT(xx, yy, zz);
+	  if (tk > 0.0) {
+	    masksurface[kkk]++;	    
+	    int kk = (tk - 1);
+	    for (int l = 0; l < 4; l++) {
+	      pphig1[VVhG1(kk, l)] = 1;
+	    }
+	  }
+	}
+      } // loop : i
+    }
+  } // loop : kkk
+
+  int nTThG0inbe = 0;
+  for (int kkk = 0; kkk < TThG0i.nbe; kkk++) {  
+    if (TThG0i.be(kkk).label == 1 && masksurface[kkk] > 0) {
+      nTThG0inbe++;
+    }
+  }
+  int[int] TThG0inbe(nTThG0inbe);
+  {
+    int i = 0;
+    for (int kkk = 0; kkk < TThG0i.nbe; kkk++) {  //
+      if (TThG0i.be(kkk).label == 1 &&  masksurface[kkk] > 0){ 
+	TThG0inbe[i] = kkk;
+	i++;
+      }
+    }
+  }
+  if (verbositylevel > 2 ) {
+    fout << "## L793 nTTG0inbe " << nTThG0inbe << endl;
+    fout.flush;
+  }
+  for (int ll = 0; ll < 0; ll++) {
+    fout << "inflation " << ll << endl;
+    fout.flush;
+    pphig0 = 0;
+    for (int k = 0; k < TThG1.nt; k++) {
+      bool flag = false;
+      for (int i = 0; i < 4; i++) {
+	if (pphig1[VVhG1(k, i)] == 1) {
+	  flag = true;
+	  break;
+	}
+      }
+      if (flag) {
+	for (int i = 0; i < 4; i++) {
+	  pphig0[VVhG1(k, i)] = 1;
+	}
+      }
+    }
+    pphig1 = pphig0;
+  }
+  
+  if (debugvtk) {
+    for [i, iv : pphig1] {
+      phigdebug[][i] = iv;
+    }
+    savevtk(workingpath+"ini."+vtkcount+".vtu",
+	    TThG1, phigdebug, order = vtkorder, bin = false);
+    fout << "## L837 " << vtkcount << endl;    
+    vtkcount++;
+  }
+  real vol = int3d(TThG1)(1.0) / TThG1.nt;
+  real hsize = exp(log(vol) / 3.0);
+  
+  real hugenegative = (-1.0e+6);
+  real hugepositive = 1.0e+6;
+  real pointeps = 1.0e-6;
+  if (first) {
+
+    for (int kk = 0; kk < TThG0i.nt; kk++) {  //
+      real[int] xxx(4), yyy(4), zzz(4);
+      for (int l = 0; l < 4; l++) {
+	xxx[l] = TThG0i[kk][l].x;
+	yyy[l] = TThG0i[kk][l].y;
+	zzz[l] = TThG0i[kk][l].z;
+      }
+      for (int l = 0; l < 4; l++) {
+	real xx = xxx[l] * (1.0 - 3.0 * shrinkinterior);
+	real yy = yyy[l] * (1.0 - 3.0 * shrinkinterior);
+	real zz = zzz[l] * (1.0 - 3.0 * shrinkinterior);	    	    
+	for (int j = 1; j < 4; j++) {
+	  int ll = (l +  j) % 4;
+	  xx +=  xxx[ll] * shrinkinterior;
+	  yy +=  yyy[ll] * shrinkinterior;
+	  zz +=  zzz[ll] * shrinkinterior;
+	}
+	{
+	  real tk = nuT(xx, yy, zz);
+	  if (tk > 0.0) {
+	    //	    maskelement[kk]++;	    
+	    int kkk = (tk - 1);
+	    for (int l = 0; l < 4; l++) {
+	      uuu[VVhG1(kkk, l)] = 1;
+	    }
+	  }
+	} // flagchi
+      } // loop : i
+    } // loop : kk
+  }
+  else {
+    for [i, v : pphig11] {
+      uuu[i] = v > 0.0 ? 1 : 0;
+    }
+  }
+  if (debugvtk) {
+    for [i, iv : uuu] {
+	phigdebug[][i] = iv;
+    }
+    savevtk(workingpath+"ini."+vtkcount+".vtu",
+	    TThG1, phigdebug, order = vtkorder, bin = false);
+    fout << "## L893 " << vtkcount << endl;
+    vtkcount++;
+  }
+
+  pphig11 = hugenegative;
+  phigdebug = -2;
+  real[int] xxx(4), yyy(4), zzz(4);
+  for (int i = 0; i < TThG1.nv; i++) {
+    if (pphig1[i] == 1) {
+      real xx, yy, zz;
+      xx = TThG1(i).x;
+      yy = TThG1(i).y;
+      zz = TThG1(i).z;
+      real phigxyz = phigib(xx, yy, zz);
+      real nnuT = nuTi(xx, yy, zz);
+      real sgn = (phigxyz >= 0.0) && (nnuT > 0.1) ? 1.0 : (-1.0);
+      if (verbositylevel > 2 ) {
+        fout << "L910: " << i << " " << xx << " " << yy << " " << zz
+	     << " phigib = " << phigxyz
+	     << " nuTi " << nnuT << " sgn " << sgn << endl;
+        fout.flush;
+      }
+      //      phigdebug[][i] = sgn;
+      bool flag = false;
+      ww = 0;
+      real distmin = hugepositive;
+      for (int k = 0; k < nTThG0inbe; k++) {
+	int kkk = TThG0inbe[k];
+	int kk = TThG0i.be(kkk).Element;
+	int ii = TThG0i.be(kkk).whoinElement;
+	for (int l = 0; l < 4; l++) {
+	  xxx[l] = TThG0i[kk][l].x;
+	  yyy[l] = TThG0i[kk][l].y;
+	  zzz[l] = TThG0i[kk][l].z;
+	}
+	for (int l = 1; l < 4; l++) {
+	  int ll = (ii + l) % 4;		  
+	  //	    int jj = TThG0i[kk][ll];
+	  int jj = VhG0i(kk, ll);
+	  if (ww[jj] == 0) {
+	    // comput distance
+	    real dd;
+	    dd = ((xx - xxx[ll]) * (xx - xxx[ll]) +
+		  (yy - yyy[ll]) * (yy - yyy[ll]) +
+		  (zz - zzz[ll]) * (zz - zzz[ll]));
+	    dd = sqrt(dd);
+	    if (distmin > dd) {
+	      distmin = dd;
+	    }
+	    ww[jj] = 1;
+	  }
+	}
+	real[int] vaa(3), vbb(3), vcc(3), vnn(3), vpp(3), vqq(3);
+	vaa[0] = xxx[(ii + 2) % 4] - xxx[(ii + 1) % 4];
+	vaa[1] = yyy[(ii + 2) % 4] - yyy[(ii + 1) % 4];
+	vaa[2] = zzz[(ii + 2) % 4] - zzz[(ii + 1) % 4]; 	      
+	vbb[0] = xxx[(ii + 3) % 4] - xxx[(ii + 1) % 4];
+	vbb[1] = yyy[(ii + 3) % 4] - yyy[(ii + 1) % 4];
+	vbb[2] = zzz[(ii + 3) % 4] - zzz[(ii + 1) % 4]; 	      
+	vcc[0] = xxx[ii] - xxx[(ii + 1) % 4];
+	vcc[1] = yyy[ii] - yyy[(ii + 1) % 4];
+	vcc[2] = zzz[ii] - zzz[(ii + 1) % 4];
+	vqq[0] = xx - xxx[(ii + 1) % 4];
+	vqq[1] = yy - yyy[(ii + 1) % 4];
+	vqq[2] = zz - zzz[(ii + 1) % 4]; 	      
+	vnn[0] = vaa[1] * vbb[2] - vaa[2] * vbb[1];
+	vnn[1] = vaa[2] * vbb[0] - vaa[0] * vbb[2];
+	vnn[2] = vaa[0] * vbb[1] - vaa[1] * vbb[0];
+	real ss = vcc' * vnn;
+	if (ss > 0.0) {
+	  vnn *= (-1.0);
+	}
+	real snn = sqrt(vnn' * vnn);
+	vnn /= snn;
+	real sqn = vqq' * vnn; //'
+	vpp = vqq - sqn * vnn;
+	real spn = vpp' * vnn;	      
+	real saa = vaa' * vaa;
+	real sab = vaa' * vbb;
+	real sbb = vbb' * vbb;
+	real spa = vpp' * vaa;
+	real spb = vpp' * vbb;
+	real lambdaa, lambdab;
+
+	real ddet = saa * sbb - sab * sab;
+	lambdaa = (spa * sbb - spb * sab) / ddet;
+	lambdab = (spb * saa - spa * sab) / ddet;	
+	
+	if ((lambdaa > -0.0005) && (lambdab > -0.0005)
+	    && ((lambdaa + lambdab) < 1.0005)) {
+          if (verbositylevel > 2 ) {
+	    fout << "L906: " << i << " " << kkk << " found: "
+	       << k << "/" << nTThG0inbe << " ( "
+	       << lambdaa << " " << lambdab << " " << (lambdaa + lambdab)
+	       << " ) " << sqn << " " << sgn;
+	    fout.flush;
+	  }
+	  pphig11[i] = sqn * (-1.0);
+	  if (abs(sqn) >= 1.0) { // bofbof
+            if (verbositylevel > 2 ) {
+	      fout << "too far" << endl;
+	      fout.flush;
+	    }
+	    flag = false;
+	  }
+	  else if (sgn * sqn > 0.0) {
+	    if (verbositylevel > 2 ) {
+	      fout << "error in sign " << phigxyz << endl;
+	      fout.flush;
+	    }
+	    flag = false;
+	  }
+	  else {
+	    if (verbositylevel > 2 ) {
+	      fout << endl;
+	      flag = true;
+	    }
+	    break;	    
+	  }
+	}
+      } // loop : kkk over surface elements
+      if (!flag) {
+        if (verbositylevel > 2 ) {
+	  fout << "L929: " << i << " " << xx << " " << yy << " " << zz
+	       << " not found ";
+	  fout << distmin << " " << sgn << endl;
+	  fout.flush;
+	}
+	pphig11[i] = distmin * sgn;
+      }  // if (flag)
+    }  // loop : mm 
+  }    // loop : m
+  if (debugvtk) {
+    savevtk(workingpath+"sgn."+vtkcount+".vtu",
+	    TThG1, phigdebug, order = vtkorder, bin = false);
+    fout << "L980 " << vtkcount << endl;
+    vtkcount++;
+    phigdebug[] = pphig11;	
+    savevtk(workingpath+"phig11."+vtkcount+".vtu",
+	    TThG1, phigdebug, order = vtkorder, bin = false);
+    fout << "L980 " << vtkcount << endl;
+    vtkcount++;
+  }
+  for (int i = 0; i < TThG1.nv; i++) {
+    if (uuu[i] == 1.0 && pphig11[i] == hugenegative) {
+      pphig11[i] = 1.0;
+    }
+  }
+  return 1;
+}
+
+fespace Vhg(ThG1, P2);
+Vhg phig, phigbc, phig0, phig1, phigsave, udist, phizg0, phizg1;
+real[int] phiga, phiglayer, phiglayer1, phigsaved0, phigsaved1; 
+
+// generating background mesh with finest elements
+{
+  generatebackgroundmesh(pointsize0);
+  real[int] xxx(4), yyy(4), zzz(4);
+  real ledge = 1.0e+6;
+  for (int k = 0; k < ThG0.nbe; k++) {
+    if (ThG0.be(k).label == 2) {
+      int kk = ThG0.be(k).Element;
+      int ii = ThG0.be(k).whoinElement;
+      for (int i = 0; i < 4; i++) {
+	xxx[i] = ThG0[kk][(ii + i) % 4].x;
+	yyy[i] = ThG0[kk][(ii + i) % 4].y;
+	zzz[i] = ThG0[kk][(ii + i) % 4].z;
+      }
+      for (int i = 1; i < 4; i++) {
+	real ledge0 = ((xxx[i] - xxx[0]) * (xxx[i] - xxx[0]) +
+		       (yyy[i] - yyy[0]) * (yyy[i] - yyy[0]) +
+		       (zzz[i] - zzz[0]) * (zzz[i] - zzz[0]));
+	ledge = ledge > ledge0 ? ledge0 : ledge;
+      }
+    }
+  }
+  if (mpirank == 0) {    
+    fout << "L1177 : " << hsize0 << " -> ";
+    fout.flush;      
+  }
+  hsize0 = sqrt(ledge);
+  if (mpirank == 0) {    
+    fout << hsize0 << endl;
+    fout.flush;      
+  }
+}
+
+mpiBarrier(comm);
+if (!flagrestarted) { //generatino of initial data
+  ThG1 = ThG0;
+  Tha1 = Tha0;
+  R1gl = R0gl;
+  D1h = D0h;
+  int mm = 0;
+  while (mm < 2) {  // second loop with mm = 1 not yet work well : 19 Oct.2020
+    if (mpirank == 0) {
+      bool gmshflag = false;
+      gmshcount = 0;
+      while (!gmshflag || gmshcount < gmshmax) {
+	gengeofile(workingpath+"out."+mm+".geo", stepfile,
+		   pointsize0 / (mm == 0 ? 1.5 : 4.0),
+		   liquid, intrfc,
+		   nsurfaces0, surfacelist0, false, false);
+	exec("gmsh -3 " + workingpath + "out."+mm+ ".geo -format msh2 -o "
+	     + workingpath + "out."+mm+".msh -log "
+	     + workingpath + "gmsh.log > /dev/null");
+	gmsherror(workingpath+"gmsh.log", nsurfaceerr, surfaceerr);
+	fout << "L711: gmsh error = " << nsurfaceerr[0] << endl;
+	fout.flush;
+	if (nsurfaceerr[0] > 0) {
+	  fout << "initial geometry is wrong" << endl;
+	  fout.flush;
+	  exit(-1);
+	  for (int i = 0; i < nsurfaceerr[0]; i++) {
+	    fout << surfaceerr[i] << " " << endl;
+	    surfacelist[nsurfaces++] = surfaceerr[i];
+	  }
+	  fout << endl;
+	  //      nsurfaces += nsurfaceerr[0];
+	}
+	else {
+	  gmshflag = true;
+	  break;
+	}
+	fout.flush;
+	gmshcount++;
+      }
+
+      ThG0i = gmshload3(workingpath+"out."+mm+".msh");
+      fout << "uniform " << ThG0i.nv << " " << ThG1.nt << endl;
+      fout.flush;
+      if (debugvtk) {
+	savevtk(workingpath+"ini."+vtkcount+".vtu", ThG0i,
+		order = vtkorder, bin = false);
+	fout << "## L739 : vtu = " << vtkcount << endl;
+	fout.flush;
+	vtkcount++;
+      }
+      VhG1 phig11;
+      real[int] phig111(VhG1.ndof);
+      setinitial(ThG0i, ThG1, phig111, true); // (mm == 0 ? true : false));
+      phig11[] = phig111;
+      
+      real phiscale = 1.0 / phig11[].max;
+      phig = phig11 * phiscale;             // interpolation from P1 to P2
+      reinitialize(phig, (mm == 0 ? 2.0 : 10.0), fout) // MACRO
+      //
+      if (debugvtk) {
+	savevtk(workingpath+"banded."+vtkcount+".vtu", ThG1,
+		phig, order = vtkorder, bin = false);
+	fout << "## L1206 : vtu = " << vtkcount << endl;	
+	vtkcount++;
+      }
+    } // if (mpirank == 0)
+
+    searchMethod = 1;  
+    mpiBarrier(comm);  
+    broadcast(processor(0, comm), phig[]);
+
+    phiga.resize(phig[].n);
+    phiga = phig[];
+    //    refinemesh(ThG1, phiga, -4, fout, (mm == 0 ? false : true));
+    refinemesh(ThG1, ThG1, Tha1, D1h, R1gl, phiga, 
+	       (mm == 0 ? -1 : -2),
+	       fout, false, false, true);
+
+    {
+      meshN Th = ThG1; // dummy mesh for initialization     
+      meshN ThBorder;
+      {
+	build(Th, s, intersection, D, P2, comm);           
+      }
+      Tha = Th;
+      fespace Vh(Th, P2);
+      Vh phi;
+      phi = 0.0;
+      
+      totaldof = Vhg.ndof;  // global DOF
+      localdof = Vh.ndof;
+      
+      Rgl = interpolate(Vh, Vhg);
+      Dh = [D]; // diagonal matrix
+      if (mpirank == 0) {
+	fout << "L1252 : starting interpolation ... ";
+	fout.flush;
+      }
+      searchMethod = 0;
+      phi = phig;
+      searchMethod = 1;      
+      if (mpirank == 0) {
+	fout << " end." << endl;
+	fout.flush;
+      }     
+      real[int] w(totaldof), wwi(localdof), wwwi(localdof);
+      wwi = Dh * phi[] ; //wwwi;
+      w = Rgl'* wwi; //'
+      phig = 0.0; // reallocation 
+      mpiAllReduce(w, phig[], comm, mpiSUM); //
+    }
+    //    phig = phig; // on the New ThG1
+    if (mpirank == 0) {
+      fout << "end" << endl;
+      fout.flush;
+    }
+    if(mpirank == 0) {
+      if(debugvtk) {
+	savevtk(workingpath+"banded."+vtkcount+".vtu", ThG1,
+		phig, order = vtkorder, bin = false);
+	fout << "## L1257 : vtu = " << vtkcount << endl;
+	fout.flush;
+	vtkcount++;
+      }
+    }
+
+    mm++;
+  } // while (mm < 2)
+
+  phiga.resize(phig[].n);
+  phiga = phig[];
+
+  generatebackgroundmesh((pointsize0/3.0));
+    
+    refinemesh(ThG1, ThG1, Tha1, D1h, R1gl, phiga, 
+	       -3,
+	       fout, false, false, true);
+    {
+      meshN Th = ThG1; // dummy mesh for initialization     
+      meshN ThBorder;
+      {
+	build(Th, s, intersection, D, P2, comm);           
+      }
+      Tha = Th;
+      fespace Vh(Th, P2);
+      Vh phi;
+      phi = 0.0;
+      
+      totaldof = Vhg.ndof;  // global DOF
+      localdof = Vh.ndof;
+      
+      Rgl = interpolate(Vh, Vhg);
+      Dh = [D]; // diagonal matrix
+      if (mpirank == 0) {
+	fout << "L1252 : starting interpolation ... ";
+	fout.flush;
+      }
+      searchMethod = 0;      
+      phi = phig;
+      searchMethod = 1;      
+      if (mpirank == 0) {
+	fout << " end." << endl;
+	fout.flush;
+      }
+      real[int] w(totaldof), wwi(localdof), wwwi(localdof);
+      wwi = Dh * phi[] ; //wwwi;
+      w = Rgl'* wwi; //'
+      phig = 0.0; // reallocation 
+      mpiAllReduce(w, phig[], comm, mpiSUM); //
+    }
+    //    phig = phig; // on the New ThG1
+    if (mpirank == 0) {
+      fout << "end" << endl;
+      fout.flush;
+    }
+
+  phig = (phig == 0.0 ? 0.0 : (phig > 0.0 ? 1.0 : -1.0)); 
+                                                    // starting from Heaviside
+  if(mpirank == 0) {
+    if(debugvtk) {
+      savevtk(workingpath+"banded."+vtkcount+".vtu", ThG1,
+	      phig, order = vtkorder, bin = false);
+      fout << "## L1295 : vtu = " << vtkcount << endl;
+      fout.flush;
+      vtkcount++;
+    }
+  }
+  //  refineflag1st = false;
+  refineskip = true;
+ }
+ else { // initial data will be read from file
+
+   generatebackgroundmesh((pointsize0/3.0));   
+
+   if (mpirank == 0) {
+     ThG1 = readmesh3(workingpath+"phi.0."+nrestart+".mesh");
+     fout << "L1262: restarted " << nrestart << endl;
+     fout.flush;
+     {
+       ifstream ff(workingpath+"phi.0."+nrestart+".data");
+       ff >> phig[];
+     }
+   }
+   broadcast(processor(0,comm),ThG1);
+   if (mpirank > 0) {
+     phig = phig;
+   }
+   broadcast(processor(0,comm),phig[]);
+
+   meshN Th = ThG1;
+   {
+     build(Th, s, intersection0, D1, P1, comm);    
+   }
+   Tha1 = Th;
+   fespace VhG00(ThG1, P1);
+   fespace Vha0(Tha1, P1);
+   //
+   R1gl = interpolate(Vha0, VhG00);
+   D1h = [D1]; // diagonal matrix
+   flaganiso = false; // true;    to start from phi.170.mesh -> phi.0.5.mesh
+   refineskip = false;   
+ } // if (flagrestart)
+ThGlobal = ThG1;
+ThGsaved0 = ThG1;
+
+Vha phi, testphi, phibc, oldphi, oldphin;
+
+varf varpfCN(phi, testphi) =
+  int3d(Tha)(phi * testphi / dt
+	     + kappa / 2.0 *
+	     (dx(phi)*dx(testphi) +dy(phi)*dy(testphi) +dz(phi)*dz(testphi))
+	    -  phi * testphi
+	    + (3.0 / 4.0) * (oldphin + oldphi) * (oldphin + oldphi)
+	    * phi * testphi)
+  - int2d(Tha, 2)((phibc > 0.0 ? 0.0 : 1.0) * kappa * costheta /
+		    //  - int2d(Tha, 2)(kappa * costheta /   
+		  (sqrt(((dx(oldphin)+dx(oldphi))*(dx(oldphin)+dx(oldphi))
+		       + (dy(oldphin)+dy(oldphi))*(dy(oldphin)+dy(oldphi))
+		       + (dz(oldphin)+dz(oldphi))*(dz(oldphin)+dz(oldphi))))
+		   == 0.0 ? 1.0 :
+		   sqrt((dx(oldphin)+dx(oldphi))*(dx(oldphin)+dx(oldphi))
+		      + (dy(oldphin)+dy(oldphi))*(dy(oldphin)+dy(oldphi))
+		      + (dz(oldphin)+dz(oldphi))*(dz(oldphin)+dz(oldphi))))*
+		  ((dx(oldphin)+dx(oldphi)) * dx(phi)
+		 + (dy(oldphin)+dy(oldphi)) * dy(phi)
+		 + (dz(oldphin)+dz(oldphi)) * dz(phi)) * testphi / 2.0);
+		 
+varf extpfCN(phi, testphi) =
+  int3d(Tha)((oldphin * testphi - oldphi * testphi) /dt 
+	    + kappa / 2.0 *
+		      ((dx(oldphin) + dx(oldphi))*dx(testphi)
+		     + (dy(oldphin) + dy(oldphi))*dy(testphi)
+		     + (dz(oldphin) + dz(oldphi))*dz(testphi))
+	    + 2.0 * ((oldphin + oldphi)/2.0 * (oldphin + oldphi)/2.0 - 1.0) *
+		     (oldphin + oldphi)/2.0 * testphi)
+  - int2d(Tha, 2)((phibc > 0.0 ? 0.0 : 1.0) * kappa * costheta * testphi / 2.0 *
+		  //  - int2d(Tha, 2)(kappa * costheta * testphi / 2.0 *
+		  sqrt((dx(oldphin) + dx(oldphi))*(dx(oldphin) + dx(oldphi))
+		     + (dy(oldphin) + dy(oldphi))*(dy(oldphin) + dy(oldphi))
+		     + (dz(oldphin) + dz(oldphi))*(dz(oldphin) + dz(oldphi))));
+
+
+varf varpfCNH1(phi, testphi) =
+  int3d(Tha)(kappa * (dx(phi) * dx(testphi) +
+		      dy(phi) * dy(testphi) +
+		      dz(phi) * dz(testphi)) / dt
+	     + kappa / 2.0 *
+	     (dx(phi)*dx(testphi) +dy(phi)*dy(testphi) +dz(phi)*dz(testphi))
+	    -  phi * testphi
+	    + (3.0 / 4.0) * (oldphin + oldphi) * (oldphin + oldphi)
+	    * phi * testphi)
+  - int2d(Tha, 2)((phibc > 0.0 ? 0.0 : 1.0) * kappa * costheta / 
+		  (sqrt(((dx(oldphin)+dx(oldphi))*(dx(oldphin)+dx(oldphi))
+		       + (dy(oldphin)+dy(oldphi))*(dy(oldphin)+dy(oldphi))
+		       + (dz(oldphin)+dz(oldphi))*(dz(oldphin)+dz(oldphi))))
+		   == 0.0 ? 1.0 :
+		   sqrt((dx(oldphin)+dx(oldphi))*(dx(oldphin)+dx(oldphi))
+		      + (dy(oldphin)+dy(oldphi))*(dy(oldphin)+dy(oldphi))
+		      + (dz(oldphin)+dz(oldphi))*(dz(oldphin)+dz(oldphi))))*
+		  ((dx(oldphin)+dx(oldphi)) * dx(phi)
+		 + (dy(oldphin)+dy(oldphi)) * dy(phi)
+		 + (dz(oldphin)+dz(oldphi)) * dz(phi)) * testphi / 2.0);
+		 
+varf extpfCNH1(phi, testphi) =
+  int3d(Tha)(kappa * ((dx(oldphin) * dx(testphi) - dx(oldphi) * dx(testphi)) +
+		      (dy(oldphin) * dy(testphi) - dy(oldphi) * dy(testphi)) +
+		      (dz(oldphin) * dz(testphi) - dz(oldphi) * dz(testphi))) /dt
+	    + kappa / 2.0 *
+		      ((dx(oldphin) + dx(oldphi))*dx(testphi)
+		     + (dy(oldphin) + dy(oldphi))*dy(testphi)
+		     + (dz(oldphin) + dz(oldphi))*dz(testphi))
+	    + 2.0 * ((oldphin + oldphi)/2.0 * (oldphin + oldphi)/2.0 - 1.0) *
+		     (oldphin + oldphi)/2.0 * testphi)
+  - int2d(Tha, 2)((phibc > 0.0 ? 0.0 : 1.0) * kappa * costheta * testphi / 2.0 *
+		  sqrt((dx(oldphin) + dx(oldphi))*(dx(oldphin) + dx(oldphi))
+		     + (dy(oldphin) + dy(oldphi))*(dy(oldphin) + dy(oldphi))
+		     + (dz(oldphin) + dz(oldphi))*(dz(oldphin) + dz(oldphi))));
+
+varf varpfst(phi, testphi) =
+  int3d(Tha)(kappa *
+	     (dx(phi)*dx(testphi) +dy(phi)*dy(testphi) +dz(phi)*dz(testphi))
+	    - 2.0 *  phi * testphi
+	     + 6.0 *  oldphin * oldphin * phi * testphi)
+  - int2d(Tha, 2)( (phibc > 0.0 ? 0.0 : 1.0) * kappa * costheta /
+		   //  - int2d(Tha, 2)(kappa * costheta /  
+		  (sqrt((dx(oldphin)*dx(oldphin)
+			+dy(oldphin)*dy(oldphin)
+			 +dz(oldphin)*dz(oldphin))) == 0.0 ? 1.0 :
+			 sqrt((dx(oldphin)*dx(oldphin)
+			      +dy(oldphin)*dy(oldphin)
+			       +dz(oldphin)*dz(oldphin)))) *
+		  (dx(oldphin) * dx(phi) +
+		   dy(oldphin) * dy(phi) +
+		   dz(oldphin) * dz(phi)) * testphi);
+		 
+varf extpfst(phi, testphi) =
+  int3d(Tha)(kappa *
+	    (dx(oldphin)*dx(testphi) +
+	     dy(oldphin)*dy(testphi) +
+	     dz(oldphin)*dz(testphi))
+	    + 2.0 *  (oldphin * oldphin - 1.0) * oldphin * testphi)
+  - int2d(Tha, 2)((phibc > 0.0 ? 0.0 : 1.0) * kappa * costheta *
+		  //  - int2d(Tha, 2)(kappa * costheta *  
+		 sqrt((dx(oldphin)*dx(oldphin)
+		      +dy(oldphin)*dy(oldphin)
+		      +dz(oldphin)*dz(oldphin))) * testphi);
+
+varf varpfCN90(phi, testphi) =
+  int3d(Tha)(kappa * (dx(phi) * dx(testphi) +
+		      dy(phi) * dy(testphi) +
+		      dz(phi) * dz(testphi)) / dt
+	     + kappa / 2.0 *
+	     (dx(phi)*dx(testphi) +dy(phi)*dy(testphi) +dz(phi)*dz(testphi))
+	    -  phi * testphi
+	    + (3.0 / 4.0) * (oldphin + oldphi) * (oldphin + oldphi)
+	     * phi * testphi);
+		 
+varf extpfCN90(phi, testphi) =
+  int3d(Tha)(kappa * ((dx(oldphin) * dx(testphi) - dx(oldphi) * dx(testphi)) +
+		      (dy(oldphin) * dy(testphi) - dy(oldphi) * dy(testphi)) +
+		      (dz(oldphin) * dz(testphi) - dz(oldphi) * dz(testphi))) /dt
+	    + kappa / 2.0 *
+		      ((dx(oldphin) + dx(oldphi))*dx(testphi)
+		     + (dy(oldphin) + dy(oldphi))*dy(testphi)
+		     + (dz(oldphin) + dz(oldphi))*dz(testphi))
+	    + 2.0 * ((oldphin + oldphi)/2.0 * (oldphin + oldphi)/2.0 - 1.0) *
+	     (oldphin + oldphi)/2.0 * testphi);
+
+varf varpfst90(phi, testphi) =
+  int3d(Tha)(kappa *
+	     (dx(phi)*dx(testphi) +dy(phi)*dy(testphi) +dz(phi)*dz(testphi))
+	    - 2.0 *  phi * testphi
+	     + 6.0 *  oldphin * oldphin * phi * testphi);
+		 
+varf extpfst90(phi, testphi) =
+  int3d(Tha)(kappa *
+	    (dx(oldphin)*dx(testphi) +
+	     dy(oldphin)*dy(testphi) +
+	     dz(oldphin)*dz(testphi))
+	     + 2.0 *  (oldphin * oldphin - 1.0) * oldphin * testphi);
+
+
+varf varpfBE(phi, testphi) =
+  int3d(Tha)(phi * testphi / dt +
+	     kappa *
+	     (dx(phi)*dx(testphi) +dy(phi)*dy(testphi) +dz(phi)*dz(testphi))
+	    - 2.0 *  phi * testphi
+	     + 6.0 *  oldphin * oldphin * phi * testphi)
+  - int2d(Tha, 2)( (phibc > 0.0 ? 0.0 : 1.0) * kappa * costheta /
+		   //  - int2d(Tha, 2)(kappa * costheta /  
+		  (sqrt((dx(oldphin)*dx(oldphin)
+			+dy(oldphin)*dy(oldphin)
+			 +dz(oldphin)*dz(oldphin))) == 0.0 ? 1.0 :
+			 sqrt((dx(oldphin)*dx(oldphin)
+			      +dy(oldphin)*dy(oldphin)
+			       +dz(oldphin)*dz(oldphin)))) *
+		  (dx(oldphin) * dx(phi) +
+		   dy(oldphin) * dy(phi) +
+		   dz(oldphin) * dz(phi)) * testphi);
+		 
+varf extpfBE(phi, testphi) =
+  int3d(Tha)((oldphin * testphi - oldphi * testphi) / dt 
+	     + kappa *
+	    (dx(oldphin)*dx(testphi) +
+	     dy(oldphin)*dy(testphi) +
+	     dz(oldphin)*dz(testphi))
+	     + 2.0 *  (oldphin * oldphin - 1.0) * oldphin * testphi)
+  - int2d(Tha, 2)((phibc > 0.0 ? 0.0 : 1.0) * kappa * costheta *
+		  //  - int2d(Tha, 2)(kappa * costheta *  
+		 sqrt((dx(oldphin)*dx(oldphin)
+		      +dy(oldphin)*dy(oldphin)
+		      +dz(oldphin)*dz(oldphin))) * testphi);
+
+varf varpfBE90(phi, testphi) =
+  int3d(Tha)(phi * testphi / dt +
+	     kappa *
+	     (dx(phi)*dx(testphi) +dy(phi)*dy(testphi) +dz(phi)*dz(testphi))
+	    - 2.0 *  phi * testphi
+	     + 6.0 *  oldphin * oldphin * phi * testphi);
+		 
+varf extpfBE90(phi, testphi) =
+  int3d(Tha)((oldphin * testphi - oldphi * testphi) / dt 
+	     + kappa *
+	    (dx(oldphin)*dx(testphi) +
+	     dy(oldphin)*dy(testphi) +
+	     dz(oldphin)*dz(testphi))
+	     + 2.0 *  (oldphin * oldphin - 1.0) * oldphin * testphi);
+
+varf extcnst(phi, testphi) = int3d(ThGlobal)(testphi);
+
+
+real[int] fcnst;
+     
+real[int] phi0g, ainvfg;
+real[int] phi0;
+
+int nliquid = 1, nair = 1, neulerc = 1;
+int nliquid0 = 1, nair0 = 1, neulerc0 = 1;
+int nliquid1 = 1, nair1 = 1, neulerc1 = 1;
+real volmag = 1.0;
+int countvolmag = 0;
+bool samekappa = (kappa1 == kappa0);
+for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
+  int mmm;  
+  int itrrefine;
+  bool bisectionphase;
+  bool changedphase = false;
+  if (pp == 0) {
+    bisectionphase = false;
+    itrrefine = refine0;
+  }
+  else {
+    bisectionphase = true;
+    itrrefine = refine1;
+    
+  }
+  int mmax = (pp == 0 ? countsweep : countbisect);
+  bool stat0 = true;
+  int statcount =  0;
+  bool refineflag = true;
+  int restarted = 0;
+  bool skipupdate = true;
+  int countrefined = 0;
+  int dangle = canglerestarted;   // for debugging
+  bool updateangle = true;
+  //  int firstconverged = 0;
+  dt = dt0;
+  int refinelevel = -4;
+  //  bool startnew = false;
+  kappa = (flagrestarted ? kappa1 : kappa0);
+  reps = sqrt(kappa);  
+  for (int mm = 0; mm <= mmax; mm++) { // mm = 0 is used for initial liquid
+    bool convvol = false;
+    bool skipeuler = false;
+    real vvol0, vvol1;
+    ThG10 = ThG1;
+    real[int] phig00(phig[].n), phig000(phig[].n);
+    phig00 = phig[];
+    matrix R00gl, D00h;    
+    R00gl = R1gl;
+    D00h = D1h;
+    while(!convvol){
+      phigsave = phig;
+      bool updatevol = (!skipupdate);
+      if (dangle > cangle) {
+	updatevol = false;
+      }
+      updateangle = (updateangle && (kappa == kappa1)
+		     && (cangle < dangle)) ? true : false;
+      fout << "L1534 " << mm
+	   << " kappa " << kappa
+	   << " updateangle " << updateangle
+	   << " updatevol " << updatevol << " " << cangle << " " << dangle
+	   << endl;
+      fout.flush;
+      
+      if (skipupdate && (kappa == kappa1)) { // what is the role of skipupdate?
+	skipupdate = false;
+      }
+      
+
+      real t = 0;
+      real cputime = 0.0;
+      real elapsedtime = 0.0;
+      
+      real J0, J1;
+      
+      real tt = 0.0;
+      
+      real Tmax = ((mm == 0) ? Tmax0 : Tmax1);
+      itrrefine = refine1; //
+      //      bool flaganiso = false;
+      bool volrestart = false;
+      bool tenlarge = false; 
+      bool angleflag = (dangle < 90) ? true : false;
+      bool restoreflag = false;
+      for (int nn = 0; nn < 2; nn++) {
+	int ll = 0;	
+	if (flagrestarted && mm == 0) {
+	  refineflag = false;
+	  refineskip = true;	  
+	  nn++;
+	  ll = 2;	  
+	}
+	bool gradientflow = (nn == 0 ? true : false);
+	bool convloop = false;
+	bool flagisoagain = false;
+	//
+	while(!convloop) { // loop : ll < itrrefine Newton
+	                   //        tt < Tmax for graidentflow
+	  int itrnewton;
+	  if (gradientflow) {
+	    itrnewton = itrnewton0;
+	    if (tt >= Tmax) {
+	      convloop = true;
+	      break;
+	    }
+	    if (dt < dtmax && kappa == kappa1) {
+	      if (mpirank == 0) {
+		fout << "L1569: dt = " << dt << " -> " << dt * sqrt(2.0)
+		     << endl;
+		fout.flush;
+	      }
+	      if (tenlarge) {
+		dt *= 2.0;
+	      }
+	      else {
+		dt *= sqrt(2.0);
+	      }
+	    }
+	    if (tenlarge) {
+	      if ((kappa == kappa0) && (!samekappa)) {
+		real vol1 = volumeofliquid(Tha, Rgl, Dh, phig[], 2);
+		if (vol1 < (volstarted - voldelta0)) {
+		  if (mpirank == 0) {
+		    fout << "L1647 : inccreasing volume during "
+			 << "angle decrement : vol1 = " << vol1
+			 << " -> " << volstarted << endl;
+		    fout.flush;
+		  }	      
+		  increasevol(ThGlobal, Tha, Rgl, Dh, vol1, volstarted,
+			      reps, phig[], 3);
+		}
+		refineflag = true;
+		refineskip = false;
+		kappa = kappa1;    // boundary is smooth for telnarge == true
+		reps = sqrt(kappa);
+	      }
+	      tenlarge = false;
+	    }
+	    if ((ll == 0) && (mm > 0)) {
+	      flaganiso = false;
+	      refineskip = false;
+	    }
+	    if (mpirank == 0) {
+	      fout << "L1611: " << mm << " " << ll << " Tmax = " << Tmax
+		   << " dt = " << dt
+		   << " angle = " << dangle << " " << ll
+		   << " refineflag= " << refineflag
+		   << " refineskip = " << refineskip
+		   << " kappa = " << kappa
+		   << " flagansio = " << flaganiso << endl;		  
+	      fout.flush;
+	    }
+	  }
+	  else { // (!gradientflow)
+	    dt = dt1;      // reset time incerement for gradient flow solver
+	    kappa = kappa1;          // kappa0 only the first gradient flow
+	    reps = sqrt(kappa);
+	    itrnewton = itrnewton1;
+	    if ((ll >= itrrefine) ||
+		((!flagrestarted) && (mm == 0) && (ll > 0) && (!flagisoagain))) {
+	      convloop = true;
+	      break;
+	    }
+	    if (ll == 0) {
+	      // save mesh and partition of the unity
+	      ThG10 = ThG1;
+	      R00gl = R1gl;
+	      D00h = D1h;
+	      phig00.resize(phig[].n);
+	      phig00 = phig[];
+	      //
+	      refineflag = false; 
+	      refineskip = true;	      
+	    }
+	    else if (ll < 3){
+	      refineflag = true;
+	      refineskip = false;	      
+	      if (ll == 1){
+		if (flagisoagain) {
+		  flaganiso = false;
+		}
+		else {
+		  flaganiso = true;		  
+		  ll++;  // extra increment
+		}
+	      }
+	      else if (ll == 2) {
+		flaganiso = true;
+	      }
+	    }
+	    // modification for	the 1st step of restarting from anisotropic mesh
+	    if (flagrestarted && mm == 0) {
+	      //	      refinelevel = -6;
+	      refineflag = true;
+	      refineskip = true;
+	      //	      flagrestarted = false;
+	      //	      refineflag1st = false;	      
+	    }
+	    if (mpirank == 0) {     
+	      fout << "L1644 : angle = " << dangle << " " << ll
+		   << " refineflag= " << refineflag
+		   << " refineskip = " << refineskip
+		   << " kappa = " << kappa
+		   << " flagansio = " << flaganiso << endl;		  
+	      fout.flush;
+	    }
+	  }
+	  ll++;	  
+	  convvol = false;
+	  broadcast(processor(0,comm),phig[]);
+	  if (mpirank == 0 && (!gradientflow)) {
+	    fout << "Newton iteration with refinement = " << ll << endl;
+	    fout.flush;
+	    if(debugvtk) {
+	      savevtk(workingpath+"refined."+vtkcount+".vtu",
+		      ThGlobal, phig, order = vtkorder, bin = false);
+	      fout << "L1661: vtu = " << vtkcount << endl;
+	      fout.flush;
+	      savemesh(ThGlobal, "phi." + vtkcount + ".mesh");
+	      {
+		ofstream ff("phi." + vtkcount + ".data");
+		ff << phig[];
+	      }
+	      vtkcount++;
+	    }
+	  }
+	  if (refineflag) { //
+	    if (!refineskip) {
+	      phiga.resize(phig[].n);
+	      phiga = phig[];
+	      if (mpirank == 0) {
+		fout << "L1730 : refinelevel = " << refinelevel << endl;
+		fout.flush;
+	      }
+	      refinemesh(ThG1, ThG1, Tha1, D1h, R1gl,	      
+			 phiga,
+			 refinelevel,
+			 fout, flaganiso, true, true); // -1
+	      if (mpirank == 0) {
+		fout << "L1739 : refinelevel = " << refinelevel << endl;
+		fout.flush;
+	      }
+	      countrefined++;
+	      ThGlobal = ThG1;
+	      refineflag = false;
+	      refineskip = false;
+	      dt = max(dt / 8.0, dt1);
+	    }
+	    
+	    meshN Th = ThGlobal; // dummy mesh for initialization     
+	    meshN ThBorder;
+	    {
+	      build(Th, s, intersection, D, P2, comm);           
+	    }
+	    Tha = Th;
+	    fespace Vh(Th, P2);          
+	    phi = 0.0;
+	    oldphin = 0.0;
+	    
+	    totaldof = Vhg.ndof;  // global DOF
+	    localdof = Vh.ndof;
+	    
+	    Rgl = interpolate(Vh, Vhg);
+	    Dh = [D]; // diagonal matrix
+	    if (mpirank == 0) {
+	      fout << "L1699: total = " << " " << totaldof << " local = "
+		   << localdof << endl;
+	      fout.flush;
+	    }
+	    mpiBarrier(comm) ;
+	    
+	    etime00 = mpiWtime();
+	    searchMethod = 0;
+	    phi = phig;      // interpolation in each subdomain Tha
+	    searchMethod = 1;
+	    phig = 0.0;      // reallocation on new mesh
+	    etime01 = mpiWtime();
+	    real[int] w(totaldof), wwi(localdof), wwwi(localdof);
+	    //     wwwi = Ral * phi[];
+	    wwi = Dh * phi[] ; //wwwi;
+	    w = Rgl'* wwi; //'
+	    mpiAllReduce(w, phig[], comm, mpiSUM); //
+	    if (mpirank == 0) {
+	      if(debugvtk0) {
+		savevtk(workingpath+"refined."+vtkcount+".vtu",
+			ThGlobal, phig, order = vtkorder, bin = false);
+		fout << "L1728: vtu = " << vtkcount << endl;
+		fout.flush;
+		vtkcount++;
+	      }
+	    }
+	    
+	    phi0g.resize(totaldof);
+	    ainvfg.resize(totaldof);
+	    phi0.resize(Vha.ndof);
+	    phiglayer.resize(phig[].n);
+	    phiglayer1.resize(phig[].n);     
+	    findneighbor(ThG1, phig[], phiglayer, 3, phiglayer1, 4, fout);
+	    phizg1 = 0.0;	  
+	    phizg0 = 0.0;
+	    phizg0[] = phiglayer1;
+	    phizg0 = phizg0 > 3.1 ? 1.0 : 0.0;
+	    // recompute constraint vector to attain volume conservation
+	    fcnst.resize(totaldof);
+	    fcnst = extcnst(0, Vhg);
+	    
+	    real fcnstl2 = fcnst.l2;
+	    fcnst = fcnst / fcnstl2;
+
+	    vol0 = volumeofliquid(Tha, Rgl, Dh, phig[], 0);
+	    vol01 = volumeofliquid(Tha, Rgl, Dh, phig[], 1); // 10 Jan.2021
+	    vol00 = volumeofliquid(Tha, Rgl, Dh, phig[], 2); // 10 Jan.2021
+	    if (mpirank == 0) {   
+	      fout << "L1754: L1 constraint = " << vol0 << " volume = "
+		   << vol01 << " " << vol00 << endl;
+	      fout.flush;
+	    }
+	    solvercount++;	    
+	    if (solvercount == 1) {
+	      volstarted = vol00;
+	      voldelta = volstarted * (volmag1 - 1.0);	      
+	      updateangle = false;	      
+	      if (mpirank == 0) {
+		fout << "L1806: " << solvercount << " "
+		     << volstarted << " " << voldelta << endl;
+	      }
+	    }
+	    //	    if (mm == 1 && !(flagrestarted)) {
+	    //	      updateangle = false;
+	    //	    }
+	  } // if (refineflag)
+	  if (updateangle) {
+	    real vol0, vol1;
+	    // starting from Heaviside	    
+	    phig = (phig == 0.0 ? 0.0 : (phig > 0.0 ? 1.0 : -1.0)); 
+	    vol1 = volumeofliquid(Tha, Rgl, Dh, phig[], 1);
+	    if (abs(vol1 - volstarted) > volmag1 * volstarted) {
+	      if (dangle > cangle) {
+		if (mpirank == 0) {
+		  fout << "L1815: same anlge " << dangle;
+		}
+		Tmax = Tmax0;	      
+		if (mpirank == 0) {
+		  fout << "-> " << dangle << " Tmax = " << Tmax << endl;
+		}
+	      }
+	      angleflag = true;
+	    }
+	    else {
+	      if (dangle > cangle) {
+		if (mpirank == 0) {
+		  fout << "L1829: update anlge " << dangle;
+		}
+		dangle += delangle;		
+		Tmax = Tmax0;	      
+		if (mpirank == 0) {
+		  fout << "-> " << dangle << " Tmax = " << Tmax << endl;
+		}
+	      }
+	      updateangle = false;
+	    }
+	    updatevol = false;	    
+	    costheta = cos(dangle * pi / 180.0);	    
+	    if (mpirank == 0) {
+	      fout << "L1766 : vloume = " << volstarted << " -> " << vol1;
+	    }
+	    if (vol1 > (volstarted + voldelta0)) {
+	      if (mpirank == 0) {
+		fout << " decreasing volume during angle decrement" << endl;
+		fout.flush;
+	      }	      
+	      decreasevol(ThGlobal, Tha, Rgl, Dh, vol1, volstarted, reps,
+			  phig[], 1);
+	    }
+	    else if (vol1 < (volstarted - voldelta0)) {
+	      if (mpirank == 0) {
+		fout << " increasing volume during angle decrement" << endl;
+		fout.flush;
+	      }	      
+	      increasevol(ThGlobal, Tha, Rgl, Dh, vol1, volstarted, reps,
+			  phig[], 1);
+	    }
+	  }
+	  else if (updatevol) {
+	    if (bisectionphase) {
+	      vvol0 = volumeofliquid(Thasaved0, Rglsaved0, Dhsaved0,
+				     phigsaved0, 1); 
+	      vvol1 = volumeofliquid(Thasaved1, Rglsaved1, Dhsaved1,
+				     phigsaved1, 1); 
+	      real vvol2 = (vvol0 + vvol1) / 2.0;
+	      phig[] = phigsaved0;
+	      if (mpirank == 0) {
+		fout << "target volume = " << vvol2 << " in ( " << vvol0
+		     << " " << vvol1 << ")" << endl;
+		fout.flush;
+	      }
+	      increasevol(ThGlobal, Tha, Rgl, Dh, vvol0, vvol2, reps, phig[],
+			  1);
+	    }
+	    else { // if (bisectionphase)
+	      real vol;
+	      phig = (phig == 0.0 ? 0.0 : (phig > 0.0 ? 1.0 : -1.0));
+	                                             // starting from Heaviside
+	      vol = volumeofliquid(Tha, Rgl, Dh, phig[], 1);
+	      if (mpirank == 0) {
+		fout << "initial vloume = " << vol << endl;
+	      }
+	      real vol0 = vol + voldelta * volmag; // ivol0 / 100.0;
+	      if (mpirank == 0) {
+		fout << "target volume = " << vol0 << " from " << vol << endl;
+		fout.flush;
+	      }
+	      increasevol(ThGlobal, Tha, Rgl, Dh, vol, vol0, reps, phig[], 1);
+	      countrefined = 0;	      
+	    }
+	    updatevol = false;
+	  }
+	  vol0 = volumeofliquid(Tha, Rgl, Dh, phig[], 0);
+	  vol01 = volumeofliquid(Tha, Rgl, Dh, phig[], 1); // 10 Jan.2021
+	  vol00 = volumeofliquid(Tha, Rgl, Dh, phig[], 2); // 10 Jan.2021
+	  if (mpirank == 0) {   
+	    fout << "L1811: L1 constraint = " << vol0 << " volume = " << vol01
+		 << " " << vol00 << endl;
+	  }
+	  phi[] = Rgl * phig[];
+	  
+	  oldphi = 0.0;
+	  oldphi[] = phi[];
+	  //	  if (!gradientflow) {
+	  if (mpirank == 0) {
+	    fout << "L1822 angleflag = " << angleflag << " angle = " << dangle
+		 << endl;
+	    fout.flush;
+	  }
+	  if (angleflag) {	  
+	    phiglayer.resize(phig[].n);
+	    phiglayer1.resize(phig[].n);
+	    findneighbor(ThG1, phig[], phiglayer, 9, phiglayer1, 10, fout);
+	    if (mpirank == 0) {
+	      fout << "L1839 " << costheta << endl;
+	      fout.flush;
+     	      phigbc = 0.0; // reallocate on the mesh TGlobal
+     	      phigbc[] = phiglayer;
+	    }
+	    phibc = 0.0; // allocation on new ThG1	       
+	    phibc[] = Rgl * phiglayer;
+	  }
+
+	  if (gradientflow) {	  
+	    tt += dt;
+	  }
+	  if (mpirank == 0) {
+	    if (gradientflow) {
+	      fout << "L1842 : t = " << tt << " dt = " << dt << endl;
+	    }
+	    else {
+	      fout << "Newton refinement " << ll << " " << itrrefine << endl;
+	    }
+	    fout.flush;
+	  }
+	  bool newtonfail = true;
+	  skipeuler = false;
+	  skipupdate = true;
+	  bool flagnearlyconv = false;
+	  for (int k = 0; k < itrnewton; k++) {
+	    real cpu0 = clock();
+	    real walltime0 = mpiWtime();
+	    oldphin = phi;
+	    matrix A;
+	    real[int] ffFull(Vha.ndof);
+	    if (gradientflow) {
+	      oldphin = phi;   // interpolation (restriction) from phig
+	      if (angleflag) {
+		A = varpfBE(Vha, Vha, tgv = -1);
+		ffFull = extpfBE(0, Vha, tgv = -1);		
+	      }
+	      else {
+		A = varpfBE90(Vha, Vha, tgv = -1, sym=true);
+		ffFull = extpfBE90(0, Vha, tgv = -1);
+	      }
+	    }
+	    else {
+	      if (angleflag) {
+		A = varpfst(Vha, Vha, tgv = -1);
+		ffFull = extpfst(0, Vha, tgv = -1);
+	      }
+	      else {
+		A = varpfst90(Vha, Vha, tgv = -1, sym=true);
+		ffFull = extpfst90(0, Vha, tgv = -1);
+	      }
+	    }
+	    real[int] rhsi = Rgl*fcnst; // Vhg -> Vha
+	    real[int] w(totaldof);
+	    real[int] rhs0(localdof), rhs1(localdof);
+	    real[int] DffFull = Dh * ffFull;
+	    real rhs0l2l = DffFull' * ffFull; //' 
+	    real rhs0l2 = 0.0;
+	    mpiAllReduce(rhs0l2l, rhs0l2, comm, mpiSUM); //
+	    rhs0l2 = sqrt(rhs0l2);
+	    schwarz dA(A, intersection, D);
+	    set(dA,
+		sparams = "-hpddm_schwarz_method ras -hpddm_variant right " +
+		"-hpddm_verbosity 3 -hpddm_tol " + epsGMRES +
+		" -hpddm_gmres_restart 150 -hpddm_max_it 150 " +
+		" -hpddm_orthogonalization mgs");
+	    real[int] wrhs(localdof * 2), wsol(localdof * 2), wwi(localdof);
+	    //
+	    real walltime1=mpiWtime();
+	    wrhs(0:rhs0.n - 1) = ffFull;
+	    wrhs(rhs0.n:rhs0.n*2-1) = rhsi;
+	    wsol = dA^-1 * wrhs;
+	    rhs0 = wsol(0:rhs0.n - 1);
+	    rhs1 = wsol(rhs0.n:rhs0.n*2-1);
+	    real walltime2=mpiWtime();          
+	    wwi = Dh * rhs1;
+	    w = Rgl'*wwi; //'
+	    ainvfg = 0.0;
+	    mpiAllReduce(w, ainvfg, comm, mpiSUM); 
+	    wwi = Dh * rhs0;
+	    w = Rgl'*wwi; //'
+	    phi0g = 0.0;
+	    mpiAllReduce(w, phi0g, comm, mpiSUM);
+	    real ss = fcnst' * ainvfg; //'
+	    
+	    real lmbd = (fcnst' * phi0g) / ss; //'
+	    phi0g = phi0g - ainvfg * lmbd;
+	    real phi0gl2 = phi0g.l2;	    
+	    phi0 = Rgl * phi0g;
+	    phi[] = phi[] - phi0;
+	    
+	    real cpu1 = clock();		   
+	    real walltime3=mpiWtime();
+	    cputime += cpu1 - cpu0;
+	    elapsedtime += walltime3 - walltime0;
+	    mpiBarrier(comm) ;
+	    
+	    phig[] = phig[] - phi0g;
+	    real phigmaxl, phigmaxg, phigminl, phigming;
+	    phigmaxl = phig[].max;
+	    phigminl = phig[].min;
+	    mpiAllReduce(phigmaxl, phigmaxg, comm, mpiMAX);
+	    mpiAllReduce(phigminl, phigming, comm, mpiMIN);	    
+	    // vol =volumeofliquid(Tha, Rgl, Dh, phig[], false); //
+	    if (mpirank == 0) {
+	      fout << k << " GMRES " << walltime2 - walltime1
+		   << " / " << walltime3 - walltime0
+		   << " : lambda = "<< lmbd << " : "
+		   << vol << " " << phi0gl2
+		   << " max = " << phig[].max << " min = " << phig[].min
+		   << endl;
+	      fout.flush;
+	    }
+	    mpiBarrier(comm) ;
+	    //
+	    if (((!gradientflow) && ll == 1)
+		&& (((phigmaxg > phigmax) && (phigming < (-1.0) * phigmax))
+		    || ((phigmaxg > phigmax) || (phigming < (-1.0) * phigmax))
+		    && ((phi0gl2 > toldiverge)))) {
+	      newtonfail = true;
+	      refineflag = true;
+	      convvol = false;
+	      skipupdate = true;
+	      flaganiso = false;
+	      restoreflag = true;		  		  
+	      break;
+	    }
+	    if ((abs(phigmaxg - 1.0) < phigconvdel) &&
+		(abs(phigming + 1.0) < phigconvdel) && (phi0gl2 < tolenlarge)
+		&& (!gradientflow)) { //  &&  (!flaganiso)) {
+	      findneighbor(ThG1, phig[], phiglayer, 3, phiglayer1, 4, fout);
+	      phizg1[] = phiglayer1;
+	      phizg1 = phizg1 < 1.1 ? 1.0 : 0.0;
+	      if (phizg0[]'*phizg1[] > 0.0 && (!flaganiso)) { // '
+		newtonfail = true;
+		refineflag = true;
+		convvol = false;
+		skipupdate = true;
+		flaganiso = false;
+		restoreflag = false;		  		  
+		if(mpirank == 0) {	      
+		  fout << "L1956: refine mesh during Newton = "
+		       << countrefined << " "
+		       << (skipupdate ? " skip " : " shrink ")
+		       << (restoreflag ? " restore" : " continue ")
+		       << endl;
+		  fout.flush;
+		}
+		break; // exit newton loop : k
+	      }
+	      else {
+		flagnearlyconv = true;
+		phig000.resize(phig[].n);
+		phig000 = phig[];
+		if(mpirank == 0) {
+		  if (!flagnearlyconv) {
+		    fout << "L1980: Newton iteration closed to convergence "
+			 << endl;
+		    fout.flush;
+		  }
+		}
+	      }
+	    }
+	    //	    
+	    if (gradientflow && (k == 0) && (phi0gl2 < tolenlarge)) {
+	      tenlarge = true;
+	    }
+	    if (phi0gl2 < epsnewton) {
+	      restoreflag = false;
+	      skipupdate = false;
+	      convvol = true;
+	      refineflag = true;
+	      newtonfail = false;
+  //
+	      if (!gradientflow) {
+		findneighbor(ThG1, phig[], phiglayer, 3, phiglayer1, 4, fout);
+		phizg1[] = phiglayer1;
+		phizg1 = phizg1 < 1.1 ? 1.0 : 0.0;
+		if (phizg0[]'*phizg1[] > 0.0) { // '
+		  refineflag = true;
+		  flagisoagain = true;
+		  if(mpirank == 0) {	      
+		    fout << "L2042: Newton with refined iso-mesh : "
+			 << countrefined << " "
+			 << (skipupdate ? " skip " : " shrink ")
+			 << (restoreflag ? " restore" : " continue ")
+			 << endl;
+		    fout.flush;
+		  }
+		}
+		else {
+		  if(mpirank == 0) {
+		    fout << "L2053: Newton with refined aniso-mesh : "  
+			 << endl;
+		    fout.flush;
+		  }
+		  flagisoagain = false;
+		}
+	      }
+	      break; // exit newton loop : k
+	    }
+	  } //loop Newton : k
+	  if (newtonfail) {
+	    if (flagnearlyconv) {
+	      phig[] = phig000;
+	      if(mpirank == 0) {
+		fout << "L2141: restore phi closed to solution" << endl;
+		fout.flush;
+	      }
+	    }
+	    dt = dt1;	    
+	    if(mpirank == 0) {
+              if(debugvtk) {
+	        savevtk(workingpath+"refined."+vtkcount+".vtu",
+	  	        ThGlobal, phig, order = vtkorder, bin = false);
+	        fout << "L987: vtu = " << vtkcount << endl;
+	        fout.flush;
+	        savemesh(ThGlobal, "phi." + vtkcount + ".mesh");
+	        {
+		  ofstream ff("phi." + vtkcount + ".data");
+		  ff << phig[];
+	        }
+	        vtkcount++;
+	      }
+	      //
+	      fout << "L1996: exceed Newton iteration, continuing gradient flow"
+		   << endl;
+	      fout.flush;
+	    }
+	    if (flaganiso && flagnearlyconv) {
+	      skipeuler = false;
+	      convvol = true;
+	      refineflag = true;	      
+	      restoreflag = false;
+	      skipupdate = false;
+	      newtonfail = false;
+      //	      gradientflow = true; // return to gradient flow solver
+	      updateangle = true;	      
+	      if(mpirank == 0) {
+		fout << "L2260: treated as converged on anisotropic mesh\n"
+		     << endl;
+	      }
+	    }
+	    else {
+	      skipeuler = true;
+	      convvol = false;
+	      refineflag = true;   // 1 Jan 2021
+	      refineskip = false;  // 10 Feb.2021
+	      gradientflow = true; // return to gradient flow solver
+	      updateangle = false;
+	      break;
+	    }
+	  }	    
+	  if (gradientflow) {
+	    findneighbor(ThG1, phig[], phiglayer, 3, phiglayer1, 4, fout);
+	    phizg1[] = phiglayer1;
+	    phizg1 = phizg1 < 1.1 ? 1.0 : 0.0;
+	    if (phizg0[]'*phizg1[] > 0.0) { // '
+	      refineflag = true;
+	      refineskip = false;
+	      if(mpirank == 0) {	      
+		fout << "L2015: refine mesh during gradient flow = "
+		     << countrefined << endl;
+		fout.flush;
+	      }
+	      dt = dt1;
+	    }
+	    else {
+	      refineflag = false;
+	    }
+	    vol = volumeofliquid(Tha, Rgl, Dh, phig[], 1);
+	    real vvol = volumeofliquid(Tha, Rgl, Dh, phig[], 2);
+	    real volratio = vol / vvol;
+	    bool volupdate = false;
+	    //	    if (abs(volratio - 1.0) > 0.005) {
+	    if (false) {
+	      if (mpirank == 0) {
+		fout << "#L1880 volume = " << vol 
+		     << " characteristic = " << vvol
+		     << " ratio = " << volratio << " update = " << volupdate;
+	      }
+	      volupdate = true;
+	      phig1 = 0.0;
+	      phig1 = ((phig * 2.0) > volratio ? volratio :
+		       ((phig * 2.0) < (-1.0) ? (-1.0) : (phig * 2.0)));
+	      real vvol = volumeofliquid(Tha, Rgl, Dh, phig1[], 2);
+	      if (mpirank == 0) {
+		fout << " -> " << vvol << endl;
+		fout.flush;
+	      }
+	      phig[] = phig1[];
+	    }
+	    if (mpirank == 0) {
+	      fout << "#L1880 volume = " << vol 
+		   << " characteristic = " << vvol
+		   << " ratio = " << volratio << " update = " << volupdate
+		   << endl;
+	    }	      
+	  } // if (gradientflow)
+	  else {
+	    vol = volumeofliquid(Tha, Rgl, Dh, phig[], 1);
+	  }
+	  if (mpirank == 0) {
+	    fout << "Newton iteration : " << ll 
+		 << " cpu time = " << cputime
+		 << " elapsed time = " << elapsedtime
+		 << endl;
+	    fout << "constraint = " << vol - vol00 << " = "
+		 << vol << " - " << vol00
+		 << endl;
+	    fout.flush;
+	    if(debugvtk) {
+	      savevtk(workingpath+"refined."+vtkcount+".vtu",
+		      ThG1, phig, order = vtkorder, bin = false);
+	      if(mpirank == 0) {	      
+		fout << "L2069: " << mm << " vtu = " << vtkcount << endl;
+		fout.flush;
+	      }
+	      vtkcount++;
+	    } // debugvtk
+	  }   // mpirank == 0
+	}     // conv loop : ll
+      }       // loop : nn
+      if (mpirank == 0) {      
+	fout << "L2078: convvol = " << convvol << endl;
+	fout.flush;
+      }
+      if (restoreflag) {
+	restarted++;
+	ThG1 = ThG10;
+	ThGlobal = ThG1;
+	R1gl = R00gl;
+	D1h = D00h;
+	phig = 0.0; // resize Vhg(ThG, P2)
+	phig[] = phig00;
+	if (mpirank == 0) {
+	  fout << "L2123 : restore mesh and phi " << phig[].n << " " << phig00.n
+	       << endl;
+	  fout.flush;
+	}
+	  
+	if (sqrt(volmag) < volmag0) {
+	  countvolmag++;
+	  volmag = volmag0;
+	}
+	else {
+	  volmag = sqrt(volmag);
+	}
+	if(mpirank == 0) {
+	  fout << "L2101: countvolmag = " << countvolmag
+	       << " vol = " << volmag << endl;
+	  fout.flush;
+	}
+	flaganiso = false;	
+	//	refineflag = true;
+	refineflag = false;		
+	skipeuler = true;
+	break;
+      } // if (!convol)
+      else {
+	countvolmag = 0;
+      }
+    } // while(!convvol)
+
+    if (skipeuler) {
+      if (mpirank == 0) {
+	fout << "L2121: restarting gradient flow solver " << restarted << " "
+	     << skipupdate << " " << volmag << endl;
+	fout.flush;
+      }
+      continue;
+    }
+    updateangle = true;
+
+    int nnliquid, nnair, nneulerc;
+    broadcast(processor(0,comm),phig[]);
+    
+    real[int] gg(Vhg.ndof);
+    gg = phig[];
+    if (mpirank == 0) {  
+      savemesh(ThGlobal, workingpath + "phi." + (bisectionphase ? "1" : "0") 
+	       + "." + mm + ".mesh");
+      ofstream ff(workingpath + "phi." + (bisectionphase ? "1" : "0") 
+	       + "." + mm + ".data");
+      ff <<  phig[];
+      savevtk((resultpath + "phi." + (bisectionphase ? "1" : "0") 
+	       + "." + mm + ".vtu"),
+	      ThGlobal, phig, order = vtkorder, bin = false);
+      fout.flush;
+    }
+    mpiBarrier(comm);
+    real walltime0=mpiWtime();
+    int[int] ivars;
+    {
+      int[int] idd(Vhg.ndof);
+      idd = 0;
+      for (int k = 0; k < Vhg.nt; k++) {
+	for (int i = 0; i < 4; i++) {
+	  idd[Vhg(k, i)] = 1;
+	}
+      }
+      Vhg uh, vh;
+      varf frc(uh, vh) = int3d(ThGlobal)(0.0 * vh)+on(2,uh=1.0);
+      uh[] = frc(0, Vhg);
+      int ii = 0;
+      for (ii = 0; ii < Vhg.ndof; ii++) {
+	if (idd[ii] == 1 && gg[ii] > 0.5 && uh[][ii] > 0.0) {
+	  break;
+	}
+      }
+      if (mpirank == 0) {  
+	checkconnectivity(ThGlobal, gg, ii, ivars);
+      }
+      else {
+	ivars.resize(6);
+      }
+      broadcast(processor(0, comm), ivars);
+    }
+    nneulerc = ivars[0];
+    nnliquid = ivars[4];
+    nnair = ivars[5];
+    real walltime1=mpiWtime();
+    mpiBarrier(comm);
+    bool printstatus = true;
+    if (bisectionphase) {
+      if (nliquid0 == nnliquid && nair0 == nnair && neulerc0 == nneulerc) {
+	ThGsaved0 = ThG1;
+	Thasaved0 = Tha;
+	Rglsaved0 = Rgl;
+	Dhsaved0 = Dh;
+	phigsaved0.resize(phig[].n);
+	phigsaved0 = phig[];
+	if (mpirank == 0) {
+	  fout << "L2187: increment lower bound" << endl;
+	  fout.flush;	 
+	}
+      }
+      else {
+	nliquid1 = nnliquid;
+	nair1 = nnair;
+	neulerc1 = nneulerc;
+	//       phig0 = phig0;
+	ThGsaved1 = ThG1;
+	Thasaved1 = Tha;
+	Rglsaved1 = Rgl;
+	Dhsaved1 = Dh;
+	phigsaved1.resize(phig[].n);
+	phigsaved1 = phig[];
+
+	ThG1 = ThGsaved0;
+	phig = 0.0;
+	//	phig[] = phisaved0;
+	if (mpirank == 0) {
+	  fout << "L2207: decrement upper bound" << endl;
+	  fout.flush;	 
+	}
+      }
+    }   //  if (bisectionphase)
+    else {
+      if (stat0 == false) {
+	statcount++;
+      }
+      if ((!changedphase) && (mm > 1) &&
+	  ( nliquid != nnliquid || nair != nnair || neulerc != nneulerc)) {
+	stat0 = false;
+	//	printstatus = false;	
+	statcount++;
+	if (mpirank == 0) {
+	  fout << "## topology is changed at " << mm
+	       << " try recomputation with same volume on refined mesh" << endl;
+	  fout.flush;
+	}
+	volmag = volmag0;      // increase with minimum ratio in the next step
+	changedphase = true;   // after topological change
+	refineflag = true;		
+	mmm = mm;
+	nliquid0 = nliquid;
+	nair0 = nair;
+	neulerc0 = neulerc;
+	nliquid1 = nnliquid;
+	nair1 = nnair;
+	neulerc1 = nneulerc;
+	popdata2(ThGsaved0, Thasaved0, Rglsaved0, Dhsaved0, phigsaved0);
+	ThGsaved1 = ThG1;
+	Thasaved1 = Tha;
+	Rglsaved1 = Rgl;
+	Dhsaved1 = Dh;
+	phigsaved1.resize(phig[].n);
+	phigsaved1 = phig[];
+      }
+      else {
+	pushdata(ThG1, Tha, Rgl, Dh, phig[]);
+      }
+    }  //  if (bisectionphase)
+    if (printstatus) {
+      if (mpirank == 0) {  
+	fout << "## " << vol01 << " : vol = " << vol00 << " : angle = "
+	     << dangle << " " << nnliquid << " " << nnair << " "
+	     << nneulerc << " : " << endl;
+	fout.flush;
+
+	string outfname = ("phi." + (bisectionphase ? "1" : "0") + "." + mm
+			   + ".vtu");
+	gout << mm << "," << "\""+outfname + "\""
+	     << "," << vol00 << "," << nnliquid << "," << nnair << ","
+	     << nneulerc<< endl;
+	gout.flush;
+
+	outputjson(mm, vol00, nnliquid, nnair, nneulerc);
+      }
+    }
+    if ((statcount == 2) && (continueflag == 0)) { //
+      break;
+    }
+    nliquid = nnliquid;
+    nair = nnair;
+    neulerc = nneulerc;
+  } // loop : mm
+  if (pp == 0) {
+    if (mpirank == 0) {
+      fout << "topology is changed between " << mmm - 1 << " and " << mmm
+	   << endl;
+      fout.flush;
+    }
+    ThG1 = ThGsaved0;
+    phig = 0.0;
+    //    phig[] = phigsaved0;
+  } // if (pp == 0)
+} // loop : pp

@@ -1,8 +1,8 @@
 <%# Headers -%>
-<%- include('blobs/headers.edp.ejs') -%>
+<%- include('/blobs/headers.edp.ejs') -%>
 
 <%# Dimension -%>
-<%- include('blobs/dimensioning.edp.ejs', {
+<%- include('/blobs/dimensioning.edp.ejs', {
 	dimension
 }); -%>
 
@@ -11,13 +11,13 @@
 const mesh = geometry.mesh
 mesh.name = 'Th'
 -%>
-<%- include('blobs/mesh.edp.ejs', {
+<%- include('/blobs/mesh.edp.ejs', {
 	dimension,
 	mesh
 }); -%>
 
 <%# Material -%>
-<%- include('blobs/materials.edp.ejs', {
+<%- include('/blobs/materials.edp.ejs', {
 	materials
 }) -%>
 
@@ -26,7 +26,7 @@ mesh.name = 'Th'
 const finiteElementSpace = parameters.finiteElementSpace.children[0]
 finiteElementSpace.name = 'Uh'
 -%>
-<%- include('blobs/fespace.edp.ejs', {
+<%- include('/blobs/fespace.edp.ejs', {
 	mesh,
 	finiteElementSpace
 }); -%>
@@ -36,13 +36,13 @@ finiteElementSpace.name = 'Uh'
 const unknownFunction = '[Ux, Uy, Uz]'
 const testFunction = '[Uhx, Uhy, Uhz]'
 -%>
-<%- include('blobs/fespaceFunction.edp.ejs', {
+<%- include('/blobs/fespaceFunction.edp.ejs', {
 	finiteElementSpace,
 	finiteElementFunction: ['Ux', 'Uy', 'Uz']
 }); -%>
 
 <%# Macro -%>
-<%- include('blobs/macro.edp.ejs', {
+<%- include('/blobs/macro.edp.ejs', {
 	dimension,
 	type: ['vectorialDivergence', 'vectorialEpsilon']
 }); -%>
@@ -105,7 +105,7 @@ varf vLinearElasticityRHS (<%= unknownFunction -%>, <%= testFunction -%>)
 
 <%# Solver -%>
 <% const solver = parameters.solver.children[0].value || parameters.solver.children[0].default -%>
-<%- include('blobs/solver.edp.ejs', {
+<%- include('/blobs/solver.edp.ejs', {
 	solver
 }) -%>
 
@@ -142,9 +142,9 @@ Sh Sigma = sqrt(
 );
 
 <%# Save -%>
-<%- include('blobs/save.edp.ejs', {
+<%- include('/blobs/save.edp.ejs', {
 	solution: {
-		path: run.path,
+		path: run.resultPath,
 		name: '"Result"',
 		mesh: mesh.name,
 		sol: [['Ux', 'Uy', 'Uz'], 'Sigma'],

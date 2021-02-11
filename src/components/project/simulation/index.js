@@ -19,7 +19,8 @@ import Run from './run'
 
 import SimulationAPI from '@/api/simulation'
 
-import models from '@/models'
+import Models from '@/models'
+import Plugins from '@/plugins'
 
 /**
  * Errors
@@ -36,6 +37,23 @@ const Selector = ({ visible, onOk, onCancel }) => {
   // State
   const [current, setCurrent] = useState()
   const [loading, setLoading] = useState(false)
+  const [models, setModels] = useState([])
+
+  // MatJax
+  useEffect(() => {
+    window.MathJax?.typeset()
+  }, [current])
+
+  // Models
+  useEffect(() => {
+    let allModels = Models
+
+    Object.keys(Plugins).forEach((key) => {
+      if (Plugins[key].category === 'Model')
+        allModels = [...allModels, ...Plugins[key].models]
+    })
+    setModels(allModels)
+  }, [Models, Plugins])
 
   /**
    * On select
@@ -55,13 +73,6 @@ const Selector = ({ visible, onOk, onCancel }) => {
     if (current) onOk(current)
     setLoading(false)
   }
-
-  /**
-   * MatJax
-   */
-  useEffect(() => {
-    window.MathJax?.typeset()
-  }, [current])
 
   /**
    * Render
@@ -101,11 +112,23 @@ const Simulation = ({ project, simulation, type, part, onClose }) => {
   const [loading, setLoading] = useState(false)
   const [visible, setVisible] = useState(false)
   const [title, setTitle] = useState()
+  const [models, setModels] = useState([])
 
   // Data
   const [, { mutateOneSimulation }] = SimulationAPI.useSimulations(
     project?.simulations
   )
+
+  // Models
+  useEffect(() => {
+    let allModels = Models
+
+    Object.keys(Plugins).forEach((key) => {
+      if (Plugins[key].category === 'Model')
+        allModels = [...allModels, ...Plugins[key].models]
+    })
+    setModels(allModels)
+  }, [Models, Plugins])
 
   // Check model update
   useEffect(() => {
@@ -121,7 +144,7 @@ const Simulation = ({ project, simulation, type, part, onClose }) => {
         setNeedUpdate(true)
       else setNeedUpdate(false)
     }
-  }, [simulation])
+  }, [simulation, models])
 
   /**
    * Simulation effect
@@ -133,7 +156,7 @@ const Simulation = ({ project, simulation, type, part, onClose }) => {
     // Check if a part is visible
     if (
       (((type === 'materials' || type === 'boundaryConditions') &&
-        part.type !== 'geometry') ||
+        part?.type !== 'geometry') ||
         !configuration?.part) &&
       configuration?.geometry?.file
     ) {
@@ -219,6 +242,7 @@ const Simulation = ({ project, simulation, type, part, onClose }) => {
         confirmLoading={loading}
         onCancel={() => setNeedUpdate(false)}
         cancelText="No"
+        maskClosable={false}
       >
         <Space direction="vertical">
           <Typography.Text>Your model needs an update!</Typography.Text>

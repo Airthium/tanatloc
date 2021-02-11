@@ -1,18 +1,60 @@
 /** @module src/lib/template */
 
+import path from 'path'
 import ejs from 'ejs'
 
 import Tools from './tools'
 
+import Templates from '@/templates'
+import PluginTemplates from '@/plugins/templates'
+
 /**
- * Render template
- * @param {string} file File name
- * @param {Object} parameters Parameters
- * @param {Object} save Save
+ * Load templates
  */
-const render = async (file, parameters, save) => {
-  // Render
-  const script = await ejs.renderFile(file, parameters)
+const loadTemplates = async () => {
+  const templatesList = {}
+  // Base templates
+  await Promise.all(
+    Object.keys(Templates).map(async (key) => {
+      const content = await Tools.readFile(
+        path.join('./templates/', Templates[key])
+      )
+      const func = await ejs.compile(content.toString(), {
+        root: './templates'
+      })
+      templatesList[key] = func
+    })
+  )
+
+  // Plugin templates
+  await Promise.all(
+    Object.keys(PluginTemplates).map(async (key) => {
+      const plugin = PluginTemplates[key]
+      await Promise.all(
+        plugin.templates.map(async (template) => {
+          const content = await Tools.readFile(
+            path.join(plugin.path, template.file)
+          )
+          const func = await ejs.compile(content.toString(), {
+            root: './templates'
+          })
+          templatesList[template.key] = func
+        })
+      )
+    })
+  )
+
+  return templatesList
+}
+
+let templates
+loadTemplates()
+  .then((res) => (templates = res))
+  .catch((err) => console.warn(err))
+
+const render = async (key, parameters, save) => {
+  // Compile
+  const script = await templates[key](parameters)
 
   // Save
   if (save) await Tools.writeFile(save.location, save.name, script)

@@ -20,6 +20,10 @@ module.exports = withLess({
           config.resolve.alias['@sentry/node'] = '@sentry/browser'
         }
 
+        config.node = {
+          __dirname: true
+        }
+
         config.plugins.push(new webpack.IgnorePlugin(/\/__tests__\//))
 
         return config

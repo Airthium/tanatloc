@@ -4,7 +4,7 @@ import path from 'path'
 
 import storage from '@/config/storage'
 
-import PluginAPIs from '@/plugin/api'
+import PluginAPIs from '@/plugins/api'
 
 import SimulationDB from '@/database/simulation'
 

@@ -230,7 +230,7 @@ const Run = ({ project, simulation }) => {
                   Run
                 </Button>
                 <Button
-                  disabled={!running}
+                  disabled={true || !running}
                   icon={<StopOutlined />}
                   onClick={onStop}
                   style={{ backgroundColor: 'blue', color: 'red' }}

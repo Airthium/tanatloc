@@ -2,7 +2,7 @@ import merge from 'lodash.merge'
 
 import User from './user'
 
-import APIs from '@/plugin/api'
+import APIs from '@/plugins/api'
 
 /**
  * Add plugin

@@ -182,7 +182,7 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
 
           // Render template
           await Template.render(
-            './templates/gmsh3D.geo.ejs',
+            'gmsh3D',
             {
               ...parameters,
               geometry: geometry.file.fileName
@@ -240,13 +240,14 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
 
     // Build the simulation script
     await Template.render(
-      './templates/' + algorithm + '.edp.ejs',
+      algorithm,
       {
         ...configuration,
         dimension: 3,
         run: {
           ...configuration.run,
-          path: 'result'
+          resultPath: 'result',
+          dataPath: 'data'
         }
       },
       {
@@ -254,6 +255,9 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
         name: id + '.edp'
       }
     )
+
+    await Tools.createPath(path.join(simulationPath, 'run/result'))
+    await Tools.createPath(path.join(simulationPath, 'run/data'))
 
     // Upload files
     // Task
@@ -329,7 +333,6 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
         await Promise.all(
           resultFiles.map(async (resultFile) => {
             const result = await getFile(cloudConfiguration, resultFile.id)
-            const fileName = resultFile.relativePath.replace('result/', '')
             await Tools.writeFile(
               path.join(storage.SIMULATION, id, 'run'),
               fileName,
@@ -375,7 +378,7 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
                     ...(simulationTask.files || []),
                     ...results.map((r) => ({
                       fileName: resFile,
-                      originPath: 'run',
+                      originPath: 'run/result',
                       name: r.name,
                       part: 'part.json',
                       partPath: r.path

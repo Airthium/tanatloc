@@ -4,7 +4,7 @@ import { Button, Card, Modal, Space, Typography } from 'antd'
 import { CloudServerOutlined } from '@ant-design/icons'
 import merge from 'lodash.merge'
 
-import Plugins from '@/plugin'
+import Plugins from '@/plugins'
 
 import PluginAPI from '@/api/plugin'
 

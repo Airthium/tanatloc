@@ -16,7 +16,7 @@
           "@/config": "./config",
           "@/models": "./models",
           "@/templates": "./templates",
-          "@/plugin": "./plugin",
+          "@/plugins": "./plugins",
           "@/api": "./src/api",
           "@/auth": "./src/auth",
           "@/components": "./src/components",

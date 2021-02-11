@@ -13,7 +13,7 @@ const freefem = async (path, script, callback) => {
     let run
 
     if (isDocker()) {
-      run = spawn('FreeFem++', ['-nw', '-ns', script], {
+      run = spawn('ff-mpirun', [' -np', '1', '-nw', '-ns', script], {
         cwd: path
       })
     } else {
@@ -26,7 +26,9 @@ const freefem = async (path, script, callback) => {
         '--user=' + user + ':' + group,
         '-w=/run',
         'tanatloc/worker:latest',
-        'FreeFem++',
+        'ff-mpirun',
+        ' -np',
+        '1',
         '-nw',
         '-ns',
         script

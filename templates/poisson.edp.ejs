@@ -1,8 +1,8 @@
 <%# Headers -%>
-<%- include('blobs/headers.edp.ejs') -%>
+<%- include('/blobs/headers.edp.ejs') -%>
 
 <%# Dimension -%>
-<%- include('blobs/dimensioning.edp.ejs', {
+<%- include('/blobs/dimensioning.edp.ejs', {
 	dimension
 }); -%>
 
@@ -11,7 +11,7 @@
 const mesh = geometry.mesh
 mesh.name = 'Th'
 -%>
-<%- include('blobs/mesh.edp.ejs', {
+<%- include('/blobs/mesh.edp.ejs', {
 	dimension,
 	mesh
 }); -%>
@@ -21,19 +21,19 @@ mesh.name = 'Th'
 const finiteElementSpace = parameters.finiteElementSpace.children[0]
 finiteElementSpace.name = 'Uh'
 -%>
-<%- include('blobs/fespace.edp.ejs', {
+<%- include('/blobs/fespace.edp.ejs', {
 	mesh,
 	finiteElementSpace
 }); -%>
 
 <%# Finite element function -%>
-<%- include('blobs/fespaceFunction.edp.ejs', {
+<%- include('/blobs/fespaceFunction.edp.ejs', {
 	finiteElementSpace,
 	finiteElementFunction: ['u']
 }); -%>
 
 <%# Macro -%>
-<%- include('blobs/macro.edp.ejs', {
+<%- include('/blobs/macro.edp.ejs', {
 	dimension,
 	type: ['scalarGradient']
 }); -%>
@@ -74,7 +74,7 @@ varf vLaplacianRHS (u, uh)
 
 <%# Solver -%>
 <% const solver = parameters.solver.children[0].value || parameters.solver.children[0].default -%>
-<%- include('blobs/solver.edp.ejs', {
+<%- include('/blobs/solver.edp.ejs', {
 	solver
 }) -%>
 
@@ -88,9 +88,9 @@ real[int] LaplacianRHS = vLaplacianRHS(0, <%= finiteElementSpace.name -%>);
 u[] = Laplacian^-1 * LaplacianRHS;
 
 <%# Save -%>
-<%- include('blobs/save.edp.ejs', {
+<%- include('/blobs/save.edp.ejs', {
 	solution: {
-		path: run.path,
+		path: run.resultPath,
 		name: '"Result"',
 		mesh: mesh.name,
 		sol: ['u'],

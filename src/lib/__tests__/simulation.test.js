@@ -8,7 +8,7 @@ jest.mock('path', () => ({
 jest.mock('@/config/storage', () => ({}))
 
 const mockCompute = jest.fn()
-jest.mock('@/plugin/api', () => ({
+jest.mock('@/plugins/api', () => ({
   key: {
     computeSimulation: async () => mockCompute()
   }

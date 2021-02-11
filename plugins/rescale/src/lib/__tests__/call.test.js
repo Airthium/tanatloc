@@ -5,7 +5,7 @@ jest.mock('url-join', () => () => 'url')
 const mockFetch = jest.fn()
 jest.mock('node-fetch', () => async () => mockFetch())
 
-describe('plugin/rescale/src/lib/call', () => {
+describe('plugins/rescale/src/lib/call', () => {
   it('json', async () => {
     mockFetch.mockImplementation(() => ({
       headers: {

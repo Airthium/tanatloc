@@ -2,7 +2,7 @@ import Local from '..'
 import { shallow } from 'enzyme'
 
 let wrapper
-describe('plugin/local/src/component', () => {
+describe('plugins/local/src/component', () => {
   const onSelect = jest.fn()
 
   beforeEach(() => {

@@ -333,6 +333,7 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
         await Promise.all(
           resultFiles.map(async (resultFile) => {
             const result = await getFile(cloudConfiguration, resultFile.id)
+            const fileName = resultFile.relativePath
             await Tools.writeFile(
               path.join(storage.SIMULATION, id, 'run'),
               fileName,

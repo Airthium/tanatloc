@@ -47,7 +47,7 @@ const loadTemplates = async () => {
   return templatesList
 }
 
-let templates
+let templates = []
 loadTemplates()
   .then((res) => (templates = res))
   .catch((err) => console.warn(err))

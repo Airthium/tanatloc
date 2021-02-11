@@ -8,7 +8,7 @@ jest.mock('next/router', () => ({
   })
 }))
 
-jest.mock('@/plugin', () => ({
+jest.mock('@/plugins', () => ({
   key: {
     renderer: 'Renderer'
   }

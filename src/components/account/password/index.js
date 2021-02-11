@@ -44,28 +44,28 @@ const Password = () => {
 
     try {
       throw { message: 'not authorized yet!' }
-      // Check current password
-      const current = await UserAPI.check({
-        username: user.email,
-        password: data.password
-      })
+      // // Check current password
+      // const current = await UserAPI.check({
+      //   username: user.email,
+      //   password: data.password
+      // })
 
-      if (current.valid) {
-        // Change password
-        if (data.newPassword === data.passwordConfirm) {
-          await UserAPI.update([
-            {
-              type: 'crypt',
-              key: 'password',
-              value: data.newPassword
-            }
-          ])
-        } else {
-          Error({ message: errors.mismatch })
-        }
-      } else {
-        notification.error({ message: errors.invalid })
-      }
+      // if (current.valid) {
+      //   // Change password
+      //   if (data.newPassword === data.passwordConfirm) {
+      //     await UserAPI.update([
+      //       {
+      //         type: 'crypt',
+      //         key: 'password',
+      //         value: data.newPassword
+      //       }
+      //     ])
+      //   } else {
+      //     Error({ message: errors.mismatch })
+      //   }
+      // } else {
+      //   notification.error({ message: errors.invalid })
+      // }
     } catch (err) {
       Error(errors.updateError, err)
     } finally {

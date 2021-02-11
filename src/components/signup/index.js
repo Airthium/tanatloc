@@ -71,17 +71,17 @@ const Signup = () => {
     // Signup
     try {
       throw { message: 'not authorized yet!' }
-      const newUser = await UserAPI.add({ username, password })
-      if (newUser.alreadyExists) {
-        setSignupErr(true)
-        setChecking(false)
-        return
-      }
+      // const newUser = await UserAPI.add({ username, password })
+      // if (newUser.alreadyExists) {
+      //   setSignupErr(true)
+      //   setChecking(false)
+      //   return
+      // }
 
-      // Login
-      const loggedUser = await login({ username, password })
-      mutateUser(loggedUser)
-      router.push('/dashboard')
+      // // Login
+      // const loggedUser = await login({ username, password })
+      // mutateUser(loggedUser)
+      // router.push('/dashboard')
     } catch (err) {
       setInternalError(true)
       setChecking(false)

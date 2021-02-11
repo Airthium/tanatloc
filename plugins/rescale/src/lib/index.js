@@ -472,6 +472,9 @@ const createJob = async (
   const lowPriority = parameters.lowPriority.value
   const numberOfCores = parameters.numberOfCores.value
   const freefemVersion = parameters.freefemVersion.value
+
+  const additionalFiles = configuration.additionalFiles.value || ''
+
   const job = await call({
     platform: configuration.platform.value,
     token: configuration.token.value,
@@ -495,6 +498,7 @@ const createJob = async (
           },
           command: command,
           inputFiles: [
+            ...additionalFiles.split(',').map((f) => ({ id: f })),
             ...geometries.map((g) => ({ id: g.id })),
             ...meshes.map((m) => ({ id: m.id })),
             { id: edp.id }

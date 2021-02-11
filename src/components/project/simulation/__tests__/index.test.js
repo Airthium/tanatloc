@@ -95,14 +95,29 @@ describe('components/project/simulation', () => {
   })
 
   it('onUpdate', async () => {
+    wrapper.unmount()
+    wrapper = mount(
+      <Simulation
+        simulation={{
+          scheme: {
+            algorithm: 'algorithm',
+            configuration: {
+              geometry: { title: 'Geometry', file: {} }
+            }
+          }
+        }}
+        type="geometry"
+      />
+    )
+
     // Cancel
     wrapper.find('Modal').props().onCancel()
 
     // Normal
     await wrapper.find('Modal').props().onOk()
     expect(mockMerge).toHaveBeenCalledTimes(1)
-    expect(mockUpdate).toHaveBeenCalledTimes(1)
-    expect(mockMutate).toHaveBeenCalledTimes(1)
+    expect(mockUpdate).toHaveBeenCalledTimes(2)
+    expect(mockMutate).toHaveBeenCalledTimes(2)
 
     // Error
     mockMerge.mockImplementation(() => {
@@ -110,8 +125,8 @@ describe('components/project/simulation', () => {
     })
     await wrapper.find('Modal').props().onOk()
     expect(mockMerge).toHaveBeenCalledTimes(2)
-    expect(mockUpdate).toHaveBeenCalledTimes(1)
-    expect(mockMutate).toHaveBeenCalledTimes(1)
+    expect(mockUpdate).toHaveBeenCalledTimes(2)
+    expect(mockMutate).toHaveBeenCalledTimes(2)
   })
 
   it('about', () => {
@@ -242,9 +257,15 @@ describe('components/project/simulation.Selector', () => {
   })
 
   it('onSelect', () => {
-    wrapper.find('Menu').props().onSelect({ key: 'algorithm' })
-    const subWrapper = shallow(wrapper.find('Content').props().children)
-    expect(subWrapper.html()).toEqual('<div></div>')
+    wrapper.unmount()
+    wrapper = mount(<Simulation.Selector visible={true} onOk={onOk} />)
+
+    wrapper.find('InternalMenu').props().onSelect({ key: 'algorithm' })
+    wrapper.update()
+
+    expect(wrapper.find('div').at(10).props().dangerouslySetInnerHTML).toEqual({
+      __html: 'description'
+    })
   })
 
   it('onCreate', async () => {

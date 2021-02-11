@@ -39,7 +39,12 @@ describe('src/components/project/simulation/run/cloudServer', () => {
       {
         key: 'key',
         uuid: 'uuid',
-        name: 'name'
+        name: 'name',
+        configuration: {
+          name: {
+            value: 'name'
+          }
+        }
       }
     ])
 

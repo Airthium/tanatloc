@@ -1,9 +1,17 @@
 import { useState } from 'react'
-import { notification, Button, Form, Input, Space, Card, Row, Col } from 'antd'
+import {
+  /*notification,*/ Button,
+  Form,
+  Input,
+  Space,
+  Card,
+  Row,
+  Col
+} from 'antd'
 
 import { Error } from '@/components/assets/notification'
 
-import UserAPI from '@/api/user'
+// import UserAPI from '@/api/user'
 
 /**
  * Errors account/password
@@ -24,7 +32,7 @@ const Password = () => {
   const [loading, setLoading] = useState(false)
 
   // Data
-  const [user] = UserAPI.useUser()
+  // const [user] = UserAPI.useUser()
 
   // Layout
   const layout = {

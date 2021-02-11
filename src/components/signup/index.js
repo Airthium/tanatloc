@@ -16,7 +16,7 @@ import {
 import Loading from '@/components/loading'
 // import Background from '../background'
 
-import login from '@/api/login'
+// import login from '@/api/login'
 import UserAPI from '@/api/user'
 
 import Sentry from '@/lib/sentry'
@@ -42,7 +42,7 @@ const Signup = () => {
   const [internalErr, setInternalError] = useState(false)
 
   // Data
-  const [user, { loadingUser, mutateUser }] = UserAPI.useUser()
+  const [user, { loadingUser /*mutateUser*/ }] = UserAPI.useUser()
 
   // Router
   const router = useRouter()

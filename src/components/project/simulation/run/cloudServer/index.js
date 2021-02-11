@@ -61,7 +61,7 @@ const CloudServer = ({ cloudServer, onOk }) => {
             {plugins?.map((plugin) => {
               const base = Plugins[plugin.key]
               return (
-                <Card key={plugin.uuid} title={plugin.name}>
+                <Card key={plugin.uuid} title={plugin.configuration.name.value}>
                   <base.renderer
                     data={plugin.data}
                     onSelect={(diff) => onMerge(plugin, diff)}

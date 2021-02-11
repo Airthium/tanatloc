@@ -8,16 +8,16 @@ Using server-side rendering (SSR).
 
 ### Database
 
-| Variable          | Default           | Comment           |
-| ----------------- | ----------------- | ----------------- |
-| DB_ADMIN          | $USER or postgres | Admin user        |
-| DB_ADMIN_DATABASE | postgres          | Admin database    |
-| DB_ADMIN_PASSWORD |                   | Admin password    |
-| DB_USER           | tanatlocuser      | Database user     |
-| DB_HOST           | localhost         | Database host     |
-| DB_PORT           | 5432              | Database port     |
-| DB_DATABASE       | tanatloc          | Database name     |
-| DB_PASSWORD       | tanatloc          | Database password |
+| Variable          | Default             | Comment           |
+| ----------------- | ------------------- | ----------------- |
+| DB_ADMIN          | `$USER` or postgres | Admin user        |
+| DB_ADMIN_DATABASE | postgres            | Admin database    |
+| DB_ADMIN_PASSWORD |                     | Admin password    |
+| DB_USER           | tanatlocuser        | Database user     |
+| DB_HOST           | localhost           | Database host     |
+| DB_PORT           | 5432                | Database port     |
+| DB_DATABASE       | tanatloc            | Database name     |
+| DB_PASSWORD       | tanatloc            | Database password |
 
 ### Sentry
 
@@ -27,12 +27,18 @@ Using server-side rendering (SSR).
 
 ### Storage
 
-| Variable                 | Default       | Comment                                 |
-| ------------------------ | ------------- | --------------------------------------- |
-| AUTH_SECRET              | `aaaa...`     | Authentication secret                   |
-| STORAGE_PATH             | /tmp/tanatloc | Absolute storage path                   |
-| AVATAR_RELATIVE_PATH     | avatar        | Relative avatar path (from STORAGE)     |
-| SIMULATION_RELATIVE_PATH | simulation    | Realtive simulation path (from STORAGE) |
+| Variable                 | Default         | Comment                                 |
+| ------------------------ | --------------- | --------------------------------------- |
+| AUTH_SECRET              | `aaaa...`       | Authentication secret                   |
+| STORAGE_PATH             | `/tmp/tanatloc` | Absolute storage path                   |
+| AVATAR_RELATIVE_PATH     | avatar          | Relative avatar path (from STORAGE)     |
+| SIMULATION_RELATIVE_PATH | simulation      | Realtive simulation path (from STORAGE) |
+
+### Email
+
+| Variable    | Default | Comment            |
+| ----------- | ------- | ------------------ |
+| EMAIL_TOKEN |         | MailerSend API key |
 
 ## Dev
 

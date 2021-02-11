@@ -43,7 +43,7 @@ const Password = () => {
     setLoading(true)
 
     try {
-      throw new Error('not authorized yet!')
+      throw { message: 'not authorized yet!' }
       // Check current password
       const current = await UserAPI.check({
         username: user.email,
@@ -61,10 +61,10 @@ const Password = () => {
             }
           ])
         } else {
-          notification.error({ message: errors.mismatch })
+          Error({ message: errors.mismatch })
         }
       } else {
-        notificaton.error({ message: errors.invalid })
+        notification.error({ message: errors.invalid })
       }
     } catch (err) {
       Error(errors.updateError, err)

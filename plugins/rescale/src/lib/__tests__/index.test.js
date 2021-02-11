@@ -14,9 +14,11 @@ jest.mock('@/lib/template', () => ({
   render: async () => mockRender()
 }))
 
+const mockCreatePath = jest.fn()
 const mockReadFile = jest.fn()
 const mockWriteFile = jest.fn()
 jest.mock('@/lib/tools', () => ({
+  createPath: async () => mockCreatePath(),
   readFile: async () => mockReadFile(),
   writeFile: async () => mockWriteFile()
 }))
@@ -30,10 +32,11 @@ jest.mock('@/services', () => ({
 const mockCall = jest.fn()
 jest.mock('../call', (param) => async (param) => mockCall(param))
 
-describe('plugin/rescale/src/lib', () => {
+describe('plugins/rescale/src/lib', () => {
   beforeEach(() => {
     mockUpdate.mockReset()
     mockRender.mockReset()
+    mockCreatePath.mockReset()
     mockReadFile.mockReset()
     mockWriteFile.mockReset()
     mockToThree.mockReset()

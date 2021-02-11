@@ -12,6 +12,11 @@ jest.mock('@/database/simulation', () => ({
   update: async () => mockUpdate()
 }))
 
+const mockCreatePath = jest.fn()
+jest.mock('@/lib/tools', () => ({
+  createPath: async () => mockCreatePath()
+}))
+
 const mockRender = jest.fn()
 jest.mock('@/lib/template', () => ({
   render: async () => mockRender()
@@ -29,10 +34,11 @@ jest.mock('@/services', () => ({
     mockToThree(path, fileIn, pathOut, callback)
 }))
 
-describe('plugin/local/src/lib', () => {
+describe('plugins/local/src/lib', () => {
   beforeEach(() => {
     mockPath.mockReset()
     mockUpdate.mockReset()
+    mockCreatePath.mockReset()
     mockRender.mockReset()
     mockGmsh.mockReset()
     mockFreefem.mockReset()

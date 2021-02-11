@@ -1,7 +1,7 @@
 import Plugin from '../plugin'
 
 const mockInit = jest.fn()
-jest.mock('@/plugin/api', () => ({
+jest.mock('@/plugins/api', () => ({
   key: {
     init: () => mockInit()
   }

@@ -49,6 +49,22 @@ jest.mock('@/models', () => [
   }
 ])
 
+jest.mock('@/plugins', () => ({
+  hpc: {
+    category: 'HPC'
+  },
+  model: {
+    category: 'Model',
+    models: [
+      {
+        name: 'name',
+        algorithm: 'pluginAlgorithm',
+        description: 'pluginDescription'
+      }
+    ]
+  }
+}))
+
 let wrapper
 describe('components/project/simulation', () => {
   beforeEach(() => {
@@ -228,7 +244,7 @@ describe('components/project/simulation.Selector', () => {
   it('onSelect', () => {
     wrapper.find('Menu').props().onSelect({ key: 'algorithm' })
     const subWrapper = shallow(wrapper.find('Content').props().children)
-    expect(subWrapper.html()).toEqual('<div>description</div>')
+    expect(subWrapper.html()).toEqual('<div></div>')
   })
 
   it('onCreate', async () => {

@@ -10,7 +10,7 @@ jest.mock('@/components/assets/notification', () => ({
 }))
 
 let wrapper
-describe('plugin/rescale/src/components/index', () => {
+describe('plugins/rescale/src/components/index', () => {
   const data = {
     coreTypes: [
       {

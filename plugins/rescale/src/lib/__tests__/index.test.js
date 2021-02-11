@@ -48,7 +48,10 @@ describe('plugins/rescale/src/lib', () => {
     mockCall.mockImplementation(() => ({ results: [{}] }))
     const res = await Rescale.init({
       platform: {},
-      token: {}
+      token: {},
+      additionalFiles: {
+        value: ''
+      }
     })
     expect(mockCall).toHaveBeenCalledTimes(2)
 
@@ -57,7 +60,10 @@ describe('plugins/rescale/src/lib', () => {
     try {
       await Rescale.init({
         platform: {},
-        token: {}
+        token: {},
+        additionalFiles: {
+          value: ''
+        }
       })
       expect(true).toBe(false)
     } catch (err) {
@@ -108,6 +114,9 @@ describe('plugins/rescale/src/lib', () => {
             },
             project: {
               value: 'project'
+            },
+            additionalFiles: {
+              value: 'id, id'
             }
           },
           inUseConfiguration: {
@@ -155,6 +164,9 @@ describe('plugins/rescale/src/lib', () => {
             },
             token: {
               value: 'token'
+            },
+            additionalFiles: {
+              value: ''
             }
           },
           inUseConfiguration: {
@@ -227,6 +239,9 @@ describe('plugins/rescale/src/lib', () => {
             },
             token: {
               value: 'token'
+            },
+            additionalFiles: {
+              value: 'id, id'
             }
           },
           inUseConfiguration: {
@@ -282,6 +297,9 @@ describe('plugins/rescale/src/lib', () => {
             },
             project: {
               value: 'project'
+            },
+            additionalFiles: {
+              value: 'id, id'
             }
           },
           inUseConfiguration: {

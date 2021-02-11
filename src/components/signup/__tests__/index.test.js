@@ -57,36 +57,36 @@ describe('src/components/signup', () => {
     wrapper = shallow(<Signup />)
   })
 
-  // it('onSignup', async () => {
-  //   // Error
-  //   mockAdd.mockImplementation(() => {
-  //     throw new Error()
-  //   })
-  //   await wrapper.find('ForwardRef(InternalForm)').props().onFinish({
-  //     username: 'username',
-  //     password: 'password',
-  //     passwordConfirmation: 'password'
-  //   })
+  it('onSignup', async () => {
+    // // Error
+    // mockAdd.mockImplementation(() => {
+    //   throw new Error()
+    // })
+    // await wrapper.find('ForwardRef(InternalForm)').props().onFinish({
+    //   username: 'username',
+    //   password: 'password',
+    //   passwordConfirmation: 'password'
+    // })
 
-  //   // Already exists
-  //   mockAdd.mockImplementation(() => ({
-  //     alreadyExists: true
-  //   }))
-  //   await wrapper.find('ForwardRef(InternalForm)').props().onFinish({
-  //     username: 'username',
-  //     password: 'password',
-  //     passwordConfirmation: 'password'
-  //   })
+    // // Already exists
+    // mockAdd.mockImplementation(() => ({
+    //   alreadyExists: true
+    // }))
+    // await wrapper.find('ForwardRef(InternalForm)').props().onFinish({
+    //   username: 'username',
+    //   password: 'password',
+    //   passwordConfirmation: 'password'
+    // })
 
-  //   // Normal
-  //   mockAdd.mockImplementation(() => ({}))
-  //   await wrapper.find('ForwardRef(InternalForm)').props().onFinish({
-  //     username: 'username',
-  //     password: 'password',
-  //     passwordConfirmation: 'password'
-  //   })
-  //   expect(mockLogin).toHaveBeenCalledTimes(1)
-  // })
+    // Normal
+    mockAdd.mockImplementation(() => ({}))
+    await wrapper.find('ForwardRef(InternalForm)').props().onFinish({
+      username: 'username',
+      password: 'password',
+      passwordConfirmation: 'password'
+    })
+    // expect(mockLogin).toHaveBeenCalledTimes(1)
+  })
 
   it('mismatch passwords rule', async () => {
     // Match

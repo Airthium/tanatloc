@@ -32,6 +32,10 @@ const Rescale = {
     project: {
       label: 'Project id',
       type: 'input'
+    },
+    additionalFiles: {
+      label: 'Additional files (id1, id2, ...)',
+      type: 'input'
     }
   },
   needInit: true,

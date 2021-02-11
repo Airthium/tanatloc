@@ -70,7 +70,7 @@ const update = async (user, data) => {
  */
 const del = async (user) => {
   // Get data
-  const data = await get(user.id, 'workspaces')
+  const data = await get(user.id, ['workspaces'])
 
   // Delete workspaces
   if (data.workspaces) {

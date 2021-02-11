@@ -70,7 +70,7 @@ const Signup = () => {
 
     // Signup
     try {
-      throw new Error('not authorized yet!')
+      throw { message: 'not authorized yet!' }
       const newUser = await UserAPI.add({ username, password })
       if (newUser.alreadyExists) {
         setSignupErr(true)

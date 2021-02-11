@@ -8,7 +8,7 @@ Plugins:
 - Stop a job
 
 Rescale:
-- delete job & files
+- delete job & files after run and get data
 - real-time results
 
 Results:

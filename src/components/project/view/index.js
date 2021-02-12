@@ -818,21 +818,24 @@ const View = ({ simulation, setPartSummary }) => {
           return {
             name: solid.name,
             number: solid.number,
-            uuid: solid.buffer.uuid
+            uuid: solid.buffer.uuid,
+            color: solid.buffer.data.attributes.color?.array
           }
         }),
         faces: partContent.faces?.map((face) => {
           return {
             name: face.name,
             number: face.number,
-            uuid: face.buffer.uuid
+            uuid: face.buffer.uuid,
+            color: face.buffer.data.attributes.color?.array
           }
         }),
         edges: partContent.edges?.map((edge) => {
           return {
             name: edge.name,
             number: edge.number,
-            uuid: edge.buffer.uuid
+            uuid: edge.buffer.uuid,
+            color: edge.buffer.data.attributes.color?.array
           }
         })
       }

@@ -19,6 +19,9 @@ const toThree = async (path, fileIn, pathOut, callback) => {
     case 'step':
       conversionCode = 'StepToThreeJS'
       break
+    case 'stp':
+      conversionCode = 'StepToThreeJS'
+      break
     case 'dxf':
       conversionCode = 'DXFToThreeJS'
       break

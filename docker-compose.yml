@@ -4,8 +4,8 @@ services:
     environment:
       - POSTGRES_PASSWORD=password
     # TO OPEN DATABASE TO HOST
-    ports:
-      - 5432:5432
+    # ports:
+    #   - 5432:5432
     volumes:
       - postgresData:/var/lib/postgresql/data
 

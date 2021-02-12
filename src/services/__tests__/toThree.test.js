@@ -49,22 +49,27 @@ describe('src/services/toThree', () => {
     expect(mockSpawn).toHaveBeenCalledTimes(1)
     expect(code).toBe(0)
 
-    // Dxf
-    code = await toThree('path', 'file.dxf', 'pathout', mockCallback)
+    code = await toThree('path', 'file.stp', 'pathout', mockCallback)
     expect(mockExecSync).toHaveBeenCalledTimes(4)
     expect(mockSpawn).toHaveBeenCalledTimes(2)
     expect(code).toBe(0)
 
-    // Msh
-    code = await toThree('path', 'file.msh', 'pathout', mockCallback)
+    // Dxf
+    code = await toThree('path', 'file.dxf', 'pathout', mockCallback)
     expect(mockExecSync).toHaveBeenCalledTimes(6)
     expect(mockSpawn).toHaveBeenCalledTimes(3)
     expect(code).toBe(0)
 
-    // VTU
-    code = await toThree('path', 'file.vtu', 'pathout', mockCallback)
+    // Msh
+    code = await toThree('path', 'file.msh', 'pathout', mockCallback)
     expect(mockExecSync).toHaveBeenCalledTimes(8)
     expect(mockSpawn).toHaveBeenCalledTimes(4)
+    expect(code).toBe(0)
+
+    // VTU
+    code = await toThree('path', 'file.vtu', 'pathout', mockCallback)
+    expect(mockExecSync).toHaveBeenCalledTimes(10)
+    expect(mockSpawn).toHaveBeenCalledTimes(5)
     expect(code).toBe(0)
 
     // Unknow
@@ -74,8 +79,8 @@ describe('src/services/toThree', () => {
     } catch (err) {
       expect(true).toBe(true)
     } finally {
-      expect(mockExecSync).toHaveBeenCalledTimes(8)
-      expect(mockSpawn).toHaveBeenCalledTimes(4)
+      expect(mockExecSync).toHaveBeenCalledTimes(10)
+      expect(mockSpawn).toHaveBeenCalledTimes(5)
     }
 
     // Error
@@ -96,8 +101,8 @@ describe('src/services/toThree', () => {
     } catch (err) {
       expect(true).toBe(true)
     } finally {
-      expect(mockExecSync).toHaveBeenCalledTimes(10)
-      expect(mockSpawn).toHaveBeenCalledTimes(5)
+      expect(mockExecSync).toHaveBeenCalledTimes(12)
+      expect(mockSpawn).toHaveBeenCalledTimes(6)
     }
   })
 

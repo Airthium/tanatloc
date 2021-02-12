@@ -374,17 +374,20 @@ describe('components/project/view', () => {
     mockGet.mockImplementation(() => ({
       solids: [
         {
-          buffer: '{"uuid": "uuid"}'
+          buffer:
+            '{ "uuid": "uuid", "data": { "attributes": { "color": { "array": [0, 0, 1] } } } }'
         }
       ],
       faces: [
         {
-          buffer: '{"uuid": "uuid"}'
+          buffer:
+            '{ "uuid": "uuid", "data": { "attributes": { "color": { "array": [0, 0, 1] } } } }'
         }
       ],
       edges: [
         {
-          buffer: '{"uuid": "uuid"}'
+          buffer:
+            '{ "uuid": "uuid", "data": { "attributes": { "color": { "array": [0, 0, 1] } } } }'
         }
       ]
     }))

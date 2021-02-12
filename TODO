@@ -14,3 +14,15 @@ Rescale:
 Results:
 - download a result
 - download an archive
+
+Project:
+- archive
+
+Workspace:
+- archive
+
+Denso:
+- create server
+- deploy the new version
+- color on the step color
+- update the model

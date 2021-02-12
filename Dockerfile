@@ -5,7 +5,7 @@ USER root
 
 ENV DEBIAN_FRONTEND noninteractive
 
-ENV INSTALL_PATH /home/app/install
+ENV INSTALL_PATH /home/app
 ENV APP_PATH /home/app
 
 # Install packages
@@ -69,7 +69,7 @@ USER root
 
 ENV DEBIAN_FRONTEND noninteractive
 
-ENV INSTALL_PATH /home/app/install
+ENV INSTALL_PATH /home/app
 ENV APP_PATH /home/app
 
 ARG DB_ADMIN
@@ -112,7 +112,8 @@ COPY docker/package.json package.json
 
 COPY --from=builder ${INSTALL_PATH}/dist-install dist-install
 COPY --from=builder ${INSTALL_PATH}/public public
-# COPY --from=builder ${INSTALL_PATH}/templates templates
+COPY --from=builder ${INSTALL_PATH}/templates templates
+COPY --from=builder ${INSTALL_PATH}/plugins plugins
 COPY --from=builder ${INSTALL_PATH}/.next .next
 RUN yarn
 

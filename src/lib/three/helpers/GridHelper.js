@@ -83,11 +83,11 @@ const GridHelper = (scene) => {
       const fontSize = 64
       const scale = maxSize / 5
 
-      const label1 = Label(offsetWidth.toFixed(2), size, 'grey', fontSize)
+      const label1 = Label(offsetWidth.toExponential(2), size, 'grey', fontSize)
       label1.translateX(-width / 2)
       label1.translateY(height / 2 + overflowGrid * maxSize)
       label1.scale.setScalar(scale)
-      const label2 = Label(width.toFixed(2), size, 'grey', fontSize)
+      const label2 = Label(width.toExponential(2), size, 'grey', fontSize)
       label2.translateX(width / 2)
       label2.translateY(height / 2 + overflowGrid * maxSize)
       label2.scale.setScalar(scale)

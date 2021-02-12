@@ -28,7 +28,8 @@ jest.mock('@/store/select/action', () => ({
 }))
 
 jest.mock('@/lib/utils', () => ({
-  stringToColor: () => {}
+  stringToColor: () => {},
+  rgbToHex: () => {}
 }))
 
 let wrapper
@@ -36,10 +37,19 @@ describe('src/components/assets/selector', () => {
   const part = {
     faces: [
       {
-        uuid: 'uuid'
+        uuid: 'uuid',
+        color: [0, 0.5, 1]
       },
       {
         uuid: 'uuid2'
+      },
+      {
+        uuid: 'uuid3',
+        color: [0, 0.5, 1]
+      },
+      {
+        uuid: 'uuid4',
+        color: [0, 1, 1]
       }
     ]
   }
@@ -89,33 +99,90 @@ describe('src/components/assets/selector', () => {
   })
 
   it('onHighlight', () => {
-    wrapper.find('Card').at(0).props().onMouseEnter('uuid')
+    wrapper.find('Card').at(1).props().onMouseEnter('uuid')
     expect(mockHighlight).toHaveBeenCalledTimes(1)
   })
 
   it('onUnhighlight', () => {
-    wrapper.find('Card').at(0).props().onMouseLeave()
+    wrapper.find('Card').at(1).props().onMouseLeave()
     expect(mockUnhighlight).toHaveBeenCalledTimes(1)
   })
 
   it('onSelect', () => {
     // Select
-    wrapper.find('Card').at(0).props().onClick('uuid')
+    wrapper.find('Card').at(1).props().onClick('uuid')
     expect(mockSelect).toHaveBeenCalledTimes(1)
 
     // Unselect
     wrapper.unmount()
     mockSelected.mockImplementation(() => ['uuid'])
     wrapper = shallow(<Selector part={part} updateSelected={updateSelected} />)
-    wrapper.find('Card').at(0).props().onClick('uuid')
+    wrapper.find('Card').at(1).props().onClick('uuid')
     expect(mockUnselect).toHaveBeenCalledTimes(1)
+  })
+
+  it('onColorFilter', () => {
+    wrapper.unmount()
+    wrapper = mount(<Selector part={part} updateSelected={updateSelected} />)
+    wrapper.find('Button').at(0).props().onClick()
+    wrapper.update()
+
+    wrapper.find('Button').at(1).props().onClick()
+    wrapper.update()
+  })
+
+  it('selectAll', () => {
+    wrapper.unmount()
+    wrapper = mount(<Selector part={part} updateSelected={updateSelected} />)
+
+    wrapper.find('Button').at(3).props().onClick()
+
+    wrapper.find('Button').at(1).props().onClick()
+    wrapper.update()
+
+    wrapper.find('Button').at(3).props().onClick()
+  })
+
+  it('unselectAll', () => {
+    wrapper.unmount()
+    wrapper = mount(<Selector part={part} updateSelected={updateSelected} />)
+
+    wrapper.find('Button').at(4).props().onClick()
+
+    wrapper.find('Button').at(1).props().onClick()
+    wrapper.update()
+
+    wrapper.find('Button').at(4).props().onClick()
+  })
+
+  it('selectSwap', () => {
+    wrapper.unmount()
+    wrapper = mount(<Selector part={part} updateSelected={updateSelected} />)
+
+    wrapper.find('Button').at(5).props().onClick()
+
+    wrapper.find('Button').at(1).props().onClick()
+    wrapper.update()
+
+    wrapper.find('Button').at(5).props().onClick()
+
+    wrapper.unmount()
+    mockSelected.mockImplementation(() => ['uuid'])
+    wrapper = mount(<Selector part={part} updateSelected={updateSelected} />)
+
+    wrapper.find('Button').at(5).props().onClick()
+
+    wrapper.find('Button').at(1).props().onClick()
+    wrapper.update()
+
+    wrapper.find('Button').at(5).props().onClick()
   })
 
   it('face highlighted', () => {
     wrapper.unmount()
     mockHighlighted.mockImplementation(() => 'uuid')
     wrapper = shallow(<Selector part={part} updateSelected={updateSelected} />)
-    expect(wrapper.find('Card').at(0).props().style.border).toBe(
+    expect(wrapper.find('Card').at(1).props().style.border).toBe(
       '2px solid #0096C7'
     )
   })
@@ -124,6 +191,6 @@ describe('src/components/assets/selector', () => {
     wrapper.unmount()
 
     wrapper = mount(<Selector part={part} updateSelected={updateSelected} />)
-    expect(updateSelected).toHaveBeenCalledTimes(1)
+    expect(updateSelected).toHaveBeenCalledTimes(2)
   })
 })

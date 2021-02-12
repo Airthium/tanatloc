@@ -16,9 +16,11 @@ const loadTemplates = async () => {
   // Base templates
   await Promise.all(
     Object.keys(Templates).map(async (key) => {
+      console.log(path.join('./templates/', Templates[key]))
       const content = await Tools.readFile(
         path.join('./templates/', Templates[key])
       )
+      console.log(content)
       const func = await ejs.compile(content.toString(), {
         root: './templates'
       })
@@ -32,9 +34,11 @@ const loadTemplates = async () => {
       const plugin = PluginTemplates[key]
       await Promise.all(
         plugin.templates.map(async (template) => {
+          console.log(path.join(plugin.path, template.file))
           const content = await Tools.readFile(
             path.join(plugin.path, template.file)
           )
+          console.log(content)
           const func = await ejs.compile(content.toString(), {
             root: './templates'
           })

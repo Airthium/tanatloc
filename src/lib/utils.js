@@ -13,4 +13,18 @@ const stringToColor = (str) => {
   return '#' + '00000'.substring(0, 6 - c.length) + c
 }
 
-export default { stringToColor }
+const componentToHex = (c) => {
+  const hex = c.toString(16)
+  return hex.length === 1 ? '0' + hex : hex
+}
+
+const rgbToHex = (color) => {
+  return (
+    '#' +
+    componentToHex(color[0] * 255) +
+    componentToHex(color[1] * 255) +
+    componentToHex(color[2] * 255)
+  )
+}
+
+export default { stringToColor, rgbToHex }

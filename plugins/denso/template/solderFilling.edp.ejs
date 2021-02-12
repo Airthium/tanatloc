@@ -43,18 +43,18 @@ const wet = boundaryConditions.wet.values
 const wall = boundaryConditions.wall.values
 const liquid = boundaryConditions.liquid.values
 const interface = boundaryConditions.interface.values
-const wetLabels = wet?.[0]?.selected.map(s => {
+const wetLabels = (wet && wet[0] && wet[0].selected && wet[0].selected.map(s => {
   return s.label
-}) || [0]
-const wallLabels = wall?.[0]?.selected.map(s => {
+})) || [0]
+const wallLabels = (wall && wall[0] && wall[0].selected && wall[0].selected.map(s => {
   return s.label
-}) || [0]
-const liquidLabels = liquid?.[0]?.selected.map(s => {
+})) || [0]
+const liquidLabels = (liquid && liquid[0] && liquid[0].selected && liquid[0].selected.map(s => {
   return s.label
-}) || [0]
-const interfaceLabels = interface?.[0]?.selected.map(s => {
+})) || [0]
+const interfaceLabels = (interface && interface[0] && interface[0].selected && interface[0].selected.map(s => {
   return s.label
-}) || [0]
+})) || [0]
 -%>
 
 int[int] wet=[<%=wetLabels-%>];

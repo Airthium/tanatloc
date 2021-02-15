@@ -13,6 +13,11 @@ const createPath = async (location) => {
   await fs.mkdir(location, { recursive: true })
 }
 
+const listFiles = async (location) => {
+  const files = await fs.readdir(location, { withFileTypes: true })
+  return files
+}
+
 /**
  * Write file
  * @param {string} location Location
@@ -124,6 +129,7 @@ const removeDirectory = async (dir) => {
 
 export default {
   createPath,
+  listFiles,
   writeFile,
   readFile,
   convert,

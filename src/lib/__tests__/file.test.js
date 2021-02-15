@@ -5,11 +5,6 @@ jest.mock('path', () => ({
   join: () => mockPath()
 }))
 
-const mockCreateReadStream = jest.fn()
-jest.mock('fs', () => ({
-  createReadStream: () => mockCreateReadStream()
-}))
-
 jest.mock('@/config/storage', () => ({}))
 
 const mockReadFile = jest.fn()
@@ -20,8 +15,6 @@ jest.mock('../tools', () => ({
 describe('src/lib/file', () => {
   beforeEach(() => {
     mockPath.mockReset()
-    mockCreateReadStream.mockReset()
-    mockCreateReadStream.mockImplementation(() => 'readStream')
     mockReadFile.mockReset()
     mockReadFile.mockImplementation(() => 'readFile')
   })
@@ -36,13 +29,5 @@ describe('src/lib/file', () => {
     expect(content).toEqual({
       buffer: 'readFile'
     })
-  })
-
-  it('createStream', () => {
-    const stream = File.createStream(
-      { id: 'id' },
-      { originPath: 'originPath', fileName: 'fileName' }
-    )
-    expect(stream).toBe('readStream')
   })
 })

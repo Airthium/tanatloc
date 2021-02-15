@@ -118,6 +118,8 @@ describe('src/lib/three/loaders/PartLoader', () => {
     // Result
     part.type = 'result'
     partLoader.load(part)
+
+    global.MockGeometry.getAttribute = () => {}
     partLoader.load(part, true)
 
     global.MockBox3.isEmpty = true

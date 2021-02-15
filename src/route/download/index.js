@@ -1,7 +1,7 @@
 import getSessionId from '../session'
 import auth from '../auth'
 
-import FileLib from '@/lib/file'
+import DownloadLib from '@/lib/download'
 import SimulationLib from '@/lib/simulation'
 import ProjectLib from '@/lib/project'
 
@@ -28,10 +28,14 @@ export default async (req, res) => {
         return
       }
 
-      res.setHeader('content-disposition', 'attachment; filename=' + file.name)
-
-      const fileStream = FileLib.createStream(simulation, file)
-      fileStream.pipe(res)
+      if (archive) {
+        res.setHeader('Content-type', 'application/zip')
+        const archiveStream = await DownloadLib.createArchiveStream(simulation)
+        archiveStream.pipe(res)
+      } else {
+        const fileStream = DownloadLib.createReadStream(simulation, file)
+        fileStream.pipe(res)
+      }
     } catch (err) {
       console.error(err)
       res.status(500).json({ error: true, message: err.message })

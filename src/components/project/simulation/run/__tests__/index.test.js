@@ -23,6 +23,11 @@ jest.mock('@/api/simulation', () => ({
   useSimulations: () => [, { mutateOneSimulation: mockMutateOneSimulation }]
 }))
 
+const mockDownloadGet = jest.fn()
+jest.mock('@/api/download', () => ({
+  get: async () => mockDownloadGet()
+}))
+
 const mockError = jest.fn()
 jest.mock('@/components/assets/notification', () => ({
   Error: () => mockError()
@@ -69,6 +74,7 @@ describe('src/components/project/simulation/run', () => {
         }
       ]
     }))
+    mockDownloadGet.mockReset()
     mockError.mockReset()
     wrapper = shallow(<Run project={project} simulation={simulation} />)
   })
@@ -140,6 +146,22 @@ describe('src/components/project/simulation/run', () => {
       throw new Error()
     })
     wrapper.find({ title: 'Results' }).find('Button').at(1).props().onClick()
+  })
+
+  it('onDownload', () => {
+    // Error
+    wrapper.find({ size: 'small' }).props().onClick()
+    expect(mockDownloadGet).toHaveBeenCalledTimes(1)
+
+    // Normal
+    mockDownloadGet.mockImplementation(() => ({
+      text: async () => 'text'
+    }))
+    window.URL = {
+      createObjectURL: () => 'object'
+    }
+    wrapper.find({ size: 'small' }).props().onClick()
+    expect(mockDownloadGet).toHaveBeenCalledTimes(2)
   })
 
   it('effect', () => {

@@ -189,7 +189,6 @@ const PartLoader = (mouseMoveEvent, mouseDownEvent) => {
       mesh.uuid = buffer.uuid
       return mesh
     } else if (partType === 'result') {
-      console.log(geometry)
       const group = new Group()
 
       geometry.computeBoundingBox()
@@ -199,25 +198,28 @@ const PartLoader = (mouseMoveEvent, mouseDownEvent) => {
       group.boundingSphere = geometry.boundingSphere
       group.uuid = buffer.uuid
 
-      const data = geometry.getAttribute('data')
-      const min = Math.min(...data.array)
-      const max = Math.max(...data.array)
-
+      let vertexColors
       const lut = new Lut()
-      lut.setMin(min)
-      lut.setMax(max)
+      const data = geometry.getAttribute('data')
+      if (data) {
+        const min = Math.min(...data.array)
+        const max = Math.max(...data.array)
 
-      const vertexColors = new Float32Array(data.count * 3)
-      for (let i = 0; i < data.count; ++i) {
-        const vertexColor = lut.getColor(data.array[i])
-        vertexColors[3 * i + 0] = vertexColor.r
-        vertexColors[3 * i + 1] = vertexColor.g
-        vertexColors[3 * i + 2] = vertexColor.b
+        lut.setMin(min)
+        lut.setMax(max)
+
+        vertexColors = new Float32Array(data.count * 3)
+        for (let i = 0; i < data.count; ++i) {
+          const vertexColor = lut.getColor(data.array[i])
+          vertexColors[3 * i + 0] = vertexColor.r
+          vertexColors[3 * i + 1] = vertexColor.g
+          vertexColors[3 * i + 2] = vertexColor.b
+        }
+        geometry.setAttribute(
+          'color',
+          new Float32BufferAttribute(vertexColors, 3)
+        )
       }
-      geometry.setAttribute(
-        'color',
-        new Float32BufferAttribute(vertexColors, 3)
-      )
 
       const material = new LineBasicMaterial({
         vertexColors: VertexColors,

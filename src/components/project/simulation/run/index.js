@@ -201,12 +201,12 @@ const Run = ({ project, simulation }) => {
 
     try {
       const archive = await DownloadAPI.get({ id: simulation.id }, null, true)
-      const content = await archive.text()
+      const content = await archive.blob()
 
-      const url = window.URL.createObjectURL(new Blob([content]))
+      const url = window.URL.createObjectURL(content)
       const link = document.createElement('a')
       link.href = url
-      link.setAttribute('download', simulation.scheme.name + '.tar.gz')
+      link.setAttribute('download', simulation.scheme.name + '.zip')
       document.body.appendChild(link)
       link.click()
       document.body.removeChild(link)

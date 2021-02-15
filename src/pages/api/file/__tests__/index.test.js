@@ -1,9 +1,9 @@
-import avatar from '@/pages/api/file'
+import file from '@/pages/api/file'
 
 jest.mock('@/route/file', () => () => {})
 
 describe('pages/api/file', () => {
   it('call', async () => {
-    await avatar()
+    await file()
   })
 })

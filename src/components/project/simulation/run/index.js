@@ -14,6 +14,7 @@ import { Error } from '@/components/assets/notification'
 import CloudServer from './cloudServer'
 
 import SimulationAPI from '@/api/simulation'
+import DownloadAPI from '@/api/download'
 
 /**
  * Errors simulation/run
@@ -21,7 +22,8 @@ import SimulationAPI from '@/api/simulation'
  */
 const errors = {
   runError: 'Unable to run the simulation',
-  updateError: 'Unable to update the simulation'
+  updateError: 'Unable to update the simulation',
+  downloadError: 'Unable to download the file'
 }
 
 /**
@@ -35,6 +37,7 @@ const Run = ({ project, simulation }) => {
   const [running, setRunning] = useState(false)
   const [logVisible, setLogVisible] = useState(false)
   const [logContent, setLogContent] = useState()
+  const [downloading, setDownloading] = useState([])
 
   const [configuration, setConfiguration] = useState(
     simulation?.scheme?.configuration
@@ -193,6 +196,34 @@ const Run = ({ project, simulation }) => {
     }
   }
 
+  const onDownload = async (result) => {
+    setDownloading([...downloading, result])
+
+    try {
+      const file = await DownloadAPI.get({ id: simulation.id }, result)
+      const content = await file.text()
+
+      const url = window.URL.createObjectURL(new Blob([content]))
+      const link = document.createElement('a')
+      link.href = url
+      link.setAttribute(
+        'download',
+        result.name + '.' + result.fileName.split('.').pop()
+      )
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+    } catch (err) {
+      Error(errors.downloadError, err)
+    } finally {
+      const index = downloading.findIndex((d) => d === result)
+      setDownloading([
+        ...downloading.slice(0, index),
+        ...downloading.slice(index + 1)
+      ])
+    }
+  }
+
   const resultFiles = []
   currentSimulation?.tasks?.forEach((task) => {
     if (task.file) resultFiles.push(task.file)
@@ -304,6 +335,12 @@ const Run = ({ project, simulation }) => {
                               : result
                           )
                         }
+                      />
+                      <Button
+                        loading={downloading.find((d) => d === result)}
+                        icon={<DownloadOutlined />}
+                        size="small"
+                        onClick={() => onDownload(result)}
                       />
                       {result.name}
                     </Space>

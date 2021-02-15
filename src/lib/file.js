@@ -1,6 +1,7 @@
 /** @module src/lib/file */
 
 import path from 'path'
+import fs from 'fs'
 
 import storage from '@/config/storage'
 
@@ -21,4 +22,11 @@ const get = async (simulation, file) => {
   }
 }
 
-export default { get }
+const createStream = (simulation, file) => {
+  const fileStream = fs.createReadStream(
+    path.join(storage.SIMULATION, simulation.id, file.originPath, file.fileName)
+  )
+  return fileStream
+}
+
+export default { get, createStream }

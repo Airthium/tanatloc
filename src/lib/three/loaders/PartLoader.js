@@ -189,6 +189,7 @@ const PartLoader = (mouseMoveEvent, mouseDownEvent) => {
       mesh.uuid = buffer.uuid
       return mesh
     } else if (partType === 'result') {
+      console.log(geometry)
       const group = new Group()
 
       geometry.computeBoundingBox()

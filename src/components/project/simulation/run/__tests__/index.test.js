@@ -148,6 +148,22 @@ describe('src/components/project/simulation/run', () => {
     wrapper.find({ title: 'Results' }).find('Button').at(1).props().onClick()
   })
 
+  it('onArchiveDownload', () => {
+    // Error
+    wrapper.find({ title: 'Results' }).props().extra.props.onClick()
+    expect(mockDownloadGet).toHaveBeenCalledTimes(1)
+
+    // Normal
+    mockDownloadGet.mockImplementation(() => ({
+      text: async () => 'text'
+    }))
+    window.URL = {
+      createObjectURL: () => 'object'
+    }
+    wrapper.find({ title: 'Results' }).props().extra.props.onClick()
+    expect(mockDownloadGet).toHaveBeenCalledTimes(2)
+  })
+
   it('onDownload', () => {
     // Error
     wrapper.find({ size: 'small' }).props().onClick()

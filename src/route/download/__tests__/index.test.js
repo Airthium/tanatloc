@@ -6,9 +6,11 @@ jest.mock('../../session', () => () => mockSession())
 const mockAuth = jest.fn()
 jest.mock('../../auth', () => () => mockAuth())
 
-const mockCreateStream = jest.fn()
-jest.mock('@/lib/file', () => ({
-  createStream: () => mockCreateStream()
+const mockCreateReadStream = jest.fn()
+const mockCreateArchiveStream = jest.fn()
+jest.mock('@/lib/download', () => ({
+  createReadStream: () => mockCreateReadStream(),
+  createArchiveStream: () => mockCreateArchiveStream()
 }))
 
 const mockGetSimulation = jest.fn()
@@ -47,8 +49,15 @@ describe('src/route/download', () => {
     mockAuth.mockReset()
     mockAuth.mockImplementation(() => false)
 
-    mockCreateStream.mockReset()
-    mockCreateStream.mockImplementation(() => ({
+    mockCreateReadStream.mockReset()
+    mockCreateReadStream.mockImplementation(() => ({
+      pipe: () => {
+        response = 'pipe'
+      }
+    }))
+
+    mockCreateArchiveStream.mockReset()
+    mockCreateArchiveStream.mockImplementation(() => ({
       pipe: () => {
         response = 'pipe'
       }
@@ -76,7 +85,8 @@ describe('src/route/download', () => {
     expect(mockGetSimulation).toHaveBeenCalledTimes(0)
     expect(mockGetProject).toHaveBeenCalledTimes(0)
     expect(mockAuth).toHaveBeenCalledTimes(0)
-    expect(mockCreateStream).toHaveBeenCalledTimes(0)
+    expect(mockCreateReadStream).toHaveBeenCalledTimes(0)
+    expect(mockCreateArchiveStream).toHaveBeenCalledTimes(0)
     expect(mockError).toHaveBeenCalledTimes(0)
     expect(response).toBe(undefined)
   })
@@ -95,7 +105,8 @@ describe('src/route/download', () => {
     expect(mockGetSimulation).toHaveBeenCalledTimes(1)
     expect(mockGetProject).toHaveBeenCalledTimes(1)
     expect(mockAuth).toHaveBeenCalledTimes(1)
-    expect(mockCreateStream).toHaveBeenCalledTimes(0)
+    expect(mockCreateReadStream).toHaveBeenCalledTimes(0)
+    expect(mockCreateArchiveStream).toHaveBeenCalledTimes(0)
     expect(mockError).toHaveBeenCalledTimes(0)
     expect(response).toEqual({ error: true, message: 'Unauthorized' })
 
@@ -106,12 +117,13 @@ describe('src/route/download', () => {
     expect(mockGetSimulation).toHaveBeenCalledTimes(2)
     expect(mockGetProject).toHaveBeenCalledTimes(2)
     expect(mockAuth).toHaveBeenCalledTimes(2)
-    expect(mockCreateStream).toHaveBeenCalledTimes(1)
+    expect(mockCreateReadStream).toHaveBeenCalledTimes(1)
+    expect(mockCreateArchiveStream).toHaveBeenCalledTimes(0)
     expect(mockError).toHaveBeenCalledTimes(0)
     expect(response).toBe('pipe')
 
     // Error
-    mockCreateStream.mockImplementation(() => {
+    mockCreateReadStream.mockImplementation(() => {
       throw new Error('test')
     })
     await download(req, res)
@@ -119,9 +131,31 @@ describe('src/route/download', () => {
     expect(mockGetSimulation).toHaveBeenCalledTimes(3)
     expect(mockGetProject).toHaveBeenCalledTimes(3)
     expect(mockAuth).toHaveBeenCalledTimes(3)
-    expect(mockCreateStream).toHaveBeenCalledTimes(2)
+    expect(mockCreateReadStream).toHaveBeenCalledTimes(2)
+    expect(mockCreateArchiveStream).toHaveBeenCalledTimes(0)
     expect(mockError).toHaveBeenCalledTimes(1)
     expect(response).toEqual({ error: true, message: 'test' })
+  })
+
+  it('archive', async () => {
+    req.body = {
+      simulation: {},
+      file: {},
+      archive: true
+    }
+
+    mockSession.mockImplementation(() => 'id')
+    mockAuth.mockImplementation(() => true)
+
+    await download(req, res)
+    expect(mockSession).toHaveBeenCalledTimes(1)
+    expect(mockGetSimulation).toHaveBeenCalledTimes(1)
+    expect(mockGetProject).toHaveBeenCalledTimes(1)
+    expect(mockAuth).toHaveBeenCalledTimes(1)
+    expect(mockCreateReadStream).toHaveBeenCalledTimes(0)
+    expect(mockCreateArchiveStream).toHaveBeenCalledTimes(1)
+    expect(mockError).toHaveBeenCalledTimes(0)
+    expect(response).toBe('pipe')
   })
 
   it('wrong method', async () => {
@@ -134,7 +168,8 @@ describe('src/route/download', () => {
     expect(mockGetSimulation).toHaveBeenCalledTimes(0)
     expect(mockGetProject).toHaveBeenCalledTimes(0)
     expect(mockAuth).toHaveBeenCalledTimes(0)
-    expect(mockCreateStream).toHaveBeenCalledTimes(0)
+    expect(mockCreateReadStream).toHaveBeenCalledTimes(0)
+    expect(mockCreateArchiveStream).toHaveBeenCalledTimes(0)
     expect(mockError).toHaveBeenCalledTimes(1)
     expect(response).toEqual({
       error: true,

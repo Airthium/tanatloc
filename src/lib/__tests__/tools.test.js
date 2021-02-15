@@ -6,6 +6,7 @@ jest.mock('path', () => ({
 }))
 
 const mockMkdir = jest.fn()
+const mockReadDir = jest.fn()
 const mockWriteFile = jest.fn()
 const mockReadFile = jest.fn()
 const mockUnlink = jest.fn()
@@ -13,6 +14,7 @@ const mockRmdir = jest.fn()
 jest.mock('fs', () => ({
   promises: {
     mkdir: async () => mockMkdir(),
+    readdir: async () => mockReadDir(),
     writeFile: async () => mockWriteFile(),
     readFile: async () => mockReadFile(),
     unlink: async () => mockUnlink(),
@@ -29,6 +31,7 @@ jest.mock('@/services', () => ({
 describe('src/lib/tools', () => {
   beforeEach(() => {
     mockMkdir.mockReset()
+    mockReadDir.mockReset()
     mockWriteFile.mockReset()
     mockReadFile.mockReset()
     mockReadFile.mockImplementation(() => 'readFile')
@@ -40,6 +43,13 @@ describe('src/lib/tools', () => {
   it('createPath', async () => {
     await Tools.createPath('location')
     expect(mockMkdir).toHaveBeenCalledTimes(1)
+  })
+
+  it('listFiles', async () => {
+    mockReadDir.mockImplementation(() => ['file'])
+    const files = await Tools.listFiles('location')
+    expect(mockReadDir).toHaveBeenCalledTimes(1)
+    expect(files).toEqual(['file'])
   })
 
   it('writeFile', async () => {

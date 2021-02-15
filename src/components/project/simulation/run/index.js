@@ -196,6 +196,31 @@ const Run = ({ project, simulation }) => {
     }
   }
 
+  const onArchiveDownload = async () => {
+    setDownloading([...downloading, 'archive'])
+
+    try {
+      const archive = await DownloadAPI.get({ id: simulation.id }, null, true)
+      const content = await archive.text()
+
+      const url = window.URL.createObjectURL(new Blob([content]))
+      const link = document.createElement('a')
+      link.href = url
+      link.setAttribute('download', simulation.scheme.name + '.tar.gz')
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+    } catch (err) {
+      Error(errors.downloadError, err)
+    } finally {
+      const index = downloading.findIndex((d) => d === 'archive')
+      setDownloading([
+        ...downloading.slice(0, index),
+        ...downloading.slice(index + 1)
+      ])
+    }
+  }
+
   const onDownload = async (result) => {
     setDownloading([...downloading, result])
 
@@ -306,9 +331,9 @@ const Run = ({ project, simulation }) => {
               title="Results"
               extra={
                 <Button
+                  loading={downloading.find((d) => d === 'archive')}
                   icon={<DownloadOutlined />}
-                  style={{ backgroundColor: 'blue', color: 'red' }}
-                  disabled={true}
+                  onClick={onArchiveDownload}
                 />
               }
             >

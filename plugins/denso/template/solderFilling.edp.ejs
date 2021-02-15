@@ -61,7 +61,7 @@ int[int] wet=[<%=wetLabels-%>];
 int[int] wall=[<%=wallLabels-%>];
 int[int] liquid=[<%=liquidLabels-%>];
 int[int] intrfc=[<%=interfaceLabels-%>];
-string jobname = "";
+string jobname = "jobname";
 real kappa1 = <%= parameters.kappa.children[0].value || parameters.kappa.children[0].default -%>;
 int nrestart = <%= parameters.nrestart.children[0].value || parameters.nrestart.children[0].default -%>;
 real volmag1 = <%= parameters.volume.children[0].value || parameters.volume.children[0].default -%>; // 1.1
@@ -167,7 +167,7 @@ int nsurfaces0 = 0;
 //
 real etime00, etime01;
 
-string resultpath = "<%= run.presultPath %>/";
+string resultpath = "<%= run.resultPath %>/";
 string workingpath = "<%= run.dataPath -%>/";
 if (mpirank == 0) {
   exec("mkdir -p " + workingpath);
@@ -572,7 +572,7 @@ func int refinemesh(mesh3 &ThG11, mesh3 &ThG00, mesh3 &Tha00,
 	    << endl;
       if(debugvtk) {
 	savevtk(workingpath+"refined."+vtkcount+".vtu", ThG11,
-		phigg, order = vtkorder, bin = false);
+		phigg, dataname = "phi", order = vtkorder, bin = false);
 	ffout << "## L109 : vtu = " << vtkcount << endl;
 	ffout.flush;
 	vtkcount++;            
@@ -607,7 +607,7 @@ func int refinemesh(mesh3 &ThG11, mesh3 &ThG00, mesh3 &Tha00,
       ffout << "## background mesh "<< endl;
       if(debugvtk) {
 	savevtk(workingpath+"background."+vtkcount+".vtu", ThG00,
-		reff0, order = vtkorder, bin = false);
+		reff0, dataname = "reff", order = vtkorder, bin = false);
 	ffout << "## L456 : vtu = " << vtkcount << endl;
 	ffout.flush;
 	vtkcount++;            
@@ -665,7 +665,7 @@ func int refinemesh(mesh3 &ThG11, mesh3 &ThG00, mesh3 &Tha00,
 	ffout << "## background data "<< endl;
 	if(debugvtk) {
 	  savevtk(workingpath+"reff."+vtkcount+".vtu", ThG00,
-		  reff, order = vtkorder, bin = false);
+		  reff, dataname = "reff", order = vtkorder, bin = false);
 	  ffout << "## L559 : vtu = " << vtkcount << endl;
 	  ffout.flush;
 	  vtkcount++;            
@@ -914,7 +914,7 @@ func int setinitial(mesh3 &TThG0i, mesh3 &TThG1, real[int] &pphig11, bool first)
   }
   if (debugvtk0) {
     savevtk(workingpath+"ini."+vtkcount+".vtu", TThG0i, phigib,
-	    order = vtkorder, bin = false);
+	dataname = "phi", order = vtkorder, bin = false);
     fout << "## L754 : vtu = " << vtkcount << endl;
     fout.flush;	
     vtkcount++;
@@ -1020,7 +1020,7 @@ func int setinitial(mesh3 &TThG0i, mesh3 &TThG1, real[int] &pphig11, bool first)
       phigdebug[][i] = iv;
     }
     savevtk(workingpath+"ini."+vtkcount+".vtu",
-	    TThG1, phigdebug, order = vtkorder, bin = false);
+	    TThG1, phigdebug, dataname = "phi", order = vtkorder, bin = false);
     fout << "## L837 " << vtkcount << endl;    
     vtkcount++;
   }
@@ -1072,7 +1072,7 @@ func int setinitial(mesh3 &TThG0i, mesh3 &TThG1, real[int] &pphig11, bool first)
 	phigdebug[][i] = iv;
     }
     savevtk(workingpath+"ini."+vtkcount+".vtu",
-	    TThG1, phigdebug, order = vtkorder, bin = false);
+	    TThG1, phigdebug, dataname = "phi", order = vtkorder, bin = false);
     fout << "## L893 " << vtkcount << endl;
     vtkcount++;
   }
@@ -1207,12 +1207,12 @@ func int setinitial(mesh3 &TThG0i, mesh3 &TThG1, real[int] &pphig11, bool first)
   }    // loop : m
   if (debugvtk) {
     savevtk(workingpath+"sgn."+vtkcount+".vtu",
-	    TThG1, phigdebug, order = vtkorder, bin = false);
+	    TThG1, phigdebug, dataname = "phi", order = vtkorder, bin = false);
     fout << "L980 " << vtkcount << endl;
     vtkcount++;
     phigdebug[] = pphig11;	
     savevtk(workingpath+"phig11."+vtkcount+".vtu",
-	    TThG1, phigdebug, order = vtkorder, bin = false);
+	    TThG1, phigdebug, dataname = "phi", order = vtkorder, bin = false);
     fout << "L980 " << vtkcount << endl;
     vtkcount++;
   }
@@ -1307,7 +1307,7 @@ if (!flagrestarted) { //generatino of initial data
       fout.flush;
       if (debugvtk) {
 	savevtk(workingpath+"ini."+vtkcount+".vtu", ThG0i,
-		order = vtkorder, bin = false);
+		bin = false);
 	fout << "## L739 : vtu = " << vtkcount << endl;
 	fout.flush;
 	vtkcount++;
@@ -1323,7 +1323,7 @@ if (!flagrestarted) { //generatino of initial data
       //
       if (debugvtk) {
 	savevtk(workingpath+"banded."+vtkcount+".vtu", ThG1,
-		phig, order = vtkorder, bin = false);
+		phig, dataname = "phi", order = vtkorder, bin = false);
 	fout << "## L1206 : vtu = " << vtkcount << endl;	
 	vtkcount++;
       }
@@ -1381,7 +1381,7 @@ if (!flagrestarted) { //generatino of initial data
     if(mpirank == 0) {
       if(debugvtk) {
 	savevtk(workingpath+"banded."+vtkcount+".vtu", ThG1,
-		phig, order = vtkorder, bin = false);
+		phig, dataname = "phi", order = vtkorder, bin = false);
 	fout << "## L1257 : vtu = " << vtkcount << endl;
 	fout.flush;
 	vtkcount++;
@@ -1443,7 +1443,7 @@ if (!flagrestarted) { //generatino of initial data
   if(mpirank == 0) {
     if(debugvtk) {
       savevtk(workingpath+"banded."+vtkcount+".vtu", ThG1,
-	      phig, order = vtkorder, bin = false);
+	      phig, dataname = "phi", order = vtkorder, bin = false);
       fout << "## L1295 : vtu = " << vtkcount << endl;
       fout.flush;
       vtkcount++;
@@ -1889,7 +1889,7 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
 	    fout.flush;
 	    if(debugvtk) {
 	      savevtk(workingpath+"refined."+vtkcount+".vtu",
-		      ThGlobal, phig, order = vtkorder, bin = false);
+		      ThGlobal, phig, dataname = "phi", order = vtkorder, bin = false);
 	      fout << "L1661: vtu = " << vtkcount << endl;
 	      fout.flush;
 	      savemesh(ThGlobal, "phi." + vtkcount + ".mesh");
@@ -1959,7 +1959,7 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
 	    if (mpirank == 0) {
 	      if(debugvtk0) {
 		savevtk(workingpath+"refined."+vtkcount+".vtu",
-			ThGlobal, phig, order = vtkorder, bin = false);
+			ThGlobal, phig, dataname = "phi", order = vtkorder, bin = false);
 		fout << "L1728: vtu = " << vtkcount << endl;
 		fout.flush;
 		vtkcount++;
@@ -2327,7 +2327,7 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
 	    if(mpirank == 0) {
               if(debugvtk) {
 	        savevtk(workingpath+"refined."+vtkcount+".vtu",
-	  	        ThGlobal, phig, order = vtkorder, bin = false);
+	  	        ThGlobal, phig, dataname = "phi", order = vtkorder, bin = false);
 	        fout << "L987: vtu = " << vtkcount << endl;
 	        fout.flush;
 	        savemesh(ThGlobal, "phi." + vtkcount + ".mesh");
@@ -2426,7 +2426,7 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
 	    fout.flush;
 	    if(debugvtk) {
 	      savevtk(workingpath+"refined."+vtkcount+".vtu",
-		      ThG1, phig, order = vtkorder, bin = false);
+		      ThG1, phig, dataname = "phi", order = vtkorder, bin = false);
 	      if(mpirank == 0) {	      
 		fout << "L2069: " << mm << " vtu = " << vtkcount << endl;
 		fout.flush;
@@ -2500,7 +2500,7 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
       ff <<  phig[];
       savevtk((resultpath + "phi." + (bisectionphase ? "1" : "0") 
 	       + "." + mm + ".vtu"),
-	      ThGlobal, phig, order = vtkorder, bin = false);
+	      ThGlobal, phig, dataname = "phi", order = vtkorder, bin = false);
       fout.flush;
     }
     mpiBarrier(comm);

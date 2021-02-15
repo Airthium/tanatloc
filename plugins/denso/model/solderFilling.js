@@ -188,7 +188,7 @@ const solderFilling = {
       title: 'Run',
       results: [
         {
-          name: ''
+          name: 'phi'
         }
       ]
     }

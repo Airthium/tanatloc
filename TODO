@@ -27,3 +27,6 @@ Denso:
 - update the model
 
 Docker does not works, result of Poisson
+
+Models:
+- linearElasticity: checked[0]

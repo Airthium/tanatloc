@@ -38,6 +38,11 @@ const get = async (id, data) => {
   return user
 }
 
+const getAll = async (data) => {
+  const users = await UserDB.getAll(data)
+  return users
+}
+
 /**
  * Login
  * @param {Object} data Data { username, password }
@@ -88,4 +93,4 @@ const del = async (user) => {
   await UserDB.del(user)
 }
 
-export default { login, add, get, update, del }
+export default { login, add, get, getAll, update, del }

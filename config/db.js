@@ -20,6 +20,7 @@ module.exports = {
  * Tables names
  */
 module.exports.databases = {
+  SYSTEM: 'tanatloc_system',
   USERS: 'tanatloc_users',
   WORKSPACES: 'tanatloc_workspaces',
   PROJECTS: 'tanatloc_projects',

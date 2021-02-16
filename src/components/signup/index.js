@@ -16,8 +16,9 @@ import {
 import Loading from '@/components/loading'
 // import Background from '../background'
 
-// import login from '@/api/login'
+import login from '@/api/login'
 import UserAPI from '@/api/user'
+import SystemAPI from '@/api/system'
 
 import Sentry from '@/lib/sentry'
 
@@ -37,12 +38,13 @@ const errors = {
  */
 const Signup = () => {
   // State
+  const [allowed, setAllowed] = useState(true)
   const [checking, setChecking] = useState(false)
   const [signupErr, setSignupErr] = useState(false)
   const [internalErr, setInternalError] = useState(false)
 
   // Data
-  const [user, { loadingUser /*mutateUser*/ }] = UserAPI.useUser()
+  const [user, { loadingUser, mutateUser }] = UserAPI.useUser()
 
   // Router
   const router = useRouter()
@@ -51,6 +53,17 @@ const Signup = () => {
   useEffect(() => {
     if (user) router.push('/dashboard')
   }, [user])
+
+  // Allowed
+  useEffect(() => {
+    SystemAPI.get(['allowsignup'])
+      .then((res) => {
+        setAllowed(res.allowsignup)
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  }, [])
 
   // Prefetch
   useEffect(() => {
@@ -70,18 +83,17 @@ const Signup = () => {
 
     // Signup
     try {
-      throw { message: 'not authorized yet!' }
-      // const newUser = await UserAPI.add({ username, password })
-      // if (newUser.alreadyExists) {
-      //   setSignupErr(true)
-      //   setChecking(false)
-      //   return
-      // }
+      const newUser = await UserAPI.add({ username, password })
+      if (newUser.alreadyExists) {
+        setSignupErr(true)
+        setChecking(false)
+        return
+      }
 
-      // // Login
-      // const loggedUser = await login({ username, password })
-      // mutateUser(loggedUser)
-      // router.push('/dashboard')
+      // Login
+      const loggedUser = await login({ username, password })
+      mutateUser(loggedUser)
+      router.push('/dashboard')
     } catch (err) {
       setInternalError(true)
       setChecking(false)
@@ -107,97 +119,107 @@ const Signup = () => {
       ) : (
         <Layout>
           {/* <Background /> */}
-          <Card bordered={false} className="Signup">
-            <Space direction="vertical" size="large" style={{ width: '100%' }}>
-              <div>
-                <Typography.Title
-                  level={1}
-                  style={{ padding: 0, marginBottom: 16, fontWeight: 500 }}
-                >
-                  Sign Up
-                </Typography.Title>
-              </div>
-              <Form
-                requiredMark="optional"
-                onFinish={onSignup}
-                layout="vertical"
+          {allowed ? (
+            <Card bordered={false} className="Signup">
+              <Space
+                direction="vertical"
+                size="large"
+                style={{ width: '100%' }}
               >
-                {(signupErr || internalErr) && (
-                  <Alert
-                    message={
-                      internalErr ? (
-                        errors.INTERNAL_ERROR
-                      ) : (
-                        <>
-                          <b type="warning">{errors.ALREADY_EXISTS}</b>
-                          <br />
-                          We know you!{' '}
-                          <Button type="link" onClick={onLogin}>
-                            Log in ?
-                          </Button>
-                        </>
-                      )
-                    }
-                    type={internalErr ? 'error' : 'warning'}
-                    showIcon
-                    style={{
-                      marginBottom: '16px'
-                    }}
-                  />
-                )}
-                <Form.Item
-                  name="username"
-                  label="Enter your email address"
-                  rules={[
-                    { required: true, message: 'Please enter your email' }
-                  ]}
+                <div>
+                  <Typography.Title
+                    level={1}
+                    style={{ padding: 0, marginBottom: 16, fontWeight: 500 }}
+                  >
+                    Sign Up
+                  </Typography.Title>
+                </div>
+                <Form
+                  requiredMark="optional"
+                  onFinish={onSignup}
+                  layout="vertical"
                 >
-                  <Input placeholder="Email address" autoComplete="email" />
-                </Form.Item>
-                <Form.Item
-                  name="password"
-                  label="Choose your password"
-                  rules={[
-                    { required: true, message: 'Please enter your Password' },
-                    { min: 6, message: errors.PASSWORD_TOO_SMALL },
-                    { max: 16, message: errors.PASSWORD_TOO_LONG }
-                  ]}
-                  style={{ marginBottom: '14px' }}
-                >
-                  <Input.Password
-                    placeholder="Password"
-                    autoComplete="current-password"
-                  />
-                </Form.Item>
-                <Form.Item
-                  name="passwordConfirmation"
-                  label="Confirm your password"
-                  rules={[
-                    { required: true, message: 'Please enter your Password' },
-                    ({ getFieldValue }) => ({
-                      validator(rule, value) {
-                        if (!value || getFieldValue('password') === value) {
-                          return Promise.resolve()
-                        }
-                        return Promise.reject(errors.PASSSWORDS_MISMATCH)
+                  {(signupErr || internalErr) && (
+                    <Alert
+                      message={
+                        internalErr ? (
+                          errors.INTERNAL_ERROR
+                        ) : (
+                          <>
+                            <b type="warning">{errors.ALREADY_EXISTS}</b>
+                            <br />
+                            We know you!{' '}
+                            <Button type="link" onClick={onLogin}>
+                              Log in ?
+                            </Button>
+                          </>
+                        )
                       }
-                    })
-                  ]}
-                  style={{ marginBottom: '14px' }}
-                >
-                  <Input.Password
-                    placeholder="Password"
-                    autoComplete="current-password"
-                  />
-                </Form.Item>
-                <Form.Item className="Signup-submit">
-                  <Button type="primary" loading={checking} htmlType="submit">
-                    Finish
-                  </Button>
-                </Form.Item>
-              </Form>
-            </Space>
-          </Card>
+                      type={internalErr ? 'error' : 'warning'}
+                      showIcon
+                      style={{
+                        marginBottom: '16px'
+                      }}
+                    />
+                  )}
+                  <Form.Item
+                    name="username"
+                    label="Enter your email address"
+                    rules={[
+                      { required: true, message: 'Please enter your email' }
+                    ]}
+                  >
+                    <Input placeholder="Email address" autoComplete="email" />
+                  </Form.Item>
+                  <Form.Item
+                    name="password"
+                    label="Choose your password"
+                    rules={[
+                      { required: true, message: 'Please enter your Password' },
+                      { min: 6, message: errors.PASSWORD_TOO_SMALL },
+                      { max: 16, message: errors.PASSWORD_TOO_LONG }
+                    ]}
+                    style={{ marginBottom: '14px' }}
+                  >
+                    <Input.Password
+                      placeholder="Password"
+                      autoComplete="current-password"
+                    />
+                  </Form.Item>
+                  <Form.Item
+                    name="passwordConfirmation"
+                    label="Confirm your password"
+                    rules={[
+                      { required: true, message: 'Please enter your Password' },
+                      ({ getFieldValue }) => ({
+                        validator(rule, value) {
+                          if (!value || getFieldValue('password') === value) {
+                            return Promise.resolve()
+                          }
+                          return Promise.reject(errors.PASSSWORDS_MISMATCH)
+                        }
+                      })
+                    ]}
+                    style={{ marginBottom: '14px' }}
+                  >
+                    <Input.Password
+                      placeholder="Password"
+                      autoComplete="current-password"
+                    />
+                  </Form.Item>
+                  <Form.Item className="Signup-submit">
+                    <Button type="primary" loading={checking} htmlType="submit">
+                      Finish
+                    </Button>
+                  </Form.Item>
+                </Form>
+              </Space>
+            </Card>
+          ) : (
+            <Card className="Signup">
+              The server does not allow signup for now
+            </Card>
+          )}
         </Layout>
       )}
     </>

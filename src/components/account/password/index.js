@@ -1,17 +1,9 @@
 import { useState } from 'react'
-import {
-  /*notification,*/ Button,
-  Form,
-  Input,
-  Space,
-  Card,
-  Row,
-  Col
-} from 'antd'
+import { notification, Button, Form, Input, Space, Card, Row, Col } from 'antd'
 
 import { Error } from '@/components/assets/notification'
 
-// import UserAPI from '@/api/user'
+import UserAPI from '@/api/user'
 
 /**
  * Errors account/password
@@ -32,7 +24,7 @@ const Password = () => {
   const [loading, setLoading] = useState(false)
 
   // Data
-  // const [user] = UserAPI.useUser()
+  const [user] = UserAPI.useUser()
 
   // Layout
   const layout = {
@@ -51,29 +43,28 @@ const Password = () => {
     setLoading(true)
 
     try {
-      throw { message: 'not authorized yet!' }
-      // // Check current password
-      // const current = await UserAPI.check({
-      //   username: user.email,
-      //   password: data.password
-      // })
+      // Check current password
+      const current = await UserAPI.check({
+        username: user.email,
+        password: data.password
+      })
 
-      // if (current.valid) {
-      //   // Change password
-      //   if (data.newPassword === data.passwordConfirm) {
-      //     await UserAPI.update([
-      //       {
-      //         type: 'crypt',
-      //         key: 'password',
-      //         value: data.newPassword
-      //       }
-      //     ])
-      //   } else {
-      //     Error({ message: errors.mismatch })
-      //   }
-      // } else {
-      //   notification.error({ message: errors.invalid })
-      // }
+      if (current.valid) {
+        // Change password
+        if (data.newPassword === data.passwordConfirm) {
+          await UserAPI.update([
+            {
+              type: 'crypt',
+              key: 'password',
+              value: data.newPassword
+            }
+          ])
+        } else {
+          Error({ message: errors.mismatch })
+        }
+      } else {
+        notification.error({ message: errors.invalid })
+      }
     } catch (err) {
       Error(errors.updateError, err)
     } finally {

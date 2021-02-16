@@ -89,6 +89,10 @@ const createDatabase = async () => {
 const createTables = async () => {
   console.info(' == Create dB tables == ')
   try {
+    // System
+    console.info(' + System table')
+    await createSystemTable()
+
     // Avatars
     console.info(' + Avatar table')
     await createAvatarTable()
@@ -137,6 +141,25 @@ const checkTable = async (table) => {
     )
 
   return exists
+}
+
+/**
+ * Create system table
+ * @memberof module: install
+ */
+const createSystemTable = async () => {
+  if (!(await checkTable(databases.SYSTEM))) {
+    await query(
+      `CREATE TABLE IF NOT EXISTS ` +
+        databases.SYSTEM +
+        ` (
+          allowsignup BOOLEAN NOT NULL
+        )`
+    )
+    await query(
+      'INSERT INTO ' + databases.SYSTEM + ' (allowsignup) VALUES (true)'
+    )
+  }
 }
 
 /**

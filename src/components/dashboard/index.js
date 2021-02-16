@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react'
 import { Layout, Menu } from 'antd'
 import {
   AppstoreFilled,
+  ControlOutlined,
   ShareAltOutlined,
   SettingFilled,
   QuestionCircleFilled,
@@ -17,6 +18,7 @@ import Loading from '@/components/loading'
 import Workspace from '@/components/workspace'
 import Add from '@/components/workspace/add'
 import Account from '@/components/account'
+import Administration from '@/components/administration'
 import Help from '@/components/help'
 
 import Welcome from './welcome'
@@ -47,6 +49,10 @@ const menuItems = {
   account: {
     label: 'Account Settings',
     key: 'account'
+  },
+  administration: {
+    label: 'Administration',
+    key: 'administration'
   },
   help: {
     label: 'I Need Help',
@@ -180,6 +186,9 @@ const Dashboard = () => {
     case menuItems.account.key:
       displayed = <Account />
       break
+    case menuItems.administration.key:
+      displayed = <Administration />
+      break
     case menuItems.help.key:
       displayed = <Help />
       break
@@ -229,6 +238,14 @@ const Dashboard = () => {
               <Menu.Item key={menuItems.account.key} icon={<SettingFilled />}>
                 {menuItems.account.label}
               </Menu.Item>
+              {user.superuser && (
+                <Menu.Item
+                  key={menuItems.administration.key}
+                  icon={<ControlOutlined />}
+                >
+                  {menuItems.administration.label}
+                </Menu.Item>
+              )}
               <Menu.Item
                 key={menuItems.help.key}
                 icon={<QuestionCircleFilled />}

@@ -17,6 +17,11 @@ jest.mock('archiver', () => () => mockArchiver())
 
 jest.mock('@/config/storage', () => ({}))
 
+const mockSimulationGet = jest.fn()
+jest.mock('../simulation', () => ({
+  get: async () => mockSimulationGet()
+}))
+
 const mockListFiles = jest.fn()
 jest.mock('../tools', () => ({
   listFiles: async () => mockListFiles()
@@ -31,7 +36,8 @@ describe('lib/download', () => {
 
     mockCreateWriteStream.mockReset()
     mockCreateWriteStream.mockImplementation(() => ({
-      on: (type, callback) => callback()
+      on: (type, callback) => callback(),
+      end: () => {}
     }))
 
     mockArchiver.mockReset()
@@ -41,8 +47,13 @@ describe('lib/download', () => {
         if (type === 'warning') callback('Warning')
       },
       pipe: jest.fn(),
-      file: jest.fn(),
+      append: jest.fn(),
       finalize: jest.fn()
+    }))
+
+    mockSimulationGet.mockReset()
+    mockSimulationGet.mockImplementation(() => ({
+      scheme: { configuration: {} }
     }))
 
     mockListFiles.mockReset()
@@ -60,7 +71,7 @@ describe('lib/download', () => {
         if (type === 'warning') callback('Warning')
       },
       pipe: jest.fn(),
-      file: jest.fn(),
+      append: jest.fn(),
       finalize: jest.fn()
     }))
     try {

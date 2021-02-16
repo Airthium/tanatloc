@@ -29,6 +29,8 @@ jest.mock('@/components/workspace/add', () => 'add')
 
 jest.mock('@/components/account', () => 'account')
 
+jest.mock('@/components/administration', () => 'administration')
+
 jest.mock('@/components/help', () => 'help')
 
 const mockUser = jest.fn()
@@ -52,7 +54,7 @@ describe('src/components/dashboard', () => {
     mockQuery.mockImplementation(() => ({}))
 
     mockUser.mockReset()
-    mockUser.mockImplementation(() => ({ id: 'id' }))
+    mockUser.mockImplementation(() => ({ id: 'id', superuser: true }))
     mockUserLoading.mockReset()
     mockUserLoading.mockImplementation(() => false)
 
@@ -142,6 +144,16 @@ describe('src/components/dashboard', () => {
       .props()
       .onClick({ item: { props: { subMenuKey: '-menu-0' } }, key: 'account' })
     expect(wrapper.find('account').length).toBe(1)
+
+    // Administration
+    wrapper
+      .find('Menu')
+      .props()
+      .onClick({
+        item: { props: { subMenuKey: '-menu-0' } },
+        key: 'administration'
+      })
+    expect(wrapper.find('administration').length).toBe(1)
 
     // Help
     wrapper

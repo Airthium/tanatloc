@@ -1,3 +1,5 @@
+/** @module src/lib/plugin */
+
 import merge from 'lodash.merge'
 
 import User from './user'

@@ -55,7 +55,7 @@ describe('src/components/account/information', () => {
         .find({ name: 'passwordConfirm' })
         .props()
         .rules[1]({ getFieldValue: () => 'password' })
-        .validator({})
+        .validator({}, 'other_password')
       expect(true).toBe(false)
     } catch (err) {
       expect(true).toBe(true)

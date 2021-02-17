@@ -1,3 +1,5 @@
+/** @module src/lib/download */
+
 import path from 'path'
 import fs from 'fs'
 import archiver from 'archiver'
@@ -7,6 +9,10 @@ import storage from '@/config/storage'
 import Simulation from '@/lib/simulation'
 import Tools from '@/lib/tools'
 
+/**
+ * Create archive stream
+ * @param {Object} simulation Simulation
+ */
 const createArchiveStream = async (simulation) => {
   const resultPath = path.join(
     storage.SIMULATION,
@@ -94,6 +100,11 @@ const createArchiveStream = async (simulation) => {
   })
 }
 
+/**
+ * Create read stream
+ * @param {Object} simulation Simulation
+ * @param {Object} file File
+ */
 const createReadStream = (simulation, file) => {
   return fs.createReadStream(
     path.join(storage.SIMULATION, simulation.id, file.originPath, file.fileName)

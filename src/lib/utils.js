@@ -1,3 +1,5 @@
+/** @module src/lib/utils */
+
 /**
  * String to color
  * @param {string} str String
@@ -13,11 +15,19 @@ const stringToColor = (str) => {
   return '#' + '00000'.substring(0, 6 - c.length) + c
 }
 
+/**
+ * Component to Hex
+ * @param {number} c Color
+ */
 const componentToHex = (c) => {
   const hex = c.toString(16)
   return hex.length === 1 ? '0' + hex : hex
 }
 
+/**
+ * RGB to Hex
+ * @param {Array} color Color [r, g, b]
+ */
 const rgbToHex = (color) => {
   return (
     '#' +

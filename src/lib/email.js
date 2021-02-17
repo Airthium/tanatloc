@@ -1,3 +1,5 @@
+/** @module src/lib/email */
+
 import MailerSend, { Recipient, EmailParams } from 'mailersend'
 
 import { TOKEN } from '@/config/email'

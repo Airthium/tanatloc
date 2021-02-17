@@ -14,6 +14,10 @@ jest.mock('next/router', () => ({
 
 jest.mock('@/components/loading', () => 'loading')
 
+jest.mock('@/components/assets/notification', () => ({
+  Error: () => {}
+}))
+
 const mockLogin = jest.fn()
 jest.mock('@/api/login', () => async () => mockLogin())
 
@@ -134,17 +138,23 @@ describe('src/components/signup', () => {
 
   it('effect', () => {
     wrapper.unmount()
+    mockSystemGet.mockImplementation(() => ({}))
     wrapper = mount(<Signup />)
     expect(mockPrefetch).toHaveBeenCalledTimes(2)
     expect(mockPush).toHaveBeenCalledTimes(0)
 
     wrapper.unmount()
-    mockUser.mockImplementation(() => ({}))
-    mockSystemGet.mockImplementation(() => ({
+    mockSystemGet.mockImplementation(async () => ({
       allowsignup: false
     }))
     wrapper = mount(<Signup />)
     expect(mockPrefetch).toHaveBeenCalledTimes(4)
+    expect(mockPush).toHaveBeenCalledTimes(0)
+
+    wrapper.unmount()
+    mockUser.mockImplementation(() => ({}))
+    wrapper = mount(<Signup />)
+    expect(mockPrefetch).toHaveBeenCalledTimes(6)
     expect(mockPush).toHaveBeenCalledTimes(1)
   })
 })

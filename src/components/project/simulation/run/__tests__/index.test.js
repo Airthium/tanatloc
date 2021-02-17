@@ -155,7 +155,7 @@ describe('src/components/project/simulation/run', () => {
 
     // Normal
     mockDownloadGet.mockImplementation(() => ({
-      text: async () => 'text'
+      blob: async () => 'text'
     }))
     window.URL = {
       createObjectURL: () => 'object'

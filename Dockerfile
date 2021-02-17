@@ -60,6 +60,7 @@ WORKDIR ${INSTALL_PATH}
 
 RUN yarn install --ignore-scripts
 RUN yarn babel . --only config,install,src/database/index.js --out-dir dist-install
+RUN yarn next telemetry disable
 RUN yarn build
 
 ## RELEASE ##
@@ -116,6 +117,7 @@ COPY --from=builder ${INSTALL_PATH}/templates templates
 COPY --from=builder ${INSTALL_PATH}/plugins plugins
 COPY --from=builder ${INSTALL_PATH}/.next .next
 RUN yarn
+RUN yarn next telemetry disable
 
 COPY docker/start.sh start.sh
 RUN chmod +x start.sh

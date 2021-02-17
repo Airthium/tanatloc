@@ -12,12 +12,10 @@ import Tools from './tools'
  * @param {Object} file File { part, partPath }
  */
 const get = async (simulation, file) => {
-  const part = await Tools.loadPart(
+  return Tools.loadPart(
     path.join(storage.SIMULATION, simulation.id, file.partPath),
     file.part
   )
-
-  return part
 }
 
 export default { get }

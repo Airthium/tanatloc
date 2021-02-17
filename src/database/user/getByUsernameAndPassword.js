@@ -14,8 +14,7 @@ const getByUsernameAndPassword = async ({ username, password }) => {
     [username, password]
   )
 
-  const user = response.rows[0]
-  return user
+  return response.rows[0]
 }
 
 export default getByUsernameAndPassword

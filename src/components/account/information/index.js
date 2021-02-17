@@ -156,13 +156,12 @@ const Information = () => {
    */
   const getBase64 = async (file) => {
     const reader = new FileReader()
-    const img = await new Promise((resolve) => {
+    return new Promise((resolve) => {
       reader.addEventListener('load', () => {
         resolve(reader.result)
       })
       reader.readAsDataURL(file)
     })
-    return img
   }
 
   /**

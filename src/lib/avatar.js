@@ -42,10 +42,7 @@ const read = async (id) => {
   const avatar = await AvatarDB.get(id, ['path'])
 
   // Read file
-  const content = await Tools.readFile(avatar.path)
-
-  // Return
-  return content
+  return Tools.readFile(avatar.path)
 }
 
 /**

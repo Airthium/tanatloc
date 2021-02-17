@@ -52,7 +52,6 @@ const Background = () => {
     div.appendChild(renderer.domElement)
 
     // Tetrahedra
-    // Rotations
     const rotationX = []
     const rotationY = []
     const rotationZ = []

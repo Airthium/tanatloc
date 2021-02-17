@@ -18,8 +18,7 @@ const login = async ({ username, password }) => {
   })
 
   if (response.status === 200) {
-    const user = await response.json()
-    return user
+    return response.json()
   }
 
   return response

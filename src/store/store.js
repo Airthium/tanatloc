@@ -70,8 +70,5 @@ export const initializeStore = (preloadedState) => {
 }
 
 export function useStore(initialState) {
-  const globalStore = useMemo(() => initializeStore(initialState), [
-    initialState
-  ])
-  return globalStore
+  return useMemo(() => initializeStore(initialState), [initialState])
 }

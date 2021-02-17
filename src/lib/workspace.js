@@ -40,12 +40,7 @@ const get = async (id, data) => {
   if (workspace && workspace.owners) {
     const owners = await Promise.all(
       workspace.owners.map(async (owner) => {
-        return await User.get(owner, [
-          'lastname',
-          'firstname',
-          'email',
-          'avatar'
-        ])
+        return User.get(owner, ['lastname', 'firstname', 'email', 'avatar'])
       })
     )
     workspace.owners = owners
@@ -55,12 +50,7 @@ const get = async (id, data) => {
   if (workspace.users) {
     const users = await Promise.all(
       workspace.users.map(async (user) => {
-        return await User.get(user, [
-          'lastname',
-          'firstname',
-          'email',
-          'avatar'
-        ])
+        return User.get(user, ['lastname', 'firstname', 'email', 'avatar'])
       })
     )
     workspace.users = users
@@ -79,7 +69,7 @@ const getByUser = async ({ id }) => {
 
   // Get workspaces data
   if (user.workspaces) {
-    const workspaces = await Promise.all(
+    return Promise.all(
       user.workspaces.map(async (workspace) => {
         const data = await get(workspace, [
           'name',
@@ -93,9 +83,6 @@ const getByUser = async ({ id }) => {
         }
       })
     )
-
-    // Return
-    return workspaces
   }
 
   return []

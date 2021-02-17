@@ -49,12 +49,7 @@ const get = async (id, data) => {
   if (project && project.owners) {
     const owners = await Promise.all(
       project.owners.map(async (owner) => {
-        return await User.get(owner, [
-          'lastname',
-          'firstname',
-          'email',
-          'avatar'
-        ])
+        return User.get(owner, ['lastname', 'firstname', 'email', 'avatar'])
       })
     )
     project.owners = owners
@@ -64,12 +59,7 @@ const get = async (id, data) => {
   if (project && project.users) {
     const users = await Promise.all(
       project.users.map(async (user) => {
-        return await User.get(user, [
-          'lastname',
-          'firstname',
-          'email',
-          'avatar'
-        ])
+        return User.get(user, ['lastname', 'firstname', 'email', 'avatar'])
       })
     )
     project.users = users

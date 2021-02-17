@@ -9,15 +9,13 @@ import config from '@/config/db'
  * @returns {Object} Pool
  */
 const startdB = () => {
-  const p = new Pool({
+  return new Pool({
     user: config.USER,
     host: config.HOST,
     database: config.DATABASE,
     password: config.PASSWORD,
     port: config.PORT
   })
-
-  return p
 }
 
 const pool = startdB()
@@ -42,7 +40,7 @@ const query = async (command, args) => {
  * @param {string} key Key override id
  */
 const getter = async (db, id, data, key = 'id') => {
-  return await query(
+  return query(
     'SELECT ' + data.join(',') + ' FROM ' + db + ' WHERE ' + key + ' = $1',
     [id]
   )

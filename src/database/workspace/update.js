@@ -10,7 +10,7 @@ import { databases } from '@/config/db'
 const update = async (workspace, data) => {
   await Promise.all(
     data.map(async (d) => {
-      return await updater(databases.WORKSPACES, workspace.id, d)
+      return updater(databases.WORKSPACES, workspace.id, d)
     })
   )
 }

@@ -67,11 +67,11 @@ const Geometry = ({ project, simulation, part }) => {
    * @param {Object} file File
    */
   const beforeUpload = (file) => {
-    const goodFormat =
+    return (
       file.name.toLowerCase().includes('.stp') ||
       file.name.toLowerCase().includes('.step') ||
       file.name.toLowerCase().includes('.dxf')
-    return goodFormat
+    )
   }
 
   /**
@@ -127,13 +127,12 @@ const Geometry = ({ project, simulation, part }) => {
    */
   const getFile = async (file) => {
     const reader = new FileReader()
-    const buffer = await new Promise((resolve) => {
+    return new Promise((resolve) => {
       reader.addEventListener('load', () => {
         resolve(reader.result)
       })
       reader.readAsArrayBuffer(file)
     })
-    return buffer
   }
 
   /**

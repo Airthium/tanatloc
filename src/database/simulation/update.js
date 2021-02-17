@@ -10,7 +10,7 @@ import { databases } from '@/config/db'
 const update = async (simulation, data) => {
   await Promise.all(
     data.map(async (d) => {
-      return await updater(databases.SIMULATIONS, simulation.id, d)
+      return updater(databases.SIMULATIONS, simulation.id, d)
     })
   )
 }

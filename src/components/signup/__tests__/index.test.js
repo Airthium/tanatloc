@@ -29,6 +29,11 @@ jest.mock('@/api/user', () => ({
   add: async () => mockAdd()
 }))
 
+const mockSystemGet = jest.fn()
+jest.mock('@/api/system', () => ({
+  get: async () => mockSystemGet()
+}))
+
 let wrapper
 describe('src/components/signup', () => {
   beforeEach(() => {
@@ -39,6 +44,10 @@ describe('src/components/signup', () => {
     mockMutate.mockReset()
     mockAdd.mockReset()
     mockLogin.mockReset()
+    mockSystemGet.mockReset()
+    mockSystemGet.mockImplementation(() => ({
+      allowsignup: true
+    }))
     wrapper = shallow(<Signup />)
   })
 
@@ -58,25 +67,25 @@ describe('src/components/signup', () => {
   })
 
   it('onSignup', async () => {
-    // // Error
-    // mockAdd.mockImplementation(() => {
-    //   throw new Error()
-    // })
-    // await wrapper.find('ForwardRef(InternalForm)').props().onFinish({
-    //   username: 'username',
-    //   password: 'password',
-    //   passwordConfirmation: 'password'
-    // })
+    // Error
+    mockAdd.mockImplementation(() => {
+      throw new Error()
+    })
+    await wrapper.find('ForwardRef(InternalForm)').props().onFinish({
+      username: 'username',
+      password: 'password',
+      passwordConfirmation: 'password'
+    })
 
-    // // Already exists
-    // mockAdd.mockImplementation(() => ({
-    //   alreadyExists: true
-    // }))
-    // await wrapper.find('ForwardRef(InternalForm)').props().onFinish({
-    //   username: 'username',
-    //   password: 'password',
-    //   passwordConfirmation: 'password'
-    // })
+    // Already exists
+    mockAdd.mockImplementation(() => ({
+      alreadyExists: true
+    }))
+    await wrapper.find('ForwardRef(InternalForm)').props().onFinish({
+      username: 'username',
+      password: 'password',
+      passwordConfirmation: 'password'
+    })
 
     // Normal
     mockAdd.mockImplementation(() => ({}))
@@ -109,19 +118,19 @@ describe('src/components/signup', () => {
     }
   })
 
-  // it('login', async () => {
-  //   mockAdd.mockImplementation(() => ({
-  //     alreadyExists: true
-  //   }))
-  //   await wrapper.find('ForwardRef(InternalForm)').props().onFinish({
-  //     username: 'username',
-  //     password: 'password',
-  //     passwordConfirmation: 'password'
-  //   })
+  it('login', async () => {
+    mockAdd.mockImplementation(() => ({
+      alreadyExists: true
+    }))
+    await wrapper.find('ForwardRef(InternalForm)').props().onFinish({
+      username: 'username',
+      password: 'password',
+      passwordConfirmation: 'password'
+    })
 
-  //   wrapper.find('Alert').props().message.props.children[4].props.onClick()
-  //   expect(mockPush).toHaveBeenCalledTimes(1)
-  // })
+    wrapper.find('Alert').props().message.props.children[4].props.onClick()
+    expect(mockPush).toHaveBeenCalledTimes(1)
+  })
 
   it('effect', () => {
     wrapper.unmount()
@@ -131,6 +140,9 @@ describe('src/components/signup', () => {
 
     wrapper.unmount()
     mockUser.mockImplementation(() => ({}))
+    mockSystemGet.mockImplementation(() => ({
+      allowsignup: false
+    }))
     wrapper = mount(<Signup />)
     expect(mockPrefetch).toHaveBeenCalledTimes(4)
     expect(mockPush).toHaveBeenCalledTimes(1)

@@ -111,7 +111,7 @@ const Users = () => {
       }
 
       // Update informations
-      await UserAPI.updateOther(newUser.id, [
+      await UserAPI.updateById(newUser.id, [
         {
           key: 'firstname',
           value: values.firstname
@@ -154,7 +154,7 @@ const Users = () => {
             return { key, value, type: key === 'password' && 'crypt' }
         })
         .filter((u) => u)
-      await UserAPI.updateOther(edit.id, toUpdate)
+      await UserAPI.updateById(edit.id, toUpdate)
 
       // Mutate
       const user = {
@@ -178,7 +178,7 @@ const Users = () => {
   const onDelete = async (values) => {
     try {
       // Delete
-      await UserAPI.delOther(values.id)
+      await UserAPI.delById(values.id)
 
       // Mutate
       delOneUser({ id: values.id })

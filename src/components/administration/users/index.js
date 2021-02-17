@@ -18,13 +18,19 @@ import {
 } from '@ant-design/icons'
 
 import UserAPI from '@/api/user'
+import SystemAPI from '@/api/system'
 
 import { Error } from '@/components/assets/notification'
 
 const errors = {
   addError: 'Unable to add user',
   updateError: 'Unable to update user',
-  deleteError: 'Unable to delete user'
+  deleteError: 'Unable to delete user',
+  passwordTooSmall: 'Your password is too small',
+  passwordTooLong: 'Your password is too long',
+  passwordRequireLetter: 'Your password must contain a letter',
+  passwordRequireNumber: 'Your password must contain a number',
+  passwordRequireSymbol: 'Your password must contain a symbol'
 }
 
 const Users = () => {
@@ -33,6 +39,7 @@ const Users = () => {
 
   // Data
   const [users, { addOneUser, mutateOneUser, delOneUser }] = UserAPI.useUsers()
+  const [system] = SystemAPI.useSystem()
 
   const layout = {
     labelCol: { span: 8 },
@@ -223,7 +230,31 @@ const Users = () => {
             <Form.Item
               name="password"
               label="Password"
-              rules={[{ required: true, message: 'Please enter a password' }]}
+              rules={[
+                { required: true, message: 'Please enter a password' },
+                {
+                  min: system?.password?.min || 6,
+                  message: errors.passwordTooSmall
+                },
+                {
+                  max: system?.password?.max || 16,
+                  message: errors.passwordTooLong
+                },
+                {
+                  pattern: system?.password?.requireLetter && /^(?=.*[a-zA-Z])/,
+                  message: errors.passwordRequireLetter
+                },
+                {
+                  pattern: system?.password?.requireNumber && /^(?=.*[0-9])/,
+                  message: errors.passwordRequireNumber
+                },
+                {
+                  pattern:
+                    system?.password?.requireSymbol &&
+                    /[!@#$%^&*(){}[\]<>?/|.:;_-]/,
+                  message: errors.passwordRequireSymbol
+                }
+              ]}
             >
               <Input.Password />
             </Form.Item>

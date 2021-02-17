@@ -14,6 +14,11 @@ jest.mock('@/api/user', () => ({
   check: () => mockCheck()
 }))
 
+const mockSystem = jest.fn()
+jest.mock('@/api/system', () => ({
+  useSystem: () => [mockSystem()]
+}))
+
 let wrapper
 describe('src/components/account/information', () => {
   beforeEach(() => {
@@ -21,6 +26,9 @@ describe('src/components/account/information', () => {
 
     mockUpdate.mockReset()
     mockCheck.mockReset()
+
+    mockSystem.mockReset()
+    mockSystem.mockImplementation(() => ({}))
 
     wrapper = shallow(<Password />)
   })
@@ -31,6 +39,52 @@ describe('src/components/account/information', () => {
 
   it('render', () => {
     expect(wrapper).toBeDefined()
+  })
+
+  it('password mismatch', async () => {
+    // Match
+    await wrapper
+      .find({ name: 'passwordConfirm' })
+      .props()
+      .rules[1]({ getFieldValue: () => 'password' })
+      .validator({}, 'password')
+
+    // Mismatch
+    try {
+      await wrapper
+        .find({ name: 'passwordConfirm' })
+        .props()
+        .rules[1]({ getFieldValue: () => 'password' })
+        .validator({})
+      expect(true).toBe(false)
+    } catch (err) {
+      expect(true).toBe(true)
+    }
+  })
+
+  it('with rules', () => {
+    wrapper.unmount()
+    mockSystem.mockImplementation(() => ({
+      password: {
+        min: 8,
+        max: 64,
+        requireLetter: true,
+        requireNumber: true,
+        requireSymbol: true
+      }
+    }))
+    wrapper = shallow(<Password />)
+    expect(wrapper.find({ name: 'newPassword' }).props().rules[1].min).toBe(8)
+    expect(wrapper.find({ name: 'newPassword' }).props().rules[2].max).toBe(64)
+    expect(
+      wrapper.find({ name: 'newPassword' }).props().rules[3].pattern
+    ).toBeDefined()
+    expect(
+      wrapper.find({ name: 'newPassword' }).props().rules[4].pattern
+    ).toBeDefined()
+    expect(
+      wrapper.find({ name: 'newPassword' }).props().rules[5].pattern
+    ).toBeDefined()
   })
 
   it('onFinish', async () => {
@@ -47,15 +101,6 @@ describe('src/components/account/information', () => {
     expect(mockUpdate).toHaveBeenCalledTimes(1)
     expect(mockError).toHaveBeenCalledTimes(0)
 
-    // Wrong password
-    await wrapper.find('ForwardRef(InternalForm)').props().onFinish({
-      newPassword: 'password',
-      passwordConfirm: 'otherpassword'
-    })
-    expect(mockCheck).toHaveBeenCalledTimes(2)
-    expect(mockUpdate).toHaveBeenCalledTimes(1)
-    expect(mockError).toHaveBeenCalledTimes(1)
-
     // No check
     mockCheck.mockImplementation(() => ({
       valid: false
@@ -64,9 +109,9 @@ describe('src/components/account/information', () => {
       newPassword: 'password',
       passwordConfirm: 'password'
     })
-    expect(mockCheck).toHaveBeenCalledTimes(3)
+    expect(mockCheck).toHaveBeenCalledTimes(2)
     expect(mockUpdate).toHaveBeenCalledTimes(1)
-    expect(mockError).toHaveBeenCalledTimes(1)
+    expect(mockError).toHaveBeenCalledTimes(0)
 
     // Error
     mockCheck.mockImplementation(() => ({
@@ -79,8 +124,8 @@ describe('src/components/account/information', () => {
       newPassword: 'password',
       passwordConfirm: 'password'
     })
-    expect(mockCheck).toHaveBeenCalledTimes(4)
+    expect(mockCheck).toHaveBeenCalledTimes(3)
     expect(mockUpdate).toHaveBeenCalledTimes(2)
-    expect(mockError).toHaveBeenCalledTimes(2)
+    expect(mockError).toHaveBeenCalledTimes(1)
   })
 })

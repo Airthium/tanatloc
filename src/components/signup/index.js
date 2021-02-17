@@ -28,9 +28,12 @@ import Sentry from '@/lib/sentry'
 const errors = {
   INTERNAL_ERROR: 'Server issue : try again shortly.',
   ALREADY_EXISTS: 'This email is already registered',
-  PASSWORD_TOO_SMALL: 'Your password is too small',
-  PASSWORD_TOO_LONG: 'Your password is too long',
-  PASSSWORDS_MISMATCH: 'Passwords mismatch',
+  passwordTooSmall: 'Your password is too small',
+  passswordTooLong: 'Your password is too long',
+  passwordRequireLetter: 'Your password must contain a letter',
+  passwordRequireNumber: 'Your password must contain a number',
+  passwordRequireSymbol: 'Your password must contain a symbol',
+  passwordMismatch: 'Passwords mismatch',
   systemError: 'Unable to get system'
 }
 
@@ -166,8 +169,30 @@ const Signup = () => {
                     label="Choose your password"
                     rules={[
                       { required: true, message: 'Please enter your Password' },
-                      { min: 6, message: errors.PASSWORD_TOO_SMALL },
-                      { max: 16, message: errors.PASSWORD_TOO_LONG }
+                      {
+                        min: system?.password?.min || 6,
+                        message: errors.passwordTooSmall
+                      },
+                      {
+                        max: system?.password?.max || 16,
+                        message: errors.passwordTooLong
+                      },
+                      {
+                        pattern:
+                          system?.password?.requireLetter && /^(?=.*[a-zA-Z])/,
+                        message: errors.passwordRequireLetter
+                      },
+                      {
+                        pattern:
+                          system?.password?.requireNumber && /^(?=.*[0-9])/,
+                        message: errors.passwordRequireNumber
+                      },
+                      {
+                        pattern:
+                          system?.password?.requireSymbol &&
+                          /[!@#$%^&*(){}[\]<>?/|.:;_-]/,
+                        message: errors.passwordRequireSymbol
+                      }
                     ]}
                     style={{ marginBottom: '14px' }}
                   >
@@ -186,7 +211,7 @@ const Signup = () => {
                           if (!value || getFieldValue('password') === value) {
                             return Promise.resolve()
                           }
-                          return Promise.reject(errors.PASSSWORDS_MISMATCH)
+                          return Promise.reject(errors.passwordMismatch)
                         }
                       })
                     ]}

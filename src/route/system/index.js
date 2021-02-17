@@ -14,7 +14,7 @@ export default async (req, res) => {
   switch (req.method) {
     case 'GET':
       try {
-        const items = await SystemLib.get(['allowsignup'])
+        const items = await SystemLib.get(['allowsignup', 'password'])
         res.status(200).json({ system: items })
       } catch (err) {
         console.error(err)

@@ -30,3 +30,6 @@ Docker does not works, result of Poisson
 
 Models:
 - linearElasticity: checked[0]
+
+Run:
+- Use file for logs (separate gmsh / Freefem for rescale)

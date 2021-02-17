@@ -153,7 +153,8 @@ const createSystemTable = async () => {
       `CREATE TABLE IF NOT EXISTS ` +
         databases.SYSTEM +
         ` (
-          allowsignup BOOLEAN NOT NULL
+          allowsignup BOOLEAN NOT NULL,
+          password jsonb NOT NULL
         )`
     )
     await query(

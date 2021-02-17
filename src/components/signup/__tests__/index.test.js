@@ -66,6 +66,33 @@ describe('src/components/signup', () => {
     wrapper = shallow(<Signup />)
   })
 
+  it('with rules', () => {
+    wrapper.unmount()
+    mockLoading.mockImplementation(() => false)
+    mockSystem.mockImplementation(() => ({
+      allowsignup: true,
+      password: {
+        min: 8,
+        max: 64,
+        requireLetter: true,
+        requireNumber: true,
+        requireSymbol: true
+      }
+    }))
+    wrapper = shallow(<Signup />)
+    expect(wrapper.find({ name: 'password' }).props().rules[1].min).toBe(8)
+    expect(wrapper.find({ name: 'password' }).props().rules[2].max).toBe(64)
+    expect(
+      wrapper.find({ name: 'password' }).props().rules[3].pattern
+    ).toBeDefined()
+    expect(
+      wrapper.find({ name: 'password' }).props().rules[4].pattern
+    ).toBeDefined()
+    expect(
+      wrapper.find({ name: 'password' }).props().rules[5].pattern
+    ).toBeDefined()
+  })
+
   it('onSignup', async () => {
     // Error
     mockAdd.mockImplementation(() => {

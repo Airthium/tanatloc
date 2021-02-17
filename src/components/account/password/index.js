@@ -4,6 +4,7 @@ import { notification, Button, Form, Input, Space, Card, Row, Col } from 'antd'
 import { Error } from '@/components/assets/notification'
 
 import UserAPI from '@/api/user'
+import SystemAPI from '@/api/system'
 
 /**
  * Errors account/password
@@ -11,7 +12,12 @@ import UserAPI from '@/api/user'
  */
 const errors = {
   updateError: 'Unable to update the password',
-  mismatch: 'Password and confirmation mismatch',
+  passwordTooSmall: 'Your password is too small',
+  passwordTooLong: 'Your password is too long',
+  passwordRequireLetter: 'Your password must contain a letter',
+  passwordRequireNumber: 'Your password must contain a number',
+  passwordRequireSymbol: 'Your password must contain a symbol',
+  passwordMismatch: 'Password and confirmation mismatch',
   invalid: 'Current password not valid'
 }
 
@@ -25,14 +31,15 @@ const Password = () => {
 
   // Data
   const [user] = UserAPI.useUser()
+  const [system] = SystemAPI.useSystem()
 
   // Layout
   const layout = {
-    labelCol: { span: 5 },
+    labelCol: { span: 8 },
     wrapperCol: { span: 8 }
   }
   const buttonLayout = {
-    wrapperCol: { offset: 5, span: 8 }
+    wrapperCol: { offset: 8, span: 16 }
   }
 
   /**
@@ -51,17 +58,13 @@ const Password = () => {
 
       if (current.valid) {
         // Change password
-        if (data.newPassword === data.passwordConfirm) {
-          await UserAPI.update([
-            {
-              type: 'crypt',
-              key: 'password',
-              value: data.newPassword
-            }
-          ])
-        } else {
-          Error({ message: errors.mismatch })
-        }
+        await UserAPI.update([
+          {
+            type: 'crypt',
+            key: 'password',
+            value: data.newPassword
+          }
+        ])
       } else {
         notification.error({ message: errors.invalid })
       }
@@ -90,13 +93,68 @@ const Password = () => {
             onFinish={onFinish}
             name="passwordForm"
           >
-            <Form.Item label="Current password" name="password">
+            <Form.Item
+              label="Current password"
+              name="password"
+              rules={[
+                {
+                  required: true,
+                  message: 'Please enter your current password'
+                }
+              ]}
+            >
               <Input.Password />
             </Form.Item>
-            <Form.Item label="New password" name="newPassword">
+            <Form.Item
+              label="New password"
+              name="newPassword"
+              rules={[
+                { required: true, message: 'Please enter your new password' },
+                {
+                  min: system?.password?.min || 6,
+                  message: errors.passwordTooSmall
+                },
+                {
+                  max: system?.password?.max || 16,
+                  message: errors.passwordTooLong
+                },
+                {
+                  pattern: system?.password?.requireLetter && /^(?=.*[a-zA-Z])/,
+                  message: errors.passwordRequireLetter
+                },
+                {
+                  pattern: system?.password?.requireNumber && /^(?=.*[0-9])/,
+                  message: errors.passwordRequireNumber
+                },
+                {
+                  pattern:
+                    system?.password?.requireSymbol &&
+                    /[!@#$%^&*(){}[\]<>?/|.:;_-]/,
+                  message: errors.passwordRequireSymbol
+                }
+              ]}
+            >
               <Input.Password />
             </Form.Item>
-            <Form.Item label="Password confirmation" name="passwordConfirm">
+            <Form.Item
+              label="Password confirmation"
+              name="passwordConfirm"
+              rules={[
+                {
+                  required: true,
+                  message: 'Please enter your new password confirmation'
+                },
+                ({ getFieldValue }) => ({
+                  validator(_, value) {
+                    if (!value || getFieldValue('newPassword') === value) {
+                      return Promise.resolve()
+                    }
+
+                    return Promise.reject(errors.passwordMismatch)
+                  }
+                })
+              ]}
+            >
               <Input.Password />
             </Form.Item>
             <Form.Item {...buttonLayout} style={{ marginBottom: 'unset' }}>

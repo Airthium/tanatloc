@@ -22,6 +22,11 @@ jest.mock('@/api/user', () => ({
   delById: async () => mockDelById()
 }))
 
+const mockSystem = jest.fn()
+jest.mock('@/api/system', () => ({
+  useSystem: () => [mockSystem()]
+}))
+
 const mockError = jest.fn()
 jest.mock('@/components/assets/notification', () => ({
   Error: () => mockError()
@@ -39,6 +44,8 @@ describe('src/components/administration/users', () => {
     mockUpdateById.mockReset()
     mockDelById.mockReset()
 
+    mockSystem.mockReset()
+
     mockError.mockReset()
 
     wrapper = shallow(<Users />)
@@ -46,6 +53,36 @@ describe('src/components/administration/users', () => {
 
   it('exists', () => {
     expect(wrapper).toBeDefined()
+  })
+
+  it('with rules', () => {
+    wrapper.unmount()
+    mockSystem.mockImplementation(() => ({
+      password: {
+        min: 8,
+        max: 64,
+        requireLetter: true,
+        requireNumber: true,
+        requireSymbol: true
+      }
+    }))
+    wrapper = shallow(<Users />)
+
+    // Open form
+    wrapper.find('Button').props().onClick()
+    wrapper.update()
+
+    expect(wrapper.find({ name: 'password' }).props().rules[1].min).toBe(8)
+    expect(wrapper.find({ name: 'password' }).props().rules[2].max).toBe(64)
+    expect(
+      wrapper.find({ name: 'password' }).props().rules[3].pattern
+    ).toBeDefined()
+    expect(
+      wrapper.find({ name: 'password' }).props().rules[4].pattern
+    ).toBeDefined()
+    expect(
+      wrapper.find({ name: 'password' }).props().rules[5].pattern
+    ).toBeDefined()
   })
 
   it('onAdd', async () => {

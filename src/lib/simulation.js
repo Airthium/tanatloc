@@ -43,9 +43,7 @@ const add = async ({ project, simulation }) => {
  * @param {Array} data Data
  */
 const get = async (id, data) => {
-  const simulation = SimulationDB.get(id, data)
-
-  return simulation
+  return SimulationDB.get(id, data)
 }
 
 /**
@@ -123,8 +121,6 @@ const checkFiles = async (simulation, data) => {
         // Remove unused
         delete file.buffer
       }
-
-      return
     })
   )
 }

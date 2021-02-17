@@ -10,7 +10,7 @@ import isDocker from 'is-docker'
  * @param {Function} callback Callback
  */
 const gmsh = async (path, fileIn, fileOut, callback) => {
-  const returnCode = await new Promise((resolve, reject) => {
+  return new Promise((resolve, reject) => {
     let run
 
     if (isDocker()) {
@@ -60,8 +60,6 @@ const gmsh = async (path, fileIn, fileOut, callback) => {
       reject(err)
     })
   })
-
-  return returnCode
 }
 
 export default gmsh

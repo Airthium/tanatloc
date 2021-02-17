@@ -88,19 +88,16 @@ const createArchiveStream = async (simulation) => {
   })
 
   // Read stream
-  const readStream = createReadStream(simulation, {
+  return createReadStream(simulation, {
     originPath: 'run',
     fileName: 'archive.zip'
   })
-
-  return readStream
 }
 
 const createReadStream = (simulation, file) => {
-  const readStream = fs.createReadStream(
+  return fs.createReadStream(
     path.join(storage.SIMULATION, simulation.id, file.originPath, file.fileName)
   )
-  return readStream
 }
 
 export default { createArchiveStream, createReadStream }

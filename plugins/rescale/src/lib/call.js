@@ -44,8 +44,7 @@ const call = async (configuration) => {
     contentType === 'text/plain' ||
     contentType === 'application/octet-stream'
   ) {
-    const text = await response.text()
-    return text
+    return response.text()
   }
 
   return response

@@ -9,7 +9,7 @@ import isDocker from 'is-docker'
  * @param {Function} callback Callback
  */
 const freefem = async (path, script, callback) => {
-  const returnCode = await new Promise((resolve, reject) => {
+  return new Promise((resolve, reject) => {
     let run
 
     if (isDocker()) {
@@ -52,8 +52,6 @@ const freefem = async (path, script, callback) => {
       reject(err)
     })
   })
-
-  return returnCode
 }
 
 export default freefem

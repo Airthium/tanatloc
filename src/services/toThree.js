@@ -36,7 +36,7 @@ const toThree = async (path, fileIn, pathOut, callback) => {
   }
 
   // Convert
-  const returnCode = await new Promise((resolve, reject) => {
+  return new Promise((resolve, reject) => {
     let run
 
     if (isDocker()) {
@@ -74,8 +74,6 @@ const toThree = async (path, fileIn, pathOut, callback) => {
       reject(err)
     })
   })
-
-  return returnCode
 }
 
 export default toThree

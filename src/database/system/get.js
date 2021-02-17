@@ -11,9 +11,7 @@ const get = async (data) => {
     'SELECT ' + data.join(',') + ' FROM ' + databases.SYSTEM
   )
 
-  const items = response.rows[0]
-
-  return items
+  return response.rows[0]
 }
 
 export default get

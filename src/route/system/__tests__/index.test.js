@@ -50,7 +50,51 @@ describe('src/route/system', () => {
     response = undefined
   })
 
-  it('no session', async () => {
+  it('GET', async () => {
+    // Normal
+    mockGet.mockImplementation(() => ({ item: 'item' }))
+    await system(req, res)
+    expect(mockGet).toHaveBeenCalledTimes(1)
+    expect(mockError).toHaveBeenCalledTimes(0)
+    expect(response).toEqual({ system: { item: 'item' } })
+
+    // Error
+    mockGet.mockImplementation(() => {
+      throw new Error()
+    })
+    await system(req, res)
+    expect(mockGet).toHaveBeenCalledTimes(2)
+    expect(mockError).toHaveBeenCalledTimes(1)
+  })
+
+  // it('no session', async () => {
+  //   await system(req, res)
+  //   expect(mockSession).toHaveBeenCalledTimes(1)
+  //   expect(mockUserGet).toHaveBeenCalledTimes(0)
+  //   expect(mockGet).toHaveBeenCalledTimes(0)
+  //   expect(mockUpdate).toHaveBeenCalledTimes(0)
+  //   expect(mockError).toHaveBeenCalledTimes(0)
+  //   expect(response).toBe(undefined)
+  // })
+
+  // it('no superuser', async () => {
+  //   mockSession.mockImplementation(() => 'id')
+  //   mockUserGet.mockImplementation(() => ({
+  //     superuser: false
+  //   }))
+  //   await system(req, res)
+  //   expect(mockSession).toHaveBeenCalledTimes(1)
+  //   expect(mockUserGet).toHaveBeenCalledTimes(1)
+  //   expect(mockGet).toHaveBeenCalledTimes(0)
+  //   expect(mockUpdate).toHaveBeenCalledTimes(0)
+  //   expect(mockError).toHaveBeenCalledTimes(0)
+  //   expect(response).toEqual({ error: true, message: 'Unauthorized' })
+  // })
+
+  it('PUT', async () => {
+    req.method = 'PUT'
+
+    // No session
     await system(req, res)
     expect(mockSession).toHaveBeenCalledTimes(1)
     expect(mockUserGet).toHaveBeenCalledTimes(0)
@@ -58,63 +102,28 @@ describe('src/route/system', () => {
     expect(mockUpdate).toHaveBeenCalledTimes(0)
     expect(mockError).toHaveBeenCalledTimes(0)
     expect(response).toBe(undefined)
-  })
 
-  it('no superuser', async () => {
+    // No supersuer
     mockSession.mockImplementation(() => 'id')
-    mockUserGet.mockImplementation(() => ({
-      superuser: false
-    }))
+    mockUserGet.mockImplementation(() => ({}))
+
     await system(req, res)
-    expect(mockSession).toHaveBeenCalledTimes(1)
+    expect(mockSession).toHaveBeenCalledTimes(2)
     expect(mockUserGet).toHaveBeenCalledTimes(1)
     expect(mockGet).toHaveBeenCalledTimes(0)
     expect(mockUpdate).toHaveBeenCalledTimes(0)
     expect(mockError).toHaveBeenCalledTimes(0)
     expect(response).toEqual({ error: true, message: 'Unauthorized' })
-  })
 
-  it('POST', async () => {
-    req.method = 'POST'
-
+    // Normal
     mockSession.mockImplementation(() => 'id')
     mockUserGet.mockImplementation(() => ({
       superuser: true
     }))
-    mockGet.mockImplementation(() => [{ item: 'item' }])
 
     await system(req, res)
-    expect(mockSession).toHaveBeenCalledTimes(1)
-    expect(mockUserGet).toHaveBeenCalledTimes(1)
-    expect(mockGet).toHaveBeenCalledTimes(1)
-    expect(mockUpdate).toHaveBeenCalledTimes(0)
-    expect(mockError).toHaveBeenCalledTimes(0)
-    expect(response).toEqual([{ item: 'item' }])
-
-    // Error
-    mockGet.mockImplementation(() => {
-      throw new Error('test')
-    })
-    await system(req, res)
-    expect(mockSession).toHaveBeenCalledTimes(2)
+    expect(mockSession).toHaveBeenCalledTimes(3)
     expect(mockUserGet).toHaveBeenCalledTimes(2)
-    expect(mockGet).toHaveBeenCalledTimes(2)
-    expect(mockUpdate).toHaveBeenCalledTimes(0)
-    expect(mockError).toHaveBeenCalledTimes(1)
-    expect(response).toEqual({ error: true, message: 'test' })
-  })
-
-  it('PUT', async () => {
-    req.method = 'PUT'
-
-    mockSession.mockImplementation(() => 'id')
-    mockUserGet.mockImplementation(() => ({
-      superuser: true
-    }))
-
-    await system(req, res)
-    expect(mockSession).toHaveBeenCalledTimes(1)
-    expect(mockUserGet).toHaveBeenCalledTimes(1)
     expect(mockGet).toHaveBeenCalledTimes(0)
     expect(mockUpdate).toHaveBeenCalledTimes(1)
     expect(mockError).toHaveBeenCalledTimes(0)
@@ -125,8 +134,8 @@ describe('src/route/system', () => {
       throw new Error('test')
     })
     await system(req, res)
-    expect(mockSession).toHaveBeenCalledTimes(2)
-    expect(mockUserGet).toHaveBeenCalledTimes(2)
+    expect(mockSession).toHaveBeenCalledTimes(4)
+    expect(mockUserGet).toHaveBeenCalledTimes(3)
     expect(mockGet).toHaveBeenCalledTimes(0)
     expect(mockUpdate).toHaveBeenCalledTimes(2)
     expect(mockError).toHaveBeenCalledTimes(1)
@@ -136,14 +145,9 @@ describe('src/route/system', () => {
   it('wrong method', async () => {
     req.method = 'SOMETHING'
 
-    mockSession.mockImplementation(() => true)
-    mockUserGet.mockImplementation(() => ({
-      superuser: true
-    }))
-
     await system(req, res)
-    expect(mockSession).toHaveBeenCalledTimes(1)
-    expect(mockUserGet).toHaveBeenCalledTimes(1)
+    expect(mockSession).toHaveBeenCalledTimes(0)
+    expect(mockUserGet).toHaveBeenCalledTimes(0)
     expect(mockGet).toHaveBeenCalledTimes(0)
     expect(mockUpdate).toHaveBeenCalledTimes(0)
     expect(mockError).toHaveBeenCalledTimes(1)

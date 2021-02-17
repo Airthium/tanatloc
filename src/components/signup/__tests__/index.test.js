@@ -14,10 +14,6 @@ jest.mock('next/router', () => ({
 
 jest.mock('@/components/loading', () => 'loading')
 
-jest.mock('@/components/assets/notification', () => ({
-  Error: () => {}
-}))
-
 const mockLogin = jest.fn()
 jest.mock('@/api/login', () => async () => mockLogin())
 
@@ -33,9 +29,9 @@ jest.mock('@/api/user', () => ({
   add: async () => mockAdd()
 }))
 
-const mockSystemGet = jest.fn()
+const mockSystem = jest.fn()
 jest.mock('@/api/system', () => ({
-  get: async () => mockSystemGet()
+  useSystem: () => [mockSystem(), { loadingSystem: false }]
 }))
 
 let wrapper
@@ -48,8 +44,8 @@ describe('src/components/signup', () => {
     mockMutate.mockReset()
     mockAdd.mockReset()
     mockLogin.mockReset()
-    mockSystemGet.mockReset()
-    mockSystemGet.mockImplementation(() => ({
+    mockSystem.mockReset()
+    mockSystem.mockImplementation(() => ({
       allowsignup: true
     }))
     wrapper = shallow(<Signup />)
@@ -138,13 +134,13 @@ describe('src/components/signup', () => {
 
   it('effect', () => {
     wrapper.unmount()
-    mockSystemGet.mockImplementation(() => ({}))
+    mockSystem.mockImplementation(() => ({}))
     wrapper = mount(<Signup />)
     expect(mockPrefetch).toHaveBeenCalledTimes(2)
     expect(mockPush).toHaveBeenCalledTimes(0)
 
     wrapper.unmount()
-    mockSystemGet.mockImplementation(async () => ({
+    mockSystem.mockImplementation(async () => ({
       allowsignup: false
     }))
     wrapper = mount(<Signup />)

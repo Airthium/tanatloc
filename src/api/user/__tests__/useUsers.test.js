@@ -1,12 +1,14 @@
 import useUsers from '../useUsers'
 
+const mockUsers = jest.fn()
 jest.mock('swr', () => () => ({
-  data: { users: [{ id: 'id' }] },
+  data: { users: mockUsers() },
   mutate: jest.fn()
 }))
 
 describe('src/api/users', () => {
-  it('useUsers', () => {
+  it('with users', () => {
+    mockUsers.mockImplementation(() => [{ id: 'id' }])
     const [
       users,
       { addOneUser, mutateOneUser, delOneUser, loadingUsers }
@@ -21,5 +23,11 @@ describe('src/api/users', () => {
     delOneUser({})
     delOneUser({ id: 'id' })
     expect(loadingUsers).toBe(false)
+  })
+
+  it('without users', () => {
+    mockUsers.mockImplementation(() => {})
+    const [users] = useUsers()
+    expect(users).toEqual([])
   })
 })

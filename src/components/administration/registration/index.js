@@ -1,4 +1,3 @@
-import { useState, useEffect } from 'react'
 import { Card, Checkbox } from 'antd'
 
 import SystemAPI from '@/api/system'
@@ -10,19 +9,8 @@ const errors = {
 }
 
 const Registration = () => {
-  // State
-  const [allowSignup, setAllowSignup] = useState()
-
   // Data
-  useEffect(() => {
-    SystemAPI.get(['allowsignup'])
-      .then((res) => {
-        setAllowSignup(res.allowsignup)
-      })
-      .catch((err) => {
-        console.log(err)
-      })
-  }, [])
+  const [system, { mutateSystem }] = SystemAPI.useSystem()
 
   /**
    * On allow signup
@@ -30,10 +18,12 @@ const Registration = () => {
   const onAllowSignup = async () => {
     try {
       // Update
-      await SystemAPI.update([{ key: 'allowsignup', value: !allowSignup }])
+      await SystemAPI.update([
+        { key: 'allowsignup', value: !system.allowsignup }
+      ])
 
-      // State
-      setAllowSignup(!allowSignup)
+      // Mutate
+      mutateSystem({ allowSignup: !system.allowsignup })
     } catch (err) {
       Error(errors.updateError, err)
     }
@@ -44,7 +34,7 @@ const Registration = () => {
    */
   return (
     <Card title="Registration" className="Vertical-gutter">
-      <Checkbox checked={allowSignup} onChange={onAllowSignup}>
+      <Checkbox checked={system?.allowsignup} onChange={onAllowSignup}>
         Allow signup
       </Checkbox>
     </Card>

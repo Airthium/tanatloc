@@ -10,9 +10,7 @@ import Workspace from './workspace'
  * @param {Object} user { username, password }
  */
 const add = async ({ username, password }) => {
-  const user = await UserDB.add({ username, password })
-
-  return user
+  return UserDB.add({ username, password })
 }
 
 /**
@@ -38,9 +36,12 @@ const get = async (id, data) => {
   return user
 }
 
+/**
+ * Get all users
+ * @param {Array} data Data
+ */
 const getAll = async (data) => {
-  const users = await UserDB.getAll(data)
-  return users
+  return await UserDB.getAll(data)
 }
 
 /**

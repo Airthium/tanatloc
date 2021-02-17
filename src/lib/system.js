@@ -7,7 +7,7 @@ import SystemDB from '@/database/system'
  * @params {Array} items Items
  */
 const get = async (items) => {
-  return await SystemDB.get(items)
+  return SystemDB.get(items)
 }
 
 /**
@@ -15,7 +15,7 @@ const get = async (items) => {
  * @params {Array} items Items
  */
 const update = async (items) => {
-  return await SystemDB.update(items)
+  return SystemDB.update(items)
 }
 
 export default { get, update }

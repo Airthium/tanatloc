@@ -14,8 +14,7 @@ const createPath = async (location) => {
 }
 
 const listFiles = async (location) => {
-  const files = await fs.readdir(location, { withFileTypes: true })
-  return files
+  return fs.readdir(location, { withFileTypes: true })
 }
 
 /**
@@ -34,8 +33,7 @@ const writeFile = async (location, name, content) => {
  * @param {string} file File name
  */
 const readFile = async (file) => {
-  const content = await fs.readFile(file)
-  return content
+  return fs.readFile(file)
 }
 
 /**

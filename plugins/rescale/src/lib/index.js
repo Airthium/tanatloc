@@ -58,11 +58,7 @@ const getFreeFEM = async (configuration) => {
     route: 'analyses/'
   })
 
-  const freefem = analyses.results.find(
-    (analysis) => analysis.code === 'freefem'
-  )
-
-  return freefem
+  return analyses.results.find((analysis) => analysis.code === 'freefem')
 }
 
 /**
@@ -588,13 +584,11 @@ const getInRunFiles = async (configuration, id) => {
  */
 const getInRunFile = async (configuration, file) => {
   const route = file.resource.replace('/api/v2/', '')
-  const content = await call({
+  return call({
     platform: configuration.platform.value,
     token: configuration.token.value,
     route
   })
-
-  return content
 }
 
 /**
@@ -618,13 +612,11 @@ const getFiles = async (configuration, id) => {
  * @param {string} id File id
  */
 const getFile = async (configuration, id) => {
-  const content = await call({
+  return call({
     platform: configuration.platform.value,
     token: configuration.token.value,
     route: 'files/' + id + '/contents/'
   })
-
-  return content
 }
 
 export default { key, init, computeSimulation }

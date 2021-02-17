@@ -1,6 +1,7 @@
 import User from '../user'
 
 const mockGet = jest.fn()
+const mockGetAll = jest.fn()
 const mockGetByUsernameAndPassword = jest.fn()
 const mockUpdate = jest.fn()
 const mockDel = jest.fn()
@@ -8,6 +9,7 @@ jest.mock('@/database/user', () => {
   return {
     add: async () => ({ id: 'id' }),
     get: async () => mockGet(),
+    getAll: async () => mockGetAll(),
     getByUsernameAndPassword: async () => mockGetByUsernameAndPassword(),
     update: async () => mockUpdate(),
     del: async () => mockDel()
@@ -27,6 +29,7 @@ jest.mock('../workspace', () => ({
 describe('src/lib/user', () => {
   beforeEach(() => {
     mockGet.mockReset()
+    mockGetAll.mockReset()
     mockGetByUsernameAndPassword.mockReset()
     mockUpdate.mockReset()
     mockDel.mockReset()
@@ -83,6 +86,13 @@ describe('src/lib/user', () => {
     expect(mockReadAvatar).toHaveBeenCalledTimes(2)
     expect(mockDelWorkspace).toHaveBeenCalledTimes(0)
     expect(user).toEqual({ id: 'id', username: 'username', avatar: undefined })
+  })
+
+  it('getAll', async () => {
+    mockGetAll.mockImplementation(() => [{ id: 'id' }])
+    const users = await User.getAll()
+    expect(mockGetAll).toHaveBeenCalledTimes(1)
+    expect(users).toEqual([{ id: 'id' }])
   })
 
   it('login', async () => {

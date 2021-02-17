@@ -37,6 +37,7 @@ describe('lib/download', () => {
     mockCreateWriteStream.mockReset()
     mockCreateWriteStream.mockImplementation(() => ({
       on: (type, callback) => callback(),
+      write: () => {},
       end: () => {}
     }))
 
@@ -53,7 +54,37 @@ describe('lib/download', () => {
 
     mockSimulationGet.mockReset()
     mockSimulationGet.mockImplementation(() => ({
-      scheme: { configuration: {} }
+      scheme: {
+        configuration: {
+          part: {},
+          geometry: {
+            file: { name: 'name' }
+          },
+          parameters: {
+            index: 1,
+            title: 'title',
+            done: true,
+            param: {
+              label: 'label',
+              children: [
+                {
+                  label: 'subLabel',
+                  value: 'value'
+                }
+              ]
+            },
+            param2: {
+              label: 'label',
+              children: [
+                {
+                  label: 'subLabel',
+                  default: 'value'
+                }
+              ]
+            }
+          }
+        }
+      }
     }))
 
     mockListFiles.mockReset()

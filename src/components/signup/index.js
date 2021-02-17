@@ -16,6 +16,8 @@ import {
 import Loading from '@/components/loading'
 // import Background from '../background'
 
+import Error from '@/components/assets/notification'
+
 import login from '@/api/login'
 import UserAPI from '@/api/user'
 import SystemAPI from '@/api/system'
@@ -30,7 +32,8 @@ const errors = {
   ALREADY_EXISTS: 'This email is already registered',
   PASSWORD_TOO_SMALL: 'Your password is too small',
   PASSWORD_TOO_LONG: 'Your password is too long',
-  PASSSWORDS_MISMATCH: 'Passwords mismatch'
+  PASSSWORDS_MISMATCH: 'Passwords mismatch',
+  systemError: 'Unable to get system'
 }
 
 /**
@@ -61,7 +64,7 @@ const Signup = () => {
         setAllowed(res.allowsignup)
       })
       .catch((err) => {
-        console.log(err)
+        Error(errors.systemError, err)
       })
   }, [])
 

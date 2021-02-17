@@ -1,4 +1,4 @@
-import system from '../'
+import users from '../'
 
 const mockSession = jest.fn()
 jest.mock('../../session', () => () => mockSession())
@@ -15,7 +15,7 @@ jest.mock('@/lib/sentry', () => ({
   captureException: () => mockError()
 }))
 
-describe('src/route/system', () => {
+describe('src/route/users', () => {
   let req, response
   const res = {
     status: () => ({
@@ -44,7 +44,7 @@ describe('src/route/system', () => {
   })
 
   it('no session', async () => {
-    await system(req, res)
+    await users(req, res)
     expect(mockSession).toHaveBeenCalledTimes(1)
     expect(mockGet).toHaveBeenCalledTimes(0)
     expect(mockGetAll).toHaveBeenCalledTimes(0)
@@ -57,7 +57,7 @@ describe('src/route/system', () => {
     mockGet.mockImplementation(() => ({
       superuser: false
     }))
-    await system(req, res)
+    await users(req, res)
     expect(mockSession).toHaveBeenCalledTimes(1)
     expect(mockGet).toHaveBeenCalledTimes(1)
     expect(mockGetAll).toHaveBeenCalledTimes(0)
@@ -81,7 +81,7 @@ describe('src/route/system', () => {
       }
     ])
 
-    await system(req, res)
+    await users(req, res)
     expect(mockSession).toHaveBeenCalledTimes(1)
     expect(mockGet).toHaveBeenCalledTimes(1)
     expect(mockGetAll).toHaveBeenCalledTimes(1)
@@ -92,7 +92,7 @@ describe('src/route/system', () => {
     mockGetAll.mockImplementation(() => {
       throw new Error('test')
     })
-    await system(req, res)
+    await users(req, res)
     expect(mockSession).toHaveBeenCalledTimes(2)
     expect(mockGet).toHaveBeenCalledTimes(2)
     expect(mockGetAll).toHaveBeenCalledTimes(2)
@@ -108,7 +108,7 @@ describe('src/route/system', () => {
       superuser: true
     }))
 
-    await system(req, res)
+    await users(req, res)
     expect(mockSession).toHaveBeenCalledTimes(1)
     expect(mockGet).toHaveBeenCalledTimes(1)
     expect(mockGetAll).toHaveBeenCalledTimes(0)

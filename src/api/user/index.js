@@ -4,9 +4,9 @@ import useUser from './useUser'
 import useUsers from './useUsers'
 import add from './add'
 import update from './update'
-import updateOther from './updateOther'
+import updateById from './updateById'
 import del from './del'
-import delOther from './delOther'
+import delById from './delById'
 
 import check from './check'
 
@@ -15,8 +15,8 @@ export default {
   useUsers,
   add,
   update,
-  updateOther,
+  updateById,
   del,
-  delOther,
+  delById,
   check
 }

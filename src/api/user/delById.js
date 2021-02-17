@@ -1,13 +1,13 @@
 import Caller from '@/api/call'
 
 /**
- * Delete other user
+ * Delete user by id
  * @memberof module:src/api/user
  */
-const delOther = async (id) => {
+const delById = async (id) => {
   return Caller.call('/api/user/' + id, {
     method: 'DELETE'
   })
 }
 
-export default delOther
+export default delById

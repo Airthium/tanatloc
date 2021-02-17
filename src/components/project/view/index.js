@@ -271,9 +271,7 @@ const ThreeView = ({ loading, part }) => {
      * Start animate
      */
     const start = () => {
-      // if (!frameId) {
       frameId = requestAnimationFrame(animate)
-      // }
     }
 
     /**

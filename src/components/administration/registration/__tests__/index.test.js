@@ -1,10 +1,11 @@
 import Registration from '..'
-import { shallow, mount } from 'enzyme'
+import { shallow } from 'enzyme'
 
-const mockGet = jest.fn()
+const mockSystem = jest.fn()
+const mockMutateSystem = jest.fn()
 const mockUpdate = jest.fn()
 jest.mock('@/api/system', () => ({
-  get: async () => mockGet(),
+  useSystem: () => [mockSystem(), { mutateSystem: mockMutateSystem }],
   update: async () => mockUpdate()
 }))
 
@@ -16,7 +17,9 @@ jest.mock('@/components/assets/notification', () => ({
 let wrapper
 describe('src/components/administration/registration', () => {
   beforeEach(() => {
-    mockGet.mockReset()
+    mockSystem.mockReset()
+    mockSystem.mockImplementation(() => ({}))
+    mockMutateSystem.mockReset()
     mockUpdate.mockReset()
 
     mockError.mockReset()
@@ -40,21 +43,5 @@ describe('src/components/administration/registration', () => {
     await wrapper.find('Checkbox').props().onChange()
     expect(mockUpdate).toHaveBeenCalledTimes(2)
     expect(mockError).toHaveBeenCalledTimes(1)
-  })
-
-  it('effect', () => {
-    wrapper.unmount()
-
-    // Error
-    wrapper = mount(<Registration />)
-    expect(mockGet).toHaveBeenCalledTimes(1)
-
-    // Normal
-    wrapper.unmount()
-    mockGet.mockImplementation(() => ({
-      allowSignup: true
-    }))
-    wrapper = mount(<Registration />)
-    expect(mockGet).toHaveBeenCalledTimes(2)
   })
 })

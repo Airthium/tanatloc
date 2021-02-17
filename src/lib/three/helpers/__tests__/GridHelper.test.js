@@ -8,7 +8,7 @@ jest.mock('../LabelHelper', () => () => ({
   }
 }))
 
-global.MockVector3 = { x: 3, y: 3, z: 3 }
+global.MockVector3 = { x: 1e5, y: 3, z: 3 }
 
 describe('src/lib/three/helpers/GridHelper', () => {
   const scene = {
@@ -23,9 +23,9 @@ describe('src/lib/three/helpers/GridHelper', () => {
     ],
     boundingBox: {
       min: {
-        x: -1,
-        y: -1,
-        z: -1
+        x: -1e-5,
+        y: -1e5,
+        z: -1e-13
       },
       max: {
         x: 1,

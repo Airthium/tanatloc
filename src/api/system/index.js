@@ -1,4 +1,4 @@
-import get from './get'
+import useSystem from './useSystem'
 import update from './update'
 
-export default { get, update }
+export default { useSystem, update }

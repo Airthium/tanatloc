@@ -110,13 +110,26 @@ describe('src/components/administration/users', () => {
     actions.props.children[0].props.onClick()
     wrapper.update()
 
+    // Normal with password
+    await wrapper.find('ForwardRef(InternalForm)').props().onFinish({
+      key: 'value',
+      password: 'password'
+    })
+    expect(mockUpdateById).toHaveBeenCalledTimes(2)
+    expect(mockMutateOneUser).toHaveBeenCalledTimes(2)
+    expect(mockError).toHaveBeenCalledTimes(0)
+
+    // Open form
+    actions.props.children[0].props.onClick()
+    wrapper.update()
+
     // Error
     mockUpdateById.mockImplementation(() => {
       throw new Error()
     })
     await wrapper.find('ForwardRef(InternalForm)').props().onFinish({})
-    expect(mockUpdateById).toHaveBeenCalledTimes(2)
-    expect(mockMutateOneUser).toHaveBeenCalledTimes(1)
+    expect(mockUpdateById).toHaveBeenCalledTimes(3)
+    expect(mockMutateOneUser).toHaveBeenCalledTimes(2)
     expect(mockError).toHaveBeenCalledTimes(1)
   })
 

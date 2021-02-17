@@ -2,10 +2,11 @@ import Administration from '..'
 import { shallow } from 'enzyme'
 
 const mockReplace = jest.fn()
+const mockQuery = jest.fn()
 jest.mock('next/router', () => ({
   useRouter: () => ({
     replace: () => mockReplace(),
-    query: { tab: 'tab' }
+    query: mockQuery()
   })
 }))
 
@@ -16,6 +17,8 @@ let wrapper
 describe('src/components/administration', () => {
   beforeEach(() => {
     mockReplace.mockReset()
+    mockQuery.mockReset()
+    mockQuery.mockImplementation(() => ({ tab: 'tab' }))
 
     wrapper = shallow(<Administration />)
   })
@@ -27,5 +30,11 @@ describe('src/components/administration', () => {
   it('onChange', () => {
     wrapper.find('Tabs').props().onChange()
     expect(mockReplace).toHaveBeenCalledTimes(1)
+  })
+
+  it('without query', () => {
+    wrapper.unmount()
+    mockQuery.mockImplementation(() => ({}))
+    wrapper = shallow(<Administration />)
   })
 })

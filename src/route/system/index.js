@@ -11,22 +11,11 @@ import Sentry from '@/lib/sentry'
  * @param {Object} res Response
  */
 export default async (req, res) => {
-  // Check session
-  const sessionId = await getSessionId(req, res)
-  if (!sessionId) return
-
-  // Check superuser
-  const superuser = await UserLib.get(sessionId, ['superuser'])
-  if (!superuser.superuser) {
-    res.status(500).json({ error: true, message: 'Unauthorized' })
-    return
-  }
-
   switch (req.method) {
-    case 'POST':
+    case 'GET':
       try {
-        const items = await SystemLib.get(req.body)
-        res.status(200).json(items)
+        const items = await SystemLib.get(['allowsignup'])
+        res.status(200).json({ system: items })
       } catch (err) {
         console.error(err)
         res.status(500).json({ error: true, message: err.message })
@@ -35,6 +24,17 @@ export default async (req, res) => {
       break
     case 'PUT':
       try {
+        // Check session
+        const sessionId = await getSessionId(req, res)
+        if (!sessionId) return
+
+        // Check superuser
+        const superuser = await UserLib.get(sessionId, ['superuser'])
+        if (!superuser.superuser) {
+          res.status(500).json({ error: true, message: 'Unauthorized' })
+          return
+        }
+
         await SystemLib.update(req.body)
         res.status(200).end()
       } catch (err) {

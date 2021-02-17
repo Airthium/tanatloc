@@ -16,8 +16,6 @@ import {
 import Loading from '@/components/loading'
 // import Background from '../background'
 
-import Error from '@/components/assets/notification'
-
 import login from '@/api/login'
 import UserAPI from '@/api/user'
 import SystemAPI from '@/api/system'
@@ -41,13 +39,13 @@ const errors = {
  */
 const Signup = () => {
   // State
-  const [allowed, setAllowed] = useState(true)
   const [checking, setChecking] = useState(false)
   const [signupErr, setSignupErr] = useState(false)
   const [internalErr, setInternalError] = useState(false)
 
   // Data
   const [user, { loadingUser, mutateUser }] = UserAPI.useUser()
+  const [system, { loadingSystem }] = SystemAPI.useSystem()
 
   // Router
   const router = useRouter()
@@ -56,17 +54,6 @@ const Signup = () => {
   useEffect(() => {
     if (user) router.push('/dashboard')
   }, [user])
-
-  // Allowed
-  useEffect(() => {
-    SystemAPI.get(['allowsignup'])
-      .then((res) => {
-        setAllowed(res.allowsignup)
-      })
-      .catch((err) => {
-        Error(errors.systemError, err)
-      })
-  }, [])
 
   // Prefetch
   useEffect(() => {
@@ -117,12 +104,12 @@ const Signup = () => {
    */
   return (
     <>
-      {loadingUser || user ? (
+      {loadingUser || loadingSystem || user ? (
         <Loading />
       ) : (
         <Layout>
           {/* <Background /> */}
-          {allowed ? (
+          {system?.allowsignup ? (
             <Card bordered={false} className="Signup">
               <Space
                 direction="vertical"

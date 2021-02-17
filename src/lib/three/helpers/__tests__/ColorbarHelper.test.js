@@ -40,6 +40,12 @@ describe('src/lib/three/helpers/ColorbarHelper', () => {
       minV: 1,
       maxV: 1
     })
+
+    colorbarHelper.setLUT({
+      createCanvas: jest.fn(),
+      minV: 1e-5,
+      maxV: 1e-5
+    })
   })
 
   it('render', () => {

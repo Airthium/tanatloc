@@ -41,7 +41,7 @@ const get = async (id, data) => {
  * @param {Array} data Data
  */
 const getAll = async (data) => {
-  return await UserDB.getAll(data)
+  return UserDB.getAll(data)
 }
 
 /**

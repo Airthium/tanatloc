@@ -76,6 +76,7 @@ const updater = async (db, id, data) => {
       )
     } else if (data.method === 'replace') {
       //TODO if necessary
+      throw new Error('not coded')
     } else if (data.method === 'remove') {
       await query(
         'UPDATE ' +
@@ -89,8 +90,10 @@ const updater = async (db, id, data) => {
       )
     } else if (data.method === 'switch') {
       //TODO if necessary
+      throw new Error('not coded')
     } else {
       //TODO
+      throw new Error('not coded')
     }
   } else if (data.type === 'json') {
     if (data.method === 'diff') {
@@ -115,8 +118,28 @@ const updater = async (db, id, data) => {
 
       // Update
       await updater(db, id, { key: data.key, value: json })
+    } else if (data.method === 'erase') {
+      // Get existing json
+      const res = await query(
+        'SELECT ' + data.key + ' FROM ' + db + ' WHERE id = $1',
+        [id]
+      )
+      const json = res.rows[0][data.key]
+
+      // Set json
+      const set = (object, path) => {
+        const last = path.pop()
+        const subObj = path.reduce((obj, key) => obj[key], object)
+        subObj[last] = null
+      }
+
+      set(json, data.path)
+
+      // Update
+      await updater(db, id, { key: data.key, value: json })
     } else {
       // TODO
+      throw new Error('not coded')
     }
   } else {
     await query('UPDATE ' + db + ' SET ' + data.key + ' = $2 WHERE id = $1', [

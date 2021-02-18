@@ -205,8 +205,18 @@ const PartLoader = (mouseMoveEvent, mouseDownEvent) => {
         const min = Math.min(...data.array)
         const max = Math.max(...data.array)
 
-        lut.setMin(min)
-        lut.setMax(max)
+        if (min === max) {
+          if (min === 0) {
+            lut.setMin(min || -1)
+            lut.setMax(max || 1)
+          } else {
+            lut.setMin(min - min * 0.1)
+            lut.setMin(min + min * 0.1)
+          }
+        } else {
+          lut.setMin(min)
+          lut.setMax(max)
+        }
 
         vertexColors = new Float32Array(data.count * 3)
         for (let i = 0; i < data.count; ++i) {

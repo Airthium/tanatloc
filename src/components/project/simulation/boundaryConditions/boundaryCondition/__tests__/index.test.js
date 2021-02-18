@@ -63,6 +63,19 @@ describe('src/components/project/simulation/boundaryConditions/boundaryCondition
   })
 
   it('onType', () => {
+    wrapper.unmount()
+    wrapper = mount(
+      <BoundaryCondition
+        project={project}
+        simulation={simulation}
+        visible={true}
+        part={part}
+        boundaryConditions={boundaryConditions}
+        boundaryCondition={boundaryCondition}
+        close={close}
+      />
+    )
+
     wrapper
       .find('Card')
       .at(1)
@@ -71,7 +84,7 @@ describe('src/components/project/simulation/boundaryConditions/boundaryCondition
 
     // Without children
     wrapper.unmount()
-    wrapper = shallow(
+    wrapper = mount(
       <BoundaryCondition
         project={project}
         simulation={simulation}

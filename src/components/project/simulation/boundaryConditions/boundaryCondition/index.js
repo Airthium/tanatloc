@@ -21,33 +21,53 @@ const BoundaryCondition = ({
   close
 }) => {
   // State
-  const [current, setCurrent] = useState({
-    name: 'New boundary condition'
-  })
+  const [types, setTypes] = useState([])
+  const [alreadySelected, setAlreadySelected] = useState([])
+  const [totalNumber, setTotalNumber] = useState(0)
+  const [current, setCurrent] = useState({})
   const [disabled, setDisabled] = useState(true)
 
-  // Data
-  const types = Object.keys(boundaryConditions)
-    .map((type) => {
-      if (type === 'index' || type === 'title' || type === 'done') return
-      return {
-        key: type,
-        label: boundaryConditions[type].label,
-        children: boundaryConditions[type].children
-      }
-    })
-    .filter((t) => t)
+  // Types & already selected
+  useEffect(() => {
+    const currentTypes = Object.keys(boundaryConditions)
+      .map((type) => {
+        if (type === 'index' || type === 'title' || type === 'done') return
+        return {
+          key: type,
+          label: boundaryConditions[type].label,
+          children: boundaryConditions[type].children,
+          values: boundaryConditions[type].values
+        }
+      })
+      .filter((t) => t)
+    setTypes(currentTypes)
 
-  const alreadySelected = Object.keys(boundaryConditions)
-    .map((type) => {
-      if (type === 'index' || type === 'title' || type === 'done') return
-      return boundaryConditions[type]?.values?.map((b) => ({
-        label: b.name,
-        selected: b.selected
-      }))
+    const currentAlreadySelected = Object.keys(boundaryConditions)
+      .map((type) => {
+        if (type === 'index' || type === 'title' || type === 'done') return
+        return boundaryConditions[type]?.values?.map((b) => ({
+          label: b.name,
+          selected: b.selected
+        }))
+      })
+      .filter((a) => a)
+      .flat()
+    setAlreadySelected(currentAlreadySelected)
+
+    const numberOfBoundaryConditions = currentTypes
+      .map((t) => t.values?.length)
+      .filter((n) => n)
+      .reduce((a, b) => a + b, 0)
+
+    setTotalNumber(numberOfBoundaryConditions)
+  }, [boundaryConditions])
+
+  useEffect(() => {
+    setCurrent({
+      ...current,
+      name: 'Boundary condition ' + (totalNumber + 1)
     })
-    .filter((a) => a)
-    .flat()
+  }, [totalNumber])
 
   // Edit
   useEffect(() => {
@@ -161,7 +181,7 @@ const BoundaryCondition = ({
    */
   const onClose = () => {
     setCurrent({
-      name: 'New boundary condition'
+      name: 'Boundary condition ' + (totalNumber + 1)
     })
     close()
   }

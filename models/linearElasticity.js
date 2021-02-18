@@ -136,7 +136,7 @@ const LinearElasticity = {
         ],
         refineFactor: 2
       },
-      pressure: {
+      presure: {
         label: 'Surface force',
         children: [
           {

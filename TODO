@@ -20,16 +20,7 @@ Project:
 Workspace:
 - archive
 
-Denso:
-- create server
-- deploy the new version
-- color on the step color
-- update the model
-
 Docker does not works, result of Poisson
-
-Models:
-- linearElasticity: checked[0]
 
 Run:
 - Use file for logs (separate gmsh / Freefem for rescale)

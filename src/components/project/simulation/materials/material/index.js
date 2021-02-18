@@ -86,7 +86,7 @@ const Material = ({
                   key={m.symbol}
                   defaultValue={m.value}
                   unit={child.unit}
-                  onChange={(val) => {
+                  onValueChange={(val) => {
                     m.value = val
                   }}
                 />

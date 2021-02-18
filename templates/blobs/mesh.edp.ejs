@@ -1,6 +1,6 @@
 // Mesh
-cout << "Read mesh..." << endl;
-cout.flush;
+if (mpirank == 0) cout << "Read mesh..." << endl;
+if (mpirank == 0) cout.flush;
 
 <%- include('./gmshMesh.edp.ejs', {
   dimension,

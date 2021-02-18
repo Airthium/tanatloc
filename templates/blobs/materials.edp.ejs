@@ -1,6 +1,6 @@
 // Materials
-cout << "Define materials..." << endl;
-cout.flush;
+if (mpirank == 0) cout << "Define materials..." << endl;
+if (mpirank == 0) cout.flush;
 
 <% materials.children.map(child => { -%>
 <% const value = child.value || child.default -%>

@@ -2,7 +2,7 @@
 int v = verbosity;
 verbosity = 0;
 
-cout << "Starting date: " << "<%= new Date().toLocaleString('en-GB', {timeZone: 'UTC'}) -%>" << endl;
-cout.flush;
+if (mpirank == 0) cout << "Starting date: " << "<%= new Date().toLocaleString('en-GB', {timeZone: 'UTC'}) -%>" << endl;
+if (mpirank == 0) cout.flush;
 
 verbosity = v;

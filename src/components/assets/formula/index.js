@@ -1,7 +1,7 @@
 /** @module 'src/components/assets/formula */
 
 import { useState, useEffect } from 'react'
-import { Button, Input, Space } from 'antd'
+import { Button, Checkbox, Input, Space } from 'antd'
 import { SaveOutlined } from '@ant-design/icons'
 
 const saveDelay = 1000
@@ -10,11 +10,21 @@ const saveDelay = 1000
  * Formula
  * @param {Object} props Props
  */
-const Formula = ({ defaultValue, onChange, unit }) => {
+const Formula = ({
+  defaultValue,
+  defaultChecked,
+  onValueChange,
+  onCheckedChange,
+  unit
+}) => {
   // State
   const [internalValue, setInternalValue] = useState(defaultValue)
+  const [internalChecked, setInternalChecked] = useState(defaultChecked)
+  const [disabled, setDisabled] = useState(
+    defaultChecked !== undefined ? !defaultChecked : false
+  )
   const [autoSave, setAutoSave] = useState(false)
-  const [disabled, setDisabled] = useState(true)
+  const [autoSaveDisabled, setAutoSaveDisabled] = useState(true)
   const [loading, setLoading] = useState(false)
 
   // Units LaTeX
@@ -23,28 +33,42 @@ const Formula = ({ defaultValue, onChange, unit }) => {
   }, [unit])
 
   /**
+   * On check change
+   * @param {Object} event
+   */
+  const onCheckboxChange = (event) => {
+    const currentChecked = event.target.checked
+    setInternalChecked(currentChecked)
+    setAutoSaveDisabled(false)
+
+    onCheckedChange(currentChecked)
+
+    setDisabled(!currentChecked)
+  }
+
+  /**
    * On input change
    * @param {Object} event Event
    */
   const onInputChange = (event) => {
     const currentValue = event.target.value
     setInternalValue(currentValue)
-    setDisabled(false)
+    setAutoSaveDisabled(false)
 
-    onChangeDelayed(currentValue)
+    onValueChangeDelayed(currentValue)
   }
 
   /**
-   * On change (delayed)
+   * On value change (delayed)
    * @param {string} value Value
    */
-  const onChangeDelayed = (value) => {
+  const onValueChangeDelayed = (value) => {
     if (autoSave) clearTimeout(autoSave)
     const id = setTimeout(() => {
       setLoading(true)
-      onChange(value)
+      onValueChange(value)
       setLoading(false)
-      setDisabled(true)
+      setAutoSaveDisabled(true)
     }, saveDelay)
     setAutoSave(id)
   }
@@ -54,8 +78,20 @@ const Formula = ({ defaultValue, onChange, unit }) => {
    */
   return (
     <Space>
-      <Input value={internalValue} onChange={onInputChange} addonAfter={unit} />
-      <Button disabled={disabled} loading={loading} icon={<SaveOutlined />} />
+      {defaultChecked !== undefined && (
+        <Checkbox checked={internalChecked} onChange={onCheckboxChange} />
+      )}
+      <Input
+        disabled={disabled}
+        value={internalValue}
+        onChange={onInputChange}
+        addonAfter={unit}
+      />
+      <Button
+        disabled={autoSaveDisabled}
+        loading={loading}
+        icon={<SaveOutlined />}
+      />
     </Space>
   )
 }

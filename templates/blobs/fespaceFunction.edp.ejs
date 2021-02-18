@@ -1,5 +1,5 @@
 // Fespace Functions
-cout << "Define finite element space functions..." << endl;
-cout.flush;
+if (mpirank == 0) cout << "Define finite element space functions..." << endl;
+if (mpirank == 0) cout.flush;
 
 <%= finiteElementSpace.name -%> [<%= finiteElementFunction.join() -%>];

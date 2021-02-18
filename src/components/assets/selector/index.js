@@ -172,7 +172,10 @@ const Selector = ({ part, alreadySelected, updateSelected }) => {
                   {alreadySelected?.map((a) => {
                     if (a.selected.find((s) => s.uuid === element.uuid))
                       return (
-                        <Tag color={Utils.stringToColor(a.label)}>
+                        <Tag
+                          key={element.uuid}
+                          color={Utils.stringToColor(a.label)}
+                        >
                           {a.label}
                         </Tag>
                       )

@@ -46,8 +46,8 @@ const rhs = parameters.rightHandSide.children[0]
 const rhsValue = rhs.value || rhs.default
 -%>
 // Problem
-cout << "Define the problem..." << endl;
-cout.flush;
+if (mpirank == 0) cout << "Define the problem..." << endl;
+if (mpirank == 0) cout.flush;
 
 varf vLaplacian (u, uh)
 	= intN(Th)(
@@ -64,11 +64,11 @@ varf vLaplacianRHS (u, uh)
 	)
 <% for (const n of neumann) { -%>
 	- intN1(Th, <%= n.selected.map(s => { return s.label}).filter(s => s).join() %>) {
-		(<%- n.values[0] %>) * uh
+		(<%- n.values[0].value %>) * uh
 	}
 <% } -%>
 <% for (const d of dirichlet) { -%>
-	+ on(<%= d.selected.map(s => { return s.label}).filter(s => s).join() -%>, u=<%- d.values[0] -%>)
+	+ on(<%= d.selected.map(s => { return s.label}).filter(s => s).join() -%>, u=<%- d.values[0].value -%>)
 <% } -%>
 	;
 
@@ -80,8 +80,8 @@ varf vLaplacianRHS (u, uh)
 
 <%# Solve -%>
 // Solve
-cout << "Solve the problem..." << endl;
-cout.flush;
+if (mpirank == 0) cout << "Solve the problem..." << endl;
+if (mpirank == 0) cout.flush;
 
 matrix Laplacian = vLaplacian(<%= finiteElementSpace.name -%>, <%= finiteElementSpace.name -%>, solver=solver);
 real[int] LaplacianRHS = vLaplacianRHS(0, <%= finiteElementSpace.name -%>);
@@ -99,4 +99,4 @@ u[] = Laplacian^-1 * LaplacianRHS;
 	}
 }); -%>
 
-cout.flush;
+if (mpirank == 0) cout.flush;

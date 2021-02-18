@@ -1,6 +1,6 @@
 // Dimension macros
-cout << "Dimension: <%= dimension -%>" << endl;
-cout.flush;
+if (mpirank == 0) cout << "Dimension: <%= dimension -%>" << endl;
+if (mpirank == 0) cout.flush;
 
 <% if (dimension === 2)  { -%>
 macro meshN()mesh//

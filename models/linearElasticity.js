@@ -110,7 +110,7 @@ const LinearElasticity = {
       title: 'Boundary conditions',
       fixed: {
         label: 'Fixed',
-        refineFactor: 10
+        refineFactor: 2
       },
       displacement: {
         label: 'Displacement',
@@ -134,7 +134,7 @@ const LinearElasticity = {
             unit: '\\(m\\)'
           }
         ],
-        refineFactor: 10
+        refineFactor: 2
       },
       pressure: {
         label: 'Surface force',
@@ -146,7 +146,7 @@ const LinearElasticity = {
             unit: '\\(N.m^{-2}\\)'
           }
         ],
-        refineFactor: 5
+        refineFactor: 2
       }
     },
     run: {

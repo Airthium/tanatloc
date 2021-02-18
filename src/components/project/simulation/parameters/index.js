@@ -103,7 +103,7 @@ const Parameters = ({ project, simulation }) => {
               defaultValue={
                 child.value === undefined ? child.default : child.value
               }
-              onChange={(value) => onChange(key, index, value)}
+              onValueChange={(value) => onChange(key, index, value)}
               unit={child.unit}
             />
           </Typography.Text>

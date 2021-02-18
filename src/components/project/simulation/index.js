@@ -153,6 +153,35 @@ const Simulation = ({ project, simulation, type, part, onClose }) => {
     setVisible(simulation)
     const configuration = simulation?.scheme?.configuration
 
+    // Check removed geometry, so remove part
+    if (
+      configuration?.part &&
+      part?.type === 'geometry' &&
+      !configuration?.geometry.file
+    ) {
+      // Update simulation
+      SimulationAPI.update({ id: simulation.id }, [
+        {
+          key: 'scheme',
+          type: 'json',
+          method: 'erase',
+          path: ['configuration', 'part']
+        }
+      ])
+        .then(() => {
+          // Update local
+          const newSimulation = { ...simulation }
+          newSimulation.scheme.configuration.part = null
+
+          // Mutate
+          mutateOneSimulation(newSimulation)
+        })
+
+        .catch((err) => {
+          Error(errors.updateError, err)
+        })
+    }
+
     // Check if a part is visible
     if (
       (((type === 'materials' || type === 'boundaryConditions') &&

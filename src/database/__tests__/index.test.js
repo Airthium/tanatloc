@@ -36,15 +36,21 @@ describe('database', () => {
 
     await updater('db', 'id', { type: 'crypt' })
 
-    await updater('db', 'id', { type: 'array' })
+    try {
+      await updater('db', 'id', { type: 'array' })
+    } catch (err) {}
 
     await updater('db', 'id', { type: 'array', method: 'append' })
 
-    await updater('db', 'id', { type: 'array', method: 'replace' })
+    try {
+      await updater('db', 'id', { type: 'array', method: 'replace' })
+    } catch (err) {}
 
     await updater('db', 'id', { type: 'array', method: 'remove' })
 
-    await updater('db', 'id', { type: 'array', method: 'switch' })
+    try {
+      await updater('db', 'id', { type: 'array', method: 'switch' })
+    } catch (err) {}
 
     mockQuery.mockImplementation(() => ({
       rows: [
@@ -66,8 +72,17 @@ describe('database', () => {
 
     await updater('db', 'id', {
       type: 'json',
-      method: 'other'
+      method: 'erase',
+      key: 'scheme',
+      path: ['first', 'second']
     })
+
+    try {
+      await updater('db', 'id', {
+        type: 'json',
+        method: 'other'
+      })
+    } catch (err) {}
   })
 
   it('deleter', async () => {

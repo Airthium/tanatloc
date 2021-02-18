@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { notification, Button, Form, Input, Space, Card, Row, Col } from 'antd'
 
+import { PasswordItem } from '@/components/assets/input'
 import { Error } from '@/components/assets/notification'
 
 import UserAPI from '@/api/user'
@@ -105,37 +106,7 @@ const Password = () => {
             >
               <Input.Password />
             </Form.Item>
-            <Form.Item
-              label="New password"
-              name="newPassword"
-              rules={[
-                { required: true, message: 'Please enter your new password' },
-                {
-                  min: system?.password?.min || 6,
-                  message: errors.passwordTooSmall
-                },
-                {
-                  max: system?.password?.max || 16,
-                  message: errors.passwordTooLong
-                },
-                {
-                  pattern: system?.password?.requireLetter && /^(?=.*[a-zA-Z])/,
-                  message: errors.passwordRequireLetter
-                },
-                {
-                  pattern: system?.password?.requireNumber && /^(?=.*[0-9])/,
-                  message: errors.passwordRequireNumber
-                },
-                {
-                  pattern:
-                    system?.password?.requireSymbol &&
-                    /[!@#$%^&*(){}[\]<>?/|.:;_-]/,
-                  message: errors.passwordRequireSymbol
-                }
-              ]}
-            >
-              <Input.Password />
-            </Form.Item>
+            <PasswordItem name="newPassword" label="New password" />
             <Form.Item
               label="Password confirmation"
               name="passwordConfirm"

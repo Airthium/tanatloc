@@ -13,6 +13,7 @@ import {
   Typography
 } from 'antd'
 
+import { PasswordItem } from '@/components/assets/input'
 import Loading from '@/components/loading'
 // import Background from '../background'
 
@@ -164,43 +165,13 @@ const Signup = () => {
                   >
                     <Input placeholder="Email address" autoComplete="email" />
                   </Form.Item>
-                  <Form.Item
+                  <PasswordItem
                     name="password"
                     label="Choose your password"
-                    rules={[
-                      { required: true, message: 'Please enter your Password' },
-                      {
-                        min: system?.password?.min || 6,
-                        message: errors.passwordTooSmall
-                      },
-                      {
-                        max: system?.password?.max || 16,
-                        message: errors.passwordTooLong
-                      },
-                      {
-                        pattern:
-                          system?.password?.requireLetter && /^(?=.*[a-zA-Z])/,
-                        message: errors.passwordRequireLetter
-                      },
-                      {
-                        pattern:
-                          system?.password?.requireNumber && /^(?=.*[0-9])/,
-                        message: errors.passwordRequireNumber
-                      },
-                      {
-                        pattern:
-                          system?.password?.requireSymbol &&
-                          /[!@#$%^&*(){}[\]<>?/|.:;_-]/,
-                        message: errors.passwordRequireSymbol
-                      }
-                    ]}
+                    inputPlaceholder="Password"
+                    inputAutoComplete="current-password"
                     style={{ marginBottom: '14px' }}
-                  >
-                    <Input.Password
-                      placeholder="Password"
-                      autoComplete="current-password"
-                    />
-                  </Form.Item>
+                  />
                   <Form.Item
                     name="passwordConfirmation"
                     label="Confirm your password"

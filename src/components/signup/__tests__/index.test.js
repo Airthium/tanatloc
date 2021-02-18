@@ -12,6 +12,10 @@ jest.mock('next/router', () => ({
   })
 }))
 
+jest.mock('@/components/assets/input', () => ({
+  PasswordItem: 'passwordItem'
+}))
+
 jest.mock('@/components/loading', () => 'loading')
 
 const mockLogin = jest.fn()
@@ -64,33 +68,6 @@ describe('src/components/signup', () => {
     mockUser.mockImplementation(() => ({}))
     mockLoading.mockImplementation(() => false)
     wrapper = shallow(<Signup />)
-  })
-
-  it('with rules', () => {
-    wrapper.unmount()
-    mockLoading.mockImplementation(() => false)
-    mockSystem.mockImplementation(() => ({
-      allowsignup: true,
-      password: {
-        min: 8,
-        max: 64,
-        requireLetter: true,
-        requireNumber: true,
-        requireSymbol: true
-      }
-    }))
-    wrapper = shallow(<Signup />)
-    expect(wrapper.find({ name: 'password' }).props().rules[1].min).toBe(8)
-    expect(wrapper.find({ name: 'password' }).props().rules[2].max).toBe(64)
-    expect(
-      wrapper.find({ name: 'password' }).props().rules[3].pattern
-    ).toBeDefined()
-    expect(
-      wrapper.find({ name: 'password' }).props().rules[4].pattern
-    ).toBeDefined()
-    expect(
-      wrapper.find({ name: 'password' }).props().rules[5].pattern
-    ).toBeDefined()
   })
 
   it('onSignup', async () => {

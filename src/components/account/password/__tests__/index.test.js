@@ -1,6 +1,10 @@
 import Password from '..'
 import { shallow } from 'enzyme'
 
+jest.mock('@/components/assets/input', () => ({
+  PasswordItem: 'passwordItem'
+}))
+
 const mockError = jest.fn()
 jest.mock('@/components/assets/notification', () => ({
   Error: () => mockError()
@@ -60,31 +64,6 @@ describe('src/components/account/information', () => {
     } catch (err) {
       expect(true).toBe(true)
     }
-  })
-
-  it('with rules', () => {
-    wrapper.unmount()
-    mockSystem.mockImplementation(() => ({
-      password: {
-        min: 8,
-        max: 64,
-        requireLetter: true,
-        requireNumber: true,
-        requireSymbol: true
-      }
-    }))
-    wrapper = shallow(<Password />)
-    expect(wrapper.find({ name: 'newPassword' }).props().rules[1].min).toBe(8)
-    expect(wrapper.find({ name: 'newPassword' }).props().rules[2].max).toBe(64)
-    expect(
-      wrapper.find({ name: 'newPassword' }).props().rules[3].pattern
-    ).toBeDefined()
-    expect(
-      wrapper.find({ name: 'newPassword' }).props().rules[4].pattern
-    ).toBeDefined()
-    expect(
-      wrapper.find({ name: 'newPassword' }).props().rules[5].pattern
-    ).toBeDefined()
   })
 
   it('onFinish', async () => {

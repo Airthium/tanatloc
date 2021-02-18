@@ -20,6 +20,7 @@ import {
 import UserAPI from '@/api/user'
 import SystemAPI from '@/api/system'
 
+import { PasswordItem } from '@/components/assets/input'
 import { Error } from '@/components/assets/notification'
 
 const errors = {
@@ -227,37 +228,7 @@ const Users = () => {
             >
               <Input />
             </Form.Item>
-            <Form.Item
-              name="password"
-              label="Password"
-              rules={[
-                { required: true, message: 'Please enter a password' },
-                {
-                  min: system?.password?.min || 6,
-                  message: errors.passwordTooSmall
-                },
-                {
-                  max: system?.password?.max || 16,
-                  message: errors.passwordTooLong
-                },
-                {
-                  pattern: system?.password?.requireLetter && /^(?=.*[a-zA-Z])/,
-                  message: errors.passwordRequireLetter
-                },
-                {
-                  pattern: system?.password?.requireNumber && /^(?=.*[0-9])/,
-                  message: errors.passwordRequireNumber
-                },
-                {
-                  pattern:
-                    system?.password?.requireSymbol &&
-                    /[!@#$%^&*(){}[\]<>?/|.:;_-]/,
-                  message: errors.passwordRequireSymbol
-                }
-              ]}
-            >
-              <Input.Password />
-            </Form.Item>
+            <PasswordItem name="password" />
             <Form.Item
               name="superuser"
               label="Administrator"

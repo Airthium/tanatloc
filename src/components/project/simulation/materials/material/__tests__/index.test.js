@@ -104,6 +104,6 @@ describe('src/components/project/simulation/materials/material', () => {
       />
     )
 
-    wrapper.find('Formula').props().onChange()
+    wrapper.find('Formula').props().onValueChange()
   })
 })

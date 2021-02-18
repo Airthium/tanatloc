@@ -62,7 +62,7 @@ describe('src/components/project/simulation/parameters', () => {
   })
 
   it('onChange', () => {
-    wrapper.find('formula').props().onChange()
+    wrapper.find('formula').props().onValueChange()
     wrapper.find('ForwardRef(InternalSelect)').props().onChange()
   })
 
@@ -71,15 +71,15 @@ describe('src/components/project/simulation/parameters', () => {
 
     wrapper = mount(<Parameters project={project} simulation={simulation} />)
 
-    wrapper.find('formula').props().onChange()
+    wrapper.find('formula').props().onValueChange()
     expect(mockUpdate).toHaveBeenCalledTimes(1)
 
-    wrapper.find('formula').props().onChange('new value')
+    wrapper.find('formula').props().onValueChange('new value')
     expect(mockUpdate).toHaveBeenCalledTimes(2)
 
     mockUpdate.mockImplementation(() => {
       throw new Error()
     })
-    wrapper.find('formula').props().onChange('new value')
+    wrapper.find('formula').props().onValueChange('new value')
   })
 })

@@ -156,7 +156,11 @@ describe('src/components/project/simulation/boundaryConditions/boundaryCondition
     boundaryCondition = {
       name: 'name',
       selected: [{ uuid: 'uuid', label: 1 }],
-      values: [0]
+      values: [
+        {
+          value: 0
+        }
+      ]
     }
     wrapper = mount(
       <BoundaryCondition
@@ -183,7 +187,11 @@ describe('src/components/project/simulation/boundaryConditions/boundaryCondition
       },
       name: 'name',
       selected: [{ uuid: 'uuid', label: 1 }],
-      values: []
+      values: [
+        {
+          value: 0
+        }
+      ]
     }
     wrapper = mount(
       <BoundaryCondition
@@ -196,6 +204,6 @@ describe('src/components/project/simulation/boundaryConditions/boundaryCondition
         close={close}
       />
     )
-    wrapper.find('Formula').props().onChange(0, 10)
+    wrapper.find('Formula').props().onValueChange(0, 10)
   })
 })

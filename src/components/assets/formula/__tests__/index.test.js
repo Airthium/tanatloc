@@ -1,7 +1,8 @@
 import Formula from '@/components/assets/formula'
 import { shallow, mount } from 'enzyme'
 
-const onChange = jest.fn()
+const onValueChange = jest.fn()
+const onCheckedChange = jest.fn()
 
 global.setTimeout = (callback) => {
   callback()
@@ -11,8 +12,12 @@ global.setTimeout = (callback) => {
 let wrapper
 describe('src/components/assets/formula', () => {
   beforeEach(() => {
-    onChange.mockReset()
-    wrapper = shallow(<Formula value="value" onChange={onChange} />)
+    onValueChange.mockReset()
+    onCheckedChange.mockReset()
+
+    wrapper = shallow(
+      <Formula defaultValue="value" onValueChange={onValueChange} />
+    )
   })
 
   afterEach(() => {
@@ -23,9 +28,50 @@ describe('src/components/assets/formula', () => {
     expect(wrapper).toBeDefined()
   })
 
+  it('with checkbox', () => {
+    wrapper.unmount()
+    wrapper = shallow(
+      <Formula
+        defaultValue="value"
+        defaultChecked={false}
+        onValueChange={onValueChange}
+        onCheckedChange={onCheckedChange}
+      />
+    )
+    expect(wrapper).toBeDefined()
+
+    expect(wrapper.find('Checkbox').length).toBe(1)
+  })
+
+  it('onCheckboxChange', () => {
+    wrapper.unmount()
+    wrapper = shallow(
+      <Formula
+        defaultValue="value"
+        defaultChecked={true}
+        onValueChange={onValueChange}
+        onCheckedChange={onCheckedChange}
+      />
+    )
+
+    let checked
+    onCheckedChange.mockImplementation((val) => (checked = val))
+
+    wrapper
+      .find('Checkbox')
+      .props()
+      .onChange({
+        target: {
+          checked: true
+        }
+      })
+    expect(onCheckedChange).toHaveBeenCalledTimes(1)
+    expect(checked).toBe(true)
+  })
+
   it('onInputChange', () => {
     let value
-    onChange.mockImplementation((val) => (value = val))
+    onValueChange.mockImplementation((val) => (value = val))
     wrapper
       .find('Input')
       .props()
@@ -34,7 +80,7 @@ describe('src/components/assets/formula', () => {
           value: 'newValue'
         }
       })
-    expect(onChange).toHaveBeenCalledTimes(1)
+    expect(onValueChange).toHaveBeenCalledTimes(1)
     expect(value).toBe('newValue')
 
     wrapper

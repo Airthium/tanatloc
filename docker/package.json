@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "@hapi/iron": "6.0.0",
-    "@sentry/node": "6.1.0",
+    "@sentry/node": "6.2.0",
     "@zeit/next-less": "1.0.1",
     "archiver": "5.2.0",
     "cookie": "0.4.1",

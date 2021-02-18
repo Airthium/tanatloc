@@ -29,7 +29,8 @@ jest.mock('@/store/select/action', () => ({
 
 jest.mock('@/lib/utils', () => ({
   stringToColor: () => {},
-  rgbToHex: () => {}
+  rgbToHex: () => {},
+  rgbToRgba: () => 'rgba()'
 }))
 
 let wrapper

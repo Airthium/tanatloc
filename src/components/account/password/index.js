@@ -5,7 +5,6 @@ import { PasswordItem } from '@/components/assets/input'
 import { Error } from '@/components/assets/notification'
 
 import UserAPI from '@/api/user'
-import SystemAPI from '@/api/system'
 
 /**
  * Errors account/password
@@ -13,11 +12,6 @@ import SystemAPI from '@/api/system'
  */
 const errors = {
   updateError: 'Unable to update the password',
-  passwordTooSmall: 'Your password is too small',
-  passwordTooLong: 'Your password is too long',
-  passwordRequireLetter: 'Your password must contain a letter',
-  passwordRequireNumber: 'Your password must contain a number',
-  passwordRequireSymbol: 'Your password must contain a symbol',
   passwordMismatch: 'Password and confirmation mismatch',
   invalid: 'Current password not valid'
 }
@@ -32,7 +26,6 @@ const Password = () => {
 
   // Data
   const [user] = UserAPI.useUser()
-  const [system] = SystemAPI.useSystem()
 
   // Layout
   const layout = {

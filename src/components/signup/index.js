@@ -29,11 +29,6 @@ import Sentry from '@/lib/sentry'
 const errors = {
   INTERNAL_ERROR: 'Server issue : try again shortly.',
   ALREADY_EXISTS: 'This email is already registered',
-  passwordTooSmall: 'Your password is too small',
-  passswordTooLong: 'Your password is too long',
-  passwordRequireLetter: 'Your password must contain a letter',
-  passwordRequireNumber: 'Your password must contain a number',
-  passwordRequireSymbol: 'Your password must contain a symbol',
   passwordMismatch: 'Passwords mismatch',
   systemError: 'Unable to get system'
 }

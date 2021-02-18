@@ -22,11 +22,6 @@ jest.mock('@/api/user', () => ({
   delById: async () => mockDelById()
 }))
 
-const mockSystem = jest.fn()
-jest.mock('@/api/system', () => ({
-  useSystem: () => [mockSystem()]
-}))
-
 jest.mock('@/components/assets/input', () => ({
   PasswordItem: 'passwordItem'
 }))
@@ -47,8 +42,6 @@ describe('src/components/administration/users', () => {
     mockAdd.mockReset()
     mockUpdateById.mockReset()
     mockDelById.mockReset()
-
-    mockSystem.mockReset()
 
     mockError.mockReset()
 

@@ -18,11 +18,6 @@ jest.mock('@/api/user', () => ({
   check: () => mockCheck()
 }))
 
-const mockSystem = jest.fn()
-jest.mock('@/api/system', () => ({
-  useSystem: () => [mockSystem()]
-}))
-
 let wrapper
 describe('src/components/account/information', () => {
   beforeEach(() => {
@@ -30,9 +25,6 @@ describe('src/components/account/information', () => {
 
     mockUpdate.mockReset()
     mockCheck.mockReset()
-
-    mockSystem.mockReset()
-    mockSystem.mockImplementation(() => ({}))
 
     wrapper = shallow(<Password />)
   })

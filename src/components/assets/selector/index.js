@@ -162,7 +162,13 @@ const Selector = ({ part, alreadySelected, updateSelected }) => {
                       ? '2px solid #c73100'
                       : '1px solid grey'
                 }}
-                bodyStyle={{ padding: '10px' }}
+                bodyStyle={{
+                  padding: '10px',
+                  backgroundImage:
+                    'linear-gradient(to right, ' +
+                    Utils.rgbToRgba(element.color, 0.25) +
+                    '0%, rgba(255, 255, 255, 0) 25%)'
+                }}
                 onMouseEnter={() => onHighlight(element.uuid)}
                 onMouseLeave={onUnhighlight}
                 onClick={() => onSelect(element.uuid)}

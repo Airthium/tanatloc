@@ -37,4 +37,24 @@ const rgbToHex = (color) => {
   )
 }
 
-export default { stringToColor, rgbToHex }
+/**
+ * rgb to CSS rgba
+ * @param {Array} color Color [r, g, b]
+ * @param {number} alpha Alpha
+ */
+const rgbToRgba = (color, alpha = 1) => {
+  if (!color) return 'rgba(255, 255, 255, 0)'
+  return (
+    'rgba(' +
+    color[0] * 255 +
+    ', ' +
+    color[1] * 255 +
+    ', ' +
+    color[2] * 255 +
+    ', ' +
+    alpha +
+    ')'
+  )
+}
+
+export default { stringToColor, rgbToHex, rgbToRgba }

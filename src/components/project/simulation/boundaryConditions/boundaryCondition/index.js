@@ -166,8 +166,6 @@ const BoundaryCondition = ({
     close()
   }
 
-  console.log(current)
-
   /**
    * Render
    */

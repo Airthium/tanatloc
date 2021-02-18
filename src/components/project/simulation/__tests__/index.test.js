@@ -170,6 +170,26 @@ describe('components/project/simulation', () => {
     wrapper = mount(<Simulation />)
     expect(wrapper.find('panel').props().title).toBe('About')
 
+    // No geometry
+    wrapper.unmount()
+    wrapper = mount(
+      <Simulation
+        simulation={{
+          scheme: {
+            algorithm: 'algorithm',
+            configuration: {
+              part: {},
+              geometry: { title: 'Geometry', file: undefined },
+              materials: { title: 'Materials' }
+            }
+          }
+        }}
+        type="material"
+      />
+    )
+    expect(wrapper.find('panel').props().title).toBe('Materials')
+
+    // Geometry
     wrapper.unmount()
     wrapper = mount(
       <Simulation

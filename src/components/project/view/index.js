@@ -781,7 +781,7 @@ const View = ({ simulation, setPartSummary }) => {
 
     if (configuration?.part) loadPart(configuration.part)
     else setPart()
-  }, [simulation])
+  }, [simulation?.scheme?.configuration?.part])
 
   /**
    * Load part

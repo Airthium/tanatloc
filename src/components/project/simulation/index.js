@@ -153,64 +153,60 @@ const Simulation = ({ project, simulation, type, part, onClose }) => {
     setVisible(simulation)
     const configuration = simulation?.scheme?.configuration
 
-    // Check removed geometry, so remove part
-    if (
-      configuration?.part &&
-      part?.type === 'geometry' &&
-      !configuration?.geometry.file
-    ) {
-      // Update simulation
-      SimulationAPI.update({ id: simulation.id }, [
-        {
-          key: 'scheme',
-          type: 'json',
-          method: 'erase',
-          path: ['configuration', 'part']
-        }
-      ])
-        .then(() => {
-          // Update local
-          const newSimulation = { ...simulation }
-          newSimulation.scheme.configuration.part = null
+    if (configuration?.geometry?.file) {
+      if (
+        !configuration?.part ||
+        ((type === 'material' || type === 'boundaryConditions') &&
+          part?.type !== 'geometry')
+      ) {
+        // Force geometry
+        const newSimulation = { ...simulation }
 
-          // Mutate
-          mutateOneSimulation(newSimulation)
-        })
+        // Update local
+        newSimulation.scheme.configuration.part = configuration.geometry.file
 
-        .catch((err) => {
-          Error(errors.updateError, err)
-        })
-    }
+        // Update simulation
+        SimulationAPI.update({ id: simulation.id }, [
+          {
+            key: 'scheme',
+            type: 'json',
+            method: 'diff',
+            path: ['configuration', 'part'],
+            value: configuration.geometry.file
+          }
+        ])
+          .then(() => {
+            // Mutate
+            mutateOneSimulation(newSimulation)
+          })
+          .catch((err) => {
+            Error(errors.updateError, err)
+          })
+      }
+    } else {
+      // Check for removed geometry
+      if (configuration?.part && part?.type == 'geometry') {
+        // Remove part
+        SimulationAPI.update({ id: simulation.id }, [
+          {
+            key: 'scheme',
+            type: 'json',
+            method: 'erase',
+            path: ['configuration', 'part']
+          }
+        ])
+          .then(() => {
+            // Update local
+            const newSimulation = { ...simulation }
+            newSimulation.scheme.configuration.part = null
 
-    // Check if a part is visible
-    if (
-      (((type === 'materials' || type === 'boundaryConditions') &&
-        part?.type !== 'geometry') ||
-        !configuration?.part) &&
-      configuration?.geometry?.file
-    ) {
-      const newSimulation = { ...simulation }
-
-      // Update local
-      newSimulation.scheme.configuration.part = configuration.geometry.file
-
-      // Update simulation
-      SimulationAPI.update({ id: simulation.id }, [
-        {
-          key: 'scheme',
-          type: 'json',
-          method: 'diff',
-          path: ['configuration', 'part'],
-          value: configuration.geometry.file
-        }
-      ])
-        .then(() => {
-          // Mutate
-          mutateOneSimulation(newSimulation)
-        })
-        .catch((err) => {
-          Error(errors.updateError, err)
-        })
+            // Mutate
+            mutateOneSimulation(newSimulation)
+          })
+          .catch((err) => {
+            Error(errors.updateError, err)
+          })
+      }
     }
 
     const subScheme = configuration?.[type]

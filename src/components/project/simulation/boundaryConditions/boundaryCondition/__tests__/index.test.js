@@ -175,7 +175,7 @@ describe('src/components/project/simulation/boundaryConditions/boundaryCondition
     )
   })
 
-  it('onChange', () => {
+  it('onValueChange', () => {
     boundaryCondition = {
       type: {
         key: 'key',
@@ -187,8 +187,44 @@ describe('src/components/project/simulation/boundaryConditions/boundaryCondition
       },
       name: 'name',
       selected: [{ uuid: 'uuid', label: 1 }],
+      values: [{}]
+    }
+    wrapper = mount(
+      <BoundaryCondition
+        project={project}
+        simulation={simulation}
+        visible={true}
+        part={part}
+        boundaryConditions={boundaryConditions}
+        boundaryCondition={boundaryCondition}
+        close={close}
+      />
+    )
+    wrapper.find('Formula').props().onValueChange(0, 10)
+  })
+
+  it('onCheckedChange', () => {
+    boundaryCondition = {
+      type: {
+        key: 'key',
+        children: [
+          {
+            default: 1
+          },
+          {
+            default: 0
+          }
+        ]
+      },
+      name: 'name',
+      selected: [{ uuid: 'uuid', label: 1 }],
       values: [
         {
+          checked: true,
+          value: 0
+        },
+        {
+          hecked: false,
           value: 0
         }
       ]
@@ -204,6 +240,6 @@ describe('src/components/project/simulation/boundaryConditions/boundaryCondition
         close={close}
       />
     )
-    wrapper.find('Formula').props().onValueChange(0, 10)
+    wrapper.find('Formula').at(1).props().onCheckedChange(1, true)
   })
 })

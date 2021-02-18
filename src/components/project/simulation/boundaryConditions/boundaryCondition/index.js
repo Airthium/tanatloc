@@ -207,16 +207,10 @@ const BoundaryCondition = ({
                 <div key={index}>
                   {child.label}
                   <Formula
-                    defaultValue={
-                      current.values?.[index]
-                        ? current.values?.[index]?.value
-                        : current.type.children?.[index]?.default
-                    }
+                    defaultValue={current.values[index].value}
                     defaultChecked={
                       current.type.children.length > 1
-                        ? current.values?.[index]?.checked !== undefined
-                          ? current.values?.[index]?.checked
-                          : true
+                        ? current.values[index].checked
                         : undefined
                     }
                     onValueChange={(value) => onValueChange(index, value)}

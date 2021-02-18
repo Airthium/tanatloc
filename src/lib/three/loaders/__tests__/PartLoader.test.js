@@ -122,6 +122,18 @@ describe('src/lib/three/loaders/PartLoader', () => {
     global.MockGeometry.getAttribute = () => {}
     partLoader.load(part, true)
 
+    global.MockGeometry.getAttribute = () => ({
+      count: 3,
+      array: [0, 0, 0]
+    })
+    partLoader.load(part)
+
+    global.MockGeometry.getAttribute = () => ({
+      count: 3,
+      array: [1, 1, 1]
+    })
+    partLoader.load(part)
+
     global.MockBox3.isEmpty = true
     partLoader.load(part, true)
   })

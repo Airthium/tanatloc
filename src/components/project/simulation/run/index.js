@@ -271,6 +271,7 @@ const Run = ({ project, simulation }) => {
         </Drawer>
         <Space direction="vertical">
           <CloudServer
+            disabled={running}
             cloudServer={currentConfiguration?.run?.cloudServer}
             onOk={onCloudServer}
           />

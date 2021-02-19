@@ -8,7 +8,7 @@ import Plugins from '@/plugins'
 
 import PluginAPI from '@/api/plugin'
 
-const CloudServer = ({ cloudServer, onOk }) => {
+const CloudServer = ({ disabled, cloudServer, onOk }) => {
   // State
   const [visible, setVisible] = useState(false)
 
@@ -74,6 +74,7 @@ const CloudServer = ({ cloudServer, onOk }) => {
       </Modal>
       <Space direction="vertical">
         <Button
+          disabled={disabled}
           icon={<CloudServerOutlined />}
           onClick={() => setVisible(true)}
         />

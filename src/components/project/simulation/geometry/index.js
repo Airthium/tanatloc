@@ -51,6 +51,11 @@ const Geometry = ({ project, simulation, part }) => {
     project?.simulations
   )
 
+  // Units LaTeX
+  useEffect(() => {
+    window.MathJax?.typeset()
+  })
+
   // Effect
   useEffect(() => {
     const file = simulation?.scheme.configuration.geometry.file
@@ -177,6 +182,9 @@ const Geometry = ({ project, simulation, part }) => {
     }
   }
 
+  /**
+   * On download
+   */
   const onDownload = async () => {
     const file = {
       origin: simulation.scheme.configuration.geometry.file.origin,

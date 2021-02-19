@@ -22,6 +22,7 @@ import DownloadAPI from '@/api/download'
  */
 const errors = {
   runError: 'Unable to run the simulation',
+  stopError: 'Unable to stop the simulation',
   updateError: 'Unable to update the simulation',
   downloadError: 'Unable to download the file'
 }
@@ -137,7 +138,11 @@ const Run = ({ project, simulation }) => {
    * On stop
    */
   const onStop = async () => {
-    // TODO
+    try {
+    await Simulation.stop({id: simulation.id})
+    }catch(err){
+      Error(errors.stopError, err)
+    }
   }
 
   /**
@@ -287,7 +292,7 @@ const Run = ({ project, simulation }) => {
                   Run
                 </Button>
                 <Button
-                  disabled={true} // || !running
+                  disabled={!running}
                   icon={<StopOutlined />}
                   onClick={onStop}
                   style={{ backgroundColor: 'blue', color: 'red' }}

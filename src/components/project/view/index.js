@@ -320,6 +320,13 @@ const ThreeView = ({ loading, part }) => {
     })
 
     if (part) loadPart()
+    else {
+      // Scene
+      computeSceneBoundingSphere()
+
+      // Grid
+      gridHelper.current.update()
+    }
   }, [part])
 
   // Enable / disable selection
@@ -780,7 +787,6 @@ const View = ({ simulation, setPartSummary }) => {
     const configuration = simulation?.scheme?.configuration
 
     if (configuration?.part) loadPart(configuration.part)
-    else setPart()
   }, [simulation?.scheme?.configuration?.part])
 
   /**
@@ -790,57 +796,63 @@ const View = ({ simulation, setPartSummary }) => {
   const loadPart = async (file) => {
     setLoading(true)
     try {
-      // Load
-      const partContent = await PartAPI.get({ id: simulation.id }, file)
+      if (file.needCleanup) {
+        // Cleanup
+        setPart()
+        setPartSummary()
+      } else {
+        // Load
+        const partContent = await PartAPI.get({ id: simulation.id }, file)
 
-      if (partContent.error) {
-        setPartSummary({ error: true, message: partContent.message })
-        return
-      }
+        if (partContent.error) {
+          setPartSummary({ error: true, message: partContent.message })
+          return
+        }
 
-      // Convert buffers
-      partContent.solids?.forEach((solid) => {
-        solid.buffer = JSON.parse(Buffer.from(solid.buffer).toString())
-      })
-      partContent.faces?.forEach((face) => {
-        face.buffer = JSON.parse(Buffer.from(face.buffer).toString())
-      })
-      partContent.edges?.forEach((edge) => {
-        edge.buffer = JSON.parse(Buffer.from(edge.buffer).toString())
-      })
-
-      // Summary
-      const summary = {
-        uuid: partContent.uuid,
-        type: partContent.type,
-        solids: partContent.solids?.map((solid) => {
-          return {
-            name: solid.name,
-            number: solid.number,
-            uuid: solid.buffer.uuid,
-            color: solid.buffer.data.attributes.color?.array
-          }
-        }),
-        faces: partContent.faces?.map((face) => {
-          return {
-            name: face.name,
-            number: face.number,
-            uuid: face.buffer.uuid,
-            color: face.buffer.data.attributes.color?.array
-          }
-        }),
-        edges: partContent.edges?.map((edge) => {
-          return {
-            name: edge.name,
-            number: edge.number,
-            uuid: edge.buffer.uuid,
-            color: edge.buffer.data.attributes.color?.array
-          }
+        // Convert buffers
+        partContent.solids?.forEach((solid) => {
+          solid.buffer = JSON.parse(Buffer.from(solid.buffer).toString())
         })
-      }
+        partContent.faces?.forEach((face) => {
+          face.buffer = JSON.parse(Buffer.from(face.buffer).toString())
+        })
+        partContent.edges?.forEach((edge) => {
+          edge.buffer = JSON.parse(Buffer.from(edge.buffer).toString())
+        })
 
-      setPart(partContent)
-      setPartSummary(summary)
+        // Summary
+        const summary = {
+          uuid: partContent.uuid,
+          type: partContent.type,
+          solids: partContent.solids?.map((solid) => {
+            return {
+              name: solid.name,
+              number: solid.number,
+              uuid: solid.buffer.uuid,
+              color: solid.buffer.data.attributes.color?.array
+            }
+          }),
+          faces: partContent.faces?.map((face) => {
+            return {
+              name: face.name,
+              number: face.number,
+              uuid: face.buffer.uuid,
+              color: face.buffer.data.attributes.color?.array
+            }
+          }),
+          edges: partContent.edges?.map((edge) => {
+            return {
+              name: edge.name,
+              number: edge.number,
+              uuid: edge.buffer.uuid,
+              color: edge.buffer.data.attributes.color?.array
+            }
+          })
+        }
+
+        setPart(partContent)
+        setPartSummary(summary)
+      }
     } catch (err) {
       Error(errors.partError, err)
     } finally {

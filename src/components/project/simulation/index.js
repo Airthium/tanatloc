@@ -155,7 +155,7 @@ const Simulation = ({ project, simulation, type, part, onClose }) => {
 
     if (configuration?.geometry?.file) {
       if (
-        !configuration?.part ||
+        !configuration.part ||
         ((type === 'materials' || type === 'boundaryConditions') &&
           part?.type !== 'geometry')
       ) {
@@ -198,7 +198,7 @@ const Simulation = ({ project, simulation, type, part, onClose }) => {
           .then(() => {
             // Update local
             const newSimulation = { ...simulation }
-            newSimulation.scheme.configuration.part = null
+            newSimulation.scheme.configuration.part = { needCleanup: true }
 
             // Mutate
             mutateOneSimulation(newSimulation)

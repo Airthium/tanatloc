@@ -112,12 +112,7 @@ const Geometry = ({ project, simulation, part }) => {
         ])
 
         // Mutate simulation
-        mutateOneSimulation(
-          {
-            ...simulation
-          },
-          true
-        )
+        mutateOneSimulation({ ...simulation }, true)
       } catch (err) {
         Error(errors.updateError, err)
       } finally {

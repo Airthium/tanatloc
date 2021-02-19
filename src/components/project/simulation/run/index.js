@@ -139,8 +139,8 @@ const Run = ({ project, simulation }) => {
    */
   const onStop = async () => {
     try {
-    await Simulation.stop({id: simulation.id})
-    }catch(err){
+      await Simulation.stop({ id: simulation.id })
+    } catch (err) {
       Error(errors.stopError, err)
     }
   }

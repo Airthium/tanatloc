@@ -339,9 +339,8 @@ describe('components/project/view', () => {
     wrapper = mount(
       <View
         simulation={{
-          scheme: { configuration: { part: {} } }
+          part: {}
         }}
-        type="geometry"
         setPartSummary={setPartSummary}
       />
     )
@@ -351,9 +350,8 @@ describe('components/project/view', () => {
     wrapper = mount(
       <View
         simulation={{
-          scheme: { configuration: { part: {} } }
+          part: {}
         }}
-        type="geometry"
         setPartSummary={setPartSummary}
       />
     )
@@ -363,9 +361,8 @@ describe('components/project/view', () => {
     wrapper = mount(
       <View
         simulation={{
-          scheme: { configuration: { part: {} } }
+          part: {}
         }}
-        type="geometry"
         setPartSummary={setPartSummary}
       />
     )
@@ -394,9 +391,18 @@ describe('components/project/view', () => {
     wrapper = mount(
       <View
         simulation={{
-          scheme: { configuration: { part: {} } }
+          part: {}
         }}
-        type="geometry"
+        setPartSummary={setPartSummary}
+      />
+    )
+    wrapper.unmount()
+
+    wrapper = mount(
+      <View
+        simulation={{
+          part: { needCleanup: true }
+        }}
         setPartSummary={setPartSummary}
       />
     )
@@ -406,9 +412,8 @@ describe('components/project/view', () => {
     wrapper = mount(
       <View
         simulation={{
-          scheme: { configuration: { part: {} } }
+          part: {}
         }}
-        type="geometry"
         setPartSummary={setPartSummary}
       />
     )

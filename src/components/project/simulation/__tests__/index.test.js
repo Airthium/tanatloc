@@ -166,47 +166,12 @@ describe('components/project/simulation', () => {
   })
 
   it('simulation effect', () => {
+    // Load models
     wrapper.unmount()
     wrapper = mount(<Simulation />)
     expect(wrapper.find('panel').props().title).toBe('About')
 
-    // No geometry
-    wrapper.unmount()
-    wrapper = mount(
-      <Simulation
-        simulation={{
-          scheme: {
-            algorithm: 'algorithm',
-            configuration: {
-              part: {},
-              geometry: { title: 'Geometry', file: undefined },
-              materials: { title: 'Materials' }
-            }
-          }
-        }}
-        type="material"
-      />
-    )
-    expect(wrapper.find('panel').props().title).toBe('Materials')
-
-    // Geometry
-    wrapper.unmount()
-    wrapper = mount(
-      <Simulation
-        simulation={{
-          scheme: {
-            algorithm: 'algorithm',
-            configuration: {
-              geometry: { title: 'Geometry', file: {} }
-            }
-          }
-        }}
-        type="geometry"
-      />
-    )
-    expect(wrapper.find('panel').props().title).toBe('Geometry')
-
-    // With changes
+    // Need update (added)
     wrapper.unmount()
     mockAddedDiff.mockImplementation(() => ({ something: { test: 'test' } }))
     wrapper = mount(
@@ -223,8 +188,28 @@ describe('components/project/simulation', () => {
       />
     )
     expect(wrapper.find('panel').props().title).toBe('Geometry')
+    mockAddedDiff.mockImplementation(() => ({}))
 
-    // Materials
+    // Need update (updated)
+    wrapper.unmount()
+    mockUpdatedDiff.mockImplementation(() => ({ something: { test: 'test' } }))
+    wrapper = mount(
+      <Simulation
+        simulation={{
+          scheme: {
+            algorithm: 'algorithm',
+            configuration: {
+              geometry: { title: 'Geometry', file: {} }
+            }
+          }
+        }}
+        type="geometry"
+      />
+    )
+    expect(wrapper.find('panel').props().title).toBe('Geometry')
+    mockUpdatedDiff.mockImplementation(() => ({}))
+
+    // Force geometry
     wrapper.unmount()
     wrapper = mount(
       <Simulation
@@ -232,39 +217,188 @@ describe('components/project/simulation', () => {
           scheme: {
             algorithm: 'algorithm',
             configuration: {
+              part: null,
+              geometry: { title: 'Geometry', file: {} },
               materials: { title: 'Materials' }
             }
           }
         }}
         type="materials"
-        part={{ type: 'result' }}
       />
     )
     expect(wrapper.find('panel').props().title).toBe('Materials')
 
-    // Error
+    // Force geometry (existing part)
+    wrapper.unmount()
+    wrapper = mount(
+      <Simulation
+        part={{ type: 'not a geometry' }}
+        simulation={{
+          scheme: {
+            algorithm: 'algorithm',
+            configuration: {
+              part: { type: 'not a geometry' },
+              geometry: { title: 'Geometry', file: {} },
+              materials: { title: 'Materials' }
+            }
+          }
+        }}
+        type="materials"
+      />
+    )
+    expect(wrapper.find('panel').props().title).toBe('Materials')
+
+    // Force geometry (error)
     wrapper.unmount()
     mockUpdate.mockImplementation(() => {
       throw new Error()
     })
     wrapper = mount(
       <Simulation
+        part={{ type: 'not a geometry' }}
         simulation={{
           scheme: {
-            configuration: { geometry: { title: 'Geometry', file: {} } }
+            algorithm: 'algorithm',
+            configuration: {
+              part: { type: 'not a geometry' },
+              geometry: { title: 'Geometry', file: {} },
+              boundaryConditions: { title: 'Boundary conditions' }
+            }
           }
         }}
-        type="geometry"
+        type="boundaryConditions"
       />
     )
-    expect(wrapper.find('panel').props().title).toBe('Geometry')
+    expect(wrapper.find('panel').props().title).toBe('Boundary conditions')
+    mockUpdate.mockReset()
+
+    // Force geometry (not needed)
+    wrapper.unmount()
+    wrapper = mount(
+      <Simulation
+        part={{ type: 'geometry' }}
+        simulation={{
+          scheme: {
+            algorithm: 'algorithm',
+            configuration: {
+              part: { type: 'not a geometry' },
+              geometry: { title: 'Geometry', file: {} },
+              boundaryConditions: { title: 'Boundary conditions' }
+            }
+          }
+        }}
+        type="boundaryConditions"
+      />
+    )
+    expect(wrapper.find('panel').props().title).toBe('Boundary conditions')
+
+    // Remove geometry
+    wrapper.unmount()
+    wrapper = mount(
+      <Simulation
+        part={{ type: 'geometry' }}
+        simulation={{
+          scheme: {
+            algorithm: 'algorithm',
+            configuration: {
+              part: {},
+              geometry: { title: 'Geometry', file: null },
+              materials: { title: 'Materials' }
+            }
+          }
+        }}
+        type="materials"
+      />
+    )
+    expect(wrapper.find('panel').props().title).toBe('Materials')
+
+    // Remove geometry (error)
+    wrapper.unmount()
+    mockUpdate.mockImplementation(() => {
+      throw new Error()
+    })
+    wrapper = mount(
+      <Simulation
+        part={{ type: 'geometry' }}
+        simulation={{
+          scheme: {
+            algorithm: 'algorithm',
+            configuration: {
+              part: {},
+              geometry: { title: 'Geometry', file: null },
+              materials: { title: 'Materials' }
+            }
+          }
+        }}
+        type="materials"
+      />
+    )
+    expect(wrapper.find('panel').props().title).toBe('Materials')
+    mockUpdate.mockReset()
+
+    // // Geometry
+
+    // // No geometry
+    // wrapper.unmount()
+    // wrapper = mount(
+    //   <Simulation
+    //     simulation={{
+    //       scheme: {
+    //         algorithm: 'algorithm',
+    //         configuration: {
+    //           part: { type: 'geometry' },
+    //           geometry: { title: 'Geometry', file: undefined },
+    //           materials: { title: 'Materials' }
+    //         }
+    //       }
+    //     }}
+    //     type="materials"
+    //   />
+    // )
+    // expect(wrapper.find('panel').props().title).toBe('Materials')
+
+    // // Materials
+    // wrapper.unmount()
+    // wrapper = mount(
+    //   <Simulation
+    //     simulation={{
+    //       scheme: {
+    //         algorithm: 'algorithm',
+    //         configuration: {
+    //           materials: { title: 'Materials' }
+    //         }
+    //       }
+    //     }}
+    //     type="materials"
+    //     part={{ type: 'result' }}
+    //   />
+    // )
+    // expect(wrapper.find('panel').props().title).toBe('Materials')
+
+    // // Error
+    // wrapper.unmount()
+    // mockUpdate.mockImplementation(() => {
+    //   throw new Error()
+    // })
+    // wrapper = mount(
+    //   <Simulation
+    //     simulation={{
+    //       scheme: {
+    //         configuration: { geometry: { title: 'Geometry', file: {} } }
+    //       }
+    //     }}
+    //     type="geometry"
+    //   />
+    // )
+    // expect(wrapper.find('panel').props().title).toBe('Geometry')
   })
 })
 
-let onOk = jest.fn()
+const onOk = jest.fn()
 describe('components/project/simulation.Selector', () => {
   beforeEach(() => {
-    onOk = jest.fn()
+    onOk.mockReset()
+
     wrapper = shallow(<Simulation.Selector onOk={onOk} />)
   })
 

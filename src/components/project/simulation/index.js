@@ -156,7 +156,7 @@ const Simulation = ({ project, simulation, type, part, onClose }) => {
     if (configuration?.geometry?.file) {
       if (
         !configuration?.part ||
-        ((type === 'material' || type === 'boundaryConditions') &&
+        ((type === 'materials' || type === 'boundaryConditions') &&
           part?.type !== 'geometry')
       ) {
         // Force geometry

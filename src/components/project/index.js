@@ -292,7 +292,13 @@ const Project = () => {
           part={partSummary}
           onClose={onSimulationClose}
         />
-        <View simulation={currentSimulation} setPartSummary={setPartSummary} />
+        <View
+          simulation={{
+            id: currentSimulation?.id,
+            part: currentSimulation?.scheme?.configuration?.part
+          }}
+          setPartSummary={setPartSummary}
+        />
       </Layout.Content>
     </Layout>
   )

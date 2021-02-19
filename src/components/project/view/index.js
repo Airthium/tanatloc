@@ -784,10 +784,8 @@ const View = ({ simulation, setPartSummary }) => {
 
   // Part
   useEffect(() => {
-    const configuration = simulation?.scheme?.configuration
-
-    if (configuration?.part) loadPart(configuration.part)
-  }, [simulation?.scheme?.configuration?.part])
+    if (simulation?.part) loadPart(simulation.part)
+  }, [simulation?.part])
 
   /**
    * Load part

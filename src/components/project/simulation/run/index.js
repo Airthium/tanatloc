@@ -83,14 +83,6 @@ const Run = ({ project, simulation }) => {
     setCurrentConfiguration(currentSimulation?.scheme?.configuration)
   }, [JSON.stringify(currentSimulation)])
 
-  useEffect(() => {
-    if (
-      currentConfiguration?.run.done !== configuration?.run.done ||
-      currentConfiguration?.run.error !== configuration?.run.error
-    )
-      mutateOneSimulation(currentSimulation)
-  }, [JSON.stringify(configuration), JSON.stringify(currentConfiguration)])
-
   /**
    * On cloud server
    * @param {Object} cloudServer Cloud server

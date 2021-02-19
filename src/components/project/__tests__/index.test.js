@@ -31,9 +31,14 @@ jest.mock('@/api/project', () => ({
 }))
 
 const mockSimulations = jest.fn()
+const mockSimulationUpdate = jest.fn()
 jest.mock('@/api/simulation', () => ({
   add: async () => ({ id: 'id' }),
-  useSimulations: () => [mockSimulations(), { addOneSimulation: () => {} }]
+  update: async () => mockSimulationUpdate(),
+  useSimulations: () => [
+    mockSimulations(),
+    { addOneSimulation: () => {}, mutateOneSimulation: () => {} }
+  ]
 }))
 
 const mockError = jest.fn()
@@ -57,6 +62,7 @@ describe('components/project', () => {
     mockMutateProject.mockReset()
     mockUpdate.mockReset()
 
+    mockSimulationUpdate.mockReset()
     mockSimulations.mockReset()
     mockSimulations.mockImplementation(() => [
       {
@@ -217,5 +223,103 @@ describe('components/project', () => {
     mockUser.mockImplementation(() => {})
     wrapper = mount(<Project />)
     expect(mockRouter).toHaveBeenCalledTimes(1)
+  })
+
+  it('simulation effect', () => {
+    // Force geometry
+    wrapper.unmount()
+    mockSimulations.mockImplementation(() => [
+      {
+        scheme: {
+          configuration: {
+            geometry: {
+              title: 'Geometry',
+              file: {}
+            }
+          }
+        }
+      }
+    ])
+    wrapper = mount(<Project />)
+
+    wrapper.find('InternalMenu').at(1).props().onClick({ key: 'simulation&id' })
+    wrapper.update()
+    expect(mockSimulationUpdate).toHaveBeenCalledTimes(1)
+
+    // Force geometry (with part)
+    wrapper.unmount()
+    mockSimulations.mockImplementation(() => [
+      {
+        scheme: {
+          configuration: {
+            part: {},
+            geometry: {
+              title: 'Geometry',
+              file: {}
+            }
+          }
+        }
+      }
+    ])
+    wrapper = mount(<Project />)
+
+    wrapper.find('InternalMenu').at(1).props().onClick({ key: 'simulation&id' })
+    wrapper.update()
+    expect(mockSimulationUpdate).toHaveBeenCalledTimes(2)
+
+    // Force geometry (error)
+    wrapper.unmount()
+    mockSimulations.mockImplementation(() => [
+      {
+        scheme: {
+          configuration: {
+            geometry: {
+              title: 'Geometry',
+              file: {}
+            }
+          }
+        }
+      }
+    ])
+    mockSimulationUpdate.mockImplementation(() => {
+      throw new Error()
+    })
+    wrapper = mount(<Project />)
+
+    wrapper.find('InternalMenu').at(1).props().onClick({ key: 'simulation&id' })
+    wrapper.update()
+    expect(mockSimulationUpdate).toHaveBeenCalledTimes(3)
+
+    // Remove part
+    wrapper.unmount()
+    mockSimulationUpdate.mockReset()
+    mockSimulations.mockImplementation(() => [
+      {
+        scheme: {
+          configuration: {
+            part: { type: 'geometry' },
+            geometry: {
+              title: 'Geometry'
+            }
+          }
+        }
+      }
+    ])
+    wrapper = mount(<Project />)
+
+    wrapper.find('InternalMenu').at(1).props().onClick({ key: 'simulation&id' })
+    wrapper.update()
+    expect(mockSimulationUpdate).toHaveBeenCalledTimes(1)
+
+    // Remove part (error)
+    wrapper.unmount()
+    mockSimulationUpdate.mockImplementation(() => {
+      throw new Error()
+    })
+    wrapper = mount(<Project />)
+
+    wrapper.find('InternalMenu').at(1).props().onClick({ key: 'simulation&id' })
+    wrapper.update()
+    expect(mockSimulationUpdate).toHaveBeenCalledTimes(3)
   })
 })

@@ -54,7 +54,7 @@ const Geometry = ({ project, simulation, part }) => {
   // Units LaTeX
   useEffect(() => {
     window.MathJax?.typeset()
-  })
+  }, [part])
 
   // Effect
   useEffect(() => {
@@ -92,6 +92,7 @@ const Geometry = ({ project, simulation, part }) => {
       // Diff scheme
       const diff = {
         file: {
+          type: 'geometry',
           name: info.file.name,
           uid: info.file.uid,
           buffer: Buffer.from(buffer)
@@ -203,10 +204,6 @@ const Geometry = ({ project, simulation, part }) => {
       Error(errors.downloadError, err)
     }
   }
-
-  useEffect(() => {
-    window.MathJax?.typeset()
-  }, [])
 
   /**
    * Render

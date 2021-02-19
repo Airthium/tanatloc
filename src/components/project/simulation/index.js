@@ -155,9 +155,8 @@ const Simulation = ({ project, simulation, type, part, onClose }) => {
 
     if (configuration?.geometry?.file) {
       if (
-        !configuration.part ||
-        ((type === 'materials' || type === 'boundaryConditions') &&
-          part?.type !== 'geometry')
+        (type === 'materials' || type === 'boundaryConditions') &&
+        part?.type !== 'geometry'
       ) {
         // Force geometry
         const newSimulation = { ...simulation }
@@ -176,30 +175,6 @@ const Simulation = ({ project, simulation, type, part, onClose }) => {
           }
         ])
           .then(() => {
-            // Mutate
-            mutateOneSimulation(newSimulation)
-          })
-          .catch((err) => {
-            Error(errors.updateError, err)
-          })
-      }
-    } else {
-      // Check for removed geometry
-      if (configuration?.part && part?.type == 'geometry') {
-        // Remove part
-        SimulationAPI.update({ id: simulation.id }, [
-          {
-            key: 'scheme',
-            type: 'json',
-            method: 'erase',
-            path: ['configuration', 'part']
-          }
-        ])
-          .then(() => {
-            // Update local
-            const newSimulation = { ...simulation }
-            newSimulation.scheme.configuration.part = { needCleanup: true }
-
             // Mutate
             mutateOneSimulation(newSimulation)
           })

@@ -57,9 +57,10 @@ const Project = () => {
   // Data
   const [user, { loadingUser }] = UserAPI.useUser()
   const [project, { mutateProject }] = ProjectAPI.useProject(projectId || '')
-  const [simulations, { addOneSimulation }] = SimulationAPI.useSimulations(
-    project.simulations
-  )
+  const [
+    simulations,
+    { addOneSimulation, mutateOneSimulation }
+  ] = SimulationAPI.useSimulations(project?.simulations)
 
   // Not logged -> go to login page
   useEffect(() => {
@@ -72,6 +73,69 @@ const Project = () => {
     if (JSON.stringify(simulation) !== JSON.stringify(currentSimulation))
       setCurrentSimulation(simulation)
   }, [simulations])
+
+  // Manage part
+  useEffect(() => {
+    const configuration = currentSimulation?.scheme?.configuration
+
+    if (configuration?.geometry?.file) {
+      if (!configuration.part) {
+        // Force geometry
+        const newSimulation = { ...currentSimulation }
+
+        // Update local
+        newSimulation.scheme.configuration.part = configuration.geometry.file
+
+        // Update simulation
+        SimulationAPI.update({ id: currentSimulation.id }, [
+          {
+            key: 'scheme',
+            type: 'json',
+            method: 'diff',
+            path: ['configuration', 'part'],
+            value: configuration.geometry.file
+          }
+        ])
+          .then(() => {
+            // Mutate
+            mutateOneSimulation(newSimulation)
+
+            // State
+            setCurrentSimulation(newSimulation)
+          })
+          .catch((err) => {
+            Error(errors.updateError, err)
+          })
+      }
+    } else {
+      // Check for removed geometry
+      if (configuration?.part?.type === 'geometry') {
+        // Remove part
+        SimulationAPI.update({ id: currentSimulation.id }, [
+          {
+            key: 'scheme',
+            type: 'json',
+            method: 'erase',
+            path: ['configuration', 'part']
+          }
+        ])
+          .then(() => {
+            // Update local
+            const newSimulation = { ...currentSimulation }
+            newSimulation.scheme.configuration.part = { needCleanup: true }
+
+            // Mutate
+            mutateOneSimulation(newSimulation)
+
+            // State
+            setCurrentSimulation(newSimulation)
+          })
+          .catch((err) => {
+            Error(errors.updateError, err)
+          })
+      }
+    }
+  }, [currentSimulation])
 
   /**
    * Handle title

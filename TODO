@@ -22,5 +22,3 @@ Workspace:
 
 Run:
 - Use file for logs (separate gmsh / Freefem for rescale)
-
-Geometry autoload bug

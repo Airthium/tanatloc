@@ -37,7 +37,7 @@ const NotAuthorized = () => {
               <AlertOutlined style={{ color: 'red' }} /> {errors.NOT_ALLOWED}
             </Typography.Text>
             <Typography.Text>
-              Go back
+              Go back{' '}
               <Button type="link" onClick={home}>
                 home
               </Button>

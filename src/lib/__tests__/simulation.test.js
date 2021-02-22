@@ -8,9 +8,11 @@ jest.mock('path', () => ({
 jest.mock('@/config/storage', () => ({}))
 
 const mockCompute = jest.fn()
+const mockStop = jest.fn()
 jest.mock('@/plugins/api', () => ({
   key: {
-    computeSimulation: async () => mockCompute()
+    computeSimulation: async () => mockCompute(),
+    stop: async () => mockStop()
   }
 }))
 
@@ -59,6 +61,7 @@ describe('src/lib/simulation', () => {
     mockRemoveFile.mockReset()
     mockRemoveDirectory.mockReset()
     mockCompute.mockReset()
+    mockStop.mockReset()
   })
 
   it('add', async () => {
@@ -101,7 +104,7 @@ describe('src/lib/simulation', () => {
   it('update', async () => {
     mockGet.mockImplementation(() => ({
       scheme: {
-        categories: {
+        configuration: {
           geometry: {}
         }
       }
@@ -190,7 +193,7 @@ describe('src/lib/simulation', () => {
     await Simulation.update({ id: 'id' }, [
       {
         key: 'scheme',
-        path: ['categories', 'geometry'],
+        path: ['configuration', 'geometry'],
         value: {
           file: {
             name: 'name',
@@ -213,7 +216,7 @@ describe('src/lib/simulation', () => {
     // With old file
     mockGet.mockImplementation(() => ({
       scheme: {
-        categories: {
+        configuration: {
           geometry: {
             file: {
               fileName: 'name',
@@ -229,7 +232,7 @@ describe('src/lib/simulation', () => {
     await Simulation.update({ id: 'id' }, [
       {
         key: 'scheme',
-        path: ['categories', 'geometry'],
+        path: ['configuration', 'geometry'],
         value: {
           file: {
             name: 'name',
@@ -259,7 +262,7 @@ describe('src/lib/simulation', () => {
     await Simulation.update({ id: 'id' }, [
       {
         key: 'scheme',
-        path: ['categories', 'geometry'],
+        path: ['configuration', 'geometry'],
         value: {
           file: {
             name: 'name',
@@ -285,7 +288,7 @@ describe('src/lib/simulation', () => {
     // With empty old file
     mockGet.mockImplementation(() => ({
       scheme: {
-        categories: {
+        configuration: {
           geometry: {
             file: {}
           }
@@ -295,7 +298,7 @@ describe('src/lib/simulation', () => {
     await Simulation.update({ id: 'id' }, [
       {
         key: 'scheme',
-        path: ['categories', 'geometry'],
+        path: ['configuration', 'geometry'],
         value: {
           file: {
             name: 'name',
@@ -319,7 +322,7 @@ describe('src/lib/simulation', () => {
     await Simulation.update({ id: 'id' }, [
       {
         key: 'scheme',
-        path: ['categories', 'geometry'],
+        path: ['configuration', 'geometry'],
         value: {
           file: 'remove'
         }
@@ -410,5 +413,25 @@ describe('src/lib/simulation', () => {
     expect(mockRemoveFile).toHaveBeenCalledTimes(0)
     expect(mockRemoveDirectory).toHaveBeenCalledTimes(0)
     expect(mockCompute).toHaveBeenCalledTimes(2)
+  })
+
+  it('stop', async () => {
+    mockGet.mockImplementation(() => ({
+      scheme: {
+        configuration: {
+          run: {
+            cloudServer: {
+              key: 'key'
+            }
+          }
+        }
+      },
+      tasks: [{ status: 'wait' }, { status: 'error' }]
+    }))
+
+    await Simulation.stop({})
+    expect(mockGet).toHaveBeenCalledTimes(1)
+    expect(mockStop).toHaveBeenCalledTimes(1)
+    expect(mockUpdate).toHaveBeenCalledTimes(1)
   })
 })

@@ -210,4 +210,10 @@ describe('plugins/local/src/lib', () => {
       expect(true).toBe(true)
     }
   })
+
+  it('stop', async () => {
+    const mockKill = jest.spyOn(process, 'kill').mockImplementation(() => {})
+    await Local.stop([{ status: 'wait' }, { status: 'process' }])
+    expect(mockKill).toHaveBeenCalledTimes(1)
+  })
 })

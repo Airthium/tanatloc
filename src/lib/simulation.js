@@ -243,4 +243,34 @@ const run = async ({ id }) => {
     })
 }
 
-export default { add, get, update, del, run }
+/**
+ * Stop simulation
+ * @param {Object} simulation Simulation { id }
+ */
+const stop = async ({ id }) => {
+  const simulation = await get(id, ['scheme', 'tasks'])
+
+  // Global
+  const configuration = simulation.scheme.configuration
+  const tasks = simulation.tasks
+
+  // Find plugin
+  const plugin = PluginAPIs[configuration.run.cloudServer.key]
+
+  // Stop
+  await plugin.stop(tasks, configuration)
+
+  // Update tasks
+  tasks.forEach((task) => {
+    if (task.status === 'wait') task.status = 'error'
+    task.log += 'Job killed'
+  })
+  await update({ id }, [
+    {
+      key: 'tasks',
+      value: tasks
+    }
+  ])
+}
+
+export default { add, get, update, del, run, stop }

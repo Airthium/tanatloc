@@ -619,4 +619,34 @@ const getFile = async (configuration, id) => {
   })
 }
 
-export default { key, init, computeSimulation }
+/**
+ * Stop simulation
+ * @param {Array} tasks Tasks
+ * @param {Object} configuration Configuration
+ */
+const stop = async (tasks, configuration) => {
+  const cloudConfiguration = configuration.run.cloudServer.configuration
+
+  await Promise.all(
+    tasks.map(async (task) => {
+      if (task.status === 'process') {
+        // Kill run, if any
+        await call({
+          platform: cloudConfiguration.platform.value,
+          token: cloudConfiguration.token.value,
+          method: 'POST',
+          route: 'jobs/' + task.pid + '/run/1/stop/'
+        })
+        // Kill job
+        await call({
+          platform: cloudConfiguration.platform.value,
+          token: cloudConfiguration.token.value,
+          method: 'POST',
+          route: 'jobs/' + task.pid + '/stop/'
+        })
+      }
+    })
+  )
+}
+
+export default { key, init, computeSimulation, stop }

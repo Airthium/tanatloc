@@ -328,4 +328,31 @@ describe('plugins/rescale/src/lib', () => {
       expect(true).toBe(true)
     }
   })
+
+  it('stop', async () => {
+    const tasks = [
+      {
+        status: 'wait'
+      },
+      {
+        status: 'process'
+      }
+    ]
+    const configuration = {
+      run: {
+        cloudServer: {
+          configuration: {
+            platform: {
+              value: 'platform'
+            },
+            token: {
+              value: 'token'
+            }
+          }
+        }
+      }
+    }
+    await Rescale.stop(tasks, configuration)
+    expect(mockCall).toHaveBeenCalledTimes(2)
+  })
 })

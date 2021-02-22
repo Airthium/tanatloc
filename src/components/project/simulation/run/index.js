@@ -131,7 +131,7 @@ const Run = ({ project, simulation }) => {
    */
   const onStop = async () => {
     try {
-      await Simulation.stop({ id: simulation.id })
+      await SimulationAPI.stop({ id: simulation.id })
     } catch (err) {
       Error(errors.stopError, err)
     }
@@ -287,7 +287,6 @@ const Run = ({ project, simulation }) => {
                   disabled={!running}
                   icon={<StopOutlined />}
                   onClick={onStop}
-                  style={{ backgroundColor: 'blue', color: 'red' }}
                 />
               </Space>
               <Steps direction="vertical">

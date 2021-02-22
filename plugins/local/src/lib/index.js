@@ -308,4 +308,14 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
   }
 }
 
-export default { key, computeMesh, computeSimulation }
+/**
+ * Stop tasks
+ * @param {Array} tasks Tasks
+ */
+const stop = async (tasks) => {
+  tasks.forEach((task) => {
+    if (task.status === 'process') process.kill(task.pid)
+  })
+}
+
+export default { key, computeMesh, computeSimulation, stop }

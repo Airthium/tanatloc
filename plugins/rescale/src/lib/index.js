@@ -629,7 +629,7 @@ const stop = async (tasks, configuration) => {
 
   await Promise.all(
     tasks.map(async (task) => {
-      if (task.status === 'process') {
+      if (task.status === 'wait' || task.status === 'process') {
         // Kill run, if any
         await call({
           platform: cloudConfiguration.platform.value,

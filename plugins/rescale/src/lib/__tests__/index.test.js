@@ -332,7 +332,7 @@ describe('plugins/rescale/src/lib', () => {
   it('stop', async () => {
     const tasks = [
       {
-        status: 'wait'
+        status: 'other'
       },
       {
         status: 'process'

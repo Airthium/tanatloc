@@ -27,6 +27,8 @@ import UserAPI from '@/api/user'
 import WorkspaceAPI from '@/api/workspace'
 import logout from '@/api/logout'
 
+import version from '/version.json'
+
 /**
  * Errors
  */
@@ -260,6 +262,7 @@ const Dashboard = () => {
               >
                 {menuItems.logout.label}
               </Menu.Item>
+              <p className="version">version: {version.git}</p>
             </Menu>
           </Layout.Sider>
 

@@ -15,7 +15,7 @@
     "path": false
   },
   "scripts": {
-    "build": "next build",
+    "build": "yarn gitversion && next build",
     "clean": "rimraf dist/ dist-server/ out/ .next/",
     "depcheck": "depcheck",
     "dev": "next",
@@ -29,6 +29,7 @@
     "server-build": "babel . --only config,server,plugin,src/auth,src/database,src/lib,src/route,src/services --out-dir dist-server",
     "start": "next start",
     "test": "jest --coverage --silent",
+    "gitversion": "sh install/version.sh",
     "workflow": ".github/workflows/node.local.sh"
   },
   "dependencies": {

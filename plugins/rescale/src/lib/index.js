@@ -557,7 +557,10 @@ const getStatus = async (configuration, id) => {
     route: 'jobs/' + id + '/statuses/'
   })
 
-  if (!status.results) return 'Completed'
+  if (!status.results) {
+    console.log(status)
+    return 'Completed'
+  }
 
   const sorted = status.results.sort((a, b) => b.statusDate - a.statusDate)
 

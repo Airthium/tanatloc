@@ -5,9 +5,15 @@ jest.mock('next/router', () => ({
   useRouter: () => [{ push: () => {} }]
 }))
 
-jest.mock('@/components/project/data', () => (project, filter, title) => {
-  return title
-})
+jest.mock(
+  '@/components/project/data',
+  () => (project, filter, title, description) => {
+    return {
+      title,
+      description
+    }
+  }
+)
 
 jest.mock('@/components/project/share', () => 'share')
 
@@ -60,14 +66,18 @@ describe('component/project/list', () => {
     const data = wrapper.find('Table').props().dataSource
     expect(data.length).toBe(2)
 
-    data[0]()
+    data[0].title()
     expect(mockUpdate).toHaveBeenCalledTimes(1)
+    data[0].description()
+    expect(mockUpdate).toHaveBeenCalledTimes(2)
 
     mockMutate.mockImplementation(() => {
       throw new Error()
     })
-    data[0]()
-    expect(mockUpdate).toHaveBeenCalledTimes(2)
+    data[0].title()
+    expect(mockUpdate).toHaveBeenCalledTimes(3)
+    data[0].description()
+    expect(mockUpdate).toHaveBeenCalledTimes(4)
   })
 
   it('onCell', () => {

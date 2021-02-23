@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import {
+  // Button,
   Divider,
   Layout,
   PageHeader,
@@ -28,6 +29,8 @@ import WorkspaceAPI from '@/api/workspace'
 const errors = {
   updateError: 'Unable to update the workspace'
 }
+
+// TODO create share
 
 /**
  * Workspace

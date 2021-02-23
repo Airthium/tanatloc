@@ -121,7 +121,7 @@ const Groups = () => {
       return <Select.Option key={user.id}>{name}</Select.Option>
     })
     setUserOptions(options)
-  }, [users])
+  }, [JSON.stringify(users)])
 
   /**
    * On add

@@ -13,6 +13,7 @@ describe('src/components/project/data', () => {
   it('avatar', () => {
     const data = Data({
       id: 'id',
+      description: 'description',
       owners: [
         { id: 'id1', avatar: 'avatar', email: 'email' },
         {

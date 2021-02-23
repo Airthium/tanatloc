@@ -34,7 +34,12 @@ const ProjectList = ({ workspace, filter }) => {
   // Data
   const data = projects
     .map((project) => {
-      return Data(project, filter, (title) => setTitle(project, title))
+      return Data(
+        project,
+        filter,
+        (title) => setTitle(project, title),
+        (description) => setDescription(project, description)
+      )
     })
     .filter((d) => d)
 
@@ -71,6 +76,26 @@ const ProjectList = ({ workspace, filter }) => {
     }
   }
 
+  const setDescription = async (project, description) => {
+    try {
+      // Update
+      await ProjectAPI.update({ id: project.id }, [
+        {
+          key: 'description',
+          value: description
+        }
+      ])
+
+      // Mutate
+      mutateOneProject({
+        ...project,
+        description: description
+      })
+    } catch (err) {
+      Error(errors.updateError, err)
+    }
+  }
+
   /**
    * Render
    */
@@ -89,6 +114,7 @@ const ProjectList = ({ workspace, filter }) => {
           />
         )
       }}
+      style={{ marginTop: '24px' }}
     >
       <Table.Column
         title=""
@@ -99,7 +125,7 @@ const ProjectList = ({ workspace, filter }) => {
           }
         }}
       />
-      <Table.Column title="Project Name" dataIndex="title" />
+      <Table.Column title="Project" dataIndex="title" />
       {/* <Table.Column title="Status" dataIndex="tags" align="center" /> */}
       <Table.Column title="Administrators" dataIndex="owners" align="center" />
       <Table.Column title="Shared With" dataIndex="users" align="center" />

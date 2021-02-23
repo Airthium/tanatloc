@@ -1,4 +1,4 @@
-import { Avatar, Carousel, Empty, Tooltip, Typography } from 'antd'
+import { Avatar, Collapse, Empty, Tooltip, Typography } from 'antd'
 
 import Utils from '@/lib/utils'
 
@@ -7,8 +7,9 @@ import Utils from '@/lib/utils'
  * @memberof module:'src/components/project
  * @param {Object} project Project
  * @param {Function} setTitle Set title
+ * @param {Function} setDescription Set description
  */
-const Data = (project, filter, setTitle) => {
+const Data = (project, filter, setTitle, setDescription) => {
   // Check
   if (!project) return null
 
@@ -17,39 +18,38 @@ const Data = (project, filter, setTitle) => {
     return null
 
   // Snapshot
-  const snapshot = (
-    <Carousel
-      autoplay
-      style={{ cursor: 'pointer' }}
-      dots={{ className: 'carousel-dots' }}
-    >
-      {project.avatar ? (
-        <div>
-          <img src={project && project.avatar} width="100" height="100" />
-        </div>
-      ) : (
-        <div>
-          <Empty
-            image={Empty.PRESENTED_IMAGE_SIMPLE}
-            description={'No preview yet.'}
-            imageStyle={{ width: 100 }}
-          />
-        </div>
-      )}
-      {project.description && (
-        <div>
-          <Typography.Title level={5}>Description:</Typography.Title>
-          <Typography.Text>{project.description}</Typography.Text>
-        </div>
-      )}
-    </Carousel>
+  const snapshot = project.avatar ? (
+    <img src={project && project.avatar} width="100" height="100" />
+  ) : (
+    <Empty
+      image={Empty.PRESENTED_IMAGE_SIMPLE}
+      description={'No preview yet.'}
+      imageStyle={{ width: 100 }}
+    />
   )
 
   // Title
   const title = (
-    <Typography.Paragraph editable={{ maxLength: 50, onChange: setTitle }}>
-      {project.title}
-    </Typography.Paragraph>
+    <>
+      <Typography.Paragraph editable={{ maxLength: 50, onChange: setTitle }}>
+        {project.title}
+      </Typography.Paragraph>
+      {project.description && (
+        <Collapse>
+          <Collapse.Panel header="Description">
+            <Typography.Paragraph
+              editable={{
+                maxLength: 260,
+                autoSize: { maxRows: 4 },
+                onChange: setDescription
+              }}
+            >
+              {project.description}
+            </Typography.Paragraph>
+          </Collapse.Panel>
+        </Collapse>
+      )}
+    </>
   )
 
   // Owners avatars

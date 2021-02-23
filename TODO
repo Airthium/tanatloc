@@ -4,9 +4,6 @@ ThreeJS:
 Simulation:
 - weak coupling
 
-Plugins:
-- Stop a job
-
 Rescale:
 - delete job & files after run and get data
 - real-time results

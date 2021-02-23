@@ -15,12 +15,12 @@
     "path": false
   },
   "scripts": {
-    "build": "yarn gitversion && next build",
+    "build": "next build",
     "clean": "rimraf dist/ dist-server/ out/ .next/",
     "depcheck": "depcheck",
     "dev": "next",
     "doc": "jsdoc -c config/jsdoc/conf.json",
-    "docker": "docker build . -t tanatloc/tanatloc:latest",
+    "docker": "yarn gitversion && docker build . -t tanatloc/tanatloc:latest",
     "electron-build": "yarn server-build && nextron build && electron-builder install-app-deps",
     "electron-dev": "yarn server-build && nextron",
     "export": "yarn build && next export",

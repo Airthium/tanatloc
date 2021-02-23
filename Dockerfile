@@ -43,7 +43,6 @@ ENV DB_HOST $DB_HOST
 ARG DB_PORT
 ENV DB_PORT $DB_PORT
 
-COPY .git {INSTALL_PATH}/.git
 COPY config ${INSTALL_PATH}/config
 COPY install ${INSTALL_PATH}/install
 COPY models ${INSTALL_PATH}/models
@@ -55,6 +54,7 @@ COPY templates ${INSTALL_PATH}/templates
 COPY .babelrc ${INSTALL_PATH}/.babelrc
 COPY next.config.js ${INSTALL_PATH}/next.config.js
 COPY package.json ${INSTALL_PATH}/package.json
+COPY version.json {INSTALL_PATH}/version.json
 COPY yarn.lock ${INSTALL_PATH}/yarn.lock
 
 WORKDIR ${INSTALL_PATH}

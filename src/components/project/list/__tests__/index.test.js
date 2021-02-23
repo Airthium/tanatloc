@@ -9,6 +9,8 @@ jest.mock('@/components/project/data', () => (project, filter, title) => {
   return title
 })
 
+jest.mock('@/components/project/share', () => 'share')
+
 jest.mock('@/components/project/delete', () => 'delete')
 
 const mockProjects = jest.fn()

@@ -4,6 +4,7 @@ import { Space, Table, Empty } from 'antd'
 import { Error } from '@/components/assets/notification'
 
 import Data from '../data'
+import Share from '../share'
 import Delete from '../delete'
 
 import ProjectAPI from '@/api/project'
@@ -99,17 +100,15 @@ const ProjectList = ({ workspace, filter }) => {
         }}
       />
       <Table.Column title="Project Name" dataIndex="title" />
-      <Table.Column title="Status" dataIndex="tags" align="center" />
+      {/* <Table.Column title="Status" dataIndex="tags" align="center" /> */}
       <Table.Column title="Administrators" dataIndex="owners" align="center" />
-      {/* <Table.Column title="Shared With" dataIndex="users" align="center" /> */}
+      <Table.Column title="Shared With" dataIndex="users" align="center" />
       <Table.Column
         title="Actions"
         align="center"
         render={(value) => (
-          <Space size="middle">
-            {/* <Button key="share" icon={<ShareAltOutlined />}>
-              Share
-            </Button> */}
+          <Space size="middle" wrap={true}>
+            <Share />
             <Delete workspace={workspace} project={value} />
           </Space>
         )}

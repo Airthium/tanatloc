@@ -1,4 +1,4 @@
-import { Avatar, Empty, Tooltip, Typography } from 'antd'
+import { Avatar, Carousel, Empty, Tooltip, Typography } from 'antd'
 
 import Utils from '@/lib/utils'
 
@@ -17,21 +17,32 @@ const Data = (project, filter, setTitle) => {
     return null
 
   // Snapshot
-  const snapshot = project.avatar ? (
-    <img
-      src={project && project.avatar}
+  const snapshot = (
+    <Carousel
+      autoplay
       style={{ cursor: 'pointer' }}
-      width="100"
-      height="100"
-    />
-  ) : (
-    <Empty
-      image={Empty.PRESENTED_IMAGE_SIMPLE}
-      style={{ cursor: 'pointer' }}
-      description={'No preview'}
-      imageStyle={{ width: 150 }}
-      description={<span>No projects yet</span>}
-    />
+      dots={{ className: 'carousel-dots' }}
+    >
+      {project.avatar ? (
+        <div>
+          <img src={project && project.avatar} width="100" height="100" />
+        </div>
+      ) : (
+        <div>
+          <Empty
+            image={Empty.PRESENTED_IMAGE_SIMPLE}
+            description={'No preview yet.'}
+            imageStyle={{ width: 100 }}
+          />
+        </div>
+      )}
+      {project.description && (
+        <div>
+          <Typography.Title level={5}>Description:</Typography.Title>
+          <Typography.Text>{project.description}</Typography.Text>
+        </div>
+      )}
+    </Carousel>
   )
 
   // Title
@@ -133,18 +144,4 @@ export default Data
 //       Backed-up in the cloud
 //     </Tag>
 //   </Space>
-// )
-
-// const sharedWith = (
-//   <Avatar.Group
-//     maxCount={3}
-//     maxStyle={{ color: '#f56a00', backgroundColor: '#fde3cf' }}
-//   >
-//     <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
-//     <Avatar style={{ backgroundColor: '#f56a00' }}>K</Avatar>
-//     <Tooltip title="Ant User" placement="top">
-//       <Avatar style={{ backgroundColor: '#87d068' }}>F</Avatar>
-//     </Tooltip>
-//     <Avatar style={{ backgroundColor: '#1890ff' }}>S</Avatar>
-//   </Avatar.Group>
 // )

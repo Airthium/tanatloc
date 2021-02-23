@@ -11,6 +11,7 @@ jest.mock('next/router', () => ({
 }))
 
 jest.mock('../users', () => 'users')
+jest.mock('../groups', () => 'groups')
 jest.mock('../registration', () => 'registration')
 
 let wrapper

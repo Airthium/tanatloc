@@ -32,57 +32,35 @@ describe('database', () => {
   })
 
   it('updater', async () => {
-    await updater('db', 'id', {})
-
-    await updater('db', 'id', { type: 'crypt' })
-
-    try {
-      await updater('db', 'id', { type: 'array' })
-    } catch (err) {}
-
-    await updater('db', 'id', { type: 'array', method: 'append' })
-
-    try {
-      await updater('db', 'id', { type: 'array', method: 'replace' })
-    } catch (err) {}
-
-    await updater('db', 'id', { type: 'array', method: 'remove' })
+    await updater('db', 'id', [
+      { key: 'key1' },
+      { key: 'key2', type: 'crypt' },
+      { key: 'key3', type: 'array', method: 'append' },
+      { key: 'key4', type: 'array', method: 'remove' },
+      { key: 'key5', type: 'json', method: 'set', path: ['first', 'second'] },
+      { key: 'key6', type: 'json', method: 'erase', path: ['first', 'second'] }
+    ])
 
     try {
-      await updater('db', 'id', { type: 'array', method: 'switch' })
-    } catch (err) {}
-
-    mockQuery.mockImplementation(() => ({
-      rows: [
-        {
-          scheme: {
-            first: {
-              second: {}
-            }
-          }
-        }
-      ]
-    }))
-    await updater('db', 'id', {
-      type: 'json',
-      method: 'diff',
-      key: 'scheme',
-      path: ['first', 'second']
-    })
-
-    await updater('db', 'id', {
-      type: 'json',
-      method: 'erase',
-      key: 'scheme',
-      path: ['first', 'second']
-    })
+      await updater('db', 'id', [{ key: 'key' }, { key: 'key' }])
+      expect(true).toBe(false)
+    } catch (err) {
+      expect(true).toBe(true)
+    }
 
     try {
-      await updater('db', 'id', {
-        type: 'json',
-        method: 'other'
-      })
-    } catch (err) {}
+      await updater('db', 'id', [{ key: 'key', type: 'array' }])
+      expect(true).toBe(false)
+    } catch (err) {
+      expect(true).toBe(true)
+    }
+
+    try {
+      await updater('db', 'id', [{ key: 'key', type: 'json' }])
+      expect(true).toBe(false)
+    } catch (err) {
+      expect(true).toBe(true)
+    }
   })
 
   it('deleter', async () => {

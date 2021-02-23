@@ -9,6 +9,7 @@ global.fetch = async (route, param) => {
   mockRoute = route
   mockParam = param
   return {
+    status: 200,
     json: mockJSON,
     headers: {
       get: () => mockGet()

@@ -65,16 +65,6 @@ const updater = async (db, id, data) => {
     else keys.push(d.key)
   })
 
-  // // Set json function
-  // const set = (object, path, value) => {
-  //   const last = path.pop()
-  //   const subObj = path.reduce((obj, key) => obj[key], object)
-  //   subObj[last] = {
-  //     ...subObj[last],
-  //     ...value
-  //   }
-  // }
-
   // Set query text & args
   const queryTextMiddle = []
   data.forEach((d) => {
@@ -89,20 +79,13 @@ const updater = async (db, id, data) => {
         queryTextMiddle.push(
           d.key + ' = array_append(' + d.key + ', $' + args.length + ')'
         )
-      } else if (d.method === 'replace') {
-        // TODO if needed
-        throw new Error('not coded')
       } else if (d.method === 'remove') {
         args.push(d.value)
         queryTextMiddle.push(
           d.key + ' = array_remove(' + d.key + ', $' + args.length + ')'
         )
-      } else if (d.method === 'switch') {
-        //TODO if necessary
-        throw new Error('not coded')
       } else {
-        //TODO
-        throw new Error('not coded')
+        throw new Error('No method specified for array update')
       }
     } else if (d.type === 'json') {
       if (d.method === 'set') {
@@ -128,8 +111,7 @@ const updater = async (db, id, data) => {
             ')'
         )
       } else {
-        // TODO
-        throw new Error('not coded')
+        throw new Error('No method specified for json update')
       }
     } else {
       args.push(d.value)

@@ -81,7 +81,7 @@ const Add = ({
         {
           key: 'scheme',
           type: 'json',
-          method: 'diff',
+          method: 'set',
           path: ['configuration', 'boundaryConditions'],
           value: diff
         }

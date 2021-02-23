@@ -91,7 +91,7 @@ const Project = () => {
           {
             key: 'scheme',
             type: 'json',
-            method: 'diff',
+            method: 'set',
             path: ['configuration', 'part'],
             value: configuration.geometry.file
           }

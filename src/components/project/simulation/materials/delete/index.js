@@ -61,7 +61,7 @@ const Delete = ({ project, simulation, index }) => {
         {
           key: 'scheme',
           type: 'json',
-          method: 'diff',
+          method: 'set',
           path: ['configuration', 'materials'],
           value: diff
         }

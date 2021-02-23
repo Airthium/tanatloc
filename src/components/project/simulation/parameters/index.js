@@ -55,7 +55,7 @@ const Parameters = ({ project, simulation }) => {
       {
         key: 'scheme',
         type: 'json',
-        method: 'diff',
+        method: 'set',
         path: ['configuration', 'parameters'],
         value: diff
       }

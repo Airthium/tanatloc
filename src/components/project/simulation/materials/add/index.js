@@ -66,7 +66,7 @@ const Add = ({ material, project, simulation, part, disabled, close }) => {
         {
           key: 'scheme',
           type: 'json',
-          method: 'diff',
+          method: 'set',
           path: ['configuration', 'materials'],
           value: diff
         }

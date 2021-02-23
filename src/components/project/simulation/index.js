@@ -169,7 +169,7 @@ const Simulation = ({ project, simulation, type, part, onClose }) => {
           {
             key: 'scheme',
             type: 'json',
-            method: 'diff',
+            method: 'set',
             path: ['configuration', 'part'],
             value: configuration.geometry.file
           }

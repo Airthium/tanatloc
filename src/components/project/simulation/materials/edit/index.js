@@ -67,7 +67,7 @@ const Edit = ({ disabled, material, project, simulation, part, close }) => {
         {
           key: 'scheme',
           type: 'json',
-          method: 'diff',
+          method: 'set',
           path: ['configuration', 'materials'],
           value: diff
         }

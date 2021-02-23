@@ -8,11 +8,7 @@ import { databases } from '@/config/db'
  * @param {Object} data Data [{ key, value, ... }, ...]
  */
 const update = async (group, data) => {
-  await Promise.all(
-    data.map(async (d) => {
-      return updater(databases.GROUPS, group.id, d)
-    })
-  )
+  return updater(databases.GROUPS, group.id, data)
 }
 
 export default update

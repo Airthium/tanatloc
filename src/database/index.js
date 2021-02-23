@@ -50,103 +50,93 @@ const getter = async (db, id, data, key = 'id') => {
  * Update from dB
  * @param {string} db Database
  * @param {string} id Id
- * @param {Object} data Data { type, method, key, path, value }
+ * @param {Array} data Data [{ type, method, key, path, value }, ...]
  */
 const updater = async (db, id, data) => {
-  if (data.type === 'crypt') {
-    await query(
-      'UPDATE ' +
-        db +
-        ' SET ' +
-        data.key +
-        " = crypt($2, gen_salt('bf')) WHERE id = $1",
-      [id, data.value]
-    )
-  } else if (data.type === 'array') {
-    if (data.method === 'append') {
-      await query(
-        'UPDATE ' +
-          db +
-          ' SET ' +
-          data.key +
-          ' = array_append(' +
-          data.key +
-          ', $2) WHERE id = $1',
-        [id, data.value]
-      )
-    } else if (data.method === 'replace') {
-      //TODO if necessary
-      throw new Error('not coded')
-    } else if (data.method === 'remove') {
-      await query(
-        'UPDATE ' +
-          db +
-          ' SET ' +
-          data.key +
-          ' = array_remove(' +
-          data.key +
-          ', $2) WHERE id = $1',
-        [id, data.value]
-      )
-    } else if (data.method === 'switch') {
-      //TODO if necessary
-      throw new Error('not coded')
-    } else {
-      //TODO
-      throw new Error('not coded')
-    }
-  } else if (data.type === 'json') {
-    if (data.method === 'diff') {
-      // Get existing json
-      const res = await query(
-        'SELECT ' + data.key + ' FROM ' + db + ' WHERE id = $1',
-        [id]
-      )
-      const json = res.rows[0][data.key]
+  const queryTextBegin = 'UPDATE ' + db + ' SET '
+  const queryTextEnd = ' WHERE id = $1'
+  const args = [id]
 
-      // Set json
-      const set = (object, path, value) => {
-        const last = path.pop()
-        const subObj = path.reduce((obj, key) => obj[key], object)
-        subObj[last] = {
-          ...subObj[last],
-          ...value
-        }
+  // Check that keys are uniques
+  const keys = []
+  data.forEach((d) => {
+    if (keys.includes(d.key))
+      throw new Error('Duplicate key in update query (key=' + d.key + ')')
+    else keys.push(d.key)
+  })
+
+  // // Set json function
+  // const set = (object, path, value) => {
+  //   const last = path.pop()
+  //   const subObj = path.reduce((obj, key) => obj[key], object)
+  //   subObj[last] = {
+  //     ...subObj[last],
+  //     ...value
+  //   }
+  // }
+
+  // Set query text & args
+  const queryTextMiddle = []
+  data.forEach((d) => {
+    if (d.type === 'crypt') {
+      args.push(d.value)
+      queryTextMiddle.push(
+        d.key + ' = crypt($' + args.length + ", gen_salt('bf'))"
+      )
+    } else if (d.type === 'array') {
+      if (d.method === 'append') {
+        args.push(d.value)
+        queryTextMiddle.push(
+          d.key + ' = array_append(' + d.key + ', $' + args.length + ')'
+        )
+      } else if (d.method === 'replace') {
+        // TODO if needed
+        throw new Error('not coded')
+      } else if (d.method === 'remove') {
+        args.push(d.value)
+        queryTextMiddle.push(
+          d.key + ' = array_remove(' + d.key + ', $' + args.length + ')'
+        )
+      } else if (d.method === 'switch') {
+        //TODO if necessary
+        throw new Error('not coded')
+      } else {
+        //TODO
+        throw new Error('not coded')
       }
-
-      set(json, data.path, data.value)
-
-      // Update
-      await updater(db, id, { key: data.key, value: json })
-    } else if (data.method === 'erase') {
-      // Get existing json
-      const res = await query(
-        'SELECT ' + data.key + ' FROM ' + db + ' WHERE id = $1',
-        [id]
-      )
-      const json = res.rows[0][data.key]
-
-      // Set json
-      const set = (object, path) => {
-        const last = path.pop()
-        const subObj = path.reduce((obj, key) => obj[key], object)
-        subObj[last] = null
+    } else if (d.type === 'json') {
+      if (d.method === 'set') {
+        args.push(d.value)
+        queryTextMiddle.push(
+          d.key +
+            ' = jsonb_set(' +
+            d.key +
+            ", '{" +
+            d.path.join(',') +
+            "}', $" +
+            args.length +
+            ')'
+        )
+      } else if (d.method === 'erase') {
+        queryTextMiddle.push(
+          d.key +
+            ' = jsonb_set(' +
+            d.key +
+            ", '{" +
+            d.path.join(',') +
+            "}', 0" +
+            ')'
+        )
+      } else {
+        // TODO
+        throw new Error('not coded')
       }
-
-      set(json, data.path)
-
-      // Update
-      await updater(db, id, { key: data.key, value: json })
     } else {
-      // TODO
-      throw new Error('not coded')
+      args.push(d.value)
+      queryTextMiddle.push(d.key + ' = $' + args.length)
     }
-  } else {
-    await query('UPDATE ' + db + ' SET ' + data.key + ' = $2 WHERE id = $1', [
-      id,
-      data.value
-    ])
-  }
+  })
+  await query(queryTextBegin + queryTextMiddle.join(', ') + queryTextEnd, args)
 }
 
 /**

@@ -101,7 +101,7 @@ const Run = ({ project, simulation }) => {
         {
           key: 'scheme',
           type: 'json',
-          method: 'diff',
+          method: 'set',
           path: ['configuration', 'run'],
           value: configuration.run
         }
@@ -180,7 +180,7 @@ const Run = ({ project, simulation }) => {
         {
           key: 'scheme',
           type: 'json',
-          method: 'diff',
+          method: 'set',
           path: ['configuration', 'part'],
           value: file
         }

@@ -17,3 +17,5 @@ const update = async (data) => {
 }
 
 export default update
+
+// TODO use transaction too ?

@@ -91,6 +91,7 @@ const Geometry = ({ project, simulation, part }) => {
 
       // Diff scheme
       const diff = {
+        ...simulation.scheme.configuration.geometry,
         file: {
           type: 'geometry',
           name: info.file.name,
@@ -106,7 +107,7 @@ const Geometry = ({ project, simulation, part }) => {
           {
             key: 'scheme',
             type: 'json',
-            method: 'diff',
+            method: 'set',
             path: ['configuration', 'geometry'],
             value: diff
           }
@@ -142,6 +143,7 @@ const Geometry = ({ project, simulation, part }) => {
   const onDelete = async () => {
     // Diff scheme
     const diff = {
+      ...simulation.scheme.configuration.geometry,
       file: 'remove',
       done: false
     }
@@ -152,7 +154,7 @@ const Geometry = ({ project, simulation, part }) => {
         {
           key: 'scheme',
           type: 'json',
-          method: 'diff',
+          method: 'set',
           path: ['configuration', 'geometry'],
           value: diff
         }

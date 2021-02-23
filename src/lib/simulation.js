@@ -187,7 +187,7 @@ const run = async ({ id }) => {
     {
       key: 'scheme',
       type: 'json',
-      method: 'diff',
+      method: 'set',
       path: ['configuration', 'run'],
       value: {
         ...configuration.run,
@@ -212,7 +212,7 @@ const run = async ({ id }) => {
         {
           key: 'scheme',
           type: 'json',
-          method: 'diff',
+          method: 'set',
           path: ['configuration', 'run'],
           value: {
             ...configuration.run,
@@ -231,8 +231,8 @@ const run = async ({ id }) => {
       update({ id }, [
         {
           key: 'scheme',
-          type: 'json',
-          method: 'diff',
+          type: 'set',
+          method: 'set',
           path: ['configuration', 'run'],
           value: {
             ...configuration.run,

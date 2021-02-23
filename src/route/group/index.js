@@ -30,7 +30,7 @@ export default async (req, res) => {
       break
     case 'PUT':
       try {
-        await GroupLib.update(req.body.id, req.body.data)
+        await GroupLib.update({ id: req.body.id }, req.body.data)
         res.status(200).end()
       } catch (err) {
         console.error(err)

@@ -1,14 +1,5 @@
 import { useState } from 'react'
-import {
-  notification,
-  Button,
-  Card,
-  Checkbox,
-  Form,
-  Input,
-  Table,
-  Space
-} from 'antd'
+import { notification, Button, Checkbox, Form, Input, Table, Space } from 'antd'
 import {
   CheckOutlined,
   CloseOutlined,
@@ -36,11 +27,12 @@ const Users = () => {
   const [users, { addOneUser, mutateOneUser, delOneUser }] = UserAPI.useUsers()
 
   const layout = {
-    labelCol: { span: 8 },
-    wrapperCol: { span: 16 }
+    labelCol: { span: 4 },
+    wrapperCol: { span: 12 }
   }
+
   const tailLayout = {
-    wrapperCol: { offset: 8, span: 16 }
+    wrapperCol: { offset: 4, span: 12 }
   }
 
   const columns = [
@@ -192,69 +184,67 @@ const Users = () => {
    * Render
    */
   return (
-    <Card title="Users" className="Vertical-gutter">
-      <Space direction="vertical">
-        {edit ? (
-          <Form
-            {...layout}
-            initialValues={{ ...edit, password: '******' }}
-            onFinish={edit === true ? onAdd : onUpdate}
+    <Space direction="vertical" style={{ width: '100%' }}>
+      {edit ? (
+        <Form
+          {...layout}
+          initialValues={{ ...edit, password: '******' }}
+          onFinish={edit === true ? onAdd : onUpdate}
+        >
+          <Form.Item
+            name="firstname"
+            label="First name"
+            rules={[{ required: true, message: 'Please enter a first name' }]}
           >
-            <Form.Item
-              name="firstname"
-              label="First name"
-              rules={[{ required: true, message: 'Please enter a first name' }]}
-            >
-              <Input />
-            </Form.Item>
-            <Form.Item
-              name="lastname"
-              label="Last name"
-              rules={[{ required: true, message: 'Please enter a last name' }]}
-            >
-              <Input />
-            </Form.Item>
-            <Form.Item
-              name="email"
-              label="Email"
-              rules={[{ required: true, message: 'Please enter an email' }]}
-            >
-              <Input />
-            </Form.Item>
-            <PasswordItem name="password" />
-            <Form.Item
-              name="superuser"
-              label="Administrator"
-              valuePropName="checked"
-            >
-              <Checkbox />
-            </Form.Item>
-            <Form.Item {...tailLayout}>
-              <Space>
-                <Button
-                  type="primary"
-                  htmlType="submit"
-                  icon={<CheckOutlined />}
-                />
-                <Button
-                  type="danger"
-                  icon={<CloseOutlined />}
-                  onClick={() => setEdit(false)}
-                />
-              </Space>
-            </Form.Item>
-          </Form>
-        ) : (
-          <Button icon={<PlusOutlined />} onClick={() => setEdit(true)}>
-            Add user
-          </Button>
-        )}
-        <Table
-          columns={columns}
-          dataSource={users.map((u) => ({ ...u, key: u.id }))}
-        />
-      </Space>
-    </Card>
+            <Input />
+          </Form.Item>
+          <Form.Item
+            name="lastname"
+            label="Last name"
+            rules={[{ required: true, message: 'Please enter a last name' }]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            name="email"
+            label="Email"
+            rules={[{ required: true, message: 'Please enter an email' }]}
+          >
+            <Input />
+          </Form.Item>
+          <PasswordItem name="password" />
+          <Form.Item
+            name="superuser"
+            label="Administrator"
+            valuePropName="checked"
+          >
+            <Checkbox />
+          </Form.Item>
+          <Form.Item {...tailLayout}>
+            <Space>
+              <Button
+                type="primary"
+                htmlType="submit"
+                icon={<CheckOutlined />}
+              />
+              <Button
+                type="danger"
+                icon={<CloseOutlined />}
+                onClick={() => setEdit(false)}
+              />
+            </Space>
+          </Form.Item>
+        </Form>
+      ) : (
+        <Button icon={<PlusOutlined />} onClick={() => setEdit(true)}>
+          Add user
+        </Button>
+      )}
+      <Table
+        columns={columns}
+        dataSource={users.map((u) => ({ ...u, key: u.id }))}
+      />
+    </Space>
   )
 }
 

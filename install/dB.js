@@ -101,6 +101,10 @@ const createTables = async () => {
     console.info(' + User table')
     await createUsersTable()
 
+    // Groups
+    console.info(' + Group table')
+    await createGroupsTable()
+
     // Workspaces
     console.info(' + Workspace table')
     await createWorkspaceTable()
@@ -205,6 +209,23 @@ const createUsersTable = async () => {
           isValidated BOOLEAN NOT NULL,
           lastModificationDate TIMESTAMP NOT NULL,
           superuser BOOLEAN NOT NULL
+        )`
+    ))
+}
+
+/**
+ * Create group table
+ * @memberof module:install
+ */
+const createGroupsTable = async () => {
+  !(await checkTable(databases.GROUPS)) &&
+    (await query(
+      `CREATE TABLE IF NOT EXISTS ` +
+        databases.GROUPS +
+        ` (
+          id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+          name TEXT,
+          users uuid[]
         )`
     ))
 }

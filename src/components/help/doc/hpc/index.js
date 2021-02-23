@@ -1,4 +1,4 @@
-import { Card, Collapse } from 'antd'
+import { Card, Collapse, Typography } from 'antd'
 
 /**
  * HPC plugins documentation
@@ -8,16 +8,22 @@ const HPC = () => {
     <Card title="HPC plugins">
       <Collapse>
         <Collapse.Panel header="Local plugin">
-          <p>Allow to compute a simulation directly on the frontal server.</p>
-          <p>This plugin is only reserved for test purposes.</p>
+          <Typography.Text>
+            Allow to compute a simulation directly on the frontal server.
+          </Typography.Text>
+          <Typography.Text>
+            This plugin is only reserved for test purposes.
+          </Typography.Text>
         </Collapse.Panel>
 
         <Collapse.Panel header="Rescale plugin">
-          <p>
+          <Typography.Text>
             Allow to compute a simulation on{' '}
             <a href="https://www.rescale.com/">Rescale</a>.
-          </p>
-          <p>You have to fill the following informations:</p>
+          </Typography.Text>
+          <Typography.Text>
+            You have to fill the following informations:
+          </Typography.Text>
           <ul>
             <li>
               Name: a name to retrieve your configuration during the simulation
@@ -37,10 +43,10 @@ const HPC = () => {
               your simulations. Generally FreeFEM custom plugins.
             </li>
           </ul>
-          <p>
+          <Typography.Text>
             When you save this informations, Tanatloc will check your API key,
             the available core types, and the available FreeFEM versions.
-          </p>
+          </Typography.Text>
         </Collapse.Panel>
       </Collapse>
     </Card>

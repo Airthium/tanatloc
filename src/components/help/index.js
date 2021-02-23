@@ -3,6 +3,7 @@
 import { Card, Layout } from 'antd'
 
 import HPC from './doc/hpc'
+import Administration from './doc/administration'
 
 /**
  * Help
@@ -16,6 +17,7 @@ const Help = () => {
       <Layout.Content>
         <Card title="Documentation">
           <HPC />
+          <Administration />
         </Card>
         <Card title="Support"></Card>
       </Layout.Content>

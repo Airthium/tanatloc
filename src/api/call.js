@@ -27,6 +27,10 @@ const call = async (route, param) => {
   })
 
   const contentType = response.headers.get('Content-Type')
+
+  if (response.status !== 200 && !contentType.includes('application/json'))
+    throw new Error('API error - status: ' + response.status)
+
   if (contentType && contentType.includes('application/json')) {
     const res = await response.json()
 

@@ -19,3 +19,6 @@ Workspace:
 
 Run:
 - Use file for logs (separate gmsh / Freefem for rescale)
+
+Database:
+- update using transactions

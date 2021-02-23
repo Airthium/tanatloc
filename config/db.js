@@ -22,6 +22,7 @@ module.exports = {
 module.exports.databases = {
   SYSTEM: 'tanatloc_system',
   USERS: 'tanatloc_users',
+  GROUPS: 'tanatloc_groups',
   WORKSPACES: 'tanatloc_workspaces',
   PROJECTS: 'tanatloc_projects',
   GEOMETRIES: 'tanatloc_geometries',

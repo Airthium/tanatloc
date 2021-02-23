@@ -54,7 +54,7 @@ const getter = async (db, id, data, key = 'id') => {
  */
 const updater = async (db, id, data) => {
   const queryTextBegin = 'UPDATE ' + db + ' SET '
-  const queryTextEnd = ' WHERE id = $1'
+  const queryTextEnd = id ? ' WHERE id = $1' : ''
   const args = [id]
 
   // Check that keys are uniques

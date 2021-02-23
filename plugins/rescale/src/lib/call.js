@@ -25,7 +25,6 @@ const call = async (configuration) => {
   })
 
   const contentType = response.headers.get('Content-Type')
-  console.log(contentType)
 
   if (contentType === 'application/json') {
     const json = await response.json()

@@ -1,4 +1,4 @@
-import query from '..'
+import { updater } from '..'
 import { databases } from '@/config/db'
 
 /**
@@ -7,15 +7,7 @@ import { databases } from '@/config/db'
  * @param {Object} data Data [{ key, value }, ...]
  */
 const update = async (data) => {
-  await Promise.all(
-    data.map(async (d) => {
-      return query('UPDATE ' + databases.SYSTEM + ' SET ' + d.key + ' = $1', [
-        d.value
-      ])
-    })
-  )
+  return updater(databases.SYSTEM, null, data)
 }
 
 export default update
-
-// TODO use transaction too ?

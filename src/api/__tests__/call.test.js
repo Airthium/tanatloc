@@ -3,13 +3,14 @@ import Caller from '../call'
 jest.mock('is-electron', () => () => false)
 
 let mockRoute, mockParam
+const mockStatus = jest.fn(() => 200)
 const mockJSON = jest.fn(async () => 'json')
 const mockGet = jest.fn(() => '')
 global.fetch = async (route, param) => {
   mockRoute = route
   mockParam = param
   return {
-    status: 200,
+    status: mockStatus(),
     json: mockJSON,
     headers: {
       get: () => mockGet()
@@ -78,6 +79,16 @@ describe('src/api/call', () => {
           Accept: 'application/json'
         }
       })
+      expect(true).toBe(false)
+    } catch (err) {
+      expect(true).toBe(true)
+    }
+
+    // Wrong status
+    try {
+      mockStatus.mockImplementation(() => '500')
+      mockGet.mockImplementation(() => 'something')
+      await Caller.call('/route', {})
       expect(true).toBe(false)
     } catch (err) {
       expect(true).toBe(true)

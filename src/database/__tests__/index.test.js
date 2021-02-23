@@ -41,6 +41,8 @@ describe('database', () => {
       { key: 'key6', type: 'json', method: 'erase', path: ['first', 'second'] }
     ])
 
+    await updater('db', null, [{ key: 'key' }])
+
     try {
       await updater('db', 'id', [{ key: 'key' }, { key: 'key' }])
       expect(true).toBe(false)

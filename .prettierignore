@@ -1,21 +1,18 @@
 # Coverage
-coverage/
+/coverage/
 
 # Doc
-doc/
+/doc/
 
 # Build
 /.next
 /out
 
 # Dist
-app/
-dist/
-dist-server/
-dist-install/
-
-# Doc
-doc/
+/app/
+/dist/
+/dist-server/
+/dist-install/
 
 # Public
 /public/

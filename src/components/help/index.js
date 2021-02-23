@@ -2,6 +2,8 @@
 
 import { Card, Layout } from 'antd'
 
+import HPC from './doc/hpc'
+
 /**
  * Help
  */
@@ -12,7 +14,9 @@ const Help = () => {
   return (
     <Layout className="Help">
       <Layout.Content>
-        <Card title="Documentation"></Card>
+        <Card title="Documentation">
+          <HPC />
+        </Card>
         <Card title="Support"></Card>
       </Layout.Content>
     </Layout>

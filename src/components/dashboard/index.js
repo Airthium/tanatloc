@@ -161,9 +161,12 @@ const Dashboard = () => {
   let sharedWorkspaces = []
   if (user) {
     workspaces?.forEach((workspace, index) => {
-      if (workspace.owners && workspace.owners.find((o) => o.id === user.id))
+      if (workspace.owners?.find((o) => o.id === user.id))
         myWorkspaces.push(<Menu.Item key={index}>{workspace.name}</Menu.Item>)
-      else if (workspace.users && workspace.users.find((u) => u.id === user.id))
+      else if (
+        workspace.users?.users.find((u) => u.id === user.id) ||
+        workspace.groups?.find((g) => user.groups?.includes(g.id))
+      )
         sharedWorkspaces.push(
           <Menu.Item key={index}>{workspace.name}</Menu.Item>
         )

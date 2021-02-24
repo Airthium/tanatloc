@@ -22,13 +22,13 @@ import Delete from './delete'
 import ProjectAdd from '@/components/project/add'
 import ProjectList from '@/components/project/list'
 
+import Utils from '@/lib/utils'
+
 import WorkspaceAPI from '@/api/workspace'
 
 const errors = {
   updateError: 'Unable to update the workspace'
 }
-
-// TODO create share
 
 /**
  * Workspace
@@ -111,13 +111,13 @@ const Workspace = ({ workspace }) => {
               </>
             }
           >
-            {workspace.users && (
+            {workspace.users?.length || workspace.groups?.length ? (
               <div className="Workspace-share">
                 <span style={{ marginRight: '10px' }}>
                   This workspace is shared with:
                 </span>
                 <Avatar.Group>
-                  {workspace.users.map((user) => {
+                  {workspace.users?.map((user) => {
                     return (
                       <Tooltip key={user} title={user} placement="bottom">
                         <Avatar style={{ backgroundColor: '#023E8A' }}>
@@ -127,8 +127,27 @@ const Workspace = ({ workspace }) => {
                     )
                   })}
                 </Avatar.Group>
+                <Avatar.Group>
+                  {workspace.groups?.map((group) => {
+                    return (
+                      <Tooltip
+                        key={group}
+                        title={group.name}
+                        placement="bottom"
+                      >
+                        <Avatar
+                          style={{
+                            backgroundColor: Utils.stringToColor(group.name)
+                          }}
+                        >
+                          {group.name?.[0]?.toUpperCase()}
+                        </Avatar>
+                      </Tooltip>
+                    )
+                  })}
+                </Avatar.Group>
               </div>
-            )}
+            ) : null}
           </PageHeader>
           <Layout.Content>
             <ProjectList workspace={workspace} filter={filter} />

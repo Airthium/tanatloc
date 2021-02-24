@@ -6,6 +6,7 @@ import auth from '../auth'
 import FileLib from '@/lib/file'
 import SimulationLib from '@/lib/simulation'
 import ProjectLib from '@/lib/project'
+import WorkspaceLib from '@/lib/workspace'
 
 import Sentry from '@/lib/sentry'
 
@@ -23,9 +24,16 @@ export default async (req, res) => {
       const simulationAuth = await SimulationLib.get(simulation.id, ['project'])
       const projectAuth = await ProjectLib.get(simulationAuth.project, [
         'owners',
-        'users'
+        'users',
+        'groups',
+        'workspace'
       ])
-      if (!auth(projectAuth, sessionId)) {
+      const workspaceAuth = await WorkspaceLib.get(projectAuth.workspace, [
+        'owners',
+        'users',
+        'groups'
+      ])
+      if (!(await auth(sessionId, projectAuth, workspaceAuth))) {
         res.status(401).json({ error: true, message: 'Unauthorized' })
         return
       }

@@ -2,6 +2,7 @@ import getSessionId from '../session'
 import auth from '../auth'
 
 import ProjectLib from '@/lib/project'
+import WorkspaceLib from '@/lib/workspace'
 
 import Sentry from '@/lib/sentry'
 
@@ -41,11 +42,16 @@ export default async (req, res) => {
               'avatar',
               'owners',
               'users',
-              'simulations'
+              'groups',
+              'simulations',
+              'workspace'
             ])
-
-            // Check authorization
-            if (!auth(project, sessionId)) {
+            const workspaceAuth = await WorkspaceLib.get(project.workspace, [
+              'owners',
+              'users',
+              'groups'
+            ])
+            if (!(await auth(sessionId, project, workspaceAuth))) {
               return
             }
 

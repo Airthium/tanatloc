@@ -277,7 +277,8 @@ const createProjectTable = async () => {
           simulations uuid[],
           owners uuid[] NOT NULL,
           users uuid[],
-          groups uuid[]
+          groups uuid[],
+          workspace uuid
         )`
     ))
 }
@@ -295,7 +296,8 @@ const createSimulationTable = async () => {
           id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
           name TEXT NOT NULL,
           scheme jsonb,
-          tasks jsonb[]
+          tasks jsonb[],
+          project uuid
         )`
     ))
 }

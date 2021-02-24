@@ -3,6 +3,7 @@
 import WorkspaceDB from '@/database/workspace'
 
 import User from './user'
+import Group from './group'
 import Project from './project'
 
 /**
@@ -37,23 +38,54 @@ const get = async (id, data) => {
   const workspace = await WorkspaceDB.get(id, data)
 
   // Get owners
-  if (workspace && workspace.owners) {
+  if (workspace?.owners) {
     const owners = await Promise.all(
       workspace.owners.map(async (owner) => {
-        return User.get(owner, ['lastname', 'firstname', 'email', 'avatar'])
+        const ownerData = await User.get(owner, [
+          'lastname',
+          'firstname',
+          'email',
+          'avatar'
+        ])
+        return {
+          id: owner,
+          ...ownerData
+        }
       })
     )
     workspace.owners = owners
   }
 
   // Get users
-  if (workspace.users) {
+  if (workspace?.users) {
     const users = await Promise.all(
       workspace.users.map(async (user) => {
-        return User.get(user, ['lastname', 'firstname', 'email', 'avatar'])
+        const userData = await User.get(user, [
+          'lastname',
+          'firstname',
+          'email',
+          'avatar'
+        ])
+        return {
+          id: user,
+          ...userData
+        }
       })
     )
     workspace.users = users
+  }
+
+  if (workspace?.groups) {
+    const groups = await Promise.all(
+      workspace.groups.map(async (group) => {
+        const groupData = await Group.get(group, ['name'])
+        return {
+          id: group,
+          ...groupData
+        }
+      })
+    )
+    workspace.groups = groups
   }
 
   return workspace
@@ -65,27 +97,63 @@ const get = async (id, data) => {
  */
 const getByUser = async ({ id }) => {
   // Get workspaces'ids
-  const user = await User.get(id, ['workspaces'])
+  const user = await User.get(id, ['groups', 'workspaces'])
 
-  // Get workspaces data
+  let workspaces = []
+
+  // Get local workspaces
   if (user.workspaces) {
-    return Promise.all(
+    const localWorkspaces = await Promise.all(
       user.workspaces.map(async (workspace) => {
         const data = await get(workspace, [
           'name',
           'owners',
           'users',
+          'groups',
           'projects'
         ])
         return {
-          ...data,
-          id: workspace
+          id: workspace,
+          ...data
         }
       })
     )
+
+    workspaces = [...localWorkspaces, ...workspaces]
   }
 
-  return []
+  // Get groups workspaces
+  if (user.groups) {
+    const groups = await Promise.all(
+      user.groups.map(async (group) => {
+        const groupData = await Group.get(group, ['workspaces'])
+
+        if (groupData.workspaces) {
+          return await Promise.all(
+            groupData.workspaces.map(async (workspace) => {
+              if (workspaces.find((w) => w.id === workspace)) return
+              const data = await get(workspace, [
+                'name',
+                'owners',
+                'users',
+                'groups',
+                'projects'
+              ])
+              return {
+                id: workspace,
+                ...data
+              }
+            })
+          )
+        }
+      })
+    )
+
+    const groupWorkspaces = groups.flatMap((g) => g).filter((g) => g)
+    workspaces = [...groupWorkspaces, ...workspaces]
+  }
+
+  return workspaces
 }
 
 /**
@@ -94,6 +162,50 @@ const getByUser = async ({ id }) => {
  * @param {Object} data Data [{ key, value, ... }, ...]
  */
 const update = async (workspace, data) => {
+  // Get data
+  const workspaceData = await get(workspace.id, ['groups'])
+  if (!workspaceData.groups) workspaceData.groups = []
+
+  // Check groups
+  const groupsUpdate = data.find((d) => d.key === 'groups' && !d.type)
+  if (groupsUpdate) {
+    // Deleted groups
+    const deleted = workspaceData.groups.filter(
+      (g) => !groupsUpdate.value.includes(g.id)
+    )
+
+    await Promise.all(
+      deleted.map(async (group) => {
+        await Group.update({ id: group.id }, [
+          {
+            key: 'workspaces',
+            type: 'array',
+            method: 'remove',
+            value: workspace.id
+          }
+        ])
+      })
+    )
+
+    // Added groups
+    const added = groupsUpdate.value.filter(
+      (g) => !workspaceData.groups.find((gg) => gg.id === g)
+    )
+    await Promise.all(
+      added.map(async (group) => {
+        await Group.update({ id: group.id }, [
+          {
+            key: 'workspaces',
+            type: 'array',
+            method: 'append',
+            value: workspace.id
+          }
+        ])
+      })
+    )
+  }
+
+  // Update workspace
   await WorkspaceDB.update(workspace, data)
 }
 

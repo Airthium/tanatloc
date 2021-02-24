@@ -1,6 +1,6 @@
 import getSessionId from '../session'
 
-import UserLib from '@/lib/user'
+// import UserLib from '@/lib/user'
 import GroupLib from '@/lib/group'
 
 import Sentry from '@/lib/sentry'
@@ -10,12 +10,12 @@ export default async (req, res) => {
   const sessionId = await getSessionId(req, res)
   if (!sessionId) return
 
-  // Check superuser
-  const user = await UserLib.get(sessionId, ['superuser'])
-  if (!user.superuser) {
-    res.status(500).json({ error: true, message: 'Unauthorized' })
-    return
-  }
+  // // Check superuser
+  // const user = await UserLib.get(sessionId, ['superuser'])
+  // if (!user.superuser) {
+  //   res.status(500).json({ error: true, message: 'Unauthorized' })
+  //   return
+  // }
 
   if (req.method === 'GET') {
     try {

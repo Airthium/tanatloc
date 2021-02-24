@@ -3,6 +3,7 @@ import auth from '../auth'
 
 import SimulationLib from '@/lib/simulation'
 import ProjectLib from '@/lib/project'
+import WorkspaceLib from '@/lib/workspace'
 
 import Sentry from '@/lib/sentry'
 
@@ -46,9 +47,15 @@ export default async (req, res) => {
             // Check authorization
             const projectAuth = await ProjectLib.get(simulation.project, [
               'owners',
-              'users'
+              'users',
+              'groups',
+              'workspace'
             ])
-            if (!auth(projectAuth, sessionId)) {
+            const workspaceAuth = await WorkspaceLib.get(
+              projectAuth.workspace,
+              ['owners', 'users', 'groups']
+            )
+            if (!(await auth(sessionId, projectAuth, workspaceAuth))) {
               return
             }
 

@@ -114,7 +114,7 @@ const update = async (group, data) => {
     )
   }
 
-  // Update groupk
+  // Update group
   await GroupDB.update(group, data)
 }
 
@@ -144,4 +144,4 @@ const del = async (group) => {
   await GroupDB.del(group)
 }
 
-export default { add, getAll, update, del }
+export default { add, get, getAll, update, del }

@@ -142,13 +142,13 @@ describe('src/components/administration/groups', () => {
       .columns[2].render('text', { key: 'value', users: [{}] })
 
     // Set edit
-    render.props.children[0].props.onClick()
+    render.props.children[0].props.onClick({ users: [{ id: 'id1' }] })
     wrapper.update()
 
     await wrapper
       .find('ForwardRef(InternalForm)')
       .props()
-      .onFinish({ key: 'value' })
+      .onFinish({ key: 'value', name: 'name', users: ['id'] })
     expect(mockUpdate).toHaveBeenCalledTimes(1)
     expect(mockMutateOneGroup).toHaveBeenCalledTimes(1)
     expect(mockError).toHaveBeenCalledTimes(0)
@@ -163,7 +163,7 @@ describe('src/components/administration/groups', () => {
     await wrapper
       .find('ForwardRef(InternalForm)')
       .props()
-      .onFinish({ key: 'value' })
+      .onFinish({ key: 'value', users: ['id1'] })
     expect(mockUpdate).toHaveBeenCalledTimes(2)
     expect(mockMutateOneGroup).toHaveBeenCalledTimes(1)
     expect(mockError).toHaveBeenCalledTimes(1)

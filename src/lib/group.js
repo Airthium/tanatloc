@@ -6,8 +6,34 @@ import User from './user'
  * Add group
  * @param {Object} group Group
  */
-const add = async (group) => {
-  return GroupDB.add(group)
+const add = async ({ name, users }) => {
+  // Add group
+  const group = await GroupDB.add({ name, users })
+
+  // Add group to users
+  await Promise.all(
+    users.map((user) => {
+      User.update({ id: user }, [
+        {
+          key: 'groups',
+          type: 'array',
+          method: 'append',
+          value: group.id
+        }
+      ])
+    })
+  )
+
+  return group
+}
+
+/**
+ * Get
+ * @param {string} id Id
+ * @param {Array} data Data
+ */
+const get = async (id, data) => {
+  return GroupDB.get(id, data)
 }
 
 /**
@@ -48,6 +74,47 @@ const getAll = async (data) => {
  * @param {Array} data Data
  */
 const update = async (group, data) => {
+  // Get data
+  const groupData = await get(group.id, ['users'])
+
+  // Check users
+  const usersUpdate = data.find((d) => d.key === 'users')
+  if (usersUpdate) {
+    // Deleted users
+    const deleted = groupData.users.filter(
+      (u) => !usersUpdate.value.includes(u)
+    )
+
+    await Promise.all(
+      deleted.map(async (user) => {
+        await User.update({ id: user }, [
+          {
+            key: 'groups',
+            type: 'array',
+            method: 'remove',
+            value: group.id
+          }
+        ])
+      })
+    )
+
+    // Added users
+    const added = usersUpdate.value.filter((u) => !groupData.users.includes(u))
+    await Promise.all(
+      added.map(async (user) => {
+        await User.update({ id: user }, [
+          {
+            key: 'groups',
+            type: 'array',
+            method: 'append',
+            value: group.id
+          }
+        ])
+      })
+    )
+  }
+
+  // Update groupk
   await GroupDB.update(group, data)
 }
 
@@ -56,6 +123,24 @@ const update = async (group, data) => {
  * @param {Object} group Group { id }
  */
 const del = async (group) => {
+  // Get data
+  const groupData = await get(group.id, ['users'])
+
+  // Del group to users
+  await Promise.all(
+    groupData.users.map(async (user) => {
+      await User.update({ id: user }, [
+        {
+          key: 'groups',
+          type: 'array',
+          method: 'remove',
+          value: group.id
+        }
+      ])
+    })
+  )
+
+  // Delete group
   await GroupDB.del(group)
 }
 

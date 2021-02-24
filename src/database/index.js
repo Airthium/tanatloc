@@ -55,7 +55,7 @@ const getter = async (db, id, data, key = 'id') => {
 const updater = async (db, id, data) => {
   const queryTextBegin = 'UPDATE ' + db + ' SET '
   const queryTextEnd = id ? ' WHERE id = $1' : ''
-  const args = [id]
+  const args = id ? [id] : []
 
   // Check that keys are uniques
   const keys = []
@@ -118,6 +118,8 @@ const updater = async (db, id, data) => {
       queryTextMiddle.push(d.key + ' = $' + args.length)
     }
   })
+  console.log(queryTextBegin + queryTextMiddle.join(', ') + queryTextEnd)
+  console.log(args)
   await query(queryTextBegin + queryTextMiddle.join(', ') + queryTextEnd, args)
 }
 

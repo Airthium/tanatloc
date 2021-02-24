@@ -152,21 +152,30 @@ const Groups = () => {
    */
   const onUpdate = async (values) => {
     try {
-      // Update
-      const toUpdate = Object.keys(values)
-        .map((key) => {
-          const value = values[key]
-          return { key, value }
+      // Check update
+      const toUpdate = []
+
+      // Name
+      if (edit.name !== values.name)
+        toUpdate.push({
+          key: 'name',
+          value: values.name
         })
-        .filter((u) => u)
+
+      if (edit.users.map((u) => u.id) !== values.users)
+        toUpdate.push({
+          key: 'users',
+          value: values.users
+        })
+
+      // Update
       await GroupAPI.update(edit.id, toUpdate)
 
       // Mutate
-      const group = {
+      mutateOneGroup({
         ...edit,
         ...values
-      }
-      mutateOneGroup(group)
+      })
 
       // Close
       setEdit(false)

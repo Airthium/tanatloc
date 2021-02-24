@@ -16,7 +16,7 @@ const add = async (
   user,
   { workspace: { id }, project: { title, description } }
 ) => {
-  const project = await ProjectDB.add(user, workspace, { title, description })
+  const project = await ProjectDB.add(user, { id }, { title, description })
 
   // Add project reference in workspace
   await Workspace.update({ id }, [

@@ -6,7 +6,11 @@ jest.mock('../..', () => async () => {
 
 describe('src/database/project/add', () => {
   it('call', async () => {
-    const res = await add({}, { title: 'title', description: 'description' })
+    const res = await add(
+      {},
+      {},
+      { title: 'title', description: 'description' }
+    )
     expect(res).toEqual({
       id: 'id',
       title: 'title',
@@ -15,7 +19,7 @@ describe('src/database/project/add', () => {
   })
 
   it('without description', async () => {
-    const res = await add({}, { title: 'title' })
+    const res = await add({}, {}, { title: 'title' })
     expect(res).toEqual({
       id: 'id',
       title: 'title',

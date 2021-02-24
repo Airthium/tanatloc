@@ -21,6 +21,11 @@ jest.mock('@/lib/project', () => ({
   get: async () => mockGetProject()
 }))
 
+const mockGetWorkspace = jest.fn()
+jest.mock('@/lib/workspace', () => ({
+  get: async () => mockGetWorkspace()
+}))
+
 const mockError = jest.fn()
 jest.mock('@/lib/sentry', () => ({
   captureException: () => mockError()
@@ -55,6 +60,9 @@ describe('src/route/part', () => {
     }))
 
     mockGetProject.mockReset()
+    mockGetProject.mockImplementation(() => ({}))
+
+    mockGetWorkspace.mockReset()
 
     mockError.mockReset()
 

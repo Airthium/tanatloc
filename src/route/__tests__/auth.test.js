@@ -1,32 +1,49 @@
 import auth from '../auth'
 
+const mockGet = jest.fn(() => ({ groups: ['id'] }))
+jest.mock('@/lib/user', () => ({
+  get: async () => mockGet()
+}))
+
 describe('src/route/auth', () => {
-  it('authorized', () => {
+  it('authorized', async () => {
     let res
 
-    res = auth({ owners: [{ id: 'id' }] }, 'id')
+    res = await auth('id', { owners: [{ id: 'id' }] })
     expect(res).toBe(true)
 
-    res = auth({ owners: [{ id: 'id' }], users: [{ id: 'id' }] }, 'id')
+    res = await auth('id', {}, { owners: [{ id: 'id' }] })
     expect(res).toBe(true)
 
-    res = auth({ users: [{ id: 'id' }] }, 'id')
+    res = await auth('id', { owners: [{ id: 'id' }], users: [{ id: 'id' }] })
+    expect(res).toBe(true)
+
+    res = await auth('id', { users: [{ id: 'id' }] })
+    expect(res).toBe(true)
+
+    res = await auth('id', {}, { users: [{ id: 'id' }] })
+    expect(res).toBe(true)
+
+    res = await auth('id', { groups: [{ id: 'id' }] }, {})
+    expect(res).toBe(true)
+
+    res = await auth('id', {}, { groups: [{ id: 'id' }] })
     expect(res).toBe(true)
   })
 
-  it('not authorized', () => {
+  it('not authorized', async () => {
     let res
 
-    res = auth({}, 'id')
+    res = await auth('id', {})
     expect(res).toBe(false)
 
-    res = auth({ owners: [{ id: 'id2' }] }, 'id1')
+    res = await auth('id', { owners: [{ id: 'id2' }] })
     expect(res).toBe(false)
 
-    res = auth({ owners: [{ id: 'id2' }], users: [{ id: 'id2' }] }, 'id1')
+    res = await auth('id', { owners: [{ id: 'id2' }], users: [{ id: 'id2' }] })
     expect(res).toBe(false)
 
-    res = auth({ users: [{ id: 'id2' }] }, 'id1')
+    res = await auth('id', { users: [{ id: 'id2' }] })
     expect(res).toBe(false)
   })
 })

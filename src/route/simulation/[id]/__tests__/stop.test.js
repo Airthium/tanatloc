@@ -18,6 +18,11 @@ jest.mock('@/lib/project', () => ({
   get: async () => mockProjectGet()
 }))
 
+const mockWorkspaceGet = jest.fn()
+jest.mock('@/lib/workspace', () => ({
+  get: async () => mockWorkspaceGet()
+}))
+
 const mockError = jest.fn()
 jest.mock('@/lib/sentry', () => ({
   captureException: () => mockError()
@@ -42,7 +47,11 @@ describe('src/route/simulation/[id]/stop', () => {
 
     mockSimulationGet.mockReset()
     mockSimulationRun.mockReset()
+
     mockProjectGet.mockReset()
+    mockProjectGet.mockImplementation(() => ({}))
+
+    mockWorkspaceGet.mockReset()
 
     mockError.mockReset()
 

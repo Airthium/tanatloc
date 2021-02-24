@@ -15,6 +15,11 @@ jest.mock('@/lib/project', () => ({
   del: async () => mockDel()
 }))
 
+const mockGetWorkspace = jest.fn()
+jest.mock('@/lib/workspace', () => ({
+  get: async () => mockGetWorkspace()
+}))
+
 const mockError = jest.fn()
 jest.mock('@/lib/sentry', () => ({
   captureException: () => mockError()
@@ -47,6 +52,8 @@ describe('src/route/project/[id]', () => {
     }))
     mockUpdate.mockReset()
     mockDel.mockReset()
+
+    mockGetWorkspace.mockReset()
 
     mockError.mockReset()
 
@@ -135,8 +142,9 @@ describe('src/route/project/[id]', () => {
     })
 
     // Error
-    mockGet.mockImplementation((id, data) => {
+    mockGet.mockImplementation((_, data) => {
       if (data.includes('title')) throw new Error('test')
+      return {}
     })
     await id(req, res)
     expect(mockSession).toHaveBeenCalledTimes(2)

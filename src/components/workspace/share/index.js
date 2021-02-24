@@ -31,7 +31,6 @@ const Share = ({ workspace }) => {
    * @param {Array} value Value
    */
   const onChange = (value) => {
-    console.log(value)
     setValues(value)
   }
 

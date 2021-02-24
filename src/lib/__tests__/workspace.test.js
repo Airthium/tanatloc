@@ -20,6 +20,11 @@ jest.mock('../user', () => ({
   update: async () => mockUserUpdate()
 }))
 
+const mockGroupGet = jest.fn()
+jest.mock('../group', () => ({
+  get: async () => mockGroupGet()
+}))
+
 const mockDelProject = jest.fn()
 jest.mock('../project', () => ({
   del: async () => mockDelProject()
@@ -34,6 +39,7 @@ describe('src/lib/workspace', () => {
 
     mockUserGet.mockReset()
     mockUserUpdate.mockReset()
+    mockGroupGet.mockReset()
     mockDelProject.mockReset()
   })
 
@@ -72,10 +78,14 @@ describe('src/lib/workspace', () => {
     mockGet.mockImplementation(() => ({
       name: 'name',
       owners: ['id'],
-      users: ['id']
+      users: ['id'],
+      groups: ['id']
     }))
     mockUserGet.mockImplementation(() => ({
       username: 'username'
+    }))
+    mockGroupGet.mockImplementation(() => ({
+      name: 'name'
     }))
     workspace = await Workspace.get()
     expect(mockAdd).toHaveBeenCalledTimes(0)
@@ -87,8 +97,9 @@ describe('src/lib/workspace', () => {
     expect(mockDelProject).toHaveBeenCalledTimes(0)
     expect(workspace).toEqual({
       name: 'name',
-      owners: [{ username: 'username' }],
-      users: [{ username: 'username' }]
+      owners: [{ id: 'id', username: 'username' }],
+      users: [{ id: 'id', username: 'username' }],
+      groups: [{ id: 'id', name: 'name' }]
     })
   })
 
@@ -126,9 +137,10 @@ describe('src/lib/workspace', () => {
   })
 
   it('update', async () => {
-    await Workspace.update({ workspace: {} })
+    mockGet.mockImplementation(() => ({}))
+    await Workspace.update({ id: 'id' }, [])
     expect(mockAdd).toHaveBeenCalledTimes(0)
-    expect(mockGet).toHaveBeenCalledTimes(0)
+    expect(mockGet).toHaveBeenCalledTimes(1)
     expect(mockUpdate).toHaveBeenCalledTimes(1)
     expect(mockDelete).toHaveBeenCalledTimes(0)
     expect(mockUserGet).toHaveBeenCalledTimes(0)

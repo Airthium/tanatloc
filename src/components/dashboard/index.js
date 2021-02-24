@@ -164,7 +164,7 @@ const Dashboard = () => {
       if (workspace.owners?.find((o) => o.id === user.id))
         myWorkspaces.push(<Menu.Item key={index}>{workspace.name}</Menu.Item>)
       else if (
-        workspace.users?.users.find((u) => u.id === user.id) ||
+        workspace.users?.find((u) => u.id === user.id) ||
         workspace.groups?.find((g) => user.groups?.includes(g.id))
       )
         sharedWorkspaces.push(

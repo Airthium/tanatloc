@@ -20,6 +20,11 @@ jest.mock('@/lib/project', () => ({
   get: async () => mockGetProject()
 }))
 
+const mockGetWorkspace = jest.fn()
+jest.mock('@/lib/workspace', () => ({
+  get: async () => mockGetWorkspace()
+}))
+
 const mockError = jest.fn()
 jest.mock('@/lib/sentry', () => ({
   captureException: () => mockError()
@@ -54,6 +59,9 @@ describe('src/route/simulation/[id]', () => {
     mockDel.mockReset()
 
     mockGetProject.mockReset()
+    mockGetProject.mockImplementation(() => ({}))
+
+    mockGetWorkspace.mockReset()
 
     mockError.mockReset()
 
@@ -72,6 +80,7 @@ describe('src/route/simulation/[id]', () => {
     expect(mockUpdate).toHaveBeenCalledTimes(0)
     expect(mockDel).toHaveBeenCalledTimes(0)
     expect(mockGetProject).toHaveBeenCalledTimes(0)
+    expect(mockGetWorkspace).toHaveBeenCalledTimes(0)
     expect(mockError).toHaveBeenCalledTimes(0)
     expect(response).toBe(undefined)
   })
@@ -86,6 +95,7 @@ describe('src/route/simulation/[id]', () => {
     expect(mockUpdate).toHaveBeenCalledTimes(0)
     expect(mockDel).toHaveBeenCalledTimes(0)
     expect(mockGetProject).toHaveBeenCalledTimes(1)
+    expect(mockGetWorkspace).toHaveBeenCalledTimes(1)
     expect(mockError).toHaveBeenCalledTimes(0)
     expect(response).toEqual({ error: true, message: 'Unauthorized' })
 
@@ -100,6 +110,7 @@ describe('src/route/simulation/[id]', () => {
     expect(mockUpdate).toHaveBeenCalledTimes(0)
     expect(mockDel).toHaveBeenCalledTimes(0)
     expect(mockGetProject).toHaveBeenCalledTimes(2)
+    expect(mockGetWorkspace).toHaveBeenCalledTimes(2)
     expect(mockError).toHaveBeenCalledTimes(1)
     expect(response).toEqual({ error: true, message: 'test' })
   })
@@ -118,6 +129,7 @@ describe('src/route/simulation/[id]', () => {
     expect(mockUpdate).toHaveBeenCalledTimes(0)
     expect(mockDel).toHaveBeenCalledTimes(0)
     expect(mockGetProject).toHaveBeenCalledTimes(1)
+    expect(mockGetWorkspace).toHaveBeenCalledTimes(1)
     expect(mockError).toHaveBeenCalledTimes(0)
     expect(response).toEqual({
       simulation: {
@@ -138,6 +150,7 @@ describe('src/route/simulation/[id]', () => {
     expect(mockUpdate).toHaveBeenCalledTimes(0)
     expect(mockDel).toHaveBeenCalledTimes(0)
     expect(mockGetProject).toHaveBeenCalledTimes(1)
+    expect(mockGetWorkspace).toHaveBeenCalledTimes(1)
     expect(mockError).toHaveBeenCalledTimes(0)
     expect(response).toEqual({
       simulation: {
@@ -147,7 +160,7 @@ describe('src/route/simulation/[id]', () => {
     })
 
     // Error
-    mockGet.mockImplementation((id, data) => {
+    mockGet.mockImplementation((_, data) => {
       if (data.includes('name')) throw new Error('test')
       return {}
     })
@@ -158,6 +171,7 @@ describe('src/route/simulation/[id]', () => {
     expect(mockUpdate).toHaveBeenCalledTimes(0)
     expect(mockDel).toHaveBeenCalledTimes(0)
     expect(mockGetProject).toHaveBeenCalledTimes(2)
+    expect(mockGetWorkspace).toHaveBeenCalledTimes(2)
     expect(mockError).toHaveBeenCalledTimes(1)
     expect(response).toEqual({ error: true, message: 'test' })
   })
@@ -175,6 +189,7 @@ describe('src/route/simulation/[id]', () => {
     expect(mockUpdate).toHaveBeenCalledTimes(1)
     expect(mockDel).toHaveBeenCalledTimes(0)
     expect(mockGetProject).toHaveBeenCalledTimes(1)
+    expect(mockGetWorkspace).toHaveBeenCalledTimes(1)
     expect(mockError).toHaveBeenCalledTimes(0)
     expect(response).toBe('end')
 
@@ -189,6 +204,7 @@ describe('src/route/simulation/[id]', () => {
     expect(mockUpdate).toHaveBeenCalledTimes(2)
     expect(mockDel).toHaveBeenCalledTimes(0)
     expect(mockGetProject).toHaveBeenCalledTimes(2)
+    expect(mockGetWorkspace).toHaveBeenCalledTimes(2)
     expect(mockError).toHaveBeenCalledTimes(1)
     expect(response).toEqual({ error: true, message: 'test' })
   })
@@ -206,6 +222,7 @@ describe('src/route/simulation/[id]', () => {
     expect(mockUpdate).toHaveBeenCalledTimes(0)
     expect(mockDel).toHaveBeenCalledTimes(1)
     expect(mockGetProject).toHaveBeenCalledTimes(1)
+    expect(mockGetWorkspace).toHaveBeenCalledTimes(1)
     expect(mockError).toHaveBeenCalledTimes(0)
     expect(response).toBe('end')
 
@@ -220,6 +237,7 @@ describe('src/route/simulation/[id]', () => {
     expect(mockUpdate).toHaveBeenCalledTimes(0)
     expect(mockDel).toHaveBeenCalledTimes(2)
     expect(mockGetProject).toHaveBeenCalledTimes(2)
+    expect(mockGetWorkspace).toHaveBeenCalledTimes(2)
     expect(mockError).toHaveBeenCalledTimes(1)
     expect(response).toEqual({ error: true, message: 'test' })
   })
@@ -237,6 +255,7 @@ describe('src/route/simulation/[id]', () => {
     expect(mockUpdate).toHaveBeenCalledTimes(0)
     expect(mockDel).toHaveBeenCalledTimes(0)
     expect(mockGetProject).toHaveBeenCalledTimes(1)
+    expect(mockGetWorkspace).toHaveBeenCalledTimes(1)
     expect(mockError).toHaveBeenCalledTimes(1)
     expect(response).toEqual({
       error: true,

@@ -3,6 +3,7 @@
 import UserDB from '@/database/user'
 
 import Avatar from './avatar'
+import Group from './group'
 import Workspace from './workspace'
 
 /**
@@ -76,7 +77,23 @@ const update = async (user, data) => {
  */
 const del = async (user) => {
   // Get data
-  const data = await get(user.id, ['workspaces'])
+  const data = await get(user.id, ['groups', 'workspaces'])
+
+  // Delete from groups
+  if (data.groups) {
+    await Promise.all(
+      data.groups.map(async (group) => {
+        await Group.update({ id: group }, [
+          {
+            key: 'users',
+            type: 'array',
+            method: 'remove',
+            value: user.id
+          }
+        ])
+      })
+    )
+  }
 
   // Delete workspaces
   if (data.workspaces) {

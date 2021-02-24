@@ -26,6 +26,11 @@ jest.mock('../workspace', () => ({
   del: async () => mockDelWorkspace()
 }))
 
+const mockUpdateGroup = jest.fn()
+jest.mock('../group', () => ({
+  update: async () => mockUpdateGroup()
+}))
+
 describe('src/lib/user', () => {
   beforeEach(() => {
     mockGet.mockReset()
@@ -35,6 +40,7 @@ describe('src/lib/user', () => {
     mockDel.mockReset()
     mockReadAvatar.mockReset()
     mockDelWorkspace.mockReset()
+    mockUpdateGroup.mockReset()
   })
 
   it('add', async () => {
@@ -134,7 +140,7 @@ describe('src/lib/user', () => {
   })
 
   it('del', async () => {
-    // Without workspaces
+    // Without workspaces & groups
     mockGet.mockImplementation(() => ({}))
     await User.del({})
     expect(mockGet).toHaveBeenCalledTimes(1)
@@ -144,8 +150,8 @@ describe('src/lib/user', () => {
     expect(mockReadAvatar).toHaveBeenCalledTimes(0)
     expect(mockDelWorkspace).toHaveBeenCalledTimes(0)
 
-    // With workspaces
-    mockGet.mockImplementation(() => ({ workspaces: ['id'] }))
+    // With workspaces & groups
+    mockGet.mockImplementation(() => ({ groups: ['id'], workspaces: ['id'] }))
     await User.del({})
     expect(mockGet).toHaveBeenCalledTimes(2)
     expect(mockGetByUsernameAndPassword).toHaveBeenCalledTimes(0)
@@ -153,5 +159,6 @@ describe('src/lib/user', () => {
     expect(mockDel).toHaveBeenCalledTimes(2)
     expect(mockReadAvatar).toHaveBeenCalledTimes(0)
     expect(mockDelWorkspace).toHaveBeenCalledTimes(1)
+    expect(mockUpdateGroup).toHaveBeenCalledTimes(1)
   })
 })

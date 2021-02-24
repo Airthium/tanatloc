@@ -2,7 +2,6 @@
 
 import { useState } from 'react'
 import {
-  // Button,
   Divider,
   Layout,
   PageHeader,
@@ -16,9 +15,8 @@ import {
 
 import { Error } from '@/components/assets/notification'
 
-// import { ShareAltOutlined } from '@ant-design/icons'
-
 import Empty from './empty'
+import Share from './share'
 import Delete from './delete'
 
 import ProjectAdd from '@/components/project/add'
@@ -91,9 +89,7 @@ const Workspace = ({ workspace }) => {
               </Typography.Title>
             }
             extra={[
-              // <Button key="share" icon={<ShareAltOutlined />}>
-              //   Share it
-              // </Button>,
+              <Share key="share" workspace={workspace} />,
               <Delete key="delete" workspace={workspace} />
             ]}
             footer={

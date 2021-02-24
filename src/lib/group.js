@@ -78,7 +78,7 @@ const update = async (group, data) => {
   const groupData = await get(group.id, ['users'])
 
   // Check users
-  const usersUpdate = data.find((d) => d.key === 'users')
+  const usersUpdate = data.find((d) => d.key === 'users' && !d.type)
   if (usersUpdate) {
     // Deleted users
     const deleted = groupData.users.filter(

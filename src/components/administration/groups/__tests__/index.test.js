@@ -139,10 +139,10 @@ describe('src/components/administration/groups', () => {
     const render = wrapper
       .find('Table')
       .props()
-      .columns[2].render('text', { key: 'value', users: [{}] })
+      .columns[2].render('text', { key: 'value', users: [{ id: 'id1' }] })
 
     // Set edit
-    render.props.children[0].props.onClick({ users: [{ id: 'id1' }] })
+    render.props.children[0].props.onClick()
     wrapper.update()
 
     await wrapper

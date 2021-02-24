@@ -152,6 +152,8 @@ const Groups = () => {
    */
   const onUpdate = async (values) => {
     try {
+      console.log(values)
+      console.log(edit)
       // Check update
       const toUpdate = []
 
@@ -162,7 +164,7 @@ const Groups = () => {
           value: values.name
         })
 
-      if (edit.users.map((u) => u.id) !== values.users)
+      if (edit.users.map((u) => u.id).toString() !== values.users.toString())
         toUpdate.push({
           key: 'users',
           value: values.users

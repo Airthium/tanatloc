@@ -107,7 +107,7 @@ const updater = async (db, id, data) => {
             d.key +
             ", '{" +
             d.path.join(',') +
-            "}', 0" +
+            "}', 'null'" +
             ')'
         )
       } else {

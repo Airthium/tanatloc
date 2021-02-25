@@ -19,12 +19,18 @@ const Data = (project, filter, setTitle, setDescription) => {
 
   // Snapshot
   const snapshot = project.avatar ? (
-    <img src={project && project.avatar} width="100" height="100" />
+    <img
+      src={project && project.avatar}
+      width="100"
+      height="100"
+      style={{ cursor: 'pointer' }}
+    />
   ) : (
     <Empty
       image={Empty.PRESENTED_IMAGE_SIMPLE}
       description={'No preview yet.'}
       imageStyle={{ width: 100 }}
+      style={{ cursor: 'pointer' }}
     />
   )
 

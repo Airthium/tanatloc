@@ -176,15 +176,26 @@ const Run = ({ project, simulation }) => {
 
     try {
       // Update simulation
-      await SimulationAPI.update({ id: simulation.id }, [
-        {
-          key: 'scheme',
-          type: 'json',
-          method: 'set',
-          path: ['configuration', 'part'],
-          value: file
-        }
-      ])
+      if (file) {
+        await SimulationAPI.update({ id: simulation.id }, [
+          {
+            key: 'scheme',
+            type: 'json',
+            method: 'set',
+            path: ['configuration', 'part'],
+            value: file
+          }
+        ])
+      } else {
+        await SimulationAPI.update({ id: simulation.id }, [
+          {
+            key: 'scheme',
+            type: 'json',
+            method: 'erase',
+            path: ['configuration', 'part']
+          }
+        ])
+      }
 
       // Mutate
       mutateOneSimulation(currentSimulation)

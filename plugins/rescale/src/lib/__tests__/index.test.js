@@ -212,6 +212,7 @@ describe('plugins/rescale/src/lib', () => {
           return {
             results: [{ status: 'Executing' }]
           }
+        else if (count < 5) return {}
         else
           return {
             results: [{ status: 'Completed' }]

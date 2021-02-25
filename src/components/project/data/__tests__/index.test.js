@@ -57,6 +57,12 @@ describe('src/components/project/data', () => {
           firstname: 'firstname',
           lastname: 'lastname'
         }
+      ],
+      groups: [
+        {
+          id: 'id',
+          name: 'name'
+        }
       ]
     })
     expect(data).toBeDefined()

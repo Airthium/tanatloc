@@ -96,7 +96,11 @@ describe('src/components/dashboard', () => {
       {
         id: 'id',
         name: 'name',
-        users: [{ id: 'id' }],
+        users: [{ id: 'id' }]
+      },
+      {
+        id: 'id',
+        name: 'name',
         groups: [{ id: 'id' }]
       },
       {

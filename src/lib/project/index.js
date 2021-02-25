@@ -165,7 +165,7 @@ const del = async ({ id }, project) => {
   // Delete from groups
   if (data.groups) {
     await Promise.all(
-      data.groups.map(async (groups) => {
+      data.groups.map(async (group) => {
         await Group.update({ id: group }, [
           {
             key: 'projects',

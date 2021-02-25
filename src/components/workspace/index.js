@@ -34,7 +34,7 @@ const errors = {
  * Workspace
  * @param {Object} props Props
  */
-const Workspace = ({ workspace }) => {
+const Workspace = ({ user, workspace }) => {
   // State
   const [filter, setFilter] = useState()
 
@@ -92,7 +92,9 @@ const Workspace = ({ workspace }) => {
               workspace.id
                 ? [
                     <Share key="share" workspace={workspace} />,
-                    <Delete key="delete" workspace={workspace} />
+                    workspace?.owners?.includes(user?.id) && (
+                      <Delete key="delete" workspace={workspace} />
+                    )
                   ]
                 : null
             }
@@ -168,7 +170,7 @@ const Workspace = ({ workspace }) => {
             ) : null}
           </PageHeader>
           <Layout.Content>
-            <ProjectList workspace={workspace} filter={filter} />
+            <ProjectList user={user} workspace={workspace} filter={filter} />
           </Layout.Content>
         </>
       ) : (

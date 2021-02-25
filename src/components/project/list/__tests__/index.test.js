@@ -10,7 +10,8 @@ jest.mock(
   () => (project, filter, title, description) => {
     return {
       title,
-      description
+      description,
+      owners: []
     }
   }
 )
@@ -41,7 +42,7 @@ describe('component/project/list', () => {
     mockMutate.mockImplementation(() => {})
     mockUpdate.mockReset()
 
-    wrapper = shallow(<List workspace={{}} filter={''} />)
+    wrapper = shallow(<List user={{ id: 'id' }} workspace={{}} filter={''} />)
   })
 
   afterEach(() => {
@@ -87,7 +88,11 @@ describe('component/project/list', () => {
 
   it('render', () => {
     // TODO must be at(5) if shared is enable
-    const render = wrapper.find('Column').at(4).props().render()
+    const render = wrapper
+      .find('Column')
+      .at(4)
+      .props()
+      .render({ owners: ['id'] })
     expect(shallow(render).html().includes('delete')).toBe(true)
   })
 })

@@ -33,7 +33,12 @@ jest.mock('@/components/assets/notification', () => ({
 let wrapper
 describe('components/workspace', () => {
   beforeEach(() => {
-    wrapper = shallow(<Workspace workspace={{}} />)
+    wrapper = shallow(
+      <Workspace
+        user={{ id: 'id' }}
+        workspace={{ id: 'id', groups: ['id'], owners: ['id'] }}
+      />
+    )
   })
 
   afterEach(() => {
@@ -52,7 +57,7 @@ describe('components/workspace', () => {
   it('with users', () => {
     const users = ['id1', 'id2']
     wrapper.unmount()
-    wrapper = shallow(<Workspace workspace={{ users: users }} />)
+    wrapper = shallow(<Workspace user={{}} workspace={{ users: users }} />)
 
     expect(wrapper.find('Avatar').length).not.toBe(0)
   })
@@ -70,5 +75,39 @@ describe('components/workspace', () => {
     wrapper.unmount()
     wrapper = shallow(<Workspace />)
     expect(wrapper.find('empty').length).toBe(1)
+  })
+
+  it('with user data', () => {
+    wrapper.unmount()
+    wrapper = shallow(
+      <Workspace
+        user={{}}
+        workspace={{ users: [{ id: 'id', avatar: 'avatar' }] }}
+      />
+    )
+
+    wrapper.unmount()
+    wrapper = shallow(
+      <Workspace
+        user={{}}
+        workspace={{ users: [{ id: 'id', email: 'email' }] }}
+      />
+    )
+
+    wrapper.unmount()
+    wrapper = shallow(
+      <Workspace
+        user={{}}
+        workspace={{ users: [{ id: 'id', firstname: 'firstname' }] }}
+      />
+    )
+
+    wrapper.unmount()
+    wrapper = shallow(
+      <Workspace
+        user={{}}
+        workspace={{ users: [{ id: 'id', lastname: 'lastname' }] }}
+      />
+    )
   })
 })

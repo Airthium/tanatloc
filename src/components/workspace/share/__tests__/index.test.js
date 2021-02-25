@@ -21,7 +21,7 @@ jest.mock('@/api/workspace', () => ({
 }))
 
 let wrapper
-describe('src/components/workspae/share', () => {
+describe('src/components/workspace/share', () => {
   const workspace = {}
 
   beforeEach(() => {
@@ -77,6 +77,12 @@ describe('src/components/workspae/share', () => {
     wrapper.unmount()
     mockGroups.mockImplementation(() => [{}])
     wrapper = shallow(<Share workspace={workspace} />)
+    expect(wrapper).toBeDefined()
+  })
+
+  it('with workspace groups', () => {
+    wrapper.unmount()
+    wrapper = shallow(<Share workspace={{ ...workspace, groups: [{}] }} />)
     expect(wrapper).toBeDefined()
   })
 })

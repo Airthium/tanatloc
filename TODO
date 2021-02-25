@@ -19,3 +19,6 @@ Workspace:
 
 Run:
 - Use file for logs (separate gmsh / Freefem for rescale)
+
+Project:
+- Data is not suitable for sharing. Not possible to disable delete

@@ -125,8 +125,8 @@ const Data = (project, filter, setTitle, setDescription) => {
     key: project.id,
     snapshot: snapshot,
     title: title,
-    owners: <Avatar.Group>{owners}</Avatar.Group>,
-    users: (
+    ownersRender: <Avatar.Group>{owners}</Avatar.Group>,
+    usersRender: (
       <>
         <Avatar.Group>{users}</Avatar.Group>
         <Avatar.Group>{groups}</Avatar.Group>

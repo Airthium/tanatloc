@@ -187,7 +187,9 @@ const Dashboard = () => {
   switch (currentView) {
     case menuItems.workspaces.key:
     case menuItems.shared.key:
-      displayed = <Workspace workspace={currentWorkspace} />
+      displayed = (
+        <Workspace user={{ id: user?.id }} workspace={currentWorkspace} />
+      )
       break
     case menuItems.account.key:
       displayed = <Account />

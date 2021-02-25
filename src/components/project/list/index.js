@@ -22,7 +22,7 @@ const errors = {
  * @memberof module:'src/components/project
  * @param {Object} props Props
  */
-const ProjectList = ({ workspace, filter }) => {
+const ProjectList = ({ user, workspace, filter }) => {
   // Router
   const router = useRouter()
 
@@ -127,15 +127,25 @@ const ProjectList = ({ workspace, filter }) => {
       />
       <Table.Column title="Project" dataIndex="title" />
       {/* <Table.Column title="Status" dataIndex="tags" align="center" /> */}
-      <Table.Column title="Administrators" dataIndex="owners" align="center" />
-      <Table.Column title="Shared With" dataIndex="users" align="center" />
+      <Table.Column
+        title="Administrators"
+        dataIndex="ownersRender"
+        align="center"
+      />
+      <Table.Column
+        title="Shared With"
+        dataIndex="usersRender"
+        align="center"
+      />
       <Table.Column
         title="Actions"
         align="center"
         render={(value) => (
           <Space size="middle" wrap={true}>
             <Share workspace={workspace} project={value} />
-            <Delete workspace={workspace} project={value} />
+            {value?.owners?.includes(user?.id) && (
+              <Delete workspace={workspace} project={value} />
+            )}
           </Space>
         )}
       />

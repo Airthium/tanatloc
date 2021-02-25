@@ -28,8 +28,7 @@ const solderFilling = {
           {
             label: 'Diffusion coefficient',
             htmlEntity: 'formula',
-            default: 1e-3,
-            unit: 'unit'
+            default: '1e-4'
           }
         ]
       },
@@ -39,8 +38,7 @@ const solderFilling = {
           {
             label: 'Contact angle',
             htmlEntity: 'formula',
-            default: 60,
-            unit: 'unit'
+            default: 60
           }
         ]
       },
@@ -50,8 +48,7 @@ const solderFilling = {
           {
             label: 'contact angle of restarted data',
             htmlEntity: 'formula',
-            default: 60,
-            unit: 'unit'
+            default: 90
           }
         ]
       },
@@ -61,8 +58,7 @@ const solderFilling = {
           {
             label: 'Size of the background mesh',
             htmlEntity: 'formula',
-            default: 0.15,
-            unit: 'unit'
+            default: 0.15
           }
         ]
       },
@@ -72,8 +68,7 @@ const solderFilling = {
           {
             label: '#step to restart',
             htmlEntity: 'formula',
-            default: 0,
-            unit: 'unit'
+            default: 0
           }
         ]
       },
@@ -83,8 +78,7 @@ const solderFilling = {
           {
             label: 'Number of steps for volume increment',
             htmlEntity: 'formula',
-            default: 50,
-            unit: 'unit'
+            default: 50
           }
         ]
       },
@@ -95,8 +89,7 @@ const solderFilling = {
           {
             label: 'Flag to perform whole increments',
             htmlEntity: 'formula',
-            default: 0,
-            unit: 'unit'
+            default: 0
           }
         ]
       },
@@ -107,14 +100,12 @@ const solderFilling = {
           {
             label: 'Minimum ratio of volume increment',
             htmlEntity: 'formula',
-            default: 1.012,
-            unit: 'unit'
+            default: 1.012
           },
           {
             label: 'Maximum ratio of volume increment',
             htmlEntity: 'formula',
-            default: 1.05,
-            unit: 'unit'
+            default: 1.05
           }
         ]
       },
@@ -125,14 +116,12 @@ const solderFilling = {
           {
             label: '#Newton for gradient flow solver',
             htmlEntity: 'formula',
-            default: 30,
-            unit: 'unit'
+            default: 30
           },
           {
             label: '#Newton for stationary state solver',
             htmlEntity: 'formula',
-            default: 60,
-            unit: 'unit'
+            default: 60
           }
         ]
       },
@@ -143,14 +132,12 @@ const solderFilling = {
           {
             label: 'Time for initial gradient flow solver',
             htmlEntity: 'formula',
-            default: 1000,
-            unit: 'unit'
+            default: 1000
           },
           {
             label: 'Time for other gradient flow solvers',
             htmlEntity: 'formula',
-            default: 1000,
-            unit: 'unit'
+            default: 1000
           }
         ]
       },
@@ -161,8 +148,7 @@ const solderFilling = {
           {
             label: 'Verbosity level for debugging',
             htmlEntity: 'formula',
-            default: 0,
-            unit: 'unit'
+            default: 0
           }
         ]
       }

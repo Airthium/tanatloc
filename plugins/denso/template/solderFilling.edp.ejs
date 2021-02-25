@@ -1,10 +1,13 @@
 // mpirun -np 12 FreeFem++-mpi SolderFilling.edp
-// to find extremal of the energy with double well potentialt0
+// to find extremal of the energy with double well potential
 // J(u)=1/2 \int \kappa |\nabla u|^2 + (u-1)^2*(u+1)^2
 // two constranits : \nabla u / |\nabla u|\cdot u = cos \tehta, \int u = c
-// Copyright : Atsushi Suzuki : 19 Oct. 2020 : Crank-Nicoslon + Newton
-//                           -> 8  Feb. 2021 
-//                           -> 11 Feb. 2021 : backward Euler + Newton
+// Copyright : Atsushi Suzuki : 19 Oct. 2020  Crank-Nicolson + Newton
+//                           -> 8  Feb. 2021  
+//                           -> 10 Feb. 2021  Backward Euler + Newton
+//                           -> 10b : forcing twice isotrpoic mesh refinement
+//                           -> 22 Feb. 2021  mesh by mmg3d + geometry by gmsh
+//                           -> 24 Feb. 2021  creation of initial mesh with MPI
 // update in printing volume with both \int (\varphi+1)/2 and  \int H(\varphi)
 // improved treatment for surface integration of contact angle condition
 // constant volume increment from the first increment given by ratio
@@ -27,7 +30,7 @@ macro def(i)i// EOM                         // scalar field definition
 macro init(i)i// EOM                        // scalar field initialization
 
 macro reinitialize(pphigg, mmagg, ffout) {
-  if(debugvtk && mpirank == 0) {
+  if(debugvtk1 && mpirank == 0) {
     ffout << "L26 : reinitialize " << mmagg << endl;
     ffout.flush;
   }
@@ -87,8 +90,9 @@ int refine0 = 5;
 int refine1 = 3; 
 int delangle = (-10);
 real hsize0 = -1.0;   // automatic
-real hsizemag = 1.5;
+real hsizemag = pointsize0;
 real largestmeshmag = 3.0;
+real pointsize = 0.15;
 real pointsize00 = pointsize0 / 2.0;
 real phigmax = 20.0;
 real phigconvdel = 0.01;
@@ -96,12 +100,13 @@ real phigdiverge = 0.5;
 real volstarted = 0.0;
 //
 int itrnewton2 = 10; //
-int itrGMRES0 = 25; //getARGV("-GMRES0", 25);
+int itrGMRES0 = 50; //getARGV("-GMRES0", 25);
 int itrGMRES1 = 150; //getARGV("-GMRES1", 150);
 real dt0 = 0.5; // getARGV("-dt0", 0.5);
 real dt1 = 0.25; // getARGV("-dt1", 0.25);
 real dtmax = 2048.0; // getARGV("-Dtmax", 32.0);
 real tolenlarge = 10.0; // parameter to controle enlarge time step
+real switch2kappa1 = 100.0; // parameter to controle enlarge time step
 real toldiverge = 1000.0; // threshold to break Newton iteration
 //
 int gmshmax = 2; // getARGV("-gmshmax", 2);
@@ -110,7 +115,7 @@ int nlayer = 10;
 int s = 1; // getARGV("-split", 1); 
 int p = 1; // getARGV("-hpddm_level_2_p", 1);
 
-bool debugvtk = (verbositylevel >= 2 ? true : false);
+bool debugvtk1 = (verbositylevel >= 2 ? true : false);
 bool debugvtk0 = (verbositylevel >= 1 ? true : false);
 
 mpiComm comm(mpiCommWorld,0,0);// trick : make a no split mpiWorld 
@@ -164,6 +169,7 @@ int[int] surfacelist(1000), surfaceerr(1), nsurfaceerr(1);
 int nsurfaces = 0;
 int[int] surfacelist0(1000);
 int nsurfaces0 = 0;
+bool computedEulerChars = false;
 //
 real etime00, etime01;
 
@@ -234,8 +240,9 @@ if (mpirank == 0) {
   fout << "** Tmax0 = " << Tmax0 << endl;             // 1000
   fout << "** Tmax1 = " << Tmax1 << endl;             // 10
   fout << "** cangle = " << cangle << endl;           // 45.0
-  fout << "** pointsize0 = " << pointsize0 << endl;   // 0.1
-  fout << ":: pointsize00 = " << pointsize00 << endl; // 0.05
+  fout << "** pointsize0 = " << pointsize0 << endl;   // -1
+  fout << ":: pointsize = "  << pointsize  << endl;   // 0.1
+  fout << "** hsizemag = " << hsizemag << endl;       // 1.0
   fout << ":: itrGMRES0 = " << itrGMRES0 << endl;     // 25
   fout << ":: itrGMRES1 = " << itrGMRES1 << endl;     // 150
   fout << ":: dt0 = " << dt0 << endl;                 // 0.5
@@ -247,6 +254,7 @@ if (mpirank == 0) {
   fout << "** Wet = " <<  wet << endl;
   fout << "** Wall = " << wall << endl;
   fout << "** Liquid = " << liquid << endl;
+  fout << "** npaart = " << npart << endl;
   fout.flush;
 }
 
@@ -440,6 +448,7 @@ func int geninifile(string fname, string sstepfile, real ppointsize)
 
 func int generatebackgroundmesh(real ppointsizee)
 {
+  int flagerror = 0;
   if (mpirank == 0) {
     
     gengeofile(workingpath+"out.geo", stepfile, ppointsizee, wet, wall,
@@ -485,12 +494,12 @@ func int generatebackgroundmesh(real ppointsizee)
       gmshcount++;
     }
     if (gmshcount >= gmshmax && gmshflag == false) {
-      fout << "L673: gmsh error " << endl;
-      exit(-1);
+      fout << "L673: gmsh error : exit" << endl;
+      flagerror = 1;
     }
     ThG0 = gmshload3(workingpath+"out.msh");         // fine mesh for background
     fout << ThG0.nv << " " << ThG0.nt << endl;
-    if(debugvtk0) {
+    if(debugvtk1) {
       savevtk(workingpath+"background."+vtkcount+".vtu", ThG0,
 	      bin = false);
       fout << "L1478: vtu = " << vtkcount << endl;
@@ -498,6 +507,11 @@ func int generatebackgroundmesh(real ppointsizee)
       vtkcount++;
     }
   }  // if (mpirank == 0)
+  broadcast(processor(0, comm), flagerror);
+  if (flagerror) {
+    exit(-1);
+  }
+
   broadcast(processor(0, comm), ThG0);
 
   meshN Th = ThG0; // dummy mesh for initialization
@@ -513,162 +527,116 @@ func int generatebackgroundmesh(real ppointsizee)
   
 }
 
-func int refinemesh(mesh3 &ThG11, mesh3 &ThG00, mesh3 &Tha00,
+func int refinemesh(mesh3 &ThG00, mesh3 &Tha00,
 		    matrix &D00h, matrix &R00gl, real[int] &pphig, int nnlayer,
-		    ofstream &ffout, bool fflaganisoo, bool morerefine,
-		    bool updatepu)
+		    ofstream &ffout, bool fflaganisoo)
 {
+  mesh3 ThG11 = ThG00;
+  mesh3 Tha11 = Tha00;
   int nlayer = nnlayer;  
   mesh3 ThGrefined;
-  fespace VhGrefined(ThGrefined, P2);  
-  fespace VhG11(ThG11, P2);
+  fespace VhGP1(ThG11, P1);
+  fespace VhGP2(ThG00, P2);  // pphig is a P2 FEM data on mesh ThG00
   real vol = int3d(ThG0)(1.0) / ThG0.nt;
   real hsize = hsize0 * hsizemag; // exp(log(vol) / 3.0) 
-  real hhsize = hsize * sqrt(sqrt(kappa / kappa0)); // 0.1^(1/4) = 0.56234
-  real hsizemax = hsize * largestmeshmag; //6.0;  
+  real hmagmax = 6.0;
+  real hmagmin = 1.0 / 12.0;
   real kappaeps = sqrt(kappa0) * sqrt(sqrt(kappa / kappa0));
-  
-  VhG11 phigg;
-  phigg[] = pphig;  // to access FE value from an array
+
+  VhGP1 phigp1;
+  VhGP2 phigp2;
+  phigp2[] = pphig;  // to access FE value from an array
   if (mpirank == 0) {
     ffout << "L406 : refinemesh " << nnlayer << " " << fflaganisoo << endl;
     ffout.flush;
   }
-  if(fflaganisoo) {
-    if (mpirank == 0){
-      //      real hsize = ThG0.hmax;
-      fespace Mh(ThG11, [P1,P1,P1,P1,P1,P1]);
-      Mh [m11, m21, m22, m31, m32, m33] = [0, 0, 0, 0, 0, 0];
-      int nv0 = ThG11.nv;
-      if (nnlayer == -3) {
-	real hsizeb = hsizemax;
-	real hsizes = hhsize / 16.0;
-	real[int] met = mshmet(ThG11, phigg, hmax=hsizeb, hmin=hsizes, aniso=1);
-	m11[] = met;
-	ThG11=mmg3d(ThG11,metric=m11[],hgrad = 1.25);
-      }
-      else {
-	real hsizeb = hsize * (largestmeshmag / 2.0);	 // * 2.0
-	real hsizes = hhsize / 64.0;  // 48.0
-	real[int] met = mshmet(ThG11, phigg, hmax=hsizeb, hmin=hsizes, aniso=1);
-	m11[] = met;
-	ThG11=mmg3d(ThG11,metric=m11[],hgrad = 1.5);	// 2.0
-      }
-      ffout << "mmg3d an-isotropic mesh refinement " << nv0 << " -> " << ThG1.nv
-	   << endl;
-      ffout.flush;
-    }
-  }
-  else {
-    fespace VhG00(ThG00, P1);
-    fespace Vha0(Tha00, P1);
-    //    fespace Vhaa(Tha, P1);
-    VhG00 u, reff, reff0, up1;
-    real[int] ua(Tha00.nv);
-    VhG0 uu, rreff;
-    real [int] uua(Tha.nv);
-    if (mpirank == 0) {
-      ffout << "## refinemesh : based on ThG1 with P2 : hsize =" << hsize
-	    << endl;
-      if(debugvtk) {
-	savevtk(workingpath+"refined."+vtkcount+".vtu", ThG11,
-		phigg, dataname = "phi", order = vtkorder, bin = false);
-	ffout << "## L109 : vtu = " << vtkcount << endl;
-	ffout.flush;
-	vtkcount++;            
-      }
-    }
+    real [int] uua(Tha0.nv);
+    VhG0 uu, rref0;
     searchMethod = 0;     // searchMethod = 1 is acculate
-    etime00 = mpiWtime();
-    //ua = phigg; // interpolation from adapted P2 to fine P1
-    distance(Tha00, phigg, ua, distmax = 100);
-    verbosity = verbosity0;
-    etime01 = mpiWtime();
-    searchMethod = 1;
-  
-    real[int] w(ThG00.nv), wwi(Tha00.nv);
-    wwi = D00h * ua; 
-
-    w = R00gl'* wwi; //'
-    
-    mpiAllReduce(w, reff0[], comm, mpiSUM); // variable in the whole domain
-    mpiBarrier(comm);
-
-    searchMethod = 0;     // searchMethod = 1 is acculate
-    distance(Tha0, phigg, uua, distmax = 100);
+    distance(Tha0, phigp2, uua, distmax = 100);
     searchMethod = 1;  
     
     real[int] w0(ThG0.nv), wwi0(Tha0.nv);    
     wwi0 = D0h * uua; 
     w0 = R0gl'* wwi0; //'
-    mpiAllReduce(w0, rreff[], comm, mpiSUM); // variable in the whole domain
-
+    mpiAllReduce(w0, rref0[], comm, mpiSUM); // variable in the whole domain
     if (mpirank == 0) {
-      ffout << "## background mesh "<< endl;
-      if(debugvtk) {
-	savevtk(workingpath+"background."+vtkcount+".vtu", ThG00,
-		reff0, dataname = "reff", order = vtkorder, bin = false);
-	ffout << "## L456 : vtu = " << vtkcount << endl;
-	ffout.flush;
-	vtkcount++;            
-      }
+      interfaceneighbors(ThG0, rref0[], 1, 17, uu[], 1);
     }
+    broadcast(processor(0, comm), uu[]);
+    {
+      VhGP1 u, reff, reff1, refff, www, uuu;
+      real[int] ua(Tha11.nv);
+      phigp1 = phigp2;      // interpolation from P2 to P1
+      searchMethod = 0;     // searchMethod = 1 is acculate
+      etime00 = mpiWtime();
+      distance(Tha11, phigp2, ua, distmax = 100);
+      verbosity = verbosity0;
+      etime01 = mpiWtime();
+      searchMethod = 1;
 
-    if (mpirank == 0) {
-      interfaceneighbors(ThG00, reff0[], 1, 17, u[], 1);
-      interfaceneighbors(ThG0, rreff[], 1, 17, uu[], 1);
-      {
-	if (nlayer == -1) {
-	  reff = (u < 1.01 ? hsize * 0.5 :
-		  (u < 3.01 ? hsize : hsize * 6.0)); //);
+      real[int] w(ThG11.nv), wwi(Tha11.nv);
+      wwi = D00h * ua;
+      w = R00gl'* wwi; //'
+
+      mpiAllReduce(w, reff1[], comm, mpiSUM); // variable in the whole domain
+      mpiBarrier(comm);
+
+      fespace VhGP1a(Tha11, P1);
+      VhGP1a uuua;
+      uuua = uu;   // interpolation from backgroud to current
+      wwi = D00h * uuua[];
+      w = R00gl'* wwi; //'
+
+      mpiAllReduce(w, uuu[], comm, mpiSUM); // variable in the whole domain
+      mpiBarrier(comm);
+      if (mpirank == 0) {
+	interfaceneighbors(ThG11, reff1[], 1, 17, u[], 1);
+	refff = abs(phigp1) < 0.9 ? 1.0 : 0.0;
+	int klevel = 0, klevel0, klevel1;
+	if (nlayer == -4) {
+	  for (klevel = 0;klevel < 17; klevel++) {
+	    www = 0.0;
+	    www = u > (klevel - 0.1) ? 1.0 : 0.0;
+	    if (refff[]' * www[] == 0.0) {
+	      break;
+	    }
+	  }
+	  klevel1 = klevel + 1;
+	  klevel0 = klevel / 2;
+	  ffout << "L612 level : " << klevel << " " << klevel0 << " "
+	       << klevel1 << endl;
+	  ffout.flush;
+	  klevel1 = klevel1 > 4 ? 4 : klevel1;  // to save gmsh cost
 	}
-	else if (nlayer == -2) {
-	  reff = (((u < 2.01) ? (hhsize * 0.25) :
-		   (uu < 4.01 ? (hsize * 0.5) :  
-		    (uu < 6.01 ? (2.0 * hsize) : hsizemax))));
+	if (nlayer == -1) {                           // for setinitial()
+	  reff = (u < 1.01 ? hsize * 0.5 :
+		  (u < 3.01 ? hsize : hsize * 2.0)); //);
+	}
+	else if (nlayer == -2) {                      // for setinitail()
+	  reff = ((u < 1.01) ? (hsize * 0.25) :
+		   (uu < 3.01 ? (hsize * 0.5) :
+		    (uu < 6.01 ? (hsize * 1.0) : hsize * 3.0)));
 	}
 	else if (nlayer == -3) {
 	  reff = 
-	    ((abs(reff0) < (kappaeps * 1.5)) ? (hhsize * 0.125) : // u < 2.01
-	     (uu < 2.01 ? (hsize * 0.25) :  	     
-	      (uu < 4.01 ? (hsize * 0.5) :  
-	       (uu < 10.01 ? (2.0 * hsize) : hsizemax))));
+	    ((abs(reff1) < (kappaeps * 2.0)) ? (hsize * 0.2) : // u < 2.01
+	     (uuu < 2.01 ? (hsize * 0.5) :
+	      (uuu < 4.01 ? (hsize * 1.0) :
+	       (uuu < 8.01 ? (hsize * 3.0) : hsize * hmagmax))));
 	}
 	else if (nlayer == -4) {
-	  reff = 
-	    ((abs(phigg) < 0.9) ? (hhsize * 0.125) : // u < 2.01
-	     (uu < 2.01 ? (hsize * 0.25) :  	     
-	      (uu < 4.01 ? (hsize * 0.5) :  
-	       (uu < 10.01 ? (2.0 * hsize) : hsizemax))));
-	}
-	else if (nlayer == -5) {
-	  reff =
-	    ((abs(phigg) < 0.6) ? (hhsize * 0.0625) : // u < 2.01	    
-	     ((abs(phigg) < 0.9) ? (hhsize * 0.125) : // u < 2.01
-	      (uu < 2.01 ? (hsize * 0.25) :  	     	      
-	       (uu < 4.01 ? (hsize * 0.5) :  
-		(uu < 10.01 ? (2.0 * hsize) : hsizemax)))));
-	}
-	else if (nlayer == -6) {  // refined closed to zero-isosurface
-	  reff = ((abs(reff0) < (kappaeps * 1.5)) ? (hhsize * 0.125) : //
-		  (((u < 8.01) && (up1 < (0.5 * hsize)))? (hhsize * 0.25) : //
-		   (uu < 3.01 ? (hsize * 0.5) :  // for the whole domain
-		    (uu < 6.01 ? (2.0 * hsize) : hsizemax))));
-	}
-	else if (nlayer == -7) {
-	  reff = ((abs(reff0) < (kappaeps * 0.75)) ? (hhsize * 0.0625) : //
-		  ((abs(reff0) < (kappaeps * 1.5)) ? (hhsize * 0.125) : //
-		   (((u < 8.01) && (up1 < (0.5 * hsize)))? (hhsize * 0.25) : //
-		    (uu < 3.01 ? (hsize * 0.5) :  // for the whole domain
-		     (uu < 6.01 ? (2.0 * hsize) : hsizemax)))));
+	  reff =  (u < (klevel1 + 0.01) ? (hsize * 0.25) : // u < 2.01
+		    (uuu < 5.01 ? (hsize * 0.5) :
+		     (uuu < 8.01 ? (hsize * 1.5) : hsize * hmagmax)));
 	}
 	ffout << "## background data "<< endl;
-	if(debugvtk) {
+	if(debugvtk1) {
 	  savevtk(workingpath+"reff."+vtkcount+".vtu", ThG00,
 		  reff, dataname = "reff", order = vtkorder, bin = false);
 	  ffout << "## L559 : vtu = " << vtkcount << endl;
 	  ffout.flush;
-	  vtkcount++;            
+	  vtkcount++;
 	}
 
 	ffout << "L445: creating pos file for background mesh " << nlayer;
@@ -689,7 +657,7 @@ func int refinemesh(mesh3 &ThG11, mesh3 &ThG00, mesh3 &Tha00,
 	       << reff[][ThG00[k][1]] << ","
 	       << reff[][ThG00[k][2]] << ","
 	       << reff[][ThG00[k][3]] << "};" << endl;
-	  }
+	  } // loop : k
 	  ff << "};" << endl;
 	}
 	ffout << "... end " << endl;
@@ -698,7 +666,8 @@ func int refinemesh(mesh3 &ThG11, mesh3 &ThG00, mesh3 &Tha00,
 	bool gmshflag = false;
 	gmshcount = 0;
 	while (!gmshflag || gmshcount < gmshmax) {
-	  gengeofile(workingpath+"out.geo", stepfile, hsizemax, wet, wall,
+	  gengeofile(workingpath+"out.geo", stepfile, (hsize * hmagmax),
+		     wet, wall,
 		     nsurfaces, surfacelist, true, true);
 	  exec("gmsh -3 "+workingpath+"out.geo -format msh2 -o "
 	       + workingpath + "out.msh -bgm "
@@ -708,7 +677,7 @@ func int refinemesh(mesh3 &ThG11, mesh3 &ThG00, mesh3 &Tha00,
 	  ffout << "L474: gmsh error = " << nsurfaceerr[0] << endl;
 	  if (nsurfaceerr[0] > 0) {
 	    for (int i = 0; i < nsurfaceerr[0]; i++) {
-	      fout << surfaceerr[i] << " " << endl;
+	      ffout << surfaceerr[i] << " " << endl;
 	      surfacelist[nsurfaces++] = surfaceerr[i];	  
 	    }
 	    ffout << endl;
@@ -720,59 +689,71 @@ func int refinemesh(mesh3 &ThG11, mesh3 &ThG00, mesh3 &Tha00,
 	  }
 	  ffout.flush;
 	  gmshcount++;
-	}
+	} // while (!gmshflag || gmshcount < gmshnmax)
 	//	gmsherror("gmsh.log", nsurfaceerr, surfaceerr);
 	ThGrefined = gmshload3(workingpath+"out.msh");
 	ffout << "L593 nv = " << ThGrefined.nv << " nt = "
-	      << ThGrefined.nt << " DOFs = " << VhGrefined.ndof << endl;
+	      << ThGrefined.nt << endl;
 	ffout.flush;
-     }
-     ThG11 = ThGrefined;      
-    } // mpirank == 0
-  }
-  broadcast(processor(0, comm), ThG11);
-  if ((nnlayer == -2)) {
-    if ((VhG11.ndof > DOFmin * 2)) {
+	ThG11 = ThGrefined;
+      } // mpirank == 0
+      broadcast(processor(0, comm), ThG11);
       if (mpirank == 0) {
-	ffout << "#L650 too large DOF : mesh size enlarged " << hsize0
-	      << " -> " << hsize0 * 2.0 << endl;
-	ffout.flush;
+	if(debugvtk1) {
+	  savevtk(workingpath+"background."+vtkcount+".vtu", ThG11,
+		  dataname = "back", bin = false);
+	  ffout << "## L688 : vtu = " << vtkcount << endl;
+	  ffout.flush;
+	  vtkcount++;
+	}
       }
-      if (VhG11.ndof < DOFmin * 3) {
-	hsize0 *= 1.5;   // too large DOF, enlarge mesh size
-      }
-      else {
-	hsize0 *= 2.0;
-      }
-    }
-    else if (VhG11.ndof < DOFmin * 0.25) {
-      if (mpirank == 0) {
-	ffout << "#L664 too small DOF : mesh size shrinked " << hsize0
-	      << " -> " << hsize0 / 1.5 << endl;
-	ffout.flush;
-      }
-      hsize0 /= 1.5;
-    }
-  }
+      if (nlayer == -4) {
+	if (mpirank == 0) {
+	  fespace Mh(ThG11, [P1,P1,P1,P1,P1,P1]);
+	  Mh [m11, m21, m22, m31, m32, m33] = [0, 0, 0, 0, 0, 0];
 
-  if (updatepu) {
+	  real hsizeb = hsize * hmagmax;
+	  real hsizes = hsize * (fflaganisoo ? hmagmin : hmagmin * 3.0);
+	  real[int] met = mshmet(ThG11, phigp2, hmax=hsizeb, hmin=hsizes,
+				 aniso=1);
+	  m11[] = met;
+	  ThG11=mmg3d(ThG11,metric=m11[],hgrad = (fflaganisoo ? 1.75 : 1.25));
+	  ffout << "mmg3d an-isotropic mesh refinement " << ThG1.nv << endl;
+	  ffout.flush;
+	  if(debugvtk1) {
+	    savevtk(workingpath+"background."+vtkcount+".vtu", ThG11,
+		    dataname = "mesh", bin = false);
+	    ffout << "## 758 : vtu = " << vtkcount << endl;
+	    ffout.flush;
+	    vtkcount++;
+	  }
+	}
+      }
+      broadcast(processor(0, comm), ThG11);
+    }   // loop : ll
     meshN Th = ThG11;
     {
       build(Th, s, intersection0, D1, P1, comm);    
     }
     Tha00 = Th;
     ThG00 = ThG11;
-    fespace VhG00(ThG00, P1);
-    fespace Vha0(Tha00, P1);
+    fespace Vha11(Tha00, P1);
     //
-    R00gl = interpolate(Vha0, VhG00);
+    R00gl = interpolate(Vha11, VhGP1);
     D00h = [D1]; // diagonal matrix
-    cout << "L567 : " << mpirank << " : " << D00h.n << " " << D00h.m << " : "
-	 << R00gl.n  << " " << R00gl.m  << endl;
-    
-  }
-
-  return -6; //nlayer;
+    ffout << "L567 : " << mpirank << " : " << D00h.n << " " << D00h.m << " : "
+	  << R00gl.n  << " " << R00gl.m  << endl;
+    ffout.flush;
+    /*
+    if (nlayer == -2 && (pointsize0 < 0.0)) {
+      real ratio = exp(log((DOFmin / 4.0) / VhGP2.ndof) / 3.0);
+      if (mpirank == 0) {
+	ffout << "L711 " << ratio << endl;
+      }
+      hsizemag /= ratio;
+    }
+    */
+  return 1; // ok
 }
 
 func int findneighbor(mesh3 &ThG11, real[int] &pphig,
@@ -912,9 +893,9 @@ func int setinitial(mesh3 &TThG0i, mesh3 &TThG1, real[int] &pphig11, bool first)
       }
     }
   }
-  if (debugvtk0) {
+  if (debugvtk1) {
     savevtk(workingpath+"ini."+vtkcount+".vtu", TThG0i, phigib,
-	dataname = "phi", order = vtkorder, bin = false);
+	    dataname = "phi", order = vtkorder, bin = false);
     fout << "## L754 : vtu = " << vtkcount << endl;
     fout.flush;	
     vtkcount++;
@@ -1015,7 +996,7 @@ func int setinitial(mesh3 &TThG0i, mesh3 &TThG1, real[int] &pphig11, bool first)
     pphig1 = pphig0;
   }
   
-  if (debugvtk) {
+  if (debugvtk1) {
     for [i, iv : pphig1] {
       phigdebug[][i] = iv;
     }
@@ -1067,7 +1048,7 @@ func int setinitial(mesh3 &TThG0i, mesh3 &TThG1, real[int] &pphig11, bool first)
       uuu[i] = v > 0.0 ? 1 : 0;
     }
   }
-  if (debugvtk) {
+  if (debugvtk1) {
     for [i, iv : uuu] {
 	phigdebug[][i] = iv;
     }
@@ -1076,11 +1057,11 @@ func int setinitial(mesh3 &TThG0i, mesh3 &TThG1, real[int] &pphig11, bool first)
     fout << "## L893 " << vtkcount << endl;
     vtkcount++;
   }
-
-  pphig11 = hugenegative;
+  real[int] ppphig11(pphig11.n);
+  ppphig11 = hugenegative;
   phigdebug = -2;
   real[int] xxx(4), yyy(4), zzz(4);
-  for (int i = 0; i < TThG1.nv; i++) {
+  for (int i = mpirank; i < TThG1.nv; i += npart) {
     if (pphig1[i] == 1) {
       real xx, yy, zz;
       xx = TThG1(i).x;
@@ -1163,30 +1144,30 @@ func int setinitial(mesh3 &TThG0i, mesh3 &TThG1, real[int] &pphig11, bool first)
 	
 	if ((lambdaa > -0.0005) && (lambdab > -0.0005)
 	    && ((lambdaa + lambdab) < 1.0005)) {
-          if (verbositylevel > 2 ) {
-	    fout << "L906: " << i << " " << kkk << " found: "
+          if (verbositylevel > 2 && mpirank == 0) {
+	    fout << "L906: " << mpirank << " :: " << i << " " << kkk << " found: "
 	       << k << "/" << nTThG0inbe << " ( "
 	       << lambdaa << " " << lambdab << " " << (lambdaa + lambdab)
 	       << " ) " << sqn << " " << sgn;
 	    fout.flush;
 	  }
-	  pphig11[i] = sqn * (-1.0);
+	  ppphig11[i] = sqn * (-1.0);
 	  if (abs(sqn) >= 1.0) { // bofbof
-            if (verbositylevel > 2 ) {
+            if (verbositylevel > 2  && mpirank == 0) {
 	      fout << "too far" << endl;
 	      fout.flush;
 	    }
 	    flag = false;
 	  }
 	  else if (sgn * sqn > 0.0) {
-	    if (verbositylevel > 2 ) {
+	    if (verbositylevel > 2  && mpirank == 0) {
 	      fout << "error in sign " << phigxyz << endl;
 	      fout.flush;
 	    }
 	    flag = false;
 	  }
 	  else {
-	    if (verbositylevel > 2 ) {
+	    if (verbositylevel > 2  && mpirank == 0) {
 	      fout << endl;
 	      flag = true;
 	    }
@@ -1195,17 +1176,20 @@ func int setinitial(mesh3 &TThG0i, mesh3 &TThG1, real[int] &pphig11, bool first)
 	}
       } // loop : kkk over surface elements
       if (!flag) {
-        if (verbositylevel > 2 ) {
+        if (verbositylevel > 2 && mpirank == 0) {
 	  fout << "L929: " << i << " " << xx << " " << yy << " " << zz
 	       << " not found ";
 	  fout << distmin << " " << sgn << endl;
 	  fout.flush;
 	}
-	pphig11[i] = distmin * sgn;
+	ppphig11[i] = distmin * sgn;
       }  // if (flag)
-    }  // loop : mm 
+    }  //  if (pphig1[i] == 1)
   }    // loop : m
-  if (debugvtk) {
+  mpiBarrier(comm);
+  pphig11 = hugenegative;
+  mpiAllReduce(ppphig11, pphig11, comm, mpiMAX); //
+  if (debugvtk1) {
     savevtk(workingpath+"sgn."+vtkcount+".vtu",
 	    TThG1, phigdebug, dataname = "phi", order = vtkorder, bin = false);
     fout << "L980 " << vtkcount << endl;
@@ -1224,13 +1208,41 @@ func int setinitial(mesh3 &TThG0i, mesh3 &TThG1, real[int] &pphig11, bool first)
   return 1;
 }
 
+func int computeEulerChars(mesh3 &ThGloball, real[int] &ggg, int[int] &ivarss)
+{
+  fespace Vhgg(ThGloball, P2);
+  int[int] idd(Vhgg.ndof);
+  idd = 0;
+  for (int k = 0; k < Vhgg.nt; k++) {
+    for (int i = 0; i < 4; i++) {
+      idd[Vhgg(k, i)] = 1;
+    }
+  }
+  Vhgg uh, vh;
+  varf frc(uh, vh) = int3d(ThGloball)(0.0 * vh)+on(2,uh=1.0);
+  uh[] = frc(0, Vhgg);
+  int ii = 0;
+  for (ii = 0; ii < Vhgg.ndof; ii++) {
+    if (idd[ii] == 1 && ggg[ii] > 0.5 && uh[][ii] > 0.0) {
+      break;
+    }
+  }
+  if (mpirank == 0) {  
+    checkconnectivity(ThGloball, ggg, ii, ivarss);
+  }
+  else {
+    ivarss.resize(6);
+  }
+  broadcast(processor(0, comm), ivarss);
+}
+			       
 fespace Vhg(ThG1, P2);
 Vhg phig, phigbc, phig0, phig1, phigsave, udist, phizg0, phizg1;
-real[int] phiga, phiglayer, phiglayer1, phigsaved0, phigsaved1; 
+real[int] phiga, phiglayer, phiglayer1, phigsaved0, phigsaved1;
 
 // generating background mesh with finest elements
 {
-  generatebackgroundmesh(pointsize0);
+  generatebackgroundmesh(pointsize / 2.0);
   real[int] xxx(4), yyy(4), zzz(4);
   real ledge = 1.0e+6;
   for (int k = 0; k < ThG0.nbe; k++) {
@@ -1268,14 +1280,15 @@ if (!flagrestarted) { //generatino of initial data
   R1gl = R0gl;
   D1h = D0h;
   int mm = 0;
-  while (mm < 2) {  // second loop with mm = 1 not yet work well : 19 Oct.2020
+  {
+    while (mm < 2) {  // second loop with mm = 1 not yet work well : 19 Oct.2020
     if (mpirank == 0) {
       bool gmshflag = false;
       gmshcount = 0;
       while (!gmshflag || gmshcount < gmshmax) {
 	gengeofile(workingpath+"out."+mm+".geo", stepfile,
-		   pointsize0 / (mm == 0 ? 1.5 : 4.0),
-		   liquid, intrfc,
+		   pointsize / (mm == 0 ? 4.0 : 8.0),   // should be balanced
+		   liquid, intrfc,                      // refinemesh(-1/-2)
 		   nsurfaces0, surfacelist0, false, false);
 	exec("gmsh -3 " + workingpath + "out."+mm+ ".geo -format msh2 -o "
 	     + workingpath + "out."+mm+".msh -log "
@@ -1305,23 +1318,26 @@ if (!flagrestarted) { //generatino of initial data
       ThG0i = gmshload3(workingpath+"out."+mm+".msh");
       fout << "uniform " << ThG0i.nv << " " << ThG1.nt << endl;
       fout.flush;
-      if (debugvtk) {
+      if (debugvtk1) {
 	savevtk(workingpath+"ini."+vtkcount+".vtu", ThG0i,
-		bin = false);
+		dataname = "phi", order = vtkorder, bin = false);
 	fout << "## L739 : vtu = " << vtkcount << endl;
 	fout.flush;
 	vtkcount++;
       }
-      VhG1 phig11;
-      real[int] phig111(VhG1.ndof);
-      setinitial(ThG0i, ThG1, phig111, true); // (mm == 0 ? true : false));
-      phig11[] = phig111;
-      
-      real phiscale = 1.0 / phig11[].max;
-      phig = phig11 * phiscale;             // interpolation from P1 to P2
-      reinitialize(phig, (mm == 0 ? 2.0 : 10.0), fout) // MACRO
-      //
-      if (debugvtk) {
+    } // if (mpirank == 0)
+    broadcast(processor(0, comm), ThG0i);
+    VhG1 phig11;
+    real[int] phig111(VhG1.ndof);
+    setinitial(ThG0i, ThG1, phig111, true); // (mm == 0 ? true : false));
+    phig11[] = phig111;
+
+    real phiscale = 1.0 / phig11[].max;
+    phig = phig11 * phiscale;             // interpolation from P1 to P2
+    reinitialize(phig, (mm == 0 ? 2.0 : 10.0), fout) // MACRO
+//
+    if (mpirank == 0) {
+      if (debugvtk1) {
 	savevtk(workingpath+"banded."+vtkcount+".vtu", ThG1,
 		phig, dataname = "phi", order = vtkorder, bin = false);
 	fout << "## L1206 : vtu = " << vtkcount << endl;	
@@ -1335,25 +1351,24 @@ if (!flagrestarted) { //generatino of initial data
 
     phiga.resize(phig[].n);
     phiga = phig[];
-    //    refinemesh(ThG1, phiga, -4, fout, (mm == 0 ? false : true));
-    refinemesh(ThG1, ThG1, Tha1, D1h, R1gl, phiga, 
+    refinemesh(ThG1, Tha1, D1h, R1gl, phiga,
 	       (mm == 0 ? -1 : -2),
-	       fout, false, false, true);
+	       fout, false);
 
     {
-      meshN Th = ThG1; // dummy mesh for initialization     
+      meshN Th = ThG1; // dummy mesh for initialization
       meshN ThBorder;
       {
-	build(Th, s, intersection, D, P2, comm);           
+	build(Th, s, intersection, D, P2, comm);
       }
       Tha = Th;
       fespace Vh(Th, P2);
       Vh phi;
       phi = 0.0;
-      
+
       totaldof = Vhg.ndof;  // global DOF
       localdof = Vh.ndof;
-      
+
       Rgl = interpolate(Vh, Vhg);
       Dh = [D]; // diagonal matrix
       if (mpirank == 0) {
@@ -1367,8 +1382,8 @@ if (!flagrestarted) { //generatino of initial data
 	fout << " end." << endl;
 	fout.flush;
       }     
-      real[int] w(totaldof), wwi(localdof), wwwi(localdof);
-      wwi = Dh * phi[] ; //wwwi;
+      real[int] w(totaldof), wwi(localdof);
+      wwi = Dh * phi[] ; //
       w = Rgl'* wwi; //'
       phig = 0.0; // reallocation 
       mpiAllReduce(w, phig[], comm, mpiSUM); //
@@ -1379,7 +1394,7 @@ if (!flagrestarted) { //generatino of initial data
       fout.flush;
     }
     if(mpirank == 0) {
-      if(debugvtk) {
+      if(debugvtk1) {
 	savevtk(workingpath+"banded."+vtkcount+".vtu", ThG1,
 		phig, dataname = "phi", order = vtkorder, bin = false);
 	fout << "## L1257 : vtu = " << vtkcount << endl;
@@ -1387,61 +1402,52 @@ if (!flagrestarted) { //generatino of initial data
 	vtkcount++;
       }
     }
-
     mm++;
-  } // while (mm < 2)
-
-  phiga.resize(phig[].n);
-  phiga = phig[];
-
-  generatebackgroundmesh((pointsize0/3.0));
-    
-    refinemesh(ThG1, ThG1, Tha1, D1h, R1gl, phiga, 
-	       -3,
-	       fout, false, false, true);
+   } // while (mm < 2)
+  }
+  {
+    meshN Th = ThG1; // dummy mesh for initialization
+    meshN ThBorder;
     {
-      meshN Th = ThG1; // dummy mesh for initialization     
-      meshN ThBorder;
-      {
-	build(Th, s, intersection, D, P2, comm);           
-      }
-      Tha = Th;
-      fespace Vh(Th, P2);
-      Vh phi;
-      phi = 0.0;
-      
-      totaldof = Vhg.ndof;  // global DOF
-      localdof = Vh.ndof;
-      
-      Rgl = interpolate(Vh, Vhg);
-      Dh = [D]; // diagonal matrix
-      if (mpirank == 0) {
-	fout << "L1252 : starting interpolation ... ";
-	fout.flush;
-      }
-      searchMethod = 0;      
-      phi = phig;
-      searchMethod = 1;      
-      if (mpirank == 0) {
-	fout << " end." << endl;
-	fout.flush;
-      }
-      real[int] w(totaldof), wwi(localdof), wwwi(localdof);
-      wwi = Dh * phi[] ; //wwwi;
-      w = Rgl'* wwi; //'
-      phig = 0.0; // reallocation 
-      mpiAllReduce(w, phig[], comm, mpiSUM); //
+      build(Th, s, intersection, D, P2, comm);
     }
-    //    phig = phig; // on the New ThG1
+    Tha = Th;
+    fespace Vh(Th, P2);
+    Vh phi;
+    phi = 0.0;
+
+    totaldof = Vhg.ndof;  // global DOF
+    localdof = Vh.ndof;
+
+    Rgl = interpolate(Vh, Vhg);
+    Dh = [D]; // diagonal matrix
     if (mpirank == 0) {
-      fout << "end" << endl;
+      fout << "L1252 : starting interpolation ... ";
       fout.flush;
     }
+    searchMethod = 0;
+    phi = phig;
+    searchMethod = 1;
+    if (mpirank == 0) {
+      fout << " end." << endl;
+      fout.flush;
+    }
+    real[int] w(totaldof), wwi(localdof), wwwi(localdof);
+    wwi = Dh * phi[] ; //wwwi;
+    w = Rgl'* wwi; //'
+    phig = 0.0; // reallocation
+    mpiAllReduce(w, phig[], comm, mpiSUM); //
+  }
+  //    phig = phig; // on the New ThG1
+  if (mpirank == 0) {
+    fout << "end" << endl;
+    fout.flush;
+  }
 
   phig = (phig == 0.0 ? 0.0 : (phig > 0.0 ? 1.0 : -1.0)); 
                                                     // starting from Heaviside
   if(mpirank == 0) {
-    if(debugvtk) {
+    if(debugvtk1) {
       savevtk(workingpath+"banded."+vtkcount+".vtu", ThG1,
 	      phig, dataname = "phi", order = vtkorder, bin = false);
       fout << "## L1295 : vtu = " << vtkcount << endl;
@@ -1454,16 +1460,39 @@ if (!flagrestarted) { //generatino of initial data
  }
  else { // initial data will be read from file
 
-   generatebackgroundmesh((pointsize0/3.0));   
-
+   int fileerror = 0;
    if (mpirank == 0) {
-     ThG1 = readmesh3(workingpath+"phi.0."+nrestart+".mesh");
-     fout << "L1262: restarted " << nrestart << endl;
-     fout.flush;
-     {
+     try {
+       ThG1 = readmesh3(workingpath+"phi.0."+nrestart+".mesh");
+       fout << "L1262: restarted " << nrestart << endl;
+       fout.flush;
+       fileerror = 0;
+     }
+     catch (...) {
+       fout << "file phi.0." + nrestart + ".mesh cannot be open : exit" << endl;
+       fout.flush;
+       fileerror = 1;
+     }
+   }
+   broadcast(processor(0, comm), fileerror);
+   if (fileerror) {
+     exit(-1);
+   }
+   if (mpirank == 0) {
+     try {
        ifstream ff(workingpath+"phi.0."+nrestart+".data");
        ff >> phig[];
+       fileerror = 0;
      }
+     catch (...) {
+       fout << "file phi.0." + nrestart + ".data cannot be open : exit" << endl;
+       fout.flush;
+       fileerror = 1;
+     }
+   }
+   broadcast(processor(0, comm), fileerror);
+   if (fileerror) {
+     exit(-1);
    }
    broadcast(processor(0,comm),ThG1);
    if (mpirank > 0) {
@@ -1473,7 +1502,7 @@ if (!flagrestarted) { //generatino of initial data
 
    meshN Th = ThG1;
    {
-     build(Th, s, intersection0, D1, P1, comm);    
+     build(Th, s, intersection0, D1, P1, comm);
    }
    Tha1 = Th;
    fespace VhG00(ThG1, P1);
@@ -1683,6 +1712,29 @@ int nliquid0 = 1, nair0 = 1, neulerc0 = 1;
 int nliquid1 = 1, nair1 = 1, neulerc1 = 1;
 real volmag = 1.0;
 int countvolmag = 0;
+
+if (flagrestarted) {
+  real[int] gg(Vhg.ndof);
+  gg = phig[];
+  int[int] ivars;
+  computeEulerChars(ThGlobal, gg, ivars);
+  neulerc = ivars[0];
+  nliquid = ivars[4];
+  nair = ivars[5];
+  if (mpirank == 0) {
+    fout << "##  angle = "
+	 << canglerestarted << " " << nliquid << " " << nair << " "
+	 << neulerc << " : " << endl;
+    fout.flush;
+  }
+  nliquid0 = nliquid;
+  nliquid1 = nliquid;    
+  nair0 = nair;
+  nair1 = nair;
+  neulerc0 = neulerc;
+  neulerc1 = neulerc;
+  computedEulerChars = true;
+}
 bool samekappa = (kappa1 == kappa0);
 for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
   int mmm;  
@@ -1829,8 +1881,8 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
 	  }
 	  else { // (!gradientflow)
 	    dt = dt1;      // reset time incerement for gradient flow solver
-	    kappa = kappa1;          // kappa0 only the first gradient flow
-	    reps = sqrt(kappa);
+    //	    kappa = kappa1;          // kappa0 only the first gradient flow
+    //	    reps = sqrt(kappa);
 	    itrnewton = itrnewton1;
 	    if ((ll >= itrrefine) ||
 		((!flagrestarted) && (mm == 0) && (ll > 0) && (!flagisoagain))) {
@@ -1850,18 +1902,13 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
 	    }
 	    else if (ll < 3){
 	      refineflag = true;
-	      refineskip = false;	      
-	      if (ll == 1){
-		if (flagisoagain) {
-		  flaganiso = false;
-		}
-		else {
-		  flaganiso = true;		  
-		  ll++;  // extra increment
-		}
+	      refineskip = false;
+	      // force second refinement with isotropic mesh
+	      if (ll == 1) {
+		flaganiso = false;
 	      }
 	      else if (ll == 2) {
-		flaganiso = true;
+		flaganiso = true;		
 	      }
 	    }
 	    // modification for	the 1st step of restarting from anisotropic mesh
@@ -1887,9 +1934,10 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
 	  if (mpirank == 0 && (!gradientflow)) {
 	    fout << "Newton iteration with refinement = " << ll << endl;
 	    fout.flush;
-	    if(debugvtk) {
+	    if(debugvtk1) {
 	      savevtk(workingpath+"refined."+vtkcount+".vtu",
-		      ThGlobal, phig, dataname = "phi", order = vtkorder, bin = false);
+		      ThGlobal, phig, dataname = "phi", order = vtkorder,
+		      bin = false);
 	      fout << "L1661: vtu = " << vtkcount << endl;
 	      fout.flush;
 	      savemesh(ThGlobal, "phi." + vtkcount + ".mesh");
@@ -1908,34 +1956,30 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
 		fout << "L1730 : refinelevel = " << refinelevel << endl;
 		fout.flush;
 	      }
-	      refinemesh(ThG1, ThG1, Tha1, D1h, R1gl,	      
+	      refinemesh(ThG1, Tha1, D1h, R1gl,
 			 phiga,
 			 refinelevel,
-			 fout, flaganiso, true, true); // -1
-	      if (mpirank == 0) {
-		fout << "L1739 : refinelevel = " << refinelevel << endl;
-		fout.flush;
-	      }
+			 fout, flaganiso);
 	      countrefined++;
 	      ThGlobal = ThG1;
 	      refineflag = false;
 	      refineskip = false;
-	      dt = max(dt / 8.0, dt1);
+	      dt = max((dt / 8.0), dt1);
 	    }
 	    
 	    meshN Th = ThGlobal; // dummy mesh for initialization     
 	    meshN ThBorder;
 	    {
-	      build(Th, s, intersection, D, P2, comm);           
+	      build(Th, s, intersection, D, P2, comm);
 	    }
 	    Tha = Th;
 	    fespace Vh(Th, P2);          
 	    phi = 0.0;
 	    oldphin = 0.0;
-	    
+
 	    totaldof = Vhg.ndof;  // global DOF
 	    localdof = Vh.ndof;
-	    
+
 	    Rgl = interpolate(Vh, Vhg);
 	    Dh = [D]; // diagonal matrix
 	    if (mpirank == 0) {
@@ -1959,7 +2003,8 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
 	    if (mpirank == 0) {
 	      if(debugvtk0) {
 		savevtk(workingpath+"refined."+vtkcount+".vtu",
-			ThGlobal, phig, dataname = "phi", order = vtkorder, bin = false);
+			ThGlobal, phig, dataname = "phi", order = vtkorder,
+			bin = false);
 		fout << "L1728: vtu = " << vtkcount << endl;
 		fout.flush;
 		vtkcount++;
@@ -2020,7 +2065,6 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
 		  fout << "-> " << dangle << " Tmax = " << Tmax << endl;
 		}
 	      }
-	      angleflag = true;
 	    }
 	    else {
 	      if (dangle > cangle) {
@@ -2035,6 +2079,7 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
 	      }
 	      updateangle = false;
 	    }
+	    angleflag = true;	    
 	    updatevol = false;	    
 	    costheta = cos(dangle * pi / 180.0);	    
 	    if (mpirank == 0) {
@@ -2230,8 +2275,8 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
 	    //
 	    if (((!gradientflow) && ll == 1)
 		&& (((phigmaxg > phigmax) && (phigming < (-1.0) * phigmax))
-		    || ((phigmaxg > phigmax) || (phigming < (-1.0) * phigmax))
-		    && ((phi0gl2 > toldiverge)))) {
+		    || (((phigmaxg > phigmax) || (phigming < (-1.0) * phigmax))
+			&& ((phi0gl2 > toldiverge))))) {
 	      newtonfail = true;
 	      refineflag = true;
 	      convvol = false;
@@ -2280,6 +2325,10 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
 	    if (gradientflow && (k == 0) && (phi0gl2 < tolenlarge)) {
 	      tenlarge = true;
 	    }
+	    if (gradientflow && (k == 0) && (kappa == kappa0) && (!samekappa)
+		&& (phi0gl2 < switch2kappa1)) {
+	      tenlarge = true;
+	    }
 	    if (phi0gl2 < epsnewton) {
 	      restoreflag = false;
 	      skipupdate = false;
@@ -2325,19 +2374,6 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
 	    }
 	    dt = dt1;	    
 	    if(mpirank == 0) {
-              if(debugvtk) {
-	        savevtk(workingpath+"refined."+vtkcount+".vtu",
-	  	        ThGlobal, phig, dataname = "phi", order = vtkorder, bin = false);
-	        fout << "L987: vtu = " << vtkcount << endl;
-	        fout.flush;
-	        savemesh(ThGlobal, "phi." + vtkcount + ".mesh");
-	        {
-		  ofstream ff("phi." + vtkcount + ".data");
-		  ff << phig[];
-	        }
-	        vtkcount++;
-	      }
-	      //
 	      fout << "L1996: exceed Newton iteration, continuing gradient flow"
 		   << endl;
 	      fout.flush;
@@ -2378,7 +2414,7 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
 		     << countrefined << endl;
 		fout.flush;
 	      }
-	      dt = dt1;
+	      dt = max((dt / 8.0), dt1);
 	    }
 	    else {
 	      refineflag = false;
@@ -2424,9 +2460,10 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
 		 << vol << " - " << vol00
 		 << endl;
 	    fout.flush;
-	    if(debugvtk) {
+	    if(debugvtk0) {
 	      savevtk(workingpath+"refined."+vtkcount+".vtu",
-		      ThG1, phig, dataname = "phi", order = vtkorder, bin = false);
+		      ThG1, phig, dataname = "phi", order = vtkorder,
+		      bin = false);
 	      if(mpirank == 0) {	      
 		fout << "L2069: " << mm << " vtu = " << vtkcount << endl;
 		fout.flush;
@@ -2506,34 +2543,17 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
     mpiBarrier(comm);
     real walltime0=mpiWtime();
     int[int] ivars;
-    {
-      int[int] idd(Vhg.ndof);
-      idd = 0;
-      for (int k = 0; k < Vhg.nt; k++) {
-	for (int i = 0; i < 4; i++) {
-	  idd[Vhg(k, i)] = 1;
-	}
-      }
-      Vhg uh, vh;
-      varf frc(uh, vh) = int3d(ThGlobal)(0.0 * vh)+on(2,uh=1.0);
-      uh[] = frc(0, Vhg);
-      int ii = 0;
-      for (ii = 0; ii < Vhg.ndof; ii++) {
-	if (idd[ii] == 1 && gg[ii] > 0.5 && uh[][ii] > 0.0) {
-	  break;
-	}
-      }
-      if (mpirank == 0) {  
-	checkconnectivity(ThGlobal, gg, ii, ivars);
-      }
-      else {
-	ivars.resize(6);
-      }
-      broadcast(processor(0, comm), ivars);
-    }
+    computeEulerChars(ThGlobal, gg, ivars);
+
     nneulerc = ivars[0];
     nnliquid = ivars[4];
     nnair = ivars[5];
+    if (computedEulerChars == false) {
+      neulerc = nneulerc;
+      nliquid = nnliquid;
+      nair = nnair;
+      computedEulerChars == true;
+    }
     real walltime1=mpiWtime();
     mpiBarrier(comm);
     bool printstatus = true;
@@ -2575,7 +2595,7 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
       if (stat0 == false) {
 	statcount++;
       }
-      if ((!changedphase) && (mm > 1) &&
+      if ((!changedphase) &&
 	  ( nliquid != nnliquid || nair != nnair || neulerc != nneulerc)) {
 	stat0 = false;
 	//	printstatus = false;	

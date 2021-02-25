@@ -138,7 +138,7 @@ const getByUser = async ({ id }) => {
 
         // Workspaces
         if (groupData.workspaces) {
-          return await Promise.all(
+          return Promise.all(
             groupData.workspaces.map(async (workspace) => {
               if (workspaces.find((w) => w.id === workspace)) return
               const data = await get(workspace, [

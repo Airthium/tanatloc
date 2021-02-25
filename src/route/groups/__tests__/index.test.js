@@ -3,11 +3,6 @@ import groups from '../'
 const mockSession = jest.fn()
 jest.mock('../../session', () => () => mockSession())
 
-// const mockGet = jest.fn()
-// jest.mock('@/lib/user', () => ({
-//   get: async () => mockGet()
-// }))
-
 const mockGetAll = jest.fn()
 jest.mock('@/lib/group', () => ({
   getAll: async () => mockGetAll()
@@ -35,7 +30,6 @@ describe('src/route/groups', () => {
     mockSession.mockReset()
     mockSession.mockImplementation(() => false)
 
-    // mockGet.mockReset()
     mockGetAll.mockReset()
 
     mockError.mockReset()
@@ -49,32 +43,15 @@ describe('src/route/groups', () => {
   it('no session', async () => {
     await groups(req, res)
     expect(mockSession).toHaveBeenCalledTimes(1)
-    // expect(mockGet).toHaveBeenCalledTimes(0)
     expect(mockGetAll).toHaveBeenCalledTimes(0)
     expect(mockError).toHaveBeenCalledTimes(0)
     expect(response).toBe(undefined)
   })
 
-  // it('no superuser', async () => {
-  //   mockSession.mockImplementation(() => 'id')
-  //   mockGet.mockImplementation(() => ({
-  //     superuser: false
-  //   }))
-  //   await groups(req, res)
-  //   expect(mockSession).toHaveBeenCalledTimes(1)
-  //   expect(mockGet).toHaveBeenCalledTimes(1)
-  //   expect(mockGetAll).toHaveBeenCalledTimes(0)
-  //   expect(mockError).toHaveBeenCalledTimes(0)
-  //   expect(response).toEqual({ error: true, message: 'Unauthorized' })
-  // })
-
   it('GET', async () => {
     req.method = 'GET'
 
     mockSession.mockImplementation(() => 'id')
-    // mockGet.mockImplementation(() => ({
-    //   superuser: true
-    // }))
     mockGetAll.mockImplementation(() => [
       {
         id: 'id'
@@ -83,7 +60,6 @@ describe('src/route/groups', () => {
 
     await groups(req, res)
     expect(mockSession).toHaveBeenCalledTimes(1)
-    // expect(mockGet).toHaveBeenCalledTimes(1)
     expect(mockGetAll).toHaveBeenCalledTimes(1)
     expect(mockError).toHaveBeenCalledTimes(0)
     expect(response).toEqual({ groups: [{ id: 'id' }] })
@@ -94,7 +70,6 @@ describe('src/route/groups', () => {
     })
     await groups(req, res)
     expect(mockSession).toHaveBeenCalledTimes(2)
-    // expect(mockGet).toHaveBeenCalledTimes(2)
     expect(mockGetAll).toHaveBeenCalledTimes(2)
     expect(mockError).toHaveBeenCalledTimes(1)
     expect(response).toEqual({ error: true, message: 'test' })
@@ -104,13 +79,9 @@ describe('src/route/groups', () => {
     req.method = 'SOMETHING'
 
     mockSession.mockImplementation(() => true)
-    // mockGet.mockImplementation(() => ({
-    //   superuser: true
-    // }))
 
     await groups(req, res)
     expect(mockSession).toHaveBeenCalledTimes(1)
-    // expect(mockGet).toHaveBeenCalledTimes(1)
     expect(mockGetAll).toHaveBeenCalledTimes(0)
     expect(mockError).toHaveBeenCalledTimes(1)
     expect(response).toEqual({

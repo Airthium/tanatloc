@@ -160,6 +160,7 @@ const Dashboard = () => {
   let myWorkspaces = []
   let sharedWorkspaces = []
   if (user) {
+    //TODO display
     workspaces?.forEach((workspace, index) => {
       if (workspace.owners?.find((o) => o.id === user.id))
         myWorkspaces.push(<Menu.Item key={index}>{workspace.name}</Menu.Item>)

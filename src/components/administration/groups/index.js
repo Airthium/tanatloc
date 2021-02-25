@@ -152,8 +152,6 @@ const Groups = () => {
    */
   const onUpdate = async (values) => {
     try {
-      console.log(values)
-      console.log(edit)
       // Check update
       const toUpdate = []
 

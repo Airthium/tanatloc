@@ -134,7 +134,7 @@ const ProjectList = ({ workspace, filter }) => {
         align="center"
         render={(value) => (
           <Space size="middle" wrap={true}>
-            <Share />
+            <Share workspace={workspace} project={value} />
             <Delete workspace={workspace} project={value} />
           </Space>
         )}

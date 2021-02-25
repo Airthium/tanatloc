@@ -97,7 +97,14 @@ const get = async (id, data) => {
  */
 const getByUser = async ({ id }) => {
   // Get workspaces'ids
-  const user = await User.get(id, ['groups', 'workspaces'])
+  const user = await User.get(id, [
+    'firstname',
+    'lastname',
+    'email',
+    'avatar',
+    'groups',
+    'workspaces'
+  ])
 
   let workspaces = []
 
@@ -122,12 +129,14 @@ const getByUser = async ({ id }) => {
     workspaces = [...localWorkspaces, ...workspaces]
   }
 
-  // Get groups workspaces
+  // Get groups workspaces & projects
   if (user.groups) {
-    const groups = await Promise.all(
+    // Workspace
+    const groupsWorkspaces = await Promise.all(
       user.groups.map(async (group) => {
         const groupData = await Group.get(group, ['workspaces'])
 
+        // Workspaces
         if (groupData.workspaces) {
           return await Promise.all(
             groupData.workspaces.map(async (workspace) => {
@@ -149,8 +158,39 @@ const getByUser = async ({ id }) => {
       })
     )
 
-    const groupWorkspaces = groups.flatMap((g) => g).filter((g) => g)
-    workspaces = [...groupWorkspaces, ...workspaces]
+    const moreWorkspaces = groupsWorkspaces.flatMap((g) => g).filter((g) => g)
+    workspaces = [...moreWorkspaces, ...workspaces]
+
+    // Projects
+    const groupsProjects = await Promise.all(
+      user.groups.map(async (group) => {
+        const groupData = await Group.get(group, ['projects'])
+        return groupData.projects
+      })
+    )
+
+    console.log(groupsProjects)
+
+    const moreProjects = groupsProjects.flatMap((g) => g).filter((g) => g)
+    if (moreProjects.length) {
+      const customWorkspace = {
+        id: 0,
+        name: 'Shared projects',
+        owners: [],
+        users: [
+          {
+            id,
+            firstname: user.firstname,
+            lastname: user.lastname,
+            email: user.email,
+            avatar: user.avatar
+          }
+        ],
+        groups: [],
+        projects: moreProjects
+      }
+      workspaces = [...workspaces, customWorkspace]
+    }
   }
 
   return workspaces
@@ -216,7 +256,23 @@ const update = async (workspace, data) => {
  */
 const del = async (user, workspace) => {
   // Get data
-  const data = await get(workspace.id, ['projects'])
+  const data = await get(workspace.id, ['groups', 'projects'])
+
+  // Delete from groups
+  if (data.groups) {
+    await Promise.all(
+      data.groups.map(async (groups) => {
+        await Group.update({ id: group }, [
+          {
+            key: 'workspaces',
+            type: 'array',
+            method: 'remove',
+            vale: workspace.id
+          }
+        ])
+      })
+    )
+  }
 
   // Delete projects
   if (data.projects) {

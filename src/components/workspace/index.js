@@ -83,15 +83,19 @@ const Workspace = ({ workspace }) => {
               <Typography.Title
                 level={2}
                 className="pageheader-name"
-                editable={{ onChange: setName }}
+                editable={workspace.id && { onChange: setName }}
               >
                 {workspace.name}
               </Typography.Title>
             }
-            extra={[
-              <Share key="share" workspace={workspace} />,
-              <Delete key="delete" workspace={workspace} />
-            ]}
+            extra={
+              workspace.id
+                ? [
+                    <Share key="share" workspace={workspace} />,
+                    <Delete key="delete" workspace={workspace} />
+                  ]
+                : null
+            }
             footer={
               <>
                 <Divider className="Tanatloc-divider" />
@@ -118,33 +122,47 @@ const Workspace = ({ workspace }) => {
                 </span>
                 <Avatar.Group>
                   {workspace.users?.map((user) => {
+                    const avatar =
+                      user.avatar && Buffer.from(user.avatar).toString()
+                    let name = ''
+                    let abbrev = ''
+                    if (user.firstname || user.lastname) {
+                      name = user.firstname + ' ' + user.lastname
+                      abbrev =
+                        (user.firstname && user.firstname[0]) +
+                        (user.lastname && user.lastname[0])
+                    } else if (user.email) {
+                      name = user.email
+                      abbrev = user.email[0]
+                    }
                     return (
-                      <Tooltip key={user} title={user} placement="bottom">
-                        <Avatar style={{ backgroundColor: '#023E8A' }}>
-                          {user}
+                      <Tooltip key={user.id} title={name} placement="bottom">
+                        <Avatar
+                          src={avatar}
+                          style={{ backgroundColor: Utils.stringToColor(name) }}
+                        >
+                          {abbrev}
                         </Avatar>
                       </Tooltip>
                     )
                   })}
                 </Avatar.Group>
                 <Avatar.Group>
-                  {workspace.groups?.map((group) => {
-                    return (
-                      <Tooltip
-                        key={group}
-                        title={group.name}
-                        placement="bottom"
+                  {workspace.groups?.map((group) => (
+                    <Tooltip
+                      key={group.id}
+                      title={group.name}
+                      placement="bottom"
+                    >
+                      <Avatar
+                        style={{
+                          backgroundColor: Utils.stringToColor(group.name)
+                        }}
                       >
-                        <Avatar
-                          style={{
-                            backgroundColor: Utils.stringToColor(group.name)
-                          }}
-                        >
-                          {group.name?.[0]?.toUpperCase()}
-                        </Avatar>
-                      </Tooltip>
-                    )
-                  })}
+                        {group.name?.[0]?.toUpperCase()}
+                      </Avatar>
+                    </Tooltip>
+                  ))}
                 </Avatar.Group>
               </div>
             ) : null}

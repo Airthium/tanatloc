@@ -4,6 +4,7 @@ import ProjectDB from '@/database/project'
 
 import Avatar from './avatar'
 import User from './user'
+import Group from './group'
 import Workspace from './workspace'
 import Simulation from './simulation'
 
@@ -35,7 +36,7 @@ const get = async (id, data) => {
   const project = await ProjectDB.get(id, data)
 
   // Get avatar
-  if (project && project.avatar) {
+  if (project?.avatar) {
     try {
       const avatar = await Avatar.read(project.avatar)
       project.avatar = avatar
@@ -46,23 +47,55 @@ const get = async (id, data) => {
   }
 
   // Get owners
-  if (project && project.owners) {
+  if (project?.owners) {
     const owners = await Promise.all(
       project.owners.map(async (owner) => {
-        return User.get(owner, ['lastname', 'firstname', 'email', 'avatar'])
+        const ownerData = await User.get(owner, [
+          'lastname',
+          'firstname',
+          'email',
+          'avatar'
+        ])
+        return {
+          id: owner,
+          ...ownerData
+        }
       })
     )
     project.owners = owners
   }
 
   // Get users
-  if (project && project.users) {
+  if (project?.users) {
     const users = await Promise.all(
       project.users.map(async (user) => {
-        return User.get(user, ['lastname', 'firstname', 'email', 'avatar'])
+        const userData = await User.get(user, [
+          'lastname',
+          'firstname',
+          'email',
+          'avatar'
+        ])
+        return {
+          id: user,
+          ...userData
+        }
       })
     )
     project.users = users
+  }
+
+  // Get groups
+  if (project?.groups) {
+    const groups = await Promise.all(
+      project.groups.map(async (group) => {
+        const groupData = await Group.get(group, ['name'])
+        return {
+          id: group,
+          ...groupData
+        }
+      })
+    )
+    project.groups = groups
   }
 
   return project
@@ -74,6 +107,49 @@ const get = async (id, data) => {
  * @param {Object} data Data [{ key, value, ...}, ...]
  */
 const update = async (project, data) => {
+  // Get data
+  const projectData = await get(project.id, ['groups'])
+  if (!projectData.groups) projectData.groups = []
+
+  // Check groups
+  const groupsUpdate = data.find((d) => d.key === 'groups' && !d.type)
+  if (groupsUpdate) {
+    // Delete groups
+    const deleted = projectData.groups.filter(
+      (g) => !groupsUpdate.value.includes(g.id)
+    )
+
+    await Promise.all(
+      deleted.map(async (group) => {
+        await Group.update({ id: group.id }, [
+          {
+            key: 'projects',
+            type: 'array',
+            method: 'remove',
+            value: project.id
+          }
+        ])
+      })
+    )
+
+    // Added groups
+    const added = groupsUpdate.value.filter(
+      (g) => !projectData.groups.find((gg) => gg.id === g)
+    )
+    await Promise.all(
+      added.map(async (group) => {
+        await Group.update({ id: group.id }, [
+          {
+            key: 'projects',
+            type: 'array',
+            method: 'append',
+            value: project.id
+          }
+        ])
+      })
+    )
+  }
+
   await ProjectDB.update(project, data)
 }
 
@@ -84,7 +160,23 @@ const update = async (project, data) => {
  */
 const del = async ({ id }, project) => {
   // Get data
-  const data = await get(project.id, ['simulations'])
+  const data = await get(project.id, ['groups', 'simulations'])
+
+  // Delete from groups
+  if (data.groups) {
+    await Promise.all(
+      data.groups.map(async (groups) => {
+        await Group.update({ id: group }, [
+          {
+            key: 'projects',
+            type: 'array',
+            method: 'remove',
+            value: project.id
+          }
+        ])
+      })
+    )
+  }
 
   // Delete simulation
   if (data.simulations) {

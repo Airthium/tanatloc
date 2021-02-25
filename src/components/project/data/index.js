@@ -53,64 +53,69 @@ const Data = (project, filter, setTitle, setDescription) => {
   )
 
   // Owners avatars
-  const owners =
-    project &&
-    project.owners &&
-    project.owners.map((owner) => {
-      const avatar = owner.avatar && Buffer.from(owner.avatar).toString()
-      let name = ''
-      let abbrev = ''
-      if (owner.firstname || owner.lastname) {
-        name = owner.firstname + ' ' + owner.lastname
-        abbrev =
-          (owner.firstname && owner.firstname[0]) +
-          (owner.lastname && owner.lastname[0])
-      } else {
-        name = owner.email
-        abbrev = owner.email[0]
-      }
+  const owners = project?.owners?.map((owner) => {
+    const avatar = owner.avatar && Buffer.from(owner.avatar).toString()
+    let name = ''
+    let abbrev = ''
+    if (owner.firstname || owner.lastname) {
+      name = owner.firstname + ' ' + owner.lastname
+      abbrev =
+        (owner.firstname && owner.firstname[0]) +
+        (owner.lastname && owner.lastname[0])
+    } else {
+      name = owner.email
+      abbrev = owner.email[0]
+    }
 
-      return (
-        <Tooltip key={owner.id} title={name}>
-          <Avatar
-            src={avatar}
-            style={{ backgroundColor: Utils.stringToColor(name) }}
-          >
-            {abbrev.toUpperCase()}
-          </Avatar>
-        </Tooltip>
-      )
-    })
+    return (
+      <Tooltip key={owner.id} title={name}>
+        <Avatar
+          src={avatar}
+          style={{ backgroundColor: Utils.stringToColor(name) }}
+        >
+          {abbrev.toUpperCase()}
+        </Avatar>
+      </Tooltip>
+    )
+  })
 
   // Users avatars
-  const users =
-    project &&
-    project.users &&
-    project.users.map((user) => {
-      const avatar = user.avatar && Buffer.from(user.avatar).toString()
-      let name = ''
-      let abbrev = ''
-      if (user.firstname || user.lastname) {
-        name = user.firstname + ' ' + user.lastname
-        abbrev =
-          (user.firstname && user.firstname[0]) +
-          (user.lastname && user.lastname[0])
-      } else {
-        name = user.email
-        abbrev = user.email[0]
-      }
+  const users = project?.users?.map((user) => {
+    const avatar = user.avatar && Buffer.from(user.avatar).toString()
+    let name = ''
+    let abbrev = ''
+    if (user.firstname || user.lastname) {
+      name = user.firstname + ' ' + user.lastname
+      abbrev =
+        (user.firstname && user.firstname[0]) +
+        (user.lastname && user.lastname[0])
+    } else {
+      name = user.email
+      abbrev = user.email[0]
+    }
 
-      return (
-        <Tooltip key={user.id} title={name}>
-          <Avatar
-            src={avatar}
-            style={{ backgroundColor: Utils.stringToColor(name) }}
-          >
-            {abbrev.toUpperCase()}
-          </Avatar>
-        </Tooltip>
-      )
-    })
+    return (
+      <Tooltip key={user.id} title={name}>
+        <Avatar
+          src={avatar}
+          style={{ backgroundColor: Utils.stringToColor(name) }}
+        >
+          {abbrev.toUpperCase()}
+        </Avatar>
+      </Tooltip>
+    )
+  })
+
+  // Groups
+  const groups = project?.groups?.map((group) => {
+    return (
+      <Tooltip key={group.id} title={group.name}>
+        <Avatar style={{ backgroundColor: Utils.stringToColor(group.name) }}>
+          {group.name[0].toUpperCase()}
+        </Avatar>
+      </Tooltip>
+    )
+  })
 
   /**
    * Not a render
@@ -121,7 +126,12 @@ const Data = (project, filter, setTitle, setDescription) => {
     snapshot: snapshot,
     title: title,
     owners: <Avatar.Group>{owners}</Avatar.Group>,
-    users: <Avatar.Group>{users}</Avatar.Group>
+    users: (
+      <>
+        <Avatar.Group>{users}</Avatar.Group>
+        <Avatar.Group>{groups}</Avatar.Group>
+      </>
+    )
   }
 }
 

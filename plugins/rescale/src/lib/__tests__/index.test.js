@@ -30,7 +30,7 @@ jest.mock('@/services', () => ({
 }))
 
 const mockCall = jest.fn()
-jest.mock('../call', (param) => async (param) => mockCall(param))
+jest.mock('../call', () => async (param) => mockCall(param))
 
 describe('plugins/rescale/src/lib', () => {
   beforeEach(() => {
@@ -46,7 +46,7 @@ describe('plugins/rescale/src/lib', () => {
   it('init', async () => {
     // Normal
     mockCall.mockImplementation(() => ({ results: [{}] }))
-    const res = await Rescale.init({
+    await Rescale.init({
       platform: {},
       token: {},
       additionalFiles: {
@@ -217,18 +217,18 @@ describe('plugins/rescale/src/lib', () => {
           return {
             results: [{ status: 'Completed' }]
           }
-      } else if (param.route === 'jobs/id/runs/1/directory-contents/')
+      } else if (param.route === 'jobs/id/runs/1/directory-contents/') {
         if (count === 2) return
         else
           return [
             { path: 'process_output.log', resource: 'this is the log file' }
           ]
-      else if (param.route === 'this is the log file') return 'log'
-      else if (param.route === 'jobs/id/runs/1/files/')
+      } else if (param.route === 'this is the log file') return 'log'
+      else if (param.route === 'jobs/id/runs/1/files/') {
         return {
           results: [{ relativePath: 'process_output.log', id: 'id' }]
         }
-      else if (param.route === 'files/id/contents/') return 'log'
+      } else if (param.route === 'files/id/contents/') return 'log'
       return { id: 'id', results: [{}] }
     })
     await Rescale.computeSimulation({ id: 'id' }, 'algorithm', {

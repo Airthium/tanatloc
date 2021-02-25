@@ -1,4 +1,4 @@
-import Template from '../'
+import '../'
 
 jest.mock('ejs', () => ({
   compile: async () => () => 'ejs'

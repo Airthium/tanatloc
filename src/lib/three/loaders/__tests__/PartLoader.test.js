@@ -192,7 +192,7 @@ describe('src/lib/three/loaders/PartLoader', () => {
 
   it('mouseMove', () => {
     let current
-    mouseMoveEvent.mockImplementation((part, uuid) => (current = uuid))
+    mouseMoveEvent.mockImplementation((p, uuid) => (current = uuid))
     const partLoader = PartLoader(mouseMoveEvent, mouseDownEvent)
     const mesh = partLoader.load(part)
     mesh.startSelection(renderer, camera, outlinePass, 'faces')
@@ -229,7 +229,7 @@ describe('src/lib/three/loaders/PartLoader', () => {
 
   it('mouseDown', () => {
     let current
-    mouseDownEvent.mockImplementation((part, uuid) => (current = uuid))
+    mouseDownEvent.mockImplementation((p, uuid) => (current = uuid))
     const partLoader = PartLoader(mouseMoveEvent, mouseDownEvent)
     const mesh = partLoader.load(part)
     mesh.startSelection(renderer, camera, outlinePass, 'faces')

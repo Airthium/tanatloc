@@ -109,6 +109,7 @@ describe('src/lib/workspace', () => {
   })
 
   it('getByUser', async () => {
+    // With workspaces & groups
     let count = 0
     mockUserGet.mockImplementation(() => ({
       workspaces: ['id', 'id'],
@@ -117,7 +118,7 @@ describe('src/lib/workspace', () => {
     mockGroupGet.mockImplementation(() => {
       count++
       return {
-        workspaces: [count === 1 ? 'id1' : 'id'],
+        workspaces: [count === 2 ? 'id1' : 'id'],
         projects: ['idp']
       }
     })
@@ -154,15 +155,30 @@ describe('src/lib/workspace', () => {
       }
     ])
 
-    // Without workspaces & groups
-    mockUserGet.mockImplementation(() => ({}))
+    // Without projects
     mockGroupGet.mockImplementation(() => ({}))
     workspaces = await Workspace.getByUser({})
     expect(mockAdd).toHaveBeenCalledTimes(0)
-    expect(mockGet).toHaveBeenCalledTimes(3)
+    expect(mockGet).toHaveBeenCalledTimes(5)
     expect(mockUpdate).toHaveBeenCalledTimes(0)
     expect(mockDelete).toHaveBeenCalledTimes(0)
     expect(mockUserGet).toHaveBeenCalledTimes(2)
+    expect(mockUserUpdate).toHaveBeenCalledTimes(0)
+    expect(mockDelProject).toHaveBeenCalledTimes(0)
+    expect(workspaces).toEqual([
+      { id: 'id', name: 'name' },
+      { id: 'id', name: 'name' }
+    ])
+
+    // Without workspaces & groups
+    mockUserGet.mockImplementation(() => ({}))
+
+    workspaces = await Workspace.getByUser({})
+    expect(mockAdd).toHaveBeenCalledTimes(0)
+    expect(mockGet).toHaveBeenCalledTimes(5)
+    expect(mockUpdate).toHaveBeenCalledTimes(0)
+    expect(mockDelete).toHaveBeenCalledTimes(0)
+    expect(mockUserGet).toHaveBeenCalledTimes(3)
     expect(mockUserUpdate).toHaveBeenCalledTimes(0)
     expect(mockDelProject).toHaveBeenCalledTimes(0)
     expect(workspaces).toEqual([])

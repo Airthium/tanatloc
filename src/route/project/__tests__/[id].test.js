@@ -10,7 +10,7 @@ const mockGet = jest.fn()
 const mockUpdate = jest.fn()
 const mockDel = jest.fn()
 jest.mock('@/lib/project', () => ({
-  get: async (id, data) => mockGet(id, data),
+  get: async (_, data) => mockGet(_, data),
   update: async () => mockUpdate(),
   del: async () => mockDel()
 }))

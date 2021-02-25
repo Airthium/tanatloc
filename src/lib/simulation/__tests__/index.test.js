@@ -43,11 +43,6 @@ jest.mock('../../tools', () => ({
   removeDirectory: async () => mockRemoveDirectory()
 }))
 
-// const mockCompute = jest.fn()
-// jest.mock('../compute', () => ({
-//   computeSimulation: async () => mockCompute()
-// }))
-
 describe('src/lib/simulation', () => {
   beforeEach(() => {
     mockPath.mockReset()

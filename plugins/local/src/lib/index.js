@@ -232,57 +232,75 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
         error && (simulationTask.log += 'Error: ' + error + '\n')
 
         if (data && data.includes('PROCESS VTU FILE')) {
-          // New result
-          const resFile = data.replace('PROCESS VTU FILE', '').trim()
-          const partPath = resFile.replace('.vtu', '')
+          const lines = data.split('\n')
+          const resultLines = lines.filter((l) =>
+            l.includes('PROCESS VTU FILE')
+          )
 
-          const results = []
+          // Put other lines in logs
+          const nonResultLines = lines.filter(
+            (l) => !l.includes('PROCESS VTU FILE')
+          )
+          nonResultLines.forEach((line) => {
+            simulationTask.log += line
+          })
 
-          try {
-            const resCode = await Services.toThree(
-              simulationPath,
-              path.join('run/result', resFile),
-              path.join('run/result', partPath),
-              ({ error: resError, data: resData }) => {
-                if (resError) {
-                  simulationTask.log += 'Warning: ' + resError
+          // Get result
+          await Promise.all(
+            resultLines.map(async (line) => {
+              // New result
+              const resFile = line.replace('PROCESS VTU FILE', '').trim()
+              const partPath = resFile.replace('.vtu', '')
+
+              const results = []
+
+              try {
+                const resCode = await Services.toThree(
+                  simulationPath,
+                  path.join('run/result', resFile),
+                  path.join('run/result', partPath),
+                  ({ error: resError, data: resData }) => {
+                    if (resError) {
+                      simulationTask.log += 'Warning: ' + resError
+                      updateTasks(id, tasks)
+                    }
+
+                    if (resData) {
+                      try {
+                        const jsonData = JSON.parse(resData)
+                        results.push(jsonData)
+                      } catch (err) {
+                        simulationTask.log += 'Warning: ' + err.message
+                        updateTasks(id, tasks)
+                      }
+                    }
+                  }
+                )
+
+                if (resCode !== 0) {
+                  simulationTask.log +=
+                    'Warning: Result converting process failed. Code ' + resCode
+                  updateTasks(id, tasks)
+                } else {
+                  simulationTask.files = [
+                    ...(simulationTask.files || []),
+                    ...results.map((result) => ({
+                      fileName: resFile,
+                      originPath: 'run/result',
+                      name: result.name,
+                      part: 'part.json',
+                      partPath: result.path
+                    }))
+                  ]
+
                   updateTasks(id, tasks)
                 }
-
-                if (resData) {
-                  try {
-                    const jsonData = JSON.parse(resData)
-                    results.push(jsonData)
-                  } catch (err) {
-                    simulationTask.log += 'Warning: ' + err.message
-                    updateTasks(id, tasks)
-                  }
-                }
+              } catch (err) {
+                simulationTask.log += 'Warning: ' + err.message
+                updateTasks(id, tasks)
               }
-            )
-
-            if (resCode !== 0) {
-              simulationTask.log +=
-                'Warning: Result converting process failed. Code ' + resCode
-              updateTasks(id, tasks)
-            } else {
-              simulationTask.files = [
-                ...(simulationTask.files || []),
-                ...results.map((result) => ({
-                  fileName: resFile,
-                  originPath: 'run/result',
-                  name: result.name,
-                  part: 'part.json',
-                  partPath: result.path
-                }))
-              ]
-
-              updateTasks(id, tasks)
-            }
-          } catch (err) {
-            simulationTask.log += 'Warning: ' + err.message
-            updateTasks(id, tasks)
-          }
+            })
+          )
         } else {
           // This is just some log
           data && (simulationTask.log += data + '\n')

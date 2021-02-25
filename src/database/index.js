@@ -89,6 +89,7 @@ const updater = async (db, id, data) => {
       }
     } else if (d.type === 'json') {
       if (d.method === 'set') {
+        if (!d.value) throw new Error('Empty json value')
         args.push(d.value)
         queryTextMiddle.push(
           d.key +
@@ -118,8 +119,8 @@ const updater = async (db, id, data) => {
       queryTextMiddle.push(d.key + ' = $' + args.length)
     }
   })
-  console.log(queryTextBegin + queryTextMiddle.join(', ') + queryTextEnd)
-  console.log(args)
+  // console.log(queryTextBegin + queryTextMiddle.join(', ') + queryTextEnd)
+  // console.log(args)
   await query(queryTextBegin + queryTextMiddle.join(', ') + queryTextEnd, args)
 }
 

@@ -107,7 +107,7 @@ describe('plugins/local/src/lib', () => {
   it('computeSimulation', async () => {
     mockFreefem.mockImplementation((path, script, callback) => {
       callback({ pid: 'pid' })
-      callback({ data: 'PROCESS VTU FILE run/result.vtu' })
+      callback({ data: 'PROCESS VTU FILE run/result.vtu\nreal log' })
       callback({ data: 'data' })
       callback({ error: 'data' })
       return 0

@@ -37,7 +37,13 @@ describe('database', () => {
       { key: 'key2', type: 'crypt' },
       { key: 'key3', type: 'array', method: 'append' },
       { key: 'key4', type: 'array', method: 'remove' },
-      { key: 'key5', type: 'json', method: 'set', path: ['first', 'second'] },
+      {
+        key: 'key5',
+        type: 'json',
+        method: 'set',
+        path: ['first', 'second'],
+        value: 'value'
+      },
       { key: 'key6', type: 'json', method: 'erase', path: ['first', 'second'] }
     ])
 
@@ -52,6 +58,15 @@ describe('database', () => {
 
     try {
       await updater('db', 'id', [{ key: 'key', type: 'array' }])
+      expect(true).toBe(false)
+    } catch (err) {
+      expect(true).toBe(true)
+    }
+
+    try {
+      await updater('db', 'id', [
+        { key: 'key', type: 'json', method: 'set', path: ['first', 'second'] }
+      ])
       expect(true).toBe(false)
     } catch (err) {
       expect(true).toBe(true)

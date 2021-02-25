@@ -87,16 +87,19 @@ matrix Laplacian = vLaplacian(<%= finiteElementSpace.name -%>, <%= finiteElement
 real[int] LaplacianRHS = vLaplacianRHS(0, <%= finiteElementSpace.name -%>);
 u[] = Laplacian^-1 * LaplacianRHS;
 
-<%# Save -%>
-<%- include('/blobs/save.edp.ejs', {
-	solution: {
-		path: run.resultPath,
-		name: '"Result"',
-		mesh: mesh.name,
-		sol: ['u'],
-		dataName: run.results.map(r => r.name),
-		order: [1]
-	}
-}); -%>
+<%# For time dependant solutions -%>
+for (int i = 0; i < 10; ++i) {
+	<%# Save -%>
+	<%- include('/blobs/save.edp.ejs', {
+		solution: {
+			path: run.resultPath,
+			name: '"Result_" + i',
+			mesh: mesh.name,
+			sol: ['u'],
+			dataName: run.results.map(r => r.name),
+			order: [1]
+		}
+	}); -%>
+}
 
 if (mpirank == 0) cout.flush;

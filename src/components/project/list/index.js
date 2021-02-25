@@ -143,7 +143,7 @@ const ProjectList = ({ user, workspace, filter }) => {
         render={(value) => (
           <Space size="middle" wrap={true}>
             <Share workspace={workspace} project={value} />
-            {value?.owners?.includes(user?.id) && (
+            {value?.owners?.find((o) => o.id === user?.id) && (
               <Delete workspace={workspace} project={value} />
             )}
           </Space>

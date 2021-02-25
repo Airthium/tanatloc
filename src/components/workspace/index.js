@@ -92,7 +92,7 @@ const Workspace = ({ user, workspace }) => {
               workspace.id
                 ? [
                     <Share key="share" workspace={workspace} />,
-                    workspace?.owners?.includes(user?.id) && (
+                    workspace?.owners?.find((o) => o.id === user?.id) && (
                       <Delete key="delete" workspace={workspace} />
                     )
                   ]

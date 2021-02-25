@@ -36,7 +36,7 @@ describe('components/workspace', () => {
     wrapper = shallow(
       <Workspace
         user={{ id: 'id' }}
-        workspace={{ id: 'id', groups: ['id'], owners: ['id'] }}
+        workspace={{ id: 'id', groups: ['id'], owners: [{ id: 'id' }] }}
       />
     )
   })

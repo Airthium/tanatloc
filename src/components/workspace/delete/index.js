@@ -57,7 +57,7 @@ const Delete = (props) => {
    */
   return (
     <>
-      <Button onClick={toggleDialog} icon={<DeleteOutlined />}>
+      <Button type="danger" onClick={toggleDialog} icon={<DeleteOutlined />}>
         Delete
       </Button>
       <DeleteDialog

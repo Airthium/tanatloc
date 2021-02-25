@@ -92,7 +92,7 @@ describe('component/project/list', () => {
       .find('Column')
       .at(4)
       .props()
-      .render({ owners: ['id'] })
+      .render({ owners: [{ id: 'id' }] })
     expect(shallow(render).html().includes('delete')).toBe(true)
   })
 })

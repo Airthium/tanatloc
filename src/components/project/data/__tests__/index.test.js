@@ -1,7 +1,8 @@
 import Data from '@/components/project/data'
 
 jest.mock('@/lib/utils', () => ({
-  stringToColor: () => {}
+  stringToColor: () => {},
+  userToAvatar: () => {}
 }))
 
 describe('src/components/project/data', () => {

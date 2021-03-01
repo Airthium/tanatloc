@@ -8,7 +8,8 @@ jest.mock('@/components/assets/notification', () => ({
 }))
 
 jest.mock('@/lib/utils', () => ({
-  stringToColor: () => {}
+  stringToColor: () => {},
+  userToAvatar: () => {}
 }))
 
 const mockUsers = jest.fn()

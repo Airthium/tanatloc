@@ -54,10 +54,12 @@ COPY templates ${INSTALL_PATH}/templates
 COPY .babelrc ${INSTALL_PATH}/.babelrc
 COPY next.config.js ${INSTALL_PATH}/next.config.js
 COPY package.json ${INSTALL_PATH}/package.json
-COPY version.json {INSTALL_PATH}/version.json
+COPY version.json ${INSTALL_PATH}/version.json
 COPY yarn.lock ${INSTALL_PATH}/yarn.lock
 
 WORKDIR ${INSTALL_PATH}
+
+RUN ls
 
 RUN yarn install --ignore-scripts
 RUN yarn babel . --only config,install,src/database/index.js --out-dir dist-install
@@ -116,7 +118,6 @@ COPY --from=builder ${INSTALL_PATH}/dist-install dist-install
 COPY --from=builder ${INSTALL_PATH}/public public
 COPY --from=builder ${INSTALL_PATH}/templates templates
 COPY --from=builder ${INSTALL_PATH}/plugins plugins
-COPY --from=builder ${INSTALL_PATH}/version.json version.json
 COPY --from=builder ${INSTALL_PATH}/.next .next
 RUN yarn
 RUN yarn next telemetry disable

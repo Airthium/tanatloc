@@ -116,6 +116,7 @@ COPY --from=builder ${INSTALL_PATH}/dist-install dist-install
 COPY --from=builder ${INSTALL_PATH}/public public
 COPY --from=builder ${INSTALL_PATH}/templates templates
 COPY --from=builder ${INSTALL_PATH}/plugins plugins
+COPY --from=builder ${INSTALL_PATH}/version.json version.json
 COPY --from=builder ${INSTALL_PATH}/.next .next
 RUN yarn
 RUN yarn next telemetry disable

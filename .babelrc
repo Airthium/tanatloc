@@ -13,7 +13,6 @@
       {
         "root": ["."],
         "alias": {
-          "@/": "./",
           "@/config": "./config",
           "@/models": "./models",
           "@/templates": "./templates",

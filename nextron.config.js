@@ -9,7 +9,6 @@ module.exports = {
       ...defaultConfig.resolve,
       alias: {
         ...defaultConfig.resolve.alias,
-        '@/': __dirname,
         '@/config': path.resolve(__dirname, 'config'),
         '@/config/*': path.resolve(__dirname, 'config/*'),
         '@/models': path.resolve(__dirname, 'models'),

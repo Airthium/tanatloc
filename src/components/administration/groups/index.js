@@ -62,32 +62,7 @@ const Groups = () => {
       dataIndex: 'users',
       key: 'users',
       render: (u) => (
-        <Avatar.Group>
-          {u.map((user) => {
-            const avatar = user.avatar && Buffer.from(user.avatar).toString()
-            let name = ''
-            let abbrev = ''
-            if (user.firstname || user.lastname) {
-              name = user.firstname + ' ' + user.lastname
-              abbrev =
-                (user.firstname && user.firstname[0]) +
-                (user.lastname && user.lastname[0])
-            } else if (user.email) {
-              name = user.email
-              abbrev = user.email[0]
-            }
-            return (
-              <Tooltip key={user.id || user} title={name}>
-                <Avatar
-                  src={avatar}
-                  style={{ backgroundColor: Utils.stringToColor(name) }}
-                >
-                  {abbrev.toUpperCase()}
-                </Avatar>
-              </Tooltip>
-            )
-          })}
-        </Avatar.Group>
+        <Avatar.Group>{u.map((user) => Utils.userToAvatar(user))}</Avatar.Group>
       )
     },
     {

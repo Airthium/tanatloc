@@ -59,31 +59,7 @@ const Data = (project, filter, setTitle, setDescription) => {
   )
 
   // Owners avatars
-  const owners = project?.owners?.map((owner) => {
-    const avatar = owner.avatar && Buffer.from(owner.avatar).toString()
-    let name = ''
-    let abbrev = ''
-    if (owner.firstname || owner.lastname) {
-      name = owner.firstname + ' ' + owner.lastname
-      abbrev =
-        (owner.firstname && owner.firstname[0]) +
-        (owner.lastname && owner.lastname[0])
-    } else {
-      name = owner.email
-      abbrev = owner.email[0]
-    }
-
-    return (
-      <Tooltip key={owner.id} title={name}>
-        <Avatar
-          src={avatar}
-          style={{ backgroundColor: Utils.stringToColor(name) }}
-        >
-          {abbrev.toUpperCase()}
-        </Avatar>
-      </Tooltip>
-    )
-  })
+  const owners = project?.owners?.map((owner) => Utils.userToAvatar(owner))
 
   // Users avatars
   const users = project?.users?.map((user) => {

@@ -123,30 +123,7 @@ const Workspace = ({ user, workspace }) => {
                   This workspace is shared with:
                 </span>
                 <Avatar.Group>
-                  {workspace.users?.map((u) => {
-                    const avatar = u.avatar && Buffer.from(u.avatar).toString()
-                    let name = ''
-                    let abbrev = ''
-                    if (u.firstname || u.lastname) {
-                      name = u.firstname + ' ' + u.lastname
-                      abbrev =
-                        (u.firstname && u.firstname[0]) +
-                        (u.lastname && u.lastname[0])
-                    } else if (u.email) {
-                      name = u.email
-                      abbrev = u.email[0]
-                    }
-                    return (
-                      <Tooltip key={u.id} title={name} placement="bottom">
-                        <Avatar
-                          src={avatar}
-                          style={{ backgroundColor: Utils.stringToColor(name) }}
-                        >
-                          {abbrev}
-                        </Avatar>
-                      </Tooltip>
-                    )
-                  })}
+                  {workspace.users?.map((u) => Utils.userToAvatar(u))}
                 </Avatar.Group>
                 <Avatar.Group>
                   {workspace.groups?.map((group) => (

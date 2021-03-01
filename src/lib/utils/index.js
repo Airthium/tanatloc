@@ -1,5 +1,7 @@
 /** @module src/lib/utils */
 
+import { Avatar, Tooltip } from 'antd'
+
 /**
  * String to color
  * @param {string} str String
@@ -59,4 +61,30 @@ const rgbToRgba = (color, alpha = 1) => {
   )
 }
 
-export default { stringToColor, rgbToHex, rgbToRgba }
+/**
+ * User to avatar
+ * @param {Object} user User
+ */
+const userToAvatar = (user) => {
+  const avatar = user.avatar && Buffer.from(user.avatar).toString()
+  let name = ''
+  let abbrev = ''
+  if (user.firstname || user.lastname) {
+    name = user.firstname + ' ' + user.lastname
+    abbrev =
+      (user.firstname && user.firstname[0]) +
+      (user.lastname && user.lastname[0])
+  } else if (user.email) {
+    name = user.email
+    abbrev = user.email[0]
+  }
+  return (
+    <Tooltip key={user.id || user} title={name}>
+      <Avatar src={avatar} style={{ backgroundColor: stringToColor(name) }}>
+        {abbrev.toUpperCase()}
+      </Avatar>
+    </Tooltip>
+  )
+}
+
+export default { stringToColor, rgbToHex, rgbToRgba, userToAvatar }

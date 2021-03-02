@@ -18,6 +18,8 @@ mesh.name = 'Th'
 
 // Variables
 real t = 0.;
+real T = <%= parameters.time.children[0].value || parameters.time.children[0].default -%>;
+real dt = <%= parameters.time.children[1].value || parameters.time.children[1].default -%>;
 
 <%# Materials -%>
 <%- include('/blobs/materials.edp.ejs', {
@@ -70,8 +72,8 @@ if (dimension === 2) {
 
 <%# Problem -%>
 <% 
-const dirichlet = boundaryCondition.dirichlet.values || []
-const neumann = boundaryCondition.neumann.values || []
+const dirichlet = boundaryConditions.dirichlet.values || []
+const neumann = boundaryConditions.neumann.values || []
 const rhs = parameters.rightHandSide.children
 const rhs1 = rhs[0].value || rhs[0].default
 const rhs2 = rhs[1].value || rhs[1].default
@@ -107,7 +109,7 @@ varf vStokesRHS (<%= freeFunction -%>, <%= testFunction -%>)
 	)
 <% } -%>
 <% for (const d of dirichlet) { -%>
-	+ on(<%= d.selected.map(s => { return s.label}).filter(s => s).join() -%><% if (d.values[0].checked) { -%>, Ux=<%- d.values[0].value -%><% } -%><% if (d.values[1].checked) { -%>, Uy=<%- d.values[1].value -%><% } -%><% if (d.values[2].checked) { -%>, Uz=<%- d.values[2].value -%><% } -%>)
+	+ on(<%= d.selected.map(s => { return s.label}).filter(s => s).join() -%><% if (d.values[0].checked) { -%>, mUx=<%- d.values[0].value -%><% } -%><% if (d.values[1].checked) { -%>, mUy=<%- d.values[1].value -%><% } -%><% if (d.values[2].checked) { -%>, mUz=<%- d.values[2].value -%><% } -%>)
 <% } -%>
 	;
 
@@ -135,7 +137,7 @@ for (int timeIter = 0; timeIter < nbIter; ++timeIter) {
 
 	// Save data
 	{
-		ofstream data("<%= result.dataPath %>/div_" + timeIter + ".dat");
+		ofstream data("<%= run.dataPath %>/div_" + timeIter + ".dat");
 		real div = intN(Th)(Div(U)) / intN(Th)(1);
 		data << "{\"name\": \"div\",";
 		data << "\"index\": 2,";
@@ -143,7 +145,7 @@ for (int timeIter = 0; timeIter < nbIter; ++timeIter) {
 		data << "\"value\": " << div << "}";
 	}
 	{
-		ofstream data("<%= result.dataPath %>/netFlow_" + timeIter + ".dat");
+		ofstream data("<%= run.dataPath %>/netFlow_" + timeIter + ".dat");
 		real netFlow = intN1(Th)(<%= U -%>' * <%= N -%>);
 		data << "{\"name\": \"netFlow\",";
 		data << "\"index\": 1,";
@@ -156,7 +158,7 @@ for (int timeIter = 0; timeIter < nbIter; ++timeIter) {
 		solution: {
 			path: run.resultPath,
 			name: '"Result_"+timeIter',
-			mesh: mesh1.name,
+			mesh: mesh.name,
 			sol: [['Ux', 'Uy', 'Uz'], 'p'],
 			dataName: run.results.map(r => r.name),
 			order: [1, 1]

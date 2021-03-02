@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Card, Spin } from 'antd'
+import { Card, Space, Spin } from 'antd'
 
 import Plugin from './plugin'
 
@@ -44,7 +44,11 @@ const HPC = () => {
   /**
    * Render
    */
-  return <>{loadingPlugins ? <Spin /> : list}</>
+  return (
+    <Space direction="vertical" style={{ width: '100%' }}>
+      {loadingPlugins ? <Spin /> : list}
+    </Space>
+  )
 }
 
 export default HPC

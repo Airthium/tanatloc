@@ -34,7 +34,7 @@ const NavierStokesTime = {
         },
         {
           label: 'Dynamic viscosity',
-          name: 'Nu',
+          name: 'Mu',
           htmlEntity: 'formula',
           default: 1e-3,
           unit: '\\(Pa.s^{-1}\\)'
@@ -64,6 +64,23 @@ const NavierStokesTime = {
             htmlEntity: 'formula',
             default: 0,
             unit: '\\(N.m^{-3}\\)'
+          }
+        ]
+      },
+      time: {
+        label: 'Time',
+        children: [
+          {
+            label: 'Total time',
+            htmlEntity: 'formula',
+            default: 1,
+            unit: 's'
+          },
+          {
+            label: 'Time step',
+            htmlEntity: 'formula',
+            default: 1e-3,
+            unit: 's'
           }
         ]
       },
@@ -108,30 +125,26 @@ const NavierStokesTime = {
     boundaryConditions: {
       index: 4,
       title: 'Boundary conditions',
-      fixed: {
-        label: 'Fixed',
-        refineFactor: 2
-      },
       dirichlet: {
-        label: 'Dirichlet',
+        label: 'Velocity',
         children: [
           {
             label: 'Ux',
             htmlEntity: 'formula',
             default: 0,
-            unit: '\\(m\\)'
+            unit: '\\(m.s^{-1}\\)'
           },
           {
             label: 'Uy',
             htmlEntity: 'formula',
             default: 0,
-            unit: '\\(m\\)'
+            unit: '\\(m.s^{-1}\\)'
           },
           {
             label: 'Uz',
             htmlEntity: 'formula',
             default: 0,
-            unit: '\\(m\\)'
+            unit: '\\(m.s^{-1}\\)'
           }
         ],
         refineFactor: 2

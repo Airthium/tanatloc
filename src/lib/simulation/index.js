@@ -231,7 +231,7 @@ const run = async ({ id }) => {
       update({ id }, [
         {
           key: 'scheme',
-          type: 'set',
+          type: 'json',
           method: 'set',
           path: ['configuration', 'run'],
           value: {

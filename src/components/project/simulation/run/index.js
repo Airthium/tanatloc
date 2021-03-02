@@ -48,7 +48,7 @@ const Run = ({ project, simulation }) => {
   // Data
   const [currentSimulation, { mutateSimulation }] = SimulationAPI.useSimulation(
     simulation?.id,
-    500
+    2000
   )
   const [, { mutateOneSimulation }] = SimulationAPI.useSimulations(
     project?.simulations
@@ -258,10 +258,33 @@ const Run = ({ project, simulation }) => {
   }
 
   const resultFiles = []
+  // console.log(currentConfiguration?.run?.resultsFilters)
+  // console.log(currentConfiguration.parameters.time.children[1].default)
+  // console.log(currentConfiguration?.run?.resultsFilters?.[0].multiplicator)
+  // console.log(
+  //   currentConfiguration?.[
+  //     currentConfiguration?.run?.resultsFilters?.[0].multiplicator
+  //   ]?.value ||
+  //     currentConfiguration?.[
+  //       currentConfiguration?.run?.resultsFilters?.[0].multiplicator
+  //     ]?.default
+  // )
+
+  const selector = currentConfiguration?.run?.resultsFilters?.[0]?.multiplicator?.split(
+    ','
+  )
+  console.log(selector)
+
+  if (selector)
+    console.log(
+      currentConfiguration[selector]?.value ||
+        currentConfiguration[selector]?.default
+    )
+
   currentSimulation?.tasks?.forEach((task) => {
     if (task.file) resultFiles.push(task.file)
     if (task.files) resultFiles.push(...task.files)
-  })
+  }) // TODO replace it
 
   /**
    * Render

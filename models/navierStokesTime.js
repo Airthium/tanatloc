@@ -167,10 +167,17 @@ const NavierStokesTime = {
       title: 'Run',
       results: [
         {
-          name: 'U'
+          name: 'Velocity'
         },
         {
-          name: 'vonMises'
+          name: 'Presure'
+        }
+      ],
+      resultsFilters: [
+        {
+          name: 'Time',
+          pattern: 'Result_^\\d+$.vtu',
+          multiplicator: 'parameters, time, children, 1'
         }
       ]
     }

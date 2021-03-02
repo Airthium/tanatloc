@@ -1,7 +1,8 @@
 import { useState } from 'react'
-import { Button, Select } from 'antd'
+import { Button, Select, Space } from 'antd'
 import { ShareAltOutlined } from '@ant-design/icons'
 
+import { EmailsInput } from '@/components/assets/input'
 import { Error } from '@/components/assets/notification'
 import Dialog from '@/components/assets/dialog'
 
@@ -82,20 +83,28 @@ const Share = ({ workspace, project }) => {
         onOk={onShare}
         loading={loading}
       >
-        Groups:
-        <Select
-          mode="multiple"
-          style={{ width: '100%' }}
-          placeholder="Select groups"
-          onChange={onChange}
-          defaultValue={project?.groups?.map((g) => g.id)}
-        >
-          {groups.map((group) => (
-            <Select.Option key={group.id} value={group.id}>
-              {group.name}
-            </Select.Option>
-          ))}
-        </Select>
+        <Space direction="vertical" style={{ width: '100%' }}>
+          <>
+            Users (by emails):
+            <EmailsInput />
+          </>
+          <>
+            Groups:
+            <Select
+              mode="multiple"
+              style={{ width: '100%' }}
+              placeholder="Select groups"
+              onChange={onChange}
+              defaultValue={project?.groups?.map((g) => g.id)}
+            >
+              {groups.map((group) => (
+                <Select.Option key={group.id} value={group.id}>
+                  {group.name}
+                </Select.Option>
+              ))}
+            </Select>
+          </>
+        </Space>
       </Dialog>
     </>
   )

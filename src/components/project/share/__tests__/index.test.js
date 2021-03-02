@@ -1,6 +1,10 @@
 import Share from '..'
 import { shallow } from 'enzyme'
 
+jest.mock('@/components/assets/input', () => ({
+  EmailsInput: 'emailsInput'
+}))
+
 const mockError = jest.fn()
 jest.mock('@/components/assets/notification', () => ({
   Error: () => mockError()

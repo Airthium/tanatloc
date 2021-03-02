@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { Button, Card, Checkbox, Form, InputNumber } from 'antd'
 import { CheckOutlined } from '@ant-design/icons'
 
@@ -11,6 +12,7 @@ const errors = {
 
 const Registration = () => {
   // Data
+  const [form] = Form.useForm()
   const [system, { mutateSystem }] = SystemAPI.useSystem()
   const layout = {
     labelCol: { span: 8 },
@@ -19,6 +21,11 @@ const Registration = () => {
   const tailLayout = {
     wrapperCol: { offset: 8, span: 16 }
   }
+
+  // Effect
+  useEffect(() => {
+    form.setFieldsValue(system?.password)
+  }, [system?.password])
 
   /**
    * On allow signup
@@ -61,11 +68,7 @@ const Registration = () => {
       </Card>
 
       <Card title="Password" className="Vertical-gutter">
-        <Form
-          {...layout}
-          initialValues={system?.password}
-          onFinish={onPasswordFinish}
-        >
+        <Form {...layout} form={form} name="form" onFinish={onPasswordFinish}>
           <Form.Item
             label="Minimum number of characters"
             name="min"

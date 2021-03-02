@@ -1,5 +1,7 @@
 import Registration from '..'
-import { shallow } from 'enzyme'
+import { shallow, mount } from 'enzyme'
+
+import '@/config/jest/matchMediaMock'
 
 const mockSystem = jest.fn()
 const mockMutateSystem = jest.fn()
@@ -60,5 +62,11 @@ describe('src/components/administration/registration', () => {
     expect(mockUpdate).toHaveBeenCalledTimes(2)
     expect(mockMutateSystem).toHaveBeenCalledTimes(1)
     expect(mockError).toHaveBeenCalledTimes(1)
+  })
+
+  it('mount', () => {
+    wrapper.unmount()
+    wrapper = mount(<Registration />)
+    expect(wrapper).toBeDefined()
   })
 })

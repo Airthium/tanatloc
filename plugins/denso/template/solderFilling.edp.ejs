@@ -170,6 +170,7 @@ int nsurfaces = 0;
 int[int] surfacelist0(1000);
 int nsurfaces0 = 0;
 bool computedEulerChars = false;
+int moffset = 0;
 //
 real etime00, etime01;
 
@@ -239,7 +240,8 @@ if (mpirank == 0) {
   fout << ":: itrnewton2 = " << itrnewton2 << endl;   // 10
   fout << "** Tmax0 = " << Tmax0 << endl;             // 1000
   fout << "** Tmax1 = " << Tmax1 << endl;             // 10
-  fout << "** cangle = " << cangle << endl;           // 45.0
+  fout << "** cangle = " << cangle << endl;           // 40.0
+  fout << "** canglerestarted = " << canglerestarted << endl;  // 90.0
   fout << "** pointsize0 = " << pointsize0 << endl;   // -1
   fout << ":: pointsize = "  << pointsize  << endl;   // 0.1
   fout << "** hsizemag = " << hsizemag << endl;       // 1.0
@@ -450,7 +452,6 @@ func int generatebackgroundmesh(real ppointsizee)
 {
   int flagerror = 0;
   if (mpirank == 0) {
-    
     gengeofile(workingpath+"out.geo", stepfile, ppointsizee, wet, wall,
 	       nsurfaces, surfacelist, true, false);
     exec("gmsh -2 "+ workingpath + "out.geo -format msh2 -o "
@@ -1227,7 +1228,7 @@ func int computeEulerChars(mesh3 &ThGloball, real[int] &ggg, int[int] &ivarss)
       break;
     }
   }
-  if (mpirank == 0) {  
+  if (mpirank == 0) {
     checkconnectivity(ThGloball, ggg, ii, ivarss);
   }
   else {
@@ -1262,12 +1263,12 @@ real[int] phiga, phiglayer, phiglayer1, phigsaved0, phigsaved1;
       }
     }
   }
-  if (mpirank == 0) {    
+  if (mpirank == 0) {
     fout << "L1177 : " << hsize0 << " -> ";
     fout.flush;      
   }
   hsize0 = sqrt(ledge);
-  if (mpirank == 0) {    
+  if (mpirank == 0) {
     fout << hsize0 << endl;
     fout.flush;      
   }
@@ -1456,21 +1457,32 @@ if (!flagrestarted) { //generatino of initial data
     }
   }
   //  refineflag1st = false;
+
+  if (mpirank == 0) {
+    savemesh(ThG1, (workingpath + "phi.0.mesh"));
+    ofstream ff(workingpath + "phi.0.data");
+    ff <<  phig[];
+    savevtk((resultpath + "phi.0.vtu"),
+	    ThG1, phig, dataname = "phi", order = vtkorder, bin = false);
+    fout.flush;
+  }
+
   refineskip = true;
+  moffset = 1;
  }
  else { // initial data will be read from file
 
    int fileerror = 0;
    if (mpirank == 0) {
      try {
-       ThG1 = readmesh3(workingpath+"phi.0."+nrestart+".mesh");
+       ThG1 = readmesh3(workingpath+"phi."+nrestart+".mesh");
        fout << "L1262: restarted " << nrestart << endl;
        fout.flush;
        fileerror = 0;
      }
      catch (...) {
-       fout << "file phi.0." + nrestart + ".mesh cannot be open : exit" << endl;
-       fout.flush;
+       fout << "file phi." + nrestart + ".mesh cannot be open : exit" << endl;
+        fout.flush;
        fileerror = 1;
      }
    }
@@ -1480,12 +1492,12 @@ if (!flagrestarted) { //generatino of initial data
    }
    if (mpirank == 0) {
      try {
-       ifstream ff(workingpath+"phi.0."+nrestart+".data");
+       ifstream ff(workingpath+"phi."+nrestart+".data");
        ff >> phig[];
        fileerror = 0;
      }
      catch (...) {
-       fout << "file phi.0." + nrestart + ".data cannot be open : exit" << endl;
+       fout << "file phi." + nrestart + ".data cannot be open : exit" << endl;
        fout.flush;
        fileerror = 1;
      }
@@ -1510,8 +1522,9 @@ if (!flagrestarted) { //generatino of initial data
    //
    R1gl = interpolate(Vha0, VhG00);
    D1h = [D1]; // diagonal matrix
-   flaganiso = false; // true;    to start from phi.170.mesh -> phi.0.5.mesh
-   refineskip = false;   
+   flaganiso = true;  //
+   refineskip = true; //
+   moffset = 0;
  } // if (flagrestart)
 ThGlobal = ThG1;
 ThGsaved0 = ThG1;
@@ -1765,7 +1778,7 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
   //  bool startnew = false;
   kappa = (flagrestarted ? kappa1 : kappa0);
   reps = sqrt(kappa);  
-  for (int mm = 0; mm <= mmax; mm++) { // mm = 0 is used for initial liquid
+  for (int mm = nrestart; mm <= (mmax + nrestart); mm++) { // mm = 0 is used for initial liquid
     bool convvol = false;
     bool skipeuler = false;
     real vvol0, vvol1;
@@ -1812,7 +1825,7 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
       bool restoreflag = false;
       for (int nn = 0; nn < 2; nn++) {
 	int ll = 0;	
-	if (flagrestarted && mm == 0) {
+	if (flagrestarted && mm == nrestart) {
 	  refineflag = false;
 	  refineskip = true;	  
 	  nn++;
@@ -1889,7 +1902,11 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
 	      convloop = true;
 	      break;
 	    }
-	    if (ll == 0) {
+	    if (flagrestarted && mm == nrestart && ll == 2) {
+	      refineflag = true;
+	      refineskip = true;
+	    }
+	    else if (ll == 0) {
 	      // save mesh and partition of the unity
 	      ThG10 = ThG1;
 	      R00gl = R1gl;
@@ -1912,14 +1929,7 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
 	      }
 	    }
 	    // modification for	the 1st step of restarting from anisotropic mesh
-	    if (flagrestarted && mm == 0) {
-	      //	      refinelevel = -6;
-	      refineflag = true;
-	      refineskip = true;
-	      //	      flagrestarted = false;
-	      //	      refineflag1st = false;	      
-	    }
-	    if (mpirank == 0) {     
+	    if (mpirank == 0) {
 	      fout << "L1644 : angle = " << dangle << " " << ll
 		   << " refineflag= " << refineflag
 		   << " refineskip = " << refineskip
@@ -1934,19 +1944,6 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
 	  if (mpirank == 0 && (!gradientflow)) {
 	    fout << "Newton iteration with refinement = " << ll << endl;
 	    fout.flush;
-	    if(debugvtk1) {
-	      savevtk(workingpath+"refined."+vtkcount+".vtu",
-		      ThGlobal, phig, dataname = "phi", order = vtkorder,
-		      bin = false);
-	      fout << "L1661: vtu = " << vtkcount << endl;
-	      fout.flush;
-	      savemesh(ThGlobal, "phi." + vtkcount + ".mesh");
-	      {
-		ofstream ff("phi." + vtkcount + ".data");
-		ff << phig[];
-	      }
-	      vtkcount++;
-	    }
 	  }
 	  if (refineflag) { //
 	    if (!refineskip) {
@@ -2031,7 +2028,7 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
 	    vol0 = volumeofliquid(Tha, Rgl, Dh, phig[], 0);
 	    vol01 = volumeofliquid(Tha, Rgl, Dh, phig[], 1); // 10 Jan.2021
 	    vol00 = volumeofliquid(Tha, Rgl, Dh, phig[], 2); // 10 Jan.2021
-	    if (mpirank == 0) {   
+	    if (mpirank == 0) {
 	      fout << "L1754: L1 constraint = " << vol0 << " volume = "
 		   << vol01 << " " << vol00 << endl;
 	      fout.flush;
@@ -2139,7 +2136,7 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
 	  vol0 = volumeofliquid(Tha, Rgl, Dh, phig[], 0);
 	  vol01 = volumeofliquid(Tha, Rgl, Dh, phig[], 1); // 10 Jan.2021
 	  vol00 = volumeofliquid(Tha, Rgl, Dh, phig[], 2); // 10 Jan.2021
-	  if (mpirank == 0) {   
+	  if (mpirank == 0) {
 	    fout << "L1811: L1 constraint = " << vol0 << " volume = " << vol01
 		 << " " << vol00 << endl;
 	  }
@@ -2298,7 +2295,7 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
 		skipupdate = true;
 		flaganiso = false;
 		restoreflag = false;		  		  
-		if(mpirank == 0) {	      
+		if(mpirank == 0) {
 		  fout << "L1956: refine mesh during Newton = "
 		       << countrefined << " "
 		       << (skipupdate ? " skip " : " shrink ")
@@ -2343,7 +2340,7 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
 		if (phizg0[]'*phizg1[] > 0.0) { // '
 		  refineflag = true;
 		  flagisoagain = true;
-		  if(mpirank == 0) {	      
+		  if(mpirank == 0) {
 		    fout << "L2042: Newton with refined iso-mesh : "
 			 << countrefined << " "
 			 << (skipupdate ? " skip " : " shrink ")
@@ -2409,7 +2406,7 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
 	    if (phizg0[]'*phizg1[] > 0.0) { // '
 	      refineflag = true;
 	      refineskip = false;
-	      if(mpirank == 0) {	      
+	      if(mpirank == 0) {
 		fout << "L2015: refine mesh during gradient flow = "
 		     << countrefined << endl;
 		fout.flush;
@@ -2530,13 +2527,10 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
     real[int] gg(Vhg.ndof);
     gg = phig[];
     if (mpirank == 0) {  
-      savemesh(ThGlobal, workingpath + "phi." + (bisectionphase ? "1" : "0") 
-	       + "." + mm + ".mesh");
-      ofstream ff(workingpath + "phi." + (bisectionphase ? "1" : "0") 
-	       + "." + mm + ".data");
+      savemesh(ThGlobal, workingpath + "phi." + (mm + moffset) + ".mesh");
+      ofstream ff(workingpath + "phi." + (mm + moffset) + ".data");
       ff <<  phig[];
-      savevtk((resultpath + "phi." + (bisectionphase ? "1" : "0") 
-	       + "." + mm + ".vtu"),
+      savevtk((resultpath + "phi." + (mm + moffset) + ".vtu"),
 	      ThGlobal, phig, dataname = "phi", order = vtkorder, bin = false);
       fout.flush;
     }
@@ -2634,14 +2628,13 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
 	     << nneulerc << " : " << endl;
 	fout.flush;
 
-	string outfname = ("phi." + (bisectionphase ? "1" : "0") + "." + mm
-			   + ".vtu");
-	gout << mm << "," << "\""+outfname + "\""
+	string outfname = ("phi." + (mm + moffset) + ".vtu");
+	gout << (mm + moffset) << "," << "\""+outfname + "\""
 	     << "," << vol00 << "," << nnliquid << "," << nnair << ","
 	     << nneulerc<< endl;
 	gout.flush;
 
-	outputjson(mm, vol00, nnliquid, nnair, nneulerc);
+	outputjson((mm + moffset), vol00, nnliquid, nnair, nneulerc);
       }
     }
     if ((statcount == 2) && (continueflag == 0)) { //

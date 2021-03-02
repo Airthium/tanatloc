@@ -21,39 +21,11 @@ const Share = ({ workspace }) => {
   // State
   const [visible, setVisible] = useState(false)
   const [loading, setLoading] = useState(false)
-  // const [value, setValue] = useState('')
-  // const [emails, setEmails] = useState([])
   const [selected, setSelected] = useState([])
 
   // Data
   const [groups] = GroupAPI.useGroups()
   const [, { mutateOneWorkspace }] = WorkspaceAPI.useWorkspaces()
-
-  // /**
-  //  * On emails change
-  //  */
-  // const onEmailsChange = (e) => {
-  //   const value = e.target.value
-
-  //   const lastChar = value[value.length - 1]
-  //   console.log(lastChar)
-
-  //   if (lastChar === ' ' || lastChar === ',') {
-  //     const newEmails = extractEmails(value)
-  //     setEmails([...emails, ...(newEmails || [])])
-  //     setValue('')
-  //   } else {
-  //     setValue(value)
-  //   }
-  // }
-
-  // const extractEmails = (text) => {
-  //   return text.match(/([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9_-]+)/gi)
-  // }
-
-  // const onClose = (e) => {
-  //   const email = e.target.parentNode.parentNode.innerText
-  // }
 
   /**
    * On change

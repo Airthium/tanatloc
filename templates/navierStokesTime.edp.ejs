@@ -1,0 +1,167 @@
+<%# Headers -%>
+<%- include('/blobs/headers.edp.ejs') -%>
+
+<%# Dimension -%>
+<%- include('/blobs/dimensioning.edp.ejs', {
+	dimension
+}); -%>
+
+<%# Mesh -%>
+<%
+const mesh = geometry.mesh
+mesh.name = 'Th'
+-%>
+<%- include('/blobs/mesh.edp.ejs', {
+	dimension,
+	mesh
+}); -%>
+
+// Variables
+real t = 0.;
+
+<%# Materials -%>
+<%- include('/blobs/materials.edp.ejs', {
+	materials
+}) -%>
+
+<%# Finite element space -%>
+<%
+const finiteElementSpace = parameters.finiteElementSpace.children[0]
+finiteElementSpace.name = 'Uh'
+-%>
+<%- include('/blobs/fespace.edp.ejs', {
+	mesh,
+	finiteElementSpace
+}); -%>
+
+<%# Finite element function -%>
+<%
+let feFunction = ['Ux', 'Uy', 'Uz', 'p']
+
+let unknownFunction = '[Ux, Uy, Uz, p]'
+let testFunction = '[Uhx, Uhy, Uhz, ph]'
+let freeFunction = '[mUx, mUy, mUz, mp]'
+
+let U = '[Ux, Uy, Uz]'
+let Uh = '[Uhx, Uhy, Uhz]'
+
+if (dimension === 2) {
+	feFunction = ['Ux', 'Uy', 'p']
+
+	unknownFunction = '[Ux, Uy, p]'
+	testFunction = '[Uhx, Uhy, ph]'
+	freeFunction = '[mUx, mUy, mp]'
+
+	U = '[Ux, Uy]'
+	Uh = '[Uhx, Uhy]'
+	N = '[N.x, N.y]'
+}
+-%>
+<%- include('/blobs/fespaceFunction.edp.ejs', {
+	finiteElementSpace,
+	finiteElementFunction: feFunction
+}); -%>
+
+<%# Macro -%>
+<%- include('/blobs/macro.edp.ejs', {
+	dimension,
+	type: ['vectorialGradient', 'vectorialDivergence']
+}); -%>
+
+<%# Problem -%>
+<% 
+const dirichlet = boundaryCondition.dirichlet.values || []
+const neumann = boundaryCondition.neumann.values || []
+const rhs = parameters.rightHandSide.children
+const rhs1 = rhs[0].value || rhs[0].default
+const rhs2 = rhs[1].value || rhs[1].default
+const rhs3 = rhs[2].value || rhs[2].default
+
+const N = '[N.x, N.y, N.z]'
+-%> 
+//Problem
+if (mpirank == 0) cout << "Define the problem..." << endl;
+if (mpirank == 0) cout.flush;
+
+real Rhodt = Rho / dt;
+varf vStokes (<%= unknownFunction -%>, <%= testFunction -%>)
+	= intN(Th)(
+		Rhodt * <%= U -%>' * <%= Uh -%>
+		+ Mu * (Grad(U) : Grad(Uh))
+		- p * Div(Uh)
+		- Div(U) * ph
+	)
+<% for (const d of dirichlet) { -%>
+	+ on(<%= d.selected.map(s => { return s.label}).filter(s => s).join() -%><% if (d.values[0].checked) { -%>, Ux=0<% } -%><% if (d.values[1].checked) { -%>, Uy=0<% } -%><% if (d.values[2].checked) { -%>, Uz=0<% } -%>)
+<% } -%>
+	;
+
+varf vStokesRHS (<%= freeFunction -%>, <%= testFunction -%>)
+	= intN(Th)(
+		Rhodt * [convect([Ux, Uy, Uz], -dt, Ux), convect([Ux, Uy, Uz], -dt, Uy), convect([Ux, Uy, Uz], -dt, Uz)]' * <%= Uh -%>
+		+ [<%- rhs1 -%>, <%- rhs2 -%>, <%- rhs3 -%>]' * <%= Uh -%>
+	)
+<% for (const n of neumann) { -%>
+	- intN1(Th, <%= p.selected.map(s => { return s.label}).filter(s => s).join() -%>)(
+		(<%- n.values[0].value -%>) * <%= N -%>' * <%= testFunction -%>
+	)
+<% } -%>
+<% for (const d of dirichlet) { -%>
+	+ on(<%= d.selected.map(s => { return s.label}).filter(s => s).join() -%><% if (d.values[0].checked) { -%>, Ux=<%- d.values[0].value -%><% } -%><% if (d.values[1].checked) { -%>, Uy=<%- d.values[1].value -%><% } -%><% if (d.values[2].checked) { -%>, Uz=<%- d.values[2].value -%><% } -%>)
+<% } -%>
+	;
+
+<%# Solver -%>
+<% const solver = parameters.solver.children[0].value || parameters.solver.children[0].default -%>
+<%- include('/blobs/solver.edp.ejs', {
+	solver
+}); -%>
+
+<%# Time loop -%>
+// Time loop
+if (mpirank == 0) cout << "Time loop..." << endl;
+if (mpirank == 0) cout.flush;
+
+int nbIter = T / dt;
+for (int timeIter = 0; timeIter < nbIter; ++timeIter) {
+	// Update
+	t += dt;
+	cout << "Time: " << t << endl;
+	matrix Stokes = vStokes(<%= finiteElementSpace.name -%>, <%= finiteElementSpace.name -%>, solver=solver);
+	real[int] StokesRHS = vStokesRHS(0, <%= finiteElementSpace.name -%>);
+
+	// Solve
+	Ux[] = Stokes^-1 * StokesRHS;
+
+	// Save data
+	{
+		ofstream data("<%= result.dataPath %>/div_" + timeIter + ".dat");
+		real div = intN(Th)(Div(U)) / intN(Th)(1);
+		data << "{\"name\": \"div\",";
+		data << "\"index\": 2,";
+		data << "\"t\": " << t << ",";
+		data << "\"value\": " << div << "}";
+	}
+	{
+		ofstream data("<%= result.dataPath %>/netFlow_" + timeIter + ".dat");
+		real netFlow = intN1(Th)(<%= U -%>' * <%= N -%>);
+		data << "{\"name\": \"netFlow\",";
+		data << "\"index\": 1,";
+		data << "\"t\": " << t << ",";
+		data << "\"value\": " << netFlow << "}";
+	}
+
+	// Save results
+	<%- include('/blobs/save.edp.ejs', {
+		solution: {
+			path: run.resultPath,
+			name: '"Result_"+timeIter',
+			mesh: mesh1.name,
+			sol: [['Ux', 'Uy', 'Uz'], 'p'],
+			dataName: run.results.map(r => r.name),
+			order: [1, 1]
+		}
+	}); -%>
+}
+
+if (mpirank == 0) cout.flush;

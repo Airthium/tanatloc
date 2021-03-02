@@ -31,6 +31,26 @@ const dataBase = {
         ]
       }
     ]
+  },
+  fluid: {
+    label: 'Fluid',
+    children: [
+      {
+        label: 'Water',
+        children: [
+          {
+            label: 'Density',
+            symbol: 'Rho',
+            value: 1e3
+          },
+          {
+            label: 'Dynamic viscosity',
+            symbol: 'Mu',
+            value: 1e-3
+          }
+        ]
+      }
+    ]
   }
 }
 

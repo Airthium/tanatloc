@@ -176,8 +176,10 @@ const NavierStokesTime = {
       resultsFilters: [
         {
           name: 'Time',
-          pattern: 'Result_^\\d+$.vtu',
-          multiplicator: 'parameters, time, children, 1'
+          prefixPattern: 'Result_',
+          suffixPattern: '.vtu',
+          pattern: 'Result_\\d+.vtu',
+          multiplicator: ['parameters', 'time', 'children', '1']
         }
       ]
     }

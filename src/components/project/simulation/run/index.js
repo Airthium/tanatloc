@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Button, Card, Drawer, Layout, Space, Steps, Tabs } from 'antd'
+import { Button, Card, Drawer, Layout, Select, Space, Steps, Tabs } from 'antd'
 import {
   DownloadOutlined,
   EyeOutlined,
@@ -38,6 +38,9 @@ const Run = ({ project, simulation }) => {
   const [running, setRunning] = useState(false)
   const [logVisible, setLogVisible] = useState(false)
   const [logContent, setLogContent] = useState()
+  const [selectors, setSelectors] = useState([])
+  const [selectorsCurrent, setSelectorsCurrent] = useState([])
+  const [results, setResults] = useState([])
   const [downloading, setDownloading] = useState([])
 
   const [configuration, setConfiguration] = useState(
@@ -48,7 +51,7 @@ const Run = ({ project, simulation }) => {
   // Data
   const [currentSimulation, { mutateSimulation }] = SimulationAPI.useSimulation(
     simulation?.id,
-    2000
+    running ? 500 : 0
   )
   const [, { mutateOneSimulation }] = SimulationAPI.useSimulations(
     project?.simulations
@@ -66,6 +69,7 @@ const Run = ({ project, simulation }) => {
     setDisabled(!done)
   }, [configuration])
 
+  // Running
   useEffect(() => {
     const runningTasks = currentSimulation?.tasks?.filter(
       (t) => t.status !== 'finish' && t.status !== 'error'
@@ -79,9 +83,138 @@ const Run = ({ project, simulation }) => {
     setConfiguration(simulation?.scheme?.configuration)
   }, [JSON.stringify(simulation)])
 
+  // Current configuration
   useEffect(() => {
     setCurrentConfiguration(currentSimulation?.scheme?.configuration)
   }, [JSON.stringify(currentSimulation)])
+
+  // Save current number when reload
+
+  // Results
+  useEffect(() => {
+    if (!currentSimulation?.tasks) return
+
+    const newResults = []
+    const newSelectors = []
+    currentSimulation.tasks.forEach((task) => {
+      if (task.file) newResults.push(task.file)
+      if (task.files) {
+        // Filters
+        const resultsFilters = configuration?.run?.resultsFilters
+
+        if (resultsFilters) {
+          //Sort by filters
+          resultsFilters.forEach((filter, filterIndex) => {
+            const pattern = new RegExp(filter.pattern)
+            const filteredFiles = task.files.filter((file) =>
+              pattern.test(file.fileName)
+            )
+
+            if (filteredFiles.length) {
+              // Set iteration numbers
+              const files = filteredFiles.map((file) => {
+                const number = file.fileName
+                  .replace(new RegExp(filter.prefixPattern), '')
+                  .replace(new RegExp(filter.suffixPattern), '')
+                return {
+                  ...file,
+                  number: +number
+                }
+              })
+
+              // Sort
+              files.sort((a, b) => a.number - b.number)
+
+              // Get unique numbers
+              const numbers = files
+                .map((file) => file.number)
+                .filter((value, index, self) => self.indexOf(value) === index)
+
+              // Multiplicator
+              const multiplicatorPath = filter.multiplicator
+              const multiplicatorObject = multiplicatorPath.reduce(
+                (a, v) => a[v],
+                configuration
+              )
+              const multiplicator =
+                multiplicatorObject.value || multiplicatorObject.default
+
+              // Set selector
+              const resultIndex = newResults.length
+              const selector = (
+                <div key={filter}>
+                  {filter.name}:{' '}
+                  <Select
+                    defaultValue={numbers[0]}
+                    options={numbers.map((n) => ({
+                      label: n * multiplicator,
+                      value: n
+                    }))}
+                    style={{ width: '100%' }}
+                    onChange={(value) =>
+                      onSelectorChange(value, resultIndex, filterIndex)
+                    }
+                  />
+                </div>
+              )
+              newSelectors.push(selector)
+
+              // Set result of current iteration or 0
+              if (selectorsCurrent[filterIndex] === undefined) {
+                const newSelectorsCurrent = [...selectorsCurrent]
+                newSelectorsCurrent[filterIndex] = 0
+                setSelectorsCurrent(newSelectorsCurrent)
+              }
+              newResults.push({
+                files,
+                current: selectorsCurrent[filterIndex]
+              })
+            }
+          })
+        } else {
+          newResults.push(...task.files)
+        }
+      }
+    })
+
+    setResults(newResults)
+    setSelectors(newSelectors)
+  }, [
+    configuration?.run?.resultsFilters,
+    currentSimulation?.tasks,
+    selectorsCurrent
+  ])
+
+  /**
+   * On selector change
+   * @param {number} value Value
+   * @param {number} index Index
+   * @param {number} filterIndex Filter index
+   */
+  const onSelectorChange = (value, index, filterIndex) => {
+    // Selectors
+    const newSelectorsCurrent = [...selectorsCurrent]
+    newSelectorsCurrent[filterIndex] = value
+    setSelectorsCurrent(newSelectorsCurrent)
+
+    // Results
+    const newResult = results[index]
+    newResult.current = value
+    setResults([
+      ...results.slice(0, index),
+      newResult,
+      ...results.slice(index + 1)
+    ])
+
+    // Update visualization
+    const currentPart = currentConfiguration.part
+    if (currentPart?.number) {
+      const newPart = newResult.files.find(
+        (file) => file.name === currentPart.name && file.number === value
+      )
+      if (newPart) setPart(newPart)
+    }
+  }
 
   /**
    * On cloud server
@@ -204,6 +337,9 @@ const Run = ({ project, simulation }) => {
     }
   }
 
+  /**
+   * On archive download
+   */
   const onArchiveDownload = async () => {
     setDownloading([...downloading, 'archive'])
 
@@ -229,6 +365,10 @@ const Run = ({ project, simulation }) => {
     }
   }
 
+  /**
+   * On download
+   * @param {Object} result Result
+   */
   const onDownload = async (result) => {
     setDownloading([...downloading, result])
 
@@ -256,35 +396,6 @@ const Run = ({ project, simulation }) => {
       ])
     }
   }
-
-  const resultFiles = []
-  // console.log(currentConfiguration?.run?.resultsFilters)
-  // console.log(currentConfiguration.parameters.time.children[1].default)
-  // console.log(currentConfiguration?.run?.resultsFilters?.[0].multiplicator)
-  // console.log(
-  //   currentConfiguration?.[
-  //     currentConfiguration?.run?.resultsFilters?.[0].multiplicator
-  //   ]?.value ||
-  //     currentConfiguration?.[
-  //       currentConfiguration?.run?.resultsFilters?.[0].multiplicator
-  //     ]?.default
-  // )
-
-  const selector = currentConfiguration?.run?.resultsFilters?.[0]?.multiplicator?.split(
-    ','
-  )
-  console.log(selector)
-
-  if (selector)
-    console.log(
-      currentConfiguration[selector]?.value ||
-        currentConfiguration[selector]?.default
-    )
-
-  currentSimulation?.tasks?.forEach((task) => {
-    if (task.file) resultFiles.push(task.file)
-    if (task.files) resultFiles.push(...task.files)
-  }) // TODO replace it
 
   /**
    * Render
@@ -357,7 +468,7 @@ const Run = ({ project, simulation }) => {
             </Space>
           </Card>
 
-          {resultFiles.length ? (
+          {results.length ? (
             <Card
               title="Results"
               extra={
@@ -368,39 +479,54 @@ const Run = ({ project, simulation }) => {
                 />
               }
             >
-              <Space direction="vertical">
-                {resultFiles.map((result) => {
-                  return (
-                    <Space key={result.name}>
-                      <Button
-                        icon={
-                          currentConfiguration?.part?.fileName ===
-                            result?.fileName &&
-                          currentConfiguration?.part?.name === result?.name ? (
-                            <EyeInvisibleOutlined />
-                          ) : (
-                            <EyeOutlined />
-                          )
-                        }
-                        onClick={() =>
-                          setPart(
+              <Space direction="vertical" style={{ width: '100%' }}>
+                {selectors}
+                {results.map((r) => {
+                  // Check if filtered
+                  let toRender = []
+                  if (r.current !== undefined) {
+                    toRender = r.files.filter((file) => {
+                      return file.number === r.current
+                    })
+                  } else {
+                    toRender = [r]
+                  }
+                  // Render
+                  return toRender.map((result) => {
+                    return (
+                      <Space key={result.name}>
+                        <Button
+                          icon={
                             currentConfiguration?.part?.fileName ===
                               result?.fileName &&
-                              currentConfiguration?.part?.name === result?.name
-                              ? null
-                              : result
-                          )
-                        }
-                      />
-                      <Button
-                        loading={downloading.find((d) => d === result)}
-                        icon={<DownloadOutlined />}
-                        size="small"
-                        onClick={() => onDownload(result)}
-                      />
-                      {result.name}
-                    </Space>
-                  )
+                            currentConfiguration?.part?.name ===
+                              result?.name ? (
+                              <EyeInvisibleOutlined />
+                            ) : (
+                              <EyeOutlined />
+                            )
+                          }
+                          onClick={() =>
+                            setPart(
+                              currentConfiguration?.part?.fileName ===
+                                result?.fileName &&
+                                currentConfiguration?.part?.name ===
+                                  result?.name
+                                ? null
+                                : result
+                            )
+                          }
+                        />
+                        <Button
+                          loading={downloading.find((d) => d === result)}
+                          icon={<DownloadOutlined />}
+                          size="small"
+                          onClick={() => onDownload(result)}
+                        />
+                        {result.name}
+                      </Space>
+                    )
+                  })
                 })}
               </Space>
             </Card>

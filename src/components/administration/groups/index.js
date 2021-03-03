@@ -1,14 +1,5 @@
 import { useState, useEffect } from 'react'
-import {
-  Avatar,
-  Button,
-  Form,
-  Input,
-  Select,
-  Space,
-  Table,
-  Tooltip
-} from 'antd'
+import { Avatar, Button, Form, Input, Select, Space, Table } from 'antd'
 import {
   CheckOutlined,
   CloseOutlined,

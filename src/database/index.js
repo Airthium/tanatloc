@@ -119,8 +119,6 @@ const updater = async (db, id, data) => {
       queryTextMiddle.push(d.key + ' = $' + args.length)
     }
   })
-  // console.log(queryTextBegin + queryTextMiddle.join(', ') + queryTextEnd)
-  // console.log(args)
   await query(queryTextBegin + queryTextMiddle.join(', ') + queryTextEnd, args)
 }
 

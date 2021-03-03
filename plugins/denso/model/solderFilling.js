@@ -43,16 +43,18 @@ const solderFilling = {
         ]
       },
       canglerestarted: {
+        advanced: true,
         label: 'canglerestarted',
         children: [
           {
             label: 'contact angle of restarted data',
             htmlEntity: 'formula',
-            default: 90
+            default: 60
           }
         ]
       },
       pointsize: {
+        advanced: true,
         label: 'pointsize',
         children: [
           {
@@ -62,7 +64,19 @@ const solderFilling = {
           }
         ]
       },
+      hsizemag: {
+        advanced: true,
+        label: 'hsizemag',
+        children: [
+          {
+            label: 'Magnitude of the finest mesh',
+            htmlEntity: 'formula',
+            default: 1.0
+          }
+        ]
+      },
       nrestart: {
+        advanced: true,
         label: 'nrestart',
         children: [
           {
@@ -73,6 +87,7 @@ const solderFilling = {
         ]
       },
       countsweep: {
+        advanced: true,
         label: 'countsweep',
         children: [
           {
@@ -132,12 +147,12 @@ const solderFilling = {
           {
             label: 'Time for initial gradient flow solver',
             htmlEntity: 'formula',
-            default: 1000
+            default: 500
           },
           {
             label: 'Time for other gradient flow solvers',
             htmlEntity: 'formula',
-            default: 1000
+            default: 500
           }
         ]
       },

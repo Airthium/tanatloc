@@ -78,6 +78,7 @@ real Tmax0 = <%= parameters.time.children[0].value || parameters.time.children[0
 real Tmax1 = <%= parameters.time.children[1].value || parameters.time.children[1].default -%>;
 real cangle = <%= parameters.cangle.children[0].value || parameters.cangle.children[0].default -%>;
 real pointsize0 = <%= parameters.pointsize.children[0].value || parameters.pointsize.children[0].default -%>;
+real hsizemag0 = <%= parameters.hsizemag.children[0].value || parameters.hsizemag.children[0].default -%>;
 real canglerestarted = <%= parameters.canglerestarted.children[0].value || parameters.canglerestarted.children[0].default -%>;
 // internal settings
 int countbisect = 1; //
@@ -90,16 +91,14 @@ int refine0 = 5;
 int refine1 = 3; 
 int delangle = (-10);
 real hsize0 = -1.0;   // automatic
-real hsizemag = pointsize0;
+real hsizemag = hsizemag0;
 real largestmeshmag = 3.0;
-real pointsize = 0.15;
-real pointsize00 = pointsize0 / 2.0;
+real pointsize = pointsize0;
 real phigmax = 20.0;
 real phigconvdel = 0.01;
 real phigdiverge = 0.5;
 real volstarted = 0.0;
 //
-int itrnewton2 = 10; //
 int itrGMRES0 = 50; //getARGV("-GMRES0", 25);
 int itrGMRES1 = 150; //getARGV("-GMRES1", 150);
 real dt0 = 0.5; // getARGV("-dt0", 0.5);
@@ -237,7 +236,6 @@ if (mpirank == 0) {
   fout << ":: refine1 = " << refine1 << endl;         // 3
   fout << "** itrnewton0 = " << itrnewton0 << endl;   // 20
   fout << "** itrnewton1 = " << itrnewton1 << endl;   // 50
-  fout << ":: itrnewton2 = " << itrnewton2 << endl;   // 10
   fout << "** Tmax0 = " << Tmax0 << endl;             // 1000
   fout << "** Tmax1 = " << Tmax1 << endl;             // 10
   fout << "** cangle = " << cangle << endl;           // 40.0

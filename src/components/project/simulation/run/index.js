@@ -67,7 +67,7 @@ const Run = ({ project, simulation }) => {
       })
     if (!configuration?.run?.cloudServer) done = false
     setDisabled(!done)
-  }, [configuration])
+  }, [JSON.stringify(configuration)])
 
   // Running
   useEffect(() => {
@@ -77,18 +77,19 @@ const Run = ({ project, simulation }) => {
 
     if (runningTasks?.length) setRunning(true)
     else setRunning(false)
-  }, [JSON.stringify(currentSimulation)])
+  }, [JSON.stringify(currentSimulation?.tasks)])
 
+  // Configuration
   useEffect(() => {
-    setConfiguration(simulation?.scheme?.configuration)
-  }, [JSON.stringify(simulation)])
+    if (simulation?.scheme?.configuration)
+      setConfiguration(simulation.scheme.configuration)
+  }, [JSON.stringify(simulation?.scheme?.configuration)])
 
   // Current configuration
   useEffect(() => {
-    setCurrentConfiguration(currentSimulation?.scheme?.configuration)
-  }, [JSON.stringify(currentSimulation)])
-
-  // Save current number when reload
+    if (currentSimulation?.scheme?.configuration)
+      setCurrentConfiguration(currentSimulation.scheme.configuration)
+  }, [JSON.stringify(currentSimulation?.scheme?.configuration)])
 
   // Results
   useEffect(() => {
@@ -159,13 +160,14 @@ const Run = ({ project, simulation }) => {
               )
               newSelectors.push(selector)
 
-              // Set result of current iteration or 0
+              // Set result & current iteration
               if (selectorsCurrent[filterIndex] === undefined) {
                 const newSelectorsCurrent = [...selectorsCurrent]
                 newSelectorsCurrent[filterIndex] = 0
                 setSelectorsCurrent(newSelectorsCurrent)
               }
               newResults.push({
+                filtered: true,
                 files,
                 current: selectorsCurrent[filterIndex]
               })
@@ -180,9 +182,9 @@ const Run = ({ project, simulation }) => {
     setResults(newResults)
     setSelectors(newSelectors)
   }, [
-    configuration?.run?.resultsFilters,
-    currentSimulation?.tasks,
-    selectorsCurrent
+    JSON.stringify(configuration?.run?.resultsFilters),
+    JSON.stringify(currentSimulation?.tasks),
+    JSON.stringify(selectorsCurrent)
   ])
 
   /**
@@ -484,7 +486,7 @@ const Run = ({ project, simulation }) => {
                 {results.map((r) => {
                   // Check if filtered
                   let toRender = []
-                  if (r.current !== undefined) {
+                  if (r.filtered) {
                     toRender = r.files.filter((file) => {
                       return file.number === r.current
                     })

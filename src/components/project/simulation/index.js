@@ -31,15 +31,15 @@ const errors = {
 
 /**
  * Load models
- * @param {Object} Models Models
- * @param {Object} Plugins Plugins
+ * @param {Object} models Models
+ * @param {Object} plugins Plugins
  */
-const loadModels = (Models, Plugins) => {
-  let allModels = Models
+const loadModels = (models, plugins) => {
+  let allModels = models
 
-  Object.keys(Plugins).forEach((key) => {
-    if (Plugins[key].category === 'Model')
-      allModels = [...allModels, ...Plugins[key].models]
+  Object.keys(plugins).forEach((key) => {
+    if (plugins[key].category === 'Model')
+      allModels = [...allModels, ...plugins[key].models]
   })
 
   return allModels

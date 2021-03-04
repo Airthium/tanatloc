@@ -199,7 +199,7 @@ describe('components/project', () => {
         ]
       })
 
-    wrapper.find('Menu').at(1).props().onClick({ key: 'simulation-0-geometry' })
+    wrapper.find('Menu').at(1).props().onClick({ key: 'simulation&0&geometry' })
   })
 
   it('unknow key', () => {
@@ -242,7 +242,11 @@ describe('components/project', () => {
     ])
     wrapper = mount(<Project />)
 
-    wrapper.find('InternalMenu').at(1).props().onClick({ key: 'simulation&id' })
+    wrapper
+      .find('InternalMenu')
+      .at(1)
+      .props()
+      .onClick({ key: 'simulation&id&materials' })
     wrapper.update()
     expect(mockSimulationUpdate).toHaveBeenCalledTimes(1)
 
@@ -263,7 +267,11 @@ describe('components/project', () => {
     ])
     wrapper = mount(<Project />)
 
-    wrapper.find('InternalMenu').at(1).props().onClick({ key: 'simulation&id' })
+    wrapper
+      .find('InternalMenu')
+      .at(1)
+      .props()
+      .onClick({ key: 'simulation&id&materials' })
     wrapper.update()
     expect(mockSimulationUpdate).toHaveBeenCalledTimes(2)
 
@@ -286,9 +294,13 @@ describe('components/project', () => {
     })
     wrapper = mount(<Project />)
 
-    wrapper.find('InternalMenu').at(1).props().onClick({ key: 'simulation&id' })
+    wrapper
+      .find('InternalMenu')
+      .at(1)
+      .props()
+      .onClick({ key: 'simulation&id&materials' })
     wrapper.update()
-    expect(mockSimulationUpdate).toHaveBeenCalledTimes(3)
+    expect(mockSimulationUpdate).toHaveBeenCalledTimes(4)
 
     // Remove part
     wrapper.unmount()
@@ -307,7 +319,11 @@ describe('components/project', () => {
     ])
     wrapper = mount(<Project />)
 
-    wrapper.find('InternalMenu').at(1).props().onClick({ key: 'simulation&id' })
+    wrapper
+      .find('InternalMenu')
+      .at(1)
+      .props()
+      .onClick({ key: 'simulation&id&materials' })
     wrapper.update()
     expect(mockSimulationUpdate).toHaveBeenCalledTimes(1)
 
@@ -318,7 +334,11 @@ describe('components/project', () => {
     })
     wrapper = mount(<Project />)
 
-    wrapper.find('InternalMenu').at(1).props().onClick({ key: 'simulation&id' })
+    wrapper
+      .find('InternalMenu')
+      .at(1)
+      .props()
+      .onClick({ key: 'simulation&id&materials' })
     wrapper.update()
     expect(mockSimulationUpdate).toHaveBeenCalledTimes(3)
   })

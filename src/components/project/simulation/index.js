@@ -158,37 +158,6 @@ const Simulation = ({ project, simulation, type, part, onClose }) => {
     setVisible(simulation)
     const configuration = simulation?.scheme?.configuration
 
-    if (configuration?.geometry?.file) {
-      if (
-        (type === 'materials' || type === 'boundaryConditions') &&
-        part?.type !== 'geometry'
-      ) {
-        // Force geometry
-        const newSimulation = { ...simulation }
-
-        // Update local
-        newSimulation.scheme.configuration.part = configuration.geometry.file
-
-        // Update simulation
-        SimulationAPI.update({ id: simulation.id }, [
-          {
-            key: 'scheme',
-            type: 'json',
-            method: 'set',
-            path: ['configuration', 'part'],
-            value: configuration.geometry.file
-          }
-        ])
-          .then(() => {
-            // Mutate
-            mutateOneSimulation(newSimulation)
-          })
-          .catch((err) => {
-            Error(errors.updateError, err)
-          })
-      }
-    }
-
     const subScheme = configuration?.[type]
     setTitle(subScheme ? subScheme.title : 'About')
   }, [simulation, type])

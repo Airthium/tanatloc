@@ -79,7 +79,12 @@ const Project = () => {
     const configuration = currentSimulation?.scheme?.configuration
 
     if (configuration?.geometry?.file) {
-      if (!configuration.part) {
+      if (
+        !configuration.part ||
+        ((currentType === 'materials' ||
+          currentType === 'boundaryConditions') &&
+          configuration?.part?.type !== 'geometry')
+      ) {
         // Force geometry
         const newSimulation = { ...currentSimulation }
 
@@ -135,7 +140,7 @@ const Project = () => {
           })
       }
     }
-  }, [currentSimulation])
+  }, [currentSimulation, currentType])
 
   /**
    * Handle title

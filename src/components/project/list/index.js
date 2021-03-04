@@ -3,7 +3,7 @@ import { Space, Table, Empty } from 'antd'
 
 import { Error } from '@/components/assets/notification'
 
-import Data from '../data'
+import Build from '../build'
 import Share from '../share'
 import Delete from '../delete'
 
@@ -34,7 +34,7 @@ const ProjectList = ({ user, workspace, filter }) => {
   // Data
   const data = projects
     .map((project) => {
-      return Data(
+      return Build(
         project,
         filter,
         (title) => setTitle(project, title),

@@ -6,7 +6,7 @@ jest.mock('next/router', () => ({
 }))
 
 jest.mock(
-  '@/components/project/data',
+  '@/components/project/build',
   () => (project, filter, title, description) => {
     return {
       title,

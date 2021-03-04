@@ -231,15 +231,22 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
 
         error && (simulationTask.log += 'Error: ' + error + '\n')
 
-        if (data && data.includes('PROCESS VTU FILE')) {
+        if (
+          data &&
+          (data.includes('PROCESS VTU FILE') ||
+            data.includes('PROCESS DATA FILE'))
+        ) {
           const lines = data.split('\n')
           const resultLines = lines.filter((l) =>
             l.includes('PROCESS VTU FILE')
           )
+          const dataLines = lines.filter((l) => l.includes('PROCESS DATA FILE'))
 
           // Put other lines in logs
           const nonResultLines = lines.filter(
-            (l) => !l.includes('PROCESS VTU FILE')
+            (l) =>
+              !l.includes('PROCESS VTU FILE') &&
+              !l.includes('PROCESS DATA FILE')
           )
           nonResultLines.forEach((line) => {
             simulationTask.log += line
@@ -296,7 +303,37 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
                   updateTasks(id, tasks)
                 }
               } catch (err) {
-                simulationTask.log += 'Warning: ' + err.message
+                simulationTask.log +=
+                  'Warning: Unable to convert result file (' + err.message + ')'
+                updateTasks(id, tasks)
+              }
+            })
+          )
+
+          // Get data
+          await Promise.all(
+            dataLines.map(async (line) => {
+              // New data
+              const dataFile = line.replace('PROCESS DATA FILE', '').trim()
+
+              try {
+                // Read file
+                const dataPath = path.join(
+                  simulationPath,
+                  'run',
+                  'data',
+                  dataFile
+                )
+                const dataContent = await Tools.readFile(dataPath)
+
+                simulationTask.datas = [
+                  ...(simulationTask.datas || []),
+                  JSON.parse(dataContent.toString())
+                ]
+                updateTasks(id, tasks)
+              } catch (err) {
+                simulationTask.log +=
+                  'Warning: Unable to read data file (' + err.message + ')'
                 updateTasks(id, tasks)
               }
             })

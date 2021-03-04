@@ -51,7 +51,7 @@ const Run = ({ project, simulation }) => {
   // Data
   const [currentSimulation, { mutateSimulation }] = SimulationAPI.useSimulation(
     simulation?.id,
-    running ? 500 : 0
+    500
   )
   const [, { mutateOneSimulation }] = SimulationAPI.useSimulations(
     project?.simulations

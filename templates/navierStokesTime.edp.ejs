@@ -136,22 +136,25 @@ for (int timeIter = 0; timeIter < nbIter; ++timeIter) {
 	Ux[] = Stokes^-1 * StokesRHS;
 
 	// Save data
-	{
-		ofstream data("<%= run.dataPath %>/div_" + timeIter + ".dat");
-		real div = intN(Th)(Div(U)) / intN(Th)(1);
-		data << "{\"name\": \"div\",";
-		data << "\"index\": 2,";
-		data << "\"t\": " << t << ",";
-		data << "\"value\": " << div << "}";
-	}
-	{
-		ofstream data("<%= run.dataPath %>/netFlow_" + timeIter + ".dat");
-		real netFlow = intN1(Th)(<%= U -%>' * <%= N -%>);
-		data << "{\"name\": \"netFlow\",";
-		data << "\"index\": 1,";
-		data << "\"t\": " << t << ",";
-		data << "\"value\": " << netFlow << "}";
-	}
+	real netFlow = intN1(Th)(<%= U -%>' * <%= N -%>);
+	<%- include('/blobs/data.edp.ejs', {
+		path: run.dataPath,
+		name: '"netFlow_"+timeIter',
+		dataName: 'Net flow',
+		index: 1,
+		x: 't',
+		y: 'netFlow'
+	}) -%>
+
+	real div = intN(Th)(Div(U)) / intN(Th)(1);
+	<%- include('/blobs/data.edp.ejs', {
+		path: run.dataPath,
+		name: '"div_"+timeIter',
+		dataName: 'Divergence',
+		index: 2,
+		x: 't',
+		y: 'div'
+	}) -%>
 
 	// Save results
 	<%- include('/blobs/save.edp.ejs', {

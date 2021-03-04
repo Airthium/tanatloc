@@ -17,6 +17,7 @@ import { Error } from '@/components/assets/notification'
 import NotAuthorized from '@/components/notauthorized'
 
 import View from './view'
+import Data from './data'
 import Simulation from './simulation'
 
 import UserAPI from '@/api/user'
@@ -368,6 +369,7 @@ const Project = () => {
           }}
           setPartSummary={setPartSummary}
         />
+        <Data simulation={{ id: currentSimulation?.id }} />
       </Layout.Content>
     </Layout>
   )

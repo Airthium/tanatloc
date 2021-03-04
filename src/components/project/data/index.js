@@ -1,139 +1,150 @@
-import { Avatar, Collapse, Empty, Tooltip, Typography } from 'antd'
+import { useState, useEffect } from 'react'
+import { Button, Drawer, Layout, Table } from 'antd'
+import { UpOutlined } from '@ant-design/icons'
+import {
+  CartesianGrid,
+  Legend,
+  LineChart,
+  Line,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis
+} from 'recharts'
 
-import Utils from '@/lib/utils'
+import SimulationAPI from '@/api/simulation'
+
+const camelize = (str) => {
+  return str.replace(/\W+(.)/g, (_, chr) => {
+    return chr.toUpperCase()
+  })
+}
 
 /**
- * Project data
- * @memberof module:'src/components/project
- * @param {Object} project Project
- * @param {Function} setTitle Set title
- * @param {Function} setDescription Set description
+ * Data visualization
+ * @param {Object} props Props
  */
-const Data = (project, filter, setTitle, setDescription) => {
-  // Check
-  if (!project) return null
+const Data = ({ simulation }) => {
+  // State
+  const [visible, setVisible] = useState(false)
+  const [table, setTable] = useState({})
 
-  // Filter
-  if (filter && !project.title?.toLowerCase()?.includes(filter.toLowerCase()))
-    return null
+  // Data
+  const [currentSimulation] = SimulationAPI.useSimulation(simulation?.id)
 
-  // Snapshot
-  const snapshot = project.avatar ? (
-    <img
-      src={project && project.avatar}
-      width="100"
-      height="100"
-      style={{ cursor: 'pointer' }}
-    />
-  ) : (
-    <Empty
-      image={Empty.PRESENTED_IMAGE_SIMPLE}
-      description={'No preview yet.'}
-      imageStyle={{ width: 100 }}
-      style={{ cursor: 'pointer' }}
-    />
-  )
+  // Data effect
+  useEffect(() => {
+    const tasks = currentSimulation?.tasks
 
-  // Title
-  const title = (
-    <>
-      <Typography.Paragraph editable={{ maxLength: 50, onChange: setTitle }}>
-        {project.title}
-      </Typography.Paragraph>
-      {project.description && (
-        <Collapse>
-          <Collapse.Panel header="Description">
-            <Typography.Paragraph
-              editable={{
-                maxLength: 260,
-                autoSize: { maxRows: 4 },
-                onChange: setDescription
-              }}
-            >
-              {project.description}
-            </Typography.Paragraph>
-          </Collapse.Panel>
-        </Collapse>
-      )}
-    </>
-  )
+    if (tasks) {
+      // Get tasks data
+      let tasksData = []
+      tasks.forEach((task) => {
+        if (task.datas) tasksData = [...tasksData, ...task.datas]
+      })
 
-  // Owners avatars
-  const owners = project?.owners?.map((owner) => Utils.userToAvatar(owner))
+      // Aggregate data
+      tasksData.sort((a, b) => a.x - b.x)
 
-  // Users avatars
-  const users = project?.users?.map((user) => {
-    const avatar = user.avatar && Buffer.from(user.avatar).toString()
-    let name = ''
-    let abbrev = ''
-    if (user.firstname || user.lastname) {
-      name = user.firstname + ' ' + user.lastname
-      abbrev =
-        (user.firstname && user.firstname[0]) +
-        (user.lastname && user.lastname[0])
-    } else {
-      name = user.email
-      abbrev = user.email[0]
+      const names = tasksData
+        .filter(
+          (value, index, self) =>
+            self.findIndex((s) => s.name === value.name) === index
+        )
+        .map((d) => d.name)
+
+      const camelNames = names.map((n) => camelize(n))
+
+      const tableColumns = names.map((n, index) => ({
+        title: n,
+        dataIndex: camelNames[index],
+        key: camelNames[index]
+      }))
+      tableColumns.unshift({
+        title: '',
+        dataIndex: 'x',
+        key: 'x'
+      })
+
+      const tableData = []
+      tasksData.forEach((d, index) => {
+        const existingIndex = tableData.findIndex((t) => t.x === d.x)
+        if (existingIndex === -1)
+          tableData.push({
+            key: index,
+            x: d.x,
+            [camelize(d.name)]: d.y
+          })
+        else {
+          tableData[existingIndex] = {
+            ...tableData[existingIndex],
+            [camelize(d.name)]: d.y
+          }
+        }
+      })
+
+      setTable({ columns: tableColumns, data: tableData })
     }
-
-    return (
-      <Tooltip key={user.id} title={name}>
-        <Avatar
-          src={avatar}
-          style={{ backgroundColor: Utils.stringToColor(name) }}
-        >
-          {abbrev.toUpperCase()}
-        </Avatar>
-      </Tooltip>
-    )
-  })
-
-  // Groups
-  const groups = project?.groups?.map((group) => {
-    return (
-      <Tooltip key={group.id} title={group.name}>
-        <Avatar style={{ backgroundColor: Utils.stringToColor(group.name) }}>
-          {group.name[0].toUpperCase()}
-        </Avatar>
-      </Tooltip>
-    )
-  })
+  }, [currentSimulation])
 
   /**
-   * Not a render
+   * Render
    */
-  return {
-    ...project,
-    key: project.id,
-    snapshot: snapshot,
-    title: title,
-    ownersRender: <Avatar.Group>{owners}</Avatar.Group>,
-    usersRender: (
-      <>
-        <Avatar.Group>{users}</Avatar.Group>
-        <Avatar.Group>{groups}</Avatar.Group>
-      </>
-    )
-  }
+  return (
+    <Layout
+      style={{
+        position: 'absolute',
+        zIndex: 100,
+        bottom: -15,
+        left: 'calc(50vw - 16px)'
+      }}
+    >
+      <Layout.Content>
+        <Button
+          icon={
+            <UpOutlined style={{ position: 'absolute', top: 5, right: 10 }} />
+          }
+          shape="round"
+          onClick={() => setVisible(true)}
+          size="large"
+        />
+
+        <Drawer
+          title="Data visualization"
+          placement="bottom"
+          closable={true}
+          onClose={() => setVisible(false)}
+          visible={visible}
+          mask={false}
+          maskClosable={false}
+          height="50vh"
+          bodyStyle={{ height: '100%', overflow: 'hidden' }}
+        >
+          <div style={{ display: 'flex', height: '100%' }}>
+            <div style={{ height: '100%', width: '50%', overflow: 'auto' }}>
+              <Table dataSource={table?.data} columns={table.columns} />
+            </div>
+
+            <ResponsiveContainer width="50%" height="100%">
+              <LineChart
+                data={[
+                  { x: 1, y: 1 },
+                  { x: 2, y: 2 }
+                ]}
+              >
+                <CartesianGrid />
+                <XAxis dataKey={'x'} />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Line type="monotone" dataKey="y" />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        </Drawer>
+      </Layout.Content>
+    </Layout>
+  )
 }
 
 export default Data
-
-// TODO
-// import {
-//   ShareAltOutlined,
-//   DeleteOutlined
-//   // SyncOutlined,
-//   // CloudSyncOutlined
-// } from '@ant-design/icons'
-
-// const tags = (
-//   <Space>
-//     <Tag icon={<SyncOutlined spin />} color="processing">
-//       Running
-//     </Tag>
-//     <Tag icon={<CloudSyncOutlined />} color="success">
-//       Backed-up in the cloud
-//     </Tag>
-//   </Space>
-// )

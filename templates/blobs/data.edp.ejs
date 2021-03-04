@@ -1,0 +1,16 @@
+{
+    {
+        ofstream data("<%= path %>/" + <%- name %> + ".dat");
+        data << "{" << endl;
+        data << "  \"name\": \"<%= dataName %>\"," << endl;
+        data << "  \"index\": \"<%= index %>\"," << endl;
+        data << "  \"x\": \"" << <%= x %> << "\"," << endl;
+        data << "  \"y\": \"" << <%= y %> << "\"" << endl;
+        data << "}" << endl;
+    }
+
+    string saveOutput = "PROCESS DATA FILE " + <%- name %> + ".dat";
+    if (mpirank == 0) cout.flush;
+    if (mpirank == 0) cout << saveOutput << endl;
+    if (mpirank == 0) cout.flush;
+}

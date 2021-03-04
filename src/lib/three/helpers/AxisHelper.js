@@ -62,7 +62,7 @@ const AxisHelper = (
   zLabel.position.set(0, 0, 1.1)
 
   // Sphere
-  const sphereGeometry = new SphereGeometry(0.1, 50, 50)
+  const sphereGeometry = new SphereGeometry(0.05, 50, 50)
   const sphereMaterial = new MeshBasicMaterial({ color: baseColor })
   const sphere = new Mesh(sphereGeometry, sphereMaterial)
 

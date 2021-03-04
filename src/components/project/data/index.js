@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
-import { Button, Drawer, Layout, Table } from 'antd'
-import { UpOutlined } from '@ant-design/icons'
+import { Button, Checkbox, Drawer, Layout, Space, Table } from 'antd'
+import { LineChartOutlined, UpOutlined } from '@ant-design/icons'
 import {
   CartesianGrid,
   Legend,
@@ -12,6 +12,8 @@ import {
   YAxis
 } from 'recharts'
 
+import Utils from '@/lib/utils'
+
 import SimulationAPI from '@/api/simulation'
 
 const camelize = (str) => {
@@ -20,6 +22,8 @@ const camelize = (str) => {
   })
 }
 
+// TODO bug in columns selection
+
 /**
  * Data visualization
  * @param {Object} props Props
@@ -27,7 +31,9 @@ const camelize = (str) => {
 const Data = ({ simulation }) => {
   // State
   const [visible, setVisible] = useState(false)
-  const [table, setTable] = useState({})
+  const [table, setTable] = useState()
+  const [columnSelection, setColumnSelection] = useState([])
+  const [plot, setPlot] = useState()
 
   // Data
   const [currentSimulation] = SimulationAPI.useSimulation(simulation?.id)
@@ -56,12 +62,23 @@ const Data = ({ simulation }) => {
       const camelNames = names.map((n) => camelize(n))
 
       const tableColumns = names.map((n, index) => ({
-        title: n,
+        title: (
+          <Space>
+            {n}
+            <Checkbox onChange={() => onCheck(n, camelNames[index])}>
+              <LineChartOutlined />
+            </Checkbox>
+          </Space>
+        ),
         dataIndex: camelNames[index],
         key: camelNames[index]
       }))
       tableColumns.unshift({
-        title: '',
+        title: (
+          <Button style={{ color: 'red', backgroundColor: 'blue' }}>
+            Export CSV
+          </Button>
+        ),
         dataIndex: 'x',
         key: 'x'
       })
@@ -86,6 +103,62 @@ const Data = ({ simulation }) => {
       setTable({ columns: tableColumns, data: tableData })
     }
   }, [currentSimulation])
+
+  // Check effect
+  useEffect(() => {
+    const tableData = table?.data
+    if (!tableData?.length) return
+
+    // Set lines
+    const keys = []
+    const lines = columnSelection.map((selection, index) => {
+      keys.push(selection.key)
+
+      return (
+        <Line
+          key={index}
+          name={selection.name}
+          type="monotone"
+          dataKey={selection.key}
+          stroke={Utils.stringToColor(selection.key)}
+          strokeWidth={2}
+        />
+      )
+    })
+
+    // Set data
+    const data = tableData
+      .map((d) => {
+        const part = { x: d.x }
+        keys.forEach((key) => {
+          d[key] && (part[key] = d[key])
+        })
+        return part
+      })
+      .filter((d) => d)
+
+    const min = Math.min(...keys.flatMap((key) => data.map((d) => d[key])))
+    const max = Math.max(...keys.flatMap((key) => data.map((d) => d[key])))
+
+    setPlot({ data, min, max, lines })
+  }, [columnSelection])
+
+  /**
+   * On check
+   * @param {string} name Name
+   * @param {string} key Key
+   */
+  const onCheck = (name, key) => {
+    const index = columnSelection.findIndex((s) => s.key === key)
+    if (index === -1) {
+      setColumnSelection([...columnSelection, { name, key }])
+    } else {
+      setColumnSelection([
+        ...columnSelection.slice(0, index),
+        ...columnSelection.slice(index + 1)
+      ])
+    }
+  }
 
   /**
    * Render
@@ -122,22 +195,20 @@ const Data = ({ simulation }) => {
         >
           <div style={{ display: 'flex', height: '100%' }}>
             <div style={{ height: '100%', width: '50%', overflow: 'auto' }}>
-              <Table dataSource={table?.data} columns={table.columns} />
+              <Table dataSource={table?.data} columns={table?.columns} />
             </div>
 
             <ResponsiveContainer width="50%" height="100%">
               <LineChart
-                data={[
-                  { x: 1, y: 1 },
-                  { x: 2, y: 2 }
-                ]}
+                data={plot?.data}
+                margin={{ top: 40, right: 40, left: 40, bottom: 40 }}
               >
-                <CartesianGrid />
+                <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey={'x'} />
-                <YAxis />
+                <YAxis domain={[plot?.min, plot?.max]} />
                 <Tooltip />
                 <Legend />
-                <Line type="monotone" dataKey="y" />
+                {plot?.lines}
               </LineChart>
             </ResponsiveContainer>
           </div>

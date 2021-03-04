@@ -19,8 +19,7 @@ const add = async (user, file) => {
   await Tools.writeFile(AVATAR, file.uid, file.data)
 
   // Add in dB
-  const avatarPath = path.join(AVATAR, file.uid)
-  const avatar = await AvatarDB.add({ name: file.name, path: avatarPath })
+  const avatar = await AvatarDB.add({ name: file.name, path: file.uid })
 
   // Check existing avatar in user, if exists: delete
   const userData = await User.get(user.id, ['avatar'])
@@ -39,10 +38,20 @@ const add = async (user, file) => {
  */
 const read = async (id) => {
   // Get path
-  const avatar = await AvatarDB.get(id, ['path'])
+  const avatar = await get(id, ['path'])
 
   // Read file
-  return Tools.readFile(avatar.path)
+  const avatarFile = path.join(AVATAR, avatar.path)
+  return Tools.readFile(avatarFile)
+}
+
+/**
+ * Get
+ * @param {string} id Id
+ * @param {Array} data Data
+ */
+const get = async (id, data) => {
+  return AvatarDB.get(id, data)
 }
 
 /**
@@ -51,8 +60,17 @@ const read = async (id) => {
  * @param {string} id Avatar's id
  */
 const del = async (user, id) => {
+  // Get
+  const data = await get(id, ['path'])
+
   // Delete avatar
   await AvatarDB.del(id)
+
+  // Remove file
+  if (data.path) {
+    const avatarFile = path.join(AVATAR, data.path)
+    await Tools.removeFile(avatarFile)
+  }
 
   // Update user
   await User.update(user, {
@@ -63,6 +81,8 @@ const del = async (user, id) => {
       }
     ]
   })
+
+  // Remove avatar file
 }
 
-export default { add, read, del }
+export default { add, read, get, del }

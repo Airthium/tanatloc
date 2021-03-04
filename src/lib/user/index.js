@@ -18,12 +18,13 @@ const add = async ({ username, password }) => {
  * Get user
  * @param {string} id User's id
  * @param {Array} data Data
+ * @param {boolean} readAvatar Read avatar ? (default: true)
  */
-const get = async (id, data) => {
+const get = async (id, data, readAvatar = true) => {
   const user = await UserDB.get(id, data)
 
   // Get avatar
-  if (user && user.avatar) {
+  if (readAvatar && user && user.avatar) {
     try {
       const avatar = await Avatar.read(user.avatar)
       user.avatar = avatar
@@ -77,7 +78,7 @@ const update = async (user, data) => {
  */
 const del = async (user) => {
   // Get data
-  const data = await get(user.id, ['groups', 'workspaces'])
+  const data = await get(user.id, ['groups', 'workspaces', 'avatar'], false)
 
   // Delete from groups
   if (data.groups) {
@@ -105,7 +106,9 @@ const del = async (user) => {
   }
 
   // Delete avatar
-  // TODO
+  if (data.avatar) {
+    await Avatar.del(user, data.avatar)
+  }
 
   // Delete user
   await UserDB.del(user)

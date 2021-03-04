@@ -36,12 +36,12 @@ const CloudServer = ({ disabled, cloudServer, onOk }) => {
       <Modal
         visible={visible}
         title="Cloud server"
-        onOk={() => {}}
         okButtonProps={{
           disabled: true,
           style: { display: 'none' }
         }}
         onCancel={close}
+        style={{ width: 'unset' }}
       >
         <Space direction="vertical">
           <Typography.Text>

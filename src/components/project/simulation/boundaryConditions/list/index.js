@@ -36,8 +36,10 @@ const List = ({ project, simulation, onEdit }) => {
     dispatch(disable())
   }
 
-  // List
-  const list = Object.keys(boundaryConditions)
+  /**
+   * Render
+   */
+  return Object.keys(boundaryConditions)
     .map((type) => {
       if (type === 'index' || type === 'title' || type === 'done') return
       return boundaryConditions[type].values?.map((child, index) => {
@@ -75,11 +77,6 @@ const List = ({ project, simulation, onEdit }) => {
       })
     })
     .filter((l) => l)
-
-  /**
-   * Render
-   */
-  return list
 }
 
 export default List

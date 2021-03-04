@@ -27,9 +27,11 @@ jest.mock('../../user', () => ({
 
 const mockReadFile = jest.fn()
 const mockWriteFile = jest.fn()
+const mockRemoveFile = jest.fn()
 jest.mock('../../tools', () => ({
   readFile: async () => mockReadFile(),
-  writeFile: async () => mockWriteFile()
+  writeFile: async () => mockWriteFile(),
+  removeFile: async () => mockRemoveFile()
 }))
 
 describe('src/lib/avatar', () => {
@@ -53,6 +55,7 @@ describe('src/lib/avatar', () => {
     mockReadFile.mockReset()
     mockReadFile.mockImplementation(() => 'avatar')
     mockWriteFile.mockReset()
+    mockRemoveFile.mockReset()
   })
 
   it('add', async () => {
@@ -62,7 +65,7 @@ describe('src/lib/avatar', () => {
       { id: 'id' },
       { name: 'name', uid: 'uid', data: 'data' }
     )
-    expect(mockPath).toHaveBeenCalledTimes(1)
+    expect(mockPath).toHaveBeenCalledTimes(0)
     expect(mockAdd).toHaveBeenCalledTimes(1)
     expect(mockGet).toHaveBeenCalledTimes(0)
     expect(mockDel).toHaveBeenCalledTimes(0)
@@ -70,6 +73,7 @@ describe('src/lib/avatar', () => {
     expect(mockUpdateUser).toHaveBeenCalledTimes(1)
     expect(mockReadFile).toHaveBeenCalledTimes(0)
     expect(mockWriteFile).toHaveBeenCalledTimes(1)
+    expect(mockRemoveFile).toHaveBeenCalledTimes(0)
     expect(avatar).toEqual({ id: 'id' })
 
     // With user avatar
@@ -80,20 +84,21 @@ describe('src/lib/avatar', () => {
       { id: 'id' },
       { name: 'name', uid: 'uid', data: 'data' }
     )
-    expect(mockPath).toHaveBeenCalledTimes(2)
+    expect(mockPath).toHaveBeenCalledTimes(1)
     expect(mockAdd).toHaveBeenCalledTimes(2)
-    expect(mockGet).toHaveBeenCalledTimes(0)
+    expect(mockGet).toHaveBeenCalledTimes(1)
     expect(mockDel).toHaveBeenCalledTimes(1)
     expect(mockGetUser).toHaveBeenCalledTimes(2)
     expect(mockUpdateUser).toHaveBeenCalledTimes(3)
     expect(mockReadFile).toHaveBeenCalledTimes(0)
     expect(mockWriteFile).toHaveBeenCalledTimes(2)
+    expect(mockRemoveFile).toHaveBeenCalledTimes(1)
     expect(avatar).toEqual({ id: 'id' })
   })
 
   it('read', async () => {
     const avatar = await Avatar.read('id')
-    expect(mockPath).toHaveBeenCalledTimes(0)
+    expect(mockPath).toHaveBeenCalledTimes(1)
     expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockGet).toHaveBeenCalledTimes(1)
     expect(mockDel).toHaveBeenCalledTimes(0)
@@ -101,18 +106,50 @@ describe('src/lib/avatar', () => {
     expect(mockUpdateUser).toHaveBeenCalledTimes(0)
     expect(mockReadFile).toHaveBeenCalledTimes(1)
     expect(mockWriteFile).toHaveBeenCalledTimes(0)
+    expect(mockRemoveFile).toHaveBeenCalledTimes(0)
     expect(avatar).toBe('avatar')
   })
 
-  it('del', async () => {
-    await Avatar.del({ id: 'id' }, 'id')
+  it('get', async () => {
+    const avatar = await Avatar.get('id', ['data'])
     expect(mockPath).toHaveBeenCalledTimes(0)
     expect(mockAdd).toHaveBeenCalledTimes(0)
-    expect(mockGet).toHaveBeenCalledTimes(0)
+    expect(mockGet).toHaveBeenCalledTimes(1)
+    expect(mockDel).toHaveBeenCalledTimes(0)
+    expect(mockGetUser).toHaveBeenCalledTimes(0)
+    expect(mockUpdateUser).toHaveBeenCalledTimes(0)
+    expect(mockReadFile).toHaveBeenCalledTimes(0)
+    expect(mockWriteFile).toHaveBeenCalledTimes(0)
+    expect(mockRemoveFile).toHaveBeenCalledTimes(0)
+    expect(avatar).toEqual({
+      path: 'path'
+    })
+  })
+
+  it('del', async () => {
+    // With path
+    await Avatar.del({ id: 'id' }, 'id')
+    expect(mockPath).toHaveBeenCalledTimes(1)
+    expect(mockAdd).toHaveBeenCalledTimes(0)
+    expect(mockGet).toHaveBeenCalledTimes(1)
     expect(mockDel).toHaveBeenCalledTimes(1)
     expect(mockGetUser).toHaveBeenCalledTimes(0)
     expect(mockUpdateUser).toHaveBeenCalledTimes(1)
     expect(mockReadFile).toHaveBeenCalledTimes(0)
     expect(mockWriteFile).toHaveBeenCalledTimes(0)
+    expect(mockRemoveFile).toHaveBeenCalledTimes(1)
+
+    // Without path
+    mockGet.mockImplementation(() => ({}))
+    await Avatar.del({ id: 'id' }, 'id')
+    expect(mockPath).toHaveBeenCalledTimes(1)
+    expect(mockAdd).toHaveBeenCalledTimes(0)
+    expect(mockGet).toHaveBeenCalledTimes(2)
+    expect(mockDel).toHaveBeenCalledTimes(2)
+    expect(mockGetUser).toHaveBeenCalledTimes(0)
+    expect(mockUpdateUser).toHaveBeenCalledTimes(2)
+    expect(mockReadFile).toHaveBeenCalledTimes(0)
+    expect(mockWriteFile).toHaveBeenCalledTimes(0)
+    expect(mockRemoveFile).toHaveBeenCalledTimes(1)
   })
 })

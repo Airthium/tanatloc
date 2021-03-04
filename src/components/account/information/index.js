@@ -64,9 +64,6 @@ const Information = () => {
 
     try {
       const toUpdate = []
-      // TODO disable for now
-      // if (data.username !== user.email)
-      //   toUpdate.push({ key: 'email', value: data.username })
       if (data.firstname !== user.firstname)
         toUpdate.push({ key: 'firstname', value: data.firstname })
       if (data.lastname !== user.lastname)
@@ -210,11 +207,6 @@ const Information = () => {
             <Form.Item label="Email" name="email">
               <Input />
             </Form.Item>
-            {/* TODO : Disabled for now (add username in dB)
-            <Form.Item label="User name" name="username">
-              <Input disabled={true} />
-            </Form.Item>
-            */}
             <Form.Item label="First name" name="firstname">
               <Input />
             </Form.Item>

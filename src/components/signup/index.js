@@ -15,7 +15,6 @@ import {
 
 import { PasswordItem } from '@/components/assets/input'
 import Loading from '@/components/loading'
-// import Background from '../background'
 
 import login from '@/api/login'
 import UserAPI from '@/api/user'
@@ -107,7 +106,6 @@ const Signup = () => {
         <Loading />
       ) : (
         <Layout>
-          {/* <Background /> */}
           {system?.allowsignup ? (
             <Card bordered={false} className="Signup">
               <Space

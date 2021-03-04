@@ -30,6 +30,22 @@ const errors = {
 }
 
 /**
+ * Load models
+ * @param {Object} Models Models
+ * @param {Object} Plugins Plugins
+ */
+const loadModels = (Models, Plugins) => {
+  let allModels = Models
+
+  Object.keys(Plugins).forEach((key) => {
+    if (Plugins[key].category === 'Model')
+      allModels = [...allModels, ...Plugins[key].models]
+  })
+
+  return allModels
+}
+
+/**
  * Simulation Selector
  * @param {Object} props Props
  */
@@ -46,12 +62,7 @@ const Selector = ({ visible, onOk, onCancel }) => {
 
   // Models
   useEffect(() => {
-    let allModels = Models
-
-    Object.keys(Plugins).forEach((key) => {
-      if (Plugins[key].category === 'Model')
-        allModels = [...allModels, ...Plugins[key].models]
-    })
+    const allModels = loadModels(Models, Plugins)
     setModels(allModels)
   }, [Models, Plugins])
 
@@ -62,7 +73,6 @@ const Selector = ({ visible, onOk, onCancel }) => {
   const onSelect = ({ key }) => {
     const model = models.find((m) => m.algorithm === key)
     setCurrent({ ...model })
-    // TODO review that
   }
 
   /**
@@ -121,12 +131,7 @@ const Simulation = ({ project, simulation, type, part, onClose }) => {
 
   // Models
   useEffect(() => {
-    let allModels = Models
-
-    Object.keys(Plugins).forEach((key) => {
-      if (Plugins[key].category === 'Model')
-        allModels = [...allModels, ...Plugins[key].models]
-    })
+    const allModels = loadModels(Models, Plugins)
     setModels(allModels)
   }, [Models, Plugins])
 

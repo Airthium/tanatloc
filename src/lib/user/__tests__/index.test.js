@@ -17,8 +17,10 @@ jest.mock('@/database/user', () => {
 })
 
 const mockReadAvatar = jest.fn()
+const mockDelAvatar = jest.fn()
 jest.mock('../../avatar', () => ({
-  read: async () => mockReadAvatar()
+  read: async () => mockReadAvatar(),
+  del: async () => mockDelAvatar()
 }))
 
 const mockDelWorkspace = jest.fn()
@@ -38,8 +40,12 @@ describe('src/lib/user', () => {
     mockGetByUsernameAndPassword.mockReset()
     mockUpdate.mockReset()
     mockDel.mockReset()
+
     mockReadAvatar.mockReset()
+    mockDelAvatar.mockReset()
+
     mockDelWorkspace.mockReset()
+
     mockUpdateGroup.mockReset()
   })
 
@@ -62,6 +68,7 @@ describe('src/lib/user', () => {
     expect(mockUpdate).toHaveBeenCalledTimes(0)
     expect(mockDel).toHaveBeenCalledTimes(0)
     expect(mockReadAvatar).toHaveBeenCalledTimes(0)
+    expect(mockDelAvatar).toHaveBeenCalledTimes(0)
     expect(mockDelWorkspace).toHaveBeenCalledTimes(0)
     expect(user).toEqual({ id: 'id', username: 'username' })
 
@@ -78,6 +85,7 @@ describe('src/lib/user', () => {
     expect(mockUpdate).toHaveBeenCalledTimes(0)
     expect(mockDel).toHaveBeenCalledTimes(0)
     expect(mockReadAvatar).toHaveBeenCalledTimes(1)
+    expect(mockDelAvatar).toHaveBeenCalledTimes(0)
     expect(mockDelWorkspace).toHaveBeenCalledTimes(0)
     expect(user).toEqual({ id: 'id', username: 'username', avatar: 'avatar' })
 
@@ -90,6 +98,7 @@ describe('src/lib/user', () => {
     expect(mockUpdate).toHaveBeenCalledTimes(0)
     expect(mockDel).toHaveBeenCalledTimes(0)
     expect(mockReadAvatar).toHaveBeenCalledTimes(2)
+    expect(mockDelAvatar).toHaveBeenCalledTimes(0)
     expect(mockDelWorkspace).toHaveBeenCalledTimes(0)
     expect(user).toEqual({ id: 'id', username: 'username', avatar: undefined })
   })
@@ -111,6 +120,7 @@ describe('src/lib/user', () => {
     expect(mockUpdate).toHaveBeenCalledTimes(0)
     expect(mockDel).toHaveBeenCalledTimes(0)
     expect(mockReadAvatar).toHaveBeenCalledTimes(0)
+    expect(mockDelAvatar).toHaveBeenCalledTimes(0)
     expect(mockDelWorkspace).toHaveBeenCalledTimes(0)
     expect(user).toBe(null)
 
@@ -125,6 +135,7 @@ describe('src/lib/user', () => {
     expect(mockUpdate).toHaveBeenCalledTimes(0)
     expect(mockDel).toHaveBeenCalledTimes(0)
     expect(mockReadAvatar).toHaveBeenCalledTimes(0)
+    expect(mockDelAvatar).toHaveBeenCalledTimes(0)
     expect(mockDelWorkspace).toHaveBeenCalledTimes(0)
     expect(user).toEqual({ id: 'id', username: 'username' })
   })
@@ -148,16 +159,22 @@ describe('src/lib/user', () => {
     expect(mockUpdate).toHaveBeenCalledTimes(0)
     expect(mockDel).toHaveBeenCalledTimes(1)
     expect(mockReadAvatar).toHaveBeenCalledTimes(0)
+    expect(mockDelAvatar).toHaveBeenCalledTimes(0)
     expect(mockDelWorkspace).toHaveBeenCalledTimes(0)
 
-    // With workspaces & groups
-    mockGet.mockImplementation(() => ({ groups: ['id'], workspaces: ['id'] }))
+    // With workspaces, groups & avatar
+    mockGet.mockImplementation(() => ({
+      groups: ['id'],
+      workspaces: ['id'],
+      avatar: 'id'
+    }))
     await User.del({})
     expect(mockGet).toHaveBeenCalledTimes(2)
     expect(mockGetByUsernameAndPassword).toHaveBeenCalledTimes(0)
     expect(mockUpdate).toHaveBeenCalledTimes(0)
     expect(mockDel).toHaveBeenCalledTimes(2)
     expect(mockReadAvatar).toHaveBeenCalledTimes(0)
+    expect(mockDelAvatar).toHaveBeenCalledTimes(1)
     expect(mockDelWorkspace).toHaveBeenCalledTimes(1)
     expect(mockUpdateGroup).toHaveBeenCalledTimes(1)
   })

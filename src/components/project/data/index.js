@@ -1,6 +1,10 @@
 import { useState, useEffect } from 'react'
 import { Button, Checkbox, Drawer, Layout, Space, Table } from 'antd'
-import { LineChartOutlined, UpOutlined } from '@ant-design/icons'
+import {
+  FileTextOutlined,
+  LineChartOutlined,
+  UpOutlined
+} from '@ant-design/icons'
 import {
   CartesianGrid,
   Legend,
@@ -29,9 +33,11 @@ const camelize = (str) => {
 const Data = ({ simulation }) => {
   // State
   const [visible, setVisible] = useState(false)
+  const [infos, setInfos] = useState()
   const [table, setTable] = useState()
   const [columnSelection, setColumnSelection] = useState([])
   const [plot, setPlot] = useState()
+  const [downloading, setDownloading] = useState(false)
 
   // Data
   const [currentSimulation] = SimulationAPI.useSimulation(simulation?.id)
@@ -60,12 +66,13 @@ const Data = ({ simulation }) => {
       const camelNames = names.map((n) => camelize(n))
 
       const tableColumns = names.map((n, index) => ({
+        align: 'center',
         title: (
           <Space>
             {n}
             <Checkbox
               checked={columnSelection[index]?.checked}
-              onChange={(event) => onCheck(event, index, n, camelNames[index])}
+              onChange={(event) => onCheck(event, index)}
             >
               <LineChartOutlined />
             </Checkbox>
@@ -74,15 +81,6 @@ const Data = ({ simulation }) => {
         dataIndex: camelNames[index],
         key: camelNames[index]
       }))
-      tableColumns.unshift({
-        title: (
-          <Button style={{ color: 'red', backgroundColor: 'blue' }}>
-            Export CSV
-          </Button>
-        ),
-        dataIndex: 'x',
-        key: 'x'
-      })
 
       const tableData = []
       tasksData.forEach((d, index) => {
@@ -101,6 +99,7 @@ const Data = ({ simulation }) => {
         }
       })
 
+      setInfos({ names, camelNames })
       setTable({ columns: tableColumns, data: tableData })
     }
   }, [JSON.stringify(currentSimulation), JSON.stringify(columnSelection)])
@@ -115,15 +114,19 @@ const Data = ({ simulation }) => {
     const lines = columnSelection
       .map((selection, index) => {
         if (!selection.checked) return
-        keys.push(selection.key)
+
+        const key = infos.camelNames[index]
+        const name = infos.names[index]
+
+        keys.push(key)
 
         return (
           <Line
             key={index}
-            name={selection.name}
+            name={name}
             type="monotone"
-            dataKey={selection.key}
-            stroke={Utils.stringToColor(selection.key)}
+            dataKey={key}
+            stroke={Utils.stringToColor(key)}
             strokeWidth={2}
           />
         )
@@ -154,17 +157,51 @@ const Data = ({ simulation }) => {
    * @param {string} name Name
    * @param {string} key Key
    */
-  const onCheck = (event, index, name, key) => {
+  const onCheck = (event, index) => {
     const checked = event.target.checked
 
     const newSelection = [...columnSelection]
     newSelection[index] = {
-      checked,
-      name,
-      key
+      checked
     }
 
     setColumnSelection(newSelection)
+  }
+
+  /**
+   * Export CSV
+   */
+  const exportCSV = () => {
+    setDownloading(true)
+
+    const separator = ','
+    let CSV = ''
+
+    const tableData = table?.data
+
+    // Header
+    CSV = 'x' + separator + infos.names.join(separator) + '\n'
+
+    // Data
+    tableData.forEach((data) => {
+      CSV += data.x
+      infos?.camelNames?.forEach((name) => {
+        data[name] !== undefined && (CSV += separator + data[name])
+      })
+      CSV += '\n'
+    })
+
+    // Download
+    const fileName = (simulation?.name || 'data') + '.csv'
+    const file = new File([CSV], fileName, { type: 'text/csv' })
+    const url = window.URL.createObjectURL(file)
+    const link = document.createElement('a')
+    link.href = url
+    link.setAttribute('download', fileName)
+    link.click()
+    link.remove()
+
+    setDownloading(false)
   }
 
   /**
@@ -202,8 +239,18 @@ const Data = ({ simulation }) => {
           bodyStyle={{ height: '100%', overflow: 'hidden' }}
         >
           <div style={{ display: 'flex', height: '100%' }}>
-            <div style={{ height: '100%', width: '50%', overflow: 'auto' }}>
-              <Table dataSource={table?.data} columns={table?.columns} />
+            <div style={{ height: '100%', width: '50%' }}>
+              <Button
+                loading={downloading}
+                disabled={!table?.data}
+                icon={<FileTextOutlined />}
+                onClick={exportCSV}
+              >
+                Export CSV
+              </Button>
+              <div style={{ height: '100%', width: '100%', overflow: 'auto' }}>
+                <Table dataSource={table?.data} columns={table?.columns} />
+              </div>
             </div>
 
             <ResponsiveContainer width="50%" height="100%">

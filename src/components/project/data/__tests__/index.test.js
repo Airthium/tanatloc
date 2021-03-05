@@ -34,7 +34,7 @@ describe('src/components/project/data', () => {
   })
 
   it('setVisible', () => {
-    wrapper.find('Button').props().onClick()
+    wrapper.find('Button').at(0).props().onClick()
     expect(wrapper.find('DrawerWrapper').props().visible).toBe(true)
 
     wrapper.find('DrawerWrapper').props().onClose()
@@ -83,7 +83,7 @@ describe('src/components/project/data', () => {
     expect(wrapper).toBeDefined()
 
     // Open drawer
-    act(() => wrapper.find('Button').props().onClick())
+    act(() => wrapper.find('Button').at(0).props().onClick())
     wrapper.update()
 
     // On check
@@ -113,5 +113,51 @@ describe('src/components/project/data', () => {
         .onChange({ target: { checked: false } })
     )
     wrapper.update()
+  })
+
+  it('exportCSV', () => {
+    wrapper.unmount()
+    mockSimulation.mockImplementation(() => ({
+      tasks: [
+        {
+          datas: [
+            {
+              name: 'data name',
+              x: 0,
+              y: 0
+            },
+            {
+              name: 'data name',
+              x: 1,
+              y: 1
+            },
+            {
+              name: 'data name 2',
+              x: 0,
+              y: 0
+            },
+            {
+              name: 'data name 2',
+              x: 2,
+              y: 2
+            }
+          ]
+        },
+        {}
+      ]
+    }))
+
+    wrapper = mount(<Data simulation={simulation} />)
+    expect(wrapper).toBeDefined()
+
+    // Open drawer
+    act(() => wrapper.find('Button').at(0).props().onClick())
+    wrapper.update()
+
+    // Export CSV
+    window.URL = {
+      createObjectURL: () => {}
+    }
+    wrapper.find('Button').at(1).props().onClick()
   })
 })

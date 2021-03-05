@@ -369,7 +369,12 @@ const Project = () => {
           }}
           setPartSummary={setPartSummary}
         />
-        <Data simulation={{ id: currentSimulation?.id }} />
+        <Data
+          simulation={{
+            id: currentSimulation?.id,
+            name: currentSimulation?.name
+          }}
+        />
       </Layout.Content>
     </Layout>
   )

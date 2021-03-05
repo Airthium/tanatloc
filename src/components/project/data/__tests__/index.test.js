@@ -87,13 +87,31 @@ describe('src/components/project/data', () => {
     wrapper.update()
 
     // On check
-    act(() => wrapper.find('Checkbox').at(0).props().onChange())
+    act(() =>
+      wrapper
+        .find('Checkbox')
+        .at(0)
+        .props()
+        .onChange({ target: { checked: true } })
+    )
     wrapper.update()
 
-    act(() => wrapper.find('Checkbox').at(1).props().onChange())
+    act(() =>
+      wrapper
+        .find('Checkbox')
+        .at(1)
+        .props()
+        .onChange({ target: { checked: true } })
+    )
     wrapper.update()
 
-    act(() => wrapper.find('Checkbox').at(0).props().onChange())
+    act(() =>
+      wrapper
+        .find('Checkbox')
+        .at(0)
+        .props()
+        .onChange({ target: { checked: false } })
+    )
     wrapper.update()
   })
 })

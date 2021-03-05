@@ -22,8 +22,6 @@ const camelize = (str) => {
   })
 }
 
-// TODO bug in columns selection
-
 /**
  * Data visualization
  * @param {Object} props Props
@@ -65,7 +63,10 @@ const Data = ({ simulation }) => {
         title: (
           <Space>
             {n}
-            <Checkbox onChange={() => onCheck(n, camelNames[index])}>
+            <Checkbox
+              checked={columnSelection[index]?.checked}
+              onChange={(event) => onCheck(event, index, n, camelNames[index])}
+            >
               <LineChartOutlined />
             </Checkbox>
           </Space>
@@ -102,7 +103,7 @@ const Data = ({ simulation }) => {
 
       setTable({ columns: tableColumns, data: tableData })
     }
-  }, [JSON.stringify(currentSimulation)])
+  }, [JSON.stringify(currentSimulation), JSON.stringify(columnSelection)])
 
   // Check effect
   useEffect(() => {
@@ -111,20 +112,23 @@ const Data = ({ simulation }) => {
 
     // Set lines
     const keys = []
-    const lines = columnSelection.map((selection, index) => {
-      keys.push(selection.key)
+    const lines = columnSelection
+      .map((selection, index) => {
+        if (!selection.checked) return
+        keys.push(selection.key)
 
-      return (
-        <Line
-          key={index}
-          name={selection.name}
-          type="monotone"
-          dataKey={selection.key}
-          stroke={Utils.stringToColor(selection.key)}
-          strokeWidth={2}
-        />
-      )
-    })
+        return (
+          <Line
+            key={index}
+            name={selection.name}
+            type="monotone"
+            dataKey={selection.key}
+            stroke={Utils.stringToColor(selection.key)}
+            strokeWidth={2}
+          />
+        )
+      })
+      .filter((l) => l)
 
     // Set data
     const data = tableData
@@ -145,19 +149,22 @@ const Data = ({ simulation }) => {
 
   /**
    * On check
+   * @param {Object} event Event
+   * @param {number} index Index
    * @param {string} name Name
    * @param {string} key Key
    */
-  const onCheck = (name, key) => {
-    const index = columnSelection.findIndex((s) => s.key === key)
-    if (index === -1) {
-      setColumnSelection([...columnSelection, { name, key }])
-    } else {
-      setColumnSelection([
-        ...columnSelection.slice(0, index),
-        ...columnSelection.slice(index + 1)
-      ])
+  const onCheck = (event, index, name, key) => {
+    const checked = event.target.checked
+
+    const newSelection = [...columnSelection]
+    newSelection[index] = {
+      checked,
+      name,
+      key
     }
+
+    setColumnSelection(newSelection)
   }
 
   /**
@@ -202,7 +209,7 @@ const Data = ({ simulation }) => {
             <ResponsiveContainer width="50%" height="100%">
               <LineChart
                 data={plot?.data}
-                margin={{ top: 40, right: 40, left: 40, bottom: 40 }}
+                margin={{ top: 0, right: 40, left: 40, bottom: 0 }}
               >
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey={'x'} />

@@ -49,7 +49,7 @@ const solderFilling = {
           {
             label: 'contact angle of restarted data',
             htmlEntity: 'formula',
-            default: 60
+            default: 90
           }
         ]
       },
@@ -147,7 +147,7 @@ const solderFilling = {
           {
             label: 'Time for initial gradient flow solver',
             htmlEntity: 'formula',
-            default: 500
+            default: 200
           },
           {
             label: 'Time for other gradient flow solvers',

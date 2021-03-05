@@ -81,6 +81,11 @@ const Data = ({ simulation }) => {
         dataIndex: camelNames[index],
         key: camelNames[index]
       }))
+      tableColumns.unshift({
+        title: '',
+        dataIndex: 'x',
+        key: 'x'
+      })
 
       const tableData = []
       tasksData.forEach((d, index) => {

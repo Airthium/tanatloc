@@ -102,7 +102,7 @@ const Data = ({ simulation }) => {
 
       setTable({ columns: tableColumns, data: tableData })
     }
-  }, [currentSimulation])
+  }, [JSON.stringify(currentSimulation)])
 
   // Check effect
   useEffect(() => {
@@ -141,7 +141,7 @@ const Data = ({ simulation }) => {
     const max = Math.max(...keys.flatMap((key) => data.map((d) => d[key])))
 
     setPlot({ data, min, max, lines })
-  }, [columnSelection])
+  }, [JSON.stringify(columnSelection)])
 
   /**
    * On check
@@ -169,7 +169,8 @@ const Data = ({ simulation }) => {
         position: 'absolute',
         zIndex: 100,
         bottom: -15,
-        left: 'calc(50vw - 16px)'
+        left: 'calc(50vw - 16px)',
+        backgroundColor: 'rgba(255, 255, 255, 0)'
       }}
     >
       <Layout.Content>

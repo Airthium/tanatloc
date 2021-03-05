@@ -13,8 +13,10 @@ jest.mock('@/database/simulation', () => ({
 }))
 
 const mockCreatePath = jest.fn()
+const mockReadFile = jest.fn()
 jest.mock('@/lib/tools', () => ({
-  createPath: async () => mockCreatePath()
+  createPath: async () => mockCreatePath(),
+  readFile: async () => mockReadFile()
 }))
 
 const mockRender = jest.fn()
@@ -38,7 +40,11 @@ describe('plugins/local/src/lib', () => {
   beforeEach(() => {
     mockPath.mockReset()
     mockUpdate.mockReset()
+
     mockCreatePath.mockReset()
+    mockReadFile.mockReset()
+    mockReadFile.mockImplementation(() => '{ "test": "test" }')
+
     mockRender.mockReset()
     mockGmsh.mockReset()
     mockFreefem.mockReset()
@@ -108,6 +114,7 @@ describe('plugins/local/src/lib', () => {
     mockFreefem.mockImplementation((path, script, callback) => {
       callback({ pid: 'pid' })
       callback({ data: 'PROCESS VTU FILE run/result.vtu\nreal log' })
+      callback({ data: 'PROCESS DATA FILE run/data.dat\nreal log' })
       callback({ data: 'data' })
       callback({ error: 'data' })
       return 0
@@ -187,8 +194,11 @@ describe('plugins/local/src/lib', () => {
       expect(true).toBe(true)
     }
 
-    // Result error
+    // Result & data error
     mockToThree.mockImplementation(() => -1)
+    mockReadFile.mockImplementation(() => {
+      throw new Error()
+    })
     await Local.computeSimulation('id', 'algorithm', {
       key: { file: {} }
     })

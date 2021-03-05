@@ -10,6 +10,7 @@ jest.mock('next/router', () => ({
   })
 }))
 
+jest.mock('@/components/project/data', () => 'data')
 jest.mock('@/components/project/view', () => 'view')
 jest.mock('@/components/project/simulation', () => {
   const Simulation = () => 'simulation'

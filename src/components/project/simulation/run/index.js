@@ -5,6 +5,8 @@ import {
   EyeOutlined,
   EyeInvisibleOutlined,
   FileTextOutlined,
+  PauseCircleOutlined,
+  PlayCircleOutlined,
   RocketOutlined,
   StopOutlined
 } from '@ant-design/icons'
@@ -42,6 +44,7 @@ const Run = ({ project, simulation }) => {
   const [selectorsCurrent, setSelectorsCurrent] = useState([])
   const [results, setResults] = useState([])
   const [downloading, setDownloading] = useState([])
+  const [play, setPlay] = useState()
 
   const [configuration, setConfiguration] = useState(
     simulation?.scheme?.configuration
@@ -152,13 +155,28 @@ const Run = ({ project, simulation }) => {
                       value: n
                     }))}
                     style={{ width: '100%' }}
+                    value={selectorsCurrent[filterIndex] * multiplicator}
                     onChange={(value) =>
                       onSelectorChange(value, resultIndex, filterIndex)
                     }
                   />
+                  <Button
+                    disabled={play}
+                    icon={<PlayCircleOutlined />}
+                    size="small"
+                    onClick={() => onPlay(resultIndex, filterIndex)}
+                  />
+                  <Button
+                    disabled={!play}
+                    icon={<PauseCircleOutlined />}
+                    size="small"
+                    onClick={() => onPause()}
+                  />
                 </div>
               )
               newSelectors.push(selector)
+
+              // TODO play / pause
 
               // Set result & current iteration
               if (selectorsCurrent[filterIndex] === undefined) {
@@ -210,11 +228,61 @@ const Run = ({ project, simulation }) => {
 
     // Update visualization
     const currentPart = currentConfiguration.part
-    if (currentPart?.number) {
+    if (currentPart?.number !== undefined) {
       const newPart = newResult.files.find(
         (file) => file.name === currentPart.name && file.number === value
       )
       if (newPart) setPart(newPart)
+    }
+  }
+
+  /**
+   * On play
+   * @param {number} index Index
+   * @param {number} filterIndex Filter index
+   */
+  const onPlay = (index, filterIndex) => {
+    const player = setInterval(() => {
+      const value = selectorsCurrent[filterIndex] + 1
+
+      // Selectors
+      setSelectorsCurrent((prev) => {
+        prev[filterIndex] = prev[filterIndex] + 1
+        return prev
+      })
+
+      // Results
+      const newResult = results[index]
+      newResult.current = value
+      setResults([
+        ...results.slice(0, index),
+        newResult,
+        ...results.slice(index + 1)
+      ])
+
+      // Update visualization
+      const currentPart = currentConfiguration.part
+      console.log(currentPart)
+      if (currentPart?.number !== undefined) {
+        const newPart = newResult.files.find(
+          (file) => file.name === currentPart.name && file.number === value
+        )
+        if (newPart) setPart(newPart)
+      }
+    }, 2000)
+
+    setPlay(player)
+  }
+
+  /**
+   * On pause
+   * @param {number} index Index
+   * @param {number} filterIndex Filter index
+   */
+  const onPause = () => {
+    if (play) {
+      clearInterval(play)
+      setPlay()
     }
   }
 

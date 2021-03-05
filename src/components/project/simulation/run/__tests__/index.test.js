@@ -1,5 +1,6 @@
 import Run from '@/components/project/simulation/run'
 import { shallow, mount } from 'enzyme'
+import { act } from 'react-dom/test-utils'
 
 import '@/config/jest/matchMediaMock'
 
@@ -346,7 +347,7 @@ describe('src/components/project/simulation/run', () => {
     wrapper.update()
 
     // Set part
-    wrapper.find('Button').at(7).props().onClick()
+    wrapper.find('Button').at(9).props().onClick()
     wrapper.update()
 
     // On selector change
@@ -354,6 +355,22 @@ describe('src/components/project/simulation/run', () => {
     wrapper.update()
 
     wrapper.find('Select').props().onChange(0, 1, 0)
+    wrapper.update()
+
+    // On play / pause
+    act(() => wrapper.find('Button').at(6).props().onClick())
+    wrapper.update()
+    global.setInterval = (callback) => {
+      callback()
+      return 1
+    }
+    act(() => wrapper.find('Button').at(5).props().onClick())
+    wrapper.update()
+    act(() => wrapper.find('Button').at(5).props().onClick())
+    wrapper.update()
+    act(() => wrapper.find('Button').at(5).props().onClick())
+    wrapper.update()
+    act(() => wrapper.find('Button').at(6).props().onClick())
     wrapper.update()
 
     // With empty filter

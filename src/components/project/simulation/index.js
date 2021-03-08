@@ -72,7 +72,7 @@ const Selector = ({ visible, onOk, onCancel }) => {
   useEffect(() => {
     const allModels = loadModels(user, Models, Plugins)
     setModels(allModels)
-  }, [Models, Plugins])
+  }, [Models, Plugins, JSON.stringify(user)])
 
   /**
    * On select
@@ -142,7 +142,7 @@ const Simulation = ({ project, simulation, type, part, onClose }) => {
   useEffect(() => {
     const allModels = loadModels(user, Models, Plugins)
     setModels(allModels)
-  }, [Models, Plugins])
+  }, [Models, Plugins, JSON.stringify(user)])
 
   // Check model update
   useEffect(() => {

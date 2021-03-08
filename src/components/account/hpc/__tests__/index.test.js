@@ -11,7 +11,17 @@ jest.mock('@/plugins', () => ({
     category: 'HPC',
     key: 'plugin',
     name: 'Test plugin'
+  },
+  TestUnauthorizedPlugin: {
+    category: 'HPC',
+    key: 'unauthorized',
+    name: 'Unauthorized'
   }
+}))
+
+const mockUser = jest.fn()
+jest.mock('@/api/user', () => ({
+  useUser: () => [mockUser()]
 }))
 
 const mockLoading = jest.fn()
@@ -22,6 +32,11 @@ jest.mock('@/api/plugin', () => ({
 let wrapper
 describe('src/components/account/hpc', () => {
   beforeEach(() => {
+    mockUser.mockReset()
+    mockUser.mockImplementation(() => ({
+      authorizedplugins: ['plugin']
+    }))
+
     mockLoading.mockReset()
     mockLoading.mockImplementation(() => false)
 
@@ -42,5 +57,23 @@ describe('src/components/account/hpc', () => {
 
     wrapper = mount(<HPC />)
     expect(wrapper.find('Spin').length).toBe(1)
+  })
+
+  it('without user', () => {
+    wrapper.unmount()
+    mockUser.mockImplementation(() => {})
+
+    wrapper = mount(<HPC />)
+    expect(wrapper).toBeDefined()
+  })
+
+  it('without authorized plugins', () => {
+    wrapper.unmount()
+    mockUser.mockImplementation(() => ({
+      authorizedplugins: []
+    }))
+
+    wrapper = mount(<HPC />)
+    expect(wrapper).toBeDefined()
   })
 })

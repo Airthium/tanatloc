@@ -28,7 +28,10 @@ const HPC = () => {
     const HPCPlugins = Object.keys(Plugins)
       .map((key) => {
         const plugin = Plugins[key]
-        if (user.authorizedplugins?.includes(key) && plugin.category === 'HPC')
+        if (
+          user.authorizedplugins?.includes(plugin.key) &&
+          plugin.category === 'HPC'
+        )
           return plugin
       })
       .filter((p) => p)
@@ -50,7 +53,7 @@ const HPC = () => {
     }
 
     setList(pluginsList)
-  }, [loadingPlugins, user])
+  }, [loadingPlugins, JSON.stringify(user)])
 
   /**
    * Render

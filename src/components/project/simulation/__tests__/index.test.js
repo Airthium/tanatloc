@@ -29,6 +29,11 @@ jest.mock('@/components/assets/notification', () => ({
   Error: () => mockError()
 }))
 
+const mockUser = jest.fn()
+jest.mock('@/api/user', () => ({
+  useUser: () => [mockUser()]
+}))
+
 const mockMutate = jest.fn()
 const mockUpdate = jest.fn()
 jest.mock('@/api/simulation', () => ({
@@ -55,6 +60,7 @@ jest.mock('@/plugins', () => ({
   },
   model: {
     category: 'Model',
+    key: 'model',
     models: [
       {
         name: 'name',
@@ -62,6 +68,10 @@ jest.mock('@/plugins', () => ({
         description: 'pluginDescription'
       }
     ]
+  },
+  unauthorizedModel: {
+    category: 'Model',
+    key: 'unauthorized'
   }
 }))
 
@@ -72,9 +82,17 @@ describe('components/project/simulation', () => {
     mockAddedDiff.mockImplementation(() => ({}))
     mockUpdatedDiff.mockReset()
     mockUpdatedDiff.mockImplementation(() => ({}))
+
     mockMerge.mockReset()
+
+    mockUser.mockReset()
+    mockUser.mockImplementation(() => ({
+      authorizedplugins: ['model']
+    }))
+
     mockMutate.mockReset()
     mockUpdate.mockReset()
+
     wrapper = shallow(<Simulation simulation={{}} />)
   })
 

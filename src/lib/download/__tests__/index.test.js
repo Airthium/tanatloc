@@ -27,6 +27,9 @@ jest.mock('../../tools', () => ({
   listFiles: async () => mockListFiles()
 }))
 
+jest.mock('../summary', () => () => ({ path: 'path', name: 'name' }))
+jest.mock('../pvd', () => () => [{ path: 'path', name: 'name' }])
+
 describe('lib/download', () => {
   beforeEach(() => {
     mockPath.mockReset()

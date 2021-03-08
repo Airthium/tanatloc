@@ -1,5 +1,6 @@
 import getSessionId from '../session'
 
+import UserLib from '@/lib/user'
 import PluginLib from '@/lib/plugin'
 
 import Sentry from '@/lib/sentry'
@@ -12,7 +13,14 @@ export default async (req, res) => {
   switch (req.method) {
     case 'POST':
       try {
-        await PluginLib.add({ id: sessionId }, req.body)
+        const body = req.body
+
+        // Check authorization
+        const user = await UserLib.get(sessionId, ['authorizedplugins'])
+        if (!user.authorizedplugins?.includes(body.plugin.key))
+          throw new Error('Unauthorized')
+
+        await PluginLib.add({ id: sessionId }, body)
         res.status(200).end()
       } catch (err) {
         console.error(err)

@@ -8,6 +8,7 @@ import PluginAPIs from '@/plugins/api'
 
 import SimulationDB from '@/database/simulation'
 
+import User from '../user'
 import Project from '../project'
 import Tools from '../tools'
 
@@ -168,9 +169,10 @@ const del = async ({ id }, simulation) => {
 
 /**
  * Run simulation
+ * @param {Object} user User { id }
  * @param {Object} simulation Simulation { id }
  */
-const run = async ({ id }) => {
+const run = async (user, { id }) => {
   const simulation = await get(id, ['scheme'])
 
   // Global
@@ -199,6 +201,11 @@ const run = async ({ id }) => {
 
   // Find plugin
   const plugin = PluginAPIs[configuration.run.cloudServer.key]
+
+  // Check authorized
+  const userData = await User.get(user.id, ['authorizedplugins'])
+  if (!userData.authorizedplugins?.includes(plugin.key))
+    throw new Error('Unauthorized')
 
   // Compute
   plugin

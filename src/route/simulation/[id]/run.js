@@ -53,7 +53,7 @@ export default async (req, res) => {
   if (req.method === 'GET') {
     // Run simulation
     try {
-      await SimulationLib.run({ id })
+      await SimulationLib.run({ id: sessionId }, { id })
       res.status(200).json({ ok: true })
     } catch (err) {
       console.error(err)

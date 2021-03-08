@@ -176,8 +176,6 @@ const Run = ({ project, simulation }) => {
               )
               newSelectors.push(selector)
 
-              // TODO play / pause
-
               // Set result & current iteration
               if (selectorsCurrent[filterIndex] === undefined) {
                 const newSelectorsCurrent = [...selectorsCurrent]

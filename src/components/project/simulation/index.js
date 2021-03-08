@@ -41,7 +41,7 @@ const loadModels = (user, models, plugins) => {
 
   Object.keys(plugins).forEach((key) => {
     if (
-      user.authorizedplugins?.includes(key) &&
+      user?.authorizedplugins?.includes(key) &&
       plugins[key].category === 'Model'
     )
       allModels = [...allModels, ...plugins[key].models]

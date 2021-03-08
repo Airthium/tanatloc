@@ -28,7 +28,8 @@ const LabelHelper = (text, size = 512, fontColor = 'black', fontSize = 512) => {
   // Label
   const material = new SpriteMaterial({
     map: texture,
-    transparent: true
+    transparent: true,
+    depthWrite: false
   })
   const label = new Sprite(material)
   label.type = 'LabelHelper'

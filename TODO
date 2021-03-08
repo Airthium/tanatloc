@@ -1,6 +1,3 @@
-ThreeJS:
-- rendering order for sprites
-
 Simulation:
 - weak coupling
 
@@ -15,4 +12,7 @@ Workspace:
 - archive
 
 Run:
-- Use file for logs (separate gmsh / Freefem for rescale)
+- Use file for logs (separate gmsh / Freefem for rescale) ?
+
+Plugins:
+- Management for authorizedplugins

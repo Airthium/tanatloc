@@ -260,7 +260,6 @@ const Run = ({ project, simulation }) => {
 
       // Update visualization
       const currentPart = currentConfiguration.part
-      console.log(currentPart)
       if (currentPart?.number !== undefined) {
         const newPart = newResult.files.find(
           (file) => file.name === currentPart.name && file.number === value

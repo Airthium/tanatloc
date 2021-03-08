@@ -9,6 +9,9 @@ import storage from '@/config/storage'
 import Simulation from '@/lib/simulation'
 import Tools from '@/lib/tools'
 
+import createSummary from './summary'
+import createPVD from './pvd'
+
 /**
  * Create archive stream
  * @param {Object} simulation Simulation
@@ -27,48 +30,21 @@ const createArchiveStream = async (simulation) => {
     'archive.zip'
   )
 
-  const summaryName = path.join(
-    storage.SIMULATION,
-    simulation.id,
-    'run',
-    'summary.txt'
-  )
-
   // Get result files
   const filesDirents = await Tools.listFiles(resultPath)
   const files = filesDirents
     .filter((dirent) => dirent.isFile())
     .map((dirent) => dirent.name)
 
-  // Simulation summary
-  const simulationScheme = await Simulation.get(simulation.id, ['scheme'])
-  const summary = fs.createWriteStream(summaryName)
-  Object.keys(simulationScheme.scheme.configuration).forEach((key) => {
-    const config = simulationScheme.scheme.configuration[key]
-    if (key === 'part') return
-    if (key === 'geometry')
-      summary.write('Geometry: ' + config.file.name + '\n')
-    if (key === 'parameters') {
-      summary.write('Parameters:\n')
-      Object.keys(config).forEach((subKey) => {
-        if (subKey === 'index' || subKey === 'title' || subKey === 'done')
-          return
-        else {
-          summary.write('- ' + config[subKey].label + '\n')
-          config[subKey].children.forEach((child) => {
-            summary.write(
-              '  - ' +
-                child.label +
-                ': ' +
-                (child.value || child.default) +
-                '\n'
-            )
-          })
-        }
-      })
-    }
-  })
-  summary.end()
+  // Summary
+  const simulationScheme = await Simulation.get(simulation.id, [
+    'name',
+    'scheme'
+  ])
+  const summary = createSummary(simulationScheme)
+
+  // PVD files
+  const pvdFiles = createPVD(simulationScheme, files)
 
   // Create zip
   const output = fs.createWriteStream(archiveName)
@@ -85,7 +61,10 @@ const createArchiveStream = async (simulation) => {
         name: path.join('result', file)
       })
     })
-    archive.append(fs.createReadStream(summaryName), { name: 'summary.txt' })
+    archive.append(fs.createReadStream(summary.path), { name: summary.name })
+    pvdFiles.forEach((file) => {
+      archive.append(fs.createReadStream(file.path), { name: file.name })
+    })
 
     output.on('close', resolve)
 

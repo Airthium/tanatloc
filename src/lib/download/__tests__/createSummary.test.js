@@ -1,4 +1,4 @@
-import createSummary from '../summary'
+import createSummary from '../createSummary'
 
 const mockPath = jest.fn()
 jest.mock('path', () => ({

@@ -1,4 +1,4 @@
-import createPVD from '../pvd'
+import createPVD from '../createPVD'
 
 const mockPath = jest.fn()
 jest.mock('path', () => ({

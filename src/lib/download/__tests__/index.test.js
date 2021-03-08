@@ -27,8 +27,8 @@ jest.mock('../../tools', () => ({
   listFiles: async () => mockListFiles()
 }))
 
-jest.mock('../summary', () => () => ({ path: 'path', name: 'name' }))
-jest.mock('../pvd', () => () => [{ path: 'path', name: 'name' }])
+jest.mock('../createSummary', () => () => ({ path: 'path', name: 'name' }))
+jest.mock('../createPVD', () => () => [{ path: 'path', name: 'name' }])
 
 describe('lib/download', () => {
   beforeEach(() => {

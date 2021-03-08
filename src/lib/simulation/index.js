@@ -204,8 +204,29 @@ const run = async (user, { id }) => {
 
   // Check authorized
   const userData = await User.get(user.id, ['authorizedplugins'])
-  if (!userData.authorizedplugins?.includes(plugin.key))
-    throw new Error('Unauthorized')
+  if (!userData.authorizedplugins?.includes(plugin.key)) {
+    const err = { message: 'Unauthorized' }
+    console.error(err)
+
+    configuration.run = {
+      ...configuration.run,
+      error: err
+    }
+    update({ id }, [
+      {
+        key: 'scheme',
+        type: 'json',
+        method: 'set',
+        path: ['configuration', 'run'],
+        value: {
+          ...configuration.run,
+          error: err
+        }
+      }
+    ])
+
+    return
+  }
 
   // Compute
   plugin

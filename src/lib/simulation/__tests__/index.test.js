@@ -11,6 +11,7 @@ const mockCompute = jest.fn()
 const mockStop = jest.fn()
 jest.mock('@/plugins/api', () => ({
   key: {
+    key: 'key',
     computeSimulation: async () => mockCompute(),
     stop: async () => mockStop()
   }
@@ -25,6 +26,11 @@ jest.mock('@/database/simulation', () => ({
   get: async () => mockGet(),
   update: async () => mockUpdate(),
   del: async () => mockDelete()
+}))
+
+const mockUserGet = jest.fn()
+jest.mock('../../user', () => ({
+  get: async () => mockUserGet()
 }))
 
 const mockUpdateProject = jest.fn()
@@ -46,15 +52,22 @@ jest.mock('../../tools', () => ({
 describe('src/lib/simulation', () => {
   beforeEach(() => {
     mockPath.mockReset()
+
     mockAdd.mockReset()
     mockGet.mockReset()
     mockUpdate.mockReset()
     mockDelete.mockReset()
+
+    mockUserGet.mockReset()
+    mockUserGet.mockImplementation(() => ({}))
+
     mockUpdateProject.mockReset()
+
     mockWriteFile.mockReset()
     mockConvert.mockReset()
     mockRemoveFile.mockReset()
     mockRemoveDirectory.mockReset()
+
     mockCompute.mockReset()
     mockStop.mockReset()
   })
@@ -378,7 +391,11 @@ describe('src/lib/simulation', () => {
         }
       }
     }))
-    await Simulation.run({})
+    mockUserGet.mockImplementation(() => ({
+      authorizedplugins: ['key']
+    }))
+
+    await Simulation.run({}, {})
     expect(mockPath).toHaveBeenCalledTimes(0)
     expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockGet).toHaveBeenCalledTimes(1)
@@ -396,11 +413,28 @@ describe('src/lib/simulation', () => {
     mockCompute.mockImplementation(() => {
       throw new Error()
     })
-    await Simulation.run({})
+    await Simulation.run({}, {})
     expect(mockPath).toHaveBeenCalledTimes(0)
     expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockGet).toHaveBeenCalledTimes(2)
     expect(mockUpdate).toHaveBeenCalledTimes(2)
+    expect(mockDelete).toHaveBeenCalledTimes(0)
+    expect(mockUpdateProject).toHaveBeenCalledTimes(0)
+    expect(mockWriteFile).toHaveBeenCalledTimes(0)
+    expect(mockConvert).toHaveBeenCalledTimes(0)
+    expect(mockRemoveFile).toHaveBeenCalledTimes(0)
+    expect(mockRemoveDirectory).toHaveBeenCalledTimes(0)
+    expect(mockCompute).toHaveBeenCalledTimes(2)
+
+    // Unauthorized
+    mockUserGet.mockImplementation(() => ({
+      authorizedplugins: []
+    }))
+    await Simulation.run({}, {})
+    expect(mockPath).toHaveBeenCalledTimes(0)
+    expect(mockAdd).toHaveBeenCalledTimes(0)
+    expect(mockGet).toHaveBeenCalledTimes(3)
+    expect(mockUpdate).toHaveBeenCalledTimes(4)
     expect(mockDelete).toHaveBeenCalledTimes(0)
     expect(mockUpdateProject).toHaveBeenCalledTimes(0)
     expect(mockWriteFile).toHaveBeenCalledTimes(0)

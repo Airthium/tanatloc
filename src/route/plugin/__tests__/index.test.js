@@ -3,6 +3,11 @@ import plugin from '../'
 const mockSession = jest.fn()
 jest.mock('../../session', () => () => mockSession())
 
+const mockUserGet = jest.fn()
+jest.mock('@/lib/user', () => ({
+  get: async () => mockUserGet()
+}))
+
 const mockAdd = jest.fn()
 const mockGetByUser = jest.fn()
 const mockUpdate = jest.fn()
@@ -36,6 +41,9 @@ describe('src/route/plugin', () => {
     mockSession.mockReset()
     mockSession.mockImplementation(() => false)
 
+    mockUserGet.mockReset()
+    mockUserGet.mockImplementation(() => ({}))
+
     mockAdd.mockReset()
     mockGetByUser.mockReset()
     mockGetByUser.mockImplementation(() => [])
@@ -61,16 +69,33 @@ describe('src/route/plugin', () => {
 
   it('POST', async () => {
     req.method = 'POST'
+    req.body = { plugin: { key: 'key' } }
 
     mockSession.mockImplementation(() => true)
 
+    // Plugin not authorized
     await plugin(req, res)
     expect(mockSession).toHaveBeenCalledTimes(1)
+    expect(mockUserGet).toHaveBeenCalledTimes(1)
+    expect(mockAdd).toHaveBeenCalledTimes(0)
+    expect(mockGetByUser).toHaveBeenCalledTimes(0)
+    expect(mockUpdate).toHaveBeenCalledTimes(0)
+    expect(mockDel).toHaveBeenCalledTimes(0)
+    expect(mockError).toHaveBeenCalledTimes(1)
+    expect(response).toEqual({ error: true, message: 'Unauthorized' })
+
+    // Plugin authorized
+    mockUserGet.mockImplementation(() => ({
+      authorizedplugins: ['key']
+    }))
+    await plugin(req, res)
+    expect(mockSession).toHaveBeenCalledTimes(2)
+    expect(mockUserGet).toHaveBeenCalledTimes(2)
     expect(mockAdd).toHaveBeenCalledTimes(1)
     expect(mockGetByUser).toHaveBeenCalledTimes(0)
     expect(mockUpdate).toHaveBeenCalledTimes(0)
     expect(mockDel).toHaveBeenCalledTimes(0)
-    expect(mockError).toHaveBeenCalledTimes(0)
+    expect(mockError).toHaveBeenCalledTimes(1)
     expect(response).toBe('end')
 
     // Error
@@ -78,12 +103,13 @@ describe('src/route/plugin', () => {
       throw new Error()
     })
     await plugin(req, res)
-    expect(mockSession).toHaveBeenCalledTimes(2)
+    expect(mockSession).toHaveBeenCalledTimes(3)
+    expect(mockUserGet).toHaveBeenCalledTimes(3)
     expect(mockAdd).toHaveBeenCalledTimes(2)
     expect(mockGetByUser).toHaveBeenCalledTimes(0)
     expect(mockUpdate).toHaveBeenCalledTimes(0)
     expect(mockDel).toHaveBeenCalledTimes(0)
-    expect(mockError).toHaveBeenCalledTimes(1)
+    expect(mockError).toHaveBeenCalledTimes(2)
     expect(response).toEqual({ error: true, message: '' })
   })
 

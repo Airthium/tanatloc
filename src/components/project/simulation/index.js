@@ -17,6 +17,7 @@ import Parameters from './parameters'
 import BoundaryConditions from './boundaryConditions'
 import Run from './run'
 
+import UserAPI from '@/api/user'
 import SimulationAPI from '@/api/simulation'
 
 import Models from '@/models'
@@ -31,14 +32,18 @@ const errors = {
 
 /**
  * Load models
+ * @param {Object} user User
  * @param {Object} models Models
  * @param {Object} plugins Plugins
  */
-const loadModels = (models, plugins) => {
+const loadModels = (user, models, plugins) => {
   let allModels = models
 
   Object.keys(plugins).forEach((key) => {
-    if (plugins[key].category === 'Model')
+    if (
+      user.authorizedplugins?.includes(key) &&
+      plugins[key].category === 'Model'
+    )
       allModels = [...allModels, ...plugins[key].models]
   })
 
@@ -55,6 +60,9 @@ const Selector = ({ visible, onOk, onCancel }) => {
   const [loading, setLoading] = useState(false)
   const [models, setModels] = useState([])
 
+  // Data
+  const [user] = UserAPI.useUser()
+
   // MatJax
   useEffect(() => {
     window.MathJax?.typeset()
@@ -62,7 +70,7 @@ const Selector = ({ visible, onOk, onCancel }) => {
 
   // Models
   useEffect(() => {
-    const allModels = loadModels(Models, Plugins)
+    const allModels = loadModels(user, Models, Plugins)
     setModels(allModels)
   }, [Models, Plugins])
 
@@ -125,13 +133,14 @@ const Simulation = ({ project, simulation, type, part, onClose }) => {
   const [models, setModels] = useState([])
 
   // Data
+  const [user] = UserAPI.useUser()
   const [, { mutateOneSimulation }] = SimulationAPI.useSimulations(
     project?.simulations
   )
 
   // Models
   useEffect(() => {
-    const allModels = loadModels(Models, Plugins)
+    const allModels = loadModels(user, Models, Plugins)
     setModels(allModels)
   }, [Models, Plugins])
 

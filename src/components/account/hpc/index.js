@@ -5,6 +5,7 @@ import Plugin from './plugin'
 
 import Plugins from '@/plugins'
 
+import UserAPI from '@/api/user'
 import PluginAPI from '@/api/plugin'
 
 /**
@@ -15,31 +16,41 @@ const HPC = () => {
   const [list, setList] = useState([])
 
   // Data
+  const [user] = UserAPI.useUser()
   const [, { loadingPlugins }] = PluginAPI.usePlugins()
 
   // Plugins list
   useEffect(() => {
     if (loadingPlugins) return
+    if (!user) return
 
-    // HPC only
+    // HPC & authorized only
     const HPCPlugins = Object.keys(Plugins)
       .map((key) => {
         const plugin = Plugins[key]
-        if (plugin.category === 'HPC') return plugin
+        if (user.authorizedplugins?.includes(key) && plugin.category === 'HPC')
+          return plugin
       })
       .filter((p) => p)
 
-    // List
-    const pluginsList = HPCPlugins.map((plugin) => {
-      return (
-        <Card key={plugin.key} title={plugin.name}>
-          <Plugin plugin={plugin} />
-        </Card>
+    let pluginsList
+    if (HPCPlugins.length) {
+      // List
+      pluginsList = HPCPlugins.map((plugin) => {
+        return (
+          <Card key={plugin.key} title={plugin.name}>
+            <Plugin plugin={plugin} />
+          </Card>
+        )
+      })
+    } else {
+      pluginsList = (
+        <Card>You do not have access to any HPC plugin. Request it.</Card>
       )
-    })
+    }
 
     setList(pluginsList)
-  }, [loadingPlugins])
+  }, [loadingPlugins, user])
 
   /**
    * Render

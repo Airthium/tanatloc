@@ -67,8 +67,8 @@ int[int] intrfc=[<%=interfaceLabels-%>];
 string jobname = "jobname";
 real kappa1 = <%= parameters.kappa.children[0].value || parameters.kappa.children[0].default -%>;
 int nrestart = <%= parameters.nrestart.children[0].value || parameters.nrestart.children[0].default -%>;
-real volmag1 = <%= parameters.volume.children[0].value || parameters.volume.children[0].default -%>; // 1.1
-real volmag0 = <%= parameters.volume.children[1].value || parameters.volume.children[1].default -%>; // 1.012
+real volmag0 = <%= parameters.volume.children[0].value || parameters.volume.children[0].default -%>; // 1.012 
+real volmag1 = <%= parameters.volume.children[1].value || parameters.volume.children[1].default -%>; // 1.1
 int countsweep = <%= parameters.countsweep.children[0].value || parameters.countsweep.children[0].default -%>;
 int continueflag =  <%= parameters.continueflag.children[0].value || parameters.continueflag.children[0].default -%>;
 //
@@ -228,8 +228,8 @@ if (mpirank == 0) {
   fout << "** kappa = " << kappa1 << endl;    // 1e-3
   fout << ":: shrinkinterior = " << shrinkinterior << endl;
   fout << "** nrestart = " << nrestart << endl;       // 0
-  fout << ":: volmag1 = " << volmag1 << endl;         // 1.1
   fout << ":: volmag0 = " << volmag0 << endl;         // 1.012
+  fout << ":: volmag1 = " << volmag1 << endl;         // 1.1
   fout << "** countsweep = " << countsweep << endl;   // 100
   fout << "** countbisect = " << countbisect << endl; // 1
   fout << ":: refine0 = " << refine0 << endl;         // 5

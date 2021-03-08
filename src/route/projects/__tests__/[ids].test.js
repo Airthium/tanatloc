@@ -1,10 +1,10 @@
 import ids from '../[ids]'
 
 const mockSession = jest.fn()
-jest.mock('../../session', () => () => mockSession())
+jest.mock('../../session', () => async () => mockSession())
 
 const mockAuth = jest.fn()
-jest.mock('../../auth', () => () => mockAuth())
+jest.mock('../../auth', () => async () => mockAuth())
 
 const mockGet = jest.fn()
 jest.mock('@/lib/project', () => ({

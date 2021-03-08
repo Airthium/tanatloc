@@ -373,6 +373,15 @@ describe('src/components/project/simulation/run', () => {
     act(() => wrapper.find('Button').at(6).props().onClick())
     wrapper.update()
 
+    // Set part
+    wrapper.find('Button').at(7).props().onClick()
+    wrapper.update()
+
+    act(() => wrapper.find('Button').at(5).props().onClick())
+    wrapper.update()
+    act(() => wrapper.find('Button').at(6).props().onClick())
+    wrapper.update()
+
     // With empty filter
     wrapper.unmount()
     mockSimulation.mockImplementation(() => ({

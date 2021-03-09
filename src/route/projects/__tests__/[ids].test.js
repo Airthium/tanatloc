@@ -11,6 +11,11 @@ jest.mock('@/lib/project', () => ({
   get: async () => mockGet()
 }))
 
+const mockGetWorkspace = jest.fn()
+jest.mock('@/lib/workspace', () => ({
+  get: async () => mockGetWorkspace()
+}))
+
 const mockError = jest.fn()
 jest.mock('@/lib/sentry', () => ({
   captureException: () => mockError()
@@ -42,6 +47,9 @@ describe('src/route/projects/ids', () => {
       title: 'title'
     }))
 
+    mockGetWorkspace.mockReset()
+    mockGetWorkspace.mockImplementation(() => ({}))
+
     mockError.mockReset()
 
     req = {
@@ -56,6 +64,7 @@ describe('src/route/projects/ids', () => {
     expect(mockSession).toHaveBeenCalledTimes(1)
     expect(mockAuth).toHaveBeenCalledTimes(0)
     expect(mockGet).toHaveBeenCalledTimes(0)
+    expect(mockGetWorkspace).toHaveBeenCalledTimes(0)
     expect(mockError).toHaveBeenCalledTimes(0)
     expect(response).toBe(undefined)
   })
@@ -71,6 +80,7 @@ describe('src/route/projects/ids', () => {
     expect(mockSession).toHaveBeenCalledTimes(1)
     expect(mockAuth).toHaveBeenCalledTimes(2)
     expect(mockGet).toHaveBeenCalledTimes(2)
+    expect(mockGetWorkspace).toHaveBeenCalledTimes(2)
     expect(mockError).toHaveBeenCalledTimes(0)
     expect(response).toEqual({
       projects: [
@@ -89,6 +99,7 @@ describe('src/route/projects/ids', () => {
     expect(mockSession).toHaveBeenCalledTimes(1)
     expect(mockAuth).toHaveBeenCalledTimes(0)
     expect(mockGet).toHaveBeenCalledTimes(0)
+    expect(mockGetWorkspace).toHaveBeenCalledTimes(0)
     expect(mockError).toHaveBeenCalledTimes(0)
     expect(response).toEqual({ projects: [] })
 
@@ -98,6 +109,7 @@ describe('src/route/projects/ids', () => {
     expect(mockSession).toHaveBeenCalledTimes(2)
     expect(mockAuth).toHaveBeenCalledTimes(2)
     expect(mockGet).toHaveBeenCalledTimes(2)
+    expect(mockGetWorkspace).toHaveBeenCalledTimes(2)
     expect(mockError).toHaveBeenCalledTimes(0)
     expect(response).toEqual({ projects: [] })
 
@@ -107,6 +119,7 @@ describe('src/route/projects/ids', () => {
     expect(mockSession).toHaveBeenCalledTimes(3)
     expect(mockAuth).toHaveBeenCalledTimes(4)
     expect(mockGet).toHaveBeenCalledTimes(4)
+    expect(mockGetWorkspace).toHaveBeenCalledTimes(4)
     expect(mockError).toHaveBeenCalledTimes(0)
     expect(response).toEqual({
       projects: [
@@ -123,6 +136,7 @@ describe('src/route/projects/ids', () => {
     expect(mockSession).toHaveBeenCalledTimes(4)
     expect(mockAuth).toHaveBeenCalledTimes(4)
     expect(mockGet).toHaveBeenCalledTimes(6)
+    expect(mockGetWorkspace).toHaveBeenCalledTimes(4)
     expect(mockError).toHaveBeenCalledTimes(0)
     expect(response).toEqual({ projects: [] })
 
@@ -132,6 +146,7 @@ describe('src/route/projects/ids', () => {
     expect(mockSession).toHaveBeenCalledTimes(5)
     expect(mockAuth).toHaveBeenCalledTimes(4)
     expect(mockGet).toHaveBeenCalledTimes(6)
+    expect(mockGetWorkspace).toHaveBeenCalledTimes(4)
     expect(mockError).toHaveBeenCalledTimes(1)
     expect(response).toEqual({
       error: true,
@@ -148,6 +163,7 @@ describe('src/route/projects/ids', () => {
     expect(mockSession).toHaveBeenCalledTimes(1)
     expect(mockAuth).toHaveBeenCalledTimes(0)
     expect(mockGet).toHaveBeenCalledTimes(0)
+    expect(mockGetWorkspace).toHaveBeenCalledTimes(0)
     expect(mockError).toHaveBeenCalledTimes(1)
     expect(response).toEqual({
       error: true,

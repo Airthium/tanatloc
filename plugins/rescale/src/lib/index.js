@@ -1,9 +1,6 @@
 import path from 'path'
-import FormData from 'form-data'
 
 import storage from '@/config/storage'
-
-import SimulationDB from '@/database/simulation'
 
 import Template from '@/lib/template'
 import Tools from '@/lib/tools'
@@ -11,6 +8,21 @@ import Tools from '@/lib/tools'
 import Services from '@/services'
 
 import call from './call'
+import {
+  getFreeFEM,
+  updateTasks,
+  uploadFile,
+  uploadFiles,
+  createJob,
+  submitJob,
+  getStatus,
+  getInRunFiles,
+  getInRunFile,
+  getFiles,
+  getFile,
+  getInRunOutputs,
+  getOutputs
+} from './tools'
 
 // Plugin key
 const key = 'rescale'
@@ -47,41 +59,17 @@ const init = async (configuration) => {
 }
 
 /**
- * Get FreeFEM
- * @param {Object} configuration Configuration
- */
-const getFreeFEM = async (configuration) => {
-  // Get "analyses"
-  const analyses = await call({
-    platform: configuration.platform.value,
-    token: configuration.token.value,
-    route: 'analyses/'
-  })
-
-  return analyses.results.find((analysis) => analysis.code === 'freefem')
-}
-
-/**
- * Update tasks
- * @param {string} id Id
- * @param {Array} tasks Tasks
- */
-const updateTasks = (id, tasks) => {
-  SimulationDB.update({ id }, [
-    {
-      key: 'tasks',
-      value: tasks
-    }
-  ])
-}
-
-/**
  * Compute simulation
  * @param {Object} simulation Simulation { id }
  * @param {string} algorithm Algorithm
  * @param {Object} configuration Configuration
  */
 const computeSimulation = async ({ id }, algorithm, configuration) => {
+  // Path
+  const simulationPath = path.join(storage.SIMULATION, id)
+  const resultPath = 'result'
+  const dataPath = 'data'
+
   // Create tasks
   const tasks = []
   const simulationTask = {
@@ -90,48 +78,48 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
     status: 'wait'
   }
   tasks.push(simulationTask)
+  updateTasks(id, tasks)
 
   try {
-    // Path
-    const simulationPath = path.join(storage.SIMULATION, id)
-
     // Cloud configuration
     const cloudConfiguration = configuration.run.cloudServer.configuration
     const cloudParameters = configuration.run.cloudServer.inUseConfiguration
 
+    // Result & data directories
+    await Tools.createPath(path.join(simulationPath, 'run', resultPath))
+    await Tools.createPath(path.join(simulationPath, 'run', dataPath))
+
     // Command
     let command = 'mkdir -p result && mkdir -p data '
 
-    // Update tasks
+    // Upload geometries
+    simulationTask.log += 'Uploading geometry...\n'
     updateTasks(id, tasks)
 
-    // Upload geometries
-    const geometries = []
-    await Promise.all(
-      Object.keys(configuration).map(async (ckey) => {
-        if (configuration[ckey].meshable !== undefined) {
-          const geometry = configuration[ckey]
-
-          // Task
-          simulationTask.log += 'Uploading geometry...\n'
-          updateTasks(id, tasks)
-
-          // Upload
-          const file = await uploadFile(
-            cloudConfiguration,
-            { id },
-            path.join(ckey, geometry.file.fileName)
-          )
-
-          // Save
-          geometries.push(file)
+    const geometryFiles = Object.keys(configuration).map((ckey) => {
+      if (configuration[ckey].meshable !== undefined) {
+        const geometry = configuration[ckey]
+        return {
+          name: geometry.file.name,
+          path: path.join(storage.SIMULATION, id, ckey, geometry.file.fileName)
         }
-      })
+      }
+    })
+
+    const geometries = await uploadFiles(
+      cloudConfiguration,
+      geometryFiles.filter((f) => f),
+      simulationTask
     )
 
-    // Meshing
-    const geoFiles = []
-    await Promise.all(
+    simulationTask.log += '\n'
+    updateTasks(id, tasks)
+
+    // Gmsh scripts
+    simulationTask.log += 'Build meshing scripts...\n'
+    updateTasks(id, tasks)
+
+    const gmshScripts = await Promise.all(
       Object.keys(configuration).map(async (ckey) => {
         if (configuration[ckey].meshable) {
           const geometry = configuration[ckey]
@@ -140,6 +128,10 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
           const meshFile = geometry.file.fileName + '.msh'
           const meshPath = geometry.file.originPath + '_mesh'
           const partPath = geometry.file.fileName
+
+          // Task
+          simulationTask.log += ' - ' + geoFile + '\n'
+          updateTasks(id, tasks)
 
           // Check refinements
           const refinements = []
@@ -189,14 +181,6 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
             }
           )
 
-          // Upload script
-          const geo = await uploadFile(
-            cloudConfiguration,
-            { id },
-            path.join(meshPath, geoFile)
-          )
-          geoFiles.push(geo)
-
           // Update command
           command +=
             '&& gmsh -3 ' +
@@ -205,16 +189,7 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
             meshFile +
             ' -format msh2 -clcurv 10 '
 
-          // // // Task
-          // // const meshingTask = {
-          // //   type: 'mesh',
-          // //   log: '',
-          // //   status: 'wait'
-          // // }
-          // // tasks.push(meshingTask)
-          // // updateTasks(id, tasks)
-
-          // Mesh
+          // Update configuration
           const mesh = {
             fileName: meshFile,
             originPath: 'geometry_mesh',
@@ -222,19 +197,36 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
             part: 'part.json',
             partPath: path.join(meshPath, partPath)
           }
-
-          // // // Task
-          // // meshingTask.status = 'finish'
-          // // meshingTask.file = mesh
-          // // updateTasks(id, tasks)
-
-          // Save mesh
           configuration[ckey].mesh = mesh
+
+          return {
+            name: geoFile,
+            path: path.join(storage.SIMULATION, id, meshPath, geoFile)
+          }
         }
       })
     )
 
-    // Build the simulation script
+    simulationTask.log += '\n'
+    updateTasks(id, tasks)
+
+    // Upload gmsh scripts
+    simulationTask.log += 'Uploading Gmsh scripts...\n'
+    updateTasks(id, tasks)
+
+    const meshes = await uploadFiles(
+      cloudConfiguration,
+      gmshScripts.filter((f) => f),
+      simulationTask
+    )
+
+    simulationTask.log += '\n'
+    updateTasks(id, tasks)
+
+    // Build the FreeFEM script
+    simulationTask.log += 'Build FreeFEM script...\n'
+    updateTasks(id, tasks)
+
     await Template.render(
       algorithm,
       {
@@ -252,19 +244,20 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
       }
     )
 
-    await Tools.createPath(path.join(simulationPath, 'run/result'))
-    await Tools.createPath(path.join(simulationPath, 'run/data'))
+    simulationTask.log += '\n'
+    updateTasks(id, tasks)
 
-    // Upload files
-    // Task
-    simulationTask.log += 'Uploading script...\n'
+    // Upload FreeFEM script
+    simulationTask.log += 'Uploading FreeFEM script...\n'
     updateTasks(id, tasks)
 
     const edp = await uploadFile(
       cloudConfiguration,
-      { id },
-      path.join('run', id + '.edp')
+      path.join(storage.SIMULATION, id, 'run', id + '.edp')
     )
+
+    simulationTask.log += '\n'
+    updateTasks(id, tasks)
 
     // Update command
     const numberOfCores = cloudParameters.numberOfCores.value
@@ -274,29 +267,43 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
     // Create job
     simulationTask.log += 'Create job...\n'
     updateTasks(id, tasks)
+
     const jobId = await createJob(
       algorithm,
       cloudConfiguration,
       cloudParameters,
       command,
       geometries,
-      geoFiles,
+      meshes,
       edp
     )
+
+    simulationTask.log += ' - Job id: ' + jobId + '\n'
+    updateTasks(id, tasks)
 
     // Submit job
     simulationTask.log += 'Submit job...\n'
     simulationTask.pid = jobId
     updateTasks(id, tasks)
+
     await submitJob(cloudConfiguration, jobId)
+
+    simulationTask.log += '\n'
+    updateTasks(id, tasks)
+
+    // Waiting for start
     simulationTask.log += 'Starting cluster...\n'
     updateTasks(id, tasks)
 
-    // log & results
+    // Monitoring
     let status
     const currentLog = simulationTask.log
     while (status !== 'Completed') {
       status = await getStatus(cloudConfiguration, jobId)
+
+      const results = []
+      const datas = []
+      const warnings = []
 
       if (status === 'Executing') {
         // Check in-run files
@@ -306,12 +313,25 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
         const logFile = inRunFiles.find((f) => f.path === logFileName)
         if (logFile) {
           const log = await getInRunFile(cloudConfiguration, logFile)
-          simulationTask.log = currentLog + log.replace(/\[.*\]: /g, '')
-        }
 
-        // TODO
-        // Warning: be sure that the files are full and finish
-        // Results
+          // Check for results or data
+          const realLog = await getInRunOutputs(
+            cloudConfiguration,
+            log,
+            inRunFiles,
+            results,
+            datas,
+            warnings,
+            simulationPath,
+            path.join('run', resultPath),
+            path.join('run', dataPath),
+            simulationTask
+          )
+
+          // Log
+          simulationTask.log =
+            currentLog + realLog.replace(/\[.*\]: /g, '') + warnings.join('\n')
+        }
       } else if (status === 'Completed') {
         const files = await getFiles(cloudConfiguration, jobId)
 
@@ -319,82 +339,31 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
         const logFile = files.find((f) => f.relativePath === logFileName)
         if (logFile) {
           const log = await getFile(cloudConfiguration, logFile.id)
-          simulationTask.log = currentLog + log.replace(/\[.*\]: /g, '')
+
+          // Check for results or data
+          const realLog = await getOutputs(
+            cloudConfiguration,
+            log,
+            files,
+            results,
+            datas,
+            warnings,
+            simulationPath,
+            path.join('run', resultPath),
+            path.join('run', dataPath),
+            simulationTask
+          )
+
+          // Log
+          simulationTask.log =
+            currentLog + realLog.replace(/\[.*\]: /g, '') + warnings.join('\n')
         }
-
-        // Results
-        const resultFiles = files.filter((f) =>
-          f.relativePath.includes('result/')
-        )
-        await Promise.all(
-          resultFiles.map(async (resultFile) => {
-            const result = await getFile(cloudConfiguration, resultFile.id)
-            const fileName = resultFile.relativePath
-            await Tools.writeFile(
-              path.join(storage.SIMULATION, id, 'run'),
-              fileName,
-              result
-            )
-
-            // Convert VTU
-            if (fileName.includes('.vtu')) {
-              const resFile = fileName
-              const partPath = resFile.replace('.vtu')
-
-              const results = []
-
-              try {
-                const resCode = await Services.toThree(
-                  simulationPath,
-                  path.join('run', resFile),
-                  path.join('run', partPath),
-                  ({ error: resError, data: resData }) => {
-                    if (resError) {
-                      simulationTask.log += 'Warning: ' + resError
-                      updateTasks(id, tasks)
-                    }
-
-                    if (resData) {
-                      try {
-                        const jsonData = JSON.parse(resData)
-                        results.push(jsonData)
-                      } catch (err) {
-                        simulationTask.log += 'Warning: ' + err.message
-                        updateTasks(id, tasks)
-                      }
-                    }
-                  }
-                )
-
-                if (resCode !== 0) {
-                  simulationTask.log +=
-                    'Warning: Result converting process failed. Code ' + resCode
-                  updateTasks(id, tasks)
-                } else {
-                  simulationTask.files = [
-                    ...(simulationTask.files || []),
-                    ...results.map((r) => ({
-                      fileName: resFile.replace('result/', ''),
-                      originPath: 'run/result',
-                      name: r.name,
-                      part: 'part.json',
-                      partPath: r.path
-                    }))
-                  ]
-
-                  updateTasks(id, tasks)
-                }
-              } catch (err) {
-                simulationTask.log += 'Warning: ' + err.message
-                updateTasks(id, tasks)
-              }
-            }
-          })
-        )
       }
 
       // Task
       updateTasks(id, tasks)
+
+      // Wait
       await new Promise((resolve) => {
         setTimeout(resolve, updateDelay)
       })
@@ -411,217 +380,6 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
 
     throw err
   }
-}
-
-/**
- * Upload file
- * @param {Object} configuration Configuration
- * @param {Object} simulation Simulation { id }
- * @param {string} fileName File name
- */
-const uploadFile = async (configuration, { id }, fileName) => {
-  const filePath = path.join(storage.SIMULATION, id, fileName)
-  const fileContent = await Tools.readFile(filePath)
-
-  const formData = new FormData()
-  formData.append('file', fileContent.toString(), fileName)
-
-  const file = await call({
-    platform: configuration.platform.value,
-    token: configuration.token.value,
-    route: 'files/contents/',
-    method: 'POST',
-    body: formData
-  })
-
-  // RESCALE API BUG
-  // response content type is text/plain but the correct type is application/json
-  const fileJson = JSON.parse(file)
-
-  return {
-    id: fileJson.id,
-    name: fileJson.name
-  }
-}
-
-/**
- * Create job
- * @param {string} algorithm Algorithm
- * @param {Object} configuration Configuration
- * @param {Object} parameters Parameters
- * @param {string} command Command
- * @param {Array} geometries Geometries
- * @param {Array} meshes Meshes
- * @param {Object} edp Edp
- */
-const createJob = async (
-  algorithm,
-  configuration,
-  parameters,
-  command,
-  geometries,
-  meshes,
-  edp
-) => {
-  const name = 'Tanatloc - ' + algorithm
-  const coreType = parameters.coreTypes.value
-  const lowPriority = parameters.lowPriority.value
-  const numberOfCores = parameters.numberOfCores.value
-  const freefemVersion = parameters.freefemVersion.value
-
-  const additionalFiles = configuration.additionalFiles.value || ''
-
-  const job = await call({
-    platform: configuration.platform.value,
-    token: configuration.token.value,
-    route: 'jobs/',
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      name,
-      isLowPriority: lowPriority,
-      jobanalyses: [
-        {
-          analysis: {
-            code: 'freefem',
-            versionName: freefemVersion
-          },
-          hardware: {
-            coreType: coreType,
-            coresPerSlot: numberOfCores
-          },
-          command: command,
-          inputFiles: [
-            ...additionalFiles.split(',').map((f) => ({ id: f })),
-            ...geometries.map((g) => ({ id: g.id })),
-            ...meshes.map((m) => ({ id: m.id })),
-            { id: edp.id }
-          ]
-        }
-      ]
-    })
-  })
-
-  // Assign project if any
-  if (configuration.organization && configuration.project) {
-    try {
-      await call({
-        platform: configuration.platform.value,
-        token: configuration.token.value,
-        route:
-          'organizations/' +
-          configuration.organization.value +
-          '/jobs/' +
-          job.id +
-          '/project-assignment/',
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ projectId: configuration.project.value })
-      })
-    } catch (err) {
-      console.warn(err)
-      //TODO sentry
-    }
-  }
-
-  return job.id
-}
-
-/**
- * Submit job
- * @param {Object} configuration Configuration
- * @param {string} id Job id
- */
-const submitJob = async (configuration, id) => {
-  await call({
-    platform: configuration.platform.value,
-    token: configuration.token.value,
-    route: 'jobs/' + id + '/submit/',
-    method: 'POST'
-  })
-}
-
-/**
- * Get job status
- * @param {Object} configuration Configuration
- * @param {string} id Job id
- */
-const getStatus = async (configuration, id) => {
-  const status = await call({
-    platform: configuration.platform.value,
-    token: configuration.token.value,
-    route: 'jobs/' + id + '/statuses/'
-  })
-
-  if (!status.results) {
-    console.log(status)
-    return 'Completed'
-  }
-
-  const sorted = status.results.sort((a, b) => b.statusDate - a.statusDate)
-
-  return sorted[0].status
-}
-
-/**
- * Get in-run files
- * @param {Object} configuration Configuration
- * @param {string} id Job id
- */
-const getInRunFiles = async (configuration, id) => {
-  const list = await call({
-    platform: configuration.platform.value,
-    token: configuration.token.value,
-    route: 'jobs/' + id + '/runs/1/directory-contents/'
-  })
-
-  return Array.isArray(list) ? list : []
-}
-
-/**
- * Get in-run file
- * @param {Object} configuration Configuration
- * @param {Object} file File
- */
-const getInRunFile = async (configuration, file) => {
-  const route = file.resource.replace('/api/v2/', '')
-  return call({
-    platform: configuration.platform.value,
-    token: configuration.token.value,
-    route
-  })
-}
-
-/**
- * Get files
- * @param {Object} configuration Configuration
- * @param {string} id Job id
- */
-const getFiles = async (configuration, id) => {
-  const list = await call({
-    platform: configuration.platform.value,
-    token: configuration.token.value,
-    route: 'jobs/' + id + '/runs/1/files/'
-  })
-
-  return list.results
-}
-
-/**
- * Get file
- * @param {Object} configuration
- * @param {string} id File id
- */
-const getFile = async (configuration, id) => {
-  return call({
-    platform: configuration.platform.value,
-    token: configuration.token.value,
-    route: 'files/' + id + '/contents/'
-  })
 }
 
 /**

@@ -394,7 +394,7 @@ const getInRunOutputs = async (
 
           task.datas = [
             ...(task.datas || []),
-            JSON.parse(dataContent.toString())
+            JSON.parse(fileContent.toString())
           ]
 
           existingDatas.push(dataFile)
@@ -544,7 +544,7 @@ const getOutputs = async (
 
           task.datas = [
             ...(task.datas || []),
-            JSON.parse(dataContent.toString())
+            JSON.parse(fileContent.toString())
           ]
 
           existingDatas.push(dataFile)

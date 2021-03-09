@@ -69,7 +69,7 @@ describe('src/route/plugin', () => {
 
   it('POST', async () => {
     req.method = 'POST'
-    req.body = { plugin: { key: 'key' } }
+    req.body = { key: 'key' }
 
     mockSession.mockImplementation(() => true)
 

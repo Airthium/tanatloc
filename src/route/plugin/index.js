@@ -17,7 +17,7 @@ export default async (req, res) => {
 
         // Check authorization
         const user = await UserLib.get(sessionId, ['authorizedplugins'])
-        if (!user.authorizedplugins?.includes(body.plugin.key))
+        if (!user.authorizedplugins?.includes(body.key))
           throw new Error('Unauthorized')
 
         await PluginLib.add({ id: sessionId }, body)

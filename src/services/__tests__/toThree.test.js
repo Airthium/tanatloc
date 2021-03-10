@@ -24,7 +24,7 @@ describe('src/services/toThree', () => {
   })
 
   it('toThree', async () => {
-    let code
+    let res
 
     // Normal
     mockSpawn.mockImplementation(() => ({
@@ -44,33 +44,33 @@ describe('src/services/toThree', () => {
     }))
 
     // Step
-    code = await toThree('path', 'file.step', 'pathout', mockCallback)
+    res = await toThree('path', 'file.step', 'pathout', mockCallback)
     expect(mockExecSync).toHaveBeenCalledTimes(2)
     expect(mockSpawn).toHaveBeenCalledTimes(1)
-    expect(code).toBe(0)
+    expect(res.code).toBe(0)
 
-    code = await toThree('path', 'file.stp', 'pathout', mockCallback)
+    res = await toThree('path', 'file.stp', 'pathout', mockCallback)
     expect(mockExecSync).toHaveBeenCalledTimes(4)
     expect(mockSpawn).toHaveBeenCalledTimes(2)
-    expect(code).toBe(0)
+    expect(res.code).toBe(0)
 
     // Dxf
-    code = await toThree('path', 'file.dxf', 'pathout', mockCallback)
+    res = await toThree('path', 'file.dxf', 'pathout', mockCallback)
     expect(mockExecSync).toHaveBeenCalledTimes(6)
     expect(mockSpawn).toHaveBeenCalledTimes(3)
-    expect(code).toBe(0)
+    expect(res.code).toBe(0)
 
     // Msh
-    code = await toThree('path', 'file.msh', 'pathout', mockCallback)
+    res = await toThree('path', 'file.msh', 'pathout', mockCallback)
     expect(mockExecSync).toHaveBeenCalledTimes(8)
     expect(mockSpawn).toHaveBeenCalledTimes(4)
-    expect(code).toBe(0)
+    expect(res.code).toBe(0)
 
     // VTU
-    code = await toThree('path', 'file.vtu', 'pathout', mockCallback)
+    res = await toThree('path', 'file.vtu', 'pathout', mockCallback)
     expect(mockExecSync).toHaveBeenCalledTimes(10)
     expect(mockSpawn).toHaveBeenCalledTimes(5)
-    expect(code).toBe(0)
+    expect(res.code).toBe(0)
 
     // Unknow
     try {
@@ -124,9 +124,9 @@ describe('src/services/toThree', () => {
         if (arg === 'close') callback(0)
       }
     }))
-    const code = await toThree('path', 'file.step', 'pathour', mockCallback)
+    const res = await toThree('path', 'file.step', 'pathour', mockCallback)
     expect(mockExecSync).toHaveBeenCalledTimes(0)
     expect(mockSpawn).toHaveBeenCalledTimes(1)
-    expect(code).toBe(0)
+    expect(res.code).toBe(0)
   })
 })

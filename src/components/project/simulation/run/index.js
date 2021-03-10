@@ -179,7 +179,7 @@ const Run = ({ project, simulation }) => {
               // Set result & current iteration
               if (selectorsCurrent[filterIndex] === undefined) {
                 const newSelectorsCurrent = [...selectorsCurrent]
-                newSelectorsCurrent[filterIndex] = 0
+                newSelectorsCurrent[filterIndex] = numbers[0]
                 setSelectorsCurrent(newSelectorsCurrent)
               }
               newResults.push({

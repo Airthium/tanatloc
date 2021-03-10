@@ -39,8 +39,8 @@
   },
   "devDependencies": {
     "@ant-design/icons": "4.5.0",
-    "@babel/cli": "7.13.0",
-    "@babel/core": "7.13.8",
+    "@babel/cli": "7.13.10",
+    "@babel/core": "7.13.10",
     "@babel/preset-typescript": "7.13.0",
     "@hapi/iron": "6.0.0",
     "@sentry/browser": "6.2.1",
@@ -89,7 +89,7 @@
     "redux-devtools-extension": "2.13.9",
     "redux-persist": "6.0.0",
     "rimraf": "3.0.2",
-    "swr": "0.4.2",
+    "swr": "0.5.0",
     "three": "0.126.1",
     "url-join": "4.0.1"
   }

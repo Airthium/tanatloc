@@ -311,7 +311,6 @@ const getInRunOutputs = async (
           .replace('PROCESS VTU FILE', '')
           .replace(/\[.*\]: /g, '')
           .trim()
-        const partPath = resultFile.replace('.vtu', '')
 
         // Check already existing
         const existing = existingResults.includes(resultFile)
@@ -330,53 +329,15 @@ const getInRunOutputs = async (
           if (typeof fileContent !== 'string')
             throw new Error('Rescale empty response')
 
-          // Write file
-          await Tools.writeFile(
-            path.join(simulationPath, resultPath),
+          await processResult(
             resultFile,
-            fileContent
-          )
-
-          // Convert file
-          const three = await Services.toThree(
+            fileContent,
             simulationPath,
-            path.join(resultPath, resultFile),
-            path.join(resultPath, partPath)
+            resultPath,
+            task,
+            warnings,
+            existingDatas
           )
-          if (three.code !== 0) {
-            console.warn(
-              'Warning: Result converting process failed. Code ' + three.code
-            )
-            warnings.push(
-              'Warning: Result converting process failed. Code ' + three.code
-            )
-          } else if (three.error) {
-            console.warn(
-              'Warning: Result converting process failed (' + three.error + ')'
-            )
-            warnings.push(
-              'Warning: Result converting process failed (' + three.error + ')'
-            )
-          } else {
-            const results = three.data
-              ?.trim()
-              ?.split('\n')
-              .map((res) => JSON.parse(res))
-
-            task.files = [
-              ...(task.files || []),
-              ...results.map((result) => ({
-                fileName: resultFile,
-                originPath: resultPath,
-                name: result.name,
-                part: 'part.json',
-                partPath: result.path
-              }))
-            ]
-
-            // Update existing results
-            existingResults.push(resultFile)
-          }
         } catch (err) {
           console.warn(
             'Warning: Unable to convert result file (' + err.message + ')'
@@ -489,7 +450,6 @@ const getOutputs = async (
           .replace('PROCESS VTU FILE', '')
           .replace(/\[.*\]: /g, '')
           .trim()
-        const partPath = resultFile.replace('.vtu', '')
 
         // Check already existing
         const existing = existingResults.includes(resultFile)
@@ -504,53 +464,15 @@ const getOutputs = async (
 
           const fileContent = await getFile(configuration, file.id)
 
-          // Write file
-          await Tools.writeFile(
-            path.join(simulationPath, resultPath),
+          await processResult(
             resultFile,
-            fileContent
-          )
-
-          // Convert file
-          const three = await Services.toThree(
+            fileContent,
             simulationPath,
-            path.join(resultPath, resultFile),
-            path.join(resultPath, partPath)
+            resultPath,
+            task,
+            warnings,
+            existingDatas
           )
-          if (three.code !== 0) {
-            console.warn(
-              'Warning: Result converting process failed. Code ' + three.code
-            )
-            warnings.push(
-              'Warning: Result converting process failed. Code ' + three.code
-            )
-          } else if (three.error) {
-            console.warn(
-              'Warning: Result converting process failed (' + three.error + ')'
-            )
-            warnings.push(
-              'Warning: Result converting process failed (' + three.error + ')'
-            )
-          } else {
-            const results = three.data
-              ?.trim()
-              ?.split('\n')
-              .map((res) => JSON.parse(res))
-
-            task.files = [
-              ...(task.files || []),
-              ...results.map((result) => ({
-                fileName: resultFile,
-                originPath: resultPath,
-                name: result.name,
-                part: 'part.json',
-                partPath: result.path
-              }))
-            ]
-
-            // Update existing results
-            existingResults.push(resultFile)
-          }
         } catch (err) {
           console.warn(
             'Warning: Unable to convert result file (' + err.message + ')'
@@ -613,6 +535,66 @@ const getOutputs = async (
   } else {
     // This is just some log
     return log
+  }
+}
+
+const processResult = async (
+  resultFile,
+  fileContent,
+  simulationPath,
+  resultPath,
+  task,
+  warnings,
+  existingResults
+) => {
+  // Part path
+  const partPath = resultFile.replace('.vtu', '')
+
+  // Write file
+  await Tools.writeFile(
+    path.join(simulationPath, resultPath),
+    resultFile,
+    fileContent
+  )
+
+  // Convert file
+  const three = await Services.toThree(
+    simulationPath,
+    path.join(resultPath, resultFile),
+    path.join(resultPath, partPath)
+  )
+  if (three.code !== 0) {
+    console.warn(
+      'Warning: Result converting process failed. Code ' + three.code
+    )
+    warnings.push(
+      'Warning: Result converting process failed. Code ' + three.code
+    )
+  } else if (three.error) {
+    console.warn(
+      'Warning: Result converting process failed (' + three.error + ')'
+    )
+    warnings.push(
+      'Warning: Result converting process failed (' + three.error + ')'
+    )
+  } else {
+    const results = three.data
+      ?.trim()
+      ?.split('\n')
+      .map((res) => JSON.parse(res))
+
+    task.files = [
+      ...(task.files || []),
+      ...results.map((result) => ({
+        fileName: resultFile,
+        originPath: resultPath,
+        name: result.name,
+        part: 'part.json',
+        partPath: result.path
+      }))
+    ]
+    // Update existing results
+    existingResults.push(resultFile)
   }
 }
 

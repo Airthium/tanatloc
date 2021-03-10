@@ -332,6 +332,7 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
         }
       } else if (status === 'Completed') {
         const files = await getFiles(cloudConfiguration, jobId)
+        console.log(files)
 
         // Log
         const logFile = files.find((f) => f.relativePath === logFileName)

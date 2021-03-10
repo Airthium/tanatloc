@@ -268,6 +268,19 @@ const getFile = async (configuration, id) => {
   })
 }
 
+/**
+ * Get in-run outputs
+ * @param {Object} configuration Configuration
+ * @param {string} log Log
+ * @param {Array} availableFiles Available files
+ * @param {Array} existingResults Existing results
+ * @param {Array} existingDatas Existing datas
+ * @param {Array} warnings Warnings
+ * @param {string} simulationPath Simulation path
+ * @param {string} resultPath Result path
+ * @param {string} dataPath Data path
+ * @param {Object} task Task
+ */
 const getInRunOutputs = async (
   configuration,
   log,
@@ -326,19 +339,19 @@ const getInRunOutputs = async (
             path.join(resultPath, partPath),
             ({ error: resError, data: resData }) => {
               if (resError) {
+                console.warn('Warning: ' + resError)
                 warnings.push('Warning: ' + resError)
               }
               if (resData) {
-                try {
-                  const jsonData = JSON.parse(resData)
-                  results.push(jsonData)
-                } catch (jsonErr) {
-                  warnings.push('Warning: ' + jsonErr.message)
-                }
+                const jsonData = JSON.parse(resData)
+                results.push(jsonData)
               }
             }
           )
           if (resCode !== 0) {
+            console.warn(
+              'Warning: Result converting process failed. Code ' + resCode
+            )
             warnings.push(
               'Warning: Result converting process failed. Code ' + resCode
             )
@@ -353,11 +366,14 @@ const getInRunOutputs = async (
                 partPath: result.path
               }))
             ]
-          }
 
-          // Update existing results
-          existingResults.push(resultFile)
+            // Update existing results
+            existingResults.push(resultFile)
+          }
         } catch (err) {
+          console.warn(
+            'Warning: Unable to convert result file (' + err.message + ')'
+          )
           warnings.push(
             'Warning: Unable to convert result file (' + err.message + ')'
           )
@@ -399,6 +415,9 @@ const getInRunOutputs = async (
 
           existingDatas.push(dataFile)
         } catch (err) {
+          console.warn(
+            'Warning: Unable to read data file (' + err.message + ')'
+          )
           warnings.push(
             'Warning: Unable to read data file (' + err.message + ')'
           )
@@ -414,6 +433,19 @@ const getInRunOutputs = async (
   }
 }
 
+/**
+ * Get outputs
+ * @param {Object} configuration Configuration
+ * @param {string} log Log
+ * @param {Array} availableFiles Available files
+ * @param {Array} existingResults Existing results
+ * @param {Array} existingDatas Existing datas
+ * @param {Array} warnings Warnings
+ * @param {string} simulationPath Simulation path
+ * @param {string} resultPath Result path
+ * @param {string} dataPath Data path
+ * @param {Object} task Task
+ */
 const getOutputs = async (
   configuration,
   log,
@@ -457,7 +489,7 @@ const getOutputs = async (
           )
           if (!file) return
 
-          const fileContent = await getFile(configuration, file)
+          const fileContent = await getFile(configuration, file.id)
 
           // Write file
           await Tools.writeFile(
@@ -474,19 +506,19 @@ const getOutputs = async (
             path.join(resultPath, partPath),
             ({ error: resError, data: resData }) => {
               if (resError) {
+                console.warn('Warning: ' + resError)
                 warnings.push('Warning: ' + resError)
               }
               if (resData) {
-                try {
-                  const jsonData = JSON.parse(resData)
-                  results.push(jsonData)
-                } catch (jsonErr) {
-                  warnings.push('Warning: ' + jsonErr.message)
-                }
+                const jsonData = JSON.parse(resData)
+                results.push(jsonData)
               }
             }
           )
           if (resCode !== 0) {
+            console.warn(
+              'Warning: Result converting process failed. Code ' + resCode
+            )
             warnings.push(
               'Warning: Result converting process failed. Code ' + resCode
             )
@@ -501,11 +533,14 @@ const getOutputs = async (
                 partPath: result.path
               }))
             ]
-          }
 
-          // Update existing results
-          existingResults.push(resultFile)
+            // Update existing results
+            existingResults.push(resultFile)
+          }
         } catch (err) {
+          console.warn(
+            'Warning: Unable to convert result file (' + err.message + ')'
+          )
           warnings.push(
             'Warning: Unable to convert result file (' + err.message + ')'
           )
@@ -533,7 +568,7 @@ const getOutputs = async (
           )
           if (!file) return
 
-          const fileContent = await getInRunFile(configuration, file)
+          const fileContent = await getFile(configuration, file.id)
 
           // Write file
           await Tools.writeFile(
@@ -549,6 +584,9 @@ const getOutputs = async (
 
           existingDatas.push(dataFile)
         } catch (err) {
+          console.warn(
+            'Warning: Unable to read data file (' + err.message + ')'
+          )
           warnings.push(
             'Warning: Unable to read data file (' + err.message + ')'
           )

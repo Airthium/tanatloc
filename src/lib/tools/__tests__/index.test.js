@@ -24,8 +24,7 @@ jest.mock('fs', () => ({
 
 const mockToThree = jest.fn()
 jest.mock('@/services', () => ({
-  toThree: async (path, fileIn, pathOut, callback) =>
-    mockToThree(path, fileIn, pathOut, callback)
+  toThree: async (path, fileIn, pathOut) => mockToThree(path, fileIn, pathOut)
 }))
 
 describe('src/lib/tools', () => {
@@ -67,12 +66,12 @@ describe('src/lib/tools', () => {
   it('convert', async () => {
     mockToThree.mockImplementation((path, fileIn, pathOut, callback) => {
       callback({ error: 'error', data: 'data' })
-      return 0
+      return { code: 0 }
     })
     await Tools.convert('location', { name: 'name' })
 
     try {
-      mockToThree.mockImplementation(() => -1)
+      mockToThree.mockImplementation(() => ({ code: -1 }))
       await Tools.convert('location', { name: 'name' })
       expect(true).toBe(false)
     } catch (err) {

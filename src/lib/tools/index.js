@@ -45,16 +45,12 @@ const convert = async (location, file) => {
   const origin = file.fileName
   const target = file.uid
 
-  const code = await Services.toThree(
-    location,
-    origin,
-    target,
-    ({ error, data }) => {
-      console.log(error)
-      console.log(data)
-    }
-  )
+  const { code, error, data } = await Services.toThree(location, origin, target)
+
   // TODO data, error
+  console.error(error)
+  console.log(data)
+
   if (code !== 0) throw new Error('Conversion process failed. Code ' + code)
 
   return {

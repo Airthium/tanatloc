@@ -64,15 +64,15 @@ const computeMesh = async (simulationPath, geometry, mesh, callback) => {
   if (code !== 0) throw new Error('Meshing process failed. Code ' + code)
 
   // Convert mesh
-  code = await Services.toThree(
+  const three = await Services.toThree(
     simulationPath,
     path.join(mesh.path, mshFile),
-    path.join(mesh.path, partPath),
-    callback
+    path.join(mesh.path, partPath)
   )
+  callback({ data: three.data, error: three.error })
 
-  if (code !== 0)
-    throw new Error('Mesh converting process failed. Code ' + code)
+  if (three.code !== 0)
+    throw new Error('Mesh converting process failed. Code ' + three.code)
 
   return {
     fileName: mshFile,
@@ -259,36 +259,33 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
               const resFile = line.replace('PROCESS VTU FILE', '').trim()
               const partPath = resFile.replace('.vtu', '')
 
-              const results = []
-
               try {
-                const resCode = await Services.toThree(
+                const three = await Services.toThree(
                   simulationPath,
                   path.join('run/result', resFile),
-                  path.join('run/result', partPath),
-                  ({ error: resError, data: resData }) => {
-                    if (resError) {
-                      simulationTask.log += 'Warning: ' + resError
-                      updateTasks(id, tasks)
-                    }
-
-                    if (resData) {
-                      try {
-                        const jsonData = JSON.parse(resData)
-                        results.push(jsonData)
-                      } catch (err) {
-                        simulationTask.log += 'Warning: ' + err.message
-                        updateTasks(id, tasks)
-                      }
-                    }
-                  }
+                  path.join('run/result', partPath)
                 )
 
-                if (resCode !== 0) {
+                if (three.code !== 0) {
                   simulationTask.log +=
-                    'Warning: Result converting process failed. Code ' + resCode
+                    'Warning: Result converting process failed. Code ' +
+                    three.code
+                  updateTasks(id, tasks)
+                } else if (three.error) {
+                  simulationTask.log +=
+                    'Warning: Result converting process failed (' +
+                    three.error +
+                    ')'
                   updateTasks(id, tasks)
                 } else {
+                  const results = three.data
+                    ?.trim()
+                    ?.split('\n')
+                    .map((res) => {
+                      const json = JSON.parse(res)
+                      return json
+                    })
+
                   simulationTask.files = [
                     ...(simulationTask.files || []),
                     ...results.map((result) => ({
@@ -303,6 +300,7 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
                   updateTasks(id, tasks)
                 }
               } catch (err) {
+                console.error(err)
                 simulationTask.log +=
                   'Warning: Unable to convert result file (' + err.message + ')'
                 updateTasks(id, tasks)

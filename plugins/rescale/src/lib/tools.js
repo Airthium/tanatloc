@@ -332,30 +332,34 @@ const getInRunOutputs = async (
           )
 
           // Convert file
-          const results = []
-          const resCode = await Services.toThree(
+          const three = await Services.toThree(
             simulationPath,
             path.join(resultPath, resultFile),
-            path.join(resultPath, partPath),
-            ({ error: resError, data: resData }) => {
-              if (resError) {
-                console.warn('Warning: ' + resError)
-                warnings.push('Warning: ' + resError)
-              }
-              if (resData) {
-                const jsonData = JSON.parse(resData)
-                results.push(jsonData)
-              }
-            }
+            path.join(resultPath, partPath)
           )
-          if (resCode !== 0) {
+          if (three.code !== 0) {
             console.warn(
-              'Warning: Result converting process failed. Code ' + resCode
+              'Warning: Result converting process failed. Code ' + three.code
             )
             warnings.push(
-              'Warning: Result converting process failed. Code ' + resCode
+              'Warning: Result converting process failed. Code ' + three.code
+            )
+          } else if (three.error) {
+            console.warn(
+              'Warning: Result converting process failed (' + three.error + ')'
+            )
+            warnings.push(
+              'Warning: Result converting process failed (' + three.error + ')'
             )
           } else {
+            const results = three.data
+              ?.trim()
+              ?.split('\n')
+              .map((res) => {
+                const json = JSON.parse(res)
+                return json
+              })
+
             task.files = [
               ...(task.files || []),
               ...results.map((result) => ({
@@ -499,30 +503,34 @@ const getOutputs = async (
           )
 
           // Convert file
-          const results = []
-          const resCode = await Services.toThree(
+          const three = await Services.toThree(
             simulationPath,
             path.join(resultPath, resultFile),
-            path.join(resultPath, partPath),
-            ({ error: resError, data: resData }) => {
-              if (resError) {
-                console.warn('Warning: ' + resError)
-                warnings.push('Warning: ' + resError)
-              }
-              if (resData) {
-                const jsonData = JSON.parse(resData)
-                results.push(jsonData)
-              }
-            }
+            path.join(resultPath, partPath)
           )
-          if (resCode !== 0) {
+          if (three.code !== 0) {
             console.warn(
-              'Warning: Result converting process failed. Code ' + resCode
+              'Warning: Result converting process failed. Code ' + three.code
             )
             warnings.push(
-              'Warning: Result converting process failed. Code ' + resCode
+              'Warning: Result converting process failed. Code ' + three.code
+            )
+          } else if (three.error) {
+            console.warn(
+              'Warning: Result converting process failed (' + three.error + ')'
+            )
+            warnings.push(
+              'Warning: Result converting process failed (' + three.error + ')'
             )
           } else {
+            const results = three.data
+              ?.trim()
+              ?.split('\n')
+              .map((res) => {
+                const json = JSON.parse(res)
+                return json
+              })
+
             task.files = [
               ...(task.files || []),
               ...results.map((result) => ({

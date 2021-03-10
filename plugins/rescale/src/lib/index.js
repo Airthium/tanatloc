@@ -306,6 +306,7 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
       if (status === 'Executing') {
         // Check in-run files
         const inRunFiles = await getInRunFiles(cloudConfiguration, jobId)
+        console.log(inRunFiles)
 
         // Log
         const logFile = inRunFiles.find((f) => f.path === logFileName)
@@ -332,7 +333,6 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
         }
       } else if (status === 'Completed') {
         const files = await getFiles(cloudConfiguration, jobId)
-        console.log(files)
 
         // Log
         const logFile = files.find((f) => f.relativePath === logFileName)

@@ -15,12 +15,8 @@ jest.mock('@/lib/template', () => ({
 }))
 
 const mockCreatePath = jest.fn()
-const mockReadFile = jest.fn()
-const mockWriteFile = jest.fn()
 jest.mock('@/lib/tools', () => ({
-  createPath: async () => mockCreatePath(),
-  readFile: async () => mockReadFile(),
-  writeFile: async () => mockWriteFile()
+  createPath: async () => mockCreatePath()
 }))
 
 const mockToThree = jest.fn()
@@ -68,8 +64,6 @@ describe('plugins/rescale/src/lib', () => {
     mockRender.mockReset()
 
     mockCreatePath.mockReset()
-    mockReadFile.mockReset()
-    mockWriteFile.mockReset()
 
     mockToThree.mockReset()
 
@@ -93,7 +87,8 @@ describe('plugins/rescale/src/lib', () => {
   it('init', async () => {
     // Normal
     mockCall.mockImplementation(() => ({ results: [{}] }))
-    await Rescale.init({
+    mockGetFreeFEM.mockImplementation(() => [{}])
+    const res = await Rescale.init({
       platform: {},
       token: {},
       additionalFiles: {
@@ -102,6 +97,7 @@ describe('plugins/rescale/src/lib', () => {
     })
     expect(mockCall).toHaveBeenCalledTimes(1)
     expect(mockGetFreeFEM).toHaveBeenCalledTimes(1)
+    expect(res).toEqual({ data: { coreTypes: [{}], freefem: [{}] } })
 
     // Invalid token
     mockCall.mockImplementation(() => ({ detail: 'Invalid token.' }))
@@ -120,256 +116,150 @@ describe('plugins/rescale/src/lib', () => {
   })
 
   it('computeSimulation', async () => {
-    // jest.setTimeout(10000)
-    // mockReadFile.mockImplementation(() => 'readFile')
-    // mockToThree.mockImplementation((path, fileIn, pathOut, callback) => {
-    //   callback({ error: 'Error' })
-    //   callback({ data: 'Not a json' })
-    //   callback({ data: '[{}]' })
-    //   return 0
-    // })
-    // mockCall.mockImplementation((param) => {
-    //   if (param.route === 'files/contents/') return '{}'
-    //   else if (param.route === 'jobs/id/statuses/')
-    //     return {
-    //       results: [{ status: 'Completed' }]
-    //     }
-    //   else if (param.route === 'jobs/id/runs/1/files/')
-    //     return {
-    //       results: [
-    //         { relativePath: 'test' },
-    //         { relativePath: 'result/test' },
-    //         { relativePath: 'result/test.vtu' }
-    //       ]
-    //     }
-    //   return { id: 'id', results: [{}] }
-    // })
-    // // Standard
-    // await Rescale.computeSimulation({ id: 'id' }, 'algorithm', {
-    //   run: {
-    //     cloudServer: {
-    //       configuration: {
-    //         platform: {
-    //           value: 'platform'
-    //         },
-    //         token: {
-    //           value: 'token'
-    //         },
-    //         organization: {
-    //           value: 'organization'
-    //         },
-    //         project: {
-    //           value: 'project'
-    //         },
-    //         additionalFiles: {
-    //           value: 'id, id'
-    //         }
-    //       },
-    //       inUseConfiguration: {
-    //         coreTypes: {
-    //           value: 'coreType'
-    //         },
-    //         lowPriority: {
-    //           value: true
-    //         },
-    //         numberOfCores: {
-    //           value: 1
-    //         },
-    //         freefemVersion: {
-    //           value: 'version'
-    //         }
-    //       }
-    //     }
-    //   }
-    // })
-    // // With meshes
-    // mockToThree.mockImplementation((path, fileIn, pathOut, callback) => {
-    //   return -1
-    // })
-    // await Rescale.computeSimulation({ id: 'id' }, 'algorithm', {
-    //   geometry: {
-    //     meshable: true,
-    //     file: {
-    //       fileName: 'fileName'
-    //     }
-    //   },
-    //   boundaryConditions: {
-    //     index: -1,
-    //     dirichlet: {
-    //       values: [{ selected: ['1'] }],
-    //       refineFactor: 2
-    //     },
-    //     neumann: {}
-    //   },
-    //   run: {
-    //     cloudServer: {
-    //       configuration: {
-    //         platform: {
-    //           value: 'platform'
-    //         },
-    //         token: {
-    //           value: 'token'
-    //         },
-    //         additionalFiles: {
-    //           value: ''
-    //         }
-    //       },
-    //       inUseConfiguration: {
-    //         coreTypes: {
-    //           value: 'coreType'
-    //         },
-    //         lowPriority: {
-    //           value: true
-    //         },
-    //         numberOfCores: {
-    //           value: 1
-    //         },
-    //         freefemVersion: {
-    //           value: 'version'
-    //         }
-    //       }
-    //     }
-    //   }
-    // })
-    // // Play with status
-    // let count = 0
-    // mockCall.mockImplementation((param) => {
-    //   if (param.route === 'files/contents/') return '{}'
-    //   else if (param.route === 'jobs/id/statuses/') {
-    //     count++
-    //     if (count === 1)
-    //       return {
-    //         results: [
-    //           {
-    //             status: 'Queued',
-    //             statusDate: '2016-04-21T17:07:04.761050Z',
-    //             statusReason: null
-    //           },
-    //           {
-    //             status: 'Pending',
-    //             statusDate: '2016-04-21T17:06:32.086507Z',
-    //             statusReason: null
-    //           }
-    //         ]
-    //       }
-    //     if (count < 4)
-    //       return {
-    //         results: [{ status: 'Executing' }]
-    //       }
-    //     else if (count < 5) return {}
-    //     else
-    //       return {
-    //         results: [{ status: 'Completed' }]
-    //       }
-    //   } else if (param.route === 'jobs/id/runs/1/directory-contents/') {
-    //     if (count === 2) return
-    //     else
-    //       return [
-    //         { path: 'process_output.log', resource: 'this is the log file' }
-    //       ]
-    //   } else if (param.route === 'this is the log file') return 'log'
-    //   else if (param.route === 'jobs/id/runs/1/files/') {
-    //     return {
-    //       results: [{ relativePath: 'process_output.log', id: 'id' }]
-    //     }
-    //   } else if (param.route === 'files/id/contents/') return 'log'
-    //   return { id: 'id', results: [{}] }
-    // })
-    // await Rescale.computeSimulation({ id: 'id' }, 'algorithm', {
-    //   run: {
-    //     cloudServer: {
-    //       configuration: {
-    //         platform: {
-    //           value: 'platform'
-    //         },
-    //         token: {
-    //           value: 'token'
-    //         },
-    //         additionalFiles: {
-    //           value: 'id, id'
-    //         }
-    //       },
-    //       inUseConfiguration: {
-    //         coreTypes: {
-    //           value: 'coreType'
-    //         },
-    //         lowPriority: {
-    //           value: true
-    //         },
-    //         numberOfCores: {
-    //           value: 1
-    //         },
-    //         freefemVersion: {
-    //           value: 'version'
-    //         }
-    //       }
-    //     }
-    //   }
-    // })
-    // // Warnings
-    // mockCall.mockImplementation((param) => {
-    //   if (param.route === 'files/contents/') return '{}'
-    //   else if (param.route === 'jobs/id/statuses/')
-    //     return {
-    //       results: [{ status: 'Completed' }]
-    //     }
-    //   else if (param.route === 'jobs/id/runs/1/files/')
-    //     return {
-    //       results: [{ relativePath: 'result/test.vtu' }]
-    //     }
-    //   else if (
-    //     param.route === 'organizations/organization/jobs/id/project-assignment/'
-    //   )
-    //     throw new Error()
-    //   return { id: 'id', results: [{}] }
-    // })
-    // mockToThree.mockImplementation(() => {
-    //   throw new Error()
-    // })
-    // await Rescale.computeSimulation({ id: 'id' }, 'algorithm', {
-    //   run: {
-    //     cloudServer: {
-    //       configuration: {
-    //         platform: {
-    //           value: 'platform'
-    //         },
-    //         token: {
-    //           value: 'token'
-    //         },
-    //         organization: {
-    //           value: 'organization'
-    //         },
-    //         project: {
-    //           value: 'project'
-    //         },
-    //         additionalFiles: {
-    //           value: 'id, id'
-    //         }
-    //       },
-    //       inUseConfiguration: {
-    //         coreTypes: {
-    //           value: 'coreType'
-    //         },
-    //         lowPriority: {
-    //           value: true
-    //         },
-    //         numberOfCores: {
-    //           value: 1
-    //         },
-    //         freefemVersion: {
-    //           value: 'version'
-    //         }
-    //       }
-    //     }
-    //   }
-    // })
-    // // Error
-    // try {
-    //   await Rescale.computeSimulation({ id: 'id' }, 'algorithm', {})
-    //   expect(true).toBe(false)
-    // } catch (err) {
-    //   expect(true).toBe(true)
-    // }
+    jest.setTimeout(10000)
+
+    mockUploadFile.mockImplementation(() => ({}))
+    mockGetStatus.mockImplementation(() => 'Completed')
+    mockGetInRunFiles.mockImplementation(() => [])
+    mockGetFiles.mockImplementation(() => [])
+
+    // Minimal
+    await Rescale.computeSimulation({ id: 'id' }, 'algorithm', {
+      run: {
+        cloudServer: {
+          configuration: {},
+          inUseConfiguration: {
+            numberOfCores: {
+              value: 64
+            }
+          }
+        }
+      }
+    })
+
+    // With geometries, meshes
+    await Rescale.computeSimulation({ id: 'id' }, 'algorithm', {
+      geometry1: {
+        meshable: true,
+        file: {
+          fileName: 'fileName'
+        }
+      },
+      geometry2: {
+        meshable: false,
+        file: {
+          fileName: 'fileName'
+        }
+      },
+      boundaryConditions: {
+        index: 0,
+        key1: {},
+        key2: {
+          values: [
+            {
+              selected: [1]
+            }
+          ],
+          refineFactor: 5
+        }
+      },
+      run: {
+        cloudServer: {
+          configuration: {},
+          inUseConfiguration: {
+            numberOfCores: {
+              value: 64
+            }
+          }
+        }
+      }
+    })
+
+    // With files
+    mockGetFiles.mockImplementation(() => [
+      {
+        relativePath: 'process_output.log'
+      }
+    ])
+    mockGetOutputs.mockImplementation(() => 'realLog')
+    await Rescale.computeSimulation({ id: 'id' }, 'algorithm', {
+      run: {
+        cloudServer: {
+          configuration: {},
+          inUseConfiguration: {
+            numberOfCores: {
+              value: 64
+            }
+          }
+        }
+      }
+    })
+
+    // With in-run files
+    let statusCount = 0
+    mockGetStatus.mockImplementation(() => {
+      statusCount++
+      return statusCount === 1 ? 'Executing' : 'Completed'
+    })
+    await Rescale.computeSimulation({ id: 'id' }, 'algorithm', {
+      run: {
+        cloudServer: {
+          configuration: {},
+          inUseConfiguration: {
+            numberOfCores: {
+              value: 64
+            }
+          }
+        }
+      }
+    })
+
+    statusCount = 0
+    mockGetInRunFiles.mockImplementation(() => [
+      {
+        path: 'process_output.log'
+      }
+    ])
+    mockGetInRunOutputs.mockImplementation(() => 'realLog')
+    await Rescale.computeSimulation({ id: 'id' }, 'algorithm', {
+      run: {
+        cloudServer: {
+          configuration: {},
+          inUseConfiguration: {
+            numberOfCores: {
+              value: 64
+            }
+          }
+        }
+      }
+    })
+
+    // Other status
+    statusCount = 0
+    mockGetStatus.mockImplementation(() => {
+      statusCount++
+      return statusCount === 1 ? 'Unknow' : 'Completed'
+    })
+    await Rescale.computeSimulation({ id: 'id' }, 'algorithm', {
+      run: {
+        cloudServer: {
+          configuration: {},
+          inUseConfiguration: {
+            numberOfCores: {
+              value: 64
+            }
+          }
+        }
+      }
+    })
+
+    // Error
+    try {
+      await Rescale.computeSimulation({ id: 'id' }, 'algorithm', {})
+      expect(true).toBe(false)
+    } catch (err) {
+      expect(true).toBe(true)
+    }
   })
 
   it('stop', async () => {

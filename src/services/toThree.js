@@ -8,9 +8,8 @@ import isDocker from 'is-docker'
  * @param {string} path Path
  * @param {string} fileIn In file
  * @param {string} pathOut Out path
- * @param {Function} callback Callback
  */
-const toThree = async (path, fileIn, pathOut, callback) => {
+const toThree = async (path, fileIn, pathOut) => {
   let conversionCode = ''
 
   // Check extension
@@ -38,6 +37,8 @@ const toThree = async (path, fileIn, pathOut, callback) => {
   // Convert
   return new Promise((resolve, reject) => {
     let run
+    let data = ''
+    let error = ''
 
     if (isDocker()) {
       run = spawn(conversionCode, [fileIn, pathOut], {
@@ -58,16 +59,20 @@ const toThree = async (path, fileIn, pathOut, callback) => {
       ])
     }
 
-    run.stdout.on('data', (data) => {
-      callback({ data: data.toString() })
+    run.stdout.on('data', (stdout) => {
+      stdout && (data += stdout.toString())
     })
 
-    run.stderr.on('data', (data) => {
-      callback({ error: data.toString() })
+    run.stderr.on('data', (stderr) => {
+      stderr && (error += stderr.toString())
     })
 
     run.on('close', (code) => {
-      resolve(code)
+      resolve({
+        code,
+        data,
+        error
+      })
     })
 
     run.on('error', (err) => {

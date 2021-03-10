@@ -483,8 +483,9 @@ const processResult = async (
       file = availableFiles.find((f) => f.relativePath.includes(resultFile))
     }
 
-    if (!file) return
+    if (!file) throw new Error('No available file')
 
+    // Get file content
     let fileContent
     if (type === 'inrun') {
       fileContent = await getInRunFile(configuration, file)
@@ -529,6 +530,7 @@ const processResult = async (
         ?.split('\n')
         .map((res) => JSON.parse(res))
 
+      // Update task
       task.files = [
         ...(task.files || []),
         ...results.map((result) => ({
@@ -539,6 +541,7 @@ const processResult = async (
           partPath: result.path
         }))
       ]
+
       // Update existing results
       existingResults.push(resultFile)
     }
@@ -585,8 +588,9 @@ const processData = async (
     } else {
       file = availableFiles.find((f) => f.relativePath.includes(dataFile))
     }
-    if (!file) return
+    if (!file) throw new Error('No available file')
 
+    // Get content
     let fileContent
     if (type === 'inrun') {
       fileContent = await getInRunFile(configuration, file)
@@ -605,8 +609,10 @@ const processData = async (
       fileContent
     )
 
+    // Update task
     task.datas = [...(task.datas || []), JSON.parse(fileContent.toString())]
 
+    // Update existing datas
     existingDatas.push(dataFile)
   } catch (err) {
     console.warn('Warning: Unable to read data file (' + err.message + ')')

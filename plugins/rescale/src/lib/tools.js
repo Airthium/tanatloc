@@ -361,10 +361,7 @@ const getInRunOutputs = async (
             const results = three.data
               ?.trim()
               ?.split('\n')
-              .map((res) => {
-                const json = JSON.parse(res)
-                return json
-              })
+              .map((res) => JSON.parse(res))
 
             task.files = [
               ...(task.files || []),
@@ -538,10 +535,7 @@ const getOutputs = async (
             const results = three.data
               ?.trim()
               ?.split('\n')
-              .map((res) => {
-                const json = JSON.parse(res)
-                return json
-              })
+              .map((res) => JSON.parse(res))
 
             task.files = [
               ...(task.files || []),

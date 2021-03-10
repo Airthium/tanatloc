@@ -281,10 +281,7 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
                   const results = three.data
                     ?.trim()
                     ?.split('\n')
-                    .map((res) => {
-                      const json = JSON.parse(res)
-                      return json
-                    })
+                    .map((res) => JSON.parse(res))
 
                   simulationTask.files = [
                     ...(simulationTask.files || []),

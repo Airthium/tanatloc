@@ -149,8 +149,12 @@ const Data = ({ simulation }) => {
       })
       .filter((d) => d)
 
-    const min = Math.min(...keys.flatMap((key) => data.map((d) => d[key])))
-    const max = Math.max(...keys.flatMap((key) => data.map((d) => d[key])))
+    const min = Math.min(
+      ...keys.flatMap((key) => data.map((d) => d[key] || null))
+    )
+    const max = Math.max(
+      ...keys.flatMap((key) => data.map((d) => d[key] || null))
+    )
 
     setPlot({ data, min, max, lines })
   }, [JSON.stringify(columnSelection)])

@@ -312,40 +312,17 @@ const getInRunOutputs = async (
           .replace(/\[.*\]: /g, '')
           .trim()
 
-        // Check already existing
-        const existing = existingResults.includes(resultFile)
-        if (existing) return
-
-        try {
-          // Get file
-          const file = availableFiles.find((f) => f.path.includes(resultFile))
-          if (!file) return
-
-          const fileContent = await getInRunFile(configuration, file)
-          if (fileContent.detail)
-            throw new Error(
-              'Run is not active. Trying to get the file at the end'
-            )
-          if (typeof fileContent !== 'string')
-            throw new Error('Rescale empty response')
-
-          await processResult(
-            resultFile,
-            fileContent,
-            simulationPath,
-            resultPath,
-            task,
-            warnings,
-            existingDatas
-          )
-        } catch (err) {
-          console.warn(
-            'Warning: Unable to convert result file (' + err.message + ')'
-          )
-          warnings.push(
-            'Warning: Unable to convert result file (' + err.message + ')'
-          )
-        }
+        await processResult(
+          'inrun',
+          resultFile,
+          configuration,
+          availableFiles,
+          existingResults,
+          warnings,
+          simulationPath,
+          resultPath,
+          task
+        )
       })
     )
 
@@ -358,44 +335,17 @@ const getInRunOutputs = async (
           .replace(/\[.*\]: /g, '')
           .trim()
 
-        // Check already existing
-        const existing = existingDatas.includes(dataFile)
-        if (existing) return
-
-        try {
-          // Get file
-          const file = availableFiles.find((f) => f.path.includes(dataFile))
-          if (!file) return
-
-          const fileContent = await getInRunFile(configuration, file)
-          if (fileContent.detail)
-            throw new Error(
-              'Run is not active. Trying to get the file at the end'
-            )
-          if (typeof fileContent !== 'string')
-            throw new Error('Rescale empty response')
-
-          // Write file
-          await Tools.writeFile(
-            path.join(simulationPath, dataPath),
-            dataFile,
-            fileContent
-          )
-
-          task.datas = [
-            ...(task.datas || []),
-            JSON.parse(fileContent.toString())
-          ]
-
-          existingDatas.push(dataFile)
-        } catch (err) {
-          console.warn(
-            'Warning: Unable to read data file (' + err.message + ')'
-          )
-          warnings.push(
-            'Warning: Unable to read data file (' + err.message + ')'
-          )
-        }
+        await processData(
+          'inrun',
+          dataFile,
+          configuration,
+          availableFiles,
+          existingDatas,
+          warnings,
+          simulationPath,
+          dataPath,
+          task
+        )
       })
     )
 
@@ -451,36 +401,17 @@ const getOutputs = async (
           .replace(/\[.*\]: /g, '')
           .trim()
 
-        // Check already existing
-        const existing = existingResults.includes(resultFile)
-        if (existing) return
-
-        try {
-          // Get file
-          const file = availableFiles.find((f) =>
-            f.relativePath.includes(resultFile)
-          )
-          if (!file) return
-
-          const fileContent = await getFile(configuration, file.id)
-
-          await processResult(
-            resultFile,
-            fileContent,
-            simulationPath,
-            resultPath,
-            task,
-            warnings,
-            existingDatas
-          )
-        } catch (err) {
-          console.warn(
-            'Warning: Unable to convert result file (' + err.message + ')'
-          )
-          warnings.push(
-            'Warning: Unable to convert result file (' + err.message + ')'
-          )
-        }
+        await processResult(
+          'final',
+          resultFile,
+          configuration,
+          availableFiles,
+          existingResults,
+          warnings,
+          simulationPath,
+          resultPath,
+          task
+        )
       })
     )
 
@@ -493,40 +424,17 @@ const getOutputs = async (
           .replace(/\[.*\]: /g, '')
           .trim()
 
-        // Check already existing
-        const existing = existingDatas.includes(dataFile)
-        if (existing) return
-
-        try {
-          // Get file
-          const file = availableFiles.find((f) =>
-            f.relativePath.includes(dataFile)
-          )
-          if (!file) return
-
-          const fileContent = await getFile(configuration, file.id)
-
-          // Write file
-          await Tools.writeFile(
-            path.join(simulationPath, dataPath),
-            dataFile,
-            fileContent
-          )
-
-          task.datas = [
-            ...(task.datas || []),
-            JSON.parse(fileContent.toString())
-          ]
-
-          existingDatas.push(dataFile)
-        } catch (err) {
-          console.warn(
-            'Warning: Unable to read data file (' + err.message + ')'
-          )
-          warnings.push(
-            'Warning: Unable to read data file (' + err.message + ')'
-          )
-        }
+        await processData(
+          'final',
+          dataFile,
+          configuration,
+          availableFiles,
+          existingDatas,
+          warnings,
+          simulationPath,
+          dataPath,
+          task
+        )
       })
     )
 
@@ -537,64 +445,172 @@ const getOutputs = async (
     return log
   }
 }
-
+/**
+ * Process result
+ * @param {string} Type
+ * @param {string} resultFile Result file
+ * @param {Array} availableFiles Available files
+ * @param {Array} existingResults Existing results
+ * @param {Arrays} warnings Warnings
+ * @param {string} simulationPath Simulation path
+ * @param {string} resultPath Result path
+ * @param {Object} task Task
+ */
 const processResult = async (
+  type,
   resultFile,
-  fileContent,
+  configuration,
+  availableFiles,
+  existingResults,
+  warnings,
   simulationPath,
   resultPath,
-  task,
-  warnings,
-  existingResults
+  task
 ) => {
   // Part path
   const partPath = resultFile.replace('.vtu', '')
 
-  // Write file
-  await Tools.writeFile(
-    path.join(simulationPath, resultPath),
-    resultFile,
-    fileContent
-  )
+  // Check already existing
+  const existing = existingResults.includes(resultFile)
+  if (existing) return
 
-  // Convert file
-  const three = await Services.toThree(
-    simulationPath,
-    path.join(resultPath, resultFile),
-    path.join(resultPath, partPath)
-  )
-  if (three.code !== 0) {
-    console.warn(
-      'Warning: Result converting process failed. Code ' + three.code
-    )
-    warnings.push(
-      'Warning: Result converting process failed. Code ' + three.code
-    )
-  } else if (three.error) {
-    console.warn(
-      'Warning: Result converting process failed (' + three.error + ')'
-    )
-    warnings.push(
-      'Warning: Result converting process failed (' + three.error + ')'
-    )
-  } else {
-    const results = three.data
-      ?.trim()
-      ?.split('\n')
-      .map((res) => JSON.parse(res))
+  try {
+    // Get file
+    let file
+    if (type === 'inrun') {
+      file = availableFiles.find((f) => f.path.includes(resultFile))
+    } else {
+      file = availableFiles.find((f) => f.relativePath.includes(resultFile))
+    }
 
-    task.files = [
-      ...(task.files || []),
-      ...results.map((result) => ({
-        fileName: resultFile,
-        originPath: resultPath,
-        name: result.name,
-        part: 'part.json',
-        partPath: result.path
-      }))
-    ]
-    // Update existing results
-    existingResults.push(resultFile)
+    if (!file) return
+
+    let fileContent
+    if (type === 'inrun') {
+      fileContent = await getInRunFile(configuration, file)
+      if (fileContent.detail)
+        throw new Error('Run is not active. Trying to get the file at the end')
+      if (typeof fileContent !== 'string')
+        throw new Error('Rescale empty response')
+    } else {
+      fileContent = await getFile(configuration, file.id)
+    }
+
+    // Write file
+    await Tools.writeFile(
+      path.join(simulationPath, resultPath),
+      resultFile,
+      fileContent
+    )
+
+    // Convert file
+    const three = await Services.toThree(
+      simulationPath,
+      path.join(resultPath, resultFile),
+      path.join(resultPath, partPath)
+    )
+    if (three.code !== 0) {
+      console.warn(
+        'Warning: Result converting process failed. Code ' + three.code
+      )
+      warnings.push(
+        'Warning: Result converting process failed. Code ' + three.code
+      )
+    } else if (three.error) {
+      console.warn(
+        'Warning: Result converting process failed (' + three.error + ')'
+      )
+      warnings.push(
+        'Warning: Result converting process failed (' + three.error + ')'
+      )
+    } else {
+      const results = three.data
+        ?.trim()
+        ?.split('\n')
+        .map((res) => JSON.parse(res))
+
+      task.files = [
+        ...(task.files || []),
+        ...results.map((result) => ({
+          fileName: resultFile,
+          originPath: resultPath,
+          name: result.name,
+          part: 'part.json',
+          partPath: result.path
+        }))
+      ]
+      // Update existing results
+      existingResults.push(resultFile)
+    }
+  } catch (err) {
+    console.warn('Warning: Unable to convert result file (' + err.message + ')')
+    warnings.push(
+      'Warning: Unable to convert result file (' + err.message + ')'
+    )
+  }
+}
+
+/**
+ * Process data
+ * @param {string} type Type
+ * @param {*} dataFile Data file
+ * @param {*} configuration Configuration
+ * @param {*} availableFiles Available files
+ * @param {*} existingDatas Existing datas
+ * @param {*} warnings Warnings
+ * @param {*} simulationPath Simulation path
+ * @param {*} dataPath Data path
+ * @param {*} task Task
+ */
+const processData = async (
+  type,
+  dataFile,
+  configuration,
+  availableFiles,
+  existingDatas,
+  warnings,
+  simulationPath,
+  dataPath,
+  task
+) => {
+  // Check already existing
+  const existing = existingDatas.includes(dataFile)
+  if (existing) return
+
+  try {
+    // Get file
+    let file
+    if (type === 'inrun') {
+      file = availableFiles.find((f) => f.path.includes(dataFile))
+    } else {
+      file = availableFiles.find((f) => f.relativePath.includes(dataFile))
+    }
+    if (!file) return
+
+    let fileContent
+    if (type === 'inrun') {
+      fileContent = await getInRunFile(configuration, file)
+      if (fileContent.detail)
+        throw new Error('Run is not active. Trying to get the file at the end')
+      if (typeof fileContent !== 'string')
+        throw new Error('Rescale empty response')
+    } else {
+      fileContent = await getFile(configuration, file.id)
+    }
+
+    // Write file
+    await Tools.writeFile(
+      path.join(simulationPath, dataPath),
+      dataFile,
+      fileContent
+    )
+
+    task.datas = [...(task.datas || []), JSON.parse(fileContent.toString())]
+
+    existingDatas.push(dataFile)
+  } catch (err) {
+    console.warn('Warning: Unable to read data file (' + err.message + ')')
+    warnings.push('Warning: Unable to read data file (' + err.message + ')')
   }
 }
 

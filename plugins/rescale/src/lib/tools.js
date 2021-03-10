@@ -293,68 +293,19 @@ const getInRunOutputs = async (
   dataPath,
   task
 ) => {
-  if (log.includes('PROCESS VTU FILE') || log.includes('PROCESS DATA FILE')) {
-    const lines = log.split('\n')
-    const resultLines = lines.filter((l) => l.includes('PROCESS VTU FILE'))
-    const dataLines = lines.filter((l) => l.includes('PROCESS DATA FILE'))
-
-    const nonResultLines = lines.filter(
-      (l) => !l.includes('PROCESS VTU FILE') && !l.includes('PROCESS DATA FILE')
-    )
-    const realLog = nonResultLines.join('\n')
-
-    // Get result
-    await Promise.all(
-      resultLines.map(async (line) => {
-        // New result
-        const resultFile = line
-          .replace('PROCESS VTU FILE', '')
-          .replace(/\[.*\]: /g, '')
-          .trim()
-
-        await processResult(
-          'inrun',
-          resultFile,
-          configuration,
-          availableFiles,
-          existingResults,
-          warnings,
-          simulationPath,
-          resultPath,
-          task
-        )
-      })
-    )
-
-    // Get data
-    await Promise.all(
-      dataLines.map(async (line) => {
-        // New data
-        const dataFile = line
-          .replace('PROCESS DATA FILE', '')
-          .replace(/\[.*\]: /g, '')
-          .trim()
-
-        await processData(
-          'inrun',
-          dataFile,
-          configuration,
-          availableFiles,
-          existingDatas,
-          warnings,
-          simulationPath,
-          dataPath,
-          task
-        )
-      })
-    )
-
-    // Return real log
-    return realLog
-  } else {
-    // This is just some log
-    return log
-  }
+  return processOutput(
+    'inrun',
+    configuration,
+    log,
+    availableFiles,
+    existingResults,
+    existingDatas,
+    warnings,
+    simulationPath,
+    resultPath,
+    dataPath,
+    task
+  )
 }
 
 /**
@@ -371,6 +322,48 @@ const getInRunOutputs = async (
  * @param {Object} task Task
  */
 const getOutputs = async (
+  configuration,
+  log,
+  availableFiles,
+  existingResults,
+  existingDatas,
+  warnings,
+  simulationPath,
+  resultPath,
+  dataPath,
+  task
+) => {
+  return processOutput(
+    'final',
+    configuration,
+    log,
+    availableFiles,
+    existingResults,
+    existingDatas,
+    warnings,
+    simulationPath,
+    resultPath,
+    dataPath,
+    task
+  )
+}
+
+/**
+ * Process output
+ * @param {string} type Type
+ * @param {Object} configuration Configuration
+ * @param {string} log Log
+ * @param {Array} availableFiles Available files
+ * @param {Array} existingResults Existing results
+ * @param {Array} existingDatas Existing datas
+ * @param {Array} warnings Warnings
+ * @param {string} simulationPath Simulation path
+ * @param {string} resultPath Result path
+ * @param {string} dataPath Data path
+ * @param {Object} task Task
+ */
+const processOutput = async (
+  type,
   configuration,
   log,
   availableFiles,
@@ -402,7 +395,7 @@ const getOutputs = async (
           .trim()
 
         await processResult(
-          'final',
+          type,
           resultFile,
           configuration,
           availableFiles,
@@ -425,7 +418,7 @@ const getOutputs = async (
           .trim()
 
         await processData(
-          'final',
+          type,
           dataFile,
           configuration,
           availableFiles,
@@ -445,6 +438,7 @@ const getOutputs = async (
     return log
   }
 }
+
 /**
  * Process result
  * @param {string} Type

@@ -111,29 +111,129 @@ describe('plugins/local/src/lib', () => {
   })
 
   it('computeSimulation', async () => {
-    //   mockFreefem.mockImplementation((path, script, callback) => {
-    //     callback({ pid: 'pid' })
-    //     callback({ data: 'PROCESS VTU FILE run/result.vtu\nreal log' })
-    //     callback({ data: 'PROCESS DATA FILE run/data.dat\nreal log' })
-    //     callback({ data: 'data' })
-    //     callback({ error: 'data' })
-    //     return 0
-    //   })
-    //   mockGmsh.mockImplementation((path, mesh, geometry, callback) => {
-    //     callback({ pid: 'pid' })
-    //     callback({ data: 'data' })
-    //     callback({ error: 'data' })
-    //     return 0
-    //   })
-    //   mockToThree.mockImplementation((path, fileIn, partPath) => {
-    //     callback({ pid: 'pid' })
-    //     callback({ data: 'file' })
-    //     callback({ data: '{ "name": "name", "path": "path" }' })
-    //     callback({ error: 'error' })
-    //     return 0
-    //   })
-    //   // Empty
-    //   await Local.computeSimulation('id', 'algorithm', {})
+    mockFreefem.mockImplementation((path, script, callback) => {
+      callback({ pid: 'pid' })
+      callback({ data: 'PROCESS VTU FILE run/result.vtu\nreal log' })
+      callback({ data: 'PROCESS DATA FILE run/data.dat\nreal log' })
+      callback({ data: 'data' })
+      callback({ error: 'data' })
+      return 0
+    })
+    mockToThree.mockImplementation(() => ({
+      code: 0,
+      error: '',
+      data: '{ "test": "test" }'
+    }))
+
+    // Empty
+    await Local.computeSimulation('id', 'algorithm', {})
+
+    // Three bad code
+    mockToThree.mockImplementation(() => ({
+      code: 1,
+      error: '',
+      data: '{ "test": "test" }'
+    }))
+    await Local.computeSimulation('id', 'algorithm', {})
+
+    // Three stderr
+    mockToThree.mockImplementation(() => ({
+      code: 0,
+      error: 'error',
+      data: '{ "test": "test" }'
+    }))
+    await Local.computeSimulation('id', 'algorithm', {})
+
+    // Three error && data error
+    mockToThree.mockImplementation(() => {
+      throw new Error()
+    })
+    JSON.parse = () => {
+      throw new Error()
+    }
+    await Local.computeSimulation('id', 'algorithm', {})
+
+    // With meshes
+    JSON.parse = () => ({})
+    mockGmsh.mockImplementation((path, mesh, geometry, callback) => {
+      callback({ pid: 'pid' })
+      callback({ data: 'data' })
+      callback({ error: 'data' })
+      return 0
+    })
+    mockToThree.mockImplementation(() => ({
+      code: 0,
+      error: '',
+      data: ''
+    }))
+    await Local.computeSimulation('id', 'algorithm', {
+      geometry: {
+        meshable: true,
+        file: {
+          originPath: 'originPath',
+          fileName: 'fileName'
+        }
+      },
+      boundaryConditions: {
+        index: 0,
+        key1: {},
+        key2: {
+          values: [
+            {
+              selected: [1]
+            }
+          ],
+          refineFactor: 5
+        }
+      }
+    })
+
+    // Meshing error
+    mockGmsh.mockImplementation(() => {
+      throw new Error()
+    })
+    try {
+      await Local.computeSimulation('id', 'algorithm', {
+        geometry: {
+          meshable: true,
+          file: {
+            originPath: 'originPath',
+            fileName: 'fileName'
+          }
+        }
+      })
+      expect(true).toBe(false)
+    } catch (err) {
+      expect(true).toBe(true)
+    } finally {
+      mockGmsh.mockImplementation(() => 0)
+    }
+
+    // Simulating error
+    mockFreefem.mockImplementation(() => 1)
+    try {
+      await Local.computeSimulation('id', 'algorithm', {})
+      expect(true).toBe(false)
+    } catch (err) {
+      expect(true).toBe(true)
+    } finally {
+      mockFreefem.mockImplementation(() => 0)
+    }
+
+    // Data
+    global.Date = {
+      now: () => 0
+    }
+    await Local.computeSimulation('id', 'algorithm', {
+      geometry: {
+        meshable: true,
+        file: {
+          originPath: 'originPath',
+          fileName: 'fileName'
+        }
+      }
+    })
+
     //   // With keys
     //   await Local.computeSimulation('id', 'algorithm', { key: {} })
     //   // With mesh

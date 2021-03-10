@@ -323,6 +323,12 @@ const getInRunOutputs = async (
           if (!file) return
 
           const fileContent = await getInRunFile(configuration, file)
+          if (fileContent.detail)
+            throw new Error(
+              'Run is not active. Trying to get the file at the end'
+            )
+          if (typeof fileContent !== 'string')
+            throw new Error('Rescale empty response')
 
           // Write file
           await Tools.writeFile(
@@ -404,6 +410,12 @@ const getInRunOutputs = async (
           if (!file) return
 
           const fileContent = await getInRunFile(configuration, file)
+          if (fileContent.detail)
+            throw new Error(
+              'Run is not active. Trying to get the file at the end'
+            )
+          if (typeof fileContent !== 'string')
+            throw new Error('Rescale empty response')
 
           // Write file
           await Tools.writeFile(

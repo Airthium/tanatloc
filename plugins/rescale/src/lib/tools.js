@@ -386,50 +386,50 @@ const processOutput = async (
     const realLog = nonResultLines.join('\n')
 
     // Get result
-    await Promise.all(
-      resultLines.map(async (line) => {
-        // New result
-        const resultFile = line
-          .replace('PROCESS VTU FILE', '')
-          .replace(/\[.*\]: /g, '')
-          .trim()
+    for (let i = 0; i < resultLines.length; ++i) {
+      const line = resultLines[i]
 
-        await processResult(
-          type,
-          resultFile,
-          configuration,
-          availableFiles,
-          existingResults,
-          warnings,
-          simulationPath,
-          resultPath,
-          task
-        )
-      })
-    )
+      // New result
+      const resultFile = line
+        .replace('PROCESS VTU FILE', '')
+        .replace(/\[.*\]: /g, '')
+        .trim()
+
+      await processResult(
+        type,
+        resultFile,
+        configuration,
+        availableFiles,
+        existingResults,
+        warnings,
+        simulationPath,
+        resultPath,
+        task
+      )
+    }
 
     // Get data
-    await Promise.all(
-      dataLines.map(async (line) => {
-        // New data
-        const dataFile = line
-          .replace('PROCESS DATA FILE', '')
-          .replace(/\[.*\]: /g, '')
-          .trim()
+    for (let i = 0; i < dataLines.length; ++i) {
+      const line = dataLines[i]
 
-        await processData(
-          type,
-          dataFile,
-          configuration,
-          availableFiles,
-          existingDatas,
-          warnings,
-          simulationPath,
-          dataPath,
-          task
-        )
-      })
-    )
+      // New data
+      const dataFile = line
+        .replace('PROCESS DATA FILE', '')
+        .replace(/\[.*\]: /g, '')
+        .trim()
+
+      await processData(
+        type,
+        dataFile,
+        configuration,
+        availableFiles,
+        existingDatas,
+        warnings,
+        simulationPath,
+        dataPath,
+        task
+      )
+    }
 
     // Return real log
     return realLog

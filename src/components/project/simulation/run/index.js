@@ -135,13 +135,17 @@ const Run = ({ project, simulation }) => {
                 .filter((value, index, self) => self.indexOf(value) === index)
 
               // Multiplicator
+              let multiplicator
+
               const multiplicatorPath = filter.multiplicator
-              const multiplicatorObject = multiplicatorPath.reduce(
-                (a, v) => a[v],
-                configuration
-              )
-              const multiplicator =
-                multiplicatorObject.value || multiplicatorObject.default
+              if (multiplicatorPath) {
+                const multiplicatorObject = multiplicatorPath.reduce(
+                  (a, v) => a[v],
+                  configuration
+                )
+                multiplicator =
+                  multiplicatorObject.value || multiplicatorObject.default
+              }
 
               // Set selector
               const resultIndex = newResults.length
@@ -150,8 +154,8 @@ const Run = ({ project, simulation }) => {
                   {filter.name}:{' '}
                   <Select
                     defaultValue={numbers[0]}
-                    options={numbers.map((n) => ({
-                      label: n * multiplicator,
+                    options={numbers.map((n, index) => ({
+                      label: multiplicator ? n * multiplicator : index,
                       value: n
                     }))}
                     style={{ width: '100%' }}

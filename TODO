@@ -2,7 +2,7 @@ Simulation:
 - weak coupling
 
 Rescale:
-- delete job & files after run and get data
+- delete job & files after run and get data - FIX DUPLICATE DATA
 - real-time results
 
 Project:

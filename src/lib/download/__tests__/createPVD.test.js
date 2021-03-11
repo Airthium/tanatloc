@@ -59,7 +59,12 @@ describe('src/lib/download/pvd', () => {
         }
       }
     }
-    const pvds = createPVD(simulation, files)
+    let pvds = createPVD(simulation, files)
+    expect(pvds).toEqual([{ name: 'Name.pvd', path: 'path' }])
+
+    // Without multiplicator
+    delete simulation.scheme.configuration.run.resultsFilters[0].multiplicator
+    pvds = createPVD(simulation, files)
     expect(pvds).toEqual([{ name: 'Name.pvd', path: 'path' }])
   })
 

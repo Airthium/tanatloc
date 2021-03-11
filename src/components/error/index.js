@@ -1,6 +1,17 @@
+import { useRouter } from 'next/router'
 import { Layout, Typography } from 'antd'
 
+/**
+ * Error page
+ * @param {Object} props Props
+ */
 function Error({ statusCode }) {
+  // Router
+  const router = useRouter()
+
+  /**
+   * Render
+   */
   return (
     <Layout>
       <Layout.Content className="NotFound">
@@ -15,7 +26,7 @@ function Error({ statusCode }) {
         <Typography.Title
           level={2}
           underline={true}
-          onClick={document.location.reload}
+          onClick={router.reload}
           style={{ cursor: 'pointer' }}
         >
           Please, refresh the page

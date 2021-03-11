@@ -64,8 +64,7 @@ describe('src/lib/tools', () => {
   })
 
   it('convert', async () => {
-    mockToThree.mockImplementation((path, fileIn, pathOut, callback) => {
-      callback({ error: 'error', data: 'data' })
+    mockToThree.mockImplementation((path, fileIn, pathOut) => {
       return { code: 0 }
     })
     await Tools.convert('location', { name: 'name' })

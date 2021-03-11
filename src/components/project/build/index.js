@@ -69,7 +69,7 @@ const Build = (project, filter, setTitle, setDescription) => {
     return (
       <Tooltip key={group.id} title={group.name}>
         <Avatar style={{ backgroundColor: Utils.stringToColor(group.name) }}>
-          {group.name[0].toUpperCase()}
+          {group.name?.[0]?.toUpperCase()}
         </Avatar>
       </Tooltip>
     )

@@ -118,7 +118,7 @@ const Data = ({ simulation }) => {
     const keys = []
     const lines = columnSelection
       .map((selection, index) => {
-        if (!selection.checked) return
+        if (!selection?.checked) return
 
         const key = infos.camelNames[index]
         const name = infos.names[index]

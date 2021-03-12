@@ -87,7 +87,7 @@ describe('src/lib/workspace', () => {
       groups: ['id']
     }))
     mockUserGet.mockImplementation(() => ({
-      username: 'username'
+      email: 'email'
     }))
     mockGroupGet.mockImplementation(() => ({
       name: 'name'
@@ -102,8 +102,8 @@ describe('src/lib/workspace', () => {
     expect(mockDelProject).toHaveBeenCalledTimes(0)
     expect(workspace).toEqual({
       name: 'name',
-      owners: [{ id: 'id', username: 'username' }],
-      users: [{ id: 'id', username: 'username' }],
+      owners: [{ id: 'id', email: 'email' }],
+      users: [{ id: 'id', email: 'email' }],
       groups: [{ id: 'id', name: 'name' }]
     })
   })

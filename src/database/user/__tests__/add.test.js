@@ -14,15 +14,14 @@ describe('src/database/user/add', () => {
       if (query.includes('SELECT')) return { rows: [] }
       else return { rows: [{ id: 'id' }] }
     })
-    user = await add({ username: 'username', password: 'password' })
+    user = await add({ email: 'email', password: 'password' })
     expect(user).toEqual({
-      username: 'username',
       id: 'id'
     })
 
     // Already existing
     mockQuery.mockImplementation(() => ({ rows: [{}] }))
-    user = await add({ username: 'username', password: 'password' })
+    user = await add({ email: 'email', password: 'password' })
     expect(user).toEqual({
       alreadyExists: true
     })

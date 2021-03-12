@@ -120,7 +120,7 @@ const Users = () => {
       ])
 
       // Mutate
-      newUser.email = value.email
+      newUser.email = values.email
       newUser.firstname = values.firstname
       newUser.lastname = values.lastname
       newUser.superuser = values.superuser

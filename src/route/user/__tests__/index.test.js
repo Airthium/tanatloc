@@ -42,7 +42,7 @@ describe('src/route/user', () => {
     }))
     mockGet.mockReset()
     mockGet.mockImplementation(() => ({
-      username: 'username'
+      email: 'email'
     }))
     mockUpdate.mockReset()
     mockDel.mockReset()
@@ -77,7 +77,7 @@ describe('src/route/user', () => {
     expect(mockError).toHaveBeenCalledTimes(0)
     expect(response).toEqual({
       user: {
-        username: 'username'
+        email: 'email'
       }
     })
 

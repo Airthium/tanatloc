@@ -4,13 +4,13 @@ import { databases } from '@/config/db'
 /**
  * Add
  * @memberof module:src/database/user
- * @param {Object} user User {  }
+ * @param {Object} user User { email, password }
  */
-const add = async ({ username, password }) => {
+const add = async ({ email, password }) => {
   // Check email
   const existing = await query(
     'SELECT id FROM ' + databases.USERS + ' WHERE email = $1',
-    [username]
+    [email]
   )
   if (existing.rows.length)
     return {
@@ -21,12 +21,11 @@ const add = async ({ username, password }) => {
   const response = await query(
     'INSERT INTO ' +
       databases.USERS +
-      " (username, email, password, isvalidated, lastmodificationdate, superuser) VALUES ($1, $2, crypt($3, gen_salt('bf')), $4, to_timestamp($5), $6) returning id",
-    [username, username, password, true, Date.now(), false]
+      " (email, password, isvalidated, lastmodificationdate, superuser) VALUES ($1, crypt($2, gen_salt('bf')), $3, to_timestamp($4), $5) returning id",
+    [email, password, true, Date.now(), false]
   )
 
   const user = response.rows[0]
-  user.username = username
 
   return user
 }

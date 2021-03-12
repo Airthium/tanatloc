@@ -95,7 +95,7 @@ const Users = () => {
     try {
       // Add user
       const newUser = await UserAPI.add({
-        username: values.email,
+        email: values.email,
         password: values.password
       })
       if (newUser.alreadyExists) {
@@ -120,7 +120,7 @@ const Users = () => {
       ])
 
       // Mutate
-      newUser.email = newUser.username
+      newUser.email = value.email
       newUser.firstname = values.firstname
       newUser.lastname = values.lastname
       newUser.superuser = values.superuser

@@ -46,7 +46,7 @@ const Password = () => {
     try {
       // Check current password
       const current = await UserAPI.check({
-        username: user.email,
+        email: user.email,
         password: data.password
       })
 

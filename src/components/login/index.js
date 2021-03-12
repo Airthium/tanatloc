@@ -56,7 +56,7 @@ const Login = () => {
 
   /**
    * Handle login
-   * @param {Object} values Values { username, password }
+   * @param {Object} values Values { email, password }
    */
   const onLogin = async (values) => {
     // State
@@ -136,7 +136,7 @@ const Login = () => {
                   />
                 )}
                 <Form.Item
-                  name="username"
+                  name="email"
                   label="Your email address"
                   rules={[
                     { required: true, message: 'Please enter your email' }

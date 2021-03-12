@@ -42,7 +42,7 @@ describe('src/route/user', () => {
     }))
     mockGet.mockReset()
     mockGet.mockImplementation(() => ({
-      username: 'username'
+      email: 'email'
     }))
     mockUpdate.mockReset()
     mockDel.mockReset()
@@ -55,7 +55,8 @@ describe('src/route/user', () => {
     response = undefined
   })
 
-  it('no session', async () => {
+  it('GET', async () => {
+    // No session
     await user(req, res)
     expect(mockSession).toHaveBeenCalledTimes(1)
     expect(mockAdd).toHaveBeenCalledTimes(0)
@@ -63,14 +64,12 @@ describe('src/route/user', () => {
     expect(mockUpdate).toHaveBeenCalledTimes(0)
     expect(mockDel).toHaveBeenCalledTimes(0)
     expect(mockError).toHaveBeenCalledTimes(0)
-    expect(response).toBe(undefined)
-  })
+    expect(response).toBe()
 
-  it('GET', async () => {
+    // With session
     mockSession.mockImplementation(() => 'id')
-
     await user(req, res)
-    expect(mockSession).toHaveBeenCalledTimes(1)
+    expect(mockSession).toHaveBeenCalledTimes(2)
     expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockGet).toHaveBeenCalledTimes(1)
     expect(mockUpdate).toHaveBeenCalledTimes(0)
@@ -78,7 +77,7 @@ describe('src/route/user', () => {
     expect(mockError).toHaveBeenCalledTimes(0)
     expect(response).toEqual({
       user: {
-        username: 'username'
+        email: 'email'
       }
     })
 
@@ -87,7 +86,7 @@ describe('src/route/user', () => {
       throw new Error('test')
     })
     await user(req, res)
-    expect(mockSession).toHaveBeenCalledTimes(2)
+    expect(mockSession).toHaveBeenCalledTimes(3)
     expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockGet).toHaveBeenCalledTimes(2)
     expect(mockUpdate).toHaveBeenCalledTimes(0)
@@ -127,10 +126,20 @@ describe('src/route/user', () => {
   it('PUT', async () => {
     req.method = 'PUT'
 
-    mockSession.mockImplementation(() => true)
-
+    // No session
     await user(req, res)
     expect(mockSession).toHaveBeenCalledTimes(1)
+    expect(mockAdd).toHaveBeenCalledTimes(0)
+    expect(mockGet).toHaveBeenCalledTimes(0)
+    expect(mockUpdate).toHaveBeenCalledTimes(0)
+    expect(mockDel).toHaveBeenCalledTimes(0)
+    expect(mockError).toHaveBeenCalledTimes(0)
+    expect(response).toBe()
+
+    // With session
+    mockSession.mockImplementation(() => true)
+    await user(req, res)
+    expect(mockSession).toHaveBeenCalledTimes(2)
     expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockGet).toHaveBeenCalledTimes(0)
     expect(mockUpdate).toHaveBeenCalledTimes(1)
@@ -143,7 +152,7 @@ describe('src/route/user', () => {
       throw new Error('test')
     })
     await user(req, res)
-    expect(mockSession).toHaveBeenCalledTimes(2)
+    expect(mockSession).toHaveBeenCalledTimes(3)
     expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockGet).toHaveBeenCalledTimes(0)
     expect(mockUpdate).toHaveBeenCalledTimes(2)
@@ -155,10 +164,20 @@ describe('src/route/user', () => {
   it('DELETE', async () => {
     req.method = 'DELETE'
 
-    mockSession.mockImplementation(() => true)
-
+    // No session
     await user(req, res)
     expect(mockSession).toHaveBeenCalledTimes(1)
+    expect(mockAdd).toHaveBeenCalledTimes(0)
+    expect(mockGet).toHaveBeenCalledTimes(0)
+    expect(mockUpdate).toHaveBeenCalledTimes(0)
+    expect(mockDel).toHaveBeenCalledTimes(0)
+    expect(mockError).toHaveBeenCalledTimes(0)
+    expect(response).toBe()
+
+    // With session
+    mockSession.mockImplementation(() => true)
+    await user(req, res)
+    expect(mockSession).toHaveBeenCalledTimes(2)
     expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockGet).toHaveBeenCalledTimes(0)
     expect(mockUpdate).toHaveBeenCalledTimes(0)
@@ -171,7 +190,7 @@ describe('src/route/user', () => {
       throw new Error('test')
     })
     await user(req, res)
-    expect(mockSession).toHaveBeenCalledTimes(2)
+    expect(mockSession).toHaveBeenCalledTimes(3)
     expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockGet).toHaveBeenCalledTimes(0)
     expect(mockUpdate).toHaveBeenCalledTimes(0)
@@ -183,10 +202,8 @@ describe('src/route/user', () => {
   it('wrong method', async () => {
     req.method = 'SOMETHING'
 
-    mockSession.mockImplementation(() => true)
-
     await user(req, res)
-    expect(mockSession).toHaveBeenCalledTimes(1)
+    expect(mockSession).toHaveBeenCalledTimes(0)
     expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockGet).toHaveBeenCalledTimes(0)
     expect(mockUpdate).toHaveBeenCalledTimes(0)

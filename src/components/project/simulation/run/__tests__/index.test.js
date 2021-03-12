@@ -382,6 +382,54 @@ describe('src/components/project/simulation/run', () => {
     act(() => wrapper.find('Button').at(6).props().onClick())
     wrapper.update()
 
+    // With filters without multiplicator
+    wrapper.unmount()
+    simulation.scheme.configuration.run.resultsFilters = [
+      {
+        name: 'Time',
+        prefixPattern: 'Result_',
+        suffixPattern: '.vtu',
+        pattern: 'Result_\\d+.vtu'
+      }
+    ]
+    simulation.scheme.configuration.parameters.time = {
+      children: [{}, { default: 0.1 }]
+    }
+    mockSimulation.mockImplementation(() => ({
+      scheme: {
+        configuration: {
+          run: {
+            done: true
+          }
+        }
+      },
+      tasks: [
+        {
+          type: 'mesh',
+          status: 'finish',
+          file: {
+            fileName: 'fileName'
+          }
+        },
+        {
+          type: 'simulation',
+          status: 'process',
+          files: [
+            {
+              name: 'name',
+              fileName: 'Result_0.vtu'
+            },
+            {
+              name: 'name',
+              fileName: 'Result_1.vtu'
+            }
+          ]
+        }
+      ]
+    }))
+    wrapper = mount(<Run project={project} simulation={simulation} />)
+    expect(wrapper).toBeDefined()
+
     // With empty filter
     wrapper.unmount()
     mockSimulation.mockImplementation(() => ({

@@ -8,10 +8,10 @@ import Workspace from '../workspace'
 
 /**
  * Add user
- * @param {Object} user { username, password }
+ * @param {Object} user { email, password }
  */
-const add = async ({ username, password }) => {
-  return UserDB.add({ username, password })
+const add = async ({ email, password }) => {
+  return UserDB.add({ email, password })
 }
 
 /**
@@ -48,10 +48,10 @@ const getAll = async (data) => {
 
 /**
  * Login
- * @param {Object} data Data { username, password }
+ * @param {Object} data Data { email, password }
  */
-const login = async ({ username, password }) => {
-  const user = await UserDB.getByUsernameAndPassword({ username, password })
+const login = async ({ email, password }) => {
+  const user = await UserDB.getByUsernameAndPassword({ email, password })
 
   // Check user
   if (!user) return null
@@ -59,7 +59,7 @@ const login = async ({ username, password }) => {
   // Return
   return {
     ...user,
-    username: username
+    email: email
   }
 }
 

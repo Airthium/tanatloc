@@ -303,29 +303,29 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
       status = await getStatus(cloudConfiguration, jobId)
 
       if (status === 'Executing') {
-        // // Check in-run files
-        // const inRunFiles = await getInRunFiles(cloudConfiguration, jobId)
-        // // Log
-        // const logFile = inRunFiles.find((f) => f.path === logFileName)
-        // if (logFile) {
-        //   const log = await getInRunFile(cloudConfiguration, logFile)
-        //   // Check for results or data
-        //   const realLog = await getInRunOutputs(
-        //     cloudConfiguration,
-        //     log,
-        //     inRunFiles,
-        //     results,
-        //     datas,
-        //     warnings,
-        //     simulationPath,
-        //     path.join('run', resultPath),
-        //     path.join('run', dataPath),
-        //     simulationTask
-        //   )
-        //   // Log
-        //   simulationTask.log =
-        //     currentLog + realLog.replace(/\[.*\]: /g, '') + warnings.join('\n')
-        // }
+        // Check in-run files
+        const inRunFiles = await getInRunFiles(cloudConfiguration, jobId)
+        // Log
+        const logFile = inRunFiles.find((f) => f.path === logFileName)
+        if (logFile) {
+          const log = await getInRunFile(cloudConfiguration, logFile)
+          // Check for results or data
+          const realLog = await getInRunOutputs(
+            cloudConfiguration,
+            log,
+            inRunFiles,
+            results,
+            datas,
+            warnings,
+            simulationPath,
+            path.join('run', resultPath),
+            path.join('run', dataPath),
+            simulationTask
+          )
+          // Log
+          simulationTask.log =
+            currentLog + realLog.replace(/\[.*\]: /g, '') + warnings.join('\n')
+        }
       } else if (status === 'Completed') {
         const files = await getFiles(cloudConfiguration, jobId)
 

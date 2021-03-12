@@ -3,15 +3,15 @@ import Caller from '@/api/call'
 /**
  * Check an user
  * @memberof module:src/api/user
- * @param {Object} data Data { username, password }
+ * @param {Object} data Data { email, password }
  */
-const check = async ({ username, password }) => {
+const check = async ({ email, password }) => {
   return Caller.call('/api/user/check', {
     method: 'POST',
     headers: {
       Accept: 'application/json'
     },
-    body: JSON.stringify({ username, password })
+    body: JSON.stringify({ email, password })
   })
 }
 

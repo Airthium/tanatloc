@@ -33,13 +33,17 @@ const createPVD = (simulation, files) => {
       vtuFiles.sort((a, b) => a.number - b.number)
 
       // Multiplicator
+      let multiplicator
+
       const multiplicatorPath = filter.multiplicator
-      const multiplicatorObject = multiplicatorPath.reduce(
-        (a, v) => a[v],
-        simulation.scheme.configuration
-      )
-      const multiplicator =
-        multiplicatorObject.value || multiplicatorObject.default
+      if (multiplicatorPath) {
+        const multiplicatorObject = multiplicatorPath.reduce(
+          (a, v) => a[v],
+          simulation.scheme.configuration
+        )
+
+        multiplicator = multiplicatorObject.value || multiplicatorObject.default
+      }
 
       // PVD file
       const pvdName = filter.name + '.pvd'
@@ -56,10 +60,10 @@ const createPVD = (simulation, files) => {
       pvd.write('\tcompressor="vtkZLibDataCompressor">\n')
       pvd.write('\t<Collection>\n')
 
-      vtuFiles.forEach((file) => {
+      vtuFiles.forEach((file, index) => {
         pvd.write(
           '\t\t<DataSet timestep="' +
-            file.number * multiplicator +
+            (multiplicator ? file.number * multiplicator : index) +
             '" group="" part="0"\n'
         )
         pvd.write('\t\t\tfile="result/' + file.name + '"/>\n')

@@ -13,7 +13,6 @@ const get = async (id, data, key = 'id') => {
 
   const user = response.rows[0]
 
-  user && (user.username = user.email) // TODO to replace
   user && (user[key] = id)
 
   return user

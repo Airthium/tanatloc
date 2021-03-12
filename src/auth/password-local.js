@@ -3,12 +3,15 @@
 import Local from 'passport-local'
 import UserDB from '@/database/user'
 
-export const localStrategy = new Local.Strategy((username, password, done) => {
-  UserDB.getByUsernameAndPassword({ username, password })
-    .then((user) => {
-      done(null, user)
-    })
-    .catch((error) => {
-      done(error)
-    })
-})
+export const localStrategy = new Local.Strategy(
+  { emailField: 'email', passwordField: 'password' },
+  (email, password, done) => {
+    UserDB.getByUsernameAndPassword({ email, password })
+      .then((user) => {
+        done(null, user)
+      })
+      .catch((error) => {
+        done(error)
+      })
+  }
+)

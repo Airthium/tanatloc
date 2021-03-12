@@ -61,9 +61,9 @@ const Signup = () => {
 
   /**
    * Handle signup
-   * @param {Object} values { username, password, passwordConfirmation }
+   * @param {Object} values { email, password, passwordConfirmation }
    */
-  const onSignup = async ({ username, password, passwordConfirmation }) => {
+  const onSignup = async ({ email, password, passwordConfirmation }) => {
     // State
     setChecking(true)
     setSignupErr(false)
@@ -71,7 +71,7 @@ const Signup = () => {
 
     // Signup
     try {
-      const newUser = await UserAPI.add({ username, password })
+      const newUser = await UserAPI.add({ email, password })
       if (newUser.alreadyExists) {
         setSignupErr(true)
         setChecking(false)
@@ -79,7 +79,7 @@ const Signup = () => {
       }
 
       // Login
-      const loggedUser = await login({ username, password })
+      const loggedUser = await login({ email, password })
       mutateUser(loggedUser)
       router.push('/dashboard')
     } catch (err) {
@@ -150,7 +150,7 @@ const Signup = () => {
                     />
                   )}
                   <Form.Item
-                    name="username"
+                    name="email"
                     label="Enter your email address"
                     rules={[
                       { required: true, message: 'Please enter your email' }

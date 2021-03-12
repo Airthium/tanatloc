@@ -101,6 +101,10 @@ const createTables = async () => {
     console.info(' + User table')
     await createUsersTable()
 
+    // Organizations
+    console.info(' + Organization table')
+    await createOrganizationTable()
+
     // Groups
     console.info(' + Group table')
     await createGroupsTable()
@@ -201,16 +205,34 @@ const createUsersTable = async () => {
           avatar uuid REFERENCES ` +
         databases.AVATARS +
         `(id) ON DELETE SET NULL,
-          username TEXT NOT NULL UNIQUE,
           isValidated BOOLEAN NOT NULL,
           lastModificationDate TIMESTAMP NOT NULL,
           superuser BOOLEAN NOT NULL,
           password TEXT,
           passwordLastChanged TIMESTAMP,
+          organizations uuid[],
           groups uuid[],
           workspaces uuid[],
           plugins jsonb[]
         )`
+    ))
+}
+
+/**
+ * Create organization
+ * @memberof module: install
+ */
+const createOrganizationTable = async () => {
+  !(await checkTable(databases.ORGANIZATIONS)) &&
+    (await query(
+      `CREATE TABLE IF NOT EXISTS ` +
+        databases.ORGANIZATIONS +
+        ` (
+    id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    name TEXT,
+    owners uuid[],
+    users uuid[]
+  )`
     ))
 }
 
@@ -325,11 +347,11 @@ const createAdmin = async () => {
     await query(
       'INSERT INTO ' +
         databases.USERS +
-        " (email, username, password, workspaces, isValidated, lastModificationDate, superuser) VALUES ($1, $2, crypt($3, gen_salt('bf')), $4, $5, to_timestamp($6), $7)",
-      ['admin', 'admin', password, [], true, Date.now() / 1000, true]
+        " (email, password, workspaces, isValidated, lastModificationDate, superuser) VALUES ($1, crypt($2, gen_salt('bf')), $3, $4, to_timestamp($5), $6)",
+      ['admin', password, [], true, Date.now() / 1000, true]
     )
     console.info(' Administrator account:')
-    console.info(' - username: admin')
+    console.info(' - email: admin')
     console.info(' - password: ' + password)
   }
 }

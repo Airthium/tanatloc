@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router'
-import { Layout, PageHeader, Tabs, Typography } from 'antd'
+import { Divider, Layout, PageHeader, Tabs, Typography } from 'antd'
 
 import Users from './users'
 import Groups from './groups'
@@ -50,6 +50,11 @@ const Administration = () => {
           <Typography.Title level={2} className="pageheader-name">
             Administration
           </Typography.Title>
+        }
+        footer={
+          <div>
+            <Divider className="Tanatloc-divider" />
+          </div>
         }
       />
       <Layout.Content>

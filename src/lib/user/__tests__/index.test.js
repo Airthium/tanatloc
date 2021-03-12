@@ -50,7 +50,7 @@ describe('src/lib/user', () => {
   })
 
   it('add', async () => {
-    const user = await User.add({ username: 'username', password: 'password' })
+    const user = await User.add({ email: 'email', password: 'password' })
     expect(user).toEqual({ id: 'id' })
   })
 
@@ -60,7 +60,7 @@ describe('src/lib/user', () => {
     // Normal
     mockGet.mockImplementation(() => ({
       id: 'id',
-      username: 'username'
+      email: 'email'
     }))
     user = await User.get('id', [])
     expect(mockGet).toHaveBeenCalledTimes(1)
@@ -70,12 +70,12 @@ describe('src/lib/user', () => {
     expect(mockReadAvatar).toHaveBeenCalledTimes(0)
     expect(mockDelAvatar).toHaveBeenCalledTimes(0)
     expect(mockDelWorkspace).toHaveBeenCalledTimes(0)
-    expect(user).toEqual({ id: 'id', username: 'username' })
+    expect(user).toEqual({ id: 'id', email: 'email' })
 
     // With avatar
     mockGet.mockImplementation(() => ({
       id: 'id',
-      username: 'username',
+      email: 'email',
       avatar: 'avatar'
     }))
     mockReadAvatar.mockImplementation(() => 'avatar')
@@ -87,7 +87,7 @@ describe('src/lib/user', () => {
     expect(mockReadAvatar).toHaveBeenCalledTimes(1)
     expect(mockDelAvatar).toHaveBeenCalledTimes(0)
     expect(mockDelWorkspace).toHaveBeenCalledTimes(0)
-    expect(user).toEqual({ id: 'id', username: 'username', avatar: 'avatar' })
+    expect(user).toEqual({ id: 'id', email: 'email', avatar: 'avatar' })
 
     mockReadAvatar.mockImplementation(() => {
       throw new Error('test')
@@ -100,7 +100,7 @@ describe('src/lib/user', () => {
     expect(mockReadAvatar).toHaveBeenCalledTimes(2)
     expect(mockDelAvatar).toHaveBeenCalledTimes(0)
     expect(mockDelWorkspace).toHaveBeenCalledTimes(0)
-    expect(user).toEqual({ id: 'id', username: 'username', avatar: undefined })
+    expect(user).toEqual({ id: 'id', email: 'email', avatar: undefined })
   })
 
   it('getAll', async () => {
@@ -114,7 +114,7 @@ describe('src/lib/user', () => {
     let user
 
     // Empty
-    user = await User.login({ username: 'username' })
+    user = await User.login({ email: 'email' })
     expect(mockGet).toHaveBeenCalledTimes(0)
     expect(mockGetByUsernameAndPassword).toHaveBeenCalledTimes(1)
     expect(mockUpdate).toHaveBeenCalledTimes(0)
@@ -127,9 +127,9 @@ describe('src/lib/user', () => {
     // Logged
     mockGetByUsernameAndPassword.mockImplementation(() => ({
       id: 'id',
-      username: 'username'
+      email: 'email'
     }))
-    user = await User.login({ username: 'username' })
+    user = await User.login({ email: 'email' })
     expect(mockGet).toHaveBeenCalledTimes(0)
     expect(mockGetByUsernameAndPassword).toHaveBeenCalledTimes(2)
     expect(mockUpdate).toHaveBeenCalledTimes(0)
@@ -137,7 +137,7 @@ describe('src/lib/user', () => {
     expect(mockReadAvatar).toHaveBeenCalledTimes(0)
     expect(mockDelAvatar).toHaveBeenCalledTimes(0)
     expect(mockDelWorkspace).toHaveBeenCalledTimes(0)
-    expect(user).toEqual({ id: 'id', username: 'username' })
+    expect(user).toEqual({ id: 'id', email: 'email' })
   })
 
   it('update', async () => {

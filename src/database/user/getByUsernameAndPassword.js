@@ -2,16 +2,16 @@ import query from '..'
 import { databases } from '@/config/db'
 
 /**
- * Get by username and password
+ * Get by email and password
  * @memberof module:src/database/user
- * @param {Object} user User { username, password }
+ * @param {Object} user User { email, password }
  */
-const getByUsernameAndPassword = async ({ username, password }) => {
+const getByUsernameAndPassword = async ({ email, password }) => {
   const response = await query(
     'SELECT id FROM ' +
       databases.USERS +
       ' WHERE email = $1 AND password = crypt($2, password)',
-    [username, password]
+    [email, password]
   )
 
   return response.rows[0]

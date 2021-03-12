@@ -2,16 +2,16 @@ import { localStrategy } from '../password-local'
 
 jest.mock('passport-local', () => ({
   Strategy: class MockStrategy {
-    constructor(func) {
-      func('username', 'password', () => {})
+    constructor(param, func) {
+      func('email', 'password', () => {})
       func(undefined, undefined, () => {})
     }
   }
 }))
 
 jest.mock('@/database/user', () => ({
-  getByUsernameAndPassword: async ({ username, password }) => {
-    if (!username) throw new Error()
+  getByUsernameAndPassword: async ({ email, password }) => {
+    if (!email) throw new Error()
   }
 }))
 

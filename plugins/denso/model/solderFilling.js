@@ -191,6 +191,14 @@ const solderFilling = {
         {
           name: 'phi'
         }
+      ],
+      resultsFilters: [
+        {
+          name: 'Time',
+          prefixPattern: 'phi.',
+          suffixPattern: '.vtu',
+          pattern: 'phi.\\d+.vtu'
+        }
       ]
     }
   }

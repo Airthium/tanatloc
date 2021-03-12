@@ -76,7 +76,7 @@ describe('src/components/signup', () => {
       throw new Error()
     })
     await wrapper.find('ForwardRef(InternalForm)').props().onFinish({
-      username: 'username',
+      email: 'email',
       password: 'password',
       passwordConfirmation: 'password'
     })
@@ -86,7 +86,7 @@ describe('src/components/signup', () => {
       alreadyExists: true
     }))
     await wrapper.find('ForwardRef(InternalForm)').props().onFinish({
-      username: 'username',
+      email: 'email',
       password: 'password',
       passwordConfirmation: 'password'
     })
@@ -94,7 +94,7 @@ describe('src/components/signup', () => {
     // Normal
     mockAdd.mockImplementation(() => ({}))
     await wrapper.find('ForwardRef(InternalForm)').props().onFinish({
-      username: 'username',
+      email: 'email',
       password: 'password',
       passwordConfirmation: 'password'
     })
@@ -127,7 +127,7 @@ describe('src/components/signup', () => {
       alreadyExists: true
     }))
     await wrapper.find('ForwardRef(InternalForm)').props().onFinish({
-      username: 'username',
+      email: 'email',
       password: 'password',
       passwordConfirmation: 'password'
     })

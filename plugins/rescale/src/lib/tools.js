@@ -385,29 +385,6 @@ const processOutput = async (
     )
     const realLog = nonResultLines.join('\n')
 
-    // Get result
-    for (let i = 0; i < resultLines.length; ++i) {
-      const line = resultLines[i]
-
-      // New result
-      const resultFile = line
-        .replace('PROCESS VTU FILE', '')
-        .replace(/\[.*\]: /g, '')
-        .trim()
-
-      await processResult(
-        type,
-        resultFile,
-        configuration,
-        availableFiles,
-        existingResults,
-        warnings,
-        simulationPath,
-        resultPath,
-        task
-      )
-    }
-
     // Get data
     for (let i = 0; i < dataLines.length; ++i) {
       const line = dataLines[i]
@@ -427,6 +404,29 @@ const processOutput = async (
         warnings,
         simulationPath,
         dataPath,
+        task
+      )
+    }
+
+    // Get result
+    for (let i = 0; i < resultLines.length; ++i) {
+      const line = resultLines[i]
+
+      // New result
+      const resultFile = line
+        .replace('PROCESS VTU FILE', '')
+        .replace(/\[.*\]: /g, '')
+        .trim()
+
+      await processResult(
+        type,
+        resultFile,
+        configuration,
+        availableFiles,
+        existingResults,
+        warnings,
+        simulationPath,
+        resultPath,
         task
       )
     }

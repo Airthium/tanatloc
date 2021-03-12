@@ -296,12 +296,11 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
     // Monitoring
     let status
     const currentLog = simulationTask.log
+    const results = []
+    const datas = []
+    const warnings = []
     while (status !== 'Completed') {
       status = await getStatus(cloudConfiguration, jobId)
-
-      const results = []
-      const datas = []
-      const warnings = []
 
       if (status === 'Executing') {
         // Check in-run files

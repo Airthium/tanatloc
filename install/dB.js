@@ -102,7 +102,7 @@ const createTables = async () => {
     await createUsersTable()
 
     // Organizations
-    console.ingo(' + Organization table')
+    console.info(' + Organization table')
     await createOrganizationTable()
 
     // Groups
@@ -223,16 +223,15 @@ const createUsersTable = async () => {
  * @memberof module: install
  */
 const createOrganizationTable = async () => {
-  !(await checkTable(database.ORGANIZATIONS)) &&
+  !(await checkTable(databases.ORGANIZATIONS)) &&
     (await query(
       `CREATE TABLE IF NOT EXISTS ` +
-        databases.GROUPS +
+        databases.ORGANIZATIONS +
         ` (
     id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
     name TEXT,
-    users uuid[],
-    workspaces uuid[],
-    projects uuid[]
+    owners uuid[],
+    users uuid[]
   )`
     ))
 }

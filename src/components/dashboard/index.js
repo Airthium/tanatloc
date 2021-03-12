@@ -3,7 +3,7 @@
 import { useRouter } from 'next/router'
 import { useState, useEffect } from 'react'
 import { Layout, Menu } from 'antd'
-import {
+import Icon, {
   AppstoreFilled,
   ControlOutlined,
   ShareAltOutlined,
@@ -11,6 +11,7 @@ import {
   QuestionCircleFilled,
   LogoutOutlined
 } from '@ant-design/icons'
+import Usergroup from '/public/icons/usergroup'
 
 import { Error } from '@/components/assets/notification'
 
@@ -18,6 +19,7 @@ import Loading from '@/components/loading'
 import Workspace from '@/components/workspace'
 import Add from '@/components/workspace/add'
 import Account from '@/components/account'
+import Organizations from '@/components/organizations'
 import Administration from '@/components/administration'
 import Help from '@/components/help'
 
@@ -51,6 +53,10 @@ const menuItems = {
   account: {
     label: 'Account Settings',
     key: 'account'
+  },
+  organizations: {
+    label: 'Organizations',
+    key: 'organzations'
   },
   administration: {
     label: 'Administration',
@@ -193,6 +199,9 @@ const Dashboard = () => {
     case menuItems.account.key:
       displayed = <Account />
       break
+    case menuItems.organizations.key:
+      displayed = <Organizations />
+      break
     case menuItems.administration.key:
       displayed = <Administration />
       break
@@ -244,6 +253,12 @@ const Dashboard = () => {
               </Menu.SubMenu>
               <Menu.Item key={menuItems.account.key} icon={<SettingFilled />}>
                 {menuItems.account.label}
+              </Menu.Item>
+              <Menu.Item
+                key={menuItems.organizations.key}
+                icon={<Icon component={Usergroup} />}
+              >
+                {menuItems.organizations.label}
               </Menu.Item>
               {user.superuser && (
                 <Menu.Item

@@ -1,4 +1,4 @@
-/** @module 'src/components/workspace */
+/** @module components/workspace */
 
 import { useState } from 'react'
 import {

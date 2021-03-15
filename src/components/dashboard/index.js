@@ -1,4 +1,4 @@
-/** @module 'src/components/dashboard */
+/** @module components/dashboard */
 
 import { useRouter } from 'next/router'
 import { useState, useEffect } from 'react'

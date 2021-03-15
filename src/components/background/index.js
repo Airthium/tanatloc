@@ -1,4 +1,4 @@
-/** @module 'src/components/background */
+/** @module components/background */
 
 import { useRef, useEffect } from 'react'
 import {

@@ -1,4 +1,4 @@
-/** @module 'src/components/assets/selector */
+/** @module components/assets/selector */
 
 import { useState, useEffect } from 'react'
 import { Button, Card, Divider, Space, Tag } from 'antd'

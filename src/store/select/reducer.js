@@ -1,4 +1,4 @@
-/** @module 'src/store/select */
+/** @module store/select */
 
 import { selectActionTypes } from './action'
 

@@ -1,7 +1,4 @@
-import reducer, {
-  selectActionTypes,
-  selectInitialState
-} from '@/store/select/reducer'
+import reducer, { selectInitialState } from '@/store/select/reducer'
 
 jest.mock('@/store/select/action', () => ({
   selectActionTypes: {

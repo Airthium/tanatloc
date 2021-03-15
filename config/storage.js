@@ -1,3 +1,5 @@
+/** @module config/storage */
+
 const path = require('path')
 const os = require('os')
 

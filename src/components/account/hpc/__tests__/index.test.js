@@ -30,7 +30,7 @@ jest.mock('@/api/plugin', () => ({
 }))
 
 let wrapper
-describe('src/components/account/hpc', () => {
+describe('components/account/hpc', () => {
   beforeEach(() => {
     mockUser.mockReset()
     mockUser.mockImplementation(() => ({

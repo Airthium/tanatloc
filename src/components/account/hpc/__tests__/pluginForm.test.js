@@ -2,7 +2,7 @@ import PluginForm from '@/components/account/hpc/pluginForm'
 import { shallow } from 'enzyme'
 
 let wrapper
-describe('src/components/account/hpc/pluginForm', () => {
+describe('components/account/hpc/pluginForm', () => {
   const plugin = {
     configuration: {
       input: {

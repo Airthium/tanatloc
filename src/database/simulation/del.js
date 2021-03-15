@@ -3,7 +3,7 @@ import { databases } from '@/config/db'
 
 /**
  * Delete simulation
- * @memberof module:src/database/simulation
+ * @memberof module:database/simulation
  * @param {Object} simulation Simulation { id }
  */
 const del = async (simulation) => {

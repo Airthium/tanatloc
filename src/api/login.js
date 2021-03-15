@@ -4,7 +4,7 @@ const base = isElectron() ? 'http://localhost:3000' : ''
 
 /**
  * Login
- * @memberof module:src/api
+ * @memberof module:api
  * @param {Object} user User { email, password }
  */
 const login = async ({ email, password }) => {

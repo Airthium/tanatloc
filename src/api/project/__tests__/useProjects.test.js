@@ -6,7 +6,7 @@ jest.mock('swr', () => () => ({
   mutate: jest.fn()
 }))
 
-describe('src/api/project/useProjects', () => {
+describe('api/project/useProjects', () => {
   it('without ids', () => {
     mockProjects.mockImplementation(() => [{ id: 'id' }, {}])
     const [

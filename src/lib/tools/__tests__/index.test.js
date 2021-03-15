@@ -27,7 +27,7 @@ jest.mock('@/services', () => ({
   toThree: async (path, fileIn, pathOut) => mockToThree(path, fileIn, pathOut)
 }))
 
-describe('src/lib/tools', () => {
+describe('lib/tools', () => {
   beforeEach(() => {
     mockMkdir.mockReset()
     mockReadDir.mockReset()

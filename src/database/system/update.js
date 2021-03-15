@@ -3,7 +3,7 @@ import { databases } from '@/config/db'
 
 /**
  * Update system items
- * @memberof module:src/database/system
+ * @memberof module:database/system
  * @param {Object} data Data [{ key, value }, ...]
  */
 const update = async (data) => {

@@ -18,7 +18,7 @@ jest.mock('@/components/assets/notification', () => ({
 }))
 
 let wrapper
-describe('src/components/project/simulation/materials/edit', () => {
+describe('components/project/simulation/materials/edit', () => {
   const material = {
     selected: ['uuid1', 'uuid3']
   }

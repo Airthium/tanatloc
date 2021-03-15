@@ -51,7 +51,7 @@ jest.mock('@/lib/sentry', () => ({
   captureException: () => {}
 }))
 
-describe('src/route/login', () => {
+describe('route/login', () => {
   it('login', () => {
     expect(login).toBeDefined()
   })

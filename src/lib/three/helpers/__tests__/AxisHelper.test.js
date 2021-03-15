@@ -14,7 +14,7 @@ jest.mock('../LabelHelper', () => () => ({
   }
 }))
 
-describe('src/lib/three/helpers/AxisHelper', () => {
+describe('lib/three/helpers/AxisHelper', () => {
   const renderer = {
     setViewport: () => {},
     render: () => {}

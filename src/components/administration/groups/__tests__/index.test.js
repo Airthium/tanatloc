@@ -39,7 +39,7 @@ jest.mock('@/api/group', () => ({
 }))
 
 let wrapper
-describe('src/components/administration/groups', () => {
+describe('components/administration/groups', () => {
   beforeEach(() => {
     mockError.mockReset()
 

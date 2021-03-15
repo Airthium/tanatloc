@@ -25,7 +25,7 @@ jest.mock('@/api/plugin', () => ({
 }))
 
 let wrapper
-describe('src/components/account/hpc/list', () => {
+describe('components/account/hpc/list', () => {
   const plugin = { key: 'key' }
 
   beforeEach(() => {

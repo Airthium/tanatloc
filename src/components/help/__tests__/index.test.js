@@ -2,7 +2,7 @@ import Help from '@/components/help'
 import { shallow } from 'enzyme'
 
 let wrapper
-describe('src/components/help', () => {
+describe('components/help', () => {
   beforeEach(() => {
     wrapper = shallow(<Help />)
   })

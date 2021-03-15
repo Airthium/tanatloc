@@ -8,7 +8,7 @@ let wrapper
 const mockResetFields = jest.fn()
 const mockOnOk = jest.fn()
 const mockOnCancel = jest.fn()
-describe('src/components/assets/dialog', () => {
+describe('components/assets/dialog', () => {
   beforeEach(() => {
     mockResetFields.mockReset()
     mockOnCancel.mockReset()

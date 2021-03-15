@@ -9,7 +9,7 @@ jest.mock('is-electron', () => () => false)
 
 jest.mock('electron-store', () => {})
 
-describe('src/auth/auth-cookies', () => {
+describe('auth/auth-cookies', () => {
   it('setTokenCookie', () => {
     let header
     const res = {

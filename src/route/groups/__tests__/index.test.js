@@ -13,7 +13,7 @@ jest.mock('@/lib/sentry', () => ({
   captureException: () => mockError()
 }))
 
-describe('src/route/groups', () => {
+describe('route/groups', () => {
   let req, response
   const res = {
     status: () => ({

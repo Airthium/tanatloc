@@ -4,7 +4,7 @@ const base = isElectron() ? 'http://localhost:3000' : ''
 
 /**
  * Logout
- * @memberof module:src/api
+ * @memberof module:api
  */
 const logout = async () => {
   await fetch(base + '/api/logout')

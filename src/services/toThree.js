@@ -4,7 +4,7 @@ import isDocker from 'is-docker'
 /**
  * toThree service
  * Convert mesh to threeJS
- * @memberof module:src/services
+ * @memberof module:services
  * @param {string} path Path
  * @param {string} fileIn In file
  * @param {string} pathOut Out path

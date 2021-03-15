@@ -1,4 +1,4 @@
-/** @module src/lib/download */
+/** @module lib/download */
 
 import path from 'path'
 import fs from 'fs'

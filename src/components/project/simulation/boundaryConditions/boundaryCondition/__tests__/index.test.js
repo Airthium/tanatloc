@@ -10,7 +10,7 @@ jest.mock(
 )
 
 let wrapper
-describe('src/components/project/simulation/boundaryConditions/boundaryCondition', () => {
+describe('components/project/simulation/boundaryConditions/boundaryCondition', () => {
   const project = {}
   const simulation = {}
   const part = {}

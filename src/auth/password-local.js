@@ -1,4 +1,4 @@
-/** @module src/auth/password-local */
+/** @module auth/password-local */
 
 import Local from 'passport-local'
 import UserDB from '@/database/user'

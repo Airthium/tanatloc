@@ -3,7 +3,7 @@ import Caller from '@/api/call'
 
 /**
  * Use a user
- * @memberof module:src/api/user
+ * @memberof module:api/user
  * @returns {Array} [user, {mutateUser function, loadingUser status}]]
  */
 const useUser = () => {

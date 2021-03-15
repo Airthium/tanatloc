@@ -1,13 +1,13 @@
 import Caller from '@/api/call'
 
 /**
- * Update group
- * @memberof module:api/group
- * @param {Object} group Group { id }
+ * Update
+ * @memberof module:api/organization
+ * @param {Object} Organization Organization { id }
  * @param {Array} Data
  */
 const update = async (id, data) => {
-  return Caller.call('/api/group', {
+  return Caller.call('/api/organization', {
     method: 'PUT',
     body: JSON.stringify({ id, data })
   })

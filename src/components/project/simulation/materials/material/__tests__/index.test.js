@@ -11,7 +11,7 @@ jest.mock('@/components/project/simulation/materials/add', () => 'Add')
 jest.mock('@/components/project/simulation/materials/edit', () => 'Edit')
 
 let wrapper
-describe('src/components/project/simulation/materials/material', () => {
+describe('components/project/simulation/materials/material', () => {
   const project = {}
   const simulation = {}
   const part = {}

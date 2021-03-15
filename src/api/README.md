@@ -8,10 +8,27 @@ Routes:
 - Avatar:
   - Add
   - Del
+- Donwload:
+  - Get
 - File:
   - Get
+- Group:
+  - Add
+  - Del
+  - Update
+  - useGroups (SWR)
+- Organization:
+  - Add
+  - Del
+  - Update
+  - useOrganizations (SWR)
 - Part:
   - Get
+- Plugin:
+  - Add
+  - Del
+  - Update
+  - usePlugins (SWR)
 - Project:
   - Add
   - Del
@@ -22,8 +39,13 @@ Routes:
   - Add
   - Del
   - Update
+  - Run
+  - Stop
   - useSimulation (SWR): one simulation
   - useSimulations (SWR): multiple simulations
+- System:
+  - Update
+  - useSystem (SWR)
 - User:
   - Add
   - Check

@@ -3,7 +3,7 @@ import { databases } from '@/config/db'
 
 /**
  * Delete project
- * @memberof module:src/database/project
+ * @memberof module:database/project
  * @param {Object} project Project { id }
  */
 const del = async (project) => {

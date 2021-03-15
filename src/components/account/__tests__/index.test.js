@@ -16,7 +16,7 @@ jest.mock('../delete', () => 'delete')
 jest.mock('../hpc', () => 'hpc')
 
 let wrapper
-describe('src/components/account', () => {
+describe('components/account', () => {
   beforeEach(() => {
     mockReplace.mockReset()
     mockQuery.mockReset()

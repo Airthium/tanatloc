@@ -7,7 +7,7 @@ jest.mock('@/database/system', () => ({
   update: async () => mockUpdate()
 }))
 
-describe('src/lib/system', () => {
+describe('lib/system', () => {
   it('get', async () => {
     await System.get()
     expect(mockGet).toHaveBeenCalledTimes(1)

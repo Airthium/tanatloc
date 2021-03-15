@@ -1,4 +1,4 @@
-/** @module src/lib/three/helpers/GridHelper */
+/** @module lib/three/helpers/GridHelper */
 
 import {
   BufferGeometry,

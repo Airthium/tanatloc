@@ -15,7 +15,7 @@ jest.mock('@/database/user', () => ({
   }
 }))
 
-describe('src/auth/password-local', () => {
+describe('auth/password-local', () => {
   it('localStrategy', () => {
     expect(localStrategy).toBeDefined()
   })

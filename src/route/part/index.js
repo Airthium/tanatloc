@@ -1,4 +1,4 @@
-/** @module src/route/part */
+/** @module route/part */
 
 import getSessionId from '../session'
 import auth from '../auth'

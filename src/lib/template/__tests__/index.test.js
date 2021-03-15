@@ -22,7 +22,7 @@ jest.mock('@/plugins/templates', () => ({
   }
 }))
 
-describe('src/lib/template', () => {
+describe('lib/template', () => {
   beforeEach(() => {
     mockWriteFile.mockReset()
   })

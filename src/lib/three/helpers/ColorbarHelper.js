@@ -1,4 +1,4 @@
-/** @module src/lib/three/helpers/ColorbarHelper */
+/** @module lib/three/helpers/ColorbarHelper */
 
 import {
   CanvasTexture,

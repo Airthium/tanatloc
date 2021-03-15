@@ -2,7 +2,7 @@ import Administration from '../'
 import { shallow } from 'enzyme'
 
 let wrapper
-describe('src/components/help/doc/administration', () => {
+describe('components/help/doc/administration', () => {
   beforeEach(() => {
     wrapper = shallow(<Administration />)
   })

@@ -101,6 +101,10 @@ const getByUser = async (user, data) => {
   return returnedOrganization
 }
 
+const update = async (organization, data) => {
+  //TODO
+}
+
 /**
  * Delete
  * @param {Object} organization Organization { id }
@@ -143,4 +147,4 @@ const del = async (organization) => {
   await OrganizationDB.del(organization)
 }
 
-export default { add, getByUser, del }
+export default { add, getByUser, update, del }

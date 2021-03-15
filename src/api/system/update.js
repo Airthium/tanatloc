@@ -2,7 +2,8 @@ import Caller from '@/api/call'
 
 /**
  * Update system item
- * @param {string} item Item
+ * @memberof module:api/system
+ * @param {string} data Data
  */
 const update = async (data) => {
   return Caller.call('/api/system', {

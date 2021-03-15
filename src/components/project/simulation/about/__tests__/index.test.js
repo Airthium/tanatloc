@@ -16,7 +16,7 @@ jest.mock('@/components/assets/notification', () => ({
 }))
 
 let wrapper
-describe('src/components/project/simulation/about', () => {
+describe('components/project/simulation/about', () => {
   beforeEach(() => {
     mockMutate.mockReset()
     mockUpdate.mockReset()

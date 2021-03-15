@@ -1,4 +1,4 @@
-/** @module src/lib/project */
+/** @module lib/project */
 
 import ProjectDB from '@/database/project'
 

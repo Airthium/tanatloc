@@ -1,4 +1,4 @@
-/** @module src/lib/part */
+/** @module lib/part */
 
 import path from 'path'
 

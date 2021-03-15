@@ -1,6 +1,6 @@
 import projects from '..'
 
-describe('src/route/projects', () => {
+describe('route/projects', () => {
   let response
   const req = {}
   const res = {

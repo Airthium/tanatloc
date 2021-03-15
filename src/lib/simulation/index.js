@@ -1,4 +1,4 @@
-/** @module src/lib/simulation */
+/** @module lib/simulation */
 
 import path from 'path'
 

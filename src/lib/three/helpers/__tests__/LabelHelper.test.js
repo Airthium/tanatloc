@@ -6,7 +6,7 @@ document.createElement = () => ({
   })
 })
 
-describe('src/lib/three/helpers/LabelHelper', () => {
+describe('lib/three/helpers/LabelHelper', () => {
   it('call', () => {
     const label = LabelHelper('text')
     expect(label).toBeDefined()

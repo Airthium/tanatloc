@@ -18,7 +18,7 @@ jest.mock('@/components/assets/notification', () => ({
 }))
 
 let wrapper
-describe('src/components/project/simulation/boundaryConditions/edit', () => {
+describe('components/project/simulation/boundaryConditions/edit', () => {
   const boundaryCondition = {
     type: {
       key: 'key'

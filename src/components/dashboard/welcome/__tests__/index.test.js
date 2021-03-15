@@ -2,7 +2,7 @@ import Welcome from '@/components/dashboard/welcome'
 import { shallow } from 'enzyme'
 
 let wrapper
-describe('src/components/dashboard/welcome', () => {
+describe('components/dashboard/welcome', () => {
   beforeEach(() => {
     wrapper = shallow(<Welcome />)
   })

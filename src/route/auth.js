@@ -2,7 +2,7 @@ import UserLib from '@/lib/user'
 
 /**
  * Check authorization
- * @memberof module:src/route
+ * @memberof module:route
  * @param {string} id User's id
  * @param {Object} object Object (Project || Workspace)
  * @param {Object} parentObject Parent object (Workspace)

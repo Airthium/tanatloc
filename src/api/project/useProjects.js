@@ -3,7 +3,7 @@ import Caller from '@/api/call'
 
 /**
  * Use projects
- * @memberof module:src/api/project
+ * @memberof module:api/project
  * @param {Array} ids [Project's ids]
  */
 const useProjects = (ids) => {
@@ -16,7 +16,7 @@ const useProjects = (ids) => {
 
   /**
    * Add one (useProjects)
-   * @memberof module:src/api/project
+   * @memberof module:api/project
    * @param {Object} project Project
    */
   const addOne = (project) => {
@@ -26,7 +26,7 @@ const useProjects = (ids) => {
 
   /**
    * Delete one (useProjects)
-   * @memberof module:src/api/project
+   * @memberof module:api/project
    * @param {Object} project project
    */
   const delOne = (project) => {
@@ -36,7 +36,7 @@ const useProjects = (ids) => {
 
   /**
    * Mutate one (useProjects)
-   * @memberof module:src/api/project
+   * @memberof module:api/project
    * @param {Object} project Project
    */
   const mutateOne = (project) => {

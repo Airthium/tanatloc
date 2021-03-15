@@ -10,7 +10,7 @@ jest.mock('../LabelHelper', () => () => ({
 
 global.MockVector3 = { x: 1e5, y: 3, z: 1e-13 }
 
-describe('src/lib/three/helpers/GridHelper', () => {
+describe('lib/three/helpers/GridHelper', () => {
   const scene = {
     children: [
       {

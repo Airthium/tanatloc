@@ -15,7 +15,7 @@ jest.mock('@/api/plugin', () => ({
 }))
 
 let wrapper
-describe('src/components/account/hpc/delete', () => {
+describe('components/account/hpc/delete', () => {
   const plugin = { uuid: 'uuid' }
 
   beforeEach(() => {

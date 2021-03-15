@@ -2,7 +2,7 @@ import route from '@/route/users'
 
 /**
  * Users API
- * @memberof module:api
+ * @memberof module:pages/api
  * @param {Object} req Request
  * @param {Object} res Response
  */

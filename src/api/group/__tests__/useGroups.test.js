@@ -6,7 +6,7 @@ jest.mock('swr', () => () => ({
   mutate: jest.fn()
 }))
 
-describe('src/api/groups', () => {
+describe('api/groups', () => {
   it('with groups', () => {
     mockGroups.mockImplementation(() => [{ id: 'id' }])
     const [

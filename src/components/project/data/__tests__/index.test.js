@@ -15,7 +15,7 @@ jest.mock('@/api/simulation', () => ({
 }))
 
 let wrapper
-describe('src/components/project/data', () => {
+describe('components/project/data', () => {
   const simulation = { id: 'id' }
 
   beforeEach(() => {

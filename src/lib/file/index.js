@@ -1,4 +1,4 @@
-/** @module src/lib/file */
+/** @module lib/file */
 
 import path from 'path'
 

@@ -2,7 +2,7 @@ import { getSession } from '@/auth/iron'
 
 /**
  * Session
- * @memberof module:src/route
+ * @memberof module:route
  * @param {Object} req Request
  * @param {Object} res Response
  */

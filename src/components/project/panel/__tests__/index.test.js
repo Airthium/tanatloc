@@ -2,7 +2,7 @@ import Panel from '@/components/project/panel'
 import { shallow } from 'enzyme'
 
 let wrapper
-describe('src/components/project/panel', () => {
+describe('components/project/panel', () => {
   beforeEach(() => {
     wrapper = shallow(<Panel />)
   })

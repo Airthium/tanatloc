@@ -6,7 +6,7 @@ jest.mock('swr', () => () => ({
   mutate: jest.fn()
 }))
 
-describe('src/api/simulation/useSimulation', () => {
+describe('api/simulation/useSimulation', () => {
   it('with simulation', () => {
     mockSimulation.mockImplementation(() => ({}))
     const [

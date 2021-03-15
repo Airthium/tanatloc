@@ -1,6 +1,10 @@
 import useSWR from 'swr'
 import Caller from '@/api/call'
 
+/**
+ * Use organizations
+ * @memberof module:api/organization
+ */
 const useOrganizations = () => {
   const { data, mutate } = useSWR('/api/organizations', Caller.fetcher)
   const loading = !data

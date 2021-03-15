@@ -3,7 +3,7 @@ import { databases } from '@/config/db'
 
 /**
  * Get user
- * @memberof module:src/database/group
+ * @memberof module:database/group
  * @param {string} id Group's id (or key)
  * @param {Array} data Data
  */

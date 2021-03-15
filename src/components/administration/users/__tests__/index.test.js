@@ -32,7 +32,7 @@ jest.mock('@/components/assets/notification', () => ({
 }))
 
 let wrapper
-describe('src/components/administration/users', () => {
+describe('components/administration/users', () => {
   beforeEach(() => {
     mockUsers.mockReset()
     mockUsers.mockImplementation(() => [{ id: 'id', superuser: true }])

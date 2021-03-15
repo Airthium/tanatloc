@@ -27,7 +27,7 @@ jest.mock('@/components/assets/notification', () => ({
 }))
 
 let wrapper
-describe('src/components/project/simulation/materials/delete', () => {
+describe('components/project/simulation/materials/delete', () => {
   const project = {}
   const simulation = {
     scheme: {

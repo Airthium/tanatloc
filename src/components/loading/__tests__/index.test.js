@@ -4,7 +4,7 @@ import { shallow } from 'enzyme'
 jest.mock('@/components/background', () => 'background')
 
 let wrapper
-describe('src/components/loading', () => {
+describe('components/loading', () => {
   beforeEach(() => {
     wrapper = shallow(<Loading />)
   })

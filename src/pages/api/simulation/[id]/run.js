@@ -2,7 +2,7 @@ import route from '@/route/simulation/[id]/run'
 
 /**
  * Simulation API from [id]/run
- * @memberof module:api
+ * @memberof module:pages/api
  * @param {Object} req Request
  * @param {Object} res Response
  */

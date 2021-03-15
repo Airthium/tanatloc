@@ -1,4 +1,4 @@
-/** @module src/database/user */
+/** @module database/user */
 
 import add from './add'
 import get from './get'

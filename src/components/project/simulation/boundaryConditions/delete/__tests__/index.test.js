@@ -27,7 +27,7 @@ jest.mock('@/components/assets/notification', () => ({
 }))
 
 let wrapper
-describe('src/components/project/simulation/boundaryConditions/delete', () => {
+describe('components/project/simulation/boundaryConditions/delete', () => {
   const project = {}
   const simulation = {
     scheme: {

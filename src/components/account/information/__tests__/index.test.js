@@ -34,7 +34,7 @@ global.FileReader = class {
 }
 
 let wrapper
-describe('src/components/account/information', () => {
+describe('components/account/information', () => {
   beforeEach(() => {
     mockError.mockReset()
 

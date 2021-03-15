@@ -4,7 +4,7 @@ jest.mock('../..', () => async () => {
   return { rows: [{ id: 'id' }] }
 })
 
-describe('src/database/project/add', () => {
+describe('database/project/add', () => {
   it('call', async () => {
     const res = await add(
       {},

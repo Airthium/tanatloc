@@ -3,7 +3,7 @@ import { databases } from '@/config/db'
 
 /**
  * Get user
- * @memberof module:src/database/user
+ * @memberof module:database/user
  * @param {string} id User's id (or key)
  * @param {Array} data Data
  * @param {string} key Key (override id selector)

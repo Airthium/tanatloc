@@ -9,7 +9,7 @@ jest.mock('three/examples/jsm/controls/TransformControls', () => ({
   }
 }))
 
-describe('src/lib/three/helpers/SectionViewHelper', () => {
+describe('lib/three/helpers/SectionViewHelper', () => {
   let mouseDown
   let mouseMove
   let mouseUp

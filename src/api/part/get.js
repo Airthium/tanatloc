@@ -2,7 +2,7 @@ import Caller from '@/api/call'
 
 /**
  * Get part
- * @memberof module:src/api/part
+ * @memberof module:api/part
  * @param {Object} simulation Simulation { id }
  * @param {Object} file File { part, partPath }
  */

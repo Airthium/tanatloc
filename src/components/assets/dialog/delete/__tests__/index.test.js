@@ -2,7 +2,7 @@ import DeleteDialog from '@/components/assets/dialog/delete'
 import { shallow } from 'enzyme'
 
 let wrapper
-describe('src/components/assets/dialog', () => {
+describe('components/assets/dialog', () => {
   beforeEach(() => {
     wrapper = shallow(
       <DeleteDialog

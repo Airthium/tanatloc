@@ -3,7 +3,7 @@ import { databases } from '@/config/db'
 
 /**
  * Get all user
- * @memberof module:src/database/user
+ * @memberof module:database/user
  * @param {Array} data Data
  */
 const getAll = async (data) => {

@@ -3,20 +3,20 @@ import { Input, Space, Tag } from 'antd'
 
 import Utils from '@/lib/utils'
 
-const EmailsInput = ({ values }) => {
+const EmailsInput = ({ values, onChange }) => {
   // State
   const [emails, setEmails] = useState([])
   const [value, setValue] = useState('')
 
   useEffect(() => {
-    if (values) setEmails(values.map((v) => v.email))
+    if (values) setEmails(values)
   }, [values])
 
   /**
-   * On change
+   * On input change
    * @param {Object} event Event
    */
-  const onChange = (event) => {
+  const onInputChange = (event) => {
     let text = event.target.value
 
     const lastChar = text[text.length - 1]
@@ -25,6 +25,7 @@ const EmailsInput = ({ values }) => {
 
       if (newEmails?.length) {
         setEmails([...emails, ...newEmails])
+        onChange([...emails, ...newEmails])
 
         // Remove emails from text
         newEmails.forEach((email) => {
@@ -56,8 +57,9 @@ const EmailsInput = ({ values }) => {
    * @param {number} index Index
    */
   const onClose = (index) => {
-    const newEmails = emails.filter((e, i) => i !== index)
+    const newEmails = emails.filter((_, i) => i !== index)
     setEmails(newEmails)
+    onChange(newEmails)
   }
 
   /**
@@ -77,7 +79,7 @@ const EmailsInput = ({ values }) => {
           </Tag>
         ))}
       </Space>
-      <Input placeholder="Emails" value={value} onChange={onChange} />
+      <Input placeholder="Emails" value={value} onChange={onInputChange} />
     </Space>
   )
 }

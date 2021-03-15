@@ -8,7 +8,7 @@ jest.mock('swr', () => () => ({
   mutate: jest.fn()
 }))
 
-describe('src/api/plugins/usePlugins', () => {
+describe('api/plugins/usePlugins', () => {
   it('with plugins', () => {
     const [
       plugins,

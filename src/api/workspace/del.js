@@ -2,7 +2,7 @@ import Caller from '@/api/call'
 
 /**
  * Delete a workspace
- * @memberof module:src/api/workspace
+ * @memberof module:api/workspace
  * @param {Object} workspace Workspace { id }
  */
 const del = async (workspace) => {

@@ -25,7 +25,7 @@ jest.mock('@/config/email', () => ({
   TOKEN: 'TOKEN'
 }))
 
-describe('src/lib/email', () => {
+describe('lib/email', () => {
   it('subscribe', () => {
     Email.subscribe('email', 'id')
   })

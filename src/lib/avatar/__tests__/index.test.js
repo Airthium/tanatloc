@@ -34,7 +34,7 @@ jest.mock('../../tools', () => ({
   removeFile: async () => mockRemoveFile()
 }))
 
-describe('src/lib/avatar', () => {
+describe('lib/avatar', () => {
   beforeEach(() => {
     mockPath.mockReset()
 

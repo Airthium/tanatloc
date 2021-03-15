@@ -1,4 +1,4 @@
-/** @module src/lib/user */
+/** @module lib/user */
 
 import UserDB from '@/database/user'
 

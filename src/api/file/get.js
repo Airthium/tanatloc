@@ -1,8 +1,8 @@
 import Caller from '@/api/call'
 
 /**
- * Get part
- * @memberof module:src/api/file
+ * Get file
+ * @memberof module:api/file
  * @param {Object} simulation Simulation { id }
  * @param {Object} file File { origin, originPath }
  */

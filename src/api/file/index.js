@@ -1,4 +1,4 @@
-/** @module src/api/file */
+/** @module api/file */
 
 import get from './get'
 

@@ -20,7 +20,7 @@ jest.mock('@/api/plugin', () => ({
 }))
 
 let wrapper
-describe('src/components/project/simulation/run/cloudServer', () => {
+describe('components/project/simulation/run/cloudServer', () => {
   const cloudServer = {
     inUseConfiguration: {
       item: {

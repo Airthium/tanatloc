@@ -23,6 +23,16 @@ export default async (req, res) => {
         Sentry.captureException(err)
       }
       break
+    case 'PUT':
+      try {
+        await OrganizationLib.update({ id: req.body.id }, req.body.data)
+        res.status(200).end()
+      } catch (err) {
+        console.error(err)
+        res.status(500).json({ error: true, message: err.message })
+        Sentry.captureException(err)
+      }
+      break
     case 'DELETE':
       try {
         await OrganizationLib.del(req.body)

@@ -1,4 +1,4 @@
-/** @module src/api/group */
+/** @module api/group */
 
 import useGroups from './useGroups'
 import add from './add'

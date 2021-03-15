@@ -1,4 +1,4 @@
-/** @module src/lib/plugin */
+/** @module lib/plugin */
 
 import merge from 'lodash.merge'
 

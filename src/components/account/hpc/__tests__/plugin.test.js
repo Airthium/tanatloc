@@ -19,7 +19,7 @@ jest.mock('@/api/plugin', () => ({
 }))
 
 let wrapper
-describe('src/component/account/hpc/plugin', () => {
+describe('component/account/hpc/plugin', () => {
   const plugin = {
     logo: 'logo',
     renderer: 'renderer',

@@ -39,7 +39,7 @@ jest.mock('@/api/system', () => ({
 }))
 
 let wrapper
-describe('src/components/signup', () => {
+describe('components/signup', () => {
   beforeEach(() => {
     mockPrefetch.mockReset()
     mockPush.mockReset()

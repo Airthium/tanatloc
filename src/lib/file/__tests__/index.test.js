@@ -12,7 +12,7 @@ jest.mock('../../tools', () => ({
   readFile: async () => mockReadFile()
 }))
 
-describe('src/lib/file', () => {
+describe('lib/file', () => {
   beforeEach(() => {
     mockPath.mockReset()
     mockReadFile.mockReset()

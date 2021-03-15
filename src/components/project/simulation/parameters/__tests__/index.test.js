@@ -11,7 +11,7 @@ jest.mock('@/api/simulation', () => ({
 }))
 
 let wrapper
-describe('src/components/project/simulation/parameters', () => {
+describe('components/project/simulation/parameters', () => {
   const project = {}
   const simulation = {
     scheme: {

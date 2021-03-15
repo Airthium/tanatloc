@@ -2,7 +2,7 @@ import HPC from '../'
 import { shallow } from 'enzyme'
 
 let wrapper
-describe('src/components/help/doc/hpc', () => {
+describe('components/help/doc/hpc', () => {
   beforeEach(() => {
     wrapper = shallow(<HPC />)
   })

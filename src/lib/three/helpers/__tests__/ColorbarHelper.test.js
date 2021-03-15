@@ -7,7 +7,7 @@ jest.mock('../LabelHelper', () => () => ({
   }
 }))
 
-describe('src/lib/three/helpers/ColorbarHelper', () => {
+describe('lib/three/helpers/ColorbarHelper', () => {
   const renderer = {
     domElement: {
       getBoundingClientRect: () => ({})

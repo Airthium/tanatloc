@@ -1,4 +1,4 @@
-/** @module src/api/project */
+/** @module api/project */
 
 import useProjects from './useProjects'
 import useProject from './useProject'

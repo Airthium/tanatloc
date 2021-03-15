@@ -1,4 +1,4 @@
-/** @module src/route/projects */
+/** @module route/projects */
 
 /**
  * Empty projects list route

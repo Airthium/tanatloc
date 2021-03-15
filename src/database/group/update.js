@@ -3,7 +3,7 @@ import { databases } from '@/config/db'
 
 /**
  * Update
- * @memberof module:src/database/group
+ * @memberof module:database/group
  * @param {Object} group Group { id }
  * @param {Object} data Data [{ key, value, ... }, ...]
  */

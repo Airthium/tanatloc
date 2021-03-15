@@ -1,4 +1,4 @@
-/** @module src/lib/three/loaders/PartLoader */
+/** @module lib/three/loaders/PartLoader */
 
 import {
   Box3,

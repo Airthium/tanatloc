@@ -17,7 +17,7 @@ jest.mock('@/components/assets/notification', () => ({
 }))
 
 let wrapper
-describe('src/components/administration/registration', () => {
+describe('components/administration/registration', () => {
   beforeEach(() => {
     mockSystem.mockReset()
     mockSystem.mockImplementation(() => ({}))

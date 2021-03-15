@@ -13,7 +13,7 @@ jest.mock('@/config/auth', () => ({
   SECRET: 'auth_secret'
 }))
 
-describe('src/auth/iron', () => {
+describe('auth/iron', () => {
   it('encryptSession', () => {
     const res = iron.encryptSession()
     expect(res).toBe('seal')

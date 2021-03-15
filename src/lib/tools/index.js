@@ -1,4 +1,4 @@
-/** @module src/lib/tools */
+/** @module lib/tools */
 
 import path from 'path'
 import { promises as fs } from 'fs'

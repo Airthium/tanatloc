@@ -22,7 +22,7 @@ jest.mock('../../user', () => ({
   update: async () => mockUserUpdate()
 }))
 
-describe('src/lib/group', () => {
+describe('lib/group', () => {
   beforeEach(() => {
     mockAdd.mockReset()
     mockGet.mockReset()

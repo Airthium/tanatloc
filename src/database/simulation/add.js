@@ -3,7 +3,7 @@ import { databases } from '@/config/db'
 
 /**
  * Add
- * @memberof module:src/database/simulation
+ * @memberof module:database/simulation
  * @param {Object} simulation Simulation { name, scheme, project }
  */
 const add = async ({ name, scheme, project }) => {

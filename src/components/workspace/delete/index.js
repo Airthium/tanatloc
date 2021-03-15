@@ -61,6 +61,7 @@ const Delete = (props) => {
         Delete
       </Button>
       <DeleteDialog
+        title="Delete the workspace"
         visible={visible}
         onCancel={toggleDialog}
         onOk={handleDelete}

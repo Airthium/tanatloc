@@ -1,10 +1,13 @@
 /** @module components/organizations */
 
-import { Divider, Layout, PageHeader, Typography } from 'antd'
+import { Divider, Layout, PageHeader, Space, Typography } from 'antd'
 
 import Add from './add'
 import List from './list'
 
+/**
+ * Organizations
+ */
 const Organizations = () => {
   return (
     <Layout className="Workspace">
@@ -22,8 +25,10 @@ const Organizations = () => {
         }
       />
       <Layout.Content>
-        <Add />
-        <List />
+        <Space direction="vertical" style={{ width: '100%' }}>
+          <Add />
+          <List />
+        </Space>
       </Layout.Content>
     </Layout>
   )

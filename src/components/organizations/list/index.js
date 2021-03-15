@@ -1,11 +1,23 @@
-import { Avatar, Button, Space, Table } from 'antd'
-import { DeleteOutlined, EditOutlined } from '@ant-design/icons'
+import { useState } from 'react'
+import { Avatar, Button, Drawer, Space, Table } from 'antd'
+import { ControlOutlined, DeleteOutlined } from '@ant-design/icons'
+
+import Organization from '../organization'
+import Delete from '../delete'
 
 import OrganizationAPI from '@/api/organization'
 
 import Utils from '@/lib/utils'
 
+/**
+ * List
+ * @memberof module:components/organizations
+ */
 const List = () => {
+  // State
+  const [visible, setVisible] = useState(false)
+  const [organization, setOrganization] = useState()
+
   // Data
   const [organizations] = OrganizationAPI.useOrganizations()
   const columns = [
@@ -38,16 +50,52 @@ const List = () => {
     {
       title: 'Actions',
       key: 'actions',
-      render: () => (
+      render: (org) => (
         <Space wrap={true}>
-          <Button icon={<EditOutlined />} />
-          <Button icon={<DeleteOutlined />} type="danger" />
+          <Button icon={<ControlOutlined />} onClick={() => onOpen(org)} />
+          <Delete organization={org} />
         </Space>
       )
     }
   ]
 
-  return <Table columns={columns} dataSource={organizations} />
+  /**
+   * On open
+   * @param {Object} org Organization
+   */
+  const onOpen = (org) => {
+    setOrganization(org)
+    setVisible(true)
+  }
+
+  return (
+    <div
+      style={{
+        position: 'relative',
+        overflow: 'hidden'
+      }}
+    >
+      <Table
+        columns={columns}
+        dataSource={organizations?.map((o) => ({ ...o, key: o.id }))}
+      />
+      <Drawer
+        title="Organization"
+        placement="right"
+        closable={true}
+        onClose={() => setVisible(false)}
+        visible={visible}
+        getContainer={false}
+        style={{ position: 'absolute' }}
+        width="100%"
+      >
+        <Organization
+          organization={organization}
+          onClose={() => setVisible(false)}
+        />
+      </Drawer>
+    </div>
+  )
 }
 
 export default List

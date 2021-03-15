@@ -80,6 +80,7 @@ const Delete = () => {
                 Delete your account
               </Button>
               <DeleteDialog
+                title="Delete your account"
                 visible={visible}
                 onCancel={() => setVisible(false)}
                 onOk={handleDelete}

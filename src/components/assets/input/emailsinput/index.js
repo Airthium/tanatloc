@@ -1,10 +1,16 @@
-import { useState } from 'react'
-import { Input, Tag } from 'antd'
+import { useState, useEffect } from 'react'
+import { Input, Space, Tag } from 'antd'
 
-const EmailsInput = () => {
+import Utils from '@/lib/utils'
+
+const EmailsInput = ({ values }) => {
   // State
   const [emails, setEmails] = useState([])
   const [value, setValue] = useState('')
+
+  useEffect(() => {
+    if (values) setEmails(values.map((v) => v.email))
+  }, [values])
 
   /**
    * On change
@@ -58,14 +64,21 @@ const EmailsInput = () => {
    * Render
    */
   return (
-    <>
-      {emails.map((email, index) => (
-        <Tag key={index} closable={true} onClose={() => onClose(index)}>
-          {email}
-        </Tag>
-      ))}
-      <Input disabled={true} value={value} onChange={onChange} />
-    </>
+    <Space direction="vertical" style={{ width: '100%' }}>
+      <Space direction="horizontal" style={{ width: '100%' }} wrap={true}>
+        {emails.map((email, index) => (
+          <Tag
+            key={index}
+            color={Utils.stringToColor(email)}
+            closable={true}
+            onClose={() => onClose(index)}
+          >
+            {email}
+          </Tag>
+        ))}
+      </Space>
+      <Input placeholder="Emails" value={value} onChange={onChange} />
+    </Space>
   )
 }
 

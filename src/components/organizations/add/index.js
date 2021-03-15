@@ -27,7 +27,7 @@ const Add = () => {
   const tailLayout = {
     wrapperCol: { offset: 4, span: 12 }
   }
-  const [_, { addOneOrganization }] = OrganizationAPI.useOrganizations()
+  const [, { addOneOrganization }] = OrganizationAPI.useOrganizations()
 
   /**
    * On add

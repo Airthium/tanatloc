@@ -23,6 +23,12 @@ const add = async (user, organization) => {
       value: newOrganization.id
     }
   ])
+
+  return newOrganization
+}
+
+const get = async (id, data) => {
+  return OrganizationDB.get(id, data)
 }
 
 /**
@@ -95,4 +101,46 @@ const getByUser = async (user, data) => {
   return returnedOrganization
 }
 
-export default { add, getByUser }
+/**
+ * Delete
+ * @param {Object} organization Organization { id }
+ */
+const del = async (organization) => {
+  // Get data
+  const organizationData = await get(organization.id, ['owners', 'users'])
+
+  // Del organization from owners
+  organizationData.owners &&
+    (await Promise.all(
+      organizationData.owners.map(async (owner) => {
+        await User.update({ id: owner }, [
+          {
+            key: 'organizations',
+            type: 'array',
+            method: 'remove',
+            value: organization.id
+          }
+        ])
+      })
+    ))
+
+  // Del organization from users
+  organizationData.users &&
+    (await Promise.all(
+      organizationData.users.map(async (user) => {
+        await User.update({ id: user }, [
+          {
+            key: 'organizations',
+            type: 'array',
+            method: 'remove',
+            value: organization.id
+          }
+        ])
+      })
+    ))
+
+  // Delete organization
+  await OrganizationDB.del(organization)
+}
+
+export default { add, getByUser, del }

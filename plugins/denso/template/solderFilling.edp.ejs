@@ -184,34 +184,41 @@ func int outputjson(int mmm, real vvol00, int nnnliquid,
 		    int nnnair, int nnneulerc)
 {
   // Save data
-  {
-    ofstream data(resultpath+"vol00_" + mmm + ".dat");
-    data << "{\"name\": \"volume\",";
-    data << "\"index\": 1,";
-    data << "\"t\": " << mmm << ",";
-    data << "\"value\": " << vvol00 << "}";
-  }
-  {
-    ofstream data(resultpath+"nnliquid_" + mmm + ".dat");
-    data << "{\"name\": \"# Liquid\",";
-    data << "\"index\": 2,";
-    data << "\"t\": " << mmm << ",";
-    data << "\"value\": " << nnnliquid << "}";
-  }
-  {
-    ofstream data(resultpath+"nnair_" + mmm + ".dat");
-    data << "{\"name\": \"# Air\",";
-    data << "\"index\": 3,";
-    data << "\"t\": " << mmm << ",";
-    data << "\"value\": " << nnnair << "}";
-  }
-  {
-    ofstream data(resultpath+"nneulerc" + mmm + ".dat");
-    data << "{\"name\": \"# Eulerc\",";
-    data << "\"index\": 4,";
-    data << "\"t\": " << mmm << ",";
-    data << "\"value\": " << nnneulerc << "}";
-  }
+<%- include('/blobs/data.edp.ejs', {
+	path: run.dataPath,
+	name: '"volume_"+mmm',
+	dataName: 'Volume',
+	index: 1,
+	x: 'mmm',
+	y: 'vvol00'
+}) -%>
+
+<%- include('/blobs/data.edp.ejs', {
+	path: run.dataPath,
+	name: '"nnliquid_"+mmm',
+	dataName: '# Liquid',
+	index: 1,
+	x: 'mmm',
+	y: 'nnnliquid'
+}) -%>
+
+<%- include('/blobs/data.edp.ejs', {
+	path: run.dataPath,
+	name: '"nnair_"+mmm',
+	dataName: '# Air',
+	index: 1,
+	x: 'mmm',
+	y: 'nnnair'
+}) -%>
+
+<%- include('/blobs/data.edp.ejs', {
+	path: run.dataPath,
+	name: '"nneulerc_"+mmm',
+	dataName: '# Eulerc',
+	index: 1,
+	x: 'mmm',
+	y: 'nnneulerc'
+}) -%>
 }
 // end of js renred variables
 
@@ -1460,8 +1467,20 @@ if (!flagrestarted) { //generatino of initial data
     savemesh(ThG1, (workingpath + "phi.0.mesh"));
     ofstream ff(workingpath + "phi.0.data");
     ff <<  phig[];
-    savevtk((resultpath + "phi.0.vtu"),
-	    ThG1, phig, dataname = "phi", order = vtkorder, bin = false);
+
+	<%- include('/blobs/save.edp.ejs', {
+		solution: {
+			path: run.resultPath,
+			name: '"phi.0"',
+			mesh: 'ThG1',
+			sol: ['phig'],
+			dataName: run.results.map(r => r.name),
+			order: [1]
+		}
+	}); -%>
+
+    //savevtk((resultpath + "phi.0.vtu"),
+	//   ThG1, phig, dataname = "phi", order = vtkorder, bin = false);
     fout.flush;
   }
 
@@ -2528,8 +2547,19 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
       savemesh(ThGlobal, workingpath + "phi." + (mm + moffset) + ".mesh");
       ofstream ff(workingpath + "phi." + (mm + moffset) + ".data");
       ff <<  phig[];
-      savevtk((resultpath + "phi." + (mm + moffset) + ".vtu"),
-	      ThGlobal, phig, dataname = "phi", order = vtkorder, bin = false);
+
+	  <%- include('/blobs/save.edp.ejs', {
+		solution: {
+			path: run.resultPath,
+			name: '"phi."+(mm+moffset)',
+			mesh: 'ThGlobal',
+			sol: ['phig'],
+			dataName: run.results.map(r => r.name),
+			order: [1]
+		}
+	}); -%>
+      //savevtk((resultpath + "phi." + (mm + moffset) + ".vtu"),
+	  //    ThGlobal, phig, dataname = "phi", order = vtkorder, bin = false);
       fout.flush;
     }
     mpiBarrier(comm);

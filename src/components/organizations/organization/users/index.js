@@ -69,7 +69,7 @@ const Users = ({ organization }) => {
   const onAdd = async (type, values) => {
     try {
       // API
-      await OrganizationAPI.update({ id: organization.id }, [
+      await OrganizationAPI.update(organization.id, [
         {
           key: type,
           type: 'array',

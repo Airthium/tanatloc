@@ -38,6 +38,10 @@ const get = async (id, data, readAvatar = true) => {
   return user
 }
 
+const getBy = async (id, data, key) => {
+  return UserDB.get(id, data, key)
+}
+
 /**
  * Get all users
  * @param {Array} data Data
@@ -114,4 +118,4 @@ const del = async (user) => {
   await UserDB.del(user)
 }
 
-export default { login, add, get, getAll, update, del }
+export default { login, add, get, getBy, getAll, update, del }

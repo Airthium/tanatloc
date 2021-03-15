@@ -102,7 +102,34 @@ const getByUser = async (user, data) => {
 }
 
 const update = async (organization, data) => {
-  //TODO
+  // Check for emails
+  const newData = await Promise.all(
+    data.map(async (d) => {
+      if (
+        d.type === 'array' &&
+        d.method === 'append' &&
+        (d.key === 'owners' || d.key === 'users')
+      ) {
+        const email = d.value
+        const user = await User.getBy(email, ['id'], 'email')
+
+        if (user) d.value = user.id
+        else {
+          // Create user
+          const newUser = await User.add({
+            email: email,
+            password: Crypto.randomBytes(12).toString('hex')
+          })
+          d.value = newUser.id
+        }
+
+        return d
+      }
+    })
+  )
+
+  // Update
+  await OrganizationDB.update(organization, newData)
 }
 
 /**

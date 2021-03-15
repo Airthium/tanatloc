@@ -2,6 +2,7 @@ import { Button, Tabs, Typography } from 'antd'
 import { ArrowLeftOutlined } from '@ant-design/icons'
 
 import Users from './users'
+import Groups from './groups'
 
 import { Error } from '@/components/assets/notification'
 
@@ -64,7 +65,7 @@ const Organization = ({ organization, onClose }) => {
           <Users organization={organization} />
         </Tabs.TabPane>
         <Tabs.TabPane tab="Groups" key="groups">
-          TODO
+          <Groups organization={organization} />
         </Tabs.TabPane>
       </Tabs>
     </>

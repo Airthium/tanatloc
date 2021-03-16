@@ -1,4 +1,4 @@
-/** @module src/lib/three/helpers/ArrowHelper */
+/** @module lib/three/helpers/ArrowHelper */
 
 import {
   ConeGeometry,

@@ -8,6 +8,7 @@ import { ExclamationCircleTwoTone } from '@ant-design/icons'
  */
 const DeleteDialog = (props) => {
   // Props
+  const title = props.title
   const visible = props.visible
   const onCancel = props.onCancel
   const onOk = props.onOk
@@ -18,7 +19,7 @@ const DeleteDialog = (props) => {
    */
   return (
     <Modal
-      title="Delete your account"
+      title={title}
       okText="Delete"
       closable={false}
       visible={visible}

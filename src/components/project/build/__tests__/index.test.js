@@ -5,7 +5,7 @@ jest.mock('@/lib/utils', () => ({
   userToAvatar: () => {}
 }))
 
-describe('src/components/project/build', () => {
+describe('components/project/build', () => {
   it('empty', () => {
     const data = Build()
     expect(data).toBe(null)

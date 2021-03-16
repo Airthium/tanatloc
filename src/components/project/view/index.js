@@ -1,4 +1,4 @@
-/** @module 'src/components/project/view */
+/** @module components/project/view */
 
 import { useRef, useState, useEffect } from 'react'
 import {

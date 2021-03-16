@@ -9,7 +9,7 @@ jest.mock('next/router', () => ({
 }))
 
 let wrapper
-describe('src/components/error', () => {
+describe('components/error', () => {
   beforeEach(() => {
     wrapper = shallow(<Error />)
   })

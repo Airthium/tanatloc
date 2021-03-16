@@ -13,6 +13,6 @@ jest.mock('@/templates', () => {})
 
 jest.mock('@/plugins/templates', () => {})
 
-describe('src/lib/template', () => {
+describe('lib/template', () => {
   it('nothingToDo', async () => {})
 })

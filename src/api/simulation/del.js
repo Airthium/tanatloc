@@ -2,7 +2,7 @@ import Caller from '@/api/call'
 
 /**
  * Delete simulation
- * @memberof module:src/api/simulation
+ * @memberof module:api/simulation
  * @param {Object} project Project { id }
  * @param {Object} simulation Simulation {id }
  */

@@ -11,7 +11,7 @@ import {
   unselect
 } from '@/store/select/action'
 
-describe('src/store/select/action', () => {
+describe('store/select/action', () => {
   it('action types', () => {
     expect(selectActionTypes.ENABLE).toBe('ENABLE')
     expect(selectActionTypes.DISABLE).toBe('DISABLE')

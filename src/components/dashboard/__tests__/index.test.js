@@ -47,7 +47,7 @@ const mockLogout = jest.fn()
 jest.mock('@/api/logout', () => () => mockLogout())
 
 let wrapper
-describe('src/components/dashboard', () => {
+describe('components/dashboard', () => {
   beforeEach(() => {
     mockRouter.mockReset()
     mockQuery.mockReset()

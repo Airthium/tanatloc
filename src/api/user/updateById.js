@@ -2,7 +2,7 @@ import Caller from '@/api/call'
 
 /**
  * Update user by id
- * @memberof module:src/api/user
+ * @memberof module:api/user
  * @param {string} id User id
  * @param {Array} data Data [{ key: value }, ...]
  */

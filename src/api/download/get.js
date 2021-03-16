@@ -1,7 +1,8 @@
 import Caller from '@/api/call'
 
 /**
- * Download file
+ * Download
+ * @memberof module:api/download
  * @param {Object} file File
  * @param {boolean} archive Archive
  */

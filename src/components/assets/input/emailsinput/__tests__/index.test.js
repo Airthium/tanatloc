@@ -2,7 +2,7 @@ import EmailsInput from '..'
 import { shallow } from 'enzyme'
 
 let wrapper
-describe('src/components/assets/input/emailsinput', () => {
+describe('components/assets/input/emailsinput', () => {
   beforeEach(() => {
     wrapper = shallow(<EmailsInput />)
   })

@@ -23,7 +23,7 @@ jest.mock('@/components/assets/notification', () => ({
 }))
 
 let wrapper
-describe('src/components/project/add', () => {
+describe('components/project/add', () => {
   beforeEach(() => {
     mockAddOneProject.mockReset()
     mockMutateOneWorkspace.mockReset()

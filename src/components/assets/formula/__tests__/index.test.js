@@ -10,7 +10,7 @@ global.setTimeout = (callback) => {
 }
 
 let wrapper
-describe('src/components/assets/formula', () => {
+describe('components/assets/formula', () => {
   beforeEach(() => {
     onValueChange.mockReset()
     onCheckedChange.mockReset()

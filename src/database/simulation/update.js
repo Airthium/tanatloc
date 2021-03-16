@@ -3,7 +3,7 @@ import { databases } from '@/config/db'
 
 /**
  * Update simulation
- * @memberof module:src/database/simulation
+ * @memberof module:database/simulation
  * @param {Object} simulation Simulation { id }
  * @param {Array} data Data [{ key, value, ... }, ...]
  */

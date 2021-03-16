@@ -6,7 +6,7 @@ jest.mock('swr', () => () => ({
   mutate: jest.fn()
 }))
 
-describe('src/api/workspace/useWorkspaces', () => {
+describe('api/workspace/useWorkspaces', () => {
   it('call', () => {
     mockWorkspaces.mockImplementation(() => [{ id: 'id' }, {}])
     const [

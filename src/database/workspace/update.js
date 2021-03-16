@@ -3,7 +3,7 @@ import { databases } from '@/config/db'
 
 /**
  * Update
- * @memberof module:src/database/workspace
+ * @memberof module:database/workspace
  * @param {Object} workspace workspace { id }
  * @param {Object} data Data [{ key, value, ... }, ... ]
  */

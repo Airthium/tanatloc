@@ -76,6 +76,7 @@ const Delete = (props) => {
         Delete
       </Button>
       <DeleteDialog
+        title="Delete the project"
         visible={visible}
         onCancel={toggleDialog}
         onOk={handleDelete}

@@ -10,7 +10,7 @@ jest.mock('child_process', () => ({
 const mockDocker = jest.fn()
 jest.mock('is-docker', () => () => mockDocker())
 
-describe('src/services/freefem', () => {
+describe('services/freefem', () => {
   const mockCallback = jest.fn()
 
   beforeEach(() => {

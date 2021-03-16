@@ -2,7 +2,7 @@ import Caller from '@/api/call'
 
 /**
  * Update user
- * @memberof module:src/api/user
+ * @memberof module:api/user
  * @param {Array} data Data [{ key: value }, ...]
  */
 const update = async (data) => {

@@ -3,7 +3,7 @@ import { databases } from '@/config/db'
 
 /**
  * Delete group
- * @memberof module:src/database/group
+ * @memberof module:database/group
  * @param {Object} group Group { id }
  */
 const del = async (group) => {

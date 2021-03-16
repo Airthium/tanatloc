@@ -1,4 +1,4 @@
-/** @module src/api/plugin */
+/** @module api/plugin */
 
 import add from './add'
 import update from './update'

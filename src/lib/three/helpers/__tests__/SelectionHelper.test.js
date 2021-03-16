@@ -4,7 +4,7 @@ document.createElement = () => ({
   style: {}
 })
 
-describe('src/lib/three/helpers/SelectionHelper', () => {
+describe('lib/three/helpers/SelectionHelper', () => {
   let mouseDown
   let mouseMove
   let mouseUp

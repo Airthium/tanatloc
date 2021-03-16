@@ -1,4 +1,4 @@
-/** @module src/lib/utils */
+/** @module lib/utils */
 
 import { Avatar, Tooltip } from 'antd'
 

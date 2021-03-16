@@ -6,7 +6,7 @@ import Sentry from '@/lib/sentry'
 
 /**
  * User check API
- * @memberof module:src/route/user
+ * @memberof module:route/user
  * @param {Object} req Request
  * @param {Object} res Response
  */

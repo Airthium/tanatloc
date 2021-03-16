@@ -49,7 +49,7 @@ jest.mock('../../tools', () => ({
   removeDirectory: async () => mockRemoveDirectory()
 }))
 
-describe('src/lib/simulation', () => {
+describe('lib/simulation', () => {
   beforeEach(() => {
     mockPath.mockReset()
 

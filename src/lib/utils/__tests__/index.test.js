@@ -1,6 +1,6 @@
 import Utils from '../'
 
-describe('src/lib/utils', () => {
+describe('lib/utils', () => {
   it('stringToColor', () => {
     const color = Utils.stringToColor('string')
     expect(color).toBe('#D56011')

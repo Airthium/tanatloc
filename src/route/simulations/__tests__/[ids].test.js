@@ -26,7 +26,7 @@ jest.mock('@/lib/sentry', () => ({
   captureException: () => mockError()
 }))
 
-describe('src/route/projects/ids', () => {
+describe('route/projects/ids', () => {
   let req, response
   const res = {
     status: () => ({

@@ -32,7 +32,7 @@ jest.mock('../../project', () => ({
   del: async () => mockDelProject()
 }))
 
-describe('src/lib/workspace', () => {
+describe('lib/workspace', () => {
   beforeEach(() => {
     mockAdd.mockReset()
     mockGet.mockReset()

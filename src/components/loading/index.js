@@ -1,4 +1,4 @@
-/** @module 'src/components/loading */
+/** @module components/loading */
 
 import { Card, Layout, Space, Spin } from 'antd'
 

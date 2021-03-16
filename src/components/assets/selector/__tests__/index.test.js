@@ -34,7 +34,7 @@ jest.mock('@/lib/utils', () => ({
 }))
 
 let wrapper
-describe('src/components/assets/selector', () => {
+describe('components/assets/selector', () => {
   const part = {
     faces: [
       {

@@ -33,7 +33,7 @@ jest.mock('@/lib/sentry', () => ({
   captureException: () => mockError()
 }))
 
-describe('src/route/download', () => {
+describe('route/download', () => {
   let req, response
   const res = {
     setHeader: () => {},

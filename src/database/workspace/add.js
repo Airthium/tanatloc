@@ -3,7 +3,7 @@ import { databases } from '@/config/db'
 
 /**
  * Add
- * @memberof module:src/database/workspace
+ * @memberof module:database/workspace
  * @param {string} user User { id }
  * @param {Object} workspace Workspace { name }
  */

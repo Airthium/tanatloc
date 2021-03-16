@@ -32,7 +32,7 @@ global.MockRaycaster.intersectObjects = [
   }
 ]
 
-describe('src/lib/three/helpers/NavigationHelper', () => {
+describe('lib/three/helpers/NavigationHelper', () => {
   const renderer = {
     domElement: {
       addEventListener: (type, callback) => {

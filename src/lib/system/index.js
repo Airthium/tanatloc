@@ -1,4 +1,4 @@
-/** @module src/lib/system */
+/** @module lib/system */
 
 import SystemDB from '@/database/system'
 

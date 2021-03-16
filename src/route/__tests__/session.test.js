@@ -5,7 +5,7 @@ jest.mock('@/auth/iron', () => ({
   getSession: () => mockSession()
 }))
 
-describe('src/route/session', () => {
+describe('route/session', () => {
   const req = {}
   const res = {
     status: () => ({

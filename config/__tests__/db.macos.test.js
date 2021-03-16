@@ -16,7 +16,10 @@ describe('config/db', () => {
   })
 
   it('databases', () => {
+    expect(config.databases.SYSTEM).toBe('tanatloc_system')
     expect(config.databases.USERS).toBe('tanatloc_users')
+    expect(config.databases.ORGANIZATIONS).toBe('tanatloc_organizations')
+    expect(config.databases.GROUPS).toBe('tanatloc_groups')
     expect(config.databases.WORKSPACES).toBe('tanatloc_workspaces')
     expect(config.databases.PROJECTS).toBe('tanatloc_projects')
     expect(config.databases.GEOMETRIES).toBe('tanatloc_geometries')

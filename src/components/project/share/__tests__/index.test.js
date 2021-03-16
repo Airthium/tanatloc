@@ -25,7 +25,7 @@ jest.mock('@/api/project', () => ({
 }))
 
 let wrapper
-describe('src/components/project/share', () => {
+describe('components/project/share', () => {
   const workspace = {}
   const project = {}
 

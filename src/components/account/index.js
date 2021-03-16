@@ -1,4 +1,4 @@
-/** @module 'src/components/account */
+/** @module components/account */
 
 import { useRouter } from 'next/router'
 import { Layout, PageHeader, Typography, Divider, Tabs } from 'antd'

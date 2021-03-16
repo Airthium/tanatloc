@@ -3,7 +3,7 @@ import { databases } from '@/config/db'
 
 /**
  * Get by user id
- * @memberof module:src/database/workspace
+ * @memberof module:database/workspace
  * @param {string} id Id
  * @param {Array} data Data
  */

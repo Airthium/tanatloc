@@ -4,7 +4,7 @@ import Sentry from '@/lib/sentry'
 
 /**
  * Logout API
- * @memberof module:src/route
+ * @memberof module:route
  * @param {Object} req Request
  * @param {Object} res Response
  */

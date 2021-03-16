@@ -2,7 +2,7 @@ import login from '../login'
 
 jest.mock('is-electron', () => () => true)
 
-describe('src/api/user', () => {
+describe('api/user', () => {
   it('login', async () => {
     global.fetch = async () => {
       return {

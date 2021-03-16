@@ -7,7 +7,7 @@ jest.mock('@/api/system', () => ({
 }))
 
 let wrapper
-describe('src/components/assets/input/password', () => {
+describe('components/assets/input/password', () => {
   beforeEach(() => {
     mockSystem.mockReset()
   })

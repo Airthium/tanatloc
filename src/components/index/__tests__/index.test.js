@@ -20,7 +20,7 @@ jest.mock('@/api/user', () => ({
 }))
 
 let wrapper
-describe('src/components/index', () => {
+describe('components/index', () => {
   beforeEach(() => {
     mockPrefetch.mockReset()
     mockPush.mockReset()

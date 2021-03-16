@@ -1,4 +1,4 @@
-/** @module src/api/avatar */
+/** @module api/avatar */
 
 import add from './add'
 import del from './del'

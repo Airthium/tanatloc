@@ -1,4 +1,4 @@
-/** @module 'src/components/dashboard */
+/** @module components/dashboard */
 
 import { useRouter } from 'next/router'
 import { useState, useEffect } from 'react'
@@ -28,8 +28,6 @@ import Welcome from './welcome'
 import UserAPI from '@/api/user'
 import WorkspaceAPI from '@/api/workspace'
 import logout from '@/api/logout'
-
-import version from '/version.json'
 
 /**
  * Errors
@@ -282,7 +280,10 @@ const Dashboard = () => {
               >
                 {menuItems.logout.label}
               </Menu.Item>
-              <p className="version">version: {version.git}</p>
+              <p className="version">
+                version: git-{process.env.SOURCE_BRANCH}-
+                {process.env.SOURCE_COMMIT}
+              </p>
             </Menu>
           </Layout.Sider>
 

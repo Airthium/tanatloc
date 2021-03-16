@@ -3,7 +3,7 @@ import Caller from '@/api/call'
 
 /**
  * Use project
- * @memberof module:src/api/project
+ * @memberof module:api/project
  * @param {string} id Project's id
  */
 const useProject = (id) => {

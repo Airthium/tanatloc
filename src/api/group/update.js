@@ -2,7 +2,7 @@ import Caller from '@/api/call'
 
 /**
  * Update group
- * @memberof module:src/api/group
+ * @memberof module:api/group
  * @param {Object} group Group { id }
  * @param {Array} Data
  */

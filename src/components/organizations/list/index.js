@@ -1,13 +1,23 @@
-import { Avatar, Button, Space, Table } from 'antd'
-import { DeleteOutlined, EditOutlined } from '@ant-design/icons'
+import { Avatar, Button, Space, Spin, Table } from 'antd'
+import { ControlOutlined } from '@ant-design/icons'
+
+import Delete from '../delete'
 
 import OrganizationAPI from '@/api/organization'
 
 import Utils from '@/lib/utils'
 
-const List = () => {
+/**
+ * List
+ * @memberof module:components/organizations
+ */
+const List = ({ setOrganization }) => {
   // Data
-  const [organizations] = OrganizationAPI.useOrganizations()
+  const [
+    organizations,
+    { loadingOrganizations }
+  ] = OrganizationAPI.useOrganizations()
+
   const columns = [
     {
       title: 'Name',
@@ -38,16 +48,26 @@ const List = () => {
     {
       title: 'Actions',
       key: 'actions',
-      render: () => (
+      render: (org) => (
         <Space wrap={true}>
-          <Button icon={<EditOutlined />} />
-          <Button icon={<DeleteOutlined />} type="danger" />
+          <Button
+            icon={<ControlOutlined />}
+            onClick={() => setOrganization(org)}
+          />
+          <Delete organization={org} />
         </Space>
       )
     }
   ]
 
-  return <Table columns={columns} dataSource={organizations} />
+  return loadingOrganizations ? (
+    <Spin />
+  ) : (
+    <Table
+      columns={columns}
+      dataSource={organizations?.map((o) => ({ ...o, key: o.id }))}
+    />
+  )
 }
 
 export default List

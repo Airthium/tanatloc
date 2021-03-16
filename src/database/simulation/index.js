@@ -1,4 +1,4 @@
-/** @module src/database/simulation */
+/** @module database/simulation */
 
 import add from './add'
 import get from './get'

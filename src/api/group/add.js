@@ -2,7 +2,7 @@ import Caller from '@/api/call'
 
 /**
  * Add group
- * @memberof module:src/api/group
+ * @memberof module:api/group
  * @param {Object} group Group
  */
 const add = async (group) => {

@@ -3,7 +3,7 @@ import { databases } from '@/config/db'
 
 /**
  * Get simulation by id
- * @memberof module:src/database/simulation
+ * @memberof module:database/simulation
  * @param {string} id Id
  * @param {Array} data Data
  */

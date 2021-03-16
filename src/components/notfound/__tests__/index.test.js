@@ -9,7 +9,7 @@ jest.mock('next/router', () => ({
 }))
 
 let wrapper
-describe('src/components/notfound', () => {
+describe('components/notfound', () => {
   beforeEach(() => {
     mockRouter.mockReset()
     wrapper = shallow(<NotFound />)

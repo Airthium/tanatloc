@@ -3,7 +3,7 @@ import Caller from '@/api/call'
 
 /**
  * Use a workspace (SWR)
- * @memberof module:src/api/workspace
+ * @memberof module:api/workspace
  * @returns {Array} [workspaces, {mutateWorkspaces function, loadingWorkspaces status}]
  */
 const useWorkspaces = () => {
@@ -13,7 +13,7 @@ const useWorkspaces = () => {
 
   /**
    * Add one (useWorkspaces)
-   * @memberof module:src/api/workspace
+   * @memberof module:api/workspace
    * @param {Object} workspace Workspace
    */
   const addOne = (workspace) => {
@@ -23,7 +23,7 @@ const useWorkspaces = () => {
 
   /**
    * Delete one (useWorkspaces)
-   * @memberof module:src/api/workspace
+   * @memberof module:api/workspace
    * @param {Object} workspace Workspace
    */
   const delOne = (workspace) => {
@@ -33,7 +33,7 @@ const useWorkspaces = () => {
 
   /**
    * Mutate one (useWorkspace)
-   * @memberof module:src/api/workspace
+   * @memberof module:api/workspace
    * @param {Object} workspace Workspace
    */
   const mutateOne = (workspace) => {

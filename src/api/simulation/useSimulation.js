@@ -3,7 +3,7 @@ import Caller from '@/api/call'
 
 /**
  * Use simulation
- * @memberof module:src/api/simulation
+ * @memberof module:api/simulation
  * @param {string} id Simulation's id
  */
 const useSimulation = (id, refresh) => {

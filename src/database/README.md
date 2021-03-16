@@ -4,6 +4,18 @@
   - Add
   - Del
   - Get
+- Group:
+  - Add
+  - Del
+  - Get
+  - GetAll
+  - Update
+- Organization:
+  - Add
+  - Del
+  - Get
+  - GetAll
+  - Update
 - Project:
   - Add
   - Del
@@ -12,6 +24,9 @@
 - Simulation:
   - Add
   - Del
+  - Get
+  - Update
+- System:
   - Get
   - Update
 - User:

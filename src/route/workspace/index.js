@@ -1,4 +1,4 @@
-/** @module src/route/workspace */
+/** @module route/workspace */
 
 import getSessionId from '../session'
 import auth from '../auth'

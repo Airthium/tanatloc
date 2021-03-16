@@ -3,7 +3,7 @@ import { databases } from '@/config/db'
 
 /**
  * Get system items
- * @memberof module:src/database/avatar
+ * @memberof module:database/avatar
  * @param {Object} data Data [ key, ]
  */
 const get = async (data) => {

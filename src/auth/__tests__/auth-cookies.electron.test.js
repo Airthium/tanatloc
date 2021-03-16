@@ -24,7 +24,7 @@ jest.mock(
     }
 )
 
-describe('src/auth/auth-cookies', () => {
+describe('auth/auth-cookies', () => {
   it('setTokenCookie', () => {
     const res = {}
     auth.setTokenCookie(res, 'token')

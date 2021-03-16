@@ -1,4 +1,4 @@
-/** @module src/services */
+/** @module services */
 
 import toThree from './toThree'
 import gmsh from './gmsh'

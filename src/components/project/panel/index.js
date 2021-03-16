@@ -1,4 +1,4 @@
-/** @module 'src/components/project/panel */
+/** @module components/project/panel */
 
 import { Button, Card } from 'antd'
 import { CloseOutlined } from '@ant-design/icons'

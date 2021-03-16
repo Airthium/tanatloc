@@ -1,16 +1,22 @@
-import { useState } from 'react'
-import { Input, Tag } from 'antd'
+import { useState, useEffect } from 'react'
+import { Input, Space, Tag } from 'antd'
 
-const EmailsInput = () => {
+import Utils from '@/lib/utils'
+
+const EmailsInput = ({ values, onChange }) => {
   // State
   const [emails, setEmails] = useState([])
   const [value, setValue] = useState('')
 
+  useEffect(() => {
+    if (values) setEmails(values)
+  }, [values])
+
   /**
-   * On change
+   * On input change
    * @param {Object} event Event
    */
-  const onChange = (event) => {
+  const onInputChange = (event) => {
     let text = event.target.value
 
     const lastChar = text[text.length - 1]
@@ -19,6 +25,7 @@ const EmailsInput = () => {
 
       if (newEmails?.length) {
         setEmails([...emails, ...newEmails])
+        onChange([...emails, ...newEmails])
 
         // Remove emails from text
         newEmails.forEach((email) => {
@@ -50,22 +57,30 @@ const EmailsInput = () => {
    * @param {number} index Index
    */
   const onClose = (index) => {
-    const newEmails = emails.filter((e, i) => i !== index)
+    const newEmails = emails.filter((_, i) => i !== index)
     setEmails(newEmails)
+    onChange(newEmails)
   }
 
   /**
    * Render
    */
   return (
-    <>
-      {emails.map((email, index) => (
-        <Tag key={index} closable={true} onClose={() => onClose(index)}>
-          {email}
-        </Tag>
-      ))}
-      <Input disabled={true} value={value} onChange={onChange} />
-    </>
+    <Space direction="vertical" style={{ width: '100%' }}>
+      <Space direction="horizontal" style={{ width: '100%' }} wrap={true}>
+        {emails.map((email, index) => (
+          <Tag
+            key={index}
+            color={Utils.stringToColor(email)}
+            closable={true}
+            onClose={() => onClose(index)}
+          >
+            {email}
+          </Tag>
+        ))}
+      </Space>
+      <Input placeholder="Emails" value={value} onChange={onInputChange} />
+    </Space>
   )
 }
 

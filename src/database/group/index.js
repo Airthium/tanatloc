@@ -1,4 +1,4 @@
-/** @module src/database/group */
+/** @module database/group */
 
 import add from './add'
 import get from './get'

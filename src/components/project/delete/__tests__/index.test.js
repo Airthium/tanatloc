@@ -20,7 +20,7 @@ jest.mock('@/components/assets/notification', () => ({
 }))
 
 let wrapper
-describe('src/components/project/delete', () => {
+describe('components/project/delete', () => {
   beforeEach(() => {
     wrapper = shallow(
       <Delete workspace={{ id: 'id', projects: [{}] }} project={{ id: 'id' }} />

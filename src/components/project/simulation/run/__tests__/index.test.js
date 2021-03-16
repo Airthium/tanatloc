@@ -35,7 +35,7 @@ jest.mock('@/components/assets/notification', () => ({
 }))
 
 let wrapper
-describe('src/components/project/simulation/run', () => {
+describe('components/project/simulation/run', () => {
   const project = {}
   const simulation = {
     scheme: {

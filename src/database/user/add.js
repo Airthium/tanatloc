@@ -3,7 +3,7 @@ import { databases } from '@/config/db'
 
 /**
  * Add
- * @memberof module:src/database/user
+ * @memberof module:database/user
  * @param {Object} user User { email, password }
  */
 const add = async ({ email, password }) => {
@@ -25,9 +25,7 @@ const add = async ({ email, password }) => {
     [email, password, true, Date.now(), false]
   )
 
-  const user = response.rows[0]
-
-  return user
+  return response.rows[0]
 }
 
 export default add

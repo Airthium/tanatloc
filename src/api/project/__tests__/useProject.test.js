@@ -6,7 +6,7 @@ jest.mock('swr', () => () => ({
   mutate: jest.fn()
 }))
 
-describe('src/api/project/useProject', () => {
+describe('api/project/useProject', () => {
   it('with project', () => {
     mockProject.mockImplementation(() => ({}))
     const [project, { mutateProject, loadingProject }] = useProject()

@@ -1,8 +1,8 @@
 import Caller from '@/api/call'
 
 /**
- * Add avatar
- * @memberof module:src/api/avatar
+ * Add
+ * @memberof module:api/avatar
  * @param {File} file File { name, uid, data }
  */
 const add = async (file) => {

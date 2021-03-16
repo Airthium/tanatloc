@@ -1,4 +1,4 @@
-/** @module src/api */
+/** @module api */
 
 import isElectron from 'is-electron'
 

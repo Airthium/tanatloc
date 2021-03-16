@@ -1,4 +1,4 @@
-/** @module src/route/avatar */
+/** @module route/avatar */
 
 import getSessionId from '../session'
 

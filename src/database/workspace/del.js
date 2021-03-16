@@ -3,7 +3,7 @@ import { databases } from '@/config/db'
 
 /**
  * Delete
- * @memberof module:src/database/workspace
+ * @memberof module:database/workspace
  * @param {Object} workspace Workspace { id }
  */
 const del = async (workspace) => {

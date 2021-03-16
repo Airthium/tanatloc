@@ -12,7 +12,7 @@ jest.mock('three/examples/jsm/math/Lut', () => ({
   }
 }))
 
-describe('src/lib/three/loaders/PartLoader', () => {
+describe('lib/three/loaders/PartLoader', () => {
   global.MockGeometry.getAttribute = (attribute) => {
     if (attribute === 'position') return { array: [] }
   }

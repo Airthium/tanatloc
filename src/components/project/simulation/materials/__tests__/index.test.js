@@ -27,7 +27,7 @@ jest.mock('@/store/select/action', () => ({
 }))
 
 let wrapper
-describe('src/components/project/simulation/materials', () => {
+describe('components/project/simulation/materials', () => {
   const project = {}
   const simulation = {
     scheme: {

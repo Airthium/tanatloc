@@ -12,7 +12,7 @@ jest.mock('../../tools', () => ({
   loadPart: async () => mockLoadPart()
 }))
 
-describe('src/lib/file', () => {
+describe('lib/file', () => {
   it('get', async () => {
     const content = await Part.get(
       { id: 'id' },

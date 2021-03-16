@@ -5,7 +5,7 @@ jest.mock('../../call', () => ({
   call: () => mockCall()
 }))
 
-describe('/src/api/simulation/update', () => {
+describe('api/simulation/update', () => {
   it('call', async () => {
     await update({}, [])
     expect(mockCall).toHaveBeenCalledTimes(1)

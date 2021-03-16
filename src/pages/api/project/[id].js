@@ -2,7 +2,7 @@ import route from '@/route/project/[id]'
 
 /**
  * Project API from [id]
- * @memberof module:api
+ * @memberof module:pages/api
  * @param {Object} req Request
  * @param {Object} res Response
  */

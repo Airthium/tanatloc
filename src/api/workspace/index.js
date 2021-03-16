@@ -1,4 +1,4 @@
-/** @module src/api/workspace */
+/** @module api/workspace */
 
 import useWorkspaces from './useWorkspaces'
 import add from './add'

@@ -3,7 +3,7 @@ import Caller from '@/api/call'
 
 /**
  * Use simulations
- * @memberof module:src/api/simulation
+ * @memberof module:api/simulation
  * @param {Array} ids [Simulation's ids]
  */
 const useSimulations = (ids) => {
@@ -16,7 +16,7 @@ const useSimulations = (ids) => {
 
   /**
    * Add one (useSimulations)
-   * @memberof module:src/api/simulation
+   * @memberof module:api/simulation
    * @param {Object} simulation Simulation
    */
   const addOne = (simulation) => {
@@ -26,7 +26,7 @@ const useSimulations = (ids) => {
 
   /**
    * Delete one (useSimulations)
-   * @memberof module:src/api/simulation
+   * @memberof module:api/simulation
    * @param {Object} simulation Simulation
    */
   const delOne = (simulation) => {
@@ -38,7 +38,7 @@ const useSimulations = (ids) => {
 
   /**
    * Mutate one (useSimulations)
-   * @memberof module:src/api/simulation
+   * @memberof module:api/simulation
    * @param {Object} simulation Simulation
    */
   const mutateOne = (simulation, revalidate) => {

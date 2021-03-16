@@ -5,7 +5,7 @@ jest.mock('../..', () => ({
   deleter: async () => mockDelete()
 }))
 
-describe('src/database/quary/workspace/delete', () => {
+describe('database/quary/workspace/delete', () => {
   it('delete', async () => {
     await del({})
     expect(mockDelete).toHaveBeenCalledTimes(1)

@@ -11,7 +11,7 @@ jest.mock('next/router', () => ({
 }))
 
 let wrapper
-describe('src/components/notfound', () => {
+describe('components/notfound', () => {
   beforeEach(() => {
     mockPrefetch.mockReset()
     mockPush.mockReset()

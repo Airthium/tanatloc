@@ -1,4 +1,4 @@
-/** @module 'src/components/assets/dialog */
+/** @module components/assets/dialog */
 
 import { Form, Modal } from 'antd'
 

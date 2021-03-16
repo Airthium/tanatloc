@@ -14,7 +14,7 @@ jest.mock('../../user', () => ({
   update: async () => mockUpdate()
 }))
 
-describe('src/lib/plugin', () => {
+describe('lib/plugin', () => {
   beforeEach(() => {
     mockInit.mockReset()
 

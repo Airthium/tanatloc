@@ -9,7 +9,7 @@ import Sentry from '@/lib/sentry'
 
 /**
  * Simulation API by [id]
- * @memberof module:src/route/simulation
+ * @memberof module:route/simulation
  * @param {Object} req Request
  * @param {Object} res Response
  */

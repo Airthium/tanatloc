@@ -1,8 +1,8 @@
 import Caller from '@/api/call'
 
 /**
- * Delete avatar
- * @memberof module:src/api/avatar
+ * Delete
+ * @memberof module:api/avatar
  * @param {Object} avatar Avatar { id }
  */
 const del = async (avatar) => {

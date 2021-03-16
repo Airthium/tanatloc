@@ -67,6 +67,7 @@ const Delete = ({ project, simulation }) => {
         Delete
       </Button>
       <DeleteDialog
+        title="Delete the simulation"
         visible={visible}
         onCancel={toggleDialog}
         onOk={handleDelete}

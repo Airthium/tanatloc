@@ -24,7 +24,7 @@ global.FileReader = class {
 }
 
 let wrapper
-describe('src/components/project/simulation/geometry', () => {
+describe('components/project/simulation/geometry', () => {
   beforeEach(() => {
     mockUpdate.mockReset()
     mockMutate.mockReset()

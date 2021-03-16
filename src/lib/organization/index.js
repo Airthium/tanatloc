@@ -23,6 +23,12 @@ const add = async (user, organization) => {
       value: newOrganization.id
     }
   ])
+
+  return newOrganization
+}
+
+const get = async (id, data) => {
+  return OrganizationDB.get(id, data)
 }
 
 /**
@@ -95,4 +101,77 @@ const getByUser = async (user, data) => {
   return returnedOrganization
 }
 
-export default { add, getByUser }
+const update = async (organization, data) => {
+  // Check for emails
+  const newData = await Promise.all(
+    data.map(async (d) => {
+      if (
+        d.type === 'array' &&
+        d.method === 'append' &&
+        (d.key === 'owners' || d.key === 'users')
+      ) {
+        const email = d.value
+        const user = await User.getBy(email, ['id'], 'email')
+
+        if (user) d.value = user.id
+        else {
+          // Create user
+          const newUser = await User.add({
+            email: email,
+            password: Crypto.randomBytes(12).toString('hex')
+          })
+          d.value = newUser.id
+        }
+
+        return d
+      }
+    })
+  )
+
+  // Update
+  await OrganizationDB.update(organization, newData)
+}
+
+/**
+ * Delete
+ * @param {Object} organization Organization { id }
+ */
+const del = async (organization) => {
+  // Get data
+  const organizationData = await get(organization.id, ['owners', 'users'])
+
+  // Del organization from owners
+  organizationData.owners &&
+    (await Promise.all(
+      organizationData.owners.map(async (owner) => {
+        await User.update({ id: owner }, [
+          {
+            key: 'organizations',
+            type: 'array',
+            method: 'remove',
+            value: organization.id
+          }
+        ])
+      })
+    ))
+
+  // Del organization from users
+  organizationData.users &&
+    (await Promise.all(
+      organizationData.users.map(async (user) => {
+        await User.update({ id: user }, [
+          {
+            key: 'organizations',
+            type: 'array',
+            method: 'remove',
+            value: organization.id
+          }
+        ])
+      })
+    ))
+
+  // Delete organization
+  await OrganizationDB.del(organization)
+}
+
+export default { add, getByUser, update, del }

@@ -2,7 +2,7 @@ import Caller from '@/api/call'
 
 /**
  * Update simulation
- * @memberof module:src/api/simulation
+ * @memberof module:api/simulation
  * @param {Object} simulation Simulation
  * @param {Array} data Data [{ key, value, ... }, ...]
  */

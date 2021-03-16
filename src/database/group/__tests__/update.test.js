@@ -5,7 +5,7 @@ jest.mock('../..', () => ({
   updater: async () => mockUpdater()
 }))
 
-describe('src/database/group/update', () => {
+describe('database/group/update', () => {
   it('call', async () => {
     await update({}, [{}])
     expect(mockUpdater).toHaveBeenCalledTimes(1)

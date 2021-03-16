@@ -14,7 +14,7 @@ jest.mock('@/config/storage', () => ({
   SIMULATION: 'simulation'
 }))
 
-describe('src/lib/download/summary', () => {
+describe('lib/download/summary', () => {
   const simulation = {
     scheme: {
       algorithm: 'algorithm',

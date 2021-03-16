@@ -5,7 +5,7 @@ jest.mock('@/lib/user', () => ({
   get: async () => mockGet()
 }))
 
-describe('src/route/auth', () => {
+describe('route/auth', () => {
   it('authorized', async () => {
     let res
 

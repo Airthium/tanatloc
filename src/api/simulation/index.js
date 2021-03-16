@@ -1,4 +1,4 @@
-/** @module src/api/simulation */
+/** @module api/simulation */
 
 import useSimulations from './useSimulations'
 import useSimulation from './useSimulation'

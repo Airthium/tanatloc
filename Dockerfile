@@ -54,7 +54,6 @@ COPY templates ${INSTALL_PATH}/templates
 COPY .babelrc ${INSTALL_PATH}/.babelrc
 COPY next.config.js ${INSTALL_PATH}/next.config.js
 COPY package.json ${INSTALL_PATH}/package.json
-COPY version.json ${INSTALL_PATH}/version.json
 COPY yarn.lock ${INSTALL_PATH}/yarn.lock
 
 WORKDIR ${INSTALL_PATH}

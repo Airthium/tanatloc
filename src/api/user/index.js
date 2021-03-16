@@ -1,4 +1,4 @@
-/** @module src/api/user */
+/** @module api/user */
 
 import useUser from './useUser'
 import useUsers from './useUsers'

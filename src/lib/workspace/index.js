@@ -1,4 +1,4 @@
-/** @module src/lib/workspace */
+/** @module lib/workspace */
 
 import WorkspaceDB from '@/database/workspace'
 

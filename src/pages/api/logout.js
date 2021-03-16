@@ -2,7 +2,7 @@ import route from '@/route/logout'
 
 /**
  * Logout API
- * @memberof module:api
+ * @memberof module:pages/api
  * @param {Object} req Request
  * @param {Object} res Response
  */

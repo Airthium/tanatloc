@@ -3,7 +3,7 @@ import { databases } from '@/config/db'
 
 /**
  * Update
- * @memberof module:src/database/user
+ * @memberof module:database/user
  * @param {Object} user User { id }
  * @param {Object} data Data [{ key, value, ... }, ...]
  */

@@ -38,7 +38,7 @@ jest.mock('../../simulation', () => ({
   del: async () => mockDelSimulation()
 }))
 
-describe('src/lib/project', () => {
+describe('lib/project', () => {
   beforeEach(() => {
     mockAdd.mockReset()
     mockGet.mockReset()

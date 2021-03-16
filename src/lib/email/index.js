@@ -1,4 +1,4 @@
-/** @module src/lib/email */
+/** @module lib/email */
 
 import MailerSend, { Recipient, EmailParams } from 'mailersend'
 

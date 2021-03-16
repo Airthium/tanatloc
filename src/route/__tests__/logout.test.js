@@ -10,7 +10,7 @@ jest.mock('@/lib/sentry', () => ({
   captureException: () => mockError()
 }))
 
-describe('src/route/api', () => {
+describe('route/api', () => {
   it('logout', () => {
     logout({}, { end: () => {} })
     expect(mockRemove).toHaveBeenCalledTimes(1)

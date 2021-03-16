@@ -1,6 +1,6 @@
 import simulations from '..'
 
-describe('src/route/simulations', () => {
+describe('route/simulations', () => {
   let response
   const req = {}
   const res = {

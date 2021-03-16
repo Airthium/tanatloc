@@ -1,4 +1,4 @@
-/** @module src/route/simulations */
+/** @module route/simulations */
 
 /**
  * Empty simulations list route

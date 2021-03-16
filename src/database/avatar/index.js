@@ -1,4 +1,4 @@
-/** @module src/database/avatar */
+/** @module database/avatar */
 
 import add from './add'
 import get from './get'

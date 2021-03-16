@@ -2,7 +2,7 @@ import Caller from '@/api/call'
 
 /**
  * Add a workspace
- * @memberof module:src/api/workspace
+ * @memberof module:api/workspace
  * @param {Object} workspace Workspace { name }
  */
 const add = async (workspace) => {

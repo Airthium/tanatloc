@@ -1,4 +1,4 @@
-/** @module src/route/simulation */
+/** @module route/simulation */
 
 import getSessionId from '../session'
 

@@ -5,7 +5,7 @@ jest.mock('../..', () => async (query) => {
   return mockQuery(query)
 })
 
-describe('src/database/user/add', () => {
+describe('database/user/add', () => {
   it('call', async () => {
     let user
 

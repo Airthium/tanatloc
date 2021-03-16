@@ -386,9 +386,7 @@ const processOutput = async (
     const realLog = nonResultLines.join('\n')
 
     // Get data
-    for (let i = 0; i < dataLines.length; ++i) {
-      const line = dataLines[i]
-
+    for (let line of dataLines) {
       // New data
       const dataFile = line
         .replace('PROCESS DATA FILE', '')
@@ -409,9 +407,7 @@ const processOutput = async (
     }
 
     // Get result
-    for (let i = 0; i < resultLines.length; ++i) {
-      const line = resultLines[i]
-
+    for (let line of resultLines) {
       // New result
       const resultFile = line
         .replace('PROCESS VTU FILE', '')

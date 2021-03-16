@@ -2,7 +2,7 @@ import Caller from '@/api/call'
 
 /**
  * Delete project
- * @memberof module:src/api/project
+ * @memberof module:api/project
  * @param {Object} workspace Workspace { id }
  * @param {Object} project Project { id }
  */

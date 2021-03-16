@@ -1,6 +1,10 @@
 import useSWR from 'swr'
 import Caller from '@/api/call'
 
+/**
+ * Uses plugins
+ * @memberof module:api/plugin
+ */
 const usePlugins = () => {
   const { data, mutate } = useSWR('/api/plugin', Caller.fetcher)
   const loading = !data

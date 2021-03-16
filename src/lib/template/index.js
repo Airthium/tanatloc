@@ -1,4 +1,4 @@
-/** @module src/lib/template */
+/** @module lib/template */
 
 import path from 'path'
 import ejs from 'ejs'

@@ -2,7 +2,7 @@ import Caller from '@/api/call'
 
 /**
  * Add user
- * @memberof module:src/api/user
+ * @memberof module:api/user
  * @param {Object} user User
  */
 const add = async (user) => {

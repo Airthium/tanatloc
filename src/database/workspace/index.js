@@ -1,4 +1,4 @@
-/** @module src/database/workspace */
+/** @module database/workspace */
 
 import get from './get'
 import add from './add'

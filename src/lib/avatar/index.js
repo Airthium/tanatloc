@@ -1,4 +1,4 @@
-/** @module src/lib/avatar */
+/** @module lib/avatar */
 
 import path from 'path'
 

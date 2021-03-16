@@ -3,7 +3,7 @@ import { databases } from '@/config/db'
 
 /**
  * Get by email and password
- * @memberof module:src/database/user
+ * @memberof module:database/user
  * @param {Object} user User { email, password }
  */
 const getByUsernameAndPassword = async ({ email, password }) => {

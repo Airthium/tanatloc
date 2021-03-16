@@ -1,4 +1,4 @@
-/** @module src/lib/user */
+/** @module lib/user */
 
 import UserDB from '@/database/user'
 
@@ -36,6 +36,10 @@ const get = async (id, data, readAvatar = true) => {
 
   // Return
   return user
+}
+
+const getBy = async (id, data, key) => {
+  return UserDB.get(id, data, key)
 }
 
 /**
@@ -114,4 +118,4 @@ const del = async (user) => {
   await UserDB.del(user)
 }
 
-export default { login, add, get, getAll, update, del }
+export default { login, add, get, getBy, getAll, update, del }

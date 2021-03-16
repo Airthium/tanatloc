@@ -3,7 +3,7 @@ import { databases } from '@/config/db'
 
 /**
  * Get project by id
- * @memberof module:src/database/project
+ * @memberof module:database/project
  * @param {string} id Id
  * @param {Array} data Data
  */

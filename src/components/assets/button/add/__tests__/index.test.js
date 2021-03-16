@@ -2,7 +2,7 @@ import AddButton from '@/components/assets/button/add'
 import { shallow } from 'enzyme'
 
 let wrapper
-describe('src/components/assets/button/add', () => {
+describe('components/assets/button/add', () => {
   const mockDisabled = jest.fn(() => false)
   const mockLoading = jest.fn(() => false)
   const mockOnAdd = jest.fn()

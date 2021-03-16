@@ -1,6 +1,6 @@
 import Sentry from '../'
 
-describe('src/lib/sentry', () => {
+describe('lib/sentry', () => {
   it('call', () => {
     expect(Sentry).toBeDefined()
   })

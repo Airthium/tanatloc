@@ -15,7 +15,7 @@ jest.mock('../groups', () => 'groups')
 jest.mock('../registration', () => 'registration')
 
 let wrapper
-describe('src/components/administration', () => {
+describe('components/administration', () => {
   beforeEach(() => {
     mockReplace.mockReset()
     mockQuery.mockReset()

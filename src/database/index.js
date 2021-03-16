@@ -1,4 +1,4 @@
-/** @module src/database */
+/** @module database */
 
 import { Pool } from 'pg'
 

@@ -3,7 +3,7 @@ import isDocker from 'is-docker'
 
 /**
  * FreeFEM service
- * @memberof module:src/services
+ * @memberof module:services
  * @param {string} path Path
  * @param {string} script Script
  * @param {Function} callback Callback

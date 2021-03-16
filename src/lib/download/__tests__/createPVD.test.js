@@ -14,7 +14,7 @@ jest.mock('@/config/storage', () => ({
   SIMULATION: 'simulation'
 }))
 
-describe('src/lib/download/pvd', () => {
+describe('lib/download/pvd', () => {
   const simulation = {
     scheme: {
       configuration: {

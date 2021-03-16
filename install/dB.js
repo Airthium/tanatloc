@@ -219,7 +219,7 @@ const createUsersTable = async () => {
 }
 
 /**
- * Create organization
+ * Create organization table
  * @memberof module: install
  */
 const createOrganizationTable = async () => {

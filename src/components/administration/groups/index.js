@@ -30,7 +30,7 @@ const Groups = () => {
   const [users] = UserAPI.useUsers()
   const [
     groups,
-    { addOneGroup, mutateOneGroup, delOneGroup }
+    { addOneGroup, mutateOneGroup, delOneGroup, loadingGroups }
   ] = GroupAPI.useGroups()
 
   const layout = {
@@ -214,6 +214,7 @@ const Groups = () => {
         </Button>
       )}
       <Table
+        loading={loadingGroups}
         columns={columns}
         dataSource={groups.map((g) => ({ ...g, key: g.id }))}
       />

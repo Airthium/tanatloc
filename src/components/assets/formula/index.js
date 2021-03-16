@@ -87,10 +87,9 @@ const Formula = ({
         onChange={onInputChange}
         addonAfter={unit}
       />
-      <Button
-        disabled={autoSaveDisabled}
-        loading={loading}
-        icon={<SaveOutlined />}
+      <SaveOutlined
+        spin={!autoSaveDisabled}
+        style={{ color: autoSaveDisabled ? 'green' : 'orange' }}
       />
     </Space>
   )

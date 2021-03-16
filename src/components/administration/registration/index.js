@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { Button, Card, Checkbox, Form, InputNumber } from 'antd'
+import { Button, Card, Checkbox, Form, InputNumber, Spin } from 'antd'
 import { CheckOutlined } from '@ant-design/icons'
 
 import SystemAPI from '@/api/system'
@@ -13,7 +13,7 @@ const errors = {
 const Registration = () => {
   // Data
   const [form] = Form.useForm()
-  const [system, { mutateSystem }] = SystemAPI.useSystem()
+  const [system, { mutateSystem, loadingSystem }] = SystemAPI.useSystem()
   const layout = {
     labelCol: { span: 8 },
     wrapperCol: { span: 16 }
@@ -59,7 +59,9 @@ const Registration = () => {
   /**
    * Render
    */
-  return (
+  return loadingSystem ? (
+    <Spin />
+  ) : (
     <>
       <Card title="Signup" className="Vertical-gutter">
         <Checkbox checked={system?.allowsignup} onChange={onAllowSignup}>

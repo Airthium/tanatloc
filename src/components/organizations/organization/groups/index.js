@@ -42,7 +42,7 @@ const Groups = ({ organization }) => {
 
   const columns = [
     {
-      title: 'Name',
+      title: 'Group name',
       dataIndex: 'name',
       key: 'name'
     },

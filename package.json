@@ -20,7 +20,7 @@
     "depcheck": "depcheck",
     "dev": "next",
     "doc": "jsdoc -c config/jsdoc/conf.json",
-    "docker": "yarn gitversion && docker build . -t tanatloc/tanatloc:latest",
+    "docker": "docker build . -t tanatloc/tanatloc:latest",
     "electron-build": "yarn server-build && nextron build && electron-builder install-app-deps",
     "electron-dev": "yarn server-build && nextron",
     "export": "yarn build && next export",
@@ -30,7 +30,6 @@
     "server-build": "babel . --only config,server,plugin,src/auth,src/database,src/lib,src/route,src/services --out-dir dist-server",
     "start": "next start",
     "test": "jest --coverage --silent",
-    "gitversion": "sh install/version.sh",
     "workflow": ".github/workflows/node.local.sh"
   },
   "dependencies": {

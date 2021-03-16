@@ -4,18 +4,30 @@ import GroupLib from '@/lib/group'
 
 import Sentry from '@/lib/sentry'
 
+/**
+ * Groups API [id]
+ * @memberof module:route/simulation
+ * @param {Object} req Request
+ * @param {Object} res Response
+ */
 export default async (req, res) => {
   // Check session
   const sessionId = await getSessionId(req, res)
   if (!sessionId) return
 
+  // Id
+  let id = req.query.id
+  if (!id) {
+    // Electron
+    id = req.params.id
+  }
+
   if (req.method === 'GET') {
     try {
-      const groups = await GroupLib.getAll([
+      const groups = await GroupLib.getByOrganization(id, [
         'id',
         'name',
-        'users',
-        'organization'
+        'users'
       ])
       res.status(200).json({ groups })
     } catch (err) {

@@ -7,12 +7,25 @@ import Add from './add'
 import List from './list'
 import Organization from './organization'
 
+import OrganizationAPI from '@/api/organization'
+
 /**
  * Organizations
  */
 const Organizations = () => {
   // State
   const [organization, setOrganization] = useState()
+
+  // Data
+  const [
+    organizations,
+    {
+      addOneOrganization,
+      delOneOrganization,
+      mutateOneOrganization,
+      loadingOrganizations
+    }
+  ] = OrganizationAPI.useOrganizations()
 
   /**
    * Render
@@ -37,12 +50,22 @@ const Organizations = () => {
           {organization ? (
             <Organization
               organization={organization}
+              swr={{
+                mutateOneOrganization
+              }}
               onClose={() => setOrganization()}
             />
           ) : (
             <>
-              <Add />
-              <List setOrganization={setOrganization} />
+              <Add swr={{ addOneOrganization }} />
+              <List
+                setOrganization={setOrganization}
+                swr={{
+                  organizations,
+                  delOneOrganization,
+                  loadingOrganizations
+                }}
+              />
             </>
           )}
         </Space>

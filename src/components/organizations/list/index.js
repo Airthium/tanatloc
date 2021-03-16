@@ -3,21 +3,14 @@ import { ControlOutlined } from '@ant-design/icons'
 
 import Delete from '../delete'
 
-import OrganizationAPI from '@/api/organization'
-
 import Utils from '@/lib/utils'
 
 /**
  * List
  * @memberof module:components/organizations
  */
-const List = ({ setOrganization }) => {
+const List = ({ setOrganization, swr }) => {
   // Data
-  const [
-    organizations,
-    { loadingOrganizations }
-  ] = OrganizationAPI.useOrganizations()
-
   const columns = [
     {
       title: 'Name',
@@ -54,18 +47,20 @@ const List = ({ setOrganization }) => {
             icon={<ControlOutlined />}
             onClick={() => setOrganization(org)}
           />
-          <Delete organization={org} />
+          <Delete
+            organization={org}
+            swr={{ delOneOrganization: swr.delOneOrganization }}
+          />
         </Space>
       )
     }
   ]
 
-  return loadingOrganizations ? (
-    <Spin />
-  ) : (
+  return (
     <Table
+      loading={swr?.loadingOrganizations}
       columns={columns}
-      dataSource={organizations?.map((o) => ({ ...o, key: o.id }))}
+      dataSource={swr?.organizations?.map((o) => ({ ...o, key: o.id }))}
     />
   )
 }

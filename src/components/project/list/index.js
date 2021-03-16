@@ -27,9 +27,10 @@ const ProjectList = ({ user, workspace, filter }) => {
   const router = useRouter()
 
   // Load projects
-  const [projects, { mutateOneProject }] = ProjectAPI.useProjects(
-    workspace?.projects
-  )
+  const [
+    projects,
+    { mutateOneProject, loadingProjects }
+  ] = ProjectAPI.useProjects(workspace?.projects)
 
   // Data
   const data = projects
@@ -101,6 +102,7 @@ const ProjectList = ({ user, workspace, filter }) => {
    */
   return (
     <Table
+      loading={loadingProjects}
       pagination={false}
       dataSource={data}
       bordered={true}

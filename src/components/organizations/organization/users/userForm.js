@@ -6,7 +6,7 @@ import { CheckOutlined, CloseOutlined, PlusOutlined } from '@ant-design/icons'
  * User form
  * @param {Object} props Props
  */
-const UserForm = ({ type, label, onAdd }) => {
+const UserForm = ({ loading, type, label, onAdd }) => {
   // State
   const [add, setAdd] = useState(false)
 
@@ -38,6 +38,7 @@ const UserForm = ({ type, label, onAdd }) => {
         <Space>
           <Button icon={<CheckOutlined />} htmlType="submit" />
           <Button
+            loading={loading}
             type="danger"
             icon={<CloseOutlined />}
             onClick={() => setAdd(false)}

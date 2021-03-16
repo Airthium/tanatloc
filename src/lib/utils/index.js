@@ -1,13 +1,13 @@
 /** @module lib/utils */
 
-import { Avatar, Tooltip } from 'antd'
+import { Avatar, Spin, Tooltip } from 'antd'
 
 /**
  * String to color
  * @param {string} str String
  */
 const stringToColor = (str) => {
-  if (!str) return '#000000'
+  if (!str) return '#FFFFFF'
 
   str = str.replace(/[\W_]+/g, '')
 
@@ -81,7 +81,7 @@ const userToAvatar = (user) => {
   return (
     <Tooltip key={user.id || user} title={name}>
       <Avatar src={avatar} style={{ backgroundColor: stringToColor(name) }}>
-        {abbrev.toUpperCase()}
+        {abbrev.toUpperCase() || <Spin />}
       </Avatar>
     </Tooltip>
   )

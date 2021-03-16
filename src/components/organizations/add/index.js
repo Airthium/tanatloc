@@ -14,7 +14,7 @@ const errors = {
  * Add
  * @memberof module:components/organizations
  */
-const Add = () => {
+const Add = ({ swr }) => {
   // State
   const [add, setAdd] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -27,7 +27,6 @@ const Add = () => {
   const tailLayout = {
     wrapperCol: { offset: 4, span: 12 }
   }
-  const [, { addOneOrganization }] = OrganizationAPI.useOrganizations()
 
   /**
    * On add
@@ -41,7 +40,7 @@ const Add = () => {
       organization.name = values.name
 
       // Mutate
-      addOneOrganization(organization)
+      swr.addOneOrganization(organization)
 
       // Close
       setAdd(false)

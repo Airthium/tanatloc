@@ -20,7 +20,7 @@ export default async (req, res) => {
   switch (req.method) {
     case 'POST':
       try {
-        const group = await GroupLib.add(req.body)
+        const group = await GroupLib.add(req.body.organization, req.body.group)
         res.status(200).json(group)
       } catch (err) {
         console.error(err)

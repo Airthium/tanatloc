@@ -1,4 +1,4 @@
-import UserLib from '@/lib/user'
+// import UserLib from '@/lib/user'
 
 /**
  * Check authorization
@@ -22,12 +22,12 @@ const auth = async (id, object, parentObject) => {
   )
     return true
 
-  // Group objects
-  const user = await UserLib.get(id, ['groups'])
-  if (user?.groups.find((g) => object?.groups?.find((gg) => gg.id === g)))
-    return true
-  if (user?.groups.find((g) => parentObject?.groups?.find((gg) => gg.id === g)))
-    return true
+  // // Group objects
+  // const user = await UserLib.get(id, ['groups'])
+  // if (user?.groups.find((g) => object?.groups?.find((gg) => gg.id === g)))
+  //   return true
+  // if (user?.groups.find((g) => parentObject?.groups?.find((gg) => gg.id === g)))
+  //   return true
 
   return false
 }

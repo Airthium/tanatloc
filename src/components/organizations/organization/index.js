@@ -9,18 +9,14 @@ import { Error } from '@/components/assets/notification'
 import OrganizationAPI from '@/api/organization'
 
 const errors = {
-  nameError: "Unable to update organization's name",
-  updateError: 'Unable to update organization'
+  nameError: "Unable to update organization's name"
 }
 
 /**
  * Organization
  * @param {Object} props Props
  */
-const Organization = ({ organization, onClose }) => {
-  // Data
-  const [, { mutateOneOrganization }] = OrganizationAPI.useOrganizations()
-
+const Organization = ({ organization, swr, onClose }) => {
   /**
    * On name
    * @param {string} name Name
@@ -36,7 +32,7 @@ const Organization = ({ organization, onClose }) => {
       ])
 
       // Local
-      mutateOneOrganization({
+      swr.mutateOneOrganization({
         ...organization,
         name: name
       })

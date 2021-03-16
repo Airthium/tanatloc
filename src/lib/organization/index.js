@@ -122,9 +122,9 @@ const update = async (organization, data) => {
           })
           d.value = newUser.id
         }
-
-        return d
       }
+
+      return d
     })
   )
 
@@ -174,4 +174,4 @@ const del = async (organization) => {
   await OrganizationDB.del(organization)
 }
 
-export default { add, getByUser, update, del }
+export default { add, get, getByUser, update, del }

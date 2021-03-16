@@ -18,13 +18,10 @@ const errors = {
  * @memberof components/organizations
  * @param {Object} props Props
  */
-const Delete = ({ organization }) => {
+const Delete = ({ organization, swr }) => {
   // State
   const [visible, setVisible] = useState(false)
   const [loading, setLoading] = useState(false)
-
-  // Data
-  const [, { delOneOrganization }] = OrganizationAPI.useOrganizations()
 
   /**
    * On delete
@@ -37,7 +34,7 @@ const Delete = ({ organization }) => {
       await OrganizationAPI.del({ id: organization.id })
 
       // Update local
-      delOneOrganization({ id: organization.id })
+      swr.delOneOrganization({ id: organization.id })
     } catch (err) {
       Error(errors.delError, err)
     } finally {

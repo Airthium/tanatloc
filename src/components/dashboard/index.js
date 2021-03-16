@@ -54,7 +54,7 @@ const menuItems = {
   },
   organizations: {
     label: 'Organizations',
-    key: 'organzations'
+    key: 'organizations'
   },
   administration: {
     label: 'Administration',

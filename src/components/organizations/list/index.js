@@ -50,7 +50,7 @@ const List = ({ user, swr, setOrganization }) => {
       title: 'Actions',
       key: 'actions',
       render: (org) => {
-        if (org.owners.includes(user.id))
+        if (org.owners.find((o) => o.id === user.id))
           return (
             <Space wrap={true}>
               <Button

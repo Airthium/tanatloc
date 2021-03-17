@@ -25,6 +25,13 @@ export default async (req, res) => {
       break
     case 'PUT':
       try {
+        // Check administrator
+        const organization = await OrganizationLib.get(req.body.id, ['owners'])
+        if (!organization.owners.includes(sessionId)) {
+          res.status(500).json({ error: true, message: 'Unauthorized' })
+          return
+        }
+
         await OrganizationLib.update({ id: req.body.id }, req.body.data)
         res.status(200).end()
       } catch (err) {
@@ -35,6 +42,13 @@ export default async (req, res) => {
       break
     case 'DELETE':
       try {
+        // Check administrator
+        const organization = await OrganizationLib.get(req.body.id, ['owners'])
+        if (!organization.owners.includes(sessionId)) {
+          res.status(500).json({ error: true, message: 'Unauthorized' })
+          return
+        }
+
         await OrganizationLib.del(req.body)
         res.status(200).end()
       } catch (err) {

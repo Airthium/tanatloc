@@ -80,10 +80,12 @@ const Edit = ({ group, organization, swr }) => {
         ...group,
         ...values
       })
-      swr.reloadOrganizations()
 
       // Close
       setVisible(false)
+
+      // Reload
+      swr.reloadOrganizations()
     } catch (err) {
       Error(errors.updateError, err)
       setLoading(false)

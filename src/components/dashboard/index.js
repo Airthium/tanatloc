@@ -211,8 +211,8 @@ const Dashboard = () => {
     case menuItems.organizations.key:
       displayed = (
         <Organizations
-          user={user}
-          organizations={organizations}
+          user={user || {}}
+          organizations={organizations || []}
           swr={{
             reloadOrganizations,
             addOneOrganization,

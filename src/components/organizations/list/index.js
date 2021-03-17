@@ -25,7 +25,9 @@ const List = ({ user, organizations, swr, setOrganization }) => {
       dataIndex: 'owners',
       key: 'owners',
       render: (owners) => (
-        <Avatar.Group>{owners?.map((o) => Utils.userToAvatar(o))}</Avatar.Group>
+        <Avatar.Group maxCount={5}>
+          {owners?.map((o) => Utils.userToAvatar(o))}
+        </Avatar.Group>
       )
     },
     {
@@ -33,7 +35,9 @@ const List = ({ user, organizations, swr, setOrganization }) => {
       dataIndex: 'users',
       key: 'users',
       render: (users) => (
-        <Avatar.Group>{users?.map((u) => Utils.userToAvatar(u))}</Avatar.Group>
+        <Avatar.Group maxCount={5}>
+          {users?.map((u) => Utils.userToAvatar(u))}
+        </Avatar.Group>
       )
     },
     {
@@ -41,7 +45,7 @@ const List = ({ user, organizations, swr, setOrganization }) => {
       dataIndex: 'groups',
       key: 'groups',
       render: (groups) => (
-        <Avatar.Group>
+        <Avatar.Group maxCount={5}>
           {groups?.map((g) => Utils.groupToAvatar(g))}
         </Avatar.Group>
       )

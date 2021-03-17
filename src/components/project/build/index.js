@@ -83,11 +83,11 @@ const Build = (project, filter, setTitle, setDescription) => {
     key: project.id,
     snapshot: snapshot,
     title: title,
-    ownersRender: <Avatar.Group>{owners}</Avatar.Group>,
+    ownersRender: <Avatar.Group maxCount={5}>{owners}</Avatar.Group>,
     usersRender: (
       <>
-        <Avatar.Group>{users}</Avatar.Group>
-        <Avatar.Group>{groups}</Avatar.Group>
+        <Avatar.Group maxCount={5}>{users}</Avatar.Group>
+        <Avatar.Group maxCount={5}>{groups}</Avatar.Group>
       </>
     )
   }

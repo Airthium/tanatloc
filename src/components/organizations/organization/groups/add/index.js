@@ -58,10 +58,12 @@ const Add = ({ organization, swr }) => {
       newGroup.name = values.name
       newGroup.users = values.users
       swr.addOneGroup(newGroup)
-      swr.reloadOrganizations()
 
       // Close
       setVisible(false)
+
+      // Reload
+      swr.reloadOrganizations()
     } catch (err) {
       Error(errors.addError, err)
       setLoading(false)

@@ -53,7 +53,9 @@ const Groups = () => {
       dataIndex: 'users',
       key: 'users',
       render: (u) => (
-        <Avatar.Group>{u.map((user) => Utils.userToAvatar(user))}</Avatar.Group>
+        <Avatar.Group maxCount={5}>
+          {u.map((user) => Utils.userToAvatar(user))}
+        </Avatar.Group>
       )
     },
     {

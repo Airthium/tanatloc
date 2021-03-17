@@ -122,10 +122,10 @@ const Workspace = ({ user, workspace }) => {
                 <span style={{ marginRight: '10px' }}>
                   This workspace is shared with:
                 </span>
-                <Avatar.Group>
+                <Avatar.Group maxCount={5}>
                   {workspace.users?.map((u) => Utils.userToAvatar(u))}
                 </Avatar.Group>
-                <Avatar.Group>
+                <Avatar.Group maxCount={5}>
                   {workspace.groups?.map((group) => (
                     <Tooltip
                       key={group.id}

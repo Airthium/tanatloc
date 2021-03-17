@@ -39,10 +39,12 @@ const Delete = ({ group, swr }) => {
 
       // Mutate
       swr.delOneGroup({ id: group.id })
-      swr.reloadOrganizations()
 
       // Close
       setVisible(false)
+
+      // Reload
+      swr.reloadOrganizations()
     } catch (err) {
       Error(errors.deleteError, err)
       setLoading(false)

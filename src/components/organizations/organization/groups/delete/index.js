@@ -7,22 +7,22 @@ import { DeleteDialog } from '@/components/assets/dialog'
 
 import { Error } from '@/components/assets/notification'
 
-import OrganizationAPI from '@/api/organization'
+import GroupAPI from '@/api/group'
 
 /**
  * Delete errors
  * @memberof module:components/organizations
  */
 const errors = {
-  delError: 'Unable to delete the organization'
+  delError: 'Unable to delete group'
 }
 
 /**
- * Delete
+ * Delete group
  * @memberof module:components/organizations
  * @param {Object} props Props
  */
-const Delete = ({ organization, swr }) => {
+const Delete = ({ group, swr }) => {
   // State
   const [visible, setVisible] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -34,17 +34,16 @@ const Delete = ({ organization, swr }) => {
     setLoading(true)
 
     try {
-      // API
-      await OrganizationAPI.del({ id: organization.id })
+      // Delete
+      await GroupAPI.del({ id: group.id })
 
-      // Local
-      swr.delOneOrganization({ id: organization.id })
+      // Mutate
+      swr.delOneGroup({ id: group.id })
 
       // Close
       setVisible(false)
     } catch (err) {
-      Error(errors.delError, err)
-    } finally {
+      Error(errors.deleteError, err)
       setLoading(false)
     }
   }
@@ -60,20 +59,20 @@ const Delete = ({ organization, swr }) => {
         onClick={() => setVisible(true)}
       />
       <DeleteDialog
-        title="Delete organization"
+        title="Delete group"
         visible={visible}
         onCancel={() => setVisible(false)}
         onOk={onDelete}
         loading={loading}
       >
-        Delete {organization?.name}?
+        Delete {group?.name}?
       </DeleteDialog>
     </>
   )
 }
 
 Delete.propTypes = {
-  organization: PropTypes.object.isRequired,
+  group: PropTypes.object.isRequired,
   swr: PropTypes.object.isRequired
 }
 

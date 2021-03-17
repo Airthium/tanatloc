@@ -14,15 +14,15 @@ import OrganizationAPI from '@/api/organization'
  * @memberof module:components/organizations
  */
 const errors = {
-  delError: 'Unable to delete the organization'
+  delError: 'Unable to delete user'
 }
 
 /**
- * Delete
+ * Delete user
  * @memberof module:components/organizations
  * @param {Object} props Props
  */
-const Delete = ({ organization, swr }) => {
+const Delete = ({ disabled, user, dBkey, organization, swr }) => {
   // State
   const [visible, setVisible] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -32,19 +32,28 @@ const Delete = ({ organization, swr }) => {
    */
   const onDelete = async () => {
     setLoading(true)
-
     try {
       // API
-      await OrganizationAPI.del({ id: organization.id })
+      await OrganizationAPI.update(organization.id, [
+        {
+          key: dBkey,
+          type: 'array',
+          method: 'remove',
+          value: user.id
+        }
+      ])
 
       // Local
-      swr.delOneOrganization({ id: organization.id })
+      const newOrganization = { ...organization }
+      newOrganization[dBkey] = newOrganization[dBkey].filter(
+        (u) => u.id !== user.id
+      )
+      swr.mutateOneOrganization(newOrganization)
 
       // Close
       setVisible(false)
     } catch (err) {
       Error(errors.delError, err)
-    } finally {
       setLoading(false)
     }
   }
@@ -55,6 +64,7 @@ const Delete = ({ organization, swr }) => {
   return (
     <>
       <Button
+        disabled={disabled || !user.id}
         icon={<DeleteOutlined />}
         type="danger"
         onClick={() => setVisible(true)}
@@ -66,13 +76,16 @@ const Delete = ({ organization, swr }) => {
         onOk={onDelete}
         loading={loading}
       >
-        Delete {organization?.name}?
+        Delete {user?.email}?
       </DeleteDialog>
     </>
   )
 }
 
 Delete.propTypes = {
+  disabled: PropTypes.bool,
+  user: PropTypes.object.isRequired,
+  dBkey: PropTypes.string.isRequired,
   organization: PropTypes.object.isRequired,
   swr: PropTypes.object.isRequired
 }

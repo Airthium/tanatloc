@@ -1,6 +1,7 @@
 import OrganizationDB from '@/database/organization'
 
 import User from '../user'
+import Group from '../group'
 
 /**
  * Add organization
@@ -57,7 +58,7 @@ const getByUser = async (user, data) => {
     return organization
   })
 
-  // User data
+  // Users & groups data
   await Promise.all(
     returnedOrganization.map(async (organization) => {
       // Owners
@@ -92,6 +93,19 @@ const getByUser = async (user, data) => {
             return {
               id: u,
               ...userData
+            }
+          })
+        ))
+
+      // Groups
+      organization.groups =
+        organization.groups &&
+        (await Promise.all(
+          organization.groups.map(async (g) => {
+            const groupData = await Group.get(g, ['name'])
+            return {
+              id: g,
+              ...groupData
             }
           })
         ))

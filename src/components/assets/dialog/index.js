@@ -1,5 +1,6 @@
 /** @module components/assets/dialog */
 
+import { useEffect } from 'react'
 import { Form, Modal } from 'antd'
 
 import DeleteDialog from './delete'
@@ -12,12 +13,18 @@ const Dialog = (props) => {
   // Props
   const title = props.title
   const visible = props.visible
+  const initialValues = props.initialValues
   const onCancel = props.onCancel
   const onOk = props.onOk
   const loading = props.loading
 
   // Form
   const [form] = Form.useForm()
+
+  // Inital values update
+  useEffect(() => {
+    if (visible && initialValues) form.setFieldsValue(initialValues)
+  }, [visible, initialValues])
 
   // Layout
   const layout = {
@@ -47,7 +54,7 @@ const Dialog = (props) => {
       }}
       confirmLoading={loading}
     >
-      <Form form={form} {...layout}>
+      <Form form={form} {...layout} initialValues={initialValues}>
         {props.children}
       </Form>
     </Modal>

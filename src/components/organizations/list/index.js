@@ -1,4 +1,5 @@
-import { Avatar, Button, Space, Spin, Table } from 'antd'
+import PropTypes from 'prop-types'
+import { Avatar, Button, Space, Table } from 'antd'
 import { ControlOutlined } from '@ant-design/icons'
 
 import Delete from '../delete'
@@ -8,8 +9,9 @@ import Utils from '@/lib/utils'
 /**
  * List
  * @memberof module:components/organizations
+ * @param {Object} props Props
  */
-const List = ({ setOrganization, swr }) => {
+const List = ({ user, swr, setOrganization }) => {
   // Data
   const columns = [
     {
@@ -23,9 +25,7 @@ const List = ({ setOrganization, swr }) => {
       dataIndex: 'owners',
       key: 'owners',
       render: (owners) => (
-        <Avatar.Group>
-          {owners?.map((owner) => Utils.userToAvatar(owner))}
-        </Avatar.Group>
+        <Avatar.Group>{owners?.map((o) => Utils.userToAvatar(o))}</Avatar.Group>
       )
     },
     {
@@ -33,29 +33,45 @@ const List = ({ setOrganization, swr }) => {
       dataIndex: 'users',
       key: 'users',
       render: (users) => (
+        <Avatar.Group>{users?.map((u) => Utils.userToAvatar(u))}</Avatar.Group>
+      )
+    },
+    {
+      title: 'Groups',
+      dataIndex: 'groups',
+      key: 'groups',
+      render: (groups) => (
         <Avatar.Group>
-          {users?.map((user) => Utils.userToAvatar(user))}
+          {groups?.map((g) => Utils.groupToAvatar(g))}
         </Avatar.Group>
       )
     },
     {
       title: 'Actions',
       key: 'actions',
-      render: (org) => (
-        <Space wrap={true}>
-          <Button
-            icon={<ControlOutlined />}
-            onClick={() => setOrganization(org)}
-          />
-          <Delete
-            organization={org}
-            swr={{ delOneOrganization: swr.delOneOrganization }}
-          />
-        </Space>
-      )
+      render: (org) => {
+        if (org.owners.includes(user.id))
+          return (
+            <Space wrap={true}>
+              <Button
+                icon={<ControlOutlined />}
+                onClick={() => setOrganization(org)}
+              >
+                Manage
+              </Button>
+              <Delete
+                organization={org}
+                swr={{ delOneOrganization: swr.delOneOrganization }}
+              />
+            </Space>
+          )
+      }
     }
   ]
 
+  /**
+   * Render
+   */
   return (
     <Table
       loading={swr?.loadingOrganizations}
@@ -63,6 +79,12 @@ const List = ({ setOrganization, swr }) => {
       dataSource={swr?.organizations?.map((o) => ({ ...o, key: o.id }))}
     />
   )
+}
+
+List.propTypes = {
+  user: PropTypes.object.isRequired,
+  swr: PropTypes.object.isRequired,
+  setOrganization: PropTypes.func.isRequired
 }
 
 export default List

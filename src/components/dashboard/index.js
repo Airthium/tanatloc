@@ -198,7 +198,7 @@ const Dashboard = () => {
       displayed = <Account />
       break
     case menuItems.organizations.key:
-      displayed = <Organizations />
+      displayed = <Organizations user={user} />
       break
     case menuItems.administration.key:
       displayed = <Administration />

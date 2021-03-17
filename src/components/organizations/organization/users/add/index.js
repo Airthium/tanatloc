@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
 import { useState } from 'react'
-import { Button, Form, Input, Typography } from 'antd'
+import { Button, Form, Input } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
 
 import Dialog from '@/components/assets/dialog'
@@ -13,33 +13,42 @@ import OrganizationAPI from '@/api/organization'
  * @memberof module:components/organizations
  */
 const errors = {
-  addError: 'Unable to add organization'
+  addError: 'Unable to add user'
 }
 
 /**
- * Add
+ * Add user
  * @memberof module:components/organizations
  * @param {Object} props Props
  */
-const Add = ({ swr }) => {
+const Add = ({ title, dBkey, organization, swr }) => {
   // State
   const [visible, setVisible] = useState(false)
   const [loading, setLoading] = useState(false)
 
   /**
-   * On add
-   * @param {Object} values Values
+   * On finish
+   * @param {Object} v Values
    */
-  const onAdd = async (values) => {
+  const onFinish = async (values) => {
     setLoading(true)
-
     try {
       // API
-      const organization = await OrganizationAPI.add({ name: values.name })
+      await OrganizationAPI.update(organization.id, [
+        {
+          key: dBkey,
+          type: 'array',
+          method: 'append',
+          value: values.email
+        }
+      ])
 
       // Local
-      organization.name = values.name
-      swr.addOneOrganization(organization)
+      const newOrganization = { ...organization }
+      newOrganization[dBkey].push({
+        email: values.email
+      })
+      swr.mutateOneOrganization(newOrganization)
 
       // Close
       setVisible(false)
@@ -49,37 +58,34 @@ const Add = ({ swr }) => {
     }
   }
 
+  /**
+   * Render
+   */
   return (
     <>
       <Dialog
-        title="New organization"
+        title={title}
         visible={visible}
         onCancel={() => setVisible(false)}
-        onOk={onAdd}
+        onOk={onFinish}
         loading={loading}
       >
-        <Form.Item>
-          <Typography.Title level={5}>New organization</Typography.Title>
-        </Form.Item>
-        <Form.Item
-          name="name"
-          label="Name"
-          rules={[
-            { required: true, message: 'Please enter an organization name' }
-          ]}
-        >
+        <Form.Item name="email" label="Email">
           <Input />
         </Form.Item>
       </Dialog>
 
       <Button icon={<PlusOutlined />} onClick={() => setVisible(true)}>
-        New organization
+        {title}
       </Button>
     </>
   )
 }
 
 Add.propTypes = {
+  title: PropTypes.string.isRequired,
+  dBkey: PropTypes.string.isRequired,
+  organization: PropTypes.object.isRequired,
   swr: PropTypes.object.isRequired
 }
 

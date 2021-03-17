@@ -11,7 +11,6 @@ import Organization from '../organization'
 const add = async (organization, { name, users }) => {
   // Add group
   const group = await GroupDB.add(organization, { name, users })
-  console.log(group)
 
   // Add group to organization
   Organization.update(organization, [

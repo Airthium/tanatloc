@@ -1,27 +1,24 @@
-import { useState } from 'react'
-import { Button, Card, Space, Table } from 'antd'
-import { DeleteOutlined } from '@ant-design/icons'
+import PropTypes from 'prop-types'
+import { Card, Space, Table } from 'antd'
 
-import UserForm from './userForm'
+import Utils from '@/lib/utils'
 
-import OrganizationAPI from '@/api/organization'
-
-const errors = {
-  addError: 'Unable to add user',
-  delError: 'Unable to delete user'
-}
+import Add from './add'
+import Delete from './delete'
 
 /**
  * Organization users
+ * @memberof module:components/organizations
  * @param {Object} props Props
  */
 const Users = ({ organization, swr }) => {
-  // State
-  const [adding, setAdding] = useState(false)
-  const [deleting, setDeleting] = useState(false)
-
   // Data
   const columns = [
+    {
+      key: 'avatar',
+      dataIndex: 'avatar',
+      render: (_, record) => Utils.userToAvatar(record)
+    },
     {
       key: 'lastname',
       title: 'Lastname',
@@ -45,12 +42,14 @@ const Users = ({ organization, swr }) => {
       key: 'actions',
       title: 'Actions',
       render: (owner) => (
-        <Button
-          loading={deleting}
+        <Delete
           disabled={organization?.owners?.length < 2}
-          type="danger"
-          icon={<DeleteOutlined />}
-          onClick={() => onDel('owners', owner.id)}
+          user={owner}
+          dBkey="owners"
+          organization={organization}
+          swr={{
+            mutateOneOrganization: swr.mutateOneOrganization
+          }}
         />
       )
     }
@@ -62,69 +61,17 @@ const Users = ({ organization, swr }) => {
       key: 'actions',
       title: 'Actions',
       render: (user) => (
-        <Button
-          loading={deleting}
-          type="danger"
-          icon={<DeleteOutlined />}
-          onClick={() => onDel('users', user.id)}
+        <Delete
+          user={user}
+          dBkey="users"
+          organization={organization}
+          swr={{
+            mutateOneOrganization: swr.mutateOneOrganization
+          }}
         />
       )
     }
   ]
-
-  /**
-   * On add
-   * @param {string} type Type (owners or users)
-   * @param {Object} values Values { email }
-   */
-  const onAdd = async (type, values) => {
-    setAdding(true)
-
-    try {
-      // API
-      await OrganizationAPI.update(organization.id, [
-        {
-          key: type,
-          type: 'array',
-          method: 'append',
-          value: values.email
-        }
-      ])
-
-      // Local
-      const newOrganization = { ...organization }
-      newOrganization[type].push(values.email)
-      swr.mutateOneOrganization(newOrganization)
-    } catch (err) {
-      Error(errors.addError, err)
-    } finally {
-      setAdding(false)
-    }
-  }
-
-  const onDel = async (type, id) => {
-    setDeleting(true)
-    try {
-      // API
-      await OrganizationAPI.update(organization.id, [
-        {
-          key: type,
-          type: 'array',
-          method: 'remove',
-          value: id
-        }
-      ])
-
-      // Local
-      const newOrganization = { ...organization }
-      newOrganization[type] = newOrganization[type].filter((u) => u.id !== id)
-      swr.mutateOneOrganization(newOrganization)
-    } catch (err) {
-      Error(errors.delError, err)
-    } finally {
-      setDeleting(false)
-    }
-  }
 
   /**
    * Render
@@ -132,37 +79,52 @@ const Users = ({ organization, swr }) => {
   return (
     <Space direction="vertical" style={{ width: '100%' }}>
       <Card title="Administrators">
-        <UserForm
-          loading={adding}
-          type="owners"
-          label="Administrator email"
-          onAdd={onAdd}
-        />
-        <Table
-          columns={ownersColumns}
-          dataSource={organization?.owners?.map((o) => ({
-            ...o,
-            key: o.id
-          }))}
-        />
+        <Space direction="vertical" style={{ width: '100%' }}>
+          <Add
+            title="New administrator"
+            dBkey="owners"
+            organization={organization}
+            swr={{
+              mutateOneOrganization: swr.mutateOneOrganization
+            }}
+          />
+          <Table
+            loading={swr?.loadingOrganizations}
+            columns={ownersColumns}
+            dataSource={organization?.owners?.map((o, index) => ({
+              ...o,
+              key: o.id || index
+            }))}
+          />
+        </Space>
       </Card>
       <Card title="Users">
-        <UserForm
-          loading={adding}
-          type="users"
-          label="User email"
-          onAdd={onAdd}
-        />
-        <Table
-          columns={usersColumns}
-          dataSource={organization?.users?.map((u) => ({
-            ...u,
-            key: u.id
-          }))}
-        />
+        <Space direction="vertical" style={{ width: '100%' }}>
+          <Add
+            title="New uers"
+            dBkey="users"
+            organization={organization}
+            swr={{
+              mutateOneOrganization: swr.mutateOneOrganization
+            }}
+          />
+          <Table
+            loading={swr?.loadingOrganizations}
+            columns={usersColumns}
+            dataSource={organization?.users?.map((u, index) => ({
+              ...u,
+              key: u.id || index
+            }))}
+          />
+        </Space>
       </Card>
     </Space>
   )
+}
+
+Users.popTypes = {
+  organization: PropTypes.object.isRequired,
+  swr: PropTypes.object.isRequired
 }
 
 export default Users

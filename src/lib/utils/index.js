@@ -87,4 +87,20 @@ const userToAvatar = (user) => {
   )
 }
 
-export default { stringToColor, rgbToHex, rgbToRgba, userToAvatar }
+const groupToAvatar = (group) => {
+  let name = group.name
+  let abbrev = name[0].toUpperCase()
+  return (
+    <Tooltip key={group.id || group} title={name}>
+      <Avatar style={{ backgroundColor: stringToColor(name) }}>{abbrev}</Avatar>
+    </Tooltip>
+  )
+}
+
+export default {
+  stringToColor,
+  rgbToHex,
+  rgbToRgba,
+  userToAvatar,
+  groupToAvatar
+}

@@ -1,6 +1,7 @@
 /** @module components/organizations */
 
-import { useState } from 'react'
+import PropTypes from 'prop-types'
+import { useState, useEffect } from 'react'
 import { Divider, Layout, PageHeader, Space, Typography } from 'antd'
 
 import Add from './add'
@@ -11,8 +12,9 @@ import OrganizationAPI from '@/api/organization'
 
 /**
  * Organizations
+ * @param {Object} props Props
  */
-const Organizations = () => {
+const Organizations = ({ user }) => {
   // State
   const [organization, setOrganization] = useState()
 
@@ -26,6 +28,17 @@ const Organizations = () => {
       loadingOrganizations
     }
   ] = OrganizationAPI.useOrganizations()
+
+  // Organization update
+  useEffect(() => {
+    if (organization) {
+      const currentOrganization = organizations.find(
+        (o) => o.id === organization.id
+      )
+      if (currentOrganization && currentOrganization !== organization)
+        setOrganization(currentOrganization)
+    }
+  }, [organizations, organization])
 
   /**
    * Render
@@ -51,7 +64,8 @@ const Organizations = () => {
             <Organization
               organization={organization}
               swr={{
-                mutateOneOrganization
+                mutateOneOrganization,
+                loadingOrganizations
               }}
               onClose={() => setOrganization()}
             />
@@ -59,12 +73,13 @@ const Organizations = () => {
             <>
               <Add swr={{ addOneOrganization }} />
               <List
-                setOrganization={setOrganization}
+                user={user}
                 swr={{
                   organizations,
                   delOneOrganization,
                   loadingOrganizations
                 }}
+                setOrganization={setOrganization}
               />
             </>
           )}
@@ -72,6 +87,10 @@ const Organizations = () => {
       </Layout.Content>
     </Layout>
   )
+}
+
+Organizations.propTypes = {
+  user: PropTypes.object.isRequired
 }
 
 export default Organizations

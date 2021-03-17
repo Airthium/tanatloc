@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types'
 import { Button, Tabs, Typography } from 'antd'
 import { ArrowLeftOutlined } from '@ant-design/icons'
 
@@ -8,12 +9,17 @@ import { Error } from '@/components/assets/notification'
 
 import OrganizationAPI from '@/api/organization'
 
+/**
+ * Organization errors
+ * @memberof module:components/organizations
+ */
 const errors = {
   nameError: "Unable to update organization's name"
 }
 
 /**
  * Organization
+ * @memberof module:components/organizations
  * @param {Object} props Props
  */
 const Organization = ({ organization, swr, onClose }) => {
@@ -24,7 +30,7 @@ const Organization = ({ organization, swr, onClose }) => {
   const onName = async (name) => {
     try {
       // API
-      await OrganizationAPI.update({ id: organization.id }, [
+      await OrganizationAPI.update(organization.id, [
         {
           key: 'name',
           value: name
@@ -58,7 +64,13 @@ const Organization = ({ organization, swr, onClose }) => {
       </div>
       <Tabs>
         <Tabs.TabPane tab="Users" key="users">
-          <Users organization={organization} />
+          <Users
+            organization={organization}
+            swr={{
+              mutateOneOrganization: swr.mutateOneOrganization,
+              loadingOrganizations: swr.loadingOrganizations
+            }}
+          />
         </Tabs.TabPane>
         <Tabs.TabPane tab="Groups" key="groups">
           <Groups organization={organization} />
@@ -66,6 +78,12 @@ const Organization = ({ organization, swr, onClose }) => {
       </Tabs>
     </>
   )
+}
+
+Organization.propTypes = {
+  organization: PropTypes.object.isRequired,
+  swr: PropTypes.object.isRequired,
+  onClose: PropTypes.func.isRequired
 }
 
 export default Organization

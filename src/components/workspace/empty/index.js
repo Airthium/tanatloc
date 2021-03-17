@@ -4,7 +4,7 @@ import Add from '../add'
 
 /**
  * Empty
- * @memberof module:'src/components/workspace
+ * @memberof module:components/workspace
  */
 const Empty = () => {
   /**

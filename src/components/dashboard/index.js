@@ -206,7 +206,7 @@ const Dashboard = () => {
       )
       break
     case menuItems.account.key:
-      displayed = <Account />
+      displayed = <Account user={user || {}} swr={{ mutateUser }} />
       break
     case menuItems.organizations.key:
       displayed = (

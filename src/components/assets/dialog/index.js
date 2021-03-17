@@ -28,8 +28,7 @@ const Dialog = (props) => {
 
   // Layout
   const layout = {
-    labelCol: { span: 5 },
-    wrapperCol: { span: 18 }
+    layout: 'vertical'
   }
 
   /**

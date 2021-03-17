@@ -27,7 +27,7 @@ import FileAPI from '@/api/file'
 
 /**
  * Errors simulation/geometry
- * @memberof module:'src/components/project/simulation
+ * @memberof module:components/project/simulation
  */
 const errors = {
   updateError: 'Unable to update the simulation',
@@ -37,7 +37,7 @@ const errors = {
 
 /**
  * Geometry
- * @memberof module:'src/components/project/simulation
+ * @memberof module:components/project/simulation
  * @param {Object} props Props
  */
 const Geometry = ({ project, simulation, part }) => {

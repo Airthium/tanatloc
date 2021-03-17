@@ -11,7 +11,7 @@ import ProjectAPI from '@/api/project'
 
 /**
  * Errors project/list
- * @memberof module:'src/components/project
+ * @memberof module:components/project
  */
 const errors = {
   updateError: 'Unable to update the project'
@@ -19,7 +19,7 @@ const errors = {
 
 /**
  * Projects' list
- * @memberof module:'src/components/project
+ * @memberof module:components/project
  * @param {Object} props Props
  */
 const ProjectList = ({ user, workspace, filter }) => {

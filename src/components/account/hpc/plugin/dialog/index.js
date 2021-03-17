@@ -1,22 +1,27 @@
+import PropTypes from 'prop-types'
 import { useState } from 'react'
-import { Button, Form, Input, Select, Space } from 'antd'
+import { Button, Form, Input, Select } from 'antd'
+import { v4 as uuid } from 'uuid'
+
+import Dialog from '@/components/assets/dialog'
+import { Error } from '@/components/assets/notification'
 
 /**
- * Plugin form
+ * Errors hpc/plugin
+ * @memberof module:components/account
+ */
+const errors = {
+  updateError: 'Unable to update plugins'
+}
+
+/**
+ * Plugin dialog
  * @param {Object} props Props
  */
-const PluginForm = ({ plugin, onFinish, onCancel }) => {
+const PluginDialog = ({ plugin, swr }) => {
   // State
+  const [visible, setVisible] = useState(false)
   const [loading, setLoading] = useState(false)
-
-  // Data
-  const layout = {
-    labelCol: { span: 6 },
-    wrapperCol: { span: 8 }
-  }
-  const tailLayout = {
-    wrapperCol: { offset: 6, span: 8 }
-  }
 
   /**
    * Build input item
@@ -26,7 +31,6 @@ const PluginForm = ({ plugin, onFinish, onCancel }) => {
   const inputItem = (item, key) => {
     return (
       <Form.Item
-        {...layout}
         key={item.label}
         name={key}
         label={item.label}
@@ -51,7 +55,6 @@ const PluginForm = ({ plugin, onFinish, onCancel }) => {
   const passwordItem = (item, key) => {
     return (
       <Form.Item
-        {...layout}
         key={item.label}
         name={key}
         label={item.label}
@@ -76,7 +79,6 @@ const PluginForm = ({ plugin, onFinish, onCancel }) => {
   const selectItem = (item, key) => {
     return (
       <Form.Item
-        {...layout}
         key={item.label}
         name={key}
         label={item.label}
@@ -105,12 +107,36 @@ const PluginForm = ({ plugin, onFinish, onCancel }) => {
    * On finish
    * @param {Object} values Values
    */
-  const onFinishInternal = async (values) => {
+  const onFinish = async (values) => {
     setLoading(true)
     try {
-      await onFinish(values)
+      // New plugin
+      const newPlugin = { ...plugin }
+
+      // Set values
+      Object.keys(values).forEach((key) => {
+        newPlugin.configuration[key].value = values[key]
+      })
+
+      // Remove logo
+      newPlugin.logo && delete newPlugin.logo
+
+      // Remove renderer
+      newPlugin.renderer && delete newPlugin.renderer
+
+      // Set uuid
+      newPlugin.uuid = uuid()
+
+      // API
+      await PluginAPI.add(newPlugin)
+
+      // Local
+      swr.addOnePlugin(newPlugin)
+
+      // Finish
+      setVisible(false)
     } catch (err) {
-      console.error(err)
+      Error(errors.updateError, err)
     } finally {
       setLoading(false)
     }
@@ -126,28 +152,32 @@ const PluginForm = ({ plugin, onFinish, onCancel }) => {
    * Render
    */
   return (
-    <Form
-      {...layout}
-      onFinish={onFinishInternal}
-      initialValues={initialValues}
-      autoComplete="off"
-    >
-      {Object.keys(plugin.configuration).map((key) => {
-        const item = plugin.configuration[key]
-        if (item.type === 'input') return inputItem(item, key)
-        else if (item.type === 'password') return passwordItem(item, key)
-        else if (item.type === 'select') return selectItem(item, key)
-      })}
-      <Form.Item {...tailLayout}>
-        <Space>
-          <Button loading={loading} type="primary" htmlType="submit">
-            Save
-          </Button>
-          <Button onClick={onCancel}>Cancel</Button>
-        </Space>
-      </Form.Item>
-    </Form>
+    <>
+      <Dialog
+        title={plugin.name}
+        visible={visible}
+        initialValues={initialValues}
+        onCancel={() => setVisible(false)}
+        onOk={onFinish}
+        loading={loading}
+      >
+        {Object.keys(plugin.configuration).map((key) => {
+          const item = plugin.configuration[key]
+          if (item.type === 'input') return inputItem(item, key)
+          else if (item.type === 'password') return passwordItem(item, key)
+          else if (item.type === 'select') return selectItem(item, key)
+        })}
+      </Dialog>
+      <Button type="primary" onClick={() => setVisible(true)}>
+        Add
+      </Button>
+    </>
   )
 }
 
-export default PluginForm
+PluginDialog.propTypes = {
+  plugin: PropTypes.object.isRequired,
+  swr: PropTypes.object.isRequired
+}
+
+export default PluginDialog

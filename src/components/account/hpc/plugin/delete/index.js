@@ -16,12 +16,9 @@ const errors = {
  * Delete plugin
  * @param {Object} props Props
  */
-const Delete = ({ plugin }) => {
+const Delete = ({ plugin, swr }) => {
   // State
   const [loading, setLoading] = useState(false)
-
-  // Data
-  const [, { delOnePlugin }] = PluginAPI.usePlugins()
 
   /**
    * On delete
@@ -34,7 +31,7 @@ const Delete = ({ plugin }) => {
       await PluginAPI.del(plugin)
 
       // Mutate
-      delOnePlugin(plugin)
+      swr.delOnePlugin(plugin)
     } catch (err) {
       Error(errors.updateError, err)
     } finally {

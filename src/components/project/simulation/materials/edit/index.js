@@ -14,7 +14,7 @@ const errors = {
 
 /**
  * Edit material
- * @memberof module:'src/components/project/simulation
+ * @memberof module:components/project/simulation
  * @param {Object} props Props
  */
 const Edit = ({ disabled, material, project, simulation, part, close }) => {

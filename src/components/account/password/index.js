@@ -1,5 +1,6 @@
+import PropTypes from 'prop-types'
 import { useState } from 'react'
-import { notification, Button, Form, Input, Space, Card, Row, Col } from 'antd'
+import { notification, Button, Card, Form, Input, Space } from 'antd'
 
 import { PasswordItem } from '@/components/assets/input'
 import { Error } from '@/components/assets/notification'
@@ -8,7 +9,7 @@ import UserAPI from '@/api/user'
 
 /**
  * Errors account/password
- * @memeberof module:'src/components/account
+ * @memberof module:components/account
  */
 const errors = {
   updateError: 'Unable to update the password',
@@ -18,14 +19,12 @@ const errors = {
 
 /**
  * Password
- * @memeberof module:'src/components/account
+ * @memberof module:components/account
+ * @param {Object} props Props
  */
-const Password = () => {
+const Password = ({ user }) => {
   // State
   const [loading, setLoading] = useState(false)
-
-  // Data
-  const [user] = UserAPI.useUser()
 
   // Layout
   const layout = {
@@ -33,7 +32,7 @@ const Password = () => {
     wrapperCol: { span: 8 }
   }
   const buttonLayout = {
-    wrapperCol: { offset: 8, span: 16 }
+    wrapperCol: { offset: 8, span: 8 }
   }
 
   /**
@@ -74,65 +73,64 @@ const Password = () => {
    */
   return (
     <Card title="Your Password">
-      <Row>
-        <Col span={4}></Col>
-        <Col span={20}>
-          <Form
-            {...layout}
-            initialValues={{
-              password: '******',
-              newPassword: '******',
-              passwordConfirm: '******'
-            }}
-            onFinish={onFinish}
-            name="passwordForm"
-          >
-            <Form.Item
-              label="Current password"
-              name="password"
-              rules={[
-                {
-                  required: true,
-                  message: 'Please enter your current password'
+      <Form
+        {...layout}
+        initialValues={{
+          password: '******',
+          newPassword: '******',
+          passwordConfirm: '******'
+        }}
+        onFinish={onFinish}
+        name="passwordForm"
+      >
+        <Form.Item
+          label="Current password"
+          name="password"
+          rules={[
+            {
+              required: true,
+              message: 'Please enter your current password'
+            }
+          ]}
+        >
+          <Input.Password />
+        </Form.Item>
+        <PasswordItem name="newPassword" label="New password" />
+        <Form.Item
+          label="Password confirmation"
+          name="passwordConfirm"
+          rules={[
+            {
+              required: true,
+              message: 'Please enter your new password confirmation'
+            },
+            ({ getFieldValue }) => ({
+              validator(_, value) {
+                if (!value || getFieldValue('newPassword') === value) {
+                  return Promise.resolve()
                 }
-              ]}
-            >
-              <Input.Password />
-            </Form.Item>
-            <PasswordItem name="newPassword" label="New password" />
-            <Form.Item
-              label="Password confirmation"
-              name="passwordConfirm"
-              rules={[
-                {
-                  required: true,
-                  message: 'Please enter your new password confirmation'
-                },
-                ({ getFieldValue }) => ({
-                  validator(_, value) {
-                    if (!value || getFieldValue('newPassword') === value) {
-                      return Promise.resolve()
-                    }
 
-                    return Promise.reject(errors.passwordMismatch)
-                  }
-                })
-              ]}
-            >
-              <Input.Password />
-            </Form.Item>
-            <Form.Item {...buttonLayout} style={{ marginBottom: 'unset' }}>
-              <Space>
-                <Button type="primary" htmlType="submit" loading={loading}>
-                  Modify password
-                </Button>
-              </Space>
-            </Form.Item>
-          </Form>
-        </Col>
-      </Row>
+                return Promise.reject(errors.passwordMismatch)
+              }
+            })
+          ]}
+        >
+          <Input.Password />
+        </Form.Item>
+        <Form.Item {...buttonLayout}>
+          <Space>
+            <Button type="primary" htmlType="submit" loading={loading}>
+              Modify password
+            </Button>
+          </Space>
+        </Form.Item>
+      </Form>
     </Card>
   )
+}
+
+Password.propTypes = {
+  user: PropTypes.object.isRequired
 }
 
 export default Password

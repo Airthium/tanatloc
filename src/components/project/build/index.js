@@ -4,7 +4,7 @@ import Utils from '@/lib/utils'
 
 /**
  * Project builder
- * @memberof module:'src/components/project
+ * @memberof module:components/project
  * @param {Object} project Project
  * @param {Function} setTitle Set title
  * @param {Function} setDescription Set description

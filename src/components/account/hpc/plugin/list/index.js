@@ -3,8 +3,8 @@ import { Button, Card, Space, Typography } from 'antd'
 
 import { Error } from '@/components/assets/notification'
 
-import PluginForm from './pluginForm'
-import Delete from './delete'
+import PluginDialog from '../dialog'
+import Delete from '../delete'
 
 import PluginAPI from '@/api/plugin'
 
@@ -19,13 +19,10 @@ const errors = {
  * Plugins list
  * @param {Object} props Props
  */
-const List = ({ plugin }) => {
+const List = ({ plugin, plugins, swr }) => {
   // State
   const [list, setList] = useState([])
   const [edit, setEdit] = useState(false)
-
-  // Data
-  const [plugins, { mutateOnePlugin }] = PluginAPI.usePlugins()
 
   // List
   useEffect(() => {
@@ -40,7 +37,7 @@ const List = ({ plugin }) => {
           style={{ marginTop: '10px' }}
         >
           {edit ? (
-            <PluginForm
+            <PluginDialog
               plugin={p}
               onFinish={(values) => onEdit(p, values)}
               onCancel={() => setEdit(false)}
@@ -93,7 +90,7 @@ const List = ({ plugin }) => {
       await PluginAPI.update(initialPlugin)
 
       // Mutate
-      mutateOnePlugin(initialPlugin)
+      swr.mutateOnePlugin(initialPlugin)
 
       // Finish
       setEdit(false)
@@ -105,7 +102,7 @@ const List = ({ plugin }) => {
   /**
    * Render
    */
-  return <>{list}</>
+  return <Space>{list}</Space>
 }
 
 export default List

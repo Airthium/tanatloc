@@ -15,7 +15,7 @@ const errors = {
 
 /**
  * Add boundary condition
- * @memberof module:'src/components/project/simulation
+ * @memberof module:components/project/simulation
  * @param {Object} props Props
  */
 const Add = ({

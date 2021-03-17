@@ -1,15 +1,14 @@
+import PropTypes from 'prop-types'
 import { useState } from 'react'
 import {
   notification,
   Avatar,
   Button,
+  Card,
   Form,
   Input,
   Space,
-  Upload,
-  Card,
-  Row,
-  Col
+  Upload
 } from 'antd'
 import { UploadOutlined, UserOutlined } from '@ant-design/icons'
 
@@ -20,7 +19,7 @@ import AvatarAPI from '@/api/avatar'
 
 /**
  * Errors account/information
- * @memberof module:'src/components/account
+ * @memberof module:components/account
  */
 const errors = {
   updateError: 'Unable to update informations',
@@ -30,9 +29,10 @@ const errors = {
 
 /**
  * Information
- * @memberof module:'src/components/account
+ * @memberof module:components/account
+ * @param {Object} props Props
  */
-const Information = () => {
+const Information = ({ user, swr }) => {
   // State
   const [loading, setLoading] = useState(false)
   const [uploading, setUploading] = useState(false)
@@ -40,19 +40,17 @@ const Information = () => {
   // Form
   const [form] = Form.useForm()
 
-  // Data
-  const [user, { mutateUser }] = UserAPI.useUser()
-
   // Layout
-  const avatarLayout = {
-    wrapperCol: { offset: 0, span: 4 }
-  }
   const layout = {
-    labelCol: { span: 5 },
+    labelCol: { span: 8 },
     wrapperCol: { span: 8 }
   }
+  const avatarLayout = {
+    wrapperCol: { offset: 8, span: 8 }
+  }
+
   const buttonLayout = {
-    wrapperCol: { offset: 5, span: 8 }
+    wrapperCol: { offset: 8, span: 8 }
   }
 
   /**
@@ -75,7 +73,7 @@ const Information = () => {
       await UserAPI.update(toUpdate)
 
       // Mutate user
-      mutateUser({
+      swr.mutateUser({
         user: {
           ...user,
           firstname: data.firstname,
@@ -133,7 +131,7 @@ const Information = () => {
         })
 
         // Mutate user
-        mutateUser({
+        swr.mutateUser({
           user: {
             ...user,
             avatar: img
@@ -165,7 +163,7 @@ const Information = () => {
    * Render
    */
   return (
-    <Card title="Contact Details" className="Vertical-gutter">
+    <Card title="Contact Details">
       <Form
         {...layout}
         form={form}
@@ -175,59 +173,58 @@ const Information = () => {
           email: user.email
         }}
         onFinish={onFinish}
-        name="personalForm"
       >
-        <Row>
-          <Col span={4}>
-            <Form.Item {...avatarLayout}>
-              <Space direction="vertical" className="Account-avatar">
-                <Avatar
-                  size={128}
-                  src={user.avatar && Buffer.from(user.avatar).toString()}
-                  icon={<UserOutlined />}
-                />
-                <Upload
-                  accept={'.jpg,.png'}
-                  showUploadList={false}
-                  beforeUpload={beforeUpload}
-                  onChange={onChange}
-                >
-                  <Button
-                    size="small"
-                    icon={<UploadOutlined />}
-                    loading={uploading}
-                  >
-                    Upload new
-                  </Button>
-                </Upload>
-              </Space>
-            </Form.Item>
-          </Col>
-          <Col span={20}>
-            <Form.Item label="Email" name="email">
-              <Input />
-            </Form.Item>
-            <Form.Item label="First name" name="firstname">
-              <Input />
-            </Form.Item>
-            <Form.Item label="Last name" name="lastname">
-              <Input />
-            </Form.Item>
-            <Form.Item {...buttonLayout} style={{ marginBottom: 'unset' }}>
-              <Space>
-                <Button type="primary" htmlType="submit" loading={loading}>
-                  Apply changes
-                </Button>
-                <Button type="text" onClick={onCancel}>
-                  Cancel
-                </Button>
-              </Space>
-            </Form.Item>
-          </Col>
-        </Row>
+        <Form.Item {...avatarLayout}>
+          <Space direction="vertical" className="Account-avatar">
+            <Avatar
+              size={128}
+              src={user.avatar && Buffer.from(user.avatar).toString()}
+              icon={<UserOutlined />}
+            />
+            <Upload
+              accept={'.jpg,.png'}
+              showUploadList={false}
+              beforeUpload={beforeUpload}
+              onChange={onChange}
+            >
+              <Button
+                size="small"
+                icon={<UploadOutlined />}
+                loading={uploading}
+              >
+                Upload new
+              </Button>
+            </Upload>
+          </Space>
+        </Form.Item>
+
+        <Form.Item label="Email" name="email">
+          <Input />
+        </Form.Item>
+        <Form.Item label="First name" name="firstname">
+          <Input />
+        </Form.Item>
+        <Form.Item label="Last name" name="lastname">
+          <Input />
+        </Form.Item>
+        <Form.Item {...buttonLayout}>
+          <Space>
+            <Button type="primary" htmlType="submit" loading={loading}>
+              Apply changes
+            </Button>
+            <Button type="text" onClick={onCancel}>
+              Cancel
+            </Button>
+          </Space>
+        </Form.Item>
       </Form>
     </Card>
   )
+}
+
+Information.propTypes = {
+  user: PropTypes.object.isRequired,
+  swr: PropTypes.object.isRequired
 }
 
 export default Information

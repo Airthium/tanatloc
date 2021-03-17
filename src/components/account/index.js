@@ -1,7 +1,8 @@
 /** @module components/account */
 
+import PropTypes from 'prop-types'
 import { useRouter } from 'next/router'
-import { Layout, PageHeader, Typography, Divider, Tabs } from 'antd'
+import { Layout, PageHeader, Typography, Divider, Tabs, Space } from 'antd'
 
 import Information from './information'
 import Password from './password'
@@ -10,8 +11,9 @@ import HPC from './hpc'
 
 /**
  * Account
+ * @param {Object} props Props
  */
-const Account = () => {
+const Account = ({ user, swr }) => {
   // Data
   const router = useRouter()
   const { tab } = router.query
@@ -48,19 +50,26 @@ const Account = () => {
       <Layout.Content>
         <Tabs defaultActiveKey={tab || 'personal'} onChange={onChange}>
           <Tabs.TabPane tab="Personal Information" key="personal">
-            <Information />
-            <Delete />
+            <Space direction="vertical">
+              <Information user={user} swr={{ mutateUser: swr.mutateUser }} />
+              <Delete swr={{ mutateUser: swr.mutateUser }} />
+            </Space>
           </Tabs.TabPane>
           <Tabs.TabPane tab="Security" key="security">
-            <Password />
+            <Password user={user} />
           </Tabs.TabPane>
           <Tabs.TabPane tab="HPC Providers" key="hpc">
-            <HPC />
+            <HPC user={user} />
           </Tabs.TabPane>
         </Tabs>
       </Layout.Content>
     </Layout>
   )
+}
+
+Account.propTypes = {
+  user: PropTypes.object.isRequired,
+  swr: PropTypes.object.isRequired
 }
 
 export default Account

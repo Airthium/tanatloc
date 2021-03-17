@@ -63,13 +63,13 @@ const Registration = () => {
     <Spin />
   ) : (
     <>
-      <Card title="Signup" className="Vertical-gutter">
+      <Card title="Signup">
         <Checkbox checked={system?.allowsignup} onChange={onAllowSignup}>
           Allow signup
         </Checkbox>
       </Card>
 
-      <Card title="Password" className="Vertical-gutter">
+      <Card title="Password">
         <Form {...layout} form={form} name="form" onFinish={onPasswordFinish}>
           <Form.Item
             label="Minimum number of characters"

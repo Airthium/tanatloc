@@ -20,7 +20,7 @@ import DownloadAPI from '@/api/download'
 
 /**
  * Errors simulation/run
- * @memberof module:'src/components/project/simulation
+ * @memberof module:components/project/simulation
  */
 const errors = {
   runError: 'Unable to run the simulation',
@@ -31,7 +31,7 @@ const errors = {
 
 /**
  * Run
- * @memberof module:'src/components/project/simulation
+ * @memberof module:components/project/simulation
  * @param {Object} props Props
  */
 const Run = ({ project, simulation }) => {

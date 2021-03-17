@@ -13,7 +13,7 @@ const errors = {
 
 /**
  * Add workspace
- * @memberof module:'src/components/workspace
+ * @memberof module:components/workspace
  */
 const Add = () => {
   // Sate

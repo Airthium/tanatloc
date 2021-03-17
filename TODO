@@ -13,3 +13,6 @@ Workspace:
 
 Run:
 - Use file for logs (separate gmsh / Freefem for rescale) ?
+
+
+Organization is the better coded part, see it for further modifications

@@ -11,7 +11,7 @@ import Utils from '@/lib/utils'
  * @memberof module:components/organizations
  * @param {Object} props Props
  */
-const List = ({ user, swr, setOrganization }) => {
+const List = ({ user, organizations, swr, setOrganization }) => {
   // Data
   const columns = [
     {
@@ -76,13 +76,14 @@ const List = ({ user, swr, setOrganization }) => {
     <Table
       loading={swr?.loadingOrganizations}
       columns={columns}
-      dataSource={swr?.organizations?.map((o) => ({ ...o, key: o.id }))}
+      dataSource={organizations?.map((o) => ({ ...o, key: o.id }))}
     />
   )
 }
 
 List.propTypes = {
   user: PropTypes.object.isRequired,
+  organizations: PropTypes.array.isRequired,
   swr: PropTypes.object.isRequired,
   setOrganization: PropTypes.func.isRequired
 }

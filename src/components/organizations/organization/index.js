@@ -73,7 +73,10 @@ const Organization = ({ organization, swr, onClose }) => {
           />
         </Tabs.TabPane>
         <Tabs.TabPane tab="Groups" key="groups">
-          <Groups organization={organization} />
+          <Groups
+            organization={organization}
+            swr={{ reloadOrganizations: swr.reloadOrganizations }}
+          />
         </Tabs.TabPane>
       </Tabs>
     </>

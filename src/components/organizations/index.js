@@ -8,26 +8,13 @@ import Add from './add'
 import List from './list'
 import Organization from './organization'
 
-import OrganizationAPI from '@/api/organization'
-
 /**
  * Organizations
  * @param {Object} props Props
  */
-const Organizations = ({ user }) => {
+const Organizations = ({ user, organizations, swr }) => {
   // State
   const [organization, setOrganization] = useState()
-
-  // Data
-  const [
-    organizations,
-    {
-      addOneOrganization,
-      delOneOrganization,
-      mutateOneOrganization,
-      loadingOrganizations
-    }
-  ] = OrganizationAPI.useOrganizations()
 
   // Organization update
   useEffect(() => {
@@ -64,20 +51,21 @@ const Organizations = ({ user }) => {
             <Organization
               organization={organization}
               swr={{
-                mutateOneOrganization,
-                loadingOrganizations
+                reloadOrganizations: swr.reloadOrganizations,
+                mutateOneOrganization: swr.mutateOneOrganization,
+                loadingOrganizations: swr.loadingOrganizations
               }}
               onClose={() => setOrganization()}
             />
           ) : (
             <>
-              <Add swr={{ addOneOrganization }} />
+              <Add swr={{ addOneOrganization: swr.addOneOrganization }} />
               <List
                 user={user}
+                organizations={organizations}
                 swr={{
-                  organizations,
-                  delOneOrganization,
-                  loadingOrganizations
+                  delOneOrganization: swr.delOneOrganization,
+                  loadingOrganizations: swr.loadingOrganizations
                 }}
                 setOrganization={setOrganization}
               />
@@ -90,7 +78,9 @@ const Organizations = ({ user }) => {
 }
 
 Organizations.propTypes = {
-  user: PropTypes.object.isRequired
+  user: PropTypes.object.isRequired,
+  organizations: PropTypes.array.isRequired,
+  swr: PropTypes.object.isRequired
 }
 
 export default Organizations

@@ -26,6 +26,7 @@ import Help from '@/components/help'
 import Welcome from './welcome'
 
 import UserAPI from '@/api/user'
+import OrganizationAPI from '@/api/organization'
 import WorkspaceAPI from '@/api/workspace'
 import logout from '@/api/logout'
 
@@ -80,6 +81,16 @@ const Dashboard = () => {
 
   // Data
   const [user, { mutateUser, loadingUser }] = UserAPI.useUser()
+  const [
+    organizations,
+    {
+      reloadOrganizations,
+      addOneOrganization,
+      delOneOrganization,
+      mutateOneOrganization,
+      loadingOrganizations
+    }
+  ] = OrganizationAPI.useOrganizations()
   const [workspaces] = WorkspaceAPI.useWorkspaces()
 
   // Router
@@ -198,7 +209,19 @@ const Dashboard = () => {
       displayed = <Account />
       break
     case menuItems.organizations.key:
-      displayed = <Organizations user={user} />
+      displayed = (
+        <Organizations
+          user={user}
+          organizations={organizations}
+          swr={{
+            reloadOrganizations,
+            addOneOrganization,
+            delOneOrganization,
+            mutateOneOrganization,
+            loadingOrganizations
+          }}
+        />
+      )
       break
     case menuItems.administration.key:
       displayed = <Administration />

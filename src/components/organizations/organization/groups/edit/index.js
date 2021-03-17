@@ -80,6 +80,7 @@ const Edit = ({ group, organization, swr }) => {
         ...group,
         ...values
       })
+      swr.reloadOrganizations()
 
       // Close
       setVisible(false)

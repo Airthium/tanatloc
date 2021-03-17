@@ -9,7 +9,7 @@ import Utils from '@/lib/utils'
 
 import GroupAPI from '@/api/group'
 
-const Groups = ({ organization }) => {
+const Groups = ({ organization, swr }) => {
   // Data
   const [
     groups,
@@ -38,9 +38,15 @@ const Groups = ({ organization }) => {
           <Edit
             group={record}
             organization={organization}
-            swr={{ mutateOneGroup }}
+            swr={{
+              reloadOrganizations: swr.reloadOrganizations,
+              mutateOneGroup
+            }}
           />
-          <Delete group={record} swr={{ delOneGroup }} />
+          <Delete
+            group={record}
+            swr={{ reloadOrganizations: swr.reloadOrganizations, delOneGroup }}
+          />
         </Space>
       )
     }
@@ -51,6 +57,7 @@ const Groups = ({ organization }) => {
       <Add
         organization={organization}
         swr={{
+          mutateOrganizations: swr.mutateOrganizations,
           addOneGroup
         }}
       />
@@ -64,7 +71,8 @@ const Groups = ({ organization }) => {
 }
 
 Groups.propTypes = {
-  organization: PropTypes.object.isRequired
+  organization: PropTypes.object.isRequired,
+  swr: PropTypes.object.isRequired
 }
 
 export default Groups

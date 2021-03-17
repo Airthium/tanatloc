@@ -58,6 +58,7 @@ const Add = ({ organization, swr }) => {
       newGroup.name = values.name
       newGroup.users = values.users
       swr.addOneGroup(newGroup)
+      swr.reloadOrganizations()
 
       // Close
       setVisible(false)

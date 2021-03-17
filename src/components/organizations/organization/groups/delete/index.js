@@ -39,6 +39,7 @@ const Delete = ({ group, swr }) => {
 
       // Mutate
       swr.delOneGroup({ id: group.id })
+      swr.reloadOrganizations()
 
       // Close
       setVisible(false)

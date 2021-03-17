@@ -10,6 +10,10 @@ const useOrganizations = () => {
   const loading = !data
   const organizations = (data && data.organizations) || []
 
+  const reload = () => {
+    mutate(null, true)
+  }
+
   /**
    * Add one
    * @param {Object} organization Organization
@@ -46,6 +50,7 @@ const useOrganizations = () => {
     organizations,
     {
       mutateOrganizations: mutate,
+      reloadOrganizations: reload,
       addOneOrganization: addOne,
       delOneOrganization: delOne,
       mutateOneOrganization: mutateOne,

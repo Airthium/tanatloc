@@ -167,10 +167,12 @@ const NavigationHelper = (
     if (isIn(mouse)) {
       currentlyHighlighted = intersect(mouse)
       highlight()
-      if (currentlyHighlighted.uuid !== previouslyHighlighted.uuid)
+      if (currentlyHighlighted.uuid !== previouslyHighlighted.uuid) {
         unhighlight()
-      previouslyHighlighted = currentlyHighlighted
+        previouslyHighlighted = currentlyHighlighted
+      }
     } else {
+      currentlyHighlighted = 0
       unhighlight()
     }
   }

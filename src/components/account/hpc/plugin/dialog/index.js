@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Button, Form, Input, Select } from 'antd'
 import { v4 as uuid } from 'uuid'
 
@@ -23,7 +23,17 @@ const errors = {
 const PluginDialog = ({ plugin, swr, edit }) => {
   // State
   const [visible, setVisible] = useState(false)
+  const [initialValues, setInitialValues] = useState()
   const [loading, setLoading] = useState(false)
+
+  // Initial values
+  useEffect(() => {
+    const currentInitialValues = {}
+    Object.keys(plugin.configuration).forEach((key) => {
+      currentInitialValues[key] = plugin.configuration[key].value
+    })
+    setInitialValues(currentInitialValues)
+  }, [plugin?.configuration])
 
   /**
    * Build input item
@@ -160,12 +170,6 @@ const PluginDialog = ({ plugin, swr, edit }) => {
       setLoading(false)
     }
   }
-
-  // Initial values
-  const initialValues = {}
-  Object.keys(plugin.configuration).forEach((key) => {
-    initialValues[key] = plugin.configuration[key].value
-  })
 
   /**
    * Render

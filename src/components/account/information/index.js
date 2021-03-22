@@ -210,7 +210,7 @@ const Information = ({ user, swr }) => {
               <Input />
             </Form.Item>
             <Form.Item {...buttonLayout}>
-              <Space>
+              <Space direction="">
                 <Button type="primary" htmlType="submit" loading={loading}>
                   Apply changes
                 </Button>

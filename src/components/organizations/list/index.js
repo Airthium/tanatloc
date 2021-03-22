@@ -56,7 +56,7 @@ const List = ({ user, organizations, swr, setOrganization }) => {
       render: (org) => {
         if (org.owners.find((o) => o.id === user.id))
           return (
-            <Space wrap={true}>
+            <Space direction="" wrap={true}>
               <Button
                 icon={<ControlOutlined />}
                 onClick={() => setOrganization(org)}

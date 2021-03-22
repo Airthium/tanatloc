@@ -56,7 +56,9 @@ const Account = ({ user, swr }) => {
             </Space>
           </Tabs.TabPane>
           <Tabs.TabPane tab="Security" key="security">
-            <Password user={user} />
+            <Space direction="vertical">
+              <Password user={user} />
+            </Space>
           </Tabs.TabPane>
           <Tabs.TabPane tab="HPC Providers" key="hpc">
             <HPC user={user} />

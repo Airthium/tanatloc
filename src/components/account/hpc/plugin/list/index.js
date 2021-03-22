@@ -1,12 +1,8 @@
 import { useState, useEffect } from 'react'
-import { Button, Card, Space, Typography } from 'antd'
-
-import { Error } from '@/components/assets/notification'
+import { Card, Space, Typography } from 'antd'
 
 import PluginDialog from '../dialog'
 import Delete from '../delete'
-
-import PluginAPI from '@/api/plugin'
 
 /**
  * Errors hpc/list
@@ -22,7 +18,6 @@ const errors = {
 const List = ({ plugin, plugins, swr }) => {
   // State
   const [list, setList] = useState([])
-  const [edit, setEdit] = useState(false)
 
   // List
   useEffect(() => {
@@ -31,73 +26,36 @@ const List = ({ plugin, plugins, swr }) => {
 
       const configuration = p.configuration
       return (
-        <Card
-          key={p.uuid}
-          title={configuration.name?.value}
-          style={{ marginTop: '10px' }}
-        >
-          {edit ? (
+        <Card key={p.uuid} title={configuration.name?.value}>
+          {Object.keys(configuration).map((key) => {
+            if (key === 'name') return
+            return (
+              <Typography.Paragraph key={key}>
+                <Typography.Text strong={true}>
+                  {configuration[key].label}:
+                </Typography.Text>{' '}
+                <Typography.Text>
+                  {configuration[key].type === 'password'
+                    ? '******'
+                    : configuration[key].value}
+                </Typography.Text>
+              </Typography.Paragraph>
+            )
+          })}
+          <Space direction="">
             <PluginDialog
               plugin={p}
-              onFinish={(values) => onEdit(p, values)}
-              onCancel={() => setEdit(false)}
+              swr={{ mutateOnePlugin: swr.mutateOnePlugin }}
+              edit={true}
             />
-          ) : (
-            Object.keys(configuration).map((key) => {
-              if (key === 'name') return
-              return (
-                <Typography.Paragraph key={key}>
-                  <Typography.Text strong={true}>
-                    {configuration[key].label}:
-                  </Typography.Text>{' '}
-                  <Typography.Text>
-                    {configuration[key].type === 'password'
-                      ? '******'
-                      : configuration[key].value}
-                  </Typography.Text>
-                </Typography.Paragraph>
-              )
-            })
-          )}
-          <Space>
-            <Button disabled={edit} onClick={() => setEdit(true)}>
-              Edit
-            </Button>
-            <Delete plugin={p} />
+            <Delete plugin={p} swr={{ delOnePlugin: swr.delOnePlugin }} />
           </Space>
         </Card>
       )
     })
 
     setList(pluginsList)
-  }, [JSON.stringify(plugins), plugin, edit])
-
-  /**
-   * On edit
-   * @param {Object} initialPlugin Plugin
-   * @param {Object} values Values
-   */
-  const onEdit = async (initialPlugin, values) => {
-    try {
-      // Set values
-      Object.keys(values).forEach((key) => {
-        initialPlugin.configuration[key].value = values[key]
-      })
-
-      initialPlugin.needReInit = true
-
-      // API
-      await PluginAPI.update(initialPlugin)
-
-      // Mutate
-      swr.mutateOnePlugin(initialPlugin)
-
-      // Finish
-      setEdit(false)
-    } catch (err) {
-      Error(errors.updateError, err)
-    }
-  }
+  }, [JSON.stringify(plugins), plugin])
 
   /**
    * Render

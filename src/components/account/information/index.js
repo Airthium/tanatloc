@@ -42,15 +42,15 @@ const Information = ({ user, swr }) => {
 
   // Layout
   const layout = {
-    labelCol: { span: 8 },
-    wrapperCol: { span: 8 }
+    labelCol: { span: 4 },
+    wrapperCol: { span: 16 }
   }
   const avatarLayout = {
     wrapperCol: { offset: 8, span: 8 }
   }
 
   const buttonLayout = {
-    wrapperCol: { offset: 8, span: 8 }
+    wrapperCol: { offset: 4, span: 16 }
   }
 
   /**
@@ -174,49 +174,53 @@ const Information = ({ user, swr }) => {
         }}
         onFinish={onFinish}
       >
-        <Form.Item {...avatarLayout}>
-          <Space direction="vertical" className="Account-avatar">
-            <Avatar
-              size={128}
-              src={user.avatar && Buffer.from(user.avatar).toString()}
-              icon={<UserOutlined />}
-            />
-            <Upload
-              accept={'.jpg,.png'}
-              showUploadList={false}
-              beforeUpload={beforeUpload}
-              onChange={onChange}
-            >
-              <Button
-                size="small"
-                icon={<UploadOutlined />}
-                loading={uploading}
+        <Space>
+          <Form.Item {...avatarLayout}>
+            <Space direction="vertical" className="Account-avatar">
+              <Avatar
+                size={128}
+                src={user.avatar && Buffer.from(user.avatar).toString()}
+                icon={<UserOutlined />}
+              />
+              <Upload
+                accept={'.jpg,.png'}
+                showUploadList={false}
+                beforeUpload={beforeUpload}
+                onChange={onChange}
               >
-                Upload new
-              </Button>
-            </Upload>
-          </Space>
-        </Form.Item>
+                <Button
+                  size="small"
+                  icon={<UploadOutlined />}
+                  loading={uploading}
+                >
+                  Upload new
+                </Button>
+              </Upload>
+            </Space>
+          </Form.Item>
 
-        <Form.Item label="Email" name="email">
-          <Input />
-        </Form.Item>
-        <Form.Item label="First name" name="firstname">
-          <Input />
-        </Form.Item>
-        <Form.Item label="Last name" name="lastname">
-          <Input />
-        </Form.Item>
-        <Form.Item {...buttonLayout}>
-          <Space>
-            <Button type="primary" htmlType="submit" loading={loading}>
-              Apply changes
-            </Button>
-            <Button type="text" onClick={onCancel}>
-              Cancel
-            </Button>
-          </Space>
-        </Form.Item>
+          <div>
+            <Form.Item label="Email" name="email">
+              <Input />
+            </Form.Item>
+            <Form.Item label="First name" name="firstname">
+              <Input />
+            </Form.Item>
+            <Form.Item label="Last name" name="lastname">
+              <Input />
+            </Form.Item>
+            <Form.Item {...buttonLayout}>
+              <Space>
+                <Button type="primary" htmlType="submit" loading={loading}>
+                  Apply changes
+                </Button>
+                <Button type="text" onClick={onCancel}>
+                  Cancel
+                </Button>
+              </Space>
+            </Form.Item>
+          </div>
+        </Space>
       </Form>
     </Card>
   )

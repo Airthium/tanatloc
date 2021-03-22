@@ -36,7 +36,7 @@ const Groups = ({ organization, swr }) => {
       title: 'Actions',
       key: 'actions',
       render: (text, record) => (
-        <Space>
+        <Space direction="">
           <Edit
             group={record}
             organization={organization}

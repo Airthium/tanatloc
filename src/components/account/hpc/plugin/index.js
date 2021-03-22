@@ -22,14 +22,14 @@ const Plugin = ({ plugin }) => {
    * Render
    */
   return (
-    <Space direction="vertical">
+    <>
       <PluginDialog plugin={plugin} swr={{ addOnePlugin }} />
       <List
         plugin={plugin}
         plugins={plugins}
         swr={{ delOnePlugin, mutateOnePlugin }}
       />
-    </Space>
+    </>
   )
 }
 

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Button } from 'antd'
 
+import { DeleteDialog } from '@/components/assets/dialog'
 import { Error } from '@/components/assets/notification'
 
 import PluginAPI from '@/api/plugin'
@@ -18,6 +19,7 @@ const errors = {
  */
 const Delete = ({ plugin, swr }) => {
   // State
+  const [visible, setVisible] = useState(false)
   const [loading, setLoading] = useState(false)
 
   /**
@@ -43,9 +45,20 @@ const Delete = ({ plugin, swr }) => {
    * Render
    */
   return (
-    <Button type="danger" loading={loading} onClick={onDelete}>
-      Delete
-    </Button>
+    <>
+      <DeleteDialog
+        title="Delete plugin"
+        visible={visible}
+        onCancel={() => setVisible(false)}
+        onOk={onDelete}
+        loading={loading}
+      >
+        Delete "{plugin.configuration.name.value}"?
+      </DeleteDialog>
+      <Button type="danger" loading={loading} onClick={() => setVisible(true)}>
+        Delete
+      </Button>
+    </>
   )
 }
 

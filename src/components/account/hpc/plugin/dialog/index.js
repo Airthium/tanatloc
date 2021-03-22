@@ -6,6 +6,8 @@ import { v4 as uuid } from 'uuid'
 import Dialog from '@/components/assets/dialog'
 import { Error } from '@/components/assets/notification'
 
+import PluginAPI from '@/api/plugin'
+
 /**
  * Errors hpc/plugin
  * @memberof module:components/account
@@ -18,7 +20,7 @@ const errors = {
  * Plugin dialog
  * @param {Object} props Props
  */
-const PluginDialog = ({ plugin, swr }) => {
+const PluginDialog = ({ plugin, swr, edit }) => {
   // State
   const [visible, setVisible] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -110,28 +112,45 @@ const PluginDialog = ({ plugin, swr }) => {
   const onFinish = async (values) => {
     setLoading(true)
     try {
-      // New plugin
-      const newPlugin = { ...plugin }
+      if (edit) {
+        const initialPlugin = { ...plugin }
 
-      // Set values
-      Object.keys(values).forEach((key) => {
-        newPlugin.configuration[key].value = values[key]
-      })
+        // Set values
+        Object.keys(values).forEach((key) => {
+          initialPlugin.configuration[key].value = values[key]
+        })
 
-      // Remove logo
-      newPlugin.logo && delete newPlugin.logo
+        initialPlugin.needReInit = true
 
-      // Remove renderer
-      newPlugin.renderer && delete newPlugin.renderer
+        // API
+        await PluginAPI.update(initialPlugin)
 
-      // Set uuid
-      newPlugin.uuid = uuid()
+        // Mutate
+        swr.mutateOnePlugin(initialPlugin)
+      } else {
+        // New plugin
+        const newPlugin = { ...plugin }
 
-      // API
-      await PluginAPI.add(newPlugin)
+        // Set values
+        Object.keys(values).forEach((key) => {
+          newPlugin.configuration[key].value = values[key]
+        })
 
-      // Local
-      swr.addOnePlugin(newPlugin)
+        // Remove logo
+        newPlugin.logo && delete newPlugin.logo
+
+        // Remove renderer
+        newPlugin.renderer && delete newPlugin.renderer
+
+        // Set uuid
+        newPlugin.uuid = uuid()
+
+        // API
+        await PluginAPI.add(newPlugin)
+
+        // Local
+        swr.addOnePlugin(newPlugin)
+      }
 
       // Finish
       setVisible(false)
@@ -169,7 +188,7 @@ const PluginDialog = ({ plugin, swr }) => {
         })}
       </Dialog>
       <Button type="primary" onClick={() => setVisible(true)}>
-        Add
+        {edit ? 'Edit' : 'Add'}
       </Button>
     </>
   )
@@ -177,7 +196,8 @@ const PluginDialog = ({ plugin, swr }) => {
 
 PluginDialog.propTypes = {
   plugin: PropTypes.object.isRequired,
-  swr: PropTypes.object.isRequired
+  swr: PropTypes.object.isRequired,
+  edit: PropTypes.bool
 }
 
 export default PluginDialog

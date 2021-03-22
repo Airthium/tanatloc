@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types'
 import { useState } from 'react'
 import { Button, Form, Input } from 'antd'
 import { PlusCircleOutlined } from '@ant-design/icons'
@@ -6,7 +7,6 @@ import { Error } from '@/components/assets/notification'
 import Dialog from '@/components/assets/dialog'
 
 import ProjectAPI from '@/api/project'
-import WorkspaceAPI from '@/api/workspace'
 
 /**
  * Errors project/add
@@ -21,17 +21,10 @@ const errors = {
  * @memberof module:components/project
  * @param {Object} props Props
  */
-const Add = (props) => {
-  // Props
-  const workspace = props.workspace || {}
-
+const Add = ({ workspace, swr }) => {
   // State
   const [visible, setVisible] = useState(false)
   const [loading, setLoading] = useState(false)
-
-  // Data
-  const [, { addOneProject }] = ProjectAPI.useProjects(workspace.projects)
-  const [, { mutateOneWorkspace }] = WorkspaceAPI.useWorkspaces()
 
   /**
    * Toggle dialog
@@ -51,18 +44,18 @@ const Add = (props) => {
       const project = await ProjectAPI.add({ id: workspace.id }, values)
 
       // Mutate projects
-      addOneProject(project)
+      swr.addOneProject(project)
 
       // Mutate workspaces
-      mutateOneWorkspace({
+      swr.mutateOneWorkspace({
         ...workspace,
         projects: [...workspace.projects, project.id]
       })
 
+      // Close
       toggleDialog()
     } catch (err) {
       Error(errors.addError, err)
-    } finally {
       setLoading(false)
     }
   }
@@ -107,6 +100,11 @@ const Add = (props) => {
       </Dialog>
     </>
   )
+}
+
+Add.propTypes = {
+  workspace: PropTypes.object.isRequired,
+  swr: PropTypes.object.isRequired
 }
 
 export default Add

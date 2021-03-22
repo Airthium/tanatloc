@@ -16,16 +16,10 @@ const errors = {
  * @memberof module:components/workspace
  * @param {Object} props Props
  */
-const Delete = (props) => {
-  // Props
-  const workspace = props.workspace
-
+const Delete = ({ workspace, swr }) => {
   // Sate
   const [visible, setVisible] = useState(false)
   const [loading, setLoading] = useState(false)
-
-  // Data
-  const [, { delOneWorkspace }] = WorkspaceAPI.useWorkspaces()
 
   /**
    * Toggle dialog delete
@@ -44,7 +38,7 @@ const Delete = (props) => {
       await WorkspaceAPI.del({ id: workspace.id })
 
       // Mutate
-      delOneWorkspace({ id: workspace.id })
+      swr.delOneWorkspace({ id: workspace.id })
     } catch (err) {
       Error(errors.delError, err)
 

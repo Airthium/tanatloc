@@ -27,7 +27,7 @@ const DeleteDialog = (props) => {
       onOk={onOk}
       confirmLoading={loading}
     >
-      <Space size="middle">
+      <Space direction="">
         <ExclamationCircleTwoTone
           twoToneColor="#faad14"
           style={{ fontSize: '1.5em' }}

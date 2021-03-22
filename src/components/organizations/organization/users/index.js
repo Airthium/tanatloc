@@ -92,6 +92,7 @@ const Users = ({ organization, swr }) => {
             loading={swr?.loadingOrganizations}
             pagination={false}
             size="small"
+            scroll={{ y: 200 }}
             columns={ownersColumns}
             dataSource={organization?.owners?.map((o, index) => ({
               ...o,
@@ -114,6 +115,7 @@ const Users = ({ organization, swr }) => {
             loading={swr?.loadingOrganizations}
             pagination={false}
             size="small"
+            scroll={{ y: 200 }}
             columns={usersColumns}
             dataSource={organization?.users?.map((u, index) => ({
               ...u,

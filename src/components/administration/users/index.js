@@ -243,6 +243,7 @@ const Users = () => {
       <Table
         pagination={false}
         size="small"
+        scroll={{ y: 'calc(100vh - 272px)' }}
         columns={columns}
         dataSource={users.map((u) => ({ ...u, key: u.id }))}
       />

@@ -1,4 +1,4 @@
-import { Avatar, Collapse, Empty, Tooltip, Typography } from 'antd'
+import { Avatar, Collapse, Empty, Typography } from 'antd'
 
 import Utils from '@/lib/utils'
 
@@ -6,6 +6,7 @@ import Utils from '@/lib/utils'
  * Project builder
  * @memberof module:components/project
  * @param {Object} project Project
+ * @param {string} filter Filter
  * @param {Function} setTitle Set title
  * @param {Function} setDescription Set description
  */
@@ -65,15 +66,7 @@ const Build = (project, filter, setTitle, setDescription) => {
   const users = project?.users?.map((user) => Utils.userToAvatar(user))
 
   // Groups
-  const groups = project?.groups?.map((group) => {
-    return (
-      <Tooltip key={group.id} title={group.name}>
-        <Avatar style={{ backgroundColor: Utils.stringToColor(group.name) }}>
-          {group.name?.[0]?.toUpperCase()}
-        </Avatar>
-      </Tooltip>
-    )
-  })
+  const groups = project?.groups?.map((group) => Utils.groupToAvatar(group))
 
   /**
    * Not a render

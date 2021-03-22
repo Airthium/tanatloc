@@ -152,7 +152,11 @@ const update = async (organization, data) => {
  */
 const del = async (organization) => {
   // Get data
-  const organizationData = await get(organization.id, ['owners', 'users'])
+  const organizationData = await get(organization.id, [
+    'owners',
+    'users',
+    'groups'
+  ])
 
   // Del organization from owners
   organizationData.owners &&
@@ -181,6 +185,14 @@ const del = async (organization) => {
             value: organization.id
           }
         ])
+      })
+    ))
+
+  // Del groups
+  organizationData.groups &&
+    (await Promise.all(
+      organizationData.groups.map(async (group) => {
+        await Group.del(group)
       })
     ))
 

@@ -29,6 +29,8 @@ jest.mock('@/components/workspace/add', () => 'add')
 
 jest.mock('@/components/account', () => 'account')
 
+jest.mock('@/components/organizations', () => 'organizations')
+
 jest.mock('@/components/administration', () => 'administration')
 
 jest.mock('@/components/help', () => 'help')

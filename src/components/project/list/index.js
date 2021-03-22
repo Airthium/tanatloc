@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types'
 import { useRouter } from 'next/router'
 import { Space, Table, Empty } from 'antd'
 
@@ -22,17 +23,57 @@ const errors = {
  * @memberof module:components/project
  * @param {Object} props Props
  */
-const ProjectList = ({ user, workspace, filter }) => {
+const ProjectList = ({ user, workspace, filter, projects, swr }) => {
   // Router
   const router = useRouter()
 
-  // Load projects
-  const [
-    projects,
-    { mutateOneProject, loadingProjects }
-  ] = ProjectAPI.useProjects(workspace?.projects)
-
   // Data
+  const columns = [
+    {
+      dataIndex: 'snapshot',
+      key: 'snapshot',
+      onCell: (project) => ({
+        onClick: () => openProject(project)
+      })
+    },
+    {
+      title: 'Project',
+      dataIndex: 'title',
+      key: 'title'
+    },
+    {
+      title: 'Administrators',
+      dataIndex: 'ownersRender',
+      key: 'ownersRender',
+      align: 'center'
+    },
+    {
+      title: 'Shared With',
+      dataIndex: 'usersRender',
+      key: 'usersRender',
+      align: 'center'
+    },
+    {
+      title: 'Actions',
+      align: 'center',
+      render: (value) => (
+        <Space direction="" wrap={true}>
+          <Share workspace={workspace} project={value} />
+          {value?.owners?.find((o) => o.id === user?.id) && (
+            <Delete
+              workspace={workspace}
+              project={value}
+              swr={{
+                mutateOneWorkspace: swr.mutateOneWorkspace,
+                delOneProject: swr.delOneProject
+              }}
+            />
+          )}
+        </Space>
+      )
+    }
+  ]
+
   const data = projects
     .map((project) => {
       return Build(
@@ -68,7 +109,7 @@ const ProjectList = ({ user, workspace, filter }) => {
       ])
 
       // Mutate project
-      mutateOneProject({
+      swr.mutateOneProject({
         ...project,
         title: title
       })
@@ -88,7 +129,7 @@ const ProjectList = ({ user, workspace, filter }) => {
       ])
 
       // Mutate
-      mutateOneProject({
+      swr.mutateOneProject({
         ...project,
         description: description
       })
@@ -102,12 +143,11 @@ const ProjectList = ({ user, workspace, filter }) => {
    */
   return (
     <Table
-      loading={loadingProjects}
+      loading={swr.loadingProjects}
       pagination={false}
-      dataSource={data}
       bordered={true}
       size="small"
-      // scroll={{ y: 'calc(100vh - 232px)' }}
+      scroll={{ y: 'calc(100vh - 238px)' }}
       locale={{
         emptyText: (
           <Empty
@@ -117,42 +157,18 @@ const ProjectList = ({ user, workspace, filter }) => {
         )
       }}
       style={{ marginTop: '24px' }}
-    >
-      <Table.Column
-        title=""
-        dataIndex="snapshot"
-        onCell={(project) => {
-          return {
-            onClick: () => openProject(project)
-          }
-        }}
-      />
-      <Table.Column title="Project" dataIndex="title" />
-      {/* <Table.Column title="Status" dataIndex="tags" align="center" /> */}
-      <Table.Column
-        title="Administrators"
-        dataIndex="ownersRender"
-        align="center"
-      />
-      <Table.Column
-        title="Shared With"
-        dataIndex="usersRender"
-        align="center"
-      />
-      <Table.Column
-        title="Actions"
-        align="center"
-        render={(value) => (
-          <Space direction="" wrap={true}>
-            <Share workspace={workspace} project={value} />
-            {value?.owners?.find((o) => o.id === user?.id) && (
-              <Delete workspace={workspace} project={value} />
-            )}
-          </Space>
-        )}
-      />
-    </Table>
+      columns={columns}
+      dataSource={data}
+    />
   )
+}
+
+ProjectList.propTypes = {
+  user: PropTypes.object.isRequired,
+  workspace: PropTypes.object.isRequired,
+  filter: PropTypes.string,
+  projects: PropTypes.array.isRequired,
+  swr: PropTypes.object.isRequired
 }
 
 export default ProjectList

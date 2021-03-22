@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types'
 import { useState } from 'react'
 import { Button, Form, Input } from 'antd'
 import { PlusCircleOutlined } from '@ant-design/icons'
@@ -14,14 +15,12 @@ const errors = {
 /**
  * Add workspace
  * @memberof module:components/workspace
+ * @param {Object} props Props
  */
-const Add = () => {
+const Add = ({ swr }) => {
   // Sate
   const [visible, setVisible] = useState(false)
   const [loading, setLoading] = useState(false)
-
-  // Data
-  const [, { addOneWorkspace }] = WorkspaceAPI.useWorkspaces()
 
   /**
    * Toggle dialog
@@ -41,7 +40,7 @@ const Add = () => {
       const workspace = await WorkspaceAPI.add(values)
 
       // Mutate
-      addOneWorkspace(workspace)
+      swr.addOneWorkspace(workspace)
 
       toggleDialog()
     } catch (err) {
@@ -86,6 +85,10 @@ const Add = () => {
       </Dialog>
     </>
   )
+}
+
+Add.propTypes = {
+  swr: PropTypes.object.isRequired
 }
 
 export default Add

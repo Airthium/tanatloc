@@ -81,6 +81,7 @@ const List = ({ user, organizations, swr, setOrganization }) => {
       loading={swr?.loadingOrganizations}
       pagination={false}
       size="small"
+      scroll={{ y: 'calc(100vh - 166px)' }}
       columns={columns}
       dataSource={organizations?.map((o) => ({ ...o, key: o.id }))}
     />

@@ -219,6 +219,7 @@ const Groups = () => {
         loading={loadingGroups}
         pagination={false}
         size="small"
+        scroll={{ y: 'calc(100vh - 272px)' }}
         columns={columns}
         dataSource={groups.map((g) => ({ ...g, key: g.id }))}
       />

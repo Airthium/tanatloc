@@ -39,6 +39,7 @@ const Add = ({ swr }) => {
 
       // Local
       organization.name = values.name
+      organization.owners = []
       swr.addOneOrganization(organization)
 
       // Close

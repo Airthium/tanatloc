@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import { Space } from 'antd'
+import { Spin } from 'antd'
 
 import PluginDialog from './dialog'
 import List from './list'
@@ -15,13 +15,15 @@ const Plugin = ({ plugin }) => {
   // Data
   const [
     plugins,
-    { addOnePlugin, delOnePlugin, mutateOnePlugin }
+    { addOnePlugin, delOnePlugin, mutateOnePlugin, loadingPlugins }
   ] = PluginAPI.usePlugins()
 
   /**
    * Render
    */
-  return (
+  return loadingPlugins ? (
+    <Spin />
+  ) : (
     <>
       <PluginDialog plugin={plugin} swr={{ addOnePlugin }} />
       <List

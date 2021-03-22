@@ -1,6 +1,8 @@
 import GroupDB from '@/database/group'
 
 import User from '../user'
+import Workspace from '../workspace'
+import Project from '../project'
 import Organization from '../organization'
 
 /**
@@ -159,9 +161,14 @@ const update = async (group, data) => {
  */
 const del = async (group) => {
   // Get data
-  const groupData = await get(group.id, ['organization'])
+  const groupData = await get(group.id, [
+    'users',
+    'workspaces',
+    'projects',
+    'organization'
+  ])
 
-  // Del group from organization
+  // Delete group from organization
   await Organization.update({ id: groupData.organization }, [
     {
       key: 'groups',
@@ -170,6 +177,51 @@ const del = async (group) => {
       value: group.id
     }
   ])
+
+  // Delete group from users
+  groupData.users &&
+    (await Promise.all(
+      groupData.users.map(async (user) => {
+        await User.update({ id: user }, [
+          {
+            key: 'groups',
+            type: 'array',
+            method: 'remove',
+            value: group.id
+          }
+        ])
+      })
+    ))
+
+  // Delete group from workspaces
+  groupData.workspaces &&
+    (await Promise.all(
+      groupData.workspaces.map(async (workspace) => {
+        await Workspace.update({ id: workspace }, [
+          {
+            key: 'groups',
+            type: 'array',
+            method: 'remove',
+            value: group.id
+          }
+        ])
+      })
+    ))
+
+  // Delete group from projects
+  groupData.projects &&
+    (await Promise.all(
+      groupData.projects.map(async (project) => {
+        await Project.update({ id: project }, [
+          {
+            key: 'groups',
+            type: 'array',
+            method: 'remove',
+            value: group.id
+          }
+        ])
+      })
+    ))
 
   // Delete group
   await GroupDB.del(group)

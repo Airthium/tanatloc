@@ -91,7 +91,10 @@ const Dashboard = () => {
       loadingOrganizations
     }
   ] = OrganizationAPI.useOrganizations()
-  const [workspaces, { mutateOneWorkspace }] = WorkspaceAPI.useWorkspaces()
+  const [
+    workspaces,
+    { addOneWorkspace, delOneWorkspace, mutateOneWorkspace }
+  ] = WorkspaceAPI.useWorkspaces()
 
   // Router
   const router = useRouter()
@@ -205,10 +208,11 @@ const Dashboard = () => {
         <Workspace
           user={{ id: user?.id }}
           workspace={currentWorkspace}
-          swr={{ mutateOneWorkspace }}
+          organizations={organizations}
+          swr={{ delOneWorkspace, mutateOneWorkspace }}
         />
       ) : (
-        <Welcome />
+        <Welcome swr={{ addOneWorkspace }} />
       )
       break
     case menuItems.account.key:
@@ -236,7 +240,7 @@ const Dashboard = () => {
       displayed = <Help />
       break
     default:
-      displayed = <Welcome />
+      displayed = <Welcome swr={{ addOneWorkspace }} />
   }
 
   /**
@@ -268,7 +272,7 @@ const Dashboard = () => {
               >
                 {myWorkspaces}
                 <li id="Add-workspace-button">
-                  <Add key="add" />
+                  <Add key="add" swr={{ addOneWorkspace }} />
                 </li>
               </Menu.SubMenu>
               <Menu.SubMenu

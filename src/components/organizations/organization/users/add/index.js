@@ -45,9 +45,10 @@ const Add = ({ title, dBkey, organization, swr }) => {
 
       // Local
       const newOrganization = { ...organization }
-      newOrganization[dBkey].push({
-        email: values.email
-      })
+      newOrganization[dBkey] = [
+        ...(newOrganization[dBkey] || []),
+        { email: values.email }
+      ]
       swr.mutateOneOrganization(newOrganization)
 
       // Close

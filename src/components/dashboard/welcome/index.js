@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types'
 import { Divider, Layout, PageHeader, Typography } from 'antd'
 
 import Add from '@/components/workspace/add'
@@ -5,8 +6,9 @@ import Add from '@/components/workspace/add'
 /**
  * Welcome
  * @memberof module:components/dashboard
+ * @param {Object} props Props
  */
-const Welcome = () => {
+const Welcome = ({ swr }) => {
   /**
    * Render
    */
@@ -23,11 +25,15 @@ const Welcome = () => {
           footer={<Divider className="Tanatloc-divider" />}
         />
         <Typography.Text>
-          Select a workspace to start, or <Add />
+          Select a workspace to start, or <Add swr={swr} />
         </Typography.Text>
       </Layout.Content>
     </Layout>
   )
+}
+
+Welcome.propTypes = {
+  swr: PropTypes.object.isRequired
 }
 
 export default Welcome

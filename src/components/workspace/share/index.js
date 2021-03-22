@@ -1,12 +1,11 @@
+import PropTypes from 'prop-types'
 import { useState } from 'react'
-import { Button, Select, Space } from 'antd'
+import { Button, TreeSelect } from 'antd'
 import { ShareAltOutlined } from '@ant-design/icons'
 
-import { EmailsInput } from '@/components/assets/input'
 import { Error } from '@/components/assets/notification'
 import Dialog from '@/components/assets/dialog'
 
-import GroupAPI from '@/api/group'
 import WorkspaceAPI from '@/api/workspace'
 
 const errors = {
@@ -17,15 +16,11 @@ const errors = {
  * Share
  * @param {Object} props Props
  */
-const Share = ({ workspace }) => {
+const Share = ({ workspace, organizations, swr }) => {
   // State
   const [visible, setVisible] = useState(false)
   const [loading, setLoading] = useState(false)
   const [selected, setSelected] = useState([])
-
-  // Data
-  const [groups] = GroupAPI.useGroups()
-  const [, { mutateOneWorkspace }] = WorkspaceAPI.useWorkspaces()
 
   /**
    * On change
@@ -53,7 +48,7 @@ const Share = ({ workspace }) => {
       // Mutate
       const newWorkspace = { ...workspace }
       newWorkspace.groups = selected
-      mutateOneWorkspace(newWorkspace)
+      swr.mutateOneWorkspace(newWorkspace)
 
       // Close
       setVisible(false)
@@ -83,31 +78,28 @@ const Share = ({ workspace }) => {
         onOk={onShare}
         loading={loading}
       >
-        <Space direction="vertical" style={{ width: '100%' }}>
-          <>
-            Users (by emails):
-            <EmailsInput />
-          </>
-          <>
-            Groups:
-            <Select
-              mode="multiple"
-              style={{ width: '100%' }}
-              placeholder="Select groups"
-              onChange={onSelectChange}
-              defaultValue={workspace?.groups?.map((g) => g.id)}
-            >
-              {groups.map((group) => (
+        <TreeSelect
+          mode="multiple"
+          style={{ width: '100%' }}
+          placeholder="Select groups"
+          onChange={onSelectChange}
+          defaultValue={workspace?.groups?.map((g) => g.id)}
+        >
+          {/* {groups.map((group) => (
                 <Select.Option key={group.id} value={group.id}>
                   {group.name}
                 </Select.Option>
-              ))}
-            </Select>
-          </>
-        </Space>
+              ))} */}
+        </TreeSelect>
       </Dialog>
     </>
   )
+}
+
+Share.propTypes = {
+  workspace: PropTypes.object.isRequired,
+  organizations: PropTypes.array.isRequired,
+  swr: PropTypes.object.isRequired
 }
 
 export default Share

@@ -60,7 +60,11 @@ const List = ({ plugin, plugins, swr }) => {
   /**
    * Render
    */
-  return <Space>{list}</Space>
+  return (
+    <Space direction="horizontal" wrap={true}>
+      {list}
+    </Space>
+  )
 }
 
 export default List

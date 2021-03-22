@@ -258,7 +258,12 @@ const Data = ({ simulation }) => {
                 Export CSV
               </Button>
               <div style={{ height: '100%', width: '100%', overflow: 'auto' }}>
-                <Table dataSource={table?.data} columns={table?.columns} />
+                <Table
+                  pagination={false}
+                  size="small"
+                  dataSource={table?.data}
+                  columns={table?.columns}
+                />
               </div>
             </div>
 

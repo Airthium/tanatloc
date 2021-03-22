@@ -107,7 +107,7 @@ const ProjectList = ({ user, workspace, filter }) => {
       dataSource={data}
       bordered={true}
       size="small"
-      scroll={{ y: 'calc(100vh - 232px)' }}
+      // scroll={{ y: 'calc(100vh - 232px)' }}
       locale={{
         emptyText: (
           <Empty
@@ -143,7 +143,7 @@ const ProjectList = ({ user, workspace, filter }) => {
         title="Actions"
         align="center"
         render={(value) => (
-          <Space size="middle" wrap={true}>
+          <Space direction="" wrap={true}>
             <Share workspace={workspace} project={value} />
             {value?.owners?.find((o) => o.id === user?.id) && (
               <Delete workspace={workspace} project={value} />

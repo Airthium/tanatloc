@@ -79,6 +79,8 @@ const List = ({ user, organizations, swr, setOrganization }) => {
   return (
     <Table
       loading={swr?.loadingOrganizations}
+      pagination={false}
+      size="small"
       columns={columns}
       dataSource={organizations?.map((o) => ({ ...o, key: o.id }))}
     />

@@ -90,6 +90,8 @@ const Users = ({ organization, swr }) => {
           />
           <Table
             loading={swr?.loadingOrganizations}
+            pagination={false}
+            size="small"
             columns={ownersColumns}
             dataSource={organization?.owners?.map((o, index) => ({
               ...o,
@@ -110,6 +112,8 @@ const Users = ({ organization, swr }) => {
           />
           <Table
             loading={swr?.loadingOrganizations}
+            pagination={false}
+            size="small"
             columns={usersColumns}
             dataSource={organization?.users?.map((u, index) => ({
               ...u,

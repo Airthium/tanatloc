@@ -241,6 +241,8 @@ const Users = () => {
         </Button>
       )}
       <Table
+        pagination={false}
+        size="small"
         columns={columns}
         dataSource={users.map((u) => ({ ...u, key: u.id }))}
       />

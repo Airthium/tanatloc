@@ -91,7 +91,7 @@ const Dashboard = () => {
       loadingOrganizations
     }
   ] = OrganizationAPI.useOrganizations()
-  const [workspaces] = WorkspaceAPI.useWorkspaces()
+  const [workspaces, { mutateOneWorkspace }] = WorkspaceAPI.useWorkspaces()
 
   // Router
   const router = useRouter()
@@ -201,8 +201,14 @@ const Dashboard = () => {
   switch (currentView) {
     case menuItems.workspaces.key:
     case menuItems.shared.key:
-      displayed = (
-        <Workspace user={{ id: user?.id }} workspace={currentWorkspace} />
+      displayed = currentWorkspace ? (
+        <Workspace
+          user={{ id: user?.id }}
+          workspace={currentWorkspace}
+          swr={{ mutateOneWorkspace }}
+        />
+      ) : (
+        <Welcome />
       )
       break
     case menuItems.account.key:

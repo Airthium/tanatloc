@@ -65,6 +65,8 @@ const Groups = ({ organization, swr }) => {
       />
       <Table
         loading={loadingGroups}
+        pagination={false}
+        size="small"
         columns={columns}
         dataSource={groups.map((g) => ({ ...g, key: g.id }))}
       />

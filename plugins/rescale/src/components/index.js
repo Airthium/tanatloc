@@ -275,6 +275,8 @@ const Rescale = ({ data, onSelect }) => {
           <Space direction="vertical" style={{ width: '100%' }}>
             <Typography.Title level={5}>Select a coretype</Typography.Title>
             <Table
+              pagination={false}
+              size="small"
               dataSource={data.coreTypes}
               columns={columns}
               rowSelection={{

@@ -4,6 +4,7 @@ import { Button, Form, Input, Select } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
 
 import Dialog from '@/components/assets/dialog'
+import { Error } from '@/components/assets/notification'
 
 import GroupAPI from '@/api/group'
 

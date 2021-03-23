@@ -8,6 +8,7 @@ import Tools from '@/lib/tools'
 import call from './call'
 import {
   getFreeFEM,
+  checkFiles,
   updateTasks,
   uploadFile,
   uploadFiles,
@@ -46,6 +47,10 @@ const init = async (configuration) => {
   // Check token
   if (coreTypes.detail === 'Invalid token.') throw new Error(coreTypes.detail)
 
+  // Check for files
+  await checkFiles(configuration)
+
+  // Get FreeFEM
   const freefem = await getFreeFEM(configuration)
 
   return {

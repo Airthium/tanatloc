@@ -1,8 +1,8 @@
 import Workspace from '@/components/workspace'
 import { shallow, mount } from 'enzyme'
-import '@/config/jest/matchMediaMock'
+import '@/config/jest/mockMatchMedia'
 
-jest.mock('@/components/workspace/empty', () => 'empty')
+// jest.mock('@/components/workspace/empty', () => 'empty')
 
 jest.mock('@/components/workspace/add', () => 'add')
 

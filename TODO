@@ -4,6 +4,7 @@ Simulation:
 Rescale:
 - delete job & files after run and get data - FIX DUPLICATE DATA
 - real-time results
+- Check for file at begin
 
 Project:
 - archive

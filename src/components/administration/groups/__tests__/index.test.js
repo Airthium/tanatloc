@@ -1,6 +1,6 @@
 import Groups from '..'
 import { shallow, mount } from 'enzyme'
-import '@/config/jest/matchMediaMock'
+import '@/config/jest/mockMatchMedia'
 
 const mockError = jest.fn()
 jest.mock('@/components/assets/notification', () => ({

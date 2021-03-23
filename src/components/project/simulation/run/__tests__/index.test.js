@@ -2,7 +2,7 @@ import Run from '@/components/project/simulation/run'
 import { shallow, mount } from 'enzyme'
 import { act } from 'react-dom/test-utils'
 
-import '@/config/jest/matchMediaMock'
+import '@/config/jest/mockMatchMedia'
 
 jest.mock(
   '@/components/project/simulation/run/cloudServer',

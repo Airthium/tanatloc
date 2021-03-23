@@ -2,7 +2,7 @@ import Rescale from '..'
 import { shallow, mount } from 'enzyme'
 import { act } from 'react-dom/test-utils'
 
-import '@/config/jest/matchMediaMock'
+import '@/config/jest/mockMatchMedia'
 
 const mockError = jest.fn()
 jest.mock('@/components/assets/notification', () => ({

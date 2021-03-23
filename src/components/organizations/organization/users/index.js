@@ -1,10 +1,10 @@
 import PropTypes from 'prop-types'
 import { Card, Space, Table } from 'antd'
 
-import Utils from '@/lib/utils'
-
 import Add from './add'
 import Delete from './delete'
+
+import Utils from '@/lib/utils'
 
 /**
  * Organization users

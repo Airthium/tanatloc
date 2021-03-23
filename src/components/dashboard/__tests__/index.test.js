@@ -2,7 +2,7 @@ import Dashboard from '@/components/dashboard'
 import { act } from 'react-dom/test-utils'
 import { shallow, mount } from 'enzyme'
 
-import '@/config/jest/matchMediaMock'
+import '@/config/jest/mockMatchMedia'
 
 const mockRouter = jest.fn()
 const mockQuery = jest.fn()

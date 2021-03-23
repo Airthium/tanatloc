@@ -1,7 +1,7 @@
 import Registration from '..'
 import { shallow, mount } from 'enzyme'
 
-import '@/config/jest/matchMediaMock'
+import '@/config/jest/mockMatchMedia'
 
 const mockSystem = jest.fn()
 const mockMutateSystem = jest.fn()

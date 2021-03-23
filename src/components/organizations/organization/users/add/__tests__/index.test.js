@@ -20,7 +20,7 @@ let wrapper
 describe('componenets/organizations/organization/users/add', () => {
   const title = 'title'
   const dBkey = 'users'
-  const organization = {}
+  const organization = { id: 'id' }
   const mutateOneOrganization = jest.fn()
   const swr = {
     mutateOneOrganization

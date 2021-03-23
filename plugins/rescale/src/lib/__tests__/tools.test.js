@@ -39,7 +39,7 @@ describe('plugins/rescale/src/lib/tools', () => {
       value: 'token'
     },
     additionalFiles: {
-      value: ''
+      value: 'id1,id2'
     }
   }
   const parameters = {
@@ -78,6 +78,20 @@ describe('plugins/rescale/src/lib/tools', () => {
     }))
     const res = await Tools.getFreeFEM(configuration)
     expect(res).toEqual({ code: 'freefem', version: 'xx' })
+  })
+
+  it('checkFiles', async () => {
+    mockCall.mockImplementation(() => ({}))
+    const res = await Tools.checkFiles(configuration)
+    expect(res).toBe()
+
+    mockCall.mockImplementation(() => ({ detail: 'Not found.' }))
+    try {
+      await Tools.checkFiles(configuration)
+      expect(true).toBe(false)
+    } catch (err) {
+      expect(true).toBe(true)
+    }
   })
 
   it('updateTasks', async () => {

@@ -70,8 +70,15 @@ const Account = ({ user, swr }) => {
 }
 
 Account.propTypes = {
-  user: PropTypes.object.isRequired,
-  swr: PropTypes.object.isRequired
+  user: PropTypes.shape({
+    email: PropTypes.string.isRequired,
+    firstname: PropTypes.string,
+    lastname: PropTypes.string,
+    avatar: PropTypes.object
+  }).isRequired,
+  swr: PropTypes.shape({
+    mutateUser: PropTypes.func.isRequired
+  }).isRequired
 }
 
 export default Account

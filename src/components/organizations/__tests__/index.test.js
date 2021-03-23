@@ -21,7 +21,7 @@ jest.mock('../organization', () => {
 
 let wrapper
 describe('components/organizations', () => {
-  const user = {}
+  const user = { id: 'id' }
   const organizations = []
 
   const reloadOrganizations = jest.fn()

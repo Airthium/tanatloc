@@ -84,10 +84,17 @@ const Delete = ({ disabled, user, dBkey, organization, swr }) => {
 
 Delete.propTypes = {
   disabled: PropTypes.bool,
-  user: PropTypes.object.isRequired,
+  user: PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    email: PropTypes.string
+  }).isRequired,
   dBkey: PropTypes.string.isRequired,
-  organization: PropTypes.object.isRequired,
-  swr: PropTypes.object.isRequired
+  organization: PropTypes.shape({
+    id: PropTypes.string.isRequired
+  }).isRequired,
+  swr: PropTypes.shape({
+    mutateOneOrganization: PropTypes.func.isRequired
+  }).isRequired
 }
 
 export default Delete

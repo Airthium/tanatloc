@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
 import { Card, Space, Typography } from 'antd'
 
@@ -65,6 +66,18 @@ const List = ({ plugin, plugins, swr }) => {
       {list}
     </Space>
   )
+}
+
+List.propTypes = {
+  plugin: PropTypes.shape({
+    key: PropTypes.string.isRequired
+  }).isRequired,
+  plugins: PropTypes.array.isRequired,
+  swr: PropTypes.shape({
+    addOnePlugin: PropTypes.func.isRequired,
+    delOnePlugin: PropTypes.func.isRequired,
+    mutateOnePlugin: PropTypes.func.isRequired
+  }).isRequired
 }
 
 export default List

@@ -59,7 +59,7 @@ const Groups = ({ organization, swr }) => {
       <Add
         organization={organization}
         swr={{
-          mutateOrganizations: swr.mutateOrganizations,
+          reloadOrganizations: swr.reloadOrganizations,
           addOneGroup
         }}
       />
@@ -76,8 +76,14 @@ const Groups = ({ organization, swr }) => {
 }
 
 Groups.propTypes = {
-  organization: PropTypes.object.isRequired,
-  swr: PropTypes.object.isRequired
+  organization: PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    owners: PropTypes.array,
+    users: PropTypes.array
+  }).isRequired,
+  swr: PropTypes.shape({
+    reloadOrganizations: PropTypes.func.isRequired
+  }).isRequired
 }
 
 export default Groups

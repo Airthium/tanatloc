@@ -137,9 +137,19 @@ const Edit = ({ group, organization, swr }) => {
 }
 
 Edit.propTypes = {
-  group: PropTypes.object.isRequired,
-  organization: PropTypes.object.isRequired,
-  swr: PropTypes.object.isRequired
+  group: PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
+    users: PropTypes.array
+  }).isRequired,
+  organization: PropTypes.shape({
+    owners: PropTypes.array,
+    users: PropTypes.array
+  }).isRequired,
+  swr: PropTypes.shape({
+    reloadOrganizations: PropTypes.func.isRequired,
+    mutateOneGroup: PropTypes.func.isRequired
+  }).isRequired
 }
 
 export default Edit

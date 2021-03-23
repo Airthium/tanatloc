@@ -86,8 +86,12 @@ const Add = ({ title, dBkey, organization, swr }) => {
 Add.propTypes = {
   title: PropTypes.string.isRequired,
   dBkey: PropTypes.string.isRequired,
-  organization: PropTypes.object.isRequired,
-  swr: PropTypes.object.isRequired
+  organization: PropTypes.shape({
+    id: PropTypes.string.isRequired
+  }).isRequired,
+  swr: PropTypes.shape({
+    mutateOneOrganization: PropTypes.func.isRequired
+  }).isRequired
 }
 
 export default Add

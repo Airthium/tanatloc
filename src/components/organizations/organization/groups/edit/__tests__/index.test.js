@@ -19,6 +19,7 @@ jest.mock('@/api/group', () => ({
 let wrapper
 describe('components/organizations/organization/groups/edit', () => {
   const group = {
+    id: 'id',
     name: 'name',
     users: [{}]
   }
@@ -107,7 +108,13 @@ describe('components/organizations/organization/groups/edit', () => {
     expect(wrapper).toBeDefined()
 
     wrapper.unmount()
-    wrapper = mount(<Edit group={{}} organization={organization} swr={swr} />)
+    wrapper = mount(
+      <Edit
+        group={{ id: 'id', name: 'name' }}
+        organization={organization}
+        swr={swr}
+      />
+    )
     expect(wrapper).toBeDefined()
   })
 })

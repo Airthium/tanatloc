@@ -34,7 +34,7 @@ const checkFiles = async (configuration) => {
 
   additionalFiles &&
     (await Promise.all(
-      additionalFiles.map(async (id) => {
+      additionalFiles.split(',').map(async (id) => {
         const file = await getFile(configuration, id)
         if (file.detail === 'Not found.')
           throw new Error('File not found ' + id)

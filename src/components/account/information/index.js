@@ -227,8 +227,15 @@ const Information = ({ user, swr }) => {
 }
 
 Information.propTypes = {
-  user: PropTypes.object.isRequired,
-  swr: PropTypes.object.isRequired
+  user: PropTypes.shape({
+    firstname: PropTypes.string,
+    lastname: PropTypes.string,
+    email: PropTypes.string,
+    avatar: PropTypes.object
+  }).isRequired,
+  swr: PropTypes.shape({
+    mutateUser: PropTypes.func.isRequired
+  }).isRequired
 }
 
 export default Information

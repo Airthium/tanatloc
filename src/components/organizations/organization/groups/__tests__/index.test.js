@@ -40,8 +40,11 @@ jest.mock('@/api/group', () => ({
 
 let wrapper
 describe('components/organizations/organization/groups', () => {
-  const organization = {}
-  const swr = {}
+  const organization = { id: 'id' }
+  const reloadOrganizations = jest.fn()
+  const swr = {
+    reloadOrganizations
+  }
 
   beforeEach(() => {
     mockUserToAvatar.mockReset()

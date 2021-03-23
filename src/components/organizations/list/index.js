@@ -89,9 +89,14 @@ const List = ({ user, organizations, swr, setOrganization }) => {
 }
 
 List.propTypes = {
-  user: PropTypes.object.isRequired,
+  user: PropTypes.shape({
+    id: PropTypes.string.isRequired
+  }).isRequired,
   organizations: PropTypes.array.isRequired,
-  swr: PropTypes.object.isRequired,
+  swr: PropTypes.shape({
+    delOneOrganization: PropTypes.func.isRequired,
+    loadingOrganizations: PropTypes.bool.isRequired
+  }).isRequired,
   setOrganization: PropTypes.func.isRequired
 }
 

@@ -36,7 +36,9 @@ const Plugin = ({ plugin }) => {
 }
 
 Plugin.propTypes = {
-  plugin: PropTypes.object.isRequired
+  plugin: PropTypes.shape({
+    key: PropTypes.string.isRequired
+  }).isRequired
 }
 
 export default Plugin

@@ -75,8 +75,13 @@ const Delete = ({ group, swr }) => {
 }
 
 Delete.propTypes = {
-  group: PropTypes.object.isRequired,
-  swr: PropTypes.object.isRequired
+  group: PropTypes.shape({
+    id: PropTypes.string.isRequired
+  }).isRequired,
+  swr: PropTypes.shape({
+    reloadOrganizations: PropTypes.func.isRequired,
+    delOneGroup: PropTypes.func.isRequired
+  }).isRequired
 }
 
 export default Delete

@@ -23,7 +23,7 @@ jest.mock('@/api/organization', () => ({
 
 let wrapper
 describe('components/organizations/organization', () => {
-  const organization = {}
+  const organization = { id: 'id' }
   const reloadOrganizations = jest.fn()
   const mutateOneOrganization = jest.fn()
   const loadingOrganizations = false

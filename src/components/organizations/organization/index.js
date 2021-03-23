@@ -84,8 +84,17 @@ const Organization = ({ organization, swr, onClose }) => {
 }
 
 Organization.propTypes = {
-  organization: PropTypes.object.isRequired,
-  swr: PropTypes.object.isRequired,
+  organization: PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    name: PropTypes.string,
+    owners: PropTypes.array,
+    users: PropTypes.array
+  }).isRequired,
+  swr: PropTypes.shape({
+    reloadOrganizations: PropTypes.func.isRequired,
+    mutateOneOrganization: PropTypes.func.isRequired,
+    loadingOrganizations: PropTypes.bool.isRequired
+  }).isRequired,
   onClose: PropTypes.func.isRequired
 }
 

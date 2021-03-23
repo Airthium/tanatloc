@@ -78,9 +78,17 @@ const Organizations = ({ user, organizations, swr }) => {
 }
 
 Organizations.propTypes = {
-  user: PropTypes.object.isRequired,
+  user: PropTypes.shape({
+    id: PropTypes.string.isRequired
+  }).isRequired,
   organizations: PropTypes.array.isRequired,
-  swr: PropTypes.object.isRequired
+  swr: PropTypes.shape({
+    reloadOrganizations: PropTypes.func.isRequired,
+    addOneOrganization: PropTypes.func.isRequired,
+    delOneOrganization: PropTypes.func.isRequired,
+    mutateOneOrganization: PropTypes.func.isRequired,
+    loadingOrganizations: PropTypes.bool.isRequired
+  }).isRequired
 }
 
 export default Organizations

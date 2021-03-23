@@ -23,7 +23,7 @@ describe('componenets/organizations/organization/users/delete', () => {
   const disabled = false
   const user = { id: 'id' }
   const dBkey = 'users'
-  const organization = { users: [{ id: 'id' }] }
+  const organization = { id: 'id', users: [{ id: 'id' }] }
   const mutateOneOrganization = jest.fn()
   const swr = {
     mutateOneOrganization

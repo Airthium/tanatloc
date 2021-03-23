@@ -199,8 +199,14 @@ const PluginDialog = ({ plugin, swr, edit }) => {
 }
 
 PluginDialog.propTypes = {
-  plugin: PropTypes.object.isRequired,
-  swr: PropTypes.object.isRequired,
+  plugin: PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    configuration: PropTypes.object.isRequired
+  }).isRequired,
+  swr: PropTypes.shape({
+    addOnePlugin: PropTypes.func.isRequired,
+    mutateOnePlugin: PropTypes.func.isRequired
+  }).isRequired,
   edit: PropTypes.bool
 }
 

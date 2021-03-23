@@ -130,7 +130,9 @@ const Password = ({ user }) => {
 }
 
 Password.propTypes = {
-  user: PropTypes.object.isRequired
+  user: PropTypes.shape({
+    email: PropTypes.string.isRequired
+  }).isRequired
 }
 
 export default Password

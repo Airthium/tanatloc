@@ -6,14 +6,13 @@ jest.mock('@/components/assets/notification', () => ({
   Error: () => mockError()
 }))
 
-jest.mock('@/components/assets/dialog', () => ({
-  DeleteDialog: 'deleteDialog'
-}))
+jest.mock('@/components/assets/dialog', () => {
+  const DeleteDialog = () => <div />
+  return { DeleteDialog }
+})
 
-const mockMutateUser = jest.fn()
 const mockDel = jest.fn()
 jest.mock('@/api/user', () => ({
-  useUser: () => [{}, { mutateUser: mockMutateUser }],
   del: async () => mockDel()
 }))
 
@@ -22,15 +21,19 @@ jest.mock('@/api/logout', () => async () => mockLogout())
 
 let wrapper
 describe('components/account/delete', () => {
+  const mutateUser = jest.fn()
+  const swr = {
+    mutateUser
+  }
+
   beforeEach(() => {
     mockError.mockReset()
 
-    mockMutateUser.mockReset()
     mockDel.mockReset()
 
     mockLogout.mockReset()
 
-    wrapper = shallow(<Delete />)
+    wrapper = shallow(<Delete swr={swr} />)
   })
 
   afterEach(() => {
@@ -42,32 +45,30 @@ describe('components/account/delete', () => {
   })
 
   it('visible', () => {
-    const visible = wrapper.find('deleteDialog').props().visible
+    const visible = wrapper.find('DeleteDialog').props().visible
     wrapper.find('Button').props().onClick()
-    expect(wrapper.find('deleteDialog').props().visible).toBe(!visible)
+    expect(wrapper.find('DeleteDialog').props().visible).toBe(!visible)
 
-    wrapper.find('deleteDialog').props().onCancel()
-    expect(wrapper.find('deleteDialog').props().visible).toBe(visible)
+    wrapper.find('DeleteDialog').props().onCancel()
+    expect(wrapper.find('DeleteDialog').props().visible).toBe(visible)
   })
 
   it('handleDelete', async () => {
     // Normal
-    await wrapper.find('deleteDialog').props().onOk()
+    await wrapper.find('DeleteDialog').props().onOk()
     expect(mockDel).toHaveBeenCalledTimes(1)
     expect(mockLogout).toHaveBeenCalledTimes(1)
-    expect(mockMutateUser).toHaveBeenCalledTimes(1)
     expect(mockError).toHaveBeenCalledTimes(0)
     wrapper.unmount()
 
     // Error
-    mockMutateUser.mockImplementation(() => {
+    mockDel.mockImplementation(() => {
       throw new Error()
     })
-    wrapper = shallow(<Delete />)
-    await wrapper.find('deleteDialog').props().onOk()
+    wrapper = shallow(<Delete swr={swr} />)
+    await wrapper.find('DeleteDialog').props().onOk()
     expect(mockDel).toHaveBeenCalledTimes(2)
-    expect(mockLogout).toHaveBeenCalledTimes(2)
-    expect(mockMutateUser).toHaveBeenCalledTimes(2)
+    expect(mockLogout).toHaveBeenCalledTimes(1)
     expect(mockError).toHaveBeenCalledTimes(1)
   })
 })

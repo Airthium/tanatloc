@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types'
 import { useState } from 'react'
 import { Button } from 'antd'
 
@@ -53,13 +54,20 @@ const Delete = ({ plugin, swr }) => {
         onOk={onDelete}
         loading={loading}
       >
-        Delete "{plugin.configuration.name.value}"?
+        Delete "{plugin?.configuration?.name?.value || 'plugin'}"?
       </DeleteDialog>
       <Button type="danger" loading={loading} onClick={() => setVisible(true)}>
         Delete
       </Button>
     </>
   )
+}
+
+Delete.propTypes = {
+  plugin: PropTypes.object.isRequired,
+  swr: PropTypes.shape({
+    delOnePlugin: PropTypes.func.isRequired
+  }).isRequired
 }
 
 export default Delete

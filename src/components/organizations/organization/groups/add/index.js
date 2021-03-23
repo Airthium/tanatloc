@@ -109,8 +109,15 @@ const Add = ({ organization, swr }) => {
 }
 
 Add.propTypes = {
-  organization: PropTypes.object.isRequired,
-  swr: PropTypes.object.isRequired
+  organization: PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    owners: PropTypes.array,
+    users: PropTypes.array
+  }).isRequired,
+  swr: PropTypes.shape({
+    reloadOrganizations: PropTypes.func.isRequired,
+    addOneGroup: PropTypes.func.isRequired
+  }).isRequired
 }
 
 export default Add

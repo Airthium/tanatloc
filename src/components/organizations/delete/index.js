@@ -73,8 +73,12 @@ const Delete = ({ organization, swr }) => {
 }
 
 Delete.propTypes = {
-  organization: PropTypes.object.isRequired,
-  swr: PropTypes.object.isRequired
+  organization: PropTypes.shape({
+    id: PropTypes.string.isRequired
+  }).isRequired,
+  swr: PropTypes.shape({
+    delOneOrganization: PropTypes.func.isRequired
+  }).isRequired
 }
 
 export default Delete

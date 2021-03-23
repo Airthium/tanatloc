@@ -59,7 +59,9 @@ const HPC = ({ user }) => {
 }
 
 HPC.propTypes = {
-  user: PropTypes.object.isRequired
+  user: PropTypes.shape({
+    authorizedplugins: PropTypes.array.isRequired
+  }).isRequired
 }
 
 export default HPC

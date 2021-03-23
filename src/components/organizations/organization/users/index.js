@@ -129,8 +129,14 @@ const Users = ({ organization, swr }) => {
 }
 
 Users.popTypes = {
-  organization: PropTypes.object.isRequired,
-  swr: PropTypes.object.isRequired
+  organization: PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    owners: PropTypes.array,
+    users: PropTypes.array
+  }).isRequired,
+  swr: PropTypes.shape({
+    mutateOneOrganization: PropTypes.func.isRequired
+  }).isRequired
 }
 
 export default Users

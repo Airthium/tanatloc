@@ -3,9 +3,7 @@ import { shallow } from 'enzyme'
 
 jest.mock('@/components/assets/dialog', () => {
   const DeleteDialog = () => <div />
-  return {
-    DeleteDialog: DeleteDialog
-  }
+  return { DeleteDialog }
 })
 
 const mockError = jest.fn()
@@ -14,16 +12,16 @@ jest.mock('@/components/assets/notification', () => ({
 }))
 
 const mockDel = jest.fn()
-jest.mock('@/api/organization', () => ({
-  del: async () => mockDel()
+jest.mock('@/api/plugin', () => ({
+  del: () => mockDel()
 }))
 
 let wrapper
-describe('components/organizations/delete', () => {
-  const organization = { id: 'id' }
-  const delOneOrganization = jest.fn()
+describe('components/account/hpc/delete', () => {
+  const plugin = {}
+  const delOnePlugin = jest.fn()
   const swr = {
-    delOneOrganization
+    delOnePlugin
   }
 
   beforeEach(() => {
@@ -31,7 +29,7 @@ describe('components/organizations/delete', () => {
 
     mockDel.mockReset()
 
-    wrapper = shallow(<Delete organization={organization} swr={swr} />)
+    wrapper = shallow(<Delete plugin={plugin} swr={swr} />)
   })
 
   afterEach(() => {
@@ -54,16 +52,17 @@ describe('components/organizations/delete', () => {
     // Normal
     await wrapper.find('DeleteDialog').props().onOk()
     expect(mockDel).toHaveBeenCalledTimes(1)
-    expect(delOneOrganization).toHaveBeenCalledTimes(1)
+    expect(delOnePlugin).toHaveBeenCalledTimes(1)
     expect(mockError).toHaveBeenCalledTimes(0)
 
     // Error
     mockDel.mockImplementation(() => {
       throw new Error()
     })
+
     await wrapper.find('DeleteDialog').props().onOk()
     expect(mockDel).toHaveBeenCalledTimes(2)
-    expect(delOneOrganization).toHaveBeenCalledTimes(1)
+    expect(delOnePlugin).toHaveBeenCalledTimes(1)
     expect(mockError).toHaveBeenCalledTimes(1)
   })
 })

@@ -77,7 +77,9 @@ const Delete = ({ swr }) => {
 }
 
 Delete.propTypes = {
-  swr: PropTypes.object.isRequired
+  swr: PropTypes.shape({
+    mutateUser: PropTypes.func.isRequired
+  }).isRequired
 }
 
 export default Delete

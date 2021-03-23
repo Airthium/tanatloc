@@ -81,7 +81,9 @@ const Add = ({ swr }) => {
 }
 
 Add.propTypes = {
-  swr: PropTypes.object.isRequired
+  swr: PropTypes.shape({
+    addOneOrganization: PropTypes.func.isRequired
+  }).isRequired
 }
 
 export default Add

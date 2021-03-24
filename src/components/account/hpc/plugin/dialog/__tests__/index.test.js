@@ -1,5 +1,5 @@
 import PluginDialog from '..'
-import { shallow } from 'enzyme'
+import { shallow, mount } from 'enzyme'
 
 jest.mock('@/components/assets/dialog', () => {
   const Dialog = () => <div />
@@ -66,12 +66,35 @@ describe('components/account/hpc/dialog', () => {
     expect(wrapper).toBeDefined()
   })
 
+  it('setVisible', () => {
+    // Visible
+    wrapper.find('Button').props().onClick()
+
+    // Not visible
+    wrapper.find('Dialog').props().onCancel()
+  })
+
   it('onFinish', async () => {
     await wrapper
       .find('Dialog')
       .props()
       .onOk({ input: 'input', password: 'password', select: 'option1' })
     expect(mockAdd).toHaveBeenCalledTimes(1)
+    expect(mockError).toHaveBeenCalledTimes(0)
+
+    // With plugin items
+    wrapper.unmount()
+    wrapper = shallow(
+      <PluginDialog
+        plugin={{ ...plugin, logo: 'logo', renderer: 'renderer' }}
+        swr={swr}
+      />
+    )
+    await wrapper
+      .find('Dialog')
+      .props()
+      .onOk({ input: 'input', password: 'password', select: 'option1' })
+    expect(mockAdd).toHaveBeenCalledTimes(2)
     expect(mockError).toHaveBeenCalledTimes(0)
 
     // Error
@@ -82,7 +105,7 @@ describe('components/account/hpc/dialog', () => {
       .find('Dialog')
       .props()
       .onOk({ input: 'input', password: 'password', select: 'option1' })
-    expect(mockAdd).toHaveBeenCalledTimes(2)
+    expect(mockAdd).toHaveBeenCalledTimes(3)
     expect(mockError).toHaveBeenCalledTimes(1)
   })
 
@@ -98,5 +121,10 @@ describe('components/account/hpc/dialog', () => {
       .onOk({ input: 'input', password: 'password', select: 'option1' })
     expect(mockUpdate).toHaveBeenCalledTimes(1)
     expect(mockError).toHaveBeenCalledTimes(0)
+  })
+
+  it('effect', () => {
+    wrapper.unmount()
+    wrapper = mount(<PluginDialog plugin={plugin} swr={swr} />)
   })
 })

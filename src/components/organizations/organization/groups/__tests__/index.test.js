@@ -63,6 +63,13 @@ describe('components/organizations/organization/groups', () => {
     expect(wrapper).toBeDefined()
   })
 
+  it('without id', () => {
+    console.log('SECURITY: check without id')
+    wrapper.unmount()
+    wrapper = shallow(<Groups organization={{}} swr={swr} />)
+    expect(wrapper).toBeDefined()
+  })
+
   it('columns', () => {
     const columns = wrapper.find('Table').props().columns
 

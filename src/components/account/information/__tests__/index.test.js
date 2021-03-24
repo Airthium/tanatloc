@@ -49,6 +49,17 @@ describe('components/account/information', () => {
     expect(wrapper).toBeDefined()
   })
 
+  it('with avatar', () => {
+    wrapper.unmount()
+    wrapper = shallow(
+      <Information
+        user={{ ...user, avatar: { type: 'Buffer', data: [] } }}
+        swr={swr}
+      />
+    )
+    expect(wrapper).toBeDefined()
+  })
+
   it('onFinish', async () => {
     // Normal
     await wrapper.find('ForwardRef(InternalForm)').props().onFinish({})

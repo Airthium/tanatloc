@@ -17,8 +17,6 @@ const HPC = ({ user }) => {
 
   // Plugins list
   useEffect(() => {
-    if (!user) return
-
     // HPC & authorized only
     const HPCPlugins = Object.keys(Plugins)
       .map((key) => {

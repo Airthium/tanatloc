@@ -1,8 +1,14 @@
+import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
 import { Input, Space, Tag } from 'antd'
 
 import Utils from '@/lib/utils'
 
+/**
+ * Emails input
+ * @memberof module:components/assets/input
+ * @param {Object} props Props
+ */
 const EmailsInput = ({ values, onChange }) => {
   // State
   const [emails, setEmails] = useState([])
@@ -82,6 +88,11 @@ const EmailsInput = ({ values, onChange }) => {
       <Input placeholder="Emails" value={value} onChange={onInputChange} />
     </Space>
   )
+}
+
+EmailsInput.propTypes = {
+  values: PropTypes.array,
+  onChange: PropTypes.func.isRequired
 }
 
 export default EmailsInput

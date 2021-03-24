@@ -27,7 +27,7 @@ describe('components/assets/input/password', () => {
         requireSymbol: true
       }
     }))
-    wrapper = shallow(<PasswordItem />)
+    wrapper = shallow(<PasswordItem name="password" />)
     expect(wrapper.find({ name: 'password' }).props().rules[1].min).toBe(8)
     expect(wrapper.find({ name: 'password' }).props().rules[2].max).toBe(64)
     expect(

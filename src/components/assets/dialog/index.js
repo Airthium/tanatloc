@@ -1,5 +1,6 @@
 /** @module components/assets/dialog */
 
+import PropTypes from 'prop-types'
 import { useEffect } from 'react'
 import { Form, Modal } from 'antd'
 
@@ -9,15 +10,15 @@ import DeleteDialog from './delete'
  * Dialog
  * @param {Object} props Props
  */
-const Dialog = (props) => {
-  // Props
-  const title = props.title
-  const visible = props.visible
-  const initialValues = props.initialValues
-  const onCancel = props.onCancel
-  const onOk = props.onOk
-  const loading = props.loading
-
+const Dialog = ({
+  title,
+  visible,
+  initialValues,
+  onCancel,
+  onOk,
+  loading,
+  children
+}) => {
   // Form
   const [form] = Form.useForm()
 
@@ -47,17 +48,26 @@ const Dialog = (props) => {
           const values = await form.validateFields()
           await onOk(values)
           form.resetFields()
-        } catch (info) {
-          console.warn('Validation Failed:', info)
-        }
+        } catch (err) {}
       }}
       confirmLoading={loading}
     >
       <Form form={form} {...layout} initialValues={initialValues}>
-        {props.children}
+        {children}
       </Form>
     </Modal>
   )
+}
+
+Dialog.propTypes = {
+  title: PropTypes.string.isRequired,
+  visible: PropTypes.bool.isRequired,
+  initialValues: PropTypes.object,
+  onCancel: PropTypes.func.isRequired,
+  onOk: PropTypes.func.isRequired,
+  loading: PropTypes.bool,
+  children: PropTypes.oneOfType([PropTypes.string, PropTypes.element])
+    .isRequired
 }
 
 export default Dialog

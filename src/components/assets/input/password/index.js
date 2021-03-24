@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types'
 import { Form, Input } from 'antd'
 
 import SystemAPI from '@/api/system'
@@ -13,6 +14,7 @@ const errors = {
 
 /**
  * Password item
+ * @memberof module:components/assets/input
  * @param {Object} props Props
  */
 const PasswordItem = ({
@@ -64,6 +66,14 @@ const PasswordItem = ({
       />
     </Form.Item>
   )
+}
+
+PasswordItem.propTypes = {
+  name: PropTypes.string,
+  label: PropTypes.string,
+  inputPlaceholder: PropTypes.string,
+  inputAutoComplete: PropTypes.string,
+  style: PropTypes.object
 }
 
 export default PasswordItem

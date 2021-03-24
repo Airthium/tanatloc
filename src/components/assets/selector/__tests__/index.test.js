@@ -1,5 +1,6 @@
 import Selector from '@/components/assets/selector'
 import { shallow, mount } from 'enzyme'
+import { act } from 'react-dom/test-utils'
 
 const mockType = jest.fn()
 const mockHighlighted = jest.fn()
@@ -125,10 +126,10 @@ describe('components/assets/selector', () => {
   it('onColorFilter', () => {
     wrapper.unmount()
     wrapper = mount(<Selector part={part} updateSelected={updateSelected} />)
-    wrapper.find('Button').at(0).props().onClick()
+    act(() => wrapper.find('Button').at(0).props().onClick())
     wrapper.update()
 
-    wrapper.find('Button').at(1).props().onClick()
+    act(() => wrapper.find('Button').at(1).props().onClick())
     wrapper.update()
   })
 
@@ -136,47 +137,55 @@ describe('components/assets/selector', () => {
     wrapper.unmount()
     wrapper = mount(<Selector part={part} updateSelected={updateSelected} />)
 
-    wrapper.find('Button').at(3).props().onClick()
-
-    wrapper.find('Button').at(1).props().onClick()
+    act(() => wrapper.find('Button').at(3).props().onClick())
     wrapper.update()
 
-    wrapper.find('Button').at(3).props().onClick()
+    act(() => wrapper.find('Button').at(1).props().onClick())
+    wrapper.update()
+
+    act(() => wrapper.find('Button').at(3).props().onClick())
+    wrapper.update()
   })
 
   it('unselectAll', () => {
     wrapper.unmount()
     wrapper = mount(<Selector part={part} updateSelected={updateSelected} />)
 
-    wrapper.find('Button').at(4).props().onClick()
-
-    wrapper.find('Button').at(1).props().onClick()
+    act(() => wrapper.find('Button').at(4).props().onClick())
     wrapper.update()
 
-    wrapper.find('Button').at(4).props().onClick()
+    act(() => wrapper.find('Button').at(1).props().onClick())
+    wrapper.update()
+
+    act(() => wrapper.find('Button').at(4).props().onClick())
+    wrapper.update()
   })
 
   it('selectSwap', () => {
     wrapper.unmount()
     wrapper = mount(<Selector part={part} updateSelected={updateSelected} />)
 
-    wrapper.find('Button').at(5).props().onClick()
-
-    wrapper.find('Button').at(1).props().onClick()
+    act(() => wrapper.find('Button').at(5).props().onClick())
     wrapper.update()
 
-    wrapper.find('Button').at(5).props().onClick()
+    act(() => wrapper.find('Button').at(1).props().onClick())
+    wrapper.update()
+
+    act(() => wrapper.find('Button').at(5).props().onClick())
+    wrapper.update()
 
     wrapper.unmount()
     mockSelected.mockImplementation(() => ['uuid'])
     wrapper = mount(<Selector part={part} updateSelected={updateSelected} />)
 
-    wrapper.find('Button').at(5).props().onClick()
-
-    wrapper.find('Button').at(1).props().onClick()
+    act(() => wrapper.find('Button').at(5).props().onClick())
     wrapper.update()
 
-    wrapper.find('Button').at(5).props().onClick()
+    act(() => wrapper.find('Button').at(1).props().onClick())
+    wrapper.update()
+
+    act(() => wrapper.find('Button').at(5).props().onClick())
+    wrapper.update()
   })
 
   it('face highlighted', () => {

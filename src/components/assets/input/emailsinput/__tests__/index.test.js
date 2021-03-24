@@ -1,10 +1,12 @@
 import EmailsInput from '..'
-import { shallow } from 'enzyme'
+import { shallow, mount } from 'enzyme'
 
 let wrapper
 describe('components/assets/input/emailsinput', () => {
+  const onChange = jest.fn()
+
   beforeEach(() => {
-    wrapper = shallow(<EmailsInput />)
+    wrapper = shallow(<EmailsInput onChange={onChange} />)
   })
 
   afterEach(() => {
@@ -65,5 +67,15 @@ describe('components/assets/input/emailsinput', () => {
     // Close
     wrapper.find('Tag').props().onClose()
     expect(wrapper.find('Tag').length).toBe(0)
+  })
+
+  it('effect', () => {
+    // Without values
+    wrapper.unmount()
+    wrapper = mount(<EmailsInput onChange={onChange} />)
+
+    // With values
+    wrapper.unmount()
+    wrapper = mount(<EmailsInput values={[]} onChange={onChange} />)
   })
 })

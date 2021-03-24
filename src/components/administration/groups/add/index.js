@@ -1,27 +1,27 @@
 import PropTypes from 'prop-types'
 import { useState } from 'react'
-import { Button, Form, Input, Typography } from 'antd'
+import { Button, Form, Input, Select } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
 
 import Dialog from '@/components/assets/dialog'
 import { Error } from '@/components/assets/notification'
 
-import OrganizationAPI from '@/api/organization'
+import GroupAPI from '@/api/group'
 
 /**
  * Add errors
- * @memberof module:components/organizations
+ * @memberof module:components/administration
  */
 const errors = {
-  addError: 'Unable to add organization'
+  addError: 'Unable to add group'
 }
 
 /**
  * Add
- * @memberof module:components/organizations
+ * @memberof module:components/administration
  * @param {Object} props Props
  */
-const Add = ({ swr }) => {
+const Add = ({ userOptions, swr }) => {
   // State
   const [visible, setVisible] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -35,12 +35,14 @@ const Add = ({ swr }) => {
 
     try {
       // API
-      const organization = await OrganizationAPI.add({ name: values.name })
+      const newGroup = await GroupAPI.add(values)
 
-      // Local
-      organization.name = values.name
-      organization.owners = []
-      swr.addOneOrganization(organization)
+      // Update local
+      newGroup.name = values.name
+      newGroup.users = values.users
+
+      //Mutate
+      swr.addOneGroup(newGroup)
 
       // Close
       setVisible(false)
@@ -56,36 +58,41 @@ const Add = ({ swr }) => {
   return (
     <>
       <Dialog
-        title="New organization"
+        title="New group"
         visible={visible}
         onCancel={() => setVisible(false)}
         onOk={onAdd}
         loading={loading}
       >
-        <Form.Item>
-          <Typography.Title level={5}>New organization</Typography.Title>
-        </Form.Item>
         <Form.Item
           name="name"
           label="Name"
-          rules={[
-            { required: true, message: 'Please enter an organization name' }
-          ]}
+          rules={[{ required: true, message: 'Please enter a name' }]}
         >
           <Input />
+        </Form.Item>
+        <Form.Item
+          name="users"
+          label="Users"
+          rules={[{ required: true, message: 'Please enter users' }]}
+        >
+          <Select mode="multiple" placeholder="Select users">
+            {userOptions}
+          </Select>
         </Form.Item>
       </Dialog>
 
       <Button icon={<PlusOutlined />} onClick={() => setVisible(true)}>
-        New organization
+        New group
       </Button>
     </>
   )
 }
 
 Add.propTypes = {
+  userOptions: PropTypes.array.isRequired,
   swr: PropTypes.shape({
-    addOneOrganization: PropTypes.func.isRequired
+    addOneGroup: PropTypes.func.isRequired
   }).isRequired
 }
 

@@ -1,3 +1,5 @@
+/** @module components/administration */
+
 import { useRouter } from 'next/router'
 import { Divider, Layout, PageHeader, Tabs, Typography } from 'antd'
 
@@ -5,6 +7,11 @@ import Users from './users'
 import Groups from './groups'
 import Registration from './registration'
 
+import UserAPI from '@/api/user'
+
+/**
+ * Tab items
+ */
 const tabItems = {
   users: {
     label: 'Users',
@@ -27,6 +34,8 @@ const Administration = () => {
   // Data
   const router = useRouter()
   const { tab } = router.query
+
+  const [users, { addOneUser, mutateOneUser, delOneUser }] = UserAPI.useUsers()
 
   /**
    * On change
@@ -60,10 +69,13 @@ const Administration = () => {
       <Layout.Content>
         <Tabs defaultActiveKey={tab || 'default'} onChange={onChange}>
           <Tabs.TabPane tab={tabItems.users.label} key={tabItems.users.key}>
-            <Users />
+            <Users
+              users={users}
+              swr={{ addOneUser, mutateOneUser, delOneUser }}
+            />
           </Tabs.TabPane>
           <Tabs.TabPane tab={tabItems.groups.label} key={tabItems.groups.key}>
-            <Groups />
+            <Groups users={users} />
           </Tabs.TabPane>
           <Tabs.TabPane
             tab={tabItems.registration.label}

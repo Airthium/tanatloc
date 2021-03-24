@@ -2,14 +2,22 @@ import { useEffect } from 'react'
 import { Button, Card, Checkbox, Form, InputNumber, Spin } from 'antd'
 import { CheckOutlined } from '@ant-design/icons'
 
-import SystemAPI from '@/api/system'
-
 import { Error } from '@/components/assets/notification'
 
+import SystemAPI from '@/api/system'
+
+/**
+ * Errors registration
+ * @memberof module:components/administration
+ */
 const errors = {
   updateError: 'Unable to update system'
 }
 
+/**
+ * Registration
+ * @memberof module:components/administration
+ */
 const Registration = () => {
   // Data
   const [form] = Form.useForm()

@@ -5,9 +5,13 @@ import '@/config/jest/mockMatchMedia'
 
 const mockSystem = jest.fn()
 const mockMutateSystem = jest.fn()
+const mockLoadingSystem = jest.fn()
 const mockUpdate = jest.fn()
 jest.mock('@/api/system', () => ({
-  useSystem: () => [mockSystem(), { mutateSystem: mockMutateSystem }],
+  useSystem: () => [
+    mockSystem(),
+    { mutateSystem: mockMutateSystem, loadingSystem: mockLoadingSystem() }
+  ],
   update: async () => mockUpdate()
 }))
 
@@ -22,6 +26,7 @@ describe('components/administration/registration', () => {
     mockSystem.mockReset()
     mockSystem.mockImplementation(() => ({}))
     mockMutateSystem.mockReset()
+    mockLoadingSystem.mockReset()
     mockUpdate.mockReset()
 
     mockError.mockReset()
@@ -31,6 +36,13 @@ describe('components/administration/registration', () => {
 
   it('exists', () => {
     expect(wrapper).toBeDefined()
+  })
+
+  it('loading', () => {
+    wrapper.unmount()
+    mockLoadingSystem.mockImplementation(() => true)
+    wrapper = shallow(<Registration />)
+    expect(wrapper.find('Spin').length).toBe(1)
   })
 
   it('onAllowSignup', async () => {

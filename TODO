@@ -4,7 +4,6 @@ Simulation:
 Rescale:
 - delete job & files after run and get data - FIX DUPLICATE DATA
 - real-time results
-- Check for file at begin
 
 Project:
 - archive
@@ -15,6 +14,6 @@ Workspace:
 Run:
 - Use file for logs (separate gmsh / Freefem for rescale) ?
 
-
-Organization is the better coded part, see it for further modifications
-Account to continue
+Organizations OK
+Account WIP
+Administration OK

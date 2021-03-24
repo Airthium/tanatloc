@@ -22,7 +22,8 @@ module.exports = {
     '<rootDir>/doc/',
     '<rootDir>/coverage/',
     '<rootDir>/jest.config.js',
-    '<rootDir>/config/jest/'
+    '<rootDir>/config/jest/',
+    '<rootDir>/public/'
   ],
   transform: {
     '^.+\\.(js|jsx|ts|tsx)$': '<rootDir>/node_modules/babel-jest',
@@ -64,6 +65,7 @@ module.exports = {
     '<rootDir>/coverage/',
     '<rootDir>/jest.config.js',
     '<rootDir>/config/jest/',
-    '<rootDir>/src/lib/three/controls/'
+    '<rootDir>/src/lib/three/controls/',
+    '<rootDir>/public/'
   ]
 }

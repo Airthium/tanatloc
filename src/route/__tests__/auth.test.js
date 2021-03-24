@@ -24,11 +24,11 @@ describe('route/auth', () => {
     res = await auth('id', {}, { users: [{ id: 'id' }] })
     expect(res).toBe(true)
 
-    res = await auth('id', { groups: [{ id: 'id' }] }, {})
-    expect(res).toBe(true)
+    // res = await auth('id', { groups: [{ id: 'id' }] }, {})
+    // expect(res).toBe(true)
 
-    res = await auth('id', {}, { groups: [{ id: 'id' }] })
-    expect(res).toBe(true)
+    // res = await auth('id', {}, { groups: [{ id: 'id' }] })
+    // expect(res).toBe(true)
   })
 
   it('not authorized', async () => {

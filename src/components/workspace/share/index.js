@@ -30,6 +30,32 @@ const Share = ({ workspace, organizations, swr }) => {
     setSelected(value)
   }
 
+  console.log(organizations)
+
+  const treeData = organizations.map((organization) => {
+    const groups = organization.groups?.map((group) => {
+      const users = group.users?.map((user) => {
+        return {
+          title: user.lastname + user.firstname || user.email,
+          value: user.id
+        }
+      })
+
+      return {
+        title: group.name,
+        value: group.id,
+        children: users
+      }
+    })
+
+    return {
+      title: organization.name,
+      value: organization.id,
+      disabled: true,
+      children: groups
+    }
+  })
+
   /**
    * On share
    */
@@ -83,14 +109,9 @@ const Share = ({ workspace, organizations, swr }) => {
           style={{ width: '100%' }}
           placeholder="Select groups"
           onChange={onSelectChange}
-          defaultValue={workspace?.groups?.map((g) => g.id)}
-        >
-          {/* {groups.map((group) => (
-                <Select.Option key={group.id} value={group.id}>
-                  {group.name}
-                </Select.Option>
-              ))} */}
-        </TreeSelect>
+          // defaultValue={workspace?.groups?.map((g) => g.id)}
+          treeData={treeData}
+        />
       </Dialog>
     </>
   )

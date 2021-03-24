@@ -147,7 +147,7 @@ const ProjectList = ({ user, workspace, filter, projects, swr }) => {
       pagination={false}
       bordered={true}
       size="small"
-      scroll={{ y: 'calc(100vh - 238px)' }}
+      scroll={{ y: 'calc(100vh - 278px)' }}
       locale={{
         emptyText: (
           <Empty

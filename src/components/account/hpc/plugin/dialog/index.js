@@ -204,8 +204,8 @@ PluginDialog.propTypes = {
     configuration: PropTypes.object.isRequired
   }).isRequired,
   swr: PropTypes.shape({
-    addOnePlugin: PropTypes.func.isRequired,
-    mutateOnePlugin: PropTypes.func.isRequired
+    addOnePlugin: PropTypes.func,
+    mutateOnePlugin: PropTypes.func
   }).isRequired,
   edit: PropTypes.bool
 }

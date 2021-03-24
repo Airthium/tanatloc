@@ -86,7 +86,7 @@ const Groups = ({ users }) => {
         loading={loadingGroups}
         pagination={false}
         size="small"
-        scroll={{ y: 'calc(100vh - 272px)' }}
+        scroll={{ y: 'calc(100vh - 276px)' }}
         columns={columns}
         dataSource={groups.map((g) => ({ ...g, key: g.id }))}
       />

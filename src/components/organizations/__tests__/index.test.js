@@ -50,10 +50,14 @@ describe('components/organizations', () => {
 
   it('setOrganization', () => {
     wrapper = mount(
-      <Organizations user={user} organizations={organizations} swr={swr} />
+      <Organizations
+        user={user}
+        organizations={[...organizations, { id: 'id' }]}
+        swr={swr}
+      />
     )
 
-    act(() => wrapper.find('List').props().setOrganization({}))
+    act(() => wrapper.find('List').props().setOrganization({ id: 'id' }))
     wrapper.update()
 
     act(() => wrapper.find('Organization').props().onClose())

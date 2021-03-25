@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { Button, Card, Checkbox, Form, InputNumber, Spin } from 'antd'
+import { Button, Card, Checkbox, Form, InputNumber, Space, Spin } from 'antd'
 import { CheckOutlined } from '@ant-design/icons'
 
 import { Error } from '@/components/assets/notification'
@@ -70,7 +70,7 @@ const Registration = () => {
   return loadingSystem ? (
     <Spin />
   ) : (
-    <>
+    <Space direction="vertical">
       <Card title="Signup">
         <Checkbox checked={system?.allowsignup} onChange={onAllowSignup}>
           Allow signup
@@ -119,7 +119,7 @@ const Registration = () => {
           </Form.Item>
         </Form>
       </Card>
-    </>
+    </Space>
   )
 }
 

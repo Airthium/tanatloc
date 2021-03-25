@@ -23,6 +23,7 @@ import Organizations from '@/components/organizations'
 import Administration from '@/components/administration'
 import Help from '@/components/help'
 
+import Empty from './empty'
 import Welcome from './welcome'
 
 import UserAPI from '@/api/user'
@@ -41,6 +42,12 @@ const errors = {
  * Dashboard menu items
  */
 const menuItems = {
+  welcome: {
+    key: 'welcome'
+  },
+  empty: {
+    key: 'empty'
+  },
   workspaces: {
     label: 'My Workspaces',
     key: 'my_workspaces'
@@ -76,6 +83,8 @@ const menuItems = {
  */
 const Dashboard = () => {
   // State
+  const [myWorkspaces, setMyWorkspaces] = useState()
+  const [sharedWorkspaces, setSharedWorkspaces] = useState()
   const [currentView, setCurrentView] = useState()
   const [currentWorkspace, setCurrentWorkspace] = useState()
 
@@ -105,28 +114,61 @@ const Dashboard = () => {
     if (!loadingUser && !user) router.replace('/login')
   }, [user, loadingUser])
 
+  // My / shared workspaces
+  useEffect(() => {
+    if (!user) return
+
+    const my = workspaces
+      .map((workspace) => {
+        if (workspace.owners?.find((o) => o.id === user.id)) return workspace
+      })
+      .filter((w) => w)
+
+    const shared = workspaces
+      .map((workspace) => {
+        if (
+          workspace.users?.find((u) => u.id === user.id) ||
+          workspace.groups?.find((g) => user.groups?.includes(g.id))
+        )
+          return workspace
+      })
+      .filter((w) => w)
+
+    setMyWorkspaces(my)
+    setSharedWorkspaces(shared)
+  }, [user, workspaces])
+
   // Update workspace
   useEffect(() => {
     if (currentWorkspace) {
       const workspace = workspaces?.find((w) => w.id === currentWorkspace.id)
-      if (JSON.stringify(workspace) !== JSON.stringify(currentWorkspace))
-        setCurrentWorkspace(workspace)
+      if (workspace !== currentWorkspace) updateCurrentView(null, workspace)
     }
   }, [workspaces, currentWorkspace])
 
   // Page effect
   useEffect(() => {
     if (workspaceId) {
-      const workspace = workspaces?.find((w) => w.id === workspaceId)
-      if (workspace?.owners?.find((o) => o.id === user.id))
-        setCurrentView(menuItems.workspaces.key)
-      else if (workspace?.users?.find((u) => u.id === user.id))
-        setCurrentView(menuItems.shared.key)
-      setCurrentWorkspace(workspace)
+      // Search in myWorkspaces
+      const myWorkspace = myWorkspaces?.find(
+        (workspace) => workspace.id === workspaceId
+      )
+      if (myWorkspace) {
+        updateCurrentView(menuItems.workspaces.key, myWorkspace)
+        return
+      }
+
+      // Search in sharedWorkspaces
+      const sharedWorkspace = sharedWorkspaces?.find(
+        (workspace) => workspace.id === workspaceId
+      )
+      if (sharedWorkspace) {
+        updateCurrentView(menuItems.shared.key, sharedWorkspace)
+      }
     } else if (page) {
-      setCurrentView(page)
+      updateCurrentView(page)
     }
-  }, [page, workspaceId])
+  }, [page, workspaceId, myWorkspaces, sharedWorkspaces])
 
   /**
    * Menu selection
@@ -136,22 +178,24 @@ const Dashboard = () => {
     const subMenuKey = item.props.subMenuKey.replace('-menu-', '')
 
     // In a submenu
-    if (
-      subMenuKey === menuItems.workspaces.key ||
-      subMenuKey === menuItems.shared.key
-    ) {
-      setCurrentView(subMenuKey)
+    if (subMenuKey === menuItems.workspaces.key) {
+      const workspace = myWorkspaces?.find((w) => w.id === key)
+      updateCurrentView(subMenuKey, workspace)
       router.replace({
         pathname: '/dashboard',
-        query: { page: subMenuKey }
+        query: { page: subMenuKey, workspaceId: key }
       })
-
-      const workspace = workspaces[key]
-      setCurrentWorkspace(workspace)
+    } else if (subMenuKey === menuItems.shared.key) {
+      const workspace = sharedWorkspaces?.find((w) => w.id === key)
+      updateCurrentView(subMenuKey, workspace)
+      router.replace({
+        pathname: '/dashboard',
+        query: { page: subMenuKey, workspaceId: key }
+      })
     } else {
-      if (key === menuItems.logout.key) handleLogout()
+      if (key === menuItems.logout.key) onLogout()
       else {
-        setCurrentView(key)
+        updateCurrentView(key)
         router.replace({
           pathname: '/dashboard',
           query: { page: key }
@@ -163,7 +207,7 @@ const Dashboard = () => {
   /**
    * Logout
    */
-  const handleLogout = async () => {
+  const onLogout = async () => {
     try {
       await logout()
       mutateUser({ user: null })
@@ -174,73 +218,77 @@ const Dashboard = () => {
     }
   }
 
-  // My / Shared workspaces
-  let myWorkspaces = []
-  let sharedWorkspaces = []
-  if (user) {
-    workspaces?.forEach((workspace, index) => {
-      if (workspace.owners?.find((o) => o.id === user.id))
-        myWorkspaces.push(<Menu.Item key={index}>{workspace.name}</Menu.Item>)
-      else if (
-        workspace.users?.find((u) => u.id === user.id) ||
-        workspace.groups?.find((g) => user.groups?.includes(g.id))
-      )
-        sharedWorkspaces.push(
-          <Menu.Item key={index}>{workspace.name}</Menu.Item>
-        )
-    })
-  }
-
   /**
-   * On workspaces
+   * On my workspaces
    */
-  const onWorkspaces = () => {
+  const onMyWorkspaces = () => {
     if (!myWorkspaces?.length) {
-      setCurrentView()
+      updateCurrentView(menuItems.welcome.key)
     }
   }
 
-  let displayed
-  switch (currentView) {
-    case menuItems.workspaces.key:
-    case menuItems.shared.key:
-      displayed = currentWorkspace ? (
-        <Workspace
-          user={{ id: user?.id }}
-          workspace={currentWorkspace}
-          organizations={organizations}
-          swr={{ delOneWorkspace, mutateOneWorkspace }}
-        />
-      ) : (
-        <Welcome swr={{ addOneWorkspace }} />
-      )
-      break
-    case menuItems.account.key:
-      displayed = <Account user={user || {}} swr={{ mutateUser }} />
-      break
-    case menuItems.organizations.key:
-      displayed = (
-        <Organizations
-          user={user || {}}
-          organizations={organizations || []}
-          swr={{
-            reloadOrganizations,
-            addOneOrganization,
-            delOneOrganization,
-            mutateOneOrganization,
-            loadingOrganizations
-          }}
-        />
-      )
-      break
-    case menuItems.administration.key:
-      displayed = <Administration />
-      break
-    case menuItems.help.key:
-      displayed = <Help />
-      break
-    default:
-      displayed = <Welcome swr={{ addOneWorkspace }} />
+  /**
+   * On shared workspaces
+   */
+  const onSharedWorkspaces = () => {
+    if (!sharedWorkspaces?.length) {
+      updateCurrentView(menuItems.empty.key)
+    }
+  }
+
+  /**
+   * Update current view
+   * @param {string} key Key
+   * @param {Object} workspace Workspace
+   */
+  const updateCurrentView = (key, workspace) => {
+    setCurrentWorkspace(workspace)
+    if (!key) return
+    switch (key) {
+      case menuItems.workspaces.key:
+      case menuItems.shared.key:
+        workspace
+          ? setCurrentView(
+              <Workspace
+                user={{ id: user?.id }}
+                workspace={workspace}
+                organizations={organizations}
+                swr={{ delOneWorkspace, mutateOneWorkspace }}
+              />
+            )
+          : setCurrentView(<Welcome swr={{ addOneWorkspace }} />)
+        break
+      case menuItems.account.key:
+        setCurrentView(<Account user={user || {}} swr={{ mutateUser }} />)
+        break
+      case menuItems.organizations.key:
+        setCurrentView(
+          <Organizations
+            user={user || {}}
+            organizations={organizations || []}
+            swr={{
+              reloadOrganizations,
+              addOneOrganization,
+              delOneOrganization,
+              mutateOneOrganization,
+              loadingOrganizations
+            }}
+          />
+        )
+        break
+      case menuItems.administration.key:
+        setCurrentView(<Administration />)
+        break
+      case menuItems.help.key:
+        setCurrentView(<Help />)
+        break
+      case menuItems.empty.key:
+        setCurrentView(<Empty />)
+        break
+      case menuItems.welcome.key:
+      default:
+        setCurrentView(<Welcome swr={{ addOneWorkspace }} />)
+    }
   }
 
   /**
@@ -268,9 +316,11 @@ const Dashboard = () => {
                 key={menuItems.workspaces.key}
                 icon={<AppstoreFilled />}
                 title={menuItems.workspaces.label}
-                onTitleClick={onWorkspaces}
+                onTitleClick={onMyWorkspaces}
               >
-                {myWorkspaces}
+                {myWorkspaces?.map((workspace) => (
+                  <Menu.Item key={workspace.id}>{workspace.name}</Menu.Item>
+                ))}
                 <li id="Add-workspace-button">
                   <Add key="add" swr={{ addOneWorkspace }} />
                 </li>
@@ -279,8 +329,11 @@ const Dashboard = () => {
                 key={menuItems.shared.key}
                 icon={<ShareAltOutlined />}
                 title={menuItems.shared.label}
+                onTitleClick={onSharedWorkspaces}
               >
-                {sharedWorkspaces}
+                {sharedWorkspaces?.map((workspace) => (
+                  <Menu.Item key={workspace.id}>{workspace.name}</Menu.Item>
+                ))}
               </Menu.SubMenu>
               <Menu.Item key={menuItems.account.key} icon={<SettingFilled />}>
                 {menuItems.account.label}
@@ -320,7 +373,7 @@ const Dashboard = () => {
             </Menu>
           </Layout.Sider>
 
-          <Layout.Content className="no-scroll">{displayed}</Layout.Content>
+          <Layout.Content className="no-scroll">{currentView}</Layout.Content>
         </Layout>
       )}
     </>

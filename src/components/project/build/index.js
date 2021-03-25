@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types'
 import { Avatar, Collapse, Empty, Typography } from 'antd'
 
 import Utils from '@/lib/utils'
@@ -75,7 +76,7 @@ const Build = (project, filter, setTitle, setDescription) => {
     ...project,
     key: project.id,
     snapshot: snapshot,
-    title: title,
+    titleRender: title,
     ownersRender: <Avatar.Group maxCount={5}>{owners}</Avatar.Group>,
     usersRender: (
       <>
@@ -84,6 +85,19 @@ const Build = (project, filter, setTitle, setDescription) => {
       </>
     )
   }
+}
+
+Build.propTypes = {
+  project: PropTypes.shape({
+    title: PropTypes.string,
+    avatar: PropTypes.object,
+    owners: PropTypes.array,
+    users: PropTypes.array,
+    groups: PropTypes.array
+  }),
+  filter: PropTypes.string,
+  setTitle: PropTypes.func.isRequired,
+  setDescription: PropTypes.func.isRequired
 }
 
 export default Build

@@ -3,21 +3,19 @@ import { shallow } from 'enzyme'
 
 let wrapper
 describe('components/project/panel', () => {
-  beforeEach(() => {
-    wrapper = shallow(<Panel />)
-  })
+  const onClose = jest.fn()
 
   afterEach(() => {
     wrapper.unmount()
   })
 
   it('render', () => {
+    wrapper = shallow(<Panel visible={true} title="title" onClose={onClose} />)
     expect(wrapper).toBeDefined()
   })
 
-  it('visible', () => {
-    wrapper.unmount()
-    wrapper = shallow(<Panel visible={true} />)
-    expect(wrapper.find('Card').props().style.display).toBe('block')
+  it('no visible', () => {
+    wrapper = shallow(<Panel visible={false} title="title" onClose={onClose} />)
+    expect(wrapper).toBeDefined()
   })
 })

@@ -1,12 +1,17 @@
+import PropTypes from 'prop-types'
 import { useState } from 'react'
 import { Button } from 'antd'
 import { DeleteOutlined } from '@ant-design/icons'
 
-import { Error } from '@/components/assets/notification'
 import { DeleteDialog } from '@/components/assets/dialog'
+import { Error } from '@/components/assets/notification'
 
 import WorkspaceAPI from '@/api/workspace'
 
+/**
+ * Errors delete
+ * @memberof module:components/workspace
+ */
 const errors = {
   delError: 'Unable to delete the workspace'
 }
@@ -22,16 +27,9 @@ const Delete = ({ workspace, swr }) => {
   const [loading, setLoading] = useState(false)
 
   /**
-   * Toggle dialog delete
+   * On delete
    */
-  const toggleDialog = () => {
-    setVisible(!visible)
-  }
-
-  /**
-   * Handle delete
-   */
-  const handleDelete = async () => {
+  const onDelete = async () => {
     setLoading(true)
     try {
       // Delete
@@ -39,9 +37,11 @@ const Delete = ({ workspace, swr }) => {
 
       // Mutate
       swr.delOneWorkspace({ id: workspace.id })
+
+      // Close
+      setVisible(false)
     } catch (err) {
       Error(errors.delError, err)
-
       setLoading(false)
     }
   }
@@ -51,20 +51,33 @@ const Delete = ({ workspace, swr }) => {
    */
   return (
     <>
-      <Button type="danger" onClick={toggleDialog} icon={<DeleteOutlined />}>
+      <Button
+        type="danger"
+        onClick={() => setVisible(true)}
+        icon={<DeleteOutlined />}
+      >
         Delete
       </Button>
       <DeleteDialog
         title="Delete the workspace"
         visible={visible}
-        onCancel={toggleDialog}
-        onOk={handleDelete}
+        onCancel={() => setVisible(false)}
+        onOk={onDelete}
         loading={loading}
       >
         The projects contained in this workspace will be lost.
       </DeleteDialog>
     </>
   )
+}
+
+Delete.propTypes = {
+  workspace: PropTypes.shape({
+    id: PropTypes.string.isRequired
+  }).isRequired,
+  swr: PropTypes.shape({
+    delOneWorkspace: PropTypes.func.isRequired
+  }).isRequired
 }
 
 export default Delete

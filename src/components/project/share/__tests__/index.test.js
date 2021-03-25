@@ -1,44 +1,36 @@
 import Share from '..'
-import { shallow } from 'enzyme'
+import { shallow, mount } from 'enzyme'
 
-jest.mock('@/components/assets/input', () => ({
-  EmailsInput: 'emailsInput'
-}))
+jest.mock('@/components/assets/dialog', () => {
+  const Dialog = () => <div />
+  return Dialog
+})
 
 const mockError = jest.fn()
 jest.mock('@/components/assets/notification', () => ({
   Error: () => mockError()
 }))
 
-jest.mock('@/components/assets/dialog', () => 'dialog')
-
-const mockGroups = jest.fn()
-jest.mock('@/api/group', () => ({
-  useGroups: () => [mockGroups()]
-}))
-
-const mockMutateOneProject = jest.fn()
-const mockProjectUpdate = jest.fn()
+const mockUpdate = jest.fn()
 jest.mock('@/api/project', () => ({
-  useProjects: () => [[], { mutateOneProject: mockMutateOneProject }],
-  update: async () => mockProjectUpdate()
+  update: async () => mockUpdate()
 }))
 
 let wrapper
 describe('components/project/share', () => {
-  const workspace = {}
-  const project = {}
+  const project = { id: 'id' }
+  const organizations = []
+  const mutateOneProject = jest.fn()
+  const swr = { mutateOneProject }
 
   beforeEach(() => {
     mockError.mockReset()
 
-    mockGroups.mockReset()
-    mockGroups.mockImplementation(() => [])
+    mockUpdate.mockReset()
 
-    mockMutateOneProject.mockReset()
-    mockProjectUpdate.mockReset()
-
-    wrapper = shallow(<Share workspace={workspace} project={project} />)
+    wrapper = shallow(
+      <Share project={project} organizations={organizations} swr={swr} />
+    )
   })
 
   afterEach(() => {
@@ -49,47 +41,66 @@ describe('components/project/share', () => {
     expect(wrapper).toBeDefined()
   })
 
-  it('setvisible', () => {
+  it('setVisible', () => {
+    // Visible
     wrapper.find('Button').props().onClick()
-    expect(wrapper.find('dialog').props().visible).toBe(true)
+
+    // Not visible
+    wrapper.find('Dialog').props().onCancel()
   })
 
-  it('onChange', () => {
-    wrapper.find('ForwardRef(InternalSelect)').props().onChange()
+  it('onSelectChange', () => {
+    wrapper.find('ForwardRef(InternalTreeSelect)').props().onChange()
   })
 
   it('onShare', async () => {
     // Normal
-    await wrapper.find('dialog').props().onOk()
-    expect(mockProjectUpdate).toHaveBeenCalledTimes(1)
-    expect(mockMutateOneProject).toHaveBeenCalledTimes(1)
+    await wrapper.find('Dialog').props().onOk()
+    expect(mockUpdate).toHaveBeenCalledTimes(1)
+    expect(mutateOneProject).toHaveBeenCalledTimes(1)
     expect(mockError).toHaveBeenCalledTimes(0)
 
     // Error
-    mockProjectUpdate.mockImplementation(() => {
+    mockUpdate.mockImplementation(() => {
       throw new Error()
     })
-    await wrapper.find('dialog').props().onOk()
-    expect(mockProjectUpdate).toHaveBeenCalledTimes(2)
-    expect(mockMutateOneProject).toHaveBeenCalledTimes(1)
+    await wrapper.find('Dialog').props().onOk()
+    expect(mockUpdate).toHaveBeenCalledTimes(2)
+    expect(mutateOneProject).toHaveBeenCalledTimes(1)
     expect(mockError).toHaveBeenCalledTimes(1)
-
-    // Cancel
-    wrapper.find('dialog').props().onCancel()
   })
 
-  it('with groups', () => {
+  it('effect', () => {
+    // Emty organizations
     wrapper.unmount()
-    mockGroups.mockImplementation(() => [{}])
-    wrapper = shallow(<Share workspace={workspace} project={project} />)
-    expect(wrapper).toBeDefined()
-  })
-
-  it('with project groups', () => {
-    wrapper.unmount()
-    wrapper = shallow(
-      <Share workspace={workspace} project={{ ...project, groups: [{}] }} />
+    wrapper = mount(
+      <Share project={project} organizations={organizations} swr={swr} />
     )
-    expect(wrapper).toBeDefined()
+
+    // Full
+    wrapper.unmount()
+    wrapper = mount(
+      <Share
+        project={{ ...project, groups: [{ id: 'id' }] }}
+        organizations={[
+          {
+            groups: [
+              {
+                id: 'id',
+                users: [
+                  {
+                    firstname: 'firstname'
+                  },
+                  {
+                    email: 'email'
+                  }
+                ]
+              }
+            ]
+          }
+        ]}
+        swr={swr}
+      />
+    )
   })
 })

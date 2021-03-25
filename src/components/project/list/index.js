@@ -23,7 +23,14 @@ const errors = {
  * @memberof module:components/project
  * @param {Object} props Props
  */
-const ProjectList = ({ user, workspace, filter, projects, swr }) => {
+const ProjectList = ({
+  user,
+  workspace,
+  projects,
+  organizations,
+  filter,
+  swr
+}) => {
   // Router
   const router = useRouter()
 
@@ -38,8 +45,8 @@ const ProjectList = ({ user, workspace, filter, projects, swr }) => {
     },
     {
       title: 'Project',
-      dataIndex: 'title',
-      key: 'title'
+      dataIndex: 'titleRender',
+      key: 'titleRender'
     },
     {
       title: 'Administrators',
@@ -58,7 +65,11 @@ const ProjectList = ({ user, workspace, filter, projects, swr }) => {
       align: 'center',
       render: (value) => (
         <Space direction="" wrap={true}>
-          <Share workspace={workspace} project={value} />
+          <Share
+            project={value}
+            organizations={organizations}
+            swr={{ mutateOneProject: swr.mutateOneProject }}
+          />
           {value?.owners?.find((o) => o.id === user?.id) && (
             <Delete
               workspace={workspace}
@@ -118,6 +129,11 @@ const ProjectList = ({ user, workspace, filter, projects, swr }) => {
     }
   }
 
+  /**
+   * Set description
+   * @param {Object} project Project
+   * @param {string} description Description
+   */
   const setDescription = async (project, description) => {
     try {
       // Update
@@ -164,11 +180,20 @@ const ProjectList = ({ user, workspace, filter, projects, swr }) => {
 }
 
 ProjectList.propTypes = {
-  user: PropTypes.object.isRequired,
-  workspace: PropTypes.object.isRequired,
-  filter: PropTypes.string,
+  user: PropTypes.shape({
+    id: PropTypes.string
+  }).isRequired,
+  workspace: PropTypes.shape({
+    id: PropTypes.string.isRequired
+  }).isRequired,
   projects: PropTypes.array.isRequired,
-  swr: PropTypes.object.isRequired
+  organizations: PropTypes.array.isRequired,
+  filter: PropTypes.string,
+  swr: PropTypes.shape({
+    delOneProject: PropTypes.func.isRequired,
+    mutateOneProject: PropTypes.func.isRequired,
+    loadingProjects: PropTypes.bool.isRequired
+  }).isRequired
 }
 
 export default ProjectList

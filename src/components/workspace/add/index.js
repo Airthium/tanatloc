@@ -3,11 +3,15 @@ import { useState } from 'react'
 import { Button, Form, Input } from 'antd'
 import { PlusCircleOutlined } from '@ant-design/icons'
 
-import { Error } from '@/components/assets/notification'
 import Dialog from '@/components/assets/dialog'
+import { Error } from '@/components/assets/notification'
 
 import WorkspaceAPI from '@/api/workspace'
 
+/**
+ * Errors add
+ * @memberof module:components/workspace
+ */
 const errors = {
   addError: 'Unable to add the workspace'
 }
@@ -23,13 +27,6 @@ const Add = ({ swr }) => {
   const [loading, setLoading] = useState(false)
 
   /**
-   * Toggle dialog
-   */
-  const toggleDialog = () => {
-    setVisible(!visible)
-  }
-
-  /**
    * On confirm
    * @param {Object} values Values
    */
@@ -42,19 +39,12 @@ const Add = ({ swr }) => {
       // Mutate
       swr.addOneWorkspace(workspace)
 
-      toggleDialog()
+      // Close
+      setVisible(false)
     } catch (err) {
       Error(errors.addError, err)
-    } finally {
       setLoading(false)
     }
-  }
-
-  /**
-   * On cancel
-   */
-  const onCancel = () => {
-    toggleDialog()
   }
 
   /**
@@ -62,14 +52,14 @@ const Add = ({ swr }) => {
    */
   return (
     <>
-      <Button onClick={toggleDialog} icon={<PlusCircleOutlined />}>
+      <Button onClick={() => setVisible(true)} icon={<PlusCircleOutlined />}>
         Create a new workspace
       </Button>
       <Dialog
         title="Create a new workspace"
         closable={false}
         visible={visible}
-        onCancel={onCancel}
+        onCancel={() => setVisible(false)}
         onOk={onOk}
         confirmLoading={loading}
       >
@@ -88,7 +78,9 @@ const Add = ({ swr }) => {
 }
 
 Add.propTypes = {
-  swr: PropTypes.object.isRequired
+  swr: PropTypes.shape({
+    addOneWorkspace: PropTypes.func.isRequired
+  }).isRequired
 }
 
 export default Add

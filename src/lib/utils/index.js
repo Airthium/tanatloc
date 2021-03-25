@@ -89,10 +89,13 @@ const userToAvatar = (user) => {
 
 const groupToAvatar = (group) => {
   let name = group.name
-  let abbrev = name[0].toUpperCase()
+  let abbrev = ''
+  if (name) abbrev = name[0]
   return (
     <Tooltip key={group.id || group} title={name}>
-      <Avatar style={{ backgroundColor: stringToColor(name) }}>{abbrev}</Avatar>
+      <Avatar style={{ backgroundColor: stringToColor(name) }}>
+        {abbrev.toUpperCase() || <Spin />}
+      </Avatar>
     </Tooltip>
   )
 }

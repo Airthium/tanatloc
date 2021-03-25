@@ -74,7 +74,6 @@ List.propTypes = {
   }).isRequired,
   plugins: PropTypes.array.isRequired,
   swr: PropTypes.shape({
-    addOnePlugin: PropTypes.func.isRequired,
     delOnePlugin: PropTypes.func.isRequired,
     mutateOnePlugin: PropTypes.func.isRequired
   }).isRequired

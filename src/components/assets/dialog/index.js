@@ -66,8 +66,12 @@ Dialog.propTypes = {
   onCancel: PropTypes.func.isRequired,
   onOk: PropTypes.func.isRequired,
   loading: PropTypes.bool,
-  children: PropTypes.oneOfType([PropTypes.string, PropTypes.element])
-    .isRequired
+  children: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.object,
+    PropTypes.array,
+    PropTypes.element
+  ]).isRequired
 }
 
 export default Dialog

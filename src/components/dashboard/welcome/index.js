@@ -33,7 +33,9 @@ const Welcome = ({ swr }) => {
 }
 
 Welcome.propTypes = {
-  swr: PropTypes.object.isRequired
+  swr: PropTypes.shape({
+    addOneWorkspace: PropTypes.func.isRequired
+  }).isRequired
 }
 
 export default Welcome

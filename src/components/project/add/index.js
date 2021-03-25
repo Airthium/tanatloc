@@ -3,8 +3,8 @@ import { useState } from 'react'
 import { Button, Form, Input } from 'antd'
 import { PlusCircleOutlined } from '@ant-design/icons'
 
-import { Error } from '@/components/assets/notification'
 import Dialog from '@/components/assets/dialog'
+import { Error } from '@/components/assets/notification'
 
 import ProjectAPI from '@/api/project'
 
@@ -27,17 +27,10 @@ const Add = ({ workspace, swr }) => {
   const [loading, setLoading] = useState(false)
 
   /**
-   * Toggle dialog
-   */
-  const toggleDialog = () => {
-    setVisible(!visible)
-  }
-
-  /**
-   * On confirm
+   * On add
    * @param {Object} values Values
    */
-  const onOk = async (values) => {
+  const onAdd = async (values) => {
     setLoading(true)
     try {
       // Add
@@ -49,22 +42,15 @@ const Add = ({ workspace, swr }) => {
       // Mutate workspaces
       swr.mutateOneWorkspace({
         ...workspace,
-        projects: [...workspace.projects, project.id]
+        projects: [...(workspace.projects || []), project.id]
       })
 
       // Close
-      toggleDialog()
+      setVisible(false)
     } catch (err) {
       Error(errors.addError, err)
       setLoading(false)
     }
-  }
-
-  /**
-   * On cancel
-   */
-  const onCancel = () => {
-    toggleDialog()
   }
 
   /**
@@ -73,7 +59,7 @@ const Add = ({ workspace, swr }) => {
   return (
     <>
       <Button
-        onClick={toggleDialog}
+        onClick={() => setVisible(true)}
         type="primary"
         icon={<PlusCircleOutlined />}
       >
@@ -83,8 +69,8 @@ const Add = ({ workspace, swr }) => {
         title="Create a new project"
         closable={false}
         visible={visible}
-        onCancel={onCancel}
-        onOk={onOk}
+        onCancel={() => setVisible(false)}
+        onOk={onAdd}
         loading={loading}
       >
         <Form.Item
@@ -103,8 +89,14 @@ const Add = ({ workspace, swr }) => {
 }
 
 Add.propTypes = {
-  workspace: PropTypes.object.isRequired,
-  swr: PropTypes.object.isRequired
+  workspace: PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    projects: PropTypes.array
+  }).isRequired,
+  swr: PropTypes.shape({
+    mutateOneWorkspace: PropTypes.func.isRequired,
+    addOneProject: PropTypes.func.isRequired
+  }).isRequired
 }
 
 export default Add

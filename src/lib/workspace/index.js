@@ -115,6 +115,7 @@ const getByUser = async ({ id }) => {
           'name',
           'owners',
           'users',
+          'groups',
           'projects'
         ])
         return {

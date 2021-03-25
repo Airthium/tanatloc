@@ -3,13 +3,13 @@ import { useState } from 'react'
 import { Button } from 'antd'
 import { DeleteOutlined } from '@ant-design/icons'
 
-import { Error } from '@/components/assets/notification'
 import { DeleteDialog } from '@/components/assets/dialog'
+import { Error } from '@/components/assets/notification'
 
 import ProjectAPI from '@/api/project'
 
 /**
- * Errors project/del
+ * Errors project/delete
  * @memberof module:components/project
  */
 const errors = {
@@ -27,16 +27,9 @@ const Delete = ({ workspace, project, swr }) => {
   const [loading, setLoading] = useState(false)
 
   /**
-   * Toggle dialog delete
+   * On delete
    */
-  const toggleDialog = () => {
-    setVisible(!visible)
-  }
-
-  /**
-   * Handle delete
-   */
-  const handleDelete = async () => {
+  const onDelete = async () => {
     setLoading(true)
     try {
       // Delete
@@ -52,6 +45,9 @@ const Delete = ({ workspace, project, swr }) => {
 
       // Mutate projects
       swr.delOneProject({ id: project.id })
+
+      // Close
+      setVisible(false)
     } catch (err) {
       Error(errors.delError, err)
       setLoading(false)
@@ -63,14 +59,18 @@ const Delete = ({ workspace, project, swr }) => {
    */
   return (
     <>
-      <Button type="danger" onClick={toggleDialog} icon={<DeleteOutlined />}>
+      <Button
+        type="danger"
+        onClick={() => setVisible(true)}
+        icon={<DeleteOutlined />}
+      >
         Delete
       </Button>
       <DeleteDialog
         title="Delete the project"
         visible={visible}
-        onCancel={toggleDialog}
-        onOk={handleDelete}
+        onCancel={() => setVisible(false)}
+        onOk={onDelete}
         loading={loading}
       >
         Delete {project.title}
@@ -80,9 +80,17 @@ const Delete = ({ workspace, project, swr }) => {
 }
 
 Delete.propTypes = {
-  workspace: PropTypes.object.isRequired,
-  project: PropTypes.object.isRequired,
-  swr: PropTypes.object.isRequired
+  workspace: PropTypes.shape({
+    projects: PropTypes.array.isRequired
+  }).isRequired,
+  project: PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    title: PropTypes.string.isRequired
+  }).isRequired,
+  swr: PropTypes.shape({
+    mutateOneWorkspace: PropTypes.func.isRequired,
+    delOneProject: PropTypes.func.isRequired
+  }).isRequired
 }
 
 export default Delete

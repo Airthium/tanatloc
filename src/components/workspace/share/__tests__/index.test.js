@@ -1,43 +1,36 @@
 import Share from '..'
-import { shallow } from 'enzyme'
-
-jest.mock('@/components/assets/input', () => ({
-  EmailsInput: 'emailsInput'
-}))
+import { shallow, mount } from 'enzyme'
 
 const mockError = jest.fn()
 jest.mock('@/components/assets/notification', () => ({
   Error: () => mockError()
 }))
 
-jest.mock('@/components/assets/dialog', () => 'dialog')
+jest.mock('@/components/assets/dialog', () => {
+  const Dialog = () => <div />
+  return Dialog
+})
 
-const mockGroups = jest.fn()
-jest.mock('@/api/group', () => ({
-  useGroups: () => [mockGroups()]
-}))
-
-const mockMutateOneWorkspace = jest.fn()
-const mockWorkspaceUpdate = jest.fn()
+const mockUpdate = jest.fn()
 jest.mock('@/api/workspace', () => ({
-  useWorkspaces: () => [[], { mutateOneWorkspace: mockMutateOneWorkspace }],
-  update: async () => mockWorkspaceUpdate()
+  update: async () => mockUpdate()
 }))
 
 let wrapper
 describe('components/workspace/share', () => {
-  const workspace = {}
+  const workspace = { id: 'id' }
+  const organizations = []
+  const mutateOneWorkspace = jest.fn()
+  const swr = { mutateOneWorkspace }
 
   beforeEach(() => {
     mockError.mockReset()
 
-    mockGroups.mockReset()
-    mockGroups.mockImplementation(() => [])
+    mockUpdate.mockReset()
 
-    mockMutateOneWorkspace.mockReset()
-    mockWorkspaceUpdate.mockReset()
-
-    wrapper = shallow(<Share workspace={workspace} />)
+    wrapper = shallow(
+      <Share workspace={workspace} organizations={organizations} swr={swr} />
+    )
   })
 
   afterEach(() => {
@@ -48,45 +41,66 @@ describe('components/workspace/share', () => {
     expect(wrapper).toBeDefined()
   })
 
-  it('setvisible', () => {
+  it('setVisible', () => {
+    // Visible
     wrapper.find('Button').props().onClick()
-    expect(wrapper.find('dialog').props().visible).toBe(true)
+
+    // Not visible
+    wrapper.find('Dialog').props().onCancel()
   })
 
-  it('onChange', () => {
-    wrapper.find('ForwardRef(InternalSelect)').props().onChange()
+  it('onSelectChange', () => {
+    wrapper.find('ForwardRef(InternalTreeSelect)').props().onChange()
   })
 
   it('onShare', async () => {
     // Normal
-    await wrapper.find('dialog').props().onOk()
-    expect(mockWorkspaceUpdate).toHaveBeenCalledTimes(1)
-    expect(mockMutateOneWorkspace).toHaveBeenCalledTimes(1)
+    await wrapper.find('Dialog').props().onOk()
+    expect(mockUpdate).toHaveBeenCalledTimes(1)
+    expect(mutateOneWorkspace).toHaveBeenCalledTimes(1)
     expect(mockError).toHaveBeenCalledTimes(0)
 
     // Error
-    mockWorkspaceUpdate.mockImplementation(() => {
+    mockUpdate.mockImplementation(() => {
       throw new Error()
     })
-    await wrapper.find('dialog').props().onOk()
-    expect(mockWorkspaceUpdate).toHaveBeenCalledTimes(2)
-    expect(mockMutateOneWorkspace).toHaveBeenCalledTimes(1)
+    await wrapper.find('Dialog').props().onOk()
+    expect(mockUpdate).toHaveBeenCalledTimes(2)
+    expect(mutateOneWorkspace).toHaveBeenCalledTimes(1)
     expect(mockError).toHaveBeenCalledTimes(1)
-
-    // Cancel
-    wrapper.find('dialog').props().onCancel()
   })
 
-  it('with groups', () => {
+  it('effect', () => {
+    // Emty organizations
     wrapper.unmount()
-    mockGroups.mockImplementation(() => [{}])
-    wrapper = shallow(<Share workspace={workspace} />)
-    expect(wrapper).toBeDefined()
-  })
+    wrapper = mount(
+      <Share workspace={workspace} organizations={organizations} swr={swr} />
+    )
 
-  it('with workspace groups', () => {
+    // Full
     wrapper.unmount()
-    wrapper = shallow(<Share workspace={{ ...workspace, groups: [{}] }} />)
-    expect(wrapper).toBeDefined()
+    wrapper = mount(
+      <Share
+        workspace={{ ...workspace, groups: [{ id: 'id' }] }}
+        organizations={[
+          {
+            groups: [
+              {
+                id: 'id',
+                users: [
+                  {
+                    firstname: 'firstname'
+                  },
+                  {
+                    email: 'email'
+                  }
+                ]
+              }
+            ]
+          }
+        ]}
+        swr={swr}
+      />
+    )
   })
 })

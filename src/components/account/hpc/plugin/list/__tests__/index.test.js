@@ -15,11 +15,9 @@ let wrapper
 describe('components/account/hpc/list', () => {
   const plugin = { key: 'key' }
   const plugins = [{}]
-  const addOnePlugin = jest.fn()
   const delOnePlugin = jest.fn()
   const mutateOnePlugin = jest.fn()
   const swr = {
-    addOnePlugin,
     delOnePlugin,
     mutateOnePlugin
   }

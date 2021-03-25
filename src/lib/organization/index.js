@@ -102,7 +102,7 @@ const getByUser = async (user, data) => {
         organization.groups &&
         (await Promise.all(
           organization.groups.map(async (g) => {
-            const groupData = await Group.get(g, ['name'])
+            const groupData = await Group.get(g, ['name', 'users'])
             return {
               id: g,
               ...groupData

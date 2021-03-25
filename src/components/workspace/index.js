@@ -147,8 +147,9 @@ const Workspace = ({ user, workspace, organizations, swr }) => {
         <ProjectList
           user={user}
           workspace={workspace}
-          filter={filter}
           projects={projects}
+          organizations={organizations}
+          filter={filter}
           swr={{
             mutateOneWorkspace: swr.mutateOneWorkspace,
             delOneProject,
@@ -162,10 +163,17 @@ const Workspace = ({ user, workspace, organizations, swr }) => {
 }
 
 Workspace.propTypes = {
-  user: PropTypes.object.isRequired,
-  workspace: PropTypes.object.isRequired,
+  user: PropTypes.shape({
+    id: PropTypes.string
+  }).isRequired,
+  workspace: PropTypes.shape({
+    id: PropTypes.string.isRequired
+  }).isRequired,
   organizations: PropTypes.array.isRequired,
-  swr: PropTypes.object.isRequired
+  swr: PropTypes.shape({
+    delOneWorkspace: PropTypes.func.isRequired,
+    mutateOneWorkspace: PropTypes.func.isRequired
+  }).isRequired
 }
 
 export default Workspace

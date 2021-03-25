@@ -1,8 +1,8 @@
 import Build from '@/components/project/build'
 
 jest.mock('@/lib/utils', () => ({
-  stringToColor: () => {},
-  userToAvatar: () => {}
+  userToAvatar: () => {},
+  groupToAvatar: () => {}
 }))
 
 describe('components/project/build', () => {

@@ -22,7 +22,7 @@ const Organizations = ({ user, organizations, swr }) => {
       const currentOrganization = organizations.find(
         (o) => o.id === organization.id
       )
-      if (currentOrganization && currentOrganization !== organization)
+      if (currentOrganization !== organization)
         setOrganization(currentOrganization)
     }
   }, [organizations, organization])

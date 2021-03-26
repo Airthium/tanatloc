@@ -178,6 +178,7 @@ const Dashboard = () => {
   }, [
     workspaceId,
     page,
+    currentWorkspace,
     JSON.stringify(myWorkspaces),
     JSON.stringify(sharedWorkspaces)
   ])

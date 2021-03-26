@@ -1,3 +1,5 @@
+/** @module lib/organization */
+
 import OrganizationDB from '@/database/organization'
 
 import User from '../user'
@@ -62,9 +64,8 @@ const getByUser = async (user, data) => {
   await Promise.all(
     returnedOrganization.map(async (organization) => {
       // Owners
-      organization.owners =
-        organization.owners &&
-        (await Promise.all(
+      organization.owners &&
+        (organization.owners = await Promise.all(
           organization.owners.map(async (o) => {
             const ownerData = await User.get(o, [
               'firstname',
@@ -80,9 +81,8 @@ const getByUser = async (user, data) => {
         ))
 
       // Users
-      organization.users =
-        organization.users &&
-        (await Promise.all(
+      organization.users &&
+        (organization.users = await Promise.all(
           organization.users.map(async (u) => {
             const userData = await User.get(u, [
               'firstname',
@@ -98,9 +98,8 @@ const getByUser = async (user, data) => {
         ))
 
       // Groups
-      organization.groups =
-        organization.groups &&
-        (await Promise.all(
+      organization.groups &&
+        (organization.groups = await Promise.all(
           organization.groups.map(async (g) => {
             const groupData = await Group.get(g, ['name', 'users'])
             return {
@@ -116,6 +115,7 @@ const getByUser = async (user, data) => {
 }
 
 const update = async (organization, data) => {
+  // TODO update user ?
   // Check for emails
   const newData = await Promise.all(
     data.map(async (d) => {

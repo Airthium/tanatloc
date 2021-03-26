@@ -78,7 +78,7 @@ const mockMutateOneOrganization = jest.fn()
 const mockLoadingOrganizations = jest.fn()
 jest.mock('@/api/organization', () => ({
   useOrganizations: () => [
-    mockOrganizations,
+    mockOrganizations(),
     {
       reloadOrganizations: mockReloadOrganizations,
       addOneOrganization: mockAddOneOrganization,
@@ -316,9 +316,10 @@ describe('components/dashboard', () => {
     }))
     wrapper = mount(<Dashboard />)
 
-    // Without user
+    // Without user & organizations
     wrapper.unmount()
     mockUser.mockImplementation(() => {})
+    mockOrganizations.mockImplementation(() => [])
     mockQuery.mockImplementation(() => ({
       page: 'account'
     }))
@@ -329,5 +330,40 @@ describe('components/dashboard', () => {
       page: 'organizations'
     }))
     wrapper = mount(<Dashboard />)
+  })
+
+  it('effect workspace update', () => {
+    wrapper.unmount()
+    const name = jest.fn(() => 'name')
+    mockUser.mockImplementation(() => ({ id: 'id' }))
+    mockWorkspaces.mockImplementation(() => [
+      { id: 'id', name: name(), owners: [{ id: 'id' }] }
+    ])
+    wrapper = mount(<Dashboard />)
+
+    act(() =>
+      wrapper
+        .find('Menu')
+        .at(1)
+        .props()
+        .onClick({
+          item: { props: { subMenuKey: 'my_workspaces-menu-' } },
+          key: 'id'
+        })
+    )
+
+    // Update name
+    name.mockImplementation(() => 'new_name')
+
+    act(() =>
+      wrapper
+        .find('Menu')
+        .at(1)
+        .props()
+        .onClick({
+          item: { props: { subMenuKey: 'my_workspaces-menu-' } },
+          key: 'id'
+        })
+    )
   })
 })

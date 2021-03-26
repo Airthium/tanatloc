@@ -120,6 +120,7 @@ describe('plugins/rescale/src/lib/tools', () => {
   })
 
   it('createJob', async () => {
+    configuration.additionalFiles.value = undefined
     mockCall.mockImplementation(() => ({ id: 'id' }))
     const job = await Tools.createJob(
       'algorithm',

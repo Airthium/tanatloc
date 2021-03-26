@@ -1,5 +1,7 @@
 /** @module lib/organization */
 
+import Crypto from 'crypto'
+
 import OrganizationDB from '@/database/organization'
 
 import User from '../user'
@@ -115,7 +117,6 @@ const getByUser = async (user, data) => {
 }
 
 const update = async (organization, data) => {
-  // TODO update user ?
   // Check for emails
   const newData = await Promise.all(
     data.map(async (d) => {
@@ -125,17 +126,28 @@ const update = async (organization, data) => {
         (d.key === 'owners' || d.key === 'users')
       ) {
         const email = d.value
-        const user = await User.getBy(email, ['id'], 'email')
+        let user = await User.getBy(email, ['id'], 'email')
 
         if (user) d.value = user.id
         else {
           // Create user
-          const newUser = await User.add({
+          user = await User.add({
             email: email,
             password: Crypto.randomBytes(12).toString('hex')
           })
-          d.value = newUser.id
+          d.value = user.id
         }
+
+        // TODO send email ?
+
+        await User.update({ id: user.id }, [
+          {
+            key: 'organizations',
+            type: 'array',
+            method: 'append',
+            value: organization.id
+          }
+        ])
       }
 
       return d

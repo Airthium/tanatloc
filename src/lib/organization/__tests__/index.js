@@ -13,10 +13,14 @@ jest.mock('@/database/organization', () => ({
   del: async () => mockDel()
 }))
 
+const mockUserAdd = jest.fn()
 const mockUserGet = jest.fn()
+const mockUserGetBy = jest.fn()
 const mockUserUpdate = jest.fn()
 jest.mock('../../user', () => ({
+  add: async () => mockUserAdd(),
   get: async () => mockUserGet(),
+  getBy: async () => mockUserGetBy(),
   update: async () => mockUserUpdate()
 }))
 
@@ -35,7 +39,9 @@ describe('lib/organization', () => {
     mockUpdate.mockReset()
     mockDel.mockReset()
 
+    mockUserAdd.mockReset()
     mockUserGet.mockReset()
+    mockUserGetBy.mockReset()
     mockUserUpdate.mockReset()
 
     mockGroupGet.mockReset()
@@ -122,7 +128,29 @@ describe('lib/organization', () => {
   })
 
   it('update', async () => {
-    // TODO
+    // Minimal
+    await Organization.update({}, [{ key: 'test' }])
+    expect(mockUpdate).toHaveBeenCalledTimes(1)
+
+    // With existing users
+    mockUserGetBy.mockImplementation(() => ({}))
+    await Organization.update({}, [
+      { key: 'owners', type: 'array', method: 'append', value: 'email' },
+      { key: 'users', type: 'array', method: 'append', value: 'email' }
+    ])
+    expect(mockUpdate).toHaveBeenCalledTimes(2)
+    expect(mockUserUpdate).toHaveBeenCalledTimes(2)
+
+    // With non-existing users
+    mockUserAdd.mockImplementation(() => ({}))
+    mockUserGetBy.mockImplementation(() => {})
+    await Organization.update({}, [
+      { key: 'owners', type: 'array', method: 'append', value: 'email' },
+      { key: 'users', type: 'array', method: 'append', value: 'email' }
+    ])
+    expect(mockUpdate).toHaveBeenCalledTimes(3)
+    expect(mockUserAdd).toHaveBeenCalledTimes(2)
+    expect(mockUserUpdate).toHaveBeenCalledTimes(4)
   })
 
   it('del', async () => {

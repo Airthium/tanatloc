@@ -83,8 +83,8 @@ const menuItems = {
  */
 const Dashboard = () => {
   // State
-  const [myWorkspaces, setMyWorkspaces] = useState()
-  const [sharedWorkspaces, setSharedWorkspaces] = useState()
+  const [myWorkspaces, setMyWorkspaces] = useState([])
+  const [sharedWorkspaces, setSharedWorkspaces] = useState([])
   const [currentView, setCurrentView] = useState()
   const [currentWorkspace, setCurrentWorkspace] = useState()
 
@@ -134,21 +134,26 @@ const Dashboard = () => {
       })
       .filter((w) => w)
 
-    setMyWorkspaces(my)
-    setSharedWorkspaces(shared)
-  }, [user, workspaces])
+    if (JSON.stringify(my) !== JSON.stringify(myWorkspaces)) setMyWorkspaces(my)
+    if (JSON.stringify(shared) !== JSON.stringify(sharedWorkspaces))
+      setSharedWorkspaces(shared)
+  }, [user, JSON.stringify(workspaces)])
 
   // Update workspace
   useEffect(() => {
     if (currentWorkspace) {
       const workspace = workspaces?.find((w) => w.id === currentWorkspace.id)
-      if (workspace !== currentWorkspace) updateCurrentView(null, workspace)
+      if (JSON.stringify(workspace) !== JSON.stringify(currentWorkspace)) {
+        updateCurrentView(null, workspace)
+      }
     }
-  }, [workspaces, currentWorkspace])
+  }, [currentWorkspace, JSON.stringify(workspaces)])
 
   // Page effect
   useEffect(() => {
     if (workspaceId) {
+      if (currentWorkspace?.id === workspaceId) return
+
       // Search in myWorkspaces
       const myWorkspace = myWorkspaces?.find(
         (workspace) => workspace.id === workspaceId
@@ -167,8 +172,15 @@ const Dashboard = () => {
       }
     } else if (page) {
       updateCurrentView(page)
+    } else {
+      updateCurrentView(menuItems.welcome.key)
     }
-  }, [page, workspaceId, myWorkspaces, sharedWorkspaces])
+  }, [
+    workspaceId,
+    page,
+    JSON.stringify(myWorkspaces),
+    JSON.stringify(sharedWorkspaces)
+  ])
 
   /**
    * Menu selection

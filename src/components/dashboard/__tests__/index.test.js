@@ -1,6 +1,6 @@
 import Dashboard from '@/components/dashboard'
-import { act } from 'react-dom/test-utils'
 import { shallow, mount } from 'enzyme'
+import { act } from 'react-dom/test-utils'
 
 import '@/config/jest/mockMatchMedia'
 
@@ -237,7 +237,97 @@ describe('components/dashboard', () => {
     wrapper.find('SubMenu').at(0).props().onTitleClick()
   })
 
-  it('onMSharedWorkspaces', () => {
+  it('onSharedWorkspaces', () => {
     wrapper.find('SubMenu').at(1).props().onTitleClick()
+  })
+
+  it('effect', () => {
+    // No user
+    wrapper.unmount()
+    mockUser.mockImplementation(() => {})
+    wrapper = mount(<Dashboard />)
+
+    // User & workspaces
+    wrapper.unmount()
+    mockUser.mockImplementation(() => ({ id: 'id', groups: [{ id: 'id' }] }))
+    mockWorkspaces.mockImplementation(() => [
+      { id: 'id1', owners: [{ id: 'id' }] },
+      { id: 'id2', users: [{ id: 'id' }] },
+      { id: 'id3', groups: [{ id: 'id' }] }
+    ])
+    wrapper = mount(<Dashboard />)
+
+    // On select
+    act(() =>
+      wrapper
+        .find('Menu')
+        .at(1)
+        .props()
+        .onClick({
+          item: { props: { subMenuKey: 'my_workspaces-menu-' } },
+          key: 'id1'
+        })
+    )
+
+    act(() =>
+      wrapper
+        .find('Menu')
+        .at(1)
+        .props()
+        .onClick({
+          item: { props: { subMenuKey: 'shared-menu-' } },
+          key: 'id2'
+        })
+    )
+
+    // On my workspaces
+    wrapper.find('SubMenu').at(0).props().onTitleClick()
+
+    // On shared workspaces
+    wrapper.find('SubMenu').at(2).props().onTitleClick()
+  })
+
+  it('effect with router', () => {
+    wrapper.unmount()
+    mockUser.mockImplementation(() => ({ id: 'id', groups: [{ id: 'id' }] }))
+    mockWorkspaces.mockImplementation(() => [
+      { id: 'id1', owners: [{ id: 'id' }] },
+      { id: 'id2', users: [{ id: 'id' }] },
+      { id: 'id3', groups: [{ id: 'id' }] }
+    ])
+
+    // My workspaces
+    mockQuery.mockImplementation(() => ({
+      workspaceId: 'id1'
+    }))
+    wrapper = mount(<Dashboard />)
+
+    // Shared workspaces
+    wrapper.unmount()
+    mockQuery.mockImplementation(() => ({
+      workspaceId: 'id2'
+    }))
+    wrapper = mount(<Dashboard />)
+
+    // Page
+    wrapper.unmount()
+    mockQuery.mockImplementation(() => ({
+      page: 'organizations'
+    }))
+    wrapper = mount(<Dashboard />)
+
+    // Without user
+    wrapper.unmount()
+    mockUser.mockImplementation(() => {})
+    mockQuery.mockImplementation(() => ({
+      page: 'account'
+    }))
+    wrapper = mount(<Dashboard />)
+
+    wrapper.unmount()
+    mockQuery.mockImplementation(() => ({
+      page: 'organizations'
+    }))
+    wrapper = mount(<Dashboard />)
   })
 })

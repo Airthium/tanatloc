@@ -1,6 +1,6 @@
 import getSessionId from '../session'
 
-import UserLib from '@/lib/user'
+import OrganizationLib from '@/lib/organization'
 import GroupLib from '@/lib/group'
 
 import Sentry from '@/lib/sentry'
@@ -10,16 +10,19 @@ export default async (req, res) => {
   const sessionId = await getSessionId(req, res)
   if (!sessionId) return
 
-  // Check superuser
-  const user = await UserLib.get(sessionId, ['superuser'])
-  if (!user.superuser) {
-    res.status(500).json({ error: true, message: 'Unauthorized' })
-    return
-  }
-
   switch (req.method) {
     case 'POST':
       try {
+        // Check administrator
+        const organization = await OrganizationLib.get(
+          req.body.organization.id,
+          ['owners']
+        )
+        if (!organization?.owners?.includes(sessionId)) {
+          res.status(500).json({ error: true, message: 'Unauthorized' })
+          return
+        }
+
         const group = await GroupLib.add(req.body.organization, req.body.group)
         res.status(200).json(group)
       } catch (err) {
@@ -30,6 +33,16 @@ export default async (req, res) => {
       break
     case 'PUT':
       try {
+        // Check administrator
+        const group = await GroupLib.get(req.body.id, ['organization'])
+        const organization = await OrganizationLib.get(group.organization, [
+          'owners'
+        ])
+        if (!organization?.owners?.includes(sessionId)) {
+          res.status(500).json({ error: true, message: 'Unauthorized' })
+          return
+        }
+
         await GroupLib.update({ id: req.body.id }, req.body.data)
         res.status(200).end()
       } catch (err) {
@@ -40,6 +53,16 @@ export default async (req, res) => {
       break
     case 'DELETE':
       try {
+        // Check administrator
+        const group = await GroupLib.get(req.body.id, ['organization'])
+        const organization = await OrganizationLib.get(group.organization, [
+          'owners'
+        ])
+        if (!organization?.owners?.includes(sessionId)) {
+          res.status(500).json({ error: true, message: 'Unauthorized' })
+          return
+        }
+
         await GroupLib.del(req.body)
         res.status(200).end()
       } catch (err) {

@@ -1,4 +1,5 @@
-// import UserLib from '@/lib/user'
+import GroupLib from '@/lib/group'
+import OrganizationLib from '@/lib/organization'
 
 // TODO
 
@@ -24,12 +25,37 @@ const auth = async (id, object, parentObject) => {
   )
     return true
 
-  // // Group objects
-  // const user = await UserLib.get(id, ['groups'])
-  // if (user?.groups.find((g) => object?.groups?.find((gg) => gg.id === g)))
-  //   return true
-  // if (user?.groups.find((g) => parentObject?.groups?.find((gg) => gg.id === g)))
-  //   return true
+  // Objects groups
+  if (object?.groups)
+    for (let group of object.groups) {
+      const groupData = await GroupLib.get(group, ['organization'])
+      const organizationData = await OrganizationLib.get(
+        groupData.organization,
+        ['owners', 'users']
+      )
+
+      if (
+        organizationData?.owners?.find((o) => o === id) ||
+        organizationData?.users?.find((u) => u === id)
+      )
+        return true
+    }
+
+  // Parent objects groups
+  if (parentObject?.groups)
+    for (let group of parentObject.groups) {
+      const groupData = await GroupLib.get(group, ['organization'])
+      const organizationData = await OrganizationLib.get(
+        groupData.organization,
+        ['owners', 'users']
+      )
+
+      if (
+        organizationData?.owners?.find((o) => o === id) ||
+        organizationData?.users?.find((u) => u === id)
+      )
+        return true
+    }
 
   return false
 }

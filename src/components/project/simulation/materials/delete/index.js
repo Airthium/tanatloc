@@ -1,13 +1,17 @@
+import PropTypes from 'prop-types'
 import { useState } from 'react'
 
-import { Error } from '@/components/assets/notification'
 import { DeleteButton } from '@/components/assets/button'
+import { Error } from '@/components/assets/notification'
 
 import { useDispatch } from 'react-redux'
 import { unselect } from '@/store/select/action'
 
 import SimulationAPI from '@/api/simulation'
 
+/**
+ * Error material
+ */
 const errors = {
   updateError: 'Unable to delete the material'
 }
@@ -16,14 +20,11 @@ const errors = {
  * Delete material
  * @param {Object} props Props
  */
-const Delete = ({ project, simulation, index }) => {
+const Delete = ({ simulation, swr, index }) => {
   // State
   const [loading, setLoading] = useState(false)
 
   // Data
-  const [, { mutateOneSimulation }] = SimulationAPI.useSimulations(
-    project?.simulations
-  )
   const dispatch = useDispatch()
 
   /**
@@ -56,7 +57,7 @@ const Delete = ({ project, simulation, index }) => {
         done: !!materials.values.length
       }
 
-      // Update
+      // API
       await SimulationAPI.update({ id: simulation.id }, [
         {
           key: 'scheme',
@@ -67,8 +68,8 @@ const Delete = ({ project, simulation, index }) => {
         }
       ])
 
-      // Mutate
-      mutateOneSimulation(newSimulation)
+      // Local
+      swr.mutateOneSimulation(newSimulation)
     } catch (err) {
       Error(errors.updateError, err)
       setLoading(false)
@@ -79,6 +80,22 @@ const Delete = ({ project, simulation, index }) => {
    * Render
    */
   return <DeleteButton loading={loading} onDelete={onDelete} />
+}
+
+Delete.propTypes = {
+  simulation: PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    scheme: PropTypes.shape({
+      configuration: PropTypes.shape({
+        materials: PropTypes.shape({
+          values: PropTypes.array.isRequired
+        })
+      })
+    })
+  }).isRequired,
+  swr: PropTypes.shape({
+    mutateOneSimulation: PropTypes.func.isRequired
+  })
 }
 
 export default Delete

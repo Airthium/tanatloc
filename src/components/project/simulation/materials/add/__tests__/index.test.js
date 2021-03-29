@@ -1,20 +1,19 @@
 import Add from '@/components/project/simulation/materials/add'
 import { shallow } from 'enzyme'
 
-jest.mock('@/components/assets/button', () => ({
-  AddButton: 'AddButton'
-}))
-
-const mockUpdate = jest.fn()
-const mockMutate = jest.fn()
-jest.mock('@/api/simulation', () => ({
-  update: async () => mockUpdate(),
-  useSimulations: () => [[], { mutateOneSimulation: mockMutate }]
-}))
+jest.mock('@/components/assets/button', () => {
+  const AddButton = () => <div />
+  return { AddButton }
+})
 
 const mockError = jest.fn()
 jest.mock('@/components/assets/notification', () => ({
   Error: () => mockError()
+}))
+
+const mockUpdate = jest.fn()
+jest.mock('@/api/simulation', () => ({
+  update: async () => mockUpdate()
 }))
 
 let wrapper
@@ -22,8 +21,8 @@ describe('components/project/simulation/materials/add', () => {
   const material = {
     selected: ['uuid1', 'uuid3']
   }
-  const project = {}
   const simulation = {
+    id: 'id',
     scheme: {
       configuration: {
         materials: {
@@ -33,13 +32,16 @@ describe('components/project/simulation/materials/add', () => {
     }
   }
   const part = { solids: [{ uuid: 'uuid1' }, { uuid: 'uuid2' }] }
+  const mutateOneSimulation = jest.fn()
+  const swr = {
+    mutateOneSimulation
+  }
   const close = jest.fn()
 
   beforeEach(() => {
-    mockUpdate.mockReset()
-    mockMutate.mockReset()
-
     mockError.mockReset()
+
+    mockUpdate.mockReset()
 
     close.mockReset()
 
@@ -47,9 +49,9 @@ describe('components/project/simulation/materials/add', () => {
       <Add
         disabled={false}
         material={material}
-        project={project}
         simulation={simulation}
         part={part}
+        swr={swr}
         close={close}
       />
     )
@@ -66,7 +68,7 @@ describe('components/project/simulation/materials/add', () => {
   it('onAdd', async () => {
     await wrapper.find('AddButton').props().onAdd()
     expect(mockUpdate).toHaveBeenCalledTimes(1)
-    expect(mockMutate).toHaveBeenCalledTimes(1)
+    expect(mutateOneSimulation).toHaveBeenCalledTimes(1)
     expect(close).toHaveBeenCalledTimes(1)
     expect(mockError).toHaveBeenCalledTimes(0)
 
@@ -75,11 +77,10 @@ describe('components/project/simulation/materials/add', () => {
     simulation.scheme.configuration.materials = {}
     wrapper = shallow(
       <Add
-        disabled={false}
         material={material}
-        project={project}
         simulation={simulation}
         part={part}
+        swr={swr}
         close={close}
       />
     )
@@ -91,7 +92,7 @@ describe('components/project/simulation/materials/add', () => {
     })
     await wrapper.find('AddButton').props().onAdd()
     expect(mockUpdate).toHaveBeenCalledTimes(3)
-    expect(mockMutate).toHaveBeenCalledTimes(2)
+    expect(mutateOneSimulation).toHaveBeenCalledTimes(2)
     expect(close).toHaveBeenCalledTimes(2)
     expect(mockError).toHaveBeenCalledTimes(1)
   })

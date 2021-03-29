@@ -69,7 +69,7 @@ const Selector = ({ user, visible, onOk, onCancel }) => {
   useEffect(() => {
     const allModels = loadModels(user, Models, Plugins)
     setModels(allModels)
-  }, [Models, Plugins, JSON.stringify(user)])
+  }, [Models, Plugins, user])
 
   /**
    * On select
@@ -117,19 +117,20 @@ const Selector = ({ user, visible, onOk, onCancel }) => {
   )
 }
 
+Selector.propTypes = {
+  user: PropTypes.shape({
+    authorizedplugins: PropTypes.array
+  }).isRequired,
+  visible: PropTypes.bool,
+  onOk: PropTypes.func.isRequired,
+  onCancel: PropTypes.func.isRequired
+}
+
 /**
  * Simulation
  * @param {Object} props Props
  */
-const Simulation = ({
-  user,
-  project,
-  simulation,
-  type,
-  part,
-  swr,
-  onClose
-}) => {
+const Simulation = ({ user, simulation, type, part, swr, onClose }) => {
   // State
   const [needUpdate, setNeedUpdate] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -257,21 +258,30 @@ const Simulation = ({
         )}
         {type === 'materials' && (
           <Materials
-            project={project}
             simulation={simulation}
             part={part}
+            swr={{
+              mutateOneSimulation: swr.mutateOneSimulation
+            }}
             setVisible={setVisible}
           />
         )}
         {type === 'boundaryConditions' && (
           <BoundaryConditions
-            project={project}
             simulation={simulation}
             part={part}
+            swr={{
+              mutateOneSimulation: swr.mutateOneSimulation
+            }}
             setVisible={setVisible}
           />
         )}
-        {type === 'run' && <Run project={project} simulation={simulation} />}
+        {type === 'run' && (
+          <Run
+            simulation={simulation}
+            swr={{ mutateOneSimulation: swr.mutateOneSimulation }}
+          />
+        )}
       </Panel>
     </>
   )

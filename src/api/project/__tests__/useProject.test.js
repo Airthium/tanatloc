@@ -9,10 +9,15 @@ jest.mock('swr', () => () => ({
 describe('api/project/useProject', () => {
   it('with project', () => {
     mockProject.mockImplementation(() => ({}))
-    const [project, { mutateProject, loadingProject }] = useProject()
+    const [
+      project,
+      { reloadProject, mutateProject, loadingProject }
+    ] = useProject()
     expect(project).toEqual({})
     expect(mutateProject).toBeDefined()
     expect(loadingProject).toBe(false)
+    expect(reloadProject).toBeDefined()
+    reloadProject()
   })
 
   it('without project', () => {

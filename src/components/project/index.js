@@ -362,7 +362,6 @@ const Project = () => {
         />
         <Simulation
           user={user}
-          project={{ id: project.id, simulations: project.simulations }}
           simulation={currentSimulation}
           type={currentType}
           part={partSummary}

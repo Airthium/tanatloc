@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
 import { Layout } from 'antd'
 import { PlusCircleOutlined } from '@ant-design/icons'
@@ -9,7 +10,12 @@ import Material from './material'
 import { useDispatch } from 'react-redux'
 import { enable, disable, setType, setPart } from '@/store/select/action'
 
-const Materials = ({ project, simulation, part, setVisible }) => {
+/**
+ * Materials
+ * @memberof module:components/project/simulation
+ * @param {Object} props Props
+ */
+const Materials = ({ simulation, part, swr, setVisible }) => {
   // State
   const [material, setMaterial] = useState()
   const [materialVisible, setMaterialVisible] = useState(false)
@@ -64,19 +70,37 @@ const Materials = ({ project, simulation, part, setVisible }) => {
         <AddButton icon={<PlusCircleOutlined />} onAdd={onAdd}>
           Add material
         </AddButton>
-        <List project={project} simulation={simulation} onEdit={onEdit} />
+        <List simulation={simulation} swr={swr} onEdit={onEdit} />
         <Material
-          project={project}
           simulation={simulation}
           visible={materialVisible}
           part={part}
           materials={materials}
           material={material}
+          swr={swr}
           close={onClose}
         />
       </Layout.Content>
     </Layout>
   )
+}
+
+Materials.propTypes = {
+  simulation: PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    scheme: PropTypes.shape({
+      configuration: PropTypes.shape({
+        materials: PropTypes.shape({
+          values: PropTypes.array.isRequired
+        })
+      })
+    })
+  }).isRequired,
+  part: PropTypes.object,
+  swr: PropTypes.shape({
+    mutateOneSimulation: PropTypes.func.isRequired
+  }).isRequired,
+  setVisible: PropTypes.func.isRequired
 }
 
 export default Materials

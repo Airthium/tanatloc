@@ -1,11 +1,14 @@
 import Geometry from '@/components/project/simulation/geometry'
 import { shallow, mount } from 'enzyme'
 
+const mockError = jest.fn()
+jest.mock('@/components/assets/notification', () => ({
+  Error: () => mockError()
+}))
+
 const mockUpdate = jest.fn()
-const mockMutate = jest.fn()
 jest.mock('@/api/simulation', () => ({
-  update: async () => mockUpdate(),
-  useSimulations: () => [[], { mutateOneSimulation: mockMutate }]
+  update: async () => mockUpdate()
 }))
 
 const mockGet = jest.fn()
@@ -17,7 +20,7 @@ global.FileReader = class {
   constructor() {
     this.result = 'result'
   }
-  addEventListener(type, callback) {
+  addEventListener(_, callback) {
     callback()
   }
   readAsArrayBuffer() {}
@@ -25,21 +28,29 @@ global.FileReader = class {
 
 let wrapper
 describe('components/project/simulation/geometry', () => {
+  const simulation = {
+    id: 'id',
+    scheme: {
+      configuration: {
+        geometry: {}
+      }
+    }
+  }
+  const part = null
+  const mutateOneSimulation = jest.fn()
+  const swr = { mutateOneSimulation }
+
   beforeEach(() => {
+    mockError.mockReset()
+
     mockUpdate.mockReset()
-    mockMutate.mockReset()
+
     mockGet.mockReset()
+
+    mutateOneSimulation.mockReset()
+
     wrapper = shallow(
-      <Geometry
-        project={{}}
-        simulation={{
-          scheme: {
-            configuration: {
-              geometry: {}
-            }
-          }
-        }}
-      />
+      <Geometry simulation={simulation} part={part} swr={swr} />
     )
   })
 
@@ -51,65 +62,36 @@ describe('components/project/simulation/geometry', () => {
     expect(wrapper).toBeDefined()
   })
 
-  it('onDelete', async () => {
-    await wrapper.find('ForwardRef').props().onConfirm()
-    expect(mockUpdate).toHaveBeenCalledTimes(1)
-
-    mockUpdate.mockImplementation(() => {
-      throw new Error()
-    })
-    await wrapper.find('ForwardRef').props().onConfirm()
-    expect(mockUpdate).toHaveBeenCalledTimes(2)
-  })
-
-  it('upload', async () => {
+  it('beforeUpload', () => {
     let res
-    wrapper.unmount()
 
-    // Before upload
-    wrapper = mount(
-      <Geometry
-        project={{}}
-        simulation={{
-          scheme: {
-            configuration: {
-              geometry: {}
-            }
-          }
-        }}
-      />
-    )
-    res = wrapper.find('Upload').at(0).props().beforeUpload({
-      name: 'test.STP'
-    })
-    expect(res).toBe(true)
-
-    res = wrapper.find('Upload').at(0).props().beforeUpload({
-      name: 'test.DXF'
-    })
-    expect(res).toBe(true)
-
-    res = wrapper.find('Upload').at(0).props().beforeUpload({
-      name: 'test.OTHER'
+    // Wrong
+    res = wrapper.find('Upload').props().beforeUpload({
+      name: 'test.test'
     })
     expect(res).toBe(false)
 
-    // On change
+    // Good
+    res = wrapper.find('Upload').props().beforeUpload({
+      name: 'test.dxf'
+    })
+    expect(res).toBe(true)
+  })
+
+  it('onUpload', async () => {
+    // Uploading
     await wrapper
       .find('Upload')
-      .at(0)
       .props()
       .onChange({
         file: {
           status: 'uploading'
         }
       })
-    expect(mockUpdate).toHaveBeenCalledTimes(0)
-    expect(mockMutate).toHaveBeenCalledTimes(0)
 
+    // Normal
     await wrapper
       .find('Upload')
-      .at(0)
       .props()
       .onChange({
         file: {
@@ -117,14 +99,15 @@ describe('components/project/simulation/geometry', () => {
         }
       })
     expect(mockUpdate).toHaveBeenCalledTimes(1)
-    expect(mockMutate).toHaveBeenCalledTimes(1)
+    expect(mutateOneSimulation).toHaveBeenCalledTimes(1)
+    expect(mockError).toHaveBeenCalledTimes(0)
 
+    // Error
     mockUpdate.mockImplementation(() => {
       throw new Error()
     })
     await wrapper
       .find('Upload')
-      .at(0)
       .props()
       .onChange({
         file: {
@@ -132,36 +115,25 @@ describe('components/project/simulation/geometry', () => {
         }
       })
     expect(mockUpdate).toHaveBeenCalledTimes(2)
-    expect(mockMutate).toHaveBeenCalledTimes(1)
+    expect(mutateOneSimulation).toHaveBeenCalledTimes(1)
+    expect(mockError).toHaveBeenCalledTimes(1)
   })
 
-  it('mount with file', async () => {
+  it('effect', () => {
     wrapper.unmount()
+    wrapper = mount(<Geometry simulation={simulation} part={part} swr={swr} />)
+    expect(wrapper).toBeDefined()
 
-    wrapper = mount(
-      <Geometry
-        project={{}}
-        simulation={{
-          scheme: {
-            configuration: {
-              geometry: {
-                file: {}
-              }
-            }
-          }
-        }}
-      />
-    )
-  })
-
-  it('download', async () => {
+    // With file
     wrapper.unmount()
     wrapper = mount(
       <Geometry
-        project={{}}
         simulation={{
+          ...simulation,
           scheme: {
+            ...simulation.scheme,
             configuration: {
+              ...simulation.scheme.configuration,
               geometry: {
                 file: {
                   origin: 'origin',
@@ -171,48 +143,137 @@ describe('components/project/simulation/geometry', () => {
             }
           }
         }}
+        part={part}
+        swr={swr}
       />
     )
+    expect(wrapper).toBeDefined()
+  })
+
+  it('onDelete', async () => {
+    // Need file
+    wrapper.unmount()
+    wrapper = mount(
+      <Geometry
+        simulation={{
+          ...simulation,
+          scheme: {
+            ...simulation.scheme,
+            configuration: {
+              ...simulation.scheme.configuration,
+              geometry: {
+                file: {
+                  origin: 'origin',
+                  originPath: 'originPath'
+                }
+              }
+            }
+          }
+        }}
+        part={part}
+        swr={swr}
+      />
+    )
+
+    // Normal
+    await wrapper.find('ForwardRef').props().onConfirm()
+    expect(mockUpdate).toHaveBeenCalledTimes(1)
+    expect(mutateOneSimulation).toHaveBeenCalledTimes(1)
+    expect(mockError).toHaveBeenCalledTimes(0)
+
+    // Error
+    mockUpdate.mockImplementation(() => {
+      throw new Error()
+    })
+    await wrapper.find('ForwardRef').props().onConfirm()
+    expect(mockUpdate).toHaveBeenCalledTimes(2)
+    expect(mutateOneSimulation).toHaveBeenCalledTimes(1)
+    expect(mockError).toHaveBeenCalledTimes(1)
+  })
+
+  it('onDownload', async () => {
+    // Need file
+    wrapper.unmount()
+    wrapper = mount(
+      <Geometry
+        simulation={{
+          ...simulation,
+          scheme: {
+            ...simulation.scheme,
+            configuration: {
+              ...simulation.scheme.configuration,
+              geometry: {
+                file: {
+                  origin: 'origin',
+                  originPath: 'originPath'
+                }
+              }
+            }
+          }
+        }}
+        part={part}
+        swr={swr}
+      />
+    )
+
+    // Normal
     mockGet.mockImplementation(() => ({
       buffer: ['buffer']
     }))
-
     window.URL.createObjectURL = () => 'url'
-
     await wrapper.find('Button').at(0).props().onClick()
     expect(mockGet).toHaveBeenCalledTimes(1)
+    expect(mockError).toHaveBeenCalledTimes(0)
 
+    // Error
     mockGet.mockImplementation(() => {
       throw new Error()
     })
     await wrapper.find('Button').at(0).props().onClick()
     expect(mockGet).toHaveBeenCalledTimes(2)
+    expect(mockError).toHaveBeenCalledTimes(1)
   })
 
   it('with part', () => {
     wrapper.unmount()
-    wrapper = shallow(
+    wrapper = mount(
       <Geometry
-        project={{}}
         simulation={{
+          ...simulation,
           scheme: {
+            ...simulation.scheme,
             configuration: {
-              geometry: {}
+              ...simulation.scheme.configuration,
+              geometry: {
+                file: {
+                  origin: 'origin',
+                  originPath: 'originPath'
+                }
+              }
             }
           }
         }}
         part={{}}
+        swr={swr}
       />
     )
+    expect(wrapper).toBeDefined()
 
     wrapper.unmount()
-    wrapper = shallow(
+    wrapper = mount(
       <Geometry
-        project={{}}
         simulation={{
+          ...simulation,
           scheme: {
+            ...simulation.scheme,
             configuration: {
-              geometry: {}
+              ...simulation.scheme.configuration,
+              geometry: {
+                file: {
+                  origin: 'origin',
+                  originPath: 'originPath'
+                }
+              }
             }
           }
         }}
@@ -221,25 +282,64 @@ describe('components/project/simulation/geometry', () => {
           faces: [{}],
           edges: [{}]
         }}
+        swr={swr}
       />
     )
+    expect(wrapper).toBeDefined()
 
     wrapper.unmount()
-    wrapper = shallow(
+    wrapper = mount(
       <Geometry
-        project={{}}
         simulation={{
+          ...simulation,
           scheme: {
+            ...simulation.scheme,
             configuration: {
-              geometry: {}
+              ...simulation.scheme.configuration,
+              geometry: {
+                file: {
+                  origin: 'origin',
+                  originPath: 'originPath'
+                }
+              }
+            }
+          }
+        }}
+        part={{
+          solids: [{}],
+          faces: [{}],
+          edges: [{}]
+        }}
+        swr={swr}
+      />
+    )
+    expect(wrapper).toBeDefined()
+
+    wrapper.unmount()
+    wrapper = mount(
+      <Geometry
+        simulation={{
+          ...simulation,
+          scheme: {
+            ...simulation.scheme,
+            configuration: {
+              ...simulation.scheme.configuration,
+              geometry: {
+                file: {
+                  origin: 'origin',
+                  originPath: 'originPath'
+                }
+              }
             }
           }
         }}
         part={{
           error: true,
-          message: 'Error message'
+          message: 'Error'
         }}
+        swr={swr}
       />
     )
+    expect(wrapper).toBeDefined()
   })
 })

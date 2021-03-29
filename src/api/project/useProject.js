@@ -13,7 +13,18 @@ const useProject = (id) => {
   )
   const loading = !data
   const project = (data && data.project) || {}
-  return [project, { mutateProject: mutate, loadingProject: loading }]
+
+  /**
+   * Reload
+   */
+  const reload = () => {
+    mutate(null, true)
+  }
+
+  return [
+    project,
+    { reloadProject: reload, mutateProject: mutate, loadingProject: loading }
+  ]
 }
 
 export default useProject

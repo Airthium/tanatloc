@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types'
 import { useEffect } from 'react'
 import { Layout, Space, Typography } from 'antd'
 
@@ -20,25 +21,20 @@ const errors = {
  * @memberof module:components/project/simulation
  * @param {Object} props Props
  */
-const About = ({ project, simulation }) => {
-  // Data
-  const [, { mutateOneSimulation }] = SimulationAPI.useSimulations(
-    project?.simulations
-  )
-
+const About = ({ simulation, swr }) => {
   /**
    * Handle name
    * @param {string} name Name
    */
   const handleName = async (name) => {
     try {
-      // Update simulation
+      // API
       await SimulationAPI.update({ id: simulation.id }, [
         { key: 'name', value: name }
       ])
 
-      // Mutate simulation
-      mutateOneSimulation({
+      // Local
+      swr.mutateOneSimulation({
         ...simulation,
         name: name
       })
@@ -50,7 +46,7 @@ const About = ({ project, simulation }) => {
   // MathJax
   useEffect(() => {
     window.MathJax?.typeset()
-  }, [simulation?.scheme.description])
+  }, [simulation.scheme?.description])
 
   return (
     <Layout>
@@ -63,32 +59,48 @@ const About = ({ project, simulation }) => {
               maxLength: 50
             }}
           >
-            {simulation?.name}
+            {simulation.name}
           </Typography.Title>
           <Typography.Text>
-            <b>Category:</b> {simulation?.scheme.category}
+            <b>Category:</b> {simulation.scheme?.category}
           </Typography.Text>
           <Typography.Text>
-            <b>Algorihtm:</b> {simulation?.scheme.algorithm}
+            <b>Algorihtm:</b> {simulation.scheme?.algorithm}
           </Typography.Text>
           <Typography.Text>
-            <b>Code:</b> {simulation?.scheme.code}
+            <b>Code:</b> {simulation.scheme?.code}
           </Typography.Text>
 
           <div
             dangerouslySetInnerHTML={{
-              __html: simulation?.scheme.description
+              __html: simulation.scheme?.description
             }}
           />
 
           <Delete
-            project={project}
-            simulation={{ id: simulation?.id, name: simulation?.name }}
+            simulation={{ id: simulation.id, name: simulation.name }}
+            swr={{
+              reloadProject: swr.reloadProject,
+              delOneSimulation: swr.delOneSimulation
+            }}
           />
         </Space>
       </Layout.Content>
     </Layout>
   )
+}
+
+About.propTypes = {
+  simulation: PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
+    scheme: PropTypes.object
+  }).isRequired,
+  swr: PropTypes.shape({
+    reloadProject: PropTypes.func.isRequired,
+    delOneSimulation: PropTypes.func.isRequired,
+    mutateOneSimulation: PropTypes.func.isRequired
+  }).isRequired
 }
 
 export default About

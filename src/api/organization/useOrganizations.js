@@ -10,6 +10,9 @@ const useOrganizations = () => {
   const loading = !data
   const organizations = (data && data.organizations) || []
 
+  /**
+   * Reload
+   */
   const reload = () => {
     mutate(null, true)
   }

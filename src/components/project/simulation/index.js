@@ -1,5 +1,6 @@
 /** @module components/project/simulation */
 
+import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
 import { Layout, Menu, Modal, Space, Typography } from 'antd'
 import { WarningOutlined } from '@ant-design/icons'
@@ -17,7 +18,6 @@ import Parameters from './parameters'
 import BoundaryConditions from './boundaryConditions'
 import Run from './run'
 
-import UserAPI from '@/api/user'
 import SimulationAPI from '@/api/simulation'
 
 import Models from '@/models'
@@ -54,14 +54,11 @@ const loadModels = (user, models, plugins) => {
  * Simulation Selector
  * @param {Object} props Props
  */
-const Selector = ({ visible, onOk, onCancel }) => {
+const Selector = ({ user, visible, onOk, onCancel }) => {
   // State
   const [current, setCurrent] = useState()
   const [loading, setLoading] = useState(false)
   const [models, setModels] = useState([])
-
-  // Data
-  const [user] = UserAPI.useUser()
 
   // MatJax
   useEffect(() => {
@@ -124,19 +121,21 @@ const Selector = ({ visible, onOk, onCancel }) => {
  * Simulation
  * @param {Object} props Props
  */
-const Simulation = ({ project, simulation, type, part, onClose }) => {
+const Simulation = ({
+  user,
+  project,
+  simulation,
+  type,
+  part,
+  swr,
+  onClose
+}) => {
   // State
   const [needUpdate, setNeedUpdate] = useState(false)
   const [loading, setLoading] = useState(false)
   const [visible, setVisible] = useState(false)
   const [title, setTitle] = useState()
   const [models, setModels] = useState([])
-
-  // Data
-  const [user] = UserAPI.useUser()
-  const [, { mutateOneSimulation }] = SimulationAPI.useSimulations(
-    project?.simulations
-  )
 
   // Models
   useEffect(() => {
@@ -198,7 +197,7 @@ const Simulation = ({ project, simulation, type, part, onClose }) => {
       ])
 
       // Mutate
-      mutateOneSimulation(newSimulation)
+      swr.mutateOneSimulation(newSimulation)
     } catch (err) {
       Error(errors.updateError, err)
     }
@@ -234,13 +233,27 @@ const Simulation = ({ project, simulation, type, part, onClose }) => {
       </Modal>
       <Panel visible={visible} title={title} onClose={onClose}>
         {type === 'about' && (
-          <About project={project} simulation={simulation} />
+          <About
+            simulation={simulation}
+            swr={{
+              reloadProject: swr.reloadProject,
+              delOneSimulation: swr.delOneSimulation,
+              mutateOneSimulation: swr.mutateOneSimulation
+            }}
+          />
         )}
         {type === 'geometry' && (
-          <Geometry project={project} simulation={simulation} part={part} />
+          <Geometry
+            simulation={simulation}
+            part={part}
+            swr={{ mutateOneSimulation: swr.mutateOneSimulation }}
+          />
         )}
         {type === 'parameters' && (
-          <Parameters project={project} simulation={simulation} />
+          <Parameters
+            simulation={simulation}
+            swr={{ mutateOneSimulation: swr.mutateOneSimulation }}
+          />
         )}
         {type === 'materials' && (
           <Materials
@@ -262,6 +275,21 @@ const Simulation = ({ project, simulation, type, part, onClose }) => {
       </Panel>
     </>
   )
+}
+
+Simulation.propTypes = {
+  user: PropTypes.shape({
+    authorizedplugins: PropTypes.array
+  }).isRequired,
+  simulation: PropTypes.shape({
+    id: PropTypes.string.isRequired
+  }).isRequired,
+  type: PropTypes.string,
+  part: PropTypes.object,
+  swr: PropTypes.shape({
+    mutateOneSimulation: PropTypes.func.isRequired
+  }).isRequired,
+  onClose: PropTypes.func.isRequired
 }
 
 Simulation.Selector = Selector

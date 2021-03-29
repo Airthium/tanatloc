@@ -1,8 +1,9 @@
+import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
 import { Card, Collapse, Layout, Select, Space, Typography } from 'antd'
 
-import { Error } from '@/components/assets/notification'
 import Formula from '@/components/assets/formula'
+import { Error } from '@/components/assets/notification'
 
 import SimulationAPI from '@/api/simulation'
 
@@ -19,15 +20,12 @@ const errors = {
  * @memberof module:components/project/simulation
  * @param {Object} props Props
  */
-const Parameters = ({ project, simulation }) => {
+const Parameters = ({ simulation, swr }) => {
   // State
   const [values, setValues] = useState({})
 
   // Data
   const subScheme = simulation?.scheme.configuration.parameters
-  const [, { mutateOneSimulation }] = SimulationAPI.useSimulations(
-    project?.simulations
-  )
 
   // Effect
   useEffect(() => {
@@ -50,7 +48,7 @@ const Parameters = ({ project, simulation }) => {
       done: true
     }
 
-    // Update
+    // API
     SimulationAPI.update({ id: simulation.id }, [
       {
         key: 'scheme',
@@ -61,8 +59,8 @@ const Parameters = ({ project, simulation }) => {
       }
     ])
       .then(() => {
-        // Mutate
-        mutateOneSimulation(newSimulation)
+        // Local
+        swr.mutateOneSimulation(newSimulation)
       })
       .catch((err) => {
         Error(errors.updateError, err)
@@ -152,6 +150,20 @@ const Parameters = ({ project, simulation }) => {
       </Layout.Content>
     </Layout>
   )
+}
+
+Parameters.propTypes = {
+  simulation: PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    scheme: PropTypes.shape({
+      configuration: PropTypes.shape({
+        parameters: PropTypes.object.isRequired
+      }).isRequired
+    }).isRequired
+  }).isRequired,
+  swr: PropTypes.shape({
+    mutateOneSimulation: PropTypes.func.isRequired
+  })
 }
 
 export default Parameters

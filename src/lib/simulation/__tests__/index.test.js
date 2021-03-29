@@ -349,10 +349,11 @@ describe('lib/simulation', () => {
   })
 
   it('delete', async () => {
-    await Simulation.del({}, {})
+    mockGet.mockImplementation(() => ({}))
+    await Simulation.del({})
     expect(mockPath).toHaveBeenCalledTimes(1)
     expect(mockAdd).toHaveBeenCalledTimes(0)
-    expect(mockGet).toHaveBeenCalledTimes(0)
+    expect(mockGet).toHaveBeenCalledTimes(1)
     expect(mockUpdate).toHaveBeenCalledTimes(0)
     expect(mockDelete).toHaveBeenCalledTimes(1)
     expect(mockUpdateProject).toHaveBeenCalledTimes(1)
@@ -368,7 +369,7 @@ describe('lib/simulation', () => {
     await Simulation.del({}, {})
     expect(mockPath).toHaveBeenCalledTimes(2)
     expect(mockAdd).toHaveBeenCalledTimes(0)
-    expect(mockGet).toHaveBeenCalledTimes(0)
+    expect(mockGet).toHaveBeenCalledTimes(2)
     expect(mockUpdate).toHaveBeenCalledTimes(0)
     expect(mockDelete).toHaveBeenCalledTimes(2)
     expect(mockUpdateProject).toHaveBeenCalledTimes(2)

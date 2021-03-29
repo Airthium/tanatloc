@@ -1,6 +1,6 @@
+import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
 import {
-  message,
   Alert,
   Button,
   Card,
@@ -40,16 +40,11 @@ const errors = {
  * @memberof module:components/project/simulation
  * @param {Object} props Props
  */
-const Geometry = ({ project, simulation, part }) => {
+const Geometry = ({ simulation, part, swr }) => {
   // State
-  const [upload, setUpload] = useState(false)
+  const [upload, setUpload] = useState(true)
   const [loading, setLoading] = useState(false)
   const [currentFile, setCurrentFile] = useState()
-
-  // Data
-  const [, { mutateOneSimulation }] = SimulationAPI.useSimulations(
-    project?.simulations
-  )
 
   // Units LaTeX
   useEffect(() => {
@@ -58,7 +53,7 @@ const Geometry = ({ project, simulation, part }) => {
 
   // Effect
   useEffect(() => {
-    const file = simulation?.scheme.configuration.geometry.file
+    const file = simulation.scheme.configuration.geometry.file
     setCurrentFile(file)
     if (file) {
       setUpload(false)
@@ -83,7 +78,7 @@ const Geometry = ({ project, simulation, part }) => {
    * On upload
    * @param {object} info Info
    */
-  const onChange = async (info) => {
+  const onUpload = async (info) => {
     if (info.file.status === 'uploading') setLoading(true)
 
     if (info.file.status === 'done') {
@@ -114,7 +109,7 @@ const Geometry = ({ project, simulation, part }) => {
         ])
 
         // Mutate simulation
-        mutateOneSimulation({ ...simulation }, true)
+        swr.mutateOneSimulation({ ...simulation }, true)
       } catch (err) {
         Error(errors.updateError, err)
       } finally {
@@ -149,7 +144,7 @@ const Geometry = ({ project, simulation, part }) => {
     }
 
     try {
-      // Update simulation
+      // API
       await SimulationAPI.update({ id: simulation.id }, [
         {
           key: 'scheme',
@@ -160,8 +155,8 @@ const Geometry = ({ project, simulation, part }) => {
         }
       ])
 
-      // Mutate
-      mutateOneSimulation({
+      // Local
+      swr.mutateOneSimulation({
         ...simulation,
         scheme: {
           ...simulation.scheme,
@@ -224,7 +219,7 @@ const Geometry = ({ project, simulation, part }) => {
               showUploadList={false}
               listType="picture-card"
               beforeUpload={beforeUpload}
-              onChange={onChange}
+              onChange={onUpload}
             >
               <div>
                 {loading ? <LoadingOutlined /> : <PlusOutlined />}
@@ -233,7 +228,7 @@ const Geometry = ({ project, simulation, part }) => {
             </Upload>
           </Space>
         ) : (
-          <>
+          <Space direction="vertical">
             <Card title="Informations">
               <Space direction="vertical">
                 <Typography.Text>
@@ -282,7 +277,7 @@ const Geometry = ({ project, simulation, part }) => {
                 )}
               </Space>
             </Card>
-            <Space style={{ marginTop: '10px' }}>
+            <Space direction="">
               <Button icon={<DownloadOutlined />} onClick={onDownload} />
               <Popconfirm
                 title="Are you sure"
@@ -292,11 +287,37 @@ const Geometry = ({ project, simulation, part }) => {
                 <Button type="danger" icon={<DeleteOutlined />} />
               </Popconfirm>
             </Space>
-          </>
+          </Space>
         )}
       </Layout.Content>
     </Layout>
   )
+}
+
+Geometry.propTypes = {
+  simulation: PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    scheme: PropTypes.shape({
+      configuration: PropTypes.shape({
+        geometry: PropTypes.shape({
+          file: PropTypes.shape({
+            origin: PropTypes.string.isRequired,
+            originPath: PropTypes.string.isRequired
+          })
+        }).isRequired
+      }).isRequired
+    }).isRequired
+  }).isRequired,
+  part: PropTypes.shape({
+    error: PropTypes.bool,
+    message: PropTypes.string,
+    solids: PropTypes.array,
+    faces: PropTypes.array,
+    edges: PropTypes.array
+  }),
+  swr: PropTypes.shape({
+    mutateOneSimulation: PropTypes.func.isRequired
+  }).isRequired
 }
 
 export default Geometry

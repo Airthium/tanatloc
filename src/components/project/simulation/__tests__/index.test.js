@@ -77,6 +77,8 @@ jest.mock('@/plugins', () => ({
 
 let wrapper
 describe('components/project/simulation', () => {
+  const swr = {}
+
   beforeEach(() => {
     mockAddedDiff.mockReset()
     mockAddedDiff.mockImplementation(() => ({}))
@@ -93,7 +95,7 @@ describe('components/project/simulation', () => {
     mockMutate.mockReset()
     mockUpdate.mockReset()
 
-    wrapper = shallow(<Simulation simulation={{}} />)
+    wrapper = shallow(<Simulation simulation={{}} swr={swr} />)
   })
 
   afterEach(() => {
@@ -107,7 +109,7 @@ describe('components/project/simulation', () => {
   it('onClose', () => {
     const onClose = jest.fn()
     wrapper.unmount()
-    wrapper = shallow(<Simulation onClose={onClose} />)
+    wrapper = shallow(<Simulation onClose={onClose} swr={swr} />)
     wrapper.find('panel').props().onClose()
     expect(onClose).toHaveBeenCalledTimes(1)
   })
@@ -125,6 +127,7 @@ describe('components/project/simulation', () => {
           }
         }}
         type="geometry"
+        swr={swr}
       />
     )
 
@@ -149,44 +152,44 @@ describe('components/project/simulation', () => {
 
   it('about', () => {
     wrapper.unmount()
-    wrapper = shallow(<Simulation type="about" />)
+    wrapper = shallow(<Simulation type="about" swr={swr} />)
     expect(wrapper.find('about').length).toBe(1)
   })
 
   it('geometry', () => {
     wrapper.unmount()
-    wrapper = shallow(<Simulation type="geometry" />)
+    wrapper = shallow(<Simulation type="geometry" swr={swr} />)
     expect(wrapper.find('geometry').length).toBe(1)
   })
 
   it('materials', () => {
     wrapper.unmount()
-    wrapper = shallow(<Simulation type="materials" />)
+    wrapper = shallow(<Simulation type="materials" swr={swr} />)
     expect(wrapper.find('materials').length).toBe(1)
   })
 
   it('parameters', () => {
     wrapper.unmount()
-    wrapper = shallow(<Simulation type="parameters" />)
+    wrapper = shallow(<Simulation type="parameters" swr={swr} />)
     expect(wrapper.find('parameters').length).toBe(1)
   })
 
   it('boundaryConditions', () => {
     wrapper.unmount()
-    wrapper = shallow(<Simulation type="boundaryConditions" />)
+    wrapper = shallow(<Simulation type="boundaryConditions" swr={swr} />)
     expect(wrapper.find('boundaryConditions').length).toBe(1)
   })
 
   it('run', () => {
     wrapper.unmount()
-    wrapper = shallow(<Simulation type="run" />)
+    wrapper = shallow(<Simulation type="run" swr={swr} />)
     expect(wrapper.find('run').length).toBe(1)
   })
 
   it('simulation effect', () => {
     // Load models
     wrapper.unmount()
-    wrapper = mount(<Simulation />)
+    wrapper = mount(<Simulation swr={swr} />)
     expect(wrapper.find('panel').props().title).toBe('About')
 
     // Need update (added)
@@ -203,6 +206,7 @@ describe('components/project/simulation', () => {
           }
         }}
         type="geometry"
+        swr={swr}
       />
     )
     expect(wrapper.find('panel').props().title).toBe('Geometry')

@@ -80,7 +80,7 @@ export default async (req, res) => {
     case 'DELETE':
       // Delete simulation
       try {
-        await SimulationLib.del(req.body, { id })
+        await SimulationLib.del({ id })
         res.status(200).end()
       } catch (err) {
         console.error(err)

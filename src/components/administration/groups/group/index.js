@@ -4,7 +4,7 @@ import { Button, Form, Input, Select } from 'antd'
 import { EditOutlined } from '@ant-design/icons'
 
 import Dialog from '@/components/assets/dialog'
-import { Error } from '@/components/assets/notification'
+import { Error as ErrorNotification } from '@/components/assets/notification'
 
 import GroupAPI from '@/api/group'
 
@@ -27,7 +27,7 @@ const errors = {
  * - group: Group in case of edit
  * - swr: SWR functions
  */
-const Edit = ({ userOptions, group, swr }) => {
+const Group = ({ userOptions, group, swr }) => {
   // State
   const [visible, setVisible] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -53,7 +53,7 @@ const Edit = ({ userOptions, group, swr }) => {
       // Close
       setVisible(false)
     } catch (err) {
-      Error(errors.addError, err)
+      ErrorNotification(errors.addError, err)
       setLoading(false)
     }
   }
@@ -93,7 +93,7 @@ const Edit = ({ userOptions, group, swr }) => {
       // Close
       setVisible(false)
     } catch (err) {
-      Error(errors.updateError, err)
+      ErrorNotification(errors.updateError, err)
       setLoading(false)
     }
   }
@@ -141,17 +141,48 @@ const Edit = ({ userOptions, group, swr }) => {
   )
 }
 
-Edit.propTypes = {
+Group.propTypes = {
+  userOptions: PropTypes.array.isRequired,
   group: PropTypes.shape({
     id: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
     users: PropTypes.array.isRequired
   }),
-  userOptions: PropTypes.array.isRequired,
-  swr: PropTypes.shape({
-    addOneGroup: PropTypes.func.isRequired,
-    mutateOneGroup: PropTypes.func.isRequired
-  }).isRequired
+  swr: (props, propName, componentName) => {
+    if (!props[propName])
+      return new Error(
+        'Invalid prop ' +
+          propName +
+          ' supplied to ' +
+          componentName +
+          '. swr missing'
+      )
+    if (props['group']) {
+      if (
+        !props[propName].mutateOneGroup ||
+        typeof props[propName].mutateOneGroup !== 'function'
+      )
+        return new Error(
+          'Invalid prop ' +
+            propName +
+            ' supplied to ' +
+            componentName +
+            '. mutateOneGroup missing'
+        )
+    } else {
+      if (
+        !props[propName].addOneGroup ||
+        typeof props[propName].addOneGroup !== 'function'
+      )
+        return new Error(
+          'Invalid prop ' +
+            propName +
+            ' supplied to ' +
+            componentName +
+            '. addOneGroup missing'
+        )
+    }
+  }
 }
 
-export default Edit
+export default Group

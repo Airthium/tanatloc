@@ -1,8 +1,6 @@
 import GroupLib from '@/lib/group'
 import OrganizationLib from '@/lib/organization'
 
-// TODO
-
 /**
  * Check authorization
  * @memberof module:route

@@ -106,7 +106,7 @@ const getByOrganization = async (id, data) => {
   const organization = await Organization.get(id, ['groups'])
 
   // Get groups
-  const groups =
+  return (
     organization.groups &&
     (await Promise.all(
       organization.groups.map(async (group) => {
@@ -135,8 +135,7 @@ const getByOrganization = async (id, data) => {
         }
       })
     ))
-
-  return groups
+  )
 }
 
 /**

@@ -16,6 +16,13 @@ jest.mock('../delete', () => {
   return Delete
 })
 
+jest.mock('@/plugins', () => ({
+  key: {
+    name: 'name',
+    category: 'category'
+  }
+}))
+
 let wrapper
 describe('components/administration/users', () => {
   const users = [{}]
@@ -46,8 +53,9 @@ describe('components/administration/users', () => {
 
     // Renders
     columns[3].render()
-    columns[4].render(true)
-    columns[4].render(false)
-    columns[5].render()
+    columns[4].render(['key'])
+    columns[5].render(true)
+    columns[5].render(false)
+    columns[6].render()
   })
 })

@@ -16,50 +16,85 @@ describe('components/assets/input/password', () => {
     wrapper.unmount()
   })
 
-  it('with rules', () => {
+  it('with rules', async () => {
+    let validator
     mockSystem.mockImplementation(() => ({
       allowsignup: true,
       password: {
         min: 8,
-        max: 64,
+        max: 16,
         requireLetter: true,
         requireNumber: true,
         requireSymbol: true
       }
     }))
     wrapper = shallow(<PasswordItem name="password" />)
-    expect(wrapper.find({ name: 'password' }).props().rules[1].min).toBe(8)
-    expect(wrapper.find({ name: 'password' }).props().rules[2].max).toBe(64)
-    expect(
-      wrapper.find({ name: 'password' }).props().rules[3].pattern
-    ).toBeDefined()
-    expect(
-      wrapper.find({ name: 'password' }).props().rules[4].pattern
-    ).toBeDefined()
-    expect(
-      wrapper.find({ name: 'password' }).props().rules[5].pattern
-    ).toBeDefined()
+
+    validator = wrapper.find({ name: 'password' }).props().rules[0]().validator
+
+    try {
+      await validator(null, '')
+    } catch (err) {
+      expect(err.message).toBe('Please enter a password')
+    }
+
+    try {
+      await validator(null, 'small')
+    } catch (err) {
+      expect(err.message).toBe('Your password is too small')
+    }
+
+    try {
+      await validator(null, 'longlonglonglonglonglong')
+    } catch (err) {
+      expect(err.message).toBe('Your password is too long')
+    }
+
+    try {
+      await validator(null, '12345678')
+    } catch (err) {
+      expect(err.message).toBe('Your password must contain a letter')
+    }
+
+    try {
+      await validator(null, 'abcdefgh')
+    } catch (err) {
+      expect(err.message).toBe('Your password must contain a number')
+    }
+
+    try {
+      await validator(null, 'abcd1234')
+    } catch (err) {
+      expect(err.message).toBe('Your password must contain a symbol')
+    }
+
+    await validator(null, 'abcd1234&')
 
     wrapper.unmount()
     mockSystem.mockImplementation(() => ({
       allowsignup: true,
       password: {
-        requireLetter: true,
-        requireNumber: true,
-        requireSymbol: true
+        requireLetter: false,
+        requireNumber: false,
+        requireSymbol: false
       }
     }))
-    wrapper = shallow(<PasswordItem />)
-    expect(wrapper.find({ name: 'password' }).props().rules[1].min).toBe(6)
-    expect(wrapper.find({ name: 'password' }).props().rules[2].max).toBe(16)
-    expect(
-      wrapper.find({ name: 'password' }).props().rules[3].pattern
-    ).toBeDefined()
-    expect(
-      wrapper.find({ name: 'password' }).props().rules[4].pattern
-    ).toBeDefined()
-    expect(
-      wrapper.find({ name: 'password' }).props().rules[5].pattern
-    ).toBeDefined()
+    wrapper = shallow(<PasswordItem edit={true} />)
+
+    validator = wrapper.find({ name: 'password' }).props().rules[0]().validator
+
+    await validator(null, '******')
+
+    try {
+      await validator(null, 'small')
+    } catch (err) {
+      expect(err.message).toBe('Your password is too small')
+    }
+
+    try {
+      await validator(null, 'longlonglonglonglonglong')
+    } catch (err) {
+      expect(err.message).toBe('Your password is too long')
+    }
   })
 })

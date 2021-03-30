@@ -22,6 +22,7 @@ const PasswordItem = ({
   label,
   inputPlaceholder,
   inputAutoComplete,
+  edit,
   style
 }) => {
   // Data
@@ -35,28 +36,33 @@ const PasswordItem = ({
       name={name || 'password'}
       label={label || 'Password'}
       rules={[
-        { required: true, message: errors.password },
-        {
-          min: system?.password?.min || 6,
-          message: errors.passwordTooSmall
-        },
-        {
-          max: system?.password?.max || 16,
-          message: errors.passwordTooLong
-        },
-        {
-          pattern: system?.password?.requireLetter && /^(?=.*[a-zA-Z])/,
-          message: errors.passwordRequireLetter
-        },
-        {
-          pattern: system?.password?.requireNumber && /^(?=.*[0-9])/,
-          message: errors.passwordRequireNumber
-        },
-        {
-          pattern:
-            system?.password?.requireSymbol && /[!@#$%^&*(){}[\]<>?/|.:;_-]/,
-          message: errors.passwordRequireSymbol
-        }
+        () => ({
+          validator(_, value) {
+            if (!value) return Promise.reject(new Error(errors.password))
+
+            if (edit && value === '******') return Promise.resolve()
+
+            if (value.length < (system?.password?.min || 6))
+              return Promise.reject(new Error(errors.passwordTooSmall))
+
+            if (value.length > (system?.password?.max || 16))
+              return Promise.reject(new Error(errors.passwordTooLong))
+
+            if (system?.password?.requireLetter)
+              if (value.search(/[a-zA-Z]/) === -1)
+                return Promise.reject(new Error(errors.passwordRequireLetter))
+
+            if (system?.password?.requireNumber)
+              if (value.search(/[0-9]/) === -1)
+                return Promise.reject(new Error(errors.passwordRequireNumber))
+
+            if (system?.password?.requireSymbol)
+              if (value.search(/[!@#$%^&*(){}[\]<>?/|.:;_-]/) === -1)
+                return Promise.reject(new Error(errors.passwordRequireSymbol))
+
+            return Promise.resolve()
+          }
+        })
       ]}
       style={style}
     >
@@ -73,6 +79,7 @@ PasswordItem.propTypes = {
   label: PropTypes.string,
   inputPlaceholder: PropTypes.string,
   inputAutoComplete: PropTypes.string,
+  edit: PropTypes.bool,
   style: PropTypes.object
 }
 

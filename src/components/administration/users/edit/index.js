@@ -1,11 +1,13 @@
 import PropTypes from 'prop-types'
 import { useState } from 'react'
-import { Button, Checkbox, Form, Input } from 'antd'
+import { Button, Checkbox, Form, Input, Select } from 'antd'
 import { EditOutlined } from '@ant-design/icons'
 
 import Dialog from '@/components/assets/dialog'
 import { PasswordItem } from '@/components/assets/input'
 import { Error } from '@/components/assets/notification'
+
+import Plugins from '@/plugins'
 
 import UserAPI from '@/api/user'
 
@@ -56,6 +58,7 @@ const Edit = ({ user, swr }) => {
       setVisible(false)
     } catch (err) {
       Error(errors.updateError, err)
+      setLoading(false)
     }
   }
 
@@ -67,23 +70,19 @@ const Edit = ({ user, swr }) => {
       <Dialog
         title="Edit user"
         visible={visible}
-        initialValues={user}
+        initialValues={{
+          ...user,
+          password: '******',
+          authorizedplugins: user.authorizedplugins || []
+        }}
         onCancel={() => setVisible(false)}
         onOk={onUpdate}
         loading={loading}
       >
-        <Form.Item
-          name="firstname"
-          label="First name"
-          rules={[{ required: true, message: 'Please enter a first name' }]}
-        >
+        <Form.Item name="firstname" label="First name">
           <Input />
         </Form.Item>
-        <Form.Item
-          name="lastname"
-          label="Last name"
-          rules={[{ required: true, message: 'Please enter a last name' }]}
-        >
+        <Form.Item name="lastname" label="Last name">
           <Input />
         </Form.Item>
         <Form.Item
@@ -93,7 +92,16 @@ const Edit = ({ user, swr }) => {
         >
           <Input />
         </Form.Item>
-        <PasswordItem name="password" />
+        <PasswordItem name="password" edit={true} />
+        <Form.Item name="authorizedplugins" label="Plugins">
+          <Select
+            mode="multiple"
+            options={Object.keys(Plugins).map((key) => ({
+              label: Plugins[key].name,
+              value: Plugins[key].key
+            }))}
+          />
+        </Form.Item>
         <Form.Item
           name="superuser"
           label="Administrator"

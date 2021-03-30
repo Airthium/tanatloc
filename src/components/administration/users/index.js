@@ -1,10 +1,12 @@
 import PropTypes from 'prop-types'
-import { Table, Space } from 'antd'
+import { Badge, Table, Space } from 'antd'
 import { CheckOutlined } from '@ant-design/icons'
 
 import Add from './add'
 import Edit from './edit'
 import Delete from './delete'
+
+import Plugins from '@/plugins'
 
 /**
  * Users
@@ -36,6 +38,28 @@ const Users = ({ users, swr }) => {
       title: 'Password',
       key: 'password',
       render: () => '******'
+    },
+    {
+      title: 'Plugins',
+      dataIndex: 'authorizedplugins',
+      key: 'authorizedplugins',
+      render: (plugins) => {
+        return (
+          <Space wrap={true}>
+            {plugins?.sort().map((key) => (
+              <Badge
+                key={key}
+                size="small"
+                count={Plugins[key].category}
+                offset={[5, -5]}
+                style={{ backgroundColor: '#108ee9' }}
+              >
+                {Plugins[key].name}
+              </Badge>
+            ))}
+          </Space>
+        )
+      }
     },
     {
       title: 'Administrator',

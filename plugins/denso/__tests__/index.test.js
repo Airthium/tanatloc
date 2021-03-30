@@ -7,6 +7,7 @@ describe('plugins/denso', () => {
     expect(Denso).toEqual({
       category: 'Model',
       key: 'denso',
+      name: 'Denso',
       models: [{}]
     })
   })

@@ -16,6 +16,13 @@ jest.mock('@/components/assets/notification', () => ({
   Error: () => mockError()
 }))
 
+jest.mock('@/plugins', () => ({
+  key: {
+    name: 'name',
+    key: 'key'
+  }
+}))
+
 const mockAdd = jest.fn()
 const mockUpdateById = jest.fn()
 jest.mock('@/api/user', () => ({

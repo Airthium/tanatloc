@@ -23,6 +23,7 @@ export default async (req, res) => {
         'firstname',
         'lastname',
         'email',
+        'authorizedplugins',
         'superuser'
       ])
       res.status(200).json({ users })

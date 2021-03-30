@@ -1,11 +1,13 @@
 import PropTypes from 'prop-types'
 import { useState } from 'react'
-import { notification, Button, Checkbox, Form, Input } from 'antd'
+import { notification, Button, Checkbox, Form, Input, Select } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
 
 import Dialog from '@/components/assets/dialog'
 import { PasswordItem } from '@/components/assets/input'
 import { Error } from '@/components/assets/notification'
+
+import Plugins from '@/plugins'
 
 import UserAPI from '@/api/user'
 
@@ -56,6 +58,10 @@ const Add = ({ swr }) => {
           value: values.lastname
         },
         {
+          key: 'authorizedplugins',
+          value: values.authorizedplugins
+        },
+        {
           key: 'superuser',
           value: !!values.superuser
         }
@@ -88,18 +94,10 @@ const Add = ({ swr }) => {
         onOk={onAdd}
         loading={loading}
       >
-        <Form.Item
-          name="firstname"
-          label="First name"
-          rules={[{ required: true, message: 'Please enter a first name' }]}
-        >
+        <Form.Item name="firstname" label="First name">
           <Input />
         </Form.Item>
-        <Form.Item
-          name="lastname"
-          label="Last name"
-          rules={[{ required: true, message: 'Please enter a last name' }]}
-        >
+        <Form.Item name="lastname" label="Last name">
           <Input />
         </Form.Item>
         <Form.Item
@@ -110,6 +108,15 @@ const Add = ({ swr }) => {
           <Input />
         </Form.Item>
         <PasswordItem name="password" />
+        <Form.Item name="authorizedplugins" label="Plugins">
+          <Select
+            mode="multiple"
+            options={Object.keys(Plugins).map((key) => ({
+              label: Plugins[key].name,
+              value: Plugins[key].key
+            }))}
+          />
+        </Form.Item>
         <Form.Item
           name="superuser"
           label="Administrator"

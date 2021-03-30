@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types'
 import { useState } from 'react'
 import { useRouter } from 'next/router'
 import { Button, Card, Modal, Space, Typography } from 'antd'
@@ -28,6 +29,11 @@ const CloudServer = ({ disabled, cloudServer, onOk }) => {
     setVisible(false)
   }
 
+  /**
+   * On merge
+   * @param {Object} plugin Plugin
+   * @param {Object} diff Diff
+   */
   const onMerge = (plugin, diff) => {
     // Merge
     merge(plugin, diff)
@@ -39,6 +45,9 @@ const CloudServer = ({ disabled, cloudServer, onOk }) => {
     close()
   }
 
+  /**
+   * Render
+   */
   return (
     <Card title="Cloud server">
       <Modal
@@ -103,6 +112,15 @@ const CloudServer = ({ disabled, cloudServer, onOk }) => {
       </Space>
     </Card>
   )
+}
+
+CloudServer.propTypes = {
+  disabled: PropTypes.bool,
+  cloudServer: PropTypes.shape({
+    name: PropTypes.string,
+    inUseConfiguration: PropTypes.object.isRequired
+  }),
+  onOk: PropTypes.func.isRequired
 }
 
 export default CloudServer

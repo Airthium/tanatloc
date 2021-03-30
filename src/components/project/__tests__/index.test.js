@@ -1,5 +1,6 @@
 import Project from '@/components/project'
 import { shallow, mount } from 'enzyme'
+import { act } from 'react-dom/test-utils'
 
 const mockRouter = jest.fn()
 jest.mock('next/router', () => ({
@@ -10,11 +11,30 @@ jest.mock('next/router', () => ({
   })
 }))
 
-jest.mock('@/components/project/data', () => 'data')
-jest.mock('@/components/project/view', () => 'view')
+const mockError = jest.fn()
+jest.mock('@/components/assets/notification', () => ({
+  Error: () => mockError()
+}))
+
+jest.mock('@/components/notauthorized', () => {
+  const NotAuthorized = () => <div />
+  return NotAuthorized
+})
+
+jest.mock('@/components/project/data', () => {
+  const Data = () => <div />
+  return Data
+})
+
+jest.mock('@/components/project/view', () => {
+  const View = () => <div />
+  return View
+})
+
 jest.mock('@/components/project/simulation', () => {
-  const Simulation = () => 'simulation'
-  Simulation.Selector = 'selector'
+  const Simulation = () => <div />
+  const Selector = () => <div />
+  Simulation.Selector = Selector
   return Simulation
 })
 
@@ -24,10 +44,14 @@ jest.mock('@/api/user', () => ({
 }))
 
 const mockProject = jest.fn()
+const mockReloadProject = jest.fn()
 const mockMutateProject = jest.fn()
 const mockUpdate = jest.fn()
 jest.mock('@/api/project', () => ({
-  useProject: () => [mockProject(), { mutateProject: mockMutateProject }],
+  useProject: () => [
+    mockProject(),
+    { reloadProject: mockReloadProject, mutateProject: mockMutateProject }
+  ],
   update: async () => mockUpdate()
 }))
 
@@ -38,19 +62,20 @@ jest.mock('@/api/simulation', () => ({
   update: async () => mockSimulationUpdate(),
   useSimulations: () => [
     mockSimulations(),
-    { addOneSimulation: () => {}, mutateOneSimulation: () => {} }
+    {
+      addOneSimulation: () => {},
+      delOneSimulation: () => {},
+      mutateOneSimulation: () => {}
+    }
   ]
-}))
-
-const mockError = jest.fn()
-jest.mock('@/components/assets/notification', () => ({
-  Error: () => mockError()
 }))
 
 let wrapper
 describe('components/project', () => {
   beforeEach(() => {
     mockRouter.mockReset()
+
+    mockError.mockReset()
 
     mockUser.mockReset()
     mockUser.mockImplementation(() => ({ id: 'id' }))
@@ -60,6 +85,7 @@ describe('components/project', () => {
       title: 'title',
       simulations: ['id', 'id']
     }))
+    mockReloadProject.mockReset()
     mockMutateProject.mockReset()
     mockUpdate.mockReset()
 
@@ -159,11 +185,11 @@ describe('components/project', () => {
 
   it('addSimulation', () => {
     wrapper.find('Menu').at(1).props().onClick({ key: 'new-simulation' })
-    expect(wrapper.find('selector').props().visible).toBe(true)
+    expect(wrapper.find('Selector').props().visible).toBe(true)
   })
 
   it('selectorOk', async () => {
-    await wrapper.find('selector').props().onOk({ configuration: {} })
+    await wrapper.find('Selector').props().onOk({ configuration: {} })
 
     expect(wrapper.find('Menu').at(1).props().children[1].length).toBe(1)
 
@@ -171,7 +197,7 @@ describe('components/project', () => {
     wrapper.unmount()
     mockProject.mockImplementation(() => ({}))
     wrapper = shallow(<Project />)
-    await wrapper.find('selector').props().onOk({ configuration: {} })
+    await wrapper.find('Selector').props().onOk({ configuration: {} })
 
     // Error
     wrapper.unmount()
@@ -179,18 +205,18 @@ describe('components/project', () => {
       throw new Error()
     })
     wrapper = shallow(<Project />)
-    await wrapper.find('selector').props().onOk({ configuration: {} })
+    await wrapper.find('Selector').props().onOk({ configuration: {} })
   })
 
   it('selector cancel', () => {
-    wrapper.find('selector').props().onCancel()
-    expect(wrapper.find('selector').props().visible).toBe(false)
+    wrapper.find('Selector').props().onCancel()
+    expect(wrapper.find('Selector').props().visible).toBe(false)
   })
 
   it('select simulation', async () => {
     // Add simulation first
     await wrapper
-      .find('selector')
+      .find('Selector')
       .props()
       .onOk({
         children: [
@@ -231,6 +257,7 @@ describe('components/project', () => {
     wrapper.unmount()
     mockSimulations.mockImplementation(() => [
       {
+        id: 'id',
         scheme: {
           configuration: {
             geometry: {
@@ -243,18 +270,21 @@ describe('components/project', () => {
     ])
     wrapper = mount(<Project />)
 
-    wrapper
-      .find('InternalMenu')
-      .at(1)
-      .props()
-      .onClick({ key: 'simulation&id&materials' })
-    wrapper.update()
+    act(() =>
+      wrapper
+        .find('InternalMenu')
+        .at(1)
+        .props()
+        .onClick({ key: 'simulation&id&materials' })
+    )
+    // wrapper.update()
     expect(mockSimulationUpdate).toHaveBeenCalledTimes(1)
 
     // Force geometry (with part)
     wrapper.unmount()
     mockSimulations.mockImplementation(() => [
       {
+        id: 'id',
         scheme: {
           configuration: {
             part: {},
@@ -268,18 +298,21 @@ describe('components/project', () => {
     ])
     wrapper = mount(<Project />)
 
-    wrapper
-      .find('InternalMenu')
-      .at(1)
-      .props()
-      .onClick({ key: 'simulation&id&materials' })
-    wrapper.update()
+    act(() =>
+      wrapper
+        .find('InternalMenu')
+        .at(1)
+        .props()
+        .onClick({ key: 'simulation&id&materials' })
+    )
+    // wrapper.update()
     expect(mockSimulationUpdate).toHaveBeenCalledTimes(2)
 
     // Force geometry (error)
     wrapper.unmount()
     mockSimulations.mockImplementation(() => [
       {
+        id: 'id',
         scheme: {
           configuration: {
             geometry: {
@@ -295,19 +328,22 @@ describe('components/project', () => {
     })
     wrapper = mount(<Project />)
 
-    wrapper
-      .find('InternalMenu')
-      .at(1)
-      .props()
-      .onClick({ key: 'simulation&id&materials' })
+    act(() =>
+      wrapper
+        .find('InternalMenu')
+        .at(1)
+        .props()
+        .onClick({ key: 'simulation&id&materials' })
+    )
     wrapper.update()
-    expect(mockSimulationUpdate).toHaveBeenCalledTimes(4)
+    expect(mockSimulationUpdate).toHaveBeenCalledTimes(3)
 
     // Remove part
     wrapper.unmount()
     mockSimulationUpdate.mockReset()
     mockSimulations.mockImplementation(() => [
       {
+        id: 'id',
         scheme: {
           configuration: {
             part: { type: 'geometry' },
@@ -320,11 +356,13 @@ describe('components/project', () => {
     ])
     wrapper = mount(<Project />)
 
-    wrapper
-      .find('InternalMenu')
-      .at(1)
-      .props()
-      .onClick({ key: 'simulation&id&materials' })
+    act(() =>
+      wrapper
+        .find('InternalMenu')
+        .at(1)
+        .props()
+        .onClick({ key: 'simulation&id&materials' })
+    )
     wrapper.update()
     expect(mockSimulationUpdate).toHaveBeenCalledTimes(1)
 
@@ -335,12 +373,14 @@ describe('components/project', () => {
     })
     wrapper = mount(<Project />)
 
-    wrapper
-      .find('InternalMenu')
-      .at(1)
-      .props()
-      .onClick({ key: 'simulation&id&materials' })
+    act(() =>
+      wrapper
+        .find('InternalMenu')
+        .at(1)
+        .props()
+        .onClick({ key: 'simulation&id&materials' })
+    )
     wrapper.update()
-    expect(mockSimulationUpdate).toHaveBeenCalledTimes(3)
+    expect(mockSimulationUpdate).toHaveBeenCalledTimes(2)
   })
 })

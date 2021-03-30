@@ -142,7 +142,7 @@ const Simulation = ({ user, simulation, type, part, swr, onClose }) => {
   useEffect(() => {
     const allModels = loadModels(user, Models, Plugins)
     setModels(allModels)
-  }, [Models, Plugins, JSON.stringify(user)])
+  }, [Models, Plugins, user])
 
   // Check model update
   useEffect(() => {
@@ -158,7 +158,7 @@ const Simulation = ({ user, simulation, type, part, swr, onClose }) => {
         setNeedUpdate(true)
       else setNeedUpdate(false)
     }
-  }, [simulation, models])
+  }, [simulation, JSON.stringify(models)])
 
   /**
    * Simulation effect

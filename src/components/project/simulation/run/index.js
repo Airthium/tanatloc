@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
 import { Button, Card, Drawer, Layout, Select, Space, Steps, Tabs } from 'antd'
 import {
@@ -34,7 +35,7 @@ const errors = {
  * @memberof module:components/project/simulation
  * @param {Object} props Props
  */
-const Run = ({ project, simulation }) => {
+const Run = ({ simulation, swr }) => {
   // State
   const [disabled, setDisabled] = useState(false)
   const [running, setRunning] = useState(false)
@@ -54,10 +55,7 @@ const Run = ({ project, simulation }) => {
   // Data
   const [currentSimulation, { mutateSimulation }] = SimulationAPI.useSimulation(
     simulation?.id,
-    500
-  )
-  const [, { mutateOneSimulation }] = SimulationAPI.useSimulations(
-    project?.simulations
+    2000
   )
 
   // Check tasks
@@ -300,7 +298,7 @@ const Run = ({ project, simulation }) => {
       configuration.run.cloudServer = cloudServer
       newSimulation.scheme.configuration = configuration
 
-      // Update simulation
+      // API
       await SimulationAPI.update({ id: simulation.id }, [
         {
           key: 'scheme',
@@ -311,8 +309,8 @@ const Run = ({ project, simulation }) => {
         }
       ])
 
-      // Mutate
-      mutateOneSimulation(currentSimulation)
+      // Local
+      swr.mutateOneSimulation(currentSimulation)
       mutateSimulation(newSimulation)
     } catch (err) {
       Error(errors.updateError, err)
@@ -402,7 +400,7 @@ const Run = ({ project, simulation }) => {
       }
 
       // Mutate
-      mutateOneSimulation(currentSimulation)
+      swr.mutateOneSimulation(currentSimulation)
     } catch (err) {
       Error(errors.updateError, err)
     }
@@ -606,6 +604,13 @@ const Run = ({ project, simulation }) => {
       </Layout.Content>
     </Layout>
   )
+}
+
+Run.propTypes = {
+  simulation: PropTypes.object.isRequired,
+  swr: PropTypes.shape({
+    mutateOneSimulation: PropTypes.func.isRequired
+  }).isRequired
 }
 
 export default Run

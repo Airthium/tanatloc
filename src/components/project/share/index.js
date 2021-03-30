@@ -67,7 +67,7 @@ const Share = ({ project, organizations, swr }) => {
     })
 
     setTreeData(data)
-  }, [organizations])
+  }, [JSON.stringify(organizations)])
 
   /**
    * On change

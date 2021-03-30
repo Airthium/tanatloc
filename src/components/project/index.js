@@ -72,6 +72,7 @@ const Project = () => {
 
   // Update simulation
   useEffect(() => {
+    console.log(currentSimulation)
     if (currentSimulation) {
       const simulation = simulations.find((s) => s.id === currentSimulation?.id)
       if (JSON.stringify(simulation) !== JSON.stringify(currentSimulation))

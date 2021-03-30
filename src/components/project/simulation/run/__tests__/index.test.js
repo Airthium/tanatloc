@@ -4,24 +4,22 @@ import { act } from 'react-dom/test-utils'
 
 import '@/config/jest/mockMatchMedia'
 
-jest.mock(
-  '@/components/project/simulation/run/cloudServer',
-  () => 'CloudServer'
-)
+jest.mock('@/components/project/simulation/run/cloudServer', () => {
+  const CloudServer = () => <div />
+  return CloudServer
+})
 
 const mockRun = jest.fn()
 const mockUpdate = jest.fn()
 const mockSimulation = jest.fn()
 const mockMutateSimulation = jest.fn()
-const mockMutateOneSimulation = jest.fn()
 jest.mock('@/api/simulation', () => ({
   run: async () => mockRun(),
   update: async () => mockUpdate(),
   useSimulation: () => [
     mockSimulation(),
     { mutateSimulation: mockMutateSimulation }
-  ],
-  useSimulations: () => [, { mutateOneSimulation: mockMutateOneSimulation }]
+  ]
 }))
 
 const mockDownloadGet = jest.fn()
@@ -36,7 +34,6 @@ jest.mock('@/components/assets/notification', () => ({
 
 let wrapper
 describe('components/project/simulation/run', () => {
-  const project = {}
   const simulation = {
     scheme: {
       configuration: {
@@ -52,6 +49,8 @@ describe('components/project/simulation/run', () => {
       }
     }
   }
+  const mutateOneSimulation = jest.fn()
+  const swr = { mutateOneSimulation }
 
   beforeEach(() => {
     mockRun.mockReset()
@@ -77,7 +76,7 @@ describe('components/project/simulation/run', () => {
     }))
     mockDownloadGet.mockReset()
     mockError.mockReset()
-    wrapper = shallow(<Run project={project} simulation={simulation} />)
+    wrapper = shallow(<Run simulation={simulation} swr={swr} />)
   })
 
   afterEach(() => {
@@ -110,7 +109,7 @@ describe('components/project/simulation/run', () => {
     // Normal
     await wrapper.find('CloudServer').props().onOk({})
     expect(mockUpdate).toHaveBeenCalledTimes(1)
-    expect(mockMutateOneSimulation).toHaveBeenCalledTimes(1)
+    expect(mutateOneSimulation).toHaveBeenCalledTimes(1)
     expect(mockMutateSimulation).toHaveBeenCalledTimes(1)
     expect(mockError).toHaveBeenCalledTimes(0)
 
@@ -120,41 +119,60 @@ describe('components/project/simulation/run', () => {
     })
     await wrapper.find('CloudServer').props().onOk({})
     expect(mockUpdate).toHaveBeenCalledTimes(2)
-    expect(mockMutateOneSimulation).toHaveBeenCalledTimes(1)
+    expect(mutateOneSimulation).toHaveBeenCalledTimes(1)
     expect(mockMutateSimulation).toHaveBeenCalledTimes(1)
     expect(mockError).toHaveBeenCalledTimes(1)
   })
 
   it('onLog', () => {
     wrapper.unmount()
-    wrapper = mount(<Run project={project} simulation={simulation} />)
+    wrapper = mount(<Run simulation={simulation} swr={swr} />)
 
     // Mesh log
-    wrapper.find('Step').at(0).props().description.props.onClick()
+    act(() => wrapper.find('Step').at(0).props().description.props.onClick())
 
     // Simulation log
-    wrapper.find('Step').at(1).props().description.props.onClick()
+    act(() => wrapper.find('Step').at(1).props().description.props.onClick())
   })
 
-  it('setPart', () => {
+  it('setPart', async () => {
     wrapper.unmount()
-    wrapper = mount(<Run project={project} simulation={simulation} />)
+    wrapper = mount(<Run simulation={simulation} swr={swr} />)
 
-    wrapper.find({ title: 'Results' }).find('Button').at(1).props().onClick()
+    await act(
+      async () =>
+        await wrapper
+          .find({ title: 'Results' })
+          .find('Button')
+          .at(1)
+          .props()
+          .onClick()
+    )
 
     // Error
     mockUpdate.mockImplementation(() => {
       throw new Error()
     })
-    wrapper.find({ title: 'Results' }).find('Button').at(1).props().onClick()
+    await act(
+      async () =>
+        await wrapper
+          .find({ title: 'Results' })
+          .find('Button')
+          .at(1)
+          .props()
+          .onClick()
+    )
   })
 
-  it('onArchiveDownload', () => {
+  it('onArchiveDownload', async () => {
     wrapper.unmount()
-    wrapper = mount(<Run project={project} simulation={simulation} />)
+    wrapper = mount(<Run simulation={simulation} swr={swr} />)
 
     // Error
-    wrapper.find({ title: 'Results' }).props().extra.props.onClick()
+    await act(
+      async () =>
+        await wrapper.find({ title: 'Results' }).props().extra.props.onClick()
+    )
     wrapper.update()
     expect(mockDownloadGet).toHaveBeenCalledTimes(1)
 
@@ -165,17 +183,22 @@ describe('components/project/simulation/run', () => {
     window.URL = {
       createObjectURL: () => 'object'
     }
-    wrapper.find({ title: 'Results' }).props().extra.props.onClick()
+    await act(
+      async () =>
+        await wrapper.find({ title: 'Results' }).props().extra.props.onClick()
+    )
     wrapper.update()
     expect(mockDownloadGet).toHaveBeenCalledTimes(2)
   })
 
-  it('onDownload', () => {
+  it('onDownload', async () => {
     wrapper.unmount()
-    wrapper = mount(<Run project={project} simulation={simulation} />)
+    wrapper = mount(<Run simulation={simulation} swr={swr} />)
 
     // Error
-    wrapper.find({ size: 'small' }).at(3).props().onClick()
+    await act(
+      async () => await wrapper.find({ size: 'small' }).at(3).props().onClick()
+    )
     wrapper.update()
     expect(mockDownloadGet).toHaveBeenCalledTimes(1)
 
@@ -186,19 +209,21 @@ describe('components/project/simulation/run', () => {
     window.URL = {
       createObjectURL: () => 'object'
     }
-    wrapper.find({ size: 'small' }).at(3).props().onClick()
+    await act(
+      async () => await wrapper.find({ size: 'small' }).at(3).props().onClick()
+    )
     wrapper.update()
     expect(mockDownloadGet).toHaveBeenCalledTimes(2)
   })
 
-  it('effect', () => {
+  it('effect', async () => {
     wrapper.unmount()
 
     // No configuration
     mockSimulation.mockImplementation(() => ({
       scheme: {}
     }))
-    wrapper = mount(<Run project={project} simulation={simulation} />)
+    wrapper = mount(<Run simulation={simulation} swr={swr} />)
     expect(wrapper).toBeDefined()
 
     // No file
@@ -220,7 +245,7 @@ describe('components/project/simulation/run', () => {
         }
       ]
     }))
-    wrapper = mount(<Run project={project} simulation={{}} />)
+    wrapper = mount(<Run simulation={{}} swr={swr} />)
     expect(wrapper).toBeDefined()
 
     // With files
@@ -250,10 +275,13 @@ describe('components/project/simulation/run', () => {
         }
       ]
     }))
-    wrapper = mount(<Run project={project} simulation={simulation} />)
+    wrapper = mount(<Run simulation={simulation} swr={swr} />)
     expect(wrapper).toBeDefined()
 
-    wrapper.find('Step').at(0).props().description.props.onClick()
+    await act(
+      async () =>
+        await wrapper.find('Step').at(0).props().description.props.onClick()
+    )
 
     wrapper.unmount()
     mockSimulation.mockImplementation(() => ({
@@ -283,15 +311,26 @@ describe('components/project/simulation/run', () => {
         }
       ]
     }))
-    wrapper = mount(<Run project={project} simulation={simulation} />)
+    wrapper = mount(<Run simulation={simulation} swr={swr} />)
     expect(wrapper).toBeDefined()
 
-    wrapper.find('Step').at(0).props().description.props.onClick()
+    await act(
+      async () =>
+        await wrapper.find('Step').at(0).props().description.props.onClick()
+    )
 
     wrapper.unmount()
-    wrapper = mount(<Run project={project} simulation={simulation} />)
+    wrapper = mount(<Run simulation={simulation} swr={swr} />)
     expect(wrapper).toBeDefined()
-    wrapper.find({ title: 'Results' }).find('Button').at(1).props().onClick()
+    await act(
+      async () =>
+        await wrapper
+          .find({ title: 'Results' })
+          .find('Button')
+          .at(1)
+          .props()
+          .onClick()
+    )
 
     // With filters
     wrapper.unmount()
@@ -339,47 +378,53 @@ describe('components/project/simulation/run', () => {
         }
       ]
     }))
-    wrapper = mount(<Run project={project} simulation={simulation} />)
+    wrapper = mount(<Run simulation={simulation} swr={swr} />)
     expect(wrapper).toBeDefined()
 
     // On selector change
-    wrapper.find('Select').props().onChange(1, 1, 0)
+    await act(
+      async () => await wrapper.find('Select').props().onChange(1, 1, 0)
+    )
     wrapper.update()
 
     // Set part
-    wrapper.find('Button').at(9).props().onClick()
+    await act(async () => await wrapper.find('Button').at(9).props().onClick())
     wrapper.update()
 
     // On selector change
-    wrapper.find('Select').props().onChange(10, 1, 0)
+    await act(
+      async () => await wrapper.find('Select').props().onChange(10, 1, 0)
+    )
     wrapper.update()
 
-    wrapper.find('Select').props().onChange(0, 1, 0)
+    await act(
+      async () => await wrapper.find('Select').props().onChange(0, 1, 0)
+    )
     wrapper.update()
 
     // On play / pause
-    act(() => wrapper.find('Button').at(6).props().onClick())
+    await act(async () => await wrapper.find('Button').at(6).props().onClick())
     wrapper.update()
     global.setInterval = (callback) => {
       callback()
       return 1
     }
-    act(() => wrapper.find('Button').at(5).props().onClick())
+    await act(async () => await wrapper.find('Button').at(5).props().onClick())
     wrapper.update()
-    act(() => wrapper.find('Button').at(5).props().onClick())
+    await act(async () => await wrapper.find('Button').at(5).props().onClick())
     wrapper.update()
-    act(() => wrapper.find('Button').at(5).props().onClick())
+    await act(async () => await wrapper.find('Button').at(5).props().onClick())
     wrapper.update()
-    act(() => wrapper.find('Button').at(6).props().onClick())
+    await act(async () => await wrapper.find('Button').at(6).props().onClick())
     wrapper.update()
 
     // Set part
     wrapper.find('Button').at(7).props().onClick()
     wrapper.update()
 
-    act(() => wrapper.find('Button').at(5).props().onClick())
+    await act(async () => await wrapper.find('Button').at(5).props().onClick())
     wrapper.update()
-    act(() => wrapper.find('Button').at(6).props().onClick())
+    await act(async () => await wrapper.find('Button').at(6).props().onClick())
     wrapper.update()
 
     // With filters without multiplicator
@@ -427,7 +472,7 @@ describe('components/project/simulation/run', () => {
         }
       ]
     }))
-    wrapper = mount(<Run project={project} simulation={simulation} />)
+    wrapper = mount(<Run simulation={simulation} swr={swr} />)
     expect(wrapper).toBeDefined()
 
     // With empty filter
@@ -464,7 +509,7 @@ describe('components/project/simulation/run', () => {
         }
       ]
     }))
-    wrapper = mount(<Run project={project} simulation={simulation} />)
+    wrapper = mount(<Run simulation={simulation} swr={swr} />)
     expect(wrapper).toBeDefined()
   })
 })

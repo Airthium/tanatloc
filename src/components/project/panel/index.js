@@ -22,9 +22,14 @@ const Panel = ({ visible, title, children, onClose }) => {
 }
 
 Panel.propTypes = {
-  visible: PropTypes.bool.isRequired,
-  title: PropTypes.string.isRequired,
-  children: PropTypes.object,
+  visible: PropTypes.bool,
+  title: PropTypes.string,
+  children: PropTypes.oneOfType([
+    PropTypes.array,
+    PropTypes.object,
+    PropTypes.element,
+    PropTypes.string
+  ]),
   onClose: PropTypes.func.isRequired
 }
 

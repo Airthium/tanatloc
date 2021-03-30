@@ -367,7 +367,7 @@ const ThreeView = ({ loading, part }) => {
         })
       }
     })
-  }, [selectHighlighted, selectSelected])
+  }, [selectHighlighted, JSON.stringify(selectSelected)])
 
   /**
    * Compute scene bounding box

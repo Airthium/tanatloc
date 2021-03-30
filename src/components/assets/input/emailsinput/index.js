@@ -6,6 +6,7 @@ import Utils from '@/lib/utils'
 
 /**
  * Emails input
+ * @deprecated
  * @memberof module:components/assets/input
  * @param {Object} props Props
  */

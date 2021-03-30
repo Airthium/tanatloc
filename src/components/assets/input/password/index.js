@@ -17,12 +17,13 @@ const errors = {
  * @memberof module:components/assets/input
  * @param {Object} props Props
  *
+ * @description
  * Props:
- * - name: Name of the form item (default: 'password')
- * - label: Label of the form item (default: 'Password')
+ * - name: Name of the form item (default: `password`)
+ * - label: Label of the form item (default: `Password`)
  * - inputPlaceholder: Input placeholder (default: none)
  * - inputAutoComplete: Input autocomplete (default: none)
- * - edit: Allow '******' as a valid password for editing purpose (default: false)
+ * - edit: Allow `******` as a valid password for editing purpose (default: `false`)
  * - style: Style of the form item (default: none)
  */
 const PasswordItem = ({

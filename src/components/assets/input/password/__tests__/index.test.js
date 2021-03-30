@@ -16,8 +16,7 @@ describe('components/assets/input/password', () => {
     wrapper.unmount()
   })
 
-  it('with rules', async () => {
-    let validator
+  it('with system password', async () => {
     mockSystem.mockImplementation(() => ({
       allowsignup: true,
       password: {
@@ -30,7 +29,8 @@ describe('components/assets/input/password', () => {
     }))
     wrapper = shallow(<PasswordItem name="password" />)
 
-    validator = wrapper.find({ name: 'password' }).props().rules[0]().validator
+    const validator = wrapper.find({ name: 'password' }).props().rules[0]()
+      .validator
 
     try {
       await validator(null, '')
@@ -41,25 +41,33 @@ describe('components/assets/input/password', () => {
     try {
       await validator(null, 'small')
     } catch (err) {
-      expect(err.message).toBe('Your password is too small')
+      expect(err.message).toBe(
+        'Your password is too small - Your password must contain a number - Your password must contain a symbol'
+      )
     }
 
     try {
       await validator(null, 'longlonglonglonglonglong')
     } catch (err) {
-      expect(err.message).toBe('Your password is too long')
+      expect(err.message).toBe(
+        'Your password is too long - Your password must contain a number - Your password must contain a symbol'
+      )
     }
 
     try {
       await validator(null, '12345678')
     } catch (err) {
-      expect(err.message).toBe('Your password must contain a letter')
+      expect(err.message).toBe(
+        'Your password must contain a letter - Your password must contain a symbol'
+      )
     }
 
     try {
       await validator(null, 'abcdefgh')
     } catch (err) {
-      expect(err.message).toBe('Your password must contain a number')
+      expect(err.message).toBe(
+        'Your password must contain a number - Your password must contain a symbol'
+      )
     }
 
     try {
@@ -69,8 +77,9 @@ describe('components/assets/input/password', () => {
     }
 
     await validator(null, 'abcd1234&')
+  })
 
-    wrapper.unmount()
+  it('without system password', async () => {
     mockSystem.mockImplementation(() => ({
       allowsignup: true,
       password: {
@@ -81,7 +90,8 @@ describe('components/assets/input/password', () => {
     }))
     wrapper = shallow(<PasswordItem edit={true} />)
 
-    validator = wrapper.find({ name: 'password' }).props().rules[0]().validator
+    const validator = wrapper.find({ name: 'password' }).props().rules[0]()
+      .validator
 
     await validator(null, '******')
 
@@ -96,5 +106,11 @@ describe('components/assets/input/password', () => {
     } catch (err) {
       expect(err.message).toBe('Your password is too long')
     }
+
+    await validator(null, '12345678')
+
+    await validator(null, 'abcdefgh')
+
+    await validator(null, 'abcd1234')
   })
 })

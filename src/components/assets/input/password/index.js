@@ -16,6 +16,14 @@ const errors = {
  * Password item
  * @memberof module:components/assets/input
  * @param {Object} props Props
+ *
+ * Props:
+ * - name: Name of the form item (default: 'password')
+ * - label: Label of the form item (default: 'Password')
+ * - inputPlaceholder: Input placeholder (default: none)
+ * - inputAutoComplete: Input autocomplete (default: none)
+ * - edit: Allow '******' as a valid password for editing purpose (default: false)
+ * - style: Style of the form item (default: none)
  */
 const PasswordItem = ({
   name,
@@ -29,6 +37,44 @@ const PasswordItem = ({
   const [system] = SystemAPI.useSystem()
 
   /**
+   * Check regex
+   * @param {string} value Value
+   * @param {RegExp} regex Regex
+   */
+  const checkRegex = (value, regex) => {
+    if (value.search(regex) === -1) return false
+    return true
+  }
+
+  /**
+   * Require letter
+   * @param {string} value Value
+   */
+  const requireLetter = (value) => {
+    if (system?.password?.requireLetter) return checkRegex(value, /[a-zA-Z]/)
+    return true
+  }
+
+  /**
+   * Require number
+   * @param {string} value Value
+   */
+  const requireNumber = (value) => {
+    if (system?.password?.requireNumber) return checkRegex(value, /[0-9]/)
+    return true
+  }
+
+  /**
+   * Require symbol
+   * @param {string} value Value
+   */
+  const requireSymbol = (value) => {
+    if (system?.password?.requireNumber)
+      return checkRegex(value, /[!@#$%^&*(){}[\]<>?/|.:;_-]/)
+    return true
+  }
+
+  /**
    * Render
    */
   return (
@@ -39,28 +85,25 @@ const PasswordItem = ({
         () => ({
           validator(_, value) {
             if (!value) return Promise.reject(new Error(errors.password))
+            else {
+              const err = []
+              if (edit && value === '******') return Promise.resolve()
 
-            if (edit && value === '******') return Promise.resolve()
+              if (value.length < (system?.password?.min || 6))
+                err.push(errors.passwordTooSmall)
 
-            if (value.length < (system?.password?.min || 6))
-              return Promise.reject(new Error(errors.passwordTooSmall))
+              if (value.length > (system?.password?.max || 16))
+                err.push(errors.passwordTooLong)
 
-            if (value.length > (system?.password?.max || 16))
-              return Promise.reject(new Error(errors.passwordTooLong))
+              if (!requireLetter(value)) err.push(errors.passwordRequireLetter)
 
-            if (system?.password?.requireLetter)
-              if (value.search(/[a-zA-Z]/) === -1)
-                return Promise.reject(new Error(errors.passwordRequireLetter))
+              if (!requireNumber(value)) err.push(errors.passwordRequireNumber)
 
-            if (system?.password?.requireNumber)
-              if (value.search(/[0-9]/) === -1)
-                return Promise.reject(new Error(errors.passwordRequireNumber))
+              if (!requireSymbol(value)) err.push(errors.passwordRequireSymbol)
 
-            if (system?.password?.requireSymbol)
-              if (value.search(/[!@#$%^&*(){}[\]<>?/|.:;_-]/) === -1)
-                return Promise.reject(new Error(errors.passwordRequireSymbol))
-
-            return Promise.resolve()
+              if (err.length) return Promise.reject(new Error(err.join(' - ')))
+              else return Promise.resolve()
+            }
           }
         })
       ]}

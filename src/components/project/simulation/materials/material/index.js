@@ -15,8 +15,8 @@ import Edit from '../edit'
  * @param {Object} props Props
  */
 const Material = ({
-  simulation,
   visible,
+  simulation,
   part,
   materials,
   material,
@@ -130,8 +130,8 @@ const Material = ({
 }
 
 Material.propTypes = {
-  simulation: PropTypes.object.isRequired,
   visible: PropTypes.bool,
+  simulation: PropTypes.object.isRequired,
   part: PropTypes.object.isRequired,
   materials: PropTypes.object.isRequired,
   material: PropTypes.object,

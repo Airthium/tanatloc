@@ -20,7 +20,7 @@ const errors = {
  * @memberof module:components/project/simulation
  * @param {Object} props Props
  */
-const Add = ({ material, simulation, part, disabled, swr, close }) => {
+const Add = ({ disabled, material, simulation, part, swr, close }) => {
   // State
   const [loading, setLoading] = useState(false)
 
@@ -88,6 +88,7 @@ const Add = ({ material, simulation, part, disabled, swr, close }) => {
 }
 
 Add.propTypes = {
+  disabled: PropTypes.bool,
   material: PropTypes.shape({
     selected: PropTypes.array.isRequired
   }).isRequired,
@@ -104,7 +105,6 @@ Add.propTypes = {
   part: PropTypes.shape({
     solids: PropTypes.array.isRequired
   }).isRequired,
-  disabled: PropTypes.bool,
   swr: PropTypes.shape({
     mutateOneSimulation: PropTypes.func.isRequired
   }).isRequired,

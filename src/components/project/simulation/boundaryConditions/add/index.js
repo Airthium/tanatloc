@@ -1,8 +1,9 @@
+import PropTypes from 'prop-types'
 import { useState } from 'react'
 import { v4 as uuid } from 'uuid'
 
-import { Error } from '@/components/assets/notification'
 import { AddButton } from '@/components/assets/button'
+import { Error } from '@/components/assets/notification'
 
 import SimulationAPI from '@/api/simulation'
 
@@ -18,21 +19,9 @@ const errors = {
  * @memberof module:components/project/simulation
  * @param {Object} props Props
  */
-const Add = ({
-  disabled,
-  boundaryCondition,
-  project,
-  simulation,
-  part,
-  close
-}) => {
+const Add = ({ disabled, simulation, boundaryCondition, part, swr, close }) => {
   // State
   const [loading, setLoading] = useState(false)
-
-  // Data
-  const [, { mutateOneSimulation }] = SimulationAPI.useSimulations(
-    project?.simulations
-  )
 
   /**
    * on Add
@@ -76,7 +65,7 @@ const Add = ({
         done: true
       }
 
-      // Update
+      // API
       await SimulationAPI.update({ id: simulation.id }, [
         {
           key: 'scheme',
@@ -87,8 +76,8 @@ const Add = ({
         }
       ])
 
-      // Mutate
-      mutateOneSimulation(newSimulation)
+      // Local
+      swr.mutateOneSimulation(newSimulation)
 
       // Stop loading
       setLoading(false)
@@ -105,6 +94,27 @@ const Add = ({
    * Render
    */
   return <AddButton disabled={disabled} loading={loading} onAdd={onAdd} />
+}
+
+Add.propTypes = {
+  disabled: PropTypes.bool,
+  simulation: PropTypes.shape({
+    scheme: PropTypes.shape({
+      configuration: PropTypes.shape({
+        boundaryConditions: PropTypes.object.isRequired
+      }).isRequired
+    }).isRequired
+  }).isRequired,
+  boundaryCondition: PropTypes.shape({
+    selected: PropTypes.array.isRequired
+  }).isRequired,
+  part: PropTypes.shape({
+    faces: PropTypes.array.isRequired
+  }).isRequired,
+  swr: PropTypes.shape({
+    mutateOneSimulation: PropTypes.func.isRequired
+  }).isRequired,
+  close: PropTypes.func.isRequired
 }
 
 export default Add

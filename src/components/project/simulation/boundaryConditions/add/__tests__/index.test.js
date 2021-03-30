@@ -1,31 +1,23 @@
 import Add from '@/components/project/simulation/boundaryConditions/add'
 import { shallow } from 'enzyme'
 
-jest.mock('@/components/assets/button', () => ({
-  AddButton: 'AddButton'
-}))
-
-const mockUpdate = jest.fn()
-const mockMutate = jest.fn()
-jest.mock('@/api/simulation', () => ({
-  update: async () => mockUpdate(),
-  useSimulations: () => [[], { mutateOneSimulation: mockMutate }]
-}))
+jest.mock('@/components/assets/button', () => {
+  const AddButton = () => <div />
+  return { AddButton }
+})
 
 const mockError = jest.fn()
 jest.mock('@/components/assets/notification', () => ({
   Error: () => mockError()
 }))
 
+const mockUpdate = jest.fn()
+jest.mock('@/api/simulation', () => ({
+  update: async () => mockUpdate()
+}))
+
 let wrapper
 describe('components/project/simulation/boundaryConditions/add', () => {
-  const boundaryCondition = {
-    type: {
-      key: 'key'
-    },
-    selected: ['uuid1', 'uuid3']
-  }
-  const project = {}
   const simulation = {
     scheme: {
       configuration: {
@@ -37,24 +29,31 @@ describe('components/project/simulation/boundaryConditions/add', () => {
       }
     }
   }
+  const boundaryCondition = {
+    type: {
+      key: 'key'
+    },
+    selected: ['uuid1', 'uuid3']
+  }
   const part = { faces: [{ uuid: 'uuid1' }, { uuid: 'uuid2' }] }
+  const mutateOneSimulation = jest.fn()
+  const swr = { mutateOneSimulation }
   const close = jest.fn()
 
   beforeEach(() => {
-    mockUpdate.mockReset()
-    mockMutate.mockReset()
-
     mockError.mockReset()
+
+    mockUpdate.mockReset()
 
     close.mockReset()
 
     wrapper = shallow(
       <Add
         disabled={false}
-        boundaryCondition={boundaryCondition}
-        project={project}
         simulation={simulation}
+        boundaryCondition={boundaryCondition}
         part={part}
+        swr={swr}
         close={close}
       />
     )
@@ -71,7 +70,7 @@ describe('components/project/simulation/boundaryConditions/add', () => {
   it('onAdd', async () => {
     await wrapper.find('AddButton').props().onAdd()
     expect(mockUpdate).toHaveBeenCalledTimes(1)
-    expect(mockMutate).toHaveBeenCalledTimes(1)
+    expect(mutateOneSimulation).toHaveBeenCalledTimes(1)
     expect(close).toHaveBeenCalledTimes(1)
     expect(mockError).toHaveBeenCalledTimes(0)
 
@@ -81,10 +80,10 @@ describe('components/project/simulation/boundaryConditions/add', () => {
     wrapper = shallow(
       <Add
         disabled={false}
-        boundaryCondition={boundaryCondition}
-        project={project}
         simulation={simulation}
+        boundaryCondition={boundaryCondition}
         part={part}
+        swr={swr}
         close={close}
       />
     )
@@ -96,7 +95,7 @@ describe('components/project/simulation/boundaryConditions/add', () => {
     })
     await wrapper.find('AddButton').props().onAdd()
     expect(mockUpdate).toHaveBeenCalledTimes(3)
-    expect(mockMutate).toHaveBeenCalledTimes(2)
+    expect(mutateOneSimulation).toHaveBeenCalledTimes(2)
     expect(close).toHaveBeenCalledTimes(2)
     expect(mockError).toHaveBeenCalledTimes(1)
   })

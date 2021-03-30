@@ -72,8 +72,8 @@ const Materials = ({ simulation, part, swr, setVisible }) => {
         </AddButton>
         <List simulation={simulation} swr={swr} onEdit={onEdit} />
         <Material
-          simulation={simulation}
           visible={materialVisible}
+          simulation={simulation}
           part={part}
           materials={materials}
           material={material}

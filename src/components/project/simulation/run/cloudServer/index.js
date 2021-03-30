@@ -8,6 +8,11 @@ import Plugins from '@/plugins'
 
 import PluginAPI from '@/api/plugin'
 
+/**
+ * Cloud server
+ * @memberof module:components/project/simulation
+ * @param {Object} props Props
+ */
 const CloudServer = ({ disabled, cloudServer, onOk }) => {
   // State
   const [visible, setVisible] = useState(false)
@@ -16,6 +21,9 @@ const CloudServer = ({ disabled, cloudServer, onOk }) => {
   const router = useRouter()
   const [plugins] = PluginAPI.usePlugins()
 
+  /**
+   * Close
+   */
   const close = () => {
     setVisible(false)
   }

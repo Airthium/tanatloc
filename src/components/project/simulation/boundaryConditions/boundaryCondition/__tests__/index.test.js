@@ -1,17 +1,29 @@
 import BoundaryCondition from '@/components/project/simulation/boundaryConditions/boundaryCondition'
 import { shallow, mount } from 'enzyme'
+import { act } from 'react-dom/test-utils'
 
-jest.mock('@/components/assets/formula', () => 'Formula')
-jest.mock('@/components/assets/selector', () => 'Selector')
-jest.mock('@/components/project/simulation/boundaryConditions/add', () => 'Add')
-jest.mock(
-  '@/components/project/simulation/boundaryConditions/edit',
-  () => 'Edit'
-)
+jest.mock('@/components/assets/formula', () => {
+  const Formula = () => <div />
+  return Formula
+})
+
+jest.mock('@/components/assets/selector', () => {
+  const Selector = () => <div />
+  return Selector
+})
+
+jest.mock('@/components/project/simulation/boundaryConditions/add', () => {
+  const Add = () => <div />
+  return Add
+})
+
+jest.mock('@/components/project/simulation/boundaryConditions/edit', () => {
+  const Edit = () => <div />
+  return Edit
+})
 
 let wrapper
 describe('components/project/simulation/boundaryConditions/boundaryCondition', () => {
-  const project = {}
   const simulation = {}
   const part = {}
   const boundaryConditions = {
@@ -27,7 +39,8 @@ describe('components/project/simulation/boundaryConditions/boundaryCondition', (
     }
   }
   let boundaryCondition = undefined
-
+  const mutateOneSimulation = jest.fn()
+  const swr = { mutateOneSimulation }
   const close = jest.fn()
 
   beforeEach(() => {
@@ -35,12 +48,12 @@ describe('components/project/simulation/boundaryConditions/boundaryCondition', (
 
     wrapper = shallow(
       <BoundaryCondition
-        project={project}
-        simulation={simulation}
         visible={true}
+        simulation={simulation}
         part={part}
         boundaryConditions={boundaryConditions}
         boundaryCondition={boundaryCondition}
+        swr={swr}
         close={close}
       />
     )
@@ -66,29 +79,30 @@ describe('components/project/simulation/boundaryConditions/boundaryCondition', (
     wrapper.unmount()
     wrapper = mount(
       <BoundaryCondition
-        project={project}
         simulation={simulation}
         visible={true}
         part={part}
         boundaryConditions={boundaryConditions}
         boundaryCondition={boundaryCondition}
+        swr={swr}
         close={close}
       />
     )
 
-    wrapper
-      .find('Card')
-      .at(1)
-      .props()
-      .children.props.onChange({ target: { value: 'key' } })
+    act(() =>
+      wrapper
+        .find('Card')
+        .at(1)
+        .props()
+        .children.props.onChange({ target: { value: 'key' } })
+    )
 
     // Without children
     wrapper.unmount()
     wrapper = mount(
       <BoundaryCondition
-        project={project}
-        simulation={simulation}
         visible={true}
+        simulation={simulation}
         part={part}
         boundaryConditions={{
           title: 'title',
@@ -97,14 +111,17 @@ describe('components/project/simulation/boundaryConditions/boundaryCondition', (
           }
         }}
         boundaryCondition={boundaryCondition}
+        swr={swr}
         close={close}
       />
     )
-    wrapper
-      .find('Card')
-      .at(1)
-      .props()
-      .children.props.onChange({ target: { value: 'key' } })
+    act(() =>
+      wrapper
+        .find('Card')
+        .at(1)
+        .props()
+        .children.props.onChange({ target: { value: 'key' } })
+    )
   })
 
   it('onSelected', () => {
@@ -121,12 +138,12 @@ describe('components/project/simulation/boundaryConditions/boundaryCondition', (
     boundaryCondition = {}
     wrapper = shallow(
       <BoundaryCondition
-        project={project}
-        simulation={simulation}
         visible={true}
+        simulation={simulation}
         part={part}
         boundaryConditions={boundaryConditions}
         boundaryCondition={boundaryCondition}
+        swr={swr}
         close={close}
       />
     )
@@ -139,12 +156,12 @@ describe('components/project/simulation/boundaryConditions/boundaryCondition', (
     boundaryCondition = { selected: [{ uuid: 'uuid', label: 1 }] }
     wrapper = mount(
       <BoundaryCondition
-        project={project}
         simulation={simulation}
         visible={true}
         part={part}
         boundaryConditions={boundaryConditions}
         boundaryCondition={boundaryCondition}
+        swr={swr}
         close={close}
       />
     )
@@ -154,12 +171,12 @@ describe('components/project/simulation/boundaryConditions/boundaryCondition', (
     boundaryCondition = null
     wrapper = mount(
       <BoundaryCondition
-        project={project}
         simulation={simulation}
         visible={true}
         part={part}
         boundaryConditions={boundaryConditions}
         boundaryCondition={boundaryCondition}
+        swr={swr}
         close={close}
       />
     )
@@ -177,12 +194,12 @@ describe('components/project/simulation/boundaryConditions/boundaryCondition', (
     }
     wrapper = mount(
       <BoundaryCondition
-        project={project}
         simulation={simulation}
         visible={true}
         part={part}
         boundaryConditions={boundaryConditions}
         boundaryCondition={boundaryCondition}
+        swr={swr}
         close={close}
       />
     )
@@ -204,16 +221,16 @@ describe('components/project/simulation/boundaryConditions/boundaryCondition', (
     }
     wrapper = mount(
       <BoundaryCondition
-        project={project}
         simulation={simulation}
         visible={true}
         part={part}
         boundaryConditions={boundaryConditions}
         boundaryCondition={boundaryCondition}
         close={close}
+        swr={swr}
       />
     )
-    wrapper.find('Formula').props().onValueChange(0, 10)
+    act(() => wrapper.find('Formula').props().onValueChange(0, 10))
   })
 
   it('onCheckedChange', () => {
@@ -244,15 +261,15 @@ describe('components/project/simulation/boundaryConditions/boundaryCondition', (
     }
     wrapper = mount(
       <BoundaryCondition
-        project={project}
         simulation={simulation}
         visible={true}
         part={part}
         boundaryConditions={boundaryConditions}
         boundaryCondition={boundaryCondition}
+        swr={swr}
         close={close}
       />
     )
-    wrapper.find('Formula').at(1).props().onCheckedChange(1, true)
+    act(() => wrapper.find('Formula').at(1).props().onCheckedChange(1, true))
   })
 })

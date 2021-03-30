@@ -1,22 +1,26 @@
 import BoundaryConditions from '@/components/project/simulation/boundaryConditions'
 import { shallow, mount } from 'enzyme'
 
-jest.mock('@/components/assets/button', () => ({
-  AddButton: 'AddButton'
-}))
-
-jest.mock(
-  '@/components/project/simulation/boundaryConditions/list',
-  () => 'List'
-)
-jest.mock(
-  '@/components/project/simulation/boundaryConditions/boundaryCondition',
-  () => 'BoundaryCondition'
-)
-
 jest.mock('react-redux', () => ({
   useDispatch: () => () => {}
 }))
+
+jest.mock('@/components/assets/button', () => {
+  const AddButton = () => <div />
+  return { AddButton }
+})
+
+jest.mock('@/components/project/simulation/boundaryConditions/list', () => {
+  const List = () => <div />
+  return List
+})
+jest.mock(
+  '@/components/project/simulation/boundaryConditions/boundaryCondition',
+  () => {
+    const BoundaryCondition = () => <div />
+    return BoundaryCondition
+  }
+)
 
 const mockEnable = jest.fn()
 const mockDisable = jest.fn()
@@ -31,7 +35,6 @@ jest.mock('@/store/select/action', () => ({
 
 let wrapper
 describe('components/project/simulation/boundaryConditions', () => {
-  const project = {}
   const simulation = {
     scheme: {
       configuration: {
@@ -46,6 +49,8 @@ describe('components/project/simulation/boundaryConditions', () => {
     }
   }
   const part = {}
+  const mutateOneSimulation = jest.fn()
+  const swr = { mutateOneSimulation }
   const setVisible = jest.fn()
 
   beforeEach(() => {
@@ -57,9 +62,9 @@ describe('components/project/simulation/boundaryConditions', () => {
     setVisible.mockReset()
     wrapper = shallow(
       <BoundaryConditions
-        project={project}
         simulation={simulation}
         part={part}
+        swr={swr}
         setVisible={setVisible}
       />
     )
@@ -93,9 +98,9 @@ describe('components/project/simulation/boundaryConditions', () => {
 
     wrapper = mount(
       <BoundaryConditions
-        project={project}
         simulation={simulation}
         part={part}
+        swr={swr}
         setVisible={setVisible}
       />
     )

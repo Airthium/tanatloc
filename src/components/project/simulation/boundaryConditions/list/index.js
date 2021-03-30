@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types'
 import { useState } from 'react'
 import { Button, Card, Space, Typography } from 'antd'
 import { EditOutlined } from '@ant-design/icons'
@@ -7,7 +8,7 @@ import { enable, disable, select } from '@/store/select/action'
 
 import Delete from '../delete'
 
-const List = ({ project, simulation, onEdit }) => {
+const List = ({ simulation, swr, onEdit }) => {
   // State
   const [enabled, setEnabled] = useState(true)
 
@@ -65,10 +66,10 @@ const List = ({ project, simulation, onEdit }) => {
                   }}
                 />
                 <Delete
-                  project={project}
                   simulation={simulation}
                   type={type}
                   index={index}
+                  swr={{ mutateOneSimulation: swr.mutateOneSimulation }}
                 />
               </Space>
             </Space>
@@ -77,6 +78,20 @@ const List = ({ project, simulation, onEdit }) => {
       })
     })
     .filter((l) => l)
+}
+
+List.propTypes = {
+  simulation: PropTypes.shape({
+    scheme: PropTypes.shape({
+      configuration: PropTypes.shape({
+        boundaryConditions: PropTypes.object
+      })
+    })
+  }),
+  swr: PropTypes.shape({
+    mutateOneSimulation: PropTypes.func.isRequired
+  }).isRequired,
+  onEdit: PropTypes.func.isRequired
 }
 
 export default List

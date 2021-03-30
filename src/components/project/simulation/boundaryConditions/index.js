@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
 import { Layout } from 'antd'
 import { PlusCircleOutlined } from '@ant-design/icons'
@@ -22,7 +23,7 @@ const errors = {
  * @memberof module:components/project/simulation
  * @param {Object} props Props
  */
-const BoundaryConditions = ({ project, simulation, part, setVisible }) => {
+const BoundaryConditions = ({ simulation, part, swr, setVisible }) => {
   // State
   const [boundaryCondition, setBoundaryCondition] = useState()
   const [boundaryConditionVisible, setBoundaryConditionVisible] = useState(
@@ -76,14 +77,20 @@ const BoundaryConditions = ({ project, simulation, part, setVisible }) => {
         <AddButton icon={<PlusCircleOutlined />} onAdd={onAdd}>
           Add boundary condition
         </AddButton>
-        <List project={project} simulation={simulation} onEdit={onEdit} />
-        <BoundaryCondition
-          project={project}
+        <List
           simulation={simulation}
+          swr={{ mutateOneSimulation: swr.mutateOneSimulation }}
+          onEdit={onEdit}
+        />
+        <BoundaryCondition
           visible={boundaryConditionVisible}
+          simulation={simulation}
           part={part}
           boundaryConditions={boundaryConditions}
           boundaryCondition={boundaryCondition}
+          swr={{
+            mutateOneSimulation: swr.mutateOneSimulation
+          }}
           close={onClose}
         />
       </Layout.Content>
@@ -91,6 +98,21 @@ const BoundaryConditions = ({ project, simulation, part, setVisible }) => {
   )
 }
 
-export default BoundaryConditions
+BoundaryConditions.propTypes = {
+  simulation: PropTypes.shape({
+    scheme: PropTypes.shape({
+      configuration: PropTypes.shape({
+        boundaryConditions: PropTypes.object
+      })
+    })
+  }).isRequired,
+  part: PropTypes.shape({
+    uuid: PropTypes.string
+  }).isRequired,
+  swr: PropTypes.shape({
+    mutateOneSimulation: PropTypes.func.isRequired
+  }).isRequired,
+  setVisible: PropTypes.func.isRequired
+}
 
-// import Si
+export default BoundaryConditions

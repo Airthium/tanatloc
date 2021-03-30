@@ -2,8 +2,7 @@ import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
 import { Avatar, Select, Space, Table } from 'antd'
 
-import Add from './add'
-import Edit from './edit'
+import Group from './group'
 import Delete from './delete'
 
 import Utils from '@/lib/utils'
@@ -56,9 +55,9 @@ const Groups = ({ users }) => {
       key: 'actions',
       render: (_, record) => (
         <Space direction="">
-          <Edit
-            group={record}
+          <Group
             userOptions={userOptions}
+            group={record}
             swr={{ mutateOneGroup }}
           />
           <Delete group={record} swr={{ delOneGroup }} />
@@ -81,7 +80,7 @@ const Groups = ({ users }) => {
 
   return (
     <Space direction="vertical" style={{ width: '100%' }}>
-      <Add userOptions={userOptions} swr={{ addOneGroup }} />
+      <Group userOptions={userOptions} swr={{ addOneGroup }} />
       <Table
         loading={loadingGroups}
         pagination={false}

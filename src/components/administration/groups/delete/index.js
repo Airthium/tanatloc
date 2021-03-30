@@ -65,7 +65,7 @@ const Delete = ({ group, swr }) => {
         onOk={onDelete}
         loading={loading}
       >
-        Delete {group?.name}?
+        Delete {group.name}?
       </DeleteDialog>
     </>
   )
@@ -74,7 +74,7 @@ const Delete = ({ group, swr }) => {
 Delete.propTypes = {
   group: PropTypes.shape({
     id: PropTypes.string.isRequired,
-    name: PropTypes.string
+    name: PropTypes.string.isRequired
   }).isRequired,
   swr: PropTypes.shape({
     delOneGroup: PropTypes.func.isRequired

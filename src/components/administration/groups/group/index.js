@@ -9,22 +9,54 @@ import { Error } from '@/components/assets/notification'
 import GroupAPI from '@/api/group'
 
 /**
- * Edit errors
+ * Groups/Group errors
  * @memberof module:components/administration
  */
 const errors = {
+  addError: 'Unable to add group',
   updateError: 'Unable to update group'
 }
 
 /**
- * Edit
+ * Groups/Group
  * @memberof module:components/administration
  * @param {Object} props Props
+ *
+ * @description
+ * - userOptions: List of users
+ * - group: Group in case of edit
+ * - swr: SWR functions
  */
-const Edit = ({ group, userOptions, swr }) => {
+const Edit = ({ userOptions, group, swr }) => {
   // State
   const [visible, setVisible] = useState(false)
   const [loading, setLoading] = useState(false)
+
+  /**
+   * On add
+   * @param {Object} values Values
+   */
+  const onAdd = async (values) => {
+    setLoading(true)
+
+    try {
+      // API
+      const newGroup = await GroupAPI.add(values)
+
+      // Local
+      swr.addOneGroup({
+        ...newGroup,
+        name: values.name,
+        users: values.users
+      })
+
+      // Close
+      setVisible(false)
+    } catch (err) {
+      Error(errors.addError, err)
+      setLoading(false)
+    }
+  }
 
   /**
    * On update
@@ -49,10 +81,10 @@ const Edit = ({ group, userOptions, swr }) => {
           value: values.users
         })
 
-      // Update
+      // API
       await GroupAPI.update(group.id, toUpdate)
 
-      // Mutate
+      // Local
       swr.mutateOneGroup({
         ...group,
         ...values
@@ -72,7 +104,7 @@ const Edit = ({ group, userOptions, swr }) => {
   return (
     <>
       <Dialog
-        title="Edit group"
+        title={group ? 'Edit group' : 'New group'}
         visible={visible}
         initialValues={
           group && {
@@ -81,7 +113,7 @@ const Edit = ({ group, userOptions, swr }) => {
           }
         }
         onCancel={() => setVisible(false)}
-        onOk={onUpdate}
+        onOk={group ? onUpdate : onAdd}
         loading={loading}
       >
         <Form.Item
@@ -103,7 +135,7 @@ const Edit = ({ group, userOptions, swr }) => {
       </Dialog>
 
       <Button icon={<EditOutlined />} onClick={() => setVisible(true)}>
-        Edit
+        {group ? 'Edit' : 'New group'}
       </Button>
     </>
   )
@@ -114,9 +146,10 @@ Edit.propTypes = {
     id: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
     users: PropTypes.array.isRequired
-  }).isRequired,
+  }),
   userOptions: PropTypes.array.isRequired,
   swr: PropTypes.shape({
+    addOneGroup: PropTypes.func.isRequired,
     mutateOneGroup: PropTypes.func.isRequired
   }).isRequired
 }

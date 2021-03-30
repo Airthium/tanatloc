@@ -248,8 +248,8 @@ const createGroupsTable = async () => {
         databases.GROUPS +
         ` (
           id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-          name TEXT,
-          users uuid[],
+          name TEXT NOT NULL,
+          users uuid[] NOT NULL,
           workspaces uuid[],
           projects uuid[],
           organization uuid[]

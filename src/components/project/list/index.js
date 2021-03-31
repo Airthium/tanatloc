@@ -2,10 +2,10 @@ import PropTypes from 'prop-types'
 import { useRouter } from 'next/router'
 import { Space, Table, Empty } from 'antd'
 
+import Share from '@/components/assets/share'
 import { Error } from '@/components/assets/notification'
 
 import Build from '../build'
-import Share from '../share'
 import Delete from '../delete'
 
 import ProjectAPI from '@/api/project'

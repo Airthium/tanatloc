@@ -5,6 +5,11 @@ jest.mock('next/router', () => ({
   useRouter: () => [{ push: () => {} }]
 }))
 
+jest.mock('@/components/assets/share', () => {
+  const Share = () => <div />
+  return Share
+})
+
 const mockError = jest.fn()
 jest.mock('@/components/assets/notification', () => ({
   Error: () => mockError()
@@ -16,11 +21,6 @@ jest.mock(
   () => (project, filter, setTitle, setDescription) =>
     mockBuild(project, filter, setTitle, setDescription)
 )
-
-jest.mock('../../share', () => {
-  const Share = () => <div />
-  return Share
-})
 
 jest.mock('../../delete', () => {
   const Delete = () => <div />

@@ -1,15 +1,15 @@
 import Workspace from '..'
 import { shallow } from 'enzyme'
 
+jest.mock('@/components/assets/share', () => {
+  const Share = () => <div />
+  return Share
+})
+
 const mockError = jest.fn()
 jest.mock('@/components/assets/notification', () => ({
   Error: () => mockError()
 }))
-
-jest.mock('../share', () => {
-  const Share = () => <div />
-  return Share
-})
 
 jest.mock('../delete', () => {
   const Delete = () => <div />

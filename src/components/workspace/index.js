@@ -12,9 +12,9 @@ import {
   Typography
 } from 'antd'
 
+import Share from '@/components/assets/share'
 import { Error } from '@/components/assets/notification'
 
-import Share from './share'
 import Delete from './delete'
 
 import ProjectAdd from '@/components/project/add'

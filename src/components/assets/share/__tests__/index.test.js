@@ -1,27 +1,27 @@
 import Share from '..'
 import { shallow, mount } from 'enzyme'
 
-const mockError = jest.fn()
-jest.mock('@/components/assets/notification', () => ({
-  Error: () => mockError()
-}))
-
 jest.mock('@/components/assets/dialog', () => {
   const Dialog = () => <div />
   return Dialog
 })
 
+const mockError = jest.fn()
+jest.mock('@/components/assets/notification', () => ({
+  Error: () => mockError()
+}))
+
 const mockUpdate = jest.fn()
-jest.mock('@/api/workspace', () => ({
+jest.mock('@/api/project', () => ({
   update: async () => mockUpdate()
 }))
 
 let wrapper
-describe('components/workspace/share', () => {
-  const workspace = { id: 'id' }
+describe('components/project/share', () => {
+  const project = { id: 'id' }
   const organizations = []
-  const mutateOneWorkspace = jest.fn()
-  const swr = { mutateOneWorkspace }
+  const mutateOneProject = jest.fn()
+  const swr = { mutateOneProject }
 
   beforeEach(() => {
     mockError.mockReset()
@@ -29,7 +29,7 @@ describe('components/workspace/share', () => {
     mockUpdate.mockReset()
 
     wrapper = shallow(
-      <Share workspace={workspace} organizations={organizations} swr={swr} />
+      <Share project={project} organizations={organizations} swr={swr} />
     )
   })
 
@@ -57,7 +57,7 @@ describe('components/workspace/share', () => {
     // Normal
     await wrapper.find('Dialog').props().onOk()
     expect(mockUpdate).toHaveBeenCalledTimes(1)
-    expect(mutateOneWorkspace).toHaveBeenCalledTimes(1)
+    expect(mutateOneProject).toHaveBeenCalledTimes(1)
     expect(mockError).toHaveBeenCalledTimes(0)
 
     // Error
@@ -66,7 +66,7 @@ describe('components/workspace/share', () => {
     })
     await wrapper.find('Dialog').props().onOk()
     expect(mockUpdate).toHaveBeenCalledTimes(2)
-    expect(mutateOneWorkspace).toHaveBeenCalledTimes(1)
+    expect(mutateOneProject).toHaveBeenCalledTimes(1)
     expect(mockError).toHaveBeenCalledTimes(1)
   })
 
@@ -74,14 +74,14 @@ describe('components/workspace/share', () => {
     // Emty organizations
     wrapper.unmount()
     wrapper = mount(
-      <Share workspace={workspace} organizations={organizations} swr={swr} />
+      <Share project={project} organizations={organizations} swr={swr} />
     )
 
     // Full
     wrapper.unmount()
     wrapper = mount(
       <Share
-        workspace={{ ...workspace, groups: [{ id: 'id' }] }}
+        project={{ ...project, groups: [{ id: 'id' }] }}
         organizations={[
           {
             groups: [

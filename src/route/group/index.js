@@ -10,18 +10,29 @@ export default async (req, res) => {
   const sessionId = await getSessionId(req, res)
   if (!sessionId) return
 
+  const checkAdministrator = async (organization, user) => {
+    const organizationData = await OrganizationLib.get(organization.id, [
+      'owners'
+    ])
+    if (!organizationData?.owners?.includes(user.id)) {
+      res.status(500).json({ error: true, message: 'Unauthorized' })
+      return false
+    }
+
+    return true
+  }
+
   switch (req.method) {
     case 'POST':
       try {
         // Check administrator
-        const organization = await OrganizationLib.get(
-          req.body.organization.id,
-          ['owners']
+        if (
+          !(await checkAdministrator(
+            { id: req.body.organization },
+            { id: sessionId }
+          ))
         )
-        if (!organization?.owners?.includes(sessionId)) {
-          res.status(500).json({ error: true, message: 'Unauthorized' })
           return
-        }
 
         const group = await GroupLib.add(req.body.organization, req.body.group)
         res.status(200).json(group)
@@ -34,14 +45,8 @@ export default async (req, res) => {
     case 'PUT':
       try {
         // Check administrator
-        const group = await GroupLib.get(req.body.id, ['organization'])
-        const organization = await OrganizationLib.get(group.organization, [
-          'owners'
-        ])
-        if (!organization?.owners?.includes(sessionId)) {
-          res.status(500).json({ error: true, message: 'Unauthorized' })
+        if (!(await checkAdministrator({ id: req.body.id }, { id: sessionId })))
           return
-        }
 
         await GroupLib.update({ id: req.body.id }, req.body.data)
         res.status(200).end()
@@ -54,14 +59,8 @@ export default async (req, res) => {
     case 'DELETE':
       try {
         // Check administrator
-        const group = await GroupLib.get(req.body.id, ['organization'])
-        const organization = await OrganizationLib.get(group.organization, [
-          'owners'
-        ])
-        if (!organization?.owners?.includes(sessionId)) {
-          res.status(500).json({ error: true, message: 'Unauthorized' })
+        if (!(await checkAdministrator({ id: req.body.id }, { id: sessionId })))
           return
-        }
 
         await GroupLib.del(req.body)
         res.status(200).end()

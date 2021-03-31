@@ -116,7 +116,7 @@ const Users = ({ organization, swr }) => {
             size="small"
             scroll={{ y: 200 }}
             columns={ownersColumns}
-            dataSource={organization?.owners?.map((o, index) => ({
+            dataSource={organization.owners.map((o, index) => ({
               ...o,
               key: o.id || index
             }))}
@@ -142,7 +142,7 @@ const Users = ({ organization, swr }) => {
             size="small"
             scroll={{ y: 200 }}
             columns={usersColumns}
-            dataSource={organization?.users?.map((u, index) => ({
+            dataSource={organization.users?.map((u, index) => ({
               ...u,
               key: u.id || index
             }))}

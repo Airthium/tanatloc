@@ -124,7 +124,7 @@ Delete.propTypes = {
       )
 
     // Missing of invalid owners
-    if (props[dBkey] === 'owners') {
+    if (props['dBkey'] === 'owners') {
       if (!props[propName].owners || !Array.isArray(props[propName].owners))
         return new Error(
           'Invalid prop ' +
@@ -136,7 +136,7 @@ Delete.propTypes = {
     }
 
     // Missing of invalid users
-    if (props[dBkey] === 'users') {
+    if (props['dBkey'] === 'users') {
       if (!props[propName].users || !Array.isArray(props[propName].users))
         return new Error(
           'Invalid prop ' +

@@ -41,6 +41,20 @@ describe('components/assets/organization/users', () => {
     expect(wrapper).toBeDefined()
   })
 
+  it('with users', () => {
+    wrapper.unmount()
+    wrapper = shallow(
+      <Users
+        organization={{
+          ...organization,
+          users: [{}]
+        }}
+        swr={swr}
+      />
+    )
+    expect(wrapper).toBeDefined()
+  })
+
   it('columns', () => {
     // Owners column
     const ownersColumns = wrapper.find('Table').at(0).props().columns

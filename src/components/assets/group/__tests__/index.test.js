@@ -27,7 +27,7 @@ describe('components/assets/groups', () => {
   const group = {
     id: 'id',
     name: 'name',
-    users: [{}]
+    users: [{ id: 'id' }]
   }
   const swr = {
     reloadOrganizations: jest.fn(),
@@ -94,7 +94,7 @@ describe('components/assets/groups', () => {
     expect(wrapper).toBeDefined()
   })
 
-  it('onEdit', async () => {
+  it('onUpdate', async () => {
     wrapper.unmount()
     wrapper = shallow(
       <Group
@@ -111,7 +111,7 @@ describe('components/assets/groups', () => {
       .props()
       .onOk({
         name: 'otherName',
-        users: [{}, {}]
+        users: ['id', 'id1']
       })
     expect(mockUpdate).toHaveBeenCalledTimes(1)
     expect(swr.mutateOneGroup).toHaveBeenCalledTimes(1)
@@ -122,10 +122,80 @@ describe('components/assets/groups', () => {
     mockUpdate.mockImplementation(() => {
       throw new Error()
     })
-    await wrapper.find('Dialog').props().onOk(group)
+    await wrapper
+      .find('Dialog')
+      .props()
+      .onOk({ name: 'name', users: ['id'] })
     expect(mockUpdate).toHaveBeenCalledTimes(2)
     expect(swr.mutateOneGroup).toHaveBeenCalledTimes(1)
     expect(swr.reloadOrganizations).toHaveBeenCalledTimes(1)
     expect(mockError).toHaveBeenCalledTimes(1)
+  })
+
+  it('propTypes', () => {
+    let res
+    const swrProp = Group.propTypes.swr
+
+    res = swrProp({}, 'swr', 'Group')
+    expect(res.message).toBe('Invalid prop swr supplied to Group. swr missing')
+
+    res = swrProp({ swr: {} }, 'swr', 'Group')
+    expect(res.message).toBe(
+      'Invalid prop swr supplied to Group. addOneGroup missing or invalid'
+    )
+
+    res = swrProp({ swr: { addOneGroup: {} } }, 'swr', 'Group')
+    expect(res.message).toBe(
+      'Invalid prop swr supplied to Group. addOneGroup missing or invalid'
+    )
+
+    res = swrProp({ swr: { addOneGroup: jest.fn } }, 'swr', 'Group')
+    expect(res.message).toBe(
+      'Invalid prop swr supplied to Group. reloadOrganizations missing or invalid'
+    )
+
+    res = swrProp(
+      { swr: { reloadOrganizations: {}, addOneGroup: jest.fn } },
+      'swr',
+      'Group'
+    )
+    expect(res.message).toBe(
+      'Invalid prop swr supplied to Group. reloadOrganizations missing or invalid'
+    )
+
+    res = swrProp(
+      { swr: { reloadOrganizations: jest.fn, addOneGroup: jest.fn } },
+      'swr',
+      'Group'
+    )
+    expect(res).toBe()
+
+    res = swrProp(
+      { swr: { reloadOrganizations: jest.fn }, group: {} },
+      'swr',
+      'Group'
+    )
+    expect(res.message).toBe(
+      'Invalid prop swr supplied to Group. mutateOneGroup missing or invalid'
+    )
+
+    res = swrProp(
+      { swr: { reloadOrganizations: jest.fn, mutateOneGroup: {} }, group: {} },
+      'swr',
+      'Group'
+    )
+    expect(res.message).toBe(
+      'Invalid prop swr supplied to Group. mutateOneGroup missing or invalid'
+    )
+
+    res = swrProp(
+      {
+        swr: { reloadOrganizations: jest.fn, mutateOneGroup: jest.fn },
+        group: {}
+      },
+      'swr',
+      'Group'
+    )
+    expect(res).toBe()
   })
 })

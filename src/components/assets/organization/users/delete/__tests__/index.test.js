@@ -52,6 +52,38 @@ describe('componenets/assets/organization/users/delete', () => {
     expect(wrapper).toBeDefined()
   })
 
+  it('with user data', () => {
+    wrapper.unmount()
+    wrapper = shallow(
+      <Delete
+        disabled={disabled}
+        user={{
+          ...user,
+          firstname: 'firstname'
+        }}
+        organization={organization}
+        dBkey={dBkey}
+        swr={swr}
+      />
+    )
+    expect(wrapper).toBeDefined()
+
+    wrapper.unmount()
+    wrapper = shallow(
+      <Delete
+        disabled={disabled}
+        user={{
+          ...user,
+          lastname: 'lastname'
+        }}
+        organization={organization}
+        dBkey={dBkey}
+        swr={swr}
+      />
+    )
+    expect(wrapper).toBeDefined()
+  })
+
   it('setVisible', () => {
     // Visible
     wrapper.find('Button').props().onClick()
@@ -75,5 +107,70 @@ describe('componenets/assets/organization/users/delete', () => {
     expect(mockUpdate).toHaveBeenCalledTimes(2)
     expect(swr.mutateOneOrganization).toHaveBeenCalledTimes(1)
     expect(mockError).toHaveBeenCalledTimes(1)
+  })
+
+  it('propTypes', () => {
+    let res
+    const organizationProp = Delete.propTypes.organization
+
+    res = organizationProp({}, 'organization', 'Delete')
+    expect(res.message).toBe(
+      'Invalid prop organization supplied to Delete. organization missing'
+    )
+
+    res = organizationProp({ organization: {} }, 'organization', 'Delete')
+    expect(res.message).toBe(
+      'Invalid prop organization supplied to Delete. id missing or invalid'
+    )
+
+    res = organizationProp(
+      { organization: { id: 'id' }, dBkey: 'owners' },
+      'organization',
+      'Delete'
+    )
+    expect(res.message).toBe(
+      'Invalid prop organization supplied to Delete. owners missing or invalid'
+    )
+
+    res = organizationProp(
+      { organization: { id: 'id', owners: {} }, dBkey: 'owners' },
+      'organization',
+      'Delete'
+    )
+    expect(res.message).toBe(
+      'Invalid prop organization supplied to Delete. owners missing or invalid'
+    )
+
+    res = organizationProp(
+      { organization: { id: 'id', owners: [] }, dBkey: 'owners' },
+      'organization',
+      'Delete'
+    )
+    expect(res).toBe()
+
+    res = organizationProp(
+      { organization: { id: 'id' }, dBkey: 'users' },
+      'organization',
+      'Delete'
+    )
+    expect(res.message).toBe(
+      'Invalid prop organization supplied to Delete. users missing or invalid'
+    )
+
+    res = organizationProp(
+      { organization: { id: 'id', users: {} }, dBkey: 'users' },
+      'organization',
+      'Delete'
+    )
+    expect(res.message).toBe(
+      'Invalid prop organization supplied to Delete. users missing or invalid'
+    )
+
+    res = organizationProp(
+      { organization: { id: 'id', users: [] }, dBkey: 'users' },
+      'organization',
+      'Delete'
+    )
+    expect(res).toBe()
   })
 })

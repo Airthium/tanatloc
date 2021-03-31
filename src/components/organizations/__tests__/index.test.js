@@ -14,7 +14,7 @@ jest.mock('../list', () => {
   return List
 })
 
-jest.mock('../organization', () => {
+jest.mock('@/components/assets/organization', () => {
   const Organization = () => <div />
   return Organization
 })

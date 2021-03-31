@@ -2,22 +2,11 @@ import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
 import { Avatar, Select, Space, Table } from 'antd'
 
-import Group from './group'
-import Delete from './delete'
+import Group, { Delete } from '@/components/assets/group'
 
 import Utils from '@/lib/utils'
 
 import GroupAPI from '@/api/group'
-
-/**
- * Errors groups
- * @memberof module/components/administration
- */
-const errors = {
-  addError: 'Unable to add group',
-  updateError: 'Unable to update group',
-  deleteError: 'Unable to delete group'
-}
 
 /**
  * Groups
@@ -31,7 +20,7 @@ const Groups = ({ users }) => {
   // Data
   const [
     groups,
-    { addOneGroup, mutateOneGroup, delOneGroup, loadingGroups }
+    { mutateOneGroup, delOneGroup, loadingGroups }
   ] = GroupAPI.useGroups()
 
   const columns = [
@@ -80,7 +69,6 @@ const Groups = ({ users }) => {
 
   return (
     <Space direction="vertical" style={{ width: '100%' }}>
-      <Group userOptions={userOptions} swr={{ addOneGroup }} />
       <Table
         loading={loadingGroups}
         pagination={false}

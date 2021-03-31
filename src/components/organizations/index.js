@@ -6,7 +6,7 @@ import { Divider, Layout, PageHeader, Space, Typography } from 'antd'
 
 import Add from './add'
 import List from './list'
-import Organization from './organization'
+import Organization from '@/components/assets/organization'
 
 /**
  * Organizations

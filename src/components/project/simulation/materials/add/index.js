@@ -1,13 +1,15 @@
+import PropTypes from 'prop-types'
 import { useState } from 'react'
 import { v4 as uuid } from 'uuid'
 
-import { Error } from '@/components/assets/notification'
 import { AddButton } from '@/components/assets/button'
+import { Error } from '@/components/assets/notification'
 
 import SimulationAPI from '@/api/simulation'
 
 /**
  * Errors material/add
+ * @memberof module:components/project/simulation
  */
 const errors = {
   updateError: 'Unable to add the material'
@@ -15,16 +17,12 @@ const errors = {
 
 /**
  * Add material
+ * @memberof module:components/project/simulation
  * @param {Object} props Props
  */
-const Add = ({ material, project, simulation, part, disabled, close }) => {
+const Add = ({ disabled, material, simulation, part, swr, close }) => {
   // State
   const [loading, setLoading] = useState(false)
-
-  // Data
-  const [, { mutateOneSimulation }] = SimulationAPI.useSimulations(
-    project?.simulations
-  )
 
   /**
    * On add
@@ -61,7 +59,7 @@ const Add = ({ material, project, simulation, part, disabled, close }) => {
         done: true
       }
 
-      // Update
+      // API
       await SimulationAPI.update({ id: simulation.id }, [
         {
           key: 'scheme',
@@ -72,11 +70,8 @@ const Add = ({ material, project, simulation, part, disabled, close }) => {
         }
       ])
 
-      // Mutate
-      mutateOneSimulation(newSimulation)
-
-      // Stop loading
-      setLoading(false)
+      // Local
+      swr.mutateOneSimulation(newSimulation)
 
       // Close
       close()
@@ -90,6 +85,30 @@ const Add = ({ material, project, simulation, part, disabled, close }) => {
    * Render
    */
   return <AddButton disabled={disabled} loading={loading} onAdd={onAdd} />
+}
+
+Add.propTypes = {
+  disabled: PropTypes.bool,
+  material: PropTypes.shape({
+    selected: PropTypes.array.isRequired
+  }).isRequired,
+  simulation: PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    scheme: PropTypes.shape({
+      configuration: PropTypes.shape({
+        materials: PropTypes.shape({
+          values: PropTypes.array
+        }).isRequired
+      }).isRequired
+    }).isRequired
+  }),
+  part: PropTypes.shape({
+    solids: PropTypes.array.isRequired
+  }).isRequired,
+  swr: PropTypes.shape({
+    mutateOneSimulation: PropTypes.func.isRequired
+  }).isRequired,
+  close: PropTypes.func.isRequired
 }
 
 export default Add

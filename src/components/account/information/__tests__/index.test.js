@@ -7,17 +7,7 @@ jest.mock('@/components/assets/notification', () => ({
 }))
 
 const mockUpdate = jest.fn()
-const mockMutate = jest.fn()
 jest.mock('@/api/user', () => ({
-  useUser: () => [
-    {
-      firstname: 'firstname',
-      lastname: 'lastname',
-      email: 'email',
-      avatar: ['avatar']
-    },
-    { mutateUser: mockMutate }
-  ],
   update: () => mockUpdate()
 }))
 
@@ -35,15 +25,20 @@ global.FileReader = class {
 
 let wrapper
 describe('components/account/information', () => {
+  const user = {}
+  const mutateUser = jest.fn()
+  const swr = {
+    mutateUser
+  }
+
   beforeEach(() => {
     mockError.mockReset()
 
     mockUpdate.mockReset()
-    mockMutate.mockReset()
 
     mockAdd.mockReset()
 
-    wrapper = shallow(<Information />)
+    wrapper = shallow(<Information user={user} swr={swr} />)
   })
 
   afterEach(() => {
@@ -54,10 +49,20 @@ describe('components/account/information', () => {
     expect(wrapper).toBeDefined()
   })
 
+  it('with avatar', () => {
+    wrapper.unmount()
+    wrapper = shallow(
+      <Information
+        user={{ ...user, avatar: { type: 'Buffer', data: [] } }}
+        swr={swr}
+      />
+    )
+    expect(wrapper).toBeDefined()
+  })
+
   it('onFinish', async () => {
     // Normal
     await wrapper.find('ForwardRef(InternalForm)').props().onFinish({})
-    expect(mockMutate).toHaveBeenCalledTimes(1)
     expect(mockUpdate).toHaveBeenCalledTimes(1)
     expect(mockError).toHaveBeenCalledTimes(0)
 
@@ -66,7 +71,6 @@ describe('components/account/information', () => {
       lastname: 'lastname',
       email: 'email'
     })
-    expect(mockMutate).toHaveBeenCalledTimes(2)
     expect(mockUpdate).toHaveBeenCalledTimes(2)
     expect(mockError).toHaveBeenCalledTimes(0)
 
@@ -75,7 +79,6 @@ describe('components/account/information', () => {
       throw new Error()
     })
     await wrapper.find('ForwardRef(InternalForm)').props().onFinish({})
-    expect(mockMutate).toHaveBeenCalledTimes(2)
     expect(mockUpdate).toHaveBeenCalledTimes(3)
     expect(mockError).toHaveBeenCalledTimes(1)
   })
@@ -113,7 +116,6 @@ describe('components/account/information', () => {
         }
       })
     expect(mockAdd).toHaveBeenCalledTimes(0)
-    expect(mockMutate).toHaveBeenCalledTimes(0)
     expect(mockError).toHaveBeenCalledTimes(0)
 
     // Done
@@ -127,7 +129,6 @@ describe('components/account/information', () => {
         }
       })
     expect(mockAdd).toHaveBeenCalledTimes(1)
-    expect(mockMutate).toHaveBeenCalledTimes(1)
     expect(mockError).toHaveBeenCalledTimes(0)
 
     // Error
@@ -144,7 +145,6 @@ describe('components/account/information', () => {
         }
       })
     expect(mockAdd).toHaveBeenCalledTimes(2)
-    expect(mockMutate).toHaveBeenCalledTimes(1)
     expect(mockError).toHaveBeenCalledTimes(1)
   })
 })

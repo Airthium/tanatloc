@@ -1,11 +1,17 @@
+import PropTypes from 'prop-types'
 import { useState } from 'react'
-import { Button, Form, Input, Space, Typography } from 'antd'
-import { CheckOutlined, CloseOutlined, PlusOutlined } from '@ant-design/icons'
+import { Button, Form, Input, Typography } from 'antd'
+import { PlusOutlined } from '@ant-design/icons'
 
+import Dialog from '@/components/assets/dialog'
 import { Error } from '@/components/assets/notification'
 
 import OrganizationAPI from '@/api/organization'
 
+/**
+ * Add errors
+ * @memberof module:components/organizations
+ */
 const errors = {
   addError: 'Unable to add organization'
 }
@@ -13,21 +19,12 @@ const errors = {
 /**
  * Add
  * @memberof module:components/organizations
+ * @param {Object} props Props
  */
-const Add = () => {
+const Add = ({ swr }) => {
   // State
-  const [add, setAdd] = useState(false)
+  const [visible, setVisible] = useState(false)
   const [loading, setLoading] = useState(false)
-
-  // Data
-  const layout = {
-    labelCol: { span: 4 },
-    wrapperCol: { span: 12 }
-  }
-  const tailLayout = {
-    wrapperCol: { offset: 4, span: 12 }
-  }
-  const [, { addOneOrganization }] = OrganizationAPI.useOrganizations()
 
   /**
    * On add
@@ -35,58 +32,61 @@ const Add = () => {
    */
   const onAdd = async (values) => {
     setLoading(true)
-    try {
-      // Add
-      const organization = await OrganizationAPI.add({ name: values.name })
-      organization.name = values.name
 
-      // Mutate
-      addOneOrganization(organization)
+    try {
+      // API
+      const organization = await OrganizationAPI.add({ name: values.name })
+
+      // Local
+      organization.name = values.name
+      organization.owners = []
+      swr.addOneOrganization(organization)
 
       // Close
-      setAdd(false)
+      setVisible(false)
     } catch (err) {
       Error(errors.addError, err)
-    } finally {
       setLoading(false)
     }
   }
 
-  return add ? (
-    <Form {...layout} onFinish={onAdd}>
-      <Form.Item>
-        <Typography.Title level={5}>New organization</Typography.Title>
-      </Form.Item>
-      <Form.Item
-        name="name"
-        label="Name"
-        rules={[
-          { required: true, message: 'Please enter an organization name' }
-        ]}
+  /**
+   * Render
+   */
+  return (
+    <>
+      <Dialog
+        title="New organization"
+        visible={visible}
+        onCancel={() => setVisible(false)}
+        onOk={onAdd}
+        loading={loading}
       >
-        <Input />
-      </Form.Item>
-      <Form.Item {...tailLayout}>
-        <Space>
-          <Button
-            icon={<CloseOutlined />}
-            type="danger"
-            onClick={() => setAdd(false)}
-          />
-          <Button
-            loading={loading}
-            icon={<CheckOutlined />}
-            type="primary"
-            htmlType="submit"
-          />
-        </Space>
-      </Form.Item>
-    </Form>
-  ) : (
-    <Button icon={<PlusOutlined />} onClick={() => setAdd(true)}>
-      New organization
-    </Button>
+        <Form.Item>
+          <Typography.Title level={5}>New organization</Typography.Title>
+        </Form.Item>
+        <Form.Item
+          name="name"
+          label="Name"
+          rules={[
+            { required: true, message: 'Please enter an organization name' }
+          ]}
+        >
+          <Input />
+        </Form.Item>
+      </Dialog>
+
+      <Button icon={<PlusOutlined />} onClick={() => setVisible(true)}>
+        New organization
+      </Button>
+    </>
   )
+}
+
+Add.propTypes = {
+  swr: PropTypes.shape({
+    addOneOrganization: PropTypes.func.isRequired
+  }).isRequired
 }
 
 export default Add

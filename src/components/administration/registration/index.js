@@ -1,19 +1,27 @@
 import { useEffect } from 'react'
-import { Button, Card, Checkbox, Form, InputNumber } from 'antd'
+import { Button, Card, Checkbox, Form, InputNumber, Space, Spin } from 'antd'
 import { CheckOutlined } from '@ant-design/icons'
-
-import SystemAPI from '@/api/system'
 
 import { Error } from '@/components/assets/notification'
 
+import SystemAPI from '@/api/system'
+
+/**
+ * Errors registration
+ * @memberof module:components/administration
+ */
 const errors = {
   updateError: 'Unable to update system'
 }
 
+/**
+ * Registration
+ * @memberof module:components/administration
+ */
 const Registration = () => {
   // Data
   const [form] = Form.useForm()
-  const [system, { mutateSystem }] = SystemAPI.useSystem()
+  const [system, { mutateSystem, loadingSystem }] = SystemAPI.useSystem()
   const layout = {
     labelCol: { span: 8 },
     wrapperCol: { span: 16 }
@@ -59,15 +67,17 @@ const Registration = () => {
   /**
    * Render
    */
-  return (
-    <>
-      <Card title="Signup" className="Vertical-gutter">
+  return loadingSystem ? (
+    <Spin />
+  ) : (
+    <Space direction="vertical">
+      <Card title="Signup">
         <Checkbox checked={system?.allowsignup} onChange={onAllowSignup}>
           Allow signup
         </Checkbox>
       </Card>
 
-      <Card title="Password" className="Vertical-gutter">
+      <Card title="Password">
         <Form {...layout} form={form} name="form" onFinish={onPasswordFinish}>
           <Form.Item
             label="Minimum number of characters"
@@ -109,7 +119,7 @@ const Registration = () => {
           </Form.Item>
         </Form>
       </Card>
-    </>
+    </Space>
   )
 }
 

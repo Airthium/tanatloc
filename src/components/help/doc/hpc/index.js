@@ -2,6 +2,7 @@ import { Card, Collapse, Typography } from 'antd'
 
 /**
  * HPC plugins documentation
+ * @memberof module:components/help
  */
 const HPC = () => {
   return (

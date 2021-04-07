@@ -141,15 +141,14 @@ const update = async (simulation, data) => {
 
 /**
  * Delete simulation
- * @param {Object} project Project { id }
  * @param {Object} simulation Simulation { id }
  */
-const del = async ({ id }, simulation) => {
-  // Delete simulation
-  await SimulationDB.del(simulation)
+const del = async (simulation) => {
+  // Data
+  const simulationData = await get(simulation.id, ['project'])
 
   // Delete simulation reference in project
-  await Project.update({ id }, [
+  await Project.update({ id: simulationData.project }, [
     {
       type: 'array',
       method: 'remove',
@@ -165,6 +164,9 @@ const del = async ({ id }, simulation) => {
   } catch (err) {
     console.warn(err)
   }
+
+  // Delete simulation
+  await SimulationDB.del(simulation)
 }
 
 /**

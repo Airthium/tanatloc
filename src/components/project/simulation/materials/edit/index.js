@@ -1,12 +1,14 @@
+import PropTypes from 'prop-types'
 import { useState } from 'react'
 
-import { Error } from '@/components/assets/notification'
 import { EditButton } from '@/components/assets/button'
+import { Error } from '@/components/assets/notification'
 
 import SimulationAPI from '@/api/simulation'
 
 /**
- * Errors boundaryCondition/edit
+ * Errors materials/edit
+ * @memberof module:components/project/simulation
  */
 const errors = {
   updateError: 'Unable to edit the material'
@@ -14,17 +16,12 @@ const errors = {
 
 /**
  * Edit material
- * @memberof module:'src/components/project/simulation
+ * @memberof module:components/project/simulation
  * @param {Object} props Props
  */
-const Edit = ({ disabled, material, project, simulation, part, close }) => {
+const Edit = ({ disabled, material, simulation, part, swr, close }) => {
   // State
   const [loading, setLoading] = useState()
-
-  // Data
-  const [, { mutateOneSimulation }] = SimulationAPI.useSimulations(
-    project?.simulations
-  )
 
   /**
    * On edit
@@ -62,7 +59,7 @@ const Edit = ({ disabled, material, project, simulation, part, close }) => {
         ...materials
       }
 
-      // Update
+      // API
       await SimulationAPI.update({ id: simulation.id }, [
         {
           key: 'scheme',
@@ -73,14 +70,13 @@ const Edit = ({ disabled, material, project, simulation, part, close }) => {
         }
       ])
 
-      // Mutate
-      mutateOneSimulation(newSimulation)
+      // Local
+      swr.mutateOneSimulation(newSimulation)
 
       // Close
       close()
     } catch (err) {
       Error(errors.updateError, err)
-    } finally {
       setLoading(false)
     }
   }
@@ -88,6 +84,30 @@ const Edit = ({ disabled, material, project, simulation, part, close }) => {
    * Render
    */
   return <EditButton disabled={disabled} loading={loading} onEdit={onEdit} />
+}
+
+Edit.propTypes = {
+  disabled: PropTypes.bool,
+  material: PropTypes.shape({
+    selected: PropTypes.array.isRequired,
+    uuid: PropTypes.string.isRequired
+  }).isRequired,
+  simulation: PropTypes.shape({
+    scheme: PropTypes.shape({
+      configuration: PropTypes.shape({
+        materials: PropTypes.shape({
+          values: PropTypes.array.isRequired
+        }).isRequired
+      }).isRequired
+    }).isRequired
+  }).isRequired,
+  part: PropTypes.shape({
+    solids: PropTypes.array.isRequired
+  }).isRequired,
+  swr: PropTypes.shape({
+    mutateOneSimulation: PropTypes.func.isRequired
+  }).isRequired,
+  close: PropTypes.func.isRequired
 }
 
 export default Edit

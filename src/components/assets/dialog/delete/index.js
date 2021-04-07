@@ -1,19 +1,20 @@
+import PropTypes from 'prop-types'
 import { Modal, Space } from 'antd'
 import { ExclamationCircleTwoTone } from '@ant-design/icons'
 
 /**
  * DeleteDialog
- * @memberof module:'src/components/assets/dialog
+ * @memberof module:components/assets/dialog
  * @param {Object} props Props
  */
-const DeleteDialog = (props) => {
-  // Props
-  const title = props.title
-  const visible = props.visible
-  const onCancel = props.onCancel
-  const onOk = props.onOk
-  const loading = props.loading
-
+const DeleteDialog = ({
+  title,
+  visible,
+  onCancel,
+  onOk,
+  loading,
+  children
+}) => {
   /**
    * Render
    */
@@ -27,15 +28,29 @@ const DeleteDialog = (props) => {
       onOk={onOk}
       confirmLoading={loading}
     >
-      <Space size="middle">
+      <Space direction="">
         <ExclamationCircleTwoTone
           twoToneColor="#faad14"
           style={{ fontSize: '1.5em' }}
         />
-        <span>{props.children}</span>
+        <span>{children}</span>
       </Space>
     </Modal>
   )
+}
+
+DeleteDialog.propTypes = {
+  title: PropTypes.string.isRequired,
+  visible: PropTypes.bool.isRequired,
+  onCancel: PropTypes.func.isRequired,
+  onOk: PropTypes.func.isRequired,
+  loading: PropTypes.bool,
+  children: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.object,
+    PropTypes.array,
+    PropTypes.element
+  ]).isRequired
 }
 
 export default DeleteDialog

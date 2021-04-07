@@ -1,7 +1,7 @@
 import Signup from '@/components/signup'
 import { shallow, mount } from 'enzyme'
 
-import '@/config/jest/matchMediaMock'
+import '@/config/jest/mockMatchMedia'
 
 const mockPrefetch = jest.fn()
 const mockPush = jest.fn()

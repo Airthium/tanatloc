@@ -1,7 +1,8 @@
+import PropTypes from 'prop-types'
 import { useState } from 'react'
 
-import { Error } from '@/components/assets/notification'
 import { DeleteButton } from '@/components/assets/button'
+import { Error } from '@/components/assets/notification'
 
 import { useDispatch } from 'react-redux'
 import { unselect } from '@/store/select/action'
@@ -10,7 +11,7 @@ import SimulationAPI from '@/api/simulation'
 
 /**
  * Errors boundaryConditions/delete
- * @memberof module:'src/components/project/simulation
+ * @memberof module:components/project/simulation
  */
 const errors = {
   updateError: 'Unable to delete the boundary condition'
@@ -18,17 +19,14 @@ const errors = {
 
 /**
  * Delete boundary condition
- * @memberof module:'src/components/project/simulation
+ * @memberof module:components/project/simulation
  * @param {Object} props Props
  */
-const Delete = ({ project, simulation, type, index }) => {
+const Delete = ({ simulation, type, index, swr }) => {
   // State
   const [loading, setLoading] = useState(false)
 
   // Data
-  const [, { mutateOneSimulation }] = SimulationAPI.useSimulations(
-    project?.simulations
-  )
   const dispatch = useDispatch()
 
   /**
@@ -68,7 +66,7 @@ const Delete = ({ project, simulation, type, index }) => {
         done: done
       }
 
-      // Update
+      // API
       await SimulationAPI.update({ id: simulation.id }, [
         {
           key: 'scheme',
@@ -79,7 +77,8 @@ const Delete = ({ project, simulation, type, index }) => {
         }
       ])
 
-      mutateOneSimulation(newSimulation)
+      // Local
+      swr.mutateOneSimulation(newSimulation)
     } catch (err) {
       Error(errors.updateError, err)
       setLoading(false)
@@ -90,6 +89,21 @@ const Delete = ({ project, simulation, type, index }) => {
    * Render
    */
   return <DeleteButton loading={loading} onDelete={onDelete} />
+}
+
+Delete.propTypes = {
+  simulation: PropTypes.shape({
+    scheme: PropTypes.shape({
+      configuration: PropTypes.shape({
+        boundaryConditions: PropTypes.object.isRequired
+      }).isRequired
+    }).isRequired
+  }).isRequired,
+  type: PropTypes.string.isRequired,
+  index: PropTypes.number.isRequired,
+  swr: PropTypes.shape({
+    mutateOneSimulation: PropTypes.func.isRequired
+  }).isRequired
 }
 
 export default Delete

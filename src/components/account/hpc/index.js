@@ -1,29 +1,22 @@
+import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
-import { Card, Space, Spin } from 'antd'
+import { Card, Space } from 'antd'
 
 import Plugin from './plugin'
 
 import Plugins from '@/plugins'
 
-import UserAPI from '@/api/user'
-import PluginAPI from '@/api/plugin'
-
 /**
  * HPC plugins
+ * @memberof module:components/account
+ * @param {Object} props Props
  */
-const HPC = () => {
+const HPC = ({ user }) => {
   // State
   const [list, setList] = useState([])
 
-  // Data
-  const [user] = UserAPI.useUser()
-  const [, { loadingPlugins }] = PluginAPI.usePlugins()
-
   // Plugins list
   useEffect(() => {
-    if (loadingPlugins) return
-    if (!user) return
-
     // HPC & authorized only
     const HPCPlugins = Object.keys(Plugins)
       .map((key) => {
@@ -36,33 +29,37 @@ const HPC = () => {
       })
       .filter((p) => p)
 
-    let pluginsList
     if (HPCPlugins.length) {
       // List
-      pluginsList = HPCPlugins.map((plugin) => {
+      const pluginsList = HPCPlugins.map((plugin) => {
         return (
           <Card key={plugin.key} title={plugin.name}>
             <Plugin plugin={plugin} />
           </Card>
         )
       })
+      setList(pluginsList)
     } else {
-      pluginsList = (
+      setList(
         <Card>You do not have access to any HPC plugin. Request it.</Card>
       )
     }
-
-    setList(pluginsList)
-  }, [loadingPlugins, JSON.stringify(user)])
+  }, [user])
 
   /**
    * Render
    */
   return (
     <Space direction="vertical" style={{ width: '100%' }}>
-      {loadingPlugins ? <Spin /> : list}
+      {list}
     </Space>
   )
+}
+
+HPC.propTypes = {
+  user: PropTypes.shape({
+    authorizedplugins: PropTypes.array.isRequired
+  }).isRequired
 }
 
 export default HPC

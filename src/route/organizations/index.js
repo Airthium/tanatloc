@@ -15,7 +15,8 @@ export default async (req, res) => {
         'id',
         'name',
         'owners',
-        'users'
+        'users',
+        'groups'
       ])
       res.status(200).json({ organizations })
     } catch (err) {

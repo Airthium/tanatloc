@@ -102,7 +102,6 @@ const getByUser = async ({ id }) => {
     'lastname',
     'email',
     'avatar',
-    'groups',
     'workspaces'
   ])
 
@@ -145,7 +144,6 @@ const getByUser = async ({ id }) => {
                 'name',
                 'owners',
                 'users',
-                'groups',
                 'projects'
               ])
               return {

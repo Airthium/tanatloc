@@ -30,4 +30,10 @@ describe('api/groups', () => {
     const [groups] = useGroups()
     expect(groups).toEqual([])
   })
+
+  it('with id', () => {
+    mockGroups.mockImplementation(() => [{ id: 'id' }])
+    const [groups] = useGroups('id')
+    expect(groups).toEqual([{ id: 'id' }])
+  })
 })

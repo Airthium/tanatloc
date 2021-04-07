@@ -1,3 +1,5 @@
+/** @module database/organization */
+
 import add from './add'
 import getAll from './getAll'
 import get from './get'

@@ -1,6 +1,11 @@
 import List from '@/components/project/simulation/materials/list'
 import { shallow } from 'enzyme'
 
+jest.mock('../../delete', () => {
+  const Delete = () => <div />
+  return Delete
+})
+
 jest.mock('react-redux', () => ({
   useDispatch: () => () => {}
 }))
@@ -16,8 +21,8 @@ jest.mock('@/store/select/action', () => ({
 
 let wrapper
 describe('components/project/simulation/materials/list', () => {
-  const project = {}
   const simulation = {
+    id: 'id',
     scheme: {
       configuration: {
         materials: {
@@ -32,7 +37,10 @@ describe('components/project/simulation/materials/list', () => {
       }
     }
   }
-
+  const mutateOneSimulation = jest.fn()
+  const swr = {
+    mutateOneSimulation
+  }
   const onEdit = jest.fn()
 
   beforeEach(() => {
@@ -43,7 +51,7 @@ describe('components/project/simulation/materials/list', () => {
     onEdit.mockReset()
 
     wrapper = shallow(
-      <List project={project} simulation={simulation} onEdit={onEdit} />
+      <List simulation={simulation} swr={swr} onEdit={onEdit} />
     )
   })
 
@@ -55,13 +63,13 @@ describe('components/project/simulation/materials/list', () => {
     expect(wrapper).toBeDefined()
   })
 
-  it('onHighlight', () => {
+  it('highlight', () => {
     wrapper.find('Card').props().onMouseEnter('key', 0)
     expect(mockEnable).toHaveBeenCalledTimes(1)
     expect(mockSelect).toHaveBeenCalledTimes(1)
   })
 
-  it('onUnhighlight', () => {
+  it('unhighlight', () => {
     wrapper.find('Card').props().onMouseLeave()
     expect(mockDisable).toHaveBeenCalledTimes(1)
   })
@@ -76,7 +84,7 @@ describe('components/project/simulation/materials/list', () => {
     wrapper.unmount()
     simulation.scheme = {}
     wrapper = shallow(
-      <List project={project} simulation={simulation} onEdit={onEdit} />
+      <List simulation={simulation} swr={swr} onEdit={onEdit} />
     )
     expect(wrapper).toBeDefined()
   })

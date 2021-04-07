@@ -18,6 +18,7 @@
     "readme": "README.md",
     "template": "./node_modules/foodoc/template"
   },
+  "plugins": ["plugins/markdown"],
   "templates": {
     "systemName": "Tanatloc documentation",
     "systemSummary": "See the world the way it really is!",

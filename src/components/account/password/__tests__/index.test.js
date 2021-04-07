@@ -1,9 +1,10 @@
 import Password from '..'
 import { shallow } from 'enzyme'
 
-jest.mock('@/components/assets/input', () => ({
-  PasswordItem: 'passwordItem'
-}))
+jest.mock('@/components/assets/input', () => {
+  const PasswordItem = () => <div />
+  return { PasswordItem }
+})
 
 const mockError = jest.fn()
 jest.mock('@/components/assets/notification', () => ({
@@ -13,20 +14,21 @@ jest.mock('@/components/assets/notification', () => ({
 const mockUpdate = jest.fn()
 const mockCheck = jest.fn()
 jest.mock('@/api/user', () => ({
-  useUser: () => [{}],
   update: () => mockUpdate(),
   check: () => mockCheck()
 }))
 
 let wrapper
 describe('components/account/information', () => {
+  const user = { email: 'email' }
+
   beforeEach(() => {
     mockError.mockReset()
 
     mockUpdate.mockReset()
     mockCheck.mockReset()
 
-    wrapper = shallow(<Password />)
+    wrapper = shallow(<Password user={user} />)
   })
 
   afterEach(() => {

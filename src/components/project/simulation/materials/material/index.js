@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
 import { Button, Card, Drawer, Space, Typography } from 'antd'
 
@@ -8,13 +9,18 @@ import DataBase from '../database'
 import Add from '../add'
 import Edit from '../edit'
 
+/**
+ * Material
+ * @memberof module:components/project/simulation
+ * @param {Object} props Props
+ */
 const Material = ({
-  project,
-  simulation,
   visible,
+  simulation,
   part,
   materials,
   material,
+  swr,
   close
 }) => {
   // State
@@ -103,24 +109,36 @@ const Material = ({
           <Edit
             disabled={disabled}
             material={current}
-            project={project}
             simulation={simulation}
             part={part}
+            swr={{ mutateOneSimulation: swr.mutateOneSimulation }}
             close={onClose}
           />
         ) : (
           <Add
             disabled={disabled}
             material={current}
-            project={project}
             simulation={simulation}
             part={part}
+            swr={{ mutateOneSimulation: swr.mutateOneSimulation }}
             close={onClose}
           />
         )}
       </Space>
     </Drawer>
   )
+}
+
+Material.propTypes = {
+  visible: PropTypes.bool,
+  simulation: PropTypes.object.isRequired,
+  part: PropTypes.object.isRequired,
+  materials: PropTypes.object.isRequired,
+  material: PropTypes.object,
+  swr: PropTypes.shape({
+    mutateOneSimulation: PropTypes.func.isRequired
+  }).isRequired,
+  close: PropTypes.func.isRequired
 }
 
 export default Material

@@ -1,38 +1,36 @@
 import Delete from '@/components/project/simulation/delete'
 import { shallow } from 'enzyme'
 
-jest.mock('@/components/assets/dialog', () => ({
-  DeleteDialog: 'deleteDialog'
-}))
-
-const mockMutateSimulation = jest.fn()
-const mockDel = jest.fn()
-jest.mock('@/api/simulation', () => ({
-  useSimulations: () => [[], { delOneSimulation: mockMutateSimulation }],
-  del: async () => mockDel()
-}))
-
-const mockMutateProject = jest.fn()
-jest.mock('@/api/project', () => ({
-  useProject: () => [{}, { mutateProject: mockMutateProject }]
-}))
+jest.mock('@/components/assets/dialog', () => {
+  const DeleteDialog = () => <div />
+  return { DeleteDialog }
+})
 
 const mockError = jest.fn()
 jest.mock('@/components/assets/notification', () => ({
   Error: () => mockError()
 }))
 
+const mockDel = jest.fn()
+jest.mock('@/api/simulation', () => ({
+  del: async () => mockDel()
+}))
+
 let wrapper
 describe('components/project/simulation/delete', () => {
+  const simulation = { id: 'id', name: 'name' }
+  const reloadProject = jest.fn()
+  const delOneSimulation = jest.fn()
+  const swr = {
+    reloadProject,
+    delOneSimulation
+  }
   beforeEach(() => {
-    mockMutateSimulation.mockReset()
-    mockDel.mockReset()
-    mockDel.mockImplementation(() => {})
+    mockError.mockReset()
 
-    mockMutateProject.mockReset()
-    wrapper = shallow(
-      <Delete project={{ simulations: [{}] }} simulation={{}} />
-    )
+    mockDel.mockReset()
+
+    wrapper = shallow(<Delete simulation={simulation} swr={swr} />)
   })
 
   afterEach(() => {
@@ -43,24 +41,30 @@ describe('components/project/simulation/delete', () => {
     expect(wrapper).toBeDefined()
   })
 
-  it('toggleDialog', () => {
-    const visible = wrapper.find('deleteDialog').props().visible
-    wrapper.find('deleteDialog').props().onCancel()
-    expect(wrapper.find('deleteDialog').props().visible).toBe(!visible)
+  it('setVisible', () => {
+    // Visible
+    wrapper.find('Button').props().onClick()
+
+    // Not visible
+    wrapper.find('DeleteDialog').props().onCancel()
   })
 
-  it('handleDelete', async () => {
-    await wrapper.find('deleteDialog').props().onOk()
+  it('onDelete', async () => {
+    // Normal
+    await wrapper.find('DeleteDialog').props().onOk()
     expect(mockDel).toHaveBeenCalledTimes(1)
-    expect(mockMutateProject).toHaveBeenCalledTimes(1)
-    expect(mockMutateSimulation).toHaveBeenCalledTimes(1)
+    expect(delOneSimulation).toHaveBeenCalledTimes(1)
+    expect(reloadProject).toHaveBeenCalledTimes(1)
+    expect(mockError).toHaveBeenCalledTimes(0)
 
     // Error
     mockDel.mockImplementation(() => {
       throw new Error()
     })
-    await wrapper.find('deleteDialog').props().onOk()
-    expect(mockMutateProject).toHaveBeenCalledTimes(1)
-    expect(mockMutateSimulation).toHaveBeenCalledTimes(1)
+    await wrapper.find('DeleteDialog').props().onOk()
+    expect(mockDel).toHaveBeenCalledTimes(2)
+    expect(delOneSimulation).toHaveBeenCalledTimes(1)
+    expect(reloadProject).toHaveBeenCalledTimes(1)
+    expect(mockError).toHaveBeenCalledTimes(1)
   })
 })

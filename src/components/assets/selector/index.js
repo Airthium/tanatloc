@@ -1,5 +1,6 @@
 /** @module components/assets/selector */
 
+import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
 import { Button, Card, Divider, Space, Tag } from 'antd'
 import {
@@ -193,6 +194,12 @@ const Selector = ({ part, alreadySelected, updateSelected }) => {
         : []}
     </Card>
   )
+}
+
+Selector.propTypes = {
+  part: PropTypes.object.isRequired,
+  alreadySelected: PropTypes.array,
+  updateSelected: PropTypes.func.isRequired
 }
 
 export default Selector

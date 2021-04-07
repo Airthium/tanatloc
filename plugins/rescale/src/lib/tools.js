@@ -26,6 +26,23 @@ const getFreeFEM = async (configuration) => {
 }
 
 /**
+ * Check files
+ * @param {Object} configuration Configuration
+ */
+const checkFiles = async (configuration) => {
+  const additionalFiles = configuration.additionalFiles.value
+
+  additionalFiles &&
+    (await Promise.all(
+      additionalFiles.split(',').map(async (id) => {
+        const file = await getFile(configuration, id)
+        if (file.detail === 'Not found.')
+          throw new Error('File not found ' + id)
+      })
+    ))
+}
+
+/**
  * Update tasks
  * @param {string} id Id
  * @param {Array} tasks Tasks
@@ -612,6 +629,7 @@ const processData = async (
 
 export {
   getFreeFEM,
+  checkFiles,
   updateTasks,
   uploadFile,
   uploadFiles,

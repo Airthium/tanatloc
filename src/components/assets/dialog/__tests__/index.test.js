@@ -1,5 +1,7 @@
 import Dialog from '@/components/assets/dialog'
-import { shallow } from 'enzyme'
+import { shallow, mount } from 'enzyme'
+
+jest.mock('../delete')
 
 jest.unmock('antd')
 import antd from 'antd'
@@ -15,8 +17,23 @@ describe('components/assets/dialog', () => {
     mockOnOk.mockReset()
     antd.Form.useForm = () => [
       {
-        validateFields: async () => {},
-        resetFields: () => mockResetFields()
+        name: 'name',
+        getInternalHooks: () => ({
+          dispatch: () => {},
+          registerField: () => {},
+          useSubscribe: () => {},
+          setInitialValues: () => {},
+          setCallbacks: () => {},
+          setValidateMessages: () => {},
+          getFields: () => {},
+          setPreserve: () => {}
+        }),
+        resetFields: () => mockResetFields(),
+        setFieldsValue: () => ({}),
+        validateFields: async () => ({}),
+        __INTERNAL__: {
+          itemRef: () => {}
+        }
       }
     ]
     wrapper = shallow(
@@ -26,7 +43,9 @@ describe('components/assets/dialog', () => {
         onCancel={mockOnCancel}
         onOk={mockOnOk}
         loading={false}
-      />
+      >
+        Test
+      </Dialog>
     )
   })
 
@@ -67,8 +86,41 @@ describe('components/assets/dialog', () => {
         onCancel={mockOnCancel}
         onOk={mockOnOk}
         loading={false}
-      />
+      >
+        Test
+      </Dialog>
     )
     await wrapper.find('Modal').props().onOk()
+  })
+
+  it('effect', () => {
+    wrapper.unmount()
+    wrapper = mount(
+      <Dialog
+        title="title"
+        visible={false}
+        onCancel={mockOnCancel}
+        onOk={mockOnOk}
+        loading={false}
+      >
+        Test
+      </Dialog>
+    )
+    expect(wrapper).toBeDefined()
+
+    wrapper.unmount()
+    wrapper = mount(
+      <Dialog
+        title="title"
+        visible={true}
+        initialValues={{}}
+        onCancel={mockOnCancel}
+        onOk={mockOnOk}
+        loading={false}
+      >
+        Test
+      </Dialog>
+    )
+    expect(wrapper).toBeDefined()
   })
 })

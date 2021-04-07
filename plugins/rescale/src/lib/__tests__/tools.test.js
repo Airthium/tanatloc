@@ -39,7 +39,7 @@ describe('plugins/rescale/src/lib/tools', () => {
       value: 'token'
     },
     additionalFiles: {
-      value: ''
+      value: 'id1,id2'
     }
   }
   const parameters = {
@@ -80,6 +80,20 @@ describe('plugins/rescale/src/lib/tools', () => {
     expect(res).toEqual({ code: 'freefem', version: 'xx' })
   })
 
+  it('checkFiles', async () => {
+    mockCall.mockImplementation(() => ({}))
+    const res = await Tools.checkFiles(configuration)
+    expect(res).toBe()
+
+    mockCall.mockImplementation(() => ({ detail: 'Not found.' }))
+    try {
+      await Tools.checkFiles(configuration)
+      expect(true).toBe(false)
+    } catch (err) {
+      expect(true).toBe(true)
+    }
+  })
+
   it('updateTasks', async () => {
     await Tools.updateTasks()
     expect(mockSimulationUpdate).toHaveBeenCalledTimes(1)
@@ -106,6 +120,7 @@ describe('plugins/rescale/src/lib/tools', () => {
   })
 
   it('createJob', async () => {
+    configuration.additionalFiles.value = undefined
     mockCall.mockImplementation(() => ({ id: 'id' }))
     const job = await Tools.createJob(
       'algorithm',

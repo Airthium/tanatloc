@@ -12,12 +12,12 @@ import Edit from '../edit'
  * @param {Object} props Props
  */
 const BoundaryCondition = ({
-  project,
-  simulation,
   visible,
+  simulation,
   part,
   boundaryConditions,
   boundaryCondition,
+  swr,
   close
 }) => {
   // State
@@ -254,20 +254,20 @@ const BoundaryCondition = ({
           {boundaryCondition ? (
             <Edit
               disabled={disabled}
+              simulation={simulation}
               boundaryCondition={current}
               oldBoundaryCondition={boundaryCondition}
-              project={project}
-              simulation={simulation}
               part={part}
+              swr={{ mutateOneSimulation: swr.mutateOneSimulation }}
               close={onClose}
             />
           ) : (
             <Add
               disabled={disabled}
-              boundaryCondition={current}
-              project={project}
               simulation={simulation}
+              boundaryCondition={current}
               part={part}
+              swr={{ mutateOneSimulation: swr.mutateOneSimulation }}
               close={onClose}
             />
           )}

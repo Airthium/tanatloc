@@ -3,16 +3,18 @@ import group from '..'
 const mockSession = jest.fn()
 jest.mock('../../session', () => () => mockSession())
 
-const mockUserGet = jest.fn()
-jest.mock('@/lib/user', () => ({
-  get: async () => mockUserGet()
+const mockOrganizationGet = jest.fn()
+jest.mock('@/lib/organization', () => ({
+  get: async () => mockOrganizationGet()
 }))
 
 const mockAdd = jest.fn()
+const mockGet = jest.fn()
 const mockUpdate = jest.fn()
 const mockDel = jest.fn()
 jest.mock('@/lib/group', () => ({
   add: async () => mockAdd(),
+  get: async () => mockGet(),
   update: async () => mockUpdate(),
   del: async () => mockDel()
 }))
@@ -39,13 +41,15 @@ describe('route/group', () => {
     mockSession.mockReset()
     mockSession.mockImplementation(() => false)
 
-    mockUserGet.mockReset()
-    mockUserGet.mockImplementation(() => ({}))
+    mockOrganizationGet.mockReset()
+    mockOrganizationGet.mockImplementation(() => ({}))
 
     mockAdd.mockReset()
     mockAdd.mockImplementation(() => ({
       id: 'id'
     }))
+    mockGet.mockReset()
+    mockGet.mockImplementation(() => ({}))
     mockUpdate.mockReset()
     mockDel.mockReset()
 
@@ -60,7 +64,7 @@ describe('route/group', () => {
   it('no session', async () => {
     await group(req, res)
     expect(mockSession).toHaveBeenCalledTimes(1)
-    expect(mockUserGet).toHaveBeenCalledTimes(0)
+    expect(mockOrganizationGet).toHaveBeenCalledTimes(0)
     expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockUpdate).toHaveBeenCalledTimes(0)
     expect(mockDel).toHaveBeenCalledTimes(0)
@@ -68,28 +72,32 @@ describe('route/group', () => {
     expect(response).toBe(undefined)
   })
 
-  it('no superuser', async () => {
+  it('POST', async () => {
+    req.body = {
+      organization: {},
+      group: {}
+    }
+
     mockSession.mockImplementation(() => 'id')
 
+    // Not authorized
     await group(req, res)
     expect(mockSession).toHaveBeenCalledTimes(1)
-    expect(mockUserGet).toHaveBeenCalledTimes(1)
+    expect(mockOrganizationGet).toHaveBeenCalledTimes(1)
     expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockUpdate).toHaveBeenCalledTimes(0)
     expect(mockDel).toHaveBeenCalledTimes(0)
     expect(mockError).toHaveBeenCalledTimes(0)
     expect(response).toEqual({ error: true, message: 'Unauthorized' })
-  })
 
-  it('POST', async () => {
-    mockSession.mockImplementation(() => 'id')
-    mockUserGet.mockImplementation(() => ({
-      superuser: true
+    // Authorized
+    mockOrganizationGet.mockImplementation(() => ({
+      owners: ['id']
     }))
 
     await group(req, res)
-    expect(mockSession).toHaveBeenCalledTimes(1)
-    expect(mockUserGet).toHaveBeenCalledTimes(1)
+    expect(mockSession).toHaveBeenCalledTimes(2)
+    expect(mockOrganizationGet).toHaveBeenCalledTimes(2)
     expect(mockAdd).toHaveBeenCalledTimes(1)
     expect(mockUpdate).toHaveBeenCalledTimes(0)
     expect(mockDel).toHaveBeenCalledTimes(0)
@@ -101,8 +109,8 @@ describe('route/group', () => {
       throw new Error('test')
     })
     await group(req, res)
-    expect(mockSession).toHaveBeenCalledTimes(2)
-    expect(mockUserGet).toHaveBeenCalledTimes(2)
+    expect(mockSession).toHaveBeenCalledTimes(3)
+    expect(mockOrganizationGet).toHaveBeenCalledTimes(3)
     expect(mockAdd).toHaveBeenCalledTimes(2)
     expect(mockUpdate).toHaveBeenCalledTimes(0)
     expect(mockDel).toHaveBeenCalledTimes(0)
@@ -117,14 +125,26 @@ describe('route/group', () => {
       data: []
     }
 
-    mockSession.mockImplementation(() => true)
-    mockUserGet.mockImplementation(() => ({
-      superuser: true
+    mockSession.mockImplementation(() => 'id')
+
+    // Not authorized
+    await group(req, res)
+    expect(mockSession).toHaveBeenCalledTimes(1)
+    expect(mockOrganizationGet).toHaveBeenCalledTimes(1)
+    expect(mockAdd).toHaveBeenCalledTimes(0)
+    expect(mockUpdate).toHaveBeenCalledTimes(0)
+    expect(mockDel).toHaveBeenCalledTimes(0)
+    expect(mockError).toHaveBeenCalledTimes(0)
+    expect(response).toEqual({ error: true, message: 'Unauthorized' })
+
+    // Authorized
+    mockOrganizationGet.mockImplementation(() => ({
+      owners: ['id']
     }))
 
     await group(req, res)
-    expect(mockSession).toHaveBeenCalledTimes(1)
-    expect(mockUserGet).toHaveBeenCalledTimes(1)
+    expect(mockSession).toHaveBeenCalledTimes(2)
+    expect(mockOrganizationGet).toHaveBeenCalledTimes(2)
     expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockUpdate).toHaveBeenCalledTimes(1)
     expect(mockDel).toHaveBeenCalledTimes(0)
@@ -136,8 +156,8 @@ describe('route/group', () => {
       throw new Error('test')
     })
     await group(req, res)
-    expect(mockSession).toHaveBeenCalledTimes(2)
-    expect(mockUserGet).toHaveBeenCalledTimes(2)
+    expect(mockSession).toHaveBeenCalledTimes(3)
+    expect(mockOrganizationGet).toHaveBeenCalledTimes(3)
     expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockUpdate).toHaveBeenCalledTimes(2)
     expect(mockDel).toHaveBeenCalledTimes(0)
@@ -147,15 +167,28 @@ describe('route/group', () => {
 
   it('DELETE', async () => {
     req.method = 'DELETE'
+    req.body = {}
 
-    mockSession.mockImplementation(() => true)
-    mockUserGet.mockImplementation(() => ({
-      superuser: true
+    mockSession.mockImplementation(() => 'id')
+
+    // Not authorized
+    await group(req, res)
+    expect(mockSession).toHaveBeenCalledTimes(1)
+    expect(mockOrganizationGet).toHaveBeenCalledTimes(1)
+    expect(mockAdd).toHaveBeenCalledTimes(0)
+    expect(mockUpdate).toHaveBeenCalledTimes(0)
+    expect(mockDel).toHaveBeenCalledTimes(0)
+    expect(mockError).toHaveBeenCalledTimes(0)
+    expect(response).toEqual({ error: true, message: 'Unauthorized' })
+
+    // Authoriezed
+    mockOrganizationGet.mockImplementation(() => ({
+      owners: ['id']
     }))
 
     await group(req, res)
-    expect(mockSession).toHaveBeenCalledTimes(1)
-    expect(mockUserGet).toHaveBeenCalledTimes(1)
+    expect(mockSession).toHaveBeenCalledTimes(2)
+    expect(mockOrganizationGet).toHaveBeenCalledTimes(2)
     expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockUpdate).toHaveBeenCalledTimes(0)
     expect(mockDel).toHaveBeenCalledTimes(1)
@@ -167,8 +200,8 @@ describe('route/group', () => {
       throw new Error('test')
     })
     await group(req, res)
-    expect(mockSession).toHaveBeenCalledTimes(2)
-    expect(mockUserGet).toHaveBeenCalledTimes(2)
+    expect(mockSession).toHaveBeenCalledTimes(3)
+    expect(mockOrganizationGet).toHaveBeenCalledTimes(3)
     expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockUpdate).toHaveBeenCalledTimes(0)
     expect(mockDel).toHaveBeenCalledTimes(2)
@@ -180,13 +213,10 @@ describe('route/group', () => {
     req.method = 'SOMETHING'
 
     mockSession.mockImplementation(() => true)
-    mockUserGet.mockImplementation(() => ({
-      superuser: true
-    }))
 
     await group(req, res)
     expect(mockSession).toHaveBeenCalledTimes(1)
-    expect(mockUserGet).toHaveBeenCalledTimes(1)
+    expect(mockOrganizationGet).toHaveBeenCalledTimes(0)
     expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockUpdate).toHaveBeenCalledTimes(0)
     expect(mockDel).toHaveBeenCalledTimes(0)

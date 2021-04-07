@@ -72,15 +72,15 @@
 @btn-primary-shadow: 0;
 @btn-text-shadow: 0;
 
-.ant-btn:hover:not(.ant-btn-primary):not(.ant-btn-link),
-.ant-btn:focus:not(.ant-btn-primary):not(.ant-btn-link) {
+.ant-btn:hover:not(.ant-btn-primary):not(.ant-btn-link):not(.ant-btn-danger),
+.ant-btn:focus:not(.ant-btn-primary):not(.ant-btn-link):not(.ant-btn-danger) {
   color: @heading-color;
   background: #ffde00;
   border-color: #ffde00;
 }
 
-.ant-btn:hover:not(.ant-btn-primary):not(.ant-btn-link) .anticon svg,
-.ant-btn:focus:not(.ant-btn-primary):not(.ant-btn-link) .anticon svg {
+.ant-btn:hover:not(.ant-btn-primary):not(.ant-btn-link):not(.ant-btn-danger) .anticon svg,
+.ant-btn:focus:not(.ant-btn-primary):not(.ant-btn-link):not(.ant-btn-danger) .anticon svg {
   fill: @heading-color;
 }
 
@@ -138,3 +138,32 @@
 @border-color-base: #d9d9d9; // major border color
 @box-shadow-base: 0 3px 6px -4px rgba(0, 0, 0, 0.12),
   0 6px 16px 0 rgba(0, 0, 0, 0.08), 0 9px 28px 8px rgba(0, 0, 0, 0.05); // major shadow for layers
+
+.ant-space-vertical {
+  width: 100% !important;
+}
+
+.ant-space-horizontal {
+  width: 100% !important;
+}
+
+.ant-space-align-center {
+  width: 100% !important;
+  justify-content: center !important;
+}
+
+.ant-space-horizontal > .ant-space-item {
+  flex: 1 1 auto !important;
+}
+
+.ant-card-head {
+  min-height: 24px !important;
+}
+
+.ant-card-head-title {
+  padding: 8px 0 !important;
+}
+
+.ant-card-body {
+  padding: 12px !important;
+}

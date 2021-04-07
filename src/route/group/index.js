@@ -1,6 +1,6 @@
 import getSessionId from '../session'
 
-import UserLib from '@/lib/user'
+import OrganizationLib from '@/lib/organization'
 import GroupLib from '@/lib/group'
 
 import Sentry from '@/lib/sentry'
@@ -10,17 +10,31 @@ export default async (req, res) => {
   const sessionId = await getSessionId(req, res)
   if (!sessionId) return
 
-  // Check superuser
-  const user = await UserLib.get(sessionId, ['superuser'])
-  if (!user.superuser) {
-    res.status(500).json({ error: true, message: 'Unauthorized' })
-    return
+  const checkAdministrator = async (organization, user) => {
+    const organizationData = await OrganizationLib.get(organization.id, [
+      'owners'
+    ])
+    if (!organizationData?.owners?.includes(user.id)) {
+      res.status(500).json({ error: true, message: 'Unauthorized' })
+      return false
+    }
+
+    return true
   }
 
   switch (req.method) {
     case 'POST':
       try {
-        const group = await GroupLib.add(req.body)
+        // Check administrator
+        if (
+          !(await checkAdministrator(
+            { id: req.body.organization },
+            { id: sessionId }
+          ))
+        )
+          return
+
+        const group = await GroupLib.add(req.body.organization, req.body.group)
         res.status(200).json(group)
       } catch (err) {
         console.error(err)
@@ -30,6 +44,10 @@ export default async (req, res) => {
       break
     case 'PUT':
       try {
+        // Check administrator
+        if (!(await checkAdministrator({ id: req.body.id }, { id: sessionId })))
+          return
+
         await GroupLib.update({ id: req.body.id }, req.body.data)
         res.status(200).end()
       } catch (err) {
@@ -40,6 +58,10 @@ export default async (req, res) => {
       break
     case 'DELETE':
       try {
+        // Check administrator
+        if (!(await checkAdministrator({ id: req.body.id }, { id: sessionId })))
+          return
+
         await GroupLib.del(req.body)
         res.status(200).end()
       } catch (err) {

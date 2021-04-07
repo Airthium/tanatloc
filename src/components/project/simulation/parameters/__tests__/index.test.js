@@ -1,19 +1,26 @@
 import Parameters from '@/components/project/simulation/parameters'
 import { shallow, mount } from 'enzyme'
+import { act } from 'react-dom/test-utils'
 
-jest.mock('@/components/assets/formula', () => 'formula')
+jest.mock('@/components/assets/formula', () => {
+  const Formula = () => <div />
+  return Formula
+})
+
+const mockError = jest.fn()
+jest.mock('@/components/assets/notification', () => ({
+  Error: () => mockError()
+}))
 
 const mockUpdate = jest.fn()
-const mockMutate = jest.fn()
 jest.mock('@/api/simulation', () => ({
-  update: async () => mockUpdate(),
-  useSimulations: () => [[], { mutateOneSimulation: mockMutate }]
+  update: async () => mockUpdate()
 }))
 
 let wrapper
 describe('components/project/simulation/parameters', () => {
-  const project = {}
   const simulation = {
+    id: 'id',
     scheme: {
       configuration: {
         parameters: {
@@ -41,9 +48,11 @@ describe('components/project/simulation/parameters', () => {
       }
     }
   }
+  const mutateOneSimulation = jest.fn()
+  const swr = { mutateOneSimulation }
 
   beforeEach(() => {
-    wrapper = shallow(<Parameters project={project} simulation={simulation} />)
+    wrapper = shallow(<Parameters simulation={simulation} swr={swr} />)
   })
 
   afterEach(() => {
@@ -56,30 +65,31 @@ describe('components/project/simulation/parameters', () => {
 
   it('with value', () => {
     wrapper.unmount()
-
     simulation.scheme.configuration.parameters.param1.children[0].value = 0
-    wrapper = shallow(<Parameters project={project} simulation={simulation} />)
+    wrapper = shallow(<Parameters simulation={simulation} swr={swr} />)
+    expect(wrapper).toBeDefined()
   })
 
   it('onChange', () => {
-    wrapper.find('formula').props().onValueChange()
+    wrapper.find('Formula').props().onValueChange()
     wrapper.find('ForwardRef(InternalSelect)').props().onChange()
   })
 
   it('effect', () => {
     wrapper.unmount()
 
-    wrapper = mount(<Parameters project={project} simulation={simulation} />)
-
-    wrapper.find('formula').props().onValueChange()
+    wrapper = mount(<Parameters simulation={simulation} swr={swr} />)
     expect(mockUpdate).toHaveBeenCalledTimes(1)
 
-    wrapper.find('formula').props().onValueChange('new value')
+    // Without value
+    act(() => wrapper.find('Formula').props().onValueChange())
     expect(mockUpdate).toHaveBeenCalledTimes(2)
 
+    // Error
     mockUpdate.mockImplementation(() => {
       throw new Error()
     })
-    wrapper.find('formula').props().onValueChange('new value')
+    act(() => wrapper.find('Formula').props().onValueChange('value'))
+    expect(mockUpdate).toHaveBeenCalledTimes(3)
   })
 })

@@ -1,7 +1,10 @@
 import HPC from '..'
 import { mount } from 'enzyme'
 
-jest.mock('@/components/account/hpc/plugin', () => 'Plugin')
+jest.mock('@/components/account/hpc/plugin', () => {
+  const Plugin = () => <div />
+  return Plugin
+})
 
 jest.mock('@/plugins', () => ({
   NonHPCPlugin: {
@@ -19,28 +22,14 @@ jest.mock('@/plugins', () => ({
   }
 }))
 
-const mockUser = jest.fn()
-jest.mock('@/api/user', () => ({
-  useUser: () => [mockUser()]
-}))
-
-const mockLoading = jest.fn()
-jest.mock('@/api/plugin', () => ({
-  usePlugins: () => [[], { loadingPlugins: mockLoading() }]
-}))
-
 let wrapper
 describe('components/account/hpc', () => {
+  const user = {
+    authorizedplugins: []
+  }
+
   beforeEach(() => {
-    mockUser.mockReset()
-    mockUser.mockImplementation(() => ({
-      authorizedplugins: ['plugin']
-    }))
-
-    mockLoading.mockReset()
-    mockLoading.mockImplementation(() => false)
-
-    wrapper = mount(<HPC />)
+    wrapper = mount(<HPC user={user} />)
   })
 
   afterEach(() => {
@@ -51,29 +40,15 @@ describe('components/account/hpc', () => {
     expect(wrapper).toBeDefined()
   })
 
-  it('loading', () => {
+  it('without authorizedplugins', () => {
     wrapper.unmount()
-    mockLoading.mockImplementation(() => true)
-
-    wrapper = mount(<HPC />)
-    expect(wrapper.find('Spin').length).toBe(1)
-  })
-
-  it('without user', () => {
-    wrapper.unmount()
-    mockUser.mockImplementation(() => {})
-
-    wrapper = mount(<HPC />)
+    wrapper = mount(<HPC user={user} />)
     expect(wrapper).toBeDefined()
   })
 
-  it('without authorized plugins', () => {
+  it('with authorized plugins', () => {
     wrapper.unmount()
-    mockUser.mockImplementation(() => ({
-      authorizedplugins: []
-    }))
-
-    wrapper = mount(<HPC />)
+    wrapper = mount(<HPC user={{ ...user, authorizedplugins: ['plugin'] }} />)
     expect(wrapper).toBeDefined()
   })
 })

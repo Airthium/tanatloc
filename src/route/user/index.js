@@ -26,7 +26,6 @@ export default async (req, res) => {
           'email',
           'avatar',
           'superuser',
-          'groups',
           'authorizedplugins',
           'plugins'
         ])

@@ -1,7 +1,7 @@
 /** @module components/assets/formula */
 
 import { useState, useEffect } from 'react'
-import { Button, Checkbox, Input, Space } from 'antd'
+import { Checkbox, Input, Space } from 'antd'
 import { SaveOutlined } from '@ant-design/icons'
 
 const saveDelay = 1000
@@ -87,10 +87,9 @@ const Formula = ({
         onChange={onInputChange}
         addonAfter={unit}
       />
-      <Button
-        disabled={autoSaveDisabled}
-        loading={loading}
-        icon={<SaveOutlined />}
+      <SaveOutlined
+        spin={loading}
+        style={{ color: autoSaveDisabled ? 'green' : 'orange' }}
       />
     </Space>
   )

@@ -1,5 +1,7 @@
 /** @module components/assets/dialog */
 
+import PropTypes from 'prop-types'
+import { useEffect } from 'react'
 import { Form, Modal } from 'antd'
 
 import DeleteDialog from './delete'
@@ -8,21 +10,26 @@ import DeleteDialog from './delete'
  * Dialog
  * @param {Object} props Props
  */
-const Dialog = (props) => {
-  // Props
-  const title = props.title
-  const visible = props.visible
-  const onCancel = props.onCancel
-  const onOk = props.onOk
-  const loading = props.loading
-
+const Dialog = ({
+  title,
+  visible,
+  initialValues,
+  onCancel,
+  onOk,
+  loading,
+  children
+}) => {
   // Form
   const [form] = Form.useForm()
 
+  // Inital values update
+  useEffect(() => {
+    if (visible && initialValues) form.setFieldsValue(initialValues)
+  }, [visible, initialValues])
+
   // Layout
   const layout = {
-    labelCol: { span: 5 },
-    wrapperCol: { span: 18 }
+    layout: 'vertical'
   }
 
   /**
@@ -41,17 +48,30 @@ const Dialog = (props) => {
           const values = await form.validateFields()
           await onOk(values)
           form.resetFields()
-        } catch (info) {
-          console.warn('Validation Failed:', info)
-        }
+        } catch (err) {}
       }}
       confirmLoading={loading}
     >
-      <Form form={form} {...layout}>
-        {props.children}
+      <Form form={form} {...layout} initialValues={initialValues}>
+        {children}
       </Form>
     </Modal>
   )
+}
+
+Dialog.propTypes = {
+  title: PropTypes.string.isRequired,
+  visible: PropTypes.bool.isRequired,
+  initialValues: PropTypes.object,
+  onCancel: PropTypes.func.isRequired,
+  onOk: PropTypes.func.isRequired,
+  loading: PropTypes.bool,
+  children: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.object,
+    PropTypes.array,
+    PropTypes.element
+  ]).isRequired
 }
 
 export default Dialog

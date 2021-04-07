@@ -3,7 +3,7 @@ import { shallow, mount } from 'enzyme'
 import { act } from 'react-dom/test-utils'
 
 import '@/config/jest/resizeObserverMock'
-import '@/config/jest/matchMediaMock'
+import '@/config/jest/mockMatchMedia'
 
 jest.mock('@/lib/utils', () => ({
   stringToColor: () => {}

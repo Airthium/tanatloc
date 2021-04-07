@@ -6,11 +6,14 @@ describe('components/assets/dialog', () => {
   beforeEach(() => {
     wrapper = shallow(
       <DeleteDialog
+        title="title"
         visible={false}
         onCancel={() => {}}
         onOk={() => {}}
         loading={false}
-      />
+      >
+        Are you sure ?
+      </DeleteDialog>
     )
   })
 

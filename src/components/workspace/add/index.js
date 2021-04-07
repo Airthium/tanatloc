@@ -1,34 +1,30 @@
+import PropTypes from 'prop-types'
 import { useState } from 'react'
 import { Button, Form, Input } from 'antd'
 import { PlusCircleOutlined } from '@ant-design/icons'
 
-import { Error } from '@/components/assets/notification'
 import Dialog from '@/components/assets/dialog'
+import { Error } from '@/components/assets/notification'
 
 import WorkspaceAPI from '@/api/workspace'
 
+/**
+ * Errors add
+ * @memberof module:components/workspace
+ */
 const errors = {
   addError: 'Unable to add the workspace'
 }
 
 /**
  * Add workspace
- * @memberof module:'src/components/workspace
+ * @memberof module:components/workspace
+ * @param {Object} props Props
  */
-const Add = () => {
+const Add = ({ swr }) => {
   // Sate
   const [visible, setVisible] = useState(false)
   const [loading, setLoading] = useState(false)
-
-  // Data
-  const [, { addOneWorkspace }] = WorkspaceAPI.useWorkspaces()
-
-  /**
-   * Toggle dialog
-   */
-  const toggleDialog = () => {
-    setVisible(!visible)
-  }
 
   /**
    * On confirm
@@ -41,21 +37,14 @@ const Add = () => {
       const workspace = await WorkspaceAPI.add(values)
 
       // Mutate
-      addOneWorkspace(workspace)
+      swr.addOneWorkspace(workspace)
 
-      toggleDialog()
+      // Close
+      setVisible(false)
     } catch (err) {
       Error(errors.addError, err)
-    } finally {
       setLoading(false)
     }
-  }
-
-  /**
-   * On cancel
-   */
-  const onCancel = () => {
-    toggleDialog()
   }
 
   /**
@@ -63,14 +52,14 @@ const Add = () => {
    */
   return (
     <>
-      <Button onClick={toggleDialog} icon={<PlusCircleOutlined />}>
+      <Button onClick={() => setVisible(true)} icon={<PlusCircleOutlined />}>
         Create a new workspace
       </Button>
       <Dialog
         title="Create a new workspace"
         closable={false}
         visible={visible}
-        onCancel={onCancel}
+        onCancel={() => setVisible(false)}
         onOk={onOk}
         confirmLoading={loading}
       >
@@ -86,6 +75,12 @@ const Add = () => {
       </Dialog>
     </>
   )
+}
+
+Add.propTypes = {
+  swr: PropTypes.shape({
+    addOneWorkspace: PropTypes.func.isRequired
+  }).isRequired
 }
 
 export default Add

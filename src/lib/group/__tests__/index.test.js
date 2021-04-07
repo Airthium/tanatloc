@@ -22,6 +22,23 @@ jest.mock('../../user', () => ({
   update: async () => mockUserUpdate()
 }))
 
+const mockWorkspaceUpdate = jest.fn()
+jest.mock('../../workspace', () => ({
+  update: async () => mockWorkspaceUpdate()
+}))
+
+const mockProjectUpdate = jest.fn()
+jest.mock('../../project', () => ({
+  update: async () => mockProjectUpdate()
+}))
+
+const mockOrganizationGet = jest.fn()
+const mockOrganizationUpdate = jest.fn()
+jest.mock('../../organization', () => ({
+  get: async () => mockOrganizationGet(),
+  update: async () => mockOrganizationUpdate()
+}))
+
 describe('lib/group', () => {
   beforeEach(() => {
     mockAdd.mockReset()
@@ -32,28 +49,50 @@ describe('lib/group', () => {
 
     mockUserGet.mockReset()
     mockUserUpdate.mockReset()
+
+    mockWorkspaceUpdate.mockReset()
+
+    mockProjectUpdate.mockReset()
+
+    mockOrganizationGet.mockReset()
+    mockOrganizationUpdate.mockReset()
   })
 
   it('add', async () => {
     mockAdd.mockImplementation(() => ({ id: 'id' }))
-    const group = await Group.add({ name: 'group', users: ['id'] })
+    const group = await Group.add({}, { name: 'group', users: ['id'] })
     expect(group).toEqual({ id: 'id' })
     expect(mockAdd).toHaveBeenCalledTimes(1)
-    expect(mockUserUpdate).toHaveBeenCalledTimes(1)
+    expect(mockOrganizationUpdate).toHaveBeenCalledTimes(1)
   })
 
   it('get', async () => {
-    mockGet.mockImplementation(() => ({ id: 'id' }))
+    mockGet.mockImplementation(() => ({ id: 'id', users: ['id'] }))
+    mockUserGet.mockImplementation(() => ({ firstname: 'firstname' }))
     const group = await Group.get('id', ['data'])
-    expect(group).toEqual({ id: 'id' })
+    expect(group).toEqual({
+      id: 'id',
+      users: [{ id: 'id', firstname: 'firstname' }]
+    })
     expect(mockGet).toHaveBeenCalledTimes(1)
   })
 
   it('getAll', async () => {
-    // Normal
+    let groups
+
+    // Minimal
     mockGetAll.mockImplementation(() => [
       {
-        id: 'id',
+        name: 'name'
+      }
+    ])
+    groups = await Group.getAll(['data'])
+    expect(mockGetAll).toHaveBeenCalledTimes(1)
+    expect(groups).toEqual([{ name: 'name' }])
+
+    // With users
+    mockGetAll.mockImplementation(() => [
+      {
         name: 'name',
         users: ['id']
       }
@@ -61,8 +100,39 @@ describe('lib/group', () => {
     mockUserGet.mockImplementation(() => ({
       firstname: 'firstname'
     }))
-    const groups = await Group.getAll(['data'])
-    expect(mockGetAll).toHaveBeenCalledTimes(1)
+    groups = await Group.getAll(['data'])
+    expect(mockGetAll).toHaveBeenCalledTimes(2)
+    expect(mockUserGet).toHaveBeenCalledTimes(1)
+    expect(groups).toEqual([
+      { name: 'name', users: [{ id: 'id', firstname: 'firstname' }] }
+    ])
+  })
+
+  it('getByOrganization', async () => {
+    let groups
+
+    // Minimal
+    mockOrganizationGet.mockImplementation(() => ({
+      groups: ['id']
+    }))
+    mockGet.mockImplementation(() => ({
+      name: 'name'
+    }))
+    groups = await Group.getByOrganization('id', ['data'])
+    expect(mockOrganizationGet).toHaveBeenCalledTimes(1)
+    expect(mockGet).toHaveBeenCalledTimes(1)
+    expect(groups).toEqual([{ id: 'id', name: 'name' }])
+
+    // With users
+    mockGet.mockImplementation(() => ({
+      name: 'name',
+      users: ['id']
+    }))
+    mockUserGet.mockImplementation(() => ({ firstname: 'firstname' }))
+    groups = await Group.getByOrganization('id', ['data'])
+    expect(mockOrganizationGet).toHaveBeenCalledTimes(2)
+    expect(mockUserGet).toHaveBeenCalledTimes(1)
+    expect(mockGet).toHaveBeenCalledTimes(2)
     expect(groups).toEqual([
       { id: 'id', name: 'name', users: [{ id: 'id', firstname: 'firstname' }] }
     ])
@@ -71,20 +141,29 @@ describe('lib/group', () => {
   it('update', async () => {
     await Group.update({}, [{}])
     expect(mockUpdate).toHaveBeenCalledTimes(1)
-
-    // With added & delete users
-    mockGet.mockImplementation(() => ({ users: ['id1'] }))
-    await Group.update({}, [{ key: 'users', value: ['id0'] }])
-    expect(mockUpdate).toHaveBeenCalledTimes(2)
-    expect(mockUserUpdate).toHaveBeenCalledTimes(2)
   })
 
   it('del', async () => {
+    // Minimal
+    mockGet.mockImplementation(() => ({}))
+    await Group.del({})
+    expect(mockGet).toHaveBeenCalledTimes(1)
+    expect(mockOrganizationUpdate).toHaveBeenCalledTimes(1)
+    expect(mockWorkspaceUpdate).toHaveBeenCalledTimes(0)
+    expect(mockProjectUpdate).toHaveBeenCalledTimes(0)
+    expect(mockDel).toHaveBeenCalledTimes(1)
+
+    // With workspaces & projects
     mockGet.mockImplementation(() => ({
-      users: [{}]
+      users: ['id'],
+      workspaces: ['id'],
+      projects: ['id']
     }))
     await Group.del({})
-    expect(mockDel).toHaveBeenCalledTimes(1)
-    expect(mockUserUpdate).toHaveBeenCalledTimes(1)
+    expect(mockGet).toHaveBeenCalledTimes(2)
+    expect(mockOrganizationUpdate).toHaveBeenCalledTimes(2)
+    expect(mockWorkspaceUpdate).toHaveBeenCalledTimes(1)
+    expect(mockProjectUpdate).toHaveBeenCalledTimes(1)
+    expect(mockDel).toHaveBeenCalledTimes(2)
   })
 })

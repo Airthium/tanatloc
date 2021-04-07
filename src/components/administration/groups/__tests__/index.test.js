@@ -1,61 +1,53 @@
 import Groups from '..'
 import { shallow, mount } from 'enzyme'
-import '@/config/jest/matchMediaMock'
 
-const mockError = jest.fn()
-jest.mock('@/components/assets/notification', () => ({
-  Error: () => mockError()
-}))
+import '@/config/jest/mockMatchMedia'
 
+jest.mock('@/components/assets/group', () => {
+  const Group = () => <div />
+  const Delete = () => <div />
+
+  Group.Delete = Delete
+  return Group
+})
+
+const mockUserToAvatar = jest.fn()
 jest.mock('@/lib/utils', () => ({
-  stringToColor: () => {},
-  userToAvatar: () => {}
-}))
-
-const mockUsers = jest.fn()
-jest.mock('@/api/user', () => ({
-  useUsers: () => [mockUsers()]
+  userToAvatar: () => mockUserToAvatar()
 }))
 
 const mockGroups = jest.fn()
 const mockAddOneGroup = jest.fn()
 const mockMutateOneGroup = jest.fn()
 const mockDelOneGroup = jest.fn()
-const mockAdd = jest.fn()
-const mockUpdate = jest.fn()
-const mockDel = jest.fn()
+const mockLoadingGroups = jest.fn()
 jest.mock('@/api/group', () => ({
   useGroups: () => [
     mockGroups(),
     {
       addOneGroup: mockAddOneGroup,
       mutateOneGroup: mockMutateOneGroup,
-      delOneGroup: mockDelOneGroup
+      delOneGroup: mockDelOneGroup,
+      loadingGroups: mockLoadingGroups()
     }
-  ],
-  add: async () => mockAdd(),
-  update: async () => mockUpdate(),
-  del: async () => mockDel()
+  ]
 }))
 
 let wrapper
 describe('components/administration/groups', () => {
-  beforeEach(() => {
-    mockError.mockReset()
+  const users = []
 
-    mockUsers.mockReset()
-    mockUsers.mockImplementation(() => [])
+  beforeEach(() => {
+    mockUserToAvatar.mockReset()
 
     mockGroups.mockReset()
-    mockGroups.mockImplementation(() => [])
+    mockGroups.mockImplementation(() => [{ id: 'id', users: [{}] }])
     mockAddOneGroup.mockReset()
     mockMutateOneGroup.mockReset()
     mockDelOneGroup.mockReset()
-    mockAdd.mockReset()
-    mockUpdate.mockReset()
-    mockDel.mockReset()
+    mockLoadingGroups.mockReset()
 
-    wrapper = shallow(<Groups />)
+    wrapper = shallow(<Groups users={users} />)
   })
 
   afterEach(() => {
@@ -66,133 +58,24 @@ describe('components/administration/groups', () => {
     expect(wrapper).toBeDefined()
   })
 
-  it('with users & groups', () => {
+  it('columns', () => {
+    const columns = wrapper.find('Table').props().columns
+
+    // Renders
+    columns[1].render([{}])
+    columns[2].render(null, [{}])
+  })
+
+  it('effect', () => {
     wrapper.unmount()
-    mockUsers.mockImplementation(() => [
-      { id: 'id' },
-      {
-        email: 'email'
-      },
-      {
-        id: 'id',
-        firstname: 'firstname',
-        avatar: 'img'
-      },
-      {
-        id: 'id',
-        lastname: 'lastname'
-      }
-    ])
-    mockGroups.mockImplementation(() => [
-      {
-        name: 'group',
-        users: [
-          { id: 'id' },
-          {
-            email: 'email'
-          },
-          {
-            id: 'id',
-            firstname: 'firstname',
-            avatar: 'img'
-          },
-          {
-            id: 'id',
-            lastname: 'lastname'
-          }
-        ]
-      }
-    ])
-    wrapper = mount(<Groups />)
+    wrapper = mount(
+      <Groups
+        users={[
+          { id: 'id1', firstname: 'firstname' },
+          { id: 'id2', email: 'email' }
+        ]}
+      />
+    )
     expect(wrapper).toBeDefined()
-  })
-
-  it('onAdd', async () => {
-    // Set edit
-    wrapper.find('Button').props().onClick()
-    wrapper.update()
-    mockAdd.mockImplementation(() => ({}))
-    await wrapper.find('ForwardRef(InternalForm)').props().onFinish({})
-    expect(mockAdd).toHaveBeenCalledTimes(1)
-    expect(mockAddOneGroup).toHaveBeenCalledTimes(1)
-    expect(mockError).toHaveBeenCalledTimes(0)
-
-    // Set edit
-    wrapper.find('Button').props().onClick()
-    wrapper.update()
-    mockAdd.mockImplementation(() => {
-      throw new Error()
-    })
-    await wrapper.find('ForwardRef(InternalForm)').props().onFinish({})
-    expect(mockAdd).toHaveBeenCalledTimes(2)
-    expect(mockAddOneGroup).toHaveBeenCalledTimes(1)
-    expect(mockError).toHaveBeenCalledTimes(1)
-
-    // Stop edit
-    wrapper.find('Button').at(1).props().onClick()
-  })
-
-  it('onUpdate', async () => {
-    wrapper.unmount()
-    mockGroups.mockImplementation(() => [{}])
-    wrapper = shallow(<Groups />)
-
-    const render = wrapper
-      .find('Table')
-      .props()
-      .columns[2].render('text', { key: 'value', users: [{ id: 'id1' }] })
-
-    // Set edit
-    render.props.children[0].props.onClick()
-    wrapper.update()
-
-    await wrapper
-      .find('ForwardRef(InternalForm)')
-      .props()
-      .onFinish({ key: 'value', name: 'name', users: ['id'] })
-    expect(mockUpdate).toHaveBeenCalledTimes(1)
-    expect(mockMutateOneGroup).toHaveBeenCalledTimes(1)
-    expect(mockError).toHaveBeenCalledTimes(0)
-
-    // Set edit
-    render.props.children[0].props.onClick()
-    wrapper.update()
-
-    mockUpdate.mockImplementation(() => {
-      throw new Error()
-    })
-    await wrapper
-      .find('ForwardRef(InternalForm)')
-      .props()
-      .onFinish({ key: 'value', users: ['id1'] })
-    expect(mockUpdate).toHaveBeenCalledTimes(2)
-    expect(mockMutateOneGroup).toHaveBeenCalledTimes(1)
-    expect(mockError).toHaveBeenCalledTimes(1)
-  })
-
-  it('onDelete', async () => {
-    wrapper.unmount()
-    mockGroups.mockImplementation(() => [{}])
-    wrapper = shallow(<Groups />)
-
-    const render = wrapper
-      .find('Table')
-      .props()
-      .columns[2].render('text', { key: 'value', users: [{}] })
-
-    // Normal
-    await render.props.children[1].props.onClick()
-    expect(mockDel).toHaveBeenCalledTimes(1)
-    expect(mockDelOneGroup).toHaveBeenCalledTimes(1)
-    expect(mockError).toHaveBeenCalledTimes(0)
-
-    // Error
-    mockDel.mockImplementation(() => {
-      throw new Error()
-    })
-    await render.props.children[1].props.onClick()
-    expect(mockDel).toHaveBeenCalledTimes(2)
-    expect(mockDelOneGroup).toHaveBeenCalledTimes(1)
-    expect(mockError).toHaveBeenCalledTimes(1)
   })
 })

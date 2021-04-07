@@ -103,6 +103,15 @@ describe('lib/user', () => {
     expect(user).toEqual({ id: 'id', email: 'email', avatar: undefined })
   })
 
+  it('getBy', async () => {
+    mockGet.mockImplementation(() => ({
+      id: 'id'
+    }))
+    const user = await User.getBy('email', ['id'], 'email')
+    expect(mockGet).toHaveBeenCalledTimes(1)
+    expect(user).toEqual({ id: 'id' })
+  })
+
   it('getAll', async () => {
     mockGetAll.mockImplementation(() => [{ id: 'id' }])
     const users = await User.getAll()

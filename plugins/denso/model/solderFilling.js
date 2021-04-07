@@ -38,7 +38,7 @@ const solderFilling = {
           {
             label: 'Contact angle',
             htmlEntity: 'formula',
-            default: 60
+            default: 40
           }
         ]
       },
@@ -187,6 +187,7 @@ const solderFilling = {
     run: {
       index: 4,
       title: 'Run',
+      logFile: 'jobname.log',
       results: [
         {
           name: 'phi'

@@ -10,19 +10,40 @@ jest.mock('next/router', () => ({
   })
 }))
 
-jest.mock('../information', () => 'information')
-jest.mock('../password', () => 'password')
-jest.mock('../delete', () => 'delete')
-jest.mock('../hpc', () => 'hpc')
+jest.mock('../information', () => {
+  const Information = () => <div />
+  return Information
+})
+
+jest.mock('../password', () => {
+  const Password = () => <div />
+  return Password
+})
+
+jest.mock('../delete', () => {
+  const Delete = () => <div />
+  return Delete
+})
+
+jest.mock('../hpc', () => {
+  const HPC = () => <div />
+  return HPC
+})
 
 let wrapper
 describe('components/account', () => {
+  const user = { email: 'email' }
+  const mutateUser = jest.fn()
+  const swr = {
+    mutateUser
+  }
+
   beforeEach(() => {
     mockReplace.mockReset()
     mockQuery.mockReset()
     mockQuery.mockImplementation(() => ({}))
 
-    wrapper = shallow(<Account />)
+    wrapper = shallow(<Account user={user} swr={swr} />)
   })
 
   afterEach(() => {

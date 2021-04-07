@@ -1,18 +1,33 @@
 import Material from '@/components/project/simulation/materials/material'
 import { shallow, mount } from 'enzyme'
 
-jest.mock('@/components/assets/formula', () => 'Formula')
-jest.mock('@/components/assets/selector', () => 'Selector')
-jest.mock(
-  '@/components/project/simulation/materials/database',
-  () => 'Database'
-)
-jest.mock('@/components/project/simulation/materials/add', () => 'Add')
-jest.mock('@/components/project/simulation/materials/edit', () => 'Edit')
+jest.mock('@/components/assets/formula', () => {
+  const Formula = () => <div />
+  return Formula
+})
+
+jest.mock('@/components/assets/selector', () => {
+  const Selector = () => <div />
+  return Selector
+})
+
+jest.mock('@/components/project/simulation/materials/database', () => {
+  const Database = () => <div />
+  return Database
+})
+
+jest.mock('@/components/project/simulation/materials/add', () => {
+  const Add = () => <div />
+  return Add
+})
+
+jest.mock('@/components/project/simulation/materials/edit', () => {
+  const Edit = () => <div />
+  return Edit
+})
 
 let wrapper
 describe('components/project/simulation/materials/material', () => {
-  const project = {}
   const simulation = {}
   const part = {}
   const materials = {
@@ -25,7 +40,8 @@ describe('components/project/simulation/materials/material', () => {
     ]
   }
   let material = undefined
-
+  const mutateOneSimulation = jest.fn()
+  const swr = { mutateOneSimulation }
   const close = jest.fn()
 
   beforeEach(() => {
@@ -33,12 +49,12 @@ describe('components/project/simulation/materials/material', () => {
 
     wrapper = shallow(
       <Material
-        project={project}
         simulation={simulation}
         visible={true}
         part={part}
         materials={materials}
         material={material}
+        swr={swr}
         close={close}
       />
     )
@@ -70,12 +86,12 @@ describe('components/project/simulation/materials/material', () => {
     material = null
     wrapper = mount(
       <Material
-        project={project}
         simulation={simulation}
         visible={true}
         part={part}
         materials={materials}
         material={material}
+        swr={swr}
         close={close}
       />
     )
@@ -94,12 +110,12 @@ describe('components/project/simulation/materials/material', () => {
     }
     wrapper = mount(
       <Material
-        project={project}
         simulation={simulation}
         visible={true}
         part={part}
         materials={materials}
         material={material}
+        swr={swr}
         close={close}
       />
     )

@@ -1,7 +1,8 @@
+import PropTypes from 'prop-types'
 import { useState } from 'react'
 
-import { Error } from '@/components/assets/notification'
 import { EditButton } from '@/components/assets/button'
+import { Error } from '@/components/assets/notification'
 
 import SimulationAPI from '@/api/simulation'
 
@@ -14,25 +15,20 @@ const errors = {
 
 /**
  * Edit boundary condition
- * @memberof module:'src/components/project/simulation
+ * @memberof module:components/project/simulation
  * @param {Object} props Props
  */
 const Edit = ({
   disabled,
+  simulation,
   boundaryCondition,
   oldBoundaryCondition,
-  project,
-  simulation,
   part,
+  swr,
   close
 }) => {
   // State
   const [loading, setLoading] = useState()
-
-  // Data
-  const [, { mutateOneSimulation }] = SimulationAPI.useSimulations(
-    project?.simulations
-  )
 
   /**
    * On edit
@@ -96,7 +92,7 @@ const Edit = ({
         ...boundaryConditions
       }
 
-      // Update
+      // API
       await SimulationAPI.update({ id: simulation.id }, [
         {
           key: 'scheme',
@@ -107,8 +103,8 @@ const Edit = ({
         }
       ])
 
-      // Mutate
-      mutateOneSimulation(newSimulation)
+      // Local
+      swr.mutateOneSimulation(newSimulation)
 
       // Close
       close()
@@ -122,6 +118,38 @@ const Edit = ({
    * Render
    */
   return <EditButton disabled={disabled} loading={loading} onEdit={onEdit} />
+}
+
+Edit.propTypes = {
+  disabled: PropTypes.bool,
+  simulation: PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    scheme: PropTypes.shape({
+      configuration: PropTypes.shape({
+        boundaryConditions: PropTypes.object.isRequired
+      }).isRequired
+    }).isRequired
+  }).isRequired,
+  boundaryCondition: PropTypes.shape({
+    uuid: PropTypes.string.isRequired,
+    type: PropTypes.shape({
+      key: PropTypes.string.isRequired
+    }).isRequired,
+    selected: PropTypes.array.isRequired
+  }).isRequired,
+  oldBoundaryCondition: PropTypes.shape({
+    uuid: PropTypes.string.isRequired,
+    type: PropTypes.shape({
+      key: PropTypes.string.isRequired
+    }).isRequired
+  }).isRequired,
+  part: PropTypes.shape({
+    faces: PropTypes.array.isRequired
+  }).isRequired,
+  swr: PropTypes.shape({
+    mutateOneSimulation: PropTypes.func.isRequired
+  }).isRequired,
+  close: PropTypes.func.isRequired
 }
 
 export default Edit

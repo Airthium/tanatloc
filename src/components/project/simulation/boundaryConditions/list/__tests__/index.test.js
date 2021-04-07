@@ -14,9 +14,13 @@ jest.mock('@/store/select/action', () => ({
   select: () => mockSelect()
 }))
 
+jest.mock('../../delete', () => {
+  const Delete = () => <div />
+  return Delete
+})
+
 let wrapper
 describe('components/project/simulation/boundaryConditions/list', () => {
-  const project = {}
   const simulation = {
     scheme: {
       configuration: {
@@ -33,7 +37,8 @@ describe('components/project/simulation/boundaryConditions/list', () => {
       }
     }
   }
-
+  const mutateOneSimulation = jest.fn()
+  const swr = { mutateOneSimulation }
   const onEdit = jest.fn()
 
   beforeEach(() => {
@@ -44,7 +49,7 @@ describe('components/project/simulation/boundaryConditions/list', () => {
     onEdit.mockReset()
 
     wrapper = shallow(
-      <List project={project} simulation={simulation} onEdit={onEdit} />
+      <List simulation={simulation} swr={swr} onEdit={onEdit} />
     )
   })
 
@@ -77,7 +82,7 @@ describe('components/project/simulation/boundaryConditions/list', () => {
     wrapper.unmount()
     simulation.scheme = {}
     wrapper = shallow(
-      <List project={project} simulation={simulation} onEdit={onEdit} />
+      <List simulation={simulation} swr={swr} onEdit={onEdit} />
     )
     expect(wrapper).toBeDefined()
   })

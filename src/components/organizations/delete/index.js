@@ -1,5 +1,5 @@
-import { useState } from 'react'
 import PropTypes from 'prop-types'
+import { useState } from 'react'
 import { Button } from 'antd'
 import { DeleteOutlined } from '@ant-design/icons'
 
@@ -9,22 +9,23 @@ import { Error } from '@/components/assets/notification'
 
 import OrganizationAPI from '@/api/organization'
 
+/**
+ * Delete errors
+ * @memberof module:components/organizations
+ */
 const errors = {
   delError: 'Unable to delete the organization'
 }
 
 /**
  * Delete
- * @memberof components/organizations
+ * @memberof module:components/organizations
  * @param {Object} props Props
  */
-const Delete = ({ organization }) => {
+const Delete = ({ organization, swr }) => {
   // State
   const [visible, setVisible] = useState(false)
   const [loading, setLoading] = useState(false)
-
-  // Data
-  const [, { delOneOrganization }] = OrganizationAPI.useOrganizations()
 
   /**
    * On delete
@@ -36,8 +37,11 @@ const Delete = ({ organization }) => {
       // API
       await OrganizationAPI.del({ id: organization.id })
 
-      // Update local
-      delOneOrganization({ id: organization.id })
+      // Local
+      swr.delOneOrganization({ id: organization.id })
+
+      // Close
+      setVisible(false)
     } catch (err) {
       Error(errors.delError, err)
     } finally {
@@ -69,7 +73,12 @@ const Delete = ({ organization }) => {
 }
 
 Delete.propTypes = {
-  organization: PropTypes.object.isRequired
+  organization: PropTypes.shape({
+    id: PropTypes.string.isRequired
+  }).isRequired,
+  swr: PropTypes.shape({
+    delOneOrganization: PropTypes.func.isRequired
+  }).isRequired
 }
 
 export default Delete

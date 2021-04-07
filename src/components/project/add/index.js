@@ -1,16 +1,16 @@
+import PropTypes from 'prop-types'
 import { useState } from 'react'
 import { Button, Form, Input } from 'antd'
 import { PlusCircleOutlined } from '@ant-design/icons'
 
-import { Error } from '@/components/assets/notification'
 import Dialog from '@/components/assets/dialog'
+import { Error } from '@/components/assets/notification'
 
 import ProjectAPI from '@/api/project'
-import WorkspaceAPI from '@/api/workspace'
 
 /**
  * Errors project/add
- * @memberof module:'src/components/project
+ * @memberof module:components/project
  */
 const errors = {
   addError: 'Unable to add a project'
@@ -18,60 +18,39 @@ const errors = {
 
 /**
  * Add project
- * @memberof module:'src/components/project
+ * @memberof module:components/project
  * @param {Object} props Props
  */
-const Add = (props) => {
-  // Props
-  const workspace = props.workspace || {}
-
+const Add = ({ workspace, swr }) => {
   // State
   const [visible, setVisible] = useState(false)
   const [loading, setLoading] = useState(false)
 
-  // Data
-  const [, { addOneProject }] = ProjectAPI.useProjects(workspace.projects)
-  const [, { mutateOneWorkspace }] = WorkspaceAPI.useWorkspaces()
-
   /**
-   * Toggle dialog
-   */
-  const toggleDialog = () => {
-    setVisible(!visible)
-  }
-
-  /**
-   * On confirm
+   * On add
    * @param {Object} values Values
    */
-  const onOk = async (values) => {
+  const onAdd = async (values) => {
     setLoading(true)
     try {
       // Add
       const project = await ProjectAPI.add({ id: workspace.id }, values)
 
       // Mutate projects
-      addOneProject(project)
+      swr.addOneProject(project)
 
       // Mutate workspaces
-      mutateOneWorkspace({
+      swr.mutateOneWorkspace({
         ...workspace,
-        projects: [...workspace.projects, project.id]
+        projects: [...(workspace.projects || []), project.id]
       })
 
-      toggleDialog()
+      // Close
+      setVisible(false)
     } catch (err) {
       Error(errors.addError, err)
-    } finally {
       setLoading(false)
     }
-  }
-
-  /**
-   * On cancel
-   */
-  const onCancel = () => {
-    toggleDialog()
   }
 
   /**
@@ -80,7 +59,7 @@ const Add = (props) => {
   return (
     <>
       <Button
-        onClick={toggleDialog}
+        onClick={() => setVisible(true)}
         type="primary"
         icon={<PlusCircleOutlined />}
       >
@@ -90,8 +69,8 @@ const Add = (props) => {
         title="Create a new project"
         closable={false}
         visible={visible}
-        onCancel={onCancel}
-        onOk={onOk}
+        onCancel={() => setVisible(false)}
+        onOk={onAdd}
         loading={loading}
       >
         <Form.Item
@@ -107,6 +86,17 @@ const Add = (props) => {
       </Dialog>
     </>
   )
+}
+
+Add.propTypes = {
+  workspace: PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    projects: PropTypes.array
+  }).isRequired,
+  swr: PropTypes.shape({
+    mutateOneWorkspace: PropTypes.func.isRequired,
+    addOneProject: PropTypes.func.isRequired
+  }).isRequired
 }
 
 export default Add

@@ -1,16 +1,16 @@
+import PropTypes from 'prop-types'
 import { useState } from 'react'
 import { Button } from 'antd'
 import { DeleteOutlined } from '@ant-design/icons'
 
-import { Error } from '@/components/assets/notification'
 import { DeleteDialog } from '@/components/assets/dialog'
+import { Error } from '@/components/assets/notification'
 
 import SimulationAPI from '@/api/simulation'
-import ProjectAPI from '@/api/project'
 
 /**
  * Errors simulation/delete
- * @memberof module:'src/components/project/simulation
+ * @memberof module:components/project/simulation
  */
 const errors = {
   delError: 'Unable to delete the simulation'
@@ -18,65 +18,70 @@ const errors = {
 
 /**
  * Delete
- * @memberof module:'src/components/project/simulation
+ * @memberof module:components/project/simulation
  * @param {Object} props Props
  */
-const Delete = ({ project, simulation }) => {
+const Delete = ({ simulation, swr }) => {
   // State
   const [visible, setVisible] = useState(false)
   const [loading, setLoading] = useState(false)
 
-  // Data
-  const [, { delOneSimulation }] = SimulationAPI.useSimulations(
-    project?.simulations
-  )
-  const [, { mutateProject }] = ProjectAPI.useProject(project?.id)
-
-  const toggleDialog = () => {
-    setVisible(!visible)
-  }
-
-  const handleDelete = async () => {
+  /**
+   * On delete
+   */
+  const onDelete = async () => {
     setLoading(true)
     try {
-      // Delete
-      await SimulationAPI.del(project, simulation)
-
-      // Mutate project
-      const index = project.simulations.findIndex((s) => s.id === simulation.id)
-      project.simulations = [
-        ...project.simulations.slice(0, index),
-        ...project.simulations.slice(index + 1)
-      ]
-      mutateProject(project)
+      // API
+      await SimulationAPI.del(simulation)
 
       // Mutate simulations
-      delOneSimulation({ id: simulation.id })
+      swr.delOneSimulation({ id: simulation.id })
 
-      toggleDialog()
+      // Reload
+      swr.reloadProject()
+
+      setVisible(false)
     } catch (err) {
       Error(errors.delError, err)
-    } finally {
       setLoading(false)
     }
   }
 
+  /**
+   * Render
+   */
   return (
     <>
-      <Button type="danger" icon={<DeleteOutlined />} onClick={toggleDialog}>
+      <Button
+        type="danger"
+        icon={<DeleteOutlined />}
+        onClick={() => setVisible(true)}
+      >
         Delete
       </Button>
       <DeleteDialog
         title="Delete the simulation"
         visible={visible}
-        onCancel={toggleDialog}
-        onOk={handleDelete}
+        onCancel={() => setVisible(false)}
+        onOk={onDelete}
         loading={loading}
       >
         Delete {simulation.name}
       </DeleteDialog>
     </>
   )
+}
+
+Delete.propTypes = {
+  simulation: PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired
+  }).isRequired,
+  swr: PropTypes.shape({
+    reloadProject: PropTypes.func.isRequired,
+    delOneSimulation: PropTypes.func.isRequired
+  }).isRequired
 }
 
 export default Delete

@@ -1,13 +1,19 @@
+import PropTypes from 'prop-types'
 import { useState } from 'react'
 import { Button, Card, Space, Typography } from 'antd'
 import { EditOutlined } from '@ant-design/icons'
 
+import Delete from '../delete'
+
 import { useDispatch } from 'react-redux'
 import { enable, disable, select } from '@/store/select/action'
 
-import Delete from '../delete'
-
-const List = ({ project, simulation, onEdit }) => {
+/**
+ * List materials
+ * @memberof module:components/project/simulation
+ * @param {Object} props Props
+ */
+const List = ({ simulation, swr, onEdit }) => {
   // State
   const [enabled, setEnabled] = useState(true)
 
@@ -58,7 +64,7 @@ const List = ({ project, simulation, onEdit }) => {
                   setTimeout(() => setEnabled(true), 500)
                 }}
               />
-              <Delete project={project} simulation={simulation} index={index} />
+              <Delete simulation={simulation} index={index} swr={swr} />
             </Space>
           </Space>
         </Card>
@@ -70,6 +76,23 @@ const List = ({ project, simulation, onEdit }) => {
    * Render
    */
   return list || null
+}
+
+List.propTypes = {
+  simulation: PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    scheme: PropTypes.shape({
+      configuration: PropTypes.shape({
+        materials: PropTypes.shape({
+          values: PropTypes.array.isRequired
+        })
+      })
+    })
+  }).isRequired,
+  swr: PropTypes.shape({
+    mutateOneSimulation: PropTypes.func.isRequired
+  }),
+  onEdit: PropTypes.func.isRequired
 }
 
 export default List

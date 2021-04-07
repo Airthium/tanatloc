@@ -3,14 +3,15 @@ import { databases } from '@/config/db'
 
 /**
  * Add
+ * @param {Object} organization Organization
  * @param {Object} group Group { name, users }
  */
-const add = async ({ name, users }) => {
+const add = async (organization, { name, users }) => {
   const response = await query(
     'INSERT INTO ' +
       databases.GROUPS +
-      ' (name, users) VALUES ($1, $2) RETURNING id',
-    [name, users]
+      ' (name, users, organization) VALUES ($1, $2, $3) RETURNING id',
+    [name, users, organization.id]
   )
 
   return response.rows[0]

@@ -57,10 +57,12 @@ const Project = () => {
 
   // Data
   const [user, { loadingUser }] = UserAPI.useUser()
-  const [project, { mutateProject }] = ProjectAPI.useProject(projectId || '')
+  const [project, { reloadProject, mutateProject }] = ProjectAPI.useProject(
+    projectId || ''
+  )
   const [
     simulations,
-    { addOneSimulation, mutateOneSimulation }
+    { addOneSimulation, delOneSimulation, mutateOneSimulation }
   ] = SimulationAPI.useSimulations(project?.simulations)
 
   // Not logged -> go to login page
@@ -68,12 +70,15 @@ const Project = () => {
     if (!loadingUser && !user) router.replace('/login')
   }, [user, loadingUser])
 
-  // Modified simulation
+  // Update simulation
   useEffect(() => {
-    const simulation = simulations.find((s) => s.id === currentSimulation?.id)
-    if (JSON.stringify(simulation) !== JSON.stringify(currentSimulation))
-      setCurrentSimulation(simulation)
-  }, [simulations])
+    console.log(currentSimulation)
+    if (currentSimulation) {
+      const simulation = simulations.find((s) => s.id === currentSimulation?.id)
+      if (JSON.stringify(simulation) !== JSON.stringify(currentSimulation))
+        setCurrentSimulation(simulation)
+    }
+  }, [currentSimulation, JSON.stringify(simulations)])
 
   // Manage part
   useEffect(() => {
@@ -351,15 +356,22 @@ const Project = () => {
       </Layout.Sider>
       <Layout.Content className="no-scroll relative">
         <Simulation.Selector
+          user={user}
           visible={selectorVisible}
           onOk={onSelectorOk}
           onCancel={onSelectorCancel}
         />
         <Simulation
-          project={{ id: project.id, simulations: project.simulations }}
+          user={user}
           simulation={currentSimulation}
           type={currentType}
           part={partSummary}
+          swr={{
+            reloadProject,
+            addOneSimulation,
+            delOneSimulation,
+            mutateOneSimulation
+          }}
           onClose={onSimulationClose}
         />
         <View

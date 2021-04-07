@@ -2,6 +2,7 @@ import { Card, Collapse, Typography } from 'antd'
 
 /**
  * Administration documentation
+ * @memberof module:components/help
  */
 const Administration = () => {
   return (

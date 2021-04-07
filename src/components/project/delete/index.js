@@ -1,16 +1,16 @@
+import PropTypes from 'prop-types'
 import { useState } from 'react'
 import { Button } from 'antd'
 import { DeleteOutlined } from '@ant-design/icons'
 
-import { Error } from '@/components/assets/notification'
 import { DeleteDialog } from '@/components/assets/dialog'
+import { Error } from '@/components/assets/notification'
 
 import ProjectAPI from '@/api/project'
-import WorkspaceAPI from '@/api/workspace'
 
 /**
- * Errors project/del
- * @memberof module:'src/components/project
+ * Errors project/delete
+ * @memberof module:components/project
  */
 const errors = {
   delError: 'Unable to delete the project'
@@ -18,33 +18,18 @@ const errors = {
 
 /**
  * Delete project
- * @memberof module:'src/components/project
+ * @memberof module:components/project
  * @param {Object} props Props
  */
-const Delete = (props) => {
-  // Props
-  const workspace = props.workspace || {}
-  const project = props.project || {}
-
+const Delete = ({ workspace, project, swr }) => {
   // Sate
   const [visible, setVisible] = useState(false)
   const [loading, setLoading] = useState(false)
 
-  // Data
-  const [, { delOneProject }] = ProjectAPI.useProjects(workspace.projects)
-  const [, { mutateOneWorkspace }] = WorkspaceAPI.useWorkspaces()
-
   /**
-   * Toggle dialog delete
+   * On delete
    */
-  const toggleDialog = () => {
-    setVisible(!visible)
-  }
-
-  /**
-   * Handle delete
-   */
-  const handleDelete = async () => {
+  const onDelete = async () => {
     setLoading(true)
     try {
       // Delete
@@ -56,13 +41,15 @@ const Delete = (props) => {
         ...workspace.projects.slice(0, index),
         ...workspace.projects.slice(index + 1)
       ]
-      mutateOneWorkspace(workspace)
+      swr.mutateOneWorkspace(workspace)
 
       // Mutate projects
-      delOneProject({ id: project.id })
+      swr.delOneProject({ id: project.id })
+
+      // Close
+      setVisible(false)
     } catch (err) {
       Error(errors.delError, err)
-
       setLoading(false)
     }
   }
@@ -72,20 +59,38 @@ const Delete = (props) => {
    */
   return (
     <>
-      <Button type="danger" onClick={toggleDialog} icon={<DeleteOutlined />}>
+      <Button
+        type="danger"
+        onClick={() => setVisible(true)}
+        icon={<DeleteOutlined />}
+      >
         Delete
       </Button>
       <DeleteDialog
         title="Delete the project"
         visible={visible}
-        onCancel={toggleDialog}
-        onOk={handleDelete}
+        onCancel={() => setVisible(false)}
+        onOk={onDelete}
         loading={loading}
       >
         Delete {project.title}
       </DeleteDialog>
     </>
   )
+}
+
+Delete.propTypes = {
+  workspace: PropTypes.shape({
+    projects: PropTypes.array.isRequired
+  }).isRequired,
+  project: PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    title: PropTypes.string.isRequired
+  }).isRequired,
+  swr: PropTypes.shape({
+    mutateOneWorkspace: PropTypes.func.isRequired,
+    delOneProject: PropTypes.func.isRequired
+  }).isRequired
 }
 
 export default Delete

@@ -1,8 +1,17 @@
+import { shallow } from 'enzyme'
+
 import Utils from '../'
 
 describe('lib/utils', () => {
   it('stringToColor', () => {
-    const color = Utils.stringToColor('string')
+    let color
+
+    // Empty
+    color = Utils.stringToColor()
+    expect(color).toBe('#FFFFFF')
+
+    // With string
+    color = Utils.stringToColor('string')
     expect(color).toBe('#D56011')
   })
 
@@ -17,5 +26,50 @@ describe('lib/utils', () => {
 
     rgba = Utils.rgbToRgba()
     expect(rgba).toBe('rgba(255, 255, 255, 0)')
+  })
+
+  it('userToAvatar', () => {
+    let res, wrapper
+
+    // Empty
+    res = Utils.userToAvatar({})
+    wrapper = shallow(res)
+    expect(wrapper.find('Spin').length).toBe(1)
+    wrapper.unmount()
+
+    // With avatar & email
+    res = Utils.userToAvatar({
+      avatar: { type: 'Buffer', data: ['data'] },
+      email: 'email'
+    })
+    wrapper = shallow(res)
+    expect(wrapper.find('Avatar').props().children).toBe('E')
+    wrapper.unmount()
+
+    // With firstname & lastname
+    res = Utils.userToAvatar({
+      email: 'email',
+      firstname: 'firstname',
+      lastname: 'lastname'
+    })
+    wrapper = shallow(res)
+    expect(wrapper.find('Avatar').props().children).toBe('FL')
+    wrapper.unmount()
+  })
+
+  it('groupToAvatar', () => {
+    let res, wrapper
+
+    // Empty
+    res = Utils.groupToAvatar({})
+    wrapper = shallow(res)
+    expect(wrapper.find('Spin').length).toBe(1)
+    wrapper.unmount()
+
+    // With name
+    res = Utils.groupToAvatar({ name: 'name' })
+    wrapper = shallow(res)
+    expect(wrapper.find('Avatar').props().children).toBe('N')
+    wrapper.unmount()
   })
 })

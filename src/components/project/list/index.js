@@ -1,17 +1,18 @@
+import PropTypes from 'prop-types'
 import { useRouter } from 'next/router'
 import { Space, Table, Empty } from 'antd'
 
+import Share from '@/components/assets/share'
 import { Error } from '@/components/assets/notification'
 
 import Build from '../build'
-import Share from '../share'
 import Delete from '../delete'
 
 import ProjectAPI from '@/api/project'
 
 /**
  * Errors project/list
- * @memberof module:'src/components/project
+ * @memberof module:components/project
  */
 const errors = {
   updateError: 'Unable to update the project'
@@ -19,19 +20,71 @@ const errors = {
 
 /**
  * Projects' list
- * @memberof module:'src/components/project
+ * @memberof module:components/project
  * @param {Object} props Props
  */
-const ProjectList = ({ user, workspace, filter }) => {
+const ProjectList = ({
+  user,
+  workspace,
+  projects,
+  organizations,
+  filter,
+  swr
+}) => {
   // Router
   const router = useRouter()
 
-  // Load projects
-  const [projects, { mutateOneProject }] = ProjectAPI.useProjects(
-    workspace?.projects
-  )
-
   // Data
+  const columns = [
+    {
+      dataIndex: 'snapshot',
+      key: 'snapshot',
+      onCell: (project) => ({
+        onClick: () => openProject(project)
+      })
+    },
+    {
+      title: 'Project',
+      dataIndex: 'titleRender',
+      key: 'titleRender'
+    },
+    {
+      title: 'Administrators',
+      dataIndex: 'ownersRender',
+      key: 'ownersRender',
+      align: 'center'
+    },
+    {
+      title: 'Shared With',
+      dataIndex: 'usersRender',
+      key: 'usersRender',
+      align: 'center'
+    },
+    {
+      title: 'Actions',
+      align: 'center',
+      render: (value) => (
+        <Space direction="" wrap={true}>
+          <Share
+            project={value}
+            organizations={organizations}
+            swr={{ mutateOneProject: swr.mutateOneProject }}
+          />
+          {value?.owners?.find((o) => o.id === user?.id) && (
+            <Delete
+              workspace={workspace}
+              project={value}
+              swr={{
+                mutateOneWorkspace: swr.mutateOneWorkspace,
+                delOneProject: swr.delOneProject
+              }}
+            />
+          )}
+        </Space>
+      )
+    }
+  ]
+
   const data = projects
     .map((project) => {
       return Build(
@@ -67,7 +120,7 @@ const ProjectList = ({ user, workspace, filter }) => {
       ])
 
       // Mutate project
-      mutateOneProject({
+      swr.mutateOneProject({
         ...project,
         title: title
       })
@@ -76,6 +129,11 @@ const ProjectList = ({ user, workspace, filter }) => {
     }
   }
 
+  /**
+   * Set description
+   * @param {Object} project Project
+   * @param {string} description Description
+   */
   const setDescription = async (project, description) => {
     try {
       // Update
@@ -87,7 +145,7 @@ const ProjectList = ({ user, workspace, filter }) => {
       ])
 
       // Mutate
-      mutateOneProject({
+      swr.mutateOneProject({
         ...project,
         description: description
       })
@@ -101,11 +159,11 @@ const ProjectList = ({ user, workspace, filter }) => {
    */
   return (
     <Table
+      loading={swr.loadingProjects}
       pagination={false}
-      dataSource={data}
       bordered={true}
       size="small"
-      scroll={{ y: 'calc(100vh - 232px)' }}
+      scroll={{ y: 'calc(100vh - 278px)' }}
       locale={{
         emptyText: (
           <Empty
@@ -115,42 +173,27 @@ const ProjectList = ({ user, workspace, filter }) => {
         )
       }}
       style={{ marginTop: '24px' }}
-    >
-      <Table.Column
-        title=""
-        dataIndex="snapshot"
-        onCell={(project) => {
-          return {
-            onClick: () => openProject(project)
-          }
-        }}
-      />
-      <Table.Column title="Project" dataIndex="title" />
-      {/* <Table.Column title="Status" dataIndex="tags" align="center" /> */}
-      <Table.Column
-        title="Administrators"
-        dataIndex="ownersRender"
-        align="center"
-      />
-      <Table.Column
-        title="Shared With"
-        dataIndex="usersRender"
-        align="center"
-      />
-      <Table.Column
-        title="Actions"
-        align="center"
-        render={(value) => (
-          <Space size="middle" wrap={true}>
-            <Share workspace={workspace} project={value} />
-            {value?.owners?.find((o) => o.id === user?.id) && (
-              <Delete workspace={workspace} project={value} />
-            )}
-          </Space>
-        )}
-      />
-    </Table>
+      columns={columns}
+      dataSource={data}
+    />
   )
+}
+
+ProjectList.propTypes = {
+  user: PropTypes.shape({
+    id: PropTypes.string
+  }).isRequired,
+  workspace: PropTypes.shape({
+    id: PropTypes.string.isRequired
+  }).isRequired,
+  projects: PropTypes.array.isRequired,
+  organizations: PropTypes.array.isRequired,
+  filter: PropTypes.string,
+  swr: PropTypes.shape({
+    delOneProject: PropTypes.func.isRequired,
+    mutateOneProject: PropTypes.func.isRequired,
+    loadingProjects: PropTypes.bool.isRequired
+  }).isRequired
 }
 
 export default ProjectList

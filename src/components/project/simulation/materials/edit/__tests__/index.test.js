@@ -1,28 +1,27 @@
 import Edit from '@/components/project/simulation/materials/edit'
 import { shallow } from 'enzyme'
 
-jest.mock('@/components/assets/button', () => ({
-  EditButton: 'EditButton'
-}))
-
-const mockUpdate = jest.fn()
-const mockMutate = jest.fn()
-jest.mock('@/api/simulation', () => ({
-  update: async () => mockUpdate(),
-  useSimulations: () => [[], { mutateOneSimulation: mockMutate }]
-}))
-
 const mockError = jest.fn()
 jest.mock('@/components/assets/notification', () => ({
   Error: () => mockError()
 }))
 
+jest.mock('@/components/assets/button', () => {
+  const EditButton = () => <div />
+  return { EditButton }
+})
+
+const mockUpdate = jest.fn()
+jest.mock('@/api/simulation', () => ({
+  update: async () => mockUpdate()
+}))
+
 let wrapper
 describe('components/project/simulation/materials/edit', () => {
   const material = {
+    uuid: 'uuid',
     selected: ['uuid1', 'uuid3']
   }
-  const project = {}
   const simulation = {
     scheme: {
       configuration: {
@@ -33,13 +32,14 @@ describe('components/project/simulation/materials/edit', () => {
     }
   }
   const part = { solids: [{ uuid: 'uuid1' }, { uuid: 'uuid2' }] }
+  const mutateOneSimulation = jest.fn()
+  const swr = { mutateOneSimulation }
   const close = jest.fn()
 
   beforeEach(() => {
-    mockUpdate.mockReset()
-    mockMutate.mockReset()
-
     mockError.mockReset()
+
+    mockUpdate.mockReset()
 
     close.mockReset()
 
@@ -47,9 +47,9 @@ describe('components/project/simulation/materials/edit', () => {
       <Edit
         disabled={false}
         material={material}
-        project={project}
         simulation={simulation}
         part={part}
+        swr={swr}
         close={close}
       />
     )
@@ -64,18 +64,20 @@ describe('components/project/simulation/materials/edit', () => {
   })
 
   it('onEdit', async () => {
+    // Normal
     await wrapper.find('EditButton').props().onEdit()
     expect(mockUpdate).toHaveBeenCalledTimes(1)
-    expect(mockMutate).toHaveBeenCalledTimes(1)
+    expect(mutateOneSimulation).toHaveBeenCalledTimes(1)
     expect(close).toHaveBeenCalledTimes(1)
     expect(mockError).toHaveBeenCalledTimes(0)
 
+    // Error
     mockUpdate.mockImplementation(() => {
       throw new Error()
     })
     await wrapper.find('EditButton').props().onEdit()
     expect(mockUpdate).toHaveBeenCalledTimes(2)
-    expect(mockMutate).toHaveBeenCalledTimes(1)
+    expect(mutateOneSimulation).toHaveBeenCalledTimes(1)
     expect(close).toHaveBeenCalledTimes(1)
     expect(mockError).toHaveBeenCalledTimes(1)
   })

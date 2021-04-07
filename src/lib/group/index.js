@@ -1,28 +1,30 @@
+/** @module lib/group */
+
 import GroupDB from '@/database/group'
 
 import User from '../user'
+import Workspace from '../workspace'
+import Project from '../project'
+import Organization from '../organization'
 
 /**
  * Add group
+ * @param {Object} organization Organization { id }
  * @param {Object} group Group
  */
-const add = async ({ name, users }) => {
+const add = async (organization, { name, users }) => {
   // Add group
-  const group = await GroupDB.add({ name, users })
+  const group = await GroupDB.add(organization, { name, users })
 
-  // Add group to users
-  await Promise.all(
-    users.map((user) => {
-      User.update({ id: user }, [
-        {
-          key: 'groups',
-          type: 'array',
-          method: 'append',
-          value: group.id
-        }
-      ])
-    })
-  )
+  // Add group to organization
+  Organization.update(organization, [
+    {
+      key: 'groups',
+      type: 'array',
+      method: 'append',
+      value: group.id
+    }
+  ])
 
   return group
 }
@@ -37,6 +39,34 @@ const get = async (id, data) => {
 }
 
 /**
+ * Get (with auto-fill users data)
+ * @param {string} id Id
+ * @param {Array} data Data
+ */
+const getWithFill = async (id, data) => {
+  const groupData = await get(id, data)
+
+  groupData.users &&
+    (groupData.users = await Promise.all(
+      groupData.users.map(async (user) => {
+        const userData = await User.get(user, [
+          'firstname',
+          'lastname',
+          'email',
+          'avatar'
+        ])
+
+        return {
+          id: user,
+          ...userData
+        }
+      })
+    ))
+
+  return groupData
+}
+
+/**
  * Get all users
  * @param {Array} data Data
  */
@@ -46,26 +76,49 @@ const getAll = async (data) => {
 
   // Users data
   await Promise.all(
-    groups.map(async (group) => {
-      await Promise.all(
-        group.users.map(async (user, index) => {
-          const userData = await User.get(user, [
-            'firstname',
-            'lastname',
-            'email',
-            'avatar'
-          ])
+    groups.map(async (group, index) => {
+      if (group.users) {
+        const users = await Promise.all(
+          group.users.map(async (user) => {
+            const userData = await User.get(user, [
+              'firstname',
+              'lastname',
+              'email',
+              'avatar'
+            ])
 
-          group.users[index] = {
-            id: user,
-            ...userData
-          }
-        })
-      )
+            return {
+              id: user,
+              ...userData
+            }
+          })
+        )
+        groups[index].users = users
+      }
     })
   )
 
   return groups
+}
+
+const getByOrganization = async (id, data) => {
+  // Get organization
+  const organization = await Organization.get(id, ['groups'])
+
+  // Get groups
+  return (
+    organization.groups &&
+    Promise.all(
+      organization.groups.map(async (group) => {
+        const groupData = await getWithFill(group, data)
+
+        return {
+          id: group,
+          ...groupData
+        }
+      })
+    )
+  )
 }
 
 /**
@@ -74,47 +127,6 @@ const getAll = async (data) => {
  * @param {Array} data Data
  */
 const update = async (group, data) => {
-  // Get data
-  const groupData = await get(group.id, ['users'])
-
-  // Check users
-  const usersUpdate = data.find((d) => d.key === 'users' && !d.type)
-  if (usersUpdate) {
-    // Deleted users
-    const deleted = groupData.users.filter(
-      (u) => !usersUpdate.value.includes(u)
-    )
-
-    await Promise.all(
-      deleted.map(async (user) => {
-        await User.update({ id: user }, [
-          {
-            key: 'groups',
-            type: 'array',
-            method: 'remove',
-            value: group.id
-          }
-        ])
-      })
-    )
-
-    // Added users
-    const added = usersUpdate.value.filter((u) => !groupData.users.includes(u))
-    await Promise.all(
-      added.map(async (user) => {
-        await User.update({ id: user }, [
-          {
-            key: 'groups',
-            type: 'array',
-            method: 'append',
-            value: group.id
-          }
-        ])
-      })
-    )
-  }
-
-  // Update group
   await GroupDB.update(group, data)
 }
 
@@ -124,24 +136,55 @@ const update = async (group, data) => {
  */
 const del = async (group) => {
   // Get data
-  const groupData = await get(group.id, ['users'])
+  const groupData = await get(group.id, [
+    'users',
+    'workspaces',
+    'projects',
+    'organization'
+  ])
 
-  // Del group to users
-  await Promise.all(
-    groupData.users.map(async (user) => {
-      await User.update({ id: user }, [
-        {
-          key: 'groups',
-          type: 'array',
-          method: 'remove',
-          value: group.id
-        }
-      ])
-    })
-  )
+  // Delete group from organization
+  await Organization.update({ id: groupData.organization }, [
+    {
+      key: 'groups',
+      type: 'array',
+      method: 'remove',
+      value: group.id
+    }
+  ])
+
+  // Delete group from workspaces
+  groupData.workspaces &&
+    (await Promise.all(
+      groupData.workspaces.map(async (workspace) => {
+        await Workspace.update({ id: workspace }, [
+          {
+            key: 'groups',
+            type: 'array',
+            method: 'remove',
+            value: group.id
+          }
+        ])
+      })
+    ))
+
+  // Delete group from projects
+  groupData.projects &&
+    (await Promise.all(
+      groupData.projects.map(async (project) => {
+        await Project.update({ id: project }, [
+          {
+            key: 'groups',
+            type: 'array',
+            method: 'remove',
+            value: group.id
+          }
+        ])
+      })
+    ))
 
   // Delete group
   await GroupDB.del(group)
 }
 
-export default { add, get, getAll, update, del }
+export default { add, get: getWithFill, getAll, getByOrganization, update, del }

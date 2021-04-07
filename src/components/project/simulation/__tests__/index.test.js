@@ -1,5 +1,6 @@
 import Simulation from '@/components/project/simulation'
 import { shallow, mount } from 'enzyme'
+import { act } from 'react-dom/test-utils'
 
 const mockAddedDiff = jest.fn()
 const mockUpdatedDiff = jest.fn()
@@ -11,33 +12,48 @@ jest.mock('deep-object-diff', () => ({
 const mockMerge = jest.fn()
 jest.mock('lodash.merge', () => () => mockMerge())
 
-jest.mock('@/components/project/panel', () => 'panel')
+jest.mock('@/components/project/panel', () => {
+  const Panel = () => <div />
+  return Panel
+})
 
-jest.mock('@/components/project/simulation/about', () => 'about')
-jest.mock('@/components/project/simulation/geometry', () => 'geometry')
-jest.mock('@/components/project/simulation/materials', () => 'materials')
-jest.mock('@/components/project/simulation/parameters', () => 'parameters')
-jest.mock(
-  '@/components/project/simulation/boundaryConditions',
-  () => 'boundaryConditions'
-)
+jest.mock('@/components/project/simulation/about', () => {
+  const About = () => <div />
+  return About
+})
 
-jest.mock('@/components/project/simulation/run', () => 'run')
+jest.mock('@/components/project/simulation/geometry', () => {
+  const Geometry = () => <div />
+  return Geometry
+})
+
+jest.mock('@/components/project/simulation/materials', () => {
+  const Materials = () => <div />
+  return Materials
+})
+
+jest.mock('@/components/project/simulation/parameters', () => {
+  const Parameters = () => <div />
+  return Parameters
+})
+
+jest.mock('@/components/project/simulation/boundaryConditions', () => {
+  const BoundaryConditions = () => <div />
+  return BoundaryConditions
+})
+
+jest.mock('@/components/project/simulation/run', () => {
+  const Run = () => <div />
+  return Run
+})
 
 const mockError = jest.fn()
 jest.mock('@/components/assets/notification', () => ({
   Error: () => mockError()
 }))
 
-const mockUser = jest.fn()
-jest.mock('@/api/user', () => ({
-  useUser: () => [mockUser()]
-}))
-
-const mockMutate = jest.fn()
 const mockUpdate = jest.fn()
 jest.mock('@/api/simulation', () => ({
-  useSimulations: () => [[], { mutateOneSimulation: mockMutate }],
   update: async () => mockUpdate()
 }))
 
@@ -77,6 +93,14 @@ jest.mock('@/plugins', () => ({
 
 let wrapper
 describe('components/project/simulation', () => {
+  const user = {}
+  const simulation = {
+    id: 'id'
+  }
+  const mutateOneSimulation = jest.fn()
+  const swr = { mutateOneSimulation }
+  const onClose = jest.fn()
+
   beforeEach(() => {
     mockAddedDiff.mockReset()
     mockAddedDiff.mockImplementation(() => ({}))
@@ -85,15 +109,18 @@ describe('components/project/simulation', () => {
 
     mockMerge.mockReset()
 
-    mockUser.mockReset()
-    mockUser.mockImplementation(() => ({
-      authorizedplugins: ['model']
-    }))
-
-    mockMutate.mockReset()
     mockUpdate.mockReset()
 
-    wrapper = shallow(<Simulation simulation={{}} />)
+    mockError.mockReset()
+
+    wrapper = shallow(
+      <Simulation
+        user={user}
+        simulation={simulation}
+        swr={swr}
+        onClose={onClose}
+      />
+    )
   })
 
   afterEach(() => {
@@ -105,10 +132,16 @@ describe('components/project/simulation', () => {
   })
 
   it('onClose', () => {
-    const onClose = jest.fn()
     wrapper.unmount()
-    wrapper = shallow(<Simulation onClose={onClose} />)
-    wrapper.find('panel').props().onClose()
+    wrapper = shallow(
+      <Simulation
+        user={user}
+        simulation={simulation}
+        swr={swr}
+        onClose={onClose}
+      />
+    )
+    wrapper.find('Panel').props().onClose()
     expect(onClose).toHaveBeenCalledTimes(1)
   })
 
@@ -116,7 +149,9 @@ describe('components/project/simulation', () => {
     wrapper.unmount()
     wrapper = mount(
       <Simulation
+        user={user}
         simulation={{
+          ...simulation,
           scheme: {
             algorithm: 'algorithm',
             configuration: {
@@ -125,76 +160,137 @@ describe('components/project/simulation', () => {
           }
         }}
         type="geometry"
+        swr={swr}
+        onClose={onClose}
       />
     )
 
     // Cancel
-    wrapper.find('Modal').props().onCancel()
+    act(() => wrapper.find('Modal').props().onCancel())
 
     // Normal
-    await wrapper.find('Modal').props().onOk()
+    await act(async () => await wrapper.find('Modal').props().onOk())
     expect(mockMerge).toHaveBeenCalledTimes(1)
     expect(mockUpdate).toHaveBeenCalledTimes(1)
-    expect(mockMutate).toHaveBeenCalledTimes(1)
+    expect(mutateOneSimulation).toHaveBeenCalledTimes(1)
+    expect(mockError).toHaveBeenCalledTimes(0)
 
     // Error
     mockMerge.mockImplementation(() => {
       throw new Error()
     })
-    await wrapper.find('Modal').props().onOk()
+    await act(async () => await wrapper.find('Modal').props().onOk())
     expect(mockMerge).toHaveBeenCalledTimes(2)
     expect(mockUpdate).toHaveBeenCalledTimes(1)
-    expect(mockMutate).toHaveBeenCalledTimes(1)
+    expect(mutateOneSimulation).toHaveBeenCalledTimes(1)
+    expect(mockError).toHaveBeenCalledTimes(1)
   })
 
   it('about', () => {
     wrapper.unmount()
-    wrapper = shallow(<Simulation type="about" />)
-    expect(wrapper.find('about').length).toBe(1)
+    wrapper = shallow(
+      <Simulation
+        user={user}
+        simulation={simulation}
+        type="about"
+        swr={swr}
+        onClose={onClose}
+      />
+    )
+    expect(wrapper.find('About').length).toBe(1)
   })
 
   it('geometry', () => {
     wrapper.unmount()
-    wrapper = shallow(<Simulation type="geometry" />)
-    expect(wrapper.find('geometry').length).toBe(1)
+    wrapper = shallow(
+      <Simulation
+        user={user}
+        simulation={simulation}
+        type="geometry"
+        swr={swr}
+        onClose={onClose}
+      />
+    )
+    expect(wrapper.find('Geometry').length).toBe(1)
   })
 
   it('materials', () => {
     wrapper.unmount()
-    wrapper = shallow(<Simulation type="materials" />)
-    expect(wrapper.find('materials').length).toBe(1)
+    wrapper = shallow(
+      <Simulation
+        user={user}
+        simulation={simulation}
+        type="materials"
+        swr={swr}
+        onClose={onClose}
+      />
+    )
+    expect(wrapper.find('Materials').length).toBe(1)
   })
 
   it('parameters', () => {
     wrapper.unmount()
-    wrapper = shallow(<Simulation type="parameters" />)
-    expect(wrapper.find('parameters').length).toBe(1)
+    wrapper = shallow(
+      <Simulation
+        user={user}
+        simulation={simulation}
+        type="parameters"
+        swr={swr}
+        onClose={onClose}
+      />
+    )
+    expect(wrapper.find('Parameters').length).toBe(1)
   })
 
   it('boundaryConditions', () => {
     wrapper.unmount()
-    wrapper = shallow(<Simulation type="boundaryConditions" />)
-    expect(wrapper.find('boundaryConditions').length).toBe(1)
+    wrapper = shallow(
+      <Simulation
+        user={user}
+        simulation={simulation}
+        type="boundaryConditions"
+        swr={swr}
+        onClose={onClose}
+      />
+    )
+    expect(wrapper.find('BoundaryConditions').length).toBe(1)
   })
 
   it('run', () => {
     wrapper.unmount()
-    wrapper = shallow(<Simulation type="run" />)
-    expect(wrapper.find('run').length).toBe(1)
+    wrapper = shallow(
+      <Simulation
+        user={user}
+        simulation={simulation}
+        type="run"
+        swr={swr}
+        onClose={onClose}
+      />
+    )
+    expect(wrapper.find('Run').length).toBe(1)
   })
 
   it('simulation effect', () => {
     // Load models
     wrapper.unmount()
-    wrapper = mount(<Simulation />)
-    expect(wrapper.find('panel').props().title).toBe('About')
+    wrapper = mount(
+      <Simulation
+        user={user}
+        simulation={simulation}
+        swr={swr}
+        onClose={onClose}
+      />
+    )
+    expect(wrapper.find('Panel').props().title).toBe('About')
 
     // Need update (added)
     wrapper.unmount()
     mockAddedDiff.mockImplementation(() => ({ something: { test: 'test' } }))
     wrapper = mount(
       <Simulation
+        user={user}
         simulation={{
+          ...simulation,
           scheme: {
             algorithm: 'algorithm',
             configuration: {
@@ -203,19 +299,26 @@ describe('components/project/simulation', () => {
           }
         }}
         type="geometry"
+        swr={swr}
+        onClose={onClose}
       />
     )
-    expect(wrapper.find('panel').props().title).toBe('Geometry')
+    expect(wrapper.find('Panel').props().title).toBe('Geometry')
     mockAddedDiff.mockImplementation(() => ({}))
   })
 })
 
-const onOk = jest.fn()
 describe('components/project/simulation.Selector', () => {
+  const user = {}
+  const onOk = jest.fn()
+  const onCancel = jest.fn()
+
   beforeEach(() => {
     onOk.mockReset()
 
-    wrapper = shallow(<Simulation.Selector onOk={onOk} />)
+    wrapper = shallow(
+      <Simulation.Selector user={user} onOk={onOk} onCancel={onCancel} />
+    )
   })
 
   afterEach(() => {
@@ -228,9 +331,18 @@ describe('components/project/simulation.Selector', () => {
 
   it('onSelect', () => {
     wrapper.unmount()
-    wrapper = mount(<Simulation.Selector visible={true} onOk={onOk} />)
+    wrapper = mount(
+      <Simulation.Selector
+        user={user}
+        visible={true}
+        onOk={onOk}
+        onCancel={onCancel}
+      />
+    )
 
-    wrapper.find('InternalMenu').props().onSelect({ key: 'algorithm' })
+    act(() =>
+      wrapper.find('InternalMenu').props().onSelect({ key: 'algorithm' })
+    )
     wrapper.update()
 
     expect(wrapper.find('div').at(10).props().dangerouslySetInnerHTML).toEqual({
@@ -249,7 +361,23 @@ describe('components/project/simulation.Selector', () => {
 
   it('effect', () => {
     wrapper.unmount()
+    wrapper = mount(
+      <Simulation.Selector user={user} onOk={onOk} onCancel={onCancel} />
+    )
+    expect(wrapper).toBeDefined()
 
-    wrapper = mount(<Simulation.Selector />)
+    // With authorizedplugins
+    wrapper.unmount()
+    wrapper = mount(
+      <Simulation.Selector
+        user={{
+          ...user,
+          authorizedplugins: ['model']
+        }}
+        onOk={onOk}
+        onCancel={onCancel}
+      />
+    )
+    expect(wrapper).toBeDefined()
   })
 })

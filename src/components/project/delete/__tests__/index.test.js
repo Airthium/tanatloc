@@ -1,29 +1,36 @@
 import Delete from '@/components/project/delete'
 import { shallow } from 'enzyme'
 
-jest.mock('@/components/assets/dialog', () => ({
-  DeleteDialog: 'deleteDialog'
-}))
-
-jest.mock('@/api/project', () => ({
-  useProjects: () => [[], { delOneProject: () => {} }],
-  del: async () => {}
-}))
-
-jest.mock('@/api/workspace', () => ({
-  useWorkspaces: () => [[], { mutateOneWorkspace: () => {} }]
-}))
+jest.mock('@/components/assets/dialog', () => {
+  const DeleteDialog = () => <div />
+  return { DeleteDialog }
+})
 
 const mockError = jest.fn()
 jest.mock('@/components/assets/notification', () => ({
   Error: () => mockError()
 }))
 
+const mockDel = jest.fn()
+jest.mock('@/api/project', () => ({
+  del: async () => mockDel()
+}))
+
 let wrapper
 describe('components/project/delete', () => {
+  const workspace = { projects: [{ id: 'id' }] }
+  const project = { id: 'id', title: 'title' }
+  const mutateOneWorkspace = jest.fn()
+  const delOneProject = jest.fn()
+  const swr = { mutateOneWorkspace, delOneProject }
+
   beforeEach(() => {
+    mockError.mockReset()
+
+    mockDel.mockReset()
+
     wrapper = shallow(
-      <Delete workspace={{ id: 'id', projects: [{}] }} project={{ id: 'id' }} />
+      <Delete workspace={workspace} project={project} swr={swr} />
     )
   })
 
@@ -35,27 +42,30 @@ describe('components/project/delete', () => {
     expect(wrapper).toBeDefined()
   })
 
-  it('without props', () => {
-    wrapper.unmount()
-    wrapper = shallow(<Delete />)
-    expect(wrapper).toBeDefined()
-  })
-
-  it('toggleDialog', () => {
-    const visible = wrapper.find('deleteDialog').props().visible
+  it('setVisible', () => {
+    // Visible
     wrapper.find('Button').props().onClick()
-    expect(wrapper.find('deleteDialog').props().visible).toBe(!visible)
+
+    // Not visible
+    wrapper.find('DeleteDialog').props().onCancel()
   })
 
-  it('handleDelete', async () => {
-    await wrapper.find('deleteDialog').props().onOk()
-    expect(wrapper.find('deleteDialog').props().loading).toBe(true)
+  it('onDelete', async () => {
+    // Normal
+    await wrapper.find('DeleteDialog').props().onOk()
+    expect(mockDel).toHaveBeenCalledTimes(1)
+    expect(mutateOneWorkspace).toHaveBeenCalledTimes(1)
+    expect(delOneProject).toHaveBeenCalledTimes(1)
+    expect(mockError).toHaveBeenCalledTimes(0)
 
-    wrapper.unmount()
-    wrapper = shallow(
-      <Delete workspace={{ id: 'id' }} project={{ id: 'id' }} />
-    )
-    await wrapper.find('deleteDialog').props().onOk()
-    expect(wrapper.find('deleteDialog').props().loading).toBe(false)
+    // Error
+    mockDel.mockImplementation(() => {
+      throw new Error()
+    })
+    await wrapper.find('DeleteDialog').props().onOk()
+    expect(mockDel).toHaveBeenCalledTimes(2)
+    expect(mutateOneWorkspace).toHaveBeenCalledTimes(1)
+    expect(delOneProject).toHaveBeenCalledTimes(1)
+    expect(mockError).toHaveBeenCalledTimes(1)
   })
 })

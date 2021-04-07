@@ -1,6 +1,11 @@
+/** @module lib/organization */
+
+import Crypto from 'crypto'
+
 import OrganizationDB from '@/database/organization'
 
 import User from '../user'
+import Group from '../group'
 
 /**
  * Add organization
@@ -57,13 +62,12 @@ const getByUser = async (user, data) => {
     return organization
   })
 
-  // User data
+  // Users & groups data
   await Promise.all(
     returnedOrganization.map(async (organization) => {
       // Owners
-      organization.owners =
-        organization.owners &&
-        (await Promise.all(
+      organization.owners &&
+        (organization.owners = await Promise.all(
           organization.owners.map(async (o) => {
             const ownerData = await User.get(o, [
               'firstname',
@@ -79,9 +83,8 @@ const getByUser = async (user, data) => {
         ))
 
       // Users
-      organization.users =
-        organization.users &&
-        (await Promise.all(
+      organization.users &&
+        (organization.users = await Promise.all(
           organization.users.map(async (u) => {
             const userData = await User.get(u, [
               'firstname',
@@ -92,6 +95,18 @@ const getByUser = async (user, data) => {
             return {
               id: u,
               ...userData
+            }
+          })
+        ))
+
+      // Groups
+      organization.groups &&
+        (organization.groups = await Promise.all(
+          organization.groups.map(async (g) => {
+            const groupData = await Group.get(g, ['name', 'users'])
+            return {
+              id: g,
+              ...groupData
             }
           })
         ))
@@ -111,20 +126,31 @@ const update = async (organization, data) => {
         (d.key === 'owners' || d.key === 'users')
       ) {
         const email = d.value
-        const user = await User.getBy(email, ['id'], 'email')
+        let user = await User.getBy(email, ['id'], 'email')
 
         if (user) d.value = user.id
         else {
           // Create user
-          const newUser = await User.add({
+          user = await User.add({
             email: email,
             password: Crypto.randomBytes(12).toString('hex')
           })
-          d.value = newUser.id
+          d.value = user.id
         }
 
-        return d
+        // TODO send email ?
+
+        await User.update({ id: user.id }, [
+          {
+            key: 'organizations',
+            type: 'array',
+            method: 'append',
+            value: organization.id
+          }
+        ])
       }
+
+      return d
     })
   )
 
@@ -138,7 +164,11 @@ const update = async (organization, data) => {
  */
 const del = async (organization) => {
   // Get data
-  const organizationData = await get(organization.id, ['owners', 'users'])
+  const organizationData = await get(organization.id, [
+    'owners',
+    'users',
+    'groups'
+  ])
 
   // Del organization from owners
   organizationData.owners &&
@@ -170,8 +200,16 @@ const del = async (organization) => {
       })
     ))
 
+  // Del groups
+  organizationData.groups &&
+    (await Promise.all(
+      organizationData.groups.map(async (group) => {
+        await Group.del(group)
+      })
+    ))
+
   // Delete organization
   await OrganizationDB.del(organization)
 }
 
-export default { add, getByUser, update, del }
+export default { add, get, getByUser, update, del }

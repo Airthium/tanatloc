@@ -82,7 +82,7 @@ const update = async (user, data) => {
  */
 const del = async (user) => {
   // Get data
-  const data = await get(user.id, ['groups', 'workspaces', 'avatar'], false)
+  const data = await get(user.id, ['workspaces', 'avatar'], false)
 
   // Delete from groups
   if (data.groups) {

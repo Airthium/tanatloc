@@ -3,6 +3,7 @@ import { databases } from '@/config/db'
 
 /**
  * Add
+ * @memberof module:database/organization
  * @param {Object} organization Organization { name, owners }
  */
 const add = async ({ name, owners }) => {

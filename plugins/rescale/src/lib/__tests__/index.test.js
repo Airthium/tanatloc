@@ -26,6 +26,7 @@ jest.mock('@/services', () => ({
 }))
 
 const mockGetFreeFEM = jest.fn()
+const mockCheckFiles = jest.fn()
 const mockUpdateTasks = jest.fn()
 const mockUploadFile = jest.fn()
 const mockUploadFiles = jest.fn()
@@ -40,6 +41,7 @@ const mockGetInRunOutputs = jest.fn()
 const mockGetOutputs = jest.fn()
 jest.mock('../tools', () => ({
   getFreeFEM: async () => mockGetFreeFEM(),
+  checkFiles: async () => mockCheckFiles(),
   updateTasks: async () => mockUpdateTasks(),
   uploadFile: async () => mockUploadFile(),
   uploadFiles: async () => mockUploadFiles(),
@@ -96,6 +98,7 @@ describe('plugins/rescale/src/lib', () => {
       }
     })
     expect(mockCall).toHaveBeenCalledTimes(1)
+    expect(mockCheckFiles).toHaveBeenCalledTimes(1)
     expect(mockGetFreeFEM).toHaveBeenCalledTimes(1)
     expect(res).toEqual({ data: { coreTypes: [{}], freefem: [{}] } })
 

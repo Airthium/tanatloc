@@ -1,15 +1,16 @@
 import Dashboard from '@/components/dashboard'
-import { act } from 'react-dom/test-utils'
 import { shallow, mount } from 'enzyme'
+import { act } from 'react-dom/test-utils'
 
-import '@/config/jest/matchMediaMock'
+import '@/config/jest/mockMatchMedia'
 
-const mockRouter = jest.fn()
+const mockReplace = jest.fn()
+const mockPush = jest.fn()
 const mockQuery = jest.fn()
 jest.mock('next/router', () => ({
   useRouter: () => ({
-    replace: mockRouter,
-    push: () => {},
+    replace: () => mockReplace(),
+    push: () => mockPush(),
     query: mockQuery()
   })
 }))
@@ -19,29 +20,89 @@ jest.mock('@/components/assets/notification', () => ({
   Error: () => mockError()
 }))
 
-jest.mock('@/components/loading', () => 'loading')
+jest.mock('@/components/loading', () => {
+  const Loading = () => <div />
+  return Loading
+})
 
-jest.mock('@/components/dashboard/welcome', () => 'welcome')
+jest.mock('@/components/workspace', () => {
+  const Workspace = () => <div />
+  return Workspace
+})
 
-jest.mock('@/components/workspace', () => 'workspace')
+jest.mock('@/components/workspace/add', () => {
+  const Add = () => <div />
+  return Add
+})
 
-jest.mock('@/components/workspace/add', () => 'add')
+jest.mock('@/components/account', () => {
+  const Account = () => <div />
+  return Account
+})
 
-jest.mock('@/components/account', () => 'account')
+jest.mock('@/components/organizations', () => {
+  const Organizations = () => <div />
+  return Organizations
+})
 
-jest.mock('@/components/administration', () => 'administration')
+jest.mock('@/components/administration', () => {
+  const Administration = () => <div />
+  return Administration
+})
 
-jest.mock('@/components/help', () => 'help')
+jest.mock('@/components/help', () => {
+  const Help = () => <div />
+  return Help
+})
+
+jest.mock('@/components/dashboard/welcome', () => {
+  const Welcome = () => <div />
+  return Welcome
+})
 
 const mockUser = jest.fn()
-const mockUserLoading = jest.fn()
-jest.mock('@/api/user/useUser', () => () => [
-  mockUser(),
-  { mutateUser: () => {}, loadingUser: mockUserLoading() }
-])
+const mockMutateUser = jest.fn()
+const mockLoadingUser = jest.fn()
+jest.mock('@/api/user', () => ({
+  useUser: () => [
+    mockUser(),
+    { mutateUser: mockMutateUser, loadingUser: mockLoadingUser() }
+  ]
+}))
+
+const mockOrganizations = jest.fn()
+const mockReloadOrganizations = jest.fn()
+const mockAddOneOrganization = jest.fn()
+const mockDelOneOrganization = jest.fn()
+const mockMutateOneOrganization = jest.fn()
+const mockLoadingOrganizations = jest.fn()
+jest.mock('@/api/organization', () => ({
+  useOrganizations: () => [
+    mockOrganizations(),
+    {
+      reloadOrganizations: mockReloadOrganizations,
+      addOneOrganization: mockAddOneOrganization,
+      delOneOrganization: mockDelOneOrganization,
+      mutateOnOrganization: mockMutateOneOrganization,
+      loadingOrganizations: mockLoadingOrganizations()
+    }
+  ]
+}))
 
 const mockWorkspaces = jest.fn()
-jest.mock('@/api/workspace/useWorkspaces', () => () => [mockWorkspaces()])
+const mockAddOneWorkspace = jest.fn()
+const mockDelOneWorkspace = jest.fn()
+const mockMutateOneWorkspace = jest.fn()
+jest.mock('@/api/workspace', () => ({
+  useWorkspaces: () => [
+    mockWorkspaces(),
+    {
+      addOneWorkspace: mockAddOneWorkspace,
+      delOneWorkspace: mockDelOneWorkspace,
+      mutateOneWorkspace: mockMutateOneWorkspace
+    }
+  ]
+}))
 
 const mockLogout = jest.fn()
 jest.mock('@/api/logout', () => () => mockLogout())
@@ -49,21 +110,32 @@ jest.mock('@/api/logout', () => () => mockLogout())
 let wrapper
 describe('components/dashboard', () => {
   beforeEach(() => {
-    mockRouter.mockReset()
+    mockReplace.mockReset()
+    mockPush.mockReset()
     mockQuery.mockReset()
     mockQuery.mockImplementation(() => ({}))
 
+    mockError.mockReset()
+
     mockUser.mockReset()
     mockUser.mockImplementation(() => ({ id: 'id', superuser: true }))
-    mockUserLoading.mockReset()
-    mockUserLoading.mockImplementation(() => false)
+    mockMutateUser.mockReset()
+    mockLoadingUser.mockReset()
+
+    mockOrganizations.mockReset()
+    mockReloadOrganizations.mockReset()
+    mockAddOneOrganization.mockReset()
+    mockDelOneOrganization.mockReset()
+    mockMutateOneOrganization.mockReset()
+    mockLoadingOrganizations.mockReset()
 
     mockWorkspaces.mockReset()
     mockWorkspaces.mockImplementation(() => [])
+    mockAddOneWorkspace.mockReset()
+    mockDelOneWorkspace.mockReset()
+    mockMutateOneWorkspace.mockReset()
 
     mockLogout.mockReset()
-
-    mockError.mockReset()
 
     wrapper = shallow(<Dashboard />)
   })
@@ -78,48 +150,9 @@ describe('components/dashboard', () => {
 
   it('loading', () => {
     wrapper.unmount()
-
-    mockUserLoading.mockImplementation(() => true)
+    mockLoadingUser.mockImplementation(() => true)
     wrapper = shallow(<Dashboard />)
-    expect(wrapper.find('loading').length).toBe(1)
-  })
-
-  it('with workspaces', () => {
-    wrapper.unmount()
-
-    mockWorkspaces.mockImplementation(() => [
-      {
-        id: 'id',
-        name: 'name',
-        owners: [{ id: 'id' }]
-      },
-      {
-        id: 'id',
-        name: 'name',
-        users: [{ id: 'id' }]
-      },
-      {
-        id: 'id',
-        name: 'name',
-        groups: [{ id: 'id' }]
-      },
-      {
-        id: 'id',
-        name: 'name'
-      }
-    ])
-    wrapper = shallow(<Dashboard />)
-
-    const myWorkspaces = wrapper.find({ title: 'My Workspaces' }).props()
-      .children
-    expect(myWorkspaces.filter((w) => w).length).toBe(2)
-
-    const sharedWorkspaces = wrapper.find({ title: 'Shared With Me' }).props()
-      .children
-    expect(sharedWorkspaces.filter((w) => w).length).toBe(1)
-
-    // onWorkspaces with workspace
-    wrapper.find('SubMenu').at(0).props().onTitleClick()
+    expect(wrapper.find('Loading').length).toBe(1)
   })
 
   it('onSelect', () => {
@@ -131,9 +164,8 @@ describe('components/dashboard', () => {
         item: { props: { subMenuKey: 'my_workspaces-menu-' } },
         key: '1'
       })
-    expect(wrapper.find('workspace').length).toBe(1)
 
-    // Shared with me
+    // Shared
     wrapper
       .find('Menu')
       .props()
@@ -141,14 +173,21 @@ describe('components/dashboard', () => {
         item: { props: { subMenuKey: 'shared-menu-' } },
         key: '1'
       })
-    expect(wrapper.find('workspace').length).toBe(1)
 
     // Account
     wrapper
       .find('Menu')
       .props()
       .onClick({ item: { props: { subMenuKey: '-menu-0' } }, key: 'account' })
-    expect(wrapper.find('account').length).toBe(1)
+
+    // Organizations
+    wrapper
+      .find('Menu')
+      .props()
+      .onClick({
+        item: { props: { subMenuKey: '-menu-0' } },
+        key: 'organizations'
+      })
 
     // Administration
     wrapper
@@ -158,14 +197,12 @@ describe('components/dashboard', () => {
         item: { props: { subMenuKey: '-menu-0' } },
         key: 'administration'
       })
-    expect(wrapper.find('administration').length).toBe(1)
 
     // Help
     wrapper
       .find('Menu')
       .props()
       .onClick({ item: { props: { subMenuKey: '-menu-0' } }, key: 'help' })
-    expect(wrapper.find('help').length).toBe(1)
 
     // Logout
     wrapper
@@ -173,7 +210,9 @@ describe('components/dashboard', () => {
       .props()
       .onClick({ item: { props: { subMenuKey: '-menu-0' } }, key: 'logout' })
     expect(mockLogout).toHaveBeenCalledTimes(1)
+    expect(mockError).toHaveBeenCalledTimes(0)
 
+    // Logout error
     mockLogout.mockImplementation(() => {
       throw new Error()
     })
@@ -192,81 +231,139 @@ describe('components/dashboard', () => {
         item: { props: { subMenuKey: 'unknown-menu-' } },
         key: 'unknown1'
       })
-    expect(wrapper.find('workspace').length).toBe(0)
-    expect(wrapper.find('account').length).toBe(0)
-    expect(wrapper.find('help').length).toBe(0)
   })
 
-  it('onWorkspaces', () => {
+  it('onMyWorkspaces', () => {
     wrapper.find('SubMenu').at(0).props().onTitleClick()
   })
 
-  it('user effect', () => {
-    wrapper.unmount()
+  it('onSharedWorkspaces', () => {
+    wrapper.find('SubMenu').at(1).props().onTitleClick()
+  })
 
-    // With user
-    wrapper = mount(<Dashboard />)
-    expect(mockRouter).toHaveBeenCalledTimes(0)
+  it('effect', () => {
+    // No user
     wrapper.unmount()
-
-    // Without user
     mockUser.mockImplementation(() => {})
     wrapper = mount(<Dashboard />)
-    expect(mockRouter).toHaveBeenCalledTimes(1)
-  })
 
-  it('workspace effect', () => {
+    // User & workspaces
     wrapper.unmount()
-
-    let name = () => 'name'
-    mockWorkspaces.mockImplementation(() => [{}, { id: 'id', name: name() }])
-    wrapper = mount(<Dashboard />)
-
-    act(() => {
-      wrapper
-        .find('InternalMenu')
-        .props()
-        .onClick({
-          item: { props: { subMenuKey: 'my_workspaces-menu-' } },
-          key: '1'
-        })
-
-      name = () => 'name1'
-      wrapper
-        .find('InternalMenu')
-        .props()
-        .onClick({
-          item: { props: { subMenuKey: 'my_workspaces-menu-' } },
-          key: '1'
-        })
-    })
-  })
-
-  it('page effect', () => {
-    wrapper.unmount()
-
-    mockQuery.mockImplementation(() => ({ page: 'page' }))
-    wrapper = mount(<Dashboard />)
-    wrapper.unmount()
-
-    mockQuery.mockImplementation(() => ({ page: 'page', workspaceId: 'id' }))
-    wrapper = mount(<Dashboard />)
-    wrapper.unmount()
-
+    mockUser.mockImplementation(() => ({ id: 'id', groups: [{ id: 'id' }] }))
     mockWorkspaces.mockImplementation(() => [
-      {
-        id: 'id',
-        owners: [{ id: 'id' }]
-      }
+      { id: 'id1', owners: [{ id: 'id' }] },
+      { id: 'id2', users: [{ id: 'id' }] },
+      { id: 'id3', groups: [{ id: 'id' }] }
     ])
     wrapper = mount(<Dashboard />)
 
+    // On select
+    act(() =>
+      wrapper
+        .find('Menu')
+        .at(1)
+        .props()
+        .onClick({
+          item: { props: { subMenuKey: 'my_workspaces-menu-' } },
+          key: 'id1'
+        })
+    )
+
+    act(() =>
+      wrapper
+        .find('Menu')
+        .at(1)
+        .props()
+        .onClick({
+          item: { props: { subMenuKey: 'shared-menu-' } },
+          key: 'id2'
+        })
+    )
+
+    // On my workspaces
+    wrapper.find('SubMenu').at(0).props().onTitleClick()
+
+    // On shared workspaces
+    wrapper.find('SubMenu').at(2).props().onTitleClick()
+  })
+
+  it('effect with router', () => {
+    wrapper.unmount()
+    mockUser.mockImplementation(() => ({ id: 'id', groups: [{ id: 'id' }] }))
     mockWorkspaces.mockImplementation(() => [
-      {
-        id: 'id',
-        users: [{ id: 'id' }]
-      }
+      { id: 'id1', owners: [{ id: 'id' }] },
+      { id: 'id2', users: [{ id: 'id' }] },
+      { id: 'id3', groups: [{ id: 'id' }] }
+    ])
+
+    // My workspaces
+    mockQuery.mockImplementation(() => ({
+      workspaceId: 'id1'
+    }))
+    wrapper = mount(<Dashboard />)
+
+    // Shared workspaces
+    wrapper.unmount()
+    mockQuery.mockImplementation(() => ({
+      workspaceId: 'id2'
+    }))
+    wrapper = mount(<Dashboard />)
+
+    // Page
+    wrapper.unmount()
+    mockQuery.mockImplementation(() => ({
+      page: 'organizations'
+    }))
+    wrapper = mount(<Dashboard />)
+
+    // Without user & organizations
+    wrapper.unmount()
+    mockUser.mockImplementation(() => {})
+    mockOrganizations.mockImplementation(() => [])
+    mockQuery.mockImplementation(() => ({
+      page: 'account'
+    }))
+    wrapper = mount(<Dashboard />)
+
+    wrapper.unmount()
+    mockQuery.mockImplementation(() => ({
+      page: 'organizations'
+    }))
+    wrapper = mount(<Dashboard />)
+  })
+
+  it('effect workspace update', () => {
+    wrapper.unmount()
+    const name = jest.fn(() => 'name')
+    mockUser.mockImplementation(() => ({ id: 'id' }))
+    mockWorkspaces.mockImplementation(() => [
+      { id: 'id', name: name(), owners: [{ id: 'id' }] }
     ])
     wrapper = mount(<Dashboard />)
+
+    act(() =>
+      wrapper
+        .find('Menu')
+        .at(1)
+        .props()
+        .onClick({
+          item: { props: { subMenuKey: 'my_workspaces-menu-' } },
+          key: 'id'
+        })
+    )
+
+    // Update name
+    name.mockImplementation(() => 'new_name')
+
+    act(() =>
+      wrapper
+        .find('Menu')
+        .at(1)
+        .props()
+        .onClick({
+          item: { props: { subMenuKey: 'my_workspaces-menu-' } },
+          key: 'id'
+        })
+    )
   })
 })

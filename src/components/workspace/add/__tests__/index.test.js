@@ -1,25 +1,32 @@
 import Add from '@/components/workspace/add'
 import { shallow } from 'enzyme'
 
-jest.mock('@/components/assets/dialog', () => 'dialog')
-
-const mockAddOneWorkspace = jest.fn()
-jest.mock('@/api/workspace', () => ({
-  add: async () => ({ id: 'id' }),
-  useWorkspaces: () => [[], { addOneWorkspace: mockAddOneWorkspace }]
-}))
+jest.mock('@/components/assets/dialog', () => {
+  const Dialog = () => <div />
+  return Dialog
+})
 
 const mockError = jest.fn()
 jest.mock('@/components/assets/notification', () => ({
   Error: () => mockError()
 }))
 
+const mockAdd = jest.fn()
+jest.mock('@/api/workspace', () => ({
+  add: async () => mockAdd()
+}))
+
 let wrapper
 describe('components/workspace/add', () => {
-  beforeEach(() => {
-    mockAddOneWorkspace.mockReset()
+  const addOneWorkspace = jest.fn()
+  const swr = { addOneWorkspace }
 
-    wrapper = shallow(<Add />)
+  beforeEach(() => {
+    mockError.mockReset()
+
+    mockAdd.mockReset()
+
+    wrapper = shallow(<Add swr={swr} />)
   })
 
   afterEach(() => {
@@ -30,28 +37,29 @@ describe('components/workspace/add', () => {
     expect(wrapper).toBeDefined()
   })
 
-  it('toggleDialog', () => {
-    const visible = wrapper.find('dialog').props().visible
+  it('setVisible', () => {
+    // Visible
     wrapper.find('Button').props().onClick()
-    expect(wrapper.find('dialog').props().visible).toBe(!visible)
+
+    // Not visible
+    wrapper.find('Dialog').props().onCancel()
   })
 
   it('onOk', async () => {
-    await wrapper.find('dialog').props().onOk()
-    expect(mockAddOneWorkspace).toHaveBeenCalledTimes(1)
+    // Normal
+    mockAdd.mockImplementation(() => ({}))
+    await wrapper.find('Dialog').props().onOk()
+    expect(mockAdd).toHaveBeenCalledTimes(1)
+    expect(addOneWorkspace).toHaveBeenCalledTimes(1)
+    expect(mockError).toHaveBeenCalledTimes(0)
 
     // Error
-    wrapper.unmount()
-    mockAddOneWorkspace.mockImplementation(() => {
+    mockAdd.mockImplementation(() => {
       throw new Error()
     })
-    wrapper = shallow(<Add />)
-    await wrapper.find('dialog').props().onOk()
-  })
-
-  it('onCancel', () => {
-    const visible = wrapper.find('dialog').props().visible
-    wrapper.find('dialog').props().onCancel()
-    expect(wrapper.find('dialog').props().visible).toBe(!visible)
+    await wrapper.find('Dialog').props().onOk()
+    expect(mockAdd).toHaveBeenCalledTimes(2)
+    expect(addOneWorkspace).toHaveBeenCalledTimes(1)
+    expect(mockError).toHaveBeenCalledTimes(1)
   })
 })

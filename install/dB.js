@@ -211,8 +211,8 @@ const createUsersTable = async () => {
           password TEXT,
           passwordLastChanged TIMESTAMP,
           organizations uuid[],
-          groups uuid[],
           workspaces uuid[],
+          authorizedplugins TEXT[],
           plugins jsonb[]
         )`
     ))
@@ -231,7 +231,8 @@ const createOrganizationTable = async () => {
     id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
     name TEXT,
     owners uuid[],
-    users uuid[]
+    users uuid[],
+    groups uuid[]
   )`
     ))
 }
@@ -247,10 +248,11 @@ const createGroupsTable = async () => {
         databases.GROUPS +
         ` (
           id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-          name TEXT,
-          users uuid[],
+          name TEXT NOT NULL,
+          users uuid[] NOT NULL,
           workspaces uuid[],
-          projects uuid[]
+          projects uuid[],
+          organization uuid[]
         )`
     ))
 }

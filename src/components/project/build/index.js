@@ -1,11 +1,13 @@
-import { Avatar, Collapse, Empty, Tooltip, Typography } from 'antd'
+import PropTypes from 'prop-types'
+import { Avatar, Collapse, Empty, Typography } from 'antd'
 
 import Utils from '@/lib/utils'
 
 /**
  * Project builder
- * @memberof module:'src/components/project
+ * @memberof module:components/project
  * @param {Object} project Project
+ * @param {string} filter Filter
  * @param {Function} setTitle Set title
  * @param {Function} setDescription Set description
  */
@@ -65,15 +67,7 @@ const Build = (project, filter, setTitle, setDescription) => {
   const users = project?.users?.map((user) => Utils.userToAvatar(user))
 
   // Groups
-  const groups = project?.groups?.map((group) => {
-    return (
-      <Tooltip key={group.id} title={group.name}>
-        <Avatar style={{ backgroundColor: Utils.stringToColor(group.name) }}>
-          {group.name?.[0]?.toUpperCase()}
-        </Avatar>
-      </Tooltip>
-    )
-  })
+  const groups = project?.groups?.map((group) => Utils.groupToAvatar(group))
 
   /**
    * Not a render
@@ -82,15 +76,28 @@ const Build = (project, filter, setTitle, setDescription) => {
     ...project,
     key: project.id,
     snapshot: snapshot,
-    title: title,
-    ownersRender: <Avatar.Group>{owners}</Avatar.Group>,
+    titleRender: title,
+    ownersRender: <Avatar.Group maxCount={5}>{owners}</Avatar.Group>,
     usersRender: (
       <>
-        <Avatar.Group>{users}</Avatar.Group>
-        <Avatar.Group>{groups}</Avatar.Group>
+        <Avatar.Group maxCount={5}>{users}</Avatar.Group>
+        <Avatar.Group maxCount={5}>{groups}</Avatar.Group>
       </>
     )
   }
+}
+
+Build.propTypes = {
+  project: PropTypes.shape({
+    title: PropTypes.string,
+    avatar: PropTypes.object,
+    owners: PropTypes.array,
+    users: PropTypes.array,
+    groups: PropTypes.array
+  }),
+  filter: PropTypes.string,
+  setTitle: PropTypes.func.isRequired,
+  setDescription: PropTypes.func.isRequired
 }
 
 export default Build

@@ -1,23 +1,18 @@
-import { Avatar, Button, Space, Spin, Table } from 'antd'
+import PropTypes from 'prop-types'
+import { Avatar, Button, Space, Table } from 'antd'
 import { ControlOutlined } from '@ant-design/icons'
 
 import Delete from '../delete'
-
-import OrganizationAPI from '@/api/organization'
 
 import Utils from '@/lib/utils'
 
 /**
  * List
  * @memberof module:components/organizations
+ * @param {Object} props Props
  */
-const List = ({ setOrganization }) => {
+const List = ({ user, organizations, swr, setOrganization }) => {
   // Data
-  const [
-    organizations,
-    { loadingOrganizations }
-  ] = OrganizationAPI.useOrganizations()
-
   const columns = [
     {
       title: 'Name',
@@ -30,8 +25,8 @@ const List = ({ setOrganization }) => {
       dataIndex: 'owners',
       key: 'owners',
       render: (owners) => (
-        <Avatar.Group>
-          {owners?.map((owner) => Utils.userToAvatar(owner))}
+        <Avatar.Group maxCount={5}>
+          {owners?.map((o) => Utils.userToAvatar(o))}
         </Avatar.Group>
       )
     },
@@ -40,34 +35,69 @@ const List = ({ setOrganization }) => {
       dataIndex: 'users',
       key: 'users',
       render: (users) => (
-        <Avatar.Group>
-          {users?.map((user) => Utils.userToAvatar(user))}
+        <Avatar.Group maxCount={5}>
+          {users?.map((u) => Utils.userToAvatar(u))}
+        </Avatar.Group>
+      )
+    },
+    {
+      title: 'Groups',
+      dataIndex: 'groups',
+      key: 'groups',
+      render: (groups) => (
+        <Avatar.Group maxCount={5}>
+          {groups?.map((g) => Utils.groupToAvatar(g))}
         </Avatar.Group>
       )
     },
     {
       title: 'Actions',
       key: 'actions',
-      render: (org) => (
-        <Space wrap={true}>
-          <Button
-            icon={<ControlOutlined />}
-            onClick={() => setOrganization(org)}
-          />
-          <Delete organization={org} />
-        </Space>
-      )
+      render: (org) => {
+        if (org.owners.find((o) => o.id === user.id))
+          return (
+            <Space direction="" wrap={true}>
+              <Button
+                icon={<ControlOutlined />}
+                onClick={() => setOrganization(org)}
+              >
+                Manage
+              </Button>
+              <Delete
+                organization={org}
+                swr={{ delOneOrganization: swr.delOneOrganization }}
+              />
+            </Space>
+          )
+      }
     }
   ]
 
-  return loadingOrganizations ? (
-    <Spin />
-  ) : (
+  /**
+   * Render
+   */
+  return (
     <Table
+      loading={swr?.loadingOrganizations}
+      pagination={false}
+      size="small"
+      scroll={{ y: 'calc(100vh - 206px)' }}
       columns={columns}
       dataSource={organizations?.map((o) => ({ ...o, key: o.id }))}
     />
   )
+}
+
+List.propTypes = {
+  user: PropTypes.shape({
+    id: PropTypes.string.isRequired
+  }).isRequired,
+  organizations: PropTypes.array.isRequired,
+  swr: PropTypes.shape({
+    delOneOrganization: PropTypes.func.isRequired,
+    loadingOrganizations: PropTypes.bool.isRequired
+  }).isRequired,
+  setOrganization: PropTypes.func.isRequired
 }
 
 export default List

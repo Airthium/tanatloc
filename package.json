@@ -34,7 +34,7 @@
   },
   "dependencies": {
     "electron-serve": "1.1.0",
-    "electron-store": "7.0.2"
+    "electron-store": "7.0.3"
   },
   "devDependencies": {
     "@ant-design/icons": "4.6.2",

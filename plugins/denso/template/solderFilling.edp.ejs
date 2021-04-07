@@ -8,6 +8,8 @@
 //                           -> 10b : forcing twice isotrpoic mesh refinement
 //                           -> 22 Feb. 2021  mesh by mmg3d + geometry by gmsh
 //                           -> 24 Feb. 2021  creation of initial mesh with MPI
+//                           -> 12 Mar. 2021  decreaing volume evolution
+//                           -> 19 Mar. 2021
 // update in printing volume with both \int (\varphi+1)/2 and  \int H(\varphi)
 // improved treatment for surface integration of contact angle condition
 // constant volume increment from the first increment given by ratio
@@ -88,14 +90,14 @@ real GeometryTol = 5e-5;
 real voldelta;
 real voldelta0 = 1.0e-3;
 int refine0 = 5; 
-int refine1 = 3; 
+int refine1 = 3;
 int delangle = (-10);
 real hsize0 = -1.0;   // automatic
 real hsizemag = hsizemag0;
-real largestmeshmag = 3.0;
 real pointsize = pointsize0;
-real phigmax = 20.0;
-real phigconvdel = 0.01;
+real phigmax = 10.0;
+real phigmax0 = 2.0;
+real phigconvdel = 0.05; // 0.01 : too small
 real phigdiverge = 0.5;
 real volstarted = 0.0;
 //
@@ -103,9 +105,10 @@ int itrGMRES0 = 50; //getARGV("-GMRES0", 25);
 int itrGMRES1 = 150; //getARGV("-GMRES1", 150);
 real dt0 = 0.5; // getARGV("-dt0", 0.5);
 real dt1 = 0.25; // getARGV("-dt1", 0.25);
-real dtmax = 2048.0; // getARGV("-Dtmax", 32.0);
+real dtmax = 32.0; // getARGV("-Dtmax", 32.0);
 real tolenlarge = 10.0; // parameter to controle enlarge time step
 real switch2kappa1 = 100.0; // parameter to controle enlarge time step
+real toldiverge0= 100.0; // threshold to break Newton iteration
 real toldiverge = 1000.0; // threshold to break Newton iteration
 //
 int gmshmax = 2; // getARGV("-gmshmax", 2);
@@ -126,6 +129,9 @@ int[int] vtkorder = [1];
 int refine;
 real size = 0.4;
 real dt;
+real dtmag = 4.0;
+real dtmagmin = sqrt(2.0);
+real dtmagstd = 4.0;
 real kappa = kappa1;
 real reps = 1.e-2;
 real costheta = cos(cangle*pi/180.0);
@@ -220,7 +226,24 @@ func int outputjson(int mmm, real vvol00, int nnnliquid,
 	y: 'nnneulerc'
 }) -%>
 }
-// end of js renred variables
+
+func int outputvtk(int nstep, mesh3 &TThh, real[int] &pphii)
+{
+  fespace Vh2(TThh, P2);
+  Vh2 phiP2;
+  phiP2[] = pphii;
+<%- include('/blobs/save.edp.ejs', {
+		solution: {
+			path: run.resultPath,
+			name: '"phi."+nstep',
+			mesh: 'TThh',
+			sol: ['phiP2'],
+			dataName: run.results.map(r => r.name),
+			order: [1]
+		}
+	}); -%>
+}
+// end of js rendered variables
 
 ofstream fout(mpirank == 0 ? (workingpath + jobname + ".log") : "/dev/null");
 ofstream gout(mpirank == 0 ? (workingpath + jobname + ".csv") : "/dev/null");
@@ -1467,21 +1490,7 @@ if (!flagrestarted) { //generatino of initial data
     savemesh(ThG1, (workingpath + "phi.0.mesh"));
     ofstream ff(workingpath + "phi.0.data");
     ff <<  phig[];
-
-	<%- include('/blobs/save.edp.ejs', {
-		solution: {
-			path: run.resultPath,
-			name: '"phi.0"',
-			mesh: 'ThG1',
-			sol: ['phig'],
-			dataName: run.results.map(r => r.name),
-			order: [1]
-		}
-	}); -%>
-
-    //savevtk((resultpath + "phi.0.vtu"),
-	//   ThG1, phig, dataname = "phi", order = vtkorder, bin = false);
-    fout.flush;
+    outputvtk(0, ThG1, phig[]);
   }
 
   refineskip = true;
@@ -1837,7 +1846,8 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
       itrrefine = refine1; //
       //      bool flaganiso = false;
       bool volrestart = false;
-      bool tenlarge = false; 
+      bool tenlarge = false;
+      bool tkeep = false;
       bool angleflag = (dangle < 90) ? true : false;
       bool restoreflag = false;
       for (int nn = 0; nn < 2; nn++) {
@@ -1852,10 +1862,19 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
 	bool convloop = false;
 	bool flagisoagain = false;
 	//
+	dtmag = dtmagstd;
+	int dtmagminrepeated = 4;
 	while(!convloop) { // loop : ll < itrrefine Newton
 	                   //        tt < Tmax for graidentflow
 	  int itrnewton;
 	  if (gradientflow) {
+	    // save mesh and partition of the unity
+	    ThG10 = ThG1;
+	    R00gl = R1gl;
+	    D00h = D1h;
+	    phig00.resize(phig[].n);
+	    phig00 = phig[];
+	    //
 	    itrnewton = itrnewton0;
 	    if (tt >= Tmax) {
 	      convloop = true;
@@ -1863,15 +1882,34 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
 	    }
 	    if (dt < dtmax && kappa == kappa1) {
 	      if (mpirank == 0) {
-		fout << "L1569: dt = " << dt << " -> " << dt * sqrt(2.0)
-		     << endl;
+		fout << "L1569: dtmagminrepeated " << dtmagminrepeated
+		     << (tkeep ? " keep " : " ")
+		     << (tenlarge ? "tenlarge" : "")
+		     << " dt = " << dt;
 		fout.flush;
 	      }
 	      if (tenlarge) {
-		dt *= 2.0;
+		tkeep = false;
+		if (dtmagminrepeated > 5) {
+		  dtmagminrepeated = 0;
+		  dtmag = dtmagstd;
+		  dt *= dtmagstd; //2.0;
+		}
+		else {
+		  dtmagminrepeated++;
+		}
+	      }
+	      else if (tkeep) {
+		if (dt == dt1) {
+		  dtmagminrepeated++;
+		}
 	      }
 	      else {
-		dt *= sqrt(2.0);
+		dt *= dtmag; // sqrt(2.0);
+	      }
+	      if (mpirank == 0) {
+		fout << "-> " << dt << endl;
+		fout.flush;
 	      }
 	    }
 	    if (tenlarge) {
@@ -1911,11 +1949,11 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
 	  }
 	  else { // (!gradientflow)
 	    dt = dt1;      // reset time incerement for gradient flow solver
-    //	    kappa = kappa1;          // kappa0 only the first gradient flow
-    //	    reps = sqrt(kappa);
+	    dtmag = dtmagmin;
+	    dtmagminrepeated = 4;
+	    tkeep = true;
 	    itrnewton = itrnewton1;
-	    if ((ll >= itrrefine) ||
-		((!flagrestarted) && (mm == 0) && (ll > 0) && (!flagisoagain))) {
+	    if (ll >= itrrefine) {
 	      convloop = true;
 	      break;
 	    }
@@ -2014,6 +2052,13 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
 	    wwi = Dh * phi[] ; //wwwi;
 	    w = Rgl'* wwi; //'
 	    mpiAllReduce(w, phig[], comm, mpiSUM); //
+	    //
+	    ThG10 = ThG1;
+	    R00gl = R1gl;
+	    D00h = D1h;
+	    phig00.resize(phig[].n);
+	    phig00 = phig[];
+	    //
 	    if (mpirank == 0) {
 	      if(debugvtk0) {
 		savevtk(workingpath+"refined."+vtkcount+".vtu",
@@ -2053,7 +2098,7 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
 	    solvercount++;	    
 	    if (solvercount == 1) {
 	      volstarted = vol00;
-	      voldelta = volstarted * (volmag1 - 1.0);	      
+	      voldelta = volstarted * (volmag1 - 1.0); // negative for decrease
 	      updateangle = false;	      
 	      if (mpirank == 0) {
 		fout << "L1806: " << solvercount << " "
@@ -2067,7 +2112,7 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
 	  if (updateangle) {
 	    real vol0, vol1;
 	    // starting from Heaviside	    
-	    phig = (phig == 0.0 ? 0.0 : (phig > 0.0 ? 1.0 : -1.0)); 
+	    //	    phig = (phig == 0.0 ? 0.0 : (phig > 0.0 ? 1.0 : -1.0));
 	    vol1 = volumeofliquid(Tha, Rgl, Dh, phig[], 1);
 	    if (abs(vol1 - volstarted) > volmag1 * volstarted) {
 	      if (dangle > cangle) {
@@ -2134,8 +2179,8 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
 	    }
 	    else { // if (bisectionphase)
 	      real vol;
-	      phig = (phig == 0.0 ? 0.0 : (phig > 0.0 ? 1.0 : -1.0));
-	                                             // starting from Heaviside
+	      //      phig = (phig == 0.0 ? 0.0 : (phig > 0.0 ? 1.0 : -1.0));
+	      //                                  // starting from Heaviside
 	      vol = volumeofliquid(Tha, Rgl, Dh, phig[], 1);
 	      if (mpirank == 0) {
 		fout << "initial vloume = " << vol << endl;
@@ -2145,7 +2190,12 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
 		fout << "target volume = " << vol0 << " from " << vol << endl;
 		fout.flush;
 	      }
-	      increasevol(ThGlobal, Tha, Rgl, Dh, vol, vol0, reps, phig[], 1);
+	      if (voldelta > 0.0) {
+		increasevol(ThGlobal, Tha, Rgl, Dh, vol, vol0, reps, phig[], 1);
+	      }
+	      else {
+		decreasevol(ThGlobal, Tha, Rgl, Dh, vol, vol0, reps, phig[], 1);
+	      }
 	      countrefined = 0;	      
 	    }
 	    updatevol = false;
@@ -2197,6 +2247,7 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
 	  skipeuler = false;
 	  skipupdate = true;
 	  bool flagnearlyconv = false;
+	  bool gradientflowtoolarge = false;
 	  for (int k = 0; k < itrnewton; k++) {
 	    real cpu0 = clock();
 	    real walltime0 = mpiWtime();
@@ -2287,7 +2338,7 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
 	    }
 	    mpiBarrier(comm) ;
 	    //
-	    if (((!gradientflow) && ll == 1)
+	    if ((ll == 1) && (!gradientflow)
 		&& (((phigmaxg > phigmax) && (phigming < (-1.0) * phigmax))
 		    || (((phigmaxg > phigmax) || (phigming < (-1.0) * phigmax))
 			&& ((phi0gl2 > toldiverge))))) {
@@ -2296,7 +2347,23 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
 	      convvol = false;
 	      skipupdate = true;
 	      flaganiso = false;
-	      restoreflag = true;		  		  
+	      restoreflag = true;
+	      break;
+	    }
+	    if (gradientflow & (((phigmaxg > phigmax0) &&
+				 (phigming < (-1.0) * phigmax0))
+				|| (((phigmaxg > phigmax0) ||
+				     (phigming < (-1.0) * phigmax0))
+				    && ((phi0gl2 > toldiverge0))))) {
+	      newtonfail = true;
+	      refineflag = true;
+	      convvol = false;
+	      skipupdate = true;
+	      flaganiso = false;
+	      restoreflag = true;
+	      if (gradientflow) {
+		gradientflowtoolarge = true;
+	      }
 	      break;
 	    }
 	    if ((abs(phigmaxg - 1.0) < phigconvdel) &&
@@ -2322,7 +2389,7 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
 		}
 		break; // exit newton loop : k
 	      }
-	      else {
+	      else if (phi0gl2 < tolenlarge) {
 		flagnearlyconv = true;
 		phig000.resize(phig[].n);
 		phig000 = phig[];
@@ -2338,10 +2405,12 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
 	    //	    
 	    if (gradientflow && (k == 0) && (phi0gl2 < tolenlarge)) {
 	      tenlarge = true;
+	      tkeep = false;
 	    }
 	    if (gradientflow && (k == 0) && (kappa == kappa0) && (!samekappa)
 		&& (phi0gl2 < switch2kappa1)) {
 	      tenlarge = true;
+	      tkeep = false;
 	    }
 	    if (phi0gl2 < epsnewton) {
 	      restoreflag = false;
@@ -2375,6 +2444,16 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
 		  flagisoagain = false;
 		}
 	      }
+	      else {
+		if ((abs(phigmaxg - 1.0) > phigconvdel) ||
+		    (abs(phigming + 1.0) > phigconvdel)) {
+		  if(mpirank == 0) {
+		    fout << "L2387: indicator function is larger than one"
+			 << endl;
+		    fout.flush;
+		  }
+		}
+	      }
 	      break; // exit newton loop : k
 	    }
 	  } //loop Newton : k
@@ -2386,7 +2465,6 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
 		fout.flush;
 	      }
 	    }
-	    dt = dt1;	    
 	    if(mpirank == 0) {
 	      fout << "L1996: exceed Newton iteration, continuing gradient flow"
 		   << endl;
@@ -2404,6 +2482,7 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
 	      if(mpirank == 0) {
 		fout << "L2260: treated as converged on anisotropic mesh\n"
 		     << endl;
+		fout.flush;
 	      }
 	    }
 	    else {
@@ -2411,11 +2490,53 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
 	      convvol = false;
 	      refineflag = true;   // 1 Jan 2021
 	      refineskip = false;  // 10 Feb.2021
-	      gradientflow = true; // return to gradient flow solver
 	      updateangle = false;
-	      break;
+	      if (!gradientflow) {
+		gradientflow = true; // return to gradient flow solver
+		dt = dt1;
+		dtmag = dtmagmin; // slow time increment
+		dtmagminrepeated = 4;
+		tkeep = true;
+		break;
+	      }
+	      else { //if (gradientflowtoolarge) {
+		if (dt == dt1) {
+		  restoreflag = false;
+		  skipupdate = true;
+		  convloop = true;
+		  refineflag = false;
+		  newtonfail = false;
+		  break;
+		}
+		refineflag = false;   // 1 Jan 2021
+		gradientflow = true; // return to gradient flow solver
+		restarted++;
+		ThG1 = ThG10;
+		ThGlobal = ThG1;
+		R1gl = R00gl;
+		D1h = D00h;
+		phig = 0.0; // resize Vhg(ThG, P2)
+		phig[] = phig00;
+		if(mpirank == 0) {
+		  fout << "L2403: restore to previous step in gradient flow "
+		       << "time = " << tt << " to " << (tt - dt) << endl;
+		  fout.flush;
+		}
+		tt -= dt; // rewind time step
+		dt = dt1;
+		dtmag = dtmagmin; // slow time increment
+		dtmagminrepeated = 0;
+		tkeep = true;
+		//		dt = max((dt / 16.0), dt1);
+		continue;
+	      }
+	      gradientflow = true; // return to gradient flow solver
+	      dt = dt1;
+	      dtmag = dtmagmin; // slow time increment
+	      dtmagminrepeated = 4;
+	      tkeep = true;
 	    }
-	  }	    
+	  } // if (newtonfail)
 	  if (gradientflow) {
 	    findneighbor(ThG1, phig[], phiglayer, 3, phiglayer1, 4, fout);
 	    phizg1[] = phiglayer1;
@@ -2547,20 +2668,7 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
       savemesh(ThGlobal, workingpath + "phi." + (mm + moffset) + ".mesh");
       ofstream ff(workingpath + "phi." + (mm + moffset) + ".data");
       ff <<  phig[];
-
-	  <%- include('/blobs/save.edp.ejs', {
-		solution: {
-			path: run.resultPath,
-			name: '"phi."+(mm+moffset)',
-			mesh: 'ThGlobal',
-			sol: ['phig'],
-			dataName: run.results.map(r => r.name),
-			order: [1]
-		}
-	}); -%>
-      //savevtk((resultpath + "phi." + (mm + moffset) + ".vtu"),
-	  //    ThGlobal, phig, dataname = "phi", order = vtkorder, bin = false);
-      fout.flush;
+      outputvtk((mm + moffset), ThGlobal, phig[]);
     }
     mpiBarrier(comm);
     real walltime0=mpiWtime();
@@ -2574,7 +2682,7 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
       neulerc = nneulerc;
       nliquid = nnliquid;
       nair = nnair;
-      computedEulerChars == true;
+      computedEulerChars = true;
     }
     real walltime1=mpiWtime();
     mpiBarrier(comm);
@@ -2673,7 +2781,7 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
     neulerc = nneulerc;
   } // loop : mm
   if (pp == 0) {
-    if (mpirank == 0) {
+    if (mpirank == 0 & mmm > 0) {
       fout << "topology is changed between " << mmm - 1 << " and " << mmm
 	   << endl;
       fout.flush;

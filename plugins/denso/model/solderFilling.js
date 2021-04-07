@@ -38,7 +38,7 @@ const solderFilling = {
           {
             label: 'Contact angle',
             htmlEntity: 'formula',
-            default: 60
+            default: 40
           }
         ]
       },

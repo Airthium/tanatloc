@@ -74,7 +74,7 @@ const CloudServer = ({ disabled, cloudServer, onOk }) => {
               account settings
             </Button>
           </Typography.Text>
-          <Space align="start" direction="horizontal">
+          <Space align="start" direction="horizontal" wrap={true}>
             {plugins?.map((plugin) => {
               const base = Plugins[plugin.key]
               return (

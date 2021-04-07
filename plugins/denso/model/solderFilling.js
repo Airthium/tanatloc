@@ -187,6 +187,7 @@ const solderFilling = {
     run: {
       index: 4,
       title: 'Run',
+      logFile: 'jobname.log',
       results: [
         {
           name: 'phi'

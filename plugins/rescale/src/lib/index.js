@@ -85,6 +85,7 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
 
   try {
     // Cloud configuration
+    const customLogFileName = configuration.run.logFile
     const cloudConfiguration = configuration.run.cloudServer.configuration
     const cloudParameters = configuration.run.cloudServer.inUseConfiguration
 
@@ -311,7 +312,9 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
         // Check in-run files
         const inRunFiles = await getInRunFiles(cloudConfiguration, jobId)
         // Log
-        const logFile = inRunFiles.find((f) => f.path === logFileName)
+        const logFile = inRunFiles.find((f) =>
+          f.path.includes(customLogFileName || logFileName)
+        )
         if (logFile) {
           const log = await getInRunFile(cloudConfiguration, logFile)
           // Check for results or data
@@ -335,7 +338,9 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
         const files = await getFiles(cloudConfiguration, jobId)
 
         // Log
-        const logFile = files.find((f) => f.relativePath === logFileName)
+        const logFile = files.find((f) =>
+          f.relativePath.includes(customLogFileName || logFileName)
+        )
         if (logFile) {
           const log = await getFile(cloudConfiguration, logFile.id)
 

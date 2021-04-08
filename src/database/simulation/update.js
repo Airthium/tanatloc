@@ -1,5 +1,5 @@
 import { updater } from '..'
-import { databases } from '@/config/db'
+import { tables } from '@/config/db'
 
 /**
  * Update simulation
@@ -8,7 +8,7 @@ import { databases } from '@/config/db'
  * @param {Array} data Data [{ key, value, ... }, ...]
  */
 const update = async (simulation, data) => {
-  return updater(databases.SIMULATIONS, simulation.id, data)
+  return updater(tables.SIMULATIONS, simulation.id, data)
 }
 
 export default update

@@ -1,5 +1,5 @@
 import query from '..'
-import { databases } from '@/config/db'
+import { tables } from '@/config/db'
 
 /**
  * Get all user
@@ -8,7 +8,7 @@ import { databases } from '@/config/db'
  */
 const getAll = async (data) => {
   const response = await query(
-    'SELECT ' + data.join(',') + ' FROM ' + databases.USERS
+    'SELECT ' + data.join(',') + ' FROM ' + tables.USERS
   )
   return response.rows
 }

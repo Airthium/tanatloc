@@ -1,5 +1,5 @@
 import query from '..'
-import { databases } from '@/config/db'
+import { tables } from '@/config/db'
 
 /**
  * Get by email and password
@@ -9,7 +9,7 @@ import { databases } from '@/config/db'
 const getByUsernameAndPassword = async ({ email, password }) => {
   const response = await query(
     'SELECT id FROM ' +
-      databases.USERS +
+      tables.USERS +
       ' WHERE email = $1 AND password = crypt($2, password)',
     [email, password]
   )

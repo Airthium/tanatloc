@@ -101,7 +101,7 @@ const Share = ({ workspace, project, organizations, swr }) => {
         // Mutate
         const newWorkspace = { ...workspace }
         newWorkspace.groups = selected
-        swr.mutateOnWorkspace(newWorkspace)
+        swr.mutateOneWorkspace(newWorkspace)
       } else {
         // API
         await ProjectAPI.update({ id: project.id }, [
@@ -139,7 +139,7 @@ const Share = ({ workspace, project, organizations, swr }) => {
         Share it
       </Button>
       <Dialog
-        title={'Share' + workspace ? 'workspace' : 'project'}
+        title={'Share' + (workspace ? 'workspace' : 'project')}
         visible={visible}
         onCancel={() => setVisible(false)}
         onOk={onShare}
@@ -173,11 +173,11 @@ Share.propTypes = {
         (props[propName].groups && !Array.isArray(props[propName].groups)))
     )
       return new Error(
-        'Invalid prop ' +
+        'Missing or invalid prop ' +
           propName +
           ' supplied to ' +
           componentName +
-          '. swr missing'
+          '.'
       )
   },
   workspace: (props, propName, componentName) => {
@@ -190,11 +190,11 @@ Share.propTypes = {
         (props[propName].groups && !Array.isArray(props[propName].groups)))
     )
       return new Error(
-        'Invalid prop ' +
+        'Missing or invalid prop ' +
           propName +
           ' supplied to ' +
           componentName +
-          '. swr missing'
+          '.'
       )
   },
   organizations: PropTypes.array.isRequired,

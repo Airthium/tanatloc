@@ -1,7 +1,7 @@
 import { Pool } from 'pg'
 import Crypto from 'crypto'
 
-import config, { databases } from '../config/db'
+import config, { tables, schemas } from '../config/db'
 import query from '@/database'
 
 /**
@@ -143,12 +143,125 @@ const checkTable = async (table) => {
   )
 
   const exists = res.rows[0].exists
-  if (exists)
-    console.warn(
-      ' ⚠ Table ' + table + ' already exists - Scheme is not verified for now'
-    )
+  if (exists) {
+    console.warn(' - Table ' + table + ' already exists')
+  }
 
   return exists
+}
+
+/**
+ * Check schema
+ * @param {string} table Table
+ */
+const checkSchema = async (table) => {
+  console.info('  -> Checking shema...')
+  const schema = await query(
+    'SELECT column_name, data_type, is_nullable, column_default from information_schema.columns where table_name = $1',
+    [table]
+  )
+  const existingColumns = schema.rows
+
+  await Promise.all(
+    schemas[table].map(async (column) => {
+      let err = 0
+      const index = existingColumns.findIndex(
+        (e) => e.column_name === column.name
+      )
+      const byName = existingColumns[index]
+
+      if (!byName) {
+        console.error('   -- Missing column ' + table + '/' + column.name)
+        err++
+      } else {
+        if (
+          (column.type.includes('[]') && byName.data_type === 'ARRAY') ||
+          column.type.toLowerCase() ===
+            byName.data_type.replace(' without time zone', '').toLowerCase()
+        ) {
+          console.info('   -- ' + column.name + ' OK')
+        } else {
+          console.error('   ⚠ Wrong column type ' + table + '/' + column.name)
+          err++
+        }
+        if (
+          (column.constraint === 'NOT NULL' ||
+            column.constraint === 'PRIMARY KEY') &&
+          byName.is_nullable !== 'NO'
+        ) {
+          console.error(
+            '   ⚠ Wrong column constraint ' + table + '/' + column.name
+          )
+          err++
+
+          if (column.constraint === 'NOT NULL') {
+            console.info('   -> Try to fix')
+            try {
+              await query(
+                'ALTER TABLE ' +
+                  table +
+                  ' ALTER COLUMN ' +
+                  column.name +
+                  ' SET NOT NULL'
+              )
+              console.info('    OK')
+              err--
+            } catch (fixError) {
+              console.warn('    ⚠ Fix failed')
+              console.warn(fixError)
+            }
+          }
+        }
+
+        if (err) {
+          existingColumns[index].err = true
+        }
+      }
+
+      if (!err) {
+        existingColumns.splice(index, 1)
+      }
+    })
+  )
+
+  const remainingColumns = existingColumns.filter((e) => !e.err)
+  if (remainingColumns.length) {
+    console.warn(' ⚠ Not used columns:')
+    remainingColumns.forEach((column) =>
+      console.warn(' - ' + column.column_name)
+    )
+  }
+}
+
+/**
+ * Create table
+ * @memberof module:install
+ * @param {string} table Table
+ * @param {Function} extra Extra function
+ */
+const createTable = async (table, extra) => {
+  if (await checkTable(table)) await checkSchema(table)
+  else {
+    await query(
+      'CREATE TABLE ' +
+        table +
+        ' (' +
+        schemas[table]
+          .map(
+            (schema) =>
+              schema.name +
+              ' ' +
+              schema.type +
+              ' ' +
+              (schema.constraint || '') +
+              ' ' +
+              (schema.default || '')
+          )
+          .join(', ') +
+        ') '
+    )
+    extra && (await extra())
+  }
 }
 
 /**
@@ -156,19 +269,13 @@ const checkTable = async (table) => {
  * @memberof module: install
  */
 const createSystemTable = async () => {
-  if (!(await checkTable(databases.SYSTEM))) {
-    await query(
-      `CREATE TABLE IF NOT EXISTS ` +
-        databases.SYSTEM +
-        ` (
-          allowsignup BOOLEAN NOT NULL,
-          password jsonb
-        )`
-    )
-    await query(
-      'INSERT INTO ' + databases.SYSTEM + ' (allowsignup) VALUES (true)'
-    )
-  }
+  await createTable(
+    tables.SYSTEM,
+    async () =>
+      await query(
+        'INSERT INTO ' + tables.SYSTEM + ' (allowsignup) VALUES (true)'
+      )
+  )
 }
 
 /**
@@ -176,16 +283,7 @@ const createSystemTable = async () => {
  * @memberof module:install
  */
 const createAvatarTable = async () => {
-  !(await checkTable(databases.AVATARS)) &&
-    (await query(
-      `CREATE TABLE IF NOT EXISTS ` +
-        databases.AVATARS +
-        ` (
-          id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-          name TEXT NOT NULL,
-          path TEXT NOT NULL
-        )`
-    ))
+  await createTable(tables.AVATARS)
 }
 
 /**
@@ -193,29 +291,7 @@ const createAvatarTable = async () => {
  * @memberof module:install
  */
 const createUsersTable = async () => {
-  !(await checkTable(databases.USERS)) &&
-    (await query(
-      `CREATE TABLE IF NOT EXISTS ` +
-        databases.USERS +
-        ` (
-          id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-          lastName TEXT,
-          firstName TEXT,
-          email TEXT NOT NULL UNIQUE,
-          avatar uuid REFERENCES ` +
-        databases.AVATARS +
-        `(id) ON DELETE SET NULL,
-          isValidated BOOLEAN NOT NULL,
-          lastModificationDate TIMESTAMP NOT NULL,
-          superuser BOOLEAN NOT NULL,
-          password TEXT,
-          passwordLastChanged TIMESTAMP,
-          organizations uuid[],
-          workspaces uuid[],
-          authorizedplugins TEXT[],
-          plugins jsonb[]
-        )`
-    ))
+  await createTable(tables.USERS)
 }
 
 /**
@@ -223,18 +299,7 @@ const createUsersTable = async () => {
  * @memberof module: install
  */
 const createOrganizationTable = async () => {
-  !(await checkTable(databases.ORGANIZATIONS)) &&
-    (await query(
-      `CREATE TABLE IF NOT EXISTS ` +
-        databases.ORGANIZATIONS +
-        ` (
-    id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-    name TEXT,
-    owners uuid[],
-    users uuid[],
-    groups uuid[]
-  )`
-    ))
+  await createTable(tables.ORGANIZATIONS)
 }
 
 /**
@@ -242,19 +307,7 @@ const createOrganizationTable = async () => {
  * @memberof module:install
  */
 const createGroupsTable = async () => {
-  !(await checkTable(databases.GROUPS)) &&
-    (await query(
-      `CREATE TABLE IF NOT EXISTS ` +
-        databases.GROUPS +
-        ` (
-          id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-          name TEXT NOT NULL,
-          users uuid[] NOT NULL,
-          workspaces uuid[],
-          projects uuid[],
-          organization uuid[]
-        )`
-    ))
+  await createTable(tables.GROUPS)
 }
 
 /**
@@ -262,20 +315,7 @@ const createGroupsTable = async () => {
  * @memberof module:install
  */
 const createWorkspaceTable = async () => {
-  !(await checkTable(databases.WORKSPACES)) &&
-    (await query(
-      `CREATE TABLE IF NOT EXISTS ` +
-        databases.WORKSPACES +
-        ` (
-          id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-          name TEXT NOT NULL,
-          owners uuid[],
-          users uuid[],
-          groups uuid[],
-          projects uuid[],
-          archivedProjects jsonb[]
-        )`
-    ))
+  await createTable(tables.WORKSPACES)
 }
 
 /**
@@ -283,28 +323,7 @@ const createWorkspaceTable = async () => {
  * @memberof module:install
  */
 const createProjectTable = async () => {
-  !(await checkTable(databases.PROJECTS)) &&
-    (await query(
-      `CREATE TABLE IF NOT EXISTS ` +
-        databases.PROJECTS +
-        ` (
-          id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-          title TEXT NOT NULL,
-          description TEXT NOT NULL,
-          avatar uuid REFERENCES ` +
-        databases.AVATARS +
-        `(id) ON DELETE SET NULL,
-          public BOOLEAN NOT NULL,
-          history jsonb,
-          createdDate TIMESTAMP NOT NULL,
-          lastAccess TIMESTAMP NOT NULL,
-          simulations uuid[],
-          owners uuid[] NOT NULL,
-          users uuid[],
-          groups uuid[],
-          workspace uuid
-        )`
-    ))
+  await createTable(tables.PROJECTS)
 }
 
 /**
@@ -312,18 +331,7 @@ const createProjectTable = async () => {
  * @memberof module:install
  */
 const createSimulationTable = async () => {
-  !(await checkTable(databases.SIMULATIONS)) &&
-    (await query(
-      `CREATE TABLE IF NOT EXISTS ` +
-        databases.SIMULATIONS +
-        ` (
-          id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-          name TEXT NOT NULL,
-          scheme jsonb,
-          tasks jsonb[],
-          project uuid
-        )`
-    ))
+  await createTable(tables.SIMULATIONS)
 }
 
 /**
@@ -340,7 +348,7 @@ const passwordGenerator = () => {
  * @memberof module:install
  */
 const createAdmin = async () => {
-  const { rows } = await query('SELECT id FROM ' + databases.USERS)
+  const { rows } = await query('SELECT id FROM ' + tables.USERS)
   if (rows.length === 0) {
     console.info(' *** Create Administrator *** ')
 
@@ -348,7 +356,7 @@ const createAdmin = async () => {
 
     await query(
       'INSERT INTO ' +
-        databases.USERS +
+        tables.USERS +
         " (email, password, workspaces, isValidated, lastModificationDate, superuser) VALUES ($1, crypt($2, gen_salt('bf')), $3, $4, to_timestamp($5), $6)",
       ['admin', password, [], true, Date.now() / 1000, true]
     )

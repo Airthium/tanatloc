@@ -1,5 +1,5 @@
 import query from '..'
-import { databases } from '@/config/db'
+import { tables } from '@/config/db'
 
 /**
  * Get system items
@@ -8,7 +8,7 @@ import { databases } from '@/config/db'
  */
 const get = async (data) => {
   const response = await query(
-    'SELECT ' + data.join(',') + ' FROM ' + databases.SYSTEM
+    'SELECT ' + data.join(',') + ' FROM ' + tables.SYSTEM
   )
 
   return response.rows[0]

@@ -1,5 +1,5 @@
 import { getter } from '..'
-import { databases } from '@/config/db'
+import { tables } from '@/config/db'
 
 /**
  * Get project by id
@@ -8,7 +8,7 @@ import { databases } from '@/config/db'
  * @param {Array} data Data
  */
 const get = async (id, data) => {
-  const response = await getter(databases.PROJECTS, id, data)
+  const response = await getter(tables.PROJECTS, id, data)
 
   const project = response.rows[0]
   project && (project.id = id)

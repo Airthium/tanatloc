@@ -1,5 +1,5 @@
 import { getter } from '..'
-import { databases } from '@/config/db'
+import { tables } from '@/config/db'
 
 /**
  * Get user
@@ -9,7 +9,7 @@ import { databases } from '@/config/db'
  * @param {string} key Key (override id selector)
  */
 const get = async (id, data, key = 'id') => {
-  const response = await getter(databases.USERS, id, data, key)
+  const response = await getter(tables.USERS, id, data, key)
 
   const user = response.rows[0]
 

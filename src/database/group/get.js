@@ -1,5 +1,5 @@
 import { getter } from '..'
-import { databases } from '@/config/db'
+import { tables } from '@/config/db'
 
 /**
  * Get user
@@ -8,7 +8,7 @@ import { databases } from '@/config/db'
  * @param {Array} data Data
  */
 const get = async (id, data) => {
-  const response = await getter(databases.GROUPS, id, data)
+  const response = await getter(tables.GROUPS, id, data)
 
   return response.rows[0]
 }

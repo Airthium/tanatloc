@@ -1,5 +1,5 @@
 import { deleter } from '..'
-import { databases } from '@/config/db'
+import { tables } from '@/config/db'
 
 /**
  * Delete avatar
@@ -7,7 +7,7 @@ import { databases } from '@/config/db'
  * @param {Object} avatar Avatar { id }
  */
 const del = async (avatar) => {
-  await deleter(databases.AVATARS, avatar.id)
+  await deleter(tables.AVATARS, avatar.id)
 }
 
 export default del

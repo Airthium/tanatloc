@@ -1,5 +1,5 @@
 import { updater } from '..'
-import { databases } from '@/config/db'
+import { tables } from '@/config/db'
 
 /**
  * Update system items
@@ -7,7 +7,7 @@ import { databases } from '@/config/db'
  * @param {Object} data Data [{ key, value }, ...]
  */
 const update = async (data) => {
-  return updater(databases.SYSTEM, 0, data)
+  return updater(tables.SYSTEM, 0, data)
 }
 
 export default update

@@ -1,5 +1,5 @@
 import { deleter } from '..'
-import { databases } from '@/config/db'
+import { tables } from '@/config/db'
 
 /**
  * Delete group
@@ -7,7 +7,7 @@ import { databases } from '@/config/db'
  * @param {Object} group Group { id }
  */
 const del = async (group) => {
-  await deleter(databases.GROUPS, group.id)
+  await deleter(tables.GROUPS, group.id)
 }
 
 export default del

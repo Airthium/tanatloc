@@ -1,5 +1,5 @@
 import { deleter } from '..'
-import { databases } from '@/config/db'
+import { tables } from '@/config/db'
 
 /**
  * Delete
@@ -8,7 +8,7 @@ import { databases } from '@/config/db'
  */
 const del = async (workspace) => {
   // Delete workspace
-  await deleter(databases.WORKSPACES, workspace.id)
+  await deleter(tables.WORKSPACES, workspace.id)
 }
 
 export default del

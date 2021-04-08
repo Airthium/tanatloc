@@ -179,10 +179,11 @@ const del = async ({ id }, project) => {
   }
 
   // Delete simulation
+  console.log(data.simulations)
   if (data.simulations) {
     await Promise.all(
       data.simulations.map(async (simulation) => {
-        await Simulation.del(project, { id: simulation })
+        await Simulation.del({ id: simulation })
       })
     )
   }

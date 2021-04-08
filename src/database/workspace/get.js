@@ -1,5 +1,5 @@
 import { getter } from '..'
-import { databases } from '@/config/db'
+import { tables } from '@/config/db'
 
 /**
  * Get by user id
@@ -8,7 +8,7 @@ import { databases } from '@/config/db'
  * @param {Array} data Data
  */
 const get = async (id, data) => {
-  const response = await getter(databases.WORKSPACES, id, data)
+  const response = await getter(tables.WORKSPACES, id, data)
 
   const workspace = response.rows[0]
   workspace && (workspace.id = id)

@@ -19,7 +19,7 @@ module.exports = {
 /**
  * Tables names
  */
-module.exports.databases = {
+const tables = {
   SYSTEM: 'tanatloc_system',
   USERS: 'tanatloc_users',
   ORGANIZATIONS: 'tanatloc_organizations',
@@ -34,3 +34,282 @@ module.exports.databases = {
   TASKS: 'tanatloc_tasks',
   LINKS: 'tanatloc_links'
 }
+
+const schemas = {
+  [tables.SYSTEM]: [
+    {
+      name: 'allowsignup',
+      type: 'BOOLEAN',
+      constraint: 'NOT NULL'
+    },
+    {
+      name: 'password',
+      type: 'JSONB'
+    }
+  ],
+  [tables.AVATARS]: [
+    {
+      name: 'id',
+      type: 'UUID',
+      constraint: 'PRIMARY KEY',
+      default: 'DEFAULT gen_random_uuid()'
+    },
+    {
+      name: 'name',
+      type: 'TEXT',
+      constraint: 'NOT NULL'
+    },
+    {
+      name: 'path',
+      type: 'TEXT',
+      constraint: 'NOT NULL'
+    }
+  ],
+  [tables.USERS]: [
+    {
+      name: 'id',
+      type: 'UUID',
+      constraint: 'PRIMARY KEY',
+      default: 'DEFAULT gen_random_uuid()'
+    },
+    {
+      name: 'lastname',
+      type: 'TEXT'
+    },
+    {
+      name: 'firstname',
+      type: 'TEXT'
+    },
+    {
+      name: 'email',
+      type: 'TEXT',
+      constraint: 'NOT NULL UNIQUE'
+    },
+    {
+      name: 'avatar',
+      type: 'UUID',
+      constraint: 'REFERENCES ' + tables.AVATARS + ' (id) ON DELETE SET NULL'
+    },
+    {
+      name: 'isvalidated',
+      type: 'BOOLEAN',
+      constraint: 'NOT NULL'
+    },
+    {
+      name: 'lastmodificationdate',
+      type: 'TIMESTAMP',
+      constraint: 'NOT NULL'
+    },
+    {
+      name: 'superuser',
+      type: 'BOOLEAN',
+      constraint: 'NOT NULL'
+    },
+    {
+      name: 'password',
+      type: 'TEXT'
+    },
+    {
+      name: 'passwordlastchanged',
+      type: 'TIMESTAMP'
+    },
+    {
+      name: 'organizations',
+      type: 'UUID[]'
+    },
+    {
+      name: 'workspaces',
+      type: 'UUID[]'
+    },
+    {
+      name: 'authorizedplugins',
+      type: 'TEXT[]'
+    },
+    {
+      name: 'plugins',
+      type: 'JSONB[]'
+    }
+  ],
+  [tables.ORGANIZATIONS]: [
+    {
+      name: 'id',
+      type: 'UUID',
+      constraint: 'PRIMARY KEY',
+      default: 'DEFAULT gen_random_uuid()'
+    },
+    {
+      name: 'name',
+      type: 'TEXT',
+      constraint: 'NOT NULL'
+    },
+    {
+      name: 'owners',
+      type: 'UUID[]',
+      constraint: 'NOT NULL'
+    },
+    {
+      name: 'users',
+      type: 'UUID[]'
+    },
+    {
+      name: 'groups',
+      type: 'UUID[]'
+    }
+  ],
+  [tables.GROUPS]: [
+    {
+      name: 'id',
+      type: 'UUID',
+      constraint: 'PRIMARY KEY',
+      default: 'DEFAULT gen_random_uuid()'
+    },
+    {
+      name: 'name',
+      type: 'TEXT',
+      constraint: 'NOT NULL'
+    },
+    {
+      name: 'users',
+      type: 'UUID[]',
+      constraint: 'NOT NULL'
+    },
+    {
+      name: 'workspaces',
+      type: 'UUID[]'
+    },
+    {
+      name: 'projects',
+      type: 'UUID[]'
+    },
+    {
+      name: 'organization',
+      type: 'UUID',
+      constraint: 'NOT NULL'
+    }
+  ],
+  [tables.WORKSPACES]: [
+    {
+      name: 'id',
+      type: 'UUID',
+      constraint: 'PRIMARY KEY',
+      default: 'DEFAULT gen_random_uuid()'
+    },
+    {
+      name: 'name',
+      type: 'TEXT',
+      constraint: 'NOT NULL'
+    },
+    {
+      name: 'owners',
+      type: 'UUID[]',
+      constraint: 'NOT NULL'
+    },
+    {
+      name: 'users',
+      type: 'UUID[]'
+    },
+    {
+      name: 'groups',
+      type: 'UUID[]'
+    },
+    {
+      name: 'projects',
+      type: 'UUID[]'
+    },
+    {
+      name: 'archivedprojects',
+      type: 'JSONB[]'
+    }
+  ],
+  [tables.PROJECTS]: [
+    {
+      name: 'id',
+      type: 'UUID',
+      constraint: 'PRIMARY KEY',
+      default: 'DEFAULT gen_random_uuid()'
+    },
+    {
+      name: 'title',
+      type: 'TEXT',
+      constraint: 'NOT NULL'
+    },
+    {
+      name: 'description',
+      type: 'TEXT'
+    },
+    {
+      name: 'avatar',
+      type: 'UUID',
+      constraint: 'REFERENCES ' + tables.AVATARS + ' (id) ON DELETE SET NULL'
+    },
+    {
+      name: 'public',
+      type: 'BOOLEAN'
+    },
+    {
+      name: 'history',
+      type: 'JSONB'
+    },
+    {
+      name: 'createddate',
+      type: 'TIMESTAMP',
+      constraint: 'NOT NULL'
+    },
+    {
+      name: 'lastaccess',
+      type: 'TIMESTAMP',
+      constraint: 'NOT NULL'
+    },
+    {
+      name: 'simulations',
+      type: 'UUID[]'
+    },
+    {
+      name: 'owners',
+      type: 'UUID[]',
+      constraint: 'NOT NULL'
+    },
+    {
+      name: 'users',
+      type: 'UUID[]'
+    },
+    {
+      name: 'groups',
+      type: 'UUID[]'
+    },
+    {
+      name: 'workspace',
+      type: 'UUID',
+      constraint: 'NOT NULL'
+    }
+  ],
+  [tables.SIMULATIONS]: [
+    {
+      name: 'id',
+      type: 'UUID',
+      constraint: 'PRIMARY KEY',
+      default: 'DEFAULT gen_random_uuid()'
+    },
+    {
+      name: 'name',
+      type: 'TEXT',
+      constraint: 'NOT NULL'
+    },
+    {
+      name: 'scheme',
+      type: 'JSONB'
+    },
+    {
+      name: 'tasks',
+      type: 'JSONB[]'
+    },
+    {
+      name: 'project',
+      type: 'UUID',
+      constraint: 'NOT NULL'
+    }
+  ]
+}
+
+module.exports.tables = tables
+module.exports.schemas = schemas

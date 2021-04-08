@@ -1,5 +1,5 @@
 import query from '..'
-import { databases } from '@/config/db'
+import { tables } from '@/config/db'
 
 /**
  * Add avatar
@@ -9,7 +9,7 @@ import { databases } from '@/config/db'
 const add = async ({ name, path }) => {
   const response = await query(
     'INSERT INTO ' +
-      databases.AVATARS +
+      tables.AVATARS +
       ' (name, path) VALUES ($1, $2) RETURNING id',
     [name, path]
   )

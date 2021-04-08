@@ -1,5 +1,5 @@
 import { getter } from '..'
-import { databases } from '@/config/db'
+import { tables } from '@/config/db'
 
 /**
  * Get avatar by id
@@ -8,7 +8,7 @@ import { databases } from '@/config/db'
  * @param {Object} data Data { key, value, ... }
  */
 const get = async (id, data) => {
-  const response = await getter(databases.AVATARS, id, data)
+  const response = await getter(tables.AVATARS, id, data)
 
   const avatar = response.rows[0]
   avatar && (avatar.id = id)

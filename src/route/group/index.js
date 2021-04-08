@@ -28,7 +28,7 @@ export default async (req, res) => {
         // Check administrator
         if (
           !(await checkAdministrator(
-            { id: req.body.organization },
+            { id: req.body.organization.id },
             { id: sessionId }
           ))
         )

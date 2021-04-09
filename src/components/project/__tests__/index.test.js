@@ -253,6 +253,34 @@ describe('components/project', () => {
   })
 
   it('simulation effect', () => {
+    // Update
+    wrapper.unmount()
+    const mockTitle = jest.fn(() => 'title')
+    mockSimulations.mockImplementation(() => [
+      {
+        id: 'id',
+        scheme: {
+          configuration: {
+            geometry: {
+              title: mockTitle(),
+              file: {}
+            }
+          }
+        }
+      }
+    ])
+    wrapper = mount(<Project />)
+    mockTitle.mockImplementation(() => 'newTitle')
+
+    act(() =>
+      wrapper
+        .find('InternalMenu')
+        .at(1)
+        .props()
+        .onClick({ key: 'simulation&id&materials' })
+    )
+    expect(mockSimulationUpdate).toHaveBeenCalledTimes(2)
+
     // Force geometry
     wrapper.unmount()
     mockSimulations.mockImplementation(() => [
@@ -278,7 +306,7 @@ describe('components/project', () => {
         .onClick({ key: 'simulation&id&materials' })
     )
     // wrapper.update()
-    expect(mockSimulationUpdate).toHaveBeenCalledTimes(1)
+    expect(mockSimulationUpdate).toHaveBeenCalledTimes(3)
 
     // Force geometry (with part)
     wrapper.unmount()
@@ -303,10 +331,38 @@ describe('components/project', () => {
         .find('InternalMenu')
         .at(1)
         .props()
-        .onClick({ key: 'simulation&id&materials' })
+        .onClick({ key: 'simulation&id&boundaryConditions' })
     )
     // wrapper.update()
-    expect(mockSimulationUpdate).toHaveBeenCalledTimes(2)
+    expect(mockSimulationUpdate).toHaveBeenCalledTimes(4)
+
+    // Force geometry (no)
+    wrapper.unmount()
+    mockSimulations.mockImplementation(() => [
+      {
+        id: 'id',
+        scheme: {
+          configuration: {
+            part: {},
+            geometry: {
+              title: 'Geometry',
+              file: {}
+            }
+          }
+        }
+      }
+    ])
+    wrapper = mount(<Project />)
+
+    act(() =>
+      wrapper
+        .find('InternalMenu')
+        .at(1)
+        .props()
+        .onClick({ key: 'simulation&id&geometry' })
+    )
+    // wrapper.update()
+    expect(mockSimulationUpdate).toHaveBeenCalledTimes(4)
 
     // Force geometry (error)
     wrapper.unmount()
@@ -336,7 +392,7 @@ describe('components/project', () => {
         .onClick({ key: 'simulation&id&materials' })
     )
     wrapper.update()
-    expect(mockSimulationUpdate).toHaveBeenCalledTimes(3)
+    expect(mockSimulationUpdate).toHaveBeenCalledTimes(5)
 
     // Remove part
     wrapper.unmount()

@@ -17,7 +17,7 @@
     "electron-store": "7.0.3",
     "express": "4.17.1",
     "is-electron": "2.2.0",
-    "is-docker": "2.2.0",
+    "is-docker": "2.2.1",
     "lodash.merge": "4.6.2",
     "mailersend": "1.0.2",
     "next": "10.1.3",

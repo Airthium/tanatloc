@@ -271,7 +271,9 @@ const checkSchema = async (table) => {
 
         console.info(' -> Try to fix')
         try {
-          await query('ALTER TABLE ' + table + ' DROP COLUMN ' + column.name)
+          await query(
+            'ALTER TABLE ' + table + ' DROP COLUMN ' + column.column_name
+          )
           console.info('  OK')
         } catch (fixError) {
           console.warn('  ⚠ Fix failed')

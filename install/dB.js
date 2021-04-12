@@ -173,6 +173,27 @@ const checkSchema = async (table) => {
       if (!byName) {
         console.error('   -- Missing column ' + table + '/' + column.name)
         err++
+
+        console.info('   -> Try to fix')
+        try {
+          await query(
+            'ALTER TABLE ' +
+              table +
+              ' ADD COLUMN ' +
+              column.name +
+              ' ' +
+              column.type +
+              ' ' +
+              (column.constraint || '') +
+              ' ' +
+              (column.default || '')
+          )
+          console.info('    OK')
+          err--
+        } catch (fixError) {
+          console.warn('    ⚠ Fix failed')
+          console.warn(fixError)
+        }
       } else {
         if (
           (column.type.includes('[]') && byName.data_type === 'ARRAY') ||
@@ -183,6 +204,23 @@ const checkSchema = async (table) => {
         } else {
           console.error('   ⚠ Wrong column type ' + table + '/' + column.name)
           err++
+
+          console.info('   -> Try to fix')
+          try {
+            await query(
+              'ALTER TABLE ' +
+                table +
+                ' ALTER COLUMN ' +
+                column.name +
+                ' ' +
+                column.type
+            )
+            console.info('    OK')
+            err--
+          } catch (fixError) {
+            console.warn('    ⚠ Fix failed')
+            console.warn(fixError)
+          }
         }
         if (
           (column.constraint === 'NOT NULL' ||
@@ -227,8 +265,19 @@ const checkSchema = async (table) => {
   const remainingColumns = existingColumns.filter((e) => !e.err)
   if (remainingColumns.length) {
     console.warn(' ⚠ Not used columns:')
-    remainingColumns.forEach((column) =>
-      console.warn(' - ' + column.column_name)
+    await Promise.all(
+      remainingColumns.map(async (column) => {
+        console.warn(' - ' + column.column_name)
+
+        console.info(' -> Try to fix')
+        try {
+          await query('ALTER TABLE ' + table + ' DROP COLUMN ' + column.name)
+          console.info('  OK')
+        } catch (fixError) {
+          console.warn('  ⚠ Fix failed')
+          console.warn(fixError)
+        }
+      })
     )
   }
 }

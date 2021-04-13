@@ -1,13 +1,19 @@
 import PropTypes from 'prop-types'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import { Button, Card, Modal, Space, Typography } from 'antd'
 import { CloudServerOutlined } from '@ant-design/icons'
 import merge from 'lodash.merge'
 
+import { Error } from '@/components/assets/notification'
+
 import Plugins from '@/plugins'
 
 import PluginAPI from '@/api/plugin'
+
+const errors = {
+  plugins: 'Plugins error'
+}
 
 /**
  * Cloud server
@@ -20,7 +26,12 @@ const CloudServer = ({ disabled, cloudServer, onOk }) => {
 
   // Data
   const router = useRouter()
-  const [plugins] = PluginAPI.usePlugins()
+  const [plugins, { errorPlugins }] = PluginAPI.usePlugins()
+
+  // Plugins errors
+  useEffect(() => {
+    if (errorPlugins) Error(errors.plugins, errorPlugins)
+  }, [errorPlugins])
 
   /**
    * Close

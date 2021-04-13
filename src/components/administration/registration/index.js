@@ -11,6 +11,7 @@ import SystemAPI from '@/api/system'
  * @memberof module:components/administration
  */
 const errors = {
+  system: 'System error',
   updateError: 'Unable to update system'
 }
 
@@ -21,7 +22,10 @@ const errors = {
 const Registration = () => {
   // Data
   const [form] = Form.useForm()
-  const [system, { mutateSystem, loadingSystem }] = SystemAPI.useSystem()
+  const [
+    system,
+    { mutateSystem, errorSystem, loadingSystem }
+  ] = SystemAPI.useSystem()
   const layout = {
     labelCol: { span: 8 },
     wrapperCol: { span: 16 }
@@ -29,6 +33,11 @@ const Registration = () => {
   const tailLayout = {
     wrapperCol: { offset: 8, span: 16 }
   }
+
+  // System error
+  useEffect(() => {
+    if (errorSystem) Error(errors.system, errorSystem)
+  }, [errorSystem])
 
   // Effect
   useEffect(() => {

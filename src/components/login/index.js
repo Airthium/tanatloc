@@ -14,6 +14,7 @@ import {
 } from 'antd'
 
 import Loading from '@/components/loading'
+import { Error } from '@/components/assets/notification'
 
 import login from '@/api/login'
 import UserAPI from '@/api/user'
@@ -24,6 +25,7 @@ import Sentry from '@/lib/sentry'
  * Errors
  */
 const errors = {
+  user: 'User error',
   INTERNAL_ERROR: 'Server issue : try again shortly.',
   BAD_CREDENTIALS: 'Incorrect credentials.'
 }
@@ -38,10 +40,15 @@ const Login = () => {
   const [internalErr, setInternalErr] = useState(false)
 
   // Data
-  const [user, { mutateUser, loadingUser }] = UserAPI.useUser()
+  const [user, { mutateUser, errorUser, loadingUser }] = UserAPI.useUser()
 
   // Router
   const router = useRouter()
+
+  // Error
+  useEffect(() => {
+    if (errorUser) Error(errors.user, errorUser)
+  }, [errorUser])
 
   // Already connected
   useEffect(() => {

@@ -1,7 +1,10 @@
 /** @module components/administration */
 
+import { useEffect } from 'react'
 import { useRouter } from 'next/router'
 import { Divider, Layout, PageHeader, Tabs, Typography } from 'antd'
+
+import { Error } from '@/components/assets/notification'
 
 import Users from './users'
 import Groups from './groups'
@@ -28,6 +31,13 @@ const tabItems = {
 }
 
 /**
+ * Errors
+ */
+const errors = {
+  users: 'Users error'
+}
+
+/**
  * Administration
  */
 const Administration = () => {
@@ -35,7 +45,15 @@ const Administration = () => {
   const router = useRouter()
   const { tab } = router.query
 
-  const [users, { addOneUser, mutateOneUser, delOneUser }] = UserAPI.useUsers()
+  const [
+    users,
+    { addOneUser, mutateOneUser, delOneUser, errorUsers }
+  ] = UserAPI.useUsers()
+
+  // Users error
+  useEffect(() => {
+    if (errorUsers) Error(errors.users, errorUsers)
+  }, [errorUsers])
 
   /**
    * On change

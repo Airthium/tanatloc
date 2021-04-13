@@ -51,7 +51,7 @@ const useWorkspaces = () => {
       addOneWorkspace: addOne,
       delOneWorkspace: delOne,
       mutateOneWorkspace: mutateOne,
-      errorWorkspace: error,
+      errorWorkspaces: error,
       loadingWorkspaces: loading
     }
   ]

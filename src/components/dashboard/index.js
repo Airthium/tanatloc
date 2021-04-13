@@ -35,6 +35,9 @@ import logout from '@/api/logout'
  * Errors
  */
 const errors = {
+  user: 'User error',
+  organizations: 'Organizations error',
+  workspaces: 'Workspaces error',
   logoutError: 'Unable to logout'
 }
 
@@ -89,7 +92,7 @@ const Dashboard = () => {
   const [currentWorkspace, setCurrentWorkspace] = useState()
 
   // Data
-  const [user, { mutateUser, loadingUser }] = UserAPI.useUser()
+  const [user, { mutateUser, errorUser, loadingUser }] = UserAPI.useUser()
   const [
     organizations,
     {
@@ -97,17 +100,25 @@ const Dashboard = () => {
       addOneOrganization,
       delOneOrganization,
       mutateOneOrganization,
+      errorOrganizations,
       loadingOrganizations
     }
   ] = OrganizationAPI.useOrganizations()
   const [
     workspaces,
-    { addOneWorkspace, delOneWorkspace, mutateOneWorkspace }
+    { addOneWorkspace, delOneWorkspace, mutateOneWorkspace, errorWorkspaces }
   ] = WorkspaceAPI.useWorkspaces()
 
   // Router
   const router = useRouter()
   const { page, workspaceId } = router.query
+
+  // Error
+  useEffect(() => {
+    if (errorUser) Error(errors.user, errorUser)
+    if (errorOrganizations) Error(errors.organizations, errorOrganizations)
+    if (errorWorkspaces) Error(errors.workspaces, errorWorkspaces)
+  }, [errorUser, errorOrganizations, errorWorkspaces])
 
   // Not logged -> go to login page
   useEffect(() => {

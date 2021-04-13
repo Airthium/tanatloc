@@ -12,11 +12,20 @@ jest.mock('next/router', () => ({
   })
 }))
 
-jest.mock('@/components/background', () => 'background')
+jest.mock('@/components/background', () => () => {
+  const Background = 'Background'
+  return Background
+})
+
+const mockError = jest.fn()
+jest.mock('@/components/assets/notification', () => ({
+  Error: () => mockError()
+}))
 
 const mockUser = jest.fn()
+const mockErrorUser = jest.fn()
 jest.mock('@/api/user', () => ({
-  useUser: () => [mockUser()]
+  useUser: () => [mockUser(), { errorUser: mockErrorUser() }]
 }))
 
 let wrapper
@@ -24,7 +33,12 @@ describe('components/index', () => {
   beforeEach(() => {
     mockPrefetch.mockReset()
     mockPush.mockReset()
+
+    mockError.mockReset()
+
     mockUser.mockReset()
+    mockErrorUser.mockReset()
+
     wrapper = shallow(<Index />)
   })
 
@@ -65,8 +79,14 @@ describe('components/index', () => {
 
   it('effect', () => {
     wrapper.unmount()
-
     wrapper = mount(<Index />)
     expect(mockPrefetch).toHaveBeenCalledTimes(3)
+
+    // With user error
+    wrapper.unmount()
+    mockErrorUser.mockImplementation(() => ({ message: 'Error' }))
+    wrapper = mount(<Index />)
+    expect(mockPrefetch).toHaveBeenCalledTimes(6)
+    expect(mockError).toHaveBeenCalledTimes(1)
   })
 })

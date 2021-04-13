@@ -1,10 +1,21 @@
+import { useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { Spin } from 'antd'
+
+import { Error } from '@/components/assets/notification'
 
 import PluginDialog from './dialog'
 import List from './list'
 
 import PluginAPI from '@/api/plugin'
+
+/**
+ * Errors account/plugins
+ * @memberof module:components/account
+ */
+const errors = {
+  plugins: 'Plugins error'
+}
 
 /**
  * Plugin
@@ -15,8 +26,19 @@ const Plugin = ({ plugin }) => {
   // Data
   const [
     plugins,
-    { addOnePlugin, delOnePlugin, mutateOnePlugin, loadingPlugins }
+    {
+      addOnePlugin,
+      delOnePlugin,
+      mutateOnePlugin,
+      errorPlugins,
+      loadingPlugins
+    }
   ] = PluginAPI.usePlugins()
+
+  // Plugins errors
+  useEffect(() => {
+    if (errorPlugins) Error(errors.plugins, errorPlugins)
+  }, [errorPlugins])
 
   /**
    * Render

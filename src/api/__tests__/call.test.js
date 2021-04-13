@@ -3,6 +3,7 @@ import Caller from '../call'
 jest.mock('is-electron', () => () => false)
 
 let mockRoute, mockParam
+const mockOk = jest.fn(() => true)
 const mockStatus = jest.fn(() => 200)
 const mockJSON = jest.fn(async () => 'json')
 const mockGet = jest.fn(() => '')
@@ -10,6 +11,7 @@ global.fetch = async (route, param) => {
   mockRoute = route
   mockParam = param
   return {
+    ok: mockOk(),
     status: mockStatus(),
     json: mockJSON,
     headers: {
@@ -20,8 +22,18 @@ global.fetch = async (route, param) => {
 
 describe('api/call', () => {
   it('fetcher', async () => {
+    // Normal
     await Caller.fetcher('/route')
     expect(mockRoute).toBe('/route')
+
+    // Error
+    mockOk.mockImplementation(() => false)
+    try {
+      await Caller.fetcher('/route')
+      expect(true).toBe(false)
+    } catch (err) {
+      expect(err.message).toBe('An error occured while fetching data.')
+    }
   })
 
   it('call', async () => {

@@ -2,10 +2,11 @@
 
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
-import { Divider, Layout, Menu } from 'antd'
+import { Divider, Layout, Menu, Typography } from 'antd'
 import { DashboardOutlined, LoginOutlined } from '@ant-design/icons'
 
 import Background from '@/components/background'
+import { Error } from '@/components/assets/notification'
 
 import UserAPI from '@/api/user'
 
@@ -19,6 +20,13 @@ const menuKeys = {
 }
 
 /**
+ * Errors
+ */
+const errors = {
+  user: 'User error'
+}
+
+/**
  * Index
  */
 const Index = () => {
@@ -26,7 +34,12 @@ const Index = () => {
   const router = useRouter()
 
   // Data
-  const [user] = UserAPI.useUser()
+  const [user, { errorUser }] = UserAPI.useUser()
+
+  // Error
+  useEffect(() => {
+    if (errorUser) Error(errors.user, errorUser)
+  }, [errorUser])
 
   // Prefetch
   useEffect(() => {
@@ -90,7 +103,21 @@ const Index = () => {
         </Menu>
       </Layout.Header>
       <Divider className="Tanatloc-divider" />
-      <Layout.Content></Layout.Content>
+      <Layout.Content>
+        <Layout style={{ margin: '20px' }}>
+          <Layout.Content
+            style={{
+              backgroundColor: 'white',
+              opacity: 0.5,
+              padding: '20px'
+            }}
+          >
+            <Typography.Title>
+              See the world the way it really is!
+            </Typography.Title>
+          </Layout.Content>
+        </Layout>
+      </Layout.Content>
     </Layout>
   )
 }

@@ -1,7 +1,7 @@
 /** @module components/workspace */
 
 import PropTypes from 'prop-types'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import {
   Avatar,
   Divider,
@@ -29,6 +29,7 @@ import ProjectAPI from '@/api/project'
  * Errors
  */
 const errors = {
+  projects: 'Projects error',
   updateError: 'Unable to update the workspace'
 }
 
@@ -43,8 +44,19 @@ const Workspace = ({ user, workspace, organizations, swr }) => {
   // Data
   const [
     projects,
-    { addOneProject, delOneProject, mutateOneProject, loadingProjects }
+    {
+      addOneProject,
+      delOneProject,
+      mutateOneProject,
+      errorProjects,
+      loadingProjects
+    }
   ] = ProjectAPI.useProjects(workspace?.projects)
+
+  // Projects error
+  useEffect(() => {
+    if (errorProjects) Error(errors.projects, errorProjects)
+  }, [errorProjects])
 
   /**
    * Set name

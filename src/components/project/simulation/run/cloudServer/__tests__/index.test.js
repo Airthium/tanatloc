@@ -16,7 +16,7 @@ jest.mock('@/plugins', () => ({
 
 const mockPlugins = jest.fn()
 jest.mock('@/api/plugin', () => ({
-  usePlugins: () => [mockPlugins()]
+  usePlugins: () => [mockPlugins(), { errorPlugins: undefined }]
 }))
 
 let wrapper

@@ -14,6 +14,8 @@ import {
 } from 'antd'
 
 import { PasswordItem } from '@/components/assets/input'
+import { Error } from '@/components/assets/notification'
+
 import Loading from '@/components/loading'
 
 import login from '@/api/login'
@@ -26,6 +28,8 @@ import Sentry from '@/lib/sentry'
  * Errors
  */
 const errors = {
+  user: 'User error',
+  system: 'System error',
   INTERNAL_ERROR: 'Server issue : try again shortly.',
   ALREADY_EXISTS: 'This email is already registered',
   passwordMismatch: 'Passwords mismatch',
@@ -42,11 +46,17 @@ const Signup = () => {
   const [internalErr, setInternalError] = useState(false)
 
   // Data
-  const [user, { loadingUser, mutateUser }] = UserAPI.useUser()
-  const [system, { loadingSystem }] = SystemAPI.useSystem()
+  const [user, { loadingUser, mutateUser, errorUser }] = UserAPI.useUser()
+  const [system, { errorSystem, loadingSystem }] = SystemAPI.useSystem()
 
   // Router
   const router = useRouter()
+
+  // Errors
+  useEffect(() => {
+    if (errorUser) Error(errors.user, errorUser)
+    if (errorSystem) Error(errors.system, errorSystem)
+  }, [errorUser, errorSystem])
 
   // Already connected
   useEffect(() => {

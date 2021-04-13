@@ -11,8 +11,8 @@ global.fetch = async (route) => {
 }
 
 describe('api/call', () => {
-  it('electron', () => {
-    Caller.fetcher('/route')
+  it('electron', async () => {
+    await Caller.fetcher('/route')
     expect(mockRoute).toBe('http://localhost:3000/route')
   })
 })

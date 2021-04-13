@@ -7,7 +7,7 @@ import Caller from '@/api/call'
  * @param {Array} ids [Project's ids]
  */
 const useProjects = (ids) => {
-  const { data, mutate } = useSWR(
+  const { data, error, mutate } = useSWR(
     '/api/projects' + (ids && ids.length ? '/' + ids.join('&') : ''),
     Caller.fetcher
   )
@@ -54,6 +54,7 @@ const useProjects = (ids) => {
       addOneProject: addOne,
       delOneProject: delOne,
       mutateOneProject: mutateOne,
+      errorProjects: error,
       loadingProjects: loading
     }
   ]

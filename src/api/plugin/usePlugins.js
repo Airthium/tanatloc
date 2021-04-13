@@ -6,7 +6,7 @@ import Caller from '@/api/call'
  * @memberof module:api/plugin
  */
 const usePlugins = () => {
-  const { data, mutate } = useSWR('/api/plugin', Caller.fetcher)
+  const { data, error, mutate } = useSWR('/api/plugin', Caller.fetcher)
   const loading = !data
   const plugins = (data && data.plugins) || []
 
@@ -35,6 +35,7 @@ const usePlugins = () => {
       addOnePlugin: addOne,
       delOnePlugin: delOne,
       mutateOnePlugin: mutateOne,
+      errorPlugins: error,
       loadingPlugins: loading
     }
   ]

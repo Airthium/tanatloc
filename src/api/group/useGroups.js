@@ -6,7 +6,7 @@ import Caller from '@/api/call'
  * @memberof module:api/group
  */
 const useGroups = (id) => {
-  const { data, mutate } = useSWR('/api/groups/' + id, Caller.fetcher)
+  const { data, error, mutate } = useSWR('/api/groups/' + id, Caller.fetcher)
   const loading = !data
   const groups = (data && data.groups) || []
 
@@ -47,6 +47,7 @@ const useGroups = (id) => {
       addOneGroup: addOne,
       delOneGroup: delOne,
       mutateOneGroup: mutateOne,
+      errorGroups: error,
       loadingGroups: loading
     }
   ]

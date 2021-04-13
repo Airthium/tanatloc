@@ -3,10 +3,19 @@ import { useState, useEffect } from 'react'
 import { Avatar, Space, Select, Table } from 'antd'
 
 import Group, { Delete } from '@/components/assets/group'
+import { Error } from '@/components/assets/notification'
 
 import Utils from '@/lib/utils'
 
 import GroupAPI from '@/api/group'
+
+/**
+ * Errors organization/groups
+ * @memberof module:components/assets/organization
+ */
+const errors = {
+  groups: 'Groups error'
+}
 
 /**
  * Groups
@@ -25,7 +34,7 @@ const Groups = ({ organization, swr }) => {
   // Data
   const [
     groups,
-    { addOneGroup, mutateOneGroup, delOneGroup, loadingGroups }
+    { addOneGroup, mutateOneGroup, delOneGroup, errorGroups, loadingGroups }
   ] = GroupAPI.useGroups(organization.id)
 
   // User options
@@ -44,6 +53,11 @@ const Groups = ({ organization, swr }) => {
     })
     setUserOptions(options)
   }, [organization])
+
+  // Groups error
+  useEffect(() => {
+    if (errorGroups) Error(errors.groups, errorGroups)
+  }, [errorGroups])
 
   // Columns
   const columns = [

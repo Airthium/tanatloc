@@ -3,10 +3,19 @@ import { useState, useEffect } from 'react'
 import { Avatar, Select, Space, Table } from 'antd'
 
 import Group, { Delete } from '@/components/assets/group'
+import { Error } from '@/components/assets/notification'
 
 import Utils from '@/lib/utils'
 
 import GroupAPI from '@/api/group'
+
+/**
+ * Errors administration/groups
+ * @memberof module:components/administration
+ */
+const errors = {
+  groups: 'Groups error'
+}
 
 /**
  * Groups
@@ -20,7 +29,7 @@ const Groups = ({ users }) => {
   // Data
   const [
     groups,
-    { mutateOneGroup, delOneGroup, loadingGroups }
+    { mutateOneGroup, delOneGroup, errorGroups, loadingGroups }
   ] = GroupAPI.useGroups()
 
   const columns = [
@@ -66,6 +75,10 @@ const Groups = ({ users }) => {
     })
     setUserOptions(options)
   }, [users])
+
+  useEffect(() => {
+    if (errorGroups) Error(errors.groups, errorGroups)
+  }, [errorGroups])
 
   return (
     <Space direction="vertical" style={{ width: '100%' }}>

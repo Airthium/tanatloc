@@ -374,6 +374,9 @@ const Project = () => {
           onClose={onSimulationClose}
         />
         <View
+          project={{
+            id: project.id
+          }}
           simulation={{
             id: currentSimulation?.id,
             part: currentSimulation?.scheme?.configuration?.part

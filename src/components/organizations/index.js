@@ -49,7 +49,12 @@ const Organizations = ({ user, organizations, swr }) => {
         <Space direction="vertical" style={{ width: '100%' }}>
           {organization ? (
             <Organization
-              organization={organization}
+              organization={{
+                id: organization.id,
+                name: organization.name,
+                owners: organization.owners,
+                users: organization.users
+              }}
               swr={{
                 reloadOrganizations: swr.reloadOrganizations,
                 mutateOneOrganization: swr.mutateOneOrganization,

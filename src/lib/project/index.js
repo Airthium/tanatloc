@@ -31,12 +31,13 @@ const add = async (
  * Get project
  * @param {string} id Project's id
  * @param {Array} data Data
+ * @param {boolean} withData With data
  */
-const get = async (id, data) => {
+const get = async (id, data, withData = true) => {
   const project = await ProjectDB.get(id, data)
 
   // Get avatar
-  if (project?.avatar) {
+  if (withData && project?.avatar) {
     try {
       const avatar = await Avatar.read(project.avatar)
       project.avatar = avatar
@@ -47,7 +48,7 @@ const get = async (id, data) => {
   }
 
   // Get owners
-  if (project?.owners) {
+  if (withData && project?.owners) {
     const owners = await Promise.all(
       project.owners.map(async (owner) => {
         const ownerData = await User.get(owner, [
@@ -66,7 +67,7 @@ const get = async (id, data) => {
   }
 
   // Get users
-  if (project?.users) {
+  if (withData && project?.users) {
     const users = await Promise.all(
       project.users.map(async (user) => {
         const userData = await User.get(user, [
@@ -85,7 +86,7 @@ const get = async (id, data) => {
   }
 
   // Get groups
-  if (project?.groups) {
+  if (withData && project?.groups) {
     const groups = await Promise.all(
       project.groups.map(async (group) => {
         const groupData = await Group.get(group, ['name'])

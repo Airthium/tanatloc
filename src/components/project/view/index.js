@@ -16,6 +16,7 @@ import {
   CompressOutlined,
   DragOutlined,
   EyeInvisibleOutlined,
+  FundProjectionScreenOutlined,
   LoadingOutlined,
   ZoomInOutlined,
   ZoomOutOutlined,
@@ -37,6 +38,7 @@ import {
   Vector3,
   WebGLRenderer
 } from 'three/build/three.module'
+import { v4 } from 'uuid'
 
 import { Error } from '@/components/assets/notification'
 
@@ -54,6 +56,7 @@ import { ColorbarHelper } from '@/lib/three/helpers/ColorbarHelper'
 
 import { PartLoader } from '@/lib/three/loaders/PartLoader'
 
+import AvatarAPI from '@/api/avatar'
 import PartAPI from '@/api/part'
 
 import { useSelector, useDispatch } from 'react-redux'
@@ -69,7 +72,7 @@ const errors = {
 /**
  * ThreeView
  */
-const ThreeView = ({ loading, part }) => {
+const ThreeView = ({ loading, project, part }) => {
   // Ref
   const mount = useRef(null)
   const scene = useRef()
@@ -87,6 +90,7 @@ const ThreeView = ({ loading, part }) => {
   const [transparent, setTransparent] = useState(false)
   const [sectionView, setSectionView] = useState(false)
   const [transform, setTransform] = useState('translate')
+  const [screenshot, setScreenshot] = useState(false)
 
   // Store
   const {
@@ -573,6 +577,56 @@ const ThreeView = ({ loading, part }) => {
   }
 
   /**
+   * Take screenshot
+   */
+  const takeScreenshot = async () => {
+    setScreenshot(true)
+
+    try {
+      const initialWidth = renderer.current.domElement.width
+      const initialHeight = renderer.current.domElement.height
+
+      const initialAspect = camera.current.aspect
+
+      // Snap render
+      const snapSize = 256
+
+      renderer.current.domElement.width = snapSize
+      renderer.current.domElement.height = snapSize
+
+      camera.current.aspect = 1
+      camera.current.updateProjectionMatrix()
+
+      renderer.current.clear()
+      renderer.current.setViewport(0, 0, snapSize, snapSize)
+      renderer.current.render(scene.current, camera.current)
+
+      const image = renderer.current.domElement.toDataURL()
+
+      // Resize
+      renderer.current.domElement.width = initialWidth
+      renderer.current.domElement.height = initialHeight
+
+      camera.current.aspect = initialAspect
+      camera.current.updateProjectionMatrix()
+
+      // API
+      await AvatarAPI.add(
+        {
+          name: 'snapshot',
+          uid: 'snapshot_' + v4(),
+          data: image
+        },
+        project
+      )
+    } catch (err) {
+      Error('Snapshot error', err)
+    } finally {
+      setScreenshot(false)
+    }
+  }
+
+  /**
    * Render
    */
   return (
@@ -593,6 +647,13 @@ const ThreeView = ({ loading, part }) => {
             justifyContent: 'flex-end'
           }}
         >
+          <Tooltip title="Take snasphot">
+            <Button
+              loading={screenshot}
+              icon={<FundProjectionScreenOutlined />}
+              onClick={takeScreenshot}
+            />
+          </Tooltip>
           <Tooltip title="Display grid">
             <Switch
               defaultChecked
@@ -728,7 +789,14 @@ const ThreeView = ({ loading, part }) => {
           style={{ display: loading ? 'flex' : 'none' }}
           className="View-loading"
         >
-          <Spin indicator={<LoadingOutlined style={{ fontSize: 60 }} spin />} />
+          <Spin
+            indicator={
+              <LoadingOutlined
+                style={{ fontSize: 60, color: '#fad114' }}
+                spin
+              />
+            }
+          />
         </div>
         <div ref={mount} className="View-canvas" />
       </Layout.Content>
@@ -740,7 +808,7 @@ const ThreeView = ({ loading, part }) => {
  * View
  * @param {Object} Props props
  */
-const View = ({ simulation, setPartSummary }) => {
+const View = ({ project, simulation, setPartSummary }) => {
   // State
   const [part, setPart] = useState()
   const [loading, setLoading] = useState(false)
@@ -824,7 +892,7 @@ const View = ({ simulation, setPartSummary }) => {
   /**
    * Render
    */
-  return <ThreeView loading={loading} part={part} />
+  return <ThreeView loading={loading} project={project} part={part} />
 }
 
 export default View

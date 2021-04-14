@@ -20,7 +20,11 @@ export default async (req, res) => {
     case 'POST':
       // Add avatar
       try {
-        const avatar = await AvatarLib.add({ id: sessionId }, req.body)
+        const avatar = await AvatarLib.add(
+          req.body.project || { id: sessionId },
+          req.body.project ? 'project' : 'user',
+          req.body.file
+        )
         res.status(200).json(avatar)
       } catch (err) {
         console.error(err)

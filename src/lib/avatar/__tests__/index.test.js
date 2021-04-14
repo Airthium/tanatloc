@@ -61,10 +61,11 @@ describe('lib/avatar', () => {
   it('add', async () => {
     let avatar
 
-    avatar = await Avatar.add(
-      { id: 'id' },
-      { name: 'name', uid: 'uid', data: 'data' }
-    )
+    avatar = await Avatar.add({ id: 'id' }, 'user', {
+      name: 'name',
+      uid: 'uid',
+      data: 'data'
+    })
     expect(mockPath).toHaveBeenCalledTimes(0)
     expect(mockAdd).toHaveBeenCalledTimes(1)
     expect(mockGet).toHaveBeenCalledTimes(0)
@@ -80,10 +81,11 @@ describe('lib/avatar', () => {
     mockGetUser.mockImplementation(() => ({
       avatar: 'avatar'
     }))
-    avatar = await Avatar.add(
-      { id: 'id' },
-      { name: 'name', uid: 'uid', data: 'data' }
-    )
+    avatar = await Avatar.add({ id: 'id' }, 'user', {
+      name: 'name',
+      uid: 'uid',
+      data: 'data'
+    })
     expect(mockPath).toHaveBeenCalledTimes(1)
     expect(mockAdd).toHaveBeenCalledTimes(2)
     expect(mockGet).toHaveBeenCalledTimes(1)
@@ -128,7 +130,7 @@ describe('lib/avatar', () => {
 
   it('del', async () => {
     // With path
-    await Avatar.del({ id: 'id' }, 'id')
+    await Avatar.del({ id: 'id' }, 'user', 'id')
     expect(mockPath).toHaveBeenCalledTimes(1)
     expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockGet).toHaveBeenCalledTimes(1)
@@ -141,7 +143,7 @@ describe('lib/avatar', () => {
 
     // Without path
     mockGet.mockImplementation(() => ({}))
-    await Avatar.del({ id: 'id' }, 'id')
+    await Avatar.del({ id: 'id' }, 'user', 'id')
     expect(mockPath).toHaveBeenCalledTimes(1)
     expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockGet).toHaveBeenCalledTimes(2)

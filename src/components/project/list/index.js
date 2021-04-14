@@ -41,7 +41,8 @@ const ProjectList = ({
       key: 'snapshot',
       onCell: (project) => ({
         onClick: () => openProject(project)
-      })
+      }),
+      align: 'center'
     },
     {
       title: 'Project',

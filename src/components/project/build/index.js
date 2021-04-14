@@ -22,7 +22,7 @@ const Build = (project, filter, setTitle, setDescription) => {
   // Snapshot
   const snapshot = project.avatar ? (
     <img
-      src={project && project.avatar}
+      src={project && Buffer.from(project.avatar).toString()}
       width="100"
       height="100"
       style={{ cursor: 'pointer' }}
@@ -31,7 +31,6 @@ const Build = (project, filter, setTitle, setDescription) => {
     <Empty
       image={Empty.PRESENTED_IMAGE_SIMPLE}
       description={'No preview yet.'}
-      imageStyle={{ width: 100 }}
       style={{ cursor: 'pointer' }}
     />
   )

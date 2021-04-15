@@ -229,6 +229,7 @@ class MockVector3 {
 class MockWebGLRenderer {
   constructor() {
     this.domElement = document.createElement('div')
+    this.domElement.toDataURL = jest.fn
     this.setClearColor = () => {}
     this.setSize = () => {}
     this.setPixelRatio = () => {}

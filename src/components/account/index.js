@@ -70,7 +70,7 @@ const Account = ({ user, swr }) => {
 }
 
 Account.propTypes = {
-  user: PropTypes.shape({
+  user: PropTypes.exact({
     email: PropTypes.string.isRequired,
     firstname: PropTypes.string,
     lastname: PropTypes.string,

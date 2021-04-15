@@ -62,11 +62,16 @@ jest.mock('@/components/dashboard/welcome', () => {
 
 const mockUser = jest.fn()
 const mockMutateUser = jest.fn()
+const mockErrorUser = jest.fn()
 const mockLoadingUser = jest.fn()
 jest.mock('@/api/user', () => ({
   useUser: () => [
     mockUser(),
-    { mutateUser: mockMutateUser, loadingUser: mockLoadingUser() }
+    {
+      mutateUser: mockMutateUser,
+      errorUser: mockErrorUser(),
+      loadingUser: mockLoadingUser()
+    }
   ]
 }))
 
@@ -75,6 +80,7 @@ const mockReloadOrganizations = jest.fn()
 const mockAddOneOrganization = jest.fn()
 const mockDelOneOrganization = jest.fn()
 const mockMutateOneOrganization = jest.fn()
+const mockErrorOrganizations = jest.fn()
 const mockLoadingOrganizations = jest.fn()
 jest.mock('@/api/organization', () => ({
   useOrganizations: () => [
@@ -84,6 +90,7 @@ jest.mock('@/api/organization', () => ({
       addOneOrganization: mockAddOneOrganization,
       delOneOrganization: mockDelOneOrganization,
       mutateOnOrganization: mockMutateOneOrganization,
+      errorOrganizations: mockErrorOrganizations(),
       loadingOrganizations: mockLoadingOrganizations()
     }
   ]
@@ -93,13 +100,15 @@ const mockWorkspaces = jest.fn()
 const mockAddOneWorkspace = jest.fn()
 const mockDelOneWorkspace = jest.fn()
 const mockMutateOneWorkspace = jest.fn()
+const mockErrorWorkspaces = jest.fn()
 jest.mock('@/api/workspace', () => ({
   useWorkspaces: () => [
     mockWorkspaces(),
     {
       addOneWorkspace: mockAddOneWorkspace,
       delOneWorkspace: mockDelOneWorkspace,
-      mutateOneWorkspace: mockMutateOneWorkspace
+      mutateOneWorkspace: mockMutateOneWorkspace,
+      errorWorkspaces: mockErrorWorkspaces()
     }
   ]
 }))
@@ -120,6 +129,7 @@ describe('components/dashboard', () => {
     mockUser.mockReset()
     mockUser.mockImplementation(() => ({ id: 'id', superuser: true }))
     mockMutateUser.mockReset()
+    mockErrorUser.mockReset()
     mockLoadingUser.mockReset()
 
     mockOrganizations.mockReset()
@@ -127,6 +137,7 @@ describe('components/dashboard', () => {
     mockAddOneOrganization.mockReset()
     mockDelOneOrganization.mockReset()
     mockMutateOneOrganization.mockReset()
+    mockErrorOrganizations.mockReset()
     mockLoadingOrganizations.mockReset()
 
     mockWorkspaces.mockReset()
@@ -134,6 +145,7 @@ describe('components/dashboard', () => {
     mockAddOneWorkspace.mockReset()
     mockDelOneWorkspace.mockReset()
     mockMutateOneWorkspace.mockReset()
+    mockErrorWorkspaces.mockReset()
 
     mockLogout.mockReset()
 
@@ -241,6 +253,32 @@ describe('components/dashboard', () => {
     wrapper.find('SubMenu').at(1).props().onTitleClick()
   })
 
+  it('effect page', () => {
+    wrapper.unmount()
+    jest.spyOn(URLSearchParams.prototype, 'get').mockImplementation((key) => {
+      if (key === 'page') return 'shared'
+      else return
+    })
+    wrapper = mount(<Dashboard />)
+
+    wrapper.unmount()
+    jest.spyOn(URLSearchParams.prototype, 'get').mockImplementation((key) => {
+      if (key === 'page') return 'shared'
+      else if (key === 'workspaceId') return 'id'
+      else return
+    })
+    wrapper = mount(<Dashboard />)
+  })
+
+  it('effect error', () => {
+    wrapper.unmount()
+    mockErrorUser.mockImplementation(() => ({ message: 'Error' }))
+    mockErrorOrganizations.mockImplementation(() => ({ message: 'Error' }))
+    mockErrorWorkspaces.mockImplementation(() => ({ message: 'Error' }))
+    wrapper = mount(<Dashboard />)
+    expect(mockError).toHaveBeenCalledTimes(6)
+  })
+
   it('effect', () => {
     // No user
     wrapper.unmount()
@@ -286,84 +324,4 @@ describe('components/dashboard', () => {
     // On shared workspaces
     wrapper.find('SubMenu').at(2).props().onTitleClick()
   })
-
-  // it('effect with router', () => {
-  //   wrapper.unmount()
-  //   mockUser.mockImplementation(() => ({ id: 'id', groups: [{ id: 'id' }] }))
-  //   mockWorkspaces.mockImplementation(() => [
-  //     { id: 'id1', owners: [{ id: 'id' }] },
-  //     { id: 'id2', users: [{ id: 'id' }] },
-  //     { id: 'id3', groups: [{ id: 'id' }] }
-  //   ])
-
-  //   // My workspaces
-  //   mockQuery.mockImplementation(() => ({
-  //     workspaceId: 'id1'
-  //   }))
-  //   wrapper = mount(<Dashboard />)
-
-  //   // Shared workspaces
-  //   wrapper.unmount()
-  //   mockQuery.mockImplementation(() => ({
-  //     workspaceId: 'id2'
-  //   }))
-  //   wrapper = mount(<Dashboard />)
-
-  //   // Page
-  //   wrapper.unmount()
-  //   mockQuery.mockImplementation(() => ({
-  //     page: 'organizations'
-  //   }))
-  //   wrapper = mount(<Dashboard />)
-
-  //   // Without user & organizations
-  //   wrapper.unmount()
-  //   mockUser.mockImplementation(() => {})
-  //   mockOrganizations.mockImplementation(() => [])
-  //   mockQuery.mockImplementation(() => ({
-  //     page: 'account'
-  //   }))
-  //   wrapper = mount(<Dashboard />)
-
-  //   wrapper.unmount()
-  //   mockQuery.mockImplementation(() => ({
-  //     page: 'organizations'
-  //   }))
-  //   wrapper = mount(<Dashboard />)
-  // })
-
-  // it('effect workspace update', () => {
-  //   wrapper.unmount()
-  //   const name = jest.fn(() => 'name')
-  //   mockUser.mockImplementation(() => ({ id: 'id' }))
-  //   mockWorkspaces.mockImplementation(() => [
-  //     { id: 'id', name: name(), owners: [{ id: 'id' }] }
-  //   ])
-  //   wrapper = mount(<Dashboard />)
-
-  //   act(() =>
-  //     wrapper
-  //       .find('Menu')
-  //       .at(1)
-  //       .props()
-  //       .onClick({
-  //         item: { props: { subMenuKey: 'my_workspaces-menu-' } },
-  //         key: 'id'
-  //       })
-  //   )
-
-  //   // Update name
-  //   name.mockImplementation(() => 'new_name')
-
-  //   act(() =>
-  //     wrapper
-  //       .find('Menu')
-  //       .at(1)
-  //       .props()
-  //       .onClick({
-  //         item: { props: { subMenuKey: 'my_workspaces-menu-' } },
-  //         key: 'id'
-  //       })
-  //   )
-  // })
 })

@@ -30,7 +30,7 @@ const add = async (parent, type, file) => {
 
     // Update user
     await User.update(parent, [{ key: 'avatar', value: avatar.id }])
-  } else if (type === 'project') {
+  } else {
     // Check existing avatar in project, if exists: delete
     const projectData = await Project.get(parent.id, ['avatar'], false)
     if (projectData.avatar) await del(parent, type, projectData.avatar)
@@ -93,7 +93,7 @@ const del = async (parent, type, id) => {
         value: null
       }
     ])
-  } else if (type === 'project') {
+  } else {
     // Update project
     await Project.update(parent, [
       {

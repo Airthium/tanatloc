@@ -331,11 +331,19 @@ const Dashboard = () => {
               />
             )}
             {currentKey === menuItems.account.key && (
-              <Account user={user || {}} swr={{ mutateUser }} />
+              <Account
+                user={{
+                  email: user?.email,
+                  firstname: user?.firstname,
+                  lastname: user?.lastname,
+                  avatar: user?.avatar
+                }}
+                swr={{ mutateUser }}
+              />
             )}
             {currentKey === menuItems.organizations.key && (
               <Organizations
-                user={user || {}}
+                user={{ id: user?.id }}
                 organizations={organizations || []}
                 swr={{
                   reloadOrganizations,

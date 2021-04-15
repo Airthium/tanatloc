@@ -85,7 +85,7 @@ const Organizations = ({ user, organizations, swr }) => {
 }
 
 Organizations.propTypes = {
-  user: PropTypes.shape({
+  user: PropTypes.exact({
     id: PropTypes.string.isRequired
   }).isRequired,
   organizations: PropTypes.array.isRequired,

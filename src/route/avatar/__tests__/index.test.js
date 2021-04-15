@@ -64,13 +64,22 @@ describe('route/avatar', () => {
     expect(mockError).toHaveBeenCalledTimes(0)
     expect(response).toBe('avatar')
 
+    // With project
+    req.body.project = {}
+    await avatar(req, res)
+    expect(mockSession).toHaveBeenCalledTimes(2)
+    expect(mockAdd).toHaveBeenCalledTimes(2)
+    expect(mockDel).toHaveBeenCalledTimes(0)
+    expect(mockError).toHaveBeenCalledTimes(0)
+    expect(response).toBe('avatar')
+
     // Error
     mockAdd.mockImplementation(() => {
       throw new Error('test')
     })
     await avatar(req, res)
-    expect(mockSession).toHaveBeenCalledTimes(2)
-    expect(mockAdd).toHaveBeenCalledTimes(2)
+    expect(mockSession).toHaveBeenCalledTimes(3)
+    expect(mockAdd).toHaveBeenCalledTimes(3)
     expect(mockDel).toHaveBeenCalledTimes(0)
     expect(mockError).toHaveBeenCalledTimes(1)
     expect(response).toEqual({ error: true, message: 'test' })

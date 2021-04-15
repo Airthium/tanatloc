@@ -197,7 +197,8 @@ describe('components/project/simulation/run', () => {
 
     // Error
     await act(
-      async () => await wrapper.find({ size: 'small' }).at(3).props().onClick()
+      async () =>
+        await wrapper.find({ size: 'small' }).at(3).props().onClick('res')
     )
     wrapper.update()
     expect(mockDownloadGet).toHaveBeenCalledTimes(1)
@@ -210,7 +211,8 @@ describe('components/project/simulation/run', () => {
       createObjectURL: () => 'object'
     }
     await act(
-      async () => await wrapper.find({ size: 'small' }).at(3).props().onClick()
+      async () =>
+        await wrapper.find({ size: 'small' }).at(3).props().onClick('res')
     )
     wrapper.update()
     expect(mockDownloadGet).toHaveBeenCalledTimes(2)

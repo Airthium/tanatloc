@@ -14,6 +14,11 @@ jest.mock('react', () => ({
   useState: jest.fn()
 }))
 
+const mockError = jest.fn()
+jest.mock('@/components/assets/notification', () => ({
+  Error: () => mockError()
+}))
+
 jest.mock('three/examples/jsm/postprocessing/RenderPass', () => ({
   RenderPass: class MockRenderPass {}
 }))
@@ -232,6 +237,8 @@ window.setTimeout = (callback) => {
 let wrapper
 describe('components/project/view', () => {
   beforeEach(() => {
+    mockError.mockReset()
+
     mockGet.mockReset()
     mockState = false
     wrapper = mount(<View />)

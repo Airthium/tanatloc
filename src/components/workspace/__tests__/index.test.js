@@ -1,5 +1,5 @@
 import Workspace from '..'
-import { shallow } from 'enzyme'
+import { shallow, mount } from 'enzyme'
 
 jest.mock('@/components/assets/share', () => {
   const Share = () => <div />
@@ -38,6 +38,25 @@ jest.mock('@/api/workspace', () => ({
   update: async () => mockUpdate()
 }))
 
+const mockProjects = jest.fn()
+const mockAddOneProject = jest.fn()
+const mockDelOneProject = jest.fn()
+const mockMutateOneProject = jest.fn()
+const mockErrorProjects = jest.fn()
+const mockLoadingProjects = jest.fn()
+jest.mock('@/api/project', () => ({
+  useProjects: () => [
+    mockProjects(),
+    {
+      addOneProject: mockAddOneProject,
+      delOneProject: mockDelOneProject,
+      mutateOneProject: mockMutateOneProject,
+      errorProjects: mockErrorProjects(),
+      loadingProjects: mockLoadingProjects()
+    }
+  ]
+}))
+
 let wrapper
 describe('components/workspace', () => {
   const user = {}
@@ -54,6 +73,14 @@ describe('components/workspace', () => {
     mockGroupToAvatar.mockReset()
 
     mockUpdate.mockReset()
+
+    mockProjects.mockReset()
+    mockProjects.mockImplementation(() => [])
+    mockAddOneProject.mockReset()
+    mockDelOneProject.mockReset()
+    mockMutateOneProject.mockReset()
+    mockErrorProjects.mockReset()
+    mockLoadingProjects.mockReset()
 
     wrapper = shallow(
       <Workspace
@@ -133,5 +160,31 @@ describe('components/workspace', () => {
       />
     )
     expect(wrapper.find('.Workspace-share').length).toBe(1)
+  })
+
+  it('effect', () => {
+    wrapper.unmount()
+    wrapper = mount(
+      <Workspace
+        user={user}
+        workspace={workspace}
+        organizations={organizations}
+        swr={swr}
+      />
+    )
+    expect(wrapper).toBeDefined()
+
+    // With error
+    wrapper.unmount()
+    mockErrorProjects.mockImplementation(() => ({ message: 'Error' }))
+    wrapper = mount(
+      <Workspace
+        user={user}
+        workspace={workspace}
+        organizations={organizations}
+        swr={swr}
+      />
+    )
+    expect(mockError).toHaveBeenCalledTimes(1)
   })
 })

@@ -287,83 +287,83 @@ describe('components/dashboard', () => {
     wrapper.find('SubMenu').at(2).props().onTitleClick()
   })
 
-  it('effect with router', () => {
-    wrapper.unmount()
-    mockUser.mockImplementation(() => ({ id: 'id', groups: [{ id: 'id' }] }))
-    mockWorkspaces.mockImplementation(() => [
-      { id: 'id1', owners: [{ id: 'id' }] },
-      { id: 'id2', users: [{ id: 'id' }] },
-      { id: 'id3', groups: [{ id: 'id' }] }
-    ])
+  // it('effect with router', () => {
+  //   wrapper.unmount()
+  //   mockUser.mockImplementation(() => ({ id: 'id', groups: [{ id: 'id' }] }))
+  //   mockWorkspaces.mockImplementation(() => [
+  //     { id: 'id1', owners: [{ id: 'id' }] },
+  //     { id: 'id2', users: [{ id: 'id' }] },
+  //     { id: 'id3', groups: [{ id: 'id' }] }
+  //   ])
 
-    // My workspaces
-    mockQuery.mockImplementation(() => ({
-      workspaceId: 'id1'
-    }))
-    wrapper = mount(<Dashboard />)
+  //   // My workspaces
+  //   mockQuery.mockImplementation(() => ({
+  //     workspaceId: 'id1'
+  //   }))
+  //   wrapper = mount(<Dashboard />)
 
-    // Shared workspaces
-    wrapper.unmount()
-    mockQuery.mockImplementation(() => ({
-      workspaceId: 'id2'
-    }))
-    wrapper = mount(<Dashboard />)
+  //   // Shared workspaces
+  //   wrapper.unmount()
+  //   mockQuery.mockImplementation(() => ({
+  //     workspaceId: 'id2'
+  //   }))
+  //   wrapper = mount(<Dashboard />)
 
-    // Page
-    wrapper.unmount()
-    mockQuery.mockImplementation(() => ({
-      page: 'organizations'
-    }))
-    wrapper = mount(<Dashboard />)
+  //   // Page
+  //   wrapper.unmount()
+  //   mockQuery.mockImplementation(() => ({
+  //     page: 'organizations'
+  //   }))
+  //   wrapper = mount(<Dashboard />)
 
-    // Without user & organizations
-    wrapper.unmount()
-    mockUser.mockImplementation(() => {})
-    mockOrganizations.mockImplementation(() => [])
-    mockQuery.mockImplementation(() => ({
-      page: 'account'
-    }))
-    wrapper = mount(<Dashboard />)
+  //   // Without user & organizations
+  //   wrapper.unmount()
+  //   mockUser.mockImplementation(() => {})
+  //   mockOrganizations.mockImplementation(() => [])
+  //   mockQuery.mockImplementation(() => ({
+  //     page: 'account'
+  //   }))
+  //   wrapper = mount(<Dashboard />)
 
-    wrapper.unmount()
-    mockQuery.mockImplementation(() => ({
-      page: 'organizations'
-    }))
-    wrapper = mount(<Dashboard />)
-  })
+  //   wrapper.unmount()
+  //   mockQuery.mockImplementation(() => ({
+  //     page: 'organizations'
+  //   }))
+  //   wrapper = mount(<Dashboard />)
+  // })
 
-  it('effect workspace update', () => {
-    wrapper.unmount()
-    const name = jest.fn(() => 'name')
-    mockUser.mockImplementation(() => ({ id: 'id' }))
-    mockWorkspaces.mockImplementation(() => [
-      { id: 'id', name: name(), owners: [{ id: 'id' }] }
-    ])
-    wrapper = mount(<Dashboard />)
+  // it('effect workspace update', () => {
+  //   wrapper.unmount()
+  //   const name = jest.fn(() => 'name')
+  //   mockUser.mockImplementation(() => ({ id: 'id' }))
+  //   mockWorkspaces.mockImplementation(() => [
+  //     { id: 'id', name: name(), owners: [{ id: 'id' }] }
+  //   ])
+  //   wrapper = mount(<Dashboard />)
 
-    act(() =>
-      wrapper
-        .find('Menu')
-        .at(1)
-        .props()
-        .onClick({
-          item: { props: { subMenuKey: 'my_workspaces-menu-' } },
-          key: 'id'
-        })
-    )
+  //   act(() =>
+  //     wrapper
+  //       .find('Menu')
+  //       .at(1)
+  //       .props()
+  //       .onClick({
+  //         item: { props: { subMenuKey: 'my_workspaces-menu-' } },
+  //         key: 'id'
+  //       })
+  //   )
 
-    // Update name
-    name.mockImplementation(() => 'new_name')
+  //   // Update name
+  //   name.mockImplementation(() => 'new_name')
 
-    act(() =>
-      wrapper
-        .find('Menu')
-        .at(1)
-        .props()
-        .onClick({
-          item: { props: { subMenuKey: 'my_workspaces-menu-' } },
-          key: 'id'
-        })
-    )
-  })
+  //   act(() =>
+  //     wrapper
+  //       .find('Menu')
+  //       .at(1)
+  //       .props()
+  //       .onClick({
+  //         item: { props: { subMenuKey: 'my_workspaces-menu-' } },
+  //         key: 'id'
+  //       })
+  //   )
+  // })
 })

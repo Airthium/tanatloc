@@ -12,18 +12,29 @@ jest.mock('next/router', () => ({
   })
 }))
 
-jest.mock('@/components/loading', () => 'loading')
+jest.mock('@/components/loading', () => {
+  const Loading = () => <div />
+  return Loading
+})
 
-// jest.mock('@/components/background', () => 'background')
+const mockError = jest.fn()
+jest.mock('@/components/assets/notification', () => ({
+  Error: () => mockError()
+}))
 
 const mockLogin = jest.fn()
 jest.mock('@/api/login', () => async () => mockLogin())
 
 const mockUser = jest.fn()
 const mockUserLoading = jest.fn()
+const mockErrorUser = jest.fn()
 jest.mock('@/api/user/useUser', () => () => [
   mockUser(),
-  { mutateUser: () => {}, loadingUser: mockUserLoading() }
+  {
+    mutateUser: () => {},
+    errorUser: mockErrorUser(),
+    loadingUser: mockUserLoading()
+  }
 ])
 
 let wrapper
@@ -31,10 +42,16 @@ describe('components/login', () => {
   beforeEach(() => {
     mockPrefetch.mockReset()
     mockPush.mockReset()
+
+    mockError.mockReset()
+
     mockLogin.mockReset()
+
     mockUser.mockReset()
     mockUserLoading.mockReset()
     mockUserLoading.mockImplementation(() => false)
+    mockErrorUser.mockReset()
+
     wrapper = shallow(<Login />)
   })
 
@@ -51,7 +68,7 @@ describe('components/login', () => {
 
     mockUserLoading.mockImplementation(() => true)
     wrapper = shallow(<Login />)
-    expect(wrapper.find('loading').length).toBe(1)
+    expect(wrapper.find('Loading').length).toBe(1)
   })
 
   it('user effect', () => {
@@ -60,10 +77,13 @@ describe('components/login', () => {
     expect(mockPush).toHaveBeenCalledTimes(0)
     mWrapper.unmount()
 
+    // With user & error
     mockUser.mockImplementation(() => ({ user: { id: 'id' } }))
+    mockErrorUser.mockImplementation(() => ({ message: 'Error' }))
     mWrapper = mount(<Login />)
     expect(mockPrefetch).toHaveBeenCalledTimes(4)
     expect(mockPush).toHaveBeenCalledTimes(1)
+    expect(mockError).toHaveBeenCalledTimes(1)
     mWrapper.unmount()
   })
 

@@ -16,7 +16,15 @@ jest.mock('@/components/assets/input', () => ({
   PasswordItem: 'passwordItem'
 }))
 
-jest.mock('@/components/loading', () => 'loading')
+const mockError = jest.fn()
+jest.mock('@/components/assets/notification', () => ({
+  Error: () => mockError()
+}))
+
+jest.mock('@/components/loading', () => {
+  const Loading = () => <div />
+  return Loading
+})
 
 const mockLogin = jest.fn()
 jest.mock('@/api/login', () => async () => mockLogin())
@@ -25,17 +33,26 @@ const mockUser = jest.fn()
 const mockLoading = jest.fn()
 const mockMutate = jest.fn()
 const mockAdd = jest.fn()
+const mockErrorUser = jest.fn()
 jest.mock('@/api/user', () => ({
   useUser: () => [
     mockUser(),
-    { loadingUser: mockLoading(), mutateUser: mockMutate }
+    {
+      loadingUser: mockLoading(),
+      mutateUser: mockMutate,
+      errorUser: mockErrorUser()
+    }
   ],
   add: async () => mockAdd()
 }))
 
 const mockSystem = jest.fn()
+const mockErrorSystem = jest.fn()
 jest.mock('@/api/system', () => ({
-  useSystem: () => [mockSystem(), { loadingSystem: false }]
+  useSystem: () => [
+    mockSystem(),
+    { loadingSystem: false, errorSystem: mockErrorSystem() }
+  ]
 }))
 
 let wrapper
@@ -43,15 +60,23 @@ describe('components/signup', () => {
   beforeEach(() => {
     mockPrefetch.mockReset()
     mockPush.mockReset()
+
+    mockError.mockReset()
+
     mockUser.mockReset()
     mockLoading.mockReset()
     mockMutate.mockReset()
     mockAdd.mockReset()
+    mockErrorUser.mockReset()
+
     mockLogin.mockReset()
+
     mockSystem.mockReset()
     mockSystem.mockImplementation(() => ({
       allowsignup: true
     }))
+    mockErrorSystem.mockReset()
+
     wrapper = shallow(<Signup />)
   })
 
@@ -143,14 +168,19 @@ describe('components/signup', () => {
     expect(mockPrefetch).toHaveBeenCalledTimes(2)
     expect(mockPush).toHaveBeenCalledTimes(0)
 
+    // No signup, errors
     wrapper.unmount()
     mockSystem.mockImplementation(async () => ({
       allowsignup: false
     }))
+    mockErrorUser.mockImplementation(() => ({ message: 'Error' }))
+    mockErrorSystem.mockImplementation(() => ({ message: 'Error' }))
     wrapper = mount(<Signup />)
     expect(mockPrefetch).toHaveBeenCalledTimes(4)
     expect(mockPush).toHaveBeenCalledTimes(0)
+    expect(mockError).toHaveBeenCalledTimes(2)
 
+    // Already user
     wrapper.unmount()
     mockUser.mockImplementation(() => ({}))
     wrapper = mount(<Signup />)

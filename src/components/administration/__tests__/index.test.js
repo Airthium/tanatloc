@@ -1,5 +1,5 @@
 import Administration from '..'
-import { shallow } from 'enzyme'
+import { shallow, mount } from 'enzyme'
 
 const mockReplace = jest.fn()
 const mockQuery = jest.fn()
@@ -8,6 +8,11 @@ jest.mock('next/router', () => ({
     replace: () => mockReplace(),
     query: mockQuery()
   })
+}))
+
+const mockError = jest.fn()
+jest.mock('@/components/assets/notification', () => ({
+  Error: () => mockError()
 }))
 
 jest.mock('../users', () => {
@@ -27,13 +32,15 @@ const mockUsers = jest.fn()
 const mockAddOneUser = jest.fn()
 const mockMutateOneUser = jest.fn()
 const mockdDelOneUser = jest.fn()
+const mockErrorUser = jest.fn()
 jest.mock('@/api/user', () => ({
   useUsers: () => [
     mockUsers(),
     {
       addOneUser: mockAddOneUser,
       mutateOneUser: mockMutateOneUser,
-      delOneUser: mockdDelOneUser
+      delOneUser: mockdDelOneUser,
+      errorUsers: mockErrorUser()
     }
   ]
 }))
@@ -45,10 +52,13 @@ describe('components/administration', () => {
     mockQuery.mockReset()
     mockQuery.mockImplementation(() => ({ tab: 'tab' }))
 
+    mockError.mockReset()
+
     mockUsers.mockReset()
     mockAddOneUser.mockReset()
     mockMutateOneUser.mockReset()
     mockdDelOneUser.mockReset()
+    mockErrorUser.mockReset()
 
     wrapper = shallow(<Administration />)
   })
@@ -66,5 +76,17 @@ describe('components/administration', () => {
     wrapper.unmount()
     mockQuery.mockImplementation(() => ({}))
     wrapper = shallow(<Administration />)
+  })
+
+  it('effect', () => {
+    wrapper.unmount()
+    wrapper = mount(<Administration />)
+    expect(wrapper).toBeDefined()
+
+    // With error
+    wrapper.unmount()
+    mockErrorUser.mockImplementation(() => ({ message: 'Error' }))
+    wrapper = mount(<Administration />)
+    expect(mockError).toHaveBeenCalledTimes(1)
   })
 })

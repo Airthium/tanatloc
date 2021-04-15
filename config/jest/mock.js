@@ -234,6 +234,7 @@ class MockWebGLRenderer {
     this.setPixelRatio = () => {}
     this.setViewport = () => {}
     this.render = () => {}
+    this.clear = () => {}
   }
 }
 

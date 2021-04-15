@@ -10,6 +10,11 @@ jest.mock('@/components/assets/group', () => {
   return Group
 })
 
+const mockError = jest.fn()
+jest.mock('@/components/assets/notification', () => ({
+  Error: () => mockError()
+}))
+
 const mockUserToAvatar = jest.fn()
 jest.mock('@/lib/utils', () => ({
   userToAvatar: () => mockUserToAvatar()
@@ -19,6 +24,7 @@ const mockGroups = jest.fn()
 const mockAddOneGroup = jest.fn()
 const mockMutateOneGroup = jest.fn()
 const mockDelOneGroup = jest.fn()
+const mockErrorGroups = jest.fn()
 const mockLoadingGroups = false
 jest.mock('@/api/group', () => ({
   useGroups: () => [
@@ -27,6 +33,7 @@ jest.mock('@/api/group', () => ({
       addOneGroup: mockAddOneGroup,
       mutateOneGroup: mockMutateOneGroup,
       delOneGroup: mockDelOneGroup,
+      errorGroups: mockErrorGroups(),
       loadingGroups: mockLoadingGroups
     }
   ]
@@ -43,6 +50,8 @@ describe('components/assets/organization/groups', () => {
   }
 
   beforeEach(() => {
+    mockError.mockReset()
+
     mockUserToAvatar.mockReset()
 
     mockGroups.mockReset()
@@ -79,7 +88,7 @@ describe('components/assets/organization/groups', () => {
     columns[2].render(null, [{}])
   })
 
-  it('userOptions', () => {
+  it('effect', () => {
     wrapper.unmount()
     wrapper = mount(
       <Groups
@@ -101,5 +110,11 @@ describe('components/assets/organization/groups', () => {
       />
     )
     expect(wrapper).toBeDefined()
+
+    // Error
+    wrapper.unmount()
+    mockErrorGroups.mockImplementation(() => ({ message: 'Error' }))
+    wrapper = mount(<Groups organization={organization} swr={swr} />)
+    expect(mockError).toHaveBeenCalledTimes(2)
   })
 })

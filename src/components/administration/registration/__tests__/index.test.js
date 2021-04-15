@@ -3,33 +3,39 @@ import { shallow, mount } from 'enzyme'
 
 import '@/config/jest/mockMatchMedia'
 
-const mockSystem = jest.fn()
-const mockMutateSystem = jest.fn()
-const mockLoadingSystem = jest.fn()
-const mockUpdate = jest.fn()
-jest.mock('@/api/system', () => ({
-  useSystem: () => [
-    mockSystem(),
-    { mutateSystem: mockMutateSystem, loadingSystem: mockLoadingSystem() }
-  ],
-  update: async () => mockUpdate()
-}))
-
 const mockError = jest.fn()
 jest.mock('@/components/assets/notification', () => ({
   Error: () => mockError()
 }))
 
+const mockSystem = jest.fn()
+const mockMutateSystem = jest.fn()
+const mockErrorSystem = jest.fn()
+const mockLoadingSystem = jest.fn()
+const mockUpdate = jest.fn()
+jest.mock('@/api/system', () => ({
+  useSystem: () => [
+    mockSystem(),
+    {
+      mutateSystem: mockMutateSystem,
+      errorSystem: mockErrorSystem(),
+      loadingSystem: mockLoadingSystem()
+    }
+  ],
+  update: async () => mockUpdate()
+}))
+
 let wrapper
 describe('components/administration/registration', () => {
   beforeEach(() => {
+    mockError.mockReset()
+
     mockSystem.mockReset()
     mockSystem.mockImplementation(() => ({}))
     mockMutateSystem.mockReset()
     mockLoadingSystem.mockReset()
+    mockErrorSystem.mockReset()
     mockUpdate.mockReset()
-
-    mockError.mockReset()
 
     wrapper = shallow(<Registration />)
   })
@@ -80,5 +86,11 @@ describe('components/administration/registration', () => {
     wrapper.unmount()
     wrapper = mount(<Registration />)
     expect(wrapper).toBeDefined()
+
+    // Error
+    wrapper.unmount()
+    mockErrorSystem.mockImplementation(() => ({ message: 'Error' }))
+    wrapper = mount(<Registration />)
+    expect(mockError).toHaveBeenCalledTimes(1)
   })
 })

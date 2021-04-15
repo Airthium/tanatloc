@@ -1,5 +1,10 @@
 import Plugin from '..'
-import { shallow } from 'enzyme'
+import { shallow, mount } from 'enzyme'
+
+const mockError = jest.fn()
+jest.mock('@/components/assets/notification', () => ({
+  Error: () => mockError()
+}))
 
 jest.mock('../dialog', () => {
   const PluginDialog = () => <div />
@@ -15,6 +20,7 @@ const mockPlugins = jest.fn()
 const mockAddOnePlugin = jest.fn()
 const mockDelOnePlugin = jest.fn()
 const mockMutateOnePlugin = jest.fn()
+const mockErrorPlugins = jest.fn()
 const mockLoadingPlugins = jest.fn()
 jest.mock('@/api/plugin', () => ({
   usePlugins: () => [
@@ -23,6 +29,7 @@ jest.mock('@/api/plugin', () => ({
       addOnePlugin: mockAddOnePlugin,
       delOnePlugin: mockDelOnePlugin,
       mutateOnePlugin: mockMutateOnePlugin,
+      errorPlugins: mockErrorPlugins(),
       loadingPlugins: mockLoadingPlugins()
     }
   ]
@@ -33,6 +40,8 @@ describe('component/account/hpc/plugin', () => {
   const plugin = { key: 'key' }
 
   beforeEach(() => {
+    mockError.mockReset()
+
     mockPlugins.mockReset()
     mockAddOnePlugin.mockReset()
     mockDelOnePlugin.mockReset()
@@ -55,5 +64,16 @@ describe('component/account/hpc/plugin', () => {
     mockLoadingPlugins.mockImplementation(() => true)
     wrapper = shallow(<Plugin plugin={plugin} />)
     expect(wrapper.find('Spin').length).toBe(1)
+  })
+
+  it('effect', () => {
+    wrapper.unmount()
+    wrapper = mount(<Plugin plugin={plugin} />)
+
+    // With error
+    mockErrorPlugins.mockImplementation(() => ({ message: 'Error' }))
+    wrapper.unmount()
+    wrapper = mount(<Plugin plugin={plugin} />)
+    expect(mockError).toHaveBeenCalledTimes(1)
   })
 })

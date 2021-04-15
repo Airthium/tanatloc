@@ -43,6 +43,7 @@ const Add = ({ swr }) => {
       swr.addOneOrganization(organization)
 
       // Close
+      setLoading(false)
       setVisible(false)
     } catch (err) {
       Error(errors.addError, err)

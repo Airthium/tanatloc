@@ -22,7 +22,7 @@ const Organizations = ({ user, organizations, swr }) => {
       const currentOrganization = organizations.find(
         (o) => o.id === organization.id
       )
-      if (currentOrganization !== organization)
+      if (JSON.stringify(currentOrganization) !== JSON.stringify(organization))
         setOrganization(currentOrganization)
     }
   }, [organizations, organization])
@@ -66,7 +66,9 @@ const Organizations = ({ user, organizations, swr }) => {
             <>
               <Add swr={{ addOneOrganization: swr.addOneOrganization }} />
               <List
-                user={user}
+                user={{
+                  id: user.id
+                }}
                 organizations={organizations}
                 swr={{
                   delOneOrganization: swr.delOneOrganization,

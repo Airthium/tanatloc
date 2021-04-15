@@ -89,11 +89,11 @@ const List = ({ user, organizations, swr, setOrganization }) => {
 }
 
 List.propTypes = {
-  user: PropTypes.shape({
+  user: PropTypes.exact({
     id: PropTypes.string.isRequired
   }).isRequired,
   organizations: PropTypes.array.isRequired,
-  swr: PropTypes.shape({
+  swr: PropTypes.exact({
     delOneOrganization: PropTypes.func.isRequired,
     loadingOrganizations: PropTypes.bool.isRequired
   }).isRequired,

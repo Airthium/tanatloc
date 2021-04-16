@@ -171,21 +171,31 @@ describe('components/project/simulation/run', () => {
     // Error
     await act(
       async () =>
-        await wrapper.find({ title: 'Results' }).props().extra.props.onClick()
+        await wrapper
+          .find({ title: 'Results' })
+          .props()
+          .extra.props.children.props.onClick()
     )
     wrapper.update()
     expect(mockDownloadGet).toHaveBeenCalledTimes(1)
 
     // Normal
-    mockDownloadGet.mockImplementation(() => ({
-      blob: async () => 'text'
-    }))
-    window.URL = {
-      createObjectURL: () => 'object'
-    }
+    mockDownloadGet.mockImplementation(() => {
+      return {
+        blob: async () => 'text'
+      }
+    })
+    Object.defineProperty(window.URL, 'createObjectURL', {
+      value: () => {},
+      configurable: true,
+      writable: true
+    })
     await act(
       async () =>
-        await wrapper.find({ title: 'Results' }).props().extra.props.onClick()
+        await wrapper
+          .find({ title: 'Results' })
+          .props()
+          .extra.props.children.props.onClick()
     )
     wrapper.update()
     expect(mockDownloadGet).toHaveBeenCalledTimes(2)
@@ -207,15 +217,87 @@ describe('components/project/simulation/run', () => {
     mockDownloadGet.mockImplementation(() => ({
       text: async () => 'text'
     }))
-    window.URL = {
-      createObjectURL: () => 'object'
-    }
+    Object.defineProperty(window.URL, 'createObjectURL', {
+      value: () => {},
+      configurable: true
+    })
     await act(
       async () =>
         await wrapper.find({ size: 'small' }).at(3).props().onClick('res')
     )
     wrapper.update()
     expect(mockDownloadGet).toHaveBeenCalledTimes(2)
+  })
+
+  it('running', () => {
+    // Errorred
+    wrapper.unmount()
+    mockSimulation.mockImplementation(() => ({
+      scheme: {
+        configuration: {
+          part: { fileName: 'fileName' },
+          run: {}
+        }
+      },
+      tasks: [
+        {
+          label: 'Mesh',
+          status: 'error'
+        },
+        {
+          label: 'Simulation',
+          status: 'wait'
+        }
+      ]
+    }))
+    wrapper = mount(<Run simulation={simulation} swr={swr} />)
+    expect(wrapper).toBeDefined()
+
+    // Not running
+    wrapper.unmount()
+    mockSimulation.mockImplementation(() => ({
+      scheme: {
+        configuration: {
+          part: { fileName: 'fileName' },
+          run: {}
+        }
+      },
+      tasks: [
+        {
+          label: 'Mesh',
+          status: 'finish'
+        },
+        {
+          label: 'Simulation',
+          status: 'finish'
+        }
+      ]
+    }))
+    wrapper = mount(<Run simulation={simulation} swr={swr} />)
+    expect(wrapper).toBeDefined()
+
+    // Running
+    wrapper.unmount()
+    mockSimulation.mockImplementation(() => ({
+      scheme: {
+        configuration: {
+          part: { fileName: 'fileName' },
+          run: {}
+        }
+      },
+      tasks: [
+        {
+          label: 'Mesh',
+          status: 'finish'
+        },
+        {
+          label: 'Simulation',
+          status: 'process'
+        }
+      ]
+    }))
+    wrapper = mount(<Run simulation={simulation} swr={swr} />)
+    expect(wrapper).toBeDefined()
   })
 
   it('effect', async () => {

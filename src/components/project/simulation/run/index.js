@@ -1,6 +1,16 @@
 import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
-import { Button, Card, Drawer, Layout, Select, Space, Steps, Tabs } from 'antd'
+import {
+  Button,
+  Card,
+  Drawer,
+  Layout,
+  Select,
+  Space,
+  Steps,
+  Tabs,
+  Tooltip
+} from 'antd'
 import {
   DownloadOutlined,
   EyeOutlined,
@@ -72,8 +82,13 @@ const Run = ({ simulation, swr }) => {
 
   // Running
   useEffect(() => {
+    const erroredTasks = currentSimulation?.tasks?.filter(
+      (t) => t.status === 'error'
+    )
+    if (erroredTasks?.length) setRunning(false)
+
     const runningTasks = currentSimulation?.tasks?.filter(
-      (t) => t.status !== 'finish' && t.status !== 'error'
+      (t) => t.status !== 'finish'
     )
 
     if (runningTasks?.length) setRunning(true)
@@ -157,7 +172,10 @@ const Run = ({ simulation, swr }) => {
                       value: n
                     }))}
                     style={{ width: '100%' }}
-                    value={selectorsCurrent[filterIndex] * multiplicator}
+                    value={
+                      selectorsCurrent[filterIndex] &&
+                      selectorsCurrent[filterIndex] * (multiplicator || 1)
+                    }
                     onChange={(value) =>
                       onSelectorChange(value, resultIndex, filterIndex)
                     }
@@ -488,7 +506,7 @@ const Run = ({ simulation, swr }) => {
           />
           <Card title="Run">
             <Space direction="vertical">
-              <Space>
+              <Space direction="">
                 <Button
                   disabled={disabled}
                   icon={<RocketOutlined />}
@@ -541,11 +559,13 @@ const Run = ({ simulation, swr }) => {
             <Card
               title="Results"
               extra={
-                <Button
-                  loading={downloading.find((d) => d === 'archive')}
-                  icon={<DownloadOutlined />}
-                  onClick={onArchiveDownload}
-                />
+                <Tooltip title="Download archive">
+                  <Button
+                    loading={downloading.find((d) => d === 'archive')}
+                    icon={<DownloadOutlined />}
+                    onClick={onArchiveDownload}
+                  />
+                </Tooltip>
               }
             >
               <Space direction="vertical" style={{ width: '100%' }}>
@@ -563,7 +583,11 @@ const Run = ({ simulation, swr }) => {
                   // Render
                   return toRender.map((result) => {
                     return (
-                      <Space key={result.name}>
+                      <Space
+                        direction=""
+                        key={result.name}
+                        style={{ alignItems: 'center' }}
+                      >
                         <Button
                           icon={
                             currentConfiguration?.part?.fileName ===

@@ -2,7 +2,7 @@
 
 import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
-import { Button, Card, Divider, Space, Tag } from 'antd'
+import { Button, Card, Divider, Space, Tag, Tooltip } from 'antd'
 import {
   CloseOutlined,
   CloseSquareOutlined,
@@ -122,26 +122,45 @@ const Selector = ({ part, alreadySelected, updateSelected }) => {
    */
   return (
     <Card>
-      <Space wrap={true}>
-        {colors.length && (
-          <Button icon={<CloseOutlined />} onClick={() => onColorFilter()} />
-        )}
-        {colors.map((color) => {
-          return (
-            <Button
-              key={color}
-              style={{ backgroundColor: Utils.rgbToHex(color) }}
-              onClick={() => onColorFilter(color)}
-            >
-              {' '}
-            </Button>
-          )
-        })}
-        <Button icon={<PlusSquareOutlined />} onClick={selectAll} />
-        <Button icon={<CloseSquareOutlined />} onClick={unselectAll} />
-        <Button icon={<SwapOutlined />} onClick={selectSwap} />
-      </Space>
-      <Divider />
+      {colors.length > 1 && (
+        <>
+          <Space direction="vertical">
+            Color helper
+            <Space direction="" wrap={true}>
+              <Tooltip title="Reset">
+                <Button
+                  icon={<CloseOutlined />}
+                  onClick={() => onColorFilter()}
+                />
+              </Tooltip>
+              {colors.map((color) => {
+                return (
+                  <Tooltip title="Color">
+                    <Button
+                      key={color}
+                      style={{ backgroundColor: Utils.rgbToHex(color) }}
+                      onClick={() => onColorFilter(color)}
+                    >
+                      {' '}
+                    </Button>
+                  </Tooltip>
+                )
+              })}
+              <Tooltip title="Select all">
+                <Button icon={<PlusSquareOutlined />} onClick={selectAll} />
+              </Tooltip>
+              <Tooltip title="Unselect all">
+                <Button icon={<CloseSquareOutlined />} onClick={unselectAll} />
+              </Tooltip>
+              <Tooltip title="Swap">
+                <Button icon={<SwapOutlined />} onClick={selectSwap} />
+              </Tooltip>
+            </Space>
+          </Space>
+          <Divider />
+        </>
+      )}
+
       {part?.[type]
         ? part[type].map((element, index) => {
             if (filter && filter.join() !== element.color?.join()) return

@@ -70,6 +70,7 @@ const DataBase = ({ onSelect }) => {
               header={material.label}
               extra={
                 <Button
+                  size="small"
                   icon={<SelectOutlined />}
                   onClick={() => onMaterialSelect(material)}
                 />

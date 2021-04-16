@@ -78,52 +78,54 @@ const Material = ({
       maskClosable={false}
       width={300}
     >
-      <Card>
-        <Space direction="vertical">
-          <DataBase onSelect={onMaterialSelect} />
-          <Typography.Text>{current?.material?.label}</Typography.Text>
-          {materials?.children?.map((child) => {
-            const m = current?.material?.children?.find(
-              (c) => c.symbol === child.name
-            )
-            if (m)
-              return (
-                <Formula
-                  key={m.symbol}
-                  defaultValue={m.value}
-                  unit={child.unit}
-                  onValueChange={(val) => {
-                    m.value = val
-                  }}
-                />
+      <Space direction="vertical">
+        <Card>
+          <Space direction="vertical">
+            <DataBase onSelect={onMaterialSelect} />
+            <Typography.Text>{current?.material?.label}</Typography.Text>
+            {materials?.children?.map((child) => {
+              const m = current?.material?.children?.find(
+                (c) => c.symbol === child.name
               )
-          })}
+              if (m)
+                return (
+                  <Formula
+                    key={m.symbol}
+                    defaultValue={m.value}
+                    unit={child.unit}
+                    onValueChange={(val) => {
+                      m.value = val
+                    }}
+                  />
+                )
+            })}
+          </Space>
+        </Card>
+        <Selector part={part} updateSelected={onSelected} />
+        <Space direction="">
+          <Button type="danger" onClick={onClose}>
+            Cancel
+          </Button>
+          {material ? (
+            <Edit
+              disabled={disabled}
+              material={current}
+              simulation={simulation}
+              part={part}
+              swr={{ mutateOneSimulation: swr.mutateOneSimulation }}
+              close={onClose}
+            />
+          ) : (
+            <Add
+              disabled={disabled}
+              material={current}
+              simulation={simulation}
+              part={part}
+              swr={{ mutateOneSimulation: swr.mutateOneSimulation }}
+              close={onClose}
+            />
+          )}
         </Space>
-      </Card>
-      <Selector part={part} updateSelected={onSelected} />
-      <Space>
-        <Button type="danger" onClick={onClose}>
-          Cancel
-        </Button>
-        {material ? (
-          <Edit
-            disabled={disabled}
-            material={current}
-            simulation={simulation}
-            part={part}
-            swr={{ mutateOneSimulation: swr.mutateOneSimulation }}
-            close={onClose}
-          />
-        ) : (
-          <Add
-            disabled={disabled}
-            material={current}
-            simulation={simulation}
-            part={part}
-            swr={{ mutateOneSimulation: swr.mutateOneSimulation }}
-            close={onClose}
-          />
-        )}
       </Space>
     </Drawer>
   )

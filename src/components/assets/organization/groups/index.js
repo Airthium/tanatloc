@@ -56,7 +56,6 @@ const Groups = ({ organization, swr }) => {
 
   // Groups error
   useEffect(() => {
-    console.log(errorGroups)
     if (errorGroups) Error(errors.groups, errorGroups)
   }, [errorGroups])
 

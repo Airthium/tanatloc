@@ -55,7 +55,7 @@ const List = ({ simulation, swr, onEdit }) => {
         >
           <Space direction="vertical">
             <Typography.Text>{material.material.label}</Typography.Text>
-            <Space>
+            <Space direction="">
               <Button
                 icon={<EditOutlined />}
                 onClick={() => {

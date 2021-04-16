@@ -247,7 +247,7 @@ const BoundaryCondition = ({
           alreadySelected={alreadySelected}
           updateSelected={onSelected}
         />
-        <Space style={{ textAlign: 'right' }}>
+        <Space direction="">
           <Button type="danger" onClick={onClose}>
             Cancel
           </Button>

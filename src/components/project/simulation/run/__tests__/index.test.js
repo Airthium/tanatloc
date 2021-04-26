@@ -187,8 +187,7 @@ describe('components/project/simulation/run', () => {
     })
     Object.defineProperty(window.URL, 'createObjectURL', {
       value: () => {},
-      configurable: true,
-      writable: true
+      configurable: true
     })
     await act(
       async () =>

@@ -172,28 +172,7 @@ const checkSchema = async (table) => {
 
       if (!byName) {
         console.error('   -- Missing column ' + table + '/' + column.name)
-        err++
-
-        console.info('   -> Try to fix')
-        try {
-          await query(
-            'ALTER TABLE ' +
-              table +
-              ' ADD COLUMN ' +
-              column.name +
-              ' ' +
-              column.type +
-              ' ' +
-              (column.constraint || '') +
-              ' ' +
-              (column.default || '')
-          )
-          console.info('    OK')
-          err--
-        } catch (fixError) {
-          console.warn('    ⚠ Fix failed')
-          console.warn(fixError)
-        }
+        if (!(await fixMissingColumn(table, column))) err++
       } else {
         if (
           (column.type.includes('[]') && byName.data_type === 'ARRAY') ||
@@ -203,24 +182,7 @@ const checkSchema = async (table) => {
           console.info('   -- ' + column.name + ' OK')
         } else {
           console.error('   ⚠ Wrong column type ' + table + '/' + column.name)
-          err++
-
-          console.info('   -> Try to fix')
-          try {
-            await query(
-              'ALTER TABLE ' +
-                table +
-                ' ALTER COLUMN ' +
-                column.name +
-                ' ' +
-                column.type
-            )
-            console.info('    OK')
-            err--
-          } catch (fixError) {
-            console.warn('    ⚠ Fix failed')
-            console.warn(fixError)
-          }
+          if (!(await fixColumnType(table, column))) err++
         }
         if (
           (column.constraint === 'NOT NULL' ||
@@ -232,23 +194,8 @@ const checkSchema = async (table) => {
           )
           err++
 
-          if (column.constraint === 'NOT NULL') {
-            console.info('   -> Try to fix')
-            try {
-              await query(
-                'ALTER TABLE ' +
-                  table +
-                  ' ALTER COLUMN ' +
-                  column.name +
-                  ' SET NOT NULL'
-              )
-              console.info('    OK')
-              err--
-            } catch (fixError) {
-              console.warn('    ⚠ Fix failed')
-              console.warn(fixError)
-            }
-          }
+          if (column.constraint === 'NOT NULL')
+            if (await fixColumnConstraint(table, column)) err--
         }
 
         if (err) {
@@ -269,18 +216,104 @@ const checkSchema = async (table) => {
       remainingColumns.map(async (column) => {
         console.warn(' - ' + column.column_name)
 
-        console.info(' -> Try to fix')
-        try {
-          await query(
-            'ALTER TABLE ' + table + ' DROP COLUMN ' + column.column_name
-          )
-          console.info('  OK')
-        } catch (fixError) {
-          console.warn('  ⚠ Fix failed')
-          console.warn(fixError)
-        }
+        await fixNotUsedColumn(table, column)
       })
     )
+  }
+}
+
+/**
+ * Try to fix missng column
+ * @param {string} table Table
+ * @param {Object} column Column
+ */
+const fixMissingColumn = async (table, column) => {
+  console.info('   -> Try to fix missing column')
+
+  try {
+    await query(
+      'ALTER TABLE ' +
+        table +
+        ' ADD COLUMN ' +
+        column.name +
+        ' ' +
+        column.type +
+        ' ' +
+        (column.constraint || '') +
+        ' ' +
+        (column.default || '')
+    )
+    console.info('    OK')
+  } catch (fixError) {
+    console.warn('    ⚠ Fix failed')
+    console.warn(fixError)
+    return false
+  }
+  return true
+}
+
+/**
+ * Try to fix column type
+ * @param {string} table Table
+ * @param {Object} column Column
+ */
+const fixColumnType = async (table, column) => {
+  console.info('   -> Try to fix column type')
+
+  try {
+    await query(
+      'ALTER TABLE ' +
+        table +
+        ' ALTER COLUMN ' +
+        column.name +
+        ' ' +
+        column.type
+    )
+    console.info('    OK')
+  } catch (fixError) {
+    console.warn('    ⚠ Fix failed')
+    console.warn(fixError)
+    return false
+  }
+
+  return true
+}
+
+/**
+ * Try to fix column constraint
+ * @param {string} table Table
+ * @param {Object} column Column
+ */
+const fixColumnConstraint = async (table, column) => {
+  console.info('   -> Try to fix column constraint')
+
+  try {
+    await query(
+      'ALTER TABLE ' + table + ' ALTER COLUMN ' + column.name + ' SET NOT NULL'
+    )
+    console.info('    OK')
+  } catch (fixError) {
+    console.warn('    ⚠ Fix failed')
+    console.warn(fixError)
+    return false
+  }
+
+  return true
+}
+
+/**
+ * Try to fix not used column
+ * @param {string} table Table
+ * @param {Object} column Column
+ */
+const fixNotUsedColumn = async (table, column) => {
+  console.info(' -> Try to fix not used column')
+  try {
+    await query('ALTER TABLE ' + table + ' DROP COLUMN ' + column.column_name)
+    console.info('  OK')
+  } catch (fixError) {
+    console.warn('  ⚠ Fix failed')
+    console.warn(fixError)
   }
 }
 
@@ -320,12 +353,8 @@ const createTable = async (table, extra) => {
  * @memberof module: install
  */
 const createSystemTable = async () => {
-  await createTable(
-    tables.SYSTEM,
-    async () =>
-      await query(
-        'INSERT INTO ' + tables.SYSTEM + ' (allowsignup) VALUES (true)'
-      )
+  await createTable(tables.SYSTEM, async () =>
+    query('INSERT INTO ' + tables.SYSTEM + ' (allowsignup) VALUES (true)')
   )
 }
 

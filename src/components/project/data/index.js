@@ -231,7 +231,7 @@ const Data = ({ simulation }) => {
             type="primary"
             icon={
               <UpOutlined
-                style={{ fontSize: 32, position: 'absolute', top: 2, left: 24 }}
+                style={{ fontSize: 24, position: 'absolute', top: 4, left: 28 }}
               />
             }
             onClick={() => setVisible(true)}

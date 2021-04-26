@@ -72,7 +72,7 @@
     "mailersend": "1.0.2",
     "next": "10.1.3",
     "next-images": "1.7.0",
-    "next-transpile-modules": "6.4.0",
+    "next-transpile-modules": "6.4.1",
     "nextron": "6.0.6",
     "node-fetch": "2.6.1",
     "passport": "0.4.1",

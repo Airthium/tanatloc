@@ -32,6 +32,12 @@ const add = async (user, organization) => {
   return newOrganization
 }
 
+/**
+ * Get
+ * @param {string} id Id
+ * @param {Array} data Data
+ * @returns
+ */
 const get = async (id, data) => {
   return OrganizationDB.get(id, data)
 }
@@ -116,6 +122,11 @@ const getByUser = async (user, data) => {
   return returnedOrganization
 }
 
+/**
+ * Update
+ * @param {Object} organization Organization
+ * @param {Array} data Data
+ */
 const update = async (organization, data) => {
   // Check for emails
   const newData = await Promise.all(

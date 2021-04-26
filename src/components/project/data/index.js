@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Button, Checkbox, Drawer, Layout, Space, Table } from 'antd'
+import { Button, Checkbox, Drawer, Layout, Space, Table, Tooltip } from 'antd'
 import {
   FileTextOutlined,
   LineChartOutlined,
@@ -11,7 +11,6 @@ import {
   LineChart,
   Line,
   ResponsiveContainer,
-  Tooltip,
   XAxis,
   YAxis
 } from 'recharts'
@@ -227,14 +226,24 @@ const Data = ({ simulation }) => {
       }}
     >
       <Layout.Content>
-        <Button
-          icon={
-            <UpOutlined style={{ position: 'absolute', top: 5, right: 10 }} />
-          }
-          shape="round"
-          onClick={() => setVisible(true)}
-          size="large"
-        />
+        <Tooltip title="Data visualization">
+          <Button
+            type="primary"
+            icon={
+              <UpOutlined
+                style={{ fontSize: 32, position: 'absolute', top: 2, left: 24 }}
+              />
+            }
+            onClick={() => setVisible(true)}
+            style={{
+              width: 80,
+              height: 80,
+              border: '1ps solid gray',
+              borderRadius: 30,
+              marginBottom: -30
+            }}
+          />
+        </Tooltip>
 
         <Drawer
           title="Data visualization"

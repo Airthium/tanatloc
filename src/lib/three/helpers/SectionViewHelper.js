@@ -10,7 +10,7 @@ import {
   Raycaster,
   Vector2,
   Vector3
-} from 'three/build/three.module'
+} from 'three'
 
 import { TransformControls } from 'three/examples/jsm/controls/TransformControls'
 

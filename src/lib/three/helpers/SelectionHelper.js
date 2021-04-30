@@ -1,6 +1,6 @@
 /** @module lib/three/helpers/SelectionHelper */
 
-import { Box2, Raycaster, Vector2, Vector3 } from 'three/build/three.module'
+import { Box2, Raycaster, Vector2, Vector3 } from 'three'
 
 /**
  * Selection helper

@@ -7,7 +7,7 @@ import {
   LineBasicMaterial,
   Vector2,
   Vector3
-} from 'three/build/three.module'
+} from 'three'
 
 import Label from './LabelHelper'
 

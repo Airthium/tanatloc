@@ -16,7 +16,7 @@ import {
   Vector3,
   VertexColors,
   WireframeGeometry
-} from 'three/build/three.module'
+} from 'three'
 import { Lut } from 'three/examples/jsm/math/Lut'
 
 // TODO edges not supported for now

@@ -1,7 +1,6 @@
 const path = require('path')
 
 const withTM = require('next-transpile-modules')(['three'])
-const withImages = require('next-images')
 const withLess = require('@zeit/next-less')
 
 const sentryConfig = require('./config/sentry')
@@ -13,25 +12,23 @@ module.exports = withLess({
   lessLoaderOptions: {
     javascriptEnabled: true
   },
-  ...withImages(
-    withTM({
-      webpack: (config, { isServer, webpack }) => {
-        if (!isServer) {
-          config.resolve.alias['@sentry/node'] = '@sentry/browser'
-        }
+  ...withTM({
+    webpack: (config, { isServer, webpack }) => {
+      if (!isServer) {
+        config.resolve.alias['@sentry/node'] = '@sentry/browser'
+      }
 
-        config.node = {
-          __dirname: true
-        }
+      config.node = {
+        __dirname: true
+      }
 
-        config.plugins.push(new webpack.IgnorePlugin(/\/__tests__\//))
+      config.plugins.push(new webpack.IgnorePlugin(/\/__tests__\//))
 
-        return config
-      },
-      env: {
-        SENTRY_DSN: sentryConfig.DSN
-      },
-      basePath
-    })
-  )
+      return config
+    },
+    env: {
+      SENTRY_DSN: sentryConfig.DSN
+    },
+    basePath
+  })
 })

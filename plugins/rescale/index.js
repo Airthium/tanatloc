@@ -1,11 +1,10 @@
-import logo from './logo.svg'
 import Renderer from './src/components'
 
 const Rescale = {
   category: 'HPC',
   key: 'rescale',
   name: 'Rescale plugin',
-  logo: logo,
+  logo: '/images/rescale.svg',
   description:
     '<p><a target="_blank" href="https://www.rescale.com/">Rescale</a>: Intelligent HPC Platform</p>',
   configuration: {

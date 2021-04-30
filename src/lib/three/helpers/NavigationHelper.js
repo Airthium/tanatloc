@@ -16,7 +16,7 @@ import {
   SphereGeometry,
   Vector2,
   Raycaster
-} from 'three/build/three.module'
+} from 'three'
 
 /**
  * Navigation helper

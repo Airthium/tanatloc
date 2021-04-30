@@ -9,7 +9,7 @@ import {
   TetrahedronGeometry,
   Vector3,
   WebGLRenderer
-} from 'three/build/three.module'
+} from 'three'
 
 /**
  * Background

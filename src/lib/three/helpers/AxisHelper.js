@@ -7,7 +7,7 @@ import {
   OrthographicCamera,
   Scene,
   SphereGeometry
-} from 'three/build/three.module'
+} from 'three'
 import Arrow from './ArrowHelper'
 import Label from './LabelHelper'
 

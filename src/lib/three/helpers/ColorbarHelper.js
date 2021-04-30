@@ -6,7 +6,7 @@ import {
   Scene,
   SpriteMaterial,
   Sprite
-} from 'three/build/three.module'
+} from 'three'
 
 import Label from './LabelHelper'
 

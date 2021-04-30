@@ -37,7 +37,7 @@ import {
   Vector2,
   Vector3,
   WebGLRenderer
-} from 'three/build/three.module'
+} from 'three'
 import { v4 } from 'uuid'
 
 import { Error } from '@/components/assets/notification'

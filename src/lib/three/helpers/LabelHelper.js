@@ -1,6 +1,6 @@
 /** @module lib/three/helpers/LabelHelper */
 
-import { Sprite, SpriteMaterial, Texture } from 'three/build/three.module'
+import { Sprite, SpriteMaterial, Texture } from 'three'
 
 /**
  * LabelHelper

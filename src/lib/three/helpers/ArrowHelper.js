@@ -6,7 +6,7 @@ import {
   Group,
   Mesh,
   MeshBasicMaterial
-} from 'three/build/three.module'
+} from 'three'
 
 /**
  * ArrowHelper

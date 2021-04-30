@@ -20,9 +20,9 @@ const DeleteDialog = ({
    */
   return (
     <Modal
-      title={title}
+      title={''}
       okText="Delete"
-      closable={false}
+      closable={true}
       visible={visible}
       onCancel={onCancel}
       onOk={onOk}

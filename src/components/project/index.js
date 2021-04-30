@@ -204,7 +204,7 @@ const Project = () => {
       // Add in dB
       const simulation = await SimulationAPI.add(
         { id: project.id },
-        { name: scheme.algorithm, scheme }
+        { name: scheme.name, scheme }
       )
 
       // Mutate

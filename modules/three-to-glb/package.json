@@ -1,0 +1,13 @@
+{
+  "name": "three-to-glb",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "UNLICENSED",
+  "type": "module",
+  "dependencies": {
+    "canvas": "^2.7.0",
+    "gltf-pipeline": "^3.0.2",
+    "three": "^0.128.0",
+    "vblob": "^1.0.2"
+  }
+}

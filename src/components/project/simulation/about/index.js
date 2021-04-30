@@ -65,7 +65,7 @@ const About = ({ simulation, swr }) => {
             <b>Category:</b> {simulation.scheme?.category}
           </Typography.Text>
           <Typography.Text>
-            <b>Algorihtm:</b> {simulation.scheme?.algorithm}
+            <b>Algorithm:</b> {simulation.scheme?.algorithm}
           </Typography.Text>
           <Typography.Text>
             <b>Code:</b> {simulation.scheme?.code}

@@ -2,6 +2,7 @@
 
 import path from 'path'
 import { promises as fs } from 'fs'
+// import ThreeToGLB from 'three-to-glb'
 
 import Services from '@/services'
 
@@ -43,18 +44,22 @@ const readFile = async (file) => {
  */
 const convert = async (location, file) => {
   const origin = file.fileName
-  const target = file.uid
+  const jsonTarget = file.uid
+  // const glbTarget = file.uid + '.glb'
 
-  const { code, error, data } = await Services.toThree(location, origin, target)
+  // TODO
 
-  // TODO data, error
-  console.error(error)
-  console.log(data)
+  const { code, error } = await Services.toThree(location, origin, jsonTarget)
 
+  // const part = await loadPart(path.join(location, jsonTarget), 'part.json')
+  // const glb = await ThreeToGLB.convert(part)
+  // console.log(glb)
+
+  if (error) throw new Error('Conversion process failed. Error: ' + error)
   if (code !== 0) throw new Error('Conversion process failed. Code ' + code)
 
   return {
-    path: target,
+    path: jsonTarget,
     part: 'part.json'
   }
 }

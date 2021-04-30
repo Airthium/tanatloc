@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { Checkbox, Input, Space } from 'antd'
-import { SaveOutlined } from '@ant-design/icons'
+import { CheckCircleOutlined, LoadingOutlined } from '@ant-design/icons'
 
 const saveDelay = 1000
 
@@ -85,11 +85,16 @@ const Formula = ({
         disabled={disabled}
         value={internalValue}
         onChange={onInputChange}
-        addonAfter={unit}
-      />
-      <SaveOutlined
-        spin={loading}
-        style={{ color: autoSaveDisabled ? 'green' : 'orange' }}
+        addonAfter={
+          <Space>
+            unit
+            {autoSaveDisabled ? (
+              <CheckCircleOutlined style={{ color: 'green' }} />
+            ) : (
+              <LoadingOutlined spin style={{ color: 'orange' }} />
+            )}
+          </Space>
+        }
       />
     </Space>
   )

@@ -63,7 +63,7 @@
 //   'Noto Color Emoji';
 @tanatloc-primary-color: #fad114;
 
-@border-radius-base: 4px;
+// @border-radius-base: 4px;
 
 @btn-primary-color: rgba(0, 0, 0, 0.85);
 @btn-primary-bg: @tanatloc-primary-color;
@@ -79,8 +79,12 @@
   border-color: #ffde00;
 }
 
-.ant-btn:hover:not(.ant-btn-primary):not(.ant-btn-link):not(.ant-btn-danger) .anticon svg,
-.ant-btn:focus:not(.ant-btn-primary):not(.ant-btn-link):not(.ant-btn-danger) .anticon svg {
+.ant-btn:hover:not(.ant-btn-primary):not(.ant-btn-link):not(.ant-btn-danger)
+  .anticon
+  svg,
+.ant-btn:focus:not(.ant-btn-primary):not(.ant-btn-link):not(.ant-btn-danger)
+  .anticon
+  svg {
   fill: @heading-color;
 }
 
@@ -89,7 +93,8 @@
   padding: 0;
 }
 
-.ant-btn-link:focus, .ant-btn-link:hover {
+.ant-btn-link:focus,
+.ant-btn-link:hover {
   color: @blue-5 !important;
 }
 

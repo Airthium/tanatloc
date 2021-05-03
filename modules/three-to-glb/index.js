@@ -3,6 +3,21 @@ const Canvas = require('canvas')
 const { Blob, FileReader } = require('vblob')
 const gltfPipeline = require('gltf-pipeline')
 
+// Global scope (fake)
+global.window = global
+global.Blob = Blob
+global.FileReader = FileReader
+global.THREE = THREE
+global.document = {
+  createElement: (nodeName) => {
+    if (nodeName !== 'canvas') throw new Error(`Cannot create node ${nodeName}`)
+    const canvas = new Canvas(256, 256)
+    return canvas
+  }
+}
+
+require('three/examples/js/exporters/GLTFExporter')
+
 const solidColor = new THREE.Color('gray')
 const faceColor = new THREE.Color('gray')
 const edgeColor = new THREE.Color('black')
@@ -82,22 +97,6 @@ const loadElement = (type, element, color) => {
  * @param {Object} part Part
  */
 const convert = async (part) => {
-  // Global scope (fake)
-  global.window = global
-  global.Blob = Blob
-  global.FileReader = FileReader
-  global.THREE = THREE
-  global.document = {
-    createElement: (nodeName) => {
-      if (nodeName !== 'canvas')
-        throw new Error(`Cannot create node ${nodeName}`)
-      const canvas = new Canvas(256, 256)
-      return canvas
-    }
-  }
-
-  require('three/examples/js/exporters/GLTFExporter')
-
   // Load part
   const mesh = load(part)
 

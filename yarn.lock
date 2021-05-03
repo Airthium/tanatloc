@@ -10987,7 +10987,15 @@ textextensions@^5.11.0:
   resolved "https://registry.yarnpkg.com/textextensions/-/textextensions-5.12.0.tgz#b908120b5c1bd4bb9eba41423d75b176011ab68a"
   integrity sha512-IYogUDaP65IXboCiPPC0jTLLBzYlhhw2Y4b0a2trPgbHNGGGEfuHE6tds+yDcCf4mpNDaGISFzwSSezcXt+d6w==
 
-three@0.128.0:
+three-to-glb@./modules/three-to-glb/:
+  version "1.0.0"
+  dependencies:
+    canvas "^2.7.0"
+    gltf-pipeline "^3.0.2"
+    three "^0.128.0"
+    vblob "^1.0.2"
+
+three@0.128.0, three@^0.128.0:
   version "0.128.0"
   resolved "https://registry.yarnpkg.com/three/-/three-0.128.0.tgz#884dacca6a330e45600a09ec5439283f50b76aa6"
   integrity sha512-i0ap/E+OaSfzw7bD1TtYnPo3VEplkl70WX5fZqZnfZsE3k3aSFudqrrC9ldFZfYFkn1zwDmBcdGfiIm/hnbyZA==

@@ -91,6 +91,7 @@
     "rimraf": "3.0.2",
     "swr": "0.5.5",
     "three": "0.128.0",
+    "three-to-glb": "./modules/three-to-glb/",
     "url-join": "4.0.1",
     "vblob": "^1.0.2"
   }

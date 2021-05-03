@@ -3,21 +3,6 @@ const Canvas = require('canvas')
 const { Blob, FileReader } = require('vblob')
 const gltfPipeline = require('gltf-pipeline')
 
-// Global scope (fake)
-global.window = global
-global.Blob = Blob
-global.FileReader = FileReader
-global.THREE = THREE
-global.document = {
-  createElement: (nodeName) => {
-    if (nodeName !== 'canvas') throw new Error(`Cannot create node ${nodeName}`)
-    const canvas = new Canvas(256, 256)
-    return canvas
-  }
-}
-
-require('three/examples/js/exporters/GLTFExporter')
-
 const solidColor = new THREE.Color('gray')
 const faceColor = new THREE.Color('gray')
 const edgeColor = new THREE.Color('black')
@@ -55,7 +40,8 @@ const load = (part) => {
 const loadElement = (type, element, color) => {
   const loader = new THREE.BufferGeometryLoader()
   const buffer = element.buffer
-  const geometry = loader.parse(buffer)
+  const json = JSON.parse(Buffer.from(buffer).toString())
+  const geometry = loader.parse(json)
 
   // Convert mm to m
   // Meshes and results are already converted
@@ -68,7 +54,7 @@ const loadElement = (type, element, color) => {
   // Color
   const colorAttribute = geometry.getAttribute('color')
   if (colorAttribute) {
-    color = new Color(
+    color = new THREE.Color(
       colorAttribute.array[0],
       colorAttribute.array[1],
       colorAttribute.array[2]
@@ -79,12 +65,12 @@ const loadElement = (type, element, color) => {
     geometry.computeBoundingBox()
     geometry.computeBoundingSphere()
 
-    const material = new MeshStandardMaterial({
+    const material = new THREE.MeshStandardMaterial({
       color: color,
       side: THREE.DoubleSide
     })
 
-    const mesh = new Mesh(geometry, material)
+    const mesh = new THREE.Mesh(geometry, material)
     mesh.uuid = buffer.uuid
 
     return mesh
@@ -96,6 +82,22 @@ const loadElement = (type, element, color) => {
  * @param {Object} part Part
  */
 const convert = async (part) => {
+  // Global scope (fake)
+  global.window = global
+  global.Blob = Blob
+  global.FileReader = FileReader
+  global.THREE = THREE
+  global.document = {
+    createElement: (nodeName) => {
+      if (nodeName !== 'canvas')
+        throw new Error(`Cannot create node ${nodeName}`)
+      const canvas = new Canvas(256, 256)
+      return canvas
+    }
+  }
+
+  require('three/examples/js/exporters/GLTFExporter')
+
   // Load part
   const mesh = load(part)
 
@@ -109,6 +111,8 @@ const convert = async (part) => {
       { binary: false }
     )
   )
+
+  // GLB
   return gltfPipeline.gltfToGlb(glft)
 }
 

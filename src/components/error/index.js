@@ -19,9 +19,7 @@ function Error({ statusCode }) {
           <Typography.Title level={1}>{statusCode}</Typography.Title>
         )}
         <Typography.Title level={1}>
-          {statusCode
-            ? 'An error occurred on server'
-            : 'An error occurred on client'}
+          {statusCode ? 'An error occurred on server' : 'An error occurred'}
         </Typography.Title>
         <Typography.Title
           level={2}

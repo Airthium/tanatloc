@@ -19,6 +19,9 @@ import {
 } from 'three'
 import { Lut } from 'three/examples/jsm/math/Lut'
 
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
+import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader'
+
 // TODO edges not supported for now
 
 /**
@@ -45,74 +48,88 @@ const PartLoader = (mouseMoveEvent, mouseDownEvent) => {
    * @param {Object} clippingPlane Clipping plane
    */
   const load = (part, transparent, clippingPlane) => {
-    const partType = part.type
+    if (part.buffer) {
+      console.log(Buffer.from(part.buffer).toString())
 
-    const object = new Group()
-    object.type = 'Part'
+      // TODO bug with DRACO docker path here
 
-    // Solids
-    const solids = new Group()
-    partType === 'geometry' &&
-      part.solids &&
-      part.solids.forEach((solid) => {
-        const mesh = loadElement(
-          partType,
-          solid,
-          solidColor,
-          transparent,
-          clippingPlane
-        )
-        mesh.visible = false
-        solids.add(mesh)
-      })
-    object.add(solids)
+      const loader = new GLTFLoader()
+      const dracoLoader = new DRACOLoader()
+      dracoLoader.setDecoderPath('three/examples/js/libs/draco')
+      dracoLoader.preload()
+      console.log(dracoLoader)
+      loader.setDRACOLoader(dracoLoader)
+      loader.parse(Buffer.from(part.buffer).toString())
+    } else {
+      const partType = part.type
 
-    // Faces
-    const faces = new Group()
-    part.faces &&
-      part.faces.forEach((face) => {
-        const mesh = loadElement(
-          partType,
-          face,
-          faceColor,
-          transparent,
-          clippingPlane
-        )
-        if (mesh) {
-          mesh.visible = true
-          faces.add(mesh)
-        }
-      })
-    object.add(faces)
+      const object = new Group()
+      object.type = 'Part'
 
-    // Edges
-    const edges = new Group()
-    //   part.edges &&
-    //   part.edges.forEach((edge) => {
-    //     const mesh = loadElement(partType, edge, edgeColor, transparent, clippingPlane)
-    //     mesh.visible = true
-    //     edge.add(mesh)
-    //   })
-    object.add(edges)
+      // Solids
+      const solids = new Group()
+      partType === 'geometry' &&
+        part.solids &&
+        part.solids.forEach((solid) => {
+          const mesh = loadElement(
+            partType,
+            solid,
+            solidColor,
+            transparent,
+            clippingPlane
+          )
+          mesh.visible = false
+          solids.add(mesh)
+        })
+      object.add(solids)
 
-    object.uuid = part.uuid
+      // Faces
+      const faces = new Group()
+      part.faces &&
+        part.faces.forEach((face) => {
+          const mesh = loadElement(
+            partType,
+            face,
+            faceColor,
+            transparent,
+            clippingPlane
+          )
+          if (mesh) {
+            mesh.visible = true
+            faces.add(mesh)
+          }
+        })
+      object.add(faces)
 
-    object.boundingBox = computeBoundingBox(object)
-    object.dispose = () => dispose(object)
+      // Edges
+      const edges = new Group()
+      //   part.edges &&
+      //   part.edges.forEach((edge) => {
+      //     const mesh = loadElement(partType, edge, edgeColor, transparent, clippingPlane)
+      //     mesh.visible = true
+      //     edge.add(mesh)
+      //   })
+      object.add(edges)
 
-    object.setTransparent = (transp) => setTransparent(object, transp)
+      object.uuid = part.uuid
 
-    object.startSelection = (renderer, camera, outlinePass, type) =>
-      startSelection(object, renderer, camera, outlinePass, type)
-    object.stopSelection = () => stopSelection(object)
-    object.getHighlighted = () => highlighted
-    object.getSelected = () => selected
-    object.highlight = highlight
-    object.unhighlight = unhighlight
-    object.select = select
-    object.unselect = unselect
+      object.boundingBox = computeBoundingBox(object)
+      object.dispose = () => dispose(object)
 
-    return object
+      object.setTransparent = (transp) => setTransparent(object, transp)
+
+      object.startSelection = (renderer, camera, outlinePass, type) =>
+        startSelection(object, renderer, camera, outlinePass, type)
+      object.stopSelection = () => stopSelection(object)
+      object.getHighlighted = () => highlighted
+      object.getSelected = () => selected
+      object.highlight = highlight
+      object.unhighlight = unhighlight
+      object.select = select
+      object.unselect = unselect
+
+      return object
+    }
   }
 
   /**
@@ -131,7 +148,7 @@ const PartLoader = (mouseMoveEvent, mouseDownEvent) => {
     clippingPlane
   ) => {
     const loader = new BufferGeometryLoader()
-    const buffer = element.buffer
+    const buffer = JSON.parse(Buffer.from(element.buffer).toString())
     const geometry = loader.parse(buffer)
 
     // Convert mm to m

@@ -2,11 +2,9 @@
 
 import path from 'path'
 import { promises as fs } from 'fs'
-// import ThreeToGLB from 'three-to-glb'
+import ThreeToGLB from 'three-to-glb'
 
 import Services from '@/services'
-
-import ThreeToGLB from '../../../modules/three-to-glb'
 
 /**
  * Create path (recursive)
@@ -53,14 +51,8 @@ const convert = async (location, file) => {
 
   const { code, error } = await Services.toThree(location, origin, jsonTarget)
 
-  console.log('three json OK')
-
   const part = await loadPart(path.join(location, jsonTarget), 'part.json')
-
-  console.log('loadpart OK')
-
   const glb = await ThreeToGLB.convert(part)
-  console.log(glb)
   await writeFile(location, glbTarget, glb.glb)
 
   if (error) throw new Error('Conversion process failed. Error: ' + error)

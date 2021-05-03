@@ -838,49 +838,49 @@ const View = ({ project, simulation, setPartSummary }) => {
           return
         }
 
-        // Convert buffers
-        partContent.solids?.forEach((solid) => {
-          solid.buffer = JSON.parse(Buffer.from(solid.buffer).toString())
-        })
-        partContent.faces?.forEach((face) => {
-          face.buffer = JSON.parse(Buffer.from(face.buffer).toString())
-        })
-        partContent.edges?.forEach((edge) => {
-          edge.buffer = JSON.parse(Buffer.from(edge.buffer).toString())
-        })
+        // // Convert buffers
+        // partContent.solids?.forEach((solid) => {
+        //   solid.buffer = JSON.parse(Buffer.from(solid.buffer).toString())
+        // })
+        // partContent.faces?.forEach((face) => {
+        //   face.buffer = JSON.parse(Buffer.from(face.buffer).toString())
+        // })
+        // partContent.edges?.forEach((edge) => {
+        //   edge.buffer = JSON.parse(Buffer.from(edge.buffer).toString())
+        // })
 
-        // Summary
-        const summary = {
-          uuid: partContent.uuid,
-          type: partContent.type,
-          solids: partContent.solids?.map((solid) => {
-            return {
-              name: solid.name,
-              number: solid.number,
-              uuid: solid.buffer.uuid,
-              color: solid.buffer.data.attributes.color?.array
-            }
-          }),
-          faces: partContent.faces?.map((face) => {
-            return {
-              name: face.name,
-              number: face.number,
-              uuid: face.buffer.uuid,
-              color: face.buffer.data.attributes.color?.array
-            }
-          }),
-          edges: partContent.edges?.map((edge) => {
-            return {
-              name: edge.name,
-              number: edge.number,
-              uuid: edge.buffer.uuid,
-              color: edge.buffer.data.attributes.color?.array
-            }
-          })
-        }
+        // // Summary
+        // const summary = {
+        //   uuid: partContent.uuid,
+        //   type: partContent.type,
+        //   solids: partContent.solids?.map((solid) => {
+        //     return {
+        //       name: solid.name,
+        //       number: solid.number,
+        //       uuid: solid.buffer.uuid,
+        //       color: solid.buffer.data.attributes.color?.array
+        //     }
+        //   }),
+        //   faces: partContent.faces?.map((face) => {
+        //     return {
+        //       name: face.name,
+        //       number: face.number,
+        //       uuid: face.buffer.uuid,
+        //       color: face.buffer.data.attributes.color?.array
+        //     }
+        //   }),
+        //   edges: partContent.edges?.map((edge) => {
+        //     return {
+        //       name: edge.name,
+        //       number: edge.number,
+        //       uuid: edge.buffer.uuid,
+        //       color: edge.buffer.data.attributes.color?.array
+        //     }
+        //   })
+        // }
 
         setPart(partContent)
-        setPartSummary(summary)
+        // setPartSummary(summary)
       }
     } catch (err) {
       Error(errors.partError, err)

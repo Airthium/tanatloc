@@ -116,8 +116,8 @@ const checkFiles = async (simulation, data) => {
 
         // Convert file
         const part = await Tools.convert(location, file)
-        d.value.file.partPath = path.join(subDir, part.path)
-        d.value.file.part = part.part
+        d.value.file.json = part.json
+        d.value.file.glb = part.glb
 
         // Remove unused
         delete file.buffer

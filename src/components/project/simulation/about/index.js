@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
 import { useEffect } from 'react'
-import { Layout, Space, Typography } from 'antd'
+import { Layout, Space, Spin, Typography } from 'antd'
 
 import { Error } from '@/components/assets/notification'
 
@@ -46,45 +46,49 @@ const About = ({ simulation, swr }) => {
   // MathJax
   useEffect(() => {
     window.MathJax?.typeset()
-  }, [simulation.scheme?.description])
+  }, [simulation?.scheme?.description])
 
   return (
     <Layout>
       <Layout.Content>
-        <Space direction="vertical">
-          <Typography.Title
-            level={4}
-            editable={{
-              onChange: handleName,
-              maxLength: 50
-            }}
-          >
-            {simulation.name}
-          </Typography.Title>
-          <Typography.Text>
-            <b>Category:</b> {simulation.scheme?.category}
-          </Typography.Text>
-          <Typography.Text>
-            <b>Algorithm:</b> {simulation.scheme?.algorithm}
-          </Typography.Text>
-          <Typography.Text>
-            <b>Code:</b> {simulation.scheme?.code}
-          </Typography.Text>
+        {simulation ? (
+          <Space direction="vertical">
+            <Typography.Title
+              level={4}
+              editable={{
+                onChange: handleName,
+                maxLength: 50
+              }}
+            >
+              {simulation.name}
+            </Typography.Title>
+            <Typography.Text>
+              <b>Category:</b> {simulation.scheme?.category}
+            </Typography.Text>
+            <Typography.Text>
+              <b>Algorithm:</b> {simulation.scheme?.algorithm}
+            </Typography.Text>
+            <Typography.Text>
+              <b>Code:</b> {simulation.scheme?.code}
+            </Typography.Text>
 
-          <div
-            dangerouslySetInnerHTML={{
-              __html: simulation.scheme?.description
-            }}
-          />
+            <div
+              dangerouslySetInnerHTML={{
+                __html: simulation.scheme?.description
+              }}
+            />
 
-          <Delete
-            simulation={{ id: simulation.id, name: simulation.name }}
-            swr={{
-              reloadProject: swr.reloadProject,
-              delOneSimulation: swr.delOneSimulation
-            }}
-          />
-        </Space>
+            <Delete
+              simulation={{ id: simulation.id, name: simulation.name }}
+              swr={{
+                reloadProject: swr.reloadProject,
+                delOneSimulation: swr.delOneSimulation
+              }}
+            />
+          </Space>
+        ) : (
+          <Spin />
+        )}
       </Layout.Content>
     </Layout>
   )

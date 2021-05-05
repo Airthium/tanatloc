@@ -51,16 +51,17 @@ const convert = async (location, file) => {
 
   const { code, error } = await Services.toThree(location, origin, jsonTarget)
 
-  const part = await loadPart(path.join(location, jsonTarget), 'part.json')
-  const glb = await ThreeToGLB.convert(part)
-  await writeFile(location, glbTarget, glb.glb)
+  // const part = await loadPart(path.join(location, jsonTarget), 'part.json')
+  const glb = ThreeToGLB.convert(path.join(location, jsonTarget), 'part.json')
+  console.log(glb)
+  await writeFile(location, glbTarget, glb)
 
   if (error) throw new Error('Conversion process failed. Error: ' + error)
   if (code !== 0) throw new Error('Conversion process failed. Code ' + code)
 
   return {
-    path: jsonTarget,
-    part: 'part.json'
+    json: jsonTarget,
+    glb: glbTarget
   }
 }
 
@@ -123,7 +124,7 @@ const removeFile = async (file) => {
  * @param {string} dir Directory
  */
 const removeDirectory = async (dir) => {
-  await fs.rmdir(dir, { recursive: true })
+  await fs.rm(dir, { recursive: true })
 }
 
 export default {

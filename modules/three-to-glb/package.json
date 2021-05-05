@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "main": "index.js",
   "license": "UNLICENSED",
-  "type": "module",
   "dependencies": {
     "canvas": "^2.7.0",
     "gltf-pipeline": "^3.0.2",

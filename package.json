@@ -17,6 +17,7 @@
   "scripts": {
     "build": "next build",
     "clean": "rimraf dist/ dist-server/ out/ .next/",
+    "copyassets": "mkdir -p public/three/libs/draco && cp -Rf node_modules/three/examples/js/libs/draco/* public/three/libs/draco/",
     "depcheck": "depcheck",
     "dev": "next",
     "doc": "jsdoc -c config/jsdoc/conf.json",
@@ -24,7 +25,7 @@
     "electron-build": "yarn server-build && nextron build && electron-builder install-app-deps",
     "electron-dev": "yarn server-build && nextron",
     "export": "yarn build && next export",
-    "postinstall": "babel . --only config,install,src/database/index.js --out-dir dist-install && node dist-install/install",
+    "postinstall": "babel . --only config,install,src/database/index.js --out-dir dist-install && node dist-install/install && yarn copyassets",
     "prettier": "prettier -l '**/*.{js,json,md,css}'",
     "prettier:write": "prettier --write '**/*.{js,json,md,css}'",
     "server-build": "babel . --only config,server,plugin,src/auth,src/database,src/lib,src/route,src/services --out-dir dist-server",

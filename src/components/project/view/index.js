@@ -510,7 +510,7 @@ const ThreeView = ({ loading, project, part }) => {
 
     // Load
     const loader = PartLoader(mouseMoveEvent, mouseDownEvent)
-    const mesh = loader.load(
+    const mesh = await loader.load(
       part,
       transparent,
       sectionViewHelper.current.getClippingPlane(),

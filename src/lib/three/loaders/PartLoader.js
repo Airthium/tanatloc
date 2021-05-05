@@ -47,19 +47,48 @@ const PartLoader = (mouseMoveEvent, mouseDownEvent) => {
    * @param {boolean} transparent Transparent
    * @param {Object} clippingPlane Clipping plane
    */
-  const load = (part, transparent, clippingPlane) => {
+  const load = async (part, transparent, clippingPlane) => {
+    console.log(part)
     if (part.buffer) {
-      console.log(Buffer.from(part.buffer).toString())
+      // console.log(Buffer.from(part.buffer).toString())
+      // console.log(JSON.parse(Buffer.from(part.buffer).toString()))
+      // console.log('ok')
 
       // TODO bug with DRACO docker path here
 
       const loader = new GLTFLoader()
-      const dracoLoader = new DRACOLoader()
-      dracoLoader.setDecoderPath('three/examples/js/libs/draco')
-      dracoLoader.preload()
-      console.log(dracoLoader)
-      loader.setDRACOLoader(dracoLoader)
-      loader.parse(Buffer.from(part.buffer).toString())
+      // const dracoLoader = new DRACOLoader()
+      // dracoLoader.setDecoderPath('/three/libs/draco/')
+      // dracoLoader.preload()
+      // loader.setDRACOLoader(dracoLoader)
+      const gltf = await new Promise((resolve) =>
+        loader.parse(Buffer.from(part.buffer).toString(), '', (gltf) =>
+          resolve(gltf)
+        )
+      )
+
+      const object = gltf.scene.children[0]
+      object.type = 'Part'
+
+      object.uuid = part.uuid
+
+      object.boundingBox = computeBoundingBox(object)
+      console.log(object.boundingBox)
+      object.dispose = () => dispose(object)
+
+      object.setTransparent = (transp) => setTransparent(object, transp)
+
+      object.startSelection = (renderer, camera, outlinePass, type) =>
+        startSelection(object, renderer, camera, outlinePass, type)
+      object.stopSelection = () => stopSelection(object)
+      object.getHighlighted = () => highlighted
+      object.getSelected = () => selected
+      object.highlight = highlight
+      object.unhighlight = unhighlight
+      object.select = select
+      object.unselect = unselect
+
+      return object
     } else {
       const partType = part.type
 

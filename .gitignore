@@ -18,6 +18,9 @@ dist-install
 /.next/
 /out
 
+# public
+/public/three
+
 # production
 /build
 

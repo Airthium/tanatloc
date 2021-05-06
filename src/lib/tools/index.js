@@ -58,7 +58,6 @@ const convert = async (location, file, callback) => {
   callback && callback({ data, error })
 
   const glb = ThreeToGLB.convert(path.join(location, jsonTarget), 'part.json')
-  console.log(glb)
   await writeFile(location, glbTarget, glb)
 
   if (error) throw new Error('Conversion process failed. Error: ' + error)

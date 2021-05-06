@@ -30,7 +30,6 @@ import {
 import {
   AmbientLight,
   Box3,
-  MeshBasicMaterial,
   PerspectiveCamera,
   PointLight,
   Scene,
@@ -73,7 +72,7 @@ const errors = {
 /**
  * ThreeView
  */
-const ThreeView = ({ loading, project, part }) => {
+const ThreeView = ({ loading, project, part, setPartSummary }) => {
   // Ref
   const mount = useRef(null)
   const scene = useRef()
@@ -518,6 +517,25 @@ const ThreeView = ({ loading, project, part }) => {
       outlinePass.current
     )
 
+    // Summary
+    const solids = mesh.children[0]
+    const faces = mesh.children[1]
+    const summary = {
+      solids: solids.children.map((solid) => ({
+        name: solid.name,
+        number: solid.number,
+        uuid: solid.uuid,
+        color: solid.material.color
+      })),
+      faces: faces.children.map((face) => ({
+        name: face.name,
+        nubmer: face.number,
+        uuid: face.uuid,
+        color: face.material.color
+      }))
+    }
+    setPartSummary(summary)
+
     // Scene
     scene.current.add(mesh)
     computeSceneBoundingSphere()
@@ -893,7 +911,14 @@ const View = ({ project, simulation, setPartSummary }) => {
   /**
    * Render
    */
-  return <ThreeView loading={loading} project={project} part={part} />
+  return (
+    <ThreeView
+      loading={loading}
+      project={project}
+      part={part}
+      setPartSummary={setPartSummary}
+    />
+  )
 }
 
 export default View

@@ -42,8 +42,12 @@ const Selector = ({ part, alreadySelected, updateSelected }) => {
     const colorsList = []
     part?.[type]?.forEach((element) => {
       if (element.color) {
+        console.log(element.color)
         const existingColor = colorsList.find(
-          (c) => c.join() === element.color.join()
+          (c) =>
+            c.r === element.color.r &&
+            c.g === element.color.g &&
+            c.b === element.color.b
         )
         if (!existingColor) {
           colorsList.push(element.color)
@@ -91,8 +95,14 @@ const Selector = ({ part, alreadySelected, updateSelected }) => {
    */
   const selectAll = () => {
     part?.[type]?.forEach((element) => {
-      if (filter && filter.join() !== element.color?.join()) return
-      dispatch(select(element.uuid))
+      if (
+        !filter ||
+        (filter &&
+          filter.r === element.color.r &&
+          filter.g === element.color.g &&
+          filter.b === element.color.b)
+      )
+        dispatch(select(element.uuid))
     })
   }
 
@@ -101,8 +111,14 @@ const Selector = ({ part, alreadySelected, updateSelected }) => {
    */
   const unselectAll = () => {
     part?.[type]?.forEach((element) => {
-      if (filter && filter.join() !== element.color?.join()) return
-      dispatch(unselect(element.uuid))
+      if (
+        !filter ||
+        (filter &&
+          filter.r === element.color.r &&
+          filter.g === element.color.g &&
+          filter.b === element.color.b)
+      )
+        dispatch(unselect(element.uuid))
     })
   }
 
@@ -111,9 +127,16 @@ const Selector = ({ part, alreadySelected, updateSelected }) => {
    */
   const selectSwap = () => {
     part?.[type]?.forEach((element) => {
-      if (filter && filter.join() !== element.color?.join()) return
-      if (selected.includes(element.uuid)) dispatch(unselect(element.uuid))
-      else dispatch(select(element.uuid))
+      if (
+        !filter ||
+        (filter &&
+          filter.r === element.color.r &&
+          filter.g === element.color.g &&
+          filter.b === element.color.b)
+      ) {
+        if (selected.includes(element.uuid)) dispatch(unselect(element.uuid))
+        else dispatch(select(element.uuid))
+      }
     })
   }
 
@@ -163,52 +186,57 @@ const Selector = ({ part, alreadySelected, updateSelected }) => {
 
       {part?.[type]
         ? part[type].map((element, index) => {
-            if (filter && filter.join() !== element.color?.join()) return
-            return (
-              <Card
-                key={index}
-                hoverable
-                style={{
-                  marginBottom:
-                    highlighted === element.uuid
-                      ? '5px'
-                      : selected.includes(element.uuid)
-                      ? '5px'
-                      : '7px',
-                  border:
-                    highlighted === element.uuid
-                      ? '2px solid #0096C7'
-                      : selected.includes(element.uuid)
-                      ? '2px solid #c73100'
-                      : '1px solid grey'
-                }}
-                bodyStyle={{
-                  padding: '10px',
-                  backgroundImage:
-                    'linear-gradient(to right, ' +
-                    Utils.rgbToRgba(element.color, 0.25) +
-                    '0%, rgba(255, 255, 255, 0) 25%)'
-                }}
-                onMouseEnter={() => onHighlight(element.uuid)}
-                onMouseLeave={onUnhighlight}
-                onClick={() => onSelect(element.uuid)}
-              >
-                <Space>
-                  {element.name}
-                  {alreadySelected?.map((a) => {
-                    if (a.selected.find((s) => s.uuid === element.uuid))
-                      return (
-                        <Tag
-                          key={element.uuid}
-                          color={Utils.stringToColor(a.label)}
-                        >
-                          {a.label}
-                        </Tag>
-                      )
-                  })}
-                </Space>
-              </Card>
+            if (
+              !filter ||
+              (filter &&
+                filter.r === element.color.r &&
+                filter.g === element.color.g &&
+                filter.b === element.color.b)
             )
+              return (
+                <Card
+                  key={index}
+                  hoverable
+                  style={{
+                    marginBottom:
+                      highlighted === element.uuid
+                        ? '5px'
+                        : selected.includes(element.uuid)
+                        ? '5px'
+                        : '7px',
+                    border:
+                      highlighted === element.uuid
+                        ? '2px solid #0096C7'
+                        : selected.includes(element.uuid)
+                        ? '2px solid #c73100'
+                        : '1px solid #d9d9d9'
+                  }}
+                  bodyStyle={{
+                    padding: '10px',
+                    textAlign: 'center',
+                    borderLeft:
+                      '30px solid ' + Utils.rgbToRgba(element.color, 1)
+                  }}
+                  onMouseEnter={() => onHighlight(element.uuid)}
+                  onMouseLeave={onUnhighlight}
+                  onClick={() => onSelect(element.uuid)}
+                >
+                  <Space>
+                    {element.name}
+                    {alreadySelected?.map((a) => {
+                      if (a.selected.find((s) => s.uuid === element.uuid))
+                        return (
+                          <Tag
+                            key={element.uuid}
+                            color={Utils.stringToColor(a.label)}
+                          >
+                            {a.label}
+                          </Tag>
+                        )
+                    })}
+                  </Space>
+                </Card>
+              )
           })
         : []}
     </Card>

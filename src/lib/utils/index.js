@@ -30,31 +30,31 @@ const componentToHex = (c) => {
 
 /**
  * RGB to Hex
- * @param {Array} color Color [r, g, b]
+ * @param {Object} color Color {r, g, b}
  */
 const rgbToHex = (color) => {
   return (
     '#' +
-    componentToHex(color[0] * 255) +
-    componentToHex(color[1] * 255) +
-    componentToHex(color[2] * 255)
+    componentToHex(color.r * 255) +
+    componentToHex(color.g * 255) +
+    componentToHex(color.b * 255)
   )
 }
 
 /**
  * rgb to CSS rgba
- * @param {Array} color Color [r, g, b]
+ * @param {Object} color Color {r, g, b}
  * @param {number} alpha Alpha
  */
 const rgbToRgba = (color, alpha = 1) => {
   if (!color) return 'rgba(255, 255, 255, 0)'
   return (
     'rgba(' +
-    color[0] * 255 +
+    color.r * 255 +
     ', ' +
-    color[1] * 255 +
+    color.g * 255 +
     ', ' +
-    color[2] * 255 +
+    color.b * 255 +
     ', ' +
     alpha +
     ')'

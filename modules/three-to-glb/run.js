@@ -18,7 +18,6 @@ global.document = {
   }
 }
 
-require('three/example/js/math/Lut')
 require('three/examples/js/exporters/GLTFExporter')
 
 // Solid color
@@ -149,7 +148,10 @@ const loadElement = (type, element, color) => {
     material.originalColor = color
 
     const mesh = new THREE.Mesh(geometry, material)
+
     mesh.uuid = buffer.uuid
+    mesh.name = element.name
+    mesh.number = element.number
 
     return mesh
   } else if (type === 'mesh') {
@@ -164,7 +166,10 @@ const loadElement = (type, element, color) => {
     material.originalColor = color
 
     const mesh = new THREE.LineSegments(wireframe, material)
+
     mesh.uuid = buffer.uuid
+    mesh.name = element.name
+    mesh.number = element.number
 
     return mesh
   } else if (type === 'result') {
@@ -237,6 +242,8 @@ const loadElement = (type, element, color) => {
     group.add(wireframe)
 
     group.uuid = buffer.uuid
+    group.name = element.name
+    group.number = element.number
 
     return group
   }
@@ -262,7 +269,7 @@ const convert = async (location, name) => {
       (content) => {
         resolve(content)
       },
-      { binary: false }
+      { onlyVisible: false, binary: false }
     )
   )
 

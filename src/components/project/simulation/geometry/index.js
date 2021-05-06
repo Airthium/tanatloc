@@ -3,10 +3,8 @@ import { useState, useEffect } from 'react'
 import {
   Alert,
   Button,
-  Card,
   Collapse,
   Layout,
-  Popconfirm,
   Space,
   Spin,
   Typography,
@@ -16,7 +14,6 @@ import {
   DeleteOutlined,
   DownloadOutlined,
   LoadingOutlined,
-  QuestionCircleOutlined,
   UploadOutlined
 } from '@ant-design/icons'
 
@@ -237,7 +234,12 @@ const Geometry = ({ simulation, part, swr }) => {
             >
               <div>
                 {loading ? (
-                  <LoadingOutlined style={{ fontSize: 25 }} />
+                  <>
+                    <LoadingOutlined style={{ fontSize: 25 }} />
+                    <div style={{ marginTop: 8 }}>
+                      <b>Loading</b>, converting, ...
+                    </div>
+                  </>
                 ) : (
                   <>
                     <UploadOutlined style={{ fontSize: 25 }} />

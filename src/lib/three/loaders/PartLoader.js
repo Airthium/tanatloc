@@ -63,13 +63,12 @@ const PartLoader = (mouseMoveEvent, mouseDownEvent) => {
         loader.load(
           url,
           (glb) => resolve(glb),
-          (progress) => console.log(progress),
+          (progress) => console.info(progress),
           (err) => console.error(err)
         )
       })
 
       const object = gltf.scene.children[0]
-      console.log(object)
       object.type = 'Part'
 
       // object.uuid = part.uuid

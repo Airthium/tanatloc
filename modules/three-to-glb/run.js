@@ -20,10 +20,19 @@ global.document = {
 
 require('three/examples/js/exporters/GLTFExporter')
 
+// Solid color
 const solidColor = new THREE.Color('gray')
+// Face color
 const faceColor = new THREE.Color('gray')
+// Edge color
 const edgeColor = new THREE.Color('black')
 
+/**
+ * Load part
+ * @param {string} location Location
+ * @param {string} name Name
+ * @return Legacy ThreeJS json
+ */
 const loadPart = (location, name) => {
   const partFile = path.join(location, name)
   const partData = fs.readFileSync(partFile)
@@ -59,6 +68,11 @@ const loadPart = (location, name) => {
   return part
 }
 
+/**
+ * Load part
+ * @param {Object} part Part
+ * @returns ThreeJS object
+ */
 const load = (part) => {
   const type = part.type
 
@@ -89,6 +103,13 @@ const load = (part) => {
   return object
 }
 
+/**
+ * Load part element
+ * @param {string} type Type
+ * @param {Object} element Element
+ * @param {string} color Color
+ * @returns Element
+ */
 const loadElement = (type, element, color) => {
   const loader = new THREE.BufferGeometryLoader()
   const buffer = element.buffer
@@ -130,7 +151,9 @@ const loadElement = (type, element, color) => {
 }
 
 /**
- * Convert part
+ * Convert
+ * @param {string} location Location
+ * @param {string} name Name
  */
 const convert = async (location, name) => {
   // Load part
@@ -139,8 +162,9 @@ const convert = async (location, name) => {
   // Load mesh
   const mesh = load(part)
 
+  // GLTF
   const exporter = new THREE.GLTFExporter()
-  const glft = await new Promise((resolve) =>
+  const gltf = await new Promise((resolve) =>
     exporter.parse(
       mesh,
       (content) => {
@@ -150,14 +174,11 @@ const convert = async (location, name) => {
     )
   )
 
-  console.log(glft)
+  console.log(JSON.stringify(gltf))
 
   // // GLB
-  // const glb = await gltfPipeline.gltfToGlb(glft)
-
-  // console.log(glb.glb.toString())
-
-  // return glb
+  // const glb = await gltfPipeline.gltfToGlb(gltf)
+  // console.log(Buffer.from(glb.glb).toString())
 }
 
 convert(process.argv[2], process.argv[3])

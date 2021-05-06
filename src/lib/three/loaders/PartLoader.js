@@ -48,24 +48,25 @@ const PartLoader = (mouseMoveEvent, mouseDownEvent) => {
    * @param {Object} clippingPlane Clipping plane
    */
   const load = async (part, transparent, clippingPlane) => {
-    console.log(part)
     if (part.buffer) {
-      // console.log(Buffer.from(part.buffer).toString())
-      // console.log(JSON.parse(Buffer.from(part.buffer).toString()))
-      // console.log('ok')
-
-      // TODO bug with DRACO docker path here
+      // TODO bug with GLB format: JSON content not found
+      const blob = new Blob([Buffer.from(part.buffer)])
+      const url = URL.createObjectURL(blob)
 
       const loader = new GLTFLoader()
-      // const dracoLoader = new DRACOLoader()
-      // dracoLoader.setDecoderPath('/three/libs/draco/')
-      // dracoLoader.preload()
-      // loader.setDRACOLoader(dracoLoader)
-      const gltf = await new Promise((resolve) =>
-        loader.parse(Buffer.from(part.buffer).toString(), '', (gltf) =>
-          resolve(gltf)
+      const dracoLoader = new DRACOLoader()
+      dracoLoader.setDecoderPath('/three/libs/draco/')
+      dracoLoader.preload()
+      loader.setDRACOLoader(dracoLoader)
+
+      const gltf = await new Promise((resolve, reject) => {
+        loader.load(
+          url,
+          (glb) => resolve(glb),
+          (progress) => console.log(progress),
+          (err) => console.error(err)
         )
-      )
+      })
 
       const object = gltf.scene.children[0]
       object.type = 'Part'

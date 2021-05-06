@@ -215,6 +215,7 @@ const Geometry = ({ simulation, part, swr }) => {
             </Typography.Text>
             <Typography.Text>STEP (3D) of DXF (2D) file</Typography.Text>
             <Upload
+              className="upload"
               accept=".stp,.step,.dxf"
               showUploadList={false}
               listType="picture-card"

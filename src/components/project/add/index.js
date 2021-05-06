@@ -67,7 +67,6 @@ const Add = ({ workspace, swr }) => {
       </Button>
       <Dialog
         title="Create a new project"
-        closable={false}
         visible={visible}
         onCancel={() => setVisible(false)}
         onOk={onAdd}

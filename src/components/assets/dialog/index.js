@@ -29,7 +29,9 @@ const Dialog = ({
 
   // Layout
   const layout = {
-    layout: 'vertical'
+    layout: 'horizontal',
+    labelCol: { span: 4 },
+    wrapperCol: { span: 20 }
   }
 
   /**
@@ -37,12 +39,14 @@ const Dialog = ({
    */
   return (
     <Modal
+      className="Dialog"
       title={title}
       visible={visible}
       onCancel={() => {
         form.resetFields()
         onCancel()
       }}
+      cancelButtonProps={{ type: 'danger' }}
       onOk={async () => {
         try {
           const values = await form.validateFields()
@@ -50,6 +54,7 @@ const Dialog = ({
           form.resetFields()
         } catch (err) {}
       }}
+      okButtonProps={{ type: 'primary' }}
       confirmLoading={loading}
     >
       <Form form={form} {...layout} initialValues={initialValues}>

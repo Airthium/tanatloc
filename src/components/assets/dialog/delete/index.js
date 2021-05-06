@@ -20,12 +20,14 @@ const DeleteDialog = ({
    */
   return (
     <Modal
+      className="Dialog"
       title={''}
       okText="Delete"
       closable={true}
       visible={visible}
       onCancel={onCancel}
       onOk={onOk}
+      okButtonProps={{ type: 'danger' }}
       confirmLoading={loading}
     >
       <Space direction="">

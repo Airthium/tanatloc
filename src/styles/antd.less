@@ -58,20 +58,30 @@
 
 @font-family: Saira;
 
-// @font-family: saira, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
-//   'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
-//   'Noto Color Emoji';
 @tanatloc-primary-color: #fad114;
 
-// @border-radius-base: 4px;
+// @btn-shadow: 0;
+// @btn-primary-shadow: 0;
+// @btn-text-shadow: 0;
 
-@btn-primary-color: rgba(0, 0, 0, 0.85);
+// Button
+@btn-primary-color: #000;
 @btn-primary-bg: @tanatloc-primary-color;
+// @btn-border-radius-base: 4px;
 
-@btn-shadow: 0;
-@btn-primary-shadow: 0;
-@btn-text-shadow: 0;
+// Button danger
+@btn-danger-color: #f00;
+@btn-danger-bg: #fff;
+.ant-btn-danger {
+  border: 1px solid #f00;
+  border-radius: 2px;
+}
+.ant-btn-danger:hover {
+  color: #fff;
+  background-color: #f00;
+}
 
+// TODO review after
 .ant-btn:hover:not(.ant-btn-primary):not(.ant-btn-link):not(.ant-btn-danger),
 .ant-btn:focus:not(.ant-btn-primary):not(.ant-btn-link):not(.ant-btn-danger) {
   color: @heading-color;

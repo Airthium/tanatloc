@@ -18,6 +18,7 @@ global.document = {
   }
 }
 
+require('three/example/js/math/Lut')
 require('three/examples/js/exporters/GLTFExporter')
 
 // Solid color
@@ -151,6 +152,93 @@ const loadElement = (type, element, color) => {
     mesh.uuid = buffer.uuid
 
     return mesh
+  } else if (type === 'mesh') {
+    const wireframe = new THREE.WireframeGeometry(geometry)
+    wireframe.computeBoundingBox()
+    wireframe.computeBoundingSphere()
+
+    const material = new THREE.LineBasicMaterial({
+      color: color,
+      linewidth: 1
+    })
+    material.originalColor = color
+
+    const mesh = new THREE.LineSegments(wireframe, material)
+    mesh.uuid = buffer.uuid
+
+    return mesh
+  } else if (type === 'result') {
+    const group = new THREE.Group()
+
+    geometry.computeBoundingBox()
+    geometry.computeBoundingSphere()
+
+    group.boundingBox = geometry.boundingBox
+    group.boundingSphere = geometry.boundingSphere
+
+    let vertexColors
+    const lut = new THREE.Lut()
+    const data = geometry.getAttribute('data')
+    if (data) {
+      const min = Math.min(...data.array)
+      const max = Math.max(...data.array)
+
+      if (min === max) {
+        if (min === 0) {
+          lut.setMin(min || -1)
+          lut.setMax(max || 1)
+        } else {
+          lut.setMin(min - min * 0.1)
+          lut.setMin(min + min * 0.1)
+        }
+      } else {
+        lut.setMin(min)
+        lut.setMax(max)
+      }
+
+      vertexColors = new Float32Array(data.count * 3)
+      for (let i = 0; i < data.count; ++i) {
+        const vertexColor = lut.getColor(data.array[i])
+        vertexColors[3 * i + 0] = vertexColor.r
+        vertexColors[3 * i + 1] = vertexColor.g
+        vertexColors[3 * i + 2] = vertexColor.b
+      }
+      geometry.setAttribute(
+        'color',
+        new THREE.Float32BufferAttribute(vertexColors, 3)
+      )
+    }
+
+    const material = new THREE.LineBasicMaterial({
+      vertexColors: THREE.VertexColors,
+      color: color,
+      side: THREE.DoubleSide
+    })
+    material.originalColor = color
+
+    const mesh = new THREE.Mesh(geometry, material)
+
+    const wireframeGeometry = new THREE.WireframeGeometry(geometry)
+    const wireframeMaterial = new THREE.LineBasicMaterial({
+      color: color,
+      linewidth: 1
+    })
+    material.originalColor = color
+
+    const wireframe = new THREE.LineSegments(
+      wireframeGeometry,
+      wireframeMaterial
+    )
+    wireframe.visible = transparent
+
+    group.lut = lut
+
+    group.add(mesh)
+    group.add(wireframe)
+
+    group.uuid = buffer.uuid
+
+    return group
   }
 }
 

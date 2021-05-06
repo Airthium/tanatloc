@@ -58,7 +58,7 @@ const Delete = ({ simulation, swr }) => {
         icon={<DeleteOutlined />}
         onClick={() => setVisible(true)}
       >
-        Delete
+        Delete the simulation
       </Button>
       <DeleteDialog
         title="Delete the simulation"

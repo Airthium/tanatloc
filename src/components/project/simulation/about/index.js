@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
 import { useEffect } from 'react'
-import { Layout, Space, Spin, Typography } from 'antd'
+import { Divider, Layout, Space, Spin, Typography } from 'antd'
 
 import { Error } from '@/components/assets/notification'
 
@@ -54,7 +54,7 @@ const About = ({ simulation, swr }) => {
         {simulation ? (
           <Space direction="vertical">
             <Typography.Title
-              level={4}
+              level={5}
               editable={{
                 onChange: handleName,
                 maxLength: 50
@@ -75,6 +75,16 @@ const About = ({ simulation, swr }) => {
             <div
               dangerouslySetInnerHTML={{
                 __html: simulation.scheme?.description
+              }}
+            />
+
+            <Divider
+              type="horizontal"
+              style={{
+                marginLeft: '-12px',
+                marginBottom: '4px',
+                marginTop: '0px',
+                width: 'calc(100% + 24px)'
               }}
             />
 

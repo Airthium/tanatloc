@@ -21,7 +21,7 @@ const DeleteDialog = ({
   return (
     <Modal
       className="Dialog"
-      title={''}
+      title={title}
       okText="Delete"
       closable={true}
       visible={visible}

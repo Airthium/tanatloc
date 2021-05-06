@@ -8,7 +8,7 @@ import { CloseOutlined } from '@ant-design/icons'
  * Panel
  * @param {Object} props Props
  */
-const Panel = ({ visible, title, children, onClose }) => {
+const Panel = ({ visible, title, children, footer, onClose }) => {
   return (
     <Card
       className="Panel"
@@ -17,6 +17,7 @@ const Panel = ({ visible, title, children, onClose }) => {
       style={{ display: visible ? 'block' : 'none' }}
     >
       {children}
+      {footer && <div className="Card-footer">{footer}</div>}
     </Card>
   )
 }
@@ -25,6 +26,12 @@ Panel.propTypes = {
   visible: PropTypes.bool,
   title: PropTypes.string,
   children: PropTypes.oneOfType([
+    PropTypes.array,
+    PropTypes.object,
+    PropTypes.element,
+    PropTypes.string
+  ]),
+  footer: PropTypes.oneOfType([
     PropTypes.array,
     PropTypes.object,
     PropTypes.element,

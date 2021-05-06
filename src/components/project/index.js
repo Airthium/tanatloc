@@ -263,6 +263,7 @@ const Project = () => {
       if (!child.subMenus?.length) {
         categories[child.index] = (
           <Menu.Item
+            className="menu-item-with-line"
             key={menuKeys.simulation + '&' + s.id + '&' + key}
             icon={
               child.error ? (
@@ -312,6 +313,7 @@ const Project = () => {
         title={s.name}
       >
         <Menu.Item
+          className="menu-item-with-line"
           key={menuKeys.simulation + '&' + s.id + '&about'}
           icon={<CheckCircleOutlined style={{ color: 'green' }} />}
         >

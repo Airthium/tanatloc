@@ -16,10 +16,11 @@ import {
   DeleteOutlined,
   DownloadOutlined,
   LoadingOutlined,
-  PlusOutlined,
-  QuestionCircleOutlined
+  QuestionCircleOutlined,
+  UploadOutlined
 } from '@ant-design/icons'
 
+import { DeleteDialog } from '@/components/assets/dialog'
 import { Error } from '@/components/assets/notification'
 
 import SimulationAPI from '@/api/simulation'
@@ -45,6 +46,9 @@ const Geometry = ({ simulation, part, swr }) => {
   const [upload, setUpload] = useState(true)
   const [loading, setLoading] = useState(false)
   const [currentFile, setCurrentFile] = useState()
+  const [deleteVisible, setDeleteVisible] = useState(false)
+  const [deleting, setDeleting] = useState(false)
+  const [downloading, setDownloading] = useState(false)
 
   // Units LaTeX
   useEffect(() => {
@@ -136,6 +140,8 @@ const Geometry = ({ simulation, part, swr }) => {
    * On delete
    */
   const onDelete = async () => {
+    setDeleting(true)
+
     // Diff scheme
     const diff = {
       ...simulation.scheme.configuration.geometry,
@@ -172,6 +178,9 @@ const Geometry = ({ simulation, part, swr }) => {
       })
     } catch (err) {
       Error(errors.updateError, err)
+    } finally {
+      setDeleting(false)
+      setDeleteVisible(false)
     }
   }
 
@@ -179,6 +188,8 @@ const Geometry = ({ simulation, part, swr }) => {
    * On download
    */
   const onDownload = async () => {
+    setDownloading(true)
+
     const file = {
       origin: simulation.scheme.configuration.geometry.file.origin,
       originPath: simulation.scheme.configuration.geometry.file.originPath
@@ -199,6 +210,8 @@ const Geometry = ({ simulation, part, swr }) => {
       link.remove()
     } catch (err) {
       Error(errors.downloadError, err)
+    } finally {
+      setDownloading(false)
     }
   }
 
@@ -210,9 +223,9 @@ const Geometry = ({ simulation, part, swr }) => {
       <Layout.Content>
         {upload ? (
           <Space direction="vertical">
-            <Typography.Text>
+            <Typography.Title level={5}>
               <b>Upload a geometry</b>
-            </Typography.Text>
+            </Typography.Title>
             <Typography.Text>STEP (3D) of DXF (2D) file</Typography.Text>
             <Upload
               className="upload"
@@ -223,71 +236,90 @@ const Geometry = ({ simulation, part, swr }) => {
               onChange={onUpload}
             >
               <div>
-                {loading ? <LoadingOutlined /> : <PlusOutlined />}
-                <div style={{ marginTop: 8 }}>Upload</div>
+                {loading ? (
+                  <LoadingOutlined style={{ fontSize: 25 }} />
+                ) : (
+                  <>
+                    <UploadOutlined style={{ fontSize: 25 }} />
+                    <div style={{ marginTop: 8 }}>
+                      <b>Choose a file</b> or drap it here
+                    </div>
+                  </>
+                )}
               </div>
             </Upload>
           </Space>
         ) : (
           <Space direction="vertical">
-            <Card title="Informations">
-              <Space direction="vertical">
-                <Typography.Text>
-                  <b>File:</b> {currentFile?.name}{' '}
-                </Typography.Text>
-                <Typography.Text>
-                  <b>Unit:</b> \(m\)
-                </Typography.Text>
-                {part ? (
-                  part.error ? (
-                    <Alert
-                      message="Error"
-                      description={
-                        <>
-                          {errors.UNABLE_TO_LOAD}
-                          <Collapse ghost={true}>
-                            <Collapse.Panel header="Error">
-                              {part.message}
-                            </Collapse.Panel>
-                          </Collapse>
-                        </>
-                      }
-                      type="error"
-                    />
-                  ) : (
+            <Typography.Title level={5}>Informations</Typography.Title>
+            <Typography.Text>
+              <b>File:</b> {currentFile?.name}{' '}
+            </Typography.Text>
+            <Typography.Text>
+              <b>Unit:</b> \(m\)
+            </Typography.Text>
+            {part ? (
+              part.error ? (
+                <Alert
+                  message="Error"
+                  description={
                     <>
-                      {part.solids && (
-                        <Typography.Text>
-                          <b>Number of solids:</b> {part.solids?.length}
-                        </Typography.Text>
-                      )}
-                      {part.faces && (
-                        <Typography.Text>
-                          <b>Number of faces:</b> {part.faces?.length}
-                        </Typography.Text>
-                      )}
-                      {part.edges && (
-                        <Typography.Text>
-                          <b>Number of edges:</b> {part.edges?.length}
-                        </Typography.Text>
-                      )}
+                      {errors.UNABLE_TO_LOAD}
+                      <Collapse ghost={true}>
+                        <Collapse.Panel header="Error">
+                          {part.message}
+                        </Collapse.Panel>
+                      </Collapse>
                     </>
-                  )
-                ) : (
-                  <Spin />
-                )}
-              </Space>
-            </Card>
-            <Space direction="">
-              <Button icon={<DownloadOutlined />} onClick={onDownload} />
-              <Popconfirm
-                title="Are you sure"
-                icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
-                onConfirm={onDelete}
+                  }
+                  type="error"
+                />
+              ) : (
+                <>
+                  {part.solids && (
+                    <Typography.Text>
+                      <b>Number of solids:</b> {part.solids?.length}
+                    </Typography.Text>
+                  )}
+                  {part.faces && (
+                    <Typography.Text>
+                      <b>Number of faces:</b> {part.faces?.length}
+                    </Typography.Text>
+                  )}
+                  {part.edges && (
+                    <Typography.Text>
+                      <b>Number of edges:</b> {part.edges?.length}
+                    </Typography.Text>
+                  )}
+                </>
+              )
+            ) : (
+              <Spin />
+            )}
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <DeleteDialog
+                title=""
+                visible={deleteVisible}
+                onCancel={() => setDeleteVisible(false)}
+                onOk={onDelete}
+                loading={deleting}
               >
-                <Button type="danger" icon={<DeleteOutlined />} />
-              </Popconfirm>
-            </Space>
+                Are you sure delete this geometry?
+              </DeleteDialog>
+              <Button
+                type="danger"
+                icon={<DeleteOutlined />}
+                onClick={() => setDeleteVisible(true)}
+              >
+                Delete geometry
+              </Button>
+              <Button
+                type="primary"
+                icon={<DownloadOutlined />}
+                loading={downloading}
+                onClick={onDownload}
+              />
+            </div>
           </Space>
         )}
       </Layout.Content>

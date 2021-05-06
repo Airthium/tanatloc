@@ -46,6 +46,19 @@
 
 .upload > .ant-upload-select-picture-card {
   width: 100%;
-  padding-top: 40%;
-  padding-bottom: 40%;
+  height: 100px;
+}
+
+// .menu-item-with-line {
+//   position: relative;
+// }
+
+.menu-item-with-line:not(:last-child)::before {
+  position: absolute;
+  content: '|';
+  font-weight: 800;
+  color: #c0c0c0;
+  top: 20px;
+  left: 54px;
+  z-index: 100;
 }

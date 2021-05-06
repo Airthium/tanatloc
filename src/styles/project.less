@@ -49,16 +49,31 @@
   height: 100px;
 }
 
-// .menu-item-with-line {
-//   position: relative;
-// }
+.menu-item-with-line {
+  position: relative !important;
+  overflow: visible !important;
+}
 
 .menu-item-with-line:not(:last-child)::before {
   position: absolute;
-  content: '|';
-  font-weight: 800;
-  color: #c0c0c0;
-  top: 20px;
+  content: '';
+  border: 1px solid #c0c0c0;
+  height: 20px;
+  width: 2px;
+  top: 34px;
   left: 54px;
   z-index: 100;
+}
+
+.menu-item-with-line span:first-child {
+  float: left;
+  height: 40px;
+  line-height: 45px;
+}
+
+.menu-item-with-line span:last-child {
+  float: left;
+  max-width: calc(100% - 24px) !important;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }

@@ -69,12 +69,12 @@ const PartLoader = (mouseMoveEvent, mouseDownEvent) => {
       })
 
       const object = gltf.scene.children[0]
+      console.log(object)
       object.type = 'Part'
 
-      object.uuid = part.uuid
+      // object.uuid = part.uuid
 
       object.boundingBox = computeBoundingBox(object)
-      console.log(object.boundingBox)
       object.dispose = () => dispose(object)
 
       object.setTransparent = (transp) => setTransparent(object, transp)

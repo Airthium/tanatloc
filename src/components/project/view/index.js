@@ -30,6 +30,7 @@ import {
 import {
   AmbientLight,
   Box3,
+  MeshBasicMaterial,
   PerspectiveCamera,
   PointLight,
   Scene,

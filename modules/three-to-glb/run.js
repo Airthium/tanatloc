@@ -77,7 +77,6 @@ const load = (part) => {
   const type = part.type
 
   const object = new THREE.Group()
-  object.type = 'Part'
 
   // Solids
   const solids = new THREE.Group()
@@ -85,6 +84,7 @@ const load = (part) => {
     part.solids &&
     part.solids.forEach((solid) => {
       const mesh = loadElement(type, solid, solidColor)
+      mesh.visible = false
       solids.add(mesh)
     })
   object.add(solids)
@@ -97,6 +97,8 @@ const load = (part) => {
       faces.add(mesh)
     })
   object.add(faces)
+
+  // TODO edges, if any
 
   object.uuid = part.uuid
 
@@ -132,6 +134,7 @@ const loadElement = (type, element, color) => {
       colorAttribute.array[1],
       colorAttribute.array[2]
     )
+    delete geometry.attributes.color
   }
 
   if (type === 'geometry') {
@@ -142,6 +145,7 @@ const loadElement = (type, element, color) => {
       color: color,
       side: THREE.DoubleSide
     })
+    material.originalColor = color
 
     const mesh = new THREE.Mesh(geometry, material)
     mesh.uuid = buffer.uuid

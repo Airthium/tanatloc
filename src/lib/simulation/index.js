@@ -115,7 +115,10 @@ const checkFiles = async (simulation, data) => {
         )
 
         // Convert file
-        const part = await Tools.convert(location, file)
+        const part = await Tools.convert(location, {
+          name: file.fileName,
+          target: file.uid
+        })
         d.value.file.json = part.json
         d.value.file.glb = part.glb
 

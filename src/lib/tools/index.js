@@ -40,18 +40,23 @@ const readFile = async (file) => {
 /**
  * Convert file
  * @param {string} location Location
- * @param {Object} file File
+ * @param {Object} file File { name, target }
+ * @param {Function?} callback Callback
  */
-const convert = async (location, file) => {
-  const origin = file.fileName
-  const jsonTarget = file.uid
-  const glbTarget = file.uid + '.glb'
+const convert = async (location, file, callback) => {
+  const origin = file.name
+  const jsonTarget = file.target
+  const glbTarget = file.target + '.glb'
 
   // TODO
 
-  const { code, error } = await Services.toThree(location, origin, jsonTarget)
+  const { code, data, error } = await Services.toThree(
+    location,
+    origin,
+    jsonTarget
+  )
+  callback && callback({ data, error })
 
-  // const part = await loadPart(path.join(location, jsonTarget), 'part.json')
   const glb = ThreeToGLB.convert(path.join(location, jsonTarget), 'part.json')
   console.log(glb)
   await writeFile(location, glbTarget, glb)

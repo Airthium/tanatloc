@@ -64,22 +64,32 @@ const computeMesh = async (simulationPath, geometry, mesh, callback) => {
   if (code !== 0) throw new Error('Meshing process failed. Code ' + code)
 
   // Convert mesh
-  const three = await Services.toThree(
+  const three = await Tools.convert(
     simulationPath,
-    path.join(mesh.path, mshFile),
-    path.join(mesh.path, partPath)
+    {
+      name: path.join(mesh.path, mshFile),
+      target: path.join(mesh.path, partPath)
+    },
+    ({ data, error }) => callback({ data, error })
   )
-  callback({ data: three.data, error: three.error })
+  // const three = await Services.toThree(
+  //   simulationPath,
+  //   path.join(mesh.path, mshFile),
+  //   path.join(mesh.path, partPath)
+  // )
+  // callback({ data: three.data, error: three.error })
 
-  if (three.code !== 0)
-    throw new Error('Mesh converting process failed. Code ' + three.code)
+  // if (three.code !== 0)
+  //   throw new Error('Mesh converting process failed. Code ' + three.code)
 
   return {
     fileName: mshFile,
     originPath: mesh.path,
     renderPath: mesh.path,
-    part: 'part.json',
-    partPath: path.join(mesh.path, partPath)
+    json: three.json,
+    glb: three.glb
+    // part: 'part.json',
+    // partPath: path.join(mesh.path, partPath)
   }
 }
 

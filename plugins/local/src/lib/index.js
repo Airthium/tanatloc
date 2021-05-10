@@ -242,121 +242,124 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
       path.join('run', id + '.edp'),
       async ({ pid, error, data }) => {
         simulationTask.status = 'process'
+        startProcess(simulationTask)
 
         pid && (simulationTask.pid = pid)
 
         error && (simulationTask.log += 'Error: ' + error + '\n')
 
-        if (
-          data &&
-          (data.includes('PROCESS VTU FILE') ||
-            data.includes('PROCESS DATA FILE'))
-        ) {
-          const lines = data.split('\n')
-          const resultLines = lines.filter((l) =>
-            l.includes('PROCESS VTU FILE')
-          )
-          const dataLines = lines.filter((l) => l.includes('PROCESS DATA FILE'))
+        // if (
+        //   data &&
+        //   (data.includes('PROCESS VTU FILE') ||
+        //     data.includes('PROCESS DATA FILE'))
+        // ) {
+        //   const lines = data.split('\n')
+        //   const resultLines = lines.filter((l) =>
+        //     l.includes('PROCESS VTU FILE')
+        //   )
+        //   const dataLines = lines.filter((l) => l.includes('PROCESS DATA FILE'))
 
-          // Put other lines in logs
-          const nonResultLines = lines.filter(
-            (l) =>
-              !l.includes('PROCESS VTU FILE') &&
-              !l.includes('PROCESS DATA FILE')
-          )
-          nonResultLines.forEach((line) => {
-            simulationTask.log += line
-          })
+        //   // Put other lines in logs
+        //   const nonResultLines = lines.filter(
+        //     (l) =>
+        //       !l.includes('PROCESS VTU FILE') &&
+        //       !l.includes('PROCESS DATA FILE')
+        //   )
+        //   nonResultLines.forEach((line) => {
+        //     simulationTask.log += line
+        //   })
 
-          // Get result
-          await Promise.all(
-            resultLines.map(async (line) => {
-              // New result
-              const resFile = line.replace('PROCESS VTU FILE', '').trim()
-              const partPath = resFile.replace('.vtu', '')
+        //   // Get result
+        //   await Promise.all(
+        //     resultLines.map(async (line) => {
+        //       // New result
+        //       const resFile = line.replace('PROCESS VTU FILE', '').trim()
+        //       const partPath = resFile.replace('.vtu', '')
 
-              try {
-                const three = await Services.toThree(
-                  simulationPath,
-                  path.join('run/result', resFile),
-                  path.join('run/result', partPath)
-                )
+        //       try {
+        //         const three = await Services.toThree(
+        //           simulationPath,
+        //           path.join('run/result', resFile),
+        //           path.join('run/result', partPath)
+        //         )
 
-                if (three.code !== 0) {
-                  simulationTask.log +=
-                    'Warning: Result converting process failed. Code ' +
-                    three.code
-                  updateTasks(id, tasks)
-                } else if (three.error) {
-                  simulationTask.log +=
-                    'Warning: Result converting process failed (' +
-                    three.error +
-                    ')'
-                  updateTasks(id, tasks)
-                } else {
-                  const results = three.data
-                    ?.trim()
-                    ?.split('\n')
-                    .map((res) => JSON.parse(res))
+        //         if (three.code !== 0) {
+        //           simulationTask.log +=
+        //             'Warning: Result converting process failed. Code ' +
+        //             three.code
+        //           updateTasks(id, tasks)
+        //         } else if (three.error) {
+        //           simulationTask.log +=
+        //             'Warning: Result converting process failed (' +
+        //             three.error +
+        //             ')'
+        //           updateTasks(id, tasks)
+        //         } else {
+        //           const results = three.data
+        //             ?.trim()
+        //             ?.split('\n')
+        //             .map((res) => JSON.parse(res))
 
-                  simulationTask.files = [
-                    ...(simulationTask.files || []),
-                    ...results.map((result) => ({
-                      fileName: resFile,
-                      originPath: 'run/result',
-                      name: result.name,
-                      part: 'part.json',
-                      partPath: result.path
-                    }))
-                  ]
+        //           simulationTask.files = [
+        //             ...(simulationTask.files || []),
+        //             ...results.map((result) => ({
+        //               fileName: resFile,
+        //               originPath: 'run/result',
+        //               name: result.name,
+        //               part: 'part.json',
+        //               partPath: result.path
+        //             }))
+        //           ]
 
-                  updateTasks(id, tasks)
-                }
-              } catch (err) {
-                console.error(err)
-                simulationTask.log +=
-                  'Warning: Unable to convert result file (' + err.message + ')'
-                updateTasks(id, tasks)
-              }
-            })
-          )
+        //           updateTasks(id, tasks)
+        //         }
+        //       } catch (err) {
+        //         console.error(err)
+        //         simulationTask.log +=
+        //           'Warning: Unable to convert result file (' + err.message + ')'
+        //         updateTasks(id, tasks)
+        //       }
+        //     })
+        //   )
 
-          // Get data
-          await Promise.all(
-            dataLines.map(async (line) => {
-              // New data
-              const dataFile = line.replace('PROCESS DATA FILE', '').trim()
+        //   // Get data
+        //   await Promise.all(
+        //     dataLines.map(async (line) => {
+        //       // New data
+        //       const dataFile = line.replace('PROCESS DATA FILE', '').trim()
 
-              try {
-                // Read file
-                const dataPath = path.join(
-                  simulationPath,
-                  'run',
-                  'data',
-                  dataFile
-                )
-                const dataContent = await Tools.readFile(dataPath)
+        //       try {
+        //         // Read file
+        //         const dataPath = path.join(
+        //           simulationPath,
+        //           'run',
+        //           'data',
+        //           dataFile
+        //         )
+        //         const dataContent = await Tools.readFile(dataPath)
 
-                simulationTask.datas = [
-                  ...(simulationTask.datas || []),
-                  JSON.parse(dataContent.toString())
-                ]
-                updateTasks(id, tasks)
-              } catch (err) {
-                simulationTask.log +=
-                  'Warning: Unable to read data file (' + err.message + ')'
-                updateTasks(id, tasks)
-              }
-            })
-          )
-        } else {
-          // This is just some log
-          data && (simulationTask.log += data + '\n')
-        }
+        //         simulationTask.datas = [
+        //           ...(simulationTask.datas || []),
+        //           JSON.parse(dataContent.toString())
+        //         ]
+        //         updateTasks(id, tasks)
+        //       } catch (err) {
+        //         simulationTask.log +=
+        //           'Warning: Unable to read data file (' + err.message + ')'
+        //         updateTasks(id, tasks)
+        //       }
+        //     })
+        //   )
+        // } else {
+        //   // This is just some log
+        //   data && (simulationTask.log += data + '\n')
+        // }
 
         if ((Date.now() - start) % updateDelay === 0) updateTasks(id, tasks)
       }
     )
+
+    stopProcess()
 
     // Task
     simulationTask.status = 'finish'
@@ -372,6 +375,35 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
 
     throw err
   }
+}
+
+let interval = null
+const startProcess = (task) => {
+  if (!interval)
+    interval = setInterval(async () => await processOutput(task), 1000)
+}
+
+const stopProcess = () => {
+  if (interval) clearInterval(interval)
+}
+
+const processOutput = async (task) => {
+  // Log
+  try {
+    const log = await Tools.readFile(
+      path.join(simulationPath, 'run', logFileName)
+    )
+    console.log(log)
+    log && (task.log += log)
+  } catch (err) {}
+
+  // Result / data
+  try {
+    const process = await Tools.readFile(
+      path.join(simulationPath, 'run', processFileName)
+    )
+    console.log(process)
+  } catch (err) {}
 }
 
 /**

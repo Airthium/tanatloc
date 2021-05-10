@@ -14,7 +14,7 @@ import Tools from '../tools'
 const get = async (simulation, file) => {
   if (file.glb) {
     const glb = await Tools.readFile(
-      path.join(storage.SIMULATION, simulation.id, file.originPath, file.glb)
+      path.join(storage.SIMULATION, simulation.id, file.glb)
     )
     return {
       buffer: glb

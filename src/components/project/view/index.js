@@ -534,7 +534,6 @@ const ThreeView = ({ loading, project, part, setPartSummary }) => {
         color: face.material.color
       }))
     }
-    console.log(summary)
     setPartSummary(summary)
 
     // Scene

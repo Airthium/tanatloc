@@ -46,8 +46,10 @@ const rhs = parameters.rightHandSide.children[0]
 const rhsValue = rhs.value || rhs.default
 -%>
 // Problem
-if (mpirank == 0) cout << "Define the problem..." << endl;
-if (mpirank == 0) cout.flush;
+if (mpirank == 0) {
+	ofstream logOut('process_output.log', append);
+	logOut << "Define the problem..." << endl;
+}
 
 varf vLaplacian (u, uh)
 	= intN(Th)(
@@ -80,8 +82,10 @@ varf vLaplacianRHS (u, uh)
 
 <%# Solve -%>
 // Solve
-if (mpirank == 0) cout << "Solve the problem..." << endl;
-if (mpirank == 0) cout.flush;
+if (mpirank == 0) {
+	ofstream logOut('process_output.log', append);
+	logOut << "Solve the problem..." << endl;
+}
 
 matrix Laplacian = vLaplacian(<%= finiteElementSpace.name -%>, <%= finiteElementSpace.name -%>, solver=solver);
 real[int] LaplacianRHS = vLaplacianRHS(0, <%= finiteElementSpace.name -%>);
@@ -98,5 +102,3 @@ u[] = Laplacian^-1 * LaplacianRHS;
 		order: [1]
 	}
 }); -%>
-
-if (mpirank == 0) cout.flush;

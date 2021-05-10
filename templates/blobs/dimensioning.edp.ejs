@@ -1,6 +1,8 @@
 // Dimension macros
-if (mpirank == 0) cout << "Dimension: <%= dimension -%>" << endl;
-if (mpirank == 0) cout.flush;
+if (mpirank == 0) {
+    ofstream logOut('process_output.log', append);
+    logOut << "Dimension: <%= dimension -%>" << endl;
+}
 
 <% if (dimension === 2)  { -%>
 macro meshN()mesh//

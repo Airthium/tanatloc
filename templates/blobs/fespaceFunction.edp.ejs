@@ -1,5 +1,7 @@
 // Fespace Functions
-if (mpirank == 0) cout << "Define finite element space functions..." << endl;
-if (mpirank == 0) cout.flush;
+if (mpirank == 0) {
+    ofstream logOut('process_output.log', append);
+    logOut << "Define finite element space functions..." << endl;
+}
 
 <%= finiteElementSpace.name -%> [<%= finiteElementFunction.join() -%>];

@@ -1,6 +1,8 @@
 // Materials
-if (mpirank == 0) cout << "Define materials..." << endl;
-if (mpirank == 0) cout.flush;
+if (mpirank == 0) {
+    ofstream logOut('process_output.log', append);
+    logOut << "Define materials..." << endl;
+}
 
 <% materials.children.map(child => { -%>
 <% const value = child.value || child.default -%>

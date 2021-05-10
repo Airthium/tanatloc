@@ -31,6 +31,7 @@ const updateDelay = 1000 // ms
 
 // Log file name
 const logFileName = 'process_output.log'
+const processFileName = 'process_data.log'
 
 /**
  * Initialization
@@ -311,14 +312,28 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
       if (status === 'Executing') {
         // Check in-run files
         const inRunFiles = await getInRunFiles(cloudConfiguration, jobId)
+
         // Log
         const logFile = inRunFiles.find((f) =>
           f.path.includes(customLogFileName || logFileName)
         )
         if (logFile) {
           const log = await getInRunFile(cloudConfiguration, logFile)
+
+          // Log
+          simulationTask.log =
+            currentLog + log.replace(/\[.*\]: /g, '') + warnings.join('\n')
+        }
+
+        // Results / data
+        const processFile = inRunFiles.find((f) =>
+          f.path.includes(processFileName)
+        )
+        if (processFile) {
+          const log = await getInRunFile(cloudConfiguration, processFile)
+
           // Check for results or data
-          const realLog = await getInRunOutputs(
+          await getInRunOutputs(
             cloudConfiguration,
             log,
             inRunFiles,
@@ -330,11 +345,9 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
             path.join('run', dataPath),
             simulationTask
           )
-          // Log
-          simulationTask.log =
-            currentLog + realLog.replace(/\[.*\]: /g, '') + warnings.join('\n')
         }
       } else if (status === 'Completed') {
+        // Check files
         const files = await getFiles(cloudConfiguration, jobId)
 
         // Log
@@ -344,8 +357,20 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
         if (logFile) {
           const log = await getFile(cloudConfiguration, logFile.id)
 
+          // Log
+          simulationTask.log =
+            currentLog + log.replace(/\[.*\]: /g, '') + warnings.join('\n')
+        }
+
+        // Results / data
+        const processFile = files.find((f) =>
+          f.relativePath.includes(processFileName)
+        )
+        if (processFile) {
+          const log = await getFile(cloudConfiguration, processFile.id)
+
           // Check for results or data
-          const realLog = await getOutputs(
+          await getOutputs(
             cloudConfiguration,
             log,
             files,
@@ -357,10 +382,6 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
             path.join('run', dataPath),
             simulationTask
           )
-
-          // Log
-          simulationTask.log =
-            currentLog + realLog.replace(/\[.*\]: /g, '') + warnings.join('\n')
         }
       }
 

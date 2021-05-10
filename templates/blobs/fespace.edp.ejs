@@ -1,6 +1,8 @@
 // Fespaces
-if (mpirank == 0) cout << "Define finie element space..." << endl;
-if (mpirank == 0) cout.flush;
+if (mpirank == 0) {
+    ofstream logOut('process_output.log', append);
+    logOut << "Define finie element space..." << endl;
+}
 
 <% const FESpace = finiteElementSpace.value || finiteElementSpace.default; -%>
 fespace <%= finiteElementSpace.name -%>(<%= mesh.name -%>, [<%= FESpace.split(',') -%>]);

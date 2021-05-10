@@ -1,6 +1,8 @@
 // Mesh
-if (mpirank == 0) cout << "Read mesh..." << endl;
-if (mpirank == 0) cout.flush;
+if (mpirank == 0) {
+  ofstream logOut('process_output.log', append);
+  logOut << "Read mesh..." << endl;
+}
 
 <%- include('./gmshMesh.edp.ejs', {
   dimension,

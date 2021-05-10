@@ -71,7 +71,16 @@ const PartLoader = (mouseMoveEvent, mouseDownEvent) => {
       const object = gltf.scene.children[0]
       object.type = 'Part'
 
-      // object.uuid = part.uuid
+      object.uuid = part.uuid
+      // Set original colors
+      const solids = object.children[0]
+      for (const solid of solids.children) {
+        solid.material.originalColor = solid.material.color
+      }
+      const faces = object.children[1]
+      for (const face of faces.children) {
+        face.material.originalColor = face.material.color
+      }
 
       object.boundingBox = computeBoundingBox(object)
       object.dispose = () => dispose(object)
@@ -516,13 +525,13 @@ const PartLoader = (mouseMoveEvent, mouseDownEvent) => {
     // Search in solids
     const solids = part.children[0]
     for (const solid of solids.children) {
-      if (solid.uuid === uuid) return solid
+      if (solid.userData.uuid === uuid) return solid
     }
 
     // Search in faces
     const faces = part.children[1]
     for (const face of faces.children) {
-      if (face.uuid === uuid) return face
+      if (face.userData.uuid === uuid) return face
     }
 
     // Search in edges
@@ -558,7 +567,7 @@ const PartLoader = (mouseMoveEvent, mouseDownEvent) => {
     )
 
     if (intersects.length)
-      mouseMoveEvent(selectionPart, intersects[0].object.uuid)
+      mouseMoveEvent(selectionPart, intersects[0].object.userData.uuid)
     else mouseMoveEvent(selectionPart)
   }
 
@@ -572,7 +581,7 @@ const PartLoader = (mouseMoveEvent, mouseDownEvent) => {
 
     const mesh = findObject(selectionPart, uuid)
     if (mesh && mesh.material) {
-      highlighted = mesh.uuid
+      highlighted = mesh.userData.uuid
       selectionOutlinePass.selectedObjects = [mesh]
       mesh.material.color = highlightColor
     }
@@ -587,7 +596,7 @@ const PartLoader = (mouseMoveEvent, mouseDownEvent) => {
     if (mesh && mesh.material) {
       selectionOutlinePass.selectedObjects = []
       // Check selection
-      const index = selected.findIndex((m) => m === mesh.uuid)
+      const index = selected.findIndex((m) => m === mesh.userData.uuid)
       // Unhighlight
       mesh.material.color =
         index === -1 ? mesh.material.originalColor : selectColor

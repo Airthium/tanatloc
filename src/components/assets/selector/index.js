@@ -220,7 +220,7 @@ const Selector = ({ part, alreadySelected, updateSelected }) => {
                   onMouseLeave={onUnhighlight}
                   onClick={() => onSelect(element.uuid)}
                 >
-                  <Space>
+                  <Space direction="" wrap={true} align="center">
                     {element.name}
                     {alreadySelected?.map((a) => {
                       if (a.selected.find((s) => s.uuid === element.uuid))

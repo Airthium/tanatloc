@@ -521,6 +521,8 @@ const ThreeView = ({ loading, project, part, setPartSummary }) => {
     const solids = mesh.children[0]
     const faces = mesh.children[1]
     const summary = {
+      uuid: mesh.uuid,
+      type: mesh.type,
       solids: solids.children.map((solid) => ({
         name: solid.userData.name,
         number: solid.userData.number,

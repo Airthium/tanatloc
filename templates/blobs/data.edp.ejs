@@ -9,8 +9,9 @@
         data << " }" << endl;
     }
 
-    string saveOutput = "PROCESS DATA FILE " + <%- name %> + ".dat";
-    if (mpirank == 0) cout.flush;
-    if (mpirank == 0) cout << saveOutput << endl;
-    if (mpirank == 0) cout.flush;
+    if (mpirank == 0) {
+        ofstream processOut('process_data.log', append);
+        string saveOutput = "PROCESS DATA FILE " + <%- name %> + ".dat";
+        processOut << saveOutput << endl;
+    }
 }

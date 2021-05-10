@@ -1,8 +1,11 @@
 // Headers
-int v = verbosity;
-verbosity = 0;
+if (mpirank == 0) {
+    // Log file
+    ofstream logOut('process_output.log');
 
-if (mpirank == 0) cout << "Starting date: " << "<%= new Date().toLocaleString('en-GB', {timeZone: 'UTC'}) -%>" << endl;
-if (mpirank == 0) cout.flush;
-
-verbosity = v;
+    // Date
+    logOut << "Starting date: " << "<%= new Date().toLocaleString('en-GB', {timeZone: 'UTC'}) -%>" << endl;
+    
+    // Process file
+    ofstream processOut('process_data.log');
+}

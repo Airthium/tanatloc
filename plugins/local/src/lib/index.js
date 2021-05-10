@@ -15,6 +15,10 @@ const key = 'local'
 // dB update delay
 const updateDelay = 1000 // ms
 
+// Results / data file name
+const logFileName = 'process_output.log'
+const processFileName = 'process_data.log'
+
 /**
  * Update tasks
  * @param {string} id Id
@@ -229,6 +233,8 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
     // Create paths
     await Tools.createPath(path.join(simulationPath, 'run/result'))
     await Tools.createPath(path.join(simulationPath, 'run/data'))
+
+    // TODO use log and process files
 
     // Compute simulation
     const code = await Services.freefem(

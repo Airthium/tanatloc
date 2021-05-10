@@ -1,11 +1,11 @@
 // Headers
 if (mpirank == 0) {
     // Log file
-    ofstream logOut('process_output.log');
+    ofstream logOut("process_output.log");
 
     // Date
     logOut << "Starting date: " << "<%= new Date().toLocaleString('en-GB', {timeZone: 'UTC'}) -%>" << endl;
     
     // Process file
-    ofstream processOut('process_data.log');
+    ofstream processOut("process_data.log");
 }

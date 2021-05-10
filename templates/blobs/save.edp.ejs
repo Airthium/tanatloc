@@ -1,6 +1,6 @@
 //Save
 if (mpirank == 0) {
-	ofstream logOut('process_output.log', append);
+	ofstream logOut("process_output.log", append);
 	logOut << "Save result..." << endl;
 }
 
@@ -26,7 +26,7 @@ load "iovtk"
 }
 
 if (mpirank == 0) {
-	ofstream processOut('process_data.log', append);
+	ofstream processOut("process_data.log", append);
 	string saveOutput = "PROCESS VTU FILE " + <%- solution.name %> + ".vtu";
 	processOut << saveOutput << endl;
 }

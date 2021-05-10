@@ -83,7 +83,7 @@ const N = '[N.x, N.y, N.z]'
 -%> 
 //Problem
 if (mpirank == 0) {
-	ofstream logOut('process_output.log', append);
+	ofstream logOut("process_output.log", append);
 	logOut << "Define the problem..." << endl;
 }
 
@@ -124,7 +124,7 @@ varf vStokesRHS (<%= freeFunction -%>, <%= testFunction -%>)
 <%# Time loop -%>
 // Time loop
 if (mpirank == 0) {
-	ofstream logOut('process_output.log', append);
+	ofstream logOut("process_output.log", append);
 	logOut << "Time loop..." << endl;
 }
 
@@ -133,7 +133,7 @@ for (int timeIter = 0; timeIter < nbIter; ++timeIter) {
 	// Update
 	t += dt;
 	if (mpirank == 0) {
-		ofstream logOut('process_output.log', append);
+		ofstream logOut("process_output.log", append);
 		logOut << "Time: " << t << endl;
 	}
 	matrix Stokes = vStokes(<%= finiteElementSpace.name -%>, <%= finiteElementSpace.name -%>, solver=solver);

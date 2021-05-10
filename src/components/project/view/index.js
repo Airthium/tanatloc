@@ -522,18 +522,19 @@ const ThreeView = ({ loading, project, part, setPartSummary }) => {
     const faces = mesh.children[1]
     const summary = {
       solids: solids.children.map((solid) => ({
-        name: solid.name,
-        number: solid.number,
-        uuid: solid.uuid,
+        name: solid.userData.name,
+        number: solid.userData.number,
+        uuid: solid.userData.uuid,
         color: solid.material.color
       })),
       faces: faces.children.map((face) => ({
-        name: face.name,
-        nubmer: face.number,
-        uuid: face.uuid,
+        name: face.userData.name,
+        number: face.userData.number,
+        uuid: face.userData.uuid,
         color: face.material.color
       }))
     }
+    console.log(summary)
     setPartSummary(summary)
 
     // Scene

@@ -42,7 +42,6 @@ const Selector = ({ part, alreadySelected, updateSelected }) => {
     const colorsList = []
     part?.[type]?.forEach((element) => {
       if (element.color) {
-        console.log(element.color)
         const existingColor = colorsList.find(
           (c) =>
             c.r === element.color.r &&

@@ -85,12 +85,14 @@ const Run = ({ simulation, swr }) => {
     const erroredTasks = currentSimulation?.tasks?.filter(
       (t) => t.status === 'error'
     )
-    if (erroredTasks?.length) setRunning(false)
+    if (erroredTasks?.length) {
+      setRunning(false)
+      return
+    }
 
     const runningTasks = currentSimulation?.tasks?.filter(
       (t) => t.status !== 'finish'
     )
-
     if (runningTasks?.length) setRunning(true)
     else setRunning(false)
   }, [JSON.stringify(currentSimulation?.tasks)])

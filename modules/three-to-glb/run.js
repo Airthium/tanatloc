@@ -114,8 +114,8 @@ const load = (part) => {
  */
 const loadElement = (type, element, color) => {
   const loader = new THREE.BufferGeometryLoader()
-  const buffer = element.buffer
-  const json = JSON.parse(Buffer.from(buffer).toString())
+  const buffer = Buffer.from(element.buffer)
+  const json = JSON.parse(buffer.toString())
   const geometry = loader.parse(json)
 
   // Convert mm to m
@@ -149,9 +149,9 @@ const loadElement = (type, element, color) => {
 
     const mesh = new THREE.Mesh(geometry, material)
 
-    mesh.uuid = buffer.uuid
-    mesh.name = element.name
-    mesh.number = element.number
+    mesh.userData.uuid = json.uuid
+    mesh.userData.name = element.name
+    mesh.userData.number = element.number
 
     return mesh
   } else if (type === 'mesh') {
@@ -167,9 +167,9 @@ const loadElement = (type, element, color) => {
 
     const mesh = new THREE.LineSegments(wireframe, material)
 
-    mesh.uuid = buffer.uuid
-    mesh.name = element.name
-    mesh.number = element.number
+    mesh.userData.uuid = json.uuid
+    mesh.userData.name = element.name
+    mesh.userData.number = element.number
 
     return mesh
   } else if (type === 'result') {
@@ -241,9 +241,9 @@ const loadElement = (type, element, color) => {
     group.add(mesh)
     group.add(wireframe)
 
-    group.uuid = buffer.uuid
-    group.name = element.name
-    group.number = element.number
+    group.userData.uuid = json.uuid
+    group.userData.name = element.name
+    group.userData.number = element.number
 
     return group
   }

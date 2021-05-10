@@ -27,10 +27,8 @@ const Groups = ({ users }) => {
   const [userOptions, setUserOptions] = useState([])
 
   // Data
-  const [
-    groups,
-    { mutateOneGroup, delOneGroup, errorGroups, loadingGroups }
-  ] = GroupAPI.useGroups()
+  const [groups, { mutateOneGroup, delOneGroup, errorGroups, loadingGroups }] =
+    GroupAPI.useGroups()
 
   const columns = [
     {

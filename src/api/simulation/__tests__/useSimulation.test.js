@@ -9,10 +9,8 @@ jest.mock('swr', () => () => ({
 describe('api/simulation/useSimulation', () => {
   it('with simulation', () => {
     mockSimulation.mockImplementation(() => ({}))
-    const [
-      simulation,
-      { mutateSimulation, loadingSimulation }
-    ] = useSimulation()
+    const [simulation, { mutateSimulation, loadingSimulation }] =
+      useSimulation()
     expect(simulation).toEqual({})
     expect(mutateSimulation).toBeDefined()
     expect(loadingSimulation).toBe(false)
@@ -20,10 +18,8 @@ describe('api/simulation/useSimulation', () => {
 
   it('without simulation', () => {
     mockSimulation.mockImplementation(() => {})
-    const [
-      simulation,
-      { mutateSimulation, loadingSimulation }
-    ] = useSimulation()
+    const [simulation, { mutateSimulation, loadingSimulation }] =
+      useSimulation()
     expect(simulation).toEqual({})
     expect(mutateSimulation).toBeDefined()
     expect(loadingSimulation).toBe(false)
@@ -31,9 +27,8 @@ describe('api/simulation/useSimulation', () => {
 
   it('with id', () => {
     mockSimulation.mockImplementation(() => {})
-    const [simulation, { mutateSimulation, loadingSimulation }] = useSimulation(
-      'id'
-    )
+    const [simulation, { mutateSimulation, loadingSimulation }] =
+      useSimulation('id')
     expect(simulation).toEqual({})
     expect(mutateSimulation).toBeDefined()
     expect(loadingSimulation).toBe(false)

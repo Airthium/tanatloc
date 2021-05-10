@@ -22,10 +22,8 @@ const errors = {
 const Registration = () => {
   // Data
   const [form] = Form.useForm()
-  const [
-    system,
-    { mutateSystem, errorSystem, loadingSystem }
-  ] = SystemAPI.useSystem()
+  const [system, { mutateSystem, errorSystem, loadingSystem }] =
+    SystemAPI.useSystem()
   const layout = {
     labelCol: { span: 8 },
     wrapperCol: { span: 16 }

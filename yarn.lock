@@ -3035,7 +3035,7 @@ caniuse-lite@^1.0.30001173, caniuse-lite@^1.0.30001179, caniuse-lite@^1.0.300012
   resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001219.tgz#5bfa5d0519f41f993618bd318f606a4c4c16156b"
   integrity sha512-c0yixVG4v9KBc/tQ2rlbB3A/bgBFRvl8h8M4IeUbqCca4gsiCfvtaheUssbnux/Mb66Vjz7x8yYjDgYcNQOhyQ==
 
-canvas@2.7.0, canvas@^2.7.0:
+canvas@^2.7.0:
   version "2.7.0"
   resolved "https://registry.yarnpkg.com/canvas/-/canvas-2.7.0.tgz#3ce3fe30c69595ccd2bd1232967e681c026be61e"
   integrity sha512-pzCxtkHb+5su5MQjTtepMDlIOtaXo277x0C0u3nMOxtkhTyQ+h2yNKhlROAaDllWgRyePAUitC08sXw26Eb6aw==
@@ -5465,7 +5465,7 @@ globalthis@^1.0.1:
   dependencies:
     define-properties "^1.1.3"
 
-gltf-pipeline@3.0.2, gltf-pipeline@^3.0.2:
+gltf-pipeline@^3.0.2:
   version "3.0.2"
   resolved "https://registry.yarnpkg.com/gltf-pipeline/-/gltf-pipeline-3.0.2.tgz#2ce54fc543f98b04a3a607c64893493fef1c394f"
   integrity sha512-UnEcXFGycDciXmpQ4aJfbApymd7CZaJB6DuAkyqSCwpDqQy4C8kvdR5Bl0cSV9wYKtzPoaxEeDUcvk5d0ny0nw==
@@ -11536,7 +11536,7 @@ vary@^1, vary@~1.1.2:
   resolved "https://registry.yarnpkg.com/vary/-/vary-1.1.2.tgz#2299f02c6ded30d4a5961b0b9f74524a18f634fc"
   integrity sha1-IpnwLG3tMNSllhsLn3RSShj2NPw=
 
-vblob@1.0.2, vblob@^1.0.2:
+vblob@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/vblob/-/vblob-1.0.2.tgz#e68a02d32c2ffb71a38654b59d0e53c01ec87c7b"
   integrity sha512-7ZexHDhnlKNbySsYUxdlZCafvVLI8xpxOfjfSnW6HDooyJFjCF+Rw4vejhL3KeDWoDkuvoEhexRE+97GXTHW0g==

@@ -45,10 +45,8 @@ const Administration = () => {
   const router = useRouter()
   const { tab } = router.query
 
-  const [
-    users,
-    { addOneUser, mutateOneUser, delOneUser, errorUsers }
-  ] = UserAPI.useUsers()
+  const [users, { addOneUser, mutateOneUser, delOneUser, errorUsers }] =
+    UserAPI.useUsers()
 
   // Users error
   useEffect(() => {

@@ -26,9 +26,8 @@ const errors = {
 const BoundaryConditions = ({ simulation, part, swr, setVisible }) => {
   // State
   const [boundaryCondition, setBoundaryCondition] = useState()
-  const [boundaryConditionVisible, setBoundaryConditionVisible] = useState(
-    false
-  )
+  const [boundaryConditionVisible, setBoundaryConditionVisible] =
+    useState(false)
 
   // Store
   const dispatch = useDispatch()

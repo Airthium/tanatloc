@@ -29,8 +29,10 @@ describe('components/assets/input/password', () => {
     }))
     wrapper = shallow(<PasswordItem name="password" />)
 
-    const validator = wrapper.find({ name: 'password' }).props().rules[0]()
-      .validator
+    const validator = wrapper
+      .find({ name: 'password' })
+      .props()
+      .rules[0]().validator
 
     try {
       await validator(null, '')
@@ -90,8 +92,10 @@ describe('components/assets/input/password', () => {
     }))
     wrapper = shallow(<PasswordItem edit={true} />)
 
-    const validator = wrapper.find({ name: 'password' }).props().rules[0]()
-      .validator
+    const validator = wrapper
+      .find({ name: 'password' })
+      .props()
+      .rules[0]().validator
 
     await validator(null, '******')
 

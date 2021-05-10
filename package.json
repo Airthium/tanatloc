@@ -62,7 +62,6 @@
     "electron-builder": "22.11.1",
     "enzyme": "3.11.0",
     "express": "4.17.1",
-    "foodoc": "0.0.9",
     "http-errors": "1.8.0",
     "is-docker": "2.2.1",
     "is-electron": "2.2.0",

@@ -156,3 +156,8 @@ Sh Sigma = sqrt(
 		order: [1, 1]
 	}
 }); -%>
+
+if (mpirank == 0) {
+	ofstream logOut("process_output.log", append);
+	logOut << "End" << endl;
+}

@@ -242,7 +242,7 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
       path.join('run', id + '.edp'),
       async ({ pid, error, data }) => {
         simulationTask.status = 'process'
-        startProcess(simulationTask)
+        startProcess(simulationPath, simulationTask)
 
         pid && (simulationTask.pid = pid)
 
@@ -378,32 +378,37 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
 }
 
 let interval = null
-const startProcess = (task) => {
+const startProcess = (simulationPath, task) => {
   if (!interval)
-    interval = setInterval(async () => await processOutput(task), 1000)
+    interval = setInterval(
+      async () => await processOutput(simulationPath, task),
+      1000
+    )
 }
 
 const stopProcess = () => {
   if (interval) clearInterval(interval)
 }
 
-const processOutput = async (task) => {
+const processOutput = async (simulationPath, task) => {
   // Log
   try {
-    const log = await Tools.readFile(
-      path.join(simulationPath, 'run', logFileName)
-    )
-    console.log(log)
-    log && (task.log += log)
-  } catch (err) {}
+    const log = await Tools.readFile(path.join(simulationPath, logFileName))
+    log && (task.log = log.toString())
+  } catch (err) {
+    console.warn(err)
+  }
 
   // Result / data
   try {
     const process = await Tools.readFile(
-      path.join(simulationPath, 'run', processFileName)
+      path.join(simulationPath, processFileName)
     )
-    console.log(process)
-  } catch (err) {}
+    // TODO
+    console.log(process.toString())
+  } catch (err) {
+    console.warn(err)
+  }
 }
 
 /**

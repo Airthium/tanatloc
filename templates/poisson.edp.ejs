@@ -102,3 +102,8 @@ u[] = Laplacian^-1 * LaplacianRHS;
 		order: [1]
 	}
 }); -%>
+
+if (mpirank == 0) {
+	ofstream logOut("process_output.log", append);
+	logOut << "End" << endl;
+}

@@ -175,3 +175,8 @@ for (int timeIter = 0; timeIter < nbIter; ++timeIter) {
 		}
 	}); -%>
 }
+
+if (mpirank == 0) {
+	ofstream logOut("process_output.log", append);
+	logOut << "End" << endl;
+}

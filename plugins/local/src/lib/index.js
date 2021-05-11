@@ -1,4 +1,6 @@
 import path from 'path'
+import { setIntervalAsync } from 'set-interval-async/fixed'
+import { clearIntervalAsync } from 'set-interval-async'
 
 import storage from '@/config/storage'
 
@@ -76,15 +78,6 @@ const computeMesh = async (simulationPath, geometry, mesh, callback) => {
     },
     ({ data, error }) => callback({ data, error })
   )
-  // const three = await Services.toThree(
-  //   simulationPath,
-  //   path.join(mesh.path, mshFile),
-  //   path.join(mesh.path, partPath)
-  // )
-  // callback({ data: three.data, error: three.error })
-
-  // if (three.code !== 0)
-  //   throw new Error('Mesh converting process failed. Code ' + three.code)
 
   return {
     fileName: mshFile,
@@ -92,8 +85,6 @@ const computeMesh = async (simulationPath, geometry, mesh, callback) => {
     renderPath: mesh.path,
     json: three.json,
     glb: three.glb
-    // part: 'part.json',
-    // partPath: path.join(mesh.path, partPath)
   }
 }
 
@@ -116,6 +107,8 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
     index: -1,
     label: 'Simulation',
     log: '',
+    warning: '',
+    error: '',
     status: 'wait'
   }
   tasks.push(simulationTask)
@@ -132,6 +125,8 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
           index: index,
           label: 'Mesh',
           log: '',
+          warning: '',
+          error: '',
           status: 'wait'
         }
         tasks.push(meshingTask)
@@ -184,7 +179,7 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
 
               pid && (meshingTask.pid = pid)
 
-              error && (meshingTask.log += 'Error: ' + error + '\n')
+              error && (meshingTask.error += 'Error: ' + error + '\n')
 
               data && (meshingTask.log += data + '\n')
 
@@ -202,7 +197,7 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
         } catch (err) {
           // Task
           meshingTask.status = 'error'
-          meshingTask.log += 'Fatal error: ' + err.message
+          meshingTask.error += 'Fatal error: ' + err.message
           updateTasks(id, tasks)
 
           throw err
@@ -234,126 +229,19 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
     await Tools.createPath(path.join(simulationPath, 'run/result'))
     await Tools.createPath(path.join(simulationPath, 'run/data'))
 
-    // TODO use log and process files
-
     // Compute simulation
     const code = await Services.freefem(
       simulationPath,
       path.join('run', id + '.edp'),
       async ({ pid, error, data }) => {
         simulationTask.status = 'process'
-        startProcess(simulationPath, simulationTask)
+        startProcess(simulationPath, simulationTask, () =>
+          updateTasks(id, tasks)
+        )
 
         pid && (simulationTask.pid = pid)
 
-        error && (simulationTask.log += 'Error: ' + error + '\n')
-
-        // if (
-        //   data &&
-        //   (data.includes('PROCESS VTU FILE') ||
-        //     data.includes('PROCESS DATA FILE'))
-        // ) {
-        //   const lines = data.split('\n')
-        //   const resultLines = lines.filter((l) =>
-        //     l.includes('PROCESS VTU FILE')
-        //   )
-        //   const dataLines = lines.filter((l) => l.includes('PROCESS DATA FILE'))
-
-        //   // Put other lines in logs
-        //   const nonResultLines = lines.filter(
-        //     (l) =>
-        //       !l.includes('PROCESS VTU FILE') &&
-        //       !l.includes('PROCESS DATA FILE')
-        //   )
-        //   nonResultLines.forEach((line) => {
-        //     simulationTask.log += line
-        //   })
-
-        //   // Get result
-        //   await Promise.all(
-        //     resultLines.map(async (line) => {
-        //       // New result
-        //       const resFile = line.replace('PROCESS VTU FILE', '').trim()
-        //       const partPath = resFile.replace('.vtu', '')
-
-        //       try {
-        //         const three = await Services.toThree(
-        //           simulationPath,
-        //           path.join('run/result', resFile),
-        //           path.join('run/result', partPath)
-        //         )
-
-        //         if (three.code !== 0) {
-        //           simulationTask.log +=
-        //             'Warning: Result converting process failed. Code ' +
-        //             three.code
-        //           updateTasks(id, tasks)
-        //         } else if (three.error) {
-        //           simulationTask.log +=
-        //             'Warning: Result converting process failed (' +
-        //             three.error +
-        //             ')'
-        //           updateTasks(id, tasks)
-        //         } else {
-        //           const results = three.data
-        //             ?.trim()
-        //             ?.split('\n')
-        //             .map((res) => JSON.parse(res))
-
-        //           simulationTask.files = [
-        //             ...(simulationTask.files || []),
-        //             ...results.map((result) => ({
-        //               fileName: resFile,
-        //               originPath: 'run/result',
-        //               name: result.name,
-        //               part: 'part.json',
-        //               partPath: result.path
-        //             }))
-        //           ]
-
-        //           updateTasks(id, tasks)
-        //         }
-        //       } catch (err) {
-        //         console.error(err)
-        //         simulationTask.log +=
-        //           'Warning: Unable to convert result file (' + err.message + ')'
-        //         updateTasks(id, tasks)
-        //       }
-        //     })
-        //   )
-
-        //   // Get data
-        //   await Promise.all(
-        //     dataLines.map(async (line) => {
-        //       // New data
-        //       const dataFile = line.replace('PROCESS DATA FILE', '').trim()
-
-        //       try {
-        //         // Read file
-        //         const dataPath = path.join(
-        //           simulationPath,
-        //           'run',
-        //           'data',
-        //           dataFile
-        //         )
-        //         const dataContent = await Tools.readFile(dataPath)
-
-        //         simulationTask.datas = [
-        //           ...(simulationTask.datas || []),
-        //           JSON.parse(dataContent.toString())
-        //         ]
-        //         updateTasks(id, tasks)
-        //       } catch (err) {
-        //         simulationTask.log +=
-        //           'Warning: Unable to read data file (' + err.message + ')'
-        //         updateTasks(id, tasks)
-        //       }
-        //     })
-        //   )
-        // } else {
-        //   // This is just some log
-        //   data && (simulationTask.log += data + '\n')
-        // }
+        error && (simulationTask.error += 'Error: ' + error + '\n')
 
         if ((Date.now() - start) % updateDelay === 0) updateTasks(id, tasks)
       }
@@ -370,7 +258,7 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
   } catch (err) {
     // Task
     simulationTask.status = 'error'
-    simulationTask.log += 'Fatal error: ' + err.message
+    simulationTask.error += 'Fatal error: ' + err.message
     updateTasks(id, tasks)
 
     throw err
@@ -378,19 +266,41 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
 }
 
 let interval = null
-const startProcess = (simulationPath, task) => {
-  if (!interval)
-    interval = setInterval(
-      async () => await processOutput(simulationPath, task),
+let currentLog = ''
+const results = []
+const datas = []
+
+/**
+ * Start process results & datas
+ * @param {string} simulationPath Simulation path
+ * @param {Object} task Simulation task
+ * @param {Function} update Update task
+ */
+const startProcess = (simulationPath, task, update) => {
+  if (!interval) {
+    results.length = 0
+    datas.length = 0
+    interval = setIntervalAsync(
+      async () => await processOutput(simulationPath, task, update),
       1000
     )
+  }
 }
 
+/**
+ * Stop process results and datas
+ */
 const stopProcess = () => {
-  if (interval) clearInterval(interval)
+  if (interval) clearIntervalAsync(interval)
 }
 
-const processOutput = async (simulationPath, task) => {
+/**
+ * Process results & datas
+ * @param {string} simulationPath Simulation path
+ * @param {Object} task Simulation task
+ * @param {Function} update Update task
+ */
+const processOutput = async (simulationPath, task, update) => {
   // Log
   try {
     const log = await Tools.readFile(path.join(simulationPath, logFileName))
@@ -404,8 +314,103 @@ const processOutput = async (simulationPath, task) => {
     const process = await Tools.readFile(
       path.join(simulationPath, processFileName)
     )
-    // TODO
-    console.log(process.toString())
+
+    const lines = process.toString().split('\n')
+    const resultLines = lines.filter((l) => l.includes('PROCESS VTU FILE'))
+    const dataLines = lines.filter((l) => l.includes('PROCESS DATA FILE'))
+
+    // Get result
+    await Promise.all(
+      resultLines.map(async (line) => {
+        // Already existing result
+        if (results.includes(line)) return
+
+        // New result
+        const resFile = line.replace('PROCESS VTU FILE', '').trim()
+        const partPath = resFile.replace('.vtu', '')
+
+        try {
+          // Convert
+          let convertData = ''
+          let convertError = ''
+          const three = await Tools.convert(
+            simulationPath,
+            {
+              name: path.join('run/result', resFile),
+              target: path.join('run/result', partPath)
+            },
+            ({ data, error }) => {
+              convertData += data
+              convertError += error
+            },
+            { isResult: true }
+          )
+
+          if (convertError) {
+            task.warning +=
+              'Warning: Result converting process failed (' + three.error + ')'
+            update()
+          } else {
+            // Add to task
+            const newResults = convertData
+              ?.trim()
+              ?.split('\n')
+              .map((res) => JSON.parse(res))
+
+            task.files = [
+              ...(task.files || []),
+              ...newResults.map((result) => ({
+                fileName: resFile,
+                originPath: 'run/result',
+                name: result.name,
+                json: result.path,
+                glb: result.path + '.glb'
+              }))
+            ]
+            update()
+
+            // Add to results
+            results.push(line)
+          }
+        } catch (err) {
+          console.error(err)
+          task.warning +=
+            'Warning: Unable to convert result file (' + err.message + ')'
+          update()
+        }
+      })
+    )
+
+    // Get data
+    await Promise.all(
+      dataLines.map(async (line) => {
+        // Already existing data
+        if (datas.includes(line)) return
+
+        // New data
+        const dataFile = line.replace('PROCESS DATA FILE', '').trim()
+
+        try {
+          // Read file
+          const dataPath = path.join(simulationPath, 'run', 'data', dataFile)
+          const dataContent = await Tools.readFile(dataPath)
+
+          // Add to tasks
+          task.datas = [
+            ...(task.datas || []),
+            JSON.parse(dataContent.toString())
+          ]
+          update()
+
+          // Add to datas
+          datas.push(line)
+        } catch (err) {
+          task.warning +=
+            'Warning: Unable to read data file (' + err.message + ')'
+          update()
+        }
+      })
+    )
   } catch (err) {
     console.warn(err)
   }

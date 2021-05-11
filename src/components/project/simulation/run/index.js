@@ -373,6 +373,20 @@ const Run = ({ simulation, swr }) => {
             __html: task?.log?.replace(/\n\n/g, '\n').replace(/\n/g, '<br />')
           }}
         />
+        <div
+          dangerouslySetInnerHTML={{
+            __html: task?.warning
+              ?.replace(/\n\n/g, '\n')
+              .replace(/\n/g, '<br />')
+          }}
+          style={{ color: 'orange' }}
+        />
+        <div
+          dangerouslySetInnerHTML={{
+            __html: task?.error?.replace(/\n\n/g, '\n').replace(/\n/g, '<br />')
+          }}
+          style={{ color: 'red' }}
+        />
       </Tabs.TabPane>
     )
     setLogContent(<Tabs>{content}</Tabs>)

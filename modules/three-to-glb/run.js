@@ -19,6 +19,7 @@ global.document = {
 }
 
 require('three/examples/js/exporters/GLTFExporter')
+require('three/examples/js/math/Lut')
 
 // Solid color
 const solidColor = new THREE.Color('gray')
@@ -234,7 +235,6 @@ const loadElement = (type, element, color) => {
       wireframeGeometry,
       wireframeMaterial
     )
-    wireframe.visible = transparent
 
     group.lut = lut
 

@@ -21,6 +21,9 @@ global.document = {
 require('three/examples/js/exporters/GLTFExporter')
 require('three/examples/js/math/Lut')
 
+require('three/examples/js/utils/BufferGeometryUtils')
+require('three/examples/js/modifiers/SimplifyModifier')
+
 // Solid color
 const solidColor = new THREE.Color('gray')
 // Face color
@@ -117,7 +120,7 @@ const loadElement = (type, element, color) => {
   const loader = new THREE.BufferGeometryLoader()
   const buffer = Buffer.from(element.buffer)
   const json = JSON.parse(buffer.toString())
-  const geometry = loader.parse(json)
+  let geometry = loader.parse(json)
 
   // Convert mm to m
   // Meshes and results are already converted
@@ -138,6 +141,10 @@ const loadElement = (type, element, color) => {
     delete geometry.attributes.color
   }
 
+  // // Reduction
+  // const simplifyModifier = new THREE.SimplifyModifier()
+  // geometry = simplifyModifier.modify(geometry, 0)
+
   if (type === 'geometry') {
     geometry.computeBoundingBox()
     geometry.computeBoundingSphere()
@@ -146,7 +153,6 @@ const loadElement = (type, element, color) => {
       color: color,
       side: THREE.DoubleSide
     })
-    material.originalColor = color
 
     const mesh = new THREE.Mesh(geometry, material)
 
@@ -164,7 +170,6 @@ const loadElement = (type, element, color) => {
       color: color,
       linewidth: 1
     })
-    material.originalColor = color
 
     const mesh = new THREE.LineSegments(wireframe, material)
 
@@ -174,15 +179,9 @@ const loadElement = (type, element, color) => {
 
     return mesh
   } else if (type === 'result') {
-    const group = new THREE.Group()
-
     geometry.computeBoundingBox()
     geometry.computeBoundingSphere()
 
-    group.boundingBox = geometry.boundingBox
-    group.boundingSphere = geometry.boundingSphere
-
-    let vertexColors
     const lut = new THREE.Lut()
     const data = geometry.getAttribute('data')
     if (data) {
@@ -202,7 +201,7 @@ const loadElement = (type, element, color) => {
         lut.setMax(max)
       }
 
-      vertexColors = new Float32Array(data.count * 3)
+      const vertexColors = new Float32Array(data.count * 3)
       for (let i = 0; i < data.count; ++i) {
         const vertexColor = lut.getColor(data.array[i])
         vertexColors[3 * i + 0] = vertexColor.r
@@ -215,37 +214,33 @@ const loadElement = (type, element, color) => {
       )
     }
 
-    const material = new THREE.LineBasicMaterial({
+    const material = new THREE.MeshStandardMaterial({
       vertexColors: THREE.VertexColors,
       color: color,
       side: THREE.DoubleSide
     })
-    material.originalColor = color
 
     const mesh = new THREE.Mesh(geometry, material)
 
     const wireframeGeometry = new THREE.WireframeGeometry(geometry)
     const wireframeMaterial = new THREE.LineBasicMaterial({
       color: color,
-      linewidth: 1
+      linewidth: 2
     })
-    material.originalColor = color
 
     const wireframe = new THREE.LineSegments(
       wireframeGeometry,
       wireframeMaterial
     )
+    mesh.add(wireframe)
 
-    group.lut = lut
+    mesh.lut = lut
 
-    group.add(mesh)
-    group.add(wireframe)
+    mesh.userData.uuid = json.uuid
+    mesh.userData.name = element.name
+    mesh.userData.number = element.number
 
-    group.userData.uuid = json.uuid
-    group.userData.name = element.name
-    group.userData.number = element.number
-
-    return group
+    return mesh
   }
 }
 

@@ -409,14 +409,6 @@ const PartLoader = (mouseMoveEvent, mouseDownEvent) => {
             child.material.opacity = transparent ? 0.5 : 1
             child.material.depthWrite = !transparent
           }
-          if (child.children && child.children.length) {
-            // This is a result
-            child.children[0].material.transparent = transparent
-            child.children[0].material.opacity = transparent ? 0.5 : 1
-            child.children[0].material.depthWrite = !transparent
-
-            child.children[1].visible = transparent
-          }
         })
     })
   }

@@ -1,6 +1,6 @@
 // Dimension macros
 if (mpirank == 0) {
-    ofstream logOut("process_output.log", append);
+    ofstream logOut("process_log.log", append);
     logOut << "Dimension: <%= dimension -%>" << endl;
 }
 

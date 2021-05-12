@@ -30,7 +30,7 @@ const key = 'rescale'
 const updateDelay = 1000 // ms
 
 // Log file name
-const logFileName = 'process_output.log'
+const logFileName = 'process_log.log'
 const processFileName = 'process_data.log'
 
 /**
@@ -79,6 +79,8 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
   const simulationTask = {
     label: 'Rescale',
     log: '',
+    warning: '',
+    error: '',
     status: 'wait'
   }
   tasks.push(simulationTask)
@@ -305,7 +307,6 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
     const currentLog = simulationTask.log
     const results = []
     const datas = []
-    const warnings = []
     while (status !== 'Completed') {
       status = await getStatus(cloudConfiguration, jobId)
 
@@ -321,8 +322,7 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
           const log = await getInRunFile(cloudConfiguration, logFile)
 
           // Log
-          simulationTask.log =
-            currentLog + log.replace(/\[.*\]: /g, '') + warnings.join('\n')
+          simulationTask.log = currentLog + log.replace(/\[.*\]: /g, '')
         }
 
         // Results / data
@@ -331,6 +331,7 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
         )
         if (processFile) {
           const log = await getInRunFile(cloudConfiguration, processFile)
+          console.log(log)
 
           // Check for results or data
           await getInRunOutputs(
@@ -339,7 +340,6 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
             inRunFiles,
             results,
             datas,
-            warnings,
             simulationPath,
             path.join('run', resultPath),
             path.join('run', dataPath),
@@ -358,8 +358,7 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
           const log = await getFile(cloudConfiguration, logFile.id)
 
           // Log
-          simulationTask.log =
-            currentLog + log.replace(/\[.*\]: /g, '') + warnings.join('\n')
+          simulationTask.log = currentLog + log.replace(/\[.*\]: /g, '')
         }
 
         // Results / data
@@ -376,7 +375,6 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
             files,
             results,
             datas,
-            warnings,
             simulationPath,
             path.join('run', resultPath),
             path.join('run', dataPath),
@@ -400,7 +398,7 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
   } catch (err) {
     // Task
     simulationTask.status = 'error'
-    simulationTask.log += 'Fatal error: ' + err.message
+    simulationTask.error += 'Fatal error: ' + err.message
     updateTasks(id, tasks)
 
     throw err

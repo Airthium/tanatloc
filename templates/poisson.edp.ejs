@@ -47,7 +47,7 @@ const rhsValue = rhs.value || rhs.default
 -%>
 // Problem
 if (mpirank == 0) {
-	ofstream logOut("process_output.log", append);
+	ofstream logOut("process_log.log", append);
 	logOut << "Define the problem..." << endl;
 }
 
@@ -83,7 +83,7 @@ varf vLaplacianRHS (u, uh)
 <%# Solve -%>
 // Solve
 if (mpirank == 0) {
-	ofstream logOut("process_output.log", append);
+	ofstream logOut("process_log.log", append);
 	logOut << "Solve the problem..." << endl;
 }
 
@@ -104,6 +104,6 @@ u[] = Laplacian^-1 * LaplacianRHS;
 }); -%>
 
 if (mpirank == 0) {
-	ofstream logOut("process_output.log", append);
+	ofstream logOut("process_log.log", append);
 	logOut << "End" << endl;
 }

@@ -3,7 +3,7 @@ const fs = require('fs')
 const THREE = require('three')
 const Canvas = require('canvas')
 const { Blob, FileReader } = require('vblob')
-const gltfPipeline = require('gltf-pipeline')
+// const gltfPipeline = require('gltf-pipeline')
 
 // Global scope (fake)
 global.window = global
@@ -74,7 +74,7 @@ const loadPart = (location, name) => {
 /**
  * Load part
  * @param {Object} part Part
- * @returns ThreeJS object
+ * @returns {Object} ThreeJS object
  */
 const load = (part) => {
   const type = part.type
@@ -113,7 +113,7 @@ const load = (part) => {
  * @param {string} type Type
  * @param {Object} element Element
  * @param {string} color Color
- * @returns Element
+ * @returns {Object} Element
  */
 const loadElement = (type, element, color) => {
   const loader = new THREE.BufferGeometryLoader()

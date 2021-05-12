@@ -36,7 +36,6 @@ const add = async (user, organization) => {
  * Get
  * @param {string} id Id
  * @param {Array} data Data
- * @returns
  */
 const get = async (id, data) => {
   return OrganizationDB.get(id, data)

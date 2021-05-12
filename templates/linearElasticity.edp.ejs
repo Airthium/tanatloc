@@ -65,7 +65,7 @@ const N = '[N.x, N.y, N.z]'
 -%>
 // Problem
 if (mpirank == 0) {
-	ofstream logOut("process_output.log", append);
+	ofstream logOut("process_log.log", append);
 	logOut << "Define the problem..." << endl;
 }
 
@@ -114,7 +114,7 @@ varf vLinearElasticityRHS (<%= unknownFunction -%>, <%= testFunction -%>)
 <%# Solve -%>
 // Solve
 if (mpirank == 0) {
-	ofstream logOut("process_output.log", append);
+	ofstream logOut("process_log.log", append);
 	logOut << "Solve the problem..." << endl;
 }
 
@@ -158,6 +158,6 @@ Sh Sigma = sqrt(
 }); -%>
 
 if (mpirank == 0) {
-	ofstream logOut("process_output.log", append);
+	ofstream logOut("process_log.log", append);
 	logOut << "End" << endl;
 }

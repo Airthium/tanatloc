@@ -74,7 +74,8 @@ Account.propTypes = {
     email: PropTypes.string.isRequired,
     firstname: PropTypes.string,
     lastname: PropTypes.string,
-    avatar: PropTypes.object
+    avatar: PropTypes.object,
+    authorizedplugins: PropTypes.array.isRequired
   }).isRequired,
   swr: PropTypes.shape({
     mutateUser: PropTypes.func.isRequired

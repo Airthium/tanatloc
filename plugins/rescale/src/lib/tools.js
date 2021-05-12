@@ -6,8 +6,6 @@ import SimulationDB from '@/database/simulation'
 import Tools from '@/lib/tools'
 import Sentry from '@/lib/sentry'
 
-import Services from '@/services'
-
 import call from './call'
 
 /**
@@ -292,7 +290,6 @@ const getFile = async (configuration, id) => {
  * @param {Array} availableFiles Available files
  * @param {Array} existingResults Existing results
  * @param {Array} existingDatas Existing datas
- * @param {Array} warnings Warnings
  * @param {string} simulationPath Simulation path
  * @param {string} resultPath Result path
  * @param {string} dataPath Data path
@@ -304,7 +301,6 @@ const getInRunOutputs = async (
   availableFiles,
   existingResults,
   existingDatas,
-  warnings,
   simulationPath,
   resultPath,
   dataPath,
@@ -317,7 +313,6 @@ const getInRunOutputs = async (
     availableFiles,
     existingResults,
     existingDatas,
-    warnings,
     simulationPath,
     resultPath,
     dataPath,
@@ -332,7 +327,6 @@ const getInRunOutputs = async (
  * @param {Array} availableFiles Available files
  * @param {Array} existingResults Existing results
  * @param {Array} existingDatas Existing datas
- * @param {Array} warnings Warnings
  * @param {string} simulationPath Simulation path
  * @param {string} resultPath Result path
  * @param {string} dataPath Data path
@@ -344,7 +338,6 @@ const getOutputs = async (
   availableFiles,
   existingResults,
   existingDatas,
-  warnings,
   simulationPath,
   resultPath,
   dataPath,
@@ -357,7 +350,6 @@ const getOutputs = async (
     availableFiles,
     existingResults,
     existingDatas,
-    warnings,
     simulationPath,
     resultPath,
     dataPath,
@@ -373,7 +365,6 @@ const getOutputs = async (
  * @param {Array} availableFiles Available files
  * @param {Array} existingResults Existing results
  * @param {Array} existingDatas Existing datas
- * @param {Array} warnings Warnings
  * @param {string} simulationPath Simulation path
  * @param {string} resultPath Result path
  * @param {string} dataPath Data path
@@ -386,7 +377,6 @@ const processOutput = async (
   availableFiles,
   existingResults,
   existingDatas,
-  warnings,
   simulationPath,
   resultPath,
   dataPath,
@@ -416,7 +406,6 @@ const processOutput = async (
         configuration,
         availableFiles,
         existingDatas,
-        warnings,
         simulationPath,
         dataPath,
         task
@@ -437,7 +426,6 @@ const processOutput = async (
         configuration,
         availableFiles,
         existingResults,
-        warnings,
         simulationPath,
         resultPath,
         task
@@ -458,7 +446,6 @@ const processOutput = async (
  * @param {string} resultFile Result file
  * @param {Array} availableFiles Available files
  * @param {Array} existingResults Existing results
- * @param {Arrays} warnings Warnings
  * @param {string} simulationPath Simulation path
  * @param {string} resultPath Result path
  * @param {Object} task Task
@@ -469,7 +456,6 @@ const processResult = async (
   configuration,
   availableFiles,
   existingResults,
-  warnings,
   simulationPath,
   resultPath,
   task
@@ -512,27 +498,29 @@ const processResult = async (
     )
 
     // Convert file
-    const three = await Services.toThree(
+    let convertData = ''
+    let convertError = ''
+    await Tools.convert(
       simulationPath,
-      path.join(resultPath, resultFile),
-      path.join(resultPath, partPath)
+      {
+        name: path.join('run/result', resFile),
+        target: path.join('run/result', partPath)
+      },
+      ({ data, error }) => {
+        convertData += data
+        convertError += error
+      },
+      { isResult: true }
     )
-    if (three.code !== 0) {
+
+    if (convertError) {
       console.warn(
-        'Warning: Result converting process failed. Code ' + three.code
+        'Warning: Result converting process failed (' + convertError + ')'
       )
-      warnings.push(
-        'Warning: Result converting process failed. Code ' + three.code
-      )
-    } else if (three.error) {
-      console.warn(
-        'Warning: Result converting process failed (' + three.error + ')'
-      )
-      warnings.push(
-        'Warning: Result converting process failed (' + three.error + ')'
-      )
+      task.warning +=
+        'Warning: Result converting process failed (' + convertError + ')'
     } else {
-      const results = three.data
+      const results = convertData
         ?.trim()
         ?.split('\n')
         .map((res) => JSON.parse(res))
@@ -544,8 +532,8 @@ const processResult = async (
           fileName: resultFile,
           originPath: resultPath,
           name: result.name,
-          part: 'part.json',
-          partPath: result.path
+          json: result.path,
+          glb: result.path + '.blg'
         }))
       ]
 
@@ -554,9 +542,8 @@ const processResult = async (
     }
   } catch (err) {
     console.warn('Warning: Unable to convert result file (' + err.message + ')')
-    warnings.push(
+    task.warning +=
       'Warning: Unable to convert result file (' + err.message + ')'
-    )
   }
 }
 
@@ -567,7 +554,6 @@ const processResult = async (
  * @param {*} configuration Configuration
  * @param {*} availableFiles Available files
  * @param {*} existingDatas Existing datas
- * @param {*} warnings Warnings
  * @param {*} simulationPath Simulation path
  * @param {*} dataPath Data path
  * @param {*} task Task
@@ -578,7 +564,6 @@ const processData = async (
   configuration,
   availableFiles,
   existingDatas,
-  warnings,
   simulationPath,
   dataPath,
   task
@@ -623,7 +608,7 @@ const processData = async (
     existingDatas.push(dataFile)
   } catch (err) {
     console.warn('Warning: Unable to read data file (' + err.message + ')')
-    warnings.push('Warning: Unable to read data file (' + err.message + ')')
+    task.warning += 'Warning: Unable to read data file (' + err.message + ')'
   }
 }
 

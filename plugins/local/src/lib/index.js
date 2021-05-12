@@ -18,7 +18,7 @@ const key = 'local'
 const updateDelay = 1000 // ms
 
 // Results / data file name
-const logFileName = 'process_output.log'
+const logFileName = 'process_log.log'
 const processFileName = 'process_data.log'
 
 /**
@@ -333,7 +333,7 @@ const processOutput = async (simulationPath, task, update) => {
           // Convert
           let convertData = ''
           let convertError = ''
-          const three = await Tools.convert(
+          await Tools.convert(
             simulationPath,
             {
               name: path.join('run/result', resFile),
@@ -348,7 +348,7 @@ const processOutput = async (simulationPath, task, update) => {
 
           if (convertError) {
             task.warning +=
-              'Warning: Result converting process failed (' + three.error + ')'
+              'Warning: Result converting process failed (' + convertError + ')'
             update()
           } else {
             // Add to task

@@ -156,9 +156,13 @@ const loadElement = (type, element, color) => {
 
     const mesh = new THREE.Mesh(geometry, material)
 
+    // Mesh data
     mesh.userData.uuid = json.uuid
     mesh.userData.name = element.name
     mesh.userData.number = element.number
+
+    // Index
+    mesh.geometry = THREE.BufferGeometryUtils.mergeVertices(mesh.geometry)
 
     return mesh
   } else if (type === 'mesh') {
@@ -173,9 +177,13 @@ const loadElement = (type, element, color) => {
 
     const mesh = new THREE.LineSegments(wireframe, material)
 
+    // Mesh data
     mesh.userData.uuid = json.uuid
     mesh.userData.name = element.name
     mesh.userData.number = element.number
+
+    // Index
+    mesh.geometry = THREE.BufferGeometryUtils.mergeVertices(mesh.geometry)
 
     return mesh
   } else if (type === 'result') {
@@ -213,6 +221,7 @@ const loadElement = (type, element, color) => {
         new THREE.Float32BufferAttribute(vertexColors, 3)
       )
     }
+    geometry.deleteAttribute('data')
 
     const material = new THREE.MeshStandardMaterial({
       vertexColors: THREE.VertexColors,
@@ -232,13 +241,20 @@ const loadElement = (type, element, color) => {
       wireframeGeometry,
       wireframeMaterial
     )
+    wireframe.geometry = THREE.BufferGeometryUtils.mergeVertices(
+      wireframe.geometry
+    )
     mesh.add(wireframe)
 
     mesh.lut = lut
 
+    // Mesh data
     mesh.userData.uuid = json.uuid
     mesh.userData.name = element.name
     mesh.userData.number = element.number
+
+    // Index
+    mesh.geometry = THREE.BufferGeometryUtils.mergeVertices(mesh.geometry)
 
     return mesh
   }

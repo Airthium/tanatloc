@@ -72,6 +72,7 @@ const PartLoader = (mouseMoveEvent, mouseDownEvent) => {
       object.type = 'Part'
 
       object.uuid = part.uuid
+
       // Set original colors
       const solids = object.children[0]
       for (const solid of solids.children) {

@@ -320,9 +320,10 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
         )
         if (logFile) {
           const log = await getInRunFile(cloudConfiguration, logFile)
-
-          // Log
-          simulationTask.log = currentLog + log.replace(/\[.*\]: /g, '')
+          if (typeof log === 'string') {
+            // Log
+            simulationTask.log = currentLog + log.replace(/\[.*\]: /g, '')
+          }
         }
 
         // Results / data
@@ -331,20 +332,20 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
         )
         if (processFile) {
           const log = await getInRunFile(cloudConfiguration, processFile)
-          console.log(log)
-
-          // Check for results or data
-          await getInRunOutputs(
-            cloudConfiguration,
-            log,
-            inRunFiles,
-            results,
-            datas,
-            simulationPath,
-            path.join('run', resultPath),
-            path.join('run', dataPath),
-            simulationTask
-          )
+          if (typeof log === 'string') {
+            // Check for results or data
+            await getInRunOutputs(
+              cloudConfiguration,
+              log,
+              inRunFiles,
+              results,
+              datas,
+              simulationPath,
+              path.join('run', resultPath),
+              path.join('run', dataPath),
+              simulationTask
+            )
+          }
         }
       } else if (status === 'Completed') {
         // Check files
@@ -356,9 +357,10 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
         )
         if (logFile) {
           const log = await getFile(cloudConfiguration, logFile.id)
-
-          // Log
-          simulationTask.log = currentLog + log.replace(/\[.*\]: /g, '')
+          if (typeof log === 'string') {
+            // Log
+            simulationTask.log = currentLog + log.replace(/\[.*\]: /g, '')
+          }
         }
 
         // Results / data
@@ -367,19 +369,20 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
         )
         if (processFile) {
           const log = await getFile(cloudConfiguration, processFile.id)
-
-          // Check for results or data
-          await getOutputs(
-            cloudConfiguration,
-            log,
-            files,
-            results,
-            datas,
-            simulationPath,
-            path.join('run', resultPath),
-            path.join('run', dataPath),
-            simulationTask
-          )
+          if (typeof log === 'string') {
+            // Check for results or data
+            await getOutputs(
+              cloudConfiguration,
+              log,
+              files,
+              results,
+              datas,
+              simulationPath,
+              path.join('run', resultPath),
+              path.join('run', dataPath),
+              simulationTask
+            )
+          }
         }
       }
 

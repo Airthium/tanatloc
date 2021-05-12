@@ -22,7 +22,6 @@ require('three/examples/js/exporters/GLTFExporter')
 require('three/examples/js/math/Lut')
 
 require('three/examples/js/utils/BufferGeometryUtils')
-require('three/examples/js/modifiers/SimplifyModifier')
 
 // Solid color
 const solidColor = new THREE.Color('gray')
@@ -140,10 +139,6 @@ const loadElement = (type, element, color) => {
     )
     delete geometry.attributes.color
   }
-
-  // // Reduction
-  // const simplifyModifier = new THREE.SimplifyModifier()
-  // geometry = simplifyModifier.modify(geometry, 0)
 
   if (type === 'geometry') {
     geometry.computeBoundingBox()

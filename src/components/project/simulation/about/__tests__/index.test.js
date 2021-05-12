@@ -61,6 +61,12 @@ describe('components/project/simulation/about', () => {
     expect(mockError).toHaveBeenCalledTimes(1)
   })
 
+  it('without simulation', () => {
+    wrapper.unmount()
+    wrapper = shallow(<About swr={swr} />)
+    expect(wrapper).toBeDefined()
+  })
+
   it('effect', () => {
     wrapper.unmount()
     wrapper = mount(<About simulation={simulation} swr={swr} />)

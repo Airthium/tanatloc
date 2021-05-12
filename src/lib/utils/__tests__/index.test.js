@@ -16,12 +16,12 @@ describe('lib/utils', () => {
   })
 
   it('rgbToHex', () => {
-    const hex = Utils.rgbToHex([0, 1, 1])
+    const hex = Utils.rgbToHex({ r: 0, g: 1, b: 1 })
     expect(hex).toBe('#00ffff')
   })
 
   it('rgbToRgba', () => {
-    let rgba = Utils.rgbToRgba([0, 1, 1], 0.1)
+    let rgba = Utils.rgbToRgba({ r: 0, g: 1, b: 1 }, 0.1)
     expect(rgba).toBe('rgba(0, 255, 255, 0.1)')
 
     rgba = Utils.rgbToRgba()

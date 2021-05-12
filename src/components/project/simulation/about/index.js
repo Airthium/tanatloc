@@ -105,12 +105,12 @@ const About = ({ simulation, swr }) => {
 }
 
 About.propTypes = {
-  simulation: PropTypes.shape({
+  simulation: PropTypes.exact({
     id: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
     scheme: PropTypes.object
-  }).isRequired,
-  swr: PropTypes.shape({
+  }),
+  swr: PropTypes.exact({
     reloadProject: PropTypes.func.isRequired,
     delOneSimulation: PropTypes.func.isRequired,
     mutateOneSimulation: PropTypes.func.isRequired

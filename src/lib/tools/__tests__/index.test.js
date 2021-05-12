@@ -18,8 +18,13 @@ jest.mock('fs', () => ({
     writeFile: async () => mockWriteFile(),
     readFile: async () => mockReadFile(),
     unlink: async () => mockUnlink(),
-    rmdir: async () => mockRmdir()
+    rm: async () => mockRmdir()
   }
+}))
+
+const mockThreeToGLB = jest.fn()
+jest.mock('three-to-glb', () => ({
+  convert: () => mockThreeToGLB()
 }))
 
 const mockToThree = jest.fn()
@@ -29,6 +34,8 @@ jest.mock('@/services', () => ({
 
 describe('lib/tools', () => {
   beforeEach(() => {
+    mockPath.mockReset()
+
     mockMkdir.mockReset()
     mockReadDir.mockReset()
     mockWriteFile.mockReset()
@@ -36,6 +43,9 @@ describe('lib/tools', () => {
     mockReadFile.mockImplementation(() => 'readFile')
     mockUnlink.mockReset()
     mockRmdir.mockReset()
+
+    mockThreeToGLB.mockReset()
+
     mockToThree.mockReset()
   })
 
@@ -67,7 +77,8 @@ describe('lib/tools', () => {
     mockToThree.mockImplementation((path, fileIn, pathOut) => {
       return { code: 0 }
     })
-    await Tools.convert('location', { name: 'name' })
+    await Tools.convert('location', { name: 'name' }, () => {})
+    expect(mockWriteFile).toHaveBeenCalledTimes(1)
 
     try {
       mockToThree.mockImplementation(() => ({ code: -1 }))

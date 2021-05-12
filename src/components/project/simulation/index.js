@@ -235,7 +235,11 @@ const Simulation = ({ user, simulation, type, part, swr, onClose }) => {
       <Panel visible={visible} title={title} onClose={onClose}>
         {type === 'about' && (
           <About
-            simulation={simulation}
+            simulation={{
+              id: simulation?.id,
+              name: simulation?.name,
+              scheme: simulation?.scheme
+            }}
             swr={{
               reloadProject: swr.reloadProject,
               delOneSimulation: swr.delOneSimulation,

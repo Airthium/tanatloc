@@ -25,7 +25,6 @@ const Formula = ({
   )
   const [autoSave, setAutoSave] = useState(false)
   const [autoSaveDisabled, setAutoSaveDisabled] = useState(true)
-  const [loading, setLoading] = useState(false)
 
   // Units LaTeX
   useEffect(() => {
@@ -65,9 +64,7 @@ const Formula = ({
   const onValueChangeDelayed = (value) => {
     if (autoSave) clearTimeout(autoSave)
     const id = setTimeout(() => {
-      setLoading(true)
       onValueChange(value)
-      setLoading(false)
       setAutoSaveDisabled(true)
     }, saveDelay)
     setAutoSave(id)

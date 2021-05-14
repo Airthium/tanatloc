@@ -41,6 +41,12 @@ const AxisHelper = (
   // Base sphere color
   const baseColor = 'black'
 
+  // Size
+  let currentOffsetWidth = offsetWidth
+  let currentOffsetHeight = offsetHeight
+  let currentWidth = width
+  let currentHeight = height
+
   // X
   const x = Arrow(xColor)
   x.rotateZ(-Math.PI / 2)
@@ -89,17 +95,22 @@ const AxisHelper = (
    * @param {Object} dimensions Dimensions
    */
   const resize = ({ newOffsetWidth, newOffsetHeight, newWidth, newHeight }) => {
-    offsetWidth = newOffsetWidth
-    offsetHeight = newOffsetHeight
-    width = newWidth
-    height = newHeight
+    currentOffsetWidth = newOffsetWidth
+    currentOffsetHeight = newOffsetHeight
+    currentWidth = newWidth
+    currentHeight = newHeight
   }
 
   /**
    * Render
    */
   const render = () => {
-    renderer.setViewport(offsetWidth, offsetHeight, width, height)
+    renderer.setViewport(
+      currentOffsetWidth,
+      currentOffsetHeight,
+      currentWidth,
+      currentHeight
+    )
     localCamera.rotation.copy(camera.rotation)
     renderer.render(localScene, localCamera)
   }

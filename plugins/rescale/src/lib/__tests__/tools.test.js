@@ -12,19 +12,16 @@ jest.mock('@/database/simulation', () => ({
 
 const mockReadFile = jest.fn()
 const mockWriteFile = jest.fn()
+const mockConvert = jest.fn()
 jest.mock('@/lib/tools', () => ({
   readFile: async () => mockReadFile(),
-  writeFile: async () => mockWriteFile()
+  writeFile: async () => mockWriteFile(),
+  convert: async (path, file, callback) => mockConvert(path, file, callback)
 }))
 
 const mockCaptureException = jest.fn()
 jest.mock('@/lib/sentry', () => ({
   captureException: () => mockCaptureException()
-}))
-
-const mockToThree = jest.fn()
-jest.mock('@/services', () => ({
-  toThree: async () => mockToThree()
 }))
 
 const mockCall = jest.fn()
@@ -64,10 +61,9 @@ describe('plugins/rescale/src/lib/tools', () => {
 
     mockReadFile.mockReset()
     mockWriteFile.mockReset()
+    mockConvert.mockReset()
 
     mockCaptureException.mockReset()
-
-    mockToThree.mockReset()
 
     mockCall.mockReset()
   })
@@ -235,87 +231,86 @@ describe('plugins/rescale/src/lib/tools', () => {
 
     // With results & data
     mockCall.mockImplementation(() => '{ "string": "string" }')
-    mockToThree.mockImplementation(() => ({
-      code: 0,
-      error: '',
-      data: '{ "test": "test" }'
-    }))
-    await Tools.getInRunOutputs(
-      configuration,
-      'log\nPROCESS VTU FILE result1.vtu\nPROCESS VTU FILE result2.vtu\nPROCESS DATA FILE data1.dat\nPROCESS DATA FILE data2.dat',
-      [
-        {
-          resource: 'resource',
-          path: 'result2.vtu'
-        },
-        {
-          resource: 'resource',
-          path: 'data2.dat'
-        }
-      ],
-      ['result1.vtu'],
-      ['data1.dat'],
-      'path',
-      'path',
-      'path',
-      {}
-    )
-
-    // Three bad code
-    mockToThree.mockImplementation(() => ({
-      code: 1
-    }))
-    await Tools.getInRunOutputs(
-      configuration,
-      'log\nPROCESS VTU FILE result1.vtu\nPROCESS VTU FILE result2.vtu\nPROCESS DATA FILE data1.dat\nPROCESS DATA FILE data2.dat',
-      [
-        {
-          resource: 'resource',
-          path: 'result2.vtu'
-        },
-        {
-          resource: 'resource',
-          path: 'data2.dat'
-        }
-      ],
-      ['result1.vtu'],
-      ['data1.dat'],
-      'path',
-      'path',
-      'path',
-      {}
-    )
-
-    // Three stderr
-    mockToThree.mockImplementation(() => ({
-      code: 0,
-      error: 'error'
-    }))
-    await Tools.getInRunOutputs(
-      configuration,
-      'log\nPROCESS VTU FILE result1.vtu\nPROCESS VTU FILE result2.vtu\nPROCESS DATA FILE data1.dat\nPROCESS DATA FILE data2.dat',
-      [
-        {
-          resource: 'resource',
-          path: 'result2.vtu'
-        },
-        {
-          resource: 'resource',
-          path: 'data2.dat'
-        }
-      ],
-      ['result1.vtu'],
-      ['data1.dat'],
-      'path',
-      'path',
-      'path',
-      {}
-    )
-
-    // Three err, write err
-    mockToThree.mockImplementation(() => {
-      throw new Error()
+    mockConvert.mockImplementation((path, file, callback) => {
+      callback({ data: '{ "test": "test" }' })
+      return {}
     })
+    await Tools.getInRunOutputs(
+      configuration,
+      'log\nPROCESS VTU FILE result1.vtu\nPROCESS VTU FILE result2.vtu\nPROCESS DATA FILE data1.dat\nPROCESS DATA FILE data2.dat',
+      [
+        {
+          resource: 'resource',
+          path: 'result2.vtu'
+        },
+        {
+          resource: 'resource',
+          path: 'data2.dat'
+        }
+      ],
+      ['result1.vtu'],
+      ['data1.dat'],
+      'path',
+      'path',
+      'path',
+      {}
+    )
+
+    // // Convert error
+    // mockConvert.mockImplementation(() => {
+    //   throw new Error()
+    // })
+    // await Tools.getInRunOutputs(
+    //   configuration,
+    //   'log\nPROCESS VTU FILE result1.vtu\nPROCESS VTU FILE result2.vtu\nPROCESS DATA FILE data1.dat\nPROCESS DATA FILE data2.dat',
+    //   [
+    //     {
+    //       resource: 'resource',
+    //       path: 'result2.vtu'
+    //     },
+    //     {
+    //       resource: 'resource',
+    //       path: 'data2.dat'
+    //     }
+    //   ],
+    //   ['result1.vtu'],
+    //   ['data1.dat'],
+    //   'path',
+    //   'path',
+    //   'path',
+    //   {}
+    // )
+
+    // Convert stderr
+    mockConvert.mockImplementation((path, file, callback) => {
+      callback({ error: 'error' })
+      return {}
+    })
+    await Tools.getInRunOutputs(
+      configuration,
+      'log\nPROCESS VTU FILE result1.vtu\nPROCESS VTU FILE result2.vtu\nPROCESS DATA FILE data1.dat\nPROCESS DATA FILE data2.dat',
+      [
+        {
+          resource: 'resource',
+          path: 'result2.vtu'
+        },
+        {
+          resource: 'resource',
+          path: 'data2.dat'
+        }
+      ],
+      ['result1.vtu'],
+      ['data1.dat'],
+      'path',
+      'path',
+      'path',
+      {}
+    )
+
+    // write err
+    // mockConvert.mockImplementation(() => {
+    //   throw new Error()
+    // })
     mockWriteFile.mockImplementation(() => {
       throw new Error()
     })
@@ -426,11 +421,10 @@ describe('plugins/rescale/src/lib/tools', () => {
 
     // With results & data
     mockCall.mockImplementation(() => '{ "string": "string" }')
-    mockToThree.mockImplementation(() => ({
-      code: 0,
-      error: '',
-      data: '{ "test": "test" }'
-    }))
+    mockConvert.mockImplementation((path, file, callback) => {
+      callback({ data: '{ "test": "test" }' })
+      return {}
+    })
     await Tools.getOutputs(
       configuration,
       'log\nPROCESS VTU FILE result1.vtu\nPROCESS VTU FILE result2.vtu\nPROCESS DATA FILE data1.dat\nPROCESS DATA FILE data2.dat',
@@ -450,10 +444,10 @@ describe('plugins/rescale/src/lib/tools', () => {
       {}
     )
 
-    // Three bad code
-    mockToThree.mockImplementation(() => ({
-      code: 1
-    }))
+    // Convert error
+    mockConvert.mockImplementation(() => {
+      throw new Error()
+    })
     await Tools.getOutputs(
       configuration,
       'log\nPROCESS VTU FILE result1.vtu\nPROCESS VTU FILE result2.vtu\nPROCESS DATA FILE data1.dat\nPROCESS DATA FILE data2.dat',
@@ -473,11 +467,13 @@ describe('plugins/rescale/src/lib/tools', () => {
       {}
     )
 
-    // Three stderr
-    mockToThree.mockImplementation(() => ({
-      code: 0,
-      error: 'error'
-    }))
+    // Convert stderr
+    mockConvert.mockImplementation((path, file, callback) => {
+      callback({
+        error: 'error'
+      })
+      return {}
+    })
     await Tools.getOutputs(
       configuration,
       'log\nPROCESS VTU FILE result1.vtu\nPROCESS VTU FILE result2.vtu\nPROCESS DATA FILE data1.dat\nPROCESS DATA FILE data2.dat',
@@ -497,8 +493,8 @@ describe('plugins/rescale/src/lib/tools', () => {
       {}
     )
 
-    // Three err, write err
-    mockToThree.mockImplementation(() => {
+    // Convert err, write err
+    mockConvert.mockImplementation(() => {
       throw new Error()
     })
     mockWriteFile.mockImplementation(() => {

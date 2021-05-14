@@ -156,6 +156,38 @@ describe('components/project/simulation/geometry', () => {
     expect(wrapper).toBeDefined()
   })
 
+  it('setDeleteVisible', () => {
+    // Need file
+    wrapper.unmount()
+    wrapper = mount(
+      <Geometry
+        simulation={{
+          ...simulation,
+          scheme: {
+            ...simulation.scheme,
+            configuration: {
+              ...simulation.scheme.configuration,
+              geometry: {
+                file: {
+                  origin: 'origin',
+                  originPath: 'originPath'
+                }
+              }
+            }
+          }
+        }}
+        part={part}
+        swr={swr}
+      />
+    )
+
+    // Open
+    act(() => wrapper.find('Button').at(0).props().onClick())
+
+    // Close
+    act(() => wrapper.find('DeleteDialog').props().onCancel())
+  })
+
   it('onDelete', async () => {
     // Need file
     wrapper.unmount()

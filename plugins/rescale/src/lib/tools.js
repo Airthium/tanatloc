@@ -503,7 +503,7 @@ const processResult = async (
     await Tools.convert(
       simulationPath,
       {
-        name: path.join('run/result', resFile),
+        name: path.join('run/result', resultFile),
         target: path.join('run/result', partPath)
       },
       ({ data, error }) => {

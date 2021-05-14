@@ -119,7 +119,7 @@ describe('plugins/rescale/src/lib', () => {
   })
 
   it('computeSimulation', async () => {
-    jest.setTimeout(10000)
+    jest.setTimeout(20000)
 
     mockUploadFile.mockImplementation(() => ({}))
     mockGetStatus.mockImplementation(() => 'Completed')
@@ -181,10 +181,28 @@ describe('plugins/rescale/src/lib', () => {
     // With files
     mockGetFiles.mockImplementation(() => [
       {
-        relativePath: 'process_output.log'
+        relativePath: 'process_log.log'
+      },
+      {
+        relativePath: 'process_data.log'
       }
     ])
+    mockGetFile.mockImplementation(() => 'log')
     mockGetOutputs.mockImplementation(() => 'realLog')
+    await Rescale.computeSimulation({ id: 'id' }, 'algorithm', {
+      run: {
+        cloudServer: {
+          configuration: {},
+          inUseConfiguration: {
+            numberOfCores: {
+              value: 64
+            }
+          }
+        }
+      }
+    })
+
+    mockGetFile.mockImplementation(() => ({ detail: 'not found' }))
     await Rescale.computeSimulation({ id: 'id' }, 'algorithm', {
       run: {
         cloudServer: {
@@ -220,10 +238,28 @@ describe('plugins/rescale/src/lib', () => {
     statusCount = 0
     mockGetInRunFiles.mockImplementation(() => [
       {
-        path: 'process_output.log'
+        path: 'process_log.log'
+      },
+      {
+        path: 'process_data.log'
       }
     ])
+    mockGetInRunFile.mockImplementation(() => 'log')
     mockGetInRunOutputs.mockImplementation(() => 'realLog')
+    await Rescale.computeSimulation({ id: 'id' }, 'algorithm', {
+      run: {
+        cloudServer: {
+          configuration: {},
+          inUseConfiguration: {
+            numberOfCores: {
+              value: 64
+            }
+          }
+        }
+      }
+    })
+
+    mockGetInRunFile.mockImplementation(() => ({ detail: 'not found' }))
     await Rescale.computeSimulation({ id: 'id' }, 'algorithm', {
       run: {
         cloudServer: {

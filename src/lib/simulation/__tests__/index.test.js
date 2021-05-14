@@ -210,7 +210,7 @@ describe('lib/simulation', () => {
         }
       }
     ])
-    expect(mockPath).toHaveBeenCalledTimes(2)
+    expect(mockPath).toHaveBeenCalledTimes(4)
     expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockGet).toHaveBeenCalledTimes(1)
     expect(mockUpdate).toHaveBeenCalledTimes(6)
@@ -249,7 +249,7 @@ describe('lib/simulation', () => {
         }
       }
     ])
-    expect(mockPath).toHaveBeenCalledTimes(6)
+    expect(mockPath).toHaveBeenCalledTimes(10)
     expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockGet).toHaveBeenCalledTimes(2)
     expect(mockUpdate).toHaveBeenCalledTimes(7)
@@ -279,7 +279,7 @@ describe('lib/simulation', () => {
         }
       }
     ])
-    expect(mockPath).toHaveBeenCalledTimes(10)
+    expect(mockPath).toHaveBeenCalledTimes(16)
     expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockGet).toHaveBeenCalledTimes(3)
     expect(mockUpdate).toHaveBeenCalledTimes(8)
@@ -315,7 +315,7 @@ describe('lib/simulation', () => {
         }
       }
     ])
-    expect(mockPath).toHaveBeenCalledTimes(12)
+    expect(mockPath).toHaveBeenCalledTimes(20)
     expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockGet).toHaveBeenCalledTimes(4)
     expect(mockUpdate).toHaveBeenCalledTimes(9)
@@ -336,7 +336,7 @@ describe('lib/simulation', () => {
         }
       }
     ])
-    expect(mockPath).toHaveBeenCalledTimes(12)
+    expect(mockPath).toHaveBeenCalledTimes(20)
     expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockGet).toHaveBeenCalledTimes(5)
     expect(mockUpdate).toHaveBeenCalledTimes(10)

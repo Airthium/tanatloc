@@ -44,9 +44,9 @@ const Selector = ({ part, alreadySelected, updateSelected }) => {
       if (element.color) {
         const existingColor = colorsList.find(
           (c) =>
-            c.r === element.color.r &&
-            c.g === element.color.g &&
-            c.b === element.color.b
+            c.r === element.color?.r &&
+            c.g === element.color?.g &&
+            c.b === element.color?.b
         )
         if (!existingColor) {
           colorsList.push(element.color)
@@ -97,9 +97,9 @@ const Selector = ({ part, alreadySelected, updateSelected }) => {
       if (
         !filter ||
         (filter &&
-          filter.r === element.color.r &&
-          filter.g === element.color.g &&
-          filter.b === element.color.b)
+          filter.r === element.color?.r &&
+          filter.g === element.color?.g &&
+          filter.b === element.color?.b)
       )
         dispatch(select(element.uuid))
     })
@@ -113,9 +113,9 @@ const Selector = ({ part, alreadySelected, updateSelected }) => {
       if (
         !filter ||
         (filter &&
-          filter.r === element.color.r &&
-          filter.g === element.color.g &&
-          filter.b === element.color.b)
+          filter.r === element.color?.r &&
+          filter.g === element.color?.g &&
+          filter.b === element.color?.b)
       )
         dispatch(unselect(element.uuid))
     })
@@ -129,9 +129,9 @@ const Selector = ({ part, alreadySelected, updateSelected }) => {
       if (
         !filter ||
         (filter &&
-          filter.r === element.color.r &&
-          filter.g === element.color.g &&
-          filter.b === element.color.b)
+          filter.r === element.color?.r &&
+          filter.g === element.color?.g &&
+          filter.b === element.color?.b)
       ) {
         if (selected.includes(element.uuid)) dispatch(unselect(element.uuid))
         else dispatch(select(element.uuid))
@@ -188,9 +188,9 @@ const Selector = ({ part, alreadySelected, updateSelected }) => {
             if (
               !filter ||
               (filter &&
-                filter.r === element.color.r &&
-                filter.g === element.color.g &&
-                filter.b === element.color.b)
+                filter.r === element.color?.r &&
+                filter.g === element.color?.g &&
+                filter.b === element.color?.b)
             )
               return (
                 <Card

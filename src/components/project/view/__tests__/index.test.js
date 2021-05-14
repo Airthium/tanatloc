@@ -149,7 +149,26 @@ jest.mock('@/lib/three/loaders/PartLoader', () => {
       )
       return {
         load: () => ({
-          children: [{}, { children: [{ lut: count++ === 1 ? null : {} }] }]
+          children: [
+            {
+              children: [
+                {
+                  userData: {},
+                  material: {}
+                }
+              ]
+            },
+            {
+              children: [
+                {
+                  userData: {},
+                  material: {},
+                  lut: count++ === 1 ? null : {}
+                }
+              ]
+            },
+            { children: [{ userData: {}, material: {} }] }
+          ]
         }),
         dispose: () => {}
       }
@@ -241,7 +260,7 @@ describe('components/project/view', () => {
 
     mockGet.mockReset()
     mockState = false
-    wrapper = mount(<View />)
+    wrapper = mount(<View setPartSummary={() => {}} />)
   })
 
   afterEach(() => {
@@ -288,7 +307,7 @@ describe('components/project/view', () => {
   it('pixelRatio', () => {
     wrapper.unmount()
     window.devicePixelRatio = undefined
-    wrapper = mount(<View />)
+    wrapper = mount(<View setPartSummary={() => {}} />)
   })
 
   it('grid visible', () => {
@@ -304,7 +323,7 @@ describe('components/project/view', () => {
   it('sectionView', () => {
     wrapper.unmount()
     mockState = true
-    wrapper = mount(<View />)
+    wrapper = mount(<View setPartSummary={() => {}} />)
     wrapper.find('Button').forEach((button) => {
       if (button.props().onClick) button.props().onClick()
     })
@@ -324,7 +343,7 @@ describe('components/project/view', () => {
   it('handleTransform', () => {
     wrapper.unmount()
     mockState = true
-    wrapper = mount(<View />)
+    wrapper = mount(<View setPartSummary={() => {}} />)
     wrapper
       .find('.ant-radio-group')
       .parent()

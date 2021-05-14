@@ -450,6 +450,7 @@ const ThreeView = ({ loading, project, part, setPartSummary }) => {
    */
   const zoomToFit = () => {
     const sphere = scene.current.boundingSphere
+    if (!sphere) return
 
     // Center
     const center = sphere.center
@@ -520,20 +521,27 @@ const ThreeView = ({ loading, project, part, setPartSummary }) => {
     // Summary
     const solids = mesh.children[0]
     const faces = mesh.children[1]
+    const edges = mesh.children[2]
     const summary = {
       uuid: mesh.uuid,
       type: mesh.type,
-      solids: solids.children.map((solid) => ({
+      solids: solids?.children?.map((solid) => ({
         name: solid.userData.name,
         number: solid.userData.number,
         uuid: solid.userData.uuid,
         color: solid.material.color
       })),
-      faces: faces.children.map((face) => ({
+      faces: faces?.children?.map((face) => ({
         name: face.userData.name,
         number: face.userData.number,
         uuid: face.userData.uuid,
         color: face.material.color
+      })),
+      edges: edges?.children?.map((edge) => ({
+        name: edge.userData.name,
+        number: edge.userData.number,
+        uuid: edge.userData.uuid,
+        color: edge.material.color
       }))
     }
     setPartSummary(summary)
@@ -859,49 +867,7 @@ const View = ({ project, simulation, setPartSummary }) => {
           return
         }
 
-        // // Convert buffers
-        // partContent.solids?.forEach((solid) => {
-        //   solid.buffer = JSON.parse(Buffer.from(solid.buffer).toString())
-        // })
-        // partContent.faces?.forEach((face) => {
-        //   face.buffer = JSON.parse(Buffer.from(face.buffer).toString())
-        // })
-        // partContent.edges?.forEach((edge) => {
-        //   edge.buffer = JSON.parse(Buffer.from(edge.buffer).toString())
-        // })
-
-        // // Summary
-        // const summary = {
-        //   uuid: partContent.uuid,
-        //   type: partContent.type,
-        //   solids: partContent.solids?.map((solid) => {
-        //     return {
-        //       name: solid.name,
-        //       number: solid.number,
-        //       uuid: solid.buffer.uuid,
-        //       color: solid.buffer.data.attributes.color?.array
-        //     }
-        //   }),
-        //   faces: partContent.faces?.map((face) => {
-        //     return {
-        //       name: face.name,
-        //       number: face.number,
-        //       uuid: face.buffer.uuid,
-        //       color: face.buffer.data.attributes.color?.array
-        //     }
-        //   }),
-        //   edges: partContent.edges?.map((edge) => {
-        //     return {
-        //       name: edge.name,
-        //       number: edge.number,
-        //       uuid: edge.buffer.uuid,
-        //       color: edge.buffer.data.attributes.color?.array
-        //     }
-        //   })
-        // }
-
         setPart(partContent)
-        // setPartSummary(summary)
       }
     } catch (err) {
       Error(errors.partError, err)

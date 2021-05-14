@@ -12,11 +12,73 @@ jest.mock('three/examples/jsm/math/Lut', () => ({
   }
 }))
 
-jest.mock('three/examples/jsm/loaders/GLTFLoader')
+jest.mock('three/examples/jsm/loaders/GLTFLoader', () => ({
+  GLTFLoader: class {
+    setDRACOLoader = jest.fn()
+    load = (url, finish, progress, error) => {
+      progress('progress')
+      error('error')
+      finish({
+        scene: {
+          children: [
+            {
+              children: [
+                {
+                  children: [
+                    {
+                      geometry: {
+                        boundingBox: {
+                          min: {},
+                          max: {}
+                        },
+                        dispose: jest.fn()
+                      },
+                      material: {
+                        dispose: jest.fn()
+                      },
+                      userData: {
+                        uuid: 'solid_uuid'
+                      }
+                    }
+                  ]
+                },
+                {
+                  children: [
+                    {
+                      geometry: {
+                        boundingBox: {
+                          min: {},
+                          max: {}
+                        },
+                        dispose: jest.fn()
+                      },
+                      material: {
+                        dispose: jest.fn()
+                      },
+                      userData: {
+                        uuid: 'face_uuid'
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      })
+    }
+  }
+}))
 
-jest.mock('three/examples/jsm/loaders/DRACOLoader')
+jest.mock('three/examples/jsm/loaders/DRACOLoader', () => ({
+  DRACOLoader: class {
+    setDecoderPath = jest.fn()
+    preload = jest.fn()
+  }
+}))
 
 describe('lib/three/loaders/PartLoader', () => {
+  global.URL.createObjectURL = jest.fn()
   global.MockGeometry.getAttribute = (attribute) => {
     if (attribute === 'position') return { array: [] }
   }
@@ -57,22 +119,7 @@ describe('lib/three/loaders/PartLoader', () => {
     }
   ]
   const part = {
-    type: 'geometry',
-    solids: [
-      {
-        buffer: '{ "uuid": "uuid"}'
-      }
-    ],
-    faces: [
-      {
-        buffer: '{ "uuid": "uuid" }'
-      }
-    ],
-    edges: [
-      {
-        buffer: '{ "uuid": "uuid" }'
-      }
-    ]
+    buffer: Buffer.from([])
   }
   let mouseMove
   let mouseDown
@@ -96,68 +143,68 @@ describe('lib/three/loaders/PartLoader', () => {
     expect(partLoader).toBeDefined()
   })
 
-  it('load', () => {
+  it('load', async () => {
     const partLoader = PartLoader()
-    partLoader.load(part)
+    await partLoader.load(part)
 
-    partLoader.load(part, true)
+    await partLoader.load(part, true)
 
     // With color
     global.MockGeometry.getAttribute = () => ({
       count: 3,
       array: [0.1, 0.2, 0.3]
     })
-    partLoader.load(part)
+    await partLoader.load(part)
 
     // No type
     part.type = 'other'
-    partLoader.load(part)
-    partLoader.load(part, true)
+    await partLoader.load(part)
+    await partLoader.load(part, true)
 
     // Mesh
     part.type = 'mesh'
-    partLoader.load(part)
-    partLoader.load(part, true)
+    await partLoader.load(part)
+    await partLoader.load(part, true)
 
     // Result
     part.type = 'result'
-    partLoader.load(part)
+    await partLoader.load(part)
 
     global.MockGeometry.getAttribute = () => {}
-    partLoader.load(part, true)
+    await partLoader.load(part, true)
 
     global.MockGeometry.getAttribute = () => ({
       count: 3,
       array: [0, 0, 0]
     })
-    partLoader.load(part)
+    await partLoader.load(part)
 
     global.MockGeometry.getAttribute = () => ({
       count: 3,
       array: [1, 1, 1]
     })
-    partLoader.load(part)
+    await partLoader.load(part)
 
     global.MockBox3.isEmpty = true
-    partLoader.load(part, true)
+    await partLoader.load(part, true)
   })
 
-  it('dispose', () => {
+  it('dispose', async () => {
     const partLoader = PartLoader()
-    const mesh = partLoader.load(part)
+    const mesh = await partLoader.load(part)
     mesh.dispose()
   })
 
-  it('setTransparent', () => {
+  it('setTransparent', async () => {
     const partLoader = PartLoader()
-    let mesh = partLoader.load(part)
+    let mesh = await partLoader.load(part)
     mesh.setTransparent(true)
     mesh.setTransparent(false)
   })
 
-  it('startSelection', () => {
+  it('startSelection', async () => {
     const partLoader = PartLoader(mouseMoveEvent, mouseDownEvent)
-    const mesh = partLoader.load(part)
+    const mesh = await partLoader.load(part)
     mesh.startSelection(renderer, camera, outlinePass, 'faces')
 
     mesh.startSelection(renderer, camera, outlinePass, 'solids')
@@ -165,9 +212,9 @@ describe('lib/three/loaders/PartLoader', () => {
     mesh.startSelection(renderer, camera, outlinePass, 'others')
   })
 
-  it('stopSelection', () => {
+  it('stopSelection', async () => {
     const partLoader = PartLoader()
-    const mesh = partLoader.load(part)
+    const mesh = await partLoader.load(part)
     mesh.stopSelection()
 
     // Add selection
@@ -180,37 +227,39 @@ describe('lib/three/loaders/PartLoader', () => {
     mesh.stopSelection()
   })
 
-  it('getHighlighted', () => {
+  it('getHighlighted', async () => {
     const partLoader = PartLoader(mouseMoveEvent, mouseDownEvent)
-    const mesh = partLoader.load(part)
+    const mesh = await partLoader.load(part)
     const highlighted = mesh.getHighlighted()
     expect(highlighted).toBe(null)
   })
 
-  it('getSelected', () => {
+  it('getSelected', async () => {
     const partLoader = PartLoader(mouseMoveEvent, mouseDownEvent)
-    const mesh = partLoader.load(part)
+    const mesh = await partLoader.load(part)
     const selected = mesh.getSelected()
     expect(selected).toEqual([])
   })
 
-  it('mouseMove', () => {
+  it('mouseMove', async () => {
     let current
     mouseMoveEvent.mockImplementation((p, uuid) => (current = uuid))
     const partLoader = PartLoader(mouseMoveEvent, mouseDownEvent)
-    const mesh = partLoader.load(part)
+    const mesh = await partLoader.load(part)
     mesh.startSelection(renderer, camera, outlinePass, 'faces')
 
     mouseMove({ target: { getBoundingClientRect: () => ({}) } })
 
-    global.MockRaycaster.intersectObjects = [{ object: { uuid: 'uuid' } }]
+    global.MockRaycaster.intersectObjects = [
+      { object: { userData: { uuid: 'uuid' } } }
+    ]
     mouseMove({ target: { getBoundingClientRect: () => ({}) } })
     expect(current).toBe('uuid')
   })
 
-  it('highlight', () => {
+  it('highlight', async () => {
     const partLoader = PartLoader()
-    const mesh = partLoader.load(part)
+    const mesh = await partLoader.load(part)
     mesh.startSelection(renderer, camera, outlinePass, 'faces')
 
     mesh.highlight('face_uuid')
@@ -218,9 +267,9 @@ describe('lib/three/loaders/PartLoader', () => {
     mesh.highlight('uuid')
   })
 
-  it('unhighlight', () => {
+  it('unhighlight', async () => {
     const partLoader = PartLoader()
-    const mesh = partLoader.load(part)
+    const mesh = await partLoader.load(part)
     mesh.startSelection(renderer, camera, outlinePass, 'faces')
 
     mesh.unhighlight()
@@ -231,11 +280,11 @@ describe('lib/three/loaders/PartLoader', () => {
     mesh.unhighlight()
   })
 
-  it('mouseDown', () => {
+  it('mouseDown', async () => {
     let current
     mouseDownEvent.mockImplementation((p, uuid) => (current = uuid))
     const partLoader = PartLoader(mouseMoveEvent, mouseDownEvent)
-    const mesh = partLoader.load(part)
+    const mesh = await partLoader.load(part)
     mesh.startSelection(renderer, camera, outlinePass, 'faces')
 
     mouseDown()
@@ -247,9 +296,9 @@ describe('lib/three/loaders/PartLoader', () => {
     expect(current).toBe('face_uuid')
   })
 
-  it('select', () => {
+  it('select', async () => {
     const partLoader = PartLoader()
-    const mesh = partLoader.load(part)
+    const mesh = await partLoader.load(part)
     mesh.startSelection(renderer, camera, outlinePass, 'faces')
 
     mesh.select('face_uuid')
@@ -258,9 +307,9 @@ describe('lib/three/loaders/PartLoader', () => {
     expect(mesh.getSelected()).toEqual(['face_uuid'])
   })
 
-  it('unselect', () => {
+  it('unselect', async () => {
     const partLoader = PartLoader()
-    const mesh = partLoader.load(part)
+    const mesh = await partLoader.load(part)
     mesh.startSelection(renderer, camera, outlinePass, 'faces')
 
     mesh.select('face_uuid')
@@ -268,7 +317,7 @@ describe('lib/three/loaders/PartLoader', () => {
     mesh.unselect('face_uuid')
   })
 
-  it('result specific', () => {
+  it('result specific', async () => {
     part.type = 'result'
     part.solids = []
 
@@ -300,7 +349,7 @@ describe('lib/three/loaders/PartLoader', () => {
     ]
 
     const partLoader = PartLoader()
-    const mesh = partLoader.load(part)
+    const mesh = await partLoader.load(part)
 
     mesh.setTransparent(true)
     mesh.setTransparent(false)

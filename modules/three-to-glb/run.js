@@ -13,8 +13,7 @@ global.THREE = THREE
 global.document = {
   createElement: (nodeName) => {
     if (nodeName !== 'canvas') throw new Error(`Cannot create node ${nodeName}`)
-    const canvas = new Canvas(256, 256)
-    return canvas
+    return new Canvas(256, 256)
   }
 }
 
@@ -63,7 +62,7 @@ const loadPart = (location, name) => {
   if (part.edges) {
     part.edges.map(async (edge) => {
       const file = path.join(location, edge.path)
-      edge.buffer = fs.readFileSYnc(file)
+      edge.buffer = fs.readFileSync(file)
       delete edge.path
     })
   }
@@ -87,7 +86,7 @@ const load = (part) => {
     part.solids &&
     part.solids.forEach((solid) => {
       const mesh = loadElement(type, solid, solidColor)
-      mesh.visible = false
+      // mesh.visible = false
       solids.add(mesh)
     })
   object.add(solids)

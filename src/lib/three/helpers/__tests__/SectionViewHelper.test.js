@@ -1,5 +1,5 @@
+import { Vector3 } from 'three'
 import { SectionViewHelper } from '../SectionViewHelper'
-import { Vector3 } from 'three/build/three.module'
 
 jest.mock('three/examples/jsm/controls/TransformControls', () => ({
   TransformControls: class {

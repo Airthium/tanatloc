@@ -2,22 +2,22 @@
 
 import {
   Box3,
-  BufferGeometryLoader,
+  // BufferGeometryLoader,
   Color,
-  DoubleSide,
-  Float32BufferAttribute,
-  Group,
-  LineBasicMaterial,
-  LineSegments,
-  Mesh,
-  MeshStandardMaterial,
+  // DoubleSide,
+  // Float32BufferAttribute,
+  // Group,
+  // LineBasicMaterial,
+  // LineSegments,
+  // Mesh,
+  // MeshStandardMaterial,
   Raycaster,
   Vector2,
-  Vector3,
-  VertexColors,
-  WireframeGeometry
+  Vector3
+  // VertexColors,
+  // WireframeGeometry
 } from 'three'
-import { Lut } from 'three/examples/jsm/math/Lut'
+// import { Lut } from 'three/examples/jsm/math/Lut'
 
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader'
@@ -30,12 +30,12 @@ import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader'
  * @param {Function} mouseDownEvent Mouse down event
  */
 const PartLoader = (mouseMoveEvent, mouseDownEvent) => {
-  // Solid color
-  const solidColor = new Color('gray')
-  // Face color
-  const faceColor = new Color('gray')
-  // Edge color
-  // const edgeColor = new Color('black')
+  // // Solid color
+  // const solidColor = new Color('gray')
+  // // Face color
+  // const faceColor = new Color('gray')
+  // // Edge color
+  // // const edgeColor = new Color('black')
   // Highlight color
   const highlightColor = new Color('#0096C7')
   // Select colo
@@ -48,282 +48,282 @@ const PartLoader = (mouseMoveEvent, mouseDownEvent) => {
    * @param {Object} clippingPlane Clipping plane
    */
   const load = async (part, transparent, clippingPlane) => {
-    if (part.buffer) {
-      // TODO bug with GLB format: JSON content not found
-      const blob = new Blob([Buffer.from(part.buffer)])
-      const url = URL.createObjectURL(blob)
+    // if (part.buffer) {
+    // TODO bug with GLB format: JSON content not found
+    const blob = new Blob([Buffer.from(part.buffer)])
+    const url = URL.createObjectURL(blob)
 
-      const loader = new GLTFLoader()
-      const dracoLoader = new DRACOLoader()
-      dracoLoader.setDecoderPath('/three/libs/draco/')
-      dracoLoader.preload()
-      loader.setDRACOLoader(dracoLoader)
+    const loader = new GLTFLoader()
+    const dracoLoader = new DRACOLoader()
+    dracoLoader.setDecoderPath('/three/libs/draco/')
+    dracoLoader.preload()
+    loader.setDRACOLoader(dracoLoader)
 
-      const gltf = await new Promise((resolve, reject) => {
-        loader.load(
-          url,
-          (glb) => resolve(glb),
-          (progress) => console.info(progress),
-          (err) => console.error(err)
-        )
-      })
-
-      const object = gltf.scene.children[0]
-      object.type = 'Part'
-
-      object.uuid = part.uuid
-
-      // Set original colors
-      const solids = object.children[0]
-      for (const solid of solids.children) {
-        solid.material.originalColor = solid.material.color
-        solid.material.clippingPlanes = [clippingPlane]
-      }
-      const faces = object.children[1]
-      for (const face of faces.children) {
-        face.material.originalColor = face.material.color
-        face.material.clippingPlanes = [clippingPlane]
-      }
-
-      object.boundingBox = computeBoundingBox(object)
-      object.dispose = () => dispose(object)
-
-      object.setTransparent = (transp) => setTransparent(object, transp)
-
-      object.startSelection = (renderer, camera, outlinePass, type) =>
-        startSelection(object, renderer, camera, outlinePass, type)
-      object.stopSelection = () => stopSelection(object)
-      object.getHighlighted = () => highlighted
-      object.getSelected = () => selected
-      object.highlight = highlight
-      object.unhighlight = unhighlight
-      object.select = select
-      object.unselect = unselect
-
-      return object
-    } else {
-      const partType = part.type
-
-      const object = new Group()
-      object.type = 'Part'
-
-      // Solids
-      const solids = new Group()
-      partType === 'geometry' &&
-        part.solids &&
-        part.solids.forEach((solid) => {
-          const mesh = loadElement(
-            partType,
-            solid,
-            solidColor,
-            transparent,
-            clippingPlane
-          )
-          mesh.visible = false
-          solids.add(mesh)
-        })
-      object.add(solids)
-
-      // Faces
-      const faces = new Group()
-      part.faces &&
-        part.faces.forEach((face) => {
-          const mesh = loadElement(
-            partType,
-            face,
-            faceColor,
-            transparent,
-            clippingPlane
-          )
-          if (mesh) {
-            mesh.visible = true
-            faces.add(mesh)
-          }
-        })
-      object.add(faces)
-
-      // Edges
-      const edges = new Group()
-      //   part.edges &&
-      //   part.edges.forEach((edge) => {
-      //     const mesh = loadElement(partType, edge, edgeColor, transparent, clippingPlane)
-      //     mesh.visible = true
-      //     edge.add(mesh)
-      //   })
-      object.add(edges)
-
-      object.uuid = part.uuid
-
-      object.boundingBox = computeBoundingBox(object)
-      object.dispose = () => dispose(object)
-
-      object.setTransparent = (transp) => setTransparent(object, transp)
-
-      object.startSelection = (renderer, camera, outlinePass, type) =>
-        startSelection(object, renderer, camera, outlinePass, type)
-      object.stopSelection = () => stopSelection(object)
-      object.getHighlighted = () => highlighted
-      object.getSelected = () => selected
-      object.highlight = highlight
-      object.unhighlight = unhighlight
-      object.select = select
-      object.unselect = unselect
-
-      return object
-    }
-  }
-
-  /**
-   * Load element
-   * @param {string} partType Part type
-   * @param {Object} element Element
-   * @param {Object} color Color
-   * @param {boolean} transparent Transparent
-   * @param {Object} clippingPlane Clipping plane
-   */
-  const loadElement = (
-    partType,
-    element,
-    color,
-    transparent,
-    clippingPlane
-  ) => {
-    const loader = new BufferGeometryLoader()
-    const buffer = JSON.parse(Buffer.from(element.buffer).toString())
-    const geometry = loader.parse(buffer)
-
-    // Convert mm to m
-    // Meshes and results are already converted
-    if (partType === 'geometry') {
-      const position = geometry.getAttribute('position')
-      position.array = position.array.map((p) => p * 1e-3)
-      geometry.setAttribute('position', position)
-    }
-
-    // Color
-    const colorAttribute = geometry.getAttribute('color')
-    if (colorAttribute) {
-      color = new Color(
-        colorAttribute.array[0],
-        colorAttribute.array[1],
-        colorAttribute.array[2]
+    const gltf = await new Promise((resolve, reject) => {
+      loader.load(
+        url,
+        (glb) => resolve(glb),
+        (progress) => console.info(progress),
+        (err) => console.error(err)
       )
+    })
+
+    const object = gltf.scene.children[0]
+    object.type = 'Part'
+
+    object.uuid = part.uuid
+
+    // Set original colors
+    const solids = object.children[0]
+    for (const solid of solids.children) {
+      solid.material.originalColor = solid.material.color
+      solid.material.clippingPlanes = [clippingPlane]
+    }
+    const faces = object.children[1]
+    for (const face of faces.children) {
+      face.material.originalColor = face.material.color
+      face.material.clippingPlanes = [clippingPlane]
     }
 
-    if (partType === 'geometry') {
-      geometry.computeBoundingBox()
-      geometry.computeBoundingSphere()
+    object.boundingBox = computeBoundingBox(object)
+    object.dispose = () => dispose(object)
 
-      const material = new MeshStandardMaterial({
-        color: color,
-        side: DoubleSide,
-        transparent: transparent,
-        opacity: transparent ? 0.5 : 1,
-        depthWrite: !transparent,
-        clippingPlanes: [clippingPlane]
-      })
-      material.originalColor = color
+    object.setTransparent = (transp) => setTransparent(object, transp)
 
-      const mesh = new Mesh(geometry, material)
-      mesh.uuid = buffer.uuid
+    object.startSelection = (renderer, camera, outlinePass, type) =>
+      startSelection(object, renderer, camera, outlinePass, type)
+    object.stopSelection = () => stopSelection(object)
+    object.getHighlighted = () => highlighted
+    object.getSelected = () => selected
+    object.highlight = highlight
+    object.unhighlight = unhighlight
+    object.select = select
+    object.unselect = unselect
 
-      return mesh
-    } else if (partType === 'mesh') {
-      const wireframe = new WireframeGeometry(geometry)
-      wireframe.computeBoundingBox()
-      wireframe.computeBoundingSphere()
+    return object
+    // } else {
+    //   const partType = part.type
 
-      const material = new LineBasicMaterial({
-        color: color,
-        linewidth: 1,
-        transparent: transparent,
-        opacity: transparent ? 0.5 : 1,
-        depthWrite: !transparent,
-        clippingPlanes: [clippingPlane]
-      })
-      material.originalColor = color
+    //   const object = new Group()
+    //   object.type = 'Part'
 
-      const mesh = new LineSegments(wireframe, material)
-      mesh.uuid = buffer.uuid
-      return mesh
-    } else if (partType === 'result') {
-      const group = new Group()
+    //   // Solids
+    //   const solids = new Group()
+    //   partType === 'geometry' &&
+    //     part.solids &&
+    //     part.solids.forEach((solid) => {
+    //       const mesh = loadElement(
+    //         partType,
+    //         solid,
+    //         solidColor,
+    //         transparent,
+    //         clippingPlane
+    //       )
+    //       mesh.visible = false
+    //       solids.add(mesh)
+    //     })
+    //   object.add(solids)
 
-      geometry.computeBoundingBox()
-      geometry.computeBoundingSphere()
+    //   // Faces
+    //   const faces = new Group()
+    //   part.faces &&
+    //     part.faces.forEach((face) => {
+    //       const mesh = loadElement(
+    //         partType,
+    //         face,
+    //         faceColor,
+    //         transparent,
+    //         clippingPlane
+    //       )
+    //       if (mesh) {
+    //         mesh.visible = true
+    //         faces.add(mesh)
+    //       }
+    //     })
+    //   object.add(faces)
 
-      group.boundingBox = geometry.boundingBox
-      group.boundingSphere = geometry.boundingSphere
-      group.uuid = buffer.uuid
+    //   // Edges
+    //   const edges = new Group()
+    //   //   part.edges &&
+    //   //   part.edges.forEach((edge) => {
+    //   //     const mesh = loadElement(partType, edge, edgeColor, transparent, clippingPlane)
+    //   //     mesh.visible = true
+    //   //     edge.add(mesh)
+    //   //   })
+    //   object.add(edges)
 
-      let vertexColors
-      const lut = new Lut()
-      const data = geometry.getAttribute('data')
-      if (data) {
-        const min = Math.min(...data.array)
-        const max = Math.max(...data.array)
+    //   object.uuid = part.uuid
 
-        if (min === max) {
-          if (min === 0) {
-            lut.setMin(min || -1)
-            lut.setMax(max || 1)
-          } else {
-            lut.setMin(min - min * 0.1)
-            lut.setMin(min + min * 0.1)
-          }
-        } else {
-          lut.setMin(min)
-          lut.setMax(max)
-        }
+    //   object.boundingBox = computeBoundingBox(object)
+    //   object.dispose = () => dispose(object)
 
-        vertexColors = new Float32Array(data.count * 3)
-        for (let i = 0; i < data.count; ++i) {
-          const vertexColor = lut.getColor(data.array[i])
-          vertexColors[3 * i + 0] = vertexColor.r
-          vertexColors[3 * i + 1] = vertexColor.g
-          vertexColors[3 * i + 2] = vertexColor.b
-        }
-        geometry.setAttribute(
-          'color',
-          new Float32BufferAttribute(vertexColors, 3)
-        )
-      }
+    //   object.setTransparent = (transp) => setTransparent(object, transp)
 
-      const material = new LineBasicMaterial({
-        vertexColors: VertexColors,
-        color: color,
-        side: DoubleSide,
-        transparent: transparent,
-        opacity: transparent ? 0.5 : 1,
-        depthWrite: !transparent,
-        clippingPlanes: [clippingPlane]
-      })
-      material.originalColor = color
+    //   object.startSelection = (renderer, camera, outlinePass, type) =>
+    //     startSelection(object, renderer, camera, outlinePass, type)
+    //   object.stopSelection = () => stopSelection(object)
+    //   object.getHighlighted = () => highlighted
+    //   object.getSelected = () => selected
+    //   object.highlight = highlight
+    //   object.unhighlight = unhighlight
+    //   object.select = select
+    //   object.unselect = unselect
 
-      const mesh = new Mesh(geometry, material)
-
-      const wireframeGeometry = new WireframeGeometry(geometry)
-      const wireframeMaterial = new LineBasicMaterial({
-        color: color,
-        linewidth: 1,
-        transparent: transparent,
-        opacity: transparent ? 0.5 : 1,
-        depthWrite: !transparent,
-        clippingPlanes: [clippingPlane]
-      })
-      material.originalColor = color
-
-      const wireframe = new LineSegments(wireframeGeometry, wireframeMaterial)
-      wireframe.visible = transparent
-
-      group.lut = lut
-
-      group.add(mesh)
-      group.add(wireframe)
-
-      return group
-    }
+    //   return object
+    // }
   }
+
+  // /**
+  //  * Load element
+  //  * @param {string} partType Part type
+  //  * @param {Object} element Element
+  //  * @param {Object} color Color
+  //  * @param {boolean} transparent Transparent
+  //  * @param {Object} clippingPlane Clipping plane
+  //  */
+  // const loadElement = (
+  //   partType,
+  //   element,
+  //   color,
+  //   transparent,
+  //   clippingPlane
+  // ) => {
+  //   const loader = new BufferGeometryLoader()
+  //   const buffer = JSON.parse(Buffer.from(element.buffer).toString())
+  //   const geometry = loader.parse(buffer)
+
+  //   // Convert mm to m
+  //   // Meshes and results are already converted
+  //   if (partType === 'geometry') {
+  //     const position = geometry.getAttribute('position')
+  //     position.array = position.array.map((p) => p * 1e-3)
+  //     geometry.setAttribute('position', position)
+  //   }
+
+  //   // Color
+  //   const colorAttribute = geometry.getAttribute('color')
+  //   if (colorAttribute) {
+  //     color = new Color(
+  //       colorAttribute.array[0],
+  //       colorAttribute.array[1],
+  //       colorAttribute.array[2]
+  //     )
+  //   }
+
+  //   if (partType === 'geometry') {
+  //     geometry.computeBoundingBox()
+  //     geometry.computeBoundingSphere()
+
+  //     const material = new MeshStandardMaterial({
+  //       color: color,
+  //       side: DoubleSide,
+  //       transparent: transparent,
+  //       opacity: transparent ? 0.5 : 1,
+  //       depthWrite: !transparent,
+  //       clippingPlanes: [clippingPlane]
+  //     })
+  //     material.originalColor = color
+
+  //     const mesh = new Mesh(geometry, material)
+  //     mesh.uuid = buffer.uuid
+
+  //     return mesh
+  //   } else if (partType === 'mesh') {
+  //     const wireframe = new WireframeGeometry(geometry)
+  //     wireframe.computeBoundingBox()
+  //     wireframe.computeBoundingSphere()
+
+  //     const material = new LineBasicMaterial({
+  //       color: color,
+  //       linewidth: 1,
+  //       transparent: transparent,
+  //       opacity: transparent ? 0.5 : 1,
+  //       depthWrite: !transparent,
+  //       clippingPlanes: [clippingPlane]
+  //     })
+  //     material.originalColor = color
+
+  //     const mesh = new LineSegments(wireframe, material)
+  //     mesh.uuid = buffer.uuid
+  //     return mesh
+  //   } else if (partType === 'result') {
+  //     const group = new Group()
+
+  //     geometry.computeBoundingBox()
+  //     geometry.computeBoundingSphere()
+
+  //     group.boundingBox = geometry.boundingBox
+  //     group.boundingSphere = geometry.boundingSphere
+  //     group.uuid = buffer.uuid
+
+  //     let vertexColors
+  //     const lut = new Lut()
+  //     const data = geometry.getAttribute('data')
+  //     if (data) {
+  //       const min = Math.min(...data.array)
+  //       const max = Math.max(...data.array)
+
+  //       if (min === max) {
+  //         if (min === 0) {
+  //           lut.setMin(min || -1)
+  //           lut.setMax(max || 1)
+  //         } else {
+  //           lut.setMin(min - min * 0.1)
+  //           lut.setMin(min + min * 0.1)
+  //         }
+  //       } else {
+  //         lut.setMin(min)
+  //         lut.setMax(max)
+  //       }
+
+  //       vertexColors = new Float32Array(data.count * 3)
+  //       for (let i = 0; i < data.count; ++i) {
+  //         const vertexColor = lut.getColor(data.array[i])
+  //         vertexColors[3 * i + 0] = vertexColor.r
+  //         vertexColors[3 * i + 1] = vertexColor.g
+  //         vertexColors[3 * i + 2] = vertexColor.b
+  //       }
+  //       geometry.setAttribute(
+  //         'color',
+  //         new Float32BufferAttribute(vertexColors, 3)
+  //       )
+  //     }
+
+  //     const material = new LineBasicMaterial({
+  //       vertexColors: VertexColors,
+  //       color: color,
+  //       side: DoubleSide,
+  //       transparent: transparent,
+  //       opacity: transparent ? 0.5 : 1,
+  //       depthWrite: !transparent,
+  //       clippingPlanes: [clippingPlane]
+  //     })
+  //     material.originalColor = color
+
+  //     const mesh = new Mesh(geometry, material)
+
+  //     const wireframeGeometry = new WireframeGeometry(geometry)
+  //     const wireframeMaterial = new LineBasicMaterial({
+  //       color: color,
+  //       linewidth: 1,
+  //       transparent: transparent,
+  //       opacity: transparent ? 0.5 : 1,
+  //       depthWrite: !transparent,
+  //       clippingPlanes: [clippingPlane]
+  //     })
+  //     material.originalColor = color
+
+  //     const wireframe = new LineSegments(wireframeGeometry, wireframeMaterial)
+  //     wireframe.visible = transparent
+
+  //     group.lut = lut
+
+  //     group.add(mesh)
+  //     group.add(wireframe)
+
+  //     return group
+  //   }
+  // }
 
   /**
    * Compute bounding box
@@ -346,12 +346,7 @@ const PartLoader = (mouseMoveEvent, mouseDownEvent) => {
       faces.children &&
         faces.children.forEach((face) => {
           let childBox
-          if (face.type === 'Group') {
-            // This is a result
-            childBox = face.boundingBox
-          } else {
-            childBox = face.geometry.boundingBox
-          }
+          childBox = face.geometry.boundingBox
           mergeBox(box, childBox)
         })
     }
@@ -385,15 +380,8 @@ const PartLoader = (mouseMoveEvent, mouseDownEvent) => {
   const dispose = (part) => {
     part.children.forEach((group) => {
       group.children.forEach((child) => {
-        if (child.children && child.children.length) {
-          // This is a result
-          child.children[0].geometry.dispose()
-          child.children[0].material.dispose()
-        } else {
-          // This is a geometry or a mesh
-          child.geometry.dispose()
-          child.material.dispose()
-        }
+        child.geometry.dispose()
+        child.material.dispose()
       })
     })
   }

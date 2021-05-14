@@ -3,12 +3,15 @@
 // Bases classes
 
 global.MockGeometry = {
-  getAttribute: () => {}
+  getAttribute: () => ({
+    array: [1, 2, 3]
+  })
 }
 class MockBufferGeometry {
   constructor() {
     this.computeBoundingBox = () => {}
     this.computeBoundingSphere = () => {}
+    this.deleteAttribute = () => {}
     this.dispose = () => {}
     this.getAttribute = (attribute) =>
       global.MockGeometry.getAttribute(attribute)
@@ -17,6 +20,7 @@ class MockBufferGeometry {
     this.translate = () => {}
     this.setFromPoints = () => {}
 
+    this.attributes = {}
     this.boundingSphere = {
       center: new MockVector3(),
       radius: 1
@@ -104,10 +108,9 @@ class MockWireframeGeometry extends MockBufferGeometry {}
 
 class MockLineBasicMaterial extends MockMaterial {}
 
-class MockLineSegments {}
-
 class MockMesh {
   constructor() {
+    this.add = () => {}
     this.lookAt = () => {}
     this.rotateX = () => {}
     this.rotateY = () => {}
@@ -115,8 +118,11 @@ class MockMesh {
     this.material = new MockMaterial()
     this.position = new MockVector3()
     this.scale = new MockVector3()
+    this.userData = {}
   }
 }
+
+class MockLineSegments extends MockMesh {}
 
 class MockMeshBasicMaterial extends MockMaterial {}
 
@@ -239,6 +245,26 @@ class MockWebGLRenderer {
   }
 }
 
+class MockGLTFExporter {
+  constructor() {
+    this.parse = (mesh, finish) => {
+      finish('gltf')
+    }
+  }
+}
+
+class MockLut {
+  constructor() {
+    this.setMin = () => {}
+    this.setMax = () => {}
+    this.getColor = () => ({ r: 0, g: 0.5, b: 1 })
+  }
+}
+
+const MockBufferGeometryUtils = {
+  mergeVertices: () => {}
+}
+
 export const MockThree = {
   BufferGeometry: MockBufferGeometry,
   Material: MockMaterial,
@@ -279,7 +305,11 @@ export const MockThree = {
   Vector2: MockVector2,
   Vector3: MockVector3,
   WebGLRenderer: MockWebGLRenderer,
-  WireframeGeometry: MockWireframeGeometry
+  WireframeGeometry: MockWireframeGeometry,
+
+  GLTFExporter: MockGLTFExporter,
+  Lut: MockLut,
+  BufferGeometryUtils: MockBufferGeometryUtils
 }
 
-jest.mock('three/build/three.module', () => MockThree)
+jest.mock('three', () => MockThree)

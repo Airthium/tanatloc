@@ -74,12 +74,32 @@ describe('lib/tools', () => {
   })
 
   it('convert', async () => {
-    mockToThree.mockImplementation((path, fileIn, pathOut) => {
-      return { code: 0 }
-    })
+    // Normal
+    mockToThree.mockImplementation(() => ({ code: 0 }))
     await Tools.convert('location', { name: 'name' }, () => {})
     expect(mockWriteFile).toHaveBeenCalledTimes(1)
 
+    // Result
+    mockToThree.mockImplementation(() => ({
+      code: 0,
+      data: JSON.stringify({ path: 'test' })
+    }))
+    await Tools.convert('location', { name: 'name' }, () => {}, {
+      isResult: true
+    })
+    expect(mockWriteFile).toHaveBeenCalledTimes(2)
+
+    // Error
+    try {
+      mockToThree.mockImplementation(() => ({ code: 0, error: 'error' }))
+      await Tools.convert('location', { name: 'name' }, () => {})
+      expect(true).toBe(false)
+    } catch (err) {
+      expect(err.message).toBe('Conversion process failed. Error: error')
+      expect(true).toBe(true)
+    }
+
+    // Wrong code
     try {
       mockToThree.mockImplementation(() => ({ code: -1 }))
       await Tools.convert('location', { name: 'name' })

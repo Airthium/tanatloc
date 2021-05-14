@@ -12,8 +12,7 @@ const { execSync } = require('child_process')
  */
 const convert = (location, name) => {
   const script = path.join(__dirname, 'run.js')
-  const glb = execSync('node ' + script + ' ' + location + ' ' + name)
-  return glb
+  return execSync('node ' + script + ' ' + location + ' ' + name)
 }
 
 module.exports = { convert }

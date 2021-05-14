@@ -1,5 +1,11 @@
 import Geometry from '@/components/project/simulation/geometry'
 import { shallow, mount } from 'enzyme'
+import { act } from 'react-dom/test-utils'
+
+jest.mock('@/components/assets/dialog', () => {
+  const DeleteDialog = () => 'DeleteDialog'
+  return { DeleteDialog }
+})
 
 const mockError = jest.fn()
 jest.mock('@/components/assets/notification', () => ({
@@ -176,7 +182,7 @@ describe('components/project/simulation/geometry', () => {
     )
 
     // Normal
-    await wrapper.find('ForwardRef').props().onConfirm()
+    await act(async () => await wrapper.find('DeleteDialog').props().onOk())
     expect(mockUpdate).toHaveBeenCalledTimes(1)
     expect(mutateOneSimulation).toHaveBeenCalledTimes(1)
     expect(mockError).toHaveBeenCalledTimes(0)
@@ -185,7 +191,7 @@ describe('components/project/simulation/geometry', () => {
     mockUpdate.mockImplementation(() => {
       throw new Error()
     })
-    await wrapper.find('ForwardRef').props().onConfirm()
+    await act(async () => await wrapper.find('DeleteDialog').props().onOk())
     expect(mockUpdate).toHaveBeenCalledTimes(2)
     expect(mutateOneSimulation).toHaveBeenCalledTimes(1)
     expect(mockError).toHaveBeenCalledTimes(1)
@@ -221,7 +227,7 @@ describe('components/project/simulation/geometry', () => {
       buffer: ['buffer']
     }))
     window.URL.createObjectURL = () => 'url'
-    await wrapper.find('Button').at(0).props().onClick()
+    await act(async () => await wrapper.find('Button').at(1).props().onClick())
     expect(mockGet).toHaveBeenCalledTimes(1)
     expect(mockError).toHaveBeenCalledTimes(0)
 
@@ -229,7 +235,7 @@ describe('components/project/simulation/geometry', () => {
     mockGet.mockImplementation(() => {
       throw new Error()
     })
-    await wrapper.find('Button').at(0).props().onClick()
+    await act(async () => await wrapper.find('Button').at(1).props().onClick())
     expect(mockGet).toHaveBeenCalledTimes(2)
     expect(mockError).toHaveBeenCalledTimes(1)
   })

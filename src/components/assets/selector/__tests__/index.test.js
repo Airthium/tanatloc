@@ -40,18 +40,18 @@ describe('components/assets/selector', () => {
     faces: [
       {
         uuid: 'uuid',
-        color: [0, 0.5, 1]
+        color: { r: 0, g: 0.5, b: 1 }
       },
       {
         uuid: 'uuid2'
       },
       {
         uuid: 'uuid3',
-        color: [0, 0.5, 1]
+        color: { r: 0, g: 0.5, b: 1 }
       },
       {
         uuid: 'uuid4',
-        color: [0, 1, 1]
+        color: { r: 0, g: 0.5, b: 0.5 }
       }
     ]
   }

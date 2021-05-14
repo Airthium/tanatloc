@@ -5,6 +5,17 @@ jest.mock('path', () => ({
   join: () => mockPath()
 }))
 
+jest.mock('set-interval-async/fixed', () => ({
+  setIntervalAsync: (func) => {
+    func()
+    return 1
+  }
+}))
+
+jest.mock('set-interval-async', () => ({
+  clearIntervalAsync: () => {}
+}))
+
 jest.mock('@/config/storage', () => ({}))
 
 const mockUpdate = jest.fn()
@@ -14,9 +25,12 @@ jest.mock('@/database/simulation', () => ({
 
 const mockCreatePath = jest.fn()
 const mockReadFile = jest.fn()
+const mockConvert = jest.fn()
 jest.mock('@/lib/tools', () => ({
   createPath: async () => mockCreatePath(),
-  readFile: async () => mockReadFile()
+  readFile: async () => mockReadFile(),
+  convert: async (path, file, callback, param) =>
+    mockConvert(path, file, callback, param)
 }))
 
 const mockRender = jest.fn()
@@ -26,13 +40,10 @@ jest.mock('@/lib/template', () => ({
 
 const mockGmsh = jest.fn()
 const mockFreefem = jest.fn()
-const mockToThree = jest.fn()
 jest.mock('@/services', () => ({
   gmsh: async (path, mesh, geometry, callback) =>
     mockGmsh(path, mesh, geometry, callback),
-  freefem: async (path, script, callback) =>
-    mockFreefem(path, script, callback),
-  toThree: async (path, fileIn, pathOut) => mockToThree(path, fileIn, pathOut)
+  freefem: async (path, script, callback) => mockFreefem(path, script, callback)
 }))
 
 describe('plugins/local/src/lib', () => {
@@ -40,6 +51,7 @@ describe('plugins/local/src/lib', () => {
     mockPath.mockReset()
     mockUpdate.mockReset()
 
+    mockConvert.mockReset()
     mockCreatePath.mockReset()
     mockReadFile.mockReset()
     mockReadFile.mockImplementation(() => '{ "test": "test" }')
@@ -47,7 +59,6 @@ describe('plugins/local/src/lib', () => {
     mockRender.mockReset()
     mockGmsh.mockReset()
     mockFreefem.mockReset()
-    mockToThree.mockReset()
   })
 
   it('key', () => {
@@ -58,11 +69,11 @@ describe('plugins/local/src/lib', () => {
     // Normal
     mockPath.mockImplementation(() => 'partPath')
     mockGmsh.mockImplementation(() => 0)
-    mockToThree.mockImplementation((path, fileIn, pathOut) => {
+    mockConvert.mockImplementation((path, file, callback) => {
+      callback({})
       return {
-        code: 0,
-        error: 'error',
-        data: 'data'
+        json: 'json',
+        glb: 'glb'
       }
     })
     const data = await Local.computeMesh(
@@ -75,12 +86,14 @@ describe('plugins/local/src/lib', () => {
       originPath: 'path',
       renderPath: 'path',
       fileName: 'file.msh',
-      part: 'part.json',
-      partPath: 'partPath'
+      json: 'json',
+      glb: 'glb'
     })
 
     // Mesh convert error
-    mockToThree.mockImplementation(() => ({ code: 1 }))
+    mockConvert.mockImplementation(() => {
+      throw new Error()
+    })
     try {
       await Local.computeMesh(
         'path',
@@ -92,7 +105,7 @@ describe('plugins/local/src/lib', () => {
     } catch (err) {
       expect(true).toBe(true)
     } finally {
-      mockToThree.mockImplementation(() => ({ code: 0 }))
+      mockConvert.mockImplementation(() => ({}))
     }
 
     // Error
@@ -111,41 +124,39 @@ describe('plugins/local/src/lib', () => {
   })
 
   it('computeSimulation', async () => {
+    mockReadFile.mockImplementation(
+      () =>
+        'PROCESS VTU FILE run/result.vtu\nreal log\nPROCESS DATA FILE run/data.dat\nreal log'
+    )
     mockFreefem.mockImplementation((path, script, callback) => {
       callback({ pid: 'pid' })
-      callback({ data: 'PROCESS VTU FILE run/result.vtu\nreal log' })
-      callback({ data: 'PROCESS DATA FILE run/data.dat\nreal log' })
       callback({ data: 'data' })
       callback({ error: 'data' })
       return 0
     })
-    mockToThree.mockImplementation(() => ({
-      code: 0,
-      error: '',
-      data: '{ "test": "test" }'
-    }))
+    mockConvert.mockImplementation((path, file, callback) => {
+      callback({ data: JSON.stringify({ path: 'path' }) })
+      return {
+        json: 'json',
+        glb: 'glb'
+      }
+    })
 
     // Empty
     await Local.computeSimulation('id', 'algorithm', {})
 
-    // Three bad code
-    mockToThree.mockImplementation(() => ({
-      code: 1,
-      error: '',
-      data: '{ "test": "test" }'
-    }))
+    // Convert stderr
+    mockConvert.mockImplementation((path, file, callback) => {
+      callback({ error: 'error' })
+      return {
+        json: 'json',
+        glb: 'glb'
+      }
+    })
     await Local.computeSimulation('id', 'algorithm', {})
 
-    // Three stderr
-    mockToThree.mockImplementation(() => ({
-      code: 0,
-      error: 'error',
-      data: '{ "test": "test" }'
-    }))
-    await Local.computeSimulation('id', 'algorithm', {})
-
-    // Three error && data error
-    mockToThree.mockImplementation(() => {
+    // Convert error
+    mockConvert.mockImplementation(() => {
       throw new Error()
     })
     JSON.parse = () => {
@@ -161,10 +172,9 @@ describe('plugins/local/src/lib', () => {
       callback({ error: 'data' })
       return 0
     })
-    mockToThree.mockImplementation(() => ({
-      code: 0,
-      error: '',
-      data: ''
+    mockConvert.mockImplementation(() => ({
+      json: 'json',
+      glb: 'glb'
     }))
     await Local.computeSimulation('id', 'algorithm', {
       geometry: {
@@ -234,80 +244,82 @@ describe('plugins/local/src/lib', () => {
       }
     })
 
-    //   // With keys
-    //   await Local.computeSimulation('id', 'algorithm', { key: {} })
-    //   // With mesh
-    //   await Local.computeSimulation('id', 'algorithm', {
-    //     key: { meshable: true, file: {} }
-    //   })
-    //   // With boundary condition (empty)
-    //   await Local.computeSimulation('id', 'algorithm', {
-    //     key: { meshable: true, file: {} },
-    //     boundaryConditions: {
-    //       index: 2,
-    //       key: {}
-    //     }
-    //   })
-    //   // With refinement
-    //   await Local.computeSimulation('id', 'algorithm', {
-    //     key: { meshable: true, file: {} },
-    //     boundaryConditions: {
-    //       key: {
-    //         refineFactor: 2,
-    //         values: [
-    //           {
-    //             selected: ['uuid']
-    //           }
-    //         ]
-    //       }
-    //     }
-    //   })
-    //   // Date
-    //   global.Date = {
-    //     now: () => 0
-    //   }
-    //   await Local.computeSimulation('id', 'algorithm', {
-    //     key: { meshable: true, file: {} }
-    //   })
-    //   global.Date = {
-    //     now: () => Math.random()
-    //   }
-    //   await Local.computeSimulation('id', 'algorithm', {
-    //     key: { meshable: true, file: {} }
-    //   })
-    //   // Mesh error
-    //   mockGmsh.mockImplementation(() => -1)
-    //   try {
-    //     await Local.computeSimulation('id', 'algorithm', {
-    //       key: { meshable: true, file: {} }
-    //     })
-    //     expect(true).toBe(false)
-    //   } catch (err) {
-    //     expect(true).toBe(true)
-    //   }
-    //   // Result & data error
-    //   mockToThree.mockImplementation(() => -1)
-    //   mockReadFile.mockImplementation(() => {
-    //     throw new Error()
-    //   })
-    //   await Local.computeSimulation('id', 'algorithm', {
-    //     key: { file: {} }
-    //   })
-    //   mockToThree.mockImplementation(() => {
-    //     throw new Error()
-    //   })
-    //   await Local.computeSimulation('id', 'algorithm', {
-    //     key: { file: {} }
-    //   })
-    //   // Error
-    //   mockGmsh.mockImplementation(() => 0)
-    //   mockFreefem.mockReset()
-    //   try {
-    //     await Local.computeSimulation('id', 'algorithm', {})
-    //     expect(true).toBe(false)
-    //   } catch (err) {
-    //     expect(true).toBe(true)
-    //   }
+    // With keys
+    await Local.computeSimulation('id', 'algorithm', { key: {} })
+    // With mesh
+    await Local.computeSimulation('id', 'algorithm', {
+      key: { meshable: true, file: {} }
+    })
+    // With boundary condition (empty)
+    await Local.computeSimulation('id', 'algorithm', {
+      key: { meshable: true, file: {} },
+      boundaryConditions: {
+        index: 2,
+        key: {}
+      }
+    })
+    // With refinement
+    await Local.computeSimulation('id', 'algorithm', {
+      key: { meshable: true, file: {} },
+      boundaryConditions: {
+        key: {
+          refineFactor: 2,
+          values: [
+            {
+              selected: ['uuid']
+            }
+          ]
+        }
+      }
+    })
+    // Date
+    global.Date = {
+      now: () => 0
+    }
+    await Local.computeSimulation('id', 'algorithm', {
+      key: { meshable: true, file: {} }
+    })
+    global.Date = {
+      now: () => Math.random()
+    }
+    await Local.computeSimulation('id', 'algorithm', {
+      key: { meshable: true, file: {} }
+    })
+    // Mesh error
+    mockGmsh.mockImplementation(() => -1)
+    try {
+      await Local.computeSimulation('id', 'algorithm', {
+        key: { meshable: true, file: {} }
+      })
+      expect(true).toBe(false)
+    } catch (err) {
+      expect(true).toBe(true)
+    }
+    // Result & data error
+    mockConvert.mockImplementation(() => {
+      throw new Error()
+    })
+    mockReadFile.mockImplementation(() => {
+      throw new Error()
+    })
+    await Local.computeSimulation('id', 'algorithm', {
+      key: { file: {} }
+    })
+    mockConvert.mockImplementation(() => {
+      throw new Error()
+    })
+    await Local.computeSimulation('id', 'algorithm', {
+      key: { file: {} }
+    })
+    // Error
+    mockGmsh.mockImplementation(() => 0)
+    mockFreefem.mockReset()
+    try {
+      await Local.computeSimulation('id', 'algorithm', {})
+      expect(true).toBe(false)
+    } catch (err) {
+      expect(true).toBe(true)
+    }
   })
 
   it('stop', async () => {

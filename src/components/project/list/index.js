@@ -1,6 +1,11 @@
 import PropTypes from 'prop-types'
 import { useRouter } from 'next/router'
-import { Space, Table, Empty } from 'antd'
+import { Button, Card, Space, Table, Empty, Divider } from 'antd'
+import {
+  DeleteOutlined,
+  EditOutlined,
+  ShareAltOutlined
+} from '@ant-design/icons'
 
 import Share from '@/components/assets/share'
 import { Error } from '@/components/assets/notification'
@@ -96,6 +101,7 @@ const ProjectList = ({
       )
     })
     .filter((d) => d)
+  console.log(data)
 
   // Open project
   const openProject = (project) => {
@@ -154,6 +160,41 @@ const ProjectList = ({
       Error(errors.updateError, err)
     }
   }
+
+  // TODO display with card start
+  // /**
+  //  * Render
+  //  */
+  // return (
+  //   <Space wrap={true}>
+  //     {data.map((project) => (
+  //       <Card
+  //         key={project.key}
+  //         title={project.title}
+  //         style={{ width: '200px', height: '300px', overflow: 'hidden' }}
+  //       >
+  //         <div
+  //           style={{
+  //             display: 'flex',
+  //             flexDirection: 'column'
+  //           }}
+  //         >
+  //           <div>{project.snapshot}</div>
+
+  //           <div style={{ display: 'flex', flexDirection: 'column' }}>
+  //             {project.ownersRender}
+  //             {project.usersRende}
+  //             <Button.Group>
+  //               <Button icon={<DeleteOutlined />} type="danger" />
+  //               <Button icon={<ShareAltOutlined />} />
+  //               <Button icon={<EditOutlined />} />
+  //             </Button.Group>
+  //           </div>
+  //         </div>
+  //       </Card>
+  //     ))}
+  //   </Space>
+  // )
 
   /**
    * Render

@@ -17,16 +17,20 @@ describe('modules/three-to-glb/run', () => {
   })
 
   it('empty', () => {
-    global.MockGeometry.getAttribute = () => ({
-      count: 3,
-      array: [1, 2, 3]
-    })
+    global.MockGeometry.getAttribute = (attribute) => {
+      if (attribute === 'data') return
+      else
+        return {
+          count: 3,
+          array: [1, 2, 3]
+        }
+    }
     let count = 0
     mockReadFile.mockImplementation(() => {
       count++
       if (count === 1)
         return JSON.stringify({
-          type: 'mesh',
+          type: 'result',
           solids: [{}],
           faces: [{}],
           edges: [{}]

@@ -26,7 +26,7 @@ describe('modules/three-to-glb/run', () => {
       count++
       if (count === 1)
         return JSON.stringify({
-          type: 'mesh',
+          type: 'result',
           solids: [{}],
           faces: [{}],
           edges: [{}]

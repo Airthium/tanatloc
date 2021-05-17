@@ -256,35 +256,9 @@ describe('plugins/rescale/src/lib/tools', () => {
       {}
     )
 
-    // // Convert error
-    // mockConvert.mockImplementation(() => {
-    //   throw new Error()
-    // })
-    // await Tools.getInRunOutputs(
-    //   configuration,
-    //   'log\nPROCESS VTU FILE result1.vtu\nPROCESS VTU FILE result2.vtu\nPROCESS DATA FILE data1.dat\nPROCESS DATA FILE data2.dat',
-    //   [
-    //     {
-    //       resource: 'resource',
-    //       path: 'result2.vtu'
-    //     },
-    //     {
-    //       resource: 'resource',
-    //       path: 'data2.dat'
-    //     }
-    //   ],
-    //   ['result1.vtu'],
-    //   ['data1.dat'],
-    //   'path',
-    //   'path',
-    //   'path',
-    //   {}
-    // )
-
-    // Convert stderr
-    mockConvert.mockImplementation((path, file, callback) => {
-      callback({ error: 'error' })
-      return {}
+    // Convert error
+    mockConvert.mockImplementation(() => {
+      throw new Error()
     })
     await Tools.getInRunOutputs(
       configuration,
@@ -307,12 +281,10 @@ describe('plugins/rescale/src/lib/tools', () => {
       {}
     )
 
-    // write err
-    // mockConvert.mockImplementation(() => {
-    //   throw new Error()
-    // })
-    mockWriteFile.mockImplementation(() => {
-      throw new Error()
+    // Convert stderr
+    mockConvert.mockImplementation((path, file, callback) => {
+      callback({ error: 'error' })
+      return {}
     })
     await Tools.getInRunOutputs(
       configuration,
@@ -483,53 +455,6 @@ describe('plugins/rescale/src/lib/tools', () => {
         },
         {
           relativePath: 'data2.dat'
-        }
-      ],
-      ['result1.vtu'],
-      ['data1.dat'],
-      'path',
-      'path',
-      'path',
-      {}
-    )
-
-    // Convert err, write err
-    mockConvert.mockImplementation(() => {
-      throw new Error()
-    })
-    mockWriteFile.mockImplementation(() => {
-      throw new Error()
-    })
-    await Tools.getOutputs(
-      configuration,
-      'log\nPROCESS VTU FILE result1.vtu\nPROCESS VTU FILE result2.vtu\nPROCESS DATA FILE data1.dat\nPROCESS DATA FILE data2.dat',
-      [
-        {
-          relativePath: 'result2.vtu'
-        },
-        {
-          relativePath: 'data2.dat'
-        }
-      ],
-      ['result1.vtu'],
-      ['data1.dat'],
-      'path',
-      'path',
-      'path',
-      {}
-    )
-
-    // No available file
-    mockCall.mockImplementation(() => ({ detail: 'detail' }))
-    await Tools.getOutputs(
-      configuration,
-      'log\nPROCESS VTU FILE result1.vtu\nPROCESS VTU FILE result2.vtu\nPROCESS DATA FILE data1.dat\nPROCESS DATA FILE data2.dat',
-      [
-        {
-          relativePath: 'result3.vtu'
-        },
-        {
-          relativePath: 'data3.dat'
         }
       ],
       ['result1.vtu'],

@@ -507,8 +507,8 @@ const processResult = async (
         target: path.join('run/result', partPath)
       },
       ({ data, error }) => {
-        convertData += data
-        convertError += error
+        data && (convertData += data)
+        error && (convertError += error)
       },
       { isResult: true }
     )

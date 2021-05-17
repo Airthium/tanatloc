@@ -17,6 +17,10 @@ describe('modules/three-to-glb/run', () => {
   })
 
   it('empty', () => {
+    global.MockGeometry.getAttribute = () => ({
+      count: 3,
+      array: [0, 0, 0]
+    })
     let count = 0
     mockReadFile.mockImplementation(() => {
       count++

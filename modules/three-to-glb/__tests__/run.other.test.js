@@ -17,16 +17,13 @@ describe('modules/three-to-glb/run', () => {
   })
 
   it('empty', () => {
-    global.MockGeometry.getAttribute = () => ({
-      count: 3,
-      array: [1, 2, 3]
-    })
+    global.MockGeometry.getAttribute = () => {}
     let count = 0
     mockReadFile.mockImplementation(() => {
       count++
       if (count === 1)
         return JSON.stringify({
-          type: 'mesh',
+          type: 'other',
           solids: [{}],
           faces: [{}],
           edges: [{}]
@@ -34,5 +31,12 @@ describe('modules/three-to-glb/run', () => {
       return JSON.stringify({})
     })
     require('../run')
+    global.document.createElement('canvas')
+    try {
+      global.document.createElement('node')
+      expect(true).toBe(false)
+    } catch (err) {
+      expect(true).toBe(true)
+    }
   })
 })

@@ -3,9 +3,7 @@
 // Bases classes
 
 global.MockGeometry = {
-  getAttribute: () => ({
-    array: [1, 2, 3]
-  })
+  getAttribute: () => {}
 }
 class MockBufferGeometry {
   constructor() {

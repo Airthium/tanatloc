@@ -5,11 +5,9 @@ jest.mock('path', () => ({
   join: () => mockPath()
 }))
 
+const mockSetInterval = jest.fn()
 jest.mock('set-interval-async/fixed', () => ({
-  setIntervalAsync: (func) => {
-    func()
-    return 1
-  }
+  setIntervalAsync: (func) => mockSetInterval(func)
 }))
 
 jest.mock('set-interval-async', () => ({
@@ -49,12 +47,14 @@ jest.mock('@/services', () => ({
 describe('plugins/local/src/lib', () => {
   beforeEach(() => {
     mockPath.mockReset()
+
+    mockSetInterval.mockReset()
+
     mockUpdate.mockReset()
 
     mockConvert.mockReset()
     mockCreatePath.mockReset()
     mockReadFile.mockReset()
-    mockReadFile.mockImplementation(() => '{ "test": "test" }')
 
     mockRender.mockReset()
     mockGmsh.mockReset()
@@ -124,58 +124,40 @@ describe('plugins/local/src/lib', () => {
   })
 
   it('computeSimulation', async () => {
-    mockReadFile.mockImplementation(
-      () =>
-        'PROCESS VTU FILE run/result.vtu\nreal log\nPROCESS DATA FILE run/data.dat\nreal log'
-    )
     mockFreefem.mockImplementation((path, script, callback) => {
       callback({ pid: 'pid' })
-      callback({ data: 'data' })
       callback({ error: 'data' })
       return 0
-    })
-    mockConvert.mockImplementation((path, file, callback) => {
-      callback({ data: JSON.stringify({ path: 'path' }) })
-      return {
-        json: 'json',
-        glb: 'glb'
-      }
     })
 
     // Empty
     await Local.computeSimulation('id', 'algorithm', {})
 
-    // Convert stderr
-    mockConvert.mockImplementation((path, file, callback) => {
-      callback({ error: 'error' })
-      return {
-        json: 'json',
-        glb: 'glb'
-      }
+    // Simulation error
+    Date.now = () => 0
+    mockFreefem.mockImplementation((path, file, callback) => {
+      callback({})
+      return 1
     })
-    await Local.computeSimulation('id', 'algorithm', {})
-
-    // Convert error
-    mockConvert.mockImplementation(() => {
-      throw new Error()
-    })
-    JSON.parse = () => {
-      throw new Error()
+    try {
+      await Local.computeSimulation('id', 'algorithm', {})
+      expect(true).toBe(false)
+    } catch (err) {
+      expect(true).toBe(true)
     }
-    await Local.computeSimulation('id', 'algorithm', {})
 
-    // With meshes
-    JSON.parse = () => ({})
+    //With meshes
+    Date.now = () => NaN
+    mockFreefem.mockImplementation(() => {
+      return 0
+    })
     mockGmsh.mockImplementation((path, mesh, geometry, callback) => {
       callback({ pid: 'pid' })
       callback({ data: 'data' })
       callback({ error: 'data' })
       return 0
     })
-    mockConvert.mockImplementation(() => ({
-      json: 'json',
-      glb: 'glb'
-    }))
+    mockConvert.mockImplementation(() => ({}))
     await Local.computeSimulation('id', 'algorithm', {
       geometry: {
         meshable: true,
@@ -183,6 +165,9 @@ describe('plugins/local/src/lib', () => {
           originPath: 'originPath',
           fileName: 'fileName'
         }
+      },
+      geometry2: {
+        meshable: false
       },
       boundaryConditions: {
         index: 0,
@@ -199,8 +184,12 @@ describe('plugins/local/src/lib', () => {
     })
 
     // Meshing error
-    mockGmsh.mockImplementation(() => {
-      throw new Error()
+    Date.now = () => 0
+    mockGmsh.mockImplementation((path, mesh, geometry, callback) => {
+      callback({ pid: 'pid' })
+      callback({ data: 'data' })
+      callback({ error: 'data' })
+      return 1
     })
     try {
       await Local.computeSimulation('id', 'algorithm', {
@@ -210,116 +199,79 @@ describe('plugins/local/src/lib', () => {
             originPath: 'originPath',
             fileName: 'fileName'
           }
+        },
+        geometry2: {
+          meshable: false
+        },
+        boundaryConditions: {
+          index: 0,
+          key1: {},
+          key2: {
+            values: [
+              {
+                selected: [1]
+              }
+            ],
+            refineFactor: 5
+          }
         }
       })
       expect(true).toBe(false)
     } catch (err) {
       expect(true).toBe(true)
-    } finally {
-      mockGmsh.mockImplementation(() => 0)
     }
 
-    // Simulating error
-    mockFreefem.mockImplementation(() => 1)
-    try {
-      await Local.computeSimulation('id', 'algorithm', {})
-      expect(true).toBe(false)
-    } catch (err) {
-      expect(true).toBe(true)
-    } finally {
-      mockFreefem.mockImplementation(() => 0)
-    }
-
-    // Data
-    global.Date = {
-      now: () => 0
-    }
-    await Local.computeSimulation('id', 'algorithm', {
-      geometry: {
-        meshable: true,
-        file: {
-          originPath: 'originPath',
-          fileName: 'fileName'
-        }
-      }
+    // With results & data, read error
+    let processOutput
+    mockSetInterval.mockImplementation((func) => {
+      processOutput = func
+      return 1
     })
-
-    // With keys
-    await Local.computeSimulation('id', 'algorithm', { key: {} })
-    // With mesh
-    await Local.computeSimulation('id', 'algorithm', {
-      key: { meshable: true, file: {} }
+    mockFreefem.mockImplementation((path, file, callback) => {
+      callback({})
+      callback({})
+      return 0
     })
-    // With boundary condition (empty)
-    await Local.computeSimulation('id', 'algorithm', {
-      key: { meshable: true, file: {} },
-      boundaryConditions: {
-        index: 2,
-        key: {}
-      }
-    })
-    // With refinement
-    await Local.computeSimulation('id', 'algorithm', {
-      key: { meshable: true, file: {} },
-      boundaryConditions: {
-        key: {
-          refineFactor: 2,
-          values: [
-            {
-              selected: ['uuid']
-            }
-          ]
-        }
-      }
-    })
-    // Date
-    global.Date = {
-      now: () => 0
-    }
-    await Local.computeSimulation('id', 'algorithm', {
-      key: { meshable: true, file: {} }
-    })
-    global.Date = {
-      now: () => Math.random()
-    }
-    await Local.computeSimulation('id', 'algorithm', {
-      key: { meshable: true, file: {} }
-    })
-    // Mesh error
-    mockGmsh.mockImplementation(() => -1)
-    try {
-      await Local.computeSimulation('id', 'algorithm', {
-        key: { meshable: true, file: {} }
-      })
-      expect(true).toBe(false)
-    } catch (err) {
-      expect(true).toBe(true)
-    }
-    // Result & data error
-    mockConvert.mockImplementation(() => {
-      throw new Error()
-    })
+    mockGmsh.mockImplementation(() => 0)
     mockReadFile.mockImplementation(() => {
       throw new Error()
     })
-    await Local.computeSimulation('id', 'algorithm', {
-      key: { file: {} }
+    await Local.computeSimulation('id', 'algorithm', {})
+    await processOutput()
+
+    // With results & data
+    JSON.parse = () => ({})
+    mockReadFile.mockImplementation(
+      () => 'PROCESS VTU FILE Result.vtu\nPROCESS DATA FILE data.dat'
+    )
+    mockConvert.mockImplementation((path, file, callback) => {
+      callback({ data: 'data' })
     })
+    await processOutput()
+
+    // With same results & data
+    await processOutput()
+
+    // Convert stderr
+    JSON.parse = () => {
+      throw new Error()
+    }
+    mockReadFile.mockImplementation(
+      () => 'PROCESS VTU FILE Result1.vtu\nPROCESS DATA FILE data1.dat'
+    )
+    mockConvert.mockImplementation((path, file, callback) => {
+      callback({ error: 'error' })
+    })
+    await processOutput()
+
+    // Convert error
+    mockReadFile.mockImplementation(
+      () => 'PROCESS VTU FILE Result2.vtu\nPROCESS DATA FILE data2.dat'
+    )
     mockConvert.mockImplementation(() => {
       throw new Error()
     })
-    await Local.computeSimulation('id', 'algorithm', {
-      key: { file: {} }
-    })
-    // Error
-    mockGmsh.mockImplementation(() => 0)
-    mockFreefem.mockReset()
-    try {
-      await Local.computeSimulation('id', 'algorithm', {})
-      expect(true).toBe(false)
-    } catch (err) {
-      expect(true).toBe(true)
-    }
+    await processOutput()
   })
 
   it('stop', async () => {

@@ -233,7 +233,7 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
     const code = await Services.freefem(
       simulationPath,
       path.join('run', id + '.edp'),
-      async ({ pid, error, data }) => {
+      async ({ pid, error }) => {
         simulationTask.status = 'process'
         startProcess(simulationPath, simulationTask, () =>
           updateTasks(id, tasks)
@@ -266,7 +266,6 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
 }
 
 let interval = null
-let currentLog = ''
 const results = []
 const datas = []
 
@@ -291,7 +290,7 @@ const startProcess = (simulationPath, task, update) => {
  * Stop process results and datas
  */
 const stopProcess = () => {
-  if (interval) clearIntervalAsync(interval)
+  interval && clearIntervalAsync(interval)
 }
 
 /**
@@ -340,8 +339,8 @@ const processOutput = async (simulationPath, task, update) => {
               target: path.join('run/result', partPath)
             },
             ({ data, error }) => {
-              convertData += data
-              convertError += error
+              data && (convertData += data)
+              error && (convertError += error)
             },
             { isResult: true }
           )

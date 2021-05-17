@@ -259,6 +259,7 @@ describe('plugins/rescale/src/lib', () => {
       }
     })
 
+    statusCount = 0
     mockGetInRunFile.mockImplementation(() => ({ detail: 'not found' }))
     await Rescale.computeSimulation({ id: 'id' }, 'algorithm', {
       run: {

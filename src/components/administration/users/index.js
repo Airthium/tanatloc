@@ -52,7 +52,6 @@ const Users = ({ users, swr }) => {
                 size="small"
                 count={Plugins[key].category}
                 offset={[5, -5]}
-                style={{ backgroundColor: '#108ee9' }}
               >
                 {Plugins[key].name}
               </Badge>

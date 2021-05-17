@@ -46,7 +46,7 @@ ENV DB_PORT $DB_PORT
 COPY config ${INSTALL_PATH}/config
 COPY install ${INSTALL_PATH}/install
 COPY models ${INSTALL_PATH}/models
-COPY models ${INSTALL_PATH}/modules
+COPY modules ${INSTALL_PATH}/modules
 COPY plugins ${INSTALL_PATH}/plugins
 COPY public ${INSTALL_PATH}/public
 COPY resources ${INSTALL_PATH}/resources

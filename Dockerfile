@@ -20,11 +20,17 @@ RUN apt install -yq \
 RUN apt install -yq \
         nodejs node-gyp
 
+# Yarn
 RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
 RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
 RUN apt update \
     && apt install -yq \
         yarn
+
+# NVM
+RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash
+RUN source ~/.bashrc
+RUN nvm install node && nvm use node
 
 RUN apt autoremove \
     && apt-get clean \
@@ -99,11 +105,17 @@ RUN apt install -yq \
 RUN apt install -yq \
         nodejs node-gyp
 
+# Yarn
 RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
 RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
 RUN apt update \
     && apt install -yq \
         yarn
+
+# NVM
+RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash
+RUN source ~/.bashrc
+RUN nvm install node && nvm use node
 
 RUN apt autoremove \
     && apt-get clean \

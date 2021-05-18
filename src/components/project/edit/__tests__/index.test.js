@@ -1,4 +1,4 @@
-import Add from '..'
+import Edit from '..'
 import { shallow } from 'enzyme'
 
 jest.mock('@/components/assets/dialog', () => {
@@ -11,27 +11,24 @@ jest.mock('@/components/assets/notification', () => ({
   Error: () => mockError()
 }))
 
-const mockAdd = jest.fn()
+const mockUpdate = jest.fn()
 jest.mock('@/api/project', () => ({
-  add: async () => mockAdd()
+  update: async () => mockUpdate()
 }))
 
 let wrapper
-describe('components/project/add', () => {
-  const workspace = { id: 'id' }
-  const mutateOneWorkspace = jest.fn()
-  const addOneProject = jest.fn()
+describe('components/project/edit', () => {
+  const project = { id: 'id', title: 'title', description: 'description' }
   const swr = {
-    mutateOneWorkspace,
-    addOneProject
+    mutateOneProject: jest.fn()
   }
 
   beforeEach(() => {
     mockError.mockReset()
 
-    mockAdd.mockReset()
+    mockUpdate.mockReset()
 
-    wrapper = shallow(<Add workspace={workspace} swr={swr} />)
+    wrapper = shallow(<Edit project={project} swr={swr} />)
   })
 
   afterEach(() => {
@@ -50,23 +47,20 @@ describe('components/project/add', () => {
     wrapper.find('Dialog').props().onCancel()
   })
 
-  it('onAdd', async () => {
+  it('onEdit', async () => {
     // Normal
-    mockAdd.mockImplementation(() => ({}))
-    await wrapper.find('Dialog').props().onOk()
-    expect(mockAdd).toHaveBeenCalledTimes(1)
-    expect(addOneProject).toHaveBeenCalledTimes(1)
-    expect(mutateOneWorkspace).toHaveBeenCalledTimes(1)
+    await wrapper.find('Dialog').props().onOk({})
+    expect(mockUpdate).toHaveBeenCalledTimes(1)
+    expect(swr.mutateOneProject).toHaveBeenCalledTimes(1)
     expect(mockError).toHaveBeenCalledTimes(0)
 
     // Error
-    mockAdd.mockImplementation(() => {
+    mockUpdate.mockImplementation(() => {
       throw new Error()
     })
-    await wrapper.find('Dialog').props().onOk()
-    expect(mockAdd).toHaveBeenCalledTimes(2)
-    expect(addOneProject).toHaveBeenCalledTimes(1)
-    expect(mutateOneWorkspace).toHaveBeenCalledTimes(1)
+    await wrapper.find('Dialog').props().onOk({})
+    expect(mockUpdate).toHaveBeenCalledTimes(2)
+    expect(swr.mutateOneProject).toHaveBeenCalledTimes(1)
     expect(mockError).toHaveBeenCalledTimes(1)
   })
 })

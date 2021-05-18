@@ -28,9 +28,13 @@ RUN apt update \
         yarn
 
 # NVM
+ENV NODE_VERSION=14.17.0
 RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash
-RUN source ~/.bashrc
-RUN nvm install node && nvm use node
+ENV NVM_DIR /root/.nvm
+RUN . "$NVM_DIR/nvm.sh" && nvm install ${NODE_VERSION}
+RUN . "$NVM_DIR/nvm.sh" && nvm use v${NODE_VERSION}
+RUN . "$NVM_DIR/nvm.sh" && nvm alias default v${NODE_VERSION}
+ENV PATH="/root/.nvm/versions/node/v${NODE_VERSION}/bin/:${PATH}"
 
 RUN apt autoremove \
     && apt-get clean \
@@ -64,8 +68,6 @@ COPY package.json ${INSTALL_PATH}/package.json
 COPY yarn.lock ${INSTALL_PATH}/yarn.lock
 
 WORKDIR ${INSTALL_PATH}
-
-RUN ls
 
 RUN yarn install --ignore-scripts
 RUN yarn babel . --only config,install,src/database/index.js --out-dir dist-install
@@ -113,9 +115,13 @@ RUN apt update \
         yarn
 
 # NVM
+ENV NODE_VERSION=14.17.0
 RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash
-RUN source ~/.bashrc
-RUN nvm install node && nvm use node
+ENV NVM_DIR /root/.nvm
+RUN . "$NVM_DIR/nvm.sh" && nvm install ${NODE_VERSION}
+RUN . "$NVM_DIR/nvm.sh" && nvm use v${NODE_VERSION}
+RUN . "$NVM_DIR/nvm.sh" && nvm alias default v${NODE_VERSION}
+ENV PATH="/root/.nvm/versions/node/v${NODE_VERSION}/bin/:${PATH}"
 
 RUN apt autoremove \
     && apt-get clean \

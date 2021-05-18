@@ -1,0 +1,7 @@
+.next
+app
+coverage
+dist-install
+dist-server
+doc
+node_modules

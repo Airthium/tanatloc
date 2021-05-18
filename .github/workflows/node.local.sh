@@ -16,12 +16,12 @@ yarn doc
 
 # Test
 rm -Rf dist/
-yarn test
+yarn test | true
 
 # Build
 rm -Rf .next
 yarn build
 
-# Electron build
-rm -Rf .next
-yarn electron-build
+# # Electron build
+# rm -Rf .next
+# yarn electron-build

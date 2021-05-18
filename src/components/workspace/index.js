@@ -155,7 +155,7 @@ const Workspace = ({ user, workspace, organizations, swr }) => {
           </div>
         ) : null}
       </PageHeader>
-      <Layout.Content>
+      <Layout.Content className="scroll">
         <ProjectList
           user={user}
           workspace={workspace}

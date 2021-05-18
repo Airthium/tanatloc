@@ -1,19 +1,14 @@
 import PropTypes from 'prop-types'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
-import { Button, Card, Space, Table, Empty, Divider } from 'antd'
-import {
-  DeleteOutlined,
-  EditOutlined,
-  ShareAltOutlined
-} from '@ant-design/icons'
+import { Avatar, Card, Divider, Empty, Space, Typography } from 'antd'
 
 import Share from '@/components/assets/share'
-import { Error } from '@/components/assets/notification'
 
-import Build from '../build'
+import Edit from '../edit'
 import Delete from '../delete'
 
-import ProjectAPI from '@/api/project'
+import Utils from '@/lib/utils'
 
 /**
  * Errors project/list
@@ -36,72 +31,67 @@ const ProjectList = ({
   filter,
   swr
 }) => {
+  // State
+  const [list, setList] = useState([])
+  const [descriptionVisible, setDescriptionVisible] = useState(-1)
+
   // Router
   const router = useRouter()
 
-  // Data
-  const columns = [
-    {
-      dataIndex: 'snapshot',
-      key: 'snapshot',
-      onCell: (project) => ({
-        onClick: () => openProject(project)
-      }),
-      align: 'center'
-    },
-    {
-      title: 'Project',
-      dataIndex: 'titleRender',
-      key: 'titleRender'
-    },
-    {
-      title: 'Administrators',
-      dataIndex: 'ownersRender',
-      key: 'ownersRender',
-      align: 'center'
-    },
-    {
-      title: 'Shared With',
-      dataIndex: 'usersRender',
-      key: 'usersRender',
-      align: 'center'
-    },
-    {
-      title: 'Actions',
-      align: 'center',
-      render: (value) => (
-        <Space direction="" wrap={true}>
-          <Share
-            project={value}
-            organizations={organizations}
-            swr={{ mutateOneProject: swr.mutateOneProject }}
-          />
-          {value?.owners?.find((o) => o.id === user?.id) && (
-            <Delete
-              workspace={workspace}
-              project={value}
-              swr={{
-                mutateOneWorkspace: swr.mutateOneWorkspace,
-                delOneProject: swr.delOneProject
-              }}
-            />
-          )}
-        </Space>
-      )
-    }
-  ]
+  useEffect(() => {
+    const currentList = projects
+      .map((project) => {
+        // Filter
+        if (
+          filter &&
+          !project.title?.toLowerCase()?.includes(filter.toLowerCase())
+        )
+          return
 
-  const data = projects
-    .map((project) => {
-      return Build(
-        project,
-        filter,
-        (title) => setTitle(project, title),
-        (description) => setDescription(project, description)
-      )
-    })
-    .filter((d) => d)
-  console.log(data)
+        // Snapshot
+        const snapshot = project.avatar ? (
+          <img
+            src={project && Buffer.from(project.avatar).toString()}
+            width="140"
+            height="140"
+          />
+        ) : (
+          <Empty
+            image={Empty.PRESENTED_IMAGE_SIMPLE}
+            description={'No preview yet.'}
+          />
+        )
+
+        // Title
+        const title = <Typography.Text>{project.title}</Typography.Text>
+
+        const description = project.description && (
+          <Typography.Paragraph>{project.description}</Typography.Paragraph>
+        )
+
+        // Owners avatars
+        const owners = project?.owners?.map((o) => Utils.userToAvatar(o))
+
+        // Users avatars
+        const users = project?.users?.map((u) => Utils.userToAvatar(u))
+
+        // Groups
+        const groups = project?.groups?.map((g) => Utils.groupToAvatar(g))
+
+        return {
+          ...project,
+          snapshotRender: snapshot,
+          titleRender: title,
+          descriptionRender: description,
+          ownersRender: owners,
+          usersRender: users,
+          groupsRender: groups
+        }
+      })
+      .filter((p) => p)
+
+    setList(currentList)
+  }, [JSON.stringify(projects)])
 
   // Open project
   const openProject = (project) => {
@@ -112,112 +102,106 @@ const ProjectList = ({
   }
 
   /**
-   * Set title
-   * @param {string} project Project { id }
-   * @param {string} title Title
-   */
-  const setTitle = async (project, title) => {
-    try {
-      // Update
-      await ProjectAPI.update({ id: project.id }, [
-        {
-          key: 'title',
-          value: title
-        }
-      ])
-
-      // Mutate project
-      swr.mutateOneProject({
-        ...project,
-        title: title
-      })
-    } catch (err) {
-      Error(errors.updateError, err)
-    }
-  }
-
-  /**
-   * Set description
-   * @param {Object} project Project
-   * @param {string} description Description
-   */
-  const setDescription = async (project, description) => {
-    try {
-      // Update
-      await ProjectAPI.update({ id: project.id }, [
-        {
-          key: 'description',
-          value: description
-        }
-      ])
-
-      // Mutate
-      swr.mutateOneProject({
-        ...project,
-        description: description
-      })
-    } catch (err) {
-      Error(errors.updateError, err)
-    }
-  }
-
-  // TODO display with card start
-  // /**
-  //  * Render
-  //  */
-  // return (
-  //   <Space wrap={true}>
-  //     {data.map((project) => (
-  //       <Card
-  //         key={project.key}
-  //         title={project.title}
-  //         style={{ width: '200px', height: '300px', overflow: 'hidden' }}
-  //       >
-  //         <div
-  //           style={{
-  //             display: 'flex',
-  //             flexDirection: 'column'
-  //           }}
-  //         >
-  //           <div>{project.snapshot}</div>
-
-  //           <div style={{ display: 'flex', flexDirection: 'column' }}>
-  //             {project.ownersRender}
-  //             {project.usersRende}
-  //             <Button.Group>
-  //               <Button icon={<DeleteOutlined />} type="danger" />
-  //               <Button icon={<ShareAltOutlined />} />
-  //               <Button icon={<EditOutlined />} />
-  //             </Button.Group>
-  //           </div>
-  //         </div>
-  //       </Card>
-  //     ))}
-  //   </Space>
-  // )
-
-  /**
    * Render
    */
   return (
-    <Table
-      loading={swr.loadingProjects}
-      pagination={false}
-      bordered={true}
-      size="small"
-      scroll={{ y: 'calc(100vh - 278px)' }}
-      locale={{
-        emptyText: (
-          <Empty
-            image={Empty.PRESENTED_IMAGE_SIMPLE}
-            description="No projects yet."
-          />
+    <Space wrap={true} align="start">
+      {list.map((project) => {
+        return (
+          <Card
+            key={project.id}
+            title={project.titleRender}
+            style={{
+              width: 200,
+              height: 300,
+              display: 'flex',
+              flexDirection: 'column'
+            }}
+          >
+            <div
+              onMouseEnter={() =>
+                setDescriptionVisible(project.description ? project.id : -1)
+              }
+              onMouseLeave={() => setDescriptionVisible(-1)}
+              onClick={() => openProject(project.id)}
+              style={{
+                cursor: 'pointer',
+                width: '100%',
+                height: 150,
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                borderBottom: '1px solid #f0f0f0'
+              }}
+            >
+              {descriptionVisible === project.id
+                ? project.descriptionRender
+                : project.snapshotRender}
+            </div>
+
+            <div
+              style={{
+                padding: '6px 0',
+                display: 'flex',
+                justifyContent: 'flex-start',
+                alignItems: 'center',
+                borderBottom: '1px solid #f0f0f0'
+              }}
+            >
+              <Avatar.Group maxCount={5}>
+                {project.ownersRender}
+                {project.usersRender}
+                {project.groupsRender}
+              </Avatar.Group>
+            </div>
+
+            <div
+              style={{
+                padding: '6px 0 0 0',
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center'
+              }}
+            >
+              <Delete
+                disabled={!project?.owners?.find((o) => o.id === user?.id)}
+                workspace={{
+                  projects: workspace.projects
+                }}
+                project={{
+                  id: project.id,
+                  title: project.title
+                }}
+                swr={{
+                  mutateOneWorkspace: swr.mutateOneWorkspace,
+                  delOneProject: swr.delOneProject
+                }}
+              />
+              <Divider type="vertical" />
+              <Share
+                disabled={!project?.owners?.find((o) => o.id === user?.id)}
+                project={{
+                  id: project.id,
+                  groups: project.groups
+                }}
+                organizations={organizations}
+                swr={{ mutateOneProject: swr.mutateOneProject }}
+              />
+              <Divider type="vertical" />
+              <Edit
+                disabled={!project?.owners?.find((o) => o.id === user?.id)}
+                project={{
+                  id: project.id,
+                  title: project.title,
+                  description: project.description
+                }}
+                swr={{ mutateOneProject: swr.mutateOneProject }}
+              />
+            </div>
+          </Card>
         )
-      }}
-      style={{ marginTop: '24px' }}
-      columns={columns}
-      dataSource={data}
-    />
+      })}
+    </Space>
   )
 }
 

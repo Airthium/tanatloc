@@ -21,7 +21,7 @@ const errors = {
  * @memberof module:components/project
  * @param {Object} props Props
  */
-const Delete = ({ workspace, project, swr }) => {
+const Delete = ({ disabled, workspace, project, swr }) => {
   // Sate
   const [visible, setVisible] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -60,12 +60,11 @@ const Delete = ({ workspace, project, swr }) => {
   return (
     <>
       <Button
+        disabled={disabled}
         type="danger"
         onClick={() => setVisible(true)}
         icon={<DeleteOutlined />}
-      >
-        Delete
-      </Button>
+      />
       <DeleteDialog
         title="Delete the project"
         visible={visible}
@@ -80,14 +79,15 @@ const Delete = ({ workspace, project, swr }) => {
 }
 
 Delete.propTypes = {
-  workspace: PropTypes.shape({
+  disabled: PropTypes.bool,
+  workspace: PropTypes.exact({
     projects: PropTypes.array.isRequired
   }).isRequired,
-  project: PropTypes.shape({
+  project: PropTypes.exact({
     id: PropTypes.string.isRequired,
     title: PropTypes.string.isRequired
   }).isRequired,
-  swr: PropTypes.shape({
+  swr: PropTypes.exact({
     mutateOneWorkspace: PropTypes.func.isRequired,
     delOneProject: PropTypes.func.isRequired
   }).isRequired

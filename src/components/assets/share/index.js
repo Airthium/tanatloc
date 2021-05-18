@@ -135,9 +135,7 @@ const Share = ({ workspace, project, organizations, swr }) => {
         key="share"
         icon={<ShareAltOutlined />}
         onClick={() => setVisible(true)}
-      >
-        Share it
-      </Button>
+      />
       <Dialog
         title={'Share' + (workspace ? 'workspace' : 'project')}
         visible={visible}

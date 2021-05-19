@@ -1,5 +1,8 @@
 import List from '..'
-import { shallow } from 'enzyme'
+import { shallow, mount } from 'enzyme'
+import { act } from 'react-dom/test-utils'
+
+import '@/config/jest/mockMatchMedia'
 
 jest.mock('next/router', () => ({
   useRouter: () => [{ push: () => {} }]
@@ -31,13 +34,11 @@ describe('component/project/list', () => {
   const workspace = { id: 'id' }
   const filter = 'filter'
   const projects = [{}, {}]
-  const delOneProject = jest.fn()
-  const mutateOneProject = jest.fn()
-  const loadingProjects = jest.fn()
+  const organizations = []
   const swr = {
-    delOneProject,
-    mutateOneProject,
-    loadingProjects
+    delOneProject: jest.fn(),
+    mutateOneProject: jest.fn(),
+    loadingProjects: false
   }
 
   beforeEach(() => {
@@ -45,14 +46,13 @@ describe('component/project/list', () => {
 
     mockUpdate.mockReset()
 
-    mutateOneProject.mockReset()
-
     wrapper = shallow(
       <List
         user={user}
         workspace={workspace}
         filter={filter}
         projects={projects}
+        organizations={organizations}
         swr={swr}
       />
     )
@@ -64,5 +64,79 @@ describe('component/project/list', () => {
 
   it('render', () => {
     expect(wrapper).toBeDefined()
+  })
+
+  it('mount', () => {
+    wrapper.unmount()
+    wrapper = mount(
+      <List
+        user={user}
+        workspace={workspace}
+        filter={filter}
+        projects={projects}
+        organizations={organizations}
+        swr={swr}
+      />
+    )
+    expect(wrapper).toBeDefined()
+  })
+
+  it('with projects', () => {
+    wrapper.unmount()
+    wrapper = mount(
+      <List
+        user={user}
+        workspace={workspace}
+        filter={filter}
+        projects={[{ id: 'id', title: 'with filter' }]}
+        organizations={organizations}
+        swr={swr}
+      />
+    )
+    expect(wrapper).toBeDefined()
+
+    // With avatar, description, owners, users, groups
+    wrapper.unmount()
+    wrapper = mount(
+      <List
+        user={user}
+        workspace={workspace}
+        filter={filter}
+        projects={[
+          {
+            id: 'id',
+            title: 'with filter',
+            description: 'description',
+            avatar: 'avatar',
+            owners: [{ id: 'id' }],
+            users: [{ id: 'id1' }],
+            groups: [{ id: 'id2' }]
+          },
+          {
+            id: 'id1',
+            title: 'with filter',
+            avatar: 'avatar',
+            owners: [{ id: 'id' }],
+            users: [{ id: 'id1' }],
+            groups: [{ id: 'id2' }]
+          }
+        ]}
+        organizations={organizations}
+        swr={swr}
+      />
+    )
+    expect(wrapper).toBeDefined()
+
+    // Mouse enter (first project)
+    act(() => wrapper.find('div').at(7).props().onMouseEnter())
+
+    // Mouse leave (first project)
+    act(() => wrapper.find('div').at(7).props().onMouseLeave())
+
+    // on click (first project)
+    act(() => wrapper.find('div').at(7).props().onClick())
+
+    // Mouse enter (second project)
+    act(() => wrapper.find('div').at(24).props().onMouseEnter())
   })
 })

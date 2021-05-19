@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import { useEffect, useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import { Avatar, Card, Divider, Empty, Space, Typography } from 'antd'
 

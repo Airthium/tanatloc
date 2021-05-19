@@ -53,6 +53,7 @@ ENV DB_HOST $DB_HOST
 ARG DB_PORT
 ENV DB_PORT $DB_PORT
 
+COPY .git ${INSTALL_PATH}/.git
 COPY config ${INSTALL_PATH}/config
 COPY install ${INSTALL_PATH}/install
 COPY models ${INSTALL_PATH}/models

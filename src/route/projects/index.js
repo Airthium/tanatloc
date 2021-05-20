@@ -29,8 +29,6 @@ export default async (req, res) => {
         return
       }
 
-      console.log(ids)
-
       const projectsTmp = await Promise.all(
         ids.map(async (id) => {
           try {

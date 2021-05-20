@@ -1,29 +1,45 @@
 import PropTypes from 'prop-types'
-import { Button, Popconfirm } from 'antd'
-import { DeleteOutlined, QuestionCircleOutlined } from '@ant-design/icons'
+import { useState } from 'react'
+import { Button } from 'antd'
+import { DeleteOutlined } from '@ant-design/icons'
+
+import { DeleteDialog } from '@/components/assets/dialog'
 
 /**
  * Delete button
  * @memberof module:@memberof module:components/assets/button
  * @param {Object} props Props
  */
-const DeleteButton = ({ loading, onDelete }) => {
+const DeleteButton = ({ disabled, loading, onDelete }) => {
+  // State
+  const [visible, setVisible] = useState(false)
+
   /**
    * Render
    */
   return (
-    <Popconfirm
-      title="Are you sure?"
-      icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
-      onConfirm={onDelete}
-    >
-      <Button type="danger" loading={loading} icon={<DeleteOutlined />} />
-    </Popconfirm>
+    <>
+      <DeleteDialog
+        visible={visible}
+        onCancel={() => setVisible(false)}
+        onOk={onDelete}
+      >
+        Are you sure to delete this condition?
+      </DeleteDialog>
+      <Button
+        disabled={disabled}
+        loading={loading}
+        icon={<DeleteOutlined style={{ color: '#ff4d4f' }} />}
+        style={{ backgroundColor: 'none', border: 'none' }}
+        onClick={() => setVisible(true)}
+      />
+    </>
   )
 }
 
 DeleteButton.propTypes = {
-  loading: PropTypes.bool.isRequired,
+  disabled: PropTypes.bool,
+  loading: PropTypes.bool,
   onDelete: PropTypes.func.isRequired
 }
 

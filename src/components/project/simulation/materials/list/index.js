@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types'
 import { useState } from 'react'
-import { Button, Card, Space, Typography } from 'antd'
-import { EditOutlined } from '@ant-design/icons'
+import { Card, Space, Typography } from 'antd'
 
+import { EditButton } from '@/components/assets/button'
 import Delete from '../delete'
 
 import { useDispatch } from 'react-redux'
@@ -45,6 +45,7 @@ const List = ({ simulation, swr, onEdit }) => {
     ?.map((material, index) => {
       return (
         <Card
+          className="material-item"
           key={index}
           hoverable
           style={{ marginTop: '5px' }}
@@ -53,12 +54,18 @@ const List = ({ simulation, swr, onEdit }) => {
             enabled && unhighlight()
           }}
         >
-          <Space direction="vertical">
+          <Space
+            direction=""
+            style={{
+              width: '100%',
+              justifyContent: 'space-between',
+              alignItems: 'center'
+            }}
+          >
             <Typography.Text>{material.material.label}</Typography.Text>
             <Space direction="">
-              <Button
-                icon={<EditOutlined />}
-                onClick={() => {
+              <EditButton
+                onEdit={() => {
                   setEnabled(false)
                   onEdit(index)
                   setTimeout(() => setEnabled(true), 500)

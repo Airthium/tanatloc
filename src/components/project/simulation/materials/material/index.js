@@ -2,6 +2,7 @@ import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
 import { Button, Card, Drawer, Space, Typography } from 'antd'
 
+import { GoBack } from '@/components/assets/button'
 import Formula from '@/components/assets/formula'
 import Selector from '@/components/assets/selector'
 
@@ -70,6 +71,7 @@ const Material = ({
 
   return (
     <Drawer
+      className="material"
       title="Material"
       placement="left"
       closable={false}
@@ -79,6 +81,7 @@ const Material = ({
       width={300}
     >
       <Space direction="vertical">
+        <GoBack onClick={onClose} />
         <Card>
           <Space direction="vertical">
             <DataBase onSelect={onMaterialSelect} />
@@ -102,7 +105,10 @@ const Material = ({
           </Space>
         </Card>
         <Selector part={part} updateSelected={onSelected} />
-        <Space direction="">
+        <Space
+          direction=""
+          style={{ width: '100%', justifyContent: 'flex-end' }}
+        >
           <Button type="danger" onClick={onClose}>
             Cancel
           </Button>

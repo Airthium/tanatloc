@@ -78,15 +78,7 @@ const About = ({ simulation, swr }) => {
               }}
             />
 
-            <Divider
-              type="horizontal"
-              style={{
-                marginLeft: '-12px',
-                marginBottom: '4px',
-                marginTop: '0px',
-                width: 'calc(100% + 24px)'
-              }}
-            />
+            <Divider type="horizontal" />
 
             <Delete
               simulation={{ id: simulation.id, name: simulation.name }}

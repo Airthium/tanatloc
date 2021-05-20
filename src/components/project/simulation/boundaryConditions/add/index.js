@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types'
 import { useState } from 'react'
 import { v4 as uuid } from 'uuid'
+import { Button } from 'antd'
 
-import { AddButton } from '@/components/assets/button'
 import { Error } from '@/components/assets/notification'
 
 import SimulationAPI from '@/api/simulation'
@@ -93,7 +93,11 @@ const Add = ({ disabled, simulation, boundaryCondition, part, swr, close }) => {
   /**
    * Render
    */
-  return <AddButton disabled={disabled} loading={loading} onAdd={onAdd} />
+  return (
+    <Button disabled={disabled} loading={loading} onClick={onAdd}>
+      Add
+    </Button>
+  )
 }
 
 Add.propTypes = {

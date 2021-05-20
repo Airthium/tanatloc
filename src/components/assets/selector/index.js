@@ -144,11 +144,11 @@ const Selector = ({ part, alreadySelected, updateSelected }) => {
    */
   return (
     <Card>
-      {colors.length > 1 && (
-        <>
-          <Space direction="vertical">
-            Color helper
-            <Space direction="" wrap={true}>
+      <Space direction="vertical">
+        Filters
+        <Space direction="" wrap={true}>
+          {colors.length > 1 && (
+            <>
               <Tooltip title="Reset">
                 <Button
                   icon={<CloseOutlined />}
@@ -168,20 +168,21 @@ const Selector = ({ part, alreadySelected, updateSelected }) => {
                   </Tooltip>
                 )
               })}
-              <Tooltip title="Select all">
-                <Button icon={<PlusSquareOutlined />} onClick={selectAll} />
-              </Tooltip>
-              <Tooltip title="Unselect all">
-                <Button icon={<CloseSquareOutlined />} onClick={unselectAll} />
-              </Tooltip>
-              <Tooltip title="Swap">
-                <Button icon={<SwapOutlined />} onClick={selectSwap} />
-              </Tooltip>
-            </Space>
-          </Space>
-          <Divider />
-        </>
-      )}
+            </>
+          )}
+          <Tooltip title="Select all">
+            <Button icon={<PlusSquareOutlined />} onClick={selectAll} />
+          </Tooltip>
+          <Tooltip title="Unselect all">
+            <Button icon={<CloseSquareOutlined />} onClick={unselectAll} />
+          </Tooltip>
+          <Tooltip title="Swap">
+            <Button icon={<SwapOutlined />} onClick={selectSwap} />
+          </Tooltip>
+        </Space>
+      </Space>
+
+      <Divider style={{ borderColor: '#f0f0f0' }} />
 
       {part?.[type]
         ? part[type].map((element, index) => {
@@ -197,12 +198,7 @@ const Selector = ({ part, alreadySelected, updateSelected }) => {
                   key={index}
                   hoverable
                   style={{
-                    marginBottom:
-                      highlighted === element.uuid
-                        ? '5px'
-                        : selected.includes(element.uuid)
-                        ? '5px'
-                        : '7px',
+                    marginBottom: '7px',
                     border:
                       highlighted === element.uuid
                         ? '2px solid #0096C7'

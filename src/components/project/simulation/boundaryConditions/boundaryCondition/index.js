@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Button, Card, Drawer, Input, Radio, Space } from 'antd'
 
+import { GoBack } from '@/components/assets/button'
 import Formula from '@/components/assets/formula'
 import Selector from '@/components/assets/selector'
 
@@ -29,6 +30,8 @@ const BoundaryCondition = ({
 
   // Types & already selected
   useEffect(() => {
+    if (!boundaryConditions) return
+
     const currentTypes = Object.keys(boundaryConditions)
       .map((type) => {
         if (type === 'index' || type === 'title' || type === 'done') return
@@ -191,6 +194,7 @@ const BoundaryCondition = ({
    */
   return (
     <Drawer
+      className="boundaryCondition"
       title="Boundary condition"
       placement="left"
       closable={false}
@@ -200,6 +204,7 @@ const BoundaryCondition = ({
       width={300}
     >
       <Space direction="vertical">
+        <GoBack onClick={onClose} />
         <Card title="Boundary condition name">
           <Input value={current?.name || ''} onChange={onName} />
         </Card>
@@ -247,7 +252,10 @@ const BoundaryCondition = ({
           alreadySelected={alreadySelected}
           updateSelected={onSelected}
         />
-        <Space direction="">
+        <Space
+          direction=""
+          style={{ width: '100%', justifyContent: 'flex-end' }}
+        >
           <Button type="danger" onClick={onClose}>
             Cancel
           </Button>

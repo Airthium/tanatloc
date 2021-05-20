@@ -4,6 +4,7 @@ import {
   Alert,
   Button,
   Collapse,
+  Divider,
   Layout,
   Space,
   Spin,
@@ -298,23 +299,8 @@ const Geometry = ({ simulation, part, swr }) => {
             ) : (
               <Spin />
             )}
-            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <DeleteDialog
-                title=""
-                visible={deleteVisible}
-                onCancel={() => setDeleteVisible(false)}
-                onOk={onDelete}
-                loading={deleting}
-              >
-                Are you sure delete this geometry?
-              </DeleteDialog>
-              <Button
-                type="danger"
-                icon={<DeleteOutlined />}
-                onClick={() => setDeleteVisible(true)}
-              >
-                Delete geometry
-              </Button>
+
+            <div style={{ textAlign: 'right' }}>
               <Button
                 type="primary"
                 icon={<DownloadOutlined />}
@@ -322,6 +308,25 @@ const Geometry = ({ simulation, part, swr }) => {
                 onClick={onDownload}
               />
             </div>
+
+            <Divider type="horizontal" />
+
+            <DeleteDialog
+              title=""
+              visible={deleteVisible}
+              onCancel={() => setDeleteVisible(false)}
+              onOk={onDelete}
+              loading={deleting}
+            >
+              Are you sure delete this geometry?
+            </DeleteDialog>
+            <Button
+              type="danger"
+              icon={<DeleteOutlined />}
+              onClick={() => setDeleteVisible(true)}
+            >
+              Delete geometry
+            </Button>
           </Space>
         )}
       </Layout.Content>

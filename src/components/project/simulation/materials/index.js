@@ -67,9 +67,7 @@ const Materials = ({ simulation, part, swr, setVisible }) => {
   return (
     <Layout>
       <Layout.Content>
-        <AddButton icon={<PlusCircleOutlined />} onAdd={onAdd}>
-          Add material
-        </AddButton>
+        <AddButton onAdd={onAdd}>Add material</AddButton>
         <List simulation={simulation} swr={swr} onEdit={onEdit} />
         <Material
           visible={materialVisible}

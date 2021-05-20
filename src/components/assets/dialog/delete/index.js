@@ -32,7 +32,7 @@ const DeleteDialog = ({
     >
       <Space direction="">
         <ExclamationCircleTwoTone
-          twoToneColor="#faad14"
+          twoToneColor="#ff4d4f"
           style={{ fontSize: '1.5em' }}
         />
         <span>{children}</span>

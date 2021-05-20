@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
 import { Layout } from 'antd'
-import { PlusCircleOutlined } from '@ant-design/icons'
 
 import { AddButton } from '@/components/assets/button'
 import List from './list'
@@ -73,9 +72,7 @@ const BoundaryConditions = ({ simulation, part, swr, setVisible }) => {
   return (
     <Layout>
       <Layout.Content>
-        <AddButton icon={<PlusCircleOutlined />} onAdd={onAdd}>
-          Add boundary condition
-        </AddButton>
+        <AddButton onAdd={onAdd}>Add boundary condition</AddButton>
         <List
           simulation={simulation}
           swr={{ mutateOneSimulation: swr.mutateOneSimulation }}

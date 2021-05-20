@@ -95,6 +95,7 @@ const ProjectList = ({
 
   // Open project
   const openProject = (project) => {
+    console.log(project)
     router.push({
       pathname: '/project',
       query: { workspaceId: workspace.id, projectId: project.id }
@@ -123,7 +124,7 @@ const ProjectList = ({
                 setDescriptionVisible(project.description ? project.id : -1)
               }
               onMouseLeave={() => setDescriptionVisible(-1)}
-              onClick={() => openProject(project.id)}
+              onClick={() => openProject({ id: project.id })}
               style={{
                 cursor: 'pointer',
                 width: '100%',

@@ -106,7 +106,13 @@ const Dashboard = () => {
   ] = OrganizationAPI.useOrganizations()
   const [
     workspaces,
-    { addOneWorkspace, delOneWorkspace, mutateOneWorkspace, errorWorkspaces }
+    {
+      addOneWorkspace,
+      delOneWorkspace,
+      mutateOneWorkspace,
+      errorWorkspaces,
+      loadingWorkspaces
+    }
   ] = WorkspaceAPI.useWorkspaces()
 
   // Router
@@ -227,6 +233,13 @@ const Dashboard = () => {
     }
   }
 
+  let workspaceToRender
+  if (currentWorkspace && currentKey === menuItems.workspaces.key) {
+    workspaceToRender = myWorkspaces.find((w) => w.id === currentWorkspace)
+  } else if (currentWorkspace && currentKey === menuItems.shared.key) {
+    workspaceToRender = sharedWorkspaces.find((w) => w.id === currentWorkspace)
+  }
+
   /**
    * Render
    */
@@ -238,7 +251,7 @@ const Dashboard = () => {
         <Layout>
           <Layout.Sider theme="light" width="250" className="Dashboard-sider">
             <div className="logo">
-              <img src="/images/logo_enora.svg" />
+              <img src="/images/logo.svg" />
             </div>
 
             <Menu
@@ -310,22 +323,12 @@ const Dashboard = () => {
           </Layout.Sider>
 
           <Layout.Content className="no-scroll">
-            {currentKey === menuItems.workspaces.key && (
+            {(currentKey === menuItems.workspaces.key ||
+              currentKey === menuItems.shared.key) && (
               <Workspace
+                loading={loadingUser || loadingWorkspaces || !workspaceToRender}
                 user={{ id: user?.id }}
-                workspace={
-                  myWorkspaces.find((w) => w.id === currentWorkspace) || {}
-                }
-                organizations={organizations}
-                swr={{ delOneWorkspace, mutateOneWorkspace }}
-              />
-            )}
-            {currentKey === menuItems.workspaces.key && (
-              <Workspace
-                user={{ id: user?.id }}
-                workspace={
-                  sharedWorkspaces.find((w) => w.id === currentWorkspace) || {}
-                }
+                workspace={workspaceToRender}
                 organizations={organizations}
                 swr={{ delOneWorkspace, mutateOneWorkspace }}
               />

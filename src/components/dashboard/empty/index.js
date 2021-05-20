@@ -6,6 +6,7 @@ const SharedEmpty = () => {
    */
   return (
     <Empty
+      image="images/empty.svg"
       description={
         <Typography.Paragraph>
           No shared workspaces or projects

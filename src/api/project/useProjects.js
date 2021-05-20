@@ -8,7 +8,7 @@ import Caller from '@/api/call'
  */
 const useProjects = (ids) => {
   const { data, error, mutate } = useSWR(
-    '/api/projects' + (ids && ids.length ? '/' + ids.join('&') : ''),
+    ['/api/projects', JSON.stringify({ ids: ids && ids.join('&') })],
     Caller.fetcher
   )
   const loading = !data

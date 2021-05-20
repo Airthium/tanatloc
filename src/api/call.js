@@ -8,8 +8,15 @@ const base = isElectron() ? 'http://localhost:3000' : ''
  * Fetcher (for SWR)
  * @param {string} url URL
  */
-const fetcher = async (url) => {
-  const res = await fetch(base + url)
+const fetcher = async (url, payload) => {
+  const res = await fetch(base + url, {
+    method: payload ? 'POST' : 'GET',
+    headers: {
+      accept: 'application/json',
+      'Content-Type': 'application/json'
+    },
+    ...(payload && { body: payload })
+  })
 
   if (!res.ok) {
     const error = new Error('An error occured while fetching data.')

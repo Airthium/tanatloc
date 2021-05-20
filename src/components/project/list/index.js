@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
-import { Avatar, Card, Divider, Empty, Space, Typography } from 'antd'
+import { Avatar, Card, Divider, Empty, Space, Spin, Typography } from 'antd'
 
 import Share from '@/components/assets/share'
 
@@ -32,6 +32,7 @@ const ProjectList = ({
   swr
 }) => {
   // State
+  const [loading, setLoading] = useState(true)
   const [list, setList] = useState([])
   const [descriptionVisible, setDescriptionVisible] = useState(-1)
 
@@ -56,10 +57,7 @@ const ProjectList = ({
             height="140"
           />
         ) : (
-          <Empty
-            image={Empty.PRESENTED_IMAGE_SIMPLE}
-            description={'No preview yet.'}
-          />
+          <Empty image="images/empty.svg" description={'No preview yet.'} />
         )
 
         // Title
@@ -91,6 +89,7 @@ const ProjectList = ({
       .filter((p) => p)
 
     setList(currentList)
+    setLoading(false)
   }, [JSON.stringify(projects)])
 
   // Open project
@@ -104,105 +103,109 @@ const ProjectList = ({
   /**
    * Render
    */
-  return (
-    <Space wrap={true} align="start">
-      {list.map((project) => {
-        return (
-          <Card
-            key={project.id}
-            title={project.titleRender}
-            style={{
-              width: 200,
-              height: 300,
-              display: 'flex',
-              flexDirection: 'column'
-            }}
-          >
-            <div
-              onMouseEnter={() =>
-                setDescriptionVisible(project.description ? project.id : -1)
-              }
-              onMouseLeave={() => setDescriptionVisible(-1)}
-              onClick={() => openProject({ id: project.id })}
+  if (loading || swr.loadingProjects) return <Spin />
+  else if (!list.length)
+    return <Empty image="images/empty.svg" description={'No project found.'} />
+  else
+    return (
+      <Space wrap={true} align="start">
+        {list.map((project) => {
+          return (
+            <Card
+              key={project.id}
+              title={project.titleRender}
               style={{
-                cursor: 'pointer',
-                width: '100%',
-                height: 150,
+                width: 200,
+                height: 300,
                 display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                borderBottom: '1px solid #f0f0f0'
+                flexDirection: 'column'
               }}
             >
-              {descriptionVisible === project.id
-                ? project.descriptionRender
-                : project.snapshotRender}
-            </div>
+              <div
+                onMouseEnter={() =>
+                  setDescriptionVisible(project.description ? project.id : -1)
+                }
+                onMouseLeave={() => setDescriptionVisible(-1)}
+                onClick={() => openProject({ id: project.id })}
+                style={{
+                  cursor: 'pointer',
+                  width: '100%',
+                  height: 150,
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  borderBottom: '1px solid #f0f0f0'
+                }}
+              >
+                {descriptionVisible === project.id
+                  ? project.descriptionRender
+                  : project.snapshotRender}
+              </div>
 
-            <div
-              style={{
-                padding: '6px 0',
-                display: 'flex',
-                justifyContent: 'flex-start',
-                alignItems: 'center',
-                borderBottom: '1px solid #f0f0f0'
-              }}
-            >
-              <Avatar.Group maxCount={5}>
-                {project.ownersRender}
-                {project.usersRender}
-                {project.groupsRender}
-              </Avatar.Group>
-            </div>
+              <div
+                style={{
+                  padding: '6px 0',
+                  display: 'flex',
+                  justifyContent: 'flex-start',
+                  alignItems: 'center',
+                  borderBottom: '1px solid #f0f0f0'
+                }}
+              >
+                <Avatar.Group maxCount={5}>
+                  {project.ownersRender}
+                  {project.usersRender}
+                  {project.groupsRender}
+                </Avatar.Group>
+              </div>
 
-            <div
-              style={{
-                padding: '6px 0 0 0',
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center'
-              }}
-            >
-              <Delete
-                disabled={!project?.owners?.find((o) => o.id === user?.id)}
-                workspace={{
-                  projects: workspace.projects
+              <div
+                style={{
+                  padding: '6px 0 0 0',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center'
                 }}
-                project={{
-                  id: project.id,
-                  title: project.title
-                }}
-                swr={{
-                  mutateOneWorkspace: swr.mutateOneWorkspace,
-                  delOneProject: swr.delOneProject
-                }}
-              />
-              <Divider type="vertical" />
-              <Share
-                disabled={!project?.owners?.find((o) => o.id === user?.id)}
-                project={{
-                  id: project.id,
-                  groups: project.groups
-                }}
-                organizations={organizations}
-                swr={{ mutateOneProject: swr.mutateOneProject }}
-              />
-              <Divider type="vertical" />
-              <Edit
-                disabled={!project?.owners?.find((o) => o.id === user?.id)}
-                project={{
-                  id: project.id,
-                  title: project.title,
-                  description: project.description
-                }}
-                swr={{ mutateOneProject: swr.mutateOneProject }}
-              />
-            </div>
-          </Card>
-        )
-      })}
-    </Space>
-  )
+              >
+                <Delete
+                  disabled={!project?.owners?.find((o) => o.id === user?.id)}
+                  workspace={{
+                    projects: workspace.projects
+                  }}
+                  project={{
+                    id: project.id,
+                    title: project.title
+                  }}
+                  swr={{
+                    mutateOneWorkspace: swr.mutateOneWorkspace,
+                    delOneProject: swr.delOneProject
+                  }}
+                />
+                <Divider type="vertical" />
+                <Share
+                  disabled={!project?.owners?.find((o) => o.id === user?.id)}
+                  project={{
+                    id: project.id,
+                    groups: project.groups
+                  }}
+                  organizations={organizations}
+                  swr={{ mutateOneProject: swr.mutateOneProject }}
+                />
+                <Divider type="vertical" />
+                <Edit
+                  disabled={!project?.owners?.find((o) => o.id === user?.id)}
+                  project={{
+                    id: project.id,
+                    title: project.title,
+                    description: project.description
+                  }}
+                  swr={{ mutateOneProject: swr.mutateOneProject }}
+                />
+              </div>
+            </Card>
+          )
+        })}
+      </Space>
+    )
 }
 
 ProjectList.propTypes = {

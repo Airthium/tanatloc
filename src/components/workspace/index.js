@@ -9,11 +9,12 @@ import {
   Layout,
   PageHeader,
   Space,
+  Spin,
   Typography
 } from 'antd'
 
 import Share from '@/components/assets/share'
-import { Error } from '@/components/assets/notification'
+import { Error as ErrorNotification } from '@/components/assets/notification'
 
 import Delete from './delete'
 
@@ -37,7 +38,7 @@ const errors = {
  * Workspace
  * @param {Object} props Props
  */
-const Workspace = ({ user, workspace, organizations, swr }) => {
+const Workspace = ({ loading, user, workspace, organizations, swr }) => {
   // State
   const [filter, setFilter] = useState()
 
@@ -55,7 +56,7 @@ const Workspace = ({ user, workspace, organizations, swr }) => {
 
   // Projects error
   useEffect(() => {
-    if (errorProjects) Error(errors.projects, errorProjects)
+    if (errorProjects) ErrorNotification(errors.projects, errorProjects)
   }, [errorProjects])
 
   /**
@@ -75,7 +76,7 @@ const Workspace = ({ user, workspace, organizations, swr }) => {
         name
       })
     } catch (err) {
-      Error(errors.updateError, err)
+      ErrorNotification(errors.updateError, err)
     }
   }
 
@@ -90,7 +91,9 @@ const Workspace = ({ user, workspace, organizations, swr }) => {
   /**
    * Render
    */
-  return (
+  return loading ? (
+    <Spin />
+  ) : (
     <Layout className="Workspace">
       <PageHeader
         backIcon={false}
@@ -111,7 +114,7 @@ const Workspace = ({ user, workspace, organizations, swr }) => {
                 organizations={organizations}
                 swr={{ mutateOneWorkspace: swr.mutateOneWorkspace }}
               />
-              {workspace?.owners?.find((o) => o.id === user?.id) && (
+              {workspace?.owners?.find((o) => o.id === user.id) && (
                 <Delete
                   workspace={workspace}
                   swr={{ delOneWorkspace: swr.delOneWorkspace }}
@@ -175,12 +178,87 @@ const Workspace = ({ user, workspace, organizations, swr }) => {
 }
 
 Workspace.propTypes = {
-  user: PropTypes.shape({
-    id: PropTypes.string
-  }).isRequired,
-  workspace: PropTypes.shape({
-    id: PropTypes.string.isRequired
-  }).isRequired,
+  loading: PropTypes.bool.isRequired,
+  user: (props, propName, componentName) => {
+    // Loading
+    if (props['loading']) return
+
+    // Missing user
+    if (!props[propName])
+      return new Error(
+        'Missing prop ' + propName + ' supplied to ' + componentName + '.'
+      )
+
+    // Missing id
+    if (!props[propName].id)
+      return new Error(
+        'Invalid prop ' +
+          propName +
+          ' supplied to ' +
+          componentName +
+          '. Missing id'
+      )
+
+    // Invalid id
+    if (typeof props[propName].id !== 'string')
+      return new Error(
+        'Invalid prop ' +
+          propName +
+          ' supplied to ' +
+          componentName +
+          '. Invalid id'
+      )
+  },
+  workspace: (props, propName, componentName) => {
+    // Loading
+    if (props['loading']) return
+
+    // Missing workspace
+    if (!props[propName])
+      return new Error(
+        'Missing prop ' + propName + ' supplied to ' + componentName + '.'
+      )
+
+    // Missing id
+    if (!props[propName].id)
+      return new Error(
+        'Invalid prop ' +
+          propName +
+          ' supplied to ' +
+          componentName +
+          '. Missing id'
+      )
+
+    // Invalid id
+    if (typeof props[propName].id !== 'string')
+      return new Error(
+        'Invalid prop ' +
+          propName +
+          ' supplied to ' +
+          componentName +
+          '. Invalid id'
+      )
+
+    // Missing projects
+    if (!props[propName].projects)
+      return new Error(
+        'Invalid prop ' +
+          propName +
+          ' supplied to ' +
+          componentName +
+          '. Missing projects'
+      )
+
+    // Invalid projects
+    if (typeof props[propName].projects !== 'object')
+      return new Error(
+        'Invalid prop ' +
+          propName +
+          ' supplied to ' +
+          componentName +
+          '. Invalid projects'
+      )
+  },
   organizations: PropTypes.array.isRequired,
   swr: PropTypes.shape({
     delOneWorkspace: PropTypes.func.isRequired,

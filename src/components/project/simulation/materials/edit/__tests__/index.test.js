@@ -6,11 +6,6 @@ jest.mock('@/components/assets/notification', () => ({
   Error: () => mockError()
 }))
 
-jest.mock('@/components/assets/button', () => {
-  const EditButton = () => <div />
-  return { EditButton }
-})
-
 const mockUpdate = jest.fn()
 jest.mock('@/api/simulation', () => ({
   update: async () => mockUpdate()
@@ -65,7 +60,7 @@ describe('components/project/simulation/materials/edit', () => {
 
   it('onEdit', async () => {
     // Normal
-    await wrapper.find('EditButton').props().onEdit()
+    await wrapper.find('Button').props().onClick()
     expect(mockUpdate).toHaveBeenCalledTimes(1)
     expect(mutateOneSimulation).toHaveBeenCalledTimes(1)
     expect(close).toHaveBeenCalledTimes(1)
@@ -75,7 +70,7 @@ describe('components/project/simulation/materials/edit', () => {
     mockUpdate.mockImplementation(() => {
       throw new Error()
     })
-    await wrapper.find('EditButton').props().onEdit()
+    await wrapper.find('Button').props().onClick()
     expect(mockUpdate).toHaveBeenCalledTimes(2)
     expect(mutateOneSimulation).toHaveBeenCalledTimes(1)
     expect(close).toHaveBeenCalledTimes(1)

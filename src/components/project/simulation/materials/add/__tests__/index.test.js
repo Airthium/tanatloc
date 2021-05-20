@@ -1,11 +1,6 @@
 import Add from '@/components/project/simulation/materials/add'
 import { shallow } from 'enzyme'
 
-jest.mock('@/components/assets/button', () => {
-  const AddButton = () => <div />
-  return { AddButton }
-})
-
 const mockError = jest.fn()
 jest.mock('@/components/assets/notification', () => ({
   Error: () => mockError()
@@ -66,7 +61,7 @@ describe('components/project/simulation/materials/add', () => {
   })
 
   it('onAdd', async () => {
-    await wrapper.find('AddButton').props().onAdd()
+    await wrapper.find('Button').props().onClick()
     expect(mockUpdate).toHaveBeenCalledTimes(1)
     expect(mutateOneSimulation).toHaveBeenCalledTimes(1)
     expect(close).toHaveBeenCalledTimes(1)
@@ -84,13 +79,13 @@ describe('components/project/simulation/materials/add', () => {
         close={close}
       />
     )
-    await wrapper.find('AddButton').props().onAdd()
+    await wrapper.find('Button').props().onClick()
 
     // Error
     mockUpdate.mockImplementation(() => {
       throw new Error()
     })
-    await wrapper.find('AddButton').props().onAdd()
+    await wrapper.find('Button').props().onClick()
     expect(mockUpdate).toHaveBeenCalledTimes(3)
     expect(mutateOneSimulation).toHaveBeenCalledTimes(2)
     expect(close).toHaveBeenCalledTimes(2)

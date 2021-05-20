@@ -14,6 +14,11 @@ jest.mock('@/store/select/action', () => ({
   select: () => mockSelect()
 }))
 
+jest.mock('@/components/assets/button', () => {
+  const EditButton = () => <div />
+  return { EditButton }
+})
+
 jest.mock('../../delete', () => {
   const Delete = () => <div />
   return Delete
@@ -74,7 +79,7 @@ describe('components/project/simulation/boundaryConditions/list', () => {
 
   it('edit', () => {
     global.setTimeout = (callback) => callback()
-    wrapper.find('Button').props().onClick()
+    wrapper.find('EditButton').props().onEdit()
     expect(onEdit).toHaveBeenCalledTimes(1)
   })
 

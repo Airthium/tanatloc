@@ -259,7 +259,7 @@ describe('components/project/simulation/geometry', () => {
       buffer: ['buffer']
     }))
     window.URL.createObjectURL = () => 'url'
-    await act(async () => await wrapper.find('Button').at(1).props().onClick())
+    await act(async () => await wrapper.find('Button').at(0).props().onClick())
     expect(mockGet).toHaveBeenCalledTimes(1)
     expect(mockError).toHaveBeenCalledTimes(0)
 
@@ -267,7 +267,7 @@ describe('components/project/simulation/geometry', () => {
     mockGet.mockImplementation(() => {
       throw new Error()
     })
-    await act(async () => await wrapper.find('Button').at(1).props().onClick())
+    await act(async () => await wrapper.find('Button').at(0).props().onClick())
     expect(mockGet).toHaveBeenCalledTimes(2)
     expect(mockError).toHaveBeenCalledTimes(1)
   })

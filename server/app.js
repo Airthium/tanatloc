@@ -13,7 +13,6 @@ import workspace from '@/route/workspace'
 import project from '@/route/project'
 import projectId from '@/route/project/[id]'
 import projects from '@/route/projects'
-import projectsIds from '@/route/projects/[ids]'
 import simulation from '@/route/simulation'
 import simulationId from '@/route/simulation/[id]'
 import simulationIdRun from '@/route/simulation/[id]/run'
@@ -51,7 +50,6 @@ app.all('/api/project', project)
 app.all('/api/project/:id', projectId)
 
 app.all('/api/projects', projects)
-app.all('/api/projects/:ids', projectsIds)
 
 app.all('/api/simulation', simulation)
 app.all('/api/simulation/:id', simulationId)

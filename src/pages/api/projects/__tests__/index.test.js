@@ -1,9 +1,9 @@
-import project from '@/pages/api/projects'
+import id from '@/pages/api/projects'
 
 jest.mock('@/route/projects', () => () => {})
 
-describe('pages/api/projects', () => {
+describe('pages/api/project', () => {
   it('call', async () => {
-    await project()
+    await id()
   })
 })

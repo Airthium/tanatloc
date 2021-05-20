@@ -1,11 +1,6 @@
 import Edit from '@/components/project/simulation/boundaryConditions/edit'
 import { shallow } from 'enzyme'
 
-jest.mock('@/components/assets/button', () => {
-  const EditButton = () => <div />
-  return { EditButton }
-})
-
 const mockError = jest.fn()
 jest.mock('@/components/assets/notification', () => ({
   Error: () => mockError()
@@ -82,7 +77,7 @@ describe('components/project/simulation/boundaryConditions/edit', () => {
   })
 
   it('onEdit', async () => {
-    await wrapper.find('EditButton').props().onEdit()
+    await wrapper.find('Button').props().onClick()
     expect(mockUpdate).toHaveBeenCalledTimes(1)
     expect(mutateOneSimulation).toHaveBeenCalledTimes(1)
     expect(close).toHaveBeenCalledTimes(1)
@@ -92,7 +87,7 @@ describe('components/project/simulation/boundaryConditions/edit', () => {
     mockUpdate.mockImplementation(() => {
       throw new Error()
     })
-    await wrapper.find('EditButton').props().onEdit()
+    await wrapper.find('Button').props().onClick()
     expect(mockUpdate).toHaveBeenCalledTimes(2)
     expect(mutateOneSimulation).toHaveBeenCalledTimes(1)
     expect(close).toHaveBeenCalledTimes(1)
@@ -114,7 +109,7 @@ describe('components/project/simulation/boundaryConditions/edit', () => {
         close={close}
       />
     )
-    await wrapper.find('EditButton').props().onEdit()
+    await wrapper.find('Button').props().onClick()
     expect(mockUpdate).toHaveBeenCalledTimes(1)
     expect(mutateOneSimulation).toHaveBeenCalledTimes(1)
     expect(close).toHaveBeenCalledTimes(1)

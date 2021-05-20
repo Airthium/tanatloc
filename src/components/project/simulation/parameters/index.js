@@ -143,8 +143,10 @@ const Parameters = ({ simulation, swr }) => {
       <Layout.Content>
         <Space direction="vertical">
           {parameters}
-          <Collapse className="no-padding">
-            <Collapse.Panel header="Advanced">{advanced}</Collapse.Panel>
+          <Collapse>
+            <Collapse.Panel header="Advanced">
+              <Space direction="vertical">{advanced}</Space>
+            </Collapse.Panel>
           </Collapse>
         </Space>
       </Layout.Content>

@@ -1,7 +1,8 @@
 import PropTypes from 'prop-types'
 import { useState } from 'react'
-import { Button, Card, Space, Typography } from 'antd'
-import { EditOutlined } from '@ant-design/icons'
+import { Card, Space, Typography } from 'antd'
+
+import { EditButton } from '@/components/assets/button'
 
 import { useDispatch } from 'react-redux'
 import { enable, disable, select } from '@/store/select/action'
@@ -46,20 +47,26 @@ const List = ({ simulation, swr, onEdit }) => {
       return boundaryConditions[type].values?.map((child, index) => {
         return (
           <Card
+            className="boundaryCondition-item"
             key={index}
             hoverable
-            style={{ marginTop: '5px' }}
             onMouseEnter={() => highlight(type, index)}
             onMouseLeave={() => {
               enabled && unhighlight()
             }}
           >
-            <Space direction="vertical">
+            <Space
+              direction="horizontal"
+              style={{
+                width: '100%',
+                justifyContent: 'space-between',
+                alignItems: 'center'
+              }}
+            >
               <Typography.Text>{child.name}</Typography.Text>
               <Space direction="">
-                <Button
-                  icon={<EditOutlined />}
-                  onClick={() => {
+                <EditButton
+                  onEdit={() => {
                     setEnabled(false)
                     onEdit(type, index)
                     setTimeout(() => setEnabled(true), 500)

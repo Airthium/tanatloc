@@ -17,4 +17,4 @@ Run:
 
 FIGMA: https://www.figma.com/file/zA0A5rq8U5zqBoTdqJwYzh/Cleaning_Tanatloc?node-id=92%3A0
 
-GLB: use geometry/file.STEP in convert like mesh and results
+Global: Manage loading data at load or reload (F5, Ctrl+Alt+R)

@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types'
 import { useState } from 'react'
+import { Button } from 'antd'
 
-import { EditButton } from '@/components/assets/button'
 import { Error } from '@/components/assets/notification'
 
 import SimulationAPI from '@/api/simulation'
@@ -83,7 +83,11 @@ const Edit = ({ disabled, material, simulation, part, swr, close }) => {
   /**
    * Render
    */
-  return <EditButton disabled={disabled} loading={loading} onEdit={onEdit} />
+  return (
+    <Button disabled={disabled} loading={loading} onClick={onEdit}>
+      Edit
+    </Button>
+  )
 }
 
 Edit.propTypes = {

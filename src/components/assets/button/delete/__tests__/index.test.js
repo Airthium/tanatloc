@@ -1,6 +1,10 @@
 import DeleteButton from '@/components/assets/button/delete'
 import { shallow } from 'enzyme'
 
+jest.mock('@/components/assets/dialog', () => ({
+  DeleteDialog: () => <div />
+}))
+
 let wrapper
 describe('components/assets/button/delete', () => {
   const mockLoading = jest.fn(() => false)
@@ -21,8 +25,14 @@ describe('components/assets/button/delete', () => {
     expect(wrapper.find('Button').props().loading).toBe(false)
   })
 
+  it('setVisible', () => {
+    wrapper.find('Button').props().onClick()
+
+    wrapper.find('DeleteDialog').props().onCancel()
+  })
+
   it('onDelete', () => {
-    wrapper.find('ForwardRef').props().onConfirm()
+    wrapper.find('DeleteDialog').props().onOk()
     expect(mockOnDelete).toHaveBeenCalledTimes(1)
   })
 })

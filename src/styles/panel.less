@@ -8,11 +8,50 @@
   overflow: hidden;
 }
 
-.Panel .ant-card-body {
+.Panel .ant-card {
+  border: none;
+}
+
+.Panel .ant-card-head .ant-btn {
+  border: none;
+}
+
+.Panel .ant-card-body .ant-card-head {
+  border: none;
+}
+
+.Panel .ant-card-body .ant-card-body {
+  padding-top: 0;
   max-height: calc(100vh - 65px);
   overflow: auto;
 }
 
-.Card-footer {
+.Panel .ant-card-body .ant-divider {
   border-top: 1px solid #f0f0f0;
+  margin-left: -12px;
+  margin-top: 4px;
+  margin-bottom: 4px;
+  width: calc(100% + 24px);
+}
+
+.Panel .ant-card-body .ant-collapse {
+  margin: 0 -12px -12px -12px;
+  border: none;
+}
+
+.Panel .ant-card-body .ant-collapse-item {
+  border: none;
+}
+
+.Panel .ant-card-body .ant-collapse-content-box {
+  padding: 12px;
+  background-color: #fafafa;
+}
+
+.Panel .ant-card-body .ant-collapse-content-box .ant-card-head {
+  background-color: #fafafa;
+}
+
+.Panel .ant-card-body .ant-collapse-content-box .ant-card-body {
+  background-color: #fafafa;
 }

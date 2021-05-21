@@ -14,7 +14,7 @@ jest.mock('react-redux', () => ({
         selected: mockSelected()
       }
     }),
-  useDispatch: () => () => {}
+  useDispatch: () => jest.fn()
 }))
 
 const mockHighlight = jest.fn()
@@ -29,8 +29,8 @@ jest.mock('@/store/select/action', () => ({
 }))
 
 jest.mock('@/lib/utils', () => ({
-  stringToColor: () => {},
-  rgbToHex: () => {},
+  stringToColor: jest.fn(),
+  rgbToHex: jest.fn(),
   rgbToRgba: () => 'rgba()'
 }))
 
@@ -192,15 +192,8 @@ describe('components/assets/selector', () => {
     wrapper.unmount()
     mockHighlighted.mockImplementation(() => 'uuid')
     wrapper = shallow(<Selector part={part} updateSelected={updateSelected} />)
-    expect(wrapper.find('Card').at(1).props().style.border).toBe(
-      '2px solid #0096C7'
+    expect(wrapper.find('div').at(0).props().style.backgroundColor).toBe(
+      '#0096C7'
     )
-  })
-
-  it('effect', () => {
-    wrapper.unmount()
-
-    wrapper = mount(<Selector part={part} updateSelected={updateSelected} />)
-    expect(updateSelected).toHaveBeenCalledTimes(2)
   })
 })

@@ -16,6 +16,10 @@ jest.mock('../delete', () => {
   return Delete
 })
 
+jest.mock('@/components/loading', () => ({
+  Simple: () => <div />
+}))
+
 jest.mock('@/components/project/add', () => {
   const ProjectAdd = () => <div />
   return ProjectAdd
@@ -59,8 +63,9 @@ jest.mock('@/api/project', () => ({
 
 let wrapper
 describe('components/workspace', () => {
-  const user = {}
-  const workspace = { id: 'id' }
+  const loading = false
+  const user = { id: 'id' }
+  const workspace = { id: 'id', projects: [] }
   const organizations = []
   const delOneWorkspace = jest.fn()
   const mutateOneWorkspace = jest.fn()
@@ -84,6 +89,7 @@ describe('components/workspace', () => {
 
     wrapper = shallow(
       <Workspace
+        loading={loading}
         user={user}
         workspace={workspace}
         organizations={organizations}
@@ -97,6 +103,20 @@ describe('components/workspace', () => {
   })
 
   it('render', () => {
+    expect(wrapper).toBeDefined()
+  })
+
+  it('loading', () => {
+    wrapper.unmount()
+    wrapper = shallow(
+      <Workspace
+        loading={true}
+        user={user}
+        workspace={workspace}
+        organizations={organizations}
+        swr={swr}
+      />
+    )
     expect(wrapper).toBeDefined()
   })
 
@@ -131,6 +151,7 @@ describe('components/workspace', () => {
     wrapper.unmount()
     wrapper = shallow(
       <Workspace
+        loading={loading}
         user={{ id: 'id' }}
         workspace={{
           ...workspace,
@@ -149,6 +170,7 @@ describe('components/workspace', () => {
     wrapper.unmount()
     wrapper = shallow(
       <Workspace
+        loading={loading}
         user={user}
         workspace={{
           ...workspace,
@@ -166,6 +188,7 @@ describe('components/workspace', () => {
     wrapper.unmount()
     wrapper = mount(
       <Workspace
+        loading={loading}
         user={user}
         workspace={workspace}
         organizations={organizations}
@@ -179,6 +202,7 @@ describe('components/workspace', () => {
     mockErrorProjects.mockImplementation(() => ({ message: 'Error' }))
     wrapper = mount(
       <Workspace
+        loading={loading}
         user={user}
         workspace={workspace}
         organizations={organizations}
@@ -186,5 +210,82 @@ describe('components/workspace', () => {
       />
     )
     expect(mockError).toHaveBeenCalledTimes(1)
+  })
+
+  it('propTypes', () => {
+    let res
+    const propTypes = Workspace.propTypes
+
+    // User
+    const userProps = propTypes.user
+    res = userProps({ loading: true }, 'user', 'Workspace')
+    expect(res).toBe()
+
+    res = userProps({ loading: false }, 'user', 'Workspace')
+    expect(res.message).toBe('Missing prop user supplied to Workspace.')
+
+    res = userProps({ loading: false, user: {} }, 'user', 'Workspace')
+    expect(res.message).toBe(
+      'Invalid prop user supplied to Workspace. Missing id'
+    )
+
+    res = userProps({ loading: false, user: { id: {} } }, 'user', 'Workspace')
+    expect(res.message).toBe(
+      'Invalid prop user supplied to Workspace. Invalid id'
+    )
+
+    res = userProps({ loading: false, user: { id: 'id' } }, 'user', 'Workspace')
+    expect(res).toBe()
+
+    // Workspace
+    const workspaceProps = propTypes.workspace
+    res = workspaceProps({ loading: true }, 'workspace', 'Workspace')
+    expect(res).toBe()
+
+    res = workspaceProps({ loading: false }, 'workspace', 'Workspace')
+    expect(res.message).toBe('Missing prop workspace supplied to Workspace.')
+
+    res = workspaceProps(
+      { loading: false, workspace: {} },
+      'workspace',
+      'Workspace'
+    )
+    expect(res.message).toBe(
+      'Invalid prop workspace supplied to Workspace. Missing id'
+    )
+
+    res = workspaceProps(
+      { loading: false, workspace: { id: {} } },
+      'workspace',
+      'Workspace'
+    )
+    expect(res.message).toBe(
+      'Invalid prop workspace supplied to Workspace. Invalid id'
+    )
+
+    res = workspaceProps(
+      { loading: false, workspace: { id: 'id' } },
+      'workspace',
+      'Workspace'
+    )
+    expect(res.message).toBe(
+      'Invalid prop workspace supplied to Workspace. Missing projects'
+    )
+
+    res = workspaceProps(
+      { loading: false, workspace: { id: 'id', projects: 'projects' } },
+      'workspace',
+      'Workspace'
+    )
+    expect(res.message).toBe(
+      'Invalid prop workspace supplied to Workspace. Invalid projects'
+    )
+
+    res = workspaceProps(
+      { loading: false, workspace: { id: 'id', projects: [] } },
+      'workspace',
+      'Workspace'
+    )
+    expect(res).toBe()
   })
 })

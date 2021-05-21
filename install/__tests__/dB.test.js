@@ -10,7 +10,7 @@ jest.mock('pg', () => ({
   Pool: class {
     constructor() {
       this.connect = () => mockClient()
-      this.end = () => {}
+      this.end = jest.fn()
     }
   }
 }))
@@ -21,7 +21,7 @@ describe('install/dB', () => {
       query: async () => ({
         rowCount: 0
       }),
-      release: () => {}
+      release: jest.fn()
     }))
     mockQuery.mockImplementation(() => ({ rows: [{}] }))
   })
@@ -31,7 +31,7 @@ describe('install/dB', () => {
       query: async () => ({
         rowCount: 1
       }),
-      release: () => {}
+      release: jest.fn()
     }))
     await createDatabase()
   })

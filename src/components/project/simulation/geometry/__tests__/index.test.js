@@ -142,7 +142,7 @@ describe('components/project/simulation/geometry', () => {
               ...simulation.scheme.configuration,
               geometry: {
                 file: {
-                  origin: 'origin',
+                  glb: 'glb',
                   originPath: 'originPath'
                 }
               }
@@ -169,7 +169,7 @@ describe('components/project/simulation/geometry', () => {
               ...simulation.scheme.configuration,
               geometry: {
                 file: {
-                  origin: 'origin',
+                  glb: 'glb',
                   originPath: 'originPath'
                 }
               }
@@ -182,7 +182,7 @@ describe('components/project/simulation/geometry', () => {
     )
 
     // Open
-    act(() => wrapper.find('Button').at(0).props().onClick())
+    act(() => wrapper.find('Button').at(1).props().onClick())
 
     // Close
     act(() => wrapper.find('DeleteDialog').props().onCancel())
@@ -201,7 +201,7 @@ describe('components/project/simulation/geometry', () => {
               ...simulation.scheme.configuration,
               geometry: {
                 file: {
-                  origin: 'origin',
+                  glb: 'glb',
                   originPath: 'originPath'
                 }
               }
@@ -242,7 +242,7 @@ describe('components/project/simulation/geometry', () => {
               ...simulation.scheme.configuration,
               geometry: {
                 file: {
-                  origin: 'origin',
+                  glb: 'glb',
                   originPath: 'originPath'
                 }
               }
@@ -284,7 +284,7 @@ describe('components/project/simulation/geometry', () => {
               ...simulation.scheme.configuration,
               geometry: {
                 file: {
-                  origin: 'origin',
+                  glb: 'glb',
                   originPath: 'originPath'
                 }
               }
@@ -308,7 +308,7 @@ describe('components/project/simulation/geometry', () => {
               ...simulation.scheme.configuration,
               geometry: {
                 file: {
-                  origin: 'origin',
+                  glb: 'glb',
                   originPath: 'originPath'
                 }
               }
@@ -336,7 +336,7 @@ describe('components/project/simulation/geometry', () => {
               ...simulation.scheme.configuration,
               geometry: {
                 file: {
-                  origin: 'origin',
+                  glb: 'glb',
                   originPath: 'originPath'
                 }
               }
@@ -364,7 +364,7 @@ describe('components/project/simulation/geometry', () => {
               ...simulation.scheme.configuration,
               geometry: {
                 file: {
-                  origin: 'origin',
+                  glb: 'glb',
                   originPath: 'originPath'
                 }
               }

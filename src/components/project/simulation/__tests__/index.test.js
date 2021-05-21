@@ -131,6 +131,12 @@ describe('components/project/simulation', () => {
     expect(wrapper).toBeDefined()
   })
 
+  it('without simulation', () => {
+    wrapper.unmount()
+    wrapper = shallow(<Simulation user={user} swr={swr} onClose={onClose} />)
+    expect(wrapper).toBeDefined()
+  })
+
   it('onClose', () => {
     wrapper.unmount()
     wrapper = shallow(

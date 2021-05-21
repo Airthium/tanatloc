@@ -16,6 +16,10 @@ jest.mock('@/components/assets/notification', () => ({
   Error: () => mockError()
 }))
 
+jest.mock('@/components/loading', () => ({
+  Simple: () => <div />
+}))
+
 jest.mock('@/components/notauthorized', () => {
   const NotAuthorized = () => <div />
   return NotAuthorized
@@ -39,8 +43,9 @@ jest.mock('@/components/project/simulation', () => {
 })
 
 const mockUser = jest.fn()
+const mockUserLoading = jest.fn()
 jest.mock('@/api/user', () => ({
-  useUser: () => [mockUser(), { loadingUser: false }]
+  useUser: () => [mockUser(), { loadingUser: mockUserLoading() }]
 }))
 
 const mockProject = jest.fn()
@@ -79,6 +84,7 @@ describe('components/project', () => {
 
     mockUser.mockReset()
     mockUser.mockImplementation(() => ({ id: 'id' }))
+    mockUserLoading.mockReset()
 
     mockProject.mockReset()
     mockProject.mockImplementation(() => ({
@@ -118,6 +124,13 @@ describe('components/project', () => {
   })
 
   it('render', () => {
+    expect(wrapper).toBeDefined()
+  })
+
+  it('loading', () => {
+    wrapper.unmount()
+    mockUserLoading.mockImplementation(() => true)
+    wrapper = shallow(<Project />)
     expect(wrapper).toBeDefined()
   })
 

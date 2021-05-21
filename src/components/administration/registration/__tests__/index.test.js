@@ -3,6 +3,10 @@ import { shallow, mount } from 'enzyme'
 
 import '@/config/jest/mockMatchMedia'
 
+jest.mock('@/components/loading', () => ({
+  Simple: () => <div />
+}))
+
 const mockError = jest.fn()
 jest.mock('@/components/assets/notification', () => ({
   Error: () => mockError()
@@ -48,7 +52,7 @@ describe('components/administration/registration', () => {
     wrapper.unmount()
     mockLoadingSystem.mockImplementation(() => true)
     wrapper = shallow(<Registration />)
-    expect(wrapper.find('Spin').length).toBe(1)
+    expect(wrapper.find('Simple').length).toBe(1)
   })
 
   it('onAllowSignup', async () => {

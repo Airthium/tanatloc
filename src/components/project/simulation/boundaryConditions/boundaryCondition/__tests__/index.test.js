@@ -67,6 +67,21 @@ describe('components/project/simulation/boundaryConditions/boundaryCondition', (
     expect(wrapper).toBeDefined()
   })
 
+  it('without boundaryCondition', () => {
+    wrapper.unmount()
+    wrapper = mount(
+      <BoundaryCondition
+        visible={true}
+        simulation={simulation}
+        part={part}
+        boundaryConditions={boundaryConditions}
+        swr={swr}
+        close={close}
+      />
+    )
+    expect(wrapper).toBeDefined()
+  })
+
   it('onName', () => {
     wrapper
       .find('Card')

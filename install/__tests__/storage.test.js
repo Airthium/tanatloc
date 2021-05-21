@@ -14,7 +14,9 @@ describe('install/storage', () => {
 
   it('exists', async () => {
     mockMkdir.mockImplementation(() => {
-      throw { code: 'EEXIST' }
+      const error = new Error()
+      error.code = 'EEXIST'
+      throw error
     })
     await createPaths()
   })

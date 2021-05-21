@@ -210,85 +210,89 @@ const Simulation = ({ user, simulation, type, part, swr, onClose }) => {
   /**
    * Render
    */
-  return (
-    <>
-      <Modal
-        title={
-          <>
-            <WarningOutlined style={{ color: 'orange', marginRight: '5px' }} />
-            Update
-          </>
-        }
-        visible={needUpdate}
-        onOk={onUpdate}
-        okText="Yes"
-        confirmLoading={loading}
-        onCancel={() => setNeedUpdate(false)}
-        cancelText="No"
-        maskClosable={false}
-      >
-        <Space direction="vertical">
-          <Typography.Text>Your model needs an update!</Typography.Text>
-          <Typography.Text strong>Update now?</Typography.Text>
-        </Space>
-      </Modal>
-      <Panel visible={visible} title={title} onClose={onClose}>
-        {type === 'about' && (
-          <About
-            simulation={{
-              id: simulation?.id,
-              name: simulation?.name,
-              scheme: simulation?.scheme
-            }}
-            swr={{
-              reloadProject: swr.reloadProject,
-              delOneSimulation: swr.delOneSimulation,
-              mutateOneSimulation: swr.mutateOneSimulation
-            }}
-          />
-        )}
-        {type === 'geometry' && (
-          <Geometry
-            simulation={simulation}
-            part={part}
-            swr={{ mutateOneSimulation: swr.mutateOneSimulation }}
-          />
-        )}
-        {type === 'parameters' && (
-          <Parameters
-            simulation={simulation}
-            swr={{ mutateOneSimulation: swr.mutateOneSimulation }}
-          />
-        )}
-        {type === 'materials' && (
-          <Materials
-            simulation={simulation}
-            part={part}
-            swr={{
-              mutateOneSimulation: swr.mutateOneSimulation
-            }}
-            setVisible={setVisible}
-          />
-        )}
-        {type === 'boundaryConditions' && (
-          <BoundaryConditions
-            simulation={simulation}
-            part={part}
-            swr={{
-              mutateOneSimulation: swr.mutateOneSimulation
-            }}
-            setVisible={setVisible}
-          />
-        )}
-        {type === 'run' && (
-          <Run
-            simulation={simulation}
-            swr={{ mutateOneSimulation: swr.mutateOneSimulation }}
-          />
-        )}
-      </Panel>
-    </>
-  )
+  if (!simulation) return null
+  else
+    return (
+      <>
+        <Modal
+          title={
+            <>
+              <WarningOutlined
+                style={{ color: 'orange', marginRight: '5px' }}
+              />
+              Update
+            </>
+          }
+          visible={needUpdate}
+          onOk={onUpdate}
+          okText="Yes"
+          confirmLoading={loading}
+          onCancel={() => setNeedUpdate(false)}
+          cancelText="No"
+          maskClosable={false}
+        >
+          <Space direction="vertical">
+            <Typography.Text>Your model needs an update!</Typography.Text>
+            <Typography.Text strong>Update now?</Typography.Text>
+          </Space>
+        </Modal>
+        <Panel visible={!!visible} title={title} onClose={onClose}>
+          {type === 'about' && (
+            <About
+              simulation={{
+                id: simulation?.id,
+                name: simulation?.name,
+                scheme: simulation?.scheme
+              }}
+              swr={{
+                reloadProject: swr.reloadProject,
+                delOneSimulation: swr.delOneSimulation,
+                mutateOneSimulation: swr.mutateOneSimulation
+              }}
+            />
+          )}
+          {type === 'geometry' && (
+            <Geometry
+              simulation={simulation}
+              part={part}
+              swr={{ mutateOneSimulation: swr.mutateOneSimulation }}
+            />
+          )}
+          {type === 'parameters' && (
+            <Parameters
+              simulation={simulation}
+              swr={{ mutateOneSimulation: swr.mutateOneSimulation }}
+            />
+          )}
+          {type === 'materials' && (
+            <Materials
+              simulation={simulation}
+              part={part}
+              swr={{
+                mutateOneSimulation: swr.mutateOneSimulation
+              }}
+              setVisible={setVisible}
+            />
+          )}
+          {type === 'boundaryConditions' && (
+            <BoundaryConditions
+              simulation={simulation}
+              part={part}
+              swr={{
+                mutateOneSimulation: swr.mutateOneSimulation
+              }}
+              setVisible={setVisible}
+            />
+          )}
+          {type === 'run' && (
+            <Run
+              simulation={simulation}
+              swr={{ mutateOneSimulation: swr.mutateOneSimulation }}
+            />
+          )}
+        </Panel>
+      </>
+    )
 }
 
 Simulation.propTypes = {
@@ -297,7 +301,7 @@ Simulation.propTypes = {
   }).isRequired,
   simulation: PropTypes.shape({
     id: PropTypes.string.isRequired
-  }).isRequired,
+  }),
   type: PropTypes.string,
   part: PropTypes.object,
   swr: PropTypes.shape({

@@ -245,7 +245,7 @@ const Dashboard = () => {
    */
   return (
     <>
-      {loadingUser || !user ? (
+      {loadingUser || loadingOrganizations || loadingWorkspaces || !user ? (
         <Loading />
       ) : (
         <Layout>
@@ -326,7 +326,7 @@ const Dashboard = () => {
             {(currentKey === menuItems.workspaces.key ||
               currentKey === menuItems.shared.key) && (
               <Workspace
-                loading={loadingUser || loadingWorkspaces || !workspaceToRender}
+                loading={!workspaceToRender}
                 user={{ id: user?.id }}
                 workspace={workspaceToRender}
                 organizations={organizations}

@@ -25,7 +25,7 @@ const Material = ({
   close
 }) => {
   // State
-  const [current, setCurrent] = useState()
+  const [current, setCurrent] = useState(material)
   const [disabled, setDisabled] = useState(true)
 
   // Edit

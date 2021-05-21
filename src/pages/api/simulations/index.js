@@ -1,7 +1,7 @@
 import route from '@/route/simulations'
 
 /**
- * Empty simulations list route
+ * Simulations API from [ids]
  * @memberof module:pages/api
  * @param {Object} req Request
  * @param {Object} res Response

@@ -95,7 +95,7 @@ Add.propTypes = {
   disabled: PropTypes.bool,
   material: PropTypes.shape({
     selected: PropTypes.array.isRequired
-  }).isRequired,
+  }),
   simulation: PropTypes.shape({
     id: PropTypes.string.isRequired,
     scheme: PropTypes.shape({

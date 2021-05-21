@@ -110,8 +110,8 @@ Add.propTypes = {
     }).isRequired
   }).isRequired,
   boundaryCondition: PropTypes.shape({
-    selected: PropTypes.array.isRequired
-  }).isRequired,
+    selected: PropTypes.array
+  }),
   part: PropTypes.shape({
     faces: PropTypes.array.isRequired
   }).isRequired,

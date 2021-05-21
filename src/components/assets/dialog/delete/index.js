@@ -42,7 +42,7 @@ const DeleteDialog = ({
 }
 
 DeleteDialog.propTypes = {
-  title: PropTypes.string.isRequired,
+  title: PropTypes.string,
   visible: PropTypes.bool.isRequired,
   onCancel: PropTypes.func.isRequired,
   onOk: PropTypes.func.isRequired,

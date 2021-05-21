@@ -9,7 +9,6 @@ import {
   Layout,
   PageHeader,
   Space,
-  Spin,
   Typography
 } from 'antd'
 
@@ -18,6 +17,7 @@ import { Error as ErrorNotification } from '@/components/assets/notification'
 
 import Delete from './delete'
 
+import Loading from '@/components/loading'
 import ProjectAdd from '@/components/project/add'
 import ProjectList from '@/components/project/list'
 
@@ -91,90 +91,90 @@ const Workspace = ({ loading, user, workspace, organizations, swr }) => {
   /**
    * Render
    */
-  return loading ? (
-    <Spin />
-  ) : (
-    <Layout className="Workspace">
-      <PageHeader
-        backIcon={false}
-        title={
-          <Typography.Title
-            level={2}
-            className="pageheader-name"
-            editable={workspace.id && { onChange: setName }}
-          >
-            {workspace.name}
-          </Typography.Title>
-        }
-        extra={
-          workspace.id && (
-            <Space direction="">
-              <Share
-                workspace={workspace}
-                organizations={organizations}
-                swr={{ mutateOneWorkspace: swr.mutateOneWorkspace }}
-              />
-              {workspace?.owners?.find((o) => o.id === user.id) && (
-                <Delete
+  if (loading) return <Loading.Simple />
+  else
+    return (
+      <Layout className="Workspace">
+        <PageHeader
+          backIcon={false}
+          title={
+            <Typography.Title
+              level={2}
+              className="pageheader-name"
+              editable={workspace.id && { onChange: setName }}
+            >
+              {workspace.name}
+            </Typography.Title>
+          }
+          extra={
+            workspace.id && (
+              <Space direction="">
+                <Share
                   workspace={workspace}
-                  swr={{ delOneWorkspace: swr.delOneWorkspace }}
+                  organizations={organizations}
+                  swr={{ mutateOneWorkspace: swr.mutateOneWorkspace }}
                 />
-              )}
-            </Space>
-          )
-        }
-        footer={
-          <>
-            <Divider className="Tanatloc-divider" />
-            <Space direction="" align="center">
-              <Input
-                addonBefore="Search"
-                placeholder="Enter a project name (case sensitive)"
-                value={filter}
-                onChange={onSearch}
-              />
-              <ProjectAdd
-                workspace={workspace}
-                swr={{
-                  mutateOneWorkspace: swr.mutateOneWorkspace,
-                  addOneProject
-                }}
-              />
-            </Space>
-          </>
-        }
-      >
-        {workspace.users?.length || workspace.groups?.length ? (
-          <div className="Workspace-share">
-            <span style={{ marginRight: '10px' }}>
-              This workspace is shared with:
-            </span>
-            <Avatar.Group maxCount={5}>
-              {workspace.users?.map((u) => Utils.userToAvatar(u))}
-            </Avatar.Group>
-            <Avatar.Group maxCount={5}>
-              {workspace.groups?.map((g) => Utils.groupToAvatar(g))}
-            </Avatar.Group>
-          </div>
-        ) : null}
-      </PageHeader>
-      <Layout.Content className="scroll">
-        <ProjectList
-          user={user}
-          workspace={workspace}
-          projects={projects}
-          organizations={organizations}
-          filter={filter}
-          swr={{
-            mutateOneWorkspace: swr.mutateOneWorkspace,
-            delOneProject,
-            mutateOneProject,
-            loadingProjects
-          }}
-        />
-      </Layout.Content>
-    </Layout>
-  )
+                {workspace?.owners?.find((o) => o.id === user.id) && (
+                  <Delete
+                    workspace={workspace}
+                    swr={{ delOneWorkspace: swr.delOneWorkspace }}
+                  />
+                )}
+              </Space>
+            )
+          }
+          footer={
+            <>
+              <Divider className="Tanatloc-divider" />
+              <Space direction="" align="center">
+                <Input
+                  addonBefore="Search"
+                  placeholder="Enter a project name (case sensitive)"
+                  value={filter}
+                  onChange={onSearch}
+                />
+                <ProjectAdd
+                  workspace={workspace}
+                  swr={{
+                    mutateOneWorkspace: swr.mutateOneWorkspace,
+                    addOneProject
+                  }}
+                />
+              </Space>
+            </>
+          }
+        >
+          {workspace.users?.length || workspace.groups?.length ? (
+            <div className="Workspace-share">
+              <span style={{ marginRight: '10px' }}>
+                This workspace is shared with:
+              </span>
+              <Avatar.Group maxCount={5}>
+                {workspace.users?.map((u) => Utils.userToAvatar(u))}
+              </Avatar.Group>
+              <Avatar.Group maxCount={5}>
+                {workspace.groups?.map((g) => Utils.groupToAvatar(g))}
+              </Avatar.Group>
+            </div>
+          ) : null}
+        </PageHeader>
+        <Layout.Content className="scroll">
+          <ProjectList
+            user={user}
+            workspace={workspace}
+            projects={projects}
+            organizations={organizations}
+            filter={filter}
+            swr={{
+              mutateOneWorkspace: swr.mutateOneWorkspace,
+              delOneProject,
+              mutateOneProject,
+              loadingProjects
+            }}
+          />
+        </Layout.Content>
+      </Layout>
+    )
 }
 
 Workspace.propTypes = {

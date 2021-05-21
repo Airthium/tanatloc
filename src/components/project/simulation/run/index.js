@@ -533,6 +533,7 @@ const Run = ({ simulation, swr }) => {
                 </Button>
                 <Button
                   disabled={!running}
+                  type="danger"
                   icon={<StopOutlined />}
                   onClick={onStop}
                 />

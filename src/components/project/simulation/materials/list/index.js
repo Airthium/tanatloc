@@ -91,7 +91,7 @@ List.propTypes = {
     scheme: PropTypes.shape({
       configuration: PropTypes.shape({
         materials: PropTypes.shape({
-          values: PropTypes.array.isRequired
+          values: PropTypes.array
         })
       })
     })

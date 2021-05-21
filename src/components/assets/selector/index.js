@@ -198,13 +198,7 @@ const Selector = ({ part, alreadySelected, updateSelected }) => {
                   key={index}
                   hoverable
                   style={{
-                    marginBottom: '7px',
-                    border:
-                      highlighted === element.uuid
-                        ? '2px solid #0096C7'
-                        : selected.includes(element.uuid)
-                        ? '2px solid #c73100'
-                        : '1px solid #d9d9d9'
+                    marginBottom: '7px'
                   }}
                   bodyStyle={{
                     padding: '10px',
@@ -217,6 +211,22 @@ const Selector = ({ part, alreadySelected, updateSelected }) => {
                   onClick={() => onSelect(element.uuid)}
                 >
                   <Space direction="" wrap={true} align="center">
+                    <div
+                      style={{
+                        position: 'absolute',
+                        top: '13px',
+                        left: '230px',
+                        width: '20px',
+                        height: '20px',
+                        borderRadius: '10px',
+                        backgroundColor:
+                          highlighted === element.uuid
+                            ? '#0096C7'
+                            : selected.includes(element.uuid)
+                            ? '#c73100'
+                            : 'transparent'
+                      }}
+                    />
                     {element.name}
                     {alreadySelected?.map((a) => {
                       if (a.selected.find((s) => s.uuid === element.uuid))

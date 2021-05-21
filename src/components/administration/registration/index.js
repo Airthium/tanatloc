@@ -1,7 +1,8 @@
 import { useEffect } from 'react'
-import { Button, Card, Checkbox, Form, InputNumber, Space, Spin } from 'antd'
+import { Button, Card, Checkbox, Form, InputNumber, Space } from 'antd'
 import { CheckOutlined } from '@ant-design/icons'
 
+import Loading from '@/components/loading'
 import { Error } from '@/components/assets/notification'
 
 import SystemAPI from '@/api/system'
@@ -74,60 +75,64 @@ const Registration = () => {
   /**
    * Render
    */
-  return loadingSystem ? (
-    <Spin />
-  ) : (
-    <Space direction="vertical">
-      <Card title="Signup">
-        <Checkbox checked={system?.allowsignup} onChange={onAllowSignup}>
-          Allow signup
-        </Checkbox>
-      </Card>
+  if (loadingSystem) return <Loading.Simple />
+  else
+    return (
+      <Space direction="vertical">
+        <Card title="Signup">
+          <Checkbox checked={system?.allowsignup} onChange={onAllowSignup}>
+            Allow signup
+          </Checkbox>
+        </Card>
 
-      <Card title="Password">
-        <Form {...layout} form={form} name="form" onFinish={onPasswordFinish}>
-          <Form.Item
-            label="Minimum number of characters"
-            name="min"
-            rules={[{ required: true, message: 'Please enter a value' }]}
-          >
-            <InputNumber min={0} max={64} />
-          </Form.Item>
-          <Form.Item
-            label="Maximum number of characters"
-            name="max"
-            rules={[{ required: true, message: 'Please enter a value' }]}
-          >
-            <InputNumber min={0} max={64} />
-          </Form.Item>
-          <Form.Item
-            {...tailLayout}
-            valuePropName="checked"
-            name="requireLetter"
-          >
-            <Checkbox>Require letter</Checkbox>
-          </Form.Item>
-          <Form.Item
-            {...tailLayout}
-            valuePropName="checked"
-            name="requireNumber"
-          >
-            <Checkbox>Require number</Checkbox>
-          </Form.Item>
-          <Form.Item
-            {...tailLayout}
-            valuePropName="checked"
-            name="requireSymbol"
-          >
-            <Checkbox>Require symbol</Checkbox>
-          </Form.Item>
-          <Form.Item {...tailLayout}>
-            <Button type="primary" icon={<CheckOutlined />} htmlType="submit" />
-          </Form.Item>
-        </Form>
-      </Card>
-    </Space>
-  )
+        <Card title="Password">
+          <Form {...layout} form={form} name="form" onFinish={onPasswordFinish}>
+            <Form.Item
+              label="Minimum number of characters"
+              name="min"
+              rules={[{ required: true, message: 'Please enter a value' }]}
+            >
+              <InputNumber min={0} max={64} />
+            </Form.Item>
+            <Form.Item
+              label="Maximum number of characters"
+              name="max"
+              rules={[{ required: true, message: 'Please enter a value' }]}
+            >
+              <InputNumber min={0} max={64} />
+            </Form.Item>
+            <Form.Item
+              {...tailLayout}
+              valuePropName="checked"
+              name="requireLetter"
+            >
+              <Checkbox>Require letter</Checkbox>
+            </Form.Item>
+            <Form.Item
+              {...tailLayout}
+              valuePropName="checked"
+              name="requireNumber"
+            >
+              <Checkbox>Require number</Checkbox>
+            </Form.Item>
+            <Form.Item
+              {...tailLayout}
+              valuePropName="checked"
+              name="requireSymbol"
+            >
+              <Checkbox>Require symbol</Checkbox>
+            </Form.Item>
+            <Form.Item {...tailLayout}>
+              <Button
+                type="primary"
+                icon={<CheckOutlined />}
+                htmlType="submit"
+              />
+            </Form.Item>
+          </Form>
+        </Card>
+      </Space>
+    )
 }
 
 export default Registration

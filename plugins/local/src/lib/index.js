@@ -280,7 +280,7 @@ const startProcess = (simulationPath, task, update) => {
     results.length = 0
     datas.length = 0
     interval = setIntervalAsync(
-      () => processOutput(simulationPath, task, update),
+      async () => processOutput(simulationPath, task, update),
       1000
     )
   }

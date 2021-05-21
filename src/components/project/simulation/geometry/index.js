@@ -312,7 +312,6 @@ const Geometry = ({ simulation, part, swr }) => {
             <Divider type="horizontal" />
 
             <DeleteDialog
-              title=""
               visible={deleteVisible}
               onCancel={() => setDeleteVisible(false)}
               onOk={onDelete}
@@ -341,7 +340,7 @@ Geometry.propTypes = {
       configuration: PropTypes.shape({
         geometry: PropTypes.shape({
           file: PropTypes.shape({
-            origin: PropTypes.string.isRequired,
+            glb: PropTypes.string.isRequired,
             originPath: PropTypes.string.isRequired
           })
         }).isRequired

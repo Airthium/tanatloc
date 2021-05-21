@@ -65,7 +65,7 @@ const Dialog = ({
 }
 
 Dialog.propTypes = {
-  title: PropTypes.string.isRequired,
+  title: PropTypes.string,
   visible: PropTypes.bool.isRequired,
   initialValues: PropTypes.object,
   onCancel: PropTypes.func.isRequired,

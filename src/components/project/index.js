@@ -14,6 +14,7 @@ import {
 
 import { Error } from '@/components/assets/notification'
 
+import Loading from '@/components/loading'
 import NotAuthorized from '@/components/notauthorized'
 
 import View from './view'
@@ -57,12 +58,16 @@ const Project = () => {
 
   // Data
   const [user, { loadingUser }] = UserAPI.useUser()
-  const [project, { reloadProject, mutateProject }] = ProjectAPI.useProject(
-    projectId || ''
-  )
+  const [project, { reloadProject, mutateProject, loadingProject }] =
+    ProjectAPI.useProject(projectId || '')
   const [
     simulations,
-    { addOneSimulation, delOneSimulation, mutateOneSimulation }
+    {
+      addOneSimulation,
+      delOneSimulation,
+      mutateOneSimulation,
+      loadingSimulations
+    }
   ] = SimulationAPI.useSimulations(project?.simulations)
 
   // Not logged -> go to login page
@@ -327,73 +332,75 @@ const Project = () => {
   /**
    * Render
    */
-  return project === 'Unauthorized' ? (
-    <NotAuthorized />
-  ) : (
-    <Layout hasSider={true}>
-      <Layout.Sider theme="light" className="Project-sider">
-        <Menu onClick={onMenuClick}>
-          <Menu.Item key={menuKeys.dashboard} icon={<ArrowLeftOutlined />}>
-            Dashboard
-          </Menu.Item>
-        </Menu>
-        <Typography.Title
-          className="Project-title"
-          level={4}
-          editable={{
-            onChange: handleTitle,
-            maxLength: 50
-          }}
-        >
-          {project.title}
-        </Typography.Title>
+  if (loadingUser || loadingProject || loadingSimulations)
+    return <Loading.Simple />
+  if (project === 'Unauthorized') return <NotAuthorized />
+  else
+    return (
+      <Layout hasSider={true}>
+        <Layout.Sider theme="light" className="Project-sider">
+          <Menu onClick={onMenuClick}>
+            <Menu.Item key={menuKeys.dashboard} icon={<ArrowLeftOutlined />}>
+              Dashboard
+            </Menu.Item>
+          </Menu>
+          <Typography.Title
+            className="Project-title"
+            level={4}
+            editable={{
+              onChange: handleTitle,
+              maxLength: 50
+            }}
+          >
+            {project.title}
+          </Typography.Title>
 
-        <Menu mode="inline" onClick={onMenuClick}>
-          <Menu.Item key={menuKeys.newSimulation} icon={<PlusOutlined />}>
-            New simulation
-          </Menu.Item>
-          {simulationsRender}
-        </Menu>
-      </Layout.Sider>
-      <Layout.Content className="no-scroll relative">
-        <Simulation.Selector
-          user={user}
-          visible={selectorVisible}
-          onOk={onSelectorOk}
-          onCancel={onSelectorCancel}
-        />
-        <Simulation
-          user={user}
-          simulation={currentSimulation}
-          type={currentType}
-          part={partSummary}
-          swr={{
-            reloadProject,
-            addOneSimulation,
-            delOneSimulation,
-            mutateOneSimulation
-          }}
-          onClose={onSimulationClose}
-        />
-        <View
-          project={{
-            id: project.id
-          }}
-          simulation={{
-            id: currentSimulation?.id,
-            part: currentSimulation?.scheme?.configuration?.part
-          }}
-          setPartSummary={setPartSummary}
-        />
-        <Data
-          simulation={{
-            id: currentSimulation?.id,
-            name: currentSimulation?.name
-          }}
-        />
-      </Layout.Content>
-    </Layout>
-  )
+          <Menu mode="inline" onClick={onMenuClick}>
+            <Menu.Item key={menuKeys.newSimulation} icon={<PlusOutlined />}>
+              New simulation
+            </Menu.Item>
+            {simulationsRender}
+          </Menu>
+        </Layout.Sider>
+        <Layout.Content className="no-scroll relative">
+          <Simulation.Selector
+            user={user}
+            visible={selectorVisible}
+            onOk={onSelectorOk}
+            onCancel={onSelectorCancel}
+          />
+          <Simulation
+            user={user}
+            simulation={currentSimulation}
+            type={currentType}
+            part={partSummary}
+            swr={{
+              reloadProject,
+              addOneSimulation,
+              delOneSimulation,
+              mutateOneSimulation
+            }}
+            onClose={onSimulationClose}
+          />
+          <View
+            project={{
+              id: project.id
+            }}
+            simulation={{
+              id: currentSimulation?.id,
+              part: currentSimulation?.scheme?.configuration?.part
+            }}
+            setPartSummary={setPartSummary}
+          />
+          <Data
+            simulation={{
+              id: currentSimulation?.id,
+              name: currentSimulation?.name
+            }}
+          />
+        </Layout.Content>
+      </Layout>
+    )
 }
 
 export default Project

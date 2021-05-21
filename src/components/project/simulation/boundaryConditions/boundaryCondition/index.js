@@ -25,7 +25,7 @@ const BoundaryCondition = ({
   const [types, setTypes] = useState([])
   const [alreadySelected, setAlreadySelected] = useState([])
   const [totalNumber, setTotalNumber] = useState(0)
-  const [current, setCurrent] = useState({})
+  const [current, setCurrent] = useState(boundaryCondition)
   const [disabled, setDisabled] = useState(true)
 
   // Types & already selected

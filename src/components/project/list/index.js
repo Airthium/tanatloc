@@ -1,8 +1,9 @@
 import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
-import { Avatar, Card, Divider, Empty, Space, Spin, Typography } from 'antd'
+import { Avatar, Card, Divider, Empty, Space, Typography } from 'antd'
 
+import Loading from '@/components/loading'
 import Share from '@/components/assets/share'
 
 import Edit from '../edit'
@@ -103,7 +104,7 @@ const ProjectList = ({
   /**
    * Render
    */
-  if (loading || swr.loadingProjects) return <Spin />
+  if (loading || swr.loadingProjects) return <Loading.Simple />
   else if (!list.length)
     return <Empty image="images/empty.svg" description={'No project found.'} />
   else

@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
-import { Layout } from 'antd'
-import { PlusCircleOutlined } from '@ant-design/icons'
+import { Layout, Space, Typography } from 'antd'
 
 import { AddButton } from '@/components/assets/button'
 import List from './list'
@@ -64,20 +63,33 @@ const Materials = ({ simulation, part, swr, setVisible }) => {
     dispatch(disable())
   }
 
+  /**
+   * Render
+   */
   return (
     <Layout>
       <Layout.Content>
-        <AddButton onAdd={onAdd}>Add material</AddButton>
-        <List simulation={simulation} swr={swr} onEdit={onEdit} />
-        <Material
-          visible={materialVisible}
-          simulation={simulation}
-          part={part}
-          materials={materials}
-          material={material}
-          swr={swr}
-          close={onClose}
-        />
+        <AddButton disabled={!part} onAdd={onAdd}>
+          Add material
+        </AddButton>
+        {part ? (
+          <>
+            <List simulation={simulation} swr={swr} onEdit={onEdit} />
+            <Material
+              visible={materialVisible}
+              simulation={simulation}
+              part={part}
+              materials={materials}
+              material={material}
+              swr={swr}
+              close={onClose}
+            />
+          </>
+        ) : (
+          <Space>
+            <Typography.Text>Please upload a geometry first</Typography.Text>
+          </Space>
+        )}
       </Layout.Content>
     </Layout>
   )
@@ -89,7 +101,7 @@ Materials.propTypes = {
     scheme: PropTypes.shape({
       configuration: PropTypes.shape({
         materials: PropTypes.shape({
-          values: PropTypes.array.isRequired
+          values: PropTypes.array
         })
       })
     })

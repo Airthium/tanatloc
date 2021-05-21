@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
-import { Layout } from 'antd'
+import { Layout, Space, Typography } from 'antd'
 
 import { AddButton } from '@/components/assets/button'
 import List from './list'
@@ -72,23 +72,33 @@ const BoundaryConditions = ({ simulation, part, swr, setVisible }) => {
   return (
     <Layout>
       <Layout.Content>
-        <AddButton onAdd={onAdd}>Add boundary condition</AddButton>
-        <List
-          simulation={simulation}
-          swr={{ mutateOneSimulation: swr.mutateOneSimulation }}
-          onEdit={onEdit}
-        />
-        <BoundaryCondition
-          visible={boundaryConditionVisible}
-          simulation={simulation}
-          part={part}
-          boundaryConditions={boundaryConditions}
-          boundaryCondition={boundaryCondition}
-          swr={{
-            mutateOneSimulation: swr.mutateOneSimulation
-          }}
-          close={onClose}
-        />
+        <AddButton disabled={!part} onAdd={onAdd}>
+          Add boundary condition
+        </AddButton>
+        {part ? (
+          <>
+            <List
+              simulation={simulation}
+              swr={{ mutateOneSimulation: swr.mutateOneSimulation }}
+              onEdit={onEdit}
+            />
+            <BoundaryCondition
+              visible={boundaryConditionVisible}
+              simulation={simulation}
+              part={part}
+              boundaryConditions={boundaryConditions}
+              boundaryCondition={boundaryCondition}
+              swr={{
+                mutateOneSimulation: swr.mutateOneSimulation
+              }}
+              close={onClose}
+            />
+          </>
+        ) : (
+          <Space>
+            <Typography.Text>Please upload a geometry first.</Typography.Text>
+          </Space>
+        )}
       </Layout.Content>
     </Layout>
   )
@@ -104,7 +114,7 @@ BoundaryConditions.propTypes = {
   }).isRequired,
   part: PropTypes.shape({
     uuid: PropTypes.string
-  }).isRequired,
+  }),
   swr: PropTypes.shape({
     mutateOneSimulation: PropTypes.func.isRequired
   }).isRequired,

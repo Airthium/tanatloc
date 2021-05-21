@@ -4,6 +4,30 @@ import { Card, Layout, Space, Spin } from 'antd'
 
 import Background from '@/components/background'
 
+const Simple = () => {
+  /**
+   * Render
+   */
+  return (
+    <Space
+      direction=""
+      style={{
+        height: '100%',
+        width: '100%',
+        justifyContent: 'center',
+        alignItems: 'center'
+      }}
+    >
+      <Card>
+        <Space direction="">
+          <Spin />
+          Loading, please wait...
+        </Space>
+      </Card>
+    </Space>
+  )
+}
+
 /**
  * Loading
  */
@@ -27,4 +51,5 @@ const Loading = () => {
   )
 }
 
+Loading.Simple = Simple
 export default Loading

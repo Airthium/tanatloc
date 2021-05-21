@@ -12,7 +12,7 @@ jest.mock(
 )
 
 jest.mock('react-redux', () => ({
-  useDispatch: () => () => {}
+  useDispatch: () => jest.fn()
 }))
 
 const mockEnable = jest.fn()
@@ -84,7 +84,6 @@ describe('components/project/simulation/materials', () => {
 
   it('effect', () => {
     wrapper.unmount()
-
     wrapper = mount(
       <Materials
         project={project}
@@ -95,5 +94,15 @@ describe('components/project/simulation/materials', () => {
     )
     expect(mockSetType).toHaveBeenCalledTimes(1)
     expect(mockSetPart).toHaveBeenCalledTimes(1)
+
+    // Without part
+    wrapper.unmount()
+    wrapper = mount(
+      <Materials
+        project={project}
+        simulation={simulation}
+        setVisible={setVisible}
+      />
+    )
   })
 })

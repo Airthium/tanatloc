@@ -95,7 +95,6 @@ describe('components/project/simulation/boundaryConditions', () => {
 
   it('effect', () => {
     wrapper.unmount()
-
     wrapper = mount(
       <BoundaryConditions
         simulation={simulation}
@@ -106,5 +105,15 @@ describe('components/project/simulation/boundaryConditions', () => {
     )
     expect(mockSetType).toHaveBeenCalledTimes(1)
     expect(mockSetPart).toHaveBeenCalledTimes(1)
+
+    // Without part
+    wrapper.unmount()
+    wrapper = mount(
+      <BoundaryConditions
+        simulation={simulation}
+        swr={swr}
+        setVisible={setVisible}
+      />
+    )
   })
 })

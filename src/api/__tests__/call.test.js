@@ -26,6 +26,9 @@ describe('api/call', () => {
     await Caller.fetcher('/route')
     expect(mockRoute).toBe('/route')
 
+    // With payload
+    await Caller.fetcher('/route', JSON.stringify({ payload: '' }))
+
     // Error
     mockOk.mockImplementation(() => false)
     try {

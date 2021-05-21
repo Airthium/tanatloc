@@ -1,10 +1,10 @@
 import app from '../app'
 
-jest.mock('http-errors', () => () => {})
+jest.mock('http-errors', () => jest.fn())
 jest.mock('express', () => ({
   __esModule: true,
   default: () => ({
-    disable: () => {},
+    disable: jest.fn(),
     use: jest.fn((callback) => {
       if (typeof callback === 'function') {
         if (callback.length === 3) callback({}, {}, jest.fn())
@@ -40,26 +40,34 @@ jest.mock('express', () => ({
   json: jest.fn(),
   urlencoded: jest.fn()
 }))
-jest.mock('cors', () => () => {})
+jest.mock('cors', () => jest.fn())
 
 jest.mock('@/route/login', () => ({
-  loginRoute: () => {}
+  loginRoute: jest.fn()
 }))
-jest.mock('@/route/logout', () => () => {})
-jest.mock('@/route/user', () => () => {})
-jest.mock('@/route/user/check', () => () => {})
-jest.mock('@/route/avatar', () => () => {})
-jest.mock('@/route/workspace', () => () => {})
-jest.mock('@/route/project', () => () => {})
-jest.mock('@/route/project/[id]', () => () => {})
-jest.mock('@/route/projects', () => () => {})
-jest.mock('@/route/simulation', () => () => {})
-jest.mock('@/route/simulation/[id]', () => () => {})
-jest.mock('@/route/simulation/[id]/run', () => () => {})
-jest.mock('@/route/simulations', () => () => {})
-jest.mock('@/route/part', () => () => {})
-jest.mock('@/route/file', () => () => {})
-jest.mock('@/route/plugin', () => () => {})
+jest.mock('@/route/avatar', () => jest.fn())
+jest.mock('@/route/download', () => jest.fn())
+jest.mock('@/route/file', () => jest.fn())
+jest.mock('@/route/group', () => jest.fn())
+jest.mock('@/route/groups', () => jest.fn())
+jest.mock('@/route/groups/[id]', () => jest.fn())
+jest.mock('@/route/organization', () => jest.fn())
+jest.mock('@/route/organizations', () => jest.fn())
+jest.mock('@/route/part', () => jest.fn())
+jest.mock('@/route/plugin', () => jest.fn())
+jest.mock('@/route/project', () => jest.fn())
+jest.mock('@/route/project/[id]', () => jest.fn())
+jest.mock('@/route/projects', () => jest.fn())
+jest.mock('@/route/simulation', () => jest.fn())
+jest.mock('@/route/simulation/[id]', () => jest.fn())
+jest.mock('@/route/simulation/[id]/run', () => jest.fn())
+jest.mock('@/route/simulations', () => jest.fn())
+jest.mock('@/route/system', () => jest.fn())
+jest.mock('@/route/user', () => jest.fn())
+jest.mock('@/route/user/check', () => jest.fn())
+jest.mock('@/route/users', () => jest.fn())
+jest.mock('@/route/workspace', () => jest.fn())
+jest.mock('@/route/logout', () => jest.fn())
 
 describe('server/app', () => {
   it('app', () => {

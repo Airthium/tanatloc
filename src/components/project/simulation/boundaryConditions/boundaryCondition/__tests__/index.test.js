@@ -67,14 +67,14 @@ describe('components/project/simulation/boundaryConditions/boundaryCondition', (
     expect(wrapper).toBeDefined()
   })
 
-  it('without boundaryCondition', () => {
+  it('without boundaryConditions', () => {
     wrapper.unmount()
     wrapper = mount(
       <BoundaryCondition
         visible={true}
         simulation={simulation}
         part={part}
-        boundaryConditions={boundaryConditions}
+        boundaryCondition={boundaryCondition}
         swr={swr}
         close={close}
       />

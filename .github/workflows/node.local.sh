@@ -22,6 +22,6 @@ yarn test | true
 rm -Rf .next
 yarn build
 
-# # Electron build
-# rm -Rf .next
-# yarn electron-build
+# Electron build
+rm -Rf .next
+yarn electron-build

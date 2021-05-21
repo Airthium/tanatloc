@@ -7453,10 +7453,10 @@ neo-async@^2.5.0, neo-async@^2.6.1:
   resolved "https://registry.yarnpkg.com/neo-async/-/neo-async-2.6.2.tgz#b4aafb93e3aeb2d8174ca53cf163ab7d7308305f"
   integrity sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw==
 
-next-transpile-modules@7.1.2:
-  version "7.1.2"
-  resolved "https://registry.yarnpkg.com/next-transpile-modules/-/next-transpile-modules-7.1.2.tgz#a58add6f9a6910e0c4ef8c1ecafd4a5f33959186"
-  integrity sha512-uKizsjRNB++vIcIyJ6zlf+SagsYsnrXecRtKl8mdlCbEl1Q1KlaV0Arb/dopWWWR29dnOlvCKiaCxODW79k1xg==
+next-transpile-modules@7.2.0:
+  version "7.2.0"
+  resolved "https://registry.yarnpkg.com/next-transpile-modules/-/next-transpile-modules-7.2.0.tgz#5100cbcd7740a038d4d5f35791a5b00b5ac80421"
+  integrity sha512-7kd3/MkqKWz4fZvrIugNQAUo2RUpA8tYY6dwCMgIoFkbo+i3Gm5h0gTieWfUj7eAV/EpO/pqp6DQy2AJqrRdqQ==
   dependencies:
     enhanced-resolve "^5.7.0"
     escalade "^3.1.1"

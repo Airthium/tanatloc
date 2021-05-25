@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
-import { Divider, Layout, Menu, Typography } from 'antd'
+import { Button, Divider, Layout, Menu, Typography } from 'antd'
 import { DashboardOutlined, LoginOutlined } from '@ant-design/icons'
 
 import Background from '@/components/background'
@@ -49,16 +49,6 @@ const Index = () => {
   }, [])
 
   /**
-   * On select
-   * @param {data} data { key }
-   */
-  const onSelect = ({ key }) => {
-    if (key === menuKeys.dashboard) handleDashboard()
-    if (key == menuKeys.signup) handleSignup()
-    if (key === menuKeys.login) handleLogin()
-  }
-
-  /**
    * Handle dashboard
    */
   const handleDashboard = () => {
@@ -87,20 +77,20 @@ const Index = () => {
       <Background />
       <Layout.Header className="Index-header">
         <img src="/images/logo.svg" />
-        <Menu onSelect={onSelect} selectedkeys={[]} mode="horizontal">
+        <Button.Group>
           {user ? (
-            <Menu.Item key={menuKeys.dashboard} icon={<DashboardOutlined />}>
+            <Button icon={<DashboardOutlined />} onClick={handleDashboard}>
               Dashboard
-            </Menu.Item>
+            </Button>
           ) : (
             <>
-              <Menu.Item key={menuKeys.signup}>Signup</Menu.Item>
-              <Menu.Item key={menuKeys.login} icon={<LoginOutlined />}>
+              <Button onClick={handleSignup}>Signup</Button>
+              <Button icon={<LoginOutlined />} onClick={handleLogin}>
                 Login
-              </Menu.Item>
+              </Button>
             </>
           )}
-        </Menu>
+        </Button.Group>
       </Layout.Header>
       <Divider className="Tanatloc-divider" />
       <Layout.Content>

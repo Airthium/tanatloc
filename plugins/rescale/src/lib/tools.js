@@ -518,7 +518,7 @@ const processResult = async (
         'Warning: Result converting process failed (' + convertError + ')'
       )
       task.warning +=
-        'Warning: Result converting process failed (' + convertError + ')'
+        'Warning: Result converting process failed (' + convertError + ')\n'
     } else {
       const results = convertData
         ?.trim()
@@ -543,7 +543,7 @@ const processResult = async (
   } catch (err) {
     console.warn('Warning: Unable to convert result file (' + err.message + ')')
     task.warning +=
-      'Warning: Unable to convert result file (' + err.message + ')'
+      'Warning: Unable to convert result file (' + err.message + ')\n'
   }
 }
 
@@ -608,7 +608,7 @@ const processData = async (
     existingDatas.push(dataFile)
   } catch (err) {
     console.warn('Warning: Unable to read data file (' + err.message + ')')
-    task.warning += 'Warning: Unable to read data file (' + err.message + ')'
+    task.warning += 'Warning: Unable to read data file (' + err.message + ')\n'
   }
 }
 

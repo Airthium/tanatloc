@@ -347,7 +347,9 @@ const processOutput = async (simulationPath, task, update) => {
 
           if (convertError) {
             task.warning +=
-              'Warning: Result converting process failed (' + convertError + ')'
+              'Warning: Result converting process failed (' +
+              convertError +
+              ')\n'
             update()
           } else {
             // Add to task
@@ -374,7 +376,7 @@ const processOutput = async (simulationPath, task, update) => {
         } catch (err) {
           console.error(err)
           task.warning +=
-            'Warning: Unable to convert result file (' + err.message + ')'
+            'Warning: Unable to convert result file (' + err.message + ')\n'
           update()
         }
       })
@@ -405,7 +407,7 @@ const processOutput = async (simulationPath, task, update) => {
           datas.push(line)
         } catch (err) {
           task.warning +=
-            'Warning: Unable to read data file (' + err.message + ')'
+            'Warning: Unable to read data file (' + err.message + ')\n'
           update()
         }
       })

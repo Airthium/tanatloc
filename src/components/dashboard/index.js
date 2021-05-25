@@ -173,21 +173,19 @@ const Dashboard = () => {
 
   /**
    * Menu selection
-   * @param {Object} data {item, key}
+   * @param {Object} data { keyPath }
    */
-  const onSelect = ({ item, key }) => {
-    const subMenuKey = item.props.subMenuKey.replace('-menu-', '')
+  const onSelect = ({ keyPath }) => {
+    const key = keyPath[0]
+    const subKey = keyPath[1]
 
     // In a submenu
-    if (
-      subMenuKey === menuItems.workspaces.key ||
-      subMenuKey === menuItems.shared.key
-    ) {
-      setCurrentWorkspace(key)
-      setCurrentKey(subMenuKey)
+    if (key === menuItems.workspaces.key || key === menuItems.shared.key) {
+      setCurrentWorkspace(subKey)
+      setCurrentKey(key)
       router.replace({
         pathname: '/dashboard',
-        query: { page: subMenuKey, workspaceId: key }
+        query: { page: key, workspaceId: subKey }
       })
     } else {
       if (key === menuItems.logout.key) onLogout()

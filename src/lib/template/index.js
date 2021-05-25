@@ -2,6 +2,7 @@
 
 import path from 'path'
 import ejs from 'ejs'
+import isElectron from 'is-electron'
 
 import Tools from '../tools'
 
@@ -17,7 +18,10 @@ const loadTemplates = async () => {
   await Promise.all(
     Object.keys(Templates).map(async (key) => {
       const content = await Tools.readFile(
-        path.join('./templates/', Templates[key])
+        path.join(
+          isElectron() ? '/resources/templates' : './templates/',
+          Templates[key]
+        )
       )
       const func = await ejs.compile(content.toString(), {
         root: './templates'
@@ -32,6 +36,7 @@ const loadTemplates = async () => {
       const plugin = PluginTemplates[key]
       await Promise.all(
         plugin.templates.map(async (template) => {
+          console.log(plugin.path)
           const content = await Tools.readFile(
             path.join(plugin.path, template.file)
           )

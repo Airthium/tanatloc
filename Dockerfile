@@ -136,9 +136,11 @@ COPY docker/package.json package.json
 COPY --from=builder ${INSTALL_PATH}/dist-install dist-install
 COPY --from=builder ${INSTALL_PATH}/modules modules
 COPY --from=builder ${INSTALL_PATH}/public public
+COPY --from=builder ${INSTALL_PATH}/node_modules/three/examples/js/libs/draco node_modules/three/examples/js/libs/draco
 COPY --from=builder ${INSTALL_PATH}/templates templates
 COPY --from=builder ${INSTALL_PATH}/plugins plugins
 COPY --from=builder ${INSTALL_PATH}/.next .next
+
 RUN yarn
 RUN yarn next telemetry disable
 

@@ -30,7 +30,8 @@ const freefem = async (path, script, callback) => {
         '-np',
         '1',
         script,
-        '-ns'
+        '-ns',
+        '> log'
       ])
     }
 

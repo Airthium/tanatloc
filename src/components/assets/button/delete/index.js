@@ -21,6 +21,7 @@ const DeleteButton = ({ disabled, loading, onDelete }) => {
     <>
       <DeleteDialog
         visible={visible}
+        loading={loading}
         onCancel={() => setVisible(false)}
         onOk={onDelete}
       >

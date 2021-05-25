@@ -1,4 +1,4 @@
-appId: com.tanatloc.nextron
+appId: com.tanatloc.app
 productName: Tanatloc
 copyright: Copyright © 2021 Airthium
 directories:
@@ -9,5 +9,5 @@ files:
     filter:
       - package.json
       - app
-      - '**/*.ejs'
+extraResources: ['templates/', 'plugins/denso/template/']
 publish: null

@@ -6,14 +6,14 @@ import { ArrowLeftOutlined } from '@ant-design/icons'
  * Go back
  * @param {Object} props Props
  */
-const GoBack = ({ onClick }) => {
+const GoBack = ({ children, onClick }) => {
   return (
     <Button
       icon={<ArrowLeftOutlined style={{ color: '#fad114' }} />}
       style={{ border: 'none' }}
       onClick={onClick}
     >
-      Go back
+      {children || 'Go back'}
     </Button>
   )
 }

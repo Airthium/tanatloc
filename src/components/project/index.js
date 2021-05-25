@@ -2,16 +2,17 @@
 
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
-import { Layout, Menu, Typography } from 'antd'
-import {
-  ArrowLeftOutlined,
+import { Button, Layout, Menu, Typography } from 'antd'
+import Icon, {
   CalculatorOutlined,
   CheckCircleOutlined,
   CloseCircleOutlined,
   ExclamationCircleOutlined,
   PlusOutlined
 } from '@ant-design/icons'
+import Geometries from '/public/icons/geometries'
 
+import { GoBack } from '@/components/assets/button'
 import { Error } from '@/components/assets/notification'
 
 import Loading from '@/components/loading'
@@ -30,6 +31,7 @@ import SimulationAPI from '@/api/simulation'
  */
 const menuKeys = {
   dashboard: 'dashboard',
+  geometries: 'geometries',
   newSimulation: 'new-simulation',
   simulation: 'simulation'
 }
@@ -177,9 +179,10 @@ const Project = () => {
    * On menu click
    * @param {Object} data Data { key }
    */
-  const onMenuClick = ({ key }) => {
-    if (key === menuKeys.dashboard) handleDashboard()
-    else if (key === menuKeys.newSimulation) addSimulation()
+  const onMenuClick = ({ key, keyPath }) => {
+    console.log(key)
+    console.log(keyPath)
+    if (keyPath[0] === menuKeys.geometries) console.log('geometries')
     else if (key.includes(menuKeys.simulation)) selectSimulation(key)
   }
 
@@ -338,27 +341,49 @@ const Project = () => {
   else
     return (
       <Layout hasSider={true}>
-        <Layout.Sider theme="light" className="Project-sider">
-          <Menu onClick={onMenuClick}>
-            <Menu.Item key={menuKeys.dashboard} icon={<ArrowLeftOutlined />}>
-              Dashboard
-            </Menu.Item>
-          </Menu>
-          <Typography.Title
-            className="Project-title"
-            level={4}
-            editable={{
-              onChange: handleTitle,
-              maxLength: 50
-            }}
-          >
-            {project.title}
-          </Typography.Title>
+        <Layout.Sider theme="light" className="Project-sider" width={256}>
+          <div className="logo">
+            <img src="/images/logo.svg" />
+          </div>
 
           <Menu mode="inline" onClick={onMenuClick}>
-            <Menu.Item key={menuKeys.newSimulation} icon={<PlusOutlined />}>
-              New simulation
+            <Menu.Item disabled={true} style={{ cursor: 'unset' }}>
+              <GoBack onClick={handleDashboard}>Return to dashboard</GoBack>
             </Menu.Item>
+
+            <Menu.Item disabled={true} style={{ cursor: 'unset' }}>
+              <Typography.Title
+                className="Project-title"
+                level={4}
+                editable={{
+                  onChange: handleTitle,
+                  maxLength: 50
+                }}
+              >
+                {project.title}
+              </Typography.Title>
+            </Menu.Item>
+
+            <Menu.Divider
+              style={{ backgroundColor: '#fad114', margin: '0 20px' }}
+            />
+
+            <Menu.SubMenu
+              key={menuKeys.geometries}
+              icon={
+                <Icon component={Geometries} style={{ maxWidth: '14px' }} />
+              }
+              title="Geometries"
+            >
+              <Menu.Item key="add" icon={<PlusOutlined />} />
+            </Menu.SubMenu>
+
+            <Menu.Item disabled={true} style={{ cursor: 'unset' }}>
+              <Button icon={<PlusOutlined />} onClick={addSimulation}>
+                New simulation
+              </Button>
+            </Menu.Item>
+
             {simulationsRender}
           </Menu>
         </Layout.Sider>

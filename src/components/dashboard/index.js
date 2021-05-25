@@ -289,7 +289,9 @@ const Dashboard = () => {
               </Menu.Item>
               <Menu.Item
                 key={menuItems.organizations.key}
-                icon={<Icon component={Usergroup} />}
+                icon={
+                  <Icon component={Usergroup} style={{ maxWidth: '14px' }} />
+                }
               >
                 {menuItems.organizations.label}
               </Menu.Item>

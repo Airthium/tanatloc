@@ -54,8 +54,8 @@ const ProjectList = ({
         const snapshot = project.avatar ? (
           <img
             src={project && Buffer.from(project.avatar).toString()}
-            width="140"
-            height="140"
+            width="135"
+            height="135"
           />
         ) : (
           <Empty image="images/empty.svg" description={'No preview yet.'} />
@@ -91,7 +91,7 @@ const ProjectList = ({
 
     setList(currentList)
     setLoading(false)
-  }, [JSON.stringify(projects)])
+  }, [JSON.stringify(projects), filter])
 
   // Open project
   const openProject = (project) => {
@@ -117,7 +117,7 @@ const ProjectList = ({
               title={project.titleRender}
               style={{
                 width: 200,
-                height: 300,
+                height: 310,
                 display: 'flex',
                 flexDirection: 'column'
               }}
@@ -131,7 +131,7 @@ const ProjectList = ({
                 style={{
                   cursor: 'pointer',
                   width: '100%',
-                  height: 150,
+                  height: 140,
                   display: 'flex',
                   justifyContent: 'center',
                   alignItems: 'center',
@@ -146,15 +146,21 @@ const ProjectList = ({
               <div
                 style={{
                   padding: '6px 0',
-                  display: 'flex',
-                  justifyContent: 'flex-start',
-                  alignItems: 'center',
-                  borderBottom: '1px solid #f0f0f0'
+                  display: 'grid',
+                  gridTemplateColumns: '10fr 1fr 20fr',
+                  gridTemplateRows: 'auto auto'
                 }}
               >
-                <Avatar.Group maxCount={5}>
+                <div>Admin:</div>
+                <div />
+                <div>Shared with:</div>
+                <Avatar.Group maxCount={5}>{project.ownersRender}</Avatar.Group>
+                <Divider
+                  type="vertical"
+                  style={{ height: '80%', borderColor: '#f0f0f0' }}
+                />
+                <Avatar.Group>
                   {project.ownersRender}
-                  {project.usersRender}
                   {project.groupsRender}
                 </Avatar.Group>
               </div>
@@ -181,7 +187,7 @@ const ProjectList = ({
                     delOneProject: swr.delOneProject
                   }}
                 />
-                <Divider type="vertical" />
+                <Divider type="vertical" style={{ borderColor: '#f0f0f0' }} />
                 <Share
                   disabled={!project?.owners?.find((o) => o.id === user?.id)}
                   project={{
@@ -191,7 +197,7 @@ const ProjectList = ({
                   organizations={organizations}
                   swr={{ mutateOneProject: swr.mutateOneProject }}
                 />
-                <Divider type="vertical" />
+                <Divider type="vertical" style={{ borderColor: '#f0f0f0' }} />
                 <Edit
                   disabled={!project?.owners?.find((o) => o.id === user?.id)}
                   project={{

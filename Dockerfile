@@ -41,6 +41,12 @@ RUN apt autoremove \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Build
+ARG SOURCE_BRANCH
+ENV SOURCE_BRANCH $SOURCE_BRANCH
+
+ARG SOURCE_COMMIT
+ENV SOURCE_COMMIT $SOURCE_COMMIT
+
 ARG DB_ADMIN
 ENV DB_ADMIN $DB_ADMIN
 

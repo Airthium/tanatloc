@@ -11,10 +11,6 @@ Project:
 Workspace:
 - archive
 
-Run:
-- Use file for logs (separate gmsh / Freefem for rescale) ?
-
-
 FIGMA: https://www.figma.com/file/zA0A5rq8U5zqBoTdqJwYzh/Cleaning_Tanatloc?node-id=92%3A0
 
 Global: Manage loading data at load or reload (F5, Ctrl+Alt+R)

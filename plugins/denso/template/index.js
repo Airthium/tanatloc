@@ -1,5 +1,5 @@
 const key = 'denso'
-const path = __dirname
+const path = './plugins/denso/template'
 
 const templates = [{ key: 'solderFilling', file: 'solderFilling.edp.ejs' }]
 

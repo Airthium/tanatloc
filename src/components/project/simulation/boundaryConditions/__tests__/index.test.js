@@ -93,27 +93,27 @@ describe('components/project/simulation/boundaryConditions', () => {
     expect(mockDisable).toHaveBeenCalledTimes(1)
   })
 
-  it('effect', () => {
-    wrapper.unmount()
-    wrapper = mount(
-      <BoundaryConditions
-        simulation={simulation}
-        part={part}
-        swr={swr}
-        setVisible={setVisible}
-      />
-    )
-    expect(mockSetType).toHaveBeenCalledTimes(1)
-    expect(mockSetPart).toHaveBeenCalledTimes(1)
+  // it('effect', () => {
+  //   wrapper.unmount()
+  //   wrapper = mount(
+  //     <BoundaryConditions
+  //       simulation={simulation}
+  //       part={part}
+  //       swr={swr}
+  //       setVisible={setVisible}
+  //     />
+  //   )
+  //   expect(mockSetType).toHaveBeenCalledTimes(1)
+  //   expect(mockSetPart).toHaveBeenCalledTimes(1)
 
-    // Without part
-    wrapper.unmount()
-    wrapper = mount(
-      <BoundaryConditions
-        simulation={simulation}
-        swr={swr}
-        setVisible={setVisible}
-      />
-    )
-  })
+  //   // Without part
+  //   wrapper.unmount()
+  //   wrapper = mount(
+  //     <BoundaryConditions
+  //       simulation={simulation}
+  //       swr={swr}
+  //       setVisible={setVisible}
+  //     />
+  //   )
+  // })
 })

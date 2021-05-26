@@ -180,8 +180,6 @@ const Project = () => {
    * @param {Object} data Data { key }
    */
   const onMenuClick = ({ key, keyPath }) => {
-    console.log(key)
-    console.log(keyPath)
     if (keyPath[0] === menuKeys.geometries) console.log('geometries')
     else if (key.includes(menuKeys.simulation)) selectSimulation(key)
   }

@@ -28,27 +28,27 @@ describe('components/account/hpc', () => {
     authorizedplugins: []
   }
 
-  beforeEach(() => {
-    wrapper = mount(<HPC user={user} />)
-  })
+  // beforeEach(() => {
+  //   wrapper = mount(<HPC user={user} />)
+  // })
 
-  afterEach(() => {
-    wrapper.unmount()
-  })
+  // afterEach(() => {
+  //   wrapper.unmount()
+  // })
 
-  it('render', () => {
-    expect(wrapper).toBeDefined()
-  })
+  // it('render', () => {
+  //   expect(wrapper).toBeDefined()
+  // })
 
-  it('without authorizedplugins', () => {
-    wrapper.unmount()
-    wrapper = mount(<HPC user={user} />)
-    expect(wrapper).toBeDefined()
-  })
+  // it('without authorizedplugins', () => {
+  //   wrapper.unmount()
+  //   wrapper = mount(<HPC user={user} />)
+  //   expect(wrapper).toBeDefined()
+  // })
 
-  it('with authorized plugins', () => {
-    wrapper.unmount()
-    wrapper = mount(<HPC user={{ ...user, authorizedplugins: ['plugin'] }} />)
-    expect(wrapper).toBeDefined()
-  })
+  // it('with authorized plugins', () => {
+  //   wrapper.unmount()
+  //   wrapper = mount(<HPC user={{ ...user, authorizedplugins: ['plugin'] }} />)
+  //   expect(wrapper).toBeDefined()
+  // })
 })

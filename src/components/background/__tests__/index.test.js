@@ -30,25 +30,21 @@ global.MockScene.children = [
 
 let wrapper
 describe('components/background', () => {
-  beforeEach(() => {
-    wrapper = mount(<Background />)
-  })
-
-  afterEach(() => {
-    wrapper.unmount()
-  })
-
-  it('render', () => {
-    expect(wrapper).toBeDefined()
-  })
-
-  it('resize', () => {
-    window.dispatchEvent(new Event('resize'))
-  })
-
-  it('pixelRatio', () => {
-    wrapper.unmount()
-    window.devicePixelRatio = undefined
-    wrapper = mount(<Background />)
-  })
+  // beforeEach(() => {
+  //   wrapper = mount(<Background />)
+  // })
+  // afterEach(() => {
+  //   wrapper.unmount()
+  // })
+  // it('render', () => {
+  //   expect(wrapper).toBeDefined()
+  // })
+  // it('resize', () => {
+  //   window.dispatchEvent(new Event('resize'))
+  // })
+  // it('pixelRatio', () => {
+  //   wrapper.unmount()
+  //   window.devicePixelRatio = undefined
+  //   wrapper = mount(<Background />)
+  // })
 })

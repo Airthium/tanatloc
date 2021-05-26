@@ -4,7 +4,7 @@ describe('plugins/denso/template', () => {
   it('exists', () => {
     expect(Template).toEqual({
       key: 'denso',
-      path: process.cwd() + '/plugins/denso/template',
+      path: './plugins/denso/template',
       templates: [
         {
           key: 'solderFilling',

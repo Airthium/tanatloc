@@ -93,9 +93,9 @@ describe('components/assets/formula', () => {
       })
   })
 
-  it('effect', () => {
-    wrapper.unmount()
+  // it('effect', () => {
+  //   wrapper.unmount()
 
-    wrapper = mount(<Formula value="value" onChange={() => {}} />)
-  })
+  //   wrapper = mount(<Formula value="value" onChange={() => {}} />)
+  // })
 })

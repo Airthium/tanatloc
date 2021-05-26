@@ -78,15 +78,15 @@ describe('components/administration', () => {
     wrapper = shallow(<Administration />)
   })
 
-  it('effect', () => {
-    wrapper.unmount()
-    wrapper = mount(<Administration />)
-    expect(wrapper).toBeDefined()
+  // it('effect', () => {
+  //   wrapper.unmount()
+  //   wrapper = mount(<Administration />)
+  //   expect(wrapper).toBeDefined()
 
-    // With error
-    wrapper.unmount()
-    mockErrorUser.mockImplementation(() => ({ message: 'Error' }))
-    wrapper = mount(<Administration />)
-    expect(mockError).toHaveBeenCalledTimes(1)
-  })
+  //   // With error
+  //   wrapper.unmount()
+  //   mockErrorUser.mockImplementation(() => ({ message: 'Error' }))
+  //   wrapper = mount(<Administration />)
+  //   expect(mockError).toHaveBeenCalledTimes(1)
+  // })
 })

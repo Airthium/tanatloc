@@ -34,28 +34,28 @@ describe('components/account/hpc/list', () => {
     expect(wrapper).toBeDefined()
   })
 
-  it('mount', () => {
-    wrapper.unmount()
-    wrapper = mount(
-      <List
-        plugin={plugin}
-        plugins={[
-          {},
-          {
-            uuid: 'uuid',
-            key: 'key',
-            configuration: {
-              name: {
-                value: 'name'
-              },
-              password: { type: 'password', value: 'password' },
-              item: { value: 'item' }
-            }
-          }
-        ]}
-        swr={swr}
-      />
-    )
-    expect(wrapper).toBeDefined()
-  })
+  // it('mount', () => {
+  //   wrapper.unmount()
+  //   wrapper = mount(
+  //     <List
+  //       plugin={plugin}
+  //       plugins={[
+  //         {},
+  //         {
+  //           uuid: 'uuid',
+  //           key: 'key',
+  //           configuration: {
+  //             name: {
+  //               value: 'name'
+  //             },
+  //             password: { type: 'password', value: 'password' },
+  //             item: { value: 'item' }
+  //           }
+  //         }
+  //       ]}
+  //       swr={swr}
+  //     />
+  //   )
+  //   expect(wrapper).toBeDefined()
+  // })
 })

@@ -69,13 +69,13 @@ describe('components/assets/input/emailsinput', () => {
     expect(wrapper.find('Tag').length).toBe(0)
   })
 
-  it('effect', () => {
-    // Without values
-    wrapper.unmount()
-    wrapper = mount(<EmailsInput onChange={onChange} />)
+  // it('effect', () => {
+  //   // Without values
+  //   wrapper.unmount()
+  //   wrapper = mount(<EmailsInput onChange={onChange} />)
 
-    // With values
-    wrapper.unmount()
-    wrapper = mount(<EmailsInput values={[]} onChange={onChange} />)
-  })
+  //   // With values
+  //   wrapper.unmount()
+  //   wrapper = mount(<EmailsInput values={[]} onChange={onChange} />)
+  // })
 })

@@ -76,22 +76,22 @@ describe('components/administration/groups', () => {
     columns[2].render(null, [{}])
   })
 
-  it('effect', () => {
-    wrapper.unmount()
-    wrapper = mount(
-      <Groups
-        users={[
-          { id: 'id1', firstname: 'firstname' },
-          { id: 'id2', email: 'email' }
-        ]}
-      />
-    )
-    expect(wrapper).toBeDefined()
+  // it('effect', () => {
+  //   wrapper.unmount()
+  //   wrapper = mount(
+  //     <Groups
+  //       users={[
+  //         { id: 'id1', firstname: 'firstname' },
+  //         { id: 'id2', email: 'email' }
+  //       ]}
+  //     />
+  //   )
+  //   expect(wrapper).toBeDefined()
 
-    // Error
-    wrapper.unmount()
-    mockErrorGroups.mockImplementation(() => ({ message: 'Error' }))
-    wrapper = mount(<Groups users={users} />)
-    expect(mockError).toHaveBeenCalledTimes(2)
-  })
+  //   // Error
+  //   wrapper.unmount()
+  //   mockErrorGroups.mockImplementation(() => ({ message: 'Error' }))
+  //   wrapper = mount(<Groups users={users} />)
+  //   expect(mockError).toHaveBeenCalledTimes(2)
+  // })
 })

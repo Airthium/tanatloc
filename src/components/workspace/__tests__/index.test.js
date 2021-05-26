@@ -184,33 +184,33 @@ describe('components/workspace', () => {
     expect(wrapper.find('.Workspace-share').length).toBe(1)
   })
 
-  it('effect', () => {
-    wrapper.unmount()
-    wrapper = mount(
-      <Workspace
-        loading={loading}
-        user={user}
-        workspace={workspace}
-        organizations={organizations}
-        swr={swr}
-      />
-    )
-    expect(wrapper).toBeDefined()
+  // it('effect', () => {
+  //   wrapper.unmount()
+  //   wrapper = mount(
+  //     <Workspace
+  //       loading={loading}
+  //       user={user}
+  //       workspace={workspace}
+  //       organizations={organizations}
+  //       swr={swr}
+  //     />
+  //   )
+  //   expect(wrapper).toBeDefined()
 
-    // With error
-    wrapper.unmount()
-    mockErrorProjects.mockImplementation(() => ({ message: 'Error' }))
-    wrapper = mount(
-      <Workspace
-        loading={loading}
-        user={user}
-        workspace={workspace}
-        organizations={organizations}
-        swr={swr}
-      />
-    )
-    expect(mockError).toHaveBeenCalledTimes(1)
-  })
+  //   // With error
+  //   wrapper.unmount()
+  //   mockErrorProjects.mockImplementation(() => ({ message: 'Error' }))
+  //   wrapper = mount(
+  //     <Workspace
+  //       loading={loading}
+  //       user={user}
+  //       workspace={workspace}
+  //       organizations={organizations}
+  //       swr={swr}
+  //     />
+  //   )
+  //   expect(mockError).toHaveBeenCalledTimes(1)
+  // })
 
   it('propTypes', () => {
     let res

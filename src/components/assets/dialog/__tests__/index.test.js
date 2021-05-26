@@ -93,34 +93,34 @@ describe('components/assets/dialog', () => {
     await wrapper.find('Modal').props().onOk()
   })
 
-  it('effect', () => {
-    wrapper.unmount()
-    wrapper = mount(
-      <Dialog
-        title="title"
-        visible={false}
-        onCancel={mockOnCancel}
-        onOk={mockOnOk}
-        loading={false}
-      >
-        Test
-      </Dialog>
-    )
-    expect(wrapper).toBeDefined()
+  // it('effect', () => {
+  //   wrapper.unmount()
+  //   wrapper = mount(
+  //     <Dialog
+  //       title="title"
+  //       visible={false}
+  //       onCancel={mockOnCancel}
+  //       onOk={mockOnOk}
+  //       loading={false}
+  //     >
+  //       Test
+  //     </Dialog>
+  //   )
+  //   expect(wrapper).toBeDefined()
 
-    wrapper.unmount()
-    wrapper = mount(
-      <Dialog
-        title="title"
-        visible={true}
-        initialValues={{}}
-        onCancel={mockOnCancel}
-        onOk={mockOnOk}
-        loading={false}
-      >
-        Test
-      </Dialog>
-    )
-    expect(wrapper).toBeDefined()
-  })
+  //   wrapper.unmount()
+  //   wrapper = mount(
+  //     <Dialog
+  //       title="title"
+  //       visible={true}
+  //       initialValues={{}}
+  //       onCancel={mockOnCancel}
+  //       onOk={mockOnOk}
+  //       loading={false}
+  //     >
+  //       Test
+  //     </Dialog>
+  //   )
+  //   expect(wrapper).toBeDefined()
+  // })
 })

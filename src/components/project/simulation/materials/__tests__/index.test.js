@@ -82,27 +82,27 @@ describe('components/project/simulation/materials', () => {
     expect(mockDisable).toHaveBeenCalledTimes(1)
   })
 
-  it('effect', () => {
-    wrapper.unmount()
-    wrapper = mount(
-      <Materials
-        project={project}
-        simulation={simulation}
-        part={part}
-        setVisible={setVisible}
-      />
-    )
-    expect(mockSetType).toHaveBeenCalledTimes(1)
-    expect(mockSetPart).toHaveBeenCalledTimes(1)
+  // it('effect', () => {
+  //   wrapper.unmount()
+  //   wrapper = mount(
+  //     <Materials
+  //       project={project}
+  //       simulation={simulation}
+  //       part={part}
+  //       setVisible={setVisible}
+  //     />
+  //   )
+  //   expect(mockSetType).toHaveBeenCalledTimes(1)
+  //   expect(mockSetPart).toHaveBeenCalledTimes(1)
 
-    // Without part
-    wrapper.unmount()
-    wrapper = mount(
-      <Materials
-        project={project}
-        simulation={simulation}
-        setVisible={setVisible}
-      />
-    )
-  })
+  //   // Without part
+  //   wrapper.unmount()
+  //   wrapper = mount(
+  //     <Materials
+  //       project={project}
+  //       simulation={simulation}
+  //       setVisible={setVisible}
+  //     />
+  //   )
+  // })
 })

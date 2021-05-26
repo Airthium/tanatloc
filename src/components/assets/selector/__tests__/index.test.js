@@ -123,70 +123,70 @@ describe('components/assets/selector', () => {
     expect(mockUnselect).toHaveBeenCalledTimes(1)
   })
 
-  it('onColorFilter', () => {
-    wrapper.unmount()
-    wrapper = mount(<Selector part={part} updateSelected={updateSelected} />)
-    act(() => wrapper.find('Button').at(0).props().onClick())
-    wrapper.update()
+  // it('onColorFilter', () => {
+  //   wrapper.unmount()
+  //   wrapper = mount(<Selector part={part} updateSelected={updateSelected} />)
+  //   act(() => wrapper.find('Button').at(0).props().onClick())
+  //   wrapper.update()
 
-    act(() => wrapper.find('Button').at(1).props().onClick())
-    wrapper.update()
-  })
+  //   act(() => wrapper.find('Button').at(1).props().onClick())
+  //   wrapper.update()
+  // })
 
-  it('selectAll', () => {
-    wrapper.unmount()
-    wrapper = mount(<Selector part={part} updateSelected={updateSelected} />)
+  // it('selectAll', () => {
+  //   wrapper.unmount()
+  //   wrapper = mount(<Selector part={part} updateSelected={updateSelected} />)
 
-    act(() => wrapper.find('Button').at(3).props().onClick())
-    wrapper.update()
+  //   act(() => wrapper.find('Button').at(3).props().onClick())
+  //   wrapper.update()
 
-    act(() => wrapper.find('Button').at(1).props().onClick())
-    wrapper.update()
+  //   act(() => wrapper.find('Button').at(1).props().onClick())
+  //   wrapper.update()
 
-    act(() => wrapper.find('Button').at(3).props().onClick())
-    wrapper.update()
-  })
+  //   act(() => wrapper.find('Button').at(3).props().onClick())
+  //   wrapper.update()
+  // })
 
-  it('unselectAll', () => {
-    wrapper.unmount()
-    wrapper = mount(<Selector part={part} updateSelected={updateSelected} />)
+  // it('unselectAll', () => {
+  //   wrapper.unmount()
+  //   wrapper = mount(<Selector part={part} updateSelected={updateSelected} />)
 
-    act(() => wrapper.find('Button').at(4).props().onClick())
-    wrapper.update()
+  //   act(() => wrapper.find('Button').at(4).props().onClick())
+  //   wrapper.update()
 
-    act(() => wrapper.find('Button').at(1).props().onClick())
-    wrapper.update()
+  //   act(() => wrapper.find('Button').at(1).props().onClick())
+  //   wrapper.update()
 
-    act(() => wrapper.find('Button').at(4).props().onClick())
-    wrapper.update()
-  })
+  //   act(() => wrapper.find('Button').at(4).props().onClick())
+  //   wrapper.update()
+  // })
 
-  it('selectSwap', () => {
-    wrapper.unmount()
-    wrapper = mount(<Selector part={part} updateSelected={updateSelected} />)
+  // it('selectSwap', () => {
+  //   wrapper.unmount()
+  //   wrapper = mount(<Selector part={part} updateSelected={updateSelected} />)
 
-    act(() => wrapper.find('Button').at(5).props().onClick())
-    wrapper.update()
+  //   act(() => wrapper.find('Button').at(5).props().onClick())
+  //   wrapper.update()
 
-    act(() => wrapper.find('Button').at(1).props().onClick())
-    wrapper.update()
+  //   act(() => wrapper.find('Button').at(1).props().onClick())
+  //   wrapper.update()
 
-    act(() => wrapper.find('Button').at(5).props().onClick())
-    wrapper.update()
+  //   act(() => wrapper.find('Button').at(5).props().onClick())
+  //   wrapper.update()
 
-    wrapper.unmount()
-    mockSelected.mockImplementation(() => ['uuid'])
-    wrapper = mount(<Selector part={part} updateSelected={updateSelected} />)
+  //   wrapper.unmount()
+  //   mockSelected.mockImplementation(() => ['uuid'])
+  //   wrapper = mount(<Selector part={part} updateSelected={updateSelected} />)
 
-    act(() => wrapper.find('Button').at(5).props().onClick())
-    wrapper.update()
+  //   act(() => wrapper.find('Button').at(5).props().onClick())
+  //   wrapper.update()
 
-    act(() => wrapper.find('Button').at(1).props().onClick())
-    wrapper.update()
+  //   act(() => wrapper.find('Button').at(1).props().onClick())
+  //   wrapper.update()
 
-    act(() => wrapper.find('Button').at(5).props().onClick())
-    wrapper.update()
-  })
+  //   act(() => wrapper.find('Button').at(5).props().onClick())
+  //   wrapper.update()
+  // })
 
   it('face highlighted', () => {
     wrapper.unmount()

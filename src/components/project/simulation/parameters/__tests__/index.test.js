@@ -75,21 +75,21 @@ describe('components/project/simulation/parameters', () => {
     wrapper.find('ForwardRef(InternalSelect)').props().onChange()
   })
 
-  it('effect', () => {
-    wrapper.unmount()
+  // it('effect', () => {
+  //   wrapper.unmount()
 
-    wrapper = mount(<Parameters simulation={simulation} swr={swr} />)
-    expect(mockUpdate).toHaveBeenCalledTimes(1)
+  //   wrapper = mount(<Parameters simulation={simulation} swr={swr} />)
+  //   expect(mockUpdate).toHaveBeenCalledTimes(1)
 
-    // Without value
-    act(() => wrapper.find('Formula').props().onValueChange())
-    expect(mockUpdate).toHaveBeenCalledTimes(2)
+  //   // Without value
+  //   act(() => wrapper.find('Formula').props().onValueChange())
+  //   expect(mockUpdate).toHaveBeenCalledTimes(2)
 
-    // Error
-    mockUpdate.mockImplementation(() => {
-      throw new Error()
-    })
-    act(() => wrapper.find('Formula').props().onValueChange('value'))
-    expect(mockUpdate).toHaveBeenCalledTimes(3)
-  })
+  //   // Error
+  //   mockUpdate.mockImplementation(() => {
+  //     throw new Error()
+  //   })
+  //   act(() => wrapper.find('Formula').props().onValueChange('value'))
+  //   expect(mockUpdate).toHaveBeenCalledTimes(3)
+  // })
 })

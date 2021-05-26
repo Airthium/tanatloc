@@ -125,259 +125,259 @@ describe('components/project/simulation/geometry', () => {
     expect(mockError).toHaveBeenCalledTimes(1)
   })
 
-  it('effect', () => {
-    wrapper.unmount()
-    wrapper = mount(<Geometry simulation={simulation} part={part} swr={swr} />)
-    expect(wrapper).toBeDefined()
+  // it('effect', () => {
+  //   wrapper.unmount()
+  //   wrapper = mount(<Geometry simulation={simulation} part={part} swr={swr} />)
+  //   expect(wrapper).toBeDefined()
 
-    // With file
-    wrapper.unmount()
-    wrapper = mount(
-      <Geometry
-        simulation={{
-          ...simulation,
-          scheme: {
-            ...simulation.scheme,
-            configuration: {
-              ...simulation.scheme.configuration,
-              geometry: {
-                file: {
-                  glb: 'glb',
-                  originPath: 'originPath'
-                }
-              }
-            }
-          }
-        }}
-        part={part}
-        swr={swr}
-      />
-    )
-    expect(wrapper).toBeDefined()
-  })
+  //   // With file
+  //   wrapper.unmount()
+  //   wrapper = mount(
+  //     <Geometry
+  //       simulation={{
+  //         ...simulation,
+  //         scheme: {
+  //           ...simulation.scheme,
+  //           configuration: {
+  //             ...simulation.scheme.configuration,
+  //             geometry: {
+  //               file: {
+  //                 glb: 'glb',
+  //                 originPath: 'originPath'
+  //               }
+  //             }
+  //           }
+  //         }
+  //       }}
+  //       part={part}
+  //       swr={swr}
+  //     />
+  //   )
+  //   expect(wrapper).toBeDefined()
+  // })
 
-  it('setDeleteVisible', () => {
-    // Need file
-    wrapper.unmount()
-    wrapper = mount(
-      <Geometry
-        simulation={{
-          ...simulation,
-          scheme: {
-            ...simulation.scheme,
-            configuration: {
-              ...simulation.scheme.configuration,
-              geometry: {
-                file: {
-                  glb: 'glb',
-                  originPath: 'originPath'
-                }
-              }
-            }
-          }
-        }}
-        part={part}
-        swr={swr}
-      />
-    )
+  // it('setDeleteVisible', () => {
+  //   // Need file
+  //   wrapper.unmount()
+  //   wrapper = mount(
+  //     <Geometry
+  //       simulation={{
+  //         ...simulation,
+  //         scheme: {
+  //           ...simulation.scheme,
+  //           configuration: {
+  //             ...simulation.scheme.configuration,
+  //             geometry: {
+  //               file: {
+  //                 glb: 'glb',
+  //                 originPath: 'originPath'
+  //               }
+  //             }
+  //           }
+  //         }
+  //       }}
+  //       part={part}
+  //       swr={swr}
+  //     />
+  //   )
 
-    // Open
-    act(() => wrapper.find('Button').at(1).props().onClick())
+  //   // Open
+  //   act(() => wrapper.find('Button').at(1).props().onClick())
 
-    // Close
-    act(() => wrapper.find('DeleteDialog').props().onCancel())
-  })
+  //   // Close
+  //   act(() => wrapper.find('DeleteDialog').props().onCancel())
+  // })
 
-  it('onDelete', async () => {
-    // Need file
-    wrapper.unmount()
-    wrapper = mount(
-      <Geometry
-        simulation={{
-          ...simulation,
-          scheme: {
-            ...simulation.scheme,
-            configuration: {
-              ...simulation.scheme.configuration,
-              geometry: {
-                file: {
-                  glb: 'glb',
-                  originPath: 'originPath'
-                }
-              }
-            }
-          }
-        }}
-        part={part}
-        swr={swr}
-      />
-    )
+  // it('onDelete', async () => {
+  //   // Need file
+  //   wrapper.unmount()
+  //   wrapper = mount(
+  //     <Geometry
+  //       simulation={{
+  //         ...simulation,
+  //         scheme: {
+  //           ...simulation.scheme,
+  //           configuration: {
+  //             ...simulation.scheme.configuration,
+  //             geometry: {
+  //               file: {
+  //                 glb: 'glb',
+  //                 originPath: 'originPath'
+  //               }
+  //             }
+  //           }
+  //         }
+  //       }}
+  //       part={part}
+  //       swr={swr}
+  //     />
+  //   )
 
-    // Normal
-    await act(async () => await wrapper.find('DeleteDialog').props().onOk())
-    expect(mockUpdate).toHaveBeenCalledTimes(1)
-    expect(mutateOneSimulation).toHaveBeenCalledTimes(1)
-    expect(mockError).toHaveBeenCalledTimes(0)
+  //   // Normal
+  //   await act(async () => await wrapper.find('DeleteDialog').props().onOk())
+  //   expect(mockUpdate).toHaveBeenCalledTimes(1)
+  //   expect(mutateOneSimulation).toHaveBeenCalledTimes(1)
+  //   expect(mockError).toHaveBeenCalledTimes(0)
 
-    // Error
-    mockUpdate.mockImplementation(() => {
-      throw new Error()
-    })
-    await act(async () => await wrapper.find('DeleteDialog').props().onOk())
-    expect(mockUpdate).toHaveBeenCalledTimes(2)
-    expect(mutateOneSimulation).toHaveBeenCalledTimes(1)
-    expect(mockError).toHaveBeenCalledTimes(1)
-  })
+  //   // Error
+  //   mockUpdate.mockImplementation(() => {
+  //     throw new Error()
+  //   })
+  //   await act(async () => await wrapper.find('DeleteDialog').props().onOk())
+  //   expect(mockUpdate).toHaveBeenCalledTimes(2)
+  //   expect(mutateOneSimulation).toHaveBeenCalledTimes(1)
+  //   expect(mockError).toHaveBeenCalledTimes(1)
+  // })
 
-  it('onDownload', async () => {
-    // Need file
-    wrapper.unmount()
-    wrapper = mount(
-      <Geometry
-        simulation={{
-          ...simulation,
-          scheme: {
-            ...simulation.scheme,
-            configuration: {
-              ...simulation.scheme.configuration,
-              geometry: {
-                file: {
-                  glb: 'glb',
-                  originPath: 'originPath'
-                }
-              }
-            }
-          }
-        }}
-        part={part}
-        swr={swr}
-      />
-    )
+  // it('onDownload', async () => {
+  //   // Need file
+  //   wrapper.unmount()
+  //   wrapper = mount(
+  //     <Geometry
+  //       simulation={{
+  //         ...simulation,
+  //         scheme: {
+  //           ...simulation.scheme,
+  //           configuration: {
+  //             ...simulation.scheme.configuration,
+  //             geometry: {
+  //               file: {
+  //                 glb: 'glb',
+  //                 originPath: 'originPath'
+  //               }
+  //             }
+  //           }
+  //         }
+  //       }}
+  //       part={part}
+  //       swr={swr}
+  //     />
+  //   )
 
-    // Normal
-    mockGet.mockImplementation(() => ({
-      buffer: ['buffer']
-    }))
-    window.URL.createObjectURL = () => 'url'
-    await act(async () => await wrapper.find('Button').at(0).props().onClick())
-    expect(mockGet).toHaveBeenCalledTimes(1)
-    expect(mockError).toHaveBeenCalledTimes(0)
+  //   // Normal
+  //   mockGet.mockImplementation(() => ({
+  //     buffer: ['buffer']
+  //   }))
+  //   window.URL.createObjectURL = () => 'url'
+  //   await act(async () => await wrapper.find('Button').at(0).props().onClick())
+  //   expect(mockGet).toHaveBeenCalledTimes(1)
+  //   expect(mockError).toHaveBeenCalledTimes(0)
 
-    // Error
-    mockGet.mockImplementation(() => {
-      throw new Error()
-    })
-    await act(async () => await wrapper.find('Button').at(0).props().onClick())
-    expect(mockGet).toHaveBeenCalledTimes(2)
-    expect(mockError).toHaveBeenCalledTimes(1)
-  })
+  //   // Error
+  //   mockGet.mockImplementation(() => {
+  //     throw new Error()
+  //   })
+  //   await act(async () => await wrapper.find('Button').at(0).props().onClick())
+  //   expect(mockGet).toHaveBeenCalledTimes(2)
+  //   expect(mockError).toHaveBeenCalledTimes(1)
+  // })
 
-  it('with part', () => {
-    wrapper.unmount()
-    wrapper = mount(
-      <Geometry
-        simulation={{
-          ...simulation,
-          scheme: {
-            ...simulation.scheme,
-            configuration: {
-              ...simulation.scheme.configuration,
-              geometry: {
-                file: {
-                  glb: 'glb',
-                  originPath: 'originPath'
-                }
-              }
-            }
-          }
-        }}
-        part={{}}
-        swr={swr}
-      />
-    )
-    expect(wrapper).toBeDefined()
+  // it('with part', () => {
+  //   wrapper.unmount()
+  //   wrapper = mount(
+  //     <Geometry
+  //       simulation={{
+  //         ...simulation,
+  //         scheme: {
+  //           ...simulation.scheme,
+  //           configuration: {
+  //             ...simulation.scheme.configuration,
+  //             geometry: {
+  //               file: {
+  //                 glb: 'glb',
+  //                 originPath: 'originPath'
+  //               }
+  //             }
+  //           }
+  //         }
+  //       }}
+  //       part={{}}
+  //       swr={swr}
+  //     />
+  //   )
+  //   expect(wrapper).toBeDefined()
 
-    wrapper.unmount()
-    wrapper = mount(
-      <Geometry
-        simulation={{
-          ...simulation,
-          scheme: {
-            ...simulation.scheme,
-            configuration: {
-              ...simulation.scheme.configuration,
-              geometry: {
-                file: {
-                  glb: 'glb',
-                  originPath: 'originPath'
-                }
-              }
-            }
-          }
-        }}
-        part={{
-          solids: [{}],
-          faces: [{}],
-          edges: [{}]
-        }}
-        swr={swr}
-      />
-    )
-    expect(wrapper).toBeDefined()
+  //   wrapper.unmount()
+  //   wrapper = mount(
+  //     <Geometry
+  //       simulation={{
+  //         ...simulation,
+  //         scheme: {
+  //           ...simulation.scheme,
+  //           configuration: {
+  //             ...simulation.scheme.configuration,
+  //             geometry: {
+  //               file: {
+  //                 glb: 'glb',
+  //                 originPath: 'originPath'
+  //               }
+  //             }
+  //           }
+  //         }
+  //       }}
+  //       part={{
+  //         solids: [{}],
+  //         faces: [{}],
+  //         edges: [{}]
+  //       }}
+  //       swr={swr}
+  //     />
+  //   )
+  //   expect(wrapper).toBeDefined()
 
-    wrapper.unmount()
-    wrapper = mount(
-      <Geometry
-        simulation={{
-          ...simulation,
-          scheme: {
-            ...simulation.scheme,
-            configuration: {
-              ...simulation.scheme.configuration,
-              geometry: {
-                file: {
-                  glb: 'glb',
-                  originPath: 'originPath'
-                }
-              }
-            }
-          }
-        }}
-        part={{
-          solids: [{}],
-          faces: [{}],
-          edges: [{}]
-        }}
-        swr={swr}
-      />
-    )
-    expect(wrapper).toBeDefined()
+  //   wrapper.unmount()
+  //   wrapper = mount(
+  //     <Geometry
+  //       simulation={{
+  //         ...simulation,
+  //         scheme: {
+  //           ...simulation.scheme,
+  //           configuration: {
+  //             ...simulation.scheme.configuration,
+  //             geometry: {
+  //               file: {
+  //                 glb: 'glb',
+  //                 originPath: 'originPath'
+  //               }
+  //             }
+  //           }
+  //         }
+  //       }}
+  //       part={{
+  //         solids: [{}],
+  //         faces: [{}],
+  //         edges: [{}]
+  //       }}
+  //       swr={swr}
+  //     />
+  //   )
+  //   expect(wrapper).toBeDefined()
 
-    wrapper.unmount()
-    wrapper = mount(
-      <Geometry
-        simulation={{
-          ...simulation,
-          scheme: {
-            ...simulation.scheme,
-            configuration: {
-              ...simulation.scheme.configuration,
-              geometry: {
-                file: {
-                  glb: 'glb',
-                  originPath: 'originPath'
-                }
-              }
-            }
-          }
-        }}
-        part={{
-          error: true,
-          message: 'Error'
-        }}
-        swr={swr}
-      />
-    )
-    expect(wrapper).toBeDefined()
-  })
+  //   wrapper.unmount()
+  //   wrapper = mount(
+  //     <Geometry
+  //       simulation={{
+  //         ...simulation,
+  //         scheme: {
+  //           ...simulation.scheme,
+  //           configuration: {
+  //             ...simulation.scheme.configuration,
+  //             geometry: {
+  //               file: {
+  //                 glb: 'glb',
+  //                 originPath: 'originPath'
+  //               }
+  //             }
+  //           }
+  //         }
+  //       }}
+  //       part={{
+  //         error: true,
+  //         message: 'Error'
+  //       }}
+  //       swr={swr}
+  //     />
+  //   )
+  //   expect(wrapper).toBeDefined()
+  // })
 })

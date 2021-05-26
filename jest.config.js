@@ -1,13 +1,14 @@
 module.exports = {
   setupFiles: [
-    '<rootDir>/config/jest/mock.js',
-    '<rootDir>/config/jest/enzyme.js'
+    '<rootDir>/config/jest/mock.js'
+    // '<rootDir>/config/jest/enzyme.js'
   ],
   collectCoverageFrom: [
     '**/*.{js,jsx,ts,tsx}',
     '!**/*.d.ts',
     '!**/node_modules/**'
   ],
+  testEnvironment: 'jsdom',
   testPathIgnorePatterns: [
     '<rootDir>/node_modules/',
     '<rootDir>/.next/',

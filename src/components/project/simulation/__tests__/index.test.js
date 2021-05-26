@@ -151,46 +151,46 @@ describe('components/project/simulation', () => {
     expect(onClose).toHaveBeenCalledTimes(1)
   })
 
-  it('onUpdate', async () => {
-    wrapper.unmount()
-    wrapper = mount(
-      <Simulation
-        user={user}
-        simulation={{
-          ...simulation,
-          scheme: {
-            algorithm: 'algorithm',
-            configuration: {
-              geometry: { title: 'Geometry', file: {} }
-            }
-          }
-        }}
-        type="geometry"
-        swr={swr}
-        onClose={onClose}
-      />
-    )
+  // it('onUpdate', async () => {
+  //   wrapper.unmount()
+  //   wrapper = mount(
+  //     <Simulation
+  //       user={user}
+  //       simulation={{
+  //         ...simulation,
+  //         scheme: {
+  //           algorithm: 'algorithm',
+  //           configuration: {
+  //             geometry: { title: 'Geometry', file: {} }
+  //           }
+  //         }
+  //       }}
+  //       type="geometry"
+  //       swr={swr}
+  //       onClose={onClose}
+  //     />
+  //   )
 
-    // Cancel
-    act(() => wrapper.find('Modal').props().onCancel())
+  //   // Cancel
+  //   act(() => wrapper.find('Modal').props().onCancel())
 
-    // Normal
-    await act(async () => await wrapper.find('Modal').props().onOk())
-    expect(mockMerge).toHaveBeenCalledTimes(1)
-    expect(mockUpdate).toHaveBeenCalledTimes(1)
-    expect(mutateOneSimulation).toHaveBeenCalledTimes(1)
-    expect(mockError).toHaveBeenCalledTimes(0)
+  //   // Normal
+  //   await act(async () => await wrapper.find('Modal').props().onOk())
+  //   expect(mockMerge).toHaveBeenCalledTimes(1)
+  //   expect(mockUpdate).toHaveBeenCalledTimes(1)
+  //   expect(mutateOneSimulation).toHaveBeenCalledTimes(1)
+  //   expect(mockError).toHaveBeenCalledTimes(0)
 
-    // Error
-    mockMerge.mockImplementation(() => {
-      throw new Error()
-    })
-    await act(async () => await wrapper.find('Modal').props().onOk())
-    expect(mockMerge).toHaveBeenCalledTimes(2)
-    expect(mockUpdate).toHaveBeenCalledTimes(1)
-    expect(mutateOneSimulation).toHaveBeenCalledTimes(1)
-    expect(mockError).toHaveBeenCalledTimes(1)
-  })
+  //   // Error
+  //   mockMerge.mockImplementation(() => {
+  //     throw new Error()
+  //   })
+  //   await act(async () => await wrapper.find('Modal').props().onOk())
+  //   expect(mockMerge).toHaveBeenCalledTimes(2)
+  //   expect(mockUpdate).toHaveBeenCalledTimes(1)
+  //   expect(mutateOneSimulation).toHaveBeenCalledTimes(1)
+  //   expect(mockError).toHaveBeenCalledTimes(1)
+  // })
 
   it('about', () => {
     wrapper.unmount()
@@ -276,42 +276,42 @@ describe('components/project/simulation', () => {
     expect(wrapper.find('Run').length).toBe(1)
   })
 
-  it('simulation effect', () => {
-    // Load models
-    wrapper.unmount()
-    wrapper = mount(
-      <Simulation
-        user={user}
-        simulation={simulation}
-        swr={swr}
-        onClose={onClose}
-      />
-    )
-    expect(wrapper.find('Panel').props().title).toBe('About')
+  // it('simulation effect', () => {
+  //   // Load models
+  //   wrapper.unmount()
+  //   wrapper = mount(
+  //     <Simulation
+  //       user={user}
+  //       simulation={simulation}
+  //       swr={swr}
+  //       onClose={onClose}
+  //     />
+  //   )
+  //   expect(wrapper.find('Panel').props().title).toBe('About')
 
-    // Need update (added)
-    wrapper.unmount()
-    mockAddedDiff.mockImplementation(() => ({ something: { test: 'test' } }))
-    wrapper = mount(
-      <Simulation
-        user={user}
-        simulation={{
-          ...simulation,
-          scheme: {
-            algorithm: 'algorithm',
-            configuration: {
-              geometry: { title: 'Geometry' }
-            }
-          }
-        }}
-        type="geometry"
-        swr={swr}
-        onClose={onClose}
-      />
-    )
-    expect(wrapper.find('Panel').props().title).toBe('Geometry')
-    mockAddedDiff.mockImplementation(() => ({}))
-  })
+  //   // Need update (added)
+  //   wrapper.unmount()
+  //   mockAddedDiff.mockImplementation(() => ({ something: { test: 'test' } }))
+  //   wrapper = mount(
+  //     <Simulation
+  //       user={user}
+  //       simulation={{
+  //         ...simulation,
+  //         scheme: {
+  //           algorithm: 'algorithm',
+  //           configuration: {
+  //             geometry: { title: 'Geometry' }
+  //           }
+  //         }
+  //       }}
+  //       type="geometry"
+  //       swr={swr}
+  //       onClose={onClose}
+  //     />
+  //   )
+  //   expect(wrapper.find('Panel').props().title).toBe('Geometry')
+  //   mockAddedDiff.mockImplementation(() => ({}))
+  // })
 })
 
 describe('components/project/simulation.Selector', () => {
@@ -335,26 +335,26 @@ describe('components/project/simulation.Selector', () => {
     expect(wrapper).toBeDefined()
   })
 
-  it('onSelect', () => {
-    wrapper.unmount()
-    wrapper = mount(
-      <Simulation.Selector
-        user={user}
-        visible={true}
-        onOk={onOk}
-        onCancel={onCancel}
-      />
-    )
+  // it('onSelect', () => {
+  //   wrapper.unmount()
+  //   wrapper = mount(
+  //     <Simulation.Selector
+  //       user={user}
+  //       visible={true}
+  //       onOk={onOk}
+  //       onCancel={onCancel}
+  //     />
+  //   )
 
-    act(() =>
-      wrapper.find('InternalMenu').props().onSelect({ key: 'algorithm' })
-    )
-    wrapper.update()
+  //   act(() =>
+  //     wrapper.find('InternalMenu').props().onSelect({ key: 'algorithm' })
+  //   )
+  //   wrapper.update()
 
-    expect(wrapper.find('div').at(10).props().dangerouslySetInnerHTML).toEqual({
-      __html: 'description'
-    })
-  })
+  //   expect(wrapper.find('div').at(10).props().dangerouslySetInnerHTML).toEqual({
+  //     __html: 'description'
+  //   })
+  // })
 
   it('onCreate', async () => {
     await wrapper.find('Modal').props().onOk()
@@ -365,25 +365,25 @@ describe('components/project/simulation.Selector', () => {
     expect(onOk).toHaveBeenCalledTimes(1)
   })
 
-  it('effect', () => {
-    wrapper.unmount()
-    wrapper = mount(
-      <Simulation.Selector user={user} onOk={onOk} onCancel={onCancel} />
-    )
-    expect(wrapper).toBeDefined()
+  // it('effect', () => {
+  //   wrapper.unmount()
+  //   wrapper = mount(
+  //     <Simulation.Selector user={user} onOk={onOk} onCancel={onCancel} />
+  //   )
+  //   expect(wrapper).toBeDefined()
 
-    // With authorizedplugins
-    wrapper.unmount()
-    wrapper = mount(
-      <Simulation.Selector
-        user={{
-          ...user,
-          authorizedplugins: ['model']
-        }}
-        onOk={onOk}
-        onCancel={onCancel}
-      />
-    )
-    expect(wrapper).toBeDefined()
-  })
+  //   // With authorizedplugins
+  //   wrapper.unmount()
+  //   wrapper = mount(
+  //     <Simulation.Selector
+  //       user={{
+  //         ...user,
+  //         authorizedplugins: ['model']
+  //       }}
+  //       onOk={onOk}
+  //       onCancel={onCancel}
+  //     />
+  //   )
+  //   expect(wrapper).toBeDefined()
+  // })
 })

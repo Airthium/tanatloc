@@ -123,8 +123,8 @@ describe('components/account/hpc/dialog', () => {
     expect(mockError).toHaveBeenCalledTimes(0)
   })
 
-  it('effect', () => {
-    wrapper.unmount()
-    wrapper = mount(<PluginDialog plugin={plugin} swr={swr} />)
-  })
+  // it('effect', () => {
+  //   wrapper.unmount()
+  //   wrapper = mount(<PluginDialog plugin={plugin} swr={swr} />)
+  // })
 })

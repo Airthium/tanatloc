@@ -116,77 +116,77 @@ describe('components/project/share', () => {
     expect(mockError).toHaveBeenCalledTimes(1)
   })
 
-  it('effect', () => {
-    // Emty organizations
-    wrapper.unmount()
-    wrapper = mount(
-      <Share project={project} organizations={organizations} swr={projectSwr} />
-    )
+  // it('effect', () => {
+  //   // Emty organizations
+  //   wrapper.unmount()
+  //   wrapper = mount(
+  //     <Share project={project} organizations={organizations} swr={projectSwr} />
+  //   )
 
-    // Full
-    wrapper.unmount()
-    wrapper = mount(
-      <Share
-        project={{ ...project, groups: [{ id: 'id' }] }}
-        organizations={[
-          {
-            groups: [
-              {
-                id: 'id',
-                users: [
-                  {
-                    firstname: 'firstname'
-                  },
-                  {
-                    email: 'email'
-                  }
-                ]
-              }
-            ]
-          }
-        ]}
-        swr={projectSwr}
-      />
-    )
-  })
+  //   // Full
+  //   wrapper.unmount()
+  //   wrapper = mount(
+  //     <Share
+  //       project={{ ...project, groups: [{ id: 'id' }] }}
+  //       organizations={[
+  //         {
+  //           groups: [
+  //             {
+  //               id: 'id',
+  //               users: [
+  //                 {
+  //                   firstname: 'firstname'
+  //                 },
+  //                 {
+  //                   email: 'email'
+  //                 }
+  //               ]
+  //             }
+  //           ]
+  //         }
+  //       ]}
+  //       swr={projectSwr}
+  //     />
+  //   )
+  // })
 
-  it('effect with workspace', () => {
-    // Emty organizations
-    wrapper.unmount()
-    wrapper = mount(
-      <Share
-        workspace={workspace}
-        organizations={organizations}
-        swr={workspaceSwr}
-      />
-    )
+  // it('effect with workspace', () => {
+  //   // Emty organizations
+  //   wrapper.unmount()
+  //   wrapper = mount(
+  //     <Share
+  //       workspace={workspace}
+  //       organizations={organizations}
+  //       swr={workspaceSwr}
+  //     />
+  //   )
 
-    // Full
-    wrapper.unmount()
-    wrapper = mount(
-      <Share
-        workspace={{ ...workspace, groups: [{ id: 'id' }] }}
-        organizations={[
-          {
-            groups: [
-              {
-                id: 'id',
-                users: [
-                  {
-                    firstname: 'firstname'
-                  },
-                  {
-                    email: 'email'
-                  }
-                ]
-              }
-            ]
-          }
-        ]}
-        swr={workspaceSwr}
-      />
-    )
-  })
+  //   // Full
+  //   wrapper.unmount()
+  //   wrapper = mount(
+  //     <Share
+  //       workspace={{ ...workspace, groups: [{ id: 'id' }] }}
+  //       organizations={[
+  //         {
+  //           groups: [
+  //             {
+  //               id: 'id',
+  //               users: [
+  //                 {
+  //                   firstname: 'firstname'
+  //                 },
+  //                 {
+  //                   email: 'email'
+  //                 }
+  //               ]
+  //             }
+  //           ]
+  //         }
+  //       ]}
+  //       swr={workspaceSwr}
+  //     />
+  //   )
+  // })
 
   it('propTypes', () => {
     let res

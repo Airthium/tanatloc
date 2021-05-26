@@ -331,9 +331,7 @@ const Rescale = ({ data, onSelect }) => {
                   id="numberOfCores"
                   min={selected.fullCores[0]}
                   max={selected.fullCores[selected.fullCores.length - 1]}
-                  parser={() => {
-                    return numberOfCores
-                  }}
+                  parser={() => numberOfCores}
                 />
               </Form.Item>
               <Form.Item

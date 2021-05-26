@@ -67,20 +67,20 @@ describe('components/project/simulation/boundaryConditions/boundaryCondition', (
     expect(wrapper).toBeDefined()
   })
 
-  it('without boundaryConditions', () => {
-    wrapper.unmount()
-    wrapper = mount(
-      <BoundaryCondition
-        visible={true}
-        simulation={simulation}
-        part={part}
-        boundaryCondition={boundaryCondition}
-        swr={swr}
-        close={close}
-      />
-    )
-    expect(wrapper).toBeDefined()
-  })
+  // it('without boundaryConditions', () => {
+  //   wrapper.unmount()
+  //   wrapper = mount(
+  //     <BoundaryCondition
+  //       visible={true}
+  //       simulation={simulation}
+  //       part={part}
+  //       boundaryCondition={boundaryCondition}
+  //       swr={swr}
+  //       close={close}
+  //     />
+  //   )
+  //   expect(wrapper).toBeDefined()
+  // })
 
   it('onName', () => {
     wrapper
@@ -90,54 +90,54 @@ describe('components/project/simulation/boundaryConditions/boundaryCondition', (
       .children.props.onChange({ target: { value: 'name' } })
   })
 
-  it('onType', () => {
-    wrapper.unmount()
-    wrapper = mount(
-      <BoundaryCondition
-        simulation={simulation}
-        visible={true}
-        part={part}
-        boundaryConditions={boundaryConditions}
-        boundaryCondition={boundaryCondition}
-        swr={swr}
-        close={close}
-      />
-    )
+  // it('onType', () => {
+  //   wrapper.unmount()
+  //   wrapper = mount(
+  //     <BoundaryCondition
+  //       simulation={simulation}
+  //       visible={true}
+  //       part={part}
+  //       boundaryConditions={boundaryConditions}
+  //       boundaryCondition={boundaryCondition}
+  //       swr={swr}
+  //       close={close}
+  //     />
+  //   )
 
-    act(() =>
-      wrapper
-        .find('Card')
-        .at(1)
-        .props()
-        .children.props.onChange({ target: { value: 'key' } })
-    )
+  //   act(() =>
+  //     wrapper
+  //       .find('Card')
+  //       .at(1)
+  //       .props()
+  //       .children.props.onChange({ target: { value: 'key' } })
+  //   )
 
-    // Without children
-    wrapper.unmount()
-    wrapper = mount(
-      <BoundaryCondition
-        visible={true}
-        simulation={simulation}
-        part={part}
-        boundaryConditions={{
-          title: 'title',
-          key: {
-            label: 'label'
-          }
-        }}
-        boundaryCondition={boundaryCondition}
-        swr={swr}
-        close={close}
-      />
-    )
-    act(() =>
-      wrapper
-        .find('Card')
-        .at(1)
-        .props()
-        .children.props.onChange({ target: { value: 'key' } })
-    )
-  })
+  //   // Without children
+  //   wrapper.unmount()
+  //   wrapper = mount(
+  //     <BoundaryCondition
+  //       visible={true}
+  //       simulation={simulation}
+  //       part={part}
+  //       boundaryConditions={{
+  //         title: 'title',
+  //         key: {
+  //           label: 'label'
+  //         }
+  //       }}
+  //       boundaryCondition={boundaryCondition}
+  //       swr={swr}
+  //       close={close}
+  //     />
+  //   )
+  //   act(() =>
+  //     wrapper
+  //       .find('Card')
+  //       .at(1)
+  //       .props()
+  //       .children.props.onChange({ target: { value: 'key' } })
+  //   )
+  // })
 
   it('onSelected', () => {
     wrapper.find('Selector').props().updateSelected()
@@ -165,126 +165,126 @@ describe('components/project/simulation/boundaryConditions/boundaryCondition', (
     expect(wrapper.find('Edit').length).toBe(1)
   })
 
-  it('effect', () => {
-    // With boundaryCondition
-    wrapper.unmount()
-    boundaryCondition = { selected: [{ uuid: 'uuid', label: 1 }] }
-    wrapper = mount(
-      <BoundaryCondition
-        simulation={simulation}
-        visible={true}
-        part={part}
-        boundaryConditions={boundaryConditions}
-        boundaryCondition={boundaryCondition}
-        swr={swr}
-        close={close}
-      />
-    )
+  // it('effect', () => {
+  //   // With boundaryCondition
+  //   wrapper.unmount()
+  //   boundaryCondition = { selected: [{ uuid: 'uuid', label: 1 }] }
+  //   wrapper = mount(
+  //     <BoundaryCondition
+  //       simulation={simulation}
+  //       visible={true}
+  //       part={part}
+  //       boundaryConditions={boundaryConditions}
+  //       boundaryCondition={boundaryCondition}
+  //       swr={swr}
+  //       close={close}
+  //     />
+  //   )
 
-    // Without boundaryCondition
-    wrapper.unmount()
-    boundaryCondition = null
-    wrapper = mount(
-      <BoundaryCondition
-        simulation={simulation}
-        visible={true}
-        part={part}
-        boundaryConditions={boundaryConditions}
-        boundaryCondition={boundaryCondition}
-        swr={swr}
-        close={close}
-      />
-    )
+  //   // Without boundaryCondition
+  //   wrapper.unmount()
+  //   boundaryCondition = null
+  //   wrapper = mount(
+  //     <BoundaryCondition
+  //       simulation={simulation}
+  //       visible={true}
+  //       part={part}
+  //       boundaryConditions={boundaryConditions}
+  //       boundaryCondition={boundaryCondition}
+  //       swr={swr}
+  //       close={close}
+  //     />
+  //   )
 
-    // Enable
-    wrapper.unmount()
-    boundaryCondition = {
-      name: 'name',
-      selected: [{ uuid: 'uuid', label: 1 }],
-      values: [
-        {
-          value: 0
-        }
-      ]
-    }
-    wrapper = mount(
-      <BoundaryCondition
-        simulation={simulation}
-        visible={true}
-        part={part}
-        boundaryConditions={boundaryConditions}
-        boundaryCondition={boundaryCondition}
-        swr={swr}
-        close={close}
-      />
-    )
-  })
+  //   // Enable
+  //   wrapper.unmount()
+  //   boundaryCondition = {
+  //     name: 'name',
+  //     selected: [{ uuid: 'uuid', label: 1 }],
+  //     values: [
+  //       {
+  //         value: 0
+  //       }
+  //     ]
+  //   }
+  //   wrapper = mount(
+  //     <BoundaryCondition
+  //       simulation={simulation}
+  //       visible={true}
+  //       part={part}
+  //       boundaryConditions={boundaryConditions}
+  //       boundaryCondition={boundaryCondition}
+  //       swr={swr}
+  //       close={close}
+  //     />
+  //   )
+  // })
 
-  it('onValueChange', () => {
-    boundaryCondition = {
-      type: {
-        key: 'key',
-        children: [
-          {
-            default: 1
-          }
-        ]
-      },
-      name: 'name',
-      selected: [{ uuid: 'uuid', label: 1 }],
-      values: [{}]
-    }
-    wrapper = mount(
-      <BoundaryCondition
-        simulation={simulation}
-        visible={true}
-        part={part}
-        boundaryConditions={boundaryConditions}
-        boundaryCondition={boundaryCondition}
-        close={close}
-        swr={swr}
-      />
-    )
-    act(() => wrapper.find('Formula').props().onValueChange(0, 10))
-  })
+  // it('onValueChange', () => {
+  //   boundaryCondition = {
+  //     type: {
+  //       key: 'key',
+  //       children: [
+  //         {
+  //           default: 1
+  //         }
+  //       ]
+  //     },
+  //     name: 'name',
+  //     selected: [{ uuid: 'uuid', label: 1 }],
+  //     values: [{}]
+  //   }
+  //   wrapper = mount(
+  //     <BoundaryCondition
+  //       simulation={simulation}
+  //       visible={true}
+  //       part={part}
+  //       boundaryConditions={boundaryConditions}
+  //       boundaryCondition={boundaryCondition}
+  //       close={close}
+  //       swr={swr}
+  //     />
+  //   )
+  //   act(() => wrapper.find('Formula').props().onValueChange(0, 10))
+  // })
 
-  it('onCheckedChange', () => {
-    boundaryCondition = {
-      type: {
-        key: 'key',
-        children: [
-          {
-            default: 1
-          },
-          {
-            default: 0
-          }
-        ]
-      },
-      name: 'name',
-      selected: [{ uuid: 'uuid', label: 1 }],
-      values: [
-        {
-          checked: true,
-          value: 0
-        },
-        {
-          hecked: false,
-          value: 0
-        }
-      ]
-    }
-    wrapper = mount(
-      <BoundaryCondition
-        simulation={simulation}
-        visible={true}
-        part={part}
-        boundaryConditions={boundaryConditions}
-        boundaryCondition={boundaryCondition}
-        swr={swr}
-        close={close}
-      />
-    )
-    act(() => wrapper.find('Formula').at(1).props().onCheckedChange(1, true))
-  })
+  // it('onCheckedChange', () => {
+  //   boundaryCondition = {
+  //     type: {
+  //       key: 'key',
+  //       children: [
+  //         {
+  //           default: 1
+  //         },
+  //         {
+  //           default: 0
+  //         }
+  //       ]
+  //     },
+  //     name: 'name',
+  //     selected: [{ uuid: 'uuid', label: 1 }],
+  //     values: [
+  //       {
+  //         checked: true,
+  //         value: 0
+  //       },
+  //       {
+  //         hecked: false,
+  //         value: 0
+  //       }
+  //     ]
+  //   }
+  //   wrapper = mount(
+  //     <BoundaryCondition
+  //       simulation={simulation}
+  //       visible={true}
+  //       part={part}
+  //       boundaryConditions={boundaryConditions}
+  //       boundaryCondition={boundaryCondition}
+  //       swr={swr}
+  //       close={close}
+  //     />
+  //   )
+  //   act(() => wrapper.find('Formula').at(1).props().onCheckedChange(1, true))
+  // })
 })

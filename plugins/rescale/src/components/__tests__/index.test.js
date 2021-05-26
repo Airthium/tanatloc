@@ -1,6 +1,7 @@
+import React from 'react'
+import { render, screen, fireEvent, waitFor } from '@testing-library/react'
+
 import Rescale from '..'
-import { shallow, mount } from 'enzyme'
-import { act } from 'react-dom/test-utils'
 
 import '@/config/jest/mockMatchMedia'
 
@@ -9,20 +10,26 @@ jest.mock('@/components/assets/notification', () => ({
   Error: () => mockError()
 }))
 
-let wrapper
 describe('plugins/rescale/src/components/index', () => {
   const data = {
     coreTypes: [
       {
-        name: 'name',
+        name: 'coretype 1',
         cores: [1, 2, 4],
         memory: 5000,
         price: 5000,
         lowPriorityPrice: 1000
+      },
+      {
+        name: 'coretype 2',
+        cores: [8, 16, 32],
+        memory: 10000,
+        price: 10000,
+        lowPriorityPrice: 2000
       }
     ],
     freefem: {
-      versions: [{}]
+      versions: [{ id: 'version', version: 'version' }]
     }
   }
   const onSelect = jest.fn()
@@ -31,145 +38,71 @@ describe('plugins/rescale/src/components/index', () => {
     mockError.mockReset()
 
     onSelect.mockReset()
-
-    wrapper = shallow(<Rescale data={data} onSelect={onSelect} />)
   })
 
-  afterEach(() => {
-    wrapper.unmount()
+  test('render', () => {
+    const { unmount } = render(<Rescale data={data} onSelect={onSelect} />)
+
+    unmount()
   })
 
-  it('render', () => {
-    expect(wrapper).toBeDefined()
+  test('rowSelection', () => {
+    const { unmount } = render(<Rescale data={data} onSelect={onSelect} />)
+
+    // Set visible
+    fireEvent.click(screen.getByRole('button'))
+
+    const radios = screen.getAllByRole('radio')
+    fireEvent.click(radios[0])
+    fireEvent.click(radios[1])
+
+    unmount()
   })
 
-  it('onRowChange', () => {
-    wrapper.find('Table').props().rowSelection.onChange('key', [{}])
+  test('onOk', async () => {
+    const { unmount } = render(<Rescale data={data} onSelect={onSelect} />)
+
+    // Set visible
+    fireEvent.click(screen.getByRole('button'))
+
+    // Select one
+    let radios = screen.getAllByRole('radio')
+    fireEvent.click(radios[0])
+
+    // Step 1 -> 2
+    let buttons = screen.getAllByRole('button')
+    fireEvent.click(buttons[3])
+
+    // Fill form
+    radios = screen.getAllByRole('radio')
+    fireEvent.click(radios[0])
+
+    const spinbutton = screen.getByRole('spinbutton')
+    fireEvent.input(spinbutton, { target: { value: 1 } })
+    fireEvent.input(spinbutton, { target: { value: 8 } })
+    fireEvent.input(spinbutton, { target: { value: 4 } })
+
+    const combobox = screen.getByRole('combobox')
+    fireEvent.change(combobox, { target: { value: 'version' } })
+
+    // Step 2 -> end
+    buttons = screen.getAllByRole('button')
+    fireEvent.click(buttons[5])
+    await waitFor(() => expect(onSelect).toHaveBeenCalledTimes(1))
+
+    unmount()
   })
 
-  it('onOk', async () => {
+  test('onCancel', () => {
+    const { unmount } = render(<Rescale data={data} onSelect={onSelect} />)
+
+    // Set visible
+    fireEvent.click(screen.getByRole('button'))
+
     // Step 1
-    wrapper
-      .find('Table')
-      .props()
-      .rowSelection.onChange('key', [{ fullCores: [] }])
-    await wrapper.find('Modal').props().onOk()
+    const buttons = screen.getAllByRole('button')
+    fireEvent.click(buttons[2])
 
-    // Step 2
-    await wrapper.find('Modal').props().onOk()
-
-    // Step 1
-    wrapper
-      .find('Table')
-      .props()
-      .rowSelection.onChange('key', [{ fullCores: [] }])
-    await wrapper.find('Modal').props().onOk()
-
-    // Error
-    const form = wrapper.find('ForwardRef(InternalForm)').props().form
-    form.validateFields = () => {
-      throw new Error()
-    }
-    await wrapper.find('Modal').props().onOk()
-    expect(mockError).toHaveBeenCalledTimes(1)
-  })
-
-  it('onCancel', () => {
-    wrapper.find('Modal').props().onCancel()
-  })
-
-  it('getCheckboxProps', () => {
-    wrapper.find('Table').props().rowSelection.getCheckboxProps({})
-  })
-
-  it('onValuesChange', () => {
-    // Got to step 2
-    wrapper
-      .find('Table')
-      .props()
-      .rowSelection.onChange('key', [{ fullCores: [1, 2, 4, 8] }])
-    wrapper.find('Modal').props().onOk()
-
-    wrapper.find('ForwardRef(InternalForm)').props().onValuesChange({}, {})
-
-    wrapper
-      .find('ForwardRef(InternalForm)')
-      .props()
-      .onValuesChange({ numberOfCores: 2 }, { numberOfCores: 2 })
-
-    wrapper
-      .find('ForwardRef(InternalForm)')
-      .props()
-      .onValuesChange({ numberOfCores: 7 }, { numberOfCores: 7 })
-
-    wrapper
-      .find('ForwardRef(InternalForm)')
-      .props()
-      .onValuesChange({ numberOfCores: 1000 }, { numberOfCores: 1000 })
-
-    wrapper
-      .find('ForwardRef(InternalForm)')
-      .props()
-      .onValuesChange({ numberOfCores: 3 }, { numberOfCores: 3 })
-
-    wrapper
-      .find('ForwardRef(InternalForm)')
-      .props()
-      .onValuesChange({ numberOfCores: 0 }, { numberOfCores: 0 })
-  })
-
-  it('setVisible', () => {
-    wrapper.find('Button').props().onClick()
-    expect(wrapper.find('Modal').props().visible).toBe(true)
-  })
-
-  it('parser', () => {
-    // Got to step 2
-    wrapper
-      .find('Table')
-      .props()
-      .rowSelection.onChange('key', [{ fullCores: [1, 2, 4, 8] }])
-    wrapper.find('Modal').props().onOk()
-
-    wrapper.find({ id: 'numberOfCores' }).props().parser()
-  })
-
-  it('render', () => {
-    wrapper.find('Table').props().columns[0].render('text', {})
-    wrapper.find('Table').props().columns[1].render([1, 2, 3])
-    wrapper.find('Table').props().columns[2].render(5000)
-  })
-
-  it('useEffect', async () => {
-    wrapper.unmount()
-
-    wrapper = mount(<Rescale data={data} onSelect={onSelect} />)
-
-    // Open
-    act(wrapper.find('Button').props().onClick)
-    wrapper.update()
-
-    // Set selection
-    act(() =>
-      wrapper
-        .find('Table')
-        .at(0)
-        .props()
-        .rowSelection.onChange('key', [{ cores: [1, 2, 4] }])
-    )
-    wrapper.update()
-
-    // Step 2
-    await act(async () => await wrapper.find('Modal').props().onOk())
-    wrapper.update()
-
-    // Set low priority
-    act(() =>
-      wrapper
-        .find('ForwardRef(InternalForm)')
-        .props()
-        .onValuesChange({ lowPriority: false })
-    )
-    wrapper.update()
+    unmount()
   })
 })

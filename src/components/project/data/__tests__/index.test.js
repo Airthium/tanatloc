@@ -41,123 +41,123 @@ describe('components/project/data', () => {
     expect(wrapper.find('DrawerWrapper').props().visible).toBe(false)
   })
 
-  it('without data', () => {
-    wrapper.unmount()
-    wrapper = mount(<Data simulation={simulation} />)
-    expect(wrapper).toBeDefined()
-  })
+  // it('without data', () => {
+  //   wrapper.unmount()
+  //   wrapper = mount(<Data simulation={simulation} />)
+  //   expect(wrapper).toBeDefined()
+  // })
 
-  it('with data', () => {
-    wrapper.unmount()
-    mockSimulation.mockImplementation(() => ({
-      tasks: [
-        {
-          datas: [
-            {
-              name: 'data name',
-              x: 0,
-              y: 0
-            },
-            {
-              name: 'data name',
-              x: 1,
-              y: 1
-            },
-            {
-              name: 'data name 2',
-              x: 0,
-              y: 0
-            },
-            {
-              name: 'data name 2',
-              x: 2,
-              y: 2
-            }
-          ]
-        },
-        {}
-      ]
-    }))
+  // it('with data', () => {
+  //   wrapper.unmount()
+  //   mockSimulation.mockImplementation(() => ({
+  //     tasks: [
+  //       {
+  //         datas: [
+  //           {
+  //             name: 'data name',
+  //             x: 0,
+  //             y: 0
+  //           },
+  //           {
+  //             name: 'data name',
+  //             x: 1,
+  //             y: 1
+  //           },
+  //           {
+  //             name: 'data name 2',
+  //             x: 0,
+  //             y: 0
+  //           },
+  //           {
+  //             name: 'data name 2',
+  //             x: 2,
+  //             y: 2
+  //           }
+  //         ]
+  //       },
+  //       {}
+  //     ]
+  //   }))
 
-    wrapper = mount(<Data simulation={simulation} />)
-    expect(wrapper).toBeDefined()
+  //   wrapper = mount(<Data simulation={simulation} />)
+  //   expect(wrapper).toBeDefined()
 
-    // Open drawer
-    act(() => wrapper.find('Button').at(0).props().onClick())
-    wrapper.update()
+  //   // Open drawer
+  //   act(() => wrapper.find('Button').at(0).props().onClick())
+  //   wrapper.update()
 
-    // On check
-    act(() =>
-      wrapper
-        .find('Checkbox')
-        .at(0)
-        .props()
-        .onChange({ target: { checked: true } })
-    )
-    wrapper.update()
+  //   // On check
+  //   act(() =>
+  //     wrapper
+  //       .find('Checkbox')
+  //       .at(0)
+  //       .props()
+  //       .onChange({ target: { checked: true } })
+  //   )
+  //   wrapper.update()
 
-    act(() =>
-      wrapper
-        .find('Checkbox')
-        .at(1)
-        .props()
-        .onChange({ target: { checked: true } })
-    )
-    wrapper.update()
+  //   act(() =>
+  //     wrapper
+  //       .find('Checkbox')
+  //       .at(1)
+  //       .props()
+  //       .onChange({ target: { checked: true } })
+  //   )
+  //   wrapper.update()
 
-    act(() =>
-      wrapper
-        .find('Checkbox')
-        .at(0)
-        .props()
-        .onChange({ target: { checked: false } })
-    )
-    wrapper.update()
-  })
+  //   act(() =>
+  //     wrapper
+  //       .find('Checkbox')
+  //       .at(0)
+  //       .props()
+  //       .onChange({ target: { checked: false } })
+  //   )
+  //   wrapper.update()
+  // })
 
-  it('exportCSV', () => {
-    wrapper.unmount()
-    mockSimulation.mockImplementation(() => ({
-      tasks: [
-        {
-          datas: [
-            {
-              name: 'data name',
-              x: 0,
-              y: 0
-            },
-            {
-              name: 'data name',
-              x: 1,
-              y: 1
-            },
-            {
-              name: 'data name 2',
-              x: 0,
-              y: 0
-            },
-            {
-              name: 'data name 2',
-              x: 2,
-              y: 2
-            }
-          ]
-        },
-        {}
-      ]
-    }))
+  // it('exportCSV', () => {
+  //   wrapper.unmount()
+  //   mockSimulation.mockImplementation(() => ({
+  //     tasks: [
+  //       {
+  //         datas: [
+  //           {
+  //             name: 'data name',
+  //             x: 0,
+  //             y: 0
+  //           },
+  //           {
+  //             name: 'data name',
+  //             x: 1,
+  //             y: 1
+  //           },
+  //           {
+  //             name: 'data name 2',
+  //             x: 0,
+  //             y: 0
+  //           },
+  //           {
+  //             name: 'data name 2',
+  //             x: 2,
+  //             y: 2
+  //           }
+  //         ]
+  //       },
+  //       {}
+  //     ]
+  //   }))
 
-    wrapper = mount(<Data simulation={simulation} />)
-    expect(wrapper).toBeDefined()
+  //   wrapper = mount(<Data simulation={simulation} />)
+  //   expect(wrapper).toBeDefined()
 
-    // Open drawer
-    act(() => wrapper.find('Button').at(0).props().onClick())
-    wrapper.update()
+  //   // Open drawer
+  //   act(() => wrapper.find('Button').at(0).props().onClick())
+  //   wrapper.update()
 
-    // Export CSV
-    window.URL = {
-      createObjectURL: () => {}
-    }
-    wrapper.find('Button').at(1).props().onClick()
-  })
+  //   // Export CSV
+  //   window.URL = {
+  //     createObjectURL: () => {}
+  //   }
+  //   wrapper.find('Button').at(1).props().onClick()
+  // })
 })

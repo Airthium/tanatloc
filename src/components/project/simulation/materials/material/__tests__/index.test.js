@@ -81,45 +81,45 @@ describe('components/project/simulation/materials/material', () => {
     expect(close).toHaveBeenCalledTimes(1)
   })
 
-  it('effect', () => {
-    // Without material
-    material = null
-    wrapper = mount(
-      <Material
-        simulation={simulation}
-        visible={true}
-        part={part}
-        materials={materials}
-        material={material}
-        swr={swr}
-        close={close}
-      />
-    )
+  // it('effect', () => {
+  //   // Without material
+  //   material = null
+  //   wrapper = mount(
+  //     <Material
+  //       simulation={simulation}
+  //       visible={true}
+  //       part={part}
+  //       materials={materials}
+  //       material={material}
+  //       swr={swr}
+  //       close={close}
+  //     />
+  //   )
 
-    // Enable
-    wrapper.unmount()
-    material = {
-      selected: [{ uuid: 'uuid', label: 1 }],
-      material: {
-        children: [
-          {
-            symbol: 'Test'
-          }
-        ]
-      }
-    }
-    wrapper = mount(
-      <Material
-        simulation={simulation}
-        visible={true}
-        part={part}
-        materials={materials}
-        material={material}
-        swr={swr}
-        close={close}
-      />
-    )
+  //   // Enable
+  //   wrapper.unmount()
+  //   material = {
+  //     selected: [{ uuid: 'uuid', label: 1 }],
+  //     material: {
+  //       children: [
+  //         {
+  //           symbol: 'Test'
+  //         }
+  //       ]
+  //     }
+  //   }
+  //   wrapper = mount(
+  //     <Material
+  //       simulation={simulation}
+  //       visible={true}
+  //       part={part}
+  //       materials={materials}
+  //       material={material}
+  //       swr={swr}
+  //       close={close}
+  //     />
+  //   )
 
-    wrapper.find('Formula').props().onValueChange()
-  })
+  //   wrapper.find('Formula').props().onValueChange()
+  // })
 })

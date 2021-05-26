@@ -31,10 +31,10 @@ describe('components/notfound', () => {
     expect(mockPush).toHaveBeenCalledTimes(1)
   })
 
-  it('effect', () => {
-    wrapper.unmount()
+  // it('effect', () => {
+  //   wrapper.unmount()
 
-    wrapper = mount(<NotAuthorized />)
-    expect(mockPrefetch).toHaveBeenCalledTimes(1)
-  })
+  //   wrapper = mount(<NotAuthorized />)
+  //   expect(mockPrefetch).toHaveBeenCalledTimes(1)
+  // })
 })

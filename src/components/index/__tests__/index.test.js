@@ -1,19 +1,23 @@
-import Index from '@/components/index/index'
-import { shallow, mount } from 'enzyme'
+/**
+ * @jest-environment jsdom
+ */
 
-import '@/config/jest/mockMatchMedia'
+import React from 'react'
+import { render, screen, fireEvent } from '@testing-library/react'
+
+import Index from '@/components/index/index'
 
 const mockPrefetch = jest.fn()
 const mockPush = jest.fn()
 jest.mock('next/router', () => ({
   useRouter: () => ({
     prefetch: mockPrefetch,
-    push: mockPush
+    push: (route) => mockPush(route)
   })
 }))
 
-jest.mock('@/components/background', () => () => {
-  const Background = 'Background'
+jest.mock('@/components/background', () => {
+  const Background = () => <div />
   return Background
 })
 
@@ -28,7 +32,6 @@ jest.mock('@/api/user', () => ({
   useUser: () => [mockUser(), { errorUser: mockErrorUser() }]
 }))
 
-let wrapper
 describe('components/index', () => {
   beforeEach(() => {
     mockPrefetch.mockReset()
@@ -38,55 +41,59 @@ describe('components/index', () => {
 
     mockUser.mockReset()
     mockErrorUser.mockReset()
-
-    wrapper = shallow(<Index />)
   })
 
-  afterEach(() => {
-    wrapper.unmount()
+  test('render', () => {
+    const { unmount } = render(<Index />)
+
+    unmount()
   })
 
-  it('render', () => {
-    expect(wrapper).toBeDefined()
-  })
+  test('handleSignup', () => {
+    let currentRoute
+    mockPush.mockImplementation((route) => (currentRoute = route))
 
-  it('onSelect', () => {
-    // Handle nothing
-    wrapper.find('Menu').props().onSelect({ item: 'item', key: 'key' })
-    expect(mockPush).toHaveBeenCalledTimes(0)
-
-    // Handle dashboard
-    wrapper.find('Menu').props().onSelect({ item: 'item', key: 'dashboard' })
+    const { unmount } = render(<Index />)
+    fireEvent.click(screen.getByText(/Signup/))
     expect(mockPush).toHaveBeenCalledTimes(1)
+    expect(currentRoute).toBe('/signup')
 
-    // Handle signup
-    wrapper.find('Menu').props().onSelect({ item: 'item', key: 'signup' })
-    expect(mockPush).toHaveBeenCalledTimes(2)
-
-    // Handle login
-    wrapper.find('Menu').props().onSelect({ item: 'item', key: 'login' })
-    expect(mockPush).toHaveBeenCalledTimes(3)
+    unmount()
   })
 
-  it('with user', () => {
-    wrapper.unmount()
+  test('handleLogin', () => {
+    let currentRoute
+    mockPush.mockImplementation((route) => (currentRoute = route))
+
+    const { unmount } = render(<Index />)
+    fireEvent.click(screen.getByText(/Login/))
+    expect(mockPush).toHaveBeenCalledTimes(1)
+    expect(currentRoute).toBe('/login')
+
+    unmount()
+  })
+
+  test('handleDashboard', () => {
+    let currentRoute
+    mockPush.mockImplementation((route) => (currentRoute = route))
+
+    // Need user
     mockUser.mockImplementation(() => ({}))
-    wrapper = shallow(<Index />)
-    expect(wrapper.find('Menu').props().children.props.children).toBe(
-      'Dashboard'
-    )
+
+    const { unmount } = render(<Index />)
+    fireEvent.click(screen.getByText(/Dashboard/))
+    expect(mockPush).toHaveBeenCalledTimes(1)
+    expect(currentRoute).toBe('/dashboard')
+
+    unmount()
   })
 
-  it('effect', () => {
-    wrapper.unmount()
-    wrapper = mount(<Index />)
-    expect(mockPrefetch).toHaveBeenCalledTimes(3)
+  test('errorUser', () => {
+    mockErrorUser.mockImplementation(() => 'error')
 
-    // With user error
-    wrapper.unmount()
-    mockErrorUser.mockImplementation(() => ({ message: 'Error' }))
-    wrapper = mount(<Index />)
-    expect(mockPrefetch).toHaveBeenCalledTimes(6)
+    const { unmount } = render(<Index />)
     expect(mockError).toHaveBeenCalledTimes(1)
+
+    unmount()
   })
 })

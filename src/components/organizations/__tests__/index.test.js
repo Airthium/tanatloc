@@ -48,32 +48,32 @@ describe('components/organizations', () => {
     expect(wrapper).toBeDefined()
   })
 
-  it('setOrganization', () => {
-    wrapper = mount(
-      <Organizations
-        user={user}
-        organizations={[...organizations, { id: 'id' }]}
-        swr={swr}
-      />
-    )
+  // it('setOrganization', () => {
+  //   wrapper = mount(
+  //     <Organizations
+  //       user={user}
+  //       organizations={[...organizations, { id: 'id' }]}
+  //       swr={swr}
+  //     />
+  //   )
 
-    act(() => wrapper.find('List').props().setOrganization({ id: 'id' }))
-    wrapper.update()
+  //   act(() => wrapper.find('List').props().setOrganization({ id: 'id' }))
+  //   wrapper.update()
 
-    act(() => wrapper.find('Organization').props().onClose())
-    wrapper.update()
-  })
+  //   act(() => wrapper.find('Organization').props().onClose())
+  //   wrapper.update()
+  // })
 
-  it('effect', () => {
-    wrapper = mount(
-      <Organizations
-        user={user}
-        organizations={[...organizations, { id: 'id', diff: 'diff' }]}
-        swr={swr}
-      />
-    )
+  // it('effect', () => {
+  //   wrapper = mount(
+  //     <Organizations
+  //       user={user}
+  //       organizations={[...organizations, { id: 'id', diff: 'diff' }]}
+  //       swr={swr}
+  //     />
+  //   )
 
-    act(() => wrapper.find('List').props().setOrganization({ id: 'id' }))
-    wrapper.update()
-  })
+  //   act(() => wrapper.find('List').props().setOrganization({ id: 'id' }))
+  //   wrapper.update()
+  // })
 })

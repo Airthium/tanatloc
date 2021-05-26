@@ -85,15 +85,15 @@ describe('components/project/simulation/run/cloudServer', () => {
     expect(onOk).toHaveBeenCalledTimes(1)
   })
 
-  it('effect', () => {
-    wrapper.unmount()
-    wrapper = mount(<CloudServer cloudServer={cloudServer} onOk={onOk} />)
-    expect(wrapper).toBeDefined()
+  // it('effect', () => {
+  //   wrapper.unmount()
+  //   wrapper = mount(<CloudServer cloudServer={cloudServer} onOk={onOk} />)
+  //   expect(wrapper).toBeDefined()
 
-    // Error
-    wrapper.unmount()
-    mockErrorPlugins.mockImplementation(() => ({ message: 'Error' }))
-    wrapper = mount(<CloudServer cloudServer={cloudServer} onOk={onOk} />)
-    expect(mockError).toHaveBeenCalledTimes(1)
-  })
+  //   // Error
+  //   wrapper.unmount()
+  //   mockErrorPlugins.mockImplementation(() => ({ message: 'Error' }))
+  //   wrapper = mount(<CloudServer cloudServer={cloudServer} onOk={onOk} />)
+  //   expect(mockError).toHaveBeenCalledTimes(1)
+  // })
 })

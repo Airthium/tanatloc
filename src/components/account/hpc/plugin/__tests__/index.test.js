@@ -66,14 +66,14 @@ describe('component/account/hpc/plugin', () => {
     expect(wrapper.find('Spin').length).toBe(1)
   })
 
-  it('effect', () => {
-    wrapper.unmount()
-    wrapper = mount(<Plugin plugin={plugin} />)
+  // it('effect', () => {
+  //   wrapper.unmount()
+  //   wrapper = mount(<Plugin plugin={plugin} />)
 
-    // With error
-    mockErrorPlugins.mockImplementation(() => ({ message: 'Error' }))
-    wrapper.unmount()
-    wrapper = mount(<Plugin plugin={plugin} />)
-    expect(mockError).toHaveBeenCalledTimes(1)
-  })
+  //   // With error
+  //   mockErrorPlugins.mockImplementation(() => ({ message: 'Error' }))
+  //   wrapper.unmount()
+  //   wrapper = mount(<Plugin plugin={plugin} />)
+  //   expect(mockError).toHaveBeenCalledTimes(1)
+  // })
 })

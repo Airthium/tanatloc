@@ -67,9 +67,9 @@ describe('components/project/simulation/about', () => {
     expect(wrapper).toBeDefined()
   })
 
-  it('effect', () => {
-    wrapper.unmount()
-    wrapper = mount(<About simulation={simulation} swr={swr} />)
-    expect(wrapper).toBeDefined()
-  })
+  // it('effect', () => {
+  //   wrapper.unmount()
+  //   wrapper = mount(<About simulation={simulation} swr={swr} />)
+  //   expect(wrapper).toBeDefined()
+  // })
 })

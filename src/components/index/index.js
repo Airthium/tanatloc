@@ -2,22 +2,13 @@
 
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
-import { Button, Divider, Layout, Menu, Typography } from 'antd'
+import { Button, Divider, Layout, Typography } from 'antd'
 import { DashboardOutlined, LoginOutlined } from '@ant-design/icons'
 
 import Background from '@/components/background'
 import { Error } from '@/components/assets/notification'
 
 import UserAPI from '@/api/user'
-
-/**
- * Menu keys
- */
-const menuKeys = {
-  dashboard: 'dashboard',
-  signup: 'signup',
-  login: 'login'
-}
 
 /**
  * Errors

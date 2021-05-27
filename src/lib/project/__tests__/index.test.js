@@ -57,7 +57,7 @@ describe('lib/project', () => {
     mockDelSimulation.mockReset()
   })
 
-  it('add', async () => {
+  test('add', async () => {
     mockAdd.mockImplementation(() => ({ id: 'id' }))
     const project = await Project.add({}, { workspace: {}, project: {} })
     expect(mockAdd).toHaveBeenCalledTimes(1)
@@ -71,7 +71,7 @@ describe('lib/project', () => {
     expect(project).toEqual({ id: 'id' })
   })
 
-  it('get', async () => {
+  test('get', async () => {
     let project
 
     // Empty
@@ -132,7 +132,7 @@ describe('lib/project', () => {
     })
   })
 
-  it('update', async () => {
+  test('update', async () => {
     mockGet.mockImplementation(() => ({}))
     await Project.update({}, [])
     expect(mockAdd).toHaveBeenCalledTimes(0)
@@ -159,7 +159,7 @@ describe('lib/project', () => {
     expect(mockDelSimulation).toHaveBeenCalledTimes(0)
   })
 
-  it('delete', async () => {
+  test('delete', async () => {
     // Without simulations & groups
     mockGet.mockImplementation(() => ({}))
     await Project.del({}, {})

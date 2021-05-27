@@ -49,31 +49,31 @@ describe('lib/tools', () => {
     mockToThree.mockReset()
   })
 
-  it('createPath', async () => {
+  test('createPath', async () => {
     await Tools.createPath('location')
     expect(mockMkdir).toHaveBeenCalledTimes(1)
   })
 
-  it('listFiles', async () => {
+  test('listFiles', async () => {
     mockReadDir.mockImplementation(() => ['file'])
     const files = await Tools.listFiles('location')
     expect(mockReadDir).toHaveBeenCalledTimes(1)
     expect(files).toEqual(['file'])
   })
 
-  it('writeFile', async () => {
+  test('writeFile', async () => {
     await Tools.writeFile('location', {})
     expect(mockMkdir).toHaveBeenCalledTimes(1)
     expect(mockWriteFile).toHaveBeenCalledTimes(1)
   })
 
-  it('readFile', async () => {
+  test('readFile', async () => {
     const content = await Tools.readFile('file')
     expect(mockReadFile).toHaveBeenCalledTimes(1)
     expect(content).toBe('readFile')
   })
 
-  it('convert', async () => {
+  test('convert', async () => {
     // Normal
     mockToThree.mockImplementation(() => ({ code: 0 }))
     await Tools.convert('location', { name: 'name' }, () => {})
@@ -109,7 +109,7 @@ describe('lib/tools', () => {
     }
   })
 
-  it('loadPart', async () => {
+  test('loadPart', async () => {
     let part
 
     // Full
@@ -133,12 +133,12 @@ describe('lib/tools', () => {
     expect(mockReadFile).toHaveBeenCalledTimes(4 + 1)
   })
 
-  it('removeFile', async () => {
+  test('removeFile', async () => {
     await Tools.removeFile('file')
     expect(mockUnlink).toHaveBeenCalledTimes(1)
   })
 
-  it('removeDirectory', async () => {
+  test('removeDirectory', async () => {
     await Tools.removeDirectory('directory')
     expect(mockRmdir).toHaveBeenCalledTimes(1)
   })

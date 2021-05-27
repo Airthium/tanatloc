@@ -19,7 +19,7 @@ describe('lib/file', () => {
     mockReadFile.mockImplementation(() => 'readFile')
   })
 
-  it('get', async () => {
+  test('get', async () => {
     const content = await File.get(
       { id: 'id' },
       { origin: 'origin', originPath: 'originPath' }

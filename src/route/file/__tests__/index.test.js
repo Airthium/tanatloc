@@ -73,7 +73,7 @@ describe('route/file', () => {
     response = undefined
   })
 
-  it('no session', async () => {
+  test('no session', async () => {
     await file(req, res)
     expect(mockSession).toHaveBeenCalledTimes(1)
     expect(mockGetSimulation).toHaveBeenCalledTimes(0)
@@ -84,7 +84,7 @@ describe('route/file', () => {
     expect(response).toBe(undefined)
   })
 
-  it('POST', async () => {
+  test('POST', async () => {
     req.body = {
       simulation: {},
       file: {}
@@ -127,7 +127,7 @@ describe('route/file', () => {
     expect(response).toEqual({ error: true, message: 'test' })
   })
 
-  it('wrong method', async () => {
+  test('wrong method', async () => {
     req.method = 'SOMETHING'
 
     mockSession.mockImplementation(() => 'id')

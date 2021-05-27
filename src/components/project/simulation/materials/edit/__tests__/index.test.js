@@ -54,11 +54,11 @@ describe('components/project/simulation/materials/edit', () => {
     wrapper.unmount()
   })
 
-  it('render', () => {
+  test('render', () => {
     expect(wrapper).toBeDefined()
   })
 
-  it('onEdit', async () => {
+  test('onEdit', async () => {
     // Normal
     await wrapper.find('Button').props().onClick()
     expect(mockUpdate).toHaveBeenCalledTimes(1)

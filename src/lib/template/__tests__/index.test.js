@@ -27,7 +27,7 @@ describe('lib/template', () => {
     mockWriteFile.mockReset()
   })
 
-  it('render', async () => {
+  test('render', async () => {
     let script
     // Without save
     script = await Template.render('key', {})

@@ -3,7 +3,7 @@ import login from '../login'
 jest.mock('is-electron', () => () => false)
 
 describe('api/user', () => {
-  it('login', async () => {
+  test('login', async () => {
     global.fetch = async () => {
       return {
         status: 200,
@@ -15,7 +15,7 @@ describe('api/user', () => {
     expect(res).toBe('res')
   })
 
-  it('login failed', async () => {
+  test('login failed', async () => {
     global.fetch = async () => {
       return {
         status: 401

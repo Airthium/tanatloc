@@ -36,17 +36,17 @@ describe('components/account/hpc', () => {
   //   wrapper.unmount()
   // })
 
-  // it('render', () => {
+  // test('render', () => {
   //   expect(wrapper).toBeDefined()
   // })
 
-  // it('without authorizedplugins', () => {
+  // test('without authorizedplugins', () => {
   //   wrapper.unmount()
   //   wrapper = mount(<HPC user={user} />)
   //   expect(wrapper).toBeDefined()
   // })
 
-  // it('with authorized plugins', () => {
+  // test('with authorized plugins', () => {
   //   wrapper.unmount()
   //   wrapper = mount(<HPC user={{ ...user, authorizedplugins: ['plugin'] }} />)
   //   expect(wrapper).toBeDefined()

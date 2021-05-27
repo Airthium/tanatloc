@@ -21,13 +21,13 @@ describe('components/assets/button/add', () => {
     wrapper.unmount()
   })
 
-  it('render', () => {
+  test('render', () => {
     expect(wrapper).toBeDefined()
     expect(wrapper.find('Button').props().disabled).toBe(false)
     expect(wrapper.find('Button').props().loading).toBe(false)
   })
 
-  it('onAdd', () => {
+  test('onAdd', () => {
     wrapper.find('Button').props().onClick()
     expect(mockOnAdd).toHaveBeenCalledTimes(1)
   })

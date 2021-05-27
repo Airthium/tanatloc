@@ -36,43 +36,43 @@ describe('lib/three/helpers/SectionViewHelper', () => {
   const controls = {
     stop: () => {}
   }
-  it('call', () => {
+  test('call', () => {
     const sectionView = SectionViewHelper(renderer, scene, camera, controls)
     expect(sectionView).toBeDefined()
   })
 
-  it('getClippingPlane', () => {
+  test('getClippingPlane', () => {
     const sectionView = SectionViewHelper(renderer, scene, camera, controls)
     sectionView.getClippingPlane()
   })
 
-  it('start', () => {
+  test('start', () => {
     const sectionView = SectionViewHelper(renderer, scene, camera, controls)
     sectionView.start()
   })
 
-  it('toogleVisible', () => {
+  test('toogleVisible', () => {
     const sectionView = SectionViewHelper(renderer, scene, camera, controls)
     sectionView.toggleVisible()
     sectionView.toggleVisible()
   })
 
-  it('toAxis', () => {
+  test('toAxis', () => {
     const sectionView = SectionViewHelper(renderer, scene, camera, controls)
     sectionView.toAxis(new Vector3())
   })
 
-  it('flip', () => {
+  test('flip', () => {
     const sectionView = SectionViewHelper(renderer, scene, camera, controls)
     sectionView.flip()
   })
 
-  it('setMode', () => {
+  test('setMode', () => {
     const sectionView = SectionViewHelper(renderer, scene, camera, controls)
     sectionView.setMode('mode')
   })
 
-  it('mouse', () => {
+  test('mouse', () => {
     const sectionView = SectionViewHelper(renderer, scene, camera, controls)
     mouseDown({})
     mouseMove({ target: { getBoundingClientRect: () => ({}) } })
@@ -94,12 +94,12 @@ describe('lib/three/helpers/SectionViewHelper', () => {
     mouseUp({})
   })
 
-  it('stop', () => {
+  test('stop', () => {
     const sectionView = SectionViewHelper(renderer, scene, camera, controls)
     sectionView.stop()
   })
 
-  it('dispose', () => {
+  test('dispose', () => {
     global.MockGroup.children = [
       {
         geometry: {

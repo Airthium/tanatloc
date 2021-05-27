@@ -1,7 +1,7 @@
 import NavierStokesTime from '../navierStokesTime'
 
 describe('models/navierStokesTime', () => {
-  it('description', () => {
+  test('description', () => {
     expect(NavierStokesTime).toBeDefined()
   })
 })

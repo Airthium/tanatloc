@@ -23,7 +23,7 @@ describe('lib/plugin', () => {
     mockUpdate.mockReset()
   })
 
-  it('add', async () => {
+  test('add', async () => {
     // Normal
     await Plugin.add({ id: 'id' }, {})
     expect(mockGet).toHaveBeenCalledTimes(1)
@@ -44,7 +44,7 @@ describe('lib/plugin', () => {
     expect(mockInit).toHaveBeenCalledTimes(1)
   })
 
-  it('getByUser', async () => {
+  test('getByUser', async () => {
     let plugins
 
     plugins = await Plugin.getByUser({ id: 'id' })
@@ -55,7 +55,7 @@ describe('lib/plugin', () => {
     expect(plugins).toEqual([{}])
   })
 
-  it('update', async () => {
+  test('update', async () => {
     // No plugins
     await Plugin.update({ id: 'id' }, { uuid: 'uuid' })
     expect(mockGet).toHaveBeenCalledTimes(1)
@@ -94,7 +94,7 @@ describe('lib/plugin', () => {
     expect(mockUpdate).toHaveBeenCalledTimes(3)
   })
 
-  it('del', async () => {
+  test('del', async () => {
     // No plugins
     await Plugin.del({ id: 'id' }, { uuid: 'uuid' })
     expect(mockGet).toHaveBeenCalledTimes(1)

@@ -1,3 +1,7 @@
+/**
+ * @jest-environment node
+ */
+
 import createDatabase from '../dB'
 
 const mockQuery = jest.fn()
@@ -26,7 +30,7 @@ describe('install/dB', () => {
     mockQuery.mockImplementation(() => ({ rows: [{}] }))
   })
 
-  it('alreadyExists', async () => {
+  test('alreadyExists', async () => {
     mockClient.mockImplementation(() => ({
       query: async () => ({
         rowCount: 1
@@ -36,16 +40,16 @@ describe('install/dB', () => {
     await createDatabase()
   })
 
-  it('database error', async () => {
+  test('database error', async () => {
     mockClient.mockImplementation(() => ({}))
     await createDatabase()
   })
 
-  it('empty', async () => {
+  test('empty', async () => {
     await createDatabase()
   })
 
-  it('admin & exists', async () => {
+  test('admin & exists', async () => {
     let fix = true
     mockQuery.mockImplementation((query) => {
       if (query.includes('SELECT id FROM')) return { rows: [] }
@@ -97,7 +101,7 @@ describe('install/dB', () => {
     await createDatabase()
   })
 
-  it('tables error', async () => {
+  test('tables error', async () => {
     mockQuery.mockImplementation(() => {
       throw new Error()
     })

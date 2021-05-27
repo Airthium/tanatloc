@@ -49,12 +49,12 @@ describe('lib/three/helpers/SelectionHelper', () => {
     stop: () => {}
   }
 
-  it('call', () => {
+  test('call', () => {
     const selection = SelectionHelper(renderer, scene, camera, controls)
     expect(selection).toBeDefined()
   })
 
-  it('events', () => {
+  test('events', () => {
     const selection = SelectionHelper(renderer, scene, camera, controls)
     mouseDown()
     mouseMove()
@@ -68,7 +68,7 @@ describe('lib/three/helpers/SelectionHelper', () => {
     mouseUp({})
   })
 
-  it('element parentElement', () => {
+  test('element parentElement', () => {
     document.createElement = () => ({
       style: {},
       parentElement: {
@@ -81,7 +81,7 @@ describe('lib/three/helpers/SelectionHelper', () => {
     mouseUp({})
   })
 
-  it('raycaster', () => {
+  test('raycaster', () => {
     global.MockRaycaster.intersectObjects = [{}]
     const selection = SelectionHelper(renderer, scene, camera, controls)
     selection.start()
@@ -89,12 +89,12 @@ describe('lib/three/helpers/SelectionHelper', () => {
     mouseUp({})
   })
 
-  it('isEnabled', () => {
+  test('isEnabled', () => {
     const selection = SelectionHelper(renderer, scene, camera, controls)
     expect(selection.isEnabled()).toBe(false)
   })
 
-  it('dispose', () => {
+  test('dispose', () => {
     const selection = SelectionHelper(renderer, scene, camera, controls)
     selection.dispose()
   })

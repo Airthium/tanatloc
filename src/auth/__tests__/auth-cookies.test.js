@@ -10,7 +10,7 @@ jest.mock('is-electron', () => () => false)
 jest.mock('electron-store', () => {})
 
 describe('auth/auth-cookies', () => {
-  it('setTokenCookie', () => {
+  test('setTokenCookie', () => {
     let header
     const res = {
       setHeader: (type, value) => {
@@ -21,7 +21,7 @@ describe('auth/auth-cookies', () => {
     expect(header).toBe('cookie')
   })
 
-  it('removeTokenCookie', () => {
+  test('removeTokenCookie', () => {
     let header
     const res = {
       setHeader: (type, value) => {
@@ -32,7 +32,7 @@ describe('auth/auth-cookies', () => {
     expect(header).toBe('cookie')
   })
 
-  it('parseCookies', () => {
+  test('parseCookies', () => {
     let res
 
     // Empty
@@ -54,7 +54,7 @@ describe('auth/auth-cookies', () => {
     expect(res).toEqual('cookie')
   })
 
-  it('getTokenCookie', () => {
+  test('getTokenCookie', () => {
     const req = {
       cookies: { token: 'cookie' }
     }

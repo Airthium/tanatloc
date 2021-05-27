@@ -45,11 +45,11 @@ describe('components/account/information', () => {
     wrapper.unmount()
   })
 
-  it('render', () => {
+  test('render', () => {
     expect(wrapper).toBeDefined()
   })
 
-  it('with avatar', () => {
+  test('with avatar', () => {
     wrapper.unmount()
     wrapper = shallow(
       <Information
@@ -60,7 +60,7 @@ describe('components/account/information', () => {
     expect(wrapper).toBeDefined()
   })
 
-  it('onFinish', async () => {
+  test('onFinish', async () => {
     // Normal
     await wrapper.find('ForwardRef(InternalForm)').props().onFinish({})
     expect(mockUpdate).toHaveBeenCalledTimes(1)
@@ -83,11 +83,11 @@ describe('components/account/information', () => {
     expect(mockError).toHaveBeenCalledTimes(1)
   })
 
-  it('onCancel', () => {
+  test('onCancel', () => {
     wrapper.find('Button').at(2).props().onClick()
   })
 
-  it('beforeUpload', () => {
+  test('beforeUpload', () => {
     let res
 
     // Wrong
@@ -105,7 +105,7 @@ describe('components/account/information', () => {
     expect(res).toBe(true)
   })
 
-  it('onChange', async () => {
+  test('onChange', async () => {
     // Uploading
     await wrapper
       .find('Upload')

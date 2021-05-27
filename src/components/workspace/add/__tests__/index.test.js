@@ -33,11 +33,11 @@ describe('components/workspace/add', () => {
     wrapper.unmount()
   })
 
-  it('render', () => {
+  test('render', () => {
     expect(wrapper).toBeDefined()
   })
 
-  it('setVisible', () => {
+  test('setVisible', () => {
     // Visible
     wrapper.find('Button').props().onClick()
 
@@ -45,7 +45,7 @@ describe('components/workspace/add', () => {
     wrapper.find('Dialog').props().onCancel()
   })
 
-  it('onOk', async () => {
+  test('onOk', async () => {
     // Normal
     mockAdd.mockImplementation(() => ({}))
     await wrapper.find('Dialog').props().onOk()

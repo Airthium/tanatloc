@@ -49,11 +49,11 @@ describe('components/assets/groups', () => {
     wrapper.unmount()
   })
 
-  it('render', () => {
+  test('render', () => {
     expect(wrapper).toBeDefined()
   })
 
-  it('setVisible', () => {
+  test('setVisible', () => {
     // Visible
     wrapper.find('Button').props().onClick()
 
@@ -61,7 +61,7 @@ describe('components/assets/groups', () => {
     wrapper.find('Dialog').props().onCancel()
   })
 
-  it('onAdd', async () => {
+  test('onAdd', async () => {
     // Normal
     mockAdd.mockImplementation(() => ({}))
     await wrapper.find('Dialog').props().onOk({})
@@ -81,7 +81,7 @@ describe('components/assets/groups', () => {
     expect(mockError).toHaveBeenCalledTimes(1)
   })
 
-  it('edit', () => {
+  test('edit', () => {
     wrapper.unmount()
     wrapper = shallow(
       <Group
@@ -94,7 +94,7 @@ describe('components/assets/groups', () => {
     expect(wrapper).toBeDefined()
   })
 
-  it('onUpdate', async () => {
+  test('onUpdate', async () => {
     wrapper.unmount()
     wrapper = shallow(
       <Group
@@ -132,7 +132,7 @@ describe('components/assets/groups', () => {
     expect(mockError).toHaveBeenCalledTimes(1)
   })
 
-  it('propTypes', () => {
+  test('propTypes', () => {
     let res
     const swrProp = Group.propTypes.swr
 

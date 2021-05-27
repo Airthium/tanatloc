@@ -1,7 +1,7 @@
 import Error from '..'
 
 describe('components/assets/notification', () => {
-  it('call', () => {
+  test('call', () => {
     Error('test', { message: 'test' })
   })
 })

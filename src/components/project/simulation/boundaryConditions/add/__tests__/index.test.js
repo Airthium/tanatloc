@@ -58,11 +58,11 @@ describe('components/project/simulation/boundaryConditions/add', () => {
     wrapper.unmount()
   })
 
-  it('render', () => {
+  test('render', () => {
     expect(wrapper).toBeDefined()
   })
 
-  it('onAdd', async () => {
+  test('onAdd', async () => {
     await wrapper.find('Button').props().onClick()
     expect(mockUpdate).toHaveBeenCalledTimes(1)
     expect(mutateOneSimulation).toHaveBeenCalledTimes(1)

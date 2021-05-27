@@ -21,17 +21,17 @@ jest.mock('@/config/db', () => {
 })
 
 describe('database', () => {
-  it('query', async () => {
+  test('query', async () => {
     const res = await query()
     expect(res).toBe('query')
   })
 
-  it('getter', async () => {
+  test('getter', async () => {
     const get = await getter('db', 'id', [])
     expect(get).toBe('query')
   })
 
-  it('updater', async () => {
+  test('updater', async () => {
     await updater('db', 'id', [
       { key: 'key1' },
       { key: 'key2', type: 'crypt' },
@@ -80,7 +80,7 @@ describe('database', () => {
     }
   })
 
-  it('deleter', async () => {
+  test('deleter', async () => {
     await deleter()
   })
 })

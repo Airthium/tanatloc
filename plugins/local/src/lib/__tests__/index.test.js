@@ -61,11 +61,11 @@ describe('plugins/local/src/lib', () => {
     mockFreefem.mockReset()
   })
 
-  it('key', () => {
+  test('key', () => {
     expect(Local.key).toBeDefined()
   })
 
-  it('computeMesh', async () => {
+  test('computeMesh', async () => {
     // Normal
     mockPath.mockImplementation(() => 'partPath')
     mockGmsh.mockImplementation(() => 0)
@@ -123,7 +123,7 @@ describe('plugins/local/src/lib', () => {
     }
   })
 
-  it('computeSimulation', async () => {
+  test('computeSimulation', async () => {
     mockFreefem.mockImplementation((path, script, callback) => {
       callback({ pid: 'pid' })
       callback({ error: 'data' })
@@ -274,7 +274,7 @@ describe('plugins/local/src/lib', () => {
     await processOutput()
   })
 
-  it('stop', async () => {
+  test('stop', async () => {
     const mockKill = jest.spyOn(process, 'kill').mockImplementation(() => {})
     await Local.stop([{ status: 'wait' }, { status: 'process' }])
     expect(mockKill).toHaveBeenCalledTimes(1)

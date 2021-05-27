@@ -6,7 +6,7 @@ jest.mock('swr', () => () => ({
 }))
 
 describe('api/system/useSystem', () => {
-  it('useSystem', () => {
+  test('useSystem', () => {
     const [system, { mutateSystem, loadingSystem }] = useSystem()
     expect(system).toEqual({ item: 'item' })
     expect(mutateSystem).toBeDefined()

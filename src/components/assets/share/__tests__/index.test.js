@@ -45,11 +45,11 @@ describe('components/project/share', () => {
     wrapper.unmount()
   })
 
-  it('render', () => {
+  test('render', () => {
     expect(wrapper).toBeDefined()
   })
 
-  it('render with workspace', () => {
+  test('render with workspace', () => {
     wrapper.unmount()
     wrapper = shallow(
       <Share
@@ -61,7 +61,7 @@ describe('components/project/share', () => {
     expect(wrapper).toBeDefined()
   })
 
-  it('setVisible', () => {
+  test('setVisible', () => {
     // Visible
     wrapper.find('Button').props().onClick()
 
@@ -69,11 +69,11 @@ describe('components/project/share', () => {
     wrapper.find('Dialog').props().onCancel()
   })
 
-  it('onSelectChange', () => {
+  test('onSelectChange', () => {
     wrapper.find('ForwardRef(InternalTreeSelect)').props().onChange()
   })
 
-  it('onShare', async () => {
+  test('onShare', async () => {
     // Normal
     await wrapper.find('Dialog').props().onOk()
     expect(mockProjectUpdate).toHaveBeenCalledTimes(1)
@@ -90,7 +90,7 @@ describe('components/project/share', () => {
     expect(mockError).toHaveBeenCalledTimes(1)
   })
 
-  it('onShare with workspace', async () => {
+  test('onShare with workspace', async () => {
     wrapper.unmount()
     wrapper = shallow(
       <Share
@@ -116,7 +116,7 @@ describe('components/project/share', () => {
     expect(mockError).toHaveBeenCalledTimes(1)
   })
 
-  // it('effect', () => {
+  // test('effect', () => {
   //   // Emty organizations
   //   wrapper.unmount()
   //   wrapper = mount(
@@ -150,7 +150,7 @@ describe('components/project/share', () => {
   //   )
   // })
 
-  // it('effect with workspace', () => {
+  // test('effect with workspace', () => {
   //   // Emty organizations
   //   wrapper.unmount()
   //   wrapper = mount(
@@ -188,7 +188,7 @@ describe('components/project/share', () => {
   //   )
   // })
 
-  it('propTypes', () => {
+  test('propTypes', () => {
     let res
 
     // Project

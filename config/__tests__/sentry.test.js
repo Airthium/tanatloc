@@ -1,5 +1,9 @@
+/**
+ * @jest-environment node
+ */
+
 describe('config/sentry', () => {
-  it('global', () => {
+  test('global', () => {
     const config = require('../sentry')
     expect(config.DSN).toBe('')
   })

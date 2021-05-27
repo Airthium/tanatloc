@@ -74,26 +74,26 @@ describe('components/project/simulation/boundaryConditions', () => {
     wrapper.unmount()
   })
 
-  it('render', () => {
+  test('render', () => {
     expect(wrapper).toBeDefined()
   })
 
-  it('onAdd', () => {
+  test('onAdd', () => {
     wrapper.find('AddButton').props().onAdd()
     expect(mockEnable).toHaveBeenCalledTimes(1)
   })
 
-  it('onEdit', () => {
+  test('onEdit', () => {
     wrapper.find('List').props().onEdit('dirichlet', 0)
     expect(mockEnable).toHaveBeenCalledTimes(1)
   })
 
-  it('onClose', () => {
+  test('onClose', () => {
     wrapper.find('BoundaryCondition').props().close()
     expect(mockDisable).toHaveBeenCalledTimes(1)
   })
 
-  // it('effect', () => {
+  // test('effect', () => {
   //   wrapper.unmount()
   //   wrapper = mount(
   //     <BoundaryConditions

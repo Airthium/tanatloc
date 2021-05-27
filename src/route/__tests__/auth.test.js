@@ -11,7 +11,7 @@ jest.mock('@/lib/organization', () => ({
 }))
 
 describe('route/auth', () => {
-  it('authorized', async () => {
+  test('authorized', async () => {
     let res
 
     res = await auth('id', { owners: [{ id: 'id' }] })
@@ -46,7 +46,7 @@ describe('route/auth', () => {
     expect(res).toBe(true)
   })
 
-  it('not authorized', async () => {
+  test('not authorized', async () => {
     let res
 
     res = await auth('id', {})

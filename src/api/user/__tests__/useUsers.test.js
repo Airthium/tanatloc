@@ -7,7 +7,7 @@ jest.mock('swr', () => () => ({
 }))
 
 describe('api/users', () => {
-  it('with users', () => {
+  test('with users', () => {
     mockUsers.mockImplementation(() => [{ id: 'id' }])
     const [users, { addOneUser, mutateOneUser, delOneUser, loadingUsers }] =
       useUsers()
@@ -23,7 +23,7 @@ describe('api/users', () => {
     expect(loadingUsers).toBe(false)
   })
 
-  it('without users', () => {
+  test('without users', () => {
     mockUsers.mockImplementation(() => {})
     const [users] = useUsers()
     expect(users).toEqual([])

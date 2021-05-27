@@ -7,7 +7,7 @@ jest.mock('../..', () => {
 })
 
 describe('database/query/user/getByUsernameAndPassword', () => {
-  it('call', async () => {
+  test('call', async () => {
     const res = await getByUsernameAndPassword({})
     expect(res).toEqual({ id: 'id' })
   })

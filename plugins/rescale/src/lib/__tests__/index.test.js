@@ -86,7 +86,7 @@ describe('plugins/rescale/src/lib', () => {
     mockCall.mockReset()
   })
 
-  it('init', async () => {
+  test('init', async () => {
     // Normal
     mockCall.mockImplementation(() => ({ results: [{}] }))
     mockGetFreeFEM.mockImplementation(() => [{}])
@@ -118,9 +118,7 @@ describe('plugins/rescale/src/lib', () => {
     }
   })
 
-  it('computeSimulation', async () => {
-    jest.setTimeout(20000)
-
+  test('computeSimulation', async () => {
     mockUploadFile.mockImplementation(() => ({}))
     mockGetStatus.mockImplementation(() => 'Completed')
     mockGetInRunFiles.mockImplementation(() => [])
@@ -300,9 +298,9 @@ describe('plugins/rescale/src/lib', () => {
     } catch (err) {
       expect(true).toBe(true)
     }
-  })
+  }, 20000)
 
-  it('stop', async () => {
+  test('stop', async () => {
     const tasks = [
       {
         status: 'other'

@@ -6,7 +6,7 @@ jest.mock('../..', () => async (query) => {
 })
 
 describe('database/user/add', () => {
-  it('call', async () => {
+  test('call', async () => {
     let user
 
     // New

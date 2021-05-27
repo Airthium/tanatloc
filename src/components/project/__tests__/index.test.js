@@ -127,25 +127,25 @@ describe('components/project', () => {
     wrapper.unmount()
   })
 
-  it('render', () => {
+  test('render', () => {
     expect(wrapper).toBeDefined()
   })
 
-  it('loading', () => {
+  test('loading', () => {
     wrapper.unmount()
     mockUserLoading.mockImplementation(() => true)
     wrapper = shallow(<Project />)
     expect(wrapper).toBeDefined()
   })
 
-  it('without configuration', () => {
+  test('without configuration', () => {
     wrapper.unmount()
     mockSimulations.mockImplementation(() => [{ scheme: {} }])
     wrapper = shallow(<Project />)
     expect(wrapper).toBeDefined()
   })
 
-  it('with subMenus', () => {
+  test('with subMenus', () => {
     wrapper.unmount()
     mockSimulations.mockImplementation(() => [
       {
@@ -176,13 +176,13 @@ describe('components/project', () => {
     wrapper = shallow(<Project />)
   })
 
-  it('Unauthorized', () => {
+  test('Unauthorized', () => {
     wrapper.unmount()
     mockProject.mockImplementation(() => 'Unauthorized')
     wrapper = shallow(<Project />)
   })
 
-  it('handleTitle', async () => {
+  test('handleTitle', async () => {
     await wrapper.find('Title').props().editable.onChange('title')
     expect(mockUpdate).toHaveBeenCalledTimes(1)
     expect(mockMutateProject).toHaveBeenCalledTimes(1)
@@ -195,17 +195,17 @@ describe('components/project', () => {
     await wrapper.find('Title').props().editable.onChange('title')
   })
 
-  it('handleDashboard', () => {
+  test('handleDashboard', () => {
     wrapper.find('GoBack').props().onClick()
     expect(mockRouter).toHaveBeenCalledTimes(1)
   })
 
-  it('addSimulation', () => {
+  test('addSimulation', () => {
     wrapper.find('Button').props().onClick()
     expect(wrapper.find('Selector').props().visible).toBe(true)
   })
 
-  it('selectorOk', async () => {
+  test('selectorOk', async () => {
     await wrapper.find('Selector').props().onOk({ configuration: {} })
 
     expect(wrapper.find('Menu').props().children.length).toBe(6)
@@ -225,12 +225,12 @@ describe('components/project', () => {
     await wrapper.find('Selector').props().onOk({ configuration: {} })
   })
 
-  it('selector cancel', () => {
+  test('selector cancel', () => {
     wrapper.find('Selector').props().onCancel()
     expect(wrapper.find('Selector').props().visible).toBe(false)
   })
 
-  it('select simulation', async () => {
+  test('select simulation', async () => {
     // Add simulation first
     await wrapper
       .find('Selector')
@@ -249,16 +249,16 @@ describe('components/project', () => {
       .onClick({ key: 'simulation&0&geometry', keyPath: [] })
   })
 
-  it('unknow key', () => {
+  test('unknow key', () => {
     wrapper.find('Menu').props().onClick({ key: 'unknow', keyPath: [] })
   })
 
-  it('simulation close', () => {
+  test('simulation close', () => {
     wrapper.find('Simulation').props().onClose()
     expect(wrapper.find('Simulation').props().simulation).toBe(undefined)
   })
 
-  // it('user effect', () => {
+  // test('user effect', () => {
   //   wrapper.unmount()
 
   //   // With user
@@ -272,7 +272,7 @@ describe('components/project', () => {
   //   expect(mockRouter).toHaveBeenCalledTimes(1)
   // })
 
-  // it('simulation effect', () => {
+  // test('simulation effect', () => {
   //   // Update
   //   wrapper.unmount()
   //   const mockTitle = jest.fn(() => 'title')

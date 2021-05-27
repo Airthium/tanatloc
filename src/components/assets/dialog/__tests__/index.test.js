@@ -53,17 +53,17 @@ describe('components/assets/dialog', () => {
     wrapper.unmount()
   })
 
-  it('render', () => {
+  test('render', () => {
     expect(wrapper).toBeDefined()
   })
 
-  it('onCancel', () => {
+  test('onCancel', () => {
     wrapper.find('Modal').props().onCancel()
     expect(mockResetFields).toHaveBeenCalledTimes(1)
     expect(mockOnCancel).toHaveBeenCalledTimes(1)
   })
 
-  it('onOk', async () => {
+  test('onOk', async () => {
     // Normal
     await wrapper.find('Modal').props().onOk()
     expect(mockOnOk).toHaveBeenCalledTimes(1)
@@ -93,7 +93,7 @@ describe('components/assets/dialog', () => {
     await wrapper.find('Modal').props().onOk()
   })
 
-  // it('effect', () => {
+  // test('effect', () => {
   //   wrapper.unmount()
   //   wrapper = mount(
   //     <Dialog

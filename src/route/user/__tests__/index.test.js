@@ -55,7 +55,7 @@ describe('route/user', () => {
     response = undefined
   })
 
-  it('GET', async () => {
+  test('GET', async () => {
     // No session
     await user(req, res)
     expect(mockSession).toHaveBeenCalledTimes(1)
@@ -95,7 +95,7 @@ describe('route/user', () => {
     expect(response).toEqual({ error: true, message: 'test' })
   })
 
-  it('POST', async () => {
+  test('POST', async () => {
     req.method = 'POST'
 
     await user(req, res)
@@ -123,7 +123,7 @@ describe('route/user', () => {
     expect(response).toEqual({ error: true, message: 'test' })
   })
 
-  it('PUT', async () => {
+  test('PUT', async () => {
     req.method = 'PUT'
 
     // No session
@@ -161,7 +161,7 @@ describe('route/user', () => {
     expect(response).toEqual({ error: true, message: 'test' })
   })
 
-  it('DELETE', async () => {
+  test('DELETE', async () => {
     req.method = 'DELETE'
 
     // No session
@@ -199,7 +199,7 @@ describe('route/user', () => {
     expect(response).toEqual({ error: true, message: 'test' })
   })
 
-  it('wrong method', async () => {
+  test('wrong method', async () => {
     req.method = 'SOMETHING'
 
     await user(req, res)

@@ -52,7 +52,7 @@ jest.mock('@/lib/sentry', () => ({
 }))
 
 describe('route/login', () => {
-  it('login', () => {
+  test('login', () => {
     expect(login).toBeDefined()
   })
 })

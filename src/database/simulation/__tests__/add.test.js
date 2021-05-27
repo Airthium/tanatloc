@@ -5,7 +5,7 @@ jest.mock('../..', () => async () => {
 })
 
 describe('database/simulation/add', () => {
-  it('call', async () => {
+  test('call', async () => {
     const res = await add({ name: 'name', scheme: {} })
     expect(res).toEqual({
       id: 'id',

@@ -1,3 +1,7 @@
+/**
+ * @jest-environment node
+ */
+
 const { convert } = require('..')
 
 jest.mock('path', () => ({
@@ -14,7 +18,7 @@ describe('modules/three-to-glb', () => {
     mockExec.mockReset()
   })
 
-  it('convert', () => {
+  test('convert', () => {
     convert('location', 'name')
     expect(mockExec).toHaveBeenCalledTimes(1)
   })

@@ -24,11 +24,11 @@ describe('components/assets/formula', () => {
     wrapper.unmount()
   })
 
-  it('render', () => {
+  test('render', () => {
     expect(wrapper).toBeDefined()
   })
 
-  it('with checkbox', () => {
+  test('with checkbox', () => {
     wrapper.unmount()
     wrapper = shallow(
       <Formula
@@ -43,7 +43,7 @@ describe('components/assets/formula', () => {
     expect(wrapper.find('Checkbox').length).toBe(1)
   })
 
-  it('onCheckboxChange', () => {
+  test('onCheckboxChange', () => {
     wrapper.unmount()
     wrapper = shallow(
       <Formula
@@ -69,7 +69,7 @@ describe('components/assets/formula', () => {
     expect(checked).toBe(true)
   })
 
-  it('onInputChange', () => {
+  test('onInputChange', () => {
     let value
     onValueChange.mockImplementation((val) => (value = val))
     wrapper
@@ -93,7 +93,7 @@ describe('components/assets/formula', () => {
       })
   })
 
-  // it('effect', () => {
+  // test('effect', () => {
   //   wrapper.unmount()
 
   //   wrapper = mount(<Formula value="value" onChange={() => {}} />)

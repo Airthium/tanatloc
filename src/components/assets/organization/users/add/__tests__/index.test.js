@@ -39,11 +39,11 @@ describe('componenets/assets/organization/users/add', () => {
     wrapper.unmount()
   })
 
-  it('render', () => {
+  test('render', () => {
     expect(wrapper).toBeDefined()
   })
 
-  it('setVisible', () => {
+  test('setVisible', () => {
     // Visible
     wrapper.find('Button').props().onClick()
 
@@ -51,7 +51,7 @@ describe('componenets/assets/organization/users/add', () => {
     wrapper.find('Dialog').props().onCancel()
   })
 
-  it('onFinish', async () => {
+  test('onFinish', async () => {
     // Normal
     await wrapper.find('Dialog').props().onOk({})
     expect(mockUpdate).toHaveBeenCalledTimes(1)

@@ -23,17 +23,17 @@ describe('lib/three/helpers/ColorbarHelper', () => {
     }
   ]
 
-  it('call', () => {
+  test('call', () => {
     const colorbarHelper = ColorbarHelper(renderer, scene)
     expect(colorbarHelper).toBeDefined()
   })
 
-  it('setVisible', () => {
+  test('setVisible', () => {
     const colorbarHelper = ColorbarHelper(renderer, scene)
     colorbarHelper.setVisible(true)
   })
 
-  it('setLUT', () => {
+  test('setLUT', () => {
     const colorbarHelper = ColorbarHelper(renderer, scene)
     colorbarHelper.setLUT({
       createCanvas: jest.fn(),
@@ -54,7 +54,7 @@ describe('lib/three/helpers/ColorbarHelper', () => {
     })
   })
 
-  it('render', () => {
+  test('render', () => {
     const colorbarHelper = ColorbarHelper(renderer, scene)
     colorbarHelper.render()
   })

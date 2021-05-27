@@ -18,17 +18,17 @@ describe('components/error', () => {
     wrapper.unmount()
   })
 
-  it('render', () => {
+  test('render', () => {
     expect(wrapper).toBeDefined()
   })
 
-  it('with statusCode', () => {
+  test('with statusCode', () => {
     wrapper.unmount()
     wrapper = shallow(<Error statusCode={200} />)
     expect(wrapper).toBeDefined()
   })
 
-  it('getInitialProps', () => {
+  test('getInitialProps', () => {
     let code
 
     const res = {}

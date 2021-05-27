@@ -35,11 +35,11 @@ describe('components/project/edit', () => {
     wrapper.unmount()
   })
 
-  it('render', () => {
+  test('render', () => {
     expect(wrapper).toBeDefined()
   })
 
-  it('setVisible', () => {
+  test('setVisible', () => {
     // Visible
     wrapper.find('Button').props().onClick()
 
@@ -47,7 +47,7 @@ describe('components/project/edit', () => {
     wrapper.find('Dialog').props().onCancel()
   })
 
-  it('onEdit', async () => {
+  test('onEdit', async () => {
     // Normal
     await wrapper.find('Dialog').props().onOk({})
     expect(mockUpdate).toHaveBeenCalledTimes(1)

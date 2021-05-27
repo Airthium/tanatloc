@@ -1,3 +1,7 @@
+/**
+ * @jest-environment node
+ */
+
 import createPaths from '../storage'
 
 const mockMkdir = jest.fn()
@@ -8,11 +12,11 @@ jest.mock('fs', () => ({
 }))
 
 describe('install/storage', () => {
-  it('normal', async () => {
+  test('normal', async () => {
     await createPaths()
   })
 
-  it('exists', async () => {
+  test('exists', async () => {
     mockMkdir.mockImplementation(() => {
       const error = new Error()
       error.code = 'EEXIST'
@@ -21,7 +25,7 @@ describe('install/storage', () => {
     await createPaths()
   })
 
-  it('error', async () => {
+  test('error', async () => {
     mockMkdir.mockImplementation(() => {
       throw new Error()
     })

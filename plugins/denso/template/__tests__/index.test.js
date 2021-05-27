@@ -1,7 +1,7 @@
 import Template from '..'
 
 describe('plugins/denso/template', () => {
-  it('exists', () => {
+  test('exists', () => {
     expect(Template).toEqual({
       key: 'denso',
       path: './plugins/denso/template',

@@ -11,7 +11,7 @@ describe('route/groups', () => {
     })
   }
 
-  it('call', async () => {
+  test('call', async () => {
     await groups(req, res)
     expect(response).toEqual({ groups: [] })
   })

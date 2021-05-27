@@ -6,7 +6,7 @@ jest.mock('../..', () => ({
 }))
 
 describe('database/system/update', () => {
-  it('call', async () => {
+  test('call', async () => {
     await update(['item'])
     expect(mockUpdater).toHaveBeenCalledTimes(1)
   })

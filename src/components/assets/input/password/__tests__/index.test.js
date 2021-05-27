@@ -16,7 +16,7 @@ describe('components/assets/input/password', () => {
     wrapper.unmount()
   })
 
-  it('with system password', async () => {
+  test('with system password', async () => {
     mockSystem.mockImplementation(() => ({
       allowsignup: true,
       password: {
@@ -81,7 +81,7 @@ describe('components/assets/input/password', () => {
     await validator(null, 'abcd1234&')
   })
 
-  it('without system password', async () => {
+  test('without system password', async () => {
     mockSystem.mockImplementation(() => ({
       allowsignup: true,
       password: {

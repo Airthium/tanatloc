@@ -6,7 +6,7 @@ const mockFetch = jest.fn()
 jest.mock('node-fetch', () => async () => mockFetch())
 
 describe('plugins/rescale/src/lib/call', () => {
-  it('json', async () => {
+  test('json', async () => {
     mockFetch.mockImplementation(() => ({
       headers: {
         get: () => 'application/json'
@@ -16,7 +16,7 @@ describe('plugins/rescale/src/lib/call', () => {
     await call({})
   })
 
-  it('json with next', async () => {
+  test('json with next', async () => {
     let count = 0
     mockFetch.mockImplementation(() => {
       count++
@@ -33,7 +33,7 @@ describe('plugins/rescale/src/lib/call', () => {
     await call({})
   })
 
-  it('text/plain', async () => {
+  test('text/plain', async () => {
     mockFetch.mockImplementation(() => {
       return {
         headers: {
@@ -45,7 +45,7 @@ describe('plugins/rescale/src/lib/call', () => {
     await call({})
   })
 
-  it('application/octet-stream', async () => {
+  test('application/octet-stream', async () => {
     mockFetch.mockImplementation(() => {
       return {
         headers: {
@@ -57,7 +57,7 @@ describe('plugins/rescale/src/lib/call', () => {
     await call({})
   })
 
-  it('non json', async () => {
+  test('non json', async () => {
     mockFetch.mockImplementation(() => ({
       headers: {
         get: () => 'other'
@@ -66,7 +66,7 @@ describe('plugins/rescale/src/lib/call', () => {
     await call({})
   })
 
-  it('error', async () => {
+  test('error', async () => {
     mockFetch.mockImplementation(() => {
       throw new Error()
     })

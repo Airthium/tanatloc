@@ -2,8 +2,6 @@ import List from '..'
 import { shallow, mount } from 'enzyme'
 import { act } from 'react-dom/test-utils'
 
-import '@/config/jest/mockMatchMedia'
-
 jest.mock('next/router', () => ({
   useRouter: () => [{ push: () => {} }]
 }))
@@ -62,11 +60,11 @@ describe('component/project/list', () => {
     wrapper.unmount()
   })
 
-  it('render', () => {
+  test('render', () => {
     expect(wrapper).toBeDefined()
   })
 
-  // it('mount', () => {
+  // test('mount', () => {
   //   wrapper.unmount()
   //   wrapper = mount(
   //     <List
@@ -81,7 +79,7 @@ describe('component/project/list', () => {
   //   expect(wrapper).toBeDefined()
   // })
 
-  // it('with projects', () => {
+  // test('with projects', () => {
   //   wrapper.unmount()
   //   wrapper = mount(
   //     <List

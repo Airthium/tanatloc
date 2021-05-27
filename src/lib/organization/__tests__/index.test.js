@@ -48,7 +48,7 @@ describe('lib/organization', () => {
     mockGroupDel.mockReset()
   })
 
-  it('add', async () => {
+  test('add', async () => {
     mockAdd.mockImplementation(() => ({ id: 'id' }))
     const organization = await Organization.add({}, {})
     expect(mockAdd).toHaveBeenCalledTimes(1)
@@ -56,14 +56,14 @@ describe('lib/organization', () => {
     expect(organization).toEqual({ id: 'id' })
   })
 
-  it('get', async () => {
+  test('get', async () => {
     mockGet.mockImplementation(() => ({ name: 'name' }))
     const organization = await Organization.get('id', ['data'])
     expect(mockGet).toHaveBeenCalledTimes(1)
     expect(organization).toEqual({ name: 'name' })
   })
 
-  it('getByUsers', async () => {
+  test('getByUsers', async () => {
     let organizations
 
     // Minimal
@@ -127,7 +127,7 @@ describe('lib/organization', () => {
     ])
   })
 
-  it('update', async () => {
+  test('update', async () => {
     // Minimal
     await Organization.update({}, [{ key: 'test' }])
     expect(mockUpdate).toHaveBeenCalledTimes(1)
@@ -153,7 +153,7 @@ describe('lib/organization', () => {
     expect(mockUserUpdate).toHaveBeenCalledTimes(4)
   })
 
-  it('del', async () => {
+  test('del', async () => {
     // Minimal
     mockGet.mockImplementation(() => ({ name: 'name' }))
     await Organization.del({})

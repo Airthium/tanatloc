@@ -63,11 +63,11 @@ describe('components/project/simulation/boundaryConditions/boundaryCondition', (
     wrapper.unmount()
   })
 
-  it('render', () => {
+  test('render', () => {
     expect(wrapper).toBeDefined()
   })
 
-  // it('without boundaryConditions', () => {
+  // test('without boundaryConditions', () => {
   //   wrapper.unmount()
   //   wrapper = mount(
   //     <BoundaryCondition
@@ -82,7 +82,7 @@ describe('components/project/simulation/boundaryConditions/boundaryCondition', (
   //   expect(wrapper).toBeDefined()
   // })
 
-  it('onName', () => {
+  test('onName', () => {
     wrapper
       .find('Card')
       .at(0)
@@ -90,7 +90,7 @@ describe('components/project/simulation/boundaryConditions/boundaryCondition', (
       .children.props.onChange({ target: { value: 'name' } })
   })
 
-  // it('onType', () => {
+  // test('onType', () => {
   //   wrapper.unmount()
   //   wrapper = mount(
   //     <BoundaryCondition
@@ -139,16 +139,16 @@ describe('components/project/simulation/boundaryConditions/boundaryCondition', (
   //   )
   // })
 
-  it('onSelected', () => {
+  test('onSelected', () => {
     wrapper.find('Selector').props().updateSelected()
   })
 
-  it('onClose', () => {
+  test('onClose', () => {
     wrapper.find('Add').props().close()
     expect(close).toHaveBeenCalledTimes(1)
   })
 
-  it('edit', () => {
+  test('edit', () => {
     wrapper.unmount()
     boundaryCondition = {}
     wrapper = shallow(
@@ -165,7 +165,7 @@ describe('components/project/simulation/boundaryConditions/boundaryCondition', (
     expect(wrapper.find('Edit').length).toBe(1)
   })
 
-  // it('effect', () => {
+  // test('effect', () => {
   //   // With boundaryCondition
   //   wrapper.unmount()
   //   boundaryCondition = { selected: [{ uuid: 'uuid', label: 1 }] }
@@ -220,7 +220,7 @@ describe('components/project/simulation/boundaryConditions/boundaryCondition', (
   //   )
   // })
 
-  // it('onValueChange', () => {
+  // test('onValueChange', () => {
   //   boundaryCondition = {
   //     type: {
   //       key: 'key',
@@ -248,7 +248,7 @@ describe('components/project/simulation/boundaryConditions/boundaryCondition', (
   //   act(() => wrapper.find('Formula').props().onValueChange(0, 10))
   // })
 
-  // it('onCheckedChange', () => {
+  // test('onCheckedChange', () => {
   //   boundaryCondition = {
   //     type: {
   //       key: 'key',

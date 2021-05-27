@@ -9,7 +9,7 @@ jest.mock('swr', () => () => ({
 }))
 
 describe('api/plugins/usePlugins', () => {
-  it('with plugins', () => {
+  test('with plugins', () => {
     const [
       plugins,
       {
@@ -33,7 +33,7 @@ describe('api/plugins/usePlugins', () => {
     mutateOnePlugin({ key: 'key' })
   })
 
-  it('withtout plugins', () => {
+  test('withtout plugins', () => {
     mockData.mockImplementation(() => undefined)
     const [plugins, { loadingPlugins }] = usePlugins()
     expect(plugins).toEqual([])

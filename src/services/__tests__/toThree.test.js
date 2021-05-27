@@ -23,7 +23,7 @@ describe('services/toThree', () => {
     mockCallback.mockReset()
   })
 
-  it('toThree', async () => {
+  test('toThree', async () => {
     let res
 
     // Normal
@@ -106,7 +106,7 @@ describe('services/toThree', () => {
     }
   })
 
-  it('isDocker', async () => {
+  test('isDocker', async () => {
     mockDocker.mockImplementation(() => true)
 
     mockSpawn.mockImplementation(() => ({

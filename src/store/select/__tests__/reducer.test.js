@@ -15,7 +15,7 @@ jest.mock('@/store/select/action', () => ({
 }))
 
 describe('store/select/reducer', () => {
-  it('initial state', () => {
+  test('initial state', () => {
     expect(selectInitialState).toEqual({
       enabled: false,
       type: null,
@@ -25,12 +25,12 @@ describe('store/select/reducer', () => {
     })
   })
 
-  it('no state', () => {
+  test('no state', () => {
     const res = reducer(undefined, {})
     expect(res).toEqual(selectInitialState)
   })
 
-  it('enable', () => {
+  test('enable', () => {
     const res = reducer(selectInitialState, { type: 'ENABLE' })
     expect(res).toEqual({
       ...selectInitialState,
@@ -38,7 +38,7 @@ describe('store/select/reducer', () => {
     })
   })
 
-  it('disable', () => {
+  test('disable', () => {
     const res = reducer(
       { ...selectInitialState, enabled: true },
       { type: 'DISABLE' }
@@ -46,12 +46,12 @@ describe('store/select/reducer', () => {
     expect(res).toEqual(selectInitialState)
   })
 
-  it('clear', () => {
+  test('clear', () => {
     const res = reducer({}, { type: 'CLEAR' })
     expect(res).toEqual(selectInitialState)
   })
 
-  it('setType', () => {
+  test('setType', () => {
     const res = reducer(selectInitialState, { type: 'SETTYPE', object: 'face' })
     expect(res).toEqual({
       ...selectInitialState,
@@ -59,7 +59,7 @@ describe('store/select/reducer', () => {
     })
   })
 
-  it('setPart', () => {
+  test('setPart', () => {
     const res = reducer(selectInitialState, { type: 'SETPART', uuid: 'uuid' })
     expect(res).toEqual({
       ...selectInitialState,
@@ -67,7 +67,7 @@ describe('store/select/reducer', () => {
     })
   })
 
-  it('highlight', () => {
+  test('highlight', () => {
     const res = reducer(selectInitialState, {
       type: 'HIGHLIGHT',
       uuid: 'uuid'
@@ -78,7 +78,7 @@ describe('store/select/reducer', () => {
     })
   })
 
-  it('unhighlight', () => {
+  test('unhighlight', () => {
     const res = reducer(
       { ...selectInitialState, highlighted: 'uuid' },
       { type: 'UNHIGHLIGHT' }
@@ -89,7 +89,7 @@ describe('store/select/reducer', () => {
     })
   })
 
-  it('select', () => {
+  test('select', () => {
     const res = reducer(selectInitialState, {
       type: 'SELECT',
       uuid: 'uuid'
@@ -100,7 +100,7 @@ describe('store/select/reducer', () => {
     })
   })
 
-  it('unselect', () => {
+  test('unselect', () => {
     let res = reducer(
       { ...selectInitialState, selected: ['uuid'] },
       {

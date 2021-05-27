@@ -12,7 +12,7 @@ import {
 } from '@/store/select/action'
 
 describe('store/select/action', () => {
-  it('action types', () => {
+  test('action types', () => {
     expect(selectActionTypes.ENABLE).toBe('ENABLE')
     expect(selectActionTypes.DISABLE).toBe('DISABLE')
     expect(selectActionTypes.CLEAR).toBe('CLEAR')
@@ -24,28 +24,28 @@ describe('store/select/action', () => {
     expect(selectActionTypes.UNSELECT).toBe('UNSELECT')
   })
 
-  it('enable', () => {
+  test('enable', () => {
     const res = enable()
     expect(res).toEqual({
       type: selectActionTypes.ENABLE
     })
   })
 
-  it('disable', () => {
+  test('disable', () => {
     const res = disable()
     expect(res).toEqual({
       type: selectActionTypes.DISABLE
     })
   })
 
-  it('clear', () => {
+  test('clear', () => {
     const res = clear()
     expect(res).toEqual({
       type: selectActionTypes.CLEAR
     })
   })
 
-  it('setType', () => {
+  test('setType', () => {
     const res = setType('type')
     expect(res).toEqual({
       type: selectActionTypes.SETTYPE,
@@ -53,7 +53,7 @@ describe('store/select/action', () => {
     })
   })
 
-  it('setPart', () => {
+  test('setPart', () => {
     const res = setPart('uuid')
     expect(res).toEqual({
       type: selectActionTypes.SETPART,
@@ -61,7 +61,7 @@ describe('store/select/action', () => {
     })
   })
 
-  it('highlight', () => {
+  test('highlight', () => {
     const res = highlight('id')
     expect(res).toEqual({
       type: selectActionTypes.HIGHLIGHT,
@@ -69,14 +69,14 @@ describe('store/select/action', () => {
     })
   })
 
-  it('unhighlight', () => {
+  test('unhighlight', () => {
     const res = unhighlight()
     expect(res).toEqual({
       type: selectActionTypes.UNHIGHLIGHT
     })
   })
 
-  it('select', () => {
+  test('select', () => {
     const res = select('id')
     expect(res).toEqual({
       type: selectActionTypes.SELECT,
@@ -84,7 +84,7 @@ describe('store/select/action', () => {
     })
   })
 
-  it('unselect', () => {
+  test('unselect', () => {
     const res = unselect('id')
     expect(res).toEqual({
       type: selectActionTypes.UNSELECT,

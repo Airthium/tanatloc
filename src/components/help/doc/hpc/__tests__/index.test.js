@@ -11,7 +11,7 @@ describe('components/help/doc/hpc', () => {
     wrapper.unmount()
   })
 
-  it('render', () => {
+  test('render', () => {
     expect(wrapper).toBeDefined()
   })
 })

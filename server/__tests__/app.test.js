@@ -70,7 +70,7 @@ jest.mock('@/route/workspace', () => jest.fn())
 jest.mock('@/route/logout', () => jest.fn())
 
 describe('server/app', () => {
-  it('app', () => {
+  test('app', () => {
     expect(app).toBeDefined()
   })
 })

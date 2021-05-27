@@ -20,18 +20,18 @@ describe('components/assets/button/delete', () => {
     wrapper.unmount()
   })
 
-  it('render', () => {
+  test('render', () => {
     expect(wrapper).toBeDefined()
     expect(wrapper.find('Button').props().loading).toBe(false)
   })
 
-  it('setVisible', () => {
+  test('setVisible', () => {
     wrapper.find('Button').props().onClick()
 
     wrapper.find('DeleteDialog').props().onCancel()
   })
 
-  it('onDelete', () => {
+  test('onDelete', () => {
     wrapper.find('DeleteDialog').props().onOk()
     expect(mockOnDelete).toHaveBeenCalledTimes(1)
   })

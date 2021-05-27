@@ -64,25 +64,25 @@ describe('components/project/simulation/materials', () => {
     wrapper.unmount()
   })
 
-  it('render', () => {
+  test('render', () => {
     expect(wrapper).toBeDefined()
   })
 
-  it('onAdd', () => {
+  test('onAdd', () => {
     wrapper.find('AddButton').props().onAdd()
     expect(mockEnable).toHaveBeenCalledTimes(1)
   })
 
-  it('onEdit', () => {
+  test('onEdit', () => {
     wrapper.find('List').props().onEdit()
   })
 
-  it('onClose', () => {
+  test('onClose', () => {
     wrapper.find('Material').props().close()
     expect(mockDisable).toHaveBeenCalledTimes(1)
   })
 
-  // it('effect', () => {
+  // test('effect', () => {
   //   wrapper.unmount()
   //   wrapper = mount(
   //     <Materials

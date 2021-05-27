@@ -37,11 +37,11 @@ describe('components/assets/organization/users', () => {
     wrapper.unmount()
   })
 
-  it('render', () => {
+  test('render', () => {
     expect(wrapper).toBeDefined()
   })
 
-  it('with users', () => {
+  test('with users', () => {
     wrapper.unmount()
     wrapper = shallow(
       <Users
@@ -55,7 +55,7 @@ describe('components/assets/organization/users', () => {
     expect(wrapper).toBeDefined()
   })
 
-  it('columns', () => {
+  test('columns', () => {
     // Owners column
     const ownersColumns = wrapper.find('Table').at(0).props().columns
 

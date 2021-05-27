@@ -35,7 +35,7 @@ describe('route/user/check', () => {
     response = undefined
   })
 
-  it('no session', async () => {
+  test('no session', async () => {
     await check(req, res)
     expect(mockSession).toHaveBeenCalledTimes(1)
     expect(mockLogin).toHaveBeenCalledTimes(0)
@@ -43,7 +43,7 @@ describe('route/user/check', () => {
     expect(response).toBe(undefined)
   })
 
-  it('session', async () => {
+  test('session', async () => {
     mockSession.mockImplementation(() => true)
     mockLogin.mockImplementation(() => ({}))
 
@@ -54,7 +54,7 @@ describe('route/user/check', () => {
     expect(response).toEqual({ valid: true })
   })
 
-  it('not authorized', async () => {
+  test('not authorized', async () => {
     mockSession.mockImplementation(() => true)
 
     await check(req, res)
@@ -64,7 +64,7 @@ describe('route/user/check', () => {
     expect(response).toEqual({ valid: false })
   })
 
-  it('error', async () => {
+  test('error', async () => {
     mockSession.mockImplementation(() => true)
     mockLogin.mockImplementation(() => {
       throw new Error('test')

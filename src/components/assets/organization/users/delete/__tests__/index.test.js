@@ -48,11 +48,11 @@ describe('componenets/assets/organization/users/delete', () => {
     wrapper.unmount()
   })
 
-  it('render', () => {
+  test('render', () => {
     expect(wrapper).toBeDefined()
   })
 
-  it('with user data', () => {
+  test('with user data', () => {
     wrapper.unmount()
     wrapper = shallow(
       <Delete
@@ -84,7 +84,7 @@ describe('componenets/assets/organization/users/delete', () => {
     expect(wrapper).toBeDefined()
   })
 
-  it('setVisible', () => {
+  test('setVisible', () => {
     // Visible
     wrapper.find('Button').props().onClick()
 
@@ -92,7 +92,7 @@ describe('componenets/assets/organization/users/delete', () => {
     wrapper.find('DeleteDialog').props().onCancel()
   })
 
-  it('onDelete', async () => {
+  test('onDelete', async () => {
     // Normal
     await wrapper.find('DeleteDialog').props().onOk()
     expect(mockUpdate).toHaveBeenCalledTimes(1)
@@ -109,7 +109,7 @@ describe('componenets/assets/organization/users/delete', () => {
     expect(mockError).toHaveBeenCalledTimes(1)
   })
 
-  it('propTypes', () => {
+  test('propTypes', () => {
     let res
     const organizationProp = Delete.propTypes.organization
 

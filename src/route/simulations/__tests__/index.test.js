@@ -66,7 +66,7 @@ describe('route/simulations/ids', () => {
     response = undefined
   })
 
-  it('no session', async () => {
+  test('no session', async () => {
     await ids(req, res)
     expect(mockSession).toHaveBeenCalledTimes(1)
     expect(mockAuth).toHaveBeenCalledTimes(0)
@@ -75,7 +75,7 @@ describe('route/simulations/ids', () => {
     expect(response).toBe(undefined)
   })
 
-  it('POST', async () => {
+  test('POST', async () => {
     mockSession.mockImplementation(() => 'id')
 
     // No ids
@@ -139,7 +139,7 @@ describe('route/simulations/ids', () => {
     })
   })
 
-  it('wrong method', async () => {
+  test('wrong method', async () => {
     req.method = 'SOMETHING'
 
     mockSession.mockImplementation(() => true)

@@ -21,7 +21,7 @@ describe('components/assets/dialog', () => {
     wrapper.unmount()
   })
 
-  it('render', () => {
+  test('render', () => {
     expect(wrapper).toBeDefined()
   })
 })

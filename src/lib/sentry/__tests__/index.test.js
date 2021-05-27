@@ -1,7 +1,7 @@
 import Sentry from '../'
 
 describe('lib/sentry', () => {
-  it('call', () => {
+  test('call', () => {
     expect(Sentry).toBeDefined()
   })
 })

@@ -45,11 +45,11 @@ describe('components/assets/organization', () => {
     wrapper.unmount()
   })
 
-  it('render', () => {
+  test('render', () => {
     expect(wrapper).toBeDefined()
   })
 
-  it('onName', async () => {
+  test('onName', async () => {
     // Normal
     await wrapper.find('Title').props().editable.onChange()
     expect(mockUpdate).toHaveBeenCalledTimes(1)

@@ -7,7 +7,7 @@ jest.mock('swr', () => () => ({
 }))
 
 describe('api/simulation/useSimulation', () => {
-  it('with simulation', () => {
+  test('with simulation', () => {
     mockSimulation.mockImplementation(() => ({}))
     const [simulation, { mutateSimulation, loadingSimulation }] =
       useSimulation()
@@ -16,7 +16,7 @@ describe('api/simulation/useSimulation', () => {
     expect(loadingSimulation).toBe(false)
   })
 
-  it('without simulation', () => {
+  test('without simulation', () => {
     mockSimulation.mockImplementation(() => {})
     const [simulation, { mutateSimulation, loadingSimulation }] =
       useSimulation()
@@ -25,7 +25,7 @@ describe('api/simulation/useSimulation', () => {
     expect(loadingSimulation).toBe(false)
   })
 
-  it('with id', () => {
+  test('with id', () => {
     mockSimulation.mockImplementation(() => {})
     const [simulation, { mutateSimulation, loadingSimulation }] =
       useSimulation('id')

@@ -19,11 +19,11 @@ describe('components/notfound', () => {
     wrapper.unmount()
   })
 
-  it('render', () => {
+  test('render', () => {
     expect(wrapper).toBeDefined()
   })
 
-  it('onClick', () => {
+  test('onClick', () => {
     wrapper.find('Title').at(2).props().onClick()
     expect(mockRouter).toHaveBeenCalledTimes(1)
   })

@@ -64,24 +64,24 @@ describe('components/project/simulation/materials/material', () => {
     wrapper.unmount()
   })
 
-  it('render', () => {
+  test('render', () => {
     expect(wrapper).toBeDefined()
   })
 
-  it('onMaterialSelect', () => {
+  test('onMaterialSelect', () => {
     wrapper.find('Database').props().onSelect()
   })
 
-  it('onSelected', () => {
+  test('onSelected', () => {
     wrapper.find('Selector').props().updateSelected()
   })
 
-  it('onClose', () => {
+  test('onClose', () => {
     wrapper.find('Add').props().close()
     expect(close).toHaveBeenCalledTimes(1)
   })
 
-  // it('effect', () => {
+  // test('effect', () => {
   //   // Without material
   //   material = null
   //   wrapper = mount(

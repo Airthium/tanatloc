@@ -45,7 +45,6 @@
     "@hapi/iron": "6.0.0",
     "@sentry/browser": "6.4.1",
     "@sentry/node": "6.4.1",
-    "@testing-library/jest-dom": "5.12.0",
     "@testing-library/react": "11.2.7",
     "@zeit/next-less": "1.0.1",
     "antd": "4.16.0",

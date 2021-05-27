@@ -66,26 +66,26 @@ describe('components/project/simulation/run/cloudServer', () => {
     wrapper.unmount()
   })
 
-  it('render', () => {
+  test('render', () => {
     expect(wrapper).toBeDefined()
   })
 
-  it('account', () => {
+  test('account', () => {
     wrapper.find('Button').at(0).props().onClick()
     expect(mockPush).toHaveBeenCalledTimes(1)
   })
 
-  it('setVisible', () => {
+  test('setVisible', () => {
     wrapper.find('Button').at(1).props().onClick()
     expect(wrapper.find('Modal').props().visible).toBe(true)
   })
 
-  it('onMerge', () => {
+  test('onMerge', () => {
     wrapper.find('Renderer').props().onSelect()
     expect(onOk).toHaveBeenCalledTimes(1)
   })
 
-  // it('effect', () => {
+  // test('effect', () => {
   //   wrapper.unmount()
   //   wrapper = mount(<CloudServer cloudServer={cloudServer} onOk={onOk} />)
   //   expect(wrapper).toBeDefined()

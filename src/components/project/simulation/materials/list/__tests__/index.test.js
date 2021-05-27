@@ -64,28 +64,28 @@ describe('components/project/simulation/materials/list', () => {
     wrapper.unmount()
   })
 
-  it('render', () => {
+  test('render', () => {
     expect(wrapper).toBeDefined()
   })
 
-  it('highlight', () => {
+  test('highlight', () => {
     wrapper.find('Card').props().onMouseEnter('key', 0)
     expect(mockEnable).toHaveBeenCalledTimes(1)
     expect(mockSelect).toHaveBeenCalledTimes(1)
   })
 
-  it('unhighlight', () => {
+  test('unhighlight', () => {
     wrapper.find('Card').props().onMouseLeave()
     expect(mockDisable).toHaveBeenCalledTimes(1)
   })
 
-  it('edit', () => {
+  test('edit', () => {
     global.setTimeout = (callback) => callback()
     wrapper.find('EditButton').props().onEdit()
     expect(onEdit).toHaveBeenCalledTimes(1)
   })
 
-  it('empty simulation', () => {
+  test('empty simulation', () => {
     wrapper.unmount()
     simulation.scheme = {}
     wrapper = shallow(

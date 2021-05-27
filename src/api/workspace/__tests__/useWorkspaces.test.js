@@ -7,7 +7,7 @@ jest.mock('swr', () => () => ({
 }))
 
 describe('api/workspace/useWorkspaces', () => {
-  it('call', () => {
+  test('call', () => {
     mockWorkspaces.mockImplementation(() => [{ id: 'id' }, {}])
     const [
       workspaces,
@@ -31,7 +31,7 @@ describe('api/workspace/useWorkspaces', () => {
     mutateOneWorkspace({ id: 'id' })
   })
 
-  it('without workspace', () => {
+  test('without workspace', () => {
     mockWorkspaces.mockImplementation(() => {})
     const [workspaces] = useWorkspaces()
     expect(workspaces).toEqual([])

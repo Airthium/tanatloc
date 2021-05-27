@@ -1,7 +1,7 @@
 import SolderFilling from '../solderFilling'
 
 describe('plugins/denso/model/solderFilling', () => {
-  it('description', () => {
+  test('description', () => {
     expect(SolderFilling).toBeDefined()
   })
 })

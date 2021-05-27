@@ -11,7 +11,7 @@ describe('api/simulation/useSimulations', () => {
     mockSimulations.mockImplementation(() => [{ id: 'id' }, {}])
   })
 
-  it('without ids', () => {
+  test('without ids', () => {
     const [
       simulations,
       {
@@ -34,12 +34,12 @@ describe('api/simulation/useSimulations', () => {
     mutateOneSimulation({ id: 'id' })
   })
 
-  it('with ids', () => {
+  test('with ids', () => {
     const [simulations] = useSimulations(['id1', 'id2'])
     expect(simulations).toEqual([{ id: 'id' }, {}])
   })
 
-  it('withtout simulations', () => {
+  test('withtout simulations', () => {
     mockSimulations.mockImplementation(() => {})
     const [simulations] = useSimulations(['id1', 'id2'])
     expect(simulations).toEqual([])

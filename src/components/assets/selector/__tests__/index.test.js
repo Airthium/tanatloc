@@ -90,27 +90,27 @@ describe('components/assets/selector', () => {
     wrapper.unmount()
   })
 
-  it('render', () => {
+  test('render', () => {
     expect(wrapper).toBeDefined()
   })
 
-  it('empty render', () => {
+  test('empty render', () => {
     wrapper.unmount()
     wrapper = shallow(<Selector part={{}} updateSelected={updateSelected} />)
     expect(wrapper).toBeDefined()
   })
 
-  it('onHighlight', () => {
+  test('onHighlight', () => {
     wrapper.find('Card').at(1).props().onMouseEnter('uuid')
     expect(mockHighlight).toHaveBeenCalledTimes(1)
   })
 
-  it('onUnhighlight', () => {
+  test('onUnhighlight', () => {
     wrapper.find('Card').at(1).props().onMouseLeave()
     expect(mockUnhighlight).toHaveBeenCalledTimes(1)
   })
 
-  it('onSelect', () => {
+  test('onSelect', () => {
     // Select
     wrapper.find('Card').at(1).props().onClick('uuid')
     expect(mockSelect).toHaveBeenCalledTimes(1)
@@ -123,7 +123,7 @@ describe('components/assets/selector', () => {
     expect(mockUnselect).toHaveBeenCalledTimes(1)
   })
 
-  // it('onColorFilter', () => {
+  // test('onColorFilter', () => {
   //   wrapper.unmount()
   //   wrapper = mount(<Selector part={part} updateSelected={updateSelected} />)
   //   act(() => wrapper.find('Button').at(0).props().onClick())
@@ -133,7 +133,7 @@ describe('components/assets/selector', () => {
   //   wrapper.update()
   // })
 
-  // it('selectAll', () => {
+  // test('selectAll', () => {
   //   wrapper.unmount()
   //   wrapper = mount(<Selector part={part} updateSelected={updateSelected} />)
 
@@ -147,7 +147,7 @@ describe('components/assets/selector', () => {
   //   wrapper.update()
   // })
 
-  // it('unselectAll', () => {
+  // test('unselectAll', () => {
   //   wrapper.unmount()
   //   wrapper = mount(<Selector part={part} updateSelected={updateSelected} />)
 
@@ -161,7 +161,7 @@ describe('components/assets/selector', () => {
   //   wrapper.update()
   // })
 
-  // it('selectSwap', () => {
+  // test('selectSwap', () => {
   //   wrapper.unmount()
   //   wrapper = mount(<Selector part={part} updateSelected={updateSelected} />)
 
@@ -188,7 +188,7 @@ describe('components/assets/selector', () => {
   //   wrapper.update()
   // })
 
-  it('face highlighted', () => {
+  test('face highlighted', () => {
     wrapper.unmount()
     mockHighlighted.mockImplementation(() => 'uuid')
     wrapper = shallow(<Selector part={part} updateSelected={updateSelected} />)

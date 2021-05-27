@@ -1,9 +1,9 @@
-import { shallow } from 'enzyme'
+import { render, screen } from '@testing-library/react'
 
 import Utils from '../'
 
 describe('lib/utils', () => {
-  it('stringToColor', () => {
+  test('stringToColor', () => {
     let color
 
     // Empty
@@ -15,12 +15,12 @@ describe('lib/utils', () => {
     expect(color).toBe('#D56011')
   })
 
-  it('rgbToHex', () => {
+  test('rgbToHex', () => {
     const hex = Utils.rgbToHex({ r: 0, g: 1, b: 1 })
     expect(hex).toBe('#00ffff')
   })
 
-  it('rgbToRgba', () => {
+  test('rgbToRgba', () => {
     let rgba = Utils.rgbToRgba({ r: 0, g: 1, b: 1 }, 0.1)
     expect(rgba).toBe('rgba(0, 255, 255, 0.1)')
 
@@ -28,23 +28,26 @@ describe('lib/utils', () => {
     expect(rgba).toBe('rgba(255, 255, 255, 0)')
   })
 
-  it('userToAvatar', () => {
-    let res, wrapper
+  test('userToAvatar', () => {
+    let res
 
     // Empty
     res = Utils.userToAvatar({})
-    wrapper = shallow(res)
-    expect(wrapper.find('Spin').length).toBe(1)
-    wrapper.unmount()
+    {
+      const { unmount } = render(res)
+      unmount()
+    }
 
     // With avatar & email
     res = Utils.userToAvatar({
       avatar: { type: 'Buffer', data: ['data'] },
       email: 'email'
     })
-    wrapper = shallow(res)
-    expect(wrapper.find('Avatar').props().children).toBe('E')
-    wrapper.unmount()
+    {
+      const { unmount } = render(res)
+      expect(screen.getByRole('img'))
+      unmount()
+    }
 
     // With firstname & lastname
     res = Utils.userToAvatar({
@@ -52,24 +55,29 @@ describe('lib/utils', () => {
       firstname: 'firstname',
       lastname: 'lastname'
     })
-    wrapper = shallow(res)
-    expect(wrapper.find('Avatar').props().children).toBe('FL')
-    wrapper.unmount()
+    {
+      const { unmount } = render(res)
+      expect(screen.getByText('FL'))
+      unmount()
+    }
   })
 
-  it('groupToAvatar', () => {
-    let res, wrapper
+  test('groupToAvatar', () => {
+    let res
 
     // Empty
     res = Utils.groupToAvatar({})
-    wrapper = shallow(res)
-    expect(wrapper.find('Spin').length).toBe(1)
-    wrapper.unmount()
+    {
+      const { unmount } = render(res)
+      unmount()
+    }
 
     // With name
     res = Utils.groupToAvatar({ name: 'name' })
-    wrapper = shallow(res)
-    expect(wrapper.find('Avatar').props().children).toBe('N')
-    wrapper.unmount()
+    {
+      const { unmount } = render(res)
+      expect(screen.getByText('N'))
+      unmount()
+    }
   })
 })

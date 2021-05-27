@@ -3,7 +3,7 @@ import part from '@/pages/api/part'
 jest.mock('@/route/part', () => jest.fn())
 
 describe('pages/api/part', () => {
-  it('call', async () => {
+  test('call', async () => {
     await part()
   })
 })

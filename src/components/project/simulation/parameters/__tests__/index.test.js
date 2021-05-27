@@ -59,23 +59,23 @@ describe('components/project/simulation/parameters', () => {
     wrapper.unmount()
   })
 
-  it('render', () => {
+  test('render', () => {
     expect(wrapper).toBeDefined()
   })
 
-  it('with value', () => {
+  test('with value', () => {
     wrapper.unmount()
     simulation.scheme.configuration.parameters.param1.children[0].value = 0
     wrapper = shallow(<Parameters simulation={simulation} swr={swr} />)
     expect(wrapper).toBeDefined()
   })
 
-  it('onChange', () => {
+  test('onChange', () => {
     wrapper.find('Formula').props().onValueChange()
     wrapper.find('ForwardRef(InternalSelect)').props().onChange()
   })
 
-  // it('effect', () => {
+  // test('effect', () => {
   //   wrapper.unmount()
 
   //   wrapper = mount(<Parameters simulation={simulation} swr={swr} />)

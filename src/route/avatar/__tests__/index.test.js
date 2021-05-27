@@ -45,7 +45,7 @@ describe('route/avatar', () => {
     response = undefined
   })
 
-  it('no session', async () => {
+  test('no session', async () => {
     await avatar(req, res)
     expect(mockSession).toHaveBeenCalledTimes(1)
     expect(mockAdd).toHaveBeenCalledTimes(0)
@@ -54,7 +54,7 @@ describe('route/avatar', () => {
     expect(response).toBe(undefined)
   })
 
-  it('POST', async () => {
+  test('POST', async () => {
     mockSession.mockImplementation(() => true)
 
     await avatar(req, res)
@@ -85,7 +85,7 @@ describe('route/avatar', () => {
     expect(response).toEqual({ error: true, message: 'test' })
   })
 
-  it('DELETE', async () => {
+  test('DELETE', async () => {
     req.method = 'DELETE'
 
     mockSession.mockImplementation(() => true)
@@ -109,7 +109,7 @@ describe('route/avatar', () => {
     expect(response).toEqual({ error: true, message: 'test' })
   })
 
-  it('wrong method', async () => {
+  test('wrong method', async () => {
     req.method = 'SOMETHING'
 
     mockSession.mockImplementation(() => true)

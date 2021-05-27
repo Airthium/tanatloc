@@ -1,10 +1,14 @@
+/**
+ * @jest-environment node
+ */
+
 Object.defineProperty(process, 'platform', {
   value: 'darwin'
 })
 const config = require('../db')
 
 describe('config/db', () => {
-  it('global', () => {
+  test('global', () => {
     expect(config.ADMIN).toBe(process.env.USER)
     expect(config.ADMIN_DATABASE).toBe('postgres')
     expect(config.ADMIN_PASSWORD).toBe('')
@@ -15,7 +19,7 @@ describe('config/db', () => {
     expect(config.PASSWORD).toBe('tanatloc')
   })
 
-  it('tables', () => {
+  test('tables', () => {
     expect(config.tables.SYSTEM).toBe('tanatloc_system')
     expect(config.tables.USERS).toBe('tanatloc_users')
     expect(config.tables.ORGANIZATIONS).toBe('tanatloc_organizations')

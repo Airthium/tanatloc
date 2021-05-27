@@ -87,7 +87,7 @@ describe('route/download', () => {
     response = undefined
   })
 
-  it('no session', async () => {
+  test('no session', async () => {
     await download(req, res)
     expect(mockSession).toHaveBeenCalledTimes(1)
     expect(mockGetSimulation).toHaveBeenCalledTimes(0)
@@ -99,7 +99,7 @@ describe('route/download', () => {
     expect(response).toBe(undefined)
   })
 
-  it('POST', async () => {
+  test('POST', async () => {
     req.body = {
       simulation: {},
       file: {}
@@ -145,7 +145,7 @@ describe('route/download', () => {
     expect(response).toEqual({ error: true, message: 'test' })
   })
 
-  it('archive', async () => {
+  test('archive', async () => {
     req.body = {
       simulation: {},
       file: {},
@@ -166,7 +166,7 @@ describe('route/download', () => {
     expect(response).toBe('pipe')
   })
 
-  it('wrong method', async () => {
+  test('wrong method', async () => {
     req.method = 'SOMETHING'
 
     mockSession.mockImplementation(() => 'id')

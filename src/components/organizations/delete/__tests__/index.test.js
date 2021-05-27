@@ -38,11 +38,11 @@ describe('components/organizations/delete', () => {
     wrapper.unmount()
   })
 
-  it('render', () => {
+  test('render', () => {
     expect(wrapper).toBeDefined()
   })
 
-  it('setVisible', () => {
+  test('setVisible', () => {
     // Visible
     wrapper.find('Button').props().onClick()
 
@@ -50,7 +50,7 @@ describe('components/organizations/delete', () => {
     wrapper.find('DeleteDialog').props().onCancel()
   })
 
-  it('onDelete', async () => {
+  test('onDelete', async () => {
     // Normal
     await wrapper.find('DeleteDialog').props().onOk()
     expect(mockDel).toHaveBeenCalledTimes(1)

@@ -1,3 +1,7 @@
+/**
+ * @jest-environment node
+ */
+
 jest.mock('path', () => ({
   join: () => 'path'
 }))
@@ -18,7 +22,7 @@ describe('modules/three-to-glb/run', () => {
     mockReadFile.mockReset()
   })
 
-  it('empty', () => {
+  test('empty', () => {
     mockReadFile.mockImplementation(() => JSON.stringify({}))
     require('../run')
   })

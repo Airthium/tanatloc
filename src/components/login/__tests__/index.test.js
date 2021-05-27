@@ -1,8 +1,6 @@
 import Login from '@/components/login'
 import { shallow, mount } from 'enzyme'
 
-import '@/config/jest/mockMatchMedia'
-
 const mockPrefetch = jest.fn()
 const mockPush = jest.fn()
 jest.mock('next/router', () => ({
@@ -59,11 +57,11 @@ describe('components/login', () => {
     wrapper.unmount()
   })
 
-  it('render', () => {
+  test('render', () => {
     expect(wrapper).toBeDefined()
   })
 
-  it('loading', () => {
+  test('loading', () => {
     wrapper.unmount()
 
     mockUserLoading.mockImplementation(() => true)
@@ -71,7 +69,7 @@ describe('components/login', () => {
     expect(wrapper.find('Loading').length).toBe(1)
   })
 
-  // it('user effect', () => {
+  // test('user effect', () => {
   //   let mWrapper = mount(<Login />)
   //   expect(mockPrefetch).toHaveBeenCalledTimes(2)
   //   expect(mockPush).toHaveBeenCalledTimes(0)
@@ -87,7 +85,7 @@ describe('components/login', () => {
   //   mWrapper.unmount()
   // })
 
-  it('onLogin', async () => {
+  test('onLogin', async () => {
     await wrapper.find('ForwardRef(InternalForm)').props().onFinish({})
     expect(mockPush).toHaveBeenCalledTimes(0)
 
@@ -106,7 +104,7 @@ describe('components/login', () => {
     expect(mockPush).toHaveBeenCalledTimes(1)
   })
 
-  it('signup', () => {
+  test('signup', () => {
     wrapper.find({ type: 'link' }).at(0).props().onClick()
     expect(mockPush).toHaveBeenCalledTimes(1)
   })

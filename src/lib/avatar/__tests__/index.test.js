@@ -69,7 +69,7 @@ describe('lib/avatar', () => {
     mockRemoveFile.mockReset()
   })
 
-  it('add', async () => {
+  test('add', async () => {
     let avatar
 
     avatar = await Avatar.add({ id: 'id' }, 'user', {
@@ -154,7 +154,7 @@ describe('lib/avatar', () => {
     expect(avatar).toEqual({ id: 'id' })
   })
 
-  it('read', async () => {
+  test('read', async () => {
     const avatar = await Avatar.read('id')
     expect(mockPath).toHaveBeenCalledTimes(1)
     expect(mockAdd).toHaveBeenCalledTimes(0)
@@ -170,7 +170,7 @@ describe('lib/avatar', () => {
     expect(avatar).toBe('avatar')
   })
 
-  it('get', async () => {
+  test('get', async () => {
     const avatar = await Avatar.get('id', ['data'])
     expect(mockPath).toHaveBeenCalledTimes(0)
     expect(mockAdd).toHaveBeenCalledTimes(0)
@@ -188,7 +188,7 @@ describe('lib/avatar', () => {
     })
   })
 
-  it('del', async () => {
+  test('del', async () => {
     // With path
     await Avatar.del({ id: 'id' }, 'user', 'id')
     expect(mockPath).toHaveBeenCalledTimes(1)

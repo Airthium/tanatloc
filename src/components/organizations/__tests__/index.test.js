@@ -2,8 +2,6 @@ import Organizations from '..'
 import { shallow, mount } from 'enzyme'
 import { act } from 'react-dom/test-utils'
 
-import '@/config/jest/mockMatchMedia'
-
 jest.mock('../add', () => {
   const Add = () => <div />
   return Add
@@ -41,14 +39,14 @@ describe('components/organizations', () => {
     wrapper.unmount()
   })
 
-  it('render', () => {
+  test('render', () => {
     wrapper = shallow(
       <Organizations user={user} organizations={organizations} swr={swr} />
     )
     expect(wrapper).toBeDefined()
   })
 
-  // it('setOrganization', () => {
+  // test('setOrganization', () => {
   //   wrapper = mount(
   //     <Organizations
   //       user={user}
@@ -64,7 +62,7 @@ describe('components/organizations', () => {
   //   wrapper.update()
   // })
 
-  // it('effect', () => {
+  // test('effect', () => {
   //   wrapper = mount(
   //     <Organizations
   //       user={user}

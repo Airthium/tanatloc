@@ -3,8 +3,6 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 
 import Rescale from '..'
 
-import '@/config/jest/mockMatchMedia'
-
 const mockError = jest.fn()
 jest.mock('@/components/assets/notification', () => ({
   Error: () => mockError()
@@ -22,14 +20,17 @@ describe('plugins/rescale/src/components/index', () => {
       },
       {
         name: 'coretype 2',
-        cores: [8, 16, 32],
+        cores: [256],
         memory: 10000,
         price: 10000,
         lowPriorityPrice: 2000
       }
     ],
     freefem: {
-      versions: [{ id: 'version', version: 'version' }]
+      versions: [
+        { id: 'version1', version: 'version1' },
+        { id: 'version2', version: 'version2' }
+      ]
     }
   }
   const onSelect = jest.fn()
@@ -67,28 +68,80 @@ describe('plugins/rescale/src/components/index', () => {
 
     // Select one
     let radios = screen.getAllByRole('radio')
-    fireEvent.click(radios[0])
+    fireEvent.click(radios[1])
 
     // Step 1 -> 2
-    let buttons = screen.getAllByRole('button')
-    fireEvent.click(buttons[3])
+    const next = screen.getByRole('button', { name: 'Next' })
+    fireEvent.click(next)
 
     // Fill form
     radios = screen.getAllByRole('radio')
     fireEvent.click(radios[0])
 
-    const spinbutton = screen.getByRole('spinbutton')
-    fireEvent.input(spinbutton, { target: { value: 1 } })
-    fireEvent.input(spinbutton, { target: { value: 8 } })
-    fireEvent.input(spinbutton, { target: { value: 4 } })
+    const numberOfCores = screen.getByRole('spinbutton')
+    fireEvent.input(numberOfCores, { target: { value: 1 } })
+    const increase = screen.getByRole('button', { name: 'Increase Value' })
+    const decrease = screen.getByRole('button', { name: 'Decrease Value' })
+    for (let i = 0; i < 3; ++i) {
+      fireEvent.mouseDown(increase)
+      fireEvent.mouseUp(increase)
+      if (i === 0) await waitFor(() => expect(+numberOfCores.value).toBe(512))
+      if (i === 1) await waitFor(() => expect(+numberOfCores.value).toBe(768))
+      if (i === 2) await waitFor(() => expect(+numberOfCores.value).toBe(768))
+    }
+    for (let i = 0; i < 3; ++i) {
+      fireEvent.mouseDown(decrease)
+      fireEvent.mouseUp(decrease)
+      if (i === 0) await waitFor(() => expect(+numberOfCores.value).toBe(512))
+      if (i === 1) await waitFor(() => expect(+numberOfCores.value).toBe(256))
+      if (i === 2) await waitFor(() => expect(+numberOfCores.value).toBe(256))
+    }
 
     const combobox = screen.getByRole('combobox')
-    fireEvent.change(combobox, { target: { value: 'version' } })
+    fireEvent.change(combobox, { target: { value: 'version1' } })
 
     // Step 2 -> end
-    buttons = screen.getAllByRole('button')
-    fireEvent.click(buttons[5])
+    const ok = screen.getByRole('button', { name: 'Ok' })
+    fireEvent.click(ok)
     await waitFor(() => expect(onSelect).toHaveBeenCalledTimes(1))
+
+    unmount()
+  })
+
+  test('onOk error', async () => {
+    const { unmount } = render(<Rescale data={data} onSelect={onSelect} />)
+
+    // Set visible
+    fireEvent.click(screen.getByRole('button'))
+
+    // Select one
+    let radios = screen.getAllByRole('radio')
+    fireEvent.click(radios[0])
+
+    // Step 1 -> 2
+    const next = screen.getByRole('button', { name: 'Next' })
+    fireEvent.click(next)
+
+    // Fill form
+    radios = screen.getAllByRole('radio')
+    fireEvent.click(radios[0])
+
+    const increase = screen.getByRole('button', { name: 'Increase Value' })
+    const decrease = screen.getByRole('button', { name: 'Decrease Value' })
+    fireEvent.mouseDown(increase)
+    fireEvent.mouseDown(decrease)
+
+    const combobox = screen.getByRole('combobox')
+    fireEvent.change(combobox, { target: { value: 'version1' } })
+
+    // Step 2 -> end
+    onSelect.mockImplementation(() => {
+      throw new Error()
+    })
+    const ok = screen.getByRole('button', { name: 'Ok' })
+    fireEvent.click(ok)
+    await waitFor(() => expect(onSelect).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
 
     unmount()
   })

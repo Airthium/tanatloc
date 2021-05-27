@@ -14,12 +14,12 @@ jest.mock('@/config/auth', () => ({
 }))
 
 describe('auth/iron', () => {
-  it('encryptSession', () => {
+  test('encryptSession', () => {
     const res = iron.encryptSession()
     expect(res).toBe('seal')
   })
 
-  it('getSession', async () => {
+  test('getSession', async () => {
     const res = await iron.getSession({})
     expect(res).toBe('unseal')
   })

@@ -8,12 +8,12 @@ jest.mock('@/database/system', () => ({
 }))
 
 describe('lib/system', () => {
-  it('get', async () => {
+  test('get', async () => {
     await System.get()
     expect(mockGet).toHaveBeenCalledTimes(1)
   })
 
-  it('update', async () => {
+  test('update', async () => {
     await System.update()
     expect(mockUpdate).toHaveBeenCalledTimes(1)
   })

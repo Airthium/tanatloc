@@ -7,7 +7,7 @@ jest.mock('swr', () => () => ({
 }))
 
 describe('api/groups', () => {
-  it('with groups', () => {
+  test('with groups', () => {
     mockGroups.mockImplementation(() => [{ id: 'id' }])
     const [
       groups,
@@ -25,13 +25,13 @@ describe('api/groups', () => {
     expect(loadingGroups).toBe(false)
   })
 
-  it('without groups', () => {
+  test('without groups', () => {
     mockGroups.mockImplementation(() => {})
     const [groups] = useGroups()
     expect(groups).toEqual([])
   })
 
-  it('with id', () => {
+  test('with id', () => {
     mockGroups.mockImplementation(() => [{ id: 'id' }])
     const [groups] = useGroups('id')
     expect(groups).toEqual([{ id: 'id' }])

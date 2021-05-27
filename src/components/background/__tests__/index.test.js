@@ -36,13 +36,13 @@ describe('components/background', () => {
   // afterEach(() => {
   //   wrapper.unmount()
   // })
-  // it('render', () => {
+  // test('render', () => {
   //   expect(wrapper).toBeDefined()
   // })
-  // it('resize', () => {
+  // test('resize', () => {
   //   window.dispatchEvent(new Event('resize'))
   // })
-  // it('pixelRatio', () => {
+  // test('pixelRatio', () => {
   //   wrapper.unmount()
   //   window.devicePixelRatio = undefined
   //   wrapper = mount(<Background />)

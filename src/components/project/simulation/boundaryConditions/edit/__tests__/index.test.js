@@ -72,11 +72,11 @@ describe('components/project/simulation/boundaryConditions/edit', () => {
     wrapper.unmount()
   })
 
-  it('render', () => {
+  test('render', () => {
     expect(wrapper).toBeDefined()
   })
 
-  it('onEdit', async () => {
+  test('onEdit', async () => {
     await wrapper.find('Button').props().onClick()
     expect(mockUpdate).toHaveBeenCalledTimes(1)
     expect(mutateOneSimulation).toHaveBeenCalledTimes(1)
@@ -94,7 +94,7 @@ describe('components/project/simulation/boundaryConditions/edit', () => {
     expect(mockError).toHaveBeenCalledTimes(1)
   })
 
-  it('onEdit (different old type)', async () => {
+  test('onEdit (different old type)', async () => {
     wrapper.unmount()
 
     oldBoundaryCondition.type.key = 'otherKey'

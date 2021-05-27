@@ -11,7 +11,7 @@ jest.mock('http', () => ({
 global.process.env.PORT = -1
 
 describe('server/bin/www', () => {
-  it('www', async () => {
+  test('www', async () => {
     await import('../www')
     expect(true).toBe(true)
   })

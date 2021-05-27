@@ -41,11 +41,11 @@ describe('components/project/simulation/about', () => {
     wrapper.unmount()
   })
 
-  it('render', () => {
+  test('render', () => {
     expect(wrapper).toBeDefined()
   })
 
-  it('handleName', async () => {
+  test('handleName', async () => {
     await wrapper.find('Title').props().editable.onChange('name')
     expect(mockUpdate).toHaveBeenCalledTimes(1)
     expect(mutateOneSimulation).toHaveBeenCalledTimes(1)
@@ -61,13 +61,13 @@ describe('components/project/simulation/about', () => {
     expect(mockError).toHaveBeenCalledTimes(1)
   })
 
-  it('without simulation', () => {
+  test('without simulation', () => {
     wrapper.unmount()
     wrapper = shallow(<About swr={swr} />)
     expect(wrapper).toBeDefined()
   })
 
-  // it('effect', () => {
+  // test('effect', () => {
   //   wrapper.unmount()
   //   wrapper = mount(<About simulation={simulation} swr={swr} />)
   //   expect(wrapper).toBeDefined()

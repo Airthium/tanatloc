@@ -15,7 +15,7 @@ jest.mock('../../tools', () => ({
 }))
 
 describe('lib/file', () => {
-  it('get', async () => {
+  test('get', async () => {
     let content
 
     content = await Part.get(

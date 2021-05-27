@@ -55,18 +55,18 @@ describe('component/account/hpc/plugin', () => {
     wrapper.unmount()
   })
 
-  it('render', () => {
+  test('render', () => {
     expect(wrapper).toBeDefined()
   })
 
-  it('loading', () => {
+  test('loading', () => {
     wrapper.unmount()
     mockLoadingPlugins.mockImplementation(() => true)
     wrapper = shallow(<Plugin plugin={plugin} />)
     expect(wrapper.find('Spin').length).toBe(1)
   })
 
-  // it('effect', () => {
+  // test('effect', () => {
   //   wrapper.unmount()
   //   wrapper = mount(<Plugin plugin={plugin} />)
 

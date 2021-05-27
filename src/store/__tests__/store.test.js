@@ -27,12 +27,12 @@ jest.mock('redux-persist', () => ({
 jest.mock('redux-persist/lib/storage', () => ({}))
 
 describe('store/store', () => {
-  it('reducer', () => {
+  test('reducer', () => {
     const res = reducer()
     expect(res).toBe('combined')
   })
 
-  it('initializeStore', () => {
+  test('initializeStore', () => {
     let res
 
     res = initializeStore()
@@ -42,7 +42,7 @@ describe('store/store', () => {
     expect(res.id).toBe('store')
   })
 
-  it('useStore', () => {
+  test('useStore', () => {
     const res = useStore()
     expect(res).toBe('memo')
   })

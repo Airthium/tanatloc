@@ -21,7 +21,7 @@ global.fetch = async (route, param) => {
 }
 
 describe('api/call', () => {
-  it('fetcher', async () => {
+  test('fetcher', async () => {
     // Normal
     await Caller.fetcher('/route')
     expect(mockRoute).toBe('/route')
@@ -39,7 +39,7 @@ describe('api/call', () => {
     }
   })
 
-  it('call', async () => {
+  test('call', async () => {
     mockJSON.mockClear()
 
     await Caller.call('/route')

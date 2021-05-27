@@ -11,12 +11,12 @@ jest.mock('@/lib/sentry', () => ({
 }))
 
 describe('route/api', () => {
-  it('logout', () => {
+  test('logout', () => {
     logout({}, { end: () => {} })
     expect(mockRemove).toHaveBeenCalledTimes(1)
   })
 
-  it('error', async () => {
+  test('error', async () => {
     mockRemove.mockImplementation(() => {
       throw new Error()
     })

@@ -1,7 +1,7 @@
 import models from '..'
 
 describe('models', () => {
-  it('length', () => {
+  test('length', () => {
     expect(models.length).toBe(3)
   })
 })

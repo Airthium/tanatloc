@@ -2,9 +2,6 @@ import Data from '..'
 import { shallow, mount } from 'enzyme'
 import { act } from 'react-dom/test-utils'
 
-import '@/config/jest/resizeObserverMock'
-import '@/config/jest/mockMatchMedia'
-
 jest.mock('@/lib/utils', () => ({
   stringToColor: () => {}
 }))
@@ -29,11 +26,11 @@ describe('components/project/data', () => {
     wrapper.unmount()
   })
 
-  it('render', () => {
+  test('render', () => {
     expect(wrapper).toBeDefined()
   })
 
-  it('setVisible', () => {
+  test('setVisible', () => {
     wrapper.find('Button').at(0).props().onClick()
     expect(wrapper.find('DrawerWrapper').props().visible).toBe(true)
 
@@ -41,13 +38,13 @@ describe('components/project/data', () => {
     expect(wrapper.find('DrawerWrapper').props().visible).toBe(false)
   })
 
-  // it('without data', () => {
+  // test('without data', () => {
   //   wrapper.unmount()
   //   wrapper = mount(<Data simulation={simulation} />)
   //   expect(wrapper).toBeDefined()
   // })
 
-  // it('with data', () => {
+  // test('with data', () => {
   //   wrapper.unmount()
   //   mockSimulation.mockImplementation(() => ({
   //     tasks: [
@@ -115,7 +112,7 @@ describe('components/project/data', () => {
   //   wrapper.update()
   // })
 
-  // it('exportCSV', () => {
+  // test('exportCSV', () => {
   //   wrapper.unmount()
   //   mockSimulation.mockImplementation(() => ({
   //     tasks: [

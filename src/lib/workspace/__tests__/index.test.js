@@ -48,7 +48,7 @@ describe('lib/workspace', () => {
     mockGroupUpdate.mockReset()
   })
 
-  it('add', async () => {
+  test('add', async () => {
     mockAdd.mockImplementation(() => ({
       id: 'id'
     }))
@@ -63,7 +63,7 @@ describe('lib/workspace', () => {
     expect(workspace).toEqual({ id: 'id' })
   })
 
-  it('get', async () => {
+  test('get', async () => {
     let workspace
 
     mockGet.mockImplementation(() => ({
@@ -108,7 +108,7 @@ describe('lib/workspace', () => {
     })
   })
 
-  it('getByUser', async () => {
+  test('getByUser', async () => {
     // With workspaces & groups
     let count = 0
     mockUserGet.mockImplementation(() => ({
@@ -184,7 +184,7 @@ describe('lib/workspace', () => {
     expect(workspaces).toEqual([])
   })
 
-  it('update', async () => {
+  test('update', async () => {
     mockGet.mockImplementation(() => ({}))
     await Workspace.update({ id: 'id' }, [])
     expect(mockAdd).toHaveBeenCalledTimes(0)
@@ -202,7 +202,7 @@ describe('lib/workspace', () => {
     await Workspace.update({ id: 'id' }, [{ key: 'groups', value: ['id1'] }])
   })
 
-  it('del', async () => {
+  test('del', async () => {
     // Without projects & groups
     mockGet.mockImplementation(() => ({}))
     await Workspace.del({}, {})

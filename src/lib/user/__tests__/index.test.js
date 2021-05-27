@@ -49,12 +49,12 @@ describe('lib/user', () => {
     mockUpdateGroup.mockReset()
   })
 
-  it('add', async () => {
+  test('add', async () => {
     const user = await User.add({ email: 'email', password: 'password' })
     expect(user).toEqual({ id: 'id' })
   })
 
-  it('get', async () => {
+  test('get', async () => {
     let user
 
     // Normal
@@ -103,7 +103,7 @@ describe('lib/user', () => {
     expect(user).toEqual({ id: 'id', email: 'email', avatar: undefined })
   })
 
-  it('getBy', async () => {
+  test('getBy', async () => {
     mockGet.mockImplementation(() => ({
       id: 'id'
     }))
@@ -112,14 +112,14 @@ describe('lib/user', () => {
     expect(user).toEqual({ id: 'id' })
   })
 
-  it('getAll', async () => {
+  test('getAll', async () => {
     mockGetAll.mockImplementation(() => [{ id: 'id' }])
     const users = await User.getAll()
     expect(mockGetAll).toHaveBeenCalledTimes(1)
     expect(users).toEqual([{ id: 'id' }])
   })
 
-  it('login', async () => {
+  test('login', async () => {
     let user
 
     // Empty
@@ -149,7 +149,7 @@ describe('lib/user', () => {
     expect(user).toEqual({ id: 'id', email: 'email' })
   })
 
-  it('update', async () => {
+  test('update', async () => {
     await User.update({}, [])
     expect(mockGet).toHaveBeenCalledTimes(0)
     expect(mockGetByUsernameAndPassword).toHaveBeenCalledTimes(0)
@@ -159,7 +159,7 @@ describe('lib/user', () => {
     expect(mockDelWorkspace).toHaveBeenCalledTimes(0)
   })
 
-  it('del', async () => {
+  test('del', async () => {
     // Without workspaces & groups
     mockGet.mockImplementation(() => ({}))
     await User.del({})

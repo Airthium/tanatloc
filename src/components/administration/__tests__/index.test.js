@@ -63,22 +63,22 @@ describe('components/administration', () => {
     wrapper = shallow(<Administration />)
   })
 
-  it('exists', () => {
+  test('exists', () => {
     expect(wrapper).toBeDefined()
   })
 
-  it('onChange', () => {
+  test('onChange', () => {
     wrapper.find('Tabs').props().onChange()
     expect(mockReplace).toHaveBeenCalledTimes(1)
   })
 
-  it('without query', () => {
+  test('without query', () => {
     wrapper.unmount()
     mockQuery.mockImplementation(() => ({}))
     wrapper = shallow(<Administration />)
   })
 
-  // it('effect', () => {
+  // test('effect', () => {
   //   wrapper.unmount()
   //   wrapper = mount(<Administration />)
   //   expect(wrapper).toBeDefined()

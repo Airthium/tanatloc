@@ -8,7 +8,7 @@ jest.mock('swr', () => () => ({
 }))
 
 describe('api/user', () => {
-  it('useUser', () => {
+  test('useUser', () => {
     const [user, { mutateUser, errorUser, loadingUser }] = useUser()
     expect(user).toEqual({})
     expect(mutateUser).toBeDefined()
@@ -16,7 +16,7 @@ describe('api/user', () => {
     expect(loadingUser).toBe(false)
   })
 
-  it('401', () => {
+  test('401', () => {
     // 401 error
     mockError.mockImplementation(() => ({
       status: 401

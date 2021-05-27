@@ -23,7 +23,7 @@ describe('services/freefem', () => {
     mockCallback.mockReset()
   })
 
-  it('freefem', async () => {
+  test('freefem', async () => {
     let code
 
     // Normal
@@ -70,7 +70,7 @@ describe('services/freefem', () => {
     }
   })
 
-  it('isDocker', async () => {
+  test('isDocker', async () => {
     mockDocker.mockImplementation(() => true)
 
     mockSpawn.mockImplementation(() => ({

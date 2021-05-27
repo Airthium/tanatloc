@@ -64,7 +64,7 @@ describe('route/project/[id]', () => {
     response = undefined
   })
 
-  it('no session', async () => {
+  test('no session', async () => {
     await id(req, res)
     expect(mockSession).toHaveBeenCalledTimes(1)
     expect(mockAuth).toHaveBeenCalledTimes(0)
@@ -75,7 +75,7 @@ describe('route/project/[id]', () => {
     expect(response).toBe(undefined)
   })
 
-  it('no authorization', async () => {
+  test('no authorization', async () => {
     mockSession.mockImplementation(() => 'id')
 
     await id(req, res)
@@ -101,7 +101,7 @@ describe('route/project/[id]', () => {
     expect(response).toEqual({ error: true, message: 'test' })
   })
 
-  it('electron', async () => {
+  test('electron', async () => {
     req.query.id = undefined
     req.params = { id: 'id' }
 
@@ -123,7 +123,7 @@ describe('route/project/[id]', () => {
     })
   })
 
-  it('GET', async () => {
+  test('GET', async () => {
     mockSession.mockImplementation(() => true)
     mockAuth.mockImplementation(() => true)
 
@@ -156,7 +156,7 @@ describe('route/project/[id]', () => {
     expect(response).toEqual({ error: true, message: 'test' })
   })
 
-  it('PUT', async () => {
+  test('PUT', async () => {
     req.method = 'PUT'
 
     mockSession.mockImplementation(() => true)
@@ -185,7 +185,7 @@ describe('route/project/[id]', () => {
     expect(response).toEqual({ error: true, message: 'test' })
   })
 
-  it('DELETE', async () => {
+  test('DELETE', async () => {
     req.method = 'DELETE'
 
     mockSession.mockImplementation(() => true)
@@ -214,7 +214,7 @@ describe('route/project/[id]', () => {
     expect(response).toEqual({ error: true, message: 'test' })
   })
 
-  it('wrong method', async () => {
+  test('wrong method', async () => {
     req.method = 'SOMETHING'
 
     mockSession.mockImplementation(() => true)

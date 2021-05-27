@@ -61,7 +61,7 @@ describe('pages/api/workspace', () => {
     }
   })
 
-  it('no session', async () => {
+  test('no session', async () => {
     await workspace(req, res)
     expect(mockSession).toHaveBeenCalledTimes(1)
     expect(mockAuth).toHaveBeenCalledTimes(0)
@@ -74,7 +74,7 @@ describe('pages/api/workspace', () => {
     expect(response).toBe(undefined)
   })
 
-  it('GET', async () => {
+  test('GET', async () => {
     mockSession.mockImplementation(() => true)
 
     await workspace(req, res)
@@ -111,7 +111,7 @@ describe('pages/api/workspace', () => {
     expect(response).toEqual({ error: true, message: 'test' })
   })
 
-  it('POST', async () => {
+  test('POST', async () => {
     req.method = 'POST'
 
     mockSession.mockImplementation(() => true)
@@ -143,7 +143,7 @@ describe('pages/api/workspace', () => {
     expect(response).toEqual({ error: true, message: 'test' })
   })
 
-  it('PUT', async () => {
+  test('PUT', async () => {
     req.method = 'PUT'
     req.body = {
       workspace: {},
@@ -193,7 +193,7 @@ describe('pages/api/workspace', () => {
     expect(response).toEqual({ error: true, message: 'test' })
   })
 
-  it('DELETE', async () => {
+  test('DELETE', async () => {
     req.method = 'DELETE'
     req.body = {}
 
@@ -240,7 +240,7 @@ describe('pages/api/workspace', () => {
     expect(response).toEqual({ error: true, message: 'test' })
   })
 
-  it('wrong method', async () => {
+  test('wrong method', async () => {
     req.method = 'SOMETHING'
 
     mockSession.mockImplementation(() => true)

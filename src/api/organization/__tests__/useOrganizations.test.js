@@ -7,7 +7,7 @@ jest.mock('swr', () => () => ({
 }))
 
 describe('api/organization/useOrganizations', () => {
-  it('with organizations', () => {
+  test('with organizations', () => {
     mockOrganizations.mockImplementation(() => [{ id: 'id' }])
     const [
       organizations,
@@ -32,7 +32,7 @@ describe('api/organization/useOrganizations', () => {
     expect(loadingOrganizations).toBe(false)
   })
 
-  it('without organizations', () => {
+  test('without organizations', () => {
     mockOrganizations.mockImplementation(() => {})
     const [organizations] = useOrganizations()
     expect(organizations).toEqual([])

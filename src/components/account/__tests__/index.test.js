@@ -1,5 +1,7 @@
+import React from 'react'
+import { fireEvent, render, screen } from '@testing-library/react'
+
 import Account from '..'
-import { shallow } from 'enzyme'
 
 const mockReplace = jest.fn()
 const mockQuery = jest.fn()
@@ -30,32 +32,32 @@ jest.mock('../hpc', () => {
   return HPC
 })
 
-let wrapper
 describe('components/account', () => {
-  const user = { email: 'email' }
-  const mutateUser = jest.fn()
+  const user = { email: 'email', authorizedplugins: [] }
   const swr = {
-    mutateUser
+    mutateUser: jest.fn()
   }
 
   beforeEach(() => {
     mockReplace.mockReset()
     mockQuery.mockReset()
     mockQuery.mockImplementation(() => ({}))
-
-    wrapper = shallow(<Account user={user} swr={swr} />)
   })
 
-  afterEach(() => {
-    wrapper.unmount()
+  test('render', () => {
+    const { unmount } = render(<Account user={user} swr={swr} />)
+
+    unmount()
   })
 
-  it('render', () => {
-    expect(wrapper).toBeDefined()
-  })
+  test('onChange', () => {
+    const { unmount } = render(<Account user={user} swr={swr} />)
 
-  it('onChange', () => {
-    wrapper.find('Tabs').props().onChange()
+    const tab = screen.getByRole('tab', { name: 'Security' })
+    fireEvent.click(tab)
+
     expect(mockReplace).toHaveBeenCalledTimes(1)
+
+    unmount()
   })
 })

@@ -13,7 +13,7 @@ global.fetch = async (route) => {
 }
 
 describe('api/call', () => {
-  it('electron', async () => {
+  test('electron', async () => {
     // Normal
     await Caller.fetcher('/route')
     expect(mockRoute).toBe('http://localhost:3000/route')

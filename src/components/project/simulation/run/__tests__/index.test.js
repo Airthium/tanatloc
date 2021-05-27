@@ -2,8 +2,6 @@ import Run from '@/components/project/simulation/run'
 import { shallow, mount } from 'enzyme'
 import { act } from 'react-dom/test-utils'
 
-import '@/config/jest/mockMatchMedia'
-
 jest.mock('@/components/project/simulation/run/cloudServer', () => {
   const CloudServer = () => <div />
   return CloudServer
@@ -83,11 +81,11 @@ describe('components/project/simulation/run', () => {
     wrapper.unmount()
   })
 
-  it('render', () => {
+  test('render', () => {
     expect(wrapper).toBeDefined()
   })
 
-  it('onRun', async () => {
+  test('onRun', async () => {
     await wrapper.find('Button').at(0).props().onClick()
     expect(mockRun).toHaveBeenCalledTimes(1)
     expect(mockError).toHaveBeenCalledTimes(0)
@@ -101,11 +99,11 @@ describe('components/project/simulation/run', () => {
     expect(mockError).toHaveBeenCalledTimes(1)
   })
 
-  it('onStop', async () => {
+  test('onStop', async () => {
     wrapper.find('Button').at(1).props().onClick()
   })
 
-  it('onCloudServer', async () => {
+  test('onCloudServer', async () => {
     // Normal
     await wrapper.find('CloudServer').props().onOk({})
     expect(mockUpdate).toHaveBeenCalledTimes(1)
@@ -124,7 +122,7 @@ describe('components/project/simulation/run', () => {
     expect(mockError).toHaveBeenCalledTimes(1)
   })
 
-  // it('onLog', () => {
+  // test('onLog', () => {
   //   wrapper.unmount()
   //   wrapper = mount(<Run simulation={simulation} swr={swr} />)
 
@@ -135,7 +133,7 @@ describe('components/project/simulation/run', () => {
   //   act(() => wrapper.find('Step').at(1).props().description.props.onClick())
   // })
 
-  // it('setPart', async () => {
+  // test('setPart', async () => {
   //   wrapper.unmount()
   //   wrapper = mount(<Run simulation={simulation} swr={swr} />)
 
@@ -164,7 +162,7 @@ describe('components/project/simulation/run', () => {
   //   )
   // })
 
-  // it('onArchiveDownload', async () => {
+  // test('onArchiveDownload', async () => {
   //   wrapper.unmount()
   //   wrapper = mount(<Run simulation={simulation} swr={swr} />)
 
@@ -200,7 +198,7 @@ describe('components/project/simulation/run', () => {
   //   expect(mockDownloadGet).toHaveBeenCalledTimes(2)
   // })
 
-  // it('onDownload', async () => {
+  // test('onDownload', async () => {
   //   wrapper.unmount()
   //   wrapper = mount(<Run simulation={simulation} swr={swr} />)
 
@@ -228,7 +226,7 @@ describe('components/project/simulation/run', () => {
   //   expect(mockDownloadGet).toHaveBeenCalledTimes(2)
   // })
 
-  // it('running', () => {
+  // test('running', () => {
   //   // Errorred
   //   wrapper.unmount()
   //   mockSimulation.mockImplementation(() => ({
@@ -299,7 +297,7 @@ describe('components/project/simulation/run', () => {
   //   expect(wrapper).toBeDefined()
   // })
 
-  // it('effect', async () => {
+  // test('effect', async () => {
   //   wrapper.unmount()
 
   //   // No configuration

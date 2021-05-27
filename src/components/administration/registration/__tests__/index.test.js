@@ -1,8 +1,6 @@
 import Registration from '..'
 import { shallow, mount } from 'enzyme'
 
-import '@/config/jest/mockMatchMedia'
-
 jest.mock('@/components/loading', () => ({
   Simple: () => <div />
 }))
@@ -44,18 +42,18 @@ describe('components/administration/registration', () => {
     wrapper = shallow(<Registration />)
   })
 
-  it('exists', () => {
+  test('exists', () => {
     expect(wrapper).toBeDefined()
   })
 
-  it('loading', () => {
+  test('loading', () => {
     wrapper.unmount()
     mockLoadingSystem.mockImplementation(() => true)
     wrapper = shallow(<Registration />)
     expect(wrapper.find('Simple').length).toBe(1)
   })
 
-  it('onAllowSignup', async () => {
+  test('onAllowSignup', async () => {
     // Normal
     await wrapper.find('Checkbox').at(0).props().onChange()
     expect(mockUpdate).toHaveBeenCalledTimes(1)
@@ -69,7 +67,7 @@ describe('components/administration/registration', () => {
     expect(mockError).toHaveBeenCalledTimes(1)
   })
 
-  it('onPasswordFinish', async () => {
+  test('onPasswordFinish', async () => {
     // Normal
     await wrapper.find('ForwardRef(InternalForm)').props().onFinish({})
     expect(mockUpdate).toHaveBeenCalledTimes(1)
@@ -86,7 +84,7 @@ describe('components/administration/registration', () => {
     expect(mockError).toHaveBeenCalledTimes(1)
   })
 
-  // it('mount', () => {
+  // test('mount', () => {
   //   wrapper.unmount()
   //   wrapper = mount(<Registration />)
   //   expect(wrapper).toBeDefined()

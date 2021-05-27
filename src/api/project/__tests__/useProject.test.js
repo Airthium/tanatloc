@@ -7,7 +7,7 @@ jest.mock('swr', () => () => ({
 }))
 
 describe('api/project/useProject', () => {
-  it('with project', () => {
+  test('with project', () => {
     mockProject.mockImplementation(() => ({}))
     const [project, { reloadProject, mutateProject, loadingProject }] =
       useProject()
@@ -18,7 +18,7 @@ describe('api/project/useProject', () => {
     reloadProject()
   })
 
-  it('without project', () => {
+  test('without project', () => {
     mockProject.mockImplementation(() => {})
     const [project, { mutateProject, loadingProject }] = useProject()
     expect(project).toEqual({})
@@ -26,7 +26,7 @@ describe('api/project/useProject', () => {
     expect(loadingProject).toBe(false)
   })
 
-  it('with id', () => {
+  test('with id', () => {
     mockProject.mockImplementation(() => {})
     const [project, { mutateProject, loadingProject }] = useProject('id')
     expect(project).toEqual({})

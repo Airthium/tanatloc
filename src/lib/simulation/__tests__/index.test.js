@@ -72,7 +72,7 @@ describe('lib/simulation', () => {
     mockStop.mockReset()
   })
 
-  it('add', async () => {
+  test('add', async () => {
     mockAdd.mockImplementation(() => ({
       id: 'id'
     }))
@@ -93,7 +93,7 @@ describe('lib/simulation', () => {
     expect(simulation).toEqual({ id: 'id' })
   })
 
-  it('get', async () => {
+  test('get', async () => {
     mockGet.mockImplementation(() => ({}))
     const simulation = await Simulation.get('id', [])
     expect(mockPath).toHaveBeenCalledTimes(0)
@@ -109,7 +109,7 @@ describe('lib/simulation', () => {
     expect(simulation).toEqual({})
   })
 
-  it('update', async () => {
+  test('update', async () => {
     mockGet.mockImplementation(() => ({
       scheme: {
         configuration: {
@@ -348,7 +348,7 @@ describe('lib/simulation', () => {
     expect(mockRemoveDirectory).toHaveBeenCalledTimes(2)
   })
 
-  it('delete', async () => {
+  test('delete', async () => {
     mockGet.mockImplementation(() => ({}))
     await Simulation.del({})
     expect(mockPath).toHaveBeenCalledTimes(1)
@@ -379,7 +379,7 @@ describe('lib/simulation', () => {
     expect(mockRemoveDirectory).toHaveBeenCalledTimes(2)
   })
 
-  it('run', async () => {
+  test('run', async () => {
     // Normal
     mockGet.mockImplementation(() => ({
       scheme: {
@@ -445,7 +445,7 @@ describe('lib/simulation', () => {
     expect(mockCompute).toHaveBeenCalledTimes(2)
   })
 
-  it('stop', async () => {
+  test('stop', async () => {
     mockGet.mockImplementation(() => ({
       scheme: {
         configuration: {

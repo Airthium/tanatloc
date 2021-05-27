@@ -33,7 +33,7 @@ describe('lib/download/summary', () => {
     }))
   })
 
-  it('call', () => {
+  test('call', () => {
     const summary = createSummary(simulation)
     expect(summary).toEqual({
       path: 'path',
@@ -41,7 +41,7 @@ describe('lib/download/summary', () => {
     })
   })
 
-  it('full', () => {
+  test('full', () => {
     simulation.scheme.configuration = {
       part: {},
       geometry: {

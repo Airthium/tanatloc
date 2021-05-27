@@ -64,11 +64,11 @@ describe('components/project/simulation/geometry', () => {
     wrapper.unmount()
   })
 
-  it('render', () => {
+  test('render', () => {
     expect(wrapper).toBeDefined()
   })
 
-  it('beforeUpload', () => {
+  test('beforeUpload', () => {
     let res
 
     // Wrong
@@ -84,7 +84,7 @@ describe('components/project/simulation/geometry', () => {
     expect(res).toBe(true)
   })
 
-  it('onUpload', async () => {
+  test('onUpload', async () => {
     // Uploading
     await wrapper
       .find('Upload')
@@ -125,7 +125,7 @@ describe('components/project/simulation/geometry', () => {
     expect(mockError).toHaveBeenCalledTimes(1)
   })
 
-  // it('effect', () => {
+  // test('effect', () => {
   //   wrapper.unmount()
   //   wrapper = mount(<Geometry simulation={simulation} part={part} swr={swr} />)
   //   expect(wrapper).toBeDefined()
@@ -156,7 +156,7 @@ describe('components/project/simulation/geometry', () => {
   //   expect(wrapper).toBeDefined()
   // })
 
-  // it('setDeleteVisible', () => {
+  // test('setDeleteVisible', () => {
   //   // Need file
   //   wrapper.unmount()
   //   wrapper = mount(
@@ -188,7 +188,7 @@ describe('components/project/simulation/geometry', () => {
   //   act(() => wrapper.find('DeleteDialog').props().onCancel())
   // })
 
-  // it('onDelete', async () => {
+  // test('onDelete', async () => {
   //   // Need file
   //   wrapper.unmount()
   //   wrapper = mount(
@@ -229,7 +229,7 @@ describe('components/project/simulation/geometry', () => {
   //   expect(mockError).toHaveBeenCalledTimes(1)
   // })
 
-  // it('onDownload', async () => {
+  // test('onDownload', async () => {
   //   // Need file
   //   wrapper.unmount()
   //   wrapper = mount(
@@ -272,7 +272,7 @@ describe('components/project/simulation/geometry', () => {
   //   expect(mockError).toHaveBeenCalledTimes(1)
   // })
 
-  // it('with part', () => {
+  // test('with part', () => {
   //   wrapper.unmount()
   //   wrapper = mount(
   //     <Geometry

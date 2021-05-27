@@ -1,7 +1,7 @@
 import Rescale from '../'
 
 describe('plugins/rescale', () => {
-  it('call', () => {
+  test('call', () => {
     expect(Rescale).toBeDefined()
     expect(Rescale.key).toBeDefined()
   })

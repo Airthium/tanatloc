@@ -20,7 +20,7 @@ jest.mock('redux-devtools-extension', () => ({
 jest.mock('redux-persist/lib/storage', () => ({}))
 
 describe('store/store (server)', () => {
-  it('null window', () => {
+  test('null window', () => {
     const res = initializeStore()
     expect(res.id).toBe('store')
   })

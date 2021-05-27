@@ -7,7 +7,7 @@ jest.mock('swr', () => () => ({
 }))
 
 describe('api/project/useProjects', () => {
-  it('without ids', () => {
+  test('without ids', () => {
     mockProjects.mockImplementation(() => [{ id: 'id' }, {}])
     const [
       projects,
@@ -31,13 +31,13 @@ describe('api/project/useProjects', () => {
     mutateOneProject({ id: 'id' })
   })
 
-  it('with ids', () => {
+  test('with ids', () => {
     mockProjects.mockImplementation(() => [{ id: 'id' }, {}])
     const [projects] = useProjects(['id1', 'id2'])
     expect(projects).toEqual([{ id: 'id' }, {}])
   })
 
-  it('withtout projects', () => {
+  test('withtout projects', () => {
     mockProjects.mockImplementation(() => {})
     const [projects] = useProjects(['id1', 'id2'])
     expect(projects).toEqual([])

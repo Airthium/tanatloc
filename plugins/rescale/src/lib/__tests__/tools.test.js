@@ -68,7 +68,7 @@ describe('plugins/rescale/src/lib/tools', () => {
     mockCall.mockReset()
   })
 
-  it('getFreeFEM', async () => {
+  test('getFreeFEM', async () => {
     mockCall.mockImplementation(() => ({
       results: [{ code: 'freefem', version: 'xx' }]
     }))
@@ -76,7 +76,7 @@ describe('plugins/rescale/src/lib/tools', () => {
     expect(res).toEqual({ code: 'freefem', version: 'xx' })
   })
 
-  it('checkFiles', async () => {
+  test('checkFiles', async () => {
     mockCall.mockImplementation(() => ({}))
     const res = await Tools.checkFiles(configuration)
     expect(res).toBe()
@@ -90,12 +90,12 @@ describe('plugins/rescale/src/lib/tools', () => {
     }
   })
 
-  it('updateTasks', async () => {
+  test('updateTasks', async () => {
     await Tools.updateTasks()
     expect(mockSimulationUpdate).toHaveBeenCalledTimes(1)
   })
 
-  it('uploadFile', async () => {
+  test('uploadFile', async () => {
     mockReadFile.mockImplementation(() => 'readFile')
     mockCall.mockImplementation(() => '{ "id": "id" }')
     const file = await Tools.uploadFile(configuration)
@@ -103,7 +103,7 @@ describe('plugins/rescale/src/lib/tools', () => {
     expect(file).toEqual({ id: 'id', name: undefined })
   })
 
-  it('uploadFiles', async () => {
+  test('uploadFiles', async () => {
     mockReadFile.mockImplementation(() => 'readFile')
     mockCall.mockImplementation(() => '{ "id": "id" }')
 
@@ -115,7 +115,7 @@ describe('plugins/rescale/src/lib/tools', () => {
     await Tools.uploadFiles(configuration, [{}])
   })
 
-  it('createJob', async () => {
+  test('createJob', async () => {
     configuration.additionalFiles.value = undefined
     mockCall.mockImplementation(() => ({ id: 'id' }))
     const job = await Tools.createJob(
@@ -164,12 +164,12 @@ describe('plugins/rescale/src/lib/tools', () => {
     expect(mockCaptureException).toHaveBeenCalledTimes(1)
   })
 
-  it('submitJob', async () => {
+  test('submitJob', async () => {
     await Tools.submitJob(configuration)
     expect(mockCall).toHaveBeenCalledTimes(1)
   })
 
-  it('getStatus', async () => {
+  test('getStatus', async () => {
     mockCall.mockImplementation(() => ({}))
 
     // Empty response (Rescale bug - bad Content-Type header)
@@ -186,7 +186,7 @@ describe('plugins/rescale/src/lib/tools', () => {
     expect(status).toBe('Executing')
   })
 
-  it('getInRunFiles', async () => {
+  test('getInRunFiles', async () => {
     let files = await Tools.getInRunFiles(configuration)
     expect(files).toEqual([])
 
@@ -195,14 +195,14 @@ describe('plugins/rescale/src/lib/tools', () => {
     expect(files).toEqual([{}])
   })
 
-  it('getInFunFile', async () => {
+  test('getInFunFile', async () => {
     const file = await Tools.getInRunFile(configuration, {
       resource: 'api/v2/file'
     })
     expect(file).toBe()
   })
 
-  it('getFiles', async () => {
+  test('getFiles', async () => {
     mockCall.mockImplementation(() => ({
       results: [{}]
     }))
@@ -210,12 +210,12 @@ describe('plugins/rescale/src/lib/tools', () => {
     expect(files).toEqual([{}])
   })
 
-  it('getFile', async () => {
+  test('getFile', async () => {
     const file = await Tools.getFile(configuration)
     expect(file).toBe()
   })
 
-  it('getInRunOuputs', async () => {
+  test('getInRunOuputs', async () => {
     // Log only
     await Tools.getInRunOutputs(
       configuration,
@@ -377,7 +377,7 @@ describe('plugins/rescale/src/lib/tools', () => {
     )
   })
 
-  it('getOuputs', async () => {
+  test('getOuputs', async () => {
     // Log only
     await Tools.getOutputs(
       configuration,

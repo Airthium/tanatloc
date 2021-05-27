@@ -18,7 +18,7 @@ describe('route/session', () => {
     mockSession.mockImplementation(() => false)
   })
 
-  it('ok', async () => {
+  test('ok', async () => {
     mockSession.mockImplementation(() => ({ id: 'id' }))
 
     const id = await getSessionId(req, res)
@@ -26,7 +26,7 @@ describe('route/session', () => {
     expect(id).toBe('id')
   })
 
-  it('wrong', async () => {
+  test('wrong', async () => {
     let id
 
     // No id
@@ -42,7 +42,7 @@ describe('route/session', () => {
     expect(id).toBe(null)
   })
 
-  it('error', async () => {
+  test('error', async () => {
     mockSession.mockImplementation(() => {
       throw new Error()
     })

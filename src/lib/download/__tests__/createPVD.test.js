@@ -35,12 +35,12 @@ describe('lib/download/pvd', () => {
     }))
   })
 
-  it('call', () => {
+  test('call', () => {
     const pvds = createPVD(simulation, files)
     expect(pvds).toEqual([])
   })
 
-  it('full', () => {
+  test('full', () => {
     simulation.scheme.configuration = {
       run: {
         resultsFilters: [
@@ -68,7 +68,7 @@ describe('lib/download/pvd', () => {
     expect(pvds).toEqual([{ name: 'Name.pvd', path: 'path' }])
   })
 
-  it('no filtered files', () => {
+  test('no filtered files', () => {
     simulation.scheme.configuration = {
       run: {
         resultsFilters: [

@@ -94,7 +94,7 @@ describe('lib/download', () => {
     mockListFiles.mockImplementation(() => [{ isFile: () => true }])
   })
 
-  it('createArchiveStream', async () => {
+  test('createArchiveStream', async () => {
     const archiveStream = await Download.createArchiveStream({ id: 'id' })
     expect(archiveStream).toBe('readStream')
 
@@ -116,7 +116,7 @@ describe('lib/download', () => {
     }
   })
 
-  it('createReadStream', () => {
+  test('createReadStream', () => {
     const stream = Download.createReadStream(
       { id: 'id' },
       { originPath: 'originPath', fileName: 'fileName' }

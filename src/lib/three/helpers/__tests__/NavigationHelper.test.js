@@ -113,17 +113,17 @@ describe('lib/three/helpers/NavigationHelper', () => {
   }
   const controls = {}
 
-  it('call', () => {
+  test('call', () => {
     const navigation = NavigationHelper(renderer, scene, camera, controls)
     expect(navigation).toBeDefined()
   })
 
-  it('event', () => {
+  test('event', () => {
     const navigation = NavigationHelper(renderer, scene, camera, controls)
     expect(navigation).toBeDefined()
   })
 
-  it('resize', () => {
+  test('resize', () => {
     const navigation = NavigationHelper(renderer, scene, camera, controls)
     navigation.resize({
       newOffsetWidth: 0,
@@ -133,12 +133,12 @@ describe('lib/three/helpers/NavigationHelper', () => {
     })
   })
 
-  it('render', () => {
+  test('render', () => {
     const navigation = NavigationHelper(renderer, scene, camera, controls)
     navigation.render()
   })
 
-  it('dispose', () => {
+  test('dispose', () => {
     global.MockGroup.children = [
       {
         children: [

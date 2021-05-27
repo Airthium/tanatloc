@@ -1,7 +1,11 @@
+/**
+ * @jest-environment node
+ */
+
 const config = require('../email')
 
 describe('config/email', () => {
-  it('global', () => {
+  test('global', () => {
     expect(config.TOKEN).toBe('')
   })
 })

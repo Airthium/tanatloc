@@ -264,10 +264,10 @@ describe('components/project/view', () => {
   // afterEach(() => {
   //   wrapper.unmount()
   // })
-  // it('render', () => {
+  // test('render', () => {
   //   expect(wrapper).toBeDefined()
   // })
-  // it('buttons', () => {
+  // test('buttons', () => {
   //   act(() => {
   //     const event = {}
   //     wrapper.find('Button').forEach((button) => {
@@ -284,7 +284,7 @@ describe('components/project/view', () => {
   //     })
   //   })
   // })
-  // it('drawers', () => {
+  // test('drawers', () => {
   //   act(() => {
   //     const event = {}
   //     wrapper.find('Drawer').forEach((drawer) => {
@@ -292,23 +292,23 @@ describe('components/project/view', () => {
   //     })
   //   })
   // })
-  // it('resize', () => {
+  // test('resize', () => {
   //   window.dispatchEvent(new Event('resize'))
   // })
-  // it('pixelRatio', () => {
+  // test('pixelRatio', () => {
   //   wrapper.unmount()
   //   window.devicePixelRatio = undefined
   //   wrapper = mount(<View setPartSummary={() => {}} />)
   // })
-  // it('grid visible', () => {
+  // test('grid visible', () => {
   //   wrapper.find('Switch').at(0).props().onChange(true)
   //   wrapper.find('Switch').at(0).props().onChange(false)
   // })
-  // it('transparent', () => {
+  // test('transparent', () => {
   //   wrapper.find('Switch').at(3).props().onChange(true)
   //   wrapper.find('Switch').at(3).props().onChange(false)
   // })
-  // it('sectionView', () => {
+  // test('sectionView', () => {
   //   wrapper.unmount()
   //   mockState = true
   //   wrapper = mount(<View setPartSummary={() => {}} />)
@@ -316,7 +316,7 @@ describe('components/project/view', () => {
   //     if (button.props().onClick) button.props().onClick()
   //   })
   // })
-  // it('selection', () => {
+  // test('selection', () => {
   //   wrapper.find('Button').forEach((button) => {
   //     if (button.props().onClick) button.props().onClick()
   //   })
@@ -325,7 +325,7 @@ describe('components/project/view', () => {
   //     if (button.props().onClick) button.props().onClick()
   //   })
   // })
-  // it('handleTransform', () => {
+  // test('handleTransform', () => {
   //   wrapper.unmount()
   //   mockState = true
   //   wrapper = mount(<View setPartSummary={() => {}} />)
@@ -339,7 +339,7 @@ describe('components/project/view', () => {
   //       }
   //     })
   // })
-  // it('effect', () => {
+  // test('effect', () => {
   //   wrapper.unmount()
   //   const setPartSummary = jest.fn()
   //   mockGet.mockImplementation(() => {

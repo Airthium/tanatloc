@@ -38,23 +38,23 @@ describe('lib/three/helpers/GridHelper', () => {
     remove: () => {}
   }
 
-  it('call', () => {
+  test('call', () => {
     const grid = GridHelper(scene)
     expect(grid).toBeDefined()
   })
 
-  it('update', () => {
+  test('update', () => {
     const grid = GridHelper(scene)
     grid.update()
   })
 
-  it('setVisible', () => {
+  test('setVisible', () => {
     const grid = GridHelper(scene)
     grid.update()
     grid.setVisible(true)
   })
 
-  it('dispose', () => {
+  test('dispose', () => {
     global.MockGroup.children = [
       {
         children: [

@@ -41,7 +41,7 @@ describe('route/groups/[id]', () => {
     response = undefined
   })
 
-  it('no session', async () => {
+  test('no session', async () => {
     await groups(req, res)
     expect(mockSession).toHaveBeenCalledTimes(1)
     expect(mockGetByOrganization).toHaveBeenCalledTimes(0)
@@ -49,7 +49,7 @@ describe('route/groups/[id]', () => {
     expect(response).toBe(undefined)
   })
 
-  it('GET', async () => {
+  test('GET', async () => {
     req.method = 'GET'
 
     mockSession.mockImplementation(() => 'id')
@@ -76,7 +76,7 @@ describe('route/groups/[id]', () => {
     expect(response).toEqual({ error: true, message: 'test' })
   })
 
-  it('electron', async () => {
+  test('electron', async () => {
     req.query.id = undefined
     req.params = { id: 'id' }
 
@@ -94,7 +94,7 @@ describe('route/groups/[id]', () => {
     expect(response).toEqual({ groups: [{ id: 'id' }] })
   })
 
-  it('wrong method', async () => {
+  test('wrong method', async () => {
     req.method = 'SOMETHING'
 
     mockSession.mockImplementation(() => true)

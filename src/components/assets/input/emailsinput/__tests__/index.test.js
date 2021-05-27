@@ -13,11 +13,11 @@ describe('components/assets/input/emailsinput', () => {
     wrapper.unmount()
   })
 
-  it('render', () => {
+  test('render', () => {
     expect(wrapper).toBeDefined()
   })
 
-  it('onChange', () => {
+  test('onChange', () => {
     // Without email nor lastChar
     wrapper
       .find('Input')
@@ -53,7 +53,7 @@ describe('components/assets/input/emailsinput', () => {
     expect(wrapper.find('Tag').length).toBe(1)
   })
 
-  it('onClose', () => {
+  test('onClose', () => {
     // Add an email
     wrapper
       .find('Input')
@@ -69,7 +69,7 @@ describe('components/assets/input/emailsinput', () => {
     expect(wrapper.find('Tag').length).toBe(0)
   })
 
-  // it('effect', () => {
+  // test('effect', () => {
   //   // Without values
   //   wrapper.unmount()
   //   wrapper = mount(<EmailsInput onChange={onChange} />)

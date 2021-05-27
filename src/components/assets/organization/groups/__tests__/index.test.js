@@ -1,6 +1,5 @@
 import Groups from '..'
 import { shallow, mount } from 'enzyme'
-import '@/config/jest/mockMatchMedia'
 
 jest.mock('@/components/assets/group', () => {
   const Group = () => <div />
@@ -74,11 +73,11 @@ describe('components/assets/organization/groups', () => {
     wrapper.unmount()
   })
 
-  it('render', () => {
+  test('render', () => {
     expect(wrapper).toBeDefined()
   })
 
-  it('columns', () => {
+  test('columns', () => {
     const columns = wrapper.find('Table').props().columns
 
     // Renders
@@ -88,7 +87,7 @@ describe('components/assets/organization/groups', () => {
     columns[2].render(null, [{}])
   })
 
-  // it('effect', () => {
+  // test('effect', () => {
   //   wrapper.unmount()
   //   wrapper = mount(
   //     <Groups

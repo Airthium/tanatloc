@@ -9,12 +9,12 @@ describe('components/project/panel', () => {
     wrapper.unmount()
   })
 
-  it('render', () => {
+  test('render', () => {
     wrapper = shallow(<Panel visible={true} title="title" onClose={onClose} />)
     expect(wrapper).toBeDefined()
   })
 
-  it('no visible', () => {
+  test('no visible', () => {
     wrapper = shallow(<Panel visible={false} title="title" onClose={onClose} />)
     expect(wrapper).toBeDefined()
   })

@@ -102,11 +102,11 @@ describe('components/workspace', () => {
     wrapper.unmount()
   })
 
-  it('render', () => {
+  test('render', () => {
     expect(wrapper).toBeDefined()
   })
 
-  it('loading', () => {
+  test('loading', () => {
     wrapper.unmount()
     wrapper = shallow(
       <Workspace
@@ -120,7 +120,7 @@ describe('components/workspace', () => {
     expect(wrapper).toBeDefined()
   })
 
-  it('setName', async () => {
+  test('setName', async () => {
     // Normal
     await wrapper.find('PageHeader').props().title.props.editable.onChange()
     expect(mockUpdate).toHaveBeenCalledTimes(1)
@@ -137,7 +137,7 @@ describe('components/workspace', () => {
     expect(mockError).toHaveBeenCalledTimes(1)
   })
 
-  it('onSearch', () => {
+  test('onSearch', () => {
     const input = wrapper.find('PageHeader').props().footer.props.children[1]
       .props.children[0]
     input.props.onChange({
@@ -147,7 +147,7 @@ describe('components/workspace', () => {
     })
   })
 
-  it('owner', () => {
+  test('owner', () => {
     wrapper.unmount()
     wrapper = shallow(
       <Workspace
@@ -166,7 +166,7 @@ describe('components/workspace', () => {
     ).toBeDefined()
   })
 
-  it('users & groups', () => {
+  test('users & groups', () => {
     wrapper.unmount()
     wrapper = shallow(
       <Workspace
@@ -184,7 +184,7 @@ describe('components/workspace', () => {
     expect(wrapper.find('.Workspace-share').length).toBe(1)
   })
 
-  // it('effect', () => {
+  // test('effect', () => {
   //   wrapper.unmount()
   //   wrapper = mount(
   //     <Workspace
@@ -212,7 +212,7 @@ describe('components/workspace', () => {
   //   expect(mockError).toHaveBeenCalledTimes(1)
   // })
 
-  it('propTypes', () => {
+  test('propTypes', () => {
     let res
     const propTypes = Workspace.propTypes
 

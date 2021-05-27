@@ -77,7 +77,7 @@ Account.propTypes = {
     avatar: PropTypes.object,
     authorizedplugins: PropTypes.array.isRequired
   }).isRequired,
-  swr: PropTypes.shape({
+  swr: PropTypes.exact({
     mutateUser: PropTypes.func.isRequired
   }).isRequired
 }

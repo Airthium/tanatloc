@@ -56,7 +56,7 @@ describe('route/plugin', () => {
     response = undefined
   })
 
-  it('no session', async () => {
+  test('no session', async () => {
     await plugin(req, res)
     expect(mockSession).toHaveBeenCalledTimes(1)
     expect(mockGetByUser).toHaveBeenCalledTimes(0)
@@ -67,7 +67,7 @@ describe('route/plugin', () => {
     expect(response).toBe(undefined)
   })
 
-  it('POST', async () => {
+  test('POST', async () => {
     req.method = 'POST'
     req.body = { key: 'key' }
 
@@ -113,7 +113,7 @@ describe('route/plugin', () => {
     expect(response).toEqual({ error: true, message: '' })
   })
 
-  it('GET', async () => {
+  test('GET', async () => {
     req.method = 'GET'
 
     mockSession.mockImplementation(() => true)
@@ -141,7 +141,7 @@ describe('route/plugin', () => {
     expect(response).toEqual({ error: true, message: '' })
   })
 
-  it('PUT', async () => {
+  test('PUT', async () => {
     mockSession.mockImplementation(() => true)
     req.method = 'PUT'
 
@@ -168,7 +168,7 @@ describe('route/plugin', () => {
     expect(response).toEqual({ error: true, message: '' })
   })
 
-  it('DELETE', async () => {
+  test('DELETE', async () => {
     req.method = 'DELETE'
 
     mockSession.mockImplementation(() => true)
@@ -196,7 +196,7 @@ describe('route/plugin', () => {
     expect(response).toEqual({ error: true, message: '' })
   })
 
-  it('wrong method', async () => {
+  test('wrong method', async () => {
     mockSession.mockImplementation(() => true)
     req.method = 'SOMETHING'
 

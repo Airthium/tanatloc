@@ -52,7 +52,7 @@ describe('route/organization', () => {
     response = undefined
   })
 
-  it('no session', async () => {
+  test('no session', async () => {
     await organization(req, res)
     expect(mockSession).toHaveBeenCalledTimes(1)
     expect(mockAdd).toHaveBeenCalledTimes(0)
@@ -63,7 +63,7 @@ describe('route/organization', () => {
     expect(response).toBe(undefined)
   })
 
-  it('POST', async () => {
+  test('POST', async () => {
     mockSession.mockImplementation(() => 'id')
 
     await organization(req, res)
@@ -89,7 +89,7 @@ describe('route/organization', () => {
     expect(response).toEqual({ error: true, message: 'test' })
   })
 
-  it('PUT', async () => {
+  test('PUT', async () => {
     req.method = 'PUT'
     req.body = {
       id: 'id'
@@ -137,7 +137,7 @@ describe('route/organization', () => {
     expect(response).toEqual({ error: true, message: 'test' })
   })
 
-  it('DELETE', async () => {
+  test('DELETE', async () => {
     req.method = 'DELETE'
     req.body = {
       id: 'id'
@@ -183,7 +183,7 @@ describe('route/organization', () => {
     expect(response).toEqual({ error: true, message: 'test' })
   })
 
-  it('wrong method', async () => {
+  test('wrong method', async () => {
     req.method = 'SOMETHING'
 
     mockSession.mockImplementation(() => true)

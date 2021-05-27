@@ -1,7 +1,11 @@
+/**
+ * @jest-environment node
+ */
+
 const config = require('../auth')
 
 describe('config/auth', () => {
-  it('global', () => {
+  test('global', () => {
     expect(config.SECRET).toBe('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
   })
 })

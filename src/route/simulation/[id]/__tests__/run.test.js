@@ -62,7 +62,7 @@ describe('route/simulation/[id]/run', () => {
     response = undefined
   })
 
-  it('no session', async () => {
+  test('no session', async () => {
     await run(req, res)
     expect(mockSession).toHaveBeenCalledTimes(1)
     expect(mockAuth).toHaveBeenCalledTimes(0)
@@ -72,7 +72,7 @@ describe('route/simulation/[id]/run', () => {
     expect(mockError).toHaveBeenCalledTimes(0)
   })
 
-  it('no authorization', async () => {
+  test('no authorization', async () => {
     mockSession.mockImplementation(() => 'id')
     mockSimulationGet.mockImplementation(() => ({}))
 
@@ -99,7 +99,7 @@ describe('route/simulation/[id]/run', () => {
     expect(response).toEqual({ error: true, message: 'test' })
   })
 
-  it('electron', async () => {
+  test('electron', async () => {
     req.query.id = undefined
     req.params = { id: 'id' }
 
@@ -130,7 +130,7 @@ describe('route/simulation/[id]/run', () => {
     expect(response).toEqual({ error: true, message: 'test' })
   })
 
-  it('wrong method', async () => {
+  test('wrong method', async () => {
     req.method = 'SOMETHING'
 
     mockSession.mockImplementation(() => true)

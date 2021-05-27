@@ -1,8 +1,6 @@
 import Signup from '@/components/signup'
 import { shallow, mount } from 'enzyme'
 
-import '@/config/jest/mockMatchMedia'
-
 const mockPrefetch = jest.fn()
 const mockPush = jest.fn()
 jest.mock('next/router', () => ({
@@ -84,18 +82,18 @@ describe('components/signup', () => {
     wrapper.unmount()
   })
 
-  it('render', () => {
+  test('render', () => {
     expect(wrapper).toBeDefined()
   })
 
-  it('with user', () => {
+  test('with user', () => {
     wrapper.unmount()
     mockUser.mockImplementation(() => ({}))
     mockLoading.mockImplementation(() => false)
     wrapper = shallow(<Signup />)
   })
 
-  it('onSignup', async () => {
+  test('onSignup', async () => {
     // Error
     mockAdd.mockImplementation(() => {
       throw new Error()
@@ -126,7 +124,7 @@ describe('components/signup', () => {
     // expect(mockLogin).toHaveBeenCalledTimes(1)
   })
 
-  it('mismatch passwords rule', async () => {
+  test('mismatch passwords rule', async () => {
     // Match
     await wrapper
       .find({ name: 'passwordConfirmation' })
@@ -147,7 +145,7 @@ describe('components/signup', () => {
     }
   })
 
-  it('login', async () => {
+  test('login', async () => {
     mockAdd.mockImplementation(() => ({
       alreadyExists: true
     }))
@@ -161,7 +159,7 @@ describe('components/signup', () => {
     expect(mockPush).toHaveBeenCalledTimes(1)
   })
 
-  // it('effect', () => {
+  // test('effect', () => {
   //   wrapper.unmount()
   //   mockSystem.mockImplementation(() => ({}))
   //   wrapper = mount(<Signup />)

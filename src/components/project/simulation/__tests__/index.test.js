@@ -127,17 +127,17 @@ describe('components/project/simulation', () => {
     wrapper.unmount()
   })
 
-  it('render', () => {
+  test('render', () => {
     expect(wrapper).toBeDefined()
   })
 
-  it('without simulation', () => {
+  test('without simulation', () => {
     wrapper.unmount()
     wrapper = shallow(<Simulation user={user} swr={swr} onClose={onClose} />)
     expect(wrapper).toBeDefined()
   })
 
-  it('onClose', () => {
+  test('onClose', () => {
     wrapper.unmount()
     wrapper = shallow(
       <Simulation
@@ -151,7 +151,7 @@ describe('components/project/simulation', () => {
     expect(onClose).toHaveBeenCalledTimes(1)
   })
 
-  // it('onUpdate', async () => {
+  // test('onUpdate', async () => {
   //   wrapper.unmount()
   //   wrapper = mount(
   //     <Simulation
@@ -192,7 +192,7 @@ describe('components/project/simulation', () => {
   //   expect(mockError).toHaveBeenCalledTimes(1)
   // })
 
-  it('about', () => {
+  test('about', () => {
     wrapper.unmount()
     wrapper = shallow(
       <Simulation
@@ -206,7 +206,7 @@ describe('components/project/simulation', () => {
     expect(wrapper.find('About').length).toBe(1)
   })
 
-  it('geometry', () => {
+  test('geometry', () => {
     wrapper.unmount()
     wrapper = shallow(
       <Simulation
@@ -220,7 +220,7 @@ describe('components/project/simulation', () => {
     expect(wrapper.find('Geometry').length).toBe(1)
   })
 
-  it('materials', () => {
+  test('materials', () => {
     wrapper.unmount()
     wrapper = shallow(
       <Simulation
@@ -234,7 +234,7 @@ describe('components/project/simulation', () => {
     expect(wrapper.find('Materials').length).toBe(1)
   })
 
-  it('parameters', () => {
+  test('parameters', () => {
     wrapper.unmount()
     wrapper = shallow(
       <Simulation
@@ -248,7 +248,7 @@ describe('components/project/simulation', () => {
     expect(wrapper.find('Parameters').length).toBe(1)
   })
 
-  it('boundaryConditions', () => {
+  test('boundaryConditions', () => {
     wrapper.unmount()
     wrapper = shallow(
       <Simulation
@@ -262,7 +262,7 @@ describe('components/project/simulation', () => {
     expect(wrapper.find('BoundaryConditions').length).toBe(1)
   })
 
-  it('run', () => {
+  test('run', () => {
     wrapper.unmount()
     wrapper = shallow(
       <Simulation
@@ -276,7 +276,7 @@ describe('components/project/simulation', () => {
     expect(wrapper.find('Run').length).toBe(1)
   })
 
-  // it('simulation effect', () => {
+  // test('simulation effect', () => {
   //   // Load models
   //   wrapper.unmount()
   //   wrapper = mount(
@@ -331,11 +331,11 @@ describe('components/project/simulation.Selector', () => {
     wrapper.unmount()
   })
 
-  it('render', () => {
+  test('render', () => {
     expect(wrapper).toBeDefined()
   })
 
-  // it('onSelect', () => {
+  // test('onSelect', () => {
   //   wrapper.unmount()
   //   wrapper = mount(
   //     <Simulation.Selector
@@ -356,7 +356,7 @@ describe('components/project/simulation.Selector', () => {
   //   })
   // })
 
-  it('onCreate', async () => {
+  test('onCreate', async () => {
     await wrapper.find('Modal').props().onOk()
 
     // With current
@@ -365,7 +365,7 @@ describe('components/project/simulation.Selector', () => {
     expect(onOk).toHaveBeenCalledTimes(1)
   })
 
-  // it('effect', () => {
+  // test('effect', () => {
   //   wrapper.unmount()
   //   wrapper = mount(
   //     <Simulation.Selector user={user} onOk={onOk} onCancel={onCancel} />

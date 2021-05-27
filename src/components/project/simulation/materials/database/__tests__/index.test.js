@@ -14,11 +14,11 @@ describe('components/project/simulation/materials/database', () => {
     wrapper.unmount()
   })
 
-  it('render', () => {
+  test('render', () => {
     expect(wrapper).toBeDefined()
   })
 
-  it('open/close', () => {
+  test('open/close', () => {
     expect(wrapper.find('Modal').props().visible).toBe(false)
     wrapper.find('Button').props().onClick()
     expect(wrapper.find('Modal').props().visible).toBe(true)
@@ -26,7 +26,7 @@ describe('components/project/simulation/materials/database', () => {
     expect(wrapper.find('Modal').props().visible).toBe(false)
   })
 
-  it('menu', () => {
+  test('menu', () => {
     wrapper.find('Menu').props().onClick({ key: 'metal' })
     expect(wrapper.find('List').length).toBe(1)
 

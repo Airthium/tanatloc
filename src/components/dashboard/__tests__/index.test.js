@@ -2,8 +2,6 @@ import Dashboard from '@/components/dashboard'
 import { shallow, mount } from 'enzyme'
 import { act } from 'react-dom/test-utils'
 
-import '@/config/jest/mockMatchMedia'
-
 const mockReplace = jest.fn()
 const mockPush = jest.fn()
 const mockQuery = jest.fn()
@@ -156,18 +154,18 @@ describe('components/dashboard', () => {
     wrapper.unmount()
   })
 
-  it('render', () => {
+  test('render', () => {
     expect(wrapper).toBeDefined()
   })
 
-  it('loading', () => {
+  test('loading', () => {
     wrapper.unmount()
     mockLoadingUser.mockImplementation(() => true)
     wrapper = shallow(<Dashboard />)
     expect(wrapper.find('Loading').length).toBe(1)
   })
 
-  it('onSelect', () => {
+  test('onSelect', () => {
     // My workspaces
     wrapper
       .find('Menu')
@@ -266,15 +264,15 @@ describe('components/dashboard', () => {
       })
   })
 
-  it('onMyWorkspaces', () => {
+  test('onMyWorkspaces', () => {
     wrapper.find('SubMenu').at(0).props().onTitleClick()
   })
 
-  it('onSharedWorkspaces', () => {
+  test('onSharedWorkspaces', () => {
     wrapper.find('SubMenu').at(1).props().onTitleClick()
   })
 
-  // it('effect page', () => {
+  // test('effect page', () => {
   //   wrapper.unmount()
   //   jest.spyOn(URLSearchParams.prototype, 'get').mockImplementation((key) => {
   //     if (key === 'page') return 'shared'
@@ -291,7 +289,7 @@ describe('components/dashboard', () => {
   //   wrapper = mount(<Dashboard />)
   // })
 
-  // it('effect error', () => {
+  // test('effect error', () => {
   //   wrapper.unmount()
   //   mockErrorUser.mockImplementation(() => ({ message: 'Error' }))
   //   mockErrorOrganizations.mockImplementation(() => ({ message: 'Error' }))
@@ -300,7 +298,7 @@ describe('components/dashboard', () => {
   //   expect(mockError).toHaveBeenCalledTimes(6)
   // })
 
-  // it('effect', () => {
+  // test('effect', () => {
   //   // No user
   //   wrapper.unmount()
   //   mockUser.mockImplementation(() => {})

@@ -3,7 +3,7 @@ import logout from '@/pages/api/logout'
 jest.mock('@/route/logout', () => () => {})
 
 describe('pages/api/logout', () => {
-  it('call', async () => {
+  test('call', async () => {
     await logout()
   })
 })

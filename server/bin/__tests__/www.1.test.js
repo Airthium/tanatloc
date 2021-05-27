@@ -30,7 +30,7 @@ jest.mock('http', () => ({
 global.process.exit = jest.fn()
 
 describe('server/bin/www', () => {
-  it('www', async () => {
+  test('www', async () => {
     await import('../www')
     expect(true).toBe(true)
   })

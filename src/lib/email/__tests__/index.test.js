@@ -26,7 +26,7 @@ jest.mock('@/config/email', () => ({
 }))
 
 describe('lib/email', () => {
-  it('subscribe', () => {
+  test('subscribe', () => {
     Email.subscribe('email', 'id')
   })
 })

@@ -35,11 +35,11 @@ describe('components/account/information', () => {
     wrapper.unmount()
   })
 
-  it('render', () => {
+  test('render', () => {
     expect(wrapper).toBeDefined()
   })
 
-  it('password mismatch', async () => {
+  test('password mismatch', async () => {
     // Match
     await wrapper
       .find({ name: 'passwordConfirm' })
@@ -60,7 +60,7 @@ describe('components/account/information', () => {
     }
   })
 
-  it('onFinish', async () => {
+  test('onFinish', async () => {
     mockCheck.mockImplementation(() => ({
       valid: true
     }))

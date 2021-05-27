@@ -7,12 +7,12 @@ document.createElement = () => ({
 })
 
 describe('lib/three/helpers/LabelHelper', () => {
-  it('call', () => {
+  test('call', () => {
     const label = LabelHelper('text')
     expect(label).toBeDefined()
   })
 
-  it('dispose', () => {
+  test('dispose', () => {
     const label = LabelHelper('text')
     label.dispose()
   })

@@ -39,11 +39,11 @@ describe('components/administration/users', () => {
     wrapper.unmount()
   })
 
-  it('render', () => {
+  test('render', () => {
     expect(wrapper).toBeDefined()
   })
 
-  it('columns', () => {
+  test('columns', () => {
     const columns = wrapper.find('Table').props().columns
 
     // Sorters

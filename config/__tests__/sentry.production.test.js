@@ -1,7 +1,11 @@
+/**
+ * @jest-environment node
+ */
+
 process.env.NODE_ENV = 'production'
 
 describe('config/sentry', () => {
-  it('global', () => {
+  test('global', () => {
     const config = require('../sentry')
     expect(config.DSN.length).toBe(73)
   })

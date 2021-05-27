@@ -23,7 +23,7 @@ describe('services/gmsh', () => {
     mockCallback.mockReset()
   })
 
-  it('gmsh', async () => {
+  test('gmsh', async () => {
     let code
 
     // Normal
@@ -70,7 +70,7 @@ describe('services/gmsh', () => {
     }
   })
 
-  it('isDocker', async () => {
+  test('isDocker', async () => {
     mockDocker.mockImplementation(() => true)
 
     mockSpawn.mockImplementation(() => ({

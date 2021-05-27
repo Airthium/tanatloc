@@ -138,12 +138,12 @@ describe('lib/three/loaders/PartLoader', () => {
   const mouseMoveEvent = jest.fn()
   const mouseDownEvent = jest.fn()
 
-  it('call', () => {
+  test('call', () => {
     const partLoader = PartLoader()
     expect(partLoader).toBeDefined()
   })
 
-  it('load', async () => {
+  test('load', async () => {
     const partLoader = PartLoader()
     await partLoader.load(part)
 
@@ -189,20 +189,20 @@ describe('lib/three/loaders/PartLoader', () => {
     await partLoader.load(part, true)
   })
 
-  it('dispose', async () => {
+  test('dispose', async () => {
     const partLoader = PartLoader()
     const mesh = await partLoader.load(part)
     mesh.dispose()
   })
 
-  it('setTransparent', async () => {
+  test('setTransparent', async () => {
     const partLoader = PartLoader()
     let mesh = await partLoader.load(part)
     mesh.setTransparent(true)
     mesh.setTransparent(false)
   })
 
-  it('startSelection', async () => {
+  test('startSelection', async () => {
     const partLoader = PartLoader(mouseMoveEvent, mouseDownEvent)
     const mesh = await partLoader.load(part)
     mesh.startSelection(renderer, camera, outlinePass, 'faces')
@@ -212,7 +212,7 @@ describe('lib/three/loaders/PartLoader', () => {
     mesh.startSelection(renderer, camera, outlinePass, 'others')
   })
 
-  it('stopSelection', async () => {
+  test('stopSelection', async () => {
     const partLoader = PartLoader()
     const mesh = await partLoader.load(part)
     mesh.stopSelection()
@@ -227,21 +227,21 @@ describe('lib/three/loaders/PartLoader', () => {
     mesh.stopSelection()
   })
 
-  it('getHighlighted', async () => {
+  test('getHighlighted', async () => {
     const partLoader = PartLoader(mouseMoveEvent, mouseDownEvent)
     const mesh = await partLoader.load(part)
     const highlighted = mesh.getHighlighted()
     expect(highlighted).toBe(null)
   })
 
-  it('getSelected', async () => {
+  test('getSelected', async () => {
     const partLoader = PartLoader(mouseMoveEvent, mouseDownEvent)
     const mesh = await partLoader.load(part)
     const selected = mesh.getSelected()
     expect(selected).toEqual([])
   })
 
-  it('mouseMove', async () => {
+  test('mouseMove', async () => {
     let current
     mouseMoveEvent.mockImplementation((p, uuid) => (current = uuid))
     const partLoader = PartLoader(mouseMoveEvent, mouseDownEvent)
@@ -257,7 +257,7 @@ describe('lib/three/loaders/PartLoader', () => {
     expect(current).toBe('uuid')
   })
 
-  it('highlight', async () => {
+  test('highlight', async () => {
     const partLoader = PartLoader()
     const mesh = await partLoader.load(part)
     mesh.startSelection(renderer, camera, outlinePass, 'faces')
@@ -267,7 +267,7 @@ describe('lib/three/loaders/PartLoader', () => {
     mesh.highlight('uuid')
   })
 
-  it('unhighlight', async () => {
+  test('unhighlight', async () => {
     const partLoader = PartLoader()
     const mesh = await partLoader.load(part)
     mesh.startSelection(renderer, camera, outlinePass, 'faces')
@@ -280,7 +280,7 @@ describe('lib/three/loaders/PartLoader', () => {
     mesh.unhighlight()
   })
 
-  it('mouseDown', async () => {
+  test('mouseDown', async () => {
     let current
     mouseDownEvent.mockImplementation((p, uuid) => (current = uuid))
     const partLoader = PartLoader(mouseMoveEvent, mouseDownEvent)
@@ -296,7 +296,7 @@ describe('lib/three/loaders/PartLoader', () => {
     expect(current).toBe('face_uuid')
   })
 
-  it('select', async () => {
+  test('select', async () => {
     const partLoader = PartLoader()
     const mesh = await partLoader.load(part)
     mesh.startSelection(renderer, camera, outlinePass, 'faces')
@@ -307,7 +307,7 @@ describe('lib/three/loaders/PartLoader', () => {
     expect(mesh.getSelected()).toEqual(['face_uuid'])
   })
 
-  it('unselect', async () => {
+  test('unselect', async () => {
     const partLoader = PartLoader()
     const mesh = await partLoader.load(part)
     mesh.startSelection(renderer, camera, outlinePass, 'faces')
@@ -317,7 +317,7 @@ describe('lib/three/loaders/PartLoader', () => {
     mesh.unselect('face_uuid')
   })
 
-  it('result specific', async () => {
+  test('result specific', async () => {
     part.type = 'result'
     part.solids = []
 

@@ -43,7 +43,7 @@ describe('route/users', () => {
     response = undefined
   })
 
-  it('no session', async () => {
+  test('no session', async () => {
     await users(req, res)
     expect(mockSession).toHaveBeenCalledTimes(1)
     expect(mockGet).toHaveBeenCalledTimes(0)
@@ -52,7 +52,7 @@ describe('route/users', () => {
     expect(response).toBe(undefined)
   })
 
-  it('no superuser', async () => {
+  test('no superuser', async () => {
     mockSession.mockImplementation(() => 'id')
     mockGet.mockImplementation(() => ({
       superuser: false
@@ -65,7 +65,7 @@ describe('route/users', () => {
     expect(response).toEqual({ error: true, message: 'Unauthorized' })
   })
 
-  it('GET', async () => {
+  test('GET', async () => {
     req.method = 'GET'
 
     mockSession.mockImplementation(() => 'id')
@@ -100,7 +100,7 @@ describe('route/users', () => {
     expect(response).toEqual({ error: true, message: 'test' })
   })
 
-  it('wrong method', async () => {
+  test('wrong method', async () => {
     req.method = 'SOMETHING'
 
     mockSession.mockImplementation(() => true)

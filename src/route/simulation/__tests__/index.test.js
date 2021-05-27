@@ -44,7 +44,7 @@ describe('route/simulation', () => {
     response = undefined
   })
 
-  it('no session', async () => {
+  test('no session', async () => {
     await simulation(req, res)
     expect(mockSession).toHaveBeenCalledTimes(1)
     expect(mockAdd).toHaveBeenCalledTimes(0)
@@ -52,7 +52,7 @@ describe('route/simulation', () => {
     expect(response).toBe(undefined)
   })
 
-  it('GET', async () => {
+  test('GET', async () => {
     mockSession.mockImplementation(() => 'id')
 
     await simulation(req, res)
@@ -62,7 +62,7 @@ describe('route/simulation', () => {
     expect(response).toBe('end')
   })
 
-  it('POST', async () => {
+  test('POST', async () => {
     req.method = 'POST'
 
     mockSession.mockImplementation(() => 'id')
@@ -87,7 +87,7 @@ describe('route/simulation', () => {
     expect(response).toEqual({ error: true, message: 'test' })
   })
 
-  it('wrong method', async () => {
+  test('wrong method', async () => {
     req.method = 'SOMETHING'
 
     mockSession.mockImplementation(() => true)

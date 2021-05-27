@@ -62,11 +62,11 @@ describe('components/account/hpc/dialog', () => {
     wrapper.unmount()
   })
 
-  it('render', () => {
+  test('render', () => {
     expect(wrapper).toBeDefined()
   })
 
-  it('setVisible', () => {
+  test('setVisible', () => {
     // Visible
     wrapper.find('Button').props().onClick()
 
@@ -74,7 +74,7 @@ describe('components/account/hpc/dialog', () => {
     wrapper.find('Dialog').props().onCancel()
   })
 
-  it('onFinish', async () => {
+  test('onFinish', async () => {
     await wrapper
       .find('Dialog')
       .props()
@@ -109,7 +109,7 @@ describe('components/account/hpc/dialog', () => {
     expect(mockError).toHaveBeenCalledTimes(1)
   })
 
-  it('edit', async () => {
+  test('edit', async () => {
     wrapper.unmount()
 
     wrapper = shallow(<PluginDialog plugin={plugin} swr={swr} edit={true} />)
@@ -123,7 +123,7 @@ describe('components/account/hpc/dialog', () => {
     expect(mockError).toHaveBeenCalledTimes(0)
   })
 
-  // it('effect', () => {
+  // test('effect', () => {
   //   wrapper.unmount()
   //   wrapper = mount(<PluginDialog plugin={plugin} swr={swr} />)
   // })

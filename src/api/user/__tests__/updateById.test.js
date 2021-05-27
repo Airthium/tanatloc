@@ -6,7 +6,7 @@ jest.mock('../../call', () => ({
 }))
 
 describe('api/user/updateById', () => {
-  it('call', async () => {
+  test('call', async () => {
     await updateById('id', [])
     expect(mockCall).toHaveBeenCalledTimes(1)
   })

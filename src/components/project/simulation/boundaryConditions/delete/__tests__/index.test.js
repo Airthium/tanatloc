@@ -68,11 +68,11 @@ describe('components/project/simulation/boundaryConditions/delete', () => {
     wrapper.unmount()
   })
 
-  it('render', () => {
+  test('render', () => {
     expect(wrapper).toBeDefined()
   })
 
-  it('onDelete', async () => {
+  test('onDelete', async () => {
     await wrapper.find('DeleteButton').props().onDelete()
     expect(mockUnselect).toHaveBeenCalledTimes(1)
     expect(mockUpdate).toHaveBeenCalledTimes(1)

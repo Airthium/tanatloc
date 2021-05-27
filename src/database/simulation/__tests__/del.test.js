@@ -6,7 +6,7 @@ jest.mock('../..', () => ({
 }))
 
 describe('database/simulation/delete', () => {
-  it('call', async () => {
+  test('call', async () => {
     await del({})
     expect(mockDelete).toHaveBeenCalledTimes(1)
   })

@@ -30,11 +30,11 @@ describe('components/account/hpc/list', () => {
     wrapper.unmount()
   })
 
-  it('render', () => {
+  test('render', () => {
     expect(wrapper).toBeDefined()
   })
 
-  // it('mount', () => {
+  // test('mount', () => {
   //   wrapper.unmount()
   //   wrapper = mount(
   //     <List

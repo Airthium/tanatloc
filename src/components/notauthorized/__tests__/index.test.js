@@ -22,16 +22,16 @@ describe('components/notfound', () => {
     wrapper.unmount()
   })
 
-  it('render', () => {
+  test('render', () => {
     expect(wrapper).toBeDefined()
   })
 
-  it('onClick', () => {
+  test('onClick', () => {
     wrapper.find({ type: 'link' }).props().onClick()
     expect(mockPush).toHaveBeenCalledTimes(1)
   })
 
-  // it('effect', () => {
+  // test('effect', () => {
   //   wrapper.unmount()
 
   //   wrapper = mount(<NotAuthorized />)

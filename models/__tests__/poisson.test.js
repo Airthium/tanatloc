@@ -1,7 +1,7 @@
 import Poisson from '../poisson'
 
 describe('models/poisson', () => {
-  it('description', () => {
+  test('description', () => {
     expect(Poisson).toBeDefined()
   })
 })

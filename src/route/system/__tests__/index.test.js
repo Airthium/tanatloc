@@ -50,7 +50,7 @@ describe('route/system', () => {
     response = undefined
   })
 
-  it('GET', async () => {
+  test('GET', async () => {
     // Normal
     mockGet.mockImplementation(() => ({ item: 'item' }))
     await system(req, res)
@@ -67,7 +67,7 @@ describe('route/system', () => {
     expect(mockError).toHaveBeenCalledTimes(1)
   })
 
-  // it('no session', async () => {
+  // test('no session', async () => {
   //   await system(req, res)
   //   expect(mockSession).toHaveBeenCalledTimes(1)
   //   expect(mockUserGet).toHaveBeenCalledTimes(0)
@@ -77,7 +77,7 @@ describe('route/system', () => {
   //   expect(response).toBe(undefined)
   // })
 
-  // it('no superuser', async () => {
+  // test('no superuser', async () => {
   //   mockSession.mockImplementation(() => 'id')
   //   mockUserGet.mockImplementation(() => ({
   //     superuser: false
@@ -91,7 +91,7 @@ describe('route/system', () => {
   //   expect(response).toEqual({ error: true, message: 'Unauthorized' })
   // })
 
-  it('PUT', async () => {
+  test('PUT', async () => {
     req.method = 'PUT'
 
     // No session
@@ -142,7 +142,7 @@ describe('route/system', () => {
     expect(response).toEqual({ error: true, message: 'test' })
   })
 
-  it('wrong method', async () => {
+  test('wrong method', async () => {
     req.method = 'SOMETHING'
 
     await system(req, res)

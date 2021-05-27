@@ -1,7 +1,7 @@
 import LinearElasticity from '../linearElasticity'
 
 describe('models/linearElasticity', () => {
-  it('description', () => {
+  test('description', () => {
     expect(LinearElasticity).toBeDefined()
   })
 })

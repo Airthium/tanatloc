@@ -25,19 +25,19 @@ jest.mock(
 )
 
 describe('auth/auth-cookies', () => {
-  it('setTokenCookie', () => {
+  test('setTokenCookie', () => {
     const res = {}
     auth.setTokenCookie(res, 'token')
     expect(mockSet).toBe('cookie')
   })
 
-  it('removeTokenCookie', () => {
+  test('removeTokenCookie', () => {
     const res = {}
     auth.removeTokenCookie(res)
     expect(mockDelete).toBe('auth-token')
   })
 
-  it('parseCookies', () => {
+  test('parseCookies', () => {
     let res
     const req = {}
 

@@ -1,5 +1,7 @@
+import React from 'react'
+import { render, screen } from '@testing-library/react'
+
 import Plugin from '..'
-import { shallow, mount } from 'enzyme'
 
 const mockError = jest.fn()
 jest.mock('@/components/assets/notification', () => ({
@@ -7,12 +9,12 @@ jest.mock('@/components/assets/notification', () => ({
 }))
 
 jest.mock('../dialog', () => {
-  const PluginDialog = () => <div />
+  const PluginDialog = () => <div role="PluginDialog" />
   return PluginDialog
 })
 
 jest.mock('../list', () => {
-  const List = () => <div />
+  const List = () => <div role="List" />
   return List
 })
 
@@ -35,7 +37,6 @@ jest.mock('@/api/plugin', () => ({
   ]
 }))
 
-let wrapper
 describe('component/account/hpc/plugin', () => {
   const plugin = { key: 'key' }
 

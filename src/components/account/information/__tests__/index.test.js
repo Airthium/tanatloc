@@ -1,5 +1,7 @@
+import React from 'react'
+import { render, screen } from '@testing-library/react'
+
 import Information from '..'
-import { shallow } from 'enzyme'
 
 const mockError = jest.fn()
 jest.mock('@/components/assets/notification', () => ({

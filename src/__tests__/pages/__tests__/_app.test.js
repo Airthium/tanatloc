@@ -1,5 +1,7 @@
+import React from 'react'
+import { render } from '@testing-library/react'
+
 import App from '@/pages/_app'
-import { shallow } from 'enzyme'
 
 jest.mock('@/store/store', () => ({
   useStore: jest.fn()
@@ -20,17 +22,10 @@ jest.mock('redux-persist/integration/react', () => ({
 jest.mock('@/styles/antd.less', () => '')
 jest.mock('@/styles/global.less', () => '')
 
-let wrapper
 describe('pages/_app', () => {
-  beforeEach(() => {
-    wrapper = shallow(<App Component="component" pageProps={{}} />)
-  })
-
-  afterEach(() => {
-    wrapper.unmount()
-  })
-
   test('render', () => {
-    expect(wrapper).toBeDefined()
+    const { unmount } = render(<App Component="component" pageProps={{}} />)
+
+    unmount()
   })
 })

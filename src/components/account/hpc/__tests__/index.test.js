@@ -1,5 +1,7 @@
+import React from 'react'
+import { render, screen } from '@testing-library/react'
+
 import HPC from '..'
-import { mount } from 'enzyme'
 
 jest.mock('@/components/account/hpc/plugin', () => {
   const Plugin = () => <div />
@@ -22,33 +24,22 @@ jest.mock('@/plugins', () => ({
   }
 }))
 
-let wrapper
 describe('components/account/hpc', () => {
   const user = {
     authorizedplugins: []
   }
 
-  // beforeEach(() => {
-  //   wrapper = mount(<HPC user={user} />)
-  // })
+  test('render', () => {
+    const { unmount } = render(<HPC user={user} />)
 
-  // afterEach(() => {
-  //   wrapper.unmount()
-  // })
+    unmount()
+  })
 
-  // test('render', () => {
-  //   expect(wrapper).toBeDefined()
-  // })
+  test('with authorized plugins', () => {
+    const { unmount } = render(
+      <HPC user={{ ...user, authorizedplugins: ['plugin'] }} />
+    )
 
-  // test('without authorizedplugins', () => {
-  //   wrapper.unmount()
-  //   wrapper = mount(<HPC user={user} />)
-  //   expect(wrapper).toBeDefined()
-  // })
-
-  // test('with authorized plugins', () => {
-  //   wrapper.unmount()
-  //   wrapper = mount(<HPC user={{ ...user, authorizedplugins: ['plugin'] }} />)
-  //   expect(wrapper).toBeDefined()
-  // })
+    unmount()
+  })
 })

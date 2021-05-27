@@ -1,19 +1,14 @@
+import React from 'react'
+import { render } from '@testing-library/react'
+
 import NotFound from '@/pages/404'
-import { shallow } from 'enzyme'
 
 jest.mock('@/components/notfound', () => 'notfound')
 
-let wrapper
 describe('pages/404', () => {
-  beforeEach(() => {
-    wrapper = shallow(<NotFound />)
-  })
-
-  afterEach(() => {
-    wrapper.unmount()
-  })
-
   test('render', () => {
-    expect(wrapper).toBeDefined()
+    const { unmount } = render(<NotFound />)
+
+    unmount()
   })
 })

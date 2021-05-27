@@ -77,7 +77,7 @@ const Delete = ({ swr }) => {
 }
 
 Delete.propTypes = {
-  swr: PropTypes.shape({
+  swr: PropTypes.exact({
     mutateUser: PropTypes.func.isRequired
   }).isRequired
 }

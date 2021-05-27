@@ -30,7 +30,7 @@ const Delete = ({ swr }) => {
   /**
    * Handle delete
    */
-  const handleDelete = async () => {
+  const onDelete = async () => {
     setLoading(true)
     try {
       // Delete
@@ -57,7 +57,7 @@ const Delete = ({ swr }) => {
         title="Delete your account"
         visible={visible}
         onCancel={() => setVisible(false)}
-        onOk={handleDelete}
+        onOk={onDelete}
         loading={loading}
       >
         This action cannot be undone. If you delete your account, you will

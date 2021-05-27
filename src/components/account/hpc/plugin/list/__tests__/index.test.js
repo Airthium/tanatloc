@@ -1,5 +1,7 @@
+import React from 'react'
+import { render, screen } from '@testing-library/react'
+
 import List from '..'
-import { shallow, mount } from 'enzyme'
 
 jest.mock('../../dialog', () => {
   const PluginDialog = () => <div />
@@ -11,27 +13,20 @@ jest.mock('../../delete', () => {
   return Delete
 })
 
-let wrapper
 describe('components/account/hpc/list', () => {
   const plugin = { key: 'key' }
   const plugins = [{}]
-  const delOnePlugin = jest.fn()
-  const mutateOnePlugin = jest.fn()
   const swr = {
-    delOnePlugin,
-    mutateOnePlugin
+    delOnePlugin: jest.fn(),
+    mutateOnePlugin: jest.fn()
   }
 
-  beforeEach(() => {
-    wrapper = shallow(<List plugin={plugin} plugins={plugins} swr={swr} />)
-  })
-
-  afterEach(() => {
-    wrapper.unmount()
-  })
-
   test('render', () => {
-    expect(wrapper).toBeDefined()
+    const { unmount } = render(
+      <List plugin={plugin} plugins={plugins} swr={swr} />
+    )
+
+    unmount()
   })
 
   // test('mount', () => {

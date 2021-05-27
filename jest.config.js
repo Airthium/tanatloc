@@ -1,8 +1,5 @@
 module.exports = {
-  setupFiles: [
-    '<rootDir>/config/jest/mock.js'
-    // '<rootDir>/config/jest/enzyme.js'
-  ],
+  setupFiles: ['<rootDir>/config/jest/mock.js'],
   collectCoverageFrom: [
     '**/*.{js,jsx,ts,tsx}',
     '!**/*.d.ts',

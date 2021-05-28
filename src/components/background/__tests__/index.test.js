@@ -1,5 +1,7 @@
+import React from 'react'
+import { fireEvent, render, screen } from '@testing-library/react'
+
 import Background from '@/components/background'
-import { mount } from 'enzyme'
 
 let mockAnimationCount = 0
 window.requestAnimationFrame = (callback) => {
@@ -28,23 +30,24 @@ global.MockScene.children = [
   }
 ]
 
-let wrapper
 describe('components/background', () => {
-  // beforeEach(() => {
-  //   wrapper = mount(<Background />)
-  // })
-  // afterEach(() => {
-  //   wrapper.unmount()
-  // })
-  // test('render', () => {
-  //   expect(wrapper).toBeDefined()
-  // })
-  // test('resize', () => {
-  //   window.dispatchEvent(new Event('resize'))
-  // })
-  // test('pixelRatio', () => {
-  //   wrapper.unmount()
-  //   window.devicePixelRatio = undefined
-  //   wrapper = mount(<Background />)
-  // })
+  test('render', () => {
+    const { unmount } = render(<Background />)
+
+    unmount()
+  })
+
+  test('resize', () => {
+    const { unmount } = render(<Background />)
+    window.dispatchEvent(new Event('resize'))
+
+    unmount()
+  })
+
+  test('pixelRatio', () => {
+    window.devicePixelRatio = undefined
+    const { unmount } = render(<Background />)
+
+    unmount()
+  })
 })

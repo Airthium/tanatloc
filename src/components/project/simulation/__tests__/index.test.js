@@ -1,6 +1,7 @@
+import React from 'react'
+import { fireEvent, render, screen } from '@testing-library/react'
+
 import Simulation from '@/components/project/simulation'
-import { shallow, mount } from 'enzyme'
-import { act } from 'react-dom/test-utils'
 
 const mockAddedDiff = jest.fn()
 const mockUpdatedDiff = jest.fn()
@@ -91,7 +92,6 @@ jest.mock('@/plugins', () => ({
   }
 }))
 
-let wrapper
 describe('components/project/simulation', () => {
   const user = {}
   const simulation = {
@@ -112,34 +112,10 @@ describe('components/project/simulation', () => {
     mockUpdate.mockReset()
 
     mockError.mockReset()
-
-    wrapper = shallow(
-      <Simulation
-        user={user}
-        simulation={simulation}
-        swr={swr}
-        onClose={onClose}
-      />
-    )
-  })
-
-  afterEach(() => {
-    wrapper.unmount()
   })
 
   test('render', () => {
-    expect(wrapper).toBeDefined()
-  })
-
-  test('without simulation', () => {
-    wrapper.unmount()
-    wrapper = shallow(<Simulation user={user} swr={swr} onClose={onClose} />)
-    expect(wrapper).toBeDefined()
-  })
-
-  test('onClose', () => {
-    wrapper.unmount()
-    wrapper = shallow(
+    const { unmount } = render(
       <Simulation
         user={user}
         simulation={simulation}
@@ -147,243 +123,263 @@ describe('components/project/simulation', () => {
         onClose={onClose}
       />
     )
-    wrapper.find('Panel').props().onClose()
-    expect(onClose).toHaveBeenCalledTimes(1)
+
+    unmount()
   })
 
-  // test('onUpdate', async () => {
-  //   wrapper.unmount()
-  //   wrapper = mount(
-  //     <Simulation
-  //       user={user}
-  //       simulation={{
-  //         ...simulation,
-  //         scheme: {
-  //           algorithm: 'algorithm',
-  //           configuration: {
-  //             geometry: { title: 'Geometry', file: {} }
-  //           }
-  //         }
-  //       }}
-  //       type="geometry"
-  //       swr={swr}
-  //       onClose={onClose}
-  //     />
-  //   )
-
-  //   // Cancel
-  //   act(() => wrapper.find('Modal').props().onCancel())
-
-  //   // Normal
-  //   await act(async () => await wrapper.find('Modal').props().onOk())
-  //   expect(mockMerge).toHaveBeenCalledTimes(1)
-  //   expect(mockUpdate).toHaveBeenCalledTimes(1)
-  //   expect(mutateOneSimulation).toHaveBeenCalledTimes(1)
-  //   expect(mockError).toHaveBeenCalledTimes(0)
-
-  //   // Error
-  //   mockMerge.mockImplementation(() => {
-  //     throw new Error()
+  //   test('without simulation', () => {
+  //     wrapper.unmount()
+  //     wrapper = shallow(<Simulation user={user} swr={swr} onClose={onClose} />)
+  //     expect(wrapper).toBeDefined()
   //   })
-  //   await act(async () => await wrapper.find('Modal').props().onOk())
-  //   expect(mockMerge).toHaveBeenCalledTimes(2)
-  //   expect(mockUpdate).toHaveBeenCalledTimes(1)
-  //   expect(mutateOneSimulation).toHaveBeenCalledTimes(1)
-  //   expect(mockError).toHaveBeenCalledTimes(1)
-  // })
 
-  test('about', () => {
-    wrapper.unmount()
-    wrapper = shallow(
-      <Simulation
-        user={user}
-        simulation={simulation}
-        type="about"
-        swr={swr}
-        onClose={onClose}
-      />
-    )
-    expect(wrapper.find('About').length).toBe(1)
-  })
-
-  test('geometry', () => {
-    wrapper.unmount()
-    wrapper = shallow(
-      <Simulation
-        user={user}
-        simulation={simulation}
-        type="geometry"
-        swr={swr}
-        onClose={onClose}
-      />
-    )
-    expect(wrapper.find('Geometry').length).toBe(1)
-  })
-
-  test('materials', () => {
-    wrapper.unmount()
-    wrapper = shallow(
-      <Simulation
-        user={user}
-        simulation={simulation}
-        type="materials"
-        swr={swr}
-        onClose={onClose}
-      />
-    )
-    expect(wrapper.find('Materials').length).toBe(1)
-  })
-
-  test('parameters', () => {
-    wrapper.unmount()
-    wrapper = shallow(
-      <Simulation
-        user={user}
-        simulation={simulation}
-        type="parameters"
-        swr={swr}
-        onClose={onClose}
-      />
-    )
-    expect(wrapper.find('Parameters').length).toBe(1)
-  })
-
-  test('boundaryConditions', () => {
-    wrapper.unmount()
-    wrapper = shallow(
-      <Simulation
-        user={user}
-        simulation={simulation}
-        type="boundaryConditions"
-        swr={swr}
-        onClose={onClose}
-      />
-    )
-    expect(wrapper.find('BoundaryConditions').length).toBe(1)
-  })
-
-  test('run', () => {
-    wrapper.unmount()
-    wrapper = shallow(
-      <Simulation
-        user={user}
-        simulation={simulation}
-        type="run"
-        swr={swr}
-        onClose={onClose}
-      />
-    )
-    expect(wrapper.find('Run').length).toBe(1)
-  })
-
-  // test('simulation effect', () => {
-  //   // Load models
-  //   wrapper.unmount()
-  //   wrapper = mount(
-  //     <Simulation
-  //       user={user}
-  //       simulation={simulation}
-  //       swr={swr}
-  //       onClose={onClose}
-  //     />
-  //   )
-  //   expect(wrapper.find('Panel').props().title).toBe('About')
-
-  //   // Need update (added)
-  //   wrapper.unmount()
-  //   mockAddedDiff.mockImplementation(() => ({ something: { test: 'test' } }))
-  //   wrapper = mount(
-  //     <Simulation
-  //       user={user}
-  //       simulation={{
-  //         ...simulation,
-  //         scheme: {
-  //           algorithm: 'algorithm',
-  //           configuration: {
-  //             geometry: { title: 'Geometry' }
-  //           }
-  //         }
-  //       }}
-  //       type="geometry"
-  //       swr={swr}
-  //       onClose={onClose}
-  //     />
-  //   )
-  //   expect(wrapper.find('Panel').props().title).toBe('Geometry')
-  //   mockAddedDiff.mockImplementation(() => ({}))
-  // })
-})
-
-describe('components/project/simulation.Selector', () => {
-  const user = {}
-  const onOk = jest.fn()
-  const onCancel = jest.fn()
-
-  beforeEach(() => {
-    onOk.mockReset()
-
-    wrapper = shallow(
-      <Simulation.Selector user={user} onOk={onOk} onCancel={onCancel} />
-    )
-  })
-
-  afterEach(() => {
-    wrapper.unmount()
-  })
-
-  test('render', () => {
-    expect(wrapper).toBeDefined()
-  })
-
-  // test('onSelect', () => {
-  //   wrapper.unmount()
-  //   wrapper = mount(
-  //     <Simulation.Selector
-  //       user={user}
-  //       visible={true}
-  //       onOk={onOk}
-  //       onCancel={onCancel}
-  //     />
-  //   )
-
-  //   act(() =>
-  //     wrapper.find('InternalMenu').props().onSelect({ key: 'algorithm' })
-  //   )
-  //   wrapper.update()
-
-  //   expect(wrapper.find('div').at(10).props().dangerouslySetInnerHTML).toEqual({
-  //     __html: 'description'
+  //   test('onClose', () => {
+  //     wrapper.unmount()
+  //     wrapper = shallow(
+  //       <Simulation
+  //         user={user}
+  //         simulation={simulation}
+  //         swr={swr}
+  //         onClose={onClose}
+  //       />
+  //     )
+  //     wrapper.find('Panel').props().onClose()
+  //     expect(onClose).toHaveBeenCalledTimes(1)
   //   })
+
+  //   // test('onUpdate', async () => {
+  //   //   wrapper.unmount()
+  //   //   wrapper = mount(
+  //   //     <Simulation
+  //   //       user={user}
+  //   //       simulation={{
+  //   //         ...simulation,
+  //   //         scheme: {
+  //   //           algorithm: 'algorithm',
+  //   //           configuration: {
+  //   //             geometry: { title: 'Geometry', file: {} }
+  //   //           }
+  //   //         }
+  //   //       }}
+  //   //       type="geometry"
+  //   //       swr={swr}
+  //   //       onClose={onClose}
+  //   //     />
+  //   //   )
+
+  //   //   // Cancel
+  //   //   act(() => wrapper.find('Modal').props().onCancel())
+
+  //   //   // Normal
+  //   //   await act(async () => await wrapper.find('Modal').props().onOk())
+  //   //   expect(mockMerge).toHaveBeenCalledTimes(1)
+  //   //   expect(mockUpdate).toHaveBeenCalledTimes(1)
+  //   //   expect(mutateOneSimulation).toHaveBeenCalledTimes(1)
+  //   //   expect(mockError).toHaveBeenCalledTimes(0)
+
+  //   //   // Error
+  //   //   mockMerge.mockImplementation(() => {
+  //   //     throw new Error()
+  //   //   })
+  //   //   await act(async () => await wrapper.find('Modal').props().onOk())
+  //   //   expect(mockMerge).toHaveBeenCalledTimes(2)
+  //   //   expect(mockUpdate).toHaveBeenCalledTimes(1)
+  //   //   expect(mutateOneSimulation).toHaveBeenCalledTimes(1)
+  //   //   expect(mockError).toHaveBeenCalledTimes(1)
+  //   // })
+
+  //   test('about', () => {
+  //     wrapper.unmount()
+  //     wrapper = shallow(
+  //       <Simulation
+  //         user={user}
+  //         simulation={simulation}
+  //         type="about"
+  //         swr={swr}
+  //         onClose={onClose}
+  //       />
+  //     )
+  //     expect(wrapper.find('About').length).toBe(1)
+  //   })
+
+  //   test('geometry', () => {
+  //     wrapper.unmount()
+  //     wrapper = shallow(
+  //       <Simulation
+  //         user={user}
+  //         simulation={simulation}
+  //         type="geometry"
+  //         swr={swr}
+  //         onClose={onClose}
+  //       />
+  //     )
+  //     expect(wrapper.find('Geometry').length).toBe(1)
+  //   })
+
+  //   test('materials', () => {
+  //     wrapper.unmount()
+  //     wrapper = shallow(
+  //       <Simulation
+  //         user={user}
+  //         simulation={simulation}
+  //         type="materials"
+  //         swr={swr}
+  //         onClose={onClose}
+  //       />
+  //     )
+  //     expect(wrapper.find('Materials').length).toBe(1)
+  //   })
+
+  //   test('parameters', () => {
+  //     wrapper.unmount()
+  //     wrapper = shallow(
+  //       <Simulation
+  //         user={user}
+  //         simulation={simulation}
+  //         type="parameters"
+  //         swr={swr}
+  //         onClose={onClose}
+  //       />
+  //     )
+  //     expect(wrapper.find('Parameters').length).toBe(1)
+  //   })
+
+  //   test('boundaryConditions', () => {
+  //     wrapper.unmount()
+  //     wrapper = shallow(
+  //       <Simulation
+  //         user={user}
+  //         simulation={simulation}
+  //         type="boundaryConditions"
+  //         swr={swr}
+  //         onClose={onClose}
+  //       />
+  //     )
+  //     expect(wrapper.find('BoundaryConditions').length).toBe(1)
+  //   })
+
+  //   test('run', () => {
+  //     wrapper.unmount()
+  //     wrapper = shallow(
+  //       <Simulation
+  //         user={user}
+  //         simulation={simulation}
+  //         type="run"
+  //         swr={swr}
+  //         onClose={onClose}
+  //       />
+  //     )
+  //     expect(wrapper.find('Run').length).toBe(1)
+  //   })
+
+  //   // test('simulation effect', () => {
+  //   //   // Load models
+  //   //   wrapper.unmount()
+  //   //   wrapper = mount(
+  //   //     <Simulation
+  //   //       user={user}
+  //   //       simulation={simulation}
+  //   //       swr={swr}
+  //   //       onClose={onClose}
+  //   //     />
+  //   //   )
+  //   //   expect(wrapper.find('Panel').props().title).toBe('About')
+
+  //   //   // Need update (added)
+  //   //   wrapper.unmount()
+  //   //   mockAddedDiff.mockImplementation(() => ({ something: { test: 'test' } }))
+  //   //   wrapper = mount(
+  //   //     <Simulation
+  //   //       user={user}
+  //   //       simulation={{
+  //   //         ...simulation,
+  //   //         scheme: {
+  //   //           algorithm: 'algorithm',
+  //   //           configuration: {
+  //   //             geometry: { title: 'Geometry' }
+  //   //           }
+  //   //         }
+  //   //       }}
+  //   //       type="geometry"
+  //   //       swr={swr}
+  //   //       onClose={onClose}
+  //   //     />
+  //   //   )
+  //   //   expect(wrapper.find('Panel').props().title).toBe('Geometry')
+  //   //   mockAddedDiff.mockImplementation(() => ({}))
+  //   // })
   // })
 
-  test('onCreate', async () => {
-    await wrapper.find('Modal').props().onOk()
+  // describe('components/project/simulation.Selector', () => {
+  //   const user = {}
+  //   const onOk = jest.fn()
+  //   const onCancel = jest.fn()
 
-    // With current
-    wrapper.find('Menu').props().onSelect({ key: 'algorithm' })
-    await wrapper.find('Modal').props().onOk()
-    expect(onOk).toHaveBeenCalledTimes(1)
-  })
+  //   beforeEach(() => {
+  //     onOk.mockReset()
 
-  // test('effect', () => {
-  //   wrapper.unmount()
-  //   wrapper = mount(
-  //     <Simulation.Selector user={user} onOk={onOk} onCancel={onCancel} />
-  //   )
-  //   expect(wrapper).toBeDefined()
+  //     wrapper = shallow(
+  //       <Simulation.Selector user={user} onOk={onOk} onCancel={onCancel} />
+  //     )
+  //   })
 
-  //   // With authorizedplugins
-  //   wrapper.unmount()
-  //   wrapper = mount(
-  //     <Simulation.Selector
-  //       user={{
-  //         ...user,
-  //         authorizedplugins: ['model']
-  //       }}
-  //       onOk={onOk}
-  //       onCancel={onCancel}
-  //     />
-  //   )
-  //   expect(wrapper).toBeDefined()
-  // })
+  //   afterEach(() => {
+  //     wrapper.unmount()
+  //   })
+
+  //   test('render', () => {
+  //     expect(wrapper).toBeDefined()
+  //   })
+
+  //   // test('onSelect', () => {
+  //   //   wrapper.unmount()
+  //   //   wrapper = mount(
+  //   //     <Simulation.Selector
+  //   //       user={user}
+  //   //       visible={true}
+  //   //       onOk={onOk}
+  //   //       onCancel={onCancel}
+  //   //     />
+  //   //   )
+
+  //   //   act(() =>
+  //   //     wrapper.find('InternalMenu').props().onSelect({ key: 'algorithm' })
+  //   //   )
+  //   //   wrapper.update()
+
+  //   //   expect(wrapper.find('div').at(10).props().dangerouslySetInnerHTML).toEqual({
+  //   //     __html: 'description'
+  //   //   })
+  //   // })
+
+  //   test('onCreate', async () => {
+  //     await wrapper.find('Modal').props().onOk()
+
+  //     // With current
+  //     wrapper.find('Menu').props().onSelect({ key: 'algorithm' })
+  //     await wrapper.find('Modal').props().onOk()
+  //     expect(onOk).toHaveBeenCalledTimes(1)
+  //   })
+
+  //   // test('effect', () => {
+  //   //   wrapper.unmount()
+  //   //   wrapper = mount(
+  //   //     <Simulation.Selector user={user} onOk={onOk} onCancel={onCancel} />
+  //   //   )
+  //   //   expect(wrapper).toBeDefined()
+
+  //   //   // With authorizedplugins
+  //   //   wrapper.unmount()
+  //   //   wrapper = mount(
+  //   //     <Simulation.Selector
+  //   //       user={{
+  //   //         ...user,
+  //   //         authorizedplugins: ['model']
+  //   //       }}
+  //   //       onOk={onOk}
+  //   //       onCancel={onCancel}
+  //   //     />
+  //   //   )
+  //   //   expect(wrapper).toBeDefined()
+  //   // })
 })

@@ -1,6 +1,7 @@
+import React from 'react'
+import { fireEvent, render, screen } from '@testing-library/react'
+
 import Organizations from '..'
-import { shallow, mount } from 'enzyme'
-import { act } from 'react-dom/test-utils'
 
 jest.mock('../add', () => {
   const Add = () => <div />
@@ -17,33 +18,24 @@ jest.mock('@/components/assets/organization', () => {
   return Organization
 })
 
-let wrapper
 describe('components/organizations', () => {
   const user = { id: 'id' }
   const organizations = []
 
-  const reloadOrganizations = jest.fn()
-  const addOneOrganization = jest.fn()
-  const delOneOrganization = jest.fn()
-  const mutateOneOrganization = jest.fn()
-  const loadingOrganizations = false
   const swr = {
-    reloadOrganizations,
-    addOneOrganization,
-    delOneOrganization,
-    mutateOneOrganization,
-    loadingOrganizations
+    reloadOrganizations: jest.fn(),
+    addOneOrganization: jest.fn(),
+    delOneOrganization: jest.fn(),
+    mutateOneOrganization: jest.fn(),
+    loadingOrganizations: false
   }
 
-  afterEach(() => {
-    wrapper.unmount()
-  })
-
   test('render', () => {
-    wrapper = shallow(
+    const { unmount } = render(
       <Organizations user={user} organizations={organizations} swr={swr} />
     )
-    expect(wrapper).toBeDefined()
+
+    unmount()
   })
 
   // test('setOrganization', () => {

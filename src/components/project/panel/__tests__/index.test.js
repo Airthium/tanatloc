@@ -1,21 +1,24 @@
-import Panel from '@/components/project/panel'
-import { shallow } from 'enzyme'
+import React from 'react'
+import { render } from '@testing-library/react'
 
-let wrapper
+import Panel from '@/components/project/panel'
+
 describe('components/project/panel', () => {
   const onClose = jest.fn()
 
-  afterEach(() => {
-    wrapper.unmount()
-  })
-
   test('render', () => {
-    wrapper = shallow(<Panel visible={true} title="title" onClose={onClose} />)
-    expect(wrapper).toBeDefined()
+    const { unmount } = render(
+      <Panel visible={true} title="title" onClose={onClose} />
+    )
+
+    unmount()
   })
 
-  test('no visible', () => {
-    wrapper = shallow(<Panel visible={false} title="title" onClose={onClose} />)
-    expect(wrapper).toBeDefined()
+  test('not visible', () => {
+    const { unmount } = render(
+      <Panel visible={false} title="title" onClose={onClose} />
+    )
+
+    unmount()
   })
 })

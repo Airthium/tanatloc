@@ -2,7 +2,7 @@ import React from 'react'
 import { fireEvent, render, screen } from '@testing-library/react'
 
 import Groups from '..'
-import { Group } from 'three'
+// import { Group } from 'three'
 
 jest.mock('@/components/assets/group', () => {
   const Group = () => <div />
@@ -59,7 +59,7 @@ describe('components/administration/groups', () => {
   })
 
   test('render', () => {
-    const { unmount } = render(<Group users={users} />)
+    const { unmount } = render(<Groups users={users} />)
 
     unmount()
   })

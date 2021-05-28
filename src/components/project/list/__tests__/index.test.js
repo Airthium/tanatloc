@@ -1,6 +1,7 @@
+import React from 'react'
+import { fireEvent, render, screen } from '@testing-library/react'
+
 import List from '..'
-import { shallow, mount } from 'enzyme'
-import { act } from 'react-dom/test-utils'
 
 jest.mock('next/router', () => ({
   useRouter: () => [{ push: () => {} }]
@@ -26,7 +27,6 @@ jest.mock('@/api/project', () => ({
   update: async () => mockUpdate()
 }))
 
-let wrapper
 describe('component/project/list', () => {
   const user = { id: 'id' }
   const workspace = { id: 'id' }
@@ -43,8 +43,10 @@ describe('component/project/list', () => {
     mockError.mockReset()
 
     mockUpdate.mockReset()
+  })
 
-    wrapper = shallow(
+  test('render', () => {
+    const { unmount } = render(
       <List
         user={user}
         workspace={workspace}
@@ -54,14 +56,8 @@ describe('component/project/list', () => {
         swr={swr}
       />
     )
-  })
 
-  afterEach(() => {
-    wrapper.unmount()
-  })
-
-  test('render', () => {
-    expect(wrapper).toBeDefined()
+    unmount()
   })
 
   // test('mount', () => {

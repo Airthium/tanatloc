@@ -1,6 +1,7 @@
+import React from 'react'
+import { fireEvent, render, screen } from '@testing-library/react'
+
 import Geometry from '@/components/project/simulation/geometry'
-import { shallow, mount } from 'enzyme'
-import { act } from 'react-dom/test-utils'
 
 jest.mock('@/components/assets/dialog', () => {
   const DeleteDialog = () => 'DeleteDialog'
@@ -32,7 +33,6 @@ global.FileReader = class {
   readAsArrayBuffer() {}
 }
 
-let wrapper
 describe('components/project/simulation/geometry', () => {
   const simulation = {
     id: 'id',
@@ -54,167 +54,52 @@ describe('components/project/simulation/geometry', () => {
     mockGet.mockReset()
 
     mutateOneSimulation.mockReset()
-
-    wrapper = shallow(
-      <Geometry simulation={simulation} part={part} swr={swr} />
-    )
-  })
-
-  afterEach(() => {
-    wrapper.unmount()
   })
 
   test('render', () => {
-    expect(wrapper).toBeDefined()
+    const { unmount } = render(
+      <Geometry simulation={simulation} part={part} swr={swr} />
+    )
+
+    unmount()
   })
 
-  test('beforeUpload', () => {
-    let res
+  // test('beforeUpload', () => {
+  //   let res
 
-    // Wrong
-    res = wrapper.find('Upload').props().beforeUpload({
-      name: 'test.test'
-    })
-    expect(res).toBe(false)
+  //   // Wrong
+  //   res = wrapper.find('Upload').props().beforeUpload({
+  //     name: 'test.test'
+  //   })
+  //   expect(res).toBe(false)
 
-    // Good
-    res = wrapper.find('Upload').props().beforeUpload({
-      name: 'test.dxf'
-    })
-    expect(res).toBe(true)
-  })
-
-  test('onUpload', async () => {
-    // Uploading
-    await wrapper
-      .find('Upload')
-      .props()
-      .onChange({
-        file: {
-          status: 'uploading'
-        }
-      })
-
-    // Normal
-    await wrapper
-      .find('Upload')
-      .props()
-      .onChange({
-        file: {
-          status: 'done'
-        }
-      })
-    expect(mockUpdate).toHaveBeenCalledTimes(1)
-    expect(mutateOneSimulation).toHaveBeenCalledTimes(1)
-    expect(mockError).toHaveBeenCalledTimes(0)
-
-    // Error
-    mockUpdate.mockImplementation(() => {
-      throw new Error()
-    })
-    await wrapper
-      .find('Upload')
-      .props()
-      .onChange({
-        file: {
-          status: 'done'
-        }
-      })
-    expect(mockUpdate).toHaveBeenCalledTimes(2)
-    expect(mutateOneSimulation).toHaveBeenCalledTimes(1)
-    expect(mockError).toHaveBeenCalledTimes(1)
-  })
-
-  // test('effect', () => {
-  //   wrapper.unmount()
-  //   wrapper = mount(<Geometry simulation={simulation} part={part} swr={swr} />)
-  //   expect(wrapper).toBeDefined()
-
-  //   // With file
-  //   wrapper.unmount()
-  //   wrapper = mount(
-  //     <Geometry
-  //       simulation={{
-  //         ...simulation,
-  //         scheme: {
-  //           ...simulation.scheme,
-  //           configuration: {
-  //             ...simulation.scheme.configuration,
-  //             geometry: {
-  //               file: {
-  //                 glb: 'glb',
-  //                 originPath: 'originPath'
-  //               }
-  //             }
-  //           }
-  //         }
-  //       }}
-  //       part={part}
-  //       swr={swr}
-  //     />
-  //   )
-  //   expect(wrapper).toBeDefined()
+  //   // Good
+  //   res = wrapper.find('Upload').props().beforeUpload({
+  //     name: 'test.dxf'
+  //   })
+  //   expect(res).toBe(true)
   // })
 
-  // test('setDeleteVisible', () => {
-  //   // Need file
-  //   wrapper.unmount()
-  //   wrapper = mount(
-  //     <Geometry
-  //       simulation={{
-  //         ...simulation,
-  //         scheme: {
-  //           ...simulation.scheme,
-  //           configuration: {
-  //             ...simulation.scheme.configuration,
-  //             geometry: {
-  //               file: {
-  //                 glb: 'glb',
-  //                 originPath: 'originPath'
-  //               }
-  //             }
-  //           }
-  //         }
-  //       }}
-  //       part={part}
-  //       swr={swr}
-  //     />
-  //   )
-
-  //   // Open
-  //   act(() => wrapper.find('Button').at(1).props().onClick())
-
-  //   // Close
-  //   act(() => wrapper.find('DeleteDialog').props().onCancel())
-  // })
-
-  // test('onDelete', async () => {
-  //   // Need file
-  //   wrapper.unmount()
-  //   wrapper = mount(
-  //     <Geometry
-  //       simulation={{
-  //         ...simulation,
-  //         scheme: {
-  //           ...simulation.scheme,
-  //           configuration: {
-  //             ...simulation.scheme.configuration,
-  //             geometry: {
-  //               file: {
-  //                 glb: 'glb',
-  //                 originPath: 'originPath'
-  //               }
-  //             }
-  //           }
-  //         }
-  //       }}
-  //       part={part}
-  //       swr={swr}
-  //     />
-  //   )
+  // test('onUpload', async () => {
+  //   // Uploading
+  //   await wrapper
+  //     .find('Upload')
+  //     .props()
+  //     .onChange({
+  //       file: {
+  //         status: 'uploading'
+  //       }
+  //     })
 
   //   // Normal
-  //   await act(async () => await wrapper.find('DeleteDialog').props().onOk())
+  //   await wrapper
+  //     .find('Upload')
+  //     .props()
+  //     .onChange({
+  //       file: {
+  //         status: 'done'
+  //       }
+  //     })
   //   expect(mockUpdate).toHaveBeenCalledTimes(1)
   //   expect(mutateOneSimulation).toHaveBeenCalledTimes(1)
   //   expect(mockError).toHaveBeenCalledTimes(0)
@@ -223,161 +108,272 @@ describe('components/project/simulation/geometry', () => {
   //   mockUpdate.mockImplementation(() => {
   //     throw new Error()
   //   })
-  //   await act(async () => await wrapper.find('DeleteDialog').props().onOk())
+  //   await wrapper
+  //     .find('Upload')
+  //     .props()
+  //     .onChange({
+  //       file: {
+  //         status: 'done'
+  //       }
+  //     })
   //   expect(mockUpdate).toHaveBeenCalledTimes(2)
   //   expect(mutateOneSimulation).toHaveBeenCalledTimes(1)
   //   expect(mockError).toHaveBeenCalledTimes(1)
   // })
 
-  // test('onDownload', async () => {
-  //   // Need file
-  //   wrapper.unmount()
-  //   wrapper = mount(
-  //     <Geometry
-  //       simulation={{
-  //         ...simulation,
-  //         scheme: {
-  //           ...simulation.scheme,
-  //           configuration: {
-  //             ...simulation.scheme.configuration,
-  //             geometry: {
-  //               file: {
-  //                 glb: 'glb',
-  //                 originPath: 'originPath'
-  //               }
-  //             }
-  //           }
-  //         }
-  //       }}
-  //       part={part}
-  //       swr={swr}
-  //     />
-  //   )
+  // // test('effect', () => {
+  // //   wrapper.unmount()
+  // //   wrapper = mount(<Geometry simulation={simulation} part={part} swr={swr} />)
+  // //   expect(wrapper).toBeDefined()
 
-  //   // Normal
-  //   mockGet.mockImplementation(() => ({
-  //     buffer: ['buffer']
-  //   }))
-  //   window.URL.createObjectURL = () => 'url'
-  //   await act(async () => await wrapper.find('Button').at(0).props().onClick())
-  //   expect(mockGet).toHaveBeenCalledTimes(1)
-  //   expect(mockError).toHaveBeenCalledTimes(0)
+  // //   // With file
+  // //   wrapper.unmount()
+  // //   wrapper = mount(
+  // //     <Geometry
+  // //       simulation={{
+  // //         ...simulation,
+  // //         scheme: {
+  // //           ...simulation.scheme,
+  // //           configuration: {
+  // //             ...simulation.scheme.configuration,
+  // //             geometry: {
+  // //               file: {
+  // //                 glb: 'glb',
+  // //                 originPath: 'originPath'
+  // //               }
+  // //             }
+  // //           }
+  // //         }
+  // //       }}
+  // //       part={part}
+  // //       swr={swr}
+  // //     />
+  // //   )
+  // //   expect(wrapper).toBeDefined()
+  // // })
 
-  //   // Error
-  //   mockGet.mockImplementation(() => {
-  //     throw new Error()
-  //   })
-  //   await act(async () => await wrapper.find('Button').at(0).props().onClick())
-  //   expect(mockGet).toHaveBeenCalledTimes(2)
-  //   expect(mockError).toHaveBeenCalledTimes(1)
-  // })
+  // // test('setDeleteVisible', () => {
+  // //   // Need file
+  // //   wrapper.unmount()
+  // //   wrapper = mount(
+  // //     <Geometry
+  // //       simulation={{
+  // //         ...simulation,
+  // //         scheme: {
+  // //           ...simulation.scheme,
+  // //           configuration: {
+  // //             ...simulation.scheme.configuration,
+  // //             geometry: {
+  // //               file: {
+  // //                 glb: 'glb',
+  // //                 originPath: 'originPath'
+  // //               }
+  // //             }
+  // //           }
+  // //         }
+  // //       }}
+  // //       part={part}
+  // //       swr={swr}
+  // //     />
+  // //   )
 
-  // test('with part', () => {
-  //   wrapper.unmount()
-  //   wrapper = mount(
-  //     <Geometry
-  //       simulation={{
-  //         ...simulation,
-  //         scheme: {
-  //           ...simulation.scheme,
-  //           configuration: {
-  //             ...simulation.scheme.configuration,
-  //             geometry: {
-  //               file: {
-  //                 glb: 'glb',
-  //                 originPath: 'originPath'
-  //               }
-  //             }
-  //           }
-  //         }
-  //       }}
-  //       part={{}}
-  //       swr={swr}
-  //     />
-  //   )
-  //   expect(wrapper).toBeDefined()
+  // //   // Open
+  // //   act(() => wrapper.find('Button').at(1).props().onClick())
 
-  //   wrapper.unmount()
-  //   wrapper = mount(
-  //     <Geometry
-  //       simulation={{
-  //         ...simulation,
-  //         scheme: {
-  //           ...simulation.scheme,
-  //           configuration: {
-  //             ...simulation.scheme.configuration,
-  //             geometry: {
-  //               file: {
-  //                 glb: 'glb',
-  //                 originPath: 'originPath'
-  //               }
-  //             }
-  //           }
-  //         }
-  //       }}
-  //       part={{
-  //         solids: [{}],
-  //         faces: [{}],
-  //         edges: [{}]
-  //       }}
-  //       swr={swr}
-  //     />
-  //   )
-  //   expect(wrapper).toBeDefined()
+  // //   // Close
+  // //   act(() => wrapper.find('DeleteDialog').props().onCancel())
+  // // })
 
-  //   wrapper.unmount()
-  //   wrapper = mount(
-  //     <Geometry
-  //       simulation={{
-  //         ...simulation,
-  //         scheme: {
-  //           ...simulation.scheme,
-  //           configuration: {
-  //             ...simulation.scheme.configuration,
-  //             geometry: {
-  //               file: {
-  //                 glb: 'glb',
-  //                 originPath: 'originPath'
-  //               }
-  //             }
-  //           }
-  //         }
-  //       }}
-  //       part={{
-  //         solids: [{}],
-  //         faces: [{}],
-  //         edges: [{}]
-  //       }}
-  //       swr={swr}
-  //     />
-  //   )
-  //   expect(wrapper).toBeDefined()
+  // // test('onDelete', async () => {
+  // //   // Need file
+  // //   wrapper.unmount()
+  // //   wrapper = mount(
+  // //     <Geometry
+  // //       simulation={{
+  // //         ...simulation,
+  // //         scheme: {
+  // //           ...simulation.scheme,
+  // //           configuration: {
+  // //             ...simulation.scheme.configuration,
+  // //             geometry: {
+  // //               file: {
+  // //                 glb: 'glb',
+  // //                 originPath: 'originPath'
+  // //               }
+  // //             }
+  // //           }
+  // //         }
+  // //       }}
+  // //       part={part}
+  // //       swr={swr}
+  // //     />
+  // //   )
 
-  //   wrapper.unmount()
-  //   wrapper = mount(
-  //     <Geometry
-  //       simulation={{
-  //         ...simulation,
-  //         scheme: {
-  //           ...simulation.scheme,
-  //           configuration: {
-  //             ...simulation.scheme.configuration,
-  //             geometry: {
-  //               file: {
-  //                 glb: 'glb',
-  //                 originPath: 'originPath'
-  //               }
-  //             }
-  //           }
-  //         }
-  //       }}
-  //       part={{
-  //         error: true,
-  //         message: 'Error'
-  //       }}
-  //       swr={swr}
-  //     />
-  //   )
-  //   expect(wrapper).toBeDefined()
-  // })
+  // //   // Normal
+  // //   await act(async () => await wrapper.find('DeleteDialog').props().onOk())
+  // //   expect(mockUpdate).toHaveBeenCalledTimes(1)
+  // //   expect(mutateOneSimulation).toHaveBeenCalledTimes(1)
+  // //   expect(mockError).toHaveBeenCalledTimes(0)
+
+  // //   // Error
+  // //   mockUpdate.mockImplementation(() => {
+  // //     throw new Error()
+  // //   })
+  // //   await act(async () => await wrapper.find('DeleteDialog').props().onOk())
+  // //   expect(mockUpdate).toHaveBeenCalledTimes(2)
+  // //   expect(mutateOneSimulation).toHaveBeenCalledTimes(1)
+  // //   expect(mockError).toHaveBeenCalledTimes(1)
+  // // })
+
+  // // test('onDownload', async () => {
+  // //   // Need file
+  // //   wrapper.unmount()
+  // //   wrapper = mount(
+  // //     <Geometry
+  // //       simulation={{
+  // //         ...simulation,
+  // //         scheme: {
+  // //           ...simulation.scheme,
+  // //           configuration: {
+  // //             ...simulation.scheme.configuration,
+  // //             geometry: {
+  // //               file: {
+  // //                 glb: 'glb',
+  // //                 originPath: 'originPath'
+  // //               }
+  // //             }
+  // //           }
+  // //         }
+  // //       }}
+  // //       part={part}
+  // //       swr={swr}
+  // //     />
+  // //   )
+
+  // //   // Normal
+  // //   mockGet.mockImplementation(() => ({
+  // //     buffer: ['buffer']
+  // //   }))
+  // //   window.URL.createObjectURL = () => 'url'
+  // //   await act(async () => await wrapper.find('Button').at(0).props().onClick())
+  // //   expect(mockGet).toHaveBeenCalledTimes(1)
+  // //   expect(mockError).toHaveBeenCalledTimes(0)
+
+  // //   // Error
+  // //   mockGet.mockImplementation(() => {
+  // //     throw new Error()
+  // //   })
+  // //   await act(async () => await wrapper.find('Button').at(0).props().onClick())
+  // //   expect(mockGet).toHaveBeenCalledTimes(2)
+  // //   expect(mockError).toHaveBeenCalledTimes(1)
+  // // })
+
+  // // test('with part', () => {
+  // //   wrapper.unmount()
+  // //   wrapper = mount(
+  // //     <Geometry
+  // //       simulation={{
+  // //         ...simulation,
+  // //         scheme: {
+  // //           ...simulation.scheme,
+  // //           configuration: {
+  // //             ...simulation.scheme.configuration,
+  // //             geometry: {
+  // //               file: {
+  // //                 glb: 'glb',
+  // //                 originPath: 'originPath'
+  // //               }
+  // //             }
+  // //           }
+  // //         }
+  // //       }}
+  // //       part={{}}
+  // //       swr={swr}
+  // //     />
+  // //   )
+  // //   expect(wrapper).toBeDefined()
+
+  // //   wrapper.unmount()
+  // //   wrapper = mount(
+  // //     <Geometry
+  // //       simulation={{
+  // //         ...simulation,
+  // //         scheme: {
+  // //           ...simulation.scheme,
+  // //           configuration: {
+  // //             ...simulation.scheme.configuration,
+  // //             geometry: {
+  // //               file: {
+  // //                 glb: 'glb',
+  // //                 originPath: 'originPath'
+  // //               }
+  // //             }
+  // //           }
+  // //         }
+  // //       }}
+  // //       part={{
+  // //         solids: [{}],
+  // //         faces: [{}],
+  // //         edges: [{}]
+  // //       }}
+  // //       swr={swr}
+  // //     />
+  // //   )
+  // //   expect(wrapper).toBeDefined()
+
+  // //   wrapper.unmount()
+  // //   wrapper = mount(
+  // //     <Geometry
+  // //       simulation={{
+  // //         ...simulation,
+  // //         scheme: {
+  // //           ...simulation.scheme,
+  // //           configuration: {
+  // //             ...simulation.scheme.configuration,
+  // //             geometry: {
+  // //               file: {
+  // //                 glb: 'glb',
+  // //                 originPath: 'originPath'
+  // //               }
+  // //             }
+  // //           }
+  // //         }
+  // //       }}
+  // //       part={{
+  // //         solids: [{}],
+  // //         faces: [{}],
+  // //         edges: [{}]
+  // //       }}
+  // //       swr={swr}
+  // //     />
+  // //   )
+  // //   expect(wrapper).toBeDefined()
+
+  // //   wrapper.unmount()
+  // //   wrapper = mount(
+  // //     <Geometry
+  // //       simulation={{
+  // //         ...simulation,
+  // //         scheme: {
+  // //           ...simulation.scheme,
+  // //           configuration: {
+  // //             ...simulation.scheme.configuration,
+  // //             geometry: {
+  // //               file: {
+  // //                 glb: 'glb',
+  // //                 originPath: 'originPath'
+  // //               }
+  // //             }
+  // //           }
+  // //         }
+  // //       }}
+  // //       part={{
+  // //         error: true,
+  // //         message: 'Error'
+  // //       }}
+  // //       swr={swr}
+  // //     />
+  // //   )
+  // //   expect(wrapper).toBeDefined()
+  // // })
 })

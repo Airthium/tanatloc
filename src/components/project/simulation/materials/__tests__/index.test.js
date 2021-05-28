@@ -1,5 +1,7 @@
+import React from 'react'
+import { fireEvent, render, screen } from '@testing-library/react'
+
 import Materials from '@/components/project/simulation/materials'
-import { shallow, mount } from 'enzyme'
 
 jest.mock('@/components/assets/button', () => ({
   AddButton: 'AddButton'
@@ -26,7 +28,6 @@ jest.mock('@/store/select/action', () => ({
   setPart: () => mockSetPart()
 }))
 
-let wrapper
 describe('components/project/simulation/materials', () => {
   const project = {}
   const simulation = {
@@ -50,7 +51,10 @@ describe('components/project/simulation/materials', () => {
     mockSetPart.mockReset()
 
     setVisible.mockReset()
-    wrapper = shallow(
+  })
+
+  test('render', () => {
+    const { unmount } = render(
       <Materials
         project={project}
         simulation={simulation}
@@ -58,51 +62,45 @@ describe('components/project/simulation/materials', () => {
         setVisible={setVisible}
       />
     )
+
+    unmount()
   })
 
-  afterEach(() => {
-    wrapper.unmount()
-  })
-
-  test('render', () => {
-    expect(wrapper).toBeDefined()
-  })
-
-  test('onAdd', () => {
-    wrapper.find('AddButton').props().onAdd()
-    expect(mockEnable).toHaveBeenCalledTimes(1)
-  })
-
-  test('onEdit', () => {
-    wrapper.find('List').props().onEdit()
-  })
-
-  test('onClose', () => {
-    wrapper.find('Material').props().close()
-    expect(mockDisable).toHaveBeenCalledTimes(1)
-  })
-
-  // test('effect', () => {
-  //   wrapper.unmount()
-  //   wrapper = mount(
-  //     <Materials
-  //       project={project}
-  //       simulation={simulation}
-  //       part={part}
-  //       setVisible={setVisible}
-  //     />
-  //   )
-  //   expect(mockSetType).toHaveBeenCalledTimes(1)
-  //   expect(mockSetPart).toHaveBeenCalledTimes(1)
-
-  //   // Without part
-  //   wrapper.unmount()
-  //   wrapper = mount(
-  //     <Materials
-  //       project={project}
-  //       simulation={simulation}
-  //       setVisible={setVisible}
-  //     />
-  //   )
+  // test('onAdd', () => {
+  //   wrapper.find('AddButton').props().onAdd()
+  //   expect(mockEnable).toHaveBeenCalledTimes(1)
   // })
+
+  // test('onEdit', () => {
+  //   wrapper.find('List').props().onEdit()
+  // })
+
+  // test('onClose', () => {
+  //   wrapper.find('Material').props().close()
+  //   expect(mockDisable).toHaveBeenCalledTimes(1)
+  // })
+
+  // // test('effect', () => {
+  // //   wrapper.unmount()
+  // //   wrapper = mount(
+  // //     <Materials
+  // //       project={project}
+  // //       simulation={simulation}
+  // //       part={part}
+  // //       setVisible={setVisible}
+  // //     />
+  // //   )
+  // //   expect(mockSetType).toHaveBeenCalledTimes(1)
+  // //   expect(mockSetPart).toHaveBeenCalledTimes(1)
+
+  // //   // Without part
+  // //   wrapper.unmount()
+  // //   wrapper = mount(
+  // //     <Materials
+  // //       project={project}
+  // //       simulation={simulation}
+  // //       setVisible={setVisible}
+  // //     />
+  // //   )
+  // // })
 })

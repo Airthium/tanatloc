@@ -1,7 +1,9 @@
+// import React from 'react'
+import { fireEvent, render, screen } from '@testing-library/react'
+
 import View from '@/components/project/view'
 import { act } from 'react-dom/test-utils'
 import React, { useState as mockUseState } from 'react'
-import { mount } from 'enzyme'
 
 jest.mock('next/router', () => ({
   useRouter: () => ({
@@ -253,7 +255,6 @@ window.setTimeout = (callback) => {
   if (callback.name !== '_flushCallback') callback()
 }
 
-let wrapper
 describe('components/project/view', () => {
   // beforeEach(() => {
   //   mockError.mockReset()
@@ -264,9 +265,11 @@ describe('components/project/view', () => {
   // afterEach(() => {
   //   wrapper.unmount()
   // })
-  // test('render', () => {
-  //   expect(wrapper).toBeDefined()
-  // })
+  test('render', () => {
+    const { unmount } = render(<View setPartSummary={jest.fn} />)
+
+    unmount()
+  })
   // test('buttons', () => {
   //   act(() => {
   //     const event = {}

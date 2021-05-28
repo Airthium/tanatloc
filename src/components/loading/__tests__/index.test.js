@@ -1,19 +1,14 @@
+import React from 'react'
+import { render } from '@testing-library/react'
+
 import Loading from '@/components/loading'
-import { shallow } from 'enzyme'
 
 jest.mock('@/components/background', () => 'background')
 
-let wrapper
 describe('components/loading', () => {
-  beforeEach(() => {
-    wrapper = shallow(<Loading />)
-  })
-
-  afterEach(() => {
-    wrapper.unmount()
-  })
-
   test('render', () => {
-    expect(wrapper).toBeDefined()
+    const { unmount } = render(<Loading />)
+
+    unmount()
   })
 })

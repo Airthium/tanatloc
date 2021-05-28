@@ -1,5 +1,5 @@
 import React from 'react'
-import { render, screen } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import Information from '..'
 
@@ -10,7 +10,7 @@ jest.mock('@/components/assets/notification', () => ({
 
 const mockUpdate = jest.fn()
 jest.mock('@/api/user', () => ({
-  update: () => mockUpdate()
+  update: async () => mockUpdate()
 }))
 
 const mockAdd = jest.fn()
@@ -37,6 +37,8 @@ describe('components/account/information', () => {
     mockUpdate.mockReset()
 
     mockAdd.mockReset()
+
+    swr.mutateUser.mockReset()
   })
 
   test('render', () => {
@@ -45,102 +47,119 @@ describe('components/account/information', () => {
     unmount()
   })
 
-  // test('with avatar', () => {
-  //   wrapper.unmount()
-  //   wrapper = shallow(
-  //     <Information
-  //       user={{ ...user, avatar: { type: 'Buffer', data: [] } }}
-  //       swr={swr}
-  //     />
-  //   )
-  //   expect(wrapper).toBeDefined()
-  // })
+  test('with avatar', () => {
+    const { unmount } = render(
+      <Information
+        user={{ ...user, avatar: { type: 'Buffer', data: [] } }}
+        swr={swr}
+      />
+    )
 
-  // test('onFinish', async () => {
-  //   // Normal
-  //   await wrapper.find('ForwardRef(InternalForm)').props().onFinish({})
-  //   expect(mockUpdate).toHaveBeenCalledTimes(1)
-  //   expect(mockError).toHaveBeenCalledTimes(0)
+    unmount()
+  })
 
-  //   await wrapper.find('ForwardRef(InternalForm)').props().onFinish({
-  //     firstname: 'firstname',
-  //     lastname: 'lastname',
-  //     email: 'email'
-  //   })
-  //   expect(mockUpdate).toHaveBeenCalledTimes(2)
-  //   expect(mockError).toHaveBeenCalledTimes(0)
+  test('onFinish', async () => {
+    const { unmount } = render(<Information user={user} swr={swr} />)
+    const button = screen.getByRole('button', { name: 'Apply changes' })
 
-  //   // Error
-  //   mockUpdate.mockImplementation(() => {
-  //     throw new Error()
-  //   })
-  //   await wrapper.find('ForwardRef(InternalForm)').props().onFinish({})
-  //   expect(mockUpdate).toHaveBeenCalledTimes(3)
-  //   expect(mockError).toHaveBeenCalledTimes(1)
-  // })
+    // Error
+    mockUpdate.mockImplementation(() => {
+      throw new Error()
+    })
+    fireEvent.click(button)
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
 
-  // test('onCancel', () => {
-  //   wrapper.find('Button').at(2).props().onClick()
-  // })
+    // Fill form
+    const email = screen.getByLabelText('Email')
+    const firstName = screen.getByLabelText('First name')
+    const lastName = screen.getByLabelText('Last name')
 
-  // test('beforeUpload', () => {
-  //   let res
+    fireEvent.change(email, { target: { value: 'email' } })
+    fireEvent.change(firstName, { target: { value: 'first name' } })
+    fireEvent.change(lastName, { target: { value: 'last name' } })
 
-  //   // Wrong
-  //   res = wrapper
-  //     .find('Upload')
-  //     .props()
-  //     .beforeUpload({ type: 'default', size: 5.1e7 })
-  //   expect(res).toBe(false)
+    // Normal
+    mockUpdate.mockImplementation(() => {})
+    fireEvent.click(button)
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
+    await waitFor(() => expect(swr.mutateUser).toHaveBeenCalledTimes(1))
 
-  //   // Good
-  //   res = wrapper
-  //     .find('Upload')
-  //     .props()
-  //     .beforeUpload({ type: 'image/jpeg', size: 1024 })
-  //   expect(res).toBe(true)
-  // })
+    unmount()
+  })
 
-  // test('onChange', async () => {
-  //   // Uploading
-  //   await wrapper
-  //     .find('Upload')
-  //     .props()
-  //     .onChange({
-  //       file: {
-  //         status: 'uploading'
-  //       }
-  //     })
-  //   expect(mockAdd).toHaveBeenCalledTimes(0)
-  //   expect(mockError).toHaveBeenCalledTimes(0)
+  test('onCancel', () => {
+    const { unmount } = render(<Information user={user} swr={swr} />)
+    const button = screen.getByRole('button', { name: 'Cancel' })
+    fireEvent.click(button)
 
-  //   // Done
-  //   await wrapper
-  //     .find('Upload')
-  //     .props()
-  //     .onChange({
-  //       file: {
-  //         status: 'done',
-  //         originFileObj: 'content'
-  //       }
-  //     })
-  //   expect(mockAdd).toHaveBeenCalledTimes(1)
-  //   expect(mockError).toHaveBeenCalledTimes(0)
+    unmount()
+  })
 
-  //   // Error
-  //   mockAdd.mockImplementation(() => {
-  //     throw new Error()
-  //   })
-  //   await wrapper
-  //     .find('Upload')
-  //     .props()
-  //     .onChange({
-  //       file: {
-  //         status: 'done',
-  //         originFileObj: 'content'
-  //       }
-  //     })
-  //   expect(mockAdd).toHaveBeenCalledTimes(2)
-  //   expect(mockError).toHaveBeenCalledTimes(1)
-  // })
+  test('upload', async () => {
+    const { unmount } = render(<Information user={user} swr={swr} />)
+
+    const upload = screen.getByRole('img', { name: 'upload' })
+
+    // Wrong format
+    let file = new File(['buffer'], 'file.png', { type: 'application/mesh' })
+    fireEvent.drop(upload, {
+      dataTransfer: {
+        files: [file]
+      }
+    })
+
+    // Wrong size
+    file = new File([Buffer.alloc(5 * 1024 * 1024)], 'file.png', {
+      type: 'application/mesh'
+    })
+    fireEvent.drop(upload, {
+      dataTransfer: {
+        files: [file]
+      }
+    })
+
+    // Good format
+    file = new File(['buffer'], 'file.png', { type: 'image/png' })
+    file.status = 'uploading'
+    fireEvent.drop(upload, {
+      dataTransfer: {
+        files: [file]
+      }
+    })
+
+    // Done
+    file.status = 'done'
+    fireEvent.drop(upload, {
+      dataTransfer: {
+        files: [file]
+      }
+    })
+    await waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(2))
+    await waitFor(() => expect(swr.mutateUser).toHaveBeenCalledTimes(2))
+
+    unmount()
+  })
+
+  it('upload error', async () => {
+    const { unmount } = render(<Information user={user} swr={swr} />)
+
+    const upload = screen.getByRole('img', { name: 'upload' })
+
+    // Avatar error
+    mockAdd.mockImplementation(() => {
+      throw new Error()
+    })
+    const file = new File(['buffer'], 'file.png', { type: 'image/png' })
+    file.status = 'done'
+    fireEvent.drop(upload, {
+      dataTransfer: {
+        files: [file]
+      }
+    })
+    await waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
+
+    unmount()
+  })
 })

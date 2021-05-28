@@ -1,5 +1,8 @@
+import React from 'react'
+import { fireEvent, render, screen } from '@testing-library/react'
+
 import List from '..'
-import { shallow } from 'enzyme'
+import { fixControlledValue } from 'antd/lib/input/Input'
 
 jest.mock('../../delete', () => {
   const Delete = () => <div />
@@ -13,7 +16,6 @@ jest.mock('@/lib/utils', () => ({
   groupToAvatar: () => mockGroupToAvatar()
 }))
 
-let wrapper
 describe('components/organizations/list', () => {
   const user = { id: 'id1' }
   const organizations = [
@@ -30,16 +32,21 @@ describe('components/organizations/list', () => {
       groups: [{ id: 'id2' }]
     }
   ]
-  const delOneOrganization = jest.fn()
-  const loadingOrganizations = false
-  const swr = { delOneOrganization, loadingOrganizations }
+  const swr = {
+    delOneOrganization: jest.fn(),
+    loadingOrganizations: false
+  }
   const setOrganization = jest.fn()
 
   beforeEach(() => {
     mockUserToAvatar.mockReset()
     mockGroupToAvatar.mockReset()
 
-    wrapper = shallow(
+    swr.delOneOrganization.mockReset()
+  })
+
+  test('render', () => {
+    const { unmount } = render(
       <List
         user={user}
         organizations={organizations}
@@ -47,35 +54,47 @@ describe('components/organizations/list', () => {
         setOrganization={setOrganization}
       />
     )
-  })
 
-  afterEach(() => {
-    wrapper.unmount()
-  })
-
-  test('render', () => {
-    expect(wrapper).toBeDefined()
+    unmount()
   })
 
   test('columns', () => {
-    const columns = wrapper.find('Table').props().columns
+    const { unmount } = render(
+      <List
+        user={user}
+        organizations={organizations}
+        swr={swr}
+        setOrganization={setOrganization}
+      />
+    )
 
-    // Sorter
-    columns[0].sorter(organizations[0], organizations[1])
-
-    // Renders
-    columns[1].render(organizations[0].owners)
-    expect(mockUserToAvatar).toHaveBeenCalledTimes(1)
-    columns[2].render(organizations[0].users)
-    expect(mockUserToAvatar).toHaveBeenCalledTimes(2)
-    columns[3].render(organizations[0].groups)
-    expect(mockGroupToAvatar).toHaveBeenCalledTimes(1)
-
-    const actions = columns[4].render(organizations[0])
-    const button = actions.props.children[0]
     // Set organization
-    button.props.onClick()
+    const button = screen.getByRole('button')
+    fireEvent.click(button)
+    expect(setOrganization).toHaveBeenCalledTimes(1)
 
-    columns[4].render(organizations[1])
+    const sorter = screen.getByRole('img')
+    fireEvent.click(sorter)
+
+    unmount()
+    // const columns = wrapper.find('Table').props().columns
+
+    // // Sorter
+    // columns[0].sorter(organizations[0], organizations[1])
+
+    // // Renders
+    // columns[1].render(organizations[0].owners)
+    // expect(mockUserToAvatar).toHaveBeenCalledTimes(1)
+    // columns[2].render(organizations[0].users)
+    // expect(mockUserToAvatar).toHaveBeenCalledTimes(2)
+    // columns[3].render(organizations[0].groups)
+    // expect(mockGroupToAvatar).toHaveBeenCalledTimes(1)
+
+    // const actions = columns[4].render(organizations[0])
+    // const button = actions.props.children[0]
+    // // Set organization
+    // button.props.onClick()
+
+    // columns[4].render(organizations[1])
   })
 })

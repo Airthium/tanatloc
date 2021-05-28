@@ -1,9 +1,12 @@
+import React from 'react'
+import { render } from '@testing-library/react'
+
 import Empty from '..'
-import { shallow } from 'enzyme'
 
 describe('components/dashboard/empty', () => {
   test('render', () => {
-    const wrapper = shallow(<Empty />)
-    expect(wrapper).toBeDefined()
+    const { unmount } = render(<Empty />)
+
+    unmount()
   })
 })

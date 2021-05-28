@@ -1,17 +1,13 @@
+import React from 'react'
+import { render } from '@testing-library/react'
+
 import HPC from '../'
-import { shallow } from 'enzyme'
 
 let wrapper
 describe('components/help/doc/hpc', () => {
-  beforeEach(() => {
-    wrapper = shallow(<HPC />)
-  })
-
-  afterEach(() => {
-    wrapper.unmount()
-  })
-
   test('render', () => {
-    expect(wrapper).toBeDefined()
+    const { unmount } = render(<HPC />)
+
+    unmount()
   })
 })

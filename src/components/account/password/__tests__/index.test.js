@@ -1,10 +1,13 @@
 import React from 'react'
-import { render, screen } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+
+import { notification } from 'antd'
 
 import Password from '..'
 
+const mockPasswordItem = jest.fn()
 jest.mock('@/components/assets/input', () => {
-  const PasswordItem = () => <div />
+  const PasswordItem = (props) => mockPasswordItem(props)
   return { PasswordItem }
 })
 
@@ -24,6 +27,16 @@ describe('components/account/information', () => {
   const user = { email: 'email' }
 
   beforeEach(() => {
+    mockPasswordItem.mockReset()
+    mockPasswordItem.mockImplementation((props) => (
+      <div>
+        <label htmlFor={'passwordForm_' + props.label} title={props.label}>
+          {props.label}
+        </label>
+        <input id={'passwordForm_' + props.label} />
+      </div>
+    ))
+
     mockError.mockReset()
 
     mockUpdate.mockReset()
@@ -36,66 +49,59 @@ describe('components/account/information', () => {
     unmount()
   })
 
-  // test('password mismatch', async () => {
-  //   // Match
-  //   await wrapper
-  //     .find({ name: 'passwordConfirm' })
-  //     .props()
-  //     .rules[1]({ getFieldValue: () => 'password' })
-  //     .validator({}, 'password')
+  test('password mismatch', async () => {
+    const { unmount } = render(<Password user={user} />)
 
-  //   // Mismatch
-  //   try {
-  //     await wrapper
-  //       .find({ name: 'passwordConfirm' })
-  //       .props()
-  //       .rules[1]({ getFieldValue: () => 'password' })
-  //       .validator({}, 'other_password')
-  //     expect(true).toBe(false)
-  //   } catch (err) {
-  //     expect(true).toBe(true)
-  //   }
-  // })
+    const mockWarn = jest.fn()
+    console.warn = mockWarn()
 
-  // test('onFinish', async () => {
-  //   mockCheck.mockImplementation(() => ({
-  //     valid: true
-  //   }))
+    const currentPassword = screen.getByLabelText('Current password')
+    const newPassword = screen.getByLabelText('New password')
+    const passwordConfirmation = screen.getByLabelText('Password confirmation')
+    const button = screen.getByRole('button')
 
-  //   // Normal
-  //   await wrapper.find('ForwardRef(InternalForm)').props().onFinish({
-  //     newPassword: 'password',
-  //     passwordConfirm: 'password'
-  //   })
-  //   expect(mockCheck).toHaveBeenCalledTimes(1)
-  //   expect(mockUpdate).toHaveBeenCalledTimes(1)
-  //   expect(mockError).toHaveBeenCalledTimes(0)
+    // Mismatch
+    fireEvent.change(currentPassword, { target: { value: 'password' } })
+    fireEvent.change(newPassword, { target: { value: 'password' } })
+    fireEvent.change(passwordConfirmation, {
+      target: { value: 'otherpassword' }
+    })
+    fireEvent.click(button)
+    await waitFor(() => expect(mockWarn).toHaveBeenCalledTimes(1))
 
-  //   // No check
-  //   mockCheck.mockImplementation(() => ({
-  //     valid: false
-  //   }))
-  //   await wrapper.find('ForwardRef(InternalForm)').props().onFinish({
-  //     newPassword: 'password',
-  //     passwordConfirm: 'password'
-  //   })
-  //   expect(mockCheck).toHaveBeenCalledTimes(2)
-  //   expect(mockUpdate).toHaveBeenCalledTimes(1)
-  //   expect(mockError).toHaveBeenCalledTimes(0)
+    unmount()
+  })
 
-  //   // Error
-  //   mockCheck.mockImplementation(() => ({
-  //     valid: true
-  //   }))
-  //   mockUpdate.mockImplementation(() => {
-  //     throw new Error()
-  //   })
-  //   await wrapper.find('ForwardRef(InternalForm)').props().onFinish({
-  //     newPassword: 'password',
-  //     passwordConfirm: 'password'
-  //   })
-  //   expect(mockCheck).toHaveBeenCalledTimes(3)
-  //   expect(mockUpdate).toHaveBeenCalledTimes(2)
-  //   expect(mockError).toHaveBeenCalledTimes(1)
-  // })
+  test('onFinish', async () => {
+    const { unmount } = render(<Password user={user} />)
+
+    const button = screen.getByRole('button')
+
+    // Error
+    mockCheck.mockImplementation(() => {
+      throw new Error()
+    })
+    fireEvent.click(button)
+    await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
+
+    // Wrong password
+    mockCheck.mockImplementation(() => ({
+      valid: false
+    }))
+    const mockErrorNotification = jest.fn()
+    jest
+      .spyOn(notification, 'error')
+      .mockImplementation(() => mockErrorNotification())
+    fireEvent.click(button)
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+
+    // Valid
+    mockCheck.mockImplementation(() => ({
+      valid: true
+    }))
+    fireEvent.click(button)
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
+
+    unmount()
+  })
 })

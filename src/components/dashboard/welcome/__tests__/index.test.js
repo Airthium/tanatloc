@@ -1,27 +1,18 @@
+import React from 'react'
+import { render } from '@testing-library/react'
+
 import Welcome from '@/components/dashboard/welcome'
-import { shallow } from 'enzyme'
 
-jest.mock('@/components/workspace/add', () => {
-  const Add = () => <div />
-  return Add
-})
+jest.mock('@/components/workspace/add', () => () => <div />)
 
-let wrapper
 describe('components/dashboard/welcome', () => {
-  const addOneWorkspace = jest.fn()
   const swr = {
-    addOneWorkspace
+    addOneWorkspace: jest.fn()
   }
 
-  beforeEach(() => {
-    wrapper = shallow(<Welcome swr={swr} />)
-  })
-
-  afterEach(() => {
-    wrapper.unmount()
-  })
-
   test('render', () => {
-    expect(wrapper).toBeDefined()
+    const { unmount } = render(<Welcome swr={swr} />)
+
+    unmount()
   })
 })

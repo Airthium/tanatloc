@@ -1,5 +1,7 @@
+import React from 'react'
+import { fireEvent, render, screen } from '@testing-library/react'
+
 import Material from '@/components/project/simulation/materials/material'
-import { shallow, mount } from 'enzyme'
 
 jest.mock('@/components/assets/formula', () => {
   const Formula = () => <div />
@@ -26,7 +28,6 @@ jest.mock('@/components/project/simulation/materials/edit', () => {
   return Edit
 })
 
-let wrapper
 describe('components/project/simulation/materials/material', () => {
   const simulation = {}
   const part = {}
@@ -46,8 +47,10 @@ describe('components/project/simulation/materials/material', () => {
 
   beforeEach(() => {
     close.mockReset()
+  })
 
-    wrapper = shallow(
+  test('render', () => {
+    const { unmount } = render(
       <Material
         simulation={simulation}
         visible={true}
@@ -58,68 +61,62 @@ describe('components/project/simulation/materials/material', () => {
         close={close}
       />
     )
+
+    unmount()
   })
 
-  afterEach(() => {
-    wrapper.unmount()
-  })
-
-  test('render', () => {
-    expect(wrapper).toBeDefined()
-  })
-
-  test('onMaterialSelect', () => {
-    wrapper.find('Database').props().onSelect()
-  })
-
-  test('onSelected', () => {
-    wrapper.find('Selector').props().updateSelected()
-  })
-
-  test('onClose', () => {
-    wrapper.find('Add').props().close()
-    expect(close).toHaveBeenCalledTimes(1)
-  })
-
-  // test('effect', () => {
-  //   // Without material
-  //   material = null
-  //   wrapper = mount(
-  //     <Material
-  //       simulation={simulation}
-  //       visible={true}
-  //       part={part}
-  //       materials={materials}
-  //       material={material}
-  //       swr={swr}
-  //       close={close}
-  //     />
-  //   )
-
-  //   // Enable
-  //   wrapper.unmount()
-  //   material = {
-  //     selected: [{ uuid: 'uuid', label: 1 }],
-  //     material: {
-  //       children: [
-  //         {
-  //           symbol: 'Test'
-  //         }
-  //       ]
-  //     }
-  //   }
-  //   wrapper = mount(
-  //     <Material
-  //       simulation={simulation}
-  //       visible={true}
-  //       part={part}
-  //       materials={materials}
-  //       material={material}
-  //       swr={swr}
-  //       close={close}
-  //     />
-  //   )
-
-  //   wrapper.find('Formula').props().onValueChange()
+  // test('onMaterialSelect', () => {
+  //   wrapper.find('Database').props().onSelect()
   // })
+
+  // test('onSelected', () => {
+  //   wrapper.find('Selector').props().updateSelected()
+  // })
+
+  // test('onClose', () => {
+  //   wrapper.find('Add').props().close()
+  //   expect(close).toHaveBeenCalledTimes(1)
+  // })
+
+  // // test('effect', () => {
+  // //   // Without material
+  // //   material = null
+  // //   wrapper = mount(
+  // //     <Material
+  // //       simulation={simulation}
+  // //       visible={true}
+  // //       part={part}
+  // //       materials={materials}
+  // //       material={material}
+  // //       swr={swr}
+  // //       close={close}
+  // //     />
+  // //   )
+
+  // //   // Enable
+  // //   wrapper.unmount()
+  // //   material = {
+  // //     selected: [{ uuid: 'uuid', label: 1 }],
+  // //     material: {
+  // //       children: [
+  // //         {
+  // //           symbol: 'Test'
+  // //         }
+  // //       ]
+  // //     }
+  // //   }
+  // //   wrapper = mount(
+  // //     <Material
+  // //       simulation={simulation}
+  // //       visible={true}
+  // //       part={part}
+  // //       materials={materials}
+  // //       material={material}
+  // //       swr={swr}
+  // //       close={close}
+  // //     />
+  // //   )
+
+  // //   wrapper.find('Formula').props().onValueChange()
+  // // })
 })

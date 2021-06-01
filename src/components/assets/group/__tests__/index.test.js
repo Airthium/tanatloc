@@ -1,12 +1,10 @@
 import React from 'react'
-import { fireEvent, render, screen } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import Group from '..'
 
-jest.mock('@/components/assets/dialog', () => {
-  const Dialog = () => <div />
-  return Dialog
-})
+const mockDialog = jest.fn()
+jest.mock('@/components/assets/dialog', () => (props) => mockDialog(props))
 
 const mockError = jest.fn()
 jest.mock('@/components/assets/notification', () => ({
@@ -20,7 +18,6 @@ jest.mock('@/api/group', () => ({
   update: async () => mockUpdate()
 }))
 
-let wrapper
 describe('components/assets/groups', () => {
   const userOptions = []
   const organization = {
@@ -38,7 +35,13 @@ describe('components/assets/groups', () => {
   }
 
   beforeEach(() => {
+    mockDialog.mockReset()
+    mockDialog.mockImplementation(() => <div />)
+
     mockError.mockReset()
+
+    mockAdd.mockReset()
+    mockUpdate.mockReset()
 
     swr.reloadOrganizations.mockReset()
   })
@@ -51,149 +54,184 @@ describe('components/assets/groups', () => {
     unmount()
   })
 
-  // test('setVisible', () => {
-  //   // Visible
-  //   wrapper.find('Button').props().onClick()
+  test('setVisible', () => {
+    mockDialog.mockImplementation((props) => (
+      <div role="Dialog" onClick={props.onCancel} />
+    ))
+    const { unmount } = render(
+      <Group userOptions={userOptions} organization={organization} swr={swr} />
+    )
 
-  //   // Not visible
-  //   wrapper.find('Dialog').props().onCancel()
-  // })
+    const button = screen.getByRole('button')
+    fireEvent.click(button)
 
-  // test('onAdd', async () => {
-  //   // Normal
-  //   mockAdd.mockImplementation(() => ({}))
-  //   await wrapper.find('Dialog').props().onOk({})
-  //   expect(mockAdd).toHaveBeenCalledTimes(1)
-  //   expect(swr.addOneGroup).toHaveBeenCalledTimes(1)
-  //   expect(swr.reloadOrganizations).toHaveBeenCalledTimes(1)
-  //   expect(mockError).toHaveBeenCalledTimes(0)
+    const dialog = screen.getByRole('Dialog')
+    fireEvent.click(dialog)
 
-  //   // Error
-  //   mockAdd.mockImplementation(() => {
-  //     throw new Error()
-  //   })
-  //   await wrapper.find('Dialog').props().onOk({})
-  //   expect(mockAdd).toHaveBeenCalledTimes(2)
-  //   expect(swr.addOneGroup).toHaveBeenCalledTimes(1)
-  //   expect(swr.reloadOrganizations).toHaveBeenCalledTimes(1)
-  //   expect(mockError).toHaveBeenCalledTimes(1)
-  // })
+    unmount()
+  })
 
-  // test('edit', () => {
-  //   wrapper.unmount()
-  //   wrapper = shallow(
-  //     <Group
-  //       userOptions={userOptions}
-  //       organization={organization}
-  //       group={group}
-  //       swr={swr}
-  //     />
-  //   )
-  //   expect(wrapper).toBeDefined()
-  // })
+  test('onAdd', async () => {
+    mockDialog.mockImplementation((props) => (
+      <div role="Dialog" onClick={props.onOk} />
+    ))
+    const { unmount } = render(
+      <Group userOptions={userOptions} organization={organization} swr={swr} />
+    )
 
-  // test('onUpdate', async () => {
-  //   wrapper.unmount()
-  //   wrapper = shallow(
-  //     <Group
-  //       userOptions={userOptions}
-  //       organization={organization}
-  //       group={group}
-  //       swr={swr}
-  //     />
-  //   )
+    const dialog = screen.getByRole('Dialog')
 
-  //   // Normal
-  //   await wrapper
-  //     .find('Dialog')
-  //     .props()
-  //     .onOk({
-  //       name: 'otherName',
-  //       users: ['id', 'id1']
-  //     })
-  //   expect(mockUpdate).toHaveBeenCalledTimes(1)
-  //   expect(swr.mutateOneGroup).toHaveBeenCalledTimes(1)
-  //   expect(swr.reloadOrganizations).toHaveBeenCalledTimes(1)
-  //   expect(mockError).toHaveBeenCalledTimes(0)
+    // Normal
+    fireEvent.click(dialog)
+    await waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(swr.addOneGroup).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
+      expect(swr.reloadOrganizations).toHaveBeenCalledTimes(1)
+    )
 
-  //   // Error
-  //   mockUpdate.mockImplementation(() => {
-  //     throw new Error()
-  //   })
-  //   await wrapper
-  //     .find('Dialog')
-  //     .props()
-  //     .onOk({ name: 'name', users: ['id'] })
-  //   expect(mockUpdate).toHaveBeenCalledTimes(2)
-  //   expect(swr.mutateOneGroup).toHaveBeenCalledTimes(1)
-  //   expect(swr.reloadOrganizations).toHaveBeenCalledTimes(1)
-  //   expect(mockError).toHaveBeenCalledTimes(1)
-  // })
+    // Error
+    mockAdd.mockImplementation(() => {
+      throw new Error()
+    })
+    fireEvent.click(dialog)
+    await waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(2))
+    await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
 
-  // test('propTypes', () => {
-  //   let res
-  //   const swrProp = Group.propTypes.swr
+    unmount()
+  })
 
-  //   res = swrProp({}, 'swr', 'Group')
-  //   expect(res.message).toBe('Invalid prop swr supplied to Group. swr missing')
+  test('onUpdate', async () => {
+    mockDialog.mockImplementation((props) => (
+      <div
+        role="Dialog"
+        onClick={() => props.onOk({ name: 'name', users: [{ id: 'id' }] })}
+      />
+    ))
+    const { unmount } = render(
+      <Group
+        userOptions={userOptions}
+        organization={organization}
+        group={group}
+        swr={swr}
+      />
+    )
 
-  //   res = swrProp({ swr: {} }, 'swr', 'Group')
-  //   expect(res.message).toBe(
-  //     'Invalid prop swr supplied to Group. addOneGroup missing or invalid'
-  //   )
+    const dialog = screen.getByRole('Dialog')
 
-  //   res = swrProp({ swr: { addOneGroup: {} } }, 'swr', 'Group')
-  //   expect(res.message).toBe(
-  //     'Invalid prop swr supplied to Group. addOneGroup missing or invalid'
-  //   )
+    // Normal
+    fireEvent.click(dialog)
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(swr.addOneGroup).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
+      expect(swr.reloadOrganizations).toHaveBeenCalledTimes(1)
+    )
 
-  //   res = swrProp({ swr: { addOneGroup: jest.fn } }, 'swr', 'Group')
-  //   expect(res.message).toBe(
-  //     'Invalid prop swr supplied to Group. reloadOrganizations missing or invalid'
-  //   )
+    // Error
+    mockUpdate.mockImplementation(() => {
+      throw new Error()
+    })
+    fireEvent.click(dialog)
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
+    await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
 
-  //   res = swrProp(
-  //     { swr: { reloadOrganizations: {}, addOneGroup: jest.fn } },
-  //     'swr',
-  //     'Group'
-  //   )
-  //   expect(res.message).toBe(
-  //     'Invalid prop swr supplied to Group. reloadOrganizations missing or invalid'
-  //   )
+    unmount()
+  })
 
-  //   res = swrProp(
-  //     { swr: { reloadOrganizations: jest.fn, addOneGroup: jest.fn } },
-  //     'swr',
-  //     'Group'
-  //   )
-  //   expect(res).toBe()
+  it('onUpdate with modifications', async () => {
+    mockDialog.mockImplementation((props) => (
+      <div
+        role="Dialog"
+        onClick={() =>
+          props.onOk({ name: 'other name', users: [{ id: 'id1' }] })
+        }
+      />
+    ))
+    const { unmount } = render(
+      <Group
+        userOptions={userOptions}
+        organization={organization}
+        group={group}
+        swr={swr}
+      />
+    )
 
-  //   res = swrProp(
-  //     { swr: { reloadOrganizations: jest.fn }, group: {} },
-  //     'swr',
-  //     'Group'
-  //   )
-  //   expect(res.message).toBe(
-  //     'Invalid prop swr supplied to Group. mutateOneGroup missing or invalid'
-  //   )
+    const dialog = screen.getByRole('Dialog')
 
-  //   res = swrProp(
-  //     { swr: { reloadOrganizations: jest.fn, mutateOneGroup: {} }, group: {} },
-  //     'swr',
-  //     'Group'
-  //   )
-  //   expect(res.message).toBe(
-  //     'Invalid prop swr supplied to Group. mutateOneGroup missing or invalid'
-  //   )
+    // Normal
+    fireEvent.click(dialog)
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(swr.addOneGroup).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
+      expect(swr.reloadOrganizations).toHaveBeenCalledTimes(1)
+    )
 
-  //   res = swrProp(
-  //     {
-  //       swr: { reloadOrganizations: jest.fn, mutateOneGroup: jest.fn },
-  //       group: {}
-  //     },
-  //     'swr',
-  //     'Group'
-  //   )
-  //   expect(res).toBe()
-  // })
+    unmount()
+  })
+
+  test('propTypes', () => {
+    let res
+    const swrProp = Group.propTypes.swr
+
+    res = swrProp({}, 'swr', 'Group')
+    expect(res.message).toBe('Invalid prop swr supplied to Group. swr missing')
+
+    res = swrProp({ swr: {} }, 'swr', 'Group')
+    expect(res.message).toBe(
+      'Invalid prop swr supplied to Group. addOneGroup missing or invalid'
+    )
+
+    res = swrProp({ swr: { addOneGroup: {} } }, 'swr', 'Group')
+    expect(res.message).toBe(
+      'Invalid prop swr supplied to Group. addOneGroup missing or invalid'
+    )
+
+    res = swrProp({ swr: { addOneGroup: jest.fn } }, 'swr', 'Group')
+    expect(res.message).toBe(
+      'Invalid prop swr supplied to Group. reloadOrganizations missing or invalid'
+    )
+
+    res = swrProp(
+      { swr: { reloadOrganizations: {}, addOneGroup: jest.fn } },
+      'swr',
+      'Group'
+    )
+    expect(res.message).toBe(
+      'Invalid prop swr supplied to Group. reloadOrganizations missing or invalid'
+    )
+
+    res = swrProp(
+      { swr: { reloadOrganizations: jest.fn, addOneGroup: jest.fn } },
+      'swr',
+      'Group'
+    )
+    expect(res).toBe()
+
+    res = swrProp(
+      { swr: { reloadOrganizations: jest.fn }, group: {} },
+      'swr',
+      'Group'
+    )
+    expect(res.message).toBe(
+      'Invalid prop swr supplied to Group. mutateOneGroup missing or invalid'
+    )
+
+    res = swrProp(
+      { swr: { reloadOrganizations: jest.fn, mutateOneGroup: {} }, group: {} },
+      'swr',
+      'Group'
+    )
+    expect(res.message).toBe(
+      'Invalid prop swr supplied to Group. mutateOneGroup missing or invalid'
+    )
+
+    res = swrProp(
+      {
+        swr: { reloadOrganizations: jest.fn, mutateOneGroup: jest.fn },
+        group: {}
+      },
+      'swr',
+      'Group'
+    )
+    expect(res).toBe()
+  })
 })

@@ -57,6 +57,9 @@ const Group = ({ userOptions, organization, group, swr }) => {
       })
       swr.reloadOrganizations()
 
+      // Loading
+      setLoading(false)
+
       // Close
       setVisible(false)
     } catch (err) {

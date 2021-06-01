@@ -83,28 +83,26 @@ const PasswordItem = ({
       name={name || 'password'}
       label={label || 'Password'}
       rules={[
+        { required: true, message: errors.password },
         () => ({
           validator(_, value) {
-            if (!value) return Promise.reject(new Error(errors.password))
-            else {
-              const err = []
-              if (edit && value === '******') return Promise.resolve()
+            const err = []
+            if (edit && value === '******') return Promise.resolve()
 
-              if (value.length < (system?.password?.min || 6))
-                err.push(errors.passwordTooSmall)
+            if (value.length < (system?.password?.min || 6))
+              err.push(errors.passwordTooSmall)
 
-              if (value.length > (system?.password?.max || 16))
-                err.push(errors.passwordTooLong)
+            if (value.length > (system?.password?.max || 16))
+              err.push(errors.passwordTooLong)
 
-              if (!requireLetter(value)) err.push(errors.passwordRequireLetter)
+            if (!requireLetter(value)) err.push(errors.passwordRequireLetter)
 
-              if (!requireNumber(value)) err.push(errors.passwordRequireNumber)
+            if (!requireNumber(value)) err.push(errors.passwordRequireNumber)
 
-              if (!requireSymbol(value)) err.push(errors.passwordRequireSymbol)
+            if (!requireSymbol(value)) err.push(errors.passwordRequireSymbol)
 
-              if (err.length) return Promise.reject(new Error(err.join(' - ')))
-              else return Promise.resolve()
-            }
+            if (err.length) return Promise.reject(err.join(' - '))
+            else return Promise.resolve()
           }
         })
       ]}

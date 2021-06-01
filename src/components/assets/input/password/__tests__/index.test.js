@@ -1,6 +1,6 @@
 import React from 'react'
-import { render, screen } from '@testing-library/react'
-import { Form } from 'antd'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { Button, Form } from 'antd'
 
 import PasswordItem from '..'
 
@@ -35,108 +35,112 @@ describe('components/assets/input/password', () => {
         requireSymbol: true
       }
     }))
+    const onFinish = jest.fn()
     const { unmount } = render(
-      <Form>
-        <PasswordItem inputPlaceholder="placeholder" />
+      <Form name="form" onFinish={onFinish}>
+        <PasswordItem name="Password" />
+        <Button htmlType="submit">Submit</Button>
       </Form>
     )
 
-    // const input = screen.getByPlaceholderText('placeholder')
+    const input = screen.getByLabelText('Password')
+    const button = screen.getByRole('button')
 
-    // // Empty
-    // // userEvent.type(input, '')
+    // Empty
+    fireEvent.change(input, { taget: { value: undefined } })
 
-    // // Small
-    // userEvent.type(input, 'small')
+    // Small
+    fireEvent.change(input, { target: { value: 'small' } })
+
+    // Long
+    fireEvent.change(input, { target: { value: 'longlonglonglonglonglong' } })
+
+    // Numbers only
+    fireEvent.change(input, { target: { value: '12345678' } })
+
+    // Letters only
+    fireEvent.change(input, { target: { value: 'abcdefgh' } })
+
+    // Letters and numbers
+    fireEvent.change(input, { target: { value: 'abcd1234' } })
+
+    // Ok
+    fireEvent.change(input, { target: { value: 'abcd1234&' } })
+    fireEvent.click(button)
+    await waitFor(() => expect(onFinish).toHaveBeenCalledTimes(1))
 
     unmount()
-
-    // const validator = wrapper
-    //   .find({ name: 'password' })
-    //   .props()
-    //   .rules[0]().validator
-
-    // try {
-    //   await validator(null, '')
-    // } catch (err) {
-    //   expect(err.message).toBe('Please enter a password')
-    // }
-
-    // try {
-    //   await validator(null, 'small')
-    // } catch (err) {
-    //   expect(err.message).toBe(
-    //     'Your password is too small - Your password must contain a number - Your password must contain a symbol'
-    //   )
-    // }
-
-    // try {
-    //   await validator(null, 'longlonglonglonglonglong')
-    // } catch (err) {
-    //   expect(err.message).toBe(
-    //     'Your password is too long - Your password must contain a number - Your password must contain a symbol'
-    //   )
-    // }
-
-    // try {
-    //   await validator(null, '12345678')
-    // } catch (err) {
-    //   expect(err.message).toBe(
-    //     'Your password must contain a letter - Your password must contain a symbol'
-    //   )
-    // }
-
-    // try {
-    //   await validator(null, 'abcdefgh')
-    // } catch (err) {
-    //   expect(err.message).toBe(
-    //     'Your password must contain a number - Your password must contain a symbol'
-    //   )
-    // }
-
-    // try {
-    //   await validator(null, 'abcd1234')
-    // } catch (err) {
-    //   expect(err.message).toBe('Your password must contain a symbol')
-    // }
-
-    // await validator(null, 'abcd1234&')
   })
 
-  // test('without system password', async () => {
-  //   mockSystem.mockImplementation(() => ({
-  //     allowsignup: true,
-  //     password: {
-  //       requireLetter: false,
-  //       requireNumber: false,
-  //       requireSymbol: false
-  //     }
-  //   }))
-  //   wrapper = shallow(<PasswordItem edit={true} />)
+  test('without system password', async () => {
+    mockSystem.mockImplementation(() => ({
+      allowsignup: true,
+      password: {
+        requireLetter: false,
+        requireNumber: false,
+        requireSymbol: false
+      }
+    }))
 
-  //   const validator = wrapper
-  //     .find({ name: 'password' })
-  //     .props()
-  //     .rules[0]().validator
+    const onFinish = jest.fn()
+    const { unmount } = render(
+      <Form name="form" onFinish={onFinish}>
+        <PasswordItem name="Password" />
+        <Button htmlType="submit">Submit</Button>
+      </Form>
+    )
 
-  //   await validator(null, '******')
+    const input = screen.getByLabelText('Password')
+    const button = screen.getByRole('button')
 
-  //   try {
-  //     await validator(null, 'small')
-  //   } catch (err) {
-  //     expect(err.message).toBe('Your password is too small')
-  //   }
+    // Empty
+    fireEvent.change(input, { taget: { value: undefined } })
 
-  //   try {
-  //     await validator(null, 'longlonglonglonglonglong')
-  //   } catch (err) {
-  //     expect(err.message).toBe('Your password is too long')
-  //   }
+    // Small
+    fireEvent.change(input, { target: { value: 'small' } })
 
-  //   await validator(null, '12345678')
+    // Long
+    fireEvent.change(input, { target: { value: 'longlonglonglonglonglong' } })
 
-  //   await validator(null, 'abcdefgh')
+    // Numbers only
+    fireEvent.change(input, { target: { value: '12345678' } })
+    fireEvent.click(button)
+    await waitFor(() => expect(onFinish).toHaveBeenCalledTimes(1))
 
-  //   await validator(null, 'abcd1234')
-  // })
+    // Letters only
+    fireEvent.change(input, { target: { value: 'abcdefgh' } })
+    fireEvent.click(button)
+    await waitFor(() => expect(onFinish).toHaveBeenCalledTimes(2))
+
+    // Letters and numbers
+    fireEvent.change(input, { target: { value: 'abcd1234' } })
+    fireEvent.click(button)
+    await waitFor(() => expect(onFinish).toHaveBeenCalledTimes(3))
+
+    // Ok
+    fireEvent.change(input, { target: { value: 'abcd1234&' } })
+    fireEvent.click(button)
+    await waitFor(() => expect(onFinish).toHaveBeenCalledTimes(4))
+
+    unmount()
+  })
+
+  test('edit mode', async () => {
+    const onFinish = jest.fn()
+    const { unmount } = render(
+      <Form name="form" onFinish={onFinish}>
+        <PasswordItem name="Password" edit={true} />
+        <Button htmlType="submit">Submit</Button>
+      </Form>
+    )
+
+    const input = screen.getByLabelText('Password')
+    const button = screen.getByRole('button')
+
+    fireEvent.change(input, { target: { value: '******' } })
+    fireEvent.click(button)
+    await waitFor(() => expect(onFinish).toHaveBeenCalledTimes(1))
+
+    unmount()
+  })
 })

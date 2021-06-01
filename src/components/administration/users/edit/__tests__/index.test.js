@@ -1,17 +1,15 @@
 import React from 'react'
-import { fireEvent, render, screen } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import Edit from '..'
 
-jest.mock('@/components/assets/dialog', () => {
-  const Dialog = () => <div />
-  return Dialog
-})
+const mockDialog = jest.fn()
+jest.mock('@/components/assets/dialog', () => (props) => mockDialog(props))
 
-jest.mock('@/components/assets/input', () => {
-  const PasswordItem = () => <div />
-  return { PasswordItem }
-})
+const mockPasswordItem = jest.fn()
+jest.mock('@/components/assets/input', () => ({
+  PasswordItem: () => mockPasswordItem()
+}))
 
 const mockError = jest.fn()
 jest.mock('@/components/assets/notification', () => ({
@@ -35,6 +33,12 @@ describe('components/administration/users/edit', () => {
   const swr = { mutateOneUser: jest.fn() }
 
   beforeEach(() => {
+    mockDialog.mockReset()
+    mockDialog.mockImplementation(() => <div />)
+
+    mockPasswordItem.mockReset()
+    mockPasswordItem.mockImplementation(() => <div />)
+
     mockError.mockReset()
 
     mockUpdateById.mockReset()
@@ -46,33 +50,50 @@ describe('components/administration/users/edit', () => {
     unmount()
   })
 
-  // test('setVisible', () => {
-  //   // Visible
-  //   wrapper.find('Button').props().onClick()
+  test('setVisible', () => {
+    mockDialog.mockImplementation((props) => (
+      <div role="Dialog" onClick={props.onCancel} />
+    ))
+    const { unmount } = render(<Edit user={user} swr={swr} />)
 
-  //   // Not visible
-  //   wrapper.find('Dialog').props().onCancel()
-  // })
+    const button = screen.getByRole('button')
+    fireEvent.click(button)
 
-  // test('onUpdate', async () => {
-  //   // Normal
-  //   await wrapper.find('Dialog').props().onOk({
-  //     firstname: 'firstname',
-  //     lastname: undefined,
-  //     password: 'password',
-  //     key: '******'
-  //   })
-  //   expect(mockUpdateById).toHaveBeenCalledTimes(1)
-  //   expect(mutateOneUser).toHaveBeenCalledTimes(1)
-  //   expect(mockError).toHaveBeenCalledTimes(0)
+    const dialog = screen.getByRole('Dialog')
+    fireEvent.click(dialog)
 
-  //   // Error
-  //   mockUpdateById.mockImplementation(() => {
-  //     throw new Error()
-  //   })
-  //   await wrapper.find('Dialog').props().onOk({})
-  //   expect(mockUpdateById).toHaveBeenCalledTimes(2)
-  //   expect(mutateOneUser).toHaveBeenCalledTimes(1)
-  //   expect(mockError).toHaveBeenCalledTimes(1)
-  // })
+    unmount()
+  })
+
+  test('onUpdate', async () => {
+    let returned = {}
+    mockDialog.mockImplementation((props) => (
+      <div role="Dialog" onClick={() => props.onOk(returned)} />
+    ))
+    const { unmount } = render(<Edit user={user} swr={swr} />)
+
+    const dialog = screen.getByRole('Dialog')
+
+    // Normal
+    returned = {
+      firstname: 'firstname',
+      lastname: undefined,
+      password: 'password',
+      key: '******'
+    }
+    fireEvent.click(dialog)
+    await waitFor(() => expect(mockUpdateById).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(swr.mutateOneUser).toHaveBeenCalledTimes(1))
+
+    // Error
+    returned = {}
+    mockUpdateById.mockImplementation(() => {
+      throw new Error()
+    })
+    fireEvent.click(dialog)
+    await waitFor(() => expect(mockUpdateById).toHaveBeenCalledTimes(2))
+    await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
+
+    unmount()
+  })
 })

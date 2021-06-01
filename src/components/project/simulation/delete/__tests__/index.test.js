@@ -1,12 +1,12 @@
 import React from 'react'
-import { fireEvent, render, screen } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import Delete from '@/components/project/simulation/delete'
 
-jest.mock('@/components/assets/dialog', () => {
-  const DeleteDialog = () => <div />
-  return { DeleteDialog }
-})
+const mockDeleteDialog = jest.fn()
+jest.mock('@/components/assets/dialog', () => ({
+  DeleteDialog: (props) => mockDeleteDialog(props)
+}))
 
 const mockError = jest.fn()
 jest.mock('@/components/assets/notification', () => ({
@@ -20,13 +20,14 @@ jest.mock('@/api/simulation', () => ({
 
 describe('components/project/simulation/delete', () => {
   const simulation = { id: 'id', name: 'name' }
-  const reloadProject = jest.fn()
-  const delOneSimulation = jest.fn()
   const swr = {
-    reloadProject,
-    delOneSimulation
+    reloadProject: jest.fn(),
+    delOneSimulation: jest.fn()
   }
   beforeEach(() => {
+    mockDeleteDialog.mockReset()
+    mockDeleteDialog.mockImplementation(() => <div />)
+
     mockError.mockReset()
 
     mockDel.mockReset()
@@ -38,30 +39,43 @@ describe('components/project/simulation/delete', () => {
     unmount()
   })
 
-  // test('setVisible', () => {
-  //   // Visible
-  //   wrapper.find('Button').props().onClick()
+  test('setVisible', () => {
+    mockDeleteDialog.mockImplementation((props) => (
+      <div role="DeleteDialog" onClick={props.onCancel} />
+    ))
+    const { unmount } = render(<Delete simulation={simulation} swr={swr} />)
 
-  //   // Not visible
-  //   wrapper.find('DeleteDialog').props().onCancel()
-  // })
+    const button = screen.getByRole('button')
+    fireEvent.click(button)
 
-  // test('onDelete', async () => {
-  //   // Normal
-  //   await wrapper.find('DeleteDialog').props().onOk()
-  //   expect(mockDel).toHaveBeenCalledTimes(1)
-  //   expect(delOneSimulation).toHaveBeenCalledTimes(1)
-  //   expect(reloadProject).toHaveBeenCalledTimes(1)
-  //   expect(mockError).toHaveBeenCalledTimes(0)
+    const dialog = screen.getByRole('DeleteDialog')
+    fireEvent.click(dialog)
 
-  //   // Error
-  //   mockDel.mockImplementation(() => {
-  //     throw new Error()
-  //   })
-  //   await wrapper.find('DeleteDialog').props().onOk()
-  //   expect(mockDel).toHaveBeenCalledTimes(2)
-  //   expect(delOneSimulation).toHaveBeenCalledTimes(1)
-  //   expect(reloadProject).toHaveBeenCalledTimes(1)
-  //   expect(mockError).toHaveBeenCalledTimes(1)
-  // })
+    unmount()
+  })
+
+  test('onDelete', async () => {
+    mockDeleteDialog.mockImplementation((props) => (
+      <div role="DeleteDialog" onClick={props.onOk} />
+    ))
+    const { unmount } = render(<Delete simulation={simulation} swr={swr} />)
+
+    const dialog = screen.getByRole('DeleteDialog')
+
+    // Normal
+    fireEvent.click(dialog)
+    await waitFor(() => expect(mockDel).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(swr.delOneSimulation).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(swr.reloadProject).toHaveBeenCalledTimes(1))
+
+    // Error
+    mockDel.mockImplementation(() => {
+      throw new Error()
+    })
+    fireEvent.click(dialog)
+    await waitFor(() => expect(mockDel).toHaveBeenCalledTimes(2))
+    await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
+
+    unmount()
+  })
 })

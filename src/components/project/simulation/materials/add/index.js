@@ -73,6 +73,8 @@ const Add = ({ disabled, material, simulation, part, swr, close }) => {
       // Local
       swr.mutateOneSimulation(newSimulation)
 
+      setLoading(false)
+
       // Close
       close()
     } catch (err) {

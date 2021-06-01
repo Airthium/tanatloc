@@ -1,12 +1,10 @@
 import React from 'react'
-import { fireEvent, render, screen } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import Add from '..'
 
-jest.mock('@/components/assets/dialog', () => {
-  const Dialog = () => <div />
-  return Dialog
-})
+const mockDialog = jest.fn()
+jest.mock('@/components/assets/dialog', () => (props) => mockDialog(props))
 
 const mockError = jest.fn()
 jest.mock('@/components/assets/notification', () => ({
@@ -26,6 +24,9 @@ describe('components/project/add', () => {
   }
 
   beforeEach(() => {
+    mockDialog.mockReset()
+    mockDialog.mockImplementation(() => <div />)
+
     mockError.mockReset()
 
     mockAdd.mockReset()
@@ -37,31 +38,44 @@ describe('components/project/add', () => {
     unmount()
   })
 
-  // test('setVisible', () => {
-  //   // Visible
-  //   wrapper.find('Button').props().onClick()
+  test('setVisible', () => {
+    mockDialog.mockImplementation((props) => (
+      <div role="Dialog" onClick={props.onCancel} />
+    ))
+    const { unmount } = render(<Add workspace={workspace} swr={swr} />)
 
-  //   // Not visible
-  //   wrapper.find('Dialog').props().onCancel()
-  // })
+    const button = screen.getByRole('button')
+    fireEvent.click(button)
 
-  // test('onAdd', async () => {
-  //   // Normal
-  //   mockAdd.mockImplementation(() => ({}))
-  //   await wrapper.find('Dialog').props().onOk()
-  //   expect(mockAdd).toHaveBeenCalledTimes(1)
-  //   expect(addOneProject).toHaveBeenCalledTimes(1)
-  //   expect(mutateOneWorkspace).toHaveBeenCalledTimes(1)
-  //   expect(mockError).toHaveBeenCalledTimes(0)
+    const dialog = screen.getByRole('Dialog')
+    fireEvent.click(dialog)
 
-  //   // Error
-  //   mockAdd.mockImplementation(() => {
-  //     throw new Error()
-  //   })
-  //   await wrapper.find('Dialog').props().onOk()
-  //   expect(mockAdd).toHaveBeenCalledTimes(2)
-  //   expect(addOneProject).toHaveBeenCalledTimes(1)
-  //   expect(mutateOneWorkspace).toHaveBeenCalledTimes(1)
-  //   expect(mockError).toHaveBeenCalledTimes(1)
-  // })
+    unmount()
+  })
+
+  test('onAdd', async () => {
+    mockDialog.mockImplementation((props) => (
+      <div role="Dialog" onClick={props.onOk} />
+    ))
+    const { unmount } = render(<Add workspace={workspace} swr={swr} />)
+
+    const dialog = screen.getByRole('Dialog')
+
+    // Normal
+    mockAdd.mockImplementation(() => ({}))
+    fireEvent.click(dialog)
+    await waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(swr.addOneProject).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(swr.mutateOneWorkspace).toHaveBeenCalledTimes(1))
+
+    // Error
+    mockAdd.mockImplementation(() => {
+      throw new Error()
+    })
+    fireEvent.click(dialog)
+    await waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(2))
+    await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
+
+    unmount()
+  })
 })

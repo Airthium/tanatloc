@@ -1,12 +1,10 @@
 import React from 'react'
-import { fireEvent, render, screen } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import Share from '..'
 
-jest.mock('@/components/assets/dialog', () => {
-  const Dialog = () => <div />
-  return Dialog
-})
+const mockDialog = jest.fn()
+jest.mock('@/components/assets/dialog', () => (props) => mockDialog(props))
 
 const mockError = jest.fn()
 jest.mock('@/components/assets/notification', () => ({
@@ -24,13 +22,29 @@ jest.mock('@/api/workspace', () => ({
 }))
 
 describe('components/project/share', () => {
-  const project = { id: 'id' }
-  const workspace = { id: 'id' }
-  const organizations = []
+  const project = { id: 'id', groups: [{ id: 'id' }] }
+  const workspace = { id: 'id', groups: [{ id: 'id' }] }
+  const organizations = [
+    {
+      groups: [
+        {
+          id: 'id',
+          name: 'name',
+          users: [
+            { id: 'id1', lastname: 'lastname', firstname: 'firstname' },
+            { id: 'id2', email: 'email' }
+          ]
+        }
+      ]
+    }
+  ]
   const projectSwr = { mutateOneProject: jest.fn() }
   const workspaceSwr = { mutateOneWorkspace: jest.fn() }
 
   beforeEach(() => {
+    mockDialog.mockReset()
+    mockDialog.mockImplementation(() => <div />)
+
     mockError.mockReset()
 
     mockProjectUpdate.mockReset()
@@ -46,205 +60,170 @@ describe('components/project/share', () => {
     unmount()
   })
 
-  // test('render with workspace', () => {
-  //   wrapper.unmount()
-  //   wrapper = shallow(
-  //     <Share
-  //       workspace={workspace}
-  //       organizations={organizations}
-  //       swr={workspaceSwr}
-  //     />
-  //   )
-  //   expect(wrapper).toBeDefined()
-  // })
+  test('render with workspace', () => {
+    const { unmount } = render(
+      <Share
+        workspace={workspace}
+        organizations={organizations}
+        swr={workspaceSwr}
+      />
+    )
 
-  // test('setVisible', () => {
-  //   // Visible
-  //   wrapper.find('Button').props().onClick()
+    unmount()
+  })
 
-  //   // Not visible
-  //   wrapper.find('Dialog').props().onCancel()
-  // })
+  test('setVisible', () => {
+    mockDialog.mockImplementation((props) => (
+      <div role="Dialog" onClick={props.onCancel} />
+    ))
+    const { unmount } = render(
+      <Share project={project} organizations={organizations} swr={projectSwr} />
+    )
 
-  // test('onSelectChange', () => {
-  //   wrapper.find('ForwardRef(InternalTreeSelect)').props().onChange()
-  // })
+    const button = screen.getByRole('button')
+    fireEvent.click(button)
 
-  // test('onShare', async () => {
-  //   // Normal
-  //   await wrapper.find('Dialog').props().onOk()
-  //   expect(mockProjectUpdate).toHaveBeenCalledTimes(1)
-  //   expect(projectSwr.mutateOneProject).toHaveBeenCalledTimes(1)
-  //   expect(mockError).toHaveBeenCalledTimes(0)
+    const dialog = screen.getByRole('Dialog')
+    fireEvent.click(dialog)
 
-  //   // Error
-  //   mockProjectUpdate.mockImplementation(() => {
-  //     throw new Error()
-  //   })
-  //   await wrapper.find('Dialog').props().onOk()
-  //   expect(mockProjectUpdate).toHaveBeenCalledTimes(2)
-  //   expect(projectSwr.mutateOneProject).toHaveBeenCalledTimes(1)
-  //   expect(mockError).toHaveBeenCalledTimes(1)
-  // })
+    unmount()
+  })
 
-  // test('onShare with workspace', async () => {
-  //   wrapper.unmount()
-  //   wrapper = shallow(
-  //     <Share
-  //       workspace={workspace}
-  //       organizations={organizations}
-  //       swr={workspaceSwr}
-  //     />
-  //   )
+  test('onSelectChange', () => {
+    mockDialog.mockImplementation((props) => <div>{props.children}</div>)
+    const { unmount } = render(
+      <Share project={project} organizations={organizations} swr={projectSwr} />
+    )
 
-  //   // Normal
-  //   await wrapper.find('Dialog').props().onOk()
-  //   expect(mockWorkspaceUpdate).toHaveBeenCalledTimes(1)
-  //   expect(workspaceSwr.mutateOneWorkspace).toHaveBeenCalledTimes(1)
-  //   expect(mockError).toHaveBeenCalledTimes(0)
+    const button = screen.getByRole('button')
+    fireEvent.click(button)
 
-  //   // Error
-  //   mockWorkspaceUpdate.mockImplementation(() => {
-  //     throw new Error()
-  //   })
-  //   await wrapper.find('Dialog').props().onOk()
-  //   expect(mockWorkspaceUpdate).toHaveBeenCalledTimes(2)
-  //   expect(workspaceSwr.mutateOneWorkspace).toHaveBeenCalledTimes(1)
-  //   expect(mockError).toHaveBeenCalledTimes(1)
-  // })
+    const combobox = screen.getByRole('combobox')
+    fireEvent.change(combobox, { target: { value: 'value' } })
 
-  // // test('effect', () => {
-  // //   // Emty organizations
-  // //   wrapper.unmount()
-  // //   wrapper = mount(
-  // //     <Share project={project} organizations={organizations} swr={projectSwr} />
-  // //   )
+    unmount()
+  })
 
-  // //   // Full
-  // //   wrapper.unmount()
-  // //   wrapper = mount(
-  // //     <Share
-  // //       project={{ ...project, groups: [{ id: 'id' }] }}
-  // //       organizations={[
-  // //         {
-  // //           groups: [
-  // //             {
-  // //               id: 'id',
-  // //               users: [
-  // //                 {
-  // //                   firstname: 'firstname'
-  // //                 },
-  // //                 {
-  // //                   email: 'email'
-  // //                 }
-  // //               ]
-  // //             }
-  // //           ]
-  // //         }
-  // //       ]}
-  // //       swr={projectSwr}
-  // //     />
-  // //   )
-  // // })
+  test('onShare', async () => {
+    mockDialog.mockImplementation((props) => (
+      <div role="Dialog" onClick={props.onOk} />
+    ))
+    const { unmount } = render(
+      <Share project={project} organizations={organizations} swr={projectSwr} />
+    )
 
-  // // test('effect with workspace', () => {
-  // //   // Emty organizations
-  // //   wrapper.unmount()
-  // //   wrapper = mount(
-  // //     <Share
-  // //       workspace={workspace}
-  // //       organizations={organizations}
-  // //       swr={workspaceSwr}
-  // //     />
-  // //   )
+    const dialog = screen.getByRole('Dialog')
 
-  // //   // Full
-  // //   wrapper.unmount()
-  // //   wrapper = mount(
-  // //     <Share
-  // //       workspace={{ ...workspace, groups: [{ id: 'id' }] }}
-  // //       organizations={[
-  // //         {
-  // //           groups: [
-  // //             {
-  // //               id: 'id',
-  // //               users: [
-  // //                 {
-  // //                   firstname: 'firstname'
-  // //                 },
-  // //                 {
-  // //                   email: 'email'
-  // //                 }
-  // //               ]
-  // //             }
-  // //           ]
-  // //         }
-  // //       ]}
-  // //       swr={workspaceSwr}
-  // //     />
-  // //   )
-  // // })
+    // Normal
+    fireEvent.click(dialog)
+    await waitFor(() => expect(mockProjectUpdate).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
+      expect(projectSwr.mutateOneProject).toHaveBeenCalledTimes(1)
+    )
 
-  // test('propTypes', () => {
-  //   let res
+    // Error
+    mockProjectUpdate.mockImplementation(() => {
+      throw new Error()
+    })
+    fireEvent.click(dialog)
+    await waitFor(() => expect(mockProjectUpdate).toHaveBeenCalledTimes(2))
+    await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
 
-  //   // Project
-  //   const projectProps = Share.propTypes.project
-  //   res = projectProps({}, 'project', 'Share')
-  //   expect(res.message).toBe(
-  //     'Missing or invalid prop project supplied to Share.'
-  //   )
+    unmount()
+  })
 
-  //   res = projectProps({ project: {} }, 'project', 'Share')
-  //   expect(res.message).toBe(
-  //     'Missing or invalid prop project supplied to Share.'
-  //   )
+  test('onShare with workspace', async () => {
+    mockDialog.mockImplementation((props) => (
+      <div role="Dialog" onClick={props.onOk} />
+    ))
+    const { unmount } = render(
+      <Share
+        workspace={workspace}
+        organizations={organizations}
+        swr={workspaceSwr}
+      />
+    )
 
-  //   res = projectProps({ project: { id: 'id' } }, 'project', 'Share')
-  //   expect(res).toBe()
+    const dialog = screen.getByRole('Dialog')
 
-  //   // Workspace
-  //   const workspaceProps = Share.propTypes.workspace
-  //   res = workspaceProps({}, 'workspace', 'Share')
-  //   expect(res.message).toBe(
-  //     'Missing or invalid prop workspace supplied to Share.'
-  //   )
+    // Normal
+    fireEvent.click(dialog)
+    await waitFor(() => expect(mockWorkspaceUpdate).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
+      expect(workspaceSwr.mutateOneWorkspace).toHaveBeenCalledTimes(1)
+    )
 
-  //   res = workspaceProps({ workspace: {} }, 'workspace', 'Share')
-  //   expect(res.message).toBe(
-  //     'Missing or invalid prop workspace supplied to Share.'
-  //   )
+    // Error
+    mockWorkspaceUpdate.mockImplementation(() => {
+      throw new Error()
+    })
+    fireEvent.click(dialog)
+    await waitFor(() => expect(mockWorkspaceUpdate).toHaveBeenCalledTimes(2))
+    await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
 
-  //   res = workspaceProps({ workspace: { id: 'id' } }, 'workspace', 'Share')
-  //   expect(res).toBe()
+    unmount()
+  })
 
-  //   // SWR
-  //   const swrProps = Share.propTypes.swr
-  //   res = swrProps({}, 'swr', 'Share')
-  //   expect(res.message).toBe('Invalid prop swr supplied to Share. swr missing')
+  test('propTypes', () => {
+    let res
 
-  //   res = swrProps({ project: {}, swr: {} }, 'swr', 'Share')
-  //   expect(res.message).toBe(
-  //     'Invalid prop swr supplied to Share. mutateOneProject missing or invalid'
-  //   )
+    // Project
+    const projectProps = Share.propTypes.project
+    res = projectProps({}, 'project', 'Share')
+    expect(res.message).toBe(
+      'Missing or invalid prop project supplied to Share.'
+    )
 
-  //   res = swrProps(
-  //     { project: {}, swr: { mutateOneProject: jest.fn() } },
-  //     'swr',
-  //     'Share'
-  //   )
-  //   expect(res).toBe()
+    res = projectProps({ project: {} }, 'project', 'Share')
+    expect(res.message).toBe(
+      'Missing or invalid prop project supplied to Share.'
+    )
 
-  //   res = swrProps({ workspace: {}, swr: {} }, 'swr', 'Share')
-  //   expect(res.message).toBe(
-  //     'Invalid prop swr supplied to Share. mutateOneWorkspace missing or invalid'
-  //   )
+    res = projectProps({ project: { id: 'id' } }, 'project', 'Share')
+    expect(res).toBe()
 
-  //   res = swrProps(
-  //     { workspace: {}, swr: { mutateOneWorkspace: jest.fn() } },
-  //     'swr',
-  //     'Share'
-  //   )
-  //   expect(res).toBe()
-  // })
+    // Workspace
+    const workspaceProps = Share.propTypes.workspace
+    res = workspaceProps({}, 'workspace', 'Share')
+    expect(res.message).toBe(
+      'Missing or invalid prop workspace supplied to Share.'
+    )
+
+    res = workspaceProps({ workspace: {} }, 'workspace', 'Share')
+    expect(res.message).toBe(
+      'Missing or invalid prop workspace supplied to Share.'
+    )
+
+    res = workspaceProps({ workspace: { id: 'id' } }, 'workspace', 'Share')
+    expect(res).toBe()
+
+    // SWR
+    const swrProps = Share.propTypes.swr
+    res = swrProps({}, 'swr', 'Share')
+    expect(res.message).toBe('Invalid prop swr supplied to Share. swr missing')
+
+    res = swrProps({ project: {}, swr: {} }, 'swr', 'Share')
+    expect(res.message).toBe(
+      'Invalid prop swr supplied to Share. mutateOneProject missing or invalid'
+    )
+
+    res = swrProps(
+      { project: {}, swr: { mutateOneProject: jest.fn() } },
+      'swr',
+      'Share'
+    )
+    expect(res).toBe()
+
+    res = swrProps({ workspace: {}, swr: {} }, 'swr', 'Share')
+    expect(res.message).toBe(
+      'Invalid prop swr supplied to Share. mutateOneWorkspace missing or invalid'
+    )
+
+    res = swrProps(
+      { workspace: {}, swr: { mutateOneWorkspace: jest.fn() } },
+      'swr',
+      'Share'
+    )
+    expect(res).toBe()
+  })
 })

@@ -1,10 +1,11 @@
 import React from 'react'
-import { fireEvent, render, screen } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import Delete from '@/components/project/simulation/materials/delete'
 
+const mockDeleteButton = jest.fn()
 jest.mock('@/components/assets/button', () => ({
-  DeleteButton: 'DeleteButton'
+  DeleteButton: (props) => mockDeleteButton(props)
 }))
 
 const mockError = jest.fn()
@@ -41,11 +42,13 @@ describe('components/project/simulation/materials/delete', () => {
       }
     }
   }
-  const mutateOneSimulation = jest.fn()
-  const swr = { mutateOneSimulation }
+  const swr = { mutateOneSimulation: jest.fn() }
   const index = 0
 
   beforeEach(() => {
+    mockDeleteButton.mockReset()
+    mockDeleteButton.mockImplementation(() => <div />)
+
     mockError.mockReset()
 
     mockUnselect.mockReset()
@@ -61,26 +64,32 @@ describe('components/project/simulation/materials/delete', () => {
     unmount()
   })
 
-  // test('onDelete', async () => {
-  //   await wrapper.find('DeleteButton').props().onDelete()
-  //   expect(mockUnselect).toHaveBeenCalledTimes(1)
-  //   expect(mockUpdate).toHaveBeenCalledTimes(1)
-  //   expect(mutateOneSimulation).toHaveBeenCalledTimes(1)
-  //   expect(mockError).toHaveBeenCalledTimes(0)
+  test('onDelete', async () => {
+    mockDeleteButton.mockImplementation((props) => (
+      <div role="button" onClick={props.onDelete} />
+    ))
+    const { unmount } = render(
+      <Delete simulation={simulation} swr={swr} index={index} />
+    )
 
-  //   // Error
-  //   simulation.scheme.configuration.materials.values = [
-  //     {
-  //       selected: ['uuid']
-  //     }
-  //   ]
-  //   mockUpdate.mockImplementation(() => {
-  //     throw new Error()
-  //   })
-  //   await wrapper.find('DeleteButton').props().onDelete()
-  //   expect(mockUnselect).toHaveBeenCalledTimes(2)
-  //   expect(mockUpdate).toHaveBeenCalledTimes(2)
-  //   expect(mutateOneSimulation).toHaveBeenCalledTimes(1)
-  //   expect(mockError).toHaveBeenCalledTimes(1)
-  // })
+    const button = screen.getByRole('button')
+
+    // Normal
+    fireEvent.click(button)
+    await waitFor(() => expect(mockUnselect).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
+      expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(1)
+    )
+
+    // Error
+    mockUpdate.mockImplementation(() => {
+      throw new Error()
+    })
+    fireEvent.click(button)
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
+
+    unmount()
+  })
 })

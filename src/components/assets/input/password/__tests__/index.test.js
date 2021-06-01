@@ -1,5 +1,6 @@
 import React from 'react'
-import { fireEvent, render, screen } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
+import { Form } from 'antd'
 
 import PasswordItem from '..'
 
@@ -14,75 +15,93 @@ describe('components/assets/input/password', () => {
   })
 
   test('render', () => {
-    const { unmount } = render(<PasswordItem />)
+    const { unmount } = render(
+      <Form>
+        <PasswordItem />
+      </Form>
+    )
 
     unmount()
   })
 
-  // test('with system password', async () => {
-  //   mockSystem.mockImplementation(() => ({
-  //     allowsignup: true,
-  //     password: {
-  //       min: 8,
-  //       max: 16,
-  //       requireLetter: true,
-  //       requireNumber: true,
-  //       requireSymbol: true
-  //     }
-  //   }))
-  //   wrapper = shallow(<PasswordItem name="password" />)
+  test('with system password', async () => {
+    mockSystem.mockImplementation(() => ({
+      allowsignup: true,
+      password: {
+        min: 8,
+        max: 16,
+        requireLetter: true,
+        requireNumber: true,
+        requireSymbol: true
+      }
+    }))
+    const { unmount } = render(
+      <Form>
+        <PasswordItem inputPlaceholder="placeholder" />
+      </Form>
+    )
 
-  //   const validator = wrapper
-  //     .find({ name: 'password' })
-  //     .props()
-  //     .rules[0]().validator
+    // const input = screen.getByPlaceholderText('placeholder')
 
-  //   try {
-  //     await validator(null, '')
-  //   } catch (err) {
-  //     expect(err.message).toBe('Please enter a password')
-  //   }
+    // // Empty
+    // // userEvent.type(input, '')
 
-  //   try {
-  //     await validator(null, 'small')
-  //   } catch (err) {
-  //     expect(err.message).toBe(
-  //       'Your password is too small - Your password must contain a number - Your password must contain a symbol'
-  //     )
-  //   }
+    // // Small
+    // userEvent.type(input, 'small')
 
-  //   try {
-  //     await validator(null, 'longlonglonglonglonglong')
-  //   } catch (err) {
-  //     expect(err.message).toBe(
-  //       'Your password is too long - Your password must contain a number - Your password must contain a symbol'
-  //     )
-  //   }
+    unmount()
 
-  //   try {
-  //     await validator(null, '12345678')
-  //   } catch (err) {
-  //     expect(err.message).toBe(
-  //       'Your password must contain a letter - Your password must contain a symbol'
-  //     )
-  //   }
+    // const validator = wrapper
+    //   .find({ name: 'password' })
+    //   .props()
+    //   .rules[0]().validator
 
-  //   try {
-  //     await validator(null, 'abcdefgh')
-  //   } catch (err) {
-  //     expect(err.message).toBe(
-  //       'Your password must contain a number - Your password must contain a symbol'
-  //     )
-  //   }
+    // try {
+    //   await validator(null, '')
+    // } catch (err) {
+    //   expect(err.message).toBe('Please enter a password')
+    // }
 
-  //   try {
-  //     await validator(null, 'abcd1234')
-  //   } catch (err) {
-  //     expect(err.message).toBe('Your password must contain a symbol')
-  //   }
+    // try {
+    //   await validator(null, 'small')
+    // } catch (err) {
+    //   expect(err.message).toBe(
+    //     'Your password is too small - Your password must contain a number - Your password must contain a symbol'
+    //   )
+    // }
 
-  //   await validator(null, 'abcd1234&')
-  // })
+    // try {
+    //   await validator(null, 'longlonglonglonglonglong')
+    // } catch (err) {
+    //   expect(err.message).toBe(
+    //     'Your password is too long - Your password must contain a number - Your password must contain a symbol'
+    //   )
+    // }
+
+    // try {
+    //   await validator(null, '12345678')
+    // } catch (err) {
+    //   expect(err.message).toBe(
+    //     'Your password must contain a letter - Your password must contain a symbol'
+    //   )
+    // }
+
+    // try {
+    //   await validator(null, 'abcdefgh')
+    // } catch (err) {
+    //   expect(err.message).toBe(
+    //     'Your password must contain a number - Your password must contain a symbol'
+    //   )
+    // }
+
+    // try {
+    //   await validator(null, 'abcd1234')
+    // } catch (err) {
+    //   expect(err.message).toBe('Your password must contain a symbol')
+    // }
+
+    // await validator(null, 'abcd1234&')
+  })
 
   // test('without system password', async () => {
   //   mockSystem.mockImplementation(() => ({

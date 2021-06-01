@@ -73,6 +73,9 @@ const Edit = ({ disabled, material, simulation, part, swr, close }) => {
       // Local
       swr.mutateOneSimulation(newSimulation)
 
+      // Loading
+      setLoading(false)
+
       // Close
       close()
     } catch (err) {

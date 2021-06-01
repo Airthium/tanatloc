@@ -1,5 +1,5 @@
 import React from 'react'
-import { fireEvent, render, screen } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import Edit from '@/components/project/simulation/materials/edit'
 
@@ -28,8 +28,7 @@ describe('components/project/simulation/materials/edit', () => {
     }
   }
   const part = { solids: [{ uuid: 'uuid1' }, { uuid: 'uuid2' }] }
-  const mutateOneSimulation = jest.fn()
-  const swr = { mutateOneSimulation }
+  const swr = { mutateOneSimulation: jest.fn() }
   const close = jest.fn()
 
   beforeEach(() => {
@@ -55,22 +54,36 @@ describe('components/project/simulation/materials/edit', () => {
     unmount()
   })
 
-  // test('onEdit', async () => {
-  //   // Normal
-  //   await wrapper.find('Button').props().onClick()
-  //   expect(mockUpdate).toHaveBeenCalledTimes(1)
-  //   expect(mutateOneSimulation).toHaveBeenCalledTimes(1)
-  //   expect(close).toHaveBeenCalledTimes(1)
-  //   expect(mockError).toHaveBeenCalledTimes(0)
+  test('onEdit', async () => {
+    const { unmount } = render(
+      <Edit
+        disabled={false}
+        material={material}
+        simulation={simulation}
+        part={part}
+        swr={swr}
+        close={close}
+      />
+    )
 
-  //   // Error
-  //   mockUpdate.mockImplementation(() => {
-  //     throw new Error()
-  //   })
-  //   await wrapper.find('Button').props().onClick()
-  //   expect(mockUpdate).toHaveBeenCalledTimes(2)
-  //   expect(mutateOneSimulation).toHaveBeenCalledTimes(1)
-  //   expect(close).toHaveBeenCalledTimes(1)
-  //   expect(mockError).toHaveBeenCalledTimes(1)
-  // })
+    const button = screen.getByRole('button')
+
+    // Normal
+    fireEvent.click(button)
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
+      expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(1)
+    )
+    await waitFor(() => expect(close).toHaveBeenCalledTimes(1))
+
+    // Error
+    mockUpdate.mockImplementation(() => {
+      throw new Error()
+    })
+    fireEvent.click(button)
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
+    await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
+
+    unmount()
+  })
 })

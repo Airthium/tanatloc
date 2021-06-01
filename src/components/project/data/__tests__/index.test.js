@@ -4,7 +4,7 @@ import { fireEvent, render, screen } from '@testing-library/react'
 import Data from '..'
 
 jest.mock('@/lib/utils', () => ({
-  stringToColor: () => {}
+  stringToColor: () => jest.fn()
 }))
 
 const mockSimulation = jest.fn()
@@ -26,131 +26,99 @@ describe('components/project/data', () => {
     unmount()
   })
 
-  // test('setVisible', () => {
-  //   wrapper.find('Button').at(0).props().onClick()
-  //   expect(wrapper.find('DrawerWrapper').props().visible).toBe(true)
+  test('setVisible', () => {
+    const { unmount } = render(<Data simulation={simulation} />)
 
-  //   wrapper.find('DrawerWrapper').props().onClose()
-  //   expect(wrapper.find('DrawerWrapper').props().visible).toBe(false)
-  // })
+    const button = screen.getByRole('button')
+    fireEvent.click(button)
 
-  // // test('without data', () => {
-  // //   wrapper.unmount()
-  // //   wrapper = mount(<Data simulation={simulation} />)
-  // //   expect(wrapper).toBeDefined()
-  // // })
+    const drawer = screen.getByRole('button', { name: 'Close' })
+    fireEvent.click(drawer)
 
-  // // test('with data', () => {
-  // //   wrapper.unmount()
-  // //   mockSimulation.mockImplementation(() => ({
-  // //     tasks: [
-  // //       {
-  // //         datas: [
-  // //           {
-  // //             name: 'data name',
-  // //             x: 0,
-  // //             y: 0
-  // //           },
-  // //           {
-  // //             name: 'data name',
-  // //             x: 1,
-  // //             y: 1
-  // //           },
-  // //           {
-  // //             name: 'data name 2',
-  // //             x: 0,
-  // //             y: 0
-  // //           },
-  // //           {
-  // //             name: 'data name 2',
-  // //             x: 2,
-  // //             y: 2
-  // //           }
-  // //         ]
-  // //       },
-  // //       {}
-  // //     ]
-  // //   }))
+    unmount()
+  })
 
-  // //   wrapper = mount(<Data simulation={simulation} />)
-  // //   expect(wrapper).toBeDefined()
+  test('with data', () => {
+    mockSimulation.mockImplementation(() => ({
+      tasks: [
+        {
+          datas: [
+            {
+              name: 'data name',
+              x: 0,
+              y: 0
+            },
+            {
+              name: 'data name',
+              x: 1,
+              y: 1
+            },
+            {
+              name: 'data name 2',
+              x: 0,
+              y: 0
+            },
+            {
+              name: 'data name 2',
+              x: 2,
+              y: 2
+            }
+          ]
+        },
+        {}
+      ]
+    }))
 
-  // //   // Open drawer
-  // //   act(() => wrapper.find('Button').at(0).props().onClick())
-  // //   wrapper.update()
+    const { unmount } = render(<Data simulation={simulation} />)
 
-  // //   // On check
-  // //   act(() =>
-  // //     wrapper
-  // //       .find('Checkbox')
-  // //       .at(0)
-  // //       .props()
-  // //       .onChange({ target: { checked: true } })
-  // //   )
-  // //   wrapper.update()
+    // Visible
+    const button = screen.getByRole('button')
+    fireEvent.click(button)
 
-  // //   act(() =>
-  // //     wrapper
-  // //       .find('Checkbox')
-  // //       .at(1)
-  // //       .props()
-  // //       .onChange({ target: { checked: true } })
-  // //   )
-  // //   wrapper.update()
+    // Checkbox
+    const checkboxes = screen.getAllByRole('checkbox')
+    fireEvent.click(checkboxes[0])
 
-  // //   act(() =>
-  // //     wrapper
-  // //       .find('Checkbox')
-  // //       .at(0)
-  // //       .props()
-  // //       .onChange({ target: { checked: false } })
-  // //   )
-  // //   wrapper.update()
-  // // })
+    unmount()
+  })
 
-  // // test('exportCSV', () => {
-  // //   wrapper.unmount()
-  // //   mockSimulation.mockImplementation(() => ({
-  // //     tasks: [
-  // //       {
-  // //         datas: [
-  // //           {
-  // //             name: 'data name',
-  // //             x: 0,
-  // //             y: 0
-  // //           },
-  // //           {
-  // //             name: 'data name',
-  // //             x: 1,
-  // //             y: 1
-  // //           },
-  // //           {
-  // //             name: 'data name 2',
-  // //             x: 0,
-  // //             y: 0
-  // //           },
-  // //           {
-  // //             name: 'data name 2',
-  // //             x: 2,
-  // //             y: 2
-  // //           }
-  // //         ]
-  // //       },
-  // //       {}
-  // //     ]
-  // //   }))
+  test('exportCSV', () => {
+    mockSimulation.mockImplementation(() => ({
+      tasks: [
+        {
+          datas: [
+            {
+              name: 'data name',
+              x: 0,
+              y: 0
+            },
+            {
+              name: 'data name 2',
+              x: 2,
+              y: 2
+            }
+          ]
+        },
+        {}
+      ]
+    }))
 
-  // //   wrapper = mount(<Data simulation={simulation} />)
-  // //   expect(wrapper).toBeDefined()
+    const { unmount } = render(<Data simulation={simulation} />)
 
-  // //   // Open drawer
-  // //   act(() => wrapper.find('Button').at(0).props().onClick())
-  // //   wrapper.update()
+    window.URL = {
+      createObjectURL: jest.fn()
+    }
 
-  // //   // Export CSV
-  // //   window.URL = {
-  // //     createObjectURL: () => {}
-  // //   }
-  // //   wrapper.find('Button').at(1).props().onClick()
-  // // })
+    // Visible
+    const button = screen.getByRole('button')
+    fireEvent.click(button)
+
+    // Checkbox
+    const exportCSV = screen.getByRole('button', {
+      name: 'file-text Export CSV'
+    })
+    fireEvent.click(exportCSV)
+
+    unmount()
+  })
 })

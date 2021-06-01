@@ -1,5 +1,5 @@
 import React from 'react'
-import { fireEvent, render, screen } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import Add from '@/components/project/simulation/boundaryConditions/add'
 
@@ -32,8 +32,7 @@ describe('components/project/simulation/boundaryConditions/add', () => {
     selected: ['uuid1', 'uuid3']
   }
   const part = { faces: [{ uuid: 'uuid1' }, { uuid: 'uuid2' }] }
-  const mutateOneSimulation = jest.fn()
-  const swr = { mutateOneSimulation }
+  const swr = { mutateOneSimulation: jest.fn() }
   const close = jest.fn()
 
   beforeEach(() => {
@@ -59,36 +58,35 @@ describe('components/project/simulation/boundaryConditions/add', () => {
     unmount()
   })
 
-  // test('onAdd', async () => {
-  //   await wrapper.find('Button').props().onClick()
-  //   expect(mockUpdate).toHaveBeenCalledTimes(1)
-  //   expect(mutateOneSimulation).toHaveBeenCalledTimes(1)
-  //   expect(close).toHaveBeenCalledTimes(1)
-  //   expect(mockError).toHaveBeenCalledTimes(0)
+  test('onAdd', async () => {
+    const { unmount } = render(
+      <Add
+        disabled={false}
+        simulation={simulation}
+        boundaryCondition={boundaryCondition}
+        part={part}
+        swr={swr}
+        close={close}
+      />
+    )
 
-  //   // Without values
-  //   wrapper.unmount()
-  //   simulation.scheme.configuration.boundaryConditions.key = {}
-  //   wrapper = shallow(
-  //     <Add
-  //       disabled={false}
-  //       simulation={simulation}
-  //       boundaryCondition={boundaryCondition}
-  //       part={part}
-  //       swr={swr}
-  //       close={close}
-  //     />
-  //   )
-  //   await wrapper.find('Button').props().onClick()
+    const button = screen.getByRole('button')
 
-  //   // Error
-  //   mockUpdate.mockImplementation(() => {
-  //     throw new Error()
-  //   })
-  //   await wrapper.find('Button').props().onClick()
-  //   expect(mockUpdate).toHaveBeenCalledTimes(3)
-  //   expect(mutateOneSimulation).toHaveBeenCalledTimes(2)
-  //   expect(close).toHaveBeenCalledTimes(2)
-  //   expect(mockError).toHaveBeenCalledTimes(1)
-  // })
+    // Normal
+    fireEvent.click(button)
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
+      expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(1)
+    )
+
+    // Error
+    mockUpdate.mockImplementation(() => {
+      throw new Error()
+    })
+    fireEvent.click(button)
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
+    await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
+
+    unmount()
+  })
 })

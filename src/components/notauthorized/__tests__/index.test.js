@@ -20,18 +20,17 @@ describe('components/notfound', () => {
 
   test('render', () => {
     const { unmount } = render(<NotAuthorized />)
+    expect(mockPrefetch).toHaveBeenCalledTimes(1)
+
     unmount()
   })
 
-  // test('onClick', () => {
-  //   wrapper.find({ type: 'link' }).props().onClick()
-  //   expect(mockPush).toHaveBeenCalledTimes(1)
-  // })
+  test('goBack', () => {
+    const { unmount } = render(<NotAuthorized />)
+    const button = screen.getByRole('button')
+    fireEvent.click(button)
+    expect(mockPush).toHaveBeenCalledTimes(1)
 
-  // // test('effect', () => {
-  // //   wrapper.unmount()
-
-  // //   wrapper = mount(<NotAuthorized />)
-  // //   expect(mockPrefetch).toHaveBeenCalledTimes(1)
-  // // })
+    unmount()
+  })
 })

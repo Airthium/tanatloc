@@ -1,14 +1,12 @@
 import React from 'react'
-import { fireEvent, render, screen } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import Delete from '..'
 
-jest.mock('@/components/assets/dialog', () => {
-  const DeleteDialog = () => <div />
-  return {
-    DeleteDialog
-  }
-})
+const mockDeleteDialog = jest.fn()
+jest.mock('@/components/assets/dialog', () => ({
+  DeleteDialog: (props) => mockDeleteDialog(props)
+}))
 
 const mockError = jest.fn()
 jest.mock('@/components/assets/notification', () => ({
@@ -30,6 +28,9 @@ describe('componenets/assets/organization/users/delete', () => {
   }
 
   beforeEach(() => {
+    mockDeleteDialog.mockReset()
+    mockDeleteDialog.mockImplementation(() => <div />)
+
     mockError.mockReset()
 
     mockUpdate.mockReset()
@@ -49,125 +50,139 @@ describe('componenets/assets/organization/users/delete', () => {
     unmount()
   })
 
-  // test('with user data', () => {
-  //   wrapper.unmount()
-  //   wrapper = shallow(
-  //     <Delete
-  //       disabled={disabled}
-  //       user={{
-  //         ...user,
-  //         firstname: 'firstname'
-  //       }}
-  //       organization={organization}
-  //       dBkey={dBkey}
-  //       swr={swr}
-  //     />
-  //   )
-  //   expect(wrapper).toBeDefined()
+  test('with user data', () => {
+    const { unmount } = render(
+      <Delete
+        disabled={disabled}
+        user={{ ...user, firstname: 'firstname', lastname: 'lastname' }}
+        organization={organization}
+        dBkey={dBkey}
+        swr={swr}
+      />
+    )
 
-  //   wrapper.unmount()
-  //   wrapper = shallow(
-  //     <Delete
-  //       disabled={disabled}
-  //       user={{
-  //         ...user,
-  //         lastname: 'lastname'
-  //       }}
-  //       organization={organization}
-  //       dBkey={dBkey}
-  //       swr={swr}
-  //     />
-  //   )
-  //   expect(wrapper).toBeDefined()
-  // })
+    unmount()
+  })
 
-  // test('setVisible', () => {
-  //   // Visible
-  //   wrapper.find('Button').props().onClick()
+  test('setVisible', () => {
+    mockDeleteDialog.mockImplementation((props) => (
+      <div role="DeleteDialog" onClick={props.onCancel} />
+    ))
+    const { unmount } = render(
+      <Delete
+        disabled={disabled}
+        user={user}
+        organization={organization}
+        dBkey={dBkey}
+        swr={swr}
+      />
+    )
 
-  //   // Not visible
-  //   wrapper.find('DeleteDialog').props().onCancel()
-  // })
+    const button = screen.getByRole('button')
+    fireEvent.click(button)
 
-  // test('onDelete', async () => {
-  //   // Normal
-  //   await wrapper.find('DeleteDialog').props().onOk()
-  //   expect(mockUpdate).toHaveBeenCalledTimes(1)
-  //   expect(swr.mutateOneOrganization).toHaveBeenCalledTimes(1)
-  //   expect(mockError).toHaveBeenCalledTimes(0)
+    const dialog = screen.getByRole('DeleteDialog')
+    fireEvent.click(dialog)
 
-  //   // Error
-  //   mockUpdate.mockImplementation(() => {
-  //     throw new Error()
-  //   })
-  //   await wrapper.find('DeleteDialog').props().onOk()
-  //   expect(mockUpdate).toHaveBeenCalledTimes(2)
-  //   expect(swr.mutateOneOrganization).toHaveBeenCalledTimes(1)
-  //   expect(mockError).toHaveBeenCalledTimes(1)
-  // })
+    unmount()
+  })
 
-  // test('propTypes', () => {
-  //   let res
-  //   const organizationProp = Delete.propTypes.organization
+  test('onDelete', async () => {
+    mockDeleteDialog.mockImplementation((props) => (
+      <div role="DeleteDialog" onClick={props.onOk} />
+    ))
+    const { unmount } = render(
+      <Delete
+        disabled={disabled}
+        user={user}
+        organization={organization}
+        dBkey={dBkey}
+        swr={swr}
+      />
+    )
 
-  //   res = organizationProp({}, 'organization', 'Delete')
-  //   expect(res.message).toBe(
-  //     'Invalid prop organization supplied to Delete. organization missing'
-  //   )
+    const dialog = screen.getByRole('DeleteDialog')
 
-  //   res = organizationProp({ organization: {} }, 'organization', 'Delete')
-  //   expect(res.message).toBe(
-  //     'Invalid prop organization supplied to Delete. id missing or invalid'
-  //   )
+    // Normal
+    fireEvent.click(dialog)
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
+      expect(swr.mutateOneOrganization).toHaveBeenCalledTimes(1)
+    )
 
-  //   res = organizationProp(
-  //     { organization: { id: 'id' }, dBkey: 'owners' },
-  //     'organization',
-  //     'Delete'
-  //   )
-  //   expect(res.message).toBe(
-  //     'Invalid prop organization supplied to Delete. owners missing or invalid'
-  //   )
+    // Error
+    mockUpdate.mockImplementation(() => {
+      throw new Error()
+    })
+    fireEvent.click(dialog)
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
+    await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
 
-  //   res = organizationProp(
-  //     { organization: { id: 'id', owners: {} }, dBkey: 'owners' },
-  //     'organization',
-  //     'Delete'
-  //   )
-  //   expect(res.message).toBe(
-  //     'Invalid prop organization supplied to Delete. owners missing or invalid'
-  //   )
+    unmount()
+  })
 
-  //   res = organizationProp(
-  //     { organization: { id: 'id', owners: [] }, dBkey: 'owners' },
-  //     'organization',
-  //     'Delete'
-  //   )
-  //   expect(res).toBe()
+  test('propTypes', () => {
+    let res
+    const organizationProp = Delete.propTypes.organization
 
-  //   res = organizationProp(
-  //     { organization: { id: 'id' }, dBkey: 'users' },
-  //     'organization',
-  //     'Delete'
-  //   )
-  //   expect(res.message).toBe(
-  //     'Invalid prop organization supplied to Delete. users missing or invalid'
-  //   )
+    res = organizationProp({}, 'organization', 'Delete')
+    expect(res.message).toBe(
+      'Invalid prop organization supplied to Delete. organization missing'
+    )
 
-  //   res = organizationProp(
-  //     { organization: { id: 'id', users: {} }, dBkey: 'users' },
-  //     'organization',
-  //     'Delete'
-  //   )
-  //   expect(res.message).toBe(
-  //     'Invalid prop organization supplied to Delete. users missing or invalid'
-  //   )
+    res = organizationProp({ organization: {} }, 'organization', 'Delete')
+    expect(res.message).toBe(
+      'Invalid prop organization supplied to Delete. id missing or invalid'
+    )
 
-  //   res = organizationProp(
-  //     { organization: { id: 'id', users: [] }, dBkey: 'users' },
-  //     'organization',
-  //     'Delete'
-  //   )
-  //   expect(res).toBe()
-  // })
+    res = organizationProp(
+      { organization: { id: 'id' }, dBkey: 'owners' },
+      'organization',
+      'Delete'
+    )
+    expect(res.message).toBe(
+      'Invalid prop organization supplied to Delete. owners missing or invalid'
+    )
+
+    res = organizationProp(
+      { organization: { id: 'id', owners: {} }, dBkey: 'owners' },
+      'organization',
+      'Delete'
+    )
+    expect(res.message).toBe(
+      'Invalid prop organization supplied to Delete. owners missing or invalid'
+    )
+
+    res = organizationProp(
+      { organization: { id: 'id', owners: [] }, dBkey: 'owners' },
+      'organization',
+      'Delete'
+    )
+    expect(res).toBe()
+
+    res = organizationProp(
+      { organization: { id: 'id' }, dBkey: 'users' },
+      'organization',
+      'Delete'
+    )
+    expect(res.message).toBe(
+      'Invalid prop organization supplied to Delete. users missing or invalid'
+    )
+
+    res = organizationProp(
+      { organization: { id: 'id', users: {} }, dBkey: 'users' },
+      'organization',
+      'Delete'
+    )
+    expect(res.message).toBe(
+      'Invalid prop organization supplied to Delete. users missing or invalid'
+    )
+
+    res = organizationProp(
+      { organization: { id: 'id', users: [] }, dBkey: 'users' },
+      'organization',
+      'Delete'
+    )
+    expect(res).toBe()
+  })
 })

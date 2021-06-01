@@ -17,18 +17,9 @@ jest.mock('@/components/assets/notification', () => ({
   Error: () => mockError()
 }))
 
-jest.mock('../users', () => {
-  const Users = () => <div />
-  return Users
-})
-jest.mock('../groups', () => {
-  const Groups = () => <div />
-  return Groups
-})
-jest.mock('../registration', () => {
-  const Registration = () => <div />
-  return Registration
-})
+jest.mock('../users', () => () => <div />)
+// jest.mock('../groups', () => () => <div />)
+jest.mock('../registration', () => () => <div />)
 
 const mockUsers = jest.fn()
 const mockAddOneUser = jest.fn()
@@ -68,26 +59,32 @@ describe('components/administration', () => {
     unmount()
   })
 
-  // test('onChange', () => {
-  //   wrapper.find('Tabs').props().onChange()
-  //   expect(mockReplace).toHaveBeenCalledTimes(1)
-  // })
+  test('onChange', () => {
+    const { unmount } = render(<Administration />)
+    // Users
+    const users = screen.getByRole('tab', { name: 'Users' })
+    fireEvent.click(users)
+    expect(mockReplace).toHaveBeenCalledTimes(1)
+    // Registration
+    const registration = screen.getByRole('tab', { name: 'Registration' })
+    fireEvent.click(registration)
+    expect(mockReplace).toHaveBeenCalledTimes(2)
 
-  // test('without query', () => {
-  //   wrapper.unmount()
-  //   mockQuery.mockImplementation(() => ({}))
-  //   wrapper = shallow(<Administration />)
-  // })
+    unmount()
+  })
 
-  // // test('effect', () => {
-  // //   wrapper.unmount()
-  // //   wrapper = mount(<Administration />)
-  // //   expect(wrapper).toBeDefined()
+  test('without query', () => {
+    mockQuery.mockImplementation(() => ({}))
+    const { unmount } = render(<Administration />)
 
-  // //   // With error
-  // //   wrapper.unmount()
-  // //   mockErrorUser.mockImplementation(() => ({ message: 'Error' }))
-  // //   wrapper = mount(<Administration />)
-  // //   expect(mockError).toHaveBeenCalledTimes(1)
-  // // })
+    unmount()
+  })
+
+  test('error', () => {
+    mockErrorUser.mockImplementation(() => true)
+    const { unmount } = render(<Administration />)
+    expect(mockError).toHaveBeenCalledTimes(1)
+
+    unmount()
+  })
 })

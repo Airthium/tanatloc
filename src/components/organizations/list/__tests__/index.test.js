@@ -2,7 +2,6 @@ import React from 'react'
 import { fireEvent, render, screen } from '@testing-library/react'
 
 import List from '..'
-import { fixControlledValue } from 'antd/lib/input/Input'
 
 jest.mock('../../delete', () => {
   const Delete = () => <div />
@@ -73,28 +72,10 @@ describe('components/organizations/list', () => {
     fireEvent.click(button)
     expect(setOrganization).toHaveBeenCalledTimes(1)
 
-    const sorter = screen.getByRole('img')
-    fireEvent.click(sorter)
+    // Sorter
+    // const sorter = screen.getByRole('th')
+    // fireEvent.click(sorter)
 
     unmount()
-    // const columns = wrapper.find('Table').props().columns
-
-    // // Sorter
-    // columns[0].sorter(organizations[0], organizations[1])
-
-    // // Renders
-    // columns[1].render(organizations[0].owners)
-    // expect(mockUserToAvatar).toHaveBeenCalledTimes(1)
-    // columns[2].render(organizations[0].users)
-    // expect(mockUserToAvatar).toHaveBeenCalledTimes(2)
-    // columns[3].render(organizations[0].groups)
-    // expect(mockGroupToAvatar).toHaveBeenCalledTimes(1)
-
-    // const actions = columns[4].render(organizations[0])
-    // const button = actions.props.children[0]
-    // // Set organization
-    // button.props.onClick()
-
-    // columns[4].render(organizations[1])
   })
 })

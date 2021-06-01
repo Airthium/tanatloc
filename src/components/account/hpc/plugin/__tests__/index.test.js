@@ -1,5 +1,5 @@
 import React from 'react'
-import { render, screen } from '@testing-library/react'
+import { render } from '@testing-library/react'
 
 import Plugin from '..'
 
@@ -8,15 +8,9 @@ jest.mock('@/components/assets/notification', () => ({
   Error: () => mockError()
 }))
 
-jest.mock('../dialog', () => {
-  const PluginDialog = () => <div role="PluginDialog" />
-  return PluginDialog
-})
+jest.mock('../dialog', () => () => <div role="PluginDialog" />)
 
-jest.mock('../list', () => {
-  const List = () => <div role="List" />
-  return List
-})
+jest.mock('../list', () => () => <div role="List" />)
 
 const mockPlugins = jest.fn()
 const mockAddOnePlugin = jest.fn()
@@ -47,6 +41,7 @@ describe('component/account/hpc/plugin', () => {
     mockAddOnePlugin.mockReset()
     mockDelOnePlugin.mockReset()
     mockMutateOnePlugin.mockReset()
+    mockErrorPlugins.mockReset()
     mockLoadingPlugins.mockReset()
   })
 
@@ -56,21 +51,18 @@ describe('component/account/hpc/plugin', () => {
     unmount()
   })
 
-  // test('loading', () => {
-  //   wrapper.unmount()
-  //   mockLoadingPlugins.mockImplementation(() => true)
-  //   wrapper = shallow(<Plugin plugin={plugin} />)
-  //   expect(wrapper.find('Spin').length).toBe(1)
-  // })
+  test('loading', () => {
+    mockLoadingPlugins.mockImplementation(() => true)
+    const { unmount } = render(<Plugin plugin={plugin} />)
 
-  // test('effect', () => {
-  //   wrapper.unmount()
-  //   wrapper = mount(<Plugin plugin={plugin} />)
+    unmount()
+  })
 
-  //   // With error
-  //   mockErrorPlugins.mockImplementation(() => ({ message: 'Error' }))
-  //   wrapper.unmount()
-  //   wrapper = mount(<Plugin plugin={plugin} />)
-  //   expect(mockError).toHaveBeenCalledTimes(1)
-  // })
+  test('error', () => {
+    mockErrorPlugins.mockImplementation(() => true)
+    const { unmount } = render(<Plugin plugin={plugin} />)
+    expect(mockError).toHaveBeenCalledTimes(1)
+
+    unmount()
+  })
 })

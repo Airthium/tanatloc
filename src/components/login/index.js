@@ -86,7 +86,7 @@ const Login = () => {
     } catch (err) {
       setInternalErr(true)
       setChecking(false)
-      Error(errors.INTERNAL_ERROR, err)
+      Error(errors.INTERNAL_ERROR, err, false)
     }
   }
 

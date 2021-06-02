@@ -8,20 +8,23 @@ import Sentry from '@/lib/sentry'
  * @memberof module:components/assets/notification
  * @param {string} title Title
  * @param {Object} err Error
+ * @param {bool?} display Display notification [default: true]
  */
-const Error = (title, err) => {
-  notification.error({
-    message: title,
-    description: <Typography.Text code={true}>{err.message}</Typography.Text>,
-    duration: 10
-  })
+const Error = (title, err, display = true) => {
+  display &&
+    notification.error({
+      message: title,
+      description: <Typography.Text code={true}>{err.message}</Typography.Text>,
+      duration: 10
+    })
   console.error(err)
   Sentry.captureException(err)
 }
 
 Error.propTypes = {
   title: PropTypes.string.isRequired,
-  err: PropTypes.object.isRequired
+  err: PropTypes.object.isRequired,
+  display: PropTypes.bool
 }
 
 export default Error

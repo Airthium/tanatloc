@@ -93,7 +93,7 @@ const Signup = () => {
     } catch (err) {
       setInternalError(true)
       setChecking(false)
-      ErrorNotification(errors.INTERNAL_ERROR, err)
+      ErrorNotification(errors.INTERNAL_ERROR, err, false)
     }
   }
 

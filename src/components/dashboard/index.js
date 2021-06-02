@@ -176,8 +176,16 @@ const Dashboard = () => {
    * @param {Object} data { keyPath }
    */
   const onSelect = ({ keyPath }) => {
-    const key = keyPath[0]
-    const subKey = keyPath[1]
+    let key = keyPath[0]
+    let subKey = keyPath[1]
+
+    // TODO temp fix (bug in antd)
+    let tmp
+    if (subKey) {
+      tmp = subKey
+      subKey = key
+      key = tmp
+    }
 
     // In a submenu
     if (key === menuItems.workspaces.key || key === menuItems.shared.key) {

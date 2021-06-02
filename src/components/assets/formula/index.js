@@ -24,7 +24,7 @@ const Formula = ({
     defaultChecked !== undefined ? !defaultChecked : false
   )
   const [autoSave, setAutoSave] = useState(false)
-  const [autoSaveDisabled, setAutoSaveDisabled] = useState(true)
+  const [saving, setSaving] = useState(true)
 
   // Units LaTeX
   useEffect(() => {
@@ -38,7 +38,7 @@ const Formula = ({
   const onCheckboxChange = (event) => {
     const currentChecked = event.target.checked
     setInternalChecked(currentChecked)
-    setAutoSaveDisabled(false)
+    setSaving(true)
 
     onCheckedChange(currentChecked)
 
@@ -52,7 +52,7 @@ const Formula = ({
   const onInputChange = (event) => {
     const currentValue = event.target.value
     setInternalValue(currentValue)
-    setAutoSaveDisabled(false)
+    setSaving(true)
 
     onValueChangeDelayed(currentValue)
   }
@@ -65,7 +65,7 @@ const Formula = ({
     if (autoSave) clearTimeout(autoSave)
     const id = setTimeout(() => {
       onValueChange(value)
-      setAutoSaveDisabled(true)
+      setSaving(false)
     }, saveDelay)
     setAutoSave(id)
   }
@@ -85,7 +85,7 @@ const Formula = ({
         addonAfter={
           <Space>
             unit
-            {autoSaveDisabled ? (
+            {saving ? (
               <CheckCircleOutlined style={{ color: 'green' }} />
             ) : (
               <LoadingOutlined spin style={{ color: 'orange' }} />

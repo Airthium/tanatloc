@@ -25,20 +25,32 @@ describe('components/assets/formula', () => {
     unmount()
   })
 
-  // test('with checkbox', () => {
-  //   wrapper.unmount()
-  //   wrapper = shallow(
-  //     <Formula
-  //       defaultValue="value"
-  //       defaultChecked={false}
-  //       onValueChange={onValueChange}
-  //       onCheckedChange={onCheckedChange}
-  //     />
-  //   )
-  //   expect(wrapper).toBeDefined()
+  test('with checkbox', () => {
+    const { unmount } = render(
+      <Formula
+        defaultValue="value"
+        defaultChecked={false}
+        onValueChange={onValueChange}
+        onCheckedChange={onCheckedChange}
+      />
+    )
 
-  //   expect(wrapper.find('Checkbox').length).toBe(1)
-  // })
+    const checkbox = screen.getByRole('checkbox')
+    fireEvent.click(checkbox)
+
+    unmount()
+  })
+
+  test('input change', () => {
+    const { unmount } = render(
+      <Formula defaultValue="value" onValueChange={onValueChange} />
+    )
+
+    const input = screen.getByRole('textbox')
+    fireEvent.change(input, { target: { value: 'test' } })
+
+    unmount()
+  })
 
   // test('onCheckboxChange', () => {
   //   wrapper.unmount()

@@ -1,5 +1,5 @@
 import React from 'react'
-import { fireEvent, render, screen } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import Dialog from '@/components/assets/dialog'
 
@@ -8,6 +8,7 @@ jest.mock('../delete')
 jest.unmock('antd')
 import antd from 'antd'
 
+const mockSetFieldsValue = jest.fn()
 const mockResetFields = jest.fn()
 const mockOnOk = jest.fn()
 const mockOnCancel = jest.fn()
@@ -20,20 +21,20 @@ describe('components/assets/dialog', () => {
       {
         name: 'name',
         getInternalHooks: () => ({
-          dispatch: () => {},
-          registerField: () => {},
-          useSubscribe: () => {},
-          setInitialValues: () => {},
-          setCallbacks: () => {},
-          setValidateMessages: () => {},
-          getFields: () => {},
-          setPreserve: () => {}
+          dispatch: jest.fn(),
+          registerField: jest.fn(),
+          useSubscribe: jest.fn(),
+          setInitialValues: jest.fn(),
+          setCallbacks: jest.fn(),
+          setValidateMessages: jest.fn(),
+          getFields: jest.fn(),
+          setPreserve: jest.fn()
         }),
         resetFields: () => mockResetFields(),
-        setFieldsValue: () => ({}),
+        setFieldsValue: () => mockSetFieldsValue(),
         validateFields: async () => ({}),
         __INTERNAL__: {
-          itemRef: () => {}
+          itemRef: jest.fn()
         }
       }
     ]
@@ -55,70 +56,77 @@ describe('components/assets/dialog', () => {
     unmount()
   })
 
-  // test('onCancel', () => {
-  //   wrapper.find('Modal').props().onCancel()
-  //   expect(mockResetFields).toHaveBeenCalledTimes(1)
-  //   expect(mockOnCancel).toHaveBeenCalledTimes(1)
-  // })
+  test('onCancel', () => {
+    const { unmount } = render(
+      <Dialog
+        title="title"
+        visible={true}
+        onCancel={mockOnCancel}
+        onOk={mockOnOk}
+        loading={false}
+      >
+        Test
+      </Dialog>
+    )
 
-  // test('onOk', async () => {
-  //   // Normal
-  //   await wrapper.find('Modal').props().onOk()
-  //   expect(mockOnOk).toHaveBeenCalledTimes(1)
-  //   expect(mockResetFields).toHaveBeenCalledTimes(1)
+    const cancel = screen.getByRole('button', { name: 'Cancel' })
+    fireEvent.click(cancel)
+    expect(mockOnCancel).toHaveBeenCalledTimes(1)
 
-  //   // Error
-  //   wrapper.unmount()
-  //   antd.Form.useForm = () => [
-  //     {
-  //       validateFields: async () => {
-  //         throw new Error()
-  //       },
-  //       resetFields: () => mockResetFields()
-  //     }
-  //   ]
-  //   wrapper = shallow(
-  //     <Dialog
-  //       title="title"
-  //       visible={false}
-  //       onCancel={mockOnCancel}
-  //       onOk={mockOnOk}
-  //       loading={false}
-  //     >
-  //       Test
-  //     </Dialog>
-  //   )
-  //   await wrapper.find('Modal').props().onOk()
-  // })
+    unmount()
+  })
 
-  // // test('effect', () => {
-  // //   wrapper.unmount()
-  // //   wrapper = mount(
-  // //     <Dialog
-  // //       title="title"
-  // //       visible={false}
-  // //       onCancel={mockOnCancel}
-  // //       onOk={mockOnOk}
-  // //       loading={false}
-  // //     >
-  // //       Test
-  // //     </Dialog>
-  // //   )
-  // //   expect(wrapper).toBeDefined()
+  test('onOk', async () => {
+    const { unmount } = render(
+      <Dialog
+        title="title"
+        visible={true}
+        onCancel={mockOnCancel}
+        onOk={mockOnOk}
+        loading={false}
+      >
+        Test
+      </Dialog>
+    )
 
-  // //   wrapper.unmount()
-  // //   wrapper = mount(
-  // //     <Dialog
-  // //       title="title"
-  // //       visible={true}
-  // //       initialValues={{}}
-  // //       onCancel={mockOnCancel}
-  // //       onOk={mockOnOk}
-  // //       loading={false}
-  // //     >
-  // //       Test
-  // //     </Dialog>
-  // //   )
-  // //   expect(wrapper).toBeDefined()
-  // // })
+    const ok = screen.getByRole('button', { name: 'OK' })
+
+    // Normal
+    fireEvent.click(ok)
+    await waitFor(() => expect(mockOnOk).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(mockResetFields).toHaveBeenCalledTimes(1))
+
+    // Error
+    antd.Form.useForm = () => [
+      {
+        validateFields: async () => ({}),
+        resetFields: () => {
+          throw new Error()
+        }
+      }
+    ]
+    fireEvent.click(ok)
+    await waitFor(() => expect(mockOnOk).toHaveBeenCalledTimes(2))
+
+    unmount()
+  })
+
+  test('initialValues', () => {
+    const { unmount } = render(
+      <Dialog
+        title="title"
+        visible={true}
+        initialValues={{}}
+        onCancel={mockOnCancel}
+        onOk={mockOnOk}
+        loading={false}
+      >
+        Test
+      </Dialog>
+    )
+
+    expect(mockSetFieldsValue).toHaveBeenCalledTimes(1)
+
+    unmount()
+  })
 })

@@ -1,12 +1,10 @@
 import React from 'react'
-import { fireEvent, render, screen } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import Edit from '..'
 
-jest.mock('@/components/assets/dialog', () => {
-  const Dialog = () => <div />
-  return Dialog
-})
+const mockDialog = jest.fn()
+jest.mock('@/components/assets/dialog', () => (props) => mockDialog(props))
 
 const mockError = jest.fn()
 jest.mock('@/components/assets/notification', () => ({
@@ -25,6 +23,9 @@ describe('components/project/edit', () => {
   }
 
   beforeEach(() => {
+    mockDialog.mockReset()
+    mockDialog.mockImplementation(() => <div />)
+
     mockError.mockReset()
 
     mockUpdate.mockReset()
@@ -36,28 +37,42 @@ describe('components/project/edit', () => {
     unmount()
   })
 
-  // test('setVisible', () => {
-  //   // Visible
-  //   wrapper.find('Button').props().onClick()
+  test('setVisible', () => {
+    mockDialog.mockImplementation((props) => (
+      <div role="Dialog" onClick={props.onCancel} />
+    ))
+    const { unmount } = render(<Edit project={project} swr={swr} />)
 
-  //   // Not visible
-  //   wrapper.find('Dialog').props().onCancel()
-  // })
+    const button = screen.getByRole('button')
+    fireEvent.click(button)
 
-  // test('onEdit', async () => {
-  //   // Normal
-  //   await wrapper.find('Dialog').props().onOk({})
-  //   expect(mockUpdate).toHaveBeenCalledTimes(1)
-  //   expect(swr.mutateOneProject).toHaveBeenCalledTimes(1)
-  //   expect(mockError).toHaveBeenCalledTimes(0)
+    const dialog = screen.getByRole('Dialog')
+    fireEvent.click(dialog)
 
-  //   // Error
-  //   mockUpdate.mockImplementation(() => {
-  //     throw new Error()
-  //   })
-  //   await wrapper.find('Dialog').props().onOk({})
-  //   expect(mockUpdate).toHaveBeenCalledTimes(2)
-  //   expect(swr.mutateOneProject).toHaveBeenCalledTimes(1)
-  //   expect(mockError).toHaveBeenCalledTimes(1)
-  // })
+    unmount()
+  })
+
+  test('onEdit', async () => {
+    mockDialog.mockImplementation((props) => (
+      <div role="Dialog" onClick={props.onOk} />
+    ))
+    const { unmount } = render(<Edit project={project} swr={swr} />)
+
+    const dialog = screen.getByRole('Dialog')
+
+    // Normal
+    fireEvent.click(dialog)
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(swr.mutateOneProject).toHaveBeenCalledTimes(1))
+
+    // Error
+    mockUpdate.mockImplementation(() => {
+      throw new Error()
+    })
+    fireEvent.click(dialog)
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
+    await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
+
+    unmount()
+  })
 })

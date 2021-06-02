@@ -86,8 +86,7 @@ const Login = () => {
     } catch (err) {
       setInternalErr(true)
       setChecking(false)
-      console.error(err)
-      Sentry.captureException(err)
+      Error(errors.INTERNAL_ERROR, err)
     }
   }
 
@@ -101,84 +100,72 @@ const Login = () => {
   /**
    * Render
    */
-  return (
-    <>
-      {loadingUser || user ? (
-        <Loading />
-      ) : (
-        <Layout>
-          <Card bordered={false} className="Login">
-            <Space direction="vertical" size="large" style={{ width: '100%' }}>
-              <div>
-                <Typography.Title
-                  level={1}
-                  style={{ padding: 0, marginBottom: 16, fontWeight: 500 }}
-                >
-                  Log In
-                </Typography.Title>
-                <Typography.Text>
-                  Your first time ?{' '}
-                  <Button type="link" onClick={signUp}>
-                    Sign up
-                  </Button>
-                </Typography.Text>
-              </div>
-              <Form
-                requiredMark="optional"
-                onFinish={onLogin}
-                layout="vertical"
+  if (loadingUser || user) return <Loading />
+  else
+    return (
+      <Layout>
+        <Card bordered={false} className="Login">
+          <Space direction="vertical" size="large" style={{ width: '100%' }}>
+            <div>
+              <Typography.Title
+                level={1}
+                style={{ padding: 0, marginBottom: 16, fontWeight: 500 }}
               >
-                {(loginErr || internalErr) && (
-                  <Alert
-                    message={
-                      internalErr
-                        ? errors.INTERNAL_ERROR
-                        : errors.BAD_CREDENTIALS
-                    }
-                    type="error"
-                    showIcon
-                    style={{
-                      marginBottom: '16px'
-                    }}
-                  />
-                )}
-                <Form.Item
-                  name="email"
-                  label="Your email address"
-                  rules={[
-                    { required: true, message: 'Please enter your email' }
-                  ]}
-                >
-                  <Input placeholder="Email address" autoComplete="email" />
-                </Form.Item>
-                <Form.Item
-                  name="password"
-                  label="Your password"
-                  rules={[
-                    { required: true, message: 'Please enter your password' }
-                  ]}
-                  style={{ marginBottom: '14px' }}
-                >
-                  <Input.Password
-                    placeholder="Password"
-                    autoComplete="current-password"
-                  />
-                </Form.Item>
-                <Typography.Text>
-                  <Button type="link">Forgot your password ?</Button>
-                </Typography.Text>
-                <Form.Item className="Login-submit">
-                  <Button type="primary" loading={checking} htmlType="submit">
-                    Log in
-                  </Button>
-                </Form.Item>
-              </Form>
-            </Space>
-          </Card>
-        </Layout>
-      )}
-    </>
-  )
+                Log In
+              </Typography.Title>
+              <Typography.Text>
+                Your first time ?{' '}
+                <Button type="link" onClick={signUp}>
+                  Sign up
+                </Button>
+              </Typography.Text>
+            </div>
+            <Form requiredMark="optional" onFinish={onLogin} layout="vertical">
+              {(loginErr || internalErr) && (
+                <Alert
+                  message={
+                    internalErr ? errors.INTERNAL_ERROR : errors.BAD_CREDENTIALS
+                  }
+                  type="error"
+                  showIcon
+                  style={{
+                    marginBottom: '16px'
+                  }}
+                />
+              )}
+              <Form.Item
+                name="email"
+                label="Your email address"
+                rules={[{ required: true, message: 'Please enter your email' }]}
+              >
+                <Input placeholder="Email address" autoComplete="email" />
+              </Form.Item>
+              <Form.Item
+                name="password"
+                label="Your password"
+                rules={[
+                  { required: true, message: 'Please enter your password' }
+                ]}
+                style={{ marginBottom: '14px' }}
+              >
+                <Input.Password
+                  placeholder="Password"
+                  autoComplete="current-password"
+                />
+              </Form.Item>
+              <Typography.Text>
+                <Button type="link">Forgot your password ?</Button>
+              </Typography.Text>
+              <Form.Item className="Login-submit">
+                <Button type="primary" loading={checking} htmlType="submit">
+                  Log in
+                </Button>
+              </Form.Item>
+            </Form>
+          </Space>
+        </Card>
+      </Layout>
+    )
 }
 
 export default Login

@@ -19,45 +19,21 @@ jest.mock('@/components/assets/notification', () => ({
   Error: () => mockError()
 }))
 
-jest.mock('@/components/loading', () => {
-  const Loading = () => <div />
-  return Loading
-})
+jest.mock('@/components/loading', () => () => <div />)
 
-jest.mock('@/components/workspace', () => {
-  const Workspace = () => <div />
-  return Workspace
-})
+jest.mock('@/components/workspace', () => () => <div />)
 
-jest.mock('@/components/workspace/add', () => {
-  const Add = () => <div />
-  return Add
-})
+jest.mock('@/components/workspace/add', () => () => <div />)
 
-jest.mock('@/components/account', () => {
-  const Account = () => <div />
-  return Account
-})
+jest.mock('@/components/account', () => () => <div />)
 
-jest.mock('@/components/organizations', () => {
-  const Organizations = () => <div />
-  return Organizations
-})
+jest.mock('@/components/organizations', () => () => <div />)
 
-jest.mock('@/components/administration', () => {
-  const Administration = () => <div />
-  return Administration
-})
+jest.mock('@/components/administration', () => () => <div />)
 
-jest.mock('@/components/help', () => {
-  const Help = () => <div />
-  return Help
-})
+jest.mock('@/components/help', () => () => <div />)
 
-jest.mock('@/components/dashboard/welcome', () => {
-  const Welcome = () => <div />
-  return Welcome
-})
+jest.mock('@/components/dashboard/welcome', () => () => <div />)
 
 const mockUser = jest.fn()
 const mockMutateUser = jest.fn()
@@ -154,191 +130,78 @@ describe('components/dashboard', () => {
     unmount()
   })
 
-  // test('loading', () => {
-  //   wrapper.unmount()
-  //   mockLoadingUser.mockImplementation(() => true)
-  //   wrapper = shallow(<Dashboard />)
-  //   expect(wrapper.find('Loading').length).toBe(1)
-  // })
+  test('loading', () => {
+    mockLoadingUser.mockImplementation(() => true)
+    const { unmount } = render(<Dashboard />)
 
-  // test('onSelect', () => {
-  //   // My workspaces
-  //   wrapper
-  //     .find('Menu')
-  //     .props()
-  //     .onClick({
-  //       item: { props: { subMenuKey: 'my_workspaces-menu-' } },
-  //       key: '1',
-  //       keyPath: []
-  //     })
+    unmount()
+  })
 
-  //   // Shared
-  //   wrapper
-  //     .find('Menu')
-  //     .props()
-  //     .onClick({
-  //       item: { props: { subMenuKey: 'shared-menu-' } },
-  //       key: '1',
-  //       keyPath: []
-  //     })
+  test('page query', () => {
+    global.URLSearchParams = class {
+      constructor() {}
+      get(param) {
+        if (param === 'page') return 'my_workspaces'
+      }
+    }
+    const { unmount } = render(<Dashboard />)
 
-  //   // Account
-  //   wrapper
-  //     .find('Menu')
-  //     .props()
-  //     .onClick({
-  //       item: { props: { subMenuKey: '-menu-0' } },
-  //       key: 'account',
-  //       keyPath: []
-  //     })
+    unmount()
+  })
 
-  //   // Organizations
-  //   wrapper
-  //     .find('Menu')
-  //     .props()
-  //     .onClick({
-  //       item: { props: { subMenuKey: '-menu-0' } },
-  //       key: 'organizations',
-  //       keyPath: []
-  //     })
+  test('errors', () => {
+    mockErrorUser.mockImplementation(() => true)
+    mockErrorOrganizations.mockImplementation(() => true)
+    mockErrorWorkspaces.mockImplementation(() => true)
+    const { unmount } = render(<Dashboard />)
 
-  //   // Administration
-  //   wrapper
-  //     .find('Menu')
-  //     .props()
-  //     .onClick({
-  //       item: { props: { subMenuKey: '-menu-0' } },
-  //       key: 'administration',
-  //       keyPath: []
-  //     })
+    expect(mockError).toHaveBeenCalledTimes(3)
 
-  //   // Help
-  //   wrapper
-  //     .find('Menu')
-  //     .props()
-  //     .onClick({
-  //       item: { props: { subMenuKey: '-menu-0' } },
-  //       key: 'help',
-  //       keyPath: []
-  //     })
+    unmount()
+  })
 
-  //   // Logout
-  //   wrapper
-  //     .find('Menu')
-  //     .props()
-  //     .onClick({
-  //       item: { props: { subMenuKey: '-menu-0' } },
-  //       key: 'logout',
-  //       keyPath: []
-  //     })
-  //   // expect(mockLogout).toHaveBeenCalledTimes(1)
-  //   expect(mockError).toHaveBeenCalledTimes(0)
+  test('user', () => {
+    mockUser.mockImplementation(() => {})
+    const { unmount } = render(<Dashboard />)
 
-  //   // Logout error
-  //   mockLogout.mockImplementation(() => {
-  //     throw new Error()
-  //   })
-  //   wrapper
-  //     .find('Menu')
-  //     .props()
-  //     .onClick({
-  //       item: { props: { subMenuKey: '-menu-0' } },
-  //       key: 'logout',
-  //       keyPath: []
-  //     })
-  //   // expect(mockLogout).toHaveBeenCalledTimes(2)
-  //   // expect(mockError).toHaveBeenCalledTimes(1)
+    expect(mockReplace).toHaveBeenCalledTimes(1)
 
-  //   // Unknown
-  //   wrapper
-  //     .find('Menu')
-  //     .props()
-  //     .onClick({
-  //       item: { props: { subMenuKey: 'unknown-menu-' } },
-  //       key: 'unknown1',
-  //       keyPath: []
-  //     })
-  // })
+    unmount()
+  })
 
-  // test('onMyWorkspaces', () => {
-  //   wrapper.find('SubMenu').at(0).props().onTitleClick()
-  // })
+  test('workspaces', () => {
+    mockWorkspaces.mockImplementation(() => [
+      { id: 'id1', owners: [{ id: 'id' }] },
+      { id: 'id2', users: [{ id: 'id' }] },
+      { id: 'id3', groups: [{ id: 'id' }] }
+    ])
+    const { unmount } = render(<Dashboard />)
 
-  // test('onSharedWorkspaces', () => {
-  //   wrapper.find('SubMenu').at(1).props().onTitleClick()
-  // })
+    unmount()
+  })
 
-  // // test('effect page', () => {
-  // //   wrapper.unmount()
-  // //   jest.spyOn(URLSearchParams.prototype, 'get').mockImplementation((key) => {
-  // //     if (key === 'page') return 'shared'
-  // //     else return
-  // //   })
-  // //   wrapper = mount(<Dashboard />)
+  test('onSelect', () => {
+    mockWorkspaces.mockImplementation(() => [
+      { id: 'id1', name: 'workspace 1', owners: [{ id: 'id' }] },
+      { id: 'id2', name: 'workspace 2', users: [{ id: 'id' }] }
+    ])
+    const { unmount } = render(<Dashboard />)
 
-  // //   wrapper.unmount()
-  // //   jest.spyOn(URLSearchParams.prototype, 'get').mockImplementation((key) => {
-  // //     if (key === 'page') return 'shared'
-  // //     else if (key === 'workspaceId') return 'id'
-  // //     else return
-  // //   })
-  // //   wrapper = mount(<Dashboard />)
-  // // })
+    const items = screen.getAllByRole('menuitem')
+    items.forEach((item) => fireEvent.click(item))
 
-  // // test('effect error', () => {
-  // //   wrapper.unmount()
-  // //   mockErrorUser.mockImplementation(() => ({ message: 'Error' }))
-  // //   mockErrorOrganizations.mockImplementation(() => ({ message: 'Error' }))
-  // //   mockErrorWorkspaces.mockImplementation(() => ({ message: 'Error' }))
-  // //   wrapper = mount(<Dashboard />)
-  // //   expect(mockError).toHaveBeenCalledTimes(6)
-  // // })
+    unmount()
+  })
 
-  // // test('effect', () => {
-  // //   // No user
-  // //   wrapper.unmount()
-  // //   mockUser.mockImplementation(() => {})
-  // //   wrapper = mount(<Dashboard />)
+  test('onSelect (error + empty)', () => {
+    mockPush.mockImplementation(() => {
+      throw new Error()
+    })
+    const { unmount } = render(<Dashboard />)
 
-  // //   // User & workspaces
-  // //   wrapper.unmount()
-  // //   mockUser.mockImplementation(() => ({ id: 'id', groups: [{ id: 'id' }] }))
-  // //   mockWorkspaces.mockImplementation(() => [
-  // //     { id: 'id1', owners: [{ id: 'id' }] },
-  // //     { id: 'id2', users: [{ id: 'id' }] },
-  // //     { id: 'id3', groups: [{ id: 'id' }] }
-  // //   ])
-  // //   wrapper = mount(<Dashboard />)
+    const items = screen.getAllByRole('menuitem')
+    items.forEach((item) => fireEvent.click(item))
 
-  // //   // On select
-  // //   act(() =>
-  // //     wrapper
-  // //       .find('Menu')
-  // //       .at(1)
-  // //       .props()
-  // //       .onClick({
-  // //         item: { props: { subMenuKey: 'my_workspaces-menu-' } },
-  // //         key: 'id1',
-  // //         keyPath: []
-  // //       })
-  // //   )
-
-  // //   act(() =>
-  // //     wrapper
-  // //       .find('Menu')
-  // //       .at(1)
-  // //       .props()
-  // //       .onClick({
-  // //         item: { props: { subMenuKey: 'shared-menu-' } },
-  // //         key: 'id2',
-  // //         keyPath: []
-  // //       })
-  // //   )
-
-  // //   // On my workspaces
-  // //   wrapper.find('SubMenu').at(0).props().onTitleClick()
-
-  // //   // On shared workspaces
-  // //   wrapper.find('SubMenu').at(2).props().onTitleClick()
-  // // })
+    unmount()
+  })
 })

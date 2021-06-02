@@ -3,30 +3,57 @@ import { fireEvent, render, screen } from '@testing-library/react'
 
 import DeleteButton from '@/components/assets/button/delete'
 
+const mockDeleteDialog = jest.fn()
 jest.mock('@/components/assets/dialog', () => ({
-  DeleteDialog: () => <div />
+  DeleteDialog: (props) => mockDeleteDialog(props)
 }))
 
 describe('components/assets/button/delete', () => {
   const mockLoading = jest.fn(() => false)
   const mockOnDelete = jest.fn()
 
+  beforeEach(() => {
+    mockDeleteDialog.mockReset()
+    mockDeleteDialog.mockImplementation(() => <div />)
+  })
+
   test('render', () => {
     const { unmount } = render(
-      <DeleteButton loading={mockLoading} onDelete={mockOnDelete} />
+      <DeleteButton loading={mockLoading()} onDelete={mockOnDelete} />
     )
 
     unmount()
   })
 
-  // test('setVisible', () => {
-  //   wrapper.find('Button').props().onClick()
+  test('setVisible', () => {
+    mockDeleteDialog.mockImplementation((props) => (
+      <div role="DeleteDialog" onClick={props.onCancel} />
+    ))
+    const { unmount } = render(
+      <DeleteButton loading={mockLoading()} onDelete={mockOnDelete} />
+    )
 
-  //   wrapper.find('DeleteDialog').props().onCancel()
-  // })
+    const button = screen.getByRole('button')
+    fireEvent.click(button)
 
-  // test('onDelete', () => {
-  //   wrapper.find('DeleteDialog').props().onOk()
-  //   expect(mockOnDelete).toHaveBeenCalledTimes(1)
-  // })
+    const dialog = screen.getByRole('DeleteDialog')
+    fireEvent.click(dialog)
+
+    unmount()
+  })
+
+  test('onDelete', () => {
+    mockDeleteDialog.mockImplementation((props) => (
+      <div role="DeleteDialog" onClick={props.onOk} />
+    ))
+    const { unmount } = render(
+      <DeleteButton loading={mockLoading()} onDelete={mockOnDelete} />
+    )
+
+    const dialog = screen.getByRole('DeleteDialog')
+    fireEvent.click(dialog)
+    expect(mockOnDelete).toHaveBeenCalledTimes(1)
+
+    unmount()
+  })
 })

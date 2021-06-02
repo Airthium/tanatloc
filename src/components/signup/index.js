@@ -14,15 +14,13 @@ import {
 } from 'antd'
 
 import { PasswordItem } from '@/components/assets/input'
-import { Error } from '@/components/assets/notification'
+import { Error as ErrorNotification } from '@/components/assets/notification'
 
 import Loading from '@/components/loading'
 
 import login from '@/api/login'
 import UserAPI from '@/api/user'
 import SystemAPI from '@/api/system'
-
-import Sentry from '@/lib/sentry'
 
 /**
  * Errors
@@ -54,8 +52,8 @@ const Signup = () => {
 
   // Errors
   useEffect(() => {
-    if (errorUser) Error(errors.user, errorUser)
-    if (errorSystem) Error(errors.system, errorSystem)
+    if (errorUser) ErrorNotification(errors.user, errorUser)
+    if (errorSystem) ErrorNotification(errors.system, errorSystem)
   }, [errorUser, errorSystem])
 
   // Already connected
@@ -95,8 +93,7 @@ const Signup = () => {
     } catch (err) {
       setInternalError(true)
       setChecking(false)
-      console.error(err)
-      Sentry.captureException(err)
+      ErrorNotification(errors.INTERNAL_ERROR, err)
     }
   }
 
@@ -110,109 +107,95 @@ const Signup = () => {
   /**
    * Render
    */
-  return (
-    <>
-      {loadingUser || loadingSystem || user ? (
-        <Loading />
-      ) : (
-        <Layout>
-          {system?.allowsignup ? (
-            <Card bordered={false} className="Signup">
-              <Space
-                direction="vertical"
-                size="large"
-                style={{ width: '100%' }}
+  if (loadingUser || loadingSystem || user) return <Loading />
+  else if (!system?.allowsignup)
+    return (
+      <Layout>
+        <Card className="Signup">The server does not allow signup for now</Card>
+      </Layout>
+    )
+  else
+    return (
+      <Layout>
+        <Card bordered={false} className="Signup">
+          <Space direction="vertical" size="large" style={{ width: '100%' }}>
+            <div>
+              <Typography.Title
+                level={1}
+                style={{ padding: 0, marginBottom: 16, fontWeight: 500 }}
               >
-                <div>
-                  <Typography.Title
-                    level={1}
-                    style={{ padding: 0, marginBottom: 16, fontWeight: 500 }}
-                  >
-                    Sign Up
-                  </Typography.Title>
-                </div>
-                <Form
-                  requiredMark="optional"
-                  onFinish={onSignup}
-                  layout="vertical"
-                >
-                  {(signupErr || internalErr) && (
-                    <Alert
-                      message={
-                        internalErr ? (
-                          errors.INTERNAL_ERROR
-                        ) : (
-                          <>
-                            <b type="warning">{errors.ALREADY_EXISTS}</b>
-                            <br />
-                            We know you!{' '}
-                            <Button type="link" onClick={onLogin}>
-                              Log in ?
-                            </Button>
-                          </>
-                        )
+                Sign Up
+              </Typography.Title>
+            </div>
+            <Form requiredMark="optional" onFinish={onSignup} layout="vertical">
+              {(signupErr || internalErr) && (
+                <Alert
+                  message={
+                    internalErr ? (
+                      errors.INTERNAL_ERROR
+                    ) : (
+                      <>
+                        <b type="warning">{errors.ALREADY_EXISTS}</b>
+                        <br />
+                        We know you!{' '}
+                        <Button type="link" onClick={onLogin}>
+                          Log in ?
+                        </Button>
+                      </>
+                    )
+                  }
+                  type={internalErr ? 'error' : 'warning'}
+                  showIcon
+                  style={{
+                    marginBottom: '16px'
+                  }}
+                />
+              )}
+              <Form.Item
+                name="email"
+                label="Enter your email address"
+                rules={[{ required: true, message: 'Please enter your email' }]}
+              >
+                <Input placeholder="Email address" autoComplete="email" />
+              </Form.Item>
+              <PasswordItem
+                name="password"
+                label="Choose your password"
+                inputPlaceholder="Password"
+                inputAutoComplete="current-password"
+                style={{ marginBottom: '14px' }}
+              />
+              <Form.Item
+                name="passwordConfirmation"
+                label="Confirm your password"
+                rules={[
+                  { required: true, message: 'Please enter your Password' },
+                  ({ getFieldValue }) => ({
+                    validator(_, value) {
+                      if (!value || getFieldValue('password') === value) {
+                        return Promise.resolve()
                       }
-                      type={internalErr ? 'error' : 'warning'}
-                      showIcon
-                      style={{
-                        marginBottom: '16px'
-                      }}
-                    />
-                  )}
-                  <Form.Item
-                    name="email"
-                    label="Enter your email address"
-                    rules={[
-                      { required: true, message: 'Please enter your email' }
-                    ]}
-                  >
-                    <Input placeholder="Email address" autoComplete="email" />
-                  </Form.Item>
-                  <PasswordItem
-                    name="password"
-                    label="Choose your password"
-                    inputPlaceholder="Password"
-                    inputAutoComplete="current-password"
-                    style={{ marginBottom: '14px' }}
-                  />
-                  <Form.Item
-                    name="passwordConfirmation"
-                    label="Confirm your password"
-                    rules={[
-                      { required: true, message: 'Please enter your Password' },
-                      ({ getFieldValue }) => ({
-                        validator(rule, value) {
-                          if (!value || getFieldValue('password') === value) {
-                            return Promise.resolve()
-                          }
-                          return Promise.reject(errors.passwordMismatch)
-                        }
-                      })
-                    ]}
-                    style={{ marginBottom: '14px' }}
-                  >
-                    <Input.Password
-                      placeholder="Password"
-                      autoComplete="current-password"
-                    />
-                  </Form.Item>
-                  <Form.Item className="Signup-submit">
-                    <Button type="primary" loading={checking} htmlType="submit">
-                      Finish
-                    </Button>
-                  </Form.Item>
-                </Form>
-              </Space>
-            </Card>
-          ) : (
-            <Card className="Signup">
-              The server does not allow signup for now
-            </Card>
-          )}
-        </Layout>
-      )}
-    </>
-  )
+                      return Promise.reject(errors.passwordMismatch)
+                    }
+                  })
+                ]}
+                style={{ marginBottom: '14px' }}
+              >
+                <Input.Password
+                  placeholder="Password"
+                  autoComplete="current-password"
+                />
+              </Form.Item>
+              <Form.Item className="Signup-submit">
+                <Button type="primary" loading={checking} htmlType="submit">
+                  Finish
+                </Button>
+              </Form.Item>
+            </Form>
+          </Space>
+        </Card>
+      </Layout>
+    )
 }
 
 export default Signup

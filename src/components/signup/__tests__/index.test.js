@@ -1,5 +1,6 @@
 import React from 'react'
-import { fireEvent, render, screen } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { Form, Input } from 'antd'
 
 import Signup from '@/components/signup'
 
@@ -12,8 +13,9 @@ jest.mock('next/router', () => ({
   })
 }))
 
+const mockPasswordItem = jest.fn()
 jest.mock('@/components/assets/input', () => ({
-  PasswordItem: 'passwordItem'
+  PasswordItem: (props) => mockPasswordItem(props)
 }))
 
 const mockError = jest.fn()
@@ -21,10 +23,7 @@ jest.mock('@/components/assets/notification', () => ({
   Error: () => mockError()
 }))
 
-jest.mock('@/components/loading', () => {
-  const Loading = () => <div />
-  return Loading
-})
+jest.mock('@/components/loading', () => () => <div />)
 
 const mockLogin = jest.fn()
 jest.mock('@/api/login', () => async () => mockLogin())
@@ -60,6 +59,9 @@ describe('components/signup', () => {
     mockPrefetch.mockReset()
     mockPush.mockReset()
 
+    mockPasswordItem.mockReset()
+    mockPasswordItem.mockImplementation(() => <div />)
+
     mockError.mockReset()
 
     mockUser.mockReset()
@@ -83,103 +85,98 @@ describe('components/signup', () => {
     unmount()
   })
 
-  // test('with user', () => {
-  //   wrapper.unmount()
-  //   mockUser.mockImplementation(() => ({}))
-  //   mockLoading.mockImplementation(() => false)
-  //   wrapper = shallow(<Signup />)
-  // })
+  test('with user', () => {
+    mockUser.mockImplementation(() => ({}))
+    const { unmount } = render(<Signup />)
+    expect(mockPush).toHaveBeenCalledTimes(1)
 
-  // test('onSignup', async () => {
-  //   // Error
-  //   mockAdd.mockImplementation(() => {
-  //     throw new Error()
-  //   })
-  //   await wrapper.find('ForwardRef(InternalForm)').props().onFinish({
-  //     email: 'email',
-  //     password: 'password',
-  //     passwordConfirmation: 'password'
-  //   })
+    unmount()
+  })
 
-  //   // Already exists
-  //   mockAdd.mockImplementation(() => ({
-  //     alreadyExists: true
-  //   }))
-  //   await wrapper.find('ForwardRef(InternalForm)').props().onFinish({
-  //     email: 'email',
-  //     password: 'password',
-  //     passwordConfirmation: 'password'
-  //   })
+  test('errors', () => {
+    mockErrorUser.mockImplementation(() => true)
+    mockErrorSystem.mockImplementation(() => true)
+    const { unmount } = render(<Signup />)
+    expect(mockError).toHaveBeenCalledTimes(2)
 
-  //   // Normal
-  //   mockAdd.mockImplementation(() => ({}))
-  //   await wrapper.find('ForwardRef(InternalForm)').props().onFinish({
-  //     email: 'email',
-  //     password: 'password',
-  //     passwordConfirmation: 'password'
-  //   })
-  //   // expect(mockLogin).toHaveBeenCalledTimes(1)
-  // })
+    unmount()
+  })
 
-  // test('mismatch passwords rule', async () => {
-  //   // Match
-  //   await wrapper
-  //     .find({ name: 'passwordConfirmation' })
-  //     .props()
-  //     .rules[1]({ getFieldValue: () => 'password' })
-  //     .validator({}, 'password')
+  test('onSignup', async () => {
+    mockPasswordItem.mockImplementation((props) => (
+      <Form.Item name={props.name} label={props.label}>
+        <Input role="PasswordItem" />
+      </Form.Item>
+    ))
+    const { unmount } = render(<Signup />)
 
-  //   // Mismatch
-  //   try {
-  //     await wrapper
-  //       .find({ name: 'passwordConfirmation' })
-  //       .props()
-  //       .rules[1]({ getFieldValue: () => 'password' })
-  //       .validator({}, 'other_password')
-  //     expect(true).toBe(false)
-  //   } catch (err) {
-  //     expect(true).toBe(true)
-  //   }
-  // })
+    const button = screen.getByRole('button')
 
-  // test('login', async () => {
-  //   mockAdd.mockImplementation(() => ({
-  //     alreadyExists: true
-  //   }))
-  //   await wrapper.find('ForwardRef(InternalForm)').props().onFinish({
-  //     email: 'email',
-  //     password: 'password',
-  //     passwordConfirmation: 'password'
-  //   })
+    // Fill email & password
+    const email = screen.getByLabelText('Enter your email address')
+    const password = screen.getByRole('PasswordItem')
+    const confirm = screen.getByLabelText('Confirm your password')
 
-  //   wrapper.find('Alert').props().message.props.children[4].props.onClick()
-  //   expect(mockPush).toHaveBeenCalledTimes(1)
-  // })
+    fireEvent.change(email, { target: { value: 'email@email.email' } })
+    fireEvent.change(password, { target: { value: 'password' } })
+    fireEvent.change(confirm, { target: { value: 'password' } })
 
-  // // test('effect', () => {
-  // //   wrapper.unmount()
-  // //   mockSystem.mockImplementation(() => ({}))
-  // //   wrapper = mount(<Signup />)
-  // //   expect(mockPrefetch).toHaveBeenCalledTimes(2)
-  // //   expect(mockPush).toHaveBeenCalledTimes(0)
+    // Already exists
+    mockAdd.mockImplementation(() => ({ alreadyExists: true }))
+    fireEvent.click(button)
+    await waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(1))
 
-  // //   // No signup, errors
-  // //   wrapper.unmount()
-  // //   mockSystem.mockImplementation(async () => ({
-  // //     allowsignup: false
-  // //   }))
-  // //   mockErrorUser.mockImplementation(() => ({ message: 'Error' }))
-  // //   mockErrorSystem.mockImplementation(() => ({ message: 'Error' }))
-  // //   wrapper = mount(<Signup />)
-  // //   expect(mockPrefetch).toHaveBeenCalledTimes(4)
-  // //   expect(mockPush).toHaveBeenCalledTimes(0)
-  // //   expect(mockError).toHaveBeenCalledTimes(2)
+    const login = screen.getByRole('button', { name: 'Log in ?' })
+    fireEvent.click(login)
+    expect(mockPush).toHaveBeenCalledTimes(1)
 
-  // //   // Already user
-  // //   wrapper.unmount()
-  // //   mockUser.mockImplementation(() => ({}))
-  // //   wrapper = mount(<Signup />)
-  // //   expect(mockPrefetch).toHaveBeenCalledTimes(6)
-  // //   expect(mockPush).toHaveBeenCalledTimes(1)
-  // // })
+    // Error
+    mockAdd.mockImplementation(() => {
+      throw new Error()
+    })
+    fireEvent.click(button)
+    await waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(2))
+    await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
+
+    // Normal
+    mockAdd.mockImplementation(() => ({ alreadyExists: false }))
+    fireEvent.click(button)
+    await waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(3))
+    await waitFor(() => expect(mockLogin).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(mockMutate).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(mockPush).toHaveBeenCalledTimes(2))
+
+    unmount()
+  })
+
+  test('mismatch passwords rule', async () => {
+    mockPasswordItem.mockImplementation((props) => (
+      <Form.Item name={props.name} label={props.label}>
+        <Input role="PasswordItem" />
+      </Form.Item>
+    ))
+    const { unmount } = render(<Signup />)
+
+    const mockWarn = jest.fn()
+    console.warn = mockWarn
+
+    const password = screen.getByRole('PasswordItem')
+    const confirm = screen.getByLabelText('Confirm your password')
+
+    fireEvent.change(password, { target: { value: 'password' } })
+    fireEvent.change(confirm, { target: { value: 'other_password' } })
+
+    await waitFor(() => expect(mockWarn).toHaveBeenCalledTimes(1))
+
+    unmount()
+  })
+
+  test('system', () => {
+    mockSystem.mockImplementation(() => ({
+      allowsignup: false
+    }))
+    const { unmount } = render(<Signup />)
+
+    unmount()
+  })
 })

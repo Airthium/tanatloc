@@ -1,5 +1,5 @@
 import React from 'react'
-import { fireEvent, render, screen } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import Login from '@/components/login'
 
@@ -12,10 +12,7 @@ jest.mock('next/router', () => ({
   })
 }))
 
-jest.mock('@/components/loading', () => {
-  const Loading = () => <div />
-  return Loading
-})
+jest.mock('@/components/loading', () => () => <div />)
 
 const mockError = jest.fn()
 jest.mock('@/components/assets/notification', () => ({
@@ -26,12 +23,13 @@ const mockLogin = jest.fn()
 jest.mock('@/api/login', () => async () => mockLogin())
 
 const mockUser = jest.fn()
+const mockMutateUser = jest.fn()
 const mockUserLoading = jest.fn()
 const mockErrorUser = jest.fn()
 jest.mock('@/api/user/useUser', () => () => [
   mockUser(),
   {
-    mutateUser: () => {},
+    mutateUser: mockMutateUser,
     errorUser: mockErrorUser(),
     loadingUser: mockUserLoading()
   }
@@ -47,6 +45,7 @@ describe('components/login', () => {
     mockLogin.mockReset()
 
     mockUser.mockReset()
+    mockMutateUser.mockReset()
     mockUserLoading.mockReset()
     mockUserLoading.mockImplementation(() => false)
     mockErrorUser.mockReset()
@@ -58,51 +57,70 @@ describe('components/login', () => {
     unmount()
   })
 
-  // test('loading', () => {
-  //   wrapper.unmount()
+  test('loading', () => {
+    mockUserLoading.mockImplementation(() => true)
+    const { unmount } = render(<Login />)
 
-  //   mockUserLoading.mockImplementation(() => true)
-  //   wrapper = shallow(<Login />)
-  //   expect(wrapper.find('Loading').length).toBe(1)
-  // })
+    unmount()
+  })
 
-  // // test('user effect', () => {
-  // //   let mWrapper = mount(<Login />)
-  // //   expect(mockPrefetch).toHaveBeenCalledTimes(2)
-  // //   expect(mockPush).toHaveBeenCalledTimes(0)
-  // //   mWrapper.unmount()
+  test('error', () => {
+    mockErrorUser.mockImplementation(() => true)
+    const { unmount } = render(<Login />)
 
-  // //   // With user & error
-  // //   mockUser.mockImplementation(() => ({ user: { id: 'id' } }))
-  // //   mockErrorUser.mockImplementation(() => ({ message: 'Error' }))
-  // //   mWrapper = mount(<Login />)
-  // //   expect(mockPrefetch).toHaveBeenCalledTimes(4)
-  // //   expect(mockPush).toHaveBeenCalledTimes(1)
-  // //   expect(mockError).toHaveBeenCalledTimes(1)
-  // //   mWrapper.unmount()
-  // // })
+    expect(mockError).toHaveBeenCalledTimes(1)
 
-  // test('onLogin', async () => {
-  //   await wrapper.find('ForwardRef(InternalForm)').props().onFinish({})
-  //   expect(mockPush).toHaveBeenCalledTimes(0)
+    unmount()
+  })
 
-  //   mockLogin.mockImplementation(() => ({ ok: true }))
-  //   await wrapper.find('ForwardRef(InternalForm)').props().onFinish({})
-  //   expect(mockPush).toHaveBeenCalledTimes(1)
+  test('user', () => {
+    mockUser.mockImplementation(() => ({}))
+    const { unmount } = render(<Login />)
 
-  //   mockLogin.mockImplementation(() => ({ ok: false }))
-  //   await wrapper.find('ForwardRef(InternalForm)').props().onFinish({})
-  //   expect(mockPush).toHaveBeenCalledTimes(1)
+    expect(mockPush).toHaveBeenCalledTimes(1)
 
-  //   mockLogin.mockImplementation(() => {
-  //     throw new Error()
-  //   })
-  //   await wrapper.find('ForwardRef(InternalForm)').props().onFinish({})
-  //   expect(mockPush).toHaveBeenCalledTimes(1)
-  // })
+    unmount()
+  })
 
-  // test('signup', () => {
-  //   wrapper.find({ type: 'link' }).at(0).props().onClick()
-  //   expect(mockPush).toHaveBeenCalledTimes(1)
-  // })
+  test('onLogin', async () => {
+    const { unmount } = render(<Login />)
+
+    const email = screen.getByLabelText('Your email address')
+    const password = screen.getByLabelText('Your password')
+
+    fireEvent.change(email, { target: { value: 'email' } })
+    fireEvent.change(password, { target: { value: 'password' } })
+
+    const button = screen.getByRole('button', { name: 'Log in' })
+
+    // Not ok
+    mockLogin.mockImplementation(() => ({}))
+    fireEvent.click(button)
+    await waitFor(() => expect(mockLogin).toHaveBeenCalledTimes(1))
+
+    // Error
+    mockLogin.mockImplementation(() => {
+      throw new Error()
+    })
+    fireEvent.click(button)
+    await waitFor(() => expect(mockLogin).toHaveBeenCalledTimes(2))
+    await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
+
+    // Ok
+    mockLogin.mockImplementation(() => ({ ok: true }))
+    fireEvent.click(button)
+    await waitFor(() => expect(mockLogin).toHaveBeenCalledTimes(3))
+    await waitFor(() => expect(mockPush).toHaveBeenCalledTimes(1))
+
+    unmount()
+  })
+
+  test('signup', () => {
+    const { unmount } = render(<Login />)
+    const button = screen.getByRole('button', { name: 'Sign up' })
+    fireEvent.click(button)
+    expect(mockPush).toHaveBeenCalledTimes(1)
+
+    unmount()
+  })
 })

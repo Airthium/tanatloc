@@ -16,18 +16,30 @@ describe('components/project/simulation/materials/database', () => {
     unmount()
   })
 
-  // test('open/close', () => {
-  //   expect(wrapper.find('Modal').props().visible).toBe(false)
-  //   wrapper.find('Button').props().onClick()
-  //   expect(wrapper.find('Modal').props().visible).toBe(true)
-  //   wrapper.find('Modal').props().onCancel()
-  //   expect(wrapper.find('Modal').props().visible).toBe(false)
-  // })
+  test('setVisible', () => {
+    const { unmount } = render(<DataBase onSelect={mockOnSelect} />)
 
-  // test('menu', () => {
-  //   wrapper.find('Menu').props().onClick({ key: 'metal' })
-  //   expect(wrapper.find('List').length).toBe(1)
+    const button = screen.getByRole('button')
+    fireEvent.click(button)
 
-  //   wrapper.find('CollapsePanel').props().extra.props.onClick()
-  // })
+    const cancel = screen.getByRole('button', { name: 'Cancel' })
+    fireEvent.click(cancel)
+
+    unmount()
+  })
+
+  test('menu', () => {
+    const { unmount } = render(<DataBase onSelect={mockOnSelect} />)
+
+    const button = screen.getByRole('button')
+    fireEvent.click(button)
+
+    const metal = screen.getByRole('menuitem', { name: 'Metal' })
+    fireEvent.click(metal)
+
+    const open = screen.getByRole('button', { name: 'select' })
+    fireEvent.click(open)
+
+    unmount()
+  })
 })

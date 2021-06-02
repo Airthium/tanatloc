@@ -24,7 +24,7 @@ const Formula = ({
     defaultChecked !== undefined ? !defaultChecked : false
   )
   const [autoSave, setAutoSave] = useState(false)
-  const [saving, setSaving] = useState(true)
+  const [saving, setSaving] = useState(false)
 
   // Units LaTeX
   useEffect(() => {
@@ -86,9 +86,9 @@ const Formula = ({
           <Space>
             unit
             {saving ? (
-              <CheckCircleOutlined style={{ color: 'green' }} />
-            ) : (
               <LoadingOutlined spin style={{ color: 'orange' }} />
+            ) : (
+              <CheckCircleOutlined style={{ color: 'green' }} />
             )}
           </Space>
         }

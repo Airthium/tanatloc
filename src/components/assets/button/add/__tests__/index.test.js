@@ -20,8 +20,20 @@ describe('components/assets/button/add', () => {
     unmount()
   })
 
-  // test('onAdd', () => {
-  //   wrapper.find('Button').props().onClick()
-  //   expect(mockOnAdd).toHaveBeenCalledTimes(1)
-  // })
+  test('onAdd', () => {
+    const { unmount } = render(
+      <AddButton
+        disabled={mockDisabled()}
+        loading={mockLoading()}
+        onAdd={mockOnAdd}
+      />
+    )
+
+    const button = screen.getByRole('button')
+    fireEvent.click(button)
+
+    expect(mockOnAdd).toHaveBeenCalledTimes(1)
+
+    unmount()
+  })
 })

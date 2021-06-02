@@ -1,15 +1,10 @@
 import React from 'react'
-import { fireEvent, render, screen } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import Formula from '@/components/assets/formula'
 
 const onValueChange = jest.fn()
 const onCheckedChange = jest.fn()
-
-global.setTimeout = (callback) => {
-  callback()
-  return 1
-}
 
 describe('components/assets/formula', () => {
   beforeEach(() => {
@@ -41,13 +36,15 @@ describe('components/assets/formula', () => {
     unmount()
   })
 
-  test('input change', () => {
+  test('input change', async () => {
     const { unmount } = render(
       <Formula defaultValue="value" onValueChange={onValueChange} />
     )
 
     const input = screen.getByRole('textbox')
     fireEvent.change(input, { target: { value: 'test' } })
+
+    await waitFor(() => screen.getByRole('img', { name: 'check-circle' }))
 
     unmount()
   })

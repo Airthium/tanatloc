@@ -58,6 +58,7 @@ export default async (req, res) => {
           'avatar',
           'owners',
           'users',
+          'geometries',
           'simulations'
         ])
 

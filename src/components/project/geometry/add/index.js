@@ -3,8 +3,15 @@ import { Space, Typography, Upload } from 'antd'
 import { LoadingOutlined, UploadOutlined } from '@ant-design/icons'
 
 import Dialog from '@/components/assets/dialog'
+import { Error as ErrorNotification } from '@/components/assets/notification'
 
-const Add = ({ visible, setVisible }) => {
+import GeometryAPI from '@/api/geometry'
+
+const errors = {
+  addError: 'Unable to add geometry'
+}
+
+const Add = ({ visible, project, setVisible }) => {
   // State
   const [loading, setLoading] = useState(false)
 
@@ -45,6 +52,16 @@ const Add = ({ visible, setVisible }) => {
       // }
 
       try {
+        // Add geometry
+        await GeometryAPI.add(
+          { id: project.id },
+          {
+            name: info.file.name,
+            uid: info.file.uid,
+            buffer: Buffer.from(buffer)
+          }
+        )
+
         //   // Update simulation
         //   await SimulationAPI.update({ id: simulation.id }, [
         //     {
@@ -59,7 +76,8 @@ const Add = ({ visible, setVisible }) => {
         //   swr.mutateOneSimulation({ ...simulation }, true)
         // TODO
       } catch (err) {
-        Error(errors.updateError, err)
+        console.log(err)
+        ErrorNotification(errors.addError, err)
       } finally {
         setLoading(false)
       }

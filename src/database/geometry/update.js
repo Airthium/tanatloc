@@ -8,7 +8,7 @@ import { tables } from '@/config/db'
  * @param {Array} data Data [{ key, value, ... }, ...]
  */
 const update = async (geometry, data) => {
-  return updater(tables.GEOEMTRIES, geometry.id, data)
+  return updater(tables.GEOMETRIES, geometry.id, data)
 }
 
 export default update

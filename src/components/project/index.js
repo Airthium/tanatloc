@@ -20,7 +20,6 @@ import NotAuthorized from '@/components/notauthorized'
 
 import Panel from './panel'
 import Geometry from './geometry'
-console.log(Geometry.Add)
 import View from './view'
 import Data from './data'
 import Simulation from './simulation'
@@ -28,6 +27,7 @@ import Simulation from './simulation'
 import UserAPI from '@/api/user'
 import ProjectAPI from '@/api/project'
 import SimulationAPI from '@/api/simulation'
+import GeometryAPI from '@/api/geometry'
 
 /**
  * Menu keys
@@ -76,6 +76,8 @@ const Project = () => {
       loadingSimulations
     }
   ] = SimulationAPI.useSimulations(project?.simulations)
+  const [geometries] = GeometryAPI.useGeometries(project?.geometries)
+  console.log(geometries)
 
   // Not logged -> go to login page
   useEffect(() => {
@@ -160,44 +162,6 @@ const Project = () => {
   }, [currentSimulation, currentType])
 
   /**
-   * Handle title
-   * @param {srting} title Title
-   */
-  const handleTitle = async (title) => {
-    try {
-      // Update
-      await ProjectAPI.update({ id: project.id }, [
-        { key: 'title', value: title }
-      ])
-
-      // Mutate
-      mutateProject({
-        ...project,
-        title
-      })
-    } catch (err) {
-      Error(errors.updateError, err)
-    }
-  }
-
-  /**
-   * On menu click
-   * @param {Object} data Data { key }
-   */
-  const onMenuClick = ({ keyPath }) => {
-    const key = keyPath.pop()
-    const subKey = keyPath.pop()
-
-    if (key === menuKeys.geometries) {
-      if (subKey === 'add') setAddGeometry(true)
-      else setCurrentGeometry(subKey)
-    } else if (key.includes(menuKeys.simulation)) {
-      const id = key.split('&').pop()
-      selectSimulation(id, subKey)
-    }
-  }
-
-  /**
    * Handle dashboard
    */
   const handleDashboard = () => {
@@ -212,6 +176,23 @@ const Project = () => {
    */
   const addSimulation = () => {
     setSelectorVisible(true)
+  }
+
+  /**
+   * On menu click
+   * @param {Object} data Data { key }
+   */
+  const onMenuClick = ({ keyPath }) => {
+    const key = keyPath.pop()
+    const subKey = keyPath.pop()
+
+    if (key === menuKeys.geometries) {
+      if (subKey === 'add') setAddGeometry(true)
+      else selectGeometry(subKey)
+    } else if (key.includes(menuKeys.simulation)) {
+      const id = key.split('&').pop()
+      selectSimulation(id, subKey)
+    }
   }
 
   /**
@@ -248,7 +229,17 @@ const Project = () => {
   }
 
   /**
-   * On simulation select
+   * Select geometry
+   * @param {string} id Id
+   */
+  const selectGeometry = (id) => {
+    const geometry = geometries.find((g) => g.id === id)
+
+    setCurrentGeometry(geometry)
+  }
+
+  /**
+   * Select simulation
    * @param {string} id Id
    * @param {string} type Type
    */
@@ -268,6 +259,11 @@ const Project = () => {
     setCurrentSimulation()
     setCurrentType()
   }
+
+  // Geometries render build
+  const geometriesRender = geometries.map((g) => (
+    <Menu.Item key={g.id}>{g.name}</Menu.Item>
+  ))
 
   // Simulations render build
   const simulationsRender = simulations.map((s) => {
@@ -340,14 +336,7 @@ const Project = () => {
               disabled={true}
               style={{ cursor: 'unset' }}
             >
-              <Typography.Title
-                className="Project-title"
-                level={4}
-                editable={{
-                  onChange: handleTitle,
-                  maxLength: 50
-                }}
-              >
+              <Typography.Title className="Project-title" level={4}>
                 {project.title}
               </Typography.Title>
             </Menu.Item>
@@ -363,6 +352,7 @@ const Project = () => {
               }
               title="Geometries"
             >
+              {geometriesRender}
               <Menu.Item key="add" icon={<PlusOutlined />} />
             </Menu.SubMenu>
 
@@ -375,7 +365,6 @@ const Project = () => {
                 New simulation
               </Button>
             </Menu.Item>
-
             {simulationsRender}
           </Menu>
         </Layout.Sider>
@@ -386,17 +375,17 @@ const Project = () => {
             onOk={onSelectorOk}
             onCancel={onSelectorCancel}
           />
-          <Geometry.Add visible={addGeometry} setVisible={setAddGeometry} />
+          <Geometry.Add
+            visible={addGeometry}
+            project={project}
+            setVisible={setAddGeometry}
+          />
           <Panel
             visible={!!currentGeometry}
             title="Geometry"
             onClose={() => setCurrentGeometry()}
           >
-            <Geometry
-              simulation={currentSimulation}
-              part={partSummary}
-              swr={{ mutateOneSimulation }}
-            />
+            <Geometry geometry={currentGeometry} />
           </Panel>
           <Simulation
             user={user}

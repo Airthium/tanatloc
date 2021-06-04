@@ -117,6 +117,10 @@ const createTables = async () => {
     console.info(' + Project table')
     await createProjectTable()
 
+    // Geometries
+    console.info(' + Geometry table')
+    await createGeometryTable()
+
     // Simulations
     console.info(' + Simulation table')
     await createSimulationTable()
@@ -145,6 +149,8 @@ const checkTable = async (table) => {
   const exists = res.rows[0].exists
   if (exists) {
     console.warn(' - Table ' + table + ' already exists')
+  } else {
+    console.warn(' - Create')
   }
 
   return exists
@@ -404,6 +410,14 @@ const createWorkspaceTable = async () => {
  */
 const createProjectTable = async () => {
   await createTable(tables.PROJECTS)
+}
+
+/**
+ * Create geometry table
+ * @memberof module:install
+ */
+const createGeometryTable = async () => {
+  await createTable(tables.GEOMETRIES)
 }
 
 /**

@@ -75,6 +75,7 @@ const get = async (id, data) => {
     workspace.users = users
   }
 
+  // Get groups
   if (workspace?.groups) {
     const groups = await Promise.all(
       workspace.groups.map(async (group) => {
@@ -258,7 +259,7 @@ const del = async (user, workspace) => {
   if (data.groups) {
     await Promise.all(
       data.groups.map(async (group) => {
-        await Group.update({ id: group }, [
+        await Group.update({ id: group.id }, [
           {
             key: 'workspaces',
             type: 'array',

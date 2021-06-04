@@ -1,15 +1,16 @@
-/** @module route/projects */
+/** @module route/simulations */
 
 import getSessionId from '../session'
 import auth from '../auth'
 
+import GeometryLib from '@/lib/geometry'
 import ProjectLib from '@/lib/project'
 import WorkspaceLib from '@/lib/workspace'
 
 import Sentry from '@/lib/sentry'
 
 /**
- * Projects API
+ * Geometries API
  * @param {Object} req Request
  * @param {Object} res Response
  */
@@ -19,40 +20,42 @@ export default async (req, res) => {
   if (!sessionId) return
 
   if (req.method === 'POST') {
-    // Get projects list
+    // Get geometries list
     try {
       // Ids
-      const ids = req.body.ids
+      let ids = req.body.ids
 
       if (!ids) {
-        res.status(200).json({ projects: [] })
+        res.status(200).json({ geometries: [] })
         return
       }
 
-      const projectsTmp = await Promise.all(
+      const geometriesTmp = await Promise.all(
         ids.map(async (id) => {
           try {
-            const project = await ProjectLib.get(id, [
-              'title',
-              'description',
-              'avatar',
+            const geometry = await GeometryLib.get(id, [
+              'name',
+              'originalfilename',
+              'summary',
+              'project'
+            ])
+
+            // Check authorization
+            const projectAuth = await ProjectLib.get(geometry.project, [
               'owners',
               'users',
               'groups',
-              'simulations',
               'workspace'
             ])
-
-            const workspaceAuth = await WorkspaceLib.get(project.workspace, [
-              'owners',
-              'users',
-              'groups'
-            ])
-            if (!(await auth(sessionId, project, workspaceAuth))) {
+            const workspaceAuth = await WorkspaceLib.get(
+              projectAuth.workspace,
+              ['owners', 'users', 'groups']
+            )
+            if (!(await auth(sessionId, projectAuth, workspaceAuth))) {
               return
             }
 
-            return project
+            return geometry
           } catch (err) {
             console.warn(err)
             return null
@@ -60,9 +63,9 @@ export default async (req, res) => {
         })
       )
 
-      const projects = projectsTmp.filter((p) => p)
+      const geometries = geometriesTmp.filter((p) => p)
 
-      res.status(200).json({ projects })
+      res.status(200).json({ geometries })
     } catch (err) {
       console.error(err)
       res.status(500).json({ error: true, message: err.message })

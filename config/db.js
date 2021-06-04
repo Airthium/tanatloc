@@ -259,6 +259,10 @@ const schemas = {
       constraint: 'NOT NULL'
     },
     {
+      name: 'geometries',
+      type: 'UUID[]'
+    },
+    {
       name: 'simulations',
       type: 'UUID[]'
     },
@@ -315,6 +319,10 @@ const schemas = {
     {
       name: 'json',
       type: 'TEXT'
+    },
+    {
+      name: 'summary',
+      type: 'JSONB'
     },
     {
       name: 'project',

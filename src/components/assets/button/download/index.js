@@ -1,24 +1,24 @@
 import PropTypes from 'prop-types'
 import { Button, Tooltip } from 'antd'
-import { EditOutlined } from '@ant-design/icons'
+import { DownloadOutlined } from '@ant-design/icons'
 
 /**
- * Edit button
+ * Download button
  * @memberof module:components/assets/button
  * @param {Object} props Props
  */
-const EditButton = ({ disabled, loading, children, onEdit }) => {
+const DownloadButton = ({ disabled, loading, children, onDownload }) => {
   /**
    * Render
    */
   return (
-    <Tooltip title="Edit">
+    <Tooltip title="Download">
       <Button
         disabled={disabled}
         loading={loading}
-        icon={<EditOutlined />}
+        icon={<DownloadOutlined />}
         style={{ backgroundColor: 'none', border: 'none' }}
-        onClick={onEdit}
+        onClick={onDownload}
       >
         {children}
       </Button>
@@ -26,11 +26,11 @@ const EditButton = ({ disabled, loading, children, onEdit }) => {
   )
 }
 
-EditButton.propTypes = {
+DownloadButton.propTypes = {
   disabled: PropTypes.bool,
   loading: PropTypes.bool,
   children: PropTypes.node,
-  onEdit: PropTypes.func.isRequired
+  onDownload: PropTypes.func.isRequired
 }
 
-export default EditButton
+export default DownloadButton

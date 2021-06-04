@@ -8,7 +8,6 @@ import GeometryDB from '@/database/geometry'
 
 import Project from '../project'
 import Tools from '../tools'
-import { readFile } from 'fs'
 
 /**
  * Add geometry
@@ -90,6 +89,16 @@ const get = async (id, data) => {
 }
 
 /**
+ * Update geometry
+ * @param {Object} geometry Geometry { id }
+ * @param {Object} data Data [{ key, value, ... }, ...]
+ */
+const update = async (geometry, data) => {
+  // Update
+  await GeometryDB.update(geometry, data)
+}
+
+/**
  * Delete geometry
  * @param {Object} geometry Geometry { id }
  */
@@ -143,4 +152,19 @@ const del = async (geometry) => {
   await GeometryDB.del(geometry)
 }
 
-export default { add, get, del }
+const read = async (geometry) => {
+  // Data
+  const geometryData = await get(geometry.id, ['extension', 'uploadfilename'])
+
+  // Read
+  const buffer = await Tools.readFile(
+    path.join(storage.GEOMETRY, geometryData.uploadfilename)
+  )
+
+  return {
+    buffer: Buffer.from(buffer),
+    extension: geometryData.extension
+  }
+}
+
+export default { add, get, update, del, read }

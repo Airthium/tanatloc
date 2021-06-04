@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types'
 import { useState } from 'react'
 import { Space, Typography, Upload } from 'antd'
 import { LoadingOutlined, UploadOutlined } from '@ant-design/icons'
@@ -11,7 +12,7 @@ const errors = {
   addError: 'Unable to add geometry'
 }
 
-const Add = ({ visible, project, setVisible }) => {
+const Add = ({ visible, project, swr, setVisible }) => {
   // State
   const [loading, setLoading] = useState(false)
 
@@ -39,21 +40,9 @@ const Add = ({ visible, project, setVisible }) => {
     if (info.file.status === 'done') {
       const buffer = await getFile(info.file.originFileObj)
 
-      // // Diff scheme
-      // const diff = {
-      //   ...simulation.scheme.configuration.geometry,
-      //   file: {
-      //     type: 'geometry',
-      //     name: info.file.name,
-      //     uid: info.file.uid,
-      //     buffer: Buffer.from(buffer)
-      //   },
-      //   done: true
-      // }
-
       try {
-        // Add geometry
-        await GeometryAPI.add(
+        // API
+        const geometry = await GeometryAPI.add(
           { id: project.id },
           {
             name: info.file.name,
@@ -62,21 +51,9 @@ const Add = ({ visible, project, setVisible }) => {
           }
         )
 
-        //   // Update simulation
-        //   await SimulationAPI.update({ id: simulation.id }, [
-        //     {
-        //       key: 'scheme',
-        //       type: 'json',
-        //       method: 'set',
-        //       path: ['configuration', 'geometry'],
-        //       value: diff
-        //     }
-        //   ])
-        //   // Mutate simulation
-        //   swr.mutateOneSimulation({ ...simulation }, true)
-        // TODO
+        // Local
+        swr.addOneGeometry(geometry)
       } catch (err) {
-        console.log(err)
         ErrorNotification(errors.addError, err)
       } finally {
         setLoading(false)
@@ -140,6 +117,17 @@ const Add = ({ visible, project, setVisible }) => {
       </Space>
     </Dialog>
   )
+}
+
+Add.propTypes = {
+  visible: PropTypes.bool,
+  project: PropTypes.exact({
+    id: PropTypes.string.isRequired
+  }).isRequired,
+  swr: PropTypes.exact({
+    addOneGeometry: PropTypes.func.isRequired
+  }).isRequired,
+  setVisible: PropTypes.func.isRequired
 }
 
 export default Add

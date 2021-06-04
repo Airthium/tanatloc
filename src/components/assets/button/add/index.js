@@ -7,7 +7,7 @@ import { PlusCircleOutlined } from '@ant-design/icons'
  * @memberof module:components/assets/button
  * @param {Object} props Props
  */
-const AddButton = ({ disabled, loading, onAdd, children }) => {
+const AddButton = ({ disabled, loading, children, onAdd }) => {
   /**
    * Render
    */
@@ -18,7 +18,7 @@ const AddButton = ({ disabled, loading, onAdd, children }) => {
       icon={<PlusCircleOutlined />}
       onClick={onAdd}
     >
-      {children || 'Add'}
+      {children}
     </Button>
   )
 }
@@ -26,8 +26,8 @@ const AddButton = ({ disabled, loading, onAdd, children }) => {
 AddButton.propTypes = {
   disabled: PropTypes.bool,
   loading: PropTypes.bool,
-  onAdd: PropTypes.func.isRequired,
-  children: PropTypes.node
+  children: PropTypes.node,
+  onAdd: PropTypes.func.isRequired
 }
 
 export default AddButton

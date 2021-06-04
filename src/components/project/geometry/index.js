@@ -1,40 +1,28 @@
 import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
-import {
-  Alert,
-  Button,
-  Collapse,
-  Divider,
-  Layout,
-  Space,
-  Spin,
-  Typography,
-  Upload
-} from 'antd'
-import {
-  DeleteOutlined,
-  DownloadOutlined,
-  LoadingOutlined,
-  UploadOutlined
-} from '@ant-design/icons'
+import { Divider, Layout, Space, Typography } from 'antd'
 
 import Add from './add'
+import Edit from './edit'
 
 import Loading from '@/components/loading'
-import { DeleteDialog } from '@/components/assets/dialog'
-import { Error } from '@/components/assets/notification'
+import {
+  DeleteButton,
+  DownloadButton,
+  EditButton
+} from '@/components/assets/button'
+import { Error as ErrorNotification } from '@/components/assets/notification'
 
-// import SimulationAPI from '@/api/simulation'
-// import FileAPI from '@/api/file'
+import GeometryAPI from '@/api/geometry'
 
 /**
  * Errors simulation/geometry
  * @memberof module:components/project/simulation
  */
 const errors = {
-  updateError: 'Unable to update the simulation',
-  downloadError: 'Unable to download the file',
-  UNABLE_TO_LOAD: 'Unable to load geometry'
+  downloadError: 'Unable to download geometry',
+  updateError: 'Unable to update geometry',
+  delError: 'Unable to delete geometry'
 }
 
 /**
@@ -42,129 +30,108 @@ const errors = {
  * @memberof module:components/project/simulation
  * @param {Object} props Props
  */
-const Geometry = ({ geometry, part, swr }) => {
+const Geometry = ({ geometry, swr }) => {
   // State
-  const [loading, setLoading] = useState(false)
-  const [deleteVisible, setDeleteVisible] = useState(false)
-  const [deleting, setDeleting] = useState(false)
   const [downloading, setDownloading] = useState(false)
-
-  // Units LaTeX
-  useEffect(() => {}, [part])
+  const [editVisible, setEditVisible] = useState(false)
+  const [deleting, setDeleting] = useState(false)
 
   // Loading
   useEffect(() => {
-    if (!geometry) setLoading(true)
-    else {
-      setLoading(false)
-      window.MathJax?.typeset()
-    }
+    window.MathJax?.typeset()
   }, [geometry])
-
-  /**
-   * On delete
-   */
-  const onDelete = async () => {
-    // setDeleting(true)
-    // // Diff scheme
-    // const diff = {
-    //   ...simulation.scheme.configuration.geometry,
-    //   file: 'remove',
-    //   done: false
-    // }
-    // try {
-    //   // API
-    //   await SimulationAPI.update({ id: simulation.id }, [
-    //     {
-    //       key: 'scheme',
-    //       type: 'json',
-    //       method: 'set',
-    //       path: ['configuration', 'geometry'],
-    //       value: diff
-    //     }
-    //   ])
-    //   // Local
-    //   swr.mutateOneSimulation({
-    //     ...simulation,
-    //     scheme: {
-    //       ...simulation.scheme,
-    //       configuration: {
-    //         ...simulation.scheme.configuration,
-    //         geometry: {
-    //           ...simulation.scheme.configuration.geometry,
-    //           file: undefined,
-    //           done: false
-    //         }
-    //       }
-    //     }
-    //   })
-    // } catch (err) {
-    //   Error(errors.updateError, err)
-    // } finally {
-    //   setDeleting(false)
-    //   setDeleteVisible(false)
-    // }
-  }
 
   /**
    * On download
    */
   const onDownload = async () => {
-    // setDownloading(true)
-    // const file = {
-    //   origin: simulation.scheme.configuration.geometry.file.origin,
-    //   originPath: simulation.scheme.configuration.geometry.file.originPath
-    // }
-    // try {
-    //   const content = await FileAPI.get({ id: simulation.id }, file)
-    //   const data = new File(
-    //     [Buffer.from(content.buffer).toString()],
-    //     file.origin
-    //   )
-    //   const url = window.URL.createObjectURL(data)
-    //   const link = document.createElement('a')
-    //   link.href = url
-    //   link.setAttribute('download', file.origin)
-    //   link.click()
-    //   link.remove()
-    // } catch (err) {
-    //   Error(errors.downloadError, err)
-    // } finally {
-    //   setDownloading(false)
-    // }
+    setDownloading(true)
+
+    try {
+      const file = await GeometryAPI.download({ id: geometry.id })
+      const data = new File(
+        [Buffer.from(file.buffer).toString()],
+        geometry.name + '.' + file.extension
+      )
+      const url = window.URL.createObjectURL(data)
+      const link = document.createElement('a')
+      link.href = url
+      link.setAttribute('download', geometry.name + '.' + file.extension)
+      link.click()
+      link.remove()
+    } catch (err) {
+      ErrorNotification(errors.downloadError, err)
+    } finally {
+      setDownloading(false)
+    }
+  }
+
+  /**
+   * On edit
+   */
+  const onEdit = async ({ name }) => {
+    try {
+      // API
+      await GeometryAPI.update({ id: geometry.id }, [
+        {
+          key: 'name',
+          value: name
+        }
+      ])
+
+      // Local
+      swr.mutateOneGeometry({ ...geometry, name })
+    } catch (err) {
+      ErrorNotification(errors.updateError, err)
+    }
+  }
+
+  /**
+   * On delete
+   */
+  const onDelete = async () => {
+    setDeleting(true)
+
+    try {
+      // API
+      await GeometryAPI.del({ id: geometry.id })
+
+      // Local
+      swr.delOneGeometry(geometry)
+    } catch (err) {
+      ErrorNotification(errors.delError, err)
+    } finally {
+      setDeleting(false)
+    }
   }
 
   /**
    * Render
    */
-  if (loading) return <Loading.Simple />
+  if (!geometry) return <Loading.Simple />
   else
     return (
       <Layout>
         <Layout.Content>
           <Space direction="vertical">
             <Typography.Title level={5}>Informations</Typography.Title>
-            <Typography.Text>
-              <b>File:</b> {geometry.name}{' '}
-            </Typography.Text>
-            <Typography.Text>
-              <b>Unit:</b> \(m\)
-            </Typography.Text>
+            <Typography.Text>File: {geometry.name} </Typography.Text>
+            <Typography.Text>Unit: \(m\)</Typography.Text>
             {geometry.summary ? (
               <>
                 {geometry.summary.solids && (
                   <Typography.Text>
-                    <b>Number of solids:</b> {geometry.summary.solids.length}
+                    Number of solids: {geometry.summary.solids.length}
                   </Typography.Text>
                 )}
                 {geometry.summary.faces && (
                   <Typography.Text>
-                    <b>Number of faces:</b> {geometry.summary.faces.length}
+                    Number of faces: {geometry.summary.faces.length}
                   </Typography.Text>
                 )}
                 {geometry.summary.edges && (
                   <Typography.Text>
-                    <b>Number of edges:</b> {geometry.summary.edges.length}
+                    Number of edges: {geometry.summary.edges.length}
                   </Typography.Text>
                 )}
               </>
@@ -172,63 +139,43 @@ const Geometry = ({ geometry, part, swr }) => {
               <Typography.Text>No summary available</Typography.Text>
             )}
 
-            <div style={{ textAlign: 'right' }}>
-              <Button
-                type="primary"
-                icon={<DownloadOutlined />}
-                loading={downloading}
-                onClick={onDownload}
-              />
-            </div>
-
             <Divider type="horizontal" />
 
-            <DeleteDialog
-              visible={deleteVisible}
-              onCancel={() => setDeleteVisible(false)}
-              onOk={onDelete}
-              loading={deleting}
+            <Space
+              direction=""
+              style={{ width: '100%', justifyContent: 'space-around' }}
             >
-              Are you sure delete this geometry?
-            </DeleteDialog>
-            <Button
-              type="danger"
-              icon={<DeleteOutlined />}
-              onClick={() => setDeleteVisible(true)}
-            >
-              Delete geometry
-            </Button>
+              <DownloadButton loading={downloading} onDownload={onDownload} />
+              <Edit
+                visible={editVisible}
+                geometry={geometry}
+                setVisible={setEditVisible}
+                onEdit={onEdit}
+              />
+              <EditButton onEdit={() => setEditVisible(true)} />
+              <DeleteButton
+                loading={deleting}
+                text="Are you sure to delete this geometry?"
+                onDelete={onDelete}
+              />
+            </Space>
           </Space>
         </Layout.Content>
       </Layout>
     )
 }
 
-// Geometry.propTypes = {
-//   simulation: PropTypes.shape({
-//     id: PropTypes.string.isRequired,
-//     scheme: PropTypes.shape({
-//       configuration: PropTypes.shape({
-//         geometry: PropTypes.shape({
-//           file: PropTypes.shape({
-//             glb: PropTypes.string.isRequired,
-//             originPath: PropTypes.string.isRequired
-//           })
-//         }).isRequired
-//       }).isRequired
-//     }).isRequired
-//   }).isRequired,
-//   part: PropTypes.shape({
-//     error: PropTypes.bool,
-//     message: PropTypes.string,
-//     solids: PropTypes.array,
-//     faces: PropTypes.array,
-//     edges: PropTypes.array
-//   }),
-//   swr: PropTypes.shape({
-//     mutateOneSimulation: PropTypes.func.isRequired
-//   }).isRequired
-// }
+Geometry.propTypes = {
+  geometry: PropTypes.exact({
+    id: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
+    summary: PropTypes.object
+  }),
+  swr: PropTypes.exact({
+    mutateOneGeometry: PropTypes.func.isRequired,
+    delOneGeometry: PropTypes.func.isRequired
+  }).isRequired
+}
 
 Geometry.Add = Add
 export default Geometry

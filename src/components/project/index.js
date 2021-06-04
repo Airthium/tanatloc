@@ -58,7 +58,7 @@ const Project = () => {
   // State
   const [selectorVisible, setSelectorVisible] = useState(false)
   const [addGeometry, setAddGeometry] = useState(false)
-  const [currentGeometry, setCurrentGeometry] = useState(false)
+  const [currentGeometry, setCurrentGeometry] = useState()
   const [currentSimulation, setCurrentSimulation] = useState()
   const [currentType, setCurrentType] = useState()
   const [partSummary, setPartSummary] = useState()
@@ -76,8 +76,16 @@ const Project = () => {
       loadingSimulations
     }
   ] = SimulationAPI.useSimulations(project?.simulations)
-  const [geometries] = GeometryAPI.useGeometries(project?.geometries)
-  console.log(geometries)
+  const [
+    geometries,
+    {
+      addOneGeometry,
+      delOneGeometry,
+      mutateOneGeometry,
+      errorGeometries,
+      loadingGeometries
+    }
+  ] = GeometryAPI.useGeometries(project?.geometries)
 
   // Not logged -> go to login page
   useEffect(() => {
@@ -311,7 +319,7 @@ const Project = () => {
   /**
    * Render
    */
-  if (loadingUser || loadingProject || loadingSimulations)
+  if (loadingUser || loadingProject || loadingGeometries || loadingSimulations)
     return <Loading.Simple />
   if (project === 'Unauthorized') return <NotAuthorized />
   else
@@ -377,16 +385,28 @@ const Project = () => {
           />
           <Geometry.Add
             visible={addGeometry}
-            project={project}
+            project={{
+              id: project.id
+            }}
+            swr={{ addOneGeometry }}
             setVisible={setAddGeometry}
           />
-          <Panel
-            visible={!!currentGeometry}
-            title="Geometry"
-            onClose={() => setCurrentGeometry()}
-          >
-            <Geometry geometry={currentGeometry} />
-          </Panel>
+          {currentGeometry && (
+            <Panel
+              visible={true}
+              title="Geometry"
+              onClose={() => setCurrentGeometry()}
+            >
+              <Geometry
+                geometry={{
+                  id: currentGeometry.id,
+                  name: currentGeometry.name,
+                  summary: currentGeometry.summary
+                }}
+                swr={{ mutateOneGeometry, delOneGeometry }}
+              />
+            </Panel>
+          )}
           <Simulation
             user={user}
             simulation={currentSimulation}

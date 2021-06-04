@@ -31,8 +31,8 @@ const Dialog = ({
   // Layout
   const layout = {
     layout: 'vertical',
-    labelCol: { span: 20 },
-    wrapperCol: { span: 20 }
+    labelCol: { offset: 2, span: 20 },
+    wrapperCol: { offset: 2, span: 20 }
   }
 
   /**

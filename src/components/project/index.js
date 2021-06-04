@@ -18,6 +18,9 @@ import { Error } from '@/components/assets/notification'
 import Loading from '@/components/loading'
 import NotAuthorized from '@/components/notauthorized'
 
+import Panel from './panel'
+import Geometry from './geometry'
+console.log(Geometry.Add)
 import View from './view'
 import Data from './data'
 import Simulation from './simulation'
@@ -54,6 +57,8 @@ const Project = () => {
 
   // State
   const [selectorVisible, setSelectorVisible] = useState(false)
+  const [addGeometry, setAddGeometry] = useState(false)
+  const [currentGeometry, setCurrentGeometry] = useState(false)
   const [currentSimulation, setCurrentSimulation] = useState()
   const [currentType, setCurrentType] = useState()
   const [partSummary, setPartSummary] = useState()
@@ -179,9 +184,17 @@ const Project = () => {
    * On menu click
    * @param {Object} data Data { key }
    */
-  const onMenuClick = ({ key, keyPath }) => {
-    if (keyPath[0] === menuKeys.geometries) console.log('geometries')
-    else if (key.includes(menuKeys.simulation)) selectSimulation(key)
+  const onMenuClick = ({ keyPath }) => {
+    const key = keyPath.pop()
+    const subKey = keyPath.pop()
+
+    if (key === menuKeys.geometries) {
+      if (subKey === 'add') setAddGeometry(true)
+      else setCurrentGeometry(subKey)
+    } else if (key.includes(menuKeys.simulation)) {
+      const id = key.split('&').pop()
+      selectSimulation(id, subKey)
+    }
   }
 
   /**
@@ -236,16 +249,13 @@ const Project = () => {
 
   /**
    * On simulation select
-   * @param {string} key Key
+   * @param {string} id Id
+   * @param {string} type Type
    */
-  const selectSimulation = (key) => {
+  const selectSimulation = (id, type) => {
     setCurrentType()
 
-    const descriptor = key.split('&')
-    const simulationId = descriptor[1]
-    const type = descriptor[2]
-
-    const simulation = simulations.find((s) => s.id === simulationId)
+    const simulation = simulations.find((s) => s.id === id)
 
     setCurrentSimulation(simulation)
     setCurrentType(type)
@@ -266,61 +276,33 @@ const Project = () => {
     Object.keys(configuration).forEach((key) => {
       if (key === 'part') return
       const child = configuration[key]
-      if (!child.subMenus?.length) {
-        categories[child.index] = (
-          <Menu.Item
-            className="menu-item-with-line"
-            key={menuKeys.simulation + '&' + s.id + '&' + key}
-            icon={
-              child.error ? (
-                <CloseCircleOutlined style={{ color: 'red' }} />
-              ) : child.done ? (
-                <CheckCircleOutlined style={{ color: 'green' }} />
-              ) : (
-                <ExclamationCircleOutlined style={{ color: 'orange' }} />
-              )
-            }
-          >
-            {child.title}
-          </Menu.Item>
-        )
-      } else {
-        const subMenus = child.subMenus.map((subMenu, index) => {
-          return (
-            <Menu.Item
-              key={menuKeys.simulation + '&' + s.id + '&' + key + '&' + index}
-            >
-              {subMenu.title}
-            </Menu.Item>
-          )
-        })
-        categories[child.index] = (
-          <Menu.SubMenu
-            key={menuKeys.simulation + '&' + s.id + '&' + key}
-            icon={
-              child.done ? (
-                <CheckCircleOutlined style={{ color: 'green' }} />
-              ) : (
-                <ExclamationCircleOutlined style={{ color: 'orange' }} />
-              )
-            }
-            title={child.title}
-            onTitleClick={onMenuClick}
-          >
-            {subMenus}
-          </Menu.SubMenu>
-        )
-      }
+      categories[child.index] = (
+        <Menu.Item
+          className="menu-item-with-line"
+          key={key}
+          icon={
+            child.error ? (
+              <CloseCircleOutlined style={{ color: 'red' }} />
+            ) : child.done ? (
+              <CheckCircleOutlined style={{ color: 'green' }} />
+            ) : (
+              <ExclamationCircleOutlined style={{ color: 'orange' }} />
+            )
+          }
+        >
+          {child.title}
+        </Menu.Item>
+      )
     })
     return (
       <Menu.SubMenu
-        key={menuKeys.simulation + s.id}
+        key={'simulation&' + s.id}
         icon={<CalculatorOutlined />}
         title={s.name}
       >
         <Menu.Item
           className="menu-item-with-line"
-          key={menuKeys.simulation + '&' + s.id + '&about'}
+          key={'about'}
           icon={<CheckCircleOutlined style={{ color: 'green' }} />}
         >
           About
@@ -345,11 +327,19 @@ const Project = () => {
           </div>
 
           <Menu mode="inline" onClick={onMenuClick}>
-            <Menu.Item disabled={true} style={{ cursor: 'unset' }}>
+            <Menu.Item
+              key={'go-back'}
+              disabled={true}
+              style={{ cursor: 'unset' }}
+            >
               <GoBack onClick={handleDashboard}>Return to dashboard</GoBack>
             </Menu.Item>
 
-            <Menu.Item disabled={true} style={{ cursor: 'unset' }}>
+            <Menu.Item
+              key={'title'}
+              disabled={true}
+              style={{ cursor: 'unset' }}
+            >
               <Typography.Title
                 className="Project-title"
                 level={4}
@@ -376,7 +366,11 @@ const Project = () => {
               <Menu.Item key="add" icon={<PlusOutlined />} />
             </Menu.SubMenu>
 
-            <Menu.Item disabled={true} style={{ cursor: 'unset' }}>
+            <Menu.Item
+              key={'new_simulation'}
+              disabled={true}
+              style={{ cursor: 'unset' }}
+            >
               <Button icon={<PlusOutlined />} onClick={addSimulation}>
                 New simulation
               </Button>
@@ -392,6 +386,18 @@ const Project = () => {
             onOk={onSelectorOk}
             onCancel={onSelectorCancel}
           />
+          <Geometry.Add visible={addGeometry} setVisible={setAddGeometry} />
+          <Panel
+            visible={!!currentGeometry}
+            title="Geometry"
+            onClose={() => setCurrentGeometry()}
+          >
+            <Geometry
+              simulation={currentSimulation}
+              part={partSummary}
+              swr={{ mutateOneSimulation }}
+            />
+          </Panel>
           <Simulation
             user={user}
             simulation={currentSimulation}

@@ -27,9 +27,7 @@ const tables = {
   WORKSPACES: 'tanatloc_workspaces',
   PROJECTS: 'tanatloc_projects',
   GEOMETRIES: 'tanatloc_geometries',
-  MESHES: 'tanatloc_meshes',
   SIMULATIONS: 'tanatloc_simulations',
-  RESULTS: 'tanatloc_results',
   AVATARS: 'tanatloc_avatars',
   TASKS: 'tanatloc_tasks',
   LINKS: 'tanatloc_links'
@@ -279,6 +277,47 @@ const schemas = {
     },
     {
       name: 'workspace',
+      type: 'UUID',
+      constraint: 'NOT NULL'
+    }
+  ],
+  [tables.GEOMETRIES]: [
+    {
+      name: 'id',
+      type: 'UUID',
+      constraint: 'PRIMARY KEY',
+      default: 'DEFAULT gen_random_uuid()'
+    },
+    {
+      name: 'name',
+      type: 'TEXT',
+      constraint: 'NOT NULL'
+    },
+    {
+      name: 'originalfilename',
+      type: 'TEXT',
+      constraint: 'NOT NULL'
+    },
+    {
+      name: 'extension',
+      type: 'TEXT',
+      constraint: 'NOT NULL'
+    },
+    {
+      name: 'uploadfilename',
+      type: 'TEXT',
+      constraint: 'NOT NULL'
+    },
+    {
+      name: 'glb',
+      type: 'TEXT'
+    },
+    {
+      name: 'json',
+      type: 'TEXT'
+    },
+    {
+      name: 'project',
       type: 'UUID',
       constraint: 'NOT NULL'
     }

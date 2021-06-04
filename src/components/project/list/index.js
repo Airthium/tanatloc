@@ -160,7 +160,7 @@ const ProjectList = ({
                   style={{ height: '80%', borderColor: '#f0f0f0' }}
                 />
                 <Avatar.Group>
-                  {project.ownersRender}
+                  {project.usersRender}
                   {project.groupsRender}
                 </Avatar.Group>
               </div>

@@ -32,7 +32,8 @@ Using server-side rendering (SSR).
 | AUTH_SECRET              | `aaaa...`       | Authentication secret                   |
 | STORAGE_PATH             | `/tmp/tanatloc` | Absolute storage path                   |
 | AVATAR_RELATIVE_PATH     | avatar          | Relative avatar path (from STORAGE)     |
-| SIMULATION_RELATIVE_PATH | simulation      | Realtive simulation path (from STORAGE) |
+| GEOMETRY_RELATIVE_PATH   | geometry        | Relative simulation path (from STORAGE) |
+| SIMULATION_RELATIVE_PATH | simulation      | Relative geometry path (from STORAGE)   |
 
 ### Email
 
@@ -42,71 +43,18 @@ Using server-side rendering (SSR).
 
 ## Dev
 
-Browser:
+Pre-requirements:
 
-```shell
-yarn install
-yarn dev
-```
+- `node`
+- `yarn`
+- `postgresql`
+- docker `tanatloc/worker`
 
-Electron:
+Start:
 
-```shell
-yarn install
-yarn electron-dev
-```
+- `yarn`
+- `yarn dev`
 
-## Build
+## Deployment
 
-Browser:
-
-```shell
-yarn install
-yarn build
-yarn start
-```
-
-Browser (static build):
-
-```shell
-yarn install
-yarn export
-```
-
-Electron
-
-```shell
-yarn install
-yarn electron-build
-```
-
-Docker
-
-```shell
-docker-compose build
-docker-compose up
-```
-
-## Architecture
-
-This project is based on [Next.js](https://github.com/vercel/next.js/).
-
-### Config
-
-Global configuration (server + client side).
-
-### Electron
-
-Electron configuration (using [Nextron](https://github.com/saltyshiomix/nextron)).
-
-### Resources
-
-Electron resources, typically icons.
-
-### Server
-
-Custom server for the electron build (as Next.js does not support builded server).
-
-### Src
-
-Global sources (server + client), including `api`, `components`, `lib`, ...
+The best way to deploy Tanatloc on a server is to use the [Tanatloc deployment script](https://github.com/Airthium/tanatloc-ssr-deploy)

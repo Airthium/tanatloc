@@ -16,6 +16,7 @@ const Dialog = ({
   initialValues,
   onCancel,
   onOk,
+  okButtonProps,
   loading,
   children
 }) => {
@@ -29,8 +30,8 @@ const Dialog = ({
 
   // Layout
   const layout = {
-    layout: 'horizontal',
-    labelCol: { span: 4 },
+    layout: 'vertical',
+    labelCol: { span: 20 },
     wrapperCol: { span: 20 }
   }
 
@@ -54,7 +55,7 @@ const Dialog = ({
           form.resetFields()
         } catch (err) {}
       }}
-      okButtonProps={{ type: 'primary' }}
+      okButtonProps={{ type: 'primary', ...okButtonProps }}
       confirmLoading={loading}
     >
       <Form form={form} {...layout} initialValues={initialValues}>

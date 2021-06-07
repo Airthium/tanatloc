@@ -7,7 +7,7 @@ import Caller from '@/api/call'
  * @param {Array} ids [Simulation's ids]
  */
 const useSimulations = (ids) => {
-  const { data, mutate } = useSWR(
+  const { data, error, mutate } = useSWR(
     ['/api/simulations', JSON.stringify({ ids })],
     Caller.fetcher
   )
@@ -56,6 +56,7 @@ const useSimulations = (ids) => {
       addOneSimulation: addOne,
       delOneSimulation: delOne,
       mutateOneSimulation: mutateOne,
+      errorSimulation: error,
       loadingSimulations: loading
     }
   ]

@@ -6,5 +6,6 @@ import update from './update'
 import del from './del'
 
 import download from './download'
+import getPart from './getPart'
 
-export default { useGeometries, add, update, del, download }
+export default { useGeometries, add, update, del, download, getPart }

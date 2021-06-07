@@ -53,9 +53,14 @@ const Add = ({ visible, project, swr, setVisible }) => {
 
         // Local
         swr.addOneGeometry(geometry)
+        swr.mutateProject({
+          geometries: [project.geometries, geometry]
+        })
+
+        // Close
+        setVisible(false)
       } catch (err) {
         ErrorNotification(errors.addError, err)
-      } finally {
         setLoading(false)
       }
     }
@@ -122,9 +127,11 @@ const Add = ({ visible, project, swr, setVisible }) => {
 Add.propTypes = {
   visible: PropTypes.bool,
   project: PropTypes.exact({
-    id: PropTypes.string.isRequired
+    id: PropTypes.string.isRequired,
+    geometries: PropTypes.array.isRequired
   }).isRequired,
   swr: PropTypes.exact({
+    mutateProject: PropTypes.func.isRequired,
     addOneGeometry: PropTypes.func.isRequired
   }).isRequired,
   setVisible: PropTypes.func.isRequired

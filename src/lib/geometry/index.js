@@ -154,6 +154,10 @@ const del = async (geometry) => {
   await GeometryDB.del(geometry)
 }
 
+/**
+ * Read
+ * @param {Object} geometry Geometry {id }
+ */
 const read = async (geometry) => {
   // Data
   const geometryData = await get(geometry.id, ['extension', 'uploadfilename'])
@@ -169,4 +173,22 @@ const read = async (geometry) => {
   }
 }
 
-export default { add, get, update, del, read }
+/**
+ * Read part
+ * @param {Object} geometry Geometry { id }
+ */
+const readPart = async (geometry) => {
+  // Data
+  const geometryData = await get(geometry.id, ['glb'])
+
+  // Read
+  const buffer = await Tools.readFile(
+    path.join(storage.GEOMETRY, geometryData.glb)
+  )
+
+  return {
+    buffer
+  }
+}
+
+export default { add, get, update, del, read, readPart }

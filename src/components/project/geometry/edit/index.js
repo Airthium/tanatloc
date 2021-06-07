@@ -19,6 +19,10 @@ const Edit = ({ visible, geometry, setVisible, onEdit }) => {
     setLoading(false)
     setVisible(false)
   }
+
+  /**
+   * Render
+   */
   return (
     <Dialog
       title="Edit the geometry's name"

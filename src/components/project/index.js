@@ -13,7 +13,7 @@ import Icon, {
 import Geometries from '/public/icons/geometries'
 
 import { GoBack } from '@/components/assets/button'
-import { Error } from '@/components/assets/notification'
+import { Error as ErrorNotification } from '@/components/assets/notification'
 
 import Loading from '@/components/loading'
 import NotAuthorized from '@/components/notauthorized'
@@ -43,6 +43,10 @@ const menuKeys = {
  * Errors
  */
 const errors = {
+  user: 'Unable to get user',
+  project: 'Unable to get project',
+  simulations: 'Unable to get simulations',
+  geometries: 'Unable to get geometries',
   updateError: 'Unable to update the project',
   addError: 'Unable to add a simulation'
 }
@@ -56,23 +60,28 @@ const Project = () => {
   const { workspaceId, projectId } = router.query
 
   // State
-  const [selectorVisible, setSelectorVisible] = useState(false)
-  const [addGeometry, setAddGeometry] = useState(false)
+  const [geometryAddVisible, setGeometryAddVisible] = useState(false)
+  const [geometryVisible, setGeometryVisible] = useState(false)
   const [currentGeometry, setCurrentGeometry] = useState()
+
+  const [simulationSelectorVisible, setSimulationSelectorVisible] =
+    useState(false)
   const [currentSimulation, setCurrentSimulation] = useState()
   const [currentType, setCurrentType] = useState()
-  const [partSummary, setPartSummary] = useState()
 
   // Data
-  const [user, { loadingUser }] = UserAPI.useUser()
-  const [project, { reloadProject, mutateProject, loadingProject }] =
-    ProjectAPI.useProject(projectId || '')
+  const [user, { errorUser, loadingUser }] = UserAPI.useUser()
+  const [
+    project,
+    { reloadProject, mutateProject, errorProject, loadingProject }
+  ] = ProjectAPI.useProject(projectId || '')
   const [
     simulations,
     {
       addOneSimulation,
       delOneSimulation,
       mutateOneSimulation,
+      errorSimulations,
       loadingSimulations
     }
   ] = SimulationAPI.useSimulations(project?.simulations)
@@ -92,6 +101,24 @@ const Project = () => {
     if (!loadingUser && !user) router.replace('/login')
   }, [user, loadingUser])
 
+  // Errors
+  useEffect(() => {
+    if (errorUser) ErrorNotification(errors.user, errorUser)
+    if (errorProject) ErrorNotification(errors.project, errorProject)
+    if (errorSimulations)
+      ErrorNotification(errors.simulations, errorSimulations)
+    if (errorGeometries) ErrorNotification(errors.geometries, errorGeometries)
+  })
+
+  // Update geometry
+  useEffect(() => {
+    if (currentGeometry) {
+      const geometry = geometries.find((g) => g.id === currentGeometry?.id)
+      if (JSON.stringify(geometry) !== JSON.stringify(currentGeometry))
+        setCurrentGeometry(geometry)
+    }
+  }, [currentGeometry, JSON.stringify(geometries)])
+
   // Update simulation
   useEffect(() => {
     if (currentSimulation) {
@@ -103,71 +130,76 @@ const Project = () => {
 
   // Manage part
   useEffect(() => {
-    const configuration = currentSimulation?.scheme?.configuration
-
-    if (configuration?.geometry?.file) {
-      if (
-        !configuration.part ||
-        ((currentType === 'materials' ||
-          currentType === 'boundaryConditions') &&
-          configuration?.part?.type !== 'geometry')
-      ) {
-        // Force geometry
-        const newSimulation = { ...currentSimulation }
-
-        // Update local
-        newSimulation.scheme.configuration.part = configuration.geometry.file
-
-        // Update simulation
-        SimulationAPI.update({ id: currentSimulation.id }, [
-          {
-            key: 'scheme',
-            type: 'json',
-            method: 'set',
-            path: ['configuration', 'part'],
-            value: configuration.geometry.file
-          }
-        ])
-          .then(() => {
-            // Mutate
-            mutateOneSimulation(newSimulation)
-
-            // State
-            setCurrentSimulation(newSimulation)
-          })
-          .catch((err) => {
-            Error(errors.updateError, err)
-          })
-      }
-    } else {
-      // Check for removed geometry
-      if (configuration?.part?.type === 'geometry') {
-        // Remove part
-        SimulationAPI.update({ id: currentSimulation.id }, [
-          {
-            key: 'scheme',
-            type: 'json',
-            method: 'erase',
-            path: ['configuration', 'part']
-          }
-        ])
-          .then(() => {
-            // Update local
-            const newSimulation = { ...currentSimulation }
-            newSimulation.scheme.configuration.part = { needCleanup: true }
-
-            // Mutate
-            mutateOneSimulation(newSimulation)
-
-            // State
-            setCurrentSimulation(newSimulation)
-          })
-          .catch((err) => {
-            Error(errors.updateError, err)
-          })
-      }
+    if (!currentGeometry) {
+      setCurrentGeometry(geometries[0])
     }
-  }, [currentSimulation, currentType])
+  }, [currentGeometry, geometries])
+  // useEffect(() => {
+  //   const configuration = currentSimulation?.scheme?.configuration
+
+  //   if (configuration?.geometry?.file) {
+  //     if (
+  //       !configuration.part ||
+  //       ((currentType === 'materials' ||
+  //         currentType === 'boundaryConditions') &&
+  //         configuration?.part?.type !== 'geometry')
+  //     ) {
+  //       // Force geometry
+  //       const newSimulation = { ...currentSimulation }
+
+  //       // Update local
+  //       newSimulation.scheme.configuration.part = configuration.geometry.file
+
+  //       // Update simulation
+  //       SimulationAPI.update({ id: currentSimulation.id }, [
+  //         {
+  //           key: 'scheme',
+  //           type: 'json',
+  //           method: 'set',
+  //           path: ['configuration', 'part'],
+  //           value: configuration.geometry.file
+  //         }
+  //       ])
+  //         .then(() => {
+  //           // Mutate
+  //           mutateOneSimulation(newSimulation)
+
+  //           // State
+  //           setCurrentSimulation(newSimulation)
+  //         })
+  //         .catch((err) => {
+  //           ErrorNotification(errors.updateError, err)
+  //         })
+  //     }
+  //   } else {
+  //     // Check for removed geometry
+  //     if (configuration?.part?.type === 'geometry') {
+  //       // Remove part
+  //       SimulationAPI.update({ id: currentSimulation.id }, [
+  //         {
+  //           key: 'scheme',
+  //           type: 'json',
+  //           method: 'erase',
+  //           path: ['configuration', 'part']
+  //         }
+  //       ])
+  //         .then(() => {
+  //           // Update local
+  //           const newSimulation = { ...currentSimulation }
+  //           newSimulation.scheme.configuration.part = { needCleanup: true }
+
+  //           // Mutate
+  //           mutateOneSimulation(newSimulation)
+
+  //           // State
+  //           setCurrentSimulation(newSimulation)
+  //         })
+  //         .catch((err) => {
+  //           ErrorNotification(errors.updateError, err)
+  //         })
+  //     }
+  //   }
+  // }, [currentSimulation, currentType])
 
   /**
    * Handle dashboard
@@ -180,13 +212,6 @@ const Project = () => {
   }
 
   /**
-   * Add simulation
-   */
-  const addSimulation = () => {
-    setSelectorVisible(true)
-  }
-
-  /**
    * On menu click
    * @param {Object} data Data { key }
    */
@@ -195,12 +220,19 @@ const Project = () => {
     const subKey = keyPath.pop()
 
     if (key === menuKeys.geometries) {
-      if (subKey === 'add') setAddGeometry(true)
+      if (subKey === 'add') setGeometryAddVisible(true)
       else selectGeometry(subKey)
     } else if (key.includes(menuKeys.simulation)) {
       const id = key.split('&').pop()
       selectSimulation(id, subKey)
     }
+  }
+
+  /**
+   * Add simulation
+   */
+  const addSimulation = () => {
+    setSimulationSelectorVisible(true)
   }
 
   /**
@@ -223,7 +255,7 @@ const Project = () => {
       })
 
       // Close selector
-      setSelectorVisible(false)
+      setSimulationSelectorVisible(false)
     } catch (err) {
       Error(errors.addError, err)
     }
@@ -233,7 +265,7 @@ const Project = () => {
    * On selector cancel
    */
   const onSelectorCancel = () => {
-    setSelectorVisible(false)
+    setSimulationSelectorVisible(false)
   }
 
   /**
@@ -244,6 +276,7 @@ const Project = () => {
     const geometry = geometries.find((g) => g.id === id)
 
     setCurrentGeometry(geometry)
+    setGeometryVisible(true)
   }
 
   /**
@@ -379,39 +412,44 @@ const Project = () => {
         <Layout.Content className="no-scroll relative">
           <Simulation.Selector
             user={user}
-            visible={selectorVisible}
+            visible={simulationSelectorVisible}
             onOk={onSelectorOk}
             onCancel={onSelectorCancel}
           />
           <Geometry.Add
-            visible={addGeometry}
+            visible={geometryAddVisible}
             project={{
-              id: project.id
+              id: project.id,
+              geometries: project.geometries
             }}
-            swr={{ addOneGeometry }}
-            setVisible={setAddGeometry}
+            swr={{ mutateProject, addOneGeometry }}
+            setVisible={setGeometryAddVisible}
           />
-          {currentGeometry && (
-            <Panel
-              visible={true}
-              title="Geometry"
-              onClose={() => setCurrentGeometry()}
-            >
+          <Panel
+            visible={geometryVisible}
+            title="Geometry"
+            onClose={() => setGeometryVisible(false)}
+          >
+            {currentGeometry && (
               <Geometry
+                project={{
+                  geometries: project.geometries
+                }}
                 geometry={{
                   id: currentGeometry.id,
                   name: currentGeometry.name,
                   summary: currentGeometry.summary
                 }}
-                swr={{ mutateOneGeometry, delOneGeometry }}
+                swr={{ mutateProject, mutateOneGeometry, delOneGeometry }}
+                close={() => setGeometryVisible(false)}
               />
-            </Panel>
-          )}
+            )}
+          </Panel>
           <Simulation
             user={user}
+            geometries={geometries}
             simulation={currentSimulation}
             type={currentType}
-            part={partSummary}
             swr={{
               reloadProject,
               addOneSimulation,
@@ -424,11 +462,11 @@ const Project = () => {
             project={{
               id: project.id
             }}
+            geometry={currentGeometry}
             simulation={{
               id: currentSimulation?.id,
               part: currentSimulation?.scheme?.configuration?.part
             }}
-            setPartSummary={setPartSummary}
           />
           <Data
             simulation={{

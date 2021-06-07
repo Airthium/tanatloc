@@ -58,9 +58,11 @@ import { PartLoader } from '@/lib/three/loaders/PartLoader'
 
 import AvatarAPI from '@/api/avatar'
 import PartAPI from '@/api/part'
+import GeometryAPI from '@/api/geometry'
 
 import { useSelector, useDispatch } from 'react-redux'
 import { highlight, select, unselect } from '@/store/select/action'
+import Geometry from '../geometry'
 
 /**
  * Errors
@@ -72,7 +74,7 @@ const errors = {
 /**
  * ThreeView
  */
-const ThreeView = ({ loading, project, part, setPartSummary }) => {
+const ThreeView = ({ loading, project, part/*, setPartSummary*/ }) => {
   // Ref
   const mount = useRef(null)
   const scene = useRef()
@@ -518,33 +520,33 @@ const ThreeView = ({ loading, project, part, setPartSummary }) => {
       outlinePass.current
     )
 
-    // Summary
-    const solids = mesh.children[0]
-    const faces = mesh.children[1]
-    const edges = mesh.children[2]
-    const summary = {
-      uuid: mesh.uuid,
-      type: mesh.type,
-      solids: solids?.children?.map((solid) => ({
-        name: solid.userData.name,
-        number: solid.userData.number,
-        uuid: solid.userData.uuid,
-        color: solid.material.color
-      })),
-      faces: faces?.children?.map((face) => ({
-        name: face.userData.name,
-        number: face.userData.number,
-        uuid: face.userData.uuid,
-        color: face.material.color
-      })),
-      edges: edges?.children?.map((edge) => ({
-        name: edge.userData.name,
-        number: edge.userData.number,
-        uuid: edge.userData.uuid,
-        color: edge.material.color
-      }))
-    }
-    setPartSummary(summary)
+    // // Summary
+    // const solids = mesh.children[0]
+    // const faces = mesh.children[1]
+    // const edges = mesh.children[2]
+    // const summary = {
+    //   uuid: mesh.uuid,
+    //   type: mesh.type,
+    //   solids: solids?.children?.map((solid) => ({
+    //     name: solid.userData.name,
+    //     number: solid.userData.number,
+    //     uuid: solid.userData.uuid,
+    //     color: solid.material.color
+    //   })),
+    //   faces: faces?.children?.map((face) => ({
+    //     name: face.userData.name,
+    //     number: face.userData.number,
+    //     uuid: face.userData.uuid,
+    //     color: face.material.color
+    //   })),
+    //   edges: edges?.children?.map((edge) => ({
+    //     name: edge.userData.name,
+    //     number: edge.userData.number,
+    //     uuid: edge.userData.uuid,
+    //     color: edge.material.color
+    //   }))
+    // }
+    // setPartSummary(summary)
 
     // Scene
     scene.current.add(mesh)
@@ -837,21 +839,22 @@ const ThreeView = ({ loading, project, part, setPartSummary }) => {
  * View
  * @param {Object} Props props
  */
-const View = ({ project, simulation, setPartSummary }) => {
+const View = ({ project, geometry, simulation, setPartSummary }) => {
   // State
   const [part, setPart] = useState()
   const [loading, setLoading] = useState(false)
 
   // Part
   useEffect(() => {
-    if (simulation?.part) loadPart(simulation.part)
-  }, [simulation?.part])
+    if (geometry) loadPart(geometry)
+  }, [geometry])
 
   /**
    * Load part
    * @param {Object} file File
    */
   const loadPart = async (file) => {
+    console.log(file)
     setLoading(true)
     try {
       if (file.needCleanup) {
@@ -860,12 +863,13 @@ const View = ({ project, simulation, setPartSummary }) => {
         setPartSummary()
       } else {
         // Load
-        const partContent = await PartAPI.get({ id: simulation.id }, file)
+        // const partContent = await PartAPI.get({ id: simulation.id }, file)
+        const partContent = await GeometryAPI.getPart({id: geometry.id})
 
-        if (partContent.error) {
-          setPartSummary({ error: true, message: partContent.message })
-          return
-        }
+        // if (partContent.error) {
+        //   setPartSummary({ error: true, message: partContent.message })
+        //   return
+        // }
 
         setPart(partContent)
       }

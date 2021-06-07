@@ -30,7 +30,7 @@ const errors = {
  * @memberof module:components/project/simulation
  * @param {Object} props Props
  */
-const Geometry = ({ geometry, swr }) => {
+const Geometry = ({ project, geometry, swr, close }) => {
   // State
   const [downloading, setDownloading] = useState(false)
   const [editVisible, setEditVisible] = useState(false)
@@ -80,7 +80,16 @@ const Geometry = ({ geometry, swr }) => {
       ])
 
       // Local
-      swr.mutateOneGeometry({ ...geometry, name })
+      geometry.name = name
+      swr.mutateOneGeometry(geometry)
+      const index = project.geometries.findIndex((g) => g.id === geometry.id)
+      swr.mutateProject({
+        geometries: [
+          ...project.geometries.slice(0, index),
+          geometry,
+          ...project.geometries.slice(index + 1)
+        ]
+      })
     } catch (err) {
       ErrorNotification(errors.updateError, err)
     }
@@ -97,7 +106,16 @@ const Geometry = ({ geometry, swr }) => {
       await GeometryAPI.del({ id: geometry.id })
 
       // Local
+      const filteredGeometries = project.geometries.filter(
+        (g) => g.id !== geometry.id
+      )
+      swr.mutateProject({
+        projects: filteredGeometries
+      })
       swr.delOneGeometry(geometry)
+
+      // Close
+      close()
     } catch (err) {
       ErrorNotification(errors.delError, err)
     } finally {
@@ -166,15 +184,20 @@ const Geometry = ({ geometry, swr }) => {
 }
 
 Geometry.propTypes = {
+  project: PropTypes.exact({
+    geometries: PropTypes.array
+  }),
   geometry: PropTypes.exact({
     id: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
     summary: PropTypes.object
   }),
   swr: PropTypes.exact({
+    mutateProject: PropTypes.func.isRequired,
     mutateOneGeometry: PropTypes.func.isRequired,
     delOneGeometry: PropTypes.func.isRequired
-  }).isRequired
+  }).isRequired,
+  close: PropTypes.func.isRequired
 }
 
 Geometry.Add = Add

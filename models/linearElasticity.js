@@ -30,14 +30,14 @@ const LinearElasticity = {
           name: 'E',
           htmlEntity: 'formula',
           default: 1e9,
-          unit: '\\(Pa\\)'
+          unit: '$Pa$'
         },
         {
           label: "Poisson's ratio",
           name: 'Nu',
           htmlEntity: 'formula',
           default: 0.4,
-          unit: '\\(1\\)'
+          unit: '$1$'
         }
       ]
     },
@@ -51,7 +51,7 @@ const LinearElasticity = {
             label: 'External force (x)',
             htmlEntity: 'formula',
             default: 0,
-            unit: '\\(N.m^{-3}\\)'
+            unit: '$N.m^{-3}$'
           },
           {
             label: 'External force (y)',

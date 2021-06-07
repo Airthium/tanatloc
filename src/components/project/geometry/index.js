@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { Divider, Layout, Space, Typography } from 'antd'
+import { MathJax } from 'better-react-mathjax'
 
 import Add from './add'
 import Edit from './edit'
@@ -35,11 +36,6 @@ const Geometry = ({ project, geometry, swr, close }) => {
   const [downloading, setDownloading] = useState(false)
   const [editVisible, setEditVisible] = useState(false)
   const [deleting, setDeleting] = useState(false)
-
-  // Loading
-  useEffect(() => {
-    window.MathJax?.typeset()
-  }, [geometry])
 
   /**
    * On download
@@ -82,14 +78,6 @@ const Geometry = ({ project, geometry, swr, close }) => {
       // Local
       geometry.name = name
       swr.mutateOneGeometry(geometry)
-      const index = project.geometries.findIndex((g) => g.id === geometry.id)
-      swr.mutateProject({
-        geometries: [
-          ...project.geometries.slice(0, index),
-          geometry,
-          ...project.geometries.slice(index + 1)
-        ]
-      })
     } catch (err) {
       ErrorNotification(errors.updateError, err)
     }
@@ -133,7 +121,12 @@ const Geometry = ({ project, geometry, swr, close }) => {
           <Space direction="vertical">
             <Typography.Title level={5}>Informations</Typography.Title>
             <Typography.Text>File: {geometry.name} </Typography.Text>
-            <Typography.Text>Unit: \(m\)</Typography.Text>
+            <Typography.Text>
+              Unit:{' '}
+              <MathJax inline dynamic>
+                $m$
+              </MathJax>
+            </Typography.Text>
             {geometry.summary ? (
               <>
                 {geometry.summary.solids && (

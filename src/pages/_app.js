@@ -3,6 +3,8 @@ import { Provider } from 'react-redux'
 import { persistStore } from 'redux-persist'
 import { PersistGate } from 'redux-persist/integration/react'
 
+import { MathJaxContext } from 'better-react-mathjax'
+
 import { useStore } from '@/store/store'
 
 import '@/styles/global.less'
@@ -25,13 +27,28 @@ const App = ({ Component, pageProps }) => {
       <PersistGate loading={<Component {...pageProps} />} persistor={persistor}>
         <Head>
           <title>Tanatloc</title>
-          <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
           <meta
             name="viewport"
             content="width=device-width, initial-scale=1.0"
           ></meta>
         </Head>
-        <Component {...pageProps} />
+        <MathJaxContext
+          version={3}
+          config={{
+            tex: {
+              inlineMath: [
+                ['$', '$'],
+                ['\\(', '\\)']
+              ],
+              displayMath: [
+                ['$$', '$$'],
+                ['\\[', '\\]']
+              ]
+            }
+          }}
+        >
+          <Component {...pageProps} />
+        </MathJaxContext>
       </PersistGate>
     </Provider>
   )

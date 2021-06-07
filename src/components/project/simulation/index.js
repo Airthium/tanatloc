@@ -9,8 +9,6 @@ import merge from 'lodash.merge'
 
 import { Error } from '@/components/assets/notification'
 
-import Panel from '../panel'
-
 import About from './about'
 import Geometry from './geometry'
 import Materials from './materials'
@@ -59,11 +57,6 @@ const Selector = ({ user, visible, onOk, onCancel }) => {
   const [current, setCurrent] = useState()
   const [loading, setLoading] = useState(false)
   const [models, setModels] = useState([])
-
-  // MatJax
-  useEffect(() => {
-    window.MathJax?.typeset()
-  }, [current])
 
   // Models
   useEffect(() => {
@@ -130,18 +123,7 @@ Selector.propTypes = {
  * Simulation
  * @param {Object} props Props
  */
-const Simulation = ({
-  user,
-  geometries,
-  simulation,
-  type,
-  part,
-  swr,
-  onClose,
-  setPanelVisible,
-  setPanelTitle,
-  setPanelContent
-}) => {
+const Simulation = ({ user, simulation, swr }) => {
   // State
   const [needUpdate, setNeedUpdate] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -168,17 +150,6 @@ const Simulation = ({
       else setNeedUpdate(false)
     }
   }, [simulation, JSON.stringify(models)])
-
-  /**
-   * Simulation effect
-   */
-  useEffect(() => {
-    setPanelVisible(!!simulation)
-    const configuration = simulation?.scheme?.configuration
-
-    const subScheme = configuration?.[type]
-    setPanelTitle(subScheme ? subScheme.title : 'About')
-  }, [simulation, type])
 
   /**
    * On update
@@ -216,77 +187,6 @@ const Simulation = ({
     setNeedUpdate(false)
   }
 
-  switch (type) {
-    case 'about':
-      setPanelContent(
-        <About
-          simulation={{
-            id: simulation?.id,
-            name: simulation?.name,
-            scheme: simulation?.scheme
-          }}
-          swr={{
-            reloadProject: swr.reloadProject,
-            delOneSimulation: swr.delOneSimulation,
-            mutateOneSimulation: swr.mutateOneSimulation
-          }}
-        />
-      )
-      break
-    case 'geometry':
-      setPanelContent(
-        <Geometry
-          geometries={geometries}
-          simulation={simulation}
-          part={part}
-          swr={{ mutateOneSimulation: swr.mutateOneSimulation }}
-        />
-      )
-      break
-    case 'parameters':
-      setPanelContent(
-        <Parameters
-          simulation={simulation}
-          swr={{ mutateOneSimulation: swr.mutateOneSimulation }}
-        />
-      )
-      break
-    case 'materials':
-      setPanelContent(
-        <Materials
-          simulation={simulation}
-          part={part}
-          swr={{
-            mutateOneSimulation: swr.mutateOneSimulation
-          }}
-          setVisible={setVisible}
-        />
-      )
-      break
-    case 'boundaryConditions':
-      setPanelContent(
-        <BoundaryConditions
-          simulation={simulation}
-          part={part}
-          swr={{
-            mutateOneSimulation: swr.mutateOneSimulation
-          }}
-          setVisible={setVisible}
-        />
-      )
-      break
-    case 'run':
-      setPanelContent(
-        <Run
-          simulation={simulation}
-          swr={{ mutateOneSimulation: swr.mutateOneSimulation }}
-        />
-      )
-      break
-    default:
-      break
-  }
-
   /**
    * Render
    */
@@ -317,18 +217,15 @@ const Simulation = ({
 }
 
 Simulation.propTypes = {
-  user: PropTypes.shape({
+  user: PropTypes.exact({
     authorizedplugins: PropTypes.array
   }).isRequired,
   simulation: PropTypes.shape({
     id: PropTypes.string.isRequired
   }),
-  type: PropTypes.string,
-  part: PropTypes.object,
-  swr: PropTypes.shape({
+  swr: PropTypes.exact({
     mutateOneSimulation: PropTypes.func.isRequired
-  }).isRequired,
-  onClose: PropTypes.func.isRequired
+  }).isRequired
 }
 
 Simulation.Selector = Selector

@@ -63,8 +63,9 @@ const Project = () => {
 
   const [simulationSelector, setSimulationSelector] = useState(false)
   const [currentSimulation, setCurrentSimulation] = useState()
+  const [currentSimulationType, setCurrentSimulationType] = useState()
 
-  const [panelVisible, setPanelVisible] = useState(true)
+  const [panelVisible, setPanelVisible] = useState(false)
   const [panelTitle, setPanelTitle] = useState()
   const [panelContent, setPanelContent] = useState()
 
@@ -107,14 +108,16 @@ const Project = () => {
     if (errorSimulations)
       ErrorNotification(errors.simulations, errorSimulations)
     if (errorGeometries) ErrorNotification(errors.geometries, errorGeometries)
-  })
+  }, [])
 
   // Update geometry
   useEffect(() => {
     if (currentGeometry) {
       const geometry = geometries.find((g) => g.id === currentGeometry?.id)
       if (JSON.stringify(geometry) !== JSON.stringify(currentGeometry))
-        setCurrentGeometry(geometry)
+        if (panelContent?.type?.name === 'Geometry')
+          selectGeometry(currentGeometry.id)
+        else setCurrentGeometry(geometry)
     }
   }, [currentGeometry, JSON.stringify(geometries)])
 
@@ -123,7 +126,7 @@ const Project = () => {
     if (currentSimulation) {
       const simulation = simulations.find((s) => s.id === currentSimulation?.id)
       if (JSON.stringify(simulation) !== JSON.stringify(currentSimulation))
-        setCurrentSimulation(simulation)
+        selectSimulation(currentSimulation.id, currentSimulationType)
     }
   }, [currentSimulation, JSON.stringify(simulations)])
 
@@ -132,7 +135,7 @@ const Project = () => {
     if (!currentGeometry) {
       setCurrentGeometry(geometries[0])
     }
-  }, [currentGeometry, geometries])
+  }, [currentGeometry, JSON.stringify(geometries)])
 
   /**
    * Handle dashboard
@@ -207,6 +210,18 @@ const Project = () => {
   }
 
   /**
+   * On panel close
+   */
+  const onPanelClose = () => {
+    setPanelVisible(false)
+    setPanelTitle()
+    setPanelContent()
+
+    setCurrentSimulation()
+    setCurrentSimulationType()
+  }
+
+  /**
    * Select geometry
    * @param {string} id Id
    */
@@ -244,6 +259,7 @@ const Project = () => {
     const item = configuration[type]
 
     setCurrentSimulation(simulation)
+    setCurrentSimulationType(type)
 
     setPanelVisible(true)
     setPanelTitle(item ? item.title : 'About')
@@ -322,30 +338,6 @@ const Project = () => {
       default:
         break
     }
-  }
-
-  /**
-   * On simulation close
-   */
-  const onSimulationClose = () => {
-    setPanelVisible(false)
-    setPanelTitle()
-    setPanelContent()
-
-    setCurrentSimulation()
-    setCurrentType()
-  }
-
-  const onSimulationVisible = (visible) => {
-    setPanelVisible(visible)
-  }
-
-  const onSimulationTitle = (title) => {
-    setPanelTitle(title)
-  }
-
-  const onSimulationContent = (content) => {
-    setPanelContent(content)
   }
 
   // Geometries render build
@@ -488,26 +480,21 @@ const Project = () => {
           <Panel
             visible={panelVisible}
             title={panelTitle}
-            onClose={() => setPanelVisible(false)}
+            onClose={onPanelClose}
           >
             {panelContent}
           </Panel>
-          {/* <Simulation
+          <Simulation
             user={user}
             geometries={geometries}
             simulation={currentSimulation}
-            type={currentType}
             swr={{
               reloadProject,
               addOneSimulation,
               delOneSimulation,
               mutateOneSimulation
             }}
-            onClose={onSimulationClose}
-            setPanelVisible={onSimulationVisible}
-            setPanelTitle={onSimulationTitle}
-            setPanelContent={onSimulationContent}
-          /> */}
+          />
           <View
             project={{
               id: project.id

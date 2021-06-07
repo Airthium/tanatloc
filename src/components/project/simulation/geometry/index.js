@@ -16,6 +16,7 @@ import {
   DeleteOutlined,
   DownloadOutlined,
   LoadingOutlined,
+  SelectOutlined,
   UploadOutlined
 } from '@ant-design/icons'
 
@@ -45,7 +46,41 @@ const Geometry = ({ geometries, simulation, part, swr }) => {
   const [geometriesList, setGeometryList] = useState([])
 
   useEffect(() => {
-    const list = geometries.map((g) => <Card key={g.id}>{g.name}</Card>)
+    const list = geometries.map((geometry) => (
+      <Collapse key={geometry.id}>
+        <Collapse.Panel
+          header={geometry.name}
+          extra={<Button icon={<SelectOutlined />} />}
+        >
+          <Space direction="vertical">
+            <Typography.Title level={5}>Informations</Typography.Title>
+            <Typography.Text>File: {geometry.name} </Typography.Text>
+            <Typography.Text>Unit: \(m\)</Typography.Text>
+            {geometry.summary ? (
+              <>
+                {geometry.summary.solids && (
+                  <Typography.Text>
+                    Number of solids: {geometry.summary.solids.length}
+                  </Typography.Text>
+                )}
+                {geometry.summary.faces && (
+                  <Typography.Text>
+                    Number of faces: {geometry.summary.faces.length}
+                  </Typography.Text>
+                )}
+                {geometry.summary.edges && (
+                  <Typography.Text>
+                    Number of edges: {geometry.summary.edges.length}
+                  </Typography.Text>
+                )}
+              </>
+            ) : (
+              <Typography.Text>No summary available</Typography.Text>
+            )}
+          </Space>
+        </Collapse.Panel>
+      </Collapse>
+    ))
     setGeometryList(list)
   }, [geometries])
 
@@ -57,10 +92,6 @@ const Geometry = ({ geometries, simulation, part, swr }) => {
   // const [deleteVisible, setDeleteVisible] = useState(false)
   // const [deleting, setDeleting] = useState(false)
   // const [downloading, setDownloading] = useState(false)
-  // // Units LaTeX
-  // useEffect(() => {
-  //   window.MathJax?.typeset()
-  // }, [part])
   // // Effect
   // useEffect(() => {
   //   const file = simulation.scheme.configuration.geometry.file

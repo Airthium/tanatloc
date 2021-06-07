@@ -13,7 +13,7 @@ import SimulationAPI from '@/api/simulation'
  * @memberof module:components/project/simulation
  */
 const errors = {
-  updateError: 'Unable to update the simulation'
+  update: 'Unable to update the simulation'
 }
 
 /**
@@ -35,18 +35,13 @@ const About = ({ simulation, swr }) => {
 
       // Local
       swr.mutateOneSimulation({
-        ...simulation,
+        id: simulation.id,
         name: name
       })
     } catch (err) {
-      Error(errors.updateError, err)
+      Error(errors.update, err)
     }
   }
-
-  // MathJax
-  useEffect(() => {
-    window.MathJax?.typeset()
-  }, [simulation?.scheme?.description])
 
   return (
     <Layout>

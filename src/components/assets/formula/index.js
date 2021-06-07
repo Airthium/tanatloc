@@ -1,8 +1,9 @@
 /** @module components/assets/formula */
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { Checkbox, Input, Space } from 'antd'
 import { CheckCircleOutlined, LoadingOutlined } from '@ant-design/icons'
+import { MathJax } from 'better-react-mathjax'
 
 const saveDelay = 1000
 
@@ -25,11 +26,6 @@ const Formula = ({
   )
   const [autoSave, setAutoSave] = useState(false)
   const [saving, setSaving] = useState(false)
-
-  // Units LaTeX
-  useEffect(() => {
-    window.MathJax?.typeset()
-  }, [unit])
 
   /**
    * On check change
@@ -84,7 +80,7 @@ const Formula = ({
         onChange={onInputChange}
         addonAfter={
           <Space>
-            unit
+            <MathJax dynamic>{unit}</MathJax>
             {saving ? (
               <LoadingOutlined spin style={{ color: 'orange' }} />
             ) : (

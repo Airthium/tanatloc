@@ -16,8 +16,6 @@ const Add = ({ visible, project, swr, setVisible }) => {
   // State
   const [loading, setLoading] = useState(false)
 
-  const onOk = () => console.log('onOk')
-
   /**
    * Upload check
    * @param {Object} file File
@@ -85,7 +83,7 @@ const Add = ({ visible, project, swr, setVisible }) => {
       title="Upload geometry"
       visible={visible}
       onCancel={() => setVisible(false)}
-      onOk={onOk}
+      onOk={() => {}}
       okButtonProps={{ style: { display: 'none' } }}
     >
       <Space direction="vertical">

@@ -155,15 +155,15 @@ const Parameters = ({ simulation, swr }) => {
 }
 
 Parameters.propTypes = {
-  simulation: PropTypes.shape({
+  simulation: PropTypes.exact({
     id: PropTypes.string.isRequired,
-    scheme: PropTypes.shape({
-      configuration: PropTypes.shape({
+    scheme: PropTypes.exact({
+      configuration: PropTypes.exact({
         parameters: PropTypes.object.isRequired
       }).isRequired
     }).isRequired
   }).isRequired,
-  swr: PropTypes.shape({
+  swr: PropTypes.exact({
     mutateOneSimulation: PropTypes.func.isRequired
   })
 }

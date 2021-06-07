@@ -118,7 +118,6 @@ const Geometry = ({ project, geometry, swr, close }) => {
       close()
     } catch (err) {
       ErrorNotification(errors.delError, err)
-    } finally {
       setDeleting(false)
     }
   }

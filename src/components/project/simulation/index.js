@@ -130,12 +130,21 @@ Selector.propTypes = {
  * Simulation
  * @param {Object} props Props
  */
-const Simulation = ({ user, simulation, type, part, swr, onClose }) => {
+const Simulation = ({
+  user,
+  geometries,
+  simulation,
+  type,
+  part,
+  swr,
+  onClose,
+  setPanelVisible,
+  setPanelTitle,
+  setPanelContent
+}) => {
   // State
   const [needUpdate, setNeedUpdate] = useState(false)
   const [loading, setLoading] = useState(false)
-  const [visible, setVisible] = useState(false)
-  const [title, setTitle] = useState()
   const [models, setModels] = useState([])
 
   // Models
@@ -164,11 +173,11 @@ const Simulation = ({ user, simulation, type, part, swr, onClose }) => {
    * Simulation effect
    */
   useEffect(() => {
-    setVisible(simulation)
+    setPanelVisible(!!simulation)
     const configuration = simulation?.scheme?.configuration
 
     const subScheme = configuration?.[type]
-    setTitle(subScheme ? subScheme.title : 'About')
+    setPanelTitle(subScheme ? subScheme.title : 'About')
   }, [simulation, type])
 
   /**
@@ -207,91 +216,103 @@ const Simulation = ({ user, simulation, type, part, swr, onClose }) => {
     setNeedUpdate(false)
   }
 
+  switch (type) {
+    case 'about':
+      setPanelContent(
+        <About
+          simulation={{
+            id: simulation?.id,
+            name: simulation?.name,
+            scheme: simulation?.scheme
+          }}
+          swr={{
+            reloadProject: swr.reloadProject,
+            delOneSimulation: swr.delOneSimulation,
+            mutateOneSimulation: swr.mutateOneSimulation
+          }}
+        />
+      )
+      break
+    case 'geometry':
+      setPanelContent(
+        <Geometry
+          geometries={geometries}
+          simulation={simulation}
+          part={part}
+          swr={{ mutateOneSimulation: swr.mutateOneSimulation }}
+        />
+      )
+      break
+    case 'parameters':
+      setPanelContent(
+        <Parameters
+          simulation={simulation}
+          swr={{ mutateOneSimulation: swr.mutateOneSimulation }}
+        />
+      )
+      break
+    case 'materials':
+      setPanelContent(
+        <Materials
+          simulation={simulation}
+          part={part}
+          swr={{
+            mutateOneSimulation: swr.mutateOneSimulation
+          }}
+          setVisible={setVisible}
+        />
+      )
+      break
+    case 'boundaryConditions':
+      setPanelContent(
+        <BoundaryConditions
+          simulation={simulation}
+          part={part}
+          swr={{
+            mutateOneSimulation: swr.mutateOneSimulation
+          }}
+          setVisible={setVisible}
+        />
+      )
+      break
+    case 'run':
+      setPanelContent(
+        <Run
+          simulation={simulation}
+          swr={{ mutateOneSimulation: swr.mutateOneSimulation }}
+        />
+      )
+      break
+    default:
+      break
+  }
+
   /**
    * Render
    */
   if (!simulation) return null
   else
     return (
-      <>
-        <Modal
-          title={
-            <>
-              <WarningOutlined
-                style={{ color: 'orange', marginRight: '5px' }}
-              />
-              Update
-            </>
-          }
-          visible={needUpdate}
-          onOk={onUpdate}
-          okText="Yes"
-          confirmLoading={loading}
-          onCancel={() => setNeedUpdate(false)}
-          cancelText="No"
-          maskClosable={false}
-        >
-          <Space direction="vertical">
-            <Typography.Text>Your model needs an update!</Typography.Text>
-            <Typography.Text strong>Update now?</Typography.Text>
-          </Space>
-        </Modal>
-        <Panel visible={!!visible} title={title} onClose={onClose}>
-          {type === 'about' && (
-            <About
-              simulation={{
-                id: simulation?.id,
-                name: simulation?.name,
-                scheme: simulation?.scheme
-              }}
-              swr={{
-                reloadProject: swr.reloadProject,
-                delOneSimulation: swr.delOneSimulation,
-                mutateOneSimulation: swr.mutateOneSimulation
-              }}
-            />
-          )}
-          {type === 'geometry' && (
-            <Geometry
-              simulation={simulation}
-              part={part}
-              swr={{ mutateOneSimulation: swr.mutateOneSimulation }}
-            />
-          )}
-          {type === 'parameters' && (
-            <Parameters
-              simulation={simulation}
-              swr={{ mutateOneSimulation: swr.mutateOneSimulation }}
-            />
-          )}
-          {type === 'materials' && (
-            <Materials
-              simulation={simulation}
-              part={part}
-              swr={{
-                mutateOneSimulation: swr.mutateOneSimulation
-              }}
-              setVisible={setVisible}
-            />
-          )}
-          {type === 'boundaryConditions' && (
-            <BoundaryConditions
-              simulation={simulation}
-              part={part}
-              swr={{
-                mutateOneSimulation: swr.mutateOneSimulation
-              }}
-              setVisible={setVisible}
-            />
-          )}
-          {type === 'run' && (
-            <Run
-              simulation={simulation}
-              swr={{ mutateOneSimulation: swr.mutateOneSimulation }}
-            />
-          )}
-        </Panel>
-      </>
+      <Modal
+        title={
+          <>
+            <WarningOutlined style={{ color: 'orange', marginRight: '5px' }} />
+            Update
+          </>
+        }
+        visible={needUpdate}
+        onOk={onUpdate}
+        okText="Yes"
+        confirmLoading={loading}
+        onCancel={() => setNeedUpdate(false)}
+        cancelText="No"
+        maskClosable={false}
+      >
+        <Space direction="vertical">
+          <Typography.Text>Your model needs an update!</Typography.Text>
+          <Typography.Text strong>Update now?</Typography.Text>
+        </Space>
+      </Modal>
     )
 }
 
@@ -311,5 +332,12 @@ Simulation.propTypes = {
 }
 
 Simulation.Selector = Selector
+
+Simulation.About = About
+Simulation.Geometry = Geometry
+Simulation.Materials = Materials
+Simulation.Parameters = Parameters
+Simulation.BoundaryConditions = BoundaryConditions
+Simulation.Run = Run
 
 export default Simulation

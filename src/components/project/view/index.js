@@ -40,7 +40,7 @@ import {
 } from 'three'
 import { v4 } from 'uuid'
 
-import { Error } from '@/components/assets/notification'
+import { Error as ErrorNotification } from '@/components/assets/notification'
 
 import { TrackballControls } from 'three/examples/jsm/controls/TrackballControls'
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass'
@@ -74,7 +74,7 @@ const errors = {
 /**
  * ThreeView
  */
-const ThreeView = ({ loading, project, part/*, setPartSummary*/ }) => {
+const ThreeView = ({ loading, project, part /*, setPartSummary*/ }) => {
   // Ref
   const mount = useRef(null)
   const scene = useRef()
@@ -520,34 +520,6 @@ const ThreeView = ({ loading, project, part/*, setPartSummary*/ }) => {
       outlinePass.current
     )
 
-    // // Summary
-    // const solids = mesh.children[0]
-    // const faces = mesh.children[1]
-    // const edges = mesh.children[2]
-    // const summary = {
-    //   uuid: mesh.uuid,
-    //   type: mesh.type,
-    //   solids: solids?.children?.map((solid) => ({
-    //     name: solid.userData.name,
-    //     number: solid.userData.number,
-    //     uuid: solid.userData.uuid,
-    //     color: solid.material.color
-    //   })),
-    //   faces: faces?.children?.map((face) => ({
-    //     name: face.userData.name,
-    //     number: face.userData.number,
-    //     uuid: face.userData.uuid,
-    //     color: face.material.color
-    //   })),
-    //   edges: edges?.children?.map((edge) => ({
-    //     name: edge.userData.name,
-    //     number: edge.userData.number,
-    //     uuid: edge.userData.uuid,
-    //     color: edge.material.color
-    //   }))
-    // }
-    // setPartSummary(summary)
-
     // Scene
     scene.current.add(mesh)
     computeSceneBoundingSphere()
@@ -651,7 +623,7 @@ const ThreeView = ({ loading, project, part/*, setPartSummary*/ }) => {
         project
       )
     } catch (err) {
-      Error('Snapshot error', err)
+      ErrorNotification('Snapshot error', err)
     } finally {
       setScreenshot(false)
     }
@@ -839,7 +811,7 @@ const ThreeView = ({ loading, project, part/*, setPartSummary*/ }) => {
  * View
  * @param {Object} Props props
  */
-const View = ({ project, geometry, simulation, setPartSummary }) => {
+const View = ({ project, geometry, setPartSummary }) => {
   // State
   const [part, setPart] = useState()
   const [loading, setLoading] = useState(false)
@@ -854,7 +826,6 @@ const View = ({ project, geometry, simulation, setPartSummary }) => {
    * @param {Object} file File
    */
   const loadPart = async (file) => {
-    console.log(file)
     setLoading(true)
     try {
       if (file.needCleanup) {
@@ -863,18 +834,17 @@ const View = ({ project, geometry, simulation, setPartSummary }) => {
         setPartSummary()
       } else {
         // Load
-        // const partContent = await PartAPI.get({ id: simulation.id }, file)
-        const partContent = await GeometryAPI.getPart({id: geometry.id})
+        const partContent = await GeometryAPI.getPart({ id: geometry.id })
 
-        // if (partContent.error) {
-        //   setPartSummary({ error: true, message: partContent.message })
-        //   return
-        // }
+        if (partContent.error) {
+          ErrorNotification('', partContent.message)
+          return
+        }
 
         setPart(partContent)
       }
     } catch (err) {
-      Error(errors.partError, err)
+      ErrorNotification(errors.partError, err)
     } finally {
       setLoading(false)
     }

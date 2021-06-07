@@ -123,30 +123,32 @@ const del = async (geometry) => {
   ])
 
   // Delete original file
-  try {
-    await Tools.removeFile(
-      path.join(
-        storage.GEOMETRY,
-        geometryData.uploadfilename + '.' + geometryData.extension
+  if (geometryData.uploadfilename)
+    try {
+      await Tools.removeFile(
+        path.join(storage.GEOMETRY, geometryData.uploadfilename)
       )
-    )
-  } catch (err) {
-    console.warn(err)
-  }
+    } catch (err) {
+      console.warn(err)
+    }
 
   // Delete glb file
-  try {
-    await Tools.removeFile(path.join(storage.GEOMETRY, geometryData.glb))
-  } catch (err) {
-    console.warn(err)
-  }
+  if (geometryData.glb)
+    try {
+      await Tools.removeFile(path.join(storage.GEOMETRY, geometryData.glb))
+    } catch (err) {
+      console.warn(err)
+    }
 
   // Delete json directory
-  try {
-    await Tools.removeDirectory(path.join(storage.GEOMETRY, geometryData.json))
-  } catch (err) {
-    console.warn(err)
-  }
+  if (geometryData.json)
+    try {
+      await Tools.removeDirectory(
+        path.join(storage.GEOMETRY, geometryData.json)
+      )
+    } catch (err) {
+      console.warn(err)
+    }
 
   // Delete geometry
   await GeometryDB.del(geometry)

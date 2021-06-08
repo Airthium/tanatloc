@@ -126,7 +126,7 @@ const Project = () => {
     if (currentSimulation) {
       const simulation = simulations.find((s) => s.id === currentSimulation?.id)
       if (JSON.stringify(simulation) !== JSON.stringify(currentSimulation))
-        selectSimulation(currentSimulation.id, currentSimulationType)
+        selectSimulation(simulation.id, currentSimulationType)
     }
   }, [currentSimulation, JSON.stringify(simulations)])
 
@@ -285,7 +285,12 @@ const Project = () => {
         setPanelContent(
           <Simulation.Geometry
             geometries={geometries}
-            simulation={simulation}
+            geometry={currentGeometry}
+            simulation={{
+              id: simulation.id,
+              scheme: simulation.scheme
+            }}
+            setGeometry={setCurrentGeometry}
             swr={{ mutateOneSimulation }}
           />
         )
@@ -295,11 +300,7 @@ const Project = () => {
           <Simulation.Parameters
             simulation={{
               id: simulation.id,
-              scheme: {
-                configuration: {
-                  parameters: simulation.scheme.configuration.parameters
-                }
-              }
+              scheme: simulation.scheme
             }}
             swr={{ mutateOneSimulation }}
           />
@@ -308,7 +309,11 @@ const Project = () => {
       case 'materials':
         setPanelContent(
           <Simulation.Materials
-            simulation={simulation}
+            geometry={currentGeometry}
+            simulation={{
+              id: simulation.id,
+              scheme: simulation.scheme
+            }}
             swr={{
               mutateOneSimulation
             }}
@@ -319,6 +324,7 @@ const Project = () => {
       case 'boundaryConditions':
         setPanelContent(
           <Simulation.BoundaryConditions
+            geometry={currentGeometry}
             simulation={simulation}
             swr={{
               mutateOneSimulation
@@ -446,6 +452,7 @@ const Project = () => {
               icon={<CalculatorOutlined />}
               title={'Simulations (' + simulations.length + ')'}
               style={{ backgroundColor: '#f0f0f0' }}
+              disabled={!geometries.length}
             >
               {simulationsRender}
               <Menu.Item
@@ -484,14 +491,13 @@ const Project = () => {
           >
             {panelContent}
           </Panel>
-          <Simulation
-            user={user}
+          <Simulation.Updater
+            user={{
+              authorizedplugins: user.authorizedplugins
+            }}
             geometries={geometries}
             simulation={currentSimulation}
             swr={{
-              reloadProject,
-              addOneSimulation,
-              delOneSimulation,
               mutateOneSimulation
             }}
           />

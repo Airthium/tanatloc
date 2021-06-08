@@ -18,7 +18,7 @@ import Edit from '../edit'
 const Material = ({
   visible,
   simulation,
-  part,
+  geometry,
   materials,
   material,
   swr,
@@ -104,7 +104,7 @@ const Material = ({
             })}
           </Space>
         </Card>
-        <Selector part={part} updateSelected={onSelected} />
+        <Selector part={geometry.summary} updateSelected={onSelected} />
         <Space
           direction=""
           style={{ width: '100%', justifyContent: 'flex-end' }}
@@ -117,7 +117,7 @@ const Material = ({
               disabled={disabled}
               material={current}
               simulation={simulation}
-              part={part}
+              geometry={geometry}
               swr={{ mutateOneSimulation: swr.mutateOneSimulation }}
               close={onClose}
             />
@@ -126,7 +126,7 @@ const Material = ({
               disabled={disabled}
               material={current}
               simulation={simulation}
-              part={part}
+              geometry={geometry}
               swr={{ mutateOneSimulation: swr.mutateOneSimulation }}
               close={onClose}
             />
@@ -140,7 +140,7 @@ const Material = ({
 Material.propTypes = {
   visible: PropTypes.bool,
   simulation: PropTypes.object.isRequired,
-  part: PropTypes.object.isRequired,
+  geometry: PropTypes.object.isRequired,
   materials: PropTypes.object.isRequired,
   material: PropTypes.object,
   swr: PropTypes.shape({

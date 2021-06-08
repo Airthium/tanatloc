@@ -179,14 +179,21 @@ const read = async (geometry) => {
  */
 const readPart = async (geometry) => {
   // Data
-  const geometryData = await get(geometry.id, ['glb'])
+  const geometryData = await get(geometry.id, ['glb', 'json'])
 
-  // Read
+  // Read GLB
   const buffer = await Tools.readFile(
     path.join(storage.GEOMETRY, geometryData.glb)
   )
 
+  // Read part file
+  const part = await Tools.readFile(
+    path.join(storage.GEOMETRY, geometryData.json, 'part.json')
+  )
+  const json = JSON.parse(part.toString())
+
   return {
+    uuid: json.uuid,
     buffer
   }
 }

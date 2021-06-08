@@ -14,7 +14,7 @@ import { enable, disable, setType, setPart } from '@/store/select/action'
  * @memberof module:components/project/simulation
  * @param {Object} props Props
  */
-const Materials = ({ simulation, part, swr, setVisible }) => {
+const Materials = ({ geometry, simulation, swr, setVisible }) => {
   // State
   const [material, setMaterial] = useState()
   const [materialVisible, setMaterialVisible] = useState(false)
@@ -23,13 +23,13 @@ const Materials = ({ simulation, part, swr, setVisible }) => {
   const dispatch = useDispatch()
 
   // Data
-  const materials = simulation?.scheme?.configuration?.materials
+  const materials = simulation?.scheme.configuration.materials
 
   // Part
   useEffect(() => {
     dispatch(setType('solids'))
-    dispatch(setPart(part?.uuid))
-  }, [part])
+    dispatch(setPart(geometry?.summary.uuid))
+  }, [geometry])
 
   /**
    * On add
@@ -69,16 +69,16 @@ const Materials = ({ simulation, part, swr, setVisible }) => {
   return (
     <Layout>
       <Layout.Content>
-        <AddButton disabled={!part} onAdd={onAdd}>
+        <AddButton disabled={!geometry} onAdd={onAdd}>
           Add material
         </AddButton>
-        {part ? (
+        {geometry ? (
           <>
             <List simulation={simulation} swr={swr} onEdit={onEdit} />
             <Material
               visible={materialVisible}
               simulation={simulation}
-              part={part}
+              geometry={geometry}
               materials={materials}
               material={material}
               swr={swr}
@@ -96,7 +96,8 @@ const Materials = ({ simulation, part, swr, setVisible }) => {
 }
 
 Materials.propTypes = {
-  simulation: PropTypes.shape({
+  geometry: PropTypes.object.isRequired,
+  simulation: PropTypes.exact({
     id: PropTypes.string.isRequired,
     scheme: PropTypes.shape({
       configuration: PropTypes.shape({
@@ -106,7 +107,6 @@ Materials.propTypes = {
       })
     })
   }).isRequired,
-  part: PropTypes.object,
   swr: PropTypes.shape({
     mutateOneSimulation: PropTypes.func.isRequired
   }).isRequired,

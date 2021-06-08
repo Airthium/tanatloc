@@ -120,10 +120,10 @@ Selector.propTypes = {
 }
 
 /**
- * Simulation
+ * Simulation Updater
  * @param {Object} props Props
  */
-const Simulation = ({ user, simulation, swr }) => {
+const Updater = ({ user, simulation, swr }) => {
   // State
   const [needUpdate, setNeedUpdate] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -216,7 +216,7 @@ const Simulation = ({ user, simulation, swr }) => {
     )
 }
 
-Simulation.propTypes = {
+Updater.propTypes = {
   user: PropTypes.exact({
     authorizedplugins: PropTypes.array
   }).isRequired,
@@ -228,13 +228,15 @@ Simulation.propTypes = {
   }).isRequired
 }
 
-Simulation.Selector = Selector
-
-Simulation.About = About
-Simulation.Geometry = Geometry
-Simulation.Materials = Materials
-Simulation.Parameters = Parameters
-Simulation.BoundaryConditions = BoundaryConditions
-Simulation.Run = Run
+const Simulation = {
+  Selector,
+  Updater,
+  About,
+  Geometry,
+  Materials,
+  Parameters,
+  BoundaryConditions,
+  Run
+}
 
 export default Simulation

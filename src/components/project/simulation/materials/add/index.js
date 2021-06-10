@@ -20,7 +20,7 @@ const errors = {
  * @memberof module:components/project/simulation
  * @param {Object} props Props
  */
-const Add = ({ disabled, material, simulation, part, swr, close }) => {
+const Add = ({ disabled, material, simulation, geometry, swr, close }) => {
   // State
   const [loading, setLoading] = useState(false)
 
@@ -32,7 +32,8 @@ const Add = ({ disabled, material, simulation, part, swr, close }) => {
 
     try {
       // Modify selection
-      const selection = part.solids
+      console.log(geometry)
+      const selection = geometry.solids
         .map((s) => {
           if (material.selected.includes(s.uuid))
             return {
@@ -108,7 +109,7 @@ Add.propTypes = {
       }).isRequired
     }).isRequired
   }),
-  part: PropTypes.shape({
+  geometry: PropTypes.shape({
     solids: PropTypes.array.isRequired
   }).isRequired,
   swr: PropTypes.shape({

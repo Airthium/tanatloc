@@ -1,5 +1,6 @@
 /** @module lib/simulation */
 
+import { promises as fs } from 'fs'
 import path from 'path'
 
 import storage from '@/config/storage'
@@ -10,6 +11,7 @@ import SimulationDB from '@/database/simulation'
 
 import User from '../user'
 import Project from '../project'
+import Geometry from '../geometry'
 import Tools from '../tools'
 
 /**
@@ -234,6 +236,29 @@ const run = async (user, { id }) => {
 
     return
   }
+
+  // Copy geometry
+  const geometryId = configuration.geometry.value
+  const geometry = await Geometry.get(geometryId, [
+    'uploadfilename',
+    'extension'
+  ])
+  configuration.geometry.file = geometry.uploadfilename
+  configuration.geometry.name = geometry.uploadfilename.replace(
+    '.' + geometry.extension,
+    ''
+  )
+  configuration.geometry.path = 'geometry'
+  await Tools.copyFile(
+    {
+      path: storage.GEOMETRY,
+      file: geometry.uploadfilename
+    },
+    {
+      path: path.join(storage.SIMULATION, simulation.id, 'geometry'),
+      file: geometry.uploadfilename
+    }
+  )
 
   // Compute
   plugin

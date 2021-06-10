@@ -104,7 +104,7 @@ const Material = ({
             })}
           </Space>
         </Card>
-        <Selector part={geometry.summary} updateSelected={onSelected} />
+        <Selector geometry={geometry} updateSelected={onSelected} />
         <Space
           direction=""
           style={{ width: '100%', justifyContent: 'flex-end' }}

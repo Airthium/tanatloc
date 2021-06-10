@@ -15,7 +15,7 @@ import Edit from '../edit'
 const BoundaryCondition = ({
   visible,
   simulation,
-  part,
+  geometry,
   boundaryConditions,
   boundaryCondition,
   swr,
@@ -248,7 +248,7 @@ const BoundaryCondition = ({
           </Card>
         )}
         <Selector
-          part={part}
+          geometry={geometry}
           alreadySelected={alreadySelected}
           updateSelected={onSelected}
         />
@@ -265,7 +265,7 @@ const BoundaryCondition = ({
               simulation={simulation}
               boundaryCondition={current}
               oldBoundaryCondition={boundaryCondition}
-              part={part}
+              geometry={geometry}
               swr={{ mutateOneSimulation: swr.mutateOneSimulation }}
               close={onClose}
             />
@@ -274,7 +274,7 @@ const BoundaryCondition = ({
               disabled={disabled}
               simulation={simulation}
               boundaryCondition={current}
-              part={part}
+              geometry={geometry}
               swr={{ mutateOneSimulation: swr.mutateOneSimulation }}
               close={onClose}
             />

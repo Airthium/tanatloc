@@ -42,16 +42,16 @@ const updateTasks = (id, tasks) => {
  * @param {Object} mesh Mesh
  */
 const computeMesh = async (simulationPath, geometry, mesh, callback) => {
-  const geoFile = geometry.file + '.geo'
-  const mshFile = geometry.file + '.msh'
-  const partPath = geometry.file
+  const geoFile = geometry.name + '.geo'
+  const mshFile = geometry.name + '.msh'
+  const partPath = geometry.name
 
   // Render template
   await Template.render(
     'gmsh3D',
     {
       ...mesh.parameters,
-      geometry: path.join(geometry.path, geometry.file)
+      geometry: path.join('..', geometry.path, geometry.file)
     },
     {
       location: path.join(simulationPath, mesh.path),
@@ -167,11 +167,12 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
           const mesh = await computeMesh(
             simulationPath,
             {
-              path: path.join('..', geometry.file.originPath),
-              file: geometry.file.fileName
+              path: path.join(geometry.path),
+              file: geometry.file,
+              name: geometry.name
             },
             {
-              path: path.join(geometry.file.originPath + '_mesh'),
+              path: path.join(geometry.name + '_mesh'),
               parameters
             },
             ({ pid, error, data }) => {

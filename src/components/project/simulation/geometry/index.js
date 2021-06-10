@@ -27,14 +27,7 @@ const Geometry = ({ geometries, geometry, simulation, setGeometry, swr }) => {
 
   useEffect(() => {
     const simulationGeometryId = simulation.scheme.configuration.geometry.value
-    if (simulationGeometryId) {
-      const simulationGeometry = geometries.find(
-        (g) => g.id === simulationGeometryId
-      )
-      setGeometry(simulationGeometry)
-    } else {
-      onSelect(geometry.id)
-    }
+    if (!simulationGeometryId) onSelect(geometry.id)
   }, [simulation])
 
   useEffect(() => {
@@ -90,7 +83,7 @@ const Geometry = ({ geometries, geometry, simulation, setGeometry, swr }) => {
       </Collapse>
     ))
     setGeometryList(list)
-  }, [geometry, simulation])
+  }, [geometry, JSON.stringify(geometries)])
 
   /**
    * On select
@@ -130,7 +123,11 @@ const Geometry = ({ geometries, geometry, simulation, setGeometry, swr }) => {
     }
   }
 
-  return <div>{geometriesList}</div>
+  return geometries.length ? (
+    <div>{geometriesList}</div>
+  ) : (
+    <div>Please upload a geometry first</div>
+  )
 }
 
 Geometry.propTypes = {

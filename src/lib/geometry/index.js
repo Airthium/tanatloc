@@ -46,12 +46,69 @@ const add = async ({ project, geometry }) => {
 
     // Get summary
     const summary = await Tools.readFile(
-      path.join(storage.GEOMETRY, geometry.uid, 'part.json')
+      path.join(storage.GEOMETRY, geometry.uid, 'part.json'),
+      'json'
     )
+
+    summary.solids &&
+      (await Promise.all(
+        summary.solids.map(async (solid) => {
+          const content = await Tools.readFile(
+            path.join(storage.GEOMETRY, geometry.uid, solid.path),
+            'json'
+          )
+          solid.uuid = content.uuid
+          if (content.data?.attributes.color?.itemSize === 3)
+            solid.color = {
+              r: content.data.attributes.color.array[0],
+              g: content.data.attributes.color.array[1],
+              b: content.data.attributes.color.array[2]
+            }
+
+          delete solid.path
+        })
+      ))
+    summary.faces &&
+      (await Promise.all(
+        summary.faces.map(async (face) => {
+          const content = await Tools.readFile(
+            path.join(storage.GEOMETRY, geometry.uid, face.path),
+            'json'
+          )
+          face.uuid = content.uuid
+          if (content.data?.attributes.color?.itemSize === 3)
+            face.color = {
+              r: content.data.attributes.color.array[0],
+              g: content.data.attributes.color.array[1],
+              b: content.data.attributes.color.array[2]
+            }
+
+          delete face.path
+        })
+      ))
+    summary.edges &&
+      (await Promise.all(
+        summary.edges.map(async (edge) => {
+          const content = await Tools.readFile(
+            path.join(storage.GEOMETRY, geometry.uid, edge.path),
+            'json'
+          )
+          edge.uuid = content.uuid
+          if (content.data?.attributes.color.itemSize === 3)
+            edge.color = {
+              r: content.data.attributes.color.array[0],
+              g: content.data.attributes.color.array[1],
+              b: content.data.attributes.color.array[2]
+            }
+
+          delete edge.path
+        })
+      ))
+
     // Update geometry
     geometryData.json = part.json
     geometryData.glb = part.glb
-    geometryData.summary = summary.toString()
+    geometryData.summary = summary
     await GeometryDB.update({ id: geometryData.id }, [
       {
         key: 'glb',
@@ -63,7 +120,7 @@ const add = async ({ project, geometry }) => {
       },
       {
         key: 'summary',
-        value: summary.toString()
+        value: JSON.stringify(summary)
       }
     ])
 
@@ -188,12 +245,12 @@ const readPart = async (geometry) => {
 
   // Read part file
   const part = await Tools.readFile(
-    path.join(storage.GEOMETRY, geometryData.json, 'part.json')
+    path.join(storage.GEOMETRY, geometryData.json, 'part.json'),
+    'json'
   )
-  const json = JSON.parse(part.toString())
 
   return {
-    uuid: json.uuid,
+    uuid: part.uuid,
     buffer
   }
 }

@@ -19,7 +19,7 @@ const errors = {
  * @memberof module:components/project/simulation
  * @param {Object} props Props
  */
-const Edit = ({ disabled, material, simulation, part, swr, close }) => {
+const Edit = ({ disabled, material, simulation, geometry, swr, close }) => {
   // State
   const [loading, setLoading] = useState()
 
@@ -35,12 +35,12 @@ const Edit = ({ disabled, material, simulation, part, swr, close }) => {
       const materials = newSimulation.scheme.configuration.materials
 
       // Modify selection
-      const selection = part.solids
-        .map((f) => {
-          if (material.selected.includes(f.uuid))
+      const selection = geometry.solids
+        .map((s) => {
+          if (material.selected.includes(s.uuid))
             return {
-              uuid: f.uuid,
-              label: f.number
+              uuid: s.uuid,
+              label: s.number
             }
         })
         .filter((s) => s)
@@ -108,7 +108,7 @@ Edit.propTypes = {
       }).isRequired
     }).isRequired
   }).isRequired,
-  part: PropTypes.shape({
+  geometry: PropTypes.shape({
     solids: PropTypes.array.isRequired
   }).isRequired,
   swr: PropTypes.shape({

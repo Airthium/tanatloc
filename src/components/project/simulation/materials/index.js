@@ -78,7 +78,7 @@ const Materials = ({ geometry, simulation, swr, setVisible }) => {
             <Material
               visible={materialVisible}
               simulation={simulation}
-              geometry={geometry}
+              geometry={geometry.summary}
               materials={materials}
               material={material}
               swr={swr}
@@ -96,7 +96,7 @@ const Materials = ({ geometry, simulation, swr, setVisible }) => {
 }
 
 Materials.propTypes = {
-  geometry: PropTypes.object.isRequired,
+  geometry: PropTypes.object,
   simulation: PropTypes.exact({
     id: PropTypes.string.isRequired,
     scheme: PropTypes.shape({

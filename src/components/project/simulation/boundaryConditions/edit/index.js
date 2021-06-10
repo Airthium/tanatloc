@@ -23,7 +23,7 @@ const Edit = ({
   simulation,
   boundaryCondition,
   oldBoundaryCondition,
-  part,
+  geometry,
   swr,
   close
 }) => {
@@ -59,7 +59,7 @@ const Edit = ({
       }
 
       // Modify selection
-      const selection = part.faces
+      const selection = geometry.faces
         .map((f) => {
           if (boundaryCondition.selected.includes(f.uuid))
             return {
@@ -147,7 +147,7 @@ Edit.propTypes = {
       key: PropTypes.string.isRequired
     }).isRequired
   }).isRequired,
-  part: PropTypes.shape({
+  geometry: PropTypes.shape({
     faces: PropTypes.array.isRequired
   }).isRequired,
   swr: PropTypes.shape({

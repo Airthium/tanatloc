@@ -114,9 +114,11 @@ const Project = () => {
   useEffect(() => {
     if (currentGeometry) {
       const geometry = geometries.find((g) => g.id === currentGeometry?.id)
-      if (JSON.stringify(geometry) !== JSON.stringify(currentGeometry))
-        if (panelContent?.type?.name === 'Geometry')
-          selectGeometry(currentGeometry.id)
+      if (
+        geometry &&
+        JSON.stringify(geometry) !== JSON.stringify(currentGeometry)
+      )
+        if (panelContent?.type?.name === 'Geometry') selectGeometry(geometry.id)
         else setCurrentGeometry(geometry)
     }
   }, [currentGeometry, JSON.stringify(geometries)])
@@ -125,8 +127,16 @@ const Project = () => {
   useEffect(() => {
     if (currentSimulation) {
       const simulation = simulations.find((s) => s.id === currentSimulation?.id)
-      if (JSON.stringify(simulation) !== JSON.stringify(currentSimulation))
+      if (
+        simulation &&
+        JSON.stringify(simulation) !== JSON.stringify(currentSimulation)
+      ) {
+        console.log('update')
+        const geometryId = simulation.scheme.configuration.geometry.value
+        const geometry = geometries.find((g) => g.id === geometryId)
+        setCurrentGeometry(geometry)
         selectSimulation(simulation.id, currentSimulationType)
+      }
     }
   }, [currentSimulation, JSON.stringify(simulations)])
 

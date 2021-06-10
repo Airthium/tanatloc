@@ -22,7 +22,7 @@ const errors = {
  * @memberof module:components/project/simulation
  * @param {Object} props Props
  */
-const BoundaryConditions = ({ simulation, part, swr, setVisible }) => {
+const BoundaryConditions = ({ geometry, simulation, swr, setVisible }) => {
   // State
   const [boundaryCondition, setBoundaryCondition] = useState()
   const [boundaryConditionVisible, setBoundaryConditionVisible] =
@@ -38,8 +38,8 @@ const BoundaryConditions = ({ simulation, part, swr, setVisible }) => {
   // Part
   useEffect(() => {
     dispatch(setType('faces'))
-    dispatch(setPart(part?.uuid))
-  }, [part])
+    dispatch(setPart(geometry?.summary.uuid))
+  }, [geometry])
 
   const onAdd = () => {
     setBoundaryCondition()
@@ -72,10 +72,10 @@ const BoundaryConditions = ({ simulation, part, swr, setVisible }) => {
   return (
     <Layout>
       <Layout.Content>
-        <AddButton disabled={!part} onAdd={onAdd}>
+        <AddButton disabled={!geometry} onAdd={onAdd}>
           Add boundary condition
         </AddButton>
-        {part ? (
+        {geometry ? (
           <>
             <List
               simulation={simulation}
@@ -85,7 +85,7 @@ const BoundaryConditions = ({ simulation, part, swr, setVisible }) => {
             <BoundaryCondition
               visible={boundaryConditionVisible}
               simulation={simulation}
-              part={part}
+              geometry={geometry.summary}
               boundaryConditions={boundaryConditions}
               boundaryCondition={boundaryCondition}
               swr={{
@@ -105,6 +105,7 @@ const BoundaryConditions = ({ simulation, part, swr, setVisible }) => {
 }
 
 BoundaryConditions.propTypes = {
+  geometry: PropTypes.object,
   simulation: PropTypes.shape({
     scheme: PropTypes.shape({
       configuration: PropTypes.shape({
@@ -112,9 +113,6 @@ BoundaryConditions.propTypes = {
       })
     })
   }).isRequired,
-  part: PropTypes.shape({
-    uuid: PropTypes.string
-  }),
   swr: PropTypes.shape({
     mutateOneSimulation: PropTypes.func.isRequired
   }).isRequired,

@@ -19,7 +19,14 @@ const errors = {
  * @memberof module:components/project/simulation
  * @param {Object} props Props
  */
-const Add = ({ disabled, simulation, boundaryCondition, part, swr, close }) => {
+const Add = ({
+  disabled,
+  simulation,
+  boundaryCondition,
+  geometry,
+  swr,
+  close
+}) => {
   // State
   const [loading, setLoading] = useState(false)
 
@@ -34,7 +41,7 @@ const Add = ({ disabled, simulation, boundaryCondition, part, swr, close }) => {
       const type = boundaryCondition.type.key
 
       // Modify selection
-      const selection = part.faces
+      const selection = geometry.faces
         .map((f) => {
           if (boundaryCondition.selected.includes(f.uuid))
             return {
@@ -112,7 +119,7 @@ Add.propTypes = {
   boundaryCondition: PropTypes.shape({
     selected: PropTypes.array
   }),
-  part: PropTypes.shape({
+  geometry: PropTypes.shape({
     faces: PropTypes.array.isRequired
   }).isRequired,
   swr: PropTypes.shape({

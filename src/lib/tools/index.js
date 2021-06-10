@@ -32,9 +32,21 @@ const writeFile = async (location, name, content) => {
 /**
  * Read file
  * @param {string} file File name
+ * @param {?string} type Type
  */
-const readFile = async (file) => {
-  return fs.readFile(file)
+const readFile = async (file, type) => {
+  const content = await fs.readFile(file)
+
+  if (type === 'json') return JSON.parse(content.toString())
+  return content
+}
+
+const copyFile = async (origin, destination) => {
+  await createPath(destination.path)
+  await fs.copyFile(
+    path.join(origin.path, origin.file),
+    path.join(destination.path, destination.file)
+  )
 }
 
 /**
@@ -152,6 +164,7 @@ export default {
   listFiles,
   writeFile,
   readFile,
+  copyFile,
   convert,
   loadPart,
   removeFile,

@@ -116,8 +116,8 @@ const ProjectList = ({
               key={project.id}
               title={project.titleRender}
               style={{
-                width: 200,
-                height: 310,
+                width: 260,
+                height: 412,
                 display: 'flex',
                 flexDirection: 'column'
               }}

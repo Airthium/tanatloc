@@ -31,8 +31,6 @@ const Dialog = ({
   // Layout
   const layout = {
     layout: 'vertical',
-    labelCol: { offset: 2, span: 20 },
-    wrapperCol: { offset: 2, span: 20 }
   }
 
   /**
@@ -47,7 +45,6 @@ const Dialog = ({
         form.resetFields()
         onCancel()
       }}
-      cancelButtonProps={{ type: 'danger' }}
       onOk={async () => {
         try {
           const values = await form.validateFields()
@@ -55,7 +52,7 @@ const Dialog = ({
           form.resetFields()
         } catch (err) {}
       }}
-      okButtonProps={{ type: 'primary', ...okButtonProps }}
+      okButtonProps={{...okButtonProps}}
       confirmLoading={loading}
     >
       <Form form={form} {...layout} initialValues={initialValues}>

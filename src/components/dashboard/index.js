@@ -4,14 +4,14 @@ import { useRouter } from 'next/router'
 import { useState, useEffect } from 'react'
 import { Layout, Menu } from 'antd'
 import Icon, {
-  AppstoreFilled,
+  AppstoreOutlined,
   ControlOutlined,
   ShareAltOutlined,
-  SettingFilled,
-  QuestionCircleFilled,
-  LogoutOutlined
+  SettingOutlined,
+  QuestionCircleOutlined,
+  LogoutOutlined,
+  TeamOutlined
 } from '@ant-design/icons'
-import Usergroup from '/public/icons/usergroup'
 
 import { Error } from '@/components/assets/notification'
 
@@ -247,13 +247,13 @@ const Dashboard = () => {
         <Loading />
       ) : (
         <Layout>
-          <Layout.Sider theme="light" width="250" className="Dashboard-sider">
+          <Layout.Sider theme="light" width="256" className="dashboard-sider">
             <div className="logo">
               <img src="/images/logo.svg" />
             </div>
 
             <Menu
-              className="Dashboard-menu"
+              className="dashboard-menu"
               theme="light"
               onClick={onSelect}
               defaultOpenKeys={[menuItems.workspaces.key, menuItems.shared.key]}
@@ -261,14 +261,14 @@ const Dashboard = () => {
             >
               <Menu.SubMenu
                 key={menuItems.workspaces.key}
-                icon={<AppstoreFilled />}
+                icon={<AppstoreOutlined />}
                 title={menuItems.workspaces.label}
                 onTitleClick={onMyWorkspaces}
               >
                 {myWorkspaces?.map((workspace) => (
                   <Menu.Item key={workspace.id}>{workspace.name}</Menu.Item>
                 ))}
-                <li id="Add-workspace-button">
+                <li id="add-workspace-button">
                   <Add key="add" swr={{ addOneWorkspace }} />
                 </li>
               </Menu.SubMenu>
@@ -282,14 +282,12 @@ const Dashboard = () => {
                   <Menu.Item key={workspace.id}>{workspace.name}</Menu.Item>
                 ))}
               </Menu.SubMenu>
-              <Menu.Item key={menuItems.account.key} icon={<SettingFilled />}>
+              <Menu.Item key={menuItems.account.key} icon={<SettingOutlined />}>
                 {menuItems.account.label}
               </Menu.Item>
               <Menu.Item
                 key={menuItems.organizations.key}
-                icon={
-                  <Icon component={Usergroup} style={{ maxWidth: '14px' }} />
-                }
+                icon={<TeamOutlined />}
               >
                 {menuItems.organizations.label}
               </Menu.Item>
@@ -303,11 +301,11 @@ const Dashboard = () => {
               )}
               <Menu.Item
                 key={menuItems.help.key}
-                icon={<QuestionCircleFilled />}
+                icon={<QuestionCircleOutlined />}
               >
                 {menuItems.help.label}
               </Menu.Item>
-              <Menu.Divider />
+              <Menu.Divider className="dashboard-menu-divider"/>
               <Menu.Item
                 key={menuItems.logout.key}
                 danger={true}

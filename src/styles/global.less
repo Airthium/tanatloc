@@ -1,8 +1,8 @@
 @import '~antd/dist/antd.less'; // Import Ant Design styles by less entry
-@import './antd.less'; // variables to override above
-@import 'notfound.less';
-@import 'background.less';
-@import 'index.less';
+@import './tanatloc-theme.less'; // variables to override above
+@import './notfound.less';
+@import './background.less';
+@import './index.less';
 @import './login.less';
 @import './signup.less';
 @import './loading.less';
@@ -43,6 +43,11 @@ body {
   background: rgba(85, 85, 85, 0.75);
 }
 
+.ant-btn:hover:not(.ant-btn-primary), .ant-btn:focus:not(.ant-btn-primary) {
+  color: #000;
+  border-color: #000;
+}
+
 .no-scroll {
   overflow: hidden;
 }
@@ -56,7 +61,7 @@ body {
 }
 
 .logo {
-  padding: 10px;
+  padding: 21px 8px 21px 8px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -64,27 +69,44 @@ body {
   height: 64px;
 }
 
-.logo img {
-  max-width: 80%;
-  max-height: 80%;
-}
+// .Tanatloc-divider {
+//   padding: 1px;
+//   background: @tanatloc-primary-color;
+//   border-top: 0 !important;
+// }
 
-.Tanatloc-divider {
-  padding: 1px;
-  background: @tanatloc-primary-color;
-  border-top: 0 !important;
-}
-
-.version {
-  color: white;
-  cursor: default;
-}
+// .version {
+//   color: white;
+//   cursor: default;
+// }
 
 // Remove last margin at the end of a form in a dialog box
-.Dialog .ant-form-item:last-child {
-  margin: 0 !important;
-}
+// .Dialog .ant-form-item:last-child {
+//   margin: 0 !important;
+// }
 
-.Dialog .ant-form-item-label {
-  overflow: auto !important;
-}
+// .Dialog .ant-form-item-label {
+//   overflow: auto !important;
+// }
+
+// .ant-typography-edit > * > svg {
+//   fill: fade(@tanatloc-primary-color, 50%);
+// }
+
+// // Space
+// .ant-space-vertical {
+//   width: 100% !important;
+// }
+
+// .ant-space-horizontal {
+//   width: 100% !important;
+// }
+
+// .ant-space-align-center {
+//   width: 100% !important;
+//   justify-content: center !important;
+// }
+
+// .ant-space-horizontal > .ant-space-item {
+//   flex: 1 1 auto !important;
+// }

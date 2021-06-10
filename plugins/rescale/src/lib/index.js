@@ -107,8 +107,8 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
       if (configuration[ckey].meshable !== undefined) {
         const geometry = configuration[ckey]
         return {
-          name: geometry.file.name,
-          path: path.join(storage.SIMULATION, id, ckey, geometry.file.fileName)
+          name: geometry.name,
+          path: path.join(storage.SIMULATION, id, geometry.path, geometry.file)
         }
       }
     })
@@ -131,10 +131,10 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
         if (configuration[ckey].meshable) {
           const geometry = configuration[ckey]
 
-          const geoFile = geometry.file.fileName + '.geo'
-          const meshFile = geometry.file.fileName + '.msh'
-          const meshPath = geometry.file.originPath + '_mesh'
-          const partPath = geometry.file.fileName
+          const geoFile = geometry.name + '.geo'
+          const meshFile = geometry.name + '.msh'
+          const meshPath = geometry.name + '_mesh'
+          const partPath = geometry.name
 
           // Task
           simulationTask.log += ' - ' + geoFile + '\n'

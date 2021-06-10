@@ -186,7 +186,7 @@ const createJob = async (
     }
   }
 
-  return job.id
+  return job.id || { error: job }
 }
 
 /**

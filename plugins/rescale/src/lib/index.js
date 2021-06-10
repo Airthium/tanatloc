@@ -180,7 +180,7 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
             'gmsh3D',
             {
               ...parameters,
-              geometry: geometry.file.fileName
+              geometry: geometry.file
             },
             {
               location: path.join(simulationPath, meshPath),
@@ -284,6 +284,11 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
       meshes,
       edp
     )
+
+    if (jobId.error) {
+      simulationTask.error += ' Fatal error: ' + JSON.stringify(jobId) + '\n'
+      updateTasks(id, tasks)
+    }
 
     simulationTask.log += ' - Job id: ' + jobId + '\n'
     updateTasks(id, tasks)

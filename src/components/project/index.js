@@ -131,7 +131,6 @@ const Project = () => {
         simulation &&
         JSON.stringify(simulation) !== JSON.stringify(currentSimulation)
       ) {
-        console.log('update')
         const geometryId = simulation.scheme.configuration.geometry.value
         const geometry = geometries.find((g) => g.id === geometryId)
         setCurrentGeometry(geometry)

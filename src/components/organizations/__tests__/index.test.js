@@ -3,20 +3,16 @@ import { fireEvent, render, screen } from '@testing-library/react'
 
 import Organizations from '..'
 
-jest.mock('../add', () => {
-  const Add = () => <div />
-  return Add
-})
+jest.mock('../add', () => () => <div />)
 
-jest.mock('../list', () => {
-  const List = () => <div />
-  return List
-})
+const mockList = jest.fn()
+jest.mock('../list', () => (props) => mockList(props))
 
-jest.mock('@/components/assets/organization', () => {
-  const Organization = () => <div />
-  return Organization
-})
+const mockOrganization = jest.fn()
+jest.mock(
+  '@/components/assets/organization',
+  () => (props) => mockOrganization(props)
+)
 
 describe('components/organizations', () => {
   const user = { id: 'id' }
@@ -30,6 +26,14 @@ describe('components/organizations', () => {
     loadingOrganizations: false
   }
 
+  beforeEach(() => {
+    mockList.mockReset()
+    mockList.mockImplementation(() => <div />)
+
+    mockOrganization.mockReset()
+    mockOrganization.mockImplementation(() => <div />)
+  })
+
   test('render', () => {
     const { unmount } = render(
       <Organizations user={user} organizations={organizations} swr={swr} />
@@ -38,32 +42,45 @@ describe('components/organizations', () => {
     unmount()
   })
 
-  // test('setOrganization', () => {
-  //   wrapper = mount(
-  //     <Organizations
-  //       user={user}
-  //       organizations={[...organizations, { id: 'id' }]}
-  //       swr={swr}
-  //     />
-  //   )
+  test('setOrganization', () => {
+    mockList.mockImplementation((props) => (
+      <div role="List" onClick={() => props.setOrganization({ id: 'id' })} />
+    ))
+    mockOrganization.mockImplementation((props) => (
+      <div role="Organization" onClick={props.onClose} />
+    ))
+    const { unmount } = render(
+      <Organizations
+        user={user}
+        organizations={[...organizations, { id: 'id' }]}
+        swr={swr}
+      />
+    )
 
-  //   act(() => wrapper.find('List').props().setOrganization({ id: 'id' }))
-  //   wrapper.update()
+    const list = screen.getByRole('List')
+    fireEvent.click(list)
 
-  //   act(() => wrapper.find('Organization').props().onClose())
-  //   wrapper.update()
-  // })
+    const organization = screen.getByRole('Organization')
+    fireEvent.click(organization)
 
-  // test('effect', () => {
-  //   wrapper = mount(
-  //     <Organizations
-  //       user={user}
-  //       organizations={[...organizations, { id: 'id', diff: 'diff' }]}
-  //       swr={swr}
-  //     />
-  //   )
+    unmount()
+  })
 
-  //   act(() => wrapper.find('List').props().setOrganization({ id: 'id' }))
-  //   wrapper.update()
-  // })
+  test('setOrganization (different)', () => {
+    mockList.mockImplementation((props) => (
+      <div role="List" onClick={() => props.setOrganization({})} />
+    ))
+    const { unmount } = render(
+      <Organizations
+        user={user}
+        organizations={[...organizations, { id: 'id' }]}
+        swr={swr}
+      />
+    )
+
+    const list = screen.getByRole('List')
+    fireEvent.click(list)
+
+    unmount()
+  })
 })

@@ -19,7 +19,6 @@ jest.mock('redux-persist/integration/react', () => ({
   PersistGate: 'persistGate'
 }))
 
-jest.mock('@/styles/antd.less', () => '')
 jest.mock('@/styles/global.less', () => '')
 
 describe('pages/_app', () => {

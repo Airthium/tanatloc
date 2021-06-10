@@ -30,7 +30,7 @@ const Dialog = ({
 
   // Layout
   const layout = {
-    layout: 'vertical',
+    layout: 'vertical'
   }
 
   /**
@@ -52,7 +52,7 @@ const Dialog = ({
           form.resetFields()
         } catch (err) {}
       }}
-      okButtonProps={{...okButtonProps}}
+      okButtonProps={{ ...okButtonProps }}
       confirmLoading={loading}
     >
       <Form form={form} {...layout} initialValues={initialValues}>

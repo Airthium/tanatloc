@@ -3,6 +3,10 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import Formula from '@/components/assets/formula'
 
+jest.mock('better-react-mathjax', () => ({
+  MathJax: () => <div />
+}))
+
 const onValueChange = jest.fn()
 const onCheckedChange = jest.fn()
 

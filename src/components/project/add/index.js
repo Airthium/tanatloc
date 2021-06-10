@@ -58,10 +58,7 @@ const Add = ({ workspace, swr }) => {
    */
   return (
     <>
-      <Button
-        onClick={() => setVisible(true)}
-        icon={<PlusCircleOutlined />}
-      >
+      <Button onClick={() => setVisible(true)} icon={<PlusCircleOutlined />}>
         Create a new project
       </Button>
       <Dialog
@@ -79,7 +76,11 @@ const Add = ({ workspace, swr }) => {
           <Input placeholder="Project's name" />
         </Form.Item>
         <Form.Item label="Description" name="description">
-          <Input.TextArea showCount maxLength={120} placeholder="Project's description" />
+          <Input.TextArea
+            showCount
+            maxLength={120}
+            placeholder="Project's description"
+          />
         </Form.Item>
       </Dialog>
     </>

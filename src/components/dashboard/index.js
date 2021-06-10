@@ -305,7 +305,7 @@ const Dashboard = () => {
               >
                 {menuItems.help.label}
               </Menu.Item>
-              <Menu.Divider className="dashboard-menu-divider"/>
+              <Menu.Divider className="dashboard-menu-divider" />
               <Menu.Item
                 key={menuItems.logout.key}
                 danger={true}

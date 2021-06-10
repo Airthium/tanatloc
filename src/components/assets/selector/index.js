@@ -157,9 +157,8 @@ const Selector = ({ geometry, alreadySelected, updateSelected }) => {
               </Tooltip>
               {colors.map((color) => {
                 return (
-                  <Tooltip title="Color">
+                  <Tooltip title="Color" key={color}>
                     <Button
-                      key={color}
                       style={{ backgroundColor: Utils.rgbToHex(color) }}
                       onClick={() => onColorFilter(color)}
                     >
@@ -258,7 +257,7 @@ const Selector = ({ geometry, alreadySelected, updateSelected }) => {
 }
 
 Selector.propTypes = {
-  part: PropTypes.object.isRequired,
+  geometry: PropTypes.object.isRequired,
   alreadySelected: PropTypes.array,
   updateSelected: PropTypes.func.isRequired
 }

@@ -36,9 +36,10 @@ jest.mock('@/lib/utils', () => ({
 }))
 
 describe('components/assets/selector', () => {
-  const part = {
+  const geometry = {
     faces: [
       {
+        name: 'name',
         uuid: 'uuid',
         color: { r: 0, g: 0.5, b: 1 }
       },
@@ -81,7 +82,7 @@ describe('components/assets/selector', () => {
   test('render', () => {
     const { unmount } = render(
       <Selector
-        part={part}
+        geometry={geometry}
         alreadySelected={alreadySelected}
         updateSelected={updateSelected}
       />
@@ -90,106 +91,114 @@ describe('components/assets/selector', () => {
     unmount()
   })
 
-  // test('empty render', () => {
-  //   wrapper.unmount()
-  //   wrapper = shallow(<Selector part={{}} updateSelected={updateSelected} />)
-  //   expect(wrapper).toBeDefined()
-  // })
+  test('empty render', () => {
+    const { unmount } = render(
+      <Selector
+        geometry={{}}
+        alreadySelected={alreadySelected}
+        updateSelected={updateSelected}
+      />
+    )
 
-  // test('onHighlight', () => {
-  //   wrapper.find('Card').at(1).props().onMouseEnter('uuid')
-  //   expect(mockHighlight).toHaveBeenCalledTimes(1)
-  // })
+    unmount()
+  })
 
-  // test('onUnhighlight', () => {
-  //   wrapper.find('Card').at(1).props().onMouseLeave()
-  //   expect(mockUnhighlight).toHaveBeenCalledTimes(1)
-  // })
+  test('on highlight unhighlight', () => {
+    const { unmount } = render(
+      <Selector
+        geometry={geometry}
+        alreadySelected={alreadySelected}
+        updateSelected={updateSelected}
+      />
+    )
 
-  // test('onSelect', () => {
-  //   // Select
-  //   wrapper.find('Card').at(1).props().onClick('uuid')
-  //   expect(mockSelect).toHaveBeenCalledTimes(1)
+    const card = screen.getByText('name')
+    fireEvent.mouseEnter(card)
 
-  //   // Unselect
-  //   wrapper.unmount()
-  //   mockSelected.mockImplementation(() => ['uuid'])
-  //   wrapper = shallow(<Selector part={part} updateSelected={updateSelected} />)
-  //   wrapper.find('Card').at(1).props().onClick('uuid')
-  //   expect(mockUnselect).toHaveBeenCalledTimes(1)
-  // })
+    expect(mockHighlight).toHaveBeenCalledTimes(1)
 
-  // // test('onColorFilter', () => {
-  // //   wrapper.unmount()
-  // //   wrapper = mount(<Selector part={part} updateSelected={updateSelected} />)
-  // //   act(() => wrapper.find('Button').at(0).props().onClick())
-  // //   wrapper.update()
+    fireEvent.mouseLeave(card)
+    expect(mockUnhighlight).toHaveBeenCalledTimes(1)
 
-  // //   act(() => wrapper.find('Button').at(1).props().onClick())
-  // //   wrapper.update()
-  // // })
+    unmount()
+  })
 
-  // // test('selectAll', () => {
-  // //   wrapper.unmount()
-  // //   wrapper = mount(<Selector part={part} updateSelected={updateSelected} />)
+  test('select', () => {
+    const { unmount } = render(
+      <Selector
+        geometry={geometry}
+        alreadySelected={alreadySelected}
+        updateSelected={updateSelected}
+      />
+    )
 
-  // //   act(() => wrapper.find('Button').at(3).props().onClick())
-  // //   wrapper.update()
+    // Select
+    const card = screen.getByText('name')
+    fireEvent.click(card)
+    expect(mockSelect).toHaveBeenCalledTimes(1)
 
-  // //   act(() => wrapper.find('Button').at(1).props().onClick())
-  // //   wrapper.update()
+    unmount()
+  })
 
-  // //   act(() => wrapper.find('Button').at(3).props().onClick())
-  // //   wrapper.update()
-  // // })
+  test('unselect', () => {
+    mockSelected.mockImplementation(() => ['uuid'])
+    const { unmount } = render(
+      <Selector
+        geometry={geometry}
+        alreadySelected={alreadySelected}
+        updateSelected={updateSelected}
+      />
+    )
 
-  // // test('unselectAll', () => {
-  // //   wrapper.unmount()
-  // //   wrapper = mount(<Selector part={part} updateSelected={updateSelected} />)
+    // Unselect
+    const card = screen.getByText('name')
+    fireEvent.click(card)
+    expect(mockUnselect).toHaveBeenCalledTimes(1)
 
-  // //   act(() => wrapper.find('Button').at(4).props().onClick())
-  // //   wrapper.update()
+    unmount()
+  })
 
-  // //   act(() => wrapper.find('Button').at(1).props().onClick())
-  // //   wrapper.update()
+  test('color filter', () => {
+    const { unmount } = render(
+      <Selector
+        geometry={geometry}
+        alreadySelected={alreadySelected}
+        updateSelected={updateSelected}
+      />
+    )
 
-  // //   act(() => wrapper.find('Button').at(4).props().onClick())
-  // //   wrapper.update()
-  // // })
+    const buttons = screen.getAllByRole('button')
+    buttons.forEach((button) => fireEvent.click(button))
 
-  // // test('selectSwap', () => {
-  // //   wrapper.unmount()
-  // //   wrapper = mount(<Selector part={part} updateSelected={updateSelected} />)
+    unmount()
+  })
 
-  // //   act(() => wrapper.find('Button').at(5).props().onClick())
-  // //   wrapper.update()
+  test('color filter (selected)', () => {
+    mockSelected.mockImplementation(() => ['uuid'])
+    const { unmount } = render(
+      <Selector
+        geometry={geometry}
+        alreadySelected={alreadySelected}
+        updateSelected={updateSelected}
+      />
+    )
 
-  // //   act(() => wrapper.find('Button').at(1).props().onClick())
-  // //   wrapper.update()
+    const buttons = screen.getAllByRole('button')
+    buttons.forEach((button) => fireEvent.click(button))
 
-  // //   act(() => wrapper.find('Button').at(5).props().onClick())
-  // //   wrapper.update()
+    unmount()
+  })
 
-  // //   wrapper.unmount()
-  // //   mockSelected.mockImplementation(() => ['uuid'])
-  // //   wrapper = mount(<Selector part={part} updateSelected={updateSelected} />)
+  test('already highlighted', () => {
+    mockHighlighted.mockImplementation(() => 'uuid')
+    const { unmount } = render(
+      <Selector
+        geometry={geometry}
+        alreadySelected={alreadySelected}
+        updateSelected={updateSelected}
+      />
+    )
 
-  // //   act(() => wrapper.find('Button').at(5).props().onClick())
-  // //   wrapper.update()
-
-  // //   act(() => wrapper.find('Button').at(1).props().onClick())
-  // //   wrapper.update()
-
-  // //   act(() => wrapper.find('Button').at(5).props().onClick())
-  // //   wrapper.update()
-  // // })
-
-  // test('face highlighted', () => {
-  //   wrapper.unmount()
-  //   mockHighlighted.mockImplementation(() => 'uuid')
-  //   wrapper = shallow(<Selector part={part} updateSelected={updateSelected} />)
-  //   expect(wrapper.find('div').at(0).props().style.backgroundColor).toBe(
-  //     '#0096C7'
-  //   )
-  // })
+    unmount()
+  })
 })

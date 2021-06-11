@@ -114,13 +114,47 @@ const ProjectList = ({
           return (
             <Card
               key={project.id}
-              title={project.titleRender}
-              style={{
-                width: 260,
-                height: 412,
-                display: 'flex',
-                flexDirection: 'column'
-              }}
+              title={
+                <Typography.Paragraph ellipsis={{ rows: 2 }}>
+                  {project.titleRender}
+                </Typography.Paragraph>
+              }
+              className="project-card"
+              headStyle={{ height: 80, padding: '0 24px' }}
+              actions={[
+                <Delete
+                  disabled={!project?.owners?.find((o) => o.id === user?.id)}
+                  workspace={{
+                    projects: workspace.projects
+                  }}
+                  project={{
+                    id: project.id,
+                    title: project.title
+                  }}
+                  swr={{
+                    mutateOneWorkspace: swr.mutateOneWorkspace,
+                    delOneProject: swr.delOneProject
+                  }}
+                />,
+                <Share
+                  disabled={!project?.owners?.find((o) => o.id === user?.id)}
+                  project={{
+                    id: project.id,
+                    groups: project.groups
+                  }}
+                  organizations={organizations}
+                  swr={{ mutateOneProject: swr.mutateOneProject }}
+                />,
+                <Edit
+                  disabled={!project?.owners?.find((o) => o.id === user?.id)}
+                  project={{
+                    id: project.id,
+                    title: project.title,
+                    description: project.description
+                  }}
+                  swr={{ mutateOneProject: swr.mutateOneProject }}
+                />
+              ]}
             >
               <div
                 onMouseEnter={() =>
@@ -163,50 +197,6 @@ const ProjectList = ({
                   {project.usersRender}
                   {project.groupsRender}
                 </Avatar.Group>
-              </div>
-
-              <div
-                style={{
-                  padding: '6px 0 0 0',
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center'
-                }}
-              >
-                <Delete
-                  disabled={!project?.owners?.find((o) => o.id === user?.id)}
-                  workspace={{
-                    projects: workspace.projects
-                  }}
-                  project={{
-                    id: project.id,
-                    title: project.title
-                  }}
-                  swr={{
-                    mutateOneWorkspace: swr.mutateOneWorkspace,
-                    delOneProject: swr.delOneProject
-                  }}
-                />
-                <Divider type="vertical" style={{ borderColor: '#f0f0f0' }} />
-                <Share
-                  disabled={!project?.owners?.find((o) => o.id === user?.id)}
-                  project={{
-                    id: project.id,
-                    groups: project.groups
-                  }}
-                  organizations={organizations}
-                  swr={{ mutateOneProject: swr.mutateOneProject }}
-                />
-                <Divider type="vertical" style={{ borderColor: '#f0f0f0' }} />
-                <Edit
-                  disabled={!project?.owners?.find((o) => o.id === user?.id)}
-                  project={{
-                    id: project.id,
-                    title: project.title,
-                    description: project.description
-                  }}
-                  swr={{ mutateOneProject: swr.mutateOneProject }}
-                />
               </div>
             </Card>
           )

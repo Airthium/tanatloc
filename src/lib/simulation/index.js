@@ -49,99 +49,11 @@ const get = async (id, data) => {
 }
 
 /**
- * Check files in update
- * @param {Object} simulation Simulation { id }
- * @param {Array} data Data
- */
-const checkFiles = async (simulation, data) => {
-  await Promise.all(
-    data.map(async (d) => {
-      // No scheme
-      if (d.key !== 'scheme') return
-      // No value
-      if (!d.value) return
-      // No file
-      if (!d.value.file) return
-
-      // Current data in dB
-      const prevData = await get(simulation.id, ['scheme'])
-
-      // Sub object from d.path
-      const subObj = d.path.reduce((obj, key) => obj[key], prevData.scheme)
-
-      // Remove old file
-      if (subObj.file) {
-        if (subObj.file.fileName) {
-          const originFile = path.join(
-            storage.SIMULATION,
-            simulation.id,
-            subObj.file.originPath,
-            subObj.file.fileName
-          )
-          try {
-            await Tools.removeFile(originFile)
-          } catch (err) {
-            console.warn(err)
-          }
-        }
-        if (subObj.file.partPath) {
-          const partDirectory = path.join(
-            storage.SIMULATION,
-            simulation.id,
-            subObj.file.partPath
-          )
-          try {
-            await Tools.removeDirectory(partDirectory)
-          } catch (err) {
-            console.warn(err)
-          }
-        }
-      }
-
-      if (d.value.file === 'remove') {
-        d.value.file = undefined
-      } else {
-        // Write new file
-        const subDir = d.path.slice(-1).pop()
-        const location = path.join(storage.SIMULATION, simulation.id, subDir)
-        const file = d.value.file
-
-        file.originPath = subDir
-        file.extension = file.name.split('.').pop()
-        file.fileName = file.uid + '.' + file.extension
-        await Tools.writeFile(
-          location,
-          file.fileName,
-          Buffer.from(file.buffer).toString()
-        )
-
-        // Convert file
-        const part = await Tools.convert(
-          path.join(storage.SIMULATION, simulation.id),
-          {
-            name: path.join(subDir, file.fileName),
-            target: path.join(subDir, file.uid)
-          }
-        )
-        d.value.file.json = part.json
-        d.value.file.glb = part.glb
-
-        // Remove unused
-        delete file.buffer
-      }
-    })
-  )
-}
-
-/**
  * Update simulation
  * @param {Object} simulation Simulation { id }
  * @param {Object} data Data [{ key, value, ... }, ...]
  */
 const update = async (simulation, data) => {
-  // Check for files
-  await checkFiles(simulation, data)
-
   // Update
   await SimulationDB.update(simulation, data)
 }

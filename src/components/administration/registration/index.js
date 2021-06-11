@@ -3,7 +3,7 @@ import { Button, Card, Checkbox, Form, InputNumber, Space } from 'antd'
 import { CheckOutlined } from '@ant-design/icons'
 
 import Loading from '@/components/loading'
-import { Error } from '@/components/assets/notification'
+import { Error as ErrorNotification } from '@/components/assets/notification'
 
 import SystemAPI from '@/api/system'
 
@@ -35,7 +35,7 @@ const Registration = () => {
 
   // System error
   useEffect(() => {
-    if (errorSystem) Error(errors.system, errorSystem)
+    if (errorSystem) ErrorNotification(errors.system, errorSystem)
   }, [errorSystem])
 
   // Effect
@@ -56,7 +56,7 @@ const Registration = () => {
       // Mutate
       mutateSystem({ allowSignup: !system.allowsignup })
     } catch (err) {
-      Error(errors.updateError, err)
+      ErrorNotification(errors.updateError, err)
     }
   }
 
@@ -68,7 +68,7 @@ const Registration = () => {
       // Mutate
       mutateSystem({ password: values })
     } catch (err) {
-      Error(errors.updateError, err)
+      ErrorNotification(errors.updateError, err)
     }
   }
 

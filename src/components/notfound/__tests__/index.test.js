@@ -21,8 +21,14 @@ describe('components/notfound', () => {
     unmount()
   })
 
-  // test('onClick', () => {
-  //   wrapper.find('Title').at(2).props().onClick()
-  //   expect(mockRouter).toHaveBeenCalledTimes(1)
-  // })
+  test('onClick', () => {
+    const { unmount } = render(<NotFound />)
+
+    const button = screen.getByRole('heading', { name: 'Come back home' })
+    fireEvent.click(button)
+
+    expect(mockRouter).toHaveBeenCalledTimes(1)
+
+    unmount()
+  })
 })

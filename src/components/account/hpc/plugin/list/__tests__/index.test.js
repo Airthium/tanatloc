@@ -3,15 +3,9 @@ import { render, screen } from '@testing-library/react'
 
 import List from '..'
 
-jest.mock('../../dialog', () => {
-  const PluginDialog = () => <div />
-  return PluginDialog
-})
+jest.mock('../../dialog', () => () => <div />)
 
-jest.mock('../../delete', () => {
-  const Delete = () => <div />
-  return Delete
-})
+jest.mock('../../delete', () => () => <div />)
 
 describe('components/account/hpc/list', () => {
   const plugin = { key: 'key' }
@@ -29,28 +23,28 @@ describe('components/account/hpc/list', () => {
     unmount()
   })
 
-  // test('mount', () => {
-  //   wrapper.unmount()
-  //   wrapper = mount(
-  //     <List
-  //       plugin={plugin}
-  //       plugins={[
-  //         {},
-  //         {
-  //           uuid: 'uuid',
-  //           key: 'key',
-  //           configuration: {
-  //             name: {
-  //               value: 'name'
-  //             },
-  //             password: { type: 'password', value: 'password' },
-  //             item: { value: 'item' }
-  //           }
-  //         }
-  //       ]}
-  //       swr={swr}
-  //     />
-  //   )
-  //   expect(wrapper).toBeDefined()
-  // })
+  test('plugins', () => {
+    const { unmount } = render(
+      <List
+        plugin={plugin}
+        plugins={[
+          {},
+          {
+            uuid: 'uuid',
+            key: 'key',
+            configuration: {
+              name: {
+                value: 'name'
+              },
+              password: { type: 'password', value: 'password' },
+              item: { value: 'item' }
+            }
+          }
+        ]}
+        swr={swr}
+      />
+    )
+
+    unmount()
+  })
 })

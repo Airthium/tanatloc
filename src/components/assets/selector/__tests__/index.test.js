@@ -174,7 +174,7 @@ describe('components/assets/selector', () => {
   })
 
   test('color filter (selected)', () => {
-    mockSelected.mockImplementation(() => ['uuid'])
+    mockSelected.mockImplementation(() => ['uuid4'])
     const { unmount } = render(
       <Selector
         geometry={geometry}

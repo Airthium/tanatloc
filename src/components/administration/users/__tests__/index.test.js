@@ -3,20 +3,11 @@ import { fireEvent, render, screen } from '@testing-library/react'
 
 import Users from '..'
 
-jest.mock('../add', () => {
-  const Add = () => <div />
-  return Add
-})
+jest.mock('../add', () => () => <div />)
 
-jest.mock('../edit', () => {
-  const Edit = () => <div />
-  return Edit
-})
+jest.mock('../edit', () => () => <div />)
 
-jest.mock('../delete', () => {
-  const Delete = () => <div />
-  return Delete
-})
+jest.mock('../delete', () => () => <div />)
 
 jest.mock('@/plugins', () => ({
   key: {
@@ -26,7 +17,10 @@ jest.mock('@/plugins', () => ({
 }))
 
 describe('components/administration/users', () => {
-  const users = [{}]
+  const users = [
+    { id: 'id1', authorizedplugins: ['key'], superuser: true },
+    { id: 'id2' }
+  ]
   const swr = {
     addOneUser: jest.fn(),
     delOneUser: jest.fn(),
@@ -39,19 +33,18 @@ describe('components/administration/users', () => {
     unmount()
   })
 
-  // test('columns', () => {
-  //   const columns = wrapper.find('Table').props().columns
+  test('sorters', () => {
+    const { unmount } = render(<Users users={users} swr={swr} />)
 
-  //   // Sorters
-  //   columns[0].sorter({ firstname: 'a' }, { firstname: 'b' })
-  //   columns[1].sorter({ lastname: 'a' }, { lastname: 'b' })
-  //   columns[2].sorter({ emailname: 'a' }, { emailname: 'b' })
+    const sorter1 = screen.getByText('First name')
+    fireEvent.click(sorter1)
 
-  //   // Renders
-  //   columns[3].render()
-  //   columns[4].render(['key'])
-  //   columns[5].render(true)
-  //   columns[5].render(false)
-  //   columns[6].render()
-  // })
+    const sorter2 = screen.getByText('Last name')
+    fireEvent.click(sorter2)
+
+    const sorter3 = screen.getByText('Email')
+    fireEvent.click(sorter3)
+
+    unmount()
+  })
 })

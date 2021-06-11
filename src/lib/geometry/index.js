@@ -251,7 +251,7 @@ const readPart = async (geometry) => {
 
   return {
     uuid: part.uuid,
-    buffer
+    buffer: Buffer.from(buffer)
   }
 }
 

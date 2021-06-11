@@ -1,5 +1,5 @@
 import React from 'react'
-import { fireEvent, render, screen } from '@testing-library/react'
+import { render } from '@testing-library/react'
 
 import Error from '..'
 
@@ -17,32 +17,32 @@ describe('components/error', () => {
     unmount()
   })
 
-  // test('with statusCode', () => {
-  //   wrapper.unmount()
-  //   wrapper = shallow(<Error statusCode={200} />)
-  //   expect(wrapper).toBeDefined()
-  // })
+  test('with statusCode', () => {
+    const { unmount } = render(<Error statusCode={200} />)
 
-  // test('getInitialProps', () => {
-  //   let code
+    unmount()
+  })
 
-  //   const res = {}
-  //   const err = {}
-  //   code = Error.getInitialProps({ res, err })
-  //   expect(code).toEqual({ statusCode: undefined })
+  test('getInitialProps', () => {
+    let code
 
-  //   res.statusCode = 200
-  //   code = Error.getInitialProps({ res, err })
-  //   expect(code).toEqual({ statusCode: 200 })
+    const res = {}
+    const err = {}
+    code = Error.getInitialProps({ res, err })
+    expect(code).toEqual({ statusCode: undefined })
 
-  //   code = Error.getInitialProps({ res: null, err })
-  //   expect(code).toEqual({ statusCode: undefined })
+    res.statusCode = 200
+    code = Error.getInitialProps({ res, err })
+    expect(code).toEqual({ statusCode: 200 })
 
-  //   err.statusCode = 200
-  //   code = Error.getInitialProps({ res: null, err })
-  //   expect(code).toEqual({ statusCode: 200 })
+    code = Error.getInitialProps({ res: null, err })
+    expect(code).toEqual({ statusCode: undefined })
 
-  //   code = Error.getInitialProps({ res: null, err: null })
-  //   expect(code).toEqual({ statusCode: 404 })
-  // })
+    err.statusCode = 200
+    code = Error.getInitialProps({ res: null, err })
+    expect(code).toEqual({ statusCode: 200 })
+
+    code = Error.getInitialProps({ res: null, err: null })
+    expect(code).toEqual({ statusCode: 404 })
+  })
 })

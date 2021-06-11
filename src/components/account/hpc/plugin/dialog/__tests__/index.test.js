@@ -24,6 +24,8 @@ jest.mock('@/api/plugin', () => ({
 describe('components/account/hpc/dialog', () => {
   const plugin = {
     name: 'name',
+    logo: 'logo',
+    renderer: 'renderer',
     configuration: {
       input: {
         label: 'Input',
@@ -82,7 +84,16 @@ describe('components/account/hpc/dialog', () => {
 
   test('onFinish', async () => {
     mockDialog.mockImplementation(({ onOk }) => (
-      <div onClick={onOk} role="Dialog" />
+      <div
+        onClick={() =>
+          onOk({
+            input: 'input',
+            password: 'password',
+            select: 'option1'
+          })
+        }
+        role="Dialog"
+      />
     ))
 
     const { unmount } = render(<PluginDialog plugin={plugin} swr={swr} />)
@@ -91,73 +102,48 @@ describe('components/account/hpc/dialog', () => {
 
     const dialog = screen.getByRole('Dialog')
 
-    // // Error
-    // mockAdd.mockImplementation(() => {
-    //   throw new Error()
-    // })
-    // fireEvent.click(dialog, {
-    //   target: {
-    //     value: {
-    //       input: 'input',
-    //       password: 'password',
-    //       select: 'option1'
-    //     }
-    //   }
-    // })
-    // await waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(1))
-    // await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
+    // Error
+    mockAdd.mockImplementation(() => {
+      throw new Error()
+    })
+    fireEvent.click(dialog)
+    await waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
+
+    // Normal
+    mockAdd.mockImplementation(() => {})
+    fireEvent.click(dialog)
+    await waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(2))
+    await waitFor(() => expect(swr.addOnePlugin).toHaveBeenCalledTimes(1))
 
     unmount()
-    // await wrapper
-    //   .find('Dialog')
-    //   .props()
-    //   .onOk({ input: 'input', password: 'password', select: 'option1' })
-    // expect(mockAdd).toHaveBeenCalledTimes(1)
-    // expect(mockError).toHaveBeenCalledTimes(0)
-
-    // // With plugin items
-    // wrapper.unmount()
-    // wrapper = shallow(
-    //   <PluginDialog
-    //     plugin={{ ...plugin, logo: 'logo', renderer: 'renderer' }}
-    //     swr={swr}
-    //   />
-    // )
-    // await wrapper
-    //   .find('Dialog')
-    //   .props()
-    //   .onOk({ input: 'input', password: 'password', select: 'option1' })
-    // expect(mockAdd).toHaveBeenCalledTimes(2)
-    // expect(mockError).toHaveBeenCalledTimes(0)
-
-    // // Error
-    // mockAdd.mockImplementation(() => {
-    //   throw new Error()
-    // })
-    // await wrapper
-    //   .find('Dialog')
-    //   .props()
-    //   .onOk({ input: 'input', password: 'password', select: 'option1' })
-    // expect(mockAdd).toHaveBeenCalledTimes(3)
-    // expect(mockError).toHaveBeenCalledTimes(1)
   })
 
-  // test('edit', async () => {
-  //   wrapper.unmount()
+  test('edit', async () => {
+    mockDialog.mockImplementation(({ onOk }) => (
+      <div
+        onClick={() =>
+          onOk({
+            input: 'input',
+            password: 'password',
+            select: 'option1'
+          })
+        }
+        role="Dialog"
+      />
+    ))
+    const { unmount } = render(
+      <PluginDialog plugin={plugin} swr={swr} edit={true} />
+    )
+    const button = screen.getByRole('button')
+    fireEvent.click(button)
 
-  //   wrapper = shallow(<PluginDialog plugin={plugin} swr={swr} edit={true} />)
-  //   expect(wrapper).toBeDefined()
+    const dialog = screen.getByRole('Dialog')
+    fireEvent.click(dialog)
 
-  //   await wrapper
-  //     .find('Dialog')
-  //     .props()
-  //     .onOk({ input: 'input', password: 'password', select: 'option1' })
-  //   expect(mockUpdate).toHaveBeenCalledTimes(1)
-  //   expect(mockError).toHaveBeenCalledTimes(0)
-  // })
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(swr.mutateOnePlugin).toHaveBeenCalledTimes(1))
 
-  // // test('effect', () => {
-  // //   wrapper.unmount()
-  // //   wrapper = mount(<PluginDialog plugin={plugin} swr={swr} />)
-  // // })
+    unmount()
+  })
 })

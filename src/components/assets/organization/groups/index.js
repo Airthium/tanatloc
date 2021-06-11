@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 import { Avatar, Space, Select, Table } from 'antd'
 
 import Group, { Delete } from '@/components/assets/group'
-import { Error } from '@/components/assets/notification'
+import { Error as ErrorNotification } from '@/components/assets/notification'
 
 import Utils from '@/lib/utils'
 
@@ -56,7 +56,7 @@ const Groups = ({ organization, swr }) => {
 
   // Groups error
   useEffect(() => {
-    if (errorGroups) Error(errors.groups, errorGroups)
+    if (errorGroups) ErrorNotification(errors.groups, errorGroups)
   }, [errorGroups])
 
   // Columns

@@ -1,5 +1,5 @@
 import React from 'react'
-import { fireEvent, render, screen } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import Registration from '..'
 
@@ -47,53 +47,72 @@ describe('components/administration/registration', () => {
     unmount()
   })
 
-  // test('loading', () => {
-  //   wrapper.unmount()
-  //   mockLoadingSystem.mockImplementation(() => true)
-  //   wrapper = shallow(<Registration />)
-  //   expect(wrapper.find('Simple').length).toBe(1)
-  // })
+  test('loading', () => {
+    mockLoadingSystem.mockImplementation(() => true)
+    const { unmount } = render(<Registration />)
 
-  // test('onAllowSignup', async () => {
-  //   // Normal
-  //   await wrapper.find('Checkbox').at(0).props().onChange()
-  //   expect(mockUpdate).toHaveBeenCalledTimes(1)
+    unmount()
+  })
 
-  //   // Error
-  //   mockUpdate.mockImplementation(() => {
-  //     throw new Error()
-  //   })
-  //   await wrapper.find('Checkbox').at(0).props().onChange()
-  //   expect(mockUpdate).toHaveBeenCalledTimes(2)
-  //   expect(mockError).toHaveBeenCalledTimes(1)
-  // })
+  test('error', () => {
+    mockErrorSystem.mockImplementation(() => true)
+    const { unmount } = render(<Registration />)
 
-  // test('onPasswordFinish', async () => {
-  //   // Normal
-  //   await wrapper.find('ForwardRef(InternalForm)').props().onFinish({})
-  //   expect(mockUpdate).toHaveBeenCalledTimes(1)
-  //   expect(mockMutateSystem).toHaveBeenCalledTimes(1)
-  //   expect(mockError).toHaveBeenCalledTimes(0)
+    expect(mockError).toHaveBeenCalledTimes(1)
 
-  //   // Error
-  //   mockUpdate.mockImplementation(() => {
-  //     throw new Error()
-  //   })
-  //   await wrapper.find('ForwardRef(InternalForm)').props().onFinish({})
-  //   expect(mockUpdate).toHaveBeenCalledTimes(2)
-  //   expect(mockMutateSystem).toHaveBeenCalledTimes(1)
-  //   expect(mockError).toHaveBeenCalledTimes(1)
-  // })
+    unmount()
+  })
 
-  // // test('mount', () => {
-  // //   wrapper.unmount()
-  // //   wrapper = mount(<Registration />)
-  // //   expect(wrapper).toBeDefined()
+  test('onAllowSignup', async () => {
+    const { unmount } = render(<Registration />)
 
-  // //   // Error
-  // //   wrapper.unmount()
-  // //   mockErrorSystem.mockImplementation(() => ({ message: 'Error' }))
-  // //   wrapper = mount(<Registration />)
-  // //   expect(mockError).toHaveBeenCalledTimes(1)
-  // // })
+    const checkboxes = screen.getAllByRole('checkbox')
+
+    // Normal
+    fireEvent.click(checkboxes[0])
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(mockMutateSystem).toHaveBeenCalledTimes(1))
+
+    // Error
+    mockUpdate.mockImplementation(() => {
+      throw new Error()
+    })
+    fireEvent.click(checkboxes[0])
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
+    await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
+
+    unmount()
+  })
+
+  test('onPasswordFinish', async () => {
+    const { unmount } = render(<Registration />)
+
+    // Fill form
+    const min = screen.getByRole('spinbutton', {
+      name: 'Minimum number of characters'
+    })
+    const max = screen.getByRole('spinbutton', {
+      name: 'Maximum number of characters'
+    })
+
+    fireEvent.change(min, { target: { value: 8 } })
+    fireEvent.change(max, { target: { value: 16 } })
+
+    const button = screen.getByRole('button', { name: 'check' })
+
+    // Normal
+    fireEvent.click(button)
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(mockMutateSystem).toHaveBeenCalledTimes(1))
+
+    // Error
+    mockUpdate.mockImplementation(() => {
+      throw new Error()
+    })
+    fireEvent.click(button)
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
+    await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
+
+    unmount()
+  })
 })

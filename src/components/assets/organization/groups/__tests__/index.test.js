@@ -59,11 +59,7 @@ describe('components/assets/organization/groups', () => {
       {
         id: 'id',
         name: 'name',
-        users: [
-          { email: 'email' },
-          { firstname: 'firstname' },
-          { lastname: 'lastname' }
-        ]
+        users: [{}]
       }
     ])
   })
@@ -74,43 +70,27 @@ describe('components/assets/organization/groups', () => {
     unmount()
   })
 
-  // test('columns', () => {
-  //   const columns = wrapper.find('Table').props().columns
+  test('error', () => {
+    mockErrorGroups.mockImplementation(() => true)
+    const { unmount } = render(<Groups organization={organization} swr={swr} />)
 
-  //   // Renders
-  //   columns[1].render([{}])
-  //   expect(mockUserToAvatar).toHaveBeenCalledTimes(1)
+    expect(mockError).toHaveBeenCalledTimes(1)
 
-  //   columns[2].render(null, [{}])
-  // })
+    unmount()
+  })
 
-  // // test('effect', () => {
-  // //   wrapper.unmount()
-  // //   wrapper = mount(
-  // //     <Groups
-  // //       organization={{
-  // //         ...organization,
-  // //         owners: [
-  // //           {
-  // //             email: 'email'
-  // //           },
-  // //           {
-  // //             firstname: 'firstname'
-  // //           },
-  // //           {
-  // //             lastname: 'lastname'
-  // //           }
-  // //         ]
-  // //       }}
-  // //       swr={swr}
-  // //     />
-  // //   )
-  // //   expect(wrapper).toBeDefined()
+  test('with owners & users', () => {
+    const { unmount } = render(
+      <Groups
+        organization={{
+          ...organization,
+          owners: [{ id: 'id1', firstname: 'firstname', lastname: 'lastname' }],
+          users: [{ id: 'id2', email: 'email' }, {}]
+        }}
+        swr={swr}
+      />
+    )
 
-  // //   // Error
-  // //   wrapper.unmount()
-  // //   mockErrorGroups.mockImplementation(() => ({ message: 'Error' }))
-  // //   wrapper = mount(<Groups organization={organization} swr={swr} />)
-  // //   expect(mockError).toHaveBeenCalledTimes(2)
-  // // })
+    unmount()
+  })
 })

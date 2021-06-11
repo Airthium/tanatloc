@@ -9,6 +9,7 @@ const mockMkdir = jest.fn()
 const mockReadDir = jest.fn()
 const mockWriteFile = jest.fn()
 const mockReadFile = jest.fn()
+const mockCopyFile = jest.fn()
 const mockUnlink = jest.fn()
 const mockRmdir = jest.fn()
 jest.mock('fs', () => ({
@@ -17,6 +18,7 @@ jest.mock('fs', () => ({
     readdir: async () => mockReadDir(),
     writeFile: async () => mockWriteFile(),
     readFile: async () => mockReadFile(),
+    copyFile: async () => mockCopyFile(),
     unlink: async () => mockUnlink(),
     rm: async () => mockRmdir()
   }
@@ -40,6 +42,7 @@ describe('lib/tools', () => {
     mockReadDir.mockReset()
     mockWriteFile.mockReset()
     mockReadFile.mockReset()
+    mockCopyFile.mockReset()
     mockReadFile.mockImplementation(() => 'readFile')
     mockUnlink.mockReset()
     mockRmdir.mockReset()
@@ -68,9 +71,19 @@ describe('lib/tools', () => {
   })
 
   test('readFile', async () => {
-    const content = await Tools.readFile('file')
+    let content = await Tools.readFile('file')
     expect(mockReadFile).toHaveBeenCalledTimes(1)
     expect(content).toBe('readFile')
+
+    mockReadFile.mockImplementation(() => '{"test": "test"}')
+    content = await Tools.readFile('file', 'json')
+    expect(mockReadFile).toHaveBeenCalledTimes(2)
+    expect(content).toEqual({ test: 'test' })
+  })
+
+  test('copyFile', async () => {
+    await Tools.copyFile('1', '2')
+    expect(mockCopyFile).toHaveBeenCalledTimes(1)
   })
 
   test('convert', async () => {

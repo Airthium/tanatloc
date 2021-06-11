@@ -26,10 +26,11 @@ describe('components/project/share', () => {
   const workspace = { id: 'id', groups: [{ id: 'id' }] }
   const organizations = [
     {
+      id: 'id0',
       groups: [
         {
           id: 'id',
-          name: 'name',
+          name: 'group name',
           users: [
             { id: 'id1', lastname: 'lastname', firstname: 'firstname' },
             { id: 'id2', email: 'email' }
@@ -98,8 +99,8 @@ describe('components/project/share', () => {
     const button = screen.getByRole('button')
     fireEvent.click(button)
 
-    const combobox = screen.getByRole('combobox')
-    fireEvent.change(combobox, { target: { value: 'value' } })
+    const group = screen.getByText('group name')
+    fireEvent.click(group)
 
     unmount()
   })

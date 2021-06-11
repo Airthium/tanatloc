@@ -74,6 +74,7 @@ describe('plugins/rescale/src/lib', () => {
     mockUploadFile.mockReset()
     mockUploadFiles.mockReset()
     mockCreateJob.mockReset()
+    mockCreateJob.mockImplementation(() => 'id')
     mockSubmitJob.mockReset()
     mockGetStatus.mockReset()
     mockGetInRunFiles.mockReset()
@@ -138,19 +139,36 @@ describe('plugins/rescale/src/lib', () => {
       }
     })
 
+    // Create job error
+    mockCreateJob.mockImplementation(() => ({ error: 'error' }))
+    await Rescale.computeSimulation({ id: 'id' }, 'algorithm', {
+      run: {
+        cloudServer: {
+          configuration: {},
+          inUseConfiguration: {
+            numberOfCores: {
+              value: 64
+            }
+          }
+        }
+      }
+    })
+
+    mockCreateJob.mockImplementation(() => 'id')
+
     // With geometries, meshes
     await Rescale.computeSimulation({ id: 'id' }, 'algorithm', {
       geometry1: {
         meshable: true,
-        file: {
-          fileName: 'fileName'
-        }
+        name: 'name',
+        path: 'path',
+        file: 'file'
       },
       geometry2: {
         meshable: false,
-        file: {
-          fileName: 'fileName'
-        }
+        name: 'name',
+        path: 'path',
+        file: 'file'
       },
       boundaryConditions: {
         index: 0,

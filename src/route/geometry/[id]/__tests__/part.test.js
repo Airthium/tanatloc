@@ -10,7 +10,7 @@ const mockGet = jest.fn()
 const mockRead = jest.fn()
 jest.mock('@/lib/geometry', () => ({
   get: async () => mockGet(),
-  read: async () => mockRead()
+  readPart: async () => mockRead()
 }))
 
 const mockProjectGet = jest.fn()

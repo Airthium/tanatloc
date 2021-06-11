@@ -7,7 +7,6 @@ import { Divider, Layout, PageHeader, Tabs, Typography } from 'antd'
 import { Error } from '@/components/assets/notification'
 
 import Users from './users'
-// import Groups from './groups'
 import Registration from './registration'
 
 import UserAPI from '@/api/user'
@@ -20,10 +19,6 @@ const tabItems = {
     label: 'Users',
     key: 'users'
   },
-  // groups: {
-  //   label: 'Groups',
-  //   key: 'groups'
-  // },
   registration: {
     label: 'Registration',
     key: 'registration'
@@ -90,9 +85,6 @@ const Administration = () => {
               swr={{ addOneUser, mutateOneUser, delOneUser }}
             />
           </Tabs.TabPane>
-          {/* <Tabs.TabPane tab={tabItems.groups.label} key={tabItems.groups.key}>
-            <Groups users={users} />
-          </Tabs.TabPane> */}
           <Tabs.TabPane
             tab={tabItems.registration.label}
             key={tabItems.registration.key}

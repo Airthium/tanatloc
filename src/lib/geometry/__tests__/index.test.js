@@ -2,7 +2,7 @@ import Geometry from '../'
 
 const mockPath = jest.fn()
 jest.mock('path', () => ({
-  join: () => mockPath()
+  join: (_, path) => mockPath(path)
 }))
 
 jest.mock('@/config/storage', () => ({}))
@@ -29,7 +29,7 @@ const mockConvert = jest.fn()
 const mockRemoveFile = jest.fn()
 const mockRemoveDirectory = jest.fn()
 jest.mock('../../tools', () => ({
-  readFile: async () => mockReadFile(),
+  readFile: async (path) => mockReadFile(path),
   writeFile: async () => mockWriteFile(),
   convert: async () => mockConvert(),
   removeFile: async () => mockRemoveFile(),
@@ -62,7 +62,23 @@ describe('lib/simulation', () => {
       json: 'json',
       glb: 'glb'
     }))
-    mockReadFile.mockImplementation(() => 'summary')
+    const summary = {
+      solids: [{}, {}],
+      faces: [{}, {}],
+      edges: [{}, {}]
+    }
+    let count = 0
+    mockReadFile.mockImplementation(() => {
+      count++
+      if (count === 1) return summary
+      else {
+        if (count % 2 === 0) return {}
+        else
+          return {
+            data: { attributes: { color: { itemSize: 3, array: [1, 1, 1] } } }
+          }
+      }
+    })
 
     // Normal
     const geometry = await Geometry.add({
@@ -73,12 +89,12 @@ describe('lib/simulation', () => {
     expect(mockWriteFile).toHaveBeenCalledTimes(1)
     expect(mockProjectUpdate).toHaveBeenCalledTimes(1)
     expect(mockConvert).toHaveBeenCalledTimes(1)
-    expect(mockReadFile).toHaveBeenCalledTimes(1)
+    expect(mockReadFile).toHaveBeenCalledTimes(7)
     expect(geometry).toEqual({
       id: 'id',
       json: 'json',
       glb: 'glb',
-      summary: 'summary'
+      summary: summary
     })
 
     // Error
@@ -96,7 +112,7 @@ describe('lib/simulation', () => {
     expect(mockWriteFile).toHaveBeenCalledTimes(2)
     expect(mockProjectUpdate).toHaveBeenCalledTimes(2)
     expect(mockConvert).toHaveBeenCalledTimes(1)
-    expect(mockReadFile).toHaveBeenCalledTimes(1)
+    expect(mockReadFile).toHaveBeenCalledTimes(7)
     expect(mockGet).toHaveBeenCalledTimes(1)
   })
 
@@ -163,6 +179,26 @@ describe('lib/simulation', () => {
     expect(read).toEqual({
       buffer: Buffer.from('buffer'),
       extension: 'extension'
+    })
+  })
+
+  test('readPart', async () => {
+    mockPath.mockImplementation((path) => path)
+    mockGet.mockImplementation(() => ({
+      glb: 'glb',
+      json: 'json'
+    }))
+    mockReadFile.mockImplementation((path) => {
+      if (path === 'glb') return 'buffer'
+      else return { uuid: 'uuid' }
+    })
+
+    const part = await Geometry.readPart({ id: 'id' })
+    expect(mockReadFile).toHaveBeenCalledTimes(2)
+    expect(mockPath).toHaveBeenCalledTimes(2)
+    expect(part).toEqual({
+      uuid: 'uuid',
+      buffer: Buffer.from('buffer')
     })
   })
 })

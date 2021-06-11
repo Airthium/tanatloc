@@ -11,4 +11,10 @@ describe('components/loading', () => {
 
     unmount()
   })
+
+  test('simple', () => {
+    const { unmount } = render(<Loading.Simple />)
+
+    unmount()
+  })
 })

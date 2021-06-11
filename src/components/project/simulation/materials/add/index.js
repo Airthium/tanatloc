@@ -32,7 +32,6 @@ const Add = ({ disabled, material, simulation, geometry, swr, close }) => {
 
     try {
       // Modify selection
-      console.log(geometry)
       const selection = geometry.solids
         .map((s) => {
           if (material.selected.includes(s.uuid))

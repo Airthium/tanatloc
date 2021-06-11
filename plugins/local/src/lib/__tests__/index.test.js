@@ -78,14 +78,14 @@ describe('plugins/local/src/lib', () => {
     })
     const data = await Local.computeMesh(
       'path',
-      { file: 'file' },
+      { path: 'path', name: 'name', file: 'file' },
       { path: 'path' },
       jest.fn()
     )
     expect(data).toEqual({
       originPath: 'path',
       renderPath: 'path',
-      fileName: 'file.msh',
+      fileName: 'name.msh',
       json: 'json',
       glb: 'glb'
     })
@@ -97,7 +97,7 @@ describe('plugins/local/src/lib', () => {
     try {
       await Local.computeMesh(
         'path',
-        { file: 'file' },
+        { path: 'path', name: 'name', file: 'file' },
         { path: 'path' },
         jest.fn()
       )
@@ -113,7 +113,7 @@ describe('plugins/local/src/lib', () => {
     try {
       await Local.computeMesh(
         'path',
-        { file: 'file' },
+        { path: 'path', name: 'name', file: 'file' },
         { path: 'path' },
         jest.fn()
       )
@@ -161,13 +161,15 @@ describe('plugins/local/src/lib', () => {
     await Local.computeSimulation('id', 'algorithm', {
       geometry: {
         meshable: true,
-        file: {
-          originPath: 'originPath',
-          fileName: 'fileName'
-        }
+        name: 'name',
+        path: 'path',
+        file: 'file'
       },
       geometry2: {
-        meshable: false
+        meshable: false,
+        name: 'name',
+        path: 'path',
+        file: 'file'
       },
       boundaryConditions: {
         index: 0,

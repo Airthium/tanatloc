@@ -3,28 +3,26 @@ import { fireEvent, render, screen } from '@testing-library/react'
 
 import List from '..'
 
+const mockPush = jest.fn()
 jest.mock('next/router', () => ({
-  useRouter: () => [{ push: () => {} }]
+  useRouter: () => ({
+    push: mockPush
+  })
 }))
 
-jest.mock('@/components/assets/share', () => {
-  const Share = () => <div />
-  return Share
-})
-
-const mockError = jest.fn()
-jest.mock('@/components/assets/notification', () => ({
-  Error: () => mockError()
+jest.mock('@/components/loading', () => ({
+  Simple: () => <div />
 }))
 
-jest.mock('../../delete', () => {
-  const Delete = () => <div />
-  return Delete
-})
+jest.mock('@/components/assets/share', () => () => <div />)
 
-const mockUpdate = jest.fn()
-jest.mock('@/api/project', () => ({
-  update: async () => mockUpdate()
+jest.mock('../../edit', () => () => <div />)
+
+jest.mock('../../delete', () => () => <div />)
+
+jest.mock('@/lib/utils', () => ({
+  userToAvatar: () => 'user_avatar',
+  groupToAvatar: () => 'group_avatar'
 }))
 
 describe('component/project/list', () => {
@@ -40,9 +38,7 @@ describe('component/project/list', () => {
   }
 
   beforeEach(() => {
-    mockError.mockReset()
-
-    mockUpdate.mockReset()
+    mockPush.mockReset()
   })
 
   test('render', () => {
@@ -50,9 +46,9 @@ describe('component/project/list', () => {
       <List
         user={user}
         workspace={workspace}
-        filter={filter}
         projects={projects}
         organizations={organizations}
+        filter={filter}
         swr={swr}
       />
     )
@@ -60,77 +56,42 @@ describe('component/project/list', () => {
     unmount()
   })
 
-  // test('mount', () => {
-  //   wrapper.unmount()
-  //   wrapper = mount(
-  //     <List
-  //       user={user}
-  //       workspace={workspace}
-  //       filter={filter}
-  //       projects={projects}
-  //       organizations={organizations}
-  //       swr={swr}
-  //     />
-  //   )
-  //   expect(wrapper).toBeDefined()
-  // })
+  test('with projects', () => {
+    const { unmount } = render(
+      <List
+        user={user}
+        workspace={workspace}
+        projects={[
+          { id: 'id1', title: 'with filter' },
+          {
+            id: 'id2',
+            title: 'with filter',
+            description: 'description',
+            avatar: 'avatar',
+            owners: [{ id: 'id' }],
+            users: [{ id: 'id1' }],
+            groups: [{ id: 'id2' }]
+          }
+        ]}
+        organizations={organizations}
+        filter={filter}
+        swr={swr}
+      />
+    )
 
-  // test('with projects', () => {
-  //   wrapper.unmount()
-  //   wrapper = mount(
-  //     <List
-  //       user={user}
-  //       workspace={workspace}
-  //       filter={filter}
-  //       projects={[{ id: 'id', title: 'with filter' }]}
-  //       organizations={organizations}
-  //       swr={swr}
-  //     />
-  //   )
-  //   expect(wrapper).toBeDefined()
+    // Show description
+    const images = screen.getAllByRole('img')
+    fireEvent.mouseEnter(images[0])
+    fireEvent.mouseEnter(images[1])
 
-  //   // With avatar, description, owners, users, groups
-  //   wrapper.unmount()
-  //   wrapper = mount(
-  //     <List
-  //       user={user}
-  //       workspace={workspace}
-  //       filter={filter}
-  //       projects={[
-  //         {
-  //           id: 'id',
-  //           title: 'with filter',
-  //           description: 'description',
-  //           avatar: 'avatar',
-  //           owners: [{ id: 'id' }],
-  //           users: [{ id: 'id1' }],
-  //           groups: [{ id: 'id2' }]
-  //         },
-  //         {
-  //           id: 'id1',
-  //           title: 'with filter',
-  //           avatar: 'avatar',
-  //           owners: [{ id: 'id' }],
-  //           users: [{ id: 'id1' }],
-  //           groups: [{ id: 'id2' }]
-  //         }
-  //       ]}
-  //       organizations={organizations}
-  //       swr={swr}
-  //     />
-  //   )
-  //   expect(wrapper).toBeDefined()
+    // Hide
+    const description = screen.getByText('description')
+    fireEvent.mouseLeave(description)
 
-  //   // // Mouse enter (first project)
-  //   // act(() => wrapper.find('div').at(7).props().onMouseEnter())
+    const newImages = screen.getAllByRole('img')
+    fireEvent.click(newImages[0])
+    expect(mockPush).toHaveBeenCalledTimes(1)
 
-  //   // // Mouse leave (first project)
-  //   // act(() => wrapper.find('div').at(7).props().onMouseLeave())
-
-  //   // // on click (first project)
-  //   // act(() => wrapper.find('div').at(7).props().onClick())
-
-  //   // // Mouse enter (second project)
-  //   // act(() => wrapper.find('div').at(24).props().onMouseEnter())
-  // })
+    unmount()
+  })
 })

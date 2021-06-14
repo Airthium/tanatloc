@@ -4,24 +4,24 @@ import { fireEvent, render, screen } from '@testing-library/react'
 import BoundaryConditions from '@/components/project/simulation/boundaryConditions'
 
 jest.mock('react-redux', () => ({
-  useDispatch: () => () => {}
+  useDispatch: () => jest.fn()
 }))
 
-jest.mock('@/components/assets/button', () => {
-  const AddButton = () => <div />
-  return { AddButton }
-})
+const mockAddButton = jest.fn()
+jest.mock('@/components/assets/button', () => ({
+  AddButton: (props) => mockAddButton(props)
+}))
 
-jest.mock('@/components/project/simulation/boundaryConditions/list', () => {
-  const List = () => <div />
-  return List
-})
+const mockList = jest.fn()
+jest.mock(
+  '@/components/project/simulation/boundaryConditions/list',
+  () => (props) => mockList(props)
+)
+
+const mockBoundaryCondition = jest.fn()
 jest.mock(
   '@/components/project/simulation/boundaryConditions/boundaryCondition',
-  () => {
-    const BoundaryCondition = () => <div />
-    return BoundaryCondition
-  }
+  () => (props) => mockBoundaryCondition(props)
 )
 
 const mockEnable = jest.fn()
@@ -36,6 +36,7 @@ jest.mock('@/store/select/action', () => ({
 }))
 
 describe('components/project/simulation/boundaryConditions', () => {
+  const geometry = { summary: {} }
   const simulation = {
     scheme: {
       configuration: {
@@ -49,11 +50,19 @@ describe('components/project/simulation/boundaryConditions', () => {
       }
     }
   }
-  const part = {}
   const swr = { mutateOneSimulation: jest.fn() }
   const setVisible = jest.fn()
 
   beforeEach(() => {
+    mockAddButton.mockReset()
+    mockAddButton.mockImplementation(() => <div />)
+
+    mockList.mockReset()
+    mockList.mockImplementation(() => <div />)
+
+    mockBoundaryCondition.mockReset()
+    mockBoundaryCondition.mockImplementation(() => <div />)
+
     mockEnable.mockReset()
     mockDisable.mockReset()
     mockSetType.mockReset()
@@ -65,8 +74,23 @@ describe('components/project/simulation/boundaryConditions', () => {
   test('render', () => {
     const { unmount } = render(
       <BoundaryConditions
+        geometry={geometry}
         simulation={simulation}
-        part={part}
+        swr={swr}
+        setVisible={setVisible}
+      />
+    )
+
+    expect(mockSetPart).toHaveBeenCalledTimes(1)
+    expect(mockSetType).toHaveBeenCalledTimes(1)
+
+    unmount()
+  })
+
+  test('without geometry', () => {
+    const { unmount } = render(
+      <BoundaryConditions
+        simulation={simulation}
         swr={swr}
         setVisible={setVisible}
       />
@@ -75,20 +99,68 @@ describe('components/project/simulation/boundaryConditions', () => {
     unmount()
   })
 
-  // test('onAdd', () => {
-  //   wrapper.find('AddButton').props().onAdd()
-  //   expect(mockEnable).toHaveBeenCalledTimes(1)
-  // })
+  test('onAdd', () => {
+    mockAddButton.mockImplementation((props) => (
+      <div role="AddButton" onClick={props.onAdd} />
+    ))
+    const { unmount } = render(
+      <BoundaryConditions
+        geometry={geometry}
+        simulation={simulation}
+        swr={swr}
+        setVisible={setVisible}
+      />
+    )
 
-  // test('onEdit', () => {
-  //   wrapper.find('List').props().onEdit('dirichlet', 0)
-  //   expect(mockEnable).toHaveBeenCalledTimes(1)
-  // })
+    const add = screen.getByRole('AddButton')
+    fireEvent.click(add)
 
-  // test('onClose', () => {
-  //   wrapper.find('BoundaryCondition').props().close()
-  //   expect(mockDisable).toHaveBeenCalledTimes(1)
-  // })
+    expect(mockEnable).toHaveBeenCalledTimes(1)
+
+    unmount()
+  })
+
+  test('onEdit', () => {
+    mockList.mockImplementation((props) => (
+      <div role="List" onClick={() => props.onEdit('dirichlet', 0)} />
+    ))
+    const { unmount } = render(
+      <BoundaryConditions
+        geometry={geometry}
+        simulation={simulation}
+        swr={swr}
+        setVisible={setVisible}
+      />
+    )
+
+    const list = screen.getByRole('List')
+    fireEvent.click(list)
+
+    expect(mockEnable).toHaveBeenCalledTimes(1)
+
+    unmount()
+  })
+
+  test('onClose', () => {
+    mockBoundaryCondition.mockImplementation((props) => (
+      <div role="BoundaryCondition" onClick={props.close} />
+    ))
+    const { unmount } = render(
+      <BoundaryConditions
+        geometry={geometry}
+        simulation={simulation}
+        swr={swr}
+        setVisible={setVisible}
+      />
+    )
+
+    const boundaryCondition = screen.getByRole('BoundaryCondition')
+    fireEvent.click(boundaryCondition)
+
+    expect(mockDisable).toHaveBeenCalledTimes(1)
+
+    unmount()
+  })
 
   // // test('effect', () => {
   // //   wrapper.unmount()

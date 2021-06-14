@@ -3,14 +3,21 @@ import { fireEvent, render, screen } from '@testing-library/react'
 
 import Materials from '@/components/project/simulation/materials'
 
+const mockAddButton = jest.fn()
 jest.mock('@/components/assets/button', () => ({
-  AddButton: 'AddButton'
+  AddButton: (props) => mockAddButton(props)
 }))
 
-jest.mock('@/components/project/simulation/materials/list', () => 'List')
+const mockList = jest.fn()
+jest.mock(
+  '@/components/project/simulation/materials/list',
+  () => (props) => mockList(props)
+)
+
+const mockMaterial = jest.fn()
 jest.mock(
   '@/components/project/simulation/materials/material',
-  () => 'Material'
+  () => (props) => mockMaterial(props)
 )
 
 jest.mock('react-redux', () => ({
@@ -29,8 +36,11 @@ jest.mock('@/store/select/action', () => ({
 }))
 
 describe('components/project/simulation/materials', () => {
-  const project = {}
+  const geometry = {
+    summary: {}
+  }
   const simulation = {
+    id: 'id',
     scheme: {
       configuration: {
         materials: {
@@ -41,10 +51,21 @@ describe('components/project/simulation/materials', () => {
       }
     }
   }
-  const part = {}
+  const swr = {
+    mutateOneSimulation: jest.fn()
+  }
   const setVisible = jest.fn()
 
   beforeEach(() => {
+    mockAddButton.mockReset()
+    mockAddButton.mockImplementation(() => <div />)
+
+    mockList.mockReset()
+    mockList.mockImplementation(() => <div />)
+
+    mockMaterial.mockReset()
+    mockMaterial.mockImplementation(() => <div />)
+
     mockEnable.mockReset()
     mockDisable.mockReset()
     mockSetType.mockReset()
@@ -56,51 +77,84 @@ describe('components/project/simulation/materials', () => {
   test('render', () => {
     const { unmount } = render(
       <Materials
-        project={project}
+        geometry={geometry}
         simulation={simulation}
-        part={part}
+        swr={swr}
         setVisible={setVisible}
       />
+    )
+
+    expect(mockSetPart).toHaveBeenCalledTimes(1)
+    expect(mockSetType).toHaveBeenCalledTimes(1)
+
+    unmount()
+  })
+
+  test('without geometry', () => {
+    const { unmount } = render(
+      <Materials simulation={simulation} swr={swr} setVisible={setVisible} />
     )
 
     unmount()
   })
 
-  // test('onAdd', () => {
-  //   wrapper.find('AddButton').props().onAdd()
-  //   expect(mockEnable).toHaveBeenCalledTimes(1)
-  // })
+  test('onAdd', () => {
+    mockAddButton.mockImplementation((props) => (
+      <div role="AddButton" onClick={props.onAdd} />
+    ))
+    const { unmount } = render(
+      <Materials
+        geometry={geometry}
+        simulation={simulation}
+        swr={swr}
+        setVisible={setVisible}
+      />
+    )
 
-  // test('onEdit', () => {
-  //   wrapper.find('List').props().onEdit()
-  // })
+    const add = screen.getByRole('AddButton')
+    fireEvent.click(add)
+    expect(mockEnable).toHaveBeenCalledTimes(1)
 
-  // test('onClose', () => {
-  //   wrapper.find('Material').props().close()
-  //   expect(mockDisable).toHaveBeenCalledTimes(1)
-  // })
+    unmount()
+  })
 
-  // // test('effect', () => {
-  // //   wrapper.unmount()
-  // //   wrapper = mount(
-  // //     <Materials
-  // //       project={project}
-  // //       simulation={simulation}
-  // //       part={part}
-  // //       setVisible={setVisible}
-  // //     />
-  // //   )
-  // //   expect(mockSetType).toHaveBeenCalledTimes(1)
-  // //   expect(mockSetPart).toHaveBeenCalledTimes(1)
+  test('onEdit', () => {
+    mockList.mockImplementation((props) => (
+      <div role="List" onClick={props.onEdit} />
+    ))
+    const { unmount } = render(
+      <Materials
+        geometry={geometry}
+        simulation={simulation}
+        swr={swr}
+        setVisible={setVisible}
+      />
+    )
 
-  // //   // Without part
-  // //   wrapper.unmount()
-  // //   wrapper = mount(
-  // //     <Materials
-  // //       project={project}
-  // //       simulation={simulation}
-  // //       setVisible={setVisible}
-  // //     />
-  // //   )
-  // // })
+    const list = screen.getByRole('List')
+    fireEvent.click(list)
+    expect(mockEnable).toHaveBeenCalledTimes(1)
+
+    unmount()
+  })
+
+  test('onClose', () => {
+    mockMaterial.mockImplementation((props) => (
+      <div role="Material" onClick={props.close} />
+    ))
+    const { unmount } = render(
+      <Materials
+        geometry={geometry}
+        simulation={simulation}
+        swr={swr}
+        setVisible={setVisible}
+      />
+    )
+
+    const material = screen.getByRole('Material')
+    fireEvent.click(material)
+    expect(mockDisable).toHaveBeenCalledTimes(1)
+
+    unmount()
+  })
 })

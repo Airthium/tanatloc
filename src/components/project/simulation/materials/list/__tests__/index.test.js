@@ -3,18 +3,15 @@ import { fireEvent, render, screen } from '@testing-library/react'
 
 import List from '@/components/project/simulation/materials/list'
 
-jest.mock('@/components/assets/button', () => {
-  const EditButton = () => <div />
-  return { EditButton }
-})
+const mockEditButton = jest.fn()
+jest.mock('@/components/assets/button', () => ({
+  EditButton: (props) => mockEditButton(props)
+}))
 
-jest.mock('../../delete', () => {
-  const Delete = () => <div />
-  return Delete
-})
+jest.mock('../../delete', () => () => <div />)
 
 jest.mock('react-redux', () => ({
-  useDispatch: () => () => {}
+  useDispatch: () => jest.fn()
 }))
 
 const mockEnable = jest.fn()
@@ -36,20 +33,22 @@ describe('components/project/simulation/materials/list', () => {
           values: [
             {
               selected: ['uuid'],
-              material: {}
+              material: { label: 'name' }
             }
           ]
         }
       }
     }
   }
-  const mutateOneSimulation = jest.fn()
   const swr = {
-    mutateOneSimulation
+    mutateOneSimulation: jest.fn()
   }
   const onEdit = jest.fn()
 
   beforeEach(() => {
+    mockEditButton.mockReset()
+    mockEditButton.mockImplementation(() => <div />)
+
     mockEnable.mockReset()
     mockDisable.mockReset()
     mockSelect.mockReset()
@@ -65,29 +64,41 @@ describe('components/project/simulation/materials/list', () => {
     unmount()
   })
 
-  // test('highlight', () => {
-  //   wrapper.find('Card').props().onMouseEnter('key', 0)
-  //   expect(mockEnable).toHaveBeenCalledTimes(1)
-  //   expect(mockSelect).toHaveBeenCalledTimes(1)
-  // })
+  test('highlight', () => {
+    const { unmount } = render(
+      <List simulation={simulation} swr={swr} onEdit={onEdit} />
+    )
 
-  // test('unhighlight', () => {
-  //   wrapper.find('Card').props().onMouseLeave()
-  //   expect(mockDisable).toHaveBeenCalledTimes(1)
-  // })
+    const item = screen.getByText('name')
+    fireEvent.mouseEnter(item)
+    expect(mockEnable).toHaveBeenCalledTimes(1)
 
-  // test('edit', () => {
-  //   global.setTimeout = (callback) => callback()
-  //   wrapper.find('EditButton').props().onEdit()
-  //   expect(onEdit).toHaveBeenCalledTimes(1)
-  // })
+    fireEvent.mouseLeave(item)
+    expect(mockSelect).toHaveBeenCalledTimes(1)
 
-  // test('empty simulation', () => {
-  //   wrapper.unmount()
-  //   simulation.scheme = {}
-  //   wrapper = shallow(
-  //     <List simulation={simulation} swr={swr} onEdit={onEdit} />
-  //   )
-  //   expect(wrapper).toBeDefined()
-  // })
+    unmount()
+  })
+
+  test('Edit', () => {
+    global.setTimeout = (callback) => callback()
+    mockEditButton.mockImplementation((props) => (
+      <div role="EditButton" onClick={props.onEdit} />
+    ))
+    const { unmount } = render(
+      <List simulation={simulation} swr={swr} onEdit={onEdit} />
+    )
+
+    const edit = screen.getByRole('EditButton')
+    fireEvent.click(edit)
+
+    unmount()
+  })
+
+  test('empty simulation', () => {
+    const { unmount } = render(
+      <List simulation={{ id: 'id' }} swr={swr} onEdit={onEdit} />
+    )
+
+    unmount()
+  })
 })

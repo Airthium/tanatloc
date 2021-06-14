@@ -11,7 +11,6 @@ module.exports = {
   ],
   testEnvironment: 'jsdom',
   testPathIgnorePatterns: [
-    '<rootDir>/src/components/project/',
     '<rootDir>/node_modules/',
     '<rootDir>/.next/',
     '<rootDir>/out/',
@@ -54,7 +53,6 @@ module.exports = {
     '^@/styles(.*)$': '<rootDir>/src/styles$1'
   },
   coveragePathIgnorePatterns: [
-    '<rootDir>/src/components/project/',
     '<rootDir>/node_modules/',
     '<rootDir>/.next/',
     '<rootDir>/out/',

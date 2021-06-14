@@ -3,29 +3,30 @@ import { fireEvent, render, screen } from '@testing-library/react'
 
 import BoundaryCondition from '@/components/project/simulation/boundaryConditions/boundaryCondition'
 
-jest.mock('@/components/assets/formula', () => {
-  const Formula = () => <div />
-  return Formula
-})
+const mockGoBack = jest.fn()
+jest.mock('@/components/assets/button', () => ({
+  GoBack: (props) => mockGoBack(props)
+}))
 
-jest.mock('@/components/assets/selector', () => {
-  const Selector = () => <div />
-  return Selector
-})
+const mockFormula = jest.fn()
+jest.mock('@/components/assets/formula', () => (props) => mockFormula(props))
 
-jest.mock('@/components/project/simulation/boundaryConditions/add', () => {
-  const Add = () => <div />
-  return Add
-})
+const mockSelector = jest.fn()
+jest.mock('@/components/assets/selector', () => (props) => mockSelector(props))
 
-jest.mock('@/components/project/simulation/boundaryConditions/edit', () => {
-  const Edit = () => <div />
-  return Edit
-})
+jest.mock(
+  '@/components/project/simulation/boundaryConditions/add',
+  () => () => <div />
+)
+
+jest.mock(
+  '@/components/project/simulation/boundaryConditions/edit',
+  () => () => <div />
+)
 
 describe('components/project/simulation/boundaryConditions/boundaryCondition', () => {
   const simulation = {}
-  const part = {}
+  const geometry = {}
   const boundaryConditions = {
     title: 'title',
     key: {
@@ -36,14 +37,28 @@ describe('components/project/simulation/boundaryConditions/boundaryCondition', (
         }
       ],
       values: [{}]
+    },
+    otherKey: {
+      label: 'other'
+    },
+    otherOtherKey: {
+      label: 'otherOther',
+      children: [{ default: 1 }, { default: 2 }, { default: 3 }]
     }
   }
-  let boundaryCondition = undefined
-  const mutateOneSimulation = jest.fn()
-  const swr = { mutateOneSimulation }
+  const swr = { mutateOneSimulation: jest.fn() }
   const close = jest.fn()
 
   beforeEach(() => {
+    mockGoBack.mockReset()
+    mockGoBack.mockImplementation(() => <div />)
+
+    mockFormula.mockReset()
+    mockFormula.mockImplementation(() => <div />)
+
+    mockSelector.mockReset()
+    mockSelector.mockImplementation(() => <div />)
+
     close.mockReset()
   })
 
@@ -52,9 +67,8 @@ describe('components/project/simulation/boundaryConditions/boundaryCondition', (
       <BoundaryCondition
         visible={true}
         simulation={simulation}
-        part={part}
+        geometry={geometry}
         boundaryConditions={boundaryConditions}
-        boundaryCondition={boundaryCondition}
         swr={swr}
         close={close}
       />
@@ -63,224 +77,109 @@ describe('components/project/simulation/boundaryConditions/boundaryCondition', (
     unmount()
   })
 
-  // // test('without boundaryConditions', () => {
-  // //   wrapper.unmount()
-  // //   wrapper = mount(
-  // //     <BoundaryCondition
-  // //       visible={true}
-  // //       simulation={simulation}
-  // //       part={part}
-  // //       boundaryCondition={boundaryCondition}
-  // //       swr={swr}
-  // //       close={close}
-  // //     />
-  // //   )
-  // //   expect(wrapper).toBeDefined()
-  // // })
+  test('without boundaryConditions', () => {
+    const { unmount } = render(
+      <BoundaryCondition
+        visible={true}
+        simulation={simulation}
+        geometry={geometry}
+        swr={swr}
+        close={close}
+      />
+    )
 
-  // test('onName', () => {
-  //   wrapper
-  //     .find('Card')
-  //     .at(0)
-  //     .props()
-  //     .children.props.onChange({ target: { value: 'name' } })
-  // })
+    unmount()
+  })
 
-  // // test('onType', () => {
-  // //   wrapper.unmount()
-  // //   wrapper = mount(
-  // //     <BoundaryCondition
-  // //       simulation={simulation}
-  // //       visible={true}
-  // //       part={part}
-  // //       boundaryConditions={boundaryConditions}
-  // //       boundaryCondition={boundaryCondition}
-  // //       swr={swr}
-  // //       close={close}
-  // //     />
-  // //   )
+  test('close', () => {
+    mockGoBack.mockImplementation((props) => (
+      <div role="GoBack" onClick={props.onClick} />
+    ))
+    const { unmount } = render(
+      <BoundaryCondition
+        visible={true}
+        simulation={simulation}
+        geometry={geometry}
+        boundaryConditions={boundaryConditions}
+        swr={swr}
+        close={close}
+      />
+    )
 
-  // //   act(() =>
-  // //     wrapper
-  // //       .find('Card')
-  // //       .at(1)
-  // //       .props()
-  // //       .children.props.onChange({ target: { value: 'key' } })
-  // //   )
+    const goBack = screen.getByRole('GoBack')
+    fireEvent.click(goBack)
 
-  // //   // Without children
-  // //   wrapper.unmount()
-  // //   wrapper = mount(
-  // //     <BoundaryCondition
-  // //       visible={true}
-  // //       simulation={simulation}
-  // //       part={part}
-  // //       boundaryConditions={{
-  // //         title: 'title',
-  // //         key: {
-  // //           label: 'label'
-  // //         }
-  // //       }}
-  // //       boundaryCondition={boundaryCondition}
-  // //       swr={swr}
-  // //       close={close}
-  // //     />
-  // //   )
-  // //   act(() =>
-  // //     wrapper
-  // //       .find('Card')
-  // //       .at(1)
-  // //       .props()
-  // //       .children.props.onChange({ target: { value: 'key' } })
-  // //   )
-  // // })
+    unmount()
+  })
 
-  // test('onSelected', () => {
-  //   wrapper.find('Selector').props().updateSelected()
-  // })
+  test('Fill', () => {
+    mockFormula.mockImplementation((props) => (
+      <div
+        role="Formula"
+        onClick={() => {
+          props.onValueChange(1)
+          props.onCheckedChange(true)
+        }}
+      />
+    ))
+    mockSelector.mockImplementation((props) => (
+      <div
+        role="Selector"
+        onClick={() => props.updateSelected([{ uuid: 'uuid' }])}
+      />
+    ))
+    const { unmount } = render(
+      <BoundaryCondition
+        visible={true}
+        simulation={simulation}
+        geometry={geometry}
+        boundaryConditions={boundaryConditions}
+        swr={swr}
+        close={close}
+      />
+    )
 
-  // test('onClose', () => {
-  //   wrapper.find('Add').props().close()
-  //   expect(close).toHaveBeenCalledTimes(1)
-  // })
+    // Name
+    const input = screen.getByRole('textbox')
+    fireEvent.input(input, { target: { value: 'BC' } })
 
-  // test('edit', () => {
-  //   wrapper.unmount()
-  //   boundaryCondition = {}
-  //   wrapper = shallow(
-  //     <BoundaryCondition
-  //       visible={true}
-  //       simulation={simulation}
-  //       part={part}
-  //       boundaryConditions={boundaryConditions}
-  //       boundaryCondition={boundaryCondition}
-  //       swr={swr}
-  //       close={close}
-  //     />
-  //   )
-  //   expect(wrapper.find('Edit').length).toBe(1)
-  // })
+    // Type
+    const radios = screen.getAllByRole('radio')
+    // Without children
+    fireEvent.click(radios[1])
 
-  // // test('effect', () => {
-  // //   // With boundaryCondition
-  // //   wrapper.unmount()
-  // //   boundaryCondition = { selected: [{ uuid: 'uuid', label: 1 }] }
-  // //   wrapper = mount(
-  // //     <BoundaryCondition
-  // //       simulation={simulation}
-  // //       visible={true}
-  // //       part={part}
-  // //       boundaryConditions={boundaryConditions}
-  // //       boundaryCondition={boundaryCondition}
-  // //       swr={swr}
-  // //       close={close}
-  // //     />
-  // //   )
+    // With three children
+    fireEvent.click(radios[2])
 
-  // //   // Without boundaryCondition
-  // //   wrapper.unmount()
-  // //   boundaryCondition = null
-  // //   wrapper = mount(
-  // //     <BoundaryCondition
-  // //       simulation={simulation}
-  // //       visible={true}
-  // //       part={part}
-  // //       boundaryConditions={boundaryConditions}
-  // //       boundaryCondition={boundaryCondition}
-  // //       swr={swr}
-  // //       close={close}
-  // //     />
-  // //   )
+    // With child
+    fireEvent.click(radios[0])
 
-  // //   // Enable
-  // //   wrapper.unmount()
-  // //   boundaryCondition = {
-  // //     name: 'name',
-  // //     selected: [{ uuid: 'uuid', label: 1 }],
-  // //     values: [
-  // //       {
-  // //         value: 0
-  // //       }
-  // //     ]
-  // //   }
-  // //   wrapper = mount(
-  // //     <BoundaryCondition
-  // //       simulation={simulation}
-  // //       visible={true}
-  // //       part={part}
-  // //       boundaryConditions={boundaryConditions}
-  // //       boundaryCondition={boundaryCondition}
-  // //       swr={swr}
-  // //       close={close}
-  // //     />
-  // //   )
-  // // })
+    // Value
+    const formula = screen.getByRole('Formula')
+    fireEvent.click(formula)
 
-  // // test('onValueChange', () => {
-  // //   boundaryCondition = {
-  // //     type: {
-  // //       key: 'key',
-  // //       children: [
-  // //         {
-  // //           default: 1
-  // //         }
-  // //       ]
-  // //     },
-  // //     name: 'name',
-  // //     selected: [{ uuid: 'uuid', label: 1 }],
-  // //     values: [{}]
-  // //   }
-  // //   wrapper = mount(
-  // //     <BoundaryCondition
-  // //       simulation={simulation}
-  // //       visible={true}
-  // //       part={part}
-  // //       boundaryConditions={boundaryConditions}
-  // //       boundaryCondition={boundaryCondition}
-  // //       close={close}
-  // //       swr={swr}
-  // //     />
-  // //   )
-  // //   act(() => wrapper.find('Formula').props().onValueChange(0, 10))
-  // // })
+    // Selector
+    const selector = screen.getByRole('Selector')
+    fireEvent.click(selector)
 
-  // // test('onCheckedChange', () => {
-  // //   boundaryCondition = {
-  // //     type: {
-  // //       key: 'key',
-  // //       children: [
-  // //         {
-  // //           default: 1
-  // //         },
-  // //         {
-  // //           default: 0
-  // //         }
-  // //       ]
-  // //     },
-  // //     name: 'name',
-  // //     selected: [{ uuid: 'uuid', label: 1 }],
-  // //     values: [
-  // //       {
-  // //         checked: true,
-  // //         value: 0
-  // //       },
-  // //       {
-  // //         hecked: false,
-  // //         value: 0
-  // //       }
-  // //     ]
-  // //   }
-  // //   wrapper = mount(
-  // //     <BoundaryCondition
-  // //       simulation={simulation}
-  // //       visible={true}
-  // //       part={part}
-  // //       boundaryConditions={boundaryConditions}
-  // //       boundaryCondition={boundaryCondition}
-  // //       swr={swr}
-  // //       close={close}
-  // //     />
-  // //   )
-  // //   act(() => wrapper.find('Formula').at(1).props().onCheckedChange(1, true))
-  // // })
+    unmount()
+  })
+
+  test('edit', () => {
+    const { unmount } = render(
+      <BoundaryCondition
+        visible={true}
+        simulation={simulation}
+        geometry={geometry}
+        boundaryConditions={boundaryConditions}
+        boundaryCondition={{
+          selected: [{ uuid: 'uuid' }]
+        }}
+        swr={swr}
+        close={close}
+      />
+    )
+
+    unmount()
+  })
 })

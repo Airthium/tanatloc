@@ -15,9 +15,10 @@ jest.mock('@/components/assets/notification', () => ({
   Error: () => mockError()
 }))
 
+const mockRenderer = jest.fn()
 jest.mock('@/plugins', () => ({
   key: {
-    renderer: 'Renderer'
+    renderer: (props) => mockRenderer(props)
   }
 }))
 
@@ -42,6 +43,9 @@ describe('components/project/simulation/run/cloudServer', () => {
     mockPush.mockReset()
 
     mockError.mockReset()
+
+    mockRenderer.mockReset()
+    mockRenderer.mockImplementation(() => <div />)
 
     mockPlugins.mockReset()
     mockPlugins.mockImplementation(() => [
@@ -69,30 +73,65 @@ describe('components/project/simulation/run/cloudServer', () => {
     unmount()
   })
 
-  // test('account', () => {
-  //   wrapper.find('Button').at(0).props().onClick()
-  //   expect(mockPush).toHaveBeenCalledTimes(1)
-  // })
+  test('error', () => {
+    mockErrorPlugins.mockImplementation(() => true)
+    const { unmount } = render(
+      <CloudServer cloudServer={cloudServer} onOk={onOk} />
+    )
+    expect(mockError).toHaveBeenCalledTimes(1)
 
-  // test('setVisible', () => {
-  //   wrapper.find('Button').at(1).props().onClick()
-  //   expect(wrapper.find('Modal').props().visible).toBe(true)
-  // })
+    unmount()
+  })
 
-  // test('onMerge', () => {
-  //   wrapper.find('Renderer').props().onSelect()
-  //   expect(onOk).toHaveBeenCalledTimes(1)
-  // })
+  test('router', () => {
+    const { unmount } = render(
+      <CloudServer cloudServer={cloudServer} onOk={onOk} />
+    )
 
-  // // test('effect', () => {
-  // //   wrapper.unmount()
-  // //   wrapper = mount(<CloudServer cloudServer={cloudServer} onOk={onOk} />)
-  // //   expect(wrapper).toBeDefined()
+    // Set visible
+    const button = screen.getByRole('button')
+    fireEvent.click(button)
 
-  // //   // Error
-  // //   wrapper.unmount()
-  // //   mockErrorPlugins.mockImplementation(() => ({ message: 'Error' }))
-  // //   wrapper = mount(<CloudServer cloudServer={cloudServer} onOk={onOk} />)
-  // //   expect(mockError).toHaveBeenCalledTimes(1)
-  // // })
+    const account = screen.getByRole('button', { name: 'account settings' })
+    fireEvent.click(account)
+
+    expect(mockPush).toHaveBeenCalledTimes(1)
+
+    unmount()
+  })
+
+  test('close', () => {
+    const { unmount } = render(
+      <CloudServer cloudServer={cloudServer} onOk={onOk} />
+    )
+
+    // Set visible
+    const button = screen.getByRole('button')
+    fireEvent.click(button)
+
+    const close = screen.getByRole('button', { name: 'Close' })
+    fireEvent.click(close)
+
+    unmount()
+  })
+
+  test('onMerge', () => {
+    mockRenderer.mockImplementation((props) => (
+      <div role="Renderer" onClick={props.onSelect} />
+    ))
+    const { unmount } = render(
+      <CloudServer cloudServer={cloudServer} onOk={onOk} />
+    )
+
+    // Set visible
+    const button = screen.getByRole('button')
+    fireEvent.click(button)
+
+    const renderer = screen.getByRole('Renderer')
+    fireEvent.click(renderer)
+
+    expect(onOk).toHaveBeenCalledTimes(1)
+
+    unmount()
+  })
 })

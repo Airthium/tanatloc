@@ -57,12 +57,10 @@ import { ColorbarHelper } from '@/lib/three/helpers/ColorbarHelper'
 import { PartLoader } from '@/lib/three/loaders/PartLoader'
 
 import AvatarAPI from '@/api/avatar'
-import PartAPI from '@/api/part'
 import GeometryAPI from '@/api/geometry'
 
 import { useSelector, useDispatch } from 'react-redux'
 import { highlight, select, unselect } from '@/store/select/action'
-import Geometry from '../geometry'
 
 /**
  * Errors
@@ -74,7 +72,7 @@ const errors = {
 /**
  * ThreeView
  */
-const ThreeView = ({ loading, project, part /*, setPartSummary*/ }) => {
+const ThreeView = ({ loading, project, part }) => {
   // Ref
   const mount = useRef(null)
   const scene = useRef()
@@ -811,7 +809,7 @@ const ThreeView = ({ loading, project, part /*, setPartSummary*/ }) => {
  * View
  * @param {Object} Props props
  */
-const View = ({ project, geometry, setPartSummary }) => {
+const View = ({ project, geometry }) => {
   // State
   const [part, setPart] = useState()
   const [loading, setLoading] = useState(false)
@@ -831,7 +829,6 @@ const View = ({ project, geometry, setPartSummary }) => {
       if (file.needCleanup) {
         // Cleanup
         setPart()
-        setPartSummary()
       } else {
         // Load
         const partContent = await GeometryAPI.getPart({ id: geometry.id })
@@ -853,14 +850,7 @@ const View = ({ project, geometry, setPartSummary }) => {
   /**
    * Render
    */
-  return (
-    <ThreeView
-      loading={loading}
-      project={project}
-      part={part}
-      setPartSummary={setPartSummary}
-    />
-  )
+  return <ThreeView loading={loading} project={project} part={part} />
 }
 
 export default View

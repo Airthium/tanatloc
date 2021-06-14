@@ -3,34 +3,30 @@ import { fireEvent, render, screen } from '@testing-library/react'
 
 import Material from '@/components/project/simulation/materials/material'
 
-jest.mock('@/components/assets/formula', () => {
-  const Formula = () => <div />
-  return Formula
-})
+const mockGoBack = jest.fn()
+jest.mock('@/components/assets/button', () => ({
+  GoBack: (props) => mockGoBack(props)
+}))
 
-jest.mock('@/components/assets/selector', () => {
-  const Selector = () => <div />
-  return Selector
-})
+const mockFormula = jest.fn()
+jest.mock('@/components/assets/formula', () => (props) => mockFormula(props))
 
-jest.mock('@/components/project/simulation/materials/database', () => {
-  const Database = () => <div />
-  return Database
-})
+const mockSelector = jest.fn()
+jest.mock('@/components/assets/selector', () => (props) => mockSelector(props))
 
-jest.mock('@/components/project/simulation/materials/add', () => {
-  const Add = () => <div />
-  return Add
-})
+const mockDatabase = jest.fn()
+jest.mock(
+  '@/components/project/simulation/materials/database',
+  () => (props) => mockDatabase(props)
+)
 
-jest.mock('@/components/project/simulation/materials/edit', () => {
-  const Edit = () => <div />
-  return Edit
-})
+jest.mock('@/components/project/simulation/materials/add', () => () => <div />)
+
+jest.mock('@/components/project/simulation/materials/edit', () => () => <div />)
 
 describe('components/project/simulation/materials/material', () => {
   const simulation = {}
-  const part = {}
+  const geometry = {}
   const materials = {
     label: 'label',
     children: [
@@ -40,12 +36,22 @@ describe('components/project/simulation/materials/material', () => {
       }
     ]
   }
-  let material = undefined
-  const mutateOneSimulation = jest.fn()
-  const swr = { mutateOneSimulation }
+  const swr = { mutateOneSimulation: jest.fn() }
   const close = jest.fn()
 
   beforeEach(() => {
+    mockGoBack.mockReset()
+    mockGoBack.mockImplementation(() => <div />)
+
+    mockFormula.mockReset()
+    mockFormula.mockImplementation(() => <div />)
+
+    mockSelector.mockReset()
+    mockSelector.mockImplementation(() => <div />)
+
+    mockDatabase.mockReset()
+    mockDatabase.mockImplementation(() => <div />)
+
     close.mockReset()
   })
 
@@ -54,9 +60,8 @@ describe('components/project/simulation/materials/material', () => {
       <Material
         simulation={simulation}
         visible={true}
-        part={part}
+        geometry={geometry}
         materials={materials}
-        material={material}
         swr={swr}
         close={close}
       />
@@ -65,58 +70,73 @@ describe('components/project/simulation/materials/material', () => {
     unmount()
   })
 
-  // test('onMaterialSelect', () => {
-  //   wrapper.find('Database').props().onSelect()
-  // })
+  test('fill', () => {
+    mockFormula.mockImplementation((props) => (
+      <div role="Formula" onClick={() => props.onValueChange(1)} />
+    ))
+    mockSelector.mockImplementation((props) => (
+      <div
+        role="Selector"
+        onClick={() => props.updateSelected([{ uuid: 'uuid' }])}
+      />
+    ))
+    mockDatabase.mockImplementation((props) => (
+      <div
+        role="Database"
+        onClick={() =>
+          props.onSelect({
+            children: [
+              {
+                symbol: 'Test'
+              }
+            ]
+          })
+        }
+      />
+    ))
+    const { unmount } = render(
+      <Material
+        simulation={simulation}
+        visible={true}
+        geometry={geometry}
+        materials={materials}
+        swr={swr}
+        close={close}
+      />
+    )
 
-  // test('onSelected', () => {
-  //   wrapper.find('Selector').props().updateSelected()
-  // })
+    // Database
+    const database = screen.getByRole('Database')
+    fireEvent.click(database)
 
-  // test('onClose', () => {
-  //   wrapper.find('Add').props().close()
-  //   expect(close).toHaveBeenCalledTimes(1)
-  // })
+    // Formula
+    const formula = screen.getByRole('Formula')
+    fireEvent.click(formula)
 
-  // // test('effect', () => {
-  // //   // Without material
-  // //   material = null
-  // //   wrapper = mount(
-  // //     <Material
-  // //       simulation={simulation}
-  // //       visible={true}
-  // //       part={part}
-  // //       materials={materials}
-  // //       material={material}
-  // //       swr={swr}
-  // //       close={close}
-  // //     />
-  // //   )
+    // Selector
+    const selector = screen.getByRole('Selector')
+    fireEvent.click(selector)
 
-  // //   // Enable
-  // //   wrapper.unmount()
-  // //   material = {
-  // //     selected: [{ uuid: 'uuid', label: 1 }],
-  // //     material: {
-  // //       children: [
-  // //         {
-  // //           symbol: 'Test'
-  // //         }
-  // //       ]
-  // //     }
-  // //   }
-  // //   wrapper = mount(
-  // //     <Material
-  // //       simulation={simulation}
-  // //       visible={true}
-  // //       part={part}
-  // //       materials={materials}
-  // //       material={material}
-  // //       swr={swr}
-  // //       close={close}
-  // //     />
-  // //   )
+    // Close
+    const button = screen.getByRole('button')
+    fireEvent.click(button)
 
-  // //   wrapper.find('Formula').props().onValueChange()
-  // // })
+    unmount()
+  })
+
+  test('edit', () => {
+    const { unmount } = render(
+      <Material
+        simulation={simulation}
+        visible={true}
+        geometry={geometry}
+        materials={materials}
+        material={{}}
+        swr={swr}
+        close={close}
+      />
+    )
+
+    unmount()
+  })
 })

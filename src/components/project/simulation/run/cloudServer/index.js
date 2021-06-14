@@ -5,7 +5,7 @@ import { Button, Card, Modal, Space, Typography } from 'antd'
 import { CloudServerOutlined } from '@ant-design/icons'
 import merge from 'lodash.merge'
 
-import { Error } from '@/components/assets/notification'
+import { Error as ErrorNotification } from '@/components/assets/notification'
 
 import Plugins from '@/plugins'
 
@@ -30,7 +30,7 @@ const CloudServer = ({ disabled, cloudServer, onOk }) => {
 
   // Plugins errors
   useEffect(() => {
-    if (errorPlugins) Error(errors.plugins, errorPlugins)
+    if (errorPlugins) ErrorNotification(errors.plugins, errorPlugins)
   }, [errorPlugins])
 
   /**

@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 import { Card, Collapse, Layout, Select, Space, Typography } from 'antd'
 
 import Formula from '@/components/assets/formula'
-import { Error } from '@/components/assets/notification'
+import { Error as ErrorNotification } from '@/components/assets/notification'
 
 import SimulationAPI from '@/api/simulation'
 
@@ -12,7 +12,7 @@ import SimulationAPI from '@/api/simulation'
  * @memberof module:components/project/simulation
  */
 const errors = {
-  updateError: 'Unable to update the simulation'
+  update: 'Unable to update the simulation'
 }
 
 /**
@@ -35,7 +35,7 @@ const Parameters = ({ simulation, swr }) => {
     Object.keys(values).forEach((key) => {
       const deepValues = values[key]
       deepValues.forEach((value, index) => {
-        if (value)
+        if (value !== undefined)
           newSimulation.scheme.configuration.parameters[key].children[
             index
           ].value = value
@@ -63,7 +63,7 @@ const Parameters = ({ simulation, swr }) => {
         swr.mutateOneSimulation(newSimulation)
       })
       .catch((err) => {
-        Error(errors.updateError, err)
+        ErrorNotification(errors.update, err)
       })
   }, [values])
 
@@ -113,7 +113,10 @@ const Parameters = ({ simulation, swr }) => {
             <Select
               options={child.options}
               defaultValue={child.value || child.default}
-              onChange={(value) => onChange(key, index, value)}
+              onChange={(value) => {
+                console.log('ok')
+                onChange(key, index, value)
+              }}
             />
           </Typography.Text>
         )

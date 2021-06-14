@@ -1,12 +1,10 @@
 import React from 'react'
-import { fireEvent, render, screen } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import Parameters from '@/components/project/simulation/parameters'
 
-jest.mock('@/components/assets/formula', () => {
-  const Formula = () => <div />
-  return Formula
-})
+const mockFormula = jest.fn()
+jest.mock('@/components/assets/formula', () => (props) => mockFormula(props))
 
 const mockError = jest.fn()
 jest.mock('@/components/assets/notification', () => ({
@@ -35,11 +33,16 @@ describe('components/project/simulation/parameters', () => {
             ]
           },
           param2: {
-            label: 'para2',
+            label: 'param2',
             advanced: true,
             children: [
               {
-                htmlEntity: 'select'
+                htmlEntity: 'select',
+                options: [
+                  { label: 'option1', value: 'option1' },
+                  { label: 'option2', value: 'option2' }
+                ],
+                default: 'option1'
               },
               {}
             ]
@@ -48,8 +51,16 @@ describe('components/project/simulation/parameters', () => {
       }
     }
   }
-  const mutateOneSimulation = jest.fn()
-  const swr = { mutateOneSimulation }
+  const swr = { mutateOneSimulation: jest.fn() }
+
+  beforeEach(() => {
+    mockFormula.mockReset()
+    mockFormula.mockImplementation(() => <div />)
+
+    mockError.mockReset()
+
+    mockUpdate.mockReset()
+  })
 
   test('render', () => {
     const { unmount } = render(<Parameters simulation={simulation} swr={swr} />)
@@ -57,33 +68,51 @@ describe('components/project/simulation/parameters', () => {
     unmount()
   })
 
-  // test('with value', () => {
-  //   wrapper.unmount()
-  //   simulation.scheme.configuration.parameters.param1.children[0].value = 0
-  //   wrapper = shallow(<Parameters simulation={simulation} swr={swr} />)
-  //   expect(wrapper).toBeDefined()
-  // })
+  test('with value', () => {
+    simulation.scheme.configuration.parameters.param2.children[0].value = 0
+    const { unmount } = render(<Parameters simulation={simulation} swr={swr} />)
 
-  // test('onChange', () => {
-  //   wrapper.find('Formula').props().onValueChange()
-  //   wrapper.find('ForwardRef(InternalSelect)').props().onChange()
-  // })
+    unmount()
+  })
 
-  // // test('effect', () => {
-  // //   wrapper.unmount()
+  test('onChange', async () => {
+    let value = 0
+    mockFormula.mockImplementation((props) => (
+      <div role="Formula" onClick={() => props.onValueChange(value)} />
+    ))
+    const { unmount } = render(<Parameters simulation={simulation} swr={swr} />)
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
 
-  // //   wrapper = mount(<Parameters simulation={simulation} swr={swr} />)
-  // //   expect(mockUpdate).toHaveBeenCalledTimes(1)
+    // Formula
+    const formula = screen.getByRole('Formula')
+    fireEvent.click(formula)
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
 
-  // //   // Without value
-  // //   act(() => wrapper.find('Formula').props().onValueChange())
-  // //   expect(mockUpdate).toHaveBeenCalledTimes(2)
+    // Update error
+    mockUpdate.mockImplementation(() => {
+      throw new Error()
+    })
+    value = undefined
+    fireEvent.click(formula)
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(3))
+    await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
+    mockUpdate.mockImplementation(() => {})
 
-  // //   // Error
-  // //   mockUpdate.mockImplementation(() => {
-  // //     throw new Error()
-  // //   })
-  // //   act(() => wrapper.find('Formula').props().onValueChange('value'))
-  // //   expect(mockUpdate).toHaveBeenCalledTimes(3)
-  // // })
+    // Open advanced
+    const open = screen.getByRole('button')
+    fireEvent.click(open)
+
+    // TODO
+    // // Select
+    // const select = screen.getByRole('combobox')
+    // fireEvent.mouseDown(select)
+    // fireEvent.mouseUp(select)
+
+    // const option2 = screen.getByRole('option', { name: 'option2' })
+    // fireEvent.mouseDown(option2)
+    // fireEvent.mouseUp(option2)
+    // await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(4))
+
+    unmount()
+  })
 })

@@ -1,5 +1,5 @@
 import React from 'react'
-import { fireEvent, render, screen } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import About from '@/components/project/simulation/about'
 
@@ -8,10 +8,7 @@ jest.mock('@/components/assets/notification', () => ({
   Error: () => mockError()
 }))
 
-jest.mock('@/components/project/simulation/delete', () => {
-  const Delete = () => <div />
-  return Delete
-})
+jest.mock('@/components/project/simulation/delete', () => () => <div />)
 
 const mockUpdate = jest.fn()
 jest.mock('@/api/simulation', () => ({
@@ -39,31 +36,56 @@ describe('components/project/simulation/about', () => {
     unmount()
   })
 
-  // test('handleName', async () => {
-  //   await wrapper.find('Title').props().editable.onChange('name')
-  //   expect(mockUpdate).toHaveBeenCalledTimes(1)
-  //   expect(mutateOneSimulation).toHaveBeenCalledTimes(1)
-  //   expect(mockError).toHaveBeenCalledTimes(0)
+  test('without simulation', () => {
+    const { unmount } = render(<About swr={swr} />)
 
-  //   // Error
-  //   mockUpdate.mockImplementation(() => {
-  //     throw new Error()
-  //   })
-  //   await wrapper.find('Title').props().editable.onChange('name')
-  //   expect(mockUpdate).toHaveBeenCalledTimes(2)
-  //   expect(mutateOneSimulation).toHaveBeenCalledTimes(1)
-  //   expect(mockError).toHaveBeenCalledTimes(1)
-  // })
+    unmount()
+  })
 
-  // test('without simulation', () => {
-  //   wrapper.unmount()
-  //   wrapper = shallow(<About swr={swr} />)
-  //   expect(wrapper).toBeDefined()
-  // })
+  test('handleName', async () => {
+    const { unmount } = render(<About simulation={simulation} swr={swr} />)
 
-  // // test('effect', () => {
-  // //   wrapper.unmount()
-  // //   wrapper = mount(<About simulation={simulation} swr={swr} />)
-  // //   expect(wrapper).toBeDefined()
-  // // })
+    // Normal
+    {
+      const button = screen.getByRole('button', { name: 'Edit' })
+      fireEvent.click(button)
+
+      const input = screen.getByText('name')
+      fireEvent.change(input, { target: { value: 'rename' } })
+      fireEvent.keyDown(input, {
+        keyCode: 13
+      })
+      fireEvent.keyUp(input, {
+        keyCode: 13
+      })
+
+      await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
+      await waitFor(() =>
+        expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(1)
+      )
+    }
+
+    // Error
+    {
+      mockUpdate.mockImplementation(() => {
+        throw new Error()
+      })
+      const button = screen.getByRole('button', { name: 'Edit' })
+      fireEvent.click(button)
+
+      const input = screen.getByText('name')
+      fireEvent.change(input, { target: { value: 'rename' } })
+      fireEvent.keyDown(input, {
+        keyCode: 13
+      })
+      fireEvent.keyUp(input, {
+        keyCode: 13
+      })
+
+      await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
+      await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
+    }
+
+    unmount()
+  })
 })

@@ -2,7 +2,7 @@ import PropTypes from 'prop-types'
 import { useEffect } from 'react'
 import { Divider, Layout, Space, Spin, Typography } from 'antd'
 
-import { Error } from '@/components/assets/notification'
+import { Error as ErrorNotification } from '@/components/assets/notification'
 
 import Delete from '../delete'
 
@@ -39,7 +39,7 @@ const About = ({ simulation, swr }) => {
         name: name
       })
     } catch (err) {
-      Error(errors.update, err)
+      ErrorNotification(errors.update, err)
     }
   }
 

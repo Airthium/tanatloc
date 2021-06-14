@@ -1,19 +1,12 @@
-// import React from 'react'
-import { fireEvent, render, screen } from '@testing-library/react'
+import React from 'react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import View from '@/components/project/view'
-import { act } from 'react-dom/test-utils'
-import React, { useState as mockUseState } from 'react'
 
 jest.mock('next/router', () => ({
   useRouter: () => ({
-    push: () => {}
+    push: jest.fn()
   })
-}))
-
-jest.mock('react', () => ({
-  ...jest.requireActual('react'),
-  useState: jest.fn()
 }))
 
 const mockError = jest.fn()
@@ -29,10 +22,10 @@ jest.mock('three/examples/jsm/postprocessing/OutlinePass', () => ({
   OutlinePass: class MockRenderPass {
     constructor() {
       this.visibleEdgeColor = {
-        set: () => {}
+        set: jest.fn()
       }
       this.hiddenEdgeColor = {
-        set: () => {}
+        set: jest.fn()
       }
     }
   }
@@ -41,8 +34,8 @@ jest.mock('three/examples/jsm/postprocessing/OutlinePass', () => ({
 jest.mock('three/examples/jsm/postprocessing/EffectComposer', () => ({
   EffectComposer: class MockEffectComposer {
     constructor() {
-      this.addPass = () => {}
-      this.render = () => {}
+      this.addPass = jest.fn()
+      this.render = jest.fn()
     }
   }
 }))
@@ -51,19 +44,19 @@ jest.mock('three/examples/jsm/controls/TrackballControls', () => ({
   TrackballControls: class MockTrackballControls {
     constructor() {
       this.target = {
-        copy: () => {},
+        copy: jest.fn(),
         clone: () => ({
           sub: () => ({
             normalize: () => ({
-              multiplyScalar: () => {}
+              multiplyScalar: jest.fn()
             })
           })
         })
       }
-      this.update = () => {}
+      this.update = jest.fn()
       this.object = {
         position: {
-          distanceTo: () => {}
+          distanceTo: jest.fn()
         }
       }
     }
@@ -72,56 +65,56 @@ jest.mock('three/examples/jsm/controls/TrackballControls', () => ({
 
 jest.mock('@/lib/three/helpers/AxisHelper', () => ({
   AxisHelper: () => ({
-    render: () => {},
-    resize: () => {},
-    dispose: () => {}
+    render: jest.fn(),
+    resize: jest.fn(),
+    dispose: jest.fn()
   })
 }))
 
 jest.mock('@/lib/three/helpers/NavigationHelper', () => ({
   NavigationHelper: () => ({
-    render: () => {},
-    resize: () => {},
-    dispose: () => {}
+    render: jest.fn(),
+    resize: jest.fn(),
+    dispose: jest.fn()
   })
 }))
 
 jest.mock('@/lib/three/helpers/GridHelper', () => ({
   GridHelper: () => ({
-    update: () => {},
-    setVisible: () => {},
-    dispose: () => {}
+    update: jest.fn(),
+    setVisible: jest.fn(),
+    dispose: jest.fn()
   })
 }))
 
 const mockSelectionEnabled = jest.fn()
 jest.mock('@/lib/three/helpers/SelectionHelper', () => ({
   SelectionHelper: () => ({
-    start: () => {},
-    end: () => {},
+    start: jest.fn(),
+    end: jest.fn(),
     isEnabled: () => mockSelectionEnabled(),
-    dispose: () => {}
+    dispose: jest.fn()
   })
 }))
 
 jest.mock('@/lib/three/helpers/SectionViewHelper', () => ({
   SectionViewHelper: () => ({
-    getClippingPlane: () => {},
-    start: () => {},
-    toggleVisible: () => {},
-    toAxis: () => {},
-    flip: () => {},
-    setMode: () => {},
-    stop: () => {},
-    dispose: () => {}
+    getClippingPlane: jest.fn(),
+    start: jest.fn(),
+    toggleVisible: jest.fn(),
+    toAxis: jest.fn(),
+    flip: jest.fn(),
+    setMode: jest.fn(),
+    stop: jest.fn(),
+    dispose: jest.fn()
   })
 }))
 
 jest.mock('@/lib/three/helpers/ColorbarHelper', () => ({
   ColorbarHelper: () => ({
-    setVisible: () => {},
-    setLUT: () => {},
-    render: () => {}
+    setVisible: jest.fn(),
+    setLUT: jest.fn(),
+    render: jest.fn()
   })
 }))
 
@@ -131,21 +124,21 @@ jest.mock('@/lib/three/loaders/PartLoader', () => {
     PartLoader: (mouseMove, mouseDown) => {
       mouseMove(
         {
-          highlight: () => {}
+          highlight: jest.fn()
         },
         'uuid'
       )
       mouseDown(
         {
           getSelected: () => ['uuid'],
-          unselect: () => {}
+          unselect: jest.fn()
         },
         'uuid'
       )
       mouseDown(
         {
           getSelected: () => ['uuid2'],
-          select: () => {}
+          select: jest.fn()
         },
         'uuid'
       )
@@ -172,15 +165,20 @@ jest.mock('@/lib/three/loaders/PartLoader', () => {
             { children: [{ userData: {}, material: {} }] }
           ]
         }),
-        dispose: () => {}
+        dispose: jest.fn()
       }
     }
   }
 })
 
+const mockAvatarAdd = jest.fn()
+jest.mock('@/api/avatar', () => ({
+  add: async () => mockAvatarAdd()
+}))
+
 const mockGet = jest.fn()
-jest.mock('@/api/part', () => ({
-  get: async () => mockGet()
+jest.mock('@/api/geometry', () => ({
+  getPart: async () => mockGet()
 }))
 
 const mockEnabled = jest.fn(() => false)
@@ -189,7 +187,7 @@ jest.mock('react-redux', () => ({
     callback({
       select: { enabled: mockEnabled(), highlighted: {}, selected: [{}] }
     }),
-  useDispatch: () => () => {}
+  useDispatch: () => jest.fn()
 }))
 
 jest.mock('@/store/select/action', () => ({
@@ -209,7 +207,7 @@ global.MockScene.children = [
   {
     type: 'PointLight',
     position: {
-      multiplyScalar: () => {}
+      multiplyScalar: jest.fn()
     }
   },
   { type: 'AxisHelper' },
@@ -220,14 +218,14 @@ global.MockScene.children = [
       max: { x: 1, y: 1, z: 1 }
     },
     material: {},
-    dispose: () => {},
-    setTransparent: () => {},
-    startSelection: () => {},
-    stopSelection: () => {},
+    dispose: jest.fn(),
+    setTransparent: jest.fn(),
+    startSelection: jest.fn(),
+    stopSelection: jest.fn(),
     getSelected: () => [{}],
-    highlight: () => {},
-    select: () => {},
-    unselect: () => {}
+    highlight: jest.fn(),
+    select: jest.fn(),
+    unselect: jest.fn()
   },
   {
     visible: true,
@@ -237,56 +235,151 @@ global.MockScene.children = [
       max: { x: 1, y: 1, z: 1 }
     },
     material: {},
-    dispose: () => {},
-    setTransparent: () => {},
-    startSelection: () => {},
-    stopSelection: () => {},
+    dispose: jest.fn(),
+    setTransparent: jest.fn(),
+    startSelection: jest.fn(),
+    stopSelection: jest.fn(),
     getSelected: () => [{}],
-    highlight: () => {},
-    select: () => {},
-    unselect: () => {}
+    highlight: jest.fn(),
+    select: jest.fn(),
+    unselect: jest.fn()
   }
 ]
-
-let mockState = false
-mockUseState.mockImplementation(() => [mockState, () => {}])
 
 window.setTimeout = (callback) => {
   if (callback.name !== '_flushCallback') callback()
 }
 
 describe('components/project/view', () => {
-  // beforeEach(() => {
-  //   mockError.mockReset()
-  //   mockGet.mockReset()
-  //   mockState = false
-  //   wrapper = mount(<View setPartSummary={() => {}} />)
-  // })
-  // afterEach(() => {
-  //   wrapper.unmount()
-  // })
+  const project = {}
+  const geometry = {}
+
+  beforeEach(() => {
+    mockError.mockReset()
+
+    mockAvatarAdd.mockReset()
+
+    mockGet.mockReset()
+    mockGet.mockImplementation(() => ({}))
+
+    mockEnabled.mockReset()
+  })
+
   test('render', () => {
-    const { unmount } = render(<View setPartSummary={jest.fn} />)
+    const { unmount } = render(<View project={project} />)
 
     unmount()
   })
-  // test('buttons', () => {
-  //   act(() => {
-  //     const event = {}
-  //     wrapper.find('Button').forEach((button) => {
-  //       if (button.props().onClick) button.props().onClick(event)
-  //       if (button.props().onMouseDown) button.props().onMouseDown(event)
-  //       if (button.props().onMouseMove) button.props().onMouseMove(event)
-  //       if (button.props().onMouseUp) button.props().onMouseUp(event)
-  //     })
-  //     wrapper.find('Button').forEach((button) => {
-  //       if (button.props().onClick) button.props().onClick(event)
-  //       if (button.props().onMouseDown) button.props().onMouseDown(event)
-  //       if (button.props().onMouseMove) button.props().onMouseMove(event)
-  //       if (button.props().onMouseUp) button.props().onMouseUp(event)
-  //     })
-  //   })
-  // })
+
+  test('geometry cleanup', () => {
+    const { unmount } = render(
+      <View project={project} geometry={{ needCleanup: true }} />
+    )
+
+    unmount()
+  })
+
+  test('with geometry error', async () => {
+    mockGet.mockImplementation(() => {
+      throw new Error()
+    })
+    const { unmount } = render(<View project={project} geometry={geometry} />)
+
+    await waitFor(() => expect(mockGet).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
+
+    unmount()
+  })
+
+  test('with geometry error 2', async () => {
+    mockGet.mockImplementation(() => ({
+      error: true,
+      message: 'message'
+    }))
+    const { unmount } = render(<View project={project} geometry={geometry} />)
+
+    await waitFor(() => expect(mockGet).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
+
+    unmount()
+  })
+
+  test('with geometry', async () => {
+    const { unmount } = render(<View project={project} geometry={geometry} />)
+
+    await waitFor(() => expect(mockGet).toHaveBeenCalledTimes(1))
+
+    unmount()
+  })
+
+  test('window pixelRatio', () => {
+    window.devicePixelRatio = null
+    const { unmount } = render(<View project={project} />)
+
+    unmount()
+  })
+
+  test('resize', () => {
+    const { unmount } = render(<View project={project} />)
+    window.dispatchEvent(new Event('resize'))
+
+    unmount()
+  })
+
+  test('switches & buttons', async () => {
+    const { unmount } = render(<View project={project} geometry={geometry} />)
+    await waitFor(() => expect(mockGet).toHaveBeenCalledTimes(1))
+
+    // Switches
+    const switches = screen.getAllByRole('switch')
+    switches.forEach((s) => fireEvent.click(s))
+
+    // Buttons
+    const buttons = screen.getAllByRole('button')
+    buttons.forEach((button) => fireEvent.click(button))
+
+    await waitFor(() => expect(mockAvatarAdd).toHaveBeenCalledTimes(1))
+
+    // Avatar error
+    mockAvatarAdd.mockImplementation(() => {
+      throw new Error()
+    })
+    const add = screen.getByRole('button', { name: 'fund-projection-screen' })
+    fireEvent.click(add)
+    await waitFor(() => expect(mockAvatarAdd).toHaveBeenCalledTimes(2))
+    await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
+
+    // Zoom
+    const zoomIn = screen.getByRole('button', { name: 'zoom-in' })
+    fireEvent.mouseDown(zoomIn)
+    fireEvent.mouseUp(zoomIn)
+
+    const zoomOut = screen.getByRole('button', { name: 'zoom-out' })
+    fireEvent.mouseDown(zoomOut)
+    fireEvent.mouseUp(zoomOut)
+
+    // Section view buttons
+    const radios = screen.getAllByRole('radio')
+    radios.forEach((radio) => fireEvent.click(radio))
+
+    const hide = screen.getByRole('button', { name: 'eye-invisible' })
+    fireEvent.click(hide)
+
+    const snapX = screen.getByRole('button', { name: 'X' })
+    fireEvent.click(snapX)
+
+    const snapY = screen.getByRole('button', { name: 'Y' })
+    fireEvent.click(snapY)
+
+    const snapZ = screen.getByRole('button', { name: 'Z' })
+    fireEvent.click(snapZ)
+
+    const flip = screen.getByRole('button', { name: 'retweet' })
+    fireEvent.click(flip)
+
+    unmount()
+  })
+
   // test('drawers', () => {
   //   act(() => {
   //     const event = {}
@@ -301,7 +394,7 @@ describe('components/project/view', () => {
   // test('pixelRatio', () => {
   //   wrapper.unmount()
   //   window.devicePixelRatio = undefined
-  //   wrapper = mount(<View setPartSummary={() => {}} />)
+  //   wrapper = mount(<View setPartSummary={jest.fn()} />)
   // })
   // test('grid visible', () => {
   //   wrapper.find('Switch').at(0).props().onChange(true)
@@ -314,7 +407,7 @@ describe('components/project/view', () => {
   // test('sectionView', () => {
   //   wrapper.unmount()
   //   mockState = true
-  //   wrapper = mount(<View setPartSummary={() => {}} />)
+  //   wrapper = mount(<View setPartSummary={jest.fn()} />)
   //   wrapper.find('Button').forEach((button) => {
   //     if (button.props().onClick) button.props().onClick()
   //   })
@@ -331,7 +424,7 @@ describe('components/project/view', () => {
   // test('handleTransform', () => {
   //   wrapper.unmount()
   //   mockState = true
-  //   wrapper = mount(<View setPartSummary={() => {}} />)
+  //   wrapper = mount(<View setPartSummary={jest.fn()} />)
   //   wrapper
   //     .find('.ant-radio-group')
   //     .parent()

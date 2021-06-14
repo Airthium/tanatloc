@@ -27,7 +27,7 @@ const Geometry = ({ geometries, geometry, simulation, setGeometry, swr }) => {
 
   useEffect(() => {
     const simulationGeometryId = simulation.scheme.configuration.geometry.value
-    if (!simulationGeometryId) onSelect(geometry.id)
+    if (!simulationGeometryId) onSelect(geometry?.id)
   }, [simulation])
 
   useEffect(() => {
@@ -45,7 +45,7 @@ const Geometry = ({ geometries, geometry, simulation, setGeometry, swr }) => {
             />
           }
           style={{
-            backgroundColor: g.id === geometry.id && 'rgba(254, 226, 61, 0.5)'
+            backgroundColor: g.id === geometry?.id && 'rgba(254, 226, 61, 0.5)'
           }}
         >
           <Space direction="vertical">
@@ -89,7 +89,7 @@ const Geometry = ({ geometries, geometry, simulation, setGeometry, swr }) => {
    * On select
    * @param {number} index Index
    */
-  const onSelect = (id) => {
+  const onSelect = async (id) => {
     try {
       const newSimulation = { ...simulation }
 
@@ -102,7 +102,7 @@ const Geometry = ({ geometries, geometry, simulation, setGeometry, swr }) => {
       }
 
       // API
-      SimulationAPI.update({ id: simulation.id }, [
+      await SimulationAPI.update({ id: simulation.id }, [
         {
           key: 'scheme',
           type: 'json',
@@ -132,7 +132,7 @@ const Geometry = ({ geometries, geometry, simulation, setGeometry, swr }) => {
 
 Geometry.propTypes = {
   geometries: PropTypes.array.isRequired,
-  geometry: PropTypes.object.isRequired,
+  geometry: PropTypes.object,
   simulation: PropTypes.exact({
     id: PropTypes.string.isRequired,
     scheme: PropTypes.shape({

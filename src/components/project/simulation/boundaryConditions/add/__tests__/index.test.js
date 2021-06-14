@@ -31,7 +31,7 @@ describe('components/project/simulation/boundaryConditions/add', () => {
     },
     selected: ['uuid1', 'uuid3']
   }
-  const part = { faces: [{ uuid: 'uuid1' }, { uuid: 'uuid2' }] }
+  const geometry = { faces: [{ uuid: 'uuid1' }, { uuid: 'uuid2' }] }
   const swr = { mutateOneSimulation: jest.fn() }
   const close = jest.fn()
 
@@ -49,7 +49,7 @@ describe('components/project/simulation/boundaryConditions/add', () => {
         disabled={false}
         simulation={simulation}
         boundaryCondition={boundaryCondition}
-        part={part}
+        geometry={geometry}
         swr={swr}
         close={close}
       />
@@ -64,7 +64,7 @@ describe('components/project/simulation/boundaryConditions/add', () => {
         disabled={false}
         simulation={simulation}
         boundaryCondition={boundaryCondition}
-        part={part}
+        geometry={geometry}
         swr={swr}
         close={close}
       />

@@ -25,47 +25,63 @@ jest.mock('@/components/loading', () => ({
   Simple: () => <div />
 }))
 
-jest.mock('@/components/notauthorized', () => {
-  const NotAuthorized = () => <div />
-  return NotAuthorized
+jest.mock('@/components/notauthorized', () => () => <div />)
+
+jest.mock('../panel', () => () => <div />)
+
+jest.mock('../geometry', () => {
+  const Geometry = () => <div />
+  const Add = () => <div />
+  Geometry.Add = Add
+  return Geometry
 })
 
-jest.mock('@/components/project/data', () => {
-  const Data = () => <div />
-  return Data
-})
+jest.mock('../view', () => () => <div />)
 
-jest.mock('@/components/project/view', () => {
-  const View = () => <div />
-  return View
-})
+jest.mock('../data', () => () => <div />)
 
-jest.mock('@/components/project/simulation', () => {
-  const Simulation = () => <div />
+jest.mock('../simulation', () => {
+  const Simulation = {}
   const Selector = () => <div />
+  const Updater = () => <div />
   Simulation.Selector = Selector
+  Simulation.Updater = Updater
   return Simulation
 })
 
 const mockUser = jest.fn()
+const mockErrorUser = jest.fn()
 const mockUserLoading = jest.fn()
 jest.mock('@/api/user', () => ({
-  useUser: () => [mockUser(), { loadingUser: mockUserLoading() }]
+  useUser: () => [
+    mockUser(),
+    {
+      errorUser: mockErrorUser(),
+      loadingUser: mockUserLoading()
+    }
+  ]
 }))
 
 const mockProject = jest.fn()
 const mockReloadProject = jest.fn()
 const mockMutateProject = jest.fn()
+const mockErrorProject = jest.fn()
 const mockUpdate = jest.fn()
 jest.mock('@/api/project', () => ({
   useProject: () => [
     mockProject(),
-    { reloadProject: mockReloadProject, mutateProject: mockMutateProject }
+    {
+      reloadProject: mockReloadProject,
+      mutateProject: mockMutateProject,
+      errorProject: mockErrorProject(),
+      loadingProject: false
+    }
   ],
   update: async () => mockUpdate()
 }))
 
 const mockSimulations = jest.fn()
+const mockErrorSimulations = jest.fn()
 const mockSimulationUpdate = jest.fn()
 jest.mock('@/api/simulation', () => ({
   add: async () => ({ id: 'id' }),
@@ -73,9 +89,26 @@ jest.mock('@/api/simulation', () => ({
   useSimulations: () => [
     mockSimulations(),
     {
-      addOneSimulation: () => {},
-      delOneSimulation: () => {},
-      mutateOneSimulation: () => {}
+      addOneSimulation: jest.fn(),
+      delOneSimulation: jest.fn(),
+      mutateOneSimulation: jest.fn(),
+      errorSimulations: mockErrorSimulations(),
+      loadingSimulations: false
+    }
+  ]
+}))
+
+const mockGeometries = jest.fn()
+const mockErrorGeometries = jest.fn()
+jest.mock('@/api/geometry', () => ({
+  useGeometries: () => [
+    mockGeometries(),
+    {
+      addOneGeometry: jest.fn(),
+      delOneGeometry: jest.fn(),
+      mutateOneGeometry: jest.fn(),
+      errorGeometries: mockErrorGeometries(),
+      loadingGeometries: false
     }
   ]
 }))
@@ -88,6 +121,7 @@ describe('components/project', () => {
 
     mockUser.mockReset()
     mockUser.mockImplementation(() => ({ id: 'id' }))
+    mockErrorUser.mockReset()
     mockUserLoading.mockReset()
 
     mockProject.mockReset()
@@ -97,12 +131,13 @@ describe('components/project', () => {
     }))
     mockReloadProject.mockReset()
     mockMutateProject.mockReset()
+    mockErrorProject.mockReset()
     mockUpdate.mockReset()
 
-    mockSimulationUpdate.mockReset()
     mockSimulations.mockReset()
     mockSimulations.mockImplementation(() => [
       {
+        id: 'id',
         scheme: {
           configuration: {
             part: 'part',
@@ -119,6 +154,12 @@ describe('components/project', () => {
         }
       }
     ])
+    mockErrorSimulations.mockReset()
+    mockSimulationUpdate.mockReset()
+
+    mockGeometries.mockReset()
+    mockGeometries.mockImplementation(() => [])
+    mockErrorGeometries.mockReset()
   })
 
   test('render', () => {
@@ -127,12 +168,33 @@ describe('components/project', () => {
     unmount()
   })
 
-  // test('loading', () => {
-  //   wrapper.unmount()
-  //   mockUserLoading.mockImplementation(() => true)
-  //   wrapper = shallow(<Project />)
-  //   expect(wrapper).toBeDefined()
-  // })
+  test('no user', () => {
+    mockUser.mockImplementation(() => {})
+    const { unmount } = render(<Project />)
+
+    expect(mockRouter).toHaveBeenCalledTimes(1)
+
+    unmount()
+  })
+
+  test('loading', () => {
+    mockUserLoading.mockImplementation(() => true)
+    const { unmount } = render(<Project />)
+
+    unmount()
+  })
+
+  test('errors', () => {
+    mockErrorUser.mockImplementation(() => true)
+    mockErrorProject.mockImplementation(() => true)
+    mockErrorSimulations.mockImplementation(() => true)
+    mockErrorGeometries.mockImplementation(() => true)
+    const { unmount } = render(<Project />)
+
+    expect(mockError).toHaveBeenCalledTimes(4)
+
+    unmount()
+  })
 
   // test('without configuration', () => {
   //   wrapper.unmount()

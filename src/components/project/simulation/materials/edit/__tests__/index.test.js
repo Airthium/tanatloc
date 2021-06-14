@@ -27,7 +27,7 @@ describe('components/project/simulation/materials/edit', () => {
       }
     }
   }
-  const part = { solids: [{ uuid: 'uuid1' }, { uuid: 'uuid2' }] }
+  const geometry = { solids: [{ uuid: 'uuid1' }, { uuid: 'uuid2' }] }
   const swr = { mutateOneSimulation: jest.fn() }
   const close = jest.fn()
 
@@ -45,7 +45,7 @@ describe('components/project/simulation/materials/edit', () => {
         disabled={false}
         material={material}
         simulation={simulation}
-        part={part}
+        geometry={geometry}
         swr={swr}
         close={close}
       />
@@ -60,7 +60,7 @@ describe('components/project/simulation/materials/edit', () => {
         disabled={false}
         material={material}
         simulation={simulation}
-        part={part}
+        geometry={geometry}
         swr={swr}
         close={close}
       />

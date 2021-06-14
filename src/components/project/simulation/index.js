@@ -181,10 +181,10 @@ const Updater = ({ user, simulation, swr }) => {
       swr.mutateOneSimulation(newSimulation)
     } catch (err) {
       Error(errors.updateError, err)
+    } finally {
+      setLoading(false)
+      setNeedUpdate(false)
     }
-
-    setLoading(false)
-    setNeedUpdate(false)
   }
 
   /**

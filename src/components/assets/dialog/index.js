@@ -41,18 +41,28 @@ const Dialog = ({
       className="Dialog"
       title={title}
       visible={visible}
-      onCancel={() => {
-        form.resetFields()
-        onCancel()
-      }}
-      onOk={async () => {
-        try {
-          const values = await form.validateFields()
-          await onOk(values)
+      onCancel={
+        onCancel &&
+        (() => {
           form.resetFields()
-        } catch (err) {}
+          onCancel()
+        })
+      }
+      cancelButtonProps={{ display: onCancel ? 'inline-block' : 'none' }}
+      onOk={
+        onOk &&
+        (async () => {
+          try {
+            const values = await form.validateFields()
+            await onOk(values)
+            form.resetFields()
+          } catch (err) {}
+        })
+      }
+      okButtonProps={{
+        ...okButtonProps,
+        display: onOk ? 'inline-block' : 'none'
       }}
-      okButtonProps={{ ...okButtonProps }}
       confirmLoading={loading}
     >
       <Form form={form} {...layout} initialValues={initialValues}>
@@ -67,7 +77,7 @@ Dialog.propTypes = {
   visible: PropTypes.bool.isRequired,
   initialValues: PropTypes.object,
   onCancel: PropTypes.func.isRequired,
-  onOk: PropTypes.func.isRequired,
+  onOk: PropTypes.func,
   loading: PropTypes.bool,
   children: PropTypes.oneOfType([
     PropTypes.string,

@@ -83,7 +83,6 @@ const Add = ({ visible, project, swr, setVisible }) => {
       title="Upload geometry"
       visible={visible}
       onCancel={() => setVisible(false)}
-      onOk={() => {}}
       okButtonProps={{ style: { display: 'none' } }}
     >
       <Space direction="vertical">

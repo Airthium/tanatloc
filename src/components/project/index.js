@@ -35,7 +35,7 @@ import GeometryAPI from '@/api/geometry'
 const menuKeys = {
   dashboard: 'dashboard',
   geometries: 'geometries',
-  simulations: 'simulation'
+  simulations: 'simulations'
 }
 
 /**
@@ -114,12 +114,14 @@ const Project = () => {
   useEffect(() => {
     if (currentGeometry) {
       const geometry = geometries.find((g) => g.id === currentGeometry?.id)
-      if (
-        geometry &&
-        JSON.stringify(geometry) !== JSON.stringify(currentGeometry)
-      )
-        if (panelContent?.type?.name === 'Geometry') selectGeometry(geometry.id)
-        else setCurrentGeometry(geometry)
+      if (geometry) {
+        if (JSON.stringify(geometry) !== JSON.stringify(currentGeometry))
+          if (panelContent?.type?.name === 'Geometry')
+            selectGeometry(geometry.id)
+          else setCurrentGeometry(geometry)
+      } else {
+        setCurrentGeometry()
+      }
     }
   }, [currentGeometry, JSON.stringify(geometries)])
 
@@ -402,7 +404,13 @@ const Project = () => {
   /**
    * Render
    */
-  if (loadingUser || loadingProject || loadingGeometries || loadingSimulations)
+  if (
+    !user ||
+    loadingUser ||
+    loadingProject ||
+    loadingGeometries ||
+    loadingSimulations
+  )
     return <Loading.Simple />
   if (project === 'Unauthorized') return <NotAuthorized />
   else

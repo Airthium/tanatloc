@@ -3,9 +3,6 @@ import { useState } from 'react'
 import { Divider, Layout, Space, Typography } from 'antd'
 import { MathJax } from 'better-react-mathjax'
 
-import Add from './add'
-import Edit from './edit'
-
 import Loading from '@/components/loading'
 import {
   DeleteButton,
@@ -13,6 +10,9 @@ import {
   EditButton
 } from '@/components/assets/button'
 import { Error as ErrorNotification } from '@/components/assets/notification'
+
+import Add from './add'
+import Edit from './edit'
 
 import GeometryAPI from '@/api/geometry'
 

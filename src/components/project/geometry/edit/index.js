@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types'
 import { useState } from 'react'
 import { Form, Input } from 'antd'
 
@@ -41,6 +42,15 @@ const Edit = ({ visible, geometry, setVisible, onEdit }) => {
       </Form.Item>
     </Dialog>
   )
+}
+
+Edit.propTypes = {
+  visible: PropTypes.bool.isRequired,
+  geometry: PropTypes.exact({
+    name: PropTypes.string.isRequired
+  }).isRequired,
+  setVisible: PropTypes.func.isRequired,
+  onEdit: PropTypes.func.isRequired
 }
 
 export default Edit

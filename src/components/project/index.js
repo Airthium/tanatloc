@@ -254,7 +254,7 @@ const Project = () => {
           summary: geometry.summary
         }}
         swr={{ mutateProject, mutateOneGeometry, delOneGeometry }}
-        close={() => setPanelVisible(false)}
+        close={onPanelClose}
       />
     )
   }
@@ -367,22 +367,13 @@ const Project = () => {
     const configuration = s?.scheme?.configuration || {}
     const categories = []
     Object.keys(configuration).forEach((key) => {
-      if (key === 'part') return
       const child = configuration[key]
+      let icon = <CheckCircleOutlined style={{ color: 'green' }} />
+      if (child.error) icon = <CloseCircleOutlined style={{ color: 'red' }} />
+      if (!child.done)
+        icon = <ExclamationCircleOutlined style={{ color: 'orange' }} />
       categories[child.index] = (
-        <Menu.Item
-          className="menu-item-with-line"
-          key={key}
-          icon={
-            child.error ? (
-              <CloseCircleOutlined style={{ color: 'red' }} />
-            ) : child.done ? (
-              <CheckCircleOutlined style={{ color: 'green' }} />
-            ) : (
-              <ExclamationCircleOutlined style={{ color: 'orange' }} />
-            )
-          }
-        >
+        <Menu.Item className="menu-item-with-line" key={key} icon={icon}>
           {child.title}
         </Menu.Item>
       )

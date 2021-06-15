@@ -22,7 +22,7 @@ import {
   StopOutlined
 } from '@ant-design/icons'
 
-import { Error } from '@/components/assets/notification'
+import { Error as ErrorNotification } from '@/components/assets/notification'
 
 import CloudServer from './cloudServer'
 
@@ -333,7 +333,7 @@ const Run = ({ simulation, swr }) => {
       swr.mutateOneSimulation(currentSimulation)
       mutateSimulation(newSimulation)
     } catch (err) {
-      Error(errors.updateError, err)
+      ErrorNotification(errors.updateError, err)
     }
   }
 
@@ -343,9 +343,11 @@ const Run = ({ simulation, swr }) => {
   const onRun = async () => {
     setRunning(true)
 
-    SimulationAPI.run({ id: simulation.id }).catch((err) => {
-      Error(errors.runError, err)
-    })
+    try {
+      await SimulationAPI.run({ id: simulation.id })
+    } catch (err) {
+      ErrorNotification(errors.runError, err)
+    }
   }
 
   /**
@@ -354,8 +356,10 @@ const Run = ({ simulation, swr }) => {
   const onStop = async () => {
     try {
       await SimulationAPI.stop({ id: simulation.id })
+
+      setRunning(false)
     } catch (err) {
-      Error(errors.stopError, err)
+      ErrorNotification(errors.stopError, err)
     }
   }
 
@@ -436,7 +440,7 @@ const Run = ({ simulation, swr }) => {
       // Mutate
       swr.mutateOneSimulation(currentSimulation)
     } catch (err) {
-      Error(errors.updateError, err)
+      ErrorNotification(errors.updateError, err)
     }
   }
 
@@ -450,7 +454,7 @@ const Run = ({ simulation, swr }) => {
       const archive = await DownloadAPI.get({ id: simulation.id }, null, true)
       const content = await archive.blob()
 
-      const url = window.URL.createObjectURL(content)
+      const url = window.URL.createObjectURL(new Blob([content]))
       const link = document.createElement('a')
       link.href = url
       link.setAttribute('download', simulation.scheme.name + '.zip')
@@ -458,7 +462,7 @@ const Run = ({ simulation, swr }) => {
       link.click()
       document.body.removeChild(link)
     } catch (err) {
-      Error(errors.downloadError, err)
+      ErrorNotification(errors.downloadError, err)
     } finally {
       const index = downloading.findIndex((d) => d === 'archive')
       setDownloading([
@@ -490,7 +494,7 @@ const Run = ({ simulation, swr }) => {
       link.click()
       document.body.removeChild(link)
     } catch (err) {
-      Error(errors.downloadError, err)
+      ErrorNotification(errors.downloadError, err)
     } finally {
       const index = downloading.findIndex((d) => d === result)
       setDownloading([

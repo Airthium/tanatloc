@@ -105,12 +105,7 @@ describe('components/project/simulation/parameters', () => {
     // TODO
     // // Select
     // const select = screen.getByRole('combobox')
-    // fireEvent.mouseDown(select)
-    // fireEvent.mouseUp(select)
-
-    // const option2 = screen.getByRole('option', { name: 'option2' })
-    // fireEvent.mouseDown(option2)
-    // fireEvent.mouseUp(option2)
+    // fireEvent.change(select, { target: { value: 'option2' } })
     // await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(4))
 
     unmount()

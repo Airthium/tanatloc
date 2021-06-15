@@ -1,19 +1,21 @@
 import React from 'react'
-import { fireEvent, render, screen } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import Project from '@/components/project'
 
-const mockRouter = jest.fn()
+const mockPush = jest.fn()
+const mockReplace = jest.fn()
 jest.mock('next/router', () => ({
   useRouter: () => ({
     query: {},
-    push: () => mockRouter(),
-    replace: () => mockRouter()
+    push: () => mockPush(),
+    replace: () => mockReplace()
   })
 }))
 
+const mockGoBack = jest.fn()
 jest.mock('@/components/assets/button', () => ({
-  GoBack: () => <div />
+  GoBack: (props) => mockGoBack(props)
 }))
 
 const mockError = jest.fn()
@@ -27,10 +29,12 @@ jest.mock('@/components/loading', () => ({
 
 jest.mock('@/components/notauthorized', () => () => <div />)
 
-jest.mock('../panel', () => () => <div />)
+const mockPanel = jest.fn()
+jest.mock('../panel', () => (props) => mockPanel(props))
 
+const mockGeometry = jest.fn()
 jest.mock('../geometry', () => {
-  const Geometry = () => <div />
+  const Geometry = (props) => mockGeometry(props)
   const Add = () => <div />
   Geometry.Add = Add
   return Geometry
@@ -40,12 +44,17 @@ jest.mock('../view', () => () => <div />)
 
 jest.mock('../data', () => () => <div />)
 
+const mockSelector = jest.fn()
 jest.mock('../simulation', () => {
   const Simulation = {}
-  const Selector = () => <div />
-  const Updater = () => <div />
-  Simulation.Selector = Selector
-  Simulation.Updater = Updater
+  Simulation.Selector = (props) => mockSelector(props)
+  Simulation.Updater = () => <div />
+  Simulation.About = () => <div />
+  Simulation.Geometry = () => <div />
+  Simulation.Materials = () => <div />
+  Simulation.Parameters = () => <div />
+  Simulation.BoundaryConditions = () => <div />
+  Simulation.Run = () => <div />
   return Simulation
 })
 
@@ -82,9 +91,10 @@ jest.mock('@/api/project', () => ({
 
 const mockSimulations = jest.fn()
 const mockErrorSimulations = jest.fn()
+const mockSimulationAdd = jest.fn()
 const mockSimulationUpdate = jest.fn()
 jest.mock('@/api/simulation', () => ({
-  add: async () => ({ id: 'id' }),
+  add: async () => mockSimulationAdd(),
   update: async () => mockSimulationUpdate(),
   useSimulations: () => [
     mockSimulations(),
@@ -115,9 +125,22 @@ jest.mock('@/api/geometry', () => ({
 
 describe('components/project', () => {
   beforeEach(() => {
-    mockRouter.mockReset()
+    mockPush.mockReset()
+    mockReplace.mockReset()
+
+    mockGoBack.mockReset()
+    mockGoBack.mockImplementation(() => <div />)
 
     mockError.mockReset()
+
+    mockPanel.mockReset()
+    mockPanel.mockImplementation(() => <div />)
+
+    mockGeometry.mockReset()
+    mockGeometry.mockImplementation(() => <div />)
+
+    mockSelector.mockReset()
+    mockSelector.mockImplementation(() => <div />)
 
     mockUser.mockReset()
     mockUser.mockImplementation(() => ({ id: 'id' }))
@@ -127,7 +150,7 @@ describe('components/project', () => {
     mockProject.mockReset()
     mockProject.mockImplementation(() => ({
       title: 'title',
-      simulations: ['id', 'id']
+      simulations: ['ids1', 'ids2']
     }))
     mockReloadProject.mockReset()
     mockMutateProject.mockReset()
@@ -137,28 +160,50 @@ describe('components/project', () => {
     mockSimulations.mockReset()
     mockSimulations.mockImplementation(() => [
       {
-        id: 'id',
+        id: 'ids1',
+        name: 'Simulation 1',
         scheme: {
           configuration: {
-            part: 'part',
             geometry: {
-              title: 'Geometry'
+              index: 0,
+              title: 'Simulation 1 Geometry'
             },
-            something: {
+            parameters: {
+              index: 1,
+              title: 'Simulation 1 Parameters',
               done: true
             },
-            somethingElse: {
+            materials: {
+              index: 2,
+              title: 'Simulation 1 Materials'
+            },
+            boundaryConditions: {
+              index: 3,
+              title: 'Simulation 1 BC'
+            },
+            run: {
+              index: 4,
+              title: 'Simulation 1 Run',
               error: true
+            },
+            unknown: {
+              index: 5,
+              title: 'Simulation 1 Unknown'
             }
           }
         }
+      },
+      {
+        id: 'ids2',
+        name: 'Simulation 2'
       }
     ])
     mockErrorSimulations.mockReset()
+    mockSimulationAdd.mockReset()
     mockSimulationUpdate.mockReset()
 
     mockGeometries.mockReset()
-    mockGeometries.mockImplementation(() => [])
+    mockGeometries.mockImplementation(() => [{ id: 'idg', name: 'Geometry' }])
     mockErrorGeometries.mockReset()
   })
 
@@ -172,13 +217,20 @@ describe('components/project', () => {
     mockUser.mockImplementation(() => {})
     const { unmount } = render(<Project />)
 
-    expect(mockRouter).toHaveBeenCalledTimes(1)
+    expect(mockReplace).toHaveBeenCalledTimes(1)
 
     unmount()
   })
 
   test('loading', () => {
     mockUserLoading.mockImplementation(() => true)
+    const { unmount } = render(<Project />)
+
+    unmount()
+  })
+
+  test('Unauthorized', () => {
+    mockProject.mockImplementation(() => 'Unauthorized')
     const { unmount } = render(<Project />)
 
     unmount()
@@ -196,11 +248,147 @@ describe('components/project', () => {
     unmount()
   })
 
+  test('dashboard', () => {
+    mockGoBack.mockImplementation((props) => (
+      <div role="GoBack" onClick={props.onClick} />
+    ))
+    const { unmount } = render(<Project />)
+
+    const goBack = screen.getByRole('GoBack')
+    fireEvent.click(goBack)
+
+    expect(mockPush).toHaveBeenCalledTimes(1)
+
+    unmount()
+  })
+
+  test('menu', () => {
+    mockSelector.mockImplementation((props) => (
+      <div role="Selector" onClick={props.onCancel} />
+    ))
+    const { unmount } = render(<Project />)
+
+    // Open submenus
+    const geometries = screen.getByRole('menuitem', { name: 'Geometries (1)' })
+    fireEvent.click(geometries)
+
+    const simulations = screen.getByRole('menuitem', {
+      name: 'calculator Simulations (2)'
+    })
+    fireEvent.click(simulations)
+
+    const title = screen.getByRole('menuitem', {
+      name: 'title'
+    })
+    fireEvent.click(title)
+
+    // Click geometry
+    const geometry = screen.getByRole('menuitem', { name: 'Geometry' })
+    fireEvent.click(geometry)
+
+    // Click new geometry
+    const newGeometry = screen.getByRole('button', {
+      name: 'plus New geometry'
+    })
+    fireEvent.click(newGeometry)
+
+    // Click new simulation
+    const newSimulation = screen.getByRole('button', {
+      name: 'plus New simulation'
+    })
+    fireEvent.click(newSimulation)
+
+    // Close selector
+    const selector = screen.getByRole('Selector')
+    fireEvent.click(selector)
+
+    // Open simulation 1
+    const simulation1 = screen.getByRole('menuitem', { name: 'Simulation 1' })
+    fireEvent.click(simulation1)
+
+    // Click simulation items
+    let simulationItem = screen.getByRole('menuitem', {
+      name: 'check-circle About'
+    })
+    fireEvent.click(simulationItem)
+
+    simulationItem = screen.getByRole('menuitem', {
+      name: 'exclamation-circle Simulation 1 Geometry'
+    })
+    fireEvent.click(simulationItem)
+
+    simulationItem = screen.getByRole('menuitem', {
+      name: 'check-circle Simulation 1 Parameters'
+    })
+    fireEvent.click(simulationItem)
+
+    simulationItem = screen.getByRole('menuitem', {
+      name: 'exclamation-circle Simulation 1 Materials'
+    })
+    fireEvent.click(simulationItem)
+
+    simulationItem = screen.getByRole('menuitem', {
+      name: 'exclamation-circle Simulation 1 BC'
+    })
+    fireEvent.click(simulationItem)
+
+    simulationItem = screen.getByRole('menuitem', {
+      name: 'exclamation-circle Simulation 1 Run'
+    })
+    fireEvent.click(simulationItem)
+
+    simulationItem = screen.getByRole('menuitem', {
+      name: 'exclamation-circle Simulation 1 Unknown'
+    })
+    fireEvent.click(simulationItem)
+
+    unmount()
+  })
+
+  test('Selector', async () => {
+    mockSelector.mockImplementation((props) => (
+      <div role="Selector" onClick={() => props.onOk({})} />
+    ))
+    const { unmount } = render(<Project />)
+
+    const selector = screen.getByRole('Selector')
+
+    // Normal
+    mockSimulationAdd.mockImplementation(() => ({ id: 'id' }))
+    fireEvent.click(selector)
+    await waitFor(() => expect(mockSimulationAdd).toHaveBeenCalledTimes(1))
+
+    // Error
+    mockSimulationAdd.mockImplementation(() => {
+      throw new Error()
+    })
+    fireEvent.click(selector)
+    await waitFor(() => expect(mockSimulationAdd).toHaveBeenCalledTimes(2))
+    await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
+
+    unmount()
+  })
+
+  test('panel', () => {
+    mockPanel.mockImplementation((props) => (
+      <div role="Panel" onClick={props.onClose} />
+    ))
+    const { unmount } = render(<Project />)
+
+    const panel = screen.getByRole('Panel')
+    fireEvent.click(panel)
+
+    unmount()
+  })
+
   // test('without configuration', () => {
-  //   wrapper.unmount()
-  //   mockSimulations.mockImplementation(() => [{ scheme: {} }])
-  //   wrapper = shallow(<Project />)
-  //   expect(wrapper).toBeDefined()
+  //   const { unmount } = render(<Project />)
+
+  //   unmount()
+  // //   wrapper.unmount()
+  // //   mockSimulations.mockImplementation(() => [{ scheme: {} }])
+  // //   wrapper = shallow(<Project />)
+  // //   expect(wrapper).toBeDefined()
   // })
 
   // test('with subMenus', () => {

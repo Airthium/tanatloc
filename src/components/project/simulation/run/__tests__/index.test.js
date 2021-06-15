@@ -1,19 +1,22 @@
 import React from 'react'
-import { fireEvent, render, screen } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
-import Run from '@/components/project/simulation/run'
+import Run from '..'
 
-jest.mock('@/components/project/simulation/run/cloudServer', () => {
-  const CloudServer = () => <div />
-  return CloudServer
-})
+const mockCloudServer = jest.fn()
+jest.mock(
+  '@/components/project/simulation/run/cloudServer',
+  () => (props) => mockCloudServer(props)
+)
 
 const mockRun = jest.fn()
+const mockStop = jest.fn()
 const mockUpdate = jest.fn()
 const mockSimulation = jest.fn()
 const mockMutateSimulation = jest.fn()
 jest.mock('@/api/simulation', () => ({
   run: async () => mockRun(),
+  stop: async () => mockStop(),
   update: async () => mockUpdate(),
   useSimulation: () => [
     mockSimulation(),
@@ -39,19 +42,23 @@ describe('components/project/simulation/run', () => {
           done: true
         },
         parameters: {
-          done: false
+          done: true
         },
         run: {
+          cloudServer: {},
           done: true
         }
       }
     }
   }
-  const mutateOneSimulation = jest.fn()
-  const swr = { mutateOneSimulation }
+  const swr = { mutateOneSimulation: jest.fn() }
 
   beforeEach(() => {
+    mockCloudServer.mockReset()
+    mockCloudServer.mockImplementation(() => <div />)
+
     mockRun.mockReset()
+    mockStop.mockReset()
     mockUpdate.mockReset()
     mockSimulation.mockReset()
     mockSimulation.mockImplementation(() => ({
@@ -59,20 +66,26 @@ describe('components/project/simulation/run', () => {
       tasks: [
         {
           label: 'Mesh',
-          index: 1
+          index: 1,
+          status: 'finish',
+          file: { name: 'name', fileName: 'resultFileName' }
         },
         {
           label: 'Simulation',
           index: -1,
-          files: [{ name: 'name', fileName: 'resultFileName' }]
+          files: [{ name: 'name', fileName: 'resultFileName' }],
+          status: 'finish'
         },
         {
           label: 'Mesh2',
-          index: 2
+          index: 2,
+          status: 'error'
         }
       ]
     }))
+
     mockDownloadGet.mockReset()
+
     mockError.mockReset()
   })
 
@@ -82,53 +95,326 @@ describe('components/project/simulation/run', () => {
     unmount()
   })
 
-  // test('onRun', async () => {
-  //   await wrapper.find('Button').at(0).props().onClick()
-  //   expect(mockRun).toHaveBeenCalledTimes(1)
-  //   expect(mockError).toHaveBeenCalledTimes(0)
+  test('not done', () => {
+    mockSimulation.mockImplementation(() => ({
+      scheme: { configuration: { run: { done: true } } },
+      tasks: [
+        {
+          status: 'finish'
+        }
+      ]
+    }))
+    const { unmount } = render(
+      <Run
+        simulation={{
+          ...simulation,
+          scheme: {
+            configuration: {
+              ...simulation.scheme.configuration,
+              parameters: { done: false },
+              run: { done: true }
+            }
+          }
+        }}
+        swr={swr}
+      />
+    )
 
-  //   // Error
-  //   mockRun.mockImplementation(() => {
-  //     throw new Error()
-  //   })
-  //   await wrapper.find('Button').at(0).props().onClick()
-  //   expect(mockRun).toHaveBeenCalledTimes(2)
-  //   expect(mockError).toHaveBeenCalledTimes(1)
-  // })
+    unmount()
+  })
 
-  // test('onStop', async () => {
-  //   wrapper.find('Button').at(1).props().onClick()
-  // })
+  test('running task', () => {
+    mockSimulation.mockImplementation(() => ({
+      scheme: { configuration: { run: { done: true } } },
+      tasks: [
+        {
+          status: 'running'
+        }
+      ]
+    }))
+    const { unmount } = render(<Run simulation={simulation} swr={swr} />)
 
-  // test('onCloudServer', async () => {
-  //   // Normal
-  //   await wrapper.find('CloudServer').props().onOk({})
-  //   expect(mockUpdate).toHaveBeenCalledTimes(1)
-  //   expect(mutateOneSimulation).toHaveBeenCalledTimes(1)
-  //   expect(mockMutateSimulation).toHaveBeenCalledTimes(1)
-  //   expect(mockError).toHaveBeenCalledTimes(0)
+    unmount()
+  })
 
-  //   // Error
-  //   mockUpdate.mockImplementation(() => {
-  //     throw new Error()
-  //   })
-  //   await wrapper.find('CloudServer').props().onOk({})
-  //   expect(mockUpdate).toHaveBeenCalledTimes(2)
-  //   expect(mutateOneSimulation).toHaveBeenCalledTimes(1)
-  //   expect(mockMutateSimulation).toHaveBeenCalledTimes(1)
-  //   expect(mockError).toHaveBeenCalledTimes(1)
-  // })
+  test('no tasks', () => {
+    mockSimulation.mockImplementation(() => ({
+      scheme: { configuration: { run: { done: true } } },
+      tasks: undefined
+    }))
+    const { unmount } = render(<Run simulation={simulation} swr={swr} />)
 
-  // // test('onLog', () => {
-  // //   wrapper.unmount()
-  // //   wrapper = mount(<Run simulation={simulation} swr={swr} />)
+    unmount()
+  })
 
-  // //   // Mesh log
-  // //   act(() => wrapper.find('Step').at(0).props().description.props.onClick())
+  test('no configuration', () => {
+    mockSimulation.mockImplementation(() => ({
+      scheme: {}
+    }))
+    const { unmount } = render(<Run simulation={{}} swr={swr} />)
 
-  // //   // Simulation log
-  // //   act(() => wrapper.find('Step').at(1).props().description.props.onClick())
-  // // })
+    unmount()
+  })
+
+  test('resuls filter', () => {
+    mockSimulation.mockImplementation(() => ({
+      scheme: { configuration: { run: { done: true } } },
+      tasks: [
+        {
+          label: 'Mesh',
+          index: 1,
+          status: 'finish'
+        },
+        {
+          label: 'Simulation',
+          index: -1,
+          files: [
+            {
+              name: 'name',
+              fileName: 'Result_0.vtu'
+            },
+            {
+              name: 'name',
+              fileName: 'Result_1.vtu'
+            }
+          ],
+          status: 'finish'
+        },
+        {
+          label: 'Mesh2',
+          index: 2,
+          status: 'error'
+        }
+      ]
+    }))
+    const { unmount } = render(
+      <Run
+        simulation={{
+          ...simulation,
+          scheme: {
+            configuration: {
+              ...simulation.scheme.configuration,
+              parameters: {
+                time: {
+                  children: [{}, { default: 0.01 }]
+                }
+              },
+              run: {
+                ...simulation.scheme.configuration.run,
+                resultsFilters: [
+                  {
+                    name: 'Time',
+                    prefixPattern: 'Result_',
+                    suffixPattern: '.vtu',
+                    pattern: 'Result_\\d+.vtu',
+                    multiplicator: ['parameters', 'time', 'children', '1']
+                  }
+                ]
+              }
+            }
+          }
+        }}
+        swr={swr}
+      />
+    )
+
+    // TODO
+    // const select = screen.getByRole('combobox')
+    // fireEvent.change(select, { target: { value: '1' } })
+
+    // const play = screen.getByRole('button', { name: 'play-circle' })
+    // fireEvent.click(play)
+
+    // const pause = screen.getByRole('button', { name: 'pause-circle' })
+    // fireEvent.click(pause)
+
+    unmount()
+  })
+
+  test('resuls filter without multiplicator', () => {
+    mockSimulation.mockImplementation(() => ({
+      scheme: { configuration: { run: { done: true } } },
+      tasks: [
+        {
+          label: 'Mesh',
+          index: 1,
+          status: 'finish'
+        },
+        {
+          label: 'Simulation',
+          index: -1,
+          files: [
+            {
+              name: 'name',
+              fileName: 'Result_0.vtu'
+            },
+            {
+              name: 'name',
+              fileName: 'Result_1.vtu'
+            }
+          ],
+          status: 'finish'
+        },
+        {
+          label: 'Mesh2',
+          index: 2,
+          status: 'error'
+        }
+      ]
+    }))
+    const { unmount } = render(
+      <Run
+        simulation={{
+          ...simulation,
+          scheme: {
+            configuration: {
+              ...simulation.scheme.configuration,
+              parameters: {
+                time: {
+                  children: [{}, { default: 0.01 }]
+                }
+              },
+              run: {
+                ...simulation.scheme.configuration.run,
+                resultsFilters: [
+                  {
+                    name: 'Time',
+                    prefixPattern: 'Result_',
+                    suffixPattern: '.vtu',
+                    pattern: 'Result_\\d+.vtu'
+                  }
+                ]
+              }
+            }
+          }
+        }}
+        swr={swr}
+      />
+    )
+
+    unmount()
+  })
+
+  test('resuls filter without files', () => {
+    mockSimulation.mockImplementation(() => ({
+      scheme: { configuration: { run: { done: true } } },
+      tasks: [
+        {
+          label: 'Mesh',
+          index: 1,
+          status: 'finish'
+        },
+        {
+          label: 'Simulation',
+          index: -1,
+          files: [],
+          status: 'finish'
+        },
+        {
+          label: 'Mesh2',
+          index: 2,
+          status: 'error'
+        }
+      ]
+    }))
+    const { unmount } = render(
+      <Run
+        simulation={{
+          ...simulation,
+          scheme: {
+            configuration: {
+              ...simulation.scheme.configuration,
+              parameters: {
+                time: {
+                  children: [{}, { default: 0.01 }]
+                }
+              },
+              run: {
+                ...simulation.scheme.configuration.run,
+                resultsFilters: [
+                  {
+                    name: 'Time',
+                    prefixPattern: 'Result_',
+                    suffixPattern: '.vtu',
+                    pattern: 'Result_\\d+.vtu'
+                  }
+                ]
+              }
+            }
+          }
+        }}
+        swr={swr}
+      />
+    )
+
+    unmount()
+  })
+
+  test('run', async () => {
+    const { unmount } = render(<Run simulation={simulation} swr={swr} />)
+    const run = screen.getByRole('button', { name: 'rocket Run' })
+    const stop = screen.getByRole('button', { name: 'stop' })
+
+    // Normal
+    fireEvent.click(run)
+    await waitFor(() => expect(mockRun).toHaveBeenCalledTimes(1))
+
+    fireEvent.click(stop)
+    await waitFor(() => expect(mockStop).toHaveBeenCalledTimes(1))
+
+    // Error
+    mockRun.mockImplementation(() => {
+      throw new Error()
+    })
+    fireEvent.click(run)
+    await waitFor(() => expect(mockRun).toHaveBeenCalledTimes(2))
+    await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
+
+    mockStop.mockImplementation(() => {
+      throw new Error()
+    })
+    fireEvent.click(stop)
+    await waitFor(() => expect(mockStop).toHaveBeenCalledTimes(2))
+    await waitFor(() => expect(mockError).toHaveBeenCalledTimes(2))
+
+    unmount()
+  })
+
+  test('onCloudServer', async () => {
+    mockCloudServer.mockImplementation((props) => (
+      <div role="CloudServer" onClick={() => props.onOk({})} />
+    ))
+    const { unmount } = render(<Run simulation={simulation} swr={swr} />)
+
+    const dialog = screen.getByRole('CloudServer')
+
+    // Normal
+    fireEvent.click(dialog)
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
+      expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(1)
+    )
+    await waitFor(() => expect(mockMutateSimulation).toHaveBeenCalledTimes(1))
+
+    // Error
+    mockUpdate.mockImplementation(() => {
+      throw new Error()
+    })
+    fireEvent.click(dialog)
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
+    await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
+
+    unmount()
+  })
+
+  test('onLog', () => {
+    const { unmount } = render(<Run simulation={simulation} swr={swr} />)
+
+    const logs = screen.getAllByRole('button', { name: 'file-text' })
+    logs.forEach((log) => fireEvent.click(log))
+
+    unmount()
+  })
 
   // // test('setPart', async () => {
   // //   wrapper.unmount()
@@ -159,435 +445,36 @@ describe('components/project/simulation/run', () => {
   // //   )
   // // })
 
-  // // test('onArchiveDownload', async () => {
-  // //   wrapper.unmount()
-  // //   wrapper = mount(<Run simulation={simulation} swr={swr} />)
+  test('download', async () => {
+    mockDownloadGet.mockImplementation(() => ({
+      blob: jest.fn(),
+      text: jest.fn()
+    }))
+    window.URL.createObjectURL = jest.fn()
 
-  // //   // Error
-  // //   await act(
-  // //     async () =>
-  // //       await wrapper
-  // //         .find({ title: 'Results' })
-  // //         .props()
-  // //         .extra.props.children.props.onClick()
-  // //   )
-  // //   wrapper.update()
-  // //   expect(mockDownloadGet).toHaveBeenCalledTimes(1)
+    const { unmount } = render(<Run simulation={simulation} swr={swr} />)
 
-  // //   // Normal
-  // //   mockDownloadGet.mockImplementation(() => {
-  // //     return {
-  // //       blob: async () => 'text'
-  // //     }
-  // //   })
-  // //   Object.defineProperty(window.URL, 'createObjectURL', {
-  // //     value: () => {},
-  // //     configurable: true
-  // //   })
-  // //   await act(
-  // //     async () =>
-  // //       await wrapper
-  // //         .find({ title: 'Results' })
-  // //         .props()
-  // //         .extra.props.children.props.onClick()
-  // //   )
-  // //   wrapper.update()
-  // //   expect(mockDownloadGet).toHaveBeenCalledTimes(2)
-  // // })
+    const downloads = screen.getAllByRole('button', { name: 'download' })
 
-  // // test('onDownload', async () => {
-  // //   wrapper.unmount()
-  // //   wrapper = mount(<Run simulation={simulation} swr={swr} />)
+    // Archive
+    fireEvent.click(downloads[0])
+    await waitFor(() => expect(mockDownloadGet).toHaveBeenCalledTimes(1))
 
-  // //   // Error
-  // //   await act(
-  // //     async () =>
-  // //       await wrapper.find({ size: 'small' }).at(3).props().onClick('res')
-  // //   )
-  // //   wrapper.update()
-  // //   expect(mockDownloadGet).toHaveBeenCalledTimes(1)
+    // File
+    fireEvent.click(downloads[1])
+    await waitFor(() => expect(mockDownloadGet).toHaveBeenCalledTimes(2))
 
-  // //   // Normal
-  // //   mockDownloadGet.mockImplementation(() => ({
-  // //     text: async () => 'text'
-  // //   }))
-  // //   Object.defineProperty(window.URL, 'createObjectURL', {
-  // //     value: () => {},
-  // //     configurable: true
-  // //   })
-  // //   await act(
-  // //     async () =>
-  // //       await wrapper.find({ size: 'small' }).at(3).props().onClick('res')
-  // //   )
-  // //   wrapper.update()
-  // //   expect(mockDownloadGet).toHaveBeenCalledTimes(2)
-  // // })
+    mockDownloadGet.mockImplementation(() => {
+      throw new Error()
+    })
+    fireEvent.click(downloads[0])
+    await waitFor(() => expect(mockDownloadGet).toHaveBeenCalledTimes(3))
+    await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
 
-  // // test('running', () => {
-  // //   // Errorred
-  // //   wrapper.unmount()
-  // //   mockSimulation.mockImplementation(() => ({
-  // //     scheme: {
-  // //       configuration: {
-  // //         part: { fileName: 'fileName' },
-  // //         run: {}
-  // //       }
-  // //     },
-  // //     tasks: [
-  // //       {
-  // //         label: 'Mesh',
-  // //         status: 'error'
-  // //       },
-  // //       {
-  // //         label: 'Simulation',
-  // //         status: 'wait'
-  // //       }
-  // //     ]
-  // //   }))
-  // //   wrapper = mount(<Run simulation={simulation} swr={swr} />)
-  // //   expect(wrapper).toBeDefined()
+    fireEvent.click(downloads[1])
+    await waitFor(() => expect(mockDownloadGet).toHaveBeenCalledTimes(4))
+    await waitFor(() => expect(mockError).toHaveBeenCalledTimes(2))
 
-  // //   // Not running
-  // //   wrapper.unmount()
-  // //   mockSimulation.mockImplementation(() => ({
-  // //     scheme: {
-  // //       configuration: {
-  // //         part: { fileName: 'fileName' },
-  // //         run: {}
-  // //       }
-  // //     },
-  // //     tasks: [
-  // //       {
-  // //         label: 'Mesh',
-  // //         status: 'finish'
-  // //       },
-  // //       {
-  // //         label: 'Simulation',
-  // //         status: 'finish'
-  // //       }
-  // //     ]
-  // //   }))
-  // //   wrapper = mount(<Run simulation={simulation} swr={swr} />)
-  // //   expect(wrapper).toBeDefined()
-
-  // //   // Running
-  // //   wrapper.unmount()
-  // //   mockSimulation.mockImplementation(() => ({
-  // //     scheme: {
-  // //       configuration: {
-  // //         part: { fileName: 'fileName' },
-  // //         run: {}
-  // //       }
-  // //     },
-  // //     tasks: [
-  // //       {
-  // //         label: 'Mesh',
-  // //         status: 'finish'
-  // //       },
-  // //       {
-  // //         label: 'Simulation',
-  // //         status: 'process'
-  // //       }
-  // //     ]
-  // //   }))
-  // //   wrapper = mount(<Run simulation={simulation} swr={swr} />)
-  // //   expect(wrapper).toBeDefined()
-  // // })
-
-  // // test('effect', async () => {
-  // //   wrapper.unmount()
-
-  // //   // No configuration
-  // //   mockSimulation.mockImplementation(() => ({
-  // //     scheme: {}
-  // //   }))
-  // //   wrapper = mount(<Run simulation={simulation} swr={swr} />)
-  // //   expect(wrapper).toBeDefined()
-
-  // //   // No file
-  // //   mockSimulation.mockImplementation(() => ({
-  // //     scheme: {
-  // //       configuration: {
-  // //         part: { fileName: 'fileName' },
-  // //         run: {}
-  // //       }
-  // //     },
-  // //     tasks: [
-  // //       {
-  // //         label: 'Mesh',
-  // //         status: 'finish'
-  // //       },
-  // //       {
-  // //         label: 'Simulation',
-  // //         status: 'finish'
-  // //       }
-  // //     ]
-  // //   }))
-  // //   wrapper = mount(<Run simulation={{}} swr={swr} />)
-  // //   expect(wrapper).toBeDefined()
-
-  // //   // With files
-  // //   wrapper.unmount()
-  // //   simulation.scheme.configuration.run.cloudServer = undefined
-  // //   mockSimulation.mockImplementation(() => ({
-  // //     scheme: {
-  // //       configuration: { run: { done: true } }
-  // //     },
-  // //     tasks: [
-  // //       {
-  // //         type: 'mesh',
-  // //         status: 'finish',
-  // //         file: {
-  // //           fileName: 'fileName'
-  // //         }
-  // //       },
-  // //       {
-  // //         type: 'simulation',
-  // //         status: 'process',
-  // //         files: [
-  // //           {
-  // //             name: 'name',
-  // //             fileName: 'fileName'
-  // //           }
-  // //         ]
-  // //       }
-  // //     ]
-  // //   }))
-  // //   wrapper = mount(<Run simulation={simulation} swr={swr} />)
-  // //   expect(wrapper).toBeDefined()
-
-  // //   await act(
-  // //     async () =>
-  // //       await wrapper.find('Step').at(0).props().description.props.onClick()
-  // //   )
-
-  // //   wrapper.unmount()
-  // //   mockSimulation.mockImplementation(() => ({
-  // //     scheme: {
-  // //       configuration: {
-  // //         part: { name: 'name', fileName: 'fileName' },
-  // //         run: { done: true }
-  // //       }
-  // //     },
-  // //     tasks: [
-  // //       {
-  // //         type: 'mesh',
-  // //         status: 'finish',
-  // //         file: {
-  // //           fileName: 'fileName'
-  // //         }
-  // //       },
-  // //       {
-  // //         type: 'simulation',
-  // //         status: 'process',
-  // //         files: [
-  // //           {
-  // //             name: 'name',
-  // //             fileName: 'fileName'
-  // //           }
-  // //         ]
-  // //       }
-  // //     ]
-  // //   }))
-  // //   wrapper = mount(<Run simulation={simulation} swr={swr} />)
-  // //   expect(wrapper).toBeDefined()
-
-  // //   await act(
-  // //     async () =>
-  // //       await wrapper.find('Step').at(0).props().description.props.onClick()
-  // //   )
-
-  // //   wrapper.unmount()
-  // //   wrapper = mount(<Run simulation={simulation} swr={swr} />)
-  // //   expect(wrapper).toBeDefined()
-  // //   await act(
-  // //     async () =>
-  // //       await wrapper
-  // //         .find({ title: 'Results' })
-  // //         .find('Button')
-  // //         .at(1)
-  // //         .props()
-  // //         .onClick()
-  // //   )
-
-  // //   // With filters
-  // //   wrapper.unmount()
-  // //   simulation.scheme.configuration.run.resultsFilters = [
-  // //     {
-  // //       name: 'Time',
-  // //       prefixPattern: 'Result_',
-  // //       suffixPattern: '.vtu',
-  // //       pattern: 'Result_\\d+.vtu',
-  // //       multiplicator: ['parameters', 'time', 'children', '1']
-  // //     }
-  // //   ]
-  // //   simulation.scheme.configuration.parameters.time = {
-  // //     children: [{}, { default: 0.1 }]
-  // //   }
-  // //   mockSimulation.mockImplementation(() => ({
-  // //     scheme: {
-  // //       configuration: {
-  // //         run: {
-  // //           done: true
-  // //         }
-  // //       }
-  // //     },
-  // //     tasks: [
-  // //       {
-  // //         type: 'mesh',
-  // //         status: 'finish',
-  // //         file: {
-  // //           fileName: 'fileName'
-  // //         }
-  // //       },
-  // //       {
-  // //         type: 'simulation',
-  // //         status: 'process',
-  // //         files: [
-  // //           {
-  // //             name: 'name',
-  // //             fileName: 'Result_0.vtu'
-  // //           },
-  // //           {
-  // //             name: 'name',
-  // //             fileName: 'Result_1.vtu'
-  // //           }
-  // //         ]
-  // //       }
-  // //     ]
-  // //   }))
-  // //   wrapper = mount(<Run simulation={simulation} swr={swr} />)
-  // //   expect(wrapper).toBeDefined()
-
-  // //   // On selector change
-  // //   await act(
-  // //     async () => await wrapper.find('Select').props().onChange(1, 1, 0)
-  // //   )
-  // //   wrapper.update()
-
-  // //   // Set part
-  // //   await act(async () => await wrapper.find('Button').at(9).props().onClick())
-  // //   wrapper.update()
-
-  // //   // On selector change
-  // //   await act(
-  // //     async () => await wrapper.find('Select').props().onChange(10, 1, 0)
-  // //   )
-  // //   wrapper.update()
-
-  // //   await act(
-  // //     async () => await wrapper.find('Select').props().onChange(0, 1, 0)
-  // //   )
-  // //   wrapper.update()
-
-  // //   // On play / pause
-  // //   await act(async () => await wrapper.find('Button').at(6).props().onClick())
-  // //   wrapper.update()
-  // //   global.setInterval = (callback) => {
-  // //     callback()
-  // //     return 1
-  // //   }
-  // //   await act(async () => await wrapper.find('Button').at(5).props().onClick())
-  // //   wrapper.update()
-  // //   await act(async () => await wrapper.find('Button').at(5).props().onClick())
-  // //   wrapper.update()
-  // //   await act(async () => await wrapper.find('Button').at(5).props().onClick())
-  // //   wrapper.update()
-  // //   await act(async () => await wrapper.find('Button').at(6).props().onClick())
-  // //   wrapper.update()
-
-  // //   // Set part
-  // //   wrapper.find('Button').at(7).props().onClick()
-  // //   wrapper.update()
-
-  // //   await act(async () => await wrapper.find('Button').at(5).props().onClick())
-  // //   wrapper.update()
-  // //   await act(async () => await wrapper.find('Button').at(6).props().onClick())
-  // //   wrapper.update()
-
-  // //   // With filters without multiplicator
-  // //   wrapper.unmount()
-  // //   simulation.scheme.configuration.run.resultsFilters = [
-  // //     {
-  // //       name: 'Time',
-  // //       prefixPattern: 'Result_',
-  // //       suffixPattern: '.vtu',
-  // //       pattern: 'Result_\\d+.vtu'
-  // //     }
-  // //   ]
-  // //   simulation.scheme.configuration.parameters.time = {
-  // //     children: [{}, { default: 0.1 }]
-  // //   }
-  // //   mockSimulation.mockImplementation(() => ({
-  // //     scheme: {
-  // //       configuration: {
-  // //         run: {
-  // //           done: true
-  // //         }
-  // //       }
-  // //     },
-  // //     tasks: [
-  // //       {
-  // //         type: 'mesh',
-  // //         status: 'finish',
-  // //         file: {
-  // //           fileName: 'fileName'
-  // //         }
-  // //       },
-  // //       {
-  // //         type: 'simulation',
-  // //         status: 'process',
-  // //         files: [
-  // //           {
-  // //             name: 'name',
-  // //             fileName: 'Result_0.vtu'
-  // //           },
-  // //           {
-  // //             name: 'name',
-  // //             fileName: 'Result_1.vtu'
-  // //           }
-  // //         ]
-  // //       }
-  // //     ]
-  // //   }))
-  // //   wrapper = mount(<Run simulation={simulation} swr={swr} />)
-  // //   expect(wrapper).toBeDefined()
-
-  // //   // With empty filter
-  // //   wrapper.unmount()
-  // //   mockSimulation.mockImplementation(() => ({
-  // //     scheme: {
-  // //       configuration: {
-  // //         run: {
-  // //           done: true
-  // //         }
-  // //       }
-  // //     },
-  // //     tasks: [
-  // //       {
-  // //         type: 'mesh',
-  // //         status: 'finish',
-  // //         file: {
-  // //           fileName: 'fileName'
-  // //         }
-  // //       },
-  // //       {
-  // //         type: 'simulation',
-  // //         status: 'process',
-  // //         files: [
-  // //           {
-  // //             name: 'name',
-  // //             fileName: 'Result0.vtu'
-  // //           },
-  // //           {
-  // //             name: 'name',
-  // //             fileName: 'Result1.vtu'
-  // //           }
-  // //         ]
-  // //       }
-  // //     ]
-  // //   }))
-  // //   wrapper = mount(<Run simulation={simulation} swr={swr} />)
-  // //   expect(wrapper).toBeDefined()
-  // // })
+    unmount()
+  })
 })

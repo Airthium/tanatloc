@@ -123,6 +123,9 @@ const Geometry = ({ geometries, geometry, simulation, setGeometry, swr }) => {
     }
   }
 
+  /**
+   * Render
+   */
   return geometries.length ? (
     <div>{geometriesList}</div>
   ) : (

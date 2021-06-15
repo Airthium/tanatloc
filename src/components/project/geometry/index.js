@@ -158,7 +158,9 @@ const Geometry = ({ project, geometry, swr, close }) => {
               <DownloadButton loading={downloading} onDownload={onDownload} />
               <Edit
                 visible={editVisible}
-                geometry={geometry}
+                geometry={{
+                  name: geometry?.name
+                }}
                 setVisible={setEditVisible}
                 onEdit={onEdit}
               />

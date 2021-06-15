@@ -7,6 +7,7 @@ import Caller from '@/api/call'
  * @param {Object} file File { part, partPath }
  */
 const get = async (simulation, file) => {
+  console.warn('DEPRECATED CALL part/get')
   return Caller.call('/api/part', {
     method: 'POST',
     headers: {

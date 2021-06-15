@@ -7,6 +7,7 @@ import Caller from '@/api/call'
  * @param {boolean} archive Archive
  */
 const get = async (simulation, file, archive) => {
+  console.warn('DEPRECATED CALL download/get')
   return Caller.call('/api/download', {
     method: 'POST',
     body: JSON.stringify({ simulation, file, archive })

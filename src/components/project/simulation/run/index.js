@@ -45,22 +45,22 @@ const errors = {
  * @memberof module:components/project/simulation
  * @param {Object} props Props
  */
-const Run = ({ simulation, swr }) => {
+const Run = ({ simulation, result, setResult, swr }) => {
   // State
   const [disabled, setDisabled] = useState(false)
   const [running, setRunning] = useState(false)
+
   const [logVisible, setLogVisible] = useState(false)
   const [logContent, setLogContent] = useState()
+
   const [selectors, setSelectors] = useState([])
   const [selectorsCurrent, setSelectorsCurrent] = useState([])
+
   const [results, setResults] = useState([])
+  const [steps, setSteps] = useState([]) //TODO
+
   const [downloading, setDownloading] = useState([])
   const [play, setPlay] = useState()
-
-  const [configuration, setConfiguration] = useState(
-    simulation?.scheme?.configuration
-  )
-  const [currentConfiguration, setCurrentConfiguration] = useState()
 
   // Data
   const [currentSimulation, { mutateSimulation }] = SimulationAPI.useSimulation(
@@ -68,54 +68,69 @@ const Run = ({ simulation, swr }) => {
     2000
   )
 
+  const configuration = simulation?.scheme?.configuration
+  const currentConfiguration = currentSimulation?.scheme?.configuration
+
   // Check tasks
   useEffect(() => {
+    if (!configuration) {
+      setDisabled(true)
+      return
+    }
+
     let done = true
-    configuration &&
-      Object.keys(configuration).forEach((key) => {
-        if (key !== 'part' && key !== 'run' && !configuration[key].done)
-          done = false
-      })
-    if (!configuration?.run?.cloudServer) done = false
+    Object.keys(configuration).forEach((key) => {
+      if (key !== 'run' && !configuration[key].done) done = false
+    })
+    if (!configuration.run.cloudServer) done = false
     setDisabled(!done)
   }, [JSON.stringify(configuration)])
 
   // Running
   useEffect(() => {
-    const erroredTasks = currentSimulation?.tasks?.filter(
-      (t) => t.status === 'error'
-    )
-    if (erroredTasks?.length) {
+    if (!currentSimulation) {
+      setRunning(false)
+      return
+    }
+    if (!currentSimulation.tasks) {
       setRunning(false)
       return
     }
 
-    const runningTasks = currentSimulation?.tasks?.filter(
+    const erroredTasks = currentSimulation.tasks.filter(
+      (t) => t.status === 'error'
+    )
+    if (erroredTasks.length) {
+      setRunning(false)
+      return
+    }
+
+    const runningTasks = currentSimulation.tasks.filter(
       (t) => t.status !== 'finish'
     )
-    if (runningTasks?.length) setRunning(true)
+    if (runningTasks.length) setRunning(true)
     else setRunning(false)
   }, [JSON.stringify(currentSimulation?.tasks)])
 
-  // Configuration
+  // Steps & Results
   useEffect(() => {
-    if (simulation?.scheme?.configuration)
-      setConfiguration(simulation.scheme.configuration)
-  }, [JSON.stringify(simulation?.scheme?.configuration)])
+    if (!currentSimulation) return
+    if (!currentSimulation.tasks) return
 
-  // Current configuration
-  useEffect(() => {
-    if (currentSimulation?.scheme?.configuration)
-      setCurrentConfiguration(currentSimulation.scheme.configuration)
-  }, [JSON.stringify(currentSimulation?.scheme?.configuration)])
-
-  // Results
-  useEffect(() => {
-    if (!currentSimulation?.tasks) return
-
+    const newSteps = []
     const newResults = []
     const newSelectors = []
-    currentSimulation.tasks.forEach((task) => {
+    currentSimulation.tasks.forEach((task, index) => {
+      // Steps
+      newSteps[task.index || index] = {
+        label: task.label,
+        status: task.status,
+        log: task.log,
+        warning: task.warning,
+        error: task.warning
+      }
+
+      // Results
       if (task.file) newResults.push(task.file)
       if (task.files) {
         // Filters
@@ -217,6 +232,7 @@ const Run = ({ simulation, swr }) => {
       }
     })
 
+    setSteps(newSteps)
     setResults(newResults)
     setSelectors(newSelectors)
   }, [
@@ -246,14 +262,15 @@ const Run = ({ simulation, swr }) => {
       ...results.slice(index + 1)
     ])
 
+    // TODO
     // Update visualization
-    const currentPart = currentConfiguration.part
-    if (currentPart?.number !== undefined) {
-      const newPart = newResult.files.find(
-        (file) => file.name === currentPart.name && file.number === value
-      )
-      if (newPart) setPart(newPart)
-    }
+    // const currentPart = currentConfiguration.part
+    // if (currentPart?.number !== undefined) {
+    //   const newPart = newResult.files.find(
+    //     (file) => file.name === currentPart.name && file.number === value
+    //   )
+    //   if (newPart) setPart(newPart)
+    // }
   }
 
   /**
@@ -280,14 +297,15 @@ const Run = ({ simulation, swr }) => {
         ...results.slice(index + 1)
       ])
 
-      // Update visualization
-      const currentPart = currentConfiguration.part
-      if (currentPart?.number !== undefined) {
-        const newPart = newResult.files.find(
-          (file) => file.name === currentPart.name && file.number === value
-        )
-        if (newPart) setPart(newPart)
-      }
+      // TODO
+      // // Update visualization
+      // const currentPart = currentConfiguration.part
+      // if (currentPart?.number !== undefined) {
+      //   const newPart = newResult.files.find(
+      //     (file) => file.name === currentPart.name && file.number === value
+      //   )
+      //   if (newPart) setPart(newPart)
+      // }
     }, 2000)
 
     setPlay(player)
@@ -330,7 +348,7 @@ const Run = ({ simulation, swr }) => {
       ])
 
       // Local
-      swr.mutateOneSimulation(currentSimulation)
+      swr.mutateOneSimulation(newSimulation)
       mutateSimulation(newSimulation)
     } catch (err) {
       ErrorNotification(errors.updateError, err)
@@ -406,43 +424,43 @@ const Run = ({ simulation, swr }) => {
     setLogVisible(!logVisible)
   }
 
-  /**
-   * Set part
-   * @param {Object} file File
-   */
-  const setPart = async (file) => {
-    // Update local
-    currentConfiguration.part = file
+  // /**
+  //  * Set part
+  //  * @param {Object} file File
+  //  */
+  // const setPart = async (file) => {
+  //   // Update local
+  //   currentConfiguration.part = file
 
-    try {
-      // Update simulation
-      if (file) {
-        await SimulationAPI.update({ id: simulation.id }, [
-          {
-            key: 'scheme',
-            type: 'json',
-            method: 'set',
-            path: ['configuration', 'part'],
-            value: file
-          }
-        ])
-      } else {
-        await SimulationAPI.update({ id: simulation.id }, [
-          {
-            key: 'scheme',
-            type: 'json',
-            method: 'erase',
-            path: ['configuration', 'part']
-          }
-        ])
-      }
+  //   try {
+  //     // Update simulation
+  //     if (file) {
+  //       await SimulationAPI.update({ id: simulation.id }, [
+  //         {
+  //           key: 'scheme',
+  //           type: 'json',
+  //           method: 'set',
+  //           path: ['configuration', 'part'],
+  //           value: file
+  //         }
+  //       ])
+  //     } else {
+  //       await SimulationAPI.update({ id: simulation.id }, [
+  //         {
+  //           key: 'scheme',
+  //           type: 'json',
+  //           method: 'erase',
+  //           path: ['configuration', 'part']
+  //         }
+  //       ])
+  //     }
 
-      // Mutate
-      swr.mutateOneSimulation(currentSimulation)
-    } catch (err) {
-      ErrorNotification(errors.updateError, err)
-    }
-  }
+  //     // Mutate
+  //     swr.mutateOneSimulation(currentSimulation)
+  //   } catch (err) {
+  //     ErrorNotification(errors.updateError, err)
+  //   }
+  // }
 
   /**
    * On archive download
@@ -539,39 +557,26 @@ const Run = ({ simulation, swr }) => {
                   disabled={!running}
                   type="danger"
                   icon={<StopOutlined />}
+                  shape="circle"
                   onClick={onStop}
                 />
               </Space>
               <Steps direction="vertical">
-                {currentSimulation?.tasks
-                  ?.sort((a, b) => {
-                    if (a.index === -1) return 1
-                    if (b.index === -1) return -1
-                    return a.index - b.index
-                  })
-                  .map((task, index) => {
-                    return (
-                      <Steps.Step
-                        key={task}
-                        title={task.label}
-                        description={
-                          <Button
-                            icon={<FileTextOutlined />}
-                            onClick={() => onLog(task, task.label)}
-                            size="small"
-                          />
-                        }
-                        subTitle={
-                          '(' +
-                          (index + 1) +
-                          '/' +
-                          currentSimulation.tasks.length +
-                          ')'
-                        }
-                        status={task.status}
+                {steps.map((step, index) => (
+                  <Steps.Step
+                    key={step}
+                    title={step.label}
+                    description={
+                      <Button
+                        icon={<FileTextOutlined />}
+                        onClick={() => onLog(step, step.label)}
+                        size="small"
                       />
-                    )
-                  })}
+                    }
+                    subTitle={'(' + (index + 1) + '/' + steps.length + ')'}
+                    status={step.status}
+                  />
+                ))}
               </Steps>
             </Space>
           </Card>
@@ -611,24 +616,26 @@ const Run = ({ simulation, swr }) => {
                       >
                         <Button
                           icon={
-                            currentConfiguration?.part?.fileName ===
-                              result?.fileName &&
-                            currentConfiguration?.part?.name ===
-                              result?.name ? (
-                              <EyeInvisibleOutlined />
-                            ) : (
-                              <EyeOutlined />
-                            )
+                            <EyeOutlined />
+                            // currentConfiguration?.part?.fileName ===
+                            //   result?.fileName &&
+                            // currentConfiguration?.part?.name ===
+                            //   result?.name ? (
+                            //   <EyeInvisibleOutlined />
+                            // ) : (
+                            //   <EyeOutlined />
+                            // )
                           }
-                          onClick={() =>
-                            setPart(
-                              currentConfiguration?.part?.fileName ===
-                                result?.fileName &&
-                                currentConfiguration?.part?.name ===
-                                  result?.name
-                                ? null
-                                : result
-                            )
+                          onClick={
+                            () => {}
+                            // setPart(
+                            //   currentConfiguration?.part?.fileName ===
+                            //     result?.fileName &&
+                            //     currentConfiguration?.part?.name ===
+                            //       result?.name
+                            //     ? null
+                            //     : result
+                            // )
                           }
                         />
                         <Button

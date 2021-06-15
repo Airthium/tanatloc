@@ -60,14 +60,16 @@ const Project = () => {
   // State
   const [geometryAdd, setGeometryAdd] = useState(false)
   const [currentGeometry, setCurrentGeometry] = useState()
+  const [geometryVisible, setGeometryVisible] = useState(false)
 
   const [simulationSelector, setSimulationSelector] = useState(false)
   const [currentSimulation, setCurrentSimulation] = useState()
   const [currentSimulationType, setCurrentSimulationType] = useState()
 
+  const [currentResult, setCurrentResult] = useState()
+
   const [panelVisible, setPanelVisible] = useState(false)
   const [panelTitle, setPanelTitle] = useState()
-  const [panelContent, setPanelContent] = useState()
 
   // Data
   const [user, { errorUser, loadingUser }] = UserAPI.useUser()
@@ -116,8 +118,7 @@ const Project = () => {
       const geometry = geometries.find((g) => g.id === currentGeometry?.id)
       if (geometry) {
         if (JSON.stringify(geometry) !== JSON.stringify(currentGeometry))
-          if (panelContent?.type?.name === 'Geometry')
-            selectGeometry(geometry.id)
+          if (geometryVisible) selectGeometry(geometry.id)
           else setCurrentGeometry(geometry)
       } else {
         setCurrentGeometry()
@@ -129,19 +130,12 @@ const Project = () => {
   useEffect(() => {
     if (currentSimulation) {
       const simulation = simulations.find((s) => s.id === currentSimulation?.id)
-      if (
-        simulation &&
-        JSON.stringify(simulation) !== JSON.stringify(currentSimulation)
-      ) {
-        const geometryId = simulation.scheme.configuration.geometry.value
-        const geometry = geometries.find((g) => g.id === geometryId)
-        setCurrentGeometry(geometry)
-        selectSimulation(simulation.id, currentSimulationType)
-      }
+      if (JSON.stringify(simulation) !== JSON.stringify(currentSimulation))
+        selectSimulation(simulation?.id, currentSimulationType)
     }
   }, [currentSimulation, JSON.stringify(simulations)])
 
-  // Manage part
+  // Manage geometry
   useEffect(() => {
     if (!currentGeometry) {
       setCurrentGeometry(geometries[0])
@@ -226,7 +220,8 @@ const Project = () => {
   const onPanelClose = () => {
     setPanelVisible(false)
     setPanelTitle()
-    setPanelContent()
+
+    setGeometryVisible(false)
 
     setCurrentSimulation()
     setCurrentSimulationType()
@@ -237,26 +232,15 @@ const Project = () => {
    * @param {string} id Id
    */
   const selectGeometry = (id) => {
+    onPanelClose()
+
     const geometry = geometries.find((g) => g.id === id)
 
     setCurrentGeometry(geometry)
+    setGeometryVisible(true)
 
     setPanelVisible(true)
     setPanelTitle(geometry.name)
-    setPanelContent(
-      <Geometry
-        project={{
-          geometries: project.geometries
-        }}
-        geometry={{
-          id: geometry.id,
-          name: geometry.name,
-          summary: geometry.summary
-        }}
-        swr={{ mutateProject, mutateOneGeometry, delOneGeometry }}
-        close={onPanelClose}
-      />
-    )
   }
 
   /**
@@ -265,6 +249,8 @@ const Project = () => {
    * @param {string} type Type
    */
   const selectSimulation = (id, type) => {
+    onPanelClose()
+
     const simulation = simulations.find((s) => s.id === id)
     const configuration = simulation.scheme.configuration
     const item = configuration[type]
@@ -275,86 +261,9 @@ const Project = () => {
     setPanelVisible(true)
     setPanelTitle(item ? item.title : 'About')
 
-    switch (type) {
-      case 'about':
-        setPanelContent(
-          <Simulation.About
-            simulation={{
-              id: simulation.id,
-              name: simulation.name,
-              scheme: simulation.scheme
-            }}
-            swr={{
-              reloadProject,
-              delOneSimulation,
-              mutateOneSimulation
-            }}
-          />
-        )
-        break
-      case 'geometry':
-        setPanelContent(
-          <Simulation.Geometry
-            geometries={geometries}
-            geometry={currentGeometry}
-            simulation={{
-              id: simulation.id,
-              scheme: simulation.scheme
-            }}
-            setGeometry={setCurrentGeometry}
-            swr={{ mutateOneSimulation }}
-          />
-        )
-        break
-      case 'parameters':
-        setPanelContent(
-          <Simulation.Parameters
-            simulation={{
-              id: simulation.id,
-              scheme: simulation.scheme
-            }}
-            swr={{ mutateOneSimulation }}
-          />
-        )
-        break
-      case 'materials':
-        setPanelContent(
-          <Simulation.Materials
-            geometry={currentGeometry}
-            simulation={{
-              id: simulation.id,
-              scheme: simulation.scheme
-            }}
-            swr={{
-              mutateOneSimulation
-            }}
-            setVisible={setPanelVisible}
-          />
-        )
-        break
-      case 'boundaryConditions':
-        setPanelContent(
-          <Simulation.BoundaryConditions
-            geometry={currentGeometry}
-            simulation={simulation}
-            swr={{
-              mutateOneSimulation
-            }}
-            setVisible={setPanelVisible}
-          />
-        )
-        break
-      case 'run':
-        setPanelContent(
-          <Simulation.Run
-            simulation={simulation}
-            swr={{ mutateOneSimulation }}
-          />
-        )
-        break
-      default:
-        break
-    }
+    const geometryId = simulation.scheme.configuration.geometry?.value
+    const geometry = geometries.find((g) => g.id === geometryId)
+    if (geometry) setCurrentGeometry(geometry)
   }
 
   // Geometries render build
@@ -497,7 +406,87 @@ const Project = () => {
             title={panelTitle}
             onClose={onPanelClose}
           >
-            {panelContent}
+            {geometryVisible && currentGeometry && (
+              <Geometry
+                project={{
+                  geometries: project.geometries
+                }}
+                geometry={{
+                  id: currentGeometry.id,
+                  name: currentGeometry.name,
+                  summary: currentGeometry.summary
+                }}
+                swr={{ mutateProject, mutateOneGeometry, delOneGeometry }}
+                close={onPanelClose}
+              />
+            )}
+            {currentSimulation && currentSimulationType === 'about' && (
+              <Simulation.About
+                simulation={{
+                  id: currentSimulation.id,
+                  name: currentSimulation.name,
+                  scheme: currentSimulation.scheme
+                }}
+                swr={{
+                  reloadProject,
+                  delOneSimulation,
+                  mutateOneSimulation
+                }}
+              />
+            )}
+            {currentSimulation && currentSimulationType === 'geometry' && (
+              <Simulation.Geometry
+                geometries={geometries}
+                geometry={currentGeometry}
+                simulation={{
+                  id: currentSimulation.id,
+                  scheme: currentSimulation.scheme
+                }}
+                setGeometry={setCurrentGeometry}
+                swr={{ mutateOneSimulation }}
+              />
+            )}
+            {currentSimulation && currentSimulationType === 'parameters' && (
+              <Simulation.Parameters
+                simulation={{
+                  id: currentSimulation.id,
+                  scheme: currentSimulation.scheme
+                }}
+                swr={{ mutateOneSimulation }}
+              />
+            )}
+            {currentSimulation && currentSimulationType === 'materials' && (
+              <Simulation.Materials
+                geometry={currentGeometry}
+                simulation={{
+                  id: currentSimulation.id,
+                  scheme: currentSimulation.scheme
+                }}
+                swr={{
+                  mutateOneSimulation
+                }}
+                setVisible={setPanelVisible}
+              />
+            )}
+            {currentSimulation &&
+              currentSimulationType === 'boundaryConditions' && (
+                <Simulation.BoundaryConditions
+                  geometry={currentGeometry}
+                  simulation={currentSimulation}
+                  swr={{
+                    mutateOneSimulation
+                  }}
+                  setVisible={setPanelVisible}
+                />
+              )}
+            {currentSimulation && currentSimulationType === 'run' && (
+              <Simulation.Run
+                simulation={currentSimulation}
+                result={currentResult}
+                setResult={setCurrentResult}
+                swr={{ mutateOneSimulation }}
+              />
+            )}
           </Panel>
           <Simulation.Updater
             user={{
@@ -514,6 +503,7 @@ const Project = () => {
               id: project.id
             }}
             geometry={currentGeometry}
+            result={currentResult}
           />
           <Data
             simulation={{

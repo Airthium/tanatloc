@@ -330,7 +330,7 @@ const ThreeView = ({ loading, project, part }) => {
       // Grid
       gridHelper.current.update()
     }
-  }, [part])
+  }, [part, loadPart])
 
   // Enable / disable selection
   useEffect(() => {
@@ -372,7 +372,7 @@ const ThreeView = ({ loading, project, part }) => {
         })
       }
     })
-  }, [selectHighlighted, JSON.stringify(selectSelected)])
+  }, [selectHighlighted, selectSelected])
 
   /**
    * Compute scene bounding box

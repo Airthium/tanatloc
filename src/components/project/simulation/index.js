@@ -149,7 +149,7 @@ const Updater = ({ user, simulation, swr }) => {
         setNeedUpdate(true)
       else setNeedUpdate(false)
     }
-  }, [simulation, JSON.stringify(models)])
+  }, [simulation, models])
 
   /**
    * On update

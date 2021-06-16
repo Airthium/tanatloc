@@ -124,7 +124,7 @@ const Project = () => {
         setCurrentGeometry()
       }
     }
-  }, [currentGeometry, JSON.stringify(geometries)])
+  }, [currentGeometry, geometries])
 
   // Update simulation
   useEffect(() => {
@@ -133,14 +133,14 @@ const Project = () => {
       if (JSON.stringify(simulation) !== JSON.stringify(currentSimulation))
         selectSimulation(simulation?.id, currentSimulationType)
     }
-  }, [currentSimulation, JSON.stringify(simulations)])
+  }, [currentSimulation, simulations])
 
   // Manage geometry
   useEffect(() => {
     if (!currentGeometry) {
       setCurrentGeometry(geometries[0])
     }
-  }, [currentGeometry, JSON.stringify(geometries)])
+  }, [currentGeometry, geometries])
 
   /**
    * Handle dashboard
@@ -321,7 +321,7 @@ const Project = () => {
       <Layout hasSider={true}>
         <Layout.Sider theme="light" className="Project-sider" width={256}>
           <div className="logo">
-            <img src="/images/logo.svg" />
+            <img src="/images/logo.svg" alt="Tanatloc" />
           </div>
 
           <Menu mode="inline" onClick={onMenuClick}>

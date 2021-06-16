@@ -54,8 +54,9 @@ const ProjectList = ({
         const snapshot = project.avatar ? (
           <img
             src={project && Buffer.from(project.avatar).toString()}
-            width="135"
-            height="135"
+            alt="Tanatloc"
+            width="135px"
+            height="135px"
           />
         ) : (
           <Empty image="images/empty.svg" description={'No preview yet.'} />
@@ -91,7 +92,7 @@ const ProjectList = ({
 
     setList(currentList)
     setLoading(false)
-  }, [JSON.stringify(projects), filter])
+  }, [projects, filter])
 
   // Open project
   const openProject = (project) => {

@@ -6,14 +6,8 @@ import route from '@/route/result'
  * @param {Object} req Request
  * @param {Object} res Response
  */
-export default async (req, res) => {
+const api = async (req, res) => {
   await route(req, res)
 }
 
-export const config = {
-  api: {
-    bodyParser: {
-      sizeLimit: '150mb'
-    }
-  }
-}
+export default api

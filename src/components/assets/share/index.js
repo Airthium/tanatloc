@@ -32,10 +32,9 @@ const Share = ({ workspace, project, organizations, swr }) => {
   // Effect
   useEffect(() => {
     // Default value
-    let defaultValue = []
-    workspace
-      ? (defaultValue = workspace.groups?.map((group) => group.id))
-      : (defaultValue = project.groups?.map((group) => group.id))
+    const defaultValue = workspace
+      ? workspace.groups?.map((group) => group.id)
+      : project.groups?.map((group) => group.id)
 
     setSelected(defaultValue)
   }, [workspace, project])
@@ -72,7 +71,7 @@ const Share = ({ workspace, project, organizations, swr }) => {
     })
 
     setTreeData(data)
-  }, [JSON.stringify(organizations)])
+  }, [organizations])
 
   /**
    * On change

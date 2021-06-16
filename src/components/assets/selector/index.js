@@ -35,7 +35,7 @@ const Selector = ({ geometry, alreadySelected, updateSelected }) => {
   // Selected
   useEffect(() => {
     updateSelected(selected)
-  }, [selected])
+  }, [updateSelected, selected])
 
   // Colors
   useEffect(() => {
@@ -55,7 +55,7 @@ const Selector = ({ geometry, alreadySelected, updateSelected }) => {
     })
 
     setColors(colorsList)
-  }, [geometry])
+  }, [geometry, type])
 
   /**
    * On highglight

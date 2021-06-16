@@ -6,6 +6,8 @@ import route from '@/route/workspace'
  * @param {Object} req Request
  * @param {Object} res Response
  */
-export default async (req, res) => {
+const api = async (req, res) => {
   await route(req, res)
 }
+
+export default api

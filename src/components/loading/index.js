@@ -39,7 +39,7 @@ const Loading = () => {
     <Layout className="tanatloc-gradient">
       <Background />
       <div className="logo">
-        <img src="/images/logo.svg" />
+        <img src="/images/logo.svg" alt="Tanatloc" />
       </div>
       <Card className="Loading">
         <Space>

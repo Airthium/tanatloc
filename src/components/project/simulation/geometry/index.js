@@ -83,7 +83,7 @@ const Geometry = ({ geometries, geometry, simulation, setGeometry, swr }) => {
       </Collapse>
     ))
     setGeometryList(list)
-  }, [geometry, JSON.stringify(geometries)])
+  }, [geometry, geometries])
 
   /**
    * On select

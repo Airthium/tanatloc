@@ -3,7 +3,7 @@
 import { useRouter } from 'next/router'
 import { useState, useEffect } from 'react'
 import { Layout, Menu } from 'antd'
-import Icon, {
+import {
   AppstoreOutlined,
   ControlOutlined,
   ShareAltOutlined,
@@ -144,7 +144,7 @@ const Dashboard = () => {
   // Not logged -> go to login page
   useEffect(() => {
     if (!loadingUser && !user) router.replace('/login')
-  }, [user, loadingUser])
+  }, [user, loadingUser, router])
 
   // My / shared workspaces
   useEffect(() => {
@@ -169,7 +169,7 @@ const Dashboard = () => {
     if (JSON.stringify(my) !== JSON.stringify(myWorkspaces)) setMyWorkspaces(my)
     if (JSON.stringify(shared) !== JSON.stringify(sharedWorkspaces))
       setSharedWorkspaces(shared)
-  }, [user, JSON.stringify(workspaces)])
+  }, [user, workspaces, myWorkspaces, sharedWorkspaces])
 
   /**
    * Menu selection
@@ -249,7 +249,7 @@ const Dashboard = () => {
         <Layout>
           <Layout.Sider theme="light" width="256" className="dashboard-sider">
             <div className="logo">
-              <img src="/images/logo.svg" />
+              <img src="/images/logo.svg" alt="Tanatloc" />
             </div>
 
             <Menu

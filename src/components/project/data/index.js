@@ -106,7 +106,7 @@ const Data = ({ simulation }) => {
       setInfos({ names, camelNames })
       setTable({ columns: tableColumns, data: tableData })
     }
-  }, [JSON.stringify(currentSimulation), JSON.stringify(columnSelection)])
+  }, [currentSimulation, columnSelection])
 
   // Check effect
   useEffect(() => {
@@ -156,7 +156,7 @@ const Data = ({ simulation }) => {
     )
 
     setPlot({ data, min, max, lines })
-  }, [JSON.stringify(columnSelection)])
+  }, [columnSelection, table, infos])
 
   /**
    * On check

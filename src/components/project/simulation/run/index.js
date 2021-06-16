@@ -84,7 +84,7 @@ const Run = ({ simulation, result, setResult, swr }) => {
     })
     if (!configuration.run.cloudServer) done = false
     setDisabled(!done)
-  }, [JSON.stringify(configuration)])
+  }, [configuration])
 
   // Running
   useEffect(() => {
@@ -110,7 +110,7 @@ const Run = ({ simulation, result, setResult, swr }) => {
     )
     if (runningTasks.length) setRunning(true)
     else setRunning(false)
-  }, [JSON.stringify(currentSimulation?.tasks)])
+  }, [currentSimulation?.tasks])
 
   // Steps & Results
   useEffect(() => {
@@ -236,9 +236,9 @@ const Run = ({ simulation, result, setResult, swr }) => {
     setResults(newResults)
     setSelectors(newSelectors)
   }, [
-    JSON.stringify(configuration?.run?.resultsFilters),
-    JSON.stringify(currentSimulation?.tasks),
-    JSON.stringify(selectorsCurrent)
+    configuration?.run?.resultsFilters,
+    currentSimulation?.tasks,
+    selectorsCurrent
   ])
 
   /**

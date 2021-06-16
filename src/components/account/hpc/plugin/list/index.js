@@ -56,7 +56,7 @@ const List = ({ plugin, plugins, swr }) => {
     })
 
     setList(pluginsList)
-  }, [JSON.stringify(plugins), plugin])
+  }, [plugin, plugins, swr])
 
   /**
    * Render

@@ -67,7 +67,7 @@ const Index = () => {
     <Layout className="Index">
       <Background />
       <Layout.Header className="Index-header">
-        <img src="/images/logo.svg" />
+        <img src="/images/logo.svg" alt="Tanatloc" />
         <Button.Group>
           {user ? (
             <Button icon={<DashboardOutlined />} onClick={handleDashboard}>

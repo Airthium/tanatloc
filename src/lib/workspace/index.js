@@ -294,4 +294,5 @@ const del = async (user, workspace) => {
   ])
 }
 
-export default { add, get, getByUser, update, del }
+const Workspace = { add, get, getByUser, update, del }
+export default Workspace

@@ -5,18 +5,23 @@ import express, { json, urlencoded } from 'express'
 import cors from 'cors'
 
 import avatar from '@/route/avatar'
-import download from '@/route/download'
-import file from '@/route/file'
+import geometries from '@/route/geometries'
+import geometry from '@/route/geometry'
+import geometryId from '@/route/geometry/[id]'
+import geometryDownload from '@/route/geometry/[id]/download'
+import geometryPart from '@/route/geometry/[id]/part'
 import group from '@/route/group'
 import groups from '@/route/groups'
 import groupsId from '@/route/groups/[id]'
 import organization from '@/route/organization'
 import organizations from '@/route/organizations'
-import part from '@/route/part'
 import plugin from '@/route/plugin'
 import project from '@/route/project'
 import projectId from '@/route/project/[id]'
 import projects from '@/route/projects'
+import result from '@/route/result'
+import resultDownload from '@/route/result/download'
+import resultArchive from '@/route/result/archive'
 import simulation from '@/route/simulation'
 import simulationId from '@/route/simulation/[id]'
 import simulationIdRun from '@/route/simulation/[id]/run'
@@ -42,9 +47,12 @@ app.use(urlencoded({ extended: false, limit: '150mb' }))
 
 app.all('/api/avatar', avatar)
 
-app.all('/api/download', download)
+app.all('/api/geometries', geometries)
 
-app.all('/api/file', file)
+app.all('/api/geometry', geometry)
+app.all('/api/geometry/:id', geometryId)
+app.all('/api/geometry/:id/download', geometryDownload)
+app.all('/api/geometry/:id/part', geometryPart)
 
 app.all('/api/group', group)
 
@@ -54,14 +62,16 @@ app.all('/api/group/:id', groupsId)
 app.all('/api/organization', organization)
 app.all('/api/organizations', organizations)
 
-app.all('/api/part', part)
-
 app.all('/api/plugin', plugin)
 
 app.all('/api/project', project)
 app.all('/api/project/:id', projectId)
 
 app.all('/api/projects', projects)
+
+app.all('/api/result', result)
+app.all('/api/result/download', resultDownload)
+app.all('/api/result/archive', resultArchive)
 
 app.all('/api/simulation', simulation)
 app.all('/api/simulation/:id', simulationId)

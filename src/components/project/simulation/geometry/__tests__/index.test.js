@@ -21,11 +21,6 @@ jest.mock('@/api/simulation', () => ({
   update: async () => mockUpdate()
 }))
 
-const mockGet = jest.fn()
-jest.mock('@/api/file', () => ({
-  get: async () => mockGet()
-}))
-
 describe('components/project/simulation/geometry', () => {
   const geometries = [{ id: 'id' }]
   const geometry = { id: 'id' }
@@ -44,8 +39,6 @@ describe('components/project/simulation/geometry', () => {
     mockError.mockReset()
 
     mockUpdate.mockReset()
-
-    mockGet.mockReset()
   })
 
   test('render', () => {

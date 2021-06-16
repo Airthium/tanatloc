@@ -24,9 +24,11 @@ jest.mock('@/api/simulation', () => ({
   ]
 }))
 
-const mockDownloadGet = jest.fn()
-jest.mock('@/api/download', () => ({
-  get: async () => mockDownloadGet()
+const mockResultDownload = jest.fn()
+const mockResultArchive = jest.fn()
+jest.mock('@/api/result', () => ({
+  download: async () => mockResultDownload(),
+  archive: async () => mockResultArchive()
 }))
 
 const mockError = jest.fn()
@@ -84,7 +86,8 @@ describe('components/project/simulation/run', () => {
       ]
     }))
 
-    mockDownloadGet.mockReset()
+    mockResultDownload.mockReset()
+    mockResultArchive.mockReset()
 
     mockError.mockReset()
   })
@@ -416,39 +419,12 @@ describe('components/project/simulation/run', () => {
     unmount()
   })
 
-  // // test('setPart', async () => {
-  // //   wrapper.unmount()
-  // //   wrapper = mount(<Run simulation={simulation} swr={swr} />)
-
-  // //   await act(
-  // //     async () =>
-  // //       await wrapper
-  // //         .find({ title: 'Results' })
-  // //         .find('Button')
-  // //         .at(1)
-  // //         .props()
-  // //         .onClick()
-  // //   )
-
-  // //   // Error
-  // //   mockUpdate.mockImplementation(() => {
-  // //     throw new Error()
-  // //   })
-  // //   await act(
-  // //     async () =>
-  // //       await wrapper
-  // //         .find({ title: 'Results' })
-  // //         .find('Button')
-  // //         .at(1)
-  // //         .props()
-  // //         .onClick()
-  // //   )
-  // // })
-
   test('download', async () => {
-    mockDownloadGet.mockImplementation(() => ({
-      blob: jest.fn(),
-      text: jest.fn()
+    mockResultDownload.mockImplementation(() => ({
+      blob: jest.fn()
+    }))
+    mockResultArchive.mockImplementation(() => ({
+      blob: jest.fn()
     }))
     window.URL.createObjectURL = jest.fn()
 
@@ -458,21 +434,24 @@ describe('components/project/simulation/run', () => {
 
     // Archive
     fireEvent.click(downloads[0])
-    await waitFor(() => expect(mockDownloadGet).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(mockResultArchive).toHaveBeenCalledTimes(1))
 
     // File
     fireEvent.click(downloads[1])
-    await waitFor(() => expect(mockDownloadGet).toHaveBeenCalledTimes(2))
+    await waitFor(() => expect(mockResultDownload).toHaveBeenCalledTimes(1))
 
-    mockDownloadGet.mockImplementation(() => {
+    mockResultDownload.mockImplementation(() => {
+      throw new Error()
+    })
+    mockResultArchive.mockImplementation(() => {
       throw new Error()
     })
     fireEvent.click(downloads[0])
-    await waitFor(() => expect(mockDownloadGet).toHaveBeenCalledTimes(3))
+    await waitFor(() => expect(mockResultArchive).toHaveBeenCalledTimes(2))
     await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
 
     fireEvent.click(downloads[1])
-    await waitFor(() => expect(mockDownloadGet).toHaveBeenCalledTimes(4))
+    await waitFor(() => expect(mockResultDownload).toHaveBeenCalledTimes(2))
     await waitFor(() => expect(mockError).toHaveBeenCalledTimes(2))
 
     unmount()

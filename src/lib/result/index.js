@@ -14,6 +14,11 @@ import createPVD from './createPVD'
 
 const archiveFileName = 'resultsArchive.zip'
 
+/**
+ * Load
+ * @param {Object} param Parameters { simulation: { id }, result: { originPath, glb } }
+ * @returns
+ */
 const load = async ({ simulation, result }) => {
   const buffer = await Tools.readFile(
     path.join(storage.SIMULATION, simulation.id, result.originPath, result.glb)
@@ -24,6 +29,11 @@ const load = async ({ simulation, result }) => {
   }
 }
 
+/**
+ * Download
+ * @param {Object} param Parameters { simulation: { id }, result { originPath, fileName } }
+ * @returns
+ */
 const download = ({ simulation, result }) => {
   return fs.createReadStream(
     path.join(
@@ -35,6 +45,11 @@ const download = ({ simulation, result }) => {
   )
 }
 
+/**
+ * Archive
+ * @param {Object} param Parameters { simulation: { id } }
+ * @returns
+ */
 const archive = async ({ simulation }) => {
   const resultPath = path.join(
     storage.SIMULATION,

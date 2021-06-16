@@ -181,6 +181,11 @@ jest.mock('@/api/geometry', () => ({
   getPart: async () => mockGet()
 }))
 
+const mockResultLoad = jest.fn()
+jest.mock('@/api/result', () => ({
+  load: async () => mockResultLoad()
+}))
+
 const mockEnabled = jest.fn(() => false)
 jest.mock('react-redux', () => ({
   useSelector: (callback) =>

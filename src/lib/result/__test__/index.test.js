@@ -1,4 +1,4 @@
-import Download from '../'
+import Geometry from '..'
 
 const mockPath = jest.fn()
 jest.mock('path', () => ({
@@ -22,15 +22,17 @@ jest.mock('../../simulation', () => ({
   get: async () => mockSimulationGet()
 }))
 
+const mockReadFile = jest.fn()
 const mockListFiles = jest.fn()
 jest.mock('../../tools', () => ({
+  readFile: async () => mockReadFile(),
   listFiles: async () => mockListFiles()
 }))
 
 jest.mock('../createSummary', () => () => ({ path: 'path', name: 'name' }))
 jest.mock('../createPVD', () => () => [{ path: 'path', name: 'name' }])
 
-describe('lib/download', () => {
+describe('lib/result', () => {
   beforeEach(() => {
     mockPath.mockReset()
 
@@ -39,9 +41,9 @@ describe('lib/download', () => {
 
     mockCreateWriteStream.mockReset()
     mockCreateWriteStream.mockImplementation(() => ({
-      on: (type, callback) => callback(),
-      write: () => {},
-      end: () => {}
+      on: (_, callback) => callback(),
+      write: jest.fn(),
+      end: jest.fn()
     }))
 
     mockArchiver.mockReset()
@@ -56,47 +58,43 @@ describe('lib/download', () => {
     }))
 
     mockSimulationGet.mockReset()
-    mockSimulationGet.mockImplementation(() => ({
-      scheme: {
-        configuration: {
-          part: {},
-          geometry: {
-            file: { name: 'name' }
-          },
-          parameters: {
-            index: 1,
-            title: 'title',
-            done: true,
-            param: {
-              label: 'label',
-              children: [
-                {
-                  label: 'subLabel',
-                  value: 'value'
-                }
-              ]
-            },
-            param2: {
-              label: 'label',
-              children: [
-                {
-                  label: 'subLabel',
-                  default: 'value'
-                }
-              ]
-            }
-          }
-        }
-      }
-    }))
+    mockSimulationGet.mockImplementation(() => ({}))
 
+    mockReadFile.mockReset()
+    mockReadFile.mockImplementation(() => 'readFile')
     mockListFiles.mockReset()
-    mockListFiles.mockImplementation(() => [{ isFile: () => true }])
+    mockListFiles.mockImplementation(() => [
+      { name: 'test.vtu', isFile: () => true },
+      { name: 'test.glb', isFile: () => true }
+    ])
   })
 
-  test('createArchiveStream', async () => {
-    const archiveStream = await Download.createArchiveStream({ id: 'id' })
-    expect(archiveStream).toBe('readStream')
+  test('load', async () => {
+    const load = await Geometry.load({
+      simulation: { id: 'id' },
+      result: { originPath: 'originPath', glb: 'glb' }
+    })
+    expect(mockReadFile).toHaveBeenCalledTimes(1)
+    expect(load).toEqual({ buffer: Buffer.from('readFile') })
+  })
+
+  test('download', () => {
+    const download = Geometry.download({
+      simulation: { id: 'id' },
+      result: { originPath: 'originPath', fileName: 'fileName' }
+    })
+    expect(mockCreateReadStream).toHaveBeenCalledTimes(1)
+    expect(download).toBe('readStream')
+  })
+
+  test('archive', async () => {
+    // Normal
+    const archive = await Geometry.archive({ simulation: { id: 'id' } })
+    expect(mockPath).toHaveBeenCalledTimes(5)
+    expect(mockSimulationGet).toHaveBeenCalledTimes(1)
+    expect(mockCreateReadStream).toHaveBeenCalledTimes(4)
+    expect(mockCreateWriteStream).toHaveBeenCalledTimes(1)
+    expect(archive).toBe('readStream')
 
     // Error
     mockArchiver.mockImplementation(() => ({
@@ -109,18 +107,10 @@ describe('lib/download', () => {
       finalize: jest.fn()
     }))
     try {
-      await Download.createArchiveStream({ id: 'id' })
+      await Geometry.archive({ simulation: { id: 'id' } })
       expect(true).toBe(false)
     } catch (err) {
       expect(true).toBe(true)
     }
-  })
-
-  test('createReadStream', () => {
-    const stream = Download.createReadStream(
-      { id: 'id' },
-      { originPath: 'originPath', fileName: 'fileName' }
-    )
-    expect(stream).toBe('readStream')
   })
 })

@@ -317,8 +317,8 @@ const ThreeView = ({ loading, project, part }) => {
     // Clean scene
     scene.current.children.forEach((child) => {
       if (child.type === 'Part') {
-        child.dispose()
         scene.current.remove(child)
+        child.dispose()
       }
     })
 

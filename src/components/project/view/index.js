@@ -330,7 +330,7 @@ const ThreeView = ({ loading, project, part }) => {
       // Grid
       gridHelper.current.update()
     }
-  }, [part, loadPart])
+  }, [part])
 
   // Enable / disable selection
   useEffect(() => {

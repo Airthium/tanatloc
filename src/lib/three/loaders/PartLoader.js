@@ -149,11 +149,9 @@ const PartLoader = (mouseMoveEvent, mouseDownEvent) => {
     part.children.forEach((group) => {
       group.children &&
         group.children.forEach((child) => {
-          if (child.material) {
-            child.material.transparent = transparent
-            child.material.opacity = transparent ? 0.5 : 1
-            child.material.depthWrite = !transparent
-          }
+          child.material.transparent = transparent
+          child.material.opacity = transparent ? 0.5 : 1
+          child.material.depthWrite = !transparent
         })
     })
   }

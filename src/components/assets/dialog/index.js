@@ -26,7 +26,7 @@ const Dialog = ({
   // Inital values update
   useEffect(() => {
     if (visible && initialValues) form.setFieldsValue(initialValues)
-  }, [visible, initialValues, form])
+  }, [visible, initialValues])
 
   // Layout
   const layout = {

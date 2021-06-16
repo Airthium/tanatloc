@@ -144,7 +144,7 @@ const Dashboard = () => {
   // Not logged -> go to login page
   useEffect(() => {
     if (!loadingUser && !user) router.replace('/login')
-  }, [user, loadingUser, router])
+  }, [user, loadingUser])
 
   // My / shared workspaces
   useEffect(() => {

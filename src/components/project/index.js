@@ -255,6 +255,8 @@ const Project = () => {
       setCurrentResult()
 
     const simulation = simulations.find((s) => s.id === id)
+    if (!simulation) return
+
     const configuration = simulation.scheme.configuration
     const item = configuration[type]
 

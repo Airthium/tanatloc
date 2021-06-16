@@ -7,6 +7,7 @@ import {
   Layout,
   Select,
   Space,
+  Spin,
   Steps,
   Tabs,
   Tooltip
@@ -40,6 +41,8 @@ const errors = {
   downloadError: 'Unable to download the file'
 }
 
+// TODO there is an infinite useEffect loop here
+
 /**
  * Run
  * @memberof module:components/project/simulation
@@ -56,7 +59,7 @@ const Run = ({ simulation, result, setResult, swr }) => {
   const [selectors, setSelectors] = useState([])
   const [selectorsCurrent, setSelectorsCurrent] = useState([])
 
-  const [results, setResults] = useState([])
+  const [results, setResults] = useState()
   const [steps, setSteps] = useState([])
 
   const [downloading, setDownloading] = useState([])
@@ -84,7 +87,7 @@ const Run = ({ simulation, result, setResult, swr }) => {
     })
     if (!configuration.run.cloudServer) done = false
     setDisabled(!done)
-  }, [configuration])
+  }, [JSON.stringify(configuration)])
 
   // Running
   useEffect(() => {
@@ -110,7 +113,7 @@ const Run = ({ simulation, result, setResult, swr }) => {
     )
     if (runningTasks.length) setRunning(true)
     else setRunning(false)
-  }, [currentSimulation?.tasks])
+  }, [JSON.stringify(currentSimulation?.tasks)])
 
   // Steps & Results
   useEffect(() => {
@@ -236,9 +239,9 @@ const Run = ({ simulation, result, setResult, swr }) => {
     setResults(newResults)
     setSelectors(newSelectors)
   }, [
-    configuration?.run?.resultsFilters,
-    currentSimulation?.tasks,
-    selectorsCurrent
+    JSON.stringify(configuration?.run?.resultsFilters),
+    JSON.stringify(currentSimulation?.tasks),
+    JSON.stringify(selectorsCurrent)
   ])
 
   /**
@@ -547,71 +550,75 @@ const Run = ({ simulation, result, setResult, swr }) => {
             </Space>
           </Card>
 
-          {results.length ? (
-            <Card
-              title="Results"
-              extra={
-                <Tooltip title="Download archive">
-                  <Button
-                    loading={downloading.find((d) => d === 'archive')}
-                    icon={<DownloadOutlined />}
-                    onClick={onArchiveDownload}
-                  />
-                </Tooltip>
-              }
-            >
-              <Space direction="vertical" style={{ width: '100%' }}>
-                {selectors}
-                {results.map((r) => {
-                  // Check if filtered
-                  let toRender = []
-                  if (r.filtered) {
-                    toRender = r.files.filter((file) => {
-                      return file.number === r.current
-                    })
-                  } else {
-                    toRender = [r]
-                  }
-                  // Render
-                  return toRender.map((file) => {
-                    return (
-                      <Space
-                        direction=""
-                        key={file.name}
-                        style={{ alignItems: 'center' }}
-                      >
-                        <Button
-                          icon={
-                            result?.fileName === file?.fileName &&
-                            result?.name === file?.name ? (
-                              <EyeOutlined />
-                            ) : (
-                              <EyeInvisibleOutlined />
-                            )
-                          }
-                          onClick={() =>
-                            setResult(
+          {results ? (
+            results.length ? (
+              <Card
+                title="Results"
+                extra={
+                  <Tooltip title="Download archive">
+                    <Button
+                      loading={downloading.find((d) => d === 'archive')}
+                      icon={<DownloadOutlined />}
+                      onClick={onArchiveDownload}
+                    />
+                  </Tooltip>
+                }
+              >
+                <Space direction="vertical" style={{ width: '100%' }}>
+                  {selectors}
+                  {results.map((r) => {
+                    // Check if filtered
+                    let toRender = []
+                    if (r.filtered) {
+                      toRender = r.files.filter((file) => {
+                        return file.number === r.current
+                      })
+                    } else {
+                      toRender = [r]
+                    }
+                    // Render
+                    return toRender.map((file) => {
+                      return (
+                        <Space
+                          direction=""
+                          key={file.name}
+                          style={{ alignItems: 'center' }}
+                        >
+                          <Button
+                            icon={
                               result?.fileName === file?.fileName &&
-                                result?.name === file?.name
-                                ? null
-                                : file
-                            )
-                          }
-                        />
-                        <Button
-                          loading={downloading.find((d) => d === file.glb)}
-                          icon={<DownloadOutlined />}
-                          size="small"
-                          onClick={() => onDownload(file)}
-                        />
-                        {file.name}
-                      </Space>
-                    )
-                  })
-                })}
-              </Space>
-            </Card>
-          ) : null}
+                              result?.name === file?.name ? (
+                                <EyeOutlined />
+                              ) : (
+                                <EyeInvisibleOutlined />
+                              )
+                            }
+                            onClick={() =>
+                              setResult(
+                                result?.fileName === file?.fileName &&
+                                  result?.name === file?.name
+                                  ? null
+                                  : file
+                              )
+                            }
+                          />
+                          <Button
+                            loading={downloading.find((d) => d === file.glb)}
+                            icon={<DownloadOutlined />}
+                            size="small"
+                            onClick={() => onDownload(file)}
+                          />
+                          {file.name}
+                        </Space>
+                      )
+                    })
+                  })}
+                </Space>
+              </Card>
+            ) : null
+          ) : (
+            <Spin />
+          )}
         </Space>
       </Layout.Content>
     </Layout>

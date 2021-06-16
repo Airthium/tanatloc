@@ -25,6 +25,8 @@ const camelize = (str) => {
   })
 }
 
+// TODO there is an infinite useEffect loop here
+
 /**
  * Data visualization
  * @param {Object} props Props
@@ -106,7 +108,7 @@ const Data = ({ simulation }) => {
       setInfos({ names, camelNames })
       setTable({ columns: tableColumns, data: tableData })
     }
-  }, [currentSimulation, columnSelection])
+  }, [JSON.stringify(currentSimulation), JSON.stringify(columnSelection)])
 
   // Check effect
   useEffect(() => {
@@ -156,7 +158,11 @@ const Data = ({ simulation }) => {
     )
 
     setPlot({ data, min, max, lines })
-  }, [columnSelection, table, infos])
+  }, [
+    JSON.stringify(table),
+    JSON.stringify(columnSelection),
+    JSON.stringify(infos)
+  ])
 
   /**
    * On check

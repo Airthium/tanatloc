@@ -59,7 +59,7 @@ const Signup = () => {
   // Already connected
   useEffect(() => {
     if (user) router.push('/dashboard')
-  }, [user, router])
+  }, [user])
 
   // Prefetch
   useEffect(() => {

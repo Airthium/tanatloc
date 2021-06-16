@@ -41,7 +41,7 @@ const Registration = () => {
   // Effect
   useEffect(() => {
     form.setFieldsValue(system?.password)
-  }, [form, system?.password])
+  }, [system?.password])
 
   /**
    * On allow signup

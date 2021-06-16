@@ -104,7 +104,7 @@ describe('components/assets/groups', () => {
     mockDialog.mockImplementation((props) => (
       <div
         role="Dialog"
-        onClick={() => props.onOk({ name: 'name', users: [{ id: 'id' }] })}
+        onClick={() => props.onOk({ name: 'name', users: ['id'] })}
       />
     ))
     const { unmount } = render(
@@ -133,6 +133,34 @@ describe('components/assets/groups', () => {
     fireEvent.click(dialog)
     await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
     await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
+
+    unmount()
+  })
+
+  test('onUpdate wit different users', async () => {
+    mockDialog.mockImplementation((props) => (
+      <div
+        role="Dialog"
+        onClick={() => props.onOk({ name: 'name', users: ['id1'] })}
+      />
+    ))
+    const { unmount } = render(
+      <Group
+        userOptions={userOptions}
+        organization={organization}
+        group={group}
+        swr={swr}
+      />
+    )
+
+    const dialog = screen.getByRole('Dialog')
+
+    fireEvent.click(dialog)
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(swr.addOneGroup).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
+      expect(swr.reloadOrganizations).toHaveBeenCalledTimes(1)
+    )
 
     unmount()
   })

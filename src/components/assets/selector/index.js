@@ -35,7 +35,7 @@ const Selector = ({ geometry, alreadySelected, updateSelected }) => {
   // Selected
   useEffect(() => {
     updateSelected(selected)
-  }, [updateSelected, selected])
+  }, [selected])
 
   // Colors
   useEffect(() => {

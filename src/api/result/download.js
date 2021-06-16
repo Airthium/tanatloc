@@ -6,11 +6,11 @@ import Caller from '@/api/call'
  * @param {Object} result Result { originPath, fileName }
  * @returns
  */
-const load = async (simulation, result) => {
+const download = async (simulation, result) => {
   return Caller.call('/api/result/download', {
     method: 'POST',
     body: JSON.stringify({ simulation, result })
   })
 }
 
-export default load
+export default download

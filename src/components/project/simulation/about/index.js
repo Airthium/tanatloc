@@ -1,5 +1,4 @@
 import PropTypes from 'prop-types'
-import { useEffect } from 'react'
 import { Divider, Layout, Space, Spin, Typography } from 'antd'
 
 import { Error as ErrorNotification } from '@/components/assets/notification'

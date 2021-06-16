@@ -19,8 +19,6 @@ import { Error } from '@/components/assets/notification'
 import login from '@/api/login'
 import UserAPI from '@/api/user'
 
-import Sentry from '@/lib/sentry'
-
 /**
  * Errors
  */

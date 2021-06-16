@@ -5,11 +5,11 @@ import Caller from '@/api/call'
  * @param {Object} simulation  Simulation { id }
  * @returns
  */
-const load = async (simulation) => {
+const archive = async (simulation) => {
   return Caller.call('/api/result/archive', {
     method: 'POST',
     body: JSON.stringify({ simulation })
   })
 }
 
-export default load
+export default archive

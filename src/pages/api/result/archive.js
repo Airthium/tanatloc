@@ -1,11 +1,19 @@
-import route from '@/route/download'
+import route from '@/route/result/archive'
 
 /**
- * Download API
+ * Result archive API
  * @memberof module:pages/api
  * @param {Object} req Request
  * @param {Object} res Response
  */
 export default async (req, res) => {
   await route(req, res)
+}
+
+export const config = {
+  api: {
+    bodyParser: {
+      sizeLimit: '150mb'
+    }
+  }
 }

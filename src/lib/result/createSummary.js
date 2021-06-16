@@ -15,7 +15,7 @@ const createSummary = (simulation) => {
     storage.SIMULATION,
     simulation.id,
     'run',
-    'summary.txt'
+    summaryName
   )
 
   // Stream
@@ -29,9 +29,7 @@ const createSummary = (simulation) => {
   Object.keys(simulation.scheme.configuration).forEach((key) => {
     const config = simulation.scheme.configuration[key]
 
-    if (key === 'part') {
-      return
-    } else if (key === 'geometry') {
+    if (key === 'geometry') {
       geometrySummary(summary, config)
     } else if (key === 'materials') {
       materialsSummary(summary, config)
@@ -58,7 +56,7 @@ const createSummary = (simulation) => {
  */
 const geometrySummary = (stream, configuration) => {
   stream.write('Geometry:\n')
-  stream.write(' - ' + configuration.file.name + '\n\n')
+  stream.write(' - ' + configuration.value + '\n\n')
 }
 
 /**

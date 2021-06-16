@@ -3,7 +3,6 @@ Simulation:
 
 Rescale:
 - delete job & files after run and get data
-- real-time results
 
 Project:
 - archive

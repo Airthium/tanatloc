@@ -233,6 +233,7 @@ const Project = () => {
    */
   const selectGeometry = (id) => {
     onPanelClose()
+    setCurrentResult()
 
     const geometry = geometries.find((g) => g.id === id)
 
@@ -250,6 +251,8 @@ const Project = () => {
    */
   const selectSimulation = (id, type) => {
     onPanelClose()
+    if (type === 'materials' || type === 'boundaryConditions')
+      setCurrentResult()
 
     const simulation = simulations.find((s) => s.id === id)
     const configuration = simulation.scheme.configuration
@@ -502,6 +505,7 @@ const Project = () => {
             project={{
               id: project.id
             }}
+            simulation={currentSimulation}
             geometry={currentGeometry}
             result={currentResult}
           />

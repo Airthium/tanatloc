@@ -58,6 +58,7 @@ import { PartLoader } from '@/lib/three/loaders/PartLoader'
 
 import AvatarAPI from '@/api/avatar'
 import GeometryAPI from '@/api/geometry'
+import ResultAPI from '@/api/result'
 
 import { useSelector, useDispatch } from 'react-redux'
 import { highlight, select, unselect } from '@/store/select/action'
@@ -809,21 +810,22 @@ const ThreeView = ({ loading, project, part }) => {
  * View
  * @param {Object} Props props
  */
-const View = ({ project, geometry }) => {
+const View = ({ project, simulation, geometry, result }) => {
   // State
   const [part, setPart] = useState()
   const [loading, setLoading] = useState(false)
 
   // Part
   useEffect(() => {
-    if (geometry) loadPart(geometry)
-  }, [geometry])
+    if (simulation && result) loadPart(result, 'result')
+    else if (geometry) loadPart(geometry, 'geometry')
+  }, [simulation, geometry, result])
 
   /**
    * Load part
    * @param {Object} file File
    */
-  const loadPart = async (file) => {
+  const loadPart = async (file, type) => {
     setLoading(true)
     try {
       if (file.needCleanup) {
@@ -831,7 +833,14 @@ const View = ({ project, geometry }) => {
         setPart()
       } else {
         // Load
-        const partContent = await GeometryAPI.getPart({ id: geometry.id })
+
+        const partContent =
+          type === 'geometry'
+            ? await GeometryAPI.getPart({ id: file.id })
+            : await ResultAPI.load(
+                { id: simulation.id },
+                { originPath: file.originPath, glb: file.glb }
+              )
 
         if (partContent.error) {
           ErrorNotification('', partContent.message)

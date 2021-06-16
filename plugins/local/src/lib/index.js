@@ -336,10 +336,10 @@ const processOutput = async (simulationPath, task, update) => {
           let convertData = ''
           let convertError = ''
           await Tools.convert(
-            simulationPath,
+            path.join(simulationPath, 'run', 'result'),
             {
-              name: path.join('run/result', resFile),
-              target: path.join('run/result', partPath)
+              name: resFile,
+              target: partPath
             },
             ({ data, error }) => {
               data && (convertData += data)

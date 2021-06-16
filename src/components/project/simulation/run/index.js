@@ -27,7 +27,7 @@ import { Error as ErrorNotification } from '@/components/assets/notification'
 import CloudServer from './cloudServer'
 
 import SimulationAPI from '@/api/simulation'
-import DownloadAPI from '@/api/download'
+import ResultAPI from '@/api/result'
 
 /**
  * Errors simulation/run
@@ -57,7 +57,7 @@ const Run = ({ simulation, result, setResult, swr }) => {
   const [selectorsCurrent, setSelectorsCurrent] = useState([])
 
   const [results, setResults] = useState([])
-  const [steps, setSteps] = useState([]) //TODO
+  const [steps, setSteps] = useState([])
 
   const [downloading, setDownloading] = useState([])
   const [play, setPlay] = useState()
@@ -122,8 +122,7 @@ const Run = ({ simulation, result, setResult, swr }) => {
     const newSelectors = []
     currentSimulation.tasks.forEach((task, index) => {
       // Steps
-      console.log(task.index)
-      newSteps[task.index || index] = {
+      newSteps[task.index] = {
         label: task.label,
         status: task.status,
         log: task.log,
@@ -265,6 +264,7 @@ const Run = ({ simulation, result, setResult, swr }) => {
 
     // TODO
     // Update visualization
+    // const currentResult = currentConfiguration.run.currentResult // Use it
     // const currentPart = currentConfiguration.part
     // if (currentPart?.number !== undefined) {
     //   const newPart = newResult.files.find(
@@ -425,44 +425,6 @@ const Run = ({ simulation, result, setResult, swr }) => {
     setLogVisible(!logVisible)
   }
 
-  // /**
-  //  * Set part
-  //  * @param {Object} file File
-  //  */
-  // const setPart = async (file) => {
-  //   // Update local
-  //   currentConfiguration.part = file
-
-  //   try {
-  //     // Update simulation
-  //     if (file) {
-  //       await SimulationAPI.update({ id: simulation.id }, [
-  //         {
-  //           key: 'scheme',
-  //           type: 'json',
-  //           method: 'set',
-  //           path: ['configuration', 'part'],
-  //           value: file
-  //         }
-  //       ])
-  //     } else {
-  //       await SimulationAPI.update({ id: simulation.id }, [
-  //         {
-  //           key: 'scheme',
-  //           type: 'json',
-  //           method: 'erase',
-  //           path: ['configuration', 'part']
-  //         }
-  //       ])
-  //     }
-
-  //     // Mutate
-  //     swr.mutateOneSimulation(currentSimulation)
-  //   } catch (err) {
-  //     ErrorNotification(errors.updateError, err)
-  //   }
-  // }
-
   /**
    * On archive download
    */
@@ -470,7 +432,7 @@ const Run = ({ simulation, result, setResult, swr }) => {
     setDownloading([...downloading, 'archive'])
 
     try {
-      const archive = await DownloadAPI.get({ id: simulation.id }, null, true)
+      const archive = await ResultAPI.archive({ id: simulation.id })
       const content = await archive.blob()
 
       const url = window.URL.createObjectURL(new Blob([content]))
@@ -493,21 +455,24 @@ const Run = ({ simulation, result, setResult, swr }) => {
 
   /**
    * On download
-   * @param {Object} result Result
+   * @param {Object} file Result file
    */
-  const onDownload = async (result) => {
-    setDownloading([...downloading, result])
+  const onDownload = async (file) => {
+    setDownloading([...downloading, file])
 
     try {
-      const file = await DownloadAPI.get({ id: simulation.id }, result)
-      const content = await file.text()
+      const content = await ResultAPI.download(
+        { id: simulation.id },
+        { originPath: file.originPath, fileName: file.fileName }
+      )
+      const blob = await content.blob()
 
-      const url = window.URL.createObjectURL(new Blob([content]))
+      const url = window.URL.createObjectURL(new Blob([blob]))
       const link = document.createElement('a')
       link.href = url
       link.setAttribute(
         'download',
-        result.name + '.' + result.fileName.split('.').pop()
+        file.name + '.' + file.fileName.split('.').pop()
       )
       document.body.appendChild(link)
       link.click()
@@ -515,7 +480,7 @@ const Run = ({ simulation, result, setResult, swr }) => {
     } catch (err) {
       ErrorNotification(errors.downloadError, err)
     } finally {
-      const index = downloading.findIndex((d) => d === result)
+      const index = downloading.findIndex((d) => d === file.glb)
       setDownloading([
         ...downloading.slice(0, index),
         ...downloading.slice(index + 1)
@@ -608,44 +573,38 @@ const Run = ({ simulation, result, setResult, swr }) => {
                     toRender = [r]
                   }
                   // Render
-                  return toRender.map((result) => {
+                  return toRender.map((file) => {
                     return (
                       <Space
                         direction=""
-                        key={result.name}
+                        key={file.name}
                         style={{ alignItems: 'center' }}
                       >
                         <Button
                           icon={
-                            <EyeOutlined />
-                            // currentConfiguration?.part?.fileName ===
-                            //   result?.fileName &&
-                            // currentConfiguration?.part?.name ===
-                            //   result?.name ? (
-                            //   <EyeInvisibleOutlined />
-                            // ) : (
-                            //   <EyeOutlined />
-                            // )
+                            result?.fileName === file?.fileName &&
+                            result?.name === file?.name ? (
+                              <EyeOutlined />
+                            ) : (
+                              <EyeInvisibleOutlined />
+                            )
                           }
-                          onClick={
-                            () => {}
-                            // setPart(
-                            //   currentConfiguration?.part?.fileName ===
-                            //     result?.fileName &&
-                            //     currentConfiguration?.part?.name ===
-                            //       result?.name
-                            //     ? null
-                            //     : result
-                            // )
+                          onClick={() =>
+                            setResult(
+                              result?.fileName === file?.fileName &&
+                                result?.name === file?.name
+                                ? null
+                                : file
+                            )
                           }
                         />
                         <Button
-                          loading={downloading.find((d) => d === result)}
+                          loading={downloading.find((d) => d === file.glb)}
                           icon={<DownloadOutlined />}
                           size="small"
-                          onClick={() => onDownload(result)}
+                          onClick={() => onDownload(file)}
                         />
-                        {result.name}
+                        {file.name}
                       </Space>
                     )
                   })

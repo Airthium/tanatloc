@@ -501,10 +501,10 @@ const processResult = async (
     let convertData = ''
     let convertError = ''
     await Tools.convert(
-      simulationPath,
+      path.join(simulationPath, 'run', 'result'),
       {
-        name: path.join('run/result', resultFile),
-        target: path.join('run/result', partPath)
+        name: resultFile,
+        target: partPath
       },
       ({ data, error }) => {
         data && (convertData += data)
@@ -533,7 +533,7 @@ const processResult = async (
           originPath: resultPath,
           name: result.name,
           json: result.path,
-          glb: result.path + '.blg'
+          glb: result.path + '.glb'
         }))
       ]
 

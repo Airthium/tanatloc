@@ -71,10 +71,10 @@ const computeMesh = async (simulationPath, geometry, mesh, callback) => {
 
   // Convert mesh
   const three = await Tools.convert(
-    simulationPath,
+    path.join(simulationPath, mesh.path),
     {
-      name: path.join(mesh.path, mshFile),
-      target: path.join(mesh.path, partPath)
+      name: mshFile,
+      target: partPath
     },
     ({ data, error }) => callback({ data, error })
   )

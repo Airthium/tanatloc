@@ -24,4 +24,5 @@ const subscribe = (email, id) => {
   mailerSend.send(emailParams)
 }
 
-export default { subscribe }
+const Email = { subscribe }
+export default Email

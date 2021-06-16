@@ -21,4 +21,5 @@ const get = async (simulation, file) => {
   }
 }
 
-export default { get }
+const File = { get }
+export default File

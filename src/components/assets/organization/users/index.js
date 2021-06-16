@@ -22,6 +22,7 @@ const Users = ({ organization, swr }) => {
     {
       key: 'avatar',
       dataIndex: 'avatar',
+      // eslint-disable-next-line react/display-name
       render: (_, user) => Utils.userToAvatar(user)
     },
     {
@@ -46,6 +47,7 @@ const Users = ({ organization, swr }) => {
     {
       key: 'actions',
       title: 'Actions',
+      // eslint-disable-next-line react/display-name
       render: (owner) => (
         <Delete
           disabled={organization.owners.length < 2}
@@ -71,6 +73,7 @@ const Users = ({ organization, swr }) => {
     {
       key: 'actions',
       title: 'Actions',
+      // eslint-disable-next-line react/display-name
       render: (user) => (
         <Delete
           user={{

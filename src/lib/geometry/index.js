@@ -255,4 +255,5 @@ const readPart = async (geometry) => {
   }
 }
 
-export default { add, get, update, del, read, readPart }
+const Geometry = { add, get, update, del, read, readPart }
+export default Geometry

@@ -98,4 +98,5 @@ const del = async ({ id }, plugin) => {
   await User.update({ id }, [{ key: 'plugins', value: user.plugins }])
 }
 
-export default { add, getByUser, update, del }
+const Plugin = { add, getByUser, update, del }
+export default Plugin

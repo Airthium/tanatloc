@@ -43,33 +43,34 @@ const Users = ({ users, swr }) => {
       title: 'Plugins',
       dataIndex: 'authorizedplugins',
       key: 'authorizedplugins',
-      render: (plugins) => {
-        return (
-          <Space wrap={true}>
-            {plugins?.sort().map((key) => (
-              <Badge
-                key={key}
-                size="small"
-                count={Plugins[key].category}
-                offset={[5, -5]}
-              >
-                {Plugins[key].name}
-              </Badge>
-            ))}
-          </Space>
-        )
-      }
+      // eslint-disable-next-line react/display-name
+      render: (plugins) => (
+        <Space wrap={true}>
+          {plugins?.sort().map((key) => (
+            <Badge
+              key={key}
+              size="small"
+              count={Plugins[key].category}
+              offset={[5, -5]}
+            >
+              {Plugins[key].name}
+            </Badge>
+          ))}
+        </Space>
+      )
     },
     {
       title: 'Administrator',
       dataIndex: 'superuser',
       key: 'superuser',
+      // eslint-disable-next-line react/display-name
       render: (superuser) =>
         superuser && <CheckOutlined style={{ color: 'green' }} />
     },
     {
       title: 'Actions',
       key: 'actions',
+      // eslint-disable-next-line react/display-name
       render: (_, record) => (
         <Space direction="">
           <Edit user={record} swr={{ mutateOneUser: swr.mutateOneUser }} />

@@ -103,26 +103,17 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
 
   // Create tasks
   const tasks = []
-  const simulationTask = {
-    index: -1,
-    label: 'Simulation',
-    log: '',
-    warning: '',
-    error: '',
-    status: 'wait'
-  }
-  tasks.push(simulationTask)
-  updateTasks(id, tasks)
 
   // Meshing
+  let taskIndex = 0
   await Promise.all(
-    Object.keys(configuration).map(async (ckey, index) => {
+    Object.keys(configuration).map(async (ckey) => {
       if (configuration[ckey].meshable) {
         const geometry = configuration[ckey]
 
         // Task
         const meshingTask = {
-          index: index,
+          index: taskIndex++,
           label: 'Mesh',
           log: '',
           warning: '',
@@ -206,6 +197,17 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
       }
     })
   )
+
+  const simulationTask = {
+    index: taskIndex++,
+    label: 'Simulation',
+    log: '',
+    warning: '',
+    error: '',
+    status: 'wait'
+  }
+  tasks.push(simulationTask)
+  updateTasks(id, tasks)
 
   try {
     // Build the simulation script

@@ -24,6 +24,7 @@ const List = ({ user, organizations, swr, setOrganization }) => {
       title: 'Administrators',
       dataIndex: 'owners',
       key: 'owners',
+      // eslint-disable-next-line react/display-name
       render: (owners) => (
         <Avatar.Group maxCount={5}>
           {owners?.map((o) => Utils.userToAvatar(o))}
@@ -34,6 +35,7 @@ const List = ({ user, organizations, swr, setOrganization }) => {
       title: 'Users',
       dataIndex: 'users',
       key: 'users',
+      // eslint-disable-next-line react/display-name
       render: (users) => (
         <Avatar.Group maxCount={5}>
           {users?.map((u) => Utils.userToAvatar(u))}
@@ -44,6 +46,7 @@ const List = ({ user, organizations, swr, setOrganization }) => {
       title: 'Groups',
       dataIndex: 'groups',
       key: 'groups',
+      // eslint-disable-next-line react/display-name
       render: (groups) => (
         <Avatar.Group maxCount={5}>
           {groups?.map((g) => Utils.groupToAvatar(g))}
@@ -53,6 +56,7 @@ const List = ({ user, organizations, swr, setOrganization }) => {
     {
       title: 'Actions',
       key: 'actions',
+      // eslint-disable-next-line react/display-name
       render: (org) => {
         if (org.owners.find((o) => o.id === user.id))
           return (

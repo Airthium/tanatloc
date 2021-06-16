@@ -70,6 +70,7 @@ const Groups = ({ organization, swr }) => {
       title: 'Users',
       dataIndex: 'users',
       key: 'users',
+      // eslint-disable-next-line react/display-name
       render: (u) => (
         <Avatar.Group maxCount={5}>
           {u.map((user) => Utils.userToAvatar(user))}
@@ -79,6 +80,7 @@ const Groups = ({ organization, swr }) => {
     {
       title: 'Actions',
       key: 'actions',
+      // eslint-disable-next-line react/display-name
       render: (_, group) => (
         <Space direction="">
           <Group

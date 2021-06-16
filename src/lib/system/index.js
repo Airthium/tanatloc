@@ -18,4 +18,5 @@ const update = async (items) => {
   return SystemDB.update(items)
 }
 
-export default { get, update }
+const System = { get, update }
+export default System

@@ -123,6 +123,7 @@ const ProjectList = ({
               headStyle={{ height: 80, padding: '0 24px' }}
               actions={[
                 <Delete
+                  key="delete"
                   disabled={!project?.owners?.find((o) => o.id === user?.id)}
                   workspace={{
                     projects: workspace.projects
@@ -137,6 +138,7 @@ const ProjectList = ({
                   }}
                 />,
                 <Share
+                  key="share"
                   disabled={!project?.owners?.find((o) => o.id === user?.id)}
                   project={{
                     id: project.id,
@@ -146,6 +148,7 @@ const ProjectList = ({
                   swr={{ mutateOneProject: swr.mutateOneProject }}
                 />,
                 <Edit
+                  key="edit"
                   disabled={!project?.owners?.find((o) => o.id === user?.id)}
                   project={{
                     id: project.id,

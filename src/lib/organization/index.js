@@ -222,4 +222,5 @@ const del = async (organization) => {
   await OrganizationDB.del(organization)
 }
 
-export default { add, get, getByUser, update, del }
+const Organization = { add, get, getByUser, update, del }
+export default Organization

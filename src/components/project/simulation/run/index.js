@@ -122,6 +122,7 @@ const Run = ({ simulation, result, setResult, swr }) => {
     const newSelectors = []
     currentSimulation.tasks.forEach((task, index) => {
       // Steps
+      console.log(task.index)
       newSteps[task.index || index] = {
         label: task.label,
         status: task.status,

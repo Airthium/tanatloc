@@ -107,4 +107,5 @@ const del = async (parent, type, id) => {
   await AvatarDB.del(id)
 }
 
-export default { add, read, get, del }
+const Avatar = { add, read, get, del }
+export default Avatar

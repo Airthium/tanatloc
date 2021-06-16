@@ -100,10 +100,11 @@ const groupToAvatar = (group) => {
   )
 }
 
-export default {
+const Utils = {
   stringToColor,
   rgbToHex,
   rgbToRgba,
   userToAvatar,
   groupToAvatar
 }
+export default Utils

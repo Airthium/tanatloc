@@ -118,4 +118,5 @@ const del = async (user) => {
   await UserDB.del(user)
 }
 
-export default { login, add, get, getBy, getAll, update, del }
+const User = { login, add, get, getBy, getAll, update, del }
+export default User

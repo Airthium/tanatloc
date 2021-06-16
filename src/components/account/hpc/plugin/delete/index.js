@@ -54,7 +54,7 @@ const Delete = ({ plugin, swr }) => {
         onOk={onDelete}
         loading={loading}
       >
-        Delete "{plugin?.configuration?.name?.value || 'plugin'}"?
+        Delete &ldquo;{plugin?.configuration?.name?.value || 'plugin'}&rdquo;?
       </DeleteDialog>
       <Button type="danger" loading={loading} onClick={() => setVisible(true)}>
         Delete

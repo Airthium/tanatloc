@@ -90,4 +90,5 @@ const createReadStream = (simulation, file) => {
   )
 }
 
-export default { createArchiveStream, createReadStream }
+const Download = { createArchiveStream, createReadStream }
+export default Download

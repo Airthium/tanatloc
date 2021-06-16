@@ -159,7 +159,7 @@ const removeDirectory = async (dir) => {
   await fs.rm(dir, { recursive: true })
 }
 
-export default {
+const Tools = {
   createPath,
   listFiles,
   writeFile,
@@ -170,3 +170,4 @@ export default {
   removeFile,
   removeDirectory
 }
+export default Tools

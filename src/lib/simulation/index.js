@@ -245,4 +245,5 @@ const stop = async ({ id }) => {
   ])
 }
 
-export default { add, get, update, del, run, stop }
+const Simulation = { add, get, update, del, run, stop }
+export default Simulation

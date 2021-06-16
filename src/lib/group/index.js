@@ -187,4 +187,5 @@ const del = async (group) => {
   await GroupDB.del(group)
 }
 
-export default { add, get: getWithFill, getAll, getByOrganization, update, del }
+const Group = { add, get: getWithFill, getAll, getByOrganization, update, del }
+export default Group

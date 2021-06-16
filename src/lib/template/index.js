@@ -63,4 +63,5 @@ const render = async (key, parameters, save) => {
   return script
 }
 
-export default { render }
+const Template = { render }
+export default Template

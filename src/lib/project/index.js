@@ -197,4 +197,5 @@ const del = async ({ id }, project) => {
   ])
 }
 
-export default { add, get, update, del }
+const Project = { add, get, update, del }
+export default Project

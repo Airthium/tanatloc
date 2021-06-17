@@ -6,8 +6,8 @@ import route from '@/route/geometry/[id]'
  * @param {Object} req Request
  * @param {Object} res Response
  */
-const _id = async (req, res) => {
+const _id_ = async (req, res) => {
   await route(req, res)
 }
 
-export default _id
+export default _id_

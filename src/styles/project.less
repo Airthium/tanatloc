@@ -22,8 +22,32 @@
 }
 
 .project-card {
+  display: flex;
+  flex-direction: column;
   width: 260px;
   height: 412px;
+}
+
+.project-card .ant-card-head {
+  height: 80px;
+  padding: 0 24px;
+}
+
+.project-card .ant-card-cover {
+  flex: 1 0 auto;
+  display: flex;
+  align-items: center;
+}
+
+.project-card .ant-card-body {
+  height: 70px;
+  border-top: 1px solid #f0f0f0;
+  padding: 0 24px;
+}
+
+.project-card .ant-card-actions > li {
+  margin: 8px 0;
+  flex: 0 1 auto;
 }
 
 .project-card .ant-card-head-title {

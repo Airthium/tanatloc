@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import PropTypes from 'prop-types'
-import { Spin } from 'antd'
+import { Space, Spin } from 'antd'
 
 import { Error } from '@/components/assets/notification'
 
@@ -46,14 +46,14 @@ const Plugin = ({ plugin }) => {
   return loadingPlugins ? (
     <Spin />
   ) : (
-    <>
+    <Space direction="vertical">
       <PluginDialog plugin={plugin} swr={{ addOnePlugin }} />
       <List
         plugin={plugin}
         plugins={plugins}
         swr={{ delOnePlugin, mutateOnePlugin }}
       />
-    </>
+    </Space>
   )
 }
 

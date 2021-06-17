@@ -79,6 +79,8 @@ describe('components/project/data', () => {
     // Checkbox
     const checkboxes = screen.getAllByRole('checkbox')
     fireEvent.click(checkboxes[0])
+    fireEvent.click(checkboxes[1])
+    fireEvent.click(checkboxes[0])
 
     unmount()
   })

@@ -90,17 +90,14 @@ describe('components/project/share', () => {
     unmount()
   })
 
-  test('onSelectChange', () => {
+  test('onSelectChange', async () => {
     mockDialog.mockImplementation((props) => <div>{props.children}</div>)
     const { unmount } = render(
       <Share project={project} organizations={organizations} swr={projectSwr} />
     )
 
-    const button = screen.getByRole('button')
-    fireEvent.click(button)
-
-    const group = screen.getByText('group name')
-    fireEvent.click(group)
+    const close = screen.getByLabelText('close')
+    fireEvent.click(close)
 
     unmount()
   })

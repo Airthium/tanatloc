@@ -1,8 +1,9 @@
 import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
-import { Button, Form, Input, Select } from 'antd'
+import { Form, Input, Select } from 'antd'
 import { v4 as uuid } from 'uuid'
 
+import { AddButton, EditButton } from '@/components/assets/button'
 import Dialog from '@/components/assets/dialog'
 import { Error } from '@/components/assets/notification'
 
@@ -191,9 +192,13 @@ const PluginDialog = ({ plugin, swr, edit }) => {
           else if (item.type === 'select') return selectItem(item, key)
         })}
       </Dialog>
-      <Button type="primary" onClick={() => setVisible(true)}>
-        {edit ? 'Edit' : 'Add'}
-      </Button>
+      {edit ? (
+        <EditButton onEdit={() => setVisible(true)}>Edit</EditButton>
+      ) : (
+        <AddButton onAdd={() => setVisible(true)}>
+          Add a new «{plugin.name}» configuration
+        </AddButton>
+      )}
     </>
   )
 }

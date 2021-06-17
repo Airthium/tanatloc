@@ -50,13 +50,13 @@ const Account = ({ user, swr }) => {
       <Layout.Content>
         <Tabs defaultActiveKey={tab || 'personal'} onChange={onChange}>
           <Tabs.TabPane tab="Personal Information" key="personal">
-            <Space direction="vertical">
+            <Space direction="vertical" style={{ width: '100%' }}>
               <Information user={user} swr={{ mutateUser: swr.mutateUser }} />
               <Delete swr={{ mutateUser: swr.mutateUser }} />
             </Space>
           </Tabs.TabPane>
           <Tabs.TabPane tab="Security" key="security">
-            <Space direction="vertical">
+            <Space direction="vertical" style={{ width: '100%' }}>
               <Password user={user} />
             </Space>
           </Tabs.TabPane>

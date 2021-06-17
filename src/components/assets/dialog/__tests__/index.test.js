@@ -56,6 +56,16 @@ describe('components/assets/dialog', () => {
     unmount()
   })
 
+  test('without onOk & onCancel', () => {
+    const { unmount } = render(
+      <Dialog title="title" visible={false} loading={false}>
+        Test
+      </Dialog>
+    )
+
+    unmount()
+  })
+
   test('onCancel', () => {
     const { unmount } = render(
       <Dialog

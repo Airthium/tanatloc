@@ -268,9 +268,13 @@ const Dashboard = () => {
                 {myWorkspaces?.map((workspace) => (
                   <Menu.Item key={workspace.id}>{workspace.name}</Menu.Item>
                 ))}
-                <li id="add-workspace-button">
-                  <Add key="add" swr={{ addOneWorkspace }} />
-                </li>
+                <Menu.Item
+                  key="add"
+                  disabled={true}
+                  style={{ cursor: 'unset' }}
+                >
+                  <Add swr={{ addOneWorkspace }} />
+                </Menu.Item>
               </Menu.SubMenu>
               <Menu.SubMenu
                 key={menuItems.shared.key}

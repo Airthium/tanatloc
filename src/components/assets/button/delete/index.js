@@ -27,7 +27,7 @@ const DeleteButton = ({ disabled, loading, text, children, onDelete }) => {
       >
         {text || 'Are you sure?'}
       </DeleteDialog>
-      <Tooltip title="Delete">
+      <Tooltip title={children || 'Delete'}>
         <Button
           disabled={disabled}
           loading={loading}

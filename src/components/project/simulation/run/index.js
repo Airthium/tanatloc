@@ -454,7 +454,7 @@ const Run = ({ simulation, result, setResult, swr }) => {
    * @param {Object} file Result file
    */
   const onDownload = async (file) => {
-    setDownloading([...downloading, file])
+    setDownloading([...downloading, file.glb])
 
     try {
       const content = await ResultAPI.download(

@@ -113,7 +113,10 @@ const Parameters = ({ simulation, swr }) => {
             <Select
               options={child.options}
               defaultValue={child.value || child.default}
-              onChange={(value) => onChange(key, index, value)}
+              onChange={(value) => {
+                console.log(value)
+                onChange(key, index, value)
+              }}
             />
           </Typography.Text>
         )

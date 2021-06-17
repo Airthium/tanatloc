@@ -99,13 +99,13 @@ describe('components/project/simulation/parameters', () => {
     mockUpdate.mockImplementation(() => {})
 
     // Open advanced
-    const open = screen.getByRole('button')
+    const open = screen.getByRole('button', { name: 'right Advanced' })
     fireEvent.click(open)
 
-    // TODO
-    // // Select
-    // const select = screen.getByRole('combobox')
-    // fireEvent.change(select, { target: { value: 'option2' } })
+    // select
+    // const select = screen.getByRole('Select')
+    // fireEvent.click(select)
+
     // await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(4))
 
     unmount()

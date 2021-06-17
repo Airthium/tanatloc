@@ -118,7 +118,7 @@ const Geometry = ({ project, geometry, swr, close }) => {
     return (
       <Layout>
         <Layout.Content>
-          <Space direction="vertical">
+          <Space direction="vertical" style={{ width: '100%' }}>
             <Typography.Title level={5}>Informations</Typography.Title>
             <Typography.Text>File: {geometry.name} </Typography.Text>
             <Typography.Text>
@@ -152,7 +152,7 @@ const Geometry = ({ project, geometry, swr, close }) => {
             <Divider type="horizontal" />
 
             <Space
-              direction=""
+              direction="horizontal"
               style={{ width: '100%', justifyContent: 'space-around' }}
             >
               <DownloadButton loading={downloading} onDownload={onDownload} />

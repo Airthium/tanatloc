@@ -151,7 +151,12 @@ describe('components/project/geometry', () => {
 
   test('onDelete', async () => {
     const { unmount } = render(
-      <Geometry project={project} geometry={geometry} swr={swr} close={close} />
+      <Geometry
+        project={{ geometries: [{}] }}
+        geometry={geometry}
+        swr={swr}
+        close={close}
+      />
     )
 
     const button = screen.getByRole('DeleteButton')

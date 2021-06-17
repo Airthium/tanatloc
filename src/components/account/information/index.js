@@ -1,18 +1,9 @@
 import PropTypes from 'prop-types'
 import { useState } from 'react'
-import {
-  notification,
-  Avatar,
-  Button,
-  Card,
-  Form,
-  Input,
-  Space,
-  Upload
-} from 'antd'
+import { Avatar, Button, Card, Form, Input, Space, Upload } from 'antd'
 import { UploadOutlined, UserOutlined } from '@ant-design/icons'
 
-import { Error } from '@/components/assets/notification'
+import { Error as ErrorNotification } from '@/components/assets/notification'
 
 import UserAPI from '@/api/user'
 import AvatarAPI from '@/api/avatar'
@@ -22,7 +13,7 @@ import AvatarAPI from '@/api/avatar'
  * @memberof module:components/account
  */
 const errors = {
-  updateError: 'Unable to update informations',
+  update: 'Unable to update informations',
   badFormat: 'Supported format: jpg, png',
   badSize: 'Image must be smaller than 5MB'
 }
@@ -42,15 +33,19 @@ const Information = ({ user, swr }) => {
 
   // Layout
   const layout = {
+    layout: 'vertical',
     labelCol: { span: 4 },
     wrapperCol: { span: 16 }
   }
   const avatarLayout = {
-    wrapperCol: { offset: 8, span: 8 }
-  }
-
-  const buttonLayout = {
     wrapperCol: { offset: 4, span: 16 }
+  }
+  const inputLayout = {
+    labelCol: { offset: 4 },
+    wrapperCol: { offset: 4, span: 16 }
+  }
+  const buttonLayout = {
+    wrapperCol: { offset: 4 }
   }
 
   /**
@@ -82,7 +77,7 @@ const Information = ({ user, swr }) => {
         }
       })
     } catch (err) {
-      Error(errors.updateError, err)
+      ErrorNotification(errors.update, err)
     } finally {
       setLoading(false)
     }
@@ -101,10 +96,10 @@ const Information = ({ user, swr }) => {
    */
   const beforeUpload = (file) => {
     const goodFormat = file.type === 'image/jpeg' || file.type === 'image/png'
-    if (!goodFormat) notification.error({ message: errors.badFormat })
+    if (!goodFormat) ErrorNotification(errors.badFormat)
 
     const goodSize = file.size / 1024 / 1024 < 5
-    if (!goodSize) notification.error({ message: errors.badSize })
+    if (!goodSize) ErrorNotification(errors.badSize)
 
     return goodFormat && goodSize
   }
@@ -138,7 +133,7 @@ const Information = ({ user, swr }) => {
           }
         })
       } catch (err) {
-        Error(err.message, err)
+        ErrorNotification(err.message, err)
       } finally {
         setUploading(false)
       }
@@ -174,53 +169,49 @@ const Information = ({ user, swr }) => {
         }}
         onFinish={onFinish}
       >
-        <Space>
-          <Form.Item {...avatarLayout}>
-            <Space direction="vertical" className="Account-avatar">
-              <Avatar
-                size={128}
-                src={user.avatar && Buffer.from(user.avatar).toString()}
-                icon={<UserOutlined />}
-              />
-              <Upload
-                accept={'.jpg,.png'}
-                showUploadList={false}
-                beforeUpload={beforeUpload}
-                onChange={onChange}
+        <Form.Item {...avatarLayout}>
+          <Space direction="vertical" className="Account-avatar">
+            <Avatar
+              size={128}
+              src={user.avatar && Buffer.from(user.avatar).toString()}
+              icon={<UserOutlined />}
+            />
+            <Upload
+              accept={'.jpg,.png'}
+              showUploadList={false}
+              beforeUpload={beforeUpload}
+              onChange={onChange}
+            >
+              <Button
+                size="small"
+                icon={<UploadOutlined />}
+                loading={uploading}
               >
-                <Button
-                  size="small"
-                  icon={<UploadOutlined />}
-                  loading={uploading}
-                >
-                  Upload new
-                </Button>
-              </Upload>
-            </Space>
-          </Form.Item>
+                Upload new
+              </Button>
+            </Upload>
+          </Space>
+        </Form.Item>
 
-          <div>
-            <Form.Item label="Email" name="email">
-              <Input />
-            </Form.Item>
-            <Form.Item label="First name" name="firstname">
-              <Input />
-            </Form.Item>
-            <Form.Item label="Last name" name="lastname">
-              <Input />
-            </Form.Item>
-            <Form.Item {...buttonLayout}>
-              <Space direction="">
-                <Button type="primary" htmlType="submit" loading={loading}>
-                  Apply changes
-                </Button>
-                <Button type="text" onClick={onCancel}>
-                  Cancel
-                </Button>
-              </Space>
-            </Form.Item>
-          </div>
-        </Space>
+        <Form.Item {...inputLayout} label="Email" name="email">
+          <Input />
+        </Form.Item>
+        <Form.Item {...inputLayout} label="First name" name="firstname">
+          <Input />
+        </Form.Item>
+        <Form.Item {...inputLayout} label="Last name" name="lastname">
+          <Input />
+        </Form.Item>
+        <Form.Item {...buttonLayout}>
+          <Space direction="">
+            <Button type="primary" htmlType="submit" loading={loading}>
+              Apply changes
+            </Button>
+            <Button type="text" onClick={onCancel}>
+              Cancel
+            </Button>
+          </Space>
+        </Form.Item>
       </Form>
     </Card>
   )

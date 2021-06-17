@@ -27,6 +27,8 @@ const errors = {
  * - style: Style of the form item (default: none)
  */
 const PasswordItem = ({
+  labelCol,
+  wrapperCol,
   name,
   label,
   inputPlaceholder,
@@ -80,6 +82,8 @@ const PasswordItem = ({
    */
   return (
     <Form.Item
+      labelCol={labelCol}
+      wrapperCol={wrapperCol}
       name={name || 'password'}
       label={label || 'Password'}
       rules={[
@@ -117,6 +121,8 @@ const PasswordItem = ({
 }
 
 PasswordItem.propTypes = {
+  labelCol: PropTypes.object,
+  wrapperCol: PropTypes.object,
   name: PropTypes.string,
   label: PropTypes.string,
   inputPlaceholder: PropTypes.string,

@@ -12,7 +12,7 @@ const EditButton = ({ disabled, loading, children, onEdit }) => {
    * Render
    */
   return (
-    <Tooltip title="Edit">
+    <Tooltip title={children || 'Edit'}>
       <Button
         disabled={disabled}
         loading={loading}

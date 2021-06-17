@@ -1,8 +1,7 @@
 import PropTypes from 'prop-types'
 import { useState } from 'react'
-import { Button } from 'antd'
 
-import { DeleteDialog } from '@/components/assets/dialog'
+import { DeleteButton } from '@/components/assets/button'
 import { Error } from '@/components/assets/notification'
 
 import PluginAPI from '@/api/plugin'
@@ -20,7 +19,6 @@ const errors = {
  */
 const Delete = ({ plugin, swr }) => {
   // State
-  const [visible, setVisible] = useState(false)
   const [loading, setLoading] = useState(false)
 
   /**
@@ -46,20 +44,15 @@ const Delete = ({ plugin, swr }) => {
    * Render
    */
   return (
-    <>
-      <DeleteDialog
-        title="Delete plugin"
-        visible={visible}
-        onCancel={() => setVisible(false)}
-        onOk={onDelete}
-        loading={loading}
-      >
-        Delete &ldquo;{plugin?.configuration?.name?.value || 'plugin'}&rdquo;?
-      </DeleteDialog>
-      <Button type="danger" loading={loading} onClick={() => setVisible(true)}>
-        Delete
-      </Button>
-    </>
+    <DeleteButton
+      loading={loading}
+      text={
+        'Delete "' + (plugin?.configuration?.name?.value || 'plugin') + '"?'
+      }
+      onDelete={onDelete}
+    >
+      Delete
+    </DeleteButton>
   )
 }
 

@@ -257,7 +257,9 @@ window.setTimeout = (callback) => {
 
 describe('components/project/view', () => {
   const project = {}
+  const simulation = {}
   const geometry = {}
+  const result = {}
 
   beforeEach(() => {
     mockError.mockReset()
@@ -266,6 +268,9 @@ describe('components/project/view', () => {
 
     mockGet.mockReset()
     mockGet.mockImplementation(() => ({}))
+
+    mockResultLoad.mockReset()
+    mockResultLoad.mockImplementation(() => ({}))
 
     mockEnabled.mockReset()
   })
@@ -313,6 +318,21 @@ describe('components/project/view', () => {
     const { unmount } = render(<View project={project} geometry={geometry} />)
 
     await waitFor(() => expect(mockGet).toHaveBeenCalledTimes(1))
+
+    unmount()
+  })
+
+  test('with result', async () => {
+    const { unmount } = render(
+      <View
+        project={project}
+        simulation={simulation}
+        geometry={geometry}
+        result={result}
+      />
+    )
+
+    await waitFor(() => expect(mockResultLoad).toHaveBeenCalledTimes(1))
 
     unmount()
   })
@@ -385,142 +405,35 @@ describe('components/project/view', () => {
     unmount()
   })
 
-  // test('drawers', () => {
-  //   act(() => {
-  //     const event = {}
-  //     wrapper.find('Drawer').forEach((drawer) => {
-  //       if (drawer.props().onClose) drawer.props().onClose(event)
-  //     })
-  //   })
-  // })
-  // test('resize', () => {
-  //   window.dispatchEvent(new Event('resize'))
-  // })
-  // test('pixelRatio', () => {
-  //   wrapper.unmount()
-  //   window.devicePixelRatio = undefined
-  //   wrapper = mount(<View setPartSummary={jest.fn()} />)
-  // })
-  // test('grid visible', () => {
-  //   wrapper.find('Switch').at(0).props().onChange(true)
-  //   wrapper.find('Switch').at(0).props().onChange(false)
-  // })
-  // test('transparent', () => {
-  //   wrapper.find('Switch').at(3).props().onChange(true)
-  //   wrapper.find('Switch').at(3).props().onChange(false)
-  // })
-  // test('sectionView', () => {
-  //   wrapper.unmount()
-  //   mockState = true
-  //   wrapper = mount(<View setPartSummary={jest.fn()} />)
-  //   wrapper.find('Button').forEach((button) => {
-  //     if (button.props().onClick) button.props().onClick()
-  //   })
-  // })
-  // test('selection', () => {
-  //   wrapper.find('Button').forEach((button) => {
-  //     if (button.props().onClick) button.props().onClick()
-  //   })
-  //   mockSelectionEnabled.mockImplementation(() => true)
-  //   wrapper.find('Button').forEach((button) => {
-  //     if (button.props().onClick) button.props().onClick()
-  //   })
-  // })
-  // test('handleTransform', () => {
-  //   wrapper.unmount()
-  //   mockState = true
-  //   wrapper = mount(<View setPartSummary={jest.fn()} />)
-  //   wrapper
-  //     .find('.ant-radio-group')
-  //     .parent()
-  //     .props()
-  //     .onChange({
-  //       target: {
-  //         value: 'value'
-  //       }
-  //     })
-  // })
-  // test('effect', () => {
-  //   wrapper.unmount()
-  //   const setPartSummary = jest.fn()
-  //   mockGet.mockImplementation(() => {
-  //     throw new Error()
-  //   })
-  //   wrapper = mount(
-  //     <View
-  //       simulation={{
-  //         part: {}
-  //       }}
-  //       setPartSummary={setPartSummary}
-  //     />
-  //   )
-  //   wrapper.unmount()
-  //   mockGet.mockImplementation(() => ({ error: true }))
-  //   wrapper = mount(
-  //     <View
-  //       simulation={{
-  //         part: {}
-  //       }}
-  //       setPartSummary={setPartSummary}
-  //     />
-  //   )
-  //   wrapper.unmount()
-  //   mockGet.mockImplementation(() => ({}))
-  //   wrapper = mount(
-  //     <View
-  //       simulation={{
-  //         part: {}
-  //       }}
-  //       setPartSummary={setPartSummary}
-  //     />
-  //   )
-  //   wrapper.unmount()
-  //   mockGet.mockImplementation(() => ({
-  //     solids: [
-  //       {
-  //         buffer:
-  //           '{ "uuid": "uuid", "data": { "attributes": { "color": { "array": [0, 0, 1] } } } }'
-  //       }
-  //     ],
-  //     faces: [
-  //       {
-  //         buffer:
-  //           '{ "uuid": "uuid", "data": { "attributes": { "color": { "array": [0, 0, 1] } } } }'
-  //       }
-  //     ],
-  //     edges: [
-  //       {
-  //         buffer:
-  //           '{ "uuid": "uuid", "data": { "attributes": { "color": { "array": [0, 0, 1] } } } }'
-  //       }
-  //     ]
-  //   }))
-  //   wrapper = mount(
-  //     <View
-  //       simulation={{
-  //         part: {}
-  //       }}
-  //       setPartSummary={setPartSummary}
-  //     />
-  //   )
-  //   wrapper.unmount()
-  //   wrapper = mount(
-  //     <View
-  //       simulation={{
-  //         part: { needCleanup: true }
-  //       }}
-  //       setPartSummary={setPartSummary}
-  //     />
-  //   )
-  //   wrapper.unmount()
-  //   mockEnabled.mockImplementation(() => true)
-  //   wrapper = mount(
-  //     <View
-  //       simulation={{
-  //         part: {}
-  //       }}
-  //       setPartSummary={setPartSummary}
-  //     />
-  //   )
-  // })
+  test('selection enabled', async () => {
+    mockEnabled.mockImplementation(() => true)
+    const { unmount } = render(<View project={project} geometry={geometry} />)
+
+    await waitFor(() => expect(mockGet).toHaveBeenCalledTimes(1))
+
+    unmount()
+  })
+
+  test('sectionView', () => {
+    const { unmount } = render(<View project={project} />)
+
+    // Activate
+    const sectionView = screen.getByRole('button', { name: 'scissor' })
+    fireEvent.click(sectionView)
+
+    const stop = screen.getByRole('button', { name: 'stop' })
+    fireEvent.click(stop)
+
+    unmount()
+  })
+
+  test('selectionHelper', () => {
+    mockSelectionEnabled.mockImplementation(() => true)
+    const { unmount } = render(<View project={project} />)
+
+    const selection = screen.getByRole('button', { name: 'select' })
+    fireEvent.click(selection)
+
+    unmount()
+  })
 })

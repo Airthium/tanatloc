@@ -53,7 +53,7 @@ const Add = ({ swr }) => {
   return (
     <>
       <Button onClick={() => setVisible(true)} icon={<PlusCircleOutlined />}>
-        Create a new workspace
+        New workspace
       </Button>
       <Dialog
         title="Create a new workspace"

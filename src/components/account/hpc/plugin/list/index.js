@@ -44,12 +44,12 @@ const List = ({ plugin, plugins, swr }) => {
             )
           })}
           <Space direction="">
+            <Delete plugin={p} swr={{ delOnePlugin: swr.delOnePlugin }} />
             <PluginDialog
               plugin={p}
               swr={{ mutateOnePlugin: swr.mutateOnePlugin }}
               edit={true}
             />
-            <Delete plugin={p} swr={{ delOnePlugin: swr.delOnePlugin }} />
           </Space>
         </Card>
       )

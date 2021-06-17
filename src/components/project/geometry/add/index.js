@@ -85,7 +85,7 @@ const Add = ({ visible, project, swr, setVisible }) => {
       onCancel={() => setVisible(false)}
       okButtonProps={{ style: { display: 'none' } }}
     >
-      <Space direction="vertical">
+      <Space direction="vertical" style={{ width: '100%' }}>
         <Typography.Title level={5}>
           <b>Upload a geometry</b>
         </Typography.Title>

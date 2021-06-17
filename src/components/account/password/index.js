@@ -28,11 +28,16 @@ const Password = ({ user }) => {
 
   // Layout
   const layout = {
-    labelCol: { span: 8 },
-    wrapperCol: { span: 8 }
+    layout: 'vertical',
+    labelCol: { span: 4 },
+    wrapperCol: { span: 16 }
+  }
+  const inputLayout = {
+    labelCol: { offset: 4 },
+    wrapperCol: { offset: 4, span: 16 }
   }
   const buttonLayout = {
-    wrapperCol: { offset: 8, span: 8 }
+    wrapperCol: { offset: 4 }
   }
 
   /**
@@ -84,6 +89,7 @@ const Password = ({ user }) => {
         name="passwordForm"
       >
         <Form.Item
+          {...inputLayout}
           label="Current password"
           name="password"
           rules={[
@@ -95,8 +101,13 @@ const Password = ({ user }) => {
         >
           <Input.Password />
         </Form.Item>
-        <PasswordItem name="newPassword" label="New password" />
+        <PasswordItem
+          {...inputLayout}
+          name="newPassword"
+          label="New password"
+        />
         <Form.Item
+          {...inputLayout}
           label="Password confirmation"
           name="passwordConfirm"
           rules={[

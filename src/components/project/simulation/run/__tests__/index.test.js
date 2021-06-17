@@ -53,6 +53,8 @@ describe('components/project/simulation/run', () => {
       }
     }
   }
+  const result = {}
+  const setResult = jest.fn()
   const swr = { mutateOneSimulation: jest.fn() }
 
   beforeEach(() => {
@@ -94,7 +96,14 @@ describe('components/project/simulation/run', () => {
   })
 
   test('render', () => {
-    const { unmount } = render(<Run simulation={simulation} swr={swr} />)
+    const { unmount } = render(
+      <Run
+        simulation={simulation}
+        result={result}
+        setResult={setResult}
+        swr={swr}
+      />
+    )
 
     unmount()
   })
@@ -121,6 +130,8 @@ describe('components/project/simulation/run', () => {
             }
           }
         }}
+        result={result}
+        setResult={setResult}
         swr={swr}
       />
     )
@@ -138,7 +149,14 @@ describe('components/project/simulation/run', () => {
       ]
     }
     mockSimulation.mockImplementation(() => data)
-    const { unmount } = render(<Run simulation={simulation} swr={swr} />)
+    const { unmount } = render(
+      <Run
+        simulation={simulation}
+        result={result}
+        setResult={setResult}
+        swr={swr}
+      />
+    )
 
     unmount()
   })
@@ -149,7 +167,14 @@ describe('components/project/simulation/run', () => {
       tasks: undefined
     }
     mockSimulation.mockImplementation(() => data)
-    const { unmount } = render(<Run simulation={simulation} swr={swr} />)
+    const { unmount } = render(
+      <Run
+        simulation={simulation}
+        result={result}
+        setResult={setResult}
+        swr={swr}
+      />
+    )
 
     unmount()
   })
@@ -159,19 +184,25 @@ describe('components/project/simulation/run', () => {
       scheme: {}
     }
     mockSimulation.mockImplementation(() => data)
-    const { unmount } = render(<Run simulation={{}} swr={swr} />)
+    const { unmount } = render(
+      <Run simulation={{}} result={result} setResult={setResult} swr={swr} />
+    )
 
     unmount()
   })
 
-  test('resuls filter', () => {
+  test('resuls filter', async () => {
     const data = {
       scheme: { configuration: { run: { done: true } } },
       tasks: [
         {
           label: 'Mesh',
           index: 1,
-          status: 'finish'
+          status: 'finish',
+          file: {
+            name: 'name',
+            fileName: 'test.msh'
+          }
         },
         {
           label: 'Simulation',
@@ -223,16 +254,30 @@ describe('components/project/simulation/run', () => {
             }
           }
         }}
+        result={{
+          name: 'name',
+          fileName: 'Result_0.vtu'
+        }}
+        setResult={setResult}
         swr={swr}
       />
     )
 
-    // TODO
-    // const select = screen.getByRole('combobox')
-    // fireEvent.change(select, { target: { value: '1' } })
+    // Select result
+    const eye = screen.getByRole('button', { name: 'eye' })
+    fireEvent.click(eye)
+    expect(setResult).toHaveBeenCalledTimes(1)
 
-    // const play = screen.getByRole('button', { name: 'play-circle' })
-    // fireEvent.click(play)
+    const invisible = screen.getByRole('button', { name: 'eye-invisible' })
+    fireEvent.click(invisible)
+    expect(setResult).toHaveBeenCalledTimes(2)
+
+    // TODO
+    const select = screen.getByRole('combobox')
+    fireEvent.change(select, { target: { value: '1' } })
+
+    const play = screen.getByRole('button', { name: 'play-circle' })
+    fireEvent.click(play)
 
     // const pause = screen.getByRole('button', { name: 'pause-circle' })
     // fireEvent.click(pause)
@@ -298,6 +343,8 @@ describe('components/project/simulation/run', () => {
             }
           }
         }}
+        result={result}
+        setResult={setResult}
         swr={swr}
       />
     )
@@ -354,6 +401,8 @@ describe('components/project/simulation/run', () => {
             }
           }
         }}
+        result={result}
+        setResult={setResult}
         swr={swr}
       />
     )
@@ -362,7 +411,14 @@ describe('components/project/simulation/run', () => {
   })
 
   test('run', async () => {
-    const { unmount } = render(<Run simulation={simulation} swr={swr} />)
+    const { unmount } = render(
+      <Run
+        simulation={simulation}
+        result={result}
+        setResult={setResult}
+        swr={swr}
+      />
+    )
     const run = screen.getByRole('button', { name: 'rocket Run' })
     const stop = screen.getByRole('button', { name: 'stop' })
 
@@ -395,7 +451,14 @@ describe('components/project/simulation/run', () => {
     mockCloudServer.mockImplementation((props) => (
       <div role="CloudServer" onClick={() => props.onOk({})} />
     ))
-    const { unmount } = render(<Run simulation={simulation} swr={swr} />)
+    const { unmount } = render(
+      <Run
+        simulation={simulation}
+        result={result}
+        setResult={setResult}
+        swr={swr}
+      />
+    )
 
     const dialog = screen.getByRole('CloudServer')
 
@@ -419,7 +482,14 @@ describe('components/project/simulation/run', () => {
   })
 
   test('onLog', () => {
-    const { unmount } = render(<Run simulation={simulation} swr={swr} />)
+    const { unmount } = render(
+      <Run
+        simulation={simulation}
+        result={result}
+        setResult={setResult}
+        swr={swr}
+      />
+    )
 
     const logs = screen.getAllByRole('button', { name: 'file-text' })
     logs.forEach((log) => fireEvent.click(log))
@@ -436,7 +506,14 @@ describe('components/project/simulation/run', () => {
     }))
     window.URL.createObjectURL = jest.fn()
 
-    const { unmount } = render(<Run simulation={simulation} swr={swr} />)
+    const { unmount } = render(
+      <Run
+        simulation={simulation}
+        result={result}
+        setResult={setResult}
+        swr={swr}
+      />
+    )
 
     const downloads = screen.getAllByRole('button', { name: 'download' })
 

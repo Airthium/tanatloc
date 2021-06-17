@@ -277,11 +277,6 @@ describe('components/project', () => {
     })
     fireEvent.click(simulations)
 
-    const title = screen.getByRole('menuitem', {
-      name: 'title'
-    })
-    fireEvent.click(title)
-
     // Click geometry
     const geometry = screen.getByRole('menuitem', { name: 'Geometry' })
     fireEvent.click(geometry)
@@ -346,6 +341,7 @@ describe('components/project', () => {
   })
 
   test('Selector', async () => {
+    mockProject.mockImplementation(() => ({}))
     mockSelector.mockImplementation((props) => (
       <div role="Selector" onClick={() => props.onOk({})} />
     ))

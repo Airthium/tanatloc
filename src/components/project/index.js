@@ -162,7 +162,8 @@ const Project = () => {
 
     if (key === menuKeys.geometries) {
       selectGeometry(subKey)
-    } else if (key === menuKeys.simulations) {
+    } else {
+      // key === menuKeys.simulations
       selectSimulation(subKey, keyPath.pop())
     }
   }

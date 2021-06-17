@@ -38,6 +38,7 @@ describe('components/project/simulation/materials/add', () => {
 
     mockUpdate.mockReset()
 
+    swr.mutateOneSimulation.mockReset()
     close.mockReset()
   })
 
@@ -83,6 +84,36 @@ describe('components/project/simulation/materials/add', () => {
     fireEvent.click(button)
     await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
     await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
+
+    unmount()
+  })
+
+  test('onAdd without values', async () => {
+    const { unmount } = render(
+      <Add
+        disabled={false}
+        material={material}
+        simulation={{
+          id: 'id',
+          scheme: {
+            configuration: {
+              materials: {}
+            }
+          }
+        }}
+        geometry={geometry}
+        swr={swr}
+        close={close}
+      />
+    )
+
+    const button = screen.getByRole('button')
+    fireEvent.click(button)
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
+      expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(1)
+    )
+    await waitFor(() => expect(close).toHaveBeenCalledTimes(1))
 
     unmount()
   })

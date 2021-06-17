@@ -235,6 +235,9 @@ const Rescale = ({ data, onSelect }) => {
 
     // Compute price
     computePrice()
+
+    // Return number of cores for parser
+    if (newNumberOfCores) return allValues.numberOfCores
   }
 
   /**
@@ -331,7 +334,12 @@ const Rescale = ({ data, onSelect }) => {
                   id="numberOfCores"
                   min={selected.fullCores[0]}
                   max={selected.fullCores[selected.fullCores.length - 1]}
-                  parser={() => numberOfCores}
+                  parser={(value) =>
+                    onValuesChange(
+                      { numberOfCores: value },
+                      form.getFieldsValue()
+                    )
+                  }
                 />
               </Form.Item>
               <Form.Item

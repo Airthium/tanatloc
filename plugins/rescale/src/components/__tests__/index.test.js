@@ -20,7 +20,7 @@ describe('plugins/rescale/src/components/index', () => {
       },
       {
         name: 'coretype 2',
-        cores: [256],
+        cores: [500],
         memory: 10000,
         price: 10000,
         lowPriorityPrice: 2000
@@ -80,22 +80,10 @@ describe('plugins/rescale/src/components/index', () => {
 
     const numberOfCores = screen.getByRole('spinbutton')
     fireEvent.input(numberOfCores, { target: { value: 1 } })
-    const increase = screen.getByRole('button', { name: 'Increase Value' })
-    const decrease = screen.getByRole('button', { name: 'Decrease Value' })
-    for (let i = 0; i < 3; ++i) {
-      fireEvent.mouseDown(increase)
-      fireEvent.mouseUp(increase)
-      if (i === 0) await waitFor(() => expect(+numberOfCores.value).toBe(512))
-      if (i === 1) await waitFor(() => expect(+numberOfCores.value).toBe(768))
-      if (i === 2) await waitFor(() => expect(+numberOfCores.value).toBe(768))
-    }
-    for (let i = 0; i < 3; ++i) {
-      fireEvent.mouseDown(decrease)
-      fireEvent.mouseUp(decrease)
-      if (i === 0) await waitFor(() => expect(+numberOfCores.value).toBe(512))
-      if (i === 1) await waitFor(() => expect(+numberOfCores.value).toBe(256))
-      if (i === 2) await waitFor(() => expect(+numberOfCores.value).toBe(256))
-    }
+    fireEvent.input(numberOfCores, { target: { value: 501 } })
+    fireEvent.input(numberOfCores, { target: { value: 1001 } })
+    fireEvent.input(numberOfCores, { target: { value: 999 } })
+    fireEvent.input(numberOfCores, { target: { value: 499 } })
 
     const combobox = screen.getByRole('combobox')
     fireEvent.change(combobox, { target: { value: 'version1' } })

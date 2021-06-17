@@ -6,8 +6,8 @@ import route from '@/route/user/check'
  * @param {Object} req Request
  * @param {Object} res Response
  */
-const api = async (req, res) => {
+const check = async (req, res) => {
   await route(req, res)
 }
 
-export default api
+export default check

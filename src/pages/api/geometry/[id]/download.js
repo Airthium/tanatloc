@@ -6,8 +6,8 @@ import route from '@/route/geometry/[id]/download'
  * @param {Object} req Request
  * @param {Object} res Response
  */
-const api = async (req, res) => {
+const download = async (req, res) => {
   await route(req, res)
 }
 
-export default api
+export default download

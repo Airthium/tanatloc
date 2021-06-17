@@ -6,8 +6,8 @@ import route from '@/route/logout'
  * @param {Object} req Request
  * @param {Object} res Response
  */
-const api = async (req, res) => {
+const logout = async (req, res) => {
   await route(req, res)
 }
 
-export default api
+export default logout

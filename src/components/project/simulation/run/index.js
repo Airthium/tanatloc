@@ -158,7 +158,7 @@ const Run = ({ simulation, result, setResult, swr }) => {
               // Get unique numbers
               const numbers = files
                 .map((file) => file.number)
-                .filter((value, index, self) => self.indexOf(value) === index)
+                .filter((value, i, self) => self.indexOf(value) === i)
 
               // Multiplicator
               let multiplicator
@@ -180,8 +180,8 @@ const Run = ({ simulation, result, setResult, swr }) => {
                   {filter.name}:{' '}
                   <Select
                     defaultValue={numbers[0]}
-                    options={numbers.map((n, index) => ({
-                      label: multiplicator ? n * multiplicator : index,
+                    options={numbers.map((n, i) => ({
+                      label: multiplicator ? n * multiplicator : i,
                       value: n
                     }))}
                     style={{ width: '100%' }}
@@ -484,6 +484,77 @@ const Run = ({ simulation, result, setResult, swr }) => {
     }
   }
 
+  // Results render
+  let resultsRender
+  if (!results) resultsRender = <Spin />
+  else if (!results.length) resultsRender = <div>No results yet</div>
+  else
+    resultsRender = (
+      <Card
+        title="Results"
+        extra={
+          <Tooltip title="Download archive">
+            <Button
+              loading={downloading.find((d) => d === 'archive')}
+              icon={<DownloadOutlined />}
+              onClick={onArchiveDownload}
+            />
+          </Tooltip>
+        }
+      >
+        <Space direction="vertical" style={{ width: '100%' }}>
+          {selectors}
+          {results.map((r) => {
+            // Check if filtered
+            let toRender = []
+            if (r.filtered) {
+              toRender = r.files.filter((file) => {
+                return file.number === r.current
+              })
+            } else {
+              toRender = [r]
+            }
+            // Render
+            return toRender.map((file) => {
+              return (
+                <Space
+                  direction=""
+                  key={file.name}
+                  style={{ alignItems: 'center' }}
+                >
+                  <Button
+                    icon={
+                      result?.fileName === file?.fileName &&
+                      result?.name === file?.name ? (
+                        <EyeOutlined />
+                      ) : (
+                        <EyeInvisibleOutlined />
+                      )
+                    }
+                    onClick={() =>
+                      setResult(
+                        result?.fileName === file?.fileName &&
+                          result?.name === file?.name
+                          ? null
+                          : file
+                      )
+                    }
+                  />
+                  <Button
+                    loading={downloading.find((d) => d === file.glb)}
+                    icon={<DownloadOutlined />}
+                    size="small"
+                    onClick={() => onDownload(file)}
+                  />
+                  {file.name}
+                </Space>
+              )
+            })
+          })}
+        </Space>
+      </Card>
+    )
+
   /**
    * Render
    */
@@ -543,75 +614,7 @@ const Run = ({ simulation, result, setResult, swr }) => {
             </Space>
           </Card>
 
-          {results ? (
-            results.length ? (
-              <Card
-                title="Results"
-                extra={
-                  <Tooltip title="Download archive">
-                    <Button
-                      loading={downloading.find((d) => d === 'archive')}
-                      icon={<DownloadOutlined />}
-                      onClick={onArchiveDownload}
-                    />
-                  </Tooltip>
-                }
-              >
-                <Space direction="vertical" style={{ width: '100%' }}>
-                  {selectors}
-                  {results.map((r) => {
-                    // Check if filtered
-                    let toRender = []
-                    if (r.filtered) {
-                      toRender = r.files.filter((file) => {
-                        return file.number === r.current
-                      })
-                    } else {
-                      toRender = [r]
-                    }
-                    // Render
-                    return toRender.map((file) => {
-                      return (
-                        <Space
-                          direction=""
-                          key={file.name}
-                          style={{ alignItems: 'center' }}
-                        >
-                          <Button
-                            icon={
-                              result?.fileName === file?.fileName &&
-                              result?.name === file?.name ? (
-                                <EyeOutlined />
-                              ) : (
-                                <EyeInvisibleOutlined />
-                              )
-                            }
-                            onClick={() =>
-                              setResult(
-                                result?.fileName === file?.fileName &&
-                                  result?.name === file?.name
-                                  ? null
-                                  : file
-                              )
-                            }
-                          />
-                          <Button
-                            loading={downloading.find((d) => d === file.glb)}
-                            icon={<DownloadOutlined />}
-                            size="small"
-                            onClick={() => onDownload(file)}
-                          />
-                          {file.name}
-                        </Space>
-                      )
-                    })
-                  })}
-                </Space>
-              </Card>
-            ) : null
-          ) : (
-            <Spin />
-          )}
+          {resultsRender}
         </Space>
       </Layout.Content>
     </Layout>

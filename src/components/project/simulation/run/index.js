@@ -41,8 +41,6 @@ const errors = {
   downloadError: 'Unable to download the file'
 }
 
-// TODO there is an infinite useEffect loop here
-
 /**
  * Run
  * @memberof module:components/project/simulation
@@ -87,15 +85,11 @@ const Run = ({ simulation, result, setResult, swr }) => {
     })
     if (!configuration.run.cloudServer) done = false
     setDisabled(!done)
-  }, [JSON.stringify(configuration)])
+  }, [configuration])
 
   // Running
   useEffect(() => {
-    if (!currentSimulation) {
-      setRunning(false)
-      return
-    }
-    if (!currentSimulation.tasks) {
+    if (!currentSimulation?.tasks) {
       setRunning(false)
       return
     }
@@ -113,12 +107,11 @@ const Run = ({ simulation, result, setResult, swr }) => {
     )
     if (runningTasks.length) setRunning(true)
     else setRunning(false)
-  }, [JSON.stringify(currentSimulation?.tasks)])
+  }, [currentSimulation?.tasks])
 
   // Steps & Results
   useEffect(() => {
-    if (!currentSimulation) return
-    if (!currentSimulation.tasks) return
+    if (!currentSimulation?.tasks) return
 
     const newSteps = []
     const newResults = []
@@ -239,9 +232,9 @@ const Run = ({ simulation, result, setResult, swr }) => {
     setResults(newResults)
     setSelectors(newSelectors)
   }, [
-    JSON.stringify(configuration?.run?.resultsFilters),
-    JSON.stringify(currentSimulation?.tasks),
-    JSON.stringify(selectorsCurrent)
+    configuration?.run?.resultsFilters,
+    currentSimulation?.tasks,
+    selectorsCurrent
   ])
 
   /**

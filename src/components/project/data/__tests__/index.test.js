@@ -39,7 +39,7 @@ describe('components/project/data', () => {
   })
 
   test('with data', () => {
-    mockSimulation.mockImplementation(() => ({
+    const data = {
       tasks: [
         {
           datas: [
@@ -67,7 +67,8 @@ describe('components/project/data', () => {
         },
         {}
       ]
-    }))
+    }
+    mockSimulation.mockImplementation(() => data)
 
     const { unmount } = render(<Data simulation={simulation} />)
 
@@ -83,7 +84,7 @@ describe('components/project/data', () => {
   })
 
   test('exportCSV', () => {
-    mockSimulation.mockImplementation(() => ({
+    const data = {
       tasks: [
         {
           datas: [
@@ -101,7 +102,8 @@ describe('components/project/data', () => {
         },
         {}
       ]
-    }))
+    }
+    mockSimulation.mockImplementation(() => data)
 
     const { unmount } = render(<Data simulation={simulation} />)
 

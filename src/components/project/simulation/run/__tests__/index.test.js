@@ -63,7 +63,7 @@ describe('components/project/simulation/run', () => {
     mockStop.mockReset()
     mockUpdate.mockReset()
     mockSimulation.mockReset()
-    mockSimulation.mockImplementation(() => ({
+    const data = {
       scheme: { configuration: { run: { done: true } } },
       tasks: [
         {
@@ -84,7 +84,8 @@ describe('components/project/simulation/run', () => {
           status: 'error'
         }
       ]
-    }))
+    }
+    mockSimulation.mockImplementation(() => data)
 
     mockResultDownload.mockReset()
     mockResultArchive.mockReset()
@@ -99,14 +100,15 @@ describe('components/project/simulation/run', () => {
   })
 
   test('not done', () => {
-    mockSimulation.mockImplementation(() => ({
+    const data = {
       scheme: { configuration: { run: { done: true } } },
       tasks: [
         {
           status: 'finish'
         }
       ]
-    }))
+    }
+    mockSimulation.mockImplementation(() => data)
     const { unmount } = render(
       <Run
         simulation={{
@@ -127,40 +129,43 @@ describe('components/project/simulation/run', () => {
   })
 
   test('running task', () => {
-    mockSimulation.mockImplementation(() => ({
+    const data = {
       scheme: { configuration: { run: { done: true } } },
       tasks: [
         {
           status: 'running'
         }
       ]
-    }))
+    }
+    mockSimulation.mockImplementation(() => data)
     const { unmount } = render(<Run simulation={simulation} swr={swr} />)
 
     unmount()
   })
 
   test('no tasks', () => {
-    mockSimulation.mockImplementation(() => ({
+    const data = {
       scheme: { configuration: { run: { done: true } } },
       tasks: undefined
-    }))
+    }
+    mockSimulation.mockImplementation(() => data)
     const { unmount } = render(<Run simulation={simulation} swr={swr} />)
 
     unmount()
   })
 
   test('no configuration', () => {
-    mockSimulation.mockImplementation(() => ({
+    const data = {
       scheme: {}
-    }))
+    }
+    mockSimulation.mockImplementation(() => data)
     const { unmount } = render(<Run simulation={{}} swr={swr} />)
 
     unmount()
   })
 
   test('resuls filter', () => {
-    mockSimulation.mockImplementation(() => ({
+    const data = {
       scheme: { configuration: { run: { done: true } } },
       tasks: [
         {
@@ -189,7 +194,8 @@ describe('components/project/simulation/run', () => {
           status: 'error'
         }
       ]
-    }))
+    }
+    mockSimulation.mockImplementation(() => data)
     const { unmount } = render(
       <Run
         simulation={{
@@ -235,7 +241,7 @@ describe('components/project/simulation/run', () => {
   })
 
   test('resuls filter without multiplicator', () => {
-    mockSimulation.mockImplementation(() => ({
+    const data = {
       scheme: { configuration: { run: { done: true } } },
       tasks: [
         {
@@ -264,7 +270,8 @@ describe('components/project/simulation/run', () => {
           status: 'error'
         }
       ]
-    }))
+    }
+    mockSimulation.mockImplementation(() => data)
     const { unmount } = render(
       <Run
         simulation={{
@@ -299,7 +306,7 @@ describe('components/project/simulation/run', () => {
   })
 
   test('resuls filter without files', () => {
-    mockSimulation.mockImplementation(() => ({
+    const data = {
       scheme: { configuration: { run: { done: true } } },
       tasks: [
         {
@@ -319,7 +326,8 @@ describe('components/project/simulation/run', () => {
           status: 'error'
         }
       ]
-    }))
+    }
+    mockSimulation.mockImplementation(() => data)
     const { unmount } = render(
       <Run
         simulation={{

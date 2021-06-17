@@ -12,7 +12,7 @@ jobs:
           fetch-depth: 0
       - uses: actions/setup-node@master
         with:
-          node-version: '14.17'
+          node-version: '16.3.0'
       - name: Install
         run: yarn install
       - name: Depcheck

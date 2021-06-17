@@ -322,7 +322,7 @@ const Project = () => {
   else
     return (
       <Layout hasSider={true}>
-        <Layout.Sider theme="light" className="Project-sider" width={256}>
+        <Layout.Sider theme="light" className="project-sider" width={256}>
           <div className="logo">
             <img src="/images/logo.svg" alt="Tanatloc" />
           </div>
@@ -331,24 +331,25 @@ const Project = () => {
             <Menu.Item
               key={'go-back'}
               disabled={true}
-              style={{ cursor: 'unset' }}
+              style={{ cursor: 'unset', margin: '10px 0', paddingLeft: 10 }}
             >
               <GoBack onClick={handleDashboard}>Return to dashboard</GoBack>
             </Menu.Item>
+
+            <Menu.Divider className="menu-divider" />
 
             <Menu.Item
               key={'title'}
               disabled={true}
               style={{ cursor: 'unset' }}
             >
-              <Typography.Title className="Project-title" level={4}>
+              <Typography.Paragraph
+                className="project-title"
+                ellipsis={{ rows: 2 }}
+              >
                 {project.title}
-              </Typography.Title>
+              </Typography.Paragraph>
             </Menu.Item>
-
-            <Menu.Divider
-              style={{ backgroundColor: '#fad114', margin: '0 20px' }}
-            />
 
             <Menu.SubMenu
               key={menuKeys.geometries}

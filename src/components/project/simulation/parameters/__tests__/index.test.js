@@ -1,5 +1,5 @@
 import React from 'react'
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import Parameters from '@/components/project/simulation/parameters'
 
@@ -102,11 +102,15 @@ describe('components/project/simulation/parameters', () => {
     const open = screen.getByRole('button', { name: 'right Advanced' })
     fireEvent.click(open)
 
-    // select
-    // const select = screen.getByRole('Select')
-    // fireEvent.click(select)
+    // Select
+    const select = screen.getByRole('combobox')
+    await act(async () => fireEvent.mouseDown(select))
 
-    // await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(4))
+    const options2 = screen.getAllByText('option2')
+    const option2 = options2[1]
+    await act(async () => fireEvent.click(option2))
+
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(4))
 
     unmount()
   })

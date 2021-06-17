@@ -1,5 +1,5 @@
 import React from 'react'
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import Run from '..'
 
@@ -210,11 +210,11 @@ describe('components/project/simulation/run', () => {
           files: [
             {
               name: 'name',
-              fileName: 'Result_0.vtu'
+              fileName: 'Result_777.vtu'
             },
             {
               name: 'name',
-              fileName: 'Result_1.vtu'
+              fileName: 'Result_999.vtu'
             }
           ],
           status: 'finish'
@@ -256,7 +256,7 @@ describe('components/project/simulation/run', () => {
         }}
         result={{
           name: 'name',
-          fileName: 'Result_0.vtu'
+          fileName: 'Result_777.vtu'
         }}
         setResult={setResult}
         swr={swr}
@@ -272,9 +272,12 @@ describe('components/project/simulation/run', () => {
     fireEvent.click(invisible)
     expect(setResult).toHaveBeenCalledTimes(2)
 
-    // TODO
+    // Select
     const select = screen.getByRole('combobox')
-    fireEvent.change(select, { target: { value: '1' } })
+    await act(async () => fireEvent.mouseDown(select))
+
+    const option999 = screen.getByText('9.99')
+    await act(async () => fireEvent.click(option999))
 
     const play = screen.getByRole('button', { name: 'play-circle' })
     fireEvent.click(play)
@@ -285,7 +288,7 @@ describe('components/project/simulation/run', () => {
     unmount()
   })
 
-  test('resuls filter without multiplicator', () => {
+  test('resuls filter without multiplicator', async () => {
     const data = {
       scheme: { configuration: { run: { done: true } } },
       tasks: [
@@ -300,11 +303,11 @@ describe('components/project/simulation/run', () => {
           files: [
             {
               name: 'name',
-              fileName: 'Result_0.vtu'
+              fileName: 'Result_777.vtu'
             },
             {
               name: 'name',
-              fileName: 'Result_1.vtu'
+              fileName: 'Result_999.vtu'
             }
           ],
           status: 'finish'
@@ -324,11 +327,6 @@ describe('components/project/simulation/run', () => {
           scheme: {
             configuration: {
               ...simulation.scheme.configuration,
-              parameters: {
-                time: {
-                  children: [{}, { default: 0.01 }]
-                }
-              },
               run: {
                 ...simulation.scheme.configuration.run,
                 resultsFilters: [
@@ -348,6 +346,13 @@ describe('components/project/simulation/run', () => {
         swr={swr}
       />
     )
+
+    // Select
+    const select = screen.getByRole('combobox')
+    await act(async () => fireEvent.mouseDown(select))
+
+    const option1 = screen.getByText('1')
+    await act(async () => fireEvent.click(option1))
 
     unmount()
   })

@@ -250,7 +250,9 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
       }
     )
 
-    stopProcess()
+    await stopProcess(simulationPath, simulationTask, () =>
+      updateTasks(id, tasks)
+    )
 
     // Task
     simulationTask.status = 'finish'
@@ -292,8 +294,10 @@ const startProcess = (simulationPath, task, update) => {
 /**
  * Stop process results and datas
  */
-const stopProcess = () => {
+const stopProcess = async (simulationPath, task, update) => {
   interval && clearIntervalAsync(interval)
+
+  await processOutput(simulationPath, task, update)
 }
 
 /**

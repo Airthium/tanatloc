@@ -9,8 +9,9 @@ import { ArrowLeftOutlined } from '@ant-design/icons'
 const GoBack = ({ children, onClick }) => {
   return (
     <Button
-      icon={<ArrowLeftOutlined style={{ color: '#fad114' }} />}
-      style={{ border: 'none' }}
+      icon={<ArrowLeftOutlined className="goback-button-icon" />}
+      className="goback-button"
+      size="large"
       onClick={onClick}
     >
       {children || 'Go back'}

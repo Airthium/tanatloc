@@ -1,52 +1,66 @@
-.Project-sider {
-  border-right: 1px solid #f0f0f0;
+.project-sider {
   overflow-x: hidden;
   overflow-y: auto;
 }
 
-.Project-sider > div {
-  margin-right: -1px;
+.project-sider .ant-layout-sider-children {
+  border-right: 1px solid @tanatloc-light-grey;
 }
 
-.Project-title {
-  margin-left: 10px;
+.ant-menu-inline,
+.ant-menu-vertical,
+.ant-menu-vertical-left {
+  border-right: none !important;
 }
 
-.Project-title .ant-typography-edit {
-  font-size: 0.9em !important;
+.project-sider .goback-button {
+  border: none;
 }
 
-.Project-title.ant-typography-edit-content {
-  left: 0 !important;
-  margin-top: 0 !important;
+.project-sider .goback-button-icon {
+  color: @tanatloc-primary-color;
+}
+
+.project-sider .menu-divider {
+  background-color: @tanatloc-primary-color;
+  margin: 0 20px;
 }
 
 .project-card {
+  display: flex;
+  flex-direction: column;
   width: 260px;
   height: 412px;
+}
+
+.project-card .ant-card-head {
+  height: 80px;
+  padding: 0 24px;
+}
+
+.project-card .ant-card-cover {
+  flex: 1 0 auto;
+  display: flex;
+  align-items: center;
+}
+
+.project-card .ant-card-body {
+  height: 70px;
+  border-top: 1px solid #f0f0f0;
+  padding: 0 24px;
+}
+
+.project-card .ant-card-actions > li {
+  margin: 8px 0;
+  flex: 0 1 auto;
 }
 
 .project-card .ant-card-head-title {
   white-space: unset !important;
 }
 
-// .ant-empty-image {
-//   width: 100px !important;
-//   height: 64px !important;
-//   margin: 8px auto;
-// }
-
-// .ant-empty-img-simple {
-//   width: 100px !important;
-//   height: 64px !important;
-// }
-
-// .ant-empty-img-simple-ellipse {
-//   //  fill: @tanatloc-primary-color;
-// }
-
 .carousel-dots > li > button {
-  background-color: #fad114 !important;
+  background-color: @tanatloc-primary-color !important;
 }
 
 .upload > .ant-upload-select-picture-card {

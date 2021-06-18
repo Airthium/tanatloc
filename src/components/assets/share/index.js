@@ -131,6 +131,7 @@ const Share = ({ workspace, project, organizations, swr }) => {
   return (
     <>
       <Button
+        type="text"
         key="share"
         icon={<ShareAltOutlined />}
         onClick={() => setVisible(true)}

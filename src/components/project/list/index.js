@@ -121,7 +121,22 @@ const ProjectList = ({
                 </Typography.Paragraph>
               }
               className="project-card"
-              headStyle={{ height: 80, padding: '0 24px' }}
+              cover={
+                <div
+                  onMouseEnter={() =>
+                    setDescriptionVisible(project.description ? project.id : -1)
+                  }
+                  onMouseLeave={() => setDescriptionVisible(-1)}
+                  onClick={() => openProject({ id: project.id })}
+                  style={{
+                    cursor: 'pointer'
+                  }}
+                >
+                  {descriptionVisible === project.id
+                    ? project.descriptionRender
+                    : project.snapshotRender}
+                </div>
+              }
               actions={[
                 <Delete
                   key="delete"
@@ -160,27 +175,6 @@ const ProjectList = ({
                 />
               ]}
             >
-              <div
-                onMouseEnter={() =>
-                  setDescriptionVisible(project.description ? project.id : -1)
-                }
-                onMouseLeave={() => setDescriptionVisible(-1)}
-                onClick={() => openProject({ id: project.id })}
-                style={{
-                  cursor: 'pointer',
-                  width: '100%',
-                  height: 140,
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  borderBottom: '1px solid #f0f0f0'
-                }}
-              >
-                {descriptionVisible === project.id
-                  ? project.descriptionRender
-                  : project.snapshotRender}
-              </div>
-
               <div
                 style={{
                   padding: '6px 0',

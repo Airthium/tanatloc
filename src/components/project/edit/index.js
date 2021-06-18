@@ -63,6 +63,7 @@ const Edit = ({ disabled, project, swr }) => {
   return (
     <>
       <Button
+        type="text"
         disabled={disabled}
         onClick={() => setVisible(true)}
         icon={<EditOutlined />}

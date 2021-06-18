@@ -61,7 +61,8 @@ const Delete = ({ disabled, workspace, project, swr }) => {
     <>
       <Button
         disabled={disabled}
-        type="danger"
+        type="link"
+        danger
         onClick={() => setVisible(true)}
         icon={<DeleteOutlined />}
       />

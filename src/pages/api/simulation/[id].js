@@ -6,8 +6,8 @@ import route from '@/route/simulation/[id]'
  * @param {Object} req Request
  * @param {Object} res Response
  */
-const _id = async (req, res) => {
+const id = async (req, res) => {
   await route(req, res)
 }
 
-export default _id
+export default id

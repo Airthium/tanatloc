@@ -17,8 +17,6 @@ import {
   EyeOutlined,
   EyeInvisibleOutlined,
   FileTextOutlined,
-  PauseCircleOutlined,
-  PlayCircleOutlined,
   RocketOutlined,
   StopOutlined
 } from '@ant-design/icons'
@@ -61,7 +59,6 @@ const Run = ({ simulation, result, setResult, swr }) => {
   const [steps, setSteps] = useState([])
 
   const [downloading, setDownloading] = useState([])
-  const [play, setPlay] = useState()
 
   // Data
   const [currentSimulation, { mutateSimulation }] = SimulationAPI.useSimulation(
@@ -193,18 +190,6 @@ const Run = ({ simulation, result, setResult, swr }) => {
                       onSelectorChange(value, resultIndex, filterIndex)
                     }
                   />
-                  <Button
-                    disabled={play}
-                    icon={<PlayCircleOutlined />}
-                    size="small"
-                    onClick={() => onPlay(resultIndex, filterIndex)}
-                  />
-                  <Button
-                    disabled={!play}
-                    icon={<PauseCircleOutlined />}
-                    size="small"
-                    onClick={() => onPause()}
-                  />
                 </div>
               )
               newSelectors.push(selector)
@@ -250,73 +235,20 @@ const Run = ({ simulation, result, setResult, swr }) => {
     setSelectorsCurrent(newSelectorsCurrent)
 
     // Results
-    const newResult = results[index]
-    newResult.current = value
+    const currentResult = results[index]
+    currentResult.current = value
     setResults([
       ...results.slice(0, index),
-      newResult,
+      currentResult,
       ...results.slice(index + 1)
     ])
 
-    // TODO
     // Update visualization
-    // const currentResult = currentConfiguration.run.currentResult // Use it
-    // const currentPart = currentConfiguration.part
-    // if (currentPart?.number !== undefined) {
-    //   const newPart = newResult.files.find(
-    //     (file) => file.name === currentPart.name && file.number === value
-    //   )
-    //   if (newPart) setPart(newPart)
-    // }
-  }
-
-  /**
-   * On play
-   * @param {number} index Index
-   * @param {number} filterIndex Filter index
-   */
-  const onPlay = (index, filterIndex) => {
-    const player = setInterval(() => {
-      const value = selectorsCurrent[filterIndex] + 1
-
-      // Selectors
-      setSelectorsCurrent((prev) => {
-        prev[filterIndex] = prev[filterIndex] + 1
-        return prev
-      })
-
-      // Results
-      const newResult = results[index]
-      newResult.current = value
-      setResults([
-        ...results.slice(0, index),
-        newResult,
-        ...results.slice(index + 1)
-      ])
-
-      // TODO
-      // // Update visualization
-      // const currentPart = currentConfiguration.part
-      // if (currentPart?.number !== undefined) {
-      //   const newPart = newResult.files.find(
-      //     (file) => file.name === currentPart.name && file.number === value
-      //   )
-      //   if (newPart) setPart(newPart)
-      // }
-    }, 2000)
-
-    setPlay(player)
-  }
-
-  /**
-   * On pause
-   * @param {number} index Index
-   * @param {number} filterIndex Filter index
-   */
-  const onPause = () => {
-    if (play) {
-      clearInterval(play)
-      setPlay()
+    if (result) {
+      const currentFile = currentResult.files.find(
+        (file) => file.name === result.name && file.number === value
+      )
+      if (currentFile) setResult(currentFile)
     }
   }
 

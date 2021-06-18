@@ -279,12 +279,6 @@ describe('components/project/simulation/run', () => {
     const option999 = screen.getByText('9.99')
     await act(async () => fireEvent.click(option999))
 
-    const play = screen.getByRole('button', { name: 'play-circle' })
-    fireEvent.click(play)
-
-    // const pause = screen.getByRole('button', { name: 'pause-circle' })
-    // fireEvent.click(pause)
-
     unmount()
   })
 
@@ -342,6 +336,75 @@ describe('components/project/simulation/run', () => {
           }
         }}
         result={result}
+        setResult={setResult}
+        swr={swr}
+      />
+    )
+
+    // Select
+    const select = screen.getByRole('combobox')
+    await act(async () => fireEvent.mouseDown(select))
+
+    const option1 = screen.getByText('1')
+    await act(async () => fireEvent.click(option1))
+
+    unmount()
+  })
+
+  test('resuls filter without result', async () => {
+    const data = {
+      scheme: { configuration: { run: { done: true } } },
+      tasks: [
+        {
+          label: 'Mesh',
+          index: 1,
+          status: 'finish'
+        },
+        {
+          label: 'Simulation',
+          index: -1,
+          files: [
+            {
+              name: 'name',
+              fileName: 'Result_777.vtu'
+            },
+            {
+              name: 'name',
+              fileName: 'Result_999.vtu'
+            }
+          ],
+          status: 'finish'
+        },
+        {
+          label: 'Mesh2',
+          index: 2,
+          status: 'error'
+        }
+      ]
+    }
+    mockSimulation.mockImplementation(() => data)
+    const { unmount } = render(
+      <Run
+        simulation={{
+          ...simulation,
+          scheme: {
+            configuration: {
+              ...simulation.scheme.configuration,
+              run: {
+                ...simulation.scheme.configuration.run,
+                resultsFilters: [
+                  {
+                    name: 'Time',
+                    prefixPattern: 'Result_',
+                    suffixPattern: '.vtu',
+                    pattern: 'Result_\\d+.vtu'
+                  }
+                ]
+              }
+            }
+          }
+        }}
+        result={undefined}
         setResult={setResult}
         swr={swr}
       />
@@ -521,13 +584,15 @@ describe('components/project/simulation/run', () => {
     )
 
     const downloads = screen.getAllByRole('button', { name: 'download' })
+    const archive = downloads[0]
+    const download = downloads[1]
 
     // Archive
-    fireEvent.click(downloads[0])
+    fireEvent.click(archive)
     await waitFor(() => expect(mockResultArchive).toHaveBeenCalledTimes(1))
 
     // File
-    fireEvent.click(downloads[1])
+    fireEvent.click(download)
     await waitFor(() => expect(mockResultDownload).toHaveBeenCalledTimes(1))
 
     mockResultDownload.mockImplementation(() => {
@@ -536,11 +601,11 @@ describe('components/project/simulation/run', () => {
     mockResultArchive.mockImplementation(() => {
       throw new Error()
     })
-    fireEvent.click(downloads[0])
+    fireEvent.click(archive)
     await waitFor(() => expect(mockResultArchive).toHaveBeenCalledTimes(2))
     await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
 
-    fireEvent.click(downloads[1])
+    fireEvent.click(download)
     await waitFor(() => expect(mockResultDownload).toHaveBeenCalledTimes(2))
     await waitFor(() => expect(mockError).toHaveBeenCalledTimes(2))
 

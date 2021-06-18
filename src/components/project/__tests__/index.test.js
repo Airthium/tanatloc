@@ -110,6 +110,7 @@ jest.mock('@/api/simulation', () => ({
 
 const mockGeometries = jest.fn()
 const mockErrorGeometries = jest.fn()
+const mockLoadingGeometries = jest.fn()
 jest.mock('@/api/geometry', () => ({
   useGeometries: () => [
     mockGeometries(),
@@ -118,7 +119,7 @@ jest.mock('@/api/geometry', () => ({
       delOneGeometry: jest.fn(),
       mutateOneGeometry: jest.fn(),
       errorGeometries: mockErrorGeometries(),
-      loadingGeometries: false
+      loadingGeometries: mockLoadingGeometries()
     }
   ]
 }))
@@ -205,6 +206,7 @@ describe('components/project', () => {
     mockGeometries.mockReset()
     mockGeometries.mockImplementation(() => [{ id: 'idg', name: 'Geometry' }])
     mockErrorGeometries.mockReset()
+    mockLoadingGeometries.mockReset()
   })
 
   test('render', () => {
@@ -224,6 +226,7 @@ describe('components/project', () => {
 
   test('loading', () => {
     mockUserLoading.mockImplementation(() => true)
+    mockLoadingGeometries.mockImplementation(() => true)
     const { unmount } = render(<Project />)
 
     unmount()
@@ -244,6 +247,13 @@ describe('components/project', () => {
     const { unmount } = render(<Project />)
 
     expect(mockError).toHaveBeenCalledTimes(4)
+
+    unmount()
+  })
+
+  test('autoopen geometry', () => {
+    mockGeometries.mockImplementation(() => [])
+    const { unmount } = render(<Project />)
 
     unmount()
   })

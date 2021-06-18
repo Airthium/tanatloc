@@ -112,6 +112,13 @@ const Project = () => {
     if (errorGeometries) ErrorNotification(errors.geometries, errorGeometries)
   }, [])
 
+  // Auto open geometry add
+  useEffect(() => {
+    if (!loadingProject && !loadingGeometries) {
+      if (!geometries.length) addGeometry()
+    }
+  }, [])
+
   // Update geometry
   useEffect(() => {
     if (currentGeometry) {

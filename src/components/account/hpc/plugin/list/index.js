@@ -27,7 +27,18 @@ const List = ({ plugin, plugins, swr }) => {
 
       const configuration = p.configuration
       return (
-        <Card key={p.uuid} title={configuration.name?.value}>
+        <Card
+          key={p.uuid}
+          title={configuration.name?.value}
+          actions={[
+            <Delete plugin={p} swr={{ delOnePlugin: swr.delOnePlugin }} />,
+            <PluginDialog
+              plugin={p}
+              swr={{ mutateOnePlugin: swr.mutateOnePlugin }}
+              edit={true}
+            />
+          ]}
+        >
           {Object.keys(configuration).map((key) => {
             if (key === 'name') return
             return (
@@ -43,14 +54,6 @@ const List = ({ plugin, plugins, swr }) => {
               </Typography.Paragraph>
             )
           })}
-          <Space direction="">
-            <Delete plugin={p} swr={{ delOnePlugin: swr.delOnePlugin }} />
-            <PluginDialog
-              plugin={p}
-              swr={{ mutateOnePlugin: swr.mutateOnePlugin }}
-              edit={true}
-            />
-          </Space>
         </Card>
       )
     })

@@ -301,7 +301,11 @@ const Project = () => {
       )
     })
     return (
-      <Menu.SubMenu key={s.id} title={s.name}>
+      <Menu.SubMenu
+        className="submenu-simulation-name"
+        key={s.id}
+        title={s.name}
+      >
         <Menu.Item
           className="menu-item-with-line"
           key={'about'}
@@ -345,56 +349,50 @@ const Project = () => {
 
             <Menu.Divider className="menu-divider" />
 
-            <Menu.Item
-              key={'title'}
-              disabled={true}
-              style={{ cursor: 'unset' }}
-            >
-              <Typography.Paragraph
-                className="project-title"
-                ellipsis={{ rows: 2 }}
-              >
+            <Menu.Item className="project-title" key={'title'} disabled={true}>
+              <Typography.Paragraph ellipsis={{ tooltip: true }}>
                 {project.title}
               </Typography.Paragraph>
             </Menu.Item>
 
             <Menu.SubMenu
+              className="menu-submenu"
               key={menuKeys.geometries}
               icon={
                 <Icon component={Geometries} style={{ maxWidth: '14px' }} />
               }
               title={'Geometries (' + geometries.length + ')'}
-              style={{ backgroundColor: '#f0f0f0' }}
             >
-              {geometriesRender}
               <Menu.Item
+                className="item-new"
                 key="new_geometry"
                 disabled={true}
-                style={{ cursor: 'unset' }}
               >
                 <Button icon={<PlusOutlined />} onClick={addGeometry}>
-                  New geometry
+                  New Geometry
                 </Button>
               </Menu.Item>
+              {geometriesRender}
             </Menu.SubMenu>
 
             <Menu.SubMenu
+              className="menu-submenu"
               key={menuKeys.simulations}
               icon={<CalculatorOutlined />}
               title={'Simulations (' + simulations.length + ')'}
               style={{ backgroundColor: '#f0f0f0' }}
               disabled={!geometries.length}
             >
-              {simulationsRender}
               <Menu.Item
+                className="item-new"
                 key={'new_simulation'}
                 disabled={true}
-                style={{ cursor: 'unset' }}
               >
                 <Button icon={<PlusOutlined />} onClick={addSimulation}>
                   New simulation
                 </Button>
               </Menu.Item>
+              {simulationsRender}
             </Menu.SubMenu>
           </Menu>
         </Layout.Sider>

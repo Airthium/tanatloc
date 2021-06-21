@@ -7,6 +7,65 @@
   border-right: 1px solid @tanatloc-light-grey;
 }
 
+.project-sider .project-title {
+  margin-top: 18px;
+  cursor: unset;
+}
+
+.project-sider .menu-submenu {
+  background-color: #f0f0f0;
+}
+
+.project-sider .menu-submenu .item-new {
+  cursor: unset;
+  margin-top: 10px;
+}
+
+.project-sider .menu-submenu .submenu-simulation-name .ant-menu-submenu-title {
+  padding-left: 24px !important;
+}
+
+.project-sider .menu-submenu .submenu-simulation-name .menu-item-with-line {
+  padding-left: 24px !important;
+  position: relative !important;
+  overflow: visible !important;
+}
+
+.project-sider
+  .menu-submenu
+  .submenu-simulation-name
+  .menu-item-with-line:not(:last-child)::before {
+  position: absolute;
+  content: '';
+  border: 1px solid #c0c0c0;
+  height: 20px;
+  width: 2px;
+  top: 30px;
+  left: 31px;
+  z-index: 100;
+}
+
+.project-sider
+  .menu-submenu
+  .submenu-simulation-name
+  .menu-item-with-line
+  span:first-child {
+  float: left;
+  height: 40px;
+  line-height: 45px;
+}
+
+.project-sider
+  .menu-submenu
+  .submenu-simulation-name
+  .menu-item-with-line
+  span:last-child {
+  float: left;
+  max-width: calc(100% - 24px) !important;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .ant-menu-inline,
 .ant-menu-vertical,
 .ant-menu-vertical-left {

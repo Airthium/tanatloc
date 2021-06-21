@@ -1,4 +1,4 @@
-.Panel {
+.panel {
   position: absolute;
   top: 0;
   left: -1px;
@@ -8,25 +8,37 @@
   overflow: hidden;
 }
 
-.Panel .ant-card {
+.panel .ant-card {
   border: none;
 }
 
-.Panel .ant-card-head .ant-btn {
+// .panel .antd-card {
+//   border-top: none !important;
+// } // No sense
+
+.panel .ant-card-head .ant-btn {
   border: none;
 }
 
-.Panel .ant-card-body .ant-card-head {
+.panel .ant-card-body .ant-card-head {
   border: none;
 }
 
-.Panel .ant-card-body .ant-card-body {
+// .panel .ant-card-bordered {
+//   border-top: none !important;
+// } // No sense
+
+.panel .ant-card-head {
+  height: 64px;
+}
+
+.panel .ant-card-body .ant-card-body {
   padding-top: 0;
   max-height: calc(100vh - 65px);
   overflow: auto;
 }
 
-.Panel .ant-card-body .ant-divider {
+.panel .ant-card-body .ant-divider {
   border-top: 1px solid #f0f0f0;
   margin-left: -12px;
   margin-top: 4px;
@@ -34,24 +46,24 @@
   width: calc(100% + 24px);
 }
 
-.Panel .ant-card-body .ant-collapse {
+.panel .ant-card-body .ant-collapse {
   margin: 0;
   border: none;
 }
 
-.Panel .ant-card-body .ant-collapse-item {
+.panel .ant-card-body .ant-collapse-item {
   border: none;
 }
 
-.Panel .ant-card-body .ant-collapse-content-box {
+.panel .ant-card-body .ant-collapse-content-box {
   padding: 12px;
   background-color: #fafafa;
 }
 
-.Panel .ant-card-body .ant-collapse-content-box .ant-card-head {
+.panel .ant-card-body .ant-collapse-content-box .ant-card-head {
   background-color: #fafafa;
 }
 
-.Panel .ant-card-body .ant-collapse-content-box .ant-card-body {
+.panel .ant-card-body .ant-collapse-content-box .ant-card-body {
   background-color: #fafafa;
 }

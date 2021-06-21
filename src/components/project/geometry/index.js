@@ -118,7 +118,28 @@ const Geometry = ({ project, geometry, swr, close }) => {
     return (
       <Layout>
         <Layout.Content>
-          <Card title="Informations">
+          <Card
+            title="Informations"
+            actions={[
+              <DownloadButton loading={downloading} onDownload={onDownload} />,
+              <>
+                <Edit
+                  visible={editVisible}
+                  geometry={{
+                    name: geometry?.name
+                  }}
+                  setVisible={setEditVisible}
+                  onEdit={onEdit}
+                />
+                <EditButton onEdit={() => setEditVisible(true)} />
+              </>,
+              <DeleteButton
+                loading={deleting}
+                text="Are you sure to delete this geometry?"
+                onDelete={onDelete}
+              />
+            ]}
+          >
             <Space direction="vertical" style={{ width: '100%' }}>
               <Typography.Text>File: {geometry.name} </Typography.Text>
               <Typography.Text>
@@ -148,29 +169,6 @@ const Geometry = ({ project, geometry, swr, close }) => {
               ) : (
                 <Typography.Text>No summary available</Typography.Text>
               )}
-
-              <Divider type="horizontal" />
-
-              <Space
-                direction="horizontal"
-                style={{ width: '100%', justifyContent: 'space-around' }}
-              >
-                <DownloadButton loading={downloading} onDownload={onDownload} />
-                <Edit
-                  visible={editVisible}
-                  geometry={{
-                    name: geometry?.name
-                  }}
-                  setVisible={setEditVisible}
-                  onEdit={onEdit}
-                />
-                <EditButton onEdit={() => setEditVisible(true)} />
-                <DeleteButton
-                  loading={deleting}
-                  text="Are you sure to delete this geometry?"
-                  onDelete={onDelete}
-                />
-              </Space>
             </Space>
           </Card>
         </Layout.Content>

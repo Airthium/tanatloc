@@ -58,6 +58,15 @@ const About = ({ simulation, swr }) => {
                 {simulation.name}
               </Typography.Title>
             }
+            actions={[
+              <Delete
+                simulation={{ id: simulation.id, name: simulation.name }}
+                swr={{
+                  reloadProject: swr.reloadProject,
+                  delOneSimulation: swr.delOneSimulation
+                }}
+              />
+            ]}
           >
             <Space direction="vertical">
               <Typography.Text>
@@ -73,16 +82,6 @@ const About = ({ simulation, swr }) => {
               <div
                 dangerouslySetInnerHTML={{
                   __html: simulation.scheme?.description
-                }}
-              />
-
-              <Divider type="horizontal" />
-
-              <Delete
-                simulation={{ id: simulation.id, name: simulation.name }}
-                swr={{
-                  reloadProject: swr.reloadProject,
-                  delOneSimulation: swr.delOneSimulation
                 }}
               />
             </Space>

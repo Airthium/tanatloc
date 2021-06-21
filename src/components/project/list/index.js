@@ -55,8 +55,9 @@ const ProjectList = ({
           <img
             src={project && Buffer.from(project.avatar).toString()}
             alt="Tanatloc"
-            width="135px"
-            height="135px"
+            width="244px"
+            height="130px"
+            style={{ transform: 'scale(1.5)' }}
           />
         ) : (
           <Empty image="images/empty.svg" description={'No preview yet.'} />
@@ -66,7 +67,12 @@ const ProjectList = ({
         const title = <Typography.Text>{project.title}</Typography.Text>
 
         const description = project.description && (
-          <Typography.Paragraph>{project.description}</Typography.Paragraph>
+          <Typography.Paragraph
+            style={{ width: '244px', height: '130px', margin: 'auto' }}
+            ellipsis={{ rows: 6, tooltip: true }}
+          >
+            {project.description}
+          </Typography.Paragraph>
         )
 
         // Owners avatars

@@ -591,16 +591,17 @@ const ThreeView = ({ loading, project, part }) => {
       const initialAspect = camera.current.aspect
 
       // Snap render
-      const snapSize = 256
+      const snapWidth = 2 * 244
+      const snapHeight = 2 * 130
 
-      renderer.current.domElement.width = snapSize
-      renderer.current.domElement.height = snapSize
+      renderer.current.domElement.width = snapWidth
+      renderer.current.domElement.height = snapHeight
 
-      camera.current.aspect = 1
+      camera.current.aspect = snapWidth / snapHeight
       camera.current.updateProjectionMatrix()
 
       renderer.current.clear()
-      renderer.current.setViewport(0, 0, snapSize, snapSize)
+      renderer.current.setViewport(0, 0, snapWidth, snapHeight)
       renderer.current.render(scene.current, camera.current)
 
       const image = renderer.current.domElement.toDataURL()

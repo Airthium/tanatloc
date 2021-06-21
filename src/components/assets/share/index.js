@@ -50,6 +50,7 @@ const Share = ({ workspace, project, organizations, swr }) => {
               : user.email
           return {
             title,
+            disabled: true,
             checkable: false,
             value: group.id + '&' + user.id
           }
@@ -65,6 +66,7 @@ const Share = ({ workspace, project, organizations, swr }) => {
       return {
         title: organization.name,
         value: organization.id,
+        disabled: true,
         checkable: false,
         children: groups
       }

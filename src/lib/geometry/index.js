@@ -139,7 +139,6 @@ const add = async ({ project, geometry }) => {
  * Get geometry
  * @param {string} id Geometry's id
  * @param {Array} data Data
- * @returns
  */
 const get = async (id, data) => {
   return GeometryDB.get(id, data)

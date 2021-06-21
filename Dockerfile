@@ -41,12 +41,6 @@ RUN apt autoremove \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Build
-ARG SOURCE_BRANCH
-ENV SOURCE_BRANCH $SOURCE_BRANCH
-
-ARG SOURCE_COMMIT
-ENV SOURCE_COMMIT $SOURCE_COMMIT
-
 ARG DB_ADMIN
 ENV DB_ADMIN $DB_ADMIN
 
@@ -75,6 +69,9 @@ COPY package.json ${INSTALL_PATH}/package.json
 COPY yarn.lock ${INSTALL_PATH}/yarn.lock
 
 WORKDIR ${INSTALL_PATH}
+
+RUN export NEXT_PUBLIC_SOURCE_BRANCH=`git rev-parse --abbrev-ref HEAD`
+RUN export NEXT_PUBLIC_SOURCE_COMMIT=`git rev-parse --short HEAD`
 
 RUN yarn install --ignore-scripts
 RUN yarn copyassets

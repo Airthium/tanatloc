@@ -318,8 +318,8 @@ const Dashboard = () => {
                 {menuItems.logout.label}
               </Menu.Item>
               <p className="version">
-                version: git-{process.env.SOURCE_BRANCH}-
-                {process.env.SOURCE_COMMIT}
+                version: git-{process.env.NEXT_PUBLIC_SOURCE_BRANCH}-
+                {process.env.NEXT_PUBLIC_SOURCE_COMMIT}
               </p>
             </Menu>
           </Layout.Sider>

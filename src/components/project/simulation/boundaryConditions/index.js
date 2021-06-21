@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
-import { Layout, Space, Typography } from 'antd'
+import { Card, Layout, Space, Typography } from 'antd'
 
 import { AddButton } from '@/components/assets/button'
 import List from './list'
@@ -72,33 +72,35 @@ const BoundaryConditions = ({ geometry, simulation, swr, setVisible }) => {
   return (
     <Layout>
       <Layout.Content>
-        <AddButton disabled={!geometry} onAdd={onAdd}>
-          Add boundary condition
-        </AddButton>
-        {geometry ? (
-          <>
-            <List
-              simulation={simulation}
-              swr={{ mutateOneSimulation: swr.mutateOneSimulation }}
-              onEdit={onEdit}
-            />
-            <BoundaryCondition
-              visible={boundaryConditionVisible}
-              simulation={simulation}
-              geometry={geometry.summary}
-              boundaryConditions={boundaryConditions}
-              boundaryCondition={boundaryCondition}
-              swr={{
-                mutateOneSimulation: swr.mutateOneSimulation
-              }}
-              close={onClose}
-            />
-          </>
-        ) : (
-          <Space>
-            <Typography.Text>Please upload a geometry first.</Typography.Text>
-          </Space>
-        )}
+        <Card>
+          <AddButton disabled={!geometry} onAdd={onAdd}>
+            Add boundary condition
+          </AddButton>
+          {geometry ? (
+            <>
+              <List
+                simulation={simulation}
+                swr={{ mutateOneSimulation: swr.mutateOneSimulation }}
+                onEdit={onEdit}
+              />
+              <BoundaryCondition
+                visible={boundaryConditionVisible}
+                simulation={simulation}
+                geometry={geometry.summary}
+                boundaryConditions={boundaryConditions}
+                boundaryCondition={boundaryCondition}
+                swr={{
+                  mutateOneSimulation: swr.mutateOneSimulation
+                }}
+                close={onClose}
+              />
+            </>
+          ) : (
+            <Space>
+              <Typography.Text>Please upload a geometry first.</Typography.Text>
+            </Space>
+          )}
+        </Card>
       </Layout.Content>
     </Layout>
   )

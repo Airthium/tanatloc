@@ -12,6 +12,11 @@ const Panel = ({ visible, title, children, onClose }) => {
   return (
     <Card
       className="Panel"
+      bodyStyle={{
+        maxHeight: 'calc(100vh - 65px)',
+        overflow: 'auto',
+        padding: 0
+      }}
       title={title}
       extra={<Button icon={<CloseOutlined />} onClick={onClose} />}
       style={{ display: visible ? 'block' : 'none' }}

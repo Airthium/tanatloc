@@ -203,7 +203,7 @@ const BoundaryCondition = ({
       maskClosable={false}
       width={300}
     >
-      <Space direction="vertical">
+      <Space direction="vertical" style={{ width: '100%' }}>
         <GoBack onClick={onClose} />
         <Card title="Boundary condition name">
           <Input value={current?.name || ''} onChange={onName} />
@@ -253,7 +253,7 @@ const BoundaryCondition = ({
           updateSelected={onSelected}
         />
         <Space
-          direction=""
+          direction="horizontal"
           style={{ width: '100%', justifyContent: 'flex-end' }}
         >
           <Button type="danger" onClick={onClose}>

@@ -146,7 +146,7 @@ const Selector = ({ geometry, alreadySelected, updateSelected }) => {
     <Card>
       <Space direction="vertical">
         Filters
-        <Space direction="" wrap={true}>
+        <Space direction="horizontal" wrap={true}>
           {colors.length > 1 && (
             <>
               <Tooltip title="Reset">
@@ -202,39 +202,40 @@ const Selector = ({ geometry, alreadySelected, updateSelected }) => {
                 return (
                   <Card
                     key={index}
-                    hoverable
                     style={{
-                      width: '180px',
                       marginBottom: '7px'
                     }}
                     bodyStyle={{
-                      padding: '10px',
-                      textAlign: 'center',
-                      borderLeft:
-                        '30px solid ' + Utils.rgbToRgba(element.color, 1)
+                      position: 'relative',
+                      padding: '10px 10px 10px 40px',
+                      borderWidth: '2px',
+                      borderStyle: 'solid',
+                      borderColor: selected.includes(element.uuid)
+                        ? '#c73100'
+                        : highlighted === element.uuid
+                        ? '#FAD114'
+                        : 'transparent',
+                      backgroundColor:
+                        highlighted === element.uuid ? '#FFFBE6' : 'transparent'
                     }}
                     onMouseEnter={() => onHighlight(element.uuid)}
                     onMouseLeave={onUnhighlight}
                     onClick={() => onSelect(element.uuid)}
                   >
-                    <Space direction="" wrap={true} align="center">
-                      <div
-                        style={{
-                          position: 'absolute',
-                          top: '13px',
-                          left: '190px',
-                          width: '20px',
-                          height: '20px',
-                          borderRadius: '10px',
-                          backgroundColor:
-                            highlighted === element.uuid
-                              ? '#0096C7'
-                              : selected.includes(element.uuid)
-                              ? '#c73100'
-                              : 'transparent'
-                        }}
-                      />
-                      {element.name}
+                    <Space direction="vertical">
+                      <div>
+                        <div
+                          style={{
+                            position: 'absolute',
+                            left: '-2px',
+                            top: '-2px',
+                            bottom: '-2px',
+                            width: '30px',
+                            backgroundColor: Utils.rgbToRgba(element.color, 1)
+                          }}
+                        />
+                        {element.name}
+                      </div>
                       {alreadySelected?.map((a) => {
                         if (a.selected.find((s) => s.uuid === element.uuid))
                           return (

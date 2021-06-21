@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import { Divider, Layout, Space, Spin, Typography } from 'antd'
+import { Card, Divider, Layout, Space, Spin, Typography } from 'antd'
 
 import { Error as ErrorNotification } from '@/components/assets/notification'
 
@@ -46,44 +46,51 @@ const About = ({ simulation, swr }) => {
     <Layout>
       <Layout.Content>
         {simulation ? (
-          <Space direction="vertical">
-            <Typography.Title
-              level={5}
-              editable={{
-                onChange: handleName,
-                maxLength: 50
-              }}
-            >
-              {simulation.name}
-            </Typography.Title>
-            <Typography.Text>
-              <b>Category:</b> {simulation.scheme?.category}
-            </Typography.Text>
-            <Typography.Text>
-              <b>Algorithm:</b> {simulation.scheme?.algorithm}
-            </Typography.Text>
-            <Typography.Text>
-              <b>Code:</b> {simulation.scheme?.code}
-            </Typography.Text>
+          <Card
+            title={
+              <Typography.Title
+                level={5}
+                editable={{
+                  onChange: handleName,
+                  maxLength: 50
+                }}
+              >
+                {simulation.name}
+              </Typography.Title>
+            }
+          >
+            <Space direction="vertical">
+              <Typography.Text>
+                <b>Category:</b> {simulation.scheme?.category}
+              </Typography.Text>
+              <Typography.Text>
+                <b>Algorithm:</b> {simulation.scheme?.algorithm}
+              </Typography.Text>
+              <Typography.Text>
+                <b>Code:</b> {simulation.scheme?.code}
+              </Typography.Text>
 
-            <div
-              dangerouslySetInnerHTML={{
-                __html: simulation.scheme?.description
-              }}
-            />
+              <div
+                dangerouslySetInnerHTML={{
+                  __html: simulation.scheme?.description
+                }}
+              />
 
-            <Divider type="horizontal" />
+              <Divider type="horizontal" />
 
-            <Delete
-              simulation={{ id: simulation.id, name: simulation.name }}
-              swr={{
-                reloadProject: swr.reloadProject,
-                delOneSimulation: swr.delOneSimulation
-              }}
-            />
-          </Space>
+              <Delete
+                simulation={{ id: simulation.id, name: simulation.name }}
+                swr={{
+                  reloadProject: swr.reloadProject,
+                  delOneSimulation: swr.delOneSimulation
+                }}
+              />
+            </Space>
+          </Card>
         ) : (
-          <Spin />
+          <Card>
+            <Spin />
+          </Card>
         )}
       </Layout.Content>
     </Layout>

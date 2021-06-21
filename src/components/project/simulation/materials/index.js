@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
-import { Layout, Space, Typography } from 'antd'
+import { Card, Layout, Space, Typography } from 'antd'
 
 import { AddButton } from '@/components/assets/button'
 import List from './list'
@@ -69,27 +69,29 @@ const Materials = ({ geometry, simulation, swr, setVisible }) => {
   return (
     <Layout>
       <Layout.Content>
-        <AddButton disabled={!geometry} onAdd={onAdd}>
-          Add material
-        </AddButton>
-        {geometry ? (
-          <>
-            <List simulation={simulation} swr={swr} onEdit={onEdit} />
-            <Material
-              visible={materialVisible}
-              simulation={simulation}
-              geometry={geometry.summary}
-              materials={materials}
-              material={material}
-              swr={swr}
-              close={onClose}
-            />
-          </>
-        ) : (
-          <Space>
-            <Typography.Text>Please upload a geometry first</Typography.Text>
-          </Space>
-        )}
+        <Card>
+          <AddButton disabled={!geometry} onAdd={onAdd}>
+            Add material
+          </AddButton>
+          {geometry ? (
+            <>
+              <List simulation={simulation} swr={swr} onEdit={onEdit} />
+              <Material
+                visible={materialVisible}
+                simulation={simulation}
+                geometry={geometry.summary}
+                materials={materials}
+                material={material}
+                swr={swr}
+                close={onClose}
+              />
+            </>
+          ) : (
+            <Space>
+              <Typography.Text>Please upload a geometry first</Typography.Text>
+            </Space>
+          )}
+        </Card>
       </Layout.Content>
     </Layout>
   )

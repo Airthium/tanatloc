@@ -121,8 +121,12 @@ const Geometry = ({ project, geometry, swr, close }) => {
           <Card
             title="Informations"
             actions={[
-              <DownloadButton loading={downloading} onDownload={onDownload} />,
-              <>
+              <DownloadButton
+                key="download"
+                loading={downloading}
+                onDownload={onDownload}
+              />,
+              <div key="edit">
                 <Edit
                   visible={editVisible}
                   geometry={{
@@ -132,8 +136,9 @@ const Geometry = ({ project, geometry, swr, close }) => {
                   onEdit={onEdit}
                 />
                 <EditButton onEdit={() => setEditVisible(true)} />
-              </>,
+              </div>,
               <DeleteButton
+                key="delete"
                 loading={deleting}
                 text="Are you sure to delete this geometry?"
                 onDelete={onDelete}

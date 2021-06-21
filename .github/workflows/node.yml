@@ -23,6 +23,8 @@ jobs:
         run: yarn test || true
       - name: Unsubscribe
         run: yarn next telemetry disable
+      - name: NextJS lint
+        run: yarn next lint
       - name: Build
         run: yarn build
       - name: Server build

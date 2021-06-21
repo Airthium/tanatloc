@@ -31,8 +31,13 @@ const List = ({ plugin, plugins, swr }) => {
           key={p.uuid}
           title={configuration.name?.value}
           actions={[
-            <Delete plugin={p} swr={{ delOnePlugin: swr.delOnePlugin }} />,
+            <Delete
+              key="delete"
+              plugin={p}
+              swr={{ delOnePlugin: swr.delOnePlugin }}
+            />,
             <PluginDialog
+              key="plugin"
               plugin={p}
               swr={{ mutateOnePlugin: swr.mutateOnePlugin }}
               edit={true}

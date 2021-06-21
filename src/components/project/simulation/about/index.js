@@ -60,6 +60,7 @@ const About = ({ simulation, swr }) => {
             }
             actions={[
               <Delete
+                key="delete"
                 simulation={{ id: simulation.id, name: simulation.name }}
                 swr={{
                   reloadProject: swr.reloadProject,

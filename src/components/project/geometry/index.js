@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
 import { useState } from 'react'
-import { Divider, Layout, Space, Typography } from 'antd'
+import { Card, Divider, Layout, Space, Typography } from 'antd'
 import { MathJax } from 'better-react-mathjax'
 
 import Loading from '@/components/loading'
@@ -118,60 +118,61 @@ const Geometry = ({ project, geometry, swr, close }) => {
     return (
       <Layout>
         <Layout.Content>
-          <Space direction="vertical" style={{ width: '100%' }}>
-            <Typography.Title level={5}>Informations</Typography.Title>
-            <Typography.Text>File: {geometry.name} </Typography.Text>
-            <Typography.Text>
-              Unit:{' '}
-              <MathJax inline dynamic>
-                $m$
-              </MathJax>
-            </Typography.Text>
-            {geometry.summary ? (
-              <>
-                {geometry.summary.solids && (
-                  <Typography.Text>
-                    Number of solids: {geometry.summary.solids.length}
-                  </Typography.Text>
-                )}
-                {geometry.summary.faces && (
-                  <Typography.Text>
-                    Number of faces: {geometry.summary.faces.length}
-                  </Typography.Text>
-                )}
-                {geometry.summary.edges && (
-                  <Typography.Text>
-                    Number of edges: {geometry.summary.edges.length}
-                  </Typography.Text>
-                )}
-              </>
-            ) : (
-              <Typography.Text>No summary available</Typography.Text>
-            )}
+          <Card title="Informations">
+            <Space direction="vertical" style={{ width: '100%' }}>
+              <Typography.Text>File: {geometry.name} </Typography.Text>
+              <Typography.Text>
+                Unit:{' '}
+                <MathJax inline dynamic>
+                  $m$
+                </MathJax>
+              </Typography.Text>
+              {geometry.summary ? (
+                <>
+                  {geometry.summary.solids && (
+                    <Typography.Text>
+                      Number of solids: {geometry.summary.solids.length}
+                    </Typography.Text>
+                  )}
+                  {geometry.summary.faces && (
+                    <Typography.Text>
+                      Number of faces: {geometry.summary.faces.length}
+                    </Typography.Text>
+                  )}
+                  {geometry.summary.edges && (
+                    <Typography.Text>
+                      Number of edges: {geometry.summary.edges.length}
+                    </Typography.Text>
+                  )}
+                </>
+              ) : (
+                <Typography.Text>No summary available</Typography.Text>
+              )}
 
-            <Divider type="horizontal" />
+              <Divider type="horizontal" />
 
-            <Space
-              direction="horizontal"
-              style={{ width: '100%', justifyContent: 'space-around' }}
-            >
-              <DownloadButton loading={downloading} onDownload={onDownload} />
-              <Edit
-                visible={editVisible}
-                geometry={{
-                  name: geometry?.name
-                }}
-                setVisible={setEditVisible}
-                onEdit={onEdit}
-              />
-              <EditButton onEdit={() => setEditVisible(true)} />
-              <DeleteButton
-                loading={deleting}
-                text="Are you sure to delete this geometry?"
-                onDelete={onDelete}
-              />
+              <Space
+                direction="horizontal"
+                style={{ width: '100%', justifyContent: 'space-around' }}
+              >
+                <DownloadButton loading={downloading} onDownload={onDownload} />
+                <Edit
+                  visible={editVisible}
+                  geometry={{
+                    name: geometry?.name
+                  }}
+                  setVisible={setEditVisible}
+                  onEdit={onEdit}
+                />
+                <EditButton onEdit={() => setEditVisible(true)} />
+                <DeleteButton
+                  loading={deleting}
+                  text="Are you sure to delete this geometry?"
+                  onDelete={onDelete}
+                />
+              </Space>
             </Space>
-          </Space>
+          </Card>
         </Layout.Content>
       </Layout>
     )

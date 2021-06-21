@@ -17,7 +17,16 @@ jest.mock('redux-devtools-extension', () => ({
   composeWithDevTools: jest.fn()
 }))
 
-jest.mock('redux-persist/lib/storage', () => ({}))
+jest.mock('redux-persist', () => ({
+  persistReducer: (params) => {
+    const storage = params.storage
+    storage.getItem('key')
+    storage.setItem('key', 'value')
+    storage.removeItem('key')
+  }
+}))
+
+jest.mock('redux-persist/lib/storage/createWebStorage', () => () => {})
 
 describe('store/store (server)', () => {
   test('null window', () => {

@@ -293,13 +293,13 @@ describe('components/project', () => {
 
     // Click new geometry
     const newGeometry = screen.getByRole('button', {
-      name: 'plus New geometry'
+      name: 'plus New Geometry'
     })
     fireEvent.click(newGeometry)
 
     // Click new simulation
     const newSimulation = screen.getByRole('button', {
-      name: 'plus New simulation'
+      name: 'plus New Simulation'
     })
     fireEvent.click(newSimulation)
 

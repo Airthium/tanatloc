@@ -389,7 +389,7 @@ const Project = () => {
                 disabled={true}
               >
                 <Button icon={<PlusOutlined />} onClick={addSimulation}>
-                  New simulation
+                  New Simulation
                 </Button>
               </Menu.Item>
               {simulationsRender}

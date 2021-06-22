@@ -127,11 +127,15 @@ const Dashboard = () => {
     setCurrentWorkspace(workspaceId)
 
     if (
-      (page === menuItems.workspaces.key || page === menuItems.shared.key) &&
-      !workspaceId
-    )
+      (!page && !workspaceId) ||
+      ((page === menuItems.workspaces.key || page === menuItems.shared.key) &&
+        !workspaceId)
+    ) {
       setCurrentKey(menuItems.welcome.key)
-    else setCurrentKey(page)
+    } else if (page && workspaceId) {
+      setCurrentWorkspace(workspaceId)
+      setCurrentKey(page)
+    } else setCurrentKey(page)
   }, [])
 
   // Error
@@ -241,136 +245,130 @@ const Dashboard = () => {
   /**
    * Render
    */
-  return (
-    <>
-      {loadingUser || loadingOrganizations || loadingWorkspaces || !user ? (
-        <Loading />
-      ) : (
-        <Layout>
-          <Layout.Sider theme="light" width="256" className="dashboard-sider">
-            <div className="logo">
-              <img src="/images/logo.svg" alt="Tanatloc" />
-            </div>
+  if (loadingUser || loadingOrganizations || loadingWorkspaces || !user)
+    return <Loading />
+  else
+    return (
+      <Layout>
+        <Layout.Sider theme="light" width="256" className="dashboard-sider">
+          <div className="logo">
+            <img src="/images/logo.svg" alt="Tanatloc" />
+          </div>
 
-            <Menu
-              className="dashboard-menu"
-              theme="light"
-              onClick={onSelect}
-              defaultOpenKeys={[menuItems.workspaces.key, menuItems.shared.key]}
-              mode="inline"
+          <Menu
+            className="dashboard-menu"
+            theme="light"
+            onClick={onSelect}
+            defaultOpenKeys={[menuItems.workspaces.key, menuItems.shared.key]}
+            mode="inline"
+          >
+            <Menu.SubMenu
+              key={menuItems.workspaces.key}
+              icon={<AppstoreOutlined />}
+              title={menuItems.workspaces.label}
+              onTitleClick={onMyWorkspaces}
             >
-              <Menu.SubMenu
-                key={menuItems.workspaces.key}
-                icon={<AppstoreOutlined />}
-                title={menuItems.workspaces.label}
-                onTitleClick={onMyWorkspaces}
-              >
-                {myWorkspaces?.map((workspace) => (
-                  <Menu.Item key={workspace.id}>{workspace.name}</Menu.Item>
-                ))}
-                <Menu.Item
-                  key="add"
-                  disabled={true}
-                  style={{ cursor: 'unset' }}
-                >
-                  <Add swr={{ addOneWorkspace }} />
-                </Menu.Item>
-              </Menu.SubMenu>
-              <Menu.SubMenu
-                key={menuItems.shared.key}
-                icon={<ShareAltOutlined />}
-                title={menuItems.shared.label}
-                onTitleClick={onSharedWorkspaces}
-              >
-                {sharedWorkspaces?.map((workspace) => (
-                  <Menu.Item key={workspace.id}>{workspace.name}</Menu.Item>
-                ))}
-              </Menu.SubMenu>
-              <Menu.Item key={menuItems.account.key} icon={<SettingOutlined />}>
-                {menuItems.account.label}
+              {myWorkspaces?.map((workspace) => (
+                <Menu.Item key={workspace.id}>{workspace.name}</Menu.Item>
+              ))}
+              <Menu.Item key="add" disabled={true} style={{ cursor: 'unset' }}>
+                <Add swr={{ addOneWorkspace }} />
               </Menu.Item>
+            </Menu.SubMenu>
+            <Menu.SubMenu
+              key={menuItems.shared.key}
+              icon={<ShareAltOutlined />}
+              title={menuItems.shared.label}
+              onTitleClick={onSharedWorkspaces}
+            >
+              {sharedWorkspaces?.map((workspace) => (
+                <Menu.Item key={workspace.id}>{workspace.name}</Menu.Item>
+              ))}
+            </Menu.SubMenu>
+            <Menu.Item key={menuItems.account.key} icon={<SettingOutlined />}>
+              {menuItems.account.label}
+            </Menu.Item>
+            <Menu.Item
+              key={menuItems.organizations.key}
+              icon={<TeamOutlined />}
+            >
+              {menuItems.organizations.label}
+            </Menu.Item>
+            {user.superuser && (
               <Menu.Item
-                key={menuItems.organizations.key}
-                icon={<TeamOutlined />}
+                key={menuItems.administration.key}
+                icon={<ControlOutlined />}
               >
-                {menuItems.organizations.label}
+                {menuItems.administration.label}
               </Menu.Item>
-              {user.superuser && (
-                <Menu.Item
-                  key={menuItems.administration.key}
-                  icon={<ControlOutlined />}
-                >
-                  {menuItems.administration.label}
-                </Menu.Item>
-              )}
-              <Menu.Item
-                key={menuItems.help.key}
-                icon={<QuestionCircleOutlined />}
-              >
-                {menuItems.help.label}
-              </Menu.Item>
-              <Menu.Divider className="dashboard-menu-divider" />
-              <Menu.Item
-                key={menuItems.logout.key}
-                danger={true}
-                icon={<LogoutOutlined />}
-              >
-                {menuItems.logout.label}
-              </Menu.Item>
-              <p className="version">
-                version: git-{process.env.NEXT_PUBLIC_SOURCE_BRANCH}-
-                {process.env.NEXT_PUBLIC_SOURCE_COMMIT}
-              </p>
-            </Menu>
-          </Layout.Sider>
+            )}
+            <Menu.Item
+              key={menuItems.help.key}
+              icon={<QuestionCircleOutlined />}
+            >
+              {menuItems.help.label}
+            </Menu.Item>
+            <Menu.Divider className="dashboard-menu-divider" />
+            <Menu.Item
+              key={menuItems.logout.key}
+              danger={true}
+              icon={<LogoutOutlined />}
+            >
+              {menuItems.logout.label}
+            </Menu.Item>
+            <p className="version">
+              version: git-{process.env.NEXT_PUBLIC_SOURCE_BRANCH}-
+              {process.env.NEXT_PUBLIC_SOURCE_COMMIT}
+            </p>
+          </Menu>
+        </Layout.Sider>
 
-          <Layout.Content className="no-scroll">
-            {(currentKey === menuItems.workspaces.key ||
-              currentKey === menuItems.shared.key) && (
-              <Workspace
-                loading={!workspaceToRender}
-                user={{ id: user?.id }}
-                workspace={workspaceToRender}
-                organizations={organizations}
-                swr={{ delOneWorkspace, mutateOneWorkspace }}
-              />
-            )}
-            {currentKey === menuItems.account.key && (
-              <Account
-                user={{
-                  email: user?.email,
-                  firstname: user?.firstname,
-                  lastname: user?.lastname,
-                  avatar: user?.avatar,
-                  authorizedplugins: user?.authorizedplugins
-                }}
-                swr={{ mutateUser }}
-              />
-            )}
-            {currentKey === menuItems.organizations.key && (
-              <Organizations
-                user={{ id: user?.id }}
-                organizations={organizations || []}
-                swr={{
-                  reloadOrganizations,
-                  addOneOrganization,
-                  delOneOrganization,
-                  mutateOneOrganization,
-                  loadingOrganizations
-                }}
-              />
-            )}
-            {currentKey === menuItems.administration.key && <Administration />}
-            {currentKey === menuItems.help.key && <Help />}
-            {currentKey === menuItems.empty.key && <Empty />}
-            {currentKey === menuItems.welcome.key && (
-              <Welcome swr={{ addOneWorkspace }} />
-            )}
-          </Layout.Content>
-        </Layout>
-      )}
-    </>
-  )
+        <Layout.Content className="no-scroll">
+          {(currentKey === menuItems.workspaces.key ||
+            currentKey === menuItems.shared.key) && (
+            <Workspace
+              loading={!workspaceToRender}
+              user={{ id: user?.id }}
+              page={currentKey}
+              workspace={workspaceToRender}
+              organizations={organizations}
+              swr={{ delOneWorkspace, mutateOneWorkspace }}
+            />
+          )}
+          {currentKey === menuItems.account.key && (
+            <Account
+              user={{
+                email: user?.email,
+                firstname: user?.firstname,
+                lastname: user?.lastname,
+                avatar: user?.avatar,
+                authorizedplugins: user?.authorizedplugins
+              }}
+              swr={{ mutateUser }}
+            />
+          )}
+          {currentKey === menuItems.organizations.key && (
+            <Organizations
+              user={{ id: user?.id }}
+              organizations={organizations || []}
+              swr={{
+                reloadOrganizations,
+                addOneOrganization,
+                delOneOrganization,
+                mutateOneOrganization,
+                loadingOrganizations
+              }}
+            />
+          )}
+          {currentKey === menuItems.administration.key && <Administration />}
+          {currentKey === menuItems.help.key && <Help />}
+          {currentKey === menuItems.empty.key && <Empty />}
+          {currentKey === menuItems.welcome.key && (
+            <Welcome swr={{ addOneWorkspace }} />
+          )}
+        </Layout.Content>
+      </Layout>
+    )
 }
 
 export default Dashboard

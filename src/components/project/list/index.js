@@ -26,6 +26,7 @@ const errors = {
  */
 const ProjectList = ({
   user,
+  page,
   workspace,
   projects,
   organizations,
@@ -104,7 +105,7 @@ const ProjectList = ({
   const openProject = (project) => {
     router.push({
       pathname: '/project',
-      query: { workspaceId: workspace.id, projectId: project.id }
+      query: { page: page, workspaceId: workspace.id, projectId: project.id }
     })
   }
 

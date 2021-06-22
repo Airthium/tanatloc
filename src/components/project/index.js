@@ -55,7 +55,7 @@ const errors = {
 const Project = () => {
   // Router
   const router = useRouter()
-  const { workspaceId, projectId } = router.query
+  const { page, workspaceId, projectId } = router.query
 
   // State
   const [geometryAdd, setGeometryAdd] = useState(false)
@@ -155,7 +155,7 @@ const Project = () => {
   const handleDashboard = () => {
     router.push({
       pathname: '/dashboard',
-      query: { workspaceId }
+      query: { page, workspaceId }
     })
   }
 

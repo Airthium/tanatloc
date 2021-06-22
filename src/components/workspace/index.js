@@ -38,7 +38,7 @@ const errors = {
  * Workspace
  * @param {Object} props Props
  */
-const Workspace = ({ loading, user, workspace, organizations, swr }) => {
+const Workspace = ({ loading, user, page, workspace, organizations, swr }) => {
   // State
   const [filter, setFilter] = useState()
 
@@ -161,6 +161,7 @@ const Workspace = ({ loading, user, workspace, organizations, swr }) => {
         <Layout.Content className="scroll">
           <ProjectList
             user={user}
+            page={page}
             workspace={workspace}
             projects={projects}
             organizations={organizations}

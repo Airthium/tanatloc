@@ -70,9 +70,6 @@ COPY yarn.lock ${INSTALL_PATH}/yarn.lock
 
 WORKDIR ${INSTALL_PATH}
 
-RUN export NEXT_PUBLIC_SOURCE_BRANCH=`git rev-parse --abbrev-ref HEAD`
-RUN export NEXT_PUBLIC_SOURCE_COMMIT=`git rev-parse --short HEAD`
-
 RUN yarn install --ignore-scripts
 RUN yarn copyassets
 RUN yarn babel . --only config,install,src/database/index.js --out-dir dist-install
@@ -145,6 +142,9 @@ COPY --from=builder ${INSTALL_PATH}/templates templates
 COPY --from=builder ${INSTALL_PATH}/plugins plugins
 COPY --from=builder ${INSTALL_PATH}/.next .next
 COPY --from=builder ${INSTALL_PATH}/yarn.lock yarn.lock
+
+RUN export NEXT_PUBLIC_SOURCE_BRANCH=`git rev-parse --abbrev-ref HEAD`
+RUN export NEXT_PUBLIC_SOURCE_COMMIT=`git rev-parse --short HEAD`
 
 RUN yarn
 RUN yarn next telemetry disable

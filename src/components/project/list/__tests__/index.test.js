@@ -85,8 +85,8 @@ describe('component/project/list', () => {
     fireEvent.mouseEnter(images[1])
 
     // Hide
-    const description = screen.getByText('description')
-    fireEvent.mouseLeave(description)
+    const descriptions = screen.getAllByText('description')
+    fireEvent.mouseLeave(descriptions[0])
 
     const newImages = screen.getAllByRole('img')
     fireEvent.click(newImages[0])

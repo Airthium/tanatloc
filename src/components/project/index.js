@@ -350,7 +350,7 @@ const Project = () => {
             <Menu.Divider className="menu-divider" />
 
             <Menu.Item className="project-title" key={'title'} disabled={true}>
-              <Typography.Paragraph ellipsis={{ tooltip: true }}>
+              <Typography.Paragraph ellipsis={{ tooltip: true, rows: 2 }}>
                 {project.title}
               </Typography.Paragraph>
             </Menu.Item>

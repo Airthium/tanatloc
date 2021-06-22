@@ -1,10 +1,11 @@
 .project-sider {
-  overflow-x: hidden;
-  overflow-y: auto;
+  overflow: hidden;
 }
 
 .project-sider .ant-layout-sider-children {
   border-right: 1px solid @tanatloc-light-grey;
+  height: 100vh;
+  overflow: hidden;
 }
 
 .project-sider .project-title {
@@ -17,6 +18,16 @@
 
 .project-sider .menu-submenu {
   background-color: #f0f0f0;
+  overflow: hidden;
+}
+
+.project-sider .menu-submenu > ul {
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.project-sider .menu-submenu-geometries {
+  max-height: 40vh;
 }
 
 .project-sider .menu-submenu .item-new {

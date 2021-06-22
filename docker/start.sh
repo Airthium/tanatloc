@@ -14,5 +14,9 @@ done
 # dB install
 node dist-install/install
 
+# Env
+export NEXT_PUBLIC_SOURCE_BRANCH=`git rev-parse --abbrev-ref HEAD`
+export NEXT_PUBLIC_SOURCE_COMMIT=`git rev-parse --short HEAD`
+
 # Start app
 yarn start

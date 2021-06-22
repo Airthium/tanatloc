@@ -338,9 +338,9 @@ const Project = () => {
             <img src="/images/logo.svg" alt="Tanatloc" />
           </div>
 
-          <Menu mode="inline" onClick={onMenuClick}>
+          <Menu mode="inline">
             <Menu.Item
-              key={'go-back'}
+              key={'menu-go-back'}
               disabled={true}
               style={{ cursor: 'unset', margin: '10px 0', paddingLeft: 10 }}
             >
@@ -354,10 +354,11 @@ const Project = () => {
                 {project.title}
               </Typography.Paragraph>
             </Menu.Item>
-
+          </Menu>
+          <Menu mode="inline" onClick={onMenuClick}>
             <Menu.SubMenu
-              className="menu-submenu"
               key={menuKeys.geometries}
+              className="menu-submenu menu-submenu-geometries"
               icon={
                 <Icon component={Geometries} style={{ maxWidth: '14px' }} />
               }
@@ -374,13 +375,13 @@ const Project = () => {
               </Menu.Item>
               {geometriesRender}
             </Menu.SubMenu>
-
+          </Menu>
+          <Menu mode="inline" onClick={onMenuClick}>
             <Menu.SubMenu
-              className="menu-submenu"
               key={menuKeys.simulations}
+              className="menu-submenu menu-submenu-simulations"
               icon={<CalculatorOutlined />}
               title={'Simulations (' + simulations.length + ')'}
-              style={{ backgroundColor: '#f0f0f0' }}
               disabled={!geometries.length}
             >
               <Menu.Item

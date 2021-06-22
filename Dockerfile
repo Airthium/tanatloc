@@ -103,7 +103,7 @@ RUN apt update \
     && apt upgrade -yq
 
 RUN apt install -yq \
-        curl gnupg g++ libpq-dev \
+        curl git gnupg g++ libpq-dev \
         make postgresql python3
 
 RUN apt install -yq \
@@ -142,9 +142,6 @@ COPY --from=builder ${INSTALL_PATH}/templates templates
 COPY --from=builder ${INSTALL_PATH}/plugins plugins
 COPY --from=builder ${INSTALL_PATH}/.next .next
 COPY --from=builder ${INSTALL_PATH}/yarn.lock yarn.lock
-
-RUN export NEXT_PUBLIC_SOURCE_BRANCH=`git rev-parse --abbrev-ref HEAD`
-RUN export NEXT_PUBLIC_SOURCE_COMMIT=`git rev-parse --short HEAD`
 
 RUN yarn
 RUN yarn next telemetry disable

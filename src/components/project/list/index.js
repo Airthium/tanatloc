@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
-import { Avatar, Card, Divider, Empty, Space, Typography } from 'antd'
+import { Avatar, Card, Carousel, Divider, Empty, Space, Typography } from 'antd'
 
 import Loading from '@/components/loading'
 import Share from '@/components/assets/share'
@@ -36,7 +36,6 @@ const ProjectList = ({
   // State
   const [loading, setLoading] = useState(true)
   const [list, setList] = useState([])
-  const [descriptionVisible, setDescriptionVisible] = useState(-1)
 
   // Router
   const router = useRouter()
@@ -56,9 +55,6 @@ const ProjectList = ({
           <img
             src={project && Buffer.from(project.avatar).toString()}
             alt="Tanatloc"
-            width="244px"
-            height="130px"
-            style={{ transform: 'scale(1.5)' }}
           />
         ) : (
           <Empty image="images/empty.svg" description={'No preview yet.'} />
@@ -68,10 +64,7 @@ const ProjectList = ({
         const title = <Typography.Text>{project.title}</Typography.Text>
 
         const description = project.description && (
-          <Typography.Paragraph
-            style={{ width: '244px', height: '130px', margin: 'auto' }}
-            ellipsis={{ rows: 6, tooltip: true }}
-          >
+          <Typography.Paragraph ellipsis={{ rows: 6, tooltip: true }}>
             {project.description}
           </Typography.Paragraph>
         )
@@ -129,20 +122,33 @@ const ProjectList = ({
               }
               className="project-card"
               cover={
-                <div
-                  onMouseEnter={() =>
-                    setDescriptionVisible(project.description ? project.id : -1)
-                  }
-                  onMouseLeave={() => setDescriptionVisible(-1)}
-                  onClick={() => openProject({ id: project.id })}
-                  style={{
-                    cursor: 'pointer'
-                  }}
-                >
-                  {descriptionVisible === project.id
-                    ? project.descriptionRender
-                    : project.snapshotRender}
-                </div>
+                project.descriptionRender ? (
+                  <Carousel
+                    className="project-carousel"
+                    autoplay
+                    dots={{ className: 'project-dots' }}
+                  >
+                    <div
+                      className="project-carousel-snapshot"
+                      onClick={() => openProject({ id: project.id })}
+                    >
+                      {project.snapshotRender}
+                    </div>
+                    <div
+                      className="project-carousel-description"
+                      onClick={() => openProject({ id: project.id })}
+                    >
+                      {project.descriptionRender}
+                    </div>
+                  </Carousel>
+                ) : (
+                  <div
+                    onClick={() => openProject({ id: project.id })}
+                    style={{ cursor: 'pointer' }}
+                  >
+                    {project.snapshotRender}
+                  </div>
+                )
               }
               actions={[
                 <Delete

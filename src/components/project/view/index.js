@@ -591,8 +591,8 @@ const ThreeView = ({ loading, project, part }) => {
       const initialAspect = camera.current.aspect
 
       // Snap render
-      const snapWidth = 2 * 244
-      const snapHeight = 2 * 130
+      const snapWidth = 2 * 260
+      const snapHeight = 2 * 156
 
       renderer.current.domElement.width = snapWidth
       renderer.current.domElement.height = snapHeight

@@ -4,7 +4,7 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
-    "start": "next start"
+    "start": "NODE_OPTIONS=\"--max_old_space_size=8192\" NEXT_PUBLIC_SOURCE_BRANCH=`git rev-parse --abbrev-ref HEAD` NEXT_PUBLIC_SOURCE_COMMIT=`git rev-parse --short HEAD` next start"
   },
   "dependencies": {
     "@hapi/iron": "6.0.0",

@@ -171,7 +171,8 @@ const Project = () => {
       selectGeometry(subKey)
     } else {
       // key === menuKeys.simulations
-      selectSimulation(subKey, keyPath.pop())
+      const type = keyPath.pop().split('&').pop()
+      selectSimulation(subKey, type)
     }
   }
 
@@ -295,7 +296,11 @@ const Project = () => {
       if (!child.done)
         icon = <ExclamationCircleOutlined style={{ color: 'orange' }} />
       categories[child.index] = (
-        <Menu.Item className="menu-item-with-line" key={key} icon={icon}>
+        <Menu.Item
+          className="menu-item-with-line"
+          key={s.id + '&' + key}
+          icon={icon}
+        >
           {child.title}
         </Menu.Item>
       )
@@ -308,7 +313,7 @@ const Project = () => {
       >
         <Menu.Item
           className="menu-item-with-line"
-          key={'about'}
+          key={s.id + '&about'}
           icon={<CheckCircleOutlined style={{ color: 'green' }} />}
         >
           About

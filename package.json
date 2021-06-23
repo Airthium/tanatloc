@@ -29,7 +29,7 @@
     "prettier": "prettier -l '**/*.{js,json,md,css}'",
     "prettier:write": "prettier --write '**/*.{js,json,md,css}'",
     "server-build": "babel . --only config,models,modules,server,plugins,src/auth,src/database,src/lib,src/route,src/services,templates --out-dir dist-server && cp plugins/denso/template/solderFilling.edp.ejs dist-server/plugins/denso/template/solderFilling.edp.ejs",
-    "start": "NODE_OPTIONS=\"--max_old_space_size=8192\" NEXT_PUBLIC_SOURCE_BRANCH=`git rev-parse --abbrev-ref HEAD` NEXT_PUBLIC_SOURCE_COMMIT=`git rev-parse --short HEAD` next start",
+    "start": "NODE_OPTIONS=\"--max_old_space_size=8192\" next start",
     "test": "jest --coverage --silent",
     "workflow": ".github/workflows/node.local.sh"
   },

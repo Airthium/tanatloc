@@ -50,7 +50,12 @@ ENV DB_HOST $DB_HOST
 ARG DB_PORT
 ENV DB_PORT $DB_PORT
 
-COPY .git ${INSTALL_PATH}/.git
+ARG SOURCE_BRANCH
+ENV NEXT_PUBLIC_SOURCE_BRANCH=$SOURCE_BRANCH
+
+ARG SOURCE_COMMIT
+ENV NEXT_PUBLIC_SOURCE_COMMIT=$SOURCE_COMMIT
+
 COPY config ${INSTALL_PATH}/config
 COPY install ${INSTALL_PATH}/install
 COPY models ${INSTALL_PATH}/models
@@ -71,6 +76,7 @@ RUN yarn install --ignore-scripts
 RUN yarn copyassets
 RUN yarn babel . --only config,install,src/database/index.js --out-dir dist-install
 RUN yarn next telemetry disable
+
 RUN yarn build
 
 ## RELEASE ##
@@ -94,6 +100,12 @@ ENV DB_HOST $DB_HOST
 
 ARG DB_PORT
 ENV DB_PORT $DB_PORT
+
+ARG SOURCE_BRANCH
+ENV NEXT_PUBLIC_SOURCE_BRANCH=$SOURCE_BRANCH
+
+ARG SOURCE_COMMIT
+ENV NEXT_PUBLIC_SOURCE_COMMIT=$SOURCE_COMMIT
 
 # Install packages
 RUN apt update \
@@ -128,7 +140,6 @@ WORKDIR ${APP_PATH}
 
 COPY docker/package.json package.json
 
-COPY --from=builder ${INSTALL_PATH}/.git .git
 COPY --from=builder ${INSTALL_PATH}/dist-install dist-install
 COPY --from=builder ${INSTALL_PATH}/modules modules
 COPY --from=builder ${INSTALL_PATH}/public public

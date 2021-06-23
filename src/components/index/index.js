@@ -98,6 +98,10 @@ const Index = () => {
             </Typography.Title>
           </Layout.Content>
         </Layout>
+        <p className="version">
+          version: git-{process.env.NEXT_PUBLIC_SOURCE_BRANCH}-
+          {process.env.NEXT_PUBLIC_SOURCE_COMMIT}
+        </p>
       </Layout.Content>
     </Layout>
   )

@@ -15,7 +15,7 @@
     "path": false
   },
   "scripts": {
-    "build": "next build",
+    "build": "NEXT_PUBLIC_SOURCE_BRANCH=`git rev-parse --abbrev-ref HEAD` NEXT_PUBLIC_SOURCE_COMMIT=`git rev-parse --short HEAD` next build",
     "clean": "rimraf dist/ dist-server/ out/ .next/",
     "copyassets": "mkdir -p public/three/libs/draco && cp -Rf node_modules/three/examples/js/libs/draco/* public/three/libs/draco/",
     "depcheck": "depcheck",

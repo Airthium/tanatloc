@@ -117,7 +117,7 @@ const Project = () => {
     if (!loadingProject && !loadingGeometries) {
       if (!geometries.length) addGeometry()
     }
-  }, [])
+  }, [loadingProject, loadingGeometries, geometries])
 
   // Update geometry
   useEffect(() => {

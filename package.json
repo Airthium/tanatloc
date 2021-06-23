@@ -19,7 +19,7 @@
     "clean": "rimraf dist/ dist-server/ out/ .next/",
     "copyassets": "mkdir -p public/three/libs/draco && cp -Rf node_modules/three/examples/js/libs/draco/* public/three/libs/draco/",
     "depcheck": "depcheck",
-    "dev": "next",
+    "dev": "NODE_OPTIONS=\"--max_old_space_size=8192\" NEXT_PUBLIC_SOURCE_BRANCH=`git rev-parse --abbrev-ref HEAD` NEXT_PUBLIC_SOURCE_COMMIT=`git rev-parse --short HEAD` next",
     "doc": "jsdoc -c config/jsdoc/conf.json",
     "docker": "docker build . -t tanatloc/tanatloc:latest",
     "electron-build": "yarn server-build && nextron build && electron-builder install-app-deps",
@@ -29,7 +29,7 @@
     "prettier": "prettier -l '**/*.{js,json,md,css}'",
     "prettier:write": "prettier --write '**/*.{js,json,md,css}'",
     "server-build": "babel . --only config,models,modules,server,plugins,src/auth,src/database,src/lib,src/route,src/services,templates --out-dir dist-server && cp plugins/denso/template/solderFilling.edp.ejs dist-server/plugins/denso/template/solderFilling.edp.ejs",
-    "start": "next start",
+    "start": "NODE_OPTIONS=\"--max_old_space_size=8192\" NEXT_PUBLIC_SOURCE_BRANCH=`git rev-parse --abbrev-ref HEAD` NEXT_PUBLIC_SOURCE_COMMIT=`git rev-parse --short HEAD` next start",
     "test": "jest --coverage --silent",
     "workflow": ".github/workflows/node.local.sh"
   },

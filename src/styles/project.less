@@ -1,4 +1,5 @@
 .project-sider {
+  height: 100vh;
   overflow: hidden;
 }
 
@@ -8,7 +9,39 @@
   overflow: hidden;
 }
 
-.project-sider .project-title {
+.ant-menu-inline,
+.ant-menu-vertical,
+.ant-menu-vertical-left {
+  border-right: none !important;
+}
+
+.project-sider .ant-menu-root.menu {
+  max-height: calc(100vh - 195px);
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.project-sider .menu-logo {
+  margin: 0;
+  padding: 0 !important;
+  height: 64px;
+  cursor: unset;
+}
+
+.project-sider .menu-goback .goback-button {
+  border: none;
+}
+
+.project-sider .menu-goback .goback-button-icon {
+  color: @tanatloc-primary-color;
+}
+
+.project-sider .menu-divider {
+  background-color: @tanatloc-primary-color;
+  margin: 0 20px;
+}
+
+.project-sider .menu-title {
   margin-top: 15px;
   line-height: 1.5em;
   cursor: unset;
@@ -18,16 +51,6 @@
 
 .project-sider .menu-submenu {
   background-color: #f0f0f0;
-  overflow: hidden;
-}
-
-.project-sider .menu-submenu > ul {
-  overflow-x: hidden;
-  overflow-y: auto;
-}
-
-.project-sider .menu-submenu-geometries {
-  max-height: 40vh;
 }
 
 .project-sider .menu-submenu .item-new {
@@ -78,25 +101,6 @@
   max-width: calc(100% - 24px) !important;
   overflow: hidden;
   text-overflow: ellipsis;
-}
-
-.ant-menu-inline,
-.ant-menu-vertical,
-.ant-menu-vertical-left {
-  border-right: none !important;
-}
-
-.project-sider .goback-button {
-  border: none;
-}
-
-.project-sider .goback-button-icon {
-  color: @tanatloc-primary-color;
-}
-
-.project-sider .menu-divider {
-  background-color: @tanatloc-primary-color;
-  margin: 0 20px;
 }
 
 .project-card {

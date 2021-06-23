@@ -334,12 +334,14 @@ const Project = () => {
     return (
       <Layout hasSider={true}>
         <Layout.Sider theme="light" className="project-sider" width={256}>
-          <div className="logo">
-            <img src="/images/logo.svg" alt="Tanatloc" />
-          </div>
-
           <Menu mode="inline">
+            <Menu.Item className="menu-logo" disabled={true}>
+              <div className="logo">
+                <img src="/images/logo.svg" alt="Tanatloc" />
+              </div>
+            </Menu.Item>
             <Menu.Item
+              className="menu-goback"
               key={'menu-go-back'}
               disabled={true}
               style={{ cursor: 'unset', margin: '10px 0', paddingLeft: 10 }}
@@ -349,16 +351,16 @@ const Project = () => {
 
             <Menu.Divider className="menu-divider" />
 
-            <Menu.Item className="project-title" key={'title'} disabled={true}>
+            <Menu.Item className="menu-title" key={'title'} disabled={true}>
               <Typography.Paragraph ellipsis={{ tooltip: true, rows: 2 }}>
                 {project.title}
               </Typography.Paragraph>
             </Menu.Item>
           </Menu>
-          <Menu mode="inline" onClick={onMenuClick}>
+          <Menu className="menu" mode="inline" onClick={onMenuClick}>
             <Menu.SubMenu
               key={menuKeys.geometries}
-              className="menu-submenu menu-submenu-geometries"
+              className="menu-submenu menu-geometries"
               icon={
                 <Icon component={Geometries} style={{ maxWidth: '14px' }} />
               }
@@ -375,11 +377,9 @@ const Project = () => {
               </Menu.Item>
               {geometriesRender}
             </Menu.SubMenu>
-          </Menu>
-          <Menu mode="inline" onClick={onMenuClick}>
             <Menu.SubMenu
               key={menuKeys.simulations}
-              className="menu-submenu menu-submenu-simulations"
+              className="menu-submenu menu-simulations"
               icon={<CalculatorOutlined />}
               title={'Simulations (' + simulations.length + ')'}
               disabled={!geometries.length}

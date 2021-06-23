@@ -48,6 +48,7 @@ describe('lib/tools', () => {
     mockRmdir.mockReset()
 
     mockThreeToGLB.mockReset()
+    mockThreeToGLB.mockImplementation(() => ({}))
 
     mockToThree.mockReset()
   })

@@ -78,7 +78,7 @@ const Registration = () => {
   if (loadingSystem) return <Loading.Simple />
   else
     return (
-      <Space direction="vertical">
+      <Space direction="vertical" style={{ width: '100%' }}>
         <Card title="Signup">
           <Checkbox checked={system?.allowsignup} onChange={onAllowSignup}>
             Allow signup

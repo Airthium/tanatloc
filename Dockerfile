@@ -10,14 +10,11 @@ ENV APP_PATH /home/app
 
 # Install packages
 RUN apt update \
-    && apt upgrade -yq
-
-RUN apt install -yq \
+    && apt upgrade -yq \
+    && apt install -yq \
         apt-utils curl \
         git gnupg g++ libpq-dev \
-        make python3
-
-RUN apt install -yq \
+        make python3 \
         nodejs node-gyp
 
 # Yarn
@@ -100,13 +97,10 @@ ENV DB_PORT $DB_PORT
 
 # Install packages
 RUN apt update \
-    && apt upgrade -yq
-
-RUN apt install -yq \
+    && apt upgrade -yq \
+    && apt install -yq \
         curl git gnupg g++ libpq-dev \
-        make postgresql python3
-
-RUN apt install -yq \
+        make postgresql python3 \
         nodejs node-gyp
 
 # Yarn

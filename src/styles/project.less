@@ -9,10 +9,14 @@
   overflow: hidden;
 }
 
-.ant-menu-inline,
-.ant-menu-vertical,
-.ant-menu-vertical-left {
+.project-sider .ant-menu-inline,
+.project-sider .ant-menu-vertical,
+.project-sider .ant-menu-vertical-left {
   border-right: none !important;
+}
+
+.project-sider .ant-menu-item-selected::after {
+  border-right: 3px solid @tanatloc-primary-color !important;
 }
 
 .project-sider .ant-menu-root.menu {

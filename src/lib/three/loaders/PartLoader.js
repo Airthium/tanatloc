@@ -61,6 +61,9 @@ const PartLoader = (mouseMoveEvent, mouseDownEvent) => {
       face.material.clippingPlanes = [clippingPlane]
     }
 
+    // Transparency
+    setTransparent(object, transparent)
+
     object.boundingBox = computeBoundingBox(object)
     object.dispose = () => dispose(object)
 

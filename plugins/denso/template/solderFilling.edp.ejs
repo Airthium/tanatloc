@@ -42,7 +42,7 @@ macro reinitialize(pphigg, mmagg, ffout) {
 int verbosity0 = verbosity;
 
 int verbositylevel = <%= parameters.verbosityLevel.children[0].value || parameters.verbosityLevel.children[0].default -%>;
-string stepfile = "<%= geometry.file.fileName -%>";
+string stepfile = "<%= geometry.file -%>";
 <%
 const wet = boundaryConditions.wet.values
 const wall = boundaryConditions.wall.values

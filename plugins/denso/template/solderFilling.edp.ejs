@@ -24,7 +24,6 @@ load "hpddm"
 
 <%# Headers -%>
 <%- include('/blobs/headers.edp.ejs') -%>
-ofstream logOut("process_log.log", append);
 
 load "interfaceneighbors"
 load "eulerchar"                    // C++ version
@@ -35,10 +34,9 @@ include "macro_ddm.idp"             // additional DDM functions
 macro def(i)i// EOM                         // scalar field definition
 macro init(i)i// EOM                        // scalar field initialization
 
-macro reinitialize(pphigg, mmagg, ffout) {
+macro reinitialize(pphigg, mmagg) {
   if(debugvtk1 && mpirank == 0) {
-    ffout << "L26 : reinitialize " << mmagg << endl;
-    ffout.flush;
+    appendLog("L26 : reinitialize " + mmagg);
   }
   pphigg = ((pphigg * mmagg > 1.0) ? 1.0 :
 	    ((pphigg * mmagg) < (-1.0) ? (-1.0): (pphigg * mmagg)));
@@ -253,44 +251,41 @@ func int outputvtk(int nstep, mesh3 &TThh, real[int] &pphii)
 // end of js rendered variables
 
 mpiBarrier(comm);
-if (mpirank == 0) {
-  logOut << ":: SolderFilling.edp :: parameters ::" << endl;
-  logOut << "** verbositylevel = " << verbositylevel << endl;
-  logOut << "** continueflag = " << continueflag << endl; // 0
-  logOut << "** stepfile = " << stepfile << endl;
-  logOut << "** jobname = " << jobname << endl;
-  logOut << "** kappa = " << kappa1 << endl;    // 1e-3
-  logOut << ":: shrinkinterior = " << shrinkinterior << endl;
-  logOut << "** nrestart = " << nrestart << endl;       // 0
-  logOut << ":: volmag0 = " << volmag0 << endl;         // 1.012
-  logOut << ":: volmag1 = " << volmag1 << endl;         // 1.1
-  logOut << "** countsweep = " << countsweep << endl;   // 100
-  logOut << "** countbisect = " << countbisect << endl; // 1
-  logOut << ":: refine0 = " << refine0 << endl;         // 5
-  logOut << ":: refine1 = " << refine1 << endl;         // 3
-  logOut << "** itrnewton0 = " << itrnewton0 << endl;   // 20
-  logOut << "** itrnewton1 = " << itrnewton1 << endl;   // 50
-  logOut << "** Tmax0 = " << Tmax0 << endl;             // 1000
-  logOut << "** Tmax1 = " << Tmax1 << endl;             // 10
-  logOut << "** cangle = " << cangle << endl;           // 40.0
-  logOut << "** canglerestarted = " << canglerestarted << endl;  // 90.0
-  logOut << "** pointsize0 = " << pointsize0 << endl;   // -1
-  logOut << ":: pointsize = "  << pointsize  << endl;   // 0.1
-  logOut << "** hsizemag = " << hsizemag << endl;       // 1.0
-  logOut << ":: itrGMRES0 = " << itrGMRES0 << endl;     // 25
-  logOut << ":: itrGMRES1 = " << itrGMRES1 << endl;     // 150
-  logOut << ":: dt0 = " << dt0 << endl;                 // 0.5
-  logOut << ":: dt1 = " << dt1 << endl;                 // 0.25
-  logOut << ":: dtmax = " << dtmax << endl;             // 64.0
-  logOut << ":: gmshmax = " << gmshmax << endl;         // 2
-  logOut << ":: epsnewton = " << epsnewton << endl;     // 1e-6
-  logOut << ":: epsGMRES = " << epsGMRES << endl;       // 1e-11
-  logOut << "** Wet = " <<  wet << endl;
-  logOut << "** Wall = " << wall << endl;
-  logOut << "** Liquid = " << liquid << endl;
-  logOut << "** npaart = " << npart << endl;
-  logOut.flush;
-}
+appendLog(":: SolderFilling.edp :: parameters ::");
+appendLog("** verbositylevel = " + verbositylevel);
+appendLog("** continueflag = " + continueflag); // 0
+appendLog("** stepfile = " + stepfile);
+appendLog("** jobname = " + jobname);
+appendLog("** kappa = " + kappa1);    // 1e-3
+appendLog(":: shrinkinterior = " + shrinkinterior);
+appendLog("** nrestart = " + nrestart);       // 0
+appendLog(":: volmag0 = " + volmag0);         // 1.012
+appendLog(":: volmag1 = " + volmag1);         // 1.1
+appendLog("** countsweep = " + countsweep);   // 100
+appendLog("** countbisect = " + countbisect); // 1
+appendLog(":: refine0 = " + refine0);         // 5
+appendLog(":: refine1 = " + refine1);         // 3
+appendLog("** itrnewton0 = " + itrnewton0);   // 20
+appendLog("** itrnewton1 = " + itrnewton1);   // 50
+appendLog("** Tmax0 = " + Tmax0);             // 1000
+appendLog("** Tmax1 = " + Tmax1);             // 10
+appendLog("** cangle = " + cangle);           // 40.0
+appendLog("** canglerestarted = " + canglerestarted);  // 90.0
+appendLog("** pointsize0 = " + pointsize0);   // -1
+appendLog(":: pointsize = "  + pointsize);   // 0.1
+appendLog("** hsizemag = " + hsizemag);       // 1.0
+appendLog(":: itrGMRES0 = " + itrGMRES0);     // 25
+appendLog(":: itrGMRES1 = " + itrGMRES1);     // 150
+appendLog(":: dt0 = " + dt0);                 // 0.5
+appendLog(":: dt1 = " + dt1);                 // 0.25
+appendLog(":: dtmax = " + dtmax);             // 64.0
+appendLog(":: gmshmax = " + gmshmax);         // 2
+appendLog(":: epsnewton = " + epsnewton);     // 1e-6
+appendLog(":: epsGMRES = " + epsGMRES);       // 1e-11
+appendLog("** Wet = " +  wet);
+appendLog("** Wall = " + wall);
+appendLog("** Liquid = " + liquid);
+appendLog("** npaart = " + npart);
 
 meshN stackThG0, stackThG1, stackThG2;
 meshN stackThb0, stackThb1, stackThb2;
@@ -490,14 +485,12 @@ func int generatebackgroundmesh(real ppointsizee)
 	 + workingpath + "out.msh -log "
 	 + workingpath + "gmsh.log > /dev/null");
     gmsherror(workingpath+"gmsh.log", nsurfaceerr, surfaceerr);
-    logOut << "gmsh error = " << nsurfaceerr[0] << endl;
+    appendLog("gmsh error = " + nsurfaceerr[0]);
     if (nsurfaceerr[0] > 0) {
       for (int i = 0; i < nsurfaceerr[0]; i++) {
-	logOut << surfaceerr[i] << " " << endl;
+		appendLog(" - " + surfaceerr[i]);
 	surfacelist[nsurfaces++] = surfaceerr[i];
       }
-      logOut << endl;
-      logOut.flush;
       //      nsurfaces += nsurfaceerr[0];
     }
     
@@ -510,33 +503,30 @@ func int generatebackgroundmesh(real ppointsizee)
 	   + workingpath + "out.msh -log "
 	   + workingpath + "gmsh.log > /dev/null");
       gmsherror(workingpath+"gmsh.log", nsurfaceerr, surfaceerr);
-      logOut << "gmsh error = " << nsurfaceerr[0] << endl;
+      appendLog("gmsh error = " + nsurfaceerr[0]);
       if (nsurfaceerr[0] > 0) {
 	for (int i = 0; i < nsurfaceerr[0]; i++) {
-	  logOut << surfaceerr[i] << " " << endl;
+		appendLog(" - " + surfaceerr[i]);
 	  surfacelist[nsurfaces++] = surfaceerr[i];
 	}
-	logOut << endl;
 	//      nsurfaces += nsurfaceerr[0];
       }
       else {
 	gmshflag = true;
 	break;
       }
-      logOut.flush;
       gmshcount++;
     }
     if (gmshcount >= gmshmax && gmshflag == false) {
-      logOut << "L673: gmsh error : exit" << endl;
+		appendLog("L673: gmsh error : exit");
       flagerror = 1;
     }
     ThG0 = gmshload3(workingpath+"out.msh");         // fine mesh for background
-    logOut << ThG0.nv << " " << ThG0.nt << endl;
+    appendLog(ThG0.nv + " " + ThG0.nt);
     if(debugvtk1) {
       savevtk(workingpath+"background."+vtkcount+".vtu", ThG0,
 	      bin = false);
-      logOut << "L1478: vtu = " << vtkcount << endl;
-      logOut.flush;
+		  appendLog("L1478: vtu = " + vtkcount);
       vtkcount++;
     }
   }  // if (mpirank == 0)
@@ -562,7 +552,7 @@ func int generatebackgroundmesh(real ppointsizee)
 
 func int refinemesh(mesh3 &ThG00, mesh3 &Tha00,
 		    matrix &D00h, matrix &R00gl, real[int] &pphig, int nnlayer,
-		    ofstream &ffout, bool fflaganisoo)
+		    bool fflaganisoo)
 {
   mesh3 ThG11 = ThG00;
   mesh3 Tha11 = Tha00;
@@ -580,8 +570,7 @@ func int refinemesh(mesh3 &ThG00, mesh3 &Tha00,
   VhGP2 phigp2;
   phigp2[] = pphig;  // to access FE value from an array
   if (mpirank == 0) {
-    ffout << "L406 : refinemesh " << nnlayer << " " << fflaganisoo << endl;
-    ffout.flush;
+    appendLog("L406 : refinemesh " + nnlayer + " " + fflaganisoo);
   }
     real [int] uua(Tha0.nv);
     VhG0 uu, rref0;
@@ -637,9 +626,8 @@ func int refinemesh(mesh3 &ThG00, mesh3 &Tha00,
 	  }
 	  klevel1 = klevel + 1;
 	  klevel0 = klevel / 2;
-	  ffout << "L612 level : " << klevel << " " << klevel0 << " "
-	       << klevel1 << endl;
-	  ffout.flush;
+	  appendLog("L612 level : " + klevel + " " + klevel0 + " "
+	       + klevel1);
 	  klevel1 = klevel1 > 4 ? 4 : klevel1;  // to save gmsh cost
 	}
 	if (nlayer == -1) {                           // for setinitial()
@@ -663,16 +651,15 @@ func int refinemesh(mesh3 &ThG00, mesh3 &Tha00,
 		    (uuu < 5.01 ? (hsize * 0.5) :
 		     (uuu < 8.01 ? (hsize * 1.5) : hsize * hmagmax)));
 	}
-	ffout << "## background data "<< endl;
+	appendLog("## background data ");
 	if(debugvtk1) {
 	  savevtk(workingpath+"reff."+vtkcount+".vtu", ThG00,
 		  reff, dataname = "reff", order = vtkorder, bin = false);
-	  ffout << "## L559 : vtu = " << vtkcount << endl;
-	  ffout.flush;
+		  appendLog("## L559 : vtu = " + vtkcount);
 	  vtkcount++;
 	}
 
-	ffout << "L445: creating pos file for background mesh " << nlayer;
+	appendLog("L445: creating pos file for background mesh " + nlayer);
 	{
 	  ofstream ff(workingpath+"bgm.pos");
 	  ff << "View \"backgournd mesh\" {" << endl;
@@ -693,8 +680,7 @@ func int refinemesh(mesh3 &ThG00, mesh3 &Tha00,
 	  } // loop : k
 	  ff << "};" << endl;
 	}
-	ffout << "... end " << endl;
-	ffout.flush;
+	appendLog("... end ");
 	//
 	bool gmshflag = false;
 	gmshcount = 0;
@@ -707,27 +693,25 @@ func int refinemesh(mesh3 &ThG00, mesh3 &Tha00,
 	       + workingpath + "bgm.pos -log "
 	       + workingpath + "gmsh.log > /dev/null");
 	  gmsherror(workingpath+"gmsh.log", nsurfaceerr, surfaceerr);
-	  ffout << "L474: gmsh error = " << nsurfaceerr[0] << endl;
+	  appendLog("L474: gmsh error = " + nsurfaceerr[0]);
 	  if (nsurfaceerr[0] > 0) {
 	    for (int i = 0; i < nsurfaceerr[0]; i++) {
-	      ffout << surfaceerr[i] << " " << endl;
+			appendLog(surfaceerr[i] + " ");
 	      surfacelist[nsurfaces++] = surfaceerr[i];	  
 	    }
-	    ffout << endl;
+	    appendLog("");
 	    //	  nsurfaces += nsurfaceerr[0];
 	  }
 	  else {
 	    gmshflag = true;
 	    break;
 	  }
-	  ffout.flush;
 	  gmshcount++;
 	} // while (!gmshflag || gmshcount < gmshnmax)
 	//	gmsherror("gmsh.log", nsurfaceerr, surfaceerr);
 	ThGrefined = gmshload3(workingpath+"out.msh");
-	ffout << "L593 nv = " << ThGrefined.nv << " nt = "
-	      << ThGrefined.nt << endl;
-	ffout.flush;
+	appendLog("L593 nv = " + ThGrefined.nv + " nt = "
+	      + ThGrefined.nt);
 	ThG11 = ThGrefined;
       } // mpirank == 0
       broadcast(processor(0, comm), ThG11);
@@ -735,8 +719,7 @@ func int refinemesh(mesh3 &ThG00, mesh3 &Tha00,
 	if(debugvtk1) {
 	  savevtk(workingpath+"background."+vtkcount+".vtu", ThG11,
 		  dataname = "back", bin = false);
-	  ffout << "## L688 : vtu = " << vtkcount << endl;
-	  ffout.flush;
+		  appendLog("## L688 : vtu = " + vtkcount);
 	  vtkcount++;
 	}
       }
@@ -751,13 +734,11 @@ func int refinemesh(mesh3 &ThG00, mesh3 &Tha00,
 				 aniso=1);
 	  m11[] = met;
 	  ThG11=mmg3d(ThG11,metric=m11[],hgrad = (fflaganisoo ? 1.75 : 1.25));
-	  ffout << "mmg3d an-isotropic mesh refinement " << ThG1.nv << endl;
-	  ffout.flush;
+	  appendLog("mmg3d an-isotropic mesh refinement " + ThG1.nv);
 	  if(debugvtk1) {
 	    savevtk(workingpath+"background."+vtkcount+".vtu", ThG11,
 		    dataname = "mesh", bin = false);
-	    ffout << "## 758 : vtu = " << vtkcount << endl;
-	    ffout.flush;
+			appendLog("## 758 : vtu = " + vtkcount);
 	    vtkcount++;
 	  }
 	}
@@ -774,14 +755,13 @@ func int refinemesh(mesh3 &ThG00, mesh3 &Tha00,
     //
     R00gl = interpolate(Vha11, VhGP1);
     D00h = [D1]; // diagonal matrix
-    ffout << "L567 : " << mpirank << " : " << D00h.n << " " << D00h.m << " : "
-	  << R00gl.n  << " " << R00gl.m  << endl;
-    ffout.flush;
+    appendLog("L567 : " + mpirank + " : " + D00h.n + " " + D00h.m + " : "
+	  + R00gl.n  + " " + R00gl.m);
     /*
     if (nlayer == -2 && (pointsize0 < 0.0)) {
       real ratio = exp(log((DOFmin / 4.0) / VhGP2.ndof) / 3.0);
       if (mpirank == 0) {
-	ffout << "L711 " << ratio << endl;
+	appendLog("L711 " + ratio);
       }
       hsizemag /= ratio;
     }
@@ -791,8 +771,7 @@ func int refinemesh(mesh3 &ThG00, mesh3 &Tha00,
 
 func int findneighbor(mesh3 &ThG11, real[int] &pphig,
 		      real[int] &layerg0, int nlayer0,
-		      real[int] &layerg1, int nlayer1,
-		      ofstream &ffout)
+		      real[int] &layerg1, int nlayer1)
 {
   if(mpirank == 0) {
     fespace VhG11(ThG11, P2);    
@@ -830,9 +809,7 @@ func real volumeofliquid(mesh3 &Thbb, matrix &Rgll, matrix &Dhh,
   mpiAllReduce(localsum, globalsum, comm, mpiSUM); //
   etime01 = mpiWtime();
   if (mpirank == 0) {
-    logOut << "L580: volume integration " << etime01 - etime00 << " sec."
-	 << endl;
-    logOut.flush;
+    appendLog("L580: volume integration " + (etime01 - etime00) + " sec.");
   }
   return globalsum;
 }
@@ -853,8 +830,7 @@ func int increasevol(mesh3 &ThG11, mesh3 &ThG1b,  matrix &Rgll, matrix &Dhh,
     etime00 = mpiWtime();
     oldphig = pphig > 0.0 ? pphig * vmag : pphig;    
     etime01 = mpiWtime();		
-    logOut << mpirank << " L454 " << etime01 - etime00 << " sec." << endl;
-    logOut.flush;
+    appendLog(mpirank + " L454 " + (etime01 - etime00) + " sec.");
     vol1 = volumeofliquid(ThG1b, Rgll, Dhh, oldphig[], volflag);
     if (vol1 > vol0) {
       vmag1 = vmag;
@@ -863,10 +839,9 @@ func int increasevol(mesh3 &ThG11, mesh3 &ThG1b,  matrix &Rgll, matrix &Dhh,
       vmag0 = vmag;
     }
     if (mpirank == 0) {
-      logOut << "increasevol:" << i << " vmag= " << vmag << "vol = "
-	   << vol << " vol0 = "
-	   << vol0 << "vol1 = " << vol1 << endl;
-      logOut.flush;
+		appendLog("increasevol:" + i + " vmag= " + vmag + "vol = "
+	   + vol + " vol0 = "
+	   + vol0 + "vol1 = " + vol1);
     }
   }
   
@@ -890,8 +865,7 @@ func int decreasevol(mesh3 &ThG11, mesh3 &ThG1b,  matrix &Rgll, matrix &Dhh,
     etime00 = mpiWtime();
     oldphig = pphig < 0.0 ? pphig * vmag : pphig;    
     etime01 = mpiWtime();		
-    logOut << mpirank << " L454 " << etime01 - etime00 << " sec." << endl;
-    logOut.flush;
+    appendLog(mpirank + " L454 " + (etime01 - etime00) + " sec.");
     vol1 = volumeofliquid(ThG1b, Rgll, Dhh, oldphig[], volflag);
     if (vol1 < vol0) {
       vmag1 = vmag;
@@ -900,10 +874,9 @@ func int decreasevol(mesh3 &ThG11, mesh3 &ThG1b,  matrix &Rgll, matrix &Dhh,
       vmag0 = vmag;
     }
     if (mpirank == 0) {
-      logOut << "decreasevol:" << i << " vmag= " << vmag << "vol = "
-	   << vol << " vol0 = "
-	   << vol0 << "vol1 = " << vol1 << endl;
-      logOut.flush;
+		appendLog("decreasevol:" + i + " vmag= " + vmag + "vol = "
+	   + vol + " vol0 = "
+		+ vol0 + "vol1 = " + vol1);
     }
   }
   
@@ -929,8 +902,7 @@ func int setinitial(mesh3 &TThG0i, mesh3 &TThG1, real[int] &pphig11, bool first)
   if (debugvtk1) {
     savevtk(workingpath+"ini."+vtkcount+".vtu", TThG0i, phigib,
 	    dataname = "phi", order = vtkorder, bin = false);
-    logOut << "## L754 : vtu = " << vtkcount << endl;
-    logOut.flush;
+		appendLog("## L754 : vtu = " + vtkcount);
     vtkcount++;
   }
   int[int] ww(VhG0i.ndof);
@@ -1005,12 +977,10 @@ func int setinitial(mesh3 &TThG0i, mesh3 &TThG1, real[int] &pphig11, bool first)
     }
   }
   if (verbositylevel > 2 ) {
-    logOut << "## L793 nTTG0inbe " << nTThG0inbe << endl;
-    logOut.flush;
+    appendLog("## L793 nTTG0inbe " + nTThG0inbe);
   }
   for (int ll = 0; ll < 0; ll++) {
-    logOut << "inflation " << ll << endl;
-    logOut.flush;
+    appendLog("inflation " + ll );
     pphig0 = 0;
     for (int k = 0; k < TThG1.nt; k++) {
       bool flag = false;
@@ -1035,7 +1005,7 @@ func int setinitial(mesh3 &TThG0i, mesh3 &TThG1, real[int] &pphig11, bool first)
     }
     savevtk(workingpath+"ini."+vtkcount+".vtu",
 	    TThG1, phigdebug, dataname = "phi", order = vtkorder, bin = false);
-    logOut << "## L837 " << vtkcount << endl;
+		appendLog("## L837 " + vtkcount);
     vtkcount++;
   }
   real vol = int3d(TThG1)(1.0) / TThG1.nt;
@@ -1087,7 +1057,7 @@ func int setinitial(mesh3 &TThG0i, mesh3 &TThG1, real[int] &pphig11, bool first)
     }
     savevtk(workingpath+"ini."+vtkcount+".vtu",
 	    TThG1, phigdebug, dataname = "phi", order = vtkorder, bin = false);
-    logOut << "## L893 " << vtkcount << endl;
+		appendLog("## L893 " + vtkcount);
     vtkcount++;
   }
   real[int] ppphig11(pphig11.n);
@@ -1104,10 +1074,9 @@ func int setinitial(mesh3 &TThG0i, mesh3 &TThG1, real[int] &pphig11, bool first)
       real nnuT = nuTi(xx, yy, zz);
       real sgn = (phigxyz >= 0.0) && (nnuT > 0.1) ? 1.0 : (-1.0);
       if (verbositylevel > 2 ) {
-        logOut << "L910: " << i << " " << xx << " " << yy << " " << zz
-	     << " phigib = " << phigxyz
-	     << " nuTi " << nnuT << " sgn " << sgn << endl;
-        logOut.flush;
+        appendLog("L910: " + i + " " + xx + " " + yy + " " + zz
+	     + " phigib = " + phigxyz
+	     + " nuTi " + nnuT + " sgn " + sgn);
       }
       //      phigdebug[][i] = sgn;
       bool flag = false;
@@ -1178,30 +1147,27 @@ func int setinitial(mesh3 &TThG0i, mesh3 &TThG1, real[int] &pphig11, bool first)
 	if ((lambdaa > -0.0005) && (lambdab > -0.0005)
 	    && ((lambdaa + lambdab) < 1.0005)) {
           if (verbositylevel > 2 && mpirank == 0) {
-	    logOut << "L906: " << mpirank << " :: " << i << " " << kkk << " found: "
-	       << k << "/" << nTThG0inbe << " ( "
-	       << lambdaa << " " << lambdab << " " << (lambdaa + lambdab)
-	       << " ) " << sqn << " " << sgn;
-	    logOut.flush;
+			appendLog("L906: " + mpirank + " :: " + i + " " + kkk + " found: "
+	       + k + "/" + nTThG0inbe + " ( "
+	       + lambdaa + " " + lambdab + " " + (lambdaa + lambdab)
+	       + " ) " + sqn + " " + sgn);
 	  }
 	  ppphig11[i] = sqn * (-1.0);
 	  if (abs(sqn) >= 1.0) { // bofbof
             if (verbositylevel > 2  && mpirank == 0) {
-	      logOut << "too far" << endl;
-	      logOut.flush;
+				appendLog("too far");
 	    }
 	    flag = false;
 	  }
 	  else if (sgn * sqn > 0.0) {
 	    if (verbositylevel > 2  && mpirank == 0) {
-	      logOut << "error in sign " << phigxyz << endl;
-	      logOut.flush;
+			appendLog("error in sign " + phigxyz);
 	    }
 	    flag = false;
 	  }
 	  else {
 	    if (verbositylevel > 2  && mpirank == 0) {
-	      logOut << endl;
+			appendLog("");
 	      flag = true;
 	    }
 	    break;	    
@@ -1210,10 +1176,9 @@ func int setinitial(mesh3 &TThG0i, mesh3 &TThG1, real[int] &pphig11, bool first)
       } // loop : kkk over surface elements
       if (!flag) {
         if (verbositylevel > 2 && mpirank == 0) {
-	  logOut << "L929: " << i << " " << xx << " " << yy << " " << zz
-	       << " not found ";
-	  logOut << distmin << " " << sgn << endl;
-	  logOut.flush;
+			appendLog("L929: " + i + " " + xx + " " + yy + " " + zz
+	       + " not found ");
+		   appendLog(distmin + " " + sgn);
 	}
 	ppphig11[i] = distmin * sgn;
       }  // if (flag)
@@ -1225,12 +1190,12 @@ func int setinitial(mesh3 &TThG0i, mesh3 &TThG1, real[int] &pphig11, bool first)
   if (debugvtk1) {
     savevtk(workingpath+"sgn."+vtkcount+".vtu",
 	    TThG1, phigdebug, dataname = "phi", order = vtkorder, bin = false);
-    logOut << "L980 " << vtkcount << endl;
+		appendLog("L980 " + vtkcount);
     vtkcount++;
     phigdebug[] = pphig11;	
     savevtk(workingpath+"phig11."+vtkcount+".vtu",
 	    TThG1, phigdebug, dataname = "phi", order = vtkorder, bin = false);
-    logOut << "L980 " << vtkcount << endl;
+		appendLog("L980 " + vtkcount);
     vtkcount++;
   }
   for (int i = 0; i < TThG1.nv; i++) {
@@ -1296,13 +1261,11 @@ real[int] phiga, phiglayer, phiglayer1, phigsaved0, phigsaved1;
     }
   }
   if (mpirank == 0) {
-    logOut << "L1177 : " << hsize0 << " -> ";
-    logOut.flush;
+    appendLog("L1177: " + hsize0 + " -> ");
   }
   hsize0 = sqrt(ledge);
   if (mpirank == 0) {
-    logOut << hsize0 << endl;
-    logOut.flush;
+    appendLog("" + hsize0);
   }
 }
 
@@ -1327,35 +1290,30 @@ if (!flagrestarted) { //generatino of initial data
 	     + workingpath + "out."+mm+".msh -log "
 	     + workingpath + "gmsh.log > /dev/null");
 	gmsherror(workingpath+"gmsh.log", nsurfaceerr, surfaceerr);
-	logOut << "L711: gmsh error = " << nsurfaceerr[0] << endl;
-	logOut.flush;
+	appendLog("L711: gmsh error = " + nsurfaceerr[0]);
 	if (nsurfaceerr[0] > 0) {
-	  logOut << "initial geometry is wrong" << endl;
-	  logOut.flush;
+		appendLog("initial geometry is wrong");
 	  exit(-1);
 	  for (int i = 0; i < nsurfaceerr[0]; i++) {
-	    logOut << surfaceerr[i] << " " << endl;
+	    appendLog(surfaceerr[i] + " ");
 	    surfacelist[nsurfaces++] = surfaceerr[i];
 	  }
-	  logOut << endl;
+	  appendLog("");
 	  //      nsurfaces += nsurfaceerr[0];
 	}
 	else {
 	  gmshflag = true;
 	  break;
 	}
-	logOut.flush;
 	gmshcount++;
       }
 
       ThG0i = gmshload3(workingpath+"out."+mm+".msh");
-      logOut << "uniform " << ThG0i.nv << " " << ThG1.nt << endl;
-      logOut.flush;
+      appendLog("uniform " + ThG0i.nv + " " + ThG1.nt);
       if (debugvtk1) {
 	savevtk(workingpath+"ini."+vtkcount+".vtu", ThG0i,
 		dataname = "phi", order = vtkorder, bin = false);
-	logOut << "## L739 : vtu = " << vtkcount << endl;
-	logOut.flush;
+		appendLog("## L739 : vtu = " + vtkcount);
 	vtkcount++;
       }
     } // if (mpirank == 0)
@@ -1367,13 +1325,13 @@ if (!flagrestarted) { //generatino of initial data
 
     real phiscale = 1.0 / phig11[].max;
     phig = phig11 * phiscale;             // interpolation from P1 to P2
-    reinitialize(phig, (mm == 0 ? 2.0 : 10.0), logOut) // MACRO
+    reinitialize(phig, (mm == 0 ? 2.0 : 10.0)) // MACRO
 //
     if (mpirank == 0) {
       if (debugvtk1) {
 	savevtk(workingpath+"banded."+vtkcount+".vtu", ThG1,
 		phig, dataname = "phi", order = vtkorder, bin = false);
-	logOut << "## L1206 : vtu = " << vtkcount << endl;
+	appedLog("## L1206 : vtu = " + vtkcount);
 	vtkcount++;
       }
     } // if (mpirank == 0)
@@ -1386,7 +1344,7 @@ if (!flagrestarted) { //generatino of initial data
     phiga = phig[];
     refinemesh(ThG1, Tha1, D1h, R1gl, phiga,
 	       (mm == 0 ? -1 : -2),
-	       logOut, false);
+	       false);
 
     {
       meshN Th = ThG1; // dummy mesh for initialization
@@ -1405,15 +1363,13 @@ if (!flagrestarted) { //generatino of initial data
       Rgl = interpolate(Vh, Vhg);
       Dh = [D]; // diagonal matrix
       if (mpirank == 0) {
-	logOut << "L1252 : starting interpolation ... ";
-	logOut.flush;
+		appendLog("L1252 : starting interpolation ... ");
       }
       searchMethod = 0;
       phi = phig;
       searchMethod = 1;      
       if (mpirank == 0) {
-	logOut << " end." << endl;
-	logOut.flush;
+		appendLog(" end.");
       }     
       real[int] w(totaldof), wwi(localdof);
       wwi = Dh * phi[] ; //
@@ -1423,15 +1379,13 @@ if (!flagrestarted) { //generatino of initial data
     }
     //    phig = phig; // on the New ThG1
     if (mpirank == 0) {
-      logOut << "end" << endl;
-      logOut.flush;
+		appendLog("end");
     }
     if(mpirank == 0) {
       if(debugvtk1) {
 	savevtk(workingpath+"banded."+vtkcount+".vtu", ThG1,
 		phig, dataname = "phi", order = vtkorder, bin = false);
-	logOut << "## L1257 : vtu = " << vtkcount << endl;
-	logOut.flush;
+		appendLog("## L1257 : vtu = " + vtkcount);
 	vtkcount++;
       }
     }
@@ -1455,15 +1409,13 @@ if (!flagrestarted) { //generatino of initial data
     Rgl = interpolate(Vh, Vhg);
     Dh = [D]; // diagonal matrix
     if (mpirank == 0) {
-      logOut << "L1252 : starting interpolation ... ";
-      logOut.flush;
+		appendLog("L1252 : starting interpolation ... ");
     }
     searchMethod = 0;
     phi = phig;
     searchMethod = 1;
     if (mpirank == 0) {
-      logOut << " end." << endl;
-      logOut.flush;
+		appendLog(" end.");
     }
     real[int] w(totaldof), wwi(localdof), wwwi(localdof);
     wwi = Dh * phi[] ; //wwwi;
@@ -1473,8 +1425,7 @@ if (!flagrestarted) { //generatino of initial data
   }
   //    phig = phig; // on the New ThG1
   if (mpirank == 0) {
-    logOut << "end" << endl;
-    logOut.flush;
+    appendLog("end");
   }
 
   phig = (phig == 0.0 ? 0.0 : (phig > 0.0 ? 1.0 : -1.0)); 
@@ -1483,8 +1434,7 @@ if (!flagrestarted) { //generatino of initial data
     if(debugvtk1) {
       savevtk(workingpath+"banded."+vtkcount+".vtu", ThG1,
 	      phig, dataname = "phi", order = vtkorder, bin = false);
-      logOut << "## L1295 : vtu = " << vtkcount << endl;
-      logOut.flush;
+		  appendLog("## L1295 : vtu = " + vtkcount);
       vtkcount++;
     }
   }
@@ -1506,13 +1456,11 @@ if (!flagrestarted) { //generatino of initial data
    if (mpirank == 0) {
      try {
        ThG1 = readmesh3(workingpath+"phi."+nrestart+".mesh");
-       logOut << "L1262: restarted " << nrestart << endl;
-       logOut.flush;
+       appendLog("L1262: restarted " + nrestart);
        fileerror = 0;
      }
      catch (...) {
-       logOut << "file phi." + nrestart + ".mesh cannot be open : exit" << endl;
-        logOut.flush;
+		appendLog("file phi." + nrestart + ".mesh cannot be open : exit");
        fileerror = 1;
      }
    }
@@ -1527,8 +1475,7 @@ if (!flagrestarted) { //generatino of initial data
        fileerror = 0;
      }
      catch (...) {
-       logOut << "file phi." + nrestart + ".data cannot be open : exit" << endl;
-       logOut.flush;
+		appendLog("file phi." + nrestart + ".data cannot be open : exit");
        fileerror = 1;
      }
    }
@@ -1765,10 +1712,9 @@ if (flagrestarted) {
   nliquid = ivars[4];
   nair = ivars[5];
   if (mpirank == 0) {
-    logOut << "##  angle = "
-	 << canglerestarted << " " << nliquid << " " << nair << " "
-	 << neulerc << " : " << endl;
-    logOut.flush;
+    appendLog("##  angle = "
+	 + canglerestarted + " " + nliquid + " " + nair + " "
+	 + neulerc + " : ");
   }
   nliquid0 = nliquid;
   nliquid1 = nliquid;    
@@ -1826,12 +1772,10 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
       }
       updateangle = (updateangle && (kappa == kappa1)
 		     && (cangle < dangle)) ? true : false;
-      logOut << "L1534 " << mm
-	   << " kappa " << kappa
-	   << " updateangle " << updateangle
-	   << " updatevol " << updatevol << " " << cangle << " " << dangle
-	   << endl;
-      logOut.flush;
+			 appendLog("L1534 " + mm
+	   + " kappa " + kappa
+	   + " updateangle " + updateangle
+	   + " updatevol " + updatevol + " " + cangle + " " + dangle);
       
       if (skipupdate && (kappa == kappa1)) { // what is the role of skipupdate?
 	skipupdate = false;
@@ -1886,11 +1830,10 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
 	    }
 	    if (dt < dtmax && kappa == kappa1) {
 	      if (mpirank == 0) {
-		logOut << "L1569: dtmagminrepeated " << dtmagminrepeated
-		     << (tkeep ? " keep " : " ")
-		     << (tenlarge ? "tenlarge" : "")
-		     << " dt = " << dt;
-		logOut.flush;
+			appendLog("L1569: dtmagminrepeated " + dtmagminrepeated
+		     + (tkeep ? " keep " : " ")
+		     + (tenlarge ? "tenlarge" : "")
+		     + " dt = " + dt);
 	      }
 	      if (tenlarge) {
 		tkeep = false;
@@ -1912,8 +1855,7 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
 		dt *= dtmag; // sqrt(2.0);
 	      }
 	      if (mpirank == 0) {
-		logOut << "-> " << dt << endl;
-		logOut.flush;
+			appendLog("-> " + dt);
 	      }
 	    }
 	    if (tenlarge) {
@@ -1921,10 +1863,9 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
 		real vol1 = volumeofliquid(Tha, Rgl, Dh, phig[], 2);
 		if (vol1 < (volstarted - voldelta0)) {
 		  if (mpirank == 0) {
-		    logOut << "L1647 : inccreasing volume during "
-			 << "angle decrement : vol1 = " << vol1
-			 << " -> " << volstarted << endl;
-		    logOut.flush;
+		    appendLog("L1647 : inccreasing volume during "
+			 + "angle decrement : vol1 = " + vol1
+			 + " -> " + volstarted);
 		  }	      
 		  increasevol(ThGlobal, Tha, Rgl, Dh, vol1, volstarted,
 			      reps, phig[], 3);
@@ -1941,14 +1882,13 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
 	      refineskip = false;
 	    }
 	    if (mpirank == 0) {
-	      logOut << "L1611: " << mm << " " << ll << " Tmax = " << Tmax
-		   << " dt = " << dt
-		   << " angle = " << dangle << " " << ll
-		   << " refineflag= " << refineflag
-		   << " refineskip = " << refineskip
-		   << " kappa = " << kappa
-		   << " flagansio = " << flaganiso << endl;		  
-	      logOut.flush;
+			appendLog("L1611: " + mm + " " + ll + " Tmax = " + Tmax
+		   + " dt = " + dt
+		   + " angle = " + dangle + " " + ll
+		   + " refineflag= " + refineflag
+		   + " refineskip = " + refineskip
+		   + " kappa = " + kappa
+		   + " flagansio = " + flaganiso);
 	    }
 	  }
 	  else { // (!gradientflow)
@@ -1989,33 +1929,30 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
 	    }
 	    // modification for	the 1st step of restarting from anisotropic mesh
 	    if (mpirank == 0) {
-	      logOut << "L1644 : angle = " << dangle << " " << ll
-		   << " refineflag= " << refineflag
-		   << " refineskip = " << refineskip
-		   << " kappa = " << kappa
-		   << " flagansio = " << flaganiso << endl;		  
-	      logOut.flush;
+			appendLog("L1644 : angle = " + dangle + " " + ll
+		   + " refineflag= " + refineflag
+		   + " refineskip = " + refineskip
+		   + " kappa = " + kappa
+		   + " flagansio = " + flaganiso);
 	    }
 	  }
 	  ll++;	  
 	  convvol = false;
 	  broadcast(processor(0,comm),phig[]);
 	  if (mpirank == 0 && (!gradientflow)) {
-	    logOut << "Newton iteration with refinement = " << ll << endl;
-	    logOut.flush;
+	    appendLog("Newton iteration with refinement = " + ll);
 	  }
 	  if (refineflag) { //
 	    if (!refineskip) {
 	      phiga.resize(phig[].n);
 	      phiga = phig[];
 	      if (mpirank == 0) {
-		logOut << "L1730 : refinelevel = " << refinelevel << endl;
-		logOut.flush;
+			appendLog("L1730 : refinelevel = " + refinelevel);
 	      }
 	      refinemesh(ThG1, Tha1, D1h, R1gl,
 			 phiga,
 			 refinelevel,
-			 logOut, flaganiso);
+			 flaganiso);
 	      countrefined++;
 	      ThGlobal = ThG1;
 	      refineflag = false;
@@ -2039,9 +1976,8 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
 	    Rgl = interpolate(Vh, Vhg);
 	    Dh = [D]; // diagonal matrix
 	    if (mpirank == 0) {
-	      logOut << "L1699: total = " << " " << totaldof << " local = "
-		   << localdof << endl;
-	      logOut.flush;
+			appendLog("L1699: total = " + " " + totaldof + " local = "
+		   + localdof);
 	    }
 	    mpiBarrier(comm) ;
 	    
@@ -2068,8 +2004,7 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
 		savevtk(workingpath+"refined."+vtkcount+".vtu",
 			ThGlobal, phig, dataname = "phi", order = vtkorder,
 			bin = false);
-		logOut << "L1728: vtu = " << vtkcount << endl;
-		logOut.flush;
+			appendLog("L1728: vtu = " + vtkcount);
 		vtkcount++;
 	      }
 	    }
@@ -2079,7 +2014,7 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
 	    phi0.resize(Vha.ndof);
 	    phiglayer.resize(phig[].n);
 	    phiglayer1.resize(phig[].n);     
-	    findneighbor(ThG1, phig[], phiglayer, 3, phiglayer1, 4, logOut);
+	    findneighbor(ThG1, phig[], phiglayer, 3, phiglayer1, 4);
 	    phizg1 = 0.0;	  
 	    phizg0 = 0.0;
 	    phizg0[] = phiglayer1;
@@ -2095,9 +2030,8 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
 	    vol01 = volumeofliquid(Tha, Rgl, Dh, phig[], 1); // 10 Jan.2021
 	    vol00 = volumeofliquid(Tha, Rgl, Dh, phig[], 2); // 10 Jan.2021
 	    if (mpirank == 0) {
-	      logOut << "L1754: L1 constraint = " << vol0 << " volume = "
-		   << vol01 << " " << vol00 << endl;
-	      logOut.flush;
+			appendLog("L1754: L1 constraint = " + vol0 + " volume = "
+		   + vol01 + " " + vol00);
 	    }
 	    solvercount++;	    
 	    if (solvercount == 1) {
@@ -2105,8 +2039,8 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
 	      voldelta = volstarted * (volmag1 - 1.0); // negative for decrease
 	      updateangle = false;	      
 	      if (mpirank == 0) {
-		logOut << "L1806: " << solvercount << " "
-		     << volstarted << " " << voldelta << endl;
+			appendLog("L1806: " + solvercount + " "
+		     + volstarted + " " + voldelta);
 	      }
 	    }
 	    //	    if (mm == 1 && !(flagrestarted)) {
@@ -2121,23 +2055,23 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
 	    if (abs(vol1 - volstarted) > volmag1 * volstarted) {
 	      if (dangle > cangle) {
 		if (mpirank == 0) {
-		  logOut << "L1815: same anlge " << dangle;
+			appendLog("L1815: same anlge " + dangle);
 		}
 		Tmax = Tmax0;	      
 		if (mpirank == 0) {
-		  logOut << "-> " << dangle << " Tmax = " << Tmax << endl;
+			appendLog("-> " + dangle + " Tmax = " + Tmax);
 		}
 	      }
 	    }
 	    else {
 	      if (dangle > cangle) {
 		if (mpirank == 0) {
-		  logOut << "L1829: update anlge " << dangle;
+			appendLog("L1829: update anlge " + dangle);
 		}
 		dangle += delangle;		
 		Tmax = Tmax0;	      
 		if (mpirank == 0) {
-		  logOut << "-> " << dangle << " Tmax = " << Tmax << endl;
+			appendLog("-> " + dangle + " Tmax = " + Tmax);
 		}
 	      }
 	      updateangle = false;
@@ -2146,20 +2080,18 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
 	    updatevol = false;	    
 	    costheta = cos(dangle * pi / 180.0);	    
 	    if (mpirank == 0) {
-	      logOut << "L1766 : vloume = " << volstarted << " -> " << vol1;
+			appendLog("L1766 : vloume = " + volstarted  " -> " + vol1);
 	    }
 	    if (vol1 > (volstarted + voldelta0)) {
 	      if (mpirank == 0) {
-		logOut << " decreasing volume during angle decrement" << endl;
-		logOut.flush;
+			appendLog(" decreasing volume during angle decrement");
 	      }
 	      decreasevol(ThGlobal, Tha, Rgl, Dh, vol1, volstarted, reps,
 			  phig[], 1);
 	    }
 	    else if (vol1 < (volstarted - voldelta0)) {
 	      if (mpirank == 0) {
-		logOut << " increasing volume during angle decrement" << endl;
-		logOut.flush;
+			appendLog(" increasing volume during angle decrement");
 	      }	      
 	      increasevol(ThGlobal, Tha, Rgl, Dh, vol1, volstarted, reps,
 			  phig[], 1);
@@ -2174,9 +2106,8 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
 	      real vvol2 = (vvol0 + vvol1) / 2.0;
 	      phig[] = phigsaved0;
 	      if (mpirank == 0) {
-		logOut << "target volume = " << vvol2 << " in ( " << vvol0
-		     << " " << vvol1 << ")" << endl;
-		logOut.flush;
+			appendLog("target volume = " + vvol2 + " in ( " + vvol0
+		     + " " + vvol1 + ")");
 	      }
 	      increasevol(ThGlobal, Tha, Rgl, Dh, vvol0, vvol2, reps, phig[],
 			  1);
@@ -2187,12 +2118,11 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
 	      //                                  // starting from Heaviside
 	      vol = volumeofliquid(Tha, Rgl, Dh, phig[], 1);
 	      if (mpirank == 0) {
-		logOut << "initial vloume = " << vol << endl;
+			appendLog("initial vloume = " + vol);
 	      }
 	      real vol0 = vol + voldelta * volmag; // ivol0 / 100.0;
 	      if (mpirank == 0) {
-		logOut << "target volume = " << vol0 << " from " << vol << endl;
-		logOut.flush;
+			appendLog("target volume = " + vol0 + " from " + vol);
 	      }
 	      if (voldelta > 0.0) {
 		increasevol(ThGlobal, Tha, Rgl, Dh, vol, vol0, reps, phig[], 1);
@@ -2208,8 +2138,8 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
 	  vol01 = volumeofliquid(Tha, Rgl, Dh, phig[], 1); // 10 Jan.2021
 	  vol00 = volumeofliquid(Tha, Rgl, Dh, phig[], 2); // 10 Jan.2021
 	  if (mpirank == 0) {
-	    logOut << "L1811: L1 constraint = " << vol0 << " volume = " << vol01
-		 << " " << vol00 << endl;
+	    appendLog("L1811: L1 constraint = " + vol0 + " volume = " + vol01
+		 + " " + vol00);
 	  }
 	  phi[] = Rgl * phig[];
 	  
@@ -2217,17 +2147,16 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
 	  oldphi[] = phi[];
 	  //	  if (!gradientflow) {
 	  if (mpirank == 0) {
-	    logOut << "L1822 angleflag = " << angleflag << " angle = " << dangle
-		 << endl;
-	    logOut.flush;
+	    appendLog("L1822 angleflag = " + angleflag + " angle = " + dangle);
+	    ;
 	  }
 	  if (angleflag) {	  
 	    phiglayer.resize(phig[].n);
 	    phiglayer1.resize(phig[].n);
 	    findneighbor(ThG1, phig[], phiglayer, 9, phiglayer1, 10, logOut);
 	    if (mpirank == 0) {
-	      logOut << "L1839 " << costheta << endl;
-	      logOut.flush;
+	      appendLog("L1839 " + costheta );
+	      ;
      	      phigbc = 0.0; // reallocate on the mesh TGlobal
      	      phigbc[] = phiglayer;
 	    }
@@ -2240,12 +2169,12 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
 	  }
 	  if (mpirank == 0) {
 	    if (gradientflow) {
-	      logOut << "L1842 : t = " << tt << " dt = " << dt << endl;
+	      appendLog("L1842 : t = " + tt + " dt = " + dt );
 	    }
 	    else {
-	      logOut << "Newton refinement " << ll << " " << itrrefine << endl;
+	      appendLog("Newton refinement " + ll + " " + itrrefine );
 	    }
-	    logOut.flush;
+	    ;
 	  }
 	  bool newtonfail = true;
 	  skipeuler = false;
@@ -2332,13 +2261,13 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
 	    mpiAllReduce(phigminl, phigming, comm, mpiMIN);	    
 	    // vol =volumeofliquid(Tha, Rgl, Dh, phig[], false); //
 	    if (mpirank == 0) {
-	      logOut << k << " GMRES " << walltime2 - walltime1
-		   << " / " << walltime3 - walltime0
-		   << " : lambda = "<< lmbd << " : "
-		   << vol << " " << phi0gl2
-		   << " max = " << phig[].max << " min = " << phig[].min
-		   << endl;
-	      logOut.flush;
+	      appendLog(k + " GMRES " + walltime2 - walltime1
+		   + " / " + walltime3 - walltime0
+		   + " : lambda = "+ lmbd + " : "
+		   + vol + " " + phi0gl2
+		   + " max = " + phig[].max + " min = " + phig[].min
+		   );
+	      ;
 	    }
 	    mpiBarrier(comm) ;
 	    //
@@ -2384,12 +2313,12 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
 		flaganiso = false;
 		restoreflag = false;		  		  
 		if(mpirank == 0) {
-		  logOut << "L1956: refine mesh during Newton = "
-		       << countrefined << " "
-		       << (skipupdate ? " skip " : " shrink ")
-		       << (restoreflag ? " restore" : " continue ")
-		       << endl;
-		  logOut.flush;
+		  appendLog("L1956: refine mesh during Newton = "
+		       + countrefined + " "
+		       + (skipupdate ? " skip " : " shrink ")
+		       + (restoreflag ? " restore" : " continue ")
+		       );
+		  ;
 		}
 		break; // exit newton loop : k
 	      }
@@ -2399,9 +2328,9 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
 		phig000 = phig[];
 		if(mpirank == 0) {
 		  if (!flagnearlyconv) {
-		    logOut << "L1980: Newton iteration closed to convergence "
-			 << endl;
-		    logOut.flush;
+		    appendLog("L1980: Newton iteration closed to convergence "
+			 );
+		    ;
 		  }
 		}
 	      }
@@ -2431,19 +2360,19 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
 		  refineflag = true;
 		  flagisoagain = true;
 		  if(mpirank == 0) {
-		    logOut << "L2042: Newton with refined iso-mesh : "
-			 << countrefined << " "
-			 << (skipupdate ? " skip " : " shrink ")
-			 << (restoreflag ? " restore" : " continue ")
-			 << endl;
-		    logOut.flush;
+		    appendLog("L2042: Newton with refined iso-mesh : "
+			 + countrefined + " "
+			 + (skipupdate ? " skip " : " shrink ")
+			 + (restoreflag ? " restore" : " continue ")
+			 );
+		    ;
 		  }
 		}
 		else {
 		  if(mpirank == 0) {
-		    logOut << "L2053: Newton with refined aniso-mesh : "
-			 << endl;
-		    logOut.flush;
+		    appendLog("L2053: Newton with refined aniso-mesh : "
+			 );
+		    ;
 		  }
 		  flagisoagain = false;
 		}
@@ -2452,9 +2381,9 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
 		if ((abs(phigmaxg - 1.0) > phigconvdel) ||
 		    (abs(phigming + 1.0) > phigconvdel)) {
 		  if(mpirank == 0) {
-		    logOut << "L2387: indicator function is larger than one"
-			 << endl;
-		    logOut.flush;
+		    appendLog("L2387: indicator function is larger than one"
+			 );
+		    ;
 		  }
 		}
 	      }
@@ -2465,14 +2394,14 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
 	    if (flagnearlyconv) {
 	      phig[] = phig000;
 	      if(mpirank == 0) {
-		logOut << "L2141: restore phi closed to solution" << endl;
-		logOut.flush;
+		appendLog("L2141: restore phi closed to solution" );
+		;
 	      }
 	    }
 	    if(mpirank == 0) {
-	      logOut << "L1996: exceed Newton iteration, continuing gradient flow"
-		   << endl;
-	      logOut.flush;
+	      appendLog("L1996: exceed Newton iteration, continuing gradient flow"
+		   );
+	      ;
 	    }
 	    if (flaganiso && flagnearlyconv) {
 	      skipeuler = false;
@@ -2484,9 +2413,9 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
       //	      gradientflow = true; // return to gradient flow solver
 	      updateangle = true;	      
 	      if(mpirank == 0) {
-		logOut << "L2260: treated as converged on anisotropic mesh\n"
-		     << endl;
-		logOut.flush;
+		appendLog("L2260: treated as converged on anisotropic mesh\n"
+		     );
+		;
 	      }
 	    }
 	    else {
@@ -2522,9 +2451,9 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
 		phig = 0.0; // resize Vhg(ThG, P2)
 		phig[] = phig00;
 		if(mpirank == 0) {
-		  logOut << "L2403: restore to previous step in gradient flow "
-		       << "time = " << tt << " to " << (tt - dt) << endl;
-		  logOut.flush;
+		  appendLog("L2403: restore to previous step in gradient flow "
+		       + "time = " + tt + " to " + (tt - dt) );
+		  ;
 		}
 		tt -= dt; // rewind time step
 		dt = dt1;
@@ -2549,9 +2478,9 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
 	      refineflag = true;
 	      refineskip = false;
 	      if(mpirank == 0) {
-		logOut << "L2015: refine mesh during gradient flow = "
-		     << countrefined << endl;
-		logOut.flush;
+		appendLog("L2015: refine mesh during gradient flow = "
+		     + countrefined );
+		;
 	      }
 	      dt = max((dt / 8.0), dt1);
 	    }
@@ -2565,9 +2494,9 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
 	    //	    if (abs(volratio - 1.0) > 0.005) {
 	    if (false) {
 	      if (mpirank == 0) {
-		logOut << "#L1880 volume = " << vol
-		     << " characteristic = " << vvol
-		     << " ratio = " << volratio << " update = " << volupdate;
+		appendLog("#L1880 volume = " + vol
+		     + " characteristic = " + vvol
+		     + " ratio = " + volratio + " update = " + volupdate;
 	      }
 	      volupdate = true;
 	      phig1 = 0.0;
@@ -2575,37 +2504,37 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
 		       ((phig * 2.0) < (-1.0) ? (-1.0) : (phig * 2.0)));
 	      real vvol = volumeofliquid(Tha, Rgl, Dh, phig1[], 2);
 	      if (mpirank == 0) {
-		logOut << " -> " << vvol << endl;
-		logOut.flush;
+		appendLog(" -> " + vvol );
+		;
 	      }
 	      phig[] = phig1[];
 	    }
 	    if (mpirank == 0) {
-	      logOut << "#L1880 volume = " << vol
-		   << " characteristic = " << vvol
-		   << " ratio = " << volratio << " update = " << volupdate
-		   << endl;
+	      appendLog("#L1880 volume = " + vol
+		   + " characteristic = " + vvol
+		   + " ratio = " + volratio + " update = " + volupdate
+		   );
 	    }	      
 	  } // if (gradientflow)
 	  else {
 	    vol = volumeofliquid(Tha, Rgl, Dh, phig[], 1);
 	  }
 	  if (mpirank == 0) {
-	    logOut << "Newton iteration : " << ll
-		 << " cpu time = " << cputime
-		 << " elapsed time = " << elapsedtime
-		 << endl;
-	    logOut << "constraint = " << vol - vol00 << " = "
-		 << vol << " - " << vol00
-		 << endl;
-	    logOut.flush;
+	    appendLog("Newton iteration : " + ll
+		 + " cpu time = " + cputime
+		 + " elapsed time = " + elapsedtime
+		 );
+	    appendLog("constraint = " + vol - vol00 + " = "
+		 + vol + " - " + vol00
+		 );
+	    ;
 	    if(debugvtk0) {
 	      savevtk(workingpath+"refined."+vtkcount+".vtu",
 		      ThG1, phig, dataname = "phi", order = vtkorder,
 		      bin = false);
 	      if(mpirank == 0) {	      
-		logOut << "L2069: " << mm << " vtu = " << vtkcount << endl;
-		logOut.flush;
+		appendLog("L2069: " + mm + " vtu = " + vtkcount );
+		;
 	      }
 	      vtkcount++;
 	    } // debugvtk
@@ -2613,8 +2542,8 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
 	}     // conv loop : ll
       }       // loop : nn
       if (mpirank == 0) {      
-	logOut << "L2078: convvol = " << convvol << endl;
-	logOut.flush;
+	appendLog("L2078: convvol = " + convvol );
+	;
       }
       if (restoreflag) {
 	restarted++;
@@ -2625,9 +2554,9 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
 	phig = 0.0; // resize Vhg(ThG, P2)
 	phig[] = phig00;
 	if (mpirank == 0) {
-	  logOut << "L2123 : restore mesh and phi " << phig[].n << " " << phig00.n
-	       << endl;
-	  logOut.flush;
+	  appendLog("L2123 : restore mesh and phi " + phig[].n + " " + phig00.n
+	       );
+	  ;
 	}
 	  
 	if (sqrt(volmag) < volmag0) {
@@ -2638,9 +2567,9 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
 	  volmag = sqrt(volmag);
 	}
 	if(mpirank == 0) {
-	  logOut << "L2101: countvolmag = " << countvolmag
-	       << " vol = " << volmag << endl;
-	  logOut.flush;
+	  appendLog("L2101: countvolmag = " + countvolmag
+	       + " vol = " + volmag );
+	  ;
 	}
 	flaganiso = false;	
 	//	refineflag = true;
@@ -2655,9 +2584,9 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
 
     if (skipeuler) {
       if (mpirank == 0) {
-	logOut << "L2121: restarting gradient flow solver " << restarted << " "
-	     << skipupdate << " " << volmag << endl;
-	logOut.flush;
+	appendLog("L2121: restarting gradient flow solver " + restarted + " "
+	     + skipupdate + " " + volmag );
+	;
       }
       continue;
     }
@@ -2700,8 +2629,8 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
 	phigsaved0.resize(phig[].n);
 	phigsaved0 = phig[];
 	if (mpirank == 0) {
-	  logOut << "L2187: increment lower bound" << endl;
-	  logOut.flush;
+	  appendLog("L2187: increment lower bound" );
+	  ;
 	}
       }
       else {
@@ -2720,8 +2649,8 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
 	phig = 0.0;
 	//	phig[] = phisaved0;
 	if (mpirank == 0) {
-	  logOut << "L2207: decrement upper bound" << endl;
-	  logOut.flush;
+	  appendLog("L2207: decrement upper bound" );
+	  ;
 	}
       }
     }   //  if (bisectionphase)
@@ -2735,9 +2664,9 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
 	//	printstatus = false;	
 	statcount++;
 	if (mpirank == 0) {
-	  logOut << "## topology is changed at " << mm
-	       << " try recomputation with same volume on refined mesh" << endl;
-	  logOut.flush;
+	  appendLog("## topology is changed at " + mm
+	       + " try recomputation with same volume on refined mesh" );
+	  ;
 	}
 	volmag = volmag0;      // increase with minimum ratio in the next step
 	changedphase = true;   // after topological change
@@ -2763,10 +2692,10 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
     }  //  if (bisectionphase)
     if (printstatus) {
       if (mpirank == 0) {  
-	logOut << "## " << vol01 << " : vol = " << vol00 << " : angle = "
-	     << dangle << " " << nnliquid << " " << nnair << " "
-	     << nneulerc << " : " << endl;
-	logOut.flush;
+	appendLog("## " + vol01 + " : vol = " + vol00 + " : angle = "
+	     + dangle + " " + nnliquid + " " + nnair + " "
+	     + nneulerc + " : " );
+	;
 
 	string outfname = ("phi." + (mm + moffset) + ".vtu");
 	gout << (mm + moffset) << "," << "\""+outfname + "\""
@@ -2786,9 +2715,9 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
   } // loop : mm
   if (pp == 0) {
     if (mpirank == 0 & mmm > 0) {
-      logOut << "topology is changed between " << mmm - 1 << " and " << mmm
-	   << endl;
-      logOut.flush;
+      appendLog("topology is changed between " + mmm - 1 + " and " + mmm
+	   );
+      ;
     }
     ThG1 = ThGsaved0;
     phig = 0.0;

@@ -1,8 +1,5 @@
 // Dimension macros
-if (mpirank == 0) {
-    ofstream logOut("process_log.log", append);
-    logOut << "Dimension: <%= dimension -%>" << endl;
-}
+appendLog("Dimension: <%= dimension -%>");
 
 <% if (dimension === 2)  { -%>
 macro meshN()mesh//

@@ -1,8 +1,5 @@
 // Fespaces
-if (mpirank == 0) {
-    ofstream logOut("process_log.log", append);
-    logOut << "Define finie element space..." << endl;
-}
+appendLog("Define finie element space...");
 
 <% const FESpace = finiteElementSpace.value || finiteElementSpace.default; -%>
 fespace <%= finiteElementSpace.name -%>(<%= mesh.name -%>, [<%= FESpace.split(',') -%>]);

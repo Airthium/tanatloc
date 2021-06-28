@@ -46,10 +46,7 @@ const rhs = parameters.rightHandSide.children[0]
 const rhsValue = rhs.value || rhs.default
 -%>
 // Problem
-if (mpirank == 0) {
-	ofstream logOut("process_log.log", append);
-	logOut << "Define the problem..." << endl;
-}
+appendLog("Define the problem...");
 
 varf vLaplacian (u, uh)
 	= intN(Th)(
@@ -82,10 +79,7 @@ varf vLaplacianRHS (u, uh)
 
 <%# Solve -%>
 // Solve
-if (mpirank == 0) {
-	ofstream logOut("process_log.log", append);
-	logOut << "Solve the problem..." << endl;
-}
+appendLog("Solve the problem...");
 
 matrix Laplacian = vLaplacian(<%= finiteElementSpace.name -%>, <%= finiteElementSpace.name -%>, solver=solver);
 real[int] LaplacianRHS = vLaplacianRHS(0, <%= finiteElementSpace.name -%>);
@@ -103,7 +97,4 @@ u[] = Laplacian^-1 * LaplacianRHS;
 	}
 }); -%>
 
-if (mpirank == 0) {
-	ofstream logOut("process_log.log", append);
-	logOut << "End" << endl;
-}
+appendLog("End");

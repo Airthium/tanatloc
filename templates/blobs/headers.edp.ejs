@@ -9,3 +9,12 @@ if (mpirank == 0) {
     // Process file
     ofstream processOut("process_data.log");
 }
+
+func int appendLog (string str) {
+    if (mpirank == 0) {
+        // Log file
+        ofstream logOut("process_log.log", append);
+
+        logOut << str << endl;
+    }
+}

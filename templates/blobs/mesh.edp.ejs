@@ -1,8 +1,5 @@
 // Mesh
-if (mpirank == 0) {
-  ofstream logOut("process_log.log", append);
-  logOut << "Read mesh..." << endl;
-}
+appendLog("Read mesh...");
 
 <%- include('./gmshMesh.edp.ejs', {
   dimension,

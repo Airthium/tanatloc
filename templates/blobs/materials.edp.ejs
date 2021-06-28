@@ -1,8 +1,5 @@
 // Materials
-if (mpirank == 0) {
-    ofstream logOut("process_log.log", append);
-    logOut << "Define materials..." << endl;
-}
+appendLog("Define materials...");
 
 <% materials.children.map(child => { -%>
 <% const value = child.value || child.default -%>

@@ -1,8 +1,5 @@
 //Save
-if (mpirank == 0) {
-	ofstream logOut("process_log.log", append);
-	logOut << "Save result..." << endl;
-}
+appendLog("Save result...");
 
 load "iovtk"
 {

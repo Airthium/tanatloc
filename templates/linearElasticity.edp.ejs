@@ -64,10 +64,7 @@ const rhsZ = rhs[2].value || rhs[2].default
 const N = '[N.x, N.y, N.z]'
 -%>
 // Problem
-if (mpirank == 0) {
-	ofstream logOut("process_log.log", append);
-	logOut << "Define the problem..." << endl;
-}
+appendLog("Define the problem...");
 
 varf vLinearElasticity (<%= unknownFunction -%>, <%= testFunction -%>)
 	= intN(Th)(
@@ -113,10 +110,7 @@ varf vLinearElasticityRHS (<%= unknownFunction -%>, <%= testFunction -%>)
 
 <%# Solve -%>
 // Solve
-if (mpirank == 0) {
-	ofstream logOut("process_log.log", append);
-	logOut << "Solve the problem..." << endl;
-}
+appendLog("Solve the problem...");
 
 matrix LinearElasticity = vLinearElasticity(<%= finiteElementSpace.name -%>, <%= finiteElementSpace.name -%>, solver=solver);
 real[int] LinearElasticityRHS = vLinearElasticityRHS(0, <%= finiteElementSpace.name -%>);
@@ -157,7 +151,4 @@ Sh Sigma = sqrt(
 	}
 }); -%>
 
-if (mpirank == 0) {
-	ofstream logOut("process_log.log", append);
-	logOut << "End" << endl;
-}
+appendLog("End");

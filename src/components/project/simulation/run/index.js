@@ -419,7 +419,7 @@ const Run = ({ simulation, result, setResult, swr }) => {
   // Results render
   let resultsRender
   if (!results) resultsRender = <Spin />
-  else if (!results.length) resultsRender = <div>No results yet</div>
+  else if (!results.length) resultsRender = <Card>No results yet</Card>
   else
     resultsRender = (
       <Card

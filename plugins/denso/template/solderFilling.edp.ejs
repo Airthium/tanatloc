@@ -14,6 +14,7 @@
 // improved treatment for surface integration of contact angle condition
 // constant volume increment from the first increment given by ratio
 // Atsushi.Suzuki@cas.cmc.osaka-u.ac.jp
+
 load "msh3"
 load "distance"
 load "gmsh"
@@ -31,15 +32,14 @@ load "gmsherror"
 
 macro dimension()3// EOM            // 2D or 3D
 include "macro_ddm.idp"             // additional DDM functions
-macro def(i)i// EOM                         // scalar field definition
-macro init(i)i// EOM                        // scalar field initialization
+macro def(i)i// EOM                 // scalar field definition
+macro init(i)i// EOM                // scalar field initialization
 
 macro reinitialize(pphigg, mmagg) {
   if(debugvtk1 && mpirank == 0) {
     appendLog("L26 : reinitialize " + mmagg);
   }
-  pphigg = ((pphigg * mmagg > 1.0) ? 1.0 :
-	    ((pphigg * mmagg) < (-1.0) ? (-1.0): (pphigg * mmagg)));
+  pphigg = ((pphigg * mmagg > 1.0) ? 1.0 : ((pphigg * mmagg) < (-1.0) ? (-1.0): (pphigg * mmagg)));
 } //
 int verbosity0 = verbosity;
 
@@ -64,10 +64,10 @@ const interfaceLabels = (interface && interface[0] && interface[0].selected && i
 })) || [0]
 -%>
 
-int[int] wet=[<%=wetLabels-%>];
-int[int] wall=[<%=wallLabels-%>];
-int[int] liquid=[<%=liquidLabels-%>];
-int[int] intrfc=[<%=interfaceLabels-%>];
+int[int] wet = [<%=wetLabels-%>];
+int[int] wall = [<%=wallLabels-%>];
+int[int] liquid = [<%=liquidLabels-%>];
+int[int] intrfc = [<%=interfaceLabels-%>];
 string jobname = "jobname";
 real kappa1 = <%= parameters.kappa.children[0].value || parameters.kappa.children[0].default -%>;
 int nrestart = <%= parameters.nrestart.children[0].value || parameters.nrestart.children[0].default -%>;
@@ -75,7 +75,6 @@ real volmag0 = <%= parameters.volume.children[0].value || parameters.volume.chil
 real volmag1 = <%= parameters.volume.children[1].value || parameters.volume.children[1].default -%>; // 1.1
 int countsweep = <%= parameters.countsweep.children[0].value || parameters.countsweep.children[0].default -%>;
 int continueflag =  <%= parameters.continueflag.children[0].value || parameters.continueflag.children[0].default -%>;
-//
 int itrnewton0 = <%= parameters.newton.children[0].value || parameters.newton.children[0].default -%>;
 int itrnewton1 = <%= parameters.newton.children[1].value || parameters.newton.children[1].default -%>;
 real Tmax0 = <%= parameters.time.children[0].value || parameters.time.children[0].default -%>;
@@ -282,9 +281,15 @@ appendLog(":: dtmax = " + dtmax);             // 64.0
 appendLog(":: gmshmax = " + gmshmax);         // 2
 appendLog(":: epsnewton = " + epsnewton);     // 1e-6
 appendLog(":: epsGMRES = " + epsGMRES);       // 1e-11
-appendLog("** Wet = " +  wet);
-appendLog("** Wall = " + wall);
-appendLog("** Liquid = " + liquid);
+appendLog("** Wet = ");
+for (int i = 0; i < wet.n; ++i)
+	appendLog(" - " + wet[i]);
+appendLog("** Wall = ");
+for (int i = 0; i < wall.n; ++i)
+	appendLog(" - " + wall[i]);
+appendLog("** Liquid = ");
+for (int i = 0; i < liquid.n; ++i)
+	appendLog(" - " + liquid[i]);
 appendLog("** npaart = " + npart);
 
 meshN stackThG0, stackThG1, stackThG2;

@@ -2085,7 +2085,7 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
 	    updatevol = false;	    
 	    costheta = cos(dangle * pi / 180.0);	    
 	    if (mpirank == 0) {
-			appendLog("L1766 : vloume = " + volstarted  " -> " + vol1);
+			appendLog("L1766 : vloume = " + volstarted + " -> " + vol1);
 	    }
 	    if (vol1 > (volstarted + voldelta0)) {
 	      if (mpirank == 0) {
@@ -2158,7 +2158,7 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
 	  if (angleflag) {	  
 	    phiglayer.resize(phig[].n);
 	    phiglayer1.resize(phig[].n);
-	    findneighbor(ThG1, phig[], phiglayer, 9, phiglayer1, 10, logOut);
+	    findneighbor(ThG1, phig[], phiglayer, 9, phiglayer1, 10);
 	    if (mpirank == 0) {
 	      appendLog("L1839 " + costheta );
 	      ;
@@ -2266,8 +2266,8 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
 	    mpiAllReduce(phigminl, phigming, comm, mpiMIN);	    
 	    // vol =volumeofliquid(Tha, Rgl, Dh, phig[], false); //
 	    if (mpirank == 0) {
-	      appendLog(k + " GMRES " + walltime2 - walltime1
-		   + " / " + walltime3 - walltime0
+	      appendLog(k + " GMRES " + (walltime2 - walltime1)
+		   + " / " + (walltime3 - walltime0)
 		   + " : lambda = "+ lmbd + " : "
 		   + vol + " " + phi0gl2
 		   + " max = " + phig[].max + " min = " + phig[].min
@@ -2307,7 +2307,7 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
 	    if ((abs(phigmaxg - 1.0) < phigconvdel) &&
 		(abs(phigming + 1.0) < phigconvdel) && (phi0gl2 < tolenlarge)
 		&& (!gradientflow)) { //  &&  (!flaganiso)) {
-	      findneighbor(ThG1, phig[], phiglayer, 3, phiglayer1, 4, logOut);
+	      findneighbor(ThG1, phig[], phiglayer, 3, phiglayer1, 4);
 	      phizg1[] = phiglayer1;
 	      phizg1 = phizg1 < 1.1 ? 1.0 : 0.0;
 	      if (phizg0[]'*phizg1[] > 0.0 && (!flaganiso)) { // '
@@ -2358,7 +2358,7 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
 	      newtonfail = false;
   //
 	      if (!gradientflow) {
-		findneighbor(ThG1, phig[], phiglayer, 3, phiglayer1, 4, logOut);
+		findneighbor(ThG1, phig[], phiglayer, 3, phiglayer1, 4);
 		phizg1[] = phiglayer1;
 		phizg1 = phizg1 < 1.1 ? 1.0 : 0.0;
 		if (phizg0[]'*phizg1[] > 0.0) { // '
@@ -2476,7 +2476,7 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
 	    }
 	  } // if (newtonfail)
 	  if (gradientflow) {
-	    findneighbor(ThG1, phig[], phiglayer, 3, phiglayer1, 4, logOut);
+	    findneighbor(ThG1, phig[], phiglayer, 3, phiglayer1, 4);
 	    phizg1[] = phiglayer1;
 	    phizg1 = phizg1 < 1.1 ? 1.0 : 0.0;
 	    if (phizg0[]'*phizg1[] > 0.0) { // '
@@ -2501,7 +2501,7 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
 	      if (mpirank == 0) {
 		appendLog("#L1880 volume = " + vol
 		     + " characteristic = " + vvol
-		     + " ratio = " + volratio + " update = " + volupdate;
+		     + " ratio = " + volratio + " update = " + volupdate);
 	      }
 	      volupdate = true;
 	      phig1 = 0.0;
@@ -2529,7 +2529,7 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
 		 + " cpu time = " + cputime
 		 + " elapsed time = " + elapsedtime
 		 );
-	    appendLog("constraint = " + vol - vol00 + " = "
+	    appendLog("constraint = " + (vol - vol00) + " = "
 		 + vol + " - " + vol00
 		 );
 	    ;
@@ -2720,7 +2720,7 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
   } // loop : mm
   if (pp == 0) {
     if (mpirank == 0 & mmm > 0) {
-      appendLog("topology is changed between " + mmm - 1 + " and " + mmm
+      appendLog("topology is changed between " + (mmm - 1) + " and " + mmm
 	   );
       ;
     }

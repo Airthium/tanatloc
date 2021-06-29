@@ -8,7 +8,9 @@ jest.mock('@/components/assets/notification', () => ({
   Error: () => mockError()
 }))
 
-jest.mock('@/components/project/simulation/delete', () => () => <div />)
+jest.mock('../../copy', () => () => <div />)
+
+jest.mock('../../delete', () => () => <div />)
 
 const mockUpdate = jest.fn()
 jest.mock('@/api/simulation', () => ({
@@ -21,7 +23,8 @@ describe('components/project/simulation/about', () => {
     name: 'name'
   }
   const swr = {
-    reloadProject: jest.fn(),
+    mutateProject: jest.fn(),
+    addOneSimulation: jest.fn(),
     delOneSimulation: jest.fn(),
     mutateOneSimulation: jest.fn()
   }

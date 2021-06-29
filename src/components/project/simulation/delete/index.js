@@ -37,7 +37,7 @@ const Delete = ({ project, simulation, swr }) => {
 
       // Mutate project
       const filteredSimulations = project.simulations.filter(
-        (s) => s.id !== simulation.id
+        (s) => s !== simulation.id
       )
       swr.mutateProject({
         id: project,

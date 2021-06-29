@@ -251,9 +251,9 @@ global.MockScene.children = [
   }
 ]
 
-window.setTimeout = (callback) => {
-  if (callback.name !== '_flushCallback') callback()
-}
+// window.setTimeout = (callback) => {
+//   if (callback.name !== '_flushCallback') callback()
+// }
 
 describe('components/project/view', () => {
   const project = {}

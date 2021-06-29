@@ -19,9 +19,10 @@ jest.mock('@/api/simulation', () => ({
 }))
 
 describe('components/project/simulation/delete', () => {
+  const project = { id: 'id', simulations: ['id'] }
   const simulation = { id: 'id', name: 'name' }
   const swr = {
-    reloadProject: jest.fn(),
+    mutateProject: jest.fn(),
     delOneSimulation: jest.fn()
   }
   beforeEach(() => {
@@ -34,7 +35,9 @@ describe('components/project/simulation/delete', () => {
   })
 
   test('render', () => {
-    const { unmount } = render(<Delete simulation={simulation} swr={swr} />)
+    const { unmount } = render(
+      <Delete project={project} simulation={simulation} swr={swr} />
+    )
 
     unmount()
   })
@@ -43,7 +46,9 @@ describe('components/project/simulation/delete', () => {
     mockDeleteDialog.mockImplementation((props) => (
       <div role="DeleteDialog" onClick={props.onCancel} />
     ))
-    const { unmount } = render(<Delete simulation={simulation} swr={swr} />)
+    const { unmount } = render(
+      <Delete project={project} simulation={simulation} swr={swr} />
+    )
 
     const button = screen.getByRole('button')
     fireEvent.click(button)
@@ -58,7 +63,9 @@ describe('components/project/simulation/delete', () => {
     mockDeleteDialog.mockImplementation((props) => (
       <div role="DeleteDialog" onClick={props.onOk} />
     ))
-    const { unmount } = render(<Delete simulation={simulation} swr={swr} />)
+    const { unmount } = render(
+      <Delete project={project} simulation={simulation} swr={swr} />
+    )
 
     const dialog = screen.getByRole('DeleteDialog')
 
@@ -66,7 +73,7 @@ describe('components/project/simulation/delete', () => {
     fireEvent.click(dialog)
     await waitFor(() => expect(mockDel).toHaveBeenCalledTimes(1))
     await waitFor(() => expect(swr.delOneSimulation).toHaveBeenCalledTimes(1))
-    await waitFor(() => expect(swr.reloadProject).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(swr.mutateProject).toHaveBeenCalledTimes(1))
 
     // Error
     mockDel.mockImplementation(() => {

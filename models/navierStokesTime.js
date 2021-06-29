@@ -125,6 +125,7 @@ const NavierStokesTime = {
     initialization: {
       index: 4,
       title: 'Initialization',
+      done: true,
       velocity: {
         label: 'Velocity',
         children: [
@@ -145,6 +146,21 @@ const NavierStokesTime = {
             htmlEntity: 'formula',
             default: 0,
             unit: '\\(m.s^{-1}\\)'
+          }
+        ]
+      },
+      coupling: {
+        label: 'Coupling',
+        children: [
+          {
+            label: 'Simulation',
+            htmlEntity: 'select',
+            options: 'SIMULATIONS_LIST'
+          },
+          {
+            label: 'Time step',
+            htmlEntity: 'formula',
+            default: 0
           }
         ]
       }

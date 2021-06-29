@@ -80,7 +80,7 @@ const Formula = ({
         onChange={onInputChange}
         addonAfter={
           <Space>
-            <MathJax dynamic>{unit}</MathJax>
+            {unit && <MathJax dynamic>{unit}</MathJax>}
             {saving ? (
               <LoadingOutlined spin style={{ color: 'orange' }} />
             ) : (

@@ -491,7 +491,10 @@ const Project = () => {
             )}
             {currentSimulation &&
               currentSimulationType === 'initialization' && (
-                <Simulation.Initialization />
+                <Simulation.Initialization
+                  simulations={simulations}
+                  simulation={currentSimulation}
+                />
               )}
             {currentSimulation &&
               currentSimulationType === 'boundaryConditions' && (

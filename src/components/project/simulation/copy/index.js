@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types'
 import { useState } from 'react'
 import { Button } from 'antd'
 import { CopyOutlined } from '@ant-design/icons'
@@ -29,9 +30,11 @@ const Copy = ({ project, simulation, swr }) => {
     try {
       // Clear results
       const newScheme = { ...simulation.scheme }
-      newScheme.configuration.run.done = false
-      newScheme.configuration.run.error = null
-      newScheme.configuration.run.results = null
+      if (newScheme.configuration.run) {
+        newScheme.configuration.run.done = false
+        newScheme.configuration.run.error = null
+        newScheme.configuration.run.results = null
+      }
 
       // API
       const newSimulation = await SimulationAPI.add(
@@ -62,6 +65,22 @@ const Copy = ({ project, simulation, swr }) => {
       Copy
     </Button>
   )
+}
+
+Copy.propTypes = {
+  project: PropTypes.exact({
+    id: PropTypes.string.isRequired,
+    simulations: PropTypes.array.isRequired
+  }).isRequired,
+  simulation: {
+    id: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
+    scheme: PropTypes.object.isRequired
+  }.isRequired,
+  swr: PropTypes.exact({
+    addOneSimulation: PropTypes.func.isRequired,
+    mutateProject: PropTypes.func.isRequired
+  }).isRequired
 }
 
 export default Copy

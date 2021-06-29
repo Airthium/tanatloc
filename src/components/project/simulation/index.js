@@ -13,6 +13,7 @@ import About from './about'
 import Geometry from './geometry'
 import Materials from './materials'
 import Parameters from './parameters'
+import Initialization from './initialization'
 import BoundaryConditions from './boundaryConditions'
 import Run from './run'
 
@@ -235,6 +236,7 @@ const Simulation = {
   Geometry,
   Materials,
   Parameters,
+  Initialization,
   BoundaryConditions,
   Run
 }

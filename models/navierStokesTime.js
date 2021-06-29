@@ -122,8 +122,35 @@ const NavierStokesTime = {
         ]
       }
     },
-    boundaryConditions: {
+    initialization: {
       index: 4,
+      title: 'Initialization',
+      velocity: {
+        label: 'Velocity',
+        children: [
+          {
+            label: 'Ux',
+            htmlEntity: 'formula',
+            default: 0,
+            unit: '\\(m.s^{-1}\\)'
+          },
+          {
+            label: 'Uy',
+            htmlEntity: 'formula',
+            default: 0,
+            unit: '\\(m.s^{-1}\\)'
+          },
+          {
+            label: 'Uz',
+            htmlEntity: 'formula',
+            default: 0,
+            unit: '\\(m.s^{-1}\\)'
+          }
+        ]
+      }
+    },
+    boundaryConditions: {
+      index: 5,
       title: 'Boundary conditions',
       dirichlet: {
         label: 'Velocity',
@@ -163,7 +190,7 @@ const NavierStokesTime = {
       }
     },
     run: {
-      index: 5,
+      index: 6,
       title: 'Run',
       results: [
         {

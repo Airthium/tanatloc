@@ -3,6 +3,7 @@ import { Card, Divider, Layout, Space, Spin, Typography } from 'antd'
 
 import { Error as ErrorNotification } from '@/components/assets/notification'
 
+import Copy from '../copy'
 import Delete from '../delete'
 
 import SimulationAPI from '@/api/simulation'
@@ -20,7 +21,7 @@ const errors = {
  * @memberof module:components/project/simulation
  * @param {Object} props Props
  */
-const About = ({ simulation, swr }) => {
+const About = ({ project, simulation, swr }) => {
   /**
    * Handle name
    * @param {string} name Name
@@ -50,6 +51,7 @@ const About = ({ simulation, swr }) => {
             title={
               <Typography.Title
                 level={5}
+                ellipsis={true}
                 editable={{
                   onChange: handleName,
                   maxLength: 50
@@ -59,11 +61,21 @@ const About = ({ simulation, swr }) => {
               </Typography.Title>
             }
             actions={[
+              <Copy
+                key="copy"
+                project={project}
+                simulation={simulation}
+                swr={{
+                  mutateProject: swr.mutateProject,
+                  addOneSimulation: swr.addOneSimulation
+                }}
+              />,
               <Delete
                 key="delete"
+                project={project}
                 simulation={{ id: simulation.id, name: simulation.name }}
                 swr={{
-                  reloadProject: swr.reloadProject,
+                  mutateProject: swr.mutateProject,
                   delOneSimulation: swr.delOneSimulation
                 }}
               />
@@ -98,13 +110,18 @@ const About = ({ simulation, swr }) => {
 }
 
 About.propTypes = {
+  project: PropTypes.exact({
+    id: PropTypes.string.isRequired,
+    simulations: PropTypes.array.isRequired
+  }),
   simulation: PropTypes.exact({
     id: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
     scheme: PropTypes.object
   }),
   swr: PropTypes.exact({
-    reloadProject: PropTypes.func.isRequired,
+    mutateProject: PropTypes.func.isRequired,
+    addOneSimulation: PropTypes.func.isRequired,
     delOneSimulation: PropTypes.func.isRequired,
     mutateOneSimulation: PropTypes.func.isRequired
   }).isRequired

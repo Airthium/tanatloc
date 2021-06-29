@@ -73,10 +73,8 @@ const Project = () => {
 
   // Data
   const [user, { errorUser, loadingUser }] = UserAPI.useUser()
-  const [
-    project,
-    { reloadProject, mutateProject, errorProject, loadingProject }
-  ] = ProjectAPI.useProject(projectId || '')
+  const [project, { mutateProject, errorProject, loadingProject }] =
+    ProjectAPI.useProject(projectId || '')
   const [
     simulations,
     {
@@ -196,7 +194,7 @@ const Project = () => {
    */
   const onSelectorOk = async (scheme) => {
     try {
-      // Add in dB
+      // Add
       const simulation = await SimulationAPI.add(
         { id: project.id },
         { name: scheme.name, scheme }
@@ -440,13 +438,18 @@ const Project = () => {
             )}
             {currentSimulation && currentSimulationType === 'about' && (
               <Simulation.About
+                project={{
+                  id: project.id,
+                  simulations: project.simulations
+                }}
                 simulation={{
                   id: currentSimulation.id,
                   name: currentSimulation.name,
                   scheme: currentSimulation.scheme
                 }}
                 swr={{
-                  reloadProject,
+                  mutateProject,
+                  addOneSimulation,
                   delOneSimulation,
                   mutateOneSimulation
                 }}
@@ -486,6 +489,10 @@ const Project = () => {
                 setVisible={setPanelVisible}
               />
             )}
+            {currentSimulation &&
+              currentSimulationType === 'initialization' && (
+                <Simulation.Initialization />
+              )}
             {currentSimulation &&
               currentSimulationType === 'boundaryConditions' && (
                 <Simulation.BoundaryConditions

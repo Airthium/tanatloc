@@ -55,7 +55,8 @@ const Run = ({ simulation, result, setResult, swr }) => {
   const [selectors, setSelectors] = useState([])
   const [selectorsCurrent, setSelectorsCurrent] = useState([])
 
-  const [results, setResults] = useState()
+  const [loadingResults, setLoadingResults] = useState(false)
+  const [results, setResults] = useState([])
   const [steps, setSteps] = useState([])
 
   const [downloading, setDownloading] = useState([])
@@ -109,6 +110,8 @@ const Run = ({ simulation, result, setResult, swr }) => {
   // Steps & Results
   useEffect(() => {
     if (!currentSimulation?.tasks) return
+
+    setLoadingResults(true)
 
     const newSteps = []
     const newResults = []
@@ -216,6 +219,8 @@ const Run = ({ simulation, result, setResult, swr }) => {
     setSteps(newSteps)
     setResults(newResults)
     setSelectors(newSelectors)
+
+    setLoadingResults(false)
   }, [
     configuration?.run?.resultsFilters,
     currentSimulation?.tasks,
@@ -418,7 +423,7 @@ const Run = ({ simulation, result, setResult, swr }) => {
 
   // Results render
   let resultsRender
-  if (!results) resultsRender = <Spin />
+  if (loadingResults) resultsRender = <Spin />
   else if (!results.length) resultsRender = <Card>No results yet</Card>
   else
     resultsRender = (

@@ -21,7 +21,7 @@ const errors = {
  * @memberof module:components/project/simulation
  * @param {Object} props Props
  */
-const Delete = ({ simulation, swr }) => {
+const Delete = ({ project, simulation, swr }) => {
   // State
   const [visible, setVisible] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -35,11 +35,17 @@ const Delete = ({ simulation, swr }) => {
       // API
       await SimulationAPI.del(simulation)
 
+      // Mutate project
+      const filteredSimulations = project.simulations.filter(
+        (s) => s.id !== simulation.id
+      )
+      swr.mutateProject({
+        id: project,
+        simulations: filteredSimulations
+      })
+
       // Mutate simulations
       swr.delOneSimulation({ id: simulation.id })
-
-      // Reload
-      swr.reloadProject()
 
       setVisible(false)
     } catch (err) {
@@ -58,7 +64,7 @@ const Delete = ({ simulation, swr }) => {
         icon={<DeleteOutlined />}
         onClick={() => setVisible(true)}
       >
-        Delete the simulation
+        Delete
       </Button>
       <DeleteDialog
         title="Delete the simulation"
@@ -74,12 +80,16 @@ const Delete = ({ simulation, swr }) => {
 }
 
 Delete.propTypes = {
-  simulation: PropTypes.shape({
+  project: PropTypes.exact({
+    id: PropTypes.string.isRequired,
+    simulations: PropTypes.array.isRequired
+  }).isRequired,
+  simulation: PropTypes.exact({
     id: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired
   }).isRequired,
-  swr: PropTypes.shape({
-    reloadProject: PropTypes.func.isRequired,
+  swr: PropTypes.exact({
+    mutateProject: PropTypes.func.isRequired,
     delOneSimulation: PropTypes.func.isRequired
   }).isRequired
 }

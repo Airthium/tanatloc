@@ -1336,7 +1336,7 @@ if (!flagrestarted) { //generatino of initial data
       if (debugvtk1) {
 	savevtk(workingpath+"banded."+vtkcount+".vtu", ThG1,
 		phig, dataname = "phi", order = vtkorder, bin = false);
-	appedLog("## L1206 : vtu = " + vtkcount);
+	appendLog("## L1206 : vtu = " + vtkcount);
 	vtkcount++;
       }
     } // if (mpirank == 0)

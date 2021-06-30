@@ -37,6 +37,7 @@ jest.mock('@/components/dashboard/welcome', () => () => <div />)
 
 const mockUser = jest.fn()
 const mockMutateUser = jest.fn()
+const mockClearUser = jest.fn()
 const mockErrorUser = jest.fn()
 const mockLoadingUser = jest.fn()
 jest.mock('@/api/user', () => ({
@@ -44,6 +45,7 @@ jest.mock('@/api/user', () => ({
     mockUser(),
     {
       mutateUser: mockMutateUser,
+      clearUse: mockClearUser,
       errorUser: mockErrorUser(),
       loadingUser: mockLoadingUser()
     }
@@ -103,6 +105,7 @@ describe('components/dashboard', () => {
     mockUser.mockReset()
     mockUser.mockImplementation(() => ({ id: 'id', superuser: true }))
     mockMutateUser.mockReset()
+    mockClearUser.mockReset()
     mockErrorUser.mockReset()
     mockLoadingUser.mockReset()
 
@@ -137,11 +140,36 @@ describe('components/dashboard', () => {
     unmount()
   })
 
-  test('page query', () => {
+  test('page query - page === my_workspaces', () => {
     global.URLSearchParams = class {
       constructor() {}
       get(param) {
         if (param === 'page') return 'my_workspaces'
+      }
+    }
+    const { unmount } = render(<Dashboard />)
+
+    unmount()
+  })
+
+  test('page query - page === my_workspace && workspaceId', () => {
+    global.URLSearchParams = class {
+      constructor() {}
+      get(param) {
+        if (param === 'workspaceId') return 'id'
+        if (param === 'page') return 'account'
+      }
+    }
+    const { unmount } = render(<Dashboard />)
+
+    unmount()
+  })
+
+  test('page query - page === account', () => {
+    global.URLSearchParams = class {
+      constructor() {}
+      get(param) {
+        if (param === 'page') return 'account'
       }
     }
     const { unmount } = render(<Dashboard />)

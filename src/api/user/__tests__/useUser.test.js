@@ -9,11 +9,15 @@ jest.mock('swr', () => () => ({
 
 describe('api/user', () => {
   test('useUser', () => {
-    const [user, { mutateUser, errorUser, loadingUser }] = useUser()
+    const [user, { mutateUser, clearUser, errorUser, loadingUser }] = useUser()
     expect(user).toEqual({})
     expect(mutateUser).toBeDefined()
+    expect(clearUser).toBeDefined()
     expect(errorUser).toBe()
     expect(loadingUser).toBe(false)
+
+    mutateUser({})
+    clearUser()
   })
 
   test('401', () => {

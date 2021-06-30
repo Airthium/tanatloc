@@ -11,5 +11,7 @@ describe('api/system/useSystem', () => {
     expect(system).toEqual({ item: 'item' })
     expect(mutateSystem).toBeDefined()
     expect(loadingSystem).toBe(false)
+
+    mutateSystem({})
   })
 })

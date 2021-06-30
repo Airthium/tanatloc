@@ -18,7 +18,7 @@ describe('components/assets/formula', () => {
 
   test('render', () => {
     const { unmount } = render(
-      <Formula defaultValue="value" onValueChange={onValueChange} />
+      <Formula defaultValue="value" onValueChange={onValueChange} unit="unit" />
     )
 
     unmount()

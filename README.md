@@ -25,15 +25,19 @@ Using server-side rendering (SSR).
 | ---------- | ------- | ---------- |
 | SENTRY_DSN |         | Sentry DSN |
 
+### Auth
+
+| Variable    | Default   | Comment               |
+| ----------- | --------- | --------------------- |
+| AUTH_SECRET | `aaaa...` | Authentication secret |
+
 ### Storage
 
-| Variable                 | Default         | Comment                                 |
-| ------------------------ | --------------- | --------------------------------------- |
-| AUTH_SECRET              | `aaaa...`       | Authentication secret                   |
-| STORAGE_PATH             | `/tmp/tanatloc` | Absolute storage path                   |
-| AVATAR_RELATIVE_PATH     | avatar          | Relative avatar path (from STORAGE)     |
-| GEOMETRY_RELATIVE_PATH   | geometry        | Relative simulation path (from STORAGE) |
-| SIMULATION_RELATIVE_PATH | simulation      | Relative geometry path (from STORAGE)   |
+| Variable | Default | Comment |
+| STORAGE_PATH | `/tmp/tanatloc` | Absolute storage path |
+| AVATAR_RELATIVE_PATH | avatar | Relative avatar path (from STORAGE) |
+| GEOMETRY_RELATIVE_PATH | geometry | Relative simulation path (from STORAGE) |
+| SIMULATION_RELATIVE_PATH | simulation | Relative geometry path (from STORAGE) |
 
 ### Email
 

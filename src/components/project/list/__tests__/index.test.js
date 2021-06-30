@@ -62,10 +62,10 @@ describe('component/project/list', () => {
         user={user}
         workspace={workspace}
         projects={[
-          { id: 'id1', title: 'with filter' },
+          { id: 'id1', title: 'project 1' },
           {
             id: 'id2',
-            title: 'with filter',
+            title: 'project 2',
             description: 'description',
             avatar: 'avatar',
             owners: [{ id: 'id' }],
@@ -74,23 +74,21 @@ describe('component/project/list', () => {
           }
         ]}
         organizations={organizations}
-        filter={filter}
         swr={swr}
       />
     )
 
-    // Show description
-    const images = screen.getAllByRole('img')
-    fireEvent.mouseEnter(images[0])
-    fireEvent.mouseEnter(images[1])
-
-    // Hide
-    const descriptions = screen.getAllByText('description')
-    fireEvent.mouseLeave(descriptions[0])
-
-    const newImages = screen.getAllByRole('img')
-    fireEvent.click(newImages[0])
+    const empty = screen.getByRole('img', { name: 'No preview yet.' })
+    fireEvent.click(empty)
     expect(mockPush).toHaveBeenCalledTimes(1)
+
+    const descriptions = screen.getAllByText('description')
+    fireEvent.click(descriptions[0])
+    expect(mockPush).toHaveBeenCalledTimes(2)
+
+    const image = screen.getByRole('img', { name: 'Tanatloc' })
+    fireEvent.click(image)
+    expect(mockPush).toHaveBeenCalledTimes(3)
 
     unmount()
   })

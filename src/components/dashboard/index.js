@@ -92,7 +92,8 @@ const Dashboard = () => {
   const [currentWorkspace, setCurrentWorkspace] = useState()
 
   // Data
-  const [user, { mutateUser, errorUser, loadingUser }] = UserAPI.useUser()
+  const [user, { mutateUser, clearUser, errorUser, loadingUser }] =
+    UserAPI.useUser()
   const [
     organizations,
     {
@@ -209,7 +210,7 @@ const Dashboard = () => {
   const onLogout = async () => {
     try {
       await logout()
-      mutateUser({ user: null })
+      clearUser()
 
       router.push('/')
     } catch (err) {

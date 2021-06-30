@@ -18,6 +18,10 @@ jest.mock('@/api/simulation', () => ({
 }))
 
 describe('components/project/simulation/about', () => {
+  const project = {
+    id: 'id',
+    simulations: ['id']
+  }
   const simulation = {
     id: 'id',
     name: 'name'
@@ -34,19 +38,23 @@ describe('components/project/simulation/about', () => {
   })
 
   test('render', () => {
-    const { unmount } = render(<About simulation={simulation} swr={swr} />)
+    const { unmount } = render(
+      <About project={project} simulation={simulation} swr={swr} />
+    )
 
     unmount()
   })
 
   test('without simulation', () => {
-    const { unmount } = render(<About swr={swr} />)
+    const { unmount } = render(<About project={project} swr={swr} />)
 
     unmount()
   })
 
   test('handleName', async () => {
-    const { unmount } = render(<About simulation={simulation} swr={swr} />)
+    const { unmount } = render(
+      <About project={project} simulation={simulation} swr={swr} />
+    )
 
     // Normal
     {

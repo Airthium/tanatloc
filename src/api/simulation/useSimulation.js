@@ -14,10 +14,20 @@ const useSimulation = (id, refresh) => {
   )
   const loading = !data
   const simulation = (data && data.simulation) || {}
+
+  const myMutate = (update) => {
+    mutate({
+      simulation: {
+        ...simulation,
+        ...update
+      }
+    })
+  }
+
   return [
     simulation,
     {
-      mutateSimulation: mutate,
+      mutateSimulation: myMutate,
       errorSimulation: error,
       loadingSimulation: loading
     }

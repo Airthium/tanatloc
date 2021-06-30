@@ -14,6 +14,8 @@ describe('api/simulation/useSimulation', () => {
     expect(simulation).toEqual({})
     expect(mutateSimulation).toBeDefined()
     expect(loadingSimulation).toBe(false)
+
+    mutateSimulation({})
   })
 
   test('without simulation', () => {

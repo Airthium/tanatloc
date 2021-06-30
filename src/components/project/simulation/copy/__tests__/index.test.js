@@ -32,6 +32,13 @@ describe('components/project/simulation/copy', () => {
     addOneSimulation: jest.fn()
   }
 
+  beforeEach(() => {
+    mockAdd.mockReset()
+
+    swr.mutateProject.mockReset()
+    swr.addOneSimulation.mockReset()
+  })
+
   test('render', () => {
     const { unmount } = render(
       <Copy project={project} simulation={simulation} swr={swr} />
@@ -61,6 +68,34 @@ describe('components/project/simulation/copy', () => {
     fireEvent.click(button)
     await waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(2))
     await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
+
+    unmount()
+  })
+
+  test('without configuration & without project.simulations', async () => {
+    const { unmount } = render(
+      <Copy
+        project={{
+          id: 'id',
+          simulations: null
+        }}
+        simulation={{
+          id: 'id',
+          name: 'name',
+          scheme: {}
+        }}
+        swr={swr}
+      />
+    )
+
+    const button = screen.getByRole('button')
+
+    // Normal
+    mockAdd.mockImplementation(() => ({}))
+    fireEvent.click(button)
+    await waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(swr.addOneSimulation).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(swr.mutateProject).toHaveBeenCalledTimes(1))
 
     unmount()
   })

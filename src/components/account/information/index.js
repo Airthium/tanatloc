@@ -69,12 +69,10 @@ const Information = ({ user, swr }) => {
 
       // Mutate user
       swr.mutateUser({
-        user: {
-          ...user,
-          firstname: data.firstname,
-          lastname: data.lastname,
-          email: data.email
-        }
+        ...user,
+        firstname: data.firstname,
+        lastname: data.lastname,
+        email: data.email
       })
     } catch (err) {
       ErrorNotification(errors.update, err)
@@ -127,10 +125,8 @@ const Information = ({ user, swr }) => {
 
         // Mutate user
         swr.mutateUser({
-          user: {
-            ...user,
-            avatar: img
-          }
+          ...user,
+          avatar: img
         })
       } catch (err) {
         ErrorNotification(err.message, err)

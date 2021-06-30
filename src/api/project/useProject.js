@@ -14,18 +14,19 @@ const useProject = (id) => {
   const loading = !data
   const project = (data && data.project) || {}
 
-  /**
-   * Reload
-   */
-  const reload = () => {
-    mutate(null, true)
+  const myMutate = (update) => {
+    mutate({
+      project: {
+        ...project,
+        ...update
+      }
+    })
   }
 
   return [
     project,
     {
-      reloadProject: reload,
-      mutateProject: mutate,
+      mutateProject: myMutate,
       errorProject: error,
       loadingProject: loading
     }

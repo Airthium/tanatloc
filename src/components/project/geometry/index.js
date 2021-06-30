@@ -98,7 +98,7 @@ const Geometry = ({ project, geometry, swr, close }) => {
         (g) => g.id !== geometry.id
       )
       swr.mutateProject({
-        projects: filteredGeometries
+        geometries: filteredGeometries
       })
       swr.delOneGeometry(geometry)
 

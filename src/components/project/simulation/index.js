@@ -141,7 +141,6 @@ const Updater = ({ user, simulation, swr }) => {
     const currentModel = models.find(
       (m) => m.algorithm === simulation?.scheme?.algorithm
     )
-
     if (currentModel && simulation?.scheme) {
       const added = addedDiff(simulation.scheme, currentModel)
       const updated = updatedDiff(simulation.scheme, currentModel)

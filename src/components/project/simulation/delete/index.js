@@ -40,14 +40,11 @@ const Delete = ({ project, simulation, swr }) => {
         (s) => s !== simulation.id
       )
       swr.mutateProject({
-        id: project,
         simulations: filteredSimulations
       })
 
       // Mutate simulations
       swr.delOneSimulation({ id: simulation.id })
-
-      setVisible(false)
     } catch (err) {
       Error(errors.delError, err)
       setLoading(false)
@@ -81,7 +78,6 @@ const Delete = ({ project, simulation, swr }) => {
 
 Delete.propTypes = {
   project: PropTypes.exact({
-    id: PropTypes.string.isRequired,
     simulations: PropTypes.array.isRequired
   }).isRequired,
   simulation: PropTypes.exact({

@@ -72,7 +72,7 @@ const About = ({ project, simulation, swr }) => {
               />,
               <Delete
                 key="delete"
-                project={project}
+                project={{ simulations: project.simulations }}
                 simulation={{ id: simulation.id, name: simulation.name }}
                 swr={{
                   mutateProject: swr.mutateProject,

@@ -30,10 +30,9 @@ const Copy = ({ project, simulation, swr }) => {
     try {
       // Clear results
       const newScheme = { ...simulation.scheme }
-      if (newScheme.configuration.run) {
+      if (newScheme?.configuration?.run) {
         newScheme.configuration.run.done = false
         newScheme.configuration.run.error = null
-        newScheme.configuration.run.results = null
       }
 
       // API
@@ -47,7 +46,6 @@ const Copy = ({ project, simulation, swr }) => {
 
       // Mutate project
       swr.mutateProject({
-        id: project.id,
         simulations: [...(project.simulations || []), newSimulation]
       })
     } catch (err) {
@@ -72,14 +70,14 @@ Copy.propTypes = {
     id: PropTypes.string.isRequired,
     simulations: PropTypes.array.isRequired
   }).isRequired,
-  simulation: {
+  simulation: PropTypes.exact({
     id: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
     scheme: PropTypes.object.isRequired
-  }.isRequired,
+  }).isRequired,
   swr: PropTypes.exact({
-    addOneSimulation: PropTypes.func.isRequired,
-    mutateProject: PropTypes.func.isRequired
+    mutateProject: PropTypes.func.isRequired,
+    addOneSimulation: PropTypes.func.isRequired
   }).isRequired
 }
 

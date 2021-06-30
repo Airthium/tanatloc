@@ -113,7 +113,10 @@ const Project = () => {
   // Auto open geometry add
   useEffect(() => {
     if (!loadingProject && !loadingGeometries) {
-      if (!geometries.length) addGeometry()
+      if (!geometries.length) setGeometryAdd(true)
+      else setGeometryAdd(false)
+    } else {
+      setGeometryAdd(false)
     }
   }, [loadingProject, loadingGeometries, geometries])
 
@@ -203,7 +206,6 @@ const Project = () => {
       // Mutate
       addOneSimulation(simulation)
       mutateProject({
-        ...project,
         simulations: [...(project.simulations || []), simulation]
       })
 
@@ -338,7 +340,7 @@ const Project = () => {
       <Layout hasSider={true}>
         <Layout.Sider theme="light" className="project-sider" width={256}>
           <Menu mode="inline">
-            <Menu.Item className="menu-logo" disabled={true}>
+            <Menu.Item className="menu-logo" key="logo" disabled={true}>
               <div className="logo">
                 <img src="/images/logo.svg" alt="Tanatloc" />
               </div>

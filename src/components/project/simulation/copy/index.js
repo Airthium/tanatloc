@@ -46,7 +46,7 @@ const Copy = ({ project, simulation, swr }) => {
 
       // Mutate project
       swr.mutateProject({
-        simulations: [...(project.simulations || []), newSimulation]
+        simulations: [...(project.simulations || []), newSimulation.id]
       })
     } catch (err) {
       ErrorNotification(errors.copy, err)

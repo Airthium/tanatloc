@@ -206,7 +206,7 @@ const Project = () => {
       // Mutate
       addOneSimulation(simulation)
       mutateProject({
-        simulations: [...(project.simulations || []), simulation]
+        simulations: [...(project.simulations || []), simulation.id]
       })
 
       // Close selector
@@ -215,6 +215,8 @@ const Project = () => {
       ErrorNotification(errors.add, err)
     }
   }
+
+  console.log(currentSimulation)
 
   /**
    * On selector cancel

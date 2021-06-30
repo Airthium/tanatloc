@@ -52,7 +52,7 @@ const Add = ({ visible, project, swr, setVisible }) => {
         // Local
         swr.addOneGeometry(geometry)
         swr.mutateProject({
-          geometries: [project.geometries, geometry]
+          geometries: [...(project.geometries || []), geometry.id]
         })
 
         // Close

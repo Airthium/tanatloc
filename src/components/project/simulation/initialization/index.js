@@ -51,7 +51,11 @@ const Initialization = ({ simulations, simulation }) => {
       } else if (child.htmlEntity === 'select') {
         let options
         if (child.options === 'SIMULATIONS_LIST') {
-          options = simulations.map((s) => ({ label: s.name, value: s.id }))
+          options = simulations.map((s) => ({
+            label: s.name,
+            value: s.id,
+            disabled: s.id === simulation.id
+          }))
         } else {
           options = child?.options || []
         }

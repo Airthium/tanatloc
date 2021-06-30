@@ -77,6 +77,7 @@ describe('components/project/geometry/add', () => {
     const upload = screen.getByRole('img', { name: 'upload' })
 
     // Uploading
+    mockAdd.mockImplementation(() => ({}))
     const file = new File(['buffer'], 'file.dxf')
     fireEvent.drop(upload, {
       dataTransfer: {

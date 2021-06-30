@@ -95,7 +95,7 @@ const Geometry = ({ project, geometry, swr, close }) => {
 
       // Local
       const filteredGeometries = project.geometries.filter(
-        (g) => g.id !== geometry.id
+        (g) => g !== geometry.id
       )
       swr.mutateProject({
         geometries: filteredGeometries

@@ -45,7 +45,7 @@ jest.mock('@/api/user', () => ({
     mockUser(),
     {
       mutateUser: mockMutateUser,
-      clearUse: mockClearUser,
+      clearUser: mockClearUser,
       errorUser: mockErrorUser(),
       loadingUser: mockLoadingUser()
     }

@@ -53,6 +53,7 @@ jest.mock('../simulation', () => {
   Simulation.Geometry = () => <div />
   Simulation.Materials = () => <div />
   Simulation.Parameters = () => <div />
+  Simulation.Initialization = () => <div />
   Simulation.BoundaryConditions = () => <div />
   Simulation.Run = () => <div />
   return Simulation

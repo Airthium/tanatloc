@@ -26,6 +26,8 @@ jest.mock('@/components/project/simulation/materials', () => () => <div />)
 
 jest.mock('@/components/project/simulation/parameters', () => () => <div />)
 
+jest.mock('@/components/project/simulation/initialization', () => () => <div />)
+
 jest.mock('@/components/project/simulation/boundaryConditions', () => () => (
   <div />
 ))

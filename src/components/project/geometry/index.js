@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
 import { useState } from 'react'
-import { Card, Divider, Layout, Space, Typography } from 'antd'
+import { Card, Layout, Space, Typography } from 'antd'
 import { MathJax } from 'better-react-mathjax'
 
 import Loading from '@/components/loading'

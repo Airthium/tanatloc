@@ -155,6 +155,8 @@ const Dashboard = () => {
   useEffect(() => {
     if (!user) return
 
+    console.log(workspaces)
+
     const my = workspaces
       .map((workspace) => {
         if (workspace.owners?.find((o) => o.id === user.id)) return workspace
@@ -164,14 +166,15 @@ const Dashboard = () => {
     const shared = workspaces
       .map((workspace) => {
         if (
-          workspace.users?.find((u) => u.id === user.id) ||
-          workspace.groups?.find((g) => {
-            return organizations.find((o) =>
-              o.groups?.find((group) => {
-                return group.id === g.id
-              })
-            )
-          })
+          !workspace.owners?.find((o) => o.id === user.id) &&
+          (workspace.users?.find((u) => u.id === user.id) ||
+            workspace.groups?.find((g) => {
+              return organizations.find((o) =>
+                o.groups?.find((group) => {
+                  return group.id === g.id
+                })
+              )
+            }))
         )
           return workspace
       })

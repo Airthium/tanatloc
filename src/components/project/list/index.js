@@ -143,8 +143,8 @@ const ProjectList = ({
                   </Carousel>
                 ) : (
                   <div
+                    className="project-snapshot"
                     onClick={() => openProject({ id: project.id })}
-                    style={{ cursor: 'pointer' }}
                   >
                     {project.snapshotRender}
                   </div>

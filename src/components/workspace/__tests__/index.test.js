@@ -54,7 +54,12 @@ jest.mock('@/api/project', () => ({
 describe('components/workspace', () => {
   const loading = false
   const user = { id: 'id' }
-  const workspace = { id: 'id', name: 'workspace', projects: [] }
+  const workspace = {
+    id: 'id',
+    name: 'workspace',
+    owners: [{ id: 'id' }],
+    projects: []
+  }
   const organizations = []
   const swr = { delOneWorkspace: jest.fn(), mutateOneWorkspace: jest.fn() }
 

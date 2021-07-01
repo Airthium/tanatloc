@@ -357,7 +357,7 @@ const Dashboard = () => {
           {currentKey === menuItems.organizations.key && (
             <Organizations
               user={{ id: user?.id }}
-              organizations={organizations || []}
+              organizations={organizations}
               swr={{
                 reloadOrganizations,
                 addOneOrganization,

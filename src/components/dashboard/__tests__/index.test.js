@@ -110,6 +110,7 @@ describe('components/dashboard', () => {
     mockLoadingUser.mockReset()
 
     mockOrganizations.mockReset()
+    mockOrganizations.mockImplementation(() => [])
     mockReloadOrganizations.mockReset()
     mockAddOneOrganization.mockReset()
     mockDelOneOrganization.mockReset()
@@ -202,6 +203,9 @@ describe('components/dashboard', () => {
       { id: 'id1', owners: [{ id: 'id' }] },
       { id: 'id2', users: [{ id: 'id' }] },
       { id: 'id3', groups: [{ id: 'id' }] }
+    ])
+    mockOrganizations.mockImplementation(() => [
+      { id: 'id', groups: [{ id: 'id' }] }
     ])
     const { unmount } = render(<Dashboard />)
 

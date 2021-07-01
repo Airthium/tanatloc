@@ -160,8 +160,9 @@ const getByUser = async ({ id }) => {
                       'groups',
                       'projects'
                     ])
-                    if (!workspaceData.owners.find((o) => o.id === id))
+                    if (!workspaceData.owners?.find((o) => o.id === id))
                       groupWorkspaces.push({
+                        id: workspace,
                         ...workspaceData,
                         owners: []
                       })

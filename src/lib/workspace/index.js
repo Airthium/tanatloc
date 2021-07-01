@@ -4,6 +4,7 @@ import WorkspaceDB from '@/database/workspace'
 
 import User from '../user'
 import Group from '../group'
+import Organization from '../organization'
 import Project from '../project'
 
 /**
@@ -103,10 +104,11 @@ const getByUser = async ({ id }) => {
     'lastname',
     'email',
     'avatar',
+    'organizations',
     'workspaces'
   ])
 
-  let workspaces = []
+  const workspaces = []
 
   // Get local workspaces
   if (user.workspaces) {
@@ -126,30 +128,60 @@ const getByUser = async ({ id }) => {
       })
     )
 
-    workspaces = [...localWorkspaces, ...workspaces]
+    workspaces.push(...localWorkspaces)
   }
 
-  // Get groups workspaces & projects
-  if (user.groups) {
-    // Workspace
-    const groupsWorkspaces = await Promise.all(
-      user.groups.map(async (group) => {
-        const groupData = await Group.get(group, ['workspaces'])
-
-        // Workspaces
-        if (groupData.workspaces) {
-          return Promise.all(
-            groupData.workspaces.map(async (workspace) => {
-              if (workspaces.find((w) => w.id === workspace)) return
-              const data = await get(workspace, [
+  // Get organizations workspaces & projects
+  if (user.organizations) {
+    const groupWorkspaces = []
+    const groupProjects = []
+    await Promise.all(
+      user.organizations.map(async (organization) => {
+        const organizationData = await Organization.get(organization, [
+          'groups'
+        ])
+        if (organizationData.groups) {
+          await Promise.all(
+            organizationData.groups.map(async (group) => {
+              const groupData = await Group.get(group, [
                 'name',
-                'owners',
-                'users',
+                'workspaces',
                 'projects'
               ])
-              return {
-                id: workspace,
-                ...data
+
+              // Workspaces
+              if (groupData.workspaces) {
+                await Promise.all(
+                  groupData.workspaces.map(async (workspace) => {
+                    const workspaceData = await get(workspace, [
+                      'name',
+                      'users',
+                      'owners',
+                      'groups',
+                      'projects'
+                    ])
+                    if (!workspaceData.owners.find((o) => o.id === id))
+                      groupWorkspaces.push({
+                        ...workspaceData,
+                        owners: []
+                      })
+                  })
+                )
+              }
+
+              if (groupData.projects) {
+                groupProjects.push({
+                  id: '0',
+                  name: 'Projects from ' + groupData.name,
+                  owners: [],
+                  groups: [
+                    {
+                      id: group,
+                      name: groupData.name
+                    }
+                  ],
+                  projects: groupData.projects
+                })
               }
             })
           )
@@ -157,37 +189,8 @@ const getByUser = async ({ id }) => {
       })
     )
 
-    const moreWorkspaces = groupsWorkspaces.flatMap((g) => g).filter((g) => g)
-    workspaces = [...moreWorkspaces, ...workspaces]
-
-    // Projects
-    const groupsProjects = await Promise.all(
-      user.groups.map(async (group) => {
-        const groupData = await Group.get(group, ['projects'])
-        return groupData.projects
-      })
-    )
-
-    const moreProjects = groupsProjects.flatMap((g) => g).filter((g) => g)
-    if (moreProjects.length) {
-      const customWorkspace = {
-        id: 0,
-        name: 'Shared projects',
-        owners: [],
-        users: [
-          {
-            id,
-            firstname: user.firstname,
-            lastname: user.lastname,
-            email: user.email,
-            avatar: user.avatar
-          }
-        ],
-        groups: [],
-        projects: moreProjects
-      }
-      workspaces = [...workspaces, customWorkspace]
-    }
+    workspaces.push(...groupWorkspaces)
+    workspaces.push(...groupProjects)
   }
 
   return workspaces

@@ -22,7 +22,7 @@ const errors = {
  * Share
  * @param {Object} props Props
  */
-const Share = ({ workspace, project, organizations, swr }) => {
+const Share = ({ disabled, workspace, project, organizations, swr }) => {
   // State
   const [visible, setVisible] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -135,6 +135,7 @@ const Share = ({ workspace, project, organizations, swr }) => {
       <Button
         type="text"
         key="share"
+        disabled={disabled}
         icon={<ShareAltOutlined />}
         onClick={() => setVisible(true)}
       />
@@ -163,6 +164,7 @@ const Share = ({ workspace, project, organizations, swr }) => {
 }
 
 Share.propTypes = {
+  disabled: PropTypes.bool,
   project: (props, propName, componentName) => {
     // Missing or invalid project
     if (

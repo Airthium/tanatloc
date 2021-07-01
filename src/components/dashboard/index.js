@@ -165,7 +165,13 @@ const Dashboard = () => {
       .map((workspace) => {
         if (
           workspace.users?.find((u) => u.id === user.id) ||
-          workspace.groups?.find((g) => user.groups?.includes(g.id))
+          workspace.groups?.find((g) => {
+            return organizations.find((o) =>
+              o.groups?.find((group) => {
+                return group.id === g.id
+              })
+            )
+          })
         )
           return workspace
       })
@@ -174,7 +180,7 @@ const Dashboard = () => {
     if (JSON.stringify(my) !== JSON.stringify(myWorkspaces)) setMyWorkspaces(my)
     if (JSON.stringify(shared) !== JSON.stringify(sharedWorkspaces))
       setSharedWorkspaces(shared)
-  }, [user, workspaces, myWorkspaces, sharedWorkspaces])
+  }, [user, workspaces, organizations, myWorkspaces, sharedWorkspaces])
 
   /**
    * Menu selection

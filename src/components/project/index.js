@@ -216,8 +216,6 @@ const Project = () => {
     }
   }
 
-  console.log(currentSimulation)
-
   /**
    * On selector cancel
    */

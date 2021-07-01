@@ -10,8 +10,21 @@ export default async (req, res) => {
   const sessionId = await getSessionId(req, res)
   if (!sessionId) return
 
-  const checkAdministrator = async (organization, user) => {
+  const checkAdministrator0 = async (organization, user) => {
     const organizationData = await OrganizationLib.get(organization.id, [
+      'owners'
+    ])
+    if (!organizationData?.owners?.includes(user.id)) {
+      res.status(500).json({ error: true, message: 'Unauthorized' })
+      return false
+    }
+
+    return true
+  }
+
+  const checkAdministrator1 = async (group, user) => {
+    const groupData = await GroupLib.get(group.id, ['organization'])
+    const organizationData = await OrganizationLib.get(groupData.organization, [
       'owners'
     ])
     if (!organizationData?.owners?.includes(user.id)) {
@@ -27,7 +40,7 @@ export default async (req, res) => {
       try {
         // Check administrator
         if (
-          !(await checkAdministrator(
+          !(await checkAdministrator0(
             { id: req.body.organization.id },
             { id: sessionId }
           ))
@@ -45,7 +58,9 @@ export default async (req, res) => {
     case 'PUT':
       try {
         // Check administrator
-        if (!(await checkAdministrator({ id: req.body.id }, { id: sessionId })))
+        if (
+          !(await checkAdministrator1({ id: req.body.id }, { id: sessionId }))
+        )
           return
 
         await GroupLib.update({ id: req.body.id }, req.body.data)
@@ -59,7 +74,9 @@ export default async (req, res) => {
     case 'DELETE':
       try {
         // Check administrator
-        if (!(await checkAdministrator({ id: req.body.id }, { id: sessionId })))
+        if (
+          !(await checkAdministrator1({ id: req.body.id }, { id: sessionId }))
+        )
           return
 
         await GroupLib.del(req.body)

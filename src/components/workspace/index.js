@@ -101,7 +101,11 @@ const Workspace = ({ loading, user, page, workspace, organizations, swr }) => {
             <Typography.Title
               level={2}
               className="pageheader-name"
-              editable={workspace.id && { onChange: setName }}
+              editable={
+                workspace?.owners?.find((o) => o.id === user.id) && {
+                  onChange: setName
+                }
+              }
             >
               {workspace.name}
             </Typography.Title>
@@ -109,11 +113,13 @@ const Workspace = ({ loading, user, page, workspace, organizations, swr }) => {
           extra={
             workspace.id && (
               <Space direction="">
-                <Share
-                  workspace={workspace}
-                  organizations={organizations}
-                  swr={{ mutateOneWorkspace: swr.mutateOneWorkspace }}
-                />
+                {workspace?.owners?.find((o) => o.id === user.id) && (
+                  <Share
+                    workspace={workspace}
+                    organizations={organizations}
+                    swr={{ mutateOneWorkspace: swr.mutateOneWorkspace }}
+                  />
+                )}
                 {workspace?.owners?.find((o) => o.id === user.id) && (
                   <Delete
                     workspace={workspace}
@@ -133,13 +139,15 @@ const Workspace = ({ loading, user, page, workspace, organizations, swr }) => {
                   value={filter}
                   onChange={onSearch}
                 />
-                <ProjectAdd
-                  workspace={workspace}
-                  swr={{
-                    mutateOneWorkspace: swr.mutateOneWorkspace,
-                    addOneProject
-                  }}
-                />
+                {workspace?.owners?.find((o) => o.id === user.id) && (
+                  <ProjectAdd
+                    workspace={workspace}
+                    swr={{
+                      mutateOneWorkspace: swr.mutateOneWorkspace,
+                      addOneProject
+                    }}
+                  />
+                )}
               </Space>
             </>
           }

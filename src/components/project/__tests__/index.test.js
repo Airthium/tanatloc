@@ -183,13 +183,17 @@ describe('components/project', () => {
               index: 3,
               title: 'Simulation 1 BC'
             },
-            run: {
+            initialization: {
               index: 4,
+              title: 'Simulation 1 Initialization'
+            },
+            run: {
+              index: 5,
               title: 'Simulation 1 Run',
               error: true
             },
             unknown: {
-              index: 5,
+              index: 6,
               title: 'Simulation 1 Unknown'
             }
           }
@@ -330,6 +334,11 @@ describe('components/project', () => {
 
     simulationItem = screen.getByRole('menuitem', {
       name: 'exclamation-circle Simulation 1 Materials'
+    })
+    fireEvent.click(simulationItem)
+
+    simulationItem = screen.getByRole('menuitem', {
+      name: 'exclamation-circle Simulation 1 Initialization'
     })
     fireEvent.click(simulationItem)
 

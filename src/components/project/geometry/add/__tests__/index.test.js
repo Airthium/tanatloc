@@ -29,6 +29,9 @@ describe('components/project/geometry/add', () => {
     mockError.mockReset()
 
     mockAdd.mockReset()
+
+    swr.mutateProject.mockReset()
+    swr.addOneGeometry.mockReset()
   })
 
   test('render', () => {
@@ -91,7 +94,35 @@ describe('components/project/geometry/add', () => {
     unmount()
   })
 
-  test('upload', async () => {
+  test('upload - no geometries', async () => {
+    mockDialog.mockImplementation((props) => <div>{props.children}</div>)
+    const { unmount } = render(
+      <Add
+        visible={visible}
+        project={{ id: 'id' }}
+        swr={swr}
+        setVisible={setVisible}
+      />
+    )
+
+    const upload = screen.getByRole('img', { name: 'upload' })
+
+    // Uploading
+    mockAdd.mockImplementation(() => ({}))
+    const file = new File(['buffer'], 'file.dxf')
+    fireEvent.drop(upload, {
+      dataTransfer: {
+        files: [file]
+      }
+    })
+    await waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(swr.addOneGeometry).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(swr.mutateProject).toHaveBeenCalledTimes(1))
+
+    unmount()
+  })
+
+  test('upload - error', async () => {
     mockDialog.mockImplementation((props) => <div>{props.children}</div>)
     const { unmount } = render(
       <Add

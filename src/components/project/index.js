@@ -260,6 +260,9 @@ const Project = () => {
    */
   const selectSimulation = (id, type) => {
     onPanelClose()
+
+    if (currentSimulation && currentSimulation.id !== id) setCurrentResult()
+
     if (type === 'materials' || type === 'boundaryConditions')
       setCurrentResult()
 

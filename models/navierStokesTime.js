@@ -151,16 +151,16 @@ const NavierStokesTime = {
       },
       coupling: {
         label: 'Coupling',
-        children: [
+        type: 'SIMULATION_COUPLING',
+        compatibility: [
           {
-            label: 'Simulation',
-            htmlEntity: 'select',
-            options: 'SIMULATIONS_LIST'
-          },
-          {
-            label: 'Time step',
-            htmlEntity: 'formula',
-            default: 0
+            algorithm: 'navierStokesTime',
+            map: [1, 1, 1],
+            filter: {
+              name: 'Time step',
+              pattern: 'Result_\\d+.vtu',
+              multiplicator: ['parameters', 'time', 'children', '1']
+            }
           }
         ]
       }

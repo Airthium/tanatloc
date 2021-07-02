@@ -526,6 +526,7 @@ const processResult = async (
       task.files = [
         ...(task.files || []),
         ...results.map((result) => ({
+          type: 'result',
           fileName: resultFile,
           originPath: resultPath,
           name: result.name,

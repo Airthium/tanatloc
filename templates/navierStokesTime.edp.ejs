@@ -156,6 +156,13 @@ for (int timeIter = 0; timeIter < nbIter; ++timeIter) {
 		y: 'div'
 	}) -%>
 
+	// Save coupling
+	<%- include('/blobs/coupling.edp.ejs', {
+		path: run.couplingPath,
+		name: '"Result_"+timeIter',
+		data: ['Ux', 'Uy', 'Uz']
+	}); -%>
+
 	// Save results
 	<%- include('/blobs/save.edp.ejs', {
 		solution: {

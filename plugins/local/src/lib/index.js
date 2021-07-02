@@ -80,6 +80,7 @@ const computeMesh = async (simulationPath, geometry, mesh, callback) => {
   )
 
   return {
+    type: 'mesh',
     fileName: mshFile,
     originPath: mesh.path,
     renderPath: mesh.path,
@@ -218,6 +219,7 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
         dimension: 3,
         run: {
           ...configuration.run,
+          couplingPath: 'run/coupling',
           resultPath: 'run/result',
           dataPath: 'run/data'
         }
@@ -229,6 +231,7 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
     )
 
     // Create paths
+    await Tools.createPath(path.join(simulationPath, 'run/coupling'))
     await Tools.createPath(path.join(simulationPath, 'run/result'))
     await Tools.createPath(path.join(simulationPath, 'run/data'))
 
@@ -368,6 +371,7 @@ const processOutput = async (simulationPath, task, update) => {
             task.files = [
               ...(task.files || []),
               ...newResults.map((result) => ({
+                type: 'result',
                 fileName: resFile,
                 originPath: 'run/result',
                 name: result.name,

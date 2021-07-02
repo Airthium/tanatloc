@@ -71,6 +71,7 @@ const init = async (configuration) => {
 const computeSimulation = async ({ id }, algorithm, configuration) => {
   // Path
   const simulationPath = path.join(storage.SIMULATION, id)
+  const couplingPath = 'coupling'
   const resultPath = 'result'
   const dataPath = 'data'
 
@@ -94,6 +95,7 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
     const cloudParameters = configuration.run.cloudServer.inUseConfiguration
 
     // Result & data directories
+    await Tools.createPath(path.join(simulationPath, 'run', couplingPath))
     await Tools.createPath(path.join(simulationPath, 'run', resultPath))
     await Tools.createPath(path.join(simulationPath, 'run', dataPath))
 
@@ -242,6 +244,7 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
         dimension: 3,
         run: {
           ...configuration.run,
+          couplingPath: 'coupling',
           resultPath: 'result',
           dataPath: 'data'
         }
@@ -331,6 +334,8 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
             simulationTask.log = currentLog + log.replace(/\[.*\]: /g, '')
           }
         }
+
+        // TODO get coupling data
 
         // Results / data
         const processFile = inRunFiles.find((f) =>

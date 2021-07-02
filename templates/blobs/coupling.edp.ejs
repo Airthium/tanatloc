@@ -1,0 +1,7 @@
+// Data for coupling
+appendLog("Save coupling data...");
+
+{
+    ofstream coupling("<%- path -%>" + "/" + <%- name -%> + ".dat" );
+    coupling << <%- data.join('[] << ') -%>[];
+}

@@ -6,7 +6,7 @@ import { Card, Collapse, Typography } from 'antd'
  */
 const HPC = () => {
   return (
-    <Card title="HPC plugins">
+    <Card title="Account / HPC plugins">
       <Collapse>
         <Collapse.Panel header="Local plugin">
           <Typography.Text>

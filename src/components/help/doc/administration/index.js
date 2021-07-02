@@ -16,12 +16,6 @@ const Administration = () => {
             You can manage users: create, delete or modify informations.
           </Typography.Text>
         </Collapse.Panel>
-        <Collapse.Panel header="Groups">
-          <Typography.Text>
-            You can manage groups: create, delete or modify informations.
-          </Typography.Text>
-          <Typography.Text>Groups are used for sharing.</Typography.Text>
-        </Collapse.Panel>
         <Collapse.Panel header="Registration">
           <Typography.Text>
             Allow you to enable / disable the signup and to manage the required

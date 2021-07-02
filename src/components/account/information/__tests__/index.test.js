@@ -121,27 +121,19 @@ describe('components/account/information', () => {
 
     // Good format
     file = new File(['buffer'], 'file.png', { type: 'image/png' })
-    file.status = 'uploading'
     fireEvent.drop(upload, {
       dataTransfer: {
         files: [file]
       }
     })
 
-    // Done
-    file.status = 'done'
-    fireEvent.drop(upload, {
-      dataTransfer: {
-        files: [file]
-      }
-    })
-    await waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(2))
-    await waitFor(() => expect(swr.mutateUser).toHaveBeenCalledTimes(2))
+    await waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(swr.mutateUser).toHaveBeenCalledTimes(1))
 
     unmount()
   })
 
-  it('upload error', async () => {
+  it('upload - error', async () => {
     const { unmount } = render(<Information user={user} swr={swr} />)
 
     const upload = screen.getByRole('img', { name: 'upload' })

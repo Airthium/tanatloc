@@ -155,8 +155,6 @@ const Dashboard = () => {
   useEffect(() => {
     if (!user) return
 
-    console.log(workspaces)
-
     const my = workspaces
       .map((workspace) => {
         if (workspace.owners?.find((o) => o.id === user.id)) return workspace

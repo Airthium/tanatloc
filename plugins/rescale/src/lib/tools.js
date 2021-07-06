@@ -473,16 +473,20 @@ const processResult = async (
       file = availableFiles.find((f) => f.relativePath.includes(resultFile))
     }
 
-    if (!file) throw new Error('No available file')
+    if (!file) throw new Error('No available file (' + resultFile + ')')
 
     // Get file content
     let fileContent
     if (type === 'inrun') {
       fileContent = await getInRunFile(configuration, file)
       if (fileContent.detail)
-        throw new Error('Run is not active. Trying to get the file at the end')
+        throw new Error(
+          'Run is not active. Trying to get the file at the end (' +
+            resultFile +
+            ')'
+        )
       if (typeof fileContent !== 'string')
-        throw new Error('Rescale empty response')
+        throw new Error('Rescale empty response (' + resultFile + ')')
     } else {
       fileContent = await getFile(configuration, file.id)
     }
@@ -578,16 +582,20 @@ const processData = async (
     } else {
       file = availableFiles.find((f) => f.relativePath.includes(dataFile))
     }
-    if (!file) throw new Error('No available file')
+    if (!file) throw new Error('No available file (' + dataFile + ')')
 
     // Get content
     let fileContent
     if (type === 'inrun') {
       fileContent = await getInRunFile(configuration, file)
       if (fileContent.detail)
-        throw new Error('Run is not active. Trying to get the file at the end')
+        throw new Error(
+          'Run is not active. Trying to get the file at the end (' +
+            dataFile +
+            ')'
+        )
       if (typeof fileContent !== 'string')
-        throw new Error('Rescale empty response')
+        throw new Error('Rescale empty response (' + dataFile + ')')
     } else {
       fileContent = await getFile(configuration, file.id)
     }

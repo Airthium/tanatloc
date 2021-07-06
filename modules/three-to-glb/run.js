@@ -187,8 +187,21 @@ const loadElement = (type, element, color) => {
     const lut = new THREE.Lut()
     const data = geometry.getAttribute('data')
     if (data) {
-      const min = Math.min(...data.array)
-      const max = Math.max(...data.array)
+      const minUsingReduce = () =>
+        data.array.reduce(
+          (m, currentValue) => Math.min(m, currentValue),
+          data.array[0]
+        )
+      const maxUsingReduce = () =>
+        data.array.reduce(
+          (m, currentValue) => Math.max(m, currentValue),
+          data.array[0]
+        )
+
+      const min = minUsingReduce()
+      //Math.min(...data.array) // Throw Maximum call stack size exceeded for big array
+      const max = maxUsingReduce()
+      //Math.max(...data.array)
 
       if (min === max) {
         if (min === 0) {
@@ -260,29 +273,33 @@ const loadElement = (type, element, color) => {
  * @param {string} name Name
  */
 const convert = async (location, name) => {
-  // Load part
-  const part = loadPart(location, name)
+  try {
+    // Load part
+    const part = loadPart(location, name)
 
-  // Load mesh
-  const mesh = load(part)
+    // Load mesh
+    const mesh = load(part)
 
-  // GLTF
-  const exporter = new THREE.GLTFExporter()
-  const gltf = await new Promise((resolve) =>
-    exporter.parse(
-      mesh,
-      (content) => {
-        resolve(content)
-      },
-      { onlyVisible: false, binary: false }
+    // GLTF
+    const exporter = new THREE.GLTFExporter()
+    const gltf = await new Promise((resolve) =>
+      exporter.parse(
+        mesh,
+        (content) => {
+          resolve(content)
+        },
+        { onlyVisible: false, binary: false }
+      )
     )
-  )
 
-  console.log(JSON.stringify(gltf))
+    console.log(JSON.stringify(gltf))
 
-  // // GLB
-  // const glb = await gltfPipeline.gltfToGlb(gltf)
-  // console.log(Buffer.from(glb.glb).toString())
+    // // GLB
+    // const glb = await gltfPipeline.gltfToGlb(gltf)
+    // console.log(Buffer.from(glb.glb).toString())
+  } catch (err) {
+    console.error(err)
+  }
 }
 
 convert(process.argv[2], process.argv[3])

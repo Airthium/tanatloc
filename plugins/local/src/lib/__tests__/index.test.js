@@ -83,6 +83,7 @@ describe('plugins/local/src/lib', () => {
       jest.fn()
     )
     expect(data).toEqual({
+      type: 'mesh',
       originPath: 'path',
       renderPath: 'path',
       fileName: 'name.msh',

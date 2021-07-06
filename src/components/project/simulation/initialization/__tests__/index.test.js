@@ -6,6 +6,8 @@ import Initialization from '..'
 const mockFormula = jest.fn()
 jest.mock('@/components/assets/formula', () => (props) => mockFormula(props))
 
+jest.mock('@/api/simulation', () => {})
+
 describe('components/project/simulation/initialization', () => {
   const simulations = [
     {

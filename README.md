@@ -36,9 +36,9 @@ Using server-side rendering (SSR).
 | Variable                 | Default         | Comment                                 |
 | ------------------------ | --------------- | --------------------------------------- |
 | STORAGE_PATH             | `/tmp/tanatloc` | Absolute storage path                   |
-| AVATAR_RELATIVE_PATH     | avatar          | Relative avatar path (from STORAGE)     |
-| GEOMETRY_RELATIVE_PATH   | geometry        | Relative simulation path (from STORAGE) |
-| SIMULATION_RELATIVE_PATH | simulation      | Relative geometry path (from STORAGE)   |
+| AVATAR_RELATIVE_PATH     | `avatar`        | Relative avatar path (from STORAGE)     |
+| GEOMETRY_RELATIVE_PATH   | `geometry`      | Relative simulation path (from STORAGE) |
+| SIMULATION_RELATIVE_PATH | `simulation`    | Relative geometry path (from STORAGE)   |
 
 ### Email
 

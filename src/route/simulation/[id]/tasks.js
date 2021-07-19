@@ -54,7 +54,7 @@ export default async (req, res) => {
     // Tasks
     try {
       const simulation = await SimulationLib.get(id, ['tasks'])
-      res.status(200).json(simulation.tasks)
+      res.status(200).json(simulation.tasks || [])
     } catch (err) {
       console.error(err)
       res.status(204).json({ error: true, message: err.message })

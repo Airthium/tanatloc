@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
-import { Collapse, Space, Typography } from 'antd'
+import { Card, Collapse, Space, Typography } from 'antd'
 import { SelectOutlined } from '@ant-design/icons'
 import { MathJax } from 'better-react-mathjax'
 
@@ -127,9 +127,14 @@ const Geometry = ({ geometries, geometry, simulation, setGeometry, swr }) => {
    * Render
    */
   return geometries.length ? (
-    <div>{geometriesList}</div>
+    <>
+      {geometriesList}
+      {simulation.scheme.configuration.geometry.meshable && (
+        <Card title="Mesh refinement">TODO</Card>
+      )}
+    </>
   ) : (
-    <div>Please upload a geometry first</div>
+    <Typography.Text>Please upload a geometry first</Typography.Text>
   )
 }
 

@@ -43,6 +43,9 @@ const About = ({ project, simulation, swr }) => {
     }
   }
 
+  /**
+   * Render
+   */
   return (
     <Layout>
       <Layout.Content>

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Collapse, Layout, Select, Space, Typography } from 'antd'
+import { Collapse, Layout, Select, Space, Spin, Typography } from 'antd'
 
 import Formula from '@/components/assets/formula'
 
@@ -7,6 +7,7 @@ import SimulationAPI from '@/api/simulation'
 
 const Initialization = ({ simulations, simulation }) => {
   // State
+  const [loading, setLoading] = useState(false)
   const [values, setValues] = useState({})
   const [couplingSimulation, setCouplingSimulation] = useState()
   const [couplingResults, setCouplingResults] = useState()
@@ -19,6 +20,8 @@ const Initialization = ({ simulations, simulation }) => {
   }
 
   const onCouplingChange = async (value) => {
+    setLoading(true)
+
     // Simulation
     const simulationToCouple = simulations.find((s) => s.id === value)
 
@@ -41,6 +44,8 @@ const Initialization = ({ simulations, simulation }) => {
         .filter((result, index) => taskResults.indexOf(result) === index)
         .sort()
     })
+
+    setLoading(false)
 
     setCouplingSimulation(simulationToCouple)
     setCouplingResults(results)
@@ -88,12 +93,22 @@ const Initialization = ({ simulations, simulation }) => {
       const filter = compatibility?.filter
       initializations.push(
         <Collapse.Panel key={key} header={initialization?.label}>
+          <Typography.Text>
+            If you use coupling, the selected simulation mesh will be used, at
+            least for the first iteration.
+          </Typography.Text>
           <Space direction="vertical" style={{ width: '100%' }}>
             <Select
               options={simulationsOptions}
               placeholder="Select a simulation"
               onChange={onCouplingChange}
             />
+            {loading && <Spin />}
+            {couplingResults?.length === 0 && (
+              <Typography.Text type="warning">
+                No results, please select an other simulation.
+              </Typography.Text>
+            )}
             {couplingResults?.length > 1 && (
               <>
                 <Typography.Text key={'simulation'}>

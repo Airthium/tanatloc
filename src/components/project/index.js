@@ -499,6 +499,7 @@ const Project = () => {
                 <Simulation.Initialization
                   simulations={simulations}
                   simulation={currentSimulation}
+                  swr={{ mutateOneSimulation }}
                 />
               )}
             {currentSimulation &&

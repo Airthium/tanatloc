@@ -382,7 +382,7 @@ const Run = ({ simulation, result, setResult, swr }) => {
         )
       })
     } catch (err) {
-      ErrorNotification(err, errors.logError)
+      ErrorNotification(errors.logError, err)
     } finally {
       setLogLoading(false)
     }

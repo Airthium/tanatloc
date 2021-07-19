@@ -1,13 +1,19 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Collapse, Layout, Select, Space, Spin, Typography } from 'antd'
 
 import Formula from '@/components/assets/formula'
+import { Error as ErrorNotification } from '@/components/assets/notification'
 
 import SimulationAPI from '@/api/simulation'
 
-const Initialization = ({ simulations, simulation }) => {
+const errors = {
+  update: 'Unable to update simulation'
+}
+
+const Initialization = ({ simulations, simulation, swr }) => {
   // State
   const [loading, setLoading] = useState(false)
+  const [currentType, setCurrentType] = useState()
   const [values, setValues] = useState({})
   const [couplingSimulation, setCouplingSimulation] = useState()
   const [couplingResults, setCouplingResults] = useState()
@@ -15,8 +21,41 @@ const Initialization = ({ simulations, simulation }) => {
   // Data
   const subScheme = simulation?.scheme.configuration.initialization
 
-  const onPanelChange = (key) => {
-    console.log(key)
+  useEffect(() => {
+    if (subScheme?.value) setCurrentType(subScheme.value.type)
+  }, [])
+
+  /**
+   * On panel change
+   * @param {string} key Key
+   */
+  const onPanelChange = async (key) => {
+    setCurrentType(key)
+    try {
+      // New simulation
+      const newSimulation = { ...simulation }
+
+      // Update local
+      const initialization = newSimulation.scheme.configuration.initialization
+      initialization.value = {
+        type: key
+      }
+
+      await SimulationAPI.update({ id: simulation.id }, [
+        {
+          key: 'scheme',
+          type: 'json',
+          method: 'set',
+          path: ['configuration', 'initialization'],
+          value: initialization
+        }
+      ])
+
+      // Local
+      swr.mutateOneSimulation(newSimulation)
+    } catch (err) {
+      ErrorNotification(errors.update, err)
+    }
   }
 
   const onCouplingChange = async (value) => {
@@ -71,7 +110,8 @@ const Initialization = ({ simulations, simulation }) => {
   // Build initialization
   const initializations = []
   Object.keys(subScheme).forEach((key) => {
-    if (key === 'index' || key === 'title' || key === 'done') return
+    if (key === 'index' || key === 'title' || key === 'done' || key === 'value')
+      return
 
     const initialization = subScheme[key]
 
@@ -166,10 +206,16 @@ const Initialization = ({ simulations, simulation }) => {
       )
     }
   })
+
+  // TODO continue
+
+  /**
+   * Render
+   */
   return (
     <Layout>
       <Layout.Content>
-        <Collapse accordion onChange={onPanelChange}>
+        <Collapse accordion onChange={onPanelChange} activeKey={currentType}>
           {initializations}
         </Collapse>
       </Layout.Content>

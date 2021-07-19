@@ -7,6 +7,7 @@ const Poisson = {
   name: "Poisson's equation",
   algorithm: 'poisson',
   code: 'FreeFEM',
+  version: '1.0.0',
   description: `
     <p>
         Poisson's equation:

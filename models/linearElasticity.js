@@ -7,6 +7,7 @@ const LinearElasticity = {
   name: 'Linear elasticity',
   algorithm: 'linearElasticity',
   code: 'FreeFEM',
+  version: '1.0.0',
   description: `
   <p>
     Linear elasticity

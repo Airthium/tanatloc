@@ -91,6 +91,9 @@ const About = ({ project, simulation, swr }) => {
               <Typography.Text>
                 <b>Code:</b> {simulation.scheme?.code}
               </Typography.Text>
+              <Typography.Text>
+                <b>Version:</b> {simulation.scheme?.version}
+              </Typography.Text>
 
               <div
                 dangerouslySetInnerHTML={{

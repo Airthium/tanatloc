@@ -6,6 +6,7 @@ const solderFilling = {
   name: 'Solder filling problem',
   algorithm: 'solderFilling',
   code: 'FreeFEM',
+  version: '1.0.0',
   description: `
   <p>
     SolderFilling to find minimum volume of liquid that fills given gap in STEP geometry definition

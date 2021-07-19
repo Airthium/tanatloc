@@ -7,6 +7,7 @@ const NavierStokesTime = {
   name: 'Navier-Stokes time-dependant',
   algorithm: 'navierStokesTime',
   code: 'FreeFEM',
+  version: '1.0.0',
   description: `
   <p>
     Navier-Stokes

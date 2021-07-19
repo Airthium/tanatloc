@@ -8,6 +8,7 @@ import del from './del'
 import run from './run'
 import stop from './stop'
 import tasks from './tasks'
+import log from './log'
 
 export default {
   useSimulations,
@@ -17,5 +18,6 @@ export default {
   del,
   run,
   stop,
-  tasks
+  tasks,
+  log
 }

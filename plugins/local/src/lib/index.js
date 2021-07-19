@@ -205,7 +205,8 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
     log: '',
     warning: '',
     error: '',
-    status: 'wait'
+    status: 'wait',
+    systemLog: 'log'
   }
   tasks.push(simulationTask)
   updateTasks(id, tasks)

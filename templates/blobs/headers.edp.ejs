@@ -18,3 +18,13 @@ func int appendLog (string str) {
         logOut << str << endl;
     }
 }
+
+func int appendError (string str) {
+    if (mpirank == 0) {
+        // Log file
+        ofstream logOut("process_log.log", append);
+
+        logOut << "Error:" << endl;
+        logOut << str << endl;
+    }
+}

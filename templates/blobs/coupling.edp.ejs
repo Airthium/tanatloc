@@ -1,7 +1,8 @@
 // Data for coupling
 appendLog("Save coupling data...");
 
+savemesh(<%- mesh -%>, "<%- path -%>" + "/" + <%- name -%> + ".mesh");
 {
-    ofstream coupling("<%- path -%>" + "/" + <%- name -%> + ".dat" );
+    ofstream coupling("<%- path -%>" + "/" + <%- name -%> + ".dat");
     coupling << <%- data.join('[] << ') -%>[];
 }

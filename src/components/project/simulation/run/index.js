@@ -5,12 +5,14 @@ import {
   Card,
   Drawer,
   Layout,
+  Modal,
   Select,
   Space,
   Spin,
   Steps,
   Tabs,
-  Tooltip
+  Tooltip,
+  Typography
 } from 'antd'
 import {
   DownloadOutlined,
@@ -36,7 +38,8 @@ const errors = {
   runError: 'Unable to run the simulation',
   stopError: 'Unable to stop the simulation',
   updateError: 'Unable to update the simulation',
-  downloadError: 'Unable to download the file'
+  downloadError: 'Unable to download the file',
+  logError: 'Unable to get system log'
 }
 
 /**
@@ -51,6 +54,7 @@ const Run = ({ simulation, result, setResult, swr }) => {
 
   const [logVisible, setLogVisible] = useState(false)
   const [logContent, setLogContent] = useState()
+  const [logLoading, setLogLoading] = useState(false)
 
   const [selectors, setSelectors] = useState([])
   const [selectorsCurrent, setSelectorsCurrent] = useState([])
@@ -123,7 +127,8 @@ const Run = ({ simulation, result, setResult, swr }) => {
         status: task.status,
         log: task.log,
         warning: task.warning,
-        error: task.warning
+        error: task.warning,
+        systemLog: task.systemLog
       }
 
       // Results
@@ -324,6 +329,11 @@ const Run = ({ simulation, result, setResult, swr }) => {
     // Content
     const content = (
       <Tabs.TabPane tab={title}>
+        {task?.systemLog && (
+          <Button loading={logLoading} onClick={() => getLog(task?.systemLog)}>
+            Complete log
+          </Button>
+        )}
         <div
           dangerouslySetInnerHTML={{
             __html: task?.log?.replace(/\n\n/g, '\n').replace(/\n/g, '<br />')
@@ -349,6 +359,33 @@ const Run = ({ simulation, result, setResult, swr }) => {
 
     // Open
     toggleLog()
+  }
+
+  const getLog = async (link) => {
+    setLogLoading(true)
+
+    try {
+      const res = await SimulationAPI.log({ id: simulation.id }, link)
+      const log = Buffer.from(res.log).toString()
+
+      Modal.info({
+        title: 'System log',
+        width: 'unset',
+        content: (
+          <Typography.Paragraph code copyable>
+            <span
+              dangerouslySetInnerHTML={{
+                __html: log.replace(/\n\n/g, '\n').replace(/\n/g, '<br />')
+              }}
+            ></span>
+          </Typography.Paragraph>
+        )
+      })
+    } catch (err) {
+      ErrorNotification(err, errors.logError)
+    } finally {
+      setLogLoading(false)
+    }
   }
 
   /**

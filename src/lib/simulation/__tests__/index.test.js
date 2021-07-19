@@ -43,12 +43,14 @@ jest.mock('../../geometry', () => ({
   get: async () => mockGeometryGet()
 }))
 
+const mockReadFile = jest.fn()
 const mockWriteFile = jest.fn()
 const mockCopyFile = jest.fn()
 const mockConvert = jest.fn()
 const mockRemoveFile = jest.fn()
 const mockRemoveDirectory = jest.fn()
 jest.mock('../../tools', () => ({
+  readFile: async () => mockReadFile(),
   writeFile: async () => mockWriteFile(),
   copyFile: async () => mockCopyFile(),
   convert: async () => mockConvert(),
@@ -72,6 +74,7 @@ describe('lib/simulation', () => {
 
     mockGeometryGet.mockReset()
 
+    mockReadFile.mockReset()
     mockWriteFile.mockReset()
     mockCopyFile.mockReset()
     mockConvert.mockReset()
@@ -262,5 +265,12 @@ describe('lib/simulation', () => {
     expect(mockGet).toHaveBeenCalledTimes(1)
     expect(mockStop).toHaveBeenCalledTimes(1)
     expect(mockUpdate).toHaveBeenCalledTimes(1)
+  })
+
+  test('getLog', async () => {
+    mockReadFile.mockImplementation(() => 'log')
+    const log = await Simulation.getLog({ id: 'id' }, 'log')
+    expect(mockReadFile).toHaveBeenCalledTimes(1)
+    expect(log).toBe('log')
   })
 })

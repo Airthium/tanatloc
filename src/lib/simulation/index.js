@@ -244,5 +244,13 @@ const stop = async ({ id }) => {
   ])
 }
 
-const Simulation = { add, get, update, del, run, stop }
+const getLog = async ({ id }, file) => {
+  // Path
+  const filePath = path.join(storage.SIMULATION, id, file)
+
+  // Write file
+  return Tools.readFile(filePath)
+}
+
+const Simulation = { add, get, update, del, run, stop, getLog }
 export default Simulation

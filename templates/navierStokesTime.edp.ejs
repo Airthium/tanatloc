@@ -1,3 +1,4 @@
+try {
 <%# Headers -%>
 <%- include('/blobs/headers.edp.ejs') -%>
 
@@ -159,6 +160,7 @@ for (int timeIter = 0; timeIter < nbIter; ++timeIter) {
 	// Save coupling
 	<%- include('/blobs/coupling.edp.ejs', {
 		path: run.couplingPath,
+		mesh: mesh.name,
 		name: '"Result_"+timeIter',
 		data: ['Ux', 'Uy', 'Uz']
 	}); -%>
@@ -177,3 +179,7 @@ for (int timeIter = 0; timeIter < nbIter; ++timeIter) {
 }
 
 appendLog("End");
+} catch(...) {
+	appendError("An internal error occurs");
+	exit(-1);
+}

@@ -36,7 +36,7 @@ const Initialization = ({ simulations, simulation }) => {
         taskResults.push(...files)
       }
       if (task.file) {
-        if (task.file.type === 'results') taskResults.push(task.file.fileName)
+        if (task.file.type === 'result') taskResults.push(task.file.fileName)
       }
 
       // Set unique
@@ -147,7 +147,9 @@ const Initialization = ({ simulations, simulation }) => {
               {child.label}:<br />
               <Select
                 options={child.options}
-                defaultValue={child.value || child.default}
+                defaultValue={
+                  child.value === undefined ? child.default : child.value
+                }
                 onChange={(value) => onChange(key, index, value)}
               />
             </Typography.Text>

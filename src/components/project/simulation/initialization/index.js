@@ -59,23 +59,87 @@ const Initialization = ({ simulations, simulation, swr }) => {
     }
   }
 
+  /**
+   * Load results
+   * @param {string} id Simulation id
+   */
   const loadResults = async (id) => {
     const tasks = await SimulationAPI.tasks({ id })
-    const results = tasks.flatMap((task) => {
-      const taskResults = []
+
+    const results = []
+    tasks.forEach((task) => {
       if (task.files) {
-        const files = task.files
-          .filter((file) => file.type === 'result')
-          .map((file) => file.fileName)
-        taskResults.push(...files)
+        // Filter
+        const currentSimulation = simulations.find((s) => s.id === id)
+        const resultsFilters =
+          currentSimulation.scheme.configuration.run.resultsFilters
+
+        //Sort by filters
+        resultsFilters.forEach((filter, filterIndex) => {
+          const pattern = new RegExp(filter.pattern)
+          const filteredFiles = task.files.filter((file) =>
+            pattern.test(file.fileName)
+          )
+
+          if (filteredFiles.length) {
+            // Set iteration numbers
+            const files = filteredFiles.map((file) => {
+              const number = file.fileName
+                .replace(new RegExp(filter.prefixPattern), '')
+                .replace(new RegExp(filter.suffixPattern), '')
+              return {
+                ...file,
+                number: +number
+              }
+            })
+
+            // Sort
+            files.sort((a, b) => a.number - b.number)
+
+            // Get unique numbers
+            const steps = files.filter((file, i, self) => {
+              return files.findIndex((s) => s.number === file.number) === i
+            })
+
+            // Multiplicator
+            let multiplicator
+
+            const multiplicatorPath = filter.multiplicator
+            if (multiplicatorPath) {
+              const multiplicatorObject = multiplicatorPath.reduce(
+                (a, v) => a[v],
+                currentSimulation.scheme.configuration
+              )
+              multiplicator =
+                multiplicatorObject.value || multiplicatorObject.default
+            }
+
+            results.push(
+              ...steps.map((file, i) => ({
+                label: (multiplicator
+                  ? file.number * multiplicator
+                  : i
+                ).toString(),
+                value: file.fileName.replace(
+                  new RegExp(filter.suffixPattern),
+                  ''
+                )
+              }))
+            )
+          }
+        })
       }
       if (task.file) {
-        if (task.file.type === 'result') taskResults.push(task.file.fileName)
+        if (task.file.type === 'result')
+          results.push({
+            label: task.file.fileName,
+            value: task.file.fileName
+          })
       }
 
       // Set unique
-      return taskResults
-        .filter((result, index) => taskResults.indexOf(result) === index)
+      return results
+        .filter((result, index) => results.indexOf(result) === index)
         .sort()
     })
 
@@ -242,7 +306,7 @@ const Initialization = ({ simulations, simulation, swr }) => {
             <Select
               options={simulationsOptions}
               placeholder="Select a simulation"
-              value={initializationValue?.simulation}
+              defaultValue={initializationValue?.simulation}
               onChange={onCouplingChange}
             />
             {loading && <Spin />}
@@ -257,11 +321,9 @@ const Initialization = ({ simulations, simulation, swr }) => {
                   {filter?.name}:
                 </Typography.Text>
                 <Select
-                  options={couplingResults.map((result) => ({
-                    value: result,
-                    label: result
-                  }))}
-                  value={initializationValue?.result || couplingResults[0]}
+                  options={couplingResults}
+                  placeholder={'Select a ' + filter.name}
+                  defaultValue={initializationValue?.result}
                   onChange={onCouplingResultChange}
                 />
               </>

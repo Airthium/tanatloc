@@ -434,7 +434,7 @@ const processOutput = async (simulationPath, task, update) => {
  * @param {Array} tasks Tasks
  */
 const stop = async (tasks) => {
-  tasks.forEach((task) => {
+  tasks?.forEach((task) => {
     if (task.status === 'process') process.kill(task.pid)
   })
 }

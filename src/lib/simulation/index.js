@@ -171,6 +171,33 @@ const run = async (user, { id }) => {
     }
   )
 
+  // TODO
+  // // Check coupling
+  // if (configuration.initialization && configuration.initialization.value) {
+  //   const type = configuration.initialization.value.type
+
+  //   if (configuration.initialization[type].type === 'SIMULATION_COUPLING') {
+  //     // Get previous mesh and result
+
+  //     console.log(configuration.initialization.value.simulation)
+  //     console.log(configuration.initialization.value.result)
+  //   }
+  // }
+
+  // // TODO remove this
+  // update({ id }, [
+  //   {
+  //     key: 'scheme',
+  //     type: 'json',
+  //     method: 'set',
+  //     path: ['configuration', 'run'],
+  //     value: {
+  //       ...configuration.run,
+  //       done: true
+  //     }
+  //   }
+  // ])
+
   // Compute
   plugin
     .computeSimulation({ id }, algorithm, configuration)
@@ -232,9 +259,9 @@ const stop = async ({ id }) => {
   await plugin.stop(tasks, configuration)
 
   // Update tasks
-  tasks.forEach((task) => {
+  tasks?.forEach((task) => {
     if (task.status === 'wait') task.status = 'error'
-    task.log += 'Job killed'
+    task.error += 'Job killed'
   })
   await update({ id }, [
     {

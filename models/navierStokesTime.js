@@ -156,9 +156,10 @@ const NavierStokesTime = {
         compatibility: [
           {
             algorithm: 'navierStokesTime',
-            map: [1, 1, 1],
             filter: {
               name: 'Time step',
+              prefixPattern: 'Result_',
+              suffixPattern: '.vtu',
               pattern: 'Result_\\d+.vtu',
               multiplicator: ['parameters', 'time', 'children', '1']
             }

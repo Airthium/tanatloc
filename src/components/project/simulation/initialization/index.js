@@ -14,7 +14,7 @@ const Initialization = ({ simulations, simulation, swr }) => {
   // State
   const [loading, setLoading] = useState(false)
   const [currentType, setCurrentType] = useState()
-  const [values, setValues] = useState({})
+  const [values, setValues] = useState([])
   const [couplingSimulation, setCouplingSimulation] = useState()
   const [couplingResults, setCouplingResults] = useState()
 
@@ -38,6 +38,7 @@ const Initialization = ({ simulations, simulation, swr }) => {
       // Update local
       const initialization = newSimulation.scheme.configuration.initialization
       initialization.value = {
+        ...initialization.value,
         type: key
       }
 
@@ -58,14 +59,8 @@ const Initialization = ({ simulations, simulation, swr }) => {
     }
   }
 
-  const onCouplingChange = async (value) => {
-    setLoading(true)
-
-    // Simulation
-    const simulationToCouple = simulations.find((s) => s.id === value)
-
-    // Results
-    const tasks = await SimulationAPI.tasks({ id: simulationToCouple.id })
+  const loadResults = async (id) => {
+    const tasks = await SimulationAPI.tasks({ id })
     const results = tasks.flatMap((task) => {
       const taskResults = []
       if (task.files) {
@@ -84,10 +79,83 @@ const Initialization = ({ simulations, simulation, swr }) => {
         .sort()
     })
 
-    setLoading(false)
-
-    setCouplingSimulation(simulationToCouple)
     setCouplingResults(results)
+  }
+
+  const setSimulation = (id) => {
+    const simulationToCouple = simulations.find((s) => s.id === id)
+    setCouplingSimulation(simulationToCouple)
+  }
+
+  const onCouplingChange = async (value) => {
+    setLoading(true)
+
+    // Simulation
+    setSimulation(value)
+
+    // Check results
+    const results = await loadResults(value)
+
+    // Update simulation
+    try {
+      // New simulation
+      const newSimulation = { ...simulation }
+
+      // Update local
+      const initialization = newSimulation.scheme.configuration.initialization
+      initialization.value = {
+        ...initialization.value,
+        simulation: value,
+        result: results[0]
+      }
+
+      await SimulationAPI.update({ id: simulation.id }, [
+        {
+          key: 'scheme',
+          type: 'json',
+          method: 'set',
+          path: ['configuration', 'initialization'],
+          value: initialization
+        }
+      ])
+
+      // Local
+      swr.mutateOneSimulation(newSimulation)
+    } catch (err) {
+      ErrorNotification(errors.update, err)
+    }
+
+    setLoading(false)
+  }
+
+  const onCouplingResultChange = async (value) => {
+    // Update simulation
+    try {
+      // New simulation
+      const newSimulation = { ...simulation }
+
+      // Update local
+      const initialization = newSimulation.scheme.configuration.initialization
+      initialization.value = {
+        ...initialization.value,
+        result: value
+      }
+
+      await SimulationAPI.update({ id: simulation.id }, [
+        {
+          key: 'scheme',
+          type: 'json',
+          method: 'set',
+          path: ['configuration', 'initialization'],
+          value: initialization
+        }
+      ])
+
+      // Local
+      swr.mutateOneSimulation(newSimulation)
+    } catch (err) {
+      ErrorNotification(errors.update, err)
+    }
   }
 
   /**
@@ -96,12 +164,35 @@ const Initialization = ({ simulations, simulation, swr }) => {
    * @param {number} index Children index
    * @param {string} value Value
    */
-  const onChange = (key, index, value) => {
-    const deepValues = values[key] || []
-    deepValues[index] = value
-    const newValues = {
-      ...values,
-      [key]: deepValues
+  const onChange = async (key, index, value) => {
+    const newValues = [...values]
+    newValues[index] = value
+
+    try {
+      // New simulation
+      const newSimulation = { ...simulation }
+
+      // Update local
+      const initialization = newSimulation.scheme.configuration.initialization
+      initialization.value = {
+        ...initialization.value,
+        values: newValues
+      }
+
+      await SimulationAPI.update({ id: simulation.id }, [
+        {
+          key: 'scheme',
+          type: 'json',
+          method: 'set',
+          path: ['configuration', 'initialization'],
+          value: initialization
+        }
+      ])
+
+      // Local
+      swr.mutateOneSimulation(newSimulation)
+    } catch (err) {
+      ErrorNotification(errors.update, err)
     }
 
     setValues(newValues)
@@ -109,6 +200,16 @@ const Initialization = ({ simulations, simulation, swr }) => {
 
   // Build initialization
   const initializations = []
+  const initializationValue = subScheme.value
+  if (
+    !couplingSimulation &&
+    !couplingResults &&
+    initializationValue?.simulation
+  ) {
+    setSimulation(initializationValue.simulation)
+    loadResults(initializationValue.simulation)
+  }
+
   Object.keys(subScheme).forEach((key) => {
     if (key === 'index' || key === 'title' || key === 'done' || key === 'value')
       return
@@ -141,6 +242,7 @@ const Initialization = ({ simulations, simulation, swr }) => {
             <Select
               options={simulationsOptions}
               placeholder="Select a simulation"
+              value={initializationValue?.simulation}
               onChange={onCouplingChange}
             />
             {loading && <Spin />}
@@ -159,7 +261,8 @@ const Initialization = ({ simulations, simulation, swr }) => {
                     value: result,
                     label: result
                   }))}
-                  defaultValue={couplingResults[0]}
+                  value={initializationValue?.result || couplingResults[0]}
+                  onChange={onCouplingResultChange}
                 />
               </>
             )}
@@ -174,7 +277,8 @@ const Initialization = ({ simulations, simulation, swr }) => {
               {child.label}:<br />
               <Formula
                 defaultValue={
-                  child.value === undefined ? child.default : child.value
+                  initializationValue?.values?.[index] ||
+                  (child.value === undefined ? child.default : child.value)
                 }
                 onValueChange={(value) => onChange(key, index, value)}
                 unit={child.unit}
@@ -206,8 +310,6 @@ const Initialization = ({ simulations, simulation, swr }) => {
       )
     }
   })
-
-  // TODO continue
 
   /**
    * Render

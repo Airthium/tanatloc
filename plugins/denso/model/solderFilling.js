@@ -169,8 +169,27 @@ const solderFilling = {
         ]
       }
     },
-    boundaryConditions: {
+    initialization: {
       index: 3,
+      title: 'Initialization',
+      done: true,
+      coupling: {
+        label: 'Coupling',
+        compatibility: [
+          {
+            algorithm: 'solderFilling',
+            filter: {
+              name: 'Step',
+              prefixPattern: 'phi.',
+              suffixPattern: '.vtu',
+              pattern: 'phi.\\d+.vtu'
+            }
+          }
+        ]
+      }
+    },
+    boundaryConditions: {
+      index: 4,
       title: 'Boundary conditions',
       wall: {
         label: 'Wall'
@@ -186,7 +205,7 @@ const solderFilling = {
       }
     },
     run: {
-      index: 4,
+      index: 5,
       title: 'Run',
       logFile: 'jobname.log',
       results: [

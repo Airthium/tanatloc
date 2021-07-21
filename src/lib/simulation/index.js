@@ -180,38 +180,52 @@ const run = async (user, { id }) => {
       const couplingSimulation = configuration.initialization.value.simulation
       const couplingResult = configuration.initialization.value.result
 
-      const couplingPath = path.join(
-        storage.SIMULATION,
-        couplingSimulation,
-        'run',
-        'coupling'
-      )
+      if (!couplingSimulation || !couplingResult) {
+        configuration.initialization.value = undefined
+      } else {
+        const couplingPath = path.join(
+          storage.SIMULATION,
+          couplingSimulation,
+          'run',
+          'coupling'
+        )
 
-      await Tools.copyFile(
-        {
-          path: couplingPath,
-          file: couplingResult + '.dat'
-        },
-        {
-          path: path.join(storage.SIMULATION, simulation.id, 'run', 'coupling'),
-          file: 'initialization.dat'
-        }
-      )
-      await Tools.copyFile(
-        {
-          path: couplingPath,
-          file: couplingResult + '.mesh'
-        },
-        {
-          path: path.join(storage.SIMULATION, simulation.id, 'run', 'coupling'),
-          file: 'initialization.mesh'
-        }
-      )
+        await Tools.copyFile(
+          {
+            path: couplingPath,
+            file: couplingResult + '.dat'
+          },
+          {
+            path: path.join(
+              storage.SIMULATION,
+              simulation.id,
+              'run',
+              'coupling'
+            ),
+            file: 'initialization.dat'
+          }
+        )
+        await Tools.copyFile(
+          {
+            path: couplingPath,
+            file: couplingResult + '.mesh'
+          },
+          {
+            path: path.join(
+              storage.SIMULATION,
+              simulation.id,
+              'run',
+              'coupling'
+            ),
+            file: 'initialization.mesh'
+          }
+        )
 
-      configuration.initialization.value = {
-        type: 'coupling',
-        dat: path.join('run', 'coupling', 'initialization.dat'),
-        mesh: path.join('run', 'coupling', 'initialization.mesh')
+        configuration.initialization.value = {
+          type: 'coupling',
+          dat: path.join('run', 'coupling', 'initialization.dat'),
+          mesh: path.join('run', 'coupling', 'initialization.mesh')
+        }
       }
     }
   }

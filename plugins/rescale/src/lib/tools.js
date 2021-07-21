@@ -100,24 +100,28 @@ const uploadFiles = async (configuration, files, task) => {
 
 /**
  * Create job
+ * @param {string} id Simulation id
  * @param {string} algorithm Algorithm
  * @param {Object} configuration Configuration
  * @param {Object} parameters Parameters
  * @param {string} command Command
  * @param {Array} geometries Geometries
+ * @param {Array} couplings Coupling data & mesh
  * @param {Array} meshes Meshes
  * @param {Object} edp Edp
  */
 const createJob = async (
+  id,
   algorithm,
   configuration,
   parameters,
   command,
   geometries,
+  couplings,
   meshes,
   edp
 ) => {
-  const name = 'Tanatloc - ' + algorithm
+  const name = 'Tanatloc - ' + algorithm + '(' + id + ')'
   const coreType = parameters.coreTypes.value
   const lowPriority = parameters.lowPriority.value
   const numberOfCores = parameters.numberOfCores.value
@@ -127,6 +131,7 @@ const createJob = async (
 
   const inputFiles = [
     ...geometries.map((g) => ({ id: g.id })),
+    ...couplings.map((c) => ({ id: c.id })),
     ...meshes.map((m) => ({ id: m.id })),
     { id: edp.id }
   ]
@@ -287,9 +292,12 @@ const getFile = async (configuration, id) => {
  * @param {Array} availableFiles Available files
  * @param {Array} existingResults Existing results
  * @param {Array} existingDatas Existing datas
+ * @param {Array} existingCouplings Existing couplings
  * @param {string} simulationPath Simulation path
  * @param {string} resultPath Result path
+ * @param {string} couplingPath Coupling path
  * @param {string} dataPath Data path
+ *
  * @param {Object} task Task
  */
 const getInRunOutputs = async (
@@ -298,9 +306,11 @@ const getInRunOutputs = async (
   availableFiles,
   existingResults,
   existingDatas,
+  existingCouplings,
   simulationPath,
   resultPath,
   dataPath,
+  couplingPath,
   task
 ) => {
   return processOutput(
@@ -310,9 +320,11 @@ const getInRunOutputs = async (
     availableFiles,
     existingResults,
     existingDatas,
+    existingCouplings,
     simulationPath,
     resultPath,
     dataPath,
+    couplingPath,
     task
   )
 }
@@ -324,9 +336,11 @@ const getInRunOutputs = async (
  * @param {Array} availableFiles Available files
  * @param {Array} existingResults Existing results
  * @param {Array} existingDatas Existing datas
+ * @param {Array} existingCouplings Existing couplings
  * @param {string} simulationPath Simulation path
  * @param {string} resultPath Result path
  * @param {string} dataPath Data path
+ * @param {string} couplingPath Coupling path
  * @param {Object} task Task
  */
 const getOutputs = async (
@@ -335,9 +349,11 @@ const getOutputs = async (
   availableFiles,
   existingResults,
   existingDatas,
+  existingCouplings,
   simulationPath,
   resultPath,
   dataPath,
+  couplingPath,
   task
 ) => {
   return processOutput(
@@ -347,9 +363,11 @@ const getOutputs = async (
     availableFiles,
     existingResults,
     existingDatas,
+    existingCouplings,
     simulationPath,
     resultPath,
     dataPath,
+    couplingPath,
     task
   )
 }
@@ -362,9 +380,11 @@ const getOutputs = async (
  * @param {Array} availableFiles Available files
  * @param {Array} existingResults Existing results
  * @param {Array} existingDatas Existing datas
+ * @param {Array} existingCouplings Existing couplings
  * @param {string} simulationPath Simulation path
  * @param {string} resultPath Result path
  * @param {string} dataPath Data path
+ * @param {string} couplingPath Coupling path
  * @param {Object} task Task
  */
 const processOutput = async (
@@ -374,13 +394,22 @@ const processOutput = async (
   availableFiles,
   existingResults,
   existingDatas,
+  existingCouplings,
   simulationPath,
   resultPath,
   dataPath,
+  couplingPath,
   task
 ) => {
-  if (log.includes('PROCESS VTU FILE') || log.includes('PROCESS DATA FILE')) {
+  if (
+    log.includes('PROCESS_COUPLING_FILE') ||
+    log.includes('PROCESS VTU FILE') ||
+    log.includes('PROCESS DATA FILE')
+  ) {
     const lines = log.split('\n')
+    const couplingLines = lines.filter((l) =>
+      l.includes('PROCESS COUPLING FILE')
+    )
     const resultLines = lines.filter((l) => l.includes('PROCESS VTU FILE'))
     const dataLines = lines.filter((l) => l.includes('PROCESS DATA FILE'))
 
@@ -388,6 +417,26 @@ const processOutput = async (
       (l) => !l.includes('PROCESS VTU FILE') && !l.includes('PROCESS DATA FILE')
     )
     const realLog = nonResultLines.join('\n')
+
+    // Get coupling
+    for (let line of couplingLines) {
+      // New coupling file
+      const couplingFile = line
+        .replace('PROCESS COUPLING FILE', '')
+        .replace(/\[.*\]: /g, '')
+        .trim()
+
+      await processCoupling(
+        type,
+        couplingFile,
+        configuration,
+        availableFiles,
+        existingCouplings,
+        simulationPath,
+        couplingPath,
+        task
+      )
+    }
 
     // Get data
     for (let line of dataLines) {
@@ -546,6 +595,73 @@ const processResult = async (
     console.warn('Warning: Unable to convert result file (' + err.message + ')')
     task.warning +=
       'Warning: Unable to convert result file (' + err.message + ')\n'
+  }
+}
+
+/**
+ * Process data
+ * @param {string} type Type
+ * @param {*} couplingFile Coupling file
+ * @param {*} configuration Configuration
+ * @param {*} availableFiles Available files
+ * @param {*} existingCouplings Existing couplings
+ * @param {*} simulationPath Simulation path
+ * @param {*} couplingPath Data path
+ * @param {*} task Task
+ */
+const processCoupling = async (
+  type,
+  couplingFile,
+  configuration,
+  availableFiles,
+  existingCouplings,
+  simulationPath,
+  couplingPath,
+  task
+) => {
+  // Check already existing
+  const existing = existingCouplings.includes(couplingFile)
+  if (existing) return
+
+  try {
+    // Get file
+    let file
+    if (type === 'inrun') {
+      file = availableFiles.find((f) => f.path.includes(couplingFile))
+    } else {
+      file = availableFiles.find((f) => f.relativePath.includes(couplingFile))
+    }
+    if (!file) throw new Error('No available file (' + couplingFile + ')')
+
+    // Get content
+    let fileContent
+    if (type === 'inrun') {
+      fileContent = await getInRunFile(configuration, file)
+      if (fileContent.detail)
+        throw new Error(
+          'Run is not active. Trying to get the file at the end (' +
+            couplingFile +
+            ')'
+        )
+      if (typeof fileContent !== 'string')
+        throw new Error('Rescale empty response (' + couplingFile + ')')
+    } else {
+      fileContent = await getFile(configuration, file.id)
+    }
+
+    // Write file
+    await Tools.writeFile(
+      path.join(simulationPath, couplingPath),
+      couplingFile,
+      fileContent
+    )
+
+    // Update existing datas
+    existingCouplings.push(couplingFile)
+  } catch (err) {
+    console.warn('Warning: Unable to read coupling file (' + err.message + ')')
+    task.warning +=
+      'Warning: Unable to read coupling file (' + err.message + ')\n'
   }
 }
 

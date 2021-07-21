@@ -127,7 +127,7 @@ const NavierStokesTime = {
       index: 4,
       title: 'Initialization',
       done: true,
-      velocity: {
+      direct: {
         label: 'Velocity',
         children: [
           {
@@ -152,7 +152,6 @@ const NavierStokesTime = {
       },
       coupling: {
         label: 'Coupling',
-        type: 'SIMULATION_COUPLING',
         compatibility: [
           {
             algorithm: 'navierStokesTime',

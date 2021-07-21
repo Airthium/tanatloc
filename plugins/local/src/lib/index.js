@@ -104,9 +104,9 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
 
   // Create tasks
   const tasks = []
+  let taskIndex = 0
 
   // Meshing
-  let taskIndex = 0
   await Promise.all(
     Object.keys(configuration).map(async (ckey) => {
       if (configuration[ckey].meshable) {
@@ -124,76 +124,90 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
         tasks.push(meshingTask)
         updateTasks(id, tasks)
 
-        // Check refinements
-        const refinements = []
-        configuration.boundaryConditions &&
-          Object.keys(configuration.boundaryConditions).forEach(
-            (boundaryKey) => {
-              if (
-                boundaryKey === 'index' ||
-                boundaryKey === 'title' ||
-                boundaryKey === 'done'
-              )
-                return
-              const boundaryCondition =
-                configuration.boundaryConditions[boundaryKey]
-              if (boundaryCondition.values && boundaryCondition.refineFactor) {
-                refinements.push({
-                  size: 'factor',
-                  factor: boundaryCondition.refineFactor,
-                  selected: boundaryCondition.values.flatMap((v) => v.selected)
-                })
-              }
-            }
-          )
-
-        // Mesh parameters
-        const parameters = {
-          size: 'auto',
-          fineness: 'normal',
-          refinements: refinements
-        }
-
-        // Build mesh
-        try {
-          const mesh = await computeMesh(
-            simulationPath,
-            {
-              path: path.join(geometry.path),
-              file: geometry.file,
-              name: geometry.name
-            },
-            {
-              path: path.join(geometry.name + '_mesh'),
-              parameters
-            },
-            ({ pid, error, data }) => {
-              meshingTask.status = 'process'
-
-              pid && (meshingTask.pid = pid)
-
-              error && (meshingTask.error += 'Error: ' + error + '\n')
-
-              data && (meshingTask.log += data + '\n')
-
-              if ((Date.now() - start) % updateDelay === 0)
-                updateTasks(id, tasks)
-            }
-          )
-          // Task
+        if (configuration.initialization?.value?.type === 'coupling') {
+          // Build not needed
+          configuration[ckey].mesh = {}
+          meshingTask.log += 'Coupling: skip mesh build'
           meshingTask.status = 'finish'
-          meshingTask.file = mesh
           updateTasks(id, tasks)
+        } else {
+          // Check refinements
+          const refinements = []
+          configuration.boundaryConditions &&
+            Object.keys(configuration.boundaryConditions).forEach(
+              (boundaryKey) => {
+                if (
+                  boundaryKey === 'index' ||
+                  boundaryKey === 'title' ||
+                  boundaryKey === 'done'
+                )
+                  return
+                const boundaryCondition =
+                  configuration.boundaryConditions[boundaryKey]
+                if (
+                  boundaryCondition.values &&
+                  boundaryCondition.refineFactor
+                ) {
+                  refinements.push({
+                    size: 'factor',
+                    factor: boundaryCondition.refineFactor,
+                    selected: boundaryCondition.values.flatMap(
+                      (v) => v.selected
+                    )
+                  })
+                }
+              }
+            )
 
-          // Save mesh name
-          configuration[ckey].mesh = mesh
-        } catch (err) {
-          // Task
-          meshingTask.status = 'error'
-          meshingTask.error += 'Fatal error: ' + err.message
-          updateTasks(id, tasks)
+          // Mesh parameters
+          const parameters = {
+            size: 'auto',
+            fineness: 'normal',
+            refinements: refinements
+          }
 
-          throw err
+          // Build mesh
+
+          try {
+            const mesh = await computeMesh(
+              simulationPath,
+              {
+                path: path.join(geometry.path),
+                file: geometry.file,
+                name: geometry.name
+              },
+              {
+                path: path.join(geometry.name + '_mesh'),
+                parameters
+              },
+              ({ pid, error, data }) => {
+                meshingTask.status = 'process'
+
+                pid && (meshingTask.pid = pid)
+
+                error && (meshingTask.error += 'Error: ' + error + '\n')
+
+                data && (meshingTask.log += data + '\n')
+
+                if ((Date.now() - start) % updateDelay === 0)
+                  updateTasks(id, tasks)
+              }
+            )
+            // Task
+            meshingTask.status = 'finish'
+            meshingTask.file = mesh
+            updateTasks(id, tasks)
+
+            // Save mesh name
+            configuration[ckey].mesh = mesh
+          } catch (err) {
+            // Task
+            meshingTask.status = 'error'
+            meshingTask.error += 'Fatal error: ' + err.message
+            updateTasks(id, tasks)
+
+            throw err
+          }
         }
       }
     })

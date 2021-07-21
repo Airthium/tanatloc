@@ -12,10 +12,15 @@ try {
 const mesh = geometry.mesh
 mesh.name = 'Th'
 -%>
+
+<% if (initialization.value && initialization.value.type === 'coupling') { -%>
+meshN Th = readmesh3("<%= initialization.value.mesh -%>");
+<% } else { -%>
 <%- include('/blobs/mesh.edp.ejs', {
 	dimension,
 	mesh
 }); -%>
+<% } -%>
 
 // Variables
 real t = 0.;
@@ -118,6 +123,18 @@ varf vStokesRHS (<%= freeFunction -%>, <%= testFunction -%>)
 <%- include('/blobs/solver.edp.ejs', {
 	solver
 }); -%>
+
+<%# Initialization -%>
+<% if (initialization.value) { -%>
+<% if (initialization.value.type === 'coupling') { -%>
+{
+	ifstream couplingData("<%= initialization.value.dat -%>");
+	couplingData >> Ux[] >> Uy[] >> Uz[];
+}
+<% } else { -%>
+<%= feFunction -%> = [<%= initialization.value.values[0] !== undefined ? initialization.value.values[0] : initialization.direct.children[0].default-%>, <%= initialization.value.values[1] !== undefined ? initialization.value.values[1] : initialization.direct.children[1].default-%>, <%= initialization.value.values[2] !== undefined ? initialization.value.values[2] : initialization.direct.children[2].default-%>];
+<% } -%>
+<% } -%>
 
 <%# Time loop -%>
 // Time loop

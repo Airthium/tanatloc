@@ -13,7 +13,7 @@ const errors = {
 const Initialization = ({ simulations, simulation, swr }) => {
   // State
   const [loading, setLoading] = useState(false)
-  const [currentType, setCurrentType] = useState()
+  const [currentKey, setCurrentKey] = useState()
   const [values, setValues] = useState([])
   const [couplingSimulation, setCouplingSimulation] = useState()
   const [couplingResults, setCouplingResults] = useState()
@@ -22,7 +22,7 @@ const Initialization = ({ simulations, simulation, swr }) => {
   const subScheme = simulation?.scheme.configuration.initialization
 
   useEffect(() => {
-    if (subScheme?.value) setCurrentType(subScheme.value.type)
+    if (subScheme?.value) setCurrentKey(subScheme.value.type)
   }, [])
 
   /**
@@ -30,7 +30,7 @@ const Initialization = ({ simulations, simulation, swr }) => {
    * @param {string} key Key
    */
   const onPanelChange = async (key) => {
-    setCurrentType(key)
+    setCurrentKey(key)
     try {
       // New simulation
       const newSimulation = { ...simulation }
@@ -280,7 +280,7 @@ const Initialization = ({ simulations, simulation, swr }) => {
 
     const initialization = subScheme[key]
 
-    if (initialization.type === 'SIMULATION_COUPLING') {
+    if (key === 'coupling') {
       const simulationsOptions = simulations.map((s) => {
         let disabled = false
         if (s.id === simulation.id) disabled = true
@@ -379,7 +379,7 @@ const Initialization = ({ simulations, simulation, swr }) => {
   return (
     <Layout>
       <Layout.Content>
-        <Collapse accordion onChange={onPanelChange} activeKey={currentType}>
+        <Collapse accordion onChange={onPanelChange} activeKey={currentKey}>
           {initializations}
         </Collapse>
       </Layout.Content>

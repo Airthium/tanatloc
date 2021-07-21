@@ -98,7 +98,6 @@ describe('components/project/simulation/initialization', () => {
           },
           coupling: {
             label: 'Coupling',
-            type: 'SIMULATION_COUPLING',
             compatibility: [
               {
                 algorithm: 'algorithm1',

@@ -100,7 +100,7 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
     await Tools.createPath(path.join(simulationPath, 'run', dataPath))
 
     // Command
-    let command = 'mkdir -p result && mkdir -p data '
+    let command = 'mkdir -p coupling && mkdir -p result && mkdir -p data '
 
     // Upload geometries
     simulationTask.log += 'Uploading geometry...\n'
@@ -125,6 +125,43 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
     simulationTask.log += '\n'
     updateTasks(id, tasks)
 
+    // Upload coupling data
+    let couplings = []
+    if (configuration.initialization?.value?.type === 'coupling') {
+      simulationTask.log += 'Uploading coupling data...\n'
+      updateTasks(id, tasks)
+
+      couplings = await uploadFiles(
+        cloudConfiguration,
+        [
+          {
+            name: 'initialization data',
+            path: path.join(
+              simulationPath,
+              configuration.initialization.value.dat
+            )
+          },
+          {
+            name: 'initialization mesh',
+            path: path.join(
+              simulationPath,
+              configuration.initialization.value.mesh
+            )
+          }
+        ],
+        simulationTask
+      )
+
+      configuration.initialization.value = {
+        type: 'coupling',
+        dat: 'initialization.dat',
+        mesh: 'initialization.mesh'
+      }
+
+      simulationTask.log += '\n'
+      updateTasks(id, tasks)
+    }
+
     // Gmsh scripts
     simulationTask.log += 'Build meshing scripts...\n'
     updateTasks(id, tasks)
@@ -132,86 +169,91 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
     const gmshScripts = await Promise.all(
       Object.keys(configuration).map(async (ckey) => {
         if (configuration[ckey].meshable) {
-          const geometry = configuration[ckey]
+          if (configuration.initialization?.value?.type === 'coupling') {
+            configuration[ckey].mesh = {}
+            return null
+          } else {
+            const geometry = configuration[ckey]
 
-          const geoFile = geometry.name + '.geo'
-          const meshFile = geometry.name + '.msh'
-          const meshPath = geometry.name + '_mesh'
-          const partPath = geometry.name
+            const geoFile = geometry.name + '.geo'
+            const meshFile = geometry.name + '.msh'
+            const meshPath = geometry.name + '_mesh'
+            const partPath = geometry.name
 
-          // Task
-          simulationTask.log += ' - ' + geoFile + '\n'
-          updateTasks(id, tasks)
+            // Task
+            simulationTask.log += ' - ' + geoFile + '\n'
+            updateTasks(id, tasks)
 
-          // Check refinements
-          const refinements = []
-          configuration.boundaryConditions &&
-            Object.keys(configuration.boundaryConditions).forEach(
-              (boundaryKey) => {
-                if (
-                  boundaryKey === 'index' ||
-                  boundaryKey === 'title' ||
-                  boundaryKey === 'done'
-                )
-                  return
-                const boundaryCondition =
-                  configuration.boundaryConditions[boundaryKey]
-                if (
-                  boundaryCondition.values &&
-                  boundaryCondition.refineFactor
-                ) {
-                  refinements.push({
-                    size: 'factor',
-                    factor: boundaryCondition.refineFactor,
-                    selected: boundaryCondition.values.flatMap(
-                      (v) => v.selected
-                    )
-                  })
+            // Check refinements
+            const refinements = []
+            configuration.boundaryConditions &&
+              Object.keys(configuration.boundaryConditions).forEach(
+                (boundaryKey) => {
+                  if (
+                    boundaryKey === 'index' ||
+                    boundaryKey === 'title' ||
+                    boundaryKey === 'done'
+                  )
+                    return
+                  const boundaryCondition =
+                    configuration.boundaryConditions[boundaryKey]
+                  if (
+                    boundaryCondition.values &&
+                    boundaryCondition.refineFactor
+                  ) {
+                    refinements.push({
+                      size: 'factor',
+                      factor: boundaryCondition.refineFactor,
+                      selected: boundaryCondition.values.flatMap(
+                        (v) => v.selected
+                      )
+                    })
+                  }
                 }
+              )
+
+            // Mesh parameters
+            const parameters = {
+              size: 'auto',
+              fineness: 'normal',
+              refinements: refinements
+            }
+
+            // Render template
+            await Template.render(
+              'gmsh3D',
+              {
+                ...parameters,
+                geometry: geometry.file
+              },
+              {
+                location: path.join(simulationPath, meshPath),
+                name: geoFile
               }
             )
 
-          // Mesh parameters
-          const parameters = {
-            size: 'auto',
-            fineness: 'normal',
-            refinements: refinements
-          }
+            // Update command
+            command +=
+              '&& gmsh -3 ' +
+              geoFile +
+              ' -o ' +
+              meshFile +
+              ' -format msh2 -clcurv 10 '
 
-          // Render template
-          await Template.render(
-            'gmsh3D',
-            {
-              ...parameters,
-              geometry: geometry.file
-            },
-            {
-              location: path.join(simulationPath, meshPath),
-              name: geoFile
+            // Update configuration
+            const mesh = {
+              fileName: meshFile,
+              originPath: 'geometry_mesh',
+              renderPath: '.',
+              part: 'part.json',
+              partPath: path.join(meshPath, partPath)
             }
-          )
+            configuration[ckey].mesh = mesh
 
-          // Update command
-          command +=
-            '&& gmsh -3 ' +
-            geoFile +
-            ' -o ' +
-            meshFile +
-            ' -format msh2 -clcurv 10 '
-
-          // Update configuration
-          const mesh = {
-            fileName: meshFile,
-            originPath: 'geometry_mesh',
-            renderPath: '.',
-            part: 'part.json',
-            partPath: path.join(meshPath, partPath)
-          }
-          configuration[ckey].mesh = mesh
-
-          return {
-            name: geoFile,
-            path: path.join(storage.SIMULATION, id, meshPath, geoFile)
+            return {
+              name: geoFile,
+              path: path.join(storage.SIMULATION, id, meshPath, geoFile)
+            }
           }
         }
       })
@@ -280,11 +322,13 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
     updateTasks(id, tasks)
 
     const jobId = await createJob(
+      id,
       algorithm,
       cloudConfiguration,
       cloudParameters,
       command,
       geometries,
+      couplings,
       meshes,
       edp
     )
@@ -316,6 +360,7 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
     const currentLog = simulationTask.log
     const results = []
     const datas = []
+    couplings = []
     while (status !== 'Completed') {
       status = await getStatus(cloudConfiguration, jobId)
 
@@ -351,9 +396,11 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
               inRunFiles,
               results,
               datas,
+              couplings,
               simulationPath,
               path.join('run', resultPath),
               path.join('run', dataPath),
+              path.join('run', couplingPath),
               simulationTask
             )
           }
@@ -388,9 +435,11 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
               files,
               results,
               datas,
+              couplings,
               simulationPath,
               path.join('run', resultPath),
               path.join('run', dataPath),
+              path.join('run', couplingPath),
               simulationTask
             )
           }

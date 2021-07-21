@@ -171,32 +171,50 @@ const run = async (user, { id }) => {
     }
   )
 
-  // TODO
-  // // Check coupling
-  // if (configuration.initialization && configuration.initialization.value) {
-  //   const type = configuration.initialization.value.type
+  // Check coupling
+  if (configuration.initialization && configuration.initialization.value) {
+    const type = configuration.initialization.value.type
 
-  //   if (configuration.initialization[type].type === 'SIMULATION_COUPLING') {
-  //     // Get previous mesh and result
+    if (type === 'coupling') {
+      // Get previous mesh and result
+      const couplingSimulation = configuration.initialization.value.simulation
+      const couplingResult = configuration.initialization.value.result
 
-  //     console.log(configuration.initialization.value.simulation)
-  //     console.log(configuration.initialization.value.result)
-  //   }
-  // }
+      const couplingPath = path.join(
+        storage.SIMULATION,
+        couplingSimulation,
+        'run',
+        'coupling'
+      )
 
-  // // TODO remove this
-  // update({ id }, [
-  //   {
-  //     key: 'scheme',
-  //     type: 'json',
-  //     method: 'set',
-  //     path: ['configuration', 'run'],
-  //     value: {
-  //       ...configuration.run,
-  //       done: true
-  //     }
-  //   }
-  // ])
+      await Tools.copyFile(
+        {
+          path: couplingPath,
+          file: couplingResult + '.dat'
+        },
+        {
+          path: path.join(storage.SIMULATION, simulation.id, 'run', 'coupling'),
+          file: 'initialization.dat'
+        }
+      )
+      await Tools.copyFile(
+        {
+          path: couplingPath,
+          file: couplingResult + '.mesh'
+        },
+        {
+          path: path.join(storage.SIMULATION, simulation.id, 'run', 'coupling'),
+          file: 'initialization.mesh'
+        }
+      )
+
+      configuration.initialization.value = {
+        type: 'coupling',
+        dat: path.join('run', 'coupling', 'initialization.dat'),
+        mesh: path.join('run', 'coupling', 'initialization.mesh')
+      }
+    }
+  }
 
   // Compute
   plugin

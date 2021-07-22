@@ -3,6 +3,7 @@ import Caller from '@/api/call'
 
 /**
  * Use groups
+ * @param {string} id Id
  * @memberof module:api/group
  */
 const useGroups = (id) => {

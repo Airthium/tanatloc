@@ -46,7 +46,8 @@ export const removeTokenCookie = (res) => {
 
 /**
  * Parse cookie
- * @param {Object} req Response
+ * @param {Object} req Request
+ * @returns {string} Cookie
  */
 export const parseCookies = (req) => {
   // For API Routes we don't need to parse the cookies.
@@ -62,6 +63,11 @@ export const parseCookies = (req) => {
   }
 }
 
+/**
+ * Get token cookie
+ * @param {Object} req Request
+ * @returns {string} Cookie
+ */
 export const getTokenCookie = (req) => {
   const cookies = parseCookies(req)
   return cookies[TOKEN_NAME]

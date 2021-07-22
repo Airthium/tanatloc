@@ -3,18 +3,24 @@
 /**
  * Database configuration
  */
-module.exports = {
-  ADMIN:
-    process.env.DB_ADMIN ||
-    (process.platform === 'darwin' ? process.env.USER : 'postgres'),
-  ADMIN_DATABASE: process.env.DB_ADMIN_DATABASE || 'postgres',
-  ADMIN_PASSWORD: process.env.DB_ADMIN_PASSWORD || '',
-  USER: process.env.DB_USER || 'tanatlocuser',
-  HOST: process.env.DB_HOST || 'localhost',
-  PORT: process.env.DB_PORT || 5432,
-  DATABASE: process.env.DB_DATABASE || 'tanatloc2',
-  PASSWORD: process.env.DB_PASSWORD || 'tanatloc'
-}
+// ADMIN
+const ADMIN =
+  process.env.DB_ADMIN ||
+  (process.platform === 'darwin' ? process.env.USER : 'postgres')
+// ADMIN DATABASE
+const ADMIN_DATABASE = process.env.DB_ADMIN_DATABASE || 'postgres'
+// ADMIN PASSWORD
+const ADMIN_PASSWORD = process.env.DB_ADMIN_PASSWORD || ''
+// USER
+const USER = process.env.DB_USER || 'tanatlocuser'
+// HOST
+const HOST = process.env.DB_HOST || 'localhost'
+// PORT
+const PORT = process.env.DB_PORT || 5432
+// DATABASE
+const DATABASE = process.env.DB_DATABASE || 'tanatloc2'
+// PASSWORD
+const PASSWORD = process.env.DB_PASSWORD || 'tanatloc'
 
 /**
  * Tables names
@@ -33,6 +39,9 @@ const tables = {
   LINKS: 'tanatloc_links'
 }
 
+/**
+ * Tables schemes
+ */
 const schemas = {
   [tables.SYSTEM]: [
     {
@@ -358,5 +367,15 @@ const schemas = {
   ]
 }
 
+module.exports = {
+  ADMIN,
+  ADMIN_DATABASE,
+  ADMIN_PASSWORD,
+  USER,
+  HOST,
+  PORT,
+  DATABASE,
+  PASSWORD
+}
 module.exports.tables = tables
 module.exports.schemas = schemas

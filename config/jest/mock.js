@@ -3,20 +3,20 @@
 // Bases classes
 
 global.MockGeometry = {
-  getAttribute: () => {}
+  getAttribute: jest.fn()
 }
 class MockBufferGeometry {
   constructor() {
-    this.computeBoundingBox = () => {}
-    this.computeBoundingSphere = () => {}
-    this.deleteAttribute = () => {}
-    this.dispose = () => {}
+    this.computeBoundingBox = () => jest.fn()
+    this.computeBoundingSphere = () => jest.fn()
+    this.deleteAttribute = () => jest.fn()
+    this.dispose = () => jest.fn()
     this.getAttribute = (attribute) =>
       global.MockGeometry.getAttribute(attribute)
-    this.setAttribute = () => {}
-    this.lookAt = () => {}
-    this.translate = () => {}
-    this.setFromPoints = () => {}
+    this.setAttribute = () => jest.fn()
+    this.lookAt = () => jest.fn()
+    this.translate = () => jest.fn()
+    this.setFromPoints = () => jest.fn()
 
     this.attributes = {}
     this.boundingSphere = {
@@ -24,18 +24,18 @@ class MockBufferGeometry {
       radius: 1
     }
     this.vertices = {
-      push: () => {}
+      push: () => jest.fn()
     }
   }
 }
 
 class MockMaterial {
   constructor() {
-    this.dispose = () => {}
+    this.dispose = jest.fn()
   }
 }
 
-class mockFloat32BufferAttribute {}
+class MockFloat32BufferAttribute {}
 
 // Child classes
 
@@ -54,7 +54,7 @@ global.MockBox3 = {
 class MockBox3 {
   constructor() {
     this.getBoundingSphere = () => new MockSphere()
-    this.set = () => {}
+    this.set = jest.fn()
     this.isEmpty = () => global.MockBox3.isEmpty
 
     this.min = new MockVector3()
@@ -85,14 +85,14 @@ global.MockGroup = {
 }
 class MockGroup {
   constructor() {
-    this.add = () => {}
-    this.lookAt = () => {}
-    this.translateX = () => {}
-    this.translateY = () => {}
-    this.translateZ = () => {}
-    this.rotateX = () => {}
-    this.rotateY = () => {}
-    this.rotateZ = () => {}
+    this.add = jest.fn()
+    this.lookAt = jest.fn()
+    this.translateX = jest.fn()
+    this.translateY = jest.fn()
+    this.translateZ = jest.fn()
+    this.rotateX = jest.fn()
+    this.rotateY = jest.fn()
+    this.rotateZ = jest.fn()
 
     this.children = global.MockGroup.children
     this.position = new MockVector3()
@@ -108,10 +108,10 @@ class MockLineBasicMaterial extends MockMaterial {}
 
 class MockMesh {
   constructor() {
-    this.add = () => {}
-    this.lookAt = () => {}
-    this.rotateX = () => {}
-    this.rotateY = () => {}
+    this.add = jest.fn()
+    this.lookAt = jest.fn()
+    this.rotateX = jest.fn()
+    this.rotateY = jest.fn()
     this.geometry = new MockBufferGeometry()
     this.material = new MockMaterial()
     this.position = new MockVector3()
@@ -132,20 +132,20 @@ class MockOrthographicCamera {
   constructor() {
     this.rotation = new MockVector3()
     this.position = new MockVector3()
-    this.getWorldDirection = () => {}
+    this.getWorldDirection = jest.fn()
   }
 }
 
 class MockPerspectiveCamera {
   constructor() {
     this.position = new MockVector3()
-    this.updateProjectionMatrix = () => {}
+    this.updateProjectionMatrix = jest.fn()
   }
 }
 
 class MockPlane {
   constructor() {
-    this.setFromNormalAndCoplanarPoint = () => {}
+    this.setFromNormalAndCoplanarPoint = jest.fn()
     this.normal = new MockVector3()
   }
 }
@@ -164,8 +164,8 @@ global.MockRaycaster = {
 }
 class MockRaycaster {
   constructor() {
-    this.set = () => {}
-    this.setFromCamera = () => {}
+    this.set = jest.fn()
+    this.setFromCamera = jest.fn()
     this.intersectObjects = () => global.MockRaycaster.intersectObjects
     this.intersectObject = () => global.MockRaycaster.intersectObject
   }
@@ -176,9 +176,9 @@ global.MockScene = {
 }
 class MockScene {
   constructor() {
-    this.add = () => {}
-    this.clear = () => {}
-    this.remove = () => {}
+    this.add = jest.fn()
+    this.clear = jest.fn()
+    this.remove = jest.fn()
     this.children = global.MockScene.children
   }
 }
@@ -199,7 +199,7 @@ class MockTetrahedronGeometry extends MockBufferGeometry {}
 
 class MockTexture {
   constructor() {
-    this.dispose = () => {}
+    this.dispose = jest.fn()
   }
 }
 
@@ -234,18 +234,18 @@ class MockWebGLRenderer {
   constructor() {
     this.domElement = document.createElement('div')
     this.domElement.toDataURL = jest.fn
-    this.setClearColor = () => {}
-    this.setSize = () => {}
-    this.setPixelRatio = () => {}
-    this.setViewport = () => {}
-    this.render = () => {}
-    this.clear = () => {}
+    this.setClearColor = jest.fn()
+    this.setSize = jest.fn()
+    this.setPixelRatio = jest.fn()
+    this.setViewport = jest.fn()
+    this.render = jest.fn()
+    this.clear = jest.fn()
   }
 }
 
 class MockGLTFExporter {
   constructor() {
-    this.parse = (mesh, finish) => {
+    this.parse = (_, finish) => {
       finish('gltf')
     }
   }
@@ -253,20 +253,20 @@ class MockGLTFExporter {
 
 class MockLut {
   constructor() {
-    this.setMin = () => {}
-    this.setMax = () => {}
+    this.setMin = jest.fn()
+    this.setMax = jest.fn()
     this.getColor = () => ({ r: 0, g: 0.5, b: 1 })
   }
 }
 
 const MockBufferGeometryUtils = {
-  mergeVertices: () => {}
+  mergeVertices: jest.fn()
 }
 
 export const MockThree = {
   BufferGeometry: MockBufferGeometry,
   Material: MockMaterial,
-  Float32BufferAttribute: mockFloat32BufferAttribute,
+  Float32BufferAttribute: MockFloat32BufferAttribute,
 
   AmbientLight: MockAmbientLight,
   Box2: MockBox2,

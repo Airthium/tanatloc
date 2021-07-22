@@ -1,8 +1,14 @@
 if (typeof window !== 'undefined') {
   class ResizeObserver {
-    disconnect() {}
-    observe() {}
-    unobserve() {}
+    disconnect() {
+      // mock method
+    }
+    observe() {
+      // mock method
+    }
+    unobserve() {
+      // mock method
+    }
   }
   window.ResizeObserver = ResizeObserver
 }

@@ -1,6 +1,11 @@
 import useSWR from 'swr'
 import Caller from '@/api/call'
 
+/**
+ * Use geometries
+ * @memberof module:api/geometry
+ * @param {Array} ids Ids
+ */
 const useGeometries = (ids) => {
   const { data, error, mutate } = useSWR(
     ['/api/geometries', JSON.stringify({ ids })],
@@ -19,11 +24,19 @@ const useGeometries = (ids) => {
     mutate({ geometries: newGeometries })
   }
 
+  /**
+   * Delete one (useGeometries)
+   * @param {Object} geometry Geometry { id }
+   */
   const delOne = (geometry) => {
     const filteredGeometries = geometries.filter((s) => s.id !== geometry.id)
     mutate({ geometryies: filteredGeometries })
   }
 
+  /**
+   * Mutate one (useGeometries)
+   * @param {Object} geometry Geometry
+   */
   const mutateOne = (geometry) => {
     const mutatedGeometries = geometries.map((g) => {
       if (g.id === geometry.id) g = { ...g, ...geometry }

@@ -75,7 +75,8 @@ const Initialization = ({ simulations, simulation, swr }) => {
           currentSimulation.scheme.configuration.run.resultsFilters
 
         //Sort by filters
-        resultsFilters.forEach((filter, filterIndex) => {
+        // Check if no results filters
+        resultsFilters?.forEach((filter, filterIndex) => {
           const pattern = new RegExp(filter.pattern)
           const filteredFiles = task.files.filter((file) =>
             pattern.test(file.fileName)

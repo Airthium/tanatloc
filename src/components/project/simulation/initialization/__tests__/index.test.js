@@ -24,7 +24,10 @@ describe('components/project/simulation/initialization', () => {
       id: 'id1',
       name: 'Simulation 1',
       scheme: {
-        algorithm: 'algorithm1'
+        algorithm: 'algorithm1',
+        configuration: {
+          run: {}
+        }
       }
     },
     {

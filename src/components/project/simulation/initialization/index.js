@@ -76,6 +76,7 @@ const Initialization = ({ simulations, simulation, swr }) => {
 
         //Sort by filters
         // Check if no results filters
+        //TODO
         resultsFilters?.forEach((filter, filterIndex) => {
           const pattern = new RegExp(filter.pattern)
           const filteredFiles = task.files.filter((file) =>
@@ -137,14 +138,11 @@ const Initialization = ({ simulations, simulation, swr }) => {
             value: task.file.fileName
           })
       }
-
-      // Set unique
-      return results
-        .filter((result, index) => results.indexOf(result) === index)
-        .sort()
     })
 
     setCouplingResults(results)
+
+    return results
   }
 
   const setSimulation = (id) => {
@@ -171,7 +169,7 @@ const Initialization = ({ simulations, simulation, swr }) => {
       initialization.value = {
         ...initialization.value,
         simulation: value,
-        result: results[0]
+        result: results[0].value
       }
 
       await SimulationAPI.update({ id: simulation.id }, [
@@ -311,12 +309,7 @@ const Initialization = ({ simulations, simulation, swr }) => {
               onChange={onCouplingChange}
             />
             {loading && <Spin />}
-            {couplingResults?.length === 0 && (
-              <Typography.Text type="warning">
-                No results, please select an other simulation.
-              </Typography.Text>
-            )}
-            {couplingResults?.length > 1 && (
+            {couplingResults?.length ? (
               <>
                 <Typography.Text key={'simulation'}>
                   {filter?.name}:
@@ -328,6 +321,10 @@ const Initialization = ({ simulations, simulation, swr }) => {
                   onChange={onCouplingResultChange}
                 />
               </>
+            ) : (
+              <Typography.Text type="warning">
+                No results, please select an other simulation.
+              </Typography.Text>
             )}
           </Space>
         </Collapse.Panel>

@@ -145,8 +145,8 @@ int DOFmin = 1500000;
 int[int][int] intersection(0);   // local-to-neighbors renumbering
 //int[int] arrayIntersection0;              // ranks of neighboring subdomains
 int[int][int] intersection0(0);   // local-to-neighbors renumbering
-int[int][int] intersection1(0);   // local-to-neighbors renumbering
-real[int] D, D0, D1;                    // partition of unity
+int[int][int] intersection11(0);   // local-to-neighbors renumbering
+real[int] D, D0, D1, D11;                    // partition of unity
 
 meshN ThGlobal;
 meshN ThG0, ThG1, ThG10, Tha0;
@@ -166,7 +166,8 @@ meshN ThGsaved0, ThGsaved1, Thasaved0, Thasaved1;
 matrix Rglsaved0, Rglsaved1, Dhsaved0, Dhsaved1;
 int totaldof, localdof;
 int totaldoff, localdoff;
-bool flagrestarted = (nrestart == 0 ? false : true);
+//bool flagrestarted = (nrestart == 0 ? false : true);
+bool flagrestarted = <%= !!initialization.value -%>; // TODO check new one
 //bool refineflag1st = true;
 bool refineskip = true;
 bool flaganiso = false;
@@ -246,6 +247,14 @@ func int outputvtk(int nstep, mesh3 &TThh, real[int] &pphii)
 			order: [1]
 		}
 	}); -%>
+
+	// TODO check new one
+	<%-	include('/blobs/coupling.edp.ejs', {
+		path: run.couplingPath,
+		name: '"phi."+nstep',
+		mesh: 'TThh',
+		data: ['phiP2'],
+	}) -%>
 }
 // end of js rendered variables
 
@@ -1356,7 +1365,7 @@ if (!flagrestarted) { //generatino of initial data
       if (debugvtk1) {
 	savevtk(workingpath+"banded."+vtkcount+".vtu", ThG1,
 		phig, dataname = "phi", order = vtkorder, bin = false);
-	appedLog("## L1206 : vtu = " + vtkcount);
+	appendLog("## L1206 : vtu = " + vtkcount);
 	vtkcount++;
       }
     } // if (mpirank == 0)
@@ -1480,7 +1489,8 @@ if (!flagrestarted) { //generatino of initial data
    int fileerror = 0;
    if (mpirank == 0) {
      try {
-       ThG1 = readmesh3(workingpath+"phi."+nrestart+".mesh");
+       //ThG1 = readmesh3(workingpath+"phi."+nrestart+".mesh");
+	   ThG1 = readmesh3("<%- initialization.value && initialization.value.mesh -%>"); // TODO check new one
        appendLog("L1262: restarted " + nrestart);
        fileerror = 0;
      }
@@ -1495,7 +1505,8 @@ if (!flagrestarted) { //generatino of initial data
    }
    if (mpirank == 0) {
      try {
-       ifstream ff(workingpath+"phi."+nrestart+".data");
+       // ifstream ff(workingpath+"phi."+nrestart+".data");
+	   ifstream ff("<%= initialization.value && initialization.value.dat -%>"); // TODO check new one
        ff >> phig[];
        fileerror = 0;
      }
@@ -2105,7 +2116,7 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
 	    updatevol = false;	    
 	    costheta = cos(dangle * pi / 180.0);	    
 	    if (mpirank == 0) {
-	      appendLog("L1766 : vloume = " + volstarted  " -> " + vol1);
+	      appendLog("L1766 : vloume = " + volstarted + " -> " + vol1);
 	    }
 	    if (vol1 > (volstarted + voldelta0)) {
 	      if (mpirank == 0) {
@@ -2178,7 +2189,7 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
 	  if (angleflag) {	  
 	    phiglayer.resize(phig[].n);
 	    phiglayer1.resize(phig[].n);
-	    findneighbor(ThG1, phig[], phiglayer, 9, phiglayer1, 10, logOut);
+	    findneighbor(ThG1, phig[], phiglayer, 9, phiglayer1, 10);
 	    if (mpirank == 0) {
 	      appendLog("L1839 " + costheta );
 	      ;
@@ -2286,8 +2297,8 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
 	    mpiAllReduce(phigminl, phigming, comm, mpiMIN);	    
 	    // vol =volumeofliquid(Tha, Rgl, Dh, phig[], false); //
 	    if (mpirank == 0) {
-	      appendLog(k + " GMRES " + walltime2 - walltime1
-		   + " / " + walltime3 - walltime0
+	      appendLog(k + " GMRES " + (walltime2 - walltime1)
+		   + " / " + (walltime3 - walltime0)
 		   + " : lambda = "+ lmbd + " : "
 		   + vol + " " + phi0gl2
 		   + " max = " + phig[].max + " min = " + phig[].min
@@ -2327,7 +2338,7 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
 	    if ((abs(phigmaxg - 1.0) < phigconvdel) &&
 		(abs(phigming + 1.0) < phigconvdel) && (phi0gl2 < tolenlarge)
 		&& (!gradientflow)) { //  &&  (!flaganiso)) {
-	      findneighbor(ThG1, phig[], phiglayer, 3, phiglayer1, 4, logOut);
+	      findneighbor(ThG1, phig[], phiglayer, 3, phiglayer1, 4);
 	      phizg1[] = phiglayer1;
 	      phizg1 = phizg1 < 1.1 ? 1.0 : 0.0;
 	      if (phizg0[]'*phizg1[] > 0.0 && (!flaganiso)) { // '
@@ -2378,7 +2389,7 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
 	      newtonfail = false;
   //
 	      if (!gradientflow) {
-		findneighbor(ThG1, phig[], phiglayer, 3, phiglayer1, 4, logOut);
+		findneighbor(ThG1, phig[], phiglayer, 3, phiglayer1, 4);
 		phizg1[] = phiglayer1;
 		phizg1 = phizg1 < 1.1 ? 1.0 : 0.0;
 		if (phizg0[]'*phizg1[] > 0.0) { // '
@@ -2496,7 +2507,7 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
 	    }
 	  } // if (newtonfail)
 	  if (gradientflow) {
-	    findneighbor(ThG1, phig[], phiglayer, 3, phiglayer1, 4, logOut);
+	    findneighbor(ThG1, phig[], phiglayer, 3, phiglayer1, 4);
 	    phizg1[] = phiglayer1;
 	    phizg1 = phizg1 < 1.1 ? 1.0 : 0.0;
 	    if (phizg0[]'*phizg1[] > 0.0) { // '
@@ -2521,7 +2532,7 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
 	      if (mpirank == 0) {
 		appendLog("#L1880 volume = " + vol
 		     + " characteristic = " + vvol
-		     + " ratio = " + volratio + " update = " + volupdate;
+		     + " ratio = " + volratio + " update = " + volupdate);
 	      }
 	      volupdate = true;
 	      phig1 = 0.0;
@@ -2549,7 +2560,7 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
 		 + " cpu time = " + cputime
 		 + " elapsed time = " + elapsedtime
 		 );
-	    appendLog("constraint = " + vol - vol00 + " = "
+	    appendLog("constraint = " + (vol - vol00) + " = "
 		 + vol + " - " + vol00
 		 );
 	    ;
@@ -2740,7 +2751,7 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
   } // loop : mm
   if (pp == 0) {
     if (mpirank == 0 & mmm > 0) {
-      appendLog("topology is changed between " + mmm - 1 + " and " + mmm
+      appendLog("topology is changed between " + (mmm - 1) + " and " + mmm
 	   );
       ;
     }

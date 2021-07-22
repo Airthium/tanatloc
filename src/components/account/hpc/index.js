@@ -34,7 +34,13 @@ const HPC = ({ user }) => {
       const pluginsList = HPCPlugins.map((plugin) => {
         return (
           <Card key={plugin.key} title={plugin.name}>
-            <Plugin plugin={plugin} />
+            <Plugin
+              plugin={{
+                key: plugin.key,
+                name: plugin.name,
+                configuration: plugin.configuration
+              }}
+            />
           </Card>
         )
       })
@@ -57,7 +63,7 @@ const HPC = ({ user }) => {
 }
 
 HPC.propTypes = {
-  user: PropTypes.shape({
+  user: PropTypes.exact({
     authorizedplugins: PropTypes.array.isRequired
   }).isRequired
 }

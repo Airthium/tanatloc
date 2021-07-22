@@ -111,7 +111,9 @@ describe('components/account/hpc/dialog', () => {
     await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
 
     // Normal
-    mockAdd.mockImplementation(() => {})
+    mockAdd.mockImplementation(() => {
+      // mock function
+    })
     fireEvent.click(dialog)
     await waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(2))
     await waitFor(() => expect(swr.addOnePlugin).toHaveBeenCalledTimes(1))
@@ -126,7 +128,7 @@ describe('components/account/hpc/dialog', () => {
           onOk({
             input: 'input',
             password: 'password',
-            select: 'option1'
+            select: 'option2'
           })
         }
         role="Dialog"

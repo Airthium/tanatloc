@@ -69,7 +69,6 @@ const Information = ({ user, swr }) => {
 
       // Mutate user
       swr.mutateUser({
-        ...user,
         firstname: data.firstname,
         lastname: data.lastname,
         email: data.email
@@ -126,7 +125,7 @@ const Information = ({ user, swr }) => {
         // Mutate user
         swr.mutateUser({
           ...user,
-          avatar: img
+          avatar: Buffer.from(img)
         })
       } catch (err) {
         ErrorNotification(err.message, err)

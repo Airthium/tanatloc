@@ -12,25 +12,13 @@ jest.mock('next/router', () => ({
   })
 }))
 
-jest.mock('../information', () => {
-  const Information = () => <div />
-  return Information
-})
+jest.mock('../information', () => () => <div />)
 
-jest.mock('../password', () => {
-  const Password = () => <div />
-  return Password
-})
+jest.mock('../password', () => () => <div />)
 
-jest.mock('../delete', () => {
-  const Delete = () => <div />
-  return Delete
-})
+jest.mock('../delete', () => () => <div />)
 
-jest.mock('../hpc', () => {
-  const HPC = () => <div />
-  return HPC
-})
+jest.mock('../hpc', () => () => <div />)
 
 describe('components/account', () => {
   const user = { email: 'email', authorizedplugins: [] }

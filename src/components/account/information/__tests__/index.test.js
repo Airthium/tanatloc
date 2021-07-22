@@ -22,7 +22,10 @@ global.FileReader = class {
   addEventListener(type, callback) {
     callback()
   }
-  readAsDataURL() {}
+  readAsDataURL() {
+    // mock method
+  }
+  result = 'img'
 }
 
 describe('components/account/information', () => {
@@ -80,7 +83,9 @@ describe('components/account/information', () => {
     fireEvent.change(lastName, { target: { value: 'last name' } })
 
     // Normal
-    mockUpdate.mockImplementation(() => {})
+    mockUpdate.mockImplementation(() => {
+      // mock function
+    })
     fireEvent.click(button)
     await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
     await waitFor(() => expect(swr.mutateUser).toHaveBeenCalledTimes(1))

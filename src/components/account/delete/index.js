@@ -14,7 +14,7 @@ import logout from '@/api/logout'
  * @memberof module:components/account
  */
 const errors = {
-  delError: 'Unable to delete the user'
+  del: 'Unable to delete the user'
 }
 
 /**
@@ -42,7 +42,7 @@ const Delete = ({ swr }) => {
       // Mutate
       swr.mutateUser({})
     } catch (err) {
-      Error(errors.delError, err)
+      Error(errors.del, err)
     } finally {
       setLoading(false)
     }

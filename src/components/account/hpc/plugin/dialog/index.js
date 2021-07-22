@@ -14,7 +14,7 @@ import PluginAPI from '@/api/plugin'
  * @memberof module:components/account
  */
 const errors = {
-  updateError: 'Unable to update plugins'
+  update: 'Unable to update plugins'
 }
 
 /**
@@ -166,7 +166,7 @@ const PluginDialog = ({ plugin, swr, edit }) => {
       // Finish
       setVisible(false)
     } catch (err) {
-      Error(errors.updateError, err)
+      Error(errors.update, err)
     } finally {
       setLoading(false)
     }
@@ -204,11 +204,11 @@ const PluginDialog = ({ plugin, swr, edit }) => {
 }
 
 PluginDialog.propTypes = {
-  plugin: PropTypes.shape({
+  plugin: PropTypes.exact({
     name: PropTypes.string.isRequired,
     configuration: PropTypes.object.isRequired
   }).isRequired,
-  swr: PropTypes.shape({
+  swr: PropTypes.exact({
     addOnePlugin: PropTypes.func,
     mutateOnePlugin: PropTypes.func
   }).isRequired,

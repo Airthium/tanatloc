@@ -80,7 +80,9 @@ describe('components/account/delete', () => {
     await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
 
     // Normal
-    mockDel.mockImplementation(() => {})
+    mockDel.mockImplementation(() => {
+      // mock function
+    })
     fireEvent.click(deleteDialog)
     await waitFor(() => expect(mockDel).toHaveBeenCalledTimes(2))
     await waitFor(() => expect(swr.mutateUser).toHaveBeenCalledTimes(1))

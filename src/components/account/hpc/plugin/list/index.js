@@ -6,13 +6,6 @@ import PluginDialog from '../dialog'
 import Delete from '../delete'
 
 /**
- * Errors hpc/list
- */
-const errors = {
-  updateError: 'Unable to update the plugin'
-}
-
-/**
  * Plugins list
  * @param {Object} props Props
  */
@@ -26,6 +19,25 @@ const List = ({ plugin, plugins, swr }) => {
       if (p.key !== plugin.key) return
 
       const configuration = p.configuration
+
+      const children = Object.keys(configuration)
+        .map((key) => {
+          if (key === 'name') return
+          return (
+            <Typography.Paragraph key={key}>
+              <Typography.Text strong={true}>
+                {configuration[key].label}:
+              </Typography.Text>{' '}
+              <Typography.Text>
+                {configuration[key].type === 'password'
+                  ? '******'
+                  : configuration[key].value}
+              </Typography.Text>
+            </Typography.Paragraph>
+          )
+        })
+        .filter((c) => c)
+
       return (
         <Card
           key={p.uuid}
@@ -33,32 +45,28 @@ const List = ({ plugin, plugins, swr }) => {
           actions={[
             <Delete
               key="delete"
-              plugin={p}
+              plugin={{
+                id: p.id,
+                configuration: p.configuration
+              }}
               swr={{ delOnePlugin: swr.delOnePlugin }}
             />,
             <PluginDialog
               key="plugin"
-              plugin={p}
+              plugin={{
+                name: p.name,
+                configuration: p.configuration
+              }}
               swr={{ mutateOnePlugin: swr.mutateOnePlugin }}
               edit={true}
             />
           ]}
         >
-          {Object.keys(configuration).map((key) => {
-            if (key === 'name') return
-            return (
-              <Typography.Paragraph key={key}>
-                <Typography.Text strong={true}>
-                  {configuration[key].label}:
-                </Typography.Text>{' '}
-                <Typography.Text>
-                  {configuration[key].type === 'password'
-                    ? '******'
-                    : configuration[key].value}
-                </Typography.Text>
-              </Typography.Paragraph>
-            )
-          })}
+          {children.length ? (
+            children
+          ) : (
+            <Typography.Text>No configuration data</Typography.Text>
+          )}
         </Card>
       )
     })
@@ -77,11 +85,11 @@ const List = ({ plugin, plugins, swr }) => {
 }
 
 List.propTypes = {
-  plugin: PropTypes.shape({
+  plugin: PropTypes.exact({
     key: PropTypes.string.isRequired
   }).isRequired,
   plugins: PropTypes.array.isRequired,
-  swr: PropTypes.shape({
+  swr: PropTypes.exact({
     delOnePlugin: PropTypes.func.isRequired,
     mutateOnePlugin: PropTypes.func.isRequired
   }).isRequired

@@ -46,10 +46,16 @@ const Plugin = ({ plugin }) => {
   return loadingPlugins ? (
     <Spin />
   ) : (
-    <Space direction="vertical">
-      <PluginDialog plugin={plugin} swr={{ addOnePlugin }} />
+    <Space direction="vertical" style={{ width: '100%' }}>
+      <PluginDialog
+        plugin={{
+          name: plugin.name,
+          configuration: plugin.configuration
+        }}
+        swr={{ addOnePlugin }}
+      />
       <List
-        plugin={plugin}
+        plugin={{ key: plugin.key }}
         plugins={plugins}
         swr={{ delOnePlugin, mutateOnePlugin }}
       />
@@ -58,8 +64,10 @@ const Plugin = ({ plugin }) => {
 }
 
 Plugin.propTypes = {
-  plugin: PropTypes.shape({
-    key: PropTypes.string.isRequired
+  plugin: PropTypes.exact({
+    key: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
+    configuration: PropTypes.object.isRequired
   }).isRequired
 }
 

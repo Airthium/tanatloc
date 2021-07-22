@@ -51,17 +51,33 @@ const Account = ({ user, swr }) => {
         <Tabs defaultActiveKey={tab || 'personal'} onChange={onChange}>
           <Tabs.TabPane tab="Personal Information" key="personal">
             <Space direction="vertical" style={{ width: '100%' }}>
-              <Information user={user} swr={{ mutateUser: swr.mutateUser }} />
+              <Information
+                user={{
+                  email: user.email,
+                  firstname: user.firstname,
+                  lastname: user.lastname,
+                  avatar: user.avatar
+                }}
+                swr={{ mutateUser: swr.mutateUser }}
+              />
               <Delete swr={{ mutateUser: swr.mutateUser }} />
             </Space>
           </Tabs.TabPane>
           <Tabs.TabPane tab="Security" key="security">
             <Space direction="vertical" style={{ width: '100%' }}>
-              <Password user={user} />
+              <Password
+                user={{
+                  email: user.email
+                }}
+              />
             </Space>
           </Tabs.TabPane>
           <Tabs.TabPane tab="HPC Providers" key="hpc">
-            <HPC user={user} />
+            <HPC
+              user={{
+                authorizedplugins: user.authorizedplugins
+              }}
+            />
           </Tabs.TabPane>
         </Tabs>
       </Layout.Content>

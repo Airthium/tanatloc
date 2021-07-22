@@ -12,7 +12,7 @@ import UserAPI from '@/api/user'
  * @memberof module:components/account
  */
 const errors = {
-  updateError: 'Unable to update the password',
+  update: 'Unable to update the password',
   passwordMismatch: 'Password and confirmation mismatch',
   invalid: 'Current password not valid'
 }
@@ -67,7 +67,7 @@ const Password = ({ user }) => {
         notification.error({ message: errors.invalid })
       }
     } catch (err) {
-      Error(errors.updateError, err)
+      Error(errors.update, err)
     } finally {
       setLoading(false)
     }
@@ -141,7 +141,7 @@ const Password = ({ user }) => {
 }
 
 Password.propTypes = {
-  user: PropTypes.shape({
+  user: PropTypes.exact({
     email: PropTypes.string.isRequired
   }).isRequired
 }

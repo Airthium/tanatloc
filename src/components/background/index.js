@@ -16,7 +16,7 @@ import {
  */
 const Background = () => {
   // Parameters
-  const numberOfTetrahedra = 100
+  const numberOfTetrahedra = 50
   const rotationSpeed = 0.005
 
   // Ref
@@ -66,16 +66,20 @@ const Background = () => {
       const material = new MeshBasicMaterial({
         color: rand * 0x0096c7 + (1 - rand) * 0xffffff,
         wireframe: true,
-        transparent: true,
+        transparent: false,
         opacity: 0.2
       })
 
-      const geometry = new TetrahedronGeometry(0.1 * Math.random())
+      const geometry = new TetrahedronGeometry(
+        0.1 + 0.075 * (0.5 - Math.random())
+      )
+
       geometry.translate(
-        (-1.2 * w) / 2 + 1.2 * w * Math.random(),
-        (-1.2 * h) / 2 + 1.2 * h * Math.random(),
+        -0.5 + 1 * w * Math.random(),
+        -0.5 * h + 1 * h * Math.random(),
         0
       )
+
       geometry.lookAt(
         new Vector3(
           -1 + 2 * Math.random(),

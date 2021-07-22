@@ -3,7 +3,6 @@ const fs = require('fs')
 const THREE = require('three')
 const Canvas = require('canvas')
 const { Blob, FileReader } = require('vblob')
-// const gltfPipeline = require('gltf-pipeline')
 
 // Global scope (fake)
 global.window = global
@@ -120,15 +119,24 @@ const loadElement = (type, element, color) => {
   const json = JSON.parse(buffer.toString())
   let geometry = loader.parse(json)
 
-  // Convert mm to m
-  // Meshes and results are already converted
-  if (type === 'geometry') {
-    const position = geometry.getAttribute('position')
-    position.array = position.array.map((p) => p * 1e-3)
-    geometry.setAttribute('position', position)
-  }
+  if (type === 'geometry') return loadGeometryElement(geometry, color)
+  else if (type === 'mesh') return loadMeshElement(geometry, color)
+  else if (type === 'result') return loadResultElement(geometry)
+}
 
-  // Color
+/**
+ * Load geometry element
+ * @param {Object} geometry Geometry
+ * @param {string} color Color
+ * @returns {Object} Element
+ */
+const loadGeometryElement = (geometry, color) => {
+  // Convert mm to m
+  const position = geometry.getAttribute('position')
+  position.array = position.array.map((p) => p * 1e-3)
+  geometry.setAttribute('position', position)
+
+  // Get color
   const colorAttribute = geometry.getAttribute('color')
   if (colorAttribute) {
     color = new THREE.Color(
@@ -139,132 +147,153 @@ const loadElement = (type, element, color) => {
     delete geometry.attributes.color
   }
 
-  if (type === 'geometry') {
-    geometry.computeBoundingBox()
-    geometry.computeBoundingSphere()
+  // Bounding box / sphere
+  geometry.computeBoundingBox()
+  geometry.computeBoundingSphere()
 
-    const material = new THREE.MeshStandardMaterial({
-      color: color,
-      side: THREE.DoubleSide
-    })
+  // Material
+  const material = new THREE.MeshStandardMaterial({
+    color: color,
+    side: THREE.DoubleSide
+  })
 
-    const mesh = new THREE.Mesh(geometry, material)
+  // Mesh
+  const mesh = new THREE.Mesh(geometry, material)
 
-    // Mesh data
-    mesh.userData.uuid = json.uuid
-    mesh.userData.name = element.name
-    mesh.userData.number = element.number
+  // Mesh data
+  mesh.userData.uuid = json.uuid
+  mesh.userData.name = element.name
+  mesh.userData.number = element.number
 
-    // Index
-    mesh.geometry = THREE.BufferGeometryUtils.mergeVertices(mesh.geometry)
+  // Index
+  mesh.geometry = THREE.BufferGeometryUtils.mergeVertices(mesh.geometry)
 
-    return mesh
-  } else if (type === 'mesh') {
-    const wireframe = new THREE.WireframeGeometry(geometry)
-    wireframe.computeBoundingBox()
-    wireframe.computeBoundingSphere()
+  return mesh
+}
 
-    const material = new THREE.LineBasicMaterial({
-      color: color,
-      linewidth: 1
-    })
+/**
+ * Load mesh element
+ * @param {Object} geometry Geometry
+ * @param {string} color Color
+ * @returns
+ */
+const loadMeshElement = (geometry, color) => {
+  // Wireframe
+  const wireframe = new THREE.WireframeGeometry(geometry)
+  wireframe.computeBoundingBox()
+  wireframe.computeBoundingSphere()
 
-    const mesh = new THREE.LineSegments(wireframe, material)
+  // Material
+  const material = new THREE.LineBasicMaterial({
+    color: color,
+    linewidth: 1
+  })
 
-    // Mesh data
-    mesh.userData.uuid = json.uuid
-    mesh.userData.name = element.name
-    mesh.userData.number = element.number
+  // Mesh
+  const mesh = new THREE.LineSegments(wireframe, material)
 
-    // Index
-    mesh.geometry = THREE.BufferGeometryUtils.mergeVertices(mesh.geometry)
+  // Mesh data
+  mesh.userData.uuid = json.uuid
+  mesh.userData.name = element.name
+  mesh.userData.number = element.number
 
-    return mesh
-  } else if (type === 'result') {
-    geometry.computeBoundingBox()
-    geometry.computeBoundingSphere()
+  // Index
+  mesh.geometry = THREE.BufferGeometryUtils.mergeVertices(mesh.geometry)
 
-    const lut = new THREE.Lut()
-    const data = geometry.getAttribute('data')
-    if (data) {
-      const minUsingReduce = () =>
-        data.array.reduce(
-          (m, currentValue) => Math.min(m, currentValue),
-          data.array[0]
-        )
-      const maxUsingReduce = () =>
-        data.array.reduce(
-          (m, currentValue) => Math.max(m, currentValue),
-          data.array[0]
-        )
+  return mesh
+}
 
-      const min = minUsingReduce()
-      //Math.min(...data.array) // Throw Maximum call stack size exceeded for big array
-      const max = maxUsingReduce()
-      //Math.max(...data.array)
+/**
+ * Load result element
+ * @param {Object} geometry Geometry
+ * @param {string} color Color
+ * @returns {Object} Element
+ */
+const loadResultElement = (geometry, color) => {
+  // Boundaing box / sphere
+  geometry.computeBoundingBox()
+  geometry.computeBoundingSphere()
 
-      if (min === max) {
-        if (min === 0) {
-          lut.setMin(min || -1)
-          lut.setMax(max || 1)
-        } else {
-          lut.setMin(min - min * 0.1)
-          lut.setMin(min + min * 0.1)
-        }
-      } else {
-        lut.setMin(min)
-        lut.setMax(max)
-      }
-
-      const vertexColors = new Float32Array(data.count * 3)
-      for (let i = 0; i < data.count; ++i) {
-        const vertexColor = lut.getColor(data.array[i])
-        vertexColors[3 * i + 0] = vertexColor.r
-        vertexColors[3 * i + 1] = vertexColor.g
-        vertexColors[3 * i + 2] = vertexColor.b
-      }
-      geometry.setAttribute(
-        'color',
-        new THREE.Float32BufferAttribute(vertexColors, 3)
+  // LUT
+  const lut = new THREE.Lut()
+  const data = geometry.getAttribute('data')
+  if (data) {
+    // Min / max
+    const minUsingReduce = () =>
+      data.array.reduce(
+        (m, currentValue) => Math.min(m, currentValue),
+        data.array[0]
       )
+    const maxUsingReduce = () =>
+      data.array.reduce(
+        (m, currentValue) => Math.max(m, currentValue),
+        data.array[0]
+      )
+
+    const min = minUsingReduce()
+    const max = maxUsingReduce()
+
+    if (min === max) {
+      if (min === 0) {
+        lut.setMin(min || -1)
+        lut.setMax(max || 1)
+      } else {
+        lut.setMin(min - min * 0.1)
+        lut.setMin(min + min * 0.1)
+      }
+    } else {
+      lut.setMin(min)
+      lut.setMax(max)
     }
-    geometry.deleteAttribute('data')
 
-    const material = new THREE.MeshStandardMaterial({
-      vertexColors: THREE.VertexColors,
-      color: color,
-      side: THREE.DoubleSide
-    })
-
-    const mesh = new THREE.Mesh(geometry, material)
-
-    const wireframeGeometry = new THREE.WireframeGeometry(geometry)
-    const wireframeMaterial = new THREE.LineBasicMaterial({
-      color: color,
-      linewidth: 2
-    })
-
-    const wireframe = new THREE.LineSegments(
-      wireframeGeometry,
-      wireframeMaterial
+    // Colors
+    const vertexColors = new Float32Array(data.count * 3)
+    for (let i = 0; i < data.count; ++i) {
+      const vertexColor = lut.getColor(data.array[i])
+      vertexColors[3 * i + 0] = vertexColor.r
+      vertexColors[3 * i + 1] = vertexColor.g
+      vertexColors[3 * i + 2] = vertexColor.b
+    }
+    geometry.setAttribute(
+      'color',
+      new THREE.Float32BufferAttribute(vertexColors, 3)
     )
-    wireframe.geometry = THREE.BufferGeometryUtils.mergeVertices(
-      wireframe.geometry
-    )
-    mesh.add(wireframe)
-
-    mesh.lut = lut
-
-    // Mesh data
-    mesh.userData.uuid = json.uuid
-    mesh.userData.name = element.name
-    mesh.userData.number = element.number
-
-    // Index
-    mesh.geometry = THREE.BufferGeometryUtils.mergeVertices(mesh.geometry)
-
-    return mesh
   }
+  geometry.deleteAttribute('data')
+
+  // Material
+  const material = new THREE.MeshStandardMaterial({
+    vertexColors: THREE.VertexColors,
+    color: color,
+    side: THREE.DoubleSide
+  })
+
+  // Wireframe
+  const wireframeGeometry = new THREE.WireframeGeometry(geometry)
+  const wireframeMaterial = new THREE.LineBasicMaterial({
+    color: color,
+    linewidth: 2
+  })
+
+  const wireframe = new THREE.LineSegments(wireframeGeometry, wireframeMaterial)
+  wireframe.geometry = THREE.BufferGeometryUtils.mergeVertices(
+    wireframe.geometry
+  )
+
+  // Mesh
+  const mesh = new THREE.Mesh(geometry, material)
+  mesh.add(wireframe)
+  mesh.lut = lut
+
+  // Mesh data
+  mesh.userData.uuid = json.uuid
+  mesh.userData.name = element.name
+  mesh.userData.number = element.number
+
+  // Index
+  mesh.geometry = THREE.BufferGeometryUtils.mergeVertices(mesh.geometry)
+
+  return mesh
 }
 
 /**
@@ -293,10 +322,6 @@ const convert = async (location, name) => {
     )
 
     console.log(JSON.stringify(gltf))
-
-    // // GLB
-    // const glb = await gltfPipeline.gltfToGlb(gltf)
-    // console.log(Buffer.from(glb.glb).toString())
   } catch (err) {
     console.error(err)
   }

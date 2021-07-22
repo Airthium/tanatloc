@@ -18,10 +18,10 @@ describe('modules/three-to-glb', () => {
     mockSpawn.mockReset()
     mockSpawn.mockImplementation(() => ({
       stdout: {
-        on: (_, callback) => callback()
+        on: (_, callback) => callback('stdout')
       },
       stderr: {
-        on: (_, callback) => callback()
+        on: (_, callback) => callback('stderr')
       },
       on: (type, callback) => {
         if (type === 'close') callback()

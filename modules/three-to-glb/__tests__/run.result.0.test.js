@@ -11,9 +11,15 @@ jest.mock('fs', () => ({
   readFileSync: () => mockReadFile()
 }))
 
-jest.mock('three/examples/js/exporters/GLTFExporter', () => {})
-jest.mock('three/examples/js/math/Lut', () => {})
-jest.mock('three/examples/js/utils/BufferGeometryUtils', () => {})
+jest.mock('three/examples/js/exporters/GLTFExporter', () => {
+  // mock module
+})
+jest.mock('three/examples/js/math/Lut', () => {
+  // mock module
+})
+jest.mock('three/examples/js/utils/BufferGeometryUtils', () => {
+  // mock module
+})
 
 jest.mock('canvas', () => class {})
 
@@ -24,8 +30,7 @@ describe('modules/three-to-glb/run', () => {
 
   test('empty', () => {
     global.MockGeometry.getAttribute = (attribute) => {
-      if (attribute === 'data') return
-      else
+      if (attribute !== 'data')
         return {
           count: 3,
           array: [1, 2, 3]
@@ -38,8 +43,7 @@ describe('modules/three-to-glb/run', () => {
         return JSON.stringify({
           type: 'result',
           solids: [{}],
-          faces: [{}],
-          edges: [{}]
+          faces: [{}]
         })
       return JSON.stringify({})
     })

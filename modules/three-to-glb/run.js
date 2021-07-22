@@ -25,8 +25,6 @@ require('three/examples/js/utils/BufferGeometryUtils')
 const solidColor = new THREE.Color('gray')
 // Face color
 const faceColor = new THREE.Color('gray')
-// Edge color
-const edgeColor = new THREE.Color('black')
 
 /**
  * Load part
@@ -57,15 +55,6 @@ const loadPart = (location, name) => {
     })
   }
 
-  // Load edges
-  if (part.edges) {
-    part.edges.map(async (edge) => {
-      const file = path.join(location, edge.path)
-      edge.buffer = fs.readFileSync(file)
-      delete edge.path
-    })
-  }
-
   return part
 }
 
@@ -85,7 +74,7 @@ const load = (part) => {
     part.solids &&
     part.solids.forEach((solid) => {
       const mesh = loadElement(type, solid, solidColor)
-      // mesh.visible = false
+      mesh.visible = false
       solids.add(mesh)
     })
   object.add(solids)
@@ -98,8 +87,6 @@ const load = (part) => {
       faces.add(mesh)
     })
   object.add(faces)
-
-  // TODO edges, if any
 
   object.uuid = part.uuid
 
@@ -119,9 +106,20 @@ const loadElement = (type, element, color) => {
   const json = JSON.parse(buffer.toString())
   let geometry = loader.parse(json)
 
-  if (type === 'geometry') return loadGeometryElement(geometry, color)
-  else if (type === 'mesh') return loadMeshElement(geometry, color)
-  else if (type === 'result') return loadResultElement(geometry)
+  let mesh = {}
+  if (type === 'geometry') mesh = loadGeometryElement(geometry, color)
+  else if (type === 'mesh') mesh = loadMeshElement(geometry, color)
+  else if (type === 'result') mesh = loadResultElement(geometry)
+
+  // Mesh data
+  mesh.userData.uuid = json.uuid
+  mesh.userData.name = element.name
+  mesh.userData.number = element.number
+
+  // Index
+  mesh.geometry = THREE.BufferGeometryUtils.mergeVertices(mesh.geometry)
+
+  return mesh
 }
 
 /**
@@ -158,17 +156,7 @@ const loadGeometryElement = (geometry, color) => {
   })
 
   // Mesh
-  const mesh = new THREE.Mesh(geometry, material)
-
-  // Mesh data
-  mesh.userData.uuid = json.uuid
-  mesh.userData.name = element.name
-  mesh.userData.number = element.number
-
-  // Index
-  mesh.geometry = THREE.BufferGeometryUtils.mergeVertices(mesh.geometry)
-
-  return mesh
+  return new THREE.Mesh(geometry, material)
 }
 
 /**
@@ -190,17 +178,7 @@ const loadMeshElement = (geometry, color) => {
   })
 
   // Mesh
-  const mesh = new THREE.LineSegments(wireframe, material)
-
-  // Mesh data
-  mesh.userData.uuid = json.uuid
-  mesh.userData.name = element.name
-  mesh.userData.number = element.number
-
-  // Index
-  mesh.geometry = THREE.BufferGeometryUtils.mergeVertices(mesh.geometry)
-
-  return mesh
+  return new THREE.LineSegments(wireframe, material)
 }
 
 /**
@@ -284,14 +262,6 @@ const loadResultElement = (geometry, color) => {
   const mesh = new THREE.Mesh(geometry, material)
   mesh.add(wireframe)
   mesh.lut = lut
-
-  // Mesh data
-  mesh.userData.uuid = json.uuid
-  mesh.userData.name = element.name
-  mesh.userData.number = element.number
-
-  // Index
-  mesh.geometry = THREE.BufferGeometryUtils.mergeVertices(mesh.geometry)
 
   return mesh
 }

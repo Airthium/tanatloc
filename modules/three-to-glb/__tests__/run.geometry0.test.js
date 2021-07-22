@@ -29,7 +29,21 @@ describe('modules/three-to-glb/run', () => {
   })
 
   test('empty', () => {
-    mockReadFile.mockImplementation(() => JSON.stringify({}))
+    let count = 0
+    global.MockGeometry.getAttribute = () => ({
+      count: 3,
+      array: [1, 2, 3]
+    })
+    mockReadFile.mockImplementation(() => {
+      count++
+      if (count === 1)
+        return JSON.stringify({
+          type: 'geometry',
+          solids: [{}],
+          faces: [{}]
+        })
+      return JSON.stringify({})
+    })
     require('../run')
   })
 })

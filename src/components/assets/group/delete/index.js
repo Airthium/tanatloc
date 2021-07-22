@@ -13,7 +13,7 @@ import GroupAPI from '@/api/group'
  * @memberof module:components/assets/group
  */
 const errors = {
-  delError: 'Unable to delete group'
+  del: 'Unable to delete group'
 }
 
 /**
@@ -48,7 +48,7 @@ const Delete = ({ group, swr }) => {
       // Close
       setVisible(false)
     } catch (err) {
-      ErrorNotification(errors.delError, err)
+      ErrorNotification(errors.del, err)
       setLoading(false)
     }
   }

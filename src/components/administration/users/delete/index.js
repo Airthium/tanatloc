@@ -65,18 +65,18 @@ const Delete = ({ user, swr }) => {
         onOk={onDelete}
         loading={loading}
       >
-        Delete {user?.email}?
+        Delete {user.email}?
       </DeleteDialog>
     </>
   )
 }
 
 Delete.propTypes = {
-  user: PropTypes.shape({
+  user: PropTypes.exact({
     id: PropTypes.string.isRequired,
-    email: PropTypes.string
+    email: PropTypes.string.isRequired
   }).isRequired,
-  swr: PropTypes.shape({
+  swr: PropTypes.exact({
     delOneUser: PropTypes.func.isRequired
   }).isRequired
 }

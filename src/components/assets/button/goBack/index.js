@@ -20,6 +20,7 @@ const GoBack = ({ children, onClick }) => {
 }
 
 GoBack.propTypes = {
+  children: PropTypes.node,
   onClick: PropTypes.func.isRequired
 }
 

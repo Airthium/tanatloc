@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { Space, Spin } from 'antd'
 
-import { Error } from '@/components/assets/notification'
+import { Error as ErrorNotification } from '@/components/assets/notification'
 
 import PluginDialog from './dialog'
 import List from './list'
@@ -37,7 +37,7 @@ const Plugin = ({ plugin }) => {
 
   // Plugins errors
   useEffect(() => {
-    if (errorPlugins) Error(errors.plugins, errorPlugins)
+    if (errorPlugins) ErrorNotification(errors.plugins, errorPlugins)
   }, [errorPlugins])
 
   /**

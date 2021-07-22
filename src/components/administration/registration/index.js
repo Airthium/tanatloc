@@ -13,7 +13,7 @@ import SystemAPI from '@/api/system'
  */
 const errors = {
   system: 'System error',
-  updateError: 'Unable to update system'
+  update: 'Unable to update system'
 }
 
 /**
@@ -56,7 +56,7 @@ const Registration = () => {
       // Mutate
       mutateSystem({ allowSignup: !system.allowsignup })
     } catch (err) {
-      ErrorNotification(errors.updateError, err)
+      ErrorNotification(errors.update, err)
     }
   }
 
@@ -68,7 +68,7 @@ const Registration = () => {
       // Mutate
       mutateSystem({ password: values })
     } catch (err) {
-      ErrorNotification(errors.updateError, err)
+      ErrorNotification(errors.update, err)
     }
   }
 

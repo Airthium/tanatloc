@@ -2,7 +2,7 @@ import PropTypes from 'prop-types'
 import { useState } from 'react'
 
 import { DeleteButton } from '@/components/assets/button'
-import { Error } from '@/components/assets/notification'
+import { Error as ErrorNotification } from '@/components/assets/notification'
 
 import PluginAPI from '@/api/plugin'
 
@@ -34,7 +34,7 @@ const Delete = ({ plugin, swr }) => {
       // Mutate
       swr.delOnePlugin(plugin)
     } catch (err) {
-      Error(errors.updateError, err)
+      ErrorNotification(errors.updateError, err)
     } finally {
       setLoading(false)
     }

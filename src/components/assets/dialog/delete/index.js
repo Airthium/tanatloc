@@ -47,12 +47,7 @@ DeleteDialog.propTypes = {
   onCancel: PropTypes.func.isRequired,
   onOk: PropTypes.func.isRequired,
   loading: PropTypes.bool,
-  children: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.object,
-    PropTypes.array,
-    PropTypes.element
-  ]).isRequired
+  children: PropTypes.node.isRequired
 }
 
 export default DeleteDialog

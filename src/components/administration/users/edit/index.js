@@ -16,7 +16,7 @@ import UserAPI from '@/api/user'
  * @memberof module:components/administration
  */
 const errors = {
-  updateError: 'Unable to update user'
+  update: 'Unable to update user'
 }
 
 /**
@@ -57,7 +57,7 @@ const Edit = ({ user, swr }) => {
       // Close
       setVisible(false)
     } catch (err) {
-      Error(errors.updateError, err)
+      Error(errors.update, err)
       setLoading(false)
     }
   }
@@ -119,10 +119,15 @@ const Edit = ({ user, swr }) => {
 }
 
 Edit.propTypes = {
-  user: PropTypes.shape({
-    id: PropTypes.string.isRequired
+  user: PropTypes.exact({
+    id: PropTypes.string.isRequired,
+    firstname: PropTypes.string,
+    lastname: PropTypes.string,
+    email: PropTypes.string.isRequired,
+    authorizedplugins: PropTypes.arry,
+    superuser: PropTypes.bool
   }).isRequired,
-  swr: PropTypes.shape({
+  swr: PropTypes.exact({
     mutateOneUser: PropTypes.func.isRequired
   }).isRequired
 }

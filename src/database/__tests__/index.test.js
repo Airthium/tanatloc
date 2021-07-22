@@ -7,7 +7,7 @@ jest.mock('pg', () => {
       constructor() {
         this.connect = async () => ({
           query: async () => mockQuery(),
-          release: () => {}
+          release: jest.fn()
         })
         this.query = async () => 'query'
         this.end = jest.fn()

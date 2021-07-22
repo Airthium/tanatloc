@@ -19,9 +19,4 @@ describe('components/assets/button/add', () => {
 
     unmount()
   })
-
-  // test('onEdit', () => {
-  //   wrapper.find('Button').props().onClick()
-  //   expect(mockOnEdit).toHaveBeenCalledTimes(1)
-  // })
 })

@@ -18,7 +18,6 @@ jest.mock('@/components/assets/notification', () => ({
 }))
 
 jest.mock('../users', () => () => <div />)
-// jest.mock('../groups', () => () => <div />)
 jest.mock('../registration', () => () => <div />)
 
 const mockUsers = jest.fn()

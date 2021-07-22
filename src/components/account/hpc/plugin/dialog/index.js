@@ -5,7 +5,7 @@ import { v4 as uuid } from 'uuid'
 
 import { AddButton, EditButton } from '@/components/assets/button'
 import Dialog from '@/components/assets/dialog'
-import { Error } from '@/components/assets/notification'
+import { Error as ErrorNotification } from '@/components/assets/notification'
 
 import PluginAPI from '@/api/plugin'
 
@@ -166,7 +166,7 @@ const PluginDialog = ({ plugin, swr, edit }) => {
       // Finish
       setVisible(false)
     } catch (err) {
-      Error(errors.update, err)
+      ErrorNotification(errors.update, err)
     } finally {
       setLoading(false)
     }

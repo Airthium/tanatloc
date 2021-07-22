@@ -16,7 +16,7 @@ import UserAPI from '@/api/user'
  * @memberof module:components/administration
  */
 const errors = {
-  addError: 'Unable to add user'
+  add: 'Unable to add user'
 }
 
 /**
@@ -77,7 +77,7 @@ const Add = ({ swr }) => {
       // Close
       setVisible(false)
     } catch (err) {
-      Error(errors.addError, err)
+      Error(errors.add, err)
       setLoading(false)
     }
   }
@@ -134,7 +134,7 @@ const Add = ({ swr }) => {
 }
 
 Add.propTypes = {
-  swr: PropTypes.shape({
+  swr: PropTypes.exact({
     addOneUser: PropTypes.func.isRequired
   }).isRequired
 }

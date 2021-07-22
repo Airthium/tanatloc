@@ -73,8 +73,21 @@ const Users = ({ users, swr }) => {
       // eslint-disable-next-line react/display-name
       render: (_, record) => (
         <Space direction="">
-          <Edit user={record} swr={{ mutateOneUser: swr.mutateOneUser }} />
-          <Delete user={record} swr={{ delOneUser: swr.delOneUser }} />
+          <Edit
+            user={{
+              id: record.id,
+              firstname: record.firstname,
+              lastname: record.lastname,
+              email: record.email,
+              authorizedplugins: record.authorizedplugins,
+              superuser: record.superuser
+            }}
+            swr={{ mutateOneUser: swr.mutateOneUser }}
+          />
+          <Delete
+            user={{ id: record.id, email: record.email }}
+            swr={{ delOneUser: swr.delOneUser }}
+          />
         </Space>
       )
     }
@@ -103,7 +116,7 @@ const Users = ({ users, swr }) => {
 
 Users.propTypes = {
   users: PropTypes.array.isRequired,
-  swr: PropTypes.shape({
+  swr: PropTypes.exact({
     addOneUser: PropTypes.func.isRequired,
     delOneUser: PropTypes.func.isRequired,
     mutateOneUser: PropTypes.func.isRequired

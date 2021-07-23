@@ -402,7 +402,7 @@ const processOutput = async (
   task
 ) => {
   if (
-    log.includes('PROCESS_COUPLING_FILE') ||
+    log.includes('PROCESS COUPLING FILE') ||
     log.includes('PROCESS VTU FILE') ||
     log.includes('PROCESS DATA FILE')
   ) {
@@ -637,16 +637,18 @@ const processCoupling = async (
     let fileContent
     if (type === 'inrun') {
       fileContent = await getInRunFile(configuration, file)
-      if (fileContent.detail)
+      if (fileContent.text) fileContent = await fileContent.text()
+      else if (fileContent.detail)
         throw new Error(
           'Run is not active. Trying to get the file at the end (' +
             couplingFile +
             ')'
         )
-      if (typeof fileContent !== 'string')
+      else if (typeof fileContent !== 'string')
         throw new Error('Rescale empty response (' + couplingFile + ')')
     } else {
       fileContent = await getFile(configuration, file.id)
+      if (fileContent.text) fileContent = await fileContent.text()
     }
 
     // Write file

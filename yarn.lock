@@ -10470,7 +10470,7 @@ text-table@^0.2.0:
   resolved "https://registry.yarnpkg.com/text-table/-/text-table-0.2.0.tgz#7f5ee823ae805207c00af2df4a84ec3fcfa570b4"
   integrity sha1-f17oI66AUgfACvLfSoTsP8+lcLQ=
 
-three-to-glb@./modules/three-to-glb/:
+three-to-glb@./modules/three-to-glb:
   version "1.0.0"
   dependencies:
     canvas "^2.7.0"

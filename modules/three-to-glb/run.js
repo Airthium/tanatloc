@@ -109,7 +109,7 @@ const loadElement = (type, element, color) => {
   let mesh = {}
   if (type === 'geometry') mesh = loadGeometryElement(geometry, color)
   else if (type === 'mesh') mesh = loadMeshElement(geometry, color)
-  else if (type === 'result') mesh = loadResultElement(geometry)
+  else if (type === 'result') mesh = loadResultElement(geometry, color)
 
   // Mesh data
   mesh.userData.uuid = json.uuid

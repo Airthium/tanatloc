@@ -16,6 +16,8 @@ import {
 import Loading from '@/components/loading'
 import { Error } from '@/components/assets/notification'
 
+import PasswordRecover from './password'
+
 import login from '@/api/login'
 import UserAPI from '@/api/user'
 
@@ -24,8 +26,8 @@ import UserAPI from '@/api/user'
  */
 const errors = {
   user: 'User error',
-  INTERNAL_ERROR: 'Server issue : try again shortly.',
-  BAD_CREDENTIALS: 'Incorrect credentials.'
+  internal: 'Server issue : try again shortly.',
+  credentials: 'Incorrect credentials.'
 }
 
 /**
@@ -84,7 +86,7 @@ const Login = () => {
     } catch (err) {
       setInternalErr(true)
       setChecking(false)
-      Error(errors.INTERNAL_ERROR, err, false)
+      Error(errors.internal, err, false)
     }
   }
 
@@ -121,9 +123,7 @@ const Login = () => {
             <Form requiredMark="optional" onFinish={onLogin} layout="vertical">
               {(loginErr || internalErr) && (
                 <Alert
-                  message={
-                    internalErr ? errors.INTERNAL_ERROR : errors.BAD_CREDENTIALS
-                  }
+                  message={internalErr ? errors.internal : errors.credentials}
                   type="error"
                   showIcon
                   style={{
@@ -151,9 +151,7 @@ const Login = () => {
                   autoComplete="current-password"
                 />
               </Form.Item>
-              <Typography.Text>
-                <Button type="link">Forgot your password ?</Button>
-              </Typography.Text>
+              <PasswordRecover />
               <Form.Item className="Login-submit">
                 <Button type="primary" loading={checking} htmlType="submit">
                   Log in

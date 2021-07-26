@@ -1,5 +1,8 @@
 import { Empty, Typography } from 'antd'
 
+/**
+ * Shared empty
+ */
 const SharedEmpty = () => {
   /**
    * Render

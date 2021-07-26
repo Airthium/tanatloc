@@ -33,7 +33,7 @@ const Welcome = ({ swr }) => {
 }
 
 Welcome.propTypes = {
-  swr: PropTypes.shape({
+  swr: PropTypes.exact({
     addOneWorkspace: PropTypes.func.isRequired
   }).isRequired
 }

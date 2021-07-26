@@ -1,5 +1,6 @@
 /** @module components/assets/notification */
 
+import Success from './success'
 import Error from './error'
 
-export { Error }
+export { Success, Error }

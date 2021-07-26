@@ -21,8 +21,32 @@ const subscribe = (email, id) => {
     .setRecipients(recipients)
     .setSubject('Tanatloc subscription')
     .setHtml('test')
+
   mailerSend.send(emailParams)
 }
 
-const Email = { subscribe }
+const recover = (email) => {
+  const recoveryLink = 'TODO build a recovery link'
+
+  const recipients = [new Recipient(email)]
+  const personalization = [
+    {
+      email,
+      data: {
+        recoveryLink
+      }
+    }
+  ]
+  const emailParams = new EmailParams()
+    .setFrom('noreply@tanatloc.com')
+    .setFromName('Tanatloc')
+    .setRecipients(recipients)
+    .setSubject('Recover your password')
+    .setTemplateId('vywj2lp7n1l7oqzd')
+    .setPersonalization(personalization)
+
+  mailerSend.send(emailParams)
+}
+
+const Email = { subscribe, recover }
 export default Email

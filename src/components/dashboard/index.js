@@ -38,7 +38,7 @@ const errors = {
   user: 'User error',
   organizations: 'Organizations error',
   workspaces: 'Workspaces error',
-  logoutError: 'Unable to logout'
+  logout: 'Unable to logout'
 }
 
 /**
@@ -221,7 +221,7 @@ const Dashboard = () => {
 
       router.push('/')
     } catch (err) {
-      Error(errors.logoutError, err)
+      Error(errors.logout, err)
     }
   }
 

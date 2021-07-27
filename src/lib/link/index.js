@@ -1,4 +1,4 @@
-import { PASSWORD_RECOVERY } from '@/config/email'
+import { SUBSCRIBE, PASSWORD_RECOVERY } from '@/config/email'
 
 import LinkDB from '@/database/link'
 
@@ -13,9 +13,20 @@ const get = async (id, data) => {
 }
 
 const process = async (id, data) => {
-  const link = await get(id, ['type', 'email'])
+  const link = await get(id, ['type', 'email', 'userid'])
 
-  if (link.type === PASSWORD_RECOVERY) {
+  if (link.type === SUBSCRIBE) {
+    // Update user
+    await UserLib.update({ id: link.userid }, [
+      {
+        key: 'isvalidated',
+        value: 'true'
+      }
+    ])
+
+    // Remove link
+    await del({ id })
+  } else if (link.type === PASSWORD_RECOVERY) {
     if (link.email !== data.email) throw new Error('Inconsistent data')
 
     // Update user

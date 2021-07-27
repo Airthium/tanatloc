@@ -47,7 +47,7 @@ const PasswordRecovery = () => {
     }
   }, [id])
 
-  const onFinish = (values) => {
+  const onFinish = async (values) => {
     setLoading(true)
 
     console.log(values)
@@ -55,12 +55,10 @@ const PasswordRecovery = () => {
     try {
       if (values.email !== linkEmail) throw new Error('Incorrect data')
 
-      LinkAPI.process(id, {
+      await LinkAPI.process(id, {
         email: values.email,
         password: values.password
       })
-      // TODO update user
-      // TODO delete link
 
       router.push('/login')
     } catch (err) {
@@ -78,6 +76,9 @@ const PasswordRecovery = () => {
       </Layout>
     )
 
+  /**
+   * Render
+   */
   return (
     <Layout>
       <Card bordered={false} className="Signup">

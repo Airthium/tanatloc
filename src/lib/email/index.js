@@ -3,7 +3,7 @@
 import MailerSend, { Recipient, EmailParams } from 'mailersend'
 
 import { DOMAIN } from '@/config/domain'
-import { TOKEN, PASSWORD_RECOVERY } from '@/config/email'
+import { TOKEN, SUBSCRIBE, PASSWORD_RECOVERY } from '@/config/email'
 
 import Link from '../link'
 
@@ -23,9 +23,9 @@ const send = async (email) => {
  */
 const subscribe = async (email, id) => {
   // Create link
-  const link = await Link.add({ type: subscribe, email, userid: id })
+  const link = await Link.add({ type: SUBSCRIBE, email, userid: id })
 
-  const subscribeLink = DOMAIN + '/validate?id=' + link.id
+  const subscribeLink = DOMAIN + '/signup/validation?id=' + link.id
 
   const recipients = [new Recipient(email)]
   const personalization = [

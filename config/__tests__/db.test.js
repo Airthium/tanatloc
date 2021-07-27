@@ -29,7 +29,6 @@ describe('config/db', () => {
     expect(config.tables.GEOMETRIES).toBe('tanatloc_geometries')
     expect(config.tables.SIMULATIONS).toBe('tanatloc_simulations')
     expect(config.tables.AVATARS).toBe('tanatloc_avatars')
-    expect(config.tables.TASKS).toBe('tanatloc_tasks')
     expect(config.tables.LINKS).toBe('tanatloc_links')
   })
 })

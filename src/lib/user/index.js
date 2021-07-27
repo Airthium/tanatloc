@@ -5,13 +5,19 @@ import UserDB from '@/database/user'
 import Avatar from '../avatar'
 import Group from '../group'
 import Workspace from '../workspace'
+import Email from '../email'
 
 /**
  * Add user
  * @param {Object} user { email, password }
  */
 const add = async ({ email, password }) => {
-  return UserDB.add({ email, password })
+  const user = await UserDB.add({ email, password })
+
+  // Send email
+  await Email.subscribe(email, user.id)
+
+  return user
 }
 
 /**

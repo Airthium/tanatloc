@@ -125,6 +125,10 @@ const createTables = async () => {
     console.info(' + Simulation table')
     await createSimulationTable()
 
+    // Links
+    console.info(' + Link table')
+    await createLinkTable()
+
     // Administrator
     await createAdmin()
 
@@ -426,6 +430,14 @@ const createGeometryTable = async () => {
  */
 const createSimulationTable = async () => {
   await createTable(tables.SIMULATIONS)
+}
+
+/**
+ * Create link table
+ * @memberof module:install
+ */
+const createLinkTable = async () => {
+  await createTable(tables.LINKS)
 }
 
 /**

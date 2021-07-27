@@ -2,31 +2,57 @@
 
 import MailerSend, { Recipient, EmailParams } from 'mailersend'
 
-import { TOKEN } from '@/config/email'
+import { DOMAIN } from '@/config/domain'
+import { TOKEN, PASSWORD_RECOVERY } from '@/config/email'
+
+import Link from '../link'
 
 const mailerSend = new MailerSend({
   api_key: TOKEN
 })
+
+const send = async (email) => {
+  const res = await mailerSend.send(email)
+  if (res.status !== 202) throw new Error(res.statusText)
+}
 
 /**
  * Subscribe
  * @param {string} email Email
  * @param {string} id User id
  */
-const subscribe = (email, id) => {
+const subscribe = async (email, id) => {
+  // Create link
+  const link = await Link.add({ type: subscribe, email, userid: id })
+
+  const subscribeLink = DOMAIN + '/validate?id=' + link.id
+
   const recipients = [new Recipient(email)]
+  const personalization = [
+    {
+      email,
+      data: {
+        subscribeLink
+      }
+    }
+  ]
+
   const emailParams = new EmailParams()
-    .setFrom('subscribe@tanatloc.com')
+    .setFrom('noreply@tanatloc.com')
     .setFromName('Tanatloc')
     .setRecipients(recipients)
     .setSubject('Tanatloc subscription')
-    .setHtml('test')
+    .setTemplateId('3vz9dle2p6lkj50y')
+    .setPersonalization(personalization)
 
-  mailerSend.send(emailParams)
+  await send(emailParams)
 }
 
-const recover = (email) => {
-  const recoveryLink = 'TODO build a recovery link'
+const recover = async (email) => {
+  // Create link entry
+  const link = await Link.add({ type: PASSWORD_RECOVERY, email })
+
+  const recoveryLink = DOMAIN + '/password?id=' + link.id
 
   const recipients = [new Recipient(email)]
   const personalization = [
@@ -45,7 +71,7 @@ const recover = (email) => {
     .setTemplateId('vywj2lp7n1l7oqzd')
     .setPersonalization(personalization)
 
-  mailerSend.send(emailParams)
+  await send(emailParams)
 }
 
 const Email = { subscribe, recover }

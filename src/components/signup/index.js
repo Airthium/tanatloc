@@ -86,10 +86,12 @@ const Signup = () => {
         return
       }
 
-      // Login
-      const loggedUser = await login({ email, password })
-      mutateUser(loggedUser)
-      router.push('/dashboard')
+      // TODO
+      // Validate page
+      // // Login
+      // const loggedUser = await login({ email, password })
+      // mutateUser(loggedUser)
+      // router.push('/dashboard')
     } catch (err) {
       setInternalError(true)
       setChecking(false)

@@ -35,7 +35,6 @@ const tables = {
   GEOMETRIES: 'tanatloc_geometries',
   SIMULATIONS: 'tanatloc_simulations',
   AVATARS: 'tanatloc_avatars',
-  TASKS: 'tanatloc_tasks',
   LINKS: 'tanatloc_links'
 }
 
@@ -363,6 +362,28 @@ const schemas = {
       name: 'project',
       type: 'UUID',
       constraint: 'NOT NULL'
+    }
+  ],
+  [tables.LINKS]: [
+    {
+      name: 'id',
+      type: 'UUID',
+      constraint: 'PRIMARY KEY',
+      default: 'DEFAULT gen_random_uuid()'
+    },
+    {
+      name: 'type',
+      type: 'TEXT',
+      constraint: 'NOT NULL'
+    },
+    {
+      name: 'email',
+      type: 'TEXT',
+      constraint: 'NOT NULL'
+    },
+    {
+      name: 'userid',
+      type: 'TEXT'
     }
   ]
 }

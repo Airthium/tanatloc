@@ -3,6 +3,10 @@
 // EMAIL TOKEN
 const TOKEN = process.env.EMAIL_TOKEN || ''
 
+// TYPES
+const PASSWORD_RECOVERY = 'passwordRecovery'
+
 module.exports = {
-  TOKEN
+  TOKEN,
+  PASSWORD_RECOVERY
 }

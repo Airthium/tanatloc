@@ -22,7 +22,7 @@ const add = async ({ email, password }) => {
     'INSERT INTO ' +
       tables.USERS +
       " (email, password, isvalidated, lastmodificationdate, superuser) VALUES ($1, crypt($2, gen_salt('bf')), $3, to_timestamp($4), $5) returning id",
-    [email, password, true, Date.now(), false]
+    [email, password, false, Date.now(), false]
   )
 
   return response.rows[0]

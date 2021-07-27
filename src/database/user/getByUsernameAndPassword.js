@@ -8,7 +8,7 @@ import { tables } from '@/config/db'
  */
 const getByUsernameAndPassword = async ({ email, password }) => {
   const response = await query(
-    'SELECT id FROM ' +
+    'SELECT id, isvalidated FROM ' +
       tables.USERS +
       ' WHERE email = $1 AND password = crypt($2, password)',
     [email, password]

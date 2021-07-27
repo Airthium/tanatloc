@@ -1,10 +1,24 @@
 /** @module components/password */
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
-import { Button, Card, Form, Input, Layout, Space, Typography } from 'antd'
+import {
+  Button,
+  Card,
+  Form,
+  Input,
+  Layout,
+  Space,
+  Spin,
+  Typography
+} from 'antd'
+
+import { PASSWORD_RECOVERY } from '@/config/email'
 
 import { PasswordItem } from '@/components/assets/input'
+import { Error as ErrorNotification } from '@/components/assets/notification'
+
+import LinkAPI from '@/api/link'
 
 const errors = {
   internal: 'Internal error, please try again later',
@@ -12,24 +26,57 @@ const errors = {
 }
 
 const PasswordRecovery = () => {
+  const [checking, setChecking] = useState(true)
+  const [linkEmail, setLinkEmail] = useState()
   const [loading, setLoading] = useState(false)
   const router = useRouter()
 
   const { id } = router.query
-  console.log(id)
-  //TODO check id in links
+
+  // Check link type
+  useEffect(() => {
+    if (id) {
+      LinkAPI.get(id, ['type', 'email'])
+        .then((res) => {
+          if (res.type === PASSWORD_RECOVERY) {
+            setLinkEmail(res.email)
+            setChecking(false)
+          }
+        })
+        .catch((err) => console.log(err))
+    }
+  }, [id])
 
   const onFinish = (values) => {
     setLoading(true)
 
+    console.log(values)
+
     try {
-      // TODO api call
+      if (values.email !== linkEmail) throw new Error('Incorrect data')
+
+      LinkAPI.process(id, {
+        email: values.email,
+        password: values.password
+      })
+      // TODO update user
+      // TODO delete link
+
       router.push('/login')
     } catch (err) {
       setLoading(false)
       ErrorNotification(errors.internal, err)
     }
   }
+
+  if (checking)
+    return (
+      <Layout>
+        <Card bordered={false} className="Signup">
+          <Spin /> Loading
+        </Card>
+      </Layout>
+    )
 
   return (
     <Layout>

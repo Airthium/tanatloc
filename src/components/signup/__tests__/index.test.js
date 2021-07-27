@@ -25,12 +25,8 @@ jest.mock('@/components/assets/notification', () => ({
 
 jest.mock('@/components/loading', () => () => <div />)
 
-const mockLogin = jest.fn()
-jest.mock('@/api/login', () => async () => mockLogin())
-
 const mockUser = jest.fn()
 const mockLoading = jest.fn()
-const mockMutate = jest.fn()
 const mockAdd = jest.fn()
 const mockErrorUser = jest.fn()
 jest.mock('@/api/user', () => ({
@@ -38,7 +34,6 @@ jest.mock('@/api/user', () => ({
     mockUser(),
     {
       loadingUser: mockLoading(),
-      mutateUser: mockMutate,
       errorUser: mockErrorUser()
     }
   ],
@@ -66,11 +61,8 @@ describe('components/signup', () => {
 
     mockUser.mockReset()
     mockLoading.mockReset()
-    mockMutate.mockReset()
     mockAdd.mockReset()
     mockErrorUser.mockReset()
-
-    mockLogin.mockReset()
 
     mockSystem.mockReset()
     mockSystem.mockImplementation(() => ({
@@ -142,8 +134,6 @@ describe('components/signup', () => {
     mockAdd.mockImplementation(() => ({ alreadyExists: false }))
     fireEvent.click(button)
     await waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(3))
-    await waitFor(() => expect(mockLogin).toHaveBeenCalledTimes(1))
-    await waitFor(() => expect(mockMutate).toHaveBeenCalledTimes(1))
     await waitFor(() => expect(mockPush).toHaveBeenCalledTimes(2))
 
     unmount()

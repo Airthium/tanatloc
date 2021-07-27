@@ -20,17 +20,25 @@ import { Error as ErrorNotification } from '@/components/assets/notification'
 
 import LinkAPI from '@/api/link'
 
+/**
+ * Errors
+ */
 const errors = {
   internal: 'Internal error, please try again later',
   passwordMismatch: 'Passwords mismatch'
 }
 
+/**
+ * Password recovery
+ */
 const PasswordRecovery = () => {
+  // State
   const [checking, setChecking] = useState(true)
   const [linkEmail, setLinkEmail] = useState()
   const [loading, setLoading] = useState(false)
   const router = useRouter()
 
+  // Id
   const { id } = router.query
 
   // Check link type
@@ -41,16 +49,20 @@ const PasswordRecovery = () => {
           if (res.type === PASSWORD_RECOVERY) {
             setLinkEmail(res.email)
             setChecking(false)
+          } else {
+            ErrorNotification('Wrong link')
           }
         })
-        .catch((err) => console.log(err))
+        .catch((err) => ErrorNotification(errors.internal, err))
     }
   }, [id])
 
+  /**
+   * On finish
+   * @param {Object} values Values { email, password, ... }
+   */
   const onFinish = async (values) => {
     setLoading(true)
-
-    console.log(values)
 
     try {
       if (values.email !== linkEmail) throw new Error('Incorrect data')
@@ -67,6 +79,9 @@ const PasswordRecovery = () => {
     }
   }
 
+  /**
+   * Render
+   */
   if (checking)
     return (
       <Layout>
@@ -75,10 +90,6 @@ const PasswordRecovery = () => {
         </Card>
       </Layout>
     )
-
-  /**
-   * Render
-   */
   return (
     <Layout>
       <Card bordered={false} className="Signup">

@@ -33,6 +33,11 @@ jest.mock('../../group', () => ({
   update: async () => mockUpdateGroup()
 }))
 
+const mockEmailSubscribe = jest.fn()
+jest.mock('../../email', () => ({
+  subscribe: async () => mockEmailSubscribe()
+}))
+
 describe('lib/user', () => {
   beforeEach(() => {
     mockGet.mockReset()
@@ -47,10 +52,13 @@ describe('lib/user', () => {
     mockDelWorkspace.mockReset()
 
     mockUpdateGroup.mockReset()
+
+    mockEmailSubscribe.mockReset()
   })
 
   test('add', async () => {
     const user = await User.add({ email: 'email', password: 'password' })
+    expect(mockEmailSubscribe).toHaveBeenCalledTimes(1)
     expect(user).toEqual({ id: 'id' })
   })
 

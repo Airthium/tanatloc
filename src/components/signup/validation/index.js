@@ -19,7 +19,7 @@ const Validation = () => {
 
   useEffect(() => {
     if (id) {
-      LinkAPI.get(id, ['type', 'userid'])
+      LinkAPI.get(id, ['type'])
         .then((res) => {
           if (res.type === SUBSCRIBE) {
             LinkAPI.process(id)
@@ -45,9 +45,11 @@ const Validation = () => {
           <Typography.Text>
             <Spin /> Validating...
           </Typography.Text>
-          <Typography.Text type="warning">
-            {!id && 'No link identifier detected'}
-          </Typography.Text>
+          {id && (
+            <Typography.Text type="warning">
+              'No link identifier detected'
+            </Typography.Text>
+          )}
         </Space>
       </Card>
     </Layout>

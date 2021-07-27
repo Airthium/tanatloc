@@ -1,6 +1,12 @@
 import { Card, Layout } from 'antd'
 
+/**
+ * Signup send
+ */
 const Send = () => {
+  /**
+   * Render
+   */
   return (
     <Layout>
       <Card bordered={false} className="Signup">

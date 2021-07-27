@@ -1,32 +1,66 @@
 import Email from '../'
 
+let mockStatus = 202
+let mockStatusText = 'Success'
 jest.mock('mailersend', () => ({
   __esModule: true,
   default: class {
-    send() {}
+    send() {
+      return { status: mockStatus, statusText: mockStatusText }
+    }
   },
   Recipient: class {},
   EmailParams: class mockEmailParams {
     setFrom() {
-      return {
-        setFromName: () => ({
-          setRecipients: () => ({
-            setSubject: () => ({
-              setHtml: () => {}
-            })
-          })
-        })
-      }
+      return this
+    }
+    setFromName() {
+      return this
+    }
+    setRecipients() {
+      return this
+    }
+    setSubject() {
+      return this
+    }
+    setTemplateId() {
+      return this
+    }
+    setPersonalization() {
+      return this
     }
   }
 }))
 
-jest.mock('@/config/email', () => ({
-  TOKEN: 'TOKEN'
+const mockLinkAdd = jest.fn()
+jest.mock('../../link', () => ({
+  add: async () => mockLinkAdd()
 }))
 
 describe('lib/email', () => {
-  test('subscribe', () => {
-    Email.subscribe('email', 'id')
+  beforeEach(() => {
+    mockLinkAdd.mockReset()
+    mockLinkAdd.mockImplementation(() => ({}))
+  })
+
+  test('subscribe', async () => {
+    await Email.subscribe('email', 'id')
+    expect(mockLinkAdd).toHaveBeenCalledTimes(1)
+  })
+
+  test('recover', async () => {
+    await Email.recover('email')
+    expect(mockLinkAdd).toHaveBeenCalledTimes(1)
+  })
+
+  test('send error', async () => {
+    mockStatus = 401
+    mockStatusText = 'Unauthorized'
+
+    try {
+      await Email.recover('email')
+    } catch (err) {
+      expect(err.message).toBe('Unauthorized')
+    }
   })
 })

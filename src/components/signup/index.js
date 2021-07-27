@@ -18,7 +18,6 @@ import { Error as ErrorNotification } from '@/components/assets/notification'
 
 import Loading from '@/components/loading'
 
-import login from '@/api/login'
 import UserAPI from '@/api/user'
 import SystemAPI from '@/api/system'
 
@@ -44,7 +43,7 @@ const Signup = () => {
   const [internalErr, setInternalError] = useState(false)
 
   // Data
-  const [user, { loadingUser, mutateUser, errorUser }] = UserAPI.useUser()
+  const [user, { loadingUser, errorUser }] = UserAPI.useUser()
   const [system, { errorSystem, loadingSystem }] = SystemAPI.useSystem()
 
   // Router

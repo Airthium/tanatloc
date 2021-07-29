@@ -3,7 +3,7 @@
 import MailerSend, { Recipient, EmailParams } from 'mailersend'
 
 import { DOMAIN } from '@/config/domain'
-import { TOKEN, SUBSCRIBE, PASSWORD_RECOVERY } from '@/config/email'
+import { TOKEN, SUBSCRIBE, PASSWORD_RECOVERY, REVALIDATE } from '@/config/email'
 
 import Link from '../link'
 
@@ -19,11 +19,11 @@ const send = async (email) => {
 /**
  * Subscribe
  * @param {string} email Email
- * @param {string} id User id
+ * @param {string} userid User id
  */
-const subscribe = async (email, id) => {
+const subscribe = async (email, userid) => {
   // Create link
-  const link = await Link.add({ type: SUBSCRIBE, email, userid: id })
+  const link = await Link.add({ type: SUBSCRIBE, email, userid })
 
   const subscribeLink = DOMAIN + '/signup/validation?id=' + link.id
 
@@ -74,5 +74,37 @@ const recover = async (email) => {
   await send(emailParams)
 }
 
-const Email = { subscribe, recover }
+/**
+ * Revalidate
+ * @param {string} email Email
+ * @param {string} userid User id
+ */
+const revalidate = async (email, userid) => {
+  // Create link
+  const link = await Link.add({ type: REVALIDATE, email, userid })
+
+  const subscribeLink = DOMAIN + '/signup/validation?id=' + link.id
+
+  const recipients = [new Recipient(email)]
+  const personalization = [
+    {
+      email,
+      data: {
+        subscribeLink
+      }
+    }
+  ]
+
+  const emailParams = new EmailParams()
+    .setFrom('noreply@tanatloc.com')
+    .setFromName('Tanatloc')
+    .setRecipients(recipients)
+    .setSubject('Validate your email')
+    .setTemplateId('jy7zpl9xq5l5vx6k')
+    .setPersonalization(personalization)
+
+  await send(emailParams)
+}
+
+const Email = { subscribe, recover, revalidate }
 export default Email

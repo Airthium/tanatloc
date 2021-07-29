@@ -10,9 +10,12 @@ const TOKEN = process.env.EMAIL_TOKEN || ''
 const SUBSCRIBE = 'subscribe'
 // PASSWORD RECOVERY
 const PASSWORD_RECOVERY = 'passwordRecovery'
+// REVALIDATE
+const REVALIDATE = 'revalidate'
 
 module.exports = {
   TOKEN,
   SUBSCRIBE,
-  PASSWORD_RECOVERY
+  PASSWORD_RECOVERY,
+  REVALIDATE
 }

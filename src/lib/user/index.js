@@ -14,8 +14,10 @@ import Email from '../email'
 const add = async ({ email, password }) => {
   const user = await UserDB.add({ email, password })
 
-  // Send email
-  await Email.subscribe(email, user.id)
+  if (!user.alreadyExists) {
+    // Send email
+    await Email.subscribe(email, user.id)
+  }
 
   return user
 }
@@ -79,6 +81,18 @@ const login = async ({ email, password }) => {
  * @param {Object} data Data [{ key, value, ... }, ...]
  */
 const update = async (user, data) => {
+  // Check email change
+  const emailData = data.find((d) => d.key === 'email')
+  if (emailData) {
+    // Revalidate email
+    Email.revalidate(emailData.value, user.id)
+
+    data.push({
+      key: 'isvalidated',
+      value: false
+    })
+  }
+
   await UserDB.update(user, data)
 }
 

@@ -1,6 +1,3 @@
-Simulation:
-- weak coupling
-
 Rescale:
 - delete job & files after run and get data
 

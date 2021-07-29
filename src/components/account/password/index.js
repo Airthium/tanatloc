@@ -3,7 +3,10 @@ import { useState } from 'react'
 import { notification, Button, Card, Form, Input, Space } from 'antd'
 
 import { PasswordItem } from '@/components/assets/input'
-import { Error } from '@/components/assets/notification'
+import {
+  Success as SuccessNotification,
+  Error as ErrorNotification
+} from '@/components/assets/notification'
 
 import UserAPI from '@/api/user'
 
@@ -63,11 +66,13 @@ const Password = ({ user }) => {
             value: data.newPassword
           }
         ])
+
+        SuccessNotification('Your password has been changed successefully')
       } else {
         notification.error({ message: errors.invalid })
       }
     } catch (err) {
-      Error(errors.update, err)
+      ErrorNotification(errors.update, err)
     } finally {
       setLoading(false)
     }

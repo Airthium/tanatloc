@@ -1,6 +1,14 @@
 import PropTypes from 'prop-types'
 import { Form, Input } from 'antd'
 
+import {
+  MIN_SIZE,
+  MAX_SIZE,
+  REQUIRE_LETTER,
+  REQUIRE_NUMBER,
+  REQUIRE_SYMBOL
+} from '@/config/auth'
+
 import SystemAPI from '@/api/system'
 
 const errors = {
@@ -40,6 +48,24 @@ const PasswordItem = ({
   const [system] = SystemAPI.useSystem()
 
   /**
+   * Check min
+   * @param {string} value Value
+   */
+  const checkMin = (value) => {
+    if (value.length < (system?.password?.min || MIN_SIZE)) return false
+    return true
+  }
+
+  /**
+   * Check max
+   * @param {string} value Value
+   */
+  const checkMax = (value) => {
+    if (value.length > (system?.password?.max || MAX_SIZE)) return false
+    return true
+  }
+
+  /**
    * Check regex
    * @param {string} value Value
    * @param {RegExp} regex Regex
@@ -54,7 +80,8 @@ const PasswordItem = ({
    * @param {string} value Value
    */
   const requireLetter = (value) => {
-    if (system?.password?.requireLetter) return checkRegex(value, /[a-zA-Z]/)
+    if (system?.password?.requireLetter || REQUIRE_LETTER)
+      return checkRegex(value, /[a-zA-Z]/)
     return true
   }
 
@@ -63,7 +90,8 @@ const PasswordItem = ({
    * @param {string} value Value
    */
   const requireNumber = (value) => {
-    if (system?.password?.requireNumber) return checkRegex(value, /[0-9]/)
+    if (system?.password?.requireNumber || REQUIRE_NUMBER)
+      return checkRegex(value, /[0-9]/)
     return true
   }
 
@@ -72,9 +100,33 @@ const PasswordItem = ({
    * @param {string} value Value
    */
   const requireSymbol = (value) => {
-    if (system?.password?.requireNumber)
+    if (system?.password?.requireNumber || REQUIRE_SYMBOL)
       return checkRegex(value, /[!@#$%^&*(){}[\]<>?/|.:;_-]/)
     return true
+  }
+
+  /**
+   * Check size
+   * @param {string} value Value
+   * @param {Array} err Errors
+   */
+  const checkSize = (value, err) => {
+    if (!checkMin(value)) err.push(errors.passwordTooSmall)
+
+    if (!checkMax(value)) err.push(errors.passwordTooLong)
+  }
+
+  /**
+   * Check format
+   * @param {string} value Value
+   * @param {Array} err Errors
+   */
+  const checkFormat = (value, err) => {
+    if (!requireLetter(value)) err.push(errors.passwordRequireLetter)
+
+    if (!requireNumber(value)) err.push(errors.passwordRequireNumber)
+
+    if (!requireSymbol(value)) err.push(errors.passwordRequireSymbol)
   }
 
   /**
@@ -93,17 +145,8 @@ const PasswordItem = ({
             const err = []
             if (edit && value === '******') return Promise.resolve()
 
-            if (value.length < (system?.password?.min || 6))
-              err.push(errors.passwordTooSmall)
-
-            if (value.length > (system?.password?.max || 16))
-              err.push(errors.passwordTooLong)
-
-            if (!requireLetter(value)) err.push(errors.passwordRequireLetter)
-
-            if (!requireNumber(value)) err.push(errors.passwordRequireNumber)
-
-            if (!requireSymbol(value)) err.push(errors.passwordRequireSymbol)
+            checkSize(value, err)
+            checkFormat(value, err)
 
             if (err.length) return Promise.reject(err.join(' - '))
             else return Promise.resolve()

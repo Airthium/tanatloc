@@ -3,7 +3,10 @@ import { useState } from 'react'
 import { Avatar, Button, Card, Form, Input, Space, Upload } from 'antd'
 import { UploadOutlined, UserOutlined } from '@ant-design/icons'
 
-import { Error as ErrorNotification } from '@/components/assets/notification'
+import {
+  Success as SuccessNotification,
+  Error as ErrorNotification
+} from '@/components/assets/notification'
 
 import UserAPI from '@/api/user'
 import AvatarAPI from '@/api/avatar'
@@ -56,13 +59,18 @@ const Information = ({ user, swr }) => {
     setLoading(true)
 
     try {
+      let revalidate = false
       const toUpdate = []
       if (data.firstname !== user.firstname)
         toUpdate.push({ key: 'firstname', value: data.firstname })
       if (data.lastname !== user.lastname)
         toUpdate.push({ key: 'lastname', value: data.lastname })
-      if (data.email !== user.email)
+      if (data.email !== user.email) {
+        revalidate = true
         toUpdate.push({ key: 'email', value: data.email })
+      }
+
+      if (!toUpdate.length) return
 
       // Update
       await UserAPI.update(toUpdate)
@@ -73,6 +81,13 @@ const Information = ({ user, swr }) => {
         lastname: data.lastname,
         email: data.email
       })
+
+      if (revalidate)
+        SuccessNotification(
+          'Changes saved',
+          'Please revalidate your email before your next login'
+        )
+      else SuccessNotification('Changes saved')
     } catch (err) {
       ErrorNotification(errors.update, err)
     } finally {

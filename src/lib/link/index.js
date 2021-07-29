@@ -1,4 +1,4 @@
-import { SUBSCRIBE, PASSWORD_RECOVERY } from '@/config/email'
+import { SUBSCRIBE, PASSWORD_RECOVERY, REVALIDATE } from '@/config/email'
 
 import LinkDB from '@/database/link'
 
@@ -15,7 +15,7 @@ const get = async (id, data) => {
 const process = async (id, data) => {
   const link = await get(id, ['type', 'email', 'userid'])
 
-  if (link.type === SUBSCRIBE) {
+  if (link.type === SUBSCRIBE || link.type === REVALIDATE) {
     // Update user
     await UserLib.update({ id: link.userid }, [
       {

@@ -3,7 +3,10 @@ import { Button, Card, Checkbox, Form, InputNumber, Space } from 'antd'
 import { CheckOutlined } from '@ant-design/icons'
 
 import Loading from '@/components/loading'
-import { Error as ErrorNotification } from '@/components/assets/notification'
+import {
+  Success as SuccessNotification,
+  Error as ErrorNotification
+} from '@/components/assets/notification'
 
 import SystemAPI from '@/api/system'
 
@@ -67,6 +70,8 @@ const Registration = () => {
 
       // Mutate
       mutateSystem({ password: values })
+
+      SuccessNotification('Changes saved')
     } catch (err) {
       ErrorNotification(errors.update, err)
     }

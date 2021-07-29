@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import { useRouter } from 'next/router'
 import { Card, Layout, Space, Spin, Typography } from 'antd'
 
-import { SUBSCRIBE } from '@/config/email'
+import { SUBSCRIBE, REVALIDATE } from '@/config/email'
 
 import { Error as ErrorNotification } from '@/components/assets/notification'
 
@@ -21,7 +21,7 @@ const Validation = () => {
     if (id) {
       LinkAPI.get(id, ['type'])
         .then((res) => {
-          if (res.type === SUBSCRIBE) {
+          if (res.type === SUBSCRIBE || res.type === REVALIDATE) {
             LinkAPI.process(id)
               .then(() => {
                 router.push('/login')

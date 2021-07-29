@@ -105,22 +105,19 @@ describe('components/assets/input/password', () => {
     // Numbers only
     fireEvent.change(input, { target: { value: '12345678' } })
     fireEvent.click(button)
-    await waitFor(() => expect(onFinish).toHaveBeenCalledTimes(1))
 
     // Letters only
     fireEvent.change(input, { target: { value: 'abcdefgh' } })
     fireEvent.click(button)
-    await waitFor(() => expect(onFinish).toHaveBeenCalledTimes(2))
 
     // Letters and numbers
     fireEvent.change(input, { target: { value: 'abcd1234' } })
     fireEvent.click(button)
-    await waitFor(() => expect(onFinish).toHaveBeenCalledTimes(3))
 
     // Ok
     fireEvent.change(input, { target: { value: 'abcd1234&' } })
     fireEvent.click(button)
-    await waitFor(() => expect(onFinish).toHaveBeenCalledTimes(4))
+    await waitFor(() => expect(onFinish).toHaveBeenCalledTimes(1))
 
     unmount()
   })

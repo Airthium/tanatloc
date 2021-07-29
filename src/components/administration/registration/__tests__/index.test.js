@@ -9,6 +9,7 @@ jest.mock('@/components/loading', () => ({
 
 const mockError = jest.fn()
 jest.mock('@/components/assets/notification', () => ({
+  Success: () => {},
   Error: () => mockError()
 }))
 

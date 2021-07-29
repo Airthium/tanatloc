@@ -13,6 +13,7 @@ jest.mock('@/components/assets/input', () => {
 
 const mockError = jest.fn()
 jest.mock('@/components/assets/notification', () => ({
+  Success: () => {},
   Error: () => mockError()
 }))
 

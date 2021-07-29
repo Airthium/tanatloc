@@ -5,6 +5,7 @@ import Information from '..'
 
 const mockError = jest.fn()
 jest.mock('@/components/assets/notification', () => ({
+  Success: () => {},
   Error: () => mockError()
 }))
 
@@ -65,20 +66,25 @@ describe('components/account/information', () => {
     const { unmount } = render(<Information user={user} swr={swr} />)
     const button = screen.getByRole('button', { name: 'Apply changes' })
 
+    // No changes
+    fireEvent.click(button)
+
     // Error
     mockUpdate.mockImplementation(() => {
       throw new Error()
     })
+    // Fill form
+    const email = screen.getByLabelText('Email')
+    fireEvent.change(email, { target: { value: 'email' } })
+
     fireEvent.click(button)
     await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
     await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
 
     // Fill form
-    const email = screen.getByLabelText('Email')
     const firstName = screen.getByLabelText('First name')
     const lastName = screen.getByLabelText('Last name')
 
-    fireEvent.change(email, { target: { value: 'email' } })
     fireEvent.change(firstName, { target: { value: 'first name' } })
     fireEvent.change(lastName, { target: { value: 'last name' } })
 

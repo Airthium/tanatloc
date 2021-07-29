@@ -47,7 +47,7 @@ const Validation = () => {
           </Typography.Text>
           {id && (
             <Typography.Text type="warning">
-              'No link identifier detected'
+              No link identifier detected
             </Typography.Text>
           )}
         </Space>

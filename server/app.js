@@ -5,6 +5,7 @@ import express, { json, urlencoded } from 'express'
 import cors from 'cors'
 
 import avatar from '@/route/avatar'
+import email from '@/route/email'
 import geometries from '@/route/geometries'
 import geometry from '@/route/geometry'
 import geometryId from '@/route/geometry/[id]'
@@ -13,6 +14,7 @@ import geometryPart from '@/route/geometry/[id]/part'
 import group from '@/route/group'
 import groups from '@/route/groups'
 import groupsId from '@/route/groups/[id]'
+import link from '@/route/link'
 import organization from '@/route/organization'
 import organizations from '@/route/organizations'
 import plugin from '@/route/plugin'
@@ -47,6 +49,8 @@ app.use(urlencoded({ extended: false, limit: '150mb' }))
 
 app.all('/api/avatar', avatar)
 
+app.all('/api/email', email)
+
 app.all('/api/geometries', geometries)
 
 app.all('/api/geometry', geometry)
@@ -58,6 +62,8 @@ app.all('/api/group', group)
 
 app.all('/api/groups', groups)
 app.all('/api/group/:id', groupsId)
+
+app.all('/api/link', link)
 
 app.all('/api/organization', organization)
 app.all('/api/organizations', organizations)

@@ -1,12 +1,14 @@
 import PropTypes from 'prop-types'
 import { useState } from 'react'
-import { Avatar, Button, Card, Form, Input, Space, Upload } from 'antd'
+import { Avatar, Button, Card, Form, Space, Typography, Upload } from 'antd'
 import { UploadOutlined, UserOutlined } from '@ant-design/icons'
 
 import {
   Success as SuccessNotification,
   Error as ErrorNotification
 } from '@/components/assets/notification'
+
+import Utils from '@/lib/utils'
 
 import UserAPI from '@/api/user'
 import AvatarAPI from '@/api/avatar'
@@ -28,78 +30,12 @@ const errors = {
  */
 const Information = ({ user, swr }) => {
   // State
-  const [loading, setLoading] = useState(false)
   const [uploading, setUploading] = useState(false)
-
-  // Form
-  const [form] = Form.useForm()
 
   // Layout
   const layout = {
-    layout: 'vertical',
     labelCol: { span: 4 },
     wrapperCol: { span: 16 }
-  }
-  const avatarLayout = {
-    wrapperCol: { offset: 4, span: 16 }
-  }
-  const inputLayout = {
-    labelCol: { offset: 4 },
-    wrapperCol: { offset: 4, span: 16 }
-  }
-  const buttonLayout = {
-    wrapperCol: { offset: 4 }
-  }
-
-  /**
-   * On finish
-   * @param {Object} data Data
-   */
-  const onFinish = async (data) => {
-    setLoading(true)
-
-    try {
-      let revalidate = false
-      const toUpdate = []
-      if (data.firstname !== user.firstname)
-        toUpdate.push({ key: 'firstname', value: data.firstname })
-      if (data.lastname !== user.lastname)
-        toUpdate.push({ key: 'lastname', value: data.lastname })
-      if (data.email !== user.email) {
-        revalidate = true
-        toUpdate.push({ key: 'email', value: data.email })
-      }
-
-      if (!toUpdate.length) return
-
-      // Update
-      await UserAPI.update(toUpdate)
-
-      // Mutate user
-      swr.mutateUser({
-        firstname: data.firstname,
-        lastname: data.lastname,
-        email: data.email
-      })
-
-      if (revalidate)
-        SuccessNotification(
-          'Changes saved',
-          'Please revalidate your email before your next login'
-        )
-      else SuccessNotification('Changes saved')
-    } catch (err) {
-      ErrorNotification(errors.update, err)
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  /**
-   * On cancel
-   */
-  const onCancel = () => {
-    form.resetFields()
   }
 
   /**
@@ -165,64 +101,137 @@ const Information = ({ user, swr }) => {
   }
 
   /**
+   * On firstname
+   * @param {string} value Value
+   */
+  const onFirstName = async (value) => {
+    try {
+      // API
+      await UserAPI.update([
+        {
+          key: 'firstname',
+          value
+        }
+      ])
+
+      // Local
+      swr.mutateUser({
+        firstname: value
+      })
+
+      SuccessNotification('Change saved')
+    } catch (err) {
+      ErrorNotification(errors.update, err)
+    }
+  }
+
+  /**
+   * On lastname
+   * @param {string} value Value
+   */
+  const onLastName = async (value) => {
+    try {
+      // API
+      await UserAPI.update([
+        {
+          key: 'lastname',
+          value
+        }
+      ])
+
+      // Local
+      swr.mutateUser({
+        lastname: value
+      })
+
+      SuccessNotification('Change saved')
+    } catch (err) {
+      ErrorNotification(errors.update, err)
+    }
+  }
+
+  /**
+   * On email
+   * @param {string} value Value
+   */
+  const onEmail = async (value) => {
+    try {
+      // Check email
+      if (!Utils.validateEmail(value))
+        throw new Error('Email address wrong format')
+
+      // API
+      await UserAPI.update([
+        {
+          key: 'email',
+          value
+        }
+      ])
+
+      // Local
+      swr.mutateUser({
+        email: value
+      })
+
+      SuccessNotification(
+        'Changes saved',
+        'A validation email has been send to ' + value
+      )
+    } catch (err) {
+      ErrorNotification(errors.update, err)
+    }
+  }
+
+  /**
    * Render
    */
   return (
     <Card title="Contact Details">
-      <Form
-        {...layout}
-        form={form}
-        initialValues={{
-          firstname: user.firstname,
-          lastname: user.lastname,
-          email: user.email
-        }}
-        onFinish={onFinish}
-      >
-        <Form.Item {...avatarLayout}>
-          <Space direction="vertical" className="Account-avatar">
-            <Avatar
-              size={128}
-              src={user.avatar && Buffer.from(user.avatar).toString()}
-              icon={<UserOutlined />}
-            />
-            <Upload
-              accept={'.jpg,.png'}
-              showUploadList={false}
-              beforeUpload={beforeUpload}
-              onChange={onChange}
-            >
-              <Button
-                size="small"
-                icon={<UploadOutlined />}
-                loading={uploading}
+      <Space direction="horizontal" className="Account">
+        <Space direction="vertical">
+          <Avatar
+            size={128}
+            src={user.avatar && Buffer.from(user.avatar).toString()}
+            icon={<UserOutlined />}
+          />
+          <Upload
+            accept={'.jpg,.png'}
+            showUploadList={false}
+            beforeUpload={beforeUpload}
+            onChange={onChange}
+          >
+            <Button size="small" icon={<UploadOutlined />} loading={uploading}>
+              Upload new
+            </Button>
+          </Upload>
+        </Space>
+        <Space direction="vertical" style={{ width: '100%' }}>
+          <Form {...layout}>
+            <Form.Item label="Email">
+              <Typography.Text
+                editable={{
+                  onChange: onEmail,
+                  icon: 'Modify your email'
+                }}
               >
-                Upload new
-              </Button>
-            </Upload>
-          </Space>
-        </Form.Item>
+                {user.email}
+              </Typography.Text>
+            </Form.Item>
 
-        <Form.Item {...inputLayout} label="Email" name="email">
-          <Input />
-        </Form.Item>
-        <Form.Item {...inputLayout} label="First name" name="firstname">
-          <Input />
-        </Form.Item>
-        <Form.Item {...inputLayout} label="Last name" name="lastname">
-          <Input />
-        </Form.Item>
-        <Form.Item {...buttonLayout}>
-          <Space direction="">
-            <Button type="primary" htmlType="submit" loading={loading}>
-              Apply changes
-            </Button>
-            <Button type="text" onClick={onCancel}>
-              Cancel
-            </Button>
-          </Space>
-        </Form.Item>
-      </Form>
+            <Form.Item label="First name">
+              <Typography.Text editable={{ onChange: onFirstName }}>
+                {user.firstname}
+              </Typography.Text>
+            </Form.Item>
+
+            <Form.Item label="Last name">
+              <Typography.Text editable={{ onChange: onLastName }}>
+                {user.lastname}
+              </Typography.Text>
+            </Form.Item>
+          </Form>
+        </Space>
+      </Space>
     </Card>
   )
 }

@@ -87,6 +87,10 @@ const userToAvatar = (user) => {
   )
 }
 
+/**
+ * Group to avatar
+ * @param {Object} group Group
+ */
 const groupToAvatar = (group) => {
   let name = group.name
   let abbrev = ''
@@ -100,11 +104,23 @@ const groupToAvatar = (group) => {
   )
 }
 
+/**
+ * Validate email
+ * @param {string} email Email
+ * @returns {bool} Valid
+ */
+const validateEmail = (email) => {
+  const re =
+    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+  return re.test(email.toLowerCase())
+}
+
 const Utils = {
   stringToColor,
   rgbToHex,
   rgbToRgba,
   userToAvatar,
-  groupToAvatar
+  groupToAvatar,
+  validateEmail
 }
 export default Utils

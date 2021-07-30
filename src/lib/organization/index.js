@@ -6,6 +6,7 @@ import OrganizationDB from '@/database/organization'
 
 import User from '../user'
 import Group from '../group'
+import Email from '../email'
 
 /**
  * Add organization
@@ -125,8 +126,12 @@ const getByUser = async (user, data) => {
  * Update
  * @param {Object} organization Organization
  * @param {Array} data Data
+ * @param {string} ownerId Owner id
  */
-const update = async (organization, data) => {
+const update = async (organization, data, ownerId) => {
+  // Get owner
+  const owner = await User.get(ownerId, ['firstname', 'lastname', 'email'])
+
   // Check for emails
   const newData = await Promise.all(
     data.map(async (d) => {
@@ -148,7 +153,8 @@ const update = async (organization, data) => {
           d.value = user.id
         }
 
-        // TODO send email ?
+        // Send email
+        await Email.invite(email, owner)
 
         await User.update({ id: user.id }, [
           {

@@ -106,5 +106,39 @@ const revalidate = async (email, userid) => {
   await send(emailParams)
 }
 
-const Email = { subscribe, recover, revalidate }
+/**
+ * Invite
+ * @param {string} email Email
+ * @param {string} user Sending user
+ */
+const invite = async (email, user) => {
+  const subscribeLink = DOMAIN + '/login'
+
+  const recipients = [new Recipient(email)]
+  let userName = ''
+  if (user.firstname || user.lastname)
+    userName = user.firstname + ' ' + user.lastname
+  else userName = user.email
+  const personalization = [
+    {
+      email,
+      data: {
+        user: userName,
+        subscribeLink
+      }
+    }
+  ]
+
+  const emailParams = new EmailParams()
+    .setFrom('noreply@tanatloc.com')
+    .setFromName('Tanatloc')
+    .setRecipients(recipients)
+    .setSubject('Your have been invited')
+    .setTemplateId('jy7zpl9x95l5vx6k')
+    .setPersonalization(personalization)
+
+  await send(emailParams)
+}
+
+const Email = { subscribe, recover, revalidate, invite }
 export default Email

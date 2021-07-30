@@ -58,6 +58,7 @@ const Add = ({ title, organization, dBkey, swr }) => {
       swr.mutateOneOrganization(newOrganization)
 
       // Close
+      setLoading(false)
       setVisible(false)
     } catch (err) {
       ErrorNotification(errors.addError, err)

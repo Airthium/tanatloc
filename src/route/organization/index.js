@@ -32,7 +32,11 @@ export default async (req, res) => {
           return
         }
 
-        await OrganizationLib.update({ id: req.body.id }, req.body.data)
+        await OrganizationLib.update(
+          { id: req.body.id },
+          req.body.data,
+          sessionId
+        )
         res.status(200).end()
       } catch (err) {
         console.error(err)

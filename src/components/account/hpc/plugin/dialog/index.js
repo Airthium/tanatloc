@@ -55,7 +55,11 @@ const PluginDialog = ({ plugin, swr, edit }) => {
           }
         ]}
       >
-        <Input id={'input-' + key} autoComplete="off" />
+        <Input
+          id={'input-' + key}
+          defaultValue={item.default}
+          autoComplete="off"
+        />
       </Form.Item>
     )
   }

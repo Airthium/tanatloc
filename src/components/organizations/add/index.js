@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
 import { useState } from 'react'
-import { Button, Form, Input, Typography } from 'antd'
+import { Button, Form, Input } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
 
 import Dialog from '@/components/assets/dialog'
@@ -63,9 +63,6 @@ const Add = ({ swr }) => {
         onOk={onAdd}
         loading={loading}
       >
-        <Form.Item>
-          <Typography.Title level={5}>New organization</Typography.Title>
-        </Form.Item>
         <Form.Item
           name="name"
           label="Name"

@@ -4,6 +4,7 @@ import {
   Button,
   Card,
   Form,
+  Input,
   InputNumber,
   Modal,
   Radio,
@@ -172,6 +173,9 @@ const Rescale = ({ data, onSelect }) => {
             freefemVersion: {
               value: freefem.label,
               id: freefem.value
+            },
+            walltime: {
+              value: values.walltime
             }
           }
         })
@@ -273,6 +277,7 @@ const Rescale = ({ data, onSelect }) => {
         }}
         onOk={onOk}
         maskClosable={false}
+        width="80%"
       >
         {step === 1 && (
           <Space direction="vertical" style={{ width: '100%' }}>
@@ -307,7 +312,8 @@ const Rescale = ({ data, onSelect }) => {
               initialValues={{
                 lowPriority: true,
                 numberOfCores: selected.fullCores[0],
-                version: options[0].value
+                version: options[0].value,
+                walltime: data.walltime
               }}
               onValuesChange={onValuesChange}
             >
@@ -351,6 +357,16 @@ const Rescale = ({ data, onSelect }) => {
                 ]}
               >
                 <Select id="version" options={options}></Select>
+              </Form.Item>
+              <Form.Item
+                name="walltime"
+                label="Walltime"
+                htmlFor="walltime"
+                rules={[
+                  { required: true, message: '"FreeFEM version" is required' }
+                ]}
+              >
+                <Input id="walltime" />
               </Form.Item>
             </Form>
           </Space>

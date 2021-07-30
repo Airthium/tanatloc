@@ -126,7 +126,9 @@ const createJob = async (
   const lowPriority = parameters.lowPriority.value
   const numberOfCores = parameters.numberOfCores.value
   const freefemVersion = parameters.freefemVersion.value
+  const walltime = parameters.walltime?.value
 
+  const defaultWalltime = configuration.walltime?.value || 48
   const additionalFiles = configuration.additionalFiles.value || ''
 
   const inputFiles = [
@@ -158,7 +160,8 @@ const createJob = async (
           },
           hardware: {
             coreType: coreType,
-            coresPerSlot: numberOfCores
+            coresPerSlot: numberOfCores,
+            walltime: walltime || defaultWalltime
           },
           command: command,
           inputFiles: inputFiles

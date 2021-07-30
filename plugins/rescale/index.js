@@ -24,6 +24,11 @@ const Rescale = {
       type: 'select',
       options: ['platform.rescale.com', 'eu.rescale.com', 'platform.rescale.jp']
     },
+    walltime: {
+      label: 'Default walltime (hours)',
+      type: 'input',
+      default: '48'
+    },
     organization: {
       label: 'Organization name',
       type: 'input'
@@ -39,7 +44,9 @@ const Rescale = {
   },
   needInit: true,
   data: {
-    coreTypes: []
+    coreTypes: [],
+    freefem: {},
+    walltime: 48
   },
   renderer: Renderer,
   inUseConfiguration: {
@@ -54,6 +61,9 @@ const Rescale = {
     },
     freefemVersion: {
       label: 'FreeFEM version'
+    },
+    walltime: {
+      label: 'Walltime'
     }
   }
 }

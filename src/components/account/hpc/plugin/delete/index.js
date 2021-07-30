@@ -58,7 +58,7 @@ const Delete = ({ plugin, swr }) => {
 
 Delete.propTypes = {
   plugin: PropTypes.exact({
-    id: PropTypes.string.isRequired,
+    uuid: PropTypes.string.isRequired,
     configuration: PropTypes.object.isRequired
   }).isRequired,
   swr: PropTypes.exact({

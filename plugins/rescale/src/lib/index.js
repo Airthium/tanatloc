@@ -57,7 +57,8 @@ const init = async (configuration) => {
   return {
     data: {
       coreTypes: coreTypes.results,
-      freefem: freefem
+      freefem: freefem,
+      walltime: configuration.walltime.value
     }
   }
 }

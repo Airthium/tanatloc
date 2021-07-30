@@ -124,7 +124,7 @@ Edit.propTypes = {
     firstname: PropTypes.string,
     lastname: PropTypes.string,
     email: PropTypes.string.isRequired,
-    authorizedplugins: PropTypes.arry,
+    authorizedplugins: PropTypes.array,
     superuser: PropTypes.bool
   }).isRequired,
   swr: PropTypes.exact({

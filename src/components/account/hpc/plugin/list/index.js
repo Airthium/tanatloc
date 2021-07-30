@@ -46,7 +46,7 @@ const List = ({ plugin, plugins, swr }) => {
             <Delete
               key="delete"
               plugin={{
-                id: p.id,
+                uuid: p.uuid,
                 configuration: p.configuration
               }}
               swr={{ delOnePlugin: swr.delOnePlugin }}

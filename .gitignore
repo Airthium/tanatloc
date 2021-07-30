@@ -8,6 +8,9 @@
 # Install
 dist-install
 
+# Updaters
+dist-updaters
+
 # testing
 /coverage
 

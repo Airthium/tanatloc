@@ -92,7 +92,7 @@
     "rimraf": "3.0.2",
     "set-interval-async": "2.0.3",
     "swr": "0.5.6",
-    "three": "0.131.0",
+    "three": "0.131.1",
     "three-to-glb": "./modules/three-to-glb",
     "url-join": "4.0.1",
     "uuid": "8.3.2"

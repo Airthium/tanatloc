@@ -108,13 +108,13 @@ const get = async (id, data, withData = true) => {
  * @param {Object} data Data [{ key, value, ...}, ...]
  */
 const update = async (project, data) => {
-  // Get data
-  const projectData = await get(project.id, ['groups'])
-  if (!projectData.groups) projectData.groups = []
-
   // Check groups
   const groupsUpdate = data.find((d) => d.key === 'groups' && !d.type)
   if (groupsUpdate) {
+    // Get data
+    const projectData = await get(project.id, ['groups'])
+    if (!projectData.groups) projectData.groups = []
+
     // Delete groups
     const deleted = projectData.groups.filter(
       (g) => !groupsUpdate.value.includes(g.id)

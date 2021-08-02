@@ -220,7 +220,7 @@ const del = async (organization) => {
   organizationData.groups &&
     (await Promise.all(
       organizationData.groups.map(async (group) => {
-        await Group.del(group)
+        await Group.del({ id: group })
       })
     ))
 

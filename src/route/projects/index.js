@@ -42,6 +42,7 @@ export default async (req, res) => {
               'simulations',
               'workspace'
             ])
+            if (!project) return
 
             const workspaceAuth = await WorkspaceLib.get(project.workspace, [
               'owners',
@@ -55,7 +56,7 @@ export default async (req, res) => {
             return project
           } catch (err) {
             console.warn(err)
-            return null
+            return
           }
         })
       )

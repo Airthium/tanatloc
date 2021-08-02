@@ -32,6 +32,7 @@
     "updaters-build": "babel . --only config,plugins,src/database,src/lib,src/services,templates,updaters --out-dir dist-updaters",
     "start": "NODE_OPTIONS=\"--max_old_space_size=8192\" next start",
     "test": "jest --coverage --silent",
+    "teste2e": "jest src/__tests__/e2e/* --coverage --silent",
     "workflow": ".github/workflows/node.local.sh"
   },
   "dependencies": {

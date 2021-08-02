@@ -66,8 +66,8 @@ const Background = () => {
       const material = new MeshBasicMaterial({
         color: rand * 0x0096c7 + (1 - rand) * 0xffffff,
         wireframe: true,
-        transparent: false,
-        opacity: 0.2
+        transparent: Math.random() > 0.5,
+        opacity: Math.random()
       })
 
       const geometry = new TetrahedronGeometry(

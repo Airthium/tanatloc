@@ -54,7 +54,10 @@ const List = ({ plugin, plugins, swr }) => {
             <PluginDialog
               key="plugin"
               plugin={{
+                uuid: p.uuid,
+                key: p.key,
                 name: p.name,
+                needInit: p.needInit,
                 configuration: p.configuration
               }}
               swr={{ mutateOnePlugin: swr.mutateOnePlugin }}

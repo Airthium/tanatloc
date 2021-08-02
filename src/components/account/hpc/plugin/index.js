@@ -49,7 +49,10 @@ const Plugin = ({ plugin }) => {
     <Space direction="vertical" style={{ width: '100%' }}>
       <PluginDialog
         plugin={{
+          uuid: plugin.uuid,
+          key: plugin.key,
           name: plugin.name,
+          needInit: plugin.needInit,
           configuration: plugin.configuration
         }}
         swr={{ addOnePlugin }}

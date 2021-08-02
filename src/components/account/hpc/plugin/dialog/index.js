@@ -209,7 +209,10 @@ const PluginDialog = ({ plugin, swr, edit }) => {
 
 PluginDialog.propTypes = {
   plugin: PropTypes.exact({
+    uuid: PropTypes.string.isRequired,
+    key: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
+    needInit: PropTypes.bool,
     configuration: PropTypes.object.isRequired
   }).isRequired,
   swr: PropTypes.exact({

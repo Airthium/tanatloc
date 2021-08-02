@@ -13,7 +13,7 @@ const mailerSend = new MailerSend({
 
 const send = async (email) => {
   const res = await mailerSend.send(email)
-  if (res.status !== 202) throw new Error(res.statusText)
+  if (res.status !== 202) throw new Error('Mail error: ' + res.statusText)
 }
 
 /**

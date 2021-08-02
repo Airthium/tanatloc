@@ -24,6 +24,20 @@ export default async (req, res) => {
     case 'POST':
       // Add geometry
       try {
+        // Check
+        if (
+          !req.body ||
+          !req.body.project ||
+          !req.body.project.id ||
+          !req.body.geometry ||
+          !req.body.geometry.name ||
+          !req.body.geometry.uid ||
+          !req.body.geometry.buffer
+        )
+          throw new Error(
+            'Missing data in your request (body: { project: { id(uuid) }, geometry: { name(string), uid(uuid), buffer(string) } })'
+          )
+
         const geometry = await GeometryLib.add(req.body)
         res.status(200).json(geometry)
       } catch (err) {

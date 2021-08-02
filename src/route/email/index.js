@@ -10,11 +10,15 @@ import Sentry from '@/lib/sentry'
 export default async (req, res) => {
   if (req.method === 'PUT') {
     try {
-      const { type } = req.body
+      // Check
+      if (!req.body || !req.body.type || !req.body.email)
+        throw new Error(
+          'Missing data in your request (body: { email(string), type(string) }'
+        )
+
+      const { email, type } = req.body
 
       if (type === PASSWORD_RECOVERY) {
-        const { email } = req.body
-
         // Check if user exists
         const existingUser = await UserLib.getBy(email, [], 'email')
         if (existingUser) await EmailLib.recover(email)

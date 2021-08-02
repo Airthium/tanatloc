@@ -28,16 +28,6 @@ const add = async ({ project, geometry }) => {
       Buffer.from(geometry.buffer).toString()
     )
 
-    // Add geometry reference in project
-    await Project.update(project, [
-      {
-        type: 'array',
-        method: 'append',
-        key: 'geometries',
-        value: geometryData.id
-      }
-    ])
-
     // Convert
     const part = await Tools.convert(storage.GEOMETRY, {
       name: geometryData.uploadfilename,
@@ -121,6 +111,16 @@ const add = async ({ project, geometry }) => {
       {
         key: 'summary',
         value: JSON.stringify(summary)
+      }
+    ])
+
+    // Add geometry reference in project
+    await Project.update(project, [
+      {
+        type: 'array',
+        method: 'append',
+        key: 'geometries',
+        value: geometryData.id
       }
     ])
 

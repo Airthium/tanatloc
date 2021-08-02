@@ -51,6 +51,9 @@ describe('e2e/avatar', () => {
       return {
         json: (object) => {
           resJson = object
+        },
+        end: () => {
+          resJson = 'end'
         }
       }
     }

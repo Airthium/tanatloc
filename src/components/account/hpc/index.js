@@ -38,7 +38,9 @@ const HPC = ({ user }) => {
               plugin={{
                 key: plugin.key,
                 name: plugin.name,
-                configuration: plugin.configuration
+                needInit: !!plugin.needInit,
+                configuration: plugin.configuration,
+                inUseConfiguration: plugin.inUseConfiguration
               }}
             />
           </Card>

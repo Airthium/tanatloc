@@ -53,7 +53,8 @@ const Plugin = ({ plugin }) => {
           key: plugin.key,
           name: plugin.name,
           needInit: plugin.needInit,
-          configuration: plugin.configuration
+          configuration: plugin.configuration,
+          inUseConfiguration: plugin.inUseConfiguration
         }}
         swr={{ addOnePlugin }}
       />
@@ -70,7 +71,9 @@ Plugin.propTypes = {
   plugin: PropTypes.exact({
     key: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
-    configuration: PropTypes.object.isRequired
+    needInit: PropTypes.bool.isRequired,
+    configuration: PropTypes.object.isRequired,
+    inUseConfiguration: PropTypes.object
   }).isRequired
 }
 

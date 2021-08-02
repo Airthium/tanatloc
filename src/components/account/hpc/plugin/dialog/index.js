@@ -31,7 +31,10 @@ const PluginDialog = ({ plugin, swr, edit }) => {
   useEffect(() => {
     const currentInitialValues = {}
     Object.keys(plugin.configuration).forEach((key) => {
-      currentInitialValues[key] = plugin.configuration[key].value
+      currentInitialValues[key] =
+        plugin.configuration[key].value !== undefined
+          ? plugin.configuration[key].value
+          : plugin.configuration[key].default
     })
     setInitialValues(currentInitialValues)
   }, [plugin?.configuration])
@@ -55,11 +58,7 @@ const PluginDialog = ({ plugin, swr, edit }) => {
           }
         ]}
       >
-        <Input
-          id={'input-' + key}
-          defaultValue={item.default}
-          autoComplete="off"
-        />
+        <Input id={'input-' + key} autoComplete="off" />
       </Form.Item>
     )
   }
@@ -209,11 +208,12 @@ const PluginDialog = ({ plugin, swr, edit }) => {
 
 PluginDialog.propTypes = {
   plugin: PropTypes.exact({
-    uuid: PropTypes.string.isRequired,
+    uuid: PropTypes.string,
     key: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
     needInit: PropTypes.bool,
-    configuration: PropTypes.object.isRequired
+    configuration: PropTypes.object.isRequired,
+    inUseConfiguration: PropTypes.object
   }).isRequired,
   swr: PropTypes.exact({
     addOnePlugin: PropTypes.func,

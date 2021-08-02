@@ -58,7 +58,8 @@ const List = ({ plugin, plugins, swr }) => {
                 key: p.key,
                 name: p.name,
                 needInit: p.needInit,
-                configuration: p.configuration
+                configuration: p.configuration,
+                inUseConfiguration: p.inUseConfiguration
               }}
               swr={{ mutateOnePlugin: swr.mutateOnePlugin }}
               edit={true}

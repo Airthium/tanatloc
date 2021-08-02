@@ -41,7 +41,7 @@ const Rescale = ({ data, onSelect }) => {
   // Get version options
   const options = data.freefem.versions.map((v) => ({
     label: v.version,
-    value: v.id
+    value: v.versionCode
   }))
 
   // Table
@@ -171,8 +171,7 @@ const Rescale = ({ data, onSelect }) => {
               value: values.lowPriority
             },
             freefemVersion: {
-              value: freefem.label,
-              id: freefem.value
+              value: freefem.value
             },
             walltime: {
               value: values.walltime

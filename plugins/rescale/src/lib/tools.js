@@ -156,7 +156,7 @@ const createJob = async (
         {
           analysis: {
             code: 'freefem',
-            versionName: freefemVersion
+            version: freefemVersion
           },
           hardware: {
             coreType: coreType,

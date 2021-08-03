@@ -10,17 +10,10 @@ import OrganizationLib from '@/lib/organization'
  */
 const auth = async (id, object, parentObject) => {
   // Objects
-  if (
-    object?.owners?.find((o) => o.id === id) ||
-    object?.users?.find((u) => u.id === id)
-  )
-    return true
+  if (object?.owners?.includes(id) || object?.users?.includes(id)) return true
 
   // Parent object
-  if (
-    parentObject?.owners?.find((o) => o.id === id) ||
-    parentObject?.users?.find((u) => u.id === id)
-  )
+  if (parentObject?.owners?.includes(id) || parentObject?.users?.includes(id))
     return true
 
   // Objects groups
@@ -33,8 +26,8 @@ const auth = async (id, object, parentObject) => {
       )
 
       if (
-        organizationData?.owners?.find((o) => o === id) ||
-        organizationData?.users?.find((u) => u === id)
+        organizationData?.owners?.includes(id) ||
+        organizationData?.users?.includes(id)
       )
         return true
     }
@@ -49,8 +42,8 @@ const auth = async (id, object, parentObject) => {
       )
 
       if (
-        organizationData?.owners?.find((o) => o === id) ||
-        organizationData?.users?.find((u) => u === id)
+        organizationData?.owners?.includes(id) ||
+        organizationData?.users?.includes(id)
       )
         return true
     }

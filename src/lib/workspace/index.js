@@ -34,12 +34,13 @@ const add = async (user, { name }) => {
  * Get workspace
  * @param {string} id Id
  * @param {Array} data Data
+ * @param {boolean} withData With data
  */
-const get = async (id, data) => {
+const get = async (id, data, withData = true) => {
   const workspace = await WorkspaceDB.get(id, data)
 
   // Get owners
-  if (workspace?.owners) {
+  if (withData && workspace?.owners) {
     const owners = await Promise.all(
       workspace.owners.map(async (owner) => {
         const ownerData = await User.get(owner, [
@@ -58,7 +59,7 @@ const get = async (id, data) => {
   }
 
   // Get users
-  if (workspace?.users) {
+  if (withData && workspace?.users) {
     const users = await Promise.all(
       workspace.users.map(async (user) => {
         const userData = await User.get(user, [
@@ -77,7 +78,7 @@ const get = async (id, data) => {
   }
 
   // Get groups
-  if (workspace?.groups) {
+  if (withData && workspace?.groups) {
     const groups = await Promise.all(
       workspace.groups.map(async (group) => {
         const groupData = await Group.get(group, ['name'])

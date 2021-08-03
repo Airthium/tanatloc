@@ -56,7 +56,7 @@ jest.mock('@sentry/node', () => ({
   captureException: (err) => mockCaptureException(err)
 }))
 
-describe('e2e/email', () => {
+describe('e2e/backend/email', () => {
   const req = {}
   let resStatus
   let resJson

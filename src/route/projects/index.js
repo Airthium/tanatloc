@@ -32,23 +32,28 @@ export default async (req, res) => {
       const projectsTmp = await Promise.all(
         ids.map(async (id) => {
           try {
-            const project = await ProjectLib.get(id, [
-              'title',
-              'description',
-              'avatar',
-              'owners',
-              'users',
-              'groups',
-              'simulations',
-              'workspace'
-            ])
+            const project = await ProjectLib.get(
+              id,
+              [
+                'title',
+                'description',
+                'avatar',
+                'owners',
+                'users',
+                'groups',
+                'simulations',
+                'workspace'
+              ],
+              false
+            )
             if (!project) return
+            //TODO project is use for auth & data here, fix the withData=false
 
-            const workspaceAuth = await WorkspaceLib.get(project.workspace, [
-              'owners',
-              'users',
-              'groups'
-            ])
+            const workspaceAuth = await WorkspaceLib.get(
+              project.workspace,
+              ['owners', 'users', 'groups'],
+              false
+            )
             if (!(await auth(sessionId, project, workspaceAuth))) {
               return
             }

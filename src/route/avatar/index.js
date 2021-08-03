@@ -23,9 +23,17 @@ export default async (req, res) => {
       if (
         !req.body ||
         !req.body.file ||
+        typeof req.body.file !== 'object' ||
         !req.body.file.name ||
+        typeof req.body.file.name !== 'string' ||
         !req.body.file.uid ||
-        !req.body.file.data
+        typeof req.body.file.uid !== 'string' ||
+        !req.body.file.data ||
+        typeof req.body.file.data !== 'string' ||
+        (req.body.project &&
+          (typeof req.body.project !== 'object' ||
+            !req.body.project.id ||
+            typeof req.body.project.id !== 'string'))
       )
         throw new Error(
           'Missing data in your request (body: { ?project: { id(uuid) }, file: { name(string), uid(uuid), data(string) } })'

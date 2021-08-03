@@ -40,15 +40,15 @@ export default async (req, res) => {
             ])
 
             // Check authorization
-            const projectAuth = await ProjectLib.get(simulation.project, [
-              'owners',
-              'users',
-              'groups',
-              'workspace'
-            ])
+            const projectAuth = await ProjectLib.get(
+              simulation.project,
+              ['owners', 'users', 'groups', 'workspace'],
+              false
+            )
             const workspaceAuth = await WorkspaceLib.get(
               projectAuth.workspace,
-              ['owners', 'users', 'groups']
+              ['owners', 'users', 'groups'],
+              false
             )
             if (!(await auth(sessionId, projectAuth, workspaceAuth))) {
               return

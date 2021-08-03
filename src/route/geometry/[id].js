@@ -28,17 +28,16 @@ export default async (req, res) => {
   // Check authorization
   try {
     const geometryAuth = await GeometryLib.get(id, ['project'])
-    const projectAuth = await ProjectLib.get(geometryAuth.project, [
-      'owners',
-      'users',
-      'groups',
-      'workspace'
-    ])
-    const workspaceAuth = await WorkspaceLib.get(projectAuth.workspace, [
-      'owners',
-      'users',
-      'groups'
-    ])
+    const projectAuth = await ProjectLib.get(
+      geometryAuth.project,
+      ['owners', 'users', 'groups', 'workspace'],
+      false
+    )
+    const workspaceAuth = await WorkspaceLib.get(
+      projectAuth.workspace,
+      ['owners', 'users', 'groups'],
+      false
+    )
     if (!(await auth(sessionId, projectAuth, workspaceAuth))) {
       res.status(401).json({ error: true, message: 'Unauthorized' })
       return
@@ -65,11 +64,20 @@ export default async (req, res) => {
     case 'PUT':
       // Update geometry
       try {
+        // Check
+        if (
+          !req.body ||
+          typeof req.body !== 'object' ||
+          !Array.isArray(req.body)
+        )
+          throw new Error('Missing data in your request (body(array))')
+
+        // Update
         await GeometryLib.update({ id }, req.body)
         res.status(200).end()
       } catch (err) {
         console.error(err)
-        res.status(204).json({ error: true, message: err.message })
+        res.status(500).json({ error: true, message: err.message })
         Sentry.captureException(err)
       }
       break

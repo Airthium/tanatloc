@@ -28,17 +28,16 @@ export default async (req, res) => {
   // Check authorization
   try {
     const geometryAuth = await GeometryLib.get(id, ['project'])
-    const projectAuth = await ProjectLib.get(geometryAuth.project, [
-      'owners',
-      'users',
-      'groups',
-      'workspace'
-    ])
-    const workspaceAuth = await WorkspaceLib.get(projectAuth.workspace, [
-      'owners',
-      'users',
-      'groups'
-    ])
+    const projectAuth = await ProjectLib.get(
+      geometryAuth.project,
+      ['owners', 'users', 'groups', 'workspace'],
+      false
+    )
+    const workspaceAuth = await WorkspaceLib.get(
+      projectAuth.workspace,
+      ['owners', 'users', 'groups'],
+      false
+    )
     if (!(await auth(sessionId, projectAuth, workspaceAuth))) {
       res.status(401).json({ error: true, message: 'Unauthorized' })
       return

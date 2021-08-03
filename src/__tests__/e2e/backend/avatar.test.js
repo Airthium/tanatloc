@@ -41,7 +41,7 @@ jest.mock('fs', () => {
   }
 })
 
-describe('e2e/avatar', () => {
+describe('e2e/backend/avatar', () => {
   const req = {}
   let resStatus
   let resJson

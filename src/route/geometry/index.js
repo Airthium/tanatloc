@@ -28,14 +28,20 @@ export default async (req, res) => {
         if (
           !req.body ||
           !req.body.project ||
+          typeof req.body.project !== 'object' ||
           !req.body.project.id ||
+          typeof req.body.project.id !== 'string' ||
           !req.body.geometry ||
+          typeof req.body.geometry !== 'object' ||
           !req.body.geometry.name ||
+          typeof req.body.geometry.name !== 'string' ||
           !req.body.geometry.uid ||
-          !req.body.geometry.buffer
+          typeof req.body.geometry.uid !== 'string' ||
+          !req.body.geometry.buffer ||
+          typeof req.body.geometry.buffer !== 'object'
         )
           throw new Error(
-            'Missing data in your request (body: { project: { id(uuid) }, geometry: { name(string), uid(uuid), buffer(string) } })'
+            'Missing data in your request (body: { project: { id(uuid) }, geometry: { name(string), uid(uuid), buffer(object) } })'
           )
 
         const geometry = await GeometryLib.add(req.body)

@@ -23,11 +23,11 @@ export default async (req, res) => {
    * @param {Object} workspace Workspace { id }
    */
   const checkAuth = async (workspace) => {
-    const workspaceAuth = await WorkspaceLib.get(workspace.id, [
-      'owners',
-      'users',
-      'groups'
-    ])
+    const workspaceAuth = await WorkspaceLib.get(
+      workspace.id,
+      ['owners', 'users', 'groups'],
+      false
+    )
 
     if (!(await auth(sessionId, workspaceAuth))) {
       throw new Error('Access denied')

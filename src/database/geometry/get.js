@@ -11,7 +11,7 @@ const get = async (id, data) => {
   const response = await getter(tables.GEOMETRIES, id, data)
 
   const geometry = response.rows[0]
-  geometry.id = id
+  geometry && (geometry.id = id)
 
   return geometry
 }

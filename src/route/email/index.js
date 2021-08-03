@@ -11,7 +11,13 @@ export default async (req, res) => {
   if (req.method === 'PUT') {
     try {
       // Check
-      if (!req.body || !req.body.type || !req.body.email)
+      if (
+        !req.body ||
+        !req.body.type ||
+        typeof req.body.type !== 'string' ||
+        !req.body.email ||
+        typeof req.body.email !== 'string'
+      )
         throw new Error(
           'Missing data in your request (body: { email(string), type(string) }'
         )

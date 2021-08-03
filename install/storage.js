@@ -33,4 +33,4 @@ const createPath = async (path) => {
   }
 }
 
-module.exports = createPaths
+export default createPaths

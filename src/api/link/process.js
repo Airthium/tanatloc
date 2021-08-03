@@ -5,7 +5,6 @@ import Caller from '@/api/call'
  * @memberof module:api/link
  * @param {string} id Id
  * @param {Object} data Data { email, password }
- * @returns
  */
 const process = async (id, data) => {
   return Caller.call('/api/link', {

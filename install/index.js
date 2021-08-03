@@ -1,7 +1,7 @@
 /** @module install */
 
-const createDatabase = require('./dB')
-const createPaths = require('./storage')
+import createDatabase from './dB'
+import createPaths from './storage'
 
 /**
  * Main

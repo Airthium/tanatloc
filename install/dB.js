@@ -458,7 +458,7 @@ const createAdmin = async () => {
   if (rows.length === 0) {
     console.info(' *** Create Administrator *** ')
 
-    const password = passwordGenerator()
+    const password = 'password' //passwordGenerator()
 
     await query(
       'INSERT INTO ' +
@@ -472,4 +472,4 @@ const createAdmin = async () => {
   }
 }
 
-module.exports = createDatabase
+export default createDatabase

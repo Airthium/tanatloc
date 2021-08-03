@@ -30,7 +30,7 @@ const faceColor = new THREE.Color('gray')
  * Load part
  * @param {string} location Location
  * @param {string} name Name
- * @return Legacy ThreeJS json
+ * @return {Object} Legacy ThreeJS json
  */
 const loadPart = (location, name) => {
   const partFile = path.join(location, name)
@@ -163,7 +163,7 @@ const loadGeometryElement = (geometry, color) => {
  * Load mesh element
  * @param {Object} geometry Geometry
  * @param {string} color Color
- * @returns
+ * @returns {Object} Mesh
  */
 const loadMeshElement = (geometry, color) => {
   // Wireframe

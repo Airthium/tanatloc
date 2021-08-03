@@ -32,7 +32,9 @@
     "updaters-build": "babel . --only config,plugins,src/database,src/lib,src/services,templates,updaters --out-dir dist-updaters",
     "start": "NODE_OPTIONS=\"--max_old_space_size=8192\" next start",
     "test": "jest --coverage --silent",
-    "teste2e": "jest src/__tests__/e2e/* --coverage --silent",
+    "testwatch": "jest --watch",
+    "teste2e": "DB_DATABASE=tanatloc_test STORAGE_PATH=/tmp/tanatloc_test yarn postinstall && jest --config jest.e2e.config.js --coverage --silent",
+    "teste2ewatch": "DB_DATABASE=tanatloc_test STORAGE_PATH=/tmp/tanatloc_test yarn postinstall && jest --config jest.e2e.config.js --watch",
     "workflow": ".github/workflows/node.local.sh"
   },
   "dependencies": {

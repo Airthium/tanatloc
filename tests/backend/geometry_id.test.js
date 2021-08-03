@@ -301,5 +301,25 @@ describe('e2e/backend/geometry/[id]', () => {
     await route(req, res)
     expect(resStatus).toBe(200)
     expect(resJson).toEqual('end')
+
+    // Error
+    mockQuery.mockImplementation((command) => {
+      if (
+        command === 'SELECT project FROM tanatloc_geometries WHERE id = $1' ||
+        command ===
+          'SELECT owners,users,groups,workspace FROM tanatloc_projects WHERE id = $1' ||
+        command ===
+          'SELECT owners,users,groups FROM tanatloc_workspaces WHERE id = $1'
+      )
+        return { rows: [{ id: 'id', owners: ['id'] }] }
+
+      throw new Error('query error')
+    })
+    await route(req, res)
+    expect(resStatus).toBe(500)
+    expect(resJson).toEqual({ error: true, message: 'query error' })
+    expect(mockCaptureException).toHaveBeenLastCalledWith(
+      new Error('query error')
+    )
   })
 })

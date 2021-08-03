@@ -60,7 +60,7 @@ describe('lib/email', () => {
     try {
       await Email.recover('email')
     } catch (err) {
-      expect(err.message).toBe('Unauthorized')
+      expect(err.message).toBe('Mail error: Unauthorized')
     }
   })
 })

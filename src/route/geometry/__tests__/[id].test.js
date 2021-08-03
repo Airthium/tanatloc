@@ -178,6 +178,7 @@ describe('route/geometry/[id]', () => {
 
   test('PUT', async () => {
     req.method = 'PUT'
+    req.body = []
 
     mockSession.mockImplementation(() => true)
     mockAuth.mockImplementation(() => true)

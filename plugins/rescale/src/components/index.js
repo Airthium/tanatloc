@@ -4,7 +4,6 @@ import {
   Button,
   Card,
   Form,
-  Input,
   InputNumber,
   Modal,
   Radio,
@@ -365,7 +364,7 @@ const Rescale = ({ data, onSelect }) => {
                   { required: true, message: '"FreeFEM version" is required' }
                 ]}
               >
-                <Input id="walltime" />
+                <InputNumber id="walltime" />
               </Form.Item>
             </Form>
           </Space>

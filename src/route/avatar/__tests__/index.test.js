@@ -57,20 +57,42 @@ describe('route/avatar', () => {
   test('POST', async () => {
     mockSession.mockImplementation(() => true)
 
+    // Empty body
     await avatar(req, res)
     expect(mockSession).toHaveBeenCalledTimes(1)
+    expect(mockAdd).toHaveBeenCalledTimes(0)
+    expect(mockDel).toHaveBeenCalledTimes(0)
+    expect(mockError).toHaveBeenCalledTimes(1)
+    expect(response).toEqual({
+      error: true,
+      message:
+        'Missing data in your request (body: { ?project: { id(uuid) }, file: { name(string), uid(uuid), data(string) } })'
+    })
+
+    // With body
+    req.body = {
+      file: {
+        name: 'name',
+        uid: 'uid',
+        data: 'data'
+      }
+    }
+    await avatar(req, res)
+    expect(mockSession).toHaveBeenCalledTimes(2)
     expect(mockAdd).toHaveBeenCalledTimes(1)
     expect(mockDel).toHaveBeenCalledTimes(0)
-    expect(mockError).toHaveBeenCalledTimes(0)
+    expect(mockError).toHaveBeenCalledTimes(1)
     expect(response).toBe('avatar')
 
     // With project
-    req.body.project = {}
+    req.body.project = {
+      id: 'id'
+    }
     await avatar(req, res)
-    expect(mockSession).toHaveBeenCalledTimes(2)
+    expect(mockSession).toHaveBeenCalledTimes(3)
     expect(mockAdd).toHaveBeenCalledTimes(2)
     expect(mockDel).toHaveBeenCalledTimes(0)
-    expect(mockError).toHaveBeenCalledTimes(0)
+    expect(mockError).toHaveBeenCalledTimes(1)
     expect(response).toBe('avatar')
 
     // Error
@@ -78,34 +100,10 @@ describe('route/avatar', () => {
       throw new Error('test')
     })
     await avatar(req, res)
-    expect(mockSession).toHaveBeenCalledTimes(3)
+    expect(mockSession).toHaveBeenCalledTimes(4)
     expect(mockAdd).toHaveBeenCalledTimes(3)
     expect(mockDel).toHaveBeenCalledTimes(0)
-    expect(mockError).toHaveBeenCalledTimes(1)
-    expect(response).toEqual({ error: true, message: 'test' })
-  })
-
-  test('DELETE', async () => {
-    req.method = 'DELETE'
-
-    mockSession.mockImplementation(() => true)
-
-    await avatar(req, res)
-    expect(mockSession).toHaveBeenCalledTimes(1)
-    expect(mockAdd).toHaveBeenCalledTimes(0)
-    expect(mockDel).toHaveBeenCalledTimes(1)
-    expect(mockError).toHaveBeenCalledTimes(0)
-    expect(response).toBe('end')
-
-    // Error
-    mockDel.mockImplementation(() => {
-      throw new Error('test')
-    })
-    await avatar(req, res)
-    expect(mockSession).toHaveBeenCalledTimes(2)
-    expect(mockAdd).toHaveBeenCalledTimes(0)
-    expect(mockDel).toHaveBeenCalledTimes(2)
-    expect(mockError).toHaveBeenCalledTimes(1)
+    expect(mockError).toHaveBeenCalledTimes(2)
     expect(response).toEqual({ error: true, message: 'test' })
   })
 

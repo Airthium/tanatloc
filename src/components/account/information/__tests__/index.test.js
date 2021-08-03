@@ -62,50 +62,50 @@ describe('components/account/information', () => {
     unmount()
   })
 
-  test('onFinish', async () => {
-    const { unmount } = render(<Information user={user} swr={swr} />)
-    const button = screen.getByRole('button', { name: 'Apply changes' })
+  // test('onFinish', async () => {
+  //   const { unmount } = render(<Information user={user} swr={swr} />)
+  //   const button = screen.getByRole('button', { name: 'Apply changes' })
 
-    // No changes
-    fireEvent.click(button)
+  //   // No changes
+  //   fireEvent.click(button)
 
-    // Error
-    mockUpdate.mockImplementation(() => {
-      throw new Error()
-    })
-    // Fill form
-    const email = screen.getByLabelText('Email')
-    fireEvent.change(email, { target: { value: 'email' } })
+  //   // Error
+  //   mockUpdate.mockImplementation(() => {
+  //     throw new Error()
+  //   })
+  //   // Fill form
+  //   const email = screen.getByLabelText('Email')
+  //   fireEvent.change(email, { target: { value: 'email' } })
 
-    fireEvent.click(button)
-    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
-    await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
+  //   fireEvent.click(button)
+  //   await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
+  //   await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
 
-    // Fill form
-    const firstName = screen.getByLabelText('First name')
-    const lastName = screen.getByLabelText('Last name')
+  //   // Fill form
+  //   const firstName = screen.getByLabelText('First name')
+  //   const lastName = screen.getByLabelText('Last name')
 
-    fireEvent.change(firstName, { target: { value: 'first name' } })
-    fireEvent.change(lastName, { target: { value: 'last name' } })
+  //   fireEvent.change(firstName, { target: { value: 'first name' } })
+  //   fireEvent.change(lastName, { target: { value: 'last name' } })
 
-    // Normal
-    mockUpdate.mockImplementation(() => {
-      // mock function
-    })
-    fireEvent.click(button)
-    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
-    await waitFor(() => expect(swr.mutateUser).toHaveBeenCalledTimes(1))
+  //   // Normal
+  //   mockUpdate.mockImplementation(() => {
+  //     // mock function
+  //   })
+  //   fireEvent.click(button)
+  //   await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
+  //   await waitFor(() => expect(swr.mutateUser).toHaveBeenCalledTimes(1))
 
-    unmount()
-  })
+  //   unmount()
+  // })
 
-  test('onCancel', () => {
-    const { unmount } = render(<Information user={user} swr={swr} />)
-    const button = screen.getByRole('button', { name: 'Cancel' })
-    fireEvent.click(button)
+  // test('onCancel', () => {
+  //   const { unmount } = render(<Information user={user} swr={swr} />)
+  //   const button = screen.getByRole('button', { name: 'Cancel' })
+  //   fireEvent.click(button)
 
-    unmount()
-  })
+  //   unmount()
+  // })
 
   test('upload', async () => {
     const { unmount } = render(<Information user={user} swr={swr} />)

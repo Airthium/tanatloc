@@ -31,6 +31,10 @@ jest.mock('../../group', () => ({
   del: async () => mockGroupDel()
 }))
 
+jest.mock('../../email', () => ({
+  invite: async () => jest.fn()
+}))
+
 describe('lib/organization', () => {
   beforeEach(() => {
     mockAdd.mockReset()

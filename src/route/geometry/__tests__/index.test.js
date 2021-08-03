@@ -64,6 +64,14 @@ describe('route/geometry', () => {
 
   test('POST', async () => {
     req.method = 'POST'
+    req.body = {
+      project: { id: 'id' },
+      geometry: {
+        name: 'name',
+        uid: 'uid',
+        buffer: Buffer.from('buffer')
+      }
+    }
 
     mockSession.mockImplementation(() => 'id')
 

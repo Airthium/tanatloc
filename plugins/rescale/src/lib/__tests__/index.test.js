@@ -96,12 +96,17 @@ describe('plugins/rescale/src/lib', () => {
       token: {},
       additionalFiles: {
         value: ''
+      },
+      walltime: {
+        value: 48
       }
     })
     expect(mockCall).toHaveBeenCalledTimes(1)
     expect(mockCheckFiles).toHaveBeenCalledTimes(1)
     expect(mockGetFreeFEM).toHaveBeenCalledTimes(1)
-    expect(res).toEqual({ data: { coreTypes: [{}], freefem: [{}] } })
+    expect(res).toEqual({
+      data: { coreTypes: [{}], freefem: [{}], walltime: 48 }
+    })
 
     // Invalid token
     mockCall.mockImplementation(() => ({ detail: 'Invalid token.' }))
@@ -111,6 +116,9 @@ describe('plugins/rescale/src/lib', () => {
         token: {},
         additionalFiles: {
           value: ''
+        },
+        walltime: {
+          value: 48
         }
       })
       expect(true).toBe(false)

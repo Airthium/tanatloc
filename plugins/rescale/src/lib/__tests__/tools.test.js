@@ -37,6 +37,9 @@ describe('plugins/rescale/src/lib/tools', () => {
     },
     additionalFiles: {
       value: 'id1,id2'
+    },
+    walltime: {
+      value: '48'
     }
   }
   const parameters = {
@@ -51,6 +54,9 @@ describe('plugins/rescale/src/lib/tools', () => {
     },
     freefemVersion: {
       value: 'xx'
+    },
+    walltime: {
+      value: 48
     }
   }
 

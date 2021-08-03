@@ -41,14 +41,16 @@ describe('route/email', () => {
   test('PUT', async () => {
     // Wrong type
     req.body = {
-      type: 'not allowed'
+      type: 'not allowed',
+      email: 'email'
     }
     await email(req, res)
     expect(mockError).toHaveBeenCalledTimes(1)
 
     // Good type, no user
     req.body = {
-      type: 'passwordRecovery'
+      type: 'passwordRecovery',
+      email: 'email'
     }
     await email(req, res)
     expect(mockUserGetBy).toHaveBeenCalledTimes(1)

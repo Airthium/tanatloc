@@ -28,9 +28,12 @@ describe('plugins/rescale/src/components/index', () => {
     ],
     freefem: {
       versions: [
-        { id: 'version1', version: 'version1' },
-        { id: 'version2', version: 'version2' }
+        { versionCode: 'version1', version: 'version1' },
+        { versionCode: 'version2', version: 'version2' }
       ]
+    },
+    walltime: {
+      value: 48
     }
   }
   const onSelect = jest.fn()
@@ -78,7 +81,7 @@ describe('plugins/rescale/src/components/index', () => {
     radios = screen.getAllByRole('radio')
     fireEvent.click(radios[0])
 
-    const numberOfCores = screen.getByRole('spinbutton')
+    const numberOfCores = screen.getAllByRole('spinbutton')[0]
     fireEvent.input(numberOfCores, { target: { value: 1 } })
     fireEvent.input(numberOfCores, { target: { value: 501 } })
     fireEvent.input(numberOfCores, { target: { value: 1001 } })
@@ -114,8 +117,12 @@ describe('plugins/rescale/src/components/index', () => {
     radios = screen.getAllByRole('radio')
     fireEvent.click(radios[0])
 
-    const increase = screen.getByRole('button', { name: 'Increase Value' })
-    const decrease = screen.getByRole('button', { name: 'Decrease Value' })
+    const increase = screen.getAllByRole('button', {
+      name: 'Increase Value'
+    })[0]
+    const decrease = screen.getAllByRole('button', {
+      name: 'Decrease Value'
+    })[0]
     fireEvent.mouseDown(increase)
     fireEvent.mouseDown(decrease)
 

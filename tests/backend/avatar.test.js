@@ -1,3 +1,5 @@
+import { promises as fs } from 'fs'
+
 import route from '@/route/avatar'
 
 import { initialize, clean } from '@/config/jest/e2e/global'
@@ -300,18 +302,39 @@ describe('e2e/backend/avatar', () => {
       expect(err).toEqual(new Error('Avatar does not exist.'))
     }
 
-    // TODO unlink error
+    // Unlink error
+    previousAvatarId = avatarId
+    req.body = {
+      project: { id: project.id },
+      file: {
+        name: 'name5',
+        uid: 'uid5',
+        data: 'data5'
+      }
+    }
+    jest.spyOn(fs, 'unlink').mockImplementation(() => {
+      throw new Error('unlink error')
+    })
+    await route(req, res)
+    expect(resStatus).toBe(200)
+    avatarId = resJson.id
+    expect(resJson).toEqual({ id: avatarId, name: 'name5' })
 
-    // expect(mockWriteFile).toHaveBeenLastCalledWith(AVATAR + '/uid', 'data')
-    // expect(mockUnlink).toHaveBeenLastCalledWith(AVATAR + '/path')
-    // // Unlink error
-    // mockUnlink.mockImplementation(() => {
-    //   throw new Error('unlink error')
-    // })
-    // await route(req, res)
-    // expect(mockWriteFile).toHaveBeenLastCalledWith(AVATAR + '/uid', 'data')
-    // expect(mockUnlink).toHaveBeenLastCalledWith(AVATAR + '/path')
-    // expect(resStatus).toBe(200)
-    // expect(resJson).toEqual({ id: 'id', name: 'name' })
+    avatar = await AvatarLib.get(avatarId, ['name', 'path'])
+    expect(avatar).toEqual({ id: avatarId, name: 'name5', path: 'uid5' })
+
+    content = await AvatarLib.read(avatarId)
+    expect(content.toString()).toBe('data5')
+
+    previousAvatar = await AvatarLib.get(previousAvatarId, ['name', 'path'])
+    expect(previousAvatar).not.toBeDefined()
+
+    // File exists but not dB entry
+    try {
+      await AvatarLib.read(previousAvatarId)
+      expect(true).toBe(false)
+    } catch (err) {
+      expect(err).toEqual(new Error('Avatar does not exist.'))
+    }
   })
 })

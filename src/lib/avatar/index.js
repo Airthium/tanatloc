@@ -46,10 +46,12 @@ const add = async (parent, type, file) => {
 /**
  * Read avatar
  * @param {string} id Avatar's id
+ * @returns {string} Content
  */
 const read = async (id) => {
   // Get path
   const avatar = await get(id, ['path'])
+  if (!avatar) throw new Error('Avatar does not exist.')
 
   // Read file
   const avatarFile = path.join(AVATAR, avatar.path)
@@ -104,7 +106,7 @@ const del = async (parent, type, id) => {
   }
 
   // Delete avatar
-  await AvatarDB.del(id)
+  await AvatarDB.del({ id })
 }
 
 const Avatar = { add, read, get, del }

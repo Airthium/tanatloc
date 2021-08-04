@@ -1,13 +1,33 @@
 import route from '@/route/avatar'
 
+import { initialize, clean } from '@/config/jest/e2e/global'
+
 import { encryptSession } from '@/auth/iron'
 
-import { DATABASE, tables } from '@/config/db'
-import { AVATAR } from '@/config/storage'
+import AvatarLib from '@/lib/avatar'
+import WorkspaceLib from '@/lib/workspace'
+import ProjectLib from '@/lib/project'
 
+// Initialize
+let adminUUID
+beforeAll((done) => {
+  initialize()
+    .then((res) => (adminUUID = res))
+    .catch((err) => console.error(err))
+    .finally(done)
+})
+
+// Clean
+afterAll((done) => {
+  clean()
+    .catch((err) => console.error(err))
+    .finally(done)
+})
+
+// Sentry mock
 const mockCaptureException = jest.fn()
 jest.mock('@sentry/node', () => ({
-  init: jest.fn(),
+  init: jest.fn,
   captureException: (err) => mockCaptureException(err)
 }))
 
@@ -31,7 +51,7 @@ describe('e2e/backend/avatar', () => {
 
   const setToken = async () => {
     req.headers = {
-      cookie: 'token=' + (await encryptSession({ id: 'id' })) + ';'
+      cookie: 'token=' + (await encryptSession({ id: adminUUID })) + ';'
     }
   }
 
@@ -152,138 +172,146 @@ describe('e2e/backend/avatar', () => {
       )
     )
 
+    // Start read / write operations
+    let avatarId
+    let previousAvatarId
+    let avatar
+    let previousAvatar
+    let content
+    let previousContent
+
     // Body with file
-    // mockQuery.mockImplementation(() => ({
-    //   rows: [{ id: 'id' }]
-    // }))
     req.body = {
       file: {
-        name: 'name',
-        uid: 'uid',
-        data: 'data'
+        name: 'name1',
+        uid: 'uid1',
+        data: 'data1'
       }
     }
     await route(req, res)
-    // expect(mockQuery).toHaveBeenNthCalledWith(
-    //   1,
-    //   'INSERT INTO ' +
-    //     tables.AVATARS +
-    //     ' (name, path) VALUES ($1, $2) RETURNING id',
-    //   ['name', 'uid']
-    // )
-    // expect(mockQuery).toHaveBeenNthCalledWith(
-    //   2,
-    //   'SELECT avatar FROM ' + tables.USERS + ' WHERE id = $1',
-    //   ['id']
-    // )
-    // expect(mockQuery).toHaveBeenNthCalledWith(
-    //   3,
-    //   'UPDATE ' + tables.USERS + ' SET avatar = $2 WHERE id = $1',
-    //   ['id', 'id']
-    // )
-    // expect(mockWriteFile).toHaveBeenLastCalledWith(AVATAR + '/uid', 'data')
     expect(resStatus).toBe(200)
-    expect(resJson).toEqual({ id: 'id', name: 'name' })
+    avatarId = resJson.id
+    expect(resJson).toEqual({ id: avatarId, name: 'name1' })
 
-    //   // Body with project & file
-    //   req.body = {
-    //     project: { id: 'id' },
-    //     file: {
-    //       name: 'name',
-    //       uid: 'uid',
-    //       data: 'data'
-    //     }
-    //   }
-    //   await route(req, res)
-    //   expect(mockQuery).toHaveBeenNthCalledWith(
-    //     4,
-    //     'INSERT INTO ' +
-    //       tables.AVATARS +
-    //       ' (name, path) VALUES ($1, $2) RETURNING id',
-    //     ['name', 'uid']
-    //   )
-    //   expect(mockQuery).toHaveBeenNthCalledWith(
-    //     5,
-    //     'SELECT avatar FROM ' + tables.PROJECTS + ' WHERE id = $1',
-    //     ['id']
-    //   )
-    //   expect(mockQuery).toHaveBeenNthCalledWith(
-    //     6,
-    //     'UPDATE ' + tables.PROJECTS + ' SET avatar = $2 WHERE id = $1',
-    //     ['id', 'id']
-    //   )
-    //   expect(mockWriteFile).toHaveBeenLastCalledWith(AVATAR + '/uid', 'data')
-    //   expect(resStatus).toBe(200)
-    //   expect(resJson).toEqual({ id: 'id', name: 'name' })
-    //   // Body with file, previous avatar
-    //   mockQuery.mockImplementation((command) => {
-    //     if (command === 'SELECT avatar FROM ' + tables.USERS + ' WHERE id = $1')
-    //       return {
-    //         rows: [{ avatar: 'id' }]
-    //       }
-    //     else if (
-    //       command ===
-    //       'SELECT path FROM ' + tables.AVATARS + ' WHERE id = $1'
-    //     )
-    //       return {
-    //         rows: [{}]
-    //       }
-    //     return {
-    //       rows: [{ id: 'id' }]
-    //     }
-    //   })
-    //   req.body = {
-    //     file: {
-    //       name: 'name',
-    //       uid: 'uid',
-    //       data: 'data'
-    //     }
-    //   }
-    //   await route(req, res)
-    //   expect(mockWriteFile).toHaveBeenLastCalledWith(AVATAR + '/uid', 'data')
-    //   expect(resStatus).toBe(200)
-    //   expect(resJson).toEqual({ id: 'id', name: 'name' })
-    //   // Body with project & file, previous avatar
-    //   mockQuery.mockImplementation((command) => {
-    //     if (
-    //       command ===
-    //       'SELECT avatar FROM ' + tables.PROJECTS + ' WHERE id = $1'
-    //     )
-    //       return {
-    //         rows: [{ avatar: 'id' }]
-    //       }
-    //     else if (
-    //       command ===
-    //       'SELECT path FROM ' + tables.AVATARS + ' WHERE id = $1'
-    //     )
-    //       return {
-    //         rows: [{ path: 'path' }]
-    //       }
-    //     return {
-    //       rows: [{ id: 'id' }]
-    //     }
-    //   })
-    //   req.body = {
-    //     project: { id: 'id' },
-    //     file: {
-    //       name: 'name',
-    //       uid: 'uid',
-    //       data: 'data'
-    //     }
-    //   }
-    //   await route(req, res)
-    //   expect(mockWriteFile).toHaveBeenLastCalledWith(AVATAR + '/uid', 'data')
-    //   expect(mockUnlink).toHaveBeenLastCalledWith(AVATAR + '/path')
-    //   expect(resStatus).toBe(200)
-    //   expect(resJson).toEqual({ id: 'id', name: 'name' })
-    //   // Unlink error
-    //   mockUnlink.mockImplementation(() => {
-    //     throw new Error('unlink error')
-    //   })
-    //   await route(req, res)
-    //   expect(mockWriteFile).toHaveBeenLastCalledWith(AVATAR + '/uid', 'data')
-    //   expect(mockUnlink).toHaveBeenLastCalledWith(AVATAR + '/path')
-    //   expect(resStatus).toBe(200)
-    //   expect(resJson).toEqual({ id: 'id', name: 'name' })
+    avatar = await AvatarLib.get(avatarId, ['name', 'path'])
+    expect(avatar).toEqual({ id: avatarId, name: 'name1', path: 'uid1' })
+
+    content = await AvatarLib.read(avatarId)
+    expect(content.toString()).toBe('data1')
+
+    // Body with file, previous avatar
+    previousAvatarId = avatarId
+    req.body = {
+      file: {
+        name: 'name2',
+        uid: 'uid2',
+        data: 'data2'
+      }
+    }
+    await route(req, res)
+    expect(resStatus).toBe(200)
+    avatarId = resJson.id
+    expect(resJson).toEqual({ id: avatarId, name: 'name2' })
+
+    avatar = await AvatarLib.get(avatarId, ['name', 'path'])
+    expect(avatar).toEqual({ id: avatarId, name: 'name2', path: 'uid2' })
+
+    content = await AvatarLib.read(avatarId)
+    expect(content.toString()).toBe('data2')
+
+    previousAvatar = await AvatarLib.get(previousAvatarId, ['name', 'path'])
+    expect(previousAvatar).not.toBeDefined()
+
+    try {
+      await AvatarLib.read(previousAvatarId)
+      expect(true).toBe(false)
+    } catch (err) {
+      expect(err).toEqual(new Error('Avatar does not exist.'))
+    }
+
+    // Create a workspace & project
+    const workspace = await WorkspaceLib.add(
+      { id: adminUUID },
+      { name: 'Test workspace' }
+    )
+    const project = await ProjectLib.add(
+      { id: adminUUID },
+      {
+        workspace: { id: workspace.id },
+        project: { title: 'Test project', description: 'Test description' }
+      }
+    )
+
+    // Body with project & file
+    previousAvatarId = avatarId
+    req.body = {
+      project: { id: project.id },
+      file: {
+        name: 'name3',
+        uid: 'uid3',
+        data: 'data3'
+      }
+    }
+    await route(req, res)
+    expect(resStatus).toBe(200)
+    avatarId = resJson.id
+    expect(resJson).toEqual({ id: avatarId, name: 'name3' })
+
+    avatar = await AvatarLib.get(avatarId, ['name', 'path'])
+    expect(avatar).toEqual({ id: avatarId, name: 'name3', path: 'uid3' })
+
+    content = await AvatarLib.read(avatarId)
+    expect(content.toString()).toBe('data3')
+
+    previousAvatar = await AvatarLib.get(previousAvatarId, ['name', 'path'])
+    expect(previousAvatar).toBeDefined()
+
+    previousContent = await AvatarLib.read(previousAvatarId)
+    expect(previousContent).toBeDefined()
+
+    // Body with project & file, previous avatar
+    previousAvatarId = avatarId
+    req.body = {
+      project: { id: project.id },
+      file: {
+        name: 'name4',
+        uid: 'uid4',
+        data: 'data4'
+      }
+    }
+    await route(req, res)
+    expect(resStatus).toBe(200)
+    avatarId = resJson.id
+    expect(resJson).toEqual({ id: avatarId, name: 'name4' })
+
+    avatar = await AvatarLib.get(avatarId, ['name', 'path'])
+    expect(avatar).toEqual({ id: avatarId, name: 'name4', path: 'uid4' })
+
+    content = await AvatarLib.read(avatarId)
+    expect(content.toString()).toBe('data4')
+
+    previousAvatar = await AvatarLib.get(previousAvatarId, ['name', 'path'])
+    expect(previousAvatar).not.toBeDefined()
+
+    try {
+      await AvatarLib.read(previousAvatarId)
+      expect(true).toBe(false)
+    } catch (err) {
+      expect(err).toEqual(new Error('Avatar does not exist.'))
+    }
+
+    // TODO unlink error
+
+    // expect(mockWriteFile).toHaveBeenLastCalledWith(AVATAR + '/uid', 'data')
+    // expect(mockUnlink).toHaveBeenLastCalledWith(AVATAR + '/path')
+    // // Unlink error
+    // mockUnlink.mockImplementation(() => {
+    //   throw new Error('unlink error')
+    // })
+    // await route(req, res)
+    // expect(mockWriteFile).toHaveBeenLastCalledWith(AVATAR + '/uid', 'data')
+    // expect(mockUnlink).toHaveBeenLastCalledWith(AVATAR + '/path')
+    // expect(resStatus).toBe(200)
+    // expect(resJson).toEqual({ id: 'id', name: 'name' })
   })
 })

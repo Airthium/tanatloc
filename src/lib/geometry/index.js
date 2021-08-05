@@ -129,7 +129,11 @@ const add = async ({ project, geometry }) => {
   } catch (err) {
     console.warn(err)
     console.warn('-> Delete geometry')
-    await del(geometryData)
+    await del({
+      ...geometryData,
+      json: geometry.uid,
+      glb: geometry.uid + '.glb'
+    })
 
     throw err
   }
@@ -156,7 +160,7 @@ const update = async (geometry, data) => {
 
 /**
  * Delete geometry
- * @param {Object} geometry Geometry { id }
+ * @param {Object} geometry Geometry { id, ?json, ?glb }
  */
 const del = async (geometry) => {
   // Data
@@ -195,6 +199,12 @@ const del = async (geometry) => {
     } catch (err) {
       console.warn(err)
     }
+  if (geometry.glb)
+    try {
+      await Tools.removeFile(path.join(storage.GEOMETRY, geometry.glb))
+    } catch (err) {
+      console.warn(err)
+    }
 
   // Delete json directory
   if (geometryData.json)
@@ -202,6 +212,12 @@ const del = async (geometry) => {
       await Tools.removeDirectory(
         path.join(storage.GEOMETRY, geometryData.json)
       )
+    } catch (err) {
+      console.warn(err)
+    }
+  if (geometry.json)
+    try {
+      await Tools.removeDirectory(path.join(storage.GEOMETRY, geometry.json))
     } catch (err) {
       console.warn(err)
     }

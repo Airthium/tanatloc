@@ -28,6 +28,8 @@ export default async (req, res) => {
   // Check authorization
   try {
     const geometryAuth = await GeometryLib.get(id, ['project'])
+    if (!geometryAuth) throw new Error('Invalid geometry identifier')
+
     const projectAuth = await ProjectLib.get(
       geometryAuth.project,
       ['owners', 'users', 'groups', 'workspace'],

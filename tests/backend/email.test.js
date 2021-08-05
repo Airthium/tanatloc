@@ -1,14 +1,27 @@
 import route from '@/route/email'
 
+import { clean } from '@/config/jest/e2e/global'
+
+import { DOMAIN } from '@/config/domain'
 import { PASSWORD_RECOVERY } from '@/config/email'
 
-let mockStatus = 202
-let mockStatusText = 'status'
+import LinkLib from '@/lib/link'
+
+// Clean
+afterAll((done) => {
+  clean()
+    .catch((err) => console.error(err))
+    .finally(done)
+})
+
+// mailersend mock
+const mockSend = jest.fn()
+let personalization
 jest.mock('mailersend', () => ({
   __esModule: true,
   default: class {
     send() {
-      return { status: mockStatus, statusText: mockStatusText }
+      return mockSend()
     }
   },
   Recipient: class {},
@@ -28,31 +41,17 @@ jest.mock('mailersend', () => ({
     setTemplateId() {
       return this
     }
-    setPersonalization() {
+    setPersonalization(p) {
+      personalization = p
       return this
     }
   }
 }))
 
-const mockQuery = jest.fn()
-jest.mock('pg', () => {
-  return {
-    Pool: class PoolMock {
-      constructor() {
-        this.connect = async () => ({
-          query: async (command, args) => mockQuery(command, args),
-          release: jest.fn()
-        })
-        this.query = async () => 'query'
-        this.end = jest.fn()
-      }
-    }
-  }
-})
-
+// Sentry mock
 const mockCaptureException = jest.fn()
 jest.mock('@sentry/node', () => ({
-  init: jest.fn(),
+  init: jest.fn,
   captureException: (err) => mockCaptureException(err)
 }))
 
@@ -75,7 +74,7 @@ describe('e2e/backend/email', () => {
   }
 
   beforeEach(() => {
-    mockQuery.mockReset()
+    mockSend.mockReset()
 
     mockCaptureException.mockReset()
 
@@ -162,9 +161,6 @@ describe('e2e/backend/email', () => {
     )
 
     // Non existing user
-    mockQuery.mockImplementation(() => ({
-      rows: []
-    }))
     req.body = {
       type: PASSWORD_RECOVERY,
       email: 'email'
@@ -172,23 +168,86 @@ describe('e2e/backend/email', () => {
     await route(req, res)
     expect(resStatus).toBe(200)
     expect(resJson).toEqual('end')
+    expect(personalization).not.toBeDefined()
 
     // Existing user
-    mockQuery.mockImplementation(() => ({
-      rows: [{ id: 'id' }]
+    mockSend.mockImplementation(() => ({
+      status: 202,
+      statusText: 'success'
     }))
+    req.body = {
+      type: PASSWORD_RECOVERY,
+      email: 'admin'
+    }
     await route(req, res)
     expect(resStatus).toBe(200)
     expect(resJson).toEqual('end')
 
-    // Error
-    mockStatus = 404
-    mockStatusText = 'Mailersend error'
+    // Process link
+    let url
+    let linkId
+    let link
+
+    url = personalization[0].data.recoveryLink
+    expect(personalization).toEqual([
+      {
+        email: 'admin',
+        data: {
+          recoveryLink: url
+        }
+      }
+    ])
+
+    linkId = url.replace(DOMAIN + '/password?id=', '')
+
+    // Check link
+    link = await LinkLib.get(linkId, ['type', 'email', 'userid'])
+    expect(link).toEqual({
+      id: linkId,
+      type: PASSWORD_RECOVERY,
+      email: 'admin',
+      userid: null
+    })
+
+    // Process link, wrong email
+    try {
+      await LinkLib.process(linkId, { email: 'email' })
+      expect(true).toBe(false)
+    } catch (err) {
+      expect(err).toEqual(new Error('Inconsistent data'))
+    }
+
+    // Process link
+    await LinkLib.process(linkId, { email: 'admin' })
+    link = await LinkLib.get(linkId, ['type', 'email', 'userid'])
+    expect(link).not.toBeDefined()
+
+    // Mailersend Error
+    mockSend.mockImplementation(() => ({
+      status: 401,
+      statusText: 'Unauthorized'
+    }))
     await route(req, res)
     expect(resStatus).toBe(500)
     expect(resJson).toEqual({
       error: true,
-      message: 'Mail error: Mailersend error'
+      message: 'Mail error: Unauthorized'
     })
+
+    // Test link
+    url = personalization[0].data.recoveryLink
+    expect(personalization).toEqual([
+      {
+        email: 'admin',
+        data: {
+          recoveryLink: url
+        }
+      }
+    ])
+
+    linkId = url.replace(DOMAIN + '/password?id=', '')
+
+    link = await LinkLib.get(linkId, ['type', 'email', 'userid'])
+    expect(link).not.toBeDefined()
   })
 })

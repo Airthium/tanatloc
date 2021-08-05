@@ -45,7 +45,12 @@ const subscribe = async (email, userid) => {
     .setTemplateId('3vz9dle2p6lkj50y')
     .setPersonalization(personalization)
 
-  await send(emailParams)
+  try {
+    await send(emailParams)
+  } catch (err) {
+    await Link.del(link)
+    throw err
+  }
 }
 
 const recover = async (email) => {
@@ -71,7 +76,12 @@ const recover = async (email) => {
     .setTemplateId('vywj2lp7n1l7oqzd')
     .setPersonalization(personalization)
 
-  await send(emailParams)
+  try {
+    await send(emailParams)
+  } catch (err) {
+    await Link.del(link)
+    throw err
+  }
 }
 
 /**
@@ -103,7 +113,12 @@ const revalidate = async (email, userid) => {
     .setTemplateId('jy7zpl9xq5l5vx6k')
     .setPersonalization(personalization)
 
-  await send(emailParams)
+  try {
+    await send(emailParams)
+  } catch (err) {
+    await Link.del(link)
+    throw err
+  }
 }
 
 /**
@@ -137,7 +152,12 @@ const invite = async (email, user) => {
     .setTemplateId('jy7zpl9x95l5vx6k')
     .setPersonalization(personalization)
 
-  await send(emailParams)
+  try {
+    await send(emailParams)
+  } catch (err) {
+    await Link.del(link)
+    throw err
+  }
 }
 
 const Email = { subscribe, recover, revalidate, invite }

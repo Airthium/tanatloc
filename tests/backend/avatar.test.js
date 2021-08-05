@@ -6,17 +6,42 @@ import { initialize, clean } from '@/config/jest/e2e/global'
 
 import { encryptSession } from '@/auth/iron'
 
+import UserLib from '@/lib/user'
 import AvatarLib from '@/lib/avatar'
 import WorkspaceLib from '@/lib/workspace'
 import ProjectLib from '@/lib/project'
 
 // Initialize
 let adminUUID
+let workspace
+let project
 beforeAll((done) => {
   initialize()
     .then((res) => (adminUUID = res))
-    .catch((err) => console.error(err))
-    .finally(done)
+    .catch(console.error)
+    .finally(() => {
+      // Create workspace & project
+      WorkspaceLib.add({ id: adminUUID }, { name: 'Test workspace' })
+        .then((w) => {
+          workspace = w
+          ProjectLib.add(
+            { id: adminUUID },
+            {
+              workspace: { id: workspace.id },
+              project: {
+                title: 'Test project',
+                description: 'Test description'
+              }
+            }
+          )
+            .then((p) => {
+              project = p
+              done()
+            })
+            .catch(console.error)
+        })
+        .catch(console.error)
+    })
 })
 
 // Clean
@@ -181,6 +206,8 @@ describe('e2e/backend/avatar', () => {
     let previousAvatar
     let content
     let previousContent
+    let userData
+    let projectData
 
     // Body with file
     req.body = {
@@ -200,6 +227,9 @@ describe('e2e/backend/avatar', () => {
 
     content = await AvatarLib.read(avatarId)
     expect(content.toString()).toBe('data1')
+
+    userData = await UserLib.get(adminUUID, ['avatar'], false)
+    expect(userData.avatar).toBe(avatarId)
 
     // Body with file, previous avatar
     previousAvatarId = avatarId
@@ -231,18 +261,8 @@ describe('e2e/backend/avatar', () => {
       expect(err).toEqual(new Error('Avatar does not exist.'))
     }
 
-    // Create a workspace & project
-    const workspace = await WorkspaceLib.add(
-      { id: adminUUID },
-      { name: 'Test workspace' }
-    )
-    const project = await ProjectLib.add(
-      { id: adminUUID },
-      {
-        workspace: { id: workspace.id },
-        project: { title: 'Test project', description: 'Test description' }
-      }
-    )
+    userData = await UserLib.get(adminUUID, ['avatar'], false)
+    expect(userData.avatar).toBe(avatarId)
 
     // Body with project & file
     previousAvatarId = avatarId
@@ -270,6 +290,9 @@ describe('e2e/backend/avatar', () => {
 
     previousContent = await AvatarLib.read(previousAvatarId)
     expect(previousContent).toBeDefined()
+
+    projectData = await ProjectLib.get(project.id, ['avatar'], false)
+    expect(projectData.avatar).toBe(avatarId)
 
     // Body with project & file, previous avatar
     previousAvatarId = avatarId
@@ -301,6 +324,9 @@ describe('e2e/backend/avatar', () => {
     } catch (err) {
       expect(err).toEqual(new Error('Avatar does not exist.'))
     }
+
+    projectData = await ProjectLib.get(project.id, ['avatar'], false)
+    expect(projectData.avatar).toBe(avatarId)
 
     // Unlink error
     previousAvatarId = avatarId
@@ -336,5 +362,8 @@ describe('e2e/backend/avatar', () => {
     } catch (err) {
       expect(err).toEqual(new Error('Avatar does not exist.'))
     }
+
+    projectData = await ProjectLib.get(project.id, ['avatar'], false)
+    expect(projectData.avatar).toBe(avatarId)
   })
 })

@@ -1,60 +1,66 @@
+import { promises as fs } from 'fs'
+
 import route from '@/route/geometry'
+
+import { initialize, clean } from '@/config/jest/e2e/global'
 
 import { encryptSession } from '@/auth/iron'
 
-import { GEOMETRY } from '@/config/storage'
+import WorkspaceLib from '@/lib/workspace'
+import ProjectLib from '@/lib/project'
+import GeometryLib from '@/lib/geometry'
 
-const mockQuery = jest.fn()
-jest.mock('pg', () => {
-  return {
-    Pool: class PoolMock {
-      constructor() {
-        this.connect = async () => ({
-          query: async (command, args) => mockQuery(command, args),
-          release: jest.fn()
+// Initialize
+let adminUUID
+let workspace
+let project
+beforeAll((done) => {
+  initialize()
+    .then((res) => (adminUUID = res))
+    .catch(console.error)
+    .finally(() => {
+      // Create workspace & project
+      WorkspaceLib.add({ id: adminUUID }, { name: 'Test workspace' })
+        .then((w) => {
+          workspace = w
+          ProjectLib.add(
+            { id: adminUUID },
+            {
+              workspace: { id: workspace.id },
+              project: {
+                title: 'Test project',
+                description: 'Test description'
+              }
+            }
+          )
+            .then((p) => {
+              project = p
+              done()
+            })
+            .catch(console.error)
         })
-        this.query = async () => 'query'
-        this.end = jest.fn()
-      }
-    }
-  }
+        .catch(console.error)
+    })
 })
 
+// Clean
+afterAll((done) => {
+  clean()
+    .catch((err) => console.error(err))
+    .finally(done)
+})
+
+// Sentry mock
 const mockCaptureException = jest.fn()
 jest.mock('@sentry/node', () => ({
-  init: jest.fn(),
+  init: jest.fn,
   captureException: (err) => mockCaptureException(err)
 }))
 
-const mockReadFile = jest.fn()
-const mockWriteFile = jest.fn()
-jest.mock('fs', () => {
-  const fs = jest.requireActual('fs')
-  return {
-    ...fs,
-    promises: {
-      ...fs.promises,
-      readFile: async (path) => mockReadFile(path),
-      writeFile: async (path, data) => mockWriteFile(path, data)
-    }
-  }
-})
-
-const mockConvert = jest.fn()
-jest.mock('three-to-glb', () => ({
-  convert: async (path, file) => mockConvert(path, file)
-}))
-
-const mockSpawn = jest.fn()
-jest.mock('child_process', () => {
-  const childProcess = jest.requireActual('child_process')
-  return {
-    ...childProcess,
-    spawn: (executable, args) => mockSpawn(executable, args)
-  }
-})
-
 describe('e2e/backend/geometry', () => {
+  // There is conversion, that takes time
+  jest.setTimeout(10_000)
+
   const req = {}
   let resStatus
   let resJson
@@ -74,33 +80,12 @@ describe('e2e/backend/geometry', () => {
 
   const setToken = async () => {
     req.headers = {
-      cookie: 'token=' + (await encryptSession({ id: 'id' })) + ';'
+      cookie: 'token=' + (await encryptSession({ id: adminUUID })) + ';'
     }
   }
 
   beforeEach(() => {
-    mockQuery.mockReset()
-
     mockCaptureException.mockReset()
-
-    mockReadFile.mockReset()
-    mockWriteFile.mockReset()
-
-    mockConvert.mockReset()
-    mockConvert.mockImplementation(() => ({ data: 'data' }))
-
-    mockSpawn.mockReset()
-    mockSpawn.mockImplementation(() => ({
-      stdout: {
-        on: (_, callback) => callback()
-      },
-      stderr: {
-        on: (_, callback) => callback()
-      },
-      on: (type, callback) => {
-        if (type === 'close') callback(0)
-      }
-    }))
 
     resStatus = undefined
     resJson = undefined
@@ -171,9 +156,9 @@ describe('e2e/backend/geometry', () => {
       )
     )
 
-    // No geometry
+    //  No geometry
     req.body = {
-      project: { id: 'id' }
+      project: { id: project.id }
     }
     await route(req, res)
     expect(resStatus).toBe(500)
@@ -190,7 +175,7 @@ describe('e2e/backend/geometry', () => {
 
     // No geometry name
     req.body = {
-      project: { id: 'id' },
+      project: { id: project.id },
       geometry: {}
     }
     await route(req, res)
@@ -208,7 +193,7 @@ describe('e2e/backend/geometry', () => {
 
     // No geometry uid
     req.body = {
-      project: { id: 'id' },
+      project: { id: project.id },
       geometry: { name: 'name.step' }
     }
     await route(req, res)
@@ -226,7 +211,7 @@ describe('e2e/backend/geometry', () => {
 
     // No geometry buffer
     req.body = {
-      project: { id: 'id' },
+      project: { id: project.id },
       geometry: { name: 'name.step', uid: 'uid' }
     }
     await route(req, res)
@@ -243,117 +228,233 @@ describe('e2e/backend/geometry', () => {
     )
 
     // Error
-    mockQuery.mockImplementation(() => {
-      throw new Error('query error')
-    })
     req.body = {
-      project: { id: 'id' },
-      geometry: { name: 'name.step', uid: 'uid', buffer: Buffer.from('buffer') }
+      project: { id: project.id },
+      geometry: {
+        name: 'name1.step',
+        uid: 'uid1',
+        buffer: Buffer.from('not a geometry')
+      }
     }
     await route(req, res)
     expect(resStatus).toBe(500)
     expect(resJson).toEqual({
       error: true,
-      message: 'query error'
-    })
-    expect(mockCaptureException).toHaveBeenLastCalledWith(
-      new Error('query error')
-    )
-
-    // Delete geometry
-    mockQuery.mockImplementation(() => ({
-      rows: [{ id: 'id' }]
-    }))
-    mockReadFile.mockImplementation(() => {
-      throw new Error('readFile error')
-    })
-    await route(req, res)
-    expect(resStatus).toBe(500)
-    expect(resJson).toEqual({
-      error: true,
-      message: 'readFile error'
-    })
-    expect(mockCaptureException).toHaveBeenLastCalledWith(
-      new Error('readFile error')
-    )
-
-    // Simple
-    mockReadFile.mockImplementation(() => '{}')
-    await route(req, res)
-    expect(mockWriteFile).toHaveBeenNthCalledWith(
-      1,
-      GEOMETRY + '/uid.step',
-      'buffer'
-    )
-    expect(mockWriteFile).toHaveBeenNthCalledWith(
-      2,
-      GEOMETRY + '/uid.glb',
-      'data'
-    )
-    expect(resStatus).toBe(200)
-    expect(resJson).toEqual({
-      extension: 'step',
-      glb: 'uid.glb',
-      id: 'id',
-      json: 'uid',
-      name: 'name.step',
-      originalfilename: 'name.step',
-      summary: {},
-      uploadfilename: 'uid.step'
+      message: 'Conversion process failed.'
     })
 
-    // With solids, faces and edges
-    let color = 0
-    mockReadFile.mockImplementation((file) => {
-      if (file.includes('/uid/path')) {
-        color++
-        if (color % 2 === 0)
-          return JSON.stringify({
-            uuid: 'uuid',
-            data: {
-              attributes: {
-                color: {
-                  itemSize: 3,
-                  array: [0, 0.5, 1]
-                }
-              }
-            }
-          })
-        else
-          return JSON.stringify({
-            uuid: 'uuid'
-          })
+    // Normal
+    const stepFile = await fs.readFile('tests/assets/cube.step')
+    req.body = {
+      project: { id: project.id },
+      geometry: {
+        name: 'name2.step',
+        uid: 'uid2',
+        buffer: Buffer.from(stepFile)
       }
-      return JSON.stringify({
-        solids: [{ path: 'path' }, { path: 'path' }],
-        faces: [{ path: 'path' }, { path: 'path' }],
-        edges: [{ path: 'path' }, { path: 'path' }]
-      })
-    })
+    }
     await route(req, res)
     expect(resStatus).toBe(200)
-    expect(resJson).toEqual({
-      extension: 'step',
-      glb: 'uid.glb',
-      id: 'id',
-      json: 'uid',
-      name: 'name.step',
-      originalfilename: 'name.step',
-      summary: {
-        solids: [
-          { uuid: 'uuid' },
-          { uuid: 'uuid', color: { r: 0, g: 0.5, b: 1 } }
-        ],
-        faces: [
-          { uuid: 'uuid' },
-          { uuid: 'uuid', color: { r: 0, g: 0.5, b: 1 } }
-        ],
-        edges: [
-          { uuid: 'uuid' },
-          { uuid: 'uuid', color: { r: 0, g: 0.5, b: 1 } }
-        ]
-      },
-      uploadfilename: 'uid.step'
+    const geometryId = resJson.id
+
+    // Remove uuid for comparaison, unique at each run
+    const resJsonCopy = JSON.parse(JSON.stringify(resJson))
+    resJsonCopy.summary.solids.forEach((solid) => {
+      delete solid.uuid
     })
+    resJsonCopy.summary.faces.forEach((face) => {
+      delete face.uuid
+    })
+    delete resJsonCopy.summary.uuid
+
+    expect(resJsonCopy).toEqual({
+      extension: 'step',
+      glb: 'uid2.glb',
+      id: geometryId,
+      json: 'uid2',
+      name: 'name2.step',
+      originalfilename: 'name2.step',
+      summary: {
+        faces: [
+          {
+            color: {
+              b: 0.75,
+              g: 0.75,
+              r: 0.75
+            },
+            name: 'face_1',
+            number: '1'
+          },
+          {
+            color: {
+              b: 0.75,
+              g: 0.75,
+              r: 0.75
+            },
+            name: 'face_2',
+            number: '2'
+          },
+          {
+            color: {
+              b: 0.75,
+              g: 0.75,
+              r: 0.75
+            },
+            name: 'face_3',
+            number: '3'
+          },
+          {
+            color: {
+              b: 0.75,
+              g: 0.75,
+              r: 0.75
+            },
+            name: 'face_4',
+            number: '4'
+          },
+          {
+            color: {
+              b: 0.75,
+              g: 0.75,
+              r: 0.75
+            },
+            name: 'face_5',
+            number: '5'
+          },
+          {
+            color: {
+              b: 0.75,
+              g: 0.75,
+              r: 0.75
+            },
+            name: 'face_6',
+            number: '6'
+          }
+        ],
+        solids: [
+          {
+            color: {
+              b: 0.75,
+              g: 0.75,
+              r: 0.75
+            },
+            name: 'solid_1',
+            number: '1'
+          }
+        ],
+        type: 'geometry'
+      },
+      uploadfilename: 'uid2.step'
+    })
+
+    // test dB entry and file
+    const geometry = await GeometryLib.get(geometryId, [
+      'name',
+      'originalfilename',
+      'extension',
+      'uploadfilename',
+      'glb',
+      'json',
+      'summary',
+      'project'
+    ])
+    const geometryCopy = JSON.parse(JSON.stringify(geometry))
+    geometryCopy.summary.solids.forEach((solid) => {
+      delete solid.uuid
+    })
+    geometryCopy.summary.faces.forEach((face) => {
+      delete face.uuid
+    })
+    delete geometryCopy.summary.uuid
+    expect(geometryCopy).toEqual({
+      extension: 'step',
+      glb: 'uid2.glb',
+      id: geometryId,
+      json: 'uid2',
+      name: 'name2.step',
+      originalfilename: 'name2.step',
+      project: project.id,
+      summary: {
+        faces: [
+          {
+            color: {
+              b: 0.75,
+              g: 0.75,
+              r: 0.75
+            },
+            name: 'face_1',
+            number: '1'
+          },
+          {
+            color: {
+              b: 0.75,
+              g: 0.75,
+              r: 0.75
+            },
+            name: 'face_2',
+            number: '2'
+          },
+          {
+            color: {
+              b: 0.75,
+              g: 0.75,
+              r: 0.75
+            },
+            name: 'face_3',
+            number: '3'
+          },
+          {
+            color: {
+              b: 0.75,
+              g: 0.75,
+              r: 0.75
+            },
+            name: 'face_4',
+            number: '4'
+          },
+          {
+            color: {
+              b: 0.75,
+              g: 0.75,
+              r: 0.75
+            },
+            name: 'face_5',
+            number: '5'
+          },
+          {
+            color: {
+              b: 0.75,
+              g: 0.75,
+              r: 0.75
+            },
+            name: 'face_6',
+            number: '6'
+          }
+        ],
+        solids: [
+          {
+            color: {
+              b: 0.75,
+              g: 0.75,
+              r: 0.75
+            },
+            name: 'solid_1',
+            number: '1'
+          }
+        ],
+        type: 'geometry'
+      },
+      uploadfilename: 'uid2.step'
+    })
+
+    // Step
+    const step = await GeometryLib.read({ id: geometryId })
+    expect(step.extension).toBe('step')
+    expect(step.buffer).toBeDefined()
+
+    // Part (json & glb)
+    const json = await GeometryLib.readPart({ id: geometryId })
+    expect(json.uuid).toBeDefined()
+    expect(json.buffer).toBeDefined()
   })
 })

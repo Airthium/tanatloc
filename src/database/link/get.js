@@ -10,7 +10,10 @@ import { tables } from '@/config/db'
 const get = async (id, data) => {
   const response = await getter(tables.LINKS, id, data)
 
-  return response.rows[0]
+  const link = response.rows[0]
+  link && (link.id = id)
+
+  return link
 }
 
 export default get

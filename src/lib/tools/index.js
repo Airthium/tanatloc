@@ -68,7 +68,7 @@ const convert = async (location, file, callback, param) => {
   )
   callback && callback({ data, error })
 
-  if (error) throw new Error('Conversion process failed. Error: ' + error)
+  if (error) throw new Error('Conversion process failed.')
   if (code !== 0) throw new Error('Conversion process failed. Code ' + code)
 
   if (param && param.isResult) {

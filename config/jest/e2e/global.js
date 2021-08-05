@@ -13,7 +13,14 @@ const initialize = async () => {
 }
 
 const clean = async () => {
+  await query('DELETE FROM ' + tables.ORGANIZATIONS)
+  await query('DELETE FROM ' + tables.GROUPS)
+  await query('DELETE FROM ' + tables.WORKSPACES)
+  await query('DELETE FROM ' + tables.PROJECTS)
+  await query('DELETE FROM ' + tables.GEOMETRIES)
+  await query('DELETE FROM ' + tables.SIMULATIONS)
   await query('DELETE FROM ' + tables.AVATARS)
+  await query('DELETE FROM ' + tables.LINKS)
 }
 
 // Export

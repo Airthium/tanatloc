@@ -22,7 +22,7 @@
     "is-docker": "2.2.1",
     "lodash.merge": "4.6.2",
     "mailersend": "1.1.0",
-    "next": "11.0.1",
+    "next": "11.1.0",
     "node-fetch": "2.6.1",
     "passport": "0.4.1",
     "passport-local": "1.0.0",

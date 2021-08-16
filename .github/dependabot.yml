@@ -1,1 +1,8 @@
-target-branch: dev
+version: 1
+updates:
+  - package-ecosystem: 'npm'
+    directory: '/'
+    target-branch: dev
+  - package-ecosystem: 'docker'
+    directory: '/'
+    target-branch: 'dev'

@@ -49,7 +49,7 @@ const call = async (route, param) => {
   if (response.status !== 200 && !contentType.includes('application/json'))
     throw new Error('API error - status: ' + response.status)
 
-  if (contentType && contentType.includes('application/json')) {
+  if (contentType?.includes('application/json')) {
     const res = await response.json()
 
     if (res.error) throw new Error(res.message)

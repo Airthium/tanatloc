@@ -55,7 +55,7 @@ beforeAll((done) => {
         })
         .catch(console.err)
     })
-})
+}, 0) // No timeout
 
 // Clean
 afterAll((done) => {
@@ -108,6 +108,22 @@ describe('e2e/backend/geometry/[id]', () => {
     expect(resJson).toEqual({ message: 'Unauthorized' })
   })
 
+  test('No id', async () => {
+    req.query = {}
+    req.params = {}
+    await setToken()
+
+    await route(req, res)
+    expect(resStatus).toBe(500)
+    expect(resJson).toEqual({
+      error: true,
+      message: 'Missing data in your request (query: { id(string) })'
+    })
+    expect(mockCaptureException).toHaveBeenLastCalledWith(
+      new Error('Missing data in your request (query: { id(string) })')
+    )
+  })
+
   test('Invalid id', async () => {
     req.query = { id: validUUID }
     await setToken()
@@ -137,212 +153,57 @@ describe('e2e/backend/geometry/[id]', () => {
     })
   })
 
-  //TODO
+  test('Update geometry', async () => {
+    req.query = { id: geometry.id }
+    req.body = {}
+    req.method = 'PUT'
+    await setToken()
 
-  // test('Get geometry', async () => {
-  //   req.query = { id: 'id' }
-  //   req.method = 'GET'
-  //   await setToken()
+    // Wrong data
+    await route(req, res)
+    expect(resStatus).toBe(500)
+    expect(resJson).toEqual({
+      error: true,
+      message: 'Missing data in your request (body(array))'
+    })
+    expect(mockCaptureException).toHaveBeenLastCalledWith(
+      new Error('Missing data in your request (body(array))')
+    )
 
-  //   // Normal
-  //   mockQuery.mockImplementation((command) => {
-  //     if (
-  //       command === 'SELECT project FROM tanatloc_geometries WHERE id = $1' ||
-  //       command ===
-  //         'SELECT owners,users,groups,workspace FROM tanatloc_projects WHERE id = $1'
-  //     )
-  //       return { rows: [{ id: 'id', owners: ['id'] }] }
+    // Normal
+    req.body = [{ key: 'name', value: 'new name' }]
+    await route(req, res)
+    expect(resStatus).toBe(200)
+    expect(resJson).toEqual('end')
+    const geometryData = await GeometryLib.get(geometry.id, ['name'])
+    expect(geometryData.name).toBe('new name')
+  })
 
-  //     return { rows: [{ id: 'id' }] }
-  //   })
-  //   await route(req, res)
-  //   expect(resStatus).toBe(200)
-  //   expect(resJson).toEqual({ geometry: { id: 'id' } })
+  test('Delete geometry', async () => {
+    req.query = { id: geometry.id }
+    req.method = 'DELETE'
+    await setToken()
 
-  //   // Error
-  //   mockQuery.mockImplementation((command) => {
-  //     if (
-  //       command === 'SELECT project FROM tanatloc_geometries WHERE id = $1' ||
-  //       command ===
-  //         'SELECT owners,users,groups,workspace FROM tanatloc_projects WHERE id = $1' ||
-  //       command ===
-  //         'SELECT owners,users,groups FROM tanatloc_workspaces WHERE id = $1'
-  //     )
-  //       return { rows: [{ id: 'id', owners: ['id'] }] }
+    // Normal
+    await route(req, res)
+    expect(resStatus).toBe(200)
+    expect(resJson).toEqual('end')
 
-  //     throw new Error('query error')
-  //   })
-  //   await route(req, res)
-  //   expect(resStatus).toBe(500)
-  //   expect(resJson).toEqual({ error: true, message: 'query error' })
-  //   expect(mockCaptureException).toHaveBeenLastCalledWith(
-  //     new Error('query error')
-  //   )
-  // })
+    const geometryData = await GeometryLib.get(geometry.id, ['name'])
+    expect(geometryData).not.toBeDefined()
 
-  // test('Update geometry', async () => {
-  //   req.query = { id: 'id' }
-  //   req.method = 'PUT'
-  //   await setToken()
+    try {
+      await GeometryLib.read({ id: geometry.id })
+      expect(true).toBe(false)
+    } catch (err) {
+      expect(err).toEqual(new Error('Geometry does not exist.'))
+    }
 
-  //   // Wrong data
-  //   mockQuery.mockImplementation((command) => {
-  //     if (
-  //       command === 'SELECT project FROM tanatloc_geometries WHERE id = $1' ||
-  //       command ===
-  //         'SELECT owners,users,groups,workspace FROM tanatloc_projects WHERE id = $1'
-  //     )
-  //       return { rows: [{ id: 'id', owners: ['id'] }] }
-
-  //     return { rows: [{ id: 'id' }] }
-  //   })
-  //   await route(req, res)
-  //   expect(resStatus).toBe(500)
-  //   expect(resJson).toEqual({
-  //     error: true,
-  //     message: 'Missing data in your request (body(array))'
-  //   })
-  //   expect(mockCaptureException).toHaveBeenLastCalledWith(
-  //     new Error('Missing data in your request (body(array))')
-  //   )
-
-  //   // Normal
-  //   req.body = [{ key: 'key', value: 'value' }]
-  //   await route(req, res)
-  //   expect(resStatus).toBe(200)
-  //   expect(resJson).toEqual('end')
-  //   expect(mockQuery).toHaveBeenLastCalledWith(
-  //     'UPDATE tanatloc_geometries SET key = $2 WHERE id = $1',
-  //     ['id', 'value']
-  //   )
-
-  //   // Error
-  //   mockQuery.mockImplementation((command) => {
-  //     if (
-  //       command === 'SELECT project FROM tanatloc_geometries WHERE id = $1' ||
-  //       command ===
-  //         'SELECT owners,users,groups,workspace FROM tanatloc_projects WHERE id = $1' ||
-  //       command ===
-  //         'SELECT owners,users,groups FROM tanatloc_workspaces WHERE id = $1'
-  //     )
-  //       return { rows: [{ id: 'id', owners: ['id'] }] }
-
-  //     throw new Error('query error')
-  //   })
-  //   await route(req, res)
-  //   expect(resStatus).toBe(500)
-  //   expect(resJson).toEqual({ error: true, message: 'query error' })
-  //   expect(mockCaptureException).toHaveBeenLastCalledWith(
-  //     new Error('query error')
-  //   )
-  // })
-
-  // test('Delete geometry', async () => {
-  //   req.query = { id: 'id' }
-  //   req.method = 'DELETE'
-  //   await setToken()
-
-  //   // Normal
-  //   mockQuery.mockImplementation((command) => {
-  //     if (
-  //       command === 'SELECT project FROM tanatloc_geometries WHERE id = $1' ||
-  //       command ===
-  //         'SELECT owners,users,groups,workspace FROM tanatloc_projects WHERE id = $1'
-  //     )
-  //       return { rows: [{ id: 'id', owners: ['id'] }] }
-
-  //     return { rows: [{ id: 'id' }] }
-  //   })
-  //   await route(req, res)
-  //   expect(mockQuery).toHaveBeenNthCalledWith(
-  //     4,
-  //     'SELECT extension,uploadfilename,glb,json,project FROM tanatloc_geometries WHERE id = $1',
-  //     ['id']
-  //   )
-  //   expect(mockQuery).toHaveBeenNthCalledWith(
-  //     5,
-  //     'UPDATE tanatloc_projects SET geometries = array_remove(geometries, $1)',
-  //     ['id']
-  //   )
-  //   expect(mockQuery).toHaveBeenNthCalledWith(
-  //     6,
-  //     'DELETE FROM tanatloc_geometries WHERE id = $1',
-  //     ['id']
-  //   )
-  //   expect(resStatus).toBe(200)
-  //   expect(resJson).toEqual('end')
-
-  //   // With uploadfilename, glb & json
-  //   mockQuery.mockClear()
-  //   mockQuery.mockImplementation((command) => {
-  //     if (
-  //       command === 'SELECT project FROM tanatloc_geometries WHERE id = $1' ||
-  //       command ===
-  //         'SELECT owners,users,groups,workspace FROM tanatloc_projects WHERE id = $1' ||
-  //       command ===
-  //         'SELECT owners,users,groups FROM tanatloc_workspaces WHERE id = $1'
-  //     )
-  //       return { rows: [{ id: 'id', owners: ['id'] }] }
-  //     else if (
-  //       command ===
-  //       'SELECT extension,uploadfilename,glb,json,project FROM tanatloc_geometries WHERE id = $1'
-  //     )
-  //       return {
-  //         rows: [
-  //           {
-  //             id: 'id',
-  //             uploadfilename: 'uploadfilename',
-  //             glb: 'glb',
-  //             json: 'json'
-  //           }
-  //         ]
-  //       }
-  //     return { rows: [{ id: 'id' }] }
-  //   })
-  //   await route(req, res)
-  //   expect(mockUnlink).toHaveBeenNthCalledWith(
-  //     1,
-  //     '/home/simon/tanatloc/geometry/uploadfilename'
-  //   )
-  //   expect(mockUnlink).toHaveBeenNthCalledWith(
-  //     2,
-  //     '/home/simon/tanatloc/geometry/glb'
-  //   )
-  //   expect(mockRm).toHaveBeenLastCalledWith(
-  //     '/home/simon/tanatloc/geometry/json'
-  //   )
-  //   expect(resStatus).toBe(200)
-  //   expect(resJson).toEqual('end')
-
-  //   // unlink & rm errors
-  //   mockUnlink.mockImplementation(() => {
-  //     throw new Error('unlink error')
-  //   })
-  //   mockRm.mockImplementation(() => {
-  //     throw new Error('rm error')
-  //   })
-  //   await route(req, res)
-  //   expect(resStatus).toBe(200)
-  //   expect(resJson).toEqual('end')
-
-  //   // Error
-  //   mockQuery.mockImplementation((command) => {
-  //     if (
-  //       command === 'SELECT project FROM tanatloc_geometries WHERE id = $1' ||
-  //       command ===
-  //         'SELECT owners,users,groups,workspace FROM tanatloc_projects WHERE id = $1' ||
-  //       command ===
-  //         'SELECT owners,users,groups FROM tanatloc_workspaces WHERE id = $1'
-  //     )
-  //       return { rows: [{ id: 'id', owners: ['id'] }] }
-
-  //     throw new Error('query error')
-  //   })
-  //   await route(req, res)
-  //   expect(resStatus).toBe(500)
-  //   expect(resJson).toEqual({ error: true, message: 'query error' })
-  //   expect(mockCaptureException).toHaveBeenLastCalledWith(
-  //     new Error('query error')
-  //   )
-  // })
+    try {
+      await GeometryLib.readPart({ id: geometry.id })
+      expect(true).toBe(false)
+    } catch (err) {
+      expect(err).toEqual(new Error('Geometry does not exist.'))
+    }
+  })
 })

@@ -8,7 +8,7 @@ import Caller from '@/api/call'
 const useOrganizations = () => {
   const { data, error, mutate } = useSWR('/api/organizations', Caller.fetcher)
   const loading = !data
-  const organizations = (data && data.organizations) || []
+  const organizations = data?.organizations || []
 
   /**
    * Reload

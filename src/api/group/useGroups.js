@@ -9,7 +9,7 @@ import Caller from '@/api/call'
 const useGroups = (id) => {
   const { data, error, mutate } = useSWR('/api/groups/' + id, Caller.fetcher)
   const loading = !data
-  const groups = (data && data.groups) || []
+  const groups = data?.groups || []
 
   /**
    * Add one

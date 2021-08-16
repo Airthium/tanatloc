@@ -8,7 +8,7 @@ import Caller from '@/api/call'
 const usePlugins = () => {
   const { data, error, mutate } = useSWR('/api/plugin', Caller.fetcher)
   const loading = !data
-  const plugins = (data && data.plugins) || []
+  const plugins = data?.plugins || []
 
   const addOne = (plugin) => {
     const newPlugins = [...plugins, plugin]

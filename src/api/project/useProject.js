@@ -12,7 +12,7 @@ const useProject = (id) => {
     Caller.fetcher
   )
   const loading = !data
-  const project = (data && data.project) || {}
+  const project = data?.project || {}
 
   const myMutate = (update) => {
     mutate({

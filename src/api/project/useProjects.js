@@ -12,7 +12,7 @@ const useProjects = (ids) => {
     Caller.fetcher
   )
   const loading = !data
-  const projects = (data && data.projects) || []
+  const projects = data?.projects || []
 
   /**
    * Add one (useProjects)

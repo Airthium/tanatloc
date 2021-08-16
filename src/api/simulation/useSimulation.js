@@ -13,7 +13,7 @@ const useSimulation = (id, refresh) => {
     { refreshInterval: refresh || 0 }
   )
   const loading = !data
-  const simulation = (data && data.simulation) || {}
+  const simulation = data?.simulation || {}
 
   const myMutate = (update) => {
     mutate({

@@ -25,6 +25,17 @@ export default async (req, res) => {
     id = req.params.id
   }
 
+  // Check
+  if (!id || typeof id !== 'string') {
+    const error = new Error(
+      'Missing data in your request (query: { id(string) })'
+    )
+    console.error(error)
+    res.status(500).json({ error: true, message: error.message })
+    Sentry.captureException(error)
+    return
+  }
+
   // Check authorization
   try {
     const geometryAuth = await GeometryLib.get(id, ['project'])
@@ -40,6 +51,7 @@ export default async (req, res) => {
       ['owners', 'users', 'groups'],
       false
     )
+
     if (!(await auth(sessionId, projectAuth, workspaceAuth))) {
       res.status(401).json({ error: true, message: 'Unauthorized' })
       return
@@ -52,17 +64,6 @@ export default async (req, res) => {
   }
 
   switch (req.method) {
-    case 'GET':
-      // Get geometry
-      try {
-        const geometry = await GeometryLib.get(id, ['name', 'scheme', 'tasks'])
-        res.status(200).json({ geometry })
-      } catch (err) {
-        console.error(err)
-        res.status(500).json({ error: true, message: err.message })
-        Sentry.captureException(err)
-      }
-      break
     case 'PUT':
       // Update geometry
       try {

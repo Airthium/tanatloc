@@ -8,7 +8,7 @@ import Caller from '@/api/call'
 const useUsers = () => {
   const { data, error, mutate } = useSWR('/api/users', Caller.fetcher)
   const loading = !data
-  const users = (data && data.users) || []
+  const users = data?.users || []
 
   /**
    * Add one

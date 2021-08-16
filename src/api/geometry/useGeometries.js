@@ -12,7 +12,7 @@ const useGeometries = (ids) => {
     Caller.fetcher
   )
   const loading = !data
-  const geometries = (data && data.geometries) || []
+  const geometries = data?.geometries || []
 
   /**
    * Add one (useGeometries)

@@ -66,7 +66,7 @@ const convert = async (location, file, callback, param) => {
     origin,
     jsonTarget
   )
-  callback && callback({ data, error })
+  callback?.({ data, error })
 
   if (error) throw new Error('Conversion process failed.')
   if (code !== 0) throw new Error('Conversion process failed. Code ' + code)

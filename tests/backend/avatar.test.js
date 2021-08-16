@@ -42,7 +42,7 @@ beforeAll((done) => {
         })
         .catch(console.error)
     })
-})
+}, 0) // No timeout
 
 // Clean
 afterAll((done) => {

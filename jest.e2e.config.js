@@ -3,7 +3,8 @@ module.exports = {
   collectCoverageFrom: [
     '**/*.{js,jsx,ts,tsx}',
     '!**/*.d.ts',
-    '!**/node_modules/**'
+    '!**/node_modules/**',
+    '!**/*.test.js'
   ],
   testEnvironment: 'jsdom',
   testEnvironmentOptions: {

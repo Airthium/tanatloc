@@ -58,7 +58,7 @@ export const parseCookies = (req) => {
     if (req.cookies) return req.cookies
 
     // For pages we do need to parse the cookies.
-    const cookie = req.headers && req.headers.cookie
+    const cookie = req.headers?.cookie
     return parse(cookie || '')
   }
 }

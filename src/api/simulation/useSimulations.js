@@ -12,7 +12,7 @@ const useSimulations = (ids) => {
     Caller.fetcher
   )
   const loading = !data
-  const simulations = (data && data.simulations) || []
+  const simulations = data?.simulations || []
 
   /**
    * Add one (useSimulations)

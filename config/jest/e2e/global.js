@@ -6,12 +6,18 @@ import UserDB from '@/database/user'
 // Valid PostgreSQL UUID
 const validUUID = 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11'
 
-// Initialize
+/**
+ * Initialize
+ * @returns Administrator id
+ */
 const initialize = async () => {
   const admin = await UserDB.get('admin', ['id'], 'email')
   return admin.id
 }
 
+/**
+ * Clean
+ */
 const clean = async () => {
   await query('DELETE FROM ' + tables.ORGANIZATIONS)
   await query('DELETE FROM ' + tables.GROUPS)

@@ -9,7 +9,7 @@ import Caller from '@/api/call'
 const useUser = () => {
   const { data, error, mutate } = useSWR('/api/user', Caller.fetcher)
   const loading = !data
-  const user = data && data.user
+  const user = data?.user
 
   const myMutate = (update) => {
     mutate({

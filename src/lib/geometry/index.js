@@ -233,6 +233,7 @@ const del = async (geometry) => {
 const read = async (geometry) => {
   // Data
   const geometryData = await get(geometry.id, ['extension', 'uploadfilename'])
+  if (!geometryData) throw new Error('Geometry does not exist.')
 
   // Read
   const buffer = await Tools.readFile(
@@ -252,6 +253,7 @@ const read = async (geometry) => {
 const readPart = async (geometry) => {
   // Data
   const geometryData = await get(geometry.id, ['glb', 'json'])
+  if (!geometryData) throw new Error('Geometry does not exist.')
 
   // Read GLB
   const buffer = await Tools.readFile(

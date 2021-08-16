@@ -78,7 +78,7 @@ const del = async (parent, type, id) => {
   const data = await get(id, ['path'])
 
   // Remove file
-  if (data && data.path) {
+  if (data?.path) {
     const avatarFile = path.join(AVATAR, data.path)
     try {
       await Tools.removeFile(avatarFile)

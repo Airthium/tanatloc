@@ -5,10 +5,10 @@ updates:
     target-branch: dev
     schedule:
       interval: daily
-      time: 02:00
+      time: '02:00'
   - package-ecosystem: docker
     directory: /
     target-branch: hotfix
     schedule:
       interval: daily
-      time: 02:00
+      time: '02:00'

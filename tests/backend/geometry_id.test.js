@@ -53,15 +53,13 @@ beforeAll((done) => {
             })
             .catch(console.error)
         })
-        .catch(console.err)
+        .catch(console.error)
     })
 }, 10_000) // No timeout
 
 // Clean
 afterAll((done) => {
-  clean()
-    .catch((err) => console.error(err))
-    .finally(done)
+  clean().catch(console.error).finally(done)
 })
 
 // Sentry mock

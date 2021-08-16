@@ -59,9 +59,7 @@ beforeAll((done) => {
 
 // Clean
 afterAll((done) => {
-  clean()
-    .catch((err) => console.error(err))
-    .finally(done)
+  clean().catch(console.error).finally(done)
 })
 
 // Sentry mock

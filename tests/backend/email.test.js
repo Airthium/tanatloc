@@ -9,9 +9,7 @@ import LinkLib from '@/lib/link'
 
 // Clean
 afterAll((done) => {
-  clean()
-    .catch((err) => console.error(err))
-    .finally(done)
+  clean().catch(console.error).finally(done)
 })
 
 // mailersend mock

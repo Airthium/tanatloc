@@ -34,20 +34,11 @@ const add = async (organization, { name, users }) => {
  * @param {string} id Id
  * @param {Array} data Data
  */
-const get = async (id, data) => {
-  return GroupDB.get(id, data)
-}
+const get = async (id, data, withData = true) => {
+  const groupData = await GroupDB.get(id, data)
 
-/**
- * Get (with auto-fill users data)
- * @param {string} id Id
- * @param {Array} data Data
- */
-const getWithFill = async (id, data) => {
-  const groupData = await get(id, data)
-
-  groupData.users &&
-    (groupData.users = await Promise.all(
+  if (withData && groupData?.users)
+    groupData.users = await Promise.all(
       groupData.users.map(async (user) => {
         const userData = await User.get(user, [
           'firstname',
@@ -61,7 +52,7 @@ const getWithFill = async (id, data) => {
           ...userData
         }
       })
-    ))
+    )
 
   return groupData
 }
@@ -110,7 +101,7 @@ const getByOrganization = async (id, data) => {
     organization.groups &&
     Promise.all(
       organization.groups.map(async (group) => {
-        const groupData = await getWithFill(group, data)
+        const groupData = await get(group, data)
 
         return {
           id: group,
@@ -187,5 +178,5 @@ const del = async (group) => {
   await GroupDB.del(group)
 }
 
-const Group = { add, get: getWithFill, getAll, getByOrganization, update, del }
+const Group = { add, get, getAll, getByOrganization, update, del }
 export default Group

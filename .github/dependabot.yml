@@ -1,1 +1,14 @@
-target-branch: dev
+version: 2
+updates:
+  - package-ecosystem: 'npm'
+    directory: '/'
+    target-branch: dev
+    schedule:
+      interval: daily
+      time: '02:00'
+  - package-ecosystem: 'docker'
+    directory: '/'
+    target-branch: 'dev'
+    schedule:
+      interval: daily
+      time: '02:00'

@@ -55,7 +55,7 @@ beforeAll((done) => {
         })
         .catch(console.err)
     })
-}, 0) // No timeout
+}, 10_000) // No timeout
 
 // Clean
 afterAll((done) => {
@@ -139,6 +139,27 @@ describe('e2e/backend/geometry/[id]/download', () => {
     )
   })
 
+  test('Unauthorized 2', async () => {
+    req.query = { id: geometry.id }
+    await setToken()
+
+    jest.spyOn(ProjectLib, 'get').mockImplementationOnce(() => ({
+      owners: ['id'],
+      users: [],
+      groups: [],
+      workspace: 'id'
+    }))
+    jest.spyOn(WorkspaceLib, 'get').mockImplementationOnce(() => ({
+      owners: ['id'],
+      users: [],
+      groups: []
+    }))
+
+    await route(req, res)
+    expect(resStatus).toBe(401)
+    expect(resJson).toEqual({ error: true, message: 'Unauthorized' })
+  })
+
   test('Wrong method', async () => {
     req.query = {}
     req.params = { id: geometry.id }
@@ -166,7 +187,7 @@ describe('e2e/backend/geometry/[id]/download', () => {
     expect(resJson).toEqual(geometryPart)
 
     // Error
-    jest.spyOn(fspromises, 'readFile').mockImplementation(() => {
+    jest.spyOn(fspromises, 'readFile').mockImplementationOnce(() => {
       throw new Error('Unable to read')
     })
     await route(req, res)

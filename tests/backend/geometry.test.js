@@ -41,7 +41,7 @@ beforeAll((done) => {
         })
         .catch(console.error)
     })
-}, 0) // No timeout
+}, 10_000) // No timeout
 
 // Clean
 afterAll((done) => {

@@ -6,6 +6,9 @@ import { initialize, clean } from '@/config/jest/e2e/global'
 
 import { encryptSession } from '@/auth/iron'
 
+import { tables } from '@/config/db'
+import { updater } from '@/database'
+
 import UserLib from '@/lib/user'
 import AvatarLib from '@/lib/avatar'
 import WorkspaceLib from '@/lib/workspace'
@@ -42,7 +45,7 @@ beforeAll((done) => {
         })
         .catch(console.error)
     })
-}, 0) // No timeout
+}, 10_000) // No timeout
 
 // Clean
 afterAll((done) => {
@@ -338,7 +341,7 @@ describe('e2e/backend/avatar', () => {
         data: 'data5'
       }
     }
-    jest.spyOn(fs, 'unlink').mockImplementation(() => {
+    jest.spyOn(fs, 'unlink').mockImplementationOnce(() => {
       throw new Error('unlink error')
     })
     await route(req, res)
@@ -365,5 +368,17 @@ describe('e2e/backend/avatar', () => {
 
     projectData = await ProjectLib.get(project.id, ['avatar'], false)
     expect(projectData.avatar).toBe(avatarId)
+  })
+
+  test('Delete (lib)', async () => {
+    const avatar = await AvatarLib.add({ id: adminUUID }, 'user', {
+      name: 'name',
+      uid: 'uid',
+      data: 'data'
+    })
+
+    await updater(tables.AVATARS, avatar.id, [{ key: 'path', value: '' }])
+
+    await AvatarLib.del({ id: adminUUID }, 'user', avatar.id)
   })
 })

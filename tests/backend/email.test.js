@@ -171,7 +171,7 @@ describe('e2e/backend/email', () => {
     expect(personalization).not.toBeDefined()
 
     // Existing user
-    mockSend.mockImplementation(() => ({
+    mockSend.mockImplementationOnce(() => ({
       status: 202,
       statusText: 'success'
     }))
@@ -223,7 +223,7 @@ describe('e2e/backend/email', () => {
     expect(link).not.toBeDefined()
 
     // Mailersend Error
-    mockSend.mockImplementation(() => ({
+    mockSend.mockImplementationOnce(() => ({
       status: 401,
       statusText: 'Unauthorized'
     }))

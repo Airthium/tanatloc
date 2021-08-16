@@ -55,7 +55,7 @@ beforeAll((done) => {
         })
         .catch(console.err)
     })
-}, 0) // No timeout
+}, 10_000) // No timeout
 
 // Clean
 afterAll((done) => {
@@ -139,6 +139,27 @@ describe('e2e/backend/geometry/[id]', () => {
     )
   })
 
+  test('Unauthorized 2', async () => {
+    req.query = { id: geometry.id }
+    await setToken()
+
+    jest.spyOn(ProjectLib, 'get').mockImplementationOnce(() => ({
+      owners: ['id'],
+      users: [],
+      groups: [],
+      workspace: 'id'
+    }))
+    jest.spyOn(WorkspaceLib, 'get').mockImplementationOnce(() => ({
+      owners: ['id'],
+      users: [],
+      groups: []
+    }))
+
+    await route(req, res)
+    expect(resStatus).toBe(401)
+    expect(resJson).toEqual({ error: true, message: 'Unauthorized' })
+  })
+
   test('Wrong method', async () => {
     req.query = {}
     req.params = { id: geometry.id }
@@ -205,5 +226,29 @@ describe('e2e/backend/geometry/[id]', () => {
     } catch (err) {
       expect(err).toEqual(new Error('Geometry does not exist.'))
     }
+
+    // Re-add geometry
+    const stepFile = fs.readFileSync('tests/assets/cube.step')
+    geometry = await GeometryLib.add({
+      project: { id: project.id },
+      geometry: {
+        name: 'name.step',
+        uid: 'uid',
+        buffer: Buffer.from(stepFile)
+      }
+    })
+
+    // Error
+    req.query = { id: geometry.id }
+
+    jest.spyOn(GeometryLib, 'del').mockImplementationOnce(() => {
+      throw new Error('Geometry del error')
+    })
+    await route(req, res)
+    expect(resStatus).toBe(500)
+    expect(resJson).toEqual({ error: true, message: 'Geometry del error' })
+    expect(mockCaptureException).toHaveBeenLastCalledWith(
+      new Error('Geometry del error')
+    )
   })
 })

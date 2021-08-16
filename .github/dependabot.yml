@@ -6,6 +6,12 @@ updates:
     schedule:
       interval: daily
       time: '02:00'
+  - package-ecosystem: npm
+    directory: /docker
+    target-branch: dev
+    schedule:
+      interval: daily
+      time: '02:00'
   - package-ecosystem: docker
     directory: /
     target-branch: hotfix

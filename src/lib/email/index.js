@@ -152,12 +152,7 @@ const invite = async (email, user) => {
     .setTemplateId('jy7zpl9x95l5vx6k')
     .setPersonalization(personalization)
 
-  try {
-    await send(emailParams)
-  } catch (err) {
-    await Link.del(link)
-    throw err
-  }
+  await send(emailParams)
 }
 
 const Email = { subscribe, recover, revalidate, invite }

@@ -1,11 +1,24 @@
 import route from '@/route/email'
 
-import { clean } from '@/config/jest/e2e/global'
+import { initialize, clean } from '@/config/jest/e2e/global'
 
 import { DOMAIN } from '@/config/domain'
-import { PASSWORD_RECOVERY } from '@/config/email'
+import { SUBSCRIBE, PASSWORD_RECOVERY, REVALIDATE } from '@/config/email'
 
 import LinkLib from '@/lib/link'
+import EmailLib from '@/lib/email'
+import { beforeAll } from '@jest/globals'
+
+// Initialization
+let adminUUID
+beforeAll((done) => {
+  new Promise(async (resolve) => {
+    adminUUID = await initialize()
+    resolve()
+  })
+    .catch(console.error)
+    .finally(done)
+}, 10_000) // No timeout
 
 // Clean
 afterAll((done) => {
@@ -247,5 +260,178 @@ describe('e2e/backend/email', () => {
 
     link = await LinkLib.get(linkId, ['type', 'email', 'userid'])
     expect(link).not.toBeDefined()
+  })
+
+  test('Lib', async () => {
+    let linkId
+    let link
+
+    // Subscribe
+    mockSend.mockImplementationOnce(() => ({
+      status: 202,
+      statusText: 'success'
+    }))
+    await EmailLib.subscribe('email', adminUUID)
+    linkId = personalization[0].data.subscribeLink.replace(
+      DOMAIN + '/signup/validation?id=',
+      ''
+    )
+    expect(personalization).toEqual([
+      {
+        email: 'email',
+        data: {
+          subscribeLink: DOMAIN + '/signup/validation?id=' + linkId
+        }
+      }
+    ])
+
+    link = await LinkLib.get(linkId, ['type', 'email', 'userid'])
+    expect(link).toEqual({
+      id: linkId,
+      type: SUBSCRIBE,
+      email: 'email',
+      userid: adminUUID
+    })
+
+    // Subscribe error
+    mockSend.mockImplementationOnce(() => ({
+      status: 401,
+      statusText: 'Unauthorized'
+    }))
+    try {
+      await EmailLib.subscribe('email', adminUUID)
+    } catch (err) {}
+    linkId = personalization[0].data.subscribeLink.replace(
+      DOMAIN + '/signup/validation?id=',
+      ''
+    )
+    expect(personalization).toEqual([
+      {
+        email: 'email',
+        data: {
+          subscribeLink: DOMAIN + '/signup/validation?id=' + linkId
+        }
+      }
+    ])
+
+    link = await LinkLib.get(linkId, ['type', 'email', 'userid'])
+    expect(link).not.toBeDefined()
+
+    // Password
+    mockSend.mockImplementationOnce(() => ({
+      status: 202,
+      statusText: 'success'
+    }))
+    await EmailLib.recover('email')
+    linkId = personalization[0].data.recoveryLink.replace(
+      DOMAIN + '/password?id=',
+      ''
+    )
+    expect(personalization).toEqual([
+      {
+        email: 'email',
+        data: {
+          recoveryLink: DOMAIN + '/password?id=' + linkId
+        }
+      }
+    ])
+
+    link = await LinkLib.get(linkId, ['type', 'email', 'userid'])
+    expect(link).toEqual({
+      id: linkId,
+      type: PASSWORD_RECOVERY,
+      email: 'email',
+      userid: null
+    })
+
+    // Password error
+    mockSend.mockImplementationOnce(() => ({
+      status: 401,
+      statusText: 'Unauthorized'
+    }))
+    try {
+      await EmailLib.recover('email')
+    } catch (err) {}
+    linkId = personalization[0].data.recoveryLink.replace(
+      DOMAIN + '/password?id=',
+      ''
+    )
+    expect(personalization).toEqual([
+      {
+        email: 'email',
+        data: {
+          recoveryLink: DOMAIN + '/password?id=' + linkId
+        }
+      }
+    ])
+
+    link = await LinkLib.get(linkId, ['type', 'email', 'userid'])
+    expect(link).not.toBeDefined()
+
+    // Revalidate
+    mockSend.mockImplementationOnce(() => ({
+      status: 202,
+      statusText: 'success'
+    }))
+    await EmailLib.revalidate('email', adminUUID)
+    linkId = personalization[0].data.subscribeLink.replace(
+      DOMAIN + '/signup/validation?id=',
+      ''
+    )
+    expect(personalization).toEqual([
+      {
+        email: 'email',
+        data: {
+          subscribeLink: DOMAIN + '/signup/validation?id=' + linkId
+        }
+      }
+    ])
+
+    link = await LinkLib.get(linkId, ['type', 'email', 'userid'])
+    expect(link).toEqual({
+      id: linkId,
+      type: REVALIDATE,
+      email: 'email',
+      userid: adminUUID
+    })
+
+    // Revalidate error
+    mockSend.mockImplementationOnce(() => ({
+      status: 401,
+      statusText: 'Unauthorized'
+    }))
+    try {
+      await EmailLib.revalidate('email', adminUUID)
+    } catch (err) {}
+    linkId = personalization[0].data.subscribeLink.replace(
+      DOMAIN + '/signup/validation?id=',
+      ''
+    )
+    expect(personalization).toEqual([
+      {
+        email: 'email',
+        data: {
+          subscribeLink: DOMAIN + '/signup/validation?id=' + linkId
+        }
+      }
+    ])
+
+    link = await LinkLib.get(linkId, ['type', 'email', 'userid'])
+    expect(link).not.toBeDefined()
+
+    // Invite
+    mockSend.mockImplementationOnce(() => ({
+      status: 202,
+      statusText: 'success'
+    }))
+    await EmailLib.invite('email', adminUUID)
+    expect(personalization).toEqual([
+      {
+        email: 'email',
+        data: {
+          subscribeLink: DOMAIN + '/login'
+        }
+      }
+    ])
   })
 })

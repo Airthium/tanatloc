@@ -1,6 +1,6 @@
-import fs, { promises as fspromises } from 'fs'
+import fs from 'fs'
 
-import route from '@/route/geometry/[id]/download'
+import route from '@/route/geometries'
 
 import { initialize, clean, validUUID } from '@/config/jest/e2e/global'
 
@@ -59,7 +59,7 @@ jest.mock('@sentry/node', () => ({
   captureException: (err) => mockCaptureException(err)
 }))
 
-describe('e2e/backend/geometry/[id]/download', () => {
+describe('e2e/backend/geoemtries', () => {
   const req = {}
   let resStatus
   let resJson
@@ -96,61 +96,7 @@ describe('e2e/backend/geometry/[id]/download', () => {
     expect(resJson).toEqual({ message: 'Unauthorized' })
   })
 
-  test('No id', async () => {
-    req.query = {}
-    req.params = {}
-    await setToken()
-
-    await route(req, res)
-    expect(resStatus).toBe(500)
-    expect(resJson).toEqual({
-      error: true,
-      message: 'Missing data in your request (query: { id(string) })'
-    })
-    expect(mockCaptureException).toHaveBeenLastCalledWith(
-      new Error('Missing data in your request (query: { id(string) })')
-    )
-  })
-
-  test('Invalid id', async () => {
-    req.query = { id: validUUID }
-    await setToken()
-
-    await route(req, res)
-    expect(resStatus).toBe(500)
-    expect(resJson).toEqual({
-      error: true,
-      message: 'Invalid geometry identifier'
-    })
-    expect(mockCaptureException).toHaveBeenLastCalledWith(
-      new Error('Invalid geometry identifier')
-    )
-  })
-
-  test('Unauthorized 2', async () => {
-    req.query = { id: geometry.id }
-    await setToken()
-
-    jest.spyOn(ProjectLib, 'get').mockImplementationOnce(() => ({
-      owners: ['id'],
-      users: [],
-      groups: [],
-      workspace: 'id'
-    }))
-    jest.spyOn(WorkspaceLib, 'get').mockImplementationOnce(() => ({
-      owners: ['id'],
-      users: [],
-      groups: []
-    }))
-
-    await route(req, res)
-    expect(resStatus).toBe(401)
-    expect(resJson).toEqual({ error: true, message: 'Unauthorized' })
-  })
-
   test('Wrong method', async () => {
-    req.query = {}
-    req.params = { id: geometry.id }
     req.method = 'method'
     await setToken()
 
@@ -160,29 +106,38 @@ describe('e2e/backend/geometry/[id]/download', () => {
       error: true,
       message: 'Method method not allowed'
     })
+    expect(mockCaptureException).toHaveBeenLastCalledWith(
+      new Error('Method method not allowed')
+    )
   })
 
-  test('Get', async () => {
-    req.query = { id: geometry.id }
-    req.method = 'GET'
+  test('No ids', async () => {
+    req.method = 'POST'
     await setToken()
 
-    // Normal
-    await route(req, res)
-    expect(resStatus).toBe(200)
-
-    const geometryPart = await GeometryLib.read({ id: geometry.id })
-    expect(resJson).toEqual(geometryPart)
-
-    // Error
-    jest.spyOn(fspromises, 'readFile').mockImplementationOnce(() => {
-      throw new Error('Unable to read')
-    })
+    // No body
     await route(req, res)
     expect(resStatus).toBe(500)
-    expect(resJson).toEqual({ error: true, message: 'Unable to read' })
+    expect(resJson).toEqual({
+      error: true,
+      message: 'Missing data in your request (body: { ids(?uuid) })'
+    })
     expect(mockCaptureException).toHaveBeenLastCalledWith(
-      new Error('Unable to read')
+      new Error('Missing data in your request (body: { ids(?uuid) })')
     )
+
+    // No ids
+    req.body = {}
+    await route(req, res)
+    expect(resStatus).toBe(200)
+    expect(resJson).toEqual({ geometries: [] })
+  })
+
+  test('with ids', async () => {
+    req.body = { ids: [geometry.id, validUUID] }
+    await setToken()
+    await route(req, res)
+    expect(resStatus).toBe(200)
+    expect(resJson.geometries.length).toBe(1)
   })
 })

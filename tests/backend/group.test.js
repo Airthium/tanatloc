@@ -11,18 +11,16 @@ import GroupLib from '@/lib/group'
 let adminUUID
 let organization
 beforeAll((done) => {
-  initialize()
-    .then((res) => (adminUUID = res))
+  new Promise(async (resolve) => {
+    adminUUID = await initialize()
+    organization = await OrganizationLib.add(
+      { id: adminUUID },
+      { name: 'Test organization' }
+    )
+    resolve()
+  })
     .catch(console.error)
-    .finally(() => {
-      // Create organization
-      OrganizationLib.add({ id: adminUUID }, { name: 'Test organization' })
-        .then((o) => {
-          organization = o
-          done()
-        })
-        .catch(console.error)
-    })
+    .finally(done)
 }, 10_000) // No timeout
 
 // Clean

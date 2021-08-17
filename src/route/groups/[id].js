@@ -22,6 +22,17 @@ export default async (req, res) => {
     id = req.params.id
   }
 
+  // Check
+  if (!id || typeof id !== 'string') {
+    const error = new Error(
+      'Missing data in your request (query: { id(string) })'
+    )
+    console.error(error)
+    res.status(500).json({ error: true, message: error.message })
+    Sentry.captureException(error)
+    return
+  }
+
   if (req.method === 'GET') {
     try {
       const groups = await GroupLib.getByOrganization(id, [

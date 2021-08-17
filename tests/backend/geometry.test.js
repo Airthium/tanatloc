@@ -15,32 +15,26 @@ let adminUUID
 let workspace
 let project
 beforeAll((done) => {
-  initialize()
-    .then((res) => (adminUUID = res))
+  new Promise(async (resolve) => {
+    adminUUID = await initialize()
+    workspace = await WorkspaceLib.add(
+      { id: adminUUID },
+      { name: 'Test workspace' }
+    )
+    project = await ProjectLib.add(
+      { id: adminUUID },
+      {
+        workspace: { id: workspace.id },
+        project: {
+          title: 'Test project',
+          description: 'Test description'
+        }
+      }
+    )
+    resolve()
+  })
     .catch(console.error)
-    .finally(() => {
-      // Create workspace & project
-      WorkspaceLib.add({ id: adminUUID }, { name: 'Test workspace' })
-        .then((w) => {
-          workspace = w
-          ProjectLib.add(
-            { id: adminUUID },
-            {
-              workspace: { id: workspace.id },
-              project: {
-                title: 'Test project',
-                description: 'Test description'
-              }
-            }
-          )
-            .then((p) => {
-              project = p
-              done()
-            })
-            .catch(console.error)
-        })
-        .catch(console.error)
-    })
+    .finally(done)
 }, 10_000) // No timeout
 
 // Clean

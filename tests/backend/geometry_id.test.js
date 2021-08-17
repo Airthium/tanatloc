@@ -16,45 +16,35 @@ let workspace
 let project
 let geometry
 beforeAll((done) => {
-  initialize()
-    .then((res) => (adminUUID = res))
-    .catch(console.error)
-    .finally(() => {
-      // Create workspace, project & geometry
-      WorkspaceLib.add({ id: adminUUID }, { name: 'Test workspace' })
-        .then((w) => {
-          workspace = w
-          ProjectLib.add(
-            { id: adminUUID },
-            {
-              workspace: { id: workspace.id },
-              project: {
-                title: 'Test project',
-                description: 'Test description'
-              }
-            }
-          )
-            .then((p) => {
-              project = p
-              const stepFile = fs.readFileSync('tests/assets/cube.step')
-              GeometryLib.add({
-                project: { id: project.id },
-                geometry: {
-                  name: 'name.step',
-                  uid: 'uid',
-                  buffer: Buffer.from(stepFile)
-                }
-              })
-                .then((g) => {
-                  geometry = g
-                  done()
-                })
-                .catch(console.error)
-            })
-            .catch(console.error)
-        })
-        .catch(console.error)
+  new Promise(async (resolve) => {
+    adminUUID = await initialize()
+    workspace = await WorkspaceLib.add(
+      { id: adminUUID },
+      { name: 'Test workspace' }
+    )
+    project = await ProjectLib.add(
+      { id: adminUUID },
+      {
+        workspace: { id: workspace.id },
+        project: {
+          title: 'Test project',
+          description: 'Test description'
+        }
+      }
+    )
+    const stepFile = fs.readFileSync('tests/assets/cube.step')
+    geometry = await GeometryLib.add({
+      project: { id: project.id },
+      geometry: {
+        name: 'name.step',
+        uid: 'uid',
+        buffer: Buffer.from(stepFile)
+      }
     })
+    resolve()
+  })
+    .catch(console.error)
+    .finally(done)
 }, 10_000) // No timeout
 
 // Clean

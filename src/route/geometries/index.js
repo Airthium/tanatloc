@@ -22,10 +22,14 @@ export default async (req, res) => {
   if (req.method === 'POST') {
     // Get geometries list
     try {
+      // Check
+      if (!req.body)
+        throw new Error('Missing data in your request (body: { ids(?uuid) })')
+
       // Ids
       let ids = req.body.ids
 
-      if (!ids) {
+      if (!ids || !Array.isArray(ids)) {
         res.status(200).json({ geometries: [] })
         return
       }
@@ -33,12 +37,14 @@ export default async (req, res) => {
       const geometriesTmp = await Promise.all(
         ids.map(async (id) => {
           try {
+            // Get geometry
             const geometry = await GeometryLib.get(id, [
               'name',
               'originalfilename',
               'summary',
               'project'
             ])
+            if (!geometry) throw new Error('Invalid geometry identifier')
 
             // Check authorization
             const projectAuth = await ProjectLib.get(
@@ -51,9 +57,8 @@ export default async (req, res) => {
               ['owners', 'users', 'groups'],
               false
             )
-            if (!(await auth(sessionId, projectAuth, workspaceAuth))) {
-              return
-            }
+            if (!(await auth(sessionId, projectAuth, workspaceAuth)))
+              throw new Error('Unauthorized')
 
             return geometry
           } catch (err) {

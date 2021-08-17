@@ -11,6 +11,7 @@ let adminUUID
 let subscribeLink
 let passwordLink
 let revalidateLink
+let unknownLink
 beforeAll((done) => {
   new Promise(async (resolve) => {
     adminUUID = await initialize()
@@ -27,6 +28,10 @@ beforeAll((done) => {
       type: REVALIDATE,
       email: 'email',
       userid: adminUUID
+    })
+    unknownLink = await LinkLib.add({
+      type: 'unknown',
+      email: 'email'
     })
     resolve()
   })
@@ -49,7 +54,7 @@ jest.mock('@sentry/node', () => ({
   captureException: (err) => mockCaptureException(err)
 }))
 
-describe('e2e/backend/email', () => {
+describe('e2e/backend/link', () => {
   const req = {}
   let resStatus
   let resJson
@@ -204,5 +209,14 @@ describe('e2e/backend/email', () => {
 
     const revalidateLinkDel = await LinkLib.get(subscribeLink.id, ['type'])
     expect(revalidateLinkDel).not.toBeDefined()
+
+    // Unknown
+    req.body = { id: unknownLink.id }
+    await route(req, res)
+    expect(resStatus).toBe(500)
+    expect(resJson).toEqual({ error: true, message: 'Unknown type' })
+
+    const unknownLinkDel = await LinkLib.get(subscribeLink.id, ['type'])
+    expect(unknownLinkDel).not.toBeDefined()
   })
 })

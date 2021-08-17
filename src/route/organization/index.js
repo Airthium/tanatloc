@@ -12,6 +12,12 @@ export default async (req, res) => {
   switch (req.method) {
     case 'POST':
       try {
+        // Check
+        if (!req.body || !req.body.name || typeof req.body.name !== 'string')
+          throw new Error(
+            'Missing data in your request (body: { name(string) })'
+          )
+
         const organization = await OrganizationLib.add(
           { id: sessionId },
           req.body
@@ -25,13 +31,26 @@ export default async (req, res) => {
       break
     case 'PUT':
       try {
+        // Check
+        if (
+          !req.body ||
+          !req.body.id ||
+          typeof req.body.id !== 'string' ||
+          !req.body.data ||
+          !Array.isArray(req.body.data)
+        )
+          throw new Error(
+            'Missing data in your request (body: { id(uuid), data(array) })'
+          )
+
         // Check administrator
         const organization = await OrganizationLib.get(req.body.id, ['owners'])
-        if (!organization.owners.includes(sessionId)) {
+        if (!organization?.owners?.includes(sessionId)) {
           res.status(500).json({ error: true, message: 'Unauthorized' })
           return
         }
 
+        // Update
         await OrganizationLib.update(
           { id: req.body.id },
           req.body.data,
@@ -46,9 +65,13 @@ export default async (req, res) => {
       break
     case 'DELETE':
       try {
+        // Check
+        if (!req.body || !req.body.id || typeof req.body.id !== 'string')
+          throw new Error('Missing data in your request (body: { id(uuid) })')
+
         // Check administrator
         const organization = await OrganizationLib.get(req.body.id, ['owners'])
-        if (!organization.owners.includes(sessionId)) {
+        if (!organization?.owners?.includes(sessionId)) {
           res.status(500).json({ error: true, message: 'Unauthorized' })
           return
         }

@@ -41,6 +41,10 @@ const process = async (id, data) => {
 
     // Remove link
     await del({ id })
+  } else {
+    // Remove link
+    await del({ id })
+    throw new Error('Unknown type')
   }
 }
 

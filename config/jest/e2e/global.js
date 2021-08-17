@@ -27,6 +27,13 @@ const clean = async () => {
   await query('DELETE FROM ' + tables.SIMULATIONS)
   await query('DELETE FROM ' + tables.AVATARS)
   await query('DELETE FROM ' + tables.LINKS)
+
+  await query(
+    'UPDATE ' +
+      tables.USERS +
+      ' set lastname=$1, firstname=$2, email=$3, avatar=$4, isvalidated=$5, superuser=$6, password=$7, organizations=$8, workspaces=$9, authorizedplugins=$10, plugins=$11',
+    [null, null, 'admin', null, true, false, 'password', null, null, null, null]
+  )
 }
 
 // Export

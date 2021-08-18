@@ -1,5 +1,5 @@
 {
-  "baseBranches": ["dev"],
+  "baseBranches": ["dev", "hotfix"],
   "extends": ["config:base"],
   "groupName": "all dependencies",
   "separateMajorMinor": false,

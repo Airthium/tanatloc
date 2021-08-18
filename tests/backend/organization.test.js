@@ -196,10 +196,10 @@ describe('e2e/backend/organization', () => {
 
     // Unauthorized
     req.body = {
-        id: validUUID,
-        data: [{ key: 'name', value: 'new name' }]
-      }
-      await route(req, res)
+      id: validUUID,
+      data: [{ key: 'name', value: 'new name' }]
+    }
+    await route(req, res)
     expect(resStatus).toBe(500)
     expect(resJson).toEqual({ error: true, message: 'Unauthorized' })
   })

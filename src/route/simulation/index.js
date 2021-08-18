@@ -24,6 +24,25 @@ export default async (req, res) => {
     case 'POST':
       // Add simulation
       try {
+        // Check
+        if (
+          !req.body ||
+          !req.body.project ||
+          typeof req.body.project !== 'object' ||
+          !req.body.project.id ||
+          typeof req.body.project.id !== 'string' ||
+          !req.body.simulation ||
+          typeof req.body.simulation !== 'object' ||
+          !req.body.simulation.name ||
+          typeof req.body.simulation.name !== 'string' ||
+          !req.body.simulation.scheme ||
+          typeof req.body.simulation.scheme !== 'object'
+        )
+          throw new Error(
+            'Missing data in your request (body: { project: { id(uuid) }, simulation: { name(string), scheme(object) } }'
+          )
+
+        // Add
         const simulation = await SimulationLib.add(req.body)
         res.status(200).json(simulation)
       } catch (err) {

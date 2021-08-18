@@ -1,6 +1,4 @@
-import fs from 'fs'
-
-import route from '@/route/geometries'
+import route from '@/route/simulations'
 
 import { initialize, clean, validUUID } from '@/config/jest/e2e/global'
 
@@ -8,13 +6,13 @@ import { encryptSession } from '@/auth/iron'
 
 import WorkspaceLib from '@/lib/workspace'
 import ProjectLib from '@/lib/project'
-import GeometryLib from '@/lib/geometry'
+import SimulationLib from '@/lib/simulation'
 
 // Initialize
 let adminUUID
 let workspace
 let project
-let geometry
+let simulation
 beforeAll((done) => {
   new Promise(async (resolve) => {
     adminUUID = await initialize()
@@ -32,13 +30,11 @@ beforeAll((done) => {
         }
       }
     )
-    const stepFile = fs.readFileSync('tests/assets/cube.step')
-    geometry = await GeometryLib.add({
+    simulation = await SimulationLib.add({
       project: { id: project.id },
-      geometry: {
-        name: 'name.step',
-        uid: 'uid',
-        buffer: Buffer.from(stepFile)
+      simulation: {
+        name: 'Test simulation',
+        scheme: {}
       }
     })
     resolve()
@@ -59,7 +55,7 @@ jest.mock('@sentry/node', () => ({
   captureException: (err) => mockCaptureException(err)
 }))
 
-describe('e2e/backend/geometries', () => {
+describe('e2e/backend/simulations', () => {
   const req = {}
   let resStatus
   let resJson
@@ -131,14 +127,14 @@ describe('e2e/backend/geometries', () => {
     req.body = {}
     await route(req, res)
     expect(resStatus).toBe(200)
-    expect(resJson).toEqual({ geometries: [] })
+    expect(resJson).toEqual({ simulations: [] })
   })
 
   test('with ids', async () => {
-    req.body = { ids: [geometry.id, validUUID] }
+    req.body = { ids: [simulation.id, validUUID] }
     await setToken()
     await route(req, res)
     expect(resStatus).toBe(200)
-    expect(resJson.geometries.length).toBe(1)
+    expect(resJson.simulations.length).toBe(1)
   })
 })

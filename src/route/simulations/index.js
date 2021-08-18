@@ -22,6 +22,10 @@ export default async (req, res) => {
   if (req.method === 'POST') {
     // Get simulations list
     try {
+      // Check
+      if (!req.body)
+        throw new Error('Missing data in your request (body: { ids(?array) })')
+
       // Ids
       let ids = req.body.ids
 
@@ -38,6 +42,7 @@ export default async (req, res) => {
               'scheme',
               'project'
             ])
+            if (!simulation) throw new Error('Invalid simulation identifier')
 
             // Check authorization
             const projectAuth = await ProjectLib.get(
@@ -51,7 +56,7 @@ export default async (req, res) => {
               false
             )
             if (!(await auth(sessionId, projectAuth, workspaceAuth))) {
-              return
+              throw new Error('Unauthorized')
             }
 
             return simulation

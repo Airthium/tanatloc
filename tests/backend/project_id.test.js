@@ -1,6 +1,4 @@
-import fs from 'fs'
-
-import route from '@/route/geometry/[id]'
+import route from '@/route/project/[id]'
 
 import { initialize, clean, validUUID } from '@/config/jest/e2e/global'
 
@@ -8,13 +6,12 @@ import { encryptSession } from '@/auth/iron'
 
 import WorkspaceLib from '@/lib/workspace'
 import ProjectLib from '@/lib/project'
-import GeometryLib from '@/lib/geometry'
+import UserLib from '@/lib/user'
 
-// Initialize
+// Initialization
 let adminUUID
 let workspace
 let project
-let geometry
 beforeAll((done) => {
   new Promise(async (resolve) => {
     adminUUID = await initialize()
@@ -24,23 +21,8 @@ beforeAll((done) => {
     )
     project = await ProjectLib.add(
       { id: adminUUID },
-      {
-        workspace: { id: workspace.id },
-        project: {
-          title: 'Test project',
-          description: 'Test description'
-        }
-      }
+      { workspace: { id: workspace.id }, project: { title: 'Test project' } }
     )
-    const stepFile = fs.readFileSync('tests/assets/cube.step')
-    geometry = await GeometryLib.add({
-      project: { id: project.id },
-      geometry: {
-        name: 'name.step',
-        uid: 'uid',
-        buffer: Buffer.from(stepFile)
-      }
-    })
     resolve()
   })
     .catch(console.error)
@@ -59,7 +41,7 @@ jest.mock('@sentry/node', () => ({
   captureException: (err) => mockCaptureException(err)
 }))
 
-describe('e2e/backend/geometry/[id]', () => {
+describe('e2e/backend/project/id', () => {
   const req = {}
   let resStatus
   let resJson
@@ -120,37 +102,15 @@ describe('e2e/backend/geometry/[id]', () => {
     expect(resStatus).toBe(500)
     expect(resJson).toEqual({
       error: true,
-      message: 'Invalid geometry identifier'
+      message: 'Invalid project identifier'
     })
     expect(mockCaptureException).toHaveBeenLastCalledWith(
-      new Error('Invalid geometry identifier')
+      new Error('Invalid project identifier')
     )
   })
 
-  test('Unauthorized 2', async () => {
-    req.query = { id: geometry.id }
-    await setToken()
-
-    jest.spyOn(ProjectLib, 'get').mockImplementationOnce(() => ({
-      owners: ['id'],
-      users: [],
-      groups: [],
-      workspace: 'id'
-    }))
-    jest.spyOn(WorkspaceLib, 'get').mockImplementationOnce(() => ({
-      owners: ['id'],
-      users: [],
-      groups: []
-    }))
-
-    await route(req, res)
-    expect(resStatus).toBe(401)
-    expect(resJson).toEqual({ error: true, message: 'Unauthorized' })
-  })
-
   test('Wrong method', async () => {
-    req.query = {}
-    req.params = { id: geometry.id }
+    req.query = { id: project.id }
     req.method = 'method'
     await setToken()
 
@@ -160,15 +120,59 @@ describe('e2e/backend/geometry/[id]', () => {
       error: true,
       message: 'Method method not allowed'
     })
+    expect(mockCaptureException).toHaveBeenLastCalledWith(
+      new Error('Method method not allowed')
+    )
   })
 
-  test('Update geometry', async () => {
-    req.query = { id: geometry.id }
-    req.body = {}
+  test('Get', async () => {
+    req.method = 'GET'
+    await setToken()
+
+    // Normal
+    await route(req, res)
+    expect(resStatus).toBe(200)
+    const id = resJson.project.id
+    const user = await UserLib.get(adminUUID, [
+      'firstname',
+      'lastname',
+      'email',
+      'avatar'
+    ])
+    expect(resJson).toEqual({
+      project: {
+        id: id,
+        title: 'Test project',
+        description: '',
+        avatar: null,
+        owners: [user],
+        users: null,
+        geometries: null,
+        simulations: null
+      }
+    })
+
+    // Error
+    jest.spyOn(ProjectLib, 'get').mockImplementationOnce(() => {
+      throw new Error('Get error')
+    })
+    await route(req, res)
+    expect(resStatus).toBe(500)
+    expect(resJson).toEqual({
+      error: true,
+      message: 'Get error'
+    })
+    expect(mockCaptureException).toHaveBeenLastCalledWith(
+      new Error('Get error')
+    )
+  })
+
+  test('Update', async () => {
     req.method = 'PUT'
     await setToken()
 
-    // Wrong data
+    // Wrong body
+    req.body = {}
     await route(req, res)
     expect(resStatus).toBe(500)
     expect(resJson).toEqual({
@@ -180,63 +184,67 @@ describe('e2e/backend/geometry/[id]', () => {
     )
 
     // Normal
-    req.body = [{ key: 'name', value: 'new name' }]
+    req.body = [{ key: 'description', value: "Test project's description" }]
     await route(req, res)
     expect(resStatus).toBe(200)
-    expect(resJson).toEqual('end')
-    const geometryData = await GeometryLib.get(geometry.id, ['name'])
-    expect(geometryData.name).toBe('new name')
-  })
+    expect(resJson).toBe('end')
 
-  test('Delete geometry', async () => {
-    req.query = { id: geometry.id }
-    req.method = 'DELETE'
-    await setToken()
-
-    // Normal
-    await route(req, res)
-    expect(resStatus).toBe(200)
-    expect(resJson).toEqual('end')
-
-    const geometryData = await GeometryLib.get(geometry.id, ['name'])
-    expect(geometryData).not.toBeDefined()
-
-    try {
-      await GeometryLib.read({ id: geometry.id })
-      expect(true).toBe(false)
-    } catch (err) {
-      expect(err).toEqual(new Error('Geometry does not exist.'))
-    }
-
-    try {
-      await GeometryLib.readPart({ id: geometry.id })
-      expect(true).toBe(false)
-    } catch (err) {
-      expect(err).toEqual(new Error('Geometry does not exist.'))
-    }
-
-    // Re-add geometry
-    const stepFile = fs.readFileSync('tests/assets/cube.step')
-    geometry = await GeometryLib.add({
-      project: { id: project.id },
-      geometry: {
-        name: 'name.step',
-        uid: 'uid',
-        buffer: Buffer.from(stepFile)
-      }
+    const projectData = await ProjectLib.get(project.id, ['description'])
+    expect(projectData).toEqual({
+      id: project.id,
+      description: "Test project's description"
     })
 
     // Error
-    req.query = { id: geometry.id }
-
-    jest.spyOn(GeometryLib, 'del').mockImplementationOnce(() => {
-      throw new Error('Geometry del error')
+    jest.spyOn(ProjectLib, 'update').mockImplementationOnce(() => {
+      throw new Error('Update error')
     })
     await route(req, res)
     expect(resStatus).toBe(500)
-    expect(resJson).toEqual({ error: true, message: 'Geometry del error' })
+    expect(resJson).toEqual({
+      error: true,
+      message: 'Update error'
+    })
     expect(mockCaptureException).toHaveBeenLastCalledWith(
-      new Error('Geometry del error')
+      new Error('Update error')
     )
+  })
+
+  test('Delete', async () => {
+    req.method = 'DELETE'
+    await setToken()
+
+    // Wrong body
+    req.body = {}
+    await route(req, res)
+    expect(resStatus).toBe(500)
+    expect(resJson).toEqual({
+      error: true,
+      message: 'Missing data in your request (body: { id(uuid) })'
+    })
+    expect(mockCaptureException).toHaveBeenLastCalledWith(
+      new Error('Missing data in your request (body: { id(uuid) })')
+    )
+
+    // Error
+    req.body = { id: workspace.id }
+    jest.spyOn(ProjectLib, 'del').mockImplementationOnce(() => {
+      throw new Error('Delete error')
+    })
+    await route(req, res)
+    expect(resStatus).toBe(500)
+    expect(resJson).toEqual({
+      error: true,
+      message: 'Delete error'
+    })
+    expect(mockCaptureException).toHaveBeenLastCalledWith(
+      new Error('Delete error')
+    )
+
+    // Normal
+    req.body = { id: workspace.id }
+    await route(req, res)
+    expect(resStatus).toBe(200)
+    expect(resJson).toBe('end')
   })
 })

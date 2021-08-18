@@ -16,8 +16,21 @@ export default async (req, res) => {
   if (!sessionId) return
 
   if (req.method === 'POST') {
-    // Add geometry
+    // Archive results
     try {
+      // Check
+      if (
+        !req.body ||
+        !req.body.simulation ||
+        typeof req.body.simulation !== 'object' ||
+        !req.body.simulation.id ||
+        typeof req.body.simulation.id !== 'string'
+      )
+        throw new Error(
+          'Missing data in your request (body: { simulation: { id(uuid) } }'
+        )
+
+      // Archive
       res.setHeader('Content-Type', 'application/zip')
       const archive = await ResultLib.archive(req.body)
       archive.pipe(res)

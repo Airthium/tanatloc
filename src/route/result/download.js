@@ -16,8 +16,27 @@ export default async (req, res) => {
   if (!sessionId) return
 
   if (req.method === 'POST') {
-    // Add geometry
+    // Download result
     try {
+      //Check
+      if (
+        !req.body ||
+        !req.body.simulation ||
+        typeof req.body.simulation !== 'object' ||
+        !req.body.simulation.id ||
+        typeof req.body.simulation.id !== 'string' ||
+        !req.body.result ||
+        typeof req.body.result !== 'object' ||
+        !req.body.result.originPath ||
+        typeof req.body.result.originPath !== 'string' ||
+        !req.body.result.fileName ||
+        typeof req.body.result.fileName !== 'string'
+      )
+        throw new Error(
+          'Missing data in your request (body: { simulation: { id(uuid) }, result: { originPath(string), fileName(string) } }'
+        )
+
+      //Download
       const fileStream = await ResultLib.download(req.body)
       fileStream.pipe(res)
     } catch (err) {

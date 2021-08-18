@@ -1,20 +1,24 @@
-import fs from 'fs'
+import path from 'path'
 
-import route from '@/route/geometries'
+import route from '@/route/result'
 
-import { initialize, clean, validUUID } from '@/config/jest/e2e/global'
+import { initialize, clean } from '@/config/jest/e2e/global'
 
 import { encryptSession } from '@/auth/iron'
 
+import { SIMULATION } from '@/config/storage'
+
 import WorkspaceLib from '@/lib/workspace'
 import ProjectLib from '@/lib/project'
-import GeometryLib from '@/lib/geometry'
+import SimulationLib from '@/lib/simulation'
+import Tools from '@/lib/tools'
+import ResultLib from '@/lib/result'
 
-// Initialize
+// Initialization
 let adminUUID
 let workspace
 let project
-let geometry
+let simulation
 beforeAll((done) => {
   new Promise(async (resolve) => {
     adminUUID = await initialize()
@@ -24,22 +28,11 @@ beforeAll((done) => {
     )
     project = await ProjectLib.add(
       { id: adminUUID },
-      {
-        workspace: { id: workspace.id },
-        project: {
-          title: 'Test project',
-          description: 'Test description'
-        }
-      }
+      { workspace: { id: workspace.id }, project: { title: 'Test project' } }
     )
-    const stepFile = fs.readFileSync('tests/assets/cube.step')
-    geometry = await GeometryLib.add({
+    simulation = await SimulationLib.add({
       project: { id: project.id },
-      geometry: {
-        name: 'name.step',
-        uid: 'uid',
-        buffer: Buffer.from(stepFile)
-      }
+      simulation: { name: 'Test simulation', scheme: {} }
     })
     resolve()
   })
@@ -59,7 +52,7 @@ jest.mock('@sentry/node', () => ({
   captureException: (err) => mockCaptureException(err)
 }))
 
-describe('e2e/backend/geometries', () => {
+describe('e2e/backend/result', () => {
   const req = {}
   let resStatus
   let resJson
@@ -111,34 +104,55 @@ describe('e2e/backend/geometries', () => {
     )
   })
 
-  test('No ids', async () => {
+  test('Load', async () => {
     req.method = 'POST'
     await setToken()
 
-    // No body
-    req.body = undefined
+    // Wrong body
+    req.body = {}
     await route(req, res)
     expect(resStatus).toBe(500)
     expect(resJson).toEqual({
       error: true,
-      message: 'Missing data in your request (body: { ids(?array) })'
+      message:
+        'Missing data in your request (body: { simulation: { id(uuid) }, result: { originPath(string), glb(string) } }'
     })
     expect(mockCaptureException).toHaveBeenLastCalledWith(
-      new Error('Missing data in your request (body: { ids(?array) })')
+      new Error(
+        'Missing data in your request (body: { simulation: { id(uuid) }, result: { originPath(string), glb(string) } }'
+      )
     )
 
-    // No ids
-    req.body = {}
-    await route(req, res)
-    expect(resStatus).toBe(200)
-    expect(resJson).toEqual({ geometries: [] })
-  })
+    // Create fake result file
+    await Tools.writeFile(
+      path.join(SIMULATION, simulation.id, 'path'),
+      'glb',
+      'glb'
+    )
 
-  test('with ids', async () => {
-    req.body = { ids: [geometry.id, validUUID] }
-    await setToken()
+    // Normal
+    req.body = {
+      simulation: { id: simulation.id },
+      result: { originPath: 'path', glb: 'glb' }
+    }
     await route(req, res)
     expect(resStatus).toBe(200)
-    expect(resJson.geometries.length).toBe(1)
+    expect(resJson).toEqual({
+      buffer: Buffer.from('glb')
+    })
+
+    // Error
+    jest.spyOn(ResultLib, 'load').mockImplementationOnce(() => {
+      throw new Error('Load error')
+    })
+    await route(req, res)
+    expect(resStatus).toBe(500)
+    expect(resJson).toEqual({
+      error: true,
+      message: 'Load error'
+    })
+    expect(mockCaptureException).toHaveBeenLastCalledWith(
+      new Error('Load error')
+    )
   })
 })

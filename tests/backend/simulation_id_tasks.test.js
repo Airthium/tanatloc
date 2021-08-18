@@ -1,6 +1,4 @@
-import fs from 'fs'
-
-import route from '@/route/geometries'
+import route from '@/route/simulation/[id]/tasks'
 
 import { initialize, clean, validUUID } from '@/config/jest/e2e/global'
 
@@ -8,13 +6,13 @@ import { encryptSession } from '@/auth/iron'
 
 import WorkspaceLib from '@/lib/workspace'
 import ProjectLib from '@/lib/project'
-import GeometryLib from '@/lib/geometry'
+import SimulationLib from '@/lib/simulation'
 
-// Initialize
+// Initialization
 let adminUUID
 let workspace
 let project
-let geometry
+let simulation
 beforeAll((done) => {
   new Promise(async (resolve) => {
     adminUUID = await initialize()
@@ -24,22 +22,11 @@ beforeAll((done) => {
     )
     project = await ProjectLib.add(
       { id: adminUUID },
-      {
-        workspace: { id: workspace.id },
-        project: {
-          title: 'Test project',
-          description: 'Test description'
-        }
-      }
+      { workspace: { id: workspace.id }, project: { title: 'Test project' } }
     )
-    const stepFile = fs.readFileSync('tests/assets/cube.step')
-    geometry = await GeometryLib.add({
+    simulation = await SimulationLib.add({
       project: { id: project.id },
-      geometry: {
-        name: 'name.step',
-        uid: 'uid',
-        buffer: Buffer.from(stepFile)
-      }
+      simulation: { name: 'Test simulation', scheme: {} }
     })
     resolve()
   })
@@ -59,7 +46,7 @@ jest.mock('@sentry/node', () => ({
   captureException: (err) => mockCaptureException(err)
 }))
 
-describe('e2e/backend/geometries', () => {
+describe('e2e/backend/simulation/id/tasks', () => {
   const req = {}
   let resStatus
   let resJson
@@ -96,7 +83,39 @@ describe('e2e/backend/geometries', () => {
     expect(resJson).toEqual({ message: 'Unauthorized' })
   })
 
+  test('No id', async () => {
+    req.query = {}
+    req.params = {}
+    await setToken()
+
+    await route(req, res)
+    expect(resStatus).toBe(500)
+    expect(resJson).toEqual({
+      error: true,
+      message: 'Missing data in your request (query: { id(string) })'
+    })
+    expect(mockCaptureException).toHaveBeenLastCalledWith(
+      new Error('Missing data in your request (query: { id(string) })')
+    )
+  })
+
+  test('Invalid id', async () => {
+    req.query = { id: validUUID }
+    await setToken()
+
+    await route(req, res)
+    expect(resStatus).toBe(500)
+    expect(resJson).toEqual({
+      error: true,
+      message: 'Invalid simulation identifier'
+    })
+    expect(mockCaptureException).toHaveBeenLastCalledWith(
+      new Error('Invalid simulation identifier')
+    )
+  })
+
   test('Wrong method', async () => {
+    req.query = { id: simulation.id }
     req.method = 'method'
     await setToken()
 
@@ -111,34 +130,28 @@ describe('e2e/backend/geometries', () => {
     )
   })
 
-  test('No ids', async () => {
-    req.method = 'POST'
+  test('Get tasks', async () => {
+    req.query = { id: simulation.id }
+    req.method = 'GET'
     await setToken()
 
-    // No body
-    req.body = undefined
+    // Normal
+    await route(req, res)
+    expect(resStatus).toBe(200)
+    expect(resJson).toEqual([])
+
+    // Error
+    jest.spyOn(SimulationLib, 'get').mockImplementationOnce(() => {
+      throw new Error('Get error')
+    })
     await route(req, res)
     expect(resStatus).toBe(500)
     expect(resJson).toEqual({
       error: true,
-      message: 'Missing data in your request (body: { ids(?array) })'
+      message: 'Get error'
     })
     expect(mockCaptureException).toHaveBeenLastCalledWith(
-      new Error('Missing data in your request (body: { ids(?array) })')
+      new Error('Get error')
     )
-
-    // No ids
-    req.body = {}
-    await route(req, res)
-    expect(resStatus).toBe(200)
-    expect(resJson).toEqual({ geometries: [] })
-  })
-
-  test('with ids', async () => {
-    req.body = { ids: [geometry.id, validUUID] }
-    await setToken()
-    await route(req, res)
-    expect(resStatus).toBe(200)
-    expect(resJson.geometries.length).toBe(1)
   })
 })

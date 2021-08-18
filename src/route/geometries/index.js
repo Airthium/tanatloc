@@ -24,7 +24,7 @@ export default async (req, res) => {
     try {
       // Check
       if (!req.body)
-        throw new Error('Missing data in your request (body: { ids(?uuid) })')
+        throw new Error('Missing data in your request (body: { ids(?array) })')
 
       // Ids
       let ids = req.body.ids

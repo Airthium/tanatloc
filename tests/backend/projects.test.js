@@ -1,6 +1,4 @@
-import fs from 'fs'
-
-import route from '@/route/geometries'
+import route from '@/route/projects'
 
 import { initialize, clean, validUUID } from '@/config/jest/e2e/global'
 
@@ -8,13 +6,11 @@ import { encryptSession } from '@/auth/iron'
 
 import WorkspaceLib from '@/lib/workspace'
 import ProjectLib from '@/lib/project'
-import GeometryLib from '@/lib/geometry'
 
-// Initialize
+// Initialization
 let adminUUID
 let workspace
 let project
-let geometry
 beforeAll((done) => {
   new Promise(async (resolve) => {
     adminUUID = await initialize()
@@ -24,23 +20,8 @@ beforeAll((done) => {
     )
     project = await ProjectLib.add(
       { id: adminUUID },
-      {
-        workspace: { id: workspace.id },
-        project: {
-          title: 'Test project',
-          description: 'Test description'
-        }
-      }
+      { workspace: { id: workspace.id }, project: { title: 'Test project' } }
     )
-    const stepFile = fs.readFileSync('tests/assets/cube.step')
-    geometry = await GeometryLib.add({
-      project: { id: project.id },
-      geometry: {
-        name: 'name.step',
-        uid: 'uid',
-        buffer: Buffer.from(stepFile)
-      }
-    })
     resolve()
   })
     .catch(console.error)
@@ -59,7 +40,7 @@ jest.mock('@sentry/node', () => ({
   captureException: (err) => mockCaptureException(err)
 }))
 
-describe('e2e/backend/geometries', () => {
+describe('e2e/backend/projects', () => {
   const req = {}
   let resStatus
   let resJson
@@ -131,14 +112,14 @@ describe('e2e/backend/geometries', () => {
     req.body = {}
     await route(req, res)
     expect(resStatus).toBe(200)
-    expect(resJson).toEqual({ geometries: [] })
+    expect(resJson).toEqual({ projects: [] })
   })
 
   test('with ids', async () => {
-    req.body = { ids: [geometry.id, validUUID] }
+    req.body = { ids: [project.id, validUUID] }
     await setToken()
     await route(req, res)
     expect(resStatus).toBe(200)
-    expect(resJson.geometries.length).toBe(1)
+    expect(resJson.projects.length).toBe(1)
   })
 })

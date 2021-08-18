@@ -25,19 +25,34 @@ export default async (req, res) => {
     id = req.params.id
   }
 
+  // Check
+  if (!id || typeof id !== 'string') {
+    const error = new Error(
+      'Missing data in your request (query: { id(string) })'
+    )
+    console.error(error)
+    res.status(500).json({ error: true, message: error.message })
+    Sentry.captureException(error)
+    return
+  }
+
   // Check authorization
   try {
     const simulationAuth = await SimulationLib.get(id, ['project'])
+    if (!simulationAuth) throw new Error('Invalid simulation identifier')
+
     const projectAuth = await ProjectLib.get(
       simulationAuth.project,
       ['owners', 'users', 'groups', 'workspace'],
       false
     )
+
     const workspaceAuth = await WorkspaceLib.get(
       projectAuth.workspace,
       ['owners', 'users', 'groups'],
       false
     )
+
     if (!(await auth(sessionId, projectAuth, workspaceAuth))) {
       res.status(401).json({ error: true, message: 'Unauthorized' })
       return
@@ -56,7 +71,7 @@ export default async (req, res) => {
       res.status(200).json(simulation.tasks || [])
     } catch (err) {
       console.error(err)
-      res.status(204).json({ error: true, message: err.message })
+      res.status(500).json({ error: true, message: err.message })
       Sentry.captureException(err)
     }
   } else {

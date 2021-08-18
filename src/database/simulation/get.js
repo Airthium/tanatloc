@@ -11,7 +11,7 @@ const get = async (id, data) => {
   const response = await getter(tables.SIMULATIONS, id, data)
 
   const simulation = response.rows[0]
-  simulation.id = id
+  simulation && (simulation.id = id)
 
   return simulation
 }

@@ -21,6 +21,10 @@ export default async (req, res) => {
   if (req.method === 'POST') {
     // Get projects list
     try {
+      // Check
+      if (!req.body)
+        throw new Error('Missing data in your request (body: { ids(?array) })')
+
       // Ids
       const ids = req.body.ids
 
@@ -32,36 +36,34 @@ export default async (req, res) => {
       const projectsTmp = await Promise.all(
         ids.map(async (id) => {
           try {
-            const project = await ProjectLib.get(
+            const projectAuth = await ProjectLib.get(
               id,
-              [
-                'title',
-                'description',
-                'avatar',
-                'owners',
-                'users',
-                'groups',
-                'simulations',
-                'workspace'
-              ],
+              ['owners', 'users', 'groups', 'workspace'],
               false
             )
-            if (!project) return
-            //TODO project is use for auth & data here, fix the withData=false
+            if (!projectAuth) throw new Error('Invalid project identifier')
 
             const workspaceAuth = await WorkspaceLib.get(
-              project.workspace,
+              projectAuth.workspace,
               ['owners', 'users', 'groups'],
               false
             )
-            if (!(await auth(sessionId, project, workspaceAuth))) {
-              return
-            }
+            if (!(await auth(sessionId, projectAuth, workspaceAuth)))
+              throw new Error('Unauthorized')
 
-            return project
+            return await ProjectLib.get(id, [
+              'title',
+              'description',
+              'avatar',
+              'owners',
+              'users',
+              'groups',
+              'simulations',
+              'workspace'
+            ])
           } catch (err) {
             console.warn(err)
-            return
+            return null
           }
         })
       )

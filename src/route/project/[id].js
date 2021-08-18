@@ -24,6 +24,17 @@ export default async (req, res) => {
     id = req.params.id
   }
 
+  // Check
+  if (!id || typeof id !== 'string') {
+    const error = new Error(
+      'Missing data in your request (query: { id(string) })'
+    )
+    console.error(error)
+    res.status(500).json({ error: true, message: error.message })
+    Sentry.captureException(error)
+    return
+  }
+
   // Check authorization
   try {
     const projectAuth = await ProjectLib.get(
@@ -31,11 +42,14 @@ export default async (req, res) => {
       ['owners', 'users', 'groups', 'workspace'],
       false
     )
+    if (!projectAuth) throw new Error('Invalid project identifier')
+
     const workspaceAuth = await WorkspaceLib.get(
       projectAuth.workspace,
       ['owners', 'users', 'groups'],
       false
     )
+
     if (!(await auth(sessionId, projectAuth, workspaceAuth))) {
       res.status(401).json({ project: 'Unauthorized' })
       return
@@ -71,17 +85,27 @@ export default async (req, res) => {
     case 'PUT':
       // Update project
       try {
+        // Check
+        if (!req.body || !Array.isArray(req.body))
+          throw new Error('Missing data in your request (body(array))')
+
+        // Update
         await ProjectLib.update({ id }, req.body)
         res.status(200).end()
       } catch (err) {
         console.error(err)
-        res.status(204).json({ error: true, message: err.message })
+        res.status(500).json({ error: true, message: err.message })
         Sentry.captureException(err)
       }
       break
     case 'DELETE':
       // Delete project
       try {
+        // Check
+        if (!req.body || !req.body.id || typeof req.body.id !== 'string')
+          throw new Error('Missing data in your request (body: { id(uuid) })')
+
+        // Delete
         await ProjectLib.del(req.body, { id })
         res.status(200).end()
       } catch (err) {

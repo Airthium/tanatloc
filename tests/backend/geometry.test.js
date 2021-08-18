@@ -35,7 +35,7 @@ beforeAll((done) => {
   })
     .catch(console.error)
     .finally(done)
-}, 10_000) // No timeout
+}, 20_000) // No timeout
 
 // Clean
 afterAll((done) => {
@@ -50,9 +50,6 @@ jest.mock('@sentry/node', () => ({
 }))
 
 describe('e2e/backend/geometry', () => {
-  // There is conversion, that takes time
-  jest.setTimeout(10_000)
-
   const req = {}
   let resStatus
   let resJson

@@ -1,20 +1,15 @@
-import fs from 'fs'
+import route from '@/route/project'
 
-import route from '@/route/geometries'
-
-import { initialize, clean, validUUID } from '@/config/jest/e2e/global'
+import { initialize, clean } from '@/config/jest/e2e/global'
 
 import { encryptSession } from '@/auth/iron'
 
 import WorkspaceLib from '@/lib/workspace'
 import ProjectLib from '@/lib/project'
-import GeometryLib from '@/lib/geometry'
 
-// Initialize
+// Initialization
 let adminUUID
 let workspace
-let project
-let geometry
 beforeAll((done) => {
   new Promise(async (resolve) => {
     adminUUID = await initialize()
@@ -22,25 +17,6 @@ beforeAll((done) => {
       { id: adminUUID },
       { name: 'Test workspace' }
     )
-    project = await ProjectLib.add(
-      { id: adminUUID },
-      {
-        workspace: { id: workspace.id },
-        project: {
-          title: 'Test project',
-          description: 'Test description'
-        }
-      }
-    )
-    const stepFile = fs.readFileSync('tests/assets/cube.step')
-    geometry = await GeometryLib.add({
-      project: { id: project.id },
-      geometry: {
-        name: 'name.step',
-        uid: 'uid',
-        buffer: Buffer.from(stepFile)
-      }
-    })
     resolve()
   })
     .catch(console.error)
@@ -59,7 +35,7 @@ jest.mock('@sentry/node', () => ({
   captureException: (err) => mockCaptureException(err)
 }))
 
-describe('e2e/backend/geometries', () => {
+describe('e2e/backend/project', () => {
   const req = {}
   let resStatus
   let resJson
@@ -111,34 +87,60 @@ describe('e2e/backend/geometries', () => {
     )
   })
 
-  test('No ids', async () => {
+  test('Empty route', async () => {
+    req.method = 'GET'
+    await setToken()
+
+    await route(req, res)
+    expect(resStatus).toBe(200)
+    expect(resJson).toBe('end')
+  })
+
+  test('Add', async () => {
     req.method = 'POST'
     await setToken()
 
-    // No body
-    req.body = undefined
+    // Wrong body
+    req.body = {}
     await route(req, res)
     expect(resStatus).toBe(500)
     expect(resJson).toEqual({
       error: true,
-      message: 'Missing data in your request (body: { ids(?array) })'
+      message:
+        'Missing data in your request (body: { workspace: { id(uuid) }, project: { title(string), description(?string) } }'
     })
     expect(mockCaptureException).toHaveBeenLastCalledWith(
-      new Error('Missing data in your request (body: { ids(?array) })')
+      new Error(
+        'Missing data in your request (body: { workspace: { id(uuid) }, project: { title(string), description(?string) } }'
+      )
     )
 
-    // No ids
-    req.body = {}
+    // Normal
+    req.body = {
+      workspace: { id: workspace.id },
+      project: { title: 'Test project' }
+    }
     await route(req, res)
     expect(resStatus).toBe(200)
-    expect(resJson).toEqual({ geometries: [] })
-  })
+    const id = resJson.id
+    expect(resJson).toEqual({
+      id: id,
+      title: 'Test project',
+      description: ''
+    })
 
-  test('with ids', async () => {
-    req.body = { ids: [geometry.id, validUUID] }
-    await setToken()
+    // Error
+    jest.spyOn(ProjectLib, 'add').mockImplementationOnce(() => {
+      throw new Error('Add error')
+    })
     await route(req, res)
-    expect(resStatus).toBe(200)
-    expect(resJson.geometries.length).toBe(1)
+    expect(resStatus).toBe(500)
+    expect(resJson).toEqual({
+      error: true,
+      message: 'Add error'
+    })
+    expect(mockCaptureException).toHaveBeenLastCalledWith(
+      new Error('Add error')
+    )
   })
 })

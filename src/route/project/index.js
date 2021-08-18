@@ -24,6 +24,23 @@ export default async (req, res) => {
     case 'POST':
       // Add project
       try {
+        // Check
+        if (
+          !req.body ||
+          !req.body.workspace ||
+          typeof req.body.workspace !== 'object' ||
+          !req.body.workspace.id ||
+          typeof req.body.workspace.id !== 'string' ||
+          !req.body.project ||
+          typeof req.body.project !== 'object' ||
+          !req.body.project.title ||
+          typeof req.body.project.title !== 'string'
+        )
+          throw new Error(
+            'Missing data in your request (body: { workspace: { id(uuid) }, project: { title(string), description(?string) } }'
+          )
+
+        // Add
         const project = await ProjectLib.add({ id: sessionId }, req.body)
         res.status(200).json(project)
       } catch (err) {

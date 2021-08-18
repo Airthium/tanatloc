@@ -131,9 +131,12 @@ const invite = async (email, user) => {
 
   const recipients = [new Recipient(email)]
   let userName = ''
-  if (user.firstname || user.lastname)
-    userName = user.firstname + ' ' + user.lastname
-  else userName = user.email
+  if (user.firstname || user.lastname) {
+    user.firstname && (userName = user.firstname + '')
+    user.lastname && (userName += user.lastname)
+  } else {
+    userName = user.email
+  }
   const personalization = [
     {
       email,

@@ -13,6 +13,19 @@ export default async (req, res) => {
   switch (req.method) {
     case 'POST':
       try {
+        // Check
+        if (
+          !req.body ||
+          typeof req.body !== 'object' ||
+          !req.body.key ||
+          typeof req.body.key !== 'string' ||
+          !req.body.configuration ||
+          typeof req.body.configuration !== 'object'
+        )
+          throw new Error(
+            'Missing data in your request (body: { key(string), needInit(?bool), configuration(object) }'
+          )
+
         const body = req.body
 
         // Check authorization
@@ -40,6 +53,11 @@ export default async (req, res) => {
       break
     case 'PUT':
       try {
+        // Check
+        if (!req.body || typeof req.body !== 'object')
+          throw new Error('Missing data in your request (body(object)}')
+
+        // Update
         await PluginLib.update({ id: sessionId }, req.body)
         res.status(200).end()
       } catch (err) {
@@ -50,6 +68,12 @@ export default async (req, res) => {
       break
     case 'DELETE':
       try {
+        // Check
+        if (!req.body || !req.body.uuid || typeof req.body.uuid !== 'string')
+          throw new Error(
+            'Missing data in your request (body: { uuid(uuid) } }'
+          )
+
         await PluginLib.del({ id: sessionId }, req.body)
         res.status(200).end()
       } catch (err) {

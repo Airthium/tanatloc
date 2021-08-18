@@ -1,6 +1,7 @@
 /** @module lib/plugin */
 
 import merge from 'lodash.merge'
+import { v4 as uuid } from 'uuid'
 
 import User from '../user'
 
@@ -12,11 +13,14 @@ import APIs from '@/plugins/api'
  * @param {Object} plugin Plugin
  */
 const add = async ({ id }, plugin) => {
+  // Set uuid
+  plugin.uuid = uuid()
+
   // Get
   const user = await User.get(id, ['plugins'])
 
-  if (!user.plugins) user.plugins = []
-  user.plugins = [...user.plugins, plugin]
+  // Update user
+  user.plugins = [...(user.plugins || []), plugin]
 
   // Plugin initialization
   if (plugin.needInit) {
@@ -56,12 +60,6 @@ const update = async ({ id }, plugin) => {
   const index = user.plugins.findIndex((p) => p.uuid === plugin.uuid)
   if (index === -1) return
 
-  user.plugins = [
-    ...user.plugins.slice(0, index),
-    plugin,
-    ...user.plugins.slice(index + 1)
-  ]
-
   // Re-init
   if (plugin.needInit && plugin.needReInit) {
     const API = APIs[plugin.key]
@@ -71,6 +69,12 @@ const update = async ({ id }, plugin) => {
     }
     plugin.needReInit = false
   }
+
+  user.plugins = [
+    ...user.plugins.slice(0, index),
+    { ...user.plugins[index], ...plugin },
+    ...user.plugins.slice(index + 1)
+  ]
 
   // Update
   await User.update({ id }, [{ key: 'plugins', value: user.plugins }])

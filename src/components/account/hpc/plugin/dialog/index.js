@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
 import { Form, Input, Select } from 'antd'
-import { v4 as uuid } from 'uuid'
 
 import { AddButton, EditButton } from '@/components/assets/button'
 import Dialog from '@/components/assets/dialog'
@@ -155,9 +154,6 @@ const PluginDialog = ({ plugin, swr, edit }) => {
 
         // Remove renderer
         newPlugin.renderer && delete newPlugin.renderer
-
-        // Set uuid
-        newPlugin.uuid = uuid()
 
         // API
         await PluginAPI.add(newPlugin)

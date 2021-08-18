@@ -424,12 +424,28 @@ describe('e2e/backend/email', () => {
       status: 202,
       statusText: 'success'
     }))
-    await EmailLib.invite('email', adminUUID)
+    await EmailLib.invite('email', { email: 'email' })
     expect(personalization).toEqual([
       {
         email: 'email',
         data: {
-          subscribeLink: DOMAIN + '/login'
+          subscribeLink: DOMAIN + '/login',
+          user: 'email'
+        }
+      }
+    ])
+
+    mockSend.mockImplementationOnce(() => ({
+      status: 202,
+      statusText: 'success'
+    }))
+    await EmailLib.invite('email', { firstname: 'admin' })
+    expect(personalization).toEqual([
+      {
+        email: 'email',
+        data: {
+          subscribeLink: DOMAIN + '/login',
+          user: 'admin'
         }
       }
     ])

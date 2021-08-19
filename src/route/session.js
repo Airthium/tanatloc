@@ -10,12 +10,12 @@ export default async (req, res) => {
   try {
     const session = await getSession(req)
     if (!session || !session.id) {
-      res.status(401).json({ message: 'Unauthorized' })
+      res.status(401).json({ error: true, message: 'Unauthorized' })
       return null
     }
     return session.id
   } catch (err) {
-    res.status(401).json({ message: 'Unauthorized' })
+    res.status(401).json({ error: true, message: 'Unauthorized' })
     console.error(err)
     return null
   }

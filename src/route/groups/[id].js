@@ -35,6 +35,7 @@ export default async (req, res) => {
 
   if (req.method === 'GET') {
     try {
+      // TODO check if user is in organization
       const groups = await GroupLib.getByOrganization(id, [
         'id',
         'name',

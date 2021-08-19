@@ -47,6 +47,13 @@ export default async (req, res) => {
       break
     case 'POST':
       try {
+        // Check
+        if (!req.body || !req.body.name || typeof req.body.name !== 'string')
+          throw new Error(
+            'Missing data in your request (body: { name(string) })'
+          )
+
+        // Add
         const workspace = await WorkspaceLib.add({ id: sessionId }, req.body)
         res.status(200).json(workspace)
       } catch (err) {
@@ -57,6 +64,19 @@ export default async (req, res) => {
       break
     case 'PUT':
       try {
+        // Check
+        if (
+          !req.body ||
+          !req.body.workspace ||
+          !req.body.workspace.id ||
+          typeof req.body.workspace.id !== 'string' ||
+          !req.body.data ||
+          !Array.isArray(req.body.data)
+        )
+          throw new Error(
+            'Missing data in your request (body: { workspace: { id(uuid) }, data(array) })'
+          )
+
         const { workspace, data } = req.body
         // Check authorization
         await checkAuth(workspace)
@@ -65,12 +85,16 @@ export default async (req, res) => {
         res.status(200).end()
       } catch (err) {
         console.error(err)
-        res.status(204).json({ error: true, message: err.message })
+        res.status(500).json({ error: true, message: err.message })
         Sentry.captureException(err)
       }
       break
     case 'DELETE':
       try {
+        // Check
+        if (!req.body || !req.body.id || typeof req.body.id !== 'string')
+          throw new Error('Missing data in your request (body: { id(uuid) })')
+
         const workspace = req.body
         // Check authorization
         await checkAuth(workspace)

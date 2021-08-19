@@ -4,6 +4,17 @@ import OrganizationLib from '@/lib/organization'
 
 import Sentry from '@/lib/sentry'
 
+/**
+ * Check administrator rights
+ * @param {string} id Id
+ */
+const checkAdministrator = async (id) => {
+  const organization = await OrganizationLib.get(id, ['owners'])
+
+  if (!organization?.owners?.includes(sessionId))
+    throw new Error('Unauthorized')
+}
+
 export default async (req, res) => {
   // Check session
   const sessionId = await getSessionId(req, res)
@@ -18,6 +29,7 @@ export default async (req, res) => {
             'Missing data in your request (body: { name(string) })'
           )
 
+        // Add
         const organization = await OrganizationLib.add(
           { id: sessionId },
           req.body
@@ -44,11 +56,7 @@ export default async (req, res) => {
           )
 
         // Check administrator
-        const organization = await OrganizationLib.get(req.body.id, ['owners'])
-        if (!organization?.owners?.includes(sessionId)) {
-          res.status(500).json({ error: true, message: 'Unauthorized' })
-          return
-        }
+        await checkAdministrator(req.body.id)
 
         // Update
         await OrganizationLib.update(
@@ -70,12 +78,9 @@ export default async (req, res) => {
           throw new Error('Missing data in your request (body: { id(uuid) })')
 
         // Check administrator
-        const organization = await OrganizationLib.get(req.body.id, ['owners'])
-        if (!organization?.owners?.includes(sessionId)) {
-          res.status(500).json({ error: true, message: 'Unauthorized' })
-          return
-        }
+        await checkAdministrator(req.body.id)
 
+        // Delete
         await OrganizationLib.del(req.body)
         res.status(200).end()
       } catch (err) {

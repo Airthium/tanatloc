@@ -1,28 +1,18 @@
-import route from '@/route/project/[id]'
+import route from '@/route/user/[id]'
 
-import { initialize, clean, validUUID } from '@/config/jest/e2e/global'
+import { initialize, clean } from '@/config/jest/e2e/global'
 
 import { encryptSession } from '@/auth/iron'
 
-import WorkspaceLib from '@/lib/workspace'
-import ProjectLib from '@/lib/project'
 import UserLib from '@/lib/user'
 
-// Initialization
+// Initialize
 let adminUUID
-let workspace
-let project
+let user
 beforeAll((done) => {
   new Promise(async (resolve) => {
     adminUUID = await initialize()
-    workspace = await WorkspaceLib.add(
-      { id: adminUUID },
-      { name: 'Test workspace' }
-    )
-    project = await ProjectLib.add(
-      { id: adminUUID },
-      { workspace: { id: workspace.id }, project: { title: 'Test project' } }
-    )
+    user = await UserLib.add({ email: 'email', password: 'password' })
     resolve()
   })
     .catch(console.error)
@@ -34,6 +24,37 @@ afterAll((done) => {
   clean().catch(console.error).finally(done)
 })
 
+// Mailersend mock
+jest.mock('mailersend', () => ({
+  __esModule: true,
+  default: class {
+    send() {
+      return { status: 202, statusText: 'success' }
+    }
+  },
+  Recipient: class {},
+  EmailParams: class mockEmailParams {
+    setFrom() {
+      return this
+    }
+    setFromName() {
+      return this
+    }
+    setRecipients() {
+      return this
+    }
+    setSubject() {
+      return this
+    }
+    setTemplateId() {
+      return this
+    }
+    setPersonalization(p) {
+      return this
+    }
+  }
+}))
+
 // Sentry mock
 const mockCaptureException = jest.fn()
 jest.mock('@sentry/node', () => ({
@@ -41,7 +62,7 @@ jest.mock('@sentry/node', () => ({
   captureException: (err) => mockCaptureException(err)
 }))
 
-describe('e2e/backend/project/id', () => {
+describe('e2e/backend/user/[id]', () => {
   const req = {}
   let resStatus
   let resJson
@@ -72,10 +93,25 @@ describe('e2e/backend/project/id', () => {
     resJson = undefined
   })
 
+  afterEach(() => {
+    req.headers = null
+  })
+
   test('Unauthorized', async () => {
     await route(req, res)
     expect(resStatus).toBe(401)
-    expect(resJson).toEqual({ error: true, message: 'Unauthorized' })
+    expect(resJson).toEqual({
+      error: true,
+      message: 'Unauthorized'
+    })
+
+    await setToken()
+    await route(req, res)
+    expect(resStatus).toBe(500)
+    expect(resJson).toEqual({
+      error: true,
+      message: 'Unauthorized'
+    })
   })
 
   test('No id', async () => {
@@ -83,35 +119,23 @@ describe('e2e/backend/project/id', () => {
     req.params = {}
     await setToken()
 
-    await route(req, res)
-    expect(resStatus).toBe(500)
-    expect(resJson).toEqual({
-      error: true,
-      message: 'Missing data in your request (query: { id(string) })'
-    })
-    expect(mockCaptureException).toHaveBeenLastCalledWith(
-      new Error('Missing data in your request (query: { id(string) })')
-    )
-  })
-
-  test('Invalid id', async () => {
-    req.query = { id: validUUID }
-    await setToken()
+    await UserLib.update({ id: adminUUID }, [{ key: 'superuser', value: true }])
 
     await route(req, res)
     expect(resStatus).toBe(500)
     expect(resJson).toEqual({
       error: true,
-      message: 'Invalid project identifier'
+      message: 'Missing data in your request (query: { id(uuid) })'
     })
     expect(mockCaptureException).toHaveBeenLastCalledWith(
-      new Error('Invalid project identifier')
+      new Error('Missing data in your request (query: { id(uuid) })')
     )
   })
 
   test('Wrong method', async () => {
-    req.query = { id: project.id }
     req.method = 'method'
+    req.query = { id: user.id }
+    req.params = {}
     await setToken()
 
     await route(req, res)
@@ -127,48 +151,31 @@ describe('e2e/backend/project/id', () => {
 
   test('Get', async () => {
     req.method = 'GET'
+    req.query = { id: user.id }
+    req.params = {}
     await setToken()
 
     // Normal
     await route(req, res)
     expect(resStatus).toBe(200)
-    const id = resJson.project.id
-    const user = await UserLib.get(adminUUID, [
-      'firstname',
-      'lastname',
-      'email',
-      'avatar'
-    ])
     expect(resJson).toEqual({
-      project: {
-        id: id,
-        title: 'Test project',
-        description: '',
+      user: {
+        id: user.id,
+        firstname: null,
+        lastname: null,
+        email: 'email',
         avatar: null,
-        owners: [user],
-        users: null,
-        geometries: null,
-        simulations: null
+        superuser: false,
+        plugins: null,
+        authorizedplugins: null
       }
     })
-
-    // Error
-    jest.spyOn(ProjectLib, 'get').mockImplementationOnce(() => {
-      throw new Error('Get error')
-    })
-    await route(req, res)
-    expect(resStatus).toBe(500)
-    expect(resJson).toEqual({
-      error: true,
-      message: 'Get error'
-    })
-    expect(mockCaptureException).toHaveBeenLastCalledWith(
-      new Error('Get error')
-    )
   })
 
   test('Update', async () => {
     req.method = 'PUT'
+    req.query = { id: user.id }
+    req.params = {}
     await setToken()
 
     // Wrong body
@@ -184,19 +191,19 @@ describe('e2e/backend/project/id', () => {
     )
 
     // Normal
-    req.body = [{ key: 'description', value: "Test project's description" }]
+    req.body = [{ key: 'firstname', value: 'firstname' }]
     await route(req, res)
     expect(resStatus).toBe(200)
     expect(resJson).toBe('end')
 
-    const projectData = await ProjectLib.get(project.id, ['description'])
-    expect(projectData).toEqual({
-      id: project.id,
-      description: "Test project's description"
+    const userData = await UserLib.get(user.id, ['firstname'])
+    expect(userData).toEqual({
+      id: user.id,
+      firstname: 'firstname'
     })
 
     // Error
-    jest.spyOn(ProjectLib, 'update').mockImplementationOnce(() => {
+    jest.spyOn(UserLib, 'update').mockImplementationOnce(() => {
       throw new Error('Update error')
     })
     await route(req, res)
@@ -212,23 +219,17 @@ describe('e2e/backend/project/id', () => {
 
   test('Delete', async () => {
     req.method = 'DELETE'
+    req.query = {}
+    req.params = { id: user.id }
     await setToken()
 
-    // Wrong body
-    req.body = {}
+    // Normal
     await route(req, res)
-    expect(resStatus).toBe(500)
-    expect(resJson).toEqual({
-      error: true,
-      message: 'Missing data in your request (body: { id(uuid) })'
-    })
-    expect(mockCaptureException).toHaveBeenLastCalledWith(
-      new Error('Missing data in your request (body: { id(uuid) })')
-    )
+    expect(resStatus).toBe(200)
+    expect(resJson).toBe('end')
 
     // Error
-    req.body = { id: workspace.id }
-    jest.spyOn(ProjectLib, 'del').mockImplementationOnce(() => {
+    jest.spyOn(UserLib, 'del').mockImplementationOnce(() => {
       throw new Error('Delete error')
     })
     await route(req, res)
@@ -240,11 +241,5 @@ describe('e2e/backend/project/id', () => {
     expect(mockCaptureException).toHaveBeenLastCalledWith(
       new Error('Delete error')
     )
-
-    // Normal
-    req.body = { id: workspace.id }
-    await route(req, res)
-    expect(resStatus).toBe(200)
-    expect(resJson).toBe('end')
   })
 })

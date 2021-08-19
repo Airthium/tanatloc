@@ -1,27 +1,21 @@
-import route from '@/route/project/[id]'
+import route from '@/route/workspace'
 
 import { initialize, clean, validUUID } from '@/config/jest/e2e/global'
 
 import { encryptSession } from '@/auth/iron'
 
 import WorkspaceLib from '@/lib/workspace'
-import ProjectLib from '@/lib/project'
 import UserLib from '@/lib/user'
 
-// Initialization
+// Initialize
 let adminUUID
 let workspace
-let project
 beforeAll((done) => {
   new Promise(async (resolve) => {
     adminUUID = await initialize()
     workspace = await WorkspaceLib.add(
       { id: adminUUID },
       { name: 'Test workspace' }
-    )
-    project = await ProjectLib.add(
-      { id: adminUUID },
-      { workspace: { id: workspace.id }, project: { title: 'Test project' } }
     )
     resolve()
   })
@@ -41,7 +35,7 @@ jest.mock('@sentry/node', () => ({
   captureException: (err) => mockCaptureException(err)
 }))
 
-describe('e2e/backend/project/id', () => {
+describe('e2e/backend/workspace', () => {
   const req = {}
   let resStatus
   let resJson
@@ -72,45 +66,20 @@ describe('e2e/backend/project/id', () => {
     resJson = undefined
   })
 
+  afterEach(() => {
+    req.headers = null
+  })
+
   test('Unauthorized', async () => {
     await route(req, res)
     expect(resStatus).toBe(401)
-    expect(resJson).toEqual({ error: true, message: 'Unauthorized' })
-  })
-
-  test('No id', async () => {
-    req.query = {}
-    req.params = {}
-    await setToken()
-
-    await route(req, res)
-    expect(resStatus).toBe(500)
     expect(resJson).toEqual({
       error: true,
-      message: 'Missing data in your request (query: { id(string) })'
+      message: 'Unauthorized'
     })
-    expect(mockCaptureException).toHaveBeenLastCalledWith(
-      new Error('Missing data in your request (query: { id(string) })')
-    )
-  })
-
-  test('Invalid id', async () => {
-    req.query = { id: validUUID }
-    await setToken()
-
-    await route(req, res)
-    expect(resStatus).toBe(500)
-    expect(resJson).toEqual({
-      error: true,
-      message: 'Invalid project identifier'
-    })
-    expect(mockCaptureException).toHaveBeenLastCalledWith(
-      new Error('Invalid project identifier')
-    )
   })
 
   test('Wrong method', async () => {
-    req.query = { id: project.id }
     req.method = 'method'
     await setToken()
 
@@ -129,41 +98,82 @@ describe('e2e/backend/project/id', () => {
     req.method = 'GET'
     await setToken()
 
-    // Normal
-    await route(req, res)
-    expect(resStatus).toBe(200)
-    const id = resJson.project.id
     const user = await UserLib.get(adminUUID, [
       'firstname',
       'lastname',
       'email',
       'avatar'
     ])
+
+    // Normal
+    await route(req, res)
+    expect(resStatus).toBe(200)
     expect(resJson).toEqual({
-      project: {
-        id: id,
-        title: 'Test project',
-        description: '',
-        avatar: null,
-        owners: [user],
-        users: null,
-        geometries: null,
-        simulations: null
-      }
+      workspaces: [
+        {
+          id: workspace.id,
+          name: 'Test workspace',
+          owners: [user],
+          users: null,
+          groups: null,
+          projects: []
+        }
+      ]
     })
 
     // Error
-    jest.spyOn(ProjectLib, 'get').mockImplementationOnce(() => {
-      throw new Error('Get error')
+    jest.spyOn(WorkspaceLib, 'getByUser').mockImplementationOnce(() => {
+      throw new Error('Get by user error')
     })
     await route(req, res)
     expect(resStatus).toBe(500)
     expect(resJson).toEqual({
       error: true,
-      message: 'Get error'
+      message: 'Get by user error'
     })
     expect(mockCaptureException).toHaveBeenLastCalledWith(
-      new Error('Get error')
+      new Error('Get by user error')
+    )
+  })
+
+  test('Add', async () => {
+    req.method = 'POST'
+    await setToken()
+
+    // Wrong body
+    req.body = {}
+    await route(req, res)
+    expect(resStatus).toBe(500)
+    expect(resJson).toEqual({
+      error: true,
+      message: 'Missing data in your request (body: { name(string) })'
+    })
+    expect(mockCaptureException).toHaveBeenLastCalledWith(
+      new Error('Missing data in your request (body: { name(string) })')
+    )
+
+    // Normal
+    req.body = { name: 'Test workspace' }
+    await route(req, res)
+    expect(resStatus).toBe(200)
+    const id = resJson.id
+    expect(resJson).toEqual({
+      id: id,
+      name: 'Test workspace'
+    })
+
+    // Error
+    jest.spyOn(WorkspaceLib, 'add').mockImplementationOnce(() => {
+      throw new Error('Add error')
+    })
+    await route(req, res)
+    expect(resStatus).toBe(500)
+    expect(resJson).toEqual({
+      error: true,
+      message: 'Add error'
+    })
+    expect(mockCaptureException).toHaveBeenLastCalledWith(
+      new Error('Add error')
     )
   })
 
@@ -177,26 +187,47 @@ describe('e2e/backend/project/id', () => {
     expect(resStatus).toBe(500)
     expect(resJson).toEqual({
       error: true,
-      message: 'Missing data in your request (body(array))'
+      message:
+        'Missing data in your request (body: { workspace: { id(uuid) }, data(array) })'
     })
     expect(mockCaptureException).toHaveBeenLastCalledWith(
-      new Error('Missing data in your request (body(array))')
+      new Error(
+        'Missing data in your request (body: { workspace: { id(uuid) }, data(array) })'
+      )
+    )
+
+    // Access denied
+    req.body = {
+      workspace: { id: validUUID },
+      data: [{ key: 'name', value: 'Test workspace new' }]
+    }
+    await route(req, res)
+    expect(resStatus).toBe(500)
+    expect(resJson).toEqual({
+      error: true,
+      message: 'Access denied'
+    })
+    expect(mockCaptureException).toHaveBeenLastCalledWith(
+      new Error('Access denied')
     )
 
     // Normal
-    req.body = [{ key: 'description', value: "Test project's description" }]
+    req.body = {
+      workspace: { id: workspace.id },
+      data: [{ key: 'name', value: 'Test workspace new' }]
+    }
     await route(req, res)
     expect(resStatus).toBe(200)
     expect(resJson).toBe('end')
 
-    const projectData = await ProjectLib.get(project.id, ['description'])
-    expect(projectData).toEqual({
-      id: project.id,
-      description: "Test project's description"
+    const workspaceData = await WorkspaceLib.get(workspace.id, ['name'])
+    expect(workspaceData).toEqual({
+      id: workspace.id,
+      name: 'Test workspace new'
     })
 
     // Error
-    jest.spyOn(ProjectLib, 'update').mockImplementationOnce(() => {
+    jest.spyOn(WorkspaceLib, 'update').mockImplementationOnce(() => {
       throw new Error('Update error')
     })
     await route(req, res)
@@ -226,9 +257,21 @@ describe('e2e/backend/project/id', () => {
       new Error('Missing data in your request (body: { id(uuid) })')
     )
 
+    // Access denied
+    req.body = { id: validUUID }
+    await route(req, res)
+    expect(resStatus).toBe(500)
+    expect(resJson).toEqual({
+      error: true,
+      message: 'Access denied'
+    })
+    expect(mockCaptureException).toHaveBeenLastCalledWith(
+      new Error('Access denied')
+    )
+
     // Error
     req.body = { id: workspace.id }
-    jest.spyOn(ProjectLib, 'del').mockImplementationOnce(() => {
+    jest.spyOn(WorkspaceLib, 'del').mockImplementationOnce(() => {
       throw new Error('Delete error')
     })
     await route(req, res)
@@ -242,7 +285,6 @@ describe('e2e/backend/project/id', () => {
     )
 
     // Normal
-    req.body = { id: workspace.id }
     await route(req, res)
     expect(resStatus).toBe(200)
     expect(resJson).toBe('end')

@@ -80,7 +80,7 @@ describe('e2e/backend/simulation/id/tasks', () => {
   test('Unauthorized', async () => {
     await route(req, res)
     expect(resStatus).toBe(401)
-    expect(resJson).toEqual({ message: 'Unauthorized' })
+    expect(resJson).toEqual({ error: true, message: 'Unauthorized' })
   })
 
   test('No id', async () => {

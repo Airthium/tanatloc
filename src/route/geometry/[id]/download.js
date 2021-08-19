@@ -53,10 +53,8 @@ export default async (req, res) => {
       false
     )
 
-    if (!(await auth(sessionId, projectAuth, workspaceAuth))) {
-      res.status(401).json({ error: true, message: 'Unauthorized' })
-      return
-    }
+    if (!(await auth(sessionId, projectAuth, workspaceAuth)))
+      throw new Error('Unauthorized')
   } catch (err) {
     console.error(err)
     res.status(500).json({ error: true, message: err.message })

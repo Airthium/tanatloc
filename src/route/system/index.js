@@ -31,9 +31,12 @@ export default async (req, res) => {
         // Check superuser
         const superuser = await UserLib.get(sessionId, ['superuser'])
         if (!superuser.superuser) {
-          res.status(500).json({ error: true, message: 'Unauthorized' })
-          return
+          throw new Error('Unauthorized')
         }
+
+        // Check
+        if (!req.body || !Array.isArray(req.body))
+          throw new Error('Missing data in your request (body(array))')
 
         await SystemLib.update(req.body)
         res.status(200).end()

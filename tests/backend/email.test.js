@@ -25,7 +25,7 @@ afterAll((done) => {
   clean().catch(console.error).finally(done)
 })
 
-// mailersend mock
+// Mailersend mock
 const mockSend = jest.fn()
 let personalization
 jest.mock('mailersend', () => ({

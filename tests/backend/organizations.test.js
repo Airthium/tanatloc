@@ -68,7 +68,7 @@ describe('e2e/backend/organizations', () => {
   test('Unauthorized', async () => {
     await route(req, res)
     expect(resStatus).toBe(401)
-    expect(resJson).toEqual({ message: 'Unauthorized' })
+    expect(resJson).toEqual({ error: true, message: 'Unauthorized' })
   })
 
   test('Wrong method', async () => {

@@ -30,6 +30,17 @@ export default async (req, res) => {
     id = req.params.id
   }
 
+  // Check
+  if (!id || typeof id !== 'string') {
+    const error = new Error(
+      'Missing data in your request (query: { id(uuid) })'
+    )
+    console.error(error)
+    res.status(500).json({ error: true, message: error.message })
+    Sentry.captureException(error)
+    return
+  }
+
   switch (req.method) {
     case 'GET':
       try {
@@ -39,7 +50,8 @@ export default async (req, res) => {
           'email',
           'avatar',
           'plugins',
-          'superuser'
+          'superuser',
+          'authorizedplugins'
         ])
         res.status(200).json({ user })
       } catch (err) {
@@ -50,6 +62,11 @@ export default async (req, res) => {
       break
     case 'PUT':
       try {
+        // Check
+        if (!req.body || !Array.isArray(req.body))
+          throw new Error('Missing data in your request (body(array))')
+
+        // Update
         await UserLib.update({ id }, req.body)
         res.status(200).end()
       } catch (err) {

@@ -38,6 +38,18 @@ export default async (req, res) => {
       break
     case 'POST':
       try {
+        // Check
+        if (
+          !req.body ||
+          !req.body.email ||
+          typeof req.body.email !== 'string' ||
+          !req.body.password ||
+          typeof req.body.password !== 'string'
+        )
+          throw new Error(
+            'Missing data in your request (body: { email(string), password(string) })'
+          )
+
         // Add
         const user = await UserLib.add(req.body)
         res.status(200).json(user)
@@ -52,6 +64,10 @@ export default async (req, res) => {
         // Check session
         const sessionId = await getSessionId(req, res)
         if (!sessionId) return
+
+        // Check
+        if (!req.body || !Array.isArray(req.body))
+          throw new Error('Missing data in your request (body(array))')
 
         // Update
         await UserLib.update({ id: sessionId }, req.body)

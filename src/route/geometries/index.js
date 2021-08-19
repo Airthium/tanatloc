@@ -57,8 +57,7 @@ export default async (req, res) => {
               ['owners', 'users', 'groups'],
               false
             )
-            if (!(await auth(sessionId, projectAuth, workspaceAuth)))
-              throw new Error('Unauthorized')
+            if (!(await auth(sessionId, projectAuth, workspaceAuth))) return
 
             return geometry
           } catch (err) {

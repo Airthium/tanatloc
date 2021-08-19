@@ -1,7 +1,9 @@
 /** @module route/project */
 
 import getSessionId from '../session'
+import auth from '../auth'
 
+import WorkspaceLib from '@/lib/workspace'
 import ProjectLib from '@/lib/project'
 
 import Sentry from '@/lib/sentry'
@@ -28,17 +30,24 @@ export default async (req, res) => {
         if (
           !req.body ||
           !req.body.workspace ||
-          typeof req.body.workspace !== 'object' ||
           !req.body.workspace.id ||
           typeof req.body.workspace.id !== 'string' ||
           !req.body.project ||
-          typeof req.body.project !== 'object' ||
           !req.body.project.title ||
           typeof req.body.project.title !== 'string'
         )
           throw new Error(
             'Missing data in your request (body: { workspace: { id(uuid) }, project: { title(string), description(?string) } }'
           )
+
+        // Check auth
+        const workspaceAuth = await WorkspaceLib.get(
+          req.body.workspace.id,
+          ['owners', 'users', 'groups'],
+          false
+        )
+        if (!(await auth(sessionId, workspaceAuth)))
+          throw new Error('Access denied')
 
         // Add
         const project = await ProjectLib.add({ id: sessionId }, req.body)

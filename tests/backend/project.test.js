@@ -1,6 +1,6 @@
 import route from '@/route/project'
 
-import { initialize, clean } from '@/config/jest/e2e/global'
+import { initialize, clean, validUUID } from '@/config/jest/e2e/global'
 
 import { encryptSession } from '@/auth/iron'
 
@@ -69,7 +69,7 @@ describe('e2e/backend/project', () => {
   test('Unauthorized', async () => {
     await route(req, res)
     expect(resStatus).toBe(401)
-    expect(resJson).toEqual({ message: 'Unauthorized' })
+    expect(resJson).toEqual({ error: true, message: 'Unauthorized' })
   })
 
   test('Wrong method', async () => {
@@ -113,6 +113,21 @@ describe('e2e/backend/project', () => {
       new Error(
         'Missing data in your request (body: { workspace: { id(uuid) }, project: { title(string), description(?string) } }'
       )
+    )
+
+    // Access denied
+    req.body = {
+      workspace: { id: validUUID },
+      project: { title: 'Test project' }
+    }
+    await route(req, res)
+    expect(resStatus).toBe(500)
+    expect(resJson).toEqual({
+      error: true,
+      message: 'Access denied'
+    })
+    expect(mockCaptureException).toHaveBeenLastCalledWith(
+      new Error('Access denied')
     )
 
     // Normal

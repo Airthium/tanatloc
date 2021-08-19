@@ -1,7 +1,10 @@
 /** @module route/geometry */
 
 import getSessionId from '../session'
+import auth from '../auth'
 
+import ProjectLib from '@/lib/project'
+import WorkspaceLib from '@/lib/workspace'
 import GeometryLib from '@/lib/geometry'
 
 import Sentry from '@/lib/sentry'
@@ -28,11 +31,9 @@ export default async (req, res) => {
         if (
           !req.body ||
           !req.body.project ||
-          typeof req.body.project !== 'object' ||
           !req.body.project.id ||
           typeof req.body.project.id !== 'string' ||
           !req.body.geometry ||
-          typeof req.body.geometry !== 'object' ||
           !req.body.geometry.name ||
           typeof req.body.geometry.name !== 'string' ||
           !req.body.geometry.uid ||
@@ -43,6 +44,21 @@ export default async (req, res) => {
           throw new Error(
             'Missing data in your request (body: { project: { id(uuid) }, geometry: { name(string), uid(uuid), buffer(object) } })'
           )
+
+        // Check auth
+        const projectAuth = await ProjectLib.get(
+          req.body.project.id,
+          ['owners', 'users', 'groups', 'workspace'],
+          false
+        )
+        if (!projectAuth) throw new Error('Invalid project identifier')
+        const workspaceAuth = await WorkspaceLib.get(
+          projectAuth.workspace,
+          ['owners', 'users', 'groups'],
+          false
+        )
+        if (!(await auth(sessionId, projectAuth, workspaceAuth)))
+          throw new Error('Access denied')
 
         const geometry = await GeometryLib.add(req.body)
         res.status(200).json(geometry)

@@ -11,7 +11,7 @@ import ProjectLib from '@/lib/project'
  * @param {Object} body Body
  */
 const checkGetBody = (body) => {
-  if (!body || !body.ids || !Array.isArray(body.ids))
+  if (!body)
     throw error(400, 'Missing data in your request (body: { ids(?array) })')
 }
 

@@ -1,99 +1,123 @@
+/** @module route/organization */
+
 import getSessionId from '../session'
 
 import OrganizationLib from '@/lib/organization'
 
-import Sentry from '@/lib/sentry'
+/**
+ * Check add body
+ * @param {Object} body Body
+ */
+const checkAddBody = (body) => {
+  if (!body || !body.name || typeof body.name !== 'string')
+    throw error(400, 'Missing data in your request (body: { name(string) })')
+}
 
 /**
- * Check administrator rights
+ * Check update body
+ * @param {Object} body Body
+ */
+const checkUpdateBody = (body) => {
+  if (
+    !body ||
+    !body.id ||
+    typeof body.id !== 'string' ||
+    !body.data ||
+    !Array.isArray(body.data)
+  )
+    throw error(
+      400,
+      'Missing data in your request (body: { id(uuid), data(array) })'
+    )
+}
+
+/**
+ * Check delete body
+ * @param {Object} body Body
+ */
+const checkDeleteBody = (body) => {
+  if (!body || !body.id || typeof body.id !== 'string')
+    throw new Error('Missing data in your request (body: { id(uuid) })')
+}
+
+/**
+ * Check organization administrator
  * @param {string} id Id
  */
-const checkAdministrator = async (id) => {
+const checkOrganizationAdministrator = async (id) => {
   const organization = await OrganizationLib.get(id, ['owners'])
 
   if (!organization?.owners?.includes(sessionId))
-    throw new Error('Unauthorized')
+    throw error(403, 'Access denied')
 }
 
+/**
+ * Organization API
+ * @param {Object} req Request
+ * @param {Object} res Response
+ */
 export default async (req, res) => {
-  // Check session
-  const sessionId = await getSessionId(req, res)
-  if (!sessionId) return
+  try {
+    // Check session
+    const sessionId = await getSessionId(req, res)
 
-  switch (req.method) {
-    case 'POST':
-      try {
+    switch (req.method) {
+      case 'POST':
         // Check
-        if (!req.body || !req.body.name || typeof req.body.name !== 'string')
-          throw new Error(
-            'Missing data in your request (body: { name(string) })'
-          )
+        checkAddBody(req.body)
 
         // Add
-        const organization = await OrganizationLib.add(
-          { id: sessionId },
-          req.body
-        )
-        res.status(200).json(organization)
-      } catch (err) {
-        console.error(err)
-        res.status(500).json({ error: true, message: err.message })
-        Sentry.captureException(err)
-      }
-      break
-    case 'PUT':
-      try {
-        // Check
-        if (
-          !req.body ||
-          !req.body.id ||
-          typeof req.body.id !== 'string' ||
-          !req.body.data ||
-          !Array.isArray(req.body.data)
-        )
-          throw new Error(
-            'Missing data in your request (body: { id(uuid), data(array) })'
+        try {
+          const organization = await OrganizationLib.add(
+            { id: sessionId },
+            req.body
           )
+          res.status(200).json(organization)
+        } catch (err) {
+          throw err(500, err.message)
+        }
+        break
+      case 'PUT':
+        // Check
+        checkUpdateBody(req.body)
 
         // Check administrator
-        await checkAdministrator(req.body.id)
+        await checkOrganizationAdministrator(req.body.id)
 
         // Update
-        await OrganizationLib.update(
-          { id: req.body.id },
-          req.body.data,
-          sessionId
-        )
-        res.status(200).end()
-      } catch (err) {
-        console.error(err)
-        res.status(500).json({ error: true, message: err.message })
-        Sentry.captureException(err)
-      }
-      break
-    case 'DELETE':
-      try {
+        try {
+          await OrganizationLib.update(
+            { id: req.body.id },
+            req.body.data,
+            sessionId
+          )
+          res.status(200).end()
+        } catch (err) {
+          throw error(500, err.message)
+        }
+        break
+      case 'DELETE':
         // Check
-        if (!req.body || !req.body.id || typeof req.body.id !== 'string')
-          throw new Error('Missing data in your request (body: { id(uuid) })')
+        checkDeleteBody(req.body)
 
         // Check administrator
-        await checkAdministrator(req.body.id)
+        await checkOrganizationAdministrator(req.body.id)
 
-        // Delete
-        await OrganizationLib.del(req.body)
-        res.status(200).end()
-      } catch (err) {
-        console.error(err)
-        res.status(500).json({ error: true, message: err.message })
-        Sentry.captureException(err)
-      }
-      break
-    default:
-      // Unauthorized method
-      const error = new Error('Method ' + req.method + ' not allowed')
-      res.status(405).json({ error: true, message: error.message })
-      Sentry.captureException(error)
-      break
+        try {
+          // Delete
+          await OrganizationLib.del(req.body)
+          res.status(200).end()
+        } catch (err) {
+          throw error(500, err.message)
+        }
+        break
+      default:
+        // Unauthorized method
+        throw error(402, 'Method ' + req.method + ' not allowed')
+    }
+  } catch (err) {
+    res
+      .status(err.status)
+      .json({ error: true, display: err.display, message: err.message, err })
   }
 }

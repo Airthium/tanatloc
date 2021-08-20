@@ -1,41 +1,46 @@
+/** @module route/users */
+
 import getSessionId from '../session'
+import error from '../error'
 
 import UserLib from '@/lib/user'
 
-import Sentry from '@/lib/sentry'
-
+/**
+ * Users API
+ * @param {Object} req Request
+ * @param {Object} res Response
+ */
 export default async (req, res) => {
-  // Check session
-  const sessionId = await getSessionId(req, res)
-  if (!sessionId) return
+  try {
+    // Check session
+    const sessionId = await getSessionId(req, res)
 
-  // Check superuser
-  const user = await UserLib.get(sessionId, ['superuser'])
-  if (!user.superuser) {
-    res.status(500).json({ error: true, message: 'Unauthorized' })
-    return
-  }
+    // Check superuser
+    const user = await UserLib.get(sessionId, ['superuser'])
+    if (!user.superuser) throw error(403, 'Access denied')
 
-  if (req.method === 'GET') {
-    try {
-      const users = await UserLib.getAll([
-        'id',
-        'firstname',
-        'lastname',
-        'email',
-        'authorizedplugins',
-        'superuser'
-      ])
-      res.status(200).json({ users })
-    } catch (err) {
-      console.error(err)
-      res.status(500).json({ error: true, message: err.message })
-      Sentry.captureException(err)
+    if (req.method === 'GET') {
+      try {
+        // Get all
+        const users = await UserLib.getAll([
+          'id',
+          'firstname',
+          'lastname',
+          'email',
+          'authorizedplugins',
+          'superuser'
+        ])
+        res.status(200).json({ users })
+      } catch (err) {
+        throw error(500, err.message)
+      }
+    } else {
+      // Unauthorized method
+      throw error(402, 'Method ' + req.method + ' not allowed')
     }
-  } else {
-    // Unauthorized method
-    const error = new Error('Method ' + req.method + ' not allowed')
-    res.status(405).json({ error: true, message: error.message })
-    Sentry.captureException(error)
+  } catch (err) {
+    res
+      .status(err.status)
+      .json({ error: true, display: err.display, message: err.message, err })
   }
 }

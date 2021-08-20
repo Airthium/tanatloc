@@ -2,54 +2,75 @@
 
 import LinkLib from '@/lib/link'
 
-import Sentry from '@/lib/sentry'
+/**
+ * Check get body
+ * @param {Object} body Body
+ */
+const checkGetBody = (body) => {
+  if (
+    !body ||
+    !body.id ||
+    typeof body.id !== 'string' ||
+    !body.data ||
+    !Array.isArray(body.data)
+  )
+    throw error(
+      400,
+      'Missing data in your request (body: { id(uuid), data(array) })'
+    )
+}
 
+/**
+ * Check process body
+ * @param {Object} body Body
+ */
+const checkProcessBody = (body) => {
+  if (!req.body || !req.body.id || typeof req.body.id !== 'string')
+    throw error(
+      400,
+      'Missing data in your request (body: { id(uuid), data(?object) })'
+    )
+}
+
+/**
+ * Link API
+ * @param {Object} req Request
+ * @param {Object} res Response
+ */
 export default async (req, res) => {
-  switch (req.method) {
-    case 'POST':
-      try {
+  try {
+    switch (req.method) {
+      case 'POST':
         // Check
-        if (
-          !req.body ||
-          !req.body.id ||
-          typeof req.body.id !== 'string' ||
-          !req.body.data ||
-          !Array.isArray(req.body.data)
-        )
-          throw new Error(
-            'Missing data in your request (body: { id(uuid), data(array) })'
-          )
+        checkGetBody(req.body)
 
-        const { id, data } = req.body
-        const link = await LinkLib.get(id, data)
-        res.status(200).json(link)
-      } catch (err) {
-        console.error(err)
-        res.status(500).json({ error: true, message: err.message })
-        Sentry.captureException(err)
-      }
-      break
-    case 'PUT':
-      try {
+        // Get
+        try {
+          const link = await LinkLib.get(req.body.id, req.body.data)
+          res.status(200).json(link)
+        } catch (err) {
+          throw error(500, err.message)
+        }
+        break
+      case 'PUT':
         // Check
-        if (!req.body || !req.body.id || typeof req.body.id !== 'string')
-          throw new Error(
-            'Missing data in your request (body: { id(uuid), data(?object) })'
-          )
+        checkProcessBody(req.body)
 
-        const { id, data } = req.body
-        await LinkLib.process(id, data)
-        res.status(200).end()
-      } catch (err) {
-        console.error(err)
-        res.status(500).json({ error: true, message: err.message })
-        Sentry.captureException(err)
-      }
-      break
-    default:
-      // Unauthorized method
-      const error = new Error('Method ' + req.method + ' not allowed')
-      res.status(405).json({ error: true, message: error.message })
-      Sentry.captureException(error)
+        // Process
+        try {
+          await LinkLib.process(req.body.id, req.body.data)
+          res.status(200).end()
+        } catch (err) {
+          throw error(500, err.message)
+        }
+        break
+      default:
+        // Unauthorized method
+        throw error(402, 'Method ' + req.method + ' not allowed')
+    }
+  } catch (err) {
+    res
+      .status(err.status)
+      .json({ error: true, display: err.display, message: err.message, err })
   }
 }

@@ -1,90 +1,112 @@
 import getSessionId from '../session'
+import error from '../error'
 
 import UserLib from '@/lib/user'
 import PluginLib from '@/lib/plugin'
 
-import Sentry from '@/lib/sentry'
+/**
+ * Check add body
+ * @param {Object} body Body
+ */
+const checkAddBody = (body) => {
+  if (
+    !body ||
+    !body.key ||
+    typeof body.key !== 'string' ||
+    !body.configuration ||
+    typeof body.configuration !== 'object'
+  )
+    throw error(
+      400,
+      'Missing data in your request (body: { key(string), needInit(?bool), configuration(object) }'
+    )
+}
 
+/**
+ * Check update body
+ * @param {Object} body Body
+ */
+const checkUpdateBody = (body) => {
+  if (!body || typeof body !== 'object')
+    throw error(400, 'Missing data in your request (body(object)}')
+}
+
+/**
+ * Check delete body
+ * @param {Object} body Body
+ */
+const checkDeleteBody = (body) => {
+  if (!body || !body.uuid || typeof body.uuid !== 'string')
+    throw error(400, 'Missing data in your request (body: { uuid(uuid) } }')
+}
+
+/**
+ * Plugin API
+ * @param {Object} req Request
+ * @param {Object} res Response
+ */
 export default async (req, res) => {
-  // Check session
-  const sessionId = await getSessionId(req, res)
-  if (!sessionId) return
+  try {
+    // Check session
+    const sessionId = await getSessionId(req, res)
 
-  switch (req.method) {
-    case 'POST':
-      try {
+    switch (req.method) {
+      case 'POST':
         // Check
-        if (
-          !req.body ||
-          typeof req.body !== 'object' ||
-          !req.body.key ||
-          typeof req.body.key !== 'string' ||
-          !req.body.configuration ||
-          typeof req.body.configuration !== 'object'
-        )
-          throw new Error(
-            'Missing data in your request (body: { key(string), needInit(?bool), configuration(object) }'
-          )
+        checkAddBody(req.body)
 
         const body = req.body
 
         // Check authorization
         const user = await UserLib.get(sessionId, ['authorizedplugins'])
         if (!user.authorizedplugins?.includes(body.key))
-          throw new Error('Unauthorized')
+          throw error(403, 'Access denied')
 
-        await PluginLib.add({ id: sessionId }, body)
-        res.status(200).end()
-      } catch (err) {
-        console.error(err)
-        res.status(500).json({ error: true, message: err.message })
-        Sentry.captureException(err)
-      }
-      break
-    case 'GET':
-      try {
-        const plugins = await PluginLib.getByUser({ id: sessionId })
-        res.status(200).json({ plugins })
-      } catch (err) {
-        console.error(err)
-        res.status(500).json({ error: true, message: err.message })
-        Sentry.captureException(err)
-      }
-      break
-    case 'PUT':
-      try {
+        try {
+          await PluginLib.add({ id: sessionId }, body)
+          res.status(200).end()
+        } catch (err) {
+          throw error(500, err.message)
+        }
+        break
+      case 'GET':
+        try {
+          const plugins = await PluginLib.getByUser({ id: sessionId })
+          res.status(200).json({ plugins })
+        } catch (err) {
+          throw error(500, err.message)
+        }
+        break
+      case 'PUT':
         // Check
-        if (!req.body || typeof req.body !== 'object')
-          throw new Error('Missing data in your request (body(object)}')
+        checkUpdateBody(req.body)
 
-        // Update
-        await PluginLib.update({ id: sessionId }, req.body)
-        res.status(200).end()
-      } catch (err) {
-        console.error(err)
-        res.status(500).json({ error: true, message: err.message })
-        Sentry.captureException(err)
-      }
-      break
-    case 'DELETE':
-      try {
+        try {
+          // Update
+          await PluginLib.update({ id: sessionId }, req.body)
+          res.status(200).end()
+        } catch (err) {
+          throw error(500, err.message)
+        }
+        break
+      case 'DELETE':
         // Check
-        if (!req.body || !req.body.uuid || typeof req.body.uuid !== 'string')
-          throw new Error(
-            'Missing data in your request (body: { uuid(uuid) } }'
-          )
+        checkDeleteBody(req.body)
 
-        await PluginLib.del({ id: sessionId }, req.body)
-        res.status(200).end()
-      } catch (err) {
-        console.error(err)
-        res.status(500).json({ error: true, message: err.message })
-        Sentry.captureException(err)
-      }
-      break
-    default:
-      const error = new Error('Method ' + req.method + ' not allowed')
-      res.status(405).json({ error: true, message: error.message })
-      Sentry.captureException(error)
+        try {
+          await PluginLib.del({ id: sessionId }, req.body)
+          res.status(200).end()
+        } catch (err) {
+          throw error(500, err.message)
+        }
+        break
+      default:
+        // Unauthorized method
+        throw error(402, 'Method ' + req.method + ' not allowed')
+    }
+  } catch (err) {
+    res
+      .status(err.status)
+      .json({ error: true, display: err.display, message: err.message, err })
   }
 }

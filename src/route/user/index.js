@@ -1,10 +1,35 @@
 /** @module route/user */
 
 import getSessionId from '../session'
+import error from '../error'
 
 import UserLib from '@/lib/user'
 
-import Sentry from '@/lib/sentry'
+/**
+ * Check add body
+ * @param {Object} body Body
+ */
+const checkAddBody = (body) => {
+  if (
+    !body ||
+    !body.email ||
+    typeof body.email !== 'string' ||
+    !body.password ||
+    typeof body.password !== 'string'
+  )
+    throw new Error(
+      'Missing data in your request (body: { email(string), password(string) })'
+    )
+}
+
+/**
+ * Check update body
+ * @param {Array} body Body
+ */
+const checkUpdateBody = (body) => {
+  if (!body || !Array.isArray(body))
+    throw new Error('Missing data in your request (body(array))')
+}
 
 /**
  * User API
@@ -12,90 +37,76 @@ import Sentry from '@/lib/sentry'
  * @param {Object} res Response
  */
 export default async (req, res) => {
-  switch (req.method) {
-    case 'GET':
-      try {
+  let sessionId
+
+  try {
+    switch (req.method) {
+      case 'GET':
         // Check session
-        const sessionId = await getSessionId(req, res)
-        if (!sessionId) return
+        sessionId = await getSessionId(req, res)
 
         // Get
-        const user = await UserLib.get(sessionId, [
-          'lastname',
-          'firstname',
-          'email',
-          'avatar',
-          'superuser',
-          'authorizedplugins',
-          'plugins'
-        ])
-        res.status(200).json({ user })
-      } catch (err) {
-        console.error(err)
-        res.status(500).json({ error: true, message: err.message })
-        Sentry.captureException(err)
-      }
-      break
-    case 'POST':
-      try {
+        try {
+          const user = await UserLib.get(sessionId, [
+            'lastname',
+            'firstname',
+            'email',
+            'avatar',
+            'superuser',
+            'authorizedplugins',
+            'plugins'
+          ])
+          res.status(200).json({ user })
+        } catch (err) {
+          throw error(500, err.message)
+        }
+        break
+      case 'POST':
         // Check
-        if (
-          !req.body ||
-          !req.body.email ||
-          typeof req.body.email !== 'string' ||
-          !req.body.password ||
-          typeof req.body.password !== 'string'
-        )
-          throw new Error(
-            'Missing data in your request (body: { email(string), password(string) })'
-          )
+        checkAddBody(req.body)
 
-        // Add
-        const user = await UserLib.add(req.body)
-        res.status(200).json(user)
-      } catch (err) {
-        console.error(err)
-        res.status(500).json({ error: true, message: err.message })
-        Sentry.captureException(err)
-      }
-      break
-    case 'PUT':
-      try {
+        try {
+          // Add
+          const user = await UserLib.add(req.body)
+          res.status(200).json(user)
+        } catch (err) {
+          throw error(500, err.message)
+        }
+        break
+      case 'PUT':
         // Check session
-        const sessionId = await getSessionId(req, res)
-        if (!sessionId) return
+        sessionId = await getSessionId(req, res)
 
         // Check
-        if (!req.body || !Array.isArray(req.body))
-          throw new Error('Missing data in your request (body(array))')
+        checkUpdateBody(req.body)
 
-        // Update
-        await UserLib.update({ id: sessionId }, req.body)
-        res.status(200).end()
-      } catch (err) {
-        console.error(err)
-        res.status(500).json({ error: true, message: err.message })
-        Sentry.captureException(err)
-      }
-      break
-    case 'DELETE':
-      try {
+        try {
+          // Update
+          await UserLib.update({ id: sessionId }, req.body)
+          res.status(200).end()
+        } catch (err) {
+          throw error(500, err.message)
+        }
+        break
+      case 'DELETE':
         // Check session
-        const sessionId = await getSessionId(req, res)
-        if (!sessionId) return
+        sessionId = await getSessionId(req, res)
 
-        // Delete
-        await UserLib.del({ id: sessionId })
-        res.status(200).end()
-      } catch (err) {
-        console.error(err)
-        res.status(500).json({ error: true, message: err.message })
-        Sentry.captureException(err)
-      }
-      break
-    default:
-      const error = new Error('Method ' + req.method + ' not allowed')
-      res.status(405).json({ error: true, message: error.message })
-      Sentry.captureException(error)
+        try {
+          // Delete
+          await UserLib.del({ id: sessionId })
+          res.status(200).end()
+        } catch (err) {
+          throw error(500, err.message)
+        }
+        break
+      default:
+        // Unauthorized method
+        throw error(402, 'Method ' + req.method + ' not allowed')
+    }
+  } catch (err) {
+    res
+      .status(err.status)
+      .json({ error: true, display: err.display, message: err.message, err })
   }
 }

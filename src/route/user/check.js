@@ -1,8 +1,26 @@
 import getSessionId from '../session'
+import error from '../error'
 
 import UserLib from '@/lib/user'
 
-import Sentry from '@/lib/sentry'
+/**
+ * Check login body
+ * @memberof module:route/user
+ * @param {Object} body Body
+ */
+const checkLoginBody = (body) => {
+  if (
+    !body ||
+    !body.email ||
+    typeof body.email !== 'string' ||
+    !body.password ||
+    typeof body.password !== 'string'
+  )
+    throw error(
+      400,
+      'Missing data in your request (body: { email(string), password(string) })'
+    )
+}
 
 /**
  * User check API
@@ -11,39 +29,32 @@ import Sentry from '@/lib/sentry'
  * @param {Object} res Response
  */
 export default async (req, res) => {
-  // Check session
-  const sessionId = await getSessionId(req, res)
-  if (!sessionId) return
+  try {
+    // Check session
+    await getSessionId(req, res)
 
-  if (req.method === 'POST') {
-    try {
+    if (req.method === 'POST') {
       // Check
-      if (
-        !req.body ||
-        !req.body.email ||
-        typeof req.body.email !== 'string' ||
-        !req.body.password ||
-        typeof req.body.password !== 'string'
-      )
-        throw new Error(
-          'Missing data in your request (body: { email(string), password(string) })'
-        )
+      checkLoginBody(req.body)
 
       // Login
-      const user = await UserLib.login(req.body)
-      if (user) {
-        res.status(200).json({ valid: true })
-      } else {
-        res.status(401).json({ valid: false })
+      try {
+        const user = await UserLib.login(req.body)
+        if (user) {
+          res.status(200).json({ valid: true })
+        } else {
+          res.status(401).json({ valid: false })
+        }
+      } catch (err) {
+        throw err(500, err.message)
       }
-    } catch (err) {
-      console.error(err)
-      res.status(500).json({ error: true, message: err.message })
-      Sentry.captureException(err)
+    } else {
+      // Unauthorized method
+      throw error(402, 'Method ' + req.method + ' not allowed')
     }
-  } else {
-    const error = new Error('Method ' + req.method + ' not allowed')
-    res.status(405).json({ error: true, message: error.message })
-    Sentry.captureException(error)
+  } catch (err) {
+    res
+      .status(err.status)
+      .json({ error: true, display: err.display, message: err.message, err })
   }
 }

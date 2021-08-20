@@ -1,12 +1,30 @@
 /** @module route/project */
 
 import getSessionId from '../session'
-import auth from '../auth'
+import error from '../error'
+import { checkWorkspaceAuth } from '../auth'
 
-import WorkspaceLib from '@/lib/workspace'
 import ProjectLib from '@/lib/project'
 
-import Sentry from '@/lib/sentry'
+/**
+ * Check add body
+ * @param {Object} body Body
+ */
+const checkAddBody = (body) => {
+  if (
+    !body ||
+    !body.workspace ||
+    !body.workspace.id ||
+    typeof body.workspace.id !== 'string' ||
+    !body.project ||
+    !body.project.title ||
+    typeof body.project.title !== 'string'
+  )
+    throw error(
+      400,
+      'Missing data in your request (body: { workspace: { id(uuid) }, project: { title(string), description(?string) } }'
+    )
+}
 
 /**
  * Project API
@@ -14,54 +32,43 @@ import Sentry from '@/lib/sentry'
  * @param {Object} res Response
  */
 export default async (req, res) => {
-  // Check session
-  const sessionId = await getSessionId(req, res)
-  if (!sessionId) return
+  try {
+    // Check session
+    const sessionId = await getSessionId(req, res)
 
-  switch (req.method) {
-    case 'GET':
-      // Empty route
-      res.status(200).end()
-      break
-    case 'POST':
-      // Add project
-      try {
+    switch (req.method) {
+      case 'GET':
+        // Empty route
+        res.status(200).end()
+        break
+      case 'POST':
         // Check
-        if (
-          !req.body ||
-          !req.body.workspace ||
-          !req.body.workspace.id ||
-          typeof req.body.workspace.id !== 'string' ||
-          !req.body.project ||
-          !req.body.project.title ||
-          typeof req.body.project.title !== 'string'
-        )
-          throw new Error(
-            'Missing data in your request (body: { workspace: { id(uuid) }, project: { title(string), description(?string) } }'
-          )
+        checkAddBody(req.body)
+
+        const { workspace, project } = body
 
         // Check auth
-        const workspaceAuth = await WorkspaceLib.get(
-          req.body.workspace.id,
-          ['owners', 'users', 'groups'],
-          false
-        )
-        if (!(await auth(sessionId, workspaceAuth)))
-          throw new Error('Access denied')
+        await checkWorkspaceAuth({ id: sessionId }, workspace)
 
         // Add
-        const project = await ProjectLib.add({ id: sessionId }, req.body)
-        res.status(200).json(project)
-      } catch (err) {
-        console.error(err)
-        res.status(500).json({ error: true, message: err.message })
-        Sentry.captureException(err)
-      }
-      break
-    default:
-      // Unauthorized method
-      const error = new Error('Method ' + req.method + ' not allowed')
-      res.status(405).json({ error: true, message: error.message })
-      Sentry.captureException(error)
+        try {
+          const newProject = await ProjectLib.add(
+            { id: sessionId },
+            workspace,
+            project
+          )
+          res.status(200).json(newProject)
+        } catch (err) {
+          throw error(500, err.message)
+        }
+        break
+      default:
+        // Unauthorized method
+        throw error(402, 'Method ' + req.method + ' not allowed')
+    }
+  } catch (err) {
+    res
+      .status(err.status)
+      .json({ error: true, display: err.display, message: err.message, err })
   }
 }

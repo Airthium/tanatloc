@@ -1,10 +1,32 @@
 /** @module route/result */
 
 import getSessionId from '../session'
+import { checkSimulationAuth } from '../auth'
+import error from '../error'
 
 import ResultLib from '@/lib/result'
 
-import Sentry from '@/lib/sentry'
+/**
+ * Check load body
+ * @param {Object} body Body
+ */
+const checkLoadBody = (body) => {
+  if (
+    !body ||
+    !body.simulation ||
+    !body.simulation.id ||
+    typeof body.simulation.id !== 'string' ||
+    !body.result ||
+    !body.result.originPath ||
+    typeof body.result.originPath !== 'string' ||
+    !body.result.glb ||
+    typeof body.result.glb !== 'string'
+  )
+    throw error(
+      400,
+      'Missing data in your request (body: { simulation: { id(uuid) }, result: { originPath(string), glb(string) } }'
+    )
+}
 
 /**
  * Result API
@@ -12,43 +34,34 @@ import Sentry from '@/lib/sentry'
  * @param {Object} res Response
  */
 export default async (req, res) => {
-  // Check session
-  const sessionId = await getSessionId(req, res)
-  if (!sessionId) return
+  try {
+    // Check session
+    const sessionId = await getSessionId(req, res)
 
-  if (req.method === 'POST') {
-    // Load result
-    try {
-      // Check
-      if (
-        !req.body ||
-        !req.body.simulation ||
-        typeof req.body.simulation !== 'object' ||
-        !req.body.simulation.id ||
-        typeof req.body.simulation.id !== 'string' ||
-        !req.body.result ||
-        typeof req.body.result !== 'object' ||
-        !req.body.result.originPath ||
-        typeof req.body.result.originPath !== 'string' ||
-        !req.body.result.glb ||
-        typeof req.body.result.glb !== 'string'
-      )
-        throw new Error(
-          'Missing data in your request (body: { simulation: { id(uuid) }, result: { originPath(string), glb(string) } }'
-        )
+    if (req.method === 'POST') {
+      // Load result
+      try {
+        // Check
+        checkLoadBody(req.body)
 
-      // Load
-      const result = await ResultLib.load(req.body)
-      res.status(200).json(result)
-    } catch (err) {
-      console.error(err)
-      res.status(500).json({ error: true, message: err.message })
-      Sentry.captureException(err)
+        const { simulation, result } = req.body
+
+        // Check auth
+        await checkSimulationAuth({ id: sessionId }, { id: simulation.id })
+
+        // Load
+        const data = await ResultLib.load(simulation, result)
+        res.status(200).json(data)
+      } catch (err) {
+        throw error(500, err.message)
+      }
+    } else {
+      // Unauthorized method
+      throw error(402, 'Method ' + req.method + ' not allowed')
     }
-  } else {
-    // Unauthorized method
-    const error = new Error('Method ' + req.method + ' not allowed')
-    res.status(405).json({ error: true, message: error.message })
-    Sentry.captureException(error)
+  } catch (err) {
+    res
+      .status(err.status)
+      .json({ error: true, display: err.display, message: err.message, err })
   }
 }

@@ -15,9 +15,10 @@ import Tools from '../tools'
 
 /**
  * Add simulation
- * @param {Object} Param { project: { id }, simulation: { name, scheme } }
+ * @param {Object} project Project { id }
+ * @param {Object} simulation Simulation { name, scheme } }
  */
-const add = async ({ project, simulation }) => {
+const add = async (project, simulation) => {
   // Add simulation
   const simulationData = await SimulationDB.add({
     ...simulation,

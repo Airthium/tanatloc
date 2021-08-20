@@ -11,12 +11,10 @@ import Simulation from '../simulation'
 /**
  * Add project
  * @param {Object} user User { id }
- * @param {Object} data Data { workspace: { id }, project: { title, description } }
+ * @param {Object} workspace Workspace: { id }
+ * @param {Object} project Project { title, description }
  */
-const add = async (
-  user,
-  { workspace: { id }, project: { title, description } }
-) => {
+const add = async (user, { id }, { title, description }) => {
   const project = await ProjectDB.add(user, { id }, { title, description })
 
   // Add project reference in workspace

@@ -1,11 +1,47 @@
 /** @module route/workspace */
 
 import getSessionId from '../session'
-import auth from '../auth'
+import { checkWorkspaceAuth } from '../auth'
+import error from '../error'
 
 import WorkspaceLib from '@/lib/workspace'
 
-import Sentry from '@/lib/sentry'
+/**
+ * Check add body
+ * @param {Object} body Body
+ */
+const checkAddBody = (body) => {
+  if (!body || !body.name || typeof body.name !== 'string')
+    throw error(400, 'Missing data in your request (body: { name(string) })')
+}
+
+/**
+ * Check update body
+ * @param {Object} body Body
+ */
+const checkUpdateBody = (body) => {
+  if (
+    !body ||
+    !body.workspace ||
+    !body.workspace.id ||
+    typeof body.workspace.id !== 'string' ||
+    !body.data ||
+    !Array.isArray(body.data)
+  )
+    throw error(
+      400,
+      'Missing data in your request (body: { workspace: { id(uuid) }, data(array) })'
+    )
+}
+
+/**
+ * Check delete body
+ * @param {Object} body Body
+ */
+const checkDeleteBody = (body) => {
+  if (!body || !body.id || typeof body.id !== 'string')
+    throw error(400, 'Missing data in your request (body: { id(uuid) })')
+}
 
 /**
  * Workspace API
@@ -14,102 +50,74 @@ import Sentry from '@/lib/sentry'
  * @param {Object} res Response
  */
 export default async (req, res) => {
-  // Check session
-  const sessionId = await getSessionId(req, res)
-  if (!sessionId) return
+  try {
+    // Check session
+    const sessionId = await getSessionId(req, res)
 
-  /**
-   * Check authorization
-   * @param {Object} workspace Workspace { id }
-   */
-  const checkAuth = async (workspace) => {
-    const workspaceAuth = await WorkspaceLib.get(
-      workspace.id,
-      ['owners', 'users', 'groups'],
-      false
-    )
-
-    if (!(await auth(sessionId, workspaceAuth))) {
-      throw new Error('Access denied')
-    }
-  }
-
-  switch (req.method) {
-    case 'GET':
-      try {
-        const workspaces = await WorkspaceLib.getByUser({ id: sessionId })
-        res.status(200).json({ workspaces })
-      } catch (err) {
-        console.error(err)
-        res.status(500).json({ error: true, message: err.message })
-        Sentry.captureException(err)
-      }
-      break
-    case 'POST':
-      try {
+    switch (req.method) {
+      case 'GET':
+        // Get
+        try {
+          const workspaces = await WorkspaceLib.getByUser({ id: sessionId })
+          res.status(200).json({ workspaces })
+        } catch (err) {
+          throw error(500, err.message)
+        }
+        break
+      case 'POST':
         // Check
-        if (!req.body || !req.body.name || typeof req.body.name !== 'string')
-          throw new Error(
-            'Missing data in your request (body: { name(string) })'
-          )
+        checkAddBody(req.body)
 
         // Add
-        const workspace = await WorkspaceLib.add({ id: sessionId }, req.body)
-        res.status(200).json(workspace)
-      } catch (err) {
-        console.error(err)
-        res.status(500).json({ error: true, message: err.message })
-        Sentry.captureException(err)
-      }
-      break
-    case 'PUT':
-      try {
-        // Check
-        if (
-          !req.body ||
-          !req.body.workspace ||
-          !req.body.workspace.id ||
-          typeof req.body.workspace.id !== 'string' ||
-          !req.body.data ||
-          !Array.isArray(req.body.data)
-        )
-          throw new Error(
-            'Missing data in your request (body: { workspace: { id(uuid) }, data(array) })'
+        try {
+          const newWorkspace = await WorkspaceLib.add(
+            { id: sessionId },
+            req.body
           )
+          res.status(200).json(newWorkspace)
+        } catch (err) {
+          throw error(500, err.message)
+        }
+        break
+      case 'PUT':
+        // Check
+        checkUpdateBody(req.body)
 
         const { workspace, data } = req.body
+
         // Check authorization
         await checkAuth(workspace)
 
-        await WorkspaceLib.update(workspace, data)
-        res.status(200).end()
-      } catch (err) {
-        console.error(err)
-        res.status(500).json({ error: true, message: err.message })
-        Sentry.captureException(err)
-      }
-      break
-    case 'DELETE':
-      try {
+        // Update
+        try {
+          await WorkspaceLib.update(workspace, data)
+          res.status(200).end()
+        } catch (err) {
+          throw error(500, err.message)
+        }
+        break
+      case 'DELETE':
         // Check
-        if (!req.body || !req.body.id || typeof req.body.id !== 'string')
-          throw new Error('Missing data in your request (body: { id(uuid) })')
+        checkDeleteBody(req.body)
 
-        const workspace = req.body
         // Check authorization
-        await checkAuth(workspace)
+        await checkWorkspaceAuth({ id: sessionId }, req.body)
 
-        await WorkspaceLib.del({ id: sessionId }, req.body)
-        res.status(200).end()
-      } catch (err) {
-        console.error(err)
-        res.status(500).json({ error: true, message: err.message })
-        Sentry.captureException(err)
-      }
-      break
-    default:
-      const error = new Error('Method ' + req.method + ' not allowed')
-      res.status(405).json({ error: true, message: error.message })
-      Sentry.captureException(error)
+        // Delete
+        try {
+          await WorkspaceLib.del({ id: sessionId }, req.body)
+          res.status(200).end()
+        } catch (err) {
+          throw error(500, err.message)
+        }
+        break
+      default:
+        // Unauthorized method
+        throw error(402, 'Method ' + req.method + ' not allowed')
+    }
+  } catch (err) {
+    res
+      .status(err.status)
+      .json({ error: true, display: err.display, message: err.message, err })
   }
 }

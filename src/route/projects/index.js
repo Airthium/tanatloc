@@ -1,12 +1,19 @@
 /** @module route/projects */
 
 import getSessionId from '../session'
-import auth from '../auth'
+import { checkProjectAuth } from '../auth'
+import error from '../error'
 
 import ProjectLib from '@/lib/project'
-import WorkspaceLib from '@/lib/workspace'
 
-import Sentry from '@/lib/sentry'
+/**
+ * Check get body
+ * @param {Object} body Body
+ */
+const checkGetBody = (body) => {
+  if (!body || !body.ids || !Array.isArray(body.ids))
+    throw error(400, 'Missing data in your request (body: { ids(?array) })')
+}
 
 /**
  * Projects API
@@ -14,42 +21,29 @@ import Sentry from '@/lib/sentry'
  * @param {Object} res Response
  */
 export default async (req, res) => {
-  // Check session
-  const sessionId = await getSessionId(req, res)
-  if (!sessionId) return
+  try {
+    // Check session
+    const sessionId = await getSessionId(req, res)
 
-  if (req.method === 'POST') {
-    // Get projects list
-    try {
+    if (req.method === 'POST') {
       // Check
-      if (!req.body)
-        throw new Error('Missing data in your request (body: { ids(?array) })')
+      checkGetBody(req.body)
 
       // Ids
       const ids = req.body.ids
 
-      if (!ids) {
+      if (!ids || !Array.isArray(ids)) {
         res.status(200).json({ projects: [] })
         return
       }
 
+      // Get projects
       const projectsTmp = await Promise.all(
         ids.map(async (id) => {
           try {
-            const projectAuth = await ProjectLib.get(
-              id,
-              ['owners', 'users', 'groups', 'workspace'],
-              false
-            )
-            if (!projectAuth) throw new Error('Invalid project identifier')
+            await checkProjectAuth({ id: sessionId }, { id })
 
-            const workspaceAuth = await WorkspaceLib.get(
-              projectAuth.workspace,
-              ['owners', 'users', 'groups'],
-              false
-            )
-            if (!(await auth(sessionId, projectAuth, workspaceAuth))) return
-
+            // Get
             return await ProjectLib.get(id, [
               'title',
               'description',
@@ -67,18 +61,19 @@ export default async (req, res) => {
         })
       )
 
-      const projects = projectsTmp.filter((p) => p)
-
-      res.status(200).json({ projects })
-    } catch (err) {
-      console.error(err)
-      res.status(500).json({ error: true, message: err.message })
-      Sentry.captureException(err)
+      try {
+        const projects = projectsTmp.filter((p) => p)
+        res.status(200).json({ projects })
+      } catch (err) {
+        throw error(500, err.message)
+      }
+    } else {
+      // Unauthorized method
+      throw error(402, 'Method ' + req.method + ' not allowed')
     }
-  } else {
-    // Unauthorized method
-    const error = new Error('Method ' + req.method + ' not allowed')
-    res.status(405).json({ error: true, message: error.message })
-    Sentry.captureException(error)
+  } catch (err) {
+    res
+      .status(err.status)
+      .json({ error: true, display: err.display, message: err.message, err })
   }
 }

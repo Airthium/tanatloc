@@ -1,10 +1,31 @@
 /** @module route/simulation */
 
 import getSessionId from '../session'
+import { checkProjectAuth } from '../auth'
+import error from '../error'
 
 import SimulationLib from '@/lib/simulation'
 
-import Sentry from '@/lib/sentry'
+/**
+ * Check add body
+ * @param {Object} body Body
+ */
+const checkAddBody = (body) => {
+  if (
+    !body ||
+    !body.project ||
+    !body.project.id ||
+    typeof body.project.id !== 'string' ||
+    !body.simulation ||
+    !body.simulation.name ||
+    typeof body.simulation.name !== 'string' ||
+    !body.simulation.scheme ||
+    typeof body.simulation.scheme !== 'object'
+  )
+    throw new Error(
+      'Missing data in your request (body: { project: { id(uuid) }, simulation: { name(string), scheme(object) } }'
+    )
+}
 
 /**
  * Simulation API
@@ -12,49 +33,39 @@ import Sentry from '@/lib/sentry'
  * @param {Object} res Response
  */
 export default async (req, res) => {
-  // Check session
-  const sessionId = await getSessionId(req, res)
-  if (!sessionId) return
+  try {
+    // Check session
+    const sessionId = await getSessionId(req, res)
 
-  switch (req.method) {
-    case 'GET':
-      // Emty route
-      res.status(200).end()
-      break
-    case 'POST':
-      // Add simulation
-      try {
+    switch (req.method) {
+      case 'GET':
+        // Emty route
+        res.status(200).end()
+        break
+      case 'POST':
         // Check
-        if (
-          !req.body ||
-          !req.body.project ||
-          typeof req.body.project !== 'object' ||
-          !req.body.project.id ||
-          typeof req.body.project.id !== 'string' ||
-          !req.body.simulation ||
-          typeof req.body.simulation !== 'object' ||
-          !req.body.simulation.name ||
-          typeof req.body.simulation.name !== 'string' ||
-          !req.body.simulation.scheme ||
-          typeof req.body.simulation.scheme !== 'object'
-        )
-          throw new Error(
-            'Missing data in your request (body: { project: { id(uuid) }, simulation: { name(string), scheme(object) } }'
-          )
+        checkAddBody(req.body)
+
+        const { project, simulation } = req.body
+
+        // Check auth
+        await checkProjectAuth({ id: sessionId }, { id: project.id })
 
         // Add
-        const simulation = await SimulationLib.add(req.body)
-        res.status(200).json(simulation)
-      } catch (err) {
-        console.error(err)
-        res.status(500).json({ error: true, message: err.message })
-        Sentry.captureException(err)
-      }
-      break
-    default:
-      // Unauthorized method
-      const error = new Error('Method ' + req.method + ' not allowed')
-      res.status(405).json({ error: true, message: error.message })
-      Sentry.captureException(error)
+        try {
+          const newSimulation = await SimulationLib.add(project, simulation)
+          res.status(200).json(newSimulation)
+        } catch (err) {
+          throw error(500, err.message)
+        }
+        break
+      default:
+        // Unauthorized method
+        throw error(402, 'Method ' + req.method + ' not allowed')
+    }
+  } catch (err) {
+    res
+      .status(err.status)
+      .json({ error: true, display: err.display, message: err.message, err })
   }
 }

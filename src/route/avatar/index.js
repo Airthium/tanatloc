@@ -1,35 +1,31 @@
 /** @module route/avatar */
 
 import getSessionId from '../session'
-import auth from '../auth'
+import { checkProjectAuth } from '../auth'
+import error from '../error'
 
 import AvatarLib from '@/lib/avatar'
 
-import Sentry from '@/lib/sentry'
-
-import ProjectLib from '@/lib/project'
-import WorkspaceLib from '@/lib/workspace'
-
 /**
- * Check project auth
- * @param {Object} project Project { id }
+ * Check add body
+ * @param {Object} body Body
  */
-const checkProjectAuth = async (project) => {
-  const projectAuth = await ProjectLib.get(
-    project.id,
-    ['owners', 'users', 'groups', 'workspace'],
-    false
+const checkAddBody = (body) => {
+  if (
+    !body ||
+    !body.file ||
+    !body.file.name ||
+    typeof body.file.name !== 'string' ||
+    !body.file.uid ||
+    typeof body.file.uid !== 'string' ||
+    !body.file.data ||
+    typeof body.file.data !== 'string' ||
+    (body.project && (!body.project.id || typeof body.project.id !== 'string'))
   )
-  if (!projectAuth) throw new Error('Invalid project identifier')
-
-  const workspaceAuth = await WorkspaceLib.get(
-    projectAuth.workspace,
-    ['owners', 'users', 'groups'],
-    false
-  )
-
-  if (!(await auth(sessionId, projectAuth, workspaceAuth)))
-    throw new Error('Access denied')
+    throw error(
+      400,
+      'Missing data in your request (body: { file: { name(string), uid(uuid), data(string) }, ?project: { id(uuid) } })'
+    )
 }
 
 /**
@@ -38,51 +34,37 @@ const checkProjectAuth = async (project) => {
  * @param {Object} res Result
  */
 export default async (req, res) => {
-  // Check session
-  const sessionId = await getSessionId(req, res)
-  if (!sessionId) return
+  try {
+    // Check session
+    const sessionId = await getSessionId(req, res)
 
-  if (req.method === 'POST') {
-    // Add avatar
-    try {
+    if (req.method === 'POST') {
       // Check
-      if (
-        !req.body ||
-        !req.body.file ||
-        !req.body.file.name ||
-        typeof req.body.file.name !== 'string' ||
-        !req.body.file.uid ||
-        typeof req.body.file.uid !== 'string' ||
-        !req.body.file.data ||
-        typeof req.body.file.data !== 'string' ||
-        (req.body.project &&
-          (!req.body.project.id || typeof req.body.project.id !== 'string'))
-      )
-        throw new Error(
-          'Missing data in your request (body: { ?project: { id(uuid) }, file: { name(string), uid(uuid), data(string) } })'
-        )
+      checkAddBody(req.body)
 
       const { file, project } = req.body
 
       // Check auth
-      if (project) await checkProjectAuth(project)
+      if (project) await checkProjectAuth({ id: sessionId }, project)
 
-      const avatar = await AvatarLib.add(
-        project || { id: sessionId },
-        project ? 'project' : 'user',
-        file
-      )
-      res.status(200).json(avatar)
-    } catch (err) {
-      console.error(err)
-      res.status(500).json({ error: true, message: err.message })
-      Sentry.captureException(err)
+      // Add
+      try {
+        const avatar = await AvatarLib.add(
+          project || { id: sessionId },
+          project ? 'project' : 'user',
+          file
+        )
+        res.status(200).json(avatar)
+      } catch (err) {
+        throw error(500, err.message)
+      }
+    } else {
+      // Unauthorized method
+      throw error(402, 'Method ' + req.method + ' not allowed')
     }
-  } else {
-    // Unauthorized method
-    const error = new Error('Method ' + req.method + ' not allowed')
-    console.error(error)
-    res.status(405).json({ error: true, message: error.message })
-    Sentry.captureException(error)
+  } catch (err) {
+    res
+      .status(err.status)
+      .json({ error: true, display: err.display, message: err.message, err })
   }
 }

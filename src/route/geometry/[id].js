@@ -1,11 +1,18 @@
 import getSessionId from '../session'
-import auth from '../auth'
+import { checkGeometryAuth } from '../auth'
+import error from '../error'
 
 import GeometryLib from '@/lib/geometry'
-import ProjectLib from '@/lib/project'
-import WorkspaceLib from '@/lib/workspace'
 
-import Sentry from '@/lib/sentry'
+/**
+ * Check update body
+ * @memberof module:route/geometry
+ * @param {Array} body Body
+ */
+const checkUpdateBody = (body) => {
+  if (!body || !Array.isArray(body))
+    throw error(400, 'Missing data in your request (body(array))')
+}
 
 /**
  * Geometry API by [id]
@@ -14,89 +21,49 @@ import Sentry from '@/lib/sentry'
  * @param {Object} res Response
  */
 export default async (req, res) => {
-  // Check session
-  const sessionId = await getSessionId(req, res)
-  if (!sessionId) return
-
-  // Id
-  let id = req.query.id
-  if (!id) {
-    // Electron
-    id = req.params.id
-  }
-
-  // Check
-  if (!id || typeof id !== 'string') {
-    const error = new Error(
-      'Missing data in your request (query: { id(string) })'
-    )
-    console.error(error)
-    res.status(500).json({ error: true, message: error.message })
-    Sentry.captureException(error)
-    return
-  }
-
-  // Check authorization
   try {
-    const geometryAuth = await GeometryLib.get(id, ['project'])
-    if (!geometryAuth) throw new Error('Invalid geometry identifier')
+    // Check session
+    const sessionId = await getSessionId(req, res)
 
-    const projectAuth = await ProjectLib.get(
-      geometryAuth.project,
-      ['owners', 'users', 'groups', 'workspace'],
-      false
-    )
+    // Id
+    const id = req.query.id || req.params.id // Electron uses params
 
-    const workspaceAuth = await WorkspaceLib.get(
-      projectAuth.workspace,
-      ['owners', 'users', 'groups'],
-      false
-    )
+    // Check
+    if (!id || typeof id !== 'string')
+      throw error(400, 'Missing data in your request (query: { id(string) })')
 
-    if (!(await auth(sessionId, projectAuth, workspaceAuth)))
-      throw new Error('Access denied')
-  } catch (err) {
-    console.error(err)
-    res.status(500).json({ error: true, message: err.message })
-    Sentry.captureException(err)
-    return
-  }
+    // Check authorization
+    await checkGeometryAuth({ id: sessionId }, { id })
 
-  switch (req.method) {
-    case 'PUT':
-      try {
+    switch (req.method) {
+      case 'PUT':
         // Check
-        if (
-          !req.body ||
-          typeof req.body !== 'object' ||
-          !Array.isArray(req.body)
-        )
-          throw new Error('Missing data in your request (body(array))')
+        checkUpdateBody(req.body)
 
         // Update
-        await GeometryLib.update({ id }, req.body)
-        res.status(200).end()
-      } catch (err) {
-        console.error(err)
-        res.status(500).json({ error: true, message: err.message })
-        Sentry.captureException(err)
-      }
-      break
-    case 'DELETE':
-      try {
+        try {
+          await GeometryLib.update({ id }, req.body)
+          res.status(200).end()
+        } catch (err) {
+          throw error(500, err.message)
+        }
+        break
+      case 'DELETE':
         // Delete
-        await GeometryLib.del({ id })
-        res.status(200).end()
-      } catch (err) {
-        console.error(err)
-        res.status(500).json({ error: true, message: err.message })
-        Sentry.captureException(err)
-      }
-      break
-    default:
-      // Unauthorized method
-      const error = new Error('Method ' + req.method + ' not allowed')
-      res.status(405).json({ error: true, message: error.message })
-      Sentry.captureException(error)
+        try {
+          await GeometryLib.del({ id })
+          res.status(200).end()
+        } catch (err) {
+          throw error(500, err.message)
+        }
+        break
+      default:
+        // Unauthorized method
+        throw error(402, 'Method ' + req.method + ' not allowed')
+    }
+  } catch (err) {
+    res
+      .status(err.status)
+      .json({ error: true, display: err.display, message: err.message, err })
   }
 }

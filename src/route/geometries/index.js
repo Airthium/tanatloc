@@ -1,13 +1,19 @@
-/** @module route/simulations */
+/** @module route/geometries */
 
 import getSessionId from '../session'
-import auth from '../auth'
+import { checkProjectAuth } from '../auth'
+import error from '../error'
 
 import GeometryLib from '@/lib/geometry'
-import ProjectLib from '@/lib/project'
-import WorkspaceLib from '@/lib/workspace'
 
-import Sentry from '@/lib/sentry'
+/**
+ * Check get body
+ * @param {Object} body Body
+ */
+const checkGetBody = (body) => {
+  if (!body || !body.ids || !Array.isArray(body.ids))
+    throw error(400, 'Missing data in your request (body: { ids(?array) })')
+}
 
 /**
  * Geometries API
@@ -15,25 +21,23 @@ import Sentry from '@/lib/sentry'
  * @param {Object} res Response
  */
 export default async (req, res) => {
-  // Check session
-  const sessionId = await getSessionId(req, res)
-  if (!sessionId) return
+  try {
+    // Check session
+    const sessionId = await getSessionId(req, res)
 
-  if (req.method === 'POST') {
-    // Get geometries list
-    try {
+    if (req.method === 'POST') {
       // Check
-      if (!req.body)
-        throw new Error('Missing data in your request (body: { ids(?array) })')
+      checkGetBody(req.body)
 
       // Ids
-      let ids = req.body.ids
+      const ids = req.body.ids
 
       if (!ids || !Array.isArray(ids)) {
         res.status(200).json({ geometries: [] })
         return
       }
 
+      // Get geometries
       const geometriesTmp = await Promise.all(
         ids.map(async (id) => {
           try {
@@ -44,43 +48,33 @@ export default async (req, res) => {
               'summary',
               'project'
             ])
-            if (!geometry) throw new Error('Invalid geometry identifier')
+            if (!geometry) throw error(400, 'Invalid geometry identifier')
 
             // Check authorization
-            const projectAuth = await ProjectLib.get(
-              geometry.project,
-              ['owners', 'users', 'groups', 'workspace'],
-              false
-            )
-
-            const workspaceAuth = await WorkspaceLib.get(
-              projectAuth.workspace,
-              ['owners', 'users', 'groups'],
-              false
-            )
-
-            if (!(await auth(sessionId, projectAuth, workspaceAuth))) return
+            await checkProjectAuth({ id: sessionId }, { id: geometry.project })
 
             return geometry
           } catch (err) {
             console.warn(err)
-            return null
           }
         })
       )
 
-      const geometries = geometriesTmp.filter((p) => p)
+      try {
+        // Filter
+        const geometries = geometriesTmp.filter((p) => p)
 
-      res.status(200).json({ geometries })
-    } catch (err) {
-      console.error(err)
-      res.status(500).json({ error: true, message: err.message })
-      Sentry.captureException(err)
+        res.status(200).json({ geometries })
+      } catch (err) {
+        throw error(500, err.message)
+      }
+    } else {
+      // Unauthorized method
+      throw error(402, 'Method ' + req.method + ' not allowed')
     }
-  } else {
-    // Unauthorized method
-    const error = new Error('Method ' + req.method + ' not allowed')
-    res.status(405).json({ error: true, message: error.message })
-    Sentry.captureException(error)
+  } catch (err) {
+    res
+      .status(err.status)
+      .json({ error: true, display: err.display, message: err.message, err })
   }
 }

@@ -16,9 +16,10 @@ const archiveFileName = 'resultsArchive.zip'
 
 /**
  * Load
- * @param {Object} param Parameters { simulation: { id }, result: { originPath, glb } }
+ * @param {Object} simulation Simulation { id }
+ * @param {Object} result Result { originPath, glb } }
  */
-const load = async ({ simulation, result }) => {
+const load = async (simulation, result) => {
   const buffer = await Tools.readFile(
     path.join(storage.SIMULATION, simulation.id, result.originPath, result.glb)
   )
@@ -30,9 +31,10 @@ const load = async ({ simulation, result }) => {
 
 /**
  * Download
- * @param {Object} param Parameters { simulation: { id }, result { originPath, fileName } }
+ * @param {Object} simulation Simulation { id }
+ * @param {Object} result Result { originPath, fileName } }
  */
-const download = ({ simulation, result }) => {
+const download = (simulation, result) => {
   return fs.createReadStream(
     path.join(
       storage.SIMULATION,
@@ -45,9 +47,9 @@ const download = ({ simulation, result }) => {
 
 /**
  * Archive
- * @param {Object} param Parameters { simulation: { id } }
+ * @param {Object} simulation Simulation { id } }
  */
-const archive = async ({ simulation }) => {
+const archive = async (simulation) => {
   const resultPath = path.join(
     storage.SIMULATION,
     simulation.id,

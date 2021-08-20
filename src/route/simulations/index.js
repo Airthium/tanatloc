@@ -1,7 +1,8 @@
 /** @module route/simulations */
 
 import getSessionId from '../session'
-import auth from '../auth'
+import auth, { checkProjectAuth } from '../auth'
+import error from '../error'
 
 import SimulationLib from '@/lib/simulation'
 import ProjectLib from '@/lib/project'
@@ -10,54 +11,53 @@ import WorkspaceLib from '@/lib/workspace'
 import Sentry from '@/lib/sentry'
 
 /**
+ * Check get body
+ * @param {Object} body Body
+ */
+const checkGetBody = (body) => {
+  if (!body || !body.ids || !Array.isArray(body.ids))
+    throw error(400, 'Missing data in your request (body: { ids(?array) })')
+}
+
+/**
  * Simulations API
  * @param {Object} req Request
  * @param {Object} res Response
  */
 export default async (req, res) => {
-  // Check session
-  const sessionId = await getSessionId(req, res)
-  if (!sessionId) return
+  try {
+    // Check session
+    const sessionId = await getSessionId(req, res)
 
-  if (req.method === 'POST') {
-    // Get simulations list
-    try {
+    if (req.method === 'POST') {
       // Check
-      if (!req.body)
-        throw new Error('Missing data in your request (body: { ids(?array) })')
+      checkGetBody(req.body)
 
       // Ids
-      let ids = req.body.ids
+      const ids = req.body.ids
 
-      if (!ids) {
+      if (!ids || !Array.isArray(ids)) {
         res.status(200).json({ simulations: [] })
         return
       }
 
+      // Get simulations
       const simulationsTmp = await Promise.all(
         ids.map(async (id) => {
           try {
+            // Get simulation
             const simulation = await SimulationLib.get(id, [
               'name',
               'scheme',
               'project'
             ])
-            if (!simulation) throw new Error('Invalid simulation identifier')
+            if (!simulation) throw error(400, 'Invalid simulation identifier')
 
             // Check authorization
-            const projectAuth = await ProjectLib.get(
-              simulation.project,
-              ['owners', 'users', 'groups', 'workspace'],
-              false
+            await checkProjectAuth(
+              { id: sessionId },
+              { id: simulation.project }
             )
-            const workspaceAuth = await WorkspaceLib.get(
-              projectAuth.workspace,
-              ['owners', 'users', 'groups'],
-              false
-            )
-            if (!(await auth(sessionId, projectAuth, workspaceAuth))) {
-              throw new Error('Unauthorized')
-            }
 
             return simulation
           } catch (err) {
@@ -67,18 +67,20 @@ export default async (req, res) => {
         })
       )
 
-      const simulations = simulationsTmp.filter((p) => p)
+      try {
+        const simulations = simulationsTmp.filter((p) => p)
 
-      res.status(200).json({ simulations })
-    } catch (err) {
-      console.error(err)
-      res.status(500).json({ error: true, message: err.message })
-      Sentry.captureException(err)
+        res.status(200).json({ simulations })
+      } catch (err) {
+        throw error(500, err.message)
+      }
+    } else {
+      // Unauthorized method
+      throw error(402, 'Method ' + req.method + ' not allowed')
     }
-  } else {
-    // Unauthorized method
-    const error = new Error('Method ' + req.method + ' not allowed')
-    res.status(405).json({ error: true, message: error.message })
-    Sentry.captureException(error)
+  } catch (err) {
+    res
+      .status(err.status)
+      .json({ error: true, display: err.display, message: err.message, err })
   }
 }

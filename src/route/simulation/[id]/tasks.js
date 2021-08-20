@@ -1,5 +1,6 @@
 import getSessionId from '../../session'
-import auth from '../../auth'
+import auth, { checkSimulationAuth } from '../../auth'
+import error from '../error'
 
 import SimulationLib from '@/lib/simulation'
 import ProjectLib from '@/lib/project'
@@ -14,70 +15,35 @@ import Sentry from '@/lib/sentry'
  * @param {Object} res Response
  */
 export default async (req, res) => {
-  // Check session
-  const sessionId = await getSessionId(req, res)
-  if (!sessionId) return
-
-  // Id
-  let id = req.query.id
-  if (!id) {
-    // Electron
-    id = req.params.id
-  }
-
-  // Check
-  if (!id || typeof id !== 'string') {
-    const error = new Error(
-      'Missing data in your request (query: { id(string) })'
-    )
-    console.error(error)
-    res.status(500).json({ error: true, message: error.message })
-    Sentry.captureException(error)
-    return
-  }
-
-  // Check authorization
   try {
-    const simulationAuth = await SimulationLib.get(id, ['project'])
-    if (!simulationAuth) throw new Error('Invalid simulation identifier')
+    // Check session
+    const sessionId = await getSessionId(req, res)
 
-    const projectAuth = await ProjectLib.get(
-      simulationAuth.project,
-      ['owners', 'users', 'groups', 'workspace'],
-      false
-    )
+    // Id
+    const id = req.query.id || req.params.id // Electron uses params
 
-    const workspaceAuth = await WorkspaceLib.get(
-      projectAuth.workspace,
-      ['owners', 'users', 'groups'],
-      false
-    )
+    // Check
+    if (!id || typeof id !== 'string')
+      throw error(400, 'Missing data in your request (query: { id(string) })')
 
-    if (!(await auth(sessionId, projectAuth, workspaceAuth))) {
-      res.status(401).json({ error: true, message: 'Unauthorized' })
-      return
+    // Check authorization
+    await checkSimulationAuth({ id: sessionId }, { id })
+
+    if (req.method === 'GET') {
+      // Tasks
+      try {
+        const simulation = await SimulationLib.get(id, ['tasks'])
+        res.status(200).json(simulation.tasks || [])
+      } catch (err) {
+        throw error(500, err.message)
+      }
+    } else {
+      // Unauthorized method
+      throw error(402, 'Method ' + req.method + ' not allowed')
     }
   } catch (err) {
-    console.error(err)
-    res.status(500).json({ error: true, message: err.message })
-    Sentry.captureException(err)
-    return
-  }
-
-  if (req.method === 'GET') {
-    // Tasks
-    try {
-      const simulation = await SimulationLib.get(id, ['tasks'])
-      res.status(200).json(simulation.tasks || [])
-    } catch (err) {
-      console.error(err)
-      res.status(500).json({ error: true, message: err.message })
-      Sentry.captureException(err)
-    }
-  } else {
-    // Unauthorized method
-    const error = new Error('Method ' + req.method + ' not allowed')
-    res.status(405).json({ error: true, message: error.message })
-    Sentry.captureException(error)
+    res
+      .status(err.status)
+      .json({ error: true, display: err.display, message: err.message, err })
   }
 }

@@ -1,93 +1,84 @@
-/** @module route/user */
-
 import getSessionId from '../session'
+import error from '../error'
 
 import UserLib from '@/lib/user'
 
-import Sentry from '@/lib/sentry'
+/**
+ * Check update body
+ * @memberof module:route/user
+ * @param {Object} body Body
+ */
+const checkUpdateBody = (body) => {
+  if (!body || !Array.isArray(body))
+    throw error(400, 'Missing data in your request (body(array))')
+}
 
 /**
  * User API by [id]
+ * @memberof module:route/user
  * @param {Object} req Request
  * @param {Object} res Response
  */
 export default async (req, res) => {
-  // Check session
-  const sessionId = await getSessionId(req, res)
-  if (!sessionId) return
+  try {
+    // Check session
+    const sessionId = await getSessionId(req, res)
 
-  // Check superuser
-  const superuser = await UserLib.get(sessionId, ['superuser'])
-  if (!superuser.superuser) {
-    res.status(500).json({ error: true, message: 'Unauthorized' })
-    return
-  }
+    // Check superuser
+    const superuser = await UserLib.get(sessionId, ['superuser'])
+    if (!superuser.superuser) throw error(403, 'Access denied')
 
-  // Id
-  let id = req.query.id
-  if (!id) {
-    // Electron
-    id = req.params.id
-  }
+    // Id
+    const id = req.query.id || req.params.id // Electron
 
-  // Check
-  if (!id || typeof id !== 'string') {
-    const error = new Error(
-      'Missing data in your request (query: { id(uuid) })'
-    )
-    console.error(error)
-    res.status(500).json({ error: true, message: error.message })
-    Sentry.captureException(error)
-    return
-  }
+    // Check
+    if (!id || typeof id !== 'string')
+      throw error(400, 'Missing data in your request (query: { id(uuid) })')
 
-  switch (req.method) {
-    case 'GET':
-      try {
-        const user = await UserLib.get(id, [
-          'lastname',
-          'firstname',
-          'email',
-          'avatar',
-          'plugins',
-          'superuser',
-          'authorizedplugins'
-        ])
-        res.status(200).json({ user })
-      } catch (err) {
-        console.error(err)
-        res.status(500).json({ error: true, message: err.message })
-        Sentry.captureException(err)
-      }
-      break
-    case 'PUT':
-      try {
+    switch (req.method) {
+      case 'GET':
+        try {
+          const user = await UserLib.get(id, [
+            'lastname',
+            'firstname',
+            'email',
+            'avatar',
+            'plugins',
+            'superuser',
+            'authorizedplugins'
+          ])
+          res.status(200).json({ user })
+        } catch (err) {
+          throw error(500, err.message)
+        }
+        break
+      case 'PUT':
         // Check
-        if (!req.body || !Array.isArray(req.body))
-          throw new Error('Missing data in your request (body(array))')
+        checkUpdateBody(req.body)
 
-        // Update
-        await UserLib.update({ id }, req.body)
-        res.status(200).end()
-      } catch (err) {
-        console.error(err)
-        res.status(500).json({ error: true, message: err.message })
-        Sentry.captureException(err)
-      }
-      break
-    case 'DELETE':
-      try {
-        await UserLib.del({ id })
-        res.status(200).end()
-      } catch (err) {
-        console.error(err)
-        res.status(500).json({ error: true, message: err.message })
-        Sentry.captureException(err)
-      }
-      break
-    default:
-      const error = new Error('Method ' + req.method + ' not allowed')
-      res.status(405).json({ error: true, message: error.message })
-      Sentry.captureException(error)
+        try {
+          // Update
+          await UserLib.update({ id }, req.body)
+          res.status(200).end()
+        } catch (err) {
+          throw error(500, err.message)
+        }
+        break
+      case 'DELETE':
+        try {
+          await UserLib.del({ id })
+          res.status(200).end()
+        } catch (err) {
+          throw error(500, err.message)
+        }
+        break
+      default:
+        // Unauthorized method
+        throw error(402, 'Method ' + req.method + ' not allowed')
+    }
+  } catch (err) {
+    res
+      .status(err.status)
+      .json({ error: true, display: err.display, message: err.message, err })
   }
 }

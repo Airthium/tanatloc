@@ -11,9 +11,10 @@ import Tools from '../tools'
 
 /**
  * Add geometry
- * @param {Object} param Param { project: { id }, geometry: { name, uid, buffer } }
+ * @param {Object} project Project: { id }
+ * @param {Object} geometry Geometry: { name, uid, buffer }
  */
-const add = async ({ project, geometry }) => {
+const add = async (project, geometry) => {
   // Add geometry
   const geometryData = await GeometryDB.add(project, {
     name: geometry.name,

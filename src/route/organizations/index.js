@@ -1,33 +1,37 @@
+/** @module route/organizations */
+
 import getSessionId from '../session'
+import error from '../error'
 
 import OrganizationLib from '@/lib/organization'
 
-import Sentry from '@/lib/sentry'
-
+/**
+ * Organizations API
+ * @param {Object} req Request
+ * @param {Object} res Response
+ */
 export default async (req, res) => {
-  // Check session
-  const sessionId = await getSessionId(req, res)
-  if (!sessionId) return
+  try {
+    // Check session
+    const sessionId = await getSessionId(req, res)
 
-  if (req.method === 'GET') {
-    try {
-      const organizations = await OrganizationLib.getByUser({ id: sessionId }, [
-        'id',
-        'name',
-        'owners',
-        'users',
-        'groups'
-      ])
-      res.status(200).json({ organizations })
-    } catch (err) {
-      console.error(err)
-      res.status(500).json({ error: true, message: err.message })
-      Sentry.captureException(err)
+    if (req.method === 'GET') {
+      try {
+        const organizations = await OrganizationLib.getByUser(
+          { id: sessionId },
+          ['id', 'name', 'owners', 'users', 'groups']
+        )
+        res.status(200).json({ organizations })
+      } catch (err) {
+        throw error(500, err.message)
+      }
+    } else {
+      // Unauthorized method
+      throw error(402, 'Method ' + req.method + ' not allowed')
     }
-  } else {
-    // Unauthorized method
-    const error = new Error('Method ' + req.method + ' not allowed')
-    res.status(405).json({ error: true, message: error.message })
-    Sentry.captureException(error)
+  } catch (err) {
+    res
+      .status(err.status)
+      .json({ error: true, display: err.display, message: err.message, err })
   }
 }

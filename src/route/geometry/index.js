@@ -1,13 +1,34 @@
 /** @module route/geometry */
 
 import getSessionId from '../session'
-import auth from '../auth'
+import { checkProjectAuth } from '../auth'
+import error from '../error'
 
-import ProjectLib from '@/lib/project'
-import WorkspaceLib from '@/lib/workspace'
 import GeometryLib from '@/lib/geometry'
 
-import Sentry from '@/lib/sentry'
+/**
+ * Check add body
+ * @param {Object} body Body
+ */
+const checkAddBody = (body) => {
+  if (
+    !body ||
+    !body.project ||
+    !body.project.id ||
+    typeof body.project.id !== 'string' ||
+    !body.geometry ||
+    !body.geometry.name ||
+    typeof body.geometry.name !== 'string' ||
+    !body.geometry.uid ||
+    typeof body.geometry.uid !== 'string' ||
+    !body.geometry.buffer ||
+    typeof body.geometry.buffer !== 'object'
+  )
+    throw error(
+      400,
+      'Missing data in your request (body: { project: { id(uuid) }, geometry: { name(string), uid(uuid), buffer(object) } })'
+    )
+}
 
 /**
  * Geometry API
@@ -15,65 +36,39 @@ import Sentry from '@/lib/sentry'
  * @param {Object} res Response
  */
 export default async (req, res) => {
-  // Check session
-  const sessionId = await getSessionId(req, res)
-  if (!sessionId) return
+  try {
+    // Check session
+    const sessionId = await getSessionId(req, res)
 
-  switch (req.method) {
-    case 'GET':
-      // Emty route
-      res.status(200).end()
-      break
-    case 'POST':
-      try {
+    switch (req.method) {
+      case 'GET':
+        // Emty route
+        res.status(200).end()
+        break
+      case 'POST':
         // Check
-        if (
-          !req.body ||
-          !req.body.project ||
-          !req.body.project.id ||
-          typeof req.body.project.id !== 'string' ||
-          !req.body.geometry ||
-          !req.body.geometry.name ||
-          typeof req.body.geometry.name !== 'string' ||
-          !req.body.geometry.uid ||
-          typeof req.body.geometry.uid !== 'string' ||
-          !req.body.geometry.buffer ||
-          typeof req.body.geometry.buffer !== 'object'
-        )
-          throw new Error(
-            'Missing data in your request (body: { project: { id(uuid) }, geometry: { name(string), uid(uuid), buffer(object) } })'
-          )
+        checkAddBody(req.body)
+
+        const { project, geometry } = req.body
 
         // Check auth
-        const projectAuth = await ProjectLib.get(
-          req.body.project.id,
-          ['owners', 'users', 'groups', 'workspace'],
-          false
-        )
-        if (!projectAuth) throw new Error('Invalid project identifier')
-
-        const workspaceAuth = await WorkspaceLib.get(
-          projectAuth.workspace,
-          ['owners', 'users', 'groups'],
-          false
-        )
-
-        if (!(await auth(sessionId, projectAuth, workspaceAuth)))
-          throw new Error('Access denied')
+        await checkProjectAuth({ id: sessionId }, project)
 
         // Add
-        const geometry = await GeometryLib.add(req.body)
-        res.status(200).json(geometry)
-      } catch (err) {
-        console.error(err)
-        res.status(500).json({ error: true, message: err.message })
-        Sentry.captureException(err)
-      }
-      break
-    default:
-      // Unauthorized method
-      const error = new Error('Method ' + req.method + ' not allowed')
-      res.status(405).json({ error: true, message: error.message })
-      Sentry.captureException(error)
+        try {
+          const newGeometry = await GeometryLib.add(project, geometry)
+          res.status(200).json(newGeometry)
+        } catch (err) {
+          throw error(500, err.message)
+        }
+        break
+      default:
+        // Unauthorized method
+        throw error(402, 'Method ' + req.method + ' not allowed')
+    }
+  } catch (err) {
+    res
+      .status(err.status)
+      .json({ error: true, display: err.display, message: err.message, err })
   }
 }

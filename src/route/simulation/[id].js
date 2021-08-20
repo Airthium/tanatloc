@@ -1,11 +1,17 @@
 import getSessionId from '../session'
-import auth from '../auth'
+import { checkSimulationAuth } from '../auth'
+import error from '../error'
 
 import SimulationLib from '@/lib/simulation'
-import ProjectLib from '@/lib/project'
-import WorkspaceLib from '@/lib/workspace'
 
-import Sentry from '@/lib/sentry'
+/**
+ * Check update body
+ * @param {Array} body Body
+ */
+const checkUpdateBody = (body) => {
+  if (!body || !Array.isArray(body))
+    throw error(400, 'Missing data in your request (body(array))')
+}
 
 /**
  * Simulation API by [id]
@@ -14,103 +20,62 @@ import Sentry from '@/lib/sentry'
  * @param {Object} res Response
  */
 export default async (req, res) => {
-  // Check session
-  const sessionId = await getSessionId(req, res)
-  if (!sessionId) return
-
-  // Id
-  let id = req.query.id
-  if (!id) {
-    // Electron
-    id = req.params.id
-  }
-
-  // Check
-  if (!id || typeof id !== 'string') {
-    const error = new Error(
-      'Missing data in your request (query: { id(string) })'
-    )
-    console.error(error)
-    res.status(500).json({ error: true, message: error.message })
-    Sentry.captureException(error)
-    return
-  }
-
-  // Check authorization
   try {
-    const simulationAuth = await SimulationLib.get(id, ['project'])
-    if (!simulationAuth) throw new Error('Invalid simulation identifier')
+    // Check session
+    const sessionId = await getSessionId(req, res)
 
-    const projectAuth = await ProjectLib.get(
-      simulationAuth.project,
-      ['owners', 'users', 'groups', 'workspace'],
-      false
-    )
+    // Id
+    const id = req.query.id || req.params.id // Electron
 
-    const workspaceAuth = await WorkspaceLib.get(
-      projectAuth.workspace,
-      ['owners', 'users', 'groups'],
-      false
-    )
+    // Check
+    if (!id || typeof id !== 'string')
+      throw error(400, 'Missing data in your request (query: { id(string) })')
 
-    if (!(await auth(sessionId, projectAuth, workspaceAuth))) {
-      res.status(401).json({ error: true, message: 'Unauthorized' })
-      return
+    // Check authorization
+    await checkSimulationAuth({ id: sessionId }, { id })
+
+    switch (req.method) {
+      case 'GET':
+        // Get
+        try {
+          const simulation = await SimulationLib.get(id, [
+            'name',
+            'scheme',
+            'tasks'
+          ])
+          res.status(200).json({ simulation })
+        } catch (err) {
+          throw error(500, err.message)
+        }
+        break
+      case 'PUT':
+        // Check
+        checkUpdateBody(req.body)
+
+        try {
+          // Update
+          await SimulationLib.update({ id }, req.body)
+          res.status(200).end()
+        } catch (err) {
+          throw error(500, err.message)
+        }
+        break
+      case 'DELETE':
+        // Delete
+        try {
+          await SimulationLib.del({ id })
+          res.status(200).end()
+        } catch (err) {
+          throw error(500, err.message)
+        }
+        break
+      default:
+        // Unauthorized method
+        throw error(402, 'Method ' + req.method + ' not allowed')
     }
   } catch (err) {
-    console.error(err)
-    res.status(500).json({ error: true, message: err.message })
-    Sentry.captureException(err)
-    return
-  }
-
-  switch (req.method) {
-    case 'GET':
-      // Get simulation
-      try {
-        const simulation = await SimulationLib.get(id, [
-          'name',
-          'scheme',
-          'tasks'
-        ])
-        res.status(200).json({ simulation })
-      } catch (err) {
-        console.error(err)
-        res.status(500).json({ error: true, message: err.message })
-        Sentry.captureException(err)
-      }
-      break
-    case 'PUT':
-      // Update simulation
-      try {
-        // Check
-        if (!req.body || !Array.isArray(req.body))
-          throw new Error('Missing data in your request (body(array))')
-
-        // Update
-        await SimulationLib.update({ id }, req.body)
-        res.status(200).end()
-      } catch (err) {
-        console.error(err)
-        res.status(500).json({ error: true, message: err.message })
-        Sentry.captureException(err)
-      }
-      break
-    case 'DELETE':
-      // Delete simulation
-      try {
-        await SimulationLib.del({ id })
-        res.status(200).end()
-      } catch (err) {
-        console.error(err)
-        res.status(500).json({ error: true, message: err.message })
-        Sentry.captureException(err)
-      }
-      break
-    default:
-      // Unauthorized method
-      const error = new Error('Method ' + req.method + ' not allowed')
-      res.status(405).json({ error: true, message: error.message })
-      Sentry.captureException(error)
+    res
+      .status(err.status)
+      .json({ error: true, display: err.display, message: err.message, err })
   }
 }

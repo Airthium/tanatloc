@@ -1,10 +1,36 @@
 /** @module route/avatar */
 
 import getSessionId from '../session'
+import auth from '../auth'
 
 import AvatarLib from '@/lib/avatar'
 
 import Sentry from '@/lib/sentry'
+
+import ProjectLib from '@/lib/project'
+import WorkspaceLib from '@/lib/workspace'
+
+/**
+ * Check project auth
+ * @param {Object} project Project { id }
+ */
+const checkProjectAuth = async (project) => {
+  const projectAuth = await ProjectLib.get(
+    project.id,
+    ['owners', 'users', 'groups', 'workspace'],
+    false
+  )
+  if (!projectAuth) throw new Error('Invalid project identifier')
+
+  const workspaceAuth = await WorkspaceLib.get(
+    projectAuth.workspace,
+    ['owners', 'users', 'groups'],
+    false
+  )
+
+  if (!(await auth(sessionId, projectAuth, workspaceAuth)))
+    throw new Error('Access denied')
+}
 
 /**
  * Avatar API
@@ -23,7 +49,6 @@ export default async (req, res) => {
       if (
         !req.body ||
         !req.body.file ||
-        typeof req.body.file !== 'object' ||
         !req.body.file.name ||
         typeof req.body.file.name !== 'string' ||
         !req.body.file.uid ||
@@ -31,18 +56,21 @@ export default async (req, res) => {
         !req.body.file.data ||
         typeof req.body.file.data !== 'string' ||
         (req.body.project &&
-          (typeof req.body.project !== 'object' ||
-            !req.body.project.id ||
-            typeof req.body.project.id !== 'string'))
+          (!req.body.project.id || typeof req.body.project.id !== 'string'))
       )
         throw new Error(
           'Missing data in your request (body: { ?project: { id(uuid) }, file: { name(string), uid(uuid), data(string) } })'
         )
 
+      const { file, project } = req.body
+
+      // Check auth
+      if (project) await checkProjectAuth(project)
+
       const avatar = await AvatarLib.add(
-        req.body.project || { id: sessionId },
-        req.body.project ? 'project' : 'user',
-        req.body.file
+        project || { id: sessionId },
+        project ? 'project' : 'user',
+        file
       )
       res.status(200).json(avatar)
     } catch (err) {

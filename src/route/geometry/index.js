@@ -25,7 +25,6 @@ export default async (req, res) => {
       res.status(200).end()
       break
     case 'POST':
-      // Add geometry
       try {
         // Check
         if (
@@ -52,14 +51,17 @@ export default async (req, res) => {
           false
         )
         if (!projectAuth) throw new Error('Invalid project identifier')
+
         const workspaceAuth = await WorkspaceLib.get(
           projectAuth.workspace,
           ['owners', 'users', 'groups'],
           false
         )
+
         if (!(await auth(sessionId, projectAuth, workspaceAuth)))
           throw new Error('Access denied')
 
+        // Add
         const geometry = await GeometryLib.add(req.body)
         res.status(200).json(geometry)
       } catch (err) {

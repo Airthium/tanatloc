@@ -54,7 +54,7 @@ export default async (req, res) => {
     )
 
     if (!(await auth(sessionId, projectAuth, workspaceAuth)))
-      throw new Error('Unauthorized')
+      throw new Error('Access denied')
   } catch (err) {
     console.error(err)
     res.status(500).json({ error: true, message: err.message })
@@ -63,8 +63,8 @@ export default async (req, res) => {
   }
 
   if (req.method === 'GET') {
-    // Download geometry
     try {
+      // Download
       const part = await GeometryLib.read({ id })
       res.status(200).json(part)
     } catch (err) {

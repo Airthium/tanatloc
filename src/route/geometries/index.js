@@ -52,11 +52,13 @@ export default async (req, res) => {
               ['owners', 'users', 'groups', 'workspace'],
               false
             )
+
             const workspaceAuth = await WorkspaceLib.get(
               projectAuth.workspace,
               ['owners', 'users', 'groups'],
               false
             )
+
             if (!(await auth(sessionId, projectAuth, workspaceAuth))) return
 
             return geometry

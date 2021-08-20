@@ -54,7 +54,7 @@ export default async (req, res) => {
     )
 
     if (!(await auth(sessionId, projectAuth, workspaceAuth)))
-      throw new Error('Unauthorized')
+      throw new Error('Access denied')
   } catch (err) {
     console.error(err)
     res.status(500).json({ error: true, message: err.message })
@@ -64,7 +64,6 @@ export default async (req, res) => {
 
   switch (req.method) {
     case 'PUT':
-      // Update geometry
       try {
         // Check
         if (
@@ -84,8 +83,8 @@ export default async (req, res) => {
       }
       break
     case 'DELETE':
-      // Delete geometry
       try {
+        // Delete
         await GeometryLib.del({ id })
         res.status(200).end()
       } catch (err) {

@@ -17,7 +17,8 @@ const checkAddBody = (body) => {
     !body.password ||
     typeof body.password !== 'string'
   )
-    throw new Error(
+    throw error(
+      400,
       'Missing data in your request (body: { email(string), password(string) })'
     )
 }
@@ -28,7 +29,7 @@ const checkAddBody = (body) => {
  */
 const checkUpdateBody = (body) => {
   if (!body || !Array.isArray(body))
-    throw new Error('Missing data in your request (body(array))')
+    throw error(400, 'Missing data in your request (body(array))')
 }
 
 /**

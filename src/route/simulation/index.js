@@ -22,7 +22,8 @@ const checkAddBody = (body) => {
     !body.simulation.scheme ||
     typeof body.simulation.scheme !== 'object'
   )
-    throw new Error(
+    throw error(
+      400,
       'Missing data in your request (body: { project: { id(uuid) }, simulation: { name(string), scheme(object) } }'
     )
 }

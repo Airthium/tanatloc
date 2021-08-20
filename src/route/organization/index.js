@@ -37,7 +37,7 @@ const checkUpdateBody = (body) => {
  */
 const checkDeleteBody = (body) => {
   if (!body || !body.id || typeof body.id !== 'string')
-    throw new Error('Missing data in your request (body: { id(uuid) })')
+    throw error(400, 'Missing data in your request (body: { id(uuid) })')
 }
 
 /**

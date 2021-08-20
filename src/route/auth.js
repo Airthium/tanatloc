@@ -3,6 +3,8 @@ import error from './error'
 import ProjectLib from '@/lib/project'
 import WorkspaceLib from '@/lib/workspace'
 import GroupLib from '@/lib/group'
+import GeometryLib from '@/lib/geometry'
+import SimulationLib from '@/lib/simulation'
 import OrganizationLib from '@/lib/organization'
 
 /**
@@ -104,7 +106,7 @@ const checkGeometryAuth = async (user, geometry, status) => {
   if (!geometryAuth) throw error(status || 400, 'Invalid geometry identifer')
 
   const projectAuth = await ProjectLib.get(
-    geometry.project,
+    geometryAuth.project,
     ['owners', 'users', 'groups', 'workspace'],
     false
   )
@@ -133,7 +135,7 @@ const checkSimulationAuth = async (user, simulation, status) => {
     throw error(status || 400, 'Invalid simulation identifer')
 
   const projectAuth = await ProjectLib.get(
-    simulation.project,
+    simulationAuth.project,
     ['owners', 'users', 'groups', 'workspace'],
     false
   )

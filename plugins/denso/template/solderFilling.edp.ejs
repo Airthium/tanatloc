@@ -106,7 +106,7 @@ int itrGMRES0 = 50; //getARGV("-GMRES0", 25);
 int itrGMRES1 = 150; //getARGV("-GMRES1", 150);
 real dt0 = 0.5; // getARGV("-dt0", 0.5);
 real dt1 = 0.25; // getARGV("-dt1", 0.25);
-real dtmax = 32.0; // getARGV("-Dtmax", 32.0);
+real dtmax = 64.0; // getARGV("-Dtmax", 32.0);
 real tolenlarge = 10.0; // parameter to controle enlarge time step
 real switch2kappa1 = 100.0; // parameter to controle enlarge time step
 real toldiverge0= 100.0; // threshold to break Newton iteration
@@ -131,8 +131,9 @@ int refine;
 real size = 0.4;
 real dt;
 real dtmag = 4.0;
-real dtmagmin = sqrt(2.0);
-real dtmagstd = 4.0;
+real dtmagmin = sqrt(sqrt(2.0));
+real dtmagstd = sqrt(2.0);
+int dtmagminrepeatedmax = 1;
 real kappa = kappa1;
 real reps = 1.e-2;
 real costheta = cos(cangle*pi/180.0);
@@ -1847,7 +1848,7 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
 	bool flagisoagain = false;
 	//
 	dtmag = dtmagstd;
-	int dtmagminrepeated = 4;
+	int dtmagminrepeated = dtmagminrepeatedmax;
 	while(!convloop) { // loop : ll < itrrefine Newton
 	                   //        tt < Tmax for graidentflow
 	  int itrnewton;
@@ -1873,7 +1874,7 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
 	      }
 	      if (tenlarge) {
 		tkeep = false;
-		if (dtmagminrepeated > 5) {
+		if (dtmagminrepeated > dtmagminrepeatedmax) {
 		  dtmagminrepeated = 0;
 		  dtmag = dtmagstd;
 		  dt *= dtmagstd; //2.0;
@@ -1930,7 +1931,7 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
 	  else { // (!gradientflow)
 	    dt = dt1;      // reset time incerement for gradient flow solver
 	    dtmag = dtmagmin;
-	    dtmagminrepeated = 4;
+	    dtmagminrepeated = dtmagminrepeatedmax;
 	    tkeep = true;
 	    itrnewton = itrnewton1;
 	    if (ll >= itrrefine) {
@@ -2464,7 +2465,7 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
 		gradientflow = true; // return to gradient flow solver
 		dt = dt1;
 		dtmag = dtmagmin; // slow time increment
-		dtmagminrepeated = 4;
+		dtmagminrepeated = dtmagminrepeatedmax;
 		tkeep = true;
 		break;
 	      }
@@ -2502,7 +2503,7 @@ for (int pp = 0; pp < 1; pp++) {  // pp < 2 for bisection search
 	      gradientflow = true; // return to gradient flow solver
 	      dt = dt1;
 	      dtmag = dtmagmin; // slow time increment
-	      dtmagminrepeated = 4;
+	      dtmagminrepeated = dtmagminrepeatedmax;
 	      tkeep = true;
 	    }
 	  } // if (newtonfail)

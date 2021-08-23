@@ -17,7 +17,7 @@ const Error = (title, err, display = true) => {
       description: err && (
         <>
           <Typography.Text code={true}>{err.message}</Typography.Text>
-          {(err.status || error.info) && (
+          {(err.status || err.info) && (
             <Collapse>
               <Collapse.Panel header="More information">
                 <Space direction="vertical">

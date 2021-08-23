@@ -1,6 +1,7 @@
 /** @module route/organization */
 
 import getSessionId from '../session'
+import error from '../error'
 
 import OrganizationLib from '@/lib/organization'
 
@@ -44,10 +45,11 @@ const checkDeleteBody = (body) => {
  * Check organization administrator
  * @param {string} id Id
  */
-const checkOrganizationAdministrator = async (id) => {
+const checkOrganizationAdministrator = async (id, user) => {
   const organization = await OrganizationLib.get(id, ['owners'])
+  if (!organization) throw error(400, 'Invalid organization identifier')
 
-  if (!organization?.owners?.includes(sessionId))
+  if (!organization?.owners?.includes(user.id))
     throw error(403, 'Access denied')
 }
 
@@ -74,7 +76,7 @@ export default async (req, res) => {
           )
           res.status(200).json(organization)
         } catch (err) {
-          throw err(500, err.message)
+          throw error(500, err.message)
         }
         break
       case 'PUT':
@@ -82,7 +84,7 @@ export default async (req, res) => {
         checkUpdateBody(req.body)
 
         // Check administrator
-        await checkOrganizationAdministrator(req.body.id)
+        await checkOrganizationAdministrator(req.body.id, { id: sessionId })
 
         // Update
         try {
@@ -101,7 +103,7 @@ export default async (req, res) => {
         checkDeleteBody(req.body)
 
         // Check administrator
-        await checkOrganizationAdministrator(req.body.id)
+        await checkOrganizationAdministrator(req.body.id, { id: sessionId })
 
         try {
           // Delete
@@ -116,6 +118,6 @@ export default async (req, res) => {
         throw error(402, 'Method ' + req.method + ' not allowed')
     }
   } catch (err) {
-    res.status(err.status).json({ error: true })
+    res.status(err.status).json({ error: true, message: err.message })
   }
 }

@@ -1,5 +1,7 @@
 /** @module route/link */
 
+import error from '../error'
+
 import LinkLib from '@/lib/link'
 
 /**
@@ -25,7 +27,7 @@ const checkGetBody = (body) => {
  * @param {Object} body Body
  */
 const checkProcessBody = (body) => {
-  if (!req.body || !req.body.id || typeof req.body.id !== 'string')
+  if (!body || !body.id || typeof body.id !== 'string')
     throw error(
       400,
       'Missing data in your request (body: { id(uuid), data(?object) })'
@@ -69,6 +71,6 @@ export default async (req, res) => {
         throw error(402, 'Method ' + req.method + ' not allowed')
     }
   } catch (err) {
-    res.status(err.status).json({ error: true })
+    res.status(err.status).json({ error: true, message: err.message })
   }
 }

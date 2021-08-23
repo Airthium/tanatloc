@@ -24,6 +24,7 @@ module.exports = {
     '<rootDir>/doc/',
     '<rootDir>/coverage/',
     '<rootDir>/jest.config.js',
+    '<rootDir>/jest.e2e.config.js',
     '<rootDir>/config/jest/',
     '<rootDir>/public/',
     '<rootDir>/tests/'
@@ -67,6 +68,7 @@ module.exports = {
     '<rootDir>/doc/',
     '<rootDir>/coverage/',
     '<rootDir>/jest.config.js',
+    '<rootDir>/jest.e2e.config.js',
     '<rootDir>/config/jest/',
     '<rootDir>/src/lib/three/controls/',
     '<rootDir>/public/',

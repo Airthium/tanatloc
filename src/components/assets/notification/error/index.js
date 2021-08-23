@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import { notification, Typography } from 'antd'
+import { Collapse, notification, Space, Typography } from 'antd'
 
 import Sentry from '@/lib/sentry'
 
@@ -15,7 +15,25 @@ const Error = (title, err, display = true) => {
     notification.error({
       message: title,
       description: err && (
-        <Typography.Text code={true}>{err.message}</Typography.Text>
+        <>
+          <Typography.Text code={true}>{err.message}</Typography.Text>
+          {(err.status || error.info) && (
+            <Collapse>
+              <Collapse.Panel header="More information">
+                <Space direction="vertical">
+                  {err.status && (
+                    <Typography.Text>Status: {err.status}</Typography.Text>
+                  )}
+                  {err.info && (
+                    <Typography.Text>
+                      Description: {err.info?.message}
+                    </Typography.Text>
+                  )}
+                </Space>
+              </Collapse.Panel>
+            </Collapse>
+          )}
+        </>
       ),
       duration: 10
     })

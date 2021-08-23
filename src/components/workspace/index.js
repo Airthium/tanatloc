@@ -31,7 +31,7 @@ import ProjectAPI from '@/api/project'
  */
 const errors = {
   projects: 'Projects error',
-  updateError: 'Unable to update the workspace'
+  update: 'Unable to update the workspace'
 }
 
 /**
@@ -76,7 +76,7 @@ const Workspace = ({ loading, user, page, workspace, organizations, swr }) => {
         name
       })
     } catch (err) {
-      ErrorNotification(errors.updateError, err)
+      ErrorNotification(errors.update, err)
     }
   }
 

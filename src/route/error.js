@@ -12,7 +12,6 @@ import Sentry from '@/lib/sentry'
 const error = (status, message, display = true) => {
   const err = new Error(message)
   err.status = status
-  err.display = display
 
   if (display) {
     console.error(err)

@@ -46,15 +46,16 @@ const call = async (route, param) => {
 
   const contentType = response.headers.get('Content-Type')
 
-  if (response.status !== 200 && !contentType.includes('application/json'))
-    throw new Error('API error - status: ' + response.status)
+  if (!response.ok) {
+    const error = new Error('An error occured while fetching data.')
+    error.info =
+      contentType?.includes('application/json') && (await response.json())
+    error.status = response.status
 
-  if (contentType?.includes('application/json')) {
-    const res = await response.json()
-
-    if (res.error) throw new Error(res.message)
-    return res
+    throw error
   }
+
+  if (contentType?.includes('application/json')) return response.json()
 
   return response
 }

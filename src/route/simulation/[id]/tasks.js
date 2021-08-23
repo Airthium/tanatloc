@@ -1,6 +1,6 @@
 import getSessionId from '../../session'
 import auth, { checkSimulationAuth } from '../../auth'
-import error from '../error'
+import error from '../../error'
 
 import SimulationLib from '@/lib/simulation'
 import ProjectLib from '@/lib/project'

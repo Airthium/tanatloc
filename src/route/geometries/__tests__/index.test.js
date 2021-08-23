@@ -1,157 +1,138 @@
-import ids from '..'
+import geometries from '..'
 
 const mockSession = jest.fn()
 jest.mock('../../session', () => () => mockSession())
 
-const mockAuth = jest.fn()
-jest.mock('../../auth', () => () => mockAuth())
-
-const mockGet = jest.fn()
-jest.mock('@/lib/geometry', () => ({
-  get: async () => mockGet()
-}))
-
-const mockGetProject = jest.fn()
-jest.mock('@/lib/project', () => ({
-  get: async () => mockGetProject()
-}))
-
-const mockGetWorkspace = jest.fn()
-jest.mock('@/lib/workspace', () => ({
-  get: async () => mockGetWorkspace()
+const mockCheckProjectAuth = jest.fn()
+jest.mock('../../auth', () => ({
+  checkProjectAuth: async () => mockCheckProjectAuth()
 }))
 
 const mockError = jest.fn()
-jest.mock('@/lib/sentry', () => ({
-  captureException: () => mockError()
+jest.mock('../../error', () => (status, message) => mockError(status, message))
+
+const mockGet = jest.fn()
+jest.mock('@/lib/geometry', () => ({
+  get: async (id) => mockGet(id)
 }))
 
-describe('route/geometries/ids', () => {
-  let req, response
+describe('route/geometries/geometries', () => {
+  const req = {}
+  let resStatus
+  let resJson
   const res = {
-    status: () => ({
-      json: (obj) => {
-        response = obj
-      },
-      end: () => {
-        response = 'end'
+    status: (status) => {
+      resStatus = status
+      return {
+        json: (obj) => {
+          resJson = obj
+        },
+        end: () => {
+          resJson = 'end'
+        }
       }
-    })
+    }
   }
 
   beforeEach(() => {
     mockSession.mockReset()
-    mockSession.mockImplementation(() => false)
+    mockSession.mockImplementation(() => true)
 
-    mockAuth.mockReset()
-    mockAuth.mockImplementation(() => false)
-
-    mockGet.mockReset()
-    mockGet.mockImplementation(() => ({
-      id: 'id',
-      name: 'name'
-    }))
-
-    mockGetProject.mockReset()
-    mockGetProject.mockImplementation(() => ({}))
-
-    mockGetWorkspace.mockReset()
+    mockCheckProjectAuth.mockReset()
+    mockCheckProjectAuth.mockImplementation(() => true)
 
     mockError.mockReset()
+    mockError.mockImplementation((status, message) => ({ status, message }))
 
-    req = {
-      method: 'POST',
-      body: { ids: ['id1', 'id2'] }
-    }
-    response = undefined
+    mockGet.mockReset()
+
+    resStatus = undefined
+    resJson = undefined
   })
 
   test('no session', async () => {
-    await ids(req, res)
+    mockSession.mockImplementation(() => {
+      const error = new Error('Unauthorized')
+      error.status = 401
+      throw error
+    })
+    await geometries(req, res)
     expect(mockSession).toHaveBeenCalledTimes(1)
-    expect(mockAuth).toHaveBeenCalledTimes(0)
+    expect(mockCheckProjectAuth).toHaveBeenCalledTimes(0)
     expect(mockGet).toHaveBeenCalledTimes(0)
     expect(mockError).toHaveBeenCalledTimes(0)
-    expect(response).toBe(undefined)
+    expect(resStatus).toBe(401)
+    expect(resJson).toEqual({ error: true, message: 'Unauthorized' })
   })
 
   test('POST', async () => {
-    mockSession.mockImplementation(() => 'id')
+    req.method = 'POST'
 
-    // No ids
-    req.body.ids = undefined
-    await ids(req, res)
+    // Wrong body
+    req.body = undefined
+    await geometries(req, res)
     expect(mockSession).toHaveBeenCalledTimes(1)
-    expect(mockAuth).toHaveBeenCalledTimes(0)
+    expect(mockCheckProjectAuth).toHaveBeenCalledTimes(0)
     expect(mockGet).toHaveBeenCalledTimes(0)
-    expect(mockGetProject).toHaveBeenCalledTimes(0)
-    expect(mockError).toHaveBeenCalledTimes(0)
-    expect(response).toEqual({ geometries: [] })
+    expect(mockError).toHaveBeenCalledTimes(1)
+    expect(resStatus).toBe(400)
+    expect(resJson).toEqual({
+      error: true,
+      message: 'Missing data in your request (body: { ids(?array) })'
+    })
 
-    // No authorization
-    req.body.ids = ['id1', 'id2']
-    await ids(req, res)
+    // No geometries
+    req.body = {}
+    await geometries(req, res)
     expect(mockSession).toHaveBeenCalledTimes(2)
-    expect(mockAuth).toHaveBeenCalledTimes(2)
-    expect(mockGet).toHaveBeenCalledTimes(2)
-    expect(mockGetProject).toHaveBeenCalledTimes(2)
-    expect(mockError).toHaveBeenCalledTimes(0)
-    expect(response).toEqual({ geometries: [] })
+    expect(mockCheckProjectAuth).toHaveBeenCalledTimes(0)
+    expect(mockGet).toHaveBeenCalledTimes(0)
+    expect(mockError).toHaveBeenCalledTimes(1)
+    expect(resStatus).toBe(200)
+    expect(resJson).toEqual({ geometries: [] })
 
     // Normal
-    mockAuth.mockImplementation(() => true)
-    await ids(req, res)
+    req.body = {
+      ids: ['id1', 'id2', 'id3']
+    }
+    let check = 0
+    mockGet.mockImplementation((id) => {
+      if (id === 'id1') return
+      return {
+        id: id,
+        name: 'name'
+      }
+    })
+    mockCheckProjectAuth.mockImplementation(() => {
+      check++
+      return check % 2
+    })
+    await geometries(req, res)
     expect(mockSession).toHaveBeenCalledTimes(3)
-    expect(mockAuth).toHaveBeenCalledTimes(4)
-    expect(mockGet).toHaveBeenCalledTimes(4)
-    expect(mockGetProject).toHaveBeenCalledTimes(4)
-    expect(mockError).toHaveBeenCalledTimes(0)
-    expect(response).toEqual({
+    expect(mockCheckProjectAuth).toHaveBeenCalledTimes(2)
+    expect(mockGet).toHaveBeenCalledTimes(3)
+    expect(mockError).toHaveBeenCalledTimes(2)
+    expect(resStatus).toBe(200)
+    expect(resJson).toEqual({
       geometries: [
-        { id: 'id', name: 'name' },
-        { id: 'id', name: 'name' }
+        { id: 'id2', name: 'name' },
+        { id: 'id3', name: 'name' }
       ]
-    })
-
-    // get error
-    mockGet.mockImplementation(() => {
-      throw new Error('test')
-    })
-    await ids(req, res)
-    expect(mockSession).toHaveBeenCalledTimes(4)
-    expect(mockAuth).toHaveBeenCalledTimes(4)
-    expect(mockGet).toHaveBeenCalledTimes(6)
-    expect(mockGetProject).toHaveBeenCalledTimes(4)
-    expect(mockError).toHaveBeenCalledTimes(0)
-    expect(response).toEqual({ geometries: [] })
-
-    // Error
-    req.body = undefined
-    await ids(req, res)
-    expect(mockSession).toHaveBeenCalledTimes(5)
-    expect(mockAuth).toHaveBeenCalledTimes(4)
-    expect(mockGet).toHaveBeenCalledTimes(6)
-    expect(mockGetProject).toHaveBeenCalledTimes(4)
-    expect(mockError).toHaveBeenCalledTimes(1)
-    expect(response).toEqual({
-      error: true,
-      message: "Cannot read property 'ids' of undefined"
     })
   })
 
   test('wrong method', async () => {
-    req.method = 'SOMETHING'
+    req.method = 'method'
 
-    mockSession.mockImplementation(() => true)
-
-    await ids(req, res)
+    await geometries(req, res)
     expect(mockSession).toHaveBeenCalledTimes(1)
-    expect(mockAuth).toHaveBeenCalledTimes(0)
+    expect(mockCheckProjectAuth).toHaveBeenCalledTimes(0)
     expect(mockGet).toHaveBeenCalledTimes(0)
     expect(mockError).toHaveBeenCalledTimes(1)
-    expect(response).toEqual({
+    expect(resStatus).toBe(402)
+    expect(resJson).toEqual({
       error: true,
-      message: 'Method SOMETHING not allowed'
+      message: 'Method method not allowed'
     })
   })
 })

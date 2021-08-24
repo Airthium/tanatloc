@@ -4246,10 +4246,10 @@ electron-to-chromium@^1.3.723, electron-to-chromium@^1.3.793:
   resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.806.tgz#21502100f11aead6c501d1cd7f2504f16c936642"
   integrity sha512-AH/otJLAAecgyrYp0XK1DPiGVWcOgwPeJBOLeuFQ5l//vhQhwC9u6d+GijClqJAmsHG4XDue81ndSQPohUu0xA==
 
-electron@13.2.1:
-  version "13.2.1"
-  resolved "https://registry.yarnpkg.com/electron/-/electron-13.2.1.tgz#0dc89ed0e3faf327b39571de533ca1ae18878ff1"
-  integrity sha512-/K0Uw+o3+phbHtrVL6qDFVJqmeRF6EIPwVeUHEH5R8JNy13f4X3RouKjQzVyY/Os8fEqYHGFONWhD6q6g750HQ==
+electron@13.2.2:
+  version "13.2.2"
+  resolved "https://registry.yarnpkg.com/electron/-/electron-13.2.2.tgz#332d91891d0db4f9a1d22d4d0bc3b500e59dc051"
+  integrity sha512-thGq2YaZqQWK1HexRghxdb26a8hA7ZSebukUSHlnHrY9+Sx9rW7e3uEHbibk/seRXVoXO76HndjKdHyObP9/Kw==
   dependencies:
     "@electron/get" "^1.0.1"
     "@types/node" "^14.6.2"
@@ -7323,10 +7323,10 @@ next-transpile-modules@8.0.0:
     enhanced-resolve "^5.7.0"
     escalade "^3.1.1"
 
-next-with-less@1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/next-with-less/-/next-with-less-1.0.0.tgz#65adf5ec2f582142064d6e82d508b8057f190963"
-  integrity sha512-lWZecS8Tulb4CzAJJm/fqAjdb5Wtf4zBezHNzFj7Ptroa1dUOxb3fYeQRJlDVX1eQOHWCclSiEeCV34fp+CZcw==
+next-with-less@1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/next-with-less/-/next-with-less-1.0.1.tgz#ebcc500047ac82587133c8908720127a84c5eb22"
+  integrity sha512-t7cxQubLXBcqSDTUylWz/YrdmmtJnLM/1edCEPLL0D8P3AGjuCpH59PZAdHwszf3J5GBedqjwy5JhBn6sTvodw==
   dependencies:
     clone-deep "^4.0.1"
 
@@ -8930,10 +8930,10 @@ recharts-scale@^0.4.4:
   dependencies:
     decimal.js-light "^2.4.1"
 
-recharts@2.1.1:
-  version "2.1.1"
-  resolved "https://registry.yarnpkg.com/recharts/-/recharts-2.1.1.tgz#704f89a7aa7772ba522d0713b17d1275b8965d4a"
-  integrity sha512-slV1RDbLPxyA3/63bjvtdrTXOuFnO6cdh/XlEu1XaM/PigPwBK2NZrVarjcirlAd7fkUzFIgKQjCxC+Hk1ymGQ==
+recharts@2.1.2:
+  version "2.1.2"
+  resolved "https://registry.yarnpkg.com/recharts/-/recharts-2.1.2.tgz#ceeb01e53fb46da0d946a1e0f82d783ddf5b9d06"
+  integrity sha512-rwFQT6T4imhLzD1kYtg9ql8YOesbFRdSwZi95KWgi5udbBdLGRCR4SgaPO8kf0URHcC23mdRbLLTMYCnXng7zQ==
   dependencies:
     "@types/d3-scale" "^3.0.0"
     "@types/d3-shape" "^2.0.0"

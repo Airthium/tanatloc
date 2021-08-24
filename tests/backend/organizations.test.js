@@ -76,7 +76,7 @@ describe('e2e/backend/organizations', () => {
     await setToken()
 
     await route(req, res)
-    expect(resStatus).toBe(405)
+    expect(resStatus).toBe(402)
     expect(resJson).toEqual({
       error: true,
       message: 'Method method not allowed'

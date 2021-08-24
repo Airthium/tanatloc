@@ -74,10 +74,10 @@ describe('e2e/backend/users', () => {
 
     await setToken()
     await route(req, res)
-    expect(resStatus).toBe(500)
+    expect(resStatus).toBe(403)
     expect(resJson).toEqual({
       error: true,
-      message: 'Unauthorized'
+      message: 'Access denied'
     })
 
     await UserLib.update({ id: adminUUID }, [{ key: 'superuser', value: true }])
@@ -88,7 +88,7 @@ describe('e2e/backend/users', () => {
     await setToken()
 
     await route(req, res)
-    expect(resStatus).toBe(405)
+    expect(resStatus).toBe(402)
     expect(resJson).toEqual({
       error: true,
       message: 'Method method not allowed'

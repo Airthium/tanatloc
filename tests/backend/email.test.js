@@ -97,7 +97,7 @@ describe('e2e/backend/email', () => {
     req.method = 'method'
 
     await route(req, res)
-    expect(resStatus).toBe(405)
+    expect(resStatus).toBe(402)
     expect(resJson).toEqual({
       error: true,
       message: 'Method method not allowed'
@@ -112,7 +112,7 @@ describe('e2e/backend/email', () => {
 
     // No body
     await route(req, res)
-    expect(resStatus).toBe(500)
+    expect(resStatus).toBe(400)
     expect(resJson).toEqual({
       error: true,
       message:
@@ -127,7 +127,7 @@ describe('e2e/backend/email', () => {
     // No type
     req.body = {}
     await route(req, res)
-    expect(resStatus).toBe(500)
+    expect(resStatus).toBe(400)
     expect(resJson).toEqual({
       error: true,
       message:
@@ -144,7 +144,7 @@ describe('e2e/backend/email', () => {
       type: 'type'
     }
     await route(req, res)
-    expect(resStatus).toBe(500)
+    expect(resStatus).toBe(400)
     expect(resJson).toEqual({
       error: true,
       message:
@@ -162,7 +162,7 @@ describe('e2e/backend/email', () => {
       email: 'email'
     }
     await route(req, res)
-    expect(resStatus).toBe(500)
+    expect(resStatus).toBe(400)
     expect(resJson).toEqual({
       error: true,
       message: 'Type type not allowed'

@@ -78,7 +78,7 @@ describe('e2e/backend/user/check', () => {
     await setToken()
 
     await route(req, res)
-    expect(resStatus).toBe(405)
+    expect(resStatus).toBe(402)
     expect(resJson).toEqual({
       error: true,
       message: 'Method method not allowed'
@@ -95,7 +95,7 @@ describe('e2e/backend/user/check', () => {
     // Wrong body
     req.body = {}
     await route(req, res)
-    expect(resStatus).toBe(500)
+    expect(resStatus).toBe(400)
     expect(resJson).toEqual({
       error: true,
       message:

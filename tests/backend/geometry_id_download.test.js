@@ -24,23 +24,21 @@ beforeAll((done) => {
     )
     project = await ProjectLib.add(
       { id: adminUUID },
+      { id: workspace.id },
       {
-        workspace: { id: workspace.id },
-        project: {
-          title: 'Test project',
-          description: 'Test description'
-        }
+        title: 'Test project',
+        description: 'Test description'
       }
     )
     const stepFile = fs.readFileSync('tests/assets/cube.step')
-    geometry = await GeometryLib.add({
-      project: { id: project.id },
-      geometry: {
+    geometry = await GeometryLib.add(
+      { id: project.id },
+      {
         name: 'name.step',
         uid: 'uid',
         buffer: Buffer.from(stepFile)
       }
-    })
+    )
     resolve()
   })
     .catch(console.error)
@@ -102,7 +100,7 @@ describe('e2e/backend/geometry/[id]/download', () => {
     await setToken()
 
     await route(req, res)
-    expect(resStatus).toBe(500)
+    expect(resStatus).toBe(400)
     expect(resJson).toEqual({
       error: true,
       message: 'Missing data in your request (query: { id(string) })'
@@ -117,7 +115,7 @@ describe('e2e/backend/geometry/[id]/download', () => {
     await setToken()
 
     await route(req, res)
-    expect(resStatus).toBe(500)
+    expect(resStatus).toBe(400)
     expect(resJson).toEqual({
       error: true,
       message: 'Invalid geometry identifier'
@@ -127,7 +125,7 @@ describe('e2e/backend/geometry/[id]/download', () => {
     )
   })
 
-  test('Unauthorized 2', async () => {
+  test('Access denied', async () => {
     req.query = { id: geometry.id }
     await setToken()
 
@@ -144,8 +142,8 @@ describe('e2e/backend/geometry/[id]/download', () => {
     }))
 
     await route(req, res)
-    expect(resStatus).toBe(500)
-    expect(resJson).toEqual({ error: true, message: 'Unauthorized' })
+    expect(resStatus).toBe(403)
+    expect(resJson).toEqual({ error: true, message: 'Access denied' })
   })
 
   test('Wrong method', async () => {
@@ -155,7 +153,7 @@ describe('e2e/backend/geometry/[id]/download', () => {
     await setToken()
 
     await route(req, res)
-    expect(resStatus).toBe(405)
+    expect(resStatus).toBe(402)
     expect(resJson).toEqual({
       error: true,
       message: 'Method method not allowed'

@@ -72,7 +72,7 @@ describe('e2e/backend/organization', () => {
     await setToken()
 
     await route(req, res)
-    expect(resStatus).toBe(405)
+    expect(resStatus).toBe(402)
     expect(resJson).toEqual({
       error: true,
       message: 'Method method not allowed'
@@ -89,7 +89,7 @@ describe('e2e/backend/organization', () => {
     // Wrong body
     req.body = {}
     await route(req, res)
-    expect(resStatus).toBe(500)
+    expect(resStatus).toBe(400)
     expect(resJson).toEqual({
       error: true,
       message: 'Missing data in your request (body: { name(string) })'
@@ -156,7 +156,7 @@ describe('e2e/backend/organization', () => {
     // Wrong body
     req.body = {}
     await route(req, res)
-    expect(resStatus).toBe(500)
+    expect(resStatus).toBe(400)
     expect(resJson).toEqual({
       error: true,
       message: 'Missing data in your request (body: { id(uuid), data(array) })'
@@ -200,8 +200,11 @@ describe('e2e/backend/organization', () => {
       data: [{ key: 'name', value: 'new name' }]
     }
     await route(req, res)
-    expect(resStatus).toBe(500)
-    expect(resJson).toEqual({ error: true, message: 'Unauthorized' })
+    expect(resStatus).toBe(400)
+    expect(resJson).toEqual({
+      error: true,
+      message: 'Invalid organization identifier'
+    })
   })
 
   test('Delete', async () => {
@@ -221,7 +224,7 @@ describe('e2e/backend/organization', () => {
     // Wrong body
     req.body = {}
     await route(req, res)
-    expect(resStatus).toBe(500)
+    expect(resStatus).toBe(400)
     expect(resJson).toEqual({
       error: true,
       message: 'Missing data in your request (body: { id(uuid) })'
@@ -243,10 +246,10 @@ describe('e2e/backend/organization', () => {
 
     // Error
     await route(req, res)
-    expect(resStatus).toBe(500)
+    expect(resStatus).toBe(400)
     expect(resJson).toEqual({
       error: true,
-      message: 'Unauthorized'
+      message: 'Invalid organization identifier'
     })
   })
 })

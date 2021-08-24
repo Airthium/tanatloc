@@ -27,12 +27,10 @@ beforeAll((done) => {
     )
     project = await ProjectLib.add(
       { id: adminUUID },
+      { id: workspace.id },
       {
-        workspace: { id: workspace.id },
-        project: {
-          title: 'Test project',
-          description: 'Test description'
-        }
+        title: 'Test project',
+        description: 'Test description'
       }
     )
     resolve()
@@ -95,7 +93,7 @@ describe('e2e/backend/avatar', () => {
     await setToken()
 
     await route(req, res)
-    expect(resStatus).toBe(405)
+    expect(resStatus).toBe(402)
     expect(resJson).toEqual({
       error: true,
       message: 'Method method not allowed'
@@ -111,30 +109,30 @@ describe('e2e/backend/avatar', () => {
 
     // No body
     await route(req, res)
-    expect(resStatus).toBe(500)
+    expect(resStatus).toBe(400)
     expect(resJson).toEqual({
       error: true,
       message:
-        'Missing data in your request (body: { ?project: { id(uuid) }, file: { name(string), uid(uuid), data(string) } })'
+        'Missing data in your request (body: { file: { name(string), uid(uuid), data(string) }, ?project: { id(uuid) } })'
     })
     expect(mockCaptureException).toHaveBeenLastCalledWith(
       new Error(
-        'Missing data in your request (body: { ?project: { id(uuid) }, file: { name(string), uid(uuid), data(string) } })'
+        'Missing data in your request (body: { file: { name(string), uid(uuid), data(string) }, ?project: { id(uuid) } })'
       )
     )
 
     // Empty body
     req.body = {}
     await route(req, res)
-    expect(resStatus).toBe(500)
+    expect(resStatus).toBe(400)
     expect(resJson).toEqual({
       error: true,
       message:
-        'Missing data in your request (body: { ?project: { id(uuid) }, file: { name(string), uid(uuid), data(string) } })'
+        'Missing data in your request (body: { file: { name(string), uid(uuid), data(string) }, ?project: { id(uuid) } })'
     })
     expect(mockCaptureException).toHaveBeenLastCalledWith(
       new Error(
-        'Missing data in your request (body: { ?project: { id(uuid) }, file: { name(string), uid(uuid), data(string) } })'
+        'Missing data in your request (body: { file: { name(string), uid(uuid), data(string) }, ?project: { id(uuid) } })'
       )
     )
 
@@ -143,15 +141,15 @@ describe('e2e/backend/avatar', () => {
       file: {}
     }
     await route(req, res)
-    expect(resStatus).toBe(500)
+    expect(resStatus).toBe(400)
     expect(resJson).toEqual({
       error: true,
       message:
-        'Missing data in your request (body: { ?project: { id(uuid) }, file: { name(string), uid(uuid), data(string) } })'
+        'Missing data in your request (body: { file: { name(string), uid(uuid), data(string) }, ?project: { id(uuid) } })'
     })
     expect(mockCaptureException).toHaveBeenLastCalledWith(
       new Error(
-        'Missing data in your request (body: { ?project: { id(uuid) }, file: { name(string), uid(uuid), data(string) } })'
+        'Missing data in your request (body: { file: { name(string), uid(uuid), data(string) }, ?project: { id(uuid) } })'
       )
     )
 
@@ -162,15 +160,15 @@ describe('e2e/backend/avatar', () => {
       }
     }
     await route(req, res)
-    expect(resStatus).toBe(500)
+    expect(resStatus).toBe(400)
     expect(resJson).toEqual({
       error: true,
       message:
-        'Missing data in your request (body: { ?project: { id(uuid) }, file: { name(string), uid(uuid), data(string) } })'
+        'Missing data in your request (body: { file: { name(string), uid(uuid), data(string) }, ?project: { id(uuid) } })'
     })
     expect(mockCaptureException).toHaveBeenLastCalledWith(
       new Error(
-        'Missing data in your request (body: { ?project: { id(uuid) }, file: { name(string), uid(uuid), data(string) } })'
+        'Missing data in your request (body: { file: { name(string), uid(uuid), data(string) }, ?project: { id(uuid) } })'
       )
     )
 
@@ -182,15 +180,15 @@ describe('e2e/backend/avatar', () => {
       }
     }
     await route(req, res)
-    expect(resStatus).toBe(500)
+    expect(resStatus).toBe(400)
     expect(resJson).toEqual({
       error: true,
       message:
-        'Missing data in your request (body: { ?project: { id(uuid) }, file: { name(string), uid(uuid), data(string) } })'
+        'Missing data in your request (body: { file: { name(string), uid(uuid), data(string) }, ?project: { id(uuid) } })'
     })
     expect(mockCaptureException).toHaveBeenLastCalledWith(
       new Error(
-        'Missing data in your request (body: { ?project: { id(uuid) }, file: { name(string), uid(uuid), data(string) } })'
+        'Missing data in your request (body: { file: { name(string), uid(uuid), data(string) }, ?project: { id(uuid) } })'
       )
     )
 

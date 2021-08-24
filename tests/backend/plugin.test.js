@@ -82,7 +82,7 @@ describe('e2e/backend/plugin', () => {
     await setToken()
 
     await route(req, res)
-    expect(resStatus).toBe(405)
+    expect(resStatus).toBe(402)
     expect(resJson).toEqual({
       error: true,
       message: 'Method method not allowed'
@@ -99,7 +99,7 @@ describe('e2e/backend/plugin', () => {
     // Wrong body
     req.body = {}
     await route(req, res)
-    expect(resStatus).toBe(500)
+    expect(resStatus).toBe(400)
     expect(resJson).toEqual({
       error: true,
       message:
@@ -120,10 +120,10 @@ describe('e2e/backend/plugin', () => {
       }
     }
     await route(req, res)
-    expect(resStatus).toBe(500)
-    expect(resJson).toEqual({ error: true, message: 'Unauthorized' })
+    expect(resStatus).toBe(403)
+    expect(resJson).toEqual({ error: true, message: 'Access denied' })
     expect(mockCaptureException).toHaveBeenLastCalledWith(
-      new Error('Unauthorized')
+      new Error('Access denied')
     )
 
     // User update
@@ -176,7 +176,7 @@ describe('e2e/backend/plugin', () => {
     // Wrong body
     req.body = undefined
     await route(req, res)
-    expect(resStatus).toBe(500)
+    expect(resStatus).toBe(400)
     expect(resJson).toEqual({
       error: true,
       message: 'Missing data in your request (body(object)}'
@@ -217,7 +217,7 @@ describe('e2e/backend/plugin', () => {
     // Wrong body
     req.body = {}
     await route(req, res)
-    expect(resStatus).toBe(500)
+    expect(resStatus).toBe(400)
     expect(resJson).toEqual({
       error: true,
       message: 'Missing data in your request (body: { uuid(uuid) } }'

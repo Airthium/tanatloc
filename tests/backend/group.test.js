@@ -77,7 +77,7 @@ describe('e2e/backend/group', () => {
     await setToken()
 
     await route(req, res)
-    expect(resStatus).toBe(405)
+    expect(resStatus).toBe(402)
     expect(resJson).toEqual({
       error: true,
       message: 'Method method not allowed'
@@ -94,30 +94,30 @@ describe('e2e/backend/group', () => {
     // No body
     req.body = undefined
     await route(req, res)
-    expect(resStatus).toBe(500)
+    expect(resStatus).toBe(400)
     expect(resJson).toEqual({
       error: true,
       message:
-        'Missing data in your request (body: { organization: { id(uuid) }, group: { name(string) } })'
+        'Missing data in your request (body: { organization: { id(uuid) }, group: { name(string), users(array) } })'
     })
     expect(mockCaptureException).toHaveBeenLastCalledWith(
       new Error(
-        'Missing data in your request (body: { organization: { id(uuid) }, group: { name(string) } })'
+        'Missing data in your request (body: { organization: { id(uuid) }, group: { name(string), users(array) } })'
       )
     )
 
     // No organization
     req.body = {}
     await route(req, res)
-    expect(resStatus).toBe(500)
+    expect(resStatus).toBe(400)
     expect(resJson).toEqual({
       error: true,
       message:
-        'Missing data in your request (body: { organization: { id(uuid) }, group: { name(string) } })'
+        'Missing data in your request (body: { organization: { id(uuid) }, group: { name(string), users(array) } })'
     })
     expect(mockCaptureException).toHaveBeenLastCalledWith(
       new Error(
-        'Missing data in your request (body: { organization: { id(uuid) }, group: { name(string) } })'
+        'Missing data in your request (body: { organization: { id(uuid) }, group: { name(string), users(array) } })'
       )
     )
 
@@ -126,15 +126,15 @@ describe('e2e/backend/group', () => {
       organization: {}
     }
     await route(req, res)
-    expect(resStatus).toBe(500)
+    expect(resStatus).toBe(400)
     expect(resJson).toEqual({
       error: true,
       message:
-        'Missing data in your request (body: { organization: { id(uuid) }, group: { name(string) } })'
+        'Missing data in your request (body: { organization: { id(uuid) }, group: { name(string), users(array) } })'
     })
     expect(mockCaptureException).toHaveBeenLastCalledWith(
       new Error(
-        'Missing data in your request (body: { organization: { id(uuid) }, group: { name(string) } })'
+        'Missing data in your request (body: { organization: { id(uuid) }, group: { name(string), users(array) } })'
       )
     )
 
@@ -143,15 +143,15 @@ describe('e2e/backend/group', () => {
       organization: { id: organization.id }
     }
     await route(req, res)
-    expect(resStatus).toBe(500)
+    expect(resStatus).toBe(400)
     expect(resJson).toEqual({
       error: true,
       message:
-        'Missing data in your request (body: { organization: { id(uuid) }, group: { name(string) } })'
+        'Missing data in your request (body: { organization: { id(uuid) }, group: { name(string), users(array) } })'
     })
     expect(mockCaptureException).toHaveBeenLastCalledWith(
       new Error(
-        'Missing data in your request (body: { organization: { id(uuid) }, group: { name(string) } })'
+        'Missing data in your request (body: { organization: { id(uuid) }, group: { name(string), users(array) } })'
       )
     )
 
@@ -161,15 +161,15 @@ describe('e2e/backend/group', () => {
       group: {}
     }
     await route(req, res)
-    expect(resStatus).toBe(500)
+    expect(resStatus).toBe(400)
     expect(resJson).toEqual({
       error: true,
       message:
-        'Missing data in your request (body: { organization: { id(uuid) }, group: { name(string) } })'
+        'Missing data in your request (body: { organization: { id(uuid) }, group: { name(string), users(array) } })'
     })
     expect(mockCaptureException).toHaveBeenLastCalledWith(
       new Error(
-        'Missing data in your request (body: { organization: { id(uuid) }, group: { name(string) } })'
+        'Missing data in your request (body: { organization: { id(uuid) }, group: { name(string), users(array) } })'
       )
     )
 
@@ -179,15 +179,15 @@ describe('e2e/backend/group', () => {
       group: { name: 'name' }
     }
     await route(req, res)
-    expect(resStatus).toBe(500)
+    expect(resStatus).toBe(400)
     expect(resJson).toEqual({
       error: true,
       message:
-        'Missing data in your request (body: { organization: { id(uuid) }, group: { name(string) } })'
+        'Missing data in your request (body: { organization: { id(uuid) }, group: { name(string), users(array) } })'
     })
     expect(mockCaptureException).toHaveBeenLastCalledWith(
       new Error(
-        'Missing data in your request (body: { organization: { id(uuid) }, group: { name(string) } })'
+        'Missing data in your request (body: { organization: { id(uuid) }, group: { name(string), users(array) } })'
       )
     )
 
@@ -245,7 +245,7 @@ describe('e2e/backend/group', () => {
     // No body
     req.body = undefined
     await route(req, res)
-    expect(resStatus).toBe(500)
+    expect(resStatus).toBe(400)
     expect(resJson).toEqual({
       error: true,
       message: 'Missing data in your request (body: { id(uuid), data(array) })'
@@ -259,7 +259,7 @@ describe('e2e/backend/group', () => {
     // No id
     req.body = {}
     await route(req, res)
-    expect(resStatus).toBe(500)
+    expect(resStatus).toBe(400)
     expect(resJson).toEqual({
       error: true,
       message: 'Missing data in your request (body: { id(uuid), data(array) })'
@@ -273,7 +273,7 @@ describe('e2e/backend/group', () => {
     // No data
     req.body = { id: groupId }
     await route(req, res)
-    expect(resStatus).toBe(500)
+    expect(resStatus).toBe(400)
     expect(resJson).toEqual({
       error: true,
       message: 'Missing data in your request (body: { id(uuid), data(array) })'
@@ -320,7 +320,7 @@ describe('e2e/backend/group', () => {
     // No body
     req.body = undefined
     await route(req, res)
-    expect(resStatus).toBe(500)
+    expect(resStatus).toBe(400)
     expect(resJson).toEqual({
       error: true,
       message: 'Missing data in your request (body: { id(uuid) })'
@@ -332,7 +332,7 @@ describe('e2e/backend/group', () => {
     // No id
     req.body = {}
     await route(req, res)
-    expect(resStatus).toBe(500)
+    expect(resStatus).toBe(400)
     expect(resJson).toEqual({
       error: true,
       message: 'Missing data in your request (body: { id(uuid) })'

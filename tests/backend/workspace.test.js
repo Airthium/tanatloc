@@ -84,7 +84,7 @@ describe('e2e/backend/workspace', () => {
     await setToken()
 
     await route(req, res)
-    expect(resStatus).toBe(405)
+    expect(resStatus).toBe(402)
     expect(resJson).toEqual({
       error: true,
       message: 'Method method not allowed'
@@ -143,7 +143,7 @@ describe('e2e/backend/workspace', () => {
     // Wrong body
     req.body = {}
     await route(req, res)
-    expect(resStatus).toBe(500)
+    expect(resStatus).toBe(400)
     expect(resJson).toEqual({
       error: true,
       message: 'Missing data in your request (body: { name(string) })'
@@ -184,7 +184,7 @@ describe('e2e/backend/workspace', () => {
     // Wrong body
     req.body = {}
     await route(req, res)
-    expect(resStatus).toBe(500)
+    expect(resStatus).toBe(400)
     expect(resJson).toEqual({
       error: true,
       message:
@@ -202,13 +202,13 @@ describe('e2e/backend/workspace', () => {
       data: [{ key: 'name', value: 'Test workspace new' }]
     }
     await route(req, res)
-    expect(resStatus).toBe(500)
+    expect(resStatus).toBe(400)
     expect(resJson).toEqual({
       error: true,
-      message: 'Access denied'
+      message: 'Invalid workspace identifier'
     })
     expect(mockCaptureException).toHaveBeenLastCalledWith(
-      new Error('Access denied')
+      new Error('Invalid workspace identifier')
     )
 
     // Normal
@@ -248,7 +248,7 @@ describe('e2e/backend/workspace', () => {
     // Wrong body
     req.body = {}
     await route(req, res)
-    expect(resStatus).toBe(500)
+    expect(resStatus).toBe(400)
     expect(resJson).toEqual({
       error: true,
       message: 'Missing data in your request (body: { id(uuid) })'
@@ -260,13 +260,13 @@ describe('e2e/backend/workspace', () => {
     // Access denied
     req.body = { id: validUUID }
     await route(req, res)
-    expect(resStatus).toBe(500)
+    expect(resStatus).toBe(400)
     expect(resJson).toEqual({
       error: true,
-      message: 'Access denied'
+      message: 'Invalid workspace identifier'
     })
     expect(mockCaptureException).toHaveBeenLastCalledWith(
-      new Error('Access denied')
+      new Error('Invalid workspace identifier')
     )
 
     // Error

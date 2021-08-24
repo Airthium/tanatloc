@@ -20,7 +20,8 @@ beforeAll((done) => {
     )
     project = await ProjectLib.add(
       { id: adminUUID },
-      { workspace: { id: workspace.id }, project: { title: 'Test project' } }
+      { id: workspace.id },
+      { title: 'Test project' }
     )
     resolve()
   })
@@ -82,7 +83,7 @@ describe('e2e/backend/projects', () => {
     await setToken()
 
     await route(req, res)
-    expect(resStatus).toBe(405)
+    expect(resStatus).toBe(402)
     expect(resJson).toEqual({
       error: true,
       message: 'Method method not allowed'
@@ -99,7 +100,7 @@ describe('e2e/backend/projects', () => {
     // No body
     req.body = undefined
     await route(req, res)
-    expect(resStatus).toBe(500)
+    expect(resStatus).toBe(400)
     expect(resJson).toEqual({
       error: true,
       message: 'Missing data in your request (body: { ids(?array) })'

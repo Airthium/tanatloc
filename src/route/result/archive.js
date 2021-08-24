@@ -44,7 +44,7 @@ export default async (req, res) => {
       try {
         // Archive
         res.setHeader('Content-Type', 'application/zip')
-        const archive = await ResultLib.archive(req.body)
+        const archive = await ResultLib.archive(simulation)
         archive.pipe(res)
       } catch (err) {
         throw error(500, err.message)

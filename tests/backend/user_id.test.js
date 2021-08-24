@@ -107,10 +107,10 @@ describe('e2e/backend/user/[id]', () => {
 
     await setToken()
     await route(req, res)
-    expect(resStatus).toBe(500)
+    expect(resStatus).toBe(403)
     expect(resJson).toEqual({
       error: true,
-      message: 'Unauthorized'
+      message: 'Access denied'
     })
   })
 
@@ -122,7 +122,7 @@ describe('e2e/backend/user/[id]', () => {
     await UserLib.update({ id: adminUUID }, [{ key: 'superuser', value: true }])
 
     await route(req, res)
-    expect(resStatus).toBe(500)
+    expect(resStatus).toBe(400)
     expect(resJson).toEqual({
       error: true,
       message: 'Missing data in your request (query: { id(uuid) })'
@@ -139,7 +139,7 @@ describe('e2e/backend/user/[id]', () => {
     await setToken()
 
     await route(req, res)
-    expect(resStatus).toBe(405)
+    expect(resStatus).toBe(402)
     expect(resJson).toEqual({
       error: true,
       message: 'Method method not allowed'
@@ -181,7 +181,7 @@ describe('e2e/backend/user/[id]', () => {
     // Wrong body
     req.body = {}
     await route(req, res)
-    expect(resStatus).toBe(500)
+    expect(resStatus).toBe(400)
     expect(resJson).toEqual({
       error: true,
       message: 'Missing data in your request (body(array))'

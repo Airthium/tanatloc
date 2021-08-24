@@ -24,11 +24,11 @@ beforeAll((done) => {
     project = await ProjectLib.add(
       { id: adminUUID },
       {
-        workspace: { id: workspace.id },
-        project: {
-          title: 'Test project',
-          description: 'Test description'
-        }
+        id: workspace.id
+      },
+      {
+        title: 'Test project',
+        description: 'Test description'
       }
     )
     resolve()
@@ -91,7 +91,7 @@ describe('e2e/backend/geometry', () => {
     await setToken()
 
     await route(req, res)
-    expect(resStatus).toBe(405)
+    expect(resStatus).toBe(402)
     expect(resJson).toEqual({
       error: true,
       message: 'Method method not allowed'
@@ -116,7 +116,7 @@ describe('e2e/backend/geometry', () => {
 
     // No body
     await route(req, res)
-    expect(resStatus).toBe(500)
+    expect(resStatus).toBe(400)
     expect(resJson).toEqual({
       error: true,
       message:
@@ -133,7 +133,7 @@ describe('e2e/backend/geometry', () => {
       project: {}
     }
     await route(req, res)
-    expect(resStatus).toBe(500)
+    expect(resStatus).toBe(400)
     expect(resJson).toEqual({
       error: true,
       message:
@@ -150,7 +150,7 @@ describe('e2e/backend/geometry', () => {
       project: { id: project.id }
     }
     await route(req, res)
-    expect(resStatus).toBe(500)
+    expect(resStatus).toBe(400)
     expect(resJson).toEqual({
       error: true,
       message:
@@ -168,7 +168,7 @@ describe('e2e/backend/geometry', () => {
       geometry: {}
     }
     await route(req, res)
-    expect(resStatus).toBe(500)
+    expect(resStatus).toBe(400)
     expect(resJson).toEqual({
       error: true,
       message:
@@ -186,7 +186,7 @@ describe('e2e/backend/geometry', () => {
       geometry: { name: 'name.step' }
     }
     await route(req, res)
-    expect(resStatus).toBe(500)
+    expect(resStatus).toBe(400)
     expect(resJson).toEqual({
       error: true,
       message:
@@ -204,7 +204,7 @@ describe('e2e/backend/geometry', () => {
       geometry: { name: 'name.step', uid: 'uid' }
     }
     await route(req, res)
-    expect(resStatus).toBe(500)
+    expect(resStatus).toBe(400)
     expect(resJson).toEqual({
       error: true,
       message:

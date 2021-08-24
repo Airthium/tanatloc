@@ -65,7 +65,7 @@ describe('e2e/backend/system', () => {
     req.method = 'method'
 
     await route(req, res)
-    expect(resStatus).toBe(405)
+    expect(resStatus).toBe(402)
     expect(resJson).toEqual({
       error: true,
       message: 'Method method not allowed'
@@ -109,17 +109,17 @@ describe('e2e/backend/system', () => {
     await setToken()
     // Not a superuser
     await route(req, res)
-    expect(resStatus).toBe(500)
-    expect(resJson).toEqual({ error: true, message: 'Unauthorized' })
+    expect(resStatus).toBe(403)
+    expect(resJson).toEqual({ error: true, message: 'Access denied' })
     expect(mockCaptureException).toHaveBeenLastCalledWith(
-      new Error('Unauthorized')
+      new Error('Access denied')
     )
 
     await Userlib.update({ id: adminUUID }, [{ key: 'superuser', value: true }])
     // Wrong body
     req.body = {}
     await route(req, res)
-    expect(resStatus).toBe(500)
+    expect(resStatus).toBe(400)
     expect(resJson).toEqual({
       error: true,
       message: 'Missing data in your request (body(array))'

@@ -22,12 +22,13 @@ beforeAll((done) => {
     )
     project = await ProjectLib.add(
       { id: adminUUID },
-      { workspace: { id: workspace.id }, project: { title: 'Test project' } }
+      { id: workspace.id },
+      { title: 'Test project' }
     )
-    simulation = await SimulationLib.add({
-      project: { id: project.id },
-      simulation: { name: 'Test simulation', scheme: {} }
-    })
+    simulation = await SimulationLib.add(
+      { id: project.id },
+      { name: 'Test simulation', scheme: {} }
+    )
     resolve()
   })
     .catch(console.error)
@@ -89,7 +90,7 @@ describe('e2e/backend/simulation/id/tasks', () => {
     await setToken()
 
     await route(req, res)
-    expect(resStatus).toBe(500)
+    expect(resStatus).toBe(400)
     expect(resJson).toEqual({
       error: true,
       message: 'Missing data in your request (query: { id(string) })'
@@ -104,7 +105,7 @@ describe('e2e/backend/simulation/id/tasks', () => {
     await setToken()
 
     await route(req, res)
-    expect(resStatus).toBe(500)
+    expect(resStatus).toBe(400)
     expect(resJson).toEqual({
       error: true,
       message: 'Invalid simulation identifier'
@@ -120,7 +121,7 @@ describe('e2e/backend/simulation/id/tasks', () => {
     await setToken()
 
     await route(req, res)
-    expect(resStatus).toBe(405)
+    expect(resStatus).toBe(402)
     expect(resJson).toEqual({
       error: true,
       message: 'Method method not allowed'
@@ -141,9 +142,14 @@ describe('e2e/backend/simulation/id/tasks', () => {
     expect(resJson).toEqual([])
 
     // Error
-    jest.spyOn(SimulationLib, 'get').mockImplementationOnce(() => {
-      throw new Error('Get error')
-    })
+    jest
+      .spyOn(SimulationLib, 'get')
+      .mockImplementationOnce(() => ({
+        project: project.id
+      }))
+      .mockImplementationOnce(() => {
+        throw new Error('Get error')
+      })
     await route(req, res)
     expect(resStatus).toBe(500)
     expect(resJson).toEqual({

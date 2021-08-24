@@ -24,23 +24,21 @@ beforeAll((done) => {
     )
     project = await ProjectLib.add(
       { id: adminUUID },
+      { id: workspace.id },
       {
-        workspace: { id: workspace.id },
-        project: {
-          title: 'Test project',
-          description: 'Test description'
-        }
+        title: 'Test project',
+        description: 'Test description'
       }
     )
     const stepFile = fs.readFileSync('tests/assets/cube.step')
-    geometry = await GeometryLib.add({
-      project: { id: project.id },
-      geometry: {
+    geometry = await GeometryLib.add(
+      { id: project.id },
+      {
         name: 'name.step',
         uid: 'uid',
         buffer: Buffer.from(stepFile)
       }
-    })
+    )
     resolve()
   })
     .catch(console.error)
@@ -101,7 +99,7 @@ describe('e2e/backend/geometries', () => {
     await setToken()
 
     await route(req, res)
-    expect(resStatus).toBe(405)
+    expect(resStatus).toBe(402)
     expect(resJson).toEqual({
       error: true,
       message: 'Method method not allowed'
@@ -118,7 +116,7 @@ describe('e2e/backend/geometries', () => {
     // No body
     req.body = undefined
     await route(req, res)
-    expect(resStatus).toBe(500)
+    expect(resStatus).toBe(400)
     expect(resJson).toEqual({
       error: true,
       message: 'Missing data in your request (body: { ids(?array) })'

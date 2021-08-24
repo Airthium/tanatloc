@@ -23,7 +23,8 @@ beforeAll((done) => {
       {
         id: adminUUID
       },
-      { workspace: { id: workspace.id }, project: { title: 'Test project' } }
+      { id: workspace.id },
+      { title: 'Test project' }
     )
     resolve()
   })
@@ -85,7 +86,7 @@ describe('e2e/backend/simulation', () => {
     await setToken()
 
     await route(req, res)
-    expect(resStatus).toBe(405)
+    expect(resStatus).toBe(402)
     expect(resJson).toEqual({
       error: true,
       message: 'Method method not allowed'
@@ -111,7 +112,7 @@ describe('e2e/backend/simulation', () => {
     // Wrong body
     req.body = {}
     await route(req, res)
-    expect(resStatus).toBe(500)
+    expect(resStatus).toBe(400)
     expect(resJson).toEqual({
       error: true,
       message:

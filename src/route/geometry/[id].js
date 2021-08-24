@@ -62,6 +62,6 @@ export default async (req, res) => {
         throw error(402, 'Method ' + req.method + ' not allowed')
     }
   } catch (err) {
-    res.status(err.status).json({ error: true })
+    res.status(err.status).json({ error: true, message: err.message })
   }
 }

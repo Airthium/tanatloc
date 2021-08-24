@@ -24,7 +24,7 @@ const checkAddBody = (body) => {
   )
     throw error(
       400,
-      'Missing data in your request (body: { organization: { id(uuid) }, group: { name(string) } })'
+      'Missing data in your request (body: { organization: { id(uuid) }, group: { name(string), users(array) } })'
     )
 }
 
@@ -150,6 +150,6 @@ export default async (req, res) => {
         throw error(402, 'Method ' + req.method + ' not allowed')
     }
   } catch (err) {
-    res.status(err.status).json({ error: true })
+    res.status(err.status).json({ error: true, message: err.message })
   }
 }

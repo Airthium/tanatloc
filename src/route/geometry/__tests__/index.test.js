@@ -36,10 +36,8 @@ describe('route/geometry', () => {
 
   beforeEach(() => {
     mockSession.mockReset()
-    mockSession.mockImplementation(() => false)
 
     mockCheckProjectAuth.mockReset()
-    mockCheckProjectAuth.mockImplementation(() => true)
 
     mockError.mockReset()
     mockError.mockImplementation((status, message) => ({ status, message }))
@@ -69,48 +67,79 @@ describe('route/geometry', () => {
     expect(resJson).toEqual({ error: true, message: 'Unauthorized' })
   })
 
-  // test('GET', async () => {
-  //   mockSession.mockImplementation(() => 'id')
+  test('GET', async () => {
+    req.method = 'GET'
 
-  //   await geometry(req, res)
-  //   expect(mockSession).toHaveBeenCalledTimes(1)
-  //   expect(mockAdd).toHaveBeenCalledTimes(0)
-  //   expect(mockError).toHaveBeenCalledTimes(0)
-  //   expect(response).toBe('end')
-  // })
+    await geometry(req, res)
+    expect(mockSession).toHaveBeenCalledTimes(1)
+    expect(mockCheckProjectAuth).toHaveBeenCalledTimes(0)
+    expect(mockAdd).toHaveBeenCalledTimes(0)
+    expect(mockError).toHaveBeenCalledTimes(0)
+    expect(resStatus).toBe(200)
+    expect(resJson).toBe('end')
+  })
 
-  // test('POST', async () => {
-  //   req.method = 'POST'
-  //   req.body = {
-  //     project: { id: 'id' },
-  //     geometry: {
-  //       name: 'name',
-  //       uid: 'uid',
-  //       buffer: Buffer.from('buffer')
-  //     }
-  //   }
+  test('POST', async () => {
+    req.method = 'POST'
 
-  //   mockSession.mockImplementation(() => 'id')
+    // Wrong body
+    req.body = {}
+    await geometry(req, res)
+    expect(mockSession).toHaveBeenCalledTimes(1)
+    expect(mockCheckProjectAuth).toHaveBeenCalledTimes(0)
+    expect(mockAdd).toHaveBeenCalledTimes(0)
+    expect(mockError).toHaveBeenCalledTimes(1)
+    expect(resStatus).toBe(400)
+    expect(resJson).toEqual({
+      error: true,
+      message:
+        'Missing data in your request (body: { project: { id(uuid) }, geometry: { name(string), uid(uuid), buffer(object) } })'
+    })
 
-  //   await geometry(req, res)
-  //   expect(mockSession).toHaveBeenCalledTimes(1)
-  //   expect(mockAdd).toHaveBeenCalledTimes(1)
-  //   expect(mockError).toHaveBeenCalledTimes(0)
-  //   expect(response).toEqual({
-  //     id: 'id',
-  //     name: 'name'
-  //   })
+    // Auth error
+    req.body = {
+      project: { id: 'id' },
+      geometry: {
+        name: 'name',
+        uid: 'uid',
+        buffer: Buffer.from('buffer')
+      }
+    }
+    mockCheckProjectAuth.mockImplementation(() => {
+      const error = new Error('Access denied')
+      error.status = 403
+      throw error
+    })
+    await geometry(req, res)
+    expect(mockSession).toHaveBeenCalledTimes(2)
+    expect(mockCheckProjectAuth).toHaveBeenCalledTimes(1)
+    expect(mockAdd).toHaveBeenCalledTimes(0)
+    expect(mockError).toHaveBeenCalledTimes(1)
+    expect(resStatus).toBe(403)
+    expect(resJson).toEqual({ error: true, message: 'Access denied' })
 
-  //   // Error
-  //   mockAdd.mockImplementation(() => {
-  //     throw new Error('test')
-  //   })
-  //   await geometry(req, res)
-  //   expect(mockSession).toHaveBeenCalledTimes(2)
-  //   expect(mockAdd).toHaveBeenCalledTimes(2)
-  //   expect(mockError).toHaveBeenCalledTimes(1)
-  //   expect(response).toEqual({ error: true, message: 'test' })
-  // })
+    // Normal
+    mockCheckProjectAuth.mockImplementation(() => true)
+    await geometry(req, res)
+    expect(mockSession).toHaveBeenCalledTimes(3)
+    expect(mockCheckProjectAuth).toHaveBeenCalledTimes(2)
+    expect(mockAdd).toHaveBeenCalledTimes(1)
+    expect(mockError).toHaveBeenCalledTimes(1)
+    expect(resStatus).toBe(200)
+    expect(resJson).toEqual({ id: 'id', name: 'name' })
+
+    // Error
+    mockAdd.mockImplementation(() => {
+      throw new Error('Add error')
+    })
+    await geometry(req, res)
+    expect(mockSession).toHaveBeenCalledTimes(4)
+    expect(mockCheckProjectAuth).toHaveBeenCalledTimes(3)
+    expect(mockAdd).toHaveBeenCalledTimes(2)
+    expect(mockError).toHaveBeenCalledTimes(2)
+    expect(resStatus).toBe(500)
+    expect(resJson).toEqual({ error: true, message: 'Add error' })
+  })
 
   test('wrong method', async () => {
     req.method = 'method'

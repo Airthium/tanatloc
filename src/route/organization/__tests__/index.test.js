@@ -3,6 +3,9 @@ import organization from '..'
 const mockSession = jest.fn()
 jest.mock('../../session', () => () => mockSession())
 
+const mockError = jest.fn()
+jest.mock('../../error', () => (status, message) => mockError(status, message))
+
 const mockAdd = jest.fn()
 const mockGet = jest.fn()
 const mockUpdate = jest.fn()
@@ -14,27 +17,30 @@ jest.mock('@/lib/organization', () => ({
   del: async () => mockDel()
 }))
 
-const mockError = jest.fn()
-jest.mock('@/lib/sentry', () => ({
-  captureException: () => mockError()
-}))
-
 describe('route/organization', () => {
-  let req, response
+  const req = {}
+  let resStatus
+  let resJson
   const res = {
-    status: () => ({
-      json: (obj) => {
-        response = obj
-      },
-      end: () => {
-        response = 'end'
+    status: (status) => {
+      resStatus = status
+      return {
+        json: (obj) => {
+          resJson = obj
+        },
+        end: () => {
+          resJson = 'end'
+        }
       }
-    })
+    }
   }
 
   beforeEach(() => {
     mockSession.mockReset()
-    mockSession.mockImplementation(() => false)
+    mockSession.mockImplementation(() => 'id')
+
+    mockError.mockReset()
+    mockError.mockImplementation((status, message) => ({ status, message }))
 
     mockAdd.mockReset()
     mockAdd.mockImplementation(() => ({
@@ -44,15 +50,16 @@ describe('route/organization', () => {
     mockUpdate.mockReset()
     mockDel.mockReset()
 
-    mockError.mockReset()
-
-    req = {
-      method: 'POST'
-    }
-    response = undefined
+    resStatus = undefined
+    resJson = undefined
   })
 
   test('no session', async () => {
+    mockSession.mockImplementation(() => {
+      const error = new Error('Unauthorized')
+      error.status = 401
+      throw error
+    })
     await organization(req, res)
     expect(mockSession).toHaveBeenCalledTimes(1)
     expect(mockAdd).toHaveBeenCalledTimes(0)
@@ -60,133 +67,209 @@ describe('route/organization', () => {
     expect(mockUpdate).toHaveBeenCalledTimes(0)
     expect(mockDel).toHaveBeenCalledTimes(0)
     expect(mockError).toHaveBeenCalledTimes(0)
-    expect(response).toBe(undefined)
+    expect(resStatus).toBe(401)
+    expect(resJson).toEqual({
+      error: true,
+      message: 'Unauthorized'
+    })
   })
 
   test('POST', async () => {
-    mockSession.mockImplementation(() => 'id')
+    req.method = 'POST'
 
+    // Wrong body
+    req.body = {}
     await organization(req, res)
     expect(mockSession).toHaveBeenCalledTimes(1)
+    expect(mockAdd).toHaveBeenCalledTimes(0)
+    expect(mockGet).toHaveBeenCalledTimes(0)
+    expect(mockUpdate).toHaveBeenCalledTimes(0)
+    expect(mockDel).toHaveBeenCalledTimes(0)
+    expect(mockError).toHaveBeenCalledTimes(1)
+    expect(resStatus).toBe(400)
+    expect(resJson).toEqual({
+      error: true,
+      message: 'Missing data in your request (body: { name(string) })'
+    })
+
+    // Normal
+    req.body = {
+      name: 'Test organization'
+    }
+    await organization(req, res)
+    expect(mockSession).toHaveBeenCalledTimes(2)
     expect(mockAdd).toHaveBeenCalledTimes(1)
     expect(mockGet).toHaveBeenCalledTimes(0)
     expect(mockUpdate).toHaveBeenCalledTimes(0)
     expect(mockDel).toHaveBeenCalledTimes(0)
-    expect(mockError).toHaveBeenCalledTimes(0)
-    expect(response).toEqual({ id: 'id' })
+    expect(mockError).toHaveBeenCalledTimes(1)
+    expect(resStatus).toBe(200)
+    expect(resJson).toEqual({
+      id: 'id'
+    })
 
     // Error
     mockAdd.mockImplementation(() => {
-      throw new Error('test')
+      throw new Error('Add error')
     })
     await organization(req, res)
-    expect(mockSession).toHaveBeenCalledTimes(2)
+    expect(mockSession).toHaveBeenCalledTimes(3)
     expect(mockAdd).toHaveBeenCalledTimes(2)
     expect(mockGet).toHaveBeenCalledTimes(0)
     expect(mockUpdate).toHaveBeenCalledTimes(0)
     expect(mockDel).toHaveBeenCalledTimes(0)
-    expect(mockError).toHaveBeenCalledTimes(1)
-    expect(response).toEqual({ error: true, message: 'test' })
+    expect(mockError).toHaveBeenCalledTimes(2)
+    expect(resStatus).toBe(500)
+    expect(resJson).toEqual({
+      error: true,
+      message: 'Add error'
+    })
   })
 
   test('PUT', async () => {
     req.method = 'PUT'
-    req.body = {
-      id: 'id'
-    }
 
-    mockSession.mockImplementation(() => 'id')
-
-    // No authorized
-    mockGet.mockImplementation(() => ({
-      owners: []
-    }))
+    // Wrong body
+    req.body = {}
     await organization(req, res)
     expect(mockSession).toHaveBeenCalledTimes(1)
+    expect(mockAdd).toHaveBeenCalledTimes(0)
+    expect(mockGet).toHaveBeenCalledTimes(0)
+    expect(mockUpdate).toHaveBeenCalledTimes(0)
+    expect(mockDel).toHaveBeenCalledTimes(0)
+    expect(mockError).toHaveBeenCalledTimes(1)
+    expect(resStatus).toBe(400)
+    expect(resJson).toEqual({
+      error: true,
+      message: 'Missing data in your request (body: { id(uuid), data(array) })'
+    })
+
+    // Invalid organization
+    req.body = { id: 'id', data: [] }
+    mockGet.mockImplementation(() => {
+      // Empty
+    })
+    await organization(req, res)
+    expect(mockSession).toHaveBeenCalledTimes(2)
     expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockGet).toHaveBeenCalledTimes(1)
     expect(mockUpdate).toHaveBeenCalledTimes(0)
     expect(mockDel).toHaveBeenCalledTimes(0)
-    expect(mockError).toHaveBeenCalledTimes(0)
-    expect(response).toEqual({ error: true, message: 'Unauthorized' })
-
-    // Normal
-    mockGet.mockImplementation(() => ({
-      owners: ['id']
-    }))
-    await organization(req, res)
-    expect(mockSession).toHaveBeenCalledTimes(2)
-    expect(mockAdd).toHaveBeenCalledTimes(0)
-    expect(mockGet).toHaveBeenCalledTimes(2)
-    expect(mockUpdate).toHaveBeenCalledTimes(1)
-    expect(mockDel).toHaveBeenCalledTimes(0)
-    expect(mockError).toHaveBeenCalledTimes(0)
-    expect(response).toBe('end')
-
-    // Error
-    mockUpdate.mockImplementation(() => {
-      throw new Error('test')
+    expect(mockError).toHaveBeenCalledTimes(2)
+    expect(resStatus).toBe(400)
+    expect(resJson).toEqual({
+      error: true,
+      message: 'Invalid organization identifier'
     })
+
+    // Access denied
+    mockGet.mockImplementation(() => ({}))
     await organization(req, res)
     expect(mockSession).toHaveBeenCalledTimes(3)
     expect(mockAdd).toHaveBeenCalledTimes(0)
+    expect(mockGet).toHaveBeenCalledTimes(2)
+    expect(mockUpdate).toHaveBeenCalledTimes(0)
+    expect(mockDel).toHaveBeenCalledTimes(0)
+    expect(mockError).toHaveBeenCalledTimes(3)
+    expect(resStatus).toBe(403)
+    expect(resJson).toEqual({
+      error: true,
+      message: 'Access denied'
+    })
+
+    // Normal
+    mockGet.mockImplementation(() => ({ owners: ['id'] }))
+    await organization(req, res)
+    expect(mockSession).toHaveBeenCalledTimes(4)
+    expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockGet).toHaveBeenCalledTimes(3)
+    expect(mockUpdate).toHaveBeenCalledTimes(1)
+    expect(mockDel).toHaveBeenCalledTimes(0)
+    expect(mockError).toHaveBeenCalledTimes(3)
+    expect(resStatus).toBe(200)
+    expect(resJson).toBe('end')
+
+    // Error
+    mockUpdate.mockImplementation(() => {
+      throw new Error('Update error')
+    })
+    await organization(req, res)
+    expect(mockSession).toHaveBeenCalledTimes(5)
+    expect(mockAdd).toHaveBeenCalledTimes(0)
+    expect(mockGet).toHaveBeenCalledTimes(4)
     expect(mockUpdate).toHaveBeenCalledTimes(2)
     expect(mockDel).toHaveBeenCalledTimes(0)
-    expect(mockError).toHaveBeenCalledTimes(1)
-    expect(response).toEqual({ error: true, message: 'test' })
+    expect(mockError).toHaveBeenCalledTimes(4)
+    expect(resStatus).toBe(500)
+    expect(resJson).toEqual({
+      error: true,
+      message: 'Update error'
+    })
   })
 
   test('DELETE', async () => {
     req.method = 'DELETE'
-    req.body = {
-      id: 'id'
-    }
 
-    mockSession.mockImplementation(() => 'id')
-
-    // Not authorized
-    mockGet.mockImplementation(() => ({ owners: [] }))
+    // Wrong body
+    req.body = {}
     await organization(req, res)
     expect(mockSession).toHaveBeenCalledTimes(1)
+    expect(mockAdd).toHaveBeenCalledTimes(0)
+    expect(mockGet).toHaveBeenCalledTimes(0)
+    expect(mockUpdate).toHaveBeenCalledTimes(0)
+    expect(mockDel).toHaveBeenCalledTimes(0)
+    expect(mockError).toHaveBeenCalledTimes(1)
+    expect(resStatus).toBe(400)
+    expect(resJson).toEqual({
+      error: true,
+      message: 'Missing data in your request (body: { id(uuid) })'
+    })
+
+    // Access denied
+    req.body = { id: 'id' }
+    mockGet.mockImplementation(() => ({}))
+    await organization(req, res)
+    expect(mockSession).toHaveBeenCalledTimes(2)
     expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockGet).toHaveBeenCalledTimes(1)
     expect(mockUpdate).toHaveBeenCalledTimes(0)
     expect(mockDel).toHaveBeenCalledTimes(0)
-    expect(mockError).toHaveBeenCalledTimes(0)
-    expect(response).toEqual({ error: true, message: 'Unauthorized' })
+    expect(mockError).toHaveBeenCalledTimes(2)
+    expect(resStatus).toBe(403)
+    expect(resJson).toEqual({
+      error: true,
+      message: 'Access denied'
+    })
 
     // Normal
-    mockGet.mockImplementation(() => ({
-      owners: ['id']
-    }))
+    mockGet.mockImplementation(() => ({ owners: ['id'] }))
     await organization(req, res)
-    expect(mockSession).toHaveBeenCalledTimes(2)
+    expect(mockSession).toHaveBeenCalledTimes(3)
     expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockGet).toHaveBeenCalledTimes(2)
     expect(mockUpdate).toHaveBeenCalledTimes(0)
     expect(mockDel).toHaveBeenCalledTimes(1)
-    expect(mockError).toHaveBeenCalledTimes(0)
-    expect(response).toBe('end')
+    expect(mockError).toHaveBeenCalledTimes(2)
+    expect(resStatus).toBe(200)
+    expect(resJson).toBe('end')
 
     // Error
     mockDel.mockImplementation(() => {
-      throw new Error('test')
+      throw new Error('Delete error')
     })
     await organization(req, res)
-    expect(mockSession).toHaveBeenCalledTimes(3)
+    expect(mockSession).toHaveBeenCalledTimes(4)
     expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockGet).toHaveBeenCalledTimes(3)
     expect(mockUpdate).toHaveBeenCalledTimes(0)
     expect(mockDel).toHaveBeenCalledTimes(2)
-    expect(mockError).toHaveBeenCalledTimes(1)
-    expect(response).toEqual({ error: true, message: 'test' })
+    expect(mockError).toHaveBeenCalledTimes(3)
+    expect(resStatus).toBe(500)
+    expect(resJson).toEqual({ error: true, message: 'Delete error' })
   })
 
   test('wrong method', async () => {
-    req.method = 'SOMETHING'
-
-    mockSession.mockImplementation(() => true)
+    req.method = 'method'
 
     await organization(req, res)
     expect(mockSession).toHaveBeenCalledTimes(1)
@@ -195,9 +278,10 @@ describe('route/organization', () => {
     expect(mockUpdate).toHaveBeenCalledTimes(0)
     expect(mockDel).toHaveBeenCalledTimes(0)
     expect(mockError).toHaveBeenCalledTimes(1)
-    expect(response).toEqual({
+    expect(resStatus).toBe(402)
+    expect(resJson).toEqual({
       error: true,
-      message: 'Method SOMETHING not allowed'
+      message: 'Method method not allowed'
     })
   })
 })

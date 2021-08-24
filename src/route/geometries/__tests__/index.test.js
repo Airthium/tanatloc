@@ -36,10 +36,8 @@ describe('route/geometries/geometries', () => {
 
   beforeEach(() => {
     mockSession.mockReset()
-    mockSession.mockImplementation(() => true)
 
     mockCheckProjectAuth.mockReset()
-    mockCheckProjectAuth.mockImplementation(() => true)
 
     mockError.mockReset()
     mockError.mockImplementation((status, message) => ({ status, message }))
@@ -105,7 +103,11 @@ describe('route/geometries/geometries', () => {
     })
     mockCheckProjectAuth.mockImplementation(() => {
       check++
-      return check % 2
+      if (check % 2) {
+        const error = new Error('Access denied')
+        error.status = 403
+        throw error
+      }
     })
     await geometries(req, res)
     expect(mockSession).toHaveBeenCalledTimes(3)
@@ -114,10 +116,7 @@ describe('route/geometries/geometries', () => {
     expect(mockError).toHaveBeenCalledTimes(2)
     expect(resStatus).toBe(200)
     expect(resJson).toEqual({
-      geometries: [
-        { id: 'id2', name: 'name' },
-        { id: 'id3', name: 'name' }
-      ]
+      geometries: [{ id: 'id3', name: 'name' }]
     })
   })
 

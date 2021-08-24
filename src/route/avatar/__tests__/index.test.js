@@ -36,10 +36,8 @@ describe('route/avatar', () => {
 
   beforeEach(() => {
     mockSession.mockReset()
-    mockSession.mockImplementation(() => true)
 
     mockCheckProjectAuth.mockReset()
-    mockCheckProjectAuth.mockImplementation(() => true)
 
     mockError.mockReset()
     mockError.mockImplementation((status, message) => ({ status, message }))

@@ -40,16 +40,16 @@ export default async (req, res) => {
 
     if (req.method === 'POST') {
       // Load result
+      // Check
+      checkLoadBody(req.body)
+
+      const { simulation, result } = req.body
+
+      // Check auth
+      await checkSimulationAuth({ id: sessionId }, { id: simulation.id })
+
+      // Load
       try {
-        // Check
-        checkLoadBody(req.body)
-
-        const { simulation, result } = req.body
-
-        // Check auth
-        await checkSimulationAuth({ id: sessionId }, { id: simulation.id })
-
-        // Load
         const data = await ResultLib.load(simulation, result)
         res.status(200).json(data)
       } catch (err) {
@@ -60,6 +60,6 @@ export default async (req, res) => {
       throw error(402, 'Method ' + req.method + ' not allowed')
     }
   } catch (err) {
-    res.status(err.status).json({ error: true })
+    res.status(err.status).json({ error: true, message: err.message })
   }
 }

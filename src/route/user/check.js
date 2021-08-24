@@ -46,13 +46,13 @@ export default async (req, res) => {
           res.status(401).json({ valid: false })
         }
       } catch (err) {
-        throw err(500, err.message)
+        throw error(500, err.message)
       }
     } else {
       // Unauthorized method
       throw error(402, 'Method ' + req.method + ' not allowed')
     }
   } catch (err) {
-    res.status(err.status).json({ error: true })
+    res.status(err.status).json({ error: true, message: err.message })
   }
 }

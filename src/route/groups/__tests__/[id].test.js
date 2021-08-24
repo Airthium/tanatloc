@@ -3,109 +3,153 @@ import groups from '../[id]'
 const mockSession = jest.fn()
 jest.mock('../../session', () => () => mockSession())
 
+const mockCheckOrganizationAuth = jest.fn()
+jest.mock('../../auth', () => ({
+  checkOrganizationAuth: async () => mockCheckOrganizationAuth()
+}))
+
+const mockError = jest.fn()
+jest.mock('../../error', () => (status, message) => mockError(status, message))
+
 const mockGetByOrganization = jest.fn()
 jest.mock('@/lib/group', () => ({
   getByOrganization: async () => mockGetByOrganization()
 }))
 
-const mockError = jest.fn()
-jest.mock('@/lib/sentry', () => ({
-  captureException: () => mockError()
-}))
-
 describe('route/groups/[id]', () => {
-  let req, response
+  const req = {}
+  let resStatus
+  let resJson
   const res = {
-    status: () => ({
-      json: (obj) => {
-        response = obj
-      },
-      end: () => {
-        response = 'end'
+    status: (status) => {
+      resStatus = status
+      return {
+        json: (obj) => {
+          resJson = obj
+        },
+        end: () => {
+          resJson = 'end'
+        }
       }
-    })
+    }
   }
 
   beforeEach(() => {
     mockSession.mockReset()
-    mockSession.mockImplementation(() => false)
+
+    mockCheckOrganizationAuth.mockReset()
+
+    mockError.mockReset()
+    mockError.mockImplementation((status, message) => ({ status, message }))
 
     mockGetByOrganization.mockReset()
 
-    mockError.mockReset()
-
-    req = {
-      method: 'GET',
-      query: { id: 'id' }
-    }
-    response = undefined
+    resStatus = undefined
+    resJson = undefined
   })
 
   test('no session', async () => {
+    mockSession.mockImplementation(() => {
+      const error = new Error('Unauthorized')
+      error.status = 401
+      throw error
+    })
     await groups(req, res)
     expect(mockSession).toHaveBeenCalledTimes(1)
+    expect(mockCheckOrganizationAuth).toHaveBeenCalledTimes(0)
     expect(mockGetByOrganization).toHaveBeenCalledTimes(0)
     expect(mockError).toHaveBeenCalledTimes(0)
-    expect(response).toBe(undefined)
+    expect(resStatus).toBe(401)
+    expect(resJson).toEqual({
+      error: true,
+      message: 'Unauthorized'
+    })
+  })
+
+  test('no id', async () => {
+    req.method = 'GET'
+    req.query = {}
+    req.params = {}
+
+    await groups(req, res)
+    expect(mockSession).toHaveBeenCalledTimes(1)
+    expect(mockCheckOrganizationAuth).toHaveBeenCalledTimes(0)
+    expect(mockGetByOrganization).toHaveBeenCalledTimes(0)
+    expect(mockError).toHaveBeenCalledTimes(1)
+    expect(resStatus).toBe(400)
+    expect(resJson).toEqual({
+      error: true,
+      message: 'Missing data in your request (query: { id(string) })'
+    })
   })
 
   test('GET', async () => {
     req.method = 'GET'
+    req.query = {}
+    req.params = { id: 'id' }
 
-    mockSession.mockImplementation(() => 'id')
-    mockGetByOrganization.mockImplementation(() => [
-      {
-        id: 'id'
-      }
-    ])
-
+    // Access denied
+    mockCheckOrganizationAuth.mockImplementation(() => {
+      const error = new Error('Access denied')
+      error.status = 403
+      throw error
+    })
     await groups(req, res)
     expect(mockSession).toHaveBeenCalledTimes(1)
+    expect(mockCheckOrganizationAuth).toHaveBeenCalledTimes(1)
+    expect(mockGetByOrganization).toHaveBeenCalledTimes(0)
+    expect(mockError).toHaveBeenCalledTimes(0)
+    expect(resStatus).toBe(403)
+    expect(resJson).toEqual({
+      error: true,
+      message: 'Access denied'
+    })
+
+    // Normal
+    mockCheckOrganizationAuth.mockImplementation(() => {
+      // Empty
+    })
+    mockGetByOrganization.mockImplementation(() => [])
+    await groups(req, res)
+    expect(mockSession).toHaveBeenCalledTimes(2)
+    expect(mockCheckOrganizationAuth).toHaveBeenCalledTimes(2)
     expect(mockGetByOrganization).toHaveBeenCalledTimes(1)
     expect(mockError).toHaveBeenCalledTimes(0)
-    expect(response).toEqual({ groups: [{ id: 'id' }] })
+    expect(resStatus).toBe(200)
+    expect(resJson).toEqual({
+      groups: []
+    })
 
     // Error
     mockGetByOrganization.mockImplementation(() => {
-      throw new Error('test')
+      throw new Error('Get error')
     })
     await groups(req, res)
-    expect(mockSession).toHaveBeenCalledTimes(2)
+    expect(mockSession).toHaveBeenCalledTimes(3)
+    expect(mockCheckOrganizationAuth).toHaveBeenCalledTimes(3)
     expect(mockGetByOrganization).toHaveBeenCalledTimes(2)
     expect(mockError).toHaveBeenCalledTimes(1)
-    expect(response).toEqual({ error: true, message: 'test' })
-  })
-
-  test('electron', async () => {
-    req.query.id = undefined
-    req.params = { id: 'id' }
-
-    mockSession.mockImplementation(() => 'id')
-    mockGetByOrganization.mockImplementation(() => [
-      {
-        id: 'id'
-      }
-    ])
-
-    await groups(req, res)
-    expect(mockSession).toHaveBeenCalledTimes(1)
-    expect(mockGetByOrganization).toHaveBeenCalledTimes(1)
-    expect(mockError).toHaveBeenCalledTimes(0)
-    expect(response).toEqual({ groups: [{ id: 'id' }] })
+    expect(resStatus).toBe(500)
+    expect(resJson).toEqual({
+      error: true,
+      message: 'Get error'
+    })
   })
 
   test('wrong method', async () => {
-    req.method = 'SOMETHING'
-
-    mockSession.mockImplementation(() => true)
+    req.method = 'method'
+    req.query = { id: 'id' }
+    req.params = {}
 
     await groups(req, res)
     expect(mockSession).toHaveBeenCalledTimes(1)
+    expect(mockCheckOrganizationAuth).toHaveBeenCalledTimes(0)
     expect(mockGetByOrganization).toHaveBeenCalledTimes(0)
     expect(mockError).toHaveBeenCalledTimes(1)
-    expect(response).toEqual({
+    expect(resStatus).toBe(402)
+    expect(resJson).toEqual({
       error: true,
-      message: 'Method SOMETHING not allowed'
+      message: 'Method method not allowed'
     })
   })
 })

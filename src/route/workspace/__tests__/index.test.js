@@ -3,50 +3,54 @@ import workspace from '..'
 const mockSession = jest.fn()
 jest.mock('../../session', () => () => mockSession())
 
-const mockAuth = jest.fn()
-jest.mock('../../auth', () => () => mockAuth())
+const mockCheckWorkspaceAuth = jest.fn()
+jest.mock('../../auth', () => ({
+  checkWorkspaceAuth: async () => mockCheckWorkspaceAuth()
+}))
+
+const mockError = jest.fn()
+jest.mock('../../error', () => (status, message) => mockError(status, message))
 
 const mockGetByUser = jest.fn()
-const mockGet = jest.fn()
 const mockAdd = jest.fn()
 const mockUpdate = jest.fn()
 const mockDel = jest.fn()
 jest.mock('@/lib/workspace', () => ({
   getByUser: async () => mockGetByUser(),
-  get: async () => mockGet(),
   add: async () => mockAdd(),
   update: async () => mockUpdate(),
   del: async () => mockDel()
 }))
 
-const mockError = jest.fn()
-jest.mock('@/lib/sentry', () => ({
-  captureException: () => mockError()
-}))
-
-describe('pages/api/workspace', () => {
-  let req, response
+describe('route/workspace', () => {
+  const req = {}
+  let resStatus
+  let resJson
   const res = {
-    status: () => ({
-      json: (obj) => {
-        response = obj
-      },
-      end: () => {
-        response = 'end'
+    status: (status) => {
+      resStatus = status
+      return {
+        json: (obj) => {
+          resJson = obj
+        },
+        end: () => {
+          resJson = 'end'
+        }
       }
-    })
+    }
   }
 
   beforeEach(() => {
     mockSession.mockReset()
     mockSession.mockImplementation(() => false)
 
-    mockAuth.mockReset()
-    mockAuth.mockImplementation(() => false)
+    mockCheckWorkspaceAuth.mockReset()
+
+    mockError.mockReset()
+    mockError.mockImplementation((status, message) => ({ status, message }))
 
     mockGetByUser.mockReset()
     mockGetByUser.mockImplementation(() => [{ id: 'id', name: 'name' }])
-    mockGet.mockReset()
     mockAdd.mockReset()
     mockAdd.mockImplementation(() => ({
       id: 'id'
@@ -54,39 +58,42 @@ describe('pages/api/workspace', () => {
     mockUpdate.mockReset()
     mockDel.mockReset()
 
-    mockError.mockReset()
-
-    req = {
-      method: 'GET'
-    }
+    resStatus = undefined
+    resJson = undefined
   })
 
   test('no session', async () => {
+    mockSession.mockImplementation(() => {
+      const error = new Error('Unauthorized')
+      error.status = 401
+      throw error
+    })
     await workspace(req, res)
     expect(mockSession).toHaveBeenCalledTimes(1)
-    expect(mockAuth).toHaveBeenCalledTimes(0)
+    expect(mockCheckWorkspaceAuth).toHaveBeenCalledTimes(0)
     expect(mockGetByUser).toHaveBeenCalledTimes(0)
-    expect(mockGet).toHaveBeenCalledTimes(0)
     expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockUpdate).toHaveBeenCalledTimes(0)
     expect(mockDel).toHaveBeenCalledTimes(0)
     expect(mockError).toHaveBeenCalledTimes(0)
-    expect(response).toBe(undefined)
+    expect(resStatus).toBe(401)
+    expect(resJson).toEqual({ error: true, message: 'Unauthorized' })
   })
 
   test('GET', async () => {
-    mockSession.mockImplementation(() => true)
+    req.method = 'GET'
 
+    // Normal
     await workspace(req, res)
     expect(mockSession).toHaveBeenCalledTimes(1)
-    expect(mockAuth).toHaveBeenCalledTimes(0)
+    expect(mockCheckWorkspaceAuth).toHaveBeenCalledTimes(0)
     expect(mockGetByUser).toHaveBeenCalledTimes(1)
-    expect(mockGet).toHaveBeenCalledTimes(0)
     expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockUpdate).toHaveBeenCalledTimes(0)
     expect(mockDel).toHaveBeenCalledTimes(0)
     expect(mockError).toHaveBeenCalledTimes(0)
-    expect(response).toEqual({
+    expect(resStatus).toBe(200)
+    expect(resJson).toEqual({
       workspaces: [
         {
           id: 'id',
@@ -97,166 +104,230 @@ describe('pages/api/workspace', () => {
 
     // Error
     mockGetByUser.mockImplementation(() => {
-      throw new Error('test')
+      throw new Error('Get error')
     })
     await workspace(req, res)
     expect(mockSession).toHaveBeenCalledTimes(2)
-    expect(mockAuth).toHaveBeenCalledTimes(0)
+    expect(mockCheckWorkspaceAuth).toHaveBeenCalledTimes(0)
     expect(mockGetByUser).toHaveBeenCalledTimes(2)
-    expect(mockGet).toHaveBeenCalledTimes(0)
     expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockUpdate).toHaveBeenCalledTimes(0)
     expect(mockDel).toHaveBeenCalledTimes(0)
     expect(mockError).toHaveBeenCalledTimes(1)
-    expect(response).toEqual({ error: true, message: 'test' })
+    expect(resStatus).toBe(500)
+    expect(resJson).toEqual({ error: true, message: 'Get error' })
   })
 
   test('POST', async () => {
     req.method = 'POST'
 
-    mockSession.mockImplementation(() => true)
-
+    // Wrong body
+    req.body = {}
     await workspace(req, res)
     expect(mockSession).toHaveBeenCalledTimes(1)
-    expect(mockAuth).toHaveBeenCalledTimes(0)
+    expect(mockCheckWorkspaceAuth).toHaveBeenCalledTimes(0)
     expect(mockGetByUser).toHaveBeenCalledTimes(0)
-    expect(mockGet).toHaveBeenCalledTimes(0)
-    expect(mockAdd).toHaveBeenCalledTimes(1)
-    expect(mockUpdate).toHaveBeenCalledTimes(0)
-    expect(mockDel).toHaveBeenCalledTimes(0)
-    expect(mockError).toHaveBeenCalledTimes(0)
-    expect(response).toEqual({ id: 'id' })
-
-    // Error
-    mockAdd.mockImplementation(() => {
-      throw new Error('test')
-    })
-    await workspace(req, res)
-    expect(mockSession).toHaveBeenCalledTimes(2)
-    expect(mockAuth).toHaveBeenCalledTimes(0)
-    expect(mockGetByUser).toHaveBeenCalledTimes(0)
-    expect(mockGet).toHaveBeenCalledTimes(0)
-    expect(mockAdd).toHaveBeenCalledTimes(2)
+    expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockUpdate).toHaveBeenCalledTimes(0)
     expect(mockDel).toHaveBeenCalledTimes(0)
     expect(mockError).toHaveBeenCalledTimes(1)
-    expect(response).toEqual({ error: true, message: 'test' })
+    expect(resStatus).toBe(400)
+    expect(resJson).toEqual({
+      error: true,
+      message: 'Missing data in your request (body: { name(string) })'
+    })
+
+    // Normal
+    req.body = {
+      name: 'Test workspace'
+    }
+    await workspace(req, res)
+    expect(mockSession).toHaveBeenCalledTimes(2)
+    expect(mockCheckWorkspaceAuth).toHaveBeenCalledTimes(0)
+    expect(mockGetByUser).toHaveBeenCalledTimes(0)
+    expect(mockAdd).toHaveBeenCalledTimes(1)
+    expect(mockUpdate).toHaveBeenCalledTimes(0)
+    expect(mockDel).toHaveBeenCalledTimes(0)
+    expect(mockError).toHaveBeenCalledTimes(1)
+    expect(resStatus).toBe(200)
+    expect(resJson).toEqual({ id: 'id' })
+
+    // Error
+    mockAdd.mockImplementation(() => {
+      throw new Error('Add error')
+    })
+    await workspace(req, res)
+    expect(mockSession).toHaveBeenCalledTimes(3)
+    expect(mockCheckWorkspaceAuth).toHaveBeenCalledTimes(0)
+    expect(mockGetByUser).toHaveBeenCalledTimes(0)
+    expect(mockAdd).toHaveBeenCalledTimes(2)
+    expect(mockUpdate).toHaveBeenCalledTimes(0)
+    expect(mockDel).toHaveBeenCalledTimes(0)
+    expect(mockError).toHaveBeenCalledTimes(2)
+    expect(resStatus).toBe(500)
+    expect(resJson).toEqual({ error: true, message: 'Add error' })
   })
 
   test('PUT', async () => {
     req.method = 'PUT'
-    req.body = {
-      workspace: {},
-      data: []
-    }
 
-    mockSession.mockImplementation(() => true)
-
-    // Not authorized
+    // Wrong body
+    req.body = {}
     await workspace(req, res)
     expect(mockSession).toHaveBeenCalledTimes(1)
-    expect(mockAuth).toHaveBeenCalledTimes(1)
+    expect(mockCheckWorkspaceAuth).toHaveBeenCalledTimes(0)
     expect(mockGetByUser).toHaveBeenCalledTimes(0)
-    expect(mockGet).toHaveBeenCalledTimes(1)
     expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockUpdate).toHaveBeenCalledTimes(0)
     expect(mockDel).toHaveBeenCalledTimes(0)
     expect(mockError).toHaveBeenCalledTimes(1)
-    expect(response).toEqual({ error: true, message: 'Access denied' })
+    expect(resStatus).toBe(400)
+    expect(resJson).toEqual({
+      error: true,
+      message:
+        'Missing data in your request (body: { workspace: { id(uuid) }, data(array) })'
+    })
 
-    // Authorized
-    mockAuth.mockImplementation(() => true)
+    // Access denied
+    req.body = {
+      workspace: { id: 'id' },
+      data: []
+    }
+    mockCheckWorkspaceAuth.mockImplementation(() => {
+      const error = new Error('Access denied')
+      error.status = 403
+      throw error
+    })
     await workspace(req, res)
     expect(mockSession).toHaveBeenCalledTimes(2)
-    expect(mockAuth).toHaveBeenCalledTimes(2)
+    expect(mockCheckWorkspaceAuth).toHaveBeenCalledTimes(1)
     expect(mockGetByUser).toHaveBeenCalledTimes(0)
-    expect(mockGet).toHaveBeenCalledTimes(2)
+    expect(mockAdd).toHaveBeenCalledTimes(0)
+    expect(mockUpdate).toHaveBeenCalledTimes(0)
+    expect(mockDel).toHaveBeenCalledTimes(0)
+    expect(mockError).toHaveBeenCalledTimes(1)
+    expect(resStatus).toBe(403)
+    expect(resJson).toEqual({
+      error: true,
+      message: 'Access denied'
+    })
+
+    // Normal
+    mockCheckWorkspaceAuth.mockReset()
+    await workspace(req, res)
+    expect(mockSession).toHaveBeenCalledTimes(3)
+    expect(mockCheckWorkspaceAuth).toHaveBeenCalledTimes(1)
+    expect(mockGetByUser).toHaveBeenCalledTimes(0)
     expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockUpdate).toHaveBeenCalledTimes(1)
     expect(mockDel).toHaveBeenCalledTimes(0)
     expect(mockError).toHaveBeenCalledTimes(1)
-    expect(response).toBe('end')
+    expect(resStatus).toBe(200)
+    expect(resJson).toBe('end')
 
     // Error
     mockUpdate.mockImplementation(() => {
-      throw new Error('test')
+      throw new Error('Update error')
     })
     await workspace(req, res)
-    expect(mockSession).toHaveBeenCalledTimes(3)
-    expect(mockAuth).toHaveBeenCalledTimes(3)
+    expect(mockSession).toHaveBeenCalledTimes(4)
+    expect(mockCheckWorkspaceAuth).toHaveBeenCalledTimes(2)
     expect(mockGetByUser).toHaveBeenCalledTimes(0)
-    expect(mockGet).toHaveBeenCalledTimes(3)
     expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockUpdate).toHaveBeenCalledTimes(2)
     expect(mockDel).toHaveBeenCalledTimes(0)
     expect(mockError).toHaveBeenCalledTimes(2)
-    expect(response).toEqual({ error: true, message: 'test' })
+    expect(resStatus).toBe(500)
+    expect(resJson).toEqual({
+      error: true,
+      message: 'Update error'
+    })
   })
 
   test('DELETE', async () => {
     req.method = 'DELETE'
+
+    // Wrong body
     req.body = {}
-
-    mockSession.mockImplementation(() => true)
-
-    // Not authorized
     await workspace(req, res)
     expect(mockSession).toHaveBeenCalledTimes(1)
-    expect(mockAuth).toHaveBeenCalledTimes(1)
+    expect(mockCheckWorkspaceAuth).toHaveBeenCalledTimes(0)
     expect(mockGetByUser).toHaveBeenCalledTimes(0)
-    expect(mockGet).toHaveBeenCalledTimes(1)
     expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockUpdate).toHaveBeenCalledTimes(0)
     expect(mockDel).toHaveBeenCalledTimes(0)
     expect(mockError).toHaveBeenCalledTimes(1)
-    expect(response).toEqual({ error: true, message: 'Access denied' })
+    expect(resStatus).toBe(400)
+    expect(resJson).toEqual({
+      error: true,
+      message: 'Missing data in your request (body: { id(uuid) })'
+    })
 
-    // Authorized
-    mockAuth.mockImplementation(() => true)
+    // Access denied
+    req.body = { id: 'id' }
+    mockCheckWorkspaceAuth.mockImplementation(() => {
+      const error = new Error('Access denied')
+      error.status = 403
+      throw error
+    })
     await workspace(req, res)
     expect(mockSession).toHaveBeenCalledTimes(2)
-    expect(mockAuth).toHaveBeenCalledTimes(2)
+    expect(mockCheckWorkspaceAuth).toHaveBeenCalledTimes(1)
     expect(mockGetByUser).toHaveBeenCalledTimes(0)
-    expect(mockGet).toHaveBeenCalledTimes(2)
+    expect(mockAdd).toHaveBeenCalledTimes(0)
+    expect(mockUpdate).toHaveBeenCalledTimes(0)
+    expect(mockDel).toHaveBeenCalledTimes(0)
+    expect(mockError).toHaveBeenCalledTimes(1)
+    expect(resStatus).toBe(403)
+    expect(resJson).toEqual({
+      error: true,
+      message: 'Access denied'
+    })
+
+    // Normal
+    mockCheckWorkspaceAuth.mockReset()
+    await workspace(req, res)
+    expect(mockSession).toHaveBeenCalledTimes(3)
+    expect(mockCheckWorkspaceAuth).toHaveBeenCalledTimes(1)
+    expect(mockGetByUser).toHaveBeenCalledTimes(0)
     expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockUpdate).toHaveBeenCalledTimes(0)
     expect(mockDel).toHaveBeenCalledTimes(1)
     expect(mockError).toHaveBeenCalledTimes(1)
-    expect(response).toBe('end')
+    expect(resStatus).toBe(200)
+    expect(resJson).toBe('end')
 
     // Error
     mockDel.mockImplementation(() => {
-      throw new Error('test')
+      throw new Error('Delete error')
     })
     await workspace(req, res)
-    expect(mockSession).toHaveBeenCalledTimes(3)
-    expect(mockAuth).toHaveBeenCalledTimes(3)
+    expect(mockSession).toHaveBeenCalledTimes(4)
+    expect(mockCheckWorkspaceAuth).toHaveBeenCalledTimes(2)
     expect(mockGetByUser).toHaveBeenCalledTimes(0)
-    expect(mockGet).toHaveBeenCalledTimes(3)
     expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockUpdate).toHaveBeenCalledTimes(0)
     expect(mockDel).toHaveBeenCalledTimes(2)
     expect(mockError).toHaveBeenCalledTimes(2)
-    expect(response).toEqual({ error: true, message: 'test' })
+    expect(resStatus).toBe(500)
+    expect(resJson).toEqual({ error: true, message: 'Delete error' })
   })
 
   test('wrong method', async () => {
-    req.method = 'SOMETHING'
-
-    mockSession.mockImplementation(() => true)
+    req.method = 'method'
 
     await workspace(req, res)
     expect(mockSession).toHaveBeenCalledTimes(1)
-    expect(mockAuth).toHaveBeenCalledTimes(0)
+    expect(mockCheckWorkspaceAuth).toHaveBeenCalledTimes(0)
     expect(mockGetByUser).toHaveBeenCalledTimes(0)
-    expect(mockGet).toHaveBeenCalledTimes(0)
     expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockUpdate).toHaveBeenCalledTimes(0)
     expect(mockDel).toHaveBeenCalledTimes(0)
     expect(mockError).toHaveBeenCalledTimes(1)
-    expect(response).toEqual({
+    expect(resStatus).toBe(402)
+    expect(resJson).toEqual({
       error: true,
-      message: 'Method SOMETHING not allowed'
+      message: 'Method method not allowed'
     })
   })
 })

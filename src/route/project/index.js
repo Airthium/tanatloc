@@ -1,8 +1,8 @@
 /** @module route/project */
 
 import getSessionId from '../session'
-import error from '../error'
 import { checkWorkspaceAuth } from '../auth'
+import error from '../error'
 
 import ProjectLib from '@/lib/project'
 
@@ -45,7 +45,7 @@ export default async (req, res) => {
         // Check
         checkAddBody(req.body)
 
-        const { workspace, project } = body
+        const { workspace, project } = req.body
 
         // Check auth
         await checkWorkspaceAuth({ id: sessionId }, workspace)
@@ -67,6 +67,6 @@ export default async (req, res) => {
         throw error(402, 'Method ' + req.method + ' not allowed')
     }
   } catch (err) {
-    res.status(err.status).json({ error: true })
+    res.status(err.status).json({ error: true, message: err.message })
   }
 }

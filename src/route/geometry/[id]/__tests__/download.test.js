@@ -3,150 +3,150 @@ import download from '../download'
 const mockSession = jest.fn()
 jest.mock('../../../session', () => () => mockSession())
 
-const mockAuth = jest.fn()
-jest.mock('../../../auth', () => () => mockAuth())
-
-const mockGet = jest.fn()
-const mockRead = jest.fn()
-jest.mock('@/lib/geometry', () => ({
-  get: async () => mockGet(),
-  read: async () => mockRead()
-}))
-
-const mockProjectGet = jest.fn()
-jest.mock('@/lib/project', () => ({
-  get: async () => mockProjectGet()
-}))
-
-const mockWorkspaceGet = jest.fn()
-jest.mock('@/lib/workspace', () => ({
-  get: async () => mockWorkspaceGet()
+const mockCheckGeometryAuth = jest.fn()
+jest.mock('../../../auth', () => ({
+  checkGeometryAuth: async () => mockCheckGeometryAuth()
 }))
 
 const mockError = jest.fn()
-jest.mock('@/lib/sentry', () => ({
-  captureException: () => mockError()
+jest.mock(
+  '../../../error',
+  () => (status, message) => mockError(status, message)
+)
+
+const mockRead = jest.fn()
+jest.mock('@/lib/geometry', () => ({
+  read: async () => mockRead()
 }))
 
 describe('route/geometry/[id]/download', () => {
-  let req, response
+  const req = {}
+  let resStatus
+  let resJson
   const res = {
-    status: () => ({
-      json: (obj) => {
-        response = obj
+    status: (status) => {
+      resStatus = status
+      return {
+        json: (obj) => {
+          resJson = obj
+        },
+        end: () => {
+          resJson = 'end'
+        }
       }
-    })
+    }
   }
 
   beforeEach(() => {
     mockSession.mockReset()
-    mockSession.mockImplementation(() => false)
 
-    mockAuth.mockReset()
-    mockAuth.mockImplementation(() => false)
-
-    mockGet.mockReset()
-    mockRead.mockReset()
-
-    mockProjectGet.mockReset()
-    mockProjectGet.mockImplementation(() => ({}))
-
-    mockWorkspaceGet.mockReset()
+    mockCheckGeometryAuth.mockReset()
 
     mockError.mockReset()
+    mockError.mockImplementation((status, message) => ({ status, message }))
 
-    req = {
-      method: 'GET',
-      query: { id: 'id' }
-    }
-    response = undefined
+    mockRead.mockReset()
+    mockRead.mockImplementation(() => 'read')
+
+    resStatus = undefined
+    resJson = undefined
   })
 
   test('no session', async () => {
-    await download(req, res)
-    expect(mockSession).toHaveBeenCalledTimes(1)
-    expect(mockAuth).toHaveBeenCalledTimes(0)
-    expect(mockGet).toHaveBeenCalledTimes(0)
-    expect(mockRead).toHaveBeenCalledTimes(0)
-    expect(mockProjectGet).toHaveBeenCalledTimes(0)
-    expect(mockError).toHaveBeenCalledTimes(0)
-  })
-
-  test('no authorization', async () => {
-    mockSession.mockImplementation(() => 'id')
-    mockGet.mockImplementation(() => ({}))
-
-    await download(req, res)
-    expect(mockSession).toHaveBeenCalledTimes(1)
-    expect(mockAuth).toHaveBeenCalledTimes(1)
-    expect(mockGet).toHaveBeenCalledTimes(1)
-    expect(mockRead).toHaveBeenCalledTimes(0)
-    expect(mockProjectGet).toHaveBeenCalledTimes(1)
-    expect(mockError).toHaveBeenCalledTimes(0)
-    expect(response).toEqual({ error: true, message: 'Unauthorized' })
-
-    // Error
-    mockAuth.mockImplementation(() => {
-      throw new Error('test')
+    mockSession.mockImplementation(() => {
+      const error = new Error('Unauthorized')
+      error.status = 401
+      throw error
     })
     await download(req, res)
-    expect(mockSession).toHaveBeenCalledTimes(2)
-    expect(mockAuth).toHaveBeenCalledTimes(2)
-    expect(mockGet).toHaveBeenCalledTimes(2)
+    expect(mockSession).toHaveBeenCalledTimes(1)
+    expect(mockCheckGeometryAuth).toHaveBeenCalledTimes(0)
     expect(mockRead).toHaveBeenCalledTimes(0)
-    expect(mockProjectGet).toHaveBeenCalledTimes(2)
-    expect(mockError).toHaveBeenCalledTimes(1)
-    expect(response).toEqual({ error: true, message: 'test' })
+    expect(mockError).toHaveBeenCalledTimes(0)
+    expect(resStatus).toBe(401)
+    expect(resJson).toEqual({ error: true, message: 'Unauthorized' })
   })
 
-  test('electron', async () => {
-    req.query.id = undefined
+  test('no id', async () => {
+    req.method = 'GET'
+    req.query = {}
+    req.params = {}
+
+    await download(req, res)
+    expect(mockSession).toHaveBeenCalledTimes(1)
+    expect(mockCheckGeometryAuth).toHaveBeenCalledTimes(0)
+    expect(mockRead).toHaveBeenCalledTimes(0)
+    expect(mockError).toHaveBeenCalledTimes(1)
+    expect(resStatus).toBe(400)
+    expect(resJson).toEqual({
+      error: true,
+      message: 'Missing data in your request (query: { id(string) })'
+    })
+  })
+
+  test('access denied', async () => {
+    req.query = { id: 'id' }
+    req.params = {}
+
+    mockCheckGeometryAuth.mockImplementation(() => {
+      const error = new Error('Access denied')
+      error.status = 403
+      throw error
+    })
+
+    await download(req, res)
+    expect(mockSession).toHaveBeenCalledTimes(1)
+    expect(mockCheckGeometryAuth).toHaveBeenCalledTimes(1)
+    expect(mockRead).toHaveBeenCalledTimes(0)
+    expect(mockError).toHaveBeenCalledTimes(0)
+    expect(resStatus).toBe(403)
+    expect(resJson).toEqual({
+      error: true,
+      message: 'Access denied'
+    })
+  })
+
+  test('read', async () => {
+    req.method = 'GET'
+    req.query = {}
     req.params = { id: 'id' }
 
-    mockSession.mockImplementation(() => true)
-    mockGet.mockImplementation(() => ({}))
-    mockAuth.mockImplementation(() => true)
-
+    // Normal
     await download(req, res)
     expect(mockSession).toHaveBeenCalledTimes(1)
-    expect(mockAuth).toHaveBeenCalledTimes(1)
-    expect(mockGet).toHaveBeenCalledTimes(1)
+    expect(mockCheckGeometryAuth).toHaveBeenCalledTimes(1)
     expect(mockRead).toHaveBeenCalledTimes(1)
-    expect(mockProjectGet).toHaveBeenCalledTimes(1)
     expect(mockError).toHaveBeenCalledTimes(0)
-    expect(response).toBe()
+    expect(resStatus).toBe(200)
+    expect(resJson).toBe('read')
 
-    // download error
+    // Error
     mockRead.mockImplementation(() => {
-      throw new Error('test')
+      throw new Error('Read error')
     })
     await download(req, res)
     expect(mockSession).toHaveBeenCalledTimes(2)
-    expect(mockAuth).toHaveBeenCalledTimes(2)
-    expect(mockGet).toHaveBeenCalledTimes(2)
+    expect(mockCheckGeometryAuth).toHaveBeenCalledTimes(2)
     expect(mockRead).toHaveBeenCalledTimes(2)
-    expect(mockProjectGet).toHaveBeenCalledTimes(2)
     expect(mockError).toHaveBeenCalledTimes(1)
-    expect(response).toEqual({ error: true, message: 'test' })
+    expect(resStatus).toBe(500)
+    expect(resJson).toEqual({ error: true, message: 'Read error' })
   })
 
   test('wrong method', async () => {
-    req.method = 'SOMETHING'
-
-    mockSession.mockImplementation(() => true)
-    mockGet.mockImplementation(() => ({}))
-    mockAuth.mockImplementation(() => true)
+    req.method = 'method'
+    req.query = { id: 'id' }
+    req.params = {}
 
     await download(req, res)
     expect(mockSession).toHaveBeenCalledTimes(1)
-    expect(mockAuth).toHaveBeenCalledTimes(1)
-    expect(mockGet).toHaveBeenCalledTimes(1)
+    expect(mockCheckGeometryAuth).toHaveBeenCalledTimes(1)
     expect(mockRead).toHaveBeenCalledTimes(0)
-    expect(mockProjectGet).toHaveBeenCalledTimes(1)
     expect(mockError).toHaveBeenCalledTimes(1)
-    expect(response).toEqual({
+    expect(resStatus).toBe(402)
+    expect(resJson).toEqual({
       error: true,
-      message: 'Method SOMETHING not allowed'
+      message: 'Method method not allowed'
     })
   })
 })

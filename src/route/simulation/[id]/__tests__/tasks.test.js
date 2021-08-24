@@ -3,144 +3,154 @@ import tasks from '../tasks'
 const mockSession = jest.fn()
 jest.mock('../../../session', () => () => mockSession())
 
-const mockAuth = jest.fn()
-jest.mock('../../../auth', () => () => mockAuth())
-
-const mockSimulationGet = jest.fn()
-jest.mock('@/lib/simulation', () => ({
-  get: async () => mockSimulationGet()
-}))
-
-const mockProjectGet = jest.fn()
-jest.mock('@/lib/project', () => ({
-  get: async () => mockProjectGet()
-}))
-
-const mockWorkspaceGet = jest.fn()
-jest.mock('@/lib/workspace', () => ({
-  get: async () => mockWorkspaceGet()
+const mockCheckSimulationAuth = jest.fn()
+jest.mock('../../../auth', () => ({
+  checkSimulationAuth: async () => mockCheckSimulationAuth()
 }))
 
 const mockError = jest.fn()
-jest.mock('@/lib/sentry', () => ({
-  captureException: () => mockError()
+jest.mock(
+  '../../../error',
+  () => (status, message) => mockError(status, message)
+)
+
+const mockGet = jest.fn()
+jest.mock('@/lib/simulation', () => ({
+  get: async () => mockGet()
 }))
 
 describe('route/simulation/[id]/tasks', () => {
-  let req, response
+  const req = {}
+  let resStatus
+  let resJson
   const res = {
-    status: () => ({
-      json: (obj) => {
-        response = obj
+    status: (status) => {
+      resStatus = status
+      return {
+        json: (obj) => {
+          resJson = obj
+        },
+        end: () => {
+          resJson = 'end'
+        }
       }
-    })
+    }
   }
 
   beforeEach(() => {
     mockSession.mockReset()
-    mockSession.mockImplementation(() => false)
 
-    mockAuth.mockReset()
-    mockAuth.mockImplementation(() => false)
-
-    mockSimulationGet.mockReset()
-
-    mockProjectGet.mockReset()
-    mockProjectGet.mockImplementation(() => ({}))
-
-    mockWorkspaceGet.mockReset()
+    mockCheckSimulationAuth.mockReset()
 
     mockError.mockReset()
+    mockError.mockImplementation((status, message) => ({ status, message }))
 
-    req = {
-      method: 'GET',
-      query: { id: 'id' }
-    }
-    response = undefined
+    mockGet.mockReset()
+    mockGet.mockImplementation(() => ({}))
+
+    resStatus = undefined
+    resJson = undefined
   })
 
   test('no session', async () => {
-    await tasks(req, res)
-    expect(mockSession).toHaveBeenCalledTimes(1)
-    expect(mockAuth).toHaveBeenCalledTimes(0)
-    expect(mockSimulationGet).toHaveBeenCalledTimes(0)
-    expect(mockProjectGet).toHaveBeenCalledTimes(0)
-    expect(mockError).toHaveBeenCalledTimes(0)
-  })
-
-  test('no authorization', async () => {
-    mockSession.mockImplementation(() => 'id')
-    mockSimulationGet.mockImplementation(() => ({}))
-
-    await tasks(req, res)
-    expect(mockSession).toHaveBeenCalledTimes(1)
-    expect(mockAuth).toHaveBeenCalledTimes(1)
-    expect(mockSimulationGet).toHaveBeenCalledTimes(1)
-    expect(mockProjectGet).toHaveBeenCalledTimes(1)
-    expect(mockError).toHaveBeenCalledTimes(0)
-    expect(response).toEqual({ error: true, message: 'Unauthorized' })
-
-    // Error
-    mockAuth.mockImplementation(() => {
-      throw new Error('test')
+    mockSession.mockImplementation(() => {
+      const error = new Error('Unauthorized')
+      error.status = 401
+      throw error
     })
     await tasks(req, res)
-    expect(mockSession).toHaveBeenCalledTimes(2)
-    expect(mockAuth).toHaveBeenCalledTimes(2)
-    expect(mockSimulationGet).toHaveBeenCalledTimes(2)
-    expect(mockProjectGet).toHaveBeenCalledTimes(2)
-    expect(mockError).toHaveBeenCalledTimes(1)
-    expect(response).toEqual({ error: true, message: 'test' })
+    expect(mockSession).toHaveBeenCalledTimes(1)
+    expect(mockCheckSimulationAuth).toHaveBeenCalledTimes(0)
+    expect(mockGet).toHaveBeenCalledTimes(0)
+    expect(mockError).toHaveBeenCalledTimes(0)
+    expect(resStatus).toBe(401)
+    expect(resJson).toEqual({
+      error: true,
+      message: 'Unauthorized'
+    })
   })
 
-  test('electron', async () => {
-    req.query.id = undefined
+  test('no id', async () => {
+    req.query = {}
+    req.params = {}
+
+    await tasks(req, res)
+    expect(mockSession).toHaveBeenCalledTimes(1)
+    expect(mockCheckSimulationAuth).toHaveBeenCalledTimes(0)
+    expect(mockGet).toHaveBeenCalledTimes(0)
+    expect(mockError).toHaveBeenCalledTimes(1)
+    expect(resStatus).toBe(400)
+    expect(resJson).toEqual({
+      error: true,
+      message: 'Missing data in your request (query: { id(string) })'
+    })
+  })
+
+  test('Access denied', async () => {
+    req.query = { id: 'id' }
+    req.params = {}
+
+    mockCheckSimulationAuth.mockImplementation(() => {
+      const error = new Error('Access denied')
+      error.status = 403
+      throw error
+    })
+
+    await tasks(req, res)
+    expect(mockSession).toHaveBeenCalledTimes(1)
+    expect(mockCheckSimulationAuth).toHaveBeenCalledTimes(1)
+    expect(mockGet).toHaveBeenCalledTimes(0)
+    expect(mockError).toHaveBeenCalledTimes(0)
+    expect(resStatus).toBe(403)
+    expect(resJson).toEqual({
+      error: true,
+      message: 'Access denied'
+    })
+  })
+
+  test('GET', async () => {
+    req.method = 'GET'
+    req.query = {}
     req.params = { id: 'id' }
 
-    mockSession.mockImplementation(() => true)
-    mockSimulationGet.mockImplementation(() => ({}))
-    mockAuth.mockImplementation(() => true)
-
+    // Normal
     await tasks(req, res)
     expect(mockSession).toHaveBeenCalledTimes(1)
-    expect(mockAuth).toHaveBeenCalledTimes(1)
-    expect(mockSimulationGet).toHaveBeenCalledTimes(2)
-    expect(mockProjectGet).toHaveBeenCalledTimes(1)
+    expect(mockCheckSimulationAuth).toHaveBeenCalledTimes(1)
+    expect(mockGet).toHaveBeenCalledTimes(1)
     expect(mockError).toHaveBeenCalledTimes(0)
-    expect(response).toEqual([])
+    expect(resStatus).toBe(200)
+    expect(resJson).toEqual([])
 
-    // Run error
-    let count = 0
-    mockSimulationGet.mockImplementation(() => {
-      count++
-      if (count > 1) throw new Error('test')
-      return {}
+    // Error
+    mockGet.mockImplementation(() => {
+      throw new Error('Get error')
     })
     await tasks(req, res)
     expect(mockSession).toHaveBeenCalledTimes(2)
-    expect(mockAuth).toHaveBeenCalledTimes(2)
-    expect(mockSimulationGet).toHaveBeenCalledTimes(4)
-    expect(mockProjectGet).toHaveBeenCalledTimes(2)
+    expect(mockCheckSimulationAuth).toHaveBeenCalledTimes(2)
+    expect(mockGet).toHaveBeenCalledTimes(2)
     expect(mockError).toHaveBeenCalledTimes(1)
-    expect(response).toEqual({ error: true, message: 'test' })
+    expect(resStatus).toBe(500)
+    expect(resJson).toEqual({
+      error: true,
+      message: 'Get error'
+    })
   })
 
   test('wrong method', async () => {
-    req.method = 'SOMETHING'
-
-    mockSession.mockImplementation(() => true)
-    mockSimulationGet.mockImplementation(() => ({}))
-    mockAuth.mockImplementation(() => true)
+    req.method = 'method'
+    req.query = { id: 'id' }
 
     await tasks(req, res)
     expect(mockSession).toHaveBeenCalledTimes(1)
-    expect(mockAuth).toHaveBeenCalledTimes(1)
-    expect(mockSimulationGet).toHaveBeenCalledTimes(1)
-    expect(mockProjectGet).toHaveBeenCalledTimes(1)
+    expect(mockCheckSimulationAuth).toHaveBeenCalledTimes(1)
+    expect(mockGet).toHaveBeenCalledTimes(0)
     expect(mockError).toHaveBeenCalledTimes(1)
-    expect(response).toEqual({
+    expect(resStatus).toBe(402)
+    expect(resJson).toEqual({
       error: true,
-      message: 'Method SOMETHING not allowed'
+      message: 'Method method not allowed'
     })
   })
 })

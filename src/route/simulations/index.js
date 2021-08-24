@@ -1,14 +1,10 @@
 /** @module route/simulations */
 
 import getSessionId from '../session'
-import auth, { checkProjectAuth } from '../auth'
+import { checkProjectAuth } from '../auth'
 import error from '../error'
 
 import SimulationLib from '@/lib/simulation'
-import ProjectLib from '@/lib/project'
-import WorkspaceLib from '@/lib/workspace'
-
-import Sentry from '@/lib/sentry'
 
 /**
  * Check get body

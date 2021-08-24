@@ -3,6 +3,9 @@ import users from '../'
 const mockSession = jest.fn()
 jest.mock('../../session', () => () => mockSession())
 
+const mockError = jest.fn()
+jest.mock('../../error', () => (status, message) => mockError(status, message))
+
 const mockGet = jest.fn()
 const mockGetAll = jest.fn()
 jest.mock('@/lib/user', () => ({
@@ -10,68 +13,69 @@ jest.mock('@/lib/user', () => ({
   getAll: async () => mockGetAll()
 }))
 
-const mockError = jest.fn()
-jest.mock('@/lib/sentry', () => ({
-  captureException: () => mockError()
-}))
-
 describe('route/users', () => {
-  let req, response
+  const req = {}
+  let resStatus
+  let resJson
   const res = {
-    status: () => ({
-      json: (obj) => {
-        response = obj
-      },
-      end: () => {
-        response = 'end'
+    status: (status) => {
+      resStatus = status
+      return {
+        json: (obj) => {
+          resJson = obj
+        },
+        end: () => {
+          resJson = 'end'
+        }
       }
-    })
+    }
   }
 
   beforeEach(() => {
     mockSession.mockReset()
-    mockSession.mockImplementation(() => false)
+
+    mockError.mockReset()
+    mockError.mockImplementation((status, message) => ({ status, message }))
 
     mockGet.mockReset()
     mockGetAll.mockReset()
 
-    mockError.mockReset()
-
-    req = {
-      method: 'GET'
-    }
-    response = undefined
+    resStatus = undefined
+    resJson = undefined
   })
 
   test('no session', async () => {
+    mockSession.mockImplementation(() => {
+      const error = new Error('Unauthorized')
+      error.status = 401
+      throw error
+    })
     await users(req, res)
     expect(mockSession).toHaveBeenCalledTimes(1)
     expect(mockGet).toHaveBeenCalledTimes(0)
     expect(mockGetAll).toHaveBeenCalledTimes(0)
     expect(mockError).toHaveBeenCalledTimes(0)
-    expect(response).toBe(undefined)
+    expect(resStatus).toBe(401)
+    expect(resJson).toEqual({
+      error: true,
+      message: 'Unauthorized'
+    })
   })
 
   test('no superuser', async () => {
-    mockSession.mockImplementation(() => 'id')
-    mockGet.mockImplementation(() => ({
-      superuser: false
-    }))
+    mockGet.mockImplementation(() => ({}))
     await users(req, res)
     expect(mockSession).toHaveBeenCalledTimes(1)
     expect(mockGet).toHaveBeenCalledTimes(1)
     expect(mockGetAll).toHaveBeenCalledTimes(0)
-    expect(mockError).toHaveBeenCalledTimes(0)
-    expect(response).toEqual({ error: true, message: 'Unauthorized' })
+    expect(mockError).toHaveBeenCalledTimes(1)
+    expect(resStatus).toBe(403)
+    expect(resJson).toEqual({ error: true, message: 'Access denied' })
   })
 
   test('GET', async () => {
     req.method = 'GET'
 
-    mockSession.mockImplementation(() => 'id')
-    mockGet.mockImplementation(() => ({
-      superuser: true
-    }))
     mockGet.mockImplementation(() => ({
       superuser: true
     }))
@@ -81,29 +85,31 @@ describe('route/users', () => {
       }
     ])
 
+    // Normal
     await users(req, res)
     expect(mockSession).toHaveBeenCalledTimes(1)
     expect(mockGet).toHaveBeenCalledTimes(1)
     expect(mockGetAll).toHaveBeenCalledTimes(1)
     expect(mockError).toHaveBeenCalledTimes(0)
-    expect(response).toEqual({ users: [{ id: 'id' }] })
+    expect(resStatus).toBe(200)
+    expect(resJson).toEqual({ users: [{ id: 'id' }] })
 
     // Error
     mockGetAll.mockImplementation(() => {
-      throw new Error('test')
+      throw new Error('Get error')
     })
     await users(req, res)
     expect(mockSession).toHaveBeenCalledTimes(2)
     expect(mockGet).toHaveBeenCalledTimes(2)
     expect(mockGetAll).toHaveBeenCalledTimes(2)
     expect(mockError).toHaveBeenCalledTimes(1)
-    expect(response).toEqual({ error: true, message: 'test' })
+    expect(resStatus).toBe(500)
+    expect(resJson).toEqual({ error: true, message: 'Get error' })
   })
 
   test('wrong method', async () => {
-    req.method = 'SOMETHING'
+    req.method = 'method'
 
-    mockSession.mockImplementation(() => true)
     mockGet.mockImplementation(() => ({
       superuser: true
     }))
@@ -113,9 +119,10 @@ describe('route/users', () => {
     expect(mockGet).toHaveBeenCalledTimes(1)
     expect(mockGetAll).toHaveBeenCalledTimes(0)
     expect(mockError).toHaveBeenCalledTimes(1)
-    expect(response).toEqual({
+    expect(resStatus).toBe(402)
+    expect(resJson).toEqual({
       error: true,
-      message: 'Method SOMETHING not allowed'
+      message: 'Method method not allowed'
     })
   })
 })

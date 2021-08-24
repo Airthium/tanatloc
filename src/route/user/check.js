@@ -46,7 +46,7 @@ export default async (req, res) => {
           res.status(401).json({ valid: false })
         }
       } catch (err) {
-        throw err(500, err.message)
+        throw error(500, err.message)
       }
     } else {
       // Unauthorized method

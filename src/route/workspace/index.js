@@ -86,7 +86,7 @@ export default async (req, res) => {
         const { workspace, data } = req.body
 
         // Check authorization
-        await checkAuth(workspace)
+        await checkWorkspaceAuth({ id: sessionId }, { id: workspace.id })
 
         // Update
         try {

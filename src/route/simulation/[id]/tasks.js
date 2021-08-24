@@ -1,12 +1,8 @@
 import getSessionId from '../../session'
-import auth, { checkSimulationAuth } from '../../auth'
+import { checkSimulationAuth } from '../../auth'
 import error from '../../error'
 
 import SimulationLib from '@/lib/simulation'
-import ProjectLib from '@/lib/project'
-import WorkspaceLib from '@/lib/workspace'
-
-import Sentry from '@/lib/sentry'
 
 /**
  * Simulation API stop

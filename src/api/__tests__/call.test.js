@@ -41,6 +41,7 @@ describe('api/call', () => {
 
   test('call', async () => {
     mockJSON.mockClear()
+    mockOk.mockImplementation(() => true)
 
     await Caller.call('/route')
     expect(mockRoute).toBe('/route')

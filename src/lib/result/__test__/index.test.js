@@ -70,26 +70,26 @@ describe('lib/result', () => {
   })
 
   test('load', async () => {
-    const load = await Geometry.load({
-      simulation: { id: 'id' },
-      result: { originPath: 'originPath', glb: 'glb' }
-    })
+    const load = await Geometry.load(
+      { id: 'id' },
+      { originPath: 'originPath', glb: 'glb' }
+    )
     expect(mockReadFile).toHaveBeenCalledTimes(1)
     expect(load).toEqual({ buffer: Buffer.from('readFile') })
   })
 
   test('download', () => {
-    const download = Geometry.download({
-      simulation: { id: 'id' },
-      result: { originPath: 'originPath', fileName: 'fileName' }
-    })
+    const download = Geometry.download(
+      { id: 'id' },
+      { originPath: 'originPath', fileName: 'fileName' }
+    )
     expect(mockCreateReadStream).toHaveBeenCalledTimes(1)
     expect(download).toBe('readStream')
   })
 
   test('archive', async () => {
     // Normal
-    const archive = await Geometry.archive({ simulation: { id: 'id' } })
+    const archive = await Geometry.archive({ id: 'id' })
     expect(mockPath).toHaveBeenCalledTimes(5)
     expect(mockSimulationGet).toHaveBeenCalledTimes(1)
     expect(mockCreateReadStream).toHaveBeenCalledTimes(4)
@@ -107,7 +107,7 @@ describe('lib/result', () => {
       finalize: jest.fn()
     }))
     try {
-      await Geometry.archive({ simulation: { id: 'id' } })
+      await Geometry.archive({ id: 'id' })
       expect(true).toBe(false)
     } catch (err) {
       expect(true).toBe(true)

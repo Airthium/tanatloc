@@ -59,7 +59,7 @@ describe('lib/project', () => {
 
   test('add', async () => {
     mockAdd.mockImplementation(() => ({ id: 'id' }))
-    const project = await Project.add({}, { workspace: {}, project: {} })
+    const project = await Project.add({}, {}, {})
     expect(mockAdd).toHaveBeenCalledTimes(1)
     expect(mockGet).toHaveBeenCalledTimes(0)
     expect(mockUpdate).toHaveBeenCalledTimes(0)

@@ -9,6 +9,6 @@ jest.mock('../..', () => ({
 describe('database/link/get', () => {
   test('call', async () => {
     const res = await get('id', ['type'])
-    expect(res).toEqual({ type: 'type' })
+    expect(res).toEqual({ id: 'id', type: 'type' })
   })
 })

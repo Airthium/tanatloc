@@ -33,14 +33,18 @@ jest.mock('mailersend', () => ({
 }))
 
 const mockLinkAdd = jest.fn()
+const mocKLinkDel = jest.fn()
 jest.mock('../../link', () => ({
-  add: async () => mockLinkAdd()
+  add: async () => mockLinkAdd(),
+  del: async () => mocKLinkDel()
 }))
 
 describe('lib/email', () => {
   beforeEach(() => {
     mockLinkAdd.mockReset()
     mockLinkAdd.mockImplementation(() => ({}))
+
+    mocKLinkDel.mockReset()
   })
 
   test('subscribe', async () => {

@@ -103,7 +103,7 @@ const checkProjectAuth = async (user, project, status) => {
  */
 const checkGeometryAuth = async (user, geometry, status) => {
   const geometryAuth = await GeometryLib.get(geometry.id, ['project'])
-  if (!geometryAuth) throw error(status || 400, 'Invalid geometry identifer')
+  if (!geometryAuth) throw error(status || 400, 'Invalid geometry identifier')
 
   const projectAuth = await ProjectLib.get(
     geometryAuth.project,
@@ -132,7 +132,7 @@ const checkGeometryAuth = async (user, geometry, status) => {
 const checkSimulationAuth = async (user, simulation, status) => {
   const simulationAuth = await SimulationLib.get(simulation.id, ['project'])
   if (!simulationAuth)
-    throw error(status || 400, 'Invalid simulation identifer')
+    throw error(status || 400, 'Invalid simulation identifier')
 
   const projectAuth = await ProjectLib.get(
     simulationAuth.project,

@@ -109,7 +109,7 @@ describe('lib/tools', () => {
       await Tools.convert('location', { name: 'name' }, () => {})
       expect(true).toBe(false)
     } catch (err) {
-      expect(err.message).toBe('Conversion process failed. Error: error')
+      expect(err.message).toBe('Conversion process failed.')
       expect(true).toBe(true)
     }
 

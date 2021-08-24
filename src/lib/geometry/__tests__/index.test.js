@@ -36,7 +36,7 @@ jest.mock('../../tools', () => ({
   removeDirectory: async () => mockRemoveDirectory()
 }))
 
-describe('lib/simulation', () => {
+describe('lib/geometry', () => {
   beforeEach(() => {
     mockPath.mockReset()
 
@@ -81,10 +81,10 @@ describe('lib/simulation', () => {
     })
 
     // Normal
-    const geometry = await Geometry.add({
-      project: { id: 'id' },
-      geometry: { name: 'name.step', uid: 'test', buffer: ['buffer'] }
-    })
+    const geometry = await Geometry.add(
+      { id: 'id' },
+      { name: 'name.step', uid: 'test', buffer: ['buffer'] }
+    )
     expect(mockAdd).toHaveBeenCalledTimes(1)
     expect(mockWriteFile).toHaveBeenCalledTimes(1)
     expect(mockProjectUpdate).toHaveBeenCalledTimes(1)
@@ -103,10 +103,10 @@ describe('lib/simulation', () => {
       throw new Error()
     })
     try {
-      await Geometry.add({
-        project: { id: 'id' },
-        geometry: { name: 'name.step', uid: 'test', buffer: ['buffer'] }
-      })
+      await Geometry.add(
+        { id: 'id' },
+        { name: 'name.step', uid: 'test', buffer: ['buffer'] }
+      )
     } catch (err) {}
     expect(mockAdd).toHaveBeenCalledTimes(2)
     expect(mockWriteFile).toHaveBeenCalledTimes(2)

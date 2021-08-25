@@ -16,6 +16,7 @@ import {
 import { Error } from '@/components/assets/notification'
 
 import Loading from '@/components/loading'
+import WorkspacesList from '@/components/workspace/list'
 import Workspace from '@/components/workspace'
 import Add from '@/components/workspace/add'
 import Account from '@/components/account'
@@ -52,12 +53,8 @@ const menuItems = {
     key: 'empty'
   },
   workspaces: {
-    label: 'My Workspaces',
-    key: 'my_workspaces'
-  },
-  shared: {
-    label: 'Shared With Me',
-    key: 'shared'
+    label: 'Workspaces',
+    key: 'workspaces'
   },
   account: {
     label: 'Account Settings',
@@ -86,8 +83,6 @@ const menuItems = {
  */
 const Dashboard = () => {
   // State
-  const [myWorkspaces, setMyWorkspaces] = useState([])
-  const [sharedWorkspaces, setSharedWorkspaces] = useState([])
   const [currentKey, setCurrentKey] = useState()
   const [currentWorkspace, setCurrentWorkspace] = useState()
 
@@ -129,8 +124,7 @@ const Dashboard = () => {
 
     if (
       (!page && !workspaceId) ||
-      ((page === menuItems.workspaces.key || page === menuItems.shared.key) &&
-        !workspaceId)
+      (page === menuItems.workspaces.key && !workspaceId)
     ) {
       setCurrentKey(menuItems.welcome.key)
     } else if (page && workspaceId) {
@@ -151,38 +145,6 @@ const Dashboard = () => {
     if (!loadingUser && !user) router.replace('/login')
   }, [user, loadingUser])
 
-  // My / shared workspaces
-  useEffect(() => {
-    if (!user) return
-
-    const my = workspaces
-      .map((workspace) => {
-        if (workspace.owners?.find((o) => o.id === user.id)) return workspace
-      })
-      .filter((w) => w)
-
-    const shared = workspaces
-      .map((workspace) => {
-        if (
-          !workspace.owners?.find((o) => o.id === user.id) &&
-          (workspace.users?.find((u) => u.id === user.id) ||
-            workspace.groups?.find((g) => {
-              return organizations.find((o) =>
-                o.groups?.find((group) => {
-                  return group.id === g.id
-                })
-              )
-            }))
-        )
-          return workspace
-      })
-      .filter((w) => w)
-
-    if (JSON.stringify(my) !== JSON.stringify(myWorkspaces)) setMyWorkspaces(my)
-    if (JSON.stringify(shared) !== JSON.stringify(sharedWorkspaces))
-      setSharedWorkspaces(shared)
-  }, [user, workspaces, organizations, myWorkspaces, sharedWorkspaces])
-
   /**
    * Menu selection
    * @param {Object} data { keyPath }
@@ -191,24 +153,24 @@ const Dashboard = () => {
     let key = keyPath.pop()
     let subKey = keyPath.pop()
 
-    // In a submenu
-    if (key === menuItems.workspaces.key || key === menuItems.shared.key) {
-      setCurrentWorkspace(subKey)
+    // // In a submenu
+    // if (key === menuItems.workspaces.key || key === menuItems.shared.key) {
+    //   setCurrentWorkspace(subKey)
+    //   setCurrentKey(key)
+    //   router.replace({
+    //     pathname: '/dashboard',
+    //     query: { page: key, workspaceId: subKey }
+    //   })
+    // } else {
+    if (key === menuItems.logout.key) onLogout()
+    else {
       setCurrentKey(key)
       router.replace({
         pathname: '/dashboard',
-        query: { page: key, workspaceId: subKey }
+        query: { page: key }
       })
-    } else {
-      if (key === menuItems.logout.key) onLogout()
-      else {
-        setCurrentKey(key)
-        router.replace({
-          pathname: '/dashboard',
-          query: { page: key }
-        })
-      }
     }
+    // }
   }
 
   /**
@@ -228,27 +190,27 @@ const Dashboard = () => {
   /**
    * On my workspaces
    */
-  const onMyWorkspaces = () => {
-    if (!myWorkspaces?.length) {
-      setCurrentKey(menuItems.welcome.key)
-    }
-  }
+  // const onMyWorkspaces = () => {
+  //   if (!myWorkspaces?.length) {
+  //     setCurrentKey(menuItems.welcome.key)
+  //   }
+  // }
 
-  /**
-   * On shared workspaces
-   */
-  const onSharedWorkspaces = () => {
-    if (!sharedWorkspaces?.length) {
-      setCurrentKey(menuItems.empty.key)
-    }
-  }
+  // /**
+  //  * On shared workspaces
+  //  */
+  // const onSharedWorkspaces = () => {
+  //   if (!sharedWorkspaces?.length) {
+  //     setCurrentKey(menuItems.empty.key)
+  //   }
+  // }
 
-  let workspaceToRender
-  if (currentWorkspace && currentKey === menuItems.workspaces.key) {
-    workspaceToRender = myWorkspaces.find((w) => w.id === currentWorkspace)
-  } else if (currentWorkspace && currentKey === menuItems.shared.key) {
-    workspaceToRender = sharedWorkspaces.find((w) => w.id === currentWorkspace)
-  }
+  // let workspaceToRender
+  // if (currentWorkspace && currentKey === menuItems.workspaces.key) {
+  //   workspaceToRender = myWorkspaces.find((w) => w.id === currentWorkspace)
+  // } else if (currentWorkspace && currentKey === menuItems.shared.key) {
+  //   workspaceToRender = sharedWorkspaces.find((w) => w.id === currentWorkspace)
+  // }
 
   /**
    * Render
@@ -267,10 +229,16 @@ const Dashboard = () => {
             className="dashboard-menu"
             theme="light"
             onClick={onSelect}
-            defaultOpenKeys={[menuItems.workspaces.key, menuItems.shared.key]}
+            // defaultOpenKeys={[menuItems.workspaces.key, menuItems.shared.key]}
             mode="inline"
           >
-            <Menu.SubMenu
+            <Menu.Item
+              key={menuItems.workspaces.key}
+              icon={<AppstoreOutlined />}
+            >
+              {menuItems.workspaces.label}
+            </Menu.Item>
+            {/* <Menu.SubMenu
               key={menuItems.workspaces.key}
               icon={<AppstoreOutlined />}
               title={menuItems.workspaces.label}
@@ -282,8 +250,8 @@ const Dashboard = () => {
               <Menu.Item key="add" disabled={true} style={{ cursor: 'unset' }}>
                 <Add swr={{ addOneWorkspace }} />
               </Menu.Item>
-            </Menu.SubMenu>
-            <Menu.SubMenu
+            </Menu.SubMenu> */}
+            {/* <Menu.SubMenu
               key={menuItems.shared.key}
               icon={<ShareAltOutlined />}
               title={menuItems.shared.label}
@@ -292,7 +260,7 @@ const Dashboard = () => {
               {sharedWorkspaces?.map((workspace) => (
                 <Menu.Item key={workspace.id}>{workspace.name}</Menu.Item>
               ))}
-            </Menu.SubMenu>
+            </Menu.SubMenu> */}
             <Menu.Item key={menuItems.account.key} icon={<SettingOutlined />}>
               {menuItems.account.label}
             </Menu.Item>
@@ -332,15 +300,12 @@ const Dashboard = () => {
         </Layout.Sider>
 
         <Layout.Content className="no-scroll">
-          {(currentKey === menuItems.workspaces.key ||
-            currentKey === menuItems.shared.key) && (
-            <Workspace
-              loading={!workspaceToRender}
+          {currentKey === menuItems.workspaces.key && (
+            <WorkspacesList
               user={{ id: user?.id }}
-              page={currentKey}
-              workspace={workspaceToRender}
+              workspaces={workspaces}
               organizations={organizations}
-              swr={{ delOneWorkspace, mutateOneWorkspace }}
+              swr={{ addOneWorkspace, delOneWorkspace, mutateOneWorkspace }}
             />
           )}
           {currentKey === menuItems.account.key && (

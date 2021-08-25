@@ -70,7 +70,7 @@ WORKDIR ${INSTALL_PATH}
 
 RUN yarn install --ignore-scripts
 RUN yarn copyassets
-RUN babel . --ignore node_modules --out-dir dist-install
+RUN yarn babel . --ignore node_modules --out-dir dist-install
 RUN yarn next telemetry disable
 
 RUN yarn build

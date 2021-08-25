@@ -4,8 +4,8 @@ const update = async () => {
   console.info('Start update...')
 
   await rescale()
-
-  console.info('Update finished.')
 }
 
-export default update
+update()
+  .then(() => console.info('Update finished.'))
+  .catch((err) => console.error(err))

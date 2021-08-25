@@ -14,5 +14,8 @@ done
 # dB install
 node dist-install/install
 
+# Update
+node dist-install/update
+
 # Start app
 yarn start

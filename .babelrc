@@ -26,7 +26,8 @@
           "@/route": "./src/route",
           "@/services": "./src/services",
           "@/store": "./src/store",
-          "@/styles": "./src/styles"
+          "@/styles": "./src/styles",
+          "@/updaters": "./updaters"
         }
       }
     ]

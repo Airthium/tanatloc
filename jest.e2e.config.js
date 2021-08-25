@@ -35,7 +35,8 @@ module.exports = {
     '^@/route(.*)$': '<rootDir>/src/route$1',
     '^@/services(.*)$': '<rootDir>/src/services$1',
     '^@/store(.*)$': '<rootDir>/src/store$1',
-    '^@/styles(.*)$': '<rootDir>/src/styles$1'
+    '^@/styles(.*)$': '<rootDir>/src/styles$1',
+    '^@/updaters(.*)$': '<rootDir>/src/updaters$1'
   },
   coveragePathIgnorePatterns: [
     '<rootDir>/node_modules/',

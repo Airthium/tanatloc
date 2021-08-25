@@ -60,6 +60,7 @@ COPY public ${INSTALL_PATH}/public
 COPY resources ${INSTALL_PATH}/resources
 COPY src ${INSTALL_PATH}/src
 COPY templates ${INSTALL_PATH}/templates
+COPY updaters ${INSTALL_PATH}/updaters
 COPY .babelrc ${INSTALL_PATH}/.babelrc
 COPY next.config.js ${INSTALL_PATH}/next.config.js
 COPY package.json ${INSTALL_PATH}/package.json
@@ -133,6 +134,7 @@ COPY --from=builder ${INSTALL_PATH}/dist-install dist-install
 COPY --from=builder ${INSTALL_PATH}/modules modules
 COPY --from=builder ${INSTALL_PATH}/public public
 COPY --from=builder ${INSTALL_PATH}/templates templates
+COPY --from=builder ${INSTALL_PATH}/updaters updaters
 COPY --from=builder ${INSTALL_PATH}/plugins plugins
 COPY --from=builder ${INSTALL_PATH}/.next .next
 COPY --from=builder ${INSTALL_PATH}/yarn.lock yarn.lock

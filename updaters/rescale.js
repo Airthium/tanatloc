@@ -1,10 +1,10 @@
 import UserLib from '@/lib/user'
 import PluginLib from '@/lib/plugin'
 
-console.info('Rescale plugin update...')
-
 // Add Rescale walltime
-const addRescaleWalltime = async () => {
+const rescale = async () => {
+  console.info('Rescale plugin update...')
+
   // Get users
   const users = await UserLib.getAll(['id', 'plugins'])
 
@@ -51,6 +51,4 @@ const addRescaleWalltime = async () => {
   )
 }
 
-addRescaleWalltime()
-  .then(() => console.info('ok'))
-  .catch((err) => console.error(err))
+export default rescale

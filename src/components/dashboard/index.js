@@ -6,7 +6,6 @@ import { Layout, Menu } from 'antd'
 import {
   AppstoreOutlined,
   ControlOutlined,
-  ShareAltOutlined,
   SettingOutlined,
   QuestionCircleOutlined,
   LogoutOutlined,
@@ -17,8 +16,6 @@ import { Error } from '@/components/assets/notification'
 
 import Loading from '@/components/loading'
 import WorkspacesList from '@/components/workspace/list'
-import Workspace from '@/components/workspace'
-import Add from '@/components/workspace/add'
 import Account from '@/components/account'
 import Organizations from '@/components/organizations'
 import Administration from '@/components/administration'
@@ -84,7 +81,6 @@ const menuItems = {
 const Dashboard = () => {
   // State
   const [currentKey, setCurrentKey] = useState()
-  const [currentWorkspace, setCurrentWorkspace] = useState()
 
   // Data
   const [user, { mutateUser, clearUser, errorUser, loadingUser }] =
@@ -118,19 +114,8 @@ const Dashboard = () => {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search)
     const page = params.get('page')
-    const workspaceId = params.get('workspaceId')
 
-    setCurrentWorkspace(workspaceId)
-
-    if (
-      (!page && !workspaceId) ||
-      (page === menuItems.workspaces.key && !workspaceId)
-    ) {
-      setCurrentKey(menuItems.welcome.key)
-    } else if (page && workspaceId) {
-      setCurrentWorkspace(workspaceId)
-      setCurrentKey(page)
-    } else setCurrentKey(page)
+    setCurrentKey(page)
   }, [])
 
   // Error
@@ -151,17 +136,7 @@ const Dashboard = () => {
    */
   const onSelect = ({ keyPath }) => {
     let key = keyPath.pop()
-    let subKey = keyPath.pop()
 
-    // // In a submenu
-    // if (key === menuItems.workspaces.key || key === menuItems.shared.key) {
-    //   setCurrentWorkspace(subKey)
-    //   setCurrentKey(key)
-    //   router.replace({
-    //     pathname: '/dashboard',
-    //     query: { page: key, workspaceId: subKey }
-    //   })
-    // } else {
     if (key === menuItems.logout.key) onLogout()
     else {
       setCurrentKey(key)
@@ -170,7 +145,6 @@ const Dashboard = () => {
         query: { page: key }
       })
     }
-    // }
   }
 
   /**
@@ -186,31 +160,6 @@ const Dashboard = () => {
       Error(errors.logout, err)
     }
   }
-
-  /**
-   * On my workspaces
-   */
-  // const onMyWorkspaces = () => {
-  //   if (!myWorkspaces?.length) {
-  //     setCurrentKey(menuItems.welcome.key)
-  //   }
-  // }
-
-  // /**
-  //  * On shared workspaces
-  //  */
-  // const onSharedWorkspaces = () => {
-  //   if (!sharedWorkspaces?.length) {
-  //     setCurrentKey(menuItems.empty.key)
-  //   }
-  // }
-
-  // let workspaceToRender
-  // if (currentWorkspace && currentKey === menuItems.workspaces.key) {
-  //   workspaceToRender = myWorkspaces.find((w) => w.id === currentWorkspace)
-  // } else if (currentWorkspace && currentKey === menuItems.shared.key) {
-  //   workspaceToRender = sharedWorkspaces.find((w) => w.id === currentWorkspace)
-  // }
 
   /**
    * Render
@@ -229,7 +178,6 @@ const Dashboard = () => {
             className="dashboard-menu"
             theme="light"
             onClick={onSelect}
-            // defaultOpenKeys={[menuItems.workspaces.key, menuItems.shared.key]}
             mode="inline"
           >
             <Menu.Item
@@ -238,29 +186,6 @@ const Dashboard = () => {
             >
               {menuItems.workspaces.label}
             </Menu.Item>
-            {/* <Menu.SubMenu
-              key={menuItems.workspaces.key}
-              icon={<AppstoreOutlined />}
-              title={menuItems.workspaces.label}
-              onTitleClick={onMyWorkspaces}
-            >
-              {myWorkspaces?.map((workspace) => (
-                <Menu.Item key={workspace.id}>{workspace.name}</Menu.Item>
-              ))}
-              <Menu.Item key="add" disabled={true} style={{ cursor: 'unset' }}>
-                <Add swr={{ addOneWorkspace }} />
-              </Menu.Item>
-            </Menu.SubMenu> */}
-            {/* <Menu.SubMenu
-              key={menuItems.shared.key}
-              icon={<ShareAltOutlined />}
-              title={menuItems.shared.label}
-              onTitleClick={onSharedWorkspaces}
-            >
-              {sharedWorkspaces?.map((workspace) => (
-                <Menu.Item key={workspace.id}>{workspace.name}</Menu.Item>
-              ))}
-            </Menu.SubMenu> */}
             <Menu.Item key={menuItems.account.key} icon={<SettingOutlined />}>
               {menuItems.account.label}
             </Menu.Item>

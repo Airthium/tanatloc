@@ -55,9 +55,7 @@ const Delete = ({ workspace, swr }) => {
         type="danger"
         onClick={() => setVisible(true)}
         icon={<DeleteOutlined />}
-      >
-        Delete
-      </Button>
+      />
       <DeleteDialog
         title="Delete the workspace"
         visible={visible}

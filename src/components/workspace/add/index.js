@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types'
 import { useState } from 'react'
-import { Button, Form, Input } from 'antd'
-import { PlusCircleOutlined } from '@ant-design/icons'
+import { Form, Input } from 'antd'
 
 import Dialog from '@/components/assets/dialog'
 import { Error } from '@/components/assets/notification'
@@ -13,7 +12,7 @@ import WorkspaceAPI from '@/api/workspace'
  * @memberof module:components/workspace
  */
 const errors = {
-  addError: 'Unable to add the workspace'
+  add: 'Unable to add the workspace'
 }
 
 /**
@@ -21,9 +20,8 @@ const errors = {
  * @memberof module:components/workspace
  * @param {Object} props Props
  */
-const Add = ({ swr }) => {
+const Add = ({ visible, swr, setVisible }) => {
   // Sate
-  const [visible, setVisible] = useState(false)
   const [loading, setLoading] = useState(false)
 
   /**
@@ -42,7 +40,7 @@ const Add = ({ swr }) => {
       // Close
       setVisible(false)
     } catch (err) {
-      Error(errors.addError, err)
+      Error(errors.add, err)
       setLoading(false)
     }
   }
@@ -51,35 +49,30 @@ const Add = ({ swr }) => {
    * Render
    */
   return (
-    <>
-      <Button onClick={() => setVisible(true)} icon={<PlusCircleOutlined />}>
-        New workspace
-      </Button>
-      <Dialog
-        title="Create a new workspace"
-        visible={visible}
-        onCancel={() => setVisible(false)}
-        onOk={onOk}
-        confirmLoading={loading}
+    <Dialog
+      title="Create a new workspace"
+      visible={visible}
+      onCancel={() => setVisible(false)}
+      onOk={onOk}
+      confirmLoading={loading}
+    >
+      <Form.Item
+        label="Name"
+        name="name"
+        rules={[{ required: true, message: "Please enter a workspace's name" }]}
       >
-        <Form.Item
-          label="Name"
-          name="name"
-          rules={[
-            { required: true, message: "Please enter a workspace's name" }
-          ]}
-        >
-          <Input placeholder="Workspace's name" />
-        </Form.Item>
-      </Dialog>
-    </>
+        <Input placeholder="Workspace's name" />
+      </Form.Item>
+    </Dialog>
   )
 }
 
 Add.propTypes = {
+  visible: PropTypes.bool.isRequired,
   swr: PropTypes.shape({
     addOneWorkspace: PropTypes.func.isRequired
-  }).isRequired
+  }).isRequired,
+  setVisible: PropTypes.func.isRequired
 }
 
 export default Add

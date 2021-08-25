@@ -1,9 +1,22 @@
+import { useState } from 'react'
 import { Divider, Layout, PageHeader, Tabs, Typography } from 'antd'
 
 import Workspace from '..'
+import Add from '../add'
 
 const WorkspacesList = ({ user, workspaces, organizations, swr }) => {
-  console.log(workspaces)
+  // State
+  const [add, setAdd] = useState(false)
+
+  /**
+   * On tab edit
+   * @param {Object} _ Unused
+   * @param {string} action Action
+   */
+  const onEdit = (_, action) => {
+    if (action === 'add') setAdd(true)
+  }
+
   /**
    * Render
    */
@@ -17,11 +30,16 @@ const WorkspacesList = ({ user, workspaces, organizations, swr }) => {
           </Typography.Title>
         }
         footer={<Divider className="Tanatloc-divider" />}
-      ></PageHeader>
+      />
       <Layout.Content>
-        <Tabs defaultActiveKey="1">
+        <Add visible={add} swr={swr} setVisible={setAdd} />
+        <Tabs type="editable-card" defaultActiveKey="1" onEdit={onEdit}>
           {workspaces.map((workspace) => (
-            <Tabs.TabPane tab={workspace.name} key={workspace.id}>
+            <Tabs.TabPane
+              tab={workspace.name}
+              key={workspace.id}
+              closable={false}
+            >
               <Workspace
                 loading={!workspace}
                 user={user}

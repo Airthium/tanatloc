@@ -2,19 +2,12 @@
 
 import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
-import {
-  Avatar,
-  Divider,
-  Input,
-  Layout,
-  PageHeader,
-  Space,
-  Typography
-} from 'antd'
+import { Avatar, Input, Layout, PageHeader, Space } from 'antd'
 
 import Share from '@/components/assets/share'
 import { Error as ErrorNotification } from '@/components/assets/notification'
 
+import Edit from './edit'
 import Delete from './delete'
 
 import Loading from '@/components/loading'
@@ -94,52 +87,19 @@ const Workspace = ({ loading, user, page, workspace, organizations, swr }) => {
   if (loading) return <Loading.Simple />
   else
     return (
-      <Layout className="Workspace">
+      <Layout>
         <PageHeader
           backIcon={false}
-          title={
-            <Typography.Title
-              level={2}
-              className="pageheader-name"
-              editable={
-                workspace?.owners?.find((o) => o.id === user.id) && {
-                  onChange: setName
-                }
-              }
-            >
-              {workspace.name}
-            </Typography.Title>
-          }
-          extra={
-            workspace.id && (
-              <Space direction="">
-                {workspace?.owners?.find((o) => o.id === user.id) && (
-                  <Share
-                    workspace={workspace}
-                    organizations={organizations}
-                    swr={{ mutateOneWorkspace: swr.mutateOneWorkspace }}
-                  />
-                )}
-                {workspace?.owners?.find((o) => o.id === user.id) && (
-                  <Delete
-                    workspace={workspace}
-                    swr={{ delOneWorkspace: swr.delOneWorkspace }}
-                  />
-                )}
-              </Space>
-            )
-          }
           footer={
-            <>
-              <Divider className="Tanatloc-divider" />
-              <Space direction="" align="center">
-                <Input
-                  addonBefore="Search"
-                  placeholder="Enter a project name (case sensitive)"
-                  value={filter}
-                  onChange={onSearch}
-                />
-                {workspace?.owners?.find((o) => o.id === user.id) && (
+            <Space direction="horizontal">
+              <Input
+                addonBefore="Search"
+                placeholder="Enter a project name (case sensitive)"
+                value={filter}
+                onChange={onSearch}
+              />
+              {workspace?.owners?.find((o) => o.id === user.id) && (
+                <>
                   <ProjectAdd
                     workspace={workspace}
                     swr={{
@@ -147,9 +107,19 @@ const Workspace = ({ loading, user, page, workspace, organizations, swr }) => {
                       addOneProject
                     }}
                   />
-                )}
-              </Space>
-            </>
+                  <Edit />
+                  <Share
+                    workspace={workspace}
+                    organizations={organizations}
+                    swr={{ mutateOneWorkspace: swr.mutateOneWorkspace }}
+                  />
+                  <Delete
+                    workspace={workspace}
+                    swr={{ delOneWorkspace: swr.delOneWorkspace }}
+                  />
+                </>
+              )}
+            </Space>
           }
         >
           {workspace.users?.length || workspace.groups?.length ? (

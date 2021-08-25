@@ -46,6 +46,7 @@ const Add = ({ workspace, swr }) => {
       })
 
       // Close
+      setLoading(false)
       setVisible(false)
     } catch (err) {
       Error(errors.addError, err)

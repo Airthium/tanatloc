@@ -15,7 +15,7 @@ done
 node dist-install/install
 
 # Update
-node dist-install/update
+node dist-install/install/update.js
 
 # Start app
 yarn start

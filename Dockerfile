@@ -70,7 +70,7 @@ WORKDIR ${INSTALL_PATH}
 
 RUN yarn install --ignore-scripts
 RUN yarn copyassets
-RUN yarn babel . --only config,install,src/database/index.js --out-dir dist-install
+RUN babel . --ignore node_modules --out-dir dist-install
 RUN yarn next telemetry disable
 
 RUN yarn build
@@ -134,7 +134,6 @@ COPY --from=builder ${INSTALL_PATH}/dist-install dist-install
 COPY --from=builder ${INSTALL_PATH}/modules modules
 COPY --from=builder ${INSTALL_PATH}/public public
 COPY --from=builder ${INSTALL_PATH}/templates templates
-COPY --from=builder ${INSTALL_PATH}/updaters updaters
 COPY --from=builder ${INSTALL_PATH}/plugins plugins
 COPY --from=builder ${INSTALL_PATH}/.next .next
 COPY --from=builder ${INSTALL_PATH}/yarn.lock yarn.lock

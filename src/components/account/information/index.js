@@ -220,13 +220,13 @@ const Information = ({ user, swr }) => {
 
             <Form.Item label="First name">
               <Typography.Text editable={{ onChange: onFirstName }}>
-                {user.firstname}
+                {user.firstname || ''}
               </Typography.Text>
             </Form.Item>
 
             <Form.Item label="Last name">
               <Typography.Text editable={{ onChange: onLastName }}>
-                {user.lastname}
+                {user.lastname || ''}
               </Typography.Text>
             </Form.Item>
           </Form>

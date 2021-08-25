@@ -38,6 +38,7 @@ const Add = ({ visible, swr, setVisible }) => {
       swr.addOneWorkspace(workspace)
 
       // Close
+      setLoading(false)
       setVisible(false)
     } catch (err) {
       Error(errors.add, err)

@@ -22,7 +22,7 @@ const errors = {
  * Share
  * @param {Object} props Props
  */
-const Share = ({ disabled, workspace, project, organizations, swr }) => {
+const Share = ({ disabled, workspace, project, organizations, swr, style }) => {
   // State
   const [visible, setVisible] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -133,7 +133,7 @@ const Share = ({ disabled, workspace, project, organizations, swr }) => {
   return (
     <>
       <Button
-        type="text"
+        type={style?.type || 'text'}
         key="share"
         disabled={disabled}
         icon={<ShareAltOutlined />}

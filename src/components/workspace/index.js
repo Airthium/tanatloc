@@ -16,7 +16,6 @@ import ProjectList from '@/components/project/list'
 
 import Utils from '@/lib/utils'
 
-import WorkspaceAPI from '@/api/workspace'
 import ProjectAPI from '@/api/project'
 
 /**
@@ -53,27 +52,6 @@ const Workspace = ({ loading, user, page, workspace, organizations, swr }) => {
   }, [errorProjects])
 
   /**
-   * Set name
-   * @param {string} name Name
-   */
-  const setName = async (name) => {
-    try {
-      // Update
-      await WorkspaceAPI.update({ id: workspace.id }, [
-        { key: 'name', value: name }
-      ])
-
-      // Mutate workspace
-      swr.mutateOneWorkspace({
-        ...workspace,
-        name
-      })
-    } catch (err) {
-      ErrorNotification(errors.update, err)
-    }
-  }
-
-  /**
    * On search
    * @param {Object} e Event
    */
@@ -91,12 +69,16 @@ const Workspace = ({ loading, user, page, workspace, organizations, swr }) => {
         <PageHeader
           backIcon={false}
           footer={
-            <Space direction="horizontal">
-              <Input
-                addonBefore="Search"
+            <Space
+              direction="horizontal"
+              size="large"
+              style={{ width: '100%' }}
+            >
+              <Input.Search
                 placeholder="Enter a project name (case sensitive)"
                 value={filter}
                 onChange={onSearch}
+                style={{ width: 500 }}
               />
               {workspace?.owners?.find((o) => o.id === user.id) && (
                 <>
@@ -107,11 +89,15 @@ const Workspace = ({ loading, user, page, workspace, organizations, swr }) => {
                       addOneProject
                     }}
                   />
-                  <Edit />
+                  <Edit
+                    workspace={workspace}
+                    swr={{ mutateOneWorkspace: swr.mutateOneWorkspace }}
+                  />
                   <Share
                     workspace={workspace}
                     organizations={organizations}
                     swr={{ mutateOneWorkspace: swr.mutateOneWorkspace }}
+                    style={{ type: 'default' }}
                   />
                   <Delete
                     workspace={workspace}

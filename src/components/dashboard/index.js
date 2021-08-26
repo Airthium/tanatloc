@@ -21,7 +21,6 @@ import Organizations from '@/components/organizations'
 import Administration from '@/components/administration'
 import Help from '@/components/help'
 
-import Empty from './empty'
 import Welcome from './welcome'
 
 import UserAPI from '@/api/user'
@@ -45,9 +44,6 @@ const errors = {
 const menuItems = {
   welcome: {
     key: 'welcome'
-  },
-  empty: {
-    key: 'empty'
   },
   workspaces: {
     label: 'Workspaces',
@@ -261,7 +257,6 @@ const Dashboard = () => {
           )}
           {currentKey === menuItems.administration.key && <Administration />}
           {currentKey === menuItems.help.key && <Help />}
-          {currentKey === menuItems.empty.key && <Empty />}
           {currentKey === menuItems.welcome.key && (
             <Welcome swr={{ addOneWorkspace }} />
           )}

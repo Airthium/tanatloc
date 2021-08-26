@@ -39,6 +39,10 @@ describe('components/account/hpc/list', () => {
               password: { type: 'password', value: 'password' },
               item: { value: 'item' }
             }
+          },
+          {
+            uuid: 'uuid2',
+            key: 'key2'
           }
         ]}
         swr={swr}

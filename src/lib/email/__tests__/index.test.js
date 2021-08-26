@@ -1,12 +1,11 @@
 import Email from '../'
 
-let mockStatus = 202
-let mockStatusText = 'Success'
+const mockSend = jest.fn()
 jest.mock('mailersend', () => ({
   __esModule: true,
   default: class {
     send() {
-      return { status: mockStatus, statusText: mockStatusText }
+      return mockSend()
     }
   },
   Recipient: class {},
@@ -33,38 +32,101 @@ jest.mock('mailersend', () => ({
 }))
 
 const mockLinkAdd = jest.fn()
-const mocKLinkDel = jest.fn()
+const mockLinkDel = jest.fn()
 jest.mock('../../link', () => ({
   add: async () => mockLinkAdd(),
-  del: async () => mocKLinkDel()
+  del: async () => mockLinkDel()
 }))
 
 describe('lib/email', () => {
   beforeEach(() => {
+    mockSend.mockReset()
+    mockSend.mockImplementation(() => ({
+      status: 202,
+      statusText: 'Success'
+    }))
+
     mockLinkAdd.mockReset()
     mockLinkAdd.mockImplementation(() => ({}))
-
-    mocKLinkDel.mockReset()
+    mockLinkDel.mockReset()
   })
 
   test('subscribe', async () => {
+    // Normal
     await Email.subscribe('email', 'id')
     expect(mockLinkAdd).toHaveBeenCalledTimes(1)
+    expect(mockSend).toHaveBeenCalledTimes(1)
+
+    // Error
+    mockSend.mockImplementation(() => ({
+      status: '401',
+      statusText: 'Unauthorized'
+    }))
+    try {
+      await Email.subscribe('email', 'id')
+    } catch (err) {
+      expect(mockLinkAdd).toHaveBeenCalledTimes(2)
+      expect(mockSend).toHaveBeenCalledTimes(2)
+      expect(mockLinkDel).toHaveBeenCalledTimes(1)
+      expect(err.message).toBe('Mail error: Unauthorized')
+    }
   })
 
   test('recover', async () => {
+    // Normal
     await Email.recover('email')
     expect(mockLinkAdd).toHaveBeenCalledTimes(1)
-  })
+    expect(mockSend).toHaveBeenCalledTimes(1)
 
-  test('send error', async () => {
-    mockStatus = 401
-    mockStatusText = 'Unauthorized'
-
+    // Error
+    mockSend.mockImplementation(() => ({
+      status: '401',
+      statusText: 'Unauthorized'
+    }))
     try {
       await Email.recover('email')
     } catch (err) {
+      expect(mockLinkAdd).toHaveBeenCalledTimes(2)
+      expect(mockSend).toHaveBeenCalledTimes(2)
+      expect(mockLinkDel).toHaveBeenCalledTimes(1)
       expect(err.message).toBe('Mail error: Unauthorized')
     }
+  })
+
+  test('revalidate', async () => {
+    // Normal
+    await Email.revalidate('email', 'id')
+    expect(mockLinkAdd).toHaveBeenCalledTimes(1)
+    expect(mockSend).toHaveBeenCalledTimes(1)
+
+    // Error
+    mockSend.mockImplementation(() => ({
+      status: '401',
+      statusText: 'Unauthorized'
+    }))
+    try {
+      await Email.revalidate('email', 'id')
+    } catch (err) {
+      expect(mockLinkAdd).toHaveBeenCalledTimes(2)
+      expect(mockSend).toHaveBeenCalledTimes(2)
+      expect(mockLinkDel).toHaveBeenCalledTimes(1)
+      expect(err.message).toBe('Mail error: Unauthorized')
+    }
+  })
+
+  test('invite', async () => {
+    // Normal
+    await Email.invite('email', { email: 'email' })
+    expect(mockLinkAdd).toHaveBeenCalledTimes(0)
+    expect(mockSend).toHaveBeenCalledTimes(1)
+
+    // Normal with data
+    await Email.invite('email', {
+      email: 'email',
+      firstname: 'firstname',
+      lastname: 'lastname'
+    })
+    expect(mockLinkAdd).toHaveBeenCalledTimes(0)
+    expect(mockSend).toHaveBeenCalledTimes(2)
   })
 })

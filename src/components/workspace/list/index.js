@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types'
 import { useState } from 'react'
 import { Divider, Layout, PageHeader, Tabs, Typography } from 'antd'
 
@@ -53,6 +54,19 @@ const WorkspacesList = ({ user, workspaces, organizations, swr }) => {
       </Layout.Content>
     </Layout>
   )
+}
+
+WorkspacesList.propTypes = {
+  user: PropTypes.exact({
+    id: PropTypes.string.isRequired
+  }).isRequired,
+  workspaces: PropTypes.array.isRequired,
+  organizations: PropTypes.array.isRequired,
+  swr: PropTypes.exact({
+    addOneWorkspace: PropTypes.func.isRequired,
+    delOneWorkspace: PropTypes.func.isRequired,
+    mutateOneWorkspace: PropTypes.func.isRequired
+  }).isRequired
 }
 
 export default WorkspacesList

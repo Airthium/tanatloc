@@ -47,6 +47,15 @@ describe('lib/link', () => {
     expect(mockUserUpdate).toHaveBeenCalledTimes(1)
     expect(mockLinkDel).toHaveBeenCalledTimes(1)
 
+    // Revalidate
+    mockLinkGet.mockImplementation(() => ({
+      type: 'revalidate',
+      userid: 'userid'
+    }))
+    await Link.process('id', {})
+    expect(mockUserUpdate).toHaveBeenCalledTimes(2)
+    expect(mockLinkDel).toHaveBeenCalledTimes(2)
+
     // Password recovery, wrong email
     mockLinkGet.mockImplementation(() => ({
       type: 'passwordRecovery',
@@ -62,8 +71,20 @@ describe('lib/link', () => {
     mockUserGetBy.mockImplementation(() => ({}))
     await Link.process('id', { email: 'email' })
     expect(mockUserGetBy).toHaveBeenCalledTimes(1)
-    expect(mockUserUpdate).toHaveBeenCalledTimes(2)
-    expect(mockLinkDel).toHaveBeenCalledTimes(2)
+    expect(mockUserUpdate).toHaveBeenCalledTimes(3)
+    expect(mockLinkDel).toHaveBeenCalledTimes(3)
+
+    // Unknown link
+    mockLinkGet.mockImplementation(() => ({
+      type: 'unknown'
+    }))
+    try {
+      await Link.process('id', {})
+      expect(true).toBe(false)
+    } catch (err) {
+      expect(mockUserUpdate).toHaveBeenCalledTimes(3)
+      expect(mockLinkDel).toHaveBeenCalledTimes(4)
+    }
   })
 
   test('del', async () => {

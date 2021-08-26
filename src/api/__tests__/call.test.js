@@ -41,73 +41,84 @@ describe('api/call', () => {
 
   test('call', async () => {
     mockJSON.mockClear()
-    mockOk.mockImplementation(() => true)
 
-    await Caller.call('/route')
-    expect(mockRoute).toBe('/route')
-    expect(mockParam).toEqual({
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    })
+    // Non ok, no params
+    mockOk.mockImplementation(() => false)
+    mockStatus.mockImplementation(() => 500)
+    try {
+      await Caller.call('/route')
+      expect(true).toBe(false)
+    } catch (err) {
+      expect(mockRoute).toBe('/route')
+      expect(mockParam).toEqual({
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+      expect(err.message).toBe('An error occured while fetching data.')
+      expect(err.info).toBe(false)
+      expect(err.status).toBe(500)
+    }
 
-    await Caller.call('/route', {
-      method: 'TEST',
-      headers: {
-        'Test-Header': 'Test-Header'
-      },
-      body: 'something'
-    })
-    expect(mockParam).toEqual({
-      method: 'TEST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Test-Header': 'Test-Header'
-      },
-      body: 'something'
-    })
-
+    // Non ok, params, json
     mockGet.mockImplementation(() => 'application/json')
-    const res = await Caller.call('/route', {
-      headers: {
-        Accept: 'application/json'
-      }
-    })
-    expect(mockParam).toEqual({
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json'
-      }
-    })
-    expect(mockJSON).toHaveBeenCalledTimes(1)
-    expect(res).toBe('json')
-
-    mockJSON.mockImplementation(() => ({
-      error: {
-        message: 'test'
-      }
-    }))
+    mockJSON.mockImplementation(() => ({ error: true, message: 'message' }))
     try {
       await Caller.call('/route', {
+        method: 'TEST',
         headers: {
-          Accept: 'application/json'
-        }
+          'Test-Header': 'Test-Header'
+        },
+        body: 'something'
       })
       expect(true).toBe(false)
     } catch (err) {
-      expect(true).toBe(true)
+      expect(mockParam).toEqual({
+        method: 'TEST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Test-Header': 'Test-Header'
+        },
+        body: 'something'
+      })
+      expect(err.message).toBe('An error occured while fetching data.')
+      expect(err.info).toEqual({ error: true, message: 'message' })
+      expect(err.status).toBe(500)
     }
 
-    // Wrong status
-    try {
-      mockStatus.mockImplementation(() => '500')
-      mockGet.mockImplementation(() => 'something')
-      await Caller.call('/route', {})
-      expect(true).toBe(false)
-    } catch (err) {
-      expect(true).toBe(true)
-    }
+    // Ok, json
+    mockOk.mockImplementation(() => true)
+    mockStatus.mockImplementation(() => 200)
+    mockJSON.mockImplementation(() => ({ ok: true }))
+    let res = await Caller.call('/route', {
+      headers: {
+        Accept: 'application/json'
+      }
+    })
+    expect(mockParam).toEqual({
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json'
+      }
+    })
+    expect(res).toEqual({ ok: true })
+
+    // Ok
+    mockGet.mockImplementation(() => '')
+    res = await Caller.call('/route', {
+      headers: {
+        Accept: 'application/json'
+      }
+    })
+    expect(mockParam).toEqual({
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json'
+      }
+    })
+    expect(res.status).toBe(200)
   })
 })

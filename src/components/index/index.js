@@ -25,7 +25,7 @@ const Index = () => {
   const router = useRouter()
 
   // Data
-  const [user, { errorUser }] = UserAPI.useUser()
+  const [user, { errorUser, loadingUser }] = UserAPI.useUser()
 
   // Error
   useEffect(() => {
@@ -68,20 +68,22 @@ const Index = () => {
       <Background />
       <Layout.Header className="Index-header">
         <img src="/images/logo.svg" alt="Tanatloc" />
-        <Button.Group>
-          {user ? (
-            <Button icon={<DashboardOutlined />} onClick={handleDashboard}>
-              Dashboard
-            </Button>
-          ) : (
-            <>
-              <Button onClick={handleSignup}>Signup</Button>
-              <Button icon={<LoginOutlined />} onClick={handleLogin}>
-                Login
+        {!loadingUser && (
+          <Button.Group>
+            {user ? (
+              <Button icon={<DashboardOutlined />} onClick={handleDashboard}>
+                Dashboard
               </Button>
-            </>
-          )}
-        </Button.Group>
+            ) : (
+              <>
+                <Button onClick={handleSignup}>Signup</Button>
+                <Button icon={<LoginOutlined />} onClick={handleLogin}>
+                  Login
+                </Button>
+              </>
+            )}
+          </Button.Group>
+        )}
       </Layout.Header>
       <Divider className="Tanatloc-divider" />
       <Layout.Content>

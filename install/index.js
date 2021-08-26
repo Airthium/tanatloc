@@ -1,7 +1,7 @@
 /** @module install */
 
-import createDatabase from './dB'
-import createPaths from './storage'
+import createDatabase from './createDatabase'
+import createPaths from './createPaths'
 
 /**
  * Main

@@ -1,5 +1,8 @@
 module.exports = {
-  setupFiles: ['<rootDir>/config/jest/e2e/index.js'],
+  setupFiles: [
+    '<rootDir>/config/jest/e2e/index.js',
+    '<rootDir>/config/jest/mockMatchMedia.js'
+  ],
   collectCoverageFrom: [
     '**/*.{js,jsx,ts,tsx}',
     '!**/*.d.ts',
@@ -54,7 +57,6 @@ module.exports = {
     '<rootDir>/jest.config.js',
     '<rootDir>/jest.e2e.config.js',
     '<rootDir>/config/jest/',
-    '<rootDir>/src/lib/three/controls/',
     '<rootDir>/public/',
     '<rootDir>/tests/',
     '<rootDir>/updaters'

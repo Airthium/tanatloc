@@ -3,6 +3,7 @@ import { fireEvent, render, screen } from '@testing-library/react'
 
 import Index from '@/components/index/index'
 
+// Next/router mock
 const mockRouterPush = jest.fn()
 jest.mock('next/router', () => ({
   useRouter: () => ({
@@ -11,8 +12,16 @@ jest.mock('next/router', () => ({
   })
 }))
 
+// SWR mock
 const mockSWR = jest.fn()
 jest.mock('swr', () => () => mockSWR())
+
+// Sentry mock
+const mockCaptureException = jest.fn()
+jest.mock('@sentry/node', () => ({
+  init: jest.fn,
+  captureException: (err) => mockCaptureException(err)
+}))
 
 describe('e2e/frontend/index', () => {
   beforeEach(() => {
@@ -20,14 +29,43 @@ describe('e2e/frontend/index', () => {
 
     mockSWR.mockReset()
     mockSWR.mockImplementation(() => ({
-      data: null,
+      data: { user: null },
       error: null,
       mutate: jest.fn
     }))
+
+    mockCaptureException.mockReset()
   })
 
   test('render', () => {
     const { unmount } = render(<Index />)
+
+    unmount()
+  })
+
+  test('render, loading', () => {
+    mockSWR.mockImplementation(() => ({
+      data: null,
+      error: null,
+      mutate: jest.fn
+    }))
+    const { unmount } = render(<Index />)
+
+    unmount()
+  })
+
+  test('user error', () => {
+    mockSWR.mockImplementation(() => ({
+      data: { user: null },
+      error: new Error('SWR error'),
+      mutate: jest.fn
+    }))
+
+    const { unmount } = render(<Index />)
+
+    expect(mockCaptureException).toHaveBeenLastCalledWith(
+      new Error('SWR error')
+    )
 
     unmount()
   })

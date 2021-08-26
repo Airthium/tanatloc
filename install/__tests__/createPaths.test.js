@@ -2,7 +2,7 @@
  * @jest-environment node
  */
 
-import createPaths from '../storage'
+import createPaths from '../createPaths'
 
 const mockMkdir = jest.fn()
 jest.mock('fs', () => ({

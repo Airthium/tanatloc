@@ -240,7 +240,7 @@ Information.propTypes = {
   user: PropTypes.shape({
     firstname: PropTypes.string,
     lastname: PropTypes.string,
-    email: PropTypes.string,
+    email: PropTypes.string.isRequired,
     avatar: PropTypes.object
   }).isRequired,
   swr: PropTypes.shape({

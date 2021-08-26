@@ -1,7 +1,7 @@
 import React from 'react'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
-import Delete from '@/components/workspace/delete'
+import Delete from '..'
 
 const mockDeleteDialog = jest.fn()
 jest.mock('@/components/assets/dialog', () => ({

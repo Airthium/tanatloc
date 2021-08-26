@@ -85,7 +85,7 @@ const update = async (user, data) => {
   const emailData = data.find((d) => d.key === 'email')
   if (emailData) {
     // Revalidate email
-    Email.revalidate(emailData.value, user.id)
+    await Email.revalidate(emailData.value, user.id)
 
     data.push({
       key: 'isvalidated',

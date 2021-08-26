@@ -73,6 +73,7 @@ module.exports = {
     '<rootDir>/config/jest/',
     '<rootDir>/src/lib/three/controls/',
     '<rootDir>/public/',
-    '<rootDir>/tests/'
+    '<rootDir>/tests/',
+    '<rootDir>/updaters'
   ]
 }

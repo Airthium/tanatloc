@@ -115,7 +115,8 @@ const Dashboard = () => {
     const params = new URLSearchParams(window.location.search)
     const page = params.get('page')
 
-    setCurrentKey(page)
+    if (page) setCurrentKey(page)
+    else setCurrentKey(menuItems.welcome.key)
   }, [])
 
   // Error

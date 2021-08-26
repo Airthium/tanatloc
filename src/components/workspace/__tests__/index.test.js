@@ -123,61 +123,6 @@ describe('components/workspace', () => {
     unmount()
   })
 
-  test('setName', async () => {
-    const { unmount } = render(
-      <Workspace
-        loading={loading}
-        user={user}
-        workspace={workspace}
-        organizations={organizations}
-        swr={swr}
-      />
-    )
-
-    // Normal
-    {
-      const button = screen.getByRole('button', { name: 'Edit' })
-      fireEvent.click(button)
-
-      const input = screen.getByText('workspace')
-      fireEvent.change(input, { target: { value: 'workspace1' } })
-      fireEvent.keyDown(input, {
-        keyCode: 13
-      })
-      fireEvent.keyUp(input, {
-        keyCode: 13
-      })
-
-      await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
-      await waitFor(() =>
-        expect(swr.mutateOneWorkspace).toHaveBeenCalledTimes(1)
-      )
-    }
-
-    // Error
-    mockUpdate.mockImplementation(() => {
-      throw new Error()
-    })
-    {
-      const button = screen.getByRole('button', { name: 'Edit' })
-      fireEvent.click(button)
-
-      const input = screen.getByText('workspace')
-      fireEvent.change(input, { target: { value: 'workspace1' } })
-      fireEvent.keyDown(input, {
-        keyCode: 13
-      })
-      fireEvent.keyUp(input, {
-        keyCode: 13
-      })
-
-      await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
-      await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
-    }
-
-    unmount()
-  })
-
   test('onSearch', () => {
     const { unmount } = render(
       <Workspace

@@ -4,7 +4,7 @@ import { Button, Form, Input } from 'antd'
 import { EditOutlined } from '@ant-design/icons'
 
 import Dialog from '@/components/assets/dialog'
-import { Error } from '@/components/assets/notification'
+import { Error as ErrorNotification } from '@/components/assets/notification'
 
 import WorkspaceAPI from '@/api/workspace'
 
@@ -27,10 +27,10 @@ const Edit = ({ workspace, swr }) => {
   const [loading, setLoading] = useState(false)
 
   /**
-   * On confirm
+   * On edit
    * @param {Object} values Values
    */
-  const onOk = async (values) => {
+  const onEdit = async (values) => {
     setLoading(true)
     try {
       // New workspace
@@ -49,7 +49,7 @@ const Edit = ({ workspace, swr }) => {
       setLoading(false)
       setVisible(false)
     } catch (err) {
-      Error(errors.update, err)
+      ErrorNotification(errors.update, err)
       setLoading(false)
     }
   }
@@ -65,7 +65,7 @@ const Edit = ({ workspace, swr }) => {
         visible={visible}
         initialValues={{ name: workspace.name }}
         onCancel={() => setVisible(false)}
-        onOk={onOk}
+        onOk={onEdit}
         confirmLoading={loading}
       >
         <Form.Item
@@ -83,7 +83,10 @@ const Edit = ({ workspace, swr }) => {
 }
 
 Edit.propTypes = {
-  workspace: PropTypes.object.isRequired,
+  workspace: PropTypes.exact({
+    id: PropTypes.string.isRequired,
+    name: PropTypes.string
+  }).isRequired,
   swr: PropTypes.shape({
     mutateOneWorkspace: PropTypes.func.isRequired
   }).isRequired

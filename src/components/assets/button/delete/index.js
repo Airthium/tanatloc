@@ -23,7 +23,10 @@ const DeleteButton = ({ disabled, loading, text, children, onDelete }) => {
         visible={visible}
         loading={loading}
         onCancel={() => setVisible(false)}
-        onOk={onDelete}
+        onOk={async () => {
+          await onDelete()
+          setVisible(false)
+        }}
       >
         {text || 'Are you sure?'}
       </DeleteDialog>

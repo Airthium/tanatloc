@@ -1,5 +1,7 @@
 import PropTypes from 'prop-types'
-import { Divider, Layout, PageHeader, Typography } from 'antd'
+import { useState } from 'react'
+import { Button, Divider, Layout, PageHeader, Typography } from 'antd'
+import { PlusOutlined } from '@ant-design/icons'
 
 import Add from '@/components/workspace/add'
 
@@ -9,6 +11,9 @@ import Add from '@/components/workspace/add'
  * @param {Object} props Props
  */
 const Welcome = ({ swr }) => {
+  // State
+  const [add, setAdd] = useState(false)
+
   /**
    * Render
    */
@@ -25,8 +30,20 @@ const Welcome = ({ swr }) => {
           footer={<Divider className="Tanatloc-divider" />}
         />
         <Typography.Text>
-          Select a workspace to start, or <Add swr={swr} />
+          Select a workspace to start, or{' '}
+          <Button
+            type="primary"
+            icon={<PlusOutlined />}
+            onClick={() => setAdd(true)}
+          >
+            add one
+          </Button>
         </Typography.Text>
+        <Add
+          visible={add}
+          swr={{ addOneWorkspace: swr.addOneWorkspace }}
+          setVisible={setAdd}
+        />
       </Layout.Content>
     </Layout>
   )

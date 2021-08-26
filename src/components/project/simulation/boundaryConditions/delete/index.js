@@ -77,6 +77,9 @@ const Delete = ({ simulation, type, index, swr }) => {
         }
       ])
 
+      // Stop loading
+      setLoading(false)
+
       // Local
       swr.mutateOneSimulation(newSimulation)
     } catch (err) {

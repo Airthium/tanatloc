@@ -60,6 +60,7 @@ module.exports = {
     '<rootDir>/src/components/',
     '<rootDir>/src/pages/',
     '<rootDir>/src/store/',
-    '<rootDir>/src/api/'
+    '<rootDir>/src/api/',
+    '<rootDir>/updaters'
   ]
 }

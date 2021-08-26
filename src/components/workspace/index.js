@@ -90,7 +90,10 @@ const Workspace = ({ loading, user, page, workspace, organizations, swr }) => {
                     }}
                   />
                   <Edit
-                    workspace={workspace}
+                    workspace={{
+                      id: workspace.id,
+                      name: workspace.name
+                    }}
                     swr={{ mutateOneWorkspace: swr.mutateOneWorkspace }}
                   />
                   <Share

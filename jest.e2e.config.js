@@ -57,10 +57,6 @@ module.exports = {
     '<rootDir>/src/lib/three/controls/',
     '<rootDir>/public/',
     '<rootDir>/tests/',
-    '<rootDir>/src/components/',
-    '<rootDir>/src/pages/',
-    '<rootDir>/src/store/',
-    '<rootDir>/src/api/',
     '<rootDir>/updaters'
   ]
 }

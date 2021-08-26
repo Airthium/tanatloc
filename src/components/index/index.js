@@ -6,7 +6,7 @@ import { Button, Divider, Layout, Typography } from 'antd'
 import { DashboardOutlined, LoginOutlined } from '@ant-design/icons'
 
 import Background from '@/components/background'
-import { Error } from '@/components/assets/notification'
+import { Error as ErrorNotification } from '@/components/assets/notification'
 
 import UserAPI from '@/api/user'
 
@@ -29,7 +29,7 @@ const Index = () => {
 
   // Error
   useEffect(() => {
-    if (errorUser) Error(errors.user, errorUser)
+    if (errorUser) ErrorNotification(errors.user, errorUser)
   }, [errorUser])
 
   // Prefetch

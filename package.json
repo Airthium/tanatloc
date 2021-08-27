@@ -41,7 +41,7 @@
     "electron-store": "8.0.0"
   },
   "devDependencies": {
-    "@ant-design/icons": "4.6.3",
+    "@ant-design/icons": "4.6.4",
     "@babel/cli": "7.14.8",
     "@babel/core": "7.15.0",
     "@babel/preset-typescript": "7.15.0",
@@ -61,7 +61,7 @@
     "deep-object-diff": "1.1.0",
     "depcheck": "1.4.2",
     "ejs": "3.1.6",
-    "electron": "13.2.2",
+    "electron": "13.2.3",
     "electron-builder": "22.11.7",
     "eslint": "7.32.0",
     "eslint-config-next": "11.1.0",
@@ -94,7 +94,7 @@
     "redux-persist": "6.0.0",
     "rimraf": "3.0.2",
     "set-interval-async": "2.0.3",
-    "swr": "0.5.6",
+    "swr": "1.0.0",
     "three": "0.132.2",
     "three-to-glb": "./modules/three-to-glb",
     "url-join": "4.0.1",

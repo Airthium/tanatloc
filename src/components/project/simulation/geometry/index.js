@@ -129,9 +129,9 @@ const Geometry = ({ geometries, geometry, simulation, setGeometry, swr }) => {
   return geometries.length ? (
     <>
       {geometriesList}
-      {simulation.scheme.configuration.geometry.meshable && (
+      {/* {simulation.scheme.configuration.geometry.meshable && (
         <Card title="Mesh refinement">TODO</Card>
-      )}
+      )} */}
     </>
   ) : (
     <Typography.Text>Please upload a geometry first</Typography.Text>

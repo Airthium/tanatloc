@@ -43,7 +43,7 @@ const Signup = () => {
   const [internalErr, setInternalError] = useState(false)
 
   // Data
-  const [user, { loadingUser, errorUser }] = UserAPI.useUser()
+  const [user, { errorUser, loadingUser }] = UserAPI.useUser()
   const [system, { errorSystem, loadingSystem }] = SystemAPI.useSystem()
 
   // Router
@@ -68,9 +68,9 @@ const Signup = () => {
 
   /**
    * Handle signup
-   * @param {Object} values { email, password, passwordConfirmation }
+   * @param {Object} values { email, password }
    */
-  const onSignup = async ({ email, password, passwordConfirmation }) => {
+  const onSignup = async ({ email, password }) => {
     // State
     setChecking(true)
     setSignupErr(false)

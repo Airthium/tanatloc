@@ -1,7 +1,7 @@
 import React from 'react'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
-import Login from '@/components/login'
+import Login from '@/pages/login'
 
 // Next/router mock
 const mockRouterPush = jest.fn()

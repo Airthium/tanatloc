@@ -52,7 +52,11 @@ const PasswordItem = ({
    * @param {string} value Value
    */
   const checkMin = (value) => {
-    if (value.length < (system?.password?.min || MIN_SIZE)) return false
+    if (
+      value.length <
+      (system?.password?.min !== undefined ? system?.password?.min : MIN_SIZE)
+    )
+      return false
     return true
   }
 
@@ -61,7 +65,11 @@ const PasswordItem = ({
    * @param {string} value Value
    */
   const checkMax = (value) => {
-    if (value.length > (system?.password?.max || MAX_SIZE)) return false
+    if (
+      value.length >
+      (system?.password?.max !== undefined ? system?.password?.max : MAX_SIZE)
+    )
+      return false
     return true
   }
 
@@ -80,7 +88,11 @@ const PasswordItem = ({
    * @param {string} value Value
    */
   const requireLetter = (value) => {
-    if (system?.password?.requireLetter || REQUIRE_LETTER)
+    if (
+      system?.password?.requireLetter !== undefined
+        ? system?.password?.requireLetter
+        : REQUIRE_LETTER
+    )
       return checkRegex(value, /[a-zA-Z]/)
     return true
   }
@@ -90,7 +102,11 @@ const PasswordItem = ({
    * @param {string} value Value
    */
   const requireNumber = (value) => {
-    if (system?.password?.requireNumber || REQUIRE_NUMBER)
+    if (
+      system?.password?.requireNumber !== undefined
+        ? system?.password?.requireNumber
+        : REQUIRE_NUMBER
+    )
       return checkRegex(value, /[0-9]/)
     return true
   }
@@ -100,7 +116,11 @@ const PasswordItem = ({
    * @param {string} value Value
    */
   const requireSymbol = (value) => {
-    if (system?.password?.requireNumber || REQUIRE_SYMBOL)
+    if (
+      system?.password?.requireSymbol !== undefined
+        ? system?.password?.requireSymbol
+        : REQUIRE_SYMBOL
+    )
       return checkRegex(value, /[!@#$%^&*(){}[\]<>?/|.:;_-]/)
     return true
   }
@@ -144,6 +164,7 @@ const PasswordItem = ({
           validator(_, value) {
             const err = []
             if (edit && value === '******') return Promise.resolve()
+            if (!value) return Promise.resolve()
 
             checkSize(value, err)
             checkFormat(value, err)

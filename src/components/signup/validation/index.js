@@ -45,7 +45,7 @@ const Validation = () => {
           <Typography.Text>
             <Spin /> Validating...
           </Typography.Text>
-          {id && (
+          {!id && (
             <Typography.Text type="warning">
               No link identifier detected
             </Typography.Text>

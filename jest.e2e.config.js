@@ -34,7 +34,7 @@ module.exports = {
     '^@/components(.*)$': '<rootDir>/src/components$1',
     '^@/database(.*)$': '<rootDir>/src/database$1',
     '^@/lib(.*)$': '<rootDir>/src/lib$1',
-    '^@/page(.*)$': '<rootDir>/src/page$1',
+    '^@/pages(.*)$': '<rootDir>/src/pages$1',
     '^@/route(.*)$': '<rootDir>/src/route$1',
     '^@/services(.*)$': '<rootDir>/src/services$1',
     '^@/store(.*)$': '<rootDir>/src/store$1',

@@ -41,7 +41,7 @@
     "electron-store": "8.0.0"
   },
   "devDependencies": {
-    "@ant-design/icons": "4.6.3",
+    "@ant-design/icons": "4.6.4",
     "@babel/cli": "7.14.8",
     "@babel/core": "7.15.0",
     "@babel/preset-typescript": "7.15.0",

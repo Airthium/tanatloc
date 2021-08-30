@@ -2799,12 +2799,12 @@ base@^0.11.1:
     mixin-deep "^1.2.0"
     pascalcase "^0.1.1"
 
-better-react-mathjax@1.0.2:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/better-react-mathjax/-/better-react-mathjax-1.0.2.tgz#f29a61700f65f781ead8c301b68edfc69f01ec1c"
-  integrity sha512-wCSInSWHSe5+u54sZQ3yz7y5Kn274g8mT6Kfdz87hpt+94/B25O/HAqtHb68sgXWEHww0Deq0Oni3Qqu8HP/jg==
+better-react-mathjax@1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/better-react-mathjax/-/better-react-mathjax-1.0.3.tgz#4bf30627e0c1a42892a539b854d0ed3f0e25f8ef"
+  integrity sha512-vtWGBlgGilcKO6ryDTk/1JIhv4SfzCMHb8gkMz4ZCuI70t1VGbN6XMouFBWJKoiWlsZvGVxF++6UW3fbdjI+6g==
   dependencies:
-    mathjax-full "^3.1.2"
+    mathjax-full "^3.2.0"
 
 big.js@^5.2.2:
   version "5.2.2"
@@ -7071,7 +7071,7 @@ matcher@^3.0.0:
   dependencies:
     escape-string-regexp "^4.0.0"
 
-mathjax-full@^3.1.2:
+mathjax-full@^3.2.0:
   version "3.2.0"
   resolved "https://registry.yarnpkg.com/mathjax-full/-/mathjax-full-3.2.0.tgz#e53269842a943d4df10502937518991268996c5c"
   integrity sha512-D2EBNvUG+mJyhn+M1C858k0f2Fc4KxXvbEX2WCMXroV10212JwfYqaBJ336ECBSz5X9L5LRoamxb7AJtg3KaJA==

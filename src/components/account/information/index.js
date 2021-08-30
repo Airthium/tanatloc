@@ -158,7 +158,7 @@ const Information = ({ user, swr }) => {
     try {
       // Check email
       if (!Utils.validateEmail(value))
-        throw new Error('Email address wrong format')
+        throw new Error('Email address wrong format.')
 
       // API
       await UserAPI.update([

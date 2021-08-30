@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { Button, Card } from 'antd'
 import { DeleteOutlined } from '@ant-design/icons'
 
-import { Error } from '@/components/assets/notification'
+import { Error as ErrorNotification } from '@/components/assets/notification'
 import { DeleteDialog } from '@/components/assets/dialog'
 
 import UserAPI from '@/api/user'
@@ -42,7 +42,7 @@ const Delete = ({ swr }) => {
       // Mutate
       swr.mutateUser({})
     } catch (err) {
-      Error(errors.del, err)
+      ErrorNotification(errors.del, err)
     } finally {
       setLoading(false)
     }

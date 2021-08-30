@@ -12,7 +12,7 @@ import {
   TeamOutlined
 } from '@ant-design/icons'
 
-import { Error } from '@/components/assets/notification'
+import { Error as ErrorNotification } from '@/components/assets/notification'
 
 import Loading from '@/components/loading'
 import WorkspacesList from '@/components/workspace/list'
@@ -117,9 +117,10 @@ const Dashboard = () => {
 
   // Error
   useEffect(() => {
-    if (errorUser) Error(errors.user, errorUser)
-    if (errorOrganizations) Error(errors.organizations, errorOrganizations)
-    if (errorWorkspaces) Error(errors.workspaces, errorWorkspaces)
+    if (errorUser) ErrorNotification(errors.user, errorUser)
+    if (errorOrganizations)
+      ErrorNotification(errors.organizations, errorOrganizations)
+    if (errorWorkspaces) ErrorNotification(errors.workspaces, errorWorkspaces)
   }, [errorUser, errorOrganizations, errorWorkspaces])
 
   // Not logged -> go to login page
@@ -154,7 +155,7 @@ const Dashboard = () => {
 
       router.push('/')
     } catch (err) {
-      Error(errors.logout, err)
+      ErrorNotification(errors.logout, err)
     }
   }
 

@@ -38,7 +38,7 @@ jest.spyOn(global, 'URLSearchParams').mockImplementation(() => ({
   }
 }))
 
-describe('e2e/frontend/dashboard/account', () => {
+describe('e2e/frontend/dashboard/account/information', () => {
   beforeEach(() => {
     mockRouterPush.mockReset()
     mockRouterReplace.mockReset()
@@ -48,7 +48,7 @@ describe('e2e/frontend/dashboard/account', () => {
     mockSWR.mockReset()
     mockSWR.mockImplementation(() => ({
       data: {
-        user: { email: 'email', authorizedplugins: [] },
+        user: { id: 'id', email: 'email', authorizedplugins: [] },
         organizations: null,
         workspaces: null
       },
@@ -71,6 +71,7 @@ describe('e2e/frontend/dashboard/account', () => {
     mockSWR.mockImplementation(() => ({
       data: {
         user: {
+          id: 'id',
           avatar: Buffer.from('avatar'),
           email: 'email',
           authorizedplugins: []
@@ -370,6 +371,11 @@ describe('e2e/frontend/dashboard/account', () => {
     fireEvent.click(button)
 
     const del = screen.getByRole('button', { name: 'Delete' })
+    const cancel = screen.getByRole('button', { name: 'Cancel' })
+
+    // Cancel
+    fireEvent.click(cancel)
+    fireEvent.click(button)
 
     // Error
     mockFetch.mockImplementation(() => {

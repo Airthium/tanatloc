@@ -39,7 +39,11 @@ describe('e2e/frontend/dashboard', () => {
 
     mockSWR.mockReset()
     mockSWR.mockImplementation(() => ({
-      data: { user: {}, organizations: null, workspaces: null },
+      data: {
+        user: { id: 'id', email: 'email', authorizedplugins: [] },
+        organizations: null,
+        workspaces: null
+      },
       error: null,
       mutate: jest.fn
     }))
@@ -127,7 +131,12 @@ describe('e2e/frontend/dashboard', () => {
     mockQuery.mockImplementation(() => ({}))
     mockSWR.mockImplementation(() => ({
       data: {
-        user: { superuser: true },
+        user: {
+          id: 'id',
+          email: 'email',
+          authorizedplugins: [],
+          superuser: true
+        },
         organizations: null,
         workspaces: null
       },

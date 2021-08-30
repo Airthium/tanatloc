@@ -43,28 +43,28 @@ const Plugin = ({ plugin }) => {
   /**
    * Render
    */
-  return loadingPlugins ? (
-    <Spin />
-  ) : (
-    <Space direction="vertical" style={{ width: '100%' }}>
-      <PluginDialog
-        plugin={{
-          uuid: plugin.uuid,
-          key: plugin.key,
-          name: plugin.name,
-          needInit: plugin.needInit,
-          configuration: plugin.configuration,
-          inUseConfiguration: plugin.inUseConfiguration
-        }}
-        swr={{ addOnePlugin }}
-      />
-      <List
-        plugin={{ key: plugin.key }}
-        plugins={plugins}
-        swr={{ delOnePlugin, mutateOnePlugin }}
-      />
-    </Space>
-  )
+  if (loadingPlugins) return <Spin />
+  else
+    return (
+      <Space direction="vertical" style={{ width: '100%' }}>
+        <PluginDialog
+          plugin={{
+            uuid: plugin.uuid,
+            key: plugin.key,
+            name: plugin.name,
+            needInit: plugin.needInit,
+            configuration: plugin.configuration,
+            inUseConfiguration: plugin.inUseConfiguration
+          }}
+          swr={{ addOnePlugin }}
+        />
+        <List
+          plugin={{ key: plugin.key }}
+          plugins={plugins}
+          swr={{ delOnePlugin, mutateOnePlugin }}
+        />
+      </Space>
+    )
 }
 
 Plugin.propTypes = {

@@ -67,7 +67,7 @@
     "eslint-config-next": "11.1.2",
     "express": "4.17.1",
     "http-errors": "1.8.0",
-    "is-docker": "2.2.1",
+    "is-docker": "3.0.0",
     "is-electron": "2.2.0",
     "jest": "27.1.0",
     "jsdoc": "3.6.7",

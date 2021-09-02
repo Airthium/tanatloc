@@ -7,11 +7,11 @@
   "packageRules": [
     {
       "packagePatterns": ["*"],
-      "excludePackageNames": ["is-docker", "node-fetch"],
       "groupName": "all dependencies",
       "groupSlug": "all"
     }
   ],
+  "ignoreDeps": ["is-docker", "node-fetch"],
   "lockFileMaintenance": {
     "enabled": false
   }

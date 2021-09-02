@@ -27,9 +27,13 @@ import resultArchive from '@/route/result/archive'
 import simulation from '@/route/simulation'
 import simulationId from '@/route/simulation/[id]'
 import simulationIdRun from '@/route/simulation/[id]/run'
+import simulationIdStop from '@/route/simulation/[id]/stop'
+import simulationIdLog from '@/route/simulation/[id]/log'
+import simulationIdTasks from '@/route/simulation/[id]/tasks'
 import simulations from '@/route/simulations'
 import system from '@/route/system'
 import user from '@/route/user'
+import userId from '@/route/user/[id]'
 import userCheck from '@/route/user/check'
 import users from '@/route/users'
 import workspace from '@/route/workspace'
@@ -82,12 +86,16 @@ app.all('/api/result/archive', resultArchive)
 app.all('/api/simulation', simulation)
 app.all('/api/simulation/:id', simulationId)
 app.all('/api/simulation/:id/run', simulationIdRun)
+app.all('/api/simulation/:id/stop', simulationIdStop)
+app.all('/api/simulation/:id/log', simulationIdLog)
+app.all('/api/simulation/:id/tasks', simulationIdTasks)
 
 app.all('/api/simulations', simulations)
 
 app.all('/api/system', system)
 
 app.all('/api/user', user)
+app.all('/api/user/:id', userId)
 app.post('/api/user/check', userCheck)
 
 app.all('/api/users', users)

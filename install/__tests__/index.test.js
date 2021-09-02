@@ -4,8 +4,8 @@
 
 import install from '../'
 
-jest.mock('../dB', () => jest.fn())
-jest.mock('../storage', () => jest.fn())
+jest.mock('../createDatabase', () => jest.fn())
+jest.mock('../createPaths', () => jest.fn())
 
 describe('install', () => {
   test('call', () => {

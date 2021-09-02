@@ -56,7 +56,7 @@ const useSimulations = (ids) => {
       addOneSimulation: addOne,
       delOneSimulation: delOne,
       mutateOneSimulation: mutateOne,
-      errorSimulation: error,
+      errorSimulations: error,
       loadingSimulations: loading
     }
   ]

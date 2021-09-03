@@ -45,7 +45,7 @@
     "@babel/core": "7.15.4",
     "@babel/preset-typescript": "7.15.0",
     "@hapi/iron": "6.0.0",
-    "@reduxjs/toolkit": "^1.6.1",
+    "@reduxjs/toolkit": "1.6.1",
     "@sentry/browser": "6.12.0",
     "@sentry/node": "6.12.0",
     "@testing-library/react": "12.0.0",

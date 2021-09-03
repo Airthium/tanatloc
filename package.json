@@ -41,7 +41,7 @@
   },
   "devDependencies": {
     "@ant-design/icons": "4.6.4",
-    "@babel/cli": "7.14.8",
+    "@babel/cli": "7.15.4",
     "@babel/core": "7.15.0",
     "@babel/preset-typescript": "7.15.0",
     "@hapi/iron": "6.0.0",

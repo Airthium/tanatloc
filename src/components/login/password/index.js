@@ -44,6 +44,7 @@ const PasswordRecover = () => {
     } catch (err) {
       setLoading(false)
       ErrorNotification(errors.recover, err)
+      throw err
     }
   }
 

@@ -2,6 +2,14 @@ import { useEffect } from 'react'
 import { Button, Card, Checkbox, Form, InputNumber, Space } from 'antd'
 import { CheckOutlined } from '@ant-design/icons'
 
+import {
+  MIN_SIZE,
+  MAX_SIZE,
+  REQUIRE_LETTER,
+  REQUIRE_NUMBER,
+  REQUIRE_SYMBOL
+} from '@/config/auth'
+
 import Loading from '@/components/loading'
 import {
   Success as SuccessNotification,
@@ -43,7 +51,16 @@ const Registration = () => {
 
   // Effect
   useEffect(() => {
-    if (!loadingSystem) form.setFieldsValue(system?.password)
+    if (!loadingSystem)
+      form.setFieldsValue(
+        system?.password || {
+          min: MIN_SIZE,
+          max: MAX_SIZE,
+          requireLetter: REQUIRE_LETTER,
+          requireNumber: REQUIRE_NUMBER,
+          requireSymbol: REQUIRE_SYMBOL
+        }
+      )
   }, [loadingSystem, system?.password])
 
   /**

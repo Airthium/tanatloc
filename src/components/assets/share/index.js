@@ -119,12 +119,13 @@ const Share = ({ disabled, workspace, project, organizations, swr, style }) => {
       }
 
       // Close
+      setLoading(false)
       setVisible(false)
     } catch (err) {
       ErrorNotification(errors.shareError, err)
+      setLoading(false)
+      throw err
     }
-
-    setLoading(false)
   }
 
   /**

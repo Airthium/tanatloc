@@ -5,7 +5,7 @@ import { PlusOutlined } from '@ant-design/icons'
 
 import Dialog from '@/components/assets/dialog'
 import { PasswordItem } from '@/components/assets/input'
-import { Error } from '@/components/assets/notification'
+import { Error as ErrorNotification } from '@/components/assets/notification'
 
 import Plugins from '@/plugins'
 
@@ -42,10 +42,7 @@ const Add = ({ swr }) => {
         email: values.email,
         password: values.password
       })
-      if (newUser.alreadyExists) {
-        notification.error('Use already exists')
-        return
-      }
+      if (newUser.alreadyExists) throw new Error('User already exists')
 
       // Update informations
       await UserAPI.updateById(newUser.id, [
@@ -75,10 +72,12 @@ const Add = ({ swr }) => {
       swr.addOneUser(newUser)
 
       // Close
+      setLoading(false)
       setVisible(false)
     } catch (err) {
-      Error(errors.add, err)
       setLoading(false)
+      ErrorNotification(errors.add, err)
+      throw err
     }
   }
 

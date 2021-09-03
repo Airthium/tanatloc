@@ -1,4 +1,4 @@
-import route from '@/route/workspace'
+import route from '@/pages/api/workspace'
 
 import { initialize, clean, validUUID } from '@/config/jest/e2e/global'
 

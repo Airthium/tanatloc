@@ -1,4 +1,4 @@
-import route from '@/route/system'
+import route from '@/pages/api/system'
 
 import { initialize, clean } from '@/config/jest/e2e/global'
 

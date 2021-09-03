@@ -1,4 +1,4 @@
-import route from '@/route/groups'
+import route from '@/pages/api/groups'
 
 describe('e2e/backend/groups', () => {
   const req = {}

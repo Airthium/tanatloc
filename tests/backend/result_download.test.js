@@ -1,6 +1,6 @@
 import path from 'path'
 
-import route from '@/route/result/download'
+import route from '@/pages/api/result/download'
 
 import { initialize, clean } from '@/config/jest/e2e/global'
 

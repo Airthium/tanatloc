@@ -1,4 +1,4 @@
-import route from '@/route/simulation/[id]'
+import route from '@/pages/api/simulation/[id]'
 
 import { initialize, clean, validUUID } from '@/config/jest/e2e/global'
 

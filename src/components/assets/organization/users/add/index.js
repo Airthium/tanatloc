@@ -63,6 +63,7 @@ const Add = ({ title, organization, dBkey, swr }) => {
     } catch (err) {
       ErrorNotification(errors.addError, err)
       setLoading(false)
+      throw err
     }
   }
 

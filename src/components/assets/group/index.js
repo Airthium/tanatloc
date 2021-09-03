@@ -61,10 +61,12 @@ const Group = ({ userOptions, organization, group, swr }) => {
       setLoading(false)
 
       // Close
+      setLoading(false)
       setVisible(false)
     } catch (err) {
       ErrorNotification(errors.addError, err)
       setLoading(false)
+      throw err
     }
   }
 
@@ -104,10 +106,12 @@ const Group = ({ userOptions, organization, group, swr }) => {
       swr.reloadOrganizations()
 
       // Close
+      setLoading(false)
       setVisible(false)
     } catch (err) {
       ErrorNotification(errors.updateError, err)
       setLoading(false)
+      throw err
     }
   }
 

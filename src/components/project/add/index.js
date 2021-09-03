@@ -51,6 +51,7 @@ const Add = ({ workspace, swr }) => {
     } catch (err) {
       Error(errors.addError, err)
       setLoading(false)
+      throw err
     }
   }
 

@@ -4,7 +4,7 @@
 
 import path from 'path'
 
-import route from '@/route/result/archive'
+import route from '@/pages/api/result/archive'
 
 import { initialize, clean } from '@/config/jest/e2e/global'
 

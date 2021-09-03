@@ -80,6 +80,7 @@ const Geometry = ({ project, geometry, swr, close }) => {
       swr.mutateOneGeometry(geometry)
     } catch (err) {
       ErrorNotification(errors.updateError, err)
+      throw err
     }
   }
 

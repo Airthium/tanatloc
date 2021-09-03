@@ -54,6 +54,7 @@ const Edit = ({ disabled, project, swr }) => {
       Error(errors.editError, err)
     } finally {
       setLoading(false)
+      throw err
     }
   }
 

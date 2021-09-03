@@ -40,7 +40,7 @@ const Edit = ({ user, swr }) => {
       const toUpdate = Object.keys(values)
         .map((key) => {
           const value = values[key]
-          if (value !== undefined && value !== '******')
+          if (value !== undefined && value !== '******' && value !== user[key])
             return { key, value, type: key === 'password' && 'crypt' }
         })
         .filter((u) => u)
@@ -55,10 +55,12 @@ const Edit = ({ user, swr }) => {
       swr.mutateOneUser(newUser)
 
       // Close
+      setLoading(false)
       setVisible(false)
     } catch (err) {
       Error(errors.update, err)
       setLoading(false)
+      throw err
     }
   }
 

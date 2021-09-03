@@ -43,6 +43,7 @@ const Add = ({ visible, swr, setVisible }) => {
     } catch (err) {
       Error(errors.add, err)
       setLoading(false)
+      throw err
     }
   }
 

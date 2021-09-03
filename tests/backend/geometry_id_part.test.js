@@ -1,6 +1,6 @@
 import fs, { promises as fspromises } from 'fs'
 
-import route from '@/route/geometry/[id]/part'
+import route from '@/pages/api/geometry/[id]/part'
 
 import { initialize, clean, validUUID } from '@/config/jest/e2e/global'
 

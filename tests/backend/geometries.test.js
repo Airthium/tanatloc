@@ -1,6 +1,6 @@
 import fs from 'fs'
 
-import route from '@/route/geometries'
+import route from '@/pages/api/geometries'
 
 import { initialize, clean, validUUID } from '@/config/jest/e2e/global'
 

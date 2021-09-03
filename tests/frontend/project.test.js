@@ -3,6 +3,7 @@ import { Provider } from 'react-redux'
 import { configureStore } from '@reduxjs/toolkit'
 import { reducer } from '@/store/store'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { MathJaxContext } from 'better-react-mathjax'
 
 import Project from '@/pages/project'
 
@@ -123,7 +124,9 @@ describe('e2e/frontend/project', () => {
   test('render', () => {
     const { unmount } = render(
       <Provider store={store}>
-        <Project />
+        <MathJaxContext>
+          <Project />
+        </MathJaxContext>
       </Provider>
     )
 
@@ -144,7 +147,9 @@ describe('e2e/frontend/project', () => {
 
     const { unmount } = render(
       <Provider store={store}>
-        <Project />
+        <MathJaxContext>
+          <Project />
+        </MathJaxContext>
       </Provider>
     )
 
@@ -167,7 +172,9 @@ describe('e2e/frontend/project', () => {
 
     const { unmount } = render(
       <Provider store={store}>
-        <Project />
+        <MathJaxContext>
+          <Project />
+        </MathJaxContext>
       </Provider>
     )
 
@@ -179,7 +186,9 @@ describe('e2e/frontend/project', () => {
   test('dashboard', () => {
     const { unmount } = render(
       <Provider store={store}>
-        <Project />
+        <MathJaxContext>
+          <Project />
+        </MathJaxContext>
       </Provider>
     )
 
@@ -199,7 +208,9 @@ describe('e2e/frontend/project', () => {
   test('add geometry', () => {
     const { unmount } = render(
       <Provider store={store}>
-        <Project />
+        <MathJaxContext>
+          <Project />
+        </MathJaxContext>
       </Provider>
     )
 
@@ -228,7 +239,9 @@ describe('e2e/frontend/project', () => {
     }))
     const { unmount } = render(
       <Provider store={store}>
-        <Project />
+        <MathJaxContext>
+          <Project />
+        </MathJaxContext>
       </Provider>
     )
 

@@ -1,6 +1,6 @@
 import { promises as fs } from 'fs'
 
-import route from '@/route/geometry'
+import route from '@/pages/api/geometry'
 
 import { initialize, clean } from '@/config/jest/e2e/global'
 

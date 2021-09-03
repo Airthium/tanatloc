@@ -51,6 +51,7 @@ const Edit = ({ workspace, swr }) => {
     } catch (err) {
       ErrorNotification(errors.update, err)
       setLoading(false)
+      throw err
     }
   }
 

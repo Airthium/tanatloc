@@ -166,6 +166,7 @@ const PluginDialog = ({ plugin, swr, edit }) => {
       setVisible(false)
     } catch (err) {
       ErrorNotification(errors.update, err)
+      throw err
     } finally {
       setLoading(false)
     }

@@ -1,6 +1,6 @@
 import fs from 'fs'
 
-import route from '@/route/simulation/[id]/run'
+import route from '@/pages/api/simulation/[id]/run'
 
 import { initialize, clean, validUUID } from '@/config/jest/e2e/global'
 

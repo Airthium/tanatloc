@@ -1,6 +1,6 @@
 import path from 'path'
 
-import route from '@/route/simulation/[id]/log'
+import route from '@/pages/api/simulation/[id]/log'
 
 import { initialize, clean, validUUID } from '@/config/jest/e2e/global'
 

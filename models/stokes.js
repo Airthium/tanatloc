@@ -1,26 +1,26 @@
 /**
- * Linear elasticity
+ * Stokes
  * @memberof module:models
  */
-const LinearElasticity = {
-  category: 'Mechanics',
-  name: 'Linear elasticity',
-  algorithm: 'linearElasticity',
+const NavierStokesTime = {
+  category: 'Fluid',
+  name: 'Stokes',
+  algorithm: 'stokes',
   code: 'FreeFEM',
   version: '1.0.0',
   description: `
   <h3>
-    Linear elasticity
+    Stokes
   </h3>
   <p>
-  Let $\\Omega$ be a domain of $\\mathbb{R}^{d}$, with $d\\in\\{2,3\\}$.<br/>
+    Let $\\Omega$ be a domain of $\\mathbb{R}^{d}$, with $d\\in\\{2,3\\}$.<br/>
 
-  The domain $\\Omega$ is bounded by $\\Gamma = \\Gamma_D \\cup \\Gamma_N$.<br/>
+    The domain $\\Omega$ is bounded by $\\Gamma = \\Gamma_D \\cup \\Gamma_N$.<br/>
 
-  // TODO
+    // TODO
   </p>
   <p>
-    See <a target="_blank" href="https://en.wikipedia.org/wiki/Linear_elasticity">Wikipedia</a>.
+    See <a target="_blank" href="https://en.wikipedia.org/wiki/Navier%E2%80%93Stokes_equations">Wikipedia</a>.
   </p>
   `,
   configuration: {
@@ -34,18 +34,11 @@ const LinearElasticity = {
       title: 'Materials',
       children: [
         {
-          label: "Young's modulus",
-          name: 'E',
+          label: 'Dynamic viscosity',
+          name: 'Mu',
           htmlEntity: 'formula',
-          default: 1e9,
-          unit: '$Pa$'
-        },
-        {
-          label: "Poisson's ratio",
-          name: 'Nu',
-          htmlEntity: 'formula',
-          default: 0.4,
-          unit: '$1$'
+          default: 1e-3,
+          unit: '\\(Pa.s^{-1}\\)'
         }
       ]
     },
@@ -59,7 +52,7 @@ const LinearElasticity = {
             label: 'External force (x)',
             htmlEntity: 'formula',
             default: 0,
-            unit: '$N.m^{-3}$'
+            unit: '\\(N.m^{-3}\\)'
           },
           {
             label: 'External force (y)',
@@ -80,19 +73,19 @@ const LinearElasticity = {
         label: 'Finite element space',
         children: [
           {
-            label: '[Ux, Uy, Uz]',
+            label: '[Ux, Uy, Uz, p]',
             htmlEntity: 'select',
             options: [
               {
-                label: 'P1',
-                value: 'P1, P1, P1'
+                label: 'P2/P1',
+                value: 'P2, P2, P2, P1'
               },
               {
-                label: 'P2',
-                value: 'P2, P2, P2'
+                label: 'P1b/P1',
+                value: 'P1b, P1b, P1b, P1'
               }
             ],
-            default: 'P1, P1, P1'
+            default: 'P2, P2, P2, P1'
           }
         ]
       },
@@ -111,57 +104,43 @@ const LinearElasticity = {
             default: 'MUMPS'
           }
         ]
-      },
-      meshAdaptation: {
-        advanced: true,
-        label: 'Mesh adaptation',
-        children: [
-          {
-            label: 'Enabled',
-            htmlEntity: 'checkbox',
-            default: false
-          },
-          {
-            label: 'Number of mesh adaptation loops',
-            htmlEntity: 'formula',
-            default: 1
-          }
-        ]
       }
     },
     boundaryConditions: {
-      index: 4,
+      index: 5,
       title: 'Boundary conditions',
-      fixed: {
-        label: 'Fixed',
-        refineFactor: 2
+      wall: {
+        label: 'Wall'
       },
-      displacement: {
-        label: 'Displacement',
+      freeOutlet: {
+        label: 'Free outlet'
+      },
+      dirichlet: {
+        label: 'Velocity',
         children: [
           {
             label: 'Ux',
             htmlEntity: 'formula',
             default: 0,
-            unit: '\\(m\\)'
+            unit: '\\(m.s^{-1}\\)'
           },
           {
             label: 'Uy',
             htmlEntity: 'formula',
             default: 0,
-            unit: '\\(m\\)'
+            unit: '\\(m.s^{-1}\\)'
           },
           {
             label: 'Uz',
             htmlEntity: 'formula',
             default: 0,
-            unit: '\\(m\\)'
+            unit: '\\(m.s^{-1}\\)'
           }
         ],
         refineFactor: 2
       },
-      presure: {
-        label: 'Surface force',
+      neumann: {
+        label: 'Pressure',
         children: [
           {
             label: 'd(U)/d(N)',
@@ -174,18 +153,18 @@ const LinearElasticity = {
       }
     },
     run: {
-      index: 5,
+      index: 6,
       title: 'Run',
       results: [
         {
-          name: 'U'
+          name: 'Velocity'
         },
         {
-          name: 'vonMises'
+          name: 'Presure'
         }
       ]
     }
   }
 }
 
-export default LinearElasticity
+export default NavierStokesTime

@@ -6,6 +6,7 @@ import { Layout, Menu, Modal, Space, Typography } from 'antd'
 import { WarningOutlined } from '@ant-design/icons'
 import { addedDiff, updatedDiff } from 'deep-object-diff'
 import merge from 'lodash.merge'
+import { MathJax } from 'better-react-mathjax'
 
 import { Error } from '@/components/assets/notification'
 
@@ -94,6 +95,7 @@ const Selector = ({ user, visible, onOk, onCancel }) => {
       okButtonProps={{ loading: loading }}
       onOk={onCreate}
       onCancel={onCancel}
+      width="80%"
     >
       <Layout>
         <Layout.Sider theme="light">
@@ -103,8 +105,10 @@ const Selector = ({ user, visible, onOk, onCancel }) => {
             })}
           </Menu>
         </Layout.Sider>
-        <Layout.Content>
-          <div dangerouslySetInnerHTML={{ __html: current?.description }} />
+        <Layout.Content style={{ padding: '10px' }}>
+          <MathJax dynamic>
+            <div dangerouslySetInnerHTML={{ __html: current?.description }} />
+          </MathJax>
         </Layout.Content>
       </Layout>
     </Modal>

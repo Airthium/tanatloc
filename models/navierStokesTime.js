@@ -9,11 +9,18 @@ const NavierStokesTime = {
   code: 'FreeFEM',
   version: '1.0.0',
   description: `
-  <p>
+  <h3>
     Navier-Stokes
+  </h3>
+  <p>
+    Let $\\Omega$ be a domain of $\\mathbb{R}^{d}$, with $d\\in\\{2,3\\}$.<br/>
+
+    The domain $\\Omega$ is bounded by $\\Gamma = \\Gamma_D \\cup \\Gamma_N$.<br/>
+
+    // TODO
   </p>
   <p>
-    <a target="_blank" href="https://en.wikipedia.org/wiki/Navier%E2%80%93Stokes_equations">Wikipedia</a>
+    See <a target="_blank" href="https://en.wikipedia.org/wiki/Navier%E2%80%93Stokes_equations">Wikipedia</a>.
   </p>
   `,
   configuration: {

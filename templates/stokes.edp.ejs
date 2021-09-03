@@ -12,20 +12,10 @@ try {
 	const mesh = geometry.mesh
 	mesh.name = 'Mesh'
 	-%>
-
-	<% if (initialization.value && initialization.value.type === 'coupling') { -%>
-	meshN Mesh = readmesh3("<%= initialization.value.mesh -%>");
-	<% } else { -%>
 	<%- include('/blobs/mesh.edp.ejs', {
 		dimension,
 		mesh
 	}); -%>
-	<% } -%>
-
-	// Variables
-	real t = 0.;
-	real T = <%= parameters.time.children[0].value || parameters.time.children[0].default -%>;
-	real dt = <%= parameters.time.children[1].value || parameters.time.children[1].default -%>;
 
 	<%# Materials -%>
 	<%- include('/blobs/materials.edp.ejs', {
@@ -92,11 +82,9 @@ try {
 	//Problem
 	appendLog("Define the problem...");
 
-	real Rhodt = Rho / dt;
-	varf vNavierStokes (<%= unknownFunction -%>, <%= testFunction -%>)
+	varf vStokes (<%= unknownFunction -%>, <%= testFunction -%>)
 		= intN(Mesh)(
-			Rhodt * <%= U -%>' * <%= Uh -%>
-			+ Mu * (Grad(U) : Grad(Uh))
+			  Mu * (Grad(U) : Grad(Uh))
 			- p * Div(Uh)
 			- Div(U) * ph
 		)
@@ -112,10 +100,9 @@ try {
 	<% } -%>
 		;
 
-	varf vNavierStokesRHS (<%= freeFunction -%>, <%= testFunction -%>)
+	varf vStokesRHS (<%= freeFunction -%>, <%= testFunction -%>)
 		= intN(Mesh)(
-			Rhodt * [convect(<%= U -%>, -dt, Ux), convect(<%= U -%>, -dt, Uy), convect(<%= U -%>, -dt, Uz)]' * <%= Uh -%>
-			+ [<%- rhs1 -%>, <%- rhs2 -%>, <%- rhs3 -%>]' * <%= Uh -%>
+			  [<%- rhs1 -%>, <%- rhs2 -%>, <%- rhs3 -%>]' * <%= Uh -%>
 		)
 	<% for (const n of neumann) { -%>
 		- intN1(Mesh, <%= p.selected.map(s => s.label).filter(s => s).join() -%>)(
@@ -139,88 +126,55 @@ try {
 		solver
 	}); -%>
 
-	<%# Initialization -%>
-	// Initialization
-	<% if (initialization.value) { -%>
-	<% if (initialization.value.type === 'coupling') { -%>
-	{
-		ifstream couplingData("<%= initialization.value.dat -%>");
-		couplingData >> Ux[] >> Uy[] >> Uz[];
-	}
-	<% } else if (initialization.value.type === 'direct' && initialization.value.values ) { -%>
-	[<%= feFunction -%>] = [
-		<%= initialization.value.values[0] !== undefined ? initialization.value.values[0] : initialization.direct.children[0].default -%>,
-		<%= initialization.value.values[1] !== undefined ? initialization.value.values[1] : initialization.direct.children[1].default -%>,
-		<%= initialization.value.values[2] !== undefined ? initialization.value.values[2] : initialization.direct.children[2].default -%>,
-		0];
-	<% } else { -%>
-	[<%= feFunction -%>] = [
-		<%= initialization.direct.children[0].default -%>,
-		<%= initialization.direct.children[1].default -%>,
-		<%= initialization.direct.children[2].default -%>,
-		0];
-	<% }-%>
-	<% } -%>
 
-	matrix NavierStokes = vNavierStokes(<%= finiteElementSpace.name -%>, <%= finiteElementSpace.name -%>, solver=solver);
+	<%# Solve -%>
+	matrix Stokes = vStokes(<%= finiteElementSpace.name -%>, <%= finiteElementSpace.name -%>, solver=solver);
+	real[int] StokesRHS = vStokesRHS(0, <%= finiteElementSpace.name -%>);
 
-	<%# Time loop -%>
-	// Time loop
-	appendLog("Time loop...");
+	// Solve
+	Ux[] = Stokes^-1 * StokesRHS;
 
-	int nbIter = T / dt;
-	for (int timeIter = 0; timeIter < nbIter; ++timeIter) {
-		// Update
-		t += dt;
-		string time = "Time: " + t;
-		appendLog("Time: " + t);
-		
-		real[int] NavierStokesRHS = vNavierStokesRHS(0, <%= finiteElementSpace.name -%>);
+	<%# Save -%>
+	// Save data
+	real netFlow = intN1(Mesh)(<%= U -%>' * <%= N -%>);
+	<%- include('/blobs/data.edp.ejs', {
+		path: run.dataPath,
+		name: '"netFlow"',
+		dataName: 'Net flow',
+		index: 1,
+		x: '0',
+		y: 'netFlow'
+	}) -%>
 
-		// Solve
-		Ux[] = NavierStokes^-1 * NavierStokesRHS;
+	real div = intN(Mesh)(Div(U)) / intN(Mesh)(1);
+	<%- include('/blobs/data.edp.ejs', {
+		path: run.dataPath,
+		name: '"div"',
+		dataName: 'Divergence',
+		index: 2,
+		x: '0',
+		y: 'div'
+	}) -%>
 
-		// Save data
-		real netFlow = intN1(Mesh)(<%= U -%>' * <%= N -%>);
-		<%- include('/blobs/data.edp.ejs', {
-			path: run.dataPath,
-			name: '"netFlow_"+timeIter',
-			dataName: 'Net flow',
-			index: 1,
-			x: 't',
-			y: 'netFlow'
-		}) -%>
+	// Save coupling
+	<%- include('/blobs/coupling.edp.ejs', {
+		path: run.couplingPath,
+		mesh: mesh.name,
+		name: '"Result_"',
+		data: ['Ux', 'Uy', 'Uz']
+	}); -%>
 
-		real div = intN(Mesh)(Div(U)) / intN(Mesh)(1);
-		<%- include('/blobs/data.edp.ejs', {
-			path: run.dataPath,
-			name: '"div_"+timeIter',
-			dataName: 'Divergence',
-			index: 2,
-			x: 't',
-			y: 'div'
-		}) -%>
-
-		// Save coupling
-		<%- include('/blobs/coupling.edp.ejs', {
-			path: run.couplingPath,
+	// Save results
+	<%- include('/blobs/save.edp.ejs', {
+		solution: {
+			path: run.resultPath,
+			name: '"Result"',
 			mesh: mesh.name,
-			name: '"Result_"+timeIter',
-			data: ['Ux', 'Uy', 'Uz']
-		}); -%>
-
-		// Save results
-		<%- include('/blobs/save.edp.ejs', {
-			solution: {
-				path: run.resultPath,
-				name: '"Result_"+timeIter',
-				mesh: mesh.name,
-				sol: [['Ux', 'Uy', 'Uz'], 'p'],
-				dataName: run.results.map(r => r.name),
-				order: [1, 1]
-			}
-		}); -%>
-	}
+			sol: [['Ux', 'Uy', 'Uz'], 'p'],
+			dataName: run.results.map(r => r.name),
+			order: [1, 1]
+		}
+	}); -%>
 
 	appendLog("End");
 } catch(...) {

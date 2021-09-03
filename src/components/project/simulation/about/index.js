@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types'
 import { Card, Layout, Space, Spin, Typography } from 'antd'
+import { MathJax } from 'better-react-mathjax'
 
 import { Error as ErrorNotification } from '@/components/assets/notification'
 
@@ -98,11 +99,13 @@ const About = ({ project, simulation, swr }) => {
                 <b>Version:</b> {simulation.scheme?.version}
               </Typography.Text>
 
-              <div
-                dangerouslySetInnerHTML={{
-                  __html: simulation.scheme?.description
-                }}
-              />
+              <MathJax dynamic>
+                <div
+                  dangerouslySetInnerHTML={{
+                    __html: simulation.scheme?.description
+                  }}
+                />
+              </MathJax>
             </Space>
           </Card>
         ) : (

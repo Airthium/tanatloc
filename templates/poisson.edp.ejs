@@ -10,7 +10,7 @@ try {
 	<%# Mesh -%>
 	<%
 	const mesh = geometry.mesh
-	mesh.name = 'Th'
+	mesh.name = 'Mesh'
 	-%>
 	<%- include('/blobs/mesh.edp.ejs', {
 		dimension,
@@ -50,7 +50,7 @@ try {
 	appendLog("Define the problem...");
 
 	varf vLaplacian (u, uh)
-		= intN(Th)(
+		= intN(Mesh)(
 			grad(u)' * grad(uh)
 		)
 	<% for (const d of dirichlet) { -%>
@@ -59,11 +59,11 @@ try {
 		;
 
 	varf vLaplacianRHS (u, uh)
-		= intN(Th)(
+		= intN(Mesh)(
 			(<%- rhsValue -%>) * uh
 		)
 	<% for (const n of neumann) { -%>
-		- intN1(Th, <%= n.selected.map(s => s.label).filter(s => s).join() %>) {
+		- intN1(Mesh, <%= n.selected.map(s => s.label).filter(s => s).join() %>) {
 			(<%- n.values[0].value %>) * uh
 		}
 	<% } -%>

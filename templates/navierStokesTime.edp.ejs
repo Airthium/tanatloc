@@ -1,204 +1,228 @@
 try {
-<%# Headers -%>
-<%- include('/blobs/headers.edp.ejs') -%>
+	<%# Headers -%>
+	<%- include('/blobs/headers.edp.ejs') -%>
 
-<%# Dimension -%>
-<%- include('/blobs/dimensioning.edp.ejs', {
-	dimension
-}); -%>
-
-<%# Mesh -%>
-<%
-const mesh = geometry.mesh
-mesh.name = 'Th'
--%>
-
-<% if (initialization.value && initialization.value.type === 'coupling') { -%>
-meshN Th = readmesh3("<%= initialization.value.mesh -%>");
-<% } else { -%>
-<%- include('/blobs/mesh.edp.ejs', {
-	dimension,
-	mesh
-}); -%>
-<% } -%>
-
-// Variables
-real t = 0.;
-real T = <%= parameters.time.children[0].value || parameters.time.children[0].default -%>;
-real dt = <%= parameters.time.children[1].value || parameters.time.children[1].default -%>;
-
-<%# Materials -%>
-<%- include('/blobs/materials.edp.ejs', {
-	materials
-}) -%>
-
-<%# Finite element space -%>
-<%
-const finiteElementSpace = parameters.finiteElementSpace.children[0]
-finiteElementSpace.name = 'Uh'
--%>
-<%- include('/blobs/fespace.edp.ejs', {
-	mesh,
-	finiteElementSpace
-}); -%>
-
-<%# Finite element function -%>
-<%
-let feFunction = ['Ux', 'Uy', 'Uz', 'p']
-
-let unknownFunction = '[Ux, Uy, Uz, p]'
-let testFunction = '[Uhx, Uhy, Uhz, ph]'
-let freeFunction = '[mUx, mUy, mUz, mp]'
-
-let U = '[Ux, Uy, Uz]'
-let Uh = '[Uhx, Uhy, Uhz]'
-
-if (dimension === 2) {
-	feFunction = ['Ux', 'Uy', 'p']
-
-	unknownFunction = '[Ux, Uy, p]'
-	testFunction = '[Uhx, Uhy, ph]'
-	freeFunction = '[mUx, mUy, mp]'
-
-	U = '[Ux, Uy]'
-	Uh = '[Uhx, Uhy]'
-	N = '[N.x, N.y]'
-}
--%>
-<%- include('/blobs/fespaceFunction.edp.ejs', {
-	finiteElementSpace,
-	finiteElementFunction: feFunction
-}); -%>
-
-<%# Macro -%>
-<%- include('/blobs/macro.edp.ejs', {
-	dimension,
-	type: ['vectorialGradient', 'vectorialDivergence']
-}); -%>
-
-<%# Problem -%>
-<% 
-const dirichlet = boundaryConditions.dirichlet.values || []
-const neumann = boundaryConditions.neumann.values || []
-const rhs = parameters.rightHandSide.children
-const rhs1 = rhs[0].value || rhs[0].default
-const rhs2 = rhs[1].value || rhs[1].default
-const rhs3 = rhs[2].value || rhs[2].default
-
-const N = '[N.x, N.y, N.z]'
--%> 
-//Problem
-appendLog("Define the problem...");
-
-real Rhodt = Rho / dt;
-varf vStokes (<%= unknownFunction -%>, <%= testFunction -%>)
-	= intN(Th)(
-		Rhodt * <%= U -%>' * <%= Uh -%>
-		+ Mu * (Grad(U) : Grad(Uh))
-		- p * Div(Uh)
-		- Div(U) * ph
-	)
-<% for (const d of dirichlet) { -%>
-	+ on(<%= d.selected.map(s => { return s.label}).filter(s => s).join() -%><% if (d.values[0].checked) { -%>, Ux=0<% } -%><% if (d.values[1].checked) { -%>, Uy=0<% } -%><% if (d.values[2].checked) { -%>, Uz=0<% } -%>)
-<% } -%>
-	;
-
-varf vStokesRHS (<%= freeFunction -%>, <%= testFunction -%>)
-	= intN(Th)(
-		Rhodt * [convect([Ux, Uy, Uz], -dt, Ux), convect([Ux, Uy, Uz], -dt, Uy), convect([Ux, Uy, Uz], -dt, Uz)]' * <%= Uh -%>
-		+ [<%- rhs1 -%>, <%- rhs2 -%>, <%- rhs3 -%>]' * <%= Uh -%>
-	)
-<% for (const n of neumann) { -%>
-	- intN1(Th, <%= p.selected.map(s => { return s.label}).filter(s => s).join() -%>)(
-		(<%- n.values[0].value -%>) * <%= N -%>' * <%= testFunction -%>
-	)
-<% } -%>
-<% for (const d of dirichlet) { -%>
-	+ on(<%= d.selected.map(s => { return s.label}).filter(s => s).join() -%><% if (d.values[0].checked) { -%>, mUx=<%- d.values[0].value -%><% } -%><% if (d.values[1].checked) { -%>, mUy=<%- d.values[1].value -%><% } -%><% if (d.values[2].checked) { -%>, mUz=<%- d.values[2].value -%><% } -%>)
-<% } -%>
-	;
-
-<%# Solver -%>
-<% const solver = parameters.solver.children[0].value || parameters.solver.children[0].default -%>
-<%- include('/blobs/solver.edp.ejs', {
-	solver
-}); -%>
-
-<%# Initialization -%>
-// Initialization
-<% if (initialization.value) { -%>
-<% if (initialization.value.type === 'coupling') { -%>
-{
-	ifstream couplingData("<%= initialization.value.dat -%>");
-	couplingData >> Ux[] >> Uy[] >> Uz[];
-}
-<% } else if (initialization.value.type === 'direct' && initialization.value.values ) { -%>
-[<%= feFunction -%>] = [<%= initialization.value.values[0] !== undefined ? initialization.value.values[0] : initialization.direct.children[0].default-%>, <%= initialization.value.values[1] !== undefined ? initialization.value.values[1] : initialization.direct.children[1].default-%>, <%= initialization.value.values[2] !== undefined ? initialization.value.values[2] : initialization.direct.children[2].default-%>, 0];
-<% } else { -%>
-[<%= feFunction -%>] = [<%= initialization.direct.children[0].default-%>, <%= initialization.direct.children[1].default-%>, initialization.direct.children[2].default-%>, 0];
-<% }-%>
-<% } -%>
-
-<%# Time loop -%>
-// Time loop
-appendLog("Time loop...");
-
-int nbIter = T / dt;
-for (int timeIter = 0; timeIter < nbIter; ++timeIter) {
-	// Update
-	t += dt;
-	string time = "Time: " + t;
-	appendLog("Time: " + t);
-
-	matrix Stokes = vStokes(<%= finiteElementSpace.name -%>, <%= finiteElementSpace.name -%>, solver=solver);
-	real[int] StokesRHS = vStokesRHS(0, <%= finiteElementSpace.name -%>);
-
-	// Solve
-	Ux[] = Stokes^-1 * StokesRHS;
-
-	// Save data
-	real netFlow = intN1(Th)(<%= U -%>' * <%= N -%>);
-	<%- include('/blobs/data.edp.ejs', {
-		path: run.dataPath,
-		name: '"netFlow_"+timeIter',
-		dataName: 'Net flow',
-		index: 1,
-		x: 't',
-		y: 'netFlow'
-	}) -%>
-
-	real div = intN(Th)(Div(U)) / intN(Th)(1);
-	<%- include('/blobs/data.edp.ejs', {
-		path: run.dataPath,
-		name: '"div_"+timeIter',
-		dataName: 'Divergence',
-		index: 2,
-		x: 't',
-		y: 'div'
-	}) -%>
-
-	// Save coupling
-	<%- include('/blobs/coupling.edp.ejs', {
-		path: run.couplingPath,
-		mesh: mesh.name,
-		name: '"Result_"+timeIter',
-		data: ['Ux', 'Uy', 'Uz']
+	<%# Dimension -%>
+	<%- include('/blobs/dimensioning.edp.ejs', {
+		dimension
 	}); -%>
 
-	// Save results
-	<%- include('/blobs/save.edp.ejs', {
-		solution: {
-			path: run.resultPath,
-			name: '"Result_"+timeIter',
+	<%# Mesh -%>
+	<%
+	const mesh = geometry.mesh
+	mesh.name = 'Th'
+	-%>
+
+	<% if (initialization.value && initialization.value.type === 'coupling') { -%>
+	meshN Th = readmesh3("<%= initialization.value.mesh -%>");
+	<% } else { -%>
+	<%- include('/blobs/mesh.edp.ejs', {
+		dimension,
+		mesh
+	}); -%>
+	<% } -%>
+
+	// Variables
+	real t = 0.;
+	real T = <%= parameters.time.children[0].value || parameters.time.children[0].default -%>;
+	real dt = <%= parameters.time.children[1].value || parameters.time.children[1].default -%>;
+
+	<%# Materials -%>
+	<%- include('/blobs/materials.edp.ejs', {
+		materials
+	}) -%>
+
+	<%# Finite element space -%>
+	<%
+	const finiteElementSpace = parameters.finiteElementSpace.children[0]
+	finiteElementSpace.name = 'Uh'
+	-%>
+	<%- include('/blobs/fespace.edp.ejs', {
+		mesh,
+		finiteElementSpace
+	}); -%>
+
+	<%# Finite element function -%>
+	<%
+	let feFunction = ['Ux', 'Uy', 'Uz', 'p']
+
+	let unknownFunction = '[Ux, Uy, Uz, p]'
+	let testFunction = '[Uhx, Uhy, Uhz, ph]'
+	let freeFunction = '[mUx, mUy, mUz, mp]'
+
+	let U = '[Ux, Uy, Uz]'
+	let Uh = '[Uhx, Uhy, Uhz]'
+
+	if (dimension === 2) {
+		feFunction = ['Ux', 'Uy', 'p']
+
+		unknownFunction = '[Ux, Uy, p]'
+		testFunction = '[Uhx, Uhy, ph]'
+		freeFunction = '[mUx, mUy, mp]'
+
+		U = '[Ux, Uy]'
+		Uh = '[Uhx, Uhy]'
+		N = '[N.x, N.y]'
+	}
+	-%>
+	<%- include('/blobs/fespaceFunction.edp.ejs', {
+		finiteElementSpace,
+		finiteElementFunction: feFunction
+	}); -%>
+
+	<%# Macro -%>
+	<%- include('/blobs/macro.edp.ejs', {
+		dimension,
+		type: ['vectorialGradient', 'vectorialDivergence']
+	}); -%>
+
+	<%# Problem -%>
+	<% 
+	const wall = boundaryConditions.wall.values || []
+	const freeOutlet = boundaryConditions.freeOutlet.values || []
+	const dirichlet = boundaryConditions.dirichlet.values || []
+	const neumann = boundaryConditions.neumann.values || []
+	const rhs = parameters.rightHandSide.children
+	const rhs1 = rhs[0].value || rhs[0].default
+	const rhs2 = rhs[1].value || rhs[1].default
+	const rhs3 = rhs[2].value || rhs[2].default
+
+	const N = '[N.x, N.y, N.z]'
+	-%> 
+	//Problem
+	appendLog("Define the problem...");
+
+	real Rhodt = Rho / dt;
+	varf vNavierStokes (<%= unknownFunction -%>, <%= testFunction -%>)
+		= intN(Th)(
+			Rhodt * <%= U -%>' * <%= Uh -%>
+			+ Mu * (Grad(U) : Grad(Uh))
+			- p * Div(Uh)
+			- Div(U) * ph
+		)
+	<% for (const d of dirichlet) { -%>
+		+ on(<%= d.selected.map(s => s.label).filter(s => s).join() -%>
+		<% if (d.values[0].checked) { -%>, Ux=0<% } -%>
+		<% if (d.values[1].checked) { -%>, Uy=0<% } -%>
+		<% if (d.values[2].checked) { -%>, Uz=0<% } -%>
+		)
+	<% } -%>
+	<% for (const w of wall) { -%>
+		+ on(<%= w.selected.map(s => s.label).filter(s => s).join() -%>, Ux=0, Uy=0, Uz=0)
+	<% } -%>
+		;
+
+	varf vNavierStokesRHS (<%= freeFunction -%>, <%= testFunction -%>)
+		= intN(Th)(
+			Rhodt * [convect(<%= U -%>, -dt, Ux), convect(<%= U -%>, -dt, Uy), convect(<%= U -%>, -dt, Uz)]' * <%= Uh -%>
+			+ [<%- rhs1 -%>, <%- rhs2 -%>, <%- rhs3 -%>]' * <%= Uh -%>
+		)
+	<% for (const n of neumann) { -%>
+		- intN1(Th, <%= p.selected.map(s => s.label).filter(s => s).join() -%>)(
+			(<%- n.values[0].value -%>) * <%= N -%>' * <%= testFunction -%>
+		)
+	<% } -%>
+	<% for (const d of dirichlet) { -%>
+		+ on(<%= d.selected.map(s => s.label).filter(s => s).join() -%>
+		<% if (d.values[0].checked) { -%>, mUx=<%- d.values[0].value -%><% } -%>
+		<% if (d.values[1].checked) { -%>, mUy=<%- d.values[1].value -%><% } -%>
+		<% if (d.values[2].checked) { -%>, mUz=<%- d.values[2].value -%><% } -%>)
+	<% } -%>
+	<% for (const w of wall) { -%>
+		+ on(<%= w.selected.map(s => s.label).filter(s => s).join() -%>, mUx=0, mUy=0, mUz=0)
+	<% } -%>
+		;
+
+	<%# Solver -%>
+	<% const solver = parameters.solver.children[0].value || parameters.solver.children[0].default -%>
+	<%- include('/blobs/solver.edp.ejs', {
+		solver
+	}); -%>
+
+	<%# Initialization -%>
+	// Initialization
+	<% if (initialization.value) { -%>
+	<% if (initialization.value.type === 'coupling') { -%>
+	{
+		ifstream couplingData("<%= initialization.value.dat -%>");
+		couplingData >> Ux[] >> Uy[] >> Uz[];
+	}
+	<% } else if (initialization.value.type === 'direct' && initialization.value.values ) { -%>
+	[<%= feFunction -%>] = [
+		<%= initialization.value.values[0] !== undefined ? initialization.value.values[0] : initialization.direct.children[0].default -%>,
+		<%= initialization.value.values[1] !== undefined ? initialization.value.values[1] : initialization.direct.children[1].default -%>,
+		<%= initialization.value.values[2] !== undefined ? initialization.value.values[2] : initialization.direct.children[2].default -%>,
+		0];
+	<% } else { -%>
+	[<%= feFunction -%>] = [
+		<%= initialization.direct.children[0].default -%>,
+		<%= initialization.direct.children[1].default -%>,
+		<%= initialization.direct.children[2].default -%>,
+		0];
+	<% }-%>
+	<% } -%>
+
+	matrix NavierStokes = vNavierStokes(<%= finiteElementSpace.name -%>, <%= finiteElementSpace.name -%>, solver=solver);
+
+	<%# Time loop -%>
+	// Time loop
+	appendLog("Time loop...");
+
+	int nbIter = T / dt;
+	for (int timeIter = 0; timeIter < nbIter; ++timeIter) {
+		// Update
+		t += dt;
+		string time = "Time: " + t;
+		appendLog("Time: " + t);
+		
+		real[int] NavierStokesRHS = vNavierStokesRHS(0, <%= finiteElementSpace.name -%>);
+
+		// Solve
+		Ux[] = NavierStokes^-1 * NavierStokesRHS;
+
+		// Save data
+		real netFlow = intN1(Th)(<%= U -%>' * <%= N -%>);
+		<%- include('/blobs/data.edp.ejs', {
+			path: run.dataPath,
+			name: '"netFlow_"+timeIter',
+			dataName: 'Net flow',
+			index: 1,
+			x: 't',
+			y: 'netFlow'
+		}) -%>
+
+		real div = intN(Th)(Div(U)) / intN(Th)(1);
+		<%- include('/blobs/data.edp.ejs', {
+			path: run.dataPath,
+			name: '"div_"+timeIter',
+			dataName: 'Divergence',
+			index: 2,
+			x: 't',
+			y: 'div'
+		}) -%>
+
+		// Save coupling
+		<%- include('/blobs/coupling.edp.ejs', {
+			path: run.couplingPath,
 			mesh: mesh.name,
-			sol: [['Ux', 'Uy', 'Uz'], 'p'],
-			dataName: run.results.map(r => r.name),
-			order: [1, 1]
-		}
-	}); -%>
-}
+			name: '"Result_"+timeIter',
+			data: ['Ux', 'Uy', 'Uz']
+		}); -%>
 
-appendLog("End");
+		// Save results
+		<%- include('/blobs/save.edp.ejs', {
+			solution: {
+				path: run.resultPath,
+				name: '"Result_"+timeIter',
+				mesh: mesh.name,
+				sol: [['Ux', 'Uy', 'Uz'], 'p'],
+				dataName: run.results.map(r => r.name),
+				order: [1, 1]
+			}
+		}); -%>
+	}
+
+	appendLog("End");
 } catch(...) {
 	appendError("An internal error occurs");
 	exit(-1);

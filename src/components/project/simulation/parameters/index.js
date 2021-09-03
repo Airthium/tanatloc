@@ -1,6 +1,14 @@
 import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
-import { Card, Collapse, Layout, Select, Space, Typography } from 'antd'
+import {
+  Card,
+  Checkbox,
+  Collapse,
+  Layout,
+  Select,
+  Space,
+  Typography
+} from 'antd'
 
 import Formula from '@/components/assets/formula'
 import { Error as ErrorNotification } from '@/components/assets/notification'
@@ -114,6 +122,16 @@ const Parameters = ({ simulation, swr }) => {
               options={child.options}
               defaultValue={child.value || child.default}
               onChange={(value) => onChange(key, index, value)}
+            />
+          </Typography.Text>
+        )
+      } else if (child.htmlEntity === 'checkbox') {
+        return (
+          <Typography.Text key={key + '&' + index}>
+            {child.label}:<br />
+            <Checkbox
+              defaultChecked={child.value}
+              onChange={(e) => onChange(key, index, e.target.checked)}
             />
           </Typography.Text>
         )

@@ -92,7 +92,6 @@
     "redux": "4.1.1",
     "redux-devtools-extension": "2.13.9",
     "redux-persist": "6.0.0",
-    "rimraf": "3.0.2",
     "set-interval-async": "2.0.3",
     "swr": "1.0.0",
     "three": "0.132.2",

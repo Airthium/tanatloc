@@ -104,6 +104,22 @@ const LinearElasticity = {
             default: 'MUMPS'
           }
         ]
+      },
+      meshAdaptation: {
+        advanced: true,
+        label: 'Mesh adaptation',
+        children: [
+          {
+            label: 'Enabled',
+            htmlEntity: 'checkbox',
+            default: false
+          },
+          {
+            label: 'Number of mesh adaptation loops',
+            htmlEntity: 'formula',
+            default: 1
+          }
+        ]
       }
     },
     boundaryConditions: {

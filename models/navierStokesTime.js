@@ -169,6 +169,12 @@ const NavierStokesTime = {
     boundaryConditions: {
       index: 5,
       title: 'Boundary conditions',
+      wall: {
+        label: 'Wall'
+      },
+      freeOutlet: {
+        label: 'Free outlet'
+      },
       dirichlet: {
         label: 'Velocity',
         children: [

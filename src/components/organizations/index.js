@@ -56,7 +56,6 @@ const Organizations = ({ user, organizations, swr }) => {
                 users: organization.users
               }}
               swr={{
-                reloadOrganizations: swr.reloadOrganizations,
                 mutateOneOrganization: swr.mutateOneOrganization,
                 loadingOrganizations: swr.loadingOrganizations
               }}
@@ -89,8 +88,7 @@ Organizations.propTypes = {
     id: PropTypes.string.isRequired
   }).isRequired,
   organizations: PropTypes.array.isRequired,
-  swr: PropTypes.shape({
-    reloadOrganizations: PropTypes.func.isRequired,
+  swr: PropTypes.exact({
     addOneOrganization: PropTypes.func.isRequired,
     delOneOrganization: PropTypes.func.isRequired,
     mutateOneOrganization: PropTypes.func.isRequired,

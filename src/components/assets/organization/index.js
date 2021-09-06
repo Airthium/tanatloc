@@ -15,7 +15,7 @@ import OrganizationAPI from '@/api/organization'
  * Organization errors
  */
 const errors = {
-  nameError: "Unable to update organization's name"
+  name: "Unable to update organization's name"
 }
 
 /**
@@ -25,7 +25,7 @@ const errors = {
  * @description
  * Props:
  * - organization: Organization `{ id, name, owners, [users] }`
- * - swr: SWR functions `{ reloadOrganizations, mutateOneOrganization, loadingOrganizations }`
+ * - swr: SWR functions `{ mutateOneOrganization, loadingOrganizations }`
  * - onClose: On close function
  */
 const Organization = ({ organization, swr, onClose }) => {
@@ -49,7 +49,7 @@ const Organization = ({ organization, swr, onClose }) => {
         name: name
       })
     } catch (err) {
-      ErrorNotification(errors.nameError, err)
+      ErrorNotification(errors.name, err)
     }
   }
 
@@ -90,7 +90,6 @@ const Organization = ({ organization, swr, onClose }) => {
               owners: organization.owners,
               users: organization.users
             }}
-            swr={{ reloadOrganizations: swr.reloadOrganizations }}
           />
         </Tabs.TabPane>
       </Tabs>
@@ -106,7 +105,6 @@ Organization.propTypes = {
     users: PropTypes.array
   }).isRequired,
   swr: PropTypes.exact({
-    reloadOrganizations: PropTypes.func.isRequired,
     mutateOneOrganization: PropTypes.func.isRequired,
     loadingOrganizations: PropTypes.bool.isRequired
   }).isRequired,

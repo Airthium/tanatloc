@@ -110,7 +110,7 @@ const Add = ({ visible, project, swr, setVisible }) => {
               <>
                 <UploadOutlined style={{ fontSize: 25 }} />
                 <div style={{ marginTop: 8 }}>
-                  <b>Choose a file</b> or drap it here
+                  <b>Choose a file</b> or drop it here
                 </div>
               </>
             )}

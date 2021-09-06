@@ -79,7 +79,11 @@ const Add = ({ title, organization, dBkey, swr }) => {
         onOk={onFinish}
         loading={loading}
       >
-        <Form.Item name="email" label="Email">
+        <Form.Item
+          name="email"
+          label="Email"
+          rules={[{ required: true, message: '"Email" is required' }]}
+        >
           <Input />
         </Form.Item>
       </Dialog>

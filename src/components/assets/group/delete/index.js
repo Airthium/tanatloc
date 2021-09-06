@@ -24,7 +24,7 @@ const errors = {
  * @description
  * Props:
  * - group: Group `{ id, name }`
- * - swr: SWR function `{ [reloadOrganizations], delOneGroup }`
+ * - swr: SWR function `{ delOneGroup }`
  */
 const Delete = ({ group, swr }) => {
   // State
@@ -43,7 +43,6 @@ const Delete = ({ group, swr }) => {
 
       // Mutate
       swr.delOneGroup({ id: group.id })
-      swr.reloadOrganizations()
 
       // Close
       setVisible(false)
@@ -82,7 +81,6 @@ Delete.propTypes = {
     name: PropTypes.string.isRequired
   }).isRequired,
   swr: PropTypes.exact({
-    reloadOrganizations: PropTypes.func.isRequired,
     delOneGroup: PropTypes.func.isRequired
   }).isRequired
 }

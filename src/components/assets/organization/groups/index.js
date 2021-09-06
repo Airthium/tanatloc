@@ -25,9 +25,8 @@ const errors = {
  * @description
  * Props:
  * - organization: Organization `{ id, owners, [users] }`
- * - swr: SWR functions `{ reloadOrganizations }`
  */
-const Groups = ({ organization, swr }) => {
+const Groups = ({ organization }) => {
   // State
   const [userOptions, setUserOptions] = useState([])
 
@@ -94,7 +93,6 @@ const Groups = ({ organization, swr }) => {
               users: group.users
             }}
             swr={{
-              reloadOrganizations: swr.reloadOrganizations,
               mutateOneGroup
             }}
           />
@@ -103,7 +101,7 @@ const Groups = ({ organization, swr }) => {
               id: group.id,
               name: group.name
             }}
-            swr={{ reloadOrganizations: swr.reloadOrganizations, delOneGroup }}
+            swr={{ delOneGroup }}
           />
         </Space>
       )
@@ -119,7 +117,6 @@ const Groups = ({ organization, swr }) => {
         userOptions={userOptions}
         organization={{ id: organization.id }}
         swr={{
-          reloadOrganizations: swr.reloadOrganizations,
           addOneGroup
         }}
       />
@@ -140,9 +137,6 @@ Groups.propTypes = {
     id: PropTypes.string.isRequired,
     owners: PropTypes.array.isRequired,
     users: PropTypes.array
-  }).isRequired,
-  swr: PropTypes.exact({
-    reloadOrganizations: PropTypes.func.isRequired
   }).isRequired
 }
 

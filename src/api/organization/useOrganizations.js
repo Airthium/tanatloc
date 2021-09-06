@@ -11,13 +11,6 @@ const useOrganizations = () => {
   const organizations = data?.organizations || []
 
   /**
-   * Reload
-   */
-  const reload = () => {
-    mutate(null, true)
-  }
-
-  /**
    * Add one
    * @param {Object} organization Organization
    */
@@ -53,7 +46,6 @@ const useOrganizations = () => {
     organizations,
     {
       mutateOrganizations: mutate,
-      reloadOrganizations: reload,
       addOneOrganization: addOne,
       delOneOrganization: delOne,
       mutateOneOrganization: mutateOne,

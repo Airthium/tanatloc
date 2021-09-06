@@ -129,7 +129,7 @@ const Users = ({ organization, swr }) => {
       <Card title="Users">
         <Space direction="vertical" style={{ width: '100%' }}>
           <Add
-            title="New uers"
+            title="New user"
             organization={{
               id: organization.id,
               users: organization.users

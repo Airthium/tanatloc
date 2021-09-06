@@ -84,7 +84,6 @@ const Dashboard = () => {
   const [
     organizations,
     {
-      reloadOrganizations,
       addOneOrganization,
       delOneOrganization,
       mutateOneOrganization,
@@ -248,7 +247,6 @@ const Dashboard = () => {
               user={{ id: user?.id }}
               organizations={organizations}
               swr={{
-                reloadOrganizations,
                 addOneOrganization,
                 delOneOrganization,
                 mutateOneOrganization,

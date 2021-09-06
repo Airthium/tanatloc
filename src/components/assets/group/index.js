@@ -28,7 +28,7 @@ const errors = {
  * - userOptions: List of users
  * - organization: Organization { id }
  * - group: Group in case of edit { id, name, users }
- * - swr: SWR functions { reloadOrganizations, addOneGroup, mutateOneGroup }
+ * - swr: SWR functions { addOneGroup, mutateOneGroup }
  */
 const Group = ({ userOptions, organization, group, swr }) => {
   // State
@@ -55,7 +55,6 @@ const Group = ({ userOptions, organization, group, swr }) => {
         name: values.name,
         users: values.users
       })
-      swr.reloadOrganizations()
 
       // Loading
       setLoading(false)
@@ -103,7 +102,6 @@ const Group = ({ userOptions, organization, group, swr }) => {
         ...group,
         ...values
       })
-      swr.reloadOrganizations()
 
       // Close
       setLoading(false)
@@ -209,19 +207,6 @@ Group.propTypes = {
             '. addOneGroup missing or invalid'
         )
     }
-
-    // Missing or invalid swr.reloadOrgnizations
-    if (
-      !props[propName].reloadOrganizations ||
-      typeof props[propName].reloadOrganizations !== 'function'
-    )
-      return new Error(
-        'Invalid prop ' +
-          propName +
-          ' supplied to ' +
-          componentName +
-          '. reloadOrganizations missing or invalid'
-      )
   }
 }
 

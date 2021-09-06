@@ -18,7 +18,7 @@ jest.mock('next/router', () => ({
 
 // SWR mock
 const mockSWR = jest.fn()
-jest.mock('swr', () => (route) => mockSWR(route))
+jest.mock('swr', () => () => mockSWR())
 
 // Fetch mock
 const mockFetch = jest.fn()
@@ -34,16 +34,16 @@ jest.mock('@sentry/node', () => ({
 // URLSearchParams mock
 jest.spyOn(global, 'URLSearchParams').mockImplementation(() => ({
   get: () => {
-    return 'administration'
+    return 'organizations'
   }
 }))
 
-describe('e2e/frontend/dashboard/administration', () => {
+describe('e2e/frontend/dashboard/organizations', () => {
   beforeEach(() => {
     mockRouterPush.mockReset()
     mockRouterReplace.mockReset()
     mockQuery.mockReset()
-    mockQuery.mockImplementation(() => ({ tab: 'registration' }))
+    mockQuery.mockImplementation(() => ({}))
 
     mockSWR.mockReset()
     mockSWR.mockImplementation(() => ({
@@ -56,8 +56,7 @@ describe('e2e/frontend/dashboard/administration', () => {
         },
         users: null,
         organizations: null,
-        workspaces: null,
-        system: { allowsignup: false }
+        workspaces: null
       },
       error: null,
       mutate: jest.fn
@@ -68,31 +67,13 @@ describe('e2e/frontend/dashboard/administration', () => {
     mockCaptureException.mockReset()
   })
 
-  test('loading', () => {
-    mockSWR.mockImplementation((route) => {
-      if (route === '/api/system') return { error: null, mutate: jest.fn }
-      return {
-        data: {
-          user: {
-            id: 'id',
-            email: 'email',
-            authorizedplugins: [],
-            superuser: true
-          },
-          users: null,
-          organizations: null,
-          workspaces: null
-        },
-        error: null,
-        mutate: jest.fn
-      }
-    })
+  test('render', () => {
     const { unmount } = render(<Dashboard />)
 
     unmount()
   })
 
-  test('system error', () => {
+  test('with organizations', async () => {
     mockSWR.mockImplementation(() => ({
       data: {
         user: {
@@ -102,25 +83,68 @@ describe('e2e/frontend/dashboard/administration', () => {
           superuser: true
         },
         users: null,
-        organizations: null,
-        workspaces: null,
-        system: null
+        organizations: [
+          {
+            id: 'id1',
+            name: 'Organization 1',
+            owners: [
+              {
+                id: 'id',
+                email: 'admin'
+              }
+            ],
+            users: [
+              {
+                id: 'id',
+                email: 'email'
+              }
+            ],
+            groups: [
+              {
+                id: 'id',
+                name: 'group'
+              }
+            ]
+          },
+          {
+            id: 'id2',
+            name: 'Organization 2',
+            owners: [
+              {
+                id: 'id',
+                email: 'admin'
+              }
+            ],
+            users: [],
+            groups: []
+          }
+        ],
+        workspaces: null
       },
-      error: new Error('SWR error'),
+      error: null,
       mutate: jest.fn
     }))
+
     const { unmount } = render(<Dashboard />)
 
-    expect(mockCaptureException).toHaveBeenCalledTimes(8)
+    // Add
+    const add = screen.getByRole('button', { name: 'plus New organization' })
+    fireEvent.click(add)
 
-    unmount()
-  })
+    // Cancel
+    let cancel = screen.getByRole('button', { name: 'Cancel' })
+    fireEvent.click(cancel)
 
-  test('allow signup', async () => {
-    const { unmount } = render(<Dashboard />)
+    fireEvent.click(add)
 
-    const checkboxes = screen.getAllByRole('checkbox')
-    const checkbox = checkboxes[0]
+    // Form
+    const name = screen.getByLabelText('Name')
+    const ok = screen.getByRole('button', { name: 'OK' })
+
+    // Empty
+    fireEvent.click(ok)
+
+    fireEvent.change(name, { target: { value: 'new name' } })
 
     // Error
     mockFetch.mockImplementation(() => ({
@@ -129,7 +153,56 @@ describe('e2e/frontend/dashboard/administration', () => {
         get: () => ''
       }
     }))
-    fireEvent.click(checkbox)
+    fireEvent.click(ok)
+    await waitFor(() =>
+      expect(mockCaptureException).toHaveBeenLastCalledWith(
+        new Error('An error occured while fetching data.')
+      )
+    )
+
+    // Normal
+    mockFetch.mockImplementation(() => ({
+      ok: true,
+      headers: {
+        get: () => 'application/json'
+      },
+      json: () => ({})
+    }))
+    fireEvent.click(ok)
+    await waitFor(() =>
+      expect(mockFetch).toHaveBeenLastCalledWith('/api/organization', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ name: 'new name' })
+      })
+    )
+
+    // Sort
+    const sorter = screen.getAllByText('Name')[0]
+    fireEvent.click(sorter)
+
+    // Delete
+    const del = screen.getAllByRole('button', { name: 'delete' })[0]
+    fireEvent.click(del)
+
+    // Cancel
+    cancel = screen.getAllByRole('button', { name: 'Cancel' })[0]
+    fireEvent.click(cancel)
+
+    fireEvent.click(del)
+    const delOk = screen.getByRole('button', { name: 'Delete' })
+
+    // Error
+    mockFetch.mockImplementation(() => ({
+      ok: false,
+      headers: {
+        get: () => ''
+      }
+    }))
+    fireEvent.click(delOk)
+    await waitFor(() => expect(mockCaptureException).toHaveBeenCalledTimes(2))
     await waitFor(() =>
       expect(mockCaptureException).toHaveBeenLastCalledWith(
         new Error('An error occured while fetching data.')
@@ -143,67 +216,20 @@ describe('e2e/frontend/dashboard/administration', () => {
         get: () => ''
       }
     }))
-    fireEvent.click(checkbox)
+    fireEvent.click(delOk)
     await waitFor(() =>
-      expect(mockFetch).toHaveBeenLastCalledWith('/api/system', {
-        method: 'PUT',
+      expect(mockFetch).toHaveBeenLastCalledWith('/api/organization', {
+        method: 'DELETE',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify([{ key: 'allowsignup', value: true }])
+        body: JSON.stringify({ id: 'id1' })
       })
     )
 
-    unmount()
-  })
-
-  test('password', async () => {
-    const { unmount } = render(<Dashboard />)
-
-    const button = screen.getByRole('button', { name: 'check' })
-
-    // Error
-    mockFetch.mockImplementation(() => ({
-      ok: false,
-      headers: {
-        get: () => ''
-      }
-    }))
-    fireEvent.click(button)
-    await waitFor(() =>
-      expect(mockCaptureException).toHaveBeenLastCalledWith(
-        new Error('An error occured while fetching data.')
-      )
-    )
-
-    // Normal
-    mockFetch.mockImplementation(() => ({
-      ok: true,
-      headers: {
-        get: () => ''
-      }
-    }))
-    fireEvent.click(button)
-    await waitFor(() =>
-      expect(mockFetch).toHaveBeenLastCalledWith('/api/system', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify([
-          {
-            key: 'password',
-            value: {
-              min: 6,
-              max: 16,
-              requireLetter: true,
-              requireNumber: true,
-              requireSymbol: true
-            }
-          }
-        ])
-      })
-    )
+    // Set organization
+    const org = screen.getAllByRole('button', { name: 'control Manage' })[0]
+    fireEvent.click(org)
 
     unmount()
   })

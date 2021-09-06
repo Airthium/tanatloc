@@ -79,6 +79,9 @@ describe('e2e/frontend/dashboard', () => {
     }))
     let { unmount } = render(<Dashboard />)
 
+    const button = screen.getByRole('button')
+    fireEvent.click(button)
+
     unmount()
 
     global.URLSearchParams = originalURLSearchParms

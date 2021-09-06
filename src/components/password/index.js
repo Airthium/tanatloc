@@ -86,7 +86,7 @@ const PasswordRecovery = () => {
     return (
       <Layout>
         <Card bordered={false} className="Signup">
-          <Spin /> Loading
+          <Spin /> Loading...
         </Card>
       </Layout>
     )

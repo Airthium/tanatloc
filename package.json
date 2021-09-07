@@ -27,7 +27,7 @@
     "postinstall": "babel . --ignore .next,app,dist,dist-install,dist-server,node_modules,public/three --out-dir dist-install && node dist-install/install && yarn copyassets",
     "prettier": "prettier -l '**/*.{js,json,md,css}'",
     "prettier:write": "prettier --write '**/*.{js,json,md,css}'",
-    "server-build": "babel . --only config,models,modules,server,plugins,src/auth,src/database,src/lib,src/route,src/services,templates --out-dir dist-server && cp plugins/denso/template/solderFilling.edp.ejs dist-server/plugins/denso/template/solderFilling.edp.ejs",
+    "server-build": "babel . --only config,models,modules,server,plugins,src/auth,src/database,src/lib,src/route,src/services,templates --out-dir dist-server",
     "start": "NODE_OPTIONS=\"--max_old_space_size=8192\" next start",
     "test": "jest --coverage --silent",
     "testwatch": "jest --watch",
@@ -79,7 +79,6 @@
     "next-transpile-modules": "8.0.0",
     "next-with-less": "1.0.1",
     "nextron": "7.0.0",
-    "node-fetch": "2.6.1",
     "passport": "0.4.1",
     "passport-local": "1.0.0",
     "pg": "8.7.1",
@@ -96,7 +95,6 @@
     "swr": "1.0.0",
     "three": "0.132.2",
     "three-to-glb": "./modules/three-to-glb",
-    "url-join": "4.0.1",
     "uuid": "8.3.2"
   }
 }

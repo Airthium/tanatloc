@@ -9,7 +9,7 @@ const Send = () => {
    */
   return (
     <Layout>
-      <Card bordered={false} className="Signup">
+      <Card bordered={true} className="Signup">
         A validation email has been send at your email address. Please follow
         the link.
       </Card>

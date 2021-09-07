@@ -1,6 +1,8 @@
 import query from '..'
 import { tables } from '@/config/db'
 
+import isElectron from 'is-electron'
+
 /**
  * Add
  * @memberof module:database/user
@@ -21,8 +23,8 @@ const add = async ({ email, password }) => {
   const response = await query(
     'INSERT INTO ' +
       tables.USERS +
-      " (email, password, isvalidated, lastmodificationdate, superuser) VALUES ($1, crypt($2, gen_salt('bf')), $3, to_timestamp($4), $5) returning id",
-    [email, password, false, Date.now(), false]
+      " (email, password, isvalidated, lastmodificationdate, superuser, authorizedplugins) VALUES ($1, crypt($2, gen_salt('bf')), $3, to_timestamp($4), $5, $6) returning id",
+    [email, password, false, Date.now(), false, isElectron() ? ['local'] : []]
   )
 
   return response.rows[0]

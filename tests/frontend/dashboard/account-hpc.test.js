@@ -83,7 +83,7 @@ describe('e2e/frontend/dashboard/account/password', () => {
             user: {
               id: 'id',
               email: 'email',
-              authorizedplugins: ['local', 'rescale', 'denso']
+              authorizedplugins: ['local']
             },
             organizations: null,
             workspaces: null
@@ -112,7 +112,7 @@ describe('e2e/frontend/dashboard/account/password', () => {
             user: {
               id: 'id',
               email: 'email',
-              authorizedplugins: ['local', 'rescale', 'denso']
+              authorizedplugins: ['local']
             },
             organizations: null,
             workspaces: null
@@ -135,7 +135,7 @@ describe('e2e/frontend/dashboard/account/password', () => {
         user: {
           id: 'id',
           email: 'email',
-          authorizedplugins: ['local', 'rescale', 'denso']
+          authorizedplugins: ['local']
         },
         organizations: null,
         workspaces: null,
@@ -151,56 +151,6 @@ describe('e2e/frontend/dashboard/account/password', () => {
                 label: 'Name',
                 type: 'input',
                 value: 'Name'
-              }
-            }
-          },
-          {
-            uuid: 'uuid2',
-            category: 'HPC',
-            key: 'rescale',
-            name: 'Rescale plugin',
-            logo: '/images/rescale.svg',
-            description:
-              '<p><a target="_blank" href="https://www.rescale.com/">Rescale</a>: Intelligent HPC Platform</p>',
-            configuration: {
-              name: {
-                required: true,
-                label: 'Name',
-                type: 'input',
-                value: 'Name'
-              },
-              token: {
-                required: true,
-                label: 'Token',
-                type: 'password'
-              },
-              platform: {
-                required: true,
-                label: 'Platform',
-                type: 'select',
-                options: [
-                  'platform.rescale.com',
-                  'eu.rescale.com',
-                  'platform.rescale.jp'
-                ],
-                value: 'platform.rescale.jp'
-              },
-              walltime: {
-                label: 'Default walltime (hours)',
-                type: 'input',
-                default: '48'
-              },
-              organization: {
-                label: 'Organization name',
-                type: 'input'
-              },
-              project: {
-                label: 'Project id',
-                type: 'input'
-              },
-              additionalFiles: {
-                label: 'Additional files (id1, id2, ...)',
-                type: 'input'
               }
             }
           }

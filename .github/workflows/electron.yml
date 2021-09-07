@@ -7,7 +7,6 @@ on:
 
 jobs:
   create-release:
-    id: create_release_job
     name: Create release
     runs-on: ubuntu latest
 
@@ -52,7 +51,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ jobs.create_release_job.steps.create_release.outputs.upload_url }}
+          upload_url: ${{ jobs.create-release.steps.create_release.outputs.upload_url }}
           asset_path: ./dist/Tanatloc-0.10.0_amd64.appImage
           asset_name: Tanatloc-0.10.0_amd64.appImage
 
@@ -80,6 +79,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ jobs.create_release_job.steps.create_release.outputs.upload_url }}
+          upload_url: ${{ jobs.create-release.steps.create_release.outputs.upload_url }}
           asset_path: ./dist/Tanatloc-0.10.0.dmg
           asset_name: Tanatloc-0.10.0.dmg

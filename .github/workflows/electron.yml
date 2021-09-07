@@ -13,8 +13,8 @@ jobs:
     steps:
       - name: Check out Git repository
         uses: actions/checkout@main
-      
-      -name: Create release
+
+      - name: Create release
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

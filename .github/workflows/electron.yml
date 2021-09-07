@@ -7,20 +7,16 @@ on:
 jobs:
   release:
   runs-on: ${{ matrix.os }}
-
     strategy:
       matrix:
         os: [macos-latest, ubuntu-latest, windows-latest]
-
     steps:
       - name: Check out git repository
         uses: actions/checkout@main
-
       - name: Install node.js, npm and yarn
         uses: actions/setup-node@main
         with:
           node-version: 16
-
       - name: Build/release electron app
         uses: samuelmeuli/action-electron-builder@v1
         with:

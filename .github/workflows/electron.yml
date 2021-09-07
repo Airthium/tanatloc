@@ -46,3 +46,44 @@ jobs:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           assets_path: ./dist/Tanatloc-0.10.0_amd64.appImage
           asset_name: Tanatloc-0.10.0_amd64.appImage
+
+  release-macos:
+    name: Build and release (MacOS)
+    runs-on: macos-latest
+
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@main
+
+      - name: Install Node.js, NPM and Yarn
+        uses: actions/setup-node@main
+        with:
+          node-version: 16
+
+      - name: Install
+        run: yarn install
+
+      - name: Electron build
+        run: yarn electron-build
+
+      - name: Create release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v0.10.0
+          release_name: v0.10.0
+          body: |
+            Electron
+          draft: false
+          prerelease: false
+
+      - name: Upload release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          assets_path: ./dist/Tanatloc-0.10.0_amd64.appImage
+          asset_name: Tanatloc-0.10.0_amd64.appImage

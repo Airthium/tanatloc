@@ -44,7 +44,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          assets_path: ./dist/Tanatloc-0.10.0_amd64.appImage
+          asset_path: ./dist/Tanatloc-0.10.0_amd64.appImage
           asset_name: Tanatloc-0.10.0_amd64.appImage
 
   release-macos:
@@ -85,5 +85,5 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          assets_path: ./dist/Tanatloc-0.10.0_amd64.appImage
-          asset_name: Tanatloc-0.10.0_amd64.appImage
+          asset_path: ./dist/Tanatloc-0.10.0.dmg
+          asset_name: Tanatloc-0.10.0.dmg

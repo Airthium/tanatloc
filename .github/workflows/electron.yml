@@ -1,29 +1,26 @@
-name: Electron
-on:
-  push:
-    branches:
-      - master
+name: Build/release electron
+
+on: push
 
 jobs:
   release:
-
     runs-on: ${{ matrix.os }}
 
-      strategy:
-        matrix:
-          os: [macos-latest, ubuntu-latest, windows-latest]
+    strategy:
+      matrix:
+        os: [macos-latest, ubuntu-latest, windows-latest]
 
-      steps:
-        - name: Check out git repository
-          uses: actions/checkout@main
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@main
 
-        - name: Install node.js, npm and yarn
-          uses: actions/setup-node@main
-          with:
-            node-version: 16
-            
-        - name: Build/release electron app
-          uses: samuelmeuli/action-electron-builder@v1
-          with:
-            github_token: ${{ secrets.GITHUB_TOKEN }}
-            build_script_name: electron-build
+      - name: Install Node.js, NPM and Yarn
+        uses: actions/setup-node@main
+        with:
+          node-version: 16
+
+      - name: Build/release Electron app
+        uses: samuelmeuli/action-electron-builder@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          build_script_name: electron-build

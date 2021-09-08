@@ -1,10 +1,11 @@
 const path = require('path')
+const webpack = require('webpack')
 
 module.exports = {
   mainSrcDir: 'electron',
   rendererSrcDir: '.',
 
-  webpack: (defaultConfig, env) => {
+  webpack: (defaultConfig) => {
     defaultConfig.resolve = {
       ...defaultConfig.resolve,
       alias: {

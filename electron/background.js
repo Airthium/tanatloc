@@ -19,6 +19,10 @@ const start = async () => {
   console.info('Starting Tanatloc')
   await app.whenReady()
 
+  // Install
+  console.info('Install')
+  require('../dist-install/install/index')
+
   // Server
   console.info('Starting server')
   require('../dist-server/server/bin/www')

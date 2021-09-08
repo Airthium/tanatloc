@@ -3,7 +3,7 @@ import { promises as fs } from 'fs'
 const copyThreeAssets = async () => {
   // Create path
   try {
-    await fs.mkdir('public/three/libs')
+    await fs.mkdir('public/three/libs', { recursive: true })
   } catch (err) {
     if (err.code !== 'EEXIST') throw err
   }

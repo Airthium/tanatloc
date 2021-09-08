@@ -96,7 +96,7 @@ jobs:
   #         asset_content_type: application/octet-stream
   release-windows:
     # needs: create-release
-    name: Build and release (MacOS)
+    name: Build and release (Windows)
     runs-on: windows-latest
 
     steps:
@@ -109,7 +109,9 @@ jobs:
           node-version: 16
 
       - name: Install
-        run: yarn install
+        run: |
+          yarn install libpq
+          yarn install
 
       - name: Electron build
         run: yarn electron-build

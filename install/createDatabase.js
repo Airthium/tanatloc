@@ -368,7 +368,7 @@ const createTable = async (table, extra) => {
  */
 const createSystemTable = async () => {
   await createTable(tables.SYSTEM, async () =>
-    query('INSERT INTO ' + tables.SYSTEM + ' (allowsignup) VALUES (true)')
+    query('INSERT INTO ' + tables.SYSTEM + ' (allowsignup) VALUES (false)')
   )
 }
 

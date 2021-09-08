@@ -94,33 +94,32 @@ jobs:
   #         asset_path: ./dist/Tanatloc-${{ needs.create-release.outputs.version }}.dmg
   #         asset_name: Tanatloc-${{ needs.create-release.outputs.version }}.dmg
   #         asset_content_type: application/octet-stream
+  release-windows:
+    needs: create-release
+    name: Build and release (MacOS)
+    runs-on: windows-latest
 
-    release-windows:
-      needs: create-release
-      name: Build and release (MacOS)
-      runs-on: windows-latest
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@main
 
-      steps:
-        - name: Check out Git repository
-          uses: actions/checkout@main
+      - name: Install Node.js, NPM and Yarn
+        uses: actions/setup-node@main
+        with:
+          node-version: 16
 
-        - name: Install Node.js, NPM and Yarn
-          uses: actions/setup-node@main
-          with:
-            node-version: 16
+      - name: Install
+        run: yarn install
 
-        - name: Install
-          run: yarn install
+      - name: Electron build
+        run: yarn electron-build
 
-        - name: Electron build
-          run: yarn electron-build
-
-        - name: Upload release
-          uses: actions/upload-release-asset@v1
-          env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          with:
-            upload_url: ${{ needs.create-release.outputs.upload_url }}
-            asset_path: ./dist/Tanatloc-${{ needs.create-release.outputs.version }}.dmg
-            asset_name: Tanatloc-${{ needs.create-release.outputs.version }}.dmg
-            asset_content_type: application/octet-stream
+      - name: Upload release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.create-release.outputs.upload_url }}
+          asset_path: ./dist/Tanatloc-${{ needs.create-release.outputs.version }}.dmg
+          asset_name: Tanatloc-${{ needs.create-release.outputs.version }}.dmg
+          asset_content_type: application/octet-stream

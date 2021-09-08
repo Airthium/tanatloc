@@ -50,10 +50,10 @@ const Users = ({ users, swr }) => {
             <Badge
               key={key}
               size="small"
-              count={Plugins[key].category}
+              count={Plugins[key]?.category}
               offset={[5, -5]}
             >
-              {Plugins[key].name}
+              {Plugins[key]?.name}
             </Badge>
           ))}
         </Space>

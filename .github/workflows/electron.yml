@@ -10,6 +10,8 @@ jobs:
     name: Create release
     runs-on: ubuntu-latest
 
+    outputs:
+      upload_url: ${{ steps.create_release.outputs.upload_url }}
     steps:
       - name: Check out Git repository
         uses: actions/checkout@main
@@ -32,9 +34,6 @@ jobs:
             Electron
           draft: false
           prerelease: false
-
-      - name: Output
-        run: echo "::set-output name=upload_url::${{ steps.create_release.outputs.upload_url }}"
 
   release-ubuntu:
     needs: create-release

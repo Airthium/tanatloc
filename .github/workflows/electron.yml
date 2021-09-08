@@ -63,6 +63,7 @@ jobs:
           upload_url: ${{ needs.create-release.outputs.upload_url }}
           asset_path: ./dist/Tanatloc-0.10.0_amd64.appImage
           asset_name: Tanatloc-0.10.0_amd64.appImage
+          asset_content_type: application/octet-stream
 
   release-macos:
     needs: create-release
@@ -92,3 +93,4 @@ jobs:
           upload_url: ${{ needs.create-release.outputs.upload_url }}
           asset_path: ./dist/Tanatloc-0.10.0.dmg
           asset_name: Tanatloc-0.10.0.dmg
+          asset_content_type: application/octet-stream

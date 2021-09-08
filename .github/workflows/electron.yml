@@ -1,97 +1,126 @@
 name: Build/release electron
 
-on:
-  push:
-    branches:
-      - master
+on: push
+    # branches:
+    #   - master
 
 jobs:
-  create-release:
-    name: Create release
-    runs-on: ubuntu-latest
+  # create-release:
+  #   name: Create release
+  #   runs-on: ubuntu-latest
 
-    outputs:
-      version: ${{ steps.package_version.outputs.version }}
-      upload_url: ${{ steps.create_release.outputs.upload_url }}
-    steps:
-      - name: Check out Git repository
-        uses: actions/checkout@main
+  #   outputs:
+  #     version: ${{ steps.package_version.outputs.version }}
+  #     upload_url: ${{ steps.create_release.outputs.upload_url }}
+  #   steps:
+  #     - name: Check out Git repository
+  #       uses: actions/checkout@main
 
-      - name: Version
-        id: package_version
-        run: |
-          VERSION=`cat package.json | grep version | head -1 | awk -F: '{ print $2 }' | sed 's/[",]//g' | tr -d '[[:space:]]'`
-          echo "::set-output name=version::$VERSION"
+  #     - name: Version
+  #       id: package_version
+  #       run: |
+  #         VERSION=`cat package.json | grep version | head -1 | awk -F: '{ print $2 }' | sed 's/[",]//g' | tr -d '[[:space:]]'`
+  #         echo "::set-output name=version::$VERSION"
 
-      - name: Create release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: v${{ steps.package_version.outputs.version }}
-          release_name: v${{ steps.package_version.outputs.version }}
-          body: |
-            Electron
-          draft: false
-          prerelease: false
+  #     - name: Create release
+  #       id: create_release
+  #       uses: actions/create-release@v1
+  #       env:
+  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #       with:
+  #         tag_name: v${{ steps.package_version.outputs.version }}
+  #         release_name: v${{ steps.package_version.outputs.version }}
+  #         body: |
+  #           Electron
+  #         draft: false
+  #         prerelease: false
 
-  release-ubuntu:
-    needs: create-release
-    name: Build and release (Ubuntu)
-    runs-on: ubuntu-latest
+  # release-ubuntu:
+  #   needs: create-release
+  #   name: Build and release (Ubuntu)
+  #   runs-on: ubuntu-latest
 
-    steps:
-      - name: Check out Git repository
-        uses: actions/checkout@main
+  #   steps:
+  #     - name: Check out Git repository
+  #       uses: actions/checkout@main
 
-      - name: Install Node.js, NPM and Yarn
-        uses: actions/setup-node@main
-        with:
-          node-version: 16
+  #     - name: Install Node.js, NPM and Yarn
+  #       uses: actions/setup-node@main
+  #       with:
+  #         node-version: 16
 
-      - name: Install
-        run: yarn install
+  #     - name: Install
+  #       run: yarn install
 
-      - name: Electron build
-        run: yarn electron-build
+  #     - name: Electron build
+  #       run: yarn electron-build
 
-      - name: Upload release
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ needs.create-release.outputs.upload_url }}
-          asset_path: ./dist/Tanatloc-${{ needs.create-release.outputs.version }}.AppImage
-          asset_name: Tanatloc-${{ needs.create-release.outputs.version }}.AppImage
-          asset_content_type: application/octet-stream
+  #     - name: Upload release
+  #       uses: actions/upload-release-asset@v1
+  #       env:
+  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #       with:
+  #         upload_url: ${{ needs.create-release.outputs.upload_url }}
+  #         asset_path: ./dist/Tanatloc-${{ needs.create-release.outputs.version }}.AppImage
+  #         asset_name: Tanatloc-${{ needs.create-release.outputs.version }}.AppImage
+  #         asset_content_type: application/octet-stream
 
-  release-macos:
-    needs: create-release
-    name: Build and release (MacOS)
-    runs-on: macos-latest
+  # release-macos:
+  #   needs: create-release
+  #   name: Build and release (MacOS)
+  #   runs-on: macos-latest
 
-    steps:
-      - name: Check out Git repository
-        uses: actions/checkout@main
+  #   steps:
+  #     - name: Check out Git repository
+  #       uses: actions/checkout@main
 
-      - name: Install Node.js, NPM and Yarn
-        uses: actions/setup-node@main
-        with:
-          node-version: 16
+  #     - name: Install Node.js, NPM and Yarn
+  #       uses: actions/setup-node@main
+  #       with:
+  #         node-version: 16
 
-      - name: Install
-        run: yarn install
+  #     - name: Install
+  #       run: yarn install
 
-      - name: Electron build
-        run: yarn electron-build
+  #     - name: Electron build
+  #       run: yarn electron-build
 
-      - name: Upload release
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ needs.create-release.outputs.upload_url }}
-          asset_path: ./dist/Tanatloc-${{ needs.create-release.outputs.version }}.dmg
-          asset_name: Tanatloc-${{ needs.create-release.outputs.version }}.dmg
-          asset_content_type: application/octet-stream
+  #     - name: Upload release
+  #       uses: actions/upload-release-asset@v1
+  #       env:
+  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #       with:
+  #         upload_url: ${{ needs.create-release.outputs.upload_url }}
+  #         asset_path: ./dist/Tanatloc-${{ needs.create-release.outputs.version }}.dmg
+  #         asset_name: Tanatloc-${{ needs.create-release.outputs.version }}.dmg
+  #         asset_content_type: application/octet-stream
+
+    release-windows:
+      needs: create-release
+      name: Build and release (MacOS)
+      runs-on: windows-latest
+
+      steps:
+        - name: Check out Git repository
+          uses: actions/checkout@main
+
+        - name: Install Node.js, NPM and Yarn
+          uses: actions/setup-node@main
+          with:
+            node-version: 16
+
+        - name: Install
+          run: yarn install
+
+        - name: Electron build
+          run: yarn electron-build
+
+        - name: Upload release
+          uses: actions/upload-release-asset@v1
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          with:
+            upload_url: ${{ needs.create-release.outputs.upload_url }}
+            asset_path: ./dist/Tanatloc-${{ needs.create-release.outputs.version }}.dmg
+            asset_name: Tanatloc-${{ needs.create-release.outputs.version }}.dmg
+            asset_content_type: application/octet-stream

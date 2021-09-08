@@ -129,6 +129,10 @@ const createTables = async () => {
     console.info(' + Link table')
     await createLinkTable()
 
+    // Wait
+    console.info(' + Wait table')
+    await createWaitTable()
+
     // Administrator
     await createAdmin()
 
@@ -438,6 +442,14 @@ const createSimulationTable = async () => {
  */
 const createLinkTable = async () => {
   await createTable(tables.LINKS)
+}
+
+/**
+ * Create wait table
+ * @memberof module:install
+ */
+ const createWaitTable = async () => {
+  await createTable(tables.WAIT)
 }
 
 /**

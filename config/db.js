@@ -35,7 +35,8 @@ const tables = {
   GEOMETRIES: 'tanatloc_geometries',
   SIMULATIONS: 'tanatloc_simulations',
   AVATARS: 'tanatloc_avatars',
-  LINKS: 'tanatloc_links'
+  LINKS: 'tanatloc_links',
+  WAIT: 'tanatloc_wait'
 }
 
 /**
@@ -383,6 +384,12 @@ const schemas = {
     },
     {
       name: 'userid',
+      type: 'TEXT'
+    }
+  ],
+  [tables.WAIT]: [
+    {
+      name: 'email',
       type: 'TEXT'
     }
   ]

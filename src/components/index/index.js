@@ -2,10 +2,12 @@
 
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
-import { Button, Divider, Layout, Typography } from 'antd'
+import { Button, Divider, Layout, Space, Typography } from 'antd'
 import { DashboardOutlined, LoginOutlined } from '@ant-design/icons'
 
 import Background from '@/components/background'
+import Wait from './wait'
+
 import { Error as ErrorNotification } from '@/components/assets/notification'
 
 import UserAPI from '@/api/user'
@@ -71,13 +73,28 @@ const Index = () => {
         {!loadingUser && (
           <Button.Group>
             {user ? (
-              <Button icon={<DashboardOutlined />} onClick={handleDashboard}>
+              <Button
+                icon={<DashboardOutlined />}
+                onClick={handleDashboard}
+                size="large"
+              >
                 Dashboard
               </Button>
             ) : (
               <>
-                <Button onClick={handleSignup}>Signup</Button>
-                <Button icon={<LoginOutlined />} onClick={handleLogin}>
+                <Button
+                  onClick={handleSignup}
+                  size="large"
+                  style={{ border: 'none' }}
+                >
+                  Signup
+                </Button>
+                <Button
+                  icon={<LoginOutlined />}
+                  onClick={handleLogin}
+                  size="large"
+                  style={{ border: 'none' }}
+                >
                   Login
                 </Button>
               </>
@@ -98,6 +115,11 @@ const Index = () => {
             <Typography.Title>
               See the world the way it really is!
             </Typography.Title>
+          </Layout.Content>
+        </Layout>
+        <Layout style={{ width: '50%', margin: 'auto' }}>
+          <Layout.Content>
+            <Wait />
           </Layout.Content>
         </Layout>
         <p className="version">

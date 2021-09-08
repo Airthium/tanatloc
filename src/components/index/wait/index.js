@@ -10,6 +10,8 @@ const Wait = () => {
   const [form] = Form.useForm()
 
   const onFinish = async (values) => {
+    if (ok) return
+
     setOk(true)
     try {
       if (!values.email) throw new Error('Empty email')
@@ -35,13 +37,8 @@ const Wait = () => {
           <Input />
         </Form.Item>
         <Form.Item>
-          <Button
-            type="primary"
-            htmlType="submit"
-            icon={ok && <CheckOutlined />}
-            disabled={ok}
-          >
-            Submit
+          <Button type="primary" htmlType="submit">
+            {ok ? <CheckOutlined /> : 'Submit'}
           </Button>
         </Form.Item>
       </Form>

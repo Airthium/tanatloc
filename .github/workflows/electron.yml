@@ -62,8 +62,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ needs.create-release.outputs.upload_url }}
-          asset_path: ./dist/Tanatloc-${{ needs.create-release.outputs.version }}_amd64.appImage
-          asset_name: Tanatloc-${{ needs.create-release.outputs.version }}_amd64.appImage
+          asset_path: ./dist/Tanatloc-${{ needs.create-release.outputs.version }}.appImage
+          asset_name: Tanatloc-${{ needs.create-release.outputs.version }}.appImage
           asset_content_type: application/octet-stream
 
   release-macos:

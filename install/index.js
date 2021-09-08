@@ -2,6 +2,7 @@
 
 import createDatabase from './createDatabase'
 import createPaths from './createPaths'
+import copyAssets from './copyAssets'
 
 /**
  * Main
@@ -11,8 +12,11 @@ const main = async () => {
   console.info("  / /\\/ _` | '_ \\ / _` | __| |/ _ \\ / __|")
   console.info(' / / | (_| | | | | (_| | |_| | (_) | (__ ')
   console.info(' \\/   \\__,_|_| |_|\\__,_|\\__|_|\\___/ \\___|')
-  await createDatabase()
-  await createPaths()
+  await copyAssets()
+  if (!process.env.CI) {
+    await createDatabase()
+    await createPaths()
+  }
 }
 
 main()

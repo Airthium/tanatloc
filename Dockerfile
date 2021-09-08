@@ -68,8 +68,7 @@ COPY yarn.lock ${INSTALL_PATH}/yarn.lock
 
 WORKDIR ${INSTALL_PATH}
 
-RUN yarn install --ignore-scripts
-RUN yarn copyassets
+RUN CI=1 yarn install
 RUN yarn babel . --ignore node_modules --out-dir dist-install
 RUN yarn next telemetry disable
 

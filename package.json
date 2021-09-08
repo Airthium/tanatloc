@@ -16,7 +16,6 @@
   },
   "scripts": {
     "build": "NEXT_PUBLIC_SOURCE_BRANCH=`git rev-parse --abbrev-ref HEAD` NEXT_PUBLIC_SOURCE_COMMIT=`git rev-parse --short HEAD` next build",
-    "copyassets": "mkdir -p public/three/libs/draco && cp -Rf node_modules/three/examples/js/libs/draco/* public/three/libs/draco/",
     "depcheck": "depcheck",
     "dev": "NODE_OPTIONS=\"--max_old_space_size=8192\" NEXT_PUBLIC_SOURCE_BRANCH=`git rev-parse --abbrev-ref HEAD` NEXT_PUBLIC_SOURCE_COMMIT=`git rev-parse --short HEAD` next",
     "doc": "jsdoc -c config/jsdoc/conf.json",
@@ -24,7 +23,7 @@
     "electron-build": "yarn server-build && nextron build && electron-builder install-app-deps",
     "electron-dev": "yarn server-build && nextron",
     "export": "yarn build && next export",
-    "postinstall": "babel . --ignore .next,app,dist,dist-install,dist-server,node_modules,public/three --out-dir dist-install && node dist-install/install && yarn copyassets",
+    "postinstall": "babel . --ignore .next,app,dist,dist-install,dist-server,node_modules,public/three --out-dir dist-install && node dist-install/install",
     "prettier": "prettier -l '**/*.{js,json,md,css}'",
     "prettier:write": "prettier --write '**/*.{js,json,md,css}'",
     "server-build": "babel . --only config,models,modules,server,plugins,src/auth,src/database,src/lib,src/route,src/services,templates --out-dir dist-server",

@@ -6,79 +6,81 @@ on:
       - master
 
 jobs:
-  create-release:
-    name: Create release
-    runs-on: ubuntu latest
+  # create-release:
+  #   name: Create release
+  #   runs-on: ubuntu latest
 
-    steps:
-      - name: Check out Git repository
-        uses: actions/checkout@main
+  #   steps:
+  #     - name: Check out Git repository
+  #       uses: actions/checkout@main
 
-      - name: Create release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: v0.10.0
-          release_name: v0.10.0
-          body: |
-            Electron
-          draft: false
-          prerelease: false
+  #     - name: Create release
+  #       id: create_release
+  #       uses: actions/create-release@v1::set-output name=release
+  #       env:
+  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #       with:
+  #         tag_name: v0.10.0
+  #         release_name: v0.10.0
+  #         body: |
+  #           Electron
+  #         draft: false
+  #         prerelease: false
 
-  release-ubuntu:
-    name: Build and release (Ubuntu)
-    runs-on: ubuntu-latest
+  # release-ubuntu:
+  #   needs: create-release
+  #   name: Build and release (Ubuntu)
+  #   runs-on: ubuntu-latest
 
-    steps:
-      - name: Check out Git repository
-        uses: actions/checkout@main
+  #   steps:
+  #     - name: Check out Git repository
+  #       uses: actions/checkout@main
 
-      - name: Install Node.js, NPM and Yarn
-        uses: actions/setup-node@main
-        with:
-          node-version: 16
+  #     - name: Install Node.js, NPM and Yarn
+  #       uses: actions/setup-node@main
+  #       with:
+  #         node-version: 16
 
-      - name: Install
-        run: yarn install
+  #     - name: Install
+  #       run: yarn install
 
-      - name: Electron build
-        run: yarn electron-build
+  #     - name: Electron build
+  #       run: yarn electron-build
 
-      - name: Upload release
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ jobs.create-release.steps.create_release.outputs.upload_url }}
-          asset_path: ./dist/Tanatloc-0.10.0_amd64.appImage
-          asset_name: Tanatloc-0.10.0_amd64.appImage
+  #     - name: Upload release
+  #       uses: actions/upload-release-asset@v1
+  #       env:
+  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #       with:
+  #         upload_url: ${{ needs.create-release.outputs.release.upload_url }}
+  #         asset_path: ./dist/Tanatloc-0.10.0_amd64.appImage
+  #         asset_name: Tanatloc-0.10.0_amd64.appImage
 
-  release-macos:
-    name: Build and release (MacOS)
-    runs-on: macos-latest
+  # release-macos:
+  #   needs: create-release
+  #   name: Build and release (MacOS)
+  #   runs-on: macos-latest
 
-    steps:
-      - name: Check out Git repository
-        uses: actions/checkout@main
+  #   steps:
+  #     - name: Check out Git repository
+  #       uses: actions/checkout@main
 
-      - name: Install Node.js, NPM and Yarn
-        uses: actions/setup-node@main
-        with:
-          node-version: 16
+  #     - name: Install Node.js, NPM and Yarn
+  #       uses: actions/setup-node@main
+  #       with:
+  #         node-version: 16
 
-      - name: Install
-        run: yarn install
+  #     - name: Install
+  #       run: yarn install
 
-      - name: Electron build
-        run: yarn electron-build
+  #     - name: Electron build
+  #       run: yarn electron-build
 
-      - name: Upload release
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ jobs.create-release.steps.create_release.outputs.upload_url }}
-          asset_path: ./dist/Tanatloc-0.10.0.dmg
-          asset_name: Tanatloc-0.10.0.dmg
+  #     - name: Upload release
+  #       uses: actions/upload-release-asset@v1
+  #       env:
+  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #       with:
+  #         upload_url: ${{ jobs.create-release.steps.create_release.outputs.upload_url }}
+  #         asset_path: ./dist/Tanatloc-0.10.0.dmg
+  #         asset_name: Tanatloc-0.10.0.dmg

@@ -448,7 +448,7 @@ const createLinkTable = async () => {
  * Create wait table
  * @memberof module:install
  */
- const createWaitTable = async () => {
+const createWaitTable = async () => {
   await createTable(tables.WAIT)
 }
 

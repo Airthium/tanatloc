@@ -95,7 +95,7 @@ jobs:
   #         asset_name: Tanatloc-${{ needs.create-release.outputs.version }}.dmg
   #         asset_content_type: application/octet-stream
   release-windows:
-    needs: create-release
+    # needs: create-release
     name: Build and release (MacOS)
     runs-on: windows-latest
 

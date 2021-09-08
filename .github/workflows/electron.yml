@@ -21,7 +21,7 @@ jobs:
         id: package_version
         run: |
           VERSION=`cat package.json | grep version | head -1 | awk -F: '{ print $2 }' | sed 's/[",]//g' | tr -d '[[:space:]]'`
-          echo "::set-output name=version::v$VERSION"
+          echo "::set-output name=version::$VERSION"
 
       - name: Create release
         id: create_release
@@ -29,8 +29,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ steps.package_version.outputs.version }}
-          release_name: ${{ steps.package_version.outputs.version }}
+          tag_name: v${{ steps.package_version.outputs.version }}
+          release_name: v${{ steps.package_version.outputs.version }}
           body: |
             Electron
           draft: false

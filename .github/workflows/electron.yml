@@ -1,4 +1,4 @@
-name: Build/release electron
+name: Build and release electron
 
 on: 
   push:

@@ -11,6 +11,7 @@ jobs:
     runs-on: ubuntu-latest
 
     outputs:
+      version: ${{ steps.package_version.outputs.version }}
       upload_url: ${{ steps.create_release.outputs.upload_url }}
     steps:
       - name: Check out Git repository
@@ -61,8 +62,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ needs.create-release.outputs.upload_url }}
-          asset_path: ./dist/Tanatloc-0.10.0_amd64.appImage
-          asset_name: Tanatloc-0.10.0_amd64.appImage
+          asset_path: ./dist/Tanatloc-${{ needs.create-release.outputs.version }}_amd64.appImage
+          asset_name: Tanatloc-${{ needs.create-release.outputs.version }}_amd64.appImage
           asset_content_type: application/octet-stream
 
   release-macos:
@@ -91,6 +92,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ needs.create-release.outputs.upload_url }}
-          asset_path: ./dist/Tanatloc-0.10.0.dmg
-          asset_name: Tanatloc-0.10.0.dmg
+          asset_path: ./dist/Tanatloc-${{ needs.create-release.outputs.version }}.dmg
+          asset_name: Tanatloc-${{ needs.create-release.outputs.version }}.dmg
           asset_content_type: application/octet-stream

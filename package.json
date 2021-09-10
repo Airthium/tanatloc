@@ -80,7 +80,7 @@
     "passport-local": "1.0.0",
     "pg": "8.7.1",
     "pg-native": "./modules/pg-native",
-    "prettier": "2.3.2",
+    "prettier": "2.4.0",
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "react-redux": "7.2.5",

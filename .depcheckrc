@@ -1,4 +1,5 @@
 ignores: [
+    "ignore-loader",
     "@sentry/browser",
     "node-fetch",
     "set-interval-async",

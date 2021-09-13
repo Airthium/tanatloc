@@ -5,7 +5,6 @@ import { v4 as uuid } from 'uuid'
 
 import User from '../user'
 import Plugins from '../plugins'
-import { lineBreak } from 'acorn'
 
 /**
  * Add plugin
@@ -24,8 +23,8 @@ const add = async ({ id }, plugin) => {
 
   // Plugin initialization
   if (plugin.needInit) {
-    const libs = await Plugins.serverList()
-    const lib = libs.find((l) => l.key === plugin.key)
+    const plugins = await Plugins.serverList()
+    const lib = plugins.find((l) => l.key === plugin.key)?.lib
     if (lib) {
       const init = await lib.init(plugin.configuration)
       merge(plugin, init)
@@ -63,10 +62,10 @@ const update = async ({ id }, plugin) => {
 
   // Re-init
   if (plugin.needInit && plugin.needReInit) {
-    const libs = await Plugins.serverList()
-    const lib = libs.find((l) => l.key === plugin.key)
+    const plugins = await Plugins.serverList()
+    const lib = plugins.find((l) => l.key === plugin.key)?.lib
     if (lib) {
-      const init = await lineBreak.init(plugin.configuration)
+      const init = await lib.init(plugin.configuration)
       merge(plugin, init)
     }
     plugin.needReInit = false

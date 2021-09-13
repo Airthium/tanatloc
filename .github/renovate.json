@@ -11,7 +11,7 @@
       "groupSlug": "all"
     }
   ],
-  "ignoreDeps": ["is-docker", "node-fetch"],
+  "ignoreDeps": ["is-docker"],
   "lockFileMaintenance": {
     "enabled": false
   }

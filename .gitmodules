@@ -1,6 +1,0 @@
-[submodule "plugins/denso"]
-	path = plugins/denso
-	url = git@github.com:Airthium/tanatloc-ssr-plugin-denso.git
-[submodule "plugins/rescale"]
-	path = plugins/rescale
-	url = git@github.com:Airthium/tanatloc-ssr-plugin-rescale.git

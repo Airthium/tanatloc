@@ -1,10 +1,20 @@
 /** @module lib/plugins */
 
-import loadPlugins from '@/plugins'
-
 let plugins
 const load = async () => {
-  plugins = await loadPlugins()
+  // Local
+  try {
+    const Local = await import('tanatloc-ssr-plugin-local')
+    plugins.push(Local.default)
+  } catch (err) {
+    console.error('Plugin local not loaded!')
+  }
+
+  // Rescale
+  // TODO
+
+  // Denso
+  // TODO
 }
 
 load().catch(console.error)

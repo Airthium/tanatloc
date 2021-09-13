@@ -1,4 +1,4 @@
-import Local from '../'
+import Local from '..'
 
 describe('plugins/local', () => {
   test('call', () => {

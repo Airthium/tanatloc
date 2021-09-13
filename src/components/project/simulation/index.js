@@ -21,7 +21,8 @@ import Run from './run'
 import SimulationAPI from '@/api/simulation'
 
 import Models from '@/models'
-import Plugins from '@/plugins'
+// import Plugins from '@/plugins'
+const Plugins = {}
 
 /**
  * Errors

@@ -4,7 +4,7 @@ import { Card, Space } from 'antd'
 
 import Plugin from './plugin'
 
-import Plugins from '@/plugins'
+import PluginsAPI from '@/api/plugins'
 
 /**
  * HPC plugins
@@ -17,41 +17,34 @@ const HPC = ({ user }) => {
 
   // Plugins list
   useEffect(() => {
-    // HPC & authorized only
-    const HPCPlugins = Object.keys(Plugins)
-      .map((key) => {
-        const plugin = Plugins[key]
-        if (
-          user.authorizedplugins?.includes(plugin.key) &&
-          plugin.category === 'HPC'
-        )
-          return plugin
-      })
-      .filter((p) => p)
+    PluginsAPI.list()
+      .then((plugins) => {
+        const HPCPlugins = plugins.filter((plugin) => plugin.category === 'HPC')
 
-    if (HPCPlugins.length) {
-      // List
-      const pluginsList = HPCPlugins.map((plugin) => {
-        return (
-          <Card key={plugin.key} title={plugin.name}>
-            <Plugin
-              plugin={{
-                key: plugin.key,
-                name: plugin.name,
-                needInit: !!plugin.needInit,
-                configuration: plugin.configuration,
-                inUseConfiguration: plugin.inUseConfiguration
-              }}
-            />
-          </Card>
-        )
+        if (HPCPlugins.length) {
+          const pluginsList = HPCPlugins.map((plugin) => {
+            return (
+              <Card key={plugin.key} title={plugin.name}>
+                <Plugin
+                  plugin={{
+                    key: plugin.key,
+                    name: plugin.name,
+                    needInit: !!plugin.needInit,
+                    configuration: plugin.configuration,
+                    inUseConfiguration: plugin.inUseConfiguration
+                  }}
+                />
+              </Card>
+            )
+          })
+          setList(pluginsList)
+        } else {
+          setList(
+            <Card>You do not have access to any HPC plugin. Request it.</Card>
+          )
+        }
       })
-      setList(pluginsList)
-    } else {
-      setList(
-        <Card>You do not have access to any HPC plugin. Request it.</Card>
-      )
-    }
+      .catch(console.log)
   }, [user])
 
   /**

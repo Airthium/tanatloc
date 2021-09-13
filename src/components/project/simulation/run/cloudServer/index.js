@@ -7,7 +7,8 @@ import merge from 'lodash.merge'
 
 import { Error as ErrorNotification } from '@/components/assets/notification'
 
-import Plugins from '@/plugins'
+// import Plugins from '@/plugins'
+const Plugins = {}
 
 import PluginAPI from '@/api/plugin'
 

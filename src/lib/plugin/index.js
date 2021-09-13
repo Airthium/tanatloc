@@ -4,8 +4,8 @@ import merge from 'lodash.merge'
 import { v4 as uuid } from 'uuid'
 
 import User from '../user'
-
-import APIs from '@/plugins/api'
+import Plugins from '../plugins'
+import { lineBreak } from 'acorn'
 
 /**
  * Add plugin
@@ -24,9 +24,10 @@ const add = async ({ id }, plugin) => {
 
   // Plugin initialization
   if (plugin.needInit) {
-    const API = APIs[plugin.key]
-    if (API) {
-      const init = await API.init(plugin.configuration)
+    const libs = await Plugins.serverList()
+    const lib = libs.find((l) => l.key === plugin.key)
+    if (lib) {
+      const init = await lib.init(plugin.configuration)
       merge(plugin, init)
     }
   }
@@ -62,9 +63,10 @@ const update = async ({ id }, plugin) => {
 
   // Re-init
   if (plugin.needInit && plugin.needReInit) {
-    const API = APIs[plugin.key]
-    if (API) {
-      const init = await API.init(plugin.configuration)
+    const libs = await Plugins.serverList()
+    const lib = libs.find((l) => l.key === plugin.key)
+    if (lib) {
+      const init = await lineBreak.init(plugin.configuration)
       merge(plugin, init)
     }
     plugin.needReInit = false

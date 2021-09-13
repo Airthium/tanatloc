@@ -6,7 +6,7 @@ import ejs from 'ejs'
 import Tools from '../tools'
 
 import Templates from '@/templates'
-import PluginTemplates from '@/plugins/templates'
+import Plugins from '../plugins'
 
 /**
  * Load templates
@@ -27,9 +27,9 @@ const loadTemplates = async () => {
   )
 
   // Plugin templates
+  const plugins = Plugins.serverList()
   await Promise.all(
-    Object.keys(PluginTemplates).map(async (key) => {
-      const plugin = PluginTemplates[key]
+    plugins.map(async (plugin) => {
       await Promise.all(
         plugin.templates.map(async (template) => {
           const content = await Tools.readFile(

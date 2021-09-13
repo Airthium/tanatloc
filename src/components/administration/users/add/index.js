@@ -7,8 +7,6 @@ import Dialog from '@/components/assets/dialog'
 import { PasswordItem } from '@/components/assets/input'
 import { Error as ErrorNotification } from '@/components/assets/notification'
 
-import Plugins from '@/plugins'
-
 import UserAPI from '@/api/user'
 
 /**
@@ -24,7 +22,7 @@ const errors = {
  * @memberof module:components/administration
  * @param {Object} props Props
  */
-const Add = ({ swr }) => {
+const Add = ({ plugins, swr }) => {
   // State
   const [visible, setVisible] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -110,9 +108,9 @@ const Add = ({ swr }) => {
         <Form.Item name="authorizedplugins" label="Plugins">
           <Select
             mode="multiple"
-            options={Object.keys(Plugins).map((key) => ({
-              label: Plugins[key].name,
-              value: Plugins[key].key
+            options={plugins.map((plugin) => ({
+              label: plugin.name,
+              value: plugin.key
             }))}
           />
         </Form.Item>
@@ -133,6 +131,7 @@ const Add = ({ swr }) => {
 }
 
 Add.propTypes = {
+  plugins: PropTypes.array.isRequired,
   swr: PropTypes.exact({
     addOneUser: PropTypes.func.isRequired
   }).isRequired

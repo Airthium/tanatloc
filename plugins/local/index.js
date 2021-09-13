@@ -1,18 +1,23 @@
-import Renderer from './src/components'
+import Lib from './src/lib'
 
 const Local = {
   category: 'HPC',
   key: 'local',
-  name: 'Local',
-  description: '<p>Local</p>',
-  configuration: {
-    name: {
-      label: 'Name',
-      type: 'input'
-    }
+  client: {
+    name: 'Local',
+    description: '<p>Local</p>',
+    configuration: {
+      name: {
+        label: 'Name',
+        type: 'input'
+      }
+    },
+    inUseConfiguration: {},
+    renderer: 'src/components'
   },
-  renderer: Renderer,
-  inUseConfiguration: {}
+  server: {
+    lib: Lib
+  }
 }
 
 export default Local

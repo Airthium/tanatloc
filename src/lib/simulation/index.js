@@ -4,14 +4,13 @@ import path from 'path'
 
 import storage from '@/config/storage'
 
-import PluginAPIs from '@/plugins/api'
-
 import SimulationDB from '@/database/simulation'
 
 import User from '../user'
 import Project from '../project'
 import Geometry from '../geometry'
 import Tools from '../tools'
+import Plugins from '../plugins'
 
 /**
  * Add simulation
@@ -121,11 +120,14 @@ const run = async (user, { id }) => {
   ])
 
   // Find plugin
-  const plugin = PluginAPIs[configuration.run.cloudServer.key]
+  const pluginsLibs = await Plugins.serverList()
+  const pluginLib = pluginsLibs.find(
+    (p) => p.key === configuration.run.cloudServer.key
+  )
 
   // Check authorized
   const userData = await User.get(user.id, ['authorizedplugins'])
-  if (!userData.authorizedplugins?.includes(plugin.key)) {
+  if (!userData.authorizedplugins?.includes(pluginLib.key)) {
     const err = { message: 'Unauthorized' }
     console.error(err)
 
@@ -232,7 +234,7 @@ const run = async (user, { id }) => {
   }
 
   // Compute
-  plugin
+  pluginLib
     .computeSimulation({ id }, algorithm, configuration)
     .then(() => {
       configuration.run = {
@@ -286,10 +288,13 @@ const stop = async ({ id }) => {
   const tasks = simulation.tasks
 
   // Find plugin
-  const plugin = PluginAPIs[configuration.run.cloudServer.key]
+  const pluginsLibs = await Plugins.serverList()
+  const pluginLib = pluginsLibs.find(
+    (p) => p.key === configuration.run.cloudServer.key
+  )
 
   // Stop
-  await plugin.stop(tasks, configuration)
+  await pluginLib.stop(tasks, configuration)
 
   // Update tasks
   tasks?.forEach((task) => {

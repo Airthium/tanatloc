@@ -1,26 +1,39 @@
 /** @module lib/plugins */
 
-import Local from 'tanatloc-ssr-plugin-local'
+import { promises as fs } from 'fs'
 
-let plugins = []
+const plugins = []
 const load = async () => {
-  // Local
+  plugins.length = 0
   try {
-    const Local = await import('tanatloc-ssr-plugin-local')
-    plugins.push(Local.default)
+    // Available directories
+    const availables = await fs.readdir('plugins')
+
+    await Promise.all(
+      availables.map(async (available) => {
+        try {
+          // Import
+          const plugin = await import(`/plugins/${available}`)
+          plugins.push(plugin.default)
+        } catch (err) {
+          console.error(`Plugin ${plugin} not loaded!`)
+        }
+      })
+    )
   } catch (err) {
-    console.log(err)
-    console.error('Plugin local not loaded!')
+    console.error(err)
   }
-
-  // Rescale
-  // TODO
-
-  // Denso
-  // TODO
 }
 
-load().catch(console.error)
+load()
+
+const serverList = async () => {
+  return plugins.map((plugin) => ({
+    category: plugin.category,
+    key: plugin.key,
+    ...plugin.server
+  }))
+}
 
 const clientList = async (user) => {
   return plugins
@@ -33,14 +46,6 @@ const clientList = async (user) => {
         }
     })
     .filter((p) => p)
-}
-
-const serverList = async () => {
-  return plugins.map((plugin) => ({
-    category: plugin.category,
-    key: plugin.key,
-    ...plugin.server
-  }))
 }
 
 export default { clientList, serverList }

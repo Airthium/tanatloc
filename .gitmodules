@@ -1,0 +1,3 @@
+[submodule "plugins/denso"]
+	path = plugins/denso
+	url = git@github.com:Airthium/tanatloc-ssr-plugin-denso.git

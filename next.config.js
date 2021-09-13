@@ -13,8 +13,14 @@ module.exports = withLess({
       }
 
       config.node = {
+        ...config.node,
         __dirname: true
       }
+
+      config.module.rules.push({
+        test: /\.ejs/,
+        use: [{ loader: 'ignore-loader' }]
+      })
 
       config.plugins.push(new webpack.IgnorePlugin(/\/__tests__\//))
 

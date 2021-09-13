@@ -1,3 +1,4 @@
+import path from 'path'
 import Lib from './src/lib'
 
 const Local = {
@@ -12,8 +13,7 @@ const Local = {
         type: 'input'
       }
     },
-    inUseConfiguration: {},
-    renderer: 'src/components'
+    inUseConfiguration: {}
   },
   server: {
     lib: Lib

@@ -19,10 +19,9 @@ import BoundaryConditions from './boundaryConditions'
 import Run from './run'
 
 import SimulationAPI from '@/api/simulation'
+import PluginsAPI from '@/api/plugins'
 
 import Models from '@/models'
-// import Plugins from '@/plugins'
-const Plugins = {}
 
 /**
  * Errors
@@ -40,12 +39,12 @@ const errors = {
 const loadModels = (user, models, plugins) => {
   let allModels = models
 
-  Object.keys(plugins).forEach((key) => {
+  plugins.map((plugin) => {
     if (
-      user?.authorizedplugins?.includes(key) &&
-      plugins[key].category === 'Model'
+      user?.authorizedplugins?.includes(plugin.key) &&
+      plugin.category === 'Model'
     )
-      allModels = [...allModels, ...plugins[key].models]
+      allModels = [...allModels, ...plugin.models]
   })
 
   return allModels
@@ -63,9 +62,16 @@ const Selector = ({ user, visible, onOk, onCancel }) => {
 
   // Models
   useEffect(() => {
-    const allModels = loadModels(user, Models, Plugins)
-    setModels(allModels)
-  }, [Models, Plugins, user])
+    if (!user) return
+
+    new Promise(async (resolve) => {
+      const plugins = await PluginsAPI.list()
+      const allModels = loadModels(user, Models, plugins)
+
+      setModels(allModels)
+      resolve()
+    }).catch(console.log)
+  }, [user])
 
   /**
    * On select
@@ -137,9 +143,16 @@ const Updater = ({ user, simulation, swr }) => {
 
   // Models
   useEffect(() => {
-    const allModels = loadModels(user, Models, Plugins)
-    setModels(allModels)
-  }, [Models, Plugins, user])
+    if (!user) return
+
+    new Promise(async (resolve) => {
+      const plugins = await PluginsAPI.list()
+      const allModels = loadModels(user, Models, plugins)
+
+      setModels(allModels)
+      resolve()
+    }).catch(console.log)
+  }, [user])
 
   // Check model update
   useEffect(() => {

@@ -27,20 +27,19 @@ const loadTemplates = async () => {
   )
 
   // Plugin templates
-  const plugins = Plugins.serverList()
+  const plugins = await Plugins.serverList()
   await Promise.all(
     plugins.map(async (plugin) => {
-      await Promise.all(
-        plugin.templates.map(async (template) => {
-          const content = await Tools.readFile(
-            path.join(plugin.path, template.file)
-          )
-          const func = await ejs.compile(content.toString(), {
-            root: './templates'
+      if (plugin.category === 'Model')
+        await Promise.all(
+          plugin.templates.map(async (template) => {
+            const content = await Tools.readFile(template)
+            const func = await ejs.compile(content.toString(), {
+              root: './templates'
+            })
+            templatesList[template.key] = func
           })
-          templatesList[template.key] = func
-        })
-      )
+        )
     })
   )
 

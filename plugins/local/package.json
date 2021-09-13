@@ -2,7 +2,6 @@
   "name": "tanatloc-ssr-plugin-local",
   "version": "1.0.0",
   "main": "index.js",
-  "type": "module",
   "license": "UNLICENSED",
   "dependencies": {
     "set-interval-async": "2.0.3"

@@ -91,7 +91,6 @@
     "redux-persist": "6.0.0",
     "set-interval-async": "2.0.3",
     "swr": "1.0.1",
-    "tanatloc-ssr-plugin-local": "./modules/plugin-local",
     "three": "0.132.2",
     "three-to-glb": "./modules/three-to-glb",
     "uuid": "8.3.2"

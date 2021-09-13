@@ -1,12 +1,15 @@
 /** @module lib/plugins */
 
-let plugins
+import Local from 'tanatloc-ssr-plugin-local'
+
+let plugins = []
 const load = async () => {
   // Local
   try {
     const Local = await import('tanatloc-ssr-plugin-local')
     plugins.push(Local.default)
   } catch (err) {
+    console.log(err)
     console.error('Plugin local not loaded!')
   }
 

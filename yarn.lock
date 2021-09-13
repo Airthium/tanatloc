@@ -10189,8 +10189,10 @@ taffydb@2.6.2:
   resolved "https://registry.yarnpkg.com/taffydb/-/taffydb-2.6.2.tgz#7cbcb64b5a141b6a2efc2c5d2c67b4e150b2a268"
   integrity sha1-fLy2S1oUG2ou/CxdLGe04VCyomg=
 
-tanatloc-ssr-plugin-local@./modules/plugin-local:
+tanatloc-ssr-plugin-local@./plugins/local:
   version "1.0.0"
+  dependencies:
+    set-interval-async "2.0.3"
 
 tapable@^2.1.1, tapable@^2.2.0:
   version "2.2.0"

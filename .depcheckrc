@@ -1,2 +1,7 @@
-ignores: ["@sentry/browser"]
+ignores: [
+    "@sentry/browser",
+    "node-fetch",
+    "set-interval-async",
+    "url-join"
+    ]
 skip-missing: true

@@ -8,7 +8,7 @@ import Sentry from '@/lib/sentry'
  * @param {Object} req Request
  * @param {Object} res Response
  */
-export default async (req, res) => {
+export default async (_, res) => {
   try {
     removeTokenCookie(res)
     res.status(200).end()

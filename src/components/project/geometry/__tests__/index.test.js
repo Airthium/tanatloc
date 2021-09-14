@@ -30,7 +30,14 @@ jest.mock('@/components/assets/notification', () => ({
 jest.mock('../add', () => () => <div />)
 
 const mockEdit = (props) => (
-  <div role="Edit" onClick={() => props.onEdit({ name: 'name' })} />
+  <div
+    role="Edit"
+    onClick={async () => {
+      try {
+        await props.onEdit({ name: 'name' })
+      } catch (err) {}
+    }}
+  />
 )
 jest.mock('../edit', () => (props) => mockEdit(props))
 

@@ -45,9 +45,6 @@ describe('components/assets/organization/groups', () => {
     id: 'id',
     owners: []
   }
-  const swr = {
-    reloadOrganizations: jest.fn()
-  }
 
   beforeEach(() => {
     mockError.mockReset()
@@ -65,14 +62,14 @@ describe('components/assets/organization/groups', () => {
   })
 
   test('render', () => {
-    const { unmount } = render(<Groups organization={organization} swr={swr} />)
+    const { unmount } = render(<Groups organization={organization} />)
 
     unmount()
   })
 
   test('error', () => {
     mockErrorGroups.mockImplementation(() => true)
-    const { unmount } = render(<Groups organization={organization} swr={swr} />)
+    const { unmount } = render(<Groups organization={organization} />)
 
     expect(mockError).toHaveBeenCalledTimes(1)
 
@@ -87,7 +84,6 @@ describe('components/assets/organization/groups', () => {
           owners: [{ id: 'id1', firstname: 'firstname', lastname: 'lastname' }],
           users: [{ id: 'id2', email: 'email' }, {}]
         }}
-        swr={swr}
       />
     )
 

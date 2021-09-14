@@ -19,7 +19,6 @@ describe('components/organizations', () => {
   const organizations = []
 
   const swr = {
-    reloadOrganizations: jest.fn(),
     addOneOrganization: jest.fn(),
     delOneOrganization: jest.fn(),
     mutateOneOrganization: jest.fn(),

@@ -29,7 +29,6 @@ describe('components/assets/groups', () => {
     users: [{ id: 'id' }]
   }
   const swr = {
-    reloadOrganizations: jest.fn(),
     addOneGroup: jest.fn(),
     mutateOneGroup: jest.fn()
   }
@@ -42,8 +41,6 @@ describe('components/assets/groups', () => {
 
     mockAdd.mockReset()
     mockUpdate.mockReset()
-
-    swr.reloadOrganizations.mockReset()
   })
 
   test('render', () => {
@@ -73,7 +70,14 @@ describe('components/assets/groups', () => {
 
   test('onAdd', async () => {
     mockDialog.mockImplementation((props) => (
-      <div role="Dialog" onClick={props.onOk} />
+      <div
+        role="Dialog"
+        onClick={async () => {
+          try {
+            await props.onOk({})
+          } catch (err) {}
+        }}
+      />
     ))
     const { unmount } = render(
       <Group userOptions={userOptions} organization={organization} swr={swr} />
@@ -85,9 +89,6 @@ describe('components/assets/groups', () => {
     fireEvent.click(dialog)
     await waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(1))
     await waitFor(() => expect(swr.addOneGroup).toHaveBeenCalledTimes(1))
-    await waitFor(() =>
-      expect(swr.reloadOrganizations).toHaveBeenCalledTimes(1)
-    )
 
     // Error
     mockAdd.mockImplementation(() => {
@@ -104,7 +105,11 @@ describe('components/assets/groups', () => {
     mockDialog.mockImplementation((props) => (
       <div
         role="Dialog"
-        onClick={() => props.onOk({ name: 'name', users: ['id'] })}
+        onClick={async () => {
+          try {
+            await props.onOk({ name: 'name', users: ['id'] })
+          } catch (err) {}
+        }}
       />
     ))
     const { unmount } = render(
@@ -122,9 +127,6 @@ describe('components/assets/groups', () => {
     fireEvent.click(dialog)
     await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
     await waitFor(() => expect(swr.addOneGroup).toHaveBeenCalledTimes(1))
-    await waitFor(() =>
-      expect(swr.reloadOrganizations).toHaveBeenCalledTimes(1)
-    )
 
     // Error
     mockUpdate.mockImplementation(() => {
@@ -141,7 +143,11 @@ describe('components/assets/groups', () => {
     mockDialog.mockImplementation((props) => (
       <div
         role="Dialog"
-        onClick={() => props.onOk({ name: 'name', users: ['id1'] })}
+        onClick={async () => {
+          try {
+            await props.onOk({ name: 'name', users: ['id1'] })
+          } catch (err) {}
+        }}
       />
     ))
     const { unmount } = render(
@@ -158,9 +164,6 @@ describe('components/assets/groups', () => {
     fireEvent.click(dialog)
     await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
     await waitFor(() => expect(swr.addOneGroup).toHaveBeenCalledTimes(1))
-    await waitFor(() =>
-      expect(swr.reloadOrganizations).toHaveBeenCalledTimes(1)
-    )
 
     unmount()
   })
@@ -169,9 +172,11 @@ describe('components/assets/groups', () => {
     mockDialog.mockImplementation((props) => (
       <div
         role="Dialog"
-        onClick={() =>
-          props.onOk({ name: 'other name', users: [{ id: 'id1' }] })
-        }
+        onClick={async () => {
+          try {
+            await props.onOk({ name: 'other name', users: ['id1'] })
+          } catch (err) {}
+        }}
       />
     ))
     const { unmount } = render(
@@ -189,9 +194,6 @@ describe('components/assets/groups', () => {
     fireEvent.click(dialog)
     await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
     await waitFor(() => expect(swr.addOneGroup).toHaveBeenCalledTimes(1))
-    await waitFor(() =>
-      expect(swr.reloadOrganizations).toHaveBeenCalledTimes(1)
-    )
 
     unmount()
   })
@@ -214,47 +216,21 @@ describe('components/assets/groups', () => {
     )
 
     res = swrProp({ swr: { addOneGroup: jest.fn } }, 'swr', 'Group')
-    expect(res.message).toBe(
-      'Invalid prop swr supplied to Group. reloadOrganizations missing or invalid'
-    )
-
-    res = swrProp(
-      { swr: { reloadOrganizations: {}, addOneGroup: jest.fn } },
-      'swr',
-      'Group'
-    )
-    expect(res.message).toBe(
-      'Invalid prop swr supplied to Group. reloadOrganizations missing or invalid'
-    )
-
-    res = swrProp(
-      { swr: { reloadOrganizations: jest.fn, addOneGroup: jest.fn } },
-      'swr',
-      'Group'
-    )
     expect(res).toBe()
 
-    res = swrProp(
-      { swr: { reloadOrganizations: jest.fn }, group: {} },
-      'swr',
-      'Group'
-    )
+    res = swrProp({ swr: {}, group: {} }, 'swr', 'Group')
     expect(res.message).toBe(
       'Invalid prop swr supplied to Group. mutateOneGroup missing or invalid'
     )
 
-    res = swrProp(
-      { swr: { reloadOrganizations: jest.fn, mutateOneGroup: {} }, group: {} },
-      'swr',
-      'Group'
-    )
+    res = swrProp({ swr: { mutateOneGroup: {} }, group: {} }, 'swr', 'Group')
     expect(res.message).toBe(
       'Invalid prop swr supplied to Group. mutateOneGroup missing or invalid'
     )
 
     res = swrProp(
       {
-        swr: { reloadOrganizations: jest.fn, mutateOneGroup: jest.fn },
+        swr: { mutateOneGroup: jest.fn },
         group: {}
       },
       'swr',

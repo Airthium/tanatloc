@@ -20,7 +20,6 @@ jest.mock('@/api/organization', () => ({
 describe('components/assets/organization', () => {
   const organization = { id: 'id', name: 'name', owners: [] }
   const swr = {
-    reloadOrganizations: jest.fn(),
     mutateOneOrganization: jest.fn(),
     loadingOrganizations: false
   }

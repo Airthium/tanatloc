@@ -11,8 +11,16 @@ jest.mock('@/lib/sentry', () => ({
 }))
 
 describe('route/api', () => {
+  const req = {}
+  const res = {
+    status: () => ({
+      end: jest.fn,
+      json: jest.fn
+    })
+  }
+
   test('logout', () => {
-    logout({}, { end: () => {} })
+    logout(req, res)
     expect(mockRemove).toHaveBeenCalledTimes(1)
   })
 
@@ -20,14 +28,7 @@ describe('route/api', () => {
     mockRemove.mockImplementation(() => {
       throw new Error()
     })
-    await logout(
-      {},
-      {
-        status: () => ({
-          json: () => {}
-        })
-      }
-    )
+    await logout(req, res)
     expect(mockError).toHaveBeenCalledTimes(1)
   })
 })

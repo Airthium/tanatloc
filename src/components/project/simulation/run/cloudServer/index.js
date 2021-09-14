@@ -39,6 +39,7 @@ const CloudServer = ({ disabled, cloudServer, onOk }) => {
     new Promise(async (resolve) => {
       const list = await PluginsAPI.list()
       setPlugins(list)
+      resolve()
     }).catch(console.log)
   }, [])
 

@@ -21,7 +21,6 @@ jest.mock('@/api/group', () => ({
 describe('components/administration/groups/delete', () => {
   const group = { id: 'id', name: 'name' }
   const swr = {
-    reloadOrganizations: jest.fn(),
     delOneGroup: jest.fn()
   }
 
@@ -66,9 +65,6 @@ describe('components/administration/groups/delete', () => {
     fireEvent.click(dialog)
     await waitFor(() => expect(mockDel).toHaveBeenCalledTimes(1))
     await waitFor(() => expect(swr.delOneGroup).toHaveBeenCalledTimes(1))
-    await waitFor(() =>
-      expect(swr.reloadOrganizations).toHaveBeenCalledTimes(1)
-    )
 
     // Error
     mockDel.mockImplementation(() => {

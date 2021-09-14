@@ -63,7 +63,6 @@ jest.mock('@/api/organization', () => ({
   useOrganizations: () => [
     mockOrganizations(),
     {
-      reloadOrganizations: mockReloadOrganizations,
       addOneOrganization: mockAddOneOrganization,
       delOneOrganization: mockDelOneOrganization,
       mutateOnOrganization: mockMutateOneOrganization,

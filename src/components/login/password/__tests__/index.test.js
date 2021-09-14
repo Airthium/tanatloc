@@ -53,7 +53,14 @@ describe('components/login/password', () => {
   test('passwordRecover', async () => {
     const values = { email: 'test@email.com' }
     mockDialog.mockImplementation((props) => (
-      <div role="Dialog" onClick={() => props.onOk(values)}></div>
+      <div
+        role="Dialog"
+        onClick={async () => {
+          try {
+            await props.onOk(values)
+          } catch (err) {}
+        }}
+      ></div>
     ))
     const { unmount } = render(<Password />)
 

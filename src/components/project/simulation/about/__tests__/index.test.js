@@ -1,4 +1,5 @@
 import React from 'react'
+import { MathJaxContext } from 'better-react-mathjax'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import About from '@/components/project/simulation/about'
@@ -39,21 +40,29 @@ describe('components/project/simulation/about', () => {
 
   test('render', () => {
     const { unmount } = render(
-      <About project={project} simulation={simulation} swr={swr} />
+      <MathJaxContext>
+        <About project={project} simulation={simulation} swr={swr} />
+      </MathJaxContext>
     )
 
     unmount()
   })
 
   test('without simulation', () => {
-    const { unmount } = render(<About project={project} swr={swr} />)
+    const { unmount } = render(
+      <MathJaxContext>
+        <About project={project} swr={swr} />
+      </MathJaxContext>
+    )
 
     unmount()
   })
 
   test('handleName', async () => {
     const { unmount } = render(
-      <About project={project} simulation={simulation} swr={swr} />
+      <MathJaxContext>
+        <About project={project} simulation={simulation} swr={swr} />
+      </MathJaxContext>
     )
 
     // Normal

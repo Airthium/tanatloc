@@ -21,7 +21,7 @@ jest.mock('@/api/workspace', () => ({
   update: async () => mockWorkspaceUpdate()
 }))
 
-describe('components/project/share', () => {
+describe('components/assets/share', () => {
   const project = { id: 'id', groups: [{ id: 'id' }] }
   const workspace = { id: 'id', groups: [{ id: 'id' }] }
   const organizations = [
@@ -104,7 +104,14 @@ describe('components/project/share', () => {
 
   test('onShare', async () => {
     mockDialog.mockImplementation((props) => (
-      <div role="Dialog" onClick={props.onOk} />
+      <div
+        role="Dialog"
+        onClick={async () => {
+          try {
+            await props.onOk({})
+          } catch (err) {}
+        }}
+      />
     ))
     const { unmount } = render(
       <Share project={project} organizations={organizations} swr={projectSwr} />
@@ -132,7 +139,14 @@ describe('components/project/share', () => {
 
   test('onShare with workspace', async () => {
     mockDialog.mockImplementation((props) => (
-      <div role="Dialog" onClick={props.onOk} />
+      <div
+        role="Dialog"
+        onClick={async () => {
+          try {
+            await props.onOk({})
+          } catch (err) {}
+        }}
+      />
     ))
     const { unmount } = render(
       <Share

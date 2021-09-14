@@ -1,4 +1,5 @@
 import React from 'react'
+import { MathJaxContext } from 'better-react-mathjax'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import Simulation from '@/components/project/simulation'
@@ -39,6 +40,32 @@ jest.mock('@/api/simulation', () => ({
   update: async () => mockUpdate()
 }))
 
+const mockList = jest.fn()
+jest.mock('@/api/plugins', () => ({
+  list: async () => mockList()
+}))
+mockList.mockImplementation(() => [
+  {
+    key: 'hpc',
+    category: 'HPC'
+  },
+  {
+    key: 'model',
+    category: 'Model',
+    models: [
+      {
+        name: 'NamePlugin',
+        algorithm: 'pluginAlgorithm',
+        description: 'pluginDescription'
+      }
+    ]
+  },
+  {
+    key: 'unauthorized',
+    category: 'Model'
+  }
+])
+
 jest.mock('@/models', () => [
   {
     name: 'Name',
@@ -52,27 +79,6 @@ jest.mock('@/models', () => [
   }
 ])
 
-jest.mock('@/plugins', () => ({
-  hpc: {
-    category: 'HPC'
-  },
-  model: {
-    category: 'Model',
-    key: 'model',
-    models: [
-      {
-        name: 'name',
-        algorithm: 'pluginAlgorithm',
-        description: 'pluginDescription'
-      }
-    ]
-  },
-  unauthorizedModel: {
-    category: 'Model',
-    key: 'unauthorized'
-  }
-}))
-
 describe('components/project/simulation.Selector', () => {
   const user = {}
   const visible = true
@@ -84,28 +90,36 @@ describe('components/project/simulation.Selector', () => {
     onCancel.mockReset()
   })
 
-  test('render', () => {
+  test('render', async () => {
     const { unmount } = render(
-      <Simulation.Selector
-        user={user}
-        visible={visible}
-        onOk={onOk}
-        onCancel={onCancel}
-      />
+      <MathJaxContext>
+        <Simulation.Selector
+          user={user}
+          visible={visible}
+          onOk={onOk}
+          onCancel={onCancel}
+        />
+      </MathJaxContext>
     )
+
+    await waitFor(() => screen.getByText('Name2'))
 
     unmount()
   })
 
-  test('onSelect', () => {
+  test('onSelect', async () => {
     const { unmount } = render(
-      <Simulation.Selector
-        user={user}
-        visible={visible}
-        onOk={onOk}
-        onCancel={onCancel}
-      />
+      <MathJaxContext>
+        <Simulation.Selector
+          user={user}
+          visible={visible}
+          onOk={onOk}
+          onCancel={onCancel}
+        />
+      </MathJaxContext>
     )
+
+    await waitFor(() => screen.getByText('Name2'))
 
     const model = screen.getByText('Name')
     fireEvent.click(model)
@@ -115,13 +129,17 @@ describe('components/project/simulation.Selector', () => {
 
   test('onCreate', async () => {
     const { unmount } = render(
-      <Simulation.Selector
-        user={user}
-        visible={visible}
-        onOk={onOk}
-        onCancel={onCancel}
-      />
+      <MathJaxContext>
+        <Simulation.Selector
+          user={user}
+          visible={visible}
+          onOk={onOk}
+          onCancel={onCancel}
+        />
+      </MathJaxContext>
     )
+
+    await waitFor(() => screen.getByText('Name2'))
 
     // Empty
     const create = screen.getByText('Create')
@@ -138,15 +156,19 @@ describe('components/project/simulation.Selector', () => {
     unmount()
   })
 
-  test('authorized plugins', () => {
+  test('authorized plugins', async () => {
     const { unmount } = render(
-      <Simulation.Selector
-        user={{ ...user, authorizedplugins: ['model'] }}
-        visible={visible}
-        onOk={onOk}
-        onCancel={onCancel}
-      />
+      <MathJaxContext>
+        <Simulation.Selector
+          user={{ ...user, authorizedplugins: ['model'] }}
+          visible={visible}
+          onOk={onOk}
+          onCancel={onCancel}
+        />
+      </MathJaxContext>
     )
+
+    await waitFor(() => screen.getByText('NamePlugin'))
 
     unmount()
   })
@@ -193,6 +215,8 @@ describe('components/project/simulation.Updater', () => {
       <Simulation.Updater user={user} simulation={simulation} swr={swr} />
     )
 
+    await waitFor(() => screen.getByRole('button', { name: 'Yes' }))
+
     const yes = screen.getByRole('button', { name: 'Yes' })
     fireEvent.click(yes)
     await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
@@ -216,6 +240,8 @@ describe('components/project/simulation.Updater', () => {
     const { unmount } = render(
       <Simulation.Updater user={user} simulation={simulation} swr={swr} />
     )
+
+    await waitFor(() => screen.getByRole('button', { name: 'No' }))
 
     const no = screen.getByRole('button', { name: 'No' })
     fireEvent.click(no)

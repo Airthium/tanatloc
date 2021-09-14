@@ -59,7 +59,14 @@ describe('componenets/assets/organization/users/add', () => {
 
   test('onFinish', async () => {
     mockDialog.mockImplementation((props) => (
-      <div role="Dialog" onClick={props.onOk} />
+      <div
+        role="Dialog"
+        onClick={async () => {
+          try {
+            await props.onOk({})
+          } catch (err) {}
+        }}
+      />
     ))
     const { unmount } = render(
       <Add title={title} organization={organization} dBkey={dBkey} swr={swr} />

@@ -54,7 +54,14 @@ describe('components/project/edit', () => {
 
   test('onEdit', async () => {
     mockDialog.mockImplementation((props) => (
-      <div role="Dialog" onClick={props.onOk} />
+      <div
+        role="Dialog"
+        onClick={async () => {
+          try {
+            await props.onOk({})
+          } catch (err) {}
+        }}
+      />
     ))
     const { unmount } = render(<Edit project={project} swr={swr} />)
 

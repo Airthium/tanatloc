@@ -120,14 +120,14 @@ const run = async (user, { id }) => {
   ])
 
   // Find plugin
-  const pluginsLibs = await Plugins.serverList()
-  const pluginLib = pluginsLibs.find(
+  const plugins = await Plugins.serverList()
+  const plugin = plugins.find(
     (p) => p.key === configuration.run.cloudServer.key
   )
 
   // Check authorized
   const userData = await User.get(user.id, ['authorizedplugins'])
-  if (!userData.authorizedplugins?.includes(pluginLib.key)) {
+  if (!userData.authorizedplugins?.includes(plugin.key)) {
     const err = { message: 'Unauthorized' }
     console.error(err)
 
@@ -234,7 +234,7 @@ const run = async (user, { id }) => {
   }
 
   // Compute
-  pluginLib
+  plugin.lib
     .computeSimulation({ id }, algorithm, configuration)
     .then(() => {
       configuration.run = {
@@ -291,7 +291,7 @@ const stop = async ({ id }) => {
   const pluginsLibs = await Plugins.serverList()
   const pluginLib = pluginsLibs.find(
     (p) => p.key === configuration.run.cloudServer.key
-  )
+  )?.lib
 
   // Stop
   await pluginLib.stop(tasks, configuration)

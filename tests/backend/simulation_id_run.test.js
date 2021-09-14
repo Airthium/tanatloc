@@ -138,7 +138,7 @@ beforeAll((done) => {
                 }
               ],
               cloudServer: {
-                key: 'local'
+                key: 'key'
               }
             }
           }
@@ -161,6 +161,18 @@ const mockCaptureException = jest.fn()
 jest.mock('@sentry/node', () => ({
   init: jest.fn,
   captureException: (err) => mockCaptureException(err)
+}))
+
+// Plugins mock (mandatory mock because of laoding time)
+jest.mock('@/lib/plugins', () => ({
+  serverList: async () => [
+    {
+      key: 'key',
+      lib: {
+        computeSimulation: async () => jest.fn()
+      }
+    }
+  ]
 }))
 
 describe('e2e/backend/simulation/id/run', () => {
@@ -254,7 +266,7 @@ describe('e2e/backend/simulation/id/run', () => {
 
     // User
     await UserLib.update({ id: adminUUID }, [
-      { key: 'authorizedplugins', value: ['local'] }
+      { key: 'authorizedplugins', value: ['key'] }
     ])
 
     // Normal

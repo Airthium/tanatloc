@@ -24,6 +24,7 @@ const add = async ({ id }, plugin) => {
   // Plugin initialization
   if (plugin.needInit) {
     const plugins = await Plugins.serverList()
+    console.log(plugins)
     const lib = plugins.find((l) => l.key === plugin.key)?.lib
     if (lib) {
       const init = await lib.init(plugin.configuration)

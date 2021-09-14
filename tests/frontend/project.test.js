@@ -2,7 +2,7 @@ import React from 'react'
 import { Provider } from 'react-redux'
 import { configureStore } from '@reduxjs/toolkit'
 import { reducer } from '@/store/store'
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { fireEvent, render, screen } from '@testing-library/react'
 import { MathJaxContext } from 'better-react-mathjax'
 
 import Project from '@/pages/project'
@@ -133,129 +133,129 @@ describe('e2e/frontend/project', () => {
     unmount()
   })
 
-  test('render, without user', () => {
-    mockSWR.mockImplementation(() => ({
-      data: {
-        user: null,
-        project: null,
-        simulations: null,
-        geometries: null
-      },
-      error: null,
-      mutate: jest.fn
-    }))
+  // test('render, without user', () => {
+  //   mockSWR.mockImplementation(() => ({
+  //     data: {
+  //       user: null,
+  //       project: null,
+  //       simulations: null,
+  //       geometries: null
+  //     },
+  //     error: null,
+  //     mutate: jest.fn
+  //   }))
 
-    const { unmount } = render(
-      <Provider store={store}>
-        <MathJaxContext>
-          <Project />
-        </MathJaxContext>
-      </Provider>
-    )
+  //   const { unmount } = render(
+  //     <Provider store={store}>
+  //       <MathJaxContext>
+  //         <Project />
+  //       </MathJaxContext>
+  //     </Provider>
+  //   )
 
-    expect(mockRouterReplace).toHaveBeenLastCalledWith('/login')
+  //   expect(mockRouterReplace).toHaveBeenLastCalledWith('/login')
 
-    unmount()
-  })
+  //   unmount()
+  // })
 
-  test('user, project, simulations & geometries error', () => {
-    mockSWR.mockImplementation(() => ({
-      data: {
-        user: { authorizedplugins: [] },
-        project: null,
-        simulations: null,
-        geometries: null
-      },
-      error: new Error('SWR error'),
-      mutate: jest.fn
-    }))
+  // test('user, project, simulations & geometries error', () => {
+  //   mockSWR.mockImplementation(() => ({
+  //     data: {
+  //       user: { authorizedplugins: [] },
+  //       project: null,
+  //       simulations: null,
+  //       geometries: null
+  //     },
+  //     error: new Error('SWR error'),
+  //     mutate: jest.fn
+  //   }))
 
-    const { unmount } = render(
-      <Provider store={store}>
-        <MathJaxContext>
-          <Project />
-        </MathJaxContext>
-      </Provider>
-    )
+  //   const { unmount } = render(
+  //     <Provider store={store}>
+  //       <MathJaxContext>
+  //         <Project />
+  //       </MathJaxContext>
+  //     </Provider>
+  //   )
 
-    expect(mockCaptureException).toHaveBeenCalledTimes(4)
+  //   expect(mockCaptureException).toHaveBeenCalledTimes(4)
 
-    unmount()
-  })
+  //   unmount()
+  // })
 
-  test('dashboard', () => {
-    const { unmount } = render(
-      <Provider store={store}>
-        <MathJaxContext>
-          <Project />
-        </MathJaxContext>
-      </Provider>
-    )
+  // test('dashboard', () => {
+  //   const { unmount } = render(
+  //     <Provider store={store}>
+  //       <MathJaxContext>
+  //         <Project />
+  //       </MathJaxContext>
+  //     </Provider>
+  //   )
 
-    const dashboard = screen.getByRole('button', {
-      name: 'arrow-left Return to dashboard'
-    })
-    fireEvent.click(dashboard)
+  //   const dashboard = screen.getByRole('button', {
+  //     name: 'arrow-left Return to dashboard'
+  //   })
+  //   fireEvent.click(dashboard)
 
-    expect(mockRouterPush).toHaveBeenLastCalledWith({
-      pathname: '/dashboard',
-      query: { page: 'page', workspaceId: 'workspaceId' }
-    })
+  //   expect(mockRouterPush).toHaveBeenLastCalledWith({
+  //     pathname: '/dashboard',
+  //     query: { page: 'page', workspaceId: 'workspaceId' }
+  //   })
 
-    unmount()
-  })
+  //   unmount()
+  // })
 
-  test('add geometry', () => {
-    const { unmount } = render(
-      <Provider store={store}>
-        <MathJaxContext>
-          <Project />
-        </MathJaxContext>
-      </Provider>
-    )
+  // test('add geometry', () => {
+  //   const { unmount } = render(
+  //     <Provider store={store}>
+  //       <MathJaxContext>
+  //         <Project />
+  //       </MathJaxContext>
+  //     </Provider>
+  //   )
 
-    // Open geometries
-    const geometries = screen.getByRole('menuitem', { name: 'Geometries (0)' })
-    fireEvent.click(geometries)
+  //   // Open geometries
+  //   const geometries = screen.getByRole('menuitem', { name: 'Geometries (0)' })
+  //   fireEvent.click(geometries)
 
-    const add = screen.getByRole('button', { name: 'plus New Geometry' })
-    fireEvent.click(add)
+  //   const add = screen.getByRole('button', { name: 'plus New Geometry' })
+  //   fireEvent.click(add)
 
-    // TODO continue here
+  //   // TODO continue here
 
-    unmount()
-  })
+  //   unmount()
+  // })
 
-  test('add simulation', () => {
-    mockSWR.mockImplementation(() => ({
-      data: {
-        user: { authorizedplugins: [] },
-        project: { id: 'id', geometries: [] },
-        simulations: null,
-        geometries: [{}]
-      },
-      error: null,
-      mutate: jest.fn
-    }))
-    const { unmount } = render(
-      <Provider store={store}>
-        <MathJaxContext>
-          <Project />
-        </MathJaxContext>
-      </Provider>
-    )
+  // test('add simulation', () => {
+  //   mockSWR.mockImplementation(() => ({
+  //     data: {
+  //       user: { authorizedplugins: [] },
+  //       project: { id: 'id', geometries: [] },
+  //       simulations: null,
+  //       geometries: [{}]
+  //     },
+  //     error: null,
+  //     mutate: jest.fn
+  //   }))
+  //   const { unmount } = render(
+  //     <Provider store={store}>
+  //       <MathJaxContext>
+  //         <Project />
+  //       </MathJaxContext>
+  //     </Provider>
+  //   )
 
-    // Open simulations
-    const simulations = screen.getByRole('menuitem', {
-      name: 'calculator Simulations (0)'
-    })
-    fireEvent.click(simulations)
+  //   // Open simulations
+  //   const simulations = screen.getByRole('menuitem', {
+  //     name: 'calculator Simulations (0)'
+  //   })
+  //   fireEvent.click(simulations)
 
-    const add = screen.getByRole('button', { name: 'plus New Simulation' })
-    fireEvent.click(add)
+  //   const add = screen.getByRole('button', { name: 'plus New Simulation' })
+  //   fireEvent.click(add)
 
-    // TODO continue here
+  //   // TODO continue here
 
-    unmount()
-  })
+  //   unmount()
+  // })
 })

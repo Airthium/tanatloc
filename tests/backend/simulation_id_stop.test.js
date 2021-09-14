@@ -33,7 +33,7 @@ beforeAll((done) => {
           configuration: {
             run: {
               cloudServer: {
-                key: 'local'
+                key: 'key'
               }
             }
           }
@@ -56,6 +56,18 @@ const mockCaptureException = jest.fn()
 jest.mock('@sentry/node', () => ({
   init: jest.fn,
   captureException: (err) => mockCaptureException(err)
+}))
+
+// Plugins mock (mandatory mock because of laoding time)
+jest.mock('@/lib/plugins', () => ({
+  serverList: async () => [
+    {
+      key: 'key',
+      lib: {
+        stop: jest.fn
+      }
+    }
+  ]
 }))
 
 describe('e2e/backend/simulation/id/stop', () => {

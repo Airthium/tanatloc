@@ -30,12 +30,17 @@ jest.mock('@sentry/node', () => ({
   captureException: (err) => mockCaptureException(err)
 }))
 
-// Plugins mock
+// Plugins mock (mandatory mock because of laoding time)
 const mockPluginInit = jest.fn()
-jest.mock('@/plugins/api', () => ({
-  key: {
-    init: (param) => mockPluginInit(param)
-  }
+jest.mock('@/lib/plugins', () => ({
+  serverList: async () => [
+    {
+      key: 'key',
+      lib: {
+        init: (param) => mockPluginInit(param)
+      }
+    }
+  ]
 }))
 
 describe('e2e/backend/plugin', () => {

@@ -167,7 +167,7 @@ describe('e2e/backend/user/[id]', () => {
         avatar: null,
         superuser: false,
         plugins: null,
-        authorizedplugins: null
+        authorizedplugins: []
       }
     })
   })

@@ -14,8 +14,12 @@ jest.mock('../../plugins', () => ({
   serverList: () => [
     {
       key: 'key',
+      category: 'Model',
       path: 'path',
       templates: ['file']
+    },
+    {
+      category: 'HPC'
     }
   ]
 }))

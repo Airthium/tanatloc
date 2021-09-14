@@ -1,5 +1,4 @@
 import { Pool } from 'pg'
-import Crypto from 'crypto'
 
 import config, { tables, schemas } from '@/config/db'
 import query from '@/database'

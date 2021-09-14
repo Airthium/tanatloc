@@ -2,7 +2,9 @@
  * @jest-environment node
  */
 
-import install from '../'
+process.env.CI = 1
+
+import install from '..'
 
 jest.mock('../copyAssets', () => jest.fn())
 jest.mock('../createDatabase', () => jest.fn())

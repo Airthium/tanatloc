@@ -1,17 +1,22 @@
 import Plugin from '../'
 
-const mockInit = jest.fn()
-jest.mock('@/plugins/api', () => ({
-  key: {
-    init: () => mockInit()
-  }
-}))
-
 const mockGet = jest.fn()
 const mockUpdate = jest.fn()
 jest.mock('../../user', () => ({
   get: async () => mockGet(),
   update: async () => mockUpdate()
+}))
+
+const mockInit = jest.fn()
+jest.mock('../../plugins', () => ({
+  serverList: () => [
+    {
+      key: 'key',
+      lib: {
+        init: () => mockInit()
+      }
+    }
+  ]
 }))
 
 describe('lib/plugin', () => {

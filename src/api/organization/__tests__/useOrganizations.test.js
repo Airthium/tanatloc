@@ -12,7 +12,6 @@ describe('api/organization/useOrganizations', () => {
     const [
       organizations,
       {
-        reloadOrganizations,
         addOneOrganization,
         mutateOneOrganization,
         delOneOrganization,
@@ -20,7 +19,6 @@ describe('api/organization/useOrganizations', () => {
       }
     ] = useOrganizations()
     expect(organizations).toEqual([{ id: 'id' }])
-    reloadOrganizations()
     expect(addOneOrganization).toBeDefined()
     addOneOrganization({})
     expect(mutateOneOrganization).toBeDefined()

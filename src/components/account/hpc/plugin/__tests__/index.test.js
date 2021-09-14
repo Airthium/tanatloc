@@ -32,7 +32,7 @@ jest.mock('@/api/plugin', () => ({
 }))
 
 describe('component/account/hpc/plugin', () => {
-  const plugin = { key: 'key' }
+  const plugin = { key: 'key', name: 'Plugin', configuration: {} }
 
   beforeEach(() => {
     mockError.mockReset()

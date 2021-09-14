@@ -186,6 +186,39 @@ describe('plugins/local/src/lib', () => {
       }
     })
 
+    // Coupling
+    await Local.computeSimulation('id', 'algorithm', {
+      geometry: {
+        meshable: true,
+        name: 'name',
+        path: 'path',
+        file: 'file'
+      },
+      geometry2: {
+        meshable: false,
+        name: 'name',
+        path: 'path',
+        file: 'file'
+      },
+      initialization: {
+        value: {
+          type: 'coupling'
+        }
+      },
+      boundaryConditions: {
+        index: 0,
+        key1: {},
+        key2: {
+          values: [
+            {
+              selected: [1]
+            }
+          ],
+          refineFactor: 5
+        }
+      }
+    })
+
     // Meshing error
     Date.now = () => 0
     mockGmsh.mockImplementation((path, mesh, geometry, callback) => {

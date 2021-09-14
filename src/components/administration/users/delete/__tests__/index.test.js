@@ -19,7 +19,7 @@ jest.mock('@/api/user', () => ({
 }))
 
 describe('components/administration/users/delete', () => {
-  const user = { id: 'id' }
+  const user = { id: 'id', email: 'email' }
   const swr = { delOneUser: jest.fn() }
 
   beforeEach(() => {

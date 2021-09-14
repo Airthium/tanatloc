@@ -5,6 +5,7 @@ jest.mock('passport-local', () => ({
     constructor(_, func) {
       func('email', 'password', () => {})
       func('email', 'password', () => {})
+      func('email', 'password', () => {})
       func(undefined, undefined, () => {})
     }
   }
@@ -16,7 +17,8 @@ jest.mock('@/database/user', () => {
     getByUsernameAndPassword: async ({ email, password }) => {
       count++
       if (!email) throw new Error()
-      if (count === 1) return { id: 'id', isvalidated: true }
+      if (count === 1) return
+      if (count === 2) return { id: 'id', isvalidated: true }
       else return { id: 'id' }
     }
   }

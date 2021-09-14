@@ -453,15 +453,6 @@ const createWaitTable = async () => {
 }
 
 /**
- * Password generator
- * @memberof module:install
- */
-const passwordGenerator = () => {
-  const buffer = Crypto.randomBytes(256)
-  return buffer.toString('hex')
-}
-
-/**
  * Create administrator
  * @memberof module:install
  */
@@ -470,7 +461,7 @@ const createAdmin = async () => {
   if (rows.length === 0) {
     console.info(' *** Create Administrator *** ')
 
-    const password = 'password' //passwordGenerator()
+    const password = 'password'
 
     await query(
       'INSERT INTO ' +

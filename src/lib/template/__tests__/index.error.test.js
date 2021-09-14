@@ -9,9 +9,9 @@ jest.mock('../../tools', () => ({
   writeFile: async () => {}
 }))
 
-jest.mock('@/templates', () => {})
+jest.mock('../../plugins', () => {})
 
-jest.mock('@/plugins/templates', () => {})
+jest.mock('@/templates', () => {})
 
 describe('lib/template', () => {
   test('nothingToDo', async () => {})

@@ -7,16 +7,6 @@ jest.mock('path', () => ({
 
 jest.mock('@/config/storage', () => ({}))
 
-const mockCompute = jest.fn()
-const mockStop = jest.fn()
-jest.mock('@/plugins/api', () => ({
-  key: {
-    key: 'key',
-    computeSimulation: async () => mockCompute(),
-    stop: async () => mockStop()
-  }
-}))
-
 const mockAdd = jest.fn()
 const mockGet = jest.fn()
 const mockUpdate = jest.fn()
@@ -41,6 +31,18 @@ jest.mock('../../project', () => ({
 const mockGeometryGet = jest.fn()
 jest.mock('../../geometry', () => ({
   get: async () => mockGeometryGet()
+}))
+
+const mockCompute = jest.fn()
+const mockStop = jest.fn()
+jest.mock('../../plugins', () => ({
+  serverList: () => [
+    {
+      key: 'key',
+      computeSimulation: async () => mockCompute(),
+      stop: async () => mockStop()
+    }
+  ]
 }))
 
 const mockReadFile = jest.fn()

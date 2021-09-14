@@ -10,16 +10,18 @@ jest.mock('../../tools', () => ({
   writeFile: async () => mockWriteFile()
 }))
 
-jest.mock('@/templates', () => ({
-  key: 'file'
+jest.mock('../../plugins', () => ({
+  serverList: () => [
+    {
+      key: 'key',
+      path: 'path',
+      templates: ['file']
+    }
+  ]
 }))
 
-jest.mock('@/plugins/templates', () => ({
-  plugin: {
-    key: 'key',
-    path: 'path',
-    templates: [{ key: 'key', file: 'file' }]
-  }
+jest.mock('@/templates', () => ({
+  key: 'file'
 }))
 
 describe('lib/template', () => {

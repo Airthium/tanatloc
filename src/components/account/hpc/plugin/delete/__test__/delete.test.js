@@ -20,7 +20,7 @@ jest.mock('@/api/plugin', () => ({
 }))
 
 describe('components/account/hpc/delete', () => {
-  const plugin = {}
+  const plugin = { uuid: 'uuid' }
   const swr = {
     delOnePlugin: jest.fn()
   }

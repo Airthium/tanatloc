@@ -152,9 +152,6 @@ const PluginDialog = ({ plugin, swr, edit }) => {
         // Remove logo
         newPlugin.logo && delete newPlugin.logo
 
-        // Remove renderer
-        newPlugin.renderer && delete newPlugin.renderer
-
         // API
         await PluginAPI.add(newPlugin)
 
@@ -208,6 +205,7 @@ PluginDialog.propTypes = {
     uuid: PropTypes.string,
     key: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
+    logo: PropTypes.string,
     needInit: PropTypes.bool,
     configuration: PropTypes.object.isRequired,
     inUseConfiguration: PropTypes.object

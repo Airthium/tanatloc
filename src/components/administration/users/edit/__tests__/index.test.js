@@ -16,20 +16,14 @@ jest.mock('@/components/assets/notification', () => ({
   Error: () => mockError()
 }))
 
-jest.mock('@/plugins', () => ({
-  key: {
-    name: 'name',
-    key: 'key'
-  }
-}))
-
 const mockUpdateById = jest.fn()
 jest.mock('@/api/user', () => ({
   updateById: async () => mockUpdateById()
 }))
 
 describe('components/administration/users/edit', () => {
-  const user = { id: 'id' }
+  const plugins = []
+  const user = { id: 'id', email: 'email' }
   const swr = { mutateOneUser: jest.fn() }
 
   beforeEach(() => {
@@ -45,7 +39,7 @@ describe('components/administration/users/edit', () => {
   })
 
   test('render', () => {
-    const { unmount } = render(<Edit user={user} swr={swr} />)
+    const { unmount } = render(<Edit plugins={plugins} user={user} swr={swr} />)
 
     unmount()
   })
@@ -54,7 +48,7 @@ describe('components/administration/users/edit', () => {
     mockDialog.mockImplementation((props) => (
       <div role="Dialog" onClick={props.onCancel} />
     ))
-    const { unmount } = render(<Edit user={user} swr={swr} />)
+    const { unmount } = render(<Edit plugins={plugins} user={user} swr={swr} />)
 
     const button = screen.getByRole('button')
     fireEvent.click(button)
@@ -68,9 +62,22 @@ describe('components/administration/users/edit', () => {
   test('onUpdate', async () => {
     let returned = {}
     mockDialog.mockImplementation((props) => (
-      <div role="Dialog" onClick={() => props.onOk(returned)} />
+      <div
+        role="Dialog"
+        onClick={async () => {
+          try {
+            await props.onOk(returned)
+          } catch (err) {}
+        }}
+      />
     ))
-    const { unmount } = render(<Edit user={user} swr={swr} />)
+    const { unmount } = render(
+      <Edit
+        plugins={[...plugins, { key: 'key', name: 'name' }]}
+        user={user}
+        swr={swr}
+      />
+    )
 
     const dialog = screen.getByRole('Dialog')
 

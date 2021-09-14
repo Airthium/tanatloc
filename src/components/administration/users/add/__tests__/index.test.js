@@ -16,13 +16,6 @@ jest.mock('@/components/assets/notification', () => ({
   Error: () => mockError()
 }))
 
-jest.mock('@/plugins', () => ({
-  key: {
-    name: 'name',
-    key: 'key'
-  }
-}))
-
 const mockAdd = jest.fn()
 const mockUpdateById = jest.fn()
 jest.mock('@/api/user', () => ({
@@ -31,6 +24,7 @@ jest.mock('@/api/user', () => ({
 }))
 
 describe('components/administration/users/add', () => {
+  const plugins = []
   const swr = { addOneUser: jest.fn() }
 
   beforeEach(() => {
@@ -47,7 +41,7 @@ describe('components/administration/users/add', () => {
   })
 
   test('render', () => {
-    const { unmount } = render(<Add swr={swr} />)
+    const { unmount } = render(<Add plugins={plugins} swr={swr} />)
 
     unmount()
   })
@@ -56,7 +50,7 @@ describe('components/administration/users/add', () => {
     mockDialog.mockImplementation((props) => (
       <div role="Dialog" onClick={props.onCancel} />
     ))
-    const { unmount } = render(<Add swr={swr} />)
+    const { unmount } = render(<Add plugins={plugins} swr={swr} />)
 
     const button = screen.getByRole('button')
     fireEvent.click(button)
@@ -70,15 +64,25 @@ describe('components/administration/users/add', () => {
   test('onAdd', async () => {
     mockAdd.mockImplementation(() => ({ alreadyExists: true }))
     mockDialog.mockImplementation((props) => (
-      <div role="Dialog" onClick={props.onOk} />
+      <div
+        role="Dialog"
+        onClick={async () => {
+          try {
+            await props.onOk({})
+          } catch (err) {}
+        }}
+      />
     ))
-    const { unmount } = render(<Add swr={swr} />)
+    const { unmount } = render(
+      <Add plugins={[...plugins, { key: 'key', name: 'name' }]} swr={swr} />
+    )
 
     const dialog = screen.getByRole('Dialog')
 
     // Already exists
     fireEvent.click(dialog)
     await waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
 
     // Not exists
     mockAdd.mockImplementation(() => ({}))
@@ -93,7 +97,7 @@ describe('components/administration/users/add', () => {
     })
     fireEvent.click(dialog)
     await waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(3))
-    await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(mockError).toHaveBeenCalledTimes(2))
 
     unmount()
   })

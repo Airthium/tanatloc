@@ -4,9 +4,9 @@ import path from 'path'
 import ejs from 'ejs'
 
 import Tools from '../tools'
+import Plugins from '../plugins'
 
 import Templates from '@/templates'
-import Plugins from '../plugins'
 
 /**
  * Load templates
@@ -37,7 +37,7 @@ const loadTemplates = async () => {
             const func = await ejs.compile(content.toString(), {
               root: './templates'
             })
-            templatesList[template.key] = func
+            templatesList[plugin.key] = func
           })
         )
     })

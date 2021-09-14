@@ -1,27 +1,13 @@
 import React from 'react'
-import { render, screen } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
 
 import HPC from '..'
 
-jest.mock('@/components/account/hpc/plugin', () => {
-  const Plugin = () => <div />
-  return Plugin
-})
+jest.mock('../plugin', () => () => <div role="Plugin" />)
 
-jest.mock('@/plugins', () => ({
-  NonHPCPlugin: {
-    category: 'Other'
-  },
-  TestPlugin: {
-    category: 'HPC',
-    key: 'plugin',
-    name: 'Test plugin'
-  },
-  TestUnauthorizedPlugin: {
-    category: 'HPC',
-    key: 'unauthorized',
-    name: 'Unauthorized'
-  }
+const mockList = jest.fn()
+jest.mock('@/api/plugins', () => ({
+  list: async () => mockList()
 }))
 
 describe('components/account/hpc', () => {
@@ -29,16 +15,35 @@ describe('components/account/hpc', () => {
     authorizedplugins: []
   }
 
-  test('render', () => {
+  beforeEach(() => {
+    mockList.mockReset()
+    mockList.mockImplementation(() => [])
+  })
+
+  test('render', async () => {
     const { unmount } = render(<HPC user={user} />)
+
+    await waitFor(() =>
+      screen.getByText('You do not have access to any HPC plugin. Request it.')
+    )
 
     unmount()
   })
 
-  test('with authorized plugins', () => {
+  test('with plugins', async () => {
+    mockList.mockImplementation(() => [
+      {
+        key: 'plugin',
+        name: 'Plugin',
+        category: 'HPC',
+        configuration: {}
+      }
+    ])
     const { unmount } = render(
       <HPC user={{ ...user, authorizedplugins: ['plugin'] }} />
     )
+
+    await waitFor(() => screen.getByRole('Plugin'))
 
     unmount()
   })

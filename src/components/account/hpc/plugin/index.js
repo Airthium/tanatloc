@@ -71,7 +71,7 @@ Plugin.propTypes = {
   plugin: PropTypes.exact({
     key: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
-    needInit: PropTypes.bool.isRequired,
+    needInit: PropTypes.bool,
     configuration: PropTypes.object.isRequired,
     inUseConfiguration: PropTypes.object
   }).isRequired

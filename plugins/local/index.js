@@ -1,4 +1,3 @@
-import path from 'path'
 import Lib from './src/lib'
 
 const Local = {

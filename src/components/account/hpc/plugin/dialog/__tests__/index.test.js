@@ -23,9 +23,9 @@ jest.mock('@/api/plugin', () => ({
 
 describe('components/account/hpc/dialog', () => {
   const plugin = {
+    key: 'key',
     name: 'name',
     logo: 'logo',
-    renderer: 'renderer',
     configuration: {
       input: {
         label: 'Input',
@@ -85,13 +85,15 @@ describe('components/account/hpc/dialog', () => {
   test('onFinish', async () => {
     mockDialog.mockImplementation(({ onOk }) => (
       <div
-        onClick={() =>
-          onOk({
-            input: 'input',
-            password: 'password',
-            select: 'option1'
-          })
-        }
+        onClick={async () => {
+          try {
+            await onOk({
+              input: 'input',
+              password: 'password',
+              select: 'option1'
+            })
+          } catch (err) {}
+        }}
         role="Dialog"
       />
     ))
@@ -124,13 +126,15 @@ describe('components/account/hpc/dialog', () => {
   test('edit', async () => {
     mockDialog.mockImplementation(({ onOk }) => (
       <div
-        onClick={() =>
-          onOk({
-            input: 'input',
-            password: 'password',
-            select: 'option2'
-          })
-        }
+        onClick={async () => {
+          try {
+            await onOk({
+              input: 'input',
+              password: 'password',
+              select: 'option2'
+            })
+          } catch (err) {}
+        }}
         role="Dialog"
       />
     ))

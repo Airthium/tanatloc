@@ -15,6 +15,7 @@ const WorkspacesList = ({ user, workspaces, organizations, swr }) => {
    * @param {string} action Action
    */
   const onEdit = (_, action) => {
+    /* istanbul ignore next */
     if (action === 'add') setAdd(true)
   }
 

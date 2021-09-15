@@ -68,6 +68,7 @@ export default async (req, res) => {
 
         res.status(200).json({ simulations })
       } catch (err) {
+        /* istanbul ignore next */
         throw error(500, err.message)
       }
     } else {

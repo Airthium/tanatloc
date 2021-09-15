@@ -134,9 +134,9 @@ describe('lib/project', () => {
 
   test('update', async () => {
     mockGet.mockImplementation(() => ({}))
-    await Project.update({}, [])
+    await Project.update({}, [{ key: 'groups', value: ['id'] }])
     expect(mockAdd).toHaveBeenCalledTimes(0)
-    expect(mockGet).toHaveBeenCalledTimes(0)
+    expect(mockGet).toHaveBeenCalledTimes(1)
     expect(mockUpdate).toHaveBeenCalledTimes(1)
     expect(mockDelete).toHaveBeenCalledTimes(0)
     expect(mockAvatar).toHaveBeenCalledTimes(0)
@@ -150,8 +150,19 @@ describe('lib/project', () => {
     }))
     await Project.update({}, [{ key: 'groups', value: ['id'] }])
     expect(mockAdd).toHaveBeenCalledTimes(0)
-    expect(mockGet).toHaveBeenCalledTimes(1)
+    expect(mockGet).toHaveBeenCalledTimes(2)
     expect(mockUpdate).toHaveBeenCalledTimes(2)
+    expect(mockDelete).toHaveBeenCalledTimes(0)
+    expect(mockAvatar).toHaveBeenCalledTimes(0)
+    expect(mockGetUser).toHaveBeenCalledTimes(0)
+    expect(mockUpdateWorkspace).toHaveBeenCalledTimes(0)
+    expect(mockDelSimulation).toHaveBeenCalledTimes(0)
+
+    // No groups update
+    await Project.update({}, [])
+    expect(mockAdd).toHaveBeenCalledTimes(0)
+    expect(mockGet).toHaveBeenCalledTimes(2)
+    expect(mockUpdate).toHaveBeenCalledTimes(3)
     expect(mockDelete).toHaveBeenCalledTimes(0)
     expect(mockAvatar).toHaveBeenCalledTimes(0)
     expect(mockGetUser).toHaveBeenCalledTimes(0)

@@ -28,6 +28,7 @@ describe('components/project/simulation/parameters', () => {
             label: 'param1',
             children: [
               {
+                label: 'Formula',
                 htmlEntity: 'formula'
               }
             ]
@@ -37,6 +38,7 @@ describe('components/project/simulation/parameters', () => {
             advanced: true,
             children: [
               {
+                label: 'Select',
                 htmlEntity: 'select',
                 options: [
                   { label: 'option1', value: 'option1' },
@@ -45,6 +47,15 @@ describe('components/project/simulation/parameters', () => {
                 default: 'option1'
               },
               {}
+            ]
+          },
+          param3: {
+            label: 'param3',
+            children: [
+              {
+                label: 'Checkbox',
+                htmlEntity: 'checkbox'
+              }
             ]
           }
         }
@@ -111,6 +122,12 @@ describe('components/project/simulation/parameters', () => {
     await act(async () => fireEvent.click(option2))
 
     await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(4))
+
+    // Checkbox
+    const checkbox = screen.getByRole('checkbox')
+    fireEvent.click(checkbox)
+
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(5))
 
     unmount()
   })

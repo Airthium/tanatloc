@@ -330,7 +330,7 @@ const Run = ({ simulation, result, setResult, swr }) => {
     const content = (
       <Tabs.TabPane tab={title}>
         {task?.systemLog && (
-          <Button loading={logLoading} onClick={() => getLog(task?.systemLog)}>
+          <Button loading={logLoading} onClick={() => getLog(task.systemLog)}>
             Complete log
           </Button>
         )}

@@ -168,6 +168,28 @@ describe('lib/avatar', () => {
     expect(mockWriteFile).toHaveBeenCalledTimes(0)
     expect(mockRemoveFile).toHaveBeenCalledTimes(0)
     expect(avatar).toBe('avatar')
+
+    // Without avatar
+    mockGet.mockImplementation(() => {
+      // empty mock
+    })
+    try {
+      await Avatar.read('id')
+      expect(true).toBe(false)
+    } catch (err) {
+      expect(err.message).toBe('Avatar does not exist.')
+    }
+    expect(mockPath).toHaveBeenCalledTimes(1)
+    expect(mockAdd).toHaveBeenCalledTimes(0)
+    expect(mockGet).toHaveBeenCalledTimes(2)
+    expect(mockDel).toHaveBeenCalledTimes(0)
+    expect(mockGetUser).toHaveBeenCalledTimes(0)
+    expect(mockUpdateUser).toHaveBeenCalledTimes(0)
+    expect(mockGetProject).toHaveBeenCalledTimes(0)
+    expect(mockUpdateProject).toHaveBeenCalledTimes(0)
+    expect(mockReadFile).toHaveBeenCalledTimes(1)
+    expect(mockWriteFile).toHaveBeenCalledTimes(0)
+    expect(mockRemoveFile).toHaveBeenCalledTimes(0)
   })
 
   test('get', async () => {

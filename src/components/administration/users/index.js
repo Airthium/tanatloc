@@ -3,11 +3,17 @@ import { useState, useEffect } from 'react'
 import { Badge, Table, Space, Spin } from 'antd'
 import { CheckOutlined } from '@ant-design/icons'
 
+import { Error as ErrorNotification } from '@/components/assets/notification'
+
+import PluginsAPI from '@/api/plugins'
+
 import Add from './add'
 import Edit from './edit'
 import Delete from './delete'
 
-import PluginsAPI from '@/api/plugins'
+const errors = {
+  plugins: 'Unable to load plugins'
+}
 
 /**
  * Users
@@ -19,94 +25,96 @@ const Users = ({ users, swr }) => {
   const [columns, setColumns] = useState()
 
   useEffect(() => {
-    new Promise(async (resolve) => {
-      const list = await PluginsAPI.list()
-      setPlugins(list)
+    PluginsAPI.list()
+      .then((list) => {
+        setPlugins(list)
 
-      setColumns([
-        {
-          title: 'First name',
-          dataIndex: 'firstname',
-          key: 'firstname',
-          sorter: (a, b) => a.firstname - b.firstname
-        },
-        {
-          title: 'Last name',
-          dataIndex: 'lastname',
-          key: 'lastname',
-          sorter: (a, b) => a.lastname - b.lastname
-        },
-        {
-          title: 'Email',
-          dataIndex: 'email',
-          key: 'email',
-          sorter: (a, b) => a.email - b.email
-        },
-        {
-          title: 'Password',
-          key: 'password',
-          render: () => '******'
-        },
-        {
-          title: 'Plugins',
-          dataIndex: 'authorizedplugins',
-          key: 'authorizedplugins',
-          // eslint-disable-next-line react/display-name
-          render: (authorizedplugins) => (
-            <Space wrap={true}>
-              {authorizedplugins?.sort().map((authorizedplugin) => {
-                if (!list) return <Spin />
-                const plugin = list.find((p) => p.key === authorizedplugin)
-                return (
-                  <Badge
-                    key={authorizedplugin}
-                    size="small"
-                    count={plugin?.category}
-                    offset={[5, -5]}
-                  >
-                    {plugin?.name}
-                  </Badge>
-                )
-              })}
-            </Space>
-          )
-        },
-        {
-          title: 'Administrator',
-          dataIndex: 'superuser',
-          key: 'superuser',
-          // eslint-disable-next-line react/display-name
-          render: (superuser) =>
-            superuser && <CheckOutlined style={{ color: 'green' }} />
-        },
-        {
-          title: 'Actions',
-          key: 'actions',
-          // eslint-disable-next-line react/display-name
-          render: (_, record) => (
-            <Space direction="">
-              <Edit
-                plugins={plugins}
-                user={{
-                  id: record.id,
-                  firstname: record.firstname,
-                  lastname: record.lastname,
-                  email: record.email,
-                  authorizedplugins: record.authorizedplugins,
-                  superuser: record.superuser
-                }}
-                swr={{ mutateOneUser: swr.mutateOneUser }}
-              />
-              <Delete
-                user={{ id: record.id, email: record.email }}
-                swr={{ delOneUser: swr.delOneUser }}
-              />
-            </Space>
-          )
-        }
-      ])
-      resolve()
-    }).catch(console.log)
+        setColumns([
+          {
+            title: 'First name',
+            dataIndex: 'firstname',
+            key: 'firstname',
+            sorter: (a, b) => a.firstname - b.firstname
+          },
+          {
+            title: 'Last name',
+            dataIndex: 'lastname',
+            key: 'lastname',
+            sorter: (a, b) => a.lastname - b.lastname
+          },
+          {
+            title: 'Email',
+            dataIndex: 'email',
+            key: 'email',
+            sorter: (a, b) => a.email - b.email
+          },
+          {
+            title: 'Password',
+            key: 'password',
+            render: () => '******'
+          },
+          {
+            title: 'Plugins',
+            dataIndex: 'authorizedplugins',
+            key: 'authorizedplugins',
+            // eslint-disable-next-line react/display-name
+            render: (authorizedplugins) => (
+              <Space wrap={true}>
+                {authorizedplugins?.sort().map((authorizedplugin) => {
+                  if (!list) return <Spin />
+                  const plugin = list.find((p) => p.key === authorizedplugin)
+                  return (
+                    <Badge
+                      key={authorizedplugin}
+                      size="small"
+                      count={plugin?.category}
+                      offset={[5, -5]}
+                    >
+                      {plugin?.name}
+                    </Badge>
+                  )
+                })}
+              </Space>
+            )
+          },
+          {
+            title: 'Administrator',
+            dataIndex: 'superuser',
+            key: 'superuser',
+            // eslint-disable-next-line react/display-name
+            render: (superuser) =>
+              superuser && <CheckOutlined style={{ color: 'green' }} />
+          },
+          {
+            title: 'Actions',
+            key: 'actions',
+            // eslint-disable-next-line react/display-name
+            render: (_, record) => (
+              <Space direction="">
+                <Edit
+                  plugins={plugins}
+                  user={{
+                    id: record.id,
+                    firstname: record.firstname,
+                    lastname: record.lastname,
+                    email: record.email,
+                    authorizedplugins: record.authorizedplugins,
+                    superuser: record.superuser
+                  }}
+                  swr={{ mutateOneUser: swr.mutateOneUser }}
+                />
+                <Delete
+                  user={{ id: record.id, email: record.email }}
+                  swr={{ delOneUser: swr.delOneUser }}
+                />
+              </Space>
+            )
+          }
+        ])
+      })
+      .catch((err) => {
+        ErrorNotification(errors.plugins, err)
+      })
   }, [])
 
   /**

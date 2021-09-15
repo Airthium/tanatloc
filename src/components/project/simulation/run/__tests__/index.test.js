@@ -12,12 +12,14 @@ jest.mock(
 const mockRun = jest.fn()
 const mockStop = jest.fn()
 const mockUpdate = jest.fn()
+const mockLog = jest.fn()
 const mockSimulation = jest.fn()
 const mockMutateSimulation = jest.fn()
 jest.mock('@/api/simulation', () => ({
   run: async () => mockRun(),
   stop: async () => mockStop(),
   update: async () => mockUpdate(),
+  log: async () => mockLog(),
   useSimulation: () => [
     mockSimulation(),
     { mutateSimulation: mockMutateSimulation }
@@ -64,6 +66,7 @@ describe('components/project/simulation/run', () => {
     mockRun.mockReset()
     mockStop.mockReset()
     mockUpdate.mockReset()
+    mockLog.mockReset()
     mockSimulation.mockReset()
     const data = {
       scheme: { configuration: { run: { done: true } } },
@@ -78,12 +81,14 @@ describe('components/project/simulation/run', () => {
           label: 'Simulation',
           index: -1,
           files: [{ name: 'name', fileName: 'resultFileName' }],
-          status: 'finish'
+          status: 'finish',
+          systemLog: 'system'
         },
         {
           label: 'Mesh2',
           index: 2,
-          status: 'error'
+          status: 'error',
+          systemLog: 'system'
         }
       ]
     }
@@ -549,7 +554,7 @@ describe('components/project/simulation/run', () => {
     unmount()
   })
 
-  test('onLog', () => {
+  test('onLog', async () => {
     const { unmount } = render(
       <Run
         simulation={simulation}
@@ -561,6 +566,18 @@ describe('components/project/simulation/run', () => {
 
     const logs = screen.getAllByRole('button', { name: 'file-text' })
     logs.forEach((log) => fireEvent.click(log))
+
+    const system = screen.getByRole('button', { name: 'Complete log' })
+
+    // Error
+    fireEvent.click(system)
+    await waitFor(() => expect(mockLog).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
+
+    // Normal
+    mockLog.mockImplementation(() => ({ log: 'system' }))
+    fireEvent.click(system)
+    await waitFor(() => expect(mockLog).toHaveBeenCalledTimes(2))
 
     unmount()
   })

@@ -38,6 +38,20 @@ describe('components/workspace/add', () => {
     unmount()
   })
 
+  test('onCancel', () => {
+    mockDialog.mockImplementation((props) => (
+      <div role="Dialog" onClick={props.onCancel} />
+    ))
+    const { unmount } = render(
+      <Add visible={visible} swr={swr} setVisible={setVisible} />
+    )
+
+    const dialog = screen.getByRole('Dialog')
+    fireEvent.click(dialog)
+
+    unmount()
+  })
+
   test('onOk', async () => {
     mockDialog.mockImplementation((props) => (
       <div

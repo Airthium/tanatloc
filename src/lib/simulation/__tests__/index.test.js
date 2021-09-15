@@ -39,8 +39,10 @@ jest.mock('../../plugins', () => ({
   serverList: () => [
     {
       key: 'key',
-      computeSimulation: async () => mockCompute(),
-      stop: async () => mockStop()
+      lib: {
+        computeSimulation: async () => mockCompute(),
+        stop: async () => mockStop()
+      }
     }
   ]
 }))

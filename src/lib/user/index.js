@@ -13,7 +13,6 @@ import Email from '../email'
  */
 const add = async ({ email, password }) => {
   const user = await UserDB.add({ email, password })
-
   if (!user.alreadyExists) {
     // Send email
     await Email.subscribe(email, user.id)

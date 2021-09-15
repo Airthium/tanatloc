@@ -8,7 +8,7 @@ import { addedDiff, updatedDiff } from 'deep-object-diff'
 import merge from 'lodash.merge'
 import { MathJax } from 'better-react-mathjax'
 
-import { Error } from '@/components/assets/notification'
+import { Error as ErrorNotification } from '@/components/assets/notification'
 
 import About from './about'
 import Geometry from './geometry'
@@ -27,7 +27,8 @@ import Models from '@/models'
  * Errors
  */
 const errors = {
-  updateError: 'Unable to update the simulation'
+  plugins: 'Unable to load plugins',
+  update: 'Unable to update the simulation'
 }
 
 /**
@@ -64,13 +65,15 @@ const Selector = ({ user, visible, onOk, onCancel }) => {
   useEffect(() => {
     if (!user) return
 
-    new Promise(async (resolve) => {
-      const plugins = await PluginsAPI.list()
-      const allModels = loadModels(user, Models, plugins)
+    PluginsAPI.list()
+      .then((plugins) => {
+        const allModels = loadModels(user, Models, plugins)
 
-      setModels(allModels)
-      resolve()
-    }).catch(console.log)
+        setModels(allModels)
+      })
+      .catch((err) => {
+        ErrorNotification(errors.plugins, err)
+      })
   }, [user])
 
   /**
@@ -145,13 +148,14 @@ const Updater = ({ user, simulation, swr }) => {
   useEffect(() => {
     if (!user) return
 
-    new Promise(async (resolve) => {
-      const plugins = await PluginsAPI.list()
-      const allModels = loadModels(user, Models, plugins)
-
-      setModels(allModels)
-      resolve()
-    }).catch(console.log)
+    PluginsAPI.list()
+      .then((plugins) => {
+        const allModels = loadModels(user, Models, plugins)
+        setModels(allModels)
+      })
+      .catch((err) => {
+        ErrorNotification(errors.plugins, err)
+      })
   }, [user])
 
   // Check model update
@@ -198,7 +202,7 @@ const Updater = ({ user, simulation, swr }) => {
       // Mutate
       swr.mutateOneSimulation(newSimulation)
     } catch (err) {
-      Error(errors.updateError, err)
+      ErrorNotification(errors.update, err)
     } finally {
       setLoading(false)
       setNeedUpdate(false)

@@ -157,12 +157,15 @@ describe('lib/geometry', () => {
     mockRemoveDirectory.mockImplementation(() => {
       throw new Error()
     })
-    await Geometry.del({})
+    await Geometry.del({
+      glb: 'glb',
+      json: 'json'
+    })
     expect(mockGet).toHaveBeenCalledTimes(3)
     expect(mockProjectUpdate).toHaveBeenCalledTimes(3)
-    expect(mockPath).toHaveBeenCalledTimes(6)
-    expect(mockRemoveFile).toHaveBeenCalledTimes(4)
-    expect(mockRemoveDirectory).toHaveBeenCalledTimes(2)
+    expect(mockPath).toHaveBeenCalledTimes(8)
+    expect(mockRemoveFile).toHaveBeenCalledTimes(5)
+    expect(mockRemoveDirectory).toHaveBeenCalledTimes(3)
     expect(mockDelete).toHaveBeenCalledTimes(3)
   })
 
@@ -180,6 +183,17 @@ describe('lib/geometry', () => {
       buffer: Buffer.from('buffer'),
       extension: 'extension'
     })
+
+    // No geometry
+    mockGet.mockImplementation(() => {
+      // empty mock
+    })
+    try {
+      await Geometry.read({ id: 'id' })
+      expect(true).toBe(false)
+    } catch (err) {
+      expect(err.message).toBe('Geometry does not exist.')
+    }
   })
 
   test('readPart', async () => {
@@ -200,5 +214,16 @@ describe('lib/geometry', () => {
       uuid: 'uuid',
       buffer: Buffer.from('buffer')
     })
+
+    // No geometry
+    mockGet.mockImplementation(() => {
+      // empty mock
+    })
+    try {
+      await Geometry.readPart({ id: 'id' })
+      expect(true).toBe(false)
+    } catch (err) {
+      expect(err.message).toBe('Geometry does not exist.')
+    }
   })
 })

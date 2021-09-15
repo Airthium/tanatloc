@@ -1,11 +1,19 @@
 import add from '../add'
 
+const mockElectron = jest.fn()
+jest.mock('is-electron', () => () => mockElectron())
+
 const mockQuery = jest.fn()
 jest.mock('../..', () => async (query) => {
   return mockQuery(query)
 })
 
 describe('database/user/add', () => {
+  beforeEach(() => {
+    mockElectron.mockReset()
+    mockQuery.mockReset()
+  })
+
   test('call', async () => {
     let user
 
@@ -24,6 +32,18 @@ describe('database/user/add', () => {
     user = await add({ email: 'email', password: 'password' })
     expect(user).toEqual({
       alreadyExists: true
+    })
+  })
+
+  test('electron', async () => {
+    mockElectron.mockImplementation(() => true)
+    mockQuery.mockImplementation((query) => {
+      if (query.includes('SELECT')) return { rows: [] }
+      else return { rows: [{ id: 'id' }] }
+    })
+    const user = await add({ email: 'email', password: 'password' })
+    expect(user).toEqual({
+      id: 'id'
     })
   })
 })

@@ -2,7 +2,7 @@ import Plugins from '..'
 
 jest.mock('fs', () => ({
   promises: {
-    readdir: async () => ['plugin']
+    readdir: async () => ['plugin', 'pluginerror']
   }
 }))
 
@@ -18,6 +18,14 @@ jest.mock(
       configuration: {}
     }
   }),
+  { virtual: true }
+)
+
+jest.mock(
+  '/plugins/pluginerror',
+  () => {
+    throw new Error('plugin import error')
+  },
   { virtual: true }
 )
 

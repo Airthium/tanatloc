@@ -1,7 +1,7 @@
+import isElectron from 'is-electron'
+
 import query from '..'
 import { tables } from '@/config/db'
-
-import isElectron from 'is-electron'
 
 /**
  * Add

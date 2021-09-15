@@ -65,6 +65,7 @@ export default async (req, res) => {
         const projects = projectsTmp.filter((p) => p)
         res.status(200).json({ projects })
       } catch (err) {
+        /* istanbul ignore next */
         throw error(500, err.message)
       }
     } else {

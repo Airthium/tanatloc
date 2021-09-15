@@ -73,6 +73,12 @@ module.exports = {
     '<rootDir>/config/jest/',
     '<rootDir>/public/',
     '<rootDir>/tests/',
-    '<rootDir>/updaters'
+    '<rootDir>/updaters',
+    '<rootDir>/src/api/wait',
+    '<rootDir>/src/database/wait',
+    '<rootDir>/src/lib/wait',
+    '<rootDir>/src/pages/api/wait',
+    '<rootDir>/src/components/index/wait',
+    '<rootDir>/src/route/wait'
   ]
 }

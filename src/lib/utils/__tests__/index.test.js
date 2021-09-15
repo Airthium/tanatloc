@@ -80,4 +80,12 @@ describe('lib/utils', () => {
       unmount()
     }
   })
+
+  test('vaidateEmail', () => {
+    let res = Utils.validateEmail('email')
+    expect(res).toBe(false)
+
+    res = Utils.validateEmail('email@email.email')
+    expect(res).toBe(true)
+  })
 })

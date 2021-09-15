@@ -164,6 +164,7 @@ const PasswordItem = ({
           validator(_, value) {
             const err = []
             if (edit && value === '******') return Promise.resolve()
+            /* istanbul ignore next */
             if (!value) return Promise.resolve()
 
             checkSize(value, err)

@@ -2,9 +2,15 @@ import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
 import { Card, Space } from 'antd'
 
-import Plugin from './plugin'
+import { Error as ErrorNotification } from '@/components/assets/notification'
 
 import PluginsAPI from '@/api/plugins'
+
+import Plugin from './plugin'
+
+const errors = {
+  plugins: 'Unable to load plugins'
+}
 
 /**
  * HPC plugins
@@ -44,7 +50,9 @@ const HPC = ({ user }) => {
           )
         }
       })
-      .catch(console.log)
+      .catch((err) => {
+        ErrorNotification(errors.plugins, err)
+      })
   }, [user])
 
   /**

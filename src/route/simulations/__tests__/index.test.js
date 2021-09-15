@@ -100,14 +100,20 @@ describe('route/simulations/ids', () => {
     req.body = {
       ids: ['id1', 'id2', 'id3']
     }
-    let check = 0
-    mockGet.mockImplementation(() => ({
-      id: 'id',
-      name: 'name'
-    }))
+    let countGet = 0
+    mockGet.mockImplementation(() => {
+      countGet++
+      if (countGet === 1) return
+      else
+        return {
+          id: 'id',
+          name: 'name'
+        }
+    })
+    let countCheck = 0
     mockCheckProjectAuth.mockImplementation(() => {
-      check++
-      if (check % 2) {
+      countCheck++
+      if (countCheck === 1) {
         const error = new Error('Access denied')
         error.status = 403
         throw error
@@ -115,9 +121,9 @@ describe('route/simulations/ids', () => {
     })
     await ids(req, res)
     expect(mockSession).toHaveBeenCalledTimes(3)
-    expect(mockCheckProjectAuth).toHaveBeenCalledTimes(3)
+    expect(mockCheckProjectAuth).toHaveBeenCalledTimes(2)
     expect(mockGet).toHaveBeenCalledTimes(3)
-    expect(mockError).toHaveBeenCalledTimes(1)
+    expect(mockError).toHaveBeenCalledTimes(2)
     expect(resStatus).toBe(200)
     expect(resJson).toEqual({
       simulations: [{ id: 'id', name: 'name' }]

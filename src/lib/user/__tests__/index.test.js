@@ -1,5 +1,6 @@
 import User from '../'
 
+const mockAdd = jest.fn()
 const mockGet = jest.fn()
 const mockGetAll = jest.fn()
 const mockGetByUsernameAndPassword = jest.fn()
@@ -7,7 +8,7 @@ const mockUpdate = jest.fn()
 const mockDel = jest.fn()
 jest.mock('@/database/user', () => {
   return {
-    add: async () => ({ id: 'id' }),
+    add: async () => mockAdd(),
     get: async () => mockGet(),
     getAll: async () => mockGetAll(),
     getByUsernameAndPassword: async () => mockGetByUsernameAndPassword(),
@@ -34,12 +35,16 @@ jest.mock('../../group', () => ({
 }))
 
 const mockEmailSubscribe = jest.fn()
+const mockEmailRevalidate = jest.fn()
 jest.mock('../../email', () => ({
-  subscribe: async () => mockEmailSubscribe()
+  subscribe: async () => mockEmailSubscribe(),
+  revalidate: async () => mockEmailRevalidate()
 }))
 
 describe('lib/user', () => {
   beforeEach(() => {
+    mockAdd.mockReset()
+    mockAdd.mockImplementation(() => ({ id: 'id' }))
     mockGet.mockReset()
     mockGetAll.mockReset()
     mockGetByUsernameAndPassword.mockReset()
@@ -54,12 +59,19 @@ describe('lib/user', () => {
     mockUpdateGroup.mockReset()
 
     mockEmailSubscribe.mockReset()
+    mockEmailRevalidate.mockReset()
   })
 
   test('add', async () => {
-    const user = await User.add({ email: 'email', password: 'password' })
+    let user = await User.add({ email: 'email', password: 'password' })
     expect(mockEmailSubscribe).toHaveBeenCalledTimes(1)
     expect(user).toEqual({ id: 'id' })
+
+    // Already exists
+    mockAdd.mockImplementation(() => ({ id: 'id', alreadyExists: true }))
+    user = await User.add({ email: 'email', password: 'password' })
+    expect(mockEmailSubscribe).toHaveBeenCalledTimes(1)
+    expect(user).toEqual({ id: 'id', alreadyExists: true })
   })
 
   test('get', async () => {
@@ -162,6 +174,16 @@ describe('lib/user', () => {
     expect(mockGet).toHaveBeenCalledTimes(0)
     expect(mockGetByUsernameAndPassword).toHaveBeenCalledTimes(0)
     expect(mockUpdate).toHaveBeenCalledTimes(1)
+    expect(mockDel).toHaveBeenCalledTimes(0)
+    expect(mockReadAvatar).toHaveBeenCalledTimes(0)
+    expect(mockDelWorkspace).toHaveBeenCalledTimes(0)
+
+    // With email
+    await User.update({}, [{ key: 'email', value: 'email' }])
+    expect(mockGet).toHaveBeenCalledTimes(0)
+    expect(mockGetByUsernameAndPassword).toHaveBeenCalledTimes(0)
+    expect(mockUpdate).toHaveBeenCalledTimes(2)
+    expect(mockEmailRevalidate).toHaveBeenCalledTimes(1)
     expect(mockDel).toHaveBeenCalledTimes(0)
     expect(mockReadAvatar).toHaveBeenCalledTimes(0)
     expect(mockDelWorkspace).toHaveBeenCalledTimes(0)

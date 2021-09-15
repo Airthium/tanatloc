@@ -12,7 +12,8 @@ import PluginAPI from '@/api/plugin'
 import PluginsAPI from '@/api/plugins'
 
 const errors = {
-  plugins: 'Plugins error'
+  plugins: 'Plugins error',
+  pluginsLoad: 'Unable to load plugins'
 }
 
 /**
@@ -36,11 +37,13 @@ const CloudServer = ({ disabled, cloudServer, onOk }) => {
 
   // Plugins
   useEffect(() => {
-    new Promise(async (resolve) => {
-      const list = await PluginsAPI.list()
-      setPlugins(list)
-      resolve()
-    }).catch(console.log)
+    PluginsAPI.list()
+      .then((list) => {
+        setPlugins(list)
+      })
+      .catch((err) => {
+        ErrorNotification(errors.pluginsLoad, err)
+      })
   }, [])
 
   /**

@@ -39,10 +39,25 @@ describe('components/account/hpc/list', () => {
               password: { type: 'password', value: 'password' },
               item: { value: 'item' }
             }
-          },
+          }
+        ]}
+        swr={swr}
+      />
+    )
+
+    unmount()
+  })
+
+  test('plugins, without configuration', () => {
+    const { unmount } = render(
+      <List
+        plugin={plugin}
+        plugins={[
+          {},
           {
-            uuid: 'uuid2',
-            key: 'key2'
+            uuid: 'uuid',
+            key: 'key',
+            configuration: {}
           }
         ]}
         swr={swr}

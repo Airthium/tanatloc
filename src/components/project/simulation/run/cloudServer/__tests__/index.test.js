@@ -3,8 +3,13 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import CloudServer from '@/components/project/simulation/run/cloudServer'
 
+jest.mock('/plugins/key/src/components', () => {}, { virtual: true })
+
 const mockDynamic = jest.fn()
-jest.mock('next/dynamic', () => () => mockDynamic())
+jest.mock('next/dynamic', () => (callback) => {
+  callback()
+  return mockDynamic()
+})
 
 const mockPush = jest.fn()
 jest.mock('next/router', () => ({
@@ -91,6 +96,19 @@ describe('components/project/simulation/run/cloudServer', () => {
     unmount()
   })
 
+  test('plugins error', async () => {
+    mockList.mockImplementation(() => {
+      throw new Error()
+    })
+    const { unmount } = render(
+      <CloudServer cloudServer={cloudServer} onOk={onOk} />
+    )
+
+    await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
+
+    unmount()
+  })
+
   test('router', () => {
     const { unmount } = render(
       <CloudServer cloudServer={cloudServer} onOk={onOk} />
@@ -124,6 +142,10 @@ describe('components/project/simulation/run/cloudServer', () => {
   })
 
   test('onMerge', async () => {
+    mockDynamic.mockImplementation(() => (props) => (
+      <div role="Renderer" onClick={props.onSelect} />
+    ))
+
     const { unmount } = render(
       <CloudServer cloudServer={cloudServer} onOk={onOk} />
     )
@@ -134,10 +156,10 @@ describe('components/project/simulation/run/cloudServer', () => {
 
     await waitFor(() => screen.getByText('Plugin name'))
 
-    // const renderer = screen.getByRole('Renderer')
-    // fireEvent.click(renderer)
+    const renderer = screen.getByRole('Renderer')
+    fireEvent.click(renderer)
 
-    // expect(onOk).toHaveBeenCalledTimes(1)
+    expect(onOk).toHaveBeenCalledTimes(1)
 
     unmount()
   })

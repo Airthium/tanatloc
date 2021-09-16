@@ -214,15 +214,113 @@ describe('lib/simulation', () => {
     expect(mockRemoveDirectory).toHaveBeenCalledTimes(0)
     expect(mockCompute).toHaveBeenCalledTimes(1)
 
+    // With initialization coupling, wrong config
+    mockGet.mockImplementation(() => ({
+      scheme: {
+        configuration: {
+          geometry: {},
+          initialization: {
+            value: {
+              type: 'coupling'
+            }
+          },
+          run: {
+            cloudServer: {
+              key: 'key'
+            }
+          }
+        }
+      }
+    }))
+    await Simulation.run({}, {})
+    expect(mockPath).toHaveBeenCalledTimes(2)
+    expect(mockAdd).toHaveBeenCalledTimes(0)
+    expect(mockGet).toHaveBeenCalledTimes(2)
+    expect(mockUpdate).toHaveBeenCalledTimes(4)
+    expect(mockDelete).toHaveBeenCalledTimes(0)
+    expect(mockUpdateProject).toHaveBeenCalledTimes(0)
+    expect(mockWriteFile).toHaveBeenCalledTimes(0)
+    expect(mockConvert).toHaveBeenCalledTimes(0)
+    expect(mockCopyFile).toHaveBeenCalledTimes(2)
+    expect(mockRemoveFile).toHaveBeenCalledTimes(0)
+    expect(mockRemoveDirectory).toHaveBeenCalledTimes(0)
+    expect(mockCompute).toHaveBeenCalledTimes(2)
+
+    // With initialization coupling
+    mockGet.mockImplementation(() => ({
+      scheme: {
+        configuration: {
+          geometry: {},
+          initialization: {
+            value: {
+              type: 'coupling',
+              simulation: 'id',
+              result: 'id'
+            }
+          },
+          run: {
+            cloudServer: {
+              key: 'key'
+            }
+          }
+        }
+      }
+    }))
+    await Simulation.run({}, {})
+    expect(mockPath).toHaveBeenCalledTimes(8)
+    expect(mockAdd).toHaveBeenCalledTimes(0)
+    expect(mockGet).toHaveBeenCalledTimes(3)
+    expect(mockUpdate).toHaveBeenCalledTimes(6)
+    expect(mockDelete).toHaveBeenCalledTimes(0)
+    expect(mockUpdateProject).toHaveBeenCalledTimes(0)
+    expect(mockWriteFile).toHaveBeenCalledTimes(0)
+    expect(mockConvert).toHaveBeenCalledTimes(0)
+    expect(mockCopyFile).toHaveBeenCalledTimes(5)
+    expect(mockRemoveFile).toHaveBeenCalledTimes(0)
+    expect(mockRemoveDirectory).toHaveBeenCalledTimes(0)
+    expect(mockCompute).toHaveBeenCalledTimes(3)
+
+    // With initialization default
+    mockGet.mockImplementation(() => ({
+      scheme: {
+        configuration: {
+          geometry: {},
+          initialization: {
+            value: {
+              type: 'default'
+            }
+          },
+          run: {
+            cloudServer: {
+              key: 'key'
+            }
+          }
+        }
+      }
+    }))
+    await Simulation.run({}, {})
+    expect(mockPath).toHaveBeenCalledTimes(9)
+    expect(mockAdd).toHaveBeenCalledTimes(0)
+    expect(mockGet).toHaveBeenCalledTimes(4)
+    expect(mockUpdate).toHaveBeenCalledTimes(8)
+    expect(mockDelete).toHaveBeenCalledTimes(0)
+    expect(mockUpdateProject).toHaveBeenCalledTimes(0)
+    expect(mockWriteFile).toHaveBeenCalledTimes(0)
+    expect(mockConvert).toHaveBeenCalledTimes(0)
+    expect(mockCopyFile).toHaveBeenCalledTimes(6)
+    expect(mockRemoveFile).toHaveBeenCalledTimes(0)
+    expect(mockRemoveDirectory).toHaveBeenCalledTimes(0)
+    expect(mockCompute).toHaveBeenCalledTimes(4)
+
     // Error
     mockUpdate.mockReset()
     mockCompute.mockImplementation(() => {
       throw new Error()
     })
     await Simulation.run({}, {})
-    expect(mockPath).toHaveBeenCalledTimes(2)
+    expect(mockPath).toHaveBeenCalledTimes(10)
     expect(mockAdd).toHaveBeenCalledTimes(0)
-    expect(mockGet).toHaveBeenCalledTimes(2)
+    expect(mockGet).toHaveBeenCalledTimes(5)
     expect(mockUpdate).toHaveBeenCalledTimes(1)
     expect(mockDelete).toHaveBeenCalledTimes(0)
     expect(mockUpdateProject).toHaveBeenCalledTimes(0)
@@ -230,16 +328,16 @@ describe('lib/simulation', () => {
     expect(mockConvert).toHaveBeenCalledTimes(0)
     expect(mockRemoveFile).toHaveBeenCalledTimes(0)
     expect(mockRemoveDirectory).toHaveBeenCalledTimes(0)
-    expect(mockCompute).toHaveBeenCalledTimes(2)
+    expect(mockCompute).toHaveBeenCalledTimes(5)
 
     // Unauthorized
     mockUserGet.mockImplementation(() => ({
       authorizedplugins: []
     }))
     await Simulation.run({}, {})
-    expect(mockPath).toHaveBeenCalledTimes(2)
+    expect(mockPath).toHaveBeenCalledTimes(10)
     expect(mockAdd).toHaveBeenCalledTimes(0)
-    expect(mockGet).toHaveBeenCalledTimes(3)
+    expect(mockGet).toHaveBeenCalledTimes(6)
     expect(mockUpdate).toHaveBeenCalledTimes(4)
     expect(mockDelete).toHaveBeenCalledTimes(0)
     expect(mockUpdateProject).toHaveBeenCalledTimes(0)
@@ -247,7 +345,7 @@ describe('lib/simulation', () => {
     expect(mockConvert).toHaveBeenCalledTimes(0)
     expect(mockRemoveFile).toHaveBeenCalledTimes(0)
     expect(mockRemoveDirectory).toHaveBeenCalledTimes(0)
-    expect(mockCompute).toHaveBeenCalledTimes(2)
+    expect(mockCompute).toHaveBeenCalledTimes(5)
   })
 
   test('stop', async () => {

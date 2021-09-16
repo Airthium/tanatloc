@@ -21,7 +21,7 @@ const errors = {
  * @param {Object} props Props
  */
 const Users = ({ users, swr }) => {
-  const [plugins, setPlugins] = useState([])
+  const [plugins, setPlugins] = useState()
   const [columns, setColumns] = useState()
 
   useEffect(() => {
@@ -120,11 +120,10 @@ const Users = ({ users, swr }) => {
   /**
    * Render
    */
-  if (!plugins) return <Spin />
   return (
     <Space direction="vertical" style={{ width: '100%' }}>
       <Add
-        plugins={plugins}
+        plugins={plugins || []}
         swr={{
           addOneUser: swr.addOneUser
         }}

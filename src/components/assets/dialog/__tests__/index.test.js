@@ -5,7 +5,6 @@ import Dialog from '@/components/assets/dialog'
 
 jest.mock('../delete')
 
-jest.unmock('antd')
 import antd from 'antd'
 
 const mockSetFieldsValue = jest.fn()

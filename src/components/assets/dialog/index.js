@@ -76,7 +76,7 @@ Dialog.propTypes = {
   title: PropTypes.string,
   visible: PropTypes.bool.isRequired,
   initialValues: PropTypes.object,
-  onCancel: PropTypes.func.isRequired,
+  onCancel: PropTypes.func,
   onOk: PropTypes.func,
   loading: PropTypes.bool,
   children: PropTypes.node.isRequired

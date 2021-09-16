@@ -3,21 +3,21 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import Users from '..'
 
+const mockError = jest.fn()
+jest.mock('@/components/assets/notification', () => ({
+  Error: () => mockError()
+}))
+
+const mockList = jest.fn()
+jest.mock('@/api/plugins', () => ({
+  list: async () => mockList()
+}))
+
 jest.mock('../add', () => () => <div />)
 
 jest.mock('../edit', () => () => <div />)
 
 jest.mock('../delete', () => () => <div />)
-
-jest.mock('@/api/plugins', () => ({
-  list: async () => [
-    {
-      key: 'key',
-      name: 'name',
-      category: 'category'
-    }
-  ]
-}))
 
 describe('components/administration/users', () => {
   const users = [
@@ -30,7 +30,42 @@ describe('components/administration/users', () => {
     mutateOneUser: jest.fn()
   }
 
+  beforeEach(() => {
+    mockError.mockReset()
+
+    mockList.mockReset()
+    mockList.mockImplementation(() => [
+      {
+        key: 'key',
+        name: 'name',
+        category: 'category'
+      }
+    ])
+  })
+
   test('render', async () => {
+    const { unmount } = render(<Users users={users} swr={swr} />)
+
+    await waitFor(() => screen.getByRole('table'))
+
+    unmount()
+  })
+
+  test('plugins error', async () => {
+    mockList.mockImplementation(() => {
+      throw new Error()
+    })
+    const { unmount } = render(<Users users={users} swr={swr} />)
+
+    await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
+
+    unmount()
+  })
+
+  test('empty plugins', async () => {
+    mockList.mockImplementation(() => {
+      // Empty mock
+    })
     const { unmount } = render(<Users users={users} swr={swr} />)
 
     await waitFor(() => screen.getByRole('table'))

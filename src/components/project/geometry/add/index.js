@@ -33,6 +33,7 @@ const Add = ({ visible, project, swr, setVisible }) => {
    * @param {object} info Info
    */
   const onUpload = async (info) => {
+    console.log(info)
     if (info.file.status === 'uploading') setLoading(true)
 
     if (info.file.status === 'done') {

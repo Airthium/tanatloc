@@ -28,7 +28,6 @@ const load = async () => {
 load()
 
 const serverList = async () => {
-  console.log(plugins)
   return plugins.map((plugin) => ({
     category: plugin.category,
     key: plugin.key,

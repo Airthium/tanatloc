@@ -94,60 +94,60 @@ describe('components/project/geometry/add', () => {
     unmount()
   })
 
-  test('upload - no geometries', async () => {
-    mockDialog.mockImplementation((props) => <div>{props.children}</div>)
-    const { unmount } = render(
-      <Add
-        visible={visible}
-        project={{ id: 'id' }}
-        swr={swr}
-        setVisible={setVisible}
-      />
-    )
+  // test('upload - no geometries', async () => {
+  //   mockDialog.mockImplementation((props) => <div>{props.children}</div>)
+  //   const { unmount } = render(
+  //     <Add
+  //       visible={visible}
+  //       project={{ id: 'id' }}
+  //       swr={swr}
+  //       setVisible={setVisible}
+  //     />
+  //   )
 
-    const upload = screen.getByRole('img', { name: 'upload' })
+  //   const upload = screen.getByRole('img', { name: 'upload' })
 
-    // Uploading
-    mockAdd.mockImplementation(() => ({}))
-    const file = new File(['buffer'], 'file.dxf')
-    fireEvent.drop(upload, {
-      dataTransfer: {
-        files: [file]
-      }
-    })
-    await waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(1))
-    await waitFor(() => expect(swr.addOneGeometry).toHaveBeenCalledTimes(1))
-    await waitFor(() => expect(swr.mutateProject).toHaveBeenCalledTimes(1))
+  //   // Uploading
+  //   mockAdd.mockImplementation(() => ({}))
+  //   const file = new File(['buffer'], 'file.dxf')
+  //   fireEvent.drop(upload, {
+  //     dataTransfer: {
+  //       files: [file]
+  //     }
+  //   })
+  //   await waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(1))
+  //   await waitFor(() => expect(swr.addOneGeometry).toHaveBeenCalledTimes(1))
+  //   await waitFor(() => expect(swr.mutateProject).toHaveBeenCalledTimes(1))
 
-    unmount()
-  })
+  //   unmount()
+  // })
 
-  test('upload - error', async () => {
-    mockDialog.mockImplementation((props) => <div>{props.children}</div>)
-    const { unmount } = render(
-      <Add
-        visible={visible}
-        project={project}
-        swr={swr}
-        setVisible={setVisible}
-      />
-    )
+  // test('upload - error', async () => {
+  //   mockDialog.mockImplementation((props) => <div>{props.children}</div>)
+  //   const { unmount } = render(
+  //     <Add
+  //       visible={visible}
+  //       project={project}
+  //       swr={swr}
+  //       setVisible={setVisible}
+  //     />
+  //   )
 
-    const upload = screen.getByRole('img', { name: 'upload' })
+  //   const upload = screen.getByRole('img', { name: 'upload' })
 
-    // Error
-    mockAdd.mockImplementation(() => {
-      throw new Error()
-    })
-    const file = new File(['buffer'], 'file.dxf')
-    fireEvent.drop(upload, {
-      dataTransfer: {
-        files: [file]
-      }
-    })
-    await waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(1))
-    await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
+  //   // Error
+  //   mockAdd.mockImplementation(() => {
+  //     throw new Error()
+  //   })
+  //   const file = new File(['buffer'], 'file.dxf')
+  //   fireEvent.drop(upload, {
+  //     dataTransfer: {
+  //       files: [file]
+  //     }
+  //   })
+  //   await waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(1))
+  //   await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
 
-    unmount()
-  })
+  //   unmount()
+  // })
 })

@@ -1,13 +1,20 @@
 import React from 'react'
-import { act, fireEvent, render, screen } from '@testing-library/react'
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import Initialization from '..'
+
+const mockError = jest.fn()
+jest.mock('@/components/assets/notification', () => ({
+  Error: () => mockError()
+}))
 
 const mockFormula = jest.fn()
 jest.mock('@/components/assets/formula', () => (props) => mockFormula(props))
 
+const mockUpdate = jest.fn()
 const mockTasks = jest.fn()
 jest.mock('@/api/simulation', () => ({
+  update: async () => mockUpdate(),
   tasks: async () => mockTasks()
 }))
 
@@ -26,7 +33,21 @@ describe('components/project/simulation/initialization', () => {
       scheme: {
         algorithm: 'algorithm1',
         configuration: {
-          run: {}
+          parameters: {
+            time: {
+              children: [{}, { default: 1 }]
+            }
+          },
+          run: {
+            resultsFilters: [
+              {
+                prefixPattern: 'result_',
+                suffixPattern: '.vtu',
+                pattern: 'result_\\d+.vtu',
+                multiplicator: ['parameters', 'time', 'children', '1']
+              }
+            ]
+          }
         }
       }
     },
@@ -117,19 +138,86 @@ describe('components/project/simulation/initialization', () => {
       }
     }
   }
+  const swr = {
+    mutateOneSimulation: jest.fn()
+  }
 
   beforeEach(() => {
+    mockError.mockReset()
+
     mockFormula.mockReset()
     mockFormula.mockImplementation(() => <div />)
 
+    mockUpdate.mockReset()
     mockTasks.mockReset()
     mockTasks.mockImplementation(() => [])
+
+    swr.mutateOneSimulation.mockReset()
   })
 
   test('render', () => {
     const { unmount } = render(
-      <Initialization simulations={simulations} simulation={simulation} />
+      <Initialization
+        simulations={simulations}
+        simulation={simulation}
+        swr={swr}
+      />
     )
+
+    unmount()
+  })
+
+  test('initial value', async () => {
+    const { unmount } = render(
+      <Initialization
+        simulations={simulations}
+        simulation={{
+          ...simulation,
+          scheme: {
+            ...simulation.scheme,
+            configuration: {
+              ...simulation.scheme.configuration,
+              initialization: {
+                ...simulation.scheme.configuration.initialization,
+                value: {
+                  simulation: 'id'
+                }
+              }
+            }
+          }
+        }}
+        swr={swr}
+      />
+    )
+
+    unmount()
+  })
+
+  test('onPanelChange', async () => {
+    const { unmount } = render(
+      <Initialization
+        simulations={simulations}
+        simulation={simulation}
+        swr={swr}
+      />
+    )
+
+    const tabs = screen.getAllByRole('tab')
+
+    // Normal
+    fireEvent.click(tabs[0])
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
+      expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(1)
+    )
+
+    // Error
+    mockUpdate.mockImplementation(() => {
+      throw new Error()
+    })
+    fireEvent.click(tabs[1])
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
+    await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
 
     unmount()
   })
@@ -139,17 +227,22 @@ describe('components/project/simulation/initialization', () => {
       <div role="Formula" onClick={props.onValueChange} />
     ))
     const { unmount } = render(
-      <Initialization simulations={simulations} simulation={simulation} />
+      <Initialization
+        simulations={simulations}
+        simulation={simulation}
+        swr={swr}
+      />
     )
 
-    // Open collapse
-    const collapse = screen.getAllByRole('img')
-    fireEvent.click(collapse[0])
-    fireEvent.click(collapse[1])
+    // Open
+    const tabs = screen.getAllByRole('tab')
+    fireEvent.click(tabs[0])
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
 
     // Click formula
     const formulas = screen.getAllByRole('Formula')
     fireEvent.click(formulas[0])
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
 
     // Click select
     const selects = screen.getAllByRole('combobox')
@@ -165,23 +258,19 @@ describe('components/project/simulation/initialization', () => {
       await act(async () => fireEvent.click(option2))
     }
 
-    // Click select
-    const select = selects[2]
-    await act(async () => fireEvent.mouseDown(select))
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(3))
 
-    {
-      const options1 = screen.getAllByText('Simulation 1')
-      const option1 = options1[0]
-      await act(async () => fireEvent.click(option1))
-    }
+    // Error
+    mockUpdate.mockImplementation(() => {
+      throw new Error()
+    })
+    fireEvent.click(formulas[0])
+    await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
 
     unmount()
   })
 
   test('onCouplingChange', async () => {
-    mockFormula.mockImplementation((props) => (
-      <div role="Formula" onClick={props.onValueChange} />
-    ))
     mockTasks.mockImplementation(() => [
       {},
       { file: { type: 'mesh' } },
@@ -190,35 +279,63 @@ describe('components/project/simulation/initialization', () => {
           { type: 'mesh' },
           {
             type: 'result',
-            fileName: 'result_0'
+            fileName: 'result_0.vtu'
           },
           {
             type: 'result',
-            fileName: 'result_1'
+            fileName: 'result_1.vtu'
           }
         ],
         file: {
           type: 'result',
-          fileName: 'result'
+          fileName: 'result.vtu'
         }
       }
     ])
     const { unmount } = render(
-      <Initialization simulations={simulations} simulation={simulation} />
+      <Initialization
+        simulations={simulations}
+        simulation={simulation}
+        swr={swr}
+      />
     )
 
     // Open collapse
-    const collapse = screen.getAllByRole('img')
-    fireEvent.click(collapse[1])
+    const tabs = screen.getAllByRole('tab')
+    fireEvent.click(tabs[1])
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
+      expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(1)
+    )
 
     // Click select
     const selects = screen.getAllByRole('combobox')
-    const select = selects[0]
+    const select = selects[2]
     await act(async () => fireEvent.mouseDown(select))
 
     const options1 = screen.getAllByText('Simulation 1')
     const option1 = options1[0]
     await act(async () => fireEvent.click(option1))
+
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
+    await waitFor(() =>
+      expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(2)
+    )
+    await waitFor(() => expect(mockTasks).toHaveBeenCalledTimes(1))
+
+    // Results
+    const newSelects = screen.getAllByRole('combobox')
+    const resultSelect = newSelects[3]
+    await act(async () => fireEvent.mouseDown(resultSelect))
+
+    const resultOptions1 = screen.getAllByText('1')
+    const resultOption1 = resultOptions1[0]
+    await act(async () => fireEvent.click(resultOption1))
+
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(3))
+    await waitFor(() =>
+      expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(3)
+    )
 
     unmount()
   })

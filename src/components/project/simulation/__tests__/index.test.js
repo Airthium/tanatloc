@@ -44,27 +44,6 @@ const mockList = jest.fn()
 jest.mock('@/api/plugins', () => ({
   list: async () => mockList()
 }))
-mockList.mockImplementation(() => [
-  {
-    key: 'hpc',
-    category: 'HPC'
-  },
-  {
-    key: 'model',
-    category: 'Model',
-    models: [
-      {
-        name: 'NamePlugin',
-        algorithm: 'pluginAlgorithm',
-        description: 'pluginDescription'
-      }
-    ]
-  },
-  {
-    key: 'unauthorized',
-    category: 'Model'
-  }
-])
 
 jest.mock('@/models', () => [
   {
@@ -86,6 +65,29 @@ describe('components/project/simulation.Selector', () => {
   const onCancel = jest.fn()
 
   beforeEach(() => {
+    mockList.mockReset()
+    mockList.mockImplementation(() => [
+      {
+        key: 'hpc',
+        category: 'HPC'
+      },
+      {
+        key: 'model',
+        category: 'Model',
+        models: [
+          {
+            name: 'NamePlugin',
+            algorithm: 'pluginAlgorithm',
+            description: 'pluginDescription'
+          }
+        ]
+      },
+      {
+        key: 'unauthorized',
+        category: 'Model'
+      }
+    ])
+
     onOk.mockReset()
     onCancel.mockReset()
   })
@@ -103,6 +105,41 @@ describe('components/project/simulation.Selector', () => {
     )
 
     await waitFor(() => screen.getByText('Name2'))
+
+    unmount()
+  })
+
+  test('no user', async () => {
+    const { unmount } = render(
+      <MathJaxContext>
+        <Simulation.Selector
+          visible={visible}
+          onOk={onOk}
+          onCancel={onCancel}
+        />
+      </MathJaxContext>
+    )
+
+    unmount()
+  })
+
+  test('plugins error', async () => {
+    mockList.mockImplementation(() => {
+      throw new Error()
+    })
+
+    const { unmount } = render(
+      <MathJaxContext>
+        <Simulation.Selector
+          user={user}
+          visible={visible}
+          onOk={onOk}
+          onCancel={onCancel}
+        />
+      </MathJaxContext>
+    )
+
+    await waitFor(() => expect(mockList).toHaveBeenCalledTimes(1))
 
     unmount()
   })
@@ -183,6 +220,29 @@ describe('components/project/simulation.Updater', () => {
   const swr = { mutateOneSimulation: jest.fn() }
 
   beforeEach(() => {
+    mockList.mockReset()
+    mockList.mockImplementation(() => [
+      {
+        key: 'hpc',
+        category: 'HPC'
+      },
+      {
+        key: 'model',
+        category: 'Model',
+        models: [
+          {
+            name: 'NamePlugin',
+            algorithm: 'pluginAlgorithm',
+            description: 'pluginDescription'
+          }
+        ]
+      },
+      {
+        key: 'unauthorized',
+        category: 'Model'
+      }
+    ])
+
     mockAddedDiff.mockReset()
     mockAddedDiff.mockImplementation(() => ({}))
     mockUpdatedDiff.mockReset()
@@ -195,10 +255,12 @@ describe('components/project/simulation.Updater', () => {
     mockError.mockReset()
   })
 
-  test('render', () => {
+  test('render', async () => {
     const { unmount } = render(
       <Simulation.Updater user={user} simulation={simulation} swr={swr} />
     )
+
+    await new Promise((resolve) => setTimeout(resolve, 200))
 
     unmount()
   })
@@ -209,8 +271,28 @@ describe('components/project/simulation.Updater', () => {
     unmount()
   })
 
+  test('no user', async () => {
+    const { unmount } = render(
+      <Simulation.Updater simulation={simulation} swr={swr} />
+    )
+
+    unmount()
+  })
+
+  test('plugins error', async () => {
+    mockList.mockImplementation(() => {
+      throw new Error()
+    })
+
+    const { unmount } = render(<Simulation.Updater user={user} swr={swr} />)
+
+    await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
+
+    unmount()
+  })
+
   test('update', async () => {
-    mockAddedDiff.mockImplementation(() => [{}])
+    mockAddedDiff.mockImplementation(() => ({ key: 'key' }))
     const { unmount } = render(
       <Simulation.Updater user={user} simulation={simulation} swr={swr} />
     )
@@ -236,7 +318,7 @@ describe('components/project/simulation.Updater', () => {
   })
 
   test('cancel', async () => {
-    mockUpdatedDiff.mockImplementation(() => [{}])
+    mockUpdatedDiff.mockImplementation(() => ({ key: 'key' }))
     const { unmount } = render(
       <Simulation.Updater user={user} simulation={simulation} swr={swr} />
     )

@@ -6,6 +6,12 @@ Using server-side rendering (SSR).
 
 ## Env
 
+### Domain
+
+| Variable | Default              | Comment       |
+| -------- | -------------------- | ------------- |
+| DOMAIN   | https://tanatloc.com | Server domain |
+
 ### Database
 
 | Variable          | Default             | Comment           |

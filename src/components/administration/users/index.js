@@ -92,7 +92,7 @@ const Users = ({ users, swr }) => {
             render: (_, record) => (
               <Space direction="">
                 <Edit
-                  plugins={plugins}
+                  plugins={list || []}
                   user={{
                     id: record.id,
                     firstname: record.firstname,

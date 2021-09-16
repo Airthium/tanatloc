@@ -5,34 +5,34 @@ import { promises as fs } from 'fs'
 const plugins = []
 const load = async () => {
   plugins.length = 0
-  try {
-    // Available directories
-    const availables = await fs.readdir('plugins')
+  // Available directories
+  const availables = await fs.readdir('plugins')
 
-    await Promise.all(
-      availables.map(async (available) => {
-        try {
-          // Import
-          const plugin = await import(`/plugins/${available}`)
-          plugins.push(plugin.default)
-        } catch (err) {
-          console.error(`Plugin ${plugin} not loaded!`)
-        }
-      })
-    )
-  } catch (err) {
-    console.error(err)
-  }
+  await Promise.all(
+    availables.map(async (available) => {
+      try {
+        // Import
+        const plugin = await import(`../../../plugins/${available}`)
+        plugins.push(plugin.default)
+        console.info(`Plugin ${available} loaded!`)
+      } catch (err) {
+        console.error(err)
+        console.error(`Plugin ${available} NOT loaded!`)
+      }
+    })
+  )
 }
 
-load()
+load().catch(console.error)
 
 const serverList = async () => {
-  return plugins.map((plugin) => ({
-    category: plugin.category,
-    key: plugin.key,
-    ...plugin.server
-  }))
+  return plugins.map((plugin) => {
+    return {
+      category: plugin.category,
+      key: plugin.key,
+      ...plugin.server
+    }
+  })
 }
 
 const clientList = async (user) => {

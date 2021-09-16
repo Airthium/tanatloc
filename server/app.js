@@ -18,6 +18,7 @@ import link from '@/route/link'
 import organization from '@/route/organization'
 import organizations from '@/route/organizations'
 import plugin from '@/route/plugin'
+import plugins from '@/route/plugins'
 import project from '@/route/project'
 import projectId from '@/route/project/[id]'
 import projects from '@/route/projects'
@@ -73,6 +74,7 @@ app.all('/api/organization', organization)
 app.all('/api/organizations', organizations)
 
 app.all('/api/plugin', plugin)
+app.all('/api/plugins', plugins)
 
 app.all('/api/project', project)
 app.all('/api/project/:id', projectId)

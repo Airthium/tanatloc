@@ -212,25 +212,25 @@ describe('components/account/information', () => {
     unmount()
   })
 
-  it('upload - error', async () => {
-    const { unmount } = render(<Information user={user} swr={swr} />)
+  // it('upload - error', async () => {
+  //   const { unmount } = render(<Information user={user} swr={swr} />)
 
-    const upload = screen.getByRole('img', { name: 'upload' })
+  //   const upload = screen.getByRole('img', { name: 'upload' })
 
-    // Add error
-    mockAdd.mockImplementation(() => {
-      throw new Error('Add error')
-    })
-    const file = new File(['buffer'], 'file.png', { type: 'image/png' })
-    fireEvent.drop(upload, {
-      dataTransfer: {
-        files: [file]
-      }
-    })
+  //   // Add error
+  //   mockAdd.mockImplementation(() => {
+  //     throw new Error('Add error')
+  //   })
+  //   const file = new File(['buffer'], 'file.png', { type: 'image/png' })
+  //   fireEvent.drop(upload, {
+  //     dataTransfer: {
+  //       files: [file]
+  //     }
+  //   })
 
-    await waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(1))
-    await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
+  //   await waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(1))
+  //   await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
 
-    unmount()
-  })
+  //   unmount()
+  // })
 })

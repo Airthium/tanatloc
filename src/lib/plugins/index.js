@@ -1,18 +1,22 @@
 /** @module lib/plugins */
 
 import { promises as fs } from 'fs'
+import isElectron from 'is-electron'
 
 const plugins = []
 const load = async () => {
-  plugins.length = 0
   // Available directories
   const availables = await fs.readdir('plugins')
 
   await Promise.all(
     availables.map(async (available) => {
       try {
+        console.log(await fs.readdir('./templates'))
+        console.log(await fs.readdir('./plugins'))
         // Import
-        const plugin = await import(`../../../plugins/${available}`)
+        const plugin = isElectron()
+          ? await import(`./plugins/${available}`)
+          : await import(`/plugins/${available}`)
         plugins.push(plugin.default)
         console.info(`Plugin ${available} loaded!`)
       } catch (err) {

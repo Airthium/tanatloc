@@ -1,5 +1,7 @@
 /** @module install */
 
+import isElectron from 'is-electron'
+
 import createDatabase from './createDatabase'
 import createPaths from './createPaths'
 import copyAssets from './copyAssets'
@@ -12,7 +14,7 @@ const main = async () => {
   console.info("  / /\\/ _` | '_ \\ / _` | __| |/ _ \\ / __|")
   console.info(' / / | (_| | | | | (_| | |_| | (_) | (__ ')
   console.info(' \\/   \\__,_|_| |_|\\__,_|\\__|_|\\___/ \\___|')
-  await copyAssets()
+  if (!isElectron()) await copyAssets()
   if (!process.env.CI) {
     await createDatabase()
     await createPaths()

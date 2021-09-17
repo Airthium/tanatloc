@@ -1,7 +1,6 @@
 /** @module three-to-glb */
 
-const { spawn } = require('child_process')
-const runner = require('./src/run')
+const vm = require('vm')
 
 /**
  * Convert legacy ThreeJS json format to glb
@@ -11,34 +10,17 @@ const runner = require('./src/run')
  * @return GLB file
  */
 const convert = async (location, name) => {
-  // const script = './run.js'
+  // Code
+  const code = async (require, _location, _name) => {
+    const { runner } = require('./src/run')
+    return runner(_location, _name)
+  }
 
-  return new Promise((resolve, reject) => {
-    let data = ''
-    let error = ''
-    // const run = spawn('node', [script, location, name])
-    const run = spawn(runner(location, name))
+  // Run in context
+  const data = await vm.runInThisContext(`${code}`)(require, location, name)
+  console.log(data)
 
-    run.stdout.on('data', (stdout) => {
-      console.log(stdout.toString())
-      stdout && (data += stdout.toString())
-    })
-
-    run.stderr.on('data', (stderr) => {
-      console.log(stderr.toString())
-      stderr && (error += stderr.toString())
-    })
-
-    run.on('close', (code) => {
-      resolve({
-        code,
-        data,
-        error
-      })
-    })
-
-    run.on('error', (err) => reject({ error: err }))
-  })
+  return data
 }
 
 module.exports = { convert }

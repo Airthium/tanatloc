@@ -1,4 +1,10 @@
-const run = (location, name) => {
+/**
+ * Runner
+ * @param {string} location Location
+ * @param {string} name Name
+ * @returns GLTF
+ */
+const runner = async (location, name) => {
   const path = require('path')
   const fs = require('fs')
   const THREE = require('three')
@@ -30,11 +36,9 @@ const run = (location, name) => {
 
   /**
    * Load part
-   * @param {string} location Location
-   * @param {string} name Name
    * @return {Object} Legacy ThreeJS json
    */
-  const loadPart = (location, name) => {
+  const loadPart = () => {
     const partFile = path.join(location, name)
     const partData = fs.readFileSync(partFile)
     const part = JSON.parse(partData)
@@ -273,36 +277,31 @@ const run = (location, name) => {
 
   /**
    * Convert
-   * @param {string} location Location
-   * @param {string} name Name
    */
-  const convert = async (location, name) => {
-    try {
-      // Load part
-      const part = loadPart(location, name)
+  const convert = async () => {
+    // try {
+    // Load part
+    const part = loadPart()
 
-      // Load mesh
-      const mesh = load(part)
+    // Load mesh
+    const mesh = load(part)
 
-      // GLTF
-      const exporter = new THREE.GLTFExporter()
-      const gltf = await new Promise((resolve) =>
-        exporter.parse(
-          mesh,
-          (content) => {
-            resolve(content)
-          },
-          { onlyVisible: false, binary: false }
-        )
+    // GLTF
+    const exporter = new THREE.GLTFExporter()
+    const gltf = await new Promise((resolve) =>
+      exporter.parse(
+        mesh,
+        (content) => {
+          resolve(content)
+        },
+        { onlyVisible: false, binary: false }
       )
+    )
 
-      console.log(JSON.stringify(gltf))
-    } catch (err) {
-      console.error(err)
-    }
+    return JSON.stringify(gltf)
   }
+
+  return convert()
 }
 
-module.exports = run
-
-// convert(process.argv[2], process.argv[3])
+module.exports = { runner }

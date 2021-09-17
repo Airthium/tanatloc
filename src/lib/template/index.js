@@ -2,6 +2,7 @@
 
 import path from 'path'
 import ejs from 'ejs'
+import isElectron from 'is-electron'
 
 import Tools from '../tools'
 import Plugins from '../plugins'
@@ -17,10 +18,18 @@ const loadTemplates = async () => {
   await Promise.all(
     Object.keys(Templates).map(async (key) => {
       const content = await Tools.readFile(
-        path.join('./templates/', Templates[key])
+        path.join(
+          isElectron() ? process.resourcesPath : './',
+          'templates',
+          Templates[key]
+        )
       )
+
       const func = await ejs.compile(content.toString(), {
-        root: './templates'
+        root: path.join(
+          isElectron() ? process.resourcesPath : './',
+          'templates'
+        )
       })
       templatesList[key] = func
     })
@@ -34,10 +43,18 @@ const loadTemplates = async () => {
         await Promise.all(
           plugin.templates.map(async (template) => {
             const content = await Tools.readFile(
-              `./plugins/${plugin.key}/${template.file}`
+              path.join(
+                isElectron() ? process.resourcesPath : './',
+                'plugins',
+                plugin.key,
+                template.file
+              )
             )
             const func = await ejs.compile(content.toString(), {
-              root: './templates'
+              root: path.join(
+                isElectron() ? process.resourcesPath : './',
+                'templates'
+              )
             })
             templatesList[template.key] = func
           })
@@ -55,6 +72,8 @@ loadTemplates()
 
 const render = async (key, parameters, save) => {
   // Compile
+  const template = templates[key]
+  if (!template) throw new Error('Unable to find the model!')
   const script = await templates[key](parameters)
 
   // Save

@@ -19,10 +19,12 @@ const convert = async (location, name) => {
     const run = spawn('node', [script, location, name])
 
     run.stdout.on('data', (stdout) => {
+      console.log(stdout.toString())
       stdout && (data += stdout.toString())
     })
 
     run.stderr.on('data', (stderr) => {
+      console.log(stderr.toString())
       stderr && (error += stderr.toString())
     })
 

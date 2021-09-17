@@ -9,4 +9,5 @@ files:
     filter:
       - package.json
       - app
+extraResources: [templates/**']
 publish: null

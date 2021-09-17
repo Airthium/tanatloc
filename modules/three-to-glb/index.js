@@ -1,6 +1,7 @@
 /** @module three-to-glb */
 
 const vm = require('vm')
+const { runner } = require('./src/run')
 
 /**
  * Convert legacy ThreeJS json format to glb
@@ -10,17 +11,24 @@ const vm = require('vm')
  * @return GLB file
  */
 const convert = async (location, name) => {
-  // Code
-  const code = async (require, _location, _name) => {
-    const { runner } = require('./src/run')
-    return runner(_location, _name)
+  try {
+    // Code
+    const code = await runner(location, name)
+
+    // TODO no enought to protect window
+
+    // Run in context
+    const data = vm.runInNewContext(`${code}`, {
+      runner,
+      location,
+      name
+    })
+    console.log(data)
+
+    return data
+  } catch (err) {
+    console.log(err)
   }
-
-  // Run in context
-  const data = await vm.runInThisContext(`${code}`)(require, location, name)
-  console.log(data)
-
-  return data
 }
 
 module.exports = { convert }

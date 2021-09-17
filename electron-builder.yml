@@ -9,5 +9,11 @@ files:
     filter:
       - package.json
       - app
-extraResources: [templates/**']
+extraResources: [
+  {
+    from : './templates',
+    to: 'templates',
+    filter: ['**/*']
+  }
+]
 publish: null

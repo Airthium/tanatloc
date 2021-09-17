@@ -11,3 +11,5 @@ Electron: create paths & database at startup
 Email: skip if email token is not present
 
 Write docker deployment documentation
+
+three-to-glb failed with electron: write it as a lib

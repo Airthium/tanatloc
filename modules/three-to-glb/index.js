@@ -1,7 +1,7 @@
 /** @module three-to-glb */
 
-const path = require('path')
 const { spawn } = require('child_process')
+const runner = require('./src/run')
 
 /**
  * Convert legacy ThreeJS json format to glb
@@ -11,12 +11,13 @@ const { spawn } = require('child_process')
  * @return GLB file
  */
 const convert = async (location, name) => {
-  const script = path.join(__dirname, 'run.js')
+  // const script = './run.js'
 
   return new Promise((resolve, reject) => {
     let data = ''
     let error = ''
-    const run = spawn('node', [script, location, name])
+    // const run = spawn('node', [script, location, name])
+    const run = spawn(runner(location, name))
 
     run.stdout.on('data', (stdout) => {
       console.log(stdout.toString())

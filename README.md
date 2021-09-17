@@ -69,3 +69,7 @@ Start:
 ## Deployment
 
 The best way to deploy Tanatloc on a server is to use the [Tanatloc deployment script](https://github.com/Airthium/tanatloc-ssr-deploy)
+
+## Remarks
+
+The server is build only for electron. Do not use it as is.

@@ -11,11 +11,9 @@ const load = async () => {
   await Promise.all(
     availables.map(async (available) => {
       try {
-        console.log(await fs.readdir('./templates'))
-        console.log(await fs.readdir('./plugins'))
         // Import
         const plugin = isElectron()
-          ? await import(`./plugins/${available}`)
+          ? await require(`/plugins/${available}`)
           : await import(`/plugins/${available}`)
         plugins.push(plugin.default)
         console.info(`Plugin ${available} loaded!`)

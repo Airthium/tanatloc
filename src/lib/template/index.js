@@ -33,11 +33,13 @@ const loadTemplates = async () => {
       if (plugin.category === 'Model')
         await Promise.all(
           plugin.templates.map(async (template) => {
-            const content = await Tools.readFile(template)
+            const content = await Tools.readFile(
+              `./plugins/${plugin.key}/${template.file}`
+            )
             const func = await ejs.compile(content.toString(), {
               root: './templates'
             })
-            templatesList[plugin.key] = func
+            templatesList[template.key] = func
           })
         )
     })

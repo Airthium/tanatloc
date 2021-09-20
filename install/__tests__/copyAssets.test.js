@@ -5,35 +5,36 @@
 import copyAssets from '../copyAssets'
 
 const mockMkdir = jest.fn()
-const mockCp = jest.fn()
 jest.mock('fs', () => ({
   promises: {
-    mkdir: async () => mockMkdir(),
-    cp: async () => mockCp()
+    mkdir: async () => mockMkdir()
   }
 }))
+
+const mockNcp = jest.fn()
+jest.mock('ncp', () => (_, __, callback) => mockNcp(callback))
 
 describe('install/copyAssets', () => {
   beforeEach(() => {
     mockMkdir.mockReset()
-    mockCp.mockReset()
+
+    mockNcp.mockReset()
+    mockNcp.mockImplementation((callback) => callback())
   })
 
   test('normal', async () => {
     await copyAssets()
     expect(mockMkdir).toHaveBeenCalledTimes(1)
-    expect(mockCp).toHaveBeenCalledTimes(1)
+    expect(mockNcp).toHaveBeenCalledTimes(1)
   })
 
   test('error', async () => {
-    mockCp.mockImplementation(() => {
-      throw new Error('cp error')
-    })
+    mockNcp.mockImplementation((callback) => callback(new Error('ncp error')))
     try {
       await copyAssets()
       expect(true).toBe(false)
     } catch (err) {
-      expect(err.message).toBe('cp error')
+      expect(err.message).toBe('ncp error')
     }
 
     mockMkdir.mockImplementation(() => {
@@ -45,7 +46,7 @@ describe('install/copyAssets', () => {
       await copyAssets()
       expect(true).toBe(false)
     } catch (err) {
-      expect(err.message).toBe('cp error')
+      expect(err.message).toBe('ncp error')
     }
 
     mockMkdir.mockImplementation(() => {

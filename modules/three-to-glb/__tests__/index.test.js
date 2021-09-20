@@ -4,53 +4,32 @@
 
 const { convert } = require('..')
 
-jest.mock('path', () => ({
-  join: () => 'path'
-}))
-
-const mockSpawn = jest.fn()
-jest.mock('child_process', () => ({
-  spawn: () => mockSpawn()
+const mockConvert = jest.fn()
+jest.mock('../src', () => ({
+  convert: async () => mockConvert()
 }))
 
 describe('modules/three-to-glb', () => {
   beforeEach(() => {
-    mockSpawn.mockReset()
-    mockSpawn.mockImplementation(() => ({
-      stdout: {
-        on: (_, callback) => callback('stdout')
-      },
-      stderr: {
-        on: (_, callback) => callback('stderr')
-      },
-      on: (type, callback) => {
-        if (type === 'close') callback()
-      }
-    }))
+    mockConvert.mockReset()
   })
 
-  test('convert', async () => {
+  test('normal', async () => {
     await convert('location', 'name')
-    expect(mockSpawn).toHaveBeenCalledTimes(1)
+    expect(mockConvert).toHaveBeenCalledTimes(1)
   })
 
-  test('convert error', async () => {
-    mockSpawn.mockImplementation(() => ({
-      stdout: {
-        on: (_, callback) => callback()
-      },
-      stderr: {
-        on: (_, callback) => callback()
-      },
-      on: (type, callback) => {
-        if (type === 'error') callback()
-      }
-    }))
+  test('error', async () => {
+    mockConvert.mockImplementation(() => {
+      throw new Error('convert error')
+    })
     try {
       await convert('location', 'name')
+      expect(true).toBe(false)
     } catch (err) {
+      expect(err.message).toBe('convert error')
     } finally {
-      expect(mockSpawn).toHaveBeenCalledTimes(1)
+      expect(mockConvert).toHaveBeenCalledTimes(1)
     }
   })
 })

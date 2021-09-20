@@ -16,7 +16,7 @@ jest.mock('../../plugins', () => ({
       key: 'key',
       category: 'Model',
       path: 'path',
-      templates: ['file']
+      templates: [{ key: 'key', file: 'file' }]
     },
     {
       category: 'HPC'

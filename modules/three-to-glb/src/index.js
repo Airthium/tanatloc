@@ -107,6 +107,7 @@ const loadElement = (type, element, color) => {
   if (type === 'geometry') mesh = loadGeometryElement(geometry, color)
   else if (type === 'mesh') mesh = loadMeshElement(geometry, color)
   else if (type === 'result') mesh = loadResultElement(geometry, color)
+  else mesh = { userData: {} }
 
   // Mesh data
   mesh.userData.uuid = json.uuid
@@ -267,7 +268,6 @@ const loadResultElement = (geometry, color) => {
  * Convert
  */
 const convert = async (location, name) => {
-  // try {
   // Load part
   const part = loadPart(location, name)
 

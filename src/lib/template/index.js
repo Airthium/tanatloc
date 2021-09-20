@@ -24,7 +24,6 @@ const loadTemplates = async () => {
           Templates[key]
         )
       )
-
       const func = await ejs.compile(content.toString(), {
         root: path.join(
           isElectron() ? process.resourcesPath : './',

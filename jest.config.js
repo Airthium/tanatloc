@@ -27,7 +27,8 @@ module.exports = {
     '<rootDir>/jest.e2e.config.js',
     '<rootDir>/config/jest/',
     '<rootDir>/public/',
-    '<rootDir>/tests/'
+    '<rootDir>/tests/',
+    '<rootDir>/modules/three-to-glb/lib/three/'
   ],
   transform: {
     '^.+\\.(js|jsx|ts|tsx)$': '<rootDir>/node_modules/babel-jest',
@@ -79,6 +80,7 @@ module.exports = {
     '<rootDir>/src/lib/wait',
     '<rootDir>/src/pages/api/wait',
     '<rootDir>/src/components/index/wait',
-    '<rootDir>/src/route/wait'
+    '<rootDir>/src/route/wait',
+    '<rootDir>/modules/three-to-glb/lib/three/'
   ]
 }

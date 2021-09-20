@@ -83,7 +83,7 @@ const convert = async (location, file, callback, param) => {
           path.join(location, result.path),
           'part.json'
         )
-        await writeFile(location, result.path + '.glb', glb)
+        await writeFile(location, result.path + '.glb', JSON.stringify(glb))
       })
     )
   } else {
@@ -91,7 +91,7 @@ const convert = async (location, file, callback, param) => {
       path.join(location, jsonTarget),
       'part.json'
     )
-    await writeFile(location, glbTarget, glb)
+    await writeFile(location, glbTarget, JSON.stringify(glb))
   }
 
   return {

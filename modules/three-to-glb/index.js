@@ -1,34 +1,26 @@
 /** @module three-to-glb */
 
-const vm = require('vm')
-const { runner } = require('./src/run')
+const { convert } = require('./src')
 
 /**
  * Convert legacy ThreeJS json format to glb
- * Use of exec required to isolate global scope modifications
  * @param {string} location Legacy ThreeJS JSON folder location
  * @param {string} name Name of the main json
  * @return GLB file
  */
-const convert = async (location, name) => {
+const threeToGlb = async (location, name) => {
   try {
-    // Code
-    const code = await runner(location, name)
-
-    // TODO no enought to protect window
-
-    // Run in context
-    const data = vm.runInNewContext(`${code}`, {
-      runner,
-      location,
-      name
-    })
-    console.log(data)
-
-    return data
+    const run = await convert(location, name)
+    console.log(run)
+    return run
   } catch (err) {
     console.log(err)
   }
 }
 
-module.exports = { convert }
+threeToGlb(
+  '/home/simon/tanatloc/geometry/rc-upload-1627976306928-4',
+  'part.json'
+).catch(console.log)
+
+module.exports = { convert: threeToGlb }

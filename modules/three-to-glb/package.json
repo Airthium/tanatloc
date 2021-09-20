@@ -5,7 +5,6 @@
   "license": "UNLICENSED",
   "dependencies": {
     "canvas": "2.8.0",
-    "gltf-pipeline": "3.0.4",
     "three": "0.132.2",
     "vblob": "1.0.2"
   }

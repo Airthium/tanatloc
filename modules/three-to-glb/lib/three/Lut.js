@@ -1,3 +1,7 @@
+/**
+ * Custom re-implementation of https://github.com/mrdoob/three.js/blob/dev/examples/js/math/Lut.js
+ */
+
 ;(function () {
   class Lut {
     constructor(colormap, count = 32) {
@@ -7,14 +11,6 @@
       this.minV = 0
       this.maxV = 1
       this.setColorMap(colormap, count)
-    }
-
-    set(value) {
-      if (value.isLut === true) {
-        this.copy(value)
-      }
-
-      return this
     }
 
     setMin(min) {
@@ -51,15 +47,6 @@
       return this
     }
 
-    copy(lut) {
-      this.lut = lut.lut
-      this.map = lut.map
-      this.n = lut.n
-      this.minV = lut.minV
-      this.maxV = lut.maxV
-      return this
-    }
-
     getColor(alpha) {
       if (alpha <= this.minV) {
         alpha = this.minV
@@ -76,46 +63,6 @@
     addColorMap(name, arrayOfColors) {
       ColorMapKeywords[name] = arrayOfColors
       return this
-    }
-
-    createCanvas() {
-      const canvas = threeToGlbGlobal.document.createElement('canvas')
-      canvas.width = 1
-      canvas.height = this.n
-      this.updateCanvas(canvas)
-      return canvas
-    }
-
-    updateCanvas(canvas) {
-      const ctx = canvas.getContext('2d', {
-        alpha: false
-      })
-      const imageData = ctx.getImageData(0, 0, 1, this.n)
-      const data = imageData.data
-      let k = 0
-      const step = 1.0 / this.n
-
-      for (let i = 1; i >= 0; i -= step) {
-        for (let j = this.map.length - 1; j >= 0; j--) {
-          if (i < this.map[j][0] && i >= this.map[j - 1][0]) {
-            const min = this.map[j - 1][0]
-            const max = this.map[j][0]
-            const minColor = new threeToGlbGlobal.THREE.Color(
-              this.map[j - 1][1]
-            )
-            const maxColor = new threeToGlbGlobal.THREE.Color(this.map[j][1])
-            const color = minColor.lerp(maxColor, (i - min) / (max - min))
-            data[k * 4] = Math.round(color.r * 255)
-            data[k * 4 + 1] = Math.round(color.g * 255)
-            data[k * 4 + 2] = Math.round(color.b * 255)
-            data[k * 4 + 3] = 255
-            k += 1
-          }
-        }
-      }
-
-      ctx.putImageData(imageData, 0, 0)
-      return canvas
     }
   }
 

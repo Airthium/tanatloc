@@ -4,7 +4,6 @@
   "main": "index.js",
   "license": "UNLICENSED",
   "dependencies": {
-    "canvas": "2.8.0",
     "three": "0.132.2",
     "vblob": "1.0.2"
   }

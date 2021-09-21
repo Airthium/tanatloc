@@ -18,7 +18,6 @@ const load = async () => {
         plugins.push(plugin.default)
         console.info(`Plugin ${available} loaded!`)
       } catch (err) {
-        console.error(err)
         console.error(`Plugin ${available} NOT loaded!`)
       }
     })

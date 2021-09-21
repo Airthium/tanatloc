@@ -5,6 +5,11 @@ module.exports = {
   rendererSrcDir: '.',
 
   webpack: (defaultConfig) => {
+    defaultConfig.module.rules.push({
+      test: /\.ejs/,
+      use: [{ loader: 'ignore-loader' }]
+    })
+
     defaultConfig.resolve = {
       ...defaultConfig.resolve,
       alias: {

@@ -6,7 +6,9 @@ import isElectron from 'is-electron'
 const plugins = []
 const load = async () => {
   // Available directories
-  const availables = await fs.readdir('./plugins')
+  const availables = await fs.readdir(
+    isElectron() ? `${process.resourcesPath}/plugins` : './plugins'
+  )
 
   await Promise.all(
     availables.map(async (available) => {
@@ -24,8 +26,7 @@ const load = async () => {
   )
 }
 
-load().catch((err) => {
-  console.error(err)
+load().catch(() => {
   console.error('Plugins load failed!')
 })
 

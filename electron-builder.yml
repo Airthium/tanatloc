@@ -11,6 +11,11 @@ files:
       - app
 extraResources: [
   {
+    from : './plugins',
+    to: 'plugins',
+    filter: ['**/*']
+  },
+  {
     from : './templates',
     to: 'templates',
     filter: ['**/*']

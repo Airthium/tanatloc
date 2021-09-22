@@ -10,16 +10,6 @@ jest.mock('fs', () => ({
   readFileSync: () => mockReadFile()
 }))
 
-jest.mock(
-  'canvas',
-  () =>
-    class {
-      constructor() {
-        return { canvas: true }
-      }
-    }
-)
-
 jest.mock('../../lib/three/GLTFExporter', () => {
   // mock
 })
@@ -39,18 +29,6 @@ describe('modules/three-to-glb/src', () => {
 
     mockReadFile.mockReset()
     mockReadFile.mockImplementation(() => JSON.stringify({}))
-  })
-
-  test('create canvas', () => {
-    try {
-      threeToGlbGlobal.document.createElement('div')
-      expect(true).toBe(false)
-    } catch (err) {
-      expect(err.message).toBe('Cannot create node div')
-    }
-
-    const canvas = threeToGlbGlobal.document.createElement('canvas')
-    expect(canvas).toEqual({ canvas: true })
   })
 
   test('empty part', async () => {

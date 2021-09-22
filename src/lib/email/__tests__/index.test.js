@@ -59,8 +59,8 @@ describe('lib/email', () => {
 
     // Error
     mockSend.mockImplementation(() => ({
-      status: '401',
-      statusText: 'Unauthorized'
+      status: 422,
+      statusText: 'Unprocessable Entity'
     }))
     try {
       await Email.subscribe('email', 'id')
@@ -68,8 +68,17 @@ describe('lib/email', () => {
       expect(mockLinkAdd).toHaveBeenCalledTimes(2)
       expect(mockSend).toHaveBeenCalledTimes(2)
       expect(mockLinkDel).toHaveBeenCalledTimes(1)
-      expect(err.message).toBe('Mail error: Unauthorized')
+      expect(err.message).toBe('Mail error: Unprocessable Entity')
     }
+
+    // Unauthorized
+    mockSend.mockImplementation(() => ({
+      status: 401,
+      statusText: 'Unauthorized'
+    }))
+    await Email.subscribe('email', 'id')
+    expect(mockLinkAdd).toHaveBeenCalledTimes(3)
+    expect(mockSend).toHaveBeenCalledTimes(3)
   })
 
   test('recover', async () => {
@@ -80,8 +89,8 @@ describe('lib/email', () => {
 
     // Error
     mockSend.mockImplementation(() => ({
-      status: '401',
-      statusText: 'Unauthorized'
+      status: 422,
+      statusText: 'Unprocessable Entity'
     }))
     try {
       await Email.recover('email')
@@ -89,7 +98,7 @@ describe('lib/email', () => {
       expect(mockLinkAdd).toHaveBeenCalledTimes(2)
       expect(mockSend).toHaveBeenCalledTimes(2)
       expect(mockLinkDel).toHaveBeenCalledTimes(1)
-      expect(err.message).toBe('Mail error: Unauthorized')
+      expect(err.message).toBe('Mail error: Unprocessable Entity')
     }
   })
 
@@ -101,8 +110,8 @@ describe('lib/email', () => {
 
     // Error
     mockSend.mockImplementation(() => ({
-      status: '401',
-      statusText: 'Unauthorized'
+      status: 422,
+      statusText: 'Unprocessable Entity'
     }))
     try {
       await Email.revalidate('email', 'id')
@@ -110,7 +119,7 @@ describe('lib/email', () => {
       expect(mockLinkAdd).toHaveBeenCalledTimes(2)
       expect(mockSend).toHaveBeenCalledTimes(2)
       expect(mockLinkDel).toHaveBeenCalledTimes(1)
-      expect(err.message).toBe('Mail error: Unauthorized')
+      expect(err.message).toBe('Mail error: Unprocessable Entity')
     }
   })
 

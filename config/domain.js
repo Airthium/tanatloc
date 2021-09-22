@@ -1,5 +1,5 @@
 // TODO
-const DOMAIN = 'https://tanatloc.com' || process.env.DOMAIN
+const DOMAIN = process.env.DOMAIN || 'https://tanatloc.com'
 
 module.exports = {
   DOMAIN

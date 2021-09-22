@@ -68,7 +68,13 @@ Start:
 
 ## Deployment
 
+### Docker
+
 The best way to deploy Tanatloc on a server is to use the [Tanatloc deployment script](https://github.com/Airthium/tanatloc-ssr-deploy)
+
+### Electron
+
+To use the electron app, you must have tanatloc/worker docker and postgresql installed on your computer.
 
 ## Remarks
 

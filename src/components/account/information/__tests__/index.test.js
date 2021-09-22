@@ -3,6 +3,9 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import Information from '..'
 
+const mockUpload = jest.fn()
+jest.mock('antd/lib/upload', () => (props) => mockUpload(props))
+
 const mockSuccess = jest.fn()
 const mockError = jest.fn()
 jest.mock('@/components/assets/notification', () => ({
@@ -42,6 +45,9 @@ describe('components/account/information', () => {
   }
 
   beforeEach(() => {
+    mockUpload.mockReset()
+    mockUpload.mockImplementation(() => <div />)
+
     mockSuccess.mockReset()
     mockError.mockReset()
 
@@ -171,66 +177,71 @@ describe('components/account/information', () => {
     unmount()
   })
 
-  test('upload', async () => {
+  test('beforeUpload', async () => {
     let file
+    mockUpload.mockImplementation((props) => (
+      <input
+        role="Upload"
+        onClick={(e) => props.beforeUpload(e.target.files[0])}
+      />
+    ))
 
     const { unmount } = render(<Information user={user} swr={swr} />)
 
-    const upload = screen.getByRole('img', { name: 'upload' })
+    const upload = screen.getByRole('Upload')
 
     // Wrong format
     file = new File(['buffer'], 'file.png', { type: 'application/mesh' })
-    fireEvent.drop(upload, {
-      dataTransfer: {
-        files: [file]
-      }
-    })
+    fireEvent.click(upload, { target: { files: [file] } })
     await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
 
     // Wrong size
     file = new File([Buffer.alloc(5 * 1024 * 1024)], 'file.png', {
       type: 'image/png'
     })
-    fireEvent.drop(upload, {
-      dataTransfer: {
-        files: [file]
-      }
-    })
+    fireEvent.click(upload, { target: { files: [file] } })
     await waitFor(() => expect(mockError).toHaveBeenCalledTimes(2))
 
     // Good format
     file = new File(['buffer'], 'file.png', { type: 'image/png' })
-    fireEvent.drop(upload, {
-      dataTransfer: {
-        files: [file]
-      }
-    })
-
-    await waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(1))
-    await waitFor(() => expect(swr.mutateUser).toHaveBeenCalledTimes(1))
+    fireEvent.click(upload, { target: { files: [file] } })
 
     unmount()
   })
 
-  // it('upload - error', async () => {
-  //   const { unmount } = render(<Information user={user} swr={swr} />)
+  test('onChange', async () => {
+    let info
+    mockUpload.mockImplementation((props) => (
+      <input
+        role="Upload"
+        onClick={async (e) => {
+          props.onChange(JSON.parse(e.target.value))
+        }}
+      />
+    ))
 
-  //   const upload = screen.getByRole('img', { name: 'upload' })
+    const { unmount } = render(<Information user={user} swr={swr} />)
 
-  //   // Add error
-  //   mockAdd.mockImplementation(() => {
-  //     throw new Error('Add error')
-  //   })
-  //   const file = new File(['buffer'], 'file.png', { type: 'image/png' })
-  //   fireEvent.drop(upload, {
-  //     dataTransfer: {
-  //       files: [file]
-  //     }
-  //   })
+    const upload = screen.getByRole('Upload')
 
-  //   await waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(1))
-  //   await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
+    // Uploading
+    info = { file: { status: 'uploading' } }
+    fireEvent.click(upload, { target: { value: JSON.stringify(info) } })
 
-  //   unmount()
-  // })
+    // Done
+    info = { file: { status: 'done', originFileObj: {} } }
+    fireEvent.click(upload, { target: { value: JSON.stringify(info) } })
+    await waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(swr.mutateUser).toHaveBeenCalledTimes(1))
+
+    // Error
+    mockAdd.mockImplementation(() => {
+      throw new Error('add error')
+    })
+    fireEvent.click(upload, { target: { value: JSON.stringify(info) } })
+    await waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(2))
+    await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
+
+    unmount()
+  })
 })

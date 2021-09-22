@@ -6,6 +6,8 @@ jest.mock('fs', () => ({
   }
 }))
 
+jest.mock('is-electron', () => () => false)
+
 jest.mock(
   '/plugins/plugin',
   () => ({

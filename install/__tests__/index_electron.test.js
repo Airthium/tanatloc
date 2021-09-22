@@ -4,13 +4,9 @@
 
 import install from '..'
 
-jest.mock('is-electron', () => () => false)
+jest.mock('is-electron', () => () => true)
 
-jest.mock('../copyAssets', () =>
-  jest.fn(() => {
-    throw new Error()
-  })
-)
+jest.mock('../copyAssets', () => jest.fn())
 jest.mock('../createDatabase', () => jest.fn())
 jest.mock('../createPaths', () => jest.fn())
 

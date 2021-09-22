@@ -4,6 +4,8 @@ jest.mock('ejs', () => ({
   compile: async () => () => 'ejs'
 }))
 
+jest.mock('is-electron', () => () => false)
+
 const mockWriteFile = jest.fn()
 jest.mock('../../tools', () => ({
   readFile: async () => 'readFile',
@@ -43,5 +45,14 @@ describe('lib/template', () => {
     script = await Template.render('key', {}, {})
     expect(script).toBe('ejs')
     expect(mockWriteFile).toHaveBeenCalledTimes(1)
+  })
+
+  test('render non existing', async () => {
+    try {
+      await Template.render('unknown key', {})
+      expect(true).toBe(false)
+    } catch (err) {
+      expect(err.message).toBe('Unable to find the model!')
+    }
   })
 })

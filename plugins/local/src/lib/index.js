@@ -101,6 +101,10 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
 
   // Path
   const simulationPath = path.join(storage.SIMULATION, id)
+  const runPath = 'run'
+  const couplingPath = 'coupling'
+  const resultPath = 'result'
+  const dataPath = 'data'
 
   // Create tasks
   const tasks = []
@@ -234,26 +238,26 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
         dimension: 3,
         run: {
           ...configuration.run,
-          couplingPath: 'run/coupling',
-          resultPath: 'run/result',
-          dataPath: 'run/data'
+          couplingPath: path.join(runPath, couplingPath),
+          resultPath: path.join(runPath, resultPath),
+          dataPath: path.join(runPath, dataPath)
         }
       },
       {
-        location: path.join(simulationPath, 'run'),
+        location: path.join(simulationPath, runPath),
         name: id + '.edp'
       }
     )
 
     // Create paths
-    await Tools.createPath(path.join(simulationPath, 'run/coupling'))
-    await Tools.createPath(path.join(simulationPath, 'run/result'))
-    await Tools.createPath(path.join(simulationPath, 'run/data'))
+    await Tools.createPath(path.join(simulationPath, runPath, couplingPath))
+    await Tools.createPath(path.join(simulationPath, runPath, resultPath))
+    await Tools.createPath(path.join(simulationPath, runPath, dataPath))
 
     // Compute simulation
     const code = await Services.freefem(
       simulationPath,
-      path.join('run', id + '.edp'),
+      path.join(runPath, id + '.edp'),
       async ({ pid, error }) => {
         simulationTask.status = 'process'
         startProcess(simulationPath, simulationTask, () =>

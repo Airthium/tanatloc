@@ -25,7 +25,7 @@ const Users = ({ users, swr }) => {
   const [columns, setColumns] = useState()
 
   useEffect(() => {
-    PluginsAPI.list()
+    PluginsAPI.completeList()
       .then((list) => {
         setPlugins(list)
 

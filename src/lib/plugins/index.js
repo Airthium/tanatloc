@@ -40,17 +40,25 @@ const serverList = async () => {
   })
 }
 
-const clientList = async (user) => {
-  return plugins
-    .map((plugin) => {
-      if (user.authorizedplugins.includes(plugin.key))
-        return {
-          category: plugin.category,
-          key: plugin.key,
-          ...plugin.client
-        }
-    })
-    .filter((p) => p)
+const clientList = async (user, complete) => {
+  if (complete) {
+    return plugins.map((plugin) => ({
+      category: plugin.category,
+      key: plugin.key,
+      ...plugin.client
+    }))
+  } else {
+    return plugins
+      .map((plugin) => {
+        if (user.authorizedplugins.includes(plugin.key))
+          return {
+            category: plugin.category,
+            key: plugin.key,
+            ...plugin.client
+          }
+      })
+      .filter((p) => p)
+  }
 }
 
 export default { clientList, serverList }

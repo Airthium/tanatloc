@@ -127,7 +127,7 @@ const Run = ({ simulation, result, setResult, swr }) => {
         status: task.status,
         log: task.log,
         warning: task.warning,
-        error: task.warning,
+        error: task.error,
         systemLog: task.systemLog
       }
 

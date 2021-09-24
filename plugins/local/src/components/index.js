@@ -9,7 +9,9 @@ const Local = ({ onSelect }) => {
   return (
     <Space style={{ width: '100%' }}>
       <Typography.Text>Local computing</Typography.Text>
-      <Button onClick={onClick} icon={<SelectOutlined />} />
+      <Button type="primary" onClick={onClick} icon={<SelectOutlined />}>
+        Select
+      </Button>
     </Space>
   )
 }

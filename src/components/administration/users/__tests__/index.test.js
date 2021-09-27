@@ -10,7 +10,7 @@ jest.mock('@/components/assets/notification', () => ({
 
 const mockList = jest.fn()
 jest.mock('@/api/plugins', () => ({
-  list: async () => mockList()
+  completeList: async () => mockList()
 }))
 
 jest.mock('../add', () => () => <div />)

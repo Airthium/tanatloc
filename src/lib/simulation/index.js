@@ -294,10 +294,11 @@ const stop = async ({ id }) => {
   )?.lib
 
   // Stop
-  await pluginLib.stop(tasks, configuration)
+  await pluginLib.stop(id, tasks, configuration)
 
   // Update tasks
   tasks?.forEach((task) => {
+    if (!task) return
     if (task.status === 'wait') task.status = 'error'
     task.error += 'Job killed'
   })

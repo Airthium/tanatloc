@@ -97,7 +97,7 @@ const Run = ({ simulation, result, setResult, swr }) => {
     }
 
     const erroredTasks = currentSimulation.tasks.filter(
-      (t) => t.status === 'error'
+      (t) => t?.status === 'error'
     )
     if (erroredTasks.length) {
       setRunning(false)
@@ -105,7 +105,7 @@ const Run = ({ simulation, result, setResult, swr }) => {
     }
 
     const runningTasks = currentSimulation.tasks.filter(
-      (t) => t.status !== 'finish'
+      (t) => t?.status !== 'finish'
     )
     if (runningTasks.length) setRunning(true)
     else setRunning(false)
@@ -121,6 +121,7 @@ const Run = ({ simulation, result, setResult, swr }) => {
     const newResults = []
     const newSelectors = []
     currentSimulation.tasks.forEach((task, index) => {
+      if (!task) return
       // Steps
       newSteps[task.index] = {
         label: task.label,

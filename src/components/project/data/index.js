@@ -49,7 +49,7 @@ const Data = ({ simulation }) => {
       // Get tasks data
       let tasksData = []
       tasks.forEach((task) => {
-        if (task.datas) tasksData = [...tasksData, ...task.datas]
+        if (task?.datas) tasksData = [...tasksData, ...task.datas]
       })
 
       // Aggregate data

@@ -1,3 +1,5 @@
+Date.now = () => 0
+
 import Local from '..'
 
 const mockPath = jest.fn()
@@ -11,7 +13,9 @@ jest.mock('set-interval-async/fixed', () => ({
 }))
 
 jest.mock('set-interval-async', () => ({
-  clearIntervalAsync: () => {}
+  clearIntervalAsync: () => {
+    /**/
+  }
 }))
 
 jest.mock('@/config/storage', () => ({}))
@@ -21,27 +25,31 @@ jest.mock('@/database/simulation', () => ({
   update: async () => mockUpdate()
 }))
 
-const mockCreatePath = jest.fn()
-const mockReadFile = jest.fn()
-const mockConvert = jest.fn()
-jest.mock('@/lib/tools', () => ({
-  createPath: async () => mockCreatePath(),
-  readFile: async () => mockReadFile(),
-  convert: async (path, file, callback, param) =>
-    mockConvert(path, file, callback, param)
-}))
-
-const mockRender = jest.fn()
-jest.mock('@/lib/template', () => ({
-  render: async () => mockRender()
-}))
-
 const mockGmsh = jest.fn()
 const mockFreefem = jest.fn()
 jest.mock('@/services', () => ({
   gmsh: async (path, mesh, geometry, callback) =>
     mockGmsh(path, mesh, geometry, callback),
   freefem: async (path, script, callback) => mockFreefem(path, script, callback)
+}))
+
+const mockCreatePath = jest.fn()
+const mockReadFile = jest.fn()
+const mockConvert = jest.fn()
+const mockRemoveFile = jest.fn()
+const mockRemoveDirectory = jest.fn()
+jest.mock('@/lib/tools', () => ({
+  createPath: async () => mockCreatePath(),
+  readFile: async () => mockReadFile(),
+  convert: async (path, file, callback, param) =>
+    mockConvert(path, file, callback, param),
+  removeFile: async () => mockRemoveFile(),
+  removeDirectory: async () => mockRemoveDirectory()
+}))
+
+const mockRender = jest.fn()
+jest.mock('@/lib/template', () => ({
+  render: async () => mockRender()
 }))
 
 describe('plugins/local/src/lib', () => {
@@ -55,6 +63,8 @@ describe('plugins/local/src/lib', () => {
     mockConvert.mockReset()
     mockCreatePath.mockReset()
     mockReadFile.mockReset()
+    mockRemoveFile.mockReset()
+    mockRemoveDirectory.mockReset()
 
     mockRender.mockReset()
     mockGmsh.mockReset()
@@ -65,11 +75,116 @@ describe('plugins/local/src/lib', () => {
     expect(Local.key).toBeDefined()
   })
 
+  test('updateTasks', () => {
+    Local.updateTasks('id', [])
+    expect(mockUpdate).toHaveBeenCalledTimes(1)
+  })
+
+  test('clean', async () => {
+    // Normal
+    await Local.clean('path')
+    expect(mockRemoveFile).toHaveBeenCalledTimes(2)
+    expect(mockRemoveDirectory).toHaveBeenCalledTimes(1)
+
+    // Error
+    mockRemoveFile.mockImplementation(() => {
+      throw new Error('removeFile error')
+    })
+    mockRemoveDirectory.mockImplementation(() => {
+      throw new Error('removeDirectory error')
+    })
+    await Local.clean('path')
+    expect(mockRemoveFile).toHaveBeenCalledTimes(4)
+    expect(mockRemoveDirectory).toHaveBeenCalledTimes(2)
+  })
+
+  test('startProcess', () => {
+    const update = jest.fn()
+    mockSetInterval.mockImplementation((callback) => {
+      callback()
+      return 'interval'
+    })
+    mockReadFile.mockImplementation(() => {
+      throw new Error('no file')
+    })
+    Local.stopProcess('id', 'path', {}, update)
+
+    const interval = Local.startProcess('id', 'path', {}, update)
+    expect(interval).toBe('interval')
+
+    Local.startProcess('id', 'path', {}, update)
+  })
+
+  test('stopProcess', () => {
+    const update = jest.fn()
+    mockReadFile.mockImplementation(() => {
+      throw new Error('no file')
+    })
+
+    Local.stopProcess('id', 'path', {}, update)
+  })
+
+  test('processResult', async () => {
+    const update = jest.fn()
+    mockSetInterval.mockImplementation((callback) => {
+      callback()
+      return 'interval'
+    })
+    mockReadFile.mockImplementation(() => 'PROCESS VTU FILE Result.vtu')
+    Local.startProcess('id', 'path', {}, update)
+
+    // Convert error
+    mockConvert.mockImplementation(() => {
+      throw new Error('Convert errror')
+    })
+    await Local.stopProcess('id', 'path', {}, update)
+
+    // Convert error message
+    mockConvert.mockImplementation((_, __, callback) => {
+      callback({ error: 'Convert error' })
+    })
+    await Local.stopProcess('id', 'path', {}, update)
+
+    // Ok
+    mockConvert.mockImplementation((_, __, callback) => {
+      callback({ data: JSON.stringify({ name: 'name', apth: 'path' }) })
+    })
+    await Local.stopProcess('id', 'path', {}, update)
+
+    await Local.stopProcess('id', 'path', {}, update)
+  })
+
+  test('processData', async () => {
+    const update = jest.fn()
+    mockSetInterval.mockImplementation((callback) => {
+      callback()
+      return 'interval'
+    })
+    mockReadFile.mockImplementation(() => 'PROCESS DATA FILE data.dat')
+    Local.startProcess('id', 'path', {}, update)
+
+    // Error
+    await Local.stopProcess('id', 'path', {}, update)
+
+    // Ok
+    let count = 0
+    mockReadFile.mockImplementation(() => {
+      count++
+      if (count === 3) return JSON.stringify({ t: 0, x: 1 })
+      return 'PROCESS DATA FILE data.dat'
+    })
+    await Local.stopProcess('id', 'path', {}, update)
+    await Local.stopProcess('id', 'path', {}, update)
+  })
+
   test('computeMesh', async () => {
     // Normal
     mockPath.mockImplementation(() => 'partPath')
-    mockGmsh.mockImplementation(() => 0)
-    mockConvert.mockImplementation((path, file, callback) => {
+    mockGmsh.mockImplementation((_, __, ___, callback) => {
+      callback({})
+      return 0
+    })
+    mockConvert.mockImplementation((_, __, callback) => {
       callback({})
       return {
         json: 'json',
@@ -125,18 +240,18 @@ describe('plugins/local/src/lib', () => {
   })
 
   test('computeSimulation', async () => {
-    mockFreefem.mockImplementation((path, script, callback) => {
+    mockFreefem.mockImplementation((_, __, callback) => {
       callback({ pid: 'pid' })
       callback({ error: 'data' })
       return 0
     })
+    mockReadFile.mockImplementation(() => '')
 
     // Empty
     await Local.computeSimulation('id', 'algorithm', {})
 
     // Simulation error
-    Date.now = () => 0
-    mockFreefem.mockImplementation((path, file, callback) => {
+    mockFreefem.mockImplementation((_, __, callback) => {
       callback({})
       return 1
     })
@@ -148,11 +263,10 @@ describe('plugins/local/src/lib', () => {
     }
 
     //With meshes
-    Date.now = () => NaN
     mockFreefem.mockImplementation(() => {
       return 0
     })
-    mockGmsh.mockImplementation((path, mesh, geometry, callback) => {
+    mockGmsh.mockImplementation((_, __, ___, callback) => {
       callback({ pid: 'pid' })
       callback({ data: 'data' })
       callback({ error: 'data' })
@@ -220,8 +334,7 @@ describe('plugins/local/src/lib', () => {
     })
 
     // Meshing error
-    Date.now = () => 0
-    mockGmsh.mockImplementation((path, mesh, geometry, callback) => {
+    mockGmsh.mockImplementation((_, __, ___, callback) => {
       callback({ pid: 'pid' })
       callback({ data: 'data' })
       callback({ error: 'data' })
@@ -256,63 +369,15 @@ describe('plugins/local/src/lib', () => {
     } catch (err) {
       expect(true).toBe(true)
     }
-
-    // With results & data, read error
-    let processOutput
-    mockSetInterval.mockImplementation((func) => {
-      processOutput = func
-      return 1
-    })
-    mockFreefem.mockImplementation((path, file, callback) => {
-      callback({})
-      callback({})
-      return 0
-    })
-    mockGmsh.mockImplementation(() => 0)
-    mockReadFile.mockImplementation(() => {
-      throw new Error()
-    })
-    await Local.computeSimulation('id', 'algorithm', {})
-    await processOutput()
-
-    // With results & data
-    JSON.parse = () => ({})
-    mockReadFile.mockImplementation(
-      () => 'PROCESS VTU FILE Result.vtu\nPROCESS DATA FILE data.dat'
-    )
-    mockConvert.mockImplementation((path, file, callback) => {
-      callback({ data: 'data' })
-    })
-    await processOutput()
-
-    // With same results & data
-    await processOutput()
-
-    // Convert stderr
-    JSON.parse = () => {
-      throw new Error()
-    }
-    mockReadFile.mockImplementation(
-      () => 'PROCESS VTU FILE Result1.vtu\nPROCESS DATA FILE data1.dat'
-    )
-    mockConvert.mockImplementation((path, file, callback) => {
-      callback({ error: 'error' })
-    })
-    await processOutput()
-
-    // Convert error
-    mockReadFile.mockImplementation(
-      () => 'PROCESS VTU FILE Result2.vtu\nPROCESS DATA FILE data2.dat'
-    )
-    mockConvert.mockImplementation(() => {
-      throw new Error()
-    })
-    await processOutput()
   })
 
   test('stop', async () => {
     const mockKill = jest.spyOn(process, 'kill').mockImplementation(() => {})
-    await Local.stop([{ status: 'wait' }, { status: 'process' }])
+    await Local.stop('id', [
+      { status: 'finish' },
+      { status: 'wait' },
+      { pid: 'pid', status: 'process' }
+    ])
     expect(mockKill).toHaveBeenCalledTimes(1)
   })
 })

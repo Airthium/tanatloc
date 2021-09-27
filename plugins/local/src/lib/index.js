@@ -29,6 +29,9 @@ const dataPath = 'data'
 // dB update delay
 const updateDelay = 1000 // ms
 
+// Time
+const start = Date.now()
+
 /**
  * Update tasks
  * @param {string} id Id
@@ -44,10 +47,38 @@ const updateTasks = (id, tasks) => {
 }
 
 /**
+ * Clean previous simulaton
+ * @param {string} simulationPath Simulation path
+ */
+const clean = async (simulationPath) => {
+  // Log file
+  try {
+    await Tools.removeFile(path.join(simulationPath, logFileName))
+  } catch (err) {
+    console.warn(err)
+  }
+
+  // Data file
+  try {
+    await Tools.removeFile(path.join(simulationPath, dataFileName))
+  } catch (err) {
+    console.warn(err)
+  }
+
+  // Run path
+  try {
+    await Tools.removeDirectory(path.join(simulationPath, runPath))
+  } catch (err) {
+    console.warn(err)
+  }
+}
+
+/**
  * Compute mesh
  * @param {string} simulationPath Simulation path
  * @param {Object} geometry Geometry { path, file, name }
  * @param {Object} mesh Mesh { path, parameters }
+ * @param {Function} callback Callback
  */
 const computeMesh = async (simulationPath, geometry, mesh, callback) => {
   const geoFile = geometry.name + '.geo'
@@ -98,23 +129,42 @@ const computeMesh = async (simulationPath, geometry, mesh, callback) => {
 }
 
 /**
- * Compute simulation
- * @param {string} simulation Simulation { id }
- * @param {string} algorithm Algorithm
+ * Get refinements
  * @param {Object} configuration Configuration
+ * @returns {Array} Refinements
  */
-const computeSimulation = async ({ id }, algorithm, configuration) => {
-  // Time
-  const start = Date.now()
+const getRefinements = (configuration) => {
+  const refinements = []
+  configuration.boundaryConditions &&
+    Object.keys(configuration.boundaryConditions).forEach((boundaryKey) => {
+      if (
+        boundaryKey === 'index' ||
+        boundaryKey === 'title' ||
+        boundaryKey === 'done'
+      )
+        return
+      const boundaryCondition = configuration.boundaryConditions[boundaryKey]
+      if (boundaryCondition.values && boundaryCondition.refineFactor) {
+        refinements.push({
+          size: 'factor',
+          factor: boundaryCondition.refineFactor,
+          selected: boundaryCondition.values.flatMap((v) => v.selected)
+        })
+      }
+    })
 
-  // Path
-  const simulationPath = path.join(storage.SIMULATION, id)
+  return refinements
+}
 
-  // Create tasks
-  const tasks = []
+/**
+ * Compute meshes
+ * @param {string} id Simulation id
+ * @param {string} simulationPath Simulation path
+ * @param {Object} configuration Configuration
+ * @param {Array} tasks Tasks
+ */
+const computeMeshes = async (id, simulationPath, configuration, tasks) => {
   let taskIndex = 0
-
-  // Meshing
   await Promise.all(
     Object.keys(configuration).map(async (ckey) => {
       if (configuration[ckey].meshable) {
@@ -138,91 +188,87 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
           meshingTask.log += 'Coupling: skip mesh build'
           meshingTask.status = 'finish'
           updateTasks(id, tasks)
-        } else {
-          // Check refinements
-          const refinements = []
-          configuration.boundaryConditions &&
-            Object.keys(configuration.boundaryConditions).forEach(
-              (boundaryKey) => {
-                if (
-                  boundaryKey === 'index' ||
-                  boundaryKey === 'title' ||
-                  boundaryKey === 'done'
-                )
-                  return
-                const boundaryCondition =
-                  configuration.boundaryConditions[boundaryKey]
-                if (
-                  boundaryCondition.values &&
-                  boundaryCondition.refineFactor
-                ) {
-                  refinements.push({
-                    size: 'factor',
-                    factor: boundaryCondition.refineFactor,
-                    selected: boundaryCondition.values.flatMap(
-                      (v) => v.selected
-                    )
-                  })
-                }
-              }
-            )
+          return
+        }
 
-          // Mesh parameters
-          const parameters = {
-            size: 'auto',
-            fineness: 'normal',
-            refinements: refinements
-          }
+        // Check refinements
+        const refinements = getRefinements(configuration)
 
-          // Build mesh
-          try {
-            const mesh = await computeMesh(
-              simulationPath,
-              {
-                path: path.join(geometry.path),
-                file: geometry.file,
-                name: geometry.name
-              },
-              {
-                path: path.join(geometry.name + '_mesh'),
-                parameters
-              },
-              ({ pid, error, data }) => {
-                meshingTask.status = 'process'
+        // Mesh parameters
+        const parameters = {
+          size: 'auto',
+          fineness: 'normal',
+          refinements: refinements
+        }
 
-                pid && (meshingTask.pid = pid)
+        // Build mesh
+        try {
+          const mesh = await computeMesh(
+            simulationPath,
+            {
+              path: path.join(geometry.path),
+              file: geometry.file,
+              name: geometry.name
+            },
+            {
+              path: path.join(geometry.name + '_mesh'),
+              parameters
+            },
+            ({ pid, error, data }) => {
+              meshingTask.status = 'process'
 
-                error && (meshingTask.error += 'Error: ' + error + '\n')
+              pid && (meshingTask.pid = pid)
 
-                data && (meshingTask.log += data + '\n')
+              error && (meshingTask.error += 'Error: ' + error + '\n')
 
-                if ((Date.now() - start) % updateDelay === 0)
-                  updateTasks(id, tasks)
-              }
-            )
+              data && (meshingTask.log += data + '\n')
 
-            // Task
-            meshingTask.status = 'finish'
-            meshingTask.file = mesh
-            updateTasks(id, tasks)
+              if ((Date.now() - start) % updateDelay === 0)
+                updateTasks(id, tasks)
+            }
+          )
 
-            // Save mesh name
-            configuration[ckey].mesh = mesh
-          } catch (err) {
-            // Task
-            meshingTask.status = 'error'
-            meshingTask.error += 'Fatal error: ' + err.message
-            updateTasks(id, tasks)
+          // Task
+          meshingTask.status = 'finish'
+          meshingTask.file = mesh
+          updateTasks(id, tasks)
 
-            throw err
-          }
+          // Save mesh name
+          configuration[ckey].mesh = mesh
+        } catch (err) {
+          // Task
+          meshingTask.status = 'error'
+          meshingTask.error += 'Fatal error: ' + err.message
+          updateTasks(id, tasks)
+
+          throw err
         }
       }
     })
   )
+}
+
+/**
+ * Compute simulation
+ * @param {string} simulation Simulation { id }
+ * @param {string} algorithm Algorithm
+ * @param {Object} configuration Configuration
+ */
+const computeSimulation = async ({ id }, algorithm, configuration) => {
+  // Path
+  const simulationPath = path.join(storage.SIMULATION, id)
+
+  // Clean previous simulation
+  await clean(simulationPath)
+
+  // Create tasks
+  const tasks = []
+
+  // Meshes
+  await computeMeshes(id, simulationPath, configuration, tasks)
 
   const simulationTask = {
-    index: taskIndex++,
+    index: tasks.length,
     label: 'Simulation',
     log: '',
     warning: '',
@@ -259,14 +305,14 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
     await Tools.createPath(path.join(simulationPath, runPath, dataPath))
 
     // Compute simulation
+    startProcess(id, simulationPath, simulationTask, () =>
+      updateTasks(id, tasks)
+    )
     const code = await Services.freefem(
       simulationPath,
       path.join(runPath, id + '.edp'),
       async ({ pid, error }) => {
         simulationTask.status = 'process'
-        startProcess(simulationPath, simulationTask, () =>
-          updateTasks(id, tasks)
-        )
 
         pid && (simulationTask.pid = pid)
 
@@ -276,7 +322,7 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
       }
     )
 
-    await stopProcess(simulationPath, simulationTask, () =>
+    await stopProcess(id, simulationPath, simulationTask, () =>
       updateTasks(id, tasks)
     )
 
@@ -290,53 +336,64 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
     // Task
     simulationTask.status = 'error'
     simulationTask.error += 'Fatal error: ' + err.message
+    stopProcess(id, simulationPath, simulationTask, () =>
+      updateTasks(id, tasks)
+    ).catch(console.warn)
     updateTasks(id, tasks)
 
     throw err
   }
 }
 
-let interval = null
+const interval = []
 const results = []
 const datas = []
 
 /**
  * Start process results & datas
+ * @param {string} id Simulation id
  * @param {string} simulationPath Simulation path
  * @param {Object} task Simulation task
  * @param {Function} update Update task
  */
-const startProcess = (simulationPath, task, update) => {
-  if (!interval) {
-    results.length = 0
-    datas.length = 0
-    interval = setIntervalAsync(
-      async () => processOutput(simulationPath, task, update),
-      1000
+const startProcess = (id, simulationPath, task, update) => {
+  if (!interval[id]) {
+    results[id] = []
+    datas[id] = []
+    interval[id] = setIntervalAsync(
+      async () => processOutput(id, simulationPath, task, update),
+      updateDelay
     )
   }
+
+  return interval[id]
 }
 
 /**
  * Stop process results and datas
- */
-const stopProcess = async (simulationPath, task, update) => {
-  interval && clearIntervalAsync(interval)
-
-  await processOutput(simulationPath, task, update)
-}
-
-/**
- * Process results & datas
+ * @param {string} id Simulation id
  * @param {string} simulationPath Simulation path
  * @param {Object} task Simulation task
  * @param {Function} update Update task
  */
-const processOutput = async (simulationPath, task, update) => {
+const stopProcess = async (id, simulationPath, task, update) => {
+  interval[id] && clearIntervalAsync(interval[id])
+
+  await processOutput(id, simulationPath, task, update)
+}
+
+/**
+ * Process results & datas
+ * @param {string} id Simulation id
+ * @param {string} simulationPath Simulation path
+ * @param {Object} task Simulation task
+ * @param {Function} update Update task
+ */
+const processOutput = async (id, simulationPath, task, update) => {
   // Log
   try {
     const log = await Tools.readFile(path.join(simulationPath, logFileName))
-    log && (task.log = log.toString())
+    task.log = log.toString()
   } catch (err) {
     console.warn(err)
   }
@@ -352,10 +409,10 @@ const processOutput = async (simulationPath, task, update) => {
     const dataLines = lines.filter((l) => l.includes('PROCESS DATA FILE'))
 
     // Results
-    await processResults(resultLines, simulationPath, task, update)
+    await processResults(id, resultLines, simulationPath, task, update)
 
     // Data
-    await processData(dataLines, simulationPath, task, update)
+    await processData(id, dataLines, simulationPath, task, update)
   } catch (err) {
     console.warn(err)
   }
@@ -363,17 +420,25 @@ const processOutput = async (simulationPath, task, update) => {
 
 /**
  * Process results
+ * @param {string} id Simulation id
  * @param {Array} resultLines Result lines
  * @param {string} simulationPath Simulation path
  * @param {Object} task Task
  * @param {Function} update Update task
  */
-const processResults = async (resultLines, simulationPath, task, update) => {
+const processResults = async (
+  id,
+  resultLines,
+  simulationPath,
+  task,
+  update
+) => {
   // Get result
   await Promise.all(
     resultLines.map(async (line) => {
       // Already existing result
-      if (results.includes(line)) return
+      if (results[id].includes(line)) return
+      results[id].push(line)
 
       // New result
       const resFile = line.replace('PROCESS VTU FILE', '').trim()
@@ -400,6 +465,10 @@ const processResults = async (resultLines, simulationPath, task, update) => {
           task.warning +=
             'Warning: Result converting process failed (' + convertError + ')\n'
           update()
+
+          // Remove line from existing results
+          const index = results[id].findIndex((l) => l === line)
+          results[id].splice(index, 1)
         } else {
           // Add to task
           const newResults = convertData
@@ -419,15 +488,16 @@ const processResults = async (resultLines, simulationPath, task, update) => {
             }))
           ]
           update()
-
-          // Add to results
-          results.push(line)
         }
       } catch (err) {
         console.error(err)
         task.warning +=
           'Warning: Unable to convert result file (' + err.message + ')\n'
         update()
+
+        // Remove line from existing results
+        const index = results[id].findIndex((l) => l === line)
+        results[id].splice(index, 1)
       }
     })
   )
@@ -435,17 +505,19 @@ const processResults = async (resultLines, simulationPath, task, update) => {
 
 /**
  * Process data
+ * @param {string} id Simulation id
  * @param {Array} dataLines Data lines
  * @param {string} simulationPath Simulation path
  * @param {Object} task Task
  * @param {Function} update Update task
  */
-const processData = async (dataLines, simulationPath, task, update) => {
+const processData = async (id, dataLines, simulationPath, task, update) => {
   // Get data
   await Promise.all(
     dataLines.map(async (line) => {
       // Already existing data
-      if (datas.includes(line)) return
+      if (datas[id].includes(line)) return
+      datas[id].push(line)
 
       // New data
       const dataFile = line.replace('PROCESS DATA FILE', '').trim()
@@ -458,13 +530,14 @@ const processData = async (dataLines, simulationPath, task, update) => {
         // Add to tasks
         task.datas = [...(task.datas || []), JSON.parse(dContent.toString())]
         update()
-
-        // Add to datas
-        datas.push(line)
       } catch (err) {
         task.warning +=
           'Warning: Unable to read data file (' + err.message + ')\n'
         update()
+
+        // Remove line from existing datas
+        const index = datas[id].findIndex((l) => l === line)
+        datas[id].splice(index, 1)
       }
     })
   )
@@ -472,11 +545,15 @@ const processData = async (dataLines, simulationPath, task, update) => {
 
 /**
  * Stop tasks
+ * @param {string} id Simulation id
  * @param {Array} tasks Tasks
  */
-const stop = async (tasks) => {
+const stop = async (id, tasks) => {
+  interval[id] && clearIntervalAsync(interval[id])
+
   tasks?.forEach((task) => {
-    if (task.status === 'process') process.kill(task.pid)
+    if (task?.status === 'wait' || task?.status === 'process')
+      task.pid && process.kill(task.pid)
   })
 }
 
@@ -488,6 +565,7 @@ export default {
   stop,
   // Can be used in other plugins
   updateTasks,
+  clean,
   startProcess,
   stopProcess,
   files: {

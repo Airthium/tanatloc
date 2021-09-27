@@ -97,6 +97,34 @@ describe('route/plugins', () => {
     })
   })
 
+  test('POST', async () => {
+    req.method = 'POST'
+
+    // Normal
+    await plugins(req, res)
+    expect(mockSession).toHaveBeenCalledTimes(1)
+    expect(mockUserGet).toHaveBeenCalledTimes(0)
+    expect(mockClientList).toHaveBeenCalledTimes(1)
+    expect(mockError).toHaveBeenCalledTimes(0)
+    expect(resStatus).toBe(200)
+    expect(resJson).toEqual(['plugin'])
+
+    // Error
+    mockClientList.mockImplementation(() => {
+      throw new Error('clientList error')
+    })
+    await plugins(req, res)
+    expect(mockSession).toHaveBeenCalledTimes(2)
+    expect(mockUserGet).toHaveBeenCalledTimes(0)
+    expect(mockClientList).toHaveBeenCalledTimes(2)
+    expect(mockError).toHaveBeenCalledTimes(1)
+    expect(resStatus).toBe(500)
+    expect(resJson).toEqual({
+      error: true,
+      message: 'clientList error'
+    })
+  })
+
   test('wrong method', async () => {
     req.method = 'method'
 

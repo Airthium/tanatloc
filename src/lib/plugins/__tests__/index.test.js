@@ -47,5 +47,11 @@ describe('lib/plugins', () => {
     // Unauthorized
     list = await Plugins.clientList({ authorizedplugins: [] })
     expect(list).toEqual([])
+
+    // Complete
+    list = await Plugins.clientList(null, true)
+    expect(list).toEqual([
+      { category: 'category', key: 'key', configuration: {} }
+    ])
   })
 })

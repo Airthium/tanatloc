@@ -345,9 +345,9 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
   }
 }
 
-const interval = []
-const results = []
-const datas = []
+const interval = {}
+const results = {}
+const datas = {}
 
 /**
  * Start process results & datas

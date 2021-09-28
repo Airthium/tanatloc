@@ -47,7 +47,7 @@
     "@reduxjs/toolkit": "1.6.1",
     "@sentry/browser": "6.13.2",
     "@sentry/node": "6.13.2",
-    "@testing-library/react": "12.1.0",
+    "@testing-library/react": "12.1.1",
     "antd": "4.16.13",
     "archiver": "5.3.0",
     "babel-jest": "27.2.2",

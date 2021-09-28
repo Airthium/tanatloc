@@ -10,11 +10,10 @@
 
     /**
      * Parse scenes and generate GLTF output
-     * @param  {Scene or [threeToGlbGlobal.THREE.Scenes]} input   threeToGlbGlobal.THREE.Scene or Array of threeToGlbGlobal.THREE.Scenes
+     * @param  {Scene | [threeToGlbGlobal.THREE.Scenes]} input   threeToGlbGlobal.THREE.Scene or Array of threeToGlbGlobal.THREE.Scenes
      * @param  {Function} onDone  Callback on completed
      * @param  {Object} options options
      */
-
     parse(input, onDone, options) {
       const writer = new GLTFWriter()
       const plugins = []
@@ -87,7 +86,6 @@
    * @param  {Array} array2 Array 2 to compare
    * @return {Boolean}        Returns true if both arrays are equal
    */
-
   function equalArray(array1, array2) {
     return (
       array1.length === array2.length &&
@@ -102,7 +100,6 @@
    * @param {Matrix4} matrix
    * @returns {Boolean} Returns true, if parameter is identity matrix
    */
-
   function isIdentityMatrix(matrix) {
     return equalArray(
       matrix.elements,
@@ -116,7 +113,6 @@
    * @param  {Integer} count
    * @return {Object} Object containing the `min` and `max` values (As an array of attribute.itemSize components)
    */
-
   function getMinMax(attribute, start, count) {
     const output = {
       min: new Array(attribute.itemSize).fill(Number.POSITIVE_INFINITY),
@@ -152,7 +148,6 @@
    * @returns {Integer} new buffer size with required padding.
    *
    */
-
   function getPaddedBufferSize(bufferSize) {
     return Math.ceil(bufferSize / 4) * 4
   }
@@ -189,13 +184,13 @@
     setPlugins(plugins) {
       this.plugins = plugins
     }
+
     /**
      * Parse scenes and generate GLTF output
      * @param  {Scene or [threeToGlbGlobal.THREE.Scenes]} input   threeToGlbGlobal.THREE.Scene or Array of threeToGlbGlobal.THREE.Scenes
      * @param  {Function} onDone  Callback on completed
      * @param  {Object} options options
      */
-
     write(input, onDone, options) {
       this.options = Object.assign(
         {},
@@ -314,7 +309,6 @@
      * @param {threeToGlbGlobal.THREE.Object3D|threeToGlbGlobal.THREE.Material} object
      * @param {Object} objectDef
      */
-
     serializeUserData(object, objectDef) {
       if (Object.keys(object.userData).length === 0) return
       const options = this.options
@@ -346,24 +340,24 @@
         )
       }
     }
+
     /**
      * Assign and return a temporal unique id for an object
      * especially which doesn't have .uuid
      * @param  {Object} object
      * @return {Integer}
      */
-
     getUID(object) {
       if (!this.uids.has(object)) this.uids.set(object, this.uid++)
       return this.uids.get(object)
     }
+
     /**
      * Checks if normal attribute values are normalized.
      *
      * @param {BufferAttribute} normal
      * @returns {Boolean}
      */
-
     isNormalizedNormalAttribute(normal) {
       const cache = this.cache
       if (cache.attributesNormalized.has(normal)) return false
@@ -377,12 +371,12 @@
 
       return true
     }
+
     /**
      * Process a buffer to append to the default one.
      * @param  {ArrayBuffer} buffer
      * @return {Integer}
      */
-
     processBuffer(buffer) {
       const json = this.json
       const buffers = this.buffers
@@ -396,6 +390,7 @@
       buffers.push(buffer)
       return 0
     }
+
     /**
      * Process and generate a BufferView
      * @param  {BufferAttribute} attribute
@@ -405,7 +400,6 @@
      * @param  {number} target (Optional) Target usage of the BufferView
      * @return {Object}
      */
-
     processBufferView(attribute, componentType, start, count, target) {
       const json = this.json
       if (!json.bufferViews) json.bufferViews = [] // Create a new dataview and dump the attribute's array into it
@@ -475,12 +469,12 @@
       }
       return output
     }
+
     /**
      * Process and generate a BufferView from an image threeToGlbGlobal.Blob.
      * @param {threeToGlbGlobal.Blob} blob
      * @return {Promise<Integer>}
      */
-
     processBufferViewImage(blob) {
       const writer = this
       const json = writer.json
@@ -501,6 +495,7 @@
         }
       })
     }
+
     /**
      * Process attribute to generate an accessor
      * @param  {BufferAttribute} attribute Attribute to process
@@ -509,7 +504,6 @@
      * @param  {Integer} count (Optional)
      * @return {Integer|null} Index of the processed accessor on the "accessors" array
      */
-
     processAccessor(attribute, geometry, start, count) {
       const options = this.options
       const json = this.json
@@ -586,12 +580,12 @@
       if (!json.accessors) json.accessors = []
       return json.accessors.push(accessorDef) - 1
     }
+
     /**
      * Process material
      * @param  {threeToGlbGlobal.THREE.Material} material Material to process
      * @return {Integer|null} Index of the processed material in the "materials" array
      */
-
     processMaterial(material) {
       const cache = this.cache
       const json = this.json
@@ -738,12 +732,12 @@
       cache.materials.set(material, index)
       return index
     }
+
     /**
      * Process mesh
      * @param  {threeToGlbGlobal.THREE.Mesh} mesh Mesh to process
      * @return {Integer|null} Index of the processed mesh in the "meshes" array
      */
-
     processMesh(mesh) {
       const cache = this.cache
       const json = this.json
@@ -1080,11 +1074,11 @@
       nodeMap.set(object, nodeIndex)
       return nodeIndex
     }
+
     /**
      * Process threeToGlbGlobal.THREE.Scene
      * @param  {Scene} node threeToGlbGlobal.THREE.Scene to process
      */
-
     processScene(scene) {
       const json = this.json
       const options = this.options
@@ -1111,11 +1105,11 @@
       if (nodes.length > 0) sceneDef.nodes = nodes
       this.serializeUserData(scene, sceneDef)
     }
+
     /**
      * Creates a threeToGlbGlobal.THREE.Scene to hold a list of objects and parse it
      * @param  {Array} objects List of objects to process
      */
-
     processObjects(objects) {
       const scene = new threeToGlbGlobal.THREE.Scene()
       scene.name = 'AuxScene'

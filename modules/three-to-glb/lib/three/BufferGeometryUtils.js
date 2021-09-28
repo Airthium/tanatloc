@@ -6,7 +6,7 @@
   /**
    * @param {BufferGeometry} geometry
    * @param {number} tolerance
-   * @return {BufferGeometry>}
+   * @return {BufferGeometry}
    */
   function mergeVertices(geometry, tolerance = 1e-4) {
     tolerance = Math.max(tolerance, Number.EPSILON) // Generate an index buffer if the geometry doesn't have one, or optimize it

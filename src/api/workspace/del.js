@@ -1,7 +1,7 @@
 import Caller from '@/api/call'
 
 /**
- * Delete a workspace
+ * Delete
  * @memberof module:api/workspace
  * @param {Object} workspace Workspace { id }
  */

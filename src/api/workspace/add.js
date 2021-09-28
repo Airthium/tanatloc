@@ -1,7 +1,7 @@
 import Caller from '@/api/call'
 
 /**
- * Add a workspace
+ * Add
  * @memberof module:api/workspace
  * @param {Object} workspace Workspace { name }
  */

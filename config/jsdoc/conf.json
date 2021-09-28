@@ -9,7 +9,8 @@
       "doc",
       "node_modules",
       ".next",
-      "out"
+      "out",
+      "modules/three-to-glb/lib/three"
     ]
   },
   "opts": {

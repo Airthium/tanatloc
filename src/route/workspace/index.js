@@ -45,7 +45,6 @@ const checkDeleteBody = (body) => {
 
 /**
  * Workspace API
- * @memberof module:api
  * @param {Object} req Request
  * @param {Object} res Response
  */

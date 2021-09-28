@@ -7,7 +7,7 @@ import Sentry from '@/lib/sentry'
  * @param {number} status Status code
  * @param {string} message Message
  * @param {?boolean} display Display (default: true)
- * @returns Error
+ * @returns {Error} Error
  */
 const error = (status, message, display = true) => {
   const err = new Error(message)

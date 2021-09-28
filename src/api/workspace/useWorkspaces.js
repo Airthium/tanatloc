@@ -2,7 +2,7 @@ import useSWR from 'swr'
 import Caller from '@/api/call'
 
 /**
- * Use a workspace (SWR)
+ * Use workspace (SWR)
  * @memberof module:api/workspace
  * @returns {Array} [workspaces, {mutateWorkspaces function, loadingWorkspaces status}]
  */

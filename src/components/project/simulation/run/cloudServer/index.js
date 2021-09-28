@@ -127,7 +127,9 @@ const CloudServer = ({ disabled, cloudServer, onOk }) => {
         />
         {cloudServer && (
           <>
-            <Typography.Text strong={true}>{cloudServer.name}</Typography.Text>
+            <Typography.Text strong={true}>
+              {cloudServer.configuration.name.value}
+            </Typography.Text>
             {Object.keys(cloudServer.inUseConfiguration).map((key) => {
               const item = cloudServer.inUseConfiguration[key]
               return (

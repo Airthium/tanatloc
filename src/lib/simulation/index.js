@@ -42,9 +42,19 @@ const add = async (project, simulation) => {
  * Get simulation
  * @param {string} id Simulation's id
  * @param {Array} data Data
+ * @returns {Object} Simulation
  */
 const get = async (id, data) => {
   return SimulationDB.get(id, data)
+}
+
+/**
+ * Get all
+ * @param {Array} data Data
+ * @returns {Array} Simulations
+ */
+const getAll = async (data) => {
+  return SimulationDB.getAll(data)
 }
 
 /**
@@ -318,5 +328,5 @@ const getLog = async ({ id }, file) => {
   return Tools.readFile(filePath)
 }
 
-const Simulation = { add, get, update, del, run, stop, getLog }
+const Simulation = { add, get, getAll, update, del, run, stop, getLog }
 export default Simulation

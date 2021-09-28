@@ -11,11 +11,13 @@ const mockAdd = jest.fn()
 const mockGet = jest.fn()
 const mockUpdate = jest.fn()
 const mockDelete = jest.fn()
+const mockGetAll = jest.fn()
 jest.mock('@/database/simulation', () => ({
   add: async () => mockAdd(),
   get: async () => mockGet(),
   update: async () => mockUpdate(),
-  del: async () => mockDelete()
+  del: async () => mockDelete(),
+  getAll: async () => mockGetAll()
 }))
 
 const mockUserGet = jest.fn()
@@ -70,6 +72,7 @@ describe('lib/simulation', () => {
     mockGet.mockReset()
     mockUpdate.mockReset()
     mockDelete.mockReset()
+    mockGetAll.mockReset()
 
     mockUserGet.mockReset()
     mockUserGet.mockImplementation(() => ({}))
@@ -124,6 +127,13 @@ describe('lib/simulation', () => {
     expect(mockRemoveFile).toHaveBeenCalledTimes(0)
     expect(mockRemoveDirectory).toHaveBeenCalledTimes(0)
     expect(simulation).toEqual({})
+  })
+
+  test('getAll', async () => {
+    mockGetAll.mockImplementation(() => [{ id: 'id' }])
+    const simulations = await Simulation.getAll([])
+    expect(mockGetAll).toHaveBeenCalledTimes(1)
+    expect(simulations).toEqual([{ id: 'id' }])
   })
 
   test('update', async () => {
@@ -360,7 +370,7 @@ describe('lib/simulation', () => {
           }
         }
       },
-      tasks: [{ status: 'wait' }, { status: 'error' }]
+      tasks: [{ status: 'wait' }, null, { status: 'error' }]
     }))
 
     await Simulation.stop({})

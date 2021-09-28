@@ -36,6 +36,9 @@ jest.mock('@/api/plugins', () => ({
 
 describe('components/project/simulation/run/cloudServer', () => {
   const cloudServer = {
+    configuration: {
+      name: { value: 'name' }
+    },
     inUseConfiguration: {
       item: {
         label: 'item',

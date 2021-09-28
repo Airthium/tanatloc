@@ -31,6 +31,12 @@ jest.mock(
   { virtual: true }
 )
 
+jest.mock('../../simulation', () => ({
+  getAll: () => {
+    throw new Error('Simulation error')
+  }
+}))
+
 describe('lib/plugins', () => {
   test('load', async () => {
     require('..')

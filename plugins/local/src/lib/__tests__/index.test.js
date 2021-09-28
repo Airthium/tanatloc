@@ -371,6 +371,10 @@ describe('plugins/local/src/lib', () => {
     }
   })
 
+  test('monitoring', async () => {
+    Local.monitoring('id', '_', '__', [], {})
+  })
+
   test('stop', async () => {
     const mockKill = jest.spyOn(process, 'kill').mockImplementation(() => {})
     await Local.stop('id', [

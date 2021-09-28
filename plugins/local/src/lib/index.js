@@ -274,7 +274,8 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
     warning: '',
     error: '',
     status: 'wait',
-    systemLog: 'log'
+    systemLog: 'log',
+    plugin: key
   }
   tasks.push(simulationTask)
   updateTasks(id, tasks)
@@ -345,6 +346,13 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
   }
 }
 
+const monitoring = async (id, _, __, tasks, simulationTask) => {
+  const simulationPath = path.join(storage.SIMUALTION, id)
+  await stopProcess(id, simulationPath, simulationTask, () =>
+    updateTasks(id, tasks)
+  )
+}
+
 const interval = {}
 const results = {}
 const datas = {}
@@ -395,7 +403,8 @@ const processOutput = async (id, simulationPath, task, update) => {
     const log = await Tools.readFile(path.join(simulationPath, logFileName))
     task.log = log.toString()
   } catch (err) {
-    console.warn(err)
+    console.warn('Simulation id: ' + id)
+    console.warn('Log file does not exists yet!')
   }
 
   // Result / data
@@ -414,7 +423,8 @@ const processOutput = async (id, simulationPath, task, update) => {
     // Data
     await processData(id, dataLines, simulationPath, task, update)
   } catch (err) {
-    console.warn(err)
+    console.warn('Simulation id: ' + id)
+    console.warn('Data file does not exists yet!')
   }
 }
 
@@ -469,26 +479,28 @@ const processResults = async (
           // Remove line from existing results
           const index = results[id].findIndex((l) => l === line)
           results[id].splice(index, 1)
-        } else {
-          // Add to task
-          const newResults = convertData
-            ?.trim()
-            ?.split('\n')
-            .map((res) => JSON.parse(res))
 
-          task.files = [
-            ...(task.files || []),
-            ...newResults.map((result) => ({
-              type: 'result',
-              fileName: resFile,
-              originPath: path.join(runPath, resultPath),
-              name: result.name,
-              json: result.path,
-              glb: result.path + '.glb'
-            }))
-          ]
-          update()
+          return
         }
+
+        // Add to task
+        const newResults = convertData
+          ?.trim()
+          ?.split('\n')
+          .map((res) => JSON.parse(res))
+
+        task.files = [
+          ...(task.files || []),
+          ...newResults.map((result) => ({
+            type: 'result',
+            fileName: resFile,
+            originPath: path.join(runPath, resultPath),
+            name: result.name,
+            json: result.path,
+            glb: result.path + '.glb'
+          }))
+        ]
+        update()
       } catch (err) {
         console.error(err)
         task.warning +=
@@ -562,6 +574,7 @@ export default {
   key,
   computeMesh,
   computeSimulation,
+  monitoring,
   stop,
   // Can be used in other plugins
   updateTasks,

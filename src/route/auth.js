@@ -29,7 +29,7 @@ const auth = async (user, object, parentObject) => {
   // Objects groups
   if (object?.groups)
     for (let group of object.groups) {
-      const groupData = await GroupLib.get(group.id, ['organization'])
+      const groupData = await GroupLib.get(group, ['organization'])
       const organizationData = await OrganizationLib.get(
         groupData.organization,
         ['owners', 'users']
@@ -41,7 +41,8 @@ const auth = async (user, object, parentObject) => {
   // Parent objects groups
   if (parentObject?.groups)
     for (let group of parentObject.groups) {
-      const groupData = await GroupLib.get(group.id, ['organization'])
+      const groupData = await GroupLib.get(group, ['organization'])
+      console.log(groupData)
       const organizationData = await OrganizationLib.get(
         groupData.organization,
         ['owners', 'users']

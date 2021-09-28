@@ -165,6 +165,7 @@ const checkTable = async (table) => {
 
 /**
  * Check schema
+ * @memberof module:install
  * @param {string} table Table
  */
 const checkSchema = async (table) => {
@@ -237,6 +238,7 @@ const checkSchema = async (table) => {
 
 /**
  * Try to fix missng column
+ * @memberof module:install
  * @param {string} table Table
  * @param {Object} column Column
  */
@@ -267,6 +269,7 @@ const fixMissingColumn = async (table, column) => {
 
 /**
  * Try to fix column type
+ * @memberof module:install
  * @param {string} table Table
  * @param {Object} column Column
  */
@@ -294,6 +297,7 @@ const fixColumnType = async (table, column) => {
 
 /**
  * Try to fix column constraint
+ * @memberof module:install
  * @param {string} table Table
  * @param {Object} column Column
  */
@@ -316,6 +320,7 @@ const fixColumnConstraint = async (table, column) => {
 
 /**
  * Try to fix not used column
+ * @memberof module:install
  * @param {string} table Table
  * @param {Object} column Column
  */

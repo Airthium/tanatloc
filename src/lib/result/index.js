@@ -1,4 +1,4 @@
-/** @module lib/geometry */
+/** @module lib/result */
 
 import path from 'path'
 import fs from 'fs'

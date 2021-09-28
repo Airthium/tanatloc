@@ -8,6 +8,7 @@ import PluginAPI from '@/api/plugin'
 
 /**
  * Errors (hpc/delete)
+ * @memberof module:components/account
  */
 const errors = {
   updateError: 'Unable to delete plugin'
@@ -15,6 +16,7 @@ const errors = {
 
 /**
  * Delete plugin
+ * @memberof module:components/account
  * @param {Object} props Props
  */
 const Delete = ({ plugin, swr }) => {

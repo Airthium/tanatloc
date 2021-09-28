@@ -20,6 +20,7 @@ const faceColor = new THREE.Color('gray')
 
 /**
  * Load part
+ * @memberof module:three-to-glb
  * @return {Object} Legacy ThreeJS json
  */
 const loadPart = (location, name) => {
@@ -50,6 +51,7 @@ const loadPart = (location, name) => {
 
 /**
  * Load part
+ * @memberof module:three-to-glb
  * @param {Object} part Part
  * @returns {Object} ThreeJS object
  */
@@ -85,6 +87,7 @@ const load = (part) => {
 
 /**
  * Load part element
+ * @memberof module:three-to-glb
  * @param {string} type Type
  * @param {Object} element Element
  * @param {string} color Color
@@ -115,6 +118,7 @@ const loadElement = (type, element, color) => {
 
 /**
  * Load geometry element
+ * @memberof module:three-to-glb
  * @param {Object} geometry Geometry
  * @param {string} color Color
  * @returns {Object} Element
@@ -152,6 +156,7 @@ const loadGeometryElement = (geometry, color) => {
 
 /**
  * Load mesh element
+ * @memberof module:three-to-glb
  * @param {Object} geometry Geometry
  * @param {string} color Color
  * @returns {Object} Mesh
@@ -174,6 +179,7 @@ const loadMeshElement = (geometry, color) => {
 
 /**
  * Load result element
+ * @memberof module:three-to-glb
  * @param {Object} geometry Geometry
  * @param {string} color Color
  * @returns {Object} Element
@@ -259,6 +265,9 @@ const loadResultElement = (geometry, color) => {
 
 /**
  * Convert
+ * @memberof module:three-to-glb
+ * @param {string} location Location
+ * @param {string} name name
  */
 const convert = async (location, name) => {
   // Load part

@@ -1,6 +1,13 @@
+import PropTypes from 'prop-types'
 import { Button, Typography, Space } from 'antd'
 import { SelectOutlined } from '@ant-design/icons'
 
+/**
+ * Local
+ * @memberof module:plugins/local
+ * @param {Object} props Props
+ * @returns {jsx} Render
+ */
 const Local = ({ onSelect }) => {
   const onClick = () => {
     onSelect()
@@ -14,6 +21,10 @@ const Local = ({ onSelect }) => {
       </Button>
     </Space>
   )
+}
+
+Local.propTypes = {
+  onSelect: PropTypes.func.isRequired
 }
 
 export default Local

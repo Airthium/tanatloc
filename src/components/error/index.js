@@ -1,3 +1,5 @@
+/** @module components/error */
+
 import { useRouter } from 'next/router'
 import { Layout, Typography } from 'antd'
 

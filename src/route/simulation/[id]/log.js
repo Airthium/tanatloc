@@ -6,6 +6,7 @@ import SimulationLib from '@/lib/simulation'
 
 /**
  * Check log body
+ * @memberof module:route/simulation
  * @param {Object} body Body
  */
 const checkLogBody = (body) => {

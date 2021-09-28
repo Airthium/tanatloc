@@ -2,6 +2,7 @@ import Caller from '@/api/call'
 
 /**
  * Load result
+ * @memberof module:api/result
  * @param {Object} simulation  Simulation { id }
  * @param {Object} result Result { originPath, glb }
  */

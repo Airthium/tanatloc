@@ -1,3 +1,5 @@
+/** @module route/plugin */
+
 import getSessionId from '../session'
 import error from '../error'
 

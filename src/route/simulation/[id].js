@@ -6,6 +6,7 @@ import SimulationLib from '@/lib/simulation'
 
 /**
  * Check update body
+ * @memberof module:route/simulation
  * @param {Array} body Body
  */
 const checkUpdateBody = (body) => {

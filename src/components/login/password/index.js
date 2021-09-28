@@ -11,6 +11,7 @@ import EmailAPI from '@/api/email'
 
 /**
  * Errors (login / password)
+ * @memberof module:components/login
  */
 const errors = {
   recover: 'Unable to recover password'
@@ -18,6 +19,7 @@ const errors = {
 
 /**
  * Password recover
+ * @memberof module:components/login
  */
 const PasswordRecover = () => {
   // State

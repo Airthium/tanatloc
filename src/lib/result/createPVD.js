@@ -5,6 +5,7 @@ import storage from '@/config/storage'
 
 /**
  * Create PVD files
+ * @memberof module:lib/result
  * @param {Object} simulation Simulation
  * @param {Array} files Files
  */

@@ -8,7 +8,8 @@ import { Error as ErrorNotification } from '@/components/assets/notification'
 import SimulationAPI from '@/api/simulation'
 
 /**
- * Errors
+ * Errors (project/copy)
+ * @memberof module:components/project/simulation
  */
 const errors = {
   copy: 'Unable to copy simulation'

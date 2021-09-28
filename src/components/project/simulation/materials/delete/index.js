@@ -10,7 +10,8 @@ import { unselect } from '@/store/select/action'
 import SimulationAPI from '@/api/simulation'
 
 /**
- * Error material
+ * Error (simulation/material/delete)
+ * @memberof module:components/project/simulation
  */
 const errors = {
   updateError: 'Unable to delete the material'
@@ -18,6 +19,7 @@ const errors = {
 
 /**
  * Delete material
+ * @memberof module:components/project/simulation
  * @param {Object} props Props
  */
 const Delete = ({ simulation, swr, index }) => {

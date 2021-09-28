@@ -9,6 +9,7 @@ import SimulationAPI from '@/api/simulation'
 
 /**
  * Errors boundaryCondition/add
+ * @memberof module:components/project/simulation
  */
 const errors = {
   updateError: 'Unable to add the boundary condition'

@@ -1,3 +1,5 @@
+/** @module components/project/data */
+
 import { useState, useEffect } from 'react'
 import { Button, Checkbox, Drawer, Layout, Space, Table, Tooltip } from 'antd'
 import {

@@ -34,6 +34,7 @@ const start = Date.now()
 
 /**
  * Update tasks
+ * @memberof module:plugins/local
  * @param {string} id Id
  * @param {Array} tasks Tasks
  */
@@ -48,6 +49,7 @@ const updateTasks = (id, tasks) => {
 
 /**
  * Clean previous simulaton
+ * @memberof module:plugins/local
  * @param {string} simulationPath Simulation path
  */
 const clean = async (simulationPath) => {
@@ -75,6 +77,7 @@ const clean = async (simulationPath) => {
 
 /**
  * Compute mesh
+ * @memberof module:plugins/local
  * @param {string} simulationPath Simulation path
  * @param {Object} geometry Geometry { path, file, name }
  * @param {Object} mesh Mesh { path, parameters }
@@ -130,6 +133,7 @@ const computeMesh = async (simulationPath, geometry, mesh, callback) => {
 
 /**
  * Get refinements
+ * @memberof module:plugins/local
  * @param {Object} configuration Configuration
  * @returns {Array} Refinements
  */
@@ -158,6 +162,7 @@ const getRefinements = (configuration) => {
 
 /**
  * Compute meshes
+ * @memberof module:plugins/local
  * @param {string} id Simulation id
  * @param {string} simulationPath Simulation path
  * @param {Object} configuration Configuration
@@ -250,6 +255,7 @@ const computeMeshes = async (id, simulationPath, configuration, tasks) => {
 
 /**
  * Compute simulation
+ * @memberof module:plugins/local
  * @param {string} simulation Simulation { id }
  * @param {string} algorithm Algorithm
  * @param {Object} configuration Configuration
@@ -359,6 +365,7 @@ const datas = {}
 
 /**
  * Start process results & datas
+ * @memberof module:plugins/local
  * @param {string} id Simulation id
  * @param {string} simulationPath Simulation path
  * @param {Object} task Simulation task
@@ -379,6 +386,7 @@ const startProcess = (id, simulationPath, task, update) => {
 
 /**
  * Stop process results and datas
+ * @memberof module:plugins/local
  * @param {string} id Simulation id
  * @param {string} simulationPath Simulation path
  * @param {Object} task Simulation task
@@ -392,6 +400,7 @@ const stopProcess = async (id, simulationPath, task, update) => {
 
 /**
  * Process results & datas
+ * @memberof module:plugins/local
  * @param {string} id Simulation id
  * @param {string} simulationPath Simulation path
  * @param {Object} task Simulation task
@@ -430,6 +439,7 @@ const processOutput = async (id, simulationPath, task, update) => {
 
 /**
  * Process results
+ * @memberof module:plugins/local
  * @param {string} id Simulation id
  * @param {Array} resultLines Result lines
  * @param {string} simulationPath Simulation path
@@ -517,6 +527,7 @@ const processResults = async (
 
 /**
  * Process data
+ * @memberof module:plugins/local
  * @param {string} id Simulation id
  * @param {Array} dataLines Data lines
  * @param {string} simulationPath Simulation path
@@ -557,6 +568,7 @@ const processData = async (id, dataLines, simulationPath, task, update) => {
 
 /**
  * Stop tasks
+ * @memberof module:plugins/local
  * @param {string} id Simulation id
  * @param {Array} tasks Tasks
  */

@@ -1,3 +1,5 @@
+/** @module lib/wait */
+
 import WaitDB from '@/database/wait'
 
 /**

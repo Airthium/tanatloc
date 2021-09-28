@@ -18,6 +18,7 @@ const errors = {
 
 /**
  * Plugin dialog
+ * @memberof module:components/account
  * @param {Object} props Props
  */
 const PluginDialog = ({ plugin, swr, edit }) => {

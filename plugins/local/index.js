@@ -1,3 +1,5 @@
+/** @module plugins/local */
+
 import Lib from './src/lib'
 
 const Local = {

@@ -2,6 +2,7 @@ import { Card, Layout } from 'antd'
 
 /**
  * Signup send
+ * @memberof module:components/signup
  */
 const Send = () => {
   /**

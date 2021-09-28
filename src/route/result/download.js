@@ -6,6 +6,7 @@ import ResultLib from '@/lib/result'
 
 /**
  * Check download body
+ * @memberof module:route/result
  * @param {Object} body Body
  */
 const checkDownloadBody = (body) => {

@@ -3,6 +3,7 @@ import { tables } from '@/config/db'
 
 /**
  * Add
+ * @memberof module:database/group
  * @param {Object} organization Organization
  * @param {Object} group Group { name, users }
  */

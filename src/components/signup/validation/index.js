@@ -12,6 +12,11 @@ const errors = {
   internal: 'Internal error'
 }
 
+/**
+ * Validation
+ * @memberof module:components/signup
+ * @returns {jxs} Render
+ */
 const Validation = () => {
   const router = useRouter()
 

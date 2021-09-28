@@ -8,6 +8,7 @@ import SimulationAPI from '@/api/simulation'
 
 /**
  * Errors boundaryCondition/edit
+ * @memberof module:components/project/simulation
  */
 const errors = {
   updateError: 'Unable to edit the boundary condition'

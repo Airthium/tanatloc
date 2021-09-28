@@ -11,6 +11,10 @@ import {
 } from 'antd'
 import { DatabaseOutlined, SelectOutlined } from '@ant-design/icons'
 
+/**
+ * Database
+ * @memberof module:components/project/simulation
+ */
 const dataBase = {
   metal: {
     label: 'Metal',
@@ -56,6 +60,7 @@ const dataBase = {
 
 /**
  * Material database
+ * @memberof module:components/project/simulation
  */
 const DataBase = ({ onSelect }) => {
   const [visible, setVisible] = useState()

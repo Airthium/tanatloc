@@ -1,7 +1,11 @@
-/** @module plugins/local */
+/** @namespace Plugins.Local */
 
 import Lib from './src/lib'
 
+/**
+ * Local plugin definition
+ * @memberof Plugins.Local
+ */
 const Local = {
   category: 'HPC',
   key: 'local',

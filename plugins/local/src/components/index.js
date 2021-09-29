@@ -4,7 +4,7 @@ import { SelectOutlined } from '@ant-design/icons'
 
 /**
  * Local
- * @memberof module:plugins/local
+ * @memberof Plugins.Local
  * @param {Object} props Props
  * @returns {jsx} Render
  */

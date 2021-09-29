@@ -1,6 +1,7 @@
 ignores: [
     "ignore-loader",
     "@sentry/browser",
+    "clean-jsdoc-theme",
     "node-fetch",
     "set-interval-async",
     "url-join"

@@ -19,10 +19,10 @@ const add = async (project, { name, uid }) => {
   )
 
   const geometry = response.rows[0]
-  geometry.name = name
-  geometry.originalfilename = name
-  geometry.extension = extension
-  geometry.uploadfilename = uploadFileName
+  geometry && (geometry.name = name)
+  geometry && (geometry.originalfilename = name)
+  geometry && (geometry.extension = extension)
+  geometry && (geometry.uploadfilename = uploadFileName)
 
   return geometry
 }

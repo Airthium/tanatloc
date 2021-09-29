@@ -1,4 +1,4 @@
-/** @module database */
+/** @namespace Database */
 
 import { Pool } from 'pg'
 
@@ -6,6 +6,7 @@ import config from '@/config/db'
 
 /**
  * Start database
+ * @memberof Database
  * @returns {Object} Pool
  */
 const startdB = () => {
@@ -22,8 +23,10 @@ const pool = startdB()
 
 /**
  * PostgreSQL query
+ * @memberof Database
  * @param {string} command Command
  * @param {Array} args Arguments
+ * @returns {Object} PostgreSQL query response
  */
 const query = async (command, args) => {
   const client = await pool.connect()
@@ -34,10 +37,12 @@ const query = async (command, args) => {
 
 /**
  * Get from dB
+ * @memberof Database
  * @param {string} db Database
  * @param {string} id Id, or key
  * @param {Array} data Data
  * @param {string} key Key override id
+ * @returns {Object} PostgreSQL query response
  */
 const getter = async (db, id, data, key = 'id') => {
   return query(
@@ -48,6 +53,7 @@ const getter = async (db, id, data, key = 'id') => {
 
 /**
  * Update from dB
+ * @memberof Database
  * @param {string} db Database
  * @param {string} id Id
  * @param {Array} data Data [{ type, method, key, path, value }, ...]
@@ -124,6 +130,7 @@ const updater = async (db, id, data) => {
 
 /**
  * Delete from dB
+ * @memberof Database
  * @param {string} db Database
  * @param {string} id Id
  */

@@ -3,8 +3,8 @@ import Caller from '@/api/call'
 
 /**
  * Use workspace (SWR)
- * @memberof module:api/workspace
- * @returns {Array} [workspaces, {mutateWorkspaces function, loadingWorkspaces status}]
+ * @memberof API.Workspace
+ * @returns {Array} [workspaces, {mutateWorkspaces, addOneWorkspace, delOneWorkspace, mutateOneWorkspace, errorWorkspaces, loadingWorkspaces}]
  */
 const useWorkspaces = () => {
   const { data, error, mutate } = useSWR('/api/workspace', Caller.fetcher)
@@ -13,7 +13,7 @@ const useWorkspaces = () => {
 
   /**
    * Add one (useWorkspaces)
-   * @memberof module:api/workspace
+   * @memberof API.Workspace
    * @param {Object} workspace Workspace
    */
   const addOne = (workspace) => {
@@ -23,7 +23,7 @@ const useWorkspaces = () => {
 
   /**
    * Delete one (useWorkspaces)
-   * @memberof module:api/workspace
+   * @memberof API.Workspace
    * @param {Object} workspace Workspace
    */
   const delOne = (workspace) => {
@@ -33,7 +33,7 @@ const useWorkspaces = () => {
 
   /**
    * Mutate one (useWorkspace)
-   * @memberof module:api/workspace
+   * @memberof API.Workspace
    * @param {Object} workspace Workspace
    */
   const mutateOne = (workspace) => {

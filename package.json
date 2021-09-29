@@ -19,7 +19,7 @@
     "build": "NEXT_PUBLIC_SOURCE_BRANCH=`git rev-parse --abbrev-ref HEAD` NEXT_PUBLIC_SOURCE_COMMIT=`git rev-parse --short HEAD` next build",
     "depcheck": "depcheck",
     "dev": "NODE_OPTIONS=\"--max_old_space_size=8192\" NEXT_PUBLIC_SOURCE_BRANCH=`git rev-parse --abbrev-ref HEAD` NEXT_PUBLIC_SOURCE_COMMIT=`git rev-parse --short HEAD` next",
-    "doc": "jsdoc -c config/jsdoc/conf.json",
+    "doc": "jsdoc -c config/jsdoc/conf.js",
     "docker": "docker build . -t tanatloc/tanatloc:latest",
     "electron-build": "yarn postinstall && yarn server-build && nextron build && electron-builder install-app-deps",
     "electron-dev": "yarn postinstall && yarn server-build && nextron",

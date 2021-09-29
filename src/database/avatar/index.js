@@ -1,4 +1,4 @@
-/** @module database/avatar */
+/** @namespace Database.Avatar */
 
 import add from './add'
 import get from './get'

@@ -2,6 +2,8 @@
 
 # Tanatloc
 
+## See the world the way it really is!
+
 Using server-side rendering (SSR).
 
 ## Env

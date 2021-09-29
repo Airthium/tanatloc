@@ -62,9 +62,9 @@ const restartJobs = async () => {
             await plugin.server.lib.monitoring(
               simulation.id,
               task.pid,
-              cloudConfiguration,
               simulation.tasks,
-              task
+              task,
+              cloudConfiguration
             )
           }
         }

@@ -309,7 +309,8 @@ const stop = async ({ id }) => {
   // Update tasks
   tasks?.forEach((task) => {
     if (!task) return
-    if (task.status === 'wait') task.status = 'error'
+    if (task.status === 'wait' || task.status === 'process')
+      task.status = 'error'
     task.error += 'Job killed'
   })
   await update({ id }, [

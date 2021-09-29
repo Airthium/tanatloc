@@ -42,7 +42,6 @@ const auth = async (user, object, parentObject) => {
   if (parentObject?.groups)
     for (let group of parentObject.groups) {
       const groupData = await GroupLib.get(group, ['organization'])
-      console.log(groupData)
       const organizationData = await OrganizationLib.get(
         groupData.organization,
         ['owners', 'users']

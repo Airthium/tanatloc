@@ -3,8 +3,9 @@ import Caller from '@/api/call'
 
 /**
  * Use geometries
- * @memberof module:api/geometry
+ * @memberof API.Geometry
  * @param {Array} ids Ids
+ * @returns {Array} [geometries, { mutateGeometries, addOneGeometry, delOneGeometry, mutateOneGeometry, errorGeometries, loadingGeometries }]
  */
 const useGeometries = (ids) => {
   const { data, error, mutate } = useSWR(

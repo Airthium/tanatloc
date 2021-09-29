@@ -1,4 +1,4 @@
-/** @module api */
+/** @namespace API */
 
 import isElectron from 'is-electron'
 
@@ -6,6 +6,7 @@ const base = isElectron() ? 'http://localhost:3000' : ''
 
 /**
  * Fetcher (for SWR)
+ * @memberof API
  * @param {string} url URL
  */
 const fetcher = async (url, payload) => {
@@ -30,6 +31,7 @@ const fetcher = async (url, payload) => {
 
 /**
  * API call
+ * @memberof API
  * @param {string} route Route
  * @param {Object} param Parameters
  * @returns {Object} Response

@@ -16,7 +16,7 @@ const add = async ({ id }, { name }) => {
   )
 
   const workspace = response.rows[0]
-  workspace.name = name
+  workspace && (workspace.name = name)
 
   return workspace
 }

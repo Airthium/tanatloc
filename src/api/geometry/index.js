@@ -1,4 +1,4 @@
-/** @module api/geometry */
+/** @namespace API.Geometry */
 
 import useGeometries from './useGeometries'
 import add from './add'

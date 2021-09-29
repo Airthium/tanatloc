@@ -20,6 +20,9 @@ const logFileName = 'process_log.log'
 // Results / data file name
 const dataFileName = 'process_data.log'
 
+// End file name
+const endFileName = 'end.log'
+
 // Paths
 const runPath = 'run'
 const couplingPath = 'coupling'
@@ -56,23 +59,22 @@ const clean = async (simulationPath) => {
   // Log file
   try {
     await Tools.removeFile(path.join(simulationPath, logFileName))
-  } catch (err) {
-    console.warn(err)
-  }
+  } catch (err) {}
 
   // Data file
   try {
     await Tools.removeFile(path.join(simulationPath, dataFileName))
-  } catch (err) {
-    console.warn(err)
-  }
+  } catch (err) {}
+
+  // End file
+  try {
+    await Tools.removeFile(path.join(simulationPath, endFileName))
+  } catch (err) {}
 
   // Run path
   try {
     await Tools.removeDirectory(path.join(simulationPath, runPath))
-  } catch (err) {
-    console.warn(err)
-  }
+  } catch (err) {}
 }
 
 /**
@@ -352,7 +354,7 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
   }
 }
 
-const monitoring = async (id, _, __, tasks, simulationTask) => {
+const monitoring = async (id, _, tasks, simulationTask) => {
   const simulationPath = path.join(storage.SIMUALTION, id)
   await stopProcess(id, simulationPath, simulationTask, () =>
     updateTasks(id, tasks)
@@ -411,10 +413,7 @@ const processOutput = async (id, simulationPath, task, update) => {
   try {
     const log = await Tools.readFile(path.join(simulationPath, logFileName))
     task.log = log.toString()
-  } catch (err) {
-    console.warn('Simulation id: ' + id)
-    console.warn('Log file does not exists yet!')
-  }
+  } catch (err) {}
 
   // Result / data
   try {
@@ -431,10 +430,7 @@ const processOutput = async (id, simulationPath, task, update) => {
 
     // Data
     await processData(id, dataLines, simulationPath, task, update)
-  } catch (err) {
-    console.warn('Simulation id: ' + id)
-    console.warn('Data file does not exists yet!')
-  }
+  } catch (err) {}
 }
 
 /**
@@ -595,7 +591,8 @@ export default {
   stopProcess,
   files: {
     log: logFileName,
-    data: dataFileName
+    data: dataFileName,
+    end: endFileName
   },
   paths: {
     run: runPath,

@@ -3,8 +3,9 @@ import { tables } from '@/config/db'
 
 /**
  * Add avatar
- * @memberof module:database/avatar
+ * @memberof Database.Avatar
  * @param {Object} data Data { name, path }
+ * @returns {Object} Avatar { id, name }
  */
 const add = async ({ name, path }) => {
   const response = await query(
@@ -15,7 +16,7 @@ const add = async ({ name, path }) => {
   )
 
   const avatar = response.rows[0]
-  avatar.name = name
+  avatar && (avatar.name = name)
 
   return avatar
 }

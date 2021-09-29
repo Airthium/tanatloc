@@ -1,4 +1,4 @@
-/** @module lib/avatar */
+/** @namespace Lib.Avatar */
 
 import path from 'path'
 
@@ -12,9 +12,11 @@ import Tools from '../tools'
 
 /**
  * Add avatar
+ * @memberof Lib.Avatar
  * @param {Object} parent Parent { id }
  * @param {string} type Type (project or user)
  * @param {File} file File { name, uid, data }
+ * @returns {Object} Avatar { id, name }
  */
 const add = async (parent, type, file) => {
   // Write file
@@ -45,6 +47,7 @@ const add = async (parent, type, file) => {
 
 /**
  * Read avatar
+ * @memberof Lib.Avatar
  * @param {string} id Avatar's id
  * @returns {string} Content
  */
@@ -60,8 +63,10 @@ const read = async (id) => {
 
 /**
  * Get
+ * @memberof Lib.Avatar
  * @param {string} id Id
  * @param {Array} data Data
+ * @returns {Object} Avatar { id, ...data }
  */
 const get = async (id, data) => {
   return AvatarDB.get(id, data)
@@ -69,6 +74,7 @@ const get = async (id, data) => {
 
 /**
  * Delete avatar
+ * @memberof Lib.Avatar
  * @param {Object} parent Parent { id }
  * @param {string} type Type (project or user)
  * @param {string} id Avatar's id

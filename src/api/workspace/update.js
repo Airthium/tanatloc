@@ -2,7 +2,7 @@ import Caller from '@/api/call'
 
 /**
  * Update
- * @memberof module:api/workspace
+ * @memberof API.Workspace
  * @param {Object} workspace Workspace { id }
  * @param {Array} data Data [{ key: value }, ...]
  */

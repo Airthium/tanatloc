@@ -2,9 +2,10 @@ import Caller from '@/api/call'
 
 /**
  * Add
- * @memberof module:api/avatar
+ * @memberof API.Avatar
  * @param {File} file File { name, uid, data }
  * @param {?Object} project Project { id } [optional]
+ * @returns {Object} Avatar { id, name }
  */
 const add = async (file, project) => {
   return Caller.call('/api/avatar', {

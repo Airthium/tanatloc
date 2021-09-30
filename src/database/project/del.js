@@ -2,8 +2,8 @@ import { deleter } from '..'
 import { tables } from '@/config/db'
 
 /**
- * Delete project
- * @memberof module:database/project
+ * Delete
+ * @memberof Database.Project
  * @param {Object} project Project { id }
  */
 const del = async (project) => {

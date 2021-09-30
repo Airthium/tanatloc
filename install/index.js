@@ -1,4 +1,4 @@
-/** @module install */
+/** @namespace Install */
 
 import isElectron from 'is-electron'
 
@@ -8,6 +8,7 @@ import copyAssets from './copyAssets'
 
 /**
  * Main
+ * @memberof Install
  */
 const main = async () => {
   console.info('/__   \\__ _ _ __   __ _| |_| | ___   ___ ')

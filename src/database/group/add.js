@@ -3,9 +3,10 @@ import { tables } from '@/config/db'
 
 /**
  * Add
- * @memberof module:database/group
+ * @memberof Database.Group
  * @param {Object} organization Organization
  * @param {Object} group Group { name, users }
+ * @returns {Object} Group { id, name, users, organization }
  */
 const add = async (organization, { name, users }) => {
   const response = await query(
@@ -15,7 +16,12 @@ const add = async (organization, { name, users }) => {
     [name, users, organization.id]
   )
 
-  return response.rows[0]
+  const group = response.rows[0]
+  group && (group.name = name)
+  group && (group.users = users)
+  group && (group.organization = organization.id)
+
+  return group
 }
 
 export default add

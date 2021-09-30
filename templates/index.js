@@ -1,4 +1,4 @@
-/** @module templates */
+/** @namespace Templates */
 
 export default {
   gmsh3D: 'gmsh3D.geo.ejs',

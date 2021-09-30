@@ -1,4 +1,4 @@
-/** @module database/geometry */
+/** @namespace Database.Geometry */
 
 import add from './add'
 import get from './get'

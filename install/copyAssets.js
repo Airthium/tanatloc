@@ -1,6 +1,10 @@
 import { promises as fs } from 'fs'
 import ncp from 'ncp'
 
+/**
+ * Copy threejs assets
+ * @memberof Install
+ */
 const copyThreeAssets = async () => {
   // Create path
   try {
@@ -28,6 +32,10 @@ const copyThreeAssets = async () => {
   })
 }
 
+/**
+ * Copy assets
+ * @memberof Install
+ */
 const copyAssets = async () => {
   await copyThreeAssets()
 }

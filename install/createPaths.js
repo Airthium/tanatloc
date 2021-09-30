@@ -4,7 +4,7 @@ import config from '@/config/storage'
 
 /**
  * Create paths from config
- * @memberof module:install
+ * @memberof Install
  */
 const createPaths = async () => {
   console.info(' == Create paths == ')
@@ -18,7 +18,7 @@ const createPaths = async () => {
 
 /**
  * Create a path
- * @memberof module:install
+ * @memberof Install
  * @param {string} path Path
  */
 const createPath = async (path) => {

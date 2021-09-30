@@ -3,7 +3,7 @@ import { tables } from '@/config/db'
 
 /**
  * Delete
- * @memberof module:database/organization
+ * @memberof Database.Organization
  * @param {Object} organization Organization { id }
  */
 const del = async (organization) => {

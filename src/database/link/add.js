@@ -3,8 +3,9 @@ import { tables } from '@/config/db'
 
 /**
  * Add
- * @memberof module:database/link
+ * @memberof Database.Link
  * @param {Object} link Link { type, email, ?userid }
+ * @returns {Object} Link { id, type, email, userid }
  */
 const add = async ({ type, email, userid }) => {
   const response = await query(
@@ -14,7 +15,12 @@ const add = async ({ type, email, userid }) => {
     [type, email, userid]
   )
 
-  return response.rows[0]
+  const link = response.rows[0]
+  link && (link.type = type)
+  link && (link.email = email)
+  link && (link.userid = userid)
+
+  return link
 }
 
 export default add

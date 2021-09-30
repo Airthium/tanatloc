@@ -3,8 +3,9 @@ import { tables } from '@/config/db'
 
 /**
  * Add
- * @memberof module:database/simulation
+ * @memberof Database.Simulation
  * @param {Object} simulation Simulation { name, scheme, project }
+ * @returns {Object} Simulation { id, name, scheme, project }
  */
 const add = async ({ name, scheme, project }) => {
   const response = await query(
@@ -15,8 +16,9 @@ const add = async ({ name, scheme, project }) => {
   )
 
   const simulation = response.rows[0]
-  simulation.name = name
-  simulation.scheme = scheme
+  simulation && (simulation.name = name)
+  simulation && (simulation.scheme = scheme)
+  simulation && (simulation.project = project)
 
   return simulation
 }

@@ -5,8 +5,9 @@ import { tables } from '@/config/db'
 
 /**
  * Add
- * @memberof module:database/user
+ * @memberof Database.User
  * @param {Object} user User { email, password }
+ * @returns {Object} User { alreadyExists: true } || { id, email }
  */
 const add = async ({ email, password }) => {
   // Check email
@@ -27,7 +28,10 @@ const add = async ({ email, password }) => {
     [email, password, false, Date.now(), false, isElectron() ? ['local'] : []]
   )
 
-  return response.rows[0]
+  const user = response.rows[0]
+  user && (user.email = email)
+
+  return user
 }
 
 export default add

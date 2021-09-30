@@ -5,7 +5,7 @@ import query from '@/database'
 
 /**
  * Create database
- * @memberof module:install
+ * @memberof Install
  */
 const createDatabase = async () => {
   console.info(' == Create dB == ')
@@ -83,7 +83,7 @@ const createDatabase = async () => {
 
 /**
  * Create tables from config
- * @memberof module:install
+ * @memberof Install
  */
 const createTables = async () => {
   console.info(' == Create dB tables == ')
@@ -144,8 +144,9 @@ const createTables = async () => {
 
 /**
  * Check if table exists
- * @memberof module:install
+ * @memberof Install
  * @param {string} table Table
+ * @returns {boolean} Exists
  */
 const checkTable = async (table) => {
   const res = await query(
@@ -165,7 +166,7 @@ const checkTable = async (table) => {
 
 /**
  * Check schema
- * @memberof module:install
+ * @memberof Install
  * @param {string} table Table
  */
 const checkSchema = async (table) => {
@@ -238,9 +239,10 @@ const checkSchema = async (table) => {
 
 /**
  * Try to fix missng column
- * @memberof module:install
+ * @memberof Install
  * @param {string} table Table
  * @param {Object} column Column
+ * @returns {boolean} Success
  */
 const fixMissingColumn = async (table, column) => {
   console.info('   -> Try to fix missing column')
@@ -269,9 +271,10 @@ const fixMissingColumn = async (table, column) => {
 
 /**
  * Try to fix column type
- * @memberof module:install
+ * @memberof Install
  * @param {string} table Table
  * @param {Object} column Column
+ * @returns {boolean} Success
  */
 const fixColumnType = async (table, column) => {
   console.info('   -> Try to fix column type')
@@ -297,9 +300,10 @@ const fixColumnType = async (table, column) => {
 
 /**
  * Try to fix column constraint
- * @memberof module:install
+ * @memberof Install
  * @param {string} table Table
  * @param {Object} column Column
+ * @returns {boolean} Success
  */
 const fixColumnConstraint = async (table, column) => {
   console.info('   -> Try to fix column constraint')
@@ -320,7 +324,7 @@ const fixColumnConstraint = async (table, column) => {
 
 /**
  * Try to fix not used column
- * @memberof module:install
+ * @memberof Install
  * @param {string} table Table
  * @param {Object} column Column
  */
@@ -337,7 +341,7 @@ const fixNotUsedColumn = async (table, column) => {
 
 /**
  * Create table
- * @memberof module:install
+ * @memberof Install
  * @param {string} table Table
  * @param {Function} extra Extra function
  */
@@ -368,7 +372,7 @@ const createTable = async (table, extra) => {
 
 /**
  * Create system table
- * @memberof module: install
+ * @memberof Install
  */
 const createSystemTable = async () => {
   await createTable(tables.SYSTEM, async () =>
@@ -378,7 +382,7 @@ const createSystemTable = async () => {
 
 /**
  * Create avatar table
- * @memberof module:install
+ * @memberof Install
  */
 const createAvatarTable = async () => {
   await createTable(tables.AVATARS)
@@ -386,7 +390,7 @@ const createAvatarTable = async () => {
 
 /**
  * Create user table
- * @memberof module:install
+ * @memberof Install
  */
 const createUsersTable = async () => {
   await createTable(tables.USERS)
@@ -394,7 +398,7 @@ const createUsersTable = async () => {
 
 /**
  * Create organization table
- * @memberof module: install
+ * @memberof Install
  */
 const createOrganizationTable = async () => {
   await createTable(tables.ORGANIZATIONS)
@@ -402,7 +406,7 @@ const createOrganizationTable = async () => {
 
 /**
  * Create group table
- * @memberof module:install
+ * @memberof Install
  */
 const createGroupsTable = async () => {
   await createTable(tables.GROUPS)
@@ -410,7 +414,7 @@ const createGroupsTable = async () => {
 
 /**
  * Create workspace table
- * @memberof module:install
+ * @memberof Install
  */
 const createWorkspaceTable = async () => {
   await createTable(tables.WORKSPACES)
@@ -418,7 +422,7 @@ const createWorkspaceTable = async () => {
 
 /**
  * Create project table
- * @memberof module:install
+ * @memberof Install
  */
 const createProjectTable = async () => {
   await createTable(tables.PROJECTS)
@@ -426,7 +430,7 @@ const createProjectTable = async () => {
 
 /**
  * Create geometry table
- * @memberof module:install
+ * @memberof Install
  */
 const createGeometryTable = async () => {
   await createTable(tables.GEOMETRIES)
@@ -434,7 +438,7 @@ const createGeometryTable = async () => {
 
 /**
  * Create simulation table
- * @memberof module:install
+ * @memberof Install
  */
 const createSimulationTable = async () => {
   await createTable(tables.SIMULATIONS)
@@ -442,7 +446,7 @@ const createSimulationTable = async () => {
 
 /**
  * Create link table
- * @memberof module:install
+ * @memberof Install
  */
 const createLinkTable = async () => {
   await createTable(tables.LINKS)
@@ -450,7 +454,7 @@ const createLinkTable = async () => {
 
 /**
  * Create wait table
- * @memberof module:install
+ * @memberof Install
  */
 const createWaitTable = async () => {
   await createTable(tables.WAIT)
@@ -458,7 +462,7 @@ const createWaitTable = async () => {
 
 /**
  * Create administrator
- * @memberof module:install
+ * @memberof Install
  */
 const createAdmin = async () => {
   const { rows } = await query('SELECT id FROM ' + tables.USERS)

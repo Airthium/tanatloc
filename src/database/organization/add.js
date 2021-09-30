@@ -3,8 +3,9 @@ import { tables } from '@/config/db'
 
 /**
  * Add
- * @memberof module:database/organization
+ * @memberof Database.Organization
  * @param {Object} organization Organization { name, owners }
+ * @returns {Object} Organization { id, name, owners }
  */
 const add = async ({ name, owners }) => {
   const response = await query(
@@ -14,7 +15,11 @@ const add = async ({ name, owners }) => {
     [name, owners]
   )
 
-  return response.rows[0]
+  const organization = response.rows[0]
+  organization && (organization.name = name)
+  organization && (organization.owners = owners)
+
+  return organization
 }
 
 export default add

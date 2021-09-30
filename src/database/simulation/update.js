@@ -2,13 +2,13 @@ import { updater } from '..'
 import { tables } from '@/config/db'
 
 /**
- * Update simulation
- * @memberof module:database/simulation
+ * Update
+ * @memberof Database.Simulation
  * @param {Object} simulation Simulation { id }
  * @param {Array} data Data [{ key, value, ... }, ...]
  */
 const update = async (simulation, data) => {
-  return updater(tables.SIMULATIONS, simulation.id, data)
+  await updater(tables.SIMULATIONS, simulation.id, data)
 }
 
 export default update

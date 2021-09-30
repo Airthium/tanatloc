@@ -3,7 +3,8 @@ module.exports = {
     include: ['.'],
     exclude: [
       'app',
-      'config',
+      'config/jest',
+      'config/jsdoc',
       'coverage',
       'dist-server',
       'dist',
@@ -12,7 +13,8 @@ module.exports = {
       '.next',
       'out',
       'modules/three-to-glb/lib/three'
-    ]
+    ],
+    excludePattern: '/__tests__/'
   },
   opts: {
     destination: './doc',

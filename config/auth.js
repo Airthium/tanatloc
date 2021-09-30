@@ -1,20 +1,40 @@
-/** @module config/auth */
-
-// Authentication secret
-const SECRET = process.env.AUTH_SECRET || new Array(33).join('a')
+/** @namespace Config.Auth */
 
 /**
- * Default password configuration
+ * Authentication secret
+ * @memberof Config.Auth
  */
-// Min size
+const SECRET = process.env.AUTH_SECRET || new Array(33).join('a')
+
+// Default password configuration
+/**
+ * Min size
+ * @memberof Config.Auth
+ */
 const MIN_SIZE = 6
-// Max size
+
+/**
+ * Max size
+ * @memberof Config.Auth
+ */
 const MAX_SIZE = 16
-// Require letter
+
+/**
+ * Require letter
+ * @memberof Config.Auth
+ */
 const REQUIRE_LETTER = true
-// Require number
+
+/**
+ * Require number
+ * @memberof Config.Auth
+ */
 const REQUIRE_NUMBER = true
-// Require symbol
+
+/**
+ * Require symbol
+ * @memberof Config.Auth
+ */
 const REQUIRE_SYMBOL = true
 
 module.exports = {

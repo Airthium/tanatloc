@@ -1,4 +1,4 @@
-/** @module lib/geometry */
+/** @namespace Lib.Geometry */
 
 import path from 'path'
 
@@ -10,9 +10,11 @@ import Project from '../project'
 import Tools from '../tools'
 
 /**
- * Add geometry
+ * Add
+ * @memberof Lib.Geometry
  * @param {Object} project Project: { id }
  * @param {Object} geometry Geometry: { name, uid, buffer }
+ * @returns {Object} Geometry { id, name, originalfilename, extension, uploadfilename, json, glb, summary }
  */
 const add = async (project, geometry) => {
   // Add geometry
@@ -141,9 +143,11 @@ const add = async (project, geometry) => {
 }
 
 /**
- * Get geometry
+ * Get
+ * @memberof Lib.Geometry
  * @param {string} id Geometry's id
  * @param {Array} data Data
+ * @returns {Object} Geometry { id, ...data }
  */
 const get = async (id, data) => {
   return GeometryDB.get(id, data)
@@ -151,6 +155,7 @@ const get = async (id, data) => {
 
 /**
  * Update geometry
+ * @memberof Lib.Geometry
  * @param {Object} geometry Geometry { id }
  * @param {Object} data Data [{ key, value, ... }, ...]
  */
@@ -160,7 +165,8 @@ const update = async (geometry, data) => {
 }
 
 /**
- * Delete geometry
+ * Delete
+ * @memberof Lib.Geometry
  * @param {Object} geometry Geometry { id, ?json, ?glb }
  */
 const del = async (geometry) => {
@@ -229,7 +235,9 @@ const del = async (geometry) => {
 
 /**
  * Read
+ * @memberof Lib.Geometry
  * @param {Object} geometry Geometry {id }
+ * @returns {Object} Geometry { buffer, extension }
  */
 const read = async (geometry) => {
   // Data
@@ -249,7 +257,9 @@ const read = async (geometry) => {
 
 /**
  * Read part
+ * @memberof Lib.Geometry
  * @param {Object} geometry Geometry { id }
+ * @returns {Object} Part { uuid, buffer }
  */
 const readPart = async (geometry) => {
   // Data

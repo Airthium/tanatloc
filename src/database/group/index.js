@@ -1,4 +1,4 @@
-/** @module database/group */
+/** @namespace Database.Group */
 
 import add from './add'
 import get from './get'

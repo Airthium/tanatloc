@@ -1,4 +1,4 @@
-/** @module database/workspace */
+/** @namespace Database.Workspace */
 
 import get from './get'
 import add from './add'

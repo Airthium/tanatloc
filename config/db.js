@@ -1,29 +1,59 @@
-/** @module config/db */
+/** @namespace Config.Database */
 
+// Database configuration
 /**
- * Database configuration
+ * Admin
+ * @memberof Config.Database
  */
-// ADMIN
 const ADMIN =
   process.env.DB_ADMIN ||
   (process.platform === 'darwin' ? process.env.USER : 'postgres')
-// ADMIN DATABASE
+
+/**
+ * Admin database
+ * @memberof Config.Database
+ */
 const ADMIN_DATABASE = process.env.DB_ADMIN_DATABASE || 'postgres'
-// ADMIN PASSWORD
+
+/**
+ * Admin password
+ * @memberof Config.Database
+ */
 const ADMIN_PASSWORD = process.env.DB_ADMIN_PASSWORD || ''
-// USER
+
+/**
+ * User
+ * @memberof Config.Database
+ */
 const USER = process.env.DB_USER || 'tanatlocuser'
-// HOST
+
+/**
+ * Host
+ * @memberof Config.Database
+ */
 const HOST = process.env.DB_HOST || 'localhost'
-// PORT
+
+/**
+ * Port
+ * @memberof Config.Database
+ */
 const PORT = process.env.DB_PORT || 5432
-// DATABASE
+
+/**
+ * Database
+ * @memberof Config.Database
+ */
 const DATABASE = process.env.DB_DATABASE || 'tanatloc2'
-// PASSWORD
+
+/**
+ * Password
+ * @memberof Config.Database
+ */
 const PASSWORD = process.env.DB_PASSWORD || 'tanatloc'
 
 /**
  * Tables names
+ * @memberof Config.Database
  */
 const tables = {
   SYSTEM: 'tanatloc_system',
@@ -41,6 +71,7 @@ const tables = {
 
 /**
  * Tables schemes
+ * @memberof Config.Database
  */
 const schemas = {
   [tables.SYSTEM]: [

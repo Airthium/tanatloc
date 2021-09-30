@@ -2,10 +2,11 @@ import { getter } from '..'
 import { tables } from '@/config/db'
 
 /**
- * Get by user id
- * @memberof module:database/workspace
+ * Get
+ * @memberof Database.Workspace
  * @param {string} id Id
  * @param {Array} data Data
+ * @returns {Object} Workspace { id, ...data }
  */
 const get = async (id, data) => {
   const response = await getter(tables.WORKSPACES, id, data)

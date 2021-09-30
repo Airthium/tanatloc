@@ -2,7 +2,7 @@ import { deleter } from '..'
 import { tables } from '@/config/db'
 
 /**
- * Delete avatar
+ * Delete
  * @memberof Database.Avatar
  * @param {Object} avatar Avatar { id }
  */

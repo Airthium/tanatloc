@@ -2,8 +2,8 @@ import { deleter } from '..'
 import { tables } from '@/config/db'
 
 /**
- * Delete group
- * @memberof module:database/group
+ * Delete
+ * @memberof Database.Group
  * @param {Object} group Group { id }
  */
 const del = async (group) => {

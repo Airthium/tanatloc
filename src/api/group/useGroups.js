@@ -3,8 +3,9 @@ import Caller from '@/api/call'
 
 /**
  * Use groups
+ * @memberof API.Group
  * @param {string} id Id
- * @memberof module:api/group
+ * @returns {Object} [ groups, { mutateGroups, addOneGroup, delOneGroup, mutateOneGroup, errorGroups, loadingGroups }]
  */
 const useGroups = (id) => {
   const { data, error, mutate } = useSWR('/api/groups/' + id, Caller.fetcher)

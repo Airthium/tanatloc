@@ -1,4 +1,4 @@
-/** @module lib/group */
+/** @namespace Lib.Group */
 
 import GroupDB from '@/database/group'
 
@@ -8,9 +8,11 @@ import Project from '../project'
 import Organization from '../organization'
 
 /**
- * Add group
+ * Add
+ * @memberof Lib.Group
  * @param {Object} organization Organization { id }
- * @param {Object} group Group
+ * @param {Object} group Group { name, users }
+ * @returns {Object} Group { id, name, users, organization }
  */
 const add = async (organization, { name, users }) => {
   // Add group
@@ -31,8 +33,11 @@ const add = async (organization, { name, users }) => {
 
 /**
  * Get
+ * @memberof Lib.Group
  * @param {string} id Id
  * @param {Array} data Data
+ * @param {?boolean} withData With data (default: true)
+ * @returns {Object} Group { id, ...data }
  */
 const get = async (id, data, withData = true) => {
   const groupData = await GroupDB.get(id, data)
@@ -58,8 +63,10 @@ const get = async (id, data, withData = true) => {
 }
 
 /**
- * Get all users
+ * Get all
+ * @memberof Lib.Group
  * @param {Array} data Data
+ * @return {Array} Groups
  */
 const getAll = async (data) => {
   // Get groups
@@ -92,6 +99,13 @@ const getAll = async (data) => {
   return groups
 }
 
+/**
+ * Get by organization
+ * @memberof Lib.Group
+ * @param {string} id Organization id
+ * @param {Array} data Data
+ * @returns {Array} Groups
+ */
 const getByOrganization = async (id, data) => {
   // Get organization
   const organization = await Organization.get(id, ['groups'])
@@ -113,7 +127,8 @@ const getByOrganization = async (id, data) => {
 }
 
 /**
- * Update group
+ * Update
+ * @memberof Lib.Group
  * @param {Object} group Group { id }
  * @param {Array} data Data
  */
@@ -122,7 +137,8 @@ const update = async (group, data) => {
 }
 
 /**
- * Delete group
+ * Delete
+ * @memberof Lib.Group
  * @param {Object} group Group { id }
  */
 const del = async (group) => {

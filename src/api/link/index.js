@@ -1,4 +1,4 @@
-/** @module api/link */
+/** @namespace API.Link */
 
 import get from './get'
 import process from './process'

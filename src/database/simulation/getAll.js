@@ -2,9 +2,10 @@ import query from '..'
 import { tables } from '@/config/db'
 
 /**
- * Get all simulations
- * @memberof module:database/simulation
+ * Get all
+ * @memberof Database.Simulation
  * @param {Array} data Data
+ * @returns {Array} Simulations
  */
 const getAll = async (data) => {
   const response = await query(

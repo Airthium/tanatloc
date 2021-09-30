@@ -2,10 +2,11 @@ import { getter } from '..'
 import { tables } from '@/config/db'
 
 /**
- * Get simulation by id
- * @memberof module:database/simulation
+ * Get
+ * @memberof Database.Simulation
  * @param {string} id Id
  * @param {Array} data Data
+ * @returns {Object} Simulation { id, ...data }
  */
 const get = async (id, data) => {
   const response = await getter(tables.SIMULATIONS, id, data)

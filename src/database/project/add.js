@@ -3,10 +3,11 @@ import { tables } from '@/config/db'
 
 /**
  * Add
- * @memberof module:database/project
+ * @memberof Database.Project
  * @param {Object} user User { id }
  * @param {Object} workspace Workspace { id }
  * @param {Object} project Project { title, description }
+ * @returns {Object} Project { id, title, description, owners, workspace }
  */
 const add = async (user, workspace, { title, description }) => {
   const response = await query(
@@ -24,8 +25,10 @@ const add = async (user, workspace, { title, description }) => {
   )
 
   const project = response.rows[0]
-  project.title = title
-  project.description = description || ''
+  project && (project.title = title)
+  project && (project.description = description || '')
+  project && (project.owners = [user.id])
+  project && (project.workspace = workspace.id)
 
   return project
 }

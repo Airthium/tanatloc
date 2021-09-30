@@ -1,4 +1,4 @@
-/** @module database/simulation */
+/** @namespace Database.Simulation */
 
 import add from './add'
 import get from './get'

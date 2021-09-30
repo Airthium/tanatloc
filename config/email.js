@@ -1,16 +1,29 @@
-/** @module config/email */
-
-// EMAIL TOKEN
-const TOKEN = process.env.EMAIL_TOKEN || ''
+/** @namespace Config.Email */
 
 /**
- * Email types
+ * Email token
+ * @memberof Config.Email
  */
-// SUBSCRIPTION VALIDATION
+const TOKEN = process.env.EMAIL_TOKEN || ''
+
+// Email types
+
+/**
+ * Subscription
+ * @memberof Config.Email
+ */
 const SUBSCRIBE = 'subscribe'
-// PASSWORD RECOVERY
+
+/**
+ * Password recoverey
+ * @memberof Config.Email
+ */
 const PASSWORD_RECOVERY = 'passwordRecovery'
-// REVALIDATE
+
+/**
+ * Revalidate
+ * @memberof Config.Email
+ */
 const REVALIDATE = 'revalidate'
 
 module.exports = {

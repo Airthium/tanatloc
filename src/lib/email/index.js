@@ -1,4 +1,4 @@
-/** @module lib/email */
+/** @namespace Lib.Email */
 
 import MailerSend, { Recipient, EmailParams } from 'mailersend'
 
@@ -11,6 +11,11 @@ const mailerSend = new MailerSend({
   api_key: TOKEN
 })
 
+/**
+ * Send
+ * @memberof Lib.Email
+ * @param {string} email Email
+ */
 const send = async (email) => {
   const res = await mailerSend.send(email)
   if (res.status === 401) {
@@ -22,6 +27,7 @@ const send = async (email) => {
 
 /**
  * Subscribe
+ * @memberof Lib.Email
  * @param {string} email Email
  * @param {string} userid User id
  */
@@ -57,6 +63,11 @@ const subscribe = async (email, userid) => {
   }
 }
 
+/**
+ * Recover
+ * @memberof Lib.Email
+ * @param {string} email Email
+ */
 const recover = async (email) => {
   // Create link entry
   const link = await Link.add({ type: PASSWORD_RECOVERY, email })
@@ -90,6 +101,7 @@ const recover = async (email) => {
 
 /**
  * Revalidate
+ * @memberof Lib.Email
  * @param {string} email Email
  * @param {string} userid User id
  */
@@ -127,6 +139,7 @@ const revalidate = async (email, userid) => {
 
 /**
  * Invite
+ * @memberof Lib.Email
  * @param {string} email Email
  * @param {string} user Sending user
  */

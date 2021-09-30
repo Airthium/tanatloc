@@ -3,9 +3,10 @@ import { tables } from '@/config/db'
 
 /**
  * Get
- * @memberof module:database/organization
+ * @memberof Database.Organization
  * @param {string} id Organization's id
  * @param {Array} data Data
+ * @returns {Object} Organization { id, ...data }
  */
 const get = async (id, data) => {
   const response = await getter(tables.ORGANIZATIONS, id, data)

@@ -2,8 +2,8 @@ import { getter } from '..'
 import { tables } from '@/config/db'
 
 /**
- * Get geometry by id
- * @memberof module:database/geometry
+ * Get
+ * @memberof Database.Geometry
  * @param {string} id Id
  * @param {Array} data Data
  */

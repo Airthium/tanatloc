@@ -1,4 +1,4 @@
-/** @module database/project */
+/** @namespace Database.Project */
 
 import get from './get'
 import add from './add'

@@ -2,7 +2,7 @@ import { getter } from '..'
 import { tables } from '@/config/db'
 
 /**
- * Get avatar by id
+ * Get
  * @memberof Database.Avatar
  * @param {string} id Avatar's id
  * @param {Object} data Data { key, value, ... }

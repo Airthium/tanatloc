@@ -1,4 +1,4 @@
-/** @module database/organization */
+/** @namespace Database.Organization */
 
 import add from './add'
 import getAll from './getAll'

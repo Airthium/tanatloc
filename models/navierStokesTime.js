@@ -1,6 +1,6 @@
 /**
  * Navier-Stokes Time-dependant
- * @memberof module:models
+ * @memberof Models
  */
 const NavierStokesTime = {
   category: 'Fluid',

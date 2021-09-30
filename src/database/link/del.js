@@ -3,7 +3,7 @@ import { tables } from '@/config/db'
 
 /**
  * Delete
- * @memberof module:database/link
+ * @memberof Database.Link
  * @param {Object} link Link { id }
  */
 const del = async (link) => {

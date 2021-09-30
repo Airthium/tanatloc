@@ -2,9 +2,10 @@ import query from '..'
 import { tables } from '@/config/db'
 
 /**
- * Get system items
- * @memberof module:database/avatar
- * @param {Object} data Data [ key, ]
+ * Get items
+ * @memberof Database.System
+ * @param {Object} data Data
+ * @returns {Object} System { ...data }
  */
 const get = async (data) => {
   const response = await query(

@@ -1,4 +1,4 @@
-/** @module api/group */
+/** @namespace API.Group */
 
 import useGroups from './useGroups'
 import add from './add'

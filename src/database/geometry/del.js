@@ -2,8 +2,8 @@ import { deleter } from '..'
 import { tables } from '@/config/db'
 
 /**
- * Delete geometry
- * @memberof module:database/geometry
+ * Delete
+ * @memberof Database.Geometry
  * @param {Object} geometry Geometry { id }
  */
 const del = async (geometry) => {

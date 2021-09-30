@@ -1,6 +1,9 @@
-/** @module config/sentry */
+/** @namespace Config.Sentry */
 
-// SENTRY DSN
+/**
+ * Sentry DNS
+ * @memberof Config.Sentry
+ */
 let DSN = ''
 if (process.env.NODE_ENV === 'production')
   DSN =

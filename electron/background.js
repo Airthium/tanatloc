@@ -1,4 +1,4 @@
-/** @module electron */
+/** @namespace Electron */
 
 import { app, ipcMain } from 'electron'
 import serve from 'electron-serve'
@@ -14,6 +14,7 @@ if (isProd) {
 
 /**
  * Start electron
+ * @memberof Electron
  */
 const start = async () => {
   console.info('Starting Tanatloc')

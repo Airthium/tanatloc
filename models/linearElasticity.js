@@ -1,6 +1,6 @@
 /**
  * Linear elasticity
- * @memberof module:models
+ * @memberof Models
  */
 const LinearElasticity = {
   category: 'Mechanics',

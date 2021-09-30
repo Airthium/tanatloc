@@ -2,7 +2,7 @@ import query from '..'
 import { tables } from '@/config/db'
 
 /**
- * Add avatar
+ * Add
  * @memberof Database.Avatar
  * @param {Object} data Data { name, path }
  * @returns {Object} Avatar { id, name }

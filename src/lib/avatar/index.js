@@ -11,7 +11,7 @@ import Project from '../project'
 import Tools from '../tools'
 
 /**
- * Add avatar
+ * Add
  * @memberof Lib.Avatar
  * @param {Object} parent Parent { id }
  * @param {string} type Type (project or user)
@@ -46,7 +46,7 @@ const add = async (parent, type, file) => {
 }
 
 /**
- * Read avatar
+ * Read
  * @memberof Lib.Avatar
  * @param {string} id Avatar's id
  * @returns {string} Content
@@ -73,7 +73,7 @@ const get = async (id, data) => {
 }
 
 /**
- * Delete avatar
+ * Delete
  * @memberof Lib.Avatar
  * @param {Object} parent Parent { id }
  * @param {string} type Type (project or user)

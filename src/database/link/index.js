@@ -1,4 +1,4 @@
-/** @module database/link */
+/** @namespace Database.Link */
 
 import add from './add'
 import get from './get'

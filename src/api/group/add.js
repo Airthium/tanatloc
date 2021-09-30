@@ -2,9 +2,10 @@ import Caller from '@/api/call'
 
 /**
  * Add group
- * @memberof module:api/group
+ * @memberof API.Group
  * @param {Object} organization Organization { id }
  * @param {Object} group Group { name, users }
+ * @returns {Object} Group { id, name, users, organization }
  */
 const add = async (organization, group) => {
   return Caller.call('/api/group', {

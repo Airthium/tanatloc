@@ -3,12 +3,12 @@ import { tables } from '@/config/db'
 
 /**
  * Update
- * @memberof module:database/project
+ * @memberof Database.Project
  * @param {Object} project Project { id }
  * @param {Array} data Data [{ key, value, ... }, ...]
  */
 const update = async (project, data) => {
-  return updater(tables.PROJECTS, project.id, data)
+  await updater(tables.PROJECTS, project.id, data)
 }
 
 export default update

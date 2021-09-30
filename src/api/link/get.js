@@ -2,9 +2,10 @@ import Caller from '@/api/call'
 
 /**
  * Get
- * @memberof module:api/link
+ * @memberof API.Link
  * @param {string} id Id
  * @param {Array} data Data
+ * @returns {Object} Link { id, ...data }
  */
 const get = async (id, data) => {
   return Caller.call('/api/link', {

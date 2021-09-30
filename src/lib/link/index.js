@@ -1,17 +1,38 @@
+/** @namespace Lib.Link */
+
 import { SUBSCRIBE, PASSWORD_RECOVERY, REVALIDATE } from '@/config/email'
 
 import LinkDB from '@/database/link'
 
 import UserLib from '../user'
 
+/**
+ * Add
+ * @memberof Lib.Link
+ * @param {Object} link Link { type, email, ?userid }
+ * @returns {Object} Link { id, type, email, userid }
+ */
 const add = async (link) => {
   return LinkDB.add(link)
 }
 
+/**
+ * Get
+ * @memberof Lib.Link
+ * @param {string} id Link id
+ * @param {Array} data Data
+ * @returns {Object} Link { id, ...data }
+ */
 const get = async (id, data) => {
   return LinkDB.get(id, data)
 }
 
+/**
+ * Process
+ * @memberof Lib.Link
+ * @param {string} id Link id
+ * @param {Object} data Data { email, password }
+ */
 const process = async (id, data) => {
   const link = await get(id, ['type', 'email', 'userid'])
 
@@ -48,6 +69,10 @@ const process = async (id, data) => {
   }
 }
 
+/**
+ * Delete
+ * @param {Object} link Link { id }
+ */
 const del = async (link) => {
   await LinkDB.del(link)
 }

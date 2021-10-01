@@ -1,9 +1,10 @@
 import Caller from '@/api/call'
 
 /**
- * Run simulation
- * @memberof module:api/simulation
+ * Run
+ * @memberof API.Simulation
  * @param {Object} simulation Simulation { id }
+ * @returns {Object} { ok: true }
  */
 const run = async (simulation) => {
   return Caller.call('/api/simulation/' + simulation.id + '/run', {

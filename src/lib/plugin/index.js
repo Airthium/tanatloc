@@ -1,4 +1,4 @@
-/** @module lib/plugin */
+/** @namespace Lib.Plugin */
 
 import merge from 'lodash.merge'
 import { v4 as uuid } from 'uuid'
@@ -7,7 +7,8 @@ import User from '../user'
 import Plugins from '../plugins'
 
 /**
- * Add plugin
+ * Add
+ * @memberof Lib.Plugin
  * @param {Object} user User { id }
  * @param {Object} plugin Plugin
  */
@@ -37,7 +38,9 @@ const add = async ({ id }, plugin) => {
 
 /**
  * Get by user
+ * @memberof Lib.Plugin
  * @param {string} user User { id }
+ * @returns {Array} Plugins
  */
 const getByUser = async ({ id }) => {
   // Get plugins
@@ -48,6 +51,7 @@ const getByUser = async ({ id }) => {
 
 /**
  * Update
+ * @memberof Lib.Plugin
  * @param {User} user User { id }
  * @param {Object} plugin Plugin
  */
@@ -82,7 +86,8 @@ const update = async ({ id }, plugin) => {
 }
 
 /**
- *
+ * Delete
+ * @memberof Lib.Plugin
  * @param {Object} user User { id }
  * @param {Object} plugin Plugin { uuid }
  */

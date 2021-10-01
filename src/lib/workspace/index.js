@@ -1,4 +1,4 @@
-/** @module lib/workspace */
+/** @namespace Lib.Workspace */
 
 import WorkspaceDB from '@/database/workspace'
 
@@ -8,9 +8,11 @@ import Organization from '../organization'
 import Project from '../project'
 
 /**
- * Add workspace
+ * Add
+ * @memberof Lib.Workspace
  * @param {Object} user User { id }
  * @param {Object} workspace Workspace { name }
+ * @returns {Object} Workspace { id, name, owners }
  */
 const add = async (user, { name }) => {
   // Add workspace
@@ -31,10 +33,12 @@ const add = async (user, { name }) => {
 }
 
 /**
- * Get workspace
+ * Get
+ * @memberof Lib.Workspace
  * @param {string} id Id
  * @param {Array} data Data
- * @param {boolean} withData With data
+ * @param {?boolean} withData With data (default: true)
+ * @returns {Object} Workspace { id, ...data }
  */
 const get = async (id, data, withData = true) => {
   const workspace = await WorkspaceDB.get(id, data)
@@ -95,8 +99,10 @@ const get = async (id, data, withData = true) => {
 }
 
 /**
- * Get workspaces by user
+ * Get by user
+ * @memberof Lib.Workspace
  * @param {Object} user User { id }
+ * @returns {Array} Workspaces
  */
 const getByUser = async ({ id }) => {
   // Get workspaces'ids
@@ -199,7 +205,8 @@ const getByUser = async ({ id }) => {
 }
 
 /**
- * Update workspace
+ * Update
+ * @memberof Lib.Workspace
  * @param {Object} workspace Workspace { id }
  * @param {Object} data Data [{ key, value, ... }, ...]
  */
@@ -252,7 +259,8 @@ const update = async (workspace, data) => {
 }
 
 /**
- *
+ * Delete
+ * @memberof Lib.Workspace
  * @param {Object} user User { id }
  * @param {Object} workspace Workspace { id }
  */

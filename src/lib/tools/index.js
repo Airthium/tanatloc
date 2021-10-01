@@ -1,4 +1,4 @@
-/** @module lib/tools */
+/** @namespace Lib.Tools */
 
 import path from 'path'
 import { promises as fs } from 'fs'
@@ -8,18 +8,26 @@ import Services from '@/services'
 
 /**
  * Create path (recursive)
+ * @memberof Lib.Tools
  * @param {string} location Location path
  */
 const createPath = async (location) => {
   await fs.mkdir(location, { recursive: true })
 }
 
+/**
+ * List files
+ * @memberof Lib.Tools
+ * @param {string} location Location
+ * @returns {Object} Files list (with types)
+ */
 const listFiles = async (location) => {
   return fs.readdir(location, { withFileTypes: true })
 }
 
 /**
  * Write file
+ * @memberof Lib.Tools
  * @param {string} location Location
  * @param {string} name File name
  * @param {Object} content Content
@@ -31,8 +39,10 @@ const writeFile = async (location, name, content) => {
 
 /**
  * Read file
+ * @memberof Lib.Tools
  * @param {string} file File name
- * @param {?string} type Type
+ * @param {?string} type Type (json)
+ * @returns {string | Object} File content or JSON
  */
 const readFile = async (file, type) => {
   const content = await fs.readFile(file)
@@ -41,6 +51,12 @@ const readFile = async (file, type) => {
   return content
 }
 
+/**
+ * Copy file
+ * @memberof Lib.Tools
+ * @param {string} origin Origin path
+ * @param {string} destination Destination path
+ */
 const copyFile = async (origin, destination) => {
   await createPath(destination.path)
   await fs.copyFile(
@@ -51,10 +67,12 @@ const copyFile = async (origin, destination) => {
 
 /**
  * Convert file
+ * @memberof Lib.Tools
  * @param {string} location Location
  * @param {Object} file File { name, target }
  * @param {Function?} callback Callback
  * @param {Object?} param Parameters { isResult: false }
+ * @returns {Object} Data { json, glb }
  */
 const convert = async (location, file, callback, param) => {
   const origin = file.name
@@ -102,8 +120,10 @@ const convert = async (location, file, callback, param) => {
 
 /**
  * Load part
+ * @memberof Lib.Tools
  * @param {string} location Location
  * @param {string} name File name
+ * @returns {Object} Part
  */
 const loadPart = async (location, name) => {
   const partFile = path.join(location, name)
@@ -148,6 +168,7 @@ const loadPart = async (location, name) => {
 
 /**
  * Remove file
+ * @memberof Lib.Tools
  * @param {string} file File name
  */
 const removeFile = async (file) => {
@@ -156,6 +177,7 @@ const removeFile = async (file) => {
 
 /**
  * Remove directory
+ * @memberof Lib.Tools
  * @param {string} dir Directory
  */
 const removeDirectory = async (dir) => {

@@ -5,9 +5,10 @@ import storage from '@/config/storage'
 
 /**
  * Create PVD files
- * @memberof module:lib/result
+ * @memberof Lib.Result
  * @param {Object} simulation Simulation
  * @param {Array} files Files
+ * @returns {Array} PVDs
  */
 const createPVD = (simulation, files) => {
   const PVDs = []

@@ -2,7 +2,8 @@ import Caller from '@/api/call'
 
 /**
  * List
- * @memberof module:api/plugins
+ * @memberof API.Plugins
+ * @returns {Array} List
  */
 const list = async () => {
   return Caller.call('/api/plugins', {

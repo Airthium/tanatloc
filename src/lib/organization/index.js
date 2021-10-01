@@ -1,4 +1,4 @@
-/** @module lib/organization */
+/** @namespace Lib.Organization */
 
 import Crypto from 'crypto'
 
@@ -9,9 +9,11 @@ import Group from '../group'
 import Email from '../email'
 
 /**
- * Add organization
+ * Add
+ * @memberof Lib.Organization
  * @param {Object} user User { id }
  * @param {Object} organization Organization { name }
+ * @returns {Object} Organization { id, name, owners }
  */
 const add = async (user, organization) => {
   // Add organization
@@ -35,8 +37,10 @@ const add = async (user, organization) => {
 
 /**
  * Get
+ * @memberof Lib.Organization
  * @param {string} id Id
  * @param {Array} data Data
+ * @returns {Object} Organization { id, ...data }
  */
 const get = async (id, data) => {
   return OrganizationDB.get(id, data)
@@ -44,8 +48,10 @@ const get = async (id, data) => {
 
 /**
  * Get by user
+ * @memberof Lib.Organization
  * @param {Object} user User { id }
  * @param {Array} data Data []
+ * @returns {Array} Organizations
  */
 const getByUser = async (user, data) => {
   const internalData = [...data]
@@ -124,6 +130,7 @@ const getByUser = async (user, data) => {
 
 /**
  * Update
+ * @memberof Lib.Organization
  * @param {Object} organization Organization
  * @param {Array} data Data
  * @param {string} ownerId Owner id
@@ -176,6 +183,7 @@ const update = async (organization, data, ownerId) => {
 
 /**
  * Delete
+ * @memberof Lib.Organization
  * @param {Object} organization Organization { id }
  */
 const del = async (organization) => {

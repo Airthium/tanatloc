@@ -2,11 +2,11 @@ import Caller from '@/api/call'
 
 /**
  * Update
- * @memberof module:api/plugin
+ * @memberof API.Plugin
  * @param {Object} plugin Plugin
  */
 const update = async (plugin) => {
-  return Caller.call('/api/plugin', {
+  await Caller.call('/api/plugin', {
     method: 'PUT',
     body: JSON.stringify(plugin)
   })

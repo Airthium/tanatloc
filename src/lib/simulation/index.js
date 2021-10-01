@@ -1,4 +1,4 @@
-/** @module lib/simulation */
+/** @namespace Lib.Simulation */
 
 import path from 'path'
 
@@ -13,9 +13,11 @@ import Tools from '../tools'
 import Plugins from '../plugins'
 
 /**
- * Add simulation
+ * Add
+ * @memberof Lib.Simulation
  * @param {Object} project Project { id }
  * @param {Object} simulation Simulation { name, scheme } }
+ * @returns {Object} Simulation { id, name, scheme, project }
  */
 const add = async (project, simulation) => {
   // Add simulation
@@ -39,10 +41,11 @@ const add = async (project, simulation) => {
 }
 
 /**
- * Get simulation
+ * Get
+ * @memberof Lib.Simulation
  * @param {string} id Simulation's id
  * @param {Array} data Data
- * @returns {Object} Simulation
+ * @returns {Object} Simulation { id, ...data }
  */
 const get = async (id, data) => {
   return SimulationDB.get(id, data)
@@ -50,6 +53,7 @@ const get = async (id, data) => {
 
 /**
  * Get all
+ * @memberof Lib.Simulation
  * @param {Array} data Data
  * @returns {Array} Simulations
  */
@@ -58,7 +62,8 @@ const getAll = async (data) => {
 }
 
 /**
- * Update simulation
+ * Update
+ * @memberof Lib.Simulation
  * @param {Object} simulation Simulation { id }
  * @param {Object} data Data [{ key, value, ... }, ...]
  */
@@ -68,7 +73,8 @@ const update = async (simulation, data) => {
 }
 
 /**
- * Delete simulation
+ * Delete
+ * @memberof Lib.Simulation
  * @param {Object} simulation Simulation { id }
  */
 const del = async (simulation) => {
@@ -98,7 +104,8 @@ const del = async (simulation) => {
 }
 
 /**
- * Run simulation
+ * Run
+ * @memberof Lib.Simulation
  * @param {Object} user User { id }
  * @param {Object} simulation Simulation { id }
  */
@@ -287,7 +294,8 @@ const run = async (user, { id }) => {
 }
 
 /**
- * Stop simulation
+ * Stop
+ * @memberof Lib.Simulation
  * @param {Object} simulation Simulation { id }
  */
 const stop = async ({ id }) => {
@@ -321,6 +329,13 @@ const stop = async ({ id }) => {
   ])
 }
 
+/**
+ * Get log
+ * @memberof Lib.Simulation
+ * @param {Object} simulation Simulation { id }
+ * @param {string} file File
+ * @returns {string} Log
+ */
 const getLog = async ({ id }, file) => {
   // Path
   const filePath = path.join(storage.SIMULATION, id, file)

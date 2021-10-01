@@ -1,13 +1,13 @@
 import Caller from '@/api/call'
 
 /**
- * Delete project
- * @memberof module:api/project
+ * Delete
+ * @memberof API.Project
  * @param {Object} workspace Workspace { id }
  * @param {Object} project Project { id }
  */
 const del = async (workspace, project) => {
-  return Caller.call('/api/project/' + project.id, {
+  await Caller.call('/api/project/' + project.id, {
     method: 'DELETE',
     body: JSON.stringify({ id: workspace.id })
   })

@@ -1,10 +1,12 @@
-/** @module lib/utils */
+/** @namespace Lib.Utils */
 
 import { Avatar, Spin, Tooltip } from 'antd'
 
 /**
  * String to color
+ * @memberof Lib.Utils
  * @param {string} str String
+ * @returns {string} Color
  */
 const stringToColor = (str) => {
   if (!str) return '#FFFFFF'
@@ -21,7 +23,9 @@ const stringToColor = (str) => {
 
 /**
  * Component to Hex
+ * @memberof Lib.Utils
  * @param {number} c Color
+ * @returns {string} Hex
  */
 const componentToHex = (c) => {
   const hex = c.toString(16)
@@ -30,7 +34,9 @@ const componentToHex = (c) => {
 
 /**
  * RGB to Hex
+ * @memberof Lib.Utils
  * @param {Object} color Color {r, g, b}
+ * @returns {string} Hex
  */
 const rgbToHex = (color) => {
   return (
@@ -43,8 +49,10 @@ const rgbToHex = (color) => {
 
 /**
  * rgb to CSS rgba
+ * @memberof Lib.Utils
  * @param {Object} color Color {r, g, b}
  * @param {number} alpha Alpha
+ * @returns {string} rgba
  */
 const rgbToRgba = (color, alpha = 1) => {
   if (!color) return 'rgba(255, 255, 255, 0)'
@@ -63,7 +71,9 @@ const rgbToRgba = (color, alpha = 1) => {
 
 /**
  * User to avatar
+ * @memberof Lib.Utils
  * @param {Object} user User
+ * @returns {jsx} Avatar
  */
 const userToAvatar = (user) => {
   const avatar = user.avatar && Buffer.from(user.avatar).toString()
@@ -89,7 +99,9 @@ const userToAvatar = (user) => {
 
 /**
  * Group to avatar
+ * @memberof Lib.Utils
  * @param {Object} group Group
+ * @returns {jsx} Avatar
  */
 const groupToAvatar = (group) => {
   let name = group.name
@@ -106,6 +118,7 @@ const groupToAvatar = (group) => {
 
 /**
  * Validate email
+ * @memberof Lib.Utils
  * @param {string} email Email
  * @returns {bool} Valid
  */

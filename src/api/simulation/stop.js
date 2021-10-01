@@ -1,9 +1,10 @@
 import Caller from '@/api/call'
 
 /**
- * Stop simulation
- * @memberof module:api/simulation
+ * Stop
+ * @memberof API.Simulation
  * @param {Object} simulation Simulation { id }
+ * @returns {Object} { ok: true }
  */
 const stop = async (simulation) => {
   return Caller.call('/api/simulation/' + simulation.id + '/stop', {

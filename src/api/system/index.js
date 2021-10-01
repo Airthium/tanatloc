@@ -1,4 +1,4 @@
-/** @module api/system */
+/** @namespace API.System */
 
 import useSystem from './useSystem'
 import update from './update'

@@ -3,7 +3,8 @@ import Caller from '@/api/call'
 
 /**
  * Uses plugins
- * @memberof module:api/plugin
+ * @memberof API.Plugin
+ * @returns {Array} [plugins, { mutatePlugins, addOnePlugin, delOnePlugin, mutateOnePlugin, errorPlugins, loadingPlugins }]
  */
 const usePlugins = () => {
   const { data, error, mutate } = useSWR('/api/plugin', Caller.fetcher)

@@ -1,12 +1,12 @@
 import Caller from '@/api/call'
 
 /**
- * Update system item
- * @memberof module:api/system
+ * Update items
+ * @memberof API.System
  * @param {string} data Data
  */
 const update = async (data) => {
-  return Caller.call('/api/system', {
+  await Caller.call('/api/system', {
     method: 'PUT',
     body: JSON.stringify(data)
   })

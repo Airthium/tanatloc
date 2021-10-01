@@ -1,4 +1,4 @@
-/** @module lib/template */
+/** @namespace Lib.Template */
 
 import path from 'path'
 import ejs from 'ejs'
@@ -11,6 +11,7 @@ import Templates from '@/templates'
 
 /**
  * Load templates
+ * @memberof Lib.Template
  */
 const loadTemplates = async () => {
   const templatesList = {}
@@ -69,6 +70,14 @@ loadTemplates()
   .then((res) => (templates = res))
   .catch((err) => console.warn(err))
 
+/**
+ * Render
+ * @memberof Lib.Template
+ * @param {string} key Key
+ * @param {Object} parameters Parameters
+ * @param {boolean} save Save
+ * @returns {string} Script
+ */
 const render = async (key, parameters, save) => {
   // Compile
   const template = templates[key]

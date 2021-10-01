@@ -5,8 +5,9 @@ import storage from '@/config/storage'
 
 /**
  * Create summary
- * @memberof module:lib/result
+ * @memberof Lib.Result
  * @param {Object} simulation Simulation
+ * @returns {Object} Summary { name, path }
  */
 const createSummary = (simulation) => {
   // Name
@@ -52,7 +53,7 @@ const createSummary = (simulation) => {
 
 /**
  * Geometry summary
- * @memberof module:lib/result
+ * @memberof Lib.Result
  * @param {Object} stream Write stream
  * @param {Object} configuration Configuration
  */
@@ -63,7 +64,7 @@ const geometrySummary = (stream, configuration) => {
 
 /**
  * Materials summary
- * @memberof module:lib/result
+ * @memberof Lib.Result
  * @param {Object} stream Write stream
  * @param {Object} configuration Configuration
  */
@@ -85,7 +86,7 @@ const materialsSummary = (stream, configuration) => {
 
 /**
  * Parameters summary
- * @memberof module:lib/result
+ * @memberof Lib.Result
  * @param {Object} stream Write stream
  * @param {Object} configuration Configuration
  */
@@ -108,7 +109,7 @@ const parametersSummary = (stream, configuration) => {
 
 /**
  * Boundary conditions summary
- * @memberof module:lib/result
+ * @memberof Lib.Result
  * @param {Object} stream Write stream
  * @param {Object} configuration Configuration
  */
@@ -144,7 +145,7 @@ const boundaryConditionsSummary = (stream, configuration) => {
 
 /**
  * Run
- * @memberof module:lib/result
+ * @memberof Lib.Result
  * @param {Object} stream Write stream
  * @param {Object} configuration Configuration
  */

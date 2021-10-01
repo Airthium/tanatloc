@@ -1,4 +1,4 @@
-/** @module lib/plugins */
+/** @namespace Lib.Plugins */
 
 import { promises as fs } from 'fs'
 import isElectron from 'is-electron'
@@ -9,6 +9,7 @@ const plugins = []
 
 /**
  * Load
+ * @memberof Lib.Plugins
  */
 const load = async () => {
   // Available directories
@@ -44,6 +45,7 @@ load()
 
 /**
  * Restart jobs
+ * @memberof Lib.Plugins
  */
 const restartJobs = async () => {
   const simulations = await Simulation.getAll(['id', 'scheme', 'tasks'])
@@ -77,6 +79,7 @@ const restartJobs = async () => {
 
 /**
  * Server list
+ * @memberof Lib.Plugins
  * @returns {Array} List
  */
 const serverList = async () => {
@@ -91,8 +94,9 @@ const serverList = async () => {
 
 /**
  * Client list
+ * @memberof Lib.Plugins
  * @param {Object} user User
- * @param {?boolean} complete Complete
+ * @param {?boolean} complete Complete or filtered by user.authorizedplugins
  * @returns {Array} List
  */
 const clientList = async (user, complete) => {

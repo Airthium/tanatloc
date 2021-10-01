@@ -1,3 +1,5 @@
+/** @namespace Components.Account */
+
 import PropTypes from 'prop-types'
 import { useRouter } from 'next/router'
 import { Layout, PageHeader, Typography, Divider, Tabs, Space } from 'antd'
@@ -9,7 +11,7 @@ import HPC from './hpc'
 
 /**
  * Account
- * @component Account
+ * @memberof Components.Account
  * @param {Object} props Props
  */
 const Account = ({ user, swr }) => {

@@ -1,4 +1,4 @@
-/** @module lib/project */
+/** @namespace Lib.Project */
 
 import ProjectDB from '@/database/project'
 
@@ -9,10 +9,12 @@ import Workspace from '../workspace'
 import Simulation from '../simulation'
 
 /**
- * Add project
+ * Add
+ * @memberof Lib.Project
  * @param {Object} user User { id }
  * @param {Object} workspace Workspace: { id }
  * @param {Object} project Project { title, description }
+ * @returns {Object} Project { id, title, description, owners, workspace }
  */
 const add = async (user, { id }, { title, description }) => {
   const project = await ProjectDB.add(user, { id }, { title, description })
@@ -26,10 +28,12 @@ const add = async (user, { id }, { title, description }) => {
 }
 
 /**
- * Get project
+ * Get
+ * @memberof Lib.Project
  * @param {string} id Project's id
  * @param {Array} data Data
- * @param {boolean} withData With data
+ * @param {?boolean} withData With data (default: true)
+ * @returns {Object} Project { id, ...data }
  */
 const get = async (id, data, withData = true) => {
   const project = await ProjectDB.get(id, data)
@@ -101,7 +105,8 @@ const get = async (id, data, withData = true) => {
 }
 
 /**
- * Update project
+ * Update
+ * @memberof Lib.Project
  * @param {Object} Project { id }
  * @param {Object} data Data [{ key, value, ...}, ...]
  */
@@ -153,7 +158,8 @@ const update = async (project, data) => {
 }
 
 /**
- * Delete project
+ * Delete
+ * @memberof Lib.Project
  * @param {Object} workspace Workspace { id }
  * @param {Object} project Project { id }
  */

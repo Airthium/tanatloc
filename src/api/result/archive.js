@@ -1,9 +1,10 @@
 import Caller from '@/api/call'
 
 /**
- * Archive result
- * @memberof module:api/result
+ * Archive
+ * @memberof API.Result
  * @param {Object} simulation  Simulation { id }
+ * @returns {Object} Archive read stream
  */
 const archive = async (simulation) => {
   return Caller.call('/api/result/archive', {

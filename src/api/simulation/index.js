@@ -1,4 +1,4 @@
-/** @module api/simulation */
+/** @namespace API.Simulation */
 
 import useSimulations from './useSimulations'
 import useSimulation from './useSimulation'

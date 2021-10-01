@@ -71,6 +71,7 @@ const process = async (id, data) => {
 
 /**
  * Delete
+ * @memberof Lib.Link
  * @param {Object} link Link { id }
  */
 const del = async (link) => {

@@ -1,4 +1,4 @@
-/** @module lib/user */
+/** @namespace Lib.User */
 
 import UserDB from '@/database/user'
 
@@ -8,8 +8,10 @@ import Workspace from '../workspace'
 import Email from '../email'
 
 /**
- * Add user
+ * Add
+ * @memberof Lib.User
  * @param {Object} user { email, password }
+ * @returns {Object} User { alreadyExists: true } || { id, email }
  */
 const add = async ({ email, password }) => {
   const user = await UserDB.add({ email, password })
@@ -22,16 +24,18 @@ const add = async ({ email, password }) => {
 }
 
 /**
- * Get user
- * @param {string} id User's id
+ * Get
+ * @memberof Lib.User
+ * @param {string} id User id
  * @param {Array} data Data
- * @param {boolean} readAvatar Read avatar ? (default: true)
+ * @param {?boolean} withData With data (default: true)
+ * @returns {Object} User { id, ...data }
  */
-const get = async (id, data, readAvatar = true) => {
+const get = async (id, data, withData = true) => {
   const user = await UserDB.get(id, data)
 
   // Get avatar
-  if (readAvatar && user && user.avatar) {
+  if (withData && user && user.avatar) {
     try {
       const avatar = await Avatar.read(user.avatar)
       user.avatar = avatar
@@ -45,13 +49,23 @@ const get = async (id, data, readAvatar = true) => {
   return user
 }
 
-const getBy = async (id, data, key) => {
-  return UserDB.get(id, data, key)
+/**
+ * Get by key
+ * @memberof Lib.User
+ * @param {string} key key
+ * @param {Array} data Data
+ * @param {string} keyName Key name
+ * @returns {Object} { key, ...data }
+ */
+const getBy = async (key, data, keyName) => {
+  return UserDB.get(key, data, keyName)
 }
 
 /**
- * Get all users
+ * Get all
+ * @memberof Lib.User
  * @param {Array} data Data
+ * @returns {Array} Users
  */
 const getAll = async (data) => {
   return UserDB.getAll(data)
@@ -59,7 +73,9 @@ const getAll = async (data) => {
 
 /**
  * Login
+ * @memberof Lib.User
  * @param {Object} data Data { email, password }
+ * @returns {Object} User { id, email }
  */
 const login = async ({ email, password }) => {
   const user = await UserDB.getByUsernameAndPassword({ email, password })
@@ -75,7 +91,8 @@ const login = async ({ email, password }) => {
 }
 
 /**
- * Update user
+ * Update
+ * @memberof Lib.User
  * @param {Object} user user { id }
  * @param {Object} data Data [{ key, value, ... }, ...]
  */
@@ -97,6 +114,7 @@ const update = async (user, data) => {
 
 /**
  * Delete user
+ * @memberof Lib.User
  * @param {Object} user User { id }
  */
 const del = async (user) => {

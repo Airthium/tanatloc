@@ -1,10 +1,11 @@
 import Caller from '@/api/call'
 
 /**
- * Simulation log
- * @memberof module:api/simulation
+ * Log
+ * @memberof API.Simulation
  * @param {Object} simulation Simulation { id }
  * @param {string} file File
+ * @returns {string} Log
  */
 const log = async (simulation, file) => {
   return Caller.call('/api/simulation/' + simulation.id + '/log', {

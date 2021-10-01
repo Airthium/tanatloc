@@ -1,12 +1,12 @@
 import Caller from '@/api/call'
 
 /**
- * Delete simulation
- * @memberof module:api/simulation
+ * Delete
+ * @memberof API.Simulation
  * @param {Object} simulation Simulation {id }
  */
 const del = async (simulation) => {
-  return Caller.call('/api/simulation/' + simulation.id, {
+  await Caller.call('/api/simulation/' + simulation.id, {
     method: 'DELETE'
   })
 }

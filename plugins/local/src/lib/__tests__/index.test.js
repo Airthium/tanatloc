@@ -83,7 +83,7 @@ describe('plugins/local/src/lib', () => {
   test('clean', async () => {
     // Normal
     await Local.clean('path')
-    expect(mockRemoveFile).toHaveBeenCalledTimes(2)
+    expect(mockRemoveFile).toHaveBeenCalledTimes(3)
     expect(mockRemoveDirectory).toHaveBeenCalledTimes(1)
 
     // Error
@@ -94,7 +94,7 @@ describe('plugins/local/src/lib', () => {
       throw new Error('removeDirectory error')
     })
     await Local.clean('path')
-    expect(mockRemoveFile).toHaveBeenCalledTimes(4)
+    expect(mockRemoveFile).toHaveBeenCalledTimes(6)
     expect(mockRemoveDirectory).toHaveBeenCalledTimes(2)
   })
 

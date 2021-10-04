@@ -8,7 +8,9 @@ describe('database/link/add', () => {
   test('call', async () => {
     const res = await add({ type: 'type', email: 'email' })
     expect(res).toEqual({
-      id: 'id'
+      id: 'id',
+      type: 'type',
+      email: 'email'
     })
   })
 })

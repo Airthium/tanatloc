@@ -24,7 +24,8 @@ describe('database/user/add', () => {
     })
     user = await add({ email: 'email', password: 'password' })
     expect(user).toEqual({
-      id: 'id'
+      id: 'id',
+      email: 'email'
     })
 
     // Already existing
@@ -43,7 +44,8 @@ describe('database/user/add', () => {
     })
     const user = await add({ email: 'email', password: 'password' })
     expect(user).toEqual({
-      id: 'id'
+      id: 'id',
+      email: 'email'
     })
   })
 })

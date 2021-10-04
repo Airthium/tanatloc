@@ -1,7 +1,7 @@
 import React from 'react'
 import { render, screen, fireEvent } from '@testing-library/react'
 
-import Index from '@/components/index/index'
+import Index from '@/components/index/index.js'
 
 const mockPrefetch = jest.fn()
 const mockPush = jest.fn()
@@ -12,10 +12,7 @@ jest.mock('next/router', () => ({
   })
 }))
 
-jest.mock('@/components/background', () => {
-  const Background = () => <div />
-  return Background
-})
+jest.mock('@/components/background', () => () => <div />)
 
 const mockError = jest.fn()
 jest.mock('@/components/assets/notification', () => ({

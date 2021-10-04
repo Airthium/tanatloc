@@ -2,7 +2,7 @@ import route from '@/route/result'
 
 /**
  * Result API
- * @memberof module:pages/api
+ * @memberof Pages.API
  * @param {Object} req Request
  * @param {Object} res Response
  */

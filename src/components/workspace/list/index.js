@@ -5,6 +5,11 @@ import { Divider, Layout, PageHeader, Tabs, Typography } from 'antd'
 import Workspace from '..'
 import Add from '../add'
 
+/**
+ * Workspace list
+ * @memberof Components.Workspace
+ * @param {Object} props Props `{ user, workspace, organizations, swr }`
+ */
 const WorkspacesList = ({ user, workspaces, organizations, swr }) => {
   // State
   const [add, setAdd] = useState(false)

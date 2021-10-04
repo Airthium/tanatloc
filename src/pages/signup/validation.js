@@ -2,7 +2,7 @@ import ValidationPage from '@/components/signup/validation'
 
 /**
  * Signup validation
- * @memberof module:pages
+ * @memberof Pages
  */
 const Validation = () => {
   /**

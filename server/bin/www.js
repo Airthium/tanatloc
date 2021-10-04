@@ -1,5 +1,3 @@
-/** @module server/bin/www */
-
 /**
  * Module dependencies.
  */
@@ -8,12 +6,14 @@ import { createServer } from 'http'
 
 /**
  * Get port from environment and store in Express.
+ * @memberof Server
  */
 const port = normalizePort(process.env.PORT || '3000')
 app.set('port', port)
 
 /**
  * Create HTTP server.
+ * @memberof Server
  */
 const server = createServer(app)
 
@@ -26,6 +26,7 @@ server.on('listening', onListening)
 
 /**
  * Normalize a port into a number, string, or false.
+ * @memberof Server
  */
 function normalizePort(val) {
   const p = parseInt(val, 10)
@@ -45,6 +46,7 @@ function normalizePort(val) {
 
 /**
  * Event listener for HTTP server "error" event.
+ * @memberof Server
  */
 function onError(error) {
   if (error.syscall !== 'listen') {
@@ -70,6 +72,7 @@ function onError(error) {
 
 /**
  * Event listener for HTTP server "listening" event.
+ * @memberof Server
  */
 function onListening() {
   const addr = server.address()

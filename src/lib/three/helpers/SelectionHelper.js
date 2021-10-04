@@ -1,9 +1,8 @@
-/** @module lib/three/helpers/SelectionHelper */
-
 import { Box2, Raycaster, Vector2, Vector3 } from 'three'
 
 /**
  * Selection helper
+ * @memberof Lib.Three.Helpers
  * @param {Object} renderer Renderer
  * @param {Object} scene Scene
  * @param {Object} camera Camera

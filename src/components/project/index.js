@@ -1,4 +1,4 @@
-/** @module components/project */
+/** @namespace Components.Project */
 
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
@@ -31,6 +31,7 @@ import GeometryAPI from '@/api/geometry'
 
 /**
  * Menu keys
+ * @memberof Components.Project
  */
 const menuKeys = {
   dashboard: 'dashboard',
@@ -40,6 +41,7 @@ const menuKeys = {
 
 /**
  * Errors
+ * @memberof Components.Project
  */
 const errors = {
   user: 'Unable to get user',
@@ -51,6 +53,7 @@ const errors = {
 
 /**
  * Project
+ * @memberof Components.Project
  */
 const Project = () => {
   // Router

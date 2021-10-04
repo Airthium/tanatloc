@@ -9,8 +9,8 @@ import { Error } from '@/components/assets/notification'
 import OrganizationAPI from '@/api/organization'
 
 /**
- * Add errors
- * @memberof module:components/organizations
+ * Errors (add)
+ * @memberof Components.Organizations
  */
 const errors = {
   addError: 'Unable to add organization'
@@ -18,7 +18,7 @@ const errors = {
 
 /**
  * Add
- * @memberof module:components/organizations
+ * @memberof Components.Organizations
  * @param {Object} props Props
  */
 const Add = ({ swr }) => {

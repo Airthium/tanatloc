@@ -1,9 +1,9 @@
 import PropTypes from 'prop-types'
-import { notification, Typography } from 'antd'
+import { notification } from 'antd'
 
 /**
  * Success
- * @memberof module:components/assets/notification
+ * @memberof Components.Assets.Notification
  * @param {string} title Title
  */
 const Success = (title, subTitle) => {

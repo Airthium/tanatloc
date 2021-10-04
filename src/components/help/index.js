@@ -1,4 +1,4 @@
-/** @module components/help */
+/** @namespace Components.Help */
 
 import { Card, Layout, Space } from 'antd'
 
@@ -8,6 +8,7 @@ import Organizations from './doc/organizations'
 
 /**
  * Help
+ * @memberof Components.Help
  */
 const Help = () => {
   /**

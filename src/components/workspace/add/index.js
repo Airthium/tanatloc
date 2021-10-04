@@ -8,8 +8,8 @@ import { Error } from '@/components/assets/notification'
 import WorkspaceAPI from '@/api/workspace'
 
 /**
- * Errors add
- * @memberof module:components/workspace
+ * Errors (add)
+ * @memberof Components.Workspace
  */
 const errors = {
   add: 'Unable to add the workspace'
@@ -17,7 +17,7 @@ const errors = {
 
 /**
  * Add workspace
- * @memberof module:components/workspace
+ * @memberof Components.Workspace
  * @param {Object} props Props
  */
 const Add = ({ visible, swr, setVisible }) => {

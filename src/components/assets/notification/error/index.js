@@ -5,7 +5,7 @@ import Sentry from '@/lib/sentry'
 
 /**
  * Error
- * @memberof module:components/assets/notification
+ * @memberof Components.Assets.Notification
  * @param {string} title Title
  * @param {Object?} err Error
  * @param {bool?} display Display notification [default: true]

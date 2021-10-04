@@ -1,5 +1,3 @@
-/** @module lib/three/helpers/ColorbarHelper */
-
 import {
   CanvasTexture,
   OrthographicCamera,
@@ -12,6 +10,7 @@ import Label from './LabelHelper'
 
 /**
  * Colorbar helper
+ * @memberof Lib.Three.Helpers
  * @param {Object} renderer Renderer
  * @param {Object} scene Scene
  */

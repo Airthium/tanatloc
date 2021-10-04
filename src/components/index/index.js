@@ -1,8 +1,8 @@
-/** @module components/index */
+/** @namespace Components.Index */
 
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
-import { Button, Divider, Layout, Space, Typography } from 'antd'
+import { Button, Divider, Layout, Typography } from 'antd'
 import { DashboardOutlined, LoginOutlined } from '@ant-design/icons'
 
 import Background from '@/components/background'
@@ -14,6 +14,7 @@ import UserAPI from '@/api/user'
 
 /**
  * Errors
+ * @memberof Components.Index
  */
 const errors = {
   user: 'User error'
@@ -21,6 +22,7 @@ const errors = {
 
 /**
  * Index
+ * @memberof Components.Index
  */
 const Index = () => {
   // Router

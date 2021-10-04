@@ -9,7 +9,7 @@ import OrganizationLib from '@/lib/organization'
 
 /**
  * Check authorization
- * @memberof module:route
+ * @memberof Route
  * @param {Object} user User { id }
  * @param {Object} object Object (Project || Workspace || Organization)
  * @param {Object} parentObject Parent object (Workspace)
@@ -55,7 +55,7 @@ const auth = async (user, object, parentObject) => {
 
 /**
  * Check workspace auth
- * @memberof module:route
+ * @memberof Route
  * @param {Object} user User { id }
  * @param {Object} workspace Workspace {id }
  * @param {?number} status Override workspace error status
@@ -73,7 +73,7 @@ const checkWorkspaceAuth = async (user, workspace, status) => {
 
 /**
  * Check project auth
- * @memberof module:route
+ * @memberof Route
  * @param {Object} user User { id }
  * @param {Object} project Project { id }
  * @param {?number} status Override project error status
@@ -99,7 +99,7 @@ const checkProjectAuth = async (user, project, status) => {
 
 /**
  * Check geometry auth
- * @memberof module:route
+ * @memberof Route
  * @param {Object} user User { id }
  * @param {Object} geometry Geometry { id }
  * @param {?number} status Override simulation error status
@@ -128,7 +128,7 @@ const checkGeometryAuth = async (user, geometry, status) => {
 
 /**
  * Check simulation auth
- * @memberof module:route
+ * @memberof Route
  * @param {Object} user User { id }
  * @param {Object} simulation Simulation { id }
  * @param {?number} status Override simulation error status
@@ -158,7 +158,7 @@ const checkSimulationAuth = async (user, simulation, status) => {
 
 /**
  * Check organization auth
- * @memberof module:route
+ * @memberof Route
  * @param {Object} user User { id }
  * @param {Object} organization Organization { id }
  * @param {?number} status Override project error status

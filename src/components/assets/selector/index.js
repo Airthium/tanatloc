@@ -1,4 +1,4 @@
-/** @module components/assets/selector */
+/** @namespace Components.Assets.Selector */
 
 import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
@@ -17,6 +17,7 @@ import Utils from '@/lib/utils'
 
 /**
  * Selector
+ * @memberof Components.Assets.Selector
  * @param {Object} props Props
  */
 const Selector = ({ geometry, alreadySelected, updateSelected }) => {

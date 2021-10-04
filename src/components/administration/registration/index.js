@@ -19,8 +19,8 @@ import {
 import SystemAPI from '@/api/system'
 
 /**
- * Errors registration
- * @memberof module:components/administration
+ * Errors (registration)
+ * @memberof Components.Administration
  */
 const errors = {
   system: 'System error',
@@ -29,7 +29,7 @@ const errors = {
 
 /**
  * Registration
- * @memberof module:components/administration
+ * @memberof Components.Administration
  */
 const Registration = () => {
   // Data

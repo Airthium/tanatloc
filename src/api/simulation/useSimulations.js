@@ -17,7 +17,7 @@ const useSimulations = (ids) => {
 
   /**
    * Add one (useSimulations)
-   * @memberof module:api/simulation
+   * @memberof API.Simulation
    * @param {Object} simulation Simulation
    */
   const addOne = (simulation) => {
@@ -27,7 +27,7 @@ const useSimulations = (ids) => {
 
   /**
    * Delete one (useSimulations)
-   * @memberof module:api/simulation
+   * @memberof API.Simulation
    * @param {Object} simulation Simulation
    */
   const delOne = (simulation) => {
@@ -39,7 +39,7 @@ const useSimulations = (ids) => {
 
   /**
    * Mutate one (useSimulations)
-   * @memberof module:api/simulation
+   * @memberof API.Simulation
    * @param {Object} simulation Simulation
    */
   const mutateOne = (simulation, revalidate) => {

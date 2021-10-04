@@ -11,8 +11,8 @@ import {
 import UserAPI from '@/api/user'
 
 /**
- * Errors account/password
- * @memberof module:components/account
+ * Errors (password)
+ * @memberof Components.Account
  */
 const errors = {
   update: 'Unable to update the password',
@@ -22,7 +22,7 @@ const errors = {
 
 /**
  * Password
- * @memberof module:components/account
+ * @memberof Components.Account
  * @param {Object} props Props
  */
 const Password = ({ user }) => {

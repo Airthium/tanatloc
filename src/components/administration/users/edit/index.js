@@ -10,8 +10,8 @@ import { Error } from '@/components/assets/notification'
 import UserAPI from '@/api/user'
 
 /**
- * Edit errors
- * @memberof module:components/administration
+ * Errors (edit)
+ * @memberof Components.Administration.Users
  */
 const errors = {
   update: 'Unable to update user'
@@ -19,7 +19,7 @@ const errors = {
 
 /**
  * Edit
- * @memberof module:components/administration
+ * @memberof Components.Administration.Users
  * @param {Object} props Props
  */
 const Edit = ({ plugins, user, swr }) => {

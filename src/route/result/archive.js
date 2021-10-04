@@ -6,7 +6,7 @@ import ResultLib from '@/lib/result'
 
 /**
  * Check archive body
- * @memberof module:route/result
+ * @memberof Route.Result
  * @param {Object} body Body
  */
 const checkArchiveBody = (body) => {
@@ -24,7 +24,7 @@ const checkArchiveBody = (body) => {
 
 /**
  * Result archive API
- * @memberof module:route/result
+ * @memberof Route.Result
  * @param {Object} req Request
  * @param {Object} res Response
  */

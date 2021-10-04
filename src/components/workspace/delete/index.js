@@ -9,8 +9,8 @@ import { Error } from '@/components/assets/notification'
 import WorkspaceAPI from '@/api/workspace'
 
 /**
- * Errors delete
- * @memberof module:components/workspace
+ * Errors (delete)
+ * @memberof Components.Workspace
  */
 const errors = {
   delError: 'Unable to delete the workspace'
@@ -18,7 +18,7 @@ const errors = {
 
 /**
  * Delete workspace
- * @memberof module:components/workspace
+ * @memberof Components.Workspace
  * @param {Object} props Props
  */
 const Delete = ({ workspace, swr }) => {

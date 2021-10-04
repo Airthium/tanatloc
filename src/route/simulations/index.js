@@ -1,4 +1,4 @@
-/** @module route/simulations */
+/** @namespace Route.Simulations */
 
 import getSessionId from '../session'
 import { checkProjectAuth } from '../auth'
@@ -8,6 +8,7 @@ import SimulationLib from '@/lib/simulation'
 
 /**
  * Check get body
+ * @memberof Route.Simulations
  * @param {Object} body Body
  */
 const checkGetBody = (body) => {
@@ -17,6 +18,7 @@ const checkGetBody = (body) => {
 
 /**
  * Simulations API
+ * @memberof Route.Simulations
  * @param {Object} req Request
  * @param {Object} res Response
  */

@@ -1,4 +1,4 @@
-/** @module route */
+/** @namespace Route */
 
 import express from 'express'
 import passport from 'passport'
@@ -8,6 +8,13 @@ import { setTokenCookie } from '@/auth/auth-cookies'
 
 import Sentry from '@/lib/sentry'
 
+/**
+ * Authenticate
+ * @memberof Route
+ * @param {string} method Method
+ * @param {Object} req Request
+ * @param {Object} res Response
+ */
 const authenticate = (method, req, res) =>
   new Promise((resolve, reject) => {
     passport.authenticate(method, { session: false }, (error, token) => {
@@ -23,6 +30,7 @@ passport.use(localStrategy)
 
 /**
  * Login API
+ * @memberof Route
  * @param {Object} req Request
  * @param {Object} res Response
  */

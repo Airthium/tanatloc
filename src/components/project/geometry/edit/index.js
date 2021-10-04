@@ -4,6 +4,11 @@ import { Form, Input } from 'antd'
 
 import Dialog from '@/components/assets/dialog'
 
+/**
+ * Edit
+ * @memberof Components.Project.Geometry
+ * @param {Object} props Props `{ visible, geometry, setVisible, onEdit }`
+ */
 const Edit = ({ visible, geometry, setVisible, onEdit }) => {
   // State
   const [loading, setLoading] = useState(false)

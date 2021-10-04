@@ -9,8 +9,8 @@ import { Error } from '@/components/assets/notification'
 import UserAPI from '@/api/user'
 
 /**
- * Delete errors
- * @memberof module:components/administration
+ * Errors (delete)
+ * @memberof Components.Administration.Users
  */
 const errors = {
   delError: 'Unable to delete user'
@@ -18,7 +18,7 @@ const errors = {
 
 /**
  * Delete
- * @memberof module:components/administration
+ * @memberof Components.Administration.Users
  * @param {Object} props Props
  */
 const Delete = ({ user, swr }) => {

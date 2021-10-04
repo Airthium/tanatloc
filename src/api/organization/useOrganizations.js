@@ -3,7 +3,7 @@ import Caller from '@/api/call'
 
 /**
  * Use organizations
- * @memberof module:api/organization
+ * @memberof API.Organization
  */
 const useOrganizations = () => {
   const { data, error, mutate } = useSWR('/api/organizations', Caller.fetcher)

@@ -11,6 +11,10 @@ import {
 
 import SystemAPI from '@/api/system'
 
+/**
+ * Errors (password)
+ * @memberof Components.Assets.Input
+ */
 const errors = {
   password: 'Please enter a password',
   passwordTooSmall: 'Your password is too small',
@@ -22,7 +26,7 @@ const errors = {
 
 /**
  * Password item
- * @memberof module:components/assets/input
+ * @memberof Components.Assets.Input
  * @param {Object} props Props
  *
  * @description

@@ -1,4 +1,4 @@
-/** @module components/organizations */
+/** @namespace Components.Organizations */
 
 import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
@@ -10,6 +10,7 @@ import Organization from '@/components/assets/organization'
 
 /**
  * Organizations
+ * @memberof Components.Organizations
  * @param {Object} props Props
  */
 const Organizations = ({ user, organizations, swr }) => {

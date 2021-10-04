@@ -1,4 +1,4 @@
-/** @module route/plugins */
+/** @namespace Route.Plugins */
 
 import getSessionId from '../session'
 import error from '../error'
@@ -8,6 +8,7 @@ import PluginsLib from '@/lib/plugins'
 
 /**
  * Plugins API
+ * @memberof Route.Plugins
  * @param {Object} req Request
  * @param {Object} res Response
  */

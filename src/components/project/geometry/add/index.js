@@ -8,10 +8,19 @@ import { Error as ErrorNotification } from '@/components/assets/notification'
 
 import GeometryAPI from '@/api/geometry'
 
+/**
+ * Errors (add)
+ * @memberof Components.Project.Geometry
+ */
 const errors = {
   addError: 'Unable to add geometry'
 }
 
+/**
+ * Add
+ * @memberof Components.Project.Geometry
+ * @param {Objecy} props Props `{ visible, project, swr, setVisible }`
+ */
 const Add = ({ visible, project, swr, setVisible }) => {
   // State
   const [loading, setLoading] = useState(false)

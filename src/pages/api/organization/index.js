@@ -2,7 +2,7 @@ import route from '@/route/organization'
 
 /**
  * Organization API
- * @memberof module:pages/api
+ * @memberof Pages.API
  * @param {Object} req Request
  * @param {Object} res Response
  */

@@ -1,4 +1,4 @@
-/** @module components/assets/share */
+/** @namespace Components.Assets.Share */
 
 import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
@@ -12,7 +12,8 @@ import WorkspaceAPI from '@/api/workspace'
 import ProjectAPI from '@/api/project'
 
 /**
- * Errors share
+ * Errors
+ * @memberof Components.Assets.Share
  */
 const errors = {
   shareError: 'Unable to share'
@@ -20,6 +21,7 @@ const errors = {
 
 /**
  * Share
+ * @memberof Components.Assets.Share
  * @param {Object} props Props
  */
 const Share = ({ disabled, workspace, project, organizations, swr, style }) => {

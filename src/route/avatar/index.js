@@ -1,4 +1,4 @@
-/** @module route/avatar */
+/** @namespace Route.Avatar */
 
 import getSessionId from '../session'
 import { checkProjectAuth } from '../auth'
@@ -8,6 +8,7 @@ import AvatarLib from '@/lib/avatar'
 
 /**
  * Check add body
+ * @memberof Route.Avatar
  * @param {Object} body Body
  */
 const checkAddBody = (body) => {
@@ -30,6 +31,7 @@ const checkAddBody = (body) => {
 
 /**
  * Avatar API
+ * @memberof Route.Avatar
  * @param {Object} req Request
  * @param {Object} res Result
  */

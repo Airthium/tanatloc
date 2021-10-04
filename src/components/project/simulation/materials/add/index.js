@@ -8,8 +8,8 @@ import { Error } from '@/components/assets/notification'
 import SimulationAPI from '@/api/simulation'
 
 /**
- * Errors material/add
- * @memberof module:components/project/simulation
+ * Errors (add)
+ * @memberof Components.Project.Simulation.Materials
  */
 const errors = {
   updateError: 'Unable to add the material'
@@ -17,7 +17,7 @@ const errors = {
 
 /**
  * Add material
- * @memberof module:components/project/simulation
+ * @memberof Components.Project.Simulation.Materials
  * @param {Object} props Props
  */
 const Add = ({ disabled, material, simulation, geometry, swr, close }) => {

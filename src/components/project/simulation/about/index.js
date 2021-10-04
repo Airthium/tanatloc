@@ -10,8 +10,8 @@ import Delete from '../delete'
 import SimulationAPI from '@/api/simulation'
 
 /**
- * Errors simulation/about
- * @memberof module:components/project/simulation
+ * Errors (about)
+ * @memberof Components.Project.Simulation
  */
 const errors = {
   update: 'Unable to update the simulation'
@@ -19,7 +19,7 @@ const errors = {
 
 /**
  * About
- * @memberof module:components/project/simulation
+ * @memberof Components.Project.Simulation
  * @param {Object} props Props
  */
 const About = ({ project, simulation, swr }) => {

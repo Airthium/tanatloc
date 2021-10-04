@@ -6,7 +6,7 @@ import SimulationLib from '@/lib/simulation'
 
 /**
  * Simulation API run
- * @memberof module:route/simulation
+ * @memberof Route.Simulation
  * @param {Object} req Request
  * @param {Object} res Response
  */

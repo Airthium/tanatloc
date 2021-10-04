@@ -1,5 +1,3 @@
-/** @module lib/three/helpers/GridHelper */
-
 import {
   BufferGeometry,
   Group,
@@ -13,6 +11,7 @@ import Label from './LabelHelper'
 
 /**
  * GridHelper
+ * @memberof Lib.Three.Helpers
  * @param {Object} scene Scene
  */
 const GridHelper = (scene) => {

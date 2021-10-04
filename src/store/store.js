@@ -1,4 +1,4 @@
-/** @module store */
+/** @namespace Store */
 
 import { useMemo } from 'react'
 import { createStore, applyMiddleware, combineReducers } from 'redux'
@@ -10,12 +10,17 @@ import select, { selectInitialState } from './select/reducer'
 
 let store
 
+/**
+ * Global initial store
+ * @memberof Store
+ */
 const globalInitialState = {
   select: selectInitialState
 }
 
 /**
  * Combine reducers
+ * @memberof Store
  */
 const combinedReducers = combineReducers({
   select
@@ -23,10 +28,11 @@ const combinedReducers = combineReducers({
 
 /**
  * Global reducer
+ * @memberof Store
  * @param {Object} state Redux state
  * @param {Object} action Redux action
  */
-export const reducer = (state = globalInitialState, action = {}) => {
+const reducer = (state = globalInitialState, action = {}) => {
   return combinedReducers(state, action)
 }
 
@@ -42,6 +48,7 @@ const createNoopStorage = () => ({
     return Promise.resolve()
   }
 })
+
 const storage =
   typeof window !== 'undefined'
     ? createWebStorage('local')
@@ -55,6 +62,11 @@ const persistConfig = {
 
 const persistedReducer = persistReducer(persistConfig, reducer)
 
+/**
+ * Make store
+ * @memberof Store
+ * @param {Object} initialState Initial store
+ */
 const makeStore = (initialState = globalInitialState) => {
   return createStore(
     persistedReducer,
@@ -63,7 +75,12 @@ const makeStore = (initialState = globalInitialState) => {
   )
 }
 
-export const initializeStore = (preloadedState) => {
+/**
+ * Initialize store
+ * @memberof Store
+ * @param {Object} preloadedState Preloaded store
+ */
+const initializeStore = (preloadedState) => {
   let _store = store ?? makeStore(preloadedState)
 
   // After navigating to a page with an initial Redux state, merge that state
@@ -85,6 +102,13 @@ export const initializeStore = (preloadedState) => {
   return _store
 }
 
-export function useStore(initialState) {
+/**
+ * Use store
+ * @memberof Store
+ * @param {Object} initialState Initial store
+ */
+const useStore = (initialState) => {
   return useMemo(() => initializeStore(initialState), [initialState])
 }
+
+export { reducer, initializeStore, useStore }

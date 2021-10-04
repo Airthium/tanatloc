@@ -2,9 +2,9 @@ import useSWR from 'swr'
 import Caller from '@/api/call'
 
 /**
- * Use a user
- * @memberof module:api/user
- * @returns {Array} [user, {mutateUser function, loadingUser status}]]
+ * Use user
+ * @memberof API.User
+ * @returns {Array} [user, { mutateUser, clearUser, errorUser, loadingUser }]]
  */
 const useUser = () => {
   const { data, error, mutate } = useSWR('/api/user', Caller.fetcher)

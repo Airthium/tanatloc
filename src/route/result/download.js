@@ -6,7 +6,7 @@ import ResultLib from '@/lib/result'
 
 /**
  * Check download body
- * @memberof module:route/result
+ * @memberof Route.Result
  * @param {Object} body Body
  */
 const checkDownloadBody = (body) => {
@@ -29,7 +29,7 @@ const checkDownloadBody = (body) => {
 
 /**
  * Result download API
- * @memberof module:route/result
+ * @memberof Route.Result
  * @param {Object} req Request
  * @param {Object} res Response
  */

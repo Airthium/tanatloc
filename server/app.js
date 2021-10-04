@@ -1,4 +1,4 @@
-/** @module server/app */
+/** @namespace Server */
 
 import createError from 'http-errors'
 import express, { json, urlencoded } from 'express'
@@ -112,6 +112,7 @@ app.get('/api/logout', logout)
 
 /**
  * Catch 404 and forward to error handler
+ * @memberof Server
  * @param req
  * @param res
  * @param next
@@ -122,6 +123,7 @@ app.use((req, res, next) => {
 
 /**
  * Error handler
+ * @memberof Server
  * @param req
  * @param res
  * @param next

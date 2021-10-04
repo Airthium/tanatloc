@@ -1,11 +1,10 @@
-/** @module components/project/panel */
-
 import PropTypes from 'prop-types'
 import { Button, Card } from 'antd'
 import { CloseOutlined } from '@ant-design/icons'
 
 /**
  * Panel
+ * @memberof Components.Project
  * @param {Object} props Props
  */
 const Panel = ({ visible, title, children, onClose }) => {

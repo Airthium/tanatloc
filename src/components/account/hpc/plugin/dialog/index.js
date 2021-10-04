@@ -9,8 +9,8 @@ import { Error as ErrorNotification } from '@/components/assets/notification'
 import PluginAPI from '@/api/plugin'
 
 /**
- * Errors hpc/plugin
- * @memberof module:components/account
+ * Errors (dialog)
+ * @memberof Components.Account.HPC.Plugin
  */
 const errors = {
   update: 'Unable to update plugins'
@@ -18,7 +18,7 @@ const errors = {
 
 /**
  * Plugin dialog
- * @memberof module:components/account
+ * @memberof Components.Account.HPC.Plugin
  * @param {Object} props Props
  */
 const PluginDialog = ({ plugin, swr, edit }) => {

@@ -1,9 +1,13 @@
-/** @module components/loading */
+/** @namespace Components.Loading */
 
 import { Card, Layout, Space, Spin } from 'antd'
 
 import Background from '@/components/background'
 
+/**
+ * Simple
+ * @memberof Components.Loading
+ */
 const Simple = () => {
   /**
    * Render
@@ -30,6 +34,7 @@ const Simple = () => {
 
 /**
  * Loading
+ * @memberof Components.Loading
  */
 const Loading = () => {
   /**

@@ -10,8 +10,8 @@ import UserAPI from '@/api/user'
 import logout from '@/api/logout'
 
 /**
- * Errors account/delete
- * @memberof module:components/account
+ * Errors (delete)
+ * @memberof Components.Account
  */
 const errors = {
   del: 'Unable to delete the user'
@@ -19,7 +19,7 @@ const errors = {
 
 /**
  * Delete account
- * @memberof module:components/account
+ * @memberof Components.Account
  * @param {Object} props Props
  */
 const Delete = ({ swr }) => {

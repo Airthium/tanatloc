@@ -9,8 +9,8 @@ import { Error } from '@/components/assets/notification'
 import ProjectAPI from '@/api/project'
 
 /**
- * Errors project/add
- * @memberof module:components/project
+ * Errors (add)
+ * @memberof Components.Project
  */
 const errors = {
   addError: 'Unable to add a project'
@@ -18,7 +18,7 @@ const errors = {
 
 /**
  * Add project
- * @memberof module:components/project
+ * @memberof Components.Project
  * @param {Object} props Props
  */
 const Add = ({ workspace, swr }) => {

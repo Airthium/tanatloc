@@ -1,4 +1,4 @@
-/** @module lib/three/loaders/PartLoader */
+/** @namespace Lib.Three.Loaders */
 
 import { Box3, Color, Raycaster, Vector2, Vector3 } from 'three'
 
@@ -9,6 +9,7 @@ import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader'
 
 /**
  * PartLoader
+ * @memberof Lib.Three.Loaders
  * @param {Function} mouseMoveEvent Mouse move event
  * @param {Function} mouseDownEvent Mouse down event
  */

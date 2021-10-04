@@ -10,8 +10,8 @@ import Utils from '@/lib/utils'
 import GroupAPI from '@/api/group'
 
 /**
- * Errors organization/groups
- * @memberof module:components/assets/organization
+ * Errors (groups)
+ * @memberof Components.Assets.Organization
  */
 const errors = {
   groups: 'Groups error'
@@ -19,7 +19,7 @@ const errors = {
 
 /**
  * Groups
- * @memberof module:components/assets/organization
+ * @memberof Components.Assets.Organization
  * @param {Object} props Props
  *
  * @description

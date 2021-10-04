@@ -1,4 +1,4 @@
-/** @module route/plugin */
+/** @namespace Route.Plugin */
 
 import getSessionId from '../session'
 import error from '../error'
@@ -8,6 +8,7 @@ import PluginLib from '@/lib/plugin'
 
 /**
  * Check add body
+ * @memberof Route.Plugin
  * @param {Object} body Body
  */
 const checkAddBody = (body) => {
@@ -26,6 +27,7 @@ const checkAddBody = (body) => {
 
 /**
  * Check update body
+ * @memberof Route.Plugin
  * @param {Object} body Body
  */
 const checkUpdateBody = (body) => {
@@ -35,6 +37,7 @@ const checkUpdateBody = (body) => {
 
 /**
  * Check delete body
+ * @memberof Route.Plugin
  * @param {Object} body Body
  */
 const checkDeleteBody = (body) => {
@@ -44,6 +47,7 @@ const checkDeleteBody = (body) => {
 
 /**
  * Plugin API
+ * @memberof Route.Plugin
  * @param {Object} req Request
  * @param {Object} res Response
  */

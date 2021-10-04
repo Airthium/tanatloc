@@ -6,7 +6,7 @@ import GroupLib from '@/lib/group'
 
 /**
  * Groups API [id]
- * @memberof module:route/groups
+ * @memberof Route.Groups
  * @param {Object} req Request
  * @param {Object} res Response
  */

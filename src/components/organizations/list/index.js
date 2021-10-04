@@ -8,7 +8,7 @@ import Utils from '@/lib/utils'
 
 /**
  * List
- * @memberof module:components/organizations
+ * @memberof Components.Organizations
  * @param {Object} props Props
  */
 const List = ({ user, organizations, swr, setOrganization }) => {

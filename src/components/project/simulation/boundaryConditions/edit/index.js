@@ -7,8 +7,8 @@ import { Error } from '@/components/assets/notification'
 import SimulationAPI from '@/api/simulation'
 
 /**
- * Errors boundaryCondition/edit
- * @memberof module:components/project/simulation
+ * Errors (edit)
+ * @memberof Components.Project.Simulation.BoundaryConditions
  */
 const errors = {
   updateError: 'Unable to edit the boundary condition'
@@ -16,7 +16,7 @@ const errors = {
 
 /**
  * Edit boundary condition
- * @memberof module:components/project/simulation
+ * @memberof Components.Project.Simulation.BoundaryConditions
  * @param {Object} props Props
  */
 const Edit = ({

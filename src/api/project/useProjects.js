@@ -17,7 +17,7 @@ const useProjects = (ids) => {
 
   /**
    * Add one (useProjects)
-   * @memberof module:api/project
+   * @memberof API.Project
    * @param {Object} project Project
    */
   const addOne = (project) => {
@@ -27,7 +27,7 @@ const useProjects = (ids) => {
 
   /**
    * Delete one (useProjects)
-   * @memberof module:api/project
+   * @memberof API.Project
    * @param {Object} project project
    */
   const delOne = (project) => {
@@ -37,7 +37,7 @@ const useProjects = (ids) => {
 
   /**
    * Mutate one (useProjects)
-   * @memberof module:api/project
+   * @memberof API.Project
    * @param {Object} project Project
    */
   const mutateOne = (project) => {

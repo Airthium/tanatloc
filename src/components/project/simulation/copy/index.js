@@ -8,8 +8,8 @@ import { Error as ErrorNotification } from '@/components/assets/notification'
 import SimulationAPI from '@/api/simulation'
 
 /**
- * Errors (project/copy)
- * @memberof module:components/project/simulation
+ * Errors (copy)
+ * @memberof Components.Project.Simulation
  */
 const errors = {
   copy: 'Unable to copy simulation'
@@ -17,7 +17,7 @@ const errors = {
 
 /**
  * Copy simulation
- * @memberof module:components/project/simulation
+ * @memberof Components.Project.Simulation
  */
 const Copy = ({ project, simulation, swr }) => {
   // State

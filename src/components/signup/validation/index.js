@@ -8,13 +8,17 @@ import { Error as ErrorNotification } from '@/components/assets/notification'
 
 import LinkAPI from '@/api/link'
 
+/**
+ * Errors (validation)
+ * @memberof Components.Signup
+ */
 const errors = {
   internal: 'Internal error'
 }
 
 /**
  * Validation
- * @memberof module:components/signup
+ * @memberof Components.Signup
  * @returns {jxs} Render
  */
 const Validation = () => {

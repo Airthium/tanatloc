@@ -17,7 +17,7 @@ const useGeometries = (ids) => {
 
   /**
    * Add one (useGeometries)
-   * @memberof module:api/geometry
+   * @memberof API.Geometry
    * @param {Object} geometry Geometry
    */
   const addOne = (geometry) => {

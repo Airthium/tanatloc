@@ -1,4 +1,4 @@
-/** @module components/assets/notification */
+/** @namespace Components.Assets.Notification */
 
 import Success from './success'
 import Error from './error'

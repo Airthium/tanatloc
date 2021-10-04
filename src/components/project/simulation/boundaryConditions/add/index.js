@@ -8,8 +8,8 @@ import { Error } from '@/components/assets/notification'
 import SimulationAPI from '@/api/simulation'
 
 /**
- * Errors boundaryCondition/add
- * @memberof module:components/project/simulation
+ * Errors (add)
+ * @memberof Components.Project.Simulation.BoundaryConditions
  */
 const errors = {
   updateError: 'Unable to add the boundary condition'
@@ -17,7 +17,7 @@ const errors = {
 
 /**
  * Add boundary condition
- * @memberof module:components/project/simulation
+ * @memberof Components.Project.Simulation.BoundaryConditions
  * @param {Object} props Props
  */
 const Add = ({

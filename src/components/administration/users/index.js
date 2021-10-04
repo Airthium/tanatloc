@@ -1,3 +1,5 @@
+/** @namespace Components.Administration.Users */
+
 import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
 import { Badge, Table, Space, Spin } from 'antd'
@@ -11,13 +13,17 @@ import Add from './add'
 import Edit from './edit'
 import Delete from './delete'
 
+/**
+ * Errors
+ * @memberof Components.Administration.Users
+ */
 const errors = {
   plugins: 'Unable to load plugins'
 }
 
 /**
  * Users
- * @memberof module:components/administration
+ * @memberof Components.Administration.Users
  * @param {Object} props Props
  */
 const Users = ({ users, swr }) => {

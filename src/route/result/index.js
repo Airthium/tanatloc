@@ -1,4 +1,4 @@
-/** @module route/result */
+/** @namespace Route.Result */
 
 import getSessionId from '../session'
 import { checkSimulationAuth } from '../auth'
@@ -8,6 +8,7 @@ import ResultLib from '@/lib/result'
 
 /**
  * Check load body
+ * @memberof Route.Result
  * @param {Object} body Body
  */
 const checkLoadBody = (body) => {
@@ -30,6 +31,7 @@ const checkLoadBody = (body) => {
 
 /**
  * Result API
+ * @memberof Route.Result
  * @param {Object} req Request
  * @param {Object} res Response
  */

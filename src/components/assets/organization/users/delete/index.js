@@ -10,8 +10,8 @@ import { Error as ErrorNotification } from '@/components/assets/notification'
 import OrganizationAPI from '@/api/organization'
 
 /**
- * Delete errors
- * @memberof module:components/assets/organization
+ * Errors (delete)
+ * @memberof Components.Assets.Organization.Users
  */
 const errors = {
   delError: 'Unable to delete user'
@@ -19,7 +19,7 @@ const errors = {
 
 /**
  * Delete user
- * @memberof module:components/assets/organization
+ * @memberof Components.Assets.Organization.Users
  * @param {Object} props Props
  *
  * @description

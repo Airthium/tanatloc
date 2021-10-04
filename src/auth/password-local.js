@@ -1,9 +1,12 @@
-/** @module auth/password-local */
+/** @namespace Auth.PasswordLocal */
 
 import Local from 'passport-local'
 import UserDB from '@/database/user'
 
-export const localStrategy = new Local.Strategy(
+/**
+ * @memberof Auth.PasswordLocal
+ */
+const localStrategy = new Local.Strategy(
   { usernameField: 'email', passwordField: 'password' },
   (email, password, done) => {
     UserDB.getByUsernameAndPassword({ email, password })
@@ -18,3 +21,5 @@ export const localStrategy = new Local.Strategy(
       })
   }
 )
+
+export { localStrategy }

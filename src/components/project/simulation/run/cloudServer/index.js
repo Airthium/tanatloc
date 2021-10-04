@@ -11,6 +11,10 @@ import { Error as ErrorNotification } from '@/components/assets/notification'
 import PluginAPI from '@/api/plugin'
 import PluginsAPI from '@/api/plugins'
 
+/**
+ * Errors (run/cloudServer)
+ * @memberof Components.Project.Simulation
+ */
 const errors = {
   plugins: 'Plugins error',
   pluginsLoad: 'Unable to load plugins'
@@ -18,7 +22,7 @@ const errors = {
 
 /**
  * Cloud server
- * @memberof module:components/project/simulation
+ * @memberof Components.Project.Simulation
  * @param {Object} props Props
  */
 const CloudServer = ({ disabled, cloudServer, onOk }) => {

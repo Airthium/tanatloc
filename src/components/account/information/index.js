@@ -14,8 +14,8 @@ import UserAPI from '@/api/user'
 import AvatarAPI from '@/api/avatar'
 
 /**
- * Errors account/information
- * @memberof module:components/account
+ * Errors (information)
+ * @memberof Components.Account
  */
 const errors = {
   update: 'Unable to update informations',
@@ -25,7 +25,7 @@ const errors = {
 
 /**
  * Information
- * @memberof module:components/account
+ * @memberof Components.Account
  * @param {Object} props Props
  */
 const Information = ({ user, swr }) => {

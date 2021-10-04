@@ -1,14 +1,7 @@
-/** @module route/user */
-
 import error from '../error'
 
 import WaitLib from '@/lib/wait'
 
-/**
- * Wait API
- * @param {Object} req Request
- * @param {Object} res Response
- */
 export default async (req, res) => {
   try {
     switch (req.method) {

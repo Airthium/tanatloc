@@ -1,4 +1,4 @@
-/** @module route/workspace */
+/** @namespace Route.Workspace */
 
 import getSessionId from '../session'
 import { checkWorkspaceAuth } from '../auth'
@@ -8,6 +8,7 @@ import WorkspaceLib from '@/lib/workspace'
 
 /**
  * Check add body
+ * @memberof Route.Workspace
  * @param {Object} body Body
  */
 const checkAddBody = (body) => {
@@ -17,6 +18,7 @@ const checkAddBody = (body) => {
 
 /**
  * Check update body
+ * @memberof Route.Workspace
  * @param {Object} body Body
  */
 const checkUpdateBody = (body) => {
@@ -36,6 +38,7 @@ const checkUpdateBody = (body) => {
 
 /**
  * Check delete body
+ * @memberof Route.Workspace
  * @param {Object} body Body
  */
 const checkDeleteBody = (body) => {
@@ -45,6 +48,7 @@ const checkDeleteBody = (body) => {
 
 /**
  * Workspace API
+ * @memberof Route.Workspace
  * @param {Object} req Request
  * @param {Object} res Response
  */

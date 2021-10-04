@@ -2,7 +2,7 @@ import Caller from '@/api/call'
 
 /**
  * Update
- * @memberof module:api/organization
+ * @memberof API.Organization
  * @param {Object} Organization Organization { id }
  * @param {Array} Data
  */

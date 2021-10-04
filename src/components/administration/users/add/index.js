@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
 import { useState } from 'react'
-import { notification, Button, Checkbox, Form, Input, Select } from 'antd'
+import { Button, Checkbox, Form, Input, Select } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
 
 import Dialog from '@/components/assets/dialog'
@@ -10,8 +10,8 @@ import { Error as ErrorNotification } from '@/components/assets/notification'
 import UserAPI from '@/api/user'
 
 /**
- * Add errors
- * @memberof module:components/administration
+ * Errors (add)
+ * @memberof Components.Administration.Users
  */
 const errors = {
   add: 'Unable to add user'
@@ -19,7 +19,7 @@ const errors = {
 
 /**
  * Add
- * @memberof module:components/administration
+ * @memberof Components.Administration.Users
  * @param {Object} props Props
  */
 const Add = ({ plugins, swr }) => {

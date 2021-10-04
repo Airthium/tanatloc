@@ -7,7 +7,7 @@ import Add from '@/components/workspace/add'
 
 /**
  * Welcome
- * @memberof module:components/dashboard
+ * @memberof Components.Dashboard
  * @param {Object} props Props
  */
 const Welcome = ({ swr }) => {

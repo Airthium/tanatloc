@@ -1,4 +1,4 @@
-/** @module components/administration */
+/** @namespace Components.Administration */
 
 import { useEffect } from 'react'
 import { useRouter } from 'next/router'
@@ -13,6 +13,7 @@ import UserAPI from '@/api/user'
 
 /**
  * Tab items
+ * @memberof Components.Administration
  */
 const tabItems = {
   users: {
@@ -27,6 +28,7 @@ const tabItems = {
 
 /**
  * Errors
+ * @memberof Components.Administration
  */
 const errors = {
   users: 'Users error'
@@ -34,6 +36,7 @@ const errors = {
 
 /**
  * Administration
+ * @memberof Components.Administration
  */
 const Administration = () => {
   // Data

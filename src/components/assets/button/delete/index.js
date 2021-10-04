@@ -7,7 +7,7 @@ import { DeleteDialog } from '@/components/assets/dialog'
 
 /**
  * Delete button
- * @memberof module:@memberof module:components/assets/button
+ * @memberof Components.Assets.Button
  * @param {Object} props Props
  */
 const DeleteButton = ({ disabled, loading, text, children, onDelete }) => {

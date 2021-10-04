@@ -1,4 +1,4 @@
-/** @module components/assets/dialog */
+/** @namespace Components.Assets.Dialog */
 
 import PropTypes from 'prop-types'
 import { useEffect } from 'react'
@@ -8,6 +8,7 @@ import DeleteDialog from './delete'
 
 /**
  * Dialog
+ * @memberof Components.Assets.Dialog
  * @param {Object} props Props
  */
 const Dialog = ({

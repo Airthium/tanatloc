@@ -12,8 +12,8 @@ import Delete from '../delete'
 import Utils from '@/lib/utils'
 
 /**
- * Errors project/list
- * @memberof module:components/project
+ * Errors (list)
+ * @memberof Components.Project
  */
 const errors = {
   updateError: 'Unable to update the project'
@@ -21,7 +21,7 @@ const errors = {
 
 /**
  * Projects' list
- * @memberof module:components/project
+ * @memberof Components.Project
  * @param {Object} props Props
  */
 const ProjectList = ({

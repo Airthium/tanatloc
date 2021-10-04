@@ -1,5 +1,3 @@
-/** @module lib/three/helpers/ArrowHelper */
-
 import {
   ConeGeometry,
   CylinderGeometry,
@@ -10,6 +8,7 @@ import {
 
 /**
  * ArrowHelper
+ * @memberof Lib.Three.Helpers
  * @param {string} color Color
  */
 const ArrowHelper = (color) => {

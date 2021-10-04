@@ -2,7 +2,7 @@ import ProjectPage from '@/components/project'
 
 /**
  * Project
- * @memberof module:pages
+ * @memberof Pages
  */
 const Project = () => {
   /**

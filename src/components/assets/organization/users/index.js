@@ -1,3 +1,5 @@
+/** @namespace Components.Assets.Organization.Users */
+
 import PropTypes from 'prop-types'
 import { Card, Space, Table } from 'antd'
 
@@ -8,7 +10,7 @@ import Utils from '@/lib/utils'
 
 /**
  * Organization users
- * @memberof module:components/assets/organization
+ * @memberof Components.Assets.Organization.Users
  * @param {Object} props Props
  *
  * @description

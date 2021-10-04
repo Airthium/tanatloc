@@ -1,4 +1,4 @@
-/** @module components/project/view */
+/** @namespace Components.Project.View */
 
 import { useRef, useState, useEffect } from 'react'
 import {
@@ -65,6 +65,7 @@ import { highlight, select, unselect } from '@/store/select/action'
 
 /**
  * Errors
+ * @memberof Components.Project.View
  */
 const errors = {
   partError: 'Unable to load part'
@@ -72,6 +73,7 @@ const errors = {
 
 /**
  * ThreeView
+ * @memberof Components.Project.View
  */
 const ThreeView = ({ loading, project, part }) => {
   // Ref
@@ -808,6 +810,7 @@ const ThreeView = ({ loading, project, part }) => {
 
 /**
  * View
+ * @memberof Components.Project.View
  * @param {Object} Props props
  */
 const View = ({ project, simulation, geometry, result }) => {

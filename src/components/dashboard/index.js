@@ -1,4 +1,4 @@
-/** @module components/dashboard */
+/** @namespace Components.Dashboard */
 
 import { useRouter } from 'next/router'
 import { useState, useEffect } from 'react'
@@ -30,6 +30,7 @@ import logout from '@/api/logout'
 
 /**
  * Errors
+ * @memberof Components.Dashboard
  */
 const errors = {
   user: 'User error',
@@ -40,6 +41,7 @@ const errors = {
 
 /**
  * Dashboard menu items
+ * @memberof Components.Dashboard
  */
 const menuItems = {
   welcome: {
@@ -73,6 +75,7 @@ const menuItems = {
 
 /**
  * Dashboard
+ * @memberof Components.Dashboard
  */
 const Dashboard = () => {
   // State

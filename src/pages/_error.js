@@ -2,7 +2,7 @@ import Error from '@/components/error'
 
 /**
  * Error page
- * @memberof module:pages
+ * @memberof Pages
  */
 const _error = () => {
   /**

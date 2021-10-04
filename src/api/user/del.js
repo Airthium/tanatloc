@@ -1,11 +1,11 @@
 import Caller from '@/api/call'
 
 /**
- * Delete an user
- * @memberof module:api/user
+ * Delete
+ * @memberof API.User
  */
 const del = async () => {
-  return Caller.call('/api/user', {
+  await Caller.call('/api/user', {
     method: 'DELETE'
   })
 }

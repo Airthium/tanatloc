@@ -1,4 +1,4 @@
-/** @module components/project/data */
+/** @namespace Components.Project.Data */
 
 import { useState, useEffect } from 'react'
 import { Button, Checkbox, Drawer, Layout, Space, Table, Tooltip } from 'antd'
@@ -21,6 +21,12 @@ import Utils from '@/lib/utils'
 
 import SimulationAPI from '@/api/simulation'
 
+/**
+ * Camelize
+ * @memberof Components.Project.Data
+ * @param {string} str String
+ * @returns {string} Camelized string
+ */
 const camelize = (str) => {
   return str.replace(/\W+(.)/g, (_, chr) => {
     return chr.toUpperCase()
@@ -29,6 +35,7 @@ const camelize = (str) => {
 
 /**
  * Data visualization
+ * @memberof Components.Project.Data
  * @param {Object} props Props
  */
 const Data = ({ simulation }) => {

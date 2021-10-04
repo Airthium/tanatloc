@@ -1,4 +1,4 @@
-/** @module components/password */
+/** @namespace Components.Password */
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
@@ -22,6 +22,7 @@ import LinkAPI from '@/api/link'
 
 /**
  * Errors
+ * @memberof Components.Password
  */
 const errors = {
   internal: 'Internal error, please try again later',
@@ -30,6 +31,7 @@ const errors = {
 
 /**
  * Password recovery
+ * @memberof Components.Password
  */
 const PasswordRecovery = () => {
   // State

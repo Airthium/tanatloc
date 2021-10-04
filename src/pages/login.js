@@ -2,7 +2,7 @@ import LoginPage from '@/components/login'
 
 /**
  * Login
- * @memberof module:pages
+ * @memberof Pages
  */
 const Login = () => {
   /**

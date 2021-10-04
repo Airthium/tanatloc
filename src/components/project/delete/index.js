@@ -9,8 +9,8 @@ import { Error } from '@/components/assets/notification'
 import ProjectAPI from '@/api/project'
 
 /**
- * Errors project/delete
- * @memberof module:components/project
+ * Errors (delete)
+ * @memberof Components.Project
  */
 const errors = {
   delError: 'Unable to delete the project'
@@ -18,7 +18,7 @@ const errors = {
 
 /**
  * Delete project
- * @memberof module:components/project
+ * @memberof Components.Project
  * @param {Object} props Props
  */
 const Delete = ({ disabled, workspace, project, swr }) => {

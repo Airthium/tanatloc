@@ -1,4 +1,4 @@
-/** @module components/workspace */
+/** @namespace Components.Workspace */
 
 import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
@@ -20,6 +20,7 @@ import ProjectAPI from '@/api/project'
 
 /**
  * Errors
+ * @memberof Components.Workspace
  */
 const errors = {
   projects: 'Projects error',
@@ -28,6 +29,7 @@ const errors = {
 
 /**
  * Workspace
+ * @memberof Components.Workspace
  * @param {Object} props Props
  */
 const Workspace = ({ loading, user, page, workspace, organizations, swr }) => {

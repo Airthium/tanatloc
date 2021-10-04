@@ -12,7 +12,7 @@ import Edit from '../edit'
 
 /**
  * Material
- * @memberof module:components/project/simulation
+ * @memberof Components.Project.Simulation.Materials
  * @param {Object} props Props
  */
 const Material = ({

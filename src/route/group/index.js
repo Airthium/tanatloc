@@ -1,4 +1,4 @@
-/** @module route/group */
+/** @namespace Route.Group */
 
 import getSessionId from '../session'
 import error from '../error'
@@ -8,6 +8,7 @@ import GroupLib from '@/lib/group'
 
 /**
  * Check add body
+ * @memberof Route.Group
  * @param {Object} body Body
  */
 const checkAddBody = (body) => {
@@ -30,6 +31,7 @@ const checkAddBody = (body) => {
 
 /**
  * Check update body
+ * @memberof Route.Group
  * @param {Object} body Body
  */
 const checkUpdateBody = (body) => {
@@ -48,6 +50,7 @@ const checkUpdateBody = (body) => {
 
 /**
  * Check delete body
+ * @memberof Route.Group
  * @param {Object} body Body
  */
 const checkDeleteBody = (body) => {
@@ -57,6 +60,7 @@ const checkDeleteBody = (body) => {
 
 /**
  * Check auth
+ * @memberof Route.Group
  * @param {Object} organization Organization { id }
  * @param {Object} user User { id }
  */
@@ -72,6 +76,7 @@ const checkOrganizationAuth = async (organization, user) => {
 
 /**
  * Check auth
+ * @memberof Route.Group
  * @param {Object} group Group { id }
  * @param {Object} user User { id }
  */
@@ -89,6 +94,7 @@ const checkGroupAuth = async (group, user) => {
 
 /**
  * Group API
+ * @memberof Route.Group
  * @param {Object} req Request
  * @param {Object} res Result
  */

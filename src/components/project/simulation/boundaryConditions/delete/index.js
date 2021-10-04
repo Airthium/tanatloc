@@ -10,8 +10,8 @@ import { unselect } from '@/store/select/action'
 import SimulationAPI from '@/api/simulation'
 
 /**
- * Errors boundaryConditions/delete
- * @memberof module:components/project/simulation
+ * Errors (delete)
+ * @memberof Components.Project.Simulation.BoundaryConditions
  */
 const errors = {
   updateError: 'Unable to delete the boundary condition'
@@ -19,7 +19,7 @@ const errors = {
 
 /**
  * Delete boundary condition
- * @memberof module:components/project/simulation
+ * @memberof Components.Project.Simulation.BoundaryConditions
  * @param {Object} props Props
  */
 const Delete = ({ simulation, type, index, swr }) => {

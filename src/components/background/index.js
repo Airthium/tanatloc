@@ -1,4 +1,4 @@
-/** @module components/background */
+/** @namespace Components.Background */
 
 import { useRef, useEffect } from 'react'
 import {
@@ -13,6 +13,7 @@ import {
 
 /**
  * Background
+ * @memberof Components.Background
  */
 const Background = () => {
   // Parameters

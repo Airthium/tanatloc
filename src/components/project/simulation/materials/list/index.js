@@ -10,7 +10,7 @@ import { enable, disable, select } from '@/store/select/action'
 
 /**
  * List materials
- * @memberof module:components/project/simulation
+ * @memberof Components.Project.Simulation.Materials
  * @param {Object} props Props
  */
 const List = ({ simulation, swr, onEdit }) => {

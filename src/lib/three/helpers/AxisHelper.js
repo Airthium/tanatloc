@@ -1,5 +1,3 @@
-/** @module lib/three/helpers/AxisHelper */
-
 import {
   Group,
   Mesh,
@@ -18,6 +16,7 @@ const defaultHeight = 150
 
 /**
  * Axis helper
+ * @memberof Lib.Three.Helpers
  * @param {Object} renderer Renderer
  * @param {Object} camera Camera
  * @param {Object} dimensions Dimensions

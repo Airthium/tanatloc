@@ -9,8 +9,8 @@ import { Error as ErrorNotification } from '@/components/assets/notification'
 import WorkspaceAPI from '@/api/workspace'
 
 /**
- * Errors edit
- * @memberof module:components/workspace
+ * Errors (edit)
+ * @memberof Components.Workspace
  */
 const errors = {
   update: 'Unable to update the workspace'
@@ -18,7 +18,7 @@ const errors = {
 
 /**
  * Edit workspace
- * @memberof module:components/workspace
+ * @memberof Components.Workspace
  * @param {Object} props Props
  */
 const Edit = ({ workspace, swr }) => {

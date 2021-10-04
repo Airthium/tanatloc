@@ -4,7 +4,7 @@ import { ArrowLeftOutlined } from '@ant-design/icons'
 
 /**
  * Go back
- * @memberof module:components/assets/button
+ * @memberof Components.Assets.Button
  * @param {Object} props Props
  */
 const GoBack = ({ children, onClick }) => {

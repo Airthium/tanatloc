@@ -1,4 +1,4 @@
-/** @module route/project */
+/** @namespace Route.Project */
 
 import getSessionId from '../session'
 import { checkWorkspaceAuth } from '../auth'
@@ -8,6 +8,7 @@ import ProjectLib from '@/lib/project'
 
 /**
  * Check add body
+ * @memberof Route.Project
  * @param {Object} body Body
  */
 const checkAddBody = (body) => {
@@ -28,6 +29,7 @@ const checkAddBody = (body) => {
 
 /**
  * Project API
+ * @memberof Route.Project
  * @param {Object} req Request
  * @param {Object} res Response
  */

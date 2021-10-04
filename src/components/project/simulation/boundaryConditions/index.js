@@ -1,3 +1,5 @@
+/** @namespace Components.Project.Simulation.BoundaryConditions */
+
 import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
 import { Card, Layout, Space, Typography } from 'antd'
@@ -10,8 +12,8 @@ import { useDispatch } from 'react-redux'
 import { enable, disable, setType, setPart } from '@/store/select/action'
 
 /**
- * Errors simulation/boundaryConditions
- * @memberof module:components/project/simulation
+ * Errors
+ * @memberof Components.Project.Simulation.BoundaryConditions
  */
 const errors = {
   updateError: 'Unable to update the simulation'
@@ -19,7 +21,7 @@ const errors = {
 
 /**
  * Boundary condition
- * @memberof module:components/project/simulation
+ * @memberof Components.Project.Simulation.BoundaryConditions
  * @param {Object} props Props
  */
 const BoundaryConditions = ({ geometry, simulation, swr, setVisible }) => {

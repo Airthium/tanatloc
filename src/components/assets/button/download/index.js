@@ -4,7 +4,7 @@ import { DownloadOutlined } from '@ant-design/icons'
 
 /**
  * Download button
- * @memberof module:components/assets/button
+ * @memberof Components.Assets.Button
  * @param {Object} props Props
  */
 const DownloadButton = ({ disabled, loading, children, onDownload }) => {

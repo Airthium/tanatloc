@@ -1,5 +1,3 @@
-/** @module lib/three/helpers/SectionViewHelper */
-
 import {
   Color,
   DoubleSide,
@@ -16,6 +14,7 @@ import { TransformControls } from 'three/examples/jsm/controls/TransformControls
 
 /**
  * SectionViewHelper
+ * @memberof Lib.Three.Helpers
  * @param {Object} renderer Renderer
  * @param {Object} scene Scene
  * @param {Object} camera Camera

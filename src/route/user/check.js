@@ -5,7 +5,7 @@ import UserLib from '@/lib/user'
 
 /**
  * Check login body
- * @memberof module:route/user
+ * @memberof Route.User
  * @param {Object} body Body
  */
 const checkLoginBody = (body) => {
@@ -24,7 +24,7 @@ const checkLoginBody = (body) => {
 
 /**
  * User check API
- * @memberof module:route/user
+ * @memberof Route.User
  * @param {Object} req Request
  * @param {Object} res Response
  */

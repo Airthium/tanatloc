@@ -7,8 +7,8 @@ import { Error } from '@/components/assets/notification'
 import SimulationAPI from '@/api/simulation'
 
 /**
- * Errors materials/edit
- * @memberof module:components/project/simulation
+ * Errors (edit)
+ * @memberof Components.Project.Simulation.Materials
  */
 const errors = {
   updateError: 'Unable to edit the material'
@@ -16,7 +16,7 @@ const errors = {
 
 /**
  * Edit material
- * @memberof module:components/project/simulation
+ * @memberof Components.Project.Simulation.Materials
  * @param {Object} props Props
  */
 const Edit = ({ disabled, material, simulation, geometry, swr, close }) => {

@@ -1,4 +1,4 @@
-/** @module route/organizations */
+/** @namespace Route.Organizations */
 
 import getSessionId from '../session'
 import error from '../error'
@@ -7,6 +7,7 @@ import OrganizationLib from '@/lib/organization'
 
 /**
  * Organizations API
+ * @memberof Route.Organizations
  * @param {Object} req Request
  * @param {Object} res Response
  */

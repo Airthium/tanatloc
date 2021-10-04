@@ -1,4 +1,4 @@
-/** @module components/project/simulation */
+/** @namespace Components.Project.Simulation */
 
 import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
@@ -25,6 +25,7 @@ import Models from '@/models'
 
 /**
  * Errors
+ * @memberof Components.Project.Simulation
  */
 const errors = {
   plugins: 'Unable to load plugins',
@@ -33,6 +34,7 @@ const errors = {
 
 /**
  * Load models
+ * @memberof Components.Project.Simulation
  * @param {Object} user User
  * @param {Object} models Models
  * @param {Object} plugins Plugins
@@ -53,6 +55,7 @@ const loadModels = (user, models, plugins) => {
 
 /**
  * Simulation Selector
+ * @memberof Components.Project.Simulation
  * @param {Object} props Props
  */
 const Selector = ({ user, visible, onOk, onCancel }) => {
@@ -136,6 +139,7 @@ Selector.propTypes = {
 
 /**
  * Simulation Updater
+ * @memberof Components.Project.Simulation
  * @param {Object} props Props
  */
 const Updater = ({ user, simulation, swr }) => {

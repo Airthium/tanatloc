@@ -1,4 +1,4 @@
-/** @module route/email */
+/** @namespace Route.Email */
 
 import error from '../error'
 
@@ -9,6 +9,7 @@ import UserLib from '@/lib/user'
 
 /**
  * Check send body
+ * @memberof Route.Email
  * @param {Object} body Body
  */
 const checkSendBody = (body) => {
@@ -27,6 +28,7 @@ const checkSendBody = (body) => {
 
 /**
  * Email API
+ * @memberof Route.Email
  * @param {Object} req Request
  * @param {Object} res Result
  */

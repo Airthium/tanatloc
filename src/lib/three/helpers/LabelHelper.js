@@ -1,9 +1,8 @@
-/** @module lib/three/helpers/LabelHelper */
-
 import { Sprite, SpriteMaterial, Texture } from 'three'
 
 /**
  * LabelHelper
+ * @memberof Lib.Three.Helpers
  * @param {string} text Text
  * @param {number} size Size
  * @param {string} fontColor Font color

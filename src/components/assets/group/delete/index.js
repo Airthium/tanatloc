@@ -9,8 +9,8 @@ import { Error as ErrorNotification } from '@/components/assets/notification'
 import GroupAPI from '@/api/group'
 
 /**
- * Delete errors
- * @memberof module:components/assets/group
+ * Errors (delete)
+ * @memberof Components.Assets.Group
  */
 const errors = {
   del: 'Unable to delete group'
@@ -18,7 +18,7 @@ const errors = {
 
 /**
  * Delete group
- * @memberof module:components/asset/group
+ * @memberof Components.Assets.Group
  * @param {Object} props Props
  *
  * @description

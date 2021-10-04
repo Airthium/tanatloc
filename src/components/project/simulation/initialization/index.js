@@ -6,10 +6,19 @@ import { Error as ErrorNotification } from '@/components/assets/notification'
 
 import SimulationAPI from '@/api/simulation'
 
+/**
+ * Errors (initialization)
+ * @memberof Components.Project.Simulation
+ */
 const errors = {
   update: 'Unable to update simulation'
 }
 
+/**
+ * Initialization
+ * @memberof Components.Project.Simulation
+ * @param {Object} props Props `{ simulations, simulation, swr }`
+ */
 const Initialization = ({ simulations, simulation, swr }) => {
   // State
   const [loading, setLoading] = useState(false)

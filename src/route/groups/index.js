@@ -1,7 +1,8 @@
-/** @module route/groups */
+/** @namespace Route.Groups */
 
 /**
  * Empty groups list route
+ * @memberof Route.Groups
  * @param {Object} req Request
  * @param {Object} res Response
  */

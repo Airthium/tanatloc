@@ -1,4 +1,4 @@
-/** @module route/system */
+/** @namespace Route.System */
 
 import getSessionId from '../session'
 import error from '../error'
@@ -8,6 +8,7 @@ import SystemLib from '@/lib/system'
 
 /**
  * Check update body
+ * @memberof Route.System
  * @param {Object} body Body
  */
 const checkUpdateBody = (body) => {
@@ -17,6 +18,7 @@ const checkUpdateBody = (body) => {
 
 /**
  * System API
+ * @memberof Route.System
  * @param {Object} req Request
  * @param {Object} res Response
  */

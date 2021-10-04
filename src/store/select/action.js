@@ -1,6 +1,6 @@
 /**
  * Select action types
- * @memberof module:store/select
+ * @memberof Store.Select
  */
 export const selectActionTypes = {
   ENABLE: 'ENABLE',
@@ -16,7 +16,7 @@ export const selectActionTypes = {
 
 /**
  * Enable select
- * @memberof module:store/select
+ * @memberof Store.Select
  */
 export const enable = () => ({
   type: selectActionTypes.ENABLE
@@ -24,7 +24,7 @@ export const enable = () => ({
 
 /**
  * Disable select
- * @memberof module:store/select
+ * @memberof Store.Select
  */
 export const disable = () => ({
   type: selectActionTypes.DISABLE
@@ -32,7 +32,7 @@ export const disable = () => ({
 
 /**
  * Clear selection
- * @memberof module:store/select
+ * @memberof Store.Select
  */
 export const clear = () => ({
   type: selectActionTypes.CLEAR
@@ -40,7 +40,7 @@ export const clear = () => ({
 
 /**
  * Set type (solid, face, edge)
- * @memberof module:store/select
+ * @memberof Store.Select
  * @param {Object} object Type
  */
 export const setType = (object) => ({
@@ -50,7 +50,7 @@ export const setType = (object) => ({
 
 /**
  * Set part
- * @memberof module:store/select
+ * @memberof Store.Select
  * @param {string} uuid Part uuid
  */
 export const setPart = (uuid) => ({
@@ -60,7 +60,7 @@ export const setPart = (uuid) => ({
 
 /**
  * Highlight
- * @memberof module:store/select
+ * @memberof Store.Select
  * @param {string} uuid uuid
  */
 export const highlight = (uuid) => ({
@@ -70,7 +70,7 @@ export const highlight = (uuid) => ({
 
 /**
  * Unhighlight
- * @memberof module:store/select
+ * @memberof Store.Select
  */
 export const unhighlight = () => ({
   type: selectActionTypes.UNHIGHLIGHT
@@ -78,7 +78,7 @@ export const unhighlight = () => ({
 
 /**
  * Select
- * @memberof module:store/select
+ * @memberof Store.Select
  * @param {string} uuid uuid
  */
 export const select = (uuid) => ({
@@ -88,7 +88,7 @@ export const select = (uuid) => ({
 
 /**
  * Unselect
- * @memberof module:store/select
+ * @memberof Store.Select
  * @param {string} uuid uuit
  */
 export const unselect = (uuid) => ({

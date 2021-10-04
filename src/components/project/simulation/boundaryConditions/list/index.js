@@ -9,6 +9,11 @@ import { enable, disable, select } from '@/store/select/action'
 
 import Delete from '../delete'
 
+/**
+ * List
+ * @memberof Components.Project.Simulation.BoundaryConditions
+ * @param {Object} props Props `{ simulation, swr, onEdit }`
+ */
 const List = ({ simulation, swr, onEdit }) => {
   // State
   const [enabled, setEnabled] = useState(true)

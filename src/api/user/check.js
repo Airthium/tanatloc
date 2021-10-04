@@ -1,9 +1,10 @@
 import Caller from '@/api/call'
 
 /**
- * Check an user
- * @memberof module:api/user
+ * Check
+ * @memberof API.User
  * @param {Object} data Data { email, password }
+ * @returns {Object} User { valid: true/false }
  */
 const check = async ({ email, password }) => {
   return Caller.call('/api/user/check', {

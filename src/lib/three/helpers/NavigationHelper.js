@@ -1,5 +1,3 @@
-/** @module lib/three/helpers/NavigationHelper */
-
 import {
   Color,
   EdgesGeometry,
@@ -20,6 +18,7 @@ import {
 
 /**
  * Navigation helper
+ * @memberof Lib.Three.Helpers
  * @param {Object} renderer Renderer
  * @param {Object} scene Scene
  * @param {Object} camera Camera

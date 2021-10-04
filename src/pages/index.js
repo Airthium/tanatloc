@@ -1,9 +1,10 @@
-/** @module pages */
+/** @namespace Pages */
 
 import IndexPage from '@/components/index/index'
 
 /**
  * Index
+ * @memberof Pages
  */
 const Index = () => {
   /**

@@ -2,7 +2,7 @@ import route from '@/route/geometry/[id]/download'
 
 /**
  * Geometry API for [id]/download
- * @memberof module:pages/api
+ * @memberof Pages.API
  * @param {Object} req Request
  * @param {Object} res Response
  */

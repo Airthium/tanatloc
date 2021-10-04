@@ -6,7 +6,7 @@ import GeometryLib from '@/lib/geometry'
 
 /**
  * Check update body
- * @memberof module:route/geometry
+ * @memberof Route.Geometry
  * @param {Array} body Body
  */
 const checkUpdateBody = (body) => {
@@ -16,7 +16,7 @@ const checkUpdateBody = (body) => {
 
 /**
  * Geometry API by [id]
- * @memberof module:route/geometry
+ * @memberof Route.Geometry
  * @param {Object} req Request
  * @param {Object} res Response
  */

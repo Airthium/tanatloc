@@ -1,10 +1,11 @@
-/** @module components/error */
+/** @namespace Components.Error */
 
 import { useRouter } from 'next/router'
 import { Layout, Typography } from 'antd'
 
 /**
  * Error page
+ * @memberof Components.Error
  * @param {Object} props Props
  */
 function Error({ statusCode }) {

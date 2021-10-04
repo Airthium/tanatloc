@@ -5,7 +5,7 @@ import UserLib from '@/lib/user'
 
 /**
  * Check update body
- * @memberof module:route/user
+ * @memberof Route.User
  * @param {Object} body Body
  */
 const checkUpdateBody = (body) => {
@@ -15,7 +15,7 @@ const checkUpdateBody = (body) => {
 
 /**
  * User API by [id]
- * @memberof module:route/user
+ * @memberof Route.User
  * @param {Object} req Request
  * @param {Object} res Response
  */

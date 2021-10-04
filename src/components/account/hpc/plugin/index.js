@@ -1,3 +1,5 @@
+/** @namespace Components.Account.HPC.Plugin */
+
 import { useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { Space, Spin } from 'antd'
@@ -10,8 +12,8 @@ import List from './list'
 import PluginAPI from '@/api/plugin'
 
 /**
- * Errors account/plugins
- * @memberof module:components/account
+ * Errors
+ * @memberof Components.Account.HPC.Plugin
  */
 const errors = {
   plugins: 'Plugins error'
@@ -19,7 +21,7 @@ const errors = {
 
 /**
  * Plugin
- * @memberof module:components/account
+ * @memberof Components.Account.HPC.Plugin
  * @param {Object} props Props
  */
 const Plugin = ({ plugin }) => {

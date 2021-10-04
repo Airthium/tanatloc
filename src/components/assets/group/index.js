@@ -1,4 +1,4 @@
-/** @module components/assets/group */
+/** @namespace @memberof Components.Assets.Group */
 
 import PropTypes from 'prop-types'
 import { useState } from 'react'
@@ -13,7 +13,8 @@ import Delete from './delete'
 import GroupAPI from '@/api/group'
 
 /**
- * Group errors
+ * Errors
+ * @memberof Components.Assets.Group
  */
 const errors = {
   addError: 'Unable to add group',
@@ -22,6 +23,7 @@ const errors = {
 
 /**
  * Group
+ * @memberof Components.Assets.Group
  * @param {Object} props Props
  *
  * @description

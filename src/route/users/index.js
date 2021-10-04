@@ -1,4 +1,4 @@
-/** @module route/users */
+/** @namespace Route.Users */
 
 import getSessionId from '../session'
 import error from '../error'
@@ -7,6 +7,7 @@ import UserLib from '@/lib/user'
 
 /**
  * Users API
+ * @memberof Route.Users
  * @param {Object} req Request
  * @param {Object} res Response
  */

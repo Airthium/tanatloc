@@ -2,7 +2,7 @@ import NotFoundPage from '@/components/notfound'
 
 /**
  * 404 page
- * @memberof module:pages
+ * @memberof Pages
  */
 const _404 = () => {
   /**

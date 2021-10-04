@@ -11,7 +11,7 @@ import '@/styles/global.less'
 
 /**
  * Global App component
- * @memberof module:pages
+ * @memberof Pages
  * @param {Object} param0 {Component, pageProps}
  */
 const App = ({ Component, pageProps }) => {

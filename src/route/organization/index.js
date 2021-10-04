@@ -1,4 +1,4 @@
-/** @module route/organization */
+/** @namespace Route.Organization */
 
 import getSessionId from '../session'
 import error from '../error'
@@ -7,6 +7,7 @@ import OrganizationLib from '@/lib/organization'
 
 /**
  * Check add body
+ * @memberof Route.Organization
  * @param {Object} body Body
  */
 const checkAddBody = (body) => {
@@ -16,6 +17,7 @@ const checkAddBody = (body) => {
 
 /**
  * Check update body
+ * @memberof Route.Organization
  * @param {Object} body Body
  */
 const checkUpdateBody = (body) => {
@@ -34,6 +36,7 @@ const checkUpdateBody = (body) => {
 
 /**
  * Check delete body
+ * @memberof Route.Organization
  * @param {Object} body Body
  */
 const checkDeleteBody = (body) => {
@@ -43,6 +46,7 @@ const checkDeleteBody = (body) => {
 
 /**
  * Check organization administrator
+ * @memberof Route.Organization
  * @param {string} id Id
  */
 const checkOrganizationAdministrator = async (id, user) => {
@@ -55,6 +59,7 @@ const checkOrganizationAdministrator = async (id, user) => {
 
 /**
  * Organization API
+ * @memberof Route.Organization
  * @param {Object} req Request
  * @param {Object} res Response
  */

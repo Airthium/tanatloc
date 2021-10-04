@@ -1,4 +1,4 @@
-/** @module route/projects */
+/** @namespace Route.Projects */
 
 import getSessionId from '../session'
 import { checkProjectAuth } from '../auth'
@@ -8,6 +8,7 @@ import ProjectLib from '@/lib/project'
 
 /**
  * Check get body
+ * @memberof Route.Projects
  * @param {Object} body Body
  */
 const checkGetBody = (body) => {
@@ -17,6 +18,7 @@ const checkGetBody = (body) => {
 
 /**
  * Projects API
+ * @memberof Route.Projects
  * @param {Object} req Request
  * @param {Object} res Response
  */

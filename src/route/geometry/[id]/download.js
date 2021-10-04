@@ -6,7 +6,7 @@ import GeometryLib from '@/lib/geometry'
 
 /**
  * Geometry API download
- * @memberof module:route/geometry
+ * @memberof Route.Geometry
  * @param {Object} req Request
  * @param {Object} res Response
  */

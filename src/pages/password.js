@@ -2,7 +2,7 @@ import PasswordPage from '@/components/password'
 
 /**
  * Password recovery
- * @memberof module:pages
+ * @memberof Pages
  */
 const Password = () => {
   /**

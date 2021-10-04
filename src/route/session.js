@@ -4,7 +4,7 @@ import error from './error'
 
 /**
  * Session
- * @memberof module:route
+ * @memberof Route
  * @param {Object} req Request
  * @param {Object} res Response
  */

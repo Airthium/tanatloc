@@ -1,4 +1,4 @@
-/** @module components/assets/organization */
+/** @namespace Components.Assets.Organization */
 
 import PropTypes from 'prop-types'
 import { Button, Tabs, Typography } from 'antd'
@@ -12,7 +12,8 @@ import Groups from './groups'
 import OrganizationAPI from '@/api/organization'
 
 /**
- * Organization errors
+ * Errors
+ * @memberof Components.Assets.Organization
  */
 const errors = {
   name: "Unable to update organization's name"
@@ -20,6 +21,7 @@ const errors = {
 
 /**
  * Organization
+ * @memberof Components.Assets.Organization
  * @param {Object} props Props
  *
  * @description

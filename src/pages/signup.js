@@ -2,7 +2,7 @@ import SignupPage from '@/components/signup'
 
 /**
  * Signup
- * @memberof module:pages
+ * @memberof Pages
  */
 const Signup = () => {
   /**

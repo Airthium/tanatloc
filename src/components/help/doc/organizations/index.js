@@ -2,7 +2,7 @@ import { Card, Collapse, Typography } from 'antd'
 
 /**
  * Organizations documentation
- * @memberof module:components/help
+ * @memberof Components.Help
  */
 const Organizations = () => {
   return (

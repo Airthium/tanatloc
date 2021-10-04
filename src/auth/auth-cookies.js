@@ -1,4 +1,4 @@
-/** @module auth/auth-cookies */
+/** @namespace Auth.AuthCookies */
 
 import { serialize, parse } from 'cookie'
 
@@ -8,15 +8,25 @@ import ElectronStore from 'electron-store'
 let storage
 if (isElectron()) storage = new ElectronStore()
 
+/**
+ * Token name
+ * @memberof Auth.AuthCookies
+ */
 const TOKEN_NAME = 'token'
+
+/**
+ * Max age
+ * @memberof Auth.AuthCookies
+ */
 const MAX_AGE = 60 * 60 * 8 // 8 hours
 
 /**
  * Set token cookie
+ * @memberof Auth.AuthCookies
  * @param {Object} res Response
  * @param {string} token Token
  */
-export const setTokenCookie = (res, token) => {
+const setTokenCookie = (res, token) => {
   const cookie = serialize(TOKEN_NAME, token, {
     maxAge: MAX_AGE,
     expires: new Date(Date.now() + MAX_AGE * 1000),
@@ -32,9 +42,10 @@ export const setTokenCookie = (res, token) => {
 
 /**
  * Remove token cookie
+ * @memberof Auth.AuthCookies
  * @param {Object} res Reponse
  */
-export const removeTokenCookie = (res) => {
+const removeTokenCookie = (res) => {
   const cookie = serialize(TOKEN_NAME, '', {
     maxAge: -1,
     path: '/'
@@ -46,10 +57,11 @@ export const removeTokenCookie = (res) => {
 
 /**
  * Parse cookie
+ * @memberof Auth.AuthCookies
  * @param {Object} req Request
  * @returns {string} Cookie
  */
-export const parseCookies = (req) => {
+const parseCookies = (req) => {
   // For API Routes we don't need to parse the cookies.
   if (isElectron()) {
     const cookie = storage.get('auth-token')
@@ -65,10 +77,13 @@ export const parseCookies = (req) => {
 
 /**
  * Get token cookie
+ * @memberof Auth.AuthCookies
  * @param {Object} req Request
  * @returns {string} Cookie
  */
-export const getTokenCookie = (req) => {
+const getTokenCookie = (req) => {
   const cookies = parseCookies(req)
   return cookies[TOKEN_NAME]
 }
+
+export { setTokenCookie, removeTokenCookie, parseCookies, getTokenCookie }

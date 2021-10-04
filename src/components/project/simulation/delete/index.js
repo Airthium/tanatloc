@@ -9,8 +9,8 @@ import { Error } from '@/components/assets/notification'
 import SimulationAPI from '@/api/simulation'
 
 /**
- * Errors simulation/delete
- * @memberof module:components/project/simulation
+ * Errors (delete)
+ * @memberof Components.Project.Simulation
  */
 const errors = {
   delError: 'Unable to delete the simulation'
@@ -18,7 +18,7 @@ const errors = {
 
 /**
  * Delete
- * @memberof module:components/project/simulation
+ * @memberof Components.Project.Simulation
  * @param {Object} props Props
  */
 const Delete = ({ project, simulation, swr }) => {

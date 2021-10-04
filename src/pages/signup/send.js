@@ -2,7 +2,7 @@ import SendPage from '@/components/signup/send'
 
 /**
  * Signup send
- * @memberof module:pages
+ * @memberof Pages
  */
 const Send = () => {
   /**

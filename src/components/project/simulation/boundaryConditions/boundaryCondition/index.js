@@ -10,7 +10,7 @@ import Edit from '../edit'
 
 /**
  * Boundary condition
- * @memberof module:components/project/simulation
+ * @memberof Components.Project.Simulation.BoundaryConditions
  * @param {Object} props Props
  */
 const BoundaryCondition = ({

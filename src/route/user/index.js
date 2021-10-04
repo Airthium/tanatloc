@@ -1,4 +1,4 @@
-/** @module route/user */
+/** @namespace Route.User */
 
 import getSessionId from '../session'
 import error from '../error'
@@ -7,6 +7,7 @@ import UserLib from '@/lib/user'
 
 /**
  * Check add body
+ * @memberof Route.User
  * @param {Object} body Body
  */
 const checkAddBody = (body) => {
@@ -25,6 +26,7 @@ const checkAddBody = (body) => {
 
 /**
  * Check update body
+ * @memberof Route.User
  * @param {Array} body Body
  */
 const checkUpdateBody = (body) => {
@@ -34,6 +36,7 @@ const checkUpdateBody = (body) => {
 
 /**
  * User API
+ * @memberof Route.User
  * @param {Object} req Request
  * @param {Object} res Response
  */

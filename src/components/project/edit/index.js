@@ -9,8 +9,8 @@ import { Error } from '@/components/assets/notification'
 import ProjectAPI from '@/api/project'
 
 /**
- * Errors project/edit
- * @memberof module:components/project
+ * Errors (edit)
+ * @memberof Components.Project
  */
 const errors = {
   editError: 'Unable to edit a project'
@@ -18,7 +18,7 @@ const errors = {
 
 /**
  * Edit project
- * @memberof module:components/project
+ * @memberof Components.Project
  * @param {Object} props Props
  */
 const Edit = ({ disabled, project, swr }) => {

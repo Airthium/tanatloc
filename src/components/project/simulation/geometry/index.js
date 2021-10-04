@@ -9,8 +9,8 @@ import { Error as ErrorNotification } from '@/components/assets/notification'
 import SimulationAPI from '@/api/simulation'
 
 /**
- * Errors simulation/geometry
- * @memberof module:components/project/simulation
+ * Errors (geometry)
+ * @memberof Components.Project.Simulation
  */
 const errors = {
   update: 'Unable to update the simulation'
@@ -18,7 +18,7 @@ const errors = {
 
 /**
  * Geometry
- * @memberof module:components/project/simulation
+ * @memberof Components.Project.Simulation
  * @param {Object} props Props
  */
 const Geometry = ({ geometries, geometry, simulation, setGeometry, swr }) => {

@@ -3,7 +3,7 @@ import isDocker from 'is-docker'
 
 /**
  * Gmsh service
- * @memberof module:services
+ * @memberof Services
  * @param {string} path Path
  * @param {string} fileIn In file
  * @param {string} fileOut Out file

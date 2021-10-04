@@ -2,7 +2,7 @@ import DashboardPage from '@/components/dashboard'
 
 /**
  * Dashboard
- * @memberof module:pages
+ * @memberof Pages
  */
 const Dashboard = () => {
   /**

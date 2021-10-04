@@ -10,8 +10,8 @@ import { Error } from '@/components/assets/notification'
 import OrganizationAPI from '@/api/organization'
 
 /**
- * Delete errors
- * @memberof module:components/organizations
+ * Errors (delete)
+ * @memberof Components.Organizations
  */
 const errors = {
   delError: 'Unable to delete the organization'
@@ -19,7 +19,7 @@ const errors = {
 
 /**
  * Delete
- * @memberof module:components/organizations
+ * @memberof Components.Organizations
  * @param {Object} props Props
  */
 const Delete = ({ organization, swr }) => {

@@ -1,3 +1,5 @@
+/** @namespace Components.Project.Geometry */
+
 import PropTypes from 'prop-types'
 import { useState } from 'react'
 import { Card, Layout, Space, Typography } from 'antd'
@@ -17,8 +19,8 @@ import Edit from './edit'
 import GeometryAPI from '@/api/geometry'
 
 /**
- * Errors simulation/geometry
- * @memberof module:components/project/simulation
+ * Errors
+ * @memberof Components.Project.Geometry
  */
 const errors = {
   downloadError: 'Unable to download geometry',
@@ -28,7 +30,7 @@ const errors = {
 
 /**
  * Geometry
- * @memberof module:components/project/simulation
+ * @memberof Components.Project.Geometry
  * @param {Object} props Props
  */
 const Geometry = ({ project, geometry, swr, close }) => {

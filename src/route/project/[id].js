@@ -6,7 +6,7 @@ import ProjectLib from '@/lib/project'
 
 /**
  * Check update body
- * @memberof module:route/project
+ * @memberof Route.Project
  * @param {Array} body Body
  */
 const checkUpdateBody = (body) => {
@@ -16,7 +16,7 @@ const checkUpdateBody = (body) => {
 
 /**
  * Check delete body
- * @memberof module:route/project
+ * @memberof Route.Project
  * @param {Object} body Body
  */
 const checkDeleteBody = (body) => {
@@ -26,7 +26,7 @@ const checkDeleteBody = (body) => {
 
 /**
  * Project API by [id]
- * @memberof module:route/project
+ * @memberof Route.Project
  * @param {Object} req Request
  * @param {Object} res Response
  */

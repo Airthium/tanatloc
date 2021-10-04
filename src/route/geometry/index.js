@@ -1,4 +1,4 @@
-/** @module route/geometry */
+/** @namespace Route.Geometry */
 
 import getSessionId from '../session'
 import { checkProjectAuth } from '../auth'
@@ -8,6 +8,7 @@ import GeometryLib from '@/lib/geometry'
 
 /**
  * Check add body
+ * @memberof Route.Geometry
  * @param {Object} body Body
  */
 const checkAddBody = (body) => {
@@ -32,6 +33,7 @@ const checkAddBody = (body) => {
 
 /**
  * Geometry API
+ * @memberof Route.Geometry
  * @param {Object} req Request
  * @param {Object} res Response
  */

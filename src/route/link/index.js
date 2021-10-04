@@ -1,4 +1,4 @@
-/** @module route/link */
+/** @namespace Route.Link */
 
 import error from '../error'
 
@@ -6,6 +6,7 @@ import LinkLib from '@/lib/link'
 
 /**
  * Check get body
+ * @memberof Route.Link
  * @param {Object} body Body
  */
 const checkGetBody = (body) => {
@@ -24,6 +25,7 @@ const checkGetBody = (body) => {
 
 /**
  * Check process body
+ * @memberof Route.Link
  * @param {Object} body Body
  */
 const checkProcessBody = (body) => {
@@ -36,6 +38,7 @@ const checkProcessBody = (body) => {
 
 /**
  * Link API
+ * @memberof Route.Link
  * @param {Object} req Request
  * @param {Object} res Response
  */

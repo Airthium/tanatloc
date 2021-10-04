@@ -1,3 +1,5 @@
+/** @namespace Components.Project.Simulation.Materials */
+
 import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
 import { Card, Layout, Space, Typography } from 'antd'
@@ -11,7 +13,7 @@ import { enable, disable, setType, setPart } from '@/store/select/action'
 
 /**
  * Materials
- * @memberof module:components/project/simulation
+ * @memberof Components.Project.Simulation.Materials
  * @param {Object} props Props
  */
 const Materials = ({ geometry, simulation, swr, setVisible }) => {

@@ -1,10 +1,11 @@
-/** @module components/notfound */
+/** @namespace Components.Notfound */
 
 import { useRouter } from 'next/router'
 import { Layout, Typography } from 'antd'
 
 /**
  * 404
+ * @memberof Components.Notfound
  */
 const NotFound = () => {
   // Router

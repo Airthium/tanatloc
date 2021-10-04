@@ -31,8 +31,8 @@ import SimulationAPI from '@/api/simulation'
 import ResultAPI from '@/api/result'
 
 /**
- * Errors simulation/run
- * @memberof module:components/project/simulation
+ * Errors (run)
+ * @memberof Components.Project.Simulation
  */
 const errors = {
   runError: 'Unable to run the simulation',
@@ -44,7 +44,7 @@ const errors = {
 
 /**
  * Run
- * @memberof module:components/project/simulation
+ * @memberof Components.Project.Simulation
  * @param {Object} props Props
  */
 const Run = ({ simulation, result, setResult, swr }) => {

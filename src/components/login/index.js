@@ -1,4 +1,4 @@
-/** @module components/login */
+/** @namespace Components.Login */
 
 import { useRouter } from 'next/router'
 import { useState, useEffect } from 'react'
@@ -23,6 +23,7 @@ import UserAPI from '@/api/user'
 
 /**
  * Errors
+ * @memberof Components.Login
  */
 const errors = {
   user: 'User error',
@@ -32,6 +33,7 @@ const errors = {
 
 /**
  * Login
+ * @memberof Components.Login
  */
 const Login = () => {
   // State

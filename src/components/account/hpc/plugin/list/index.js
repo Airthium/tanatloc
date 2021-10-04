@@ -7,7 +7,7 @@ import Delete from '../delete'
 
 /**
  * Plugins list
- * @memberof module:components/account
+ * @memberof Components.Account.HPC.Plugin
  * @param {Object} props Props
  */
 const List = ({ plugin, plugins, swr }) => {

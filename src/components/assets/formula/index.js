@@ -1,4 +1,4 @@
-/** @module components/assets/formula */
+/** @namespace Components.Assets.Formula */
 
 import { useState } from 'react'
 import { Checkbox, Input, Space } from 'antd'
@@ -9,6 +9,7 @@ const saveDelay = 1000
 
 /**
  * Formula
+ * @memberof Components.Assets.Formula
  * @param {Object} props Props
  */
 const Formula = ({

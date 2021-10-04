@@ -2,7 +2,7 @@ import Caller from '@/api/call'
 
 /**
  * Delete group
- * @memberof module:api/organization
+ * @memberof API.Organization
  * @param {Object} organization Organization
  */
 const del = async (organization) => {

@@ -82,7 +82,7 @@ const restartJobs = async () => {
  * @memberof Lib.Plugins
  * @returns {Array} List
  */
-const serverList = async () => {
+const serverList = () => {
   return plugins.map((plugin) => {
     return {
       category: plugin.category,
@@ -99,7 +99,7 @@ const serverList = async () => {
  * @param {boolean} [complete] Complete or filtered by user.authorizedplugins
  * @returns {Array} List
  */
-const clientList = async (user, complete) => {
+const clientList = (user, complete) => {
   if (complete) {
     return plugins.map((plugin) => ({
       category: plugin.category,

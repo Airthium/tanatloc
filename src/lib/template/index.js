@@ -36,7 +36,7 @@ const loadTemplates = async () => {
   )
 
   // Plugin templates
-  const plugins = await Plugins.serverList()
+  const plugins = Plugins.serverList()
   await Promise.all(
     plugins.map(async (plugin) => {
       if (plugin.category === 'Model')

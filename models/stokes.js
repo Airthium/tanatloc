@@ -2,7 +2,7 @@
  * Stokes
  * @memberof Models
  */
-const NavierStokesTime = {
+const Stokes = {
   category: 'Fluid',
   name: 'Stokes',
   algorithm: 'stokes',
@@ -167,4 +167,4 @@ const NavierStokesTime = {
   }
 }
 
-export default NavierStokesTime
+export default Stokes

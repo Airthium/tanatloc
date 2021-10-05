@@ -107,7 +107,7 @@ jest.mock('../../simulation', () => ({
 
 describe('lib/plugins', () => {
   test('serverList', async () => {
-    const list = await Plugins.serverList()
+    const list = Plugins.serverList()
     expect(list).toEqual([
       { category: 'HPC1', key: 'key1', lib: {} },
       { category: 'HPC2', key: 'key2', lib: { monitoring: jest.fn } }
@@ -116,15 +116,15 @@ describe('lib/plugins', () => {
 
   test('clientList', async () => {
     // Authorized
-    let list = await Plugins.clientList({ authorizedplugins: ['key1'] })
+    let list = Plugins.clientList({ authorizedplugins: ['key1'] })
     expect(list).toEqual([{ category: 'HPC1', key: 'key1', configuration: {} }])
 
     // Unauthorized
-    list = await Plugins.clientList({ authorizedplugins: [] })
+    list = Plugins.clientList({ authorizedplugins: [] })
     expect(list).toEqual([])
 
     // Complete
-    list = await Plugins.clientList(null, true)
+    list = Plugins.clientList(null, true)
     expect(list).toEqual([
       { category: 'HPC1', key: 'key1', configuration: {} },
       { category: 'HPC2', key: 'key2', configuration: {} }

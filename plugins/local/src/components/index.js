@@ -5,7 +5,7 @@ import { SelectOutlined } from '@ant-design/icons'
 /**
  * Local
  * @memberof Plugins.Local
- * @param {Object} props Props
+ * @param {Object} props Props `{ onSelect }`
  * @returns {jsx} Render
  */
 const Local = ({ onSelect }) => {

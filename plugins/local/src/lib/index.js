@@ -81,10 +81,10 @@ const clean = async (simulationPath) => {
  * Compute mesh
  * @memberof Plugins.Local
  * @param {string} simulationPath Simulation path
- * @param {Object} geometry Geometry { path, file, name }
- * @param {Object} mesh Mesh { path, parameters }
+ * @param {Object} geometry Geometry `{ path, file, name }`
+ * @param {Object} mesh Mesh `{ path, parameters }`
  * @param {Function} callback Callback
- * @returns {Object} Mesh { type, fileName, originPath, renderPath, json, glb }
+ * @returns {Object} Mesh `{ type, fileName, originPath, renderPath, json, glb }`
  */
 const computeMesh = async (simulationPath, geometry, mesh, callback) => {
   const geoFile = geometry.name + '.geo'
@@ -259,7 +259,7 @@ const computeMeshes = async (id, simulationPath, configuration, tasks) => {
 /**
  * Compute simulation
  * @memberof Plugins.Local
- * @param {string} simulation Simulation { id }
+ * @param {string} simulation Simulation `{ id }`
  * @param {string} algorithm Algorithm
  * @param {Object} configuration Configuration
  */

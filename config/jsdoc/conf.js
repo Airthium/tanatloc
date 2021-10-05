@@ -21,7 +21,7 @@ module.exports = {
     destination: './doc',
     recurse: true,
     readme: 'README.md',
-    template: './node_modules/air-jsdoc-template'
+    template: './node_modules/@airthium/air-jsdoc-template'
   },
   templateOptions: {
     icon: './public/images/icon.png',

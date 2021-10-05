@@ -7,6 +7,17 @@
   resolved "https://registry.yarnpkg.com/7zip-bin/-/7zip-bin-5.1.1.tgz#9274ec7460652f9c632c59addf24efb1684ef876"
   integrity sha512-sAP4LldeWNz0lNzmTird3uWfFDWWTeg6V/MsmyyLR9X1idwKBWIgt/ZvinqQldJm3LecKEs1emkbquO6PCiLVQ==
 
+"@airthium/air-jsdoc-template@1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@airthium/air-jsdoc-template/-/air-jsdoc-template-1.0.2.tgz#52c04f5374f9879634651c8b228c91ad6e440c07"
+  integrity sha512-/Drmmd7JpQmvuy7RfNieK94X0BjK2fQnsTqDPb2OReWXifVA2ERguhq54xXYyMUHh2uAcQ51Ny098O8ZVO5Tng==
+  dependencies:
+    "@jsdoc/util" "^0.2.5"
+    common-path-prefix "^3.0.0"
+    jsdoc "^3.6.7"
+    lodash "^4.17.21"
+    taffydb "^2.7.3"
+
 "@ant-design/colors@^6.0.0":
   version "6.0.0"
   resolved "https://registry.yarnpkg.com/@ant-design/colors/-/colors-6.0.0.tgz#9b9366257cffcc47db42b9d0203bb592c13c0298"
@@ -2150,13 +2161,6 @@ agent-base@6:
   integrity sha512-RZNwNclF7+MS/8bDg70amg32dyeZGZxiDuQmZxKLAlQjr3jGyLx+4Kkk58UO7D2QdgFIQCovuSuZESne6RG6XQ==
   dependencies:
     debug "4"
-
-air-jsdoc-template@../air-jsdoc-template/:
-  version "1.0.0"
-  dependencies:
-    "@jsdoc/util" "^0.2.5"
-    common-path-prefix "^3.0.0"
-    taffydb "^2.7.3"
 
 ajv-formats@^2.1.1:
   version "2.1.1"
@@ -6034,7 +6038,7 @@ js2xmlparser@^4.0.1:
   dependencies:
     xmlcreate "^2.0.3"
 
-jsdoc@3.6.7:
+jsdoc@3.6.7, jsdoc@^3.6.7:
   version "3.6.7"
   resolved "https://registry.yarnpkg.com/jsdoc/-/jsdoc-3.6.7.tgz#00431e376bed7f9de4716c6f15caa80e64492b89"
   integrity sha512-sxKt7h0vzCd+3Y81Ey2qinupL6DpRSZJclS04ugHDNmRUXGzqicMJ6iwayhSA0S0DwwX30c5ozyUthr1QKF6uw==

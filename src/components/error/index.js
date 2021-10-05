@@ -6,7 +6,7 @@ import { Layout, Typography } from 'antd'
 /**
  * Error page
  * @memberof Components.Error
- * @param {Object} props Props
+ * @param {Object} props Props `{ statusCode }`
  */
 function Error({ statusCode }) {
   // Router

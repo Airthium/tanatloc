@@ -6,8 +6,8 @@ import { tables } from '@/config/db'
  * @memberof Database.User
  * @param {string} id User's id (or key)
  * @param {Array} data Data
- * @param {string} key Key (override id selector)
- * @returns {Object} User { [key], ...data }
+ * @param {string} [key=id] Key (override id selector)
+ * @returns {Object} User `{ [key], ...data }`
  */
 const get = async (id, data, key = 'id') => {
   const response = await getter(tables.USERS, id, data, key)

@@ -4,7 +4,7 @@ import Caller from '@/api/call'
 /**
  * Use user
  * @memberof API.User
- * @returns {Array} [user, { mutateUser, clearUser, errorUser, loadingUser }]]
+ * @returns {Array} `[user, { mutateUser, clearUser, errorUser, loadingUser }]]`
  */
 const useUser = () => {
   const { data, error, mutate } = useSWR('/api/user', Caller.fetcher)

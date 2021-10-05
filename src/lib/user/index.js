@@ -10,8 +10,8 @@ import Email from '../email'
 /**
  * Add
  * @memberof Lib.User
- * @param {Object} user { email, password }
- * @returns {Object} User { alreadyExists: true } || { id, email }
+ * @param {Object} user `{ email, password }`
+ * @returns {Object} User `{ alreadyExists: true } || { id, email }`
  */
 const add = async ({ email, password }) => {
   const user = await UserDB.add({ email, password })
@@ -28,8 +28,8 @@ const add = async ({ email, password }) => {
  * @memberof Lib.User
  * @param {string} id User id
  * @param {Array} data Data
- * @param {?boolean} withData With data (default: true)
- * @returns {Object} User { id, ...data }
+ * @param {boolean} [withData=true] With data
+ * @returns {Object} User `{ id, ...data }`
  */
 const get = async (id, data, withData = true) => {
   const user = await UserDB.get(id, data)
@@ -55,7 +55,7 @@ const get = async (id, data, withData = true) => {
  * @param {string} key key
  * @param {Array} data Data
  * @param {string} keyName Key name
- * @returns {Object} { key, ...data }
+ * @returns {Object} `{ key, ...data }`
  */
 const getBy = async (key, data, keyName) => {
   return UserDB.get(key, data, keyName)
@@ -74,8 +74,8 @@ const getAll = async (data) => {
 /**
  * Login
  * @memberof Lib.User
- * @param {Object} data Data { email, password }
- * @returns {Object} User { id, email }
+ * @param {Object} data Data `{ email, password }`
+ * @returns {Object} User `{ id, email }`
  */
 const login = async ({ email, password }) => {
   const user = await UserDB.getByUsernameAndPassword({ email, password })
@@ -93,8 +93,8 @@ const login = async ({ email, password }) => {
 /**
  * Update
  * @memberof Lib.User
- * @param {Object} user user { id }
- * @param {Object} data Data [{ key, value, ... }, ...]
+ * @param {Object} user user `{ id }`
+ * @param {Object} data Data `[{ key, value, ... }, ...]`
  */
 const update = async (user, data) => {
   // Check email change
@@ -115,7 +115,7 @@ const update = async (user, data) => {
 /**
  * Delete user
  * @memberof Lib.User
- * @param {Object} user User { id }
+ * @param {Object} user User `{ id }`
  */
 const del = async (user) => {
   // Get data

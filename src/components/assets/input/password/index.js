@@ -27,7 +27,7 @@ const errors = {
 /**
  * Password item
  * @memberof Components.Assets.Input
- * @param {Object} props Props
+ * @param {Object} props Props `{ labelCol, wrapperCol, name, label, inputPlaceholder, inputAutoComplete, edit, style }`
  *
  * @description
  * Props:

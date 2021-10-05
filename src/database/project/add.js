@@ -4,10 +4,10 @@ import { tables } from '@/config/db'
 /**
  * Add
  * @memberof Database.Project
- * @param {Object} user User { id }
- * @param {Object} workspace Workspace { id }
- * @param {Object} project Project { title, description }
- * @returns {Object} Project { id, title, description, owners, workspace }
+ * @param {Object} user User `{ id }`
+ * @param {Object} workspace Workspace `{ id }`
+ * @param {Object} project Project `{ title, description }`
+ * @returns {Object} Project `{ id, title, description, owners, workspace }`
  */
 const add = async (user, workspace, { title, description }) => {
   const response = await query(

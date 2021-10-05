@@ -3,7 +3,7 @@ import Caller from '@/api/call'
 /**
  * Log
  * @memberof API.Simulation
- * @param {Object} simulation Simulation { id }
+ * @param {Object} simulation Simulation `{ id }`
  * @param {string} file File
  * @returns {string} Log
  */

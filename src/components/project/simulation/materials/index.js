@@ -14,7 +14,7 @@ import { enable, disable, setType, setPart } from '@/store/select/action'
 /**
  * Materials
  * @memberof Components.Project.Simulation.Materials
- * @param {Object} props Props
+ * @param {Object} props Props `{ geometry, simulation, swr, setVisible }`
  */
 const Materials = ({ geometry, simulation, swr, setVisible }) => {
   // State

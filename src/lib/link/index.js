@@ -9,8 +9,8 @@ import UserLib from '../user'
 /**
  * Add
  * @memberof Lib.Link
- * @param {Object} link Link { type, email, ?userid }
- * @returns {Object} Link { id, type, email, userid }
+ * @param {Object} link Link `{ type, email, ?userid }`
+ * @returns {Object} Link `{ id, type, email, userid }`
  */
 const add = async (link) => {
   return LinkDB.add(link)
@@ -21,7 +21,7 @@ const add = async (link) => {
  * @memberof Lib.Link
  * @param {string} id Link id
  * @param {Array} data Data
- * @returns {Object} Link { id, ...data }
+ * @returns {Object} Link `{ id, ...data }`
  */
 const get = async (id, data) => {
   return LinkDB.get(id, data)
@@ -31,7 +31,7 @@ const get = async (id, data) => {
  * Process
  * @memberof Lib.Link
  * @param {string} id Link id
- * @param {Object} data Data { email, password }
+ * @param {Object} data Data `{ email, password }`
  */
 const process = async (id, data) => {
   const link = await get(id, ['type', 'email', 'userid'])
@@ -72,7 +72,7 @@ const process = async (id, data) => {
 /**
  * Delete
  * @memberof Lib.Link
- * @param {Object} link Link { id }
+ * @param {Object} link Link `{ id }`
  */
 const del = async (link) => {
   await LinkDB.del(link)

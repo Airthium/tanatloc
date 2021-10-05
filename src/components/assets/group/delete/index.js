@@ -19,7 +19,7 @@ const errors = {
 /**
  * Delete group
  * @memberof Components.Assets.Group
- * @param {Object} props Props
+ * @param {Object} props Props `{ group, swr }`
  *
  * @description
  * Props:

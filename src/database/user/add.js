@@ -6,8 +6,8 @@ import { tables } from '@/config/db'
 /**
  * Add
  * @memberof Database.User
- * @param {Object} user User { email, password }
- * @returns {Object} User { alreadyExists: true } || { id, email }
+ * @param {Object} user User `{ email, password }`
+ * @returns {Object} User `{ alreadyExists: true } || { id, email }`
  */
 const add = async ({ email, password }) => {
   // Check email

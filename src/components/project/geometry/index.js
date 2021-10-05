@@ -31,7 +31,7 @@ const errors = {
 /**
  * Geometry
  * @memberof Components.Project.Geometry
- * @param {Object} props Props
+ * @param {Object} props Props `{ project, geometry, swr, close }`
  */
 const Geometry = ({ project, geometry, swr, close }) => {
   // State

@@ -9,7 +9,7 @@ import DeleteDialog from './delete'
 /**
  * Dialog
  * @memberof Components.Assets.Dialog
- * @param {Object} props Props
+ * @param {Object} props Props `{ title, visible, initialValues, onCancel, onOk, okButtonProps, loading, children }`
  */
 const Dialog = ({
   title,

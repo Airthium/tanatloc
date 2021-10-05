@@ -5,7 +5,7 @@ import Caller from '@/api/call'
  * Use groups
  * @memberof API.Group
  * @param {string} id Id
- * @returns {Object} [ groups, { mutateGroups, addOneGroup, delOneGroup, mutateOneGroup, errorGroups, loadingGroups }]
+ * @returns {Object} `[ groups, { mutateGroups, addOneGroup, delOneGroup, mutateOneGroup, errorGroups, loadingGroups }]`
  */
 const useGroups = (id) => {
   const { data, error, mutate } = useSWR('/api/groups/' + id, Caller.fetcher)

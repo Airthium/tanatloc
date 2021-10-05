@@ -5,7 +5,7 @@ import { EditOutlined } from '@ant-design/icons'
 /**
  * Edit button
  * @memberof Components.Assets.Button
- * @param {Object} props Props
+ * @param {Object} props Props `{ disabled, loading, children, onEdit }`
  */
 const EditButton = ({ disabled, loading, children, onEdit }) => {
   /**

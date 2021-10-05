@@ -20,7 +20,7 @@ const errors = {
 /**
  * Delete
  * @memberof Components.Organizations
- * @param {Object} props Props
+ * @param {Object} props Props `{ organization, swr }`
  */
 const Delete = ({ organization, swr }) => {
   // State

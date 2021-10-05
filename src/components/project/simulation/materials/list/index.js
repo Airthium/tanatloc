@@ -11,7 +11,7 @@ import { enable, disable, select } from '@/store/select/action'
 /**
  * List materials
  * @memberof Components.Project.Simulation.Materials
- * @param {Object} props Props
+ * @param {Object} props Props `{ simulation, swr, onEdit }`
  */
 const List = ({ simulation, swr, onEdit }) => {
   // State

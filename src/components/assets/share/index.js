@@ -22,7 +22,7 @@ const errors = {
 /**
  * Share
  * @memberof Components.Assets.Share
- * @param {Object} props Props
+ * @param {Object} props Props `{ disabled, workspace, project, organizations, swr, style }`
  */
 const Share = ({ disabled, workspace, project, organizations, swr, style }) => {
   // State

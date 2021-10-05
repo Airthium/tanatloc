@@ -18,7 +18,7 @@ const errors = {
 /**
  * Add workspace
  * @memberof Components.Workspace
- * @param {Object} props Props
+ * @param {Object} props Props `{ visible, swr, setVisible }`
  */
 const Add = ({ visible, swr, setVisible }) => {
   // Sate

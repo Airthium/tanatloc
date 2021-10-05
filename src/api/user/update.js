@@ -3,7 +3,7 @@ import Caller from '@/api/call'
 /**
  * Update
  * @memberof API.User
- * @param {Array} data Data [{ key: value }, ...]
+ * @param {Array} data Data `[{ key, value }, ...]`
  */
 const update = async (data) => {
   await Caller.call('/api/user', {

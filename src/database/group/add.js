@@ -5,8 +5,8 @@ import { tables } from '@/config/db'
  * Add
  * @memberof Database.Group
  * @param {Object} organization Organization
- * @param {Object} group Group { name, users }
- * @returns {Object} Group { id, name, users, organization }
+ * @param {Object} group Group `{ name, users }`
+ * @returns {Object} Group `{ id, name, users, organization }`
  */
 const add = async (organization, { name, users }) => {
   const response = await query(

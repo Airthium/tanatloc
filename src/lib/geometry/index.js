@@ -12,9 +12,9 @@ import Tools from '../tools'
 /**
  * Add
  * @memberof Lib.Geometry
- * @param {Object} project Project: { id }
- * @param {Object} geometry Geometry: { name, uid, buffer }
- * @returns {Object} Geometry { id, name, originalfilename, extension, uploadfilename, json, glb, summary }
+ * @param {Object} project Project `{ id }`
+ * @param {Object} geometry Geometry `{ name, uid, buffer }`
+ * @returns {Object} Geometry `{ id, name, originalfilename, extension, uploadfilename, json, glb, summary }`
  */
 const add = async (project, geometry) => {
   // Add geometry
@@ -147,7 +147,7 @@ const add = async (project, geometry) => {
  * @memberof Lib.Geometry
  * @param {string} id Geometry's id
  * @param {Array} data Data
- * @returns {Object} Geometry { id, ...data }
+ * @returns {Object} Geometry `{ id, ...data }`
  */
 const get = async (id, data) => {
   return GeometryDB.get(id, data)
@@ -156,8 +156,8 @@ const get = async (id, data) => {
 /**
  * Update geometry
  * @memberof Lib.Geometry
- * @param {Object} geometry Geometry { id }
- * @param {Object} data Data [{ key, value, ... }, ...]
+ * @param {Object} geometry Geometry `{ id }`
+ * @param {Object} data Data `[{ key, value, ... }, ...]`
  */
 const update = async (geometry, data) => {
   // Update
@@ -167,7 +167,7 @@ const update = async (geometry, data) => {
 /**
  * Delete
  * @memberof Lib.Geometry
- * @param {Object} geometry Geometry { id, ?json, ?glb }
+ * @param {Object} geometry Geometry `{ id, ?json, ?glb }`
  */
 const del = async (geometry) => {
   // Data
@@ -236,8 +236,8 @@ const del = async (geometry) => {
 /**
  * Read
  * @memberof Lib.Geometry
- * @param {Object} geometry Geometry {id }
- * @returns {Object} Geometry { buffer, extension }
+ * @param {Object} geometry Geometry `{id }`
+ * @returns {Object} Geometry `{ buffer, extension }`
  */
 const read = async (geometry) => {
   // Data
@@ -258,8 +258,8 @@ const read = async (geometry) => {
 /**
  * Read part
  * @memberof Lib.Geometry
- * @param {Object} geometry Geometry { id }
- * @returns {Object} Part { uuid, buffer }
+ * @param {Object} geometry Geometry `{ id }`
+ * @returns {Object} Part `{ uuid, buffer }`
  */
 const readPart = async (geometry) => {
   // Data

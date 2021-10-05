@@ -18,7 +18,7 @@ import Utils from '@/lib/utils'
 /**
  * Selector
  * @memberof Components.Assets.Selector
- * @param {Object} props Props
+ * @param {Object} props Props `{ geometry, alreadySelected, updateSelected }`
  */
 const Selector = ({ geometry, alreadySelected, updateSelected }) => {
   // State

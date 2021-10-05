@@ -13,10 +13,10 @@ import Tools from '../tools'
 /**
  * Add
  * @memberof Lib.Avatar
- * @param {Object} parent Parent { id }
+ * @param {Object} parent Parent `{ id }`
  * @param {string} type Type (project or user)
- * @param {File} file File { name, uid, data }
- * @returns {Object} Avatar { id, name }
+ * @param {File} file File `{ name, uid, data }`
+ * @returns {Object} Avatar `{ id, name }`
  */
 const add = async (parent, type, file) => {
   // Write file
@@ -66,7 +66,7 @@ const read = async (id) => {
  * @memberof Lib.Avatar
  * @param {string} id Id
  * @param {Array} data Data
- * @returns {Object} Avatar { id, ...data }
+ * @returns {Object} Avatar `{ id, ...data }`
  */
 const get = async (id, data) => {
   return AvatarDB.get(id, data)
@@ -75,7 +75,7 @@ const get = async (id, data) => {
 /**
  * Delete
  * @memberof Lib.Avatar
- * @param {Object} parent Parent { id }
+ * @param {Object} parent Parent `{ id }`
  * @param {string} type Type (project or user)
  * @param {string} id Avatar's id
  */

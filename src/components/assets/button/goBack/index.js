@@ -5,7 +5,7 @@ import { ArrowLeftOutlined } from '@ant-design/icons'
 /**
  * Go back
  * @memberof Components.Assets.Button
- * @param {Object} props Props
+ * @param {Object} props Props `{ children, onClick}`
  */
 const GoBack = ({ children, onClick }) => {
   return (

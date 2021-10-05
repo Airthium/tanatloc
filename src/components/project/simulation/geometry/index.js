@@ -19,7 +19,7 @@ const errors = {
 /**
  * Geometry
  * @memberof Components.Project.Simulation
- * @param {Object} props Props
+ * @param {Object} props Props `{ geometries, geometry, simulation, setGeometry, swr }`
  */
 const Geometry = ({ geometries, geometry, simulation, setGeometry, swr }) => {
   // State

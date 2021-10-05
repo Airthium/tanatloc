@@ -7,8 +7,8 @@ import Sentry from '@/lib/sentry'
  * Error
  * @memberof Components.Assets.Notification
  * @param {string} title Title
- * @param {Object?} err Error
- * @param {bool?} display Display notification [default: true]
+ * @param {Object} [err] Error
+ * @param {bool} [display=true] Display notification
  */
 const Error = (title, err, display = true) => {
   display &&

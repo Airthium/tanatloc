@@ -15,7 +15,7 @@ const errors = {
 /**
  * HPC plugins
  * @memberof Components.Account
- * @param {Object} props Props
+ * @param {Object} props Props `{ user }`
  */
 const HPC = ({ user }) => {
   // State

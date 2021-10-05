@@ -19,7 +19,7 @@ const errors = {
 /**
  * Delete workspace
  * @memberof Components.Workspace
- * @param {Object} props Props
+ * @param {Object} props Props `{ workspace, swr }`
  */
 const Delete = ({ workspace, swr }) => {
   // Sate

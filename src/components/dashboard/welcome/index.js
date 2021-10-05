@@ -8,7 +8,7 @@ import Add from '@/components/workspace/add'
 /**
  * Welcome
  * @memberof Components.Dashboard
- * @param {Object} props Props
+ * @param {Object} props Props `{ swr }`
  */
 const Welcome = ({ swr }) => {
   // State

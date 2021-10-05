@@ -4,8 +4,8 @@ import { tables } from '@/config/db'
 /**
  * Get by email and password
  * @memberof Database.User
- * @param {Object} user User { email, password }
- * @returns {Object} User { id }
+ * @param {Object} user User `{ email, password }`
+ * @returns {Object} User `{ id }`
  */
 const getByUsernameAndPassword = async ({ email, password }) => {
   const response = await query(

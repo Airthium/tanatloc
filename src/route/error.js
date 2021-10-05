@@ -5,7 +5,7 @@ import Sentry from '@/lib/sentry'
  * @memberof Route
  * @param {number} status Status code
  * @param {string} message Message
- * @param {?boolean} display Display (default: true)
+ * @param {boolean} [display=true] Display
  * @returns {Error} Error
  */
 const error = (status, message, display = true) => {

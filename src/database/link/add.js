@@ -4,8 +4,8 @@ import { tables } from '@/config/db'
 /**
  * Add
  * @memberof Database.Link
- * @param {Object} link Link { type, email, ?userid }
- * @returns {Object} Link { id, type, email, userid }
+ * @param {Object} link Link `{ type, email, ?userid }`
+ * @returns {Object} Link `{ id, type, email, userid }`
  */
 const add = async ({ type, email, userid }) => {
   const response = await query(

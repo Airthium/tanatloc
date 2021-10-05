@@ -9,7 +9,7 @@ import Plugins from '../plugins'
 /**
  * Add
  * @memberof Lib.Plugin
- * @param {Object} user User { id }
+ * @param {Object} user User `{ id }`
  * @param {Object} plugin Plugin
  */
 const add = async ({ id }, plugin) => {
@@ -39,7 +39,7 @@ const add = async ({ id }, plugin) => {
 /**
  * Get by user
  * @memberof Lib.Plugin
- * @param {string} user User { id }
+ * @param {string} user User `{ id }`
  * @returns {Array} Plugins
  */
 const getByUser = async ({ id }) => {
@@ -52,7 +52,7 @@ const getByUser = async ({ id }) => {
 /**
  * Update
  * @memberof Lib.Plugin
- * @param {User} user User { id }
+ * @param {User} user User `{ id }`
  * @param {Object} plugin Plugin
  */
 const update = async ({ id }, plugin) => {
@@ -88,8 +88,8 @@ const update = async ({ id }, plugin) => {
 /**
  * Delete
  * @memberof Lib.Plugin
- * @param {Object} user User { id }
- * @param {Object} plugin Plugin { uuid }
+ * @param {Object} user User `{ id }`
+ * @param {Object} plugin Plugin `{ uuid }`
  */
 const del = async ({ id }, plugin) => {
   // Get

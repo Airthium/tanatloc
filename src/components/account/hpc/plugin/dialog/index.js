@@ -19,7 +19,7 @@ const errors = {
 /**
  * Plugin dialog
  * @memberof Components.Account.HPC.Plugin
- * @param {Object} props Props
+ * @param {Object} props Props `{ plugin, swr, edit }`
  */
 const PluginDialog = ({ plugin, swr, edit }) => {
   // State

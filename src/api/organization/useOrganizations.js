@@ -4,6 +4,7 @@ import Caller from '@/api/call'
 /**
  * Use organizations
  * @memberof API.Organization
+ * @returns {Array} `[organizations, {mutateOrganizations, addOneOrganization, delOneOrganization, mutateOneOrganization, errorOrganizations, loadingOrganizations }]`
  */
 const useOrganizations = () => {
   const { data, error, mutate } = useSWR('/api/organizations', Caller.fetcher)

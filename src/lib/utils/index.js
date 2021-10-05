@@ -35,7 +35,7 @@ const componentToHex = (c) => {
 /**
  * RGB to Hex
  * @memberof Lib.Utils
- * @param {Object} color Color {r, g, b}
+ * @param {Object} color Color `{r, g, b}`
  * @returns {string} Hex
  */
 const rgbToHex = (color) => {
@@ -50,7 +50,7 @@ const rgbToHex = (color) => {
 /**
  * rgb to CSS rgba
  * @memberof Lib.Utils
- * @param {Object} color Color {r, g, b}
+ * @param {Object} color Color `{r, g, b}`
  * @param {number} alpha Alpha
  * @returns {string} rgba
  */

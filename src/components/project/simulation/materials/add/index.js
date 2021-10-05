@@ -18,7 +18,7 @@ const errors = {
 /**
  * Add material
  * @memberof Components.Project.Simulation.Materials
- * @param {Object} props Props
+ * @param {Object} props Props `{ disabled, material, simulation, geometry, swr, close }`
  */
 const Add = ({ disabled, material, simulation, geometry, swr, close }) => {
   // State

@@ -56,7 +56,7 @@ const loadModels = (user, models, plugins) => {
 /**
  * Simulation Selector
  * @memberof Components.Project.Simulation
- * @param {Object} props Props
+ * @param {Object} props Props `{ user, visible, onOk, onCancel }`
  */
 const Selector = ({ user, visible, onOk, onCancel }) => {
   // State
@@ -140,7 +140,7 @@ Selector.propTypes = {
 /**
  * Simulation Updater
  * @memberof Components.Project.Simulation
- * @param {Object} props Props
+ * @param {Object} props Props `{ user, simulation, swr }`
  */
 const Updater = ({ user, simulation, swr }) => {
   // State

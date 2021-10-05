@@ -3,7 +3,7 @@ import Caller from '@/api/call'
 /**
  * Run
  * @memberof API.Simulation
- * @param {Object} simulation Simulation { id }
+ * @param {Object} simulation Simulation `{ id }`
  * @returns {Object} { ok: true }
  */
 const run = async (simulation) => {

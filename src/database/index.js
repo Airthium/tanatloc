@@ -56,7 +56,7 @@ const getter = async (db, id, data, key = 'id') => {
  * @memberof Database
  * @param {string} db Database
  * @param {string} id Id
- * @param {Array} data Data [{ type, method, key, path, value }, ...]
+ * @param {Array} data Data `[{ type, method, key, path, value }, ...]`
  */
 const updater = async (db, id, data) => {
   const queryTextBegin = 'UPDATE ' + db + ' SET '

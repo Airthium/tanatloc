@@ -17,9 +17,9 @@ const archiveFileName = 'resultsArchive.zip'
 /**
  * Load
  * @memberof Lib.Result
- * @param {Object} simulation Simulation { id }
- * @param {Object} result Result { originPath, glb } }
- * @returns {Object} Result { buffer }
+ * @param {Object} simulation Simulation `{ id }`
+ * @param {Object} result Result `{ originPath, glb } }`
+ * @returns {Object} Result `{ buffer }`
  */
 const load = async (simulation, result) => {
   const buffer = await Tools.readFile(
@@ -34,8 +34,8 @@ const load = async (simulation, result) => {
 /**
  * Download
  * @memberof Lib.Result
- * @param {Object} simulation Simulation { id }
- * @param {Object} result Result { originPath, fileName } }
+ * @param {Object} simulation Simulation `{ id }`
+ * @param {Object} result Result `{ originPath, fileName } }`
  * @return {Object} Read stream
  */
 const download = (simulation, result) => {
@@ -52,7 +52,7 @@ const download = (simulation, result) => {
 /**
  * Archive
  * @memberof Lib.Result
- * @param {Object} simulation Simulation { id } }
+ * @param {Object} simulation Simulation `{ id } }`
  * @returns {Object} Read stream
  */
 const archive = async (simulation) => {

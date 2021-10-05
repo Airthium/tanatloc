@@ -10,9 +10,9 @@ import Project from '../project'
 /**
  * Add
  * @memberof Lib.Workspace
- * @param {Object} user User { id }
- * @param {Object} workspace Workspace { name }
- * @returns {Object} Workspace { id, name, owners }
+ * @param {Object} user User `{ id }`
+ * @param {Object} workspace Workspace `{ name }`
+ * @returns {Object} Workspace `{ id, name, owners }`
  */
 const add = async (user, { name }) => {
   // Add workspace
@@ -37,8 +37,8 @@ const add = async (user, { name }) => {
  * @memberof Lib.Workspace
  * @param {string} id Id
  * @param {Array} data Data
- * @param {?boolean} withData With data (default: true)
- * @returns {Object} Workspace { id, ...data }
+ * @param {boolean} [withData=true] With data
+ * @returns {Object} Workspace `{ id, ...data }`
  */
 const get = async (id, data, withData = true) => {
   const workspace = await WorkspaceDB.get(id, data)
@@ -101,7 +101,7 @@ const get = async (id, data, withData = true) => {
 /**
  * Get by user
  * @memberof Lib.Workspace
- * @param {Object} user User { id }
+ * @param {Object} user User `{ id }`
  * @returns {Array} Workspaces
  */
 const getByUser = async ({ id }) => {
@@ -207,8 +207,8 @@ const getByUser = async ({ id }) => {
 /**
  * Update
  * @memberof Lib.Workspace
- * @param {Object} workspace Workspace { id }
- * @param {Object} data Data [{ key, value, ... }, ...]
+ * @param {Object} workspace Workspace `{ id }`
+ * @param {Object} data Data `[{ key, value, ... }, ...]`
  */
 const update = async (workspace, data) => {
   // Get data
@@ -261,8 +261,8 @@ const update = async (workspace, data) => {
 /**
  * Delete
  * @memberof Lib.Workspace
- * @param {Object} user User { id }
- * @param {Object} workspace Workspace { id }
+ * @param {Object} user User `{ id }`
+ * @param {Object} workspace Workspace `{ id }`
  */
 const del = async (user, workspace) => {
   // Get data

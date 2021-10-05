@@ -23,7 +23,7 @@ const errors = {
 /**
  * Cloud server
  * @memberof Components.Project.Simulation
- * @param {Object} props Props
+ * @param {Object} props Props `{ disabled, cloudServer, onOk }`
  */
 const CloudServer = ({ disabled, cloudServer, onOk }) => {
   // State

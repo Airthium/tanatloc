@@ -6,7 +6,7 @@ import { tables } from '@/config/db'
  * @memberof Database.Project
  * @param {string} id Id
  * @param {Array} data Data
- * @returns {Object} Project { id, ...data }
+ * @returns {Object} Project `{ id, ...data }`
  */
 const get = async (id, data) => {
   const response = await getter(tables.PROJECTS, id, data)

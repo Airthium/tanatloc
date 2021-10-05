@@ -61,6 +61,7 @@ const dataBase = {
 /**
  * Material database
  * @memberof Components.Project.Simulation.Materials
+ * @param {Object} props Props `{ onSelect }`
  */
 const DataBase = ({ onSelect }) => {
   const [visible, setVisible] = useState()

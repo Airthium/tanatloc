@@ -41,7 +41,7 @@ const writeFile = async (location, name, content) => {
  * Read file
  * @memberof Lib.Tools
  * @param {string} file File name
- * @param {?string} type Type (json)
+ * @param {string} [type] Type (json)
  * @returns {string | Object} File content or JSON
  */
 const readFile = async (file, type) => {
@@ -69,10 +69,10 @@ const copyFile = async (origin, destination) => {
  * Convert file
  * @memberof Lib.Tools
  * @param {string} location Location
- * @param {Object} file File { name, target }
- * @param {Function?} callback Callback
- * @param {Object?} param Parameters { isResult: false }
- * @returns {Object} Data { json, glb }
+ * @param {Object} file File `{ name, target }`
+ * @param {Function} [callback] Callback
+ * @param {Object} [param] Parameters `{ isResult: true }`
+ * @returns {Object} Data `{ json, glb }`
  */
 const convert = async (location, file, callback, param) => {
   const origin = file.name

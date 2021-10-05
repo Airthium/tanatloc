@@ -20,7 +20,7 @@ const errors = {
 /**
  * Delete boundary condition
  * @memberof Components.Project.Simulation.BoundaryConditions
- * @param {Object} props Props
+ * @param {Object} props Props `{ simulation, type, index, swr }`
  */
 const Delete = ({ simulation, type, index, swr }) => {
   // State

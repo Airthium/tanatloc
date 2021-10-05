@@ -95,8 +95,8 @@ const serverList = async () => {
 /**
  * Client list
  * @memberof Lib.Plugins
- * @param {Object} user User
- * @param {?boolean} complete Complete or filtered by user.authorizedplugins
+ * @param {Object} user User `{ authorizedplugins }`
+ * @param {boolean} [complete] Complete or filtered by user.authorizedplugins
  * @returns {Array} List
  */
 const clientList = async (user, complete) => {

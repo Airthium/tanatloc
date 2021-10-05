@@ -4,8 +4,8 @@ import { tables } from '@/config/db'
 /**
  * Add
  * @memberof Database.Organization
- * @param {Object} organization Organization { name, owners }
- * @returns {Object} Organization { id, name, owners }
+ * @param {Object} organization Organization `{ name, owners }`
+ * @returns {Object} Organization `{ id, name, owners }`
  */
 const add = async ({ name, owners }) => {
   const response = await query(

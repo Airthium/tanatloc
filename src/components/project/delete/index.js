@@ -19,7 +19,7 @@ const errors = {
 /**
  * Delete project
  * @memberof Components.Project
- * @param {Object} props Props
+ * @param {Object} props Props `{ disabled, workspace, project, swr }`
  */
 const Delete = ({ disabled, workspace, project, swr }) => {
   // Sate

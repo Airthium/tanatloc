@@ -12,7 +12,7 @@ import HPC from './hpc'
 /**
  * Account
  * @memberof Components.Account
- * @param {Object} props Props
+ * @param {Object} props Props `{ user, swr }`
  */
 const Account = ({ user, swr }) => {
   // Data

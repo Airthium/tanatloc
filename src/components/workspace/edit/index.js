@@ -19,7 +19,7 @@ const errors = {
 /**
  * Edit workspace
  * @memberof Components.Workspace
- * @param {Object} props Props
+ * @param {Object} props Props `{ workspace, swr }`
  */
 const Edit = ({ workspace, swr }) => {
   // Sate

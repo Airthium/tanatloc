@@ -4,7 +4,7 @@ import Caller from '@/api/call'
  * Update by id
  * @memberof API.User
  * @param {string} id User id
- * @param {Array} data Data [{ key: value }, ...]
+ * @param {Array} data Data `[{ key: value }, ...]`
  */
 const updateById = async (id, data) => {
   await Caller.call('/api/user/' + id, {

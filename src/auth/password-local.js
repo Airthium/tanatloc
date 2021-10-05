@@ -4,6 +4,7 @@ import Local from 'passport-local'
 import UserDB from '@/database/user'
 
 /**
+ * Local strategy
  * @memberof Auth.PasswordLocal
  */
 const localStrategy = new Local.Strategy(

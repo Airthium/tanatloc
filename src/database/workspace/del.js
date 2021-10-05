@@ -4,7 +4,7 @@ import { tables } from '@/config/db'
 /**
  * Delete
  * @memberof Database.Workspace
- * @param {Object} workspace Workspace { id }
+ * @param {Object} workspace Workspace `{ id }`
  */
 const del = async (workspace) => {
   // Delete workspace

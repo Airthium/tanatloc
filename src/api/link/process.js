@@ -4,7 +4,7 @@ import Caller from '@/api/call'
  * Process
  * @memberof API.Link
  * @param {string} id Id
- * @param {Object} data Data { email, password }
+ * @param {Object} data Data `{ email, password }`
  *
  */
 const process = async (id, data) => {

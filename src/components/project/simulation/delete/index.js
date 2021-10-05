@@ -19,7 +19,7 @@ const errors = {
 /**
  * Delete
  * @memberof Components.Project.Simulation
- * @param {Object} props Props
+ * @param {Object} props Props `{ project, simulation, swr }`
  */
 const Delete = ({ project, simulation, swr }) => {
   // State

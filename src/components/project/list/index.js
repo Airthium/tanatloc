@@ -22,7 +22,7 @@ const errors = {
 /**
  * Projects' list
  * @memberof Components.Project
- * @param {Object} props Props
+ * @param {Object} props Props `{ user, page, workspace, projects, organizations, filter, swr }`
  */
 const ProjectList = ({
   user,

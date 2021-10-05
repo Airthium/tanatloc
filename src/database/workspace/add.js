@@ -4,9 +4,9 @@ import { tables } from '@/config/db'
 /**
  * Add
  * @memberof Database.Workspace
- * @param {string} user User { id }
- * @param {Object} workspace Workspace { name }
- * @returns {Object} Workspace { id, name, owners }
+ * @param {string} user User `{ id }`
+ * @param {Object} workspace Workspace `{ name }`
+ * @returns {Object} Workspace `{ id, name, owners }`
  */
 const add = async ({ id }, { name }) => {
   const response = await query(

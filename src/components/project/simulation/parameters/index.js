@@ -26,7 +26,7 @@ const errors = {
 /**
  * Parameters
  * @memberof Components.Project.Simulation
- * @param {Object} props Props
+ * @param {Object} props Props `{ simulation, swr }`
  */
 const Parameters = ({ simulation, swr }) => {
   // State

@@ -74,6 +74,7 @@ const errors = {
 /**
  * ThreeView
  * @memberof Components.Project.View
+ * @param {Object} props Props `{ loading, project, part }`
  */
 const ThreeView = ({ loading, project, part }) => {
   // Ref
@@ -811,7 +812,7 @@ const ThreeView = ({ loading, project, part }) => {
 /**
  * View
  * @memberof Components.Project.View
- * @param {Object} Props props
+ * @param {Object} props Props `{ project, simulation, geometry, result }`
  */
 const View = ({ project, simulation, geometry, result }) => {
   // State

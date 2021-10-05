@@ -11,7 +11,7 @@ import Edit from '../edit'
 /**
  * Boundary condition
  * @memberof Components.Project.Simulation.BoundaryConditions
- * @param {Object} props Props
+ * @param {Object} props Props `{ visible, simulation, geometry, boundaryConditions, boundaryCondition, swr, close }`
  */
 const BoundaryCondition = ({
   visible,

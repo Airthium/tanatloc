@@ -17,7 +17,7 @@ const errors = {
 /**
  * Edit boundary condition
  * @memberof Components.Project.Simulation.BoundaryConditions
- * @param {Object} props Props
+ * @param {Object} props Props `{ disabled, simulation, boundaryCondition, oldBoundaryCondition, geometry, swr, close }`
  */
 const Edit = ({
   disabled,

@@ -20,7 +20,7 @@ const errors = {
 /**
  * Delete material
  * @memberof Components.Project.Simulation.Materials
- * @param {Object} props Props
+ * @param {Object} props Props `{ simulation, swr, index }`
  */
 const Delete = ({ simulation, swr, index }) => {
   // State

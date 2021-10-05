@@ -58,7 +58,7 @@ const auth = async (user, object, parentObject) => {
  * @memberof Route
  * @param {Object} user User { id }
  * @param {Object} workspace Workspace {id }
- * @param {?number} status Override workspace error status
+ * @param {number} [status] Override workspace error status
  */
 const checkWorkspaceAuth = async (user, workspace, status) => {
   const workspaceAuth = await WorkspaceLib.get(
@@ -76,7 +76,7 @@ const checkWorkspaceAuth = async (user, workspace, status) => {
  * @memberof Route
  * @param {Object} user User { id }
  * @param {Object} project Project { id }
- * @param {?number} status Override project error status
+ * @param {number} [status] Override project error status
  */
 const checkProjectAuth = async (user, project, status) => {
   const projectAuth = await ProjectLib.get(
@@ -102,7 +102,7 @@ const checkProjectAuth = async (user, project, status) => {
  * @memberof Route
  * @param {Object} user User { id }
  * @param {Object} geometry Geometry { id }
- * @param {?number} status Override simulation error status
+ * @param {number} [status] Override simulation error status
  */
 const checkGeometryAuth = async (user, geometry, status) => {
   const geometryAuth = await GeometryLib.get(geometry.id, ['project'])
@@ -131,7 +131,7 @@ const checkGeometryAuth = async (user, geometry, status) => {
  * @memberof Route
  * @param {Object} user User { id }
  * @param {Object} simulation Simulation { id }
- * @param {?number} status Override simulation error status
+ * @param {number} [status] Override simulation error status
  */
 const checkSimulationAuth = async (user, simulation, status) => {
   const simulationAuth = await SimulationLib.get(simulation.id, ['project'])
@@ -161,7 +161,7 @@ const checkSimulationAuth = async (user, simulation, status) => {
  * @memberof Route
  * @param {Object} user User { id }
  * @param {Object} organization Organization { id }
- * @param {?number} status Override project error status
+ * @param {number} [status] Override project error status
  */
 const checkOrganizationAuth = async (user, organization, status) => {
   const organizationAuth = await OrganizationLib.get(organization.id, [

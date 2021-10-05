@@ -5,7 +5,7 @@ import { PlusCircleOutlined } from '@ant-design/icons'
 /**
  * Add button
  * @memberof Components.Assets.Button
- * @param {Object} props Props
+ * @param {Object} props Props `{ disabled, loading, children onAdd }`
  */
 const AddButton = ({ disabled, loading, children, onAdd }) => {
   /**

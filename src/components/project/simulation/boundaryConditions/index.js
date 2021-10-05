@@ -22,7 +22,7 @@ const errors = {
 /**
  * Boundary condition
  * @memberof Components.Project.Simulation.BoundaryConditions
- * @param {Object} props Props
+ * @param {Object} props Props `{ geometry, simulation, swr, setVisible }`
  */
 const BoundaryConditions = ({ geometry, simulation, swr, setVisible }) => {
   // State

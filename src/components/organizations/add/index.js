@@ -19,7 +19,7 @@ const errors = {
 /**
  * Add
  * @memberof Components.Organizations
- * @param {Object} props Props
+ * @param {Object} props Props `{ swr }`
  */
 const Add = ({ swr }) => {
   // State

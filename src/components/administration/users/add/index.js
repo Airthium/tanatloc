@@ -20,7 +20,7 @@ const errors = {
 /**
  * Add
  * @memberof Components.Administration.Users
- * @param {Object} props Props
+ * @param {Object} props Props `{ plugins, swr }`
  */
 const Add = ({ plugins, swr }) => {
   // State

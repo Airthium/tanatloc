@@ -11,7 +11,7 @@ import Organization from '@/components/assets/organization'
 /**
  * Organizations
  * @memberof Components.Organizations
- * @param {Object} props Props
+ * @param {Object} props Props `{ user, organizations, swr }`
  */
 const Organizations = ({ user, organizations, swr }) => {
   // State

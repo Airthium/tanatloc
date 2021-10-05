@@ -3,7 +3,7 @@ import Caller from '@/api/call'
 /**
  * Archive
  * @memberof API.Result
- * @param {Object} simulation  Simulation { id }
+ * @param {Object} simulation  Simulation `{ id }`
  * @returns {Object} Archive read stream
  */
 const archive = async (simulation) => {

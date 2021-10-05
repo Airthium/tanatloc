@@ -3,7 +3,7 @@ import Caller from '@/api/call'
 /**
  * Delete group
  * @memberof API.Organization
- * @param {Object} organization Organization
+ * @param {Object} organization Organization `{ id }`
  */
 const del = async (organization) => {
   return Caller.call('/api/organization', {

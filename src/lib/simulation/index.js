@@ -15,9 +15,9 @@ import Plugins from '../plugins'
 /**
  * Add
  * @memberof Lib.Simulation
- * @param {Object} project Project { id }
- * @param {Object} simulation Simulation { name, scheme } }
- * @returns {Object} Simulation { id, name, scheme, project }
+ * @param {Object} project Project `{ id }`
+ * @param {Object} simulation Simulation `{ name, scheme }`
+ * @returns {Object} Simulation `{ id, name, scheme, project }`
  */
 const add = async (project, simulation) => {
   // Add simulation
@@ -45,7 +45,7 @@ const add = async (project, simulation) => {
  * @memberof Lib.Simulation
  * @param {string} id Simulation's id
  * @param {Array} data Data
- * @returns {Object} Simulation { id, ...data }
+ * @returns {Object} Simulation `{ id, ...data }`
  */
 const get = async (id, data) => {
   return SimulationDB.get(id, data)
@@ -64,8 +64,8 @@ const getAll = async (data) => {
 /**
  * Update
  * @memberof Lib.Simulation
- * @param {Object} simulation Simulation { id }
- * @param {Object} data Data [{ key, value, ... }, ...]
+ * @param {Object} simulation Simulation `{ id }`
+ * @param {Object} data Data `[{ key, value, ... }, ...]`
  */
 const update = async (simulation, data) => {
   // Update
@@ -75,7 +75,7 @@ const update = async (simulation, data) => {
 /**
  * Delete
  * @memberof Lib.Simulation
- * @param {Object} simulation Simulation { id }
+ * @param {Object} simulation Simulation `{ id }`
  */
 const del = async (simulation) => {
   // Data
@@ -106,8 +106,8 @@ const del = async (simulation) => {
 /**
  * Run
  * @memberof Lib.Simulation
- * @param {Object} user User { id }
- * @param {Object} simulation Simulation { id }
+ * @param {Object} user User `{ id }`
+ * @param {Object} simulation Simulation `{ id }`
  */
 const run = async (user, { id }) => {
   const simulation = await get(id, ['scheme'])
@@ -296,7 +296,7 @@ const run = async (user, { id }) => {
 /**
  * Stop
  * @memberof Lib.Simulation
- * @param {Object} simulation Simulation { id }
+ * @param {Object} simulation Simulation `{ id }`
  */
 const stop = async ({ id }) => {
   const simulation = await get(id, ['scheme', 'tasks'])
@@ -332,7 +332,7 @@ const stop = async ({ id }) => {
 /**
  * Get log
  * @memberof Lib.Simulation
- * @param {Object} simulation Simulation { id }
+ * @param {Object} simulation Simulation `{ id }`
  * @param {string} file File
  * @returns {string} Log
  */

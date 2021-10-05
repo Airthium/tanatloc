@@ -5,7 +5,7 @@ import { tables } from '@/config/db'
  * Get items
  * @memberof Database.System
  * @param {Object} data Data
- * @returns {Object} System { ...data }
+ * @returns {Object} System `{ ...data }`
  */
 const get = async (data) => {
   const response = await query(

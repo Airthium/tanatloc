@@ -18,6 +18,7 @@ const errors = {
 /**
  * Copy simulation
  * @memberof Components.Project.Simulation
+ * @param {Object} props Props `{ project, simulation, swr }`
  */
 const Copy = ({ project, simulation, swr }) => {
   // State

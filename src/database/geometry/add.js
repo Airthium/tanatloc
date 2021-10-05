@@ -4,9 +4,9 @@ import { tables } from '@/config/db'
 /**
  * Add
  * @memberof Database.Geometry
- * @param {Object} project Project { id }
- * @param {Object} geometry Geometry { name, uid }
- * @returns {Object} Geometry { id, name, originalfilename, extension, uploadfilename }
+ * @param {Object} project Project `{ id }`
+ * @param {Object} geometry Geometry `{ name, uid }`
+ * @returns {Object} Geometry `{ id, name, originalfilename, extension, uploadfilename }`
  */
 const add = async (project, { name, uid }) => {
   const extension = name.split('.').pop()

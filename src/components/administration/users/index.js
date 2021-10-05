@@ -24,7 +24,7 @@ const errors = {
 /**
  * Users
  * @memberof Components.Administration.Users
- * @param {Object} props Props
+ * @param {Object} props Props `{ users, swr }`
  */
 const Users = ({ users, swr }) => {
   const [plugins, setPlugins] = useState()

@@ -19,7 +19,7 @@ const errors = {
 /**
  * Add user
  * @memberof Components.Assets.Organization.Users
- * @param {Object} props Props
+ * @param {Object} props Props `{ title, organization, dBkey, swr }`
  *
  * @description
  * Props:

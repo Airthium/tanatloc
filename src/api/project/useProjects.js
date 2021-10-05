@@ -4,8 +4,8 @@ import Caller from '@/api/call'
 /**
  * Use projects
  * @memberof API.Project
- * @param {Array} ids [Project's ids]
- * @returns {Array} [projects, { mutateProjects, addOneProject, delOneProject, mutateOneProject, errorProjects, loadingProjects }]
+ * @param {Array} ids [Projects ids]
+ * @returns {Array} `[projects, { mutateProjects, addOneProject, delOneProject, mutateOneProject, errorProjects, loadingProjects }]`
  */
 const useProjects = (ids) => {
   const { data, error, mutate } = useSWR(

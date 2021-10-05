@@ -23,7 +23,7 @@ const errors = {
 /**
  * Password
  * @memberof Components.Account
- * @param {Object} props Props
+ * @param {Object} props Props `{ user }`
  */
 const Password = ({ user }) => {
   // State

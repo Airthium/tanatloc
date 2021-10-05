@@ -19,7 +19,7 @@ const errors = {
 /**
  * Delete
  * @memberof Components.Administration.Users
- * @param {Object} props Props
+ * @param {Object} props Props `{ user, swr }`
  */
 const Delete = ({ user, swr }) => {
   // State

@@ -20,7 +20,7 @@ const errors = {
 /**
  * Groups
  * @memberof Components.Assets.Organization
- * @param {Object} props Props
+ * @param {Object} props Props `{ organization }`
  *
  * @description
  * Props:

@@ -30,7 +30,7 @@ const errors = {
 /**
  * Workspace
  * @memberof Components.Workspace
- * @param {Object} props Props
+ * @param {Object} props Props `{ loading, user, page, workspace, organizations, swr }`
  */
 const Workspace = ({ loading, user, page, workspace, organizations, swr }) => {
   // State

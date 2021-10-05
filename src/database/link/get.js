@@ -6,7 +6,7 @@ import { tables } from '@/config/db'
  * @memberof Database.Link
  * @param {string} id Link's id
  * @param {Array} data Data
- * @returns {Object} Link { id, ...data }
+ * @returns {Object} Link `{ id, ...data }`
  */
 const get = async (id, data) => {
   const response = await getter(tables.LINKS, id, data)

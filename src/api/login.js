@@ -5,7 +5,7 @@ const base = isElectron() ? 'http://localhost:3000' : ''
 /**
  * Login
  * @memberof API
- * @param {Object} user User { email, password }
+ * @param {Object} user User `{ email, password }`
  */
 const login = async ({ email, password }) => {
   const response = await fetch(base + '/api/login', {

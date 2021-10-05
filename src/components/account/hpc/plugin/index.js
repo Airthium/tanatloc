@@ -22,7 +22,7 @@ const errors = {
 /**
  * Plugin
  * @memberof Components.Account.HPC.Plugin
- * @param {Object} props Props
+ * @param {Object} props Props `{ plugin }`
  */
 const Plugin = ({ plugin }) => {
   // Data

@@ -17,7 +17,7 @@ const errors = {
 /**
  * Delete plugin
  * @memberof Components.Account.HPC.Plugin
- * @param {Object} props Props
+ * @param {Object} props Props `{ plugin, swr }`
  */
 const Delete = ({ plugin, swr }) => {
   // State

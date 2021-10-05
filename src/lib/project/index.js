@@ -11,10 +11,10 @@ import Simulation from '../simulation'
 /**
  * Add
  * @memberof Lib.Project
- * @param {Object} user User { id }
- * @param {Object} workspace Workspace: { id }
- * @param {Object} project Project { title, description }
- * @returns {Object} Project { id, title, description, owners, workspace }
+ * @param {Object} user User `{ id }`
+ * @param {Object} workspace Workspace: `{ id }`
+ * @param {Object} project Project `{ title, description }`
+ * @returns {Object} Project `{ id, title, description, owners, workspace }`
  */
 const add = async (user, { id }, { title, description }) => {
   const project = await ProjectDB.add(user, { id }, { title, description })
@@ -32,8 +32,8 @@ const add = async (user, { id }, { title, description }) => {
  * @memberof Lib.Project
  * @param {string} id Project's id
  * @param {Array} data Data
- * @param {?boolean} withData With data (default: true)
- * @returns {Object} Project { id, ...data }
+ * @param {boolean} [withData=true] With data
+ * @returns {Object} Project `{ id, ...data }`
  */
 const get = async (id, data, withData = true) => {
   const project = await ProjectDB.get(id, data)
@@ -107,8 +107,8 @@ const get = async (id, data, withData = true) => {
 /**
  * Update
  * @memberof Lib.Project
- * @param {Object} Project { id }
- * @param {Object} data Data [{ key, value, ...}, ...]
+ * @param {Object} Project `{ id }`
+ * @param {Object} data Data `[{ key, value, ...}, ...]`
  */
 const update = async (project, data) => {
   // Check groups
@@ -160,8 +160,8 @@ const update = async (project, data) => {
 /**
  * Delete
  * @memberof Lib.Project
- * @param {Object} workspace Workspace { id }
- * @param {Object} project Project { id }
+ * @param {Object} workspace Workspace `{ id }`
+ * @param {Object} project Project `{ id }`
  */
 const del = async ({ id }, project) => {
   // Get data

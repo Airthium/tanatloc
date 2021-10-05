@@ -7,7 +7,7 @@ import storage from '@/config/storage'
  * Create summary
  * @memberof Lib.Result
  * @param {Object} simulation Simulation
- * @returns {Object} Summary { name, path }
+ * @returns {Object} Summary `{ name, path }`
  */
 const createSummary = (simulation) => {
   // Name

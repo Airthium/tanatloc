@@ -20,7 +20,7 @@ const errors = {
 /**
  * Delete account
  * @memberof Components.Account
- * @param {Object} props Props
+ * @param {Object} props Props `{ swr }`
  */
 const Delete = ({ swr }) => {
   // State

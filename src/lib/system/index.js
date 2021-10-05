@@ -6,7 +6,7 @@ import SystemDB from '@/database/system'
  * Get items
  * @memberof Lib.System
  * @params {Array} items Items
- * @returns {Object} System { ...items }
+ * @returns {Object} System `{ ...items }`
  */
 const get = async (items) => {
   return SystemDB.get(items)

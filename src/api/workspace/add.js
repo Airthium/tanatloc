@@ -3,8 +3,8 @@ import Caller from '@/api/call'
 /**
  * Add
  * @memberof API.Workspace
- * @param {Object} workspace Workspace { name }
- * @returns {Object} Workspace { id, name, owners }
+ * @param {Object} workspace Workspace `{ name }`
+ * @returns {Object} Workspace `{ id, name, owners }`
  */
 const add = async (workspace) => {
   return Caller.call('/api/workspace', {

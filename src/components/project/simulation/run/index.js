@@ -45,7 +45,7 @@ const errors = {
 /**
  * Run
  * @memberof Components.Project.Simulation
- * @param {Object} props Props
+ * @param {Object} props Props `{ simulation, result, setResult, swr }`
  */
 const Run = ({ simulation, result, setResult, swr }) => {
   // State

@@ -36,7 +36,7 @@ const camelize = (str) => {
 /**
  * Data visualization
  * @memberof Components.Project.Data
- * @param {Object} props Props
+ * @param {Object} props Props `{ simulation }`
  */
 const Data = ({ simulation }) => {
   // State

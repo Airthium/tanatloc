@@ -5,6 +5,7 @@ import { notification } from 'antd'
  * Success
  * @memberof Components.Assets.Notification
  * @param {string} title Title
+ * @param {string} subTitle Sub title
  */
 const Success = (title, subTitle) => {
   notification.success({

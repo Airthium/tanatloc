@@ -6,7 +6,7 @@ import { tables } from '@/config/db'
  * @memberof Database.Simulation
  * @param {string} id Id
  * @param {Array} data Data
- * @returns {Object} Simulation { id, ...data }
+ * @returns {Object} Simulation `{ id, ...data }`
  */
 const get = async (id, data) => {
   const response = await getter(tables.SIMULATIONS, id, data)

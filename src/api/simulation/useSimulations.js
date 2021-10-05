@@ -4,8 +4,8 @@ import Caller from '@/api/call'
 /**
  * Use simulations
  * @memberof API.Simulation
- * @param {Array} ids [Simulation's ids]
- * @returns {Array} [simulations, { mutateSimulations, addOneSimulation, delOneSimulation, mutateOneSimulation, errorSimulations, loadingSimulations }]
+ * @param {Array} ids [Simulations ids]
+ * @returns {Array} `[simulations, { mutateSimulations, addOneSimulation, delOneSimulation, mutateOneSimulation, errorSimulations, loadingSimulations }]`
  */
 const useSimulations = (ids) => {
   const { data, error, mutate } = useSWR(

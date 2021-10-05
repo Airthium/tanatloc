@@ -24,7 +24,7 @@ const errors = {
 /**
  * Group
  * @memberof Components.Assets.Group
- * @param {Object} props Props
+ * @param {Object} props Props `{ userOptions, organization, group, swr }`
  *
  * @description
  * - userOptions: List of users

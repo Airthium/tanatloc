@@ -4,8 +4,8 @@ import { tables } from '@/config/db'
 /**
  * Add
  * @memberof Database.Simulation
- * @param {Object} simulation Simulation { name, scheme, project }
- * @returns {Object} Simulation { id, name, scheme, project }
+ * @param {Object} simulation Simulation `{ name, scheme, project }`
+ * @returns {Object} Simulation `{ id, name, scheme, project }`
  */
 const add = async ({ name, scheme, project }) => {
   const response = await query(

@@ -13,7 +13,7 @@ import Edit from '../edit'
 /**
  * Material
  * @memberof Components.Project.Simulation.Materials
- * @param {Object} props Props
+ * @param {Object} props Props `{ visible, simulation, geometry, materials, material, swr, close }`
  */
 const Material = ({
   visible,

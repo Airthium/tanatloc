@@ -22,7 +22,7 @@ const errors = {
 /**
  * Organization
  * @memberof Components.Assets.Organization
- * @param {Object} props Props
+ * @param {Object} props Props `{ organization, swr, onClose }`
  *
  * @description
  * Props:

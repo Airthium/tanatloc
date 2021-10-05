@@ -5,7 +5,7 @@ import { CloseOutlined } from '@ant-design/icons'
 /**
  * Panel
  * @memberof Components.Project
- * @param {Object} props Props
+ * @param {Object} props Props `{ visible, title, children onClose }`
  */
 const Panel = ({ visible, title, children, onClose }) => {
   return (

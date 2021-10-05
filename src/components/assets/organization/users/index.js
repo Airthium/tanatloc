@@ -11,7 +11,7 @@ import Utils from '@/lib/utils'
 /**
  * Organization users
  * @memberof Components.Assets.Organization.Users
- * @param {Object} props Props
+ * @param {Object} props Props `{ organization, swr }`
  *
  * @description
  * Props:

@@ -4,8 +4,8 @@ import { tables } from '@/config/db'
 /**
  * Add
  * @memberof Database.Avatar
- * @param {Object} data Data { name, path }
- * @returns {Object} Avatar { id, name }
+ * @param {Object} data Data `{ name, path }`
+ * @returns {Object} Avatar `{ id, name }`
  */
 const add = async ({ name, path }) => {
   const response = await query(

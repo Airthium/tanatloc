@@ -19,7 +19,7 @@ const errors = {
 /**
  * Edit project
  * @memberof Components.Project
- * @param {Object} props Props
+ * @param {Object} props Props `{ disabled, project, swr }`
  */
 const Edit = ({ disabled, project, swr }) => {
   // State

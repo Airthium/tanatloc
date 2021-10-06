@@ -155,6 +155,7 @@ const ProjectList = ({
                   key="delete"
                   disabled={!project?.owners?.find((o) => o.id === user?.id)}
                   workspace={{
+                    id: workspace.id,
                     projects: workspace.projects
                   }}
                   project={{
@@ -221,7 +222,8 @@ ProjectList.propTypes = {
     id: PropTypes.string
   }).isRequired,
   workspace: PropTypes.shape({
-    id: PropTypes.string.isRequired
+    id: PropTypes.string.isRequired,
+    projects: PropTypes.array
   }).isRequired,
   projects: PropTypes.array.isRequired,
   organizations: PropTypes.array.isRequired,

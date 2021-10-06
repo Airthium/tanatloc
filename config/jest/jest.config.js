@@ -1,4 +1,5 @@
 module.exports = {
+  rootDir: '../..',
   setupFiles: [
     '<rootDir>/config/jest/mock.js',
     '<rootDir>/config/jest/mockMatchMedia.js',

@@ -25,12 +25,11 @@ const errors = {
  * Group
  * @memberof Components.Assets.Group
  * @param {Object} props Props `{ userOptions, organization, group, swr }`
- *
  * @description
- * - userOptions: List of users
- * - organization: Organization { id }
- * - group: Group in case of edit { id, name, users }
- * - swr: SWR functions { addOneGroup, mutateOneGroup }
+ * - userOptions (array) List of users
+ * - organization (Object) Organization `{ id }`
+ * - group (Object) Group in case of edit `{ id, name, users }`
+ * - swr (Object) SWR functions `{ addOneGroup, mutateOneGroup }`
  */
 const Group = ({ userOptions, organization, group, swr }) => {
   // State

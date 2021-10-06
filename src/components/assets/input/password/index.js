@@ -31,12 +31,14 @@ const errors = {
  *
  * @description
  * Props:
- * - name: Name of the form item (default: `password`)
- * - label: Label of the form item (default: `Password`)
- * - inputPlaceholder: Input placeholder (default: none)
- * - inputAutoComplete: Input autocomplete (default: none)
- * - edit: Allow `******` as a valid password for editing purpose (default: `false`)
- * - style: Style of the form item (default: none)
+ * - labelCol (Object) Label layout
+ * - wrapperCol (Object) Input layout
+ * - name (string) Name of the form item (default: `password`)
+ * - label (string) Label of the form item (default: `Password`)
+ * - inputPlaceholder (string) Input placeholder (default: none)
+ * - inputAutoComplete (string) Input autocomplete (default: none)
+ * - edit (boolean) Allow `******` as a valid password for editing purpose (default: `false`)
+ * - style (Object) Style of the form item (default: none)
  */
 const PasswordItem = ({
   labelCol,

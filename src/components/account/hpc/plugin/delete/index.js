@@ -37,6 +37,7 @@ const Delete = ({ plugin, swr }) => {
       swr.delOnePlugin(plugin)
     } catch (err) {
       ErrorNotification(errors.updateError, err)
+      throw err
     } finally {
       setLoading(false)
     }

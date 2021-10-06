@@ -6,6 +6,11 @@ import { DownloadOutlined } from '@ant-design/icons'
  * Download button
  * @memberof Components.Assets.Button
  * @param {Object} props Props `{ disabled, loading, children, onDownload }`
+ * @description Props list:
+ * - disabled (boolean) Set disabled state
+ * - loading (boolean) Set loading state
+ * - children (React node) Button children
+ * - onDownload (Function) Button click
  */
 const DownloadButton = ({ disabled, loading, children, onDownload }) => {
   /**

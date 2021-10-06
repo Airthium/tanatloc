@@ -6,6 +6,7 @@ import * as Store from 'electron-store'
  * @memberof Electron
  * @param {string} windowName Window name
  * @param {Object} options Options
+ * @description Create the electron window
  */
 export default function createWindow(windowName, options) {
   const key = 'window-state'

@@ -6,6 +6,11 @@ import { EditOutlined } from '@ant-design/icons'
  * Edit button
  * @memberof Components.Assets.Button
  * @param {Object} props Props `{ disabled, loading, children, onEdit }`
+ * @description Props list:
+ * - disabled (boolean) Set disabled state
+ * - loading (boolean) Set loading state
+ * - children (React node) Button children
+ * - onEdit (Function) Button click
  */
 const EditButton = ({ disabled, loading, children, onEdit }) => {
   /**

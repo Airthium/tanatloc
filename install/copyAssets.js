@@ -4,6 +4,8 @@ import ncp from 'ncp'
 /**
  * Copy threejs assets
  * @memberof Install
+ * @description Copy threejs assets in `public/three/libs`:
+ * - `draco` libraries
  */
 const copyThreeAssets = async () => {
   // Create path
@@ -35,6 +37,7 @@ const copyThreeAssets = async () => {
 /**
  * Copy assets
  * @memberof Install
+ * @description Copy assets
  */
 const copyAssets = async () => {
   await copyThreeAssets()

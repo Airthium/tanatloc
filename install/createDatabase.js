@@ -6,6 +6,7 @@ import query from '@/database'
 /**
  * Create database
  * @memberof Install
+ * @description Create the Tanatloc database with `pgcrypto` extension
  */
 const createDatabase = async () => {
   console.info(' == Create dB == ')

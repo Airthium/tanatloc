@@ -2,7 +2,7 @@ import PropTypes from 'prop-types'
 import { notification } from 'antd'
 
 /**
- * Success
+ * Success notification
  * @memberof Components.Assets.Notification
  * @param {string} title Title
  * @param {string} subTitle Sub title

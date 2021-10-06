@@ -23,6 +23,12 @@ const errors = {
  * Share
  * @memberof Components.Assets.Share
  * @param {Object} props Props `{ disabled, workspace, project, organizations, swr, style }`
+ * @description Props list:
+ * - disabled (boolean) Set disabled state
+ * - workspace (Object) Workspace `{id, groups}`
+ * - organizations (Array) Organizations
+ * - swr (Object) SWR functions `{ mutateOneWorkspace, mutateOneProject }`
+ * - style (Object) Button style
  */
 const Share = ({ disabled, workspace, project, organizations, swr, style }) => {
   // State

@@ -3,6 +3,7 @@
 /**
  * Email token
  * @memberof Config.Email
+ * @description Set by `EMAIL_TOKEN` environment variable or empty string
  */
 const TOKEN = process.env.EMAIL_TOKEN || ''
 

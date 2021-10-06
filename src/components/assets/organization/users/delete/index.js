@@ -21,14 +21,13 @@ const errors = {
  * Delete user
  * @memberof Components.Assets.Organization.Users
  * @param {Object} props Props
- *
  * @description
- * Props:
- * - disabled
- * - user: User `{ id, email, [firstname], [lastname] }`
- * - organization: Organization `{ id, [dBkey] }`
- * - dbKey: Database key, must be `owners` or `users`
- * - swr: SWR functions `{ mutateOneOrganization }`
+ * Props list:
+ * - disabled (boolean) Set disabled state
+ * - user (Object) User `{ id, email, [firstname], [lastname] }`
+ * - organization (Object) Organization `{ id, [dBkey] }`
+ * - dbKey (string) Database key, must be `owners` or `users`
+ * - swr (Object) SWR functions `{ mutateOneOrganization }`
  */
 const Delete = ({ disabled, user, organization, dBkey, swr }) => {
   // State

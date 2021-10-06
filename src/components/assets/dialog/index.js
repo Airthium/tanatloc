@@ -9,17 +9,26 @@ import DeleteDialog from './delete'
 /**
  * Dialog
  * @memberof Components.Assets.Dialog
- * @param {Object} props Props `{ title, visible, initialValues, onCancel, onOk, okButtonProps, loading, children }`
+ * @param {Object} props Props `{ visible, loading, title, initialValues, okButtonProps, children, onCancel, onOk }`
+ * @description Props list:
+ * - visible (boolean) Dialog visible
+ * - loading (boolean) Form loading
+ * - title (string) Dialog title
+ * - initialValues (Object) Form initial values
+ * - okButtonProps (Object) Ok button props
+ * - children (React node) Form children
+ * - onCancel (Function) Dialog cancel
+ * - onOk (Function) Dialog ok
  */
 const Dialog = ({
-  title,
   visible,
-  initialValues,
-  onCancel,
-  onOk,
-  okButtonProps,
   loading,
-  children
+  title,
+  initialValues,
+  okButtonProps,
+  children,
+  onCancel,
+  onOk
 }) => {
   // Form
   const [form] = Form.useForm()

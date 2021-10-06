@@ -20,12 +20,12 @@ const errors = {
  * Add user
  * @memberof Components.Assets.Organization.Users
  * @param {Object} props Props `{ title, organization, dBkey, swr }`
- *
  * @description
  * Props:
- * - title: Title
- * - organization: Organization `{ id, [dBkey] }`
- * - dBkey: Database key, must be `owners` or `users`
+ * - title (string) Title
+ * - organization (Object) Organization `{ id, [dBkey] }`
+ * - dBkey (string) Database key, must be `owners` or `users`
+ * - swr (Object) SWR functions `{ mutateOneOrganization }`
  */
 const Add = ({ title, organization, dBkey, swr }) => {
   // State

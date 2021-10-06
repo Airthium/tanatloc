@@ -4,7 +4,7 @@ import { Collapse, notification, Space, Typography } from 'antd'
 import Sentry from '@/lib/sentry'
 
 /**
- * Error
+ * Error notification
  * @memberof Components.Assets.Notification
  * @param {string} title Title
  * @param {Object} [err] Error

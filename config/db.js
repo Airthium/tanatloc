@@ -4,6 +4,9 @@
 /**
  * Admin
  * @memberof Config.Database
+ * @description Set by `DB_ADMIN` environment variable or:
+ * - `darwin` on MacOS
+ * - `postrges` on Unix-like systems and Windows
  */
 const ADMIN =
   process.env.DB_ADMIN ||
@@ -12,42 +15,49 @@ const ADMIN =
 /**
  * Admin database
  * @memberof Config.Database
+ * @description Set by `DB_ADMIN_DATABASE` environment variable or `postgres`
  */
 const ADMIN_DATABASE = process.env.DB_ADMIN_DATABASE || 'postgres'
 
 /**
  * Admin password
  * @memberof Config.Database
+ * @description Set by `DB_ADMIN_PASSWORD` or empty string
  */
 const ADMIN_PASSWORD = process.env.DB_ADMIN_PASSWORD || ''
 
 /**
  * User
  * @memberof Config.Database
+ * @description Set by `DB_USER` environment variable or `tanatlocuser`
  */
 const USER = process.env.DB_USER || 'tanatlocuser'
 
 /**
  * Host
  * @memberof Config.Database
+ * @description Set by `DB_HOST` environment variable or `localhost`
  */
 const HOST = process.env.DB_HOST || 'localhost'
 
 /**
  * Port
  * @memberof Config.Database
+ * @description Set by `DB_PORT` environment variable or `5432`
  */
 const PORT = process.env.DB_PORT || 5432
 
 /**
  * Database
  * @memberof Config.Database
+ * @description Set by `DB_DATABASE` environment variable or `tanatloc2`
  */
 const DATABASE = process.env.DB_DATABASE || 'tanatloc2'
 
 /**
  * Password
  * @memberof Config.Database
+ * @description Set by `DB_PASSWORD` environment variable or `tanatloc`
  */
 const PASSWORD = process.env.DB_PASSWORD || 'tanatloc'
 

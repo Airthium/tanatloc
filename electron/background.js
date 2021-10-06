@@ -15,6 +15,7 @@ if (isProd) {
 /**
  * Start electron
  * @memberof Electron
+ * @description Start the installation script, the server and the electron window
  */
 const start = async () => {
   console.info('Starting Tanatloc')

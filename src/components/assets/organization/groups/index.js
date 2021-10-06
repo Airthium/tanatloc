@@ -21,10 +21,9 @@ const errors = {
  * Groups
  * @memberof Components.Assets.Organization
  * @param {Object} props Props `{ organization }`
- *
  * @description
  * Props:
- * - organization: Organization `{ id, owners, [users] }`
+ * - organization (Object) Organization `{ id, owners, [users] }`
  */
 const Groups = ({ organization }) => {
   // State

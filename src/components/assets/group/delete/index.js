@@ -20,11 +20,10 @@ const errors = {
  * Delete group
  * @memberof Components.Assets.Group
  * @param {Object} props Props `{ group, swr }`
- *
  * @description
  * Props:
- * - group: Group `{ id, name }`
- * - swr: SWR function `{ delOneGroup }`
+ * - group (Object) Group `{ id, name }`
+ * - swr (Object) SWR function `{ delOneGroup }`
  */
 const Delete = ({ group, swr }) => {
   // State

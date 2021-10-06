@@ -7,10 +7,8 @@
   resolved "https://registry.yarnpkg.com/7zip-bin/-/7zip-bin-5.1.1.tgz#9274ec7460652f9c632c59addf24efb1684ef876"
   integrity sha512-sAP4LldeWNz0lNzmTird3uWfFDWWTeg6V/MsmyyLR9X1idwKBWIgt/ZvinqQldJm3LecKEs1emkbquO6PCiLVQ==
 
-"@airthium/air-jsdoc-template@1.0.2":
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/@airthium/air-jsdoc-template/-/air-jsdoc-template-1.0.2.tgz#52c04f5374f9879634651c8b228c91ad6e440c07"
-  integrity sha512-/Drmmd7JpQmvuy7RfNieK94X0BjK2fQnsTqDPb2OReWXifVA2ERguhq54xXYyMUHh2uAcQ51Ny098O8ZVO5Tng==
+"@airthium/air-jsdoc-template@../air-jsdoc-template/":
+  version "1.0.3"
   dependencies:
     "@jsdoc/util" "^0.2.5"
     common-path-prefix "^3.0.0"

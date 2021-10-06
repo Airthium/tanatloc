@@ -11,6 +11,11 @@ const saveDelay = 1000
  * Formula
  * @memberof Components.Assets.Formula
  * @param {Object} props Props `{ defaultValue, defaultchecked, onValueChange, onCheckedChange }`
+ * @description Props list:
+ * - defaultValue (string) Default value
+ * - defaultChecked (boolean) Default checked
+ * - onValueChange (Function) On value change
+ * - onCheckedChange (Function) On checked change
  */
 const Formula = ({
   defaultValue,

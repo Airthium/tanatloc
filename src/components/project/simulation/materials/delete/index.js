@@ -75,6 +75,7 @@ const Delete = ({ simulation, swr, index }) => {
     } catch (err) {
       Error(errors.updateError, err)
       setLoading(false)
+      throw err
     }
   }
 

@@ -17,7 +17,7 @@
   },
   "scripts": {
     "build": "NEXT_PUBLIC_SOURCE_BRANCH=`git rev-parse --abbrev-ref HEAD` NEXT_PUBLIC_SOURCE_COMMIT=`git rev-parse --short HEAD` next build",
-    "depcheck": "depcheck",
+    "depcheck": "depcheck --config=config/depcheck/.depcheckrc",
     "dev": "NODE_OPTIONS=\"--max_old_space_size=8192\" NEXT_PUBLIC_SOURCE_BRANCH=`git rev-parse --abbrev-ref HEAD` NEXT_PUBLIC_SOURCE_COMMIT=`git rev-parse --short HEAD` next",
     "doc": "jsdoc -c config/jsdoc/conf.js",
     "docker": "docker build . -t tanatloc/tanatloc:latest",
@@ -29,10 +29,10 @@
     "prettier:write": "prettier --write '**/*.{js,json,md,css}'",
     "server-build": "babel . --ignore \"**/__tests__/**/*.js\" --only config,models,modules,plugins,server,src/auth,src/database,src/lib,src/route,src/services,templates --out-dir dist-server",
     "start": "NODE_OPTIONS=\"--max_old_space_size=8192\" next start",
-    "test": "jest --coverage --silent",
-    "testwatch": "jest --watch",
-    "teste2e": "DB_DATABASE=tanatloc_test STORAGE_PATH=/tmp/tanatloc_test yarn postinstall && jest --config jest.e2e.config.js --coverage --silent --runInBand",
-    "teste2ewatch": "DB_DATABASE=tanatloc_test STORAGE_PATH=/tmp/tanatloc_test yarn postinstall && jest --config jest.e2e.config.js --watch --runInBand",
+    "test": "jest --config config/jest/jest.config.js --coverage --silent",
+    "testwatch": "jest --config config/jest/jest.config.js --watch",
+    "teste2e": "DB_DATABASE=tanatloc_test STORAGE_PATH=/tmp/tanatloc_test yarn postinstall && jest --config config/jest/e2e/jest.config.js --coverage --silent --runInBand",
+    "teste2ewatch": "DB_DATABASE=tanatloc_test STORAGE_PATH=/tmp/tanatloc_test yarn postinstall && jest --config config/jest/e2e/jest.config.js --watch --runInBand",
     "workflow": ".github/workflows/node.local.sh"
   },
   "dependencies": {
@@ -40,6 +40,7 @@
     "electron-store": "8.0.1"
   },
   "devDependencies": {
+    "@airthium/air-jsdoc-template": "../air-jsdoc-template/",
     "@ant-design/icons": "4.7.0",
     "@babel/cli": "7.15.7",
     "@babel/core": "7.15.5",
@@ -48,7 +49,6 @@
     "@sentry/browser": "6.13.2",
     "@sentry/node": "6.13.2",
     "@testing-library/react": "12.1.2",
-    "@airthium/air-jsdoc-template": "1.0.2",
     "antd": "4.16.13",
     "archiver": "5.3.0",
     "babel-jest": "27.2.4",

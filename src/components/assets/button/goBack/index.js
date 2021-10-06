@@ -6,6 +6,9 @@ import { ArrowLeftOutlined } from '@ant-design/icons'
  * Go back
  * @memberof Components.Assets.Button
  * @param {Object} props Props `{ children, onClick}`
+ * @description Props list:
+ * - children (React node) Button children (default to 'Go back')
+ * - onClick (Function) Button click
  */
 const GoBack = ({ children, onClick }) => {
   return (

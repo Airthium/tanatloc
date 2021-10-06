@@ -23,12 +23,11 @@ const errors = {
  * Organization
  * @memberof Components.Assets.Organization
  * @param {Object} props Props `{ organization, swr, onClose }`
- *
  * @description
- * Props:
- * - organization: Organization `{ id, name, owners, [users] }`
- * - swr: SWR functions `{ mutateOneOrganization, loadingOrganizations }`
- * - onClose: On close function
+ * Props list:
+ * - organization (Object) Organization `{ id, name, owners, [users] }`
+ * - swr (Object) SWR functions `{ mutateOneOrganization, loadingOrganizations }`
+ * - onClose (Function) On close
  */
 const Organization = ({ organization, swr, onClose }) => {
   /**

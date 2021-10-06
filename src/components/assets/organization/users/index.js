@@ -12,11 +12,10 @@ import Utils from '@/lib/utils'
  * Organization users
  * @memberof Components.Assets.Organization.Users
  * @param {Object} props Props `{ organization, swr }`
- *
  * @description
- * Props:
- * - organization: Organization `{ id, owners, [users] }`
- * - swr: SWR functions `{ mutateOneOrganization }`
+ * Props list:
+ * - organization (Object) Organization `{ id, owners, [users] }`
+ * - swr (Object) SWR functions `{ mutateOneOrganization }`
  */
 const Users = ({ organization, swr }) => {
   // Columns

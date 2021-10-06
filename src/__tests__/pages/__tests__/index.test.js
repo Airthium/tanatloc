@@ -3,7 +3,7 @@ import { render } from '@testing-library/react'
 
 import Index from '@/pages/index'
 
-jest.mock('@/components/index/index', () => () => <div />)
+jest.mock('@/components/index/index.js', () => () => <div />)
 
 describe('pages/index', () => {
   test('render', () => {

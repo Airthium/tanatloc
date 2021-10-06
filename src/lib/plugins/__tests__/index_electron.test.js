@@ -1,9 +1,7 @@
 Object.defineProperty(process, 'resourcesPath', { value: 'resourcesPath' })
 
-jest.mock('fs', () => ({
-  promises: {
-    readdir: async () => ['plugin', 'pluginerror']
-  }
+jest.mock('../../tools', () => ({
+  listDirectories: async () => ['plugin', 'pluginHPC', 'pluginerror']
 }))
 
 jest.mock('is-electron', () => () => true)

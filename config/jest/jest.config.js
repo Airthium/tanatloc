@@ -27,6 +27,7 @@ module.exports = {
     '<rootDir>/jest.config.js',
     '<rootDir>/jest.e2e.config.js',
     '<rootDir>/config/jest/',
+    '<rootDir>/config/jsdoc/',
     '<rootDir>/public/',
     '<rootDir>/tests/',
     '<rootDir>/modules/three-to-glb/lib/three/'
@@ -73,6 +74,7 @@ module.exports = {
     '<rootDir>/jest.config.js',
     '<rootDir>/jest.e2e.config.js',
     '<rootDir>/config/jest/',
+    '<rootDir>/config/jsdoc/',
     '<rootDir>/public/',
     '<rootDir>/tests/',
     '<rootDir>/updaters',

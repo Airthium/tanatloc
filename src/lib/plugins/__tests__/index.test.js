@@ -1,9 +1,7 @@
 import Plugins from '..'
 
-jest.mock('fs', () => ({
-  promises: {
-    readdir: async () => ['plugin', 'pluginHPC', 'pluginerror']
-  }
+jest.mock('../../tools', () => ({
+  listDirectories: async () => ['plugin', 'pluginHPC', 'pluginerror']
 }))
 
 jest.mock('is-electron', () => () => false)

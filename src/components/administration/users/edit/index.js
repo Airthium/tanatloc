@@ -42,6 +42,14 @@ const Edit = ({ plugins, user, swr }) => {
             return { key, value, type: key === 'password' && 'crypt' }
         })
         .filter((u) => u)
+
+      if (!toUpdate.length) {
+        // Close
+        setLoading(false)
+        setVisible(false)
+        return
+      }
+
       await UserAPI.updateById(user.id, toUpdate)
 
       // Mutate

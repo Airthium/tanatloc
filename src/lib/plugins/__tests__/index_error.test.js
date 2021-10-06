@@ -1,10 +1,8 @@
 import '..'
 
-jest.mock('fs', () => ({
-  promises: {
-    readdir: async () => {
-      throw new Error('readdir error')
-    }
+jest.mock('../../tools', () => ({
+  listDirectories: async () => {
+    throw new Error('')
   }
 }))
 

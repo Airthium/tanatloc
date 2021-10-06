@@ -25,6 +25,15 @@ const listFiles = async (location) => {
   return fs.readdir(location, { withFileTypes: true })
 }
 
+const listDirectories = async (location) => {
+  const files = await listFiles(location)
+  return files
+    .map((file) => {
+      if (file.isDirectory()) return file.name
+    })
+    .filter((f) => f)
+}
+
 /**
  * Write file
  * @memberof Lib.Tools
@@ -187,6 +196,7 @@ const removeDirectory = async (dir) => {
 const Tools = {
   createPath,
   listFiles,
+  listDirectories,
   writeFile,
   readFile,
   copyFile,

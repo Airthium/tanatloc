@@ -74,7 +74,14 @@ describe('components/project/simulation/boundaryConditions/delete', () => {
 
   test('onDelete', async () => {
     mockDeleteButton.mockImplementation((props) => (
-      <div role="DeleteButton" onClick={props.onDelete} />
+      <div
+        role="DeleteButton"
+        onClick={async () => {
+          try {
+            await props.onDelete()
+          } catch (err) {}
+        }}
+      />
     ))
     const { unmount } = render(
       <Delete simulation={simulation} type={type} index={index} swr={swr} />

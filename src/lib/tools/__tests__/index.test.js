@@ -65,6 +65,16 @@ describe('lib/tools', () => {
     expect(files).toEqual(['file'])
   })
 
+  test('listDirectories', async () => {
+    mockReadDir.mockImplementation(() => [
+      { isDirectory: () => true, name: 'name1' },
+      { isDirectory: () => false, name: 'name2' }
+    ])
+    const directories = await Tools.listDirectories('location')
+    expect(mockReadDir).toHaveBeenCalledTimes(1)
+    expect(directories).toEqual(['name1'])
+  })
+
   test('writeFile', async () => {
     await Tools.writeFile('location', {})
     expect(mockMkdir).toHaveBeenCalledTimes(1)

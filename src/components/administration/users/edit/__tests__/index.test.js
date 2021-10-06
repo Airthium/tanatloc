@@ -92,8 +92,16 @@ describe('components/administration/users/edit', () => {
     await waitFor(() => expect(mockUpdateById).toHaveBeenCalledTimes(1))
     await waitFor(() => expect(swr.mutateOneUser).toHaveBeenCalledTimes(1))
 
-    // Error
+    // Empty
     returned = {}
+    fireEvent.click(dialog)
+    await waitFor(() => expect(mockUpdateById).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(swr.mutateOneUser).toHaveBeenCalledTimes(1))
+
+    // Error
+    returned = {
+      firstname: 'other firstname'
+    }
     mockUpdateById.mockImplementation(() => {
       throw new Error()
     })

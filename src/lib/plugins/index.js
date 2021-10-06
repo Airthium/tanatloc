@@ -1,9 +1,9 @@
 /** @namespace Lib.Plugins */
 
-import { promises as fs } from 'fs'
 import isElectron from 'is-electron'
 
 import Simulation from '../simulation'
+import Tools from '../tools'
 
 const plugins = []
 
@@ -13,7 +13,7 @@ const plugins = []
  */
 const load = async () => {
   // Available directories
-  const availables = await fs.readdir(
+  const availables = await Tools.listDirectories(
     isElectron() ? `${process.resourcesPath}/plugins` : './plugins'
   )
 

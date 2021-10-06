@@ -66,7 +66,14 @@ describe('components/project/simulation/materials/delete', () => {
 
   test('onDelete', async () => {
     mockDeleteButton.mockImplementation((props) => (
-      <div role="button" onClick={props.onDelete} />
+      <div
+        role="button"
+        onClick={async () => {
+          try {
+            await props.onDelete()
+          } catch (err) {}
+        }}
+      />
     ))
     const { unmount } = render(
       <Delete simulation={simulation} swr={swr} index={index} />

@@ -60,7 +60,7 @@ jest.mock('@sentry/node', () => ({
 
 // Plugins mock (mandatory mock because of laoding time)
 jest.mock('@/lib/plugins', () => ({
-  serverList: async () => [
+  serverList: () => [
     {
       key: 'key',
       lib: {

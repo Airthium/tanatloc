@@ -25,6 +25,7 @@ const HPC = ({ user }) => {
   useEffect(() => {
     PluginsAPI.list()
       .then((plugins) => {
+        console.log(plugins)
         const HPCPlugins = plugins.filter((plugin) => plugin.category === 'HPC')
 
         if (HPCPlugins.length) {
@@ -51,6 +52,7 @@ const HPC = ({ user }) => {
         }
       })
       .catch((err) => {
+        console.log(err)
         ErrorNotification(errors.plugins, err)
       })
   }, [user])

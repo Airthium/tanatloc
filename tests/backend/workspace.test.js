@@ -159,7 +159,8 @@ describe('e2e/backend/workspace', () => {
     const id = resJson.id
     expect(resJson).toEqual({
       id: id,
-      name: 'Test workspace'
+      name: 'Test workspace',
+      owners: [adminUUID]
     })
 
     // Error

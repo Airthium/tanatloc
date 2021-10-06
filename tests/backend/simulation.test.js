@@ -135,7 +135,8 @@ describe('e2e/backend/simulation', () => {
     expect(resJson).toEqual({
       id: id,
       name: 'Test simulation',
-      scheme: {}
+      scheme: {},
+      project: project.id
     })
 
     // Error

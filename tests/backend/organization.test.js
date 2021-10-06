@@ -105,7 +105,11 @@ describe('e2e/backend/organization', () => {
     await route(req, res)
     expect(resStatus).toBe(200)
     const organizationId = resJson.id
-    expect(resJson).toEqual({ id: organizationId })
+    expect(resJson).toEqual({
+      id: organizationId,
+      name: 'Test organization',
+      owners: [adminUUID]
+    })
 
     const organization = await OrganizationLib.get(organizationId, [
       'name',

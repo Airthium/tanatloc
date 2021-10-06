@@ -10,7 +10,7 @@ jest.mock('three', () => {
   return {
     ...THREE,
     WebGLRenderer: jest.fn().mockReturnValue({
-      domElement: global.document.createElement('div'),
+      domElement: global.document?.createElement('div'),
       setClearColor: jest.fn(),
       setPixelRatio: jest.fn(),
       setSize: jest.fn(),

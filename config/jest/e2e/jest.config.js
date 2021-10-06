@@ -1,6 +1,7 @@
 module.exports = {
   rootDir: '../../..',
   setupFiles: [
+    'jest-canvas-mock',
     '<rootDir>/config/jest/e2e/index.js',
     '<rootDir>/config/jest/mockMatchMedia.js'
   ],

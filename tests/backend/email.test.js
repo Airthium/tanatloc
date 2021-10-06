@@ -233,17 +233,14 @@ describe('e2e/backend/email', () => {
     link = await LinkLib.get(linkId, ['type', 'email', 'userid'])
     expect(link).not.toBeDefined()
 
-    // Mailersend Error
+    // Mailersend unauthorized
     mockSend.mockImplementationOnce(() => ({
       status: 401,
       statusText: 'Unauthorized'
     }))
     await route(req, res)
-    expect(resStatus).toBe(500)
-    expect(resJson).toEqual({
-      error: true,
-      message: 'Mail error: Unauthorized'
-    })
+    expect(resStatus).toBe(200)
+    expect(resJson).toBe('end')
 
     // Test link
     url = personalization[0].data.recoveryLink
@@ -259,7 +256,12 @@ describe('e2e/backend/email', () => {
     linkId = url.replace(DOMAIN + '/password?id=', '')
 
     link = await LinkLib.get(linkId, ['type', 'email', 'userid'])
-    expect(link).not.toBeDefined()
+    expect(link).toEqual({
+      id: linkId,
+      email: 'admin',
+      type: PASSWORD_RECOVERY,
+      userid: null
+    })
   })
 
   test('Lib', async () => {
@@ -295,8 +297,8 @@ describe('e2e/backend/email', () => {
 
     // Subscribe error
     mockSend.mockImplementationOnce(() => ({
-      status: 401,
-      statusText: 'Unauthorized'
+      status: 404,
+      statusText: 'Not found'
     }))
     try {
       await EmailLib.subscribe('email', adminUUID)
@@ -346,8 +348,8 @@ describe('e2e/backend/email', () => {
 
     // Password error
     mockSend.mockImplementationOnce(() => ({
-      status: 401,
-      statusText: 'Unauthorized'
+      status: 404,
+      statusText: 'Not found'
     }))
     try {
       await EmailLib.recover('email')
@@ -397,8 +399,8 @@ describe('e2e/backend/email', () => {
 
     // Revalidate error
     mockSend.mockImplementationOnce(() => ({
-      status: 401,
-      statusText: 'Unauthorized'
+      status: 404,
+      statusText: 'Not found'
     }))
     try {
       await EmailLib.revalidate('email', adminUUID)

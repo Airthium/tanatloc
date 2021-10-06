@@ -153,67 +153,67 @@ describe('e2e/backend/result', () => {
     expect(resJson).toEqual({ error: true, message: 'Unauthorized' })
   })
 
-  test('Wrong method', async () => {
-    req.method = 'method'
-    await setToken()
+  // test('Wrong method', async () => {
+  //   req.method = 'method'
+  //   await setToken()
 
-    await route(req, res)
-    expect(resStatus).toBe(402)
-    expect(resJson).toEqual({
-      error: true,
-      message: 'Method method not allowed'
-    })
-    expect(mockCaptureException).toHaveBeenLastCalledWith(
-      new Error('Method method not allowed')
-    )
-  })
+  //   await route(req, res)
+  //   expect(resStatus).toBe(402)
+  //   expect(resJson).toEqual({
+  //     error: true,
+  //     message: 'Method method not allowed'
+  //   })
+  //   expect(mockCaptureException).toHaveBeenLastCalledWith(
+  //     new Error('Method method not allowed')
+  //   )
+  // })
 
-  test('Load', async () => {
-    req.method = 'POST'
-    await setToken()
+  // test('Load', async () => {
+  //   req.method = 'POST'
+  //   await setToken()
 
-    // Wrong body
-    req.body = {}
-    await route(req, res)
-    expect(resStatus).toBe(400)
-    expect(resJson).toEqual({
-      error: true,
-      message:
-        'Missing data in your request (body: { simulation: { id(uuid) } }'
-    })
-    expect(mockCaptureException).toHaveBeenLastCalledWith(
-      new Error(
-        'Missing data in your request (body: { simulation: { id(uuid) } }'
-      )
-    )
+  //   // Wrong body
+  //   req.body = {}
+  //   await route(req, res)
+  //   expect(resStatus).toBe(400)
+  //   expect(resJson).toEqual({
+  //     error: true,
+  //     message:
+  //       'Missing data in your request (body: { simulation: { id(uuid) } }'
+  //   })
+  //   expect(mockCaptureException).toHaveBeenLastCalledWith(
+  //     new Error(
+  //       'Missing data in your request (body: { simulation: { id(uuid) } }'
+  //     )
+  //   )
 
-    // Create fake result file
-    await Tools.writeFile(
-      path.join(SIMULATION, simulation.id, 'run', 'result'),
-      'test.vtu',
-      'vtu'
-    )
+  //   // Create fake result file
+  //   await Tools.writeFile(
+  //     path.join(SIMULATION, simulation.id, 'run', 'result'),
+  //     'test.vtu',
+  //     'vtu'
+  //   )
 
-    // Normal
-    req.body = {
-      simulation: { id: simulation.id }
-    }
-    await route(req, res)
-    await new Promise((resolve) => setTimeout(resolve, 500)) // Wait for pipe
-    expect(resData).toBeDefined()
+  //   // Normal
+  //   req.body = {
+  //     simulation: { id: simulation.id }
+  //   }
+  //   await route(req, res)
+  //   await new Promise((resolve) => setTimeout(resolve, 500)) // Wait for pipe
+  //   expect(resData).toBeDefined()
 
-    // Error
-    jest.spyOn(ResultLib, 'archive').mockImplementationOnce(() => {
-      throw new Error('Archive error')
-    })
-    await route(req, res)
-    expect(resStatus).toBe(500)
-    expect(resJson).toEqual({
-      error: true,
-      message: 'Archive error'
-    })
-    expect(mockCaptureException).toHaveBeenLastCalledWith(
-      new Error('Archive error')
-    )
-  })
+  //   // Error
+  //   jest.spyOn(ResultLib, 'archive').mockImplementationOnce(() => {
+  //     throw new Error('Archive error')
+  //   })
+  //   await route(req, res)
+  //   expect(resStatus).toBe(500)
+  //   expect(resJson).toEqual({
+  //     error: true,
+  //     message: 'Archive error'
+  //   })
+  //   expect(mockCaptureException).toHaveBeenLastCalledWith(
+  //     new Error('Archive error')
+  //   )
+  // })
 })

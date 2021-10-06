@@ -94,7 +94,7 @@ describe('e2e/frontend/index', () => {
 
     const { unmount } = render(<Index />)
 
-    const button = screen.getByRole('button')
+    const button = screen.getByRole('button', { name: 'dashboard Dashboard' })
     // Dashboard
     fireEvent.click(button)
     expect(mockRouterPush).toHaveBeenLastCalledWith('/dashboard')

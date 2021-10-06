@@ -182,7 +182,8 @@ describe('e2e/backend/user', () => {
     expect(resStatus).toBe(200)
     newUser = resJson
     expect(resJson).toEqual({
-      id: newUser.id
+      id: newUser.id,
+      email: 'email'
     })
     expect(mockSend).toHaveBeenCalledTimes(1)
 

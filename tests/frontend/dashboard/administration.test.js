@@ -63,6 +63,13 @@ describe('e2e/frontend/dashboard/administration', () => {
     }))
 
     mockFetch.mockReset()
+    mockFetch.mockImplementation(() => ({
+      ok: true,
+      headers: {
+        get: () => 'application/json'
+      },
+      json: () => ''
+    }))
 
     mockCaptureException.mockReset()
   })
@@ -190,7 +197,7 @@ describe('e2e/frontend/dashboard/administration', () => {
     }))
     fireEvent.click(ok)
     await waitFor(() =>
-      expect(mockFetch).toHaveBeenNthCalledWith(4, '/api/user/id', {
+      expect(mockFetch).toHaveBeenNthCalledWith(5, '/api/user/id', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'
@@ -226,6 +233,8 @@ describe('e2e/frontend/dashboard/administration', () => {
     mockQuery.mockImplementation(() => ({ tab: 'users' }))
 
     const { unmount } = render(<Dashboard />)
+
+    await waitFor(() => screen.getByRole('button', { name: 'edit Edit' }))
 
     const edit = screen.getByRole('button', { name: 'edit Edit' })
     fireEvent.click(edit)
@@ -311,6 +320,8 @@ describe('e2e/frontend/dashboard/administration', () => {
 
     const { unmount } = render(<Dashboard />)
 
+    await waitFor(() => screen.getByRole('button', { name: 'delete' }))
+
     const del = screen.getByRole('button', { name: 'delete' })
     fireEvent.click(del)
 
@@ -357,7 +368,7 @@ describe('e2e/frontend/dashboard/administration', () => {
     unmount()
   })
 
-  test('sort', () => {
+  test('sort', async () => {
     mockSWR.mockImplementation(() => ({
       data: {
         user: {
@@ -384,6 +395,8 @@ describe('e2e/frontend/dashboard/administration', () => {
     mockQuery.mockImplementation(() => ({ tab: 'users' }))
 
     const { unmount } = render(<Dashboard />)
+
+    await waitFor(() => screen.getByText('First name'))
 
     const sorter1 = screen.getByText('First name')
     fireEvent.click(sorter1)

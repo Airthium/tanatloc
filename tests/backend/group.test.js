@@ -199,7 +199,12 @@ describe('e2e/backend/group', () => {
     await route(req, res)
     expect(resStatus).toBe(200)
     const groupId = resJson.id
-    expect(resJson).toEqual({ id: groupId })
+    expect(resJson).toEqual({
+      id: groupId,
+      name: 'name',
+      organization: organization.id,
+      users: [adminUUID]
+    })
 
     const groupData = await GroupLib.get(
       groupId,

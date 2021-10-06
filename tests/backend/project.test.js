@@ -141,7 +141,9 @@ describe('e2e/backend/project', () => {
     expect(resJson).toEqual({
       id: id,
       title: 'Test project',
-      description: ''
+      description: '',
+      owners: [adminUUID],
+      workspace: workspace.id
     })
 
     // Error

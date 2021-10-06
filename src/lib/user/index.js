@@ -108,8 +108,6 @@ const update = async (user, data) => {
       value: false
     })
   }
-  console.log(user)
-  console.log(data)
 
   await UserDB.update(user, data)
 }

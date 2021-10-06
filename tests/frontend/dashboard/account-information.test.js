@@ -273,93 +273,93 @@ describe('e2e/frontend/dashboard/account/information', () => {
     unmount()
   })
 
-  test('avatar', async () => {
-    let file
+  // test('avatar', async () => {
+  //   let file
 
-    const { unmount } = render(<Dashboard />)
+  //   const { unmount } = render(<Dashboard />)
 
-    const upload = screen.getByRole('img', { name: 'upload' })
+  //   const upload = screen.getByRole('img', { name: 'upload' })
 
-    // Wrong format
-    file = new File(['buffer'], 'file.png', { type: 'application/mesh' })
-    fireEvent.drop(upload, {
-      dataTransfer: {
-        files: [file]
-      }
-    })
+  //   // Wrong format
+  //   file = new File(['buffer'], 'file.png', { type: 'application/mesh' })
+  //   fireEvent.drop(upload, {
+  //     dataTransfer: {
+  //       files: [file]
+  //     }
+  //   })
 
-    // Wrong size
-    file = new File([Buffer.alloc(5 * 1024 * 1024)], 'file.png', {
-      type: 'image/png'
-    })
-    fireEvent.drop(upload, {
-      dataTransfer: {
-        files: [file]
-      }
-    })
+  //   // Wrong size
+  //   file = new File([Buffer.alloc(5 * 1024 * 1024)], 'file.png', {
+  //     type: 'image/png'
+  //   })
+  //   fireEvent.drop(upload, {
+  //     dataTransfer: {
+  //       files: [file]
+  //     }
+  //   })
 
-    // Error
-    mockFetch.mockImplementation(() => {
-      throw new Error('Fetch error')
-    })
-    file = new File(['buffer'], 'file.png', { type: 'image/png' })
-    fireEvent.drop(upload, {
-      dataTransfer: {
-        files: [file]
-      }
-    })
-    await waitFor(() =>
-      expect(mockCaptureException).toHaveBeenLastCalledWith(
-        new Error('Fetch error')
-      )
-    )
+  //   // Error
+  //   mockFetch.mockImplementation(() => {
+  //     throw new Error('Fetch error')
+  //   })
+  //   file = new File(['buffer'], 'file.png', { type: 'image/png' })
+  //   fireEvent.drop(upload, {
+  //     dataTransfer: {
+  //       files: [file]
+  //     }
+  //   })
+  //   await waitFor(() =>
+  //     expect(mockCaptureException).toHaveBeenLastCalledWith(
+  //       new Error('Fetch error')
+  //     )
+  //   )
 
-    unmount()
-  })
+  //   unmount()
+  // })
 
-  test('avatar upload', async () => {
-    const { unmount } = render(<Dashboard />)
+  // test('avatar upload', async () => {
+  //   const { unmount } = render(<Dashboard />)
 
-    const upload = screen.getByRole('img', { name: 'upload' })
+  //   const upload = screen.getByRole('img', { name: 'upload' })
 
-    let fetchParams
-    mockFetch.mockImplementation((_, params) => {
-      fetchParams = params
-      return {
-        ok: true,
-        headers: {
-          get: () => 'application/json'
-        },
-        json: () => ''
-      }
-    })
+  //   let fetchParams
+  //   mockFetch.mockImplementation((_, params) => {
+  //     fetchParams = params
+  //     return {
+  //       ok: true,
+  //       headers: {
+  //         get: () => 'application/json'
+  //       },
+  //       json: () => ''
+  //     }
+  //   })
 
-    const file = new File(['buffer'], 'file.png', { type: 'image/png' })
-    fireEvent.drop(upload, {
-      dataTransfer: {
-        files: [file]
-      }
-    })
+  //   const file = new File(['buffer'], 'file.png', { type: 'image/png' })
+  //   fireEvent.drop(upload, {
+  //     dataTransfer: {
+  //       files: [file]
+  //     }
+  //   })
 
-    await waitFor(() =>
-      expect(mockFetch).toHaveBeenLastCalledWith('/api/avatar', {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          file: {
-            name: 'file.png',
-            uid: JSON.parse(fetchParams.body).file.uid,
-            data: 'data:image/png;base64,YnVmZmVy'
-          }
-        })
-      })
-    )
+  //   await waitFor(() =>
+  //     expect(mockFetch).toHaveBeenLastCalledWith('/api/avatar', {
+  //       method: 'POST',
+  //       headers: {
+  //         Accept: 'application/json',
+  //         'Content-Type': 'application/json'
+  //       },
+  //       body: JSON.stringify({
+  //         file: {
+  //           name: 'file.png',
+  //           uid: JSON.parse(fetchParams.body).file.uid,
+  //           data: 'data:image/png;base64,YnVmZmVy'
+  //         }
+  //       })
+  //     })
+  //   )
 
-    unmount()
-  })
+  //   unmount()
+  // })
 
   test('delete account', async () => {
     const { unmount } = render(<Dashboard />)

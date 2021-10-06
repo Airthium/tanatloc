@@ -40,7 +40,7 @@
     "electron-store": "8.0.1"
   },
   "devDependencies": {
-    "@airthium/air-jsdoc-template": "1.03",
+    "@airthium/air-jsdoc-template": "1.0.4",
     "@ant-design/icons": "4.7.0",
     "@babel/cli": "7.15.7",
     "@babel/core": "7.15.5",

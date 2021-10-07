@@ -38,6 +38,9 @@ jest.spyOn(global, 'URLSearchParams').mockImplementation(() => ({
   }
 }))
 
+const mockUpload = jest.fn()
+jest.mock('antd/lib/upload', () => (props) => mockUpload(props))
+
 describe('e2e/frontend/dashboard/account/information', () => {
   beforeEach(() => {
     mockRouterPush.mockReset()
@@ -59,6 +62,9 @@ describe('e2e/frontend/dashboard/account/information', () => {
     mockFetch.mockReset()
 
     mockCaptureException.mockReset()
+
+    mockUpload.mockReset()
+    mockUpload.mockImplementation(() => <div />)
   })
 
   test('render', () => {
@@ -273,93 +279,120 @@ describe('e2e/frontend/dashboard/account/information', () => {
     unmount()
   })
 
-  // test('avatar', async () => {
-  //   let file
+  test('beforeUpload', async () => {
+    let file
+    mockUpload.mockImplementation((props) => (
+      <input
+        role="Upload"
+        onClick={(e) => props.beforeUpload(e.target.files[0])}
+      />
+    ))
 
-  //   const { unmount } = render(<Dashboard />)
+    const { unmount } = render(<Dashboard />)
 
-  //   const upload = screen.getByRole('img', { name: 'upload' })
+    const upload = screen.getByRole('Upload')
 
-  //   // Wrong format
-  //   file = new File(['buffer'], 'file.png', { type: 'application/mesh' })
-  //   fireEvent.drop(upload, {
-  //     dataTransfer: {
-  //       files: [file]
-  //     }
-  //   })
+    // Wrong format
+    file = new File(['buffer'], 'file.png', { type: 'application/mesh' })
+    fireEvent.click(upload, {
+      target: {
+        files: [file]
+      }
+    })
 
-  //   // Wrong size
-  //   file = new File([Buffer.alloc(5 * 1024 * 1024)], 'file.png', {
-  //     type: 'image/png'
-  //   })
-  //   fireEvent.drop(upload, {
-  //     dataTransfer: {
-  //       files: [file]
-  //     }
-  //   })
+    // Wrong size
+    file = new File([Buffer.alloc(5 * 1024 * 1024)], 'file.png', {
+      type: 'image/png'
+    })
+    fireEvent.drop(upload, {
+      target: {
+        files: [file]
+      }
+    })
 
-  //   // Error
-  //   mockFetch.mockImplementation(() => {
-  //     throw new Error('Fetch error')
-  //   })
-  //   file = new File(['buffer'], 'file.png', { type: 'image/png' })
-  //   fireEvent.drop(upload, {
-  //     dataTransfer: {
-  //       files: [file]
-  //     }
-  //   })
-  //   await waitFor(() =>
-  //     expect(mockCaptureException).toHaveBeenLastCalledWith(
-  //       new Error('Fetch error')
-  //     )
-  //   )
+    // Good
+    file = new File(['buffer'], 'file.png', { type: 'image/png' })
+    fireEvent.drop(upload, {
+      target: {
+        files: [file]
+      }
+    })
 
-  //   unmount()
-  // })
+    unmount()
+  })
 
-  // test('avatar upload', async () => {
-  //   const { unmount } = render(<Dashboard />)
+  test('onChange', async () => {
+    let info
+    mockUpload.mockImplementation((props) => (
+      <input
+        role="Upload"
+        onClick={async (e) => {
+          props.onChange(JSON.parse(e.target.value))
+        }}
+      />
+    ))
 
-  //   const upload = screen.getByRole('img', { name: 'upload' })
+    const { unmount } = render(<Dashboard />)
 
-  //   let fetchParams
-  //   mockFetch.mockImplementation((_, params) => {
-  //     fetchParams = params
-  //     return {
-  //       ok: true,
-  //       headers: {
-  //         get: () => 'application/json'
-  //       },
-  //       json: () => ''
-  //     }
-  //   })
+    const upload = screen.getByRole('Upload')
 
-  //   const file = new File(['buffer'], 'file.png', { type: 'image/png' })
-  //   fireEvent.drop(upload, {
-  //     dataTransfer: {
-  //       files: [file]
-  //     }
-  //   })
+    mockFetch.mockImplementation(() => {
+      return {
+        ok: true,
+        headers: {
+          get: () => 'application/json'
+        },
+        json: () => ''
+      }
+    })
 
-  //   await waitFor(() =>
-  //     expect(mockFetch).toHaveBeenLastCalledWith('/api/avatar', {
-  //       method: 'POST',
-  //       headers: {
-  //         Accept: 'application/json',
-  //         'Content-Type': 'application/json'
-  //       },
-  //       body: JSON.stringify({
-  //         file: {
-  //           name: 'file.png',
-  //           uid: JSON.parse(fetchParams.body).file.uid,
-  //           data: 'data:image/png;base64,YnVmZmVy'
-  //         }
-  //       })
-  //     })
-  //   )
+    // Uploading
+    info = { file: { status: 'uploading' } }
+    fireEvent.click(upload, {
+      target: {
+        value: JSON.stringify(info)
+      }
+    })
 
-  //   unmount()
-  // })
+    // Done
+    info = {
+      file: { status: 'done', name: 'file.png', uid: 'uid', originFileObj: {} }
+    }
+    global.FileReader = class {
+      addEventListener(_, callback) {
+        callback()
+      }
+      readAsDataURL() {
+        // mock method
+      }
+      result = 'img'
+    }
+
+    fireEvent.click(upload, {
+      target: {
+        value: JSON.stringify(info)
+      }
+    })
+
+    await waitFor(() =>
+      expect(mockFetch).toHaveBeenLastCalledWith('/api/avatar', {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          file: {
+            name: 'file.png',
+            uid: 'uid',
+            data: 'img'
+          }
+        })
+      })
+    )
+
+    unmount()
+  })
 
   test('delete account', async () => {
     const { unmount } = render(<Dashboard />)

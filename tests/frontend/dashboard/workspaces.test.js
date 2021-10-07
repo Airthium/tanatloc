@@ -38,7 +38,7 @@ jest.spyOn(global, 'URLSearchParams').mockImplementation(() => ({
   }
 }))
 
-describe('e2e/frontend/dashboard/help', () => {
+describe('e2e/frontend/dashboard/workspaces', () => {
   beforeEach(() => {
     mockRouterPush.mockReset()
     mockRouterReplace.mockReset()
@@ -72,7 +72,29 @@ describe('e2e/frontend/dashboard/help', () => {
       data: {
         user: { id: 'id', email: 'email', authorizedplugins: [] },
         organizations: null,
-        workspaces: [{ id: 'id', name: 'Test workspace' }]
+        workspaces: [{ id: 'id', name: 'Test workspace' }],
+        projects: [
+          {
+            title: 'title1',
+            description: '',
+            avatar: '',
+            owners: ['id'],
+            users: [],
+            groups: [],
+            simulations: [],
+            workspace: 'id'
+          },
+          {
+            title: 'title1',
+            description: '',
+            avatar: '',
+            owners: ['id0'],
+            users: ['id'],
+            groups: [],
+            simulations: [],
+            workspace: 'id'
+          }
+        ]
       },
       error: null,
       mutate: jest.fn

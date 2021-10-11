@@ -58,7 +58,35 @@ const PluginDialog = ({ plugin, swr, edit }) => {
           }
         ]}
       >
-        <Input id={'input-' + key} autoComplete="off" />
+        <Input id={'input-' + key} autoComplete="off" {...(item.props || {})} />
+      </Form.Item>
+    )
+  }
+
+  /**
+   * Build textarea item
+   * @param {Object} item Item
+   * @param {string} key Key
+   */
+  const textareaItem = (item, key) => {
+    return (
+      <Form.Item
+        key={item.label}
+        name={key}
+        label={item.label}
+        htmlFor={'input-' + key}
+        rules={[
+          {
+            required: item.required,
+            message: "'" + item.label + "' is required"
+          }
+        ]}
+      >
+        <Input.TextArea
+          id={'input-' + key}
+          autoComplete="off"
+          {...(item.props || {})}
+        />
       </Form.Item>
     )
   }
@@ -82,7 +110,12 @@ const PluginDialog = ({ plugin, swr, edit }) => {
           }
         ]}
       >
-        <Input id={'input-' + key} type="password" autoComplete="off" />
+        <Input
+          id={'input-' + key}
+          type="password"
+          autoComplete="off"
+          {...(item.props || {})}
+        />
       </Form.Item>
     )
   }
@@ -109,7 +142,11 @@ const PluginDialog = ({ plugin, swr, edit }) => {
         <Select id={'select-' + key}>
           {item.options.map((option) => {
             return (
-              <Select.Option key={option} value={option}>
+              <Select.Option
+                key={option}
+                value={option}
+                {...(item.props || {})}
+              >
                 {option}
               </Select.Option>
             )
@@ -186,6 +223,7 @@ const PluginDialog = ({ plugin, swr, edit }) => {
         {Object.keys(plugin.configuration).map((key) => {
           const item = plugin.configuration[key]
           if (item.type === 'input') return inputItem(item, key)
+          else if (item.type === 'textarea') return textareaItem(item, key)
           else if (item.type === 'password') return passwordItem(item, key)
           else if (item.type === 'select') return selectItem(item, key)
         })}

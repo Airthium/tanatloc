@@ -8,6 +8,7 @@ import Icon, {
   CheckCircleOutlined,
   CloseCircleOutlined,
   ExclamationCircleOutlined,
+  LoadingOutlined,
   PlusOutlined
 } from '@ant-design/icons'
 import Geometries from '/public/icons/geometries'
@@ -332,14 +333,7 @@ const Project = () => {
   /**
    * Render
    */
-  if (
-    !user ||
-    loadingUser ||
-    loadingProject ||
-    loadingGeometries ||
-    loadingSimulations
-  )
-    return <Loading.Simple />
+  if (!user || loadingUser || loadingProject) return <Loading.Simple />
   if (project === 'Unauthorized') return <NotAuthorized />
   else
     return (
@@ -373,7 +367,11 @@ const Project = () => {
               key={menuKeys.geometries}
               className="menu-submenu menu-geometries"
               icon={
-                <Icon component={Geometries} style={{ maxWidth: '14px' }} />
+                loadingGeometries ? (
+                  <LoadingOutlined />
+                ) : (
+                  <Icon component={Geometries} style={{ maxWidth: '14px' }} />
+                )
               }
               title={'Geometries (' + geometries.length + ')'}
             >
@@ -391,7 +389,13 @@ const Project = () => {
             <Menu.SubMenu
               key={menuKeys.simulations}
               className="menu-submenu menu-simulations"
-              icon={<CalculatorOutlined />}
+              icon={
+                loadingSimulations ? (
+                  <LoadingOutlined />
+                ) : (
+                  <CalculatorOutlined />
+                )
+              }
               title={'Simulations (' + simulations.length + ')'}
               disabled={!geometries.length}
             >

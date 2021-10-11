@@ -270,7 +270,7 @@ describe('components/project/simulation/initialization', () => {
     unmount()
   })
 
-  test('onCouplingChange', async () => {
+  const setTasksResults = () => {
     mockTasks.mockImplementation(() => [
       {},
       { file: { type: 'mesh' } },
@@ -292,6 +292,10 @@ describe('components/project/simulation/initialization', () => {
         }
       }
     ])
+  }
+
+  test('onCouplingChange', async () => {
+    setTasksResults()
     const { unmount } = render(
       <Initialization
         simulations={simulations}
@@ -335,6 +339,88 @@ describe('components/project/simulation/initialization', () => {
     await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(3))
     await waitFor(() =>
       expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(3)
+    )
+
+    unmount()
+  })
+
+  test('onCouplingChange, without files', async () => {
+    mockTasks.mockImplementation(() => [{ files: [] }])
+    const { unmount } = render(
+      <Initialization
+        simulations={simulations}
+        simulation={simulation}
+        swr={swr}
+      />
+    )
+
+    // Open collapse
+    const tabs = screen.getAllByRole('tab')
+    fireEvent.click(tabs[1])
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
+      expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(1)
+    )
+
+    unmount()
+  })
+
+  test('onCouplingChange, without multiplicator', async () => {
+    setTasksResults()
+    const simulations2 = [
+      {
+        id: 'id',
+        name: 'Simulation 0',
+        scheme: {
+          algorithm: 'algorithm1'
+        }
+      },
+      {
+        id: 'id1',
+        name: 'Simulation 1',
+        scheme: {
+          algorithm: 'algorithm1',
+          configuration: {
+            parameters: {
+              time: {
+                children: [{}, { default: 1 }]
+              }
+            },
+            run: {
+              resultsFilters: [
+                {
+                  prefixPattern: 'result_',
+                  suffixPattern: '.vtu',
+                  pattern: 'result_\\d+.vtu'
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        id: 'id2',
+        name: 'Simulation 2',
+        scheme: {
+          algorithm: 'algorithm2'
+        }
+      }
+    ]
+
+    const { unmount } = render(
+      <Initialization
+        simulations={simulations2}
+        simulation={simulation}
+        swr={swr}
+      />
+    )
+
+    // Open collapse
+    const tabs = screen.getAllByRole('tab')
+    fireEvent.click(tabs[1])
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
+      expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(1)
     )
 
     unmount()

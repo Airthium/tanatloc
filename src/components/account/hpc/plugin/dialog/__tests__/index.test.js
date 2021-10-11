@@ -4,10 +4,7 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import PluginDialog from '..'
 
 const mockDialog = jest.fn()
-jest.mock('@/components/assets/dialog', () => {
-  const Dialog = (props) => mockDialog(props)
-  return Dialog
-})
+jest.mock('@/components/assets/dialog', () => (props) => mockDialog(props))
 
 const mockError = jest.fn()
 jest.mock('@/components/assets/notification', () => ({
@@ -39,6 +36,11 @@ describe('components/account/hpc/dialog', () => {
         label: 'Select',
         type: 'select',
         options: ['option1', 'option2']
+      },
+      textarea: {
+        label: 'Textarea',
+        type: 'textarea',
+        default: 'Default'
       },
       other: {
         label: 'Other',

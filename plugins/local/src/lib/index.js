@@ -32,9 +32,6 @@ const dataPath = 'data'
 // dB update delay
 const updateDelay = 1000 // ms
 
-// Time
-const start = Date.now()
-
 /**
  * Update tasks
  * @memberof Plugins.Local
@@ -172,6 +169,9 @@ const getRefinements = (configuration) => {
  * @param {Array} tasks Tasks
  */
 const computeMeshes = async (id, simulationPath, configuration, tasks) => {
+  // Time
+  const start = Date.now()
+
   let taskIndex = 0
   await Promise.all(
     Object.keys(configuration).map(async (ckey) => {
@@ -264,6 +264,9 @@ const computeMeshes = async (id, simulationPath, configuration, tasks) => {
  * @param {Object} configuration Configuration
  */
 const computeSimulation = async ({ id }, algorithm, configuration) => {
+  // Time
+  const start = Date.now()
+
   // Path
   const simulationPath = path.join(storage.SIMULATION, id)
 

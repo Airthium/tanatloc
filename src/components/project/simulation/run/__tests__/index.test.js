@@ -71,6 +71,7 @@ describe('components/project/simulation/run', () => {
     const data = {
       scheme: { configuration: { run: { done: true } } },
       tasks: [
+        null,
         {
           label: 'Mesh',
           index: 1,

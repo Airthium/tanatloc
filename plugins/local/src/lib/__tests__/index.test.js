@@ -1,5 +1,3 @@
-Date.now = () => 0
-
 import Local from '..'
 
 const mockPath = jest.fn()
@@ -240,12 +238,17 @@ describe('plugins/local/src/lib', () => {
   })
 
   test('computeSimulation', async () => {
+    Date.now = () => 500 + 250 * Math.random()
     mockFreefem.mockImplementation((_, __, callback) => {
       callback({ pid: 'pid' })
       callback({ error: 'data' })
       return 0
     })
-    mockReadFile.mockImplementation(() => '')
+    mockSetInterval.mockImplementation((callback) => {
+      callback()
+      return 'interval'
+    })
+    mockReadFile.mockImplementation(() => 'PROCESS DATA FILE Result.dat')
 
     // Empty
     await Local.computeSimulation('id', 'algorithm', {})
@@ -263,7 +266,8 @@ describe('plugins/local/src/lib', () => {
     }
 
     //With meshes
-    mockFreefem.mockImplementation(() => {
+    mockFreefem.mockImplementation((_, __, callback) => {
+      callback({ pid: 'pid' })
       return 0
     })
     mockGmsh.mockImplementation((_, __, ___, callback) => {
@@ -301,6 +305,7 @@ describe('plugins/local/src/lib', () => {
     })
 
     // Coupling
+    Date.now = () => 0
     await Local.computeSimulation('id', 'algorithm', {
       geometry: {
         meshable: true,
@@ -372,11 +377,14 @@ describe('plugins/local/src/lib', () => {
   })
 
   test('monitoring', async () => {
+    mockReadFile.mockImplementation(() => 'PROCESS DATA FILE Result.dat')
     Local.monitoring('id', '_', '__', [], {})
   })
 
   test('stop', async () => {
-    const mockKill = jest.spyOn(process, 'kill').mockImplementation(() => {})
+    const mockKill = jest.spyOn(process, 'kill').mockImplementation(() => {
+      //
+    })
     await Local.stop('id', [
       { status: 'finish' },
       { status: 'wait' },

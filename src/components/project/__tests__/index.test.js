@@ -94,6 +94,7 @@ const mockSimulations = jest.fn()
 const mockErrorSimulations = jest.fn()
 const mockSimulationAdd = jest.fn()
 const mockSimulationUpdate = jest.fn()
+const mockLoadingSimulations = jest.fn()
 jest.mock('@/api/simulation', () => ({
   add: async () => mockSimulationAdd(),
   update: async () => mockSimulationUpdate(),
@@ -104,7 +105,7 @@ jest.mock('@/api/simulation', () => ({
       delOneSimulation: jest.fn(),
       mutateOneSimulation: jest.fn(),
       errorSimulations: mockErrorSimulations(),
-      loadingSimulations: false
+      loadingSimulations: mockLoadingSimulations()
     }
   ]
 }))
@@ -207,6 +208,7 @@ describe('components/project', () => {
     mockErrorSimulations.mockReset()
     mockSimulationAdd.mockReset()
     mockSimulationUpdate.mockReset()
+    mockLoadingSimulations.mockReset()
 
     mockGeometries.mockReset()
     mockGeometries.mockImplementation(() => [{ id: 'idg', name: 'Geometry' }])
@@ -231,7 +233,14 @@ describe('components/project', () => {
 
   test('loading', () => {
     mockUserLoading.mockImplementation(() => true)
+    const { unmount } = render(<Project />)
+
+    unmount()
+  })
+
+  test('loading geometries & simulation', () => {
     mockLoadingGeometries.mockImplementation(() => true)
+    mockLoadingSimulations.mockImplementation(() => true)
     const { unmount } = render(<Project />)
 
     unmount()
@@ -396,322 +405,4 @@ describe('components/project', () => {
 
     unmount()
   })
-
-  // test('without configuration', () => {
-  //   const { unmount } = render(<Project />)
-
-  //   unmount()
-  // //   wrapper.unmount()
-  // //   mockSimulations.mockImplementation(() => [{ scheme: {} }])
-  // //   wrapper = shallow(<Project />)
-  // //   expect(wrapper).toBeDefined()
-  // })
-
-  // test('with subMenus', () => {
-  //   wrapper.unmount()
-  //   mockSimulations.mockImplementation(() => [
-  //     {
-  //       scheme: {
-  //         configuration: {
-  //           geometry: {
-  //             title: 'Geometry',
-  //             subMenus: [
-  //               {
-  //                 title: 'title1'
-  //               },
-  //               { title: 'title2' }
-  //             ]
-  //           },
-  //           something: {
-  //             done: true,
-  //             subMenus: [
-  //               {
-  //                 title: 'title1'
-  //               },
-  //               { title: 'title2' }
-  //             ]
-  //           }
-  //         }
-  //       }
-  //     }
-  //   ])
-  //   wrapper = shallow(<Project />)
-  // })
-
-  // test('Unauthorized', () => {
-  //   wrapper.unmount()
-  //   mockProject.mockImplementation(() => 'Unauthorized')
-  //   wrapper = shallow(<Project />)
-  // })
-
-  // test('handleTitle', async () => {
-  //   await wrapper.find('Title').props().editable.onChange('title')
-  //   expect(mockUpdate).toHaveBeenCalledTimes(1)
-  //   expect(mockMutateProject).toHaveBeenCalledTimes(1)
-
-  //   wrapper.unmount()
-  //   mockMutateProject.mockImplementation(() => {
-  //     throw new Error()
-  //   })
-  //   wrapper = shallow(<Project />)
-  //   await wrapper.find('Title').props().editable.onChange('title')
-  // })
-
-  // test('handleDashboard', () => {
-  //   wrapper.find('GoBack').props().onClick()
-  //   expect(mockRouter).toHaveBeenCalledTimes(1)
-  // })
-
-  // test('addSimulation', () => {
-  //   wrapper.find('Button').props().onClick()
-  //   expect(wrapper.find('Selector').props().visible).toBe(true)
-  // })
-
-  // test('selectorOk', async () => {
-  //   await wrapper.find('Selector').props().onOk({ configuration: {} })
-
-  //   expect(wrapper.find('Menu').props().children.length).toBe(6)
-
-  //   //Empty
-  //   wrapper.unmount()
-  //   mockProject.mockImplementation(() => ({}))
-  //   wrapper = shallow(<Project />)
-  //   await wrapper.find('Selector').props().onOk({ configuration: {} })
-
-  //   // Error
-  //   wrapper.unmount()
-  //   mockMutateProject.mockImplementation(() => {
-  //     throw new Error()
-  //   })
-  //   wrapper = shallow(<Project />)
-  //   await wrapper.find('Selector').props().onOk({ configuration: {} })
-  // })
-
-  // test('selector cancel', () => {
-  //   wrapper.find('Selector').props().onCancel()
-  //   expect(wrapper.find('Selector').props().visible).toBe(false)
-  // })
-
-  // test('select simulation', async () => {
-  //   // Add simulation first
-  //   await wrapper
-  //     .find('Selector')
-  //     .props()
-  //     .onOk({
-  //       children: [
-  //         {
-  //           type: 'geometry'
-  //         }
-  //       ]
-  //     })
-
-  //   wrapper
-  //     .find('Menu')
-  //     .props()
-  //     .onClick({ key: 'simulation&0&geometry', keyPath: [] })
-  // })
-
-  // test('unknow key', () => {
-  //   wrapper.find('Menu').props().onClick({ key: 'unknow', keyPath: [] })
-  // })
-
-  // test('simulation close', () => {
-  //   wrapper.find('Simulation').props().onClose()
-  //   expect(wrapper.find('Simulation').props().simulation).toBe(undefined)
-  // })
-
-  // // test('user effect', () => {
-  // //   wrapper.unmount()
-
-  // //   // With user
-  // //   wrapper = mount(<Project />)
-  // //   expect(mockRouter).toHaveBeenCalledTimes(0)
-  // //   wrapper.unmount()
-
-  // //   // Without user
-  // //   mockUser.mockImplementation(() => {})
-  // //   wrapper = mount(<Project />)
-  // //   expect(mockRouter).toHaveBeenCalledTimes(1)
-  // // })
-
-  // // test('simulation effect', () => {
-  // //   // Update
-  // //   wrapper.unmount()
-  // //   const mockTitle = jest.fn(() => 'title')
-  // //   mockSimulations.mockImplementation(() => [
-  // //     {
-  // //       id: 'id',
-  // //       scheme: {
-  // //         configuration: {
-  // //           geometry: {
-  // //             title: mockTitle(),
-  // //             file: {}
-  // //           }
-  // //         }
-  // //       }
-  // //     }
-  // //   ])
-  // //   wrapper = mount(<Project />)
-  // //   mockTitle.mockImplementation(() => 'newTitle')
-
-  // //   act(() =>
-  // //     wrapper
-  // //       .find('InternalMenu')
-  // //       .props()
-  // //       .onClick({ key: 'simulation&id&materials', keyPath: [] })
-  // //   )
-  // //   expect(mockSimulationUpdate).toHaveBeenCalledTimes(2)
-
-  // //   // Force geometry
-  // //   wrapper.unmount()
-  // //   mockSimulations.mockImplementation(() => [
-  // //     {
-  // //       id: 'id',
-  // //       scheme: {
-  // //         configuration: {
-  // //           geometry: {
-  // //             title: 'Geometry',
-  // //             file: {}
-  // //           }
-  // //         }
-  // //       }
-  // //     }
-  // //   ])
-  // //   wrapper = mount(<Project />)
-
-  // //   act(() =>
-  // //     wrapper
-  // //       .find('InternalMenu')
-  // //       .props()
-  // //       .onClick({ key: 'simulation&id&materials', keyPath: [] })
-  // //   )
-  // //   // wrapper.update()
-  // //   expect(mockSimulationUpdate).toHaveBeenCalledTimes(3)
-
-  // //   // Force geometry (with part)
-  // //   wrapper.unmount()
-  // //   mockSimulations.mockImplementation(() => [
-  // //     {
-  // //       id: 'id',
-  // //       scheme: {
-  // //         configuration: {
-  // //           part: {},
-  // //           geometry: {
-  // //             title: 'Geometry',
-  // //             file: {}
-  // //           }
-  // //         }
-  // //       }
-  // //     }
-  // //   ])
-  // //   wrapper = mount(<Project />)
-
-  // //   act(() =>
-  // //     wrapper
-  // //       .find('InternalMenu')
-  // //       .props()
-  // //       .onClick({ key: 'simulation&id&boundaryConditions', keyPath: [] })
-  // //   )
-  // //   // wrapper.update()
-  // //   expect(mockSimulationUpdate).toHaveBeenCalledTimes(4)
-
-  // //   // Force geometry (no)
-  // //   wrapper.unmount()
-  // //   mockSimulations.mockImplementation(() => [
-  // //     {
-  // //       id: 'id',
-  // //       scheme: {
-  // //         configuration: {
-  // //           part: {},
-  // //           geometry: {
-  // //             title: 'Geometry',
-  // //             file: {}
-  // //           }
-  // //         }
-  // //       }
-  // //     }
-  // //   ])
-  // //   wrapper = mount(<Project />)
-
-  // //   act(() =>
-  // //     wrapper
-  // //       .find('InternalMenu')
-  // //       .props()
-  // //       .onClick({ key: 'simulation&id&geometry', keyPath: [] })
-  // //   )
-  // //   // wrapper.update()
-  // //   expect(mockSimulationUpdate).toHaveBeenCalledTimes(4)
-
-  // //   // Force geometry (error)
-  // //   wrapper.unmount()
-  // //   mockSimulations.mockImplementation(() => [
-  // //     {
-  // //       id: 'id',
-  // //       scheme: {
-  // //         configuration: {
-  // //           geometry: {
-  // //             title: 'Geometry',
-  // //             file: {}
-  // //           }
-  // //         }
-  // //       }
-  // //     }
-  // //   ])
-  // //   mockSimulationUpdate.mockImplementation(() => {
-  // //     throw new Error()
-  // //   })
-  // //   wrapper = mount(<Project />)
-
-  // //   act(() =>
-  // //     wrapper
-  // //       .find('InternalMenu')
-  // //       .props()
-  // //       .onClick({ key: 'simulation&id&materials', keyPath: [] })
-  // //   )
-  // //   wrapper.update()
-  // //   expect(mockSimulationUpdate).toHaveBeenCalledTimes(5)
-
-  // //   // Remove part
-  // //   wrapper.unmount()
-  // //   mockSimulationUpdate.mockReset()
-  // //   mockSimulations.mockImplementation(() => [
-  // //     {
-  // //       id: 'id',
-  // //       scheme: {
-  // //         configuration: {
-  // //           part: { type: 'geometry' },
-  // //           geometry: {
-  // //             title: 'Geometry'
-  // //           }
-  // //         }
-  // //       }
-  // //     }
-  // //   ])
-  // //   wrapper = mount(<Project />)
-
-  // //   act(() =>
-  // //     wrapper
-  // //       .find('InternalMenu')
-  // //       .props()
-  // //       .onClick({ key: 'simulation&id&materials', keyPath: [] })
-  // //   )
-  // //   wrapper.update()
-  // //   expect(mockSimulationUpdate).toHaveBeenCalledTimes(1)
-
-  // //   // Remove part (error)
-  // //   wrapper.unmount()
-  // //   mockSimulationUpdate.mockImplementation(() => {
-  // //     throw new Error()
-  // //   })
-  // //   wrapper = mount(<Project />)
-
-  // //   act(() =>
-  // //     wrapper
-  // //       .find('InternalMenu')
-  // //       .props()
-  // //       .onClick({ key: 'simulation&id&materials', keyPath: [] })
-  // //   )
-  // //   wrapper.update()
-  // //   expect(mockSimulationUpdate).toHaveBeenCalledTimes(2)
-  // // })
 })

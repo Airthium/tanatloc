@@ -48,8 +48,6 @@ const Workspace = ({ loading, user, page, workspace, organizations, swr }) => {
     }
   ] = ProjectAPI.useProjects(workspace?.projects)
 
-  console.log(projects)
-
   // Projects error
   useEffect(() => {
     if (errorProjects) ErrorNotification(errors.projects, errorProjects)

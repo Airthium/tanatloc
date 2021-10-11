@@ -32,7 +32,8 @@ const loadPart = (location, name) => {
   if (part.solids) {
     part.solids.map((solid) => {
       const file = path.join(location, solid.path)
-      solid.buffer = fs.readFileSync(file)
+      const content = fs.readFileSync(file)
+      solid.buffer = content
       delete solid.path
     })
   }
@@ -41,7 +42,8 @@ const loadPart = (location, name) => {
   if (part.faces) {
     part.faces.map((face) => {
       const file = path.join(location, face.path)
-      face.buffer = fs.readFileSync(file)
+      const content = fs.readFileSync(file)
+      face.buffer = content
       delete face.path
     })
   }

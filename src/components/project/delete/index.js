@@ -82,6 +82,7 @@ const Delete = ({ disabled, workspace, project, swr }) => {
 Delete.propTypes = {
   disabled: PropTypes.bool,
   workspace: PropTypes.exact({
+    id: PropTypes.string.isRequired,
     projects: PropTypes.array.isRequired
   }).isRequired,
   project: PropTypes.exact({

@@ -628,5 +628,5 @@ describe('components/project/simulation/run', () => {
     await waitFor(() => expect(mockError).toHaveBeenCalledTimes(2))
 
     unmount()
-  })
+  }, 10_000)
 })

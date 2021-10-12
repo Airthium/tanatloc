@@ -59,8 +59,7 @@ const Run = ({ simulation, result, setResult, swr }) => {
   const [selectors, setSelectors] = useState([])
   const [selectorsCurrent, setSelectorsCurrent] = useState([])
 
-  const [loadingResults, setLoadingResults] = useState(false)
-  const [results, setResults] = useState([])
+  const [results, setResults] = useState()
   const [steps, setSteps] = useState([])
 
   const [downloading, setDownloading] = useState([])
@@ -113,14 +112,15 @@ const Run = ({ simulation, result, setResult, swr }) => {
 
   // Steps & Results
   useEffect(() => {
-    if (!currentSimulation?.tasks) return
-
-    setLoadingResults(true)
+    if (!currentSimulation?.tasks) {
+      setResults([])
+      return
+    }
 
     const newSteps = []
     const newResults = []
     const newSelectors = []
-    currentSimulation.tasks.forEach((task, index) => {
+    currentSimulation.tasks.forEach((task) => {
       if (!task) return
       // Steps
       newSteps[task.index] = {
@@ -225,8 +225,6 @@ const Run = ({ simulation, result, setResult, swr }) => {
     setSteps(newSteps)
     setResults(newResults)
     setSelectors(newSelectors)
-
-    setLoadingResults(false)
   }, [
     configuration?.run?.resultsFilters,
     currentSimulation?.tasks,
@@ -410,17 +408,14 @@ const Run = ({ simulation, result, setResult, swr }) => {
       const link = document.createElement('a')
       link.href = url
       link.setAttribute('download', simulation.scheme.name + '.zip')
-      document.body.appendChild(link)
       link.click()
-      document.body.removeChild(link)
     } catch (err) {
       ErrorNotification(errors.downloadError, err)
     } finally {
-      const index = downloading.findIndex((d) => d === 'archive')
-      setDownloading([
-        ...downloading.slice(0, index),
-        ...downloading.slice(index + 1)
-      ])
+      setDownloading((d) => {
+        const index = d.indexOf('archive')
+        return [...d.slice(0, index), ...d.slice(index + 1)]
+      })
     }
   }
 
@@ -445,23 +440,20 @@ const Run = ({ simulation, result, setResult, swr }) => {
         'download',
         file.name + '.' + file.fileName.split('.').pop()
       )
-      document.body.appendChild(link)
       link.click()
-      document.body.removeChild(link)
     } catch (err) {
       ErrorNotification(errors.downloadError, err)
     } finally {
-      const index = downloading.findIndex((d) => d === file.glb)
-      setDownloading([
-        ...downloading.slice(0, index),
-        ...downloading.slice(index + 1)
-      ])
+      setDownloading((d) => {
+        const index = d.indexOf(file.glb)
+        return [...d.slice(0, index), ...d.slice(index + 1)]
+      })
     }
   }
 
   // Results render
   let resultsRender
-  if (loadingResults) resultsRender = <Spin />
+  if (!results) resultsRender = <Spin />
   else if (!results.length) resultsRender = <Card>No results yet</Card>
   else
     resultsRender = (

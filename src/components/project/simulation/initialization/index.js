@@ -108,7 +108,7 @@ const Initialization = ({ simulations, simulation, swr }) => {
             files.sort((a, b) => a.number - b.number)
 
             // Get unique numbers
-            const steps = files.filter((file, i, self) => {
+            const steps = files.filter((file, i) => {
               return files.findIndex((s) => s.number === file.number) === i
             })
 
@@ -165,11 +165,11 @@ const Initialization = ({ simulations, simulation, swr }) => {
     // Simulation
     setSimulation(value)
 
-    // Check results
-    const results = await loadResults(value)
-
-    // Update simulation
     try {
+      // Check results
+      const results = await loadResults(value)
+
+      // Update simulation
       // New simulation
       const newSimulation = { ...simulation }
 
@@ -232,11 +232,10 @@ const Initialization = ({ simulations, simulation, swr }) => {
 
   /**
    * On parameter change
-   * @param {string} key Parameter key
    * @param {number} index Children index
    * @param {string} value Value
    */
-  const onChange = async (key, index, value) => {
+  const onChange = async (index, value) => {
     const newValues = [...values]
     newValues[index] = value
 
@@ -349,7 +348,7 @@ const Initialization = ({ simulations, simulation, swr }) => {
                   initializationValue?.values?.[index] ||
                   (child.value === undefined ? child.default : child.value)
                 }
-                onValueChange={(value) => onChange(key, index, value)}
+                onValueChange={(value) => onChange(index, value)}
                 unit={child.unit}
               />
             </Typography.Text>
@@ -363,7 +362,7 @@ const Initialization = ({ simulations, simulation, swr }) => {
                 defaultValue={
                   child.value === undefined ? child.default : child.value
                 }
-                onChange={(value) => onChange(key, index, value)}
+                onChange={(value) => onChange(index, value)}
               />
             </Typography.Text>
           )

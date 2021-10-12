@@ -202,7 +202,21 @@ describe('components/project', () => {
       },
       {
         id: 'ids2',
-        name: 'Simulation 2'
+        name: 'Simulation 2',
+        scheme: {}
+      },
+      {
+        id: 'ids3',
+        name: 'Simulation 3',
+        scheme: {
+          configuration: {
+            geometry: {
+              index: 0,
+              title: 'Simulation 3 Geometry',
+              value: 'idg'
+            }
+          }
+        }
       }
     ])
     mockErrorSimulations.mockReset()
@@ -223,7 +237,9 @@ describe('components/project', () => {
   })
 
   test('no user', () => {
-    mockUser.mockImplementation(() => {})
+    mockUser.mockImplementation(() => {
+      //
+    })
     const { unmount } = render(<Project />)
 
     expect(mockReplace).toHaveBeenCalledTimes(1)
@@ -286,7 +302,7 @@ describe('components/project', () => {
     unmount()
   })
 
-  test('menu', () => {
+  test('menu', async () => {
     mockSelector.mockImplementation((props) => (
       <div role="Selector" onClick={props.onCancel} />
     ))
@@ -297,7 +313,7 @@ describe('components/project', () => {
     fireEvent.click(geometries)
 
     const simulations = screen.getByRole('menuitem', {
-      name: 'calculator Simulations (2)'
+      name: 'calculator Simulations (3)'
     })
     fireEvent.click(simulations)
 
@@ -321,15 +337,19 @@ describe('components/project', () => {
     const selector = screen.getByRole('Selector')
     fireEvent.click(selector)
 
+    // Open simulation 2
+    const simulation2 = screen.getByRole('menuitem', { name: 'Simulation 2' })
+    fireEvent.click(simulation2)
+
     // Open simulation 1
     const simulation1 = screen.getByRole('menuitem', { name: 'Simulation 1' })
     fireEvent.click(simulation1)
 
     // Click simulation items
-    let simulationItem = screen.getByRole('menuitem', {
+    let simulationItem = screen.getAllByRole('menuitem', {
       name: 'check-circle About'
     })
-    fireEvent.click(simulationItem)
+    fireEvent.click(simulationItem[1])
 
     simulationItem = screen.getByRole('menuitem', {
       name: 'exclamation-circle Simulation 1 Geometry'
@@ -363,6 +383,15 @@ describe('components/project', () => {
 
     simulationItem = screen.getByRole('menuitem', {
       name: 'exclamation-circle Simulation 1 Unknown'
+    })
+    fireEvent.click(simulationItem)
+
+    // Open simulation 3
+    const simulation3 = screen.getByRole('menuitem', { name: 'Simulation 3' })
+    fireEvent.click(simulation3)
+
+    simulationItem = screen.getByRole('menuitem', {
+      name: 'exclamation-circle Simulation 3 Geometry'
     })
     fireEvent.click(simulationItem)
 
@@ -402,6 +431,88 @@ describe('components/project', () => {
 
     const panel = screen.getByRole('Panel')
     fireEvent.click(panel)
+
+    unmount()
+  })
+
+  test('Update geometry', () => {
+    mockPanel.mockImplementation((props) => (
+      <div role="Panel" onClick={props.onClose} />
+    ))
+
+    let geometryName = 'Geometry'
+    mockGeometries.mockImplementation(() => [{ id: 'idg', name: geometryName }])
+
+    const { unmount } = render(<Project />)
+
+    // Select geometry
+    const geometries = screen.getByRole('menuitem', { name: 'Geometries (1)' })
+    fireEvent.click(geometries)
+    const simulations = screen.getByRole('menuitem', {
+      name: 'calculator Simulations (3)'
+    })
+    fireEvent.click(simulations)
+    const simulation1 = screen.getByRole('menuitem', { name: 'Simulation 1' })
+    fireEvent.click(simulation1)
+    const simulationItem = screen.getByRole('menuitem', {
+      name: 'check-circle About'
+    })
+
+    const geometry = screen.getByRole('menuitem', { name: 'Geometry' })
+    fireEvent.click(geometry)
+
+    // Rename
+    geometryName = 'Geometry rename'
+    fireEvent.click(geometry)
+
+    // Close panel -> not visible
+    const panel = screen.getByRole('Panel')
+    fireEvent.click(panel)
+
+    // Rename
+    geometryName = 'Geometry'
+    fireEvent.click(simulationItem)
+
+    // Delete geometry
+    mockGeometries.mockImplementation(() => [])
+    fireEvent.click(geometry)
+
+    unmount()
+  })
+
+  test('Update simulation', () => {
+    let simulationName = 'Simulation 1'
+    mockSimulations.mockImplementation(() => [
+      {
+        id: 'ids1',
+        name: simulationName,
+        scheme: {
+          configuration: {}
+        }
+      }
+    ])
+
+    const { unmount } = render(<Project />)
+
+    // Select simulation
+    const simulations = screen.getByRole('menuitem', {
+      name: 'calculator Simulations (1)'
+    })
+    fireEvent.click(simulations)
+    const simulation1 = screen.getByRole('menuitem', { name: 'Simulation 1' })
+    fireEvent.click(simulation1)
+    const simulationItem = screen.getByRole('menuitem', {
+      name: 'check-circle About'
+    })
+    fireEvent.click(simulationItem)
+
+    // Rename
+    simulationName = 'Simulation 1 rename'
+    fireEvent.click(simulationItem)
+
+    // Delete
+    mockSimulations.mockImplementation(() => [])
+    fireEvent.click(simulationItem)
 
     unmount()
   })

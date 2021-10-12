@@ -273,7 +273,7 @@ const Project = () => {
     const simulation = simulations.find((s) => s.id === id)
     if (!simulation) return
 
-    const configuration = simulation.scheme.configuration
+    const configuration = simulation?.scheme?.configuration || {}
     const item = configuration[type]
 
     setCurrentSimulation(simulation)
@@ -282,7 +282,7 @@ const Project = () => {
     setPanelVisible(true)
     setPanelTitle(item ? item.title : 'About')
 
-    const geometryId = simulation.scheme.configuration.geometry?.value
+    const geometryId = configuration.geometry?.value
     const geometry = geometries.find((g) => g.id === geometryId)
     if (geometry) setCurrentGeometry(geometry)
   }

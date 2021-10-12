@@ -1,5 +1,9 @@
 import rescale from '@/updaters/rescale'
 
+/**
+ * Update
+ * @memberof Install
+ */
 const update = async () => {
   console.info('Start update...')
 

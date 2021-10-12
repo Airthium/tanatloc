@@ -178,58 +178,31 @@ const checkSchema = async (table) => {
   )
   const existingColumns = schema.rows
 
-  await Promise.all(
-    schemas[table].map(async (column) => {
-      let err = 0
+  for (const configColumn of schemas[table]) {
+    try {
       const index = existingColumns.findIndex(
-        (e) => e.column_name === column.name
+        (e) => e.column_name === configColumn.name
       )
-      const byName = existingColumns[index]
+      const column = existingColumns[index]
 
-      if (!byName) {
-        console.error('   -- Missing column ' + table + '/' + column.name)
-        if (!(await fixMissingColumn(table, column))) err++
+      if (!column) {
+        await checkMissing(table, configColumn)
       } else {
-        if (
-          (column.type.includes('[]') && byName.data_type === 'ARRAY') ||
-          column.type.toLowerCase() ===
-            byName.data_type.replace(' without time zone', '').toLowerCase()
-        ) {
-          console.info('   -- ' + column.name + ' OK')
-        } else {
-          console.error('   ⚠ Wrong column type ' + table + '/' + column.name)
-          if (!(await fixColumnType(table, column))) err++
-        }
-        if (
-          (column.constraint === 'NOT NULL' ||
-            column.constraint === 'PRIMARY KEY') &&
-          byName.is_nullable !== 'NO'
-        ) {
-          console.error(
-            '   ⚠ Wrong column constraint ' + table + '/' + column.name
-          )
-          err++
-
-          if (column.constraint === 'NOT NULL')
-            if (await fixColumnConstraint(table, column)) err--
-        }
-
-        if (err) {
-          existingColumns[index].err = true
-        }
+        await checkType(table, column, configColumn)
+        await checkConstraint(table, column, configColumn)
       }
 
-      if (!err) {
-        existingColumns.splice(index, 1)
-      }
-    })
-  )
+      existingColumns.splice(index, 1)
+    } catch (err) {
+      console.warn('Unable to fix ' + table + '/' + configColumn.name)
+      console.warn(err)
+    }
+  }
 
-  const remainingColumns = existingColumns.filter((e) => !e.err)
-  if (remainingColumns.length) {
+  if (existingColumns.length) {
     console.warn(' ⚠ Not used columns:')
     await Promise.all(
-      remainingColumns.map(async (column) => {
+      existingColumns.map(async (column) => {
         console.warn(' - ' + column.column_name)
 
         await fixNotUsedColumn(table, column)
@@ -239,11 +212,21 @@ const checkSchema = async (table) => {
 }
 
 /**
- * Try to fix missng column
+ * Check missing
+ * @memberof Install
+ * @param {string} table Table
+ * @param {Object} configColumn Configuration column
+ */
+const checkMissing = async (table, configColumn) => {
+  console.error('   -- Missing column ' + table + '/' + configColumn.name)
+  await fixMissingColumn(table, configColumn)
+}
+
+/**
+ * Try to fix missing column
  * @memberof Install
  * @param {string} table Table
  * @param {Object} column Column
- * @returns {boolean} Success
  */
 const fixMissingColumn = async (table, column) => {
   console.info('   -> Try to fix missing column')
@@ -262,12 +245,30 @@ const fixMissingColumn = async (table, column) => {
         (column.default || '')
     )
     console.info('    OK')
-  } catch (fixError) {
+  } catch (err) {
     console.warn('    ⚠ Fix failed')
-    console.warn(fixError)
-    return false
+    throw err
   }
-  return true
+}
+
+/**
+ * Check type
+ * @memberof Install
+ * @param {string} table Table
+ * @param {Object} column Column
+ * @param {Object} configColumn Configuration column
+ */
+const checkType = async (table, column, configColumn) => {
+  if (
+    (configColumn.type.includes('[]') && column.data_type === 'ARRAY') ||
+    configColumn.type.toLowerCase() ===
+      column.data_type.replace(' without time zone', '').toLowerCase()
+  ) {
+    console.info('   -- ' + configColumn.name + ' OK')
+  } else {
+    console.error('   ⚠ Wrong column type ' + table + '/' + configColumn.name)
+    await fixColumnType(table, column)
+  }
 }
 
 /**
@@ -275,7 +276,6 @@ const fixMissingColumn = async (table, column) => {
  * @memberof Install
  * @param {string} table Table
  * @param {Object} column Column
- * @returns {boolean} Success
  */
 const fixColumnType = async (table, column) => {
   console.info('   -> Try to fix column type')
@@ -290,13 +290,36 @@ const fixColumnType = async (table, column) => {
         column.type
     )
     console.info('    OK')
-  } catch (fixError) {
+  } catch (err) {
     console.warn('    ⚠ Fix failed')
-    console.warn(fixError)
-    return false
+    throw err
   }
+}
 
-  return true
+/**
+ * Check constraint
+ * @memberof Install
+ * @param {string} table Table
+ * @param {Object} column Column
+ * @param {Object} configColumn Configuration column
+ */
+const checkConstraint = async (table, column, configColumn) => {
+  if (
+    (configColumn.constraint === 'NOT NULL' ||
+      configColumn.constraint === 'PRIMARY KEY') &&
+    column.is_nullable !== 'NO'
+  ) {
+    if (configColumn.constraint === 'NOT NULL')
+      await fixColumnConstraint(table, configColumn)
+    else {
+      console.error(
+        '   ⚠ Wrong column constraint ' + table + '/' + configColumn.name
+      )
+      throw new Error(
+        'Wrong column constraint ' + table + '/' + configColumn.name
+      )
+    }
+  }
 }
 
 /**
@@ -304,7 +327,6 @@ const fixColumnType = async (table, column) => {
  * @memberof Install
  * @param {string} table Table
  * @param {Object} column Column
- * @returns {boolean} Success
  */
 const fixColumnConstraint = async (table, column) => {
   console.info('   -> Try to fix column constraint')
@@ -314,13 +336,10 @@ const fixColumnConstraint = async (table, column) => {
       'ALTER TABLE ' + table + ' ALTER COLUMN ' + column.name + ' SET NOT NULL'
     )
     console.info('    OK')
-  } catch (fixError) {
+  } catch (err) {
     console.warn('    ⚠ Fix failed')
-    console.warn(fixError)
-    return false
+    throw err
   }
-
-  return true
 }
 
 /**
@@ -334,9 +353,9 @@ const fixNotUsedColumn = async (table, column) => {
   try {
     await query('ALTER TABLE ' + table + ' DROP COLUMN ' + column.column_name)
     console.info('  OK')
-  } catch (fixError) {
+  } catch (err) {
     console.warn('  ⚠ Fix failed')
-    console.warn(fixError)
+    console.warn(err)
   }
 }
 

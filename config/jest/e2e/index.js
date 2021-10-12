@@ -5,6 +5,7 @@ process.env.STORAGE_PATH = '/tmp/tanatloc_test'
 // Jest
 jest.setTimeout(20_000)
 
+// Three
 jest.mock('three', () => {
   const THREE = jest.requireActual('three')
   return {

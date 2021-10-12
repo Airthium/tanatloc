@@ -19,8 +19,18 @@ export default function createWindow(windowName, options) {
   let state = {}
   let win
 
+  /**
+   * Restore store
+   * @memberof Electron
+   * @returns {Object} Store
+   */
   const restore = () => store.get(key, defaultSize)
 
+  /**
+   * Get current position
+   * @memberof Electron
+   * @returns {Object} Position
+   */
   const getCurrentPosition = () => {
     const position = win.getPosition()
     const size = win.getSize()
@@ -32,6 +42,13 @@ export default function createWindow(windowName, options) {
     }
   }
 
+  /**
+   * Window within bounds
+   * @memberof Electron
+   * @param {Object} windowState Window state
+   * @param {Object} bounds Bounds
+   * @returns {boolean} Within
+   */
   const windowWithinBounds = (windowState, bounds) => {
     return (
       windowState.x >= bounds.x &&
@@ -41,6 +58,11 @@ export default function createWindow(windowName, options) {
     )
   }
 
+  /**
+   * Reset to defaults
+   * @memberof Electron
+   * @returns {Object} Defaults
+   */
   const resetToDefaults = () => {
     const bounds = screen.getPrimaryDisplay().bounds
     return Object.assign({}, defaultSize, {
@@ -49,6 +71,12 @@ export default function createWindow(windowName, options) {
     })
   }
 
+  /**
+   * Ensure visibile on some display
+   * @memberof Electron
+   * @param {Object} windowState Window state
+   * @returns {Object} Window state
+   */
   const ensureVisibleOnSomeDisplay = (windowState) => {
     const visible = screen.getAllDisplays().some((display) => {
       return windowWithinBounds(windowState, display.bounds)
@@ -61,6 +89,10 @@ export default function createWindow(windowName, options) {
     return windowState
   }
 
+  /**
+   * Save state
+   * @memberof Electron
+   */
   const saveState = () => {
     if (!win.isMinimized() && !win.isMaximized()) {
       Object.assign(state, getCurrentPosition())

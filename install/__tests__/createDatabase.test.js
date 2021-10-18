@@ -50,6 +50,7 @@ describe('install/dB', () => {
   })
 
   test('admin & exists', async () => {
+    let fixConstraint = true
     let fix = true
     mockQuery.mockImplementation((query) => {
       if (query.includes('SELECT id FROM')) return { rows: [] }
@@ -89,14 +90,23 @@ describe('install/dB', () => {
             }
           ]
         }
-      else if (query.includes('ALTER TABLE')) {
-        if (fix) return {}
-        else throw new Error()
-      } else return { rows: [{ exists: true }] }
+      else if (query.includes('ALTER TABLE'))
+        if (query.includes('ALTER COLUMN') && query.includes('TEXT')) {
+          if (fixConstraint) return {}
+          else throw new Error()
+        } else {
+          if (fix) return {}
+          else throw new Error()
+        }
+      else return { rows: [{ exists: true }] }
     })
     await createDatabase()
 
     // Fix error
+    fix = false
+    await createDatabase()
+
+    fixConstraint = false
     fix = false
     await createDatabase()
   })

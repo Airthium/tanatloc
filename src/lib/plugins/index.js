@@ -109,7 +109,7 @@ const clientList = (user, complete) => {
   } else {
     return plugins
       .map((plugin) => {
-        if (user.authorizedplugins.includes(plugin.key))
+        if (user.authorizedplugins?.includes(plugin.key))
           return {
             category: plugin.category,
             key: plugin.key,

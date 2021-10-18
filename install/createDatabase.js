@@ -267,7 +267,7 @@ const checkType = async (table, column, configColumn) => {
     console.info('   -- ' + configColumn.name + ' OK')
   } else {
     console.error('   ⚠ Wrong column type ' + table + '/' + configColumn.name)
-    await fixColumnType(table, column)
+    await fixColumnType(table, configColumn)
   }
 }
 

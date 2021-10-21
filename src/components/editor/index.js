@@ -9,9 +9,10 @@ import {
   Input,
   Layout,
   Select,
+  Space,
   Typography
 } from 'antd'
-import { DeleteOutlined, PlusOutlined } from '@ant-design/icons'
+import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons'
 import SimpleEditor from 'react-simple-code-editor'
 import { highlight, languages } from 'prismjs/components/prism-core'
 import './prism/prism-freefem.js'
@@ -20,8 +21,19 @@ import Dialog from '@/components/assets/dialog'
 
 import 'prism-themes/themes/prism-vs.css'
 
+const headersLine = `//TANATLOC HEADERS (mandatory)
+// You can now use:
+// - function: appendLog(string)
+// - function: appendError(string)\n\n`
+
+const dimensionLine = `//TANATLOC DIMENSION (mandatory)
+// You can now use:
+// - type: meshN (2D: mesh, 3D: mesh3)
+// - function: intN (2D: int2d, 3D: int3d)
+// - function: intN1 (2D: int1d, 3D, int2d)\n\n`
+
 const existingCategories = ['Academic', 'Fluid', 'Mechanics']
-const existingMaterialSymbols = ['Rho', 'Mu']
+const existingMaterialSymbols = ['Rho', 'Mu'] // must match the material database
 // TODO get real datas
 
 /**
@@ -30,25 +42,37 @@ const existingMaterialSymbols = ['Rho', 'Mu']
  */
 const Editor = () => {
   // State
-  const [code, setCode] = useState('')
+  const [code, setCode] = useState(headersLine + dimensionLine)
   const [category, setCategory] = useState()
   const [configuration, setConfiguration] = useState({})
 
   const [geometry, setGeometry] = useState(false)
   const [materials, setMaterials] = useState(false)
+  const [parameters, setParameters] = useState(false)
 
   useEffect(() => {
-    const baseCode = '//TANATLOC HEADERS\n//TANATLOC DIMENSION\n'
+    let newCode = code
 
-    let newCode = baseCode
+    // Dimension
+    if (!newCode.includes(dimensionLine)) newCode = dimensionLine + newCode
 
-    if (configuration.geometry) {
+    // Headers
+    if (!newCode.includes(headersLine)) newCode = headersLine + newCode
+
+    // Geometry
+    if (configuration.geometry && !newCode.includes('//TANATLOC GEOMETRY')) {
       newCode += '//TANATLOC GEOMETRY\n'
+      newCode += '// You can now use:\n'
+      newCode += '// - mesh variable: ' + configuration.geometry.name + '\n\n'
+    }
+    if (!configuration.geometry && newCode.includes('//TANATLOC GEOMETRY')) {
+      const lines = newCode.split('\n')
+      const index = lines.findIndex((l) => l === '//TANATLOC GEOMETRY')
+      lines.splice(index, 4)
+      newCode = lines.join('\n')
     }
 
-    if (configuration.materials) {
-      newCode += '//TANATLOC MATERIALS\n'
-    }
+    // TODO materials, parameters, ...
 
     setCode(newCode)
   }, [configuration])
@@ -72,6 +96,13 @@ const Editor = () => {
         title: 'Geometry',
         ...values
       }
+    })
+  }
+
+  const onGeometryDelete = () => {
+    setConfiguration({
+      ...configuration,
+      geometry: null
     })
   }
 
@@ -100,7 +131,17 @@ const Editor = () => {
     })
   }
 
-  console.log(configuration)
+  const onParametersOpen = () => {
+    setParameters(true)
+  }
+
+  const onParametersClose = () => {
+    setParameters(false)
+  }
+
+  const onParameters = (values) => {
+    console.log(values)
+  }
 
   /**
    * Render
@@ -117,7 +158,7 @@ const Editor = () => {
         onCancel={onGeometryClose}
         onOk={(values) => {
           onGeometry(values)
-          setGeometry(false)
+          onGeometryClose()
         }}
       >
         <Form.Item
@@ -143,7 +184,7 @@ const Editor = () => {
         onCancel={onMaterialsClose}
         onOk={(values) => {
           onMaterials(values)
-          setMaterials(false)
+          onMaterialsClose()
         }}
       >
         <Form.Item
@@ -172,11 +213,76 @@ const Editor = () => {
         <Form.Item
           label="Unit"
           name="unit"
-          tooltip="Example: kg.m^{-3}"
+          tooltip="LaTeX friendly, example: kg.m^{-3}"
           rules={[{ required: true }]}
         >
           <Input />
         </Form.Item>
+      </Dialog>
+      <Dialog
+        visible={parameters}
+        title="Parameters"
+        initialValues={{}}
+        onCancel={onParametersClose}
+        onOk={(values) => {
+          onParameters(values)
+          onParametersClose()
+        }}
+      >
+        <Form.Item
+          label="Parameters group name"
+          name="group"
+          rules={[{ required: true }]}
+        >
+          <Input />
+        </Form.Item>
+        <Form.List name="parameters">
+          {(fields, { add, remove }) => (
+            <>
+              {fields.map(({ key, name, fieldKey, ...restField }) => (
+                <div key={key}>
+                  <Space>
+                    Parameters {name + 1}
+                    <Button
+                      type="danger"
+                      icon={<DeleteOutlined />}
+                      onClick={() => remove(name)}
+                    />
+                  </Space>
+
+                  <Form.Item
+                    {...restField}
+                    label="Label"
+                    name={[name, 'label']}
+                    fieldKey={[fieldKey, 'label']}
+                    rules={[{ required: true }]}
+                  >
+                    <Input />
+                  </Form.Item>
+                  <Form.Item
+                    {...restField}
+                    label="Default value"
+                    name={[name, 'default']}
+                    fieldKey={[fieldKey, 'default']}
+                    rules={[{ required: true }]}
+                  >
+                    <Input />
+                  </Form.Item>
+                  <Form.Item
+                    {...restField}
+                    label="Unit"
+                    name={[name, 'unit']}
+                    fieldKey={[fieldKey, 'unit']}
+                    rules={[{ required: true }]}
+                  >
+                    <Input />
+                  </Form.Item>
+                </div>
+              ))}
+              <Button onClick={add}>Add</Button>
+            </>
+          )}
+        </Form.List>
       </Dialog>
       <Layout style={{ padding: 10 }}>
         <Layout.Sider theme="light" width="300px" style={{ paddingRight: 10 }}>
@@ -239,37 +345,62 @@ const Editor = () => {
             </Form.Item>
             <Form.Item label="Configuration">
               <Form.Item>
-                <Button onClick={onGeometryOpen}>Geometry</Button>
-                <div
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'flex-start'
-                  }}
+                <Button
+                  disabled={configuration.geometry}
+                  onClick={onGeometryOpen}
                 >
-                  {configuration?.geometry && (
-                    <Button type="danger" icon={<DeleteOutlined />} />
-                  )}
-                </div>
+                  Geometry
+                </Button>
+                {configuration?.geometry && (
+                  <div
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      marginTop: 10
+                    }}
+                  >
+                    Geometry
+                    <Button.Group>
+                      <Button icon={<EditOutlined />} />
+                      <Button
+                        type="danger"
+                        icon={<DeleteOutlined />}
+                        onClick={onGeometryDelete}
+                      />
+                    </Button.Group>
+                  </div>
+                )}
               </Form.Item>
               <Form.Item>
                 <Button onClick={onMaterialsOpen}>Materials</Button>
                 <div
                   style={{
                     display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'flex-start'
+                    flexDirection: 'column'
                   }}
                 >
-                  {configuration?.materials?.children?.map((m, index) => (
-                    <Button type="danger" icon={<DeleteOutlined />}>
+                  {configuration?.materials?.children?.map((_, index) => (
+                    <div
+                      key={index}
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        marginTop: 10
+                      }}
+                    >
                       Material {index + 1}
-                    </Button>
+                      <Button.Group>
+                        <Button icon={<EditOutlined />} />
+                        <Button type="danger" icon={<DeleteOutlined />} />
+                      </Button.Group>
+                    </div>
                   ))}
                 </div>
               </Form.Item>
               <Form.Item>
-                <Button disabled={true}>Parameters</Button>
+                <Button onClick={onParametersOpen}>Parameters</Button>
               </Form.Item>
               <Form.Item>
                 <Button disabled={true}>Initialization</Button>

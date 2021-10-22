@@ -14,7 +14,7 @@
     "better-react-mathjax": "1.0.3",
     "cookie": "0.4.1",
     "ejs": "3.1.6",
-    "electron": "15.2.0",
+    "electron": "15.3.0",
     "electron-store": "8.0.1",
     "express": "4.17.1",
     "form-data": "4.0.0",

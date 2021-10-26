@@ -30,6 +30,7 @@ const Geometry = ({ visible, geometry, onOk, onClose }) => {
         label="Meshable"
         tooltip="Enable automatic geometry meshing before FreeFEM script launch"
         valuePropName="checked"
+        rules={[{ required: true }]}
       >
         <Checkbox />
       </Form.Item>
@@ -37,6 +38,7 @@ const Geometry = ({ visible, geometry, onOk, onClose }) => {
         name="name"
         label="Mesh name"
         tooltip="Only required if the geometry is meshable"
+        rules={[{ required: true }]}
       >
         <Input />
       </Form.Item>

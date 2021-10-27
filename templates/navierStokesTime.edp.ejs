@@ -172,7 +172,6 @@ try {
 	for (int timeIter = 0; timeIter < nbIter; ++timeIter) {
 		// Update
 		t += dt;
-		string time = "Time: " + t;
 		appendLog("Time: " + t);
 		
 		real[int] NavierStokesRHS = vNavierStokesRHS(0, <%= finiteElementSpace.name -%>);

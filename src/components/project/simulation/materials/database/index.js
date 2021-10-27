@@ -23,6 +23,11 @@ const dataBase = {
         label: 'Steel',
         children: [
           {
+            label: 'Density',
+            symbol: 'Rho',
+            value: 7850
+          },
+          {
             label: "Young's modulus",
             symbol: 'E',
             value: 2.1e9
@@ -31,6 +36,16 @@ const dataBase = {
             label: "Poisson's ratio",
             symbol: 'Nu',
             value: 0.3
+          },
+          {
+            label: 'Thermal conductivity',
+            symbol: 'Lambda',
+            value: 15
+          },
+          {
+            label: 'Heat capacity',
+            symbol: 'Cp',
+            value: 502
           }
         ]
       }

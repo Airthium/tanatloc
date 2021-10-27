@@ -1,0 +1,266 @@
+try {
+	<%# Headers -%>
+	<%- include('/blobs/headers.edp.ejs') -%>
+
+	<%# Dimension -%>
+	<%- include('/blobs/dimensioning.edp.ejs', {
+		dimension
+	}); -%>
+
+	<%# Mesh -%>
+	<%
+	const mesh = geometry.mesh
+	mesh.name = 'Mesh'
+	-%>
+	<%- include('/blobs/mesh.edp.ejs', {
+		dimension,
+		mesh
+	}); -%>
+
+	<%# Material -%>
+	<%- include('/blobs/materials.edp.ejs', {
+		materials
+	}) -%>
+
+	<%# Finite element space -%>
+	<%
+	const finiteElementSpace = parameters.finiteElementSpace.children[0]
+	finiteElementSpace.name = 'Uh'
+	-%>
+	<%- include('/blobs/fespace.edp.ejs', {
+		mesh,
+		finiteElementSpace
+	}); -%>
+
+	<%# Finite element function -%>
+	<%
+	const unknownFunction = '[Ux, Uy, Uz]'
+	const testFunction = '[Uhx, Uhy, Uhz]'
+	-%>
+	<%- include('/blobs/fespaceFunction.edp.ejs', {
+		finiteElementSpace,
+		finiteElementFunction: ['Ux', 'Uy', 'Uz']
+	}); -%>
+	<%
+	const unknownPFunction = '[Upx, Upy, Upz]'
+	const unknownPPFunction = '[Uppx, Uppy, Uppz]'
+	-%>
+	<%- include('/blobs/fespaceFunction.edp.ejs', {
+		finiteElementSpace,
+		finiteElementFunction: ['Upx', 'Upy', 'Upz']
+	}); -%>
+	<%- include('/blobs/fespaceFunction.edp.ejs', {
+		finiteElementSpace,
+		finiteElementFunction: ['Uppx', 'Uppy', 'Uppz']
+	}); -%>
+
+	<%# Macro -%>
+	<%- include('/blobs/macro.edp.ejs', {
+		dimension,
+		type: ['vectorialDivergence', 'vectorialEpsilon']
+	}); -%>
+
+	// Variables
+	real t = 0.;
+	real T = <%= parameters.time.children[0].value || parameters.time.children[0].default -%>;
+	real dt = <%= parameters.time.children[1].value || parameters.time.children[1].default -%>;
+
+	real Mu = E/(2.*(1.+Nu));
+	real Lambda = E*Nu/((1.+ Nu)*(1.-2.*Nu));
+
+	<%# Problem -%>
+	<%
+	const fixed = boundaryConditions.fixed.values || []
+	const displacement = boundaryConditions.displacement.values || []
+	const presure = boundaryConditions.presure.values || []
+	const rhs = parameters.rightHandSide.children
+	const rhsX = rhs[0].value || rhs[0].default
+	const rhsY = rhs[1].value || rhs[1].default
+	const rhsZ = rhs[2].value || rhs[2].default
+
+	const N = '[N.x, N.y, N.z]'
+	-%>
+	// Problem
+	appendLog("Define the problem...");
+
+	varf vLinearElasticity (<%= unknownFunction -%>, <%= testFunction -%>)
+		= intN(Mesh)(
+			  (Rho/dt) * <%= unknownFunction -%>' * <%= testFunction -%>
+			+ Lambda * Div(U) * Div(Uh)
+			+ 2. * Mu * (
+				Epsilon(U)' * Epsilon(Uh)
+			)
+		)
+	<% for (const d of displacement) { -%>
+		+ on(<%= d.selected.map(s => s.label).filter(s => s).join() -%>
+		<% if (d.values[0].checked) { -%>, Ux=0<% } -%>
+		<% if (d.values[1].checked) { -%>, Uy=0<% } -%>
+		<% if (d.values[2].checked) { -%>, Uz=0<% } -%>
+		)
+	<% } -%>
+	<% for (const f of fixed) { -%>
+		+ on(<%= f.selected.map(s => s.label).filter(s => s).join() -%>, Ux=0, Uy=0, Uz=0)
+	<% } -%>
+		;
+
+	varf vLinearElasticityRHS (<%= unknownFunction -%>, <%= testFunction -%>)
+		= intN(Mesh)(
+			  2. * (Rho/dt) * <%= unknownPFunction -%>' * <%= testFunction -%>
+			- (Rho/dt) * <%= unknownPPFunction -%>' * <%= testFunction -%>
+	<% if (dimension === 2) { -%>
+			+ [<%- rhsX -%>, <%- rhsY -%>]' * <%= testFunction %>
+	<% } else { -%>
+			+ [<%- rhsX -%>, <%- rhsY -%>, <%- rhsZ -%>]' * <%= testFunction %>
+	<% } -%>
+		)
+	<% for (const p of presure) { -%>
+		- intN1(Mesh, <%= p.selected.map(s => s.label).filter(s => s).join() -%>)(
+			(<%- p.values[0].value -%>) * <%= N -%>' * <%= testFunction -%>
+		)
+	<% } -%>
+	<% for (const d of displacement) { -%>
+		+ on(<%= d.selected.map(s => s.label).filter(s => s).join() -%>
+		<% if (d.values[0].checked) { -%>, Ux=<%- d.values[0].value -%><% } -%>
+		<% if (d.values[1].checked) { -%>, Uy=<%- d.values[1].value -%><% } -%>
+		<% if (d.values[2].checked) { -%>, Uz=<%- d.values[2].value -%><% } -%>
+		)
+	<% } -%>
+	<% for (const f of fixed) { -%>
+		+ on(<%= f.selected.map(s => s.label).filter(s => s).join() -%>, Ux=0, Uy=0, Uz=0)
+	<% } -%>
+		;
+
+	<%# Solver -%>
+	<% const solver = parameters.solver.children[0].value || parameters.solver.children[0].default -%>
+	<%- include('/blobs/solver.edp.ejs', {
+		solver
+	}) -%>
+
+	<%# Matrix -%>
+	// Matrix
+	appendLog("Build matrix...");
+	matrix LinearElasticity = vLinearElasticity(<%= finiteElementSpace.name -%>, <%= finiteElementSpace.name -%>, solver=solver);
+
+	<%# Time loop -%>
+	int nbIter = T / dt;
+	for (int timeIter = 0; timeIter < nbIter; ++timeIter) {
+		// Update
+		t += dt;
+		appendLog("Time: " + t);
+
+		<%= unknownPPFunction -%> = <%= unknownPFunction -%>;
+		<%= unknownPFunction -%> = <%= unknownFunction -%>;
+		real[int] LinearElasticityRHS = vLinearElasticityRHS(0, <%= finiteElementSpace.name -%>);
+
+		// Solve
+		Ux[] = LinearElasticity^-1 * LinearElasticityRHS;
+
+		<% if (parameters.meshAdaptation.children[0].value) { -%>
+		// Mesh adaptation
+		load "mshmet"
+		load "mmg"
+	
+		fespace Hh(Mesh, P0);
+		Hh h = hTriangle;
+		real minh = h[].min;
+		real maxh = h[].max;
+	
+		int nLoops = <%= parameters.meshAdaptation.children[1].value || parameters.meshAdaptation.children[1].default -%>;
+		for (int i = 0; i < nLoops; ++i) {
+			real[int] metric = mshmet(Mesh, [Ux, Uy, Uz], aniso=0, hmin=minh/5., hmax=maxh);
+			Mesh = mmg3d(Mesh, metric=metric);
+			[Ux, Uy, Uz] = [Ux, Uy, Uz];
+	
+			matrix LinearElasticity = vLinearElasticity(<%= finiteElementSpace.name -%>, <%= finiteElementSpace.name -%>, solver=solver);
+			real[int] LinearElasticityRHS = vLinearElasticityRHS(0, <%= finiteElementSpace.name -%>);
+			Ux[] = LinearElasticity^-1 * LinearElasticityRHS;
+		}
+		<% } -%>
+	
+		<%# von Mises stress -%>
+		fespace Sh(Mesh, P2);
+		Sh epsilon11 = dx(Ux);
+		Sh epsilon22 = dy(Uy);
+		Sh epsilon33 = dz(Uz);
+		Sh epsilon12 = 0.5*(dy(Ux) + dx(Uy));
+		Sh epsilon13 = 0.5*(dz(Ux) + dx(Uz));
+		Sh epsilon23 = 0.5*(dy(Uz) + dz(Uy));
+	
+		Sh traceEpsilon = epsilon11 + epsilon22 + epsilon33;
+	
+		Sh gamma11 = 2.*Mu * epsilon11 + Lambda * traceEpsilon;
+		Sh gamma22 = 2.*Mu * epsilon22 + Lambda * traceEpsilon;
+		Sh gamma33 = 2.*Mu * epsilon33 + Lambda * traceEpsilon;
+		Sh gamma12 = 2.*Mu * epsilon12;
+		Sh gamma13 = 2.*Mu * epsilon13;
+		Sh gamma23 = 2.*Mu * epsilon23;
+	
+		Sh Sigma = sqrt(
+			0.5 * ((gamma11 - gamma22)^2 + (gamma22 - gamma33)^2 + (gamma33 - gamma11)^2)
+			+ 3.*(gamma12^2 + gamma23^2 + gamma13^2)
+		);
+
+		Sh UUx = Ux;
+		Sh UUy = Uy;
+		Sh UUz = Uz;
+
+		real maxUx = UUx[].max;
+		real maxUy = UUy[].max;
+		real maxUz = UUz[].max;
+		real maxU = Ux[].max;
+
+		// Save data
+		<%- include('/blobs/data.edp.ejs', {
+			path: run.dataPath,
+			name: '"maxUx_"+timeIter',
+			dataName: 'Max displacement (x)',
+			index: 1,
+			x: 't',
+			y: 'maxUx'
+		}) -%>
+
+		<%- include('/blobs/data.edp.ejs', {
+			path: run.dataPath,
+			name: '"maxUy_"+timeIter',
+			dataName: 'Max displacement (y)',
+			index: 1,
+			x: 't',
+			y: 'maxUy'
+		}) -%>
+
+		<%- include('/blobs/data.edp.ejs', {
+			path: run.dataPath,
+			name: '"maxUz_"+timeIter',
+			dataName: 'Max displacement (z)',
+			index: 1,
+			x: 't',
+			y: 'maxUz'
+		}) -%>
+
+		<%- include('/blobs/data.edp.ejs', {
+			path: run.dataPath,
+			name: '"maxU_"+timeIter',
+			dataName: 'Max displacement',
+			index: 1,
+			x: 't',
+			y: 'maxU'
+		}) -%>
+	
+		// Save results
+		<%- include('/blobs/save.edp.ejs', {
+			solution: {
+				path: run.resultPath,
+				name: '"Result_"+timeIter',
+				mesh: mesh.name,
+				sol: [['Ux', 'Uy', 'Uz'], 'Sigma'],
+				dataName: run.results.map(r => r.name),
+				order: [1, 1]
+			}
+		}); -%>
+	}
+
+	appendLog("End");
+} catch(...) {
+	appendError("An internal error occurs");
+	exit(-1);
+}

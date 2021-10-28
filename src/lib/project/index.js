@@ -38,6 +38,8 @@ const add = async (user, { id }, { title, description }) => {
 const get = async (id, data, withData = true) => {
   const project = await ProjectDB.get(id, data)
 
+  if (project.archived) return project
+
   // Get avatar
   if (withData && project?.avatar) {
     try {

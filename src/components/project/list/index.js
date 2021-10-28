@@ -8,6 +8,7 @@ import Share from '@/components/assets/share'
 
 import Edit from '../edit'
 import Delete from '../delete'
+import Archive from '../archive'
 
 import Utils from '@/lib/utils'
 
@@ -153,6 +154,22 @@ const ProjectList = ({
               actions={[
                 <Delete
                   key="delete"
+                  disabled={!project?.owners?.find((o) => o.id === user?.id)}
+                  workspace={{
+                    id: workspace.id,
+                    projects: workspace.projects
+                  }}
+                  project={{
+                    id: project.id,
+                    title: project.title
+                  }}
+                  swr={{
+                    mutateOneWorkspace: swr.mutateOneWorkspace,
+                    delOneProject: swr.delOneProject
+                  }}
+                />,
+                <Archive
+                  key="archive"
                   disabled={!project?.owners?.find((o) => o.id === user?.id)}
                   workspace={{
                     id: workspace.id,

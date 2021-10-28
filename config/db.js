@@ -277,6 +277,10 @@ const schemas = {
       default: 'DEFAULT gen_random_uuid()'
     },
     {
+      name: 'archived',
+      type: 'BOOLEAN'
+    },
+    {
       name: 'title',
       type: 'TEXT',
       constraint: 'NOT NULL'

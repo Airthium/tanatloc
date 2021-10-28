@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
 import { useState } from 'react'
-import { Button, Form, Input } from 'antd'
+import { Button, Form, Input, Tooltip } from 'antd'
 import { EditOutlined } from '@ant-design/icons'
 
 import Dialog from '@/components/assets/dialog'
@@ -63,12 +63,14 @@ const Edit = ({ disabled, project, swr }) => {
    */
   return (
     <>
-      <Button
-        type="text"
-        disabled={disabled}
-        onClick={() => setVisible(true)}
-        icon={<EditOutlined />}
-      />
+      <Tooltip title="Edit">
+        <Button
+          type="text"
+          disabled={disabled}
+          onClick={() => setVisible(true)}
+          icon={<EditOutlined />}
+        />
+      </Tooltip>
       <Dialog
         title={'Edit "' + project.title + '" project'}
         visible={visible}

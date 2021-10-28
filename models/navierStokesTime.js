@@ -17,7 +17,24 @@ const NavierStokesTime = {
 
     The domain $\\Omega$ is bounded by $\\Gamma = \\Gamma_D \\cup \\Gamma_N$.<br/>
 
-    // TODO
+    $u$ is the velocity and $p$ the pressure.<br/>
+
+    The Navier-Stokes equations reads as follow:
+
+    $$
+    \\begin{align}
+      \\rho\\frac{\\partial u}{\\partial t} + \\rho(u\\cdot\\nabla)u + \\nabla p - \\mu\\Delta u &= f&\\text{on }\\Omega\\\\
+      u &= u_D&\\text{on }\\Gamma_D\\\\
+      \\mu\\frac{\\partial u}{\\partial n} - pn &= g_N&\\text{on }\\Gamma_N
+    \\end{align}
+    $$
+
+    With $\\mu$ the viscosity and $\\rho$ the density.
+  </p>
+  <figure>
+    <img src="/images/Stokes.png" alt="Stokes" />
+    <figcaption>Navier-Stokes equation example on a pipe.</figcaption>
+  </figure>
   </p>
   <p>
     See <a target="_blank" href="https://en.wikipedia.org/wiki/Navier%E2%80%93Stokes_equations">Wikipedia</a>.

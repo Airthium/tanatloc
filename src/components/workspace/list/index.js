@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types'
+import { useRouter } from 'next/router'
 import { useState } from 'react'
 import { Divider, Layout, PageHeader, Tabs, Typography } from 'antd'
 
@@ -13,6 +14,10 @@ import Add from '../add'
 const WorkspacesList = ({ user, workspaces, organizations, swr }) => {
   // State
   const [add, setAdd] = useState(false)
+
+  // Router
+  const router = useRouter()
+  const { page, workspaceId } = router.query
 
   /**
    * On tab edit
@@ -40,7 +45,11 @@ const WorkspacesList = ({ user, workspaces, organizations, swr }) => {
       />
       <Layout.Content>
         <Add visible={add} swr={swr} setVisible={setAdd} />
-        <Tabs type="editable-card" defaultActiveKey="1" onEdit={onEdit}>
+        <Tabs
+          type="editable-card"
+          defaultActiveKey={workspaceId || '1'}
+          onEdit={onEdit}
+        >
           {workspaces.map((workspace) => (
             <Tabs.TabPane
               tab={workspace.name}
@@ -50,6 +59,7 @@ const WorkspacesList = ({ user, workspaces, organizations, swr }) => {
               <Workspace
                 loading={!workspace}
                 user={user}
+                page={page}
                 workspace={workspace}
                 organizations={organizations}
                 swr={swr}

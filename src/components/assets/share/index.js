@@ -2,7 +2,7 @@
 
 import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
-import { Button, TreeSelect } from 'antd'
+import { Button, Tooltip, TreeSelect } from 'antd'
 import { ShareAltOutlined } from '@ant-design/icons'
 
 import Dialog from '@/components/assets/dialog'
@@ -141,13 +141,15 @@ const Share = ({ disabled, workspace, project, organizations, swr, style }) => {
    */
   return (
     <>
-      <Button
-        type={style?.type || 'text'}
-        key="share"
-        disabled={disabled}
-        icon={<ShareAltOutlined />}
-        onClick={() => setVisible(true)}
-      />
+      <Tooltip title="Share">
+        <Button
+          type={style?.type || 'text'}
+          key="share"
+          disabled={disabled}
+          icon={<ShareAltOutlined />}
+          onClick={() => setVisible(true)}
+        />
+      </Tooltip>
       <Dialog
         title={'Share' + (workspace ? 'workspace' : 'project')}
         visible={visible}

@@ -17,8 +17,24 @@ const Stokes = {
 
     The domain $\\Omega$ is bounded by $\\Gamma = \\Gamma_D \\cup \\Gamma_N$.<br/>
 
-    // TODO
+    $u$ is the velocity and $p$ the pressure.<br/>
+
+    The Stokes equations reads as follow:
+
+    $$
+    \\begin{align}
+      \\mu\\Delta u - \\nabla p &= f&\\text{on }\\Omega\\\\
+      u &= u_D&\\text{on }\\Gamma_D\\\\
+      \\mu\\frac{\\partial u}{\\partial n} - pn &= g_N&\\text{on }\\Gamma_N
+    \\end{align}
+    $$
+
+    With $\\mu$ the viscosity.
   </p>
+  <figure>
+    <img src="/images/Stokes.png" alt="Stokes" />
+    <figcaption>Stokes equation example on a pipe.</figcaption>
+  </figure>
   <p>
     See <a target="_blank" href="https://en.wikipedia.org/wiki/Navier%E2%80%93Stokes_equations">Wikipedia</a>.
   </p>

@@ -17,8 +17,26 @@ const LinearElasticityTime = {
 
   The domain $\\Omega$ is bounded by $\\Gamma = \\Gamma_D \\cup \\Gamma_N$.<br/>
 
-  // TODO
+  $u$ is the displacement.<br/>
+
+  The linear elasticity equation reads as follow:
+
+  $$
+  \\begin{align}
+    \\frac{\\partial^2u}{\\partial t^2}-\\text{div}(\\sigma) &= f &\\text{on }\\Omega\\\\
+    u &= u_D&\\text{on }\\Gamma_D\\\\
+    \\sigma\\cdot n &= u_N&\\text{on }\\Gamma_N
+  \\end{align}
+  $$
+
+  With $\\sigma_{ij}(u) = \\lambda\\delta_{ij}\\nabla\\cdot u + 2\\mu\\epsilon_{ij}(u)$.<br>
+
+  $\\lambda$ and $\\mu$ are the Lamé coefficients.
   </p>
+  <figure>
+    <img src="/images/LinearElasticity.png" alt="Linear Elasticity" />
+    <figcaption>Linear elasticity equation example on a beam.</figcaption>
+  </figure>
   <p>
     See <a target="_blank" href="https://en.wikipedia.org/wiki/Linear_elasticity">Wikipedia</a>.
   </p>

@@ -2,7 +2,7 @@
 
 import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
-import { Layout, Menu, Modal, Space, Typography } from 'antd'
+import { Layout, Menu, Modal, Select, Space, Typography } from 'antd'
 import { WarningOutlined } from '@ant-design/icons'
 import { addedDiff, updatedDiff } from 'deep-object-diff'
 import merge from 'lodash.merge'
@@ -63,6 +63,7 @@ const Selector = ({ user, visible, onOk, onCancel }) => {
   const [current, setCurrent] = useState()
   const [loading, setLoading] = useState(false)
   const [models, setModels] = useState([])
+  const [category, setCategory] = useState()
 
   // Models
   useEffect(() => {
@@ -97,6 +98,11 @@ const Selector = ({ user, visible, onOk, onCancel }) => {
     setLoading(false)
   }
 
+  const categories = models
+    .map((m) => m.category)
+    .filter((value, index, self) => self.indexOf(value) === index)
+    .map((c) => ({ key: c, value: c }))
+
   /**
    * Render
    */
@@ -113,12 +119,22 @@ const Selector = ({ user, visible, onOk, onCancel }) => {
       <Layout>
         <Layout.Sider theme="light">
           <Menu mode="inline" onSelect={onSelect}>
+            <Select
+              options={categories}
+              allowClear
+              placeholder="Category filter"
+              onChange={setCategory}
+            />
             {models.map((model) => {
-              return <Menu.Item key={model.algorithm}>{model.name}</Menu.Item>
+              if (!category || model.category === category)
+                return <Menu.Item key={model.algorithm}>{model.name}</Menu.Item>
             })}
           </Menu>
         </Layout.Sider>
-        <Layout.Content style={{ padding: '10px' }}>
+        <Layout.Content
+          style={{ padding: '10px' }}
+          className="simulation-selector"
+        >
           <MathJax dynamic>
             <div dangerouslySetInnerHTML={{ __html: current?.description }} />
           </MathJax>
@@ -228,10 +244,10 @@ const Updater = ({ user, simulation, swr }) => {
         }
         visible={needUpdate}
         onOk={onUpdate}
-        okText="Yes"
+        okText="Ok"
         confirmLoading={loading}
         onCancel={() => setNeedUpdate(false)}
-        cancelText="No"
+        cancelButtonProps={{ disabled: true }}
         maskClosable={false}
       >
         <Space direction="vertical">

@@ -24,6 +24,10 @@ const Poisson = {
     \\nabla u &= g_N &\\text{on }\\Gamma_N
   \\end{align}
   </p>
+  <figure>
+    <img src="/images/Poisson.png" alt="Poisson" />
+    <figcaption>Poisson's equation example on a cube.</figcaption>
+  </figure>
   <p>
       See <a target="_blank" href="https://en.wikipedia.org/wiki/Poisson%27s_equation">Wikipedia</a>.
   </p>

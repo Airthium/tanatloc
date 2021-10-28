@@ -47,6 +47,7 @@ export default async (req, res) => {
 
             // Get
             return await ProjectLib.get(id, [
+              'archived',
               'title',
               'description',
               'avatar',

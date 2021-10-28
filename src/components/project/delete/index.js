@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
 import { useState } from 'react'
-import { Button } from 'antd'
+import { Button, Tooltip } from 'antd'
 import { DeleteOutlined } from '@ant-design/icons'
 
 import { DeleteDialog } from '@/components/assets/dialog'
@@ -59,13 +59,15 @@ const Delete = ({ disabled, workspace, project, swr }) => {
    */
   return (
     <>
-      <Button
-        disabled={disabled}
-        type="link"
-        danger
-        onClick={() => setVisible(true)}
-        icon={<DeleteOutlined />}
-      />
+      <Tooltip title="Delete">
+        <Button
+          disabled={disabled}
+          type="link"
+          danger
+          onClick={() => setVisible(true)}
+          icon={<DeleteOutlined />}
+        />
+      </Tooltip>
       <DeleteDialog
         title="Delete the project"
         visible={visible}

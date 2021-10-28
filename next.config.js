@@ -22,7 +22,9 @@ module.exports = withLess({
         use: [{ loader: 'ignore-loader' }]
       })
 
-      config.plugins.push(new webpack.IgnorePlugin(/\/__tests__\//))
+      config.plugins.push(
+        new webpack.IgnorePlugin({ resourceRegExp: /\/__tests__\// })
+      )
 
       return config
     },

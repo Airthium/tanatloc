@@ -6,6 +6,7 @@ import { DOMAIN } from '@/config/domain'
 import { TOKEN, SUBSCRIBE, PASSWORD_RECOVERY, REVALIDATE } from '@/config/email'
 
 import Link from '../link'
+import User from '../user'
 
 const mailerSend = new MailerSend({
   api_key: TOKEN
@@ -15,14 +16,16 @@ const mailerSend = new MailerSend({
  * Send
  * @memberof Lib.Email
  * @param {string} email Email
+ * @returns {boolean} Valid
  */
 const send = async (email) => {
   const res = await mailerSend.send(email)
   if (res.status === 401) {
     console.warn('No email token: email skip!')
-    return
+    return false
   }
   if (res.status !== 202) throw new Error('Mail error: ' + res.statusText)
+  return true
 }
 
 /**
@@ -56,7 +59,15 @@ const subscribe = async (email, userid) => {
     .setPersonalization(personalization)
 
   try {
-    await send(emailParams)
+    if (!(await send(emailParams))) {
+      // No Email token -> validate user
+      await User.update({ id: userid }, [
+        {
+          key: 'isvalidated',
+          value: true
+        }
+      ])
+    }
   } catch (err) {
     await Link.del(link)
     throw err

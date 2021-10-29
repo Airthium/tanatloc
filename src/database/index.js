@@ -79,6 +79,9 @@ const updater = async (db, id, data) => {
       queryTextMiddle.push(
         d.key + ' = crypt($' + args.length + ", gen_salt('bf'))"
       )
+    } else if (d.type === 'date') {
+      args.push(d.value)
+      queryTextMiddle.push(d.key + ' = to_timestamp($' + args.length + ')')
     } else if (d.type === 'array') {
       if (d.method === 'append') {
         args.push(d.value)

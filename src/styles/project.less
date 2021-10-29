@@ -144,6 +144,10 @@
   cursor: pointer;
 }
 
+.project-carousel-snapshot.archive {
+  cursor: not-allowed;
+}
+
 .project-carousel-snapshot img {
   max-width: 98%;
   max-height: 98%;
@@ -154,10 +158,18 @@
   cursor: pointer;
 }
 
+.project-carousel-description.archive {
+  cursor: not-allowed;
+}
+
 .project-snapshot {
   width: 260px;
   height: 156px;
   cursor: pointer;
+}
+
+.project-snapshot.archive {
+  cursor: not-allowed;
 }
 
 .project-snapshot img {
@@ -193,6 +205,10 @@
 
 .project-card .ant-card-head-title {
   white-space: unset !important;
+}
+
+.project-card.archive {
+  background-color: #fafafa;
 }
 
 .carousel-dots > li > button {

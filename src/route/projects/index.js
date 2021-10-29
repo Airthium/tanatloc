@@ -50,6 +50,8 @@ export default async (req, res) => {
               'archived',
               'title',
               'description',
+              'createddate',
+              'lastaccess',
               'avatar',
               'owners',
               'users',

@@ -1,7 +1,16 @@
 import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
-import { Avatar, Card, Carousel, Divider, Empty, Space, Typography } from 'antd'
+import {
+  Avatar,
+  Card,
+  Carousel,
+  Divider,
+  Empty,
+  Space,
+  Tag,
+  Typography
+} from 'antd'
 
 import Loading from '@/components/loading'
 import Share from '@/components/assets/share'
@@ -52,7 +61,9 @@ const ProjectList = ({
           return
 
         // Snapshot
-        const snapshot = project.avatar ? (
+        const snapshot = project.archived ? (
+          <Empty description={'Archived project'} />
+        ) : project.avatar ? (
           <img
             src={project && Buffer.from(project.avatar).toString()}
             alt="Tanatloc"
@@ -64,10 +75,22 @@ const ProjectList = ({
         // Title
         const title = <Typography.Text>{project.title}</Typography.Text>
 
-        const description = project.description && (
-          <Typography.Paragraph ellipsis={{ rows: 6, tooltip: true }}>
-            {project.description}
-          </Typography.Paragraph>
+        const description = (
+          <Space direction="vertical" style={{ textAlign: 'left' }}>
+            <Typography.Text>
+              <b>Created:</b>{' '}
+              {new Date(project.createddate).toLocaleDateString()}
+            </Typography.Text>
+            <Typography.Text>
+              <b>Last modified:</b>{' '}
+              {new Date(project.lastaccess).toLocaleDateString()}
+            </Typography.Text>
+            {project.description && (
+              <Typography.Paragraph ellipsis={{ rows: 4, tooltip: true }}>
+                {project.description}
+              </Typography.Paragraph>
+            )}
+          </Space>
         )
 
         // Owners avatars
@@ -117,11 +140,14 @@ const ProjectList = ({
             <Card
               key={project.id}
               title={
-                <Typography.Paragraph ellipsis={{ rows: 2 }}>
-                  {project.titleRender}
-                </Typography.Paragraph>
+                <>
+                  <Typography.Paragraph ellipsis={{ rows: 2 }}>
+                    {project.titleRender}
+                  </Typography.Paragraph>
+                  {project.archived && <Tag>Archived</Tag>}
+                </>
               }
-              className="project-card"
+              className={'project-card' + (project.archived ? ' archive' : '')}
               cover={
                 project.descriptionRender ? (
                   <Carousel
@@ -130,22 +156,36 @@ const ProjectList = ({
                     dots={{ className: 'project-dots' }}
                   >
                     <div
-                      className="project-carousel-snapshot"
-                      onClick={() => openProject({ id: project.id })}
+                      className={
+                        'project-carousel-snapshot' +
+                        (project.archived ? ' archive' : '')
+                      }
+                      onClick={() =>
+                        !project.archived && openProject({ id: project.id })
+                      }
                     >
                       {project.snapshotRender}
                     </div>
                     <div
-                      className="project-carousel-description"
-                      onClick={() => openProject({ id: project.id })}
+                      className={
+                        'project-carousel-description' +
+                        (project.archived ? ' archive' : '')
+                      }
+                      onClick={() =>
+                        !project.archived && openProject({ id: project.id })
+                      }
                     >
                       {project.descriptionRender}
                     </div>
                   </Carousel>
                 ) : (
                   <div
-                    className="project-snapshot"
-                    onClick={() => openProject({ id: project.id })}
+                    className={
+                      'project-snapshot' + (project.archived ? ' archive' : '')
+                    }
+                    onClick={() =>
+                      !project.archived && openProject({ id: project.id })
+                    }
                   >
                     {project.snapshotRender}
                   </div>
@@ -176,6 +216,7 @@ const ProjectList = ({
                     projects: workspace.projects
                   }}
                   project={{
+                    archived: project.archived,
                     id: project.id,
                     title: project.title
                   }}

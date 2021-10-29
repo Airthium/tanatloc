@@ -38,7 +38,7 @@ const add = async (user, { id }, { title, description }) => {
 const get = async (id, data, withData = true) => {
   const project = await ProjectDB.get(id, data)
 
-  if (project.archived) return project
+  if (project?.archived) project.avatar = null
 
   // Get avatar
   if (withData && project?.avatar) {
@@ -113,6 +113,13 @@ const get = async (id, data, withData = true) => {
  * @param {Object} data Data `[{ key, value, ...}, ...]`
  */
 const update = async (project, data) => {
+  // Modify last access
+  data.push({
+    type: 'date',
+    key: 'lastaccess',
+    value: Date.now() / 1000
+  })
+
   // Check groups
   const groupsUpdate = data.find((d) => d.key === 'groups' && !d.type)
   if (groupsUpdate) {

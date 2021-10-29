@@ -8,11 +8,9 @@ import { Error as ErrorNotification } from '@/components/assets/notification'
 import Geometry from './geometry'
 import Material from './material'
 import Parameters from './parameters'
-import BoundaryCondition from '../boundaryCondition'
-
-//TODO
-const Initialization = 'div'
-const Results = 'div'
+import BoundaryCondition from './boundaryCondition'
+import Initialization from './initialization'
+import Results from './results'
 
 /**
  * Configuration
@@ -75,7 +73,7 @@ const Configuration = (props) => {
    */
   const onGeometryEdit = () => {
     setGeometry(configuration.geometry)
-    setGeometryVisible(true)
+    onGeometryOpen()
   }
 
   /**
@@ -139,6 +137,7 @@ const Configuration = (props) => {
         }
       })
     }
+    onMaterialClose()
   }
 
   /**
@@ -149,7 +148,7 @@ const Configuration = (props) => {
     const m = configuration.materials.children[index]
     m.index = index
     setMaterial(m)
-    setMaterialVisible(true)
+    onMaterialOpen()
   }
 
   /**
@@ -197,6 +196,7 @@ const Configuration = (props) => {
     setConfiguration({
       ...configuration,
       parameters: {
+        ...configuration.parameters,
         [values.label]: {
           label: values.label,
           children: values.parameters.map((p) => ({
@@ -206,6 +206,7 @@ const Configuration = (props) => {
         }
       }
     })
+    onParametersClose()
   }
 
   /**
@@ -248,7 +249,10 @@ const Configuration = (props) => {
    * On intialization
    * @param {Object} values Values
    */
-  const onInitialization = (values) => {}
+  const onInitialization = (values) => {
+    //TODO
+    onInitializationClose()
+  }
 
   /**
    * On initialization edit
@@ -281,7 +285,10 @@ const Configuration = (props) => {
    * On boundary condition
    * @param {Object} values Values
    */
-  const onBoundaryCondition = (values) => {}
+  const onBoundaryCondition = (values) => {
+    //TODO
+    onBoundaryConditionClose()
+  }
 
   /**
    * On boundary condition edit
@@ -314,7 +321,10 @@ const Configuration = (props) => {
    * On results
    * @param {Object} values Values
    */
-  const onResults = (values) => {}
+  const onResults = (values) => {
+    //TODO
+    onResultsClose()
+  }
 
   /**
    * On results edit
@@ -446,7 +456,8 @@ const Configuration = (props) => {
               />
               <Button.Group>
                 <Button
-                  icon={<EditOutlined onClick={() => onMaterialEdit(index)} />}
+                  icon={<EditOutlined />}
+                  onClick={() => onMaterialEdit(index)}
                 />
                 <Button
                   type="danger"
@@ -488,9 +499,8 @@ const Configuration = (props) => {
                     ))}
                     <Button.Group>
                       <Button
-                        icon={
-                          <EditOutlined onClick={() => onParametersEdit(key)} />
-                        }
+                        icon={<EditOutlined />}
+                        onClick={() => onParametersEdit(key)}
                       />
                       <Button
                         type="danger"
@@ -508,11 +518,7 @@ const Configuration = (props) => {
           label="Initialization"
           style={{ marginBottom: 10 }}
         >
-          <Button
-            disabled={true}
-            icon={<PlusOutlined />}
-            onClick={onInitializationOpen}
-          />
+          <Button icon={<PlusOutlined />} onClick={onInitializationOpen} />
         </Form.Item>
         <Form.Item wrapperCol={{ offset: 4, span: 16 }}></Form.Item>
         <Form.Item
@@ -520,19 +526,11 @@ const Configuration = (props) => {
           label="Boundary conditions"
           style={{ marginBottom: 10 }}
         >
-          <Button
-            disabled={true}
-            icon={<PlusOutlined />}
-            onClick={onBoundaryConditionOpen}
-          />
+          <Button icon={<PlusOutlined />} onClick={onBoundaryConditionOpen} />
         </Form.Item>
         <Form.Item wrapperCol={{ offset: 4, span: 16 }}></Form.Item>
         <Form.Item name="results" label="Results" style={{ marginBottom: 10 }}>
-          <Button
-            disabled={true}
-            icon={<PlusOutlined />}
-            onClick={onResultsOpen}
-          />
+          <Button icon={<PlusOutlined />} onClick={onResultsOpen} />
         </Form.Item>
         <Form.Item wrapperCol={{ offset: 4, span: 16 }}></Form.Item>
         <Form.Item wrapperCol={{ offset: 4 }}>

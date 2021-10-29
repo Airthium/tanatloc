@@ -12,17 +12,14 @@ const Geometry = ({ visible, geometry, onOk, onClose }) => {
       visible={visible}
       title="Geometry"
       initialValues={
-        geometry
-          ? geometry
-          : {
-              meshable: true,
-              name: 'Mesh'
-            }
+        geometry || {
+          meshable: true,
+          name: 'Mesh'
+        }
       }
       onCancel={onClose}
       onOk={(values) => {
         onOk(values)
-        onClose()
       }}
     >
       <Form.Item

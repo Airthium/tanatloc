@@ -20,7 +20,6 @@ const Material = ({ visible, material, onOk, onClose }) => {
           index: material?.index,
           ...values
         })
-        onClose()
       }}
     >
       <Form.Item

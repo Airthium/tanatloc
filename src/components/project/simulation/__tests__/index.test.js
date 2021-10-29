@@ -183,14 +183,8 @@ describe('components/project/simulation.Selector', () => {
     const select = screen.getByRole('combobox')
     await act(async () => fireEvent.mouseDown(select))
 
-    {
-      const option1 = screen.getByRole('option', { name: 'category' })
-      await act(async () => fireEvent.click(option1))
-    }
-
-    await waitFor(() => !screen.getByText('Name2'))
-
-    screen.debug()
+    const option = screen.getByRole('option', { name: 'category2' })
+    await act(async () => fireEvent.click(option))
 
     unmount()
   })

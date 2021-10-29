@@ -17,7 +17,6 @@ const Parameters = ({ visible, parameters, onOk, onClose }) => {
       onOk={(values) => {
         try {
           onOk(values)
-          onClose()
         } catch (err) {}
       }}
     >

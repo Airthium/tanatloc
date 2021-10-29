@@ -52,8 +52,6 @@ const Editor = () => {
     setStep(step + 1)
   }
 
-  console.log(configuration)
-
   /**
    * Render
    */

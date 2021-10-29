@@ -61,16 +61,20 @@ const ProjectList = ({
           return
 
         // Snapshot
-        const snapshot = project.archived ? (
-          <Empty description={'Archived project'} />
-        ) : project.avatar ? (
-          <img
-            src={project && Buffer.from(project.avatar).toString()}
-            alt="Tanatloc"
-          />
-        ) : (
-          <Empty image="images/empty.svg" description={'No preview yet.'} />
-        )
+        let snapshot
+        if (project.archived)
+          snapshot = <Empty description={'Archived project'} />
+        else if (project.avatar)
+          snapshot = (
+            <img
+              src={project && Buffer.from(project.avatar).toString()}
+              alt="Tanatloc"
+            />
+          )
+        else
+          snapshot = (
+            <Empty image="images/empty.svg" description={'No preview yet.'} />
+          )
 
         // Title
         const title = <Typography.Text>{project.title}</Typography.Text>
@@ -149,39 +153,15 @@ const ProjectList = ({
               }
               className={'project-card' + (project.archived ? ' archive' : '')}
               cover={
-                project.descriptionRender ? (
-                  <Carousel
-                    className="project-carousel"
-                    autoplay
-                    dots={{ className: 'project-dots' }}
-                  >
-                    <div
-                      className={
-                        'project-carousel-snapshot' +
-                        (project.archived ? ' archive' : '')
-                      }
-                      onClick={() =>
-                        !project.archived && openProject({ id: project.id })
-                      }
-                    >
-                      {project.snapshotRender}
-                    </div>
-                    <div
-                      className={
-                        'project-carousel-description' +
-                        (project.archived ? ' archive' : '')
-                      }
-                      onClick={() =>
-                        !project.archived && openProject({ id: project.id })
-                      }
-                    >
-                      {project.descriptionRender}
-                    </div>
-                  </Carousel>
-                ) : (
+                <Carousel
+                  className="project-carousel"
+                  autoplay
+                  dots={{ className: 'project-dots' }}
+                >
                   <div
                     className={
-                      'project-snapshot' + (project.archived ? ' archive' : '')
+                      'project-carousel-snapshot' +
+                      (project.archived ? ' archive' : '')
                     }
                     onClick={() =>
                       !project.archived && openProject({ id: project.id })
@@ -189,7 +169,18 @@ const ProjectList = ({
                   >
                     {project.snapshotRender}
                   </div>
-                )
+                  <div
+                    className={
+                      'project-carousel-description' +
+                      (project.archived ? ' archive' : '')
+                    }
+                    onClick={() =>
+                      !project.archived && openProject({ id: project.id })
+                    }
+                  >
+                    {project.descriptionRender}
+                  </div>
+                </Carousel>
               }
               actions={[
                 <Delete

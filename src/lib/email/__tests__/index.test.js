@@ -38,6 +38,11 @@ jest.mock('../../link', () => ({
   del: async () => mockLinkDel()
 }))
 
+const mockUserUpdate = jest.fn()
+jest.mock('../../user', () => ({
+  update: async () => mockUserUpdate()
+}))
+
 describe('lib/email', () => {
   beforeEach(() => {
     mockSend.mockReset()
@@ -49,6 +54,8 @@ describe('lib/email', () => {
     mockLinkAdd.mockReset()
     mockLinkAdd.mockImplementation(() => ({}))
     mockLinkDel.mockReset()
+
+    mockUserUpdate.mockReset()
   })
 
   test('subscribe', async () => {
@@ -79,6 +86,7 @@ describe('lib/email', () => {
     await Email.subscribe('email', 'id')
     expect(mockLinkAdd).toHaveBeenCalledTimes(3)
     expect(mockSend).toHaveBeenCalledTimes(3)
+    expect(mockUserUpdate).toHaveBeenCalledTimes(1)
   })
 
   test('recover', async () => {

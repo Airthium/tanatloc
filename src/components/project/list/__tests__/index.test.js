@@ -71,7 +71,8 @@ describe('component/project/list', () => {
             owners: [{ id: 'id' }],
             users: [{ id: 'id1' }],
             groups: [{ id: 'id2' }]
-          }
+          },
+          { id: 'id3', archived: true, title: 'archive 1' }
         ]}
         organizations={organizations}
         swr={swr}

@@ -1,6 +1,6 @@
 import React from 'react'
 import { MathJaxContext } from 'better-react-mathjax'
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import Simulation from '@/components/project/simulation'
 
@@ -48,11 +48,13 @@ jest.mock('@/api/plugins', () => ({
 jest.mock('@/models', () => [
   {
     name: 'Name',
+    category: 'category',
     algorithm: 'algorithm',
     description: 'description'
   },
   {
     name: 'Name2',
+    category: 'category2',
     algorithm: 'algorithm2',
     description: 'description2'
   }
@@ -160,6 +162,35 @@ describe('components/project/simulation.Selector', () => {
 
     const model = screen.getByText('Name')
     fireEvent.click(model)
+
+    unmount()
+  })
+
+  test('category', async () => {
+    const { unmount } = render(
+      <MathJaxContext>
+        <Simulation.Selector
+          user={user}
+          visible={visible}
+          onOk={onOk}
+          onCancel={onCancel}
+        />
+      </MathJaxContext>
+    )
+
+    await waitFor(() => screen.getByText('Name2'))
+
+    const select = screen.getByRole('combobox')
+    await act(async () => fireEvent.mouseDown(select))
+
+    {
+      const option1 = screen.getByRole('option', { name: 'category' })
+      await act(async () => fireEvent.click(option1))
+    }
+
+    await waitFor(() => !screen.getByText('Name2'))
+
+    screen.debug()
 
     unmount()
   })
@@ -297,9 +328,9 @@ describe('components/project/simulation.Updater', () => {
       <Simulation.Updater user={user} simulation={simulation} swr={swr} />
     )
 
-    await waitFor(() => screen.getByRole('button', { name: 'Yes' }))
+    await waitFor(() => screen.getByRole('button', { name: 'OK' }))
 
-    const yes = screen.getByRole('button', { name: 'Yes' })
+    const yes = screen.getByRole('button', { name: 'OK' })
     fireEvent.click(yes)
     await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
     await waitFor(() =>
@@ -317,16 +348,16 @@ describe('components/project/simulation.Updater', () => {
     unmount()
   })
 
-  test('cancel', async () => {
+  test('close', async () => {
     mockUpdatedDiff.mockImplementation(() => ({ key: 'key' }))
     const { unmount } = render(
       <Simulation.Updater user={user} simulation={simulation} swr={swr} />
     )
 
-    await waitFor(() => screen.getByRole('button', { name: 'No' }))
+    await waitFor(() => screen.getByRole('img', { name: 'close' }))
 
-    const no = screen.getByRole('button', { name: 'No' })
-    fireEvent.click(no)
+    const close = screen.getByRole('img', { name: 'close' })
+    fireEvent.click(close)
 
     unmount()
   })

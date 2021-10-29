@@ -244,7 +244,7 @@ const Updater = ({ user, simulation, swr }) => {
         }
         visible={needUpdate}
         onOk={onUpdate}
-        okText="Ok"
+        okText="OK"
         confirmLoading={loading}
         onCancel={() => setNeedUpdate(false)}
         cancelButtonProps={{ disabled: true }}

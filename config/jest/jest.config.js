@@ -30,7 +30,8 @@ module.exports = {
     '<rootDir>/config/jsdoc/',
     '<rootDir>/public/',
     '<rootDir>/tests/',
-    '<rootDir>/modules/three-to-glb/lib/three/'
+    '<rootDir>/modules/three-to-glb/lib/three/',
+    '<rootDir>/src/components/editor/prism/'
   ],
   transform: {
     '^.+\\.(js|jsx|ts|tsx)$': '<rootDir>/node_modules/babel-jest',
@@ -84,6 +85,7 @@ module.exports = {
     '<rootDir>/src/pages/api/wait',
     '<rootDir>/src/components/index/wait',
     '<rootDir>/src/route/wait',
-    '<rootDir>/modules/three-to-glb/lib/three/'
+    '<rootDir>/modules/three-to-glb/lib/three/',
+    '<rootDir>/src/components/editor/prism/'
   ]
 }

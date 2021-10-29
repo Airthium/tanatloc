@@ -130,6 +130,17 @@ describe('lib/project', () => {
       users: [{ id: 'user' }],
       groups: [{ id: 'group' }]
     })
+
+    // Archived
+    mockGet.mockImplementation(() => ({
+      archived: true
+    }))
+    project = await Project.get()
+    expect(mockGet).toHaveBeenCalledTimes(4)
+    expect(project).toEqual({
+      archived: true,
+      avatar: null
+    })
   })
 
   test('update', async () => {

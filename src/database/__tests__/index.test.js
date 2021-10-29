@@ -44,7 +44,8 @@ describe('database', () => {
         path: ['first', 'second'],
         value: 'value'
       },
-      { key: 'key6', type: 'json', method: 'erase', path: ['first', 'second'] }
+      { key: 'key6', type: 'json', method: 'erase', path: ['first', 'second'] },
+      { key: 'key7', type: 'date', value: 123 }
     ])
 
     await updater('db', null, [{ key: 'key' }])

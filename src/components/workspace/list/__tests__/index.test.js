@@ -3,6 +3,13 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import List from '..'
 
+const mockQuery = jest.fn()
+jest.mock('next/router', () => ({
+  useRouter: () => ({
+    query: mockQuery()
+  })
+}))
+
 jest.mock('../..', () => () => <div />)
 jest.mock('../../add', () => () => <div />)
 
@@ -17,6 +24,9 @@ describe('components/workspace/list', () => {
   }
 
   beforeEach(() => {
+    mockQuery.mockReset()
+    mockQuery.mockImplementation(() => ({}))
+
     swr.addOneWorkspace.mockReset()
     swr.mutateOneWorkspace.mockReset()
     swr.delOneWorkspace.mockReset()

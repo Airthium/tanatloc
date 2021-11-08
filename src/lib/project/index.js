@@ -1,5 +1,7 @@
 /** @namespace Lib.Project */
 
+import storage from '@/config/storage'
+
 import ProjectDB from '@/database/project'
 
 import Avatar from '../avatar'
@@ -7,6 +9,7 @@ import User from '../user'
 import Group from '../group'
 import Workspace from '../workspace'
 import Simulation from '../simulation'
+import Tools from '../tools'
 
 /**
  * Add
@@ -174,7 +177,7 @@ const update = async (project, data) => {
  */
 const del = async ({ id }, project) => {
   // Get data
-  const data = await get(project.id, ['groups', 'simulations'])
+  const data = await get(project.id, ['groups', 'simulations'], false)
 
   // Delete from groups
   if (data.groups) {
@@ -208,6 +211,32 @@ const del = async ({ id }, project) => {
   await Workspace.update({ id }, [
     { type: 'array', method: 'remove', key: 'projects', value: project.id }
   ])
+}
+
+const archive = async (project) => {
+  // Data
+  const data = await get(
+    project.id,
+    ['title', 'description', 'avatar', 'geometries', 'simulations'],
+    false
+  )
+
+  // Create temporary path
+  const temporaryPath = path.join(storage.STORAGE, '.temp-', project.id)
+  await Tools.createPath(temporaryPath)
+
+  // Create summary
+  const content = 'Title: ' + data.title + '\nDescription: ' + data.description
+  await Tools.writeFile(temporaryPath, 'summary.txt', content)
+
+  // Get avatar
+  // And remove it after archive
+
+  // Archive geometries
+  // And remove geometries
+
+  // Archive simulations
+  // And remove simulations
 }
 
 const Project = { add, get, update, del }

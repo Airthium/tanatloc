@@ -1,21 +1,51 @@
 import PropTypes from 'prop-types'
-import { Button, Tooltip } from 'antd'
+import { useState } from 'react'
+import { Button, Tooltip, Typography } from 'antd'
 import { HddOutlined, ImportOutlined } from '@ant-design/icons'
 
+import Dialog from '@/components/assets/dialog'
+
 const Archive = ({ disabled, workspace, project, swr }) => {
-  // TODO
-  // logic
+  // State
+  const [visible, setVisible] = useState(false)
+  const [loading, setLoading] = useState(false)
+
+  const onArchive = async () => {
+    setLoading(true)
+    //TODO
+    // API
+    // Mutate workspace
+    // Mutate project
+    setLoading(false)
+  }
 
   /**
    * Render
    */
   return (
-    <Tooltip title={project.archived ? 'Restore' : 'Archive'}>
-      <Button
-        type="link"
-        icon={project.archived ? <ImportOutlined /> : <HddOutlined />}
-      />
-    </Tooltip>
+    <>
+      <Dialog
+        visible={visible}
+        closable={false}
+        loading={loading}
+        title="Archive"
+        onCancel={() => setVisible(false)}
+        onOk={onArchive}
+        okButtonProps={{ text: 'Archive' }}
+      >
+        <Typography.Text>
+          Archive the project «{project.title}»?
+        </Typography.Text>
+      </Dialog>
+      <Tooltip title={project.archived ? 'Restore' : 'Archive'}>
+        <Button
+          disabled={disabled}
+          type="link"
+          icon={project.archived ? <ImportOutlined /> : <HddOutlined />}
+          onClick={() => setVisible(true)}
+        />
+      </Tooltip>
+    </>
   )
 }
 
@@ -32,7 +62,7 @@ Archive.propTypes = {
   }).isRequired,
   swr: PropTypes.exact({
     mutateOneWorkspace: PropTypes.func.isRequired,
-    delOneProject: PropTypes.func.isRequired
+    mutateOneProject: PropTypes.func.isRequired
   }).isRequired
 }
 

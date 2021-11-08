@@ -12,6 +12,7 @@ import DeleteDialog from './delete'
  * @param {Object} props Props `{ visible, loading, title, initialValues, okButtonProps, children, onCancel, onOk }`
  * @description Props list:
  * - visible (boolean) Dialog visible
+ * - closable (boolean) Dialog closable
  * - loading (boolean) Form loading
  * - title (string) Dialog title
  * - initialValues (Object) Form initial values
@@ -22,6 +23,7 @@ import DeleteDialog from './delete'
  */
 const Dialog = ({
   visible,
+  closable,
   loading,
   title,
   initialValues,
@@ -51,6 +53,8 @@ const Dialog = ({
       className="Dialog"
       title={title}
       visible={visible}
+      closable={closable === undefined ? true : closable}
+      maskClosable={closable === undefined ? true : closable}
       onCancel={
         onCancel &&
         (() => {
@@ -69,6 +73,7 @@ const Dialog = ({
           } catch (err) {}
         })
       }
+      okText={okButtonProps?.text}
       okButtonProps={{
         ...okButtonProps,
         display: onOk ? 'inline-block' : 'none'

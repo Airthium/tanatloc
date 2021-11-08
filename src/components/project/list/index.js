@@ -213,7 +213,7 @@ const ProjectList = ({
                   }}
                   swr={{
                     mutateOneWorkspace: swr.mutateOneWorkspace,
-                    delOneProject: swr.delOneProject
+                    mutateOneProject: swr.mutateOneProject
                   }}
                 />,
                 <Share

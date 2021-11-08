@@ -103,8 +103,6 @@ const Selector = ({ user, visible, onOk, onCancel }) => {
     .filter((value, index, self) => self.indexOf(value) === index)
     .map((c) => ({ key: c, value: c }))
 
-  console.log(category)
-
   /**
    * Render
    */
@@ -125,10 +123,7 @@ const Selector = ({ user, visible, onOk, onCancel }) => {
               options={categories}
               allowClear
               placeholder="Category filter"
-              onChange={(value) => {
-                console.log(value)
-                setCategory(value)
-              }}
+              onChange={setCategory}
             />
             {models.map((model) => {
               if (!category || model.category === category)

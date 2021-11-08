@@ -183,8 +183,8 @@ describe('components/project/simulation.Selector', () => {
     const select = screen.getByRole('combobox')
     await act(async () => fireEvent.mouseDown(select))
 
-    const option = screen.getByRole('option', { name: 'category2' })
-    await act(async () => fireEvent.click(option))
+    const option = screen.getAllByText('category2')
+    await act(async () => fireEvent.click(option[1]))
 
     unmount()
   })
@@ -256,7 +256,7 @@ describe('components/project/simulation.Updater', () => {
         category: 'Model',
         models: [
           {
-            name: 'NamePlugin',
+            name: 'NamePlugin1',
             algorithm: 'pluginAlgorithm',
             description: 'pluginDescription'
           }

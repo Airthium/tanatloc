@@ -3,10 +3,14 @@
 // Bases classes
 
 global.MockGeometry = {
-  getAttribute: jest.fn()
+  attributes: {},
+  morphAttributes: {},
+  getAttribute: jest.fn(),
+  getIndex: jest.fn()
 }
 class MockBufferGeometry {
   constructor() {
+    this.clone = () => this
     this.computeBoundingBox = () => jest.fn()
     this.computeBoundingSphere = () => jest.fn()
     this.deleteAttribute = () => jest.fn()
@@ -14,11 +18,14 @@ class MockBufferGeometry {
     this.getAttribute = (attribute) =>
       global.MockGeometry.getAttribute(attribute)
     this.setAttribute = () => jest.fn()
+    this.getIndex = () => global.MockGeometry.getIndex()
+    this.setIndex = () => jest.fn()
     this.lookAt = () => jest.fn()
     this.translate = () => jest.fn()
     this.setFromPoints = () => jest.fn()
 
-    this.attributes = {}
+    this.attributes = global.MockGeometry.attributes
+    this.morphAttributes = global.MockGeometry.morphAttributes
     this.boundingSphere = {
       center: new MockVector3(),
       radius: 1
@@ -28,6 +35,8 @@ class MockBufferGeometry {
     }
   }
 }
+
+class MockBufferAttribute {}
 
 class MockMaterial {
   constructor() {
@@ -72,7 +81,11 @@ class MockBufferGeometryLoader {
 
 class MockCanvasTexture {}
 
-class MockColor {}
+class MockColor {
+  constructor() {
+    this.lerp = jest.fn()
+  }
+}
 
 class MockConeGeometry extends MockBufferGeometry {}
 
@@ -265,6 +278,7 @@ const MockBufferGeometryUtils = {
 
 export const MockThree = {
   BufferGeometry: MockBufferGeometry,
+  BufferAttribute: MockBufferAttribute,
   Material: MockMaterial,
   Float32BufferAttribute: MockFloat32BufferAttribute,
 

@@ -101,11 +101,11 @@ function mergeVertices(geometry, tolerance = 1e-4) {
     if (name in morphAttrsArrays) {
       for (let j = 0; j < morphAttrsArrays[name].length; j++) {
         const oldMorphAttribute = geometry.morphAttributes[name][j]
-        const buffer = new oldMorphAttribute.array.constructor(
+        const arrayBuffer = new oldMorphAttribute.array.constructor(
           morphAttrsArrays[name][j]
         )
         const morphAttribute = new threeToGlbGlobal.THREE.BufferAttribute(
-          buffer,
+          arrayBuffer,
           oldMorphAttribute.itemSize,
           oldMorphAttribute.normalized
         )

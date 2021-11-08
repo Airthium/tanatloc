@@ -13,6 +13,8 @@ jest.mock('next/router', () => ({
   })
 }))
 
+jest.mock('/public/icons/geometries', () => () => <div />, { virtual: true })
+
 const mockGoBack = jest.fn()
 jest.mock('@/components/assets/button', () => ({
   GoBack: (props) => mockGoBack(props)

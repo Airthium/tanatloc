@@ -7,7 +7,7 @@ import { MathJaxContext } from 'better-react-mathjax'
 
 import { useStore } from '@/store/store'
 
-import '@/styles/global.less'
+require('@/styles/global.less')
 
 /**
  * Global App component

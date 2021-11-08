@@ -1,6 +1,7 @@
 module.exports = {
   rootDir: '../..',
   setupFiles: [
+    '<rootDir>/config/jest/setup.js',
     '<rootDir>/config/jest/mock.js',
     '<rootDir>/config/jest/mockMatchMedia.js',
     '<rootDir>/config/jest/mockResizeObserver.js'
@@ -24,18 +25,17 @@ module.exports = {
     '<rootDir>/dist-install/',
     '<rootDir>/doc/',
     '<rootDir>/coverage/',
-    '<rootDir>/jest.config.js',
-    '<rootDir>/jest.e2e.config.js',
     '<rootDir>/config/jest/',
     '<rootDir>/config/jsdoc/',
     '<rootDir>/public/',
     '<rootDir>/tests/',
-    '<rootDir>/modules/three-to-glb/lib/three/',
+    '<rootDir>/updaters/',
     '<rootDir>/src/components/editor/prism/'
   ],
   transform: {
     '^.+\\.(js|jsx|ts|tsx)$': '<rootDir>/node_modules/babel-jest',
-    '^.+\\.css$': '<rootDir>/config/jest/cssTransform.js'
+    // '^.+\\.(js|jsx|ts|tsx)$': '<rootDir>/node_modules/@swc/jest',
+    '^.+\\.(css)$': '<rootDir>/config/jest/cssTransform.js'
   },
   transformIgnorePatterns: [
     '/node_modules/',
@@ -57,7 +57,7 @@ module.exports = {
     '^@/services(.*)$': '<rootDir>/src/services$1',
     '^@/store(.*)$': '<rootDir>/src/store$1',
     '^@/styles(.*)$': '<rootDir>/src/styles$1',
-    '^@/updaters(.*)$': '<rootDir>/src/updaters$1'
+    '^@/updaters(.*)$': '<rootDir>/updaters$1'
   },
   coveragePathIgnorePatterns: [
     '<rootDir>/node_modules/',
@@ -72,20 +72,17 @@ module.exports = {
     '<rootDir>/dist-install/',
     '<rootDir>/doc/',
     '<rootDir>/coverage/',
-    '<rootDir>/jest.config.js',
-    '<rootDir>/jest.e2e.config.js',
     '<rootDir>/config/jest/',
     '<rootDir>/config/jsdoc/',
     '<rootDir>/public/',
     '<rootDir>/tests/',
-    '<rootDir>/updaters',
+    '<rootDir>/updaters/',
     '<rootDir>/src/api/wait',
     '<rootDir>/src/database/wait',
     '<rootDir>/src/lib/wait',
     '<rootDir>/src/pages/api/wait',
     '<rootDir>/src/components/index/wait',
     '<rootDir>/src/route/wait',
-    '<rootDir>/modules/three-to-glb/lib/three/',
     '<rootDir>/src/components/editor/prism/'
   ]
 }

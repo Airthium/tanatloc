@@ -1,5 +1,4 @@
-@import '~antd/dist/antd.less'; // Import Ant Design styles by less entry
-@import './tanatloc-theme.less'; // variables to override above
+@import '~antd/dist/antd.less';
 @import './notfound.less';
 @import './background.less';
 @import './index.less';
@@ -14,6 +13,105 @@
 @import './panel.less';
 @import './help.less';
 @import './editor.less';
+
+// Fonts
+@font-face {
+  font-family: 'Saira';
+  src: url('/fonts/saira/Saira-Regular.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: 'Saira';
+  src: url('/fonts/saira/Saira-Medium.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 500;
+}
+
+@font-face {
+  font-family: 'Saira';
+  src: url('/fonts/saira/Saira-MediumItalic.woff2') format('woff2');
+  font-style: italic;
+  font-weight: 500;
+}
+
+@font-face {
+  font-family: 'Saira';
+  src: url('/fonts/saira/Saira-SemiBold.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 600;
+}
+
+@font-face {
+  font-family: 'Saira';
+  src: url('/fonts/saira/Saira-Bold.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 700;
+}
+
+@font-face {
+  font-family: 'Saira';
+  src: url('/fonts/saira/Saira-ExtraBold.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 800;
+}
+
+@font-face {
+  font-family: 'Saira';
+  src: url('/fonts/saira/Saira-ExtraBoldItalic.woff2') format('woff2');
+  font-style: italic;
+  font-weight: 800;
+}
+
+@font-face {
+  font-family: 'Saira';
+  src: url('/fonts/saira/Saira-Black.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 900;
+}
+
+// See https://github.com/ant-design/ant-design/blob/master/components/style/themes/default.less for variables
+// Color
+@tanatloc-primary-color: rgb(250, 209, 20);
+@tanatloc-light-grey: rgb(217, 217, 217);
+@tanatloc-text-dark: rgb(0, 0, 0, 0.65);
+@tanatloc-text-light: rgb(0, 0, 0, 0.45);
+@tanatloc-links: rgb(238, 152, 23);
+
+@primary-color: @tanatloc-primary-color;
+@secondary-color: @tanatloc-light-grey;
+
+// Font
+@font-family: Saira;
+@text-color: #1f1f1f;
+
+// Menu
+@menu-bg: @component-background;
+@menu-item-color: @text-color;
+@menu-highlight-color: @text-color;
+
+@menu-item-active-bg: #cecece26;
+@menu-item-vertical-margin: 0px;
+@menu-item-boundary-margin: 0px;
+
+@menu-icon-margin-right: 10px;
+@menu-icon-size: @menu-item-font-size + 2px;
+
+// Buttons
+@btn-primary-color: #1f1f1f;
+
+// Divider
+@divider-color: @tanatloc-primary-color;
+
+// Layout
+@layout-body-background: #fff;
+
+// Input
+@input-addon-bg: white;
+
+// Badge
+@badge-color: @tanatloc-primary-color;
 
 html,
 body {
@@ -78,12 +176,6 @@ body {
   border: unset !important;
 }
 
-// .Tanatloc-divider {
-//   padding: 1px;
-//   background: @tanatloc-primary-color;
-//   border-top: 0 !important;
-// }
-
 .version {
   position: absolute;
   bottom: 0;
@@ -91,34 +183,3 @@ body {
   color: transparent;
   cursor: default;
 }
-
-// Remove last margin at the end of a form in a dialog box
-// .Dialog .ant-form-item:last-child {
-//   margin: 0 !important;
-// }
-
-// .Dialog .ant-form-item-label {
-//   overflow: auto !important;
-// }
-
-// .ant-typography-edit > * > svg {
-//   fill: fade(@tanatloc-primary-color, 50%);
-// }
-
-// // Space
-// .ant-space-vertical {
-//   width: 100% !important;
-// }
-
-// .ant-space-horizontal {
-//   width: 100% !important;
-// }
-
-// .ant-space-align-center {
-//   width: 100% !important;
-//   justify-content: center !important;
-// }
-
-// .ant-space-horizontal > .ant-space-item {
-//   flex: 1 1 auto !important;
-// }

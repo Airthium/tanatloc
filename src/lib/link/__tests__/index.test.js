@@ -1,4 +1,3 @@
-import { expect } from '@jest/globals'
 import Link from '..'
 
 const mockLinkAdd = jest.fn()

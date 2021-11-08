@@ -1,36 +1,44 @@
-const withTM = require('next-transpile-modules')(['three'])
-const withLess = require('next-with-less')
+const withPlugins = require('next-compose-plugins')
+const withAntdLess = require('next-plugin-antd-less')
 
 const sentryConfig = require('./config/sentry')
 
 const basePath = ''
 
-module.exports = withLess({
-  ...withTM({
-    webpack: (config, { isServer, webpack }) => {
-      if (!isServer) {
-        config.resolve.alias['@sentry/node'] = '@sentry/browser'
-      }
+const plugins = [
+  [
+    withAntdLess,
+    {
+      lessVarsFilePath: './src/styles/global.less',
+      lessVarsFilePathAppendToEndOfContent: true
+    }
+  ]
+]
 
-      config.node = {
-        ...config.node,
-        __dirname: true
-      }
+module.exports = withPlugins([...plugins], {
+  webpack: (config, { isServer, webpack }) => {
+    if (!isServer) {
+      config.resolve.alias['@sentry/node'] = '@sentry/browser'
+    }
 
-      config.module.rules.push({
-        test: /\.ejs/,
-        use: [{ loader: 'ignore-loader' }]
-      })
+    config.node = {
+      ...config.node,
+      __dirname: true
+    }
 
-      config.plugins.push(
-        new webpack.IgnorePlugin({ resourceRegExp: /\/__tests__\// })
-      )
+    config.module.rules.push({
+      test: /\.ejs/,
+      use: [{ loader: 'ignore-loader' }]
+    })
 
-      return config
-    },
-    env: {
-      SENTRY_DSN: sentryConfig.DSN
-    },
-    basePath
-  })
+    config.plugins.push(
+      new webpack.IgnorePlugin({ resourceRegExp: /\/__tests__\// })
+    )
+
+    return config
+  },
+  env: {
+    SENTRY_DSN: sentryConfig.DSN
+  },
+  basePath
 })

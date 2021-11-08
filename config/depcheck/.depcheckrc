@@ -1,9 +1,9 @@
 ignores: [
-    "ignore-loader",
-    "@sentry/browser",
     "@airthium/air-jsdoc-template",
+    "@sentry/browser",
+    "ignore-loader",
     "node-fetch",
     "set-interval-async",
     "url-join"
     ]
-skip-missing: true
+skip-missing: false

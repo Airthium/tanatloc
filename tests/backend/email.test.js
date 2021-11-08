@@ -7,7 +7,6 @@ import { SUBSCRIBE, PASSWORD_RECOVERY, REVALIDATE } from '@/config/email'
 
 import LinkLib from '@/lib/link'
 import EmailLib from '@/lib/email'
-import { beforeAll } from '@jest/globals'
 
 // Initialization
 let adminUUID

@@ -8,7 +8,7 @@ jest.mock('@/store/store', () => ({
 }))
 
 jest.mock('react-redux', () => ({
-  Provider: 'provider'
+  Provider: 'Provider'
 }))
 
 jest.mock('redux-persist', () => ({
@@ -16,7 +16,7 @@ jest.mock('redux-persist', () => ({
 }))
 
 jest.mock('redux-persist/integration/react', () => ({
-  PersistGate: 'persistGate'
+  PersistGate: 'PersistGate'
 }))
 
 jest.mock('@/styles/global.less', () => '')

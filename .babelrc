@@ -7,6 +7,29 @@
         "libraryName": "antd",
         "style": "index.css"
       }
+    ],
+    [
+      "module-resolver",
+      {
+        "root": ["."],
+        "alias": {
+          "@/config": "./config",
+          "@/models": "./models",
+          "@/templates": "./templates",
+          "@/plugins": "./plugins",
+          "@/api": "./src/api",
+          "@/auth": "./src/auth",
+          "@/components": "./src/components",
+          "@/database": "./src/database",
+          "@/lib": "./src/lib",
+          "@/pages": "./src/pages",
+          "@/route": "./src/route",
+          "@/services": "./src/services",
+          "@/store": "./src/store",
+          "@/styles": "./src/styles",
+          "@/updaters": "./updaters"
+        }
+      }
     ]
   ]
 }

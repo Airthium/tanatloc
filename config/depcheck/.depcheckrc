@@ -1,6 +1,7 @@
 ignores: [
     "@airthium/air-jsdoc-template",
     "@sentry/browser",
+    "@swc/jest",
     "ignore-loader",
     "node-fetch",
     "set-interval-async",

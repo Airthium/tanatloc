@@ -5,6 +5,8 @@ jest.mock('path', () => ({
   join: () => mockPath()
 }))
 
+const mockCreateReadStream = jest.fn()
+const mockCreateWriteStream = jest.fn()
 const mockMkdir = jest.fn()
 const mockReadDir = jest.fn()
 const mockWriteFile = jest.fn()
@@ -13,6 +15,8 @@ const mockCopyFile = jest.fn()
 const mockUnlink = jest.fn()
 const mockRmdir = jest.fn()
 jest.mock('fs', () => ({
+  createReadStream: () => mockCreateReadStream(),
+  createWriteStream: () => mockCreateWriteStream(),
   promises: {
     mkdir: async () => mockMkdir(),
     readdir: async () => mockReadDir(),
@@ -22,6 +26,18 @@ jest.mock('fs', () => ({
     unlink: async () => mockUnlink(),
     rm: async () => mockRmdir()
   }
+}))
+
+const mockNcp = jest.fn()
+jest.mock(
+  'ncp',
+  () => (origin, desstination, callback) =>
+    mockNcp(origin, desstination, callback)
+)
+
+const mockTar = jest.fn()
+jest.mock('tar', () => ({
+  c: () => mockTar()
 }))
 
 const mockThreeToGLB = jest.fn()
@@ -38,6 +54,8 @@ describe('lib/tools', () => {
   beforeEach(() => {
     mockPath.mockReset()
 
+    mockCreateReadStream.mockReset()
+    mockCreateWriteStream.mockReset()
     mockMkdir.mockReset()
     mockReadDir.mockReset()
     mockWriteFile.mockReset()
@@ -46,6 +64,10 @@ describe('lib/tools', () => {
     mockReadFile.mockImplementation(() => 'readFile')
     mockUnlink.mockReset()
     mockRmdir.mockReset()
+
+    mockNcp.mockReset()
+
+    mockTar.mockReset()
 
     mockThreeToGLB.mockReset()
     mockThreeToGLB.mockImplementation(() => ({}))
@@ -93,8 +115,52 @@ describe('lib/tools', () => {
   })
 
   test('copyFile', async () => {
-    await Tools.copyFile('1', '2')
+    await Tools.copyFile(
+      { path: 'path', file: 'file' },
+      { path: 'path', file: 'file' }
+    )
     expect(mockCopyFile).toHaveBeenCalledTimes(1)
+  })
+
+  test('copyDirectory', async () => {
+    mockNcp.mockImplementation((_, __, callback) => callback())
+    await Tools.copyDirectory('origin', 'destination')
+    expect(mockNcp).toHaveBeenCalledTimes(1)
+
+    mockNcp.mockImplementation((_, __, callback) =>
+      callback(new Error('error'))
+    )
+    try {
+      await Tools.copyDirectory('origin', 'destination')
+    } catch (err) {
+      expect(err.message).toBe('error')
+    }
+    expect(mockNcp).toHaveBeenCalledTimes(2)
+  })
+
+  test('removeFile', async () => {
+    await Tools.removeFile('file')
+    expect(mockUnlink).toHaveBeenCalledTimes(1)
+  })
+
+  test('removeDirectory', async () => {
+    await Tools.removeDirectory('directory')
+    expect(mockRmdir).toHaveBeenCalledTimes(1)
+  })
+
+  test('archive', async () => {
+    await Tools.archive('target', { C: 'C', path: 'path' })
+    expect(mockTar).toHaveBeenCalledTimes(1)
+  })
+
+  test('readStream', () => {
+    Tools.readStream('file')
+    expect(mockCreateReadStream).toHaveBeenCalledTimes(1)
+  })
+
+  test('writeStream', () => {
+    Tools.writeStream('file')
+    expect(mockCreateWriteStream).toHaveBeenCalledTimes(1)
   })
 
   test('convert', async () => {
@@ -155,15 +221,5 @@ describe('lib/tools', () => {
     part = await Tools.loadPart('target', 'file')
     expect(part).toEqual({})
     expect(mockReadFile).toHaveBeenCalledTimes(4 + 1)
-  })
-
-  test('removeFile', async () => {
-    await Tools.removeFile('file')
-    expect(mockUnlink).toHaveBeenCalledTimes(1)
-  })
-
-  test('removeDirectory', async () => {
-    await Tools.removeDirectory('directory')
-    expect(mockRmdir).toHaveBeenCalledTimes(1)
   })
 })

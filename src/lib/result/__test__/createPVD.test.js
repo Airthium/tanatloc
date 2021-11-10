@@ -5,13 +5,13 @@ jest.mock('path', () => ({
   join: () => mockPath()
 }))
 
-const mockCreateWriteStream = jest.fn()
-jest.mock('fs', () => ({
-  createWriteStream: () => mockCreateWriteStream()
-}))
-
 jest.mock('@/config/storage', () => ({
   SIMULATION: 'simulation'
+}))
+
+const mockWriteStream = jest.fn()
+jest.mock('../../tools', () => ({
+  writeStream: () => mockWriteStream()
 }))
 
 describe('lib/download/pvd', () => {
@@ -28,8 +28,8 @@ describe('lib/download/pvd', () => {
     mockPath.mockReset()
     mockPath.mockImplementation(() => 'path')
 
-    mockCreateWriteStream.mockReset()
-    mockCreateWriteStream.mockImplementation(() => ({
+    mockWriteStream.mockReset()
+    mockWriteStream.mockImplementation(() => ({
       write: jest.fn(),
       end: jest.fn()
     }))

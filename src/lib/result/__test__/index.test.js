@@ -5,13 +5,6 @@ jest.mock('path', () => ({
   join: () => mockPath()
 }))
 
-const mockCreateReadStream = jest.fn()
-const mockCreateWriteStream = jest.fn()
-jest.mock('fs', () => ({
-  createReadStream: () => mockCreateReadStream(),
-  createWriteStream: () => mockCreateWriteStream()
-}))
-
 const mockArchiver = jest.fn()
 jest.mock('archiver', () => () => mockArchiver())
 
@@ -24,9 +17,13 @@ jest.mock('../../simulation', () => ({
 
 const mockReadFile = jest.fn()
 const mockListFiles = jest.fn()
+const mockReadStream = jest.fn()
+const mockWriteStream = jest.fn()
 jest.mock('../../tools', () => ({
   readFile: async () => mockReadFile(),
-  listFiles: async () => mockListFiles()
+  listFiles: async () => mockListFiles(),
+  readStream: () => mockReadStream(),
+  writeStream: () => mockWriteStream()
 }))
 
 jest.mock('../createSummary', () => () => ({ path: 'path', name: 'name' }))
@@ -35,16 +32,6 @@ jest.mock('../createPVD', () => () => [{ path: 'path', name: 'name' }])
 describe('lib/result', () => {
   beforeEach(() => {
     mockPath.mockReset()
-
-    mockCreateReadStream.mockReset()
-    mockCreateReadStream.mockImplementation(() => 'readStream')
-
-    mockCreateWriteStream.mockReset()
-    mockCreateWriteStream.mockImplementation(() => ({
-      on: (_, callback) => callback(),
-      write: jest.fn(),
-      end: jest.fn()
-    }))
 
     mockArchiver.mockReset()
     mockArchiver.mockImplementation(() => ({
@@ -67,6 +54,15 @@ describe('lib/result', () => {
       { name: 'test.vtu', isFile: () => true },
       { name: 'test.glb', isFile: () => true }
     ])
+    mockReadStream.mockReset()
+    mockReadStream.mockImplementation(() => 'readStream')
+
+    mockWriteStream.mockReset()
+    mockWriteStream.mockImplementation(() => ({
+      on: (_, callback) => callback(),
+      write: jest.fn(),
+      end: jest.fn()
+    }))
   })
 
   test('load', async () => {
@@ -83,7 +79,7 @@ describe('lib/result', () => {
       { id: 'id' },
       { originPath: 'originPath', fileName: 'fileName' }
     )
-    expect(mockCreateReadStream).toHaveBeenCalledTimes(1)
+    expect(mockReadStream).toHaveBeenCalledTimes(1)
     expect(download).toBe('readStream')
   })
 
@@ -92,8 +88,8 @@ describe('lib/result', () => {
     const archive = await Geometry.archive({ id: 'id' })
     expect(mockPath).toHaveBeenCalledTimes(5)
     expect(mockSimulationGet).toHaveBeenCalledTimes(1)
-    expect(mockCreateReadStream).toHaveBeenCalledTimes(4)
-    expect(mockCreateWriteStream).toHaveBeenCalledTimes(1)
+    expect(mockReadStream).toHaveBeenCalledTimes(4)
+    expect(mockWriteStream).toHaveBeenCalledTimes(1)
     expect(archive).toBe('readStream')
 
     // Error

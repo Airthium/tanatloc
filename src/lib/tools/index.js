@@ -21,12 +21,17 @@ const createPath = async (location) => {
  * List files
  * @memberof Lib.Tools
  * @param {string} location Location
- * @returns {Object} Files list (with types)
+ * @returns {Array} Files list (with types)
  */
 const listFiles = async (location) => {
   return fs.readdir(location, { withFileTypes: true })
 }
 
+/**
+ * List directories
+ * @param {string} location Location
+ * @returns {Array} Directory list
+ */
 const listDirectories = async (location) => {
   const files = await listFiles(location)
   return files
@@ -90,6 +95,58 @@ const copyDirectory = async (origin, destination) => {
       resolve()
     })
   })
+}
+
+/**
+ * Remove file
+ * @memberof Lib.Tools
+ * @param {string} file File name
+ */
+const removeFile = async (file) => {
+  await fs.unlink(file)
+}
+
+/**
+ * Remove directory
+ * @memberof Lib.Tools
+ * @param {string} dir Directory
+ */
+const removeDirectory = async (dir) => {
+  await fs.rm(dir, { recursive: true })
+}
+
+/**
+ * Tar
+ * @param {string} target Target
+ * @param {Object} directory Directory { C, path }
+ */
+const archive = async (target, directory) => {
+  await tar.c(
+    {
+      gzip: true,
+      C: directory.C,
+      file: target
+    },
+    [directory.path]
+  )
+}
+
+/**
+ * Create read stream
+ * @param {string} file File
+ * @returns {Object} Read stream
+ */
+const readStream = (file) => {
+  return createReadStream(file)
+}
+
+/**
+ * Create write stream
+ * @param {string} file File
+ * @returns {Object} Write stream
+ */
+const writeStream = (file) => {
+  return createWriteStream(file)
 }
 
 /**
@@ -193,53 +250,6 @@ const loadPart = async (location, name) => {
   return part
 }
 
-/**
- * Remove file
- * @memberof Lib.Tools
- * @param {string} file File name
- */
-const removeFile = async (file) => {
-  // await fs.unlink(file)
-}
-
-/**
- * Remove directory
- * @memberof Lib.Tools
- * @param {string} dir Directory
- */
-const removeDirectory = async (dir) => {
-  // await fs.rm(dir, { recursive: true })
-}
-
-/**
- * Tar
- * @param {string} target Target
- * @param {Object} directory Directory { C, path }
- */
-const archive = async (target, directory) => {
-  await new Promise((resolve, reject) => {
-    tar
-      .c(
-        {
-          gzip: true,
-          C: directory.C,
-          file: target
-        },
-        [directory.path]
-      )
-      .then(() => resolve())
-      .catch((err) => reject(err))
-  })
-}
-
-const readStream = (file) => {
-  return createReadStream(file)
-}
-
-const writeStream = (file) => {
-  return createWriteStream(file)
-}
-
 const Tools = {
   createPath,
   listFiles,
@@ -248,12 +258,12 @@ const Tools = {
   readFile,
   copyFile,
   copyDirectory,
-  convert,
-  loadPart,
   removeFile,
   removeDirectory,
   archive,
   readStream,
-  writeStream
+  writeStream,
+  convert,
+  loadPart
 }
 export default Tools

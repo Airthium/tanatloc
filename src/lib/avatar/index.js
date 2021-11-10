@@ -2,7 +2,7 @@
 
 import path from 'path'
 
-import { AVATAR } from '@/config/storage'
+import storage from '@/config/storage'
 
 import AvatarDB from '@/database/avatar'
 
@@ -20,7 +20,7 @@ import Tools from '../tools'
  */
 const add = async (parent, type, file) => {
   // Write file
-  await Tools.writeFile(AVATAR, file.uid, file.data)
+  await Tools.writeFile(storage.AVATAR, file.uid, file.data)
 
   // Add in dB
   const avatar = await AvatarDB.add({ name: file.name, path: file.uid })
@@ -57,7 +57,7 @@ const read = async (id) => {
   if (!avatar) throw new Error('Avatar does not exist.')
 
   // Read file
-  const avatarFile = path.join(AVATAR, avatar.path)
+  const avatarFile = path.join(storage.AVATAR, avatar.path)
   return Tools.readFile(avatarFile)
 }
 
@@ -85,7 +85,7 @@ const del = async (parent, type, id) => {
 
   // Remove file
   if (data?.path) {
-    const avatarFile = path.join(AVATAR, data.path)
+    const avatarFile = path.join(storage.AVATAR, data.path)
     try {
       await Tools.removeFile(avatarFile)
     } catch (err) {
@@ -115,5 +115,28 @@ const del = async (parent, type, id) => {
   await AvatarDB.del({ id })
 }
 
-const Avatar = { add, read, get, del }
+/**
+ * Archive
+ * @param {Object} avatar Avatar { id }
+ * @param {string} to Target
+ */
+const archive = async (avatar, to) => {
+  // Data
+  const data = await get(avatar.id, ['path'])
+
+  if (data.path) {
+    //copy
+    await Tools.copyFile(
+      {
+        path: storage.AVATAR,
+        file: data.path
+      },
+      { path: to, file: data.path }
+    )
+    //remove
+    await Tools.removeFile(path.join(storage.AVATAR, data.path))
+  }
+}
+
+const Avatar = { add, read, get, del, archive }
 export default Avatar

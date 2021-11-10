@@ -1,7 +1,8 @@
 import path from 'path'
-import fs from 'fs'
 
 import storage from '@/config/storage'
+
+import Tools from '../tools'
 
 /**
  * Create summary
@@ -21,7 +22,7 @@ const createSummary = (simulation) => {
   )
 
   // Stream
-  const summary = fs.createWriteStream(summaryPath)
+  const summary = Tools.writeStream(summaryPath)
 
   // Header
   summary.write(simulation.name + '\n')

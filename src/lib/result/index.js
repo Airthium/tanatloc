@@ -1,7 +1,6 @@
 /** @namespace Lib.Result */
 
 import path from 'path'
-import fs from 'fs'
 import archiver from 'archiver'
 
 import storage from '@/config/storage'
@@ -39,7 +38,7 @@ const load = async (simulation, result) => {
  * @return {Object} Read stream
  */
 const download = (simulation, result) => {
-  return fs.createReadStream(
+  return Tools.readStream(
     path.join(
       storage.SIMULATION,
       simulation.id,
@@ -87,7 +86,7 @@ const archive = async (simulation) => {
   const pvdFiles = createPVD(simulationScheme, files)
 
   // Create zip
-  const output = fs.createWriteStream(archiveName)
+  const output = Tools.writeStream(archiveName)
   const zip = archiver('zip')
 
   await new Promise(async (resolve, reject) => {
@@ -100,17 +99,17 @@ const archive = async (simulation) => {
       files.map(async (file) => {
         const extension = file.split('.').pop()
         if (extension === 'vtu')
-          await zip.append(fs.createReadStream(path.join(resultPath, file)), {
+          await zip.append(Tools.readStream(path.join(resultPath, file)), {
             name: path.join('result', file)
           })
       })
     )
 
-    await zip.append(fs.createReadStream(summary.path), { name: summary.name })
+    await zip.append(Tools.readStream(summary.path), { name: summary.name })
 
     await Promise.all(
       pvdFiles.map(async (file) => {
-        await zip.append(fs.createReadStream(file.path), { name: file.name })
+        await zip.append(Tools.readStream(file.path), { name: file.name })
       })
     )
 
@@ -120,7 +119,7 @@ const archive = async (simulation) => {
   })
 
   // Read stream
-  return fs.createReadStream(
+  return Tools.readStream(
     path.join(storage.SIMULATION, simulation.id, 'run', archiveFileName)
   )
 }

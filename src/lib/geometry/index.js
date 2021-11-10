@@ -237,7 +237,7 @@ const del = async (geometry) => {
  * Read
  * @memberof Lib.Geometry
  * @param {Object} geometry Geometry `{id }`
- * @returns {Object} Geometry `{ buffer, extension }`
+ * @returns {Object} Geometry `{ buffer, extension, uploadfilename }`
  */
 const read = async (geometry) => {
   // Data
@@ -283,5 +283,55 @@ const readPart = async (geometry) => {
   }
 }
 
-const Geometry = { add, get, update, del, read, readPart }
+/**
+ * Archive geometry
+ * @param {Object} geometry Geometry { id }
+ * @param {string} to Target
+ */
+const archive = async (geometry, to) => {
+  // Data
+  const data = await get(geometry.id, ['uploadfilename', 'glb, json'])
+
+  // Original file
+  if (data.uploadfilename) {
+    //copy
+    await Tools.copyFile(
+      {
+        path: storage.GEOMETRY,
+        file: data.uploadfilename
+      },
+      {
+        path: to,
+        file: data.uploadfilename
+      }
+    )
+    //remove
+    await Tools.removeFile(path.join(storage.GEOMETRY, data.uploadfilename))
+  }
+
+  // JSON
+  if (data.json) {
+    const json = path.join(storage.GEOMETRY, data.json)
+    //copy
+    await Tools.copyDirectory(json, path.join(to, data.json))
+    //remove
+    await Tools.removeDirectory(json)
+  }
+
+  // GLB
+  if (data.glb) {
+    //copy
+    await Tools.copyFile(
+      {
+        path: storage.GEOMETRY,
+        file: data.glb
+      },
+      { path: to, file: data.glb }
+    )
+    //remove
+    await Tools.removeFile(path.join(storage.GEOMETRY, data.glb))
+  }
+}
+
+const Geometry = { add, get, update, del, read, readPart, archive }
 export default Geometry

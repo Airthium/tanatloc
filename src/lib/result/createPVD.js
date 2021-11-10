@@ -1,7 +1,8 @@
 import path from 'path'
-import fs from 'fs'
 
 import storage from '@/config/storage'
+
+import Tools from '../tools'
 
 /**
  * Create PVD files
@@ -55,7 +56,7 @@ const createPVD = (simulation, files) => {
         'run',
         filter.name + '.pvd'
       )
-      const pvd = fs.createWriteStream(pvdPath)
+      const pvd = Tools.writeStream(pvdPath)
       pvd.write('<?xml version="1.0"?>\n')
       pvd.write('<VTKFile type="Collection" version="0.1"\n')
       pvd.write('\tbyte_order="LittleEndian"\n')

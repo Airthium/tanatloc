@@ -1,7 +1,9 @@
 /** @namespace Lib.Tools */
 
 import path from 'path'
-import { promises as fs } from 'fs'
+import { createReadStream, createWriteStream, promises as fs } from 'fs'
+import ncp from 'ncp'
+import tar from 'tar'
 import ThreeToGLB from 'three-to-glb'
 
 import Services from '@/services'
@@ -63,8 +65,8 @@ const readFile = async (file, type) => {
 /**
  * Copy file
  * @memberof Lib.Tools
- * @param {string} origin Origin path
- * @param {string} destination Destination path
+ * @param {Object} origin Origin path {path, file }
+ * @param {Object} destination Destination { path, file }
  */
 const copyFile = async (origin, destination) => {
   await createPath(destination.path)
@@ -72,6 +74,22 @@ const copyFile = async (origin, destination) => {
     path.join(origin.path, origin.file),
     path.join(destination.path, destination.file)
   )
+}
+
+/**
+ * Copy directory
+ * @param {string} origin Origin path
+ * @param {string} destination Desctination path
+ */
+const copyDirectory = async (origin, destination) => {
+  // TODO
+  // fs.cp only since 16.7.0, wait for electron
+  await new Promise((resolve, reject) => {
+    ncp(origin, destination, (err) => {
+      err && reject(err)
+      resolve()
+    })
+  })
 }
 
 /**
@@ -181,7 +199,7 @@ const loadPart = async (location, name) => {
  * @param {string} file File name
  */
 const removeFile = async (file) => {
-  await fs.unlink(file)
+  // await fs.unlink(file)
 }
 
 /**
@@ -190,7 +208,36 @@ const removeFile = async (file) => {
  * @param {string} dir Directory
  */
 const removeDirectory = async (dir) => {
-  await fs.rm(dir, { recursive: true })
+  // await fs.rm(dir, { recursive: true })
+}
+
+/**
+ * Tar
+ * @param {string} target Target
+ * @param {Object} directory Directory { C, path }
+ */
+const archive = async (target, directory) => {
+  await new Promise((resolve, reject) => {
+    tar
+      .c(
+        {
+          gzip: true,
+          C: directory.C,
+          file: target
+        },
+        [directory.path]
+      )
+      .then(() => resolve())
+      .catch((err) => reject(err))
+  })
+}
+
+const readStream = (file) => {
+  return createReadStream(file)
+}
+
+const writeStream = (file) => {
+  return createWriteStream(file)
 }
 
 const Tools = {
@@ -200,9 +247,13 @@ const Tools = {
   writeFile,
   readFile,
   copyFile,
+  copyDirectory,
   convert,
   loadPart,
   removeFile,
-  removeDirectory
+  removeDirectory,
+  archive,
+  readStream,
+  writeStream
 }
 export default Tools

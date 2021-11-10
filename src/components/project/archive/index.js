@@ -4,6 +4,13 @@ import { Button, Tooltip, Typography } from 'antd'
 import { HddOutlined, ImportOutlined } from '@ant-design/icons'
 
 import Dialog from '@/components/assets/dialog'
+import { Error as ErrorNotification } from '@/components/assets/notification'
+
+import ProjectAPI from '@/api/project'
+
+const errors = {
+  archive: 'Unable to archive project'
+}
 
 const Archive = ({ disabled, workspace, project, swr }) => {
   // State
@@ -12,11 +19,33 @@ const Archive = ({ disabled, workspace, project, swr }) => {
 
   const onArchive = async () => {
     setLoading(true)
-    //TODO
-    // API
-    // Mutate workspace
-    // Mutate project
-    setLoading(false)
+    try {
+      // API
+      const archive = await ProjectAPI.archive({ id: project.id })
+      const content = await archive.blob()
+
+      const url = window.URL.createObjectURL(new Blob([content]))
+      const link = document.createElement('a')
+      link.href = url
+      link.setAttribute('download', project.id + '.tanatlocarchive')
+      link.click()
+
+      // Mutate project
+      swr.mutateOneProject({
+        ...project,
+        archived: true
+      })
+
+      // Mutate workspace
+      swr.mutateOneWorkspace(workspace)
+
+      // Close
+      setLoading(false)
+      setVisible(false)
+    } catch (err) {
+      ErrorNotification(errors.archive, err)
+      setLoading(false)
+    }
   }
 
   /**

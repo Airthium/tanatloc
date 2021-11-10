@@ -2,7 +2,8 @@
 
 import isElectron from 'is-electron'
 
-const base = isElectron() ? 'http://localhost:3000' : ''
+const port = process.env.PORT || 3000
+const base = isElectron() ? 'http://localhost:' + port : ''
 
 /**
  * Fetcher (for SWR)

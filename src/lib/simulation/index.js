@@ -344,5 +344,18 @@ const getLog = async ({ id }, file) => {
   return Tools.readFile(filePath)
 }
 
-const Simulation = { add, get, getAll, update, del, run, stop, getLog }
+/**
+ * Archive
+ * @param {Object} simulation Simulation { id }
+ * @param {string} to Target
+ */
+const archive = async (simulation, to) => {
+  await Tools.copyDirectory(
+    path.join(storage.SIMULATION, simulation.id),
+    path.join(to, simulation.id)
+  )
+  await Tools.removeDirectory(path.join(storage.SIMULATION, simulation.id))
+}
+
+const Simulation = { add, get, getAll, update, del, run, stop, getLog, archive }
 export default Simulation

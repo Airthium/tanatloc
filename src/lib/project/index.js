@@ -1,5 +1,7 @@
 /** @namespace Lib.Project */
 
+import path from 'path'
+
 import storage from '@/config/storage'
 
 import ProjectDB from '@/database/project'
@@ -8,6 +10,7 @@ import Avatar from '../avatar'
 import User from '../user'
 import Group from '../group'
 import Workspace from '../workspace'
+import Geometry from '../geometry'
 import Simulation from '../simulation'
 import Tools from '../tools'
 
@@ -213,6 +216,10 @@ const del = async ({ id }, project) => {
   ])
 }
 
+/**
+ * Archive
+ * @param {Object} project Project { id }
+ */
 const archive = async (project) => {
   // Data
   const data = await get(
@@ -222,7 +229,7 @@ const archive = async (project) => {
   )
 
   // Create temporary path
-  const temporaryPath = path.join(storage.STORAGE, '.temp-', project.id)
+  const temporaryPath = path.join(storage.STORAGE, '.archive-' + project.id)
   await Tools.createPath(temporaryPath)
 
   // Create summary
@@ -230,14 +237,42 @@ const archive = async (project) => {
   await Tools.writeFile(temporaryPath, 'summary.txt', content)
 
   // Get avatar
-  // And remove it after archive
+  if (data.avatar) await Avatar.archive({ id: data.avatar }, temporaryPath)
 
   // Archive geometries
-  // And remove geometries
+  if (data.geometries)
+    await Promise.all(
+      data.geometries.map(async (geometry) =>
+        Geometry.archive({ id: geometry }, temporaryPath)
+      )
+    )
 
   // Archive simulations
-  // And remove simulations
+  if (data.simulations)
+    await Promise.all(
+      data.simulations.map(async (simulation) =>
+        Simulation.archive({ id: simulation }, temporaryPath)
+      )
+    )
+
+  // Create archive
+  const archiveFileName = temporaryPath + '.tgz'
+  Tools.archive(archiveFileName, {
+    C: storage.STORAGE,
+    path: '.archive-' + project.id
+  })
+
+  // Update project
+  await update(project, [
+    {
+      key: 'archived',
+      value: true
+    }
+  ])
+
+  // Create read strem
+  return Tools.readStream(archiveFileName)
 }
 
-const Project = { add, get, update, del }
+const Project = { add, get, update, del, archive }
 export default Project

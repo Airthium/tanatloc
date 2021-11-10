@@ -4,7 +4,7 @@ import { app, ipcMain } from 'electron'
 import serve from 'electron-serve'
 import { createWindow } from './helpers'
 
-const isProd = process.env.NODE_ENV === 'production'
+const isProd: boolean = process.env.NODE_ENV === 'production'
 
 if (isProd) {
   serve({ directory: 'app' })
@@ -17,7 +17,7 @@ if (isProd) {
  * @memberof Electron
  * @description Start the installation script, the server and the electron window
  */
-const start = async () => {
+const start = async (): Promise<void> => {
   console.info('Starting Tanatloc')
   await app.whenReady()
 

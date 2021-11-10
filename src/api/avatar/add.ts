@@ -7,7 +7,10 @@ import Caller from '@/api/call'
  * @param {Object} [project] Project `{ id }`
  * @returns {Object} Avatar `{ id, name }`
  */
-const add = async (file, project) => {
+const add = async (
+  file: { name: string; uid: string; data: Buffer },
+  project: { id: string }
+): Promise<object> => {
   return Caller.call('/api/avatar', {
     method: 'POST',
     headers: {

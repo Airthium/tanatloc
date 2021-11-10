@@ -104,6 +104,7 @@
     "tar": "6.1.11",
     "three": "0.134.0",
     "three-to-glb": "./modules/three-to-glb/",
+    "typescript": "^4.4.4",
     "url-join": "4.0.1",
     "uuid": "8.3.2"
   }

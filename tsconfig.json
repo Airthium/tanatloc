@@ -1,5 +1,19 @@
 {
   "compilerOptions": {
+    "allowJs": true,
+    "target": "es5",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "skipLibCheck": true,
+    "strict": false,
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": true,
+    "incremental": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
     "baseUrl": ".",
     "paths": {
       "@/config": ["config"],
@@ -33,5 +47,7 @@
       "@/updaters": ["updaters"],
       "@/updaters/*": ["updaters/*"]
     }
-  }
+  },
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "src/api/avatar/add.js"],
+  "exclude": ["node_modules"]
 }

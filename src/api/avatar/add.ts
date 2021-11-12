@@ -10,12 +10,11 @@ import { call, CallResponse } from '@/api/call'
 export const add = async (
   file: { name: string; uid: string; data: Buffer },
   project: { id: string }
-): Promise<CallResponse> => {
-  return call('/api/avatar', {
+): Promise<CallResponse> =>
+  call('/api/avatar', {
     method: 'POST',
     headers: {
       Accept: 'application/json'
     },
     body: JSON.stringify({ file, project })
   })
-}

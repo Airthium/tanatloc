@@ -1,4 +1,4 @@
-import Caller from '@/api/call'
+import { call } from '@/api/call'
 
 /**
  * Update
@@ -6,11 +6,12 @@ import Caller from '@/api/call'
  * @param {Object} geometry Geometry `{ id }`
  * @param {Array} data Data `[{ key, value, ... }, ...]`
  */
-const update = async (geometry, data) => {
-  await Caller.call('/api/geometry/' + geometry.id, {
+export const update = async (
+  geometry: { id: string },
+  data: Array<any>
+): Promise<void> => {
+  await call('/api/geometry/' + geometry.id, {
     method: 'PUT',
     body: JSON.stringify(data)
   })
 }
-
-export default update

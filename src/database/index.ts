@@ -4,12 +4,24 @@ import { Pool } from 'pg'
 
 import { USER, HOST, DATABASE, PASSWORD, PORT } from '@/config/db'
 
+type DataBaseEntry = {
+  key: string
+  value: string
+  type?: string
+  method?: string
+  path?: Array<string>
+}
+
+type DataBaseResponse = {
+  rows: Array<any>
+}
+
 /**
  * Start database
  * @memberof Database
  * @returns {Object} Pool
  */
-const startdB = () => {
+const startdB = (): Pool => {
   return new Pool({
     user: USER,
     host: HOST,
@@ -28,7 +40,10 @@ const pool = startdB()
  * @param {Array} args Arguments
  * @returns {Object} PostgreSQL query response
  */
-const query = async (command, args) => {
+const query = async (
+  command: string,
+  args: Array<string>
+): Promise<DataBaseResponse> => {
   const client = await pool.connect()
   const res = await client.query(command, args)
   client.release()
@@ -44,7 +59,12 @@ const query = async (command, args) => {
  * @param {string} key Key override id
  * @returns {Object} PostgreSQL query response
  */
-const getter = async (db, id, data, key = 'id') => {
+const getter = async (
+  db: string,
+  id: string,
+  data: Array<DataBaseEntry>,
+  key: string = 'id'
+): Promise<DataBaseResponse> => {
   return query(
     'SELECT ' + data.join(',') + ' FROM ' + db + ' WHERE ' + key + ' = $1',
     [id]
@@ -58,7 +78,11 @@ const getter = async (db, id, data, key = 'id') => {
  * @param {string} id Id
  * @param {Array} data Data `[{ type, method, key, path, value }, ...]`
  */
-const updater = async (db, id, data) => {
+const updater = async (
+  db: string,
+  id: string,
+  data: Array<DataBaseEntry>
+): Promise<void> => {
   const queryTextBegin = 'UPDATE ' + db + ' SET '
   const queryTextEnd = id ? ' WHERE id = $1' : ''
   const args = id ? [id] : []
@@ -137,7 +161,7 @@ const updater = async (db, id, data) => {
  * @param {string} db Database
  * @param {string} id Id
  */
-const deleter = async (db, id) => {
+const deleter = async (db: string, id: string): Promise<void> => {
   await query('DELETE FROM ' + db + ' WHERE id = $1', [id])
 }
 

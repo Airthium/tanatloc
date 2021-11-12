@@ -1,5 +1,5 @@
 /** @namespace API.Email */
 
-import recover from './recover'
+import { recover } from './recover'
 
 export default { recover }

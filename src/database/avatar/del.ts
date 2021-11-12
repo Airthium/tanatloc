@@ -6,7 +6,7 @@ import { tables } from '@/config/db'
  * @memberof Database.Avatar
  * @param {Object} avatar Avatar `{ id }`
  */
-const del = async (avatar) => {
+export const del = async (avatar: { id: string }): Promise<void> => {
   await deleter(tables.AVATARS, avatar.id)
 }
 

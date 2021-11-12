@@ -1,4 +1,4 @@
-import Caller from '@/api/call'
+import { call, CallResponse } from '@/api/call'
 
 /**
  * Add
@@ -7,11 +7,11 @@ import Caller from '@/api/call'
  * @param {Object} geometry Geometry `{ name, uid, buffer }`
  * @returns {Object} Geometry `{ id, name, originalfilename, extension, uploadfilename, json, glb, summary }`
  */
-const add = async (project, geometry) => {
-  return Caller.call('/api/geometry', {
+export const add = async (
+  project: { id: string },
+  geometry: { name: string; uid: string; buffer: Buffer }
+): Promise<CallResponse> =>
+  call('/api/geometry', {
     method: 'POST',
     body: JSON.stringify({ project, geometry })
   })
-}
-
-export default add

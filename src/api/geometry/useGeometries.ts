@@ -7,7 +7,7 @@ import Caller from '@/api/call'
  * @param {Array} ids Ids
  * @returns {Array} `[geometries, { mutateGeometries, addOneGeometry, delOneGeometry, mutateOneGeometry, errorGeometries, loadingGeometries }]`
  */
-const useGeometries = (ids) => {
+export const useGeometries = (ids: Array<string>): Array<any> => {
   const { data, error, mutate } = useSWR(
     ['/api/geometries', JSON.stringify({ ids })],
     Caller.fetcher
@@ -58,5 +58,3 @@ const useGeometries = (ids) => {
     }
   ]
 }
-
-export default useGeometries

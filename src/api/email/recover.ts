@@ -7,11 +7,9 @@ import { PASSWORD_RECOVERY } from '@/config/email'
  * @memberof API.Email
  * @param {string} email email
  */
-const recover = async (email: string): Promise<void> => {
+export const recover = async (email: string): Promise<void> => {
   await Caller.call('/api/email', {
     method: 'PUT',
     body: JSON.stringify({ type: PASSWORD_RECOVERY, email })
   })
 }
-
-export default recover

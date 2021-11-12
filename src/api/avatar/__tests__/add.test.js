@@ -1,4 +1,4 @@
-import add from '../add'
+import { add } from '../add'
 
 const mockCall = jest.fn(async () => 'res')
 jest.mock('../../call', () => ({

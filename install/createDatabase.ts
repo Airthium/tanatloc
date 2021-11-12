@@ -1,6 +1,17 @@
 import { Pool } from 'pg'
 
-import config, { tables, schemas } from '@/config/db'
+import {
+  ADMIN,
+  ADMIN_DATABASE,
+  ADMIN_PASSWORD,
+  USER,
+  HOST,
+  PORT,
+  DATABASE,
+  PASSWORD,
+  tables,
+  schemas
+} from '@/config/db'
 import query from '@/database'
 
 /**
@@ -8,49 +19,43 @@ import query from '@/database'
  * @memberof Install
  * @description Create the Tanatloc database with `pgcrypto` extension
  */
-const createDatabase = async () => {
+export const createDatabase = async (): Promise<void> => {
   console.info(' == Create dB == ')
   try {
-    let pool, client
+    let pool: Pool
+    let client: Pool
 
     // Pool
     pool = new Pool({
-      host: config.HOST,
-      port: config.PORT,
-      user: config.ADMIN,
-      database: config.ADMIN_DATABASE,
-      password: config.ADMIN_PASSWORD
+      host: HOST,
+      port: PORT,
+      user: ADMIN,
+      database: ADMIN_DATABASE,
+      password: ADMIN_PASSWORD
     })
     client = await pool.connect()
 
     // Database
     console.info(' + Create database')
     const checkDatabase = await client.query(
-      "SELECT FROM pg_database WHERE datname = '" + config.DATABASE + "'"
+      "SELECT FROM pg_database WHERE datname = '" + DATABASE + "'"
     )
     if (checkDatabase.rowCount === 0)
-      await client.query('CREATE DATABASE ' + config.DATABASE)
+      await client.query('CREATE DATABASE ' + DATABASE)
 
     // User
     console.info(' + Create user')
     const checkUser = await client.query(
-      "SELECT FROM pg_user WHERE usename = '" + config.USER + "'"
+      "SELECT FROM pg_user WHERE usename = '" + USER + "'"
     )
     if (checkUser.rowCount === 0)
       await client.query(
-        'CREATE USER ' +
-          config.USER +
-          " WITH ENCRYPTED PASSWORD '" +
-          config.PASSWORD +
-          "'"
+        'CREATE USER ' + USER + " WITH ENCRYPTED PASSWORD '" + PASSWORD + "'"
       )
 
     // Privileges
     await client.query(
-      'GRANT ALL PRIVILEGES ON DATABASE ' +
-        config.DATABASE +
-        ' TO ' +
-        config.USER
+      'GRANT ALL PRIVILEGES ON DATABASE ' + DATABASE + ' TO ' + USER
     )
 
     // Close
@@ -59,11 +64,11 @@ const createDatabase = async () => {
 
     // New pool
     pool = new Pool({
-      host: config.HOST,
-      port: config.PORT,
-      database: config.DATABASE,
-      user: config.USER,
-      password: config.PASSWORD
+      host: HOST,
+      port: PORT,
+      database: DATABASE,
+      user: USER,
+      password: PASSWORD
     })
     client = await pool.connect()
 
@@ -86,7 +91,7 @@ const createDatabase = async () => {
  * Create tables from config
  * @memberof Install
  */
-const createTables = async () => {
+const createTables = async (): Promise<void> => {
   console.info(' == Create dB tables == ')
   try {
     // System
@@ -149,7 +154,7 @@ const createTables = async () => {
  * @param {string} table Table
  * @returns {boolean} Exists
  */
-const checkTable = async (table) => {
+const checkTable = async (table: string): Promise<boolean> => {
   const res = await query(
     'SELECT EXISTS (SELECT FROM pg_tables WHERE tablename = $1)',
     [table]
@@ -165,12 +170,25 @@ const checkTable = async (table) => {
   return exists
 }
 
+type Column = {
+  column_name: string
+  data_type: string
+  is_nullable: string
+}
+
+type ColumnConfig = {
+  name: string
+  type: string
+  constraint?: string
+  default?: string
+}
+
 /**
  * Check schema
  * @memberof Install
  * @param {string} table Table
  */
-const checkSchema = async (table) => {
+const checkSchema = async (table: string): Promise<void> => {
   console.info('  -> Checking shema...')
   const schema = await query(
     'SELECT column_name, data_type, is_nullable, column_default from information_schema.columns where table_name = $1',
@@ -217,7 +235,10 @@ const checkSchema = async (table) => {
  * @param {string} table Table
  * @param {Object} configColumn Configuration column
  */
-const checkMissing = async (table, configColumn) => {
+const checkMissing = async (
+  table: string,
+  configColumn: ColumnConfig
+): Promise<void> => {
   console.error('   -- Missing column ' + table + '/' + configColumn.name)
   await fixMissingColumn(table, configColumn)
 }
@@ -228,7 +249,10 @@ const checkMissing = async (table, configColumn) => {
  * @param {string} table Table
  * @param {Object} column Column
  */
-const fixMissingColumn = async (table, column) => {
+const fixMissingColumn = async (
+  table: string,
+  column: ColumnConfig
+): Promise<void> => {
   console.info('   -> Try to fix missing column')
 
   try {
@@ -242,7 +266,8 @@ const fixMissingColumn = async (table, column) => {
         ' ' +
         (column.constraint || '') +
         ' ' +
-        (column.default || '')
+        (column.default || ''),
+      []
     )
     console.info('    OK')
   } catch (err) {
@@ -258,7 +283,11 @@ const fixMissingColumn = async (table, column) => {
  * @param {Object} column Column
  * @param {Object} configColumn Configuration column
  */
-const checkType = async (table, column, configColumn) => {
+const checkType = async (
+  table: string,
+  column: Column,
+  configColumn: ColumnConfig
+): Promise<void> => {
   if (
     (configColumn.type.includes('[]') && column.data_type === 'ARRAY') ||
     configColumn.type.toLowerCase() ===
@@ -277,7 +306,10 @@ const checkType = async (table, column, configColumn) => {
  * @param {string} table Table
  * @param {Object} column Column
  */
-const fixColumnType = async (table, column) => {
+const fixColumnType = async (
+  table: string,
+  column: ColumnConfig
+): Promise<void> => {
   console.info('   -> Try to fix column type')
 
   try {
@@ -287,7 +319,8 @@ const fixColumnType = async (table, column) => {
         ' ALTER COLUMN ' +
         column.name +
         ' ' +
-        column.type
+        column.type,
+      []
     )
     console.info('    OK')
   } catch (err) {
@@ -303,7 +336,11 @@ const fixColumnType = async (table, column) => {
  * @param {Object} column Column
  * @param {Object} configColumn Configuration column
  */
-const checkConstraint = async (table, column, configColumn) => {
+const checkConstraint = async (
+  table: string,
+  column: Column,
+  configColumn: ColumnConfig
+): Promise<void> => {
   if (
     (configColumn.constraint === 'NOT NULL' ||
       configColumn.constraint === 'PRIMARY KEY') &&
@@ -328,12 +365,16 @@ const checkConstraint = async (table, column, configColumn) => {
  * @param {string} table Table
  * @param {Object} column Column
  */
-const fixColumnConstraint = async (table, column) => {
+const fixColumnConstraint = async (
+  table: string,
+  column: ColumnConfig
+): Promise<void> => {
   console.info('   -> Try to fix column constraint')
 
   try {
     await query(
-      'ALTER TABLE ' + table + ' ALTER COLUMN ' + column.name + ' SET NOT NULL'
+      'ALTER TABLE ' + table + ' ALTER COLUMN ' + column.name + ' SET NOT NULL',
+      []
     )
     console.info('    OK')
   } catch (err) {
@@ -348,10 +389,16 @@ const fixColumnConstraint = async (table, column) => {
  * @param {string} table Table
  * @param {Object} column Column
  */
-const fixNotUsedColumn = async (table, column) => {
+const fixNotUsedColumn = async (
+  table: string,
+  column: Column
+): Promise<void> => {
   console.info(' -> Try to fix not used column')
   try {
-    await query('ALTER TABLE ' + table + ' DROP COLUMN ' + column.column_name)
+    await query(
+      'ALTER TABLE ' + table + ' DROP COLUMN ' + column.column_name,
+      []
+    )
     console.info('  OK')
   } catch (err) {
     console.warn('  ⚠ Fix failed')
@@ -365,7 +412,7 @@ const fixNotUsedColumn = async (table, column) => {
  * @param {string} table Table
  * @param {Function} extra Extra function
  */
-const createTable = async (table, extra) => {
+const createTable = async (table: string, extra?: Function): Promise<void> => {
   if (await checkTable(table)) await checkSchema(table)
   else {
     await query(
@@ -384,7 +431,8 @@ const createTable = async (table, extra) => {
               (schema.default || '')
           )
           .join(', ') +
-        ') '
+        ') ',
+      []
     )
     extra && (await extra())
   }
@@ -394,9 +442,9 @@ const createTable = async (table, extra) => {
  * Create system table
  * @memberof Install
  */
-const createSystemTable = async () => {
+const createSystemTable = async (): Promise<void> => {
   await createTable(tables.SYSTEM, async () =>
-    query('INSERT INTO ' + tables.SYSTEM + ' (allowsignup) VALUES (false)')
+    query('INSERT INTO ' + tables.SYSTEM + ' (allowsignup) VALUES (false)', [])
   )
 }
 
@@ -404,7 +452,7 @@ const createSystemTable = async () => {
  * Create avatar table
  * @memberof Install
  */
-const createAvatarTable = async () => {
+const createAvatarTable = async (): Promise<void> => {
   await createTable(tables.AVATARS)
 }
 
@@ -412,7 +460,7 @@ const createAvatarTable = async () => {
  * Create user table
  * @memberof Install
  */
-const createUsersTable = async () => {
+const createUsersTable = async (): Promise<void> => {
   await createTable(tables.USERS)
 }
 
@@ -420,7 +468,7 @@ const createUsersTable = async () => {
  * Create organization table
  * @memberof Install
  */
-const createOrganizationTable = async () => {
+const createOrganizationTable = async (): Promise<void> => {
   await createTable(tables.ORGANIZATIONS)
 }
 
@@ -428,7 +476,7 @@ const createOrganizationTable = async () => {
  * Create group table
  * @memberof Install
  */
-const createGroupsTable = async () => {
+const createGroupsTable = async (): Promise<void> => {
   await createTable(tables.GROUPS)
 }
 
@@ -436,7 +484,7 @@ const createGroupsTable = async () => {
  * Create workspace table
  * @memberof Install
  */
-const createWorkspaceTable = async () => {
+const createWorkspaceTable = async (): Promise<void> => {
   await createTable(tables.WORKSPACES)
 }
 
@@ -444,7 +492,7 @@ const createWorkspaceTable = async () => {
  * Create project table
  * @memberof Install
  */
-const createProjectTable = async () => {
+const createProjectTable = async (): Promise<void> => {
   await createTable(tables.PROJECTS)
 }
 
@@ -452,7 +500,7 @@ const createProjectTable = async () => {
  * Create geometry table
  * @memberof Install
  */
-const createGeometryTable = async () => {
+const createGeometryTable = async (): Promise<void> => {
   await createTable(tables.GEOMETRIES)
 }
 
@@ -460,7 +508,7 @@ const createGeometryTable = async () => {
  * Create simulation table
  * @memberof Install
  */
-const createSimulationTable = async () => {
+const createSimulationTable = async (): Promise<void> => {
   await createTable(tables.SIMULATIONS)
 }
 
@@ -468,7 +516,7 @@ const createSimulationTable = async () => {
  * Create link table
  * @memberof Install
  */
-const createLinkTable = async () => {
+const createLinkTable = async (): Promise<void> => {
   await createTable(tables.LINKS)
 }
 
@@ -476,7 +524,7 @@ const createLinkTable = async () => {
  * Create wait table
  * @memberof Install
  */
-const createWaitTable = async () => {
+const createWaitTable = async (): Promise<void> => {
   await createTable(tables.WAIT)
 }
 
@@ -484,8 +532,8 @@ const createWaitTable = async () => {
  * Create administrator
  * @memberof Install
  */
-const createAdmin = async () => {
-  const { rows } = await query('SELECT id FROM ' + tables.USERS)
+const createAdmin = async (): Promise<void> => {
+  const { rows } = await query('SELECT id FROM ' + tables.USERS, [])
   if (rows.length === 0) {
     console.info(' *** Create Administrator *** ')
 
@@ -502,5 +550,3 @@ const createAdmin = async () => {
     console.info(' - password: ' + password)
   }
 }
-
-export default createDatabase

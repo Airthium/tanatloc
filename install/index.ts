@@ -2,15 +2,15 @@
 
 import isElectron from 'is-electron'
 
-import createDatabase from './createDatabase'
-import createPaths from './createPaths'
-import copyAssets from './copyAssets'
+import { createDatabase } from './createDatabase'
+import { createPaths } from './createPaths'
+import { copyAssets } from './copyAssets'
 
 /**
  * Main
  * @memberof Install
  */
-const main = async () => {
+const main = async (): Promise<void> => {
   console.info('/__   \\__ _ _ __   __ _| |_| | ___   ___ ')
   console.info("  / /\\/ _` | '_ \\ / _` | __| |/ _ \\ / __|")
   console.info(' / / | (_| | | | | (_| | |_| | (_) | (__ ')

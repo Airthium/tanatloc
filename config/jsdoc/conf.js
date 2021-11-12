@@ -1,6 +1,7 @@
 module.exports = {
   source: {
     include: ['.'],
+    includePattern: '\\.(jsx|js|ts|tsx)$',
     exclude: [
       'app',
       'config/jest',
@@ -16,7 +17,7 @@ module.exports = {
     ],
     excludePattern: '/__tests__/'
   },
-  plugins: ['plugins/markdown'],
+  plugins: ['plugins/markdown', 'node_modules/better-docs/typescript'],
   opts: {
     destination: './doc',
     recurse: true,

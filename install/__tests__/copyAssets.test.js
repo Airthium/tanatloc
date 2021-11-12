@@ -2,7 +2,7 @@
  * @jest-environment node
  */
 
-import copyAssets from '../copyAssets'
+import { copyAssets } from '../copyAssets'
 
 const mockMkdir = jest.fn()
 jest.mock('fs', () => ({

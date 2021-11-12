@@ -2,7 +2,7 @@
 
 import { Pool } from 'pg'
 
-import config from '@/config/db'
+import { USER, HOST, DATABASE, PASSWORD, PORT } from '@/config/db'
 
 /**
  * Start database
@@ -11,11 +11,11 @@ import config from '@/config/db'
  */
 const startdB = () => {
   return new Pool({
-    user: config.USER,
-    host: config.HOST,
-    database: config.DATABASE,
-    password: config.PASSWORD,
-    port: config.PORT
+    user: USER,
+    host: HOST,
+    database: DATABASE,
+    password: PASSWORD,
+    port: PORT
   })
 }
 

@@ -4,6 +4,7 @@ ignores: [
     "@swc/cli",
     "@swc/core",
     "@swc/jest",
+    "better-docs",
     "ignore-loader",
     "node-fetch",
     "set-interval-async",

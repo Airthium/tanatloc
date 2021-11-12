@@ -1,7 +1,7 @@
 const withPlugins = require('next-compose-plugins')
 const withAntdLess = require('next-plugin-antd-less')
 
-const sentryConfig = require('./config/sentry')
+const { DSN } = require('./config/sentry')
 
 const basePath = ''
 
@@ -38,7 +38,7 @@ module.exports = withPlugins([...plugins], {
     return config
   },
   env: {
-    SENTRY_DSN: sentryConfig.DSN
+    SENTRY_DSN: DSN
   },
   basePath,
   typescript: {

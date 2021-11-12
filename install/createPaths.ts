@@ -1,12 +1,12 @@
 import { promises as fs } from 'fs'
 
-import config from '@/config/storage'
+import * as config from '@/config/storage'
 
 /**
  * Create paths from config
  * @memberof Install
  */
-const createPaths = async () => {
+export const createPaths = async (): Promise<void> => {
   console.info(' == Create paths == ')
 
   for (const key of Object.keys(config)) {
@@ -21,7 +21,7 @@ const createPaths = async () => {
  * @memberof Install
  * @param {string} path Path
  */
-const createPath = async (path) => {
+const createPath = async (path: string): Promise<void> => {
   try {
     await fs.mkdir(path)
   } catch (err) {
@@ -32,5 +32,3 @@ const createPath = async (path) => {
     }
   }
 }
-
-export default createPaths

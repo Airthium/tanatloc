@@ -7,7 +7,7 @@ import ncp from 'ncp'
  * @description Copy threejs assets in `public/three/libs`:
  * - `draco` libraries
  */
-const copyThreeAssets = async () => {
+const copyThreeAssets = async (): Promise<void> => {
   // Create path
   try {
     await fs.mkdir('public/three/libs', { recursive: true })
@@ -22,16 +22,18 @@ const copyThreeAssets = async () => {
   //   'public/three/libs/draco',
   //   { recursive: true }
   // )
-  await new Promise((resolve, reject) => {
-    ncp(
-      'node_modules/three/examples/js/libs/draco',
-      'public/three/libs/draco',
-      (err) => {
-        err && reject(err)
-        resolve()
-      }
-    )
-  })
+  await new Promise(
+    (resolve: (value: void) => void, reject: (reason: Error) => void) => {
+      ncp(
+        'node_modules/three/examples/js/libs/draco',
+        'public/three/libs/draco',
+        (err: Error) => {
+          err && reject(err)
+          resolve()
+        }
+      )
+    }
+  )
 }
 
 /**
@@ -39,8 +41,6 @@ const copyThreeAssets = async () => {
  * @memberof Install
  * @description Copy assets
  */
-const copyAssets = async () => {
+export const copyAssets = async (): Promise<void> => {
   await copyThreeAssets()
 }
-
-export default copyAssets

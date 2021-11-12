@@ -2,7 +2,7 @@
  * @jest-environment node
  */
 
-import createDatabase from '../createDatabase'
+import { createDatabase } from '../createDatabase'
 
 const mockQuery = jest.fn()
 jest.mock('@/database', () => {

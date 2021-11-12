@@ -45,7 +45,6 @@ const errors: Errors = {
  * Archive
  * @memberof Components.Project
  * @param {Object} props Props `{ disabled, workspace, project, swr }`
- * @returns
  */
 const Archive = ({ disabled, workspace, project, swr }: Props) => {
   // State

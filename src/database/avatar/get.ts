@@ -1,12 +1,7 @@
 import { tables } from '@/config/db'
 
 import { getter } from '..'
-
-type Avatar = {
-  id: string
-  name?: string
-  path?: string
-}
+import { IAvatar } from '.'
 
 /**
  * Get
@@ -15,7 +10,10 @@ type Avatar = {
  * @param {Array} data Data
  * @returns {Object} Avatar `{ id, ...data }`
  */
-export const get = async (id: string, data: Array<string>): Promise<Avatar> => {
+export const get = async (
+  id: string,
+  data: Array<string>
+): Promise<IAvatar> => {
   const response = await getter(tables.AVATARS, id, data)
 
   const avatar = response.rows[0]

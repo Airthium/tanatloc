@@ -1,6 +1,6 @@
 import path from 'path'
 
-import storage from '@/config/storage'
+import { SIMULATION } from '@/config/storage'
 
 import Tools from '../tools'
 
@@ -14,12 +14,7 @@ const createSummary = (simulation) => {
   // Name
   const summaryName = 'summary.txt'
 
-  const summaryPath = path.join(
-    storage.SIMULATION,
-    simulation.id,
-    'run',
-    summaryName
-  )
+  const summaryPath = path.join(SIMULATION, simulation.id, 'run', summaryName)
 
   // Stream
   const summary = Tools.writeStream(summaryPath)

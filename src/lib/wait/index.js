@@ -4,4 +4,5 @@ const add = async ({ email }) => {
   WaitDB.add({ email })
 }
 
-export default { add }
+const Wait = { add }
+export default Wait

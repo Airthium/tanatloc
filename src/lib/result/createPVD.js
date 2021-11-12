@@ -1,6 +1,6 @@
 import path from 'path'
 
-import storage from '@/config/storage'
+import { SIMULATION } from '@/config/storage'
 
 import Tools from '../tools'
 
@@ -51,7 +51,7 @@ const createPVD = (simulation, files) => {
       // PVD file
       const pvdName = filter.name + '.pvd'
       const pvdPath = path.join(
-        storage.SIMULATION,
+        SIMULATION,
         simulation.id,
         'run',
         filter.name + '.pvd'

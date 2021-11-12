@@ -3,7 +3,7 @@
 import path from 'path'
 import archiver from 'archiver'
 
-import storage from '@/config/storage'
+import { SIMULATION } from '@/config/storage'
 
 import Simulation from '../simulation'
 import Tools from '../tools'
@@ -22,7 +22,7 @@ const archiveFileName = 'resultsArchive.zip'
  */
 const load = async (simulation, result) => {
   const buffer = await Tools.readFile(
-    path.join(storage.SIMULATION, simulation.id, result.originPath, result.glb)
+    path.join(SIMULATION, simulation.id, result.originPath, result.glb)
   )
 
   return {
@@ -39,12 +39,7 @@ const load = async (simulation, result) => {
  */
 const download = (simulation, result) => {
   return Tools.readStream(
-    path.join(
-      storage.SIMULATION,
-      simulation.id,
-      result.originPath,
-      result.fileName
-    )
+    path.join(SIMULATION, simulation.id, result.originPath, result.fileName)
   )
 }
 
@@ -55,15 +50,10 @@ const download = (simulation, result) => {
  * @returns {Object} Read stream
  */
 const archive = async (simulation) => {
-  const resultPath = path.join(
-    storage.SIMULATION,
-    simulation.id,
-    'run',
-    'result'
-  )
+  const resultPath = path.join(SIMULATION, simulation.id, 'run', 'result')
 
   const archiveName = path.join(
-    storage.SIMULATION,
+    SIMULATION,
     simulation.id,
     'run',
     archiveFileName
@@ -120,7 +110,7 @@ const archive = async (simulation) => {
 
   // Read stream
   return Tools.readStream(
-    path.join(storage.SIMULATION, simulation.id, 'run', archiveFileName)
+    path.join(SIMULATION, simulation.id, 'run', archiveFileName)
   )
 }
 

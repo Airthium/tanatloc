@@ -2,9 +2,10 @@
 
 import path from 'path'
 
-import storage from '@/config/storage'
+import { AVATAR } from '@/config/storage'
 
 import AvatarDB from '@/database/avatar'
+import type { IAvatar, INewAvatar } from '@/database/avatar'
 
 import User from '../user'
 import Project from '../project'
@@ -18,9 +19,13 @@ import Tools from '../tools'
  * @param {File} file File `{ name, uid, data }`
  * @returns {Object} Avatar `{ id, name }`
  */
-const add = async (parent, type, file) => {
+const add = async (
+  parent: { id: string },
+  type: string,
+  file: { name: string; uid: string; data: Buffer }
+): Promise<INewAvatar> => {
   // Write file
-  await Tools.writeFile(storage.AVATAR, file.uid, file.data)
+  await Tools.writeFile(AVATAR, file.uid, file.data)
 
   // Add in dB
   const avatar = await AvatarDB.add({ name: file.name, path: file.uid })
@@ -51,13 +56,13 @@ const add = async (parent, type, file) => {
  * @param {string} id Avatar's id
  * @returns {string} Content
  */
-const read = async (id) => {
+const read = async (id: string): Promise<Buffer> => {
   // Get path
   const avatar = await get(id, ['path'])
   if (!avatar) throw new Error('Avatar does not exist.')
 
   // Read file
-  const avatarFile = path.join(storage.AVATAR, avatar.path)
+  const avatarFile = path.join(AVATAR, avatar.path)
   return Tools.readFile(avatarFile)
 }
 
@@ -68,7 +73,7 @@ const read = async (id) => {
  * @param {Array} data Data
  * @returns {Object} Avatar `{ id, ...data }`
  */
-const get = async (id, data) => {
+const get = async (id: string, data: Array<string>): Promise<IAvatar> => {
   return AvatarDB.get(id, data)
 }
 
@@ -79,13 +84,17 @@ const get = async (id, data) => {
  * @param {string} type Type (project or user)
  * @param {string} id Avatar's id
  */
-const del = async (parent, type, id) => {
+const del = async (
+  parent: { id: string },
+  type: string,
+  id: string
+): Promise<void> => {
   // Get
   const data = await get(id, ['path'])
 
   // Remove file
   if (data?.path) {
-    const avatarFile = path.join(storage.AVATAR, data.path)
+    const avatarFile = path.join(AVATAR, data.path)
     try {
       await Tools.removeFile(avatarFile)
     } catch (err) {
@@ -120,7 +129,7 @@ const del = async (parent, type, id) => {
  * @param {Object} avatar Avatar { id }
  * @param {string} to Target
  */
-const archive = async (avatar, to) => {
+const archive = async (avatar: { id: string }, to: string): Promise<void> => {
   // Data
   const data = await get(avatar.id, ['path'])
 
@@ -128,13 +137,13 @@ const archive = async (avatar, to) => {
     //copy
     await Tools.copyFile(
       {
-        path: storage.AVATAR,
+        path: AVATAR,
         file: data.path
       },
       { path: to, file: data.path }
     )
     //remove
-    await Tools.removeFile(path.join(storage.AVATAR, data.path))
+    await Tools.removeFile(path.join(AVATAR, data.path))
   }
 }
 

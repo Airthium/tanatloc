@@ -2,7 +2,7 @@
 
 import path from 'path'
 
-import storage from '@/config/storage'
+import { GEOMETRY } from '@/config/storage'
 
 import GeometryDB from '@/database/geometry'
 
@@ -26,20 +26,20 @@ const add = async (project, geometry) => {
   try {
     // Write file
     await Tools.writeFile(
-      storage.GEOMETRY,
+      GEOMETRY,
       geometryData.uploadfilename,
       Buffer.from(geometry.buffer).toString()
     )
 
     // Convert
-    const part = await Tools.convert(storage.GEOMETRY, {
+    const part = await Tools.convert(GEOMETRY, {
       name: geometryData.uploadfilename,
       target: geometry.uid
     })
 
     // Get summary
     const summary = await Tools.readFile(
-      path.join(storage.GEOMETRY, geometry.uid, 'part.json'),
+      path.join(GEOMETRY, geometry.uid, 'part.json'),
       'json'
     )
 
@@ -47,7 +47,7 @@ const add = async (project, geometry) => {
       (await Promise.all(
         summary.solids.map(async (solid) => {
           const content = await Tools.readFile(
-            path.join(storage.GEOMETRY, geometry.uid, solid.path),
+            path.join(GEOMETRY, geometry.uid, solid.path),
             'json'
           )
           solid.uuid = content.uuid
@@ -65,7 +65,7 @@ const add = async (project, geometry) => {
       (await Promise.all(
         summary.faces.map(async (face) => {
           const content = await Tools.readFile(
-            path.join(storage.GEOMETRY, geometry.uid, face.path),
+            path.join(GEOMETRY, geometry.uid, face.path),
             'json'
           )
           face.uuid = content.uuid
@@ -83,7 +83,7 @@ const add = async (project, geometry) => {
       (await Promise.all(
         summary.edges.map(async (edge) => {
           const content = await Tools.readFile(
-            path.join(storage.GEOMETRY, geometry.uid, edge.path),
+            path.join(GEOMETRY, geometry.uid, edge.path),
             'json'
           )
           edge.uuid = content.uuid
@@ -192,9 +192,7 @@ const del = async (geometry) => {
   // Delete original file
   if (geometryData.uploadfilename)
     try {
-      await Tools.removeFile(
-        path.join(storage.GEOMETRY, geometryData.uploadfilename)
-      )
+      await Tools.removeFile(path.join(GEOMETRY, geometryData.uploadfilename))
     } catch (err) {
       console.warn(err)
     }
@@ -202,13 +200,13 @@ const del = async (geometry) => {
   // Delete glb file
   if (geometryData.glb)
     try {
-      await Tools.removeFile(path.join(storage.GEOMETRY, geometryData.glb))
+      await Tools.removeFile(path.join(GEOMETRY, geometryData.glb))
     } catch (err) {
       console.warn(err)
     }
   if (geometry.glb)
     try {
-      await Tools.removeFile(path.join(storage.GEOMETRY, geometry.glb))
+      await Tools.removeFile(path.join(GEOMETRY, geometry.glb))
     } catch (err) {
       console.warn(err)
     }
@@ -216,15 +214,13 @@ const del = async (geometry) => {
   // Delete json directory
   if (geometryData.json)
     try {
-      await Tools.removeDirectory(
-        path.join(storage.GEOMETRY, geometryData.json)
-      )
+      await Tools.removeDirectory(path.join(GEOMETRY, geometryData.json))
     } catch (err) {
       console.warn(err)
     }
   if (geometry.json)
     try {
-      await Tools.removeDirectory(path.join(storage.GEOMETRY, geometry.json))
+      await Tools.removeDirectory(path.join(GEOMETRY, geometry.json))
     } catch (err) {
       console.warn(err)
     }
@@ -246,7 +242,7 @@ const read = async (geometry) => {
 
   // Read
   const buffer = await Tools.readFile(
-    path.join(storage.GEOMETRY, geometryData.uploadfilename)
+    path.join(GEOMETRY, geometryData.uploadfilename)
   )
 
   return {
@@ -267,13 +263,11 @@ const readPart = async (geometry) => {
   if (!geometryData) throw new Error('Geometry does not exist.')
 
   // Read GLB
-  const buffer = await Tools.readFile(
-    path.join(storage.GEOMETRY, geometryData.glb)
-  )
+  const buffer = await Tools.readFile(path.join(GEOMETRY, geometryData.glb))
 
   // Read part file
   const part = await Tools.readFile(
-    path.join(storage.GEOMETRY, geometryData.json, 'part.json'),
+    path.join(GEOMETRY, geometryData.json, 'part.json'),
     'json'
   )
 
@@ -297,7 +291,7 @@ const archive = async (geometry, to) => {
     //copy
     await Tools.copyFile(
       {
-        path: storage.GEOMETRY,
+        path: GEOMETRY,
         file: data.uploadfilename
       },
       {
@@ -306,12 +300,12 @@ const archive = async (geometry, to) => {
       }
     )
     //remove
-    await Tools.removeFile(path.join(storage.GEOMETRY, data.uploadfilename))
+    await Tools.removeFile(path.join(GEOMETRY, data.uploadfilename))
   }
 
   // JSON
   if (data.json) {
-    const json = path.join(storage.GEOMETRY, data.json)
+    const json = path.join(GEOMETRY, data.json)
     //copy
     await Tools.copyDirectory(json, path.join(to, data.json))
     //remove
@@ -323,13 +317,13 @@ const archive = async (geometry, to) => {
     //copy
     await Tools.copyFile(
       {
-        path: storage.GEOMETRY,
+        path: GEOMETRY,
         file: data.glb
       },
       { path: to, file: data.glb }
     )
     //remove
-    await Tools.removeFile(path.join(storage.GEOMETRY, data.glb))
+    await Tools.removeFile(path.join(GEOMETRY, data.glb))
   }
 }
 

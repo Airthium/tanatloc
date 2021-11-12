@@ -2,7 +2,7 @@
 
 import path from 'path'
 
-import storage from '@/config/storage'
+import { GEOMETRY, SIMULATION } from '@/config/storage'
 
 import SimulationDB from '@/database/simulation'
 
@@ -92,7 +92,7 @@ const del = async (simulation) => {
   ])
 
   // Delete folder
-  const simulationDirectory = path.join(storage.SIMULATION, simulation.id)
+  const simulationDirectory = path.join(SIMULATION, simulation.id)
   try {
     await Tools.removeDirectory(simulationDirectory)
   } catch (err) {
@@ -182,11 +182,11 @@ const run = async (user, { id }) => {
   configuration.geometry.path = 'geometry'
   await Tools.copyFile(
     {
-      path: storage.GEOMETRY,
+      path: GEOMETRY,
       file: geometry.uploadfilename
     },
     {
-      path: path.join(storage.SIMULATION, simulation.id, 'geometry'),
+      path: path.join(SIMULATION, simulation.id, 'geometry'),
       file: geometry.uploadfilename
     }
   )
@@ -204,7 +204,7 @@ const run = async (user, { id }) => {
         configuration.initialization.value = undefined
       } else {
         const couplingPath = path.join(
-          storage.SIMULATION,
+          SIMULATION,
           couplingSimulation,
           'run',
           'coupling'
@@ -216,12 +216,7 @@ const run = async (user, { id }) => {
             file: couplingResult + '.dat'
           },
           {
-            path: path.join(
-              storage.SIMULATION,
-              simulation.id,
-              'run',
-              'coupling'
-            ),
+            path: path.join(SIMULATION, simulation.id, 'run', 'coupling'),
             file: 'initialization.dat'
           }
         )
@@ -231,12 +226,7 @@ const run = async (user, { id }) => {
             file: couplingResult + '.mesh'
           },
           {
-            path: path.join(
-              storage.SIMULATION,
-              simulation.id,
-              'run',
-              'coupling'
-            ),
+            path: path.join(SIMULATION, simulation.id, 'run', 'coupling'),
             file: 'initialization.mesh'
           }
         )
@@ -338,7 +328,7 @@ const stop = async ({ id }) => {
  */
 const getLog = async ({ id }, file) => {
   // Path
-  const filePath = path.join(storage.SIMULATION, id, file)
+  const filePath = path.join(SIMULATION, id, file)
 
   // Write file
   return Tools.readFile(filePath)
@@ -351,10 +341,10 @@ const getLog = async ({ id }, file) => {
  */
 const archive = async (simulation, to) => {
   await Tools.copyDirectory(
-    path.join(storage.SIMULATION, simulation.id),
+    path.join(SIMULATION, simulation.id),
     path.join(to, simulation.id)
   )
-  await Tools.removeDirectory(path.join(storage.SIMULATION, simulation.id))
+  await Tools.removeDirectory(path.join(SIMULATION, simulation.id))
 }
 
 const Simulation = { add, get, getAll, update, del, run, stop, getLog, archive }

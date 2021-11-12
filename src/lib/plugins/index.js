@@ -120,4 +120,5 @@ const clientList = (user, complete) => {
   }
 }
 
-export default { clientList, serverList }
+const Plugins = { clientList, serverList }
+export default Plugins

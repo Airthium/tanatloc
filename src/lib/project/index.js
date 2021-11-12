@@ -2,7 +2,7 @@
 
 import path from 'path'
 
-import storage from '@/config/storage'
+import { STORAGE } from '@/config/storage'
 
 import ProjectDB from '@/database/project'
 
@@ -229,7 +229,7 @@ const archive = async (project) => {
   )
 
   // Create temporary path
-  const temporaryPath = path.join(storage.STORAGE, '.archive-' + project.id)
+  const temporaryPath = path.join(STORAGE, '.archive-' + project.id)
   await Tools.createPath(temporaryPath)
 
   // Create summary
@@ -258,7 +258,7 @@ const archive = async (project) => {
   // Create archive
   const archiveFileName = temporaryPath + '.tgz'
   Tools.archive(archiveFileName, {
-    C: storage.STORAGE,
+    C: STORAGE,
     path: '.archive-' + project.id
   })
 

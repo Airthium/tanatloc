@@ -2,7 +2,7 @@ import path from 'path'
 import { setIntervalAsync } from 'set-interval-async/fixed'
 import { clearIntervalAsync } from 'set-interval-async'
 
-import storage from '@/config/storage'
+import { SIMULATION } from '@/config/storage'
 
 import SimulationDB from '@/database/simulation'
 
@@ -268,7 +268,7 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
   const start = Date.now()
 
   // Path
-  const simulationPath = path.join(storage.SIMULATION, id)
+  const simulationPath = path.join(SIMULATION, id)
 
   // Clean previous simulation
   await clean(simulationPath)
@@ -367,7 +367,7 @@ const computeSimulation = async ({ id }, algorithm, configuration) => {
  * @param {Object} simulationTask Simulation task
  */
 const monitoring = async (id, _, tasks, simulationTask) => {
-  const simulationPath = path.join(storage.SIMUALTION, id)
+  const simulationPath = path.join(SIMUALTION, id)
   await stopProcess(id, simulationPath, simulationTask, () =>
     updateTasks(id, tasks)
   )

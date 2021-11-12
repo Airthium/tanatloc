@@ -2,6 +2,7 @@
 
 import path from 'path'
 import { createReadStream, createWriteStream, promises as fs } from 'fs'
+import { Dirent, ReadStream, WriteStream } from 'original-fs'
 import ncp from 'ncp'
 import tar from 'tar'
 import ThreeToGLB from 'three-to-glb'
@@ -13,7 +14,7 @@ import Services from '@/services'
  * @memberof Lib.Tools
  * @param {string} location Location path
  */
-const createPath = async (location) => {
+const createPath = async (location: string): Promise<void> => {
   await fs.mkdir(location, { recursive: true })
 }
 
@@ -23,7 +24,7 @@ const createPath = async (location) => {
  * @param {string} location Location
  * @returns {Array} Files list (with types)
  */
-const listFiles = async (location) => {
+const listFiles = async (location: string): Promise<Array<Dirent>> => {
   return fs.readdir(location, { withFileTypes: true })
 }
 
@@ -32,7 +33,7 @@ const listFiles = async (location) => {
  * @param {string} location Location
  * @returns {Array} Directory list
  */
-const listDirectories = async (location) => {
+const listDirectories = async (location: string): Promise<Array<string>> => {
   const files = await listFiles(location)
   return files
     .map((file) => {
@@ -48,7 +49,11 @@ const listDirectories = async (location) => {
  * @param {string} name File name
  * @param {Object} content Content
  */
-const writeFile = async (location, name, content) => {
+const writeFile = async (
+  location: string,
+  name: string,
+  content: Buffer
+): Promise<void> => {
   await createPath(location)
   await fs.writeFile(path.join(location, name), content)
 }
@@ -58,13 +63,18 @@ const writeFile = async (location, name, content) => {
  * @memberof Lib.Tools
  * @param {string} file File name
  * @param {string} [type] Type (json)
- * @returns {string | Object} File content or JSON
+ * @returns {Buffer} File content
  */
-const readFile = async (file, type) => {
+const readFile = async (file: string, type?: string): Promise<Buffer> => {
   const content = await fs.readFile(file)
 
   if (type === 'json') return JSON.parse(content.toString())
   return content
+}
+
+const readJSONFile = async (file: string): Promise<JSON> => {
+  const content = await readFile(file)
+  return JSON.parse(content.toString())
 }
 
 /**
@@ -73,7 +83,10 @@ const readFile = async (file, type) => {
  * @param {Object} origin Origin path {path, file }
  * @param {Object} destination Destination { path, file }
  */
-const copyFile = async (origin, destination) => {
+const copyFile = async (
+  origin: { path: string; file: string },
+  destination: { path: string; file: string }
+): Promise<void> => {
   await createPath(destination.path)
   await fs.copyFile(
     path.join(origin.path, origin.file),
@@ -86,15 +99,20 @@ const copyFile = async (origin, destination) => {
  * @param {string} origin Origin path
  * @param {string} destination Desctination path
  */
-const copyDirectory = async (origin, destination) => {
+const copyDirectory = async (
+  origin: string,
+  destination: string
+): Promise<void> => {
   // TODO
   // fs.cp only since 16.7.0, wait for electron
-  await new Promise((resolve, reject) => {
-    ncp(origin, destination, (err) => {
-      err && reject(err)
-      resolve()
-    })
-  })
+  await new Promise(
+    (resolve: (value: void) => void, reject: (reason: Error) => void) => {
+      ncp(origin, destination, (err: Error) => {
+        err && reject(err)
+        resolve()
+      })
+    }
+  )
 }
 
 /**
@@ -102,7 +120,7 @@ const copyDirectory = async (origin, destination) => {
  * @memberof Lib.Tools
  * @param {string} file File name
  */
-const removeFile = async (file) => {
+const removeFile = async (file: string): Promise<void> => {
   await fs.unlink(file)
 }
 
@@ -111,7 +129,7 @@ const removeFile = async (file) => {
  * @memberof Lib.Tools
  * @param {string} dir Directory
  */
-const removeDirectory = async (dir) => {
+const removeDirectory = async (dir: string): Promise<void> => {
   await fs.rm(dir, { recursive: true })
 }
 
@@ -120,7 +138,10 @@ const removeDirectory = async (dir) => {
  * @param {string} target Target
  * @param {Object} directory Directory { C, path }
  */
-const archive = async (target, directory) => {
+const archive = async (
+  target: string,
+  directory: { C: string; path: string }
+): Promise<void> => {
   await tar.c(
     {
       gzip: true,
@@ -136,7 +157,7 @@ const archive = async (target, directory) => {
  * @param {string} file File
  * @returns {Object} Read stream
  */
-const readStream = (file) => {
+const readStream = (file: string): ReadStream => {
   return createReadStream(file)
 }
 
@@ -145,7 +166,7 @@ const readStream = (file) => {
  * @param {string} file File
  * @returns {Object} Write stream
  */
-const writeStream = (file) => {
+const writeStream = (file: string): WriteStream => {
   return createWriteStream(file)
 }
 
@@ -158,7 +179,12 @@ const writeStream = (file) => {
  * @param {Object} [param] Parameters `{ isResult: true }`
  * @returns {Object} Data `{ json, glb }`
  */
-const convert = async (location, file, callback, param) => {
+const convert = async (
+  location: string,
+  file: { name: string; target: string },
+  callback?: Function,
+  param?: { isResult: boolean }
+): Promise<{ json: string; glb: string }> => {
   const origin = file.name
   const jsonTarget = file.target
   const glbTarget = file.target + '.glb'
@@ -180,7 +206,7 @@ const convert = async (location, file, callback, param) => {
       .map((res) => JSON.parse(res))
 
     await Promise.all(
-      results.map(async (result) => {
+      results.map(async (result: { path: string }) => {
         const glb = await ThreeToGLB.convert(
           path.join(location, result.path),
           'part.json'
@@ -209,9 +235,9 @@ const convert = async (location, file, callback, param) => {
  * @param {string} name File name
  * @returns {Object} Part
  */
-const loadPart = async (location, name) => {
+const loadPart = async (location: string, name: string) => {
   const partFile = path.join(location, name)
-  const partData = await fs.readFile(partFile)
+  const partData = await readFile(partFile)
   const part = JSON.parse(partData)
 
   // Load solids
@@ -256,6 +282,7 @@ const Tools = {
   listDirectories,
   writeFile,
   readFile,
+  readJSONFile,
   copyFile,
   copyDirectory,
   removeFile,

@@ -1,11 +1,7 @@
 import { tables } from '@/config/db'
 
 import { query } from '..'
-
-type NewAvatar = {
-  id: string
-  name: string
-}
+import { INewAvatar } from '.'
 
 /**
  * Add
@@ -16,7 +12,7 @@ type NewAvatar = {
 export const add = async (avatar: {
   name: string
   path: string
-}): Promise<NewAvatar> => {
+}): Promise<INewAvatar> => {
   const response = await query(
     'INSERT INTO ' +
       tables.AVATARS +

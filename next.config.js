@@ -40,5 +40,8 @@ module.exports = withPlugins([...plugins], {
   env: {
     SENTRY_DSN: sentryConfig.DSN
   },
-  basePath
+  basePath,
+  typescript: {
+    ignoreBuildErrors: true
+  }
 })

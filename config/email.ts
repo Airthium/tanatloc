@@ -5,7 +5,7 @@
  * @memberof Config.Email
  * @description Set by `EMAIL_TOKEN` environment variable or empty string
  */
-const TOKEN = process.env.EMAIL_TOKEN || ''
+export const TOKEN: string = process.env.EMAIL_TOKEN || ''
 
 // Email types
 
@@ -13,23 +13,16 @@ const TOKEN = process.env.EMAIL_TOKEN || ''
  * Subscription
  * @memberof Config.Email
  */
-const SUBSCRIBE = 'subscribe'
+export const SUBSCRIBE: string = 'subscribe'
 
 /**
  * Password recoverey
  * @memberof Config.Email
  */
-const PASSWORD_RECOVERY = 'passwordRecovery'
+export const PASSWORD_RECOVERY: string = 'passwordRecovery'
 
 /**
  * Revalidate
  * @memberof Config.Email
  */
-const REVALIDATE = 'revalidate'
-
-module.exports = {
-  TOKEN,
-  SUBSCRIBE,
-  PASSWORD_RECOVERY,
-  REVALIDATE
-}
+export const REVALIDATE: string = 'revalidate'

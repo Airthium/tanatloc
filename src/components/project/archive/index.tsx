@@ -95,7 +95,7 @@ const Archive = ({ disabled, workspace, project, swr }: Props) => {
         title="Archive"
         onCancel={() => setVisible(false)}
         onOk={onArchive}
-        okButtonProps={{ text: 'Archive' }}
+        okButtonText="Archive"
       >
         <Typography.Text>
           Archive the project «{project.title}»?

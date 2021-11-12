@@ -1,5 +1,24 @@
-import { getter } from '..'
 import { tables } from '@/config/db'
+
+import { getter } from '..'
+
+type Project = {
+  id: string
+  archived?: boolean
+  title?: string
+  description?: string
+  avatar?: string
+  public?: boolean
+  history?: object
+  createddate?: Date
+  lastaccess?: Date
+  geometries?: Array<string>
+  simulations?: Array<string>
+  owners?: Array<string>
+  users?: Array<string>
+  groups?: Array<string>
+  workspace?: string
+}
 
 /**
  * Get
@@ -8,7 +27,10 @@ import { tables } from '@/config/db'
  * @param {Array} data Data
  * @returns {Object} Project `{ id, ...data }`
  */
-const get = async (id, data) => {
+export const get = async (
+  id: string,
+  data: Array<string>
+): Promise<Project> => {
   const response = await getter(tables.PROJECTS, id, data)
 
   const project = response.rows[0]
@@ -16,5 +38,3 @@ const get = async (id, data) => {
 
   return project
 }
-
-export default get

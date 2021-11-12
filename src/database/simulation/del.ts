@@ -1,13 +1,12 @@
-import { deleter } from '..'
 import { tables } from '@/config/db'
+
+import { deleter } from '..'
 
 /**
  * Delete
  * @memberof Database.Simulation
  * @param {Object} simulation Simulation `{ id }`
  */
-const del = async (simulation) => {
+export const del = async (simulation: { id: string }) => {
   await deleter(tables.SIMULATIONS, simulation.id)
 }
-
-export default del

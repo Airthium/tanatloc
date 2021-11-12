@@ -1,13 +1,12 @@
-import { deleter } from '..'
 import { tables } from '@/config/db'
+
+import { deleter } from '..'
 
 /**
  * Delete
  * @memberof Database.Organization
  * @param {Object} organization Organization `{ id }`
  */
-const del = async (organization) => {
+export const del = async (organization: { id: string }): Promise<void> => {
   await deleter(tables.ORGANIZATIONS, organization.id)
 }
-
-export default del

@@ -1,5 +1,12 @@
-import query from '..'
 import { tables } from '@/config/db'
+
+import query from '..'
+
+type NewWorkspace = {
+  id: string
+  name: string
+  owners: Array<string>
+}
 
 /**
  * Add
@@ -8,19 +15,20 @@ import { tables } from '@/config/db'
  * @param {Object} workspace Workspace `{ name }`
  * @returns {Object} Workspace `{ id, name, owners }`
  */
-const add = async ({ id }, { name }) => {
+export const add = async (
+  user: { id: string },
+  workspace: { name: string }
+): Promise<NewWorkspace> => {
   const response = await query(
     'INSERT INTO ' +
       tables.WORKSPACES +
       ' (name, owners, projects) VALUES ($1, $2, $3) RETURNING id',
-    [name, [id], []]
+    [workspace.name, [user.id], []]
   )
 
-  const workspace = response.rows[0]
-  workspace && (workspace.name = name)
-  workspace && (workspace.owners = [id])
+  const newWorkspace = response.rows[0]
+  newWorkspace && (newWorkspace.name = workspace.name)
+  newWorkspace && (newWorkspace.owners = [user.id])
 
-  return workspace
+  return newWorkspace
 }
-
-export default add

@@ -4,7 +4,7 @@ import { Pool } from 'pg'
 
 import { USER, HOST, DATABASE, PASSWORD, PORT } from '@/config/db'
 
-type DataBaseEntry = {
+export type DataBaseEntry = {
   key: string
   value: string
   type?: string
@@ -40,9 +40,9 @@ const pool = startdB()
  * @param {Array} args Arguments
  * @returns {Object} PostgreSQL query response
  */
-const query = async (
+export const query = async (
   command: string,
-  args: Array<string>
+  args: Array<boolean | number | string | Array<string> | object>
 ): Promise<DataBaseResponse> => {
   const client = await pool.connect()
   const res = await client.query(command, args)
@@ -59,10 +59,10 @@ const query = async (
  * @param {string} key Key override id
  * @returns {Object} PostgreSQL query response
  */
-const getter = async (
+export const getter = async (
   db: string,
   id: string,
-  data: Array<DataBaseEntry>,
+  data: Array<string>,
   key: string = 'id'
 ): Promise<DataBaseResponse> => {
   return query(
@@ -78,7 +78,7 @@ const getter = async (
  * @param {string} id Id
  * @param {Array} data Data `[{ type, method, key, path, value }, ...]`
  */
-const updater = async (
+export const updater = async (
   db: string,
   id: string,
   data: Array<DataBaseEntry>
@@ -161,9 +161,8 @@ const updater = async (
  * @param {string} db Database
  * @param {string} id Id
  */
-const deleter = async (db: string, id: string): Promise<void> => {
+export const deleter = async (db: string, id: string): Promise<void> => {
   await query('DELETE FROM ' + db + ' WHERE id = $1', [id])
 }
 
 export default query
-export { getter, updater, deleter }

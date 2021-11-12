@@ -1,5 +1,6 @@
-import { updater } from '..'
 import { tables } from '@/config/db'
+
+import { DataBaseEntry, updater } from '..'
 
 /**
  * Update
@@ -7,8 +8,9 @@ import { tables } from '@/config/db'
  * @param {Object} workspace workspace `{ id }`
  * @param {Object} data Data `[{ key, value, ... }, ... ]`
  */
-const update = async (workspace, data) => {
+export const update = async (
+  workspace: { id: string },
+  data: Array<DataBaseEntry>
+): Promise<void> => {
   await updater(tables.WORKSPACES, workspace.id, data)
 }
-
-export default update

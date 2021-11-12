@@ -1,5 +1,11 @@
-import query from '..'
 import { tables } from '@/config/db'
+
+import query from '..'
+
+type User = {
+  id: string
+  password: string
+}
 
 /**
  * Get by email and password
@@ -7,15 +13,16 @@ import { tables } from '@/config/db'
  * @param {Object} user User `{ email, password }`
  * @returns {Object} User `{ id }`
  */
-const getByUsernameAndPassword = async ({ email, password }) => {
+export const getByUsernameAndPassword = async (user: {
+  email: string
+  password: string
+}): Promise<User> => {
   const response = await query(
     'SELECT id, isvalidated FROM ' +
       tables.USERS +
       ' WHERE email = $1 AND password = crypt($2, password)',
-    [email, password]
+    [user.email, user.password]
   )
 
   return response.rows[0]
 }
-
-export default getByUsernameAndPassword

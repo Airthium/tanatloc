@@ -1,5 +1,6 @@
-import { updater } from '..'
 import { tables } from '@/config/db'
+
+import { DataBaseEntry, updater } from '..'
 
 /**
  * Update
@@ -7,8 +8,9 @@ import { tables } from '@/config/db'
  * @param {Object} group Group `{ id }`
  * @param {Object} data Data `[{ key, value, ... }, ...]`
  */
-const update = async (group, data) => {
+export const update = async (
+  group: { id: string },
+  data: Array<DataBaseEntry>
+) => {
   await updater(tables.GROUPS, group.id, data)
 }
-
-export default update

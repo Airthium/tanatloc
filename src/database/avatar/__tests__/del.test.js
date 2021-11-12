@@ -1,4 +1,4 @@
-import del from '../del'
+import { del } from '../del'
 
 const mockDelete = jest.fn()
 jest.mock('../..', () => ({

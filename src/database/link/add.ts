@@ -1,5 +1,13 @@
-import query from '..'
 import { tables } from '@/config/db'
+
+import query from '..'
+
+type NewLink = {
+  id: string
+  type: string
+  email: string
+  userid?: string
+}
 
 /**
  * Add
@@ -7,20 +15,22 @@ import { tables } from '@/config/db'
  * @param {Object} link Link `{ type, email, ?userid }`
  * @returns {Object} Link `{ id, type, email, userid }`
  */
-const add = async ({ type, email, userid }) => {
+export const add = async (link: {
+  type: string
+  email: string
+  userid?: string
+}): Promise<NewLink> => {
   const response = await query(
     'INSERT INTO ' +
       tables.LINKS +
       ' (type, email, userid) VALUES ($1, $2, $3) RETURNING id',
-    [type, email, userid]
+    [link.type, link.email, link.userid]
   )
 
-  const link = response.rows[0]
-  link && (link.type = type)
-  link && (link.email = email)
-  link && (link.userid = userid)
+  const newLink = response.rows[0]
+  newLink && (newLink.type = link.type)
+  newLink && (newLink.email = link.email)
+  newLink && (newLink.userid = link.userid)
 
-  return link
+  return newLink
 }
-
-export default add

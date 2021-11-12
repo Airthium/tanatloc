@@ -1,27 +1,36 @@
-import query from '..'
 import { tables } from '@/config/db'
+
+import query from '..'
+
+type NewGroup = {
+  id: string
+  name: string
+  users: Array<string>
+  organization: string
+}
 
 /**
  * Add
  * @memberof Database.Group
- * @param {Object} organization Organization
+ * @param {Object} organization Organization `{ id }`
  * @param {Object} group Group `{ name, users }`
  * @returns {Object} Group `{ id, name, users, organization }`
  */
-const add = async (organization, { name, users }) => {
+export const add = async (
+  organization: { id: string },
+  group: { name: string; users: Array<string> }
+): Promise<NewGroup> => {
   const response = await query(
     'INSERT INTO ' +
       tables.GROUPS +
       ' (name, users, organization) VALUES ($1, $2, $3) RETURNING id',
-    [name, users, organization.id]
+    [group.name, group.users, organization.id]
   )
 
-  const group = response.rows[0]
-  group && (group.name = name)
-  group && (group.users = users)
-  group && (group.organization = organization.id)
+  const newGroup = response.rows[0]
+  newGroup && (newGroup.name = group.name)
+  newGroup && (newGroup.users = group.users)
+  newGroup && (newGroup.organization = organization.id)
 
-  return group
+  return newGroup
 }
-
-export default add

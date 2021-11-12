@@ -1,5 +1,13 @@
-import query from '..'
 import { tables } from '@/config/db'
+
+import query from '..'
+
+type NewSimulation = {
+  id: string
+  name: string
+  scheme: object
+  project: string
+}
 
 /**
  * Add
@@ -7,20 +15,22 @@ import { tables } from '@/config/db'
  * @param {Object} simulation Simulation `{ name, scheme, project }`
  * @returns {Object} Simulation `{ id, name, scheme, project }`
  */
-const add = async ({ name, scheme, project }) => {
+export const add = async (simulation: {
+  name: string
+  scheme: object
+  project: string
+}): Promise<NewSimulation> => {
   const response = await query(
     'INSERT INTO ' +
       tables.SIMULATIONS +
       ' (name, scheme, project) VALUES ($1, $2, $3) RETURNING id',
-    [name, scheme, project]
+    [simulation.name, simulation.scheme, simulation.project]
   )
 
-  const simulation = response.rows[0]
-  simulation && (simulation.name = name)
-  simulation && (simulation.scheme = scheme)
-  simulation && (simulation.project = project)
+  const newSimulation = response.rows[0]
+  newSimulation && (newSimulation.name = simulation.name)
+  newSimulation && (newSimulation.scheme = simulation.scheme)
+  newSimulation && (newSimulation.project = simulation.project)
 
-  return simulation
+  return newSimulation
 }
-
-export default add

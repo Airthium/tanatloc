@@ -1,5 +1,22 @@
-import { getter } from '..'
 import { tables } from '@/config/db'
+
+import { getter } from '..'
+
+export type User = {
+  id?: string
+  lastname?: string
+  firstname?: string
+  email?: string
+  avatar?: string
+  isvalidated?: boolean
+  lastmodificationdate?: Date
+  superuser?: boolean
+  passwordlastchanged?: Date
+  organizations?: Array<string>
+  workspaces?: Array<string>
+  authorizedplugins?: Array<string>
+  plugins?: Array<object>
+}
 
 /**
  * Get
@@ -9,7 +26,11 @@ import { tables } from '@/config/db'
  * @param {string} [key=id] Key (override id selector)
  * @returns {Object} User `{ [key], ...data }`
  */
-const get = async (id, data, key = 'id') => {
+export const get = async (
+  id: string,
+  data: Array<string>,
+  key: string = 'id'
+): Promise<User> => {
   const response = await getter(tables.USERS, id, data, key)
 
   const user = response.rows[0]
@@ -17,5 +38,3 @@ const get = async (id, data, key = 'id') => {
 
   return user
 }
-
-export default get

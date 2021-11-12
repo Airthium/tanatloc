@@ -1,5 +1,15 @@
-import { getter } from '..'
 import { tables } from '@/config/db'
+
+import { getter } from '..'
+
+export type Group = {
+  id: string
+  name?: string
+  users?: Array<string>
+  workspaces?: Array<string>
+  projects?: Array<string>
+  organization?: string
+}
 
 /**
  * Get
@@ -8,7 +18,7 @@ import { tables } from '@/config/db'
  * @param {Array} data Data
  * @returns {Object} Group `{ id, ...data }`
  */
-const get = async (id, data) => {
+export const get = async (id: string, data: Array<string>): Promise<Group> => {
   const response = await getter(tables.GROUPS, id, data)
 
   const group = response.rows[0]
@@ -16,5 +26,3 @@ const get = async (id, data) => {
 
   return group
 }
-
-export default get

@@ -1,7 +1,14 @@
 import isElectron from 'is-electron'
 
-import query from '..'
 import { tables } from '@/config/db'
+
+import query from '..'
+
+type NewUser = {
+  alreadyExists?: boolean
+  id?: string
+  email?: string
+}
 
 /**
  * Add
@@ -9,11 +16,14 @@ import { tables } from '@/config/db'
  * @param {Object} user User `{ email, password }`
  * @returns {Object} User `{ alreadyExists: true } || { id, email }`
  */
-const add = async ({ email, password }) => {
+export const add = async (user: {
+  email: string
+  password: string
+}): Promise<NewUser> => {
   // Check email
   const existing = await query(
     'SELECT id FROM ' + tables.USERS + ' WHERE email = $1',
-    [email]
+    [user.email]
   )
   if (existing.rows.length)
     return {
@@ -25,13 +35,18 @@ const add = async ({ email, password }) => {
     'INSERT INTO ' +
       tables.USERS +
       " (email, password, isvalidated, lastmodificationdate, superuser, authorizedplugins) VALUES ($1, crypt($2, gen_salt('bf')), $3, to_timestamp($4), $5, $6) returning id",
-    [email, password, false, Date.now(), false, isElectron() ? ['local'] : []]
+    [
+      user.email,
+      user.password,
+      false,
+      Date.now(),
+      false,
+      isElectron() ? ['local'] : []
+    ]
   )
 
-  const user = response.rows[0]
-  user && (user.email = email)
+  const newUser = response.rows[0]
+  newUser && (newUser.email = user.email)
 
-  return user
+  return newUser
 }
-
-export default add

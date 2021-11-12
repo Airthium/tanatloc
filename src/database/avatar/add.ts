@@ -1,7 +1,8 @@
-import query from '..'
 import { tables } from '@/config/db'
 
-type Avatar = {
+import { query } from '..'
+
+type NewAvatar = {
   id: string
   name: string
 }
@@ -15,7 +16,7 @@ type Avatar = {
 export const add = async (avatar: {
   name: string
   path: string
-}): Promise<Avatar> => {
+}): Promise<NewAvatar> => {
   const response = await query(
     'INSERT INTO ' +
       tables.AVATARS +
@@ -23,8 +24,8 @@ export const add = async (avatar: {
     [avatar.name, avatar.path]
   )
 
-  return {
-    ...response.rows[0],
-    name: avatar.name
-  }
+  const newAvatar = response.rows[0]
+  newAvatar && (newAvatar.name = avatar.name)
+
+  return newAvatar
 }

@@ -1,5 +1,6 @@
-import { updater } from '..'
 import { tables } from '@/config/db'
+
+import { DataBaseEntry, updater } from '..'
 
 /**
  * Update
@@ -7,8 +8,9 @@ import { tables } from '@/config/db'
  * @param {Object} geometry Geometry `{ id }`
  * @param {Array} data Data `[{ key, value, ... }, ...]`
  */
-const update = async (geometry, data) => {
+export const update = async (
+  geometry: { id: string },
+  data: Array<DataBaseEntry>
+) => {
   await updater(tables.GEOMETRIES, geometry.id, data)
 }
-
-export default update

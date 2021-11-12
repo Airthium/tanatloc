@@ -1,5 +1,6 @@
-import { deleter } from '..'
 import { tables } from '@/config/db'
+
+import { deleter } from '..'
 
 /**
  * Delete
@@ -9,5 +10,3 @@ import { tables } from '@/config/db'
 export const del = async (avatar: { id: string }): Promise<void> => {
   await deleter(tables.AVATARS, avatar.id)
 }
-
-export default del

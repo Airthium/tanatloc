@@ -1,5 +1,6 @@
-import query from '..'
 import { tables } from '@/config/db'
+
+import query from '..'
 
 /**
  * Get all
@@ -7,11 +8,11 @@ import { tables } from '@/config/db'
  * @param {Array} data Data
  * @returns {Array} Simulations
  */
-const getAll = async (data) => {
+export const getAll = async (data: Array<string>) => {
   const response = await query(
-    'SELECT ' + data.join(',') + ' FROM ' + tables.SIMULATIONS
+    'SELECT ' + data.join(',') + ' FROM ' + tables.SIMULATIONS,
+    []
   )
+
   return response.rows
 }
-
-export default getAll

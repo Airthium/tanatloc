@@ -1,5 +1,12 @@
-import query from '..'
 import { tables } from '@/config/db'
+
+import query from '..'
+
+type NewOrganization = {
+  id: string
+  name: string
+  owners: Array<string>
+}
 
 /**
  * Add
@@ -7,19 +14,20 @@ import { tables } from '@/config/db'
  * @param {Object} organization Organization `{ name, owners }`
  * @returns {Object} Organization `{ id, name, owners }`
  */
-const add = async ({ name, owners }) => {
+export const add = async (organization: {
+  name: string
+  owners: Array<string>
+}): Promise<NewOrganization> => {
   const response = await query(
     'INSERT INTO ' +
       tables.ORGANIZATIONS +
       ' (name, owners) VALUES ($1, $2) RETURNING id',
-    [name, owners]
+    [organization.name, organization.owners]
   )
 
-  const organization = response.rows[0]
-  organization && (organization.name = name)
-  organization && (organization.owners = owners)
+  const newOrganization = response.rows[0]
+  newOrganization && (newOrganization.name = organization.name)
+  newOrganization && (newOrganization.owners = organization.owners)
 
-  return organization
+  return newOrganization
 }
-
-export default add

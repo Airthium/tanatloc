@@ -1,5 +1,7 @@
-import query from '..'
 import { tables } from '@/config/db'
+
+import query from '..'
+import { User } from './get'
 
 /**
  * Get all
@@ -7,12 +9,11 @@ import { tables } from '@/config/db'
  * @param {Array} data Data
  * @returns {Array} Users
  */
-const getAll = async (data) => {
+export const getAll = async (data: Array<string>): Promise<Array<User>> => {
   const response = await query(
-    'SELECT ' + data.join(',') + ' FROM ' + tables.USERS
+    'SELECT ' + data.join(',') + ' FROM ' + tables.USERS,
+    []
   )
 
   return response.rows
 }
-
-export default getAll

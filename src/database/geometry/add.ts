@@ -1,5 +1,14 @@
-import query from '..'
 import { tables } from '@/config/db'
+
+import { query } from '..'
+
+type NewGeometry = {
+  id: string
+  name: string
+  originalfilename: string
+  extension: string
+  uploadfilename: string
+}
 
 /**
  * Add
@@ -8,24 +17,25 @@ import { tables } from '@/config/db'
  * @param {Object} geometry Geometry `{ name, uid }`
  * @returns {Object} Geometry `{ id, name, originalfilename, extension, uploadfilename }`
  */
-const add = async (project, { name, uid }) => {
-  const extension = name.split('.').pop()
-  const uploadFileName = uid + '.' + extension
+export const add = async (
+  project: { id: string },
+  geometry: { name: string; uid: string }
+): Promise<NewGeometry> => {
+  const extension = geometry.name.split('.').pop()
+  const uploadFileName = geometry.uid + '.' + extension
 
   const response = await query(
     'INSERT INTO ' +
       tables.GEOMETRIES +
       ' (name, originalfilename, extension, uploadfilename, project) VALUES ($1, $1, $2, $3, $4) RETURNING id',
-    [name, extension, uploadFileName, project.id]
+    [geometry.name, extension, uploadFileName, project.id]
   )
 
-  const geometry = response.rows[0]
-  geometry && (geometry.name = name)
-  geometry && (geometry.originalfilename = name)
-  geometry && (geometry.extension = extension)
-  geometry && (geometry.uploadfilename = uploadFileName)
+  const newGeometry = response.rows[0]
+  newGeometry && (newGeometry.name = geometry.name)
+  newGeometry && (newGeometry.originalfilename = geometry.name)
+  newGeometry && (newGeometry.extension = extension)
+  newGeometry && (newGeometry.uploadfilename = uploadFileName)
 
-  return geometry
+  return newGeometry
 }
-
-export default add

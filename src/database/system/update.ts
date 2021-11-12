@@ -1,13 +1,12 @@
-import { updater } from '..'
 import { tables } from '@/config/db'
+
+import { DataBaseEntry, updater } from '..'
 
 /**
  * Update items
  * @memberof Database.System
  * @param {Object} data Data `[{ key, value }, ...]`
  */
-const update = async (data) => {
-  await updater(tables.SYSTEM, 0, data)
+export const update = async (data: Array<DataBaseEntry>): Promise<void> => {
+  await updater(tables.SYSTEM, '', data)
 }
-
-export default update

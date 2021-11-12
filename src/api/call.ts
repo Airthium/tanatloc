@@ -1,11 +1,19 @@
 /** @namespace API */
 
-interface CallError extends Error {
+import isElectron from 'is-electron'
+
+export interface Headers {
+  Accept: string
+}
+
+export interface CallError extends Error {
   info?: Object
   status?: number
 }
 
-import isElectron from 'is-electron'
+export interface CallResponse {
+  blob: Function
+}
 
 const port: number = parseInt(process.env.PORT) || 3000
 const base: string = isElectron() ? 'http://localhost:' + port : ''
@@ -16,7 +24,10 @@ const base: string = isElectron() ? 'http://localhost:' + port : ''
  * @param {string} url URL
  * @param {string} [payload] Payload
  */
-const fetcher = async (url: string, payload: string): Promise<object> => {
+export const fetcher = async (
+  url: string,
+  payload: string
+): Promise<CallResponse> => {
   const res = await fetch(base + url, {
     method: payload ? 'POST' : 'GET',
     headers: {
@@ -44,10 +55,10 @@ const fetcher = async (url: string, payload: string): Promise<object> => {
  * @param {Object} param Parameters
  * @returns {Object} Response
  */
-const call = async (
+export const call = async (
   route: string,
-  param?: { method?: string; headers?: object; body: string }
-): Promise<object> => {
+  param?: { method?: string; headers?: Headers; body?: string }
+): Promise<CallResponse> => {
   const response = await fetch(base + route, {
     ...param,
     method: (param && param.method) || 'GET',

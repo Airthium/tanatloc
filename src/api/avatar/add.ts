@@ -1,4 +1,4 @@
-import Caller from '@/api/call'
+import { call, CallResponse } from '@/api/call'
 
 /**
  * Add
@@ -7,11 +7,11 @@ import Caller from '@/api/call'
  * @param {Object} [project] Project `{ id }`
  * @returns {Object} Avatar `{ id, name }`
  */
-const add = async (
+export const add = async (
   file: { name: string; uid: string; data: Buffer },
   project: { id: string }
-): Promise<object> => {
-  return Caller.call('/api/avatar', {
+): Promise<CallResponse> => {
+  return call('/api/avatar', {
     method: 'POST',
     headers: {
       Accept: 'application/json'
@@ -19,5 +19,3 @@ const add = async (
     body: JSON.stringify({ file, project })
   })
 }
-
-export default add

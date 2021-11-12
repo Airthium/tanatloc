@@ -8,11 +8,46 @@ import { Error as ErrorNotification } from '@/components/assets/notification'
 
 import ProjectAPI from '@/api/project'
 
-const errors = {
+interface Errors {
+  archive: string
+}
+
+interface Workspace {
+  id: string
+}
+
+interface Project {
+  archived: boolean
+  id: string
+  title: string
+}
+
+interface Swr {
+  mutateOneWorkspace: Function
+  mutateOneProject: Function
+}
+
+interface Props {
+  disabled: boolean
+  workspace: Workspace
+  project: Project
+  swr: Swr
+}
+
+/**
+ * Errors (archive)
+ */
+const errors: Errors = {
   archive: 'Unable to archive project'
 }
 
-const Archive = ({ disabled, workspace, project, swr }) => {
+/**
+ * Archive
+ * @memberof Components.Project
+ * @param {Object} props Props `{ disabled, workspace, project, swr }`
+ * @returns
+ */
+const Archive = ({ disabled, workspace, project, swr }: Props) => {
   // State
   const [visible, setVisible] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -81,8 +116,7 @@ const Archive = ({ disabled, workspace, project, swr }) => {
 Archive.propTypes = {
   disabled: PropTypes.bool,
   workspace: PropTypes.exact({
-    id: PropTypes.string.isRequired,
-    projects: PropTypes.array.isRequired
+    id: PropTypes.string.isRequired
   }).isRequired,
   project: PropTypes.exact({
     archived: PropTypes.bool,

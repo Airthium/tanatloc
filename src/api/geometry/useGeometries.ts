@@ -1,5 +1,5 @@
 import useSWR from 'swr'
-import Caller from '@/api/call'
+import { fetcher } from '@/api/call'
 
 /**
  * Use geometries
@@ -10,7 +10,7 @@ import Caller from '@/api/call'
 export const useGeometries = (ids: Array<string>): Array<any> => {
   const { data, error, mutate } = useSWR(
     ['/api/geometries', JSON.stringify({ ids })],
-    Caller.fetcher
+    fetcher
   )
   const loading = !data
   const geometries = data?.geometries || []

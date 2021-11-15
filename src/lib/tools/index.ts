@@ -1,8 +1,14 @@
 /** @namespace Lib.Tools */
 
 import path from 'path'
-import { createReadStream, createWriteStream, promises as fs } from 'fs'
-import { Dirent, ReadStream, WriteStream } from 'original-fs'
+import {
+  Dirent,
+  ReadStream,
+  WriteStream,
+  createReadStream,
+  createWriteStream,
+  promises as fs
+} from 'fs'
 import ncp from 'ncp'
 import tar from 'tar'
 import ThreeToGLB from 'three-to-glb'
@@ -72,7 +78,7 @@ const readFile = async (file: string, type?: string): Promise<Buffer> => {
   return content
 }
 
-const readJSONFile = async (file: string): Promise<JSON> => {
+const readJSONFile = async (file: string): Promise<any> => {
   const content = await readFile(file)
   return JSON.parse(content.toString())
 }

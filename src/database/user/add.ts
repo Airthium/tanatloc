@@ -2,13 +2,8 @@ import isElectron from 'is-electron'
 
 import { tables } from '@/config/db'
 
-import query from '..'
-
-type NewUser = {
-  alreadyExists?: boolean
-  id?: string
-  email?: string
-}
+import { query } from '..'
+import { INewUser } from '../index.d'
 
 /**
  * Add
@@ -19,7 +14,7 @@ type NewUser = {
 export const add = async (user: {
   email: string
   password: string
-}): Promise<NewUser> => {
+}): Promise<INewUser> => {
   // Check email
   const existing = await query(
     'SELECT id FROM ' + tables.USERS + ' WHERE email = $1',

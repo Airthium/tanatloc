@@ -1,4 +1,4 @@
-import Caller from '@/api/call'
+import { call } from '@/api/call'
 
 /**
  * Update project
@@ -7,7 +7,7 @@ import Caller from '@/api/call'
  * @param {Array} data Data `[{ key, value, ... }, ...]`
  */
 const update = async (project, data) => {
-  return Caller.call('/api/project/' + project.id, {
+  return call('/api/project/' + project.id, {
     method: 'PUT',
     body: JSON.stringify(data)
   })

@@ -1,12 +1,7 @@
 import { tables } from '@/config/db'
 
-import query from '..'
-
-type NewWorkspace = {
-  id: string
-  name: string
-  owners: Array<string>
-}
+import { query } from '..'
+import { INewWorkspace } from '../index.d'
 
 /**
  * Add
@@ -18,7 +13,7 @@ type NewWorkspace = {
 export const add = async (
   user: { id: string },
   workspace: { name: string }
-): Promise<NewWorkspace> => {
+): Promise<INewWorkspace> => {
   const response = await query(
     'INSERT INTO ' +
       tables.WORKSPACES +

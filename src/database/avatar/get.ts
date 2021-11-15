@@ -1,7 +1,7 @@
 import { tables } from '@/config/db'
 
 import { getter } from '..'
-import { IAvatar } from '.'
+import { IAvatar } from '../index.d'
 
 /**
  * Get

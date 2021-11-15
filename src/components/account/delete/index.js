@@ -7,7 +7,7 @@ import { Error as ErrorNotification } from '@/components/assets/notification'
 import { DeleteDialog } from '@/components/assets/dialog'
 
 import UserAPI from '@/api/user'
-import logout from '@/api/logout'
+import { logout } from '@/api/logout'
 
 /**
  * Errors (delete)

@@ -1,5 +1,5 @@
 import useSWR from 'swr'
-import Caller from '@/api/call'
+import { fetcher } from '@/api/call'
 
 /**
  * Use workspace (SWR)
@@ -7,7 +7,7 @@ import Caller from '@/api/call'
  * @returns {Array} `[workspaces, {mutateWorkspaces, addOneWorkspace, delOneWorkspace, mutateOneWorkspace, errorWorkspaces, loadingWorkspaces}]`
  */
 const useWorkspaces = () => {
-  const { data, error, mutate } = useSWR('/api/workspace', Caller.fetcher)
+  const { data, error, mutate } = useSWR('/api/workspace', fetcher)
   const loading = !data
   const workspaces = data?.workspaces || []
 

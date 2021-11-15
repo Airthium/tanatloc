@@ -1,5 +1,5 @@
 import useSWR from 'swr'
-import Caller from '@/api/call'
+import { fetcher } from '@/api/call'
 
 /**
  * Use groups
@@ -8,7 +8,7 @@ import Caller from '@/api/call'
  * @returns {Object} `[ groups, { mutateGroups, addOneGroup, delOneGroup, mutateOneGroup, errorGroups, loadingGroups }]`
  */
 const useGroups = (id) => {
-  const { data, error, mutate } = useSWR('/api/groups/' + id, Caller.fetcher)
+  const { data, error, mutate } = useSWR('/api/groups/' + id, fetcher)
   const loading = !data
   const groups = data?.groups || []
 

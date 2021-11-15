@@ -1,4 +1,4 @@
-import Caller from '@/api/call'
+import { call } from '@/api/call'
 
 /**
  * Update
@@ -7,7 +7,7 @@ import Caller from '@/api/call'
  * @param {Array} data Data `[{ key: value }, ...]`
  */
 const update = async (workspace, data) => {
-  await Caller.call('/api/workspace', {
+  await call('/api/workspace', {
     method: 'PUT',
     body: JSON.stringify({ workspace: workspace, data: data })
   })

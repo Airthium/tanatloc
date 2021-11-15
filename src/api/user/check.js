@@ -1,4 +1,4 @@
-import Caller from '@/api/call'
+import { call } from '@/api/call'
 
 /**
  * Check
@@ -7,7 +7,7 @@ import Caller from '@/api/call'
  * @returns {Object} User `{ valid: true/false }`
  */
 const check = async ({ email, password }) => {
-  return Caller.call('/api/user/check', {
+  return call('/api/user/check', {
     method: 'POST',
     headers: {
       Accept: 'application/json'

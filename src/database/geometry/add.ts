@@ -1,14 +1,7 @@
 import { tables } from '@/config/db'
 
 import { query } from '..'
-
-type NewGeometry = {
-  id: string
-  name: string
-  originalfilename: string
-  extension: string
-  uploadfilename: string
-}
+import { INewGeometry } from '../index.d'
 
 /**
  * Add
@@ -20,7 +13,7 @@ type NewGeometry = {
 export const add = async (
   project: { id: string },
   geometry: { name: string; uid: string }
-): Promise<NewGeometry> => {
+): Promise<INewGeometry> => {
   const extension = geometry.name.split('.').pop()
   const uploadFileName = geometry.uid + '.' + extension
 

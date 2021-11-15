@@ -1,4 +1,4 @@
-import Caller from '@/api/call'
+import { call } from '@/api/call'
 
 /**
  * Update items
@@ -6,7 +6,7 @@ import Caller from '@/api/call'
  * @param {string} data Data
  */
 const update = async (data) => {
-  await Caller.call('/api/system', {
+  await call('/api/system', {
     method: 'PUT',
     body: JSON.stringify(data)
   })

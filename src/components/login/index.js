@@ -18,7 +18,7 @@ import { Error } from '@/components/assets/notification'
 
 import PasswordRecover from './password'
 
-import login from '@/api/login'
+import { login } from '@/api/login'
 import UserAPI from '@/api/user'
 
 /**

@@ -1,4 +1,4 @@
-import Caller from '@/api/call'
+import { call } from '@/api/call'
 
 /**
  * Run
@@ -7,7 +7,7 @@ import Caller from '@/api/call'
  * @returns {Object} { ok: true }
  */
 const run = async (simulation) => {
-  return Caller.call('/api/simulation/' + simulation.id + '/run', {
+  return call('/api/simulation/' + simulation.id + '/run', {
     method: 'GET',
     headers: {
       Accept: 'application/json'

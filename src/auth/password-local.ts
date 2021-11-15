@@ -9,7 +9,7 @@ import UserDB from '@/database/user'
  */
 const localStrategy = new Local.Strategy(
   { usernameField: 'email', passwordField: 'password' },
-  (email, password, done) => {
+  (email:string, password:string, done:Function) => {
     UserDB.getByUsernameAndPassword({ email, password })
       .then((user) => {
         if (!user) done(new Error('Bad credentials!'))

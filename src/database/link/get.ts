@@ -1,13 +1,7 @@
 import { tables } from '@/config/db'
 
 import { getter } from '..'
-
-type Link = {
-  id: string
-  type?: string
-  email?: string
-  userid?: string
-}
+import { ILink } from '../index.d'
 
 /**
  * Get
@@ -16,7 +10,7 @@ type Link = {
  * @param {Array} data Data
  * @returns {Object} Link `{ id, ...data }`
  */
-export const get = async (id: string, data: Array<string>): Promise<Link> => {
+export const get = async (id: string, data: Array<string>): Promise<ILink> => {
   const response = await getter(tables.LINKS, id, data)
 
   const link = response.rows[0]

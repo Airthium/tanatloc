@@ -1,12 +1,7 @@
 import { tables } from '@/config/db'
 
-import query from '..'
-
-type NewOrganization = {
-  id: string
-  name: string
-  owners: Array<string>
-}
+import { query } from '..'
+import { INewOrganization } from '../index.d'
 
 /**
  * Add
@@ -17,7 +12,7 @@ type NewOrganization = {
 export const add = async (organization: {
   name: string
   owners: Array<string>
-}): Promise<NewOrganization> => {
+}): Promise<INewOrganization> => {
   const response = await query(
     'INSERT INTO ' +
       tables.ORGANIZATIONS +

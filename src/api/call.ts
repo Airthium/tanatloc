@@ -2,18 +2,7 @@
 
 import isElectron from 'is-electron'
 
-export interface Headers {
-  Accept: string
-}
-
-export interface CallError extends Error {
-  info?: Object
-  status?: number
-}
-
-export interface CallResponse {
-  blob: Function
-}
+import { ICallError, ICallHeaders, ICallResponse } from '.'
 
 const port: number = parseInt(process.env.PORT) || 3000
 const base: string = isElectron() ? 'http://localhost:' + port : ''
@@ -24,10 +13,7 @@ const base: string = isElectron() ? 'http://localhost:' + port : ''
  * @param {string} url URL
  * @param {string} [payload] Payload
  */
-export const fetcher = async (
-  url: string,
-  payload: string
-): Promise<CallResponse> => {
+export const fetcher = async (url: string, payload: string): Promise<JSON> => {
   const res = await fetch(base + url, {
     method: payload ? 'POST' : 'GET',
     headers: {
@@ -38,7 +24,7 @@ export const fetcher = async (
   })
 
   if (!res.ok) {
-    const error: CallError = new Error('An error occured while fetching data.')
+    const error: ICallError = new Error('An error occured while fetching data.')
     error.info = await res.json()
     error.status = res.status
 
@@ -57,8 +43,8 @@ export const fetcher = async (
  */
 export const call = async (
   route: string,
-  param?: { method?: string; headers?: Headers; body?: string }
-): Promise<CallResponse> => {
+  param?: { method?: string; headers?: ICallHeaders; body?: string }
+): Promise<ICallResponse | JSON> => {
   const response = await fetch(base + route, {
     ...param,
     method: (param && param.method) || 'GET',
@@ -71,7 +57,7 @@ export const call = async (
   const contentType = response.headers.get('Content-Type')
 
   if (!response.ok) {
-    const error: CallError = new Error('An error occured while fetching data.')
+    const error: ICallError = new Error('An error occured while fetching data.')
     error.info =
       contentType?.includes('application/json') && (await response.json())
     error.status = response.status
@@ -83,5 +69,3 @@ export const call = async (
 
   return response
 }
-
-export default { fetcher, call }

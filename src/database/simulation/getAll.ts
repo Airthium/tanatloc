@@ -1,6 +1,7 @@
 import { tables } from '@/config/db'
 
-import query from '..'
+import { query } from '..'
+import { ISimulation } from '../index.d'
 
 /**
  * Get all
@@ -8,7 +9,9 @@ import query from '..'
  * @param {Array} data Data
  * @returns {Array} Simulations
  */
-export const getAll = async (data: Array<string>) => {
+export const getAll = async (
+  data: Array<string>
+): Promise<Array<ISimulation>> => {
   const response = await query(
     'SELECT ' + data.join(',') + ' FROM ' + tables.SIMULATIONS,
     []

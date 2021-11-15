@@ -1,24 +1,7 @@
 import { tables } from '@/config/db'
 
 import { getter } from '..'
-
-type Project = {
-  id: string
-  archived?: boolean
-  title?: string
-  description?: string
-  avatar?: string
-  public?: boolean
-  history?: object
-  createddate?: Date
-  lastaccess?: Date
-  geometries?: Array<string>
-  simulations?: Array<string>
-  owners?: Array<string>
-  users?: Array<string>
-  groups?: Array<string>
-  workspace?: string
-}
+import { IProject } from '../index.d'
 
 /**
  * Get
@@ -30,7 +13,7 @@ type Project = {
 export const get = async (
   id: string,
   data: Array<string>
-): Promise<Project> => {
+): Promise<IProject> => {
   const response = await getter(tables.PROJECTS, id, data)
 
   const project = response.rows[0]

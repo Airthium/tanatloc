@@ -1,7 +1,7 @@
 import { tables } from '@/config/db'
 
 import { query } from '..'
-import { INewAvatar } from '.'
+import { INewAvatar } from '../index.d'
 
 /**
  * Add

@@ -1,4 +1,4 @@
-import Caller from '@/api/call'
+import { call } from '@/api/call'
 
 /**
  * Delete
@@ -6,7 +6,7 @@ import Caller from '@/api/call'
  * @param {Object} simulation Simulation `{id }`
  */
 const del = async (simulation) => {
-  await Caller.call('/api/simulation/' + simulation.id, {
+  await call('/api/simulation/' + simulation.id, {
     method: 'DELETE'
   })
 }

@@ -1,11 +1,7 @@
 import { tables } from '@/config/db'
 
-import query from '..'
-
-type User = {
-  id: string
-  password: string
-}
+import { query } from '..'
+import { IUserCheck } from '../index.d'
 
 /**
  * Get by email and password
@@ -16,7 +12,7 @@ type User = {
 export const getByUsernameAndPassword = async (user: {
   email: string
   password: string
-}): Promise<User> => {
+}): Promise<IUserCheck> => {
   const response = await query(
     'SELECT id, isvalidated FROM ' +
       tables.USERS +

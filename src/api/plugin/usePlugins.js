@@ -1,5 +1,5 @@
 import useSWR from 'swr'
-import Caller from '@/api/call'
+import { fetcher } from '@/api/call'
 
 /**
  * Uses plugins
@@ -7,7 +7,7 @@ import Caller from '@/api/call'
  * @returns {Array} `[plugins, { mutatePlugins, addOnePlugin, delOnePlugin, mutateOnePlugin, errorPlugins, loadingPlugins }]`
  */
 const usePlugins = () => {
-  const { data, error, mutate } = useSWR('/api/plugin', Caller.fetcher)
+  const { data, error, mutate } = useSWR('/api/plugin', fetcher)
   const loading = !data
   const plugins = data?.plugins || []
 

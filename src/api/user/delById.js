@@ -1,11 +1,11 @@
-import Caller from '@/api/call'
+import { call } from '@/api/call'
 
 /**
  * Delete by id
  * @memberof API.User
  */
 const delById = async (id) => {
-  await Caller.call('/api/user/' + id, {
+  await call('/api/user/' + id, {
     method: 'DELETE'
   })
 }

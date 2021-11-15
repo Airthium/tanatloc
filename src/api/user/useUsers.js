@@ -1,5 +1,5 @@
 import useSWR from 'swr'
-import Caller from '@/api/call'
+import { fetcher } from '@/api/call'
 
 /**
  * Use users
@@ -7,7 +7,7 @@ import Caller from '@/api/call'
  * @returns {Array} `[users, { mutateUsers, addOneUser, delOneUser, mutateOneUser, errorUsers, loadingUsers }]`
  */
 const useUsers = () => {
-  const { data, error, mutate } = useSWR('/api/users', Caller.fetcher)
+  const { data, error, mutate } = useSWR('/api/users', fetcher)
   const loading = !data
   const users = data?.users || []
 

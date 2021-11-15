@@ -1,11 +1,7 @@
 import { tables } from '@/config/db'
 
-import query from '..'
-
-type System = {
-  allowsignup?: boolean
-  password?: object
-}
+import { query } from '..'
+import { ISystem } from '../index.d'
 
 /**
  * Get items
@@ -13,7 +9,7 @@ type System = {
  * @param {Object} data Data
  * @returns {Object} System `{ ...data }`
  */
-export const get = async (data: Array<string>): Promise<System> => {
+export const get = async (data: Array<string>): Promise<ISystem> => {
   const response = await query(
     'SELECT ' + data.join(',') + ' FROM ' + tables.SYSTEM,
     []

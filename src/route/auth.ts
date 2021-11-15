@@ -12,7 +12,7 @@ import OrganizationLib from '@/lib/organization'
  * @memberof Route
  * @param {Object} user User { id }
  * @param {Object} object Object (Project || Workspace || Organization)
- * @param {Object} parentObject Parent object (Workspace)
+ * @param {Object} [parentObject] Parent object (Workspace)
  */
 const auth = async (user, object, parentObject) => {
   // Objects

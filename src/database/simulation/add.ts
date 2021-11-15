@@ -1,13 +1,7 @@
 import { tables } from '@/config/db'
 
-import query from '..'
-
-type NewSimulation = {
-  id: string
-  name: string
-  scheme: object
-  project: string
-}
+import { query } from '..'
+import { INewSimulation } from '../index.d'
 
 /**
  * Add
@@ -19,7 +13,7 @@ export const add = async (simulation: {
   name: string
   scheme: object
   project: string
-}): Promise<NewSimulation> => {
+}): Promise<INewSimulation> => {
   const response = await query(
     'INSERT INTO ' +
       tables.SIMULATIONS +

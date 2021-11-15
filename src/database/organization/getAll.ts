@@ -1,7 +1,7 @@
 import { tables } from '@/config/db'
 
-import query from '..'
-import { Organization } from './get'
+import { query } from '..'
+import { IOrganization } from '../index.d'
 
 /**
  * Get all
@@ -11,7 +11,7 @@ import { Organization } from './get'
  */
 export const getAll = async (
   data: Array<string>
-): Promise<Array<Organization>> => {
+): Promise<Array<IOrganization>> => {
   const response = await query(
     'SELECT ' + data.join(',') + ' FROM ' + tables.ORGANIZATIONS,
     []

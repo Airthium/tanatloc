@@ -1,4 +1,4 @@
-import Caller from '@/api/call'
+import { call } from '@/api/call'
 
 /**
  * Delete
@@ -6,7 +6,7 @@ import Caller from '@/api/call'
  * @param {Object} workspace Workspace `{ id }`
  */
 const del = async (workspace) => {
-  await Caller.call('/api/workspace', {
+  await call('/api/workspace', {
     method: 'DELETE',
     body: JSON.stringify(workspace)
   })

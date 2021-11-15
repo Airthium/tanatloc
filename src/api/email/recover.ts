@@ -1,4 +1,4 @@
-import Caller from '@/api/call'
+import { call } from '@/api/call'
 
 import { PASSWORD_RECOVERY } from '@/config/email'
 
@@ -8,7 +8,7 @@ import { PASSWORD_RECOVERY } from '@/config/email'
  * @param {string} email email
  */
 export const recover = async (email: string): Promise<void> => {
-  await Caller.call('/api/email', {
+  await call('/api/email', {
     method: 'PUT',
     body: JSON.stringify({ type: PASSWORD_RECOVERY, email })
   })

@@ -1,4 +1,4 @@
-import Caller from '@/api/call'
+import { call } from '@/api/call'
 
 /**
  * Tasks
@@ -7,7 +7,7 @@ import Caller from '@/api/call'
  * @returns {Array} Tasks
  */
 const tasks = async (simulation) => {
-  return Caller.call('/api/simulation/' + simulation.id + '/tasks', {
+  return call('/api/simulation/' + simulation.id + '/tasks', {
     method: 'GET'
   })
 }

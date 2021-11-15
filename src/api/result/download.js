@@ -1,4 +1,4 @@
-import Caller from '@/api/call'
+import { call } from '@/api/call'
 
 /**
  * Download
@@ -8,7 +8,7 @@ import Caller from '@/api/call'
  * @returns {Object} Download read stream
  */
 const download = async (simulation, result) => {
-  return Caller.call('/api/result/download', {
+  return call('/api/result/download', {
     method: 'POST',
     body: JSON.stringify({ simulation, result })
   })

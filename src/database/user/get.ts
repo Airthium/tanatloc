@@ -1,22 +1,7 @@
 import { tables } from '@/config/db'
 
 import { getter } from '..'
-
-export type User = {
-  id?: string
-  lastname?: string
-  firstname?: string
-  email?: string
-  avatar?: string
-  isvalidated?: boolean
-  lastmodificationdate?: Date
-  superuser?: boolean
-  passwordlastchanged?: Date
-  organizations?: Array<string>
-  workspaces?: Array<string>
-  authorizedplugins?: Array<string>
-  plugins?: Array<object>
-}
+import { IUser } from '../index.d'
 
 /**
  * Get
@@ -30,7 +15,7 @@ export const get = async (
   id: string,
   data: Array<string>,
   key: string = 'id'
-): Promise<User> => {
+): Promise<IUser> => {
   const response = await getter(tables.USERS, id, data, key)
 
   const user = response.rows[0]

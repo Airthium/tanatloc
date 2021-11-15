@@ -1,16 +1,7 @@
 import { tables } from '@/config/db'
 
 import { getter } from '..'
-
-type Workspace = {
-  id: string
-  name?: string
-  owners?: Array<string>
-  users?: Array<string>
-  groups?: Array<string>
-  projects?: Array<string>
-  archivedprojects?: Array<object>
-}
+import { IWorkspace } from '../index.d'
 
 /**
  * Get
@@ -22,7 +13,7 @@ type Workspace = {
 export const get = async (
   id: string,
   data: Array<string>
-): Promise<Workspace> => {
+): Promise<IWorkspace> => {
   const response = await getter(tables.WORKSPACES, id, data)
 
   const workspace = response.rows[0]

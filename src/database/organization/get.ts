@@ -1,14 +1,7 @@
 import { tables } from '@/config/db'
 
 import { getter } from '..'
-
-export type Organization = {
-  id: string
-  name?: string
-  owners?: Array<string>
-  users?: Array<string>
-  groups?: Array<string>
-}
+import { IOrganization } from '../index.d'
 
 /**
  * Get
@@ -20,7 +13,7 @@ export type Organization = {
 export const get = async (
   id: string,
   data: Array<string>
-): Promise<Organization> => {
+): Promise<IOrganization> => {
   const response = await getter(tables.ORGANIZATIONS, id, data)
 
   const organization = response.rows[0]

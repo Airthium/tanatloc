@@ -1,7 +1,7 @@
-import Caller from '@/api/call'
+import { call } from '@/api/call'
 
 const add = async (user) => {
-  return Caller.call('/api/wait', {
+  return call('/api/wait', {
     method: 'POST',
     headers: {
       Accept: 'application/json'

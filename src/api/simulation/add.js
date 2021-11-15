@@ -1,4 +1,4 @@
-import Caller from '@/api/call'
+import { call } from '@/api/call'
 
 /**
  * Add
@@ -8,7 +8,7 @@ import Caller from '@/api/call'
  * @returns {Object} Simulation `{ id, name, scheme, project }`
  */
 const add = async (project, simulation) => {
-  return Caller.call('/api/simulation', {
+  return call('/api/simulation', {
     method: 'POST',
     headers: {
       Accept: 'application/json'

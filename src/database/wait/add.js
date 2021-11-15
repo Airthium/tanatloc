@@ -1,4 +1,4 @@
-import query from '..'
+import { query } from '..'
 import { tables } from '@/config/db'
 
 const add = async ({ email }) => {

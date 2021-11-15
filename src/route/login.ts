@@ -8,6 +8,8 @@ import { setTokenCookie } from '@/auth/auth-cookies'
 
 import Sentry from '@/lib/sentry'
 
+import { IRequest, IResponse } from '.'
+
 /**
  * Authenticate
  * @memberof Route
@@ -15,15 +17,23 @@ import Sentry from '@/lib/sentry'
  * @param {Object} req Request
  * @param {Object} res Response
  */
-const authenticate = (method, req, res) =>
+const authenticate = (
+  method: string,
+  req: IRequest,
+  res: IResponse
+): Promise<{ id: string }> =>
   new Promise((resolve, reject) => {
-    passport.authenticate(method, { session: false }, (error, token) => {
-      if (error) {
-        reject(error)
-      } else {
-        resolve(token)
+    passport.authenticate(
+      method,
+      { session: false },
+      (error: Error, token: { id: string }) => {
+        if (error) {
+          reject(error)
+        } else {
+          resolve(token)
+        }
       }
-    })(req, res)
+    )(req, res)
   })
 
 passport.use(localStrategy)
@@ -34,7 +44,7 @@ passport.use(localStrategy)
  * @param {Object} req Request
  * @param {Object} res Response
  */
-export const loginRoute = async (req, res) => {
+export const loginRoute = async (req: IRequest, res: IResponse) => {
   try {
     const user = await authenticate('local', req, res)
     if (!user) {

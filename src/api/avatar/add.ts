@@ -1,4 +1,5 @@
-import { call, CallResponse } from '@/api/call'
+import { call } from '@/api/call'
+import { ICallResponse } from '..'
 
 /**
  * Add
@@ -10,7 +11,7 @@ import { call, CallResponse } from '@/api/call'
 export const add = async (
   file: { name: string; uid: string; data: Buffer },
   project: { id: string }
-): Promise<CallResponse> =>
+): Promise<ICallResponse | JSON> =>
   call('/api/avatar', {
     method: 'POST',
     headers: {

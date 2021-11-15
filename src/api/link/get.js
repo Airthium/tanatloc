@@ -1,4 +1,4 @@
-import Caller from '@/api/call'
+import { call } from '@/api/call'
 
 /**
  * Get
@@ -8,7 +8,7 @@ import Caller from '@/api/call'
  * @returns {Object} Link `{ id, ...data }`
  */
 const get = async (id, data) => {
-  return Caller.call('/api/link', {
+  return call('/api/link', {
     method: 'POST',
     headers: {
       Accept: 'application/json'

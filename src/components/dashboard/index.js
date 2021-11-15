@@ -26,7 +26,7 @@ import Welcome from './welcome'
 import UserAPI from '@/api/user'
 import OrganizationAPI from '@/api/organization'
 import WorkspaceAPI from '@/api/workspace'
-import logout from '@/api/logout'
+import { logout } from '@/api/logout'
 
 /**
  * Errors

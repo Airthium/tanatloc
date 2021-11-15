@@ -1,18 +1,7 @@
 import { tables } from '@/config/db'
 
 import { getter } from '..'
-
-type Geometry = {
-  id: string
-  name?: string
-  originalfilename?: string
-  extension?: string
-  uploadfilename?: string
-  glb?: string
-  json?: string
-  summary?: object
-  project?: string
-}
+import { IGeometry } from '../index.d'
 
 /**
  * Get
@@ -23,7 +12,7 @@ type Geometry = {
 export const get = async (
   id: string,
   data: Array<string>
-): Promise<Geometry> => {
+): Promise<IGeometry> => {
   const response = await getter(tables.GEOMETRIES, id, data)
 
   const geometry = response.rows[0]

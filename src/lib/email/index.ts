@@ -18,7 +18,7 @@ const mailerSend = new MailerSend({
  * @param {string} email Email
  * @returns {boolean} Valid
  */
-const send = async (email) => {
+const send = async (email: string): Promise<boolean> => {
   const res = await mailerSend.send(email)
   if (res.status === 401) {
     console.warn('No email token: email skip!')
@@ -34,7 +34,7 @@ const send = async (email) => {
  * @param {string} email Email
  * @param {string} userid User id
  */
-const subscribe = async (email, userid) => {
+const subscribe = async (email: string, userid: string): Promise<void> => {
   // Create link
   const link = await Link.add({ type: SUBSCRIBE, email, userid })
 
@@ -79,7 +79,7 @@ const subscribe = async (email, userid) => {
  * @memberof Lib.Email
  * @param {string} email Email
  */
-const recover = async (email) => {
+const recover = async (email: string): Promise<void> => {
   // Create link entry
   const link = await Link.add({ type: PASSWORD_RECOVERY, email })
 
@@ -116,7 +116,7 @@ const recover = async (email) => {
  * @param {string} email Email
  * @param {string} userid User id
  */
-const revalidate = async (email, userid) => {
+const revalidate = async (email: string, userid: string): Promise<void> => {
   // Create link
   const link = await Link.add({ type: REVALIDATE, email, userid })
 
@@ -152,9 +152,12 @@ const revalidate = async (email, userid) => {
  * Invite
  * @memberof Lib.Email
  * @param {string} email Email
- * @param {string} user Sending user
+ * @param {Object} user Sending user
  */
-const invite = async (email, user) => {
+const invite = async (
+  email: string,
+  user: { email: string; firstname?: string; lastname?: string }
+): Promise<void> => {
   const subscribeLink = DOMAIN + '/login'
 
   const recipients = [new Recipient(email)]

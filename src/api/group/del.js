@@ -1,4 +1,4 @@
-import Caller from '@/api/call'
+import { call } from '@/api/call'
 
 /**
  * Delete group
@@ -6,7 +6,7 @@ import Caller from '@/api/call'
  * @param {Object} group Group `{ id }`
  */
 const del = async (group) => {
-  await Caller.call('/api/group', {
+  await call('/api/group', {
     method: 'DELETE',
     body: JSON.stringify(group)
   })

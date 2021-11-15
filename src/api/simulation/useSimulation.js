@@ -1,5 +1,5 @@
 import useSWR from 'swr'
-import Caller from '@/api/call'
+import { fetcher } from '@/api/call'
 
 /**
  * Use simulation
@@ -10,7 +10,7 @@ import Caller from '@/api/call'
 const useSimulation = (id, refresh) => {
   const { data, error, mutate } = useSWR(
     '/api/simulation' + (id ? '/' + id : ''),
-    Caller.fetcher,
+    fetcher,
     { refreshInterval: refresh || 0 }
   )
   const loading = !data

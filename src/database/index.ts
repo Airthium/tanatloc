@@ -4,17 +4,7 @@ import { Pool } from 'pg'
 
 import { USER, HOST, DATABASE, PASSWORD, PORT } from '@/config/db'
 
-export type DataBaseEntry = {
-  key: string
-  value: string
-  type?: string
-  method?: string
-  path?: Array<string>
-}
-
-type DataBaseResponse = {
-  rows: Array<any>
-}
+import { IDataBaseEntry, IDataBaseResponse } from './index.d'
 
 /**
  * Start database
@@ -43,7 +33,7 @@ const pool = startdB()
 export const query = async (
   command: string,
   args: Array<boolean | number | string | Array<string> | object>
-): Promise<DataBaseResponse> => {
+): Promise<IDataBaseResponse> => {
   const client = await pool.connect()
   const res = await client.query(command, args)
   client.release()
@@ -51,7 +41,7 @@ export const query = async (
 }
 
 /**
- * Get from dB
+ * Get
  * @memberof Database
  * @param {string} db Database
  * @param {string} id Id, or key
@@ -64,7 +54,7 @@ export const getter = async (
   id: string,
   data: Array<string>,
   key: string = 'id'
-): Promise<DataBaseResponse> => {
+): Promise<IDataBaseResponse> => {
   return query(
     'SELECT ' + data.join(',') + ' FROM ' + db + ' WHERE ' + key + ' = $1',
     [id]
@@ -72,7 +62,7 @@ export const getter = async (
 }
 
 /**
- * Update from dB
+ * Update
  * @memberof Database
  * @param {string} db Database
  * @param {string} id Id
@@ -81,8 +71,9 @@ export const getter = async (
 export const updater = async (
   db: string,
   id: string,
-  data: Array<DataBaseEntry>
+  data: Array<IDataBaseEntry>
 ): Promise<void> => {
+  // Begin / end text
   const queryTextBegin = 'UPDATE ' + db + ' SET '
   const queryTextEnd = id ? ' WHERE id = $1' : ''
   const args = id ? [id] : []
@@ -98,65 +89,137 @@ export const updater = async (
   // Set query text & args
   const queryTextMiddle = []
   data.forEach((d) => {
-    if (d.type === 'crypt') {
-      args.push(d.value)
-      queryTextMiddle.push(
-        d.key + ' = crypt($' + args.length + ", gen_salt('bf'))"
-      )
-    } else if (d.type === 'date') {
-      args.push(d.value)
-      queryTextMiddle.push(d.key + ' = to_timestamp($' + args.length + ')')
-    } else if (d.type === 'array') {
-      if (d.method === 'append') {
+    switch (d.type) {
+      case 'crypt':
+        cryptUpdater(d, args, queryTextMiddle)
+        break
+      case 'date':
+        dateUpdater(d, args, queryTextMiddle)
+        break
+      case 'array':
+        arrayUpdater(d, args, queryTextMiddle)
+        break
+      case 'json':
+        jsonUpdater(d, args, queryTextMiddle)
+        break
+      default:
         args.push(d.value)
-        queryTextMiddle.push(
-          d.key + ' = array_append(' + d.key + ', $' + args.length + ')'
-        )
-      } else if (d.method === 'remove') {
-        args.push(d.value)
-        queryTextMiddle.push(
-          d.key + ' = array_remove(' + d.key + ', $' + args.length + ')'
-        )
-      } else {
-        throw new Error('No method specified for array update')
-      }
-    } else if (d.type === 'json') {
-      if (d.method === 'set') {
-        if (!d.value) throw new Error('Empty json value')
-        args.push(d.value)
-        queryTextMiddle.push(
-          d.key +
-            ' = jsonb_set(' +
-            d.key +
-            ", '{" +
-            d.path.join(',') +
-            "}', $" +
-            args.length +
-            ')'
-        )
-      } else if (d.method === 'erase') {
-        queryTextMiddle.push(
-          d.key +
-            ' = jsonb_set(' +
-            d.key +
-            ", '{" +
-            d.path.join(',') +
-            "}', 'null'" +
-            ')'
-        )
-      } else {
-        throw new Error('No method specified for json update')
-      }
-    } else {
-      args.push(d.value)
-      queryTextMiddle.push(d.key + ' = $' + args.length)
+        queryTextMiddle.push(d.key + ' = $' + args.length)
     }
   })
   await query(queryTextBegin + queryTextMiddle.join(', ') + queryTextEnd, args)
 }
 
 /**
- * Delete from dB
+ * Update (crypt)
+ * @memberof Database
+ * @param data Data
+ * @param args Args
+ * @param queryText Query text
+ */
+const cryptUpdater = (
+  data: IDataBaseEntry,
+  args: Array<string>,
+  queryText: Array<string>
+): void => {
+  args.push(data.value)
+  queryText.push(data.key + ' = crypt($' + args.length + ", gen_salt('bf'))")
+}
+
+/**
+ * Update (date)
+ * @memberof Database
+ * @param data Data
+ * @param args Args
+ * @param queryText Query text
+ */
+const dateUpdater = (
+  data: IDataBaseEntry,
+  args: Array<string>,
+  queryText: Array<string>
+): void => {
+  args.push(data.value)
+  queryText.push(data.key + ' = to_timestamp($' + args.length + ')')
+}
+
+/**
+ * Update (array)
+ * @memberof Database
+ * @param data Data
+ * @param args Args
+ * @param queryText Query text
+ */
+const arrayUpdater = (
+  data: IDataBaseEntry,
+  args: Array<string>,
+  queryText: Array<string>
+): void => {
+  switch (data.method) {
+    case 'append':
+      args.push(data.value)
+      queryText.push(
+        data.key + ' = array_append(' + data.key + ', $' + args.length + ')'
+      )
+      break
+    case 'remove':
+      args.push(data.value)
+      queryText.push(
+        data.key + ' = array_remove(' + data.key + ', $' + args.length + ')'
+      )
+      break
+    default:
+      throw new Error(
+        'No method ' + (data.method || 'specified') + ' for array update'
+      )
+  }
+}
+
+/**
+ * Update (json)
+ * @memberof Database
+ * @param data Data
+ * @param args Args
+ * @param queryText Query text
+ */
+const jsonUpdater = (
+  data: IDataBaseEntry,
+  args: Array<string>,
+  queryText: Array<string>
+) => {
+  switch (data.method) {
+    case 'set':
+      args.push(data.value)
+      queryText.push(
+        data.key +
+          ' = jsonb_set(' +
+          data.key +
+          ", '{" +
+          data.path.join(',') +
+          "}', $" +
+          args.length +
+          ')'
+      )
+      break
+    case 'erase':
+      queryText.push(
+        data.key +
+          ' = jsonb_set(' +
+          data.key +
+          ", '{" +
+          data.path.join(',') +
+          "}', 'null'" +
+          ')'
+      )
+      break
+    default:
+      throw new Error(
+        'No method ' + (data.method || 'specified') + ' for json update'
+      )
+  }
+}
+
+/**
+ * Delete
  * @memberof Database
  * @param {string} db Database
  * @param {string} id Id
@@ -164,5 +227,3 @@ export const updater = async (
 export const deleter = async (db: string, id: string): Promise<void> => {
   await query('DELETE FROM ' + db + ' WHERE id = $1', [id])
 }
-
-export default query

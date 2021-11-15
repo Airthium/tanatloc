@@ -1,4 +1,4 @@
-import Caller from '@/api/call'
+import { call } from '@/api/call'
 
 /**
  * Add group
@@ -8,7 +8,7 @@ import Caller from '@/api/call'
  * @returns {Object} Group `{ id, name, users, organization }`
  */
 const add = async (organization, group) => {
-  return Caller.call('/api/group', {
+  return call('/api/group', {
     method: 'POST',
     body: JSON.stringify({ organization, group })
   })

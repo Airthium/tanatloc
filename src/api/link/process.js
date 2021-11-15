@@ -1,4 +1,4 @@
-import Caller from '@/api/call'
+import { call } from '@/api/call'
 
 /**
  * Process
@@ -8,7 +8,7 @@ import Caller from '@/api/call'
  *
  */
 const process = async (id, data) => {
-  await Caller.call('/api/link', {
+  await call('/api/link', {
     method: 'PUT',
     body: JSON.stringify({ id, data })
   })

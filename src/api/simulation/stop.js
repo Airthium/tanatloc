@@ -1,4 +1,4 @@
-import Caller from '@/api/call'
+import { call } from '@/api/call'
 
 /**
  * Stop
@@ -7,7 +7,7 @@ import Caller from '@/api/call'
  * @returns {Object} `{ ok: true }`
  */
 const stop = async (simulation) => {
-  return Caller.call('/api/simulation/' + simulation.id + '/stop', {
+  return call('/api/simulation/' + simulation.id + '/stop', {
     method: 'GET'
   })
 }

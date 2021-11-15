@@ -1,13 +1,7 @@
 import { tables } from '@/config/db'
 
-import query from '..'
-
-type NewGroup = {
-  id: string
-  name: string
-  users: Array<string>
-  organization: string
-}
+import { query } from '..'
+import { INewGroup } from '../index.d'
 
 /**
  * Add
@@ -19,7 +13,7 @@ type NewGroup = {
 export const add = async (
   organization: { id: string },
   group: { name: string; users: Array<string> }
-): Promise<NewGroup> => {
+): Promise<INewGroup> => {
   const response = await query(
     'INSERT INTO ' +
       tables.GROUPS +

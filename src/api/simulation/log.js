@@ -1,4 +1,4 @@
-import Caller from '@/api/call'
+import { call } from '@/api/call'
 
 /**
  * Log
@@ -8,7 +8,7 @@ import Caller from '@/api/call'
  * @returns {string} Log
  */
 const log = async (simulation, file) => {
-  return Caller.call('/api/simulation/' + simulation.id + '/log', {
+  return call('/api/simulation/' + simulation.id + '/log', {
     method: 'POST',
     body: JSON.stringify({ file })
   })

@@ -1,4 +1,4 @@
-import Caller from '@/api/call'
+import { call } from '@/api/call'
 
 /**
  * Archive
@@ -7,7 +7,7 @@ import Caller from '@/api/call'
  * @returns {Object} Archive read stream
  */
 const archive = async (simulation) => {
-  return Caller.call('/api/result/archive', {
+  return call('/api/result/archive', {
     method: 'POST',
     body: JSON.stringify({ simulation })
   })

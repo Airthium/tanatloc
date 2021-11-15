@@ -1,4 +1,4 @@
-import Caller from '@/api/call'
+import { call } from '@/api/call'
 
 /**
  * Update
@@ -6,7 +6,7 @@ import Caller from '@/api/call'
  * @param {Object} plugin Plugin
  */
 const update = async (plugin) => {
-  await Caller.call('/api/plugin', {
+  await call('/api/plugin', {
     method: 'PUT',
     body: JSON.stringify(plugin)
   })

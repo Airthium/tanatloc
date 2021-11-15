@@ -1,13 +1,7 @@
 import { tables } from '@/config/db'
 
 import { getter } from '..'
-
-type Simulation = {
-  id: string
-  name?: string
-  scheme?: object
-  project?: string
-}
+import { ISimulation } from '../index.d'
 
 /**
  * Get
@@ -19,7 +13,7 @@ type Simulation = {
 export const get = async (
   id: string,
   data: Array<string>
-): Promise<Simulation> => {
+): Promise<ISimulation> => {
   const response = await getter(tables.SIMULATIONS, id, data)
 
   const simulation = response.rows[0]

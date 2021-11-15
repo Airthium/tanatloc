@@ -1,13 +1,7 @@
 import { tables } from '@/config/db'
 
-import query from '..'
-
-type NewLink = {
-  id: string
-  type: string
-  email: string
-  userid?: string
-}
+import { query } from '..'
+import { INewLink } from '../index.d'
 
 /**
  * Add
@@ -19,7 +13,7 @@ export const add = async (link: {
   type: string
   email: string
   userid?: string
-}): Promise<NewLink> => {
+}): Promise<INewLink> => {
   const response = await query(
     'INSERT INTO ' +
       tables.LINKS +

@@ -1,4 +1,4 @@
-import Caller from '@/api/call'
+import { call } from '@/api/call'
 
 /**
  * Load
@@ -8,7 +8,7 @@ import Caller from '@/api/call'
  * @returns {Object} Result `{ buffer }`
  */
 const load = async (simulation, result) => {
-  return Caller.call('/api/result', {
+  return call('/api/result', {
     method: 'POST',
     body: JSON.stringify({ simulation, result })
   })

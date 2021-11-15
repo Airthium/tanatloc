@@ -5,7 +5,7 @@ import path from 'path'
 import { AVATAR } from '@/config/storage'
 
 import AvatarDB from '@/database/avatar'
-import type { IAvatar, INewAvatar } from '@/database/avatar'
+import type { IAvatar, INewAvatar } from '@/database/index.d'
 
 import User from '../user'
 import Project from '../project'

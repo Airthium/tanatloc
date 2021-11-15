@@ -1,14 +1,7 @@
 import { tables } from '@/config/db'
 
-import query from '..'
-
-type NewProject = {
-  id: string
-  title: string
-  description?: string
-  owners: Array<string>
-  workspace: string
-}
+import { query } from '..'
+import { INewProject } from '../index.d'
 
 /**
  * Add
@@ -22,7 +15,7 @@ export const add = async (
   user: { id: string },
   workspace: { id: string },
   project: { title: string; description?: string }
-): Promise<NewProject> => {
+): Promise<INewProject> => {
   const response = await query(
     'INSERT INTO ' +
       tables.PROJECTS +

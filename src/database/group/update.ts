@@ -1,6 +1,7 @@
 import { tables } from '@/config/db'
 
-import { DataBaseEntry, updater } from '..'
+import { updater } from '..'
+import { IDataBaseEntry } from '../index.d'
 
 /**
  * Update
@@ -10,7 +11,7 @@ import { DataBaseEntry, updater } from '..'
  */
 export const update = async (
   group: { id: string },
-  data: Array<DataBaseEntry>
+  data: Array<IDataBaseEntry>
 ) => {
   await updater(tables.GROUPS, group.id, data)
 }

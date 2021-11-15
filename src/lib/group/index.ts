@@ -1,6 +1,7 @@
 /** @namespace Lib.Group */
 
 import GroupDB from '@/database/group'
+import { INewGroup, IGroup, IUser, IDataBaseEntry } from '@/database/index.d'
 
 import User from '../user'
 import Workspace from '../workspace'
@@ -14,9 +15,14 @@ import Organization from '../organization'
  * @param {Object} group Group `{ name, users }`
  * @returns {Object} Group `{ id, name, users, organization }`
  */
-const add = async (organization, { name, users }) => {
+const add = async (
+  organization: { id: string },
+  group: { name: string; users: Array<string> }
+): Promise<INewGroup> => {
   // Add group
-  const group = await GroupDB.add(organization, { name, users })
+  const newGroup = await GroupDB.add(organization, group)
+
+  //TODO bug here!
 
   // Add group to organization
   Organization.update(organization, [
@@ -28,7 +34,7 @@ const add = async (organization, { name, users }) => {
     }
   ])
 
-  return group
+  return newGroup
 }
 
 /**
@@ -39,7 +45,11 @@ const add = async (organization, { name, users }) => {
  * @param {boolean} [withData=true] With data
  * @returns {Object} Group `{ id, ...data }`
  */
-const get = async (id, data, withData = true) => {
+const get = async (
+  id: string,
+  data: Array<string>,
+  withData: boolean = true
+): Promise<IGroup & { users?: IUser }> => {
   const groupData = await GroupDB.get(id, data)
 
   if (withData && groupData?.users)
@@ -68,7 +78,9 @@ const get = async (id, data, withData = true) => {
  * @param {Array} data Data
  * @return {Array} Groups
  */
-const getAll = async (data) => {
+const getAll = async (
+  data: Array<string>
+): Promise<Array<IGroup & { users?: IUser }>> => {
   // Get groups
   const groups = await GroupDB.getAll(data)
 
@@ -104,9 +116,12 @@ const getAll = async (data) => {
  * @memberof Lib.Group
  * @param {string} id Organization id
  * @param {Array} data Data
- * @returns {Array} Groups
+ * @returns {Array} Groups TODO complete TS type
  */
-const getByOrganization = async (id, data) => {
+const getByOrganization = async (
+  id: string,
+  data: Array<string>
+): Promise<Array<any>> => {
   // Get organization
   const organization = await Organization.get(id, ['groups'])
 
@@ -132,7 +147,10 @@ const getByOrganization = async (id, data) => {
  * @param {Object} group Group `{ id }`
  * @param {Array} data Data
  */
-const update = async (group, data) => {
+const update = async (
+  group: { id: string },
+  data: IDataBaseEntry[]
+): Promise<void> => {
   await GroupDB.update(group, data)
 }
 
@@ -141,7 +159,7 @@ const update = async (group, data) => {
  * @memberof Lib.Group
  * @param {Object} group Group `{ id }`
  */
-const del = async (group) => {
+const del = async (group: { id: string }): Promise<void> => {
   // Get data
   const groupData = await get(group.id, [
     'users',

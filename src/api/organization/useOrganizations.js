@@ -1,5 +1,5 @@
 import useSWR from 'swr'
-import Caller from '@/api/call'
+import { fetcher } from '@/api/call'
 
 /**
  * Use organizations
@@ -7,7 +7,7 @@ import Caller from '@/api/call'
  * @returns {Array} `[organizations, {mutateOrganizations, addOneOrganization, delOneOrganization, mutateOneOrganization, errorOrganizations, loadingOrganizations }]`
  */
 const useOrganizations = () => {
-  const { data, error, mutate } = useSWR('/api/organizations', Caller.fetcher)
+  const { data, error, mutate } = useSWR('/api/organizations', fetcher)
   const loading = !data
   const organizations = data?.organizations || []
 

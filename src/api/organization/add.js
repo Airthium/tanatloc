@@ -1,4 +1,4 @@
-import Caller from '@/api/call'
+import { call } from '@/api/call'
 
 /**
  * Add organization
@@ -7,7 +7,7 @@ import Caller from '@/api/call'
  * @returns {Object} Organization `{ id, name, owners }`
  */
 const add = async (organization) => {
-  return Caller.call('/api/organization', {
+  return call('/api/organization', {
     method: 'POST',
     body: JSON.stringify(organization)
   })

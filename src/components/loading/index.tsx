@@ -8,13 +8,12 @@ import Background from '@/components/background'
  * Simple
  * @memberof Components.Loading
  */
-const Simple = () => {
+const Simple = (): JSX.Element => {
   /**
    * Render
    */
   return (
     <Space
-      direction=""
       style={{
         height: '100%',
         width: '100%',
@@ -23,7 +22,7 @@ const Simple = () => {
       }}
     >
       <Card>
-        <Space direction="">
+        <Space>
           <Spin />
           Loading, please wait...
         </Space>
@@ -36,7 +35,7 @@ const Simple = () => {
  * Loading
  * @memberof Components.Loading
  */
-const Loading = () => {
+const Loading = (): JSX.Element => {
   /**
    * Render
    */

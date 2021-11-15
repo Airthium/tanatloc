@@ -2,6 +2,7 @@
 
 import path from 'path'
 import archiver from 'archiver'
+import { ReadStream } from 'fs'
 
 import { SIMULATION } from '@/config/storage'
 
@@ -20,7 +21,10 @@ const archiveFileName = 'resultsArchive.zip'
  * @param {Object} result Result `{ originPath, glb } }`
  * @returns {Object} Result `{ buffer }`
  */
-const load = async (simulation, result) => {
+const load = async (
+  simulation: { id: string },
+  result: { originPath: string; glb: string }
+): Promise<{ buffer: Buffer }> => {
   const buffer = await Tools.readFile(
     path.join(SIMULATION, simulation.id, result.originPath, result.glb)
   )
@@ -37,7 +41,10 @@ const load = async (simulation, result) => {
  * @param {Object} result Result `{ originPath, fileName } }`
  * @return {Object} Read stream
  */
-const download = (simulation, result) => {
+const download = (
+  simulation: { id: string },
+  result: { originPath: string; fileName: string }
+): ReadStream => {
   return Tools.readStream(
     path.join(SIMULATION, simulation.id, result.originPath, result.fileName)
   )
@@ -49,7 +56,7 @@ const download = (simulation, result) => {
  * @param {Object} simulation Simulation `{ id } }`
  * @returns {Object} Read stream
  */
-const archive = async (simulation) => {
+const archive = async (simulation: { id: string }): Promise<ReadStream> => {
   const resultPath = path.join(SIMULATION, simulation.id, 'run', 'result')
 
   const archiveName = path.join(
@@ -80,8 +87,8 @@ const archive = async (simulation) => {
   const zip = archiver('zip')
 
   await new Promise(async (resolve, reject) => {
-    zip.on('warning', (err) => console.warn(err))
-    zip.on('error', (err) => reject(err))
+    zip.on('warning', (err: Error) => console.warn(err))
+    zip.on('error', (err: Error) => reject(err))
     zip.pipe(output)
 
     // Append files

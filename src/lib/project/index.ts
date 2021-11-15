@@ -1,11 +1,14 @@
 /** @namespace Lib.Project */
 
 import path from 'path'
+import { ReadStream } from 'fs'
 
 import { STORAGE } from '@/config/storage'
 
 import ProjectDB from '@/database/project'
+import { IDataBaseEntry, IProject } from '@/database/index.d'
 
+import { IProjectWithData } from '../index.d'
 import Avatar from '../avatar'
 import User from '../user'
 import Group from '../group'
@@ -17,51 +20,71 @@ import Tools from '../tools'
 /**
  * Add
  * @memberof Lib.Project
- * @param {Object} user User `{ id }`
- * @param {Object} workspace Workspace: `{ id }`
- * @param {Object} project Project `{ title, description }`
- * @returns {Object} Project `{ id, title, description, owners, workspace }`
+ * @param user User
+ * @param workspace Workspace
+ * @param project Project
+ * @returns New project
  */
-const add = async (user, { id }, { title, description }) => {
-  const project = await ProjectDB.add(user, { id }, { title, description })
+const add = async (
+  user: { id: string },
+  workspace: { id: string },
+  project: { title: string; description?: string }
+): Promise<IProject> => {
+  const newProject = await ProjectDB.add(user, workspace, project)
 
   // Add project reference in workspace
-  await Workspace.update({ id }, [
-    { type: 'array', method: 'append', key: 'projects', value: project.id }
+  await Workspace.update(workspace, [
+    { type: 'array', method: 'append', key: 'projects', value: newProject.id }
   ])
 
-  return project
+  return newProject
 }
 
 /**
  * Get
  * @memberof Lib.Project
- * @param {string} id Project's id
- * @param {Array} data Data
- * @param {boolean} [withData=true] With data
- * @returns {Object} Project `{ id, ...data }`
+ * @param id Project id
+ * @param data Data
+ * @returns Project
  */
-const get = async (id, data, withData = true) => {
-  const project = await ProjectDB.get(id, data)
+const get = async (id: string, data: string[]): Promise<IProject> => {
+  return ProjectDB.get(id, data)
+}
 
+/**
+ * Get with data
+ * @memberof Lib.Project
+ * @param id Project id
+ * @param data Data
+ * @returns Project
+ */
+const getWithData = async (
+  id: string,
+  data: string[]
+): Promise<IProjectWithData> => {
+  const project = await get(id, data)
+
+  // Check archived
   if (project?.archived) project.avatar = null
 
+  const projectWithData: IProjectWithData = { ...project }
+
   // Get avatar
-  if (withData && project?.avatar) {
+  if (project?.avatar) {
     try {
       const avatar = await Avatar.read(project.avatar)
-      project.avatar = avatar
+      projectWithData.avatar = avatar
     } catch (err) {
       console.warn(err)
-      project.avatar = undefined
+      projectWithData.avatar = undefined
     }
   }
 
   // Get owners
-  if (withData && project?.owners) {
+  if (project?.owners) {
     const owners = await Promise.all(
       project.owners.map(async (owner) => {
-        const ownerData = await User.get(owner, [
+        const ownerData = await User.getWithData(owner, [
           'lastname',
           'firstname',
           'email',
@@ -73,14 +96,14 @@ const get = async (id, data, withData = true) => {
         }
       })
     )
-    project.owners = owners
+    projectWithData.owners = owners
   }
 
   // Get users
-  if (withData && project?.users) {
+  if (project?.users) {
     const users = await Promise.all(
       project.users.map(async (user) => {
-        const userData = await User.get(user, [
+        const userData = await User.getWithData(user, [
           'lastname',
           'firstname',
           'email',
@@ -92,11 +115,11 @@ const get = async (id, data, withData = true) => {
         }
       })
     )
-    project.users = users
+    projectWithData.users = users
   }
 
   // Get groups
-  if (withData && project?.groups) {
+  if (project?.groups) {
     const groups = await Promise.all(
       project.groups.map(async (group) => {
         const groupData = await Group.get(group, ['name'])
@@ -106,19 +129,22 @@ const get = async (id, data, withData = true) => {
         }
       })
     )
-    project.groups = groups
+    projectWithData.groups = groups
   }
 
-  return project
+  return projectWithData
 }
 
 /**
  * Update
  * @memberof Lib.Project
- * @param {Object} Project `{ id }`
- * @param {Object} data Data `[{ key, value, ...}, ...]`
+ * @param Project Project
+ * @param data Data
  */
-const update = async (project, data) => {
+const update = async (
+  project: { id: string },
+  data: IDataBaseEntry[]
+): Promise<void> => {
   // Modify last access
   data.push({
     type: 'date',
@@ -135,12 +161,12 @@ const update = async (project, data) => {
 
     // Delete groups
     const deleted = projectData.groups.filter(
-      (g) => !groupsUpdate.value.includes(g.id)
+      (g) => !groupsUpdate.value.includes(g)
     )
 
     await Promise.all(
       deleted.map(async (group) => {
-        await Group.update({ id: group.id }, [
+        await Group.update({ id: group }, [
           {
             key: 'projects',
             type: 'array',
@@ -153,7 +179,7 @@ const update = async (project, data) => {
 
     // Added groups
     const added = groupsUpdate.value.filter(
-      (g) => !projectData.groups.find((gg) => gg.id === g)
+      (g) => !projectData.groups.find((gg) => gg === g)
     )
     await Promise.all(
       added.map(async (group) => {
@@ -175,12 +201,15 @@ const update = async (project, data) => {
 /**
  * Delete
  * @memberof Lib.Project
- * @param {Object} workspace Workspace `{ id }`
- * @param {Object} project Project `{ id }`
+ * @param workspace Workspace
+ * @param project Project
  */
-const del = async ({ id }, project) => {
+const del = async (
+  workspace: { id: string },
+  project: { id: string }
+): Promise<void> => {
   // Get data
-  const data = await get(project.id, ['groups', 'simulations'], false)
+  const data = await get(project.id, ['groups', 'simulations'])
 
   // Delete from groups
   if (data.groups) {
@@ -211,22 +240,25 @@ const del = async ({ id }, project) => {
   await ProjectDB.del(project)
 
   // Delete project reference in workspace
-  await Workspace.update({ id }, [
+  await Workspace.update(workspace, [
     { type: 'array', method: 'remove', key: 'projects', value: project.id }
   ])
 }
 
 /**
  * Archive
- * @param {Object} project Project { id }
+ * @param project Project
+ * @returns Read stream
  */
-const archive = async (project) => {
+const archive = async (project: { id: string }): Promise<ReadStream> => {
   // Data
-  const data = await get(
-    project.id,
-    ['title', 'description', 'avatar', 'geometries', 'simulations'],
-    false
-  )
+  const data = await get(project.id, [
+    'title',
+    'description',
+    'avatar',
+    'geometries',
+    'simulations'
+  ])
 
   // Create temporary path
   const temporaryPath = path.join(STORAGE, '.archive-' + project.id)
@@ -274,5 +306,5 @@ const archive = async (project) => {
   return Tools.readStream(archiveFileName)
 }
 
-const Project = { add, get, update, del, archive }
+const Project = { add, get, getWithData, update, del, archive }
 export default Project

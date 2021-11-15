@@ -11,7 +11,7 @@ const plugins = []
  * Load
  * @memberof Lib.Plugins
  */
-const load = async () => {
+const load = async (): Promise<void> => {
   // Available directories
   const availables = await Tools.listDirectories(
     isElectron() ? `${process.resourcesPath}/plugins` : './plugins'

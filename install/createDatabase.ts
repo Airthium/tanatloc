@@ -12,7 +12,7 @@ import {
   tables,
   schemas
 } from '@/config/db'
-import query from '@/database'
+import { query } from '@/database'
 
 /**
  * Create database

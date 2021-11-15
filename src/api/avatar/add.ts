@@ -4,9 +4,9 @@ import { ICallResponse } from '..'
 /**
  * Add
  * @memberof API.Avatar
- * @param {File} file File `{ name, uid, data }`
- * @param {Object} [project] Project `{ id }`
- * @returns {Object} Avatar `{ id, name }`
+ * @param file File
+ * @param project Project
+ * @returns Avatar
  */
 export const add = async (
   file: { name: string; uid: string; data: Buffer },

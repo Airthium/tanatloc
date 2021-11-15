@@ -1,13 +1,26 @@
 import useSWR from 'swr'
 import { fetcher } from '@/api/call'
+import { IProjectWithData } from '@/lib'
 
 /**
  * Use projects
  * @memberof API.Project
- * @param {Array} ids [Projects ids]
+ * @param ids Projects ids
  * @returns {Array} `[projects, { mutateProjects, addOneProject, delOneProject, mutateOneProject, errorProjects, loadingProjects }]`
  */
-const useProjects = (ids) => {
+const useProjects = (
+  ids: string[]
+): [
+  IProjectWithData[],
+  {
+    mutateProjects: Function
+    addOneProject: Function
+    delOneProject: Function
+    mutateOneProject: Function
+    errorProjects: Error
+    loadingProjects: boolean
+  }
+] => {
   const { data, error, mutate } = useSWR(
     ['/api/projects', JSON.stringify({ ids })],
     fetcher
@@ -20,7 +33,7 @@ const useProjects = (ids) => {
    * @memberof API.Project
    * @param {Object} project Project
    */
-  const addOne = (project) => {
+  const addOne = (project: IProjectWithData) => {
     const newProjects = [...projects, project]
     mutate({ projects: newProjects })
   }
@@ -30,7 +43,7 @@ const useProjects = (ids) => {
    * @memberof API.Project
    * @param {Object} project project
    */
-  const delOne = (project) => {
+  const delOne = (project: IProjectWithData) => {
     const filteredProjects = projects.filter((p) => p.id !== project.id)
     mutate({ projects: filteredProjects })
   }
@@ -40,7 +53,7 @@ const useProjects = (ids) => {
    * @memberof API.Project
    * @param {Object} project Project
    */
-  const mutateOne = (project) => {
+  const mutateOne = (project: IProjectWithData) => {
     const mutatedProjects = projects.map((p) => {
       if (p.id === project.id) p = { ...p, ...project }
       return p

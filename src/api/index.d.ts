@@ -1,3 +1,9 @@
+import { IProject } from '@/database'
+
+export interface IFetchResponse {
+  projects?: IProject[]
+}
+
 export interface ICallHeaders {
   Accept?: string
 }

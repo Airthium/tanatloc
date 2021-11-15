@@ -49,7 +49,7 @@ export default async (req, res) => {
       case 'GET':
         // Get project
         try {
-          const project = await ProjectLib.get(id, [
+          const project = await ProjectLib.getWithData(id, [
             'title',
             'description',
             'avatar',

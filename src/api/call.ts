@@ -2,7 +2,12 @@
 
 import isElectron from 'is-electron'
 
-import { ICallError, ICallHeaders, ICallResponse } from '.'
+import {
+  ICallError,
+  ICallHeaders,
+  ICallResponse,
+  IFetchResponse
+} from './index.d'
 
 const port: number = parseInt(process.env.PORT) || 3000
 const base: string = isElectron() ? 'http://localhost:' + port : ''
@@ -13,7 +18,10 @@ const base: string = isElectron() ? 'http://localhost:' + port : ''
  * @param {string} url URL
  * @param {string} [payload] Payload
  */
-export const fetcher = async (url: string, payload: string): Promise<JSON> => {
+export const fetcher = async (
+  url: string,
+  payload: string
+): Promise<IFetchResponse> => {
   const res = await fetch(base + url, {
     method: payload ? 'POST' : 'GET',
     headers: {

@@ -38,7 +38,7 @@ export default async (req, res) => {
     switch (req.method) {
       case 'GET':
         try {
-          const user = await UserLib.get(id, [
+          const user = await UserLib.getWithData(id, [
             'lastname',
             'firstname',
             'email',

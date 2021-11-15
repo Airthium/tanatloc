@@ -46,7 +46,7 @@ export default async (req, res) => {
             await checkProjectAuth({ id: sessionId }, { id })
 
             // Get
-            return await ProjectLib.get(id, [
+            return await ProjectLib.getWithData(id, [
               'archived',
               'title',
               'description',

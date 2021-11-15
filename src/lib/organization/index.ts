@@ -3,6 +3,7 @@
 import Crypto from 'crypto'
 
 import OrganizationDB from '@/database/organization'
+import { INewOrganization, IOrganization } from '@/database/index.d'
 
 import User from '../user'
 import Group from '../group'
@@ -15,7 +16,10 @@ import Email from '../email'
  * @param {Object} organization Organization `{ name }`
  * @returns {Object} Organization `{ id, name, owners }`
  */
-const add = async (user, organization) => {
+const add = async (
+  user: { id: string },
+  organization: { name: string }
+): Promise<INewOrganization> => {
   // Add organization
   const newOrganization = await OrganizationDB.add({
     name: organization.name,
@@ -42,7 +46,7 @@ const add = async (user, organization) => {
  * @param {Array} data Data
  * @returns {Object} Organization `{ id, ...data }`
  */
-const get = async (id, data) => {
+const get = async (id: string, data: string[]): Promise<IOrganization> => {
   return OrganizationDB.get(id, data)
 }
 
@@ -53,7 +57,10 @@ const get = async (id, data) => {
  * @param {Array} data Data
  * @returns {Array} Organizations
  */
-const getByUser = async (user, data) => {
+const getByUser = async (
+  user: { id: string },
+  data: string[]
+): Promise<IOrganization[]> => {
   const internalData = [...data]
   if (!internalData.includes('owners')) internalData.push('owners')
   if (!internalData.includes('users')) internalData.push('users')
@@ -81,7 +88,7 @@ const getByUser = async (user, data) => {
       organization.owners &&
         (organization.owners = await Promise.all(
           organization.owners.map(async (o) => {
-            const ownerData = await User.get(o, [
+            const ownerData = await User.getWithData(o, [
               'firstname',
               'lastname',
               'email',
@@ -98,7 +105,7 @@ const getByUser = async (user, data) => {
       organization.users &&
         (organization.users = await Promise.all(
           organization.users.map(async (u) => {
-            const userData = await User.get(u, [
+            const userData = await User.getWithData(u, [
               'firstname',
               'lastname',
               'email',
@@ -135,7 +142,7 @@ const getByUser = async (user, data) => {
  * @param {Array} data Data
  * @param {string} ownerId Owner id
  */
-const update = async (organization, data, ownerId) => {
+const update = async (organization: { id: string }, data, ownerId) => {
   // Get owner
   const owner = await User.get(ownerId, ['firstname', 'lastname', 'email'])
 

@@ -8,7 +8,7 @@ import { Avatar, Spin, Tooltip } from 'antd'
  * @param {string} str String
  * @returns {string} Color
  */
-const stringToColor = (str) => {
+const stringToColor = (str: string): string => {
   if (!str) return '#FFFFFF'
 
   str = str.replace(/[\W_]+/g, '')
@@ -27,7 +27,7 @@ const stringToColor = (str) => {
  * @param {number} c Color
  * @returns {string} Hex
  */
-const componentToHex = (c) => {
+const componentToHex = (c: number): string => {
   const hex = c.toString(16)
   return hex.length === 1 ? '0' + hex : hex
 }
@@ -38,7 +38,7 @@ const componentToHex = (c) => {
  * @param {Object} color Color `{r, g, b}`
  * @returns {string} Hex
  */
-const rgbToHex = (color) => {
+const rgbToHex = (color: { r: number; g: number; b: number }): string => {
   return (
     '#' +
     componentToHex(color.r * 255) +
@@ -54,7 +54,10 @@ const rgbToHex = (color) => {
  * @param {number} alpha Alpha
  * @returns {string} rgba
  */
-const rgbToRgba = (color, alpha = 1) => {
+const rgbToRgba = (
+  color: { r: number; g: number; b: number },
+  alpha: number = 1
+): string => {
   if (!color) return 'rgba(255, 255, 255, 0)'
   return (
     'rgba(' +
@@ -75,7 +78,13 @@ const rgbToRgba = (color, alpha = 1) => {
  * @param {Object} user User
  * @returns {jsx} Avatar
  */
-const userToAvatar = (user) => {
+const userToAvatar = (user: {
+  id: string
+  email?: string
+  firstname?: string
+  lastname?: string
+  avatar?: Buffer
+}): JSX.Element => {
   const avatar = user.avatar && Buffer.from(user.avatar).toString()
   let name = ''
   let abbrev = ''
@@ -89,7 +98,7 @@ const userToAvatar = (user) => {
     abbrev = user.email[0]
   }
   return (
-    <Tooltip key={user.id || user} title={name}>
+    <Tooltip key={user.id || JSON.stringify(user)} title={name}>
       <Avatar src={avatar} style={{ backgroundColor: stringToColor(name) }}>
         {abbrev.toUpperCase() || <Spin />}
       </Avatar>
@@ -103,12 +112,12 @@ const userToAvatar = (user) => {
  * @param {Object} group Group
  * @returns {jsx} Avatar
  */
-const groupToAvatar = (group) => {
+const groupToAvatar = (group: { id: string; name: string }): JSX.Element => {
   let name = group.name
   let abbrev = ''
   if (name) abbrev = name[0]
   return (
-    <Tooltip key={group.id || group} title={name}>
+    <Tooltip key={group.id || JSON.stringify(group)} title={name}>
       <Avatar style={{ backgroundColor: stringToColor(name) }}>
         {abbrev.toUpperCase() || <Spin />}
       </Avatar>
@@ -122,7 +131,7 @@ const groupToAvatar = (group) => {
  * @param {string} email Email
  * @returns {bool} Valid
  */
-const validateEmail = (email) => {
+const validateEmail = (email: string): boolean => {
   const re =
     /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
   return re.test(email.toLowerCase())

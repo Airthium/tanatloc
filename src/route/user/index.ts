@@ -51,7 +51,7 @@ export default async (req, res) => {
 
         // Get
         try {
-          const user = await UserLib.get(sessionId, [
+          const user = await UserLib.getWithData(sessionId, [
             'lastname',
             'firstname',
             'email',

@@ -58,7 +58,7 @@ const listDirectories = async (location: string): Promise<Array<string>> => {
 const writeFile = async (
   location: string,
   name: string,
-  content: Buffer
+  content: Buffer | string
 ): Promise<void> => {
   await createPath(location)
   await fs.writeFile(path.join(location, name), content)

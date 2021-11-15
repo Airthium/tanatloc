@@ -1,7 +1,7 @@
 /** @namespace Components.Assets.Dialog */
 
 import PropTypes from 'prop-types'
-import { CSSProperties, useEffect } from 'react'
+import { CSSProperties, ReactChild, useEffect } from 'react'
 import { Form, Modal } from 'antd'
 
 import DeleteDialog from './delete'
@@ -14,7 +14,7 @@ interface Props {
   initialValues?: object
   okButtonProps?: CSSProperties
   okButtonText?: string
-  children: Node
+  children: ReactChild | ReactChild[]
   onCancel: Function
   onOk: Function
 }

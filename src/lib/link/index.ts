@@ -3,6 +3,7 @@
 import { SUBSCRIBE, PASSWORD_RECOVERY, REVALIDATE } from '@/config/email'
 
 import LinkDB from '@/database/link'
+import { ILink, INewLink } from '@/database/index.d'
 
 import UserLib from '../user'
 
@@ -12,7 +13,11 @@ import UserLib from '../user'
  * @param {Object} link Link `{ type, email, ?userid }`
  * @returns {Object} Link `{ id, type, email, userid }`
  */
-const add = async (link) => {
+const add = async (link: {
+  type: string
+  email: string
+  userid?: string
+}): Promise<INewLink> => {
   return LinkDB.add(link)
 }
 
@@ -23,7 +28,7 @@ const add = async (link) => {
  * @param {Array} data Data
  * @returns {Object} Link `{ id, ...data }`
  */
-const get = async (id, data) => {
+const get = async (id: string, data: Array<string>): Promise<ILink> => {
   return LinkDB.get(id, data)
 }
 
@@ -33,7 +38,10 @@ const get = async (id, data) => {
  * @param {string} id Link id
  * @param {Object} data Data `{ email, password }`
  */
-const process = async (id, data) => {
+const process = async (
+  id: string,
+  data: { email: string; password: string }
+): Promise<void> => {
   const link = await get(id, ['type', 'email', 'userid'])
 
   if (link.type === SUBSCRIBE || link.type === REVALIDATE) {
@@ -74,7 +82,7 @@ const process = async (id, data) => {
  * @memberof Lib.Link
  * @param {Object} link Link `{ id }`
  */
-const del = async (link) => {
+const del = async (link: { id: string }): Promise<void> => {
   await LinkDB.del(link)
 }
 

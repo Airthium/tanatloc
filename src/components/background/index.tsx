@@ -15,10 +15,10 @@ import {
  * Background
  * @memberof Components.Background
  */
-const Background = () => {
+const Background = (): JSX.Element => {
   // Parameters
-  const numberOfTetrahedra = 50
-  const rotationSpeed = 0.005
+  const numberOfTetrahedra: number = 50
+  const rotationSpeed: number = 0.005
 
   // Ref
   const mount = useRef(null)
@@ -27,7 +27,7 @@ const Background = () => {
   useEffect(() => {
     const div = mount.current
 
-    let frameId
+    let frameId: number
 
     let width = div.clientWidth
     let height = div.clientHeight
@@ -99,7 +99,7 @@ const Background = () => {
     /**
      * Resize
      */
-    const resize = () => {
+    const resize = (): void => {
       width = div.clientWidth
       height = div.clientHeight
       renderer.setSize(width, height)
@@ -110,12 +110,17 @@ const Background = () => {
     /**
      * Render scene
      */
-    const renderScene = () => {
-      scene.children.forEach((child, index) => {
-        child.rotation.x += rotationY[index]
-        child.rotation.y += rotationX[index]
-        child.rotation.z += rotationZ[index]
-      })
+    const renderScene = (): void => {
+      scene.children.forEach(
+        (
+          child: { rotation: { x: number; y: number; z: number } },
+          index: number
+        ) => {
+          child.rotation.x += rotationY[index]
+          child.rotation.y += rotationX[index]
+          child.rotation.z += rotationZ[index]
+        }
+      )
 
       renderer.render(scene, camera)
     }
@@ -123,7 +128,7 @@ const Background = () => {
     /**
      * Animate
      */
-    const animate = () => {
+    const animate = (): void => {
       renderScene()
       frameId = requestAnimationFrame(animate)
     }
@@ -131,7 +136,7 @@ const Background = () => {
     /**
      * Stop
      */
-    const stop = () => {
+    const stop = (): void => {
       cancelAnimationFrame(frameId)
     }
 
@@ -153,11 +158,16 @@ const Background = () => {
       div.removeChild(renderer.domElement)
 
       // Clear scene
-      scene.children.forEach((child) => {
-        child.geometry.dispose()
-        child.material.dispose()
-        scene.remove(child)
-      })
+      scene.children.forEach(
+        (child: {
+          geometry: { dispose: Function }
+          material: { dispose: Function }
+        }) => {
+          child.geometry.dispose()
+          child.material.dispose()
+          scene.remove(child)
+        }
+      )
     }
   }, [])
 

@@ -21,12 +21,26 @@ import Archive from '../archive'
 
 import Utils from '@/lib/utils'
 
-/**
- * Errors (list)
- * @memberof Components.Project
- */
-const errors = {
-  updateError: 'Unable to update the project'
+import {
+  IProjectWithData,
+  IUserWithData,
+  IWorkspaceWithData
+} from '@/lib/index.d'
+import { IOrganization } from '@/database/index.d'
+
+interface IProps {
+  user: IUserWithData
+  page: string
+  workspace: IWorkspaceWithData
+  projects: IProjectWithData[]
+  organizations: IOrganization[]
+  filter: string
+  swr: {
+    mutateOneWorkspace: Function
+    delOneProject: Function
+    mutateOneProject: Function
+    loadingProjects: boolean
+  }
 }
 
 /**
@@ -42,7 +56,7 @@ const ProjectList = ({
   organizations,
   filter,
   swr
-}) => {
+}: IProps) => {
   // State
   const [loading, setLoading] = useState(true)
   const [list, setList] = useState([])
@@ -277,6 +291,7 @@ ProjectList.propTypes = {
   organizations: PropTypes.array.isRequired,
   filter: PropTypes.string,
   swr: PropTypes.shape({
+    mutateOneWorkspace: PropTypes.func.isRequired,
     delOneProject: PropTypes.func.isRequired,
     mutateOneProject: PropTypes.func.isRequired,
     loadingProjects: PropTypes.bool.isRequired

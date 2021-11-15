@@ -24,7 +24,7 @@ const errors = {
  * Index
  * @memberof Components.Index
  */
-const Index = () => {
+const Index = (): JSX.Element => {
   // Router
   const router = useRouter()
 

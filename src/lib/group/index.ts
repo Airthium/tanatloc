@@ -7,6 +7,7 @@ import User from '../user'
 import Workspace from '../workspace'
 import Project from '../project'
 import Organization from '../organization'
+import { IGroupWithData } from '..'
 
 /**
  * Add
@@ -45,17 +46,21 @@ const add = async (
  * @param {boolean} [withData=true] With data
  * @returns {Object} Group `{ id, ...data }`
  */
-const get = async (
-  id: string,
-  data: Array<string>,
-  withData: boolean = true
-): Promise<IGroup & { users?: IUser }> => {
-  const groupData = await GroupDB.get(id, data)
+const get = async (id: string, data: Array<string>): Promise<IGroup> => {
+  return GroupDB.get(id, data)
+}
 
-  if (withData && groupData?.users)
-    groupData.users = await Promise.all(
-      groupData.users.map(async (user) => {
-        const userData = await User.get(user, [
+const getWithData = async (
+  id: string,
+  data: string[]
+): Promise<IGroupWithData> => {
+  const group = await get(id, data)
+
+  const groupWithData: IGroupWithData = { ...group }
+  if (group?.users)
+    groupWithData.users = await Promise.all(
+      group.users.map(async (user) => {
+        const userData = await User.getWithData(user, [
           'firstname',
           'lastname',
           'email',
@@ -69,7 +74,7 @@ const get = async (
       })
     )
 
-  return groupData
+  return groupWithData
 }
 
 /**
@@ -78,9 +83,7 @@ const get = async (
  * @param {Array} data Data
  * @return {Array} Groups
  */
-const getAll = async (
-  data: Array<string>
-): Promise<Array<IGroup & { users?: IUser }>> => {
+const getAll = async (data: Array<string>): Promise<Array<IGroupWithData>> => {
   // Get groups
   const groups = await GroupDB.getAll(data)
 
@@ -90,7 +93,7 @@ const getAll = async (
       if (group.users) {
         const users = await Promise.all(
           group.users.map(async (user) => {
-            const userData = await User.get(user, [
+            const userData = await User.getWithData(user, [
               'firstname',
               'lastname',
               'email',
@@ -212,5 +215,5 @@ const del = async (group: { id: string }): Promise<void> => {
   await GroupDB.del(group)
 }
 
-const Group = { add, get, getAll, getByOrganization, update, del }
+const Group = { add, get, getWithData, getAll, getByOrganization, update, del }
 export default Group

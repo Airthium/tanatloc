@@ -4,7 +4,7 @@ import { CheckOutlined } from '@ant-design/icons'
 
 import WaitAPI from '@/api/wait'
 
-const Wait = () => {
+const Wait = (): JSX.Element => {
   const [ok, setOk] = useState(false)
 
   const [form] = Form.useForm()

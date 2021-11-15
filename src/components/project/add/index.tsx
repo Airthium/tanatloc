@@ -8,6 +8,8 @@ import { Error } from '@/components/assets/notification'
 
 import ProjectAPI from '@/api/project'
 
+import { IWorkspaceWithData } from '@/lib'
+
 /**
  * Errors (add)
  * @memberof Components.Project
@@ -16,12 +18,20 @@ const errors = {
   addError: 'Unable to add a project'
 }
 
+interface IProps {
+  workspace: IWorkspaceWithData
+  swr: {
+    mutateOneWorkspace: Function
+    addOneProject: Function
+  }
+}
+
 /**
  * Add project
  * @memberof Components.Project
  * @param {Object} props Props `{ workspace, swr }`
  */
-const Add = ({ workspace, swr }) => {
+const Add = ({ workspace, swr }: IProps): JSX.Element => {
   // State
   const [visible, setVisible] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -30,7 +40,10 @@ const Add = ({ workspace, swr }) => {
    * On add
    * @param {Object} values Values
    */
-  const onAdd = async (values) => {
+  const onAdd = async (values: {
+    title: string
+    description: string
+  }): Promise<void> => {
     setLoading(true)
     try {
       // Add

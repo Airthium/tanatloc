@@ -14,10 +14,10 @@ import Tools from '../tools'
 /**
  * Add
  * @memberof Lib.Avatar
- * @param {Object} parent Parent `{ id }`
- * @param {string} type Type (project or user)
- * @param {File} file File `{ name, uid, data }`
- * @returns {Object} Avatar `{ id, name }`
+ * @param parent Parent
+ * @param type Type
+ * @param file File
+ * @returns New avatar
  */
 const add = async (
   parent: { id: string },
@@ -32,14 +32,14 @@ const add = async (
 
   if (type === 'user') {
     // Check existing avatar in user, if exists: delete
-    const userData = await User.get(parent.id, ['avatar'], false)
+    const userData = await User.get(parent.id, ['avatar'])
     if (userData.avatar) await del(parent, type, userData.avatar)
 
     // Update user
     await User.update(parent, [{ key: 'avatar', value: avatar.id }])
   } else {
     // Check existing avatar in project, if exists: delete
-    const projectData = await Project.get(parent.id, ['avatar'], false)
+    const projectData = await Project.get(parent.id, ['avatar'])
     if (projectData.avatar) await del(parent, type, projectData.avatar)
 
     // Update project
@@ -53,8 +53,8 @@ const add = async (
 /**
  * Read
  * @memberof Lib.Avatar
- * @param {string} id Avatar's id
- * @returns {string} Content
+ * @param id Avatar id
+ * @returns Content
  */
 const read = async (id: string): Promise<Buffer> => {
   // Get path
@@ -69,9 +69,9 @@ const read = async (id: string): Promise<Buffer> => {
 /**
  * Get
  * @memberof Lib.Avatar
- * @param {string} id Id
- * @param {Array} data Data
- * @returns {Object} Avatar `{ id, ...data }`
+ * @param id Id
+ * @param data Data
+ * @returns Avatar
  */
 const get = async (id: string, data: Array<string>): Promise<IAvatar> => {
   return AvatarDB.get(id, data)
@@ -80,9 +80,9 @@ const get = async (id: string, data: Array<string>): Promise<IAvatar> => {
 /**
  * Delete
  * @memberof Lib.Avatar
- * @param {Object} parent Parent `{ id }`
- * @param {string} type Type (project or user)
- * @param {string} id Avatar's id
+ * @param parent Parent
+ * @param type Type (project or user)
+ * @param id Avatar id
  */
 const del = async (
   parent: { id: string },
@@ -126,8 +126,8 @@ const del = async (
 
 /**
  * Archive
- * @param {Object} avatar Avatar { id }
- * @param {string} to Target
+ * @param avatar Avatar
+ * @param to Target
  */
 const archive = async (avatar: { id: string }, to: string): Promise<void> => {
   // Data

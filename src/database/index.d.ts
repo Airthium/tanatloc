@@ -1,6 +1,6 @@
 export interface IDataBaseEntry {
   key: string
-  value: string
+  value: any
   type?: string
   method?: string
   path?: Array<string>
@@ -136,6 +136,14 @@ export interface INewUser {
   email?: string
 }
 
+export interface IPlugin {
+  uuid?: string
+  key: string
+  needInit?: boolean
+  needReInit: boolean
+  configuration: any
+}
+
 export interface IUser {
   id?: string
   lastname?: string
@@ -149,7 +157,7 @@ export interface IUser {
   organizations?: Array<string>
   workspaces?: Array<string>
   authorizedplugins?: Array<string>
-  plugins?: Array<object>
+  plugins?: Array<IPlugin>
 }
 
 export interface IUserCheck {

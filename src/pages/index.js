@@ -1,6 +1,6 @@
 /** @namespace Pages */
 
-import IndexPage from '@/components/index/index.js'
+import IndexPage from '@/components/index/index.tsx'
 
 /**
  * Index

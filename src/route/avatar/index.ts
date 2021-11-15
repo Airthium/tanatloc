@@ -38,7 +38,7 @@ const checkAddBody = (body) => {
 export default async (req, res) => {
   try {
     // Check session
-    const sessionId = await getSessionId(req, res)
+    const sessionId = await getSessionId(req)
 
     if (req.method === 'POST') {
       // Check

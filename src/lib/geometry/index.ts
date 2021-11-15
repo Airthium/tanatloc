@@ -7,6 +7,8 @@ import { GEOMETRY } from '@/config/storage'
 import GeometryDB from '@/database/geometry'
 import { IDataBaseEntry, IGeometry } from '@/database/index.d'
 
+import { INewGeometry } from '../index.d'
+
 import Project from '../project'
 import Tools from '../tools'
 
@@ -20,28 +22,7 @@ import Tools from '../tools'
 const add = async (
   project: { id: string },
   geometry: { name: string; uid: string; buffer: Buffer }
-): Promise<
-  IGeometry & {
-    json: string
-    glb: string
-    summary: {
-      type: string
-      uuid: string
-      solids?: Array<{
-        uuid: string
-        color: { r: number; g: number; b: number }
-      }>
-      faces?: Array<{
-        uuid: string
-        color: { r: number; g: number; b: number }
-      }>
-      edges?: Array<{
-        uuid: string
-        color: { r: number; g: number; b: number }
-      }>
-    }
-  }
-> => {
+): Promise<INewGeometry> => {
   // Add geometry
   const geometryData = await GeometryDB.add(project, {
     name: geometry.name,

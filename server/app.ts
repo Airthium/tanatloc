@@ -39,7 +39,7 @@ import userCheck from '@/route/user/check'
 import users from '@/route/users'
 import workspace from '@/route/workspace'
 import { loginRoute } from '@/route/login'
-import logout from '@/route/logout'
+import { logout } from '@/route/logout'
 
 const app = express()
 app.disable('x-powered-by')

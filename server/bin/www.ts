@@ -28,7 +28,7 @@ server.on('listening', onListening)
  * Normalize a port into a number, string, or false.
  * @memberof Server
  */
-function normalizePort(val) {
+function normalizePort(val: string) {
   const p = parseInt(val, 10)
 
   if (isNaN(p)) {

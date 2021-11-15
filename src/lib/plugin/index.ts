@@ -3,6 +3,8 @@
 import merge from 'lodash.merge'
 import { v4 as uuid } from 'uuid'
 
+import { IPlugin } from '@/database/index.d'
+
 import User from '../user'
 import Plugins from '../plugins'
 
@@ -12,15 +14,15 @@ import Plugins from '../plugins'
  * @param {Object} user User `{ id }`
  * @param {Object} plugin Plugin
  */
-const add = async ({ id }, plugin) => {
+const add = async (user: { id: string }, plugin: IPlugin): Promise<void> => {
   // Set uuid
   plugin.uuid = uuid()
 
   // Get
-  const user = await User.get(id, ['plugins'])
+  const userData = await User.get(user.id, ['plugins'])
 
   // Update user
-  user.plugins = [...(user.plugins || []), plugin]
+  userData.plugins = [...(userData.plugins || []), plugin]
 
   // Plugin initialization
   if (plugin.needInit) {
@@ -33,7 +35,7 @@ const add = async ({ id }, plugin) => {
   }
 
   // Update
-  await User.update({ id }, [{ key: 'plugins', value: user.plugins }])
+  await User.update(user, [{ key: 'plugins', value: userData.plugins }])
 }
 
 /**
@@ -42,11 +44,11 @@ const add = async ({ id }, plugin) => {
  * @param {string} user User `{ id }`
  * @returns {Array} Plugins
  */
-const getByUser = async ({ id }) => {
+const getByUser = async (user: { id: string }): Promise<IPlugin[]> => {
   // Get plugins
-  const user = await User.get(id, ['plugins'])
+  const userData = await User.get(user.id, ['plugins'])
 
-  return user.plugins || []
+  return userData.plugins || []
 }
 
 /**
@@ -55,13 +57,13 @@ const getByUser = async ({ id }) => {
  * @param {User} user User `{ id }`
  * @param {Object} plugin Plugin
  */
-const update = async ({ id }, plugin) => {
+const update = async (user: { id: string }, plugin: IPlugin): Promise<void> => {
   // Get
-  const user = await User.get(id, ['plugins'])
+  const userData = await User.get(user.id, ['plugins'])
 
-  if (!user.plugins) return
+  if (!userData.plugins) return
 
-  const index = user.plugins.findIndex((p) => p.uuid === plugin.uuid)
+  const index = userData.plugins.findIndex((p) => p.uuid === plugin.uuid)
   if (index === -1) return
 
   // Re-init
@@ -75,14 +77,14 @@ const update = async ({ id }, plugin) => {
     plugin.needReInit = false
   }
 
-  user.plugins = [
-    ...user.plugins.slice(0, index),
-    { ...user.plugins[index], ...plugin },
-    ...user.plugins.slice(index + 1)
+  userData.plugins = [
+    ...userData.plugins.slice(0, index),
+    { ...userData.plugins[index], ...plugin },
+    ...userData.plugins.slice(index + 1)
   ]
 
   // Update
-  await User.update({ id }, [{ key: 'plugins', value: user.plugins }])
+  await User.update(user, [{ key: 'plugins', value: userData.plugins }])
 }
 
 /**
@@ -91,21 +93,21 @@ const update = async ({ id }, plugin) => {
  * @param {Object} user User `{ id }`
  * @param {Object} plugin Plugin `{ uuid }`
  */
-const del = async ({ id }, plugin) => {
+const del = async (user: { id: string }, plugin: IPlugin): Promise<void> => {
   // Get
-  const user = await User.get(id, ['plugins'])
-  if (!user.plugins) return
+  const userData = await User.get(user.id, ['plugins'])
+  if (!userData.plugins) return
 
-  const index = user.plugins.findIndex((p) => p.uuid === plugin.uuid)
+  const index = userData.plugins.findIndex((p) => p.uuid === plugin.uuid)
   if (index === -1) return
 
-  user.plugins = [
-    ...user.plugins.slice(0, index),
-    ...user.plugins.slice(index + 1)
+  userData.plugins = [
+    ...userData.plugins.slice(0, index),
+    ...userData.plugins.slice(index + 1)
   ]
 
   // Update
-  await User.update({ id }, [{ key: 'plugins', value: user.plugins }])
+  await User.update(user, [{ key: 'plugins', value: userData.plugins }])
 }
 
 const Plugin = { add, getByUser, update, del }

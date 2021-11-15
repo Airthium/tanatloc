@@ -79,11 +79,12 @@ const checkWorkspaceAuth = async (user, workspace, status) => {
  * @param {number} [status] Override project error status
  */
 const checkProjectAuth = async (user, project, status) => {
-  const projectAuth = await ProjectLib.get(
-    project.id,
-    ['owners', 'users', 'groups', 'workspace'],
-    false
-  )
+  const projectAuth = await ProjectLib.get(project.id, [
+    'owners',
+    'users',
+    'groups',
+    'workspace'
+  ])
   if (!projectAuth) throw error(status || 400, 'Invalid project identifier')
 
   const workspaceAuth = await WorkspaceLib.get(
@@ -108,11 +109,12 @@ const checkGeometryAuth = async (user, geometry, status) => {
   const geometryAuth = await GeometryLib.get(geometry.id, ['project'])
   if (!geometryAuth) throw error(status || 400, 'Invalid geometry identifier')
 
-  const projectAuth = await ProjectLib.get(
-    geometryAuth.project,
-    ['owners', 'users', 'groups', 'workspace'],
-    false
-  )
+  const projectAuth = await ProjectLib.get(geometryAuth.project, [
+    'owners',
+    'users',
+    'groups',
+    'workspace'
+  ])
   if (!projectAuth) throw error(500, 'Invalid project identifier')
 
   const workspaceAuth = await WorkspaceLib.get(
@@ -138,11 +140,12 @@ const checkSimulationAuth = async (user, simulation, status) => {
   if (!simulationAuth)
     throw error(status || 400, 'Invalid simulation identifier')
 
-  const projectAuth = await ProjectLib.get(
-    simulationAuth.project,
-    ['owners', 'users', 'groups', 'workspace'],
-    false
-  )
+  const projectAuth = await ProjectLib.get(simulationAuth.project, [
+    'owners',
+    'users',
+    'groups',
+    'workspace'
+  ])
   if (!projectAuth) throw error(500, 'Invalid project identifier')
 
   const workspaceAuth = await WorkspaceLib.get(

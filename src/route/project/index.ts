@@ -1,17 +1,23 @@
 /** @namespace Route.Project */
 
-import getSessionId from '../session'
+import { session } from '../session'
 import { checkWorkspaceAuth } from '../auth'
-import error from '../error'
+import { error } from '../error'
 
 import ProjectLib from '@/lib/project'
+import { IRequest, IResponse } from '..'
+
+interface IAddBody {
+  workspace: { id: string }
+  project: { title: string; description?: string }
+}
 
 /**
  * Check add body
  * @memberof Route.Project
  * @param {Object} body Body
  */
-const checkAddBody = (body) => {
+const checkAddBody = (body: IAddBody): void => {
   if (
     !body ||
     !body.workspace ||
@@ -33,10 +39,13 @@ const checkAddBody = (body) => {
  * @param {Object} req Request
  * @param {Object} res Response
  */
-export default async (req, res) => {
+export default async (
+  req: IRequest<IAddBody>,
+  res: IResponse
+): Promise<void> => {
   try {
     // Check session
-    const sessionId = await getSessionId(req, res)
+    const sessionId = await session(req)
 
     switch (req.method) {
       case 'GET':

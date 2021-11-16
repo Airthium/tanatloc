@@ -5,15 +5,15 @@ import { IWorkspaceWithData } from '@/lib'
 /**
  * Use workspace (SWR)
  * @memberof API.Workspace
- * @returns {Array} `[workspaces, {mutateWorkspaces, addOneWorkspace, delOneWorkspace, mutateOneWorkspace, errorWorkspaces, loadingWorkspaces}]`
+ * @returns Workspaces
  */
 export const useWorkspaces = (): [
   IWorkspaceWithData,
   {
-    mutateWorkspaces: Function
-    addOneWorkspace: Function
-    delOneWorkspace: Function
-    mutateOneWorkspace: Function
+    mutateWorkspaces: (data: { workspaces: IWorkspaceWithData[] }) => void
+    addOneWorkspace: (workspace: IWorkspaceWithData) => void
+    delOneWorkspace: (workspace: IWorkspaceWithData) => void
+    mutateOneWorkspace: (workspace: IWorkspaceWithData) => void
     errorWorkspaces: Error
     loadingWorkspaces: boolean
   }
@@ -27,7 +27,7 @@ export const useWorkspaces = (): [
    * @memberof API.Workspace
    * @param {Object} workspace Workspace
    */
-  const addOne = (workspace) => {
+  const addOne = (workspace: IWorkspaceWithData) => {
     const newWorkspaces = [...workspaces, workspace]
     mutate({ workspaces: newWorkspaces })
   }
@@ -37,9 +37,9 @@ export const useWorkspaces = (): [
    * @memberof API.Workspace
    * @param {Object} workspace Workspace
    */
-  const delOne = (workspace) => {
+  const delOne = (workspace: IWorkspaceWithData) => {
     const filteredWorkspaces = workspaces.filter((w) => w.id !== workspace.id)
-    mutate({ workspace: filteredWorkspaces })
+    mutate({ workspaces: filteredWorkspaces })
   }
 
   /**
@@ -47,7 +47,7 @@ export const useWorkspaces = (): [
    * @memberof API.Workspace
    * @param {Object} workspace Workspace
    */
-  const mutateOne = (workspace) => {
+  const mutateOne = (workspace: IWorkspaceWithData) => {
     const mutatedWorkspaces = workspaces.map((w) => {
       if (w.id === workspace.id) w = { ...w, ...workspace }
       return w

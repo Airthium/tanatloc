@@ -8,6 +8,7 @@ ignores: [
     "ignore-loader",
     "node-fetch",
     "set-interval-async",
+    "typedoc",
     "url-join"
     ]
 skip-missing: false

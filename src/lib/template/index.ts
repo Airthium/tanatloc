@@ -65,7 +65,7 @@ const loadTemplates = async () => {
   return templatesList
 }
 
-let templates = []
+let templates = {}
 loadTemplates()
   .then((res) => (templates = res))
   .catch((err) => console.warn(err))
@@ -78,7 +78,11 @@ loadTemplates()
  * @param {boolean} save Save
  * @returns {string} Script
  */
-const render = async (key, parameters, save) => {
+const render = async (
+  key: string,
+  parameters: object,
+  save?: { location: string; name: string }
+): Promise<string> => {
   // Compile
   const template = templates[key]
   if (!template) throw new Error('Unable to find the model!')

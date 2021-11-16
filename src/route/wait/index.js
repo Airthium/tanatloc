@@ -1,4 +1,4 @@
-import error from '../error'
+import { error } from '../error'
 
 import WaitLib from '@/lib/wait'
 

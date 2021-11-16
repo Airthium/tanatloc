@@ -1,15 +1,22 @@
-import getSessionId from '../session'
+import { IRequest, IResponse } from '..'
+import { session } from '../session'
 import { checkSimulationAuth } from '../auth'
-import error from '../error'
+import { error } from '../error'
 
 import ResultLib from '@/lib/result'
+
+interface IArchiveBody {
+  simulation: {
+    id: string
+  }
+}
 
 /**
  * Check archive body
  * @memberof Route.Result
  * @param {Object} body Body
  */
-const checkArchiveBody = (body) => {
+const checkArchiveBody = (body: IArchiveBody): void => {
   if (
     !body ||
     !body.simulation ||
@@ -28,10 +35,13 @@ const checkArchiveBody = (body) => {
  * @param {Object} req Request
  * @param {Object} res Response
  */
-export default async (req, res) => {
+export default async (
+  req: IRequest<IArchiveBody>,
+  res: IResponse
+): Promise<void> => {
   try {
     // Check session
-    const sessionId = await getSessionId(req, res)
+    const sessionId = await session(req)
 
     if (req.method === 'POST') {
       // Check

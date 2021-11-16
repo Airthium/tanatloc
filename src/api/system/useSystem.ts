@@ -1,17 +1,27 @@
 import useSWR from 'swr'
+
 import { fetcher } from '@/api/call'
+
+import { ISystem } from '@/database/index.d'
 
 /**
  * Use system
  * @memberof API.System
- * @returns {Array} `[system, {mutateSystem, errorSystem, loadingSystem }]`
+ * @returns System
  */
-const useSystem = () => {
+export const useSystem = (): [
+  ISystem,
+  {
+    mutateSystem: (system: ISystem) => void
+    errorSystem: Error
+    loadingSystem: boolean
+  }
+] => {
   const { data, error, mutate } = useSWR('/api/system', fetcher)
   const loading = !data
   const system = data?.system
 
-  const myMutate = (update) => {
+  const myMutate = (update: ISystem) => {
     mutate({
       system: {
         ...system,
@@ -25,5 +35,3 @@ const useSystem = () => {
     { mutateSystem: myMutate, errorSystem: error, loadingSystem: loading }
   ]
 }
-
-export default useSystem

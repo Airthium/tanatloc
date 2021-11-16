@@ -1,6 +1,15 @@
-// import { INewGeometry, IGroup, IProject, IUser, IWorkspace } from '@/database'
+/** @namespace Lib */
 
-export interface INewGeometry extends INewGeometry {
+import {
+  IGroup,
+  IUser,
+  IWorkspace,
+  IProject,
+  INewGeometry,
+  IOrganization
+} from '@/database'
+
+export interface INewGeometryWithData extends INewGeometry {
   json: string
   glb: string
   summary: {
@@ -23,6 +32,13 @@ export interface INewGeometry extends INewGeometry {
 
 export interface IGroupWithData extends Omit<IGroup, 'users'> {
   users?: string[] | IUserWithData[]
+}
+
+export interface IOrganizationWithData
+  extends Omit<IOrganization, 'owners' | 'users' | 'groups'> {
+  owners?: string[] | IUserWithData[]
+  users?: string[] | IUserWithData[]
+  groups?: string[] | IGroupWithData[]
 }
 
 export interface IProjectWithData

@@ -1,12 +1,25 @@
 import useSWR from 'swr'
+
 import { fetcher } from '@/api/call'
+
+import { IUserWithData } from '@/lib/index.d'
 
 /**
  * Use users
  * @memberof API.User
- * @returns {Array} `[users, { mutateUsers, addOneUser, delOneUser, mutateOneUser, errorUsers, loadingUsers }]`
+ * @returns Users
  */
-const useUsers = () => {
+export const useUsers = (): [
+  IUserWithData[],
+  {
+    mutateUsers: (data: { users: IUserWithData[] }) => void
+    addOneUser: (user: IUserWithData) => void
+    delOneUser: (user: IUserWithData) => void
+    mutateOneUser: (user: IUserWithData) => void
+    errorUsers: Error
+    loadingUsers: boolean
+  }
+] => {
   const { data, error, mutate } = useSWR('/api/users', fetcher)
   const loading = !data
   const users = data?.users || []
@@ -15,7 +28,7 @@ const useUsers = () => {
    * Add one
    * @param {Object} user User
    */
-  const addOne = (user) => {
+  const addOne = (user: IUserWithData) => {
     const newUsers = [...users, user]
     mutate({ users: newUsers })
   }
@@ -24,7 +37,7 @@ const useUsers = () => {
    * Del one
    * @param {Object} user User
    */
-  const delOne = (user) => {
+  const delOne = (user: IUserWithData) => {
     const filteredUsers = users.filter((u) => u.id !== user.id)
     mutate({ users: filteredUsers })
   }
@@ -33,7 +46,7 @@ const useUsers = () => {
    * Mutate one
    * @param {Object} user User
    */
-  const mutateOne = (user) => {
+  const mutateOne = (user: IUserWithData) => {
     const mutatedUsers = users.map((u) => {
       if (u.id === user.id) u = { ...u, ...user }
       return u
@@ -53,5 +66,3 @@ const useUsers = () => {
     }
   ]
 }
-
-export default useUsers

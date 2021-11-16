@@ -1,8 +1,12 @@
-import { IProjectWithData, IWorkspaceWithData } from '@/lib'
+import { ISystem } from '@/database'
+import { IProjectWithData, IUserWithData, IWorkspaceWithData } from '@/lib'
 
 export interface IFetchResponse {
   project?: IProjectWithData[]
   projects?: IProjectWithDate[]
+  system?: ISystem
+  user?: IUserWithData
+  users?: IUserWithData[]
   workspaces?: IWorkspaceWithData[]
 }
 

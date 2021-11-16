@@ -5,10 +5,8 @@ import { call } from '@/api/call'
  * @memberof API.Simulation
  * @param {Object} simulation Simulation `{id }`
  */
-const del = async (simulation) => {
+export const del = async (simulation: { id: string }): Promise<void> => {
   await call('/api/simulation/' + simulation.id, {
     method: 'DELETE'
   })
 }
-
-export default del

@@ -4,10 +4,8 @@ import { call } from '@/api/call'
  * Delete
  * @memberof API.User
  */
-const del = async () => {
+export const del = async (): Promise<void> => {
   await call('/api/user', {
     method: 'DELETE'
   })
 }
-
-export default del

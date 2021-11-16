@@ -1,7 +1,7 @@
 /** @namespace Lib.Workspace */
 
 import WorkspaceDB from '@/database/workspace'
-import { IDataBaseEntry, INewWorkspace } from '@/database/index.d'
+import { IDataBaseEntry, INewWorkspace, IWorkspace } from '@/database/index.d'
 
 import { IWorkspaceWithData } from '../index.d'
 
@@ -40,18 +40,28 @@ const add = async (
 
 /**
  * Get
+ * @param id Id
+ * @param data Data
+ * @returns Workspace
+ */
+const get = async (id: string, data: string[]): Promise<IWorkspace> => {
+  return WorkspaceDB.get(id, data)
+}
+
+/**
+ * Get with data
  * @memberof Lib.Workspace
  * @param {string} id Id
  * @param {Array} data Data
  * @param {boolean} [withData=true] With data
  * @returns {Object} Workspace `{ id, ...data }`
  */
-const get = async (
+const getWithData = async (
   id: string,
   data: Array<string>,
   withData: boolean = true
 ): Promise<IWorkspaceWithData> => {
-  const workspace = await WorkspaceDB.get(id, data)
+  const workspace = await get(id, data)
 
   const workspaceWithData: IWorkspaceWithData = { ...workspace }
   // Get owners
@@ -115,7 +125,11 @@ const get = async (
  * @param {Object} user User `{ id }`
  * @returns {Array} Workspaces
  */
-const getByUser = async ({ id }: { id: string }) => {
+const getByUser = async ({
+  id
+}: {
+  id: string
+}): Promise<IWorkspaceWithData[]> => {
   // Get workspaces'ids
   const user = await User.getWithData(id, [
     'firstname',
@@ -171,7 +185,7 @@ const getByUser = async ({ id }: { id: string }) => {
               if (groupData.workspaces) {
                 await Promise.all(
                   groupData.workspaces.map(async (workspace) => {
-                    const workspaceData = await get(workspace, [
+                    const workspaceData = await getWithData(workspace, [
                       'name',
                       'users',
                       'owners',
@@ -221,9 +235,12 @@ const getByUser = async ({ id }: { id: string }) => {
  * @param {Object} workspace Workspace `{ id }`
  * @param {Object} data Data `[{ key, value, ... }, ...]`
  */
-const update = async (workspace: { id: string }, data: IDataBaseEntry[]) => {
+const update = async (
+  workspace: { id: string },
+  data: IDataBaseEntry[]
+): Promise<void> => {
   // Get data
-  const workspaceData = await get(workspace.id, ['groups'])
+  const workspaceData = await getWithData(workspace.id, ['groups'])
   if (!workspaceData.groups) workspaceData.groups = []
 
   // Check groups
@@ -275,9 +292,12 @@ const update = async (workspace: { id: string }, data: IDataBaseEntry[]) => {
  * @param {Object} user User `{ id }`
  * @param {Object} workspace Workspace `{ id }`
  */
-const del = async (user, workspace) => {
+const del = async (
+  user: { id: string },
+  workspace: { id: string }
+): Promise<void> => {
   // Get data
-  const data = await get(workspace.id, ['groups', 'projects'])
+  const data = await getWithData(workspace.id, ['groups', 'projects'])
 
   // Delete from groups
   if (data.groups) {
@@ -288,7 +308,7 @@ const del = async (user, workspace) => {
             key: 'workspaces',
             type: 'array',
             method: 'remove',
-            vale: workspace.id
+            value: workspace.id
           }
         ])
       })
@@ -318,5 +338,5 @@ const del = async (user, workspace) => {
   ])
 }
 
-const Workspace = { add, get, getByUser, update, del }
+const Workspace = { add, get, getWithData, getByUser, update, del }
 export default Workspace

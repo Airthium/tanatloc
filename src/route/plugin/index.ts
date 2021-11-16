@@ -1,17 +1,28 @@
 /** @namespace Route.Plugin */
 
-import getSessionId from '../session'
-import error from '../error'
+import { IRequest, IResponse } from '..'
+import { session } from '../session'
+import { error } from '../error'
+
+import { IPlugin } from '@/database/index.d'
 
 import UserLib from '@/lib/user'
 import PluginLib from '@/lib/plugin'
+
+type IAddBody = IPlugin
+
+type IUpdateBody = object
+
+interface IDeleteBody {
+  uuid: string
+}
 
 /**
  * Check add body
  * @memberof Route.Plugin
  * @param {Object} body Body
  */
-const checkAddBody = (body) => {
+const checkAddBody = (body: IAddBody): void => {
   if (
     !body ||
     !body.key ||
@@ -30,7 +41,7 @@ const checkAddBody = (body) => {
  * @memberof Route.Plugin
  * @param {Object} body Body
  */
-const checkUpdateBody = (body) => {
+const checkUpdateBody = (body: IUpdateBody): void => {
   if (!body || typeof body !== 'object')
     throw error(400, 'Missing data in your request (body(object)}')
 }
@@ -40,7 +51,7 @@ const checkUpdateBody = (body) => {
  * @memberof Route.Plugin
  * @param {Object} body Body
  */
-const checkDeleteBody = (body) => {
+const checkDeleteBody = (body: IDeleteBody): void => {
   if (!body || !body.uuid || typeof body.uuid !== 'string')
     throw error(400, 'Missing data in your request (body: { uuid(uuid) } }')
 }
@@ -51,10 +62,13 @@ const checkDeleteBody = (body) => {
  * @param {Object} req Request
  * @param {Object} res Response
  */
-export default async (req, res) => {
+export default async (
+  req: IRequest<IAddBody & IUpdateBody & IDeleteBody>,
+  res: IResponse
+): Promise<void> => {
   try {
     // Check session
-    const sessionId = await getSessionId(req, res)
+    const sessionId = await session(req)
 
     switch (req.method) {
       case 'POST':

@@ -7,7 +7,7 @@ import { call } from '@/api/call'
  * @param {string} file File
  * @returns {string} Log
  */
-const log = async (simulation, file) => {
+const log = async (simulation: { id: string }, file: string) => {
   return call('/api/simulation/' + simulation.id + '/log', {
     method: 'POST',
     body: JSON.stringify({ file })

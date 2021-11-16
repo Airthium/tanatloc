@@ -1,15 +1,24 @@
-import getSessionId from '../session'
+import { IRequest, IResponse } from '..'
+import { session } from '../session'
 import { checkProjectAuth } from '../auth'
-import error from '../error'
+import { error } from '../error'
+
+import { IDataBaseEntry } from '@/database/index.d'
 
 import ProjectLib from '@/lib/project'
+
+type IUpdateBody = IDataBaseEntry[]
+
+interface IDeleteBody {
+  id: string
+}
 
 /**
  * Check update body
  * @memberof Route.Project
  * @param {Array} body Body
  */
-const checkUpdateBody = (body) => {
+const checkUpdateBody = (body: IUpdateBody): void => {
   if (!body || !Array.isArray(body))
     throw error(400, 'Missing data in your request (body(array))')
 }
@@ -19,7 +28,7 @@ const checkUpdateBody = (body) => {
  * @memberof Route.Project
  * @param {Object} body Body
  */
-const checkDeleteBody = (body) => {
+const checkDeleteBody = (body: IDeleteBody): void => {
   if (!body || !body.id || typeof body.id !== 'string')
     throw error(400, 'Missing data in your request (body: { id(uuid) })')
 }
@@ -30,10 +39,13 @@ const checkDeleteBody = (body) => {
  * @param {Object} req Request
  * @param {Object} res Response
  */
-export default async (req, res) => {
+export default async (
+  req: IRequest<IUpdateBody & IDeleteBody>,
+  res: IResponse
+): Promise<void> => {
   try {
     // Check session
-    const sessionId = await getSessionId(req, res)
+    const sessionId = await session(req)
 
     // Id
     const id = req.query.id || req.params.id // Electron

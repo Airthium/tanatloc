@@ -1,17 +1,22 @@
 /** @namespace Route.Projects */
 
-import getSessionId from '../session'
+import { IRequest, IResponse } from '..'
+import { session } from '../session'
 import { checkProjectAuth } from '../auth'
-import error from '../error'
+import { error } from '../error'
 
 import ProjectLib from '@/lib/project'
+
+interface IGetBody {
+  ids: string[]
+}
 
 /**
  * Check get body
  * @memberof Route.Projects
  * @param {Object} body Body
  */
-const checkGetBody = (body) => {
+const checkGetBody = (body: IGetBody): void => {
   if (!body)
     throw error(400, 'Missing data in your request (body: { ids(?array) })')
 }
@@ -22,10 +27,10 @@ const checkGetBody = (body) => {
  * @param {Object} req Request
  * @param {Object} res Response
  */
-export default async (req, res) => {
+export default async (req: IRequest<IGetBody>, res: IResponse) => {
   try {
     // Check session
-    const sessionId = await getSessionId(req, res)
+    const sessionId = await session(req)
 
     if (req.method === 'POST') {
       // Check

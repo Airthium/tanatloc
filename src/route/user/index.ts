@@ -1,16 +1,26 @@
 /** @namespace Route.User */
 
-import getSessionId from '../session'
-import error from '../error'
+import { IRequest, IResponse } from '..'
+import { session } from '../session'
+import { error } from '../error'
+
+import { IDataBaseEntry } from '@/database/index.d'
 
 import UserLib from '@/lib/user'
+
+interface IAddBody {
+  email: string
+  password: string
+}
+
+type IUpdateBody = IDataBaseEntry[]
 
 /**
  * Check add body
  * @memberof Route.User
  * @param {Object} body Body
  */
-const checkAddBody = (body) => {
+const checkAddBody = (body: IAddBody): void => {
   if (
     !body ||
     !body.email ||
@@ -29,7 +39,7 @@ const checkAddBody = (body) => {
  * @memberof Route.User
  * @param {Array} body Body
  */
-const checkUpdateBody = (body) => {
+const checkUpdateBody = (body: IUpdateBody): void => {
   if (!body || !Array.isArray(body))
     throw error(400, 'Missing data in your request (body(array))')
 }
@@ -40,14 +50,17 @@ const checkUpdateBody = (body) => {
  * @param {Object} req Request
  * @param {Object} res Response
  */
-export default async (req, res) => {
+export default async (
+  req: IRequest<IAddBody & IUpdateBody>,
+  res: IResponse
+): Promise<void> => {
   let sessionId
 
   try {
     switch (req.method) {
       case 'GET':
         // Check session
-        sessionId = await getSessionId(req, res)
+        sessionId = await session(req)
 
         // Get
         try {
@@ -79,7 +92,7 @@ export default async (req, res) => {
         break
       case 'PUT':
         // Check session
-        sessionId = await getSessionId(req, res)
+        sessionId = await session(req)
 
         // Check
         checkUpdateBody(req.body)
@@ -94,7 +107,7 @@ export default async (req, res) => {
         break
       case 'DELETE':
         // Check session
-        sessionId = await getSessionId(req, res)
+        sessionId = await session(req)
 
         try {
           // Delete

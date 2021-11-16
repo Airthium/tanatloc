@@ -111,17 +111,65 @@ export interface IProject {
   workspace?: string
 }
 
+export interface ISimulationScheme {
+  category: string
+  name: string
+  algorithm: string
+  code: string
+  version: string
+  description: string
+  configuration: {
+    geometry?: {
+      value?: string
+      file?: string
+      name?: string
+      path?: name
+      done?: boolean
+    }
+    materials?: {
+      done?: boolean
+    }
+    parameters?: {
+      done?: boolean
+    }
+    initialization?: {
+      value?: {
+        type?: string
+        simulation?: string
+        result?: string
+        dat?: string
+        mesh?: string
+      }
+      done?: boolean
+    }
+    boundaryConditions?: {
+      done?: boolean
+    }
+    run?: {
+      cloudServer?: {
+        key?: string
+      }
+      error?: Error
+      done?: boolean
+    }
+  }
+}
+
 export interface INewSimulation {
   id: string
   name: string
-  scheme: object
+  scheme: ISimulationScheme
   project: string
 }
 
 export interface ISimulation {
   id: string
   name?: string
-  scheme?: object
+  scheme?: ISimulationScheme
+  tasks?: Array<{
+    status: string
+    error: string
+  }>
   project?: string
 }
 

@@ -17,7 +17,7 @@ import Services from '@/services'
 /**
  * Create path (recursive)
  * @memberof Lib.Tools
- * @param {string} location Location path
+ * @param location Location path
  */
 const createPath = async (location: string): Promise<void> => {
   await fs.mkdir(location, { recursive: true })
@@ -26,8 +26,8 @@ const createPath = async (location: string): Promise<void> => {
 /**
  * List files
  * @memberof Lib.Tools
- * @param {string} location Location
- * @returns {Array} Files list (with types)
+ * @param location Location
+ * @returns Files list (with types)
  */
 const listFiles = async (location: string): Promise<Array<Dirent>> => {
   return fs.readdir(location, { withFileTypes: true })
@@ -35,8 +35,8 @@ const listFiles = async (location: string): Promise<Array<Dirent>> => {
 
 /**
  * List directories
- * @param {string} location Location
- * @returns {Array} Directory list
+ * @param location Location
+ * @returns Directory list
  */
 const listDirectories = async (location: string): Promise<Array<string>> => {
   const files = await listFiles(location)
@@ -50,9 +50,9 @@ const listDirectories = async (location: string): Promise<Array<string>> => {
 /**
  * Write file
  * @memberof Lib.Tools
- * @param {string} location Location
- * @param {string} name File name
- * @param {Object} content Content
+ * @param location Location
+ * @param name File name
+ * @param content Content
  */
 const writeFile = async (
   location: string,
@@ -66,15 +66,11 @@ const writeFile = async (
 /**
  * Read file
  * @memberof Lib.Tools
- * @param {string} file File name
- * @param {string} [type] Type (json)
- * @returns {Buffer} File content
+ * @param file File name
+ * @returns File content
  */
-const readFile = async (file: string, type?: string): Promise<Buffer> => {
-  const content = await fs.readFile(file)
-
-  if (type === 'json') return JSON.parse(content.toString())
-  return content
+const readFile = async (file: string): Promise<Buffer> => {
+  return fs.readFile(file)
 }
 
 const readJSONFile = async (file: string): Promise<any> => {
@@ -85,8 +81,8 @@ const readJSONFile = async (file: string): Promise<any> => {
 /**
  * Copy file
  * @memberof Lib.Tools
- * @param {Object} origin Origin path {path, file }
- * @param {Object} destination Destination { path, file }
+ * @param origin Origin path
+ * @param destination Destination
  */
 const copyFile = async (
   origin: { path: string; file: string },
@@ -101,8 +97,8 @@ const copyFile = async (
 
 /**
  * Copy directory
- * @param {string} origin Origin path
- * @param {string} destination Desctination path
+ * @param origin Origin path
+ * @param destination Destination
  */
 const copyDirectory = async (
   origin: string,
@@ -114,7 +110,7 @@ const copyDirectory = async (
 /**
  * Remove file
  * @memberof Lib.Tools
- * @param {string} file File name
+ * @param file File name
  */
 const removeFile = async (file: string): Promise<void> => {
   await fs.unlink(file)
@@ -123,7 +119,7 @@ const removeFile = async (file: string): Promise<void> => {
 /**
  * Remove directory
  * @memberof Lib.Tools
- * @param {string} dir Directory
+ * @param dir Directory
  */
 const removeDirectory = async (dir: string): Promise<void> => {
   await fs.rm(dir, { recursive: true })
@@ -131,8 +127,8 @@ const removeDirectory = async (dir: string): Promise<void> => {
 
 /**
  * Tar
- * @param {string} target Target
- * @param {Object} directory Directory { C, path }
+ * @param target Target
+ * @param directory Directory
  */
 const archive = async (
   target: string,
@@ -150,8 +146,8 @@ const archive = async (
 
 /**
  * Create read stream
- * @param {string} file File
- * @returns {Object} Read stream
+ * @param file File
+ * @returns Read stream
  */
 const readStream = (file: string): ReadStream => {
   return createReadStream(file)
@@ -159,8 +155,8 @@ const readStream = (file: string): ReadStream => {
 
 /**
  * Create write stream
- * @param {string} file File
- * @returns {Object} Write stream
+ * @param file File
+ * @returns Write stream
  */
 const writeStream = (file: string): WriteStream => {
   return createWriteStream(file)
@@ -169,11 +165,11 @@ const writeStream = (file: string): WriteStream => {
 /**
  * Convert file
  * @memberof Lib.Tools
- * @param {string} location Location
- * @param {Object} file File `{ name, target }`
- * @param {Function} [callback] Callback
- * @param {Object} [param] Parameters `{ isResult: true }`
- * @returns {Object} Data `{ json, glb }`
+ * @param location Location
+ * @param file File
+ * @param callback Callback
+ * @param param Parameters
+ * @returns Data
  */
 const convert = async (
   location: string,
@@ -227,14 +223,13 @@ const convert = async (
 /**
  * Load part
  * @memberof Lib.Tools
- * @param {string} location Location
- * @param {string} name File name
- * @returns {Object} Part
+ * @param location Location
+ * @param name File name
+ * @returns Part
  */
-const loadPart = async (location: string, name: string) => {
+const loadPart = async (location: string, name: string): Promise<JSON> => {
   const partFile = path.join(location, name)
-  const partData = await readFile(partFile)
-  const part = JSON.parse(partData)
+  const part = await readJSONFile(partFile)
 
   // Load solids
   if (part.solids) {

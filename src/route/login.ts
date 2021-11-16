@@ -1,5 +1,3 @@
-/** @namespace Route */
-
 import express from 'express'
 import passport from 'passport'
 import { localStrategy } from '@/auth/password-local'

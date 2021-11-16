@@ -3,11 +3,17 @@
 import Crypto from 'crypto'
 
 import OrganizationDB from '@/database/organization'
-import { INewOrganization, IOrganization } from '@/database/index.d'
+import {
+  IDataBaseEntry,
+  INewOrganization,
+  IOrganization
+} from '@/database/index.d'
 
 import User from '../user'
 import Group from '../group'
 import Email from '../email'
+
+import { IOrganizationWithData } from '../index.d'
 
 /**
  * Add
@@ -51,6 +57,75 @@ const get = async (id: string, data: string[]): Promise<IOrganization> => {
 }
 
 /**
+ * Get with data
+ * @param id Id
+ * @param data Data
+ * @returns Organization
+ */
+const getWithData = async (
+  id: string,
+  data: string[]
+): Promise<IOrganizationWithData> => {
+  const organization = await get(id, data)
+
+  const organizationWithData: IOrganizationWithData = { ...organization }
+
+  // Owners
+  if (organization?.owners) {
+    organizationWithData.owners = await Promise.all(
+      organization.owners.map(async (owner) => {
+        const ownerData = await User.getWithData(owner, [
+          'firstname',
+          'lastname',
+          'email',
+          'avatar'
+        ])
+
+        return {
+          id: owner,
+          ...ownerData
+        }
+      })
+    )
+  }
+
+  // Users
+  if (organization?.users) {
+    organizationWithData.users = await Promise.all(
+      organization.users.map(async (user) => {
+        const userData = await User.getWithData(user, [
+          'firstname',
+          'lastname',
+          'email',
+          'avatar'
+        ])
+
+        return {
+          id: user,
+          ...userData
+        }
+      })
+    )
+  }
+
+  // Groups
+  if (organization?.groups) {
+    organizationWithData.groups = await Promise.all(
+      organization.groups.map(async (group) => {
+        const groupData = await Group.getWithData(group, ['name', 'users'])
+
+        return {
+          id: group,
+          ...groupData
+        }
+      })
+    )
+  }
+
+  return organizationWithData
+}
+
+/**
  * Get by user
  * @memberof Lib.Organization
  * @param {Object} user User `{ id }`
@@ -60,7 +135,7 @@ const get = async (id: string, data: string[]): Promise<IOrganization> => {
 const getByUser = async (
   user: { id: string },
   data: string[]
-): Promise<IOrganization[]> => {
+): Promise<IOrganizationWithData[]> => {
   const internalData = [...data]
   if (!internalData.includes('owners')) internalData.push('owners')
   if (!internalData.includes('users')) internalData.push('users')
@@ -73,17 +148,19 @@ const getByUser = async (
   )
 
   // Remove internal
-  const returnedOrganization = userOrganizations.map((o) => {
-    const organization = {}
-    data.forEach((d) => {
-      organization[d] = o[d]
-    })
-    return organization
-  })
+  const returnedOrganization: IOrganizationWithData[] = userOrganizations.map(
+    (o) => {
+      const organization = {}
+      data.forEach((d) => {
+        organization[d] = o[d]
+      })
+      return organization
+    }
+  )
 
   // Users & groups data
   await Promise.all(
-    returnedOrganization.map(async (organization) => {
+    returnedOrganization.map(async (organization: IOrganizationWithData) => {
       // Owners
       organization.owners &&
         (organization.owners = await Promise.all(
@@ -142,13 +219,17 @@ const getByUser = async (
  * @param {Array} data Data
  * @param {string} ownerId Owner id
  */
-const update = async (organization: { id: string }, data, ownerId) => {
-  // Get owner
-  const owner = await User.get(ownerId, ['firstname', 'lastname', 'email'])
+const update = async (
+  organization: { id: string },
+  data: IDataBaseEntry[],
+  ownerId?: string
+) => {
+  if (ownerId) {
+    // Get owner
+    const owner = await User.get(ownerId, ['firstname', 'lastname', 'email'])
 
-  // Check for emails
-  const newData = await Promise.all(
-    data.map(async (d) => {
+    // Check for emails
+    for (const d of data) {
       if (
         d.type === 'array' &&
         d.method === 'append' &&
@@ -168,7 +249,11 @@ const update = async (organization: { id: string }, data, ownerId) => {
         }
 
         // Send email
-        await Email.invite(email, owner)
+        await Email.invite(email, {
+          email: owner.email,
+          firstname: owner.firstname,
+          lastname: owner.lastname
+        })
 
         await User.update({ id: user.id }, [
           {
@@ -179,13 +264,11 @@ const update = async (organization: { id: string }, data, ownerId) => {
           }
         ])
       }
-
-      return d
-    })
-  )
+    }
+  }
 
   // Update
-  await OrganizationDB.update(organization, newData)
+  await OrganizationDB.update(organization, data)
 }
 
 /**
@@ -193,7 +276,7 @@ const update = async (organization: { id: string }, data, ownerId) => {
  * @memberof Lib.Organization
  * @param {Object} organization Organization `{ id }`
  */
-const del = async (organization) => {
+const del = async (organization: { id: string }): Promise<void> => {
   // Get data
   const organizationData = await get(organization.id, [
     'owners',
@@ -243,5 +326,5 @@ const del = async (organization) => {
   await OrganizationDB.del(organization)
 }
 
-const Organization = { add, get, getByUser, update, del }
+const Organization = { add, get, getWithData, getByUser, update, del }
 export default Organization

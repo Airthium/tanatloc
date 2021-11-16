@@ -156,15 +156,14 @@ const del = async (user: { id: string }): Promise<void> => {
   if (data.organizations) {
     await Promise.all(
       data.organizations.map(async (group) => {
-        // await Organization.update({ id: group }, [
-        //   {
-        //     key: 'users',
-        //     type: 'array',
-        //     method: 'remove',
-        //     value: user.id
-        //   }
-        // ])
-        //TODO
+        await Organization.update({ id: group }, [
+          {
+            key: 'users',
+            type: 'array',
+            method: 'remove',
+            value: user.id
+          }
+        ])
       })
     )
   }

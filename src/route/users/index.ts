@@ -1,7 +1,8 @@
 /** @namespace Route.Users */
 
-import getSessionId from '../session'
-import error from '../error'
+import { IRequest, IResponse } from '..'
+import { session } from '../session'
+import { error } from '../error'
 
 import UserLib from '@/lib/user'
 
@@ -11,10 +12,10 @@ import UserLib from '@/lib/user'
  * @param {Object} req Request
  * @param {Object} res Response
  */
-export default async (req, res) => {
+export default async (req: IRequest, res: IResponse): Promise<void> => {
   try {
     // Check session
-    const sessionId = await getSessionId(req, res)
+    const sessionId = await session(req)
 
     // Check superuser
     const user = await UserLib.get(sessionId, ['superuser'])

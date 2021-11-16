@@ -40,7 +40,7 @@ const get = async (id: string, data: Array<string>): Promise<ILink> => {
  */
 const process = async (
   id: string,
-  data: { email: string; password: string }
+  data?: { email: string; password: string }
 ): Promise<void> => {
   const link = await get(id, ['type', 'email', 'userid'])
 

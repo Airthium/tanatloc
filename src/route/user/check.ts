@@ -1,14 +1,20 @@
-import getSessionId from '../session'
-import error from '../error'
+import { IRequest, IResponse } from '..'
+import { session } from '../session'
+import { error } from '../error'
 
 import UserLib from '@/lib/user'
+
+interface ILoginBody {
+  email: string
+  password: string
+}
 
 /**
  * Check login body
  * @memberof Route.User
  * @param {Object} body Body
  */
-const checkLoginBody = (body) => {
+const checkLoginBody = (body: ILoginBody): void => {
   if (
     !body ||
     !body.email ||
@@ -28,10 +34,13 @@ const checkLoginBody = (body) => {
  * @param {Object} req Request
  * @param {Object} res Response
  */
-export default async (req, res) => {
+export default async (
+  req: IRequest<ILoginBody>,
+  res: IResponse
+): Promise<void> => {
   try {
     // Check session
-    await getSessionId(req, res)
+    await session(req)
 
     if (req.method === 'POST') {
       // Check

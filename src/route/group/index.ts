@@ -1,17 +1,39 @@
 /** @namespace Route.Group */
 
-import getSessionId from '../session'
-import error from '../error'
+import { IRequest, IResponse } from '..'
+import { session } from '../session'
+import { error } from '../error'
+
+import { IDataBaseEntry } from '@/database/index.d'
 
 import OrganizationLib from '@/lib/organization'
 import GroupLib from '@/lib/group'
+
+interface IAddBody {
+  organization: {
+    id: string
+  }
+  group: {
+    name: string
+    users: string[]
+  }
+}
+
+interface IUpdateBody {
+  id: string
+  data: IDataBaseEntry[]
+}
+
+interface IDeleteBody {
+  id: string
+}
 
 /**
  * Check add body
  * @memberof Route.Group
  * @param {Object} body Body
  */
-const checkAddBody = (body) => {
+const checkAddBody = (body: IAddBody): void => {
   if (
     !body ||
     !body.organization ||
@@ -34,7 +56,7 @@ const checkAddBody = (body) => {
  * @memberof Route.Group
  * @param {Object} body Body
  */
-const checkUpdateBody = (body) => {
+const checkUpdateBody = (body: IUpdateBody): void => {
   if (
     !body ||
     !body.id ||
@@ -53,7 +75,7 @@ const checkUpdateBody = (body) => {
  * @memberof Route.Group
  * @param {Object} body Body
  */
-const checkDeleteBody = (body) => {
+const checkDeleteBody = (body: IDeleteBody): void => {
   if (!body || !body.id || typeof body.id !== 'string')
     throw error(400, 'Missing data in your request (body: { id(uuid) })')
 }
@@ -64,7 +86,10 @@ const checkDeleteBody = (body) => {
  * @param {Object} organization Organization { id }
  * @param {Object} user User { id }
  */
-const checkOrganizationAuth = async (organization, user) => {
+const checkOrganizationAuth = async (
+  organization: { id: string },
+  user: { id: string }
+): Promise<void> => {
   const organizationData = await OrganizationLib.get(organization.id, [
     'owners'
   ])
@@ -80,7 +105,10 @@ const checkOrganizationAuth = async (organization, user) => {
  * @param {Object} group Group { id }
  * @param {Object} user User { id }
  */
-const checkGroupAuth = async (group, user) => {
+const checkGroupAuth = async (
+  group: { id: string },
+  user: { id: string }
+): Promise<void> => {
   const groupData = await GroupLib.get(group.id, ['organization'])
   if (!groupData) throw error(400, 'Invalid group identifier')
 
@@ -98,10 +126,13 @@ const checkGroupAuth = async (group, user) => {
  * @param {Object} req Request
  * @param {Object} res Result
  */
-export default async (req, res) => {
+export default async (
+  req: IRequest<IAddBody & IUpdateBody & IDeleteBody>,
+  res: IResponse
+) => {
   try {
     // Check session
-    const sessionId = await getSessionId(req, res)
+    const sessionId = await session(req)
 
     switch (req.method) {
       case 'POST':

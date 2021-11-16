@@ -1,6 +1,7 @@
-import getSessionId from '../../session'
-import { checkSimulationAuth } from '../../auth'
-import error from '../../error'
+import { IRequest, IResponse } from '@/route'
+import { session } from '@/route/session'
+import { checkSimulationAuth } from '@/route/auth'
+import { error } from '@/route/error'
 
 import SimulationLib from '@/lib/simulation'
 
@@ -10,10 +11,10 @@ import SimulationLib from '@/lib/simulation'
  * @param {Object} req Request
  * @param {Object} res Response
  */
-export default async (req, res) => {
+export default async (req: IRequest, res: IResponse): Promise<void> => {
   try {
     // Check session
-    const sessionId = await getSessionId(req, res)
+    const sessionId = await session(req)
 
     // Id
     const id = req.query.id || req.params.id // Electron uses params

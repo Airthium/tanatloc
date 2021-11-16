@@ -1,17 +1,28 @@
 /** @namespace Route.Result */
 
-import getSessionId from '../session'
+import { IRequest, IResponse } from '..'
+import { session } from '../session'
 import { checkSimulationAuth } from '../auth'
-import error from '../error'
+import { error } from '../error'
 
 import ResultLib from '@/lib/result'
+
+interface ILoadBody {
+  simulation: {
+    id: string
+  }
+  result: {
+    originPath: string
+    glb: string
+  }
+}
 
 /**
  * Check load body
  * @memberof Route.Result
  * @param {Object} body Body
  */
-const checkLoadBody = (body) => {
+const checkLoadBody = (body: ILoadBody): void => {
   if (
     !body ||
     !body.simulation ||
@@ -35,10 +46,13 @@ const checkLoadBody = (body) => {
  * @param {Object} req Request
  * @param {Object} res Response
  */
-export default async (req, res) => {
+export default async (
+  req: IRequest<ILoadBody>,
+  res: IResponse
+): Promise<void> => {
   try {
     // Check session
-    const sessionId = await getSessionId(req, res)
+    const sessionId = await session(req)
 
     if (req.method === 'POST') {
       // Load result

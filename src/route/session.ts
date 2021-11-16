@@ -1,7 +1,7 @@
 import { getSession } from '@/auth/iron'
 
 import { IRequest } from '.'
-import error from './error'
+import { error } from './error'
 
 /**
  * Session
@@ -9,7 +9,7 @@ import error from './error'
  * @param {Object} req Request
  * @param {Object} res Response
  */
-export default async (req: IRequest): Promise<string> => {
+export const session = async (req: IRequest): Promise<string> => {
   try {
     const session = await getSession(req)
     if (!session || !session.id) {

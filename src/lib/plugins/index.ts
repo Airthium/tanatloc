@@ -99,7 +99,10 @@ const serverList = () => {
  * @param {boolean} [complete] Complete or filtered by user.authorizedplugins
  * @returns {Array} List
  */
-const clientList = (user, complete) => {
+const clientList = (
+  user: { authorizedplugins?: string[] },
+  complete?: boolean
+) => {
   if (complete) {
     return plugins.map((plugin) => ({
       category: plugin.category,

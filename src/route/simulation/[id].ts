@@ -1,15 +1,20 @@
-import getSessionId from '../session'
+import { IRequest, IResponse } from '..'
+import { session } from '../session'
 import { checkSimulationAuth } from '../auth'
-import error from '../error'
+import { error } from '../error'
+
+import { IDataBaseEntry } from '@/database/index.d'
 
 import SimulationLib from '@/lib/simulation'
+
+type IUpdateBody = IDataBaseEntry[]
 
 /**
  * Check update body
  * @memberof Route.Simulation
  * @param {Array} body Body
  */
-const checkUpdateBody = (body) => {
+const checkUpdateBody = (body: IUpdateBody): void => {
   if (!body || !Array.isArray(body))
     throw error(400, 'Missing data in your request (body(array))')
 }
@@ -20,10 +25,13 @@ const checkUpdateBody = (body) => {
  * @param {Object} req Request
  * @param {Object} res Response
  */
-export default async (req, res) => {
+export default async (
+  req: IRequest<IUpdateBody>,
+  res: IResponse
+): Promise<void> => {
   try {
     // Check session
-    const sessionId = await getSessionId(req, res)
+    const sessionId = await session(req)
 
     // Id
     const id = req.query.id || req.params.id // Electron

@@ -1,15 +1,29 @@
 /** @namespace Route.Link */
 
-import error from '../error'
+import { IRequest, IResponse } from '..'
+import { error } from '../error'
 
 import LinkLib from '@/lib/link'
+
+interface IGetBody {
+  id: string
+  data: string[]
+}
+
+interface IProcessBody {
+  id: string
+  data?: {
+    email: string
+    password: string
+  }
+}
 
 /**
  * Check get body
  * @memberof Route.Link
  * @param {Object} body Body
  */
-const checkGetBody = (body) => {
+const checkGetBody = (body: IGetBody): void => {
   if (
     !body ||
     !body.id ||
@@ -28,7 +42,7 @@ const checkGetBody = (body) => {
  * @memberof Route.Link
  * @param {Object} body Body
  */
-const checkProcessBody = (body) => {
+const checkProcessBody = (body: IProcessBody): void => {
   if (!body || !body.id || typeof body.id !== 'string')
     throw error(
       400,
@@ -42,7 +56,10 @@ const checkProcessBody = (body) => {
  * @param {Object} req Request
  * @param {Object} res Response
  */
-export default async (req, res) => {
+export default async (
+  req: IRequest<IGetBody & IProcessBody>,
+  res: IResponse
+): Promise<void> => {
   try {
     switch (req.method) {
       case 'POST':

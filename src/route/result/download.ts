@@ -1,15 +1,26 @@
-import getSessionId from '../session'
+import { IRequest, IResponse } from '..'
+import { session } from '../session'
 import { checkSimulationAuth } from '../auth'
-import error from '../error'
+import { error } from '../error'
 
 import ResultLib from '@/lib/result'
+
+interface IDownloadBody {
+  simulation: {
+    id: string
+  }
+  result: {
+    originPath: string
+    fileName: string
+  }
+}
 
 /**
  * Check download body
  * @memberof Route.Result
  * @param {Object} body Body
  */
-const checkDownloadBody = (body) => {
+const checkDownloadBody = (body: IDownloadBody): void => {
   if (
     !body ||
     !body.simulation ||
@@ -33,10 +44,13 @@ const checkDownloadBody = (body) => {
  * @param {Object} req Request
  * @param {Object} res Response
  */
-export default async (req, res) => {
+export default async (
+  req: IRequest<IDownloadBody>,
+  res: IResponse
+): Promise<void> => {
   try {
     // Check session
-    const sessionId = await getSessionId(req, res)
+    const sessionId = await session(req)
 
     if (req.method === 'POST') {
       //Check

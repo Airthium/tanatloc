@@ -1,6 +1,7 @@
-import getSessionId from '../session'
+import { IRequest, IResponse } from '..'
+import { session } from '../session'
 import { checkOrganizationAuth } from '../auth'
-import error from '../error'
+import { error } from '../error'
 
 import GroupLib from '@/lib/group'
 
@@ -10,10 +11,10 @@ import GroupLib from '@/lib/group'
  * @param {Object} req Request
  * @param {Object} res Response
  */
-export default async (req, res) => {
+export default async (req: IRequest, res: IResponse) => {
   try {
     // Check session
-    const sessionId = await getSessionId(req, res)
+    const sessionId = await session(req)
 
     // Id
     const id = req.query.id || req.params.id // Electron

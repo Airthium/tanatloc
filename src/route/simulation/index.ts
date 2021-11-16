@@ -1,17 +1,30 @@
 /** @namspace Route.Simulation */
 
-import getSessionId from '../session'
+import { session } from '../session'
 import { checkProjectAuth } from '../auth'
-import error from '../error'
+import { error } from '../error'
+
+import { ISimulationScheme } from '@/database/index.d'
 
 import SimulationLib from '@/lib/simulation'
+import { IRequest, IResponse } from '..'
+
+interface IAddBody {
+  project: {
+    id: string
+  }
+  simulation: {
+    name: string
+    scheme: ISimulationScheme
+  }
+}
 
 /**
  * Check add body
  * @memberof Route.Simulation
  * @param {Object} body Body
  */
-const checkAddBody = (body) => {
+const checkAddBody = (body: IAddBody): void => {
   if (
     !body ||
     !body.project ||
@@ -35,10 +48,13 @@ const checkAddBody = (body) => {
  * @param {Object} req Request
  * @param {Object} res Response
  */
-export default async (req, res) => {
+export default async (
+  req: IRequest<IAddBody>,
+  res: IResponse
+): Promise<void> => {
   try {
     // Check session
-    const sessionId = await getSessionId(req, res)
+    const sessionId = await session(req)
 
     switch (req.method) {
       case 'GET':

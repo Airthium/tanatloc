@@ -1,15 +1,21 @@
 import Sentry from '@/lib/sentry'
 
+import { IRouteError } from '.'
+
 /**
  * Route error
  * @memberof Route
- * @param {number} status Status code
- * @param {string} message Message
- * @param {boolean} [display=true] Display
- * @returns {Error} Error
+ * @param status Status code
+ * @param message Message
+ * @param [display=true] Display
+ * @returns Error
  */
-const error = (status, message, display = true) => {
-  const err = new Error(message)
+export const error = (
+  status: number,
+  message: string,
+  display: boolean = true
+) => {
+  const err: IRouteError = new Error(message)
   err.status = status
 
   if (display) {
@@ -19,5 +25,3 @@ const error = (status, message, display = true) => {
 
   return err
 }
-
-export default error

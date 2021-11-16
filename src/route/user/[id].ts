@@ -1,7 +1,12 @@
-import getSessionId from '../session'
-import error from '../error'
+import { IRequest, IResponse } from '..'
+import { session } from '../session'
+import { error } from '../error'
+
+import { IDataBaseEntry } from '@/database/index.d'
 
 import UserLib from '@/lib/user'
+
+type IUpdateBody = IDataBaseEntry[]
 
 /**
  * Check update body
@@ -19,10 +24,13 @@ const checkUpdateBody = (body) => {
  * @param {Object} req Request
  * @param {Object} res Response
  */
-export default async (req, res) => {
+export default async (
+  req: IRequest<IUpdateBody>,
+  res: IResponse
+): Promise<void> => {
   try {
     // Check session
-    const sessionId = await getSessionId(req, res)
+    const sessionId = await session(req)
 
     // Check superuser
     const superuser = await UserLib.get(sessionId, ['superuser'])

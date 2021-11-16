@@ -1,17 +1,29 @@
 /** @namespace Route.Avatar */
 
-import getSessionId from '../session'
+import { IRequest, IResponse } from '..'
+import { session } from '../session'
 import { checkProjectAuth } from '../auth'
-import error from '../error'
+import { error } from '../error'
 
 import AvatarLib from '@/lib/avatar'
+
+interface IAddBody {
+  file: {
+    name: string
+    uid: string
+    data: Buffer
+  }
+  project: {
+    id: string
+  }
+}
 
 /**
  * Check add body
  * @memberof Route.Avatar
  * @param {Object} body Body
  */
-const checkAddBody = (body) => {
+const checkAddBody = (body: IAddBody): void => {
   if (
     !body ||
     !body.file ||
@@ -35,10 +47,13 @@ const checkAddBody = (body) => {
  * @param {Object} req Request
  * @param {Object} res Result
  */
-export default async (req, res) => {
+export default async (
+  req: IRequest<IAddBody>,
+  res: IResponse
+): Promise<void> => {
   try {
     // Check session
-    const sessionId = await getSessionId(req)
+    const sessionId = await session(req)
 
     if (req.method === 'POST') {
       // Check

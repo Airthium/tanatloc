@@ -1,17 +1,29 @@
 /** @namespace Route.Geometry */
 
-import getSessionId from '../session'
+import { IRequest, IResponse } from '..'
+import { session } from '../session'
 import { checkProjectAuth } from '../auth'
-import error from '../error'
+import { error } from '../error'
 
 import GeometryLib from '@/lib/geometry'
+
+interface IAddBody {
+  project: {
+    id: string
+  }
+  geometry: {
+    name: string
+    uid: string
+    buffer: Buffer
+  }
+}
 
 /**
  * Check add body
  * @memberof Route.Geometry
  * @param {Object} body Body
  */
-const checkAddBody = (body) => {
+const checkAddBody = (body: IAddBody): void => {
   if (
     !body ||
     !body.project ||
@@ -37,10 +49,13 @@ const checkAddBody = (body) => {
  * @param {Object} req Request
  * @param {Object} res Response
  */
-export default async (req, res) => {
+export default async (
+  req: IRequest<IAddBody>,
+  res: IResponse
+): Promise<void> => {
   try {
     // Check session
-    const sessionId = await getSessionId(req, res)
+    const sessionId = await session(req)
 
     switch (req.method) {
       case 'GET':

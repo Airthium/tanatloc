@@ -1,17 +1,35 @@
 /** @namespace Route.Workspace */
 
-import getSessionId from '../session'
+import { IRequest, IResponse } from '..'
+import { session } from '../session'
 import { checkWorkspaceAuth } from '../auth'
-import error from '../error'
+import { error } from '../error'
+
+import { IDataBaseEntry } from '@/database/index.d'
 
 import WorkspaceLib from '@/lib/workspace'
+
+interface IAddBody {
+  name: string
+}
+
+interface IUpdateBody {
+  workspace: {
+    id: string
+  }
+  data: IDataBaseEntry[]
+}
+
+interface IDeleteBody {
+  id: string
+}
 
 /**
  * Check add body
  * @memberof Route.Workspace
  * @param {Object} body Body
  */
-const checkAddBody = (body) => {
+const checkAddBody = (body: IAddBody): void => {
   if (!body || !body.name || typeof body.name !== 'string')
     throw error(400, 'Missing data in your request (body: { name(string) })')
 }
@@ -21,7 +39,7 @@ const checkAddBody = (body) => {
  * @memberof Route.Workspace
  * @param {Object} body Body
  */
-const checkUpdateBody = (body) => {
+const checkUpdateBody = (body: IUpdateBody): void => {
   if (
     !body ||
     !body.workspace ||
@@ -41,7 +59,7 @@ const checkUpdateBody = (body) => {
  * @memberof Route.Workspace
  * @param {Object} body Body
  */
-const checkDeleteBody = (body) => {
+const checkDeleteBody = (body: IDeleteBody): void => {
   if (!body || !body.id || typeof body.id !== 'string')
     throw error(400, 'Missing data in your request (body: { id(uuid) })')
 }
@@ -52,10 +70,13 @@ const checkDeleteBody = (body) => {
  * @param {Object} req Request
  * @param {Object} res Response
  */
-export default async (req, res) => {
+export default async (
+  req: IRequest<IAddBody & IUpdateBody & IDeleteBody>,
+  res: IResponse
+): Promise<void> => {
   try {
     // Check session
-    const sessionId = await getSessionId(req, res)
+    const sessionId = await session(req)
 
     switch (req.method) {
       case 'GET':

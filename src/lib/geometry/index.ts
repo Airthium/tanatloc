@@ -7,7 +7,7 @@ import { GEOMETRY } from '@/config/storage'
 import GeometryDB from '@/database/geometry'
 import { IDataBaseEntry, IGeometry } from '@/database/index.d'
 
-import { INewGeometry } from '../index.d'
+import { INewGeometryWithData } from '../index.d'
 
 import Project from '../project'
 import Tools from '../tools'
@@ -22,7 +22,7 @@ import Tools from '../tools'
 const add = async (
   project: { id: string },
   geometry: { name: string; uid: string; buffer: Buffer }
-): Promise<INewGeometry> => {
+): Promise<INewGeometryWithData> => {
   // Add geometry
   const geometryData = await GeometryDB.add(project, {
     name: geometry.name,

@@ -4,6 +4,12 @@ import path from 'path'
 
 import { GEOMETRY, SIMULATION } from '@/config/storage'
 
+import {
+  IDataBaseEntry,
+  INewSimulation,
+  ISimulation,
+  ISimulationScheme
+} from '@/database/index.d'
 import SimulationDB from '@/database/simulation'
 
 import User from '../user'
@@ -19,7 +25,10 @@ import Plugins from '../plugins'
  * @param {Object} simulation Simulation `{ name, scheme }`
  * @returns {Object} Simulation `{ id, name, scheme, project }`
  */
-const add = async (project, simulation) => {
+const add = async (
+  project: { id: string },
+  simulation: { name: string; scheme: ISimulationScheme }
+): Promise<INewSimulation> => {
   // Add simulation
   const simulationData = await SimulationDB.add({
     ...simulation,
@@ -47,7 +56,7 @@ const add = async (project, simulation) => {
  * @param {Array} data Data
  * @returns {Object} Simulation `{ id, ...data }`
  */
-const get = async (id, data) => {
+const get = async (id: string, data: string[]): Promise<ISimulation> => {
   return SimulationDB.get(id, data)
 }
 
@@ -57,7 +66,7 @@ const get = async (id, data) => {
  * @param {Array} data Data
  * @returns {Array} Simulations
  */
-const getAll = async (data) => {
+const getAll = async (data: string[]): Promise<ISimulation[]> => {
   return SimulationDB.getAll(data)
 }
 
@@ -67,7 +76,10 @@ const getAll = async (data) => {
  * @param {Object} simulation Simulation `{ id }`
  * @param {Object} data Data `[{ key, value, ... }, ...]`
  */
-const update = async (simulation, data) => {
+const update = async (
+  simulation: { id: string },
+  data: IDataBaseEntry[]
+): Promise<void> => {
   // Update
   await SimulationDB.update(simulation, data)
 }
@@ -77,7 +89,7 @@ const update = async (simulation, data) => {
  * @memberof Lib.Simulation
  * @param {Object} simulation Simulation `{ id }`
  */
-const del = async (simulation) => {
+const del = async (simulation: { id: string }): Promise<void> => {
   // Data
   const simulationData = await get(simulation.id, ['project'])
 
@@ -109,12 +121,15 @@ const del = async (simulation) => {
  * @param {Object} user User `{ id }`
  * @param {Object} simulation Simulation `{ id }`
  */
-const run = async (user, { id }) => {
-  const simulation = await get(id, ['scheme'])
+const run = async (
+  user: { id: string },
+  simulation: { id: string }
+): Promise<void> => {
+  const simulationData = await get(simulation.id, ['scheme'])
 
   // Global
-  const configuration = simulation.scheme.configuration
-  const algorithm = simulation.scheme.algorithm
+  const configuration = simulationData.scheme.configuration
+  const algorithm = simulationData.scheme.algorithm
 
   // Update status
   configuration.run = {
@@ -122,7 +137,7 @@ const run = async (user, { id }) => {
     done: null,
     error: null
   }
-  await update({ id }, [
+  await update(simulation, [
     {
       key: 'scheme',
       type: 'json',
@@ -145,14 +160,14 @@ const run = async (user, { id }) => {
   // Check authorized
   const userData = await User.get(user.id, ['authorizedplugins'])
   if (!userData.authorizedplugins?.includes(plugin.key)) {
-    const err = { message: 'Unauthorized' }
+    const err = new Error('Unauthorized')
     console.error(err)
 
     configuration.run = {
       ...configuration.run,
       error: err
     }
-    update({ id }, [
+    update(simulation, [
       {
         key: 'scheme',
         type: 'json',
@@ -242,13 +257,13 @@ const run = async (user, { id }) => {
 
   // Compute
   plugin.lib
-    .computeSimulation({ id }, algorithm, configuration)
+    .computeSimulation(simulation, algorithm, configuration)
     .then(() => {
       configuration.run = {
         ...configuration.run,
         done: true
       }
-      update({ id }, [
+      update(simulation, [
         {
           key: 'scheme',
           type: 'json',
@@ -268,7 +283,7 @@ const run = async (user, { id }) => {
         ...configuration.run,
         error: err
       }
-      update({ id }, [
+      update(simulation, [
         {
           key: 'scheme',
           type: 'json',
@@ -288,12 +303,12 @@ const run = async (user, { id }) => {
  * @memberof Lib.Simulation
  * @param {Object} simulation Simulation `{ id }`
  */
-const stop = async ({ id }) => {
-  const simulation = await get(id, ['scheme', 'tasks'])
+const stop = async (simulation: { id: string }): Promise<void> => {
+  const simulationData = await get(simulation.id, ['scheme', 'tasks'])
 
   // Global
-  const configuration = simulation.scheme.configuration
-  const tasks = simulation.tasks
+  const configuration = simulationData.scheme.configuration
+  const tasks = simulationData.tasks
 
   // Find plugin
   const pluginsLibs = Plugins.serverList()
@@ -302,7 +317,7 @@ const stop = async ({ id }) => {
   )?.lib
 
   // Stop
-  await pluginLib.stop(id, tasks, configuration)
+  await pluginLib.stop(simulation.id, tasks, configuration)
 
   // Update tasks
   tasks?.forEach((task) => {
@@ -311,7 +326,7 @@ const stop = async ({ id }) => {
       task.status = 'error'
     task.error += 'Job killed'
   })
-  await update({ id }, [
+  await update(simulation, [
     {
       key: 'tasks',
       value: tasks
@@ -326,9 +341,12 @@ const stop = async ({ id }) => {
  * @param {string} file File
  * @returns {string} Log
  */
-const getLog = async ({ id }, file) => {
+const getLog = async (
+  simulation: { id: string },
+  file: string
+): Promise<Buffer> => {
   // Path
-  const filePath = path.join(SIMULATION, id, file)
+  const filePath = path.join(SIMULATION, simulation.id, file)
 
   // Write file
   return Tools.readFile(filePath)
@@ -339,7 +357,10 @@ const getLog = async ({ id }, file) => {
  * @param {Object} simulation Simulation { id }
  * @param {string} to Target
  */
-const archive = async (simulation, to) => {
+const archive = async (
+  simulation: { id: string },
+  to: string
+): Promise<void> => {
   await Tools.copyDirectory(
     path.join(SIMULATION, simulation.id),
     path.join(to, simulation.id)

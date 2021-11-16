@@ -1,7 +1,7 @@
 /** @namespace Lib.Group */
 
 import GroupDB from '@/database/group'
-import { INewGroup, IGroup, IUser, IDataBaseEntry } from '@/database/index.d'
+import { INewGroup, IGroup, IDataBaseEntry } from '@/database/index.d'
 
 import User from '../user'
 import Workspace from '../workspace'
@@ -23,15 +23,13 @@ const add = async (
   // Add group
   const newGroup = await GroupDB.add(organization, group)
 
-  //TODO bug here!
-
   // Add group to organization
   Organization.update(organization, [
     {
       key: 'groups',
       type: 'array',
       method: 'append',
-      value: group.id
+      value: newGroup.id
     }
   ])
 
@@ -50,6 +48,12 @@ const get = async (id: string, data: Array<string>): Promise<IGroup> => {
   return GroupDB.get(id, data)
 }
 
+/**
+ * Get with data
+ * @param id Id
+ * @param data Data
+ * @returns Group
+ */
 const getWithData = async (
   id: string,
   data: string[]

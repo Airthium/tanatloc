@@ -1,11 +1,13 @@
-import error from './error'
+import { error } from './error'
 
 import ProjectLib from '@/lib/project'
 import WorkspaceLib from '@/lib/workspace'
 import GroupLib from '@/lib/group'
+import OrganizationLib from '@/lib/organization'
 import GeometryLib from '@/lib/geometry'
 import SimulationLib from '@/lib/simulation'
-import OrganizationLib from '@/lib/organization'
+
+import { IProject, IWorkspace, IOrganization } from '@/database/index.d'
 
 /**
  * Check authorization
@@ -14,7 +16,11 @@ import OrganizationLib from '@/lib/organization'
  * @param {Object} object Object (Project || Workspace || Organization)
  * @param {Object} [parentObject] Parent object (Workspace)
  */
-const auth = async (user, object, parentObject) => {
+const auth = async (
+  user: { id: string },
+  object: IProject | IWorkspace | IOrganization,
+  parentObject?: IWorkspace
+) => {
   // Objects
   if (object?.owners?.includes(user.id) || object?.users?.includes(user.id))
     return true
@@ -60,12 +66,16 @@ const auth = async (user, object, parentObject) => {
  * @param {Object} workspace Workspace {id }
  * @param {number} [status] Override workspace error status
  */
-const checkWorkspaceAuth = async (user, workspace, status) => {
-  const workspaceAuth = await WorkspaceLib.get(
-    workspace.id,
-    ['owners', 'users', 'groups'],
-    false
-  )
+const checkWorkspaceAuth = async (
+  user: { id: string },
+  workspace: { id: string },
+  status?: number
+) => {
+  const workspaceAuth = await WorkspaceLib.get(workspace.id, [
+    'owners',
+    'users',
+    'groups'
+  ])
   if (!workspaceAuth) throw error(status || 400, 'Invalid workspace identifier')
 
   if (!(await auth(user, workspaceAuth))) throw error(403, 'Access denied')
@@ -78,7 +88,11 @@ const checkWorkspaceAuth = async (user, workspace, status) => {
  * @param {Object} project Project { id }
  * @param {number} [status] Override project error status
  */
-const checkProjectAuth = async (user, project, status) => {
+const checkProjectAuth = async (
+  user: { id: string },
+  project: { id: string },
+  status?: number
+): Promise<void> => {
   const projectAuth = await ProjectLib.get(project.id, [
     'owners',
     'users',
@@ -87,11 +101,11 @@ const checkProjectAuth = async (user, project, status) => {
   ])
   if (!projectAuth) throw error(status || 400, 'Invalid project identifier')
 
-  const workspaceAuth = await WorkspaceLib.get(
-    projectAuth.workspace,
-    ['owners', 'users', 'groups'],
-    false
-  )
+  const workspaceAuth = await WorkspaceLib.get(projectAuth.workspace, [
+    'owners',
+    'users',
+    'groups'
+  ])
   if (!workspaceAuth) throw error(500, 'Invalid workspace identifier')
 
   if (!(await auth(user, projectAuth, workspaceAuth)))
@@ -105,7 +119,11 @@ const checkProjectAuth = async (user, project, status) => {
  * @param {Object} geometry Geometry { id }
  * @param {number} [status] Override simulation error status
  */
-const checkGeometryAuth = async (user, geometry, status) => {
+const checkGeometryAuth = async (
+  user: { id: string },
+  geometry: { id: string },
+  status?: number
+): Promise<void> => {
   const geometryAuth = await GeometryLib.get(geometry.id, ['project'])
   if (!geometryAuth) throw error(status || 400, 'Invalid geometry identifier')
 
@@ -117,11 +135,11 @@ const checkGeometryAuth = async (user, geometry, status) => {
   ])
   if (!projectAuth) throw error(500, 'Invalid project identifier')
 
-  const workspaceAuth = await WorkspaceLib.get(
-    projectAuth.workspace,
-    ['owners', 'users', 'groups'],
-    false
-  )
+  const workspaceAuth = await WorkspaceLib.get(projectAuth.workspace, [
+    'owners',
+    'users',
+    'groups'
+  ])
   if (!workspaceAuth) throw error(500, 'Invalid workspace identifier')
 
   if (!(await auth(user, projectAuth, workspaceAuth)))
@@ -135,7 +153,11 @@ const checkGeometryAuth = async (user, geometry, status) => {
  * @param {Object} simulation Simulation { id }
  * @param {number} [status] Override simulation error status
  */
-const checkSimulationAuth = async (user, simulation, status) => {
+const checkSimulationAuth = async (
+  user: { id: string },
+  simulation: { id: string },
+  status?: number
+): Promise<void> => {
   const simulationAuth = await SimulationLib.get(simulation.id, ['project'])
   if (!simulationAuth)
     throw error(status || 400, 'Invalid simulation identifier')
@@ -148,11 +170,11 @@ const checkSimulationAuth = async (user, simulation, status) => {
   ])
   if (!projectAuth) throw error(500, 'Invalid project identifier')
 
-  const workspaceAuth = await WorkspaceLib.get(
-    projectAuth.workspace,
-    ['owners', 'users', 'groups'],
-    false
-  )
+  const workspaceAuth = await WorkspaceLib.get(projectAuth.workspace, [
+    'owners',
+    'users',
+    'groups'
+  ])
   if (!workspaceAuth) throw error(500, 'Invalid workspace identifier')
 
   if (!(await auth(user, projectAuth, workspaceAuth)))
@@ -166,7 +188,11 @@ const checkSimulationAuth = async (user, simulation, status) => {
  * @param {Object} organization Organization { id }
  * @param {number} [status] Override project error status
  */
-const checkOrganizationAuth = async (user, organization, status) => {
+const checkOrganizationAuth = async (
+  user: { id: string },
+  organization: { id: string },
+  status?: number
+): Promise<void> => {
   const organizationAuth = await OrganizationLib.get(organization.id, [
     'owners',
     'users'

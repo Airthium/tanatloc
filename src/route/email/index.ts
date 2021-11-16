@@ -1,18 +1,24 @@
 /** @namespace Route.Email */
 
-import error from '../error'
+import { IRequest, IResponse } from '..'
+import { error } from '../error'
 
 import { PASSWORD_RECOVERY } from '@/config/email'
 
 import EmailLib from '@/lib/email'
 import UserLib from '@/lib/user'
 
+interface ICheckBody {
+  email: string
+  type: string
+}
+
 /**
  * Check send body
  * @memberof Route.Email
  * @param {Object} body Body
  */
-const checkSendBody = (body) => {
+const checkSendBody = (body: ICheckBody): void => {
   if (
     !body ||
     !body.type ||
@@ -32,7 +38,10 @@ const checkSendBody = (body) => {
  * @param {Object} req Request
  * @param {Object} res Result
  */
-export default async (req, res) => {
+export default async (
+  req: IRequest<ICheckBody>,
+  res: IResponse
+): Promise<void> => {
   try {
     if (req.method === 'PUT') {
       // Check

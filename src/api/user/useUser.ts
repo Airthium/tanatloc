@@ -1,17 +1,28 @@
 import useSWR from 'swr'
+
 import { fetcher } from '@/api/call'
+
+import { IUserWithData } from '@/lib/index.d'
 
 /**
  * Use user
  * @memberof API.User
- * @returns {Array} `[user, { mutateUser, clearUser, errorUser, loadingUser }]]`
+ * @returns User
  */
-const useUser = () => {
+export const useUser = (): [
+  IUserWithData,
+  {
+    mutateUser: (user: IUserWithData) => void
+    clearUser: () => void
+    errorUser: Error
+    loadingUser: boolean
+  }
+] => {
   const { data, error, mutate } = useSWR('/api/user', fetcher)
   const loading = !data
   const user = data?.user
 
-  const myMutate = (update) => {
+  const myMutate = (update: IUserWithData) => {
     mutate({
       user: {
         ...user,
@@ -34,5 +45,3 @@ const useUser = () => {
     }
   ]
 }
-
-export default useUser

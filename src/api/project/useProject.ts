@@ -1,5 +1,6 @@
 import useSWR from 'swr'
 import { fetcher } from '@/api/call'
+import { IProjectWithData } from '@/lib/index.d'
 
 /**
  * Use project
@@ -7,7 +8,12 @@ import { fetcher } from '@/api/call'
  * @param {string} id Project id
  * @returns {Array} `[project, { mutateProject, errorProject, loadingProject }]`
  */
-const useProject = (id) => {
+export const useProject = (
+  id: string
+): [
+  IProjectWithData,
+  { mutateProject: Function; errorProject: Error; loadingProject: boolean }
+] => {
   const { data, error, mutate } = useSWR(
     '/api/project' + (id ? '/' + id : ''),
     fetcher
@@ -15,13 +21,12 @@ const useProject = (id) => {
   const loading = !data
   const project = data?.project || {}
 
-  const myMutate = (update) => {
-    mutate({
-      project: {
-        ...project,
-        ...update
-      }
-    })
+  const myMutate = (update: IProjectWithData) => {
+    const mutatedProject = {
+      ...project,
+      ...update
+    }
+    mutate({ project: mutatedProject })
   }
 
   return [
@@ -33,5 +38,3 @@ const useProject = (id) => {
     }
   ]
 }
-
-export default useProject

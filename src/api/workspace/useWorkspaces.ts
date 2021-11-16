@@ -1,12 +1,23 @@
 import useSWR from 'swr'
 import { fetcher } from '@/api/call'
+import { IWorkspaceWithData } from '@/lib'
 
 /**
  * Use workspace (SWR)
  * @memberof API.Workspace
  * @returns {Array} `[workspaces, {mutateWorkspaces, addOneWorkspace, delOneWorkspace, mutateOneWorkspace, errorWorkspaces, loadingWorkspaces}]`
  */
-const useWorkspaces = () => {
+export const useWorkspaces = (): [
+  IWorkspaceWithData,
+  {
+    mutateWorkspaces: Function
+    addOneWorkspace: Function
+    delOneWorkspace: Function
+    mutateOneWorkspace: Function
+    errorWorkspaces: Error
+    loadingWorkspaces: boolean
+  }
+] => {
   const { data, error, mutate } = useSWR('/api/workspace', fetcher)
   const loading = !data
   const workspaces = data?.workspaces || []
@@ -56,5 +67,3 @@ const useWorkspaces = () => {
     }
   ]
 }
-
-export default useWorkspaces

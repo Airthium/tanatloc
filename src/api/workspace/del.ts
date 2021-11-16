@@ -5,11 +5,9 @@ import { call } from '@/api/call'
  * @memberof API.Workspace
  * @param {Object} workspace Workspace `{ id }`
  */
-const del = async (workspace) => {
+export const del = async (workspace: { id: string }): Promise<void> => {
   await call('/api/workspace', {
     method: 'DELETE',
     body: JSON.stringify(workspace)
   })
 }
-
-export default del

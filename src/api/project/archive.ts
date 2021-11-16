@@ -1,4 +1,6 @@
-import { call, CallResponse } from '@/api/call'
+import { ICallResponse } from '../index.d'
+
+import { call } from '@/api/call'
 
 /**
  * Archive
@@ -8,7 +10,7 @@ import { call, CallResponse } from '@/api/call'
  */
 export const archive = async (project: {
   id: string
-}): Promise<CallResponse> => {
+}): Promise<ICallResponse> => {
   return call('/api/project/' + project.id + '/archive', {
     method: 'GET',
     headers: {

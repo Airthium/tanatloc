@@ -52,7 +52,7 @@ export const fetcher = async (
 export const call = async (
   route: string,
   param?: { method?: string; headers?: ICallHeaders; body?: string }
-): Promise<ICallResponse | JSON> => {
+): Promise<ICallResponse> => {
   const response = await fetch(base + route, {
     ...param,
     method: (param && param.method) || 'GET',

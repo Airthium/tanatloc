@@ -1,6 +1,6 @@
 import useSWR from 'swr'
 import { fetcher } from '@/api/call'
-import { IProjectWithData } from '@/lib'
+import { IProjectWithData } from '@/lib/index.d'
 
 /**
  * Use projects
@@ -8,7 +8,7 @@ import { IProjectWithData } from '@/lib'
  * @param ids Projects ids
  * @returns {Array} `[projects, { mutateProjects, addOneProject, delOneProject, mutateOneProject, errorProjects, loadingProjects }]`
  */
-const useProjects = (
+export const useProjects = (
   ids: string[]
 ): [
   IProjectWithData[],
@@ -73,5 +73,3 @@ const useProjects = (
     }
   ]
 }
-
-export default useProjects

@@ -1,3 +1,5 @@
+import { INewWorkspace } from '@/database/index.d'
+
 import { call } from '@/api/call'
 
 /**
@@ -6,14 +8,16 @@ import { call } from '@/api/call'
  * @param {Object} workspace Workspace `{ name }`
  * @returns {Object} Workspace `{ id, name, owners }`
  */
-const add = async (workspace) => {
-  return call('/api/workspace', {
+export const add = async (workspace: {
+  name: string
+}): Promise<INewWorkspace> => {
+  const response = await call('/api/workspace', {
     method: 'POST',
     headers: {
       Accept: 'application/json'
     },
     body: JSON.stringify(workspace)
   })
-}
 
-export default add
+  return response.json()
+}

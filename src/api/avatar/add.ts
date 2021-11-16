@@ -1,5 +1,6 @@
+import { INewAvatar } from '@/database/index.d'
+
 import { call } from '@/api/call'
-import { ICallResponse } from '..'
 
 /**
  * Add
@@ -11,11 +12,14 @@ import { ICallResponse } from '..'
 export const add = async (
   file: { name: string; uid: string; data: Buffer },
   project: { id: string }
-): Promise<ICallResponse | JSON> =>
-  call('/api/avatar', {
+): Promise<INewAvatar> => {
+  const response = await call('/api/avatar', {
     method: 'POST',
     headers: {
       Accept: 'application/json'
     },
     body: JSON.stringify({ file, project })
   })
+
+  return response.json()
+}

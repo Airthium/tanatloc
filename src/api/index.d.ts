@@ -1,7 +1,9 @@
-import { IProject } from '@/database'
+import { IProjectWithData, IWorkspaceWithData } from '@/lib'
 
 export interface IFetchResponse {
-  projects?: IProject[]
+  project?: IProjectWithData[]
+  projects?: IProjectWithDate[]
+  workspaces?: IWorkspaceWithData[]
 }
 
 export interface ICallHeaders {
@@ -9,7 +11,8 @@ export interface ICallHeaders {
 }
 
 export interface ICallResponse {
-  blob: Function
+  blob?: Function
+  json?: Function
 }
 
 export interface ICallError extends Error {

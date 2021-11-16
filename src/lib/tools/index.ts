@@ -9,7 +9,6 @@ import {
   createWriteStream,
   promises as fs
 } from 'fs'
-import ncp from 'ncp'
 import tar from 'tar'
 import ThreeToGLB from 'three-to-glb'
 
@@ -109,16 +108,7 @@ const copyDirectory = async (
   origin: string,
   destination: string
 ): Promise<void> => {
-  // TODO
-  // fs.cp only since 16.7.0, wait for electron
-  await new Promise(
-    (resolve: (value: void) => void, reject: (reason: Error) => void) => {
-      ncp(origin, destination, (err: Error) => {
-        err && reject(err)
-        resolve()
-      })
-    }
-  )
+  await fs.cp(origin, destination, { recursive: true })
 }
 
 /**

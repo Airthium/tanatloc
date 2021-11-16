@@ -1,5 +1,4 @@
 import { promises as fs } from 'fs'
-import ncp from 'ncp'
 
 /**
  * Copy threejs assets
@@ -16,23 +15,10 @@ const copyThreeAssets = async (): Promise<void> => {
   }
 
   // Copy
-  // fs.cp only since 16.7.0, wait for electron
-  // await fs.cp(
-  //   'node_modules/three/examples/js/libs/draco',
-  //   'public/three/libs/draco',
-  //   { recursive: true }
-  // )
-  await new Promise(
-    (resolve: (value: void) => void, reject: (reason: Error) => void) => {
-      ncp(
-        'node_modules/three/examples/js/libs/draco',
-        'public/three/libs/draco',
-        (err: Error) => {
-          err && reject(err)
-          resolve()
-        }
-      )
-    }
+  await fs.cp(
+    'node_modules/three/examples/js/libs/draco',
+    'public/three/libs/draco',
+    { recursive: true }
   )
 }
 

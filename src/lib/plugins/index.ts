@@ -2,6 +2,8 @@
 
 import isElectron from 'is-electron'
 
+import { IClientPlugin, IServerPlugin } from '@/database/index.d'
+
 import Simulation from '../simulation'
 import Tools from '../tools'
 
@@ -35,7 +37,7 @@ const load = async (): Promise<void> => {
 
 load()
   .then(() => {
-    restartJobs.apply().catch(() => {
+    restartJobs().catch(() => {
       console.error('Restart jobs failed!')
     })
   })
@@ -47,7 +49,7 @@ load()
  * Restart jobs
  * @memberof Lib.Plugins
  */
-const restartJobs = async () => {
+const restartJobs = async (): Promise<void> => {
   const simulations = await Simulation.getAll(['id', 'scheme', 'tasks'])
 
   // Check waiting or processing tasks
@@ -82,7 +84,7 @@ const restartJobs = async () => {
  * @memberof Lib.Plugins
  * @returns {Array} List
  */
-const serverList = () => {
+const serverList = (): IServerPlugin[] => {
   return plugins.map((plugin) => {
     return {
       category: plugin.category,
@@ -102,7 +104,7 @@ const serverList = () => {
 const clientList = (
   user: { authorizedplugins?: string[] },
   complete?: boolean
-) => {
+): IClientPlugin[] => {
   if (complete) {
     return plugins.map((plugin) => ({
       category: plugin.category,

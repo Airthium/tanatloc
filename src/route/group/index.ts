@@ -20,7 +20,9 @@ interface IAddBody {
 }
 
 interface IUpdateBody {
-  id: string
+  group: {
+    id: string
+  }
   data: IDataBaseEntry[]
 }
 
@@ -59,14 +61,15 @@ const checkAddBody = (body: IAddBody): void => {
 const checkUpdateBody = (body: IUpdateBody): void => {
   if (
     !body ||
-    !body.id ||
-    typeof body.id !== 'string' ||
+    !body.group ||
+    !body.group.id ||
+    typeof body.group.id !== 'string' ||
     !body.data ||
     !Array.isArray(body.data)
   )
     throw error(
       400,
-      'Missing data in your request (body: { id(uuid), data(array) })'
+      'Missing data in your request (body: { group: { id(uuid) }, data(array) })'
     )
 }
 
@@ -157,11 +160,11 @@ export default async (
         checkUpdateBody(req.body)
 
         // Check auth
-        await checkGroupAuth({ id: req.body.id }, { id: sessionId })
+        await checkGroupAuth(req.body.group, { id: sessionId })
 
         // Update
         try {
-          await GroupLib.update({ id: req.body.id }, req.body.data)
+          await GroupLib.update(req.body.group, req.body.data)
           res.status(200).end()
         } catch (err) {
           throw error(500, err.message)

@@ -1,5 +1,6 @@
 import useSWR from 'swr'
 import { fetcher } from '@/api/call'
+import { ISimulation } from '@/database/index.d'
 
 /**
  * Use simulations
@@ -7,7 +8,19 @@ import { fetcher } from '@/api/call'
  * @param {Array} ids [Simulations ids]
  * @returns {Array} `[simulations, { mutateSimulations, addOneSimulation, delOneSimulation, mutateOneSimulation, errorSimulations, loadingSimulations }]`
  */
-const useSimulations = (ids) => {
+export const useSimulations = (
+  ids: string[]
+): [
+  ISimulation[],
+  {
+    mutateSimulations: (data: { simulations: ISimulation[] }) => void
+    addOneSimulation: (simulation: ISimulation) => void
+    delOneSimulation: (simulation: ISimulation) => void
+    mutateOneSimulation: (simulation: ISimulation, revalidate?: boolean) => void
+    errorSimulations: Error
+    loadingSimulations: boolean
+  }
+] => {
   const { data, error, mutate } = useSWR(
     ['/api/simulations', JSON.stringify({ ids })],
     fetcher
@@ -20,7 +33,7 @@ const useSimulations = (ids) => {
    * @memberof API.Simulation
    * @param {Object} simulation Simulation
    */
-  const addOne = (simulation) => {
+  const addOne = (simulation: ISimulation) => {
     const newSimulations = [...simulations, simulation]
     mutate({ simulations: newSimulations })
   }
@@ -30,7 +43,7 @@ const useSimulations = (ids) => {
    * @memberof API.Simulation
    * @param {Object} simulation Simulation
    */
-  const delOne = (simulation) => {
+  const delOne = (simulation: ISimulation) => {
     const filteredSimulations = simulations.filter(
       (s) => s.id !== simulation.id
     )
@@ -42,7 +55,7 @@ const useSimulations = (ids) => {
    * @memberof API.Simulation
    * @param {Object} simulation Simulation
    */
-  const mutateOne = (simulation, revalidate) => {
+  const mutateOne = (simulation: ISimulation, revalidate?: boolean) => {
     const mutatedSimulations = simulations.map((s) => {
       if (s.id === simulation.id) s = { ...s, ...simulation }
       return s
@@ -62,5 +75,3 @@ const useSimulations = (ids) => {
     }
   ]
 }
-
-export default useSimulations

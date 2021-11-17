@@ -19,7 +19,7 @@ export const useProject = (
     fetcher
   )
   const loading = !data
-  const project = data?.project || {}
+  const project = data?.project || { id: '0' }
 
   const myMutate = (update: IProjectWithData) => {
     const mutatedProject = {

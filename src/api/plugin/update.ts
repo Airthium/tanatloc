@@ -1,15 +1,15 @@
+import { IPlugin } from '@/database/index.d'
+
 import { call } from '@/api/call'
 
 /**
- * Delete
+ * Update
  * @memberof API.Plugin
  * @param {Object} plugin Plugin
  */
-const del = async (plugin) => {
+export const update = async (plugin: IPlugin): Promise<void> => {
   await call('/api/plugin', {
-    method: 'DELETE',
+    method: 'PUT',
     body: JSON.stringify(plugin)
   })
 }
-
-export default del

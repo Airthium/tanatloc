@@ -5,11 +5,9 @@ import { call } from '@/api/call'
  * @memberof API.Group
  * @param {Object} group Group `{ id }`
  */
-const del = async (group) => {
+export const del = async (group: { id: string }): Promise<void> => {
   await call('/api/group', {
     method: 'DELETE',
     body: JSON.stringify(group)
   })
 }
-
-export default del

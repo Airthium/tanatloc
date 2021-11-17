@@ -1,3 +1,5 @@
+import { INewGroup } from '@/database/index.d'
+
 import { call } from '@/api/call'
 
 /**
@@ -7,11 +9,14 @@ import { call } from '@/api/call'
  * @param {Object} group Group `{ name, users }`
  * @returns {Object} Group `{ id, name, users, organization }`
  */
-const add = async (organization, group) => {
-  return call('/api/group', {
+export const add = async (
+  organization: { id: string },
+  group: { name: string; users: string[] }
+): Promise<INewGroup> => {
+  const response = await call('/api/group', {
     method: 'POST',
     body: JSON.stringify({ organization, group })
   })
-}
 
-export default add
+  return response.json()
+}

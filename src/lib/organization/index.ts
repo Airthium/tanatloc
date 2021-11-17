@@ -13,7 +13,11 @@ import User from '../user'
 import Group from '../group'
 import Email from '../email'
 
-import { IOrganizationWithData } from '../index.d'
+import {
+  IGroupWithData,
+  IOrganizationWithData,
+  IUserWithData
+} from '../index.d'
 
 /**
  * Add
@@ -57,6 +61,76 @@ const get = async (id: string, data: string[]): Promise<IOrganization> => {
 }
 
 /**
+ * Get owners data
+ * @param organization Organization
+ * @returns Owners data
+ */
+const getOwnersData = async (
+  organization: IOrganization | { owners: string[] }
+): Promise<IUserWithData[]> => {
+  return Promise.all(
+    organization.owners.map(async (owner) => {
+      const ownerData = await User.getWithData(owner, [
+        'firstname',
+        'lastname',
+        'email',
+        'avatar'
+      ])
+
+      return {
+        id: owner,
+        ...ownerData
+      }
+    })
+  )
+}
+
+/**
+ * Get users data
+ * @param organization Organization
+ * @returns Users data
+ */
+const getUsersData = async (
+  organization: IOrganization | { users: string[] }
+): Promise<IUserWithData[]> => {
+  return Promise.all(
+    organization.users.map(async (user) => {
+      const userData = await User.getWithData(user, [
+        'firstname',
+        'lastname',
+        'email',
+        'avatar'
+      ])
+
+      return {
+        id: user,
+        ...userData
+      }
+    })
+  )
+}
+
+/**
+ * Get groups data
+ * @param organization Organization
+ * @returns Groups data
+ */
+const getGroupsData = async (
+  organization: IOrganization | { groups: string[] }
+): Promise<IGroupWithData[]> => {
+  return Promise.all(
+    organization.groups.map(async (group) => {
+      const groupData = await Group.getWithData(group, ['name', 'users'])
+
+      return {
+        id: group,
+        ...groupData
+      }
+    })
+  )
+}
+
+/**
  * Get with data
  * @param id Id
  * @param data Data
@@ -68,58 +142,22 @@ const getWithData = async (
 ): Promise<IOrganizationWithData> => {
   const organization = await get(id, data)
 
-  const organizationWithData: IOrganizationWithData = { ...organization }
+  const { owners, users, groups, ...organizationData } = organization
+  const organizationWithData: IOrganizationWithData = { ...organizationData }
 
   // Owners
   if (organization?.owners) {
-    organizationWithData.owners = await Promise.all(
-      organization.owners.map(async (owner) => {
-        const ownerData = await User.getWithData(owner, [
-          'firstname',
-          'lastname',
-          'email',
-          'avatar'
-        ])
-
-        return {
-          id: owner,
-          ...ownerData
-        }
-      })
-    )
+    organizationWithData.owners = await getOwnersData(organization)
   }
 
   // Users
   if (organization?.users) {
-    organizationWithData.users = await Promise.all(
-      organization.users.map(async (user) => {
-        const userData = await User.getWithData(user, [
-          'firstname',
-          'lastname',
-          'email',
-          'avatar'
-        ])
-
-        return {
-          id: user,
-          ...userData
-        }
-      })
-    )
+    organizationWithData.users = await getUsersData(organization)
   }
 
   // Groups
   if (organization?.groups) {
-    organizationWithData.groups = await Promise.all(
-      organization.groups.map(async (group) => {
-        const groupData = await Group.getWithData(group, ['name', 'users'])
-
-        return {
-          id: group,
-          ...groupData
-        }
-      })
-    )
+    organizationWithData.groups = await getGroupsData(organization)
   }
 
   return organizationWithData
@@ -142,74 +180,36 @@ const getByUser = async (
 
   const organizations = await OrganizationDB.getAll(internalData)
 
-  // Check user
-  const userOrganizations = organizations.filter(
-    (o) => o.owners?.includes(user.id) || o.users?.includes(user.id)
-  )
+  // Check user & data
+  const userOrganizations = await Promise.all(
+    organizations.map(async (organization) => {
+      // Check user
+      if (
+        organization.owners?.includes(user.id) ||
+        organization.users?.includes(user.id)
+      ) {
+        const { owners, users, groups, ...organizationData } = organization
 
-  // Remove internal
-  const returnedOrganization: IOrganizationWithData[] = userOrganizations.map(
-    (o) => {
-      const organization = {}
-      data.forEach((d) => {
-        organization[d] = o[d]
-      })
-      return organization
-    }
-  )
+        const organizationWithData: IOrganizationWithData = {
+          ...organizationData
+        }
 
-  // Users & groups data
-  await Promise.all(
-    returnedOrganization.map(async (organization: IOrganizationWithData) => {
-      // Owners
-      organization.owners &&
-        (organization.owners = await Promise.all(
-          organization.owners.map(async (o) => {
-            const ownerData = await User.getWithData(o, [
-              'firstname',
-              'lastname',
-              'email',
-              'avatar'
-            ])
-            return {
-              id: o,
-              ...ownerData
-            }
-          })
-        ))
+        // Owner data
+        if (data.includes('owners') && owners)
+          organizationWithData.owners = await getOwnersData({ owners })
 
-      // Users
-      organization.users &&
-        (organization.users = await Promise.all(
-          organization.users.map(async (u) => {
-            const userData = await User.getWithData(u, [
-              'firstname',
-              'lastname',
-              'email',
-              'avatar'
-            ])
-            return {
-              id: u,
-              ...userData
-            }
-          })
-        ))
+        if (data.includes('groups') && users)
+          organizationWithData.users = await getUsersData({ users })
 
-      // Groups
-      organization.groups &&
-        (organization.groups = await Promise.all(
-          organization.groups.map(async (g) => {
-            const groupData = await Group.get(g, ['name', 'users'])
-            return {
-              id: g,
-              ...groupData
-            }
-          })
-        ))
+        if (groups)
+          organizationWithData.groups = await getGroupsData({ groups })
+
+        return organizationData
+      }
     })
   )
 
-  return returnedOrganization
+  return userOrganizations
 }
 
 /**

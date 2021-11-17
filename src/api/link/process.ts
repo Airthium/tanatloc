@@ -7,11 +7,12 @@ import { call } from '@/api/call'
  * @param {Object} data Data `{ email, password }`
  *
  */
-const process = async (id, data) => {
+export const process = async (
+  id: string,
+  data?: { email: string; password: string }
+): Promise<void> => {
   await call('/api/link', {
     method: 'PUT',
     body: JSON.stringify({ id, data })
   })
 }
-
-export default process

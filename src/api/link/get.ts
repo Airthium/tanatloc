@@ -1,3 +1,5 @@
+import { ILink } from '@/database/index.d'
+
 import { call } from '@/api/call'
 
 /**
@@ -7,14 +9,14 @@ import { call } from '@/api/call'
  * @param {Array} data Data
  * @returns {Object} Link `{ id, ...data }`
  */
-const get = async (id, data) => {
-  return call('/api/link', {
+export const get = async (id: string, data: string[]): Promise<ILink> => {
+  const response = await call('/api/link', {
     method: 'POST',
     headers: {
       Accept: 'application/json'
     },
     body: JSON.stringify({ id, data })
   })
-}
 
-export default get
+  return response.json()
+}

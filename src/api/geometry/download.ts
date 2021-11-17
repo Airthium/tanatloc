@@ -1,4 +1,6 @@
-import { call, CallResponse } from '@/api/call'
+import { IGeometryFile } from '@/lib'
+
+import { call } from '@/api/call'
 
 /**
  * Download
@@ -8,4 +10,8 @@ import { call, CallResponse } from '@/api/call'
  */
 export const download = async (geometry: {
   id: string
-}): Promise<CallResponse> => call('/api/geometry/' + geometry.id + '/download')
+}): Promise<IGeometryFile> => {
+  const response = await call('/api/geometry/' + geometry.id + '/download')
+
+  return response.json()
+}

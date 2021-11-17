@@ -52,8 +52,9 @@ const getWithData = async (
 ): Promise<IUserWithData> => {
   const user = await get(id, data)
 
+  const { avatar, ...userData } = user
   const userWithData: IUserWithData = {
-    ...user
+    ...userData
   }
   // Get avatar
   if (user?.avatar) {

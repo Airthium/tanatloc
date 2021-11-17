@@ -60,7 +60,8 @@ const getWithData = async (
 ): Promise<IGroupWithData> => {
   const group = await get(id, data)
 
-  const groupWithData: IGroupWithData = { ...group }
+  const { users, ...groupData } = group
+  const groupWithData: IGroupWithData = { ...groupData }
   if (group?.users)
     groupWithData.users = await Promise.all(
       group.users.map(async (user) => {
@@ -91,6 +92,11 @@ const getAll = async (data: Array<string>): Promise<Array<IGroupWithData>> => {
   // Get groups
   const groups = await GroupDB.getAll(data)
 
+  const groupsData = groups.map((group) => {
+    const { users, ...groupData } = group
+    return groupData
+  })
+  const groupsWithData: IGroupWithData[] = [...(groupsData || [])]
   // Users data
   await Promise.all(
     groups.map(async (group, index) => {
@@ -110,12 +116,12 @@ const getAll = async (data: Array<string>): Promise<Array<IGroupWithData>> => {
             }
           })
         )
-        groups[index].users = users
+        groupsWithData[index].users = users
       }
     })
   )
 
-  return groups
+  return groupsWithData
 }
 
 /**

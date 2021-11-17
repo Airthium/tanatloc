@@ -1,13 +1,28 @@
 import useSWR from 'swr'
+
 import { fetcher } from '@/api/call'
+
+import { IGeometry } from '@/database/index.d'
 
 /**
  * Use geometries
  * @memberof API.Geometry
- * @param {Array} ids Ids
- * @returns {Array} `[geometries, { mutateGeometries, addOneGeometry, delOneGeometry, mutateOneGeometry, errorGeometries, loadingGeometries }]`
+ * @param ids Ids
+ * @returns Geometries
  */
-export const useGeometries = (ids: Array<string>): Array<any> => {
+export const useGeometries = (
+  ids: Array<string>
+): [
+  IGeometry[],
+  {
+    mutateGeometries: (data: { geometries: IGeometry[] }) => void
+    addOneGeometry: (geometry: IGeometry) => void
+    delOneGeometry: (geometry: IGeometry) => void
+    mutateOneGeometry: (geometry: IGeometry) => void
+    errorGeometries: Error
+    loadingGeometries: boolean
+  }
+] => {
   const { data, error, mutate } = useSWR(
     ['/api/geometries', JSON.stringify({ ids })],
     fetcher
@@ -20,7 +35,7 @@ export const useGeometries = (ids: Array<string>): Array<any> => {
    * @memberof API.Geometry
    * @param {Object} geometry Geometry
    */
-  const addOne = (geometry) => {
+  const addOne = (geometry: IGeometry) => {
     const newGeometries = [...geometries, geometry]
     mutate({ geometries: newGeometries })
   }
@@ -29,16 +44,16 @@ export const useGeometries = (ids: Array<string>): Array<any> => {
    * Delete one (useGeometries)
    * @param {Object} geometry Geometry { id }
    */
-  const delOne = (geometry) => {
+  const delOne = (geometry: IGeometry) => {
     const filteredGeometries = geometries.filter((s) => s.id !== geometry.id)
-    mutate({ geometryies: filteredGeometries })
+    mutate({ geometries: filteredGeometries })
   }
 
   /**
    * Mutate one (useGeometries)
    * @param {Object} geometry Geometry
    */
-  const mutateOne = (geometry) => {
+  const mutateOne = (geometry: IGeometry) => {
     const mutatedGeometries = geometries.map((g) => {
       if (g.id === geometry.id) g = { ...g, ...geometry }
       return g

@@ -7,11 +7,14 @@ import { call } from '@/api/call'
  * @param {string} file File
  * @returns {string} Log
  */
-const log = async (simulation: { id: string }, file: string) => {
-  return call('/api/simulation/' + simulation.id + '/log', {
+export const log = async (
+  simulation: { id: string },
+  file: string
+): Promise<{ log: Buffer }> => {
+  const response = await call('/api/simulation/' + simulation.id + '/log', {
     method: 'POST',
     body: JSON.stringify({ file })
   })
-}
 
-export default log
+  return response.json()
+}

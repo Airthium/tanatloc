@@ -1,3 +1,5 @@
+import { IPlugin } from '@/database/index.d'
+
 import { call } from '@/api/call'
 
 /**
@@ -5,11 +7,9 @@ import { call } from '@/api/call'
  * @memberof API.Plugin
  * @param {Object} plugin Plugin
  */
-const add = async (plugin) => {
+export const add = async (plugin: IPlugin): Promise<void> => {
   await call('/api/plugin', {
     method: 'POST',
     body: JSON.stringify(plugin)
   })
 }
-
-export default add

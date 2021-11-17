@@ -1,5 +1,8 @@
 import useSWR from 'swr'
+
 import { fetcher } from '@/api/call'
+
+import { IGroupWithData } from '@/lib'
 
 /**
  * Use groups
@@ -7,7 +10,19 @@ import { fetcher } from '@/api/call'
  * @param {string} id Id
  * @returns {Object} `[ groups, { mutateGroups, addOneGroup, delOneGroup, mutateOneGroup, errorGroups, loadingGroups }]`
  */
-const useGroups = (id) => {
+export const useGroups = (
+  id: string
+): [
+  IGroupWithData[],
+  {
+    mutateGroups: (data: { groups: IGroupWithData[] }) => void
+    addOneGroup: (group: IGroupWithData) => void
+    delOneGroup: (group: IGroupWithData) => void
+    mutateOneGroup: (group: IGroupWithData) => void
+    errorGroups: Error
+    loadingGroups: boolean
+  }
+] => {
   const { data, error, mutate } = useSWR('/api/groups/' + id, fetcher)
   const loading = !data
   const groups = data?.groups || []
@@ -16,7 +31,7 @@ const useGroups = (id) => {
    * Add one
    * @param {Object} group Group
    */
-  const addOne = (group) => {
+  const addOne = (group: IGroupWithData) => {
     const newGroups = [...groups, group]
     mutate({ groups: newGroups })
   }
@@ -25,7 +40,7 @@ const useGroups = (id) => {
    * Del one
    * @param {Object} group Group
    */
-  const delOne = (group) => {
+  const delOne = (group: IGroupWithData) => {
     const filteredGroups = groups.filter((g) => g.id !== group.id)
     mutate({ groups: filteredGroups })
   }
@@ -34,7 +49,7 @@ const useGroups = (id) => {
    * Mutate one
    * @param {Object} groups Group
    */
-  const mutateOne = (group) => {
+  const mutateOne = (group: IGroupWithData) => {
     const mutatedGroups = groups.map((g) => {
       if (g.id === group.id) g = { ...g, ...group }
       return g
@@ -54,5 +69,3 @@ const useGroups = (id) => {
     }
   ]
 }
-
-export default useGroups

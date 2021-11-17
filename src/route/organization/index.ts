@@ -7,13 +7,16 @@ import { IDataBaseEntry } from '@/database/index.d'
 
 import OrganizationLib from '@/lib/organization'
 import { IRequest, IResponse } from '..'
+import organization from '@/database/organization'
 
 interface IAddBody {
   name: string
 }
 
 interface IUpdateBody {
-  id: string
+  organization: {
+    id: string
+  }
   data: IDataBaseEntry[]
 }
 
@@ -39,8 +42,9 @@ const checkAddBody = (body: IAddBody): void => {
 const checkUpdateBody = (body: IUpdateBody): void => {
   if (
     !body ||
-    !body.id ||
-    typeof body.id !== 'string' ||
+    !body.organization ||
+    !body.organization.id ||
+    typeof body.organization.id !== 'string' ||
     !body.data ||
     !Array.isArray(body.data)
   )
@@ -113,12 +117,14 @@ export default async (
         checkUpdateBody(req.body)
 
         // Check administrator
-        await checkOrganizationAdministrator(req.body, { id: sessionId })
+        await checkOrganizationAdministrator(req.body.organization, {
+          id: sessionId
+        })
 
         // Update
         try {
           await OrganizationLib.update(
-            { id: req.body.id },
+            req.body.organization,
             req.body.data,
             sessionId
           )

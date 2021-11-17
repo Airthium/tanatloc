@@ -58,15 +58,15 @@ const get = async (id: string, data: string[]): Promise<IWorkspace> => {
  */
 const getWithData = async (
   id: string,
-  data: Array<string>,
-  withData: boolean = true
+  data: Array<string>
 ): Promise<IWorkspaceWithData> => {
   const workspace = await get(id, data)
 
-  const workspaceWithData: IWorkspaceWithData = { ...workspace }
+  const { owners, users, groups, ...workspaceData } = workspace
+  const workspaceWithData: IWorkspaceWithData = { ...workspaceData }
   // Get owners
-  if (withData && workspace?.owners) {
-    const owners = await Promise.all(
+  if (workspace?.owners) {
+    const ownersData = await Promise.all(
       workspace.owners.map(async (owner) => {
         const ownerData = await User.getWithData(owner, [
           'lastname',
@@ -80,12 +80,12 @@ const getWithData = async (
         }
       })
     )
-    workspaceWithData.owners = owners
+    workspaceWithData.owners = ownersData
   }
 
   // Get users
-  if (withData && workspace?.users) {
-    const users = await Promise.all(
+  if (workspace?.users) {
+    const usersData = await Promise.all(
       workspace.users.map(async (user) => {
         const userData = await User.getWithData(user, [
           'lastname',
@@ -99,21 +99,21 @@ const getWithData = async (
         }
       })
     )
-    workspaceWithData.users = users
+    workspaceWithData.users = usersData
   }
 
   // Get groups
-  if (withData && workspace?.groups) {
-    const groups = await Promise.all(
+  if (workspace?.groups) {
+    const groupsData = await Promise.all(
       workspace.groups.map(async (group) => {
-        const groupData = await Group.get(group, ['name'])
+        const groupData = await Group.getWithData(group, ['name'])
         return {
           id: group,
           ...groupData
         }
       })
     )
-    workspaceWithData.groups = groups
+    workspaceWithData.groups = groupsData
   }
 
   return workspaceWithData
@@ -131,7 +131,7 @@ const getByUser = async ({
   id: string
 }): Promise<IWorkspaceWithData[]> => {
   // Get workspaces'ids
-  const user = await User.getWithData(id, [
+  const user = await User.get(id, [
     'firstname',
     'lastname',
     'email',
@@ -192,7 +192,11 @@ const getByUser = async ({
                       'groups',
                       'projects'
                     ])
-                    if (!workspaceData.owners?.find((o) => o.id === id))
+                    if (
+                      !workspaceData.owners?.find(
+                        (o: IWorkspaceWithData) => o.id === id
+                      )
+                    )
                       groupWorkspaces.push({
                         id: workspace,
                         ...workspaceData,

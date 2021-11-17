@@ -7,7 +7,7 @@ import {
   IProject,
   INewGeometry,
   IOrganization
-} from '@/database'
+} from '@/database/index.d'
 
 export interface INewGeometryWithData extends INewGeometry {
   json: string
@@ -30,32 +30,42 @@ export interface INewGeometryWithData extends INewGeometry {
   }
 }
 
+export interface IGeometryFile {
+  extension: string
+  buffer: Buffer
+}
+
+export interface IGeometryPart {
+  uuid: string
+  buffer: Buffer
+}
+
 export interface IGroupWithData extends Omit<IGroup, 'users'> {
-  users?: string[] | IUserWithData[]
+  users?: IUserWithData[]
 }
 
 export interface IOrganizationWithData
   extends Omit<IOrganization, 'owners' | 'users' | 'groups'> {
-  owners?: string[] | IUserWithData[]
-  users?: string[] | IUserWithData[]
-  groups?: string[] | IGroupWithData[]
+  owners?: IUserWithData[]
+  users?: IUserWithData[]
+  groups?: IGroupWithData[]
 }
 
 export interface IProjectWithData
-  extends Omit<IProject, 'avatar', 'owners', 'users', 'groups'> {
-  avatar?: string | Buffer
-  owners?: string[] | IUserWithData[]
-  users?: string[] | IUserWithData[]
-  groups?: string[] | IGroupWithData[]
+  extends Omit<IProject, 'avatar' | 'owners' | 'users' | 'groups'> {
+  avatar?: Buffer
+  owners?: IUserWithData[]
+  users?: IUserWithData[]
+  groups?: IGroupWithData[]
 }
 
 export interface IUserWithData extends Omit<IUser, 'avatar'> {
-  avatar?: string | Buffer
+  avatar?: Buffer
 }
 
 export interface IWorkspaceWithData
   extends Omit<IWorkspace, 'owners' | 'users' | 'groups'> {
-  owners?: string[] | IUserWithData[]
-  users?: string[] | IUserWithData[]
-  groups?: string[] | IGroupWithData[]
+  owners?: IUserWithData[]
+  users?: IUserWithData[]
+  groups?: IGroupWithData[]
 }

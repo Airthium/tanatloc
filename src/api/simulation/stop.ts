@@ -6,10 +6,8 @@ import { call } from '@/api/call'
  * @param {Object} simulation Simulation `{ id }`
  * @returns {Object} `{ ok: true }`
  */
-const stop = async (simulation) => {
-  return call('/api/simulation/' + simulation.id + '/stop', {
+export const stop = async (simulation: { id: string }): Promise<void> => {
+  await call('/api/simulation/' + simulation.id + '/stop', {
     method: 'GET'
   })
 }
-
-export default stop

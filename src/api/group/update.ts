@@ -1,3 +1,5 @@
+import { IDataBaseEntry } from '@/database/index.d'
+
 import { call } from '@/api/call'
 
 /**
@@ -6,11 +8,12 @@ import { call } from '@/api/call'
  * @param {Object} group Group `{ id }`
  * @param {Array} data Data `[{ key, value, ... }, ...]`
  */
-const update = async (id, data) => {
+export const update = async (
+  group: { id: string },
+  data: IDataBaseEntry[]
+): Promise<void> => {
   await call('/api/group', {
     method: 'PUT',
-    body: JSON.stringify({ id, data })
+    body: JSON.stringify({ group, data })
   })
 }
-
-export default update

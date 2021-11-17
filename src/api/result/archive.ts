@@ -1,3 +1,4 @@
+import { ICallResponse } from '..'
 import { call } from '@/api/call'
 
 /**
@@ -6,11 +7,11 @@ import { call } from '@/api/call'
  * @param {Object} simulation  Simulation `{ id }`
  * @returns {Object} Archive read stream
  */
-const archive = async (simulation) => {
+export const archive = async (simulation: {
+  id: string
+}): Promise<ICallResponse> => {
   return call('/api/result/archive', {
     method: 'POST',
     body: JSON.stringify({ simulation })
   })
 }
-
-export default archive

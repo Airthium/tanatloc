@@ -5,11 +5,9 @@ import { call } from '@/api/call'
  * @memberof API.Organization
  * @param {Object} organization Organization `{ id }`
  */
-const del = async (organization) => {
-  return call('/api/organization', {
+export const del = async (organization: { id: string }): Promise<void> => {
+  await call('/api/organization', {
     method: 'DELETE',
     body: JSON.stringify(organization)
   })
 }
-
-export default del

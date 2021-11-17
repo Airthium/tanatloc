@@ -7,7 +7,7 @@ import { GEOMETRY } from '@/config/storage'
 import GeometryDB from '@/database/geometry'
 import { IDataBaseEntry, IGeometry } from '@/database/index.d'
 
-import { INewGeometryWithData } from '../index.d'
+import { IGeometryPart, IGeometryFile, INewGeometryWithData } from '../index.d'
 
 import Project from '../project'
 import Tools from '../tools'
@@ -265,9 +265,7 @@ const del = async (geometry: {
  * @param {Object} geometry Geometry `{id }`
  * @returns {Object} Geometry `{ extension, buffer }`
  */
-const read = async (geometry: {
-  id: string
-}): Promise<{ extension: string; buffer: Buffer }> => {
+const read = async (geometry: { id: string }): Promise<IGeometryFile> => {
   // Data
   const geometryData = await get(geometry.id, ['extension', 'uploadfilename'])
   if (!geometryData) throw new Error('Geometry does not exist.')
@@ -289,9 +287,7 @@ const read = async (geometry: {
  * @param {Object} geometry Geometry `{ id }`
  * @returns {Object} Part `{ uuid, buffer }`
  */
-const readPart = async (geometry: {
-  id: string
-}): Promise<{ uuid: string; buffer: Buffer }> => {
+const readPart = async (geometry: { id: string }): Promise<IGeometryPart> => {
   // Data
   const geometryData = await get(geometry.id, ['glb', 'json'])
   if (!geometryData) throw new Error('Geometry does not exist.')

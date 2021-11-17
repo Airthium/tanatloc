@@ -148,6 +148,7 @@ export interface ISimulationScheme {
     run?: {
       cloudServer?: {
         key?: string
+        configuration?: object
       }
       error?: Error
       done?: boolean
@@ -169,6 +170,8 @@ export interface ISimulation {
   tasks?: Array<{
     status: string
     error: string
+    plugin?: string
+    pid?: string | number
   }>
   project?: string
 }
@@ -190,6 +193,26 @@ export interface IPlugin {
   needInit?: boolean
   needReInit: boolean
   configuration: any
+}
+
+export interface IServerPlugin {
+  category: string
+  key: string
+  lib?: {
+    init: Function
+    computeSimulation: Function
+    stop: Function
+  }
+  templates?: Array<{ key: string; file: string }>
+}
+
+export interface IClientPlugin {
+  category: string
+  key: string
+  name: string
+  description: string
+  configuration: object
+  inUseConfiguration: object
 }
 
 export interface IUser {

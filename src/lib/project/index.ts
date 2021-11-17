@@ -67,7 +67,8 @@ const getWithData = async (
   // Check archived
   if (project?.archived) project.avatar = null
 
-  const projectWithData: IProjectWithData = { ...project }
+  const { avatar, owners, users, groups, ...projectData } = project
+  const projectWithData: IProjectWithData = { ...projectData }
 
   // Get avatar
   if (project?.avatar) {
@@ -122,7 +123,7 @@ const getWithData = async (
   if (project?.groups) {
     const groups = await Promise.all(
       project.groups.map(async (group) => {
-        const groupData = await Group.get(group, ['name'])
+        const groupData = await Group.getWithData(group, ['name'])
         return {
           id: group,
           ...groupData

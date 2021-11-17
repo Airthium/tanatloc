@@ -13,10 +13,10 @@ export const useProjects = (
 ): [
   IProjectWithData[],
   {
-    mutateProjects: Function
-    addOneProject: Function
-    delOneProject: Function
-    mutateOneProject: Function
+    mutateProjects: (data: { projects: IProjectWithData[] }) => void
+    addOneProject: (project: IProjectWithData) => void
+    delOneProject: (project: IProjectWithData) => void
+    mutateOneProject: (project: IProjectWithData) => void
     errorProjects: Error
     loadingProjects: boolean
   }

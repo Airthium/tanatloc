@@ -7,11 +7,17 @@ import { call } from '@/api/call'
  * @param {Object} result Result `{ originPath, glb }`
  * @returns {Object} Result `{ buffer }`
  */
-const load = async (simulation, result) => {
-  return call('/api/result', {
+export const load = async (
+  simulation: { id: string },
+  result: { originPath: string; glb: string }
+): Promise<{ buffer: Buffer }> => {
+  const response = await call('/api/result', {
     method: 'POST',
+    headers: {
+      Accept: 'application/json'
+    },
     body: JSON.stringify({ simulation, result })
   })
-}
 
-export default load
+  return response.json()
+}

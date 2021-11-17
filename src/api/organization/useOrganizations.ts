@@ -1,12 +1,25 @@
 import useSWR from 'swr'
 import { fetcher } from '@/api/call'
+import { IOrganizationWithData } from '@/lib'
 
 /**
  * Use organizations
  * @memberof API.Organization
  * @returns {Array} `[organizations, {mutateOrganizations, addOneOrganization, delOneOrganization, mutateOneOrganization, errorOrganizations, loadingOrganizations }]`
  */
-const useOrganizations = () => {
+export const useOrganizations = (): [
+  IOrganizationWithData[],
+  {
+    mutateOrganizations: (data: {
+      organizations: IOrganizationWithData[]
+    }) => void
+    addOneOrganization: (organization: IOrganizationWithData) => void
+    delOneOrganization: (organization: IOrganizationWithData) => void
+    mutateOneOrganization: (organization: IOrganizationWithData) => void
+    errorOrganizations: Error
+    loadingOrganizations: boolean
+  }
+] => {
   const { data, error, mutate } = useSWR('/api/organizations', fetcher)
   const loading = !data
   const organizations = data?.organizations || []
@@ -15,7 +28,7 @@ const useOrganizations = () => {
    * Add one
    * @param {Object} organization Organization
    */
-  const addOne = (organization) => {
+  const addOne = (organization: IOrganizationWithData) => {
     const newOrganizations = [...organizations, organization]
     mutate({ organizations: newOrganizations })
   }
@@ -24,7 +37,7 @@ const useOrganizations = () => {
    * Delete one
    * @param {Object} organization Organization
    */
-  const delOne = (organization) => {
+  const delOne = (organization: IOrganizationWithData) => {
     const filteredOrganizations = organizations.filter(
       (o) => o.id !== organization.id
     )
@@ -35,7 +48,7 @@ const useOrganizations = () => {
    * Mutate one
    * @param {Object} organization Organization
    */
-  const mutateOne = (organization) => {
+  const mutateOne = (organization: IOrganizationWithData) => {
     const mutatedOrganizations = organizations.map((o) => {
       if (o.id === organization.id) o = { ...o, ...organization }
       return o
@@ -55,5 +68,3 @@ const useOrganizations = () => {
     }
   ]
 }
-
-export default useOrganizations

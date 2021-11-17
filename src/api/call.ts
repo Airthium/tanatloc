@@ -73,7 +73,5 @@ export const call = async (
     throw error
   }
 
-  if (contentType?.includes('application/json')) return response.json()
-
   return response
 }

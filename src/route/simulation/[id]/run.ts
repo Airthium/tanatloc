@@ -30,7 +30,7 @@ export default async (req: IRequest, res: IResponse): Promise<void> => {
       // Run
       try {
         await SimulationLib.run({ id: sessionId }, { id })
-        res.status(200).json({ ok: true })
+        res.status(200).end()
       } catch (err) {
         throw error(500, err.message)
       }

@@ -1,4 +1,6 @@
-import { call, CallResponse } from '@/api/call'
+import { IGeometryPart } from '@/lib'
+
+import { call } from '@/api/call'
 
 /**
  * Get part
@@ -8,4 +10,8 @@ import { call, CallResponse } from '@/api/call'
  */
 export const getPart = async (geometry: {
   id: string
-}): Promise<CallResponse> => call('/api/geometry/' + geometry.id + '/part')
+}): Promise<IGeometryPart> => {
+  const response = await call('/api/geometry/' + geometry.id + '/part')
+
+  return response.json()
+}

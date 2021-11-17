@@ -8,7 +8,7 @@ import { IWorkspaceWithData } from '@/lib'
  * @returns Workspaces
  */
 export const useWorkspaces = (): [
-  IWorkspaceWithData,
+  IWorkspaceWithData[],
   {
     mutateWorkspaces: (data: { workspaces: IWorkspaceWithData[] }) => void
     addOneWorkspace: (workspace: IWorkspaceWithData) => void

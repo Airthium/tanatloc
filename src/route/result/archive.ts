@@ -1,3 +1,5 @@
+import { WriteStream } from 'fs'
+
 import { IRequest, IResponse } from '..'
 import { session } from '../session'
 import { checkSimulationAuth } from '../auth'
@@ -37,7 +39,7 @@ const checkArchiveBody = (body: IArchiveBody): void => {
  */
 export default async (
   req: IRequest<IArchiveBody>,
-  res: IResponse
+  res: IResponse & WriteStream
 ): Promise<void> => {
   try {
     // Check session

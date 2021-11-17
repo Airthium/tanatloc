@@ -9,9 +9,7 @@ import { IOrganization } from '../index.d'
  * @param {Array<string>} data Data
  * @returns {Array} Organizations
  */
-export const getAll = async (
-  data: Array<string>
-): Promise<Array<IOrganization>> => {
+export const getAll = async (data: Array<string>): Promise<IOrganization[]> => {
   const response = await query(
     'SELECT ' + data.join(',') + ' FROM ' + tables.ORGANIZATIONS,
     []

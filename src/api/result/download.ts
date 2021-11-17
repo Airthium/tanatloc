@@ -1,3 +1,5 @@
+import { ICallResponse } from '..'
+
 import { call } from '@/api/call'
 
 /**
@@ -7,11 +9,12 @@ import { call } from '@/api/call'
  * @param {Object} result Result `{ originPath, fileName }`
  * @returns {Object} Download read stream
  */
-const download = async (simulation, result) => {
+export const download = async (
+  simulation: { id: string },
+  result: { originPath: string; fileName: string }
+): Promise<ICallResponse> => {
   return call('/api/result/download', {
     method: 'POST',
     body: JSON.stringify({ simulation, result })
   })
 }
-
-export default download

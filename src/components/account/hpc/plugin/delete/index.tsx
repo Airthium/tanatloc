@@ -1,10 +1,19 @@
 import PropTypes from 'prop-types'
 import { useState } from 'react'
 
+import { IClientPlugin } from '@/database/index.d'
+
 import { DeleteButton } from '@/components/assets/button'
 import { Error as ErrorNotification } from '@/components/assets/notification'
 
 import PluginAPI from '@/api/plugin'
+
+interface IProps {
+  plugin: IClientPlugin
+  swr: {
+    delOnePlugin: Function
+  }
+}
 
 /**
  * Errors (delete)
@@ -19,14 +28,14 @@ const errors = {
  * @memberof Components.Account.HPC.Plugin
  * @param {Object} props Props `{ plugin, swr }`
  */
-const Delete = ({ plugin, swr }) => {
+const Delete = ({ plugin, swr }: IProps) => {
   // State
   const [loading, setLoading] = useState(false)
 
   /**
    * On delete
    */
-  const onDelete = async () => {
+  const onDelete = async (): Promise<void> => {
     setLoading(true)
 
     try {

@@ -178,7 +178,13 @@ export interface ISimulation {
 
 export interface ISystem {
   allowsignup?: boolean
-  password?: object
+  password?: {
+    min: number
+    max: number
+    requireLetter: boolean
+    requireNumber: boolean
+    requireSymbol: boolean
+  }
 }
 
 export interface INewUser {
@@ -189,15 +195,11 @@ export interface INewUser {
 
 export interface IPlugin {
   uuid?: string
-  key: string
-  needInit?: boolean
-  needReInit: boolean
-  configuration: any
+  key?: string
 }
 
-export interface IServerPlugin {
-  category: string
-  key: string
+export interface IServerPlugin extends IPlugin {
+  category?: string
   lib?: {
     init: Function
     computeSimulation: Function
@@ -206,13 +208,18 @@ export interface IServerPlugin {
   templates?: Array<{ key: string; file: string }>
 }
 
-export interface IClientPlugin {
-  category: string
-  key: string
-  name: string
-  description: string
-  configuration: object
-  inUseConfiguration: object
+export interface IClientPlugin extends IPlugin {
+  category?: string
+  name?: string
+  description?: string
+  needInit?: boolean
+  needReInit?: boolean
+  configuration?: {
+    name?: {
+      value: string
+    }
+  }
+  inUseConfiguration?: object
 }
 
 export interface IUser {

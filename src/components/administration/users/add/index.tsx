@@ -1,71 +1,99 @@
 import PropTypes from 'prop-types'
 import { useState } from 'react'
 import { Button, Checkbox, Form, Input, Select } from 'antd'
-import { EditOutlined } from '@ant-design/icons'
+import { PlusOutlined } from '@ant-design/icons'
+
+import { IClientPlugin } from '@/database/index.d'
 
 import Dialog from '@/components/assets/dialog'
 import { PasswordItem } from '@/components/assets/input'
-import { Error } from '@/components/assets/notification'
+import { Error as ErrorNotification } from '@/components/assets/notification'
 
 import UserAPI from '@/api/user'
 
-/**
- * Errors (edit)
- * @memberof Components.Administration.Users
- */
-const errors = {
-  update: 'Unable to update user'
+interface IProps {
+  plugins: IClientPlugin[]
+  swr: {
+    addOneUser: Function
+  }
 }
 
 /**
- * Edit
+ * Errors (add)
  * @memberof Components.Administration.Users
- * @param {Object} props Props `{ plugins, user, swr }`
  */
-const Edit = ({ plugins, user, swr }) => {
+const errors = {
+  add: 'Unable to add user'
+}
+
+/**
+ * Add
+ * @memberof Components.Administration.Users
+ * @param {Object} props Props `{ plugins, swr }`
+ */
+const Add = ({ plugins, swr }: IProps): JSX.Element => {
   // State
   const [visible, setVisible] = useState(false)
   const [loading, setLoading] = useState(false)
 
   /**
-   * On update
+   * On add
    * @param {Object} values Values
    */
-  const onUpdate = async (values) => {
+  const onAdd = async (values: {
+    email: string
+    password: string
+    firstname: string
+    lastname: string
+    authorizedplugins: string[]
+    superuser: boolean
+  }) => {
     setLoading(true)
+
     try {
-      // Update
-      const toUpdate = Object.keys(values)
-        .map((key) => {
-          const value = values[key]
-          if (value !== undefined && value !== '******' && value !== user[key])
-            return { key, value, type: key === 'password' && 'crypt' }
-        })
-        .filter((u) => u)
+      // API
+      const newUser = await UserAPI.add({
+        email: values.email,
+        password: values.password
+      })
+      if (newUser.alreadyExists) throw new Error('User already exists')
 
-      if (!toUpdate.length) {
-        // Close
-        setLoading(false)
-        setVisible(false)
-        return
-      }
-
-      await UserAPI.updateById(user.id, toUpdate)
+      // Update informations
+      await UserAPI.updateById(newUser.id, [
+        {
+          key: 'firstname',
+          value: values.firstname
+        },
+        {
+          key: 'lastname',
+          value: values.lastname
+        },
+        {
+          key: 'authorizedplugins',
+          value: values.authorizedplugins
+        },
+        {
+          key: 'superuser',
+          value: !!values.superuser
+        }
+      ])
 
       // Mutate
-      const newUser = {
-        ...user,
-        ...values
+      const newUserWithData = {
+        ...newUser,
+        email: values.email,
+        firstname: values.firstname,
+        lastname: values.firstname,
+        superuser: values.superuser
       }
-      delete newUser.password
-      swr.mutateOneUser(newUser)
+      swr.addOneUser(newUserWithData)
 
       // Close
       setLoading(false)
       setVisible(false)
     } catch (err) {
-      Error(errors.update, err)
       setLoading(false)
+      ErrorNotification(errors.add, err)
       throw err
     }
   }
@@ -76,15 +104,10 @@ const Edit = ({ plugins, user, swr }) => {
   return (
     <>
       <Dialog
-        title="Edit user"
+        title="New user"
         visible={visible}
-        initialValues={{
-          ...user,
-          password: '******',
-          authorizedplugins: user.authorizedplugins || []
-        }}
         onCancel={() => setVisible(false)}
-        onOk={onUpdate}
+        onOk={onAdd}
         loading={loading}
       >
         <Form.Item name="firstname" label="First name">
@@ -100,7 +123,7 @@ const Edit = ({ plugins, user, swr }) => {
         >
           <Input />
         </Form.Item>
-        <PasswordItem name="password" edit={true} />
+        <PasswordItem name="password" />
         <Form.Item name="authorizedplugins" label="Plugins">
           <Select
             mode="multiple"
@@ -119,26 +142,18 @@ const Edit = ({ plugins, user, swr }) => {
         </Form.Item>
       </Dialog>
 
-      <Button icon={<EditOutlined />} onClick={() => setVisible(true)}>
-        Edit
+      <Button icon={<PlusOutlined />} onClick={() => setVisible(true)}>
+        New user
       </Button>
     </>
   )
 }
 
-Edit.propTypes = {
+Add.propTypes = {
   plugins: PropTypes.array.isRequired,
-  user: PropTypes.exact({
-    id: PropTypes.string.isRequired,
-    firstname: PropTypes.string,
-    lastname: PropTypes.string,
-    email: PropTypes.string.isRequired,
-    authorizedplugins: PropTypes.array,
-    superuser: PropTypes.bool
-  }).isRequired,
   swr: PropTypes.exact({
-    mutateOneUser: PropTypes.func.isRequired
+    addOneUser: PropTypes.func.isRequired
   }).isRequired
 }
 
-export default Edit
+export default Add

@@ -38,10 +38,10 @@ const errors = {
  * Administration
  * @memberof Components.Administration
  */
-const Administration = () => {
+const Administration = (): JSX.Element => {
   // Data
   const router = useRouter()
-  const { tab } = router.query
+  const { tab }: { tab?: string } = router.query
 
   const [users, { addOneUser, mutateOneUser, delOneUser, errorUsers }] =
     UserAPI.useUsers()
@@ -55,7 +55,7 @@ const Administration = () => {
    * On change
    * @param {string} key Key
    */
-  const onChange = (key) => {
+  const onChange = (key: string) => {
     router.replace({
       pathname: '/dashboard',
       query: { page: 'administration', tab: key }

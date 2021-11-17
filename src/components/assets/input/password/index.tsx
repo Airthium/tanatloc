@@ -11,6 +11,17 @@ import {
 
 import SystemAPI from '@/api/system'
 
+interface IProps {
+  labelCol?: {}
+  wrapperCol?: {}
+  name?: string
+  label?: string
+  inputPlaceholder?: string
+  inputAutoComplete?: string
+  edit?: boolean
+  style?: {}
+}
+
 /**
  * Errors (password)
  * @memberof Components.Assets.Input
@@ -49,7 +60,7 @@ const PasswordItem = ({
   inputAutoComplete,
   edit,
   style
-}) => {
+}: IProps): JSX.Element => {
   // Data
   const [system] = SystemAPI.useSystem()
 
@@ -57,7 +68,7 @@ const PasswordItem = ({
    * Check min
    * @param {string} value Value
    */
-  const checkMin = (value) => {
+  const checkMin = (value: string): boolean => {
     if (
       value.length <
       (system?.password?.min !== undefined ? system?.password?.min : MIN_SIZE)
@@ -70,7 +81,7 @@ const PasswordItem = ({
    * Check max
    * @param {string} value Value
    */
-  const checkMax = (value) => {
+  const checkMax = (value: string): boolean => {
     if (
       value.length >
       (system?.password?.max !== undefined ? system?.password?.max : MAX_SIZE)
@@ -84,7 +95,7 @@ const PasswordItem = ({
    * @param {string} value Value
    * @param {RegExp} regex Regex
    */
-  const checkRegex = (value, regex) => {
+  const checkRegex = (value: string, regex: RegExp): boolean => {
     if (value.search(regex) === -1) return false
     return true
   }
@@ -93,7 +104,7 @@ const PasswordItem = ({
    * Require letter
    * @param {string} value Value
    */
-  const requireLetter = (value) => {
+  const requireLetter = (value: string): boolean => {
     if (
       system?.password?.requireLetter !== undefined
         ? system?.password?.requireLetter
@@ -107,7 +118,7 @@ const PasswordItem = ({
    * Require number
    * @param {string} value Value
    */
-  const requireNumber = (value) => {
+  const requireNumber = (value: string): boolean => {
     if (
       system?.password?.requireNumber !== undefined
         ? system?.password?.requireNumber
@@ -121,7 +132,7 @@ const PasswordItem = ({
    * Require symbol
    * @param {string} value Value
    */
-  const requireSymbol = (value) => {
+  const requireSymbol = (value: string): boolean => {
     if (
       system?.password?.requireSymbol !== undefined
         ? system?.password?.requireSymbol
@@ -136,7 +147,7 @@ const PasswordItem = ({
    * @param {string} value Value
    * @param {Array} err Errors
    */
-  const checkSize = (value, err) => {
+  const checkSize = (value: string, err: string[]): void => {
     if (!checkMin(value)) err.push(errors.passwordTooSmall)
 
     if (!checkMax(value)) err.push(errors.passwordTooLong)
@@ -147,7 +158,7 @@ const PasswordItem = ({
    * @param {string} value Value
    * @param {Array} err Errors
    */
-  const checkFormat = (value, err) => {
+  const checkFormat = (value: string, err: string[]): void => {
     if (!requireLetter(value)) err.push(errors.passwordRequireLetter)
 
     if (!requireNumber(value)) err.push(errors.passwordRequireNumber)

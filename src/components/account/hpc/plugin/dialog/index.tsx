@@ -2,11 +2,22 @@ import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
 import { Form, Input, Select } from 'antd'
 
+import { IClientPlugin } from '@/database/index.d'
+
 import { AddButton, EditButton } from '@/components/assets/button'
 import Dialog from '@/components/assets/dialog'
 import { Error as ErrorNotification } from '@/components/assets/notification'
 
 import PluginAPI from '@/api/plugin'
+
+interface IProps {
+  plugin: IClientPlugin
+  swr: {
+    addOnePlugin?: Function
+    mutateOnePlugin?: Function
+  }
+  edit?: boolean
+}
 
 /**
  * Errors (dialog)
@@ -21,10 +32,10 @@ const errors = {
  * @memberof Components.Account.HPC.Plugin
  * @param {Object} props Props `{ plugin, swr, edit }`
  */
-const PluginDialog = ({ plugin, swr, edit }) => {
+const PluginDialog = ({ plugin, swr, edit }: IProps): JSX.Element => {
   // State
   const [visible, setVisible] = useState(false)
-  const [initialValues, setInitialValues] = useState()
+  const [initialValues, setInitialValues] = useState({})
   const [loading, setLoading] = useState(false)
 
   // Initial values
@@ -44,7 +55,10 @@ const PluginDialog = ({ plugin, swr, edit }) => {
    * @param {Object} item Item
    * @param {string} key Key
    */
-  const inputItem = (item, key) => {
+  const inputItem = (
+    item: { required?: boolean; label: string; props?: object },
+    key: string
+  ): JSX.Element => {
     return (
       <Form.Item
         key={item.label}
@@ -68,7 +82,10 @@ const PluginDialog = ({ plugin, swr, edit }) => {
    * @param {Object} item Item
    * @param {string} key Key
    */
-  const textareaItem = (item, key) => {
+  const textareaItem = (
+    item: { required?: boolean; label: string; props?: object },
+    key: string
+  ): JSX.Element => {
     return (
       <Form.Item
         key={item.label}
@@ -96,7 +113,10 @@ const PluginDialog = ({ plugin, swr, edit }) => {
    * @param {Object} item Item
    * @param {string} key Key
    */
-  const passwordItem = (item, key) => {
+  const passwordItem = (
+    item: { required?: boolean; label: string; props?: object },
+    key: string
+  ): JSX.Element => {
     return (
       <Form.Item
         key={item.label}
@@ -125,7 +145,15 @@ const PluginDialog = ({ plugin, swr, edit }) => {
    * @param {Object} item Item
    * @param {string} key Key
    */
-  const selectItem = (item, key) => {
+  const selectItem = (
+    item: {
+      required?: boolean
+      label: string
+      options: string[]
+      props?: object
+    },
+    key: string
+  ): JSX.Element => {
     return (
       <Form.Item
         key={item.label}
@@ -160,7 +188,7 @@ const PluginDialog = ({ plugin, swr, edit }) => {
    * On finish
    * @param {Object} values Values
    */
-  const onFinish = async (values) => {
+  const onFinish = async (values: {}): Promise<void> => {
     setLoading(true)
     try {
       if (edit) {
@@ -186,9 +214,6 @@ const PluginDialog = ({ plugin, swr, edit }) => {
         Object.keys(values).forEach((key) => {
           newPlugin.configuration[key].value = values[key]
         })
-
-        // Remove logo
-        newPlugin.logo && delete newPlugin.logo
 
         // API
         await PluginAPI.add(newPlugin)
@@ -244,7 +269,6 @@ PluginDialog.propTypes = {
     uuid: PropTypes.string,
     key: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
-    logo: PropTypes.string,
     needInit: PropTypes.bool,
     configuration: PropTypes.object.isRequired,
     inUseConfiguration: PropTypes.object

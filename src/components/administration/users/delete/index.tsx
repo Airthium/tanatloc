@@ -8,6 +8,16 @@ import { Error } from '@/components/assets/notification'
 
 import UserAPI from '@/api/user'
 
+interface IProps {
+  user: {
+    id: string
+    email: string
+  }
+  swr: {
+    delOneUser: Function
+  }
+}
+
 /**
  * Errors (delete)
  * @memberof Components.Administration.Users
@@ -21,7 +31,7 @@ const errors = {
  * @memberof Components.Administration.Users
  * @param {Object} props Props `{ user, swr }`
  */
-const Delete = ({ user, swr }) => {
+const Delete = ({ user, swr }: IProps): JSX.Element => {
   // State
   const [visible, setVisible] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -29,7 +39,7 @@ const Delete = ({ user, swr }) => {
   /**
    * On delete
    */
-  const onDelete = async () => {
+  const onDelete = async (): Promise<void> => {
     setLoading(true)
 
     try {
@@ -55,7 +65,7 @@ const Delete = ({ user, swr }) => {
     <>
       <Button
         icon={<DeleteOutlined />}
-        type="danger"
+        danger
         onClick={() => setVisible(true)}
       />
       <DeleteDialog

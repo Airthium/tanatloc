@@ -33,6 +33,8 @@ export interface ICallResponse {
 }
 
 export interface ICallError extends Error {
-  info?: object
+  info?: {
+    message: string
+  }
   status?: number
 }

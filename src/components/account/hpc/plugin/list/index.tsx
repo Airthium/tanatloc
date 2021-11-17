@@ -2,15 +2,26 @@ import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
 import { Card, Space, Typography } from 'antd'
 
+import { IClientPlugin } from '@/database/index.d'
+
 import PluginDialog from '../dialog'
 import Delete from '../delete'
+
+interface IProps {
+  plugin: IClientPlugin
+  plugins: IClientPlugin[]
+  swr: {
+    delOnePlugin: Function
+    mutateOnePlugin: Function
+  }
+}
 
 /**
  * Plugins list
  * @memberof Components.Account.HPC.Plugin
  * @param {Object} props Props `{ plugin, plugins, swr }`
  */
-const List = ({ plugin, plugins, swr }) => {
+const List = ({ plugin, plugins, swr }: IProps): JSX.Element => {
   // State
   const [list, setList] = useState([])
 

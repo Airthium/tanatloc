@@ -1,6 +1,14 @@
 import PropTypes from 'prop-types'
+import { ReactChild } from 'react'
 import { Button, Tooltip } from 'antd'
 import { PlusCircleOutlined } from '@ant-design/icons'
+
+interface IProps {
+  disabled?: boolean
+  loading?: boolean
+  children: ReactChild | ReactChild[]
+  onAdd: () => void
+}
 
 /**
  * Add button
@@ -12,7 +20,12 @@ import { PlusCircleOutlined } from '@ant-design/icons'
  * - children (React node) Button children
  * - onAdd (Function) Button click
  */
-const AddButton = ({ disabled, loading, children, onAdd }) => {
+const AddButton = ({
+  disabled,
+  loading,
+  children,
+  onAdd
+}: IProps): JSX.Element => {
   /**
    * Render
    */

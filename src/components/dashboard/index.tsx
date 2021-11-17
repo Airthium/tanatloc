@@ -79,7 +79,7 @@ const menuItems = {
  */
 const Dashboard = () => {
   // State
-  const [currentKey, setCurrentKey] = useState()
+  const [currentKey, setCurrentKey] = useState('')
 
   // Data
   const [user, { mutateUser, clearUser, errorUser, loadingUser }] =

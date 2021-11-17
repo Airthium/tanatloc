@@ -21,28 +21,6 @@ import Archive from '../archive'
 
 import Utils from '@/lib/utils'
 
-import {
-  IProjectWithData,
-  IUserWithData,
-  IWorkspaceWithData
-} from '@/lib/index.d'
-import { IOrganization } from '@/database/index.d'
-
-interface IProps {
-  user: IUserWithData
-  page: string
-  workspace: IWorkspaceWithData
-  projects: IProjectWithData[]
-  organizations: IOrganization[]
-  filter: string
-  swr: {
-    mutateOneWorkspace: Function
-    delOneProject: Function
-    mutateOneProject: Function
-    loadingProjects: boolean
-  }
-}
-
 /**
  * Projects' list
  * @memberof Components.Project
@@ -56,7 +34,7 @@ const ProjectList = ({
   organizations,
   filter,
   swr
-}: IProps) => {
+}) => {
   // State
   const [loading, setLoading] = useState(true)
   const [list, setList] = useState([])

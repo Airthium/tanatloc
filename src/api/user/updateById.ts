@@ -10,7 +10,7 @@ import { call } from '@/api/call'
  */
 export const updateById = async (
   id: string,
-  data: IDataBaseEntry
+  data: IDataBaseEntry[]
 ): Promise<void> => {
   await call('/api/user/' + id, {
     method: 'PUT',

@@ -9,21 +9,34 @@ import Password from './password'
 import Delete from './delete'
 import HPC from './hpc'
 
+interface IProps {
+  user: {
+    email: string
+    firstname?: string
+    lastname?: string
+    avatar?: Buffer
+    authorizedplugins: string[]
+  }
+  swr: {
+    mutateUser: Function
+  }
+}
+
 /**
  * Account
  * @memberof Components.Account
  * @param {Object} props Props `{ user, swr }`
  */
-const Account = ({ user, swr }) => {
+const Account = ({ user, swr }: IProps): JSX.Element => {
   // Data
   const router = useRouter()
-  const { tab } = router.query
+  const { tab }: { tab?: string } = router.query
 
   /**
    * On change
    * @param {string} key Key
    */
-  const onChange = (key) => {
+  const onChange = (key: string): void => {
     router.replace({
       pathname: '/dashboard',
       query: { page: 'account', tab: key }

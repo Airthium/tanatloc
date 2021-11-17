@@ -10,6 +10,12 @@ import {
 
 import UserAPI from '@/api/user'
 
+interface IProps {
+  user: {
+    email: string
+  }
+}
+
 /**
  * Errors (password)
  * @memberof Components.Account
@@ -25,16 +31,11 @@ const errors = {
  * @memberof Components.Account
  * @param {Object} props Props `{ user }`
  */
-const Password = ({ user }) => {
+const Password = ({ user }: IProps) => {
   // State
   const [loading, setLoading] = useState(false)
 
   // Layout
-  const layout = {
-    layout: 'vertical',
-    labelCol: { span: 4 },
-    wrapperCol: { span: 16 }
-  }
   const inputLayout = {
     labelCol: { offset: 4 },
     wrapperCol: { offset: 4, span: 16 }
@@ -47,7 +48,10 @@ const Password = ({ user }) => {
    * On finish
    * @param {Object} data Data
    */
-  const onFinish = async (data) => {
+  const onFinish = async (data: {
+    password: string
+    newPassword: string
+  }): Promise<void> => {
     setLoading(true)
 
     try {
@@ -84,7 +88,9 @@ const Password = ({ user }) => {
   return (
     <Card title="Your Password">
       <Form
-        {...layout}
+        layout="vertical"
+        labelCol={{ span: 4 }}
+        wrapperCol={{ span: 16 }}
         initialValues={{
           password: '******',
           newPassword: '******',

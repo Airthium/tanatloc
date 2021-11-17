@@ -11,7 +11,7 @@ import { call } from '@/api/call'
 export const check = async (user: {
   email: string
   password: string
-}): Promise<IUserCheck> => {
+}): Promise<{ valid: boolean }> => {
   const response = await call('/api/user/check', {
     method: 'POST',
     headers: {

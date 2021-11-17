@@ -4,12 +4,18 @@ import { useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { Space, Spin } from 'antd'
 
+import { IClientPlugin } from '@/database/index.d'
+
 import { Error as ErrorNotification } from '@/components/assets/notification'
 
 import PluginDialog from './dialog'
 import List from './list'
 
 import PluginAPI from '@/api/plugin'
+
+interface IProps {
+  plugin: IClientPlugin
+}
 
 /**
  * Errors
@@ -24,7 +30,7 @@ const errors = {
  * @memberof Components.Account.HPC.Plugin
  * @param {Object} props Props `{ plugin }`
  */
-const Plugin = ({ plugin }) => {
+const Plugin = ({ plugin }: IProps) => {
   // Data
   const [
     plugins,

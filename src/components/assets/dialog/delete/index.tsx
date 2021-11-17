@@ -1,6 +1,16 @@
 import PropTypes from 'prop-types'
 import { Modal, Space } from 'antd'
 import { ExclamationCircleTwoTone } from '@ant-design/icons'
+import { ReactChild } from 'react'
+
+interface IProps {
+  visible: boolean
+  loading?: boolean
+  title: string
+  children: ReactChild | ReactChild[]
+  onCancel: Function
+  onOk: Function
+}
 
 /**
  * DeleteDialog
@@ -34,10 +44,10 @@ const DeleteDialog = ({
       visible={visible}
       onCancel={onCancel}
       onOk={onOk}
-      okButtonProps={{ type: 'danger' }}
+      okButtonProps={{ danger: true }}
       confirmLoading={loading}
     >
-      <Space direction="">
+      <Space>
         <ExclamationCircleTwoTone
           twoToneColor="#ff4d4f"
           style={{ fontSize: '1.5em' }}

@@ -5,6 +5,14 @@ import { Checkbox, Input, Space } from 'antd'
 import { CheckCircleOutlined, LoadingOutlined } from '@ant-design/icons'
 import { MathJax } from 'better-react-mathjax'
 
+interface IProps {
+  defaultValue?: string
+  defaultChecked?: boolean
+  onValueChange: Function
+  onCheckedChange: Function
+  unit?: string
+}
+
 const saveDelay = 1000
 
 /**
@@ -23,21 +31,21 @@ const Formula = ({
   onValueChange,
   onCheckedChange,
   unit
-}) => {
+}: IProps): JSX.Element => {
   // State
   const [internalValue, setInternalValue] = useState(defaultValue)
   const [internalChecked, setInternalChecked] = useState(defaultChecked)
   const [disabled, setDisabled] = useState(
     defaultChecked !== undefined ? !defaultChecked : false
   )
-  const [autoSave, setAutoSave] = useState(false)
+  const [autoSave, setAutoSave]: [number, Function] = useState(0)
   const [saving, setSaving] = useState(false)
 
   /**
    * On check change
    * @param {Object} event
    */
-  const onCheckboxChange = (event) => {
+  const onCheckboxChange = (event): void => {
     const currentChecked = event.target.checked
     setInternalChecked(currentChecked)
     setSaving(true)
@@ -51,7 +59,7 @@ const Formula = ({
    * On input change
    * @param {Object} event Event
    */
-  const onInputChange = (event) => {
+  const onInputChange = (event): void => {
     const currentValue = event.target.value
     setInternalValue(currentValue)
     setSaving(true)
@@ -63,7 +71,7 @@ const Formula = ({
    * On value change (delayed)
    * @param {string} value Value
    */
-  const onValueChangeDelayed = (value) => {
+  const onValueChangeDelayed = (value: string): void => {
     if (autoSave) clearTimeout(autoSave)
     const id = setTimeout(() => {
       onValueChange(value)

@@ -3,7 +3,7 @@
 import merge from 'lodash.merge'
 import { v4 as uuid } from 'uuid'
 
-import { IPlugin } from '@/database/index.d'
+import { IClientPlugin } from '@/database/index.d'
 
 import User from '../user'
 import Plugins from '../plugins'
@@ -14,7 +14,10 @@ import Plugins from '../plugins'
  * @param {Object} user User `{ id }`
  * @param {Object} plugin Plugin
  */
-const add = async (user: { id: string }, plugin: IPlugin): Promise<void> => {
+const add = async (
+  user: { id: string },
+  plugin: IClientPlugin
+): Promise<void> => {
   // Set uuid
   plugin.uuid = uuid()
 
@@ -44,7 +47,7 @@ const add = async (user: { id: string }, plugin: IPlugin): Promise<void> => {
  * @param {string} user User `{ id }`
  * @returns {Array} Plugins
  */
-const getByUser = async (user: { id: string }): Promise<IPlugin[]> => {
+const getByUser = async (user: { id: string }): Promise<IClientPlugin[]> => {
   // Get plugins
   const userData = await User.get(user.id, ['plugins'])
 
@@ -57,7 +60,10 @@ const getByUser = async (user: { id: string }): Promise<IPlugin[]> => {
  * @param {User} user User `{ id }`
  * @param {Object} plugin Plugin
  */
-const update = async (user: { id: string }, plugin: IPlugin): Promise<void> => {
+const update = async (
+  user: { id: string },
+  plugin: IClientPlugin
+): Promise<void> => {
   // Get
   const userData = await User.get(user.id, ['plugins'])
 
@@ -93,7 +99,10 @@ const update = async (user: { id: string }, plugin: IPlugin): Promise<void> => {
  * @param {Object} user User `{ id }`
  * @param {Object} plugin Plugin `{ uuid }`
  */
-const del = async (user: { id: string }, plugin: IPlugin): Promise<void> => {
+const del = async (
+  user: { id: string },
+  plugin: IClientPlugin
+): Promise<void> => {
   // Get
   const userData = await User.get(user.id, ['plugins'])
   if (!userData.plugins) return

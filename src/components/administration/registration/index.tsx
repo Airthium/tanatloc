@@ -31,7 +31,7 @@ const errors = {
  * Registration
  * @memberof Components.Administration
  */
-const Registration = () => {
+const Registration = (): JSX.Element => {
   // Data
   const [form] = Form.useForm()
   const [system, { mutateSystem, errorSystem, loadingSystem }] =
@@ -74,7 +74,7 @@ const Registration = () => {
       ])
 
       // Mutate
-      mutateSystem({ allowSignup: !system.allowsignup })
+      mutateSystem({ allowsignup: !system.allowsignup })
     } catch (err) {
       ErrorNotification(errors.update, err)
     }

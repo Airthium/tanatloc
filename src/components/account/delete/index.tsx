@@ -9,6 +9,12 @@ import { DeleteDialog } from '@/components/assets/dialog'
 import UserAPI from '@/api/user'
 import { logout } from '@/api/logout'
 
+interface IProps {
+  swr: {
+    mutateUser: Function
+  }
+}
+
 /**
  * Errors (delete)
  * @memberof Components.Account
@@ -22,7 +28,7 @@ const errors = {
  * @memberof Components.Account
  * @param {Object} props Props `{ swr }`
  */
-const Delete = ({ swr }) => {
+const Delete = ({ swr }: IProps) => {
   // State
   const [visible, setVisible] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -30,7 +36,7 @@ const Delete = ({ swr }) => {
   /**
    * Handle delete
    */
-  const onDelete = async () => {
+  const onDelete = async (): Promise<void> => {
     setLoading(true)
     try {
       // Delete
@@ -66,7 +72,7 @@ const Delete = ({ swr }) => {
       <Card title="Delete your account">
         <Button
           icon={<DeleteOutlined />}
-          type="danger"
+          danger
           onClick={() => setVisible(true)}
         >
           Delete your account

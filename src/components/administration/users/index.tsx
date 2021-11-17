@@ -7,11 +7,22 @@ import { CheckOutlined } from '@ant-design/icons'
 
 import { Error as ErrorNotification } from '@/components/assets/notification'
 
+import { IUserWithData } from '@/lib/index.d'
+
 import PluginsAPI from '@/api/plugins'
 
 import Add from './add'
 import Edit from './edit'
 import Delete from './delete'
+
+interface IProps {
+  users: Array<IUserWithData>
+  swr: {
+    addOneUser: Function
+    delOneUser: Function
+    mutateOneUser: Function
+  }
+}
 
 /**
  * Errors
@@ -26,9 +37,9 @@ const errors = {
  * @memberof Components.Administration.Users
  * @param {Object} props Props `{ users, swr }`
  */
-const Users = ({ users, swr }) => {
-  const [plugins, setPlugins] = useState()
-  const [columns, setColumns] = useState()
+const Users = ({ users, swr }: IProps): JSX.Element => {
+  const [plugins, setPlugins] = useState([])
+  const [columns, setColumns] = useState([])
 
   useEffect(() => {
     PluginsAPI.completeList()
@@ -96,7 +107,7 @@ const Users = ({ users, swr }) => {
             key: 'actions',
             // eslint-disable-next-line react/display-name
             render: (_, record) => (
-              <Space direction="">
+              <Space>
                 <Edit
                   plugins={list || []}
                   user={{

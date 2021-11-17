@@ -12,6 +12,19 @@ import Utils from '@/lib/utils'
 
 import UserAPI from '@/api/user'
 import AvatarAPI from '@/api/avatar'
+import { UploadChangeParam } from 'antd/lib/upload'
+
+interface IProps {
+  user: {
+    email: string
+    firstname?: string
+    lastname?: string
+    avatar: Buffer
+  }
+  swr: {
+    mutateUser: Function
+  }
+}
 
 /**
  * Errors (information)
@@ -28,7 +41,7 @@ const errors = {
  * @memberof Components.Account
  * @param {Object} props Props `{ user, swr }`
  */
-const Information = ({ user, swr }) => {
+const Information = ({ user, swr }: IProps) => {
   // State
   const [uploading, setUploading] = useState(false)
 
@@ -42,7 +55,7 @@ const Information = ({ user, swr }) => {
    * Before upload
    * @param {File} file File
    */
-  const beforeUpload = (file) => {
+  const beforeUpload = (file: { type: string; size: number }): boolean => {
     const goodFormat = file.type === 'image/jpeg' || file.type === 'image/png'
     if (!goodFormat) ErrorNotification(errors.badFormat)
 
@@ -56,7 +69,7 @@ const Information = ({ user, swr }) => {
    * On avatar change
    * @param {Object} info Info
    */
-  const onChange = async (info) => {
+  const onChange = async (info: UploadChangeParam<any>) => {
     if (info.file.status === 'uploading') {
       setUploading(true)
     }
@@ -70,7 +83,7 @@ const Information = ({ user, swr }) => {
         await AvatarAPI.add({
           name: info.file.name,
           uid: info.file.uid,
-          data: img
+          data: Buffer.from(img)
         })
 
         // Mutate user
@@ -90,7 +103,7 @@ const Information = ({ user, swr }) => {
    * Read base64 image
    * @param {File} file File
    */
-  const getBase64 = async (file) => {
+  const getBase64 = async (file: Blob): Promise<any> => {
     const reader = new FileReader()
     return new Promise((resolve) => {
       reader.addEventListener('load', () => {
@@ -104,7 +117,7 @@ const Information = ({ user, swr }) => {
    * On firstname
    * @param {string} value Value
    */
-  const onFirstName = async (value) => {
+  const onFirstName = async (value: string): Promise<void> => {
     try {
       // API
       await UserAPI.update([
@@ -129,7 +142,7 @@ const Information = ({ user, swr }) => {
    * On lastname
    * @param {string} value Value
    */
-  const onLastName = async (value) => {
+  const onLastName = async (value: string): Promise<void> => {
     try {
       // API
       await UserAPI.update([
@@ -154,7 +167,7 @@ const Information = ({ user, swr }) => {
    * On email
    * @param {string} value Value
    */
-  const onEmail = async (value) => {
+  const onEmail = async (value: string): Promise<void> => {
     try {
       // Check email
       if (!Utils.validateEmail(value))

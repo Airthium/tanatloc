@@ -8,6 +8,12 @@ import PluginsAPI from '@/api/plugins'
 
 import Plugin from './plugin'
 
+interface IProps {
+  user: {
+    authorizedplugins: string[]
+  }
+}
+
 const errors = {
   plugins: 'Unable to load plugins'
 }
@@ -17,7 +23,7 @@ const errors = {
  * @memberof Components.Account
  * @param {Object} props Props `{ user }`
  */
-const HPC = ({ user }) => {
+const HPC = ({ user }: IProps) => {
   // State
   const [list, setList] = useState([])
 
@@ -45,9 +51,11 @@ const HPC = ({ user }) => {
           })
           setList(pluginsList)
         } else {
-          setList(
-            <Card>You do not have access to any HPC plugin. Request it.</Card>
-          )
+          setList([
+            <Card key="0">
+              You do not have access to any HPC plugin. Request it.
+            </Card>
+          ])
         }
       })
       .catch((err) => {

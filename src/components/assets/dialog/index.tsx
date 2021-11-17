@@ -1,22 +1,24 @@
 /** @namespace Components.Assets.Dialog */
 
 import PropTypes from 'prop-types'
-import { CSSProperties, ReactChild, useEffect } from 'react'
+import { ReactChild, useEffect } from 'react'
 import { Form, Modal } from 'antd'
+
+import { BaseButtonProps } from 'antd/lib/button/button'
 
 import DeleteDialog from './delete'
 
-interface Props {
+interface IProps {
   visible: boolean
   closable?: boolean
   loading?: boolean
   title: string
   initialValues?: object
-  okButtonProps?: CSSProperties
+  okButtonProps?: BaseButtonProps
   okButtonText?: string
   children: ReactChild | ReactChild[]
-  onCancel: Function
-  onOk: Function
+  onCancel?: Function
+  onOk?: Function
 }
 
 /**
@@ -46,7 +48,7 @@ const Dialog = ({
   children,
   onCancel,
   onOk
-}: Props) => {
+}: IProps): JSX.Element => {
   // Form
   const [form] = Form.useForm()
 
@@ -72,7 +74,9 @@ const Dialog = ({
           onCancel()
         })
       }
-      cancelButtonProps={{ display: onCancel ? 'inline-block' : 'none' }}
+      cancelButtonProps={{
+        style: { display: onCancel ? 'inline-block' : 'none' }
+      }}
       onOk={
         onOk &&
         (async () => {
@@ -86,7 +90,7 @@ const Dialog = ({
       okText={okButtonText}
       okButtonProps={{
         ...okButtonProps,
-        display: onOk ? 'inline-block' : 'none'
+        style: { display: onOk ? 'inline-block' : 'none' }
       }}
       confirmLoading={loading}
     >

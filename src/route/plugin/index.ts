@@ -4,12 +4,12 @@ import { IRequest, IResponse } from '..'
 import { session } from '../session'
 import { error } from '../error'
 
-import { IPlugin } from '@/database/index.d'
+import { IClientPlugin } from '@/database/index.d'
 
 import UserLib from '@/lib/user'
 import PluginLib from '@/lib/plugin'
 
-type IAddBody = IPlugin
+type IAddBody = IClientPlugin
 
 type IUpdateBody = object
 

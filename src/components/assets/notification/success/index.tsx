@@ -7,7 +7,7 @@ import { notification } from 'antd'
  * @param {string} title Title
  * @param {string} subTitle Sub title
  */
-const Success = (title, subTitle) => {
+const Success = (title: string, subTitle?: string): void => {
   notification.success({
     message: title,
     description: subTitle,

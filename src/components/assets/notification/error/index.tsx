@@ -3,6 +3,8 @@ import { Collapse, notification, Space, Typography } from 'antd'
 
 import Sentry from '@/lib/sentry'
 
+import { ICallError } from '@/api'
+
 /**
  * Error notification
  * @memberof Components.Assets.Notification
@@ -10,7 +12,11 @@ import Sentry from '@/lib/sentry'
  * @param {Object} [err] Error
  * @param {bool} [display=true] Display notification
  */
-const Error = (title, err, display = true) => {
+const Error = (
+  title: string,
+  err?: ICallError,
+  display: boolean = true
+): void => {
   display &&
     notification.error({
       message: title,
@@ -19,7 +25,7 @@ const Error = (title, err, display = true) => {
           <Typography.Text code={true}>{err.message}</Typography.Text>
           {(err.status || err.info) && (
             <Collapse>
-              <Collapse.Panel header="More information">
+              <Collapse.Panel key="information" header="More information">
                 <Space direction="vertical">
                   {err.status && (
                     <Typography.Text>Status: {err.status}</Typography.Text>
@@ -43,7 +49,7 @@ const Error = (title, err, display = true) => {
 
 Error.propTypes = {
   title: PropTypes.string.isRequired,
-  err: PropTypes.object.isRequired,
+  err: PropTypes.object,
   display: PropTypes.bool
 }
 

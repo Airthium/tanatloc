@@ -1,6 +1,14 @@
 import PropTypes from 'prop-types'
+import { ReactChild } from 'react'
 import { Button, Tooltip } from 'antd'
 import { EditOutlined } from '@ant-design/icons'
+
+interface IProps {
+  disabled?: boolean
+  loading?: boolean
+  children: ReactChild | ReactChild[]
+  onEdit: () => void
+}
 
 /**
  * Edit button
@@ -12,7 +20,12 @@ import { EditOutlined } from '@ant-design/icons'
  * - children (React node) Button children
  * - onEdit (Function) Button click
  */
-const EditButton = ({ disabled, loading, children, onEdit }) => {
+const EditButton = ({
+  disabled,
+  loading,
+  children,
+  onEdit
+}: IProps): JSX.Element => {
   /**
    * Render
    */

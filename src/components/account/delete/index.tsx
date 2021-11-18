@@ -26,12 +26,12 @@ const errors = {
 /**
  * Delete account
  * @memberof Components.Account
- * @param {Object} props Props `{ swr }`
+ * @param props Props
  */
 const Delete = ({ swr }: IProps) => {
   // State
-  const [visible, setVisible] = useState(false)
-  const [loading, setLoading] = useState(false)
+  const [visible, setVisible]: [boolean, Function] = useState(false)
+  const [loading, setLoading]: [boolean, Function] = useState(false)
 
   /**
    * Handle delete

@@ -3,6 +3,8 @@ import { useState } from 'react'
 import { Avatar, Button, Card, Form, Space, Typography, Upload } from 'antd'
 import { UploadOutlined, UserOutlined } from '@ant-design/icons'
 
+import { IUserWithData } from '@/lib/index.d'
+
 import {
   Success as SuccessNotification,
   Error as ErrorNotification
@@ -15,12 +17,7 @@ import AvatarAPI from '@/api/avatar'
 import { UploadChangeParam } from 'antd/lib/upload'
 
 interface IProps {
-  user: {
-    email: string
-    firstname?: string
-    lastname?: string
-    avatar: Buffer
-  }
+  user: IUserWithData
   swr: {
     mutateUser: Function
   }
@@ -39,11 +36,11 @@ const errors = {
 /**
  * Information
  * @memberof Components.Account
- * @param {Object} props Props `{ user, swr }`
+ * @param props Props
  */
 const Information = ({ user, swr }: IProps) => {
   // State
-  const [uploading, setUploading] = useState(false)
+  const [uploading, setUploading]: [boolean, Function] = useState(false)
 
   // Layout
   const layout = {
@@ -53,7 +50,7 @@ const Information = ({ user, swr }: IProps) => {
 
   /**
    * Before upload
-   * @param {File} file File
+   * @param file File
    */
   const beforeUpload = (file: { type: string; size: number }): boolean => {
     const goodFormat = file.type === 'image/jpeg' || file.type === 'image/png'
@@ -67,7 +64,7 @@ const Information = ({ user, swr }: IProps) => {
 
   /**
    * On avatar change
-   * @param {Object} info Info
+   * @param info Info
    */
   const onChange = async (info: UploadChangeParam<any>) => {
     if (info.file.status === 'uploading') {
@@ -101,7 +98,7 @@ const Information = ({ user, swr }: IProps) => {
 
   /**
    * Read base64 image
-   * @param {File} file File
+   * @param file File
    */
   const getBase64 = async (file: Blob): Promise<any> => {
     const reader = new FileReader()
@@ -115,7 +112,7 @@ const Information = ({ user, swr }: IProps) => {
 
   /**
    * On firstname
-   * @param {string} value Value
+   * @param value Value
    */
   const onFirstName = async (value: string): Promise<void> => {
     try {
@@ -140,7 +137,7 @@ const Information = ({ user, swr }: IProps) => {
 
   /**
    * On lastname
-   * @param {string} value Value
+   * @param value Value
    */
   const onLastName = async (value: string): Promise<void> => {
     try {
@@ -165,7 +162,7 @@ const Information = ({ user, swr }: IProps) => {
 
   /**
    * On email
-   * @param {string} value Value
+   * @param value Value
    */
   const onEmail = async (value: string): Promise<void> => {
     try {

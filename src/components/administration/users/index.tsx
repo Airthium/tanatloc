@@ -2,12 +2,13 @@
 
 import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
-import { Badge, Table, Space, Spin } from 'antd'
+import { Badge, Table, Space, Spin, TableColumnsType } from 'antd'
 import { CheckOutlined } from '@ant-design/icons'
 
-import { Error as ErrorNotification } from '@/components/assets/notification'
-
+import { IClientPlugin } from '@/database/index.d'
 import { IUserWithData } from '@/lib/index.d'
+
+import { Error as ErrorNotification } from '@/components/assets/notification'
 
 import PluginsAPI from '@/api/plugins'
 
@@ -35,11 +36,11 @@ const errors = {
 /**
  * Users
  * @memberof Components.Administration.Users
- * @param {Object} props Props `{ users, swr }`
+ * @param props Props
  */
 const Users = ({ users, swr }: IProps): JSX.Element => {
-  const [plugins, setPlugins] = useState([])
-  const [columns, setColumns] = useState([])
+  const [plugins, setPlugins]: [IClientPlugin[], Function] = useState([])
+  const [columns, setColumns]: [TableColumnsType, Function] = useState([])
 
   useEffect(() => {
     PluginsAPI.completeList()
@@ -51,19 +52,21 @@ const Users = ({ users, swr }: IProps): JSX.Element => {
             title: 'First name',
             dataIndex: 'firstname',
             key: 'firstname',
-            sorter: (a, b) => a.firstname - b.firstname
+            sorter: (a: { firstname: any }, b: { firstname: any }) =>
+              a.firstname - b.firstname
           },
           {
             title: 'Last name',
             dataIndex: 'lastname',
             key: 'lastname',
-            sorter: (a, b) => a.lastname - b.lastname
+            sorter: (a: { lastname: any }, b: { lastname: any }) =>
+              a.lastname - b.lastname
           },
           {
             title: 'Email',
             dataIndex: 'email',
             key: 'email',
-            sorter: (a, b) => a.email - b.email
+            sorter: (a: { email: any }, b: { email: any }) => a.email - b.email
           },
           {
             title: 'Password',
@@ -75,7 +78,7 @@ const Users = ({ users, swr }: IProps): JSX.Element => {
             dataIndex: 'authorizedplugins',
             key: 'authorizedplugins',
             // eslint-disable-next-line react/display-name
-            render: (authorizedplugins) => (
+            render: (authorizedplugins: string[]) => (
               <Space wrap={true}>
                 {authorizedplugins?.sort().map((authorizedplugin) => {
                   if (!list) return <Spin />
@@ -99,14 +102,14 @@ const Users = ({ users, swr }: IProps): JSX.Element => {
             dataIndex: 'superuser',
             key: 'superuser',
             // eslint-disable-next-line react/display-name
-            render: (superuser) =>
+            render: (superuser: boolean) =>
               superuser && <CheckOutlined style={{ color: 'green' }} />
           },
           {
             title: 'Actions',
             key: 'actions',
             // eslint-disable-next-line react/display-name
-            render: (_, record) => (
+            render: (_: any, record: IUserWithData) => (
               <Space>
                 <Edit
                   plugins={list || []}

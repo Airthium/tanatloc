@@ -24,7 +24,7 @@ interface IProps {
 /**
  * Dialog
  * @memberof Components.Assets.Dialog
- * @param {Object} props Props `{ visible, loading, title, initialValues, okButtonProps, children, onCancel, onOk }`
+ * @param props Props
  * @description Props list:
  * - visible (boolean) Dialog visible
  * - closable (boolean) Dialog closable
@@ -106,7 +106,7 @@ Dialog.propTypes = {
   closable: PropTypes.bool,
   loading: PropTypes.bool,
   title: PropTypes.string.isRequired,
-  initialValues: PropTypes.object.isRequired,
+  initialValues: PropTypes.object,
   okButtonProps: PropTypes.object,
   okButtonText: PropTypes.string,
   children: PropTypes.node.isRequired,

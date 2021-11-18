@@ -3,41 +3,27 @@ import { useState } from 'react'
 import { Button, Tooltip, Typography } from 'antd'
 import { HddOutlined, ImportOutlined } from '@ant-design/icons'
 
+import { IProjectWithData, IWorkspaceWithData } from '@/lib'
+
 import Dialog from '@/components/assets/dialog'
 import { Error as ErrorNotification } from '@/components/assets/notification'
 
 import ProjectAPI from '@/api/project'
 
-interface Errors {
-  archive: string
-}
-
-interface Workspace {
-  id: string
-}
-
-interface Project {
-  archived: boolean
-  id: string
-  title: string
-}
-
-interface Swr {
-  mutateOneWorkspace: Function
-  mutateOneProject: Function
-}
-
-interface Props {
-  disabled: boolean
-  workspace: Workspace
-  project: Project
-  swr: Swr
+interface IProps {
+  disabled?: boolean
+  workspace: IWorkspaceWithData
+  project: IProjectWithData
+  swr: {
+    mutateOneWorkspace: Function
+    mutateOneProject: Function
+  }
 }
 
 /**
  * Errors (archive)
  */
-const errors: Errors = {
+const errors = {
   archive: 'Unable to archive project'
 }
 
@@ -46,12 +32,17 @@ const errors: Errors = {
  * @memberof Components.Project
  * @param {Object} props Props `{ disabled, workspace, project, swr }`
  */
-const Archive = ({ disabled, workspace, project, swr }: Props) => {
+const Archive = ({
+  disabled,
+  workspace,
+  project,
+  swr
+}: IProps): JSX.Element => {
   // State
   const [visible, setVisible] = useState(false)
   const [loading, setLoading] = useState(false)
 
-  const onArchive = async () => {
+  const onArchive = async (): Promise<void> => {
     setLoading(true)
     try {
       // API

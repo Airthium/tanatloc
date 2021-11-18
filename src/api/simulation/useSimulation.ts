@@ -10,7 +10,7 @@ import { ISimulation } from '@/database/index.d'
  */
 export const useSimulation = (
   id: string,
-  refresh: number
+  refresh?: number
 ): [
   ISimulation,
   {

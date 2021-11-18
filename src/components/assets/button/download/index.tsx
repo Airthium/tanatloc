@@ -1,18 +1,31 @@
 import PropTypes from 'prop-types'
 import { Button, Tooltip } from 'antd'
 import { DownloadOutlined } from '@ant-design/icons'
+import { ReactChild } from 'react'
+
+interface IProps {
+  disabled?: boolean
+  loading?: boolean
+  children: ReactChild | ReactChild[]
+  onDownload: Function
+}
 
 /**
  * Download button
  * @memberof Components.Assets.Button
- * @param {Object} props Props `{ disabled, loading, children, onDownload }`
+ * @param props Props
  * @description Props list:
  * - disabled (boolean) Set disabled state
  * - loading (boolean) Set loading state
- * - children (React node) Button children
+ * - children (React child) Button children
  * - onDownload (Function) Button click
  */
-const DownloadButton = ({ disabled, loading, children, onDownload }) => {
+const DownloadButton = ({
+  disabled,
+  loading,
+  children,
+  onDownload
+}: IProps): JSX.Element => {
   /**
    * Render
    */
@@ -23,7 +36,7 @@ const DownloadButton = ({ disabled, loading, children, onDownload }) => {
         loading={loading}
         icon={<DownloadOutlined />}
         style={{ backgroundColor: 'none', border: 'none' }}
-        onClick={onDownload}
+        onClick={() => onDownload()}
       >
         {children}
       </Button>

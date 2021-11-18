@@ -46,21 +46,21 @@ const Index = (): JSX.Element => {
   /**
    * Handle dashboard
    */
-  const handleDashboard = () => {
+  const handleDashboard = (): void => {
     router.push('/dashboard')
   }
 
   /**
    * Handle signup
    */
-  const handleSignup = () => {
+  const handleSignup = (): void => {
     router.push('/signup')
   }
 
   /**
    * Handle login
    */
-  const handleLogin = () => {
+  const handleLogin = (): void => {
     router.push('/login')
   }
 

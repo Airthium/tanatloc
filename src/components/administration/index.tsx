@@ -53,7 +53,7 @@ const Administration = (): JSX.Element => {
 
   /**
    * On change
-   * @param {string} key Key
+   * @param key Key
    */
   const onChange = (key: string) => {
     router.replace({

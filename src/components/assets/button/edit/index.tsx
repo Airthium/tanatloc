@@ -6,14 +6,14 @@ import { EditOutlined } from '@ant-design/icons'
 interface IProps {
   disabled?: boolean
   loading?: boolean
-  children: ReactChild | ReactChild[]
+  children?: string
   onEdit: () => void
 }
 
 /**
  * Edit button
  * @memberof Components.Assets.Button
- * @param {Object} props Props `{ disabled, loading, children, onEdit }`
+ * @param props Props
  * @description Props list:
  * - disabled (boolean) Set disabled state
  * - loading (boolean) Set loading state

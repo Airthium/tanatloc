@@ -2,6 +2,8 @@ import { useEffect } from 'react'
 import { Button, Card, Checkbox, Form, InputNumber, Space } from 'antd'
 import { CheckOutlined } from '@ant-design/icons'
 
+import { ISystem } from '@/database/index.d'
+
 import {
   MIN_SIZE,
   MAX_SIZE,
@@ -66,7 +68,7 @@ const Registration = (): JSX.Element => {
   /**
    * On allow signup
    */
-  const onAllowSignup = async () => {
+  const onAllowSignup = async (): Promise<void> => {
     try {
       // Update
       await SystemAPI.update([
@@ -80,7 +82,13 @@ const Registration = (): JSX.Element => {
     }
   }
 
-  const onPasswordFinish = async (values) => {
+  /**
+   * On password
+   * @param values Values
+   */
+  const onPasswordFinish = async (
+    values: ISystem['password']
+  ): Promise<void> => {
     try {
       // Update
       await SystemAPI.update([{ key: 'password', value: values }])

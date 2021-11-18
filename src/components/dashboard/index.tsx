@@ -134,7 +134,7 @@ const Dashboard = () => {
    * Menu selection
    * @param {Object} data { keyPath }
    */
-  const onSelect = ({ keyPath }) => {
+  const onSelect = ({ keyPath }: { keyPath: string[] }): void => {
     let key = keyPath.pop()
 
     if (key === menuItems.logout.key) onLogout()
@@ -150,7 +150,7 @@ const Dashboard = () => {
   /**
    * Logout
    */
-  const onLogout = async () => {
+  const onLogout = async (): Promise<void> => {
     try {
       await logout()
       clearUser()

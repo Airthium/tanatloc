@@ -38,7 +38,7 @@ const errors = {
 /**
  * Password item
  * @memberof Components.Assets.Input
- * @param {Object} props Props `{ labelCol, wrapperCol, name, label, inputPlaceholder, inputAutoComplete, edit, style }`
+ * @param props Props
  *
  * @description
  * Props:
@@ -66,7 +66,7 @@ const PasswordItem = ({
 
   /**
    * Check min
-   * @param {string} value Value
+   * @param value Value
    */
   const checkMin = (value: string): boolean => {
     if (
@@ -79,7 +79,7 @@ const PasswordItem = ({
 
   /**
    * Check max
-   * @param {string} value Value
+   * @param value Value
    */
   const checkMax = (value: string): boolean => {
     if (
@@ -92,8 +92,8 @@ const PasswordItem = ({
 
   /**
    * Check regex
-   * @param {string} value Value
-   * @param {RegExp} regex Regex
+   * @param value Value
+   * @param regex Regex
    */
   const checkRegex = (value: string, regex: RegExp): boolean => {
     if (value.search(regex) === -1) return false
@@ -102,7 +102,7 @@ const PasswordItem = ({
 
   /**
    * Require letter
-   * @param {string} value Value
+   * @param value Value
    */
   const requireLetter = (value: string): boolean => {
     if (
@@ -116,7 +116,7 @@ const PasswordItem = ({
 
   /**
    * Require number
-   * @param {string} value Value
+   * @param value Value
    */
   const requireNumber = (value: string): boolean => {
     if (
@@ -130,7 +130,7 @@ const PasswordItem = ({
 
   /**
    * Require symbol
-   * @param {string} value Value
+   * @param value Value
    */
   const requireSymbol = (value: string): boolean => {
     if (
@@ -144,8 +144,8 @@ const PasswordItem = ({
 
   /**
    * Check size
-   * @param {string} value Value
-   * @param {Array} err Errors
+   * @param value Value
+   * @param err Errors
    */
   const checkSize = (value: string, err: string[]): void => {
     if (!checkMin(value)) err.push(errors.passwordTooSmall)
@@ -155,8 +155,8 @@ const PasswordItem = ({
 
   /**
    * Check format
-   * @param {string} value Value
-   * @param {Array} err Errors
+   * @param value Value
+   * @param err Errors
    */
   const checkFormat = (value: string, err: string[]): void => {
     if (!requireLetter(value)) err.push(errors.passwordRequireLetter)

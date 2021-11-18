@@ -1,7 +1,8 @@
 /** @namespace Components.Assets.Formula */
 
-import { useState } from 'react'
+import { ChangeEvent, useState } from 'react'
 import { Checkbox, Input, Space } from 'antd'
+import { CheckboxChangeEvent } from 'antd/lib/checkbox'
 import { CheckCircleOutlined, LoadingOutlined } from '@ant-design/icons'
 import { MathJax } from 'better-react-mathjax'
 
@@ -18,7 +19,7 @@ const saveDelay = 1000
 /**
  * Formula
  * @memberof Components.Assets.Formula
- * @param {Object} props Props `{ defaultValue, defaultchecked, onValueChange, onCheckedChange }`
+ * @param props Props
  * @description Props list:
  * - defaultValue (string) Default value
  * - defaultChecked (boolean) Default checked
@@ -33,19 +34,21 @@ const Formula = ({
   unit
 }: IProps): JSX.Element => {
   // State
-  const [internalValue, setInternalValue] = useState(defaultValue)
-  const [internalChecked, setInternalChecked] = useState(defaultChecked)
-  const [disabled, setDisabled] = useState(
+  const [internalValue, setInternalValue]: [string, Function] =
+    useState(defaultValue)
+  const [internalChecked, setInternalChecked]: [boolean, Function] =
+    useState(defaultChecked)
+  const [disabled, setDisabled]: [boolean, Function] = useState(
     defaultChecked !== undefined ? !defaultChecked : false
   )
   const [autoSave, setAutoSave]: [number, Function] = useState(0)
-  const [saving, setSaving] = useState(false)
+  const [saving, setSaving]: [boolean, Function] = useState(false)
 
   /**
    * On check change
-   * @param {Object} event
+   * @param event
    */
-  const onCheckboxChange = (event): void => {
+  const onCheckboxChange = (event: CheckboxChangeEvent): void => {
     const currentChecked = event.target.checked
     setInternalChecked(currentChecked)
     setSaving(true)
@@ -57,9 +60,9 @@ const Formula = ({
 
   /**
    * On input change
-   * @param {Object} event Event
+   * @param event Event
    */
-  const onInputChange = (event): void => {
+  const onInputChange = (event: ChangeEvent<HTMLInputElement>): void => {
     const currentValue = event.target.value
     setInternalValue(currentValue)
     setSaving(true)
@@ -69,7 +72,7 @@ const Formula = ({
 
   /**
    * On value change (delayed)
-   * @param {string} value Value
+   * @param value Value
    */
   const onValueChangeDelayed = (value: string): void => {
     if (autoSave) clearTimeout(autoSave)

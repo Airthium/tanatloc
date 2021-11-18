@@ -172,6 +172,7 @@ export interface ISimulation {
     error: string
     plugin?: string
     pid?: string | number
+    datas: Array<{ x: number; y: number }>
   }>
   project?: string
 }

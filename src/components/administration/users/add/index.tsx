@@ -29,16 +29,16 @@ const errors = {
 /**
  * Add
  * @memberof Components.Administration.Users
- * @param {Object} props Props `{ plugins, swr }`
+ * @param props Props
  */
 const Add = ({ plugins, swr }: IProps): JSX.Element => {
   // State
-  const [visible, setVisible] = useState(false)
-  const [loading, setLoading] = useState(false)
+  const [visible, setVisible]: [boolean, Function] = useState(false)
+  const [loading, setLoading]: [boolean, Function] = useState(false)
 
   /**
    * On add
-   * @param {Object} values Values
+   * @param values Values
    */
   const onAdd = async (values: {
     email: string
@@ -47,7 +47,7 @@ const Add = ({ plugins, swr }: IProps): JSX.Element => {
     lastname: string
     authorizedplugins: string[]
     superuser: boolean
-  }) => {
+  }): Promise<void> => {
     setLoading(true)
 
     try {

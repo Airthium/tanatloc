@@ -12,7 +12,7 @@ const base: string = isElectron() ? 'http://localhost:3000' : ''
 export const login = async (user: {
   email: string
   password: string
-}): Promise<ICallResponse | JSON> => {
+}): Promise<{ ok: boolean; id?: string; isvalidated?: boolean }> => {
   const response = await fetch(base + '/api/login', {
     method: 'POST',
     headers: {
@@ -23,8 +23,13 @@ export const login = async (user: {
   })
 
   if (response.status === 200) {
-    return response.json()
+    return {
+      ok: true,
+      ...(await response.json())
+    }
   }
 
-  return response
+  return {
+    ok: false
+  }
 }

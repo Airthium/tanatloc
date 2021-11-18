@@ -9,7 +9,7 @@ const Wait = (): JSX.Element => {
 
   const [form] = Form.useForm()
 
-  const onFinish = async (values) => {
+  const onFinish = async (values: { email: string }): Promise<void> => {
     if (ok) return
 
     setOk(true)

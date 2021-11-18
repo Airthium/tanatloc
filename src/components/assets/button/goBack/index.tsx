@@ -11,7 +11,7 @@ interface IProps {
 /**
  * Go back
  * @memberof Components.Assets.Button
- * @param {Object} props Props `{ children, onClick}`
+ * @param props Props
  * @description Props list:
  * - children (React node) Button children (default to 'Go back')
  * - onClick (Function) Button click

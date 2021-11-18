@@ -15,7 +15,7 @@ interface IProps {
 /**
  * DeleteDialog
  * @memberof Components.Assets.Dialog
- * @param {Object} props Props `{ visible, loading, title, children, onCancel, onOk }`
+ * @param props Props
  * @description Props list:
  * - visible (boolean) Dialog visible
  * - loading (boolean) Dialog loading
@@ -31,7 +31,7 @@ const DeleteDialog = ({
   children,
   onCancel,
   onOk
-}) => {
+}: IProps): JSX.Element => {
   /**
    * Render
    */
@@ -42,8 +42,8 @@ const DeleteDialog = ({
       okText="Delete"
       closable={true}
       visible={visible}
-      onCancel={onCancel}
-      onOk={onOk}
+      onCancel={() => onCancel()}
+      onOk={() => onOk()}
       okButtonProps={{ danger: true }}
       confirmLoading={loading}
     >
@@ -59,12 +59,12 @@ const DeleteDialog = ({
 }
 
 DeleteDialog.propTypes = {
-  title: PropTypes.string,
   visible: PropTypes.bool.isRequired,
-  onCancel: PropTypes.func.isRequired,
-  onOk: PropTypes.func.isRequired,
   loading: PropTypes.bool,
-  children: PropTypes.node.isRequired
+  title: PropTypes.string,
+  children: PropTypes.node.isRequired,
+  onCancel: PropTypes.func.isRequired,
+  onOk: PropTypes.func.isRequired
 }
 
 export default DeleteDialog

@@ -2,6 +2,8 @@ import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
 import { Card, Space } from 'antd'
 
+import { IUserWithData } from '@/lib/index.d'
+
 import { Error as ErrorNotification } from '@/components/assets/notification'
 
 import PluginsAPI from '@/api/plugins'
@@ -9,9 +11,7 @@ import PluginsAPI from '@/api/plugins'
 import Plugin from './plugin'
 
 interface IProps {
-  user: {
-    authorizedplugins: string[]
-  }
+  user: IUserWithData
 }
 
 const errors = {
@@ -21,11 +21,11 @@ const errors = {
 /**
  * HPC plugins
  * @memberof Components.Account
- * @param {Object} props Props `{ user }`
+ * @param props Props
  */
 const HPC = ({ user }: IProps) => {
   // State
-  const [list, setList] = useState([])
+  const [list, setList]: [JSX.Element[], Function] = useState([])
 
   // Plugins list
   useEffect(() => {

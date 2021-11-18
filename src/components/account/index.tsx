@@ -4,19 +4,15 @@ import PropTypes from 'prop-types'
 import { useRouter } from 'next/router'
 import { Layout, PageHeader, Typography, Divider, Tabs, Space } from 'antd'
 
+import { IUserWithData } from '@/lib/index.d'
+
 import Information from './information'
 import Password from './password'
 import Delete from './delete'
 import HPC from './hpc'
 
 interface IProps {
-  user: {
-    email: string
-    firstname?: string
-    lastname?: string
-    avatar?: Buffer
-    authorizedplugins: string[]
-  }
+  user: IUserWithData
   swr: {
     mutateUser: Function
   }
@@ -25,7 +21,7 @@ interface IProps {
 /**
  * Account
  * @memberof Components.Account
- * @param {Object} props Props `{ user, swr }`
+ * @param props Props
  */
 const Account = ({ user, swr }: IProps): JSX.Element => {
   // Data
@@ -34,7 +30,7 @@ const Account = ({ user, swr }: IProps): JSX.Element => {
 
   /**
    * On change
-   * @param {string} key Key
+   * @param key Key
    */
   const onChange = (key: string): void => {
     router.replace({

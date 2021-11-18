@@ -16,13 +16,13 @@ interface IProps {
 /**
  * Delete button
  * @memberof Components.Assets.Button
- * @param {Object} props Props `{ disabled, loading, text, children, onDelete }`
+ * @param props Props
  * @description Props list:
  * - disabled (boolean) Set disabled state
  * - loading (boolean) Set loading state
  * - text (string) DeleteDialog text
- * - children (React node) Button children
- * - onDelete (Function) DeleteDialog click (this function can throw an error)
+ * - children (React child) Button children
+ * - onDelete (async Function) DeleteDialog click (this function can throw an error)
  */
 const DeleteButton = ({
   disabled,
@@ -32,7 +32,7 @@ const DeleteButton = ({
   onDelete
 }: IProps): JSX.Element => {
   // State
-  const [visible, setVisible] = useState(false)
+  const [visible, setVisible]: [boolean, Function] = useState(false)
 
   /**
    * Render
@@ -42,6 +42,7 @@ const DeleteButton = ({
       <DeleteDialog
         visible={visible}
         loading={loading}
+        title="Delete"
         onCancel={() => setVisible(false)}
         onOk={async () => {
           await onDelete()

@@ -2,6 +2,8 @@ import PropTypes from 'prop-types'
 import { useState } from 'react'
 import { notification, Button, Card, Form, Input, Space } from 'antd'
 
+import { IUserWithData } from '@/lib/index.d'
+
 import { PasswordItem } from '@/components/assets/input'
 import {
   Success as SuccessNotification,
@@ -11,9 +13,7 @@ import {
 import UserAPI from '@/api/user'
 
 interface IProps {
-  user: {
-    email: string
-  }
+  user: IUserWithData
 }
 
 /**
@@ -29,11 +29,11 @@ const errors = {
 /**
  * Password
  * @memberof Components.Account
- * @param {Object} props Props `{ user }`
+ * @param props Props
  */
 const Password = ({ user }: IProps) => {
   // State
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading]: [boolean, Function] = useState(false)
 
   // Layout
   const inputLayout = {
@@ -46,7 +46,7 @@ const Password = ({ user }: IProps) => {
 
   /**
    * On finish
-   * @param {Object} data Data
+   * @param data Data
    */
   const onFinish = async (data: {
     password: string

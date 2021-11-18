@@ -37,16 +37,16 @@ const errors = {
 /**
  * Edit
  * @memberof Components.Administration.Users
- * @param {Object} props Props `{ plugins, user, swr }`
+ * @param props Props
  */
 const Edit = ({ plugins, user, swr }: IProps): JSX.Element => {
   // State
-  const [visible, setVisible] = useState(false)
-  const [loading, setLoading] = useState(false)
+  const [visible, setVisible]: [boolean, Function] = useState(false)
+  const [loading, setLoading]: [boolean, Function] = useState(false)
 
   /**
    * On update
-   * @param {Object} values Values
+   * @param values Values
    */
   const onUpdate = async (values: {
     firstname: string

@@ -19,11 +19,11 @@ interface IProps {
 /**
  * Plugins list
  * @memberof Components.Account.HPC.Plugin
- * @param {Object} props Props `{ plugin, plugins, swr }`
+ * @param props Props
  */
 const List = ({ plugin, plugins, swr }: IProps): JSX.Element => {
   // State
-  const [list, setList] = useState([])
+  const [list, setList]: [JSX.Element[], Function] = useState([])
 
   // List
   useEffect(() => {

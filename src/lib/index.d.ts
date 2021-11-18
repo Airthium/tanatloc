@@ -64,8 +64,9 @@ export interface IUserWithData extends Omit<IUser, 'avatar'> {
 }
 
 export interface IWorkspaceWithData
-  extends Omit<IWorkspace, 'owners' | 'users' | 'groups'> {
+  extends Omit<IWorkspace, 'owners' | 'users' | 'groups' | 'projects'> {
   owners?: IUserWithData[]
   users?: IUserWithData[]
   groups?: IGroupWithData[]
+  projects?: string[]
 }

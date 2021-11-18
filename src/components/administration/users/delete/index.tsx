@@ -29,12 +29,12 @@ const errors = {
 /**
  * Delete
  * @memberof Components.Administration.Users
- * @param {Object} props Props `{ user, swr }`
+ * @param props Props
  */
 const Delete = ({ user, swr }: IProps): JSX.Element => {
   // State
-  const [visible, setVisible] = useState(false)
-  const [loading, setLoading] = useState(false)
+  const [visible, setVisible]: [boolean, Function] = useState(false)
+  const [loading, setLoading]: [boolean, Function] = useState(false)
 
   /**
    * On delete

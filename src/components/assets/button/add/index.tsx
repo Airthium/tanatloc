@@ -7,17 +7,17 @@ interface IProps {
   disabled?: boolean
   loading?: boolean
   children: ReactChild | ReactChild[]
-  onAdd: () => void
+  onAdd: Function
 }
 
 /**
  * Add button
  * @memberof Components.Assets.Button
- * @param {Object} props Props `{ disabled, loading, children, onAdd }`
+ * @param props Props
  * @description Props list:
  * - disabled (boolean) Set disabled state
  * - loading (boolean) Set loading state
- * - children (React node) Button children
+ * - children (React child) Button children
  * - onAdd (Function) Button click
  */
 const AddButton = ({
@@ -35,7 +35,7 @@ const AddButton = ({
         disabled={disabled}
         loading={loading}
         icon={<PlusCircleOutlined />}
-        onClick={onAdd}
+        onClick={() => onAdd()}
       >
         {children}
       </Button>

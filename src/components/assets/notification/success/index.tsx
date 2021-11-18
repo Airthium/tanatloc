@@ -4,8 +4,8 @@ import { notification } from 'antd'
 /**
  * Success notification
  * @memberof Components.Assets.Notification
- * @param {string} title Title
- * @param {string} subTitle Sub title
+ * @param title Title
+ * @param subTitle Sub title
  */
 const Success = (title: string, subTitle?: string): void => {
   notification.success({

@@ -30,13 +30,13 @@ const errors = {
 /**
  * Plugin dialog
  * @memberof Components.Account.HPC.Plugin
- * @param {Object} props Props `{ plugin, swr, edit }`
+ * @param props Props
  */
 const PluginDialog = ({ plugin, swr, edit }: IProps): JSX.Element => {
   // State
-  const [visible, setVisible] = useState(false)
-  const [initialValues, setInitialValues] = useState({})
-  const [loading, setLoading] = useState(false)
+  const [visible, setVisible]: [boolean, Function] = useState(false)
+  const [loading, setLoading]: [boolean, Function] = useState(false)
+  const [initialValues, setInitialValues]: [object, Function] = useState({})
 
   // Initial values
   useEffect(() => {
@@ -52,8 +52,8 @@ const PluginDialog = ({ plugin, swr, edit }: IProps): JSX.Element => {
 
   /**
    * Build input item
-   * @param {Object} item Item
-   * @param {string} key Key
+   * @param item Item
+   * @param key Key
    */
   const inputItem = (
     item: { required?: boolean; label: string; props?: object },
@@ -79,8 +79,8 @@ const PluginDialog = ({ plugin, swr, edit }: IProps): JSX.Element => {
 
   /**
    * Build textarea item
-   * @param {Object} item Item
-   * @param {string} key Key
+   * @param item Item
+   * @param key Key
    */
   const textareaItem = (
     item: { required?: boolean; label: string; props?: object },
@@ -110,8 +110,8 @@ const PluginDialog = ({ plugin, swr, edit }: IProps): JSX.Element => {
 
   /**
    * Build password item
-   * @param {Object} item Item
-   * @param {string} key Key
+   * @param item Item
+   * @param key Key
    */
   const passwordItem = (
     item: { required?: boolean; label: string; props?: object },
@@ -142,8 +142,8 @@ const PluginDialog = ({ plugin, swr, edit }: IProps): JSX.Element => {
 
   /**
    * Build select item
-   * @param {Object} item Item
-   * @param {string} key Key
+   * @param item Item
+   * @param key Key
    */
   const selectItem = (
     item: {
@@ -186,9 +186,9 @@ const PluginDialog = ({ plugin, swr, edit }: IProps): JSX.Element => {
 
   /**
    * On finish
-   * @param {Object} values Values
+   * @param values Values
    */
-  const onFinish = async (values: {}): Promise<void> => {
+  const onFinish = async (values: object): Promise<void> => {
     setLoading(true)
     try {
       if (edit) {

@@ -8,9 +8,9 @@ import { ICallError } from '@/api'
 /**
  * Error notification
  * @memberof Components.Assets.Notification
- * @param {string} title Title
- * @param {Object} [err] Error
- * @param {bool} [display=true] Display notification
+ * @param title Title
+ * @param err Error
+ * @param display Display notification
  */
 const Error = (
   title: string,

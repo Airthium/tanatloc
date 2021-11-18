@@ -53,7 +53,9 @@ export const loginRoute = async (req: IRequest, res: IResponse) => {
     const token = await encryptSession(session)
     setTokenCookie(res, token)
 
-    res.status(200).json({ ok: true })
+    console.log(session)
+
+    res.status(200).json(session)
   } catch (err) {
     console.error(err)
     res.status(401).json({ error: true, message: err.message })

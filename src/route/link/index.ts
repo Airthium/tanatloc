@@ -5,12 +5,12 @@ import { error } from '../error'
 
 import LinkLib from '@/lib/link'
 
-interface IGetBody {
+export interface IGetBody {
   id: string
   data: string[]
 }
 
-interface IProcessBody {
+export interface IProcessBody {
   id: string
   data?: {
     email: string

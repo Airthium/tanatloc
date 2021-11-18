@@ -9,11 +9,11 @@ import { IClientPlugin } from '@/database/index.d'
 import UserLib from '@/lib/user'
 import PluginLib from '@/lib/plugin'
 
-type IAddBody = IClientPlugin
+export type IAddBody = IClientPlugin
 
-type IUpdateBody = object
+export type IUpdateBody = object
 
-interface IDeleteBody {
+export interface IDeleteBody {
   uuid: string
 }
 

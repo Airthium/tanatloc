@@ -7,7 +7,7 @@ import { IDataBaseEntry } from '@/database/index.d'
 
 import SimulationLib from '@/lib/simulation'
 
-type IUpdateBody = IDataBaseEntry[]
+export type IUpdateBody = IDataBaseEntry[]
 
 /**
  * Check update body

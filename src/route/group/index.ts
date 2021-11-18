@@ -9,7 +9,7 @@ import { IDataBaseEntry } from '@/database/index.d'
 import OrganizationLib from '@/lib/organization'
 import GroupLib from '@/lib/group'
 
-interface IAddBody {
+export interface IAddBody {
   organization: {
     id: string
   }
@@ -19,14 +19,14 @@ interface IAddBody {
   }
 }
 
-interface IUpdateBody {
+export interface IUpdateBody {
   group: {
     id: string
   }
   data: IDataBaseEntry[]
 }
 
-interface IDeleteBody {
+export interface IDeleteBody {
   id: string
 }
 

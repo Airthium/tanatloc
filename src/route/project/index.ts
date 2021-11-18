@@ -7,7 +7,7 @@ import { error } from '../error'
 import ProjectLib from '@/lib/project'
 import { IRequest, IResponse } from '..'
 
-interface IAddBody {
+export interface IAddBody {
   workspace: { id: string }
   project: { title: string; description?: string }
 }

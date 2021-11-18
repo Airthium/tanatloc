@@ -7,7 +7,7 @@ import { error } from '../error'
 
 import GeometryLib from '@/lib/geometry'
 
-interface IAddBody {
+export interface IAddBody {
   project: {
     id: string
   }

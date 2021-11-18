@@ -9,7 +9,7 @@ import { ISimulationScheme } from '@/database/index.d'
 import SimulationLib from '@/lib/simulation'
 import { IRequest, IResponse } from '..'
 
-interface IAddBody {
+export interface IAddBody {
   project: {
     id: string
   }

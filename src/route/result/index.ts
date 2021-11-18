@@ -7,7 +7,7 @@ import { error } from '../error'
 
 import ResultLib from '@/lib/result'
 
-interface ILoadBody {
+export interface ILoadBody {
   simulation: {
     id: string
   }

@@ -7,9 +7,9 @@ import { IDataBaseEntry } from '@/database/index.d'
 
 import ProjectLib from '@/lib/project'
 
-type IUpdateBody = IDataBaseEntry[]
+export type IUpdateBody = IDataBaseEntry[]
 
-interface IDeleteBody {
+export interface IDeleteBody {
   id: string
 }
 

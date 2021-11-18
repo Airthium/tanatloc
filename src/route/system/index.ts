@@ -9,7 +9,7 @@ import UserLib from '@/lib/user'
 import SystemLib from '@/lib/system'
 import { IRequest, IResponse } from '..'
 
-type IUpdateBody = IDataBaseEntry[]
+export type IUpdateBody = IDataBaseEntry[]
 
 /**
  * Check update body

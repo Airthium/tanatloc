@@ -7,7 +7,7 @@ import { IDataBaseEntry } from '@/database/index.d'
 
 import GeometryLib from '@/lib/geometry'
 
-type IUpdateBody = IDataBaseEntry[]
+export type IUpdateBody = IDataBaseEntry[]
 
 /**
  * Check update body

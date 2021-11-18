@@ -8,7 +8,7 @@ import { PASSWORD_RECOVERY } from '@/config/email'
 import EmailLib from '@/lib/email'
 import UserLib from '@/lib/user'
 
-interface ICheckBody {
+export interface ICheckBody {
   email: string
   type: string
 }

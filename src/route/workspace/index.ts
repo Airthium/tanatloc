@@ -9,18 +9,18 @@ import { IDataBaseEntry } from '@/database/index.d'
 
 import WorkspaceLib from '@/lib/workspace'
 
-interface IAddBody {
+export interface IAddBody {
   name: string
 }
 
-interface IUpdateBody {
+export interface IUpdateBody {
   workspace: {
     id: string
   }
   data: IDataBaseEntry[]
 }
 
-interface IDeleteBody {
+export interface IDeleteBody {
   id: string
 }
 

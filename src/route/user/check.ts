@@ -4,7 +4,7 @@ import { error } from '../error'
 
 import UserLib from '@/lib/user'
 
-interface ILoginBody {
+export interface ILoginBody {
   email: string
   password: string
 }

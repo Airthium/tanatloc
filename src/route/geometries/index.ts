@@ -7,7 +7,7 @@ import { error } from '../error'
 
 import GeometryLib from '@/lib/geometry'
 
-interface IGetBody {
+export interface IGetBody {
   ids: string[]
 }
 

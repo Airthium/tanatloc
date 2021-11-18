@@ -7,7 +7,7 @@ import { error } from '../error'
 
 import ProjectLib from '@/lib/project'
 
-interface IGetBody {
+export interface IGetBody {
   ids: string[]
 }
 

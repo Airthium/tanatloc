@@ -6,7 +6,7 @@ import { IDataBaseEntry } from '@/database/index.d'
 
 import UserLib from '@/lib/user'
 
-type IUpdateBody = IDataBaseEntry[]
+export type IUpdateBody = IDataBaseEntry[]
 
 /**
  * Check update body

@@ -5,7 +5,7 @@ import { error } from '@/route/error'
 
 import SimulationLib from '@/lib/simulation'
 
-interface ILogBody {
+export interface ILogBody {
   file: string
 }
 

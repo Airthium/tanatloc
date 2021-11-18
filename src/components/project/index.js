@@ -56,7 +56,7 @@ const errors = {
  * Project
  * @memberof Components.Project
  */
-const Project = (): JSX.Element => {
+const Project = () => {
   // Router
   const router = useRouter()
   const { page, workspaceId, projectId } = router.query

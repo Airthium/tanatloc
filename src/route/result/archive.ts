@@ -7,7 +7,7 @@ import { error } from '../error'
 
 import ResultLib from '@/lib/result'
 
-interface IArchiveBody {
+export interface IArchiveBody {
   simulation: {
     id: string
   }

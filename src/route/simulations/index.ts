@@ -7,7 +7,7 @@ import { error } from '../error'
 
 import SimulationLib from '@/lib/simulation'
 
-interface IGetBody {
+export interface IGetBody {
   ids: string[]
 }
 

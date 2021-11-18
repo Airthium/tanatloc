@@ -7,20 +7,19 @@ import { IDataBaseEntry } from '@/database/index.d'
 
 import OrganizationLib from '@/lib/organization'
 import { IRequest, IResponse } from '..'
-import organization from '@/database/organization'
 
-interface IAddBody {
+export interface IAddBody {
   name: string
 }
 
-interface IUpdateBody {
+export interface IUpdateBody {
   organization: {
     id: string
   }
   data: IDataBaseEntry[]
 }
 
-interface IDeleteBody {
+export interface IDeleteBody {
   id: string
 }
 

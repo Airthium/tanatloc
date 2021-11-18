@@ -7,7 +7,7 @@ import { error } from '../error'
 
 import AvatarLib from '@/lib/avatar'
 
-interface IAddBody {
+export interface IAddBody {
   file: {
     name: string
     uid: string

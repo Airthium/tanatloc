@@ -6,9 +6,9 @@ import { INewWorkspace } from '../index.d'
 /**
  * Add
  * @memberof Database.Workspace
- * @param {string} user User `{ id }`
- * @param {Object} workspace Workspace `{ name }`
- * @returns {Object} Workspace `{ id, name, owners }`
+ * @param user User
+ * @param workspace Workspace
+ * @returns New workspace
  */
 export const add = async (
   user: { id: string },

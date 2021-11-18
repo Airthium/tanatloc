@@ -5,7 +5,7 @@ import { deleter } from '..'
 /**
  * Delete
  * @memberof Database.Simulation
- * @param {Object} simulation Simulation `{ id }`
+ * @param simulation Simulation
  */
 export const del = async (simulation: { id: string }) => {
   await deleter(tables.SIMULATIONS, simulation.id)

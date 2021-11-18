@@ -8,7 +8,7 @@ import { STORAGE } from '@/config/storage'
 import ProjectDB from '@/database/project'
 import { IDataBaseEntry, IProject } from '@/database/index.d'
 
-import { IProjectWithData } from '../index.d'
+import { IGroupWithData, IProjectWithData, IUserWithData } from '../index.d'
 import Avatar from '../avatar'
 import User from '../user'
 import Group from '../group'
@@ -43,7 +43,7 @@ const add = async (
 /**
  * Get
  * @memberof Lib.Project
- * @param id Project id
+ * @param id Id
  * @param data Data
  * @returns Project
  */
@@ -52,9 +52,83 @@ const get = async (id: string, data: string[]): Promise<IProject> => {
 }
 
 /**
+ * Get avatar
+ * @param project Project
+ * @returns Avatar
+ */
+const getAvatar = async (project: IProject): Promise<Buffer> => {
+  try {
+    return await Avatar.read(project.avatar)
+  } catch (err) {
+    console.warn(err)
+  }
+}
+
+/**
+ * Get owners
+ * @param project Project
+ * @returns Owners
+ */
+const getOwners = async (project: IProject): Promise<IUserWithData[]> => {
+  return Promise.all(
+    project.owners.map(async (owner) => {
+      const ownerData = await User.getWithData(owner, [
+        'lastname',
+        'firstname',
+        'email',
+        'avatar'
+      ])
+      return {
+        id: owner,
+        ...ownerData
+      }
+    })
+  )
+}
+
+/**
+ * Get users
+ * @param project Project
+ * @returns Users
+ */
+const getUsers = async (project: IProject): Promise<IUserWithData[]> => {
+  return Promise.all(
+    project.users.map(async (user) => {
+      const userData = await User.getWithData(user, [
+        'lastname',
+        'firstname',
+        'email',
+        'avatar'
+      ])
+      return {
+        id: user,
+        ...userData
+      }
+    })
+  )
+}
+
+/**
+ * Get groups
+ * @param project Project
+ * @returns Groups
+ */
+const getGroups = async (project: IProject): Promise<IGroupWithData[]> => {
+  return Promise.all(
+    project.groups.map(async (group) => {
+      const groupData = await Group.getWithData(group, ['name'])
+      return {
+        id: group,
+        ...groupData
+      }
+    })
+  )
+}
+
+/**
  * Get with data
  * @memberof Lib.Project
- * @param id Project id
+ * @param id Id
  * @param data Data
  * @returns Project
  */
@@ -71,67 +145,16 @@ const getWithData = async (
   const projectWithData: IProjectWithData = { ...projectData }
 
   // Get avatar
-  if (project?.avatar) {
-    try {
-      const avatar = await Avatar.read(project.avatar)
-      projectWithData.avatar = avatar
-    } catch (err) {
-      console.warn(err)
-      projectWithData.avatar = undefined
-    }
-  }
+  if (project?.avatar) projectWithData.avatar = await getAvatar(project)
 
   // Get owners
-  if (project?.owners) {
-    const owners = await Promise.all(
-      project.owners.map(async (owner) => {
-        const ownerData = await User.getWithData(owner, [
-          'lastname',
-          'firstname',
-          'email',
-          'avatar'
-        ])
-        return {
-          id: owner,
-          ...ownerData
-        }
-      })
-    )
-    projectWithData.owners = owners
-  }
+  if (project?.owners) projectWithData.owners = await getOwners(project)
 
   // Get users
-  if (project?.users) {
-    const users = await Promise.all(
-      project.users.map(async (user) => {
-        const userData = await User.getWithData(user, [
-          'lastname',
-          'firstname',
-          'email',
-          'avatar'
-        ])
-        return {
-          id: user,
-          ...userData
-        }
-      })
-    )
-    projectWithData.users = users
-  }
+  if (project?.users) projectWithData.users = await getUsers(project)
 
   // Get groups
-  if (project?.groups) {
-    const groups = await Promise.all(
-      project.groups.map(async (group) => {
-        const groupData = await Group.getWithData(group, ['name'])
-        return {
-          id: group,
-          ...groupData
-        }
-      })
-    )
-    projectWithData.groups = groups
-  }
+  if (project?.groups) projectWithData.groups = await getGroups(project)
 
   return projectWithData
 }

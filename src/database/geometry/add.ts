@@ -6,9 +6,9 @@ import { INewGeometry } from '../index.d'
 /**
  * Add
  * @memberof Database.Geometry
- * @param {Object} project Project `{ id }`
- * @param {Object} geometry Geometry `{ name, uid }`
- * @returns {Object} Geometry `{ id, name, originalfilename, extension, uploadfilename }`
+ * @param project Project
+ * @param geometry Geometry
+ * @returns Geometry
  */
 export const add = async (
   project: { id: string },

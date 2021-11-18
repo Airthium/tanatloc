@@ -6,8 +6,8 @@ import { IOrganization } from '../index.d'
 /**
  * Get all
  * @memberof Database.Organization
- * @param {Array<string>} data Data
- * @returns {Array} Organizations
+ * @param data Data
+ * @returns Organizations
  */
 export const getAll = async (data: Array<string>): Promise<IOrganization[]> => {
   const response = await query(

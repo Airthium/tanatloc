@@ -6,8 +6,8 @@ import { INewLink } from '../index.d'
 /**
  * Add
  * @memberof Database.Link
- * @param {Object} link Link `{ type, email, ?userid }`
- * @returns {Object} Link `{ id, type, email, userid }`
+ * @param link Link
+ * @returns New link
  */
 export const add = async (link: {
   type: string

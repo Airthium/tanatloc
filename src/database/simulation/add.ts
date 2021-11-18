@@ -6,8 +6,8 @@ import { INewSimulation } from '../index.d'
 /**
  * Add
  * @memberof Database.Simulation
- * @param {Object} simulation Simulation `{ name, scheme, project }`
- * @returns {Object} Simulation `{ id, name, scheme, project }`
+ * @param simulation Simulation
+ * @returns New simulation
  */
 export const add = async (simulation: {
   name: string

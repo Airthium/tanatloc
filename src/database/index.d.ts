@@ -150,6 +150,13 @@ export interface ISimulationScheme {
         key?: string
         configuration?: object
       }
+      resultsFilters: {
+        name: string
+        pattern: RegExp
+        prefixPattern: RegExp
+        suffixPattern: RegExp
+        multiplicator?: string[]
+      }[]
       error?: Error
       done?: boolean
     }

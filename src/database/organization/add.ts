@@ -6,8 +6,8 @@ import { INewOrganization } from '../index.d'
 /**
  * Add
  * @memberof Database.Organization
- * @param {Object} organization Organization `{ name, owners }`
- * @returns {Object} Organization `{ id, name, owners }`
+ * @param organization Organization
+ * @returns New organization
  */
 export const add = async (organization: {
   name: string

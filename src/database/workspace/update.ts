@@ -6,8 +6,8 @@ import { IDataBaseEntry } from '../index.d'
 /**
  * Update
  * @memberof Database.Workspace
- * @param {Object} workspace workspace `{ id }`
- * @param {Object} data Data `[{ key, value, ... }, ... ]`
+ * @param workspace workspace
+ * @param data Data
  */
 export const update = async (
   workspace: { id: string },

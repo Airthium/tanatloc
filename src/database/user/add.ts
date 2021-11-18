@@ -8,8 +8,8 @@ import { INewUser } from '../index.d'
 /**
  * Add
  * @memberof Database.User
- * @param {Object} user User `{ email, password }`
- * @returns {Object} User `{ alreadyExists: true } || { id, email }`
+ * @param user User
+ * @returns New user
  */
 export const add = async (user: {
   email: string

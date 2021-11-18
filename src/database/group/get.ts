@@ -6,9 +6,9 @@ import { IGroup } from '../index.d'
 /**
  * Get
  * @memberof Database.Group
- * @param {string} id Group id
- * @param {Array} data Data
- * @returns {Object} Group `{ id, ...data }`
+ * @param id Group id
+ * @param data Data
+ * @returns Group
  */
 export const get = async (id: string, data: Array<string>): Promise<IGroup> => {
   const response = await getter(tables.GROUPS, id, data)

@@ -6,8 +6,8 @@ import { IUserCheck } from '../index.d'
 /**
  * Get by email and password
  * @memberof Database.User
- * @param {Object} user User `{ email, password }`
- * @returns {Object} User `{ id }`
+ * @param user User
+ * @returns User
  */
 export const getByUsernameAndPassword = async (user: {
   email: string

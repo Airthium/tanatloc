@@ -6,8 +6,8 @@ import { IGroup } from '../index.d'
 /**
  * Get all
  * @memberof Database.Group
- * @param {Array} data Data
- * @returns {Array} Groups
+ * @param data Data
+ * @returns Groups
  */
 export const getAll = async (data: Array<string>): Promise<Array<IGroup>> => {
   const response = await query(

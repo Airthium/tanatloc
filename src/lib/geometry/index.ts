@@ -15,9 +15,9 @@ import Tools from '../tools'
 /**
  * Add
  * @memberof Lib.Geometry
- * @param {Object} project Project `{ id }`
- * @param {Object} geometry Geometry `{ name, uid, buffer }`
- * @returns {Object} Geometry `{ id, name, originalfilename, extension, uploadfilename, json, glb, summary }`
+ * @param project Project
+ * @param geometry Geometry
+ * @returns New geometry
  */
 const add = async (
   project: { id: string },
@@ -168,9 +168,9 @@ const add = async (
 /**
  * Get
  * @memberof Lib.Geometry
- * @param {string} id Geometry's id
- * @param {Array} data Data
- * @returns {Object} Geometry `{ id, ...data }`
+ * @param id Id
+ * @param data Data
+ * @returns Geometry
  */
 const get = async (id: string, data: Array<string>): Promise<IGeometry> => {
   return GeometryDB.get(id, data)
@@ -179,8 +179,8 @@ const get = async (id: string, data: Array<string>): Promise<IGeometry> => {
 /**
  * Update geometry
  * @memberof Lib.Geometry
- * @param {Object} geometry Geometry `{ id }`
- * @param {Object} data Data `[{ key, value, ... }, ...]`
+ * @param geometry Geometry
+ * @param data Data
  */
 const update = async (
   geometry: { id: string },
@@ -193,7 +193,7 @@ const update = async (
 /**
  * Delete
  * @memberof Lib.Geometry
- * @param {Object} geometry Geometry `{ id, ?json, ?glb }`
+ * @param geometry Geometry
  */
 const del = async (geometry: {
   id: string
@@ -262,8 +262,8 @@ const del = async (geometry: {
 /**
  * Read
  * @memberof Lib.Geometry
- * @param {Object} geometry Geometry `{id }`
- * @returns {Object} Geometry `{ extension, buffer }`
+ * @param geometry Geometry
+ * @returns Geometry file
  */
 const read = async (geometry: { id: string }): Promise<IGeometryFile> => {
   // Data
@@ -284,8 +284,8 @@ const read = async (geometry: { id: string }): Promise<IGeometryFile> => {
 /**
  * Read part
  * @memberof Lib.Geometry
- * @param {Object} geometry Geometry `{ id }`
- * @returns {Object} Part `{ uuid, buffer }`
+ * @param geometry Geometry
+ * @returns Geometry part
  */
 const readPart = async (geometry: { id: string }): Promise<IGeometryPart> => {
   // Data
@@ -308,8 +308,8 @@ const readPart = async (geometry: { id: string }): Promise<IGeometryPart> => {
 
 /**
  * Archive geometry
- * @param {Object} geometry Geometry { id }
- * @param {string} to Target
+ * @param geometry Geometry
+ * @param to Target
  */
 const archive = async (geometry: { id: string }, to: string): Promise<void> => {
   // Data

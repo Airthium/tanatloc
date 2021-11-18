@@ -82,7 +82,7 @@ const restartJobs = async (): Promise<void> => {
 /**
  * Server list
  * @memberof Lib.Plugins
- * @returns {Array} List
+ * @returns List
  */
 const serverList = (): IServerPlugin[] => {
   return plugins.map((plugin) => {
@@ -97,9 +97,9 @@ const serverList = (): IServerPlugin[] => {
 /**
  * Client list
  * @memberof Lib.Plugins
- * @param {Object} user User `{ authorizedplugins }`
- * @param {boolean} [complete] Complete or filtered by user.authorizedplugins
- * @returns {Array} List
+ * @param user User
+ * @param complete Complete or filtered by user.authorizedplugins
+ * @returns List
  */
 const clientList = (
   user: { authorizedplugins?: string[] },

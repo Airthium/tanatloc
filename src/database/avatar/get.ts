@@ -6,9 +6,9 @@ import { IAvatar } from '../index.d'
 /**
  * Get
  * @memberof Database.Avatar
- * @param {string} id Avatar's id
- * @param {Array} data Data
- * @returns {Object} Avatar `{ id, ...data }`
+ * @param id Avatar id
+ * @param data Data
+ * @returns Avatar
  */
 export const get = async (
   id: string,

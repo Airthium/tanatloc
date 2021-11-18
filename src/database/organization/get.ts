@@ -6,9 +6,9 @@ import { IOrganization } from '../index.d'
 /**
  * Get
  * @memberof Database.Organization
- * @param {string} id Organization's id
- * @param {Array} data Data
- * @returns {Object} Organization `{ id, ...data }`
+ * @param id Organization id
+ * @param data Data
+ * @returns Organization
  */
 export const get = async (
   id: string,

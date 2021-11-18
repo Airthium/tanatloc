@@ -6,9 +6,9 @@ import { IWorkspace } from '../index.d'
 /**
  * Get
  * @memberof Database.Workspace
- * @param {string} id Id
- * @param {Array} data Data
- * @returns {Object} Workspace `{ id, ...data }`
+ * @param id Id
+ * @param data Data
+ * @returns Workspace
  */
 export const get = async (
   id: string,

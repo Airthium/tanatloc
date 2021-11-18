@@ -53,6 +53,7 @@
     "@swc/core": "1.2.110",
     "@swc/jest": "0.2.5",
     "@testing-library/react": "12.1.2",
+    "@types/jest": "^27.0.2",
     "antd": "4.16.13",
     "archiver": "5.3.0",
     "babel-jest": "27.3.1",

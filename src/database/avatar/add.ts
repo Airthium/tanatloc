@@ -6,8 +6,8 @@ import { INewAvatar } from '../index.d'
 /**
  * Add
  * @memberof Database.Avatar
- * @param {Object} data Data `{ name, path }`
- * @returns {Object} Avatar `{ id, name }`
+ * @param data Data
+ * @returns Avatar
  */
 export const add = async (avatar: {
   name: string

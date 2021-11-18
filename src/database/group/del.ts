@@ -5,7 +5,7 @@ import { deleter } from '..'
 /**
  * Delete
  * @memberof Database.Group
- * @param {Object} group Group `{ id }`
+ * @param group Group
  */
 export const del = async (group: { id: string }): Promise<void> => {
   await deleter(tables.GROUPS, group.id)

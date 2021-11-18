@@ -6,8 +6,8 @@ import { IDataBaseEntry } from '../index.d'
 /**
  * Update
  * @memberof Database.Organization
- * @param {Object} organization Organization `{ id }`
- * @param {Object} data Data `[{ key, value, ... }, ...]`
+ * @param organization Organization
+ * @param data Data
  */
 export const update = async (
   organization: { id: string },

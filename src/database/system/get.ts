@@ -6,8 +6,8 @@ import { ISystem } from '../index.d'
 /**
  * Get items
  * @memberof Database.System
- * @param {Object} data Data
- * @returns {Object} System `{ ...data }`
+ * @param data Data
+ * @returns System
  */
 export const get = async (data: Array<string>): Promise<ISystem> => {
   const response = await query(

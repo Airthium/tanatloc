@@ -6,9 +6,9 @@ import { IProject } from '../index.d'
 /**
  * Get
  * @memberof Database.Project
- * @param {string} id Id
- * @param {Array} data Data
- * @returns {Object} Project `{ id, ...data }`
+ * @param id Id
+ * @param data Data
+ * @returns Project
  */
 export const get = async (
   id: string,

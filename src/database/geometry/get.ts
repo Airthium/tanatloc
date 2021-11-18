@@ -6,8 +6,8 @@ import { IGeometry } from '../index.d'
 /**
  * Get
  * @memberof Database.Geometry
- * @param {string} id Id
- * @param {Array} data Data
+ * @param id Id
+ * @param data Data
  */
 export const get = async (
   id: string,

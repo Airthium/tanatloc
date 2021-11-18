@@ -6,9 +6,9 @@ import { ISimulation } from '../index.d'
 /**
  * Get
  * @memberof Database.Simulation
- * @param {string} id Id
- * @param {Array} data Data
- * @returns {Object} Simulation `{ id, ...data }`
+ * @param id Id
+ * @param data Data
+ * @returns Simulation
  */
 export const get = async (
   id: string,

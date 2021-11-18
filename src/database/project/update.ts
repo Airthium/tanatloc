@@ -6,8 +6,8 @@ import { IDataBaseEntry } from '../index.d'
 /**
  * Update
  * @memberof Database.Project
- * @param {Object} project Project `{ id }`
- * @param {Array} data Data `[{ key, value, ... }, ...]`
+ * @param project Project
+ * @param data Data
  */
 export const update = async (
   project: { id: string },

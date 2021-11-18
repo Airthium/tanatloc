@@ -11,8 +11,8 @@ import Plugins from '../plugins'
 /**
  * Add
  * @memberof Lib.Plugin
- * @param {Object} user User `{ id }`
- * @param {Object} plugin Plugin
+ * @param user User
+ * @param plugin Plugin
  */
 const add = async (
   user: { id: string },
@@ -44,8 +44,8 @@ const add = async (
 /**
  * Get by user
  * @memberof Lib.Plugin
- * @param {string} user User `{ id }`
- * @returns {Array} Plugins
+ * @param user User
+ * @returns Plugins
  */
 const getByUser = async (user: { id: string }): Promise<IClientPlugin[]> => {
   // Get plugins
@@ -57,8 +57,8 @@ const getByUser = async (user: { id: string }): Promise<IClientPlugin[]> => {
 /**
  * Update
  * @memberof Lib.Plugin
- * @param {User} user User `{ id }`
- * @param {Object} plugin Plugin
+ * @param user User
+ * @param plugin Plugin
  */
 const update = async (
   user: { id: string },
@@ -96,8 +96,8 @@ const update = async (
 /**
  * Delete
  * @memberof Lib.Plugin
- * @param {Object} user User `{ id }`
- * @param {Object} plugin Plugin `{ uuid }`
+ * @param user User
+ * @param plugin Plugin
  */
 const del = async (
   user: { id: string },

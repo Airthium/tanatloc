@@ -15,8 +15,8 @@ const mailerSend = new MailerSend({
 /**
  * Send
  * @memberof Lib.Email
- * @param {string} email Email
- * @returns {boolean} Valid
+ * @param email Email
+ * @returns Valid
  */
 const send = async (email: string): Promise<boolean> => {
   const res = await mailerSend.send(email)
@@ -31,8 +31,8 @@ const send = async (email: string): Promise<boolean> => {
 /**
  * Subscribe
  * @memberof Lib.Email
- * @param {string} email Email
- * @param {string} userid User id
+ * @param email Email
+ * @param userid User id
  */
 const subscribe = async (email: string, userid: string): Promise<void> => {
   // Create link
@@ -77,7 +77,7 @@ const subscribe = async (email: string, userid: string): Promise<void> => {
 /**
  * Recover
  * @memberof Lib.Email
- * @param {string} email Email
+ * @param email Email
  */
 const recover = async (email: string): Promise<void> => {
   // Create link entry
@@ -113,8 +113,8 @@ const recover = async (email: string): Promise<void> => {
 /**
  * Revalidate
  * @memberof Lib.Email
- * @param {string} email Email
- * @param {string} userid User id
+ * @param email Email
+ * @param userid User id
  */
 const revalidate = async (email: string, userid: string): Promise<void> => {
   // Create link
@@ -151,8 +151,8 @@ const revalidate = async (email: string, userid: string): Promise<void> => {
 /**
  * Invite
  * @memberof Lib.Email
- * @param {string} email Email
- * @param {Object} user Sending user
+ * @param email Email
+ * @param user Sending user
  */
 const invite = async (
   email: string,

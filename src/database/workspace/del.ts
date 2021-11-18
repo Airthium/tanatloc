@@ -5,7 +5,7 @@ import { deleter } from '..'
 /**
  * Delete
  * @memberof Database.Workspace
- * @param {Object} workspace Workspace `{ id }`
+ * @param workspace Workspace
  */
 export const del = async (workspace: { id: string }): Promise<void> => {
   // Delete workspace

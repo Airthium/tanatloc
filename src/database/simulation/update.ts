@@ -6,8 +6,8 @@ import { IDataBaseEntry } from '../index.d'
 /**
  * Update
  * @memberof Database.Simulation
- * @param {Object} simulation Simulation `{ id }`
- * @param {Array} data Data `[{ key, value, ... }, ...]`
+ * @param simulation Simulation
+ * @param data Data
  */
 export const update = async (
   simulation: { id: string },

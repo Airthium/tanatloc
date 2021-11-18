@@ -6,8 +6,8 @@ import { ISimulation } from '../index.d'
 /**
  * Get all
  * @memberof Database.Simulation
- * @param {Array} data Data
- * @returns {Array} Simulations
+ * @param data Data
+ * @returns Simulations
  */
 export const getAll = async (
   data: Array<string>

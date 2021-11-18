@@ -1,4 +1,4 @@
-import query, { getter, updater, deleter } from '..'
+import { query, getter, updater, deleter } from '..'
 
 const mockQuery = jest.fn(() => 'query')
 jest.mock('pg', () => {

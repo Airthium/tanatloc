@@ -22,9 +22,9 @@ import {
 /**
  * Add
  * @memberof Lib.Organization
- * @param {Object} user User `{ id }`
- * @param {Object} organization Organization `{ name }`
- * @returns {Object} Organization `{ id, name, owners }`
+ * @param user User
+ * @param organization Organization
+ * @returns New organization
  */
 const add = async (
   user: { id: string },
@@ -52,9 +52,9 @@ const add = async (
 /**
  * Get
  * @memberof Lib.Organization
- * @param {string} id Id
- * @param {Array} data Data
- * @returns {Object} Organization `{ id, ...data }`
+ * @param id Id
+ * @param data Data
+ * @returns Organization
  */
 const get = async (id: string, data: string[]): Promise<IOrganization> => {
   return OrganizationDB.get(id, data)
@@ -146,17 +146,17 @@ const getWithData = async (
   const organizationWithData: IOrganizationWithData = { ...organizationData }
 
   // Owners
-  if (organization?.owners) {
+  if (owners) {
     organizationWithData.owners = await getOwnersData(organization)
   }
 
   // Users
-  if (organization?.users) {
+  if (users) {
     organizationWithData.users = await getUsersData(organization)
   }
 
   // Groups
-  if (organization?.groups) {
+  if (groups) {
     organizationWithData.groups = await getGroupsData(organization)
   }
 
@@ -166,9 +166,9 @@ const getWithData = async (
 /**
  * Get by user
  * @memberof Lib.Organization
- * @param {Object} user User `{ id }`
- * @param {Array} data Data
- * @returns {Array} Organizations
+ * @param user User
+ * @param data Data
+ * @returns Organizations
  */
 const getByUser = async (
   user: { id: string },
@@ -185,39 +185,39 @@ const getByUser = async (
     organizations.map(async (organization) => {
       // Check user
       if (
-        organization.owners?.includes(user.id) ||
-        organization.users?.includes(user.id)
-      ) {
-        const { owners, users, groups, ...organizationData } = organization
+        !organization.owners?.includes(user.id) &&
+        !organization.users?.includes(user.id)
+      )
+        return
 
-        const organizationWithData: IOrganizationWithData = {
-          ...organizationData
-        }
+      const { owners, users, groups, ...organizationData } = organization
 
-        // Owner data
-        if (data.includes('owners') && owners)
-          organizationWithData.owners = await getOwnersData({ owners })
-
-        if (data.includes('groups') && users)
-          organizationWithData.users = await getUsersData({ users })
-
-        if (groups)
-          organizationWithData.groups = await getGroupsData({ groups })
-
-        return organizationData
+      const organizationWithData: IOrganizationWithData = {
+        ...organizationData
       }
+
+      // Owner data
+      if (data.includes('owners') && owners)
+        organizationWithData.owners = await getOwnersData({ owners })
+
+      if (data.includes('groups') && users)
+        organizationWithData.users = await getUsersData({ users })
+
+      if (groups) organizationWithData.groups = await getGroupsData({ groups })
+
+      return organizationWithData
     })
   )
 
-  return userOrganizations
+  return userOrganizations.filter((o) => o)
 }
 
 /**
  * Update
  * @memberof Lib.Organization
- * @param {Object} organization Organization
- * @param {Array} data Data
- * @param {string} ownerId Owner id
+ * @param organization Organization
+ * @param data Data
+ * @param ownerId Owner id
  */
 const update = async (
   organization: { id: string },
@@ -274,7 +274,7 @@ const update = async (
 /**
  * Delete
  * @memberof Lib.Organization
- * @param {Object} organization Organization `{ id }`
+ * @param organization Organization
  */
 const del = async (organization: { id: string }): Promise<void> => {
   // Get data

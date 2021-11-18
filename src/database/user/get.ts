@@ -6,10 +6,10 @@ import { IUser } from '../index.d'
 /**
  * Get
  * @memberof Database.User
- * @param {string} id User's id (or key)
- * @param {Array} data Data
- * @param {string} [key=id] Key (override id selector)
- * @returns {Object} User `{ [key], ...data }`
+ * @param id User id (or key)
+ * @param data Data
+ * @param key Key (override id selector)
+ * @returns User
  */
 export const get = async (
   id: string,

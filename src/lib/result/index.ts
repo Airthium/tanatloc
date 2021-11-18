@@ -17,9 +17,9 @@ const archiveFileName = 'resultsArchive.zip'
 /**
  * Load
  * @memberof Lib.Result
- * @param {Object} simulation Simulation `{ id }`
- * @param {Object} result Result `{ originPath, glb } }`
- * @returns {Object} Result `{ buffer }`
+ * @param simulation Simulation
+ * @param result Result
+ * @returns New result
  */
 const load = async (
   simulation: { id: string },
@@ -37,9 +37,9 @@ const load = async (
 /**
  * Download
  * @memberof Lib.Result
- * @param {Object} simulation Simulation `{ id }`
- * @param {Object} result Result `{ originPath, fileName } }`
- * @return {Object} Read stream
+ * @param simulation Simulation
+ * @param result Result
+ * @return Read stream
  */
 const download = (
   simulation: { id: string },
@@ -53,8 +53,8 @@ const download = (
 /**
  * Archive
  * @memberof Lib.Result
- * @param {Object} simulation Simulation `{ id } }`
- * @returns {Object} Read stream
+ * @param simulation Simulation
+ * @returns Read stream
  */
 const archive = async (simulation: { id: string }): Promise<ReadStream> => {
   const resultPath = path.join(SIMULATION, simulation.id, 'run', 'result')

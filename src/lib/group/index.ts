@@ -7,14 +7,14 @@ import User from '../user'
 import Workspace from '../workspace'
 import Project from '../project'
 import Organization from '../organization'
-import { IGroupWithData } from '..'
+import { IGroupWithData, IUserWithData } from '..'
 
 /**
  * Add
  * @memberof Lib.Group
- * @param {Object} organization Organization `{ id }`
- * @param {Object} group Group `{ name, users }`
- * @returns {Object} Group `{ id, name, users, organization }`
+ * @param organization Organization
+ * @param group Group
+ * @returns New group
  */
 const add = async (
   organization: { id: string },
@@ -39,13 +39,37 @@ const add = async (
 /**
  * Get
  * @memberof Lib.Group
- * @param {string} id Id
- * @param {Array} data Data
- * @param {boolean} [withData=true] With data
- * @returns {Object} Group `{ id, ...data }`
+ * @param id Id
+ * @param data Data
+ * @returns Group
  */
 const get = async (id: string, data: Array<string>): Promise<IGroup> => {
   return GroupDB.get(id, data)
+}
+
+/**
+ * Get users data
+ * @param group Group
+ * @returns Users
+ */
+const getUsersData = async (
+  group: IGroup | { users: string[] }
+): Promise<IUserWithData[]> => {
+  return Promise.all(
+    group.users.map(async (user) => {
+      const userData = await User.getWithData(user, [
+        'firstname',
+        'lastname',
+        'email',
+        'avatar'
+      ])
+
+      return {
+        id: user,
+        ...userData
+      }
+    })
+  )
 }
 
 /**
@@ -62,22 +86,7 @@ const getWithData = async (
 
   const { users, ...groupData } = group
   const groupWithData: IGroupWithData = { ...groupData }
-  if (group?.users)
-    groupWithData.users = await Promise.all(
-      group.users.map(async (user) => {
-        const userData = await User.getWithData(user, [
-          'firstname',
-          'lastname',
-          'email',
-          'avatar'
-        ])
-
-        return {
-          id: user,
-          ...userData
-        }
-      })
-    )
+  if (group?.users) groupWithData.users = await getUsersData(group)
 
   return groupWithData
 }
@@ -85,8 +94,8 @@ const getWithData = async (
 /**
  * Get all
  * @memberof Lib.Group
- * @param {Array} data Data
- * @return {Array} Groups
+ * @param data Data
+ * @return Groups
  */
 const getAll = async (data: Array<string>): Promise<Array<IGroupWithData>> => {
   // Get groups
@@ -101,21 +110,7 @@ const getAll = async (data: Array<string>): Promise<Array<IGroupWithData>> => {
   await Promise.all(
     groups.map(async (group, index) => {
       if (group.users) {
-        const users = await Promise.all(
-          group.users.map(async (user) => {
-            const userData = await User.getWithData(user, [
-              'firstname',
-              'lastname',
-              'email',
-              'avatar'
-            ])
-
-            return {
-              id: user,
-              ...userData
-            }
-          })
-        )
+        const users = await getUsersData(group)
         groupsWithData[index].users = users
       }
     })
@@ -127,14 +122,14 @@ const getAll = async (data: Array<string>): Promise<Array<IGroupWithData>> => {
 /**
  * Get by organization
  * @memberof Lib.Group
- * @param {string} id Organization id
- * @param {Array} data Data
- * @returns {Array} Groups TODO complete TS type
+ * @param id Organization id
+ * @param data Data
+ * @returns Groups
  */
 const getByOrganization = async (
   id: string,
   data: Array<string>
-): Promise<Array<any>> => {
+): Promise<IGroupWithData[]> => {
   // Get organization
   const organization = await Organization.get(id, ['groups'])
 
@@ -143,7 +138,7 @@ const getByOrganization = async (
     organization.groups &&
     Promise.all(
       organization.groups.map(async (group) => {
-        const groupData = await get(group, data)
+        const groupData = await getWithData(group, data)
 
         return {
           id: group,
@@ -157,8 +152,8 @@ const getByOrganization = async (
 /**
  * Update
  * @memberof Lib.Group
- * @param {Object} group Group `{ id }`
- * @param {Array} data Data
+ * @param group Group
+ * @param data Data
  */
 const update = async (
   group: { id: string },
@@ -170,7 +165,7 @@ const update = async (
 /**
  * Delete
  * @memberof Lib.Group
- * @param {Object} group Group `{ id }`
+ * @param group Group
  */
 const del = async (group: { id: string }): Promise<void> => {
   // Get data

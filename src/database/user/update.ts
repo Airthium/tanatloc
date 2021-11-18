@@ -6,8 +6,8 @@ import { IDataBaseEntry } from '../index.d'
 /**
  * Update
  * @memberof Database.User
- * @param {Object} user User `{ id }`
- * @param {Object} data Data `[{ key, value, ... }, ...]`
+ * @param user User
+ * @param data Data
  */
 export const update = async (
   user: { id: string },

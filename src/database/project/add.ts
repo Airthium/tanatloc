@@ -6,10 +6,10 @@ import { INewProject } from '../index.d'
 /**
  * Add
  * @memberof Database.Project
- * @param {Object} user User `{ id }`
- * @param {Object} workspace Workspace `{ id }`
- * @param {Object} project Project `{ title, description }`
- * @returns {Object} Project `{ id, title, description, owners, workspace }`
+ * @param user User
+ * @param workspace Workspace
+ * @param project Project
+ * @returns New project
  */
 export const add = async (
   user: { id: string },

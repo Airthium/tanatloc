@@ -6,9 +6,9 @@ import { INewGroup } from '../index.d'
 /**
  * Add
  * @memberof Database.Group
- * @param {Object} organization Organization `{ id }`
- * @param {Object} group Group `{ name, users }`
- * @returns {Object} Group `{ id, name, users, organization }`
+ * @param organization Organization
+ * @param group Group
+ * @returns New group
  */
 export const add = async (
   organization: { id: string },

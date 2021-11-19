@@ -5,8 +5,8 @@ import { IRequest, IResponse } from '..'
 /**
  * Empty groups list route
  * @memberof Route.Groups
- * @param {Object} req Request
- * @param {Object} res Response
+ * @param req Request
+ * @param res Response
  */
 export default async (req: IRequest, res: IResponse) => {
   // Empty route

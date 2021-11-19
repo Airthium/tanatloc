@@ -8,8 +8,8 @@ import GeometryLib from '@/lib/geometry'
 /**
  * Geometry API download
  * @memberof Route.Geometry
- * @param {Object} req Request
- * @param {Object} res Response
+ * @param req Request
+ * @param res Response
  */
 export default async (req: IRequest, res: IResponse) => {
   try {

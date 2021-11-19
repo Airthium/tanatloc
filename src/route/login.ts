@@ -11,9 +11,9 @@ import { IRequest, IResponse } from '.'
 /**
  * Authenticate
  * @memberof Route
- * @param {string} method Method
- * @param {Object} req Request
- * @param {Object} res Response
+ * @param method Method
+ * @param req Request
+ * @param res Response
  */
 const authenticate = (
   method: string,
@@ -39,8 +39,8 @@ passport.use(localStrategy)
 /**
  * Login API
  * @memberof Route
- * @param {Object} req Request
- * @param {Object} res Response
+ * @param req Request
+ * @param res Response
  */
 export const loginRoute = async (req: IRequest, res: IResponse) => {
   try {

@@ -151,7 +151,7 @@ const update = async (
  */
 const del = async (user: { id: string }): Promise<void> => {
   // Get data
-  const data = await get(user.id, ['workspaces', 'avatar'])
+  const data = await get(user.id, ['workspaces', 'organizations', 'avatar'])
 
   // Delete from organization
   if (data.organizations) {

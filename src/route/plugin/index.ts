@@ -20,7 +20,7 @@ export interface IDeleteBody {
 /**
  * Check add body
  * @memberof Route.Plugin
- * @param {Object} body Body
+ * @param body Body
  */
 const checkAddBody = (body: IAddBody): void => {
   if (
@@ -39,7 +39,7 @@ const checkAddBody = (body: IAddBody): void => {
 /**
  * Check update body
  * @memberof Route.Plugin
- * @param {Object} body Body
+ * @param body Body
  */
 const checkUpdateBody = (body: IUpdateBody): void => {
   if (!body || typeof body !== 'object')
@@ -49,7 +49,7 @@ const checkUpdateBody = (body: IUpdateBody): void => {
 /**
  * Check delete body
  * @memberof Route.Plugin
- * @param {Object} body Body
+ * @param body Body
  */
 const checkDeleteBody = (body: IDeleteBody): void => {
   if (!body || !body.uuid || typeof body.uuid !== 'string')
@@ -59,8 +59,8 @@ const checkDeleteBody = (body: IDeleteBody): void => {
 /**
  * Plugin API
  * @memberof Route.Plugin
- * @param {Object} req Request
- * @param {Object} res Response
+ * @param req Request
+ * @param res Response
  */
 export default async (
   req: IRequest<IAddBody & IUpdateBody & IDeleteBody>,

@@ -10,8 +10,8 @@ import PluginsLib from '@/lib/plugins'
 /**
  * Plugins API
  * @memberof Route.Plugins
- * @param {Object} req Request
- * @param {Object} res Response
+ * @param req Request
+ * @param res Response
  */
 export default async (req: IRequest, res: IResponse) => {
   try {

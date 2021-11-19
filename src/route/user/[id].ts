@@ -11,7 +11,7 @@ export type IUpdateBody = IDataBaseEntry[]
 /**
  * Check update body
  * @memberof Route.User
- * @param {Object} body Body
+ * @param body Body
  */
 const checkUpdateBody = (body) => {
   if (!body || !Array.isArray(body))
@@ -21,8 +21,8 @@ const checkUpdateBody = (body) => {
 /**
  * User API by [id]
  * @memberof Route.User
- * @param {Object} req Request
- * @param {Object} res Response
+ * @param req Request
+ * @param res Response
  */
 export default async (
   req: IRequest<IUpdateBody>,

@@ -1,5 +1,7 @@
 Object.defineProperty(process, 'resourcesPath', { value: 'resourcesPath' })
 
+export {}
+
 jest.mock('../../tools', () => ({
   listDirectories: async () => ['plugin', 'pluginHPC', 'pluginerror']
 }))
@@ -40,5 +42,3 @@ describe('lib/plugins', () => {
     require('..')
   })
 })
-
-export {}

@@ -12,7 +12,7 @@ export interface ILogBody {
 /**
  * Check log body
  * @memberof Route.Simulation
- * @param {Object} body Body
+ * @param body Body
  */
 const checkLogBody = (body: ILogBody): void => {
   if (!body || !body.file || typeof body.file !== 'string')
@@ -22,8 +22,8 @@ const checkLogBody = (body: ILogBody): void => {
 /**
  * Simulation API log
  * @memberof Route.Simulation
- * @param {Object} req Request
- * @param {Object} res Response
+ * @param req Request
+ * @param res Response
  */
 export default async (
   req: IRequest<ILogBody>,

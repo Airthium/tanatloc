@@ -21,7 +21,7 @@ export interface IProcessBody {
 /**
  * Check get body
  * @memberof Route.Link
- * @param {Object} body Body
+ * @param body Body
  */
 const checkGetBody = (body: IGetBody): void => {
   if (
@@ -40,7 +40,7 @@ const checkGetBody = (body: IGetBody): void => {
 /**
  * Check process body
  * @memberof Route.Link
- * @param {Object} body Body
+ * @param body Body
  */
 const checkProcessBody = (body: IProcessBody): void => {
   if (!body || !body.id || typeof body.id !== 'string')
@@ -53,8 +53,8 @@ const checkProcessBody = (body: IProcessBody): void => {
 /**
  * Link API
  * @memberof Route.Link
- * @param {Object} req Request
- * @param {Object} res Response
+ * @param req Request
+ * @param res Response
  */
 export default async (
   req: IRequest<IGetBody & IProcessBody>,

@@ -8,7 +8,7 @@ import { Avatar, Spin, Tooltip } from 'antd'
  * @param {string} str String
  * @returns {string} Color
  */
-const stringToColor = (str: string): string => {
+const stringToColor = (str?: string): string => {
   if (!str) return '#FFFFFF'
 
   str = str.replace(/[\W_]+/g, '')
@@ -55,7 +55,7 @@ const rgbToHex = (color: { r: number; g: number; b: number }): string => {
  * @returns {string} rgba
  */
 const rgbToRgba = (
-  color: { r: number; g: number; b: number },
+  color?: { r: number; g: number; b: number },
   alpha: number = 1
 ): string => {
   if (!color) return 'rgba(255, 255, 255, 0)'

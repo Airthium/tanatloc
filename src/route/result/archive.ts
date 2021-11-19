@@ -16,7 +16,7 @@ export interface IArchiveBody {
 /**
  * Check archive body
  * @memberof Route.Result
- * @param {Object} body Body
+ * @param body Body
  */
 const checkArchiveBody = (body: IArchiveBody): void => {
   if (
@@ -34,8 +34,8 @@ const checkArchiveBody = (body: IArchiveBody): void => {
 /**
  * Result archive API
  * @memberof Route.Result
- * @param {Object} req Request
- * @param {Object} res Response
+ * @param req Request
+ * @param res Response
  */
 export default async (
   req: IRequest<IArchiveBody>,

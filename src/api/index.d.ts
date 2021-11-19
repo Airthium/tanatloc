@@ -28,6 +28,7 @@ export interface ICallHeaders {
 }
 
 export interface ICallResponse {
+  status?: number
   blob?: Function
   json?: Function
 }

@@ -20,7 +20,7 @@ export interface IDownloadBody {
 /**
  * Check download body
  * @memberof Route.Result
- * @param {Object} body Body
+ * @param body Body
  */
 const checkDownloadBody = (body: IDownloadBody): void => {
   if (
@@ -43,8 +43,8 @@ const checkDownloadBody = (body: IDownloadBody): void => {
 /**
  * Result download API
  * @memberof Route.Result
- * @param {Object} req Request
- * @param {Object} res Response
+ * @param req Request
+ * @param res Response
  */
 export default async (
   req: IRequest<IDownloadBody>,

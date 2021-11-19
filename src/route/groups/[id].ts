@@ -8,8 +8,8 @@ import GroupLib from '@/lib/group'
 /**
  * Groups API [id]
  * @memberof Route.Groups
- * @param {Object} req Request
- * @param {Object} res Response
+ * @param req Request
+ * @param res Response
  */
 export default async (req: IRequest, res: IResponse) => {
   try {

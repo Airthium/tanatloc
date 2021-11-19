@@ -18,7 +18,7 @@ export type IUpdateBody = IDataBaseEntry[]
 /**
  * Check add body
  * @memberof Route.User
- * @param {Object} body Body
+ * @param body Body
  */
 const checkAddBody = (body: IAddBody): void => {
   if (
@@ -37,7 +37,7 @@ const checkAddBody = (body: IAddBody): void => {
 /**
  * Check update body
  * @memberof Route.User
- * @param {Array} body Body
+ * @param body Body
  */
 const checkUpdateBody = (body: IUpdateBody): void => {
   if (!body || !Array.isArray(body))
@@ -47,8 +47,8 @@ const checkUpdateBody = (body: IUpdateBody): void => {
 /**
  * User API
  * @memberof Route.User
- * @param {Object} req Request
- * @param {Object} res Response
+ * @param req Request
+ * @param res Response
  */
 export default async (
   req: IRequest<IAddBody & IUpdateBody>,

@@ -12,7 +12,7 @@ export type IUpdateBody = IDataBaseEntry[]
 /**
  * Check update body
  * @memberof Route.Geometry
- * @param {Array} body Body
+ * @param body Body
  */
 const checkUpdateBody = (body: IUpdateBody): void => {
   if (!body || !Array.isArray(body))
@@ -22,8 +22,8 @@ const checkUpdateBody = (body: IUpdateBody): void => {
 /**
  * Geometry API by [id]
  * @memberof Route.Geometry
- * @param {Object} req Request
- * @param {Object} res Response
+ * @param req Request
+ * @param res Response
  */
 export default async (
   req: IRequest<IUpdateBody>,

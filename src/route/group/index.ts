@@ -33,7 +33,7 @@ export interface IDeleteBody {
 /**
  * Check add body
  * @memberof Route.Group
- * @param {Object} body Body
+ * @param body Body
  */
 const checkAddBody = (body: IAddBody): void => {
   if (
@@ -56,7 +56,7 @@ const checkAddBody = (body: IAddBody): void => {
 /**
  * Check update body
  * @memberof Route.Group
- * @param {Object} body Body
+ * @param body Body
  */
 const checkUpdateBody = (body: IUpdateBody): void => {
   if (
@@ -76,7 +76,7 @@ const checkUpdateBody = (body: IUpdateBody): void => {
 /**
  * Check delete body
  * @memberof Route.Group
- * @param {Object} body Body
+ * @param body Body
  */
 const checkDeleteBody = (body: IDeleteBody): void => {
   if (!body || !body.id || typeof body.id !== 'string')
@@ -86,8 +86,8 @@ const checkDeleteBody = (body: IDeleteBody): void => {
 /**
  * Check auth
  * @memberof Route.Group
- * @param {Object} organization Organization { id }
- * @param {Object} user User { id }
+ * @param organization Organization { id }
+ * @param user User { id }
  */
 const checkOrganizationAuth = async (
   organization: { id: string },
@@ -105,8 +105,8 @@ const checkOrganizationAuth = async (
 /**
  * Check auth
  * @memberof Route.Group
- * @param {Object} group Group { id }
- * @param {Object} user User { id }
+ * @param group Group { id }
+ * @param user User { id }
  */
 const checkGroupAuth = async (
   group: { id: string },
@@ -126,8 +126,8 @@ const checkGroupAuth = async (
 /**
  * Group API
  * @memberof Route.Group
- * @param {Object} req Request
- * @param {Object} res Result
+ * @param req Request
+ * @param res Result
  */
 export default async (
   req: IRequest<IAddBody & IUpdateBody & IDeleteBody>,

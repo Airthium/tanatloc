@@ -22,8 +22,8 @@ const checkUpdateBody = (body: IUpdateBody): void => {
 /**
  * Simulation API by [id]
  * @memberof Route.Simulation
- * @param {Object} req Request
- * @param {Object} res Response
+ * @param req Request
+ * @param res Response
  */
 export default async (
   req: IRequest<IUpdateBody>,

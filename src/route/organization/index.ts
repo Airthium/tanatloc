@@ -26,7 +26,7 @@ export interface IDeleteBody {
 /**
  * Check add body
  * @memberof Route.Organization
- * @param {Object} body Body
+ * @param body Body
  */
 const checkAddBody = (body: IAddBody): void => {
   if (!body || !body.name || typeof body.name !== 'string')
@@ -36,7 +36,7 @@ const checkAddBody = (body: IAddBody): void => {
 /**
  * Check update body
  * @memberof Route.Organization
- * @param {Object} body Body
+ * @param body Body
  */
 const checkUpdateBody = (body: IUpdateBody): void => {
   if (
@@ -56,7 +56,7 @@ const checkUpdateBody = (body: IUpdateBody): void => {
 /**
  * Check delete body
  * @memberof Route.Organization
- * @param {Object} body Body
+ * @param body Body
  */
 const checkDeleteBody = (body: IDeleteBody): void => {
   if (!body || !body.id || typeof body.id !== 'string')
@@ -66,7 +66,7 @@ const checkDeleteBody = (body: IDeleteBody): void => {
 /**
  * Check organization administrator
  * @memberof Route.Organization
- * @param {string} id Id
+ * @param id Id
  */
 const checkOrganizationAdministrator = async (
   organization: { id: string },
@@ -84,8 +84,8 @@ const checkOrganizationAdministrator = async (
 /**
  * Organization API
  * @memberof Route.Organization
- * @param {Object} req Request
- * @param {Object} res Response
+ * @param req Request
+ * @param res Response
  */
 export default async (
   req: IRequest<IAddBody & IUpdateBody & IDeleteBody>,

@@ -13,7 +13,7 @@ export interface IAddBody {
     uid: string
     data: Buffer
   }
-  project: {
+  project?: {
     id: string
   }
 }
@@ -21,7 +21,7 @@ export interface IAddBody {
 /**
  * Check add body
  * @memberof Route.Avatar
- * @param {Object} body Body
+ * @param body Body
  */
 const checkAddBody = (body: IAddBody): void => {
   if (
@@ -32,7 +32,7 @@ const checkAddBody = (body: IAddBody): void => {
     !body.file.uid ||
     typeof body.file.uid !== 'string' ||
     !body.file.data ||
-    typeof body.file.data !== 'string' ||
+    typeof body.file.data !== 'object' ||
     (body.project && (!body.project.id || typeof body.project.id !== 'string'))
   )
     throw error(
@@ -44,8 +44,8 @@ const checkAddBody = (body: IAddBody): void => {
 /**
  * Avatar API
  * @memberof Route.Avatar
- * @param {Object} req Request
- * @param {Object} res Result
+ * @param req Request
+ * @param res Result
  */
 export default async (
   req: IRequest<IAddBody>,

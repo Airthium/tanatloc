@@ -12,7 +12,7 @@ export interface ILoginBody {
 /**
  * Check login body
  * @memberof Route.User
- * @param {Object} body Body
+ * @param body Body
  */
 const checkLoginBody = (body: ILoginBody): void => {
   if (
@@ -31,8 +31,8 @@ const checkLoginBody = (body: ILoginBody): void => {
 /**
  * User check API
  * @memberof Route.User
- * @param {Object} req Request
- * @param {Object} res Response
+ * @param req Request
+ * @param res Response
  */
 export default async (
   req: IRequest<ILoginBody>,

@@ -131,14 +131,7 @@ const getByUser = async ({
   id: string
 }): Promise<IWorkspaceWithData[]> => {
   // Get workspaces'ids
-  const user = await User.get(id, [
-    'firstname',
-    'lastname',
-    'email',
-    'avatar',
-    'organizations',
-    'workspaces'
-  ])
+  const user = await User.get(id, ['organizations', 'workspaces'])
 
   const workspaces = []
 

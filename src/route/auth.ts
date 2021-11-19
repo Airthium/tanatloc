@@ -12,9 +12,9 @@ import { IProject, IWorkspace, IOrganization } from '@/database/index.d'
 /**
  * Check authorization
  * @memberof Route
- * @param {Object} user User { id }
- * @param {Object} object Object (Project || Workspace || Organization)
- * @param {Object} [parentObject] Parent object (Workspace)
+ * @param user User
+ * @param object Object (Project || Workspace || Organization)
+ * @param parentObject Parent object (Workspace)
  */
 const auth = async (
   user: { id: string },
@@ -62,9 +62,9 @@ const auth = async (
 /**
  * Check workspace auth
  * @memberof Route
- * @param {Object} user User { id }
- * @param {Object} workspace Workspace {id }
- * @param {number} [status] Override workspace error status
+ * @param user User
+ * @param workspace Workspace
+ * @param status Override workspace error status
  */
 const checkWorkspaceAuth = async (
   user: { id: string },
@@ -84,9 +84,9 @@ const checkWorkspaceAuth = async (
 /**
  * Check project auth
  * @memberof Route
- * @param {Object} user User { id }
- * @param {Object} project Project { id }
- * @param {number} [status] Override project error status
+ * @param user User
+ * @param project Project
+ * @param status Override project error status
  */
 const checkProjectAuth = async (
   user: { id: string },
@@ -115,9 +115,9 @@ const checkProjectAuth = async (
 /**
  * Check geometry auth
  * @memberof Route
- * @param {Object} user User { id }
- * @param {Object} geometry Geometry { id }
- * @param {number} [status] Override simulation error status
+ * @param user User
+ * @param geometry Geometry
+ * @param status Override simulation error status
  */
 const checkGeometryAuth = async (
   user: { id: string },
@@ -149,9 +149,9 @@ const checkGeometryAuth = async (
 /**
  * Check simulation auth
  * @memberof Route
- * @param {Object} user User { id }
- * @param {Object} simulation Simulation { id }
- * @param {number} [status] Override simulation error status
+ * @param user User
+ * @param simulation Simulation
+ * @param status Override simulation error status
  */
 const checkSimulationAuth = async (
   user: { id: string },
@@ -184,9 +184,9 @@ const checkSimulationAuth = async (
 /**
  * Check organization auth
  * @memberof Route
- * @param {Object} user User { id }
- * @param {Object} organization Organization { id }
- * @param {number} [status] Override project error status
+ * @param user User
+ * @param organization Organization
+ * @param status Override project error status
  */
 const checkOrganizationAuth = async (
   user: { id: string },

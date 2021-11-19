@@ -4,6 +4,7 @@ ignores: [
     "@swc/cli",
     "@swc/core",
     "@swc/jest",
+    "@types/*",
     "better-docs",
     "ignore-loader",
     "node-fetch",
@@ -11,4 +12,4 @@ ignores: [
     "typedoc",
     "url-join"
     ]
-skip-missing: false
+skip-missing: true

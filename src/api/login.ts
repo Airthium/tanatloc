@@ -1,7 +1,5 @@
 import isElectron from 'is-electron'
 
-import { ICallResponse } from '.'
-
 const base: string = isElectron() ? 'http://localhost:3000' : ''
 
 /**

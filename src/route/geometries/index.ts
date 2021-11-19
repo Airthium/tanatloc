@@ -14,7 +14,7 @@ export interface IGetBody {
 /**
  * Check get body
  * @memberof Route.Geometries
- * @param {Object} body Body
+ * @param body Body
  */
 const checkGetBody = (body: IGetBody): void => {
   if (!body)
@@ -24,8 +24,8 @@ const checkGetBody = (body: IGetBody): void => {
 /**
  * Geometries API
  * @memberof Route.Geometries
- * @param {Object} req Request
- * @param {Object} res Response
+ * @param req Request
+ * @param res Response
  */
 export default async (
   req: IRequest<IGetBody>,

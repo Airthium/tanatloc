@@ -1,15 +1,15 @@
 /** @namespace Route */
 
 export interface IRequest<Tbody = {}> {
-  method: string
+  method?: string
   query?: {
     id?: string
   }
   params?: {
     id?: string
   }
-  cookies: string
-  headers: {
+  cookies?: string
+  headers?: {
     cookie: string
   }
   body?: Tbody

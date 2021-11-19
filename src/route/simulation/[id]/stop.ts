@@ -8,8 +8,8 @@ import SimulationLib from '@/lib/simulation'
 /**
  * Simulation API stop
  * @memberof Route.Simulation
- * @param {Object} req Request
- * @param {Object} res Response
+ * @param req Request
+ * @param res Response
  */
 export default async (req: IRequest, res: IResponse): Promise<void> => {
   try {

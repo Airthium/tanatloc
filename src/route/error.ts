@@ -7,7 +7,7 @@ import { IRouteError } from '.'
  * @memberof Route
  * @param status Status code
  * @param message Message
- * @param [display=true] Display
+ * @param display Display
  * @returns Error
  */
 export const error = (

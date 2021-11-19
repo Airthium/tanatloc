@@ -119,47 +119,12 @@ export interface ISimulationScheme {
   version: string
   description: string
   configuration: {
-    geometry?: {
-      value?: string
-      file?: string
-      name?: string
-      path?: name
-      done?: boolean
-    }
-    materials?: {
-      done?: boolean
-    }
-    parameters?: {
-      done?: boolean
-    }
-    initialization?: {
-      value?: {
-        type?: string
-        simulation?: string
-        result?: string
-        dat?: string
-        mesh?: string
-      }
-      done?: boolean
-    }
-    boundaryConditions?: {
-      done?: boolean
-    }
-    run?: {
-      cloudServer?: {
-        key?: string
-        configuration?: object
-      }
-      resultsFilters: {
-        name: string
-        pattern: RegExp
-        prefixPattern: RegExp
-        suffixPattern: RegExp
-        multiplicator?: string[]
-      }[]
-      error?: Error
-      done?: boolean
-    }
+    geometry?: any
+    materials?: any
+    parameters?: any
+    initialization?: any
+    boundaryConditions?: any
+    run?: any
   }
 }
 

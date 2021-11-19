@@ -20,7 +20,7 @@ export interface ILoadBody {
 /**
  * Check load body
  * @memberof Route.Result
- * @param {Object} body Body
+ * @param body Body
  */
 const checkLoadBody = (body: ILoadBody): void => {
   if (
@@ -43,8 +43,8 @@ const checkLoadBody = (body: ILoadBody): void => {
 /**
  * Result API
  * @memberof Route.Result
- * @param {Object} req Request
- * @param {Object} res Response
+ * @param req Request
+ * @param res Response
  */
 export default async (
   req: IRequest<ILoadBody>,

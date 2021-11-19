@@ -16,7 +16,7 @@ export interface IDeleteBody {
 /**
  * Check update body
  * @memberof Route.Project
- * @param {Array} body Body
+ * @param body Body
  */
 const checkUpdateBody = (body: IUpdateBody): void => {
   if (!body || !Array.isArray(body))
@@ -26,7 +26,7 @@ const checkUpdateBody = (body: IUpdateBody): void => {
 /**
  * Check delete body
  * @memberof Route.Project
- * @param {Object} body Body
+ * @param body Body
  */
 const checkDeleteBody = (body: IDeleteBody): void => {
   if (!body || !body.id || typeof body.id !== 'string')
@@ -36,8 +36,8 @@ const checkDeleteBody = (body: IDeleteBody): void => {
 /**
  * Project API by [id]
  * @memberof Route.Project
- * @param {Object} req Request
- * @param {Object} res Response
+ * @param req Request
+ * @param res Response
  */
 export default async (
   req: IRequest<IUpdateBody & IDeleteBody>,

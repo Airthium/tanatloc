@@ -20,7 +20,7 @@ const base: string = isElectron() ? 'http://localhost:' + port : ''
  */
 export const fetcher = async (
   url: string,
-  payload: string
+  payload?: string
 ): Promise<IFetchResponse> => {
   const res = await fetch(base + url, {
     method: payload ? 'POST' : 'GET',

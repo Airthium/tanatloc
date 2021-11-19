@@ -9,8 +9,8 @@ import OrganizationLib from '@/lib/organization'
 /**
  * Organizations API
  * @memberof Route.Organizations
- * @param {Object} req Request
- * @param {Object} res Response
+ * @param req Request
+ * @param res Response
  */
 export default async (req: IRequest, res: IResponse) => {
   try {

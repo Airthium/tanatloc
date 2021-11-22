@@ -31,12 +31,12 @@ const errors = {
 /**
  * Delete project
  * @memberof Components.Project
- * @param {Object} props Props `{ disabled, workspace, project, swr }`
+ * @param props Props
  */
 const Delete = ({ disabled, workspace, project, swr }: IProps): JSX.Element => {
   // Sate
-  const [visible, setVisible] = useState(false)
-  const [loading, setLoading] = useState(false)
+  const [visible, setVisible]: [boolean, Function] = useState(false)
+  const [loading, setLoading]: [boolean, Function] = useState(false)
 
   /**
    * On delete
@@ -48,7 +48,7 @@ const Delete = ({ disabled, workspace, project, swr }: IProps): JSX.Element => {
       await ProjectAPI.del(workspace, project)
 
       // Mutate workspaces
-      const index = workspace.projects.findIndex((p) => p.id === project.id)
+      const index = workspace.projects.findIndex((p) => p === project.id)
       workspace.projects = [
         ...workspace.projects.slice(0, index),
         ...workspace.projects.slice(index + 1)

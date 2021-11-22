@@ -3,9 +3,21 @@ import { useState } from 'react'
 import { Button } from 'antd'
 import { CopyOutlined } from '@ant-design/icons'
 
+import { ISimulation } from '@/database/index.d'
+import { IProjectWithData } from '@/lib/index.d'
+
 import { Error as ErrorNotification } from '@/components/assets/notification'
 
 import SimulationAPI from '@/api/simulation'
+
+interface IProps {
+  project: IProjectWithData
+  simulation: ISimulation
+  swr: {
+    mutateProject: Function
+    addOneSimulation: Function
+  }
+}
 
 /**
  * Errors (copy)
@@ -18,16 +30,16 @@ const errors = {
 /**
  * Copy simulation
  * @memberof Components.Project.Simulation
- * @param {Object} props Props `{ project, simulation, swr }`
+ * @param props Props
  */
-const Copy = ({ project, simulation, swr }) => {
+const Copy = ({ project, simulation, swr }: IProps): JSX.Element => {
   // State
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading]: [boolean, Function] = useState(false)
 
   /**
    * On copy
    */
-  const onCopy = async () => {
+  const onCopy = async (): Promise<void> => {
     setLoading(true)
     try {
       // Clear results

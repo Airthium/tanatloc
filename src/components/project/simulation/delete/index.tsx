@@ -3,10 +3,22 @@ import { useState } from 'react'
 import { Button } from 'antd'
 import { DeleteOutlined } from '@ant-design/icons'
 
+import { ISimulation } from '@/database/index.d'
+import { IProjectWithData } from '@/lib/index.d'
+
 import { DeleteDialog } from '@/components/assets/dialog'
 import { Error } from '@/components/assets/notification'
 
 import SimulationAPI from '@/api/simulation'
+
+interface IProps {
+  project: IProjectWithData
+  simulation: ISimulation
+  swr: {
+    mutateProject: Function
+    delOneSimulation: Function
+  }
+}
 
 /**
  * Errors (delete)
@@ -19,17 +31,17 @@ const errors = {
 /**
  * Delete
  * @memberof Components.Project.Simulation
- * @param {Object} props Props `{ project, simulation, swr }`
+ * @param props Props
  */
-const Delete = ({ project, simulation, swr }) => {
+const Delete = ({ project, simulation, swr }: IProps): JSX.Element => {
   // State
-  const [visible, setVisible] = useState(false)
-  const [loading, setLoading] = useState(false)
+  const [visible, setVisible]: [boolean, Function] = useState(false)
+  const [loading, setLoading]: [boolean, Function] = useState(false)
 
   /**
    * On delete
    */
-  const onDelete = async () => {
+  const onDelete = async (): Promise<void> => {
     setLoading(true)
     try {
       // API
@@ -56,11 +68,7 @@ const Delete = ({ project, simulation, swr }) => {
    */
   return (
     <>
-      <Button
-        type="danger"
-        icon={<DeleteOutlined />}
-        onClick={() => setVisible(true)}
-      >
+      <Button danger icon={<DeleteOutlined />} onClick={() => setVisible(true)}>
         Delete
       </Button>
       <DeleteDialog

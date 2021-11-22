@@ -26,15 +26,15 @@ const errors = {
 /**
  * Add workspace
  * @memberof Components.Workspace
- * @param {Object} props Props `{ visible, swr, setVisible }`
+ * @param props Props
  */
 const Add = ({ visible, swr, setVisible }: IProps): JSX.Element => {
   // Sate
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading]: [boolean, Function] = useState(false)
 
   /**
    * On confirm
-   * @param {Object} values Values
+   * @param values Values
    */
   const onOk = async (values: { name: string }): Promise<void> => {
     setLoading(true)

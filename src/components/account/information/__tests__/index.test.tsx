@@ -28,15 +28,17 @@ jest.mock('@/api/avatar', () => ({
   add: async () => mockAdd()
 }))
 
-global.FileReader = class {
-  addEventListener(_, callback) {
-    callback()
+Object.defineProperty(global, 'FileReader', {
+  value: class {
+    addEventListener(_, callback) {
+      callback()
+    }
+    readAsDataURL() {
+      // mock method
+    }
+    result = 'img'
   }
-  readAsDataURL() {
-    // mock method
-  }
-  result = 'img'
-}
+})
 
 describe('components/account/information', () => {
   const user = { email: 'email' }
@@ -69,7 +71,7 @@ describe('components/account/information', () => {
   test('with avatar', () => {
     const { unmount } = render(
       <Information
-        user={{ ...user, avatar: { type: 'Buffer', data: [] } }}
+        user={{ ...user, avatar: Buffer.from('buffer') }}
         swr={swr}
       />
     )
@@ -182,6 +184,7 @@ describe('components/account/information', () => {
     mockUpload.mockImplementation((props) => (
       <input
         role="Upload"
+        //@ts-ignore
         onClick={(e) => props.beforeUpload(e.target.files[0])}
       />
     ))
@@ -215,6 +218,7 @@ describe('components/account/information', () => {
       <input
         role="Upload"
         onClick={async (e) => {
+          //@ts-ignore
           props.onChange(JSON.parse(e.target.value))
         }}
       />

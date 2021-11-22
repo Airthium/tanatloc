@@ -23,7 +23,7 @@ const errors = {
  * @memberof Components.Account
  * @param props Props
  */
-const HPC = ({ user }: IProps) => {
+const HPC = ({ user }: IProps): JSX.Element => {
   // State
   const [list, setList]: [JSX.Element[], Function] = useState([])
 

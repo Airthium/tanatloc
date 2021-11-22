@@ -22,7 +22,7 @@ interface IProps {
 /**
  * Workspace list
  * @memberof Components.Workspace
- * @param {Object} props Props `{ user, workspace, organizations, swr }`
+ * @param props Props
  */
 const WorkspacesList = ({
   user,
@@ -31,7 +31,7 @@ const WorkspacesList = ({
   swr
 }: IProps): JSX.Element => {
   // State
-  const [add, setAdd] = useState(false)
+  const [add, setAdd]: [boolean, Function] = useState(false)
 
   // Router
   const router = useRouter()
@@ -40,10 +40,10 @@ const WorkspacesList = ({
 
   /**
    * On tab edit
-   * @param {Object} _ Unused
-   * @param {string} action Action
+   * @param _ Unused
+   * @param action Action
    */
-  const onEdit = (_: {}, action: string) => {
+  const onEdit = (_: {}, action: string): void => {
     /* istanbul ignore next */
     if (action === 'add') setAdd(true)
   }

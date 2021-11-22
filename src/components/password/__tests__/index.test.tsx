@@ -16,7 +16,7 @@ jest.mock('@/components/assets/input', () => ({
 
 const mockError = jest.fn()
 jest.mock('@/components/assets/notification', () => ({
-  Error: (title, description) => mockError(title, description)
+  Error: (title: string, description: string) => mockError(title, description)
 }))
 
 const mockLinkGet = jest.fn()

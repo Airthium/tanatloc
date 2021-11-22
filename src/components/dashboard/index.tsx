@@ -79,7 +79,7 @@ const menuItems = {
  */
 const Dashboard = () => {
   // State
-  const [currentKey, setCurrentKey] = useState('')
+  const [currentKey, setCurrentKey]: [string, Function] = useState()
 
   // Data
   const [user, { mutateUser, clearUser, errorUser, loadingUser }] =
@@ -132,7 +132,7 @@ const Dashboard = () => {
 
   /**
    * Menu selection
-   * @param {Object} data { keyPath }
+   * @param data
    */
   const onSelect = ({ keyPath }: { keyPath: string[] }): void => {
     let key = keyPath.pop()

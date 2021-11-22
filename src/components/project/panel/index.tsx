@@ -13,7 +13,7 @@ interface IProps {
 /**
  * Panel
  * @memberof Components.Project
- * @param {Object} props Props `{ visible, title, children onClose }`
+ * @param props Props
  */
 const Panel = ({ visible, title, children, onClose }: IProps): JSX.Element => {
   return (

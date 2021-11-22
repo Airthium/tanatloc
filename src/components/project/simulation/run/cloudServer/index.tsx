@@ -6,10 +6,26 @@ import { Button, Card, Modal, Space, Typography } from 'antd'
 import { CloudServerOutlined } from '@ant-design/icons'
 import merge from 'lodash.merge'
 
+import { IClientPlugin } from '@/database/index.d'
+
 import { Error as ErrorNotification } from '@/components/assets/notification'
 
 import PluginAPI from '@/api/plugin'
 import PluginsAPI from '@/api/plugins'
+
+interface IProps {
+  disabled?: boolean
+  cloudServer: {
+    name: string
+    configuration: {
+      name: {
+        value: string
+      }
+    }
+    inUseConfiguration: {}
+  }
+  onOk: Function
+}
 
 /**
  * Errors (run/cloudServer)
@@ -23,12 +39,12 @@ const errors = {
 /**
  * Cloud server
  * @memberof Components.Project.Simulation
- * @param {Object} props Props `{ disabled, cloudServer, onOk }`
+ * @param props Props `{ disabled, cloudServer, onOk }`
  */
-const CloudServer = ({ disabled, cloudServer, onOk }) => {
+const CloudServer = ({ disabled, cloudServer, onOk }: IProps): JSX.Element => {
   // State
-  const [visible, setVisible] = useState(false)
-  const [Plugins, setPlugins] = useState([])
+  const [visible, setVisible]: [boolean, Function] = useState(false)
+  const [Plugins, setPlugins]: [IClientPlugin[], Function] = useState([])
 
   // Data
   const router = useRouter()
@@ -53,16 +69,16 @@ const CloudServer = ({ disabled, cloudServer, onOk }) => {
   /**
    * Close
    */
-  const close = () => {
+  const close = (): void => {
     setVisible(false)
   }
 
   /**
    * On merge
-   * @param {Object} plugin Plugin
-   * @param {Object} diff Diff
+   * @param plugin Plugin
+   * @param diff Diff
    */
-  const onMerge = (plugin, diff) => {
+  const onMerge = (plugin: IClientPlugin, diff: IClientPlugin): void => {
     // Merge
     merge(plugin, diff)
 
@@ -107,8 +123,8 @@ const CloudServer = ({ disabled, cloudServer, onOk }) => {
               const Plugin = Plugins.find((p) => p.key === plugin.key)
               if (!Plugin) return
 
-              const Renderer = dynamic(() =>
-                import(`/plugins/${Plugin.key}/src/components`)
+              const Renderer = dynamic(
+                () => import(`/plugins/${Plugin.key}/src/components`)
               )
 
               return (

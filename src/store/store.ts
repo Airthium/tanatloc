@@ -1,14 +1,22 @@
 /** @namespace Store */
 
 import { useMemo } from 'react'
-import { createStore, applyMiddleware, combineReducers } from 'redux'
+import {
+  AnyAction,
+  Store,
+  createStore,
+  applyMiddleware,
+  combineReducers
+} from 'redux'
 import { composeWithDevTools } from 'redux-devtools-extension'
 import { persistReducer } from 'redux-persist'
 import createWebStorage from 'redux-persist/lib/storage/createWebStorage'
 
-import select, { selectInitialState } from './select/reducer'
+import select, { selectInitialState, SelectState } from './select/reducer'
 
-let store
+let store: Store<{
+  select: SelectState
+}>
 
 /**
  * Global initial store
@@ -32,19 +40,22 @@ const combinedReducers = combineReducers({
  * @param {Object} state Redux state
  * @param {Object} action Redux action
  */
-const reducer = (state = globalInitialState, action) => {
+const reducer = (
+  state: { select: SelectState } = globalInitialState,
+  action?: AnyAction
+) => {
   return combinedReducers(state, action)
 }
 
 // PERSIST
 const createNoopStorage = () => ({
-  getItem(_key) {
+  getItem(_key: string) {
     return Promise.resolve(null)
   },
-  setItem(_key, value) {
+  setItem(_key: string, value: any) {
     return Promise.resolve(value)
   },
-  removeItem(_key) {
+  removeItem(_key: string) {
     return Promise.resolve()
   }
 })
@@ -67,7 +78,10 @@ const persistedReducer = persistReducer(persistConfig, reducer)
  * @memberof Store
  * @param {Object} initialState Initial store
  */
-const makeStore = (initialState = globalInitialState) => {
+const makeStore = (initialState: {
+  select: SelectState
+  _persist: { version: number; rehydrated: boolean }
+}) => {
   return createStore(
     persistedReducer,
     initialState,

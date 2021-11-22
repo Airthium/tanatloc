@@ -16,7 +16,7 @@ jest.mock('../../add', () => () => <div />)
 describe('components/workspace/list', () => {
   const user = { id: 'id' }
   const workspaces = [{ id: 'id' }]
-  const organizations = [{}]
+  const organizations = [{ id: 'id' }]
   const swr = {
     addOneWorkspace: jest.fn(),
     mutateOneWorkspace: jest.fn(),

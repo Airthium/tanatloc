@@ -19,7 +19,7 @@ jest.mock('@/api/project', () => ({
 }))
 
 describe('components/project/delete', () => {
-  const workspace = { projects: [{ id: 'id' }] }
+  const workspace = { id: 'id', projects: ['id'] }
   const project = { id: 'id', title: 'title' }
   const swr = { mutateOneWorkspace: jest.fn(), delOneProject: jest.fn() }
 

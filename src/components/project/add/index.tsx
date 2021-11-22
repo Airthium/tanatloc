@@ -10,14 +10,6 @@ import ProjectAPI from '@/api/project'
 
 import { IWorkspaceWithData } from '@/lib'
 
-/**
- * Errors (add)
- * @memberof Components.Project
- */
-const errors = {
-  addError: 'Unable to add a project'
-}
-
 interface IProps {
   workspace: IWorkspaceWithData
   swr: {
@@ -27,14 +19,22 @@ interface IProps {
 }
 
 /**
+ * Errors (add)
+ * @memberof Components.Project
+ */
+const errors = {
+  addError: 'Unable to add a project'
+}
+
+/**
  * Add project
  * @memberof Components.Project
  * @param {Object} props Props `{ workspace, swr }`
  */
 const Add = ({ workspace, swr }: IProps): JSX.Element => {
   // State
-  const [visible, setVisible] = useState(false)
-  const [loading, setLoading] = useState(false)
+  const [visible, setVisible]: [boolean, Function] = useState(false)
+  const [loading, setLoading]: [boolean, Function] = useState(false)
 
   /**
    * On add

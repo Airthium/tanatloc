@@ -2,9 +2,40 @@ import PropTypes from 'prop-types'
 import { useState } from 'react'
 import { Button } from 'antd'
 
+import { ISimulation } from '@/database/index.d'
+
 import { Error } from '@/components/assets/notification'
 
 import SimulationAPI from '@/api/simulation'
+
+interface IProps {
+  disabled?: boolean
+  simulation: ISimulation
+  boundaryCondition: {
+    uuid: string
+    type: {
+      key: string
+    }
+    selected: {}[]
+  }
+  oldBoundaryCondition: {
+    uuid: string
+    type: {
+      key: string
+    }
+  }
+  geometry: {
+    faces: {
+      uuid: string
+      number: number
+    }[]
+  }
+  swr: {
+    mutateOneSimulation: Function
+  }
+
+  close: Function
+}
 
 /**
  * Errors (edit)
@@ -17,7 +48,7 @@ const errors = {
 /**
  * Edit boundary condition
  * @memberof Components.Project.Simulation.BoundaryConditions
- * @param {Object} props Props `{ disabled, simulation, boundaryCondition, oldBoundaryCondition, geometry, swr, close }`
+ * @param props Props
  */
 const Edit = ({
   disabled,
@@ -27,14 +58,14 @@ const Edit = ({
   geometry,
   swr,
   close
-}) => {
+}: IProps): JSX.Element => {
   // State
-  const [loading, setLoading] = useState()
+  const [loading, setLoading]: [boolean, Function] = useState(false)
 
   /**
    * On edit
    */
-  const onEdit = async () => {
+  const onEdit = async (): Promise<void> => {
     setLoading(true)
 
     try {
@@ -51,7 +82,7 @@ const Edit = ({
 
       if (oldType !== type) {
         const index = boundaryConditions[oldType].values.findIndex(
-          (b) => b.uuid === oldBoundaryCondition.uuid
+          (b: { uuid: string }) => b.uuid === oldBoundaryCondition.uuid
         )
         boundaryConditions[oldType].values = [
           ...boundaryConditions[oldType].values.slice(0, index),
@@ -79,7 +110,7 @@ const Edit = ({
         ]
       } else {
         const index = boundaryConditions[type].values.findIndex(
-          (b) => b.uuid === boundaryCondition.uuid
+          (b: { uuid: string }) => b.uuid === boundaryCondition.uuid
         )
         boundaryConditions[type].values = [
           ...boundaryConditions[type].values.slice(0, index),

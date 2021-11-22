@@ -31,7 +31,7 @@ const errors = {
  * @memberof Components.Account
  * @param props Props
  */
-const Password = ({ user }: IProps) => {
+const Password = ({ user }: IProps): JSX.Element => {
   // State
   const [loading, setLoading]: [boolean, Function] = useState(false)
 

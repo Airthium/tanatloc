@@ -29,7 +29,14 @@ jest.mock('@/api/simulation', () => ({
 
 describe('components/project/simulation/boundaryConditions/delete', () => {
   const simulation = {
+    id: 'id',
     scheme: {
+      category: 'category',
+      name: 'name',
+      algorithm: 'algorithm',
+      code: 'code',
+      version: 'version',
+      description: 'description',
       configuration: {
         boundaryConditions: {
           index: 3,

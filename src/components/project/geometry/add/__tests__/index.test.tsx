@@ -19,15 +19,17 @@ jest.mock('@/api/geometry', () => ({
   add: async () => mockAdd()
 }))
 
-global.FileReader = class {
-  addEventListener(_, callback) {
-    callback()
+Object.defineProperty(global, 'FileReader', {
+  value: class {
+    addEventListener(_, callback) {
+      callback()
+    }
+    readAsBufferArray() {
+      // mock method
+    }
+    result = 'buffer'
   }
-  readAsBufferArray() {
-    // mock method
-  }
-  result = 'buffer'
-}
+})
 
 describe('components/project/geometry/add', () => {
   const visible = true
@@ -89,6 +91,7 @@ describe('components/project/geometry/add', () => {
     mockUpload.mockImplementation((props) => (
       <input
         role="Upload"
+        //@ts-ignore
         onClick={(e) => props.beforeUpload(e.target.files[0])}
       />
     ))
@@ -121,6 +124,7 @@ describe('components/project/geometry/add', () => {
     mockUpload.mockImplementation((props) => (
       <input
         role="Upload"
+        //@ts-ignore
         onClick={(e) => props.onChange(JSON.parse(e.target.value))}
       />
     ))
@@ -163,6 +167,7 @@ describe('components/project/geometry/add', () => {
     mockUpload.mockImplementation((props) => (
       <input
         role="Upload"
+        //@ts-ignore
         onClick={(e) => props.onChange(JSON.parse(e.target.value))}
       />
     ))

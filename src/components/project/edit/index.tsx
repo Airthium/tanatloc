@@ -29,16 +29,16 @@ const errors = {
 /**
  * Edit project
  * @memberof Components.Project
- * @param {Object} props Props `{ disabled, project, swr }`
+ * @param props Props
  */
 const Edit = ({ disabled, project, swr }: IProps): JSX.Element => {
   // State
-  const [visible, setVisible] = useState(false)
-  const [loading, setLoading] = useState(false)
+  const [visible, setVisible]: [boolean, Function] = useState(false)
+  const [loading, setLoading]: [boolean, Function] = useState(false)
 
   /**
    * On edit
-   * @param {Object} values Values
+   * @param values Values
    */
   const onEdit = async (values: {
     title: string

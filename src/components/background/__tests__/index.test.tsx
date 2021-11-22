@@ -1,31 +1,33 @@
 import React from 'react'
-import { fireEvent, render, screen } from '@testing-library/react'
+import { render } from '@testing-library/react'
 
 import Background from '@/components/background'
 
 let mockAnimationCount = 0
-window.requestAnimationFrame = (callback) => {
-  mockAnimationCount++
-  if (mockAnimationCount === 1) callback()
-}
+Object.defineProperty(window, 'requestAnimationFrame', {
+  value: (callback: Function) => {
+    mockAnimationCount++
+    if (mockAnimationCount === 1) callback()
+  }
+})
 
 global.MockScene.children = [
   {
     rotation: {},
     geometry: {
-      dispose: () => {}
+      dispose: jest.fn
     },
     material: {
-      dispose: () => {}
+      dispose: jest.fn
     }
   },
   {
     rotation: {},
     geometry: {
-      dispose: () => {}
+      dispose: jest.fn
     },
     material: {
-      dispose: () => {}
+      dispose: jest.fn
     }
   }
 ]
@@ -45,7 +47,7 @@ describe('components/background', () => {
   })
 
   test('pixelRatio', () => {
-    window.devicePixelRatio = undefined
+    Object.defineProperty(window, 'devicePixelRatio', { value: undefined })
     const { unmount } = render(<Background />)
 
     unmount()

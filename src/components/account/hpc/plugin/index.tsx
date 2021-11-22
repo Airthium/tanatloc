@@ -30,7 +30,7 @@ const errors = {
  * @memberof Components.Account.HPC.Plugin
  * @param props Props
  */
-const Plugin = ({ plugin }: IProps) => {
+const Plugin = ({ plugin }: IProps): JSX.Element => {
   // Data
   const [
     plugins,

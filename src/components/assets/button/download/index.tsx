@@ -6,7 +6,7 @@ import { ReactChild } from 'react'
 interface IProps {
   disabled?: boolean
   loading?: boolean
-  children: ReactChild | ReactChild[]
+  children?: ReactChild | ReactChild[]
   onDownload: Function
 }
 

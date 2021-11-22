@@ -8,7 +8,7 @@ jest.mock('@/components/assets/dialog', () => (props) => mockDialog(props))
 
 describe('components/project/geometry/edit', () => {
   const visible = true
-  const geometry = { name: 'name' }
+  const geometry = { id: 'id', name: 'name' }
   const setVisible = jest.fn()
   const onEdit = jest.fn()
 

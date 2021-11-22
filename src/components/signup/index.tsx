@@ -40,9 +40,9 @@ const errors = {
  */
 const Signup = (): JSX.Element => {
   // State
-  const [checking, setChecking] = useState(false)
-  const [signupErr, setSignupErr] = useState(false)
-  const [internalErr, setInternalError] = useState(false)
+  const [checking, setChecking]: [boolean, Function] = useState(false)
+  const [signupErr, setSignupErr]: [boolean, Function] = useState(false)
+  const [internalErr, setInternalError]: [boolean, Function] = useState(false)
 
   // Data
   const [user, { errorUser, loadingUser }] = UserAPI.useUser()
@@ -70,12 +70,9 @@ const Signup = (): JSX.Element => {
 
   /**
    * Handle signup
-   * @param {Object} values { email, password }
+   * @param values
    */
-  const onSignup = async ({
-    email,
-    password
-  }: {
+  const onSignup = async (values: {
     email: string
     password: string
   }): Promise<void> => {
@@ -86,7 +83,7 @@ const Signup = (): JSX.Element => {
 
     // Signup
     try {
-      const newUser = await UserAPI.add({ email, password })
+      const newUser = await UserAPI.add(values)
       if (newUser.alreadyExists) {
         setSignupErr(true)
         setChecking(false)

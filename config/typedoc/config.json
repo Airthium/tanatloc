@@ -6,7 +6,7 @@
     "**/app/**",
     "**/config/jest/**",
     "**/config/jsdoc/**",
-    "**/config/sentry/**",
+    "**/config/sentry.js",
     "**/coverage/**",
     "**/dist/**",
     "**/dist-server/**",

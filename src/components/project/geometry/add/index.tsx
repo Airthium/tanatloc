@@ -1,12 +1,25 @@
 import PropTypes from 'prop-types'
 import { useState } from 'react'
 import { Space, Typography, Upload } from 'antd'
+import { UploadChangeParam } from 'antd/lib/upload'
 import { LoadingOutlined, UploadOutlined } from '@ant-design/icons'
+
+import { IProjectWithData } from '@/lib/index.d'
 
 import Dialog from '@/components/assets/dialog'
 import { Error as ErrorNotification } from '@/components/assets/notification'
 
 import GeometryAPI from '@/api/geometry'
+
+interface IProps {
+  visible: boolean
+  project: IProjectWithData
+  swr: {
+    mutateProject: Function
+    addOneGeometry: Function
+  }
+  setVisible: Function
+}
 
 /**
  * Errors (add)
@@ -19,17 +32,17 @@ const errors = {
 /**
  * Add
  * @memberof Components.Project.Geometry
- * @param {Objecy} props Props `{ visible, project, swr, setVisible }`
+ * @param props Props
  */
-const Add = ({ visible, project, swr, setVisible }) => {
+const Add = ({ visible, project, swr, setVisible }: IProps): JSX.Element => {
   // State
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading]: [boolean, Function] = useState(false)
 
   /**
    * Upload check
-   * @param {Object} file File
+   * @param file File
    */
-  const beforeUpload = (file) => {
+  const beforeUpload = (file: { name: string }): boolean => {
     return (
       file.name.toLowerCase().includes('.stp') ||
       file.name.toLowerCase().includes('.step') ||
@@ -39,9 +52,9 @@ const Add = ({ visible, project, swr, setVisible }) => {
 
   /**
    * On upload
-   * @param {object} info Info
+   * @param info Info
    */
-  const onUpload = async (info) => {
+  const onUpload = async (info: UploadChangeParam<any>): Promise<void> => {
     if (info.file.status === 'uploading') setLoading(true)
 
     if (info.file.status === 'done') {
@@ -75,9 +88,9 @@ const Add = ({ visible, project, swr, setVisible }) => {
 
   /**
    * Get file
-   * @param {Object} file File
+   * @param file File
    */
-  const getFile = async (file) => {
+  const getFile = async (file: Blob): Promise<any> => {
     const reader = new FileReader()
     return new Promise((resolve) => {
       reader.addEventListener('load', () => {
@@ -92,7 +105,6 @@ const Add = ({ visible, project, swr, setVisible }) => {
       title="Upload geometry"
       visible={visible}
       onCancel={() => setVisible(false)}
-      okButtonProps={{ style: { display: 'none' } }}
     >
       <Space direction="vertical" style={{ width: '100%' }}>
         <Typography.Title level={5}>

@@ -28,7 +28,7 @@ const errors = {
  * @memberof Components.Account
  * @param props Props
  */
-const Delete = ({ swr }: IProps) => {
+const Delete = ({ swr }: IProps): JSX.Element => {
   // State
   const [visible, setVisible]: [boolean, Function] = useState(false)
   const [loading, setLoading]: [boolean, Function] = useState(false)

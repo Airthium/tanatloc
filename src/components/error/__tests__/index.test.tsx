@@ -26,8 +26,8 @@ describe('components/error', () => {
   test('getInitialProps', () => {
     let code
 
-    const res = {}
-    const err = {}
+    const res: { statusCode?: number } = {}
+    const err: { statusCode?: number } = {}
     code = Error.getInitialProps({ res, err })
     expect(code).toEqual({ statusCode: undefined })
 

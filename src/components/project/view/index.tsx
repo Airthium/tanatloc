@@ -62,6 +62,7 @@ import ResultAPI from '@/api/result'
 
 import { useSelector, useDispatch } from 'react-redux'
 import { highlight, select, unselect } from '@/store/select/action'
+import { SelectState } from '@/store/select/reducer'
 
 /**
  * Errors
@@ -103,7 +104,7 @@ const ThreeView = ({ loading, project, part }) => {
     selectPart,
     selectHighlighted,
     selectSelected
-  } = useSelector((state) => ({
+  } = useSelector((state: { select: SelectState }) => ({
     selectEnabled: state.select.enabled,
     selectType: state.select.type,
     selectPart: state.select.part,

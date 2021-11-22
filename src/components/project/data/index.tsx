@@ -13,13 +13,20 @@ import {
   LineChart,
   Line,
   ResponsiveContainer,
+  Tooltip as ReTooltip,
   XAxis,
   YAxis
 } from 'recharts'
 
+import { ISimulation } from '@/database/index.d'
+
 import Utils from '@/lib/utils'
 
 import SimulationAPI from '@/api/simulation'
+
+interface IProps {
+  simulation: ISimulation
+}
 
 /**
  * Camelize
@@ -27,7 +34,7 @@ import SimulationAPI from '@/api/simulation'
  * @param {string} str String
  * @returns {string} Camelized string
  */
-const camelize = (str) => {
+const camelize = (str: string): string => {
   return str.replace(/\W+(.)/g, (_, chr) => {
     return chr.toUpperCase()
   })
@@ -38,14 +45,20 @@ const camelize = (str) => {
  * @memberof Components.Project.Data
  * @param {Object} props Props `{ simulation }`
  */
-const Data = ({ simulation }) => {
+const Data = ({ simulation }: IProps): JSX.Element => {
   // State
-  const [visible, setVisible] = useState(false)
-  const [infos, setInfos] = useState()
-  const [table, setTable] = useState()
-  const [columnSelection, setColumnSelection] = useState([])
-  const [plot, setPlot] = useState()
-  const [downloading, setDownloading] = useState(false)
+  const [visible, setVisible]: [boolean, Function] = useState(false)
+  const [infos, setInfos]: [
+    { names: string[]; camelNames: string[] },
+    Function
+  ] = useState()
+  const [table, setTable]: [{ columns; data }, Function] = useState()
+  const [columnSelection, setColumnSelection]: [
+    { checked: boolean }[],
+    Function
+  ] = useState([])
+  const [plot, setPlot]: [{ data; min; max; lines }, Function] = useState()
+  const [downloading, setDownloading]: [boolean, Function] = useState(false)
 
   // Data
   const [currentSimulation] = SimulationAPI.useSimulation(simulation?.id)
@@ -73,7 +86,12 @@ const Data = ({ simulation }) => {
 
       const camelNames = names.map((n) => camelize(n))
 
-      const tableColumns = names.map((n, index) => ({
+      const tableColumns: {
+        align?: string
+        title: string | JSX.Element
+        dataIndex: string
+        key: string
+      }[] = names.map((n, index) => ({
         align: 'center',
         title: (
           <Space>
@@ -292,7 +310,7 @@ const Data = ({ simulation }) => {
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey={'x'} />
                 <YAxis domain={[plot?.min, plot?.max]} />
-                <Tooltip />
+                <ReTooltip />
                 <Legend />
                 {plot?.lines}
               </LineChart>

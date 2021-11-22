@@ -2,12 +2,26 @@ import PropTypes from 'prop-types'
 import { Card, Layout, Space, Spin, Typography } from 'antd'
 import { MathJax } from 'better-react-mathjax'
 
+import { ISimulation } from '@/database/index.d'
+import { IProjectWithData } from '@/lib/index.d'
+
 import { Error as ErrorNotification } from '@/components/assets/notification'
 
 import Copy from '../copy'
 import Delete from '../delete'
 
 import SimulationAPI from '@/api/simulation'
+
+interface IProps {
+  project: IProjectWithData
+  simulation: ISimulation
+  swr: {
+    mutateProject: Function
+    addOneSimulation: Function
+    delOneSimulation: Function
+    mutateOneSimulation: Function
+  }
+}
 
 /**
  * Errors (about)
@@ -22,12 +36,12 @@ const errors = {
  * @memberof Components.Project.Simulation
  * @param {Object} props Props `{ project, simulation, swr }`
  */
-const About = ({ project, simulation, swr }) => {
+const About = ({ project, simulation, swr }: IProps): JSX.Element => {
   /**
    * Handle name
    * @param {string} name Name
    */
-  const handleName = async (name) => {
+  const handleName = async (name: string): Promise<void> => {
     try {
       // API
       await SimulationAPI.update({ id: simulation.id }, [

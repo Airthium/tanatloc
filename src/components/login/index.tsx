@@ -37,9 +37,9 @@ const errors = {
  */
 const Login = (): JSX.Element => {
   // State
-  const [checking, setChecking] = useState(false)
-  const [loginErr, setLoginErr] = useState(false)
-  const [internalErr, setInternalErr] = useState(false)
+  const [checking, setChecking]: [boolean, Function] = useState(false)
+  const [loginErr, setLoginErr]: [boolean, Function] = useState(false)
+  const [internalErr, setInternalErr]: [boolean, Function] = useState(false)
 
   // Data
   const [user, { mutateUser, errorUser, loadingUser }] = UserAPI.useUser()
@@ -65,7 +65,7 @@ const Login = (): JSX.Element => {
 
   /**
    * Handle login
-   * @param {Object} values Values { email, password }
+   * @param values
    */
   const onLogin = async (values: {
     email: string

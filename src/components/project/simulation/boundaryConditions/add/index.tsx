@@ -3,9 +3,30 @@ import { useState } from 'react'
 import { v4 as uuid } from 'uuid'
 import { Button } from 'antd'
 
+import { IGeometry, ISimulation } from '@/database/index.d'
+
 import { Error } from '@/components/assets/notification'
 
 import SimulationAPI from '@/api/simulation'
+
+interface IProps {
+  disabled?: boolean
+  simulation: ISimulation
+  boundaryCondition: {
+    uuid: string
+    type: {
+      key: string
+    }
+    selected: {}[]
+  }
+  geometry: {
+    faces: { uuid: string; number: number }[]
+  }
+  swr: {
+    mutateOneSimulation: Function
+  }
+  close: Function
+}
 
 /**
  * Errors (add)
@@ -18,7 +39,7 @@ const errors = {
 /**
  * Add boundary condition
  * @memberof Components.Project.Simulation.BoundaryConditions
- * @param {Object} props Props `{ disabled, simulation, boundaryCondition, geometry, swr, close }`
+ * @param props Props
  */
 const Add = ({
   disabled,
@@ -27,9 +48,9 @@ const Add = ({
   geometry,
   swr,
   close
-}) => {
+}: IProps): JSX.Element => {
   // State
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading]: [boolean, Function] = useState(false)
 
   /**
    * on Add

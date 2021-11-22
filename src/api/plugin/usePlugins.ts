@@ -2,7 +2,7 @@ import useSWR from 'swr'
 
 import { fetcher } from '@/api/call'
 
-import { IPlugin } from '@/database/index.d'
+import { IClientPlugin } from '@/database/index.d'
 
 /**
  * Uses plugins
@@ -10,12 +10,12 @@ import { IPlugin } from '@/database/index.d'
  * @returns Plugins
  */
 export const usePlugins = (): [
-  IPlugin[],
+  IClientPlugin[],
   {
-    mutatePlugins: (data: { plugins: IPlugin[] }) => void
-    addOnePlugin: (plugin: IPlugin) => void
-    delOnePlugin: (plugin: IPlugin) => void
-    mutateOnePlugin: (plugin: IPlugin) => void
+    mutatePlugins: (data: { plugins: IClientPlugin[] }) => void
+    addOnePlugin: (plugin: IClientPlugin) => void
+    delOnePlugin: (plugin: IClientPlugin) => void
+    mutateOnePlugin: (plugin: IClientPlugin) => void
     errorPlugins: Error
     loadingPlugins: boolean
   }
@@ -24,17 +24,17 @@ export const usePlugins = (): [
   const loading = !data
   const plugins = data?.plugins || []
 
-  const addOne = (plugin: IPlugin) => {
+  const addOne = (plugin: IClientPlugin) => {
     const newPlugins = [...plugins, plugin]
     mutate({ plugins: newPlugins })
   }
 
-  const delOne = (plugin: IPlugin) => {
+  const delOne = (plugin: IClientPlugin) => {
     const filteredPlugins = plugins.filter((p) => p.key !== plugin.key)
     mutate({ plugins: filteredPlugins })
   }
 
-  const mutateOne = (plugin: IPlugin) => {
+  const mutateOne = (plugin: IClientPlugin) => {
     const mutatedPlugin = plugins.map((p) => {
       if (p.key === plugin.key) p = { ...p, ...plugin }
       return p

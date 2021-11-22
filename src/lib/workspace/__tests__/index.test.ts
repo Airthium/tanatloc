@@ -174,7 +174,7 @@ describe('lib/workspace', () => {
     expect(mockGet).toHaveBeenCalledTimes(6)
     expect(mockUpdate).toHaveBeenCalledTimes(0)
     expect(mockDelete).toHaveBeenCalledTimes(0)
-    expect(mockUserGet).toHaveBeenCalledTimes(3)
+    expect(mockUserGet).toHaveBeenCalledTimes(5)
     expect(mockUserUpdate).toHaveBeenCalledTimes(0)
     expect(mockDelProject).toHaveBeenCalledTimes(0)
 
@@ -185,7 +185,7 @@ describe('lib/workspace', () => {
     expect(mockGet).toHaveBeenCalledTimes(8)
     expect(mockUpdate).toHaveBeenCalledTimes(0)
     expect(mockDelete).toHaveBeenCalledTimes(0)
-    expect(mockUserGet).toHaveBeenCalledTimes(4)
+    expect(mockUserGet).toHaveBeenCalledTimes(8)
     expect(mockUserUpdate).toHaveBeenCalledTimes(0)
     expect(mockDelProject).toHaveBeenCalledTimes(0)
 
@@ -197,7 +197,7 @@ describe('lib/workspace', () => {
     expect(mockGet).toHaveBeenCalledTimes(10)
     expect(mockUpdate).toHaveBeenCalledTimes(0)
     expect(mockDelete).toHaveBeenCalledTimes(0)
-    expect(mockUserGet).toHaveBeenCalledTimes(5)
+    expect(mockUserGet).toHaveBeenCalledTimes(11)
     expect(mockUserUpdate).toHaveBeenCalledTimes(0)
     expect(mockDelProject).toHaveBeenCalledTimes(0)
 
@@ -209,7 +209,7 @@ describe('lib/workspace', () => {
     expect(mockGet).toHaveBeenCalledTimes(10)
     expect(mockUpdate).toHaveBeenCalledTimes(0)
     expect(mockDelete).toHaveBeenCalledTimes(0)
-    expect(mockUserGet).toHaveBeenCalledTimes(6)
+    expect(mockUserGet).toHaveBeenCalledTimes(12)
     expect(mockUserUpdate).toHaveBeenCalledTimes(0)
     expect(mockDelProject).toHaveBeenCalledTimes(0)
   })

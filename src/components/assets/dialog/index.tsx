@@ -1,7 +1,7 @@
 /** @namespace Components.Assets.Dialog */
 
 import PropTypes from 'prop-types'
-import { ReactChild, useEffect } from 'react'
+import { CSSProperties, ReactChild, useEffect } from 'react'
 import { Form, Modal } from 'antd'
 
 import { BaseButtonProps } from 'antd/lib/button/button'

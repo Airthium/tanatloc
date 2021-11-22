@@ -35,9 +35,11 @@ const errors = {
  */
 const PasswordRecovery = (): JSX.Element => {
   // State
-  const [checking, setChecking] = useState(true)
-  const [linkEmail, setLinkEmail] = useState('')
-  const [loading, setLoading] = useState(false)
+  const [checking, setChecking]: [boolean, Function] = useState(true)
+  const [linkEmail, setLinkEmail]: [string, Function] = useState()
+  const [loading, setLoading]: [boolean, Function] = useState(false)
+
+  // Data
   const router = useRouter()
 
   // Id
@@ -61,7 +63,7 @@ const PasswordRecovery = (): JSX.Element => {
 
   /**
    * On finish
-   * @param {Object} values Values { email, password, ... }
+   * @param values Values
    */
   const onFinish = async (values: {
     email: string

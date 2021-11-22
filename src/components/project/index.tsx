@@ -13,6 +13,8 @@ import Icon, {
 } from '@ant-design/icons'
 import Geometries from '/public/icons/geometries'
 
+import { IGeometry, ISimulation, ISimulationScheme } from '@/database/index.d'
+
 import { GoBack } from '@/components/assets/button'
 import { Error as ErrorNotification } from '@/components/assets/notification'
 
@@ -66,18 +68,23 @@ const Project = (): JSX.Element => {
   }: { page?: string; workspaceId?: string; projectId?: string } = router.query
 
   // State
-  const [geometryAdd, setGeometryAdd] = useState(false)
-  const [currentGeometry, setCurrentGeometry] = useState()
-  const [geometryVisible, setGeometryVisible] = useState(false)
+  const [geometryAdd, setGeometryAdd]: [boolean, Function] = useState(false)
+  const [currentGeometry, setCurrentGeometry]: [IGeometry, Function] =
+    useState()
+  const [geometryVisible, setGeometryVisible]: [boolean, Function] =
+    useState(false)
 
-  const [simulationSelector, setSimulationSelector] = useState(false)
-  const [currentSimulation, setCurrentSimulation] = useState()
-  const [currentSimulationType, setCurrentSimulationType] = useState()
+  const [simulationSelector, setSimulationSelector]: [boolean, Function] =
+    useState(false)
+  const [currentSimulation, setCurrentSimulation]: [ISimulation, Function] =
+    useState()
+  const [currentSimulationType, setCurrentSimulationType]: [string, Function] =
+    useState()
 
   const [currentResult, setCurrentResult] = useState()
 
-  const [panelVisible, setPanelVisible] = useState(false)
-  const [panelTitle, setPanelTitle] = useState()
+  const [panelVisible, setPanelVisible]: [boolean, Function] = useState(false)
+  const [panelTitle, setPanelTitle]: [string, Function] = useState()
 
   // Data
   const [user, { errorUser, loadingUser }] = UserAPI.useUser()
@@ -170,9 +177,9 @@ const Project = (): JSX.Element => {
 
   /**
    * On menu click
-   * @param {Object} data Data { key }
+   * @param data Data
    */
-  const onMenuClick = ({ keyPath }) => {
+  const onMenuClick = ({ keyPath }: { keyPath: string[] }): void => {
     const key = keyPath.pop()
     const subKey = keyPath.pop()
 
@@ -188,14 +195,14 @@ const Project = (): JSX.Element => {
   /**
    * Add geometry
    */
-  const addGeometry = () => {
+  const addGeometry = (): void => {
     setGeometryAdd(true)
   }
 
   /**
    * Add simulation
    */
-  const addSimulation = () => {
+  const addSimulation = (): void => {
     setSimulationSelector(true)
   }
 
@@ -203,7 +210,7 @@ const Project = (): JSX.Element => {
    * On selector ok
    * @param {Object} scheme Simulation scheme
    */
-  const onSelectorOk = async (scheme) => {
+  const onSelectorOk = async (scheme: ISimulationScheme): Promise<void> => {
     try {
       // Add
       const simulation = await SimulationAPI.add(
@@ -227,14 +234,14 @@ const Project = (): JSX.Element => {
   /**
    * On selector cancel
    */
-  const onSelectorCancel = () => {
+  const onSelectorCancel = (): void => {
     setSimulationSelector(false)
   }
 
   /**
    * On panel close
    */
-  const onPanelClose = () => {
+  const onPanelClose = (): void => {
     setPanelVisible(false)
     setPanelTitle()
 
@@ -246,9 +253,9 @@ const Project = (): JSX.Element => {
 
   /**
    * Select geometry
-   * @param {string} id Id
+   * @param id Id
    */
-  const selectGeometry = (id) => {
+  const selectGeometry = (id: string): void => {
     onPanelClose()
     setCurrentResult()
 
@@ -263,10 +270,10 @@ const Project = (): JSX.Element => {
 
   /**
    * Select simulation
-   * @param {string} id Id
-   * @param {string} type Type
+   * @param id Id
+   * @param type Type
    */
-  const selectSimulation = (id, type) => {
+  const selectSimulation = (id: string, type: string): void => {
     onPanelClose()
 
     if (currentSimulation && currentSimulation.id !== id) setCurrentResult()

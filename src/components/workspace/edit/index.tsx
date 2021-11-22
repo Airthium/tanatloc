@@ -29,16 +29,16 @@ const errors = {
 /**
  * Edit workspace
  * @memberof Components.Workspace
- * @param {Object} props Props `{ workspace, swr }`
+ * @param props Props
  */
 const Edit = ({ workspace, swr }: IProps): JSX.Element => {
   // Sate
-  const [visible, setVisible] = useState(false)
-  const [loading, setLoading] = useState(false)
+  const [visible, setVisible]: [boolean, Function] = useState(false)
+  const [loading, setLoading]: [boolean, Function] = useState(false)
 
   /**
    * On edit
-   * @param {Object} values Values
+   * @param values Values
    */
   const onEdit = async (values: { name: string }): Promise<void> => {
     setLoading(true)

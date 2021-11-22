@@ -139,7 +139,7 @@ const getByUser = async ({
   if (user.workspaces) {
     const localWorkspaces = await Promise.all(
       user.workspaces.map(async (workspace) => {
-        const data = await get(workspace, [
+        const data = await getWithData(workspace, [
           'name',
           'owners',
           'users',

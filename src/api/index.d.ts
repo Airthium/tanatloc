@@ -1,5 +1,5 @@
 import { ISimulation } from '@/database/index.d'
-import { IGeometry, IPlugin, ISystem } from '@/database/index.d'
+import { IGeometry, IClientPlugin, ISystem } from '@/database/index.d'
 import {
   IGroupWithData,
   IOrganizationWithData,
@@ -11,7 +11,7 @@ import {
 export interface IFetchResponse {
   geometries?: IGeometry[]
   groups?: IGroupWithData[]
-  plugins?: IPlugin[]
+  plugins?: IClientPlugin[]
   organizations?: IOrganizationWithData[]
   project?: IProjectWithData
   projects?: IProjectWithData[]

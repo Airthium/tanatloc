@@ -26,7 +26,7 @@ interface IProps {
     mutateOneWorkspace?: Function
     mutateOneProject?: Function
   }
-  style: CSSProperties & {
+  style?: CSSProperties & {
     buttonType: 'link' | 'text' | 'ghost' | 'default' | 'primary' | 'dashed'
   }
 }

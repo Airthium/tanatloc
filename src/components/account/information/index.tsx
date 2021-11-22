@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types'
 import { useState } from 'react'
 import { Avatar, Button, Card, Form, Space, Typography, Upload } from 'antd'
+import { UploadChangeParam } from 'antd/lib/upload'
 import { UploadOutlined, UserOutlined } from '@ant-design/icons'
 
 import { IUserWithData } from '@/lib/index.d'
@@ -14,7 +15,6 @@ import Utils from '@/lib/utils'
 
 import UserAPI from '@/api/user'
 import AvatarAPI from '@/api/avatar'
-import { UploadChangeParam } from 'antd/lib/upload'
 
 interface IProps {
   user: IUserWithData
@@ -38,7 +38,7 @@ const errors = {
  * @memberof Components.Account
  * @param props Props
  */
-const Information = ({ user, swr }: IProps) => {
+const Information = ({ user, swr }: IProps): JSX.Element => {
   // State
   const [uploading, setUploading]: [boolean, Function] = useState(false)
 

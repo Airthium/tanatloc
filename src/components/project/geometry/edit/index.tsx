@@ -2,22 +2,36 @@ import PropTypes from 'prop-types'
 import { useState } from 'react'
 import { Form, Input } from 'antd'
 
+import { IGeometry } from '@/database/index.d'
+
 import Dialog from '@/components/assets/dialog'
+
+interface IProps {
+  visible: boolean
+  geometry: IGeometry
+  setVisible: Function
+  onEdit: Function
+}
 
 /**
  * Edit
  * @memberof Components.Project.Geometry
  * @param {Object} props Props `{ visible, geometry, setVisible, onEdit }`
  */
-const Edit = ({ visible, geometry, setVisible, onEdit }) => {
+const Edit = ({
+  visible,
+  geometry,
+  setVisible,
+  onEdit
+}: IProps): JSX.Element => {
   // State
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading]: [boolean, Function] = useState(false)
 
   /**
    * On ok
    * @param {Object} values Values
    */
-  const onOk = async (values) => {
+  const onOk = async (values: { name: string }): Promise<void> => {
     setLoading(true)
 
     await onEdit({ name: values.name })
@@ -52,6 +66,7 @@ const Edit = ({ visible, geometry, setVisible, onEdit }) => {
 Edit.propTypes = {
   visible: PropTypes.bool.isRequired,
   geometry: PropTypes.exact({
+    id: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired
   }).isRequired,
   setVisible: PropTypes.func.isRequired,

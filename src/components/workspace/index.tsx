@@ -1,10 +1,14 @@
 /** @namespace Components.Workspace */
 
 import PropTypes from 'prop-types'
-import { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Avatar, Input, Layout, PageHeader, Space } from 'antd'
 
-import { IOrganizationWithData, IWorkspaceWithData } from '@/lib/index.d'
+import {
+  IOrganizationWithData,
+  IUserWithData,
+  IWorkspaceWithData
+} from '@/lib/index.d'
 
 import Share from '@/components/assets/share'
 import { Error as ErrorNotification } from '@/components/assets/notification'
@@ -22,7 +26,7 @@ import ProjectAPI from '@/api/project'
 
 interface IProps {
   loading: boolean
-  user: {}
+  user: IUserWithData
   page: string
   workspace: IWorkspaceWithData
   organizations: IOrganizationWithData[]
@@ -44,7 +48,7 @@ const errors = {
 /**
  * Workspace
  * @memberof Components.Workspace
- * @param {Object} props Props `{ loading, user, page, workspace, organizations, swr }`
+ * @param props Props
  */
 const Workspace = ({
   loading,
@@ -55,7 +59,7 @@ const Workspace = ({
   swr
 }: IProps): JSX.Element => {
   // State
-  const [filter, setFilter] = useState()
+  const [filter, setFilter]: [string, Function] = useState()
 
   // Data
   const [
@@ -76,9 +80,9 @@ const Workspace = ({
 
   /**
    * On search
-   * @param {Object} e Event
+   * @param e Event
    */
-  const onSearch = (e) => {
+  const onSearch = (e: React.ChangeEvent<HTMLInputElement>): void => {
     setFilter(e.target.value)
   }
 

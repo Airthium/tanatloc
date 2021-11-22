@@ -1,6 +1,8 @@
 import PropTypes from 'prop-types'
 import { useState } from 'react'
 
+import { ISimulation } from '@/database/index.d'
+
 import { DeleteButton } from '@/components/assets/button'
 import { Error } from '@/components/assets/notification'
 
@@ -8,6 +10,15 @@ import { useDispatch } from 'react-redux'
 import { unselect } from '@/store/select/action'
 
 import SimulationAPI from '@/api/simulation'
+
+interface IProps {
+  simulation: ISimulation
+  type: string
+  index: number
+  swr: {
+    mutateOneSimulation: Function
+  }
+}
 
 /**
  * Errors (delete)
@@ -20,11 +31,11 @@ const errors = {
 /**
  * Delete boundary condition
  * @memberof Components.Project.Simulation.BoundaryConditions
- * @param {Object} props Props `{ simulation, type, index, swr }`
+ * @param props Props
  */
-const Delete = ({ simulation, type, index, swr }) => {
+const Delete = ({ simulation, type, index, swr }: IProps): JSX.Element => {
   // State
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading]: [boolean, Function] = useState(false)
 
   // Data
   const dispatch = useDispatch()
@@ -32,7 +43,7 @@ const Delete = ({ simulation, type, index, swr }) => {
   /**
    * On delete
    */
-  const onDelete = async () => {
+  const onDelete = async (): Promise<void> => {
     setLoading(true)
 
     try {

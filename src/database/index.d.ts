@@ -37,7 +37,11 @@ export interface IGeometry {
   uploadfilename?: string
   glb?: string
   json?: string
-  summary?: object
+  summary?: {
+    solids?: {}[]
+    faces?: {}[]
+    edges?: {}[]
+  }
   project?: string
 }
 
@@ -191,6 +195,11 @@ export interface IPlugin {
         type: string
         value?: string
       }
+      password?: {
+        label: string
+        type: string
+        value?: string
+      }
     }
     inUseConfiguration?: any
   }
@@ -217,6 +226,7 @@ export interface IClientPlugin extends Omit<IPlugin, 'client' | 'server'> {
   needReInit?: IPlugin['client']['needReInit']
   configuration?: IPlugin['client']['configuration']
   inUseConfiguration?: IPlugin['client']['inUseConfiguration']
+  data?: {}
 }
 
 export interface IUser {

@@ -52,6 +52,7 @@ jest.mock('@/api/geometry', () => ({
 
 describe('components/project/geometry', () => {
   const project = {
+    id: 'id',
     geometries: []
   }
   const geometry = {
@@ -83,7 +84,12 @@ describe('components/project/geometry', () => {
 
   test('loading', () => {
     const { unmount } = render(
-      <Geometry project={project} swr={swr} close={close} />
+      <Geometry
+        project={project}
+        geometry={undefined}
+        swr={swr}
+        close={close}
+      />
     )
 
     unmount()
@@ -159,7 +165,7 @@ describe('components/project/geometry', () => {
   test('onDelete', async () => {
     const { unmount } = render(
       <Geometry
-        project={{ geometries: [{}] }}
+        project={{ id: 'id', geometries: ['id'] }}
         geometry={geometry}
         swr={swr}
         close={close}

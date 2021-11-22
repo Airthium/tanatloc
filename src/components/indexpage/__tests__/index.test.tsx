@@ -8,7 +8,7 @@ const mockPush = jest.fn()
 jest.mock('next/router', () => ({
   useRouter: () => ({
     prefetch: mockPrefetch,
-    push: (route) => mockPush(route)
+    push: (route: string) => mockPush(route)
   })
 }))
 
@@ -43,7 +43,7 @@ describe('components/index', () => {
   })
 
   test('handleSignup', () => {
-    let currentRoute
+    let currentRoute: string
     mockPush.mockImplementation((route) => (currentRoute = route))
 
     const { unmount } = render(<Index />)
@@ -55,7 +55,7 @@ describe('components/index', () => {
   })
 
   test('handleLogin', () => {
-    let currentRoute
+    let currentRoute: string
     mockPush.mockImplementation((route) => (currentRoute = route))
 
     const { unmount } = render(<Index />)
@@ -67,7 +67,7 @@ describe('components/index', () => {
   })
 
   test('handleDashboard', () => {
-    let currentRoute
+    let currentRoute: string
     mockPush.mockImplementation((route) => (currentRoute = route))
 
     // Need user

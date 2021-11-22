@@ -5,6 +5,9 @@ import { useState } from 'react'
 import { Card, Layout, Space, Typography } from 'antd'
 import { MathJax } from 'better-react-mathjax'
 
+import { IGeometry } from '@/database/index.d'
+import { IProjectWithData } from '@/lib/index.d'
+
 import Loading from '@/components/loading'
 import {
   DeleteButton,
@@ -17,6 +20,17 @@ import Add from './add'
 import Edit from './edit'
 
 import GeometryAPI from '@/api/geometry'
+
+interface IProps {
+  project: IProjectWithData
+  geometry: IGeometry
+  swr: {
+    mutateProject: Function
+    mutateOneGeometry: Function
+    delOneGeometry: Function
+  }
+  close: Function
+}
 
 /**
  * Errors
@@ -31,18 +45,18 @@ const errors = {
 /**
  * Geometry
  * @memberof Components.Project.Geometry
- * @param {Object} props Props `{ project, geometry, swr, close }`
+ * @param props Props
  */
-const Geometry = ({ project, geometry, swr, close }) => {
+const Geometry = ({ project, geometry, swr, close }: IProps): JSX.Element => {
   // State
-  const [downloading, setDownloading] = useState(false)
-  const [editVisible, setEditVisible] = useState(false)
-  const [deleting, setDeleting] = useState(false)
+  const [downloading, setDownloading]: [boolean, Function] = useState(false)
+  const [editVisible, setEditVisible]: [boolean, Function] = useState(false)
+  const [deleting, setDeleting]: [boolean, Function] = useState(false)
 
   /**
    * On download
    */
-  const onDownload = async () => {
+  const onDownload = async (): Promise<void> => {
     setDownloading(true)
 
     try {
@@ -67,18 +81,18 @@ const Geometry = ({ project, geometry, swr, close }) => {
   /**
    * On edit
    */
-  const onEdit = async ({ name }) => {
+  const onEdit = async (value: { name: string }): Promise<void> => {
     try {
       // API
       await GeometryAPI.update({ id: geometry.id }, [
         {
           key: 'name',
-          value: name
+          value: value.name
         }
       ])
 
       // Local
-      geometry.name = name
+      geometry.name = value.name
       swr.mutateOneGeometry(geometry)
     } catch (err) {
       ErrorNotification(errors.updateError, err)
@@ -89,7 +103,7 @@ const Geometry = ({ project, geometry, swr, close }) => {
   /**
    * On delete
    */
-  const onDelete = async () => {
+  const onDelete = async (): Promise<void> => {
     setDeleting(true)
 
     try {
@@ -133,6 +147,7 @@ const Geometry = ({ project, geometry, swr, close }) => {
                 <Edit
                   visible={editVisible}
                   geometry={{
+                    id: geometry?.id,
                     name: geometry?.name
                   }}
                   setVisible={setEditVisible}

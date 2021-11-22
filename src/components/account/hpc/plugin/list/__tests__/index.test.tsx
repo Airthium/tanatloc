@@ -34,9 +34,16 @@ describe('components/account/hpc/list', () => {
             key: 'key',
             configuration: {
               name: {
+                label: 'Name',
+                type: 'input',
                 value: 'name'
               },
-              password: { type: 'password', value: 'password' },
+              password: {
+                label: 'Password',
+                type: 'password',
+                value: 'password'
+              },
+              //@ts-ignore
               item: { value: 'item' }
             }
           }

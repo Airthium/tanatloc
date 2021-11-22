@@ -23,12 +23,23 @@ import {
   StopOutlined
 } from '@ant-design/icons'
 
+import { ISimulation } from '@/database/index.d'
+
 import { Error as ErrorNotification } from '@/components/assets/notification'
 
 import CloudServer from './cloudServer'
 
 import SimulationAPI from '@/api/simulation'
 import ResultAPI from '@/api/result'
+
+interface IProps {
+  simulation: ISimulation
+  result: {}
+  setResult: Function
+  swr: {
+    mutateOneSimulation: Function
+  }
+}
 
 /**
  * Errors (run)
@@ -47,7 +58,7 @@ const errors = {
  * @memberof Components.Project.Simulation
  * @param {Object} props Props `{ simulation, result, setResult, swr }`
  */
-const Run = ({ simulation, result, setResult, swr }) => {
+const Run = ({ simulation, result, setResult, swr }: IProps): JSX.Element => {
   // State
   const [disabled, setDisabled] = useState(false)
   const [running, setRunning] = useState(false)

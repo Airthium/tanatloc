@@ -3,9 +3,22 @@ import { useState } from 'react'
 import { v4 as uuid } from 'uuid'
 import { Button } from 'antd'
 
+import { ISimulation } from '@/database/index.d'
+
 import { Error } from '@/components/assets/notification'
 
 import SimulationAPI from '@/api/simulation'
+
+interface IProps {
+  disabled?: boolean
+  material: {}
+  simulation: ISimulation
+  geometry: {}
+  swr: {
+    mutateOneSimulation: Function
+  }
+  close: Function
+}
 
 /**
  * Errors (add)
@@ -18,11 +31,18 @@ const errors = {
 /**
  * Add material
  * @memberof Components.Project.Simulation.Materials
- * @param {Object} props Props `{ disabled, material, simulation, geometry, swr, close }`
+ * @param props Props
  */
-const Add = ({ disabled, material, simulation, geometry, swr, close }) => {
+const Add = ({
+  disabled,
+  material,
+  simulation,
+  geometry,
+  swr,
+  close
+}: IProps): JSX.Element => {
   // State
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading]: [boolean, Function] = useState(false)
 
   /**
    * On add

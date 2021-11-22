@@ -12,6 +12,13 @@ import {
   Typography
 } from 'antd'
 
+import {
+  IOrganizationWithData,
+  IProjectWithData,
+  IUserWithData,
+  IWorkspaceWithData
+} from '@/lib/index.d'
+
 import Loading from '@/components/loading'
 import Share from '@/components/assets/share'
 
@@ -20,12 +27,6 @@ import Delete from '../delete'
 import Archive from '../archive'
 
 import Utils from '@/lib/utils'
-import {
-  IOrganizationWithData,
-  IProjectWithData,
-  IUserWithData,
-  IWorkspaceWithData
-} from '@/lib'
 
 interface IProps {
   user: IUserWithData
@@ -45,7 +46,7 @@ interface IProps {
 /**
  * Projects' list
  * @memberof Components.Project
- * @param {Object} props Props `{ user, page, workspace, projects, organizations, filter, swr }`
+ * @param props Props
  */
 const ProjectList = ({
   user,
@@ -57,8 +58,20 @@ const ProjectList = ({
   swr
 }: IProps): JSX.Element => {
   // State
-  const [loading, setLoading] = useState(true)
-  const [list, setList] = useState([])
+  const [loading, setLoading]: [boolean, Function] = useState(true)
+  const [list, setList]: [
+    Array<
+      IProjectWithData & {
+        snapshotRender: JSX.Element
+        titleRender: JSX.Element
+        descriptionRender: JSX.Element
+        ownersRender: JSX.Element
+        usersRender: JSX.Element
+        groupsRender: JSX.Element
+      }
+    >,
+    Function
+  ] = useState([])
 
   // Router
   const router = useRouter()

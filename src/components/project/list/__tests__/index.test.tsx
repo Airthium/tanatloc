@@ -29,11 +29,12 @@ describe('component/project/list', () => {
   const user = { id: 'id' }
   const workspace = { id: 'id' }
   const filter = 'filter'
-  const projects = [{}, {}]
+  const projects = [{ id: 'id' }, { id: 'id' }]
   const organizations = []
   const swr = {
-    delOneProject: jest.fn(),
-    mutateOneProject: jest.fn(),
+    mutateOneWorkspace: jest.fn,
+    delOneProject: jest.fn,
+    mutateOneProject: jest.fn,
     loadingProjects: false
   }
 
@@ -45,6 +46,7 @@ describe('component/project/list', () => {
     const { unmount } = render(
       <List
         user={user}
+        page="page"
         workspace={workspace}
         projects={projects}
         organizations={organizations}
@@ -60,6 +62,7 @@ describe('component/project/list', () => {
     const { unmount } = render(
       <List
         user={user}
+        page="page"
         workspace={workspace}
         projects={[
           { id: 'id1', title: 'project 1' },
@@ -67,7 +70,7 @@ describe('component/project/list', () => {
             id: 'id2',
             title: 'project 2',
             description: 'description',
-            avatar: 'avatar',
+            avatar: Buffer.from('avatar'),
             owners: [{ id: 'id' }],
             users: [{ id: 'id1' }],
             groups: [{ id: 'id2' }]

@@ -141,37 +141,46 @@ describe('components/dashboard', () => {
   })
 
   test('page query - page === my_workspaces', () => {
-    global.URLSearchParams = class {
-      constructor() {}
-      get(param) {
-        if (param === 'page') return 'my_workspaces'
-      }
-    }
+    Object.defineProperty(global, 'URLSearchParams', {
+      value: class {
+        constructor() {}
+        get(param) {
+          if (param === 'page') return 'my_workspaces'
+        }
+      },
+      configurable: true
+    })
     const { unmount } = render(<Dashboard />)
 
     unmount()
   })
 
   test('page query - page === my_workspace && workspaceId', () => {
-    global.URLSearchParams = class {
-      constructor() {}
-      get(param) {
-        if (param === 'workspaceId') return 'id'
-        if (param === 'page') return 'account'
-      }
-    }
+    Object.defineProperty(global, 'URLSearchParams', {
+      value: class {
+        constructor() {}
+        get(param) {
+          if (param === 'workspaceId') return 'id'
+          if (param === 'page') return 'account'
+        }
+      },
+      configurable: true
+    })
     const { unmount } = render(<Dashboard />)
 
     unmount()
   })
 
   test('page query - page === account', () => {
-    global.URLSearchParams = class {
-      constructor() {}
-      get(param) {
-        if (param === 'page') return 'account'
-      }
-    }
+    Object.defineProperty(global, 'URLSearchParams', {
+      value: class {
+        constructor() {}
+        get(param) {
+          if (param === 'page') return 'account'
+        }
+      },
+      configurable: true
+    })
     const { unmount } = render(<Dashboard />)
 
     unmount()

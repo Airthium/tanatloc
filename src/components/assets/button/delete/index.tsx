@@ -9,7 +9,7 @@ interface IProps {
   disabled?: boolean
   loading?: boolean
   text?: string
-  children: ReactChild | ReactChild[]
+  children?: ReactChild | ReactChild[]
   onDelete: () => Promise<void>
 }
 

@@ -1,5 +1,5 @@
 import React from 'react'
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { fireEvent, render, screen } from '@testing-library/react'
 
 import Workspace from '..'
 
@@ -85,6 +85,7 @@ describe('components/workspace', () => {
       <Workspace
         loading={loading}
         user={user}
+        page="page"
         workspace={workspace}
         organizations={organizations}
         swr={swr}
@@ -99,6 +100,7 @@ describe('components/workspace', () => {
       <Workspace
         loading={true}
         user={user}
+        page="page"
         workspace={workspace}
         organizations={organizations}
         swr={swr}
@@ -114,6 +116,7 @@ describe('components/workspace', () => {
       <Workspace
         loading={true}
         user={user}
+        page="page"
         workspace={workspace}
         organizations={organizations}
         swr={swr}
@@ -128,6 +131,7 @@ describe('components/workspace', () => {
       <Workspace
         loading={loading}
         user={user}
+        page="page"
         workspace={workspace}
         organizations={organizations}
         swr={swr}
@@ -145,6 +149,7 @@ describe('components/workspace', () => {
       <Workspace
         loading={loading}
         user={{ id: 'id' }}
+        page="page"
         workspace={{
           ...workspace,
           owners: [{ id: 'id' }],
@@ -169,7 +174,7 @@ describe('components/workspace', () => {
     // User
     const userProps = propTypes.user
     res = userProps({ loading: true }, 'user', 'Workspace')
-    expect(res).toBe()
+    expect(res).toBe(undefined)
 
     res = userProps({ loading: false }, 'user', 'Workspace')
     expect(res.message).toBe('Missing prop user supplied to Workspace.')
@@ -185,12 +190,12 @@ describe('components/workspace', () => {
     )
 
     res = userProps({ loading: false, user: { id: 'id' } }, 'user', 'Workspace')
-    expect(res).toBe()
+    expect(res).toBe(undefined)
 
     // Workspace
     const workspaceProps = propTypes.workspace
     res = workspaceProps({ loading: true }, 'workspace', 'Workspace')
-    expect(res).toBe()
+    expect(res).toBe(undefined)
 
     res = workspaceProps({ loading: false }, 'workspace', 'Workspace')
     expect(res.message).toBe('Missing prop workspace supplied to Workspace.')
@@ -236,6 +241,6 @@ describe('components/workspace', () => {
       'workspace',
       'Workspace'
     )
-    expect(res).toBe()
+    expect(res).toBe(undefined)
   })
 })

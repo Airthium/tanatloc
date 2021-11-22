@@ -30,7 +30,7 @@ const errors = {
 /**
  * Archive
  * @memberof Components.Project
- * @param {Object} props Props `{ disabled, workspace, project, swr }`
+ * @param props Props
  */
 const Archive = ({
   disabled,
@@ -39,8 +39,8 @@ const Archive = ({
   swr
 }: IProps): JSX.Element => {
   // State
-  const [visible, setVisible] = useState(false)
-  const [loading, setLoading] = useState(false)
+  const [visible, setVisible]: [boolean, Function] = useState(false)
+  const [loading, setLoading]: [boolean, Function] = useState(false)
 
   const onArchive = async (): Promise<void> => {
     setLoading(true)

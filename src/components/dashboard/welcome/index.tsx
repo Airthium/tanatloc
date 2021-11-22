@@ -14,11 +14,11 @@ interface IProps {
 /**
  * Welcome
  * @memberof Components.Dashboard
- * @param {Object} props Props `{ swr }`
+ * @param props Props
  */
 const Welcome = ({ swr }: IProps): JSX.Element => {
   // State
-  const [add, setAdd] = useState(false)
+  const [add, setAdd]: [boolean, Function] = useState(false)
 
   /**
    * Render

@@ -28,7 +28,7 @@ const errors = {
  * @memberof Components.Account.HPC.Plugin
  * @param props Props
  */
-const Delete = ({ plugin, swr }: IProps) => {
+const Delete = ({ plugin, swr }: IProps): JSX.Element => {
   // State
   const [loading, setLoading]: [boolean, Function] = useState(false)
 

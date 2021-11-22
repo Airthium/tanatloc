@@ -4,8 +4,8 @@ import { call } from '@/api/call'
 /**
  * Archive
  * @memberof API.Result
- * @param {Object} simulation  Simulation `{ id }`
- * @returns {Object} Archive read stream
+ * @param simulation  Simulation
+ * @returns Archive read stream
  */
 export const archive = async (simulation: {
   id: string

@@ -5,8 +5,8 @@ import { call } from '@/api/call'
 /**
  * Update
  * @memberof API.Organization
- * @param {Object} Organization Organization `{ id }`
- * @param {Array} data Data
+ * @param Organization Organization
+ * @param data Data
  */
 export const update = async (
   organization: { id: string },

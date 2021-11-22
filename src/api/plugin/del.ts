@@ -5,7 +5,7 @@ import { call } from '@/api/call'
 /**
  * Delete
  * @memberof API.Plugin
- * @param {Object} plugin Plugin
+ * @param plugin Plugin
  */
 export const del = async (plugin: IPlugin): Promise<void> => {
   await call('/api/plugin', {

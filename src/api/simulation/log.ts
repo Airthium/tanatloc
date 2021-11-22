@@ -3,9 +3,9 @@ import { call } from '@/api/call'
 /**
  * Log
  * @memberof API.Simulation
- * @param {Object} simulation Simulation `{ id }`
- * @param {string} file File
- * @returns {string} Log
+ * @param simulation Simulation
+ * @param file File
+ * @returns Log
  */
 export const log = async (
   simulation: { id: string },

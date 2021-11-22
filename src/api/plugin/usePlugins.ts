@@ -7,7 +7,7 @@ import { IPlugin } from '@/database/index.d'
 /**
  * Uses plugins
  * @memberof API.Plugin
- * @returns {Array} `[plugins, { mutatePlugins, addOnePlugin, delOnePlugin, mutateOnePlugin, errorPlugins, loadingPlugins }]`
+ * @returns Plugins
  */
 export const usePlugins = (): [
   IPlugin[],

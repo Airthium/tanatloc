@@ -5,7 +5,7 @@ import { IOrganizationWithData } from '@/lib'
 /**
  * Use organizations
  * @memberof API.Organization
- * @returns {Array} `[organizations, {mutateOrganizations, addOneOrganization, delOneOrganization, mutateOneOrganization, errorOrganizations, loadingOrganizations }]`
+ * @returns Organization
  */
 export const useOrganizations = (): [
   IOrganizationWithData[],

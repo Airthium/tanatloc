@@ -5,9 +5,9 @@ import { call } from '@/api/call'
 /**
  * Download
  * @memberof API.Result
- * @param {Object} simulation  Simulation `{ id }`
- * @param {Object} result Result `{ originPath, fileName }`
- * @returns {Object} Download read stream
+ * @param simulation Simulation
+ * @param result Result
+ * @returns Download read stream
  */
 export const download = async (
   simulation: { id: string },

@@ -5,8 +5,8 @@ import { call } from '@/api/call'
 /**
  * Archive
  * @memberof API.Project
- * @param {Object} project Project `{ id }`
- * @returns {Object} Response `{ blob }`
+ * @param project Project
+ * @returns Response
  */
 export const archive = async (project: {
   id: string

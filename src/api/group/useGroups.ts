@@ -7,8 +7,8 @@ import { IGroupWithData } from '@/lib'
 /**
  * Use groups
  * @memberof API.Group
- * @param {string} id Id
- * @returns {Object} `[ groups, { mutateGroups, addOneGroup, delOneGroup, mutateOneGroup, errorGroups, loadingGroups }]`
+ * @param id Id
+ * @returns Groups
  */
 export const useGroups = (
   id: string

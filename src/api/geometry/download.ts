@@ -5,8 +5,8 @@ import { call } from '@/api/call'
 /**
  * Download
  * @memberof API.Geometry
- * @param {Object} geometry Geometry `{ id }`
- * @returns {Object} Geometry `{ buffer, extension }`
+ * @param geometry Geometry
+ * @returns Geometry
  */
 export const download = async (geometry: {
   id: string

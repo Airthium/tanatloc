@@ -3,9 +3,9 @@ import { call } from '@/api/call'
 /**
  * Load
  * @memberof API.Result
- * @param {Object} simulation  Simulation `{ id }`
- * @param {Object} result Result `{ originPath, glb }`
- * @returns {Object} Result `{ buffer }`
+ * @param simulation Simulation
+ * @param result Result
+ * @returns Result
  */
 export const load = async (
   simulation: { id: string },

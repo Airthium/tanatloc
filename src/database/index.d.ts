@@ -128,6 +128,21 @@ export interface ISimulationScheme {
   }
 }
 
+export interface ISimulationTask {
+  index?: number
+  label: string
+  status: string
+  pid?: string | number
+  log?: string
+  warning?: string
+  error?: string
+  systemLog?: string
+  file?: {}
+  files?: {}[]
+  plugin?: string
+  datas?: Array<{ x: number; y: number }>
+}
+
 export interface INewSimulation {
   id: string
   name: string
@@ -139,13 +154,7 @@ export interface ISimulation {
   id: string
   name?: string
   scheme?: ISimulationScheme
-  tasks?: Array<{
-    status: string
-    error: string
-    plugin?: string
-    pid?: string | number
-    datas: Array<{ x: number; y: number }>
-  }>
+  tasks?: ISimulationTask[]
   project?: string
 }
 
@@ -169,30 +178,45 @@ export interface INewUser {
 export interface IPlugin {
   uuid?: string
   key?: string
-}
-
-export interface IServerPlugin extends IPlugin {
   category?: string
-  lib?: {
-    init: Function
-    computeSimulation: Function
-    stop: Function
-  }
-  templates?: Array<{ key: string; file: string }>
-}
-
-export interface IClientPlugin extends IPlugin {
-  category?: string
-  name?: string
-  description?: string
-  needInit?: boolean
-  needReInit?: boolean
-  configuration?: {
-    name?: {
-      value: string
+  client?: {
+    name?: string
+    description?: string
+    models?: string[]
+    needInit?: boolean
+    needReInit?: boolean
+    configuration?: {
+      name?: {
+        label: string
+        type: string
+        value?: string
+      }
     }
+    inUseConfiguration?: any
   }
-  inUseConfiguration?: object
+  server?: {
+    lib?: {
+      init?: Function
+      computeSimulation: Function
+      stop: Function
+    }
+    templates?: Array<{ key: string; file: string }>
+  }
+}
+
+export interface IServerPlugin extends Omit<IPlugin, 'client' | 'server'> {
+  lib?: IPlugin['server']['lib']
+  templates?: IPlugin['server']['templates']
+}
+
+export interface IClientPlugin extends Omit<IPlugin, 'client' | 'server'> {
+  name?: IPlugin['client']['name']
+  description?: IPlugin['client']['description']
+  models?: IPlugin['client']['models']
+  needInit?: IPlugin['client']['needInit']
+  needReInit?: IPlugin['client']['needReInit']
+  configuration?: IPlugin['client']['configuration']
+  inUseConfiguration?: IPlugin['client']['inUseConfiguration']
 }
 
 export interface IUser {

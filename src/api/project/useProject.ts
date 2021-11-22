@@ -5,8 +5,8 @@ import { IProjectWithData } from '@/lib/index.d'
 /**
  * Use project
  * @memberof API.Project
- * @param {string} id Project id
- * @returns {Array} `[project, { mutateProject, errorProject, loadingProject }]`
+ * @param id Project id
+ * @returns Project
  */
 export const useProject = (
   id: string

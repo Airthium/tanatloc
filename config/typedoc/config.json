@@ -1,0 +1,20 @@
+{
+  "exclude": [
+    "**/node_modules/**",
+    "**/tests/**",
+    "**/__tests__/**",
+    "**/app/**",
+    "**/config/jest/**",
+    "**/config/jsdoc/**",
+    "**/config/sentry/**",
+    "**/coverage/**",
+    "**/dist/**",
+    "**/dist-server/**",
+    "**/dist-install/**",
+    "**/doc/**",
+    "**/.next/**",
+    "**/public/**"
+  ],
+  "entryPointStrategy": "expand",
+  "out": "doc"
+}

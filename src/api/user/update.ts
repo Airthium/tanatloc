@@ -5,7 +5,7 @@ import { call } from '@/api/call'
 /**
  * Update
  * @memberof API.User
- * @param {Array} data Data `[{ key, value }, ...]`
+ * @param data Data
  */
 export const update = async (data: IDataBaseEntry[]): Promise<void> => {
   await call('/api/user', {

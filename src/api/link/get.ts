@@ -5,9 +5,9 @@ import { call } from '@/api/call'
 /**
  * Get
  * @memberof API.Link
- * @param {string} id Id
- * @param {Array} data Data
- * @returns {Object} Link `{ id, ...data }`
+ * @param id Id
+ * @param data Data
+ * @returns Link
  */
 export const get = async (id: string, data: string[]): Promise<ILink> => {
   const response = await call('/api/link', {

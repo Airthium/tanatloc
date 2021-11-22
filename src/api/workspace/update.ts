@@ -5,8 +5,8 @@ import { call } from '@/api/call'
 /**
  * Update
  * @memberof API.Workspace
- * @param {Object} workspace Workspace `{ id }`
- * @param {Array} data Data `[{ key: value }, ...]`
+ * @param workspace Workspace
+ * @param data Data
  */
 export const update = async (
   workspace: { id: string },

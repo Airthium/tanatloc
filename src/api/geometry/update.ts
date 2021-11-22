@@ -3,8 +3,8 @@ import { call } from '@/api/call'
 /**
  * Update
  * @memberof API.Geometry
- * @param {Object} geometry Geometry `{ id }`
- * @param {Array} data Data `[{ key, value, ... }, ...]`
+ * @param geometry Geometry
+ * @param data Data
  */
 export const update = async (
   geometry: { id: string },

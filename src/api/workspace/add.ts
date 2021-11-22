@@ -5,8 +5,8 @@ import { call } from '@/api/call'
 /**
  * Add
  * @memberof API.Workspace
- * @param {Object} workspace Workspace `{ name }`
- * @returns {Object} Workspace `{ id, name, owners }`
+ * @param workspace Workspace
+ * @returns Workspace
  */
 export const add = async (workspace: {
   name: string

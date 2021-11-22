@@ -5,9 +5,9 @@ import { call } from '@/api/call'
 /**
  * Add group
  * @memberof API.Group
- * @param {Object} organization Organization `{ id }`
- * @param {Object} group Group `{ name, users }`
- * @returns {Object} Group `{ id, name, users, organization }`
+ * @param organization Organization
+ * @param group Group
+ * @returns New group
  */
 export const add = async (
   organization: { id: string },

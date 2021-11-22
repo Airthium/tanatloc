@@ -1,7 +1,7 @@
 import React from 'react'
 import { render, screen, fireEvent } from '@testing-library/react'
 
-import Index from '@/components/index/index.js'
+import Index from '..'
 
 const mockPrefetch = jest.fn()
 const mockPush = jest.fn()

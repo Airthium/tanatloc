@@ -5,8 +5,8 @@ import { ISimulation } from '@/database/index.d'
 /**
  * Use simulation
  * @memberof API.Simulation
- * @param {string} id Simulation id
- * @returns {Array} `[simulation, { mutateSimulation, errorSimulation, loadingSimulation }]`
+ * @param id Simulation id
+ * @returns Simulation
  */
 export const useSimulation = (
   id: string,

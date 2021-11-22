@@ -5,8 +5,8 @@ import { call } from '@/api/call'
 /**
  * Update by id
  * @memberof API.User
- * @param {string} id User id
- * @param {Array} data Data `[{ key: value }, ...]`
+ * @param id User id
+ * @param data Data
  */
 export const updateById = async (
   id: string,

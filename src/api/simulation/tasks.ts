@@ -3,8 +3,8 @@ import { call } from '@/api/call'
 /**
  * Tasks
  * @memberof API.Simulation
- * @param {Object} simulation Simulation `{ id }`
- * @returns {Array} Tasks
+ * @param simulation Simulation
+ * @returns Tasks
  */
 export const tasks = async (simulation: {
   id: string

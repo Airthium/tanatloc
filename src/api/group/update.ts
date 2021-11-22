@@ -5,8 +5,8 @@ import { call } from '@/api/call'
 /**
  * Update group
  * @memberof API.Group
- * @param {Object} group Group `{ id }`
- * @param {Array} data Data `[{ key, value, ... }, ...]`
+ * @param group Group
+ * @param data Data
  */
 export const update = async (
   group: { id: string },

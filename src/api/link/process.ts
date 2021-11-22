@@ -3,8 +3,8 @@ import { call } from '@/api/call'
 /**
  * Process
  * @memberof API.Link
- * @param {string} id Id
- * @param {Object} data Data `{ email, password }`
+ * @param id Id
+ * @param data Data
  *
  */
 export const process = async (

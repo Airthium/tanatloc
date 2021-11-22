@@ -5,9 +5,9 @@ import { call } from '@/api/call'
 /**
  * Add
  * @memberof API.Geometry
- * @param {Object} project Project `{ id }`
- * @param {Object} geometry Geometry `{ name, uid, buffer }`
- * @returns {Object} Geometry `{ id, name, originalfilename, extension, uploadfilename, json, glb, summary }`
+ * @param project Project
+ * @param geometry Geometry
+ * @returns Geometry
  */
 export const add = async (
   project: { id: string },

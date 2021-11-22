@@ -3,7 +3,7 @@ import { call } from '@/api/call'
 /**
  * Delete
  * @memberof API.Workspace
- * @param {Object} workspace Workspace `{ id }`
+ * @param workspace Workspace
  */
 export const del = async (workspace: { id: string }): Promise<void> => {
   await call('/api/workspace', {

@@ -5,8 +5,8 @@ import { call } from '@/api/call'
 /**
  * Get part
  * @memberof API.Geometry
- * @param {Object} geometry Geometry `{ id }`
- * @returns {Object} Part `{ uuid, buffer }`
+ * @param geometry Geometry
+ * @returns Part
  */
 export const getPart = async (geometry: {
   id: string

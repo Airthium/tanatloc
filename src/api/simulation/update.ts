@@ -5,8 +5,8 @@ import { call } from '@/api/call'
 /**
  * Update
  * @memberof API.Simulation
- * @param {Object} simulation Simulation `{ id }`
- * @param {Array} data Data `[{ key, value, ... }, ...]`
+ * @param simulation Simulation
+ * @param data Data
  */
 export const update = async (
   simulation: { id: string },

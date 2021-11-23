@@ -2,20 +2,30 @@ import PropTypes from 'prop-types'
 import { useState } from 'react'
 import { Card, Space, Typography } from 'antd'
 
+import { ISimulation } from '@/database/index.d'
+
 import { EditButton } from '@/components/assets/button'
 import Delete from '../delete'
 
 import { useDispatch } from 'react-redux'
 import { enable, disable, select } from '@/store/select/action'
 
+interface IProps {
+  simulation: ISimulation
+  swr: {
+    mutateOneSimulation: Function
+  }
+  onEdit: Function
+}
+
 /**
  * List materials
  * @memberof Components.Project.Simulation.Materials
  * @param {Object} props Props `{ simulation, swr, onEdit }`
  */
-const List = ({ simulation, swr, onEdit }) => {
+const List = ({ simulation, swr, onEdit }: IProps): JSX.Element => {
   // State
-  const [enabled, setEnabled] = useState(true)
+  const [enabled, setEnabled]: [boolean, Function] = useState(true)
 
   // Data
   const materials = simulation?.scheme?.configuration?.materials || {}
@@ -42,7 +52,7 @@ const List = ({ simulation, swr, onEdit }) => {
 
   // List
   const list = materials.values
-    ?.map((material, index) => {
+    ?.map((material, index: number) => {
       return (
         <Card
           className="material-item"
@@ -55,7 +65,6 @@ const List = ({ simulation, swr, onEdit }) => {
           }}
         >
           <Space
-            direction=""
             style={{
               width: '100%',
               justifyContent: 'space-between',
@@ -63,7 +72,7 @@ const List = ({ simulation, swr, onEdit }) => {
             }}
           >
             <Typography.Text>{material.material.label}</Typography.Text>
-            <Space direction="">
+            <Space>
               <EditButton
                 onEdit={() => {
                   setEnabled(false)

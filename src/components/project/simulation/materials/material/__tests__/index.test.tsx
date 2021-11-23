@@ -25,13 +25,23 @@ jest.mock('@/components/project/simulation/materials/add', () => () => <div />)
 jest.mock('@/components/project/simulation/materials/edit', () => () => <div />)
 
 describe('components/project/simulation/materials/material', () => {
-  const simulation = {}
-  const geometry = {}
+  const simulation = {
+    id: 'id'
+  }
+  const geometry = {
+    solids: [
+      {
+        uuid: 'uuid',
+        number: 1
+      }
+    ]
+  }
   const materials = {
     label: 'label',
     children: [
       {
         name: 'Test',
+        unit: 'unit',
         default: 0
       }
     ]
@@ -131,7 +141,6 @@ describe('components/project/simulation/materials/material', () => {
         visible={true}
         geometry={geometry}
         materials={materials}
-        material={{}}
         swr={swr}
         close={close}
       />

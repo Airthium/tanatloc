@@ -4,6 +4,8 @@ import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
 import { Card, Layout, Space, Typography } from 'antd'
 
+import { IGeometry, ISimulation } from '@/database/index.d'
+
 import { AddButton } from '@/components/assets/button'
 import List from './list'
 import Material from './material'
@@ -11,15 +13,31 @@ import Material from './material'
 import { useDispatch } from 'react-redux'
 import { enable, disable, setType, setPart } from '@/store/select/action'
 
+interface IProps {
+  geometry?: IGeometry
+  simulation: ISimulation
+  swr: {
+    mutateOneSimulation: Function
+  }
+  setVisible: Function
+}
+
 /**
  * Materials
  * @memberof Components.Project.Simulation.Materials
- * @param {Object} props Props `{ geometry, simulation, swr, setVisible }`
+ * @param props Props
  */
-const Materials = ({ geometry, simulation, swr, setVisible }) => {
+const Materials = ({
+  geometry,
+  simulation,
+  swr,
+  setVisible
+}: IProps): JSX.Element => {
   // State
-  const [material, setMaterial] = useState()
-  const [materialVisible, setMaterialVisible] = useState(false)
+  const [material, setMaterial]: [{ uuid: string; selected: {}[] }, Function] =
+    useState()
+  const [materialVisible, setMaterialVisible]: [boolean, Function] =
+    useState(false)
 
   // Store
   const dispatch = useDispatch()
@@ -36,7 +54,7 @@ const Materials = ({ geometry, simulation, swr, setVisible }) => {
   /**
    * On add
    */
-  const onAdd = () => {
+  const onAdd = (): void => {
     setMaterial()
     setMaterialVisible(true)
     setVisible(false)
@@ -46,7 +64,7 @@ const Materials = ({ geometry, simulation, swr, setVisible }) => {
   /**
    * On edit
    */
-  const onEdit = (index) => {
+  const onEdit = (index: number): void => {
     const materialToEdit = materials.values[index]
     setMaterial(materialToEdit)
 
@@ -58,7 +76,7 @@ const Materials = ({ geometry, simulation, swr, setVisible }) => {
   /**
    * On close
    */
-  const onClose = () => {
+  const onClose = (): void => {
     setMaterialVisible(false)
     setVisible(true)
     setMaterial()
@@ -81,7 +99,9 @@ const Materials = ({ geometry, simulation, swr, setVisible }) => {
               <Material
                 visible={materialVisible}
                 simulation={simulation}
-                geometry={geometry.summary}
+                geometry={{
+                  solids: geometry.summary.solids
+                }}
                 materials={materials}
                 material={material}
                 swr={swr}

@@ -16,7 +16,7 @@ interface IProps {
 /**
  * Edit
  * @memberof Components.Project.Geometry
- * @param {Object} props Props `{ visible, geometry, setVisible, onEdit }`
+ * @param props Props
  */
 const Edit = ({
   visible,
@@ -29,7 +29,7 @@ const Edit = ({
 
   /**
    * On ok
-   * @param {Object} values Values
+   * @param values Values
    */
   const onOk = async (values: { name: string }): Promise<void> => {
     setLoading(true)

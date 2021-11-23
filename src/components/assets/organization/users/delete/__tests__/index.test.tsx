@@ -158,7 +158,7 @@ describe('componenets/assets/organization/users/delete', () => {
       'organization',
       'Delete'
     )
-    expect(res).toBe()
+    expect(res).toBe(undefined)
 
     res = organizationProp(
       { organization: { id: 'id' }, dBkey: 'users' },
@@ -183,6 +183,6 @@ describe('componenets/assets/organization/users/delete', () => {
       'organization',
       'Delete'
     )
-    expect(res).toBe()
+    expect(res).toBe(undefined)
   })
 })

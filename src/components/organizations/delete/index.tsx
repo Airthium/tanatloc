@@ -28,7 +28,7 @@ const errors = {
 /**
  * Delete
  * @memberof Components.Organizations
- * @param {Object} props Props `{ organization, swr }`
+ * @param props Props
  */
 const Delete = ({ organization, swr }: IProps): JSX.Element => {
   // State

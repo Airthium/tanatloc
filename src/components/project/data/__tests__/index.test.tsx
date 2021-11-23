@@ -109,9 +109,11 @@ describe('components/project/data', () => {
 
     const { unmount } = render(<Data simulation={simulation} />)
 
-    window.URL = {
-      createObjectURL: jest.fn()
-    }
+    Object.defineProperty(window, 'URL', {
+      value: {
+        createObjectURL: jest.fn()
+      }
+    })
 
     // Visible
     const button = screen.getByRole('button')

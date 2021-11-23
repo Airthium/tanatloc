@@ -2,6 +2,8 @@ import PropTypes from 'prop-types'
 import { useState } from 'react'
 import { Card, Space, Typography } from 'antd'
 
+import { ISimulation } from '@/database/index.d'
+
 import { EditButton } from '@/components/assets/button'
 
 import { useDispatch } from 'react-redux'
@@ -9,14 +11,22 @@ import { enable, disable, select } from '@/store/select/action'
 
 import Delete from '../delete'
 
+interface IProps {
+  simulation: ISimulation
+  swr: {
+    mutateOneSimulation: Function
+  }
+  onEdit: Function
+}
+
 /**
  * List
  * @memberof Components.Project.Simulation.BoundaryConditions
  * @param {Object} props Props `{ simulation, swr, onEdit }`
  */
-const List = ({ simulation, swr, onEdit }) => {
+const List = ({ simulation, swr, onEdit }: IProps): JSX.Element => {
   // State
-  const [enabled, setEnabled] = useState(true)
+  const [enabled, setEnabled]: [boolean, Function] = useState(true)
 
   // Data
   const boundaryConditions =
@@ -25,13 +35,13 @@ const List = ({ simulation, swr, onEdit }) => {
 
   /**
    * Highlight current
-   * @param {string} key Key
-   * @param {number} index Index
+   * @param key Key
+   * @param index Index
    */
-  const highlight = (key, index) => {
+  const highlight = (key: string, index: number): void => {
     dispatch(enable())
     const currentSelected = boundaryConditions[key]?.values[index]?.selected
-    currentSelected?.forEach((s) => {
+    currentSelected?.forEach((s: { uuid: string }) => {
       dispatch(select(s.uuid))
     })
   }
@@ -46,50 +56,56 @@ const List = ({ simulation, swr, onEdit }) => {
   /**
    * Render
    */
-  return Object.keys(boundaryConditions)
-    .map((type) => {
-      if (type === 'index' || type === 'title' || type === 'done') return
-      return boundaryConditions[type].values?.map((child, index) => {
-        return (
-          <Card
-            className="boundaryCondition-item"
-            key={index}
-            hoverable
-            onMouseEnter={() => highlight(type, index)}
-            onMouseLeave={() => {
-              enabled && unhighlight()
-            }}
-          >
-            <Space
-              direction="horizontal"
-              style={{
-                width: '100%',
-                justifyContent: 'space-between',
-                alignItems: 'center'
-              }}
-            >
-              <Typography.Text>{child.name}</Typography.Text>
-              <Space direction="">
-                <EditButton
-                  onEdit={() => {
-                    setEnabled(false)
-                    onEdit(type, index)
-                    setTimeout(() => setEnabled(true), 500)
+  return (
+    <>
+      {Object.keys(boundaryConditions)
+        .map((type) => {
+          if (type === 'index' || type === 'title' || type === 'done') return
+          return boundaryConditions[type].values?.map(
+            (child: { name: string }, index: number) => {
+              return (
+                <Card
+                  className="boundaryCondition-item"
+                  key={index}
+                  hoverable
+                  onMouseEnter={() => highlight(type, index)}
+                  onMouseLeave={() => {
+                    enabled && unhighlight()
                   }}
-                />
-                <Delete
-                  simulation={simulation}
-                  type={type}
-                  index={index}
-                  swr={{ mutateOneSimulation: swr.mutateOneSimulation }}
-                />
-              </Space>
-            </Space>
-          </Card>
-        )
-      })
-    })
-    .filter((l) => l)
+                >
+                  <Space
+                    direction="horizontal"
+                    style={{
+                      width: '100%',
+                      justifyContent: 'space-between',
+                      alignItems: 'center'
+                    }}
+                  >
+                    <Typography.Text>{child.name}</Typography.Text>
+                    <Space>
+                      <EditButton
+                        onEdit={() => {
+                          setEnabled(false)
+                          onEdit(type, index)
+                          setTimeout(() => setEnabled(true), 500)
+                        }}
+                      />
+                      <Delete
+                        simulation={simulation}
+                        type={type}
+                        index={index}
+                        swr={{ mutateOneSimulation: swr.mutateOneSimulation }}
+                      />
+                    </Space>
+                  </Space>
+                </Card>
+              )
+            }
+          )
+        })
+        .filter((l) => l)}
+    </>
+  )
 }
 
 List.propTypes = {

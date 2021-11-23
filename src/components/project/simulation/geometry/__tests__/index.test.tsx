@@ -27,6 +27,12 @@ describe('components/project/simulation/geometry', () => {
   const simulation = {
     id: 'id',
     scheme: {
+      category: 'category',
+      name: 'name',
+      algorithm: 'algorithm',
+      code: 'code',
+      version: 'version',
+      description: 'description',
       configuration: {
         geometry: {}
       }
@@ -78,6 +84,12 @@ describe('components/project/simulation/geometry', () => {
         simulation={{
           id: 'id',
           scheme: {
+            category: 'category',
+            name: 'name',
+            algorithm: 'algorithm',
+            code: 'code',
+            version: 'version',
+            description: 'description',
             configuration: {
               geometry: { value: 'id' }
             }

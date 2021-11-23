@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { v4 as uuid } from 'uuid'
 import { Button } from 'antd'
 
-import { IGeometry, ISimulation } from '@/database/index.d'
+import { ISimulation } from '@/database/index.d'
 
 import { Error } from '@/components/assets/notification'
 

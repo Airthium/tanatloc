@@ -15,7 +15,14 @@ jest.mock('@/api/simulation', () => ({
 
 describe('components/project/simulation/boundaryConditions/add', () => {
   const simulation = {
+    id: 'id',
     scheme: {
+      category: 'category',
+      name: 'name',
+      algorithm: 'algorithm',
+      code: 'code',
+      version: 'version',
+      description: 'description',
       configuration: {
         boundaryConditions: {
           key: {
@@ -26,12 +33,18 @@ describe('components/project/simulation/boundaryConditions/add', () => {
     }
   }
   const boundaryCondition = {
+    uuid: 'uuid',
     type: {
       key: 'key'
     },
     selected: ['uuid1', 'uuid3']
   }
-  const geometry = { faces: [{ uuid: 'uuid1' }, { uuid: 'uuid2' }] }
+  const geometry = {
+    faces: [
+      { uuid: 'uuid1', number: 1 },
+      { uuid: 'uuid2', number: 2 }
+    ]
+  }
   const swr = { mutateOneSimulation: jest.fn() }
   const close = jest.fn()
 
@@ -96,7 +109,14 @@ describe('components/project/simulation/boundaryConditions/add', () => {
       <Add
         disabled={false}
         simulation={{
+          id: 'id',
           scheme: {
+            category: 'category',
+            name: 'name',
+            algorithm: 'algorithm',
+            code: 'code',
+            version: 'version',
+            description: 'description',
             configuration: {
               boundaryConditions: {
                 key: {}

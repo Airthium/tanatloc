@@ -10,7 +10,7 @@ interface IProps {
   defaultValue?: string
   defaultChecked?: boolean
   onValueChange: Function
-  onCheckedChange: Function
+  onCheckedChange?: Function
   unit?: string
 }
 

@@ -37,11 +37,25 @@ jest.mock('@/store/select/action', () => ({
 
 describe('components/project/simulation/materials', () => {
   const geometry = {
-    summary: {}
+    id: 'id',
+    summary: {
+      solids: [
+        {
+          uuid: 'uuid',
+          number: 1
+        }
+      ]
+    }
   }
   const simulation = {
     id: 'id',
     scheme: {
+      category: 'category',
+      name: 'name',
+      algorithm: 'algorithm',
+      code: 'code',
+      version: 'version',
+      description: 'description',
       configuration: {
         materials: {
           index: 1,

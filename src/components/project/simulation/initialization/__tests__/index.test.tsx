@@ -24,14 +24,25 @@ describe('components/project/simulation/initialization', () => {
       id: 'id',
       name: 'Simulation 0',
       scheme: {
-        algorithm: 'algorithm1'
+        category: 'category',
+        name: 'name',
+        code: 'code',
+        version: 'version',
+        description: 'description',
+        algorithm: 'algorithm1',
+        configuration: undefined
       }
     },
     {
       id: 'id1',
       name: 'Simulation 1',
       scheme: {
+        category: 'category',
+        name: 'name',
         algorithm: 'algorithm1',
+        code: 'code',
+        version: 'version',
+        description: 'description',
         configuration: {
           parameters: {
             time: {
@@ -55,20 +66,38 @@ describe('components/project/simulation/initialization', () => {
       id: 'id2',
       name: 'Simulation 2',
       scheme: {
-        algorithm: 'algorithm2'
+        category: 'category',
+        name: 'name',
+        code: 'code',
+        version: 'version',
+        description: 'description',
+        algorithm: 'algorithm2',
+        configuration: undefined
       }
     },
     {
       id: 'id3',
       name: 'Simulation 3',
       scheme: {
-        algorithm: 'algorithm1'
+        category: 'category',
+        name: 'name',
+        code: 'code',
+        version: 'version',
+        description: 'description',
+        algorithm: 'algorithm1',
+        configuration: undefined
       }
     }
   ]
   const simulation = {
     id: 'id',
     scheme: {
+      category: 'category',
+      name: 'name',
+      algorithm: 'algorithm',
+      code: 'code',
+      version: 'version',
+      description: 'description',
       configuration: {
         parameters: {
           time: {
@@ -407,13 +436,24 @@ describe('components/project/simulation/initialization', () => {
         id: 'id',
         name: 'Simulation 0',
         scheme: {
-          algorithm: 'algorithm1'
+          category: 'category',
+          name: 'name',
+          code: 'code',
+          version: 'version',
+          description: 'description',
+          algorithm: 'algorithm1',
+          configuration: undefined
         }
       },
       {
         id: 'id1',
         name: 'Simulation 1',
         scheme: {
+          category: 'category',
+          name: 'name',
+          code: 'code',
+          version: 'version',
+          description: 'description',
           algorithm: 'algorithm1',
           configuration: {
             parameters: {
@@ -437,7 +477,13 @@ describe('components/project/simulation/initialization', () => {
         id: 'id2',
         name: 'Simulation 2',
         scheme: {
-          algorithm: 'algorithm2'
+          category: 'category',
+          name: 'name',
+          code: 'code',
+          version: 'version',
+          description: 'description',
+          algorithm: 'algorithm2',
+          configuration: undefined
         }
       }
     ]

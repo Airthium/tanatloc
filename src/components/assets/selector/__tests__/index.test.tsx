@@ -44,14 +44,17 @@ describe('components/assets/selector', () => {
         color: { r: 0, g: 0.5, b: 1 }
       },
       {
-        uuid: 'uuid2'
+        uuid: 'uuid2',
+        name: 'name'
       },
       {
         uuid: 'uuid3',
+        name: 'name',
         color: { r: 0, g: 0.5, b: 1 }
       },
       {
         uuid: 'uuid4',
+        name: 'name',
         color: { r: 0, g: 0.5, b: 0.5 }
       }
     ]

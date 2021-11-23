@@ -11,6 +11,10 @@ import {
 } from 'antd'
 import { DatabaseOutlined, SelectOutlined } from '@ant-design/icons'
 
+interface IProps {
+  onSelect: Function
+}
+
 /**
  * Database
  * @memberof Components.Project.Simulation.Materials
@@ -76,46 +80,63 @@ const dataBase = {
 /**
  * Material database
  * @memberof Components.Project.Simulation.Materials
- * @param {Object} props Props `{ onSelect }`
+ * @param props Props
  */
-const DataBase = ({ onSelect }) => {
-  const [visible, setVisible] = useState()
-  const [current, setCurrent] = useState()
+const DataBase = ({ onSelect }: IProps): JSX.Element => {
+  const [visible, setVisible]: [boolean, Function] = useState()
+  const [current, setCurrent]: [JSX.Element, Function] = useState()
 
   const onMenuClick = ({ key }) => {
-    const materials = dataBase[key].children.map((material) => {
-      return (
-        <List.Item key={material.label}>
-          <Collapse>
-            <Collapse.Panel
-              header={material.label}
-              extra={
-                <Button
-                  size="small"
-                  icon={<SelectOutlined />}
-                  onClick={() => onMaterialSelect(material)}
-                />
-              }
-            >
-              <Space direction="vertical">
-                {material.children.map((value) => {
-                  return (
-                    <Typography.Text key={value.label}>
-                      {value.label}: {value.symbol} = {value.value}
-                    </Typography.Text>
-                  )
-                })}
-              </Space>
-            </Collapse.Panel>
-          </Collapse>
-        </List.Item>
-      )
-    })
+    const materials = dataBase[key].children.map(
+      (material: {
+        label: string
+        children: {
+          label: string
+          symbol: string
+          value: number
+        }[]
+      }) => {
+        return (
+          <List.Item key={material.label}>
+            <Collapse>
+              <Collapse.Panel
+                key=""
+                header={material.label}
+                extra={
+                  <Button
+                    size="small"
+                    icon={<SelectOutlined />}
+                    onClick={() => onMaterialSelect(material)}
+                  />
+                }
+              >
+                <Space direction="vertical">
+                  {material.children.map((value) => {
+                    return (
+                      <Typography.Text key={value.label}>
+                        {value.label}: {value.symbol} = {value.value}
+                      </Typography.Text>
+                    )
+                  })}
+                </Space>
+              </Collapse.Panel>
+            </Collapse>
+          </List.Item>
+        )
+      }
+    )
 
     setCurrent(<List itemLayout="vertical">{materials}</List>)
   }
 
-  const onMaterialSelect = (material) => {
+  const onMaterialSelect = (material: {
+    label: string
+    children: {
+      label: string
+      symbol: string
+      value: number
+    }[]
+  }) => {
     onSelect(material)
     setVisible(false)
   }

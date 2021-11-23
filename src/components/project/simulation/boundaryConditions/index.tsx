@@ -4,6 +4,8 @@ import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
 import { Card, Layout, Space, Typography } from 'antd'
 
+import { IGeometry, ISimulation } from '@/database/index.d'
+
 import { AddButton } from '@/components/assets/button'
 import List from './list'
 import BoundaryCondition from './boundaryCondition'
@@ -11,12 +13,13 @@ import BoundaryCondition from './boundaryCondition'
 import { useDispatch } from 'react-redux'
 import { enable, disable, setType, setPart } from '@/store/select/action'
 
-/**
- * Errors
- * @memberof Components.Project.Simulation.BoundaryConditions
- */
-const errors = {
-  updateError: 'Unable to update the simulation'
+interface IProps {
+  geometry: IGeometry
+  simulation: ISimulation
+  swr: {
+    mutateOneSimulation: Function
+  }
+  setVisible: Function
 }
 
 /**
@@ -24,11 +27,18 @@ const errors = {
  * @memberof Components.Project.Simulation.BoundaryConditions
  * @param {Object} props Props `{ geometry, simulation, swr, setVisible }`
  */
-const BoundaryConditions = ({ geometry, simulation, swr, setVisible }) => {
+const BoundaryConditions = ({
+  geometry,
+  simulation,
+  swr,
+  setVisible
+}: IProps): JSX.Element => {
   // State
-  const [boundaryCondition, setBoundaryCondition] = useState()
-  const [boundaryConditionVisible, setBoundaryConditionVisible] =
-    useState(false)
+  const [boundaryCondition, setBoundaryCondition]: [{}, Function] = useState()
+  const [boundaryConditionVisible, setBoundaryConditionVisible]: [
+    boolean,
+    Function
+  ] = useState(false)
 
   // Store
   const dispatch = useDispatch()
@@ -43,7 +53,10 @@ const BoundaryConditions = ({ geometry, simulation, swr, setVisible }) => {
     dispatch(setPart(geometry?.summary.uuid))
   }, [geometry])
 
-  const onAdd = () => {
+  /**
+   * On add
+   */
+  const onAdd = (): void => {
     setBoundaryCondition()
 
     setBoundaryConditionVisible(true)
@@ -51,7 +64,12 @@ const BoundaryConditions = ({ geometry, simulation, swr, setVisible }) => {
     dispatch(enable())
   }
 
-  const onEdit = (type, index) => {
+  /**
+   * On edit
+   * @param type Type
+   * @param index Index
+   */
+  const onEdit = (type: string, index: number): void => {
     const boundaryConditionToEdit = boundaryConditions[type].values[index]
     setBoundaryCondition(boundaryConditionToEdit)
 
@@ -60,7 +78,10 @@ const BoundaryConditions = ({ geometry, simulation, swr, setVisible }) => {
     dispatch(enable())
   }
 
-  const onClose = () => {
+  /**
+   * On close
+   */
+  const onClose = (): void => {
     setBoundaryConditionVisible(false)
 
     setVisible(true)

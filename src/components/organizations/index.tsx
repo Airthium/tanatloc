@@ -24,7 +24,7 @@ interface IProps {
 /**
  * Organizations
  * @memberof Components.Organizations
- * @param {Object} props Props `{ user, organizations, swr }`
+ * @param props Props
  */
 const Organizations = ({ user, organizations, swr }: IProps): JSX.Element => {
   // State

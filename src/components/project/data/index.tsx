@@ -1,7 +1,16 @@
 /** @namespace Components.Project.Data */
 
 import { useState, useEffect } from 'react'
-import { Button, Checkbox, Drawer, Layout, Space, Table, Tooltip } from 'antd'
+import {
+  Button,
+  Checkbox,
+  Drawer,
+  Layout,
+  Space,
+  Table,
+  TableColumnsType,
+  Tooltip
+} from 'antd'
 import {
   FileTextOutlined,
   LineChartOutlined,
@@ -31,8 +40,8 @@ interface IProps {
 /**
  * Camelize
  * @memberof Components.Project.Data
- * @param {string} str String
- * @returns {string} Camelized string
+ * @param str String
+ * @returns Camelized string
  */
 const camelize = (str: string): string => {
   return str.replace(/\W+(.)/g, (_, chr) => {
@@ -43,7 +52,7 @@ const camelize = (str: string): string => {
 /**
  * Data visualization
  * @memberof Components.Project.Data
- * @param {Object} props Props `{ simulation }`
+ * @param props Props
  */
 const Data = ({ simulation }: IProps): JSX.Element => {
   // State
@@ -52,12 +61,16 @@ const Data = ({ simulation }: IProps): JSX.Element => {
     { names: string[]; camelNames: string[] },
     Function
   ] = useState()
-  const [table, setTable]: [{ columns; data }, Function] = useState()
+  const [table, setTable]: [{ columns: TableColumnsType; data }, Function] =
+    useState()
   const [columnSelection, setColumnSelection]: [
     { checked: boolean }[],
     Function
   ] = useState([])
-  const [plot, setPlot]: [{ data; min; max; lines }, Function] = useState()
+  const [plot, setPlot]: [
+    { data: { x: number }[]; min: number; max: number; lines: JSX.Element[] },
+    Function
+  ] = useState()
   const [downloading, setDownloading]: [boolean, Function] = useState(false)
 
   // Data

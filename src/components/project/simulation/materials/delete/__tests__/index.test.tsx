@@ -31,6 +31,12 @@ describe('components/project/simulation/materials/delete', () => {
   const simulation = {
     id: 'id',
     scheme: {
+      category: 'category',
+      name: 'name',
+      algorithm: 'algorithm',
+      code: 'code',
+      version: 'version',
+      description: 'description',
       configuration: {
         materials: {
           values: [

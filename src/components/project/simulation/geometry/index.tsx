@@ -4,9 +4,21 @@ import { Card, Collapse, Space, Typography } from 'antd'
 import { SelectOutlined } from '@ant-design/icons'
 import { MathJax } from 'better-react-mathjax'
 
+import { IGeometry, ISimulation } from '@/database/index.d'
+
 import { Error as ErrorNotification } from '@/components/assets/notification'
 
 import SimulationAPI from '@/api/simulation'
+
+interface IProps {
+  geometries: IGeometry[]
+  geometry?: IGeometry
+  simulation: ISimulation
+  setGeometry: Function
+  swr: {
+    mutateOneSimulation: Function
+  }
+}
 
 /**
  * Errors (geometry)
@@ -19,11 +31,19 @@ const errors = {
 /**
  * Geometry
  * @memberof Components.Project.Simulation
- * @param {Object} props Props `{ geometries, geometry, simulation, setGeometry, swr }`
+ * @param props Props
  */
-const Geometry = ({ geometries, geometry, simulation, setGeometry, swr }) => {
+const Geometry = ({
+  geometries,
+  geometry,
+  simulation,
+  setGeometry,
+  swr
+}: IProps): JSX.Element => {
   // State
-  const [geometriesList, setGeometryList] = useState([])
+  const [geometriesList, setGeometryList]: [IGeometry[], Function] = useState(
+    []
+  )
 
   useEffect(() => {
     const simulationGeometryId = simulation.scheme.configuration.geometry.value
@@ -89,7 +109,7 @@ const Geometry = ({ geometries, geometry, simulation, setGeometry, swr }) => {
    * On select
    * @param {number} index Index
    */
-  const onSelect = async (id) => {
+  const onSelect = async (id: string): Promise<void> => {
     try {
       const newSimulation = { ...simulation }
 

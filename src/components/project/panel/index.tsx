@@ -6,7 +6,7 @@ import { CloseOutlined } from '@ant-design/icons'
 interface IProps {
   visible: boolean
   title: string
-  children: ReactChild | ReactChild[]
+  children?: ReactChild | ReactChild[]
   onClose: Function
 }
 

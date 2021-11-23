@@ -6,7 +6,7 @@ import { PlusCircleOutlined } from '@ant-design/icons'
 interface IProps {
   disabled?: boolean
   loading?: boolean
-  children: ReactChild | ReactChild[]
+  children?: ReactChild | ReactChild[]
   onAdd: Function
 }
 

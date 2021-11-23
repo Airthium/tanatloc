@@ -1,14 +1,7 @@
 import React from 'react'
 import { fireEvent, render, screen } from '@testing-library/react'
 
-import List from '@/components/project/simulation/materials/list'
-
-const mockEditButton = jest.fn()
-jest.mock('@/components/assets/button', () => ({
-  EditButton: (props) => mockEditButton(props)
-}))
-
-jest.mock('../../delete', () => () => <div />)
+import List from '@/components/project/simulation/boundaryConditions/list'
 
 jest.mock('react-redux', () => ({
   useDispatch: () => jest.fn()
@@ -23,35 +16,48 @@ jest.mock('@/store/select/action', () => ({
   select: () => mockSelect()
 }))
 
-describe('components/project/simulation/materials/list', () => {
+const mockEditButton = jest.fn()
+jest.mock('@/components/assets/button', () => ({
+  EditButton: (props) => mockEditButton(props)
+}))
+
+jest.mock('../../delete', () => () => <div />)
+
+describe('components/project/simulation/boundaryConditions/list', () => {
   const simulation = {
     id: 'id',
     scheme: {
+      category: 'category',
+      name: 'name',
+      algorithm: 'algorithm',
+      code: 'code',
+      version: 'version',
+      description: 'description',
       configuration: {
-        materials: {
+        boundaryConditions: {
           title: 'title',
-          values: [
-            {
-              selected: ['uuid'],
-              material: { label: 'name' }
-            }
-          ]
+          key: {
+            values: [
+              {
+                name: 'name',
+                selected: ['uuid']
+              }
+            ]
+          }
         }
       }
     }
   }
-  const swr = {
-    mutateOneSimulation: jest.fn()
-  }
+  const swr = { mutateOneSimulation: jest.fn() }
   const onEdit = jest.fn()
 
   beforeEach(() => {
-    mockEditButton.mockReset()
-    mockEditButton.mockImplementation(() => <div />)
-
     mockEnable.mockReset()
     mockDisable.mockReset()
     mockSelect.mockReset()
+
+    mockEditButton.mockReset()
+    mockEditButton.mockImplementation(() => <div />)
 
     onEdit.mockReset()
   })
@@ -80,7 +86,10 @@ describe('components/project/simulation/materials/list', () => {
   })
 
   test('Edit', () => {
-    global.setTimeout = (callback) => callback()
+    Object.defineProperty(global, 'setTimeout', {
+      value: (callback: Function) => callback()
+    })
+
     mockEditButton.mockImplementation((props) => (
       <div role="EditButton" onClick={props.onEdit} />
     ))
@@ -96,7 +105,8 @@ describe('components/project/simulation/materials/list', () => {
 
   test('empty simulation', () => {
     const { unmount } = render(
-      <List simulation={{ id: 'id' }} swr={swr} onEdit={onEdit} />
+      //@ts-ignore
+      <List simulation={{}} swr={swr} onEdit={onEdit} />
     )
 
     unmount()

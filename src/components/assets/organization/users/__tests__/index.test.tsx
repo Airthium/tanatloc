@@ -1,5 +1,5 @@
 import React from 'react'
-import { fireEvent, render, screen } from '@testing-library/react'
+import { render } from '@testing-library/react'
 
 import Users from '..'
 
@@ -19,7 +19,7 @@ describe('components/assets/organization/users', () => {
   }
   const swr = {
     mutateOneOrganization: jest.fn(),
-    loadingOrganizations: jest.fn()
+    loadingOrganizations: false
   }
 
   beforeEach(() => {

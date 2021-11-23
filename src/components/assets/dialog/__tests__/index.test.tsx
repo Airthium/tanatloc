@@ -31,6 +31,7 @@ describe('components/assets/dialog', () => {
         }),
         resetFields: () => mockResetFields(),
         setFieldsValue: () => mockSetFieldsValue(),
+        //@ts-ignore
         validateFields: async () => ({}),
         __INTERNAL__: {
           itemRef: jest.fn()
@@ -108,6 +109,7 @@ describe('components/assets/dialog', () => {
     // Error
     antd.Form.useForm = () => [
       {
+        //@ts-ignore
         validateFields: async () => ({}),
         resetFields: () => {
           throw new Error()

@@ -257,7 +257,7 @@ const BoundaryCondition = ({
           direction="horizontal"
           style={{ width: '100%', justifyContent: 'flex-end' }}
         >
-          <Button type="danger" onClick={onClose}>
+          <Button danger onClick={onClose}>
             Cancel
           </Button>
           {boundaryCondition ? (

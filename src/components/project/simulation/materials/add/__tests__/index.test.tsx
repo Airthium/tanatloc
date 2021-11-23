@@ -15,11 +15,18 @@ jest.mock('@/api/simulation', () => ({
 
 describe('components/project/simulation/materials/add', () => {
   const material = {
+    uuid: 'uuid',
     selected: ['uuid1', 'uuid3']
   }
   const simulation = {
     id: 'id',
     scheme: {
+      category: 'category',
+      name: 'name',
+      algorithm: 'algorithm',
+      code: 'code',
+      version: 'version',
+      description: 'description',
       configuration: {
         materials: {
           values: []
@@ -27,7 +34,12 @@ describe('components/project/simulation/materials/add', () => {
       }
     }
   }
-  const geometry = { solids: [{ uuid: 'uuid1' }, { uuid: 'uuid2' }] }
+  const geometry = {
+    solids: [
+      { uuid: 'uuid1', number: 1 },
+      { uuid: 'uuid2', number: 2 }
+    ]
+  }
   const swr = {
     mutateOneSimulation: jest.fn()
   }
@@ -96,6 +108,12 @@ describe('components/project/simulation/materials/add', () => {
         simulation={{
           id: 'id',
           scheme: {
+            category: 'category',
+            name: 'name',
+            algorithm: 'algorithm',
+            code: 'code',
+            version: 'version',
+            description: 'description',
             configuration: {
               materials: {}
             }

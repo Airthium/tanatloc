@@ -1,7 +1,7 @@
 /** @namespace Components.Assets.Dialog */
 
 import PropTypes from 'prop-types'
-import { CSSProperties, ReactChild, useEffect } from 'react'
+import { ReactChild, useEffect } from 'react'
 import { Form, Modal } from 'antd'
 
 import { BaseButtonProps } from 'antd/lib/button/button'
@@ -110,8 +110,8 @@ Dialog.propTypes = {
   okButtonProps: PropTypes.object,
   okButtonText: PropTypes.string,
   children: PropTypes.node.isRequired,
-  onCancel: PropTypes.func.isRequired,
-  onOk: PropTypes.func.isRequired
+  onCancel: PropTypes.func,
+  onOk: PropTypes.func
 }
 
 export default Dialog

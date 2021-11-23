@@ -1,10 +1,20 @@
 import { useState, useEffect } from 'react'
 import { Collapse, Layout, Select, Space, Spin, Typography } from 'antd'
 
+import { ISimulation } from '@/database/index.d'
+
 import Formula from '@/components/assets/formula'
 import { Error as ErrorNotification } from '@/components/assets/notification'
 
 import SimulationAPI from '@/api/simulation'
+
+interface IProps {
+  simulations: ISimulation[]
+  simulation?: ISimulation
+  swr: {
+    mutateOneSimulation: Function
+  }
+}
 
 /**
  * Errors (initialization)
@@ -17,15 +27,23 @@ const errors = {
 /**
  * Initialization
  * @memberof Components.Project.Simulation
- * @param {Object} props Props `{ simulations, simulation, swr }`
+ * @param props Props
  */
-const Initialization = ({ simulations, simulation, swr }) => {
+const Initialization = ({
+  simulations,
+  simulation,
+  swr
+}: IProps): JSX.Element => {
   // State
-  const [loading, setLoading] = useState(false)
-  const [currentKey, setCurrentKey] = useState()
-  const [values, setValues] = useState([])
-  const [couplingSimulation, setCouplingSimulation] = useState()
-  const [couplingResults, setCouplingResults] = useState()
+  const [loading, setLoading]: [boolean, Function] = useState(false)
+  const [currentKey, setCurrentKey]: [string, Function] = useState()
+  const [values, setValues]: [string[], Function] = useState([])
+  const [couplingSimulation, setCouplingSimulation]: [ISimulation, Function] =
+    useState()
+  const [couplingResults, setCouplingResults]: [
+    { label: string; value: string }[],
+    Function
+  ] = useState()
 
   // Data
   const subScheme = simulation?.scheme.configuration.initialization
@@ -36,9 +54,9 @@ const Initialization = ({ simulations, simulation, swr }) => {
 
   /**
    * On panel change
-   * @param {string} key Key
+   * @param key Key
    */
-  const onPanelChange = async (key) => {
+  const onPanelChange = async (key: string): Promise<void> => {
     setCurrentKey(key)
     try {
       // New simulation
@@ -72,7 +90,9 @@ const Initialization = ({ simulations, simulation, swr }) => {
    * Load results
    * @param {string} id Simulation id
    */
-  const loadResults = async (id) => {
+  const loadResults = async (
+    id: string
+  ): Promise<{ label: string; value: string }[]> => {
     const tasks = await SimulationAPI.tasks({ id })
 
     const results = []
@@ -154,7 +174,7 @@ const Initialization = ({ simulations, simulation, swr }) => {
     return results
   }
 
-  const setSimulation = (id) => {
+  const setSimulation = (id: string): void => {
     const simulationToCouple = simulations.find((s) => s.id === id)
     setCouplingSimulation(simulationToCouple)
   }

@@ -86,6 +86,7 @@ const Delete = ({ project, simulation, swr }: IProps): JSX.Element => {
 
 Delete.propTypes = {
   project: PropTypes.exact({
+    id: PropTypes.string.isRequired,
     simulations: PropTypes.array.isRequired
   }).isRequired,
   simulation: PropTypes.exact({

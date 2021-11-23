@@ -216,7 +216,7 @@ describe('components/assets/groups', () => {
     )
 
     res = swrProp({ swr: { addOneGroup: jest.fn } }, 'swr', 'Group')
-    expect(res).toBe()
+    expect(res).toBe(undefined)
 
     res = swrProp({ swr: {}, group: {} }, 'swr', 'Group')
     expect(res.message).toBe(
@@ -236,6 +236,6 @@ describe('components/assets/groups', () => {
       'swr',
       'Group'
     )
-    expect(res).toBe()
+    expect(res).toBe(undefined)
   })
 })

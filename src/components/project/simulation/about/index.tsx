@@ -13,8 +13,8 @@ import Delete from '../delete'
 import SimulationAPI from '@/api/simulation'
 
 interface IProps {
-  project: IProjectWithData
-  simulation: ISimulation
+  project?: IProjectWithData
+  simulation?: ISimulation
   swr: {
     mutateProject: Function
     addOneSimulation: Function
@@ -34,12 +34,12 @@ const errors = {
 /**
  * About
  * @memberof Components.Project.Simulation
- * @param {Object} props Props `{ project, simulation, swr }`
+ * @param props Props
  */
 const About = ({ project, simulation, swr }: IProps): JSX.Element => {
   /**
    * Handle name
-   * @param {string} name Name
+   * @param name Name
    */
   const handleName = async (name: string): Promise<void> => {
     try {
@@ -61,10 +61,16 @@ const About = ({ project, simulation, swr }: IProps): JSX.Element => {
   /**
    * Render
    */
-  return (
-    <Layout>
-      <Layout.Content>
-        {simulation ? (
+  if (!project || !simulation)
+    return (
+      <Card>
+        <Spin />
+      </Card>
+    )
+  else
+    return (
+      <Layout>
+        <Layout.Content>
           <Card
             title={
               <Typography.Title
@@ -81,7 +87,10 @@ const About = ({ project, simulation, swr }: IProps): JSX.Element => {
             actions={[
               <Copy
                 key="copy"
-                project={project}
+                project={{
+                  id: project.id,
+                  simulations: project.simulations
+                }}
                 simulation={simulation}
                 swr={{
                   mutateProject: swr.mutateProject,
@@ -90,7 +99,7 @@ const About = ({ project, simulation, swr }: IProps): JSX.Element => {
               />,
               <Delete
                 key="delete"
-                project={{ simulations: project.simulations }}
+                project={{ id: project.id, simulations: project.simulations }}
                 simulation={{ id: simulation.id, name: simulation.name }}
                 swr={{
                   mutateProject: swr.mutateProject,
@@ -122,14 +131,9 @@ const About = ({ project, simulation, swr }: IProps): JSX.Element => {
               </MathJax>
             </Space>
           </Card>
-        ) : (
-          <Card>
-            <Spin />
-          </Card>
-        )}
-      </Layout.Content>
-    </Layout>
-  )
+        </Layout.Content>
+      </Layout>
+    )
 }
 
 About.propTypes = {

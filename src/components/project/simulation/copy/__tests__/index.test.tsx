@@ -22,6 +22,12 @@ describe('components/project/simulation/copy', () => {
     id: 'id',
     name: 'name',
     scheme: {
+      category: 'category',
+      name: 'name',
+      description: 'description',
+      algorithm: 'algorithm',
+      code: 'code',
+      version: 'version',
       configuration: {
         run: {}
       }
@@ -82,7 +88,15 @@ describe('components/project/simulation/copy', () => {
         simulation={{
           id: 'id',
           name: 'name',
-          scheme: {}
+          scheme: {
+            category: 'category',
+            name: 'name',
+            description: 'description',
+            algorithm: 'algorithm',
+            code: 'code',
+            version: 'version',
+            configuration: undefined
+          }
         }}
         swr={swr}
       />

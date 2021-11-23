@@ -29,7 +29,7 @@ const errors = {
 /**
  * Add project
  * @memberof Components.Project
- * @param {Object} props Props `{ workspace, swr }`
+ * @param props Props
  */
 const Add = ({ workspace, swr }: IProps): JSX.Element => {
   // State
@@ -38,7 +38,7 @@ const Add = ({ workspace, swr }: IProps): JSX.Element => {
 
   /**
    * On add
-   * @param {Object} values Values
+   * @param values Values
    */
   const onAdd = async (values: {
     title: string

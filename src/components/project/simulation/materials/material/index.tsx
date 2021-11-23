@@ -2,6 +2,8 @@ import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
 import { Button, Card, Drawer, Space, Typography } from 'antd'
 
+import { ISimulation } from '@/database/index.d'
+
 import { GoBack } from '@/components/assets/button'
 import Formula from '@/components/assets/formula'
 import Selector from '@/components/assets/selector'
@@ -9,6 +11,26 @@ import Selector from '@/components/assets/selector'
 import DataBase from '../database'
 import Add from '../add'
 import Edit from '../edit'
+
+interface IProps {
+  visible: boolean
+  simulation: ISimulation
+  geometry: {
+    solids: {
+      uuid: string
+      number: number
+    }[]
+  }
+  materials: { children: { name: string; unit: string }[] }
+  material?: {
+    uuid: string
+    selected: {}[]
+  }
+  swr: {
+    mutateOneSimulation: Function
+  }
+  close: Function
+}
 
 /**
  * Material
@@ -23,10 +45,23 @@ const Material = ({
   material,
   swr,
   close
-}) => {
+}: IProps): JSX.Element => {
   // State
-  const [current, setCurrent] = useState(material)
-  const [disabled, setDisabled] = useState(true)
+  const [current, setCurrent]: [
+    {
+      uuid: string
+      material?: {
+        label: string
+        children: {
+          symbol: string
+          value: string
+        }[]
+      }
+      selected: {}[]
+    },
+    Function
+  ] = useState(material)
+  const [disabled, setDisabled]: [boolean, Function] = useState(true)
 
   // Edit
   useEffect(() => {
@@ -109,7 +144,7 @@ const Material = ({
           direction="horizontal"
           style={{ width: '100%', justifyContent: 'flex-end' }}
         >
-          <Button type="danger" onClick={onClose}>
+          <Button danger onClick={onClose}>
             Cancel
           </Button>
           {material ? (

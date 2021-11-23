@@ -2,9 +2,30 @@ import PropTypes from 'prop-types'
 import { useState } from 'react'
 import { Button } from 'antd'
 
+import { ISimulation } from '@/database/index.d'
+
 import { Error } from '@/components/assets/notification'
 
 import SimulationAPI from '@/api/simulation'
+
+interface IProps {
+  disabled?: boolean
+  material: {
+    uuid: string
+    selected: {}[]
+  }
+  simulation: ISimulation
+  geometry: {
+    solids: {
+      uuid: string
+      number: number
+    }[]
+  }
+  swr: {
+    mutateOneSimulation: Function
+  }
+  close: Function
+}
 
 /**
  * Errors (edit)
@@ -17,16 +38,23 @@ const errors = {
 /**
  * Edit material
  * @memberof Components.Project.Simulation.Materials
- * @param {Object} props Props `{ disabled, material, simulation, geometry, swr, close }`
+ * @param props Props
  */
-const Edit = ({ disabled, material, simulation, geometry, swr, close }) => {
+const Edit = ({
+  disabled,
+  material,
+  simulation,
+  geometry,
+  swr,
+  close
+}: IProps): JSX.Element => {
   // State
-  const [loading, setLoading] = useState()
+  const [loading, setLoading]: [boolean, Function] = useState(false)
 
   /**
    * On edit
    */
-  const onEdit = async () => {
+  const onEdit = async (): Promise<void> => {
     setLoading(true)
 
     try {

@@ -11,9 +11,17 @@ import SimulationAPI from '@/api/simulation'
 
 interface IProps {
   disabled?: boolean
-  material: {}
+  material: {
+    uuid: string
+    selected: {}[]
+  }
   simulation: ISimulation
-  geometry: {}
+  geometry: {
+    solids: {
+      uuid: string
+      number: number
+    }[]
+  }
   swr: {
     mutateOneSimulation: Function
   }
@@ -47,7 +55,7 @@ const Add = ({
   /**
    * On add
    */
-  const onAdd = async () => {
+  const onAdd = async (): Promise<void> => {
     setLoading(true)
 
     try {

@@ -25,7 +25,7 @@ interface IProps {
 /**
  * List
  * @memberof Components.Organizations
- * @param {Object} props Props `{ user, organizations, swr, setorganization }`
+ * @param props Props
  */
 const List = ({
   user,

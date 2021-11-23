@@ -42,6 +42,9 @@ const Archive = ({
   const [visible, setVisible]: [boolean, Function] = useState(false)
   const [loading, setLoading]: [boolean, Function] = useState(false)
 
+  /**
+   * On archive
+   */
   const onArchive = async (): Promise<void> => {
     setLoading(true)
     try {

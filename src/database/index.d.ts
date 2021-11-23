@@ -38,7 +38,11 @@ export interface IGeometry {
   glb?: string
   json?: string
   summary?: {
-    solids?: {}[]
+    uuid?: string
+    solids?: {
+      uuid: string
+      number: number
+    }[]
     faces?: {}[]
     edges?: {}[]
   }

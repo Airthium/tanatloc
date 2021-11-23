@@ -25,7 +25,7 @@ const errors = {
 /**
  * Add
  * @memberof Components.Organizations
- * @param {Object} props Props `{ swr }`
+ * @param props Props
  */
 const Add = ({ swr }: IProps): JSX.Element => {
   // State
@@ -34,7 +34,7 @@ const Add = ({ swr }: IProps): JSX.Element => {
 
   /**
    * On add
-   * @param {Object} values Values
+   * @param values Values
    */
   const onAdd = async (values: { name: string }): Promise<void> => {
     setLoading(true)

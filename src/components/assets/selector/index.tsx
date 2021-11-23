@@ -14,12 +14,29 @@ import { useSelector, useDispatch } from 'react-redux'
 import { highlight, unhighlight, select, unselect } from '@/store/select/action'
 import { SelectState } from '@/store/select/reducer'
 
-import { IGeometry } from '@/database/index.d'
-
 import Utils from '@/lib/utils'
 
 interface IProps {
-  geometry: IGeometry
+  geometry: {
+    faces?: {
+      uuid: string
+      number?: number
+      name?: string
+      color?: { r: number; g: number; b: number }
+    }[]
+    solids?: {
+      uuid: string
+      number?: number
+      name?: string
+      color?: { r: number; g: number; b: number }
+    }[]
+    edges?: {
+      uuid: string
+      number?: number
+      name?: string
+      color?: { r: number; g: number; b: number }
+    }[]
+  }
   alreadySelected?: Array<{
     label: string
     selected: Array<{ uuid: string }>

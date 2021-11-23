@@ -2,7 +2,8 @@
  * @jest-environment node
  */
 
-process.env.NODE_ENV = 'production'
+Object.defineProperty(process.env, 'NODE_ENV', { value: 'production' })
+export {}
 
 describe('config/sentry', () => {
   test('global', () => {

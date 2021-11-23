@@ -1,8 +1,10 @@
+import { IModel } from './index.d'
+
 /**
  * Stokes
  * @memberof Models
  */
-const Stokes = {
+const Stokes: IModel = {
   category: 'Fluid',
   name: 'Stokes',
   algorithm: 'stokes',

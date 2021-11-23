@@ -4,13 +4,17 @@ import isDocker from 'is-docker'
 /**
  * FreeFEM service
  * @memberof Services
- * @param {string} path Path
- * @param {string} script Script
- * @param {Function} callback Callback
+ * @param  path Path
+ * @param script Script
+ * @param callback Callback
  */
-const freefem = async (path, script, callback) => {
+const freefem = async (
+  path: string,
+  script: string,
+  callback: Function
+): Promise<number> => {
   return new Promise((resolve, reject) => {
-    let run
+    let run: any
 
     if (isDocker()) {
       run = spawn('ff-mpirun', [' -np', '1', script, '-ns'], {
@@ -37,19 +41,19 @@ const freefem = async (path, script, callback) => {
 
     callback({ pid: run.pid })
 
-    run.stdout.on('data', (data) => {
+    run.stdout.on('data', (data: Buffer) => {
       callback({ data: data.toString() })
     })
 
-    run.stderr.on('data', (data) => {
+    run.stderr.on('data', (data: Buffer) => {
       callback({ error: data.toString() })
     })
 
-    run.on('close', (code) => {
+    run.on('close', (code: number) => {
       resolve(code)
     })
 
-    run.on('error', (err) => {
+    run.on('error', (err: Error) => {
       reject(err)
     })
   })

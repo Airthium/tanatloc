@@ -1,6 +1,8 @@
+//@ts-nocheck
+
 /** @namespace Components.Project.View */
 
-import { useRef, useState, useEffect } from 'react'
+import { useRef, useState, useEffect, MutableRefObject } from 'react'
 import {
   Button,
   Divider,
@@ -40,6 +42,8 @@ import {
 } from 'three'
 import { v4 } from 'uuid'
 
+import { IProjectWithData } from '@/lib/index.d'
+
 import { Error as ErrorNotification } from '@/components/assets/notification'
 
 import { TrackballControls } from 'three/examples/jsm/controls/TrackballControls'
@@ -64,6 +68,12 @@ import { useSelector, useDispatch } from 'react-redux'
 import { highlight, select, unselect } from '@/store/select/action'
 import { SelectState } from '@/store/select/reducer'
 
+interface IProps {
+  loading: boolean
+  project: IProjectWithData
+  part: {}
+}
+
 /**
  * Errors
  * @memberof Components.Project.View
@@ -77,25 +87,25 @@ const errors = {
  * @memberof Components.Project.View
  * @param {Object} props Props `{ loading, project, part }`
  */
-const ThreeView = ({ loading, project, part }) => {
+const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
   // Ref
-  const mount = useRef(null)
-  const scene = useRef()
-  const camera = useRef()
-  const renderer = useRef()
-  const outlinePass = useRef()
-  const effectComposer = useRef()
-  const controls = useRef()
-  const gridHelper = useRef()
-  const selectionHelper = useRef()
-  const sectionViewHelper = useRef()
-  const colorbarHelper = useRef()
+  const mount: MutableRefObject<any> = useRef(null)
+  const scene: MutableRefObject<any> = useRef()
+  const camera: MutableRefObject<any> = useRef()
+  const renderer: MutableRefObject<any> = useRef()
+  const outlinePass: MutableRefObject<any> = useRef()
+  const effectComposer: MutableRefObject<any> = useRef()
+  const controls: MutableRefObject<any> = useRef()
+  const gridHelper: MutableRefObject<any> = useRef()
+  const selectionHelper: MutableRefObject<any> = useRef()
+  const sectionViewHelper: MutableRefObject<any> = useRef()
+  const colorbarHelper: MutableRefObject<any> = useRef()
 
   // State
-  const [transparent, setTransparent] = useState(false)
-  const [sectionView, setSectionView] = useState(false)
-  const [transform, setTransform] = useState('translate')
-  const [screenshot, setScreenshot] = useState(false)
+  const [transparent, setTransparent]: [boolean, Function] = useState(false)
+  const [sectionView, setSectionView]: [boolean, Function] = useState(false)
+  const [transform, setTransform]: [string, Function] = useState('translate')
+  const [screenshot, setScreenshot]: [boolean, Function] = useState(false)
 
   // Store
   const {
@@ -122,7 +132,7 @@ const ThreeView = ({ loading, project, part }) => {
 
     let width = currentMount.clientWidth
     let height = currentMount.clientHeight
-    let frameId
+    let frameId: number
 
     // Scene
     scene.current = new Scene()
@@ -242,7 +252,7 @@ const ThreeView = ({ loading, project, part }) => {
     /**
      * Handle resize
      */
-    const handleResize = () => {
+    const handleResize = (): void => {
       width = currentMount.clientWidth
       height = currentMount.clientHeight
       renderer.current.setSize(width, height)
@@ -269,7 +279,7 @@ const ThreeView = ({ loading, project, part }) => {
     /**
      * Animate
      */
-    const animate = () => {
+    const animate = (): void => {
       renderScene()
       /*frameId = */ requestAnimationFrame(animate)
     }
@@ -277,14 +287,14 @@ const ThreeView = ({ loading, project, part }) => {
     /**
      * Start animate
      */
-    const start = () => {
+    const start = (): void => {
       frameId = requestAnimationFrame(animate)
     }
 
     /**
      * Stop animate
      */
-    const stop = () => {
+    const stop = (): void => {
       cancelAnimationFrame(frameId)
       frameId = null
     }
@@ -518,9 +528,10 @@ const ThreeView = ({ loading, project, part }) => {
     const mesh = await loader.load(
       part,
       transparent,
-      sectionViewHelper.current.getClippingPlane(),
-      outlinePass.current
+      sectionViewHelper.current.getClippingPlane()
+      // outlinePass.current
     )
+    //TODO outlinepass
 
     // Scene
     scene.current.add(mesh)
@@ -817,8 +828,8 @@ const ThreeView = ({ loading, project, part }) => {
  */
 const View = ({ project, simulation, geometry, result }) => {
   // State
-  const [part, setPart] = useState()
-  const [loading, setLoading] = useState(false)
+  const [part, setPart]: [{ buffer: Buffer }, Function] = useState()
+  const [loading, setLoading]: [boolean, Function] = useState(false)
 
   // Part
   useEffect(() => {

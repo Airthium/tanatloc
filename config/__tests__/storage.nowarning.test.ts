@@ -2,12 +2,12 @@
  * @jest-environment node
  */
 
-process.env.STORAGE_PATH = 'storage'
-
-const config = require('../storage')
+Object.defineProperty(process.env, 'STORAGE_PATH', { value: 'storage' })
+export {}
 
 describe('config/storage', () => {
-  test('global', () => {
+  test('global', async () => {
+    const config = await import('../storage')
     expect(config.STORAGE).toBe('storage')
     expect(config.AVATAR).toBe('storage/avatar')
     expect(config.SIMULATION).toBe('storage/simulation')

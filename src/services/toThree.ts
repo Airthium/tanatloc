@@ -9,7 +9,11 @@ import isDocker from 'is-docker'
  * @param {string} fileIn In file
  * @param {string} pathOut Out path
  */
-const toThree = async (path, fileIn, pathOut) => {
+const toThree = async (
+  path: string,
+  fileIn: string,
+  pathOut: string
+): Promise<{ code: number; data: string; error: string }> => {
   let conversionCode = ''
 
   // Check extension
@@ -36,7 +40,7 @@ const toThree = async (path, fileIn, pathOut) => {
 
   // Convert
   return new Promise((resolve, reject) => {
-    let run
+    let run: any
     let data = ''
     let error = ''
 
@@ -59,15 +63,15 @@ const toThree = async (path, fileIn, pathOut) => {
       ])
     }
 
-    run.stdout.on('data', (stdout) => {
+    run.stdout.on('data', (stdout: Buffer) => {
       stdout && (data += stdout.toString())
     })
 
-    run.stderr.on('data', (stderr) => {
+    run.stderr.on('data', (stderr: Buffer) => {
       stderr && (error += stderr.toString())
     })
 
-    run.on('close', (code) => {
+    run.on('close', (code: any) => {
       resolve({
         code,
         data,
@@ -75,7 +79,7 @@ const toThree = async (path, fileIn, pathOut) => {
       })
     })
 
-    run.on('error', (err) => {
+    run.on('error', (err: Error) => {
       reject(err)
     })
   })

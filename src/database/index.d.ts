@@ -1,3 +1,5 @@
+import { IModel } from '@/models/index.d'
+
 export interface IDataBaseEntry {
   key: string
   value: any
@@ -190,7 +192,7 @@ export interface IPlugin {
   client?: {
     name?: string
     description?: string
-    models?: string[]
+    models?: IModel[]
     needInit?: boolean
     needReInit?: boolean
     configuration?: {

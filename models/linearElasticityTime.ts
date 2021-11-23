@@ -1,8 +1,10 @@
+import { IModel } from './index.d'
+
 /**
  * Linear elasticity (time dependent)
  * @memberof Models
  */
-const LinearElasticityTime = {
+const LinearElasticityTime: IModel = {
   category: 'Mechanics',
   name: 'Linear elasticity (time depedent)',
   algorithm: 'linearElasticityTime',
@@ -54,6 +56,7 @@ const LinearElasticityTime = {
         {
           label: 'Density',
           name: 'Rho',
+          htmlEntity: 'formula',
           default: 8050,
           unit: '$kg.m^{-3}'
         },

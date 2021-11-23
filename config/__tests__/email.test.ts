@@ -2,7 +2,7 @@
  * @jest-environment node
  */
 
-const config = require('../email')
+import * as config from '../email'
 
 describe('config/email', () => {
   test('global', () => {

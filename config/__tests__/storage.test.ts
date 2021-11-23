@@ -2,7 +2,7 @@
  * @jest-environment node
  */
 
-const config = require('../storage')
+import * as config from '../storage'
 
 jest.mock('os', () => ({
   homedir: () => '/homedir'

@@ -1,8 +1,10 @@
+import { IModel } from './index.d'
+
 /**
  * Poisson's equation
  * @memberof Models
  */
-const Poisson = {
+const Poisson: IModel = {
   category: 'Academic',
   name: "Poisson's equation",
   algorithm: 'poisson',
@@ -97,6 +99,7 @@ const Poisson = {
         children: [
           {
             label: 'u',
+            htmlEntity: 'formula',
             default: 0
           }
         ]
@@ -106,6 +109,7 @@ const Poisson = {
         children: [
           {
             label: 'du/dn',
+            htmlEntity: 'formula',
             default: 0
           }
         ]

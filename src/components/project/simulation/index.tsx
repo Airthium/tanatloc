@@ -8,6 +8,10 @@ import { addedDiff, updatedDiff } from 'deep-object-diff'
 import merge from 'lodash.merge'
 import { MathJax } from 'better-react-mathjax'
 
+import { IUserWithData } from '@/lib/index.d'
+import { IClientPlugin, ISimulation } from '@/database/index.d'
+import { IModel } from '@/models/index.d'
+
 import { Error as ErrorNotification } from '@/components/assets/notification'
 
 import About from './about'
@@ -22,6 +26,13 @@ import SimulationAPI from '@/api/simulation'
 import PluginsAPI from '@/api/plugins'
 
 import Models from '@/models'
+
+interface ISelectorProps {
+  visible: boolean
+  user: IUserWithData
+  onOk: Function
+  onCancel: Function
+}
 
 /**
  * Errors
@@ -39,10 +50,14 @@ const errors = {
  * @param {Object} models Models
  * @param {Object} plugins Plugins
  */
-const loadModels = (user, models, plugins) => {
+const loadModels = (
+  user: IUserWithData,
+  models: IModel[],
+  plugins: IClientPlugin[]
+) => {
   let allModels = models
 
-  plugins.map((plugin) => {
+  plugins.forEach((plugin) => {
     if (
       user?.authorizedplugins?.includes(plugin.key) &&
       plugin.category === 'Model'
@@ -58,12 +73,17 @@ const loadModels = (user, models, plugins) => {
  * @memberof Components.Project.Simulation
  * @param {Object} props Props `{ user, visible, onOk, onCancel }`
  */
-const Selector = ({ user, visible, onOk, onCancel }) => {
+const Selector = ({
+  visible,
+  user,
+  onOk,
+  onCancel
+}: ISelectorProps): JSX.Element => {
   // State
-  const [current, setCurrent] = useState()
-  const [loading, setLoading] = useState(false)
-  const [models, setModels] = useState([])
-  const [category, setCategory] = useState()
+  const [current, setCurrent]: [IModel, Function] = useState()
+  const [loading, setLoading]: [boolean, Function] = useState(false)
+  const [models, setModels]: [IModel[], Function] = useState([])
+  const [category, setCategory]: [string, Function] = useState()
 
   // Models
   useEffect(() => {
@@ -82,9 +102,9 @@ const Selector = ({ user, visible, onOk, onCancel }) => {
 
   /**
    * On select
-   * @param {Object} data Data { key }
+   * @param data Data
    */
-  const onSelect = ({ key }) => {
+  const onSelect = ({ key }: { key: string }): void => {
     const model = models.find((m) => m.algorithm === key)
     setCurrent({ ...model })
   }
@@ -92,7 +112,7 @@ const Selector = ({ user, visible, onOk, onCancel }) => {
   /**
    * On create
    */
-  const onCreate = async () => {
+  const onCreate = async (): Promise<void> => {
     setLoading(true)
     if (current) onOk(current)
     setLoading(false)
@@ -113,7 +133,7 @@ const Selector = ({ user, visible, onOk, onCancel }) => {
       okText="Create"
       okButtonProps={{ loading: loading }}
       onOk={onCreate}
-      onCancel={onCancel}
+      onCancel={() => onCancel()}
       width="80%"
     >
       <Layout>
@@ -123,7 +143,7 @@ const Selector = ({ user, visible, onOk, onCancel }) => {
               options={categories}
               allowClear
               placeholder="Category filter"
-              onChange={setCategory}
+              onChange={(value) => setCategory(value)}
             />
             {models.map((model) => {
               if (!category || model.category === category)
@@ -153,16 +173,24 @@ Selector.propTypes = {
   onCancel: PropTypes.func.isRequired
 }
 
+interface IUpdaterProps {
+  user: IUserWithData
+  simulation: ISimulation
+  swr: {
+    mutateOneSimulation: Function
+  }
+}
+
 /**
  * Simulation Updater
  * @memberof Components.Project.Simulation
  * @param {Object} props Props `{ user, simulation, swr }`
  */
-const Updater = ({ user, simulation, swr }) => {
+const Updater = ({ user, simulation, swr }: IUpdaterProps): JSX.Element => {
   // State
-  const [needUpdate, setNeedUpdate] = useState(false)
-  const [loading, setLoading] = useState(false)
-  const [models, setModels] = useState([])
+  const [needUpdate, setNeedUpdate]: [boolean, Function] = useState(false)
+  const [loading, setLoading]: [boolean, Function] = useState(false)
+  const [models, setModels]: [IModel[], Function] = useState([])
 
   // Models
   useEffect(() => {
@@ -196,7 +224,7 @@ const Updater = ({ user, simulation, swr }) => {
   /**
    * On update
    */
-  const onUpdate = async () => {
+  const onUpdate = async (): Promise<void> => {
     setLoading(true)
 
     try {

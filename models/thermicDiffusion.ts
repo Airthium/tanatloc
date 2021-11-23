@@ -1,8 +1,10 @@
+import { IModel } from './index.d'
+
 /**
  * Thermic diffusion
  * @memberof Models
  */
-const ThermicDiffusion = {
+const ThermicDiffusion: IModel = {
   category: 'Thermic',
   name: 'Thermal diffusion',
   algorithm: 'thermicDiffusion',

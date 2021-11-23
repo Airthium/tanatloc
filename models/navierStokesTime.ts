@@ -1,8 +1,10 @@
+import { IModel } from './index.d'
+
 /**
  * Navier-Stokes Time-dependant
  * @memberof Models
  */
-const NavierStokesTime = {
+const NavierStokesTime: IModel = {
   category: 'Fluid',
   name: 'Navier-Stokes time-dependant',
   algorithm: 'navierStokesTime',

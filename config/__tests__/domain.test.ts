@@ -2,7 +2,7 @@
  * @jest-environment node
  */
 
-const config = require('../domain')
+import * as config from '../domain'
 
 describe('config/domain', () => {
   test('global', () => {

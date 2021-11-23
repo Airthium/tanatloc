@@ -2,7 +2,7 @@
  * @jest-environment node
  */
 
-const config = require('../auth')
+import * as config from '../auth'
 
 describe('config/auth', () => {
   test('global', () => {

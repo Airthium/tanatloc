@@ -1,5 +1,9 @@
-import { useState, useEffect } from 'react'
+//@ts-nocheck
+
+import { useState, useEffect, ChangeEvent } from 'react'
 import { Button, Card, Drawer, Input, Radio, Space } from 'antd'
+
+import { ISimulation } from '@/database/index.d'
 
 import { GoBack } from '@/components/assets/button'
 import Formula from '@/components/assets/formula'
@@ -8,10 +12,24 @@ import Selector from '@/components/assets/selector'
 import Add from '../add'
 import Edit from '../edit'
 
+interface IProps {
+  visible: boolean
+  simulation: ISimulation
+  geometry: {}
+  boundaryConditions: {}[]
+  boundaryCondition?: {
+    name: string
+    selected: { uuid: string }[]
+    values: {}[]
+  }
+  swr: {}
+  close: Function
+}
+
 /**
  * Boundary condition
  * @memberof Components.Project.Simulation.BoundaryConditions
- * @param {Object} props Props `{ visible, simulation, geometry, boundaryConditions, boundaryCondition, swr, close }`
+ * @param props Props
  */
 const BoundaryCondition = ({
   visible,
@@ -21,13 +39,24 @@ const BoundaryCondition = ({
   boundaryCondition,
   swr,
   close
-}) => {
+}: IProps): JSX.Element => {
   // State
-  const [types, setTypes] = useState([])
-  const [alreadySelected, setAlreadySelected] = useState([])
-  const [totalNumber, setTotalNumber] = useState(0)
-  const [current, setCurrent] = useState(boundaryCondition)
-  const [disabled, setDisabled] = useState(true)
+  const [types, setTypes]: [
+    {
+      key: string
+      label: string
+      children: {}[]
+      values: {}[]
+    }[],
+    Function
+  ] = useState([])
+  const [alreadySelected, setAlreadySelected]: [{}[], Function] = useState([])
+  const [totalNumber, setTotalNumber]: [number, Function] = useState(0)
+  const [current, setCurrent]: [
+    { name: string; selected: {}[]; values: {}[] },
+    Function
+  ] = useState(boundaryCondition)
+  const [disabled, setDisabled]: [boolean, Function] = useState(true)
 
   // Types & already selected
   useEffect(() => {
@@ -98,7 +127,7 @@ const BoundaryCondition = ({
    * On name
    * @param {Object} event Event
    */
-  const onName = (event) => {
+  const onName = (event: ChangeEvent<HTMLInputElement>): void => {
     const name = event.target.value
     setCurrent({
       ...current,
@@ -110,7 +139,7 @@ const BoundaryCondition = ({
    * On type
    * @param {Object} event Event
    */
-  const onType = (event) => {
+  const onType = (event: ChangeEvent<HTMLInputElement>): void => {
     const key = event.target.value
     const type = types.find((t) => t.key === key)
     const values = boundaryConditions[key].children
@@ -136,7 +165,7 @@ const BoundaryCondition = ({
    * @param {number} index Index
    * @param {string} value Value
    */
-  const onValueChange = (index, value) => {
+  const onValueChange = (index: number, value): void => {
     setCurrent({
       ...current,
       values: [

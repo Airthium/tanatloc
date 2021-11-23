@@ -192,7 +192,7 @@ describe('components/assets/share', () => {
     )
 
     res = projectProps({ project: { id: 'id' } }, 'project', 'Share')
-    expect(res).toBe()
+    expect(res).toBe(undefined)
 
     // Workspace
     const workspaceProps = Share.propTypes.workspace
@@ -207,7 +207,7 @@ describe('components/assets/share', () => {
     )
 
     res = workspaceProps({ workspace: { id: 'id' } }, 'workspace', 'Share')
-    expect(res).toBe()
+    expect(res).toBe(undefined)
 
     // SWR
     const swrProps = Share.propTypes.swr
@@ -224,7 +224,7 @@ describe('components/assets/share', () => {
       'swr',
       'Share'
     )
-    expect(res).toBe()
+    expect(res).toBe(undefined)
 
     res = swrProps({ workspace: {}, swr: {} }, 'swr', 'Share')
     expect(res.message).toBe(
@@ -236,6 +236,6 @@ describe('components/assets/share', () => {
       'swr',
       'Share'
     )
-    expect(res).toBe()
+    expect(res).toBe(undefined)
   })
 })

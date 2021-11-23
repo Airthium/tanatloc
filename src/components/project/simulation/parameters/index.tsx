@@ -1,3 +1,5 @@
+//@ts-nocheck
+
 import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
 import {
@@ -10,10 +12,19 @@ import {
   Typography
 } from 'antd'
 
+import { ISimulation } from '@/database/index.d'
+
 import Formula from '@/components/assets/formula'
 import { Error as ErrorNotification } from '@/components/assets/notification'
 
 import SimulationAPI from '@/api/simulation'
+
+interface IProps {
+  simulation: ISimulation
+  swr: {
+    mutateOneSimulation: Function
+  }
+}
 
 /**
  * Errors (parameters)
@@ -26,11 +37,11 @@ const errors = {
 /**
  * Parameters
  * @memberof Components.Project.Simulation
- * @param {Object} props Props `{ simulation, swr }`
+ * @param props Props
  */
-const Parameters = ({ simulation, swr }) => {
+const Parameters = ({ simulation, swr }: IProps): JSX.Element => {
   // State
-  const [values, setValues] = useState({})
+  const [values, setValues]: [{}, Function] = useState({})
 
   // Data
   const subScheme = simulation?.scheme.configuration.parameters
@@ -42,7 +53,7 @@ const Parameters = ({ simulation, swr }) => {
     // Update local
     Object.keys(values).forEach((key) => {
       const deepValues = values[key]
-      deepValues.forEach((value, index) => {
+      deepValues.forEach((value: string, index: number) => {
         if (value !== undefined)
           newSimulation.scheme.configuration.parameters[key].children[
             index
@@ -77,11 +88,15 @@ const Parameters = ({ simulation, swr }) => {
 
   /**
    * On parameter change
-   * @param {string} key Parameter key
-   * @param {number} index Children index
-   * @param {string} value Value
+   * @param key Parameter key
+   * @param index Children index
+   * @param value Value
    */
-  const onChange = (key, index, value) => {
+  const onChange = (
+    key: string,
+    index: number,
+    value: boolean | string
+  ): void => {
     const deepValues = values[key] || []
     deepValues[index] = value
     const newValues = {
@@ -109,7 +124,7 @@ const Parameters = ({ simulation, swr }) => {
               defaultValue={
                 child.value === undefined ? child.default : child.value
               }
-              onValueChange={(value) => onChange(key, index, value)}
+              onValueChange={(value: string) => onChange(key, index, value)}
               unit={child.unit}
             />
           </Typography.Text>
@@ -121,7 +136,7 @@ const Parameters = ({ simulation, swr }) => {
             <Select
               options={child.options}
               defaultValue={child.value || child.default}
-              onChange={(value) => onChange(key, index, value)}
+              onChange={(value: string) => onChange(key, index, value)}
             />
           </Typography.Text>
         )
@@ -162,7 +177,7 @@ const Parameters = ({ simulation, swr }) => {
         <Space direction="vertical">
           {parameters}
           <Collapse>
-            <Collapse.Panel header="Advanced">
+            <Collapse.Panel key="advanced" header="Advanced">
               <Space direction="vertical">{advanced}</Space>
             </Collapse.Panel>
           </Collapse>

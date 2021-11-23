@@ -4,14 +4,19 @@ import isDocker from 'is-docker'
 /**
  * Gmsh service
  * @memberof Services
- * @param {string} path Path
- * @param {string} fileIn In file
- * @param {string} fileOut Out file
- * @param {Function} callback Callback
+ * @param path Path
+ * @param fileIn In file
+ * @param fileOut Out file
+ * @param callback Callback
  */
-const gmsh = async (path, fileIn, fileOut, callback) => {
+const gmsh = async (
+  path: string,
+  fileIn: string,
+  fileOut: string,
+  callback: Function
+): Promise<void> => {
   return new Promise((resolve, reject) => {
-    let run
+    let run: any
 
     if (isDocker()) {
       run = spawn(
@@ -44,19 +49,19 @@ const gmsh = async (path, fileIn, fileOut, callback) => {
 
     callback({ pid: run.pid })
 
-    run.stdout.on('data', (data) => {
+    run.stdout.on('data', (data: Buffer) => {
       callback({ data: data.toString() })
     })
 
-    run.stderr.on('data', (data) => {
+    run.stderr.on('data', (data: Buffer) => {
       callback({ error: data.toString() })
     })
 
-    run.on('close', (code) => {
+    run.on('close', (code: any) => {
       resolve(code)
     })
 
-    run.on('error', (err) => {
+    run.on('error', (err: Error) => {
       reject(err)
     })
   })

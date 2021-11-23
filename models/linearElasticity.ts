@@ -1,8 +1,10 @@
+import { IModel } from './index.d'
+
 /**
  * Linear elasticity
  * @memberof Models
  */
-const LinearElasticity = {
+const LinearElasticity: IModel = {
   category: 'Mechanics',
   name: 'Linear elasticity',
   algorithm: 'linearElasticity',

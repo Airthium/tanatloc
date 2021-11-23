@@ -1,3 +1,5 @@
+//@ts-nocheck
+
 import React from 'react'
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 
@@ -20,6 +22,12 @@ describe('components/project/simulation/parameters', () => {
   const simulation = {
     id: 'id',
     scheme: {
+      category: 'category',
+      name: 'name',
+      algorithm: 'algorithm',
+      code: 'code',
+      version: 'version',
+      description: 'description',
       configuration: {
         parameters: {
           index: 0,

@@ -3,13 +3,13 @@
  */
 
 Object.defineProperty(process, 'platform', {
-  value: 'darwin'
+  value: 'linux'
 })
-const config = require('../db')
+import * as config from '../db'
 
 describe('config/db', () => {
   test('global', () => {
-    expect(config.ADMIN).toBe(process.env.USER)
+    expect(config.ADMIN).toBe('postgres')
     expect(config.ADMIN_DATABASE).toBe('postgres')
     expect(config.ADMIN_PASSWORD).toBe('')
     expect(config.USER).toBe('tanatlocuser')

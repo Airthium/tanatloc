@@ -1,3 +1,5 @@
+//@ts-nocheck
+
 /** @namespace Components.Project */
 
 import { useRouter } from 'next/router'

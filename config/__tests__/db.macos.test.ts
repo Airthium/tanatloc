@@ -3,13 +3,14 @@
  */
 
 Object.defineProperty(process, 'platform', {
-  value: 'linux'
+  value: 'darwin'
 })
-const config = require('../db')
+export {}
 
 describe('config/db', () => {
   test('global', () => {
-    expect(config.ADMIN).toBe('postgres')
+    const config = require('../db')
+    expect(config.ADMIN).toBe(process.env.USER)
     expect(config.ADMIN_DATABASE).toBe('postgres')
     expect(config.ADMIN_PASSWORD).toBe('')
     expect(config.USER).toBe('tanatlocuser')
@@ -20,6 +21,7 @@ describe('config/db', () => {
   })
 
   test('tables', () => {
+    const config = require('../db')
     expect(config.tables.SYSTEM).toBe('tanatloc_system')
     expect(config.tables.USERS).toBe('tanatloc_users')
     expect(config.tables.ORGANIZATIONS).toBe('tanatloc_organizations')

@@ -1,3 +1,5 @@
+//@ts-nocheck
+
 import PropTypes from 'prop-types'
 import dynamic from 'next/dynamic'
 import { useState, useEffect } from 'react'

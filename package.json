@@ -50,7 +50,7 @@
     "@reduxjs/toolkit": "1.6.2",
     "@sentry/browser": "6.15.0",
     "@sentry/node": "6.15.0",
-    "@swc/cli": "0.1.51",
+    "@swc/cli": "0.1.52",
     "@swc/core": "1.2.111",
     "@swc/jest": "0.2.8",
     "@testing-library/react": "12.1.2",

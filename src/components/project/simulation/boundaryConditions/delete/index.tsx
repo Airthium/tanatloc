@@ -11,7 +11,7 @@ import { unselect } from '@/store/select/action'
 
 import SimulationAPI from '@/api/simulation'
 
-interface IProps {
+export interface IProps {
   simulation: ISimulation
   type: string
   index: number

@@ -17,7 +17,7 @@ import { Error as ErrorNotification } from '@/components/assets/notification'
 import WorkspaceAPI from '@/api/workspace'
 import ProjectAPI from '@/api/project'
 
-interface IProps {
+export interface IProps {
   disabled?: boolean
   workspace?: IWorkspaceWithData
   project?: IProjectWithData

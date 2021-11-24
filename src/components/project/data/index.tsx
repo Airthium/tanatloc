@@ -33,7 +33,7 @@ import Utils from '@/lib/utils'
 
 import SimulationAPI from '@/api/simulation'
 
-interface IProps {
+export interface IProps {
   simulation: ISimulation
 }
 

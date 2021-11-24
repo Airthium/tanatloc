@@ -5,7 +5,7 @@ import { PlusOutlined } from '@ant-design/icons'
 
 import Add from '@/components/workspace/add'
 
-interface IProps {
+export interface IProps {
   swr: {
     addOneWorkspace: Function
   }

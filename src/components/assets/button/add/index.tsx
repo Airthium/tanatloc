@@ -3,7 +3,7 @@ import { ReactChild } from 'react'
 import { Button, Tooltip } from 'antd'
 import { PlusCircleOutlined } from '@ant-design/icons'
 
-interface IProps {
+export interface IProps {
   disabled?: boolean
   loading?: boolean
   children?: ReactChild | ReactChild[]

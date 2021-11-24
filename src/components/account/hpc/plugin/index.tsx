@@ -13,7 +13,7 @@ import List from './list'
 
 import PluginAPI from '@/api/plugin'
 
-interface IProps {
+export interface IProps {
   plugin: IClientPlugin
 }
 

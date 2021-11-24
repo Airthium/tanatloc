@@ -14,7 +14,7 @@ import { Error as ErrorNotification } from '@/components/assets/notification'
 
 import GroupAPI from '@/api/group'
 
-interface IProps {
+export interface IProps {
   organization: IOrganizationWithData
 }
 

@@ -11,7 +11,7 @@ import { Error as ErrorNotification } from '@/components/assets/notification'
 
 import UserAPI from '@/api/user'
 
-interface IProps {
+export interface IProps {
   plugins: IClientPlugin[]
   swr: {
     addOneUser: Function

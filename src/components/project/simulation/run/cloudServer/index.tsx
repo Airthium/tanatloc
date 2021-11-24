@@ -14,7 +14,7 @@ import { Error as ErrorNotification } from '@/components/assets/notification'
 import PluginAPI from '@/api/plugin'
 import PluginsAPI from '@/api/plugins'
 
-interface IProps {
+export interface IProps {
   disabled?: boolean
   cloudServer: IModel['configuration']['run']['cloudServer']
   onOk: Function

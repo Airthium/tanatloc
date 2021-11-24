@@ -10,7 +10,7 @@ import { Error as ErrorNotification } from '@/components/assets/notification'
 
 import PluginAPI from '@/api/plugin'
 
-interface IProps {
+export interface IProps {
   plugin: IClientPlugin
   swr: {
     addOnePlugin?: Function

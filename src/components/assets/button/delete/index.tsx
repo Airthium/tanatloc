@@ -5,7 +5,7 @@ import { DeleteOutlined } from '@ant-design/icons'
 
 import { DeleteDialog } from '@/components/assets/dialog'
 
-interface IProps {
+export interface IProps {
   disabled?: boolean
   loading?: boolean
   text?: string

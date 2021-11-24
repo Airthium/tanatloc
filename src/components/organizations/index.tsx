@@ -10,7 +10,7 @@ import Add from './add'
 import List from './list'
 import Organization from '@/components/assets/organization'
 
-interface IProps {
+export interface IProps {
   user: IUserWithData
   organizations: IOrganizationWithData[]
   swr: {

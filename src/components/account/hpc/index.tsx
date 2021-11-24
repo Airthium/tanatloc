@@ -10,7 +10,7 @@ import PluginsAPI from '@/api/plugins'
 
 import Plugin from './plugin'
 
-interface IProps {
+export interface IProps {
   user: IUserWithData
 }
 

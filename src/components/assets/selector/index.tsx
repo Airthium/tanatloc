@@ -16,7 +16,7 @@ import { SelectState } from '@/store/select/reducer'
 
 import Utils from '@/lib/utils'
 
-interface IProps {
+export interface IProps {
   geometry: {
     faces?: {
       uuid: string

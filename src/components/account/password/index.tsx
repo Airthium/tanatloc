@@ -12,7 +12,7 @@ import {
 
 import UserAPI from '@/api/user'
 
-interface IProps {
+export interface IProps {
   user: IUserWithData
 }
 

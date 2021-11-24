@@ -10,7 +10,7 @@ import { Error as ErrorNotification } from '@/components/assets/notification'
 
 import OrganizationAPI from '@/api/organization'
 
-interface IProps {
+export interface IProps {
   disabled?: boolean
   user: IUserWithData
   organization: IOrganizationWithData

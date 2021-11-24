@@ -14,7 +14,7 @@ import Delete from './delete'
 
 import GroupAPI from '@/api/group'
 
-interface IProps {
+export interface IProps {
   userOptions: string[]
   organization: IOrganizationWithData
   group?: IGroupWithData

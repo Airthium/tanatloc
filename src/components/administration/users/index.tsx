@@ -16,7 +16,7 @@ import Add from './add'
 import Edit from './edit'
 import Delete from './delete'
 
-interface IProps {
+export interface IProps {
   users: Array<IUserWithData>
   swr: {
     addOneUser: Function

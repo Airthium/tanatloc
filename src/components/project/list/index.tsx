@@ -28,7 +28,7 @@ import Archive from '../archive'
 
 import Utils from '@/lib/utils'
 
-interface IProps {
+export interface IProps {
   user: IUserWithData
   page: string
   workspace: IWorkspaceWithData

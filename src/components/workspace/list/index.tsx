@@ -8,7 +8,7 @@ import { IOrganizationWithData, IWorkspaceWithData } from '@/lib/index.d'
 import Workspace from '..'
 import Add from '../add'
 
-interface IProps {
+export interface IProps {
   user: {}
   workspaces: IWorkspaceWithData[]
   organizations: IOrganizationWithData[]

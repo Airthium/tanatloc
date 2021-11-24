@@ -21,7 +21,7 @@ import Edit from './edit'
 
 import GeometryAPI from '@/api/geometry'
 
-interface IProps {
+export interface IProps {
   project: IProjectWithData
   geometry: IGeometry
   swr: {

@@ -11,7 +11,7 @@ import {
 
 import SystemAPI from '@/api/system'
 
-interface IProps {
+export interface IProps {
   labelCol?: {}
   wrapperCol?: {}
   name?: string

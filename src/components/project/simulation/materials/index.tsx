@@ -14,7 +14,7 @@ import Material from './material'
 import { useDispatch } from 'react-redux'
 import { enable, disable, setType, setPart } from '@/store/select/action'
 
-interface IProps {
+export interface IProps {
   geometry?: IGeometry
   simulation: ISimulation
   swr: {

@@ -3,7 +3,7 @@
 import { useRouter } from 'next/router'
 import { Layout, Typography } from 'antd'
 
-interface IProps {
+export interface IProps {
   statusCode?: number
 }
 

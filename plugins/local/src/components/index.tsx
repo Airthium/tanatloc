@@ -2,7 +2,7 @@ import PropTypes from 'prop-types'
 import { Button, Typography, Space } from 'antd'
 import { SelectOutlined } from '@ant-design/icons'
 
-interface IProps {
+export interface IProps {
   onSelect: Function
 }
 

@@ -6,7 +6,7 @@ import { IGeometry } from '@/database/index.d'
 
 import Dialog from '@/components/assets/dialog'
 
-interface IProps {
+export interface IProps {
   visible: boolean
   geometry: IGeometry
   setVisible: Function

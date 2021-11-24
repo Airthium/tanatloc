@@ -11,7 +11,7 @@ import Delete from '../delete'
 import { useDispatch } from 'react-redux'
 import { enable, disable, select } from '@/store/select/action'
 
-interface IProps {
+export interface IProps {
   simulation: ISimulation
   swr: {
     mutateOneSimulation: Function

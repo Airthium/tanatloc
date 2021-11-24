@@ -124,23 +124,6 @@ export interface IProject {
   workspace?: string
 }
 
-// export interface ISimulationScheme {
-//   category: string
-//   name: string
-//   algorithm: string
-//   code: string
-//   version: string
-//   description: string
-//   configuration: {
-//     geometry?: any
-//     materials?: any
-//     parameters?: any
-//     initialization?: any
-//     boundaryConditions?: any
-//     run?: any
-//   }
-// }
-
 export interface ISimulationTask {
   index?: number
   label: string

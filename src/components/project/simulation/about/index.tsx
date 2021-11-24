@@ -12,7 +12,7 @@ import Delete from '../delete'
 
 import SimulationAPI from '@/api/simulation'
 
-interface IProps {
+export interface IProps {
   project?: IProjectWithData
   simulation?: ISimulation
   swr: {

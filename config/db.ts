@@ -62,7 +62,7 @@ export const DATABASE: string = process.env.DB_DATABASE || 'tanatloc2'
  */
 export const PASSWORD: string = process.env.DB_PASSWORD || 'tanatloc'
 
-interface Tables {
+export interface Tables {
   SYSTEM: string
   USERS: string
   ORGANIZATIONS: string
@@ -94,7 +94,7 @@ export const tables: Tables = {
   WAIT: 'tanatloc_wait'
 }
 
-interface Scheme {
+export interface Scheme {
   [key: string]: {
     name: string
     type: string

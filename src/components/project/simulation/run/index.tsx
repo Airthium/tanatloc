@@ -32,7 +32,7 @@ import CloudServer from './cloudServer'
 import SimulationAPI from '@/api/simulation'
 import ResultAPI from '@/api/result'
 
-interface IProps {
+export interface IProps {
   simulation: ISimulation
   result: {
     fileName: string

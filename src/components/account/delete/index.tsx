@@ -9,7 +9,7 @@ import { DeleteDialog } from '@/components/assets/dialog'
 import UserAPI from '@/api/user'
 import { logout } from '@/api/logout'
 
-interface IProps {
+export interface IProps {
   swr: {
     mutateUser: Function
   }

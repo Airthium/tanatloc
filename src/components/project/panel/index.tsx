@@ -3,7 +3,7 @@ import { ReactChild } from 'react'
 import { Button, Card } from 'antd'
 import { CloseOutlined } from '@ant-design/icons'
 
-interface IProps {
+export interface IProps {
   visible: boolean
   title: string
   children?: ReactChild | ReactChild[]

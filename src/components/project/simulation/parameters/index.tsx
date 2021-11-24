@@ -18,7 +18,7 @@ import { Error as ErrorNotification } from '@/components/assets/notification'
 
 import SimulationAPI from '@/api/simulation'
 
-interface IProps {
+export interface IProps {
   simulation: ISimulation
   swr: {
     mutateOneSimulation: Function

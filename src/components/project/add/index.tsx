@@ -10,7 +10,7 @@ import ProjectAPI from '@/api/project'
 
 import { IWorkspaceWithData } from '@/lib'
 
-interface IProps {
+export interface IProps {
   workspace: IWorkspaceWithData
   swr: {
     mutateOneWorkspace: Function

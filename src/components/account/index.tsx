@@ -11,7 +11,7 @@ import Password from './password'
 import Delete from './delete'
 import HPC from './hpc'
 
-interface IProps {
+export interface IProps {
   user: IUserWithData
   swr: {
     mutateUser: Function

@@ -8,7 +8,7 @@ import { BaseButtonProps } from 'antd/lib/button/button'
 
 import DeleteDialog from './delete'
 
-interface IProps {
+export interface IProps {
   visible: boolean
   closable?: boolean
   loading?: boolean

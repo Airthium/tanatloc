@@ -12,7 +12,7 @@ import Delete from '../delete'
 
 import Utils from '@/lib/utils'
 
-interface IProps {
+export interface IProps {
   user: IUserWithData
   organizations: IOrganizationWithData[]
   swr: {

@@ -3,7 +3,7 @@ import { ReactChild } from 'react'
 import { Button } from 'antd'
 import { ArrowLeftOutlined } from '@ant-design/icons'
 
-interface IProps {
+export interface IProps {
   children?: ReactChild | ReactChild[]
   onClick: () => void
 }

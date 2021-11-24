@@ -8,7 +8,7 @@ import { Error } from '@/components/assets/notification'
 
 import UserAPI from '@/api/user'
 
-interface IProps {
+export interface IProps {
   user: {
     id: string
     email: string

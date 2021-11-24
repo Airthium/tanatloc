@@ -8,7 +8,7 @@ import { Error } from '@/components/assets/notification'
 
 import WorkspaceAPI from '@/api/workspace'
 
-interface IProps {
+export interface IProps {
   workspace: {
     id: string
   }

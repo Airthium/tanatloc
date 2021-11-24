@@ -3,7 +3,7 @@ import { Button, Tooltip } from 'antd'
 import { DownloadOutlined } from '@ant-design/icons'
 import { ReactChild } from 'react'
 
-interface IProps {
+export interface IProps {
   disabled?: boolean
   loading?: boolean
   children?: ReactChild | ReactChild[]

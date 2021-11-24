@@ -13,7 +13,7 @@ import DataBase from '../database'
 import Add from '../add'
 import Edit from '../edit'
 
-interface IProps {
+export interface IProps {
   visible: boolean
   simulation: ISimulation
   geometry: {

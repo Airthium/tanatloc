@@ -11,7 +11,7 @@ import { enable, disable, select } from '@/store/select/action'
 
 import Delete from '../delete'
 
-interface IProps {
+export interface IProps {
   simulation: ISimulation
   swr: {
     mutateOneSimulation: Function

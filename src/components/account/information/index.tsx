@@ -16,7 +16,7 @@ import Utils from '@/lib/utils'
 import UserAPI from '@/api/user'
 import AvatarAPI from '@/api/avatar'
 
-interface IProps {
+export interface IProps {
   user: IUserWithData
   swr: {
     mutateUser: Function

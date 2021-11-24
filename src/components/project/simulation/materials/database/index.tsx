@@ -11,7 +11,7 @@ import {
 } from 'antd'
 import { DatabaseOutlined, SelectOutlined } from '@ant-design/icons'
 
-interface IProps {
+export interface IProps {
   onSelect: Function
 }
 

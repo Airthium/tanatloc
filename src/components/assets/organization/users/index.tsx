@@ -9,7 +9,7 @@ import Utils from '@/lib/utils'
 import Add from './add'
 import Delete from './delete'
 
-interface IProps {
+export interface IProps {
   organization: IOrganizationWithData
   swr: {
     mutateOneOrganization: Function

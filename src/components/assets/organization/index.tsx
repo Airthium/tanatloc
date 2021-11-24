@@ -13,7 +13,7 @@ import Groups from './groups'
 
 import OrganizationAPI from '@/api/organization'
 
-interface IProps {
+export interface IProps {
   organization: IOrganizationWithData
   swr: {
     mutateOneOrganization: Function

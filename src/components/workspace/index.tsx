@@ -24,7 +24,7 @@ import Utils from '@/lib/utils'
 
 import ProjectAPI from '@/api/project'
 
-interface IProps {
+export interface IProps {
   loading: boolean
   user: IUserWithData
   page: string

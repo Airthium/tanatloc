@@ -27,7 +27,7 @@ import PluginsAPI from '@/api/plugins'
 
 import Models from '@/models'
 
-interface ISelectorProps {
+export interface ISelectorProps {
   visible: boolean
   user?: IUserWithData
   onOk: Function
@@ -173,7 +173,7 @@ Selector.propTypes = {
   onCancel: PropTypes.func.isRequired
 }
 
-interface IUpdaterProps {
+export interface IUpdaterProps {
   user?: IUserWithData
   simulation?: ISimulation
   swr: {

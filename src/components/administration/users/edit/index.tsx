@@ -11,7 +11,7 @@ import { Error } from '@/components/assets/notification'
 
 import UserAPI from '@/api/user'
 
-interface IProps {
+export interface IProps {
   plugins: IClientPlugin[]
   user: {
     id: string

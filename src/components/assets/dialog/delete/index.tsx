@@ -3,7 +3,7 @@ import { Modal, Space } from 'antd'
 import { ExclamationCircleTwoTone } from '@ant-design/icons'
 import { ReactChild } from 'react'
 
-interface IProps {
+export interface IProps {
   visible: boolean
   loading?: boolean
   title: string

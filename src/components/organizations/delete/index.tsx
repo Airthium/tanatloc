@@ -10,7 +10,7 @@ import { Error } from '@/components/assets/notification'
 
 import OrganizationAPI from '@/api/organization'
 
-interface IProps {
+export interface IProps {
   organization: IOrganizationWithData
   swr: {
     delOneOrganization: Function

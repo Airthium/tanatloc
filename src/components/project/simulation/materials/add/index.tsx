@@ -10,7 +10,7 @@ import { Error } from '@/components/assets/notification'
 
 import SimulationAPI from '@/api/simulation'
 
-interface IProps {
+export interface IProps {
   disabled?: boolean
   material: IModelMaterialValue
   simulation: ISimulation

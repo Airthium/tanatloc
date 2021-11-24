@@ -1,7 +1,7 @@
 import { screen, BrowserWindow } from 'electron'
 import Store from 'electron-store'
 
-interface IWindow {
+export interface IWindow {
   getPosition: () => number[]
   getSize: () => number[]
   isMaximized: () => boolean
@@ -14,7 +14,7 @@ interface IWindow {
   }
 }
 
-interface IWindowState {
+export interface IWindowState {
   x: number
   y: number
   width: number

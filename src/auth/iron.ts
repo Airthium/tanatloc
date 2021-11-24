@@ -13,7 +13,7 @@ import { IRequest } from '@/route'
  */
 const TOKEN_SECRET: string = SECRET
 
-type Token = {
+export type Token = {
   id: string
 }
 

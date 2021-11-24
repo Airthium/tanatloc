@@ -7,7 +7,7 @@ import { IClientPlugin } from '@/database/index.d'
 import PluginDialog from '../dialog'
 import Delete from '../delete'
 
-interface IProps {
+export interface IProps {
   plugin: IClientPlugin
   plugins: IClientPlugin[]
   swr: {

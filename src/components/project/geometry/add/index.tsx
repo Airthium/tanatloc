@@ -11,7 +11,7 @@ import { Error as ErrorNotification } from '@/components/assets/notification'
 
 import GeometryAPI from '@/api/geometry'
 
-interface IProps {
+export interface IProps {
   visible: boolean
   project: IProjectWithData
   swr: {

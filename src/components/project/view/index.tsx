@@ -67,7 +67,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { highlight, select, unselect } from '@/store/select/action'
 import { SelectState } from '@/store/select/reducer'
 
-interface IThreeProps {
+export interface IThreeProps {
   loading: boolean
   project: IProjectWithData
   part: {}
@@ -820,7 +820,7 @@ const ThreeView = ({ loading, project, part }: IThreeProps): JSX.Element => {
   )
 }
 
-interface IViewProps {
+export interface IViewProps {
   project: IProjectWithData
   simulation?: ISimulation
   geometry?: IGeometry & { needCleanup?: boolean }

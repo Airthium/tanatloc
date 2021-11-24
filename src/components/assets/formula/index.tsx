@@ -6,7 +6,7 @@ import { CheckboxChangeEvent } from 'antd/lib/checkbox'
 import { CheckCircleOutlined, LoadingOutlined } from '@ant-design/icons'
 import { MathJax } from 'better-react-mathjax'
 
-interface IProps {
+export interface IProps {
   defaultValue?: string
   defaultChecked?: boolean
   onValueChange: Function

@@ -14,7 +14,7 @@ const gmsh = async (
   fileIn: string,
   fileOut: string,
   callback: Function
-): Promise<void> => {
+): Promise<number> => {
   return new Promise((resolve, reject) => {
     let run: any
 
@@ -57,7 +57,7 @@ const gmsh = async (
       callback({ error: data.toString() })
     })
 
-    run.on('close', (code: any) => {
+    run.on('close', (code: number) => {
       resolve(code)
     })
 

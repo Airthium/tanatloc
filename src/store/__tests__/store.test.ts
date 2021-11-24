@@ -35,7 +35,7 @@ describe('store/store', () => {
   test('initializeStore', () => {
     let res
 
-    res = initializeStore()
+    res = initializeStore({})
     expect(res.id).toBe('store')
 
     res = initializeStore({})
@@ -43,7 +43,7 @@ describe('store/store', () => {
   })
 
   test('useStore', () => {
-    const res = useStore()
+    const res = useStore({})
     expect(res).toBe('memo')
   })
 })

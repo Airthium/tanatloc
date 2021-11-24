@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { Card, Space, Typography } from 'antd'
 
 import { ISimulation } from '@/database/index.d'
+import { IModelMaterialValue } from '@/models/index.d'
 
 import { EditButton } from '@/components/assets/button'
 import Delete from '../delete'
@@ -21,24 +22,24 @@ interface IProps {
 /**
  * List materials
  * @memberof Components.Project.Simulation.Materials
- * @param {Object} props Props `{ simulation, swr, onEdit }`
+ * @param props Props
  */
 const List = ({ simulation, swr, onEdit }: IProps): JSX.Element => {
   // State
   const [enabled, setEnabled]: [boolean, Function] = useState(true)
 
   // Data
-  const materials = simulation?.scheme?.configuration?.materials || {}
+  const materials = simulation?.scheme?.configuration?.materials
   const dispatch = useDispatch()
 
   /**
    * Highlight current
    * @param {number} index Index
    */
-  const highlight = (index) => {
+  const highlight = (index: number): void => {
     dispatch(enable())
     const currentSelected = materials?.values[index]?.selected
-    currentSelected?.forEach((s) => {
+    currentSelected?.forEach((s: { uuid: string }) => {
       dispatch(select(s.uuid))
     })
   }
@@ -46,13 +47,13 @@ const List = ({ simulation, swr, onEdit }: IProps): JSX.Element => {
   /**
    * Unhighlight current
    */
-  const unhighlight = () => {
+  const unhighlight = (): void => {
     dispatch(disable())
   }
 
   // List
-  const list = materials.values
-    ?.map((material, index: number) => {
+  const list = materials?.values
+    ?.map((material: IModelMaterialValue, index: number) => {
       return (
         <Card
           className="material-item"
@@ -86,12 +87,12 @@ const List = ({ simulation, swr, onEdit }: IProps): JSX.Element => {
         </Card>
       )
     })
-    .filter((l) => l)
+    .filter((l: any) => l)
 
   /**
    * Render
    */
-  return list || null
+  return <>{list || null}</>
 }
 
 List.propTypes = {

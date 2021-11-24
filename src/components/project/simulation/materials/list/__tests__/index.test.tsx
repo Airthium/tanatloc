@@ -5,7 +5,7 @@ import List from '@/components/project/simulation/materials/list'
 
 const mockEditButton = jest.fn()
 jest.mock('@/components/assets/button', () => ({
-  EditButton: (props) => mockEditButton(props)
+  EditButton: (props: {}) => mockEditButton(props)
 }))
 
 jest.mock('../../delete', () => () => <div />)
@@ -35,11 +35,13 @@ describe('components/project/simulation/materials/list', () => {
       description: 'description',
       configuration: {
         materials: {
+          index: 2,
           title: 'title',
           values: [
             {
-              selected: ['uuid'],
-              material: { label: 'name' }
+              uuid: 'uuid',
+              selected: [{ uuid: 'uuid', label: 1 }],
+              material: { label: 'name', children: [] }
             }
           ]
         }

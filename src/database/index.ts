@@ -9,7 +9,7 @@ import { IDataBaseEntry, IDataBaseResponse } from './index.d'
 /**
  * Start database
  * @memberof Database
- * @returns {Object} Pool
+ * @returns Pool
  */
 const startdB = (): Pool => {
   return new Pool({
@@ -26,9 +26,9 @@ const pool = startdB()
 /**
  * PostgreSQL query
  * @memberof Database
- * @param {string} command Command
- * @param {Array} args Arguments
- * @returns {Object} PostgreSQL query response
+ * @param command Command
+ * @param args Arguments
+ * @returns PostgreSQL query response
  */
 export const query = async (
   command: string,
@@ -43,11 +43,11 @@ export const query = async (
 /**
  * Get
  * @memberof Database
- * @param {string} db Database
- * @param {string} id Id, or key
- * @param {Array} data Data
- * @param {string} key Key override id
- * @returns {Object} PostgreSQL query response
+ * @param db Database
+ * @param id Id, or key
+ * @param data Data
+ * @param key Key override id
+ * @returns PostgreSQL query response
  */
 export const getter = async (
   db: string,
@@ -64,9 +64,9 @@ export const getter = async (
 /**
  * Update
  * @memberof Database
- * @param {string} db Database
- * @param {string} id Id
- * @param {Array} data Data `[{ type, method, key, path, value }, ...]`
+ * @param db Database
+ * @param id Id
+ * @param data Data
  */
 export const updater = async (
   db: string,
@@ -221,8 +221,8 @@ const jsonUpdater = (
 /**
  * Delete
  * @memberof Database
- * @param {string} db Database
- * @param {string} id Id
+ * @param db Database
+ * @param id Id
  */
 export const deleter = async (db: string, id: string): Promise<void> => {
   await query('DELETE FROM ' + db + ' WHERE id = $1', [id])

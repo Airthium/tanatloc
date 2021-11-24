@@ -26,7 +26,7 @@ export const useUsers = (): [
 
   /**
    * Add one
-   * @param {Object} user User
+   * @param user User
    */
   const addOne = (user: IUserWithData) => {
     const newUsers = [...users, user]
@@ -35,7 +35,7 @@ export const useUsers = (): [
 
   /**
    * Del one
-   * @param {Object} user User
+   * @param user User
    */
   const delOne = (user: IUserWithData) => {
     const filteredUsers = users.filter((u) => u.id !== user.id)
@@ -44,7 +44,7 @@ export const useUsers = (): [
 
   /**
    * Mutate one
-   * @param {Object} user User
+   * @param user User
    */
   const mutateOne = (user: IUserWithData) => {
     const mutatedUsers = users.map((u) => {

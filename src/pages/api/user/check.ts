@@ -5,8 +5,8 @@ import route, { ILoginBody } from '@/route/user/check'
 /**
  * User check API
  * @memberof Pages.API
- * @param {Object} req Request
- * @param {Object} res Response
+ * @param req Request
+ * @param res Response
  */
 const check = async (
   req: IRequest<ILoginBody>,

@@ -5,8 +5,8 @@ import route, { ICheckBody } from '@/route/email'
 /**
  * Email API
  * @memberof Pages.API
- * @param {Object} req Request
- * @param {Object} res Response
+ * @param req Request
+ * @param res Response
  */
 const api = async (
   req: IRequest<ICheckBody>,

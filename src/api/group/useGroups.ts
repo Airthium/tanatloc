@@ -29,7 +29,7 @@ export const useGroups = (
 
   /**
    * Add one
-   * @param {Object} group Group
+   * @param group Group
    */
   const addOne = (group: IGroupWithData) => {
     const newGroups = [...groups, group]
@@ -38,7 +38,7 @@ export const useGroups = (
 
   /**
    * Del one
-   * @param {Object} group Group
+   * @param group Group
    */
   const delOne = (group: IGroupWithData) => {
     const filteredGroups = groups.filter((g) => g.id !== group.id)
@@ -47,7 +47,7 @@ export const useGroups = (
 
   /**
    * Mutate one
-   * @param {Object} groups Group
+   * @param groups Group
    */
   const mutateOne = (group: IGroupWithData) => {
     const mutatedGroups = groups.map((g) => {

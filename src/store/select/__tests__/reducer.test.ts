@@ -26,7 +26,7 @@ describe('store/select/reducer', () => {
   })
 
   test('no state', () => {
-    const res = reducer(undefined, {})
+    const res = reducer(undefined, { type: 'tpye' })
     expect(res).toEqual(selectInitialState)
   })
 
@@ -47,7 +47,7 @@ describe('store/select/reducer', () => {
   })
 
   test('clear', () => {
-    const res = reducer({}, { type: 'CLEAR' })
+    const res = reducer({ enabled: true, selected: [] }, { type: 'CLEAR' })
     expect(res).toEqual(selectInitialState)
   })
 

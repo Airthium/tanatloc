@@ -1,5 +1,3 @@
-//@ts-nocheck
-
 import React from 'react'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
@@ -23,9 +21,11 @@ jest.mock('three/examples/jsm/postprocessing/RenderPass', () => ({
 jest.mock('three/examples/jsm/postprocessing/OutlinePass', () => ({
   OutlinePass: class MockRenderPass {
     constructor() {
+      //@ts-ignore
       this.visibleEdgeColor = {
         set: jest.fn()
       }
+      //@ts-ignore
       this.hiddenEdgeColor = {
         set: jest.fn()
       }
@@ -36,7 +36,9 @@ jest.mock('three/examples/jsm/postprocessing/OutlinePass', () => ({
 jest.mock('three/examples/jsm/postprocessing/EffectComposer', () => ({
   EffectComposer: class MockEffectComposer {
     constructor() {
+      //@ts-ignore
       this.addPass = jest.fn()
+      //@ts-ignore
       this.render = jest.fn()
     }
   }
@@ -45,6 +47,7 @@ jest.mock('three/examples/jsm/postprocessing/EffectComposer', () => ({
 jest.mock('three/examples/jsm/controls/TrackballControls', () => ({
   TrackballControls: class MockTrackballControls {
     constructor() {
+      //@ts-ignore
       this.target = {
         copy: jest.fn(),
         clone: () => ({
@@ -55,7 +58,9 @@ jest.mock('three/examples/jsm/controls/TrackballControls', () => ({
           })
         })
       }
+      //@ts-ignore
       this.update = jest.fn()
+      //@ts-ignore
       this.object = {
         position: {
           distanceTo: jest.fn()
@@ -204,10 +209,12 @@ jest.mock('@/store/select/action', () => ({
 }))
 
 let mockAnimationCount = 0
-window.requestAnimationFrame = (callback) => {
-  mockAnimationCount++
-  if (mockAnimationCount < 10) callback()
-}
+Object.defineProperty(window, 'requestAnimationFrame', {
+  value: (callback: Function) => {
+    mockAnimationCount++
+    if (mockAnimationCount < 10) callback()
+  }
+})
 
 global.MockScene.children = [
   { type: 'AmbientLight' },
@@ -258,9 +265,15 @@ global.MockScene.children = [
 // }
 
 describe('components/project/view', () => {
-  const project = {}
-  const simulation = {}
-  const geometry = {}
+  const project = {
+    id: 'id'
+  }
+  const simulation = {
+    id: 'id'
+  }
+  const geometry = {
+    id: 'id'
+  }
   const result = {}
 
   beforeEach(() => {
@@ -285,7 +298,7 @@ describe('components/project/view', () => {
 
   test('geometry cleanup', () => {
     const { unmount } = render(
-      <View project={project} geometry={{ needCleanup: true }} />
+      <View project={project} geometry={{ id: 'id', needCleanup: true }} />
     )
 
     unmount()
@@ -340,7 +353,7 @@ describe('components/project/view', () => {
   })
 
   test('window pixelRatio', () => {
-    window.devicePixelRatio = null
+    Object.defineProperty(window, 'devicePixelRatio', { value: null })
     const { unmount } = render(<View project={project} />)
 
     unmount()

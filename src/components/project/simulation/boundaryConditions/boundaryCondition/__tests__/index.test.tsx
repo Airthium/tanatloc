@@ -1,5 +1,3 @@
-//@ts-nocheck
-
 import React from 'react'
 import { fireEvent, render, screen } from '@testing-library/react'
 
@@ -7,7 +5,7 @@ import BoundaryCondition from '@/components/project/simulation/boundaryCondition
 
 const mockGoBack = jest.fn()
 jest.mock('@/components/assets/button', () => ({
-  GoBack: (props) => mockGoBack(props)
+  GoBack: (props: {}) => mockGoBack(props)
 }))
 
 const mockFormula = jest.fn()
@@ -27,25 +25,46 @@ jest.mock(
 )
 
 describe('components/project/simulation/boundaryConditions/boundaryCondition', () => {
-  const simulation = {}
-  const geometry = {}
+  const simulation = {
+    id: 'id'
+  }
+  const geometry = {
+    faces: []
+  }
   const boundaryConditions = {
+    index: 1,
     title: 'title',
     key: {
       label: 'label',
       children: [
         {
+          label: 'label',
+          htmlEntity: 'entity',
           default: 0
         }
       ],
-      values: [{}]
+      values: [
+        {
+          uuid: 'uuid',
+          name: 'name',
+          type: {
+            key: 'key',
+            label: 'key'
+          },
+          selected: []
+        }
+      ]
     },
     otherKey: {
       label: 'other'
     },
     otherOtherKey: {
       label: 'otherOther',
-      children: [{ default: 1 }, { default: 2 }, { default: 3 }]
+      children: [
+        { label: 'label', htmlEntity: 'entity', default: 1 },
+        { label: 'label', htmlEntity: 'entity', default: 2 },
+        { label: 'label', htmlEntity: 'entity', default: 3 }
+      ]
     }
   }
   const swr = { mutateOneSimulation: jest.fn() }
@@ -81,6 +100,7 @@ describe('components/project/simulation/boundaryConditions/boundaryCondition', (
 
   test('without boundaryConditions', () => {
     const { unmount } = render(
+      //@ts-ignore
       <BoundaryCondition
         visible={true}
         simulation={simulation}
@@ -175,7 +195,13 @@ describe('components/project/simulation/boundaryConditions/boundaryCondition', (
         geometry={geometry}
         boundaryConditions={boundaryConditions}
         boundaryCondition={{
-          selected: [{ uuid: 'uuid' }]
+          uuid: 'uuid',
+          name: 'name',
+          type: {
+            key: 'key',
+            label: 'key'
+          },
+          selected: [{ uuid: 'uuid', label: 1 }]
         }}
         swr={swr}
         close={close}

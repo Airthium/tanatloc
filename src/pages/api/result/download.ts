@@ -6,8 +6,8 @@ import route, { IDownloadBody } from '@/route/result/download'
 /**
  * Result download API
  * @memberof Pages.API
- * @param {Object} req Request
- * @param {Object} res Response
+ * @param req Request
+ * @param res Response
  */
 const download = async (
   req: IRequest<IDownloadBody>,

@@ -37,10 +37,13 @@ describe('components/project/simulation/materials/material', () => {
     ]
   }
   const materials = {
-    label: 'label',
+    index: 1,
+    title: 'Material',
     children: [
       {
+        label: 'Test',
         name: 'Test',
+        htmlEntity: 'entity',
         unit: 'unit',
         default: 0
       }

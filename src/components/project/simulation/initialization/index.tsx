@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { Collapse, Layout, Select, Space, Spin, Typography } from 'antd'
 
 import { ISimulation } from '@/database/index.d'
+import { IModelInitialization } from '@/models/index.d'
 
 import Formula from '@/components/assets/formula'
 import { Error as ErrorNotification } from '@/components/assets/notification'
@@ -267,6 +268,7 @@ const Initialization = ({
       const initialization = newSimulation.scheme.configuration.initialization
       initialization.value = {
         ...initialization.value,
+        //@ts-ignore
         values: newValues
       }
 
@@ -312,6 +314,7 @@ const Initialization = ({
         let disabled = false
         if (s.id === simulation.id) disabled = true
         if (
+          //@ts-ignore
           !initialization.compatibility.find(
             (c) => c.algorithm === s.scheme.algorithm
           )
@@ -319,11 +322,13 @@ const Initialization = ({
           disabled = true
         return { label: s.name, value: s.id, disabled }
       })
+      //@ts-ignore
       const compatibility = initialization.compatibility.find(
         (c) => c.algorithm === couplingSimulation?.scheme?.algorithm
       )
       const filter = compatibility?.filter
       initializations.push(
+        //@ts-ignore
         <Collapse.Panel key={key} header={initialization?.label}>
           <Typography.Text>
             If you use coupling, the selected simulation mesh will be used, at
@@ -358,38 +363,44 @@ const Initialization = ({
         </Collapse.Panel>
       )
     } else {
-      const components = initialization?.children.map((child, index) => {
-        if (child.htmlEntity === 'formula') {
-          return (
-            <Typography.Text key={key + '&' + index}>
-              {child.label}:<br />
-              <Formula
-                defaultValue={
-                  initializationValue?.values?.[index] ||
-                  (child.value === undefined ? child.default : child.value)
-                }
-                onValueChange={(value) => onChange(index, value)}
-                unit={child.unit}
-              />
-            </Typography.Text>
-          )
-        } else if (child.htmlEntity === 'select') {
-          return (
-            <Typography.Text key={key + '&' + index}>
-              {child.label}:<br />
-              <Select
-                options={child.options}
-                defaultValue={
-                  child.value === undefined ? child.default : child.value
-                }
-                onChange={(value) => onChange(index, value)}
-              />
-            </Typography.Text>
-          )
+      //@ts-ignore
+      const components = initialization?.children.map(
+        (child: IModelInitialization, index: number) => {
+          if (child.htmlEntity === 'formula') {
+            return (
+              <Typography.Text key={key + '&' + index}>
+                {child.label}:<br />
+                <Formula
+                  defaultValue={
+                    //@ts-ignore
+                    initializationValue?.values?.[index] ||
+                    (child.value === undefined ? child.default : child.value)
+                  }
+                  onValueChange={(value) => onChange(index, value)}
+                  unit={child.unit}
+                />
+              </Typography.Text>
+            )
+          } else if (child.htmlEntity === 'select') {
+            return (
+              <Typography.Text key={key + '&' + index}>
+                {child.label}:<br />
+                <Select
+                  options={child.options}
+                  //@ts-ignore
+                  defaultValue={
+                    child.value === undefined ? child.default : child.value
+                  }
+                  onChange={(value) => onChange(index, value)}
+                />
+              </Typography.Text>
+            )
+          }
         }
-      })
+      )
 
       initializations.push(
+        //@ts-ignore
         <Collapse.Panel key={key} header={initialization?.label}>
           <Space direction="vertical" style={{ width: '100%' }}>
             {components}

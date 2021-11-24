@@ -29,7 +29,6 @@ jest.mock('http', () => ({
 }))
 
 Object.defineProperty(process, 'exit', { value: jest.fn })
-export {}
 
 describe('server/bin/www', () => {
   test('www', async () => {
@@ -37,3 +36,5 @@ describe('server/bin/www', () => {
     expect(true).toBe(true)
   })
 })
+
+export {}

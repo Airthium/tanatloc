@@ -3,7 +3,8 @@ import { useState } from 'react'
 import { v4 as uuid } from 'uuid'
 import { Button } from 'antd'
 
-import { ISimulation } from '@/database/index.d'
+import { IGeometry, ISimulation } from '@/database/index.d'
+import { IModelMaterialValue } from '@/models/index.d'
 
 import { Error } from '@/components/assets/notification'
 
@@ -11,16 +12,10 @@ import SimulationAPI from '@/api/simulation'
 
 interface IProps {
   disabled?: boolean
-  material: {
-    uuid: string
-    selected: {}[]
-  }
+  material: IModelMaterialValue
   simulation: ISimulation
   geometry: {
-    solids: {
-      uuid: string
-      number: number
-    }[]
+    solids: IGeometry['summary']['solids']
   }
   swr: {
     mutateOneSimulation: Function
@@ -62,7 +57,7 @@ const Add = ({
       // Modify selection
       const selection = geometry.solids
         .map((s) => {
-          if (material.selected.includes(s.uuid))
+          if (material.selected.find((m) => m.uuid === s.uuid))
             return {
               uuid: s.uuid,
               label: s.number

@@ -52,13 +52,17 @@ describe('lib/download/summary', () => {
   test('full', () => {
     simulation.scheme.configuration = {
       geometry: {
-        file: {
-          name: 'name'
-        }
+        index: 1,
+        title: 'Geometry',
+        meshable: true,
+        file: 'file'
       },
       materials: {
+        index: 2,
+        title: 'Materials',
         values: [
           {
+            uuid: 'uuid',
             material: {
               label: 'label',
               children: [
@@ -69,17 +73,20 @@ describe('lib/download/summary', () => {
                 }
               ]
             },
-            selected: [{ label: 1 }]
+            selected: [{ uuid: 'uuid', label: 1 }]
           }
         ]
       },
       parameters: {
-        index: 0,
+        index: 3,
+        title: 'Parameters',
         parameter: {
           label: 'label',
           children: [
             {
               label: 'label',
+              htmlEntity: 'entity',
+              default: 0,
               value: 'value'
             }
           ]
@@ -89,6 +96,7 @@ describe('lib/download/summary', () => {
           children: [
             {
               label: 'label',
+              htmlEntity: 'entity',
               default: 'default'
             }
           ]
@@ -96,11 +104,15 @@ describe('lib/download/summary', () => {
       },
       boundaryConditions: {
         index: 0,
+        title: 'Boundary conditions',
         type: {
+          label: 'label',
           values: [
             {
+              uuid: 'uuid',
               name: 'name',
               type: {
+                key: 'key',
                 label: 'label'
               },
               values: [
@@ -116,16 +128,21 @@ describe('lib/download/summary', () => {
                   checked: false
                 }
               ],
-              selected: [{ label: 1 }]
+              selected: [{ uuid: 'uuid', label: 1 }]
             }
           ]
         },
-        otherType: {},
+        otherType: {
+          label: 'label'
+        },
         otherOtherType: {
+          label: 'label',
           values: [
             {
+              uuid: 'uuid',
               name: 'undefined',
               type: {
+                key: 'undefined',
                 label: 'undefined'
               },
               selected: []
@@ -134,6 +151,8 @@ describe('lib/download/summary', () => {
         }
       },
       run: {
+        index: 5,
+        title: 'Run',
         cloudServer: {
           name: 'name'
         }

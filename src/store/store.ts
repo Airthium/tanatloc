@@ -37,8 +37,8 @@ const combinedReducers = combineReducers({
 /**
  * Global reducer
  * @memberof Store
- * @param {Object} state Redux state
- * @param {Object} action Redux action
+ * @param state Redux state
+ * @param action Redux action
  */
 const reducer = (
   state: { select: SelectState } = globalInitialState,
@@ -48,7 +48,7 @@ const reducer = (
 }
 
 // PERSIST
-const createNoopStorage = () => ({
+const createNoopStorage = (): any => ({
   getItem(_key: string) {
     return Promise.resolve(null)
   },
@@ -76,12 +76,12 @@ const persistedReducer = persistReducer(persistConfig, reducer)
 /**
  * Make store
  * @memberof Store
- * @param {Object} initialState Initial store
+ * @param initialState Initial store
  */
 const makeStore = (initialState: {
   select: SelectState
   _persist: { version: number; rehydrated: boolean }
-}) => {
+}): Store => {
   return createStore(
     persistedReducer,
     initialState,
@@ -92,7 +92,7 @@ const makeStore = (initialState: {
 /**
  * Initialize store
  * @memberof Store
- * @param {Object} preloadedState Preloaded store
+ * @param preloadedState Preloaded store
  */
 const initializeStore = (preloadedState) => {
   let _store = store ?? makeStore(preloadedState)
@@ -119,7 +119,7 @@ const initializeStore = (preloadedState) => {
 /**
  * Use store
  * @memberof Store
- * @param {Object} initialState Initial store
+ * @param initialState Initial store
  */
 const useStore = (initialState) => {
   return useMemo(() => initializeStore(initialState), [initialState])

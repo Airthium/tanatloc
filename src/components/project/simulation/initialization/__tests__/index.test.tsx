@@ -1,6 +1,8 @@
 import React from 'react'
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 
+import { ISimulation } from '@/database/index.d'
+
 import Initialization from '..'
 
 const mockError = jest.fn()
@@ -19,7 +21,7 @@ jest.mock('@/api/simulation', () => ({
 }))
 
 describe('components/project/simulation/initialization', () => {
-  const simulations = [
+  const simulations: ISimulation[] = [
     {
       id: 'id',
       name: 'Simulation 0',
@@ -45,13 +47,26 @@ describe('components/project/simulation/initialization', () => {
         description: 'description',
         configuration: {
           parameters: {
+            index: 1,
+            title: 'Parameters',
             time: {
-              children: [{}, { default: 1 }]
+              label: 'Time',
+              children: [
+                {
+                  label: 'label',
+                  htmlEntity: 'label',
+                  default: 0
+                },
+                { label: 'label', htmlEntity: 'label', default: 1 }
+              ]
             }
           },
           run: {
+            index: 5,
+            title: 'Run',
             resultsFilters: [
               {
+                name: 'Time',
                 prefixPattern: 'result_',
                 suffixPattern: '.vtu',
                 pattern: 'result_\\d+.vtu',
@@ -89,7 +104,7 @@ describe('components/project/simulation/initialization', () => {
       }
     }
   ]
-  const simulation = {
+  const simulation: ISimulation = {
     id: 'id',
     scheme: {
       category: 'category',
@@ -100,10 +115,20 @@ describe('components/project/simulation/initialization', () => {
       description: 'description',
       configuration: {
         parameters: {
+          index: 1,
+          title: 'Parameters',
           time: {
+            label: 'Time',
             children: [
-              {},
               {
+                label: 'label',
+                htmlEntity: 'entity',
+                default: 0
+              },
+              {
+                label: 'label',
+                htmlEntity: 'entity',
+                default: 0,
                 value: 0.1
               }
             ]
@@ -142,17 +167,19 @@ describe('components/project/simulation/initialization', () => {
                   { label: 'select_option1', value: 'select_option1' },
                   { label: 'select_option2', value: 'select_option2' }
                 ],
+                default: 'select_option1',
                 value: 0
               },
               {
                 label: 'Test',
                 htmlEntity: 'select',
                 options: [{ label: 'select', value: 'select' }],
-                default: 0
+                default: 'select'
               },
               {
                 label: 'Unknown',
-                htmlEntity: 'unknown'
+                htmlEntity: 'unknown',
+                default: 0
               }
             ]
           },
@@ -431,7 +458,7 @@ describe('components/project/simulation/initialization', () => {
 
   test('onCouplingChange, without multiplicator', async () => {
     setTasksResults()
-    const simulations2 = [
+    const simulations2: ISimulation[] = [
       {
         id: 'id',
         name: 'Simulation 0',
@@ -457,13 +484,26 @@ describe('components/project/simulation/initialization', () => {
           algorithm: 'algorithm1',
           configuration: {
             parameters: {
+              index: 1,
+              title: 'Parameters',
               time: {
-                children: [{}, { default: 1 }]
+                label: 'Time',
+                children: [
+                  {
+                    label: 'label',
+                    htmlEntity: 'entity',
+                    default: 0
+                  },
+                  { label: 'label', htmlEntity: 'entity', default: 1 }
+                ]
               }
             },
             run: {
+              index: 5,
+              title: 'Run',
               resultsFilters: [
                 {
+                  name: 'Time',
                   prefixPattern: 'result_',
                   suffixPattern: '.vtu',
                   pattern: 'result_\\d+.vtu'

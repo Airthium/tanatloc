@@ -1,5 +1,3 @@
-//@ts-nocheck
-
 import React from 'react'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
@@ -39,7 +37,7 @@ jest.mock('@/api/plugins', () => ({
 describe('components/project/simulation/run/cloudServer', () => {
   const cloudServer = {
     configuration: {
-      name: { value: 'name' }
+      name: { label: 'Name', type: 'input', value: 'name' }
     },
     inUseConfiguration: {
       item: {

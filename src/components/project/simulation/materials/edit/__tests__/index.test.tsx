@@ -16,7 +16,10 @@ jest.mock('@/api/simulation', () => ({
 describe('components/project/simulation/materials/edit', () => {
   const material = {
     uuid: 'uuid',
-    selected: ['uuid1', 'uuid3']
+    selected: [
+      { uuid: 'uuid1', label: 1 },
+      { uuid: 'uuid3', label: 3 }
+    ]
   }
   const simulation = {
     id: 'id',
@@ -29,7 +32,14 @@ describe('components/project/simulation/materials/edit', () => {
       description: 'description',
       configuration: {
         materials: {
-          values: [{}]
+          index: 3,
+          title: 'Materials',
+          values: [
+            {
+              uuid: 'uuid',
+              selected: []
+            }
+          ]
         }
       }
     }

@@ -6,7 +6,7 @@ import { createDatabase } from '../createDatabase'
 
 const mockQuery = jest.fn()
 jest.mock('@/database', () => ({
-  query: async (query) => mockQuery(query)
+  query: async (query: string) => mockQuery(query)
 }))
 
 const mockClient = jest.fn()

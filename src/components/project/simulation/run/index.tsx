@@ -1,5 +1,3 @@
-//@ts-nocheck
-
 import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
 import {
@@ -25,7 +23,7 @@ import {
   StopOutlined
 } from '@ant-design/icons'
 
-import { ISimulation } from '@/database/index.d'
+import { ISimulation, ISimulationTask } from '@/database/index.d'
 
 import { Error as ErrorNotification } from '@/components/assets/notification'
 
@@ -36,7 +34,11 @@ import ResultAPI from '@/api/result'
 
 interface IProps {
   simulation: ISimulation
-  result: {}
+  result: {
+    fileName: string
+    name: string
+    number: number
+  }
   setResult: Function
   swr: {
     mutateOneSimulation: Function
@@ -62,20 +64,29 @@ const errors = {
  */
 const Run = ({ simulation, result, setResult, swr }: IProps): JSX.Element => {
   // State
-  const [disabled, setDisabled] = useState(false)
-  const [running, setRunning] = useState(false)
+  const [disabled, setDisabled]: [boolean, Function] = useState(false)
+  const [running, setRunning]: [boolean, Function] = useState(false)
 
-  const [logVisible, setLogVisible] = useState(false)
-  const [logContent, setLogContent] = useState()
-  const [logLoading, setLogLoading] = useState(false)
+  const [logVisible, setLogVisible]: [boolean, Function] = useState(false)
+  const [logContent, setLogContent]: [string, Function] = useState()
+  const [logLoading, setLogLoading]: [boolean, Function] = useState(false)
 
-  const [selectors, setSelectors] = useState([])
+  const [selectors, setSelectors]: [JSX.Element[], Function] = useState([])
   const [selectorsCurrent, setSelectorsCurrent] = useState([])
 
-  const [results, setResults] = useState()
-  const [steps, setSteps] = useState([])
+  const [results, setResults]: [
+    {
+      name: string
+      number: number
+      filtered?: boolean
+      files?: { name: string; number: number }[]
+      current?: number
+    }[],
+    Function
+  ] = useState()
+  const [steps, setSteps]: [ISimulationTask[], Function] = useState([])
 
-  const [downloading, setDownloading] = useState([])
+  const [downloading, setDownloading]: [string[], Function] = useState([])
 
   // Data
   const [currentSimulation, { mutateSimulation }] = SimulationAPI.useSimulation(
@@ -195,7 +206,7 @@ const Run = ({ simulation, result, setResult, swr }: IProps): JSX.Element => {
               // Set selector
               const resultIndex = newResults.length
               const selector = (
-                <div key={filter}>
+                <div key={filter.name}>
                   {filter.name}:{' '}
                   <Select
                     defaultValue={numbers[0]}
@@ -250,14 +261,23 @@ const Run = ({ simulation, result, setResult, swr }: IProps): JSX.Element => {
    * @param {number} index Index
    * @param {number} filterIndex Filter index
    */
-  const onSelectorChange = (value, index, filterIndex) => {
+  const onSelectorChange = (
+    value: number,
+    index: number,
+    filterIndex: number
+  ) => {
     // Selectors
     const newSelectorsCurrent = [...selectorsCurrent]
     newSelectorsCurrent[filterIndex] = value
     setSelectorsCurrent(newSelectorsCurrent)
 
     // Results
-    const currentResult = results[index]
+    const currentResult: {
+      name: string
+      number: number
+      current?: number
+      files?: { name: string; number: number }[]
+    } = results[index]
     currentResult.current = value
     setResults([
       ...results.slice(0, index),
@@ -475,7 +495,7 @@ const Run = ({ simulation, result, setResult, swr }: IProps): JSX.Element => {
         extra={
           <Tooltip title="Download archive">
             <Button
-              loading={downloading.find((d) => d === 'archive')}
+              loading={!!downloading.find((d) => d === 'archive')}
               icon={<DownloadOutlined />}
               onClick={onArchiveDownload}
             />
@@ -497,11 +517,7 @@ const Run = ({ simulation, result, setResult, swr }: IProps): JSX.Element => {
             // Render
             return toRender.map((file) => {
               return (
-                <Space
-                  direction=""
-                  key={file.name}
-                  style={{ alignItems: 'center' }}
-                >
+                <Space key={file.name} style={{ alignItems: 'center' }}>
                   <Button
                     icon={
                       result?.fileName === file?.fileName &&
@@ -521,7 +537,7 @@ const Run = ({ simulation, result, setResult, swr }: IProps): JSX.Element => {
                     }
                   />
                   <Button
-                    loading={downloading.find((d) => d === file.glb)}
+                    loading={!!downloading.find((d) => d === file.glb)}
                     icon={<DownloadOutlined />}
                     size="small"
                     onClick={() => onDownload(file)}
@@ -557,7 +573,7 @@ const Run = ({ simulation, result, setResult, swr }: IProps): JSX.Element => {
           />
           <Card title="Run">
             <Space direction="vertical">
-              <Space direction="">
+              <Space>
                 <Button
                   disabled={disabled}
                   icon={<RocketOutlined />}
@@ -568,7 +584,7 @@ const Run = ({ simulation, result, setResult, swr }: IProps): JSX.Element => {
                 </Button>
                 <Button
                   disabled={!running}
-                  type="danger"
+                  danger
                   icon={<StopOutlined />}
                   shape="circle"
                   onClick={onStop}
@@ -577,7 +593,7 @@ const Run = ({ simulation, result, setResult, swr }: IProps): JSX.Element => {
               <Steps direction="vertical">
                 {steps.map((step, index) => (
                   <Steps.Step
-                    key={step}
+                    key={JSON.stringify(step)}
                     title={step.label}
                     description={
                       <Button

@@ -3,7 +3,6 @@
  */
 
 Object.defineProperty(process, 'env', { value: { CI: 1 } })
-// process.env.CI = 1
 
 import '..'
 

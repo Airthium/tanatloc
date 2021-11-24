@@ -3,7 +3,7 @@ import { WriteStream } from 'fs'
 
 import { SIMULATION } from '@/config/storage'
 
-import { ISimulationScheme } from '@/database/index.d'
+import { IModel } from '@/models/index.d'
 
 import Tools from '../tools'
 
@@ -16,7 +16,7 @@ import Tools from '../tools'
 const createSummary = (simulation: {
   id: string
   name?: string
-  scheme?: ISimulationScheme
+  scheme?: IModel
 }) => {
   // Name
   const summaryName = 'summary.txt'

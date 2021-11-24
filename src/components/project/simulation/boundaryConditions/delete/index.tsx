@@ -56,13 +56,17 @@ const Delete = ({ simulation, type, index, swr }: IProps): JSX.Element => {
       const typedBoundaryCondition = boundaryConditions[type]
 
       // (unselect)
+      //@ts-ignore
       const boundaryCondition = typedBoundaryCondition.values[index]
-      boundaryCondition.selected.forEach((s) => {
+      boundaryCondition.selected.forEach((s: { uuid: string }) => {
         dispatch(unselect(s.uuid))
       })
 
+      //@ts-ignore
       typedBoundaryCondition.values = [
+        //@ts-ignore
         ...typedBoundaryCondition.values.slice(0, index),
+        //@ts-ignore
         ...typedBoundaryCondition.values.slice(index + 1)
       ]
 
@@ -70,6 +74,7 @@ const Delete = ({ simulation, type, index, swr }: IProps): JSX.Element => {
       let done = false
       Object.keys(boundaryConditions).forEach((t) => {
         if (t === 'index' || t === 'title' || t === 'done') return
+        //@ts-ignore
         if (boundaryConditions[t].values?.length) done = true
       })
       const diff = {

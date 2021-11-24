@@ -94,11 +94,20 @@ export const tables: Tables = {
   WAIT: 'tanatloc_wait'
 }
 
+interface Scheme {
+  [key: string]: {
+    name: string
+    type: string
+    constraint?: string
+    default?: string
+  }[]
+}
+
 /**
  * Tables schemes
  * @memberof Config.Database
  */
-export const schemas = {
+export const schemas: Scheme = {
   [tables.SYSTEM]: [
     {
       name: 'allowsignup',

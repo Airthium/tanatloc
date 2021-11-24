@@ -1,5 +1,3 @@
-//@ts-nocheck
-
 import React from 'react'
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 
@@ -8,7 +6,7 @@ import Run from '..'
 const mockCloudServer = jest.fn()
 jest.mock(
   '@/components/project/simulation/run/cloudServer',
-  () => (props) => mockCloudServer(props)
+  () => (props: {}) => mockCloudServer(props)
 )
 
 const mockRun = jest.fn()
@@ -42,22 +40,37 @@ jest.mock('@/components/assets/notification', () => ({
 
 describe('components/project/simulation/run', () => {
   const simulation = {
+    id: 'id',
     scheme: {
+      category: 'category',
+      name: 'name',
+      description: 'description',
+      algorithm: 'algorithm',
+      code: 'code',
+      version: 'version',
       configuration: {
         about: {
           done: true
         },
         parameters: {
+          index: 1,
+          title: 'Parameters',
           done: true
         },
         run: {
+          index: 2,
+          title: 'Run',
           cloudServer: {},
           done: true
         }
       }
     }
   }
-  const result = {}
+  const result = {
+    fileName: 'fileName',
+    name: 'name',
+    number: 1
+  }
   const setResult = jest.fn()
   const swr = { mutateOneSimulation: jest.fn() }
 
@@ -131,10 +144,11 @@ describe('components/project/simulation/run', () => {
         simulation={{
           ...simulation,
           scheme: {
+            ...simulation.scheme,
             configuration: {
               ...simulation.scheme.configuration,
-              parameters: { done: false },
-              run: { done: true }
+              parameters: { index: 1, title: 'Parameters', done: false },
+              run: { index: 2, title: 'Run', done: true }
             }
           }
         }}
@@ -193,7 +207,15 @@ describe('components/project/simulation/run', () => {
     }
     mockSimulation.mockImplementation(() => data)
     const { unmount } = render(
-      <Run simulation={{}} result={result} setResult={setResult} swr={swr} />
+      <Run
+        simulation={{
+          ...simulation,
+          scheme: { ...simulation.scheme, configuration: undefined }
+        }}
+        result={result}
+        setResult={setResult}
+        swr={swr}
+      />
     )
 
     unmount()
@@ -240,11 +262,22 @@ describe('components/project/simulation/run', () => {
         simulation={{
           ...simulation,
           scheme: {
+            ...simulation.scheme,
             configuration: {
               ...simulation.scheme.configuration,
               parameters: {
+                index: 1,
+                title: 'Parameters',
                 time: {
-                  children: [{}, { default: 0.01 }]
+                  label: 'Time',
+                  children: [
+                    {
+                      label: 'label',
+                      htmlEntity: 'entity',
+                      default: 0
+                    },
+                    { label: 'label', htmlEntity: 'entity', default: 0.01 }
+                  ]
                 }
               },
               run: {
@@ -264,7 +297,8 @@ describe('components/project/simulation/run', () => {
         }}
         result={{
           name: 'name',
-          fileName: 'Result_777.vtu'
+          fileName: 'Result_777.vtu',
+          number: 1
         }}
         setResult={setResult}
         swr={swr}
@@ -327,6 +361,7 @@ describe('components/project/simulation/run', () => {
         simulation={{
           ...simulation,
           scheme: {
+            ...simulation.scheme,
             configuration: {
               ...simulation.scheme.configuration,
               run: {
@@ -396,6 +431,7 @@ describe('components/project/simulation/run', () => {
         simulation={{
           ...simulation,
           scheme: {
+            ...simulation.scheme,
             configuration: {
               ...simulation.scheme.configuration,
               run: {
@@ -456,11 +492,22 @@ describe('components/project/simulation/run', () => {
         simulation={{
           ...simulation,
           scheme: {
+            ...simulation.scheme,
             configuration: {
               ...simulation.scheme.configuration,
               parameters: {
+                index: 1,
+                title: 'Parameters',
                 time: {
-                  children: [{}, { default: 0.01 }]
+                  label: 'Time',
+                  children: [
+                    {
+                      label: 'label',
+                      htmlEntity: 'entity',
+                      default: 0
+                    },
+                    { label: 'label', htmlEntity: 'entity', default: 0.01 }
+                  ]
                 }
               },
               run: {

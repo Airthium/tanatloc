@@ -1,6 +1,8 @@
 import React from 'react'
 import { fireEvent, render, screen } from '@testing-library/react'
 
+import { ISimulation } from '@/database/index.d'
+
 import BoundaryConditions from '@/components/project/simulation/boundaryConditions'
 
 jest.mock('react-redux', () => ({
@@ -9,19 +11,19 @@ jest.mock('react-redux', () => ({
 
 const mockAddButton = jest.fn()
 jest.mock('@/components/assets/button', () => ({
-  AddButton: (props) => mockAddButton(props)
+  AddButton: (props: {}) => mockAddButton(props)
 }))
 
 const mockList = jest.fn()
 jest.mock(
   '@/components/project/simulation/boundaryConditions/list',
-  () => (props) => mockList(props)
+  () => (props: {}) => mockList(props)
 )
 
 const mockBoundaryCondition = jest.fn()
 jest.mock(
   '@/components/project/simulation/boundaryConditions/boundaryCondition',
-  () => (props) => mockBoundaryCondition(props)
+  () => (props: {}) => mockBoundaryCondition(props)
 )
 
 const mockEnable = jest.fn()
@@ -36,15 +38,36 @@ jest.mock('@/store/select/action', () => ({
 }))
 
 describe('components/project/simulation/boundaryConditions', () => {
-  const geometry = { summary: {} }
-  const simulation = {
+  const geometry = {
+    id: 'id',
+    summary: {}
+  }
+  const simulation: ISimulation = {
+    id: 'id',
     scheme: {
+      category: 'category',
+      name: 'name',
+      description: '',
+      algorithm: 'algorithm',
+      code: 'code',
+      version: 'version',
       configuration: {
         boundaryConditions: {
           index: 1,
-          label: 'label',
+          title: 'boundary conditions',
           dirichlet: {
-            values: [{}]
+            label: 'label',
+            values: [
+              {
+                uuid: 'uuid',
+                name: 'name',
+                type: {
+                  key: 'key',
+                  label: 'label'
+                },
+                selected: []
+              }
+            ]
           }
         }
       }

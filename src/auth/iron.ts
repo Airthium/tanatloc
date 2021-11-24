@@ -20,8 +20,8 @@ type Token = {
 /**
  * Encrypt session
  * @memberof Auth.Iron
- * @param {Object} session Session
- * @returns {string} Encrypted token
+ * @param session Session
+ * @returns Encrypted token
  */
 const encryptSession = (session: Token): Promise<string> => {
   return Iron.seal(session, TOKEN_SECRET, Iron.defaults)
@@ -30,8 +30,8 @@ const encryptSession = (session: Token): Promise<string> => {
 /**
  * Get session
  * @memberof Auth.Iron
- * @param {Object} req Request
- * @returns {string}Token
+ * @param req Request
+ * @returns Token
  */
 const getSession = async (req: IRequest): Promise<Token> => {
   const token = getTokenCookie(req)

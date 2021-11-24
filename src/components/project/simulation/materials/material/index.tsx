@@ -2,7 +2,8 @@ import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
 import { Button, Card, Drawer, Space, Typography } from 'antd'
 
-import { ISimulation } from '@/database/index.d'
+import { IGeometry, ISimulation } from '@/database/index.d'
+import { IModel, IModelMaterialValue } from '@/models/index.d'
 
 import { GoBack } from '@/components/assets/button'
 import Formula from '@/components/assets/formula'
@@ -16,16 +17,10 @@ interface IProps {
   visible: boolean
   simulation: ISimulation
   geometry: {
-    solids: {
-      uuid: string
-      number: number
-    }[]
+    solids: IGeometry['summary']['solids']
   }
-  materials: { children: { name: string; unit: string }[] }
-  material?: {
-    uuid: string
-    selected: {}[]
-  }
+  materials: IModel['configuration']['materials']
+  material?: IModelMaterialValue
   swr: {
     mutateOneSimulation: Function
   }
@@ -47,20 +42,8 @@ const Material = ({
   close
 }: IProps): JSX.Element => {
   // State
-  const [current, setCurrent]: [
-    {
-      uuid: string
-      material?: {
-        label: string
-        children: {
-          symbol: string
-          value: string
-        }[]
-      }
-      selected: {}[]
-    },
-    Function
-  ] = useState(material)
+  const [current, setCurrent]: [IModelMaterialValue, Function] =
+    useState(material)
   const [disabled, setDisabled]: [boolean, Function] = useState(true)
 
   // Edit

@@ -54,7 +54,7 @@ const Delete = ({ simulation, swr, index }: IProps): JSX.Element => {
       const material = materials.values[index]
 
       // (unselect)
-      material.selected.forEach((s) => {
+      material.selected.forEach((s: { uuid: string }) => {
         dispatch(unselect(s.uuid))
       })
 

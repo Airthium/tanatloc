@@ -5,8 +5,8 @@ import route from '@/route/organizations'
 /**
  * Organizations API
  * @memberof Pages.API
- * @param {Object} req Request
- * @param {Object} res Response
+ * @param req Request
+ * @param res Response
  */
 const api = async (req: IRequest, res: IResponse): Promise<void> => {
   await route(req, res)

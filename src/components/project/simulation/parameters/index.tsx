@@ -1,5 +1,3 @@
-//@ts-nocheck
-
 import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
 import {
@@ -13,6 +11,7 @@ import {
 } from 'antd'
 
 import { ISimulation } from '@/database/index.d'
+import { IModelParameter } from '@/models/index.d'
 
 import Formula from '@/components/assets/formula'
 import { Error as ErrorNotification } from '@/components/assets/notification'
@@ -41,7 +40,10 @@ const errors = {
  */
 const Parameters = ({ simulation, swr }: IProps): JSX.Element => {
   // State
-  const [values, setValues]: [{}, Function] = useState({})
+  const [values, setValues]: [
+    { [key: string]: string[] | boolean[] },
+    Function
+  ] = useState({})
 
   // Data
   const subScheme = simulation?.scheme.configuration.parameters
@@ -53,8 +55,9 @@ const Parameters = ({ simulation, swr }: IProps): JSX.Element => {
     // Update local
     Object.keys(values).forEach((key) => {
       const deepValues = values[key]
-      deepValues.forEach((value: string, index: number) => {
+      deepValues.forEach((value: string | boolean, index: number) => {
         if (value !== undefined)
+          //@ts-ignore
           newSimulation.scheme.configuration.parameters[key].children[
             index
           ].value = value
@@ -115,6 +118,7 @@ const Parameters = ({ simulation, swr }: IProps): JSX.Element => {
 
     const parameter = subScheme[key]
 
+    //@ts-ignore
     const components = parameter?.children.map((child, index) => {
       if (child.htmlEntity === 'formula') {
         return (
@@ -153,14 +157,17 @@ const Parameters = ({ simulation, swr }: IProps): JSX.Element => {
       }
     })
 
+    //@ts-ignore
     if (parameter?.advanced) {
       advanced.push(
+        //@ts-ignore
         <Card key={key} title={parameter?.label}>
           <Space direction="vertical">{components}</Space>
         </Card>
       )
     } else {
       parameters.push(
+        //@ts-ignore
         <Card key={key} title={parameter?.label}>
           <Space direction="vertical">{components}</Space>
         </Card>

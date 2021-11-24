@@ -5,7 +5,7 @@ import Delete from '@/components/project/delete'
 
 const mockDeleteDialog = jest.fn()
 jest.mock('@/components/assets/dialog', () => ({
-  DeleteDialog: (props) => mockDeleteDialog(props)
+  DeleteDialog: (props: {}) => mockDeleteDialog(props)
 }))
 
 const mockError = jest.fn()

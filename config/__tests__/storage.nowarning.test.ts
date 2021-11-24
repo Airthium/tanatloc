@@ -3,7 +3,6 @@
  */
 
 Object.defineProperty(process.env, 'STORAGE_PATH', { value: 'storage' })
-export {}
 
 describe('config/storage', () => {
   test('global', async () => {
@@ -13,3 +12,5 @@ describe('config/storage', () => {
     expect(config.SIMULATION).toBe('storage/simulation')
   })
 })
+
+export {}

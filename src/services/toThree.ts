@@ -5,9 +5,9 @@ import isDocker from 'is-docker'
  * toThree service
  * Convert mesh to threeJS
  * @memberof Services
- * @param {string} path Path
- * @param {string} fileIn In file
- * @param {string} pathOut Out path
+ * @param path Path
+ * @param fileIn In file
+ * @param pathOut Out path
  */
 const toThree = async (
   path: string,

@@ -14,7 +14,9 @@ jest.mock('@/components/assets/notification', () => ({
 }))
 
 jest.mock('react-redux', () => ({
-  useDispatch: () => () => {}
+  useDispatch: () => () => {
+    // Empty
+  }
 }))
 
 const mockUnselect = jest.fn()
@@ -39,9 +41,12 @@ describe('components/project/simulation/materials/delete', () => {
       description: 'description',
       configuration: {
         materials: {
+          index: 1,
+          title: 'Materials',
           values: [
             {
-              selected: ['uuid']
+              uuid: 'uuid',
+              selected: [{ uuid: 'uuid', label: 1 }]
             }
           ]
         }

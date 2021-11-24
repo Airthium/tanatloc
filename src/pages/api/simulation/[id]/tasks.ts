@@ -5,8 +5,8 @@ import route from '@/route/simulation/[id]/tasks'
 /**
  * Simulation API from [id]/tasks
  * @memberof Pages.API
- * @param {Object} req Request
- * @param {Object} res Response
+ * @param req Request
+ * @param res Response
  */
 const tasks = async (req: IRequest, res: IResponse): Promise<void> => {
   await route(req, res)

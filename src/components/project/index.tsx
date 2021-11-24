@@ -1,5 +1,3 @@
-//@ts-nocheck
-
 /** @namespace Components.Project */
 
 import { useRouter } from 'next/router'
@@ -13,9 +11,11 @@ import Icon, {
   LoadingOutlined,
   PlusOutlined
 } from '@ant-design/icons'
+//@ts-ignore
 import Geometries from '/public/icons/geometries'
 
-import { IGeometry, ISimulation, ISimulationScheme } from '@/database/index.d'
+import { IGeometry, ISimulation } from '@/database/index.d'
+import { IModel } from '@/models/index.d'
 
 import { GoBack } from '@/components/assets/button'
 import { Error as ErrorNotification } from '@/components/assets/notification'
@@ -83,7 +83,10 @@ const Project = (): JSX.Element => {
   const [currentSimulationType, setCurrentSimulationType]: [string, Function] =
     useState()
 
-  const [currentResult, setCurrentResult] = useState()
+  const [currentResult, setCurrentResult]: [
+    { fileName: string; name: string; number: number },
+    Function
+  ] = useState()
 
   const [panelVisible, setPanelVisible]: [boolean, Function] = useState(false)
   const [panelTitle, setPanelTitle]: [string, Function] = useState()
@@ -212,7 +215,7 @@ const Project = (): JSX.Element => {
    * On selector ok
    * @param {Object} scheme Simulation scheme
    */
-  const onSelectorOk = async (scheme: ISimulationScheme): Promise<void> => {
+  const onSelectorOk = async (scheme: IModel): Promise<void> => {
     try {
       // Add
       const simulation = await SimulationAPI.add(
@@ -347,7 +350,7 @@ const Project = (): JSX.Element => {
    * Render
    */
   if (!user || loadingUser || loadingProject) return <Loading.Simple />
-  if (project === 'Unauthorized') return <NotAuthorized />
+  if (project.id === '0') return <NotAuthorized />
   else
     return (
       <Layout hasSider={true}>
@@ -447,9 +450,10 @@ const Project = (): JSX.Element => {
             title={panelTitle}
             onClose={onPanelClose}
           >
-            {geometryVisible && currentGeometry && (
+            {geometryVisible && currentGeometry ? (
               <Geometry
                 project={{
+                  id: project.id,
                   geometries: project.geometries
                 }}
                 geometry={{
@@ -460,7 +464,7 @@ const Project = (): JSX.Element => {
                 swr={{ mutateProject, mutateOneGeometry, delOneGeometry }}
                 close={onPanelClose}
               />
-            )}
+            ) : null}
             {currentSimulation && currentSimulationType === 'about' && (
               <Simulation.About
                 project={{
@@ -546,7 +550,6 @@ const Project = (): JSX.Element => {
             user={{
               authorizedplugins: user.authorizedplugins
             }}
-            geometries={geometries}
             simulation={currentSimulation}
             swr={{
               mutateOneSimulation

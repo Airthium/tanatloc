@@ -73,10 +73,10 @@ loadTemplates()
 /**
  * Render
  * @memberof Lib.Template
- * @param {string} key Key
- * @param {Object} parameters Parameters
- * @param {boolean} save Save
- * @returns {string} Script
+ * @param key Key
+ * @param parameters Parameters
+ * @param save Save
+ * @returns Script
  */
 const render = async (
   key: string,

@@ -15,7 +15,7 @@ jest.mock('@/config/auth', () => ({
 
 describe('auth/iron', () => {
   test('encryptSession', () => {
-    const res = iron.encryptSession()
+    const res = iron.encryptSession({ id: 'id' })
     expect(res).toBe('seal')
   })
 

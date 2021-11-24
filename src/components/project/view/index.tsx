@@ -1,5 +1,3 @@
-//@ts-nocheck
-
 /** @namespace Components.Project.View */
 
 import { useRef, useState, useEffect, MutableRefObject } from 'react'
@@ -42,6 +40,7 @@ import {
 } from 'three'
 import { v4 } from 'uuid'
 
+import { IGeometry, ISimulation } from '@/database/index.d'
 import { IProjectWithData } from '@/lib/index.d'
 
 import { Error as ErrorNotification } from '@/components/assets/notification'
@@ -68,7 +67,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { highlight, select, unselect } from '@/store/select/action'
 import { SelectState } from '@/store/select/reducer'
 
-interface IProps {
+interface IThreeProps {
   loading: boolean
   project: IProjectWithData
   part: {}
@@ -87,7 +86,7 @@ const errors = {
  * @memberof Components.Project.View
  * @param {Object} props Props `{ loading, project, part }`
  */
-const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
+const ThreeView = ({ loading, project, part }: IThreeProps): JSX.Element => {
   // Ref
   const mount: MutableRefObject<any> = useRef(null)
   const scene: MutableRefObject<any> = useRef()
@@ -821,12 +820,24 @@ const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
   )
 }
 
+interface IViewProps {
+  project: IProjectWithData
+  simulation?: ISimulation
+  geometry?: IGeometry & { needCleanup?: boolean }
+  result?: {}
+}
+
 /**
  * View
  * @memberof Components.Project.View
- * @param {Object} props Props `{ project, simulation, geometry, result }`
+ * @param props Props
  */
-const View = ({ project, simulation, geometry, result }) => {
+const View = ({
+  project,
+  simulation,
+  geometry,
+  result
+}: IViewProps): JSX.Element => {
   // State
   const [part, setPart]: [{ buffer: Buffer }, Function] = useState()
   const [loading, setLoading]: [boolean, Function] = useState(false)
@@ -857,11 +868,6 @@ const View = ({ project, simulation, geometry, result }) => {
                 { id: simulation.id },
                 { originPath: file.originPath, glb: file.glb }
               )
-
-        if (partContent.error) {
-          ErrorNotification('', partContent.message)
-          return
-        }
 
         setPart(partContent)
       }

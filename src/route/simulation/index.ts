@@ -4,7 +4,7 @@ import { session } from '../session'
 import { checkProjectAuth } from '../auth'
 import { error } from '../error'
 
-import { ISimulationScheme } from '@/database/index.d'
+import { IModel } from '@/models/index.d'
 
 import SimulationLib from '@/lib/simulation'
 import { IRequest, IResponse } from '..'
@@ -15,7 +15,7 @@ export interface IAddBody {
   }
   simulation: {
     name: string
-    scheme: ISimulationScheme
+    scheme: IModel
   }
 }
 

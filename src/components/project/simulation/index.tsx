@@ -29,7 +29,7 @@ import Models from '@/models'
 
 interface ISelectorProps {
   visible: boolean
-  user: IUserWithData
+  user?: IUserWithData
   onOk: Function
   onCancel: Function
 }
@@ -167,15 +167,15 @@ const Selector = ({
 Selector.propTypes = {
   user: PropTypes.shape({
     authorizedplugins: PropTypes.array
-  }).isRequired,
+  }),
   visible: PropTypes.bool,
   onOk: PropTypes.func.isRequired,
   onCancel: PropTypes.func.isRequired
 }
 
 interface IUpdaterProps {
-  user: IUserWithData
-  simulation: ISimulation
+  user?: IUserWithData
+  simulation?: ISimulation
   swr: {
     mutateOneSimulation: Function
   }
@@ -289,7 +289,7 @@ const Updater = ({ user, simulation, swr }: IUpdaterProps): JSX.Element => {
 Updater.propTypes = {
   user: PropTypes.exact({
     authorizedplugins: PropTypes.array
-  }).isRequired,
+  }),
   simulation: PropTypes.shape({
     id: PropTypes.string.isRequired
   }),

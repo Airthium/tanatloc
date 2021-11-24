@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react'
 import { Card, Layout, Space, Typography } from 'antd'
 
 import { IGeometry, ISimulation } from '@/database/index.d'
+import { IModelBoundaryConditionValue } from '@/models/index.d'
 
 import { AddButton } from '@/components/assets/button'
 import List from './list'
@@ -14,7 +15,7 @@ import { useDispatch } from 'react-redux'
 import { enable, disable, setType, setPart } from '@/store/select/action'
 
 interface IProps {
-  geometry: IGeometry
+  geometry?: IGeometry
   simulation: ISimulation
   swr: {
     mutateOneSimulation: Function
@@ -25,7 +26,7 @@ interface IProps {
 /**
  * Boundary condition
  * @memberof Components.Project.Simulation.BoundaryConditions
- * @param {Object} props Props `{ geometry, simulation, swr, setVisible }`
+ * @param props Props
  */
 const BoundaryConditions = ({
   geometry,
@@ -34,7 +35,10 @@ const BoundaryConditions = ({
   setVisible
 }: IProps): JSX.Element => {
   // State
-  const [boundaryCondition, setBoundaryCondition]: [{}, Function] = useState()
+  const [boundaryCondition, setBoundaryCondition]: [
+    IModelBoundaryConditionValue,
+    Function
+  ] = useState()
   const [boundaryConditionVisible, setBoundaryConditionVisible]: [
     boolean,
     Function
@@ -70,6 +74,7 @@ const BoundaryConditions = ({
    * @param index Index
    */
   const onEdit = (type: string, index: number): void => {
+    //@ts-ignore
     const boundaryConditionToEdit = boundaryConditions[type].values[index]
     setBoundaryCondition(boundaryConditionToEdit)
 
@@ -109,7 +114,9 @@ const BoundaryConditions = ({
               <BoundaryCondition
                 visible={boundaryConditionVisible}
                 simulation={simulation}
-                geometry={geometry.summary}
+                geometry={{
+                  faces: geometry.summary.faces
+                }}
                 boundaryConditions={boundaryConditions}
                 boundaryCondition={boundaryCondition}
                 swr={{

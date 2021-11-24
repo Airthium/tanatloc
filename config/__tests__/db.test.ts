@@ -2,10 +2,11 @@
  * @jest-environment node
  */
 
+import * as config from '../db'
+
 Object.defineProperty(process, 'platform', {
   value: 'linux'
 })
-import * as config from '../db'
 
 describe('config/db', () => {
   test('global', () => {

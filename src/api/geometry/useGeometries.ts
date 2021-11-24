@@ -33,7 +33,7 @@ export const useGeometries = (
   /**
    * Add one (useGeometries)
    * @memberof API.Geometry
-   * @param {Object} geometry Geometry
+   * @param geometry Geometry
    */
   const addOne = (geometry: IGeometry) => {
     const newGeometries = [...geometries, geometry]
@@ -42,7 +42,7 @@ export const useGeometries = (
 
   /**
    * Delete one (useGeometries)
-   * @param {Object} geometry Geometry { id }
+   * @param geometry Geometry
    */
   const delOne = (geometry: IGeometry) => {
     const filteredGeometries = geometries.filter((s) => s.id !== geometry.id)
@@ -51,7 +51,7 @@ export const useGeometries = (
 
   /**
    * Mutate one (useGeometries)
-   * @param {Object} geometry Geometry
+   * @param geometry Geometry
    */
   const mutateOne = (geometry: IGeometry) => {
     const mutatedGeometries = geometries.map((g) => {

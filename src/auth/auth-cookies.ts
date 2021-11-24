@@ -25,8 +25,8 @@ const MAX_AGE: number = 60 * 60 * 8 // 8 hours
 /**
  * Set token cookie
  * @memberof Auth.AuthCookies
- * @param {Object} res IResponse
- * @param {string} token Token
+ * @param res Response
+ * @param token Token
  */
 const setTokenCookie = (res: IResponse, token: string): void => {
   const cookie = serialize(TOKEN_NAME, token, {
@@ -45,7 +45,7 @@ const setTokenCookie = (res: IResponse, token: string): void => {
 /**
  * Remove token cookie
  * @memberof Auth.AuthCookies
- * @param {Object} res Reponse
+ * @param res Reponse
  */
 const removeTokenCookie = (res: IResponse): void => {
   const cookie = serialize(TOKEN_NAME, '', {
@@ -60,8 +60,8 @@ const removeTokenCookie = (res: IResponse): void => {
 /**
  * Parse cookie
  * @memberof Auth.AuthCookies
- * @param {Object} req IRequest
- * @returns {string} Cookie
+ * @param req Request
+ * @returns Cookie
  */
 const parseCookies = (req: IRequest): string => {
   // For API Routes we don't need to parse the cookies.
@@ -80,8 +80,8 @@ const parseCookies = (req: IRequest): string => {
 /**
  * Get token cookie
  * @memberof Auth.AuthCookies
- * @param {Object} req IRequest
- * @returns {string} Cookie
+ * @param req Request
+ * @returns Cookie
  */
 const getTokenCookie = (req: IRequest): string => {
   const cookies = parseCookies(req)

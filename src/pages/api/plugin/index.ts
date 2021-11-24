@@ -5,8 +5,8 @@ import route, { IAddBody, IDeleteBody, IUpdateBody } from '@/route/plugin'
 /**
  * Plugin API
  * @memberof Pages.API
- * @param {Object} req Request
- * @param {Object} res Response
+ * @param req Request
+ * @param res Response
  */
 const api = async (
   req: IRequest<IAddBody & IUpdateBody & IDeleteBody>,

@@ -151,8 +151,8 @@ const createTables = async (): Promise<void> => {
 /**
  * Check if table exists
  * @memberof Install
- * @param {string} table Table
- * @returns {boolean} Exists
+ * @param table Table
+ * @returns Exists
  */
 const checkTable = async (table: string): Promise<boolean> => {
   const res = await query(
@@ -186,7 +186,7 @@ type ColumnConfig = {
 /**
  * Check schema
  * @memberof Install
- * @param {string} table Table
+ * @param table Table
  */
 const checkSchema = async (table: string): Promise<void> => {
   console.info('  -> Checking shema...')
@@ -232,8 +232,8 @@ const checkSchema = async (table: string): Promise<void> => {
 /**
  * Check missing
  * @memberof Install
- * @param {string} table Table
- * @param {Object} configColumn Configuration column
+ * @param table Table
+ * @param configColumn Configuration column
  */
 const checkMissing = async (
   table: string,
@@ -246,8 +246,8 @@ const checkMissing = async (
 /**
  * Try to fix missing column
  * @memberof Install
- * @param {string} table Table
- * @param {Object} column Column
+ * @param table Table
+ * @param column Column
  */
 const fixMissingColumn = async (
   table: string,
@@ -279,9 +279,9 @@ const fixMissingColumn = async (
 /**
  * Check type
  * @memberof Install
- * @param {string} table Table
- * @param {Object} column Column
- * @param {Object} configColumn Configuration column
+ * @param table Table
+ * @param column Column
+ * @param configColumn Configuration column
  */
 const checkType = async (
   table: string,
@@ -303,8 +303,8 @@ const checkType = async (
 /**
  * Try to fix column type
  * @memberof Install
- * @param {string} table Table
- * @param {Object} column Column
+ * @param table Table
+ * @param column Column
  */
 const fixColumnType = async (
   table: string,
@@ -332,9 +332,9 @@ const fixColumnType = async (
 /**
  * Check constraint
  * @memberof Install
- * @param {string} table Table
- * @param {Object} column Column
- * @param {Object} configColumn Configuration column
+ * @param table Table
+ * @param column Column
+ * @param configColumn Configuration column
  */
 const checkConstraint = async (
   table: string,
@@ -362,8 +362,8 @@ const checkConstraint = async (
 /**
  * Try to fix column constraint
  * @memberof Install
- * @param {string} table Table
- * @param {Object} column Column
+ * @param table Table
+ * @param column Column
  */
 const fixColumnConstraint = async (
   table: string,
@@ -386,8 +386,8 @@ const fixColumnConstraint = async (
 /**
  * Try to fix not used column
  * @memberof Install
- * @param {string} table Table
- * @param {Object} column Column
+ * @param table Table
+ * @param column Column
  */
 const fixNotUsedColumn = async (
   table: string,
@@ -409,8 +409,8 @@ const fixNotUsedColumn = async (
 /**
  * Create table
  * @memberof Install
- * @param {string} table Table
- * @param {Function} extra Extra function
+ * @param table Table
+ * @param extra Extra function
  */
 const createTable = async (table: string, extra?: Function): Promise<void> => {
   if (await checkTable(table)) await checkSchema(table)

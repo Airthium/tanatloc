@@ -31,7 +31,7 @@ export const useSimulations = (
   /**
    * Add one (useSimulations)
    * @memberof API.Simulation
-   * @param {Object} simulation Simulation
+   * @param simulation Simulation
    */
   const addOne = (simulation: ISimulation) => {
     const newSimulations = [...simulations, simulation]
@@ -41,7 +41,7 @@ export const useSimulations = (
   /**
    * Delete one (useSimulations)
    * @memberof API.Simulation
-   * @param {Object} simulation Simulation
+   * @param simulation Simulation
    */
   const delOne = (simulation: ISimulation) => {
     const filteredSimulations = simulations.filter(
@@ -53,7 +53,7 @@ export const useSimulations = (
   /**
    * Mutate one (useSimulations)
    * @memberof API.Simulation
-   * @param {Object} simulation Simulation
+   * @param simulation Simulation
    */
   const mutateOne = (simulation: ISimulation, revalidate?: boolean) => {
     const mutatedSimulations = simulations.map((s) => {

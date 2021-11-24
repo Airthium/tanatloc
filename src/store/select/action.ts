@@ -41,7 +41,7 @@ export const clear = (): { type: string } => ({
 /**
  * Set type (solid, face, edge)
  * @memberof Store.Select
- * @param {string} object Type
+ * @param object Type
  */
 export const setType = (object: string): { type: string; object: string } => ({
   type: selectActionTypes.SETTYPE,
@@ -51,7 +51,7 @@ export const setType = (object: string): { type: string; object: string } => ({
 /**
  * Set part
  * @memberof Store.Select
- * @param {string} uuid Part uuid
+ * @param uuid Part uuid
  */
 export const setPart = (uuid: string): { type: string; uuid: string } => ({
   type: selectActionTypes.SETPART,
@@ -61,7 +61,7 @@ export const setPart = (uuid: string): { type: string; uuid: string } => ({
 /**
  * Highlight
  * @memberof Store.Select
- * @param {string} uuid uuid
+ * @param uuid uuid
  */
 export const highlight = (uuid: string): { type: string; uuid: string } => ({
   type: selectActionTypes.HIGHLIGHT,
@@ -79,7 +79,7 @@ export const unhighlight = (): { type: string } => ({
 /**
  * Select
  * @memberof Store.Select
- * @param {string} uuid uuid
+ * @param uuid uuid
  */
 export const select = (uuid: string): { type: string; uuid: string } => ({
   type: selectActionTypes.SELECT,
@@ -89,7 +89,7 @@ export const select = (uuid: string): { type: string; uuid: string } => ({
 /**
  * Unselect
  * @memberof Store.Select
- * @param {string} uuid uuit
+ * @param uuid uuit
  */
 export const unselect = (uuid: string): { type: string; uuid: string } => ({
   type: selectActionTypes.UNSELECT,

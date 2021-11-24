@@ -1,5 +1,3 @@
-//@ts-nocheck
-
 import React from 'react'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
@@ -50,16 +48,17 @@ jest.mock('../data', () => () => <div />)
 
 const mockSelector = jest.fn()
 jest.mock('../simulation', () => {
-  const Simulation = {}
-  Simulation.Selector = (props) => mockSelector(props)
-  Simulation.Updater = () => <div />
-  Simulation.About = () => <div />
-  Simulation.Geometry = () => <div />
-  Simulation.Materials = () => <div />
-  Simulation.Parameters = () => <div />
-  Simulation.Initialization = () => <div />
-  Simulation.BoundaryConditions = () => <div />
-  Simulation.Run = () => <div />
+  const Simulation = {
+    Selector: (props: {}) => mockSelector(props),
+    Updater: () => <div />,
+    About: () => <div />,
+    Geometry: () => <div />,
+    Materials: () => <div />,
+    Parameters: () => <div />,
+    Initialization: () => <div />,
+    BoundaryConditions: () => <div />,
+    Run: () => <div />
+  }
   return Simulation
 })
 
@@ -350,12 +349,12 @@ describe('components/project', () => {
     fireEvent.click(simulation1)
 
     // Click simulation items
-    let simulationItem = screen.getAllByRole('menuitem', {
+    let simulationItems = screen.getAllByRole('menuitem', {
       name: 'check-circle About'
     })
-    fireEvent.click(simulationItem[1])
+    fireEvent.click(simulationItems[1])
 
-    simulationItem = screen.getByRole('menuitem', {
+    let simulationItem = screen.getByRole('menuitem', {
       name: 'exclamation-circle Simulation 1 Geometry'
     })
     fireEvent.click(simulationItem)

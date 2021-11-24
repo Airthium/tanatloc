@@ -45,7 +45,10 @@ export interface IGeometry {
       uuid: string
       number: number
     }[]
-    faces?: {}[]
+    faces?: {
+      uuid: string
+      number: number
+    }[]
     edges?: {}[]
   }
   project?: string
@@ -121,34 +124,36 @@ export interface IProject {
   workspace?: string
 }
 
-export interface ISimulationScheme {
-  category: string
-  name: string
-  algorithm: string
-  code: string
-  version: string
-  description: string
-  configuration: {
-    geometry?: any
-    materials?: any
-    parameters?: any
-    initialization?: any
-    boundaryConditions?: any
-    run?: any
-  }
-}
+// export interface ISimulationScheme {
+//   category: string
+//   name: string
+//   algorithm: string
+//   code: string
+//   version: string
+//   description: string
+//   configuration: {
+//     geometry?: any
+//     materials?: any
+//     parameters?: any
+//     initialization?: any
+//     boundaryConditions?: any
+//     run?: any
+//   }
+// }
 
 export interface ISimulationTask {
   index?: number
   label: string
-  status: string
+  status: 'wait' | 'process' | 'finish' | 'error'
   pid?: string | number
   log?: string
   warning?: string
   error?: string
   systemLog?: string
   file?: {}
-  files?: {}[]
+  files?: {
+    fileName: string
+  }[]
   plugin?: string
   datas?: Array<{ x: number; y: number }>
 }
@@ -156,14 +161,14 @@ export interface ISimulationTask {
 export interface INewSimulation {
   id: string
   name: string
-  scheme: ISimulationScheme
+  scheme: IModel
   project: string
 }
 
 export interface ISimulation {
   id: string
   name?: string
-  scheme?: ISimulationScheme
+  scheme?: IModel
   tasks?: ISimulationTask[]
   project?: string
 }

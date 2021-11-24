@@ -5,8 +5,8 @@ import route from '@/route/geometry/[id]/part'
 /**
  * Geometry API for [id]/part
  * @memberof Pages.API
- * @param {Object} req Request
- * @param {Object} res Response
+ * @param req Request
+ * @param res Response
  */
 const part = async (req: IRequest, res: IResponse): Promise<void> => {
   await route(req, res)

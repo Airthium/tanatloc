@@ -3,7 +3,8 @@ import { useState } from 'react'
 import { v4 as uuid } from 'uuid'
 import { Button } from 'antd'
 
-import { ISimulation } from '@/database/index.d'
+import { IGeometry, ISimulation } from '@/database/index.d'
+import { IModelBoundaryConditionValue } from '@/models/index.d'
 
 import { Error } from '@/components/assets/notification'
 
@@ -12,15 +13,9 @@ import SimulationAPI from '@/api/simulation'
 interface IProps {
   disabled?: boolean
   simulation: ISimulation
-  boundaryCondition: {
-    uuid: string
-    type: {
-      key: string
-    }
-    selected: {}[]
-  }
+  boundaryCondition: IModelBoundaryConditionValue
   geometry: {
-    faces: { uuid: string; number: number }[]
+    faces: IGeometry['summary']['faces']
   }
   swr: {
     mutateOneSimulation: Function
@@ -65,7 +60,7 @@ const Add = ({
       // Modify selection
       const selection = geometry.faces
         .map((f) => {
-          if (boundaryCondition.selected.includes(f.uuid))
+          if (boundaryCondition.selected.find((b) => b.uuid === f.uuid))
             return {
               uuid: f.uuid,
               label: f.number
@@ -83,7 +78,9 @@ const Add = ({
       // Update local
       const boundaryConditions =
         newSimulation.scheme.configuration.boundaryConditions
+      //@ts-ignore
       boundaryConditions[type].values = [
+        //@ts-ignore
         ...(boundaryConditions[type].values || []),
         boundaryCondition
       ]

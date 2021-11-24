@@ -240,7 +240,15 @@ describe('components/project/simulation.Updater', () => {
   const user = {}
   const simulation = {
     id: 'id',
-    scheme: { algorithm: 'algorithm' }
+    scheme: {
+      category: 'category',
+      name: 'name',
+      description: 'description',
+      code: 'code',
+      version: 'version',
+      algorithm: 'algorithm',
+      configuration: undefined
+    }
   }
   const swr = { mutateOneSimulation: jest.fn() }
 

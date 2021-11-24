@@ -2,11 +2,19 @@ import { localStrategy } from '../password-local'
 
 jest.mock('passport-local', () => ({
   Strategy: class MockStrategy {
-    constructor(_, func) {
-      func('email', 'password', () => {})
-      func('email', 'password', () => {})
-      func('email', 'password', () => {})
-      func(undefined, undefined, () => {})
+    constructor(_: {}, func: Function) {
+      func('email', 'password', () => {
+        // Empty
+      })
+      func('email', 'password', () => {
+        // Empty
+      })
+      func('email', 'password', () => {
+        // Empty
+      })
+      func(undefined, undefined, () => {
+        // Empty
+      })
     }
   }
 }))

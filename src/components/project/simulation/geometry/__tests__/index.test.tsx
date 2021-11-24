@@ -1,6 +1,8 @@
 import React from 'react'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
+import { ISimulation } from '@/database/index.d'
+
 import Geometry from '..'
 
 jest.mock('better-react-mathjax', () => ({
@@ -24,7 +26,7 @@ jest.mock('@/api/simulation', () => ({
 describe('components/project/simulation/geometry', () => {
   const geometries = [{ id: 'id' }]
   const geometry = { id: 'id' }
-  const simulation = {
+  const simulation: ISimulation = {
     id: 'id',
     scheme: {
       category: 'category',
@@ -34,7 +36,11 @@ describe('components/project/simulation/geometry', () => {
       version: 'version',
       description: 'description',
       configuration: {
-        geometry: {}
+        geometry: {
+          index: 1,
+          title: 'Geometry',
+          meshable: false
+        }
       }
     }
   }
@@ -91,7 +97,12 @@ describe('components/project/simulation/geometry', () => {
             version: 'version',
             description: 'description',
             configuration: {
-              geometry: { value: 'id' }
+              geometry: {
+                index: 1,
+                title: 'Geometry',
+                meshable: false,
+                value: 'id'
+              }
             }
           }
         }}

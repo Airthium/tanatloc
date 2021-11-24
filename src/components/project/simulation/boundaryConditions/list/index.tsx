@@ -22,7 +22,7 @@ interface IProps {
 /**
  * List
  * @memberof Components.Project.Simulation.BoundaryConditions
- * @param {Object} props Props `{ simulation, swr, onEdit }`
+ * @param props Props
  */
 const List = ({ simulation, swr, onEdit }: IProps): JSX.Element => {
   // State

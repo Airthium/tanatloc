@@ -30,7 +30,8 @@ jest.mock('redux-persist/lib/storage/createWebStorage', () => () => {})
 
 describe('store/store (server)', () => {
   test('null window', () => {
-    const res = initializeStore()
+    const res = initializeStore({})
+    //@ts-ignore
     expect(res.id).toBe('store')
   })
 })

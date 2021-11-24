@@ -2,7 +2,8 @@ import PropTypes from 'prop-types'
 import { useState } from 'react'
 import { Button } from 'antd'
 
-import { ISimulation } from '@/database/index.d'
+import { IGeometry, ISimulation } from '@/database/index.d'
+import { IModelMaterialValue } from '@/models/index.d'
 
 import { Error } from '@/components/assets/notification'
 
@@ -10,16 +11,10 @@ import SimulationAPI from '@/api/simulation'
 
 interface IProps {
   disabled?: boolean
-  material: {
-    uuid: string
-    selected: {}[]
-  }
+  material: IModelMaterialValue
   simulation: ISimulation
   geometry: {
-    solids: {
-      uuid: string
-      number: number
-    }[]
+    solids: IGeometry['summary']['solids']
   }
   swr: {
     mutateOneSimulation: Function
@@ -65,7 +60,7 @@ const Edit = ({
       // Modify selection
       const selection = geometry.solids
         .map((s) => {
-          if (material.selected.includes(s.uuid))
+          if (material.selected.find((m) => m.uuid === s.uuid))
             return {
               uuid: s.uuid,
               label: s.number
@@ -75,7 +70,9 @@ const Edit = ({
       material.selected = selection
 
       // Update local
-      const index = materials.values.findIndex((m) => m.uuid === material.uuid)
+      const index = materials.values.findIndex(
+        (m: { uuid: string }) => m.uuid === material.uuid
+      )
       materials.values = [
         ...materials.values.slice(0, index),
         material,

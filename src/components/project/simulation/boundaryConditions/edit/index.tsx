@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { Button } from 'antd'
 
 import { ISimulation } from '@/database/index.d'
+import { IModelBoundaryConditionValue } from '@/models/index.d'
 
 import { Error } from '@/components/assets/notification'
 
@@ -11,19 +12,8 @@ import SimulationAPI from '@/api/simulation'
 interface IProps {
   disabled?: boolean
   simulation: ISimulation
-  boundaryCondition: {
-    uuid: string
-    type: {
-      key: string
-    }
-    selected: {}[]
-  }
-  oldBoundaryCondition: {
-    uuid: string
-    type: {
-      key: string
-    }
-  }
+  boundaryCondition: IModelBoundaryConditionValue
+  oldBoundaryCondition: IModelBoundaryConditionValue
   geometry: {
     faces: {
       uuid: string
@@ -81,11 +71,15 @@ const Edit = ({
       const oldType = oldBoundaryCondition.type.key
 
       if (oldType !== type) {
+        //@ts-ignore
         const index = boundaryConditions[oldType].values.findIndex(
           (b: { uuid: string }) => b.uuid === oldBoundaryCondition.uuid
         )
+        //@ts-ignore
         boundaryConditions[oldType].values = [
+          //@ts-ignore
           ...boundaryConditions[oldType].values.slice(0, index),
+          //@ts-ignore
           ...boundaryConditions[oldType].values.slice(index + 1)
         ]
       }
@@ -93,7 +87,7 @@ const Edit = ({
       // Modify selection
       const selection = geometry.faces
         .map((f) => {
-          if (boundaryCondition.selected.includes(f.uuid))
+          if (boundaryCondition.selected.find((b) => b.uuid === f.uuid))
             return {
               uuid: f.uuid,
               label: f.number
@@ -104,17 +98,23 @@ const Edit = ({
 
       // Update local
       if (oldType !== type) {
+        //@ts-ignore
         boundaryConditions[type].values = [
+          //@ts-ignore
           ...boundaryConditions[type].values,
           boundaryCondition
         ]
       } else {
+        //@ts-ignore
         const index = boundaryConditions[type].values.findIndex(
           (b: { uuid: string }) => b.uuid === boundaryCondition.uuid
         )
+        //@ts-ignore
         boundaryConditions[type].values = [
+          //@ts-ignore
           ...boundaryConditions[type].values.slice(0, index),
           boundaryCondition,
+          //@ts-ignore
           ...boundaryConditions[type].values.slice(index + 1)
         ]
       }

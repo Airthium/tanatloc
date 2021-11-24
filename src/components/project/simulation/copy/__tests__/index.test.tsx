@@ -1,6 +1,8 @@
 import React from 'react'
 import { fireEvent, screen, render, waitFor } from '@testing-library/react'
 
+import { ISimulation } from '@/database/index.d'
+
 import Copy from '..'
 
 const mockError = jest.fn()
@@ -18,7 +20,7 @@ describe('components/project/simulation/copy', () => {
     id: 'id',
     simulations: ['id']
   }
-  const simulation = {
+  const simulation: ISimulation = {
     id: 'id',
     name: 'name',
     scheme: {
@@ -29,7 +31,10 @@ describe('components/project/simulation/copy', () => {
       code: 'code',
       version: 'version',
       configuration: {
-        run: {}
+        run: {
+          index: 1,
+          title: 'Run'
+        }
       }
     }
   }

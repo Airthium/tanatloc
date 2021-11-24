@@ -4,12 +4,9 @@ import path from 'path'
 
 import { GEOMETRY, SIMULATION } from '@/config/storage'
 
-import {
-  IDataBaseEntry,
-  INewSimulation,
-  ISimulation,
-  ISimulationScheme
-} from '@/database/index.d'
+import { IDataBaseEntry, INewSimulation, ISimulation } from '@/database/index.d'
+import { IModel } from '@/models/index.d'
+
 import SimulationDB from '@/database/simulation'
 
 import User from '../user'
@@ -21,13 +18,13 @@ import Plugins from '../plugins'
 /**
  * Add
  * @memberof Lib.Simulation
- * @param {Object} project Project `{ id }`
- * @param {Object} simulation Simulation `{ name, scheme }`
- * @returns {Object} Simulation `{ id, name, scheme, project }`
+ * @param project Project
+ * @param simulation Simulation
+ * @returns Simulation
  */
 const add = async (
   project: { id: string },
-  simulation: { name: string; scheme: ISimulationScheme }
+  simulation: { name: string; scheme: IModel }
 ): Promise<INewSimulation> => {
   // Add simulation
   const simulationData = await SimulationDB.add({
@@ -52,9 +49,9 @@ const add = async (
 /**
  * Get
  * @memberof Lib.Simulation
- * @param {string} id Simulation's id
- * @param {Array} data Data
- * @returns {Object} Simulation `{ id, ...data }`
+ * @param id Simulation id
+ * @param data Data
+ * @returns Simulation
  */
 const get = async (id: string, data: string[]): Promise<ISimulation> => {
   return SimulationDB.get(id, data)
@@ -63,8 +60,8 @@ const get = async (id: string, data: string[]): Promise<ISimulation> => {
 /**
  * Get all
  * @memberof Lib.Simulation
- * @param {Array} data Data
- * @returns {Array} Simulations
+ * @param data Data
+ * @returns Simulations
  */
 const getAll = async (data: string[]): Promise<ISimulation[]> => {
   return SimulationDB.getAll(data)
@@ -73,8 +70,8 @@ const getAll = async (data: string[]): Promise<ISimulation[]> => {
 /**
  * Update
  * @memberof Lib.Simulation
- * @param {Object} simulation Simulation `{ id }`
- * @param {Object} data Data `[{ key, value, ... }, ...]`
+ * @param simulation Simulation
+ * @param data Data
  */
 const update = async (
   simulation: { id: string },
@@ -87,7 +84,7 @@ const update = async (
 /**
  * Delete
  * @memberof Lib.Simulation
- * @param {Object} simulation Simulation `{ id }`
+ * @param simulation Simulation
  */
 const del = async (simulation: { id: string }): Promise<void> => {
   // Data
@@ -118,8 +115,8 @@ const del = async (simulation: { id: string }): Promise<void> => {
 /**
  * Run
  * @memberof Lib.Simulation
- * @param {Object} user User `{ id }`
- * @param {Object} simulation Simulation `{ id }`
+ * @param user User
+ * @param simulation Simulation
  */
 const run = async (
   user: { id: string },
@@ -301,7 +298,7 @@ const run = async (
 /**
  * Stop
  * @memberof Lib.Simulation
- * @param {Object} simulation Simulation `{ id }`
+ * @param simulation Simulation
  */
 const stop = async (simulation: { id: string }): Promise<void> => {
   const simulationData = await get(simulation.id, ['scheme', 'tasks'])
@@ -337,9 +334,9 @@ const stop = async (simulation: { id: string }): Promise<void> => {
 /**
  * Get log
  * @memberof Lib.Simulation
- * @param {Object} simulation Simulation `{ id }`
- * @param {string} file File
- * @returns {string} Log
+ * @param simulation Simulation
+ * @param file File
+ * @returns Log
  */
 const getLog = async (
   simulation: { id: string },
@@ -354,8 +351,8 @@ const getLog = async (
 
 /**
  * Archive
- * @param {Object} simulation Simulation { id }
- * @param {string} to Target
+ * @param simulation Simulation
+ * @param to Target
  */
 const archive = async (
   simulation: { id: string },

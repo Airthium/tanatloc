@@ -4,7 +4,9 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import Delete from '@/components/project/simulation/boundaryConditions/delete'
 
 jest.mock('react-redux', () => ({
-  useDispatch: () => () => {}
+  useDispatch: () => () => {
+    // Empty
+  }
 }))
 
 const mockDeleteButton = jest.fn()
@@ -40,13 +42,31 @@ describe('components/project/simulation/boundaryConditions/delete', () => {
       configuration: {
         boundaryConditions: {
           index: 3,
-          firstKey: {},
+          title: 'Boundary conditions',
+          firstKey: {
+            label: 'label'
+          },
           key: {
+            label: 'key',
             values: [
               {
-                selected: ['uuid']
+                uuid: 'uuid',
+                name: 'name',
+                type: {
+                  key: 'key',
+                  label: 'key'
+                },
+                selected: [{ uuid: 'uuid', label: 1 }]
               },
-              {}
+              {
+                uuid: 'uuid',
+                name: 'name',
+                type: {
+                  key: 'key',
+                  label: 'key'
+                },
+                selected: []
+              }
             ]
           }
         }

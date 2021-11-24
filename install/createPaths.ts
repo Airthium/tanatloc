@@ -19,7 +19,7 @@ export const createPaths = async (): Promise<void> => {
 /**
  * Create a path
  * @memberof Install
- * @param {string} path Path
+ * @param path Path
  */
 const createPath = async (path: string): Promise<void> => {
   try {

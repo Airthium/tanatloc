@@ -1,3 +1,18 @@
+import { IClientPlugin } from '@/database/index.d'
+
+export interface IModelMaterialValue {
+  uuid: string
+  material?: {
+    label: string
+    children: {
+      label: string
+      symbol: string
+      value: string
+    }[]
+  }
+  selected: { uuid: string; label: number }[]
+}
+
 export interface IModelMaterial {
   label: string
   name: string
@@ -12,6 +27,22 @@ export interface IModelParameter {
   default: boolean | number | string
   options?: { label: string; value: string }[]
   unit?: string
+  value?: boolean | number | string
+}
+
+export interface IModelBoundaryConditionValue {
+  uuid: string
+  name: string
+  type: {
+    key: string
+    label: string
+    children?: IModelBoundaryCondition[]
+  }
+  selected: { uuid: string; label: number }[]
+  values?: {
+    checked?: boolean
+    value?: boolean | number | string
+  }[]
 }
 
 export interface IModelBoundaryCondition {
@@ -24,22 +55,33 @@ export interface IModelBoundaryCondition {
 export interface IModelInitialization {
   label: string
   htmlEntity: string
+  options?: { label: string; value: string }[]
   default: boolean | number | string
-  unit: string
+  unit?: string
+  value?: boolean | number | string
 }
 
 export interface IModelInitializationCoupling {
   label: string
   compatibility: {
     algorithm: string
+    map?: number[]
     filter: {
       name: string
-      prefixPattern: string | RegExp
-      suffixPattern: string | RegExp
+      prefixPattern?: string | RegExp
+      suffixPattern?: string | RegExp
       pattern: string | RegExp
       multiplicator?: string[]
     }
   }[]
+}
+
+export interface IModelInitializationValue {
+  type: string
+  simulation?: string
+  result?: string
+  dat?: string
+  mesh?: string
 }
 
 export interface IModel {
@@ -55,12 +97,17 @@ export interface IModel {
       title: string
       done?: boolean
       meshable: boolean
+      value?: string
+      file?: string
+      name?: string
+      path?: string
     }
     materials?: {
       index: number
       title: string
       done?: boolean
-      children: IModelMaterial[]
+      children?: IModelMaterial[]
+      values?: IModelMaterialValue[]
     }
     parameters?: {
       index: number
@@ -84,11 +131,13 @@ export interface IModel {
         | boolean
         | number
         | string
+        | IModelInitializationValue
         | {
             label: string
             children: IModelInitialization[]
           }
         | IModelInitializationCoupling
+      value?: IModelInitializationValue
     }
     boundaryConditions?: {
       index: number
@@ -102,13 +151,15 @@ export interface IModel {
             label: string
             refineFactor?: number
             children?: IModelBoundaryCondition[]
+            values?: IModelBoundaryConditionValue[]
           }
     }
     run?: {
       index: number
       title: string
       done?: boolean
-      results: { name: string }[]
+      error?: string | Error
+      results?: { name: string }[]
       resultsFilters?: {
         name: string
         prefixPattern: string | RegExp
@@ -116,6 +167,7 @@ export interface IModel {
         pattern: string | RegExp
         multiplicator?: string[]
       }[]
+      cloudServer?: IClientPlugin
     }
   }
 }

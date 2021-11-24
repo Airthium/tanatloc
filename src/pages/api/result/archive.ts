@@ -6,8 +6,8 @@ import route, { IArchiveBody } from '@/route/result/archive'
 /**
  * Result archive API
  * @memberof Pages.API
- * @param {Object} req Request
- * @param {Object} res Response
+ * @param req Request
+ * @param res Response
  */
 const archive = async (
   req: IRequest<IArchiveBody>,

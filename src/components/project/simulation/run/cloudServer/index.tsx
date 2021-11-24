@@ -1,14 +1,13 @@
-//@ts-nocheck
-
 import PropTypes from 'prop-types'
 import dynamic from 'next/dynamic'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, ComponentType } from 'react'
 import { useRouter } from 'next/router'
 import { Button, Card, Modal, Space, Typography } from 'antd'
 import { CloudServerOutlined } from '@ant-design/icons'
 import merge from 'lodash.merge'
 
 import { IClientPlugin } from '@/database/index.d'
+import { IModel } from '@/models/index.d'
 
 import { Error as ErrorNotification } from '@/components/assets/notification'
 
@@ -17,15 +16,7 @@ import PluginsAPI from '@/api/plugins'
 
 interface IProps {
   disabled?: boolean
-  cloudServer: {
-    name: string
-    configuration: {
-      name: {
-        value: string
-      }
-    }
-    inUseConfiguration: {}
-  }
+  cloudServer: IModel['configuration']['run']['cloudServer']
   onOk: Function
 }
 
@@ -125,15 +116,14 @@ const CloudServer = ({ disabled, cloudServer, onOk }: IProps): JSX.Element => {
               const Plugin = Plugins.find((p) => p.key === plugin.key)
               if (!Plugin) return
 
-              const Renderer = dynamic(
-                () => import(`/plugins/${Plugin.key}/src/components`)
-              )
+              const Renderer: ComponentType<{ data: any; onSelect: Function }> =
+                dynamic(() => import(`/plugins/${Plugin.key}/src/components`))
 
               return (
                 <Card key={plugin.uuid} title={plugin.configuration.name.value}>
                   <Renderer
                     data={plugin.data}
-                    onSelect={(diff) => onMerge(plugin, diff)}
+                    onSelect={(diff: IClientPlugin) => onMerge(plugin, diff)}
                   />
                 </Card>
               )

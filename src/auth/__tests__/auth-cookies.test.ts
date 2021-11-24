@@ -1,42 +1,54 @@
+import { IRequest, IResponse } from '@/route/index.d'
+
 import * as auth from '../auth-cookies'
 
+const mockParse = jest.fn()
 jest.mock('cookie', () => ({
   serialize: () => 'cookie',
-  parse: (cookie) => cookie
+  parse: (cookie: string): string => mockParse(cookie)
 }))
 
 jest.mock('is-electron', () => () => false)
 
-jest.mock('electron-store', () => {})
+jest.mock('electron-store', () => {
+  // Empty
+})
 
 describe('auth/auth-cookies', () => {
+  beforeEach(() => {
+    mockParse.mockReset()
+    mockParse.mockImplementation((cookie) => cookie)
+  })
+
   test('setTokenCookie', () => {
-    let header
-    const res = {
-      setHeader: (type, value) => {
-        header = value
-      }
+    let header: string
+    const res: IResponse = {
+      setHeader: (_: string, value: string) => (header = value),
+      status: (_: number) => res,
+      end: () => res,
+      json: () => res
     }
     auth.setTokenCookie(res, 'token')
     expect(header).toBe('cookie')
   })
 
   test('removeTokenCookie', () => {
-    let header
-    const res = {
-      setHeader: (type, value) => {
-        header = value
-      }
+    let header: string
+    const res: IResponse = {
+      setHeader: (_: string, value: string) => (header = value),
+      status: (_: number) => res,
+      end: () => res,
+      json: () => res
     }
     auth.removeTokenCookie(res)
     expect(header).toBe('cookie')
   })
 
   test('parseCookies', () => {
-    let res
+    let res: string
 
     // Empty
-    const req = {}
+    const req: IRequest = {}
     res = auth.parseCookies(req)
     expect(res).toBe('')
 
@@ -55,8 +67,12 @@ describe('auth/auth-cookies', () => {
   })
 
   test('getTokenCookie', () => {
-    const req = {
-      cookies: { token: 'cookie' }
+    mockParse.mockImplementation((cookie) => JSON.parse(cookie))
+
+    const req: IRequest = {
+      headers: {
+        cookie: JSON.stringify({ token: 'cookie' })
+      }
     }
     const res = auth.getTokenCookie(req)
     expect(res).toBe('cookie')

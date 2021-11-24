@@ -25,7 +25,7 @@ export const useWorkspaces = (): [
   /**
    * Add one (useWorkspaces)
    * @memberof API.Workspace
-   * @param {Object} workspace Workspace
+   * @param workspace Workspace
    */
   const addOne = (workspace: IWorkspaceWithData) => {
     const newWorkspaces = [...workspaces, workspace]
@@ -35,7 +35,7 @@ export const useWorkspaces = (): [
   /**
    * Delete one (useWorkspaces)
    * @memberof API.Workspace
-   * @param {Object} workspace Workspace
+   * @param workspace Workspace
    */
   const delOne = (workspace: IWorkspaceWithData) => {
     const filteredWorkspaces = workspaces.filter((w) => w.id !== workspace.id)
@@ -45,7 +45,7 @@ export const useWorkspaces = (): [
   /**
    * Mutate one (useWorkspace)
    * @memberof API.Workspace
-   * @param {Object} workspace Workspace
+   * @param workspace Workspace
    */
   const mutateOne = (workspace: IWorkspaceWithData) => {
     const mutatedWorkspaces = workspaces.map((w) => {

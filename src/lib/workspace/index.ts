@@ -13,9 +13,9 @@ import Project from '../project'
 /**
  * Add
  * @memberof Lib.Workspace
- * @param {Object} user User `{ id }`
- * @param {Object} workspace Workspace `{ name }`
- * @returns {Object} Workspace `{ id, name, owners }`
+ * @param user User
+ * @param workspace Workspace
+ * @returns Workspace
  */
 const add = async (
   user: { id: string },
@@ -51,10 +51,9 @@ const get = async (id: string, data: string[]): Promise<IWorkspace> => {
 /**
  * Get with data
  * @memberof Lib.Workspace
- * @param {string} id Id
- * @param {Array} data Data
- * @param {boolean} [withData=true] With data
- * @returns {Object} Workspace `{ id, ...data }`
+ * @param id Id
+ * @param data Data
+ * @returns Workspace
  */
 const getWithData = async (
   id: string,
@@ -122,8 +121,8 @@ const getWithData = async (
 /**
  * Get by user
  * @memberof Lib.Workspace
- * @param {Object} user User `{ id }`
- * @returns {Array} Workspaces
+ * @param user User
+ * @returns Workspaces
  */
 const getByUser = async ({
   id
@@ -229,8 +228,8 @@ const getByUser = async ({
 /**
  * Update
  * @memberof Lib.Workspace
- * @param {Object} workspace Workspace `{ id }`
- * @param {Object} data Data `[{ key, value, ... }, ...]`
+ * @param workspace Workspace
+ * @param data Data
  */
 const update = async (
   workspace: { id: string },
@@ -286,8 +285,8 @@ const update = async (
 /**
  * Delete
  * @memberof Lib.Workspace
- * @param {Object} user User `{ id }`
- * @param {Object} workspace Workspace `{ id }`
+ * @param user User
+ * @param workspace Workspace
  */
 const del = async (
   user: { id: string },

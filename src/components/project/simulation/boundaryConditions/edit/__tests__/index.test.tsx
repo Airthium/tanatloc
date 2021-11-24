@@ -25,11 +25,35 @@ describe('components/project/simulation/boundaryConditions/edit', () => {
       description: 'description',
       configuration: {
         boundaryConditions: {
+          index: 1,
+          title: 'Boudnary conditions',
           key: {
-            values: [{}]
+            label: 'label',
+            values: [
+              {
+                uuid: 'uuid',
+                name: 'name',
+                type: {
+                  key: 'string',
+                  label: 'key'
+                },
+                selected: []
+              }
+            ]
           },
           otherKey: {
-            values: [{}]
+            label: 'label',
+            values: [
+              {
+                uuid: 'uuid',
+                name: 'name',
+                type: {
+                  key: 'string',
+                  label: 'key'
+                },
+                selected: []
+              }
+            ]
           }
         }
       }
@@ -37,17 +61,27 @@ describe('components/project/simulation/boundaryConditions/edit', () => {
   }
   const boundaryCondition = {
     uuid: 'uuid',
+    name: 'name',
     type: {
-      key: 'key'
+      key: 'key',
+      label: 'key'
     },
-    selected: ['uuid1', 'uuid3']
+    selected: [
+      { uuid: 'uuid1', label: 1 },
+      { uuid: 'uuid3', label: 3 }
+    ]
   }
   const oldBoundaryCondition = {
     uuid: 'uuid',
+    name: 'name',
     type: {
-      key: 'key'
+      key: 'key',
+      label: 'key'
     },
-    selected: ['uuid1', 'uuid2']
+    selected: [
+      { uuid: 'uuid1', label: 1 },
+      { uuid: 'uuid2', label: 2 }
+    ]
   }
   const geometry = {
     faces: [

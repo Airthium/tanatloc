@@ -5,8 +5,8 @@ import route, { IGetBody, IProcessBody } from '@/route/link'
 /**
  * Link API
  * @memberof Pages.API
- * @param {Object} req Request
- * @param {Object} res Response
+ * @param req Request
+ * @param res Response
  */
 const api = async (
   req: IRequest<IGetBody & IProcessBody>,

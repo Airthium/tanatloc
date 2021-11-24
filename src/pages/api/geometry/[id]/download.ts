@@ -5,8 +5,8 @@ import route from '@/route/geometry/[id]/download'
 /**
  * Geometry API for [id]/download
  * @memberof Pages.API
- * @param {Object} req Request
- * @param {Object} res Response
+ * @param req Request
+ * @param res Response
  */
 const download = async (req: IRequest, res: IResponse): Promise<void> => {
   await route(req, res)

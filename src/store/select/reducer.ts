@@ -25,8 +25,8 @@ export const selectInitialState: SelectState = {
 /**
  * Select reducer
  * @memberof Store.Select
- * @param {Object} state Redux state
- * @param {Object} action Action
+ * @param state Redux state
+ * @param action Action
  */
 const reducer = (
   state: SelectState,

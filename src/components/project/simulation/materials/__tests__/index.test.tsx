@@ -11,7 +11,7 @@ jest.mock('@/components/assets/button', () => ({
 const mockList = jest.fn()
 jest.mock(
   '@/components/project/simulation/materials/list',
-  () => (props) => mockList(props)
+  () => (props: {}) => mockList(props)
 )
 
 const mockMaterial = jest.fn()
@@ -59,8 +59,13 @@ describe('components/project/simulation/materials', () => {
       configuration: {
         materials: {
           index: 1,
-          label: 'label',
-          values: [{}]
+          title: 'Materials',
+          values: [
+            {
+              uuid: 'uuid',
+              selected: []
+            }
+          ]
         }
       }
     }

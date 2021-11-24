@@ -5,8 +5,8 @@ import route, { IDeleteBody, IUpdateBody } from '@/route/project/[id]'
 /**
  * Project API from [id]
  * @memberof Pages.API
- * @param {Object} req Request
- * @param {Object} res Response
+ * @param req Request
+ * @param res Response
  */
 const id = async (
   req: IRequest<IUpdateBody & IDeleteBody>,

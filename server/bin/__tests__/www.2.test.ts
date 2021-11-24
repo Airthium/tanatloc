@@ -19,7 +19,6 @@ jest.mock('http', () => ({
   })
 }))
 Object.defineProperty(process, 'env', { value: { PORT: 'port' } })
-export {}
 
 describe('server/bin/www', () => {
   test('www', async () => {
@@ -27,3 +26,5 @@ describe('server/bin/www', () => {
     expect(true).toBe(true)
   })
 })
+
+export {}

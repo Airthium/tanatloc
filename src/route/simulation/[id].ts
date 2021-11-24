@@ -12,7 +12,7 @@ export type IUpdateBody = IDataBaseEntry[]
 /**
  * Check update body
  * @memberof Route.Simulation
- * @param {Array} body Body
+ * @param body Body
  */
 const checkUpdateBody = (body: IUpdateBody): void => {
   if (!body || !Array.isArray(body))

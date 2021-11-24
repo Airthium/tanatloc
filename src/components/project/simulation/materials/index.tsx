@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react'
 import { Card, Layout, Space, Typography } from 'antd'
 
 import { IGeometry, ISimulation } from '@/database/index.d'
+import { IModelMaterialValue } from '@/models/index.d'
 
 import { AddButton } from '@/components/assets/button'
 import List from './list'
@@ -34,8 +35,7 @@ const Materials = ({
   setVisible
 }: IProps): JSX.Element => {
   // State
-  const [material, setMaterial]: [{ uuid: string; selected: {}[] }, Function] =
-    useState()
+  const [material, setMaterial]: [IModelMaterialValue, Function] = useState()
   const [materialVisible, setMaterialVisible]: [boolean, Function] =
     useState(false)
 

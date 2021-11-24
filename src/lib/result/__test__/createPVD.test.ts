@@ -27,7 +27,10 @@ describe('lib/download/pvd', () => {
       algorithm: 'algorithm',
       version: 'version',
       configuration: {
-        run: {}
+        run: {
+          index: 1,
+          title: 'Run'
+        }
       }
     }
   }
@@ -52,6 +55,8 @@ describe('lib/download/pvd', () => {
   test('full', () => {
     simulation.scheme.configuration = {
       run: {
+        index: 2,
+        title: 'Run',
         resultsFilters: [
           {
             name: 'Name',
@@ -63,8 +68,18 @@ describe('lib/download/pvd', () => {
         ]
       },
       parameters: {
+        index: 1,
+        title: 'Parameters',
         time: {
-          children: [{}, { default: 0.1 }]
+          label: 'Time',
+          children: [
+            {
+              label: 'label',
+              htmlEntity: 'entity',
+              default: 0
+            },
+            { label: 'label', htmlEntity: 'entity', default: 0.1 }
+          ]
         }
       }
     }
@@ -80,6 +95,8 @@ describe('lib/download/pvd', () => {
   test('no filtered files', () => {
     simulation.scheme.configuration = {
       run: {
+        index: 2,
+        title: 'Run',
         resultsFilters: [
           {
             name: 'Name',
@@ -91,8 +108,18 @@ describe('lib/download/pvd', () => {
         ]
       },
       parameters: {
+        index: 1,
+        title: 'Parameters',
         time: {
-          children: [{}, { default: 0.1 }]
+          label: 'Time',
+          children: [
+            {
+              label: 'label',
+              htmlEntity: 'entity',
+              default: 0
+            },
+            { label: 'label', htmlEntity: 'entity', default: 0.1 }
+          ]
         }
       }
     }

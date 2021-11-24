@@ -1,9 +1,20 @@
-//@ts-nocheck
-
 import { useState, useEffect, ChangeEvent } from 'react'
-import { Button, Card, Drawer, Input, Radio, Space } from 'antd'
+import {
+  Button,
+  Card,
+  Drawer,
+  Input,
+  Radio,
+  RadioChangeEvent,
+  Space
+} from 'antd'
 
-import { ISimulation } from '@/database/index.d'
+import { IGeometry, ISimulation } from '@/database/index.d'
+import {
+  IModel,
+  IModelBoundaryCondition,
+  IModelBoundaryConditionValue
+} from '@/models/index.d'
 
 import { GoBack } from '@/components/assets/button'
 import Formula from '@/components/assets/formula'
@@ -15,14 +26,14 @@ import Edit from '../edit'
 interface IProps {
   visible: boolean
   simulation: ISimulation
-  geometry: {}
-  boundaryConditions: {}[]
-  boundaryCondition?: {
-    name: string
-    selected: { uuid: string }[]
-    values: {}[]
+  geometry: {
+    faces: IGeometry['summary']['faces']
   }
-  swr: {}
+  boundaryConditions: IModel['configuration']['boundaryConditions']
+  boundaryCondition?: IModelBoundaryConditionValue
+  swr: {
+    mutateOneSimulation: Function
+  }
   close: Function
 }
 
@@ -50,12 +61,13 @@ const BoundaryCondition = ({
     }[],
     Function
   ] = useState([])
-  const [alreadySelected, setAlreadySelected]: [{}[], Function] = useState([])
-  const [totalNumber, setTotalNumber]: [number, Function] = useState(0)
-  const [current, setCurrent]: [
-    { name: string; selected: {}[]; values: {}[] },
+  const [alreadySelected, setAlreadySelected]: [
+    { label: string; selected: { uuid: string }[] }[],
     Function
-  ] = useState(boundaryCondition)
+  ] = useState([])
+  const [totalNumber, setTotalNumber]: [number, Function] = useState(0)
+  const [current, setCurrent]: [IModelBoundaryConditionValue, Function] =
+    useState(boundaryCondition)
   const [disabled, setDisabled]: [boolean, Function] = useState(true)
 
   // Types & already selected
@@ -67,8 +79,11 @@ const BoundaryCondition = ({
         if (type === 'index' || type === 'title' || type === 'done') return
         return {
           key: type,
+          //@ts-ignore
           label: boundaryConditions[type].label,
+          //@ts-ignore
           children: boundaryConditions[type].children,
+          //@ts-ignore
           values: boundaryConditions[type].values
         }
       })
@@ -78,10 +93,13 @@ const BoundaryCondition = ({
     const currentAlreadySelected = Object.keys(boundaryConditions)
       .map((type) => {
         if (type === 'index' || type === 'title' || type === 'done') return
-        return boundaryConditions[type]?.values?.map((b) => ({
-          label: b.name,
-          selected: b.selected
-        }))
+        //@ts-ignore
+        return boundaryConditions[type]?.values?.map(
+          (b: { name: string; selected: {}[] }) => ({
+            label: b.name,
+            selected: b.selected
+          })
+        )
       })
       .filter((a) => a)
       .flat()
@@ -107,7 +125,9 @@ const BoundaryCondition = ({
     if (boundaryCondition)
       setCurrent({
         ...boundaryCondition,
-        selected: boundaryCondition.selected.map((s) => s.uuid)
+        selected: boundaryCondition.selected.map(
+          (s: { uuid: string }) => s.uuid
+        )
       })
   }, [boundaryCondition])
 
@@ -125,7 +145,7 @@ const BoundaryCondition = ({
 
   /**
    * On name
-   * @param {Object} event Event
+   * @param event Event
    */
   const onName = (event: ChangeEvent<HTMLInputElement>): void => {
     const name = event.target.value
@@ -137,16 +157,20 @@ const BoundaryCondition = ({
 
   /**
    * On type
-   * @param {Object} event Event
+   * @param event Event
    */
-  const onType = (event: ChangeEvent<HTMLInputElement>): void => {
+  const onType = (event: RadioChangeEvent): void => {
     const key = event.target.value
     const type = types.find((t) => t.key === key)
+    //@ts-ignore
     const values = boundaryConditions[key].children
-      ? boundaryConditions[key].children.map((child) => ({
-          checked: true,
-          value: child.default
-        }))
+      ? //@ts-ignore
+        boundaryConditions[key].children.map(
+          (child: IModelBoundaryCondition) => ({
+            checked: true,
+            value: child.default
+          })
+        )
       : [
           {
             checked: true,
@@ -162,10 +186,10 @@ const BoundaryCondition = ({
 
   /**
    * On value change
-   * @param {number} index Index
-   * @param {string} value Value
+   * @param index Index
+   * @param value Value
    */
-  const onValueChange = (index: number, value): void => {
+  const onValueChange = (index: number, value: string): void => {
     setCurrent({
       ...current,
       values: [
@@ -181,10 +205,10 @@ const BoundaryCondition = ({
 
   /**
    * On checked change
-   * @param {number} index Index
-   * @param {boolean} checked Checked
+   * @param index Index
+   * @param checked Checked
    */
-  const onCheckedChange = (index, checked) => {
+  const onCheckedChange = (index: number, checked: boolean): void => {
     setCurrent({
       ...current,
       values: [
@@ -200,9 +224,9 @@ const BoundaryCondition = ({
 
   /**
    * On selected
-   * @param {Array} selected Selected
+   * @param selected Selected
    */
-  const onSelected = (selected) => {
+  const onSelected = (selected: {}[]): void => {
     setCurrent({
       ...current,
       selected: selected
@@ -212,7 +236,7 @@ const BoundaryCondition = ({
   /**
    * On close
    */
-  const onClose = () => {
+  const onClose = (): void => {
     setCurrent({
       name: 'Boundary condition ' + (totalNumber + 1)
     })
@@ -260,7 +284,7 @@ const BoundaryCondition = ({
                 <div key={index}>
                   {child.label}
                   <Formula
-                    defaultValue={current.values[index].value}
+                    defaultValue={String(current.values[index].value)}
                     defaultChecked={
                       current.type.children.length > 1
                         ? current.values[index].checked

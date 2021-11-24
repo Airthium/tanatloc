@@ -1,3 +1,5 @@
+import { IResponse } from '@/route/index.d'
+
 import * as auth from '../auth-cookies'
 
 jest.mock('cookie', () => ({
@@ -7,17 +9,20 @@ jest.mock('cookie', () => ({
 
 jest.mock('is-electron', () => () => true)
 
-let mockSet
-let mockDelete
+let mockSet: string
+let mockDelete: string
 const mockGet = jest.fn()
 jest.mock(
   'electron-store',
   () =>
     class MockStore {
       constructor() {
-        this.set = (name, value) => (mockSet = value)
+        //@ts-ignore
+        this.set = (_: string, value: string) => (mockSet = value)
+        //@ts-ignore
         this.get = () => mockGet()
-        this.delete = (name) => {
+        //@ts-ignore
+        this.delete = (name: string) => {
           mockDelete = name
         }
       }
@@ -26,19 +31,29 @@ jest.mock(
 
 describe('auth/auth-cookies', () => {
   test('setTokenCookie', () => {
-    const res = {}
+    const res: IResponse = {
+      setHeader: jest.fn,
+      status: (_: number) => res,
+      end: () => res,
+      json: () => res
+    }
     auth.setTokenCookie(res, 'token')
     expect(mockSet).toBe('cookie')
   })
 
   test('removeTokenCookie', () => {
-    const res = {}
+    const res: IResponse = {
+      setHeader: jest.fn,
+      status: (_: number) => res,
+      end: () => res,
+      json: () => res
+    }
     auth.removeTokenCookie(res)
     expect(mockDelete).toBe('auth-token')
   })
 
   test('parseCookies', () => {
-    let res
+    let res: string
     const req = {}
 
     res = auth.parseCookies(req)

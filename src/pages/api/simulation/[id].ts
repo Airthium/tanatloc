@@ -6,8 +6,8 @@ import route from '@/route/simulation/[id]'
 /**
  * Simulation API from [id]
  * @memberof Pages.API
- * @param {Object} req Request
- * @param {Object} res Response
+ * @param req Request
+ * @param res Response
  */
 const id = async (
   req: IRequest<IUpdateBody>,

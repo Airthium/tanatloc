@@ -35,12 +35,19 @@ describe('components/project/simulation/boundaryConditions/list', () => {
       description: 'description',
       configuration: {
         boundaryConditions: {
-          title: 'title',
+          index: 1,
+          title: 'Boundary conditions',
           key: {
+            label: 'label',
             values: [
               {
+                uuid: 'uuid',
                 name: 'name',
-                selected: ['uuid']
+                type: {
+                  key: 'key',
+                  label: 'key'
+                },
+                selected: [{ uuid: 'uuid', label: 1 }]
               }
             ]
           }

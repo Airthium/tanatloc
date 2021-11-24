@@ -6,8 +6,8 @@ import { IDataBaseEntry, ISystem } from '@/database/index.d'
 /**
  * Get items
  * @memberof Lib.System
- * @params {Array} items Items
- * @returns {Object} System `{ ...items }`
+ * @params items Items
+ * @returns System
  */
 const get = async (items: string[]): Promise<ISystem> => {
   return SystemDB.get(items)
@@ -16,7 +16,7 @@ const get = async (items: string[]): Promise<ISystem> => {
 /**
  * Update items
  * @memberof Lib.System
- * @params {Array} items Items
+ * @params items Items
  */
 const update = async (items: IDataBaseEntry[]): Promise<void> => {
   await SystemDB.update(items)

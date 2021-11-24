@@ -5,11 +5,10 @@
 Object.defineProperty(process, 'platform', {
   value: 'darwin'
 })
-export {}
 
 describe('config/db', () => {
-  test('global', () => {
-    const config = require('../db')
+  test('global', async () => {
+    const config = await import('../db')
     expect(config.ADMIN).toBe(process.env.USER)
     expect(config.ADMIN_DATABASE).toBe('postgres')
     expect(config.ADMIN_PASSWORD).toBe('')
@@ -20,8 +19,8 @@ describe('config/db', () => {
     expect(config.PASSWORD).toBe('tanatloc')
   })
 
-  test('tables', () => {
-    const config = require('../db')
+  test('tables', async () => {
+    const config = await import('../db')
     expect(config.tables.SYSTEM).toBe('tanatloc_system')
     expect(config.tables.USERS).toBe('tanatloc_users')
     expect(config.tables.ORGANIZATIONS).toBe('tanatloc_organizations')
@@ -34,3 +33,5 @@ describe('config/db', () => {
     expect(config.tables.LINKS).toBe('tanatloc_links')
   })
 })
+
+export {}

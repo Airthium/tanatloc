@@ -15,8 +15,8 @@ const base: string = isElectron() ? 'http://localhost:' + port : ''
 /**
  * Fetcher (for SWR)
  * @memberof API
- * @param {string} url URL
- * @param {string} [payload] Payload
+ * @param url URL
+ * @param payload Payload
  */
 export const fetcher = async (
   url: string,
@@ -45,9 +45,9 @@ export const fetcher = async (
 /**
  * API call
  * @memberof API
- * @param {string} route Route
- * @param {Object} param Parameters
- * @returns {Object} Response
+ * @param route Route
+ * @param param Parameters
+ * @returns Response
  */
 export const call = async (
   route: string,

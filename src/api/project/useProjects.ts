@@ -31,7 +31,7 @@ export const useProjects = (
   /**
    * Add one (useProjects)
    * @memberof API.Project
-   * @param {Object} project Project
+   * @param project Project
    */
   const addOne = (project: IProjectWithData) => {
     const newProjects = [...projects, project]
@@ -41,7 +41,7 @@ export const useProjects = (
   /**
    * Delete one (useProjects)
    * @memberof API.Project
-   * @param {Object} project project
+   * @param project project
    */
   const delOne = (project: IProjectWithData) => {
     const filteredProjects = projects.filter((p) => p.id !== project.id)
@@ -51,7 +51,7 @@ export const useProjects = (
   /**
    * Mutate one (useProjects)
    * @memberof API.Project
-   * @param {Object} project Project
+   * @param project Project
    */
   const mutateOne = (project: IProjectWithData) => {
     const mutatedProjects = projects.map((p) => {

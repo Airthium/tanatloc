@@ -1,5 +1,3 @@
-//@ts-nocheck
-
 import React from 'react'
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 
@@ -37,7 +35,8 @@ describe('components/project/simulation/parameters', () => {
             children: [
               {
                 label: 'Formula',
-                htmlEntity: 'formula'
+                htmlEntity: 'formula',
+                default: 0
               }
             ]
           },
@@ -54,7 +53,11 @@ describe('components/project/simulation/parameters', () => {
                 ],
                 default: 'option1'
               },
-              {}
+              {
+                label: 'label',
+                htmlEntity: 'entity',
+                default: 0
+              }
             ]
           },
           param3: {
@@ -62,7 +65,8 @@ describe('components/project/simulation/parameters', () => {
             children: [
               {
                 label: 'Checkbox',
-                htmlEntity: 'checkbox'
+                htmlEntity: 'checkbox',
+                default: 0
               }
             ]
           }
@@ -88,6 +92,7 @@ describe('components/project/simulation/parameters', () => {
   })
 
   test('with value', () => {
+    //@ts-ignore
     simulation.scheme.configuration.parameters.param2.children[0].value = 0
     const { unmount } = render(<Parameters simulation={simulation} swr={swr} />)
 

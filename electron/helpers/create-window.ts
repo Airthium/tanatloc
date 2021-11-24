@@ -1,37 +1,61 @@
 import { screen, BrowserWindow } from 'electron'
-import * as Store from 'electron-store'
+import Store from 'electron-store'
+
+interface IWindow {
+  getPosition: () => number[]
+  getSize: () => number[]
+  isMaximized: () => boolean
+  isMinimized: () => boolean
+  loadURL: (url: string) => Promise<void>
+  maximize: () => void
+  on: (event: string, callback: Function) => void
+  webContents: {
+    openDevTools: () => void
+  }
+}
+
+interface IWindowState {
+  x: number
+  y: number
+  width: number
+  height: number
+}
 
 /**
  * Create electron window
  * @memberof Electron
- * @param {string} windowName Window name
- * @param {Object} options Options
+ * @param windowName Window name
+ * @param options Options
  * @description Create the electron window
  */
-export default function createWindow(windowName, options) {
+export default (
+  windowName: string,
+  options: { width: number; height: number; webPreferences?: {} }
+): IWindow => {
   const key = 'window-state'
   const name = `window-state-${windowName}`
-  const store = new Store({ name })
+  const store = new Store()
+  store.set('name', name)
   const defaultSize = {
     width: options.width,
     height: options.height
   }
   let state = {}
-  let win
+  let win: IWindow
 
   /**
    * Restore store
    * @memberof Electron
-   * @returns {Object} Store
+   * @returns Store
    */
-  const restore = () => store.get(key, defaultSize)
+  const restore = (): any => store.get(key, defaultSize)
 
   /**
    * Get current position
    * @memberof Electron
-   * @returns {Object} Position
+   * @returns Position
    */
-  const getCurrentPosition = () => {
+  const getCurrentPosition = (): IWindowState => {
     const position = win.getPosition()
     const size = win.getSize()
     return {
@@ -45,11 +69,14 @@ export default function createWindow(windowName, options) {
   /**
    * Window within bounds
    * @memberof Electron
-   * @param {Object} windowState Window state
-   * @param {Object} bounds Bounds
-   * @returns {boolean} Within
+   * @param windowState Window state
+   * @param bounds Bounds
+   * @returns Within
    */
-  const windowWithinBounds = (windowState, bounds) => {
+  const windowWithinBounds = (
+    windowState: IWindowState,
+    bounds: IWindowState
+  ): boolean => {
     return (
       windowState.x >= bounds.x &&
       windowState.y >= bounds.y &&
@@ -61,9 +88,9 @@ export default function createWindow(windowName, options) {
   /**
    * Reset to defaults
    * @memberof Electron
-   * @returns {Object} Defaults
+   * @returns Defaults
    */
-  const resetToDefaults = () => {
+  const resetToDefaults = (): IWindowState => {
     const bounds = screen.getPrimaryDisplay().bounds
     return Object.assign({}, defaultSize, {
       x: (bounds.width - defaultSize.width) / 2,
@@ -74,10 +101,12 @@ export default function createWindow(windowName, options) {
   /**
    * Ensure visibile on some display
    * @memberof Electron
-   * @param {Object} windowState Window state
-   * @returns {Object} Window state
+   * @param windowState Window state
+   * @returns Window state
    */
-  const ensureVisibleOnSomeDisplay = (windowState) => {
+  const ensureVisibleOnSomeDisplay = (
+    windowState: IWindowState
+  ): IWindowState => {
     const visible = screen.getAllDisplays().some((display) => {
       return windowWithinBounds(windowState, display.bounds)
     })
@@ -93,7 +122,7 @@ export default function createWindow(windowName, options) {
    * Save state
    * @memberof Electron
    */
-  const saveState = () => {
+  const saveState = (): void => {
     if (!win.isMinimized() && !win.isMaximized()) {
       Object.assign(state, getCurrentPosition())
     }

@@ -328,7 +328,7 @@ describe('components/project/simulation/initialization', () => {
       await act(async () => fireEvent.click(option2))
     }
 
-    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(3))
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
 
     // Error
     mockUpdate.mockImplementation(() => {

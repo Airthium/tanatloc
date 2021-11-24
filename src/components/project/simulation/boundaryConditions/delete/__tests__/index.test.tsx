@@ -128,7 +128,7 @@ describe('components/project/simulation/boundaryConditions/delete', () => {
       throw new Error()
     })
     fireEvent.click(button)
-    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
     await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
 
     unmount()

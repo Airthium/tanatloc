@@ -316,18 +316,18 @@ describe('components/project/view', () => {
     unmount()
   })
 
-  test('with geometry error 2', async () => {
-    mockGet.mockImplementation(() => ({
-      error: true,
-      message: 'message'
-    }))
-    const { unmount } = render(<View project={project} geometry={geometry} />)
+  // test('with geometry error 2', async () => {
+  //   mockGet.mockImplementation(() => ({
+  //     error: true,
+  //     message: 'message'
+  //   }))
+  //   const { unmount } = render(<View project={project} geometry={geometry} />)
 
-    await waitFor(() => expect(mockGet).toHaveBeenCalledTimes(1))
-    await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
+  //   await waitFor(() => expect(mockGet).toHaveBeenCalledTimes(1))
+  //   await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
 
-    unmount()
-  })
+  //   unmount()
+  // })
 
   test('with geometry', async () => {
     const { unmount } = render(<View project={project} geometry={geometry} />)

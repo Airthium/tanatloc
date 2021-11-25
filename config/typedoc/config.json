@@ -21,6 +21,7 @@
     "../../electron",
     "../../install",
     "../../models",
+    "../../plugins",
     "../../server",
     "../../src/api",
     "../../src/auth",

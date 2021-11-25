@@ -149,7 +149,7 @@ const PluginDialog = ({ plugin, swr, edit }: IProps): JSX.Element => {
     item: {
       required?: boolean
       label: string
-      options: string[]
+      options?: string[]
       props?: object
     },
     key: string

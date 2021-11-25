@@ -184,18 +184,25 @@ export interface IPlugin {
     needInit?: boolean
     needReInit?: boolean
     configuration?: {
-      name?: {
+      [key: string]: {
         label: string
         type: string
-        value?: string
-      }
-      password?: {
-        label: string
-        type: string
-        value?: string
+        required?: boolean
+        options?: string[]
+        default?: boolean | number | value
+        value?: bollean | number | string
+        props?: any
       }
     }
-    inUseConfiguration?: any
+    data?: {
+      [key: string]: any
+    }
+    inUseConfiguration?: {
+      [key: string]: {
+        label: string
+        value?: boolean | number | string
+      }
+    }
   }
   server?: {
     lib?: {
@@ -219,6 +226,7 @@ export interface IClientPlugin extends Omit<IPlugin, 'client' | 'server'> {
   needInit?: IPlugin['client']['needInit']
   needReInit?: IPlugin['client']['needReInit']
   configuration?: IPlugin['client']['configuration']
+  data?: IPlugin['client']['data']
   inUseConfiguration?: IPlugin['client']['inUseConfiguration']
   data?: {}
 }

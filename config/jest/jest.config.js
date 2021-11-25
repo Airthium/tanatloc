@@ -29,7 +29,6 @@ module.exports = {
     '<rootDir>/config/jsdoc/',
     '<rootDir>/public/',
     '<rootDir>/tests/',
-    '<rootDir>/updaters/',
     '<rootDir>/src/components/editor/prism/'
   ],
   transform: {
@@ -56,8 +55,7 @@ module.exports = {
     '^@/route(.*)$': '<rootDir>/src/route$1',
     '^@/services(.*)$': '<rootDir>/src/services$1',
     '^@/store(.*)$': '<rootDir>/src/store$1',
-    '^@/styles(.*)$': '<rootDir>/src/styles$1',
-    '^@/updaters(.*)$': '<rootDir>/updaters$1'
+    '^@/styles(.*)$': '<rootDir>/src/styles$1'
   },
   coveragePathIgnorePatterns: [
     '<rootDir>/node_modules/',
@@ -76,7 +74,6 @@ module.exports = {
     '<rootDir>/config/jsdoc/',
     '<rootDir>/public/',
     '<rootDir>/tests/',
-    '<rootDir>/updaters/',
     '<rootDir>/src/api/wait',
     '<rootDir>/src/database/wait',
     '<rootDir>/src/lib/wait',

@@ -25,7 +25,7 @@ RUN apt update \
         yarn
 
 # NVM
-ENV NODE_VERSION=14.18.0
+ENV NODE_VERSION=16.13.0
 RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash
 ENV NVM_DIR /root/.nvm
 RUN . "$NVM_DIR/nvm.sh" && nvm install ${NODE_VERSION}
@@ -60,7 +60,6 @@ COPY public ${INSTALL_PATH}/public
 COPY resources ${INSTALL_PATH}/resources
 COPY src ${INSTALL_PATH}/src
 COPY templates ${INSTALL_PATH}/templates
-COPY updaters ${INSTALL_PATH}/updaters
 COPY .babelrc ${INSTALL_PATH}/.babelrc
 COPY next.config.js ${INSTALL_PATH}/next.config.js
 COPY package.json ${INSTALL_PATH}/package.json
@@ -112,7 +111,7 @@ RUN apt update \
         yarn
 
 # NVM
-ENV NODE_VERSION=14.18.0
+ENV NODE_VERSION=16.13.0
 RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash
 ENV NVM_DIR /root/.nvm
 RUN . "$NVM_DIR/nvm.sh" && nvm install ${NODE_VERSION}

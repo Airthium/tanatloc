@@ -8,9 +8,6 @@ node_modules
 # Install
 dist-install
 
-# Updaters
-dist-updaters
-
 # testing
 /coverage
 

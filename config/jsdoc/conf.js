@@ -1,7 +1,7 @@
 module.exports = {
   source: {
     include: ['.'],
-    includePattern: '\\.(jsx|js|tsx|ts)$',
+    includePattern: '\\.(jsx|js)$',
     exclude: [
       'app',
       'config/jest',

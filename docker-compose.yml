@@ -1,6 +1,6 @@
 services:
   database:
-    image: postgres
+    image: postgres:13
     environment:
       - POSTGRES_PASSWORD=password
     # TO OPEN DATABASE TO HOST
@@ -10,15 +10,7 @@ services:
       - postgresData:/var/lib/postgresql/data
 
   tanatloc:
-    build:
-      context: .
-      args:
-        - DB_ADMIN=postgres
-        - DB_ADMIN_PASSWORD=password
-        - DB_HOST=database
-        - DB_PORT=5432
-    depends_on:
-      - database
+    image: tanatloc/tanatloc:test
     environment:
       - DB_ADMIN=postgres
       - DB_ADMIN_PASSWORD=password
@@ -28,7 +20,7 @@ services:
       - tanatlocData:/root/tanatloc
 
   network:
-    image: nginx
+    image: nginx:1.21
     depends_on:
       - tanatloc
     ports:

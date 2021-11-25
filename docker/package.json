@@ -34,6 +34,7 @@
     "redux-devtools-extension": "2.13.9",
     "redux-persist": "6.0.0",
     "set-interval-async": "2.0.3",
+    "tar": "6.1.11",
     "three-to-glb": "./modules/three-to-glb/",
     "url-join": "4.0.1",
     "uuid": "8.3.2"

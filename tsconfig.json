@@ -43,9 +43,7 @@
       "@/store": ["src/store"],
       "@/store/*": ["src/store/*"],
       "@/styles": ["src/styles"],
-      "@/styles/*": ["src/styles/*"],
-      "@/updaters": ["updaters"],
-      "@/updaters/*": ["updaters/*"]
+      "@/styles/*": ["src/styles/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],

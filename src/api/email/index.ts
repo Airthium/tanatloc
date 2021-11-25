@@ -1,4 +1,4 @@
-/** @namespace API.Email */
+/** @module API.Email */
 
 import { recover } from './recover'
 

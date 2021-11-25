@@ -1,4 +1,4 @@
-/** @namespace Route.Workspace */
+/** @module Route.Workspace */
 
 import { IRequest, IResponse } from '..'
 import { session } from '../session'

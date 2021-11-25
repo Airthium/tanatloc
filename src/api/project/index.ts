@@ -1,4 +1,4 @@
-/** @namespace API.Project */
+/** @module API.Project */
 
 import { useProjects } from './useProjects'
 import { useProject } from './useProject'

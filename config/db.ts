@@ -1,4 +1,4 @@
-/** @namespace Config.Database */
+/** @module Config.Database */
 
 // Database configuration
 /**

@@ -1,4 +1,4 @@
-/** @namespace Auth.AuthCookies */
+/** @module Auth.AuthCookies */
 
 import { serialize, parse } from 'cookie'
 

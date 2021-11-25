@@ -1,3 +1,3 @@
-/** @namespace Config */
+/** @module Config */
 
 export {}

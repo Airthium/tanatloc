@@ -1,4 +1,4 @@
-/** @namespace Components.Index */
+/** @module Components.Index */
 
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'

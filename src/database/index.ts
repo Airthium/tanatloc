@@ -1,4 +1,4 @@
-/** @namespace Database */
+/** @module Database */
 
 import { Pool } from 'pg'
 

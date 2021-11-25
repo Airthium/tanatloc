@@ -1,4 +1,4 @@
-/** @namespace Components.Assets.Button */
+/** @module Components.Assets.Button */
 
 import AddButton from './add'
 import EditButton from './edit'

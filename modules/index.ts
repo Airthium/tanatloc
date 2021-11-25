@@ -1,3 +1,3 @@
-/** @namespace Modules */
+/** @module Modules */
 
 export {}

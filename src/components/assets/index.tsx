@@ -1,3 +1,3 @@
-/** @namespace Components.Assets */
+/** @module Components.Assets */
 
 export {}

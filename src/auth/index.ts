@@ -1,3 +1,3 @@
-/** @namespace Auth */
+/** @module Auth */
 
 export {}

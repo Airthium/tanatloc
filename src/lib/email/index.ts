@@ -1,4 +1,4 @@
-/** @namespace Lib.Email */
+/** @module Lib.Email */
 
 import MailerSend, { Recipient, EmailParams } from 'mailersend'
 

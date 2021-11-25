@@ -1,4 +1,4 @@
-/** @namespace Lib.Link */
+/** @module Lib.Link */
 
 import { SUBSCRIBE, PASSWORD_RECOVERY, REVALIDATE } from '@/config/email'
 

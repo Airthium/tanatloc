@@ -1,4 +1,4 @@
-/** @namespace Components.Organizations */
+/** @module Components.Organizations */
 
 import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'

@@ -1,4 +1,4 @@
-/** @namespace Components.Assets.Input */
+/** @module Components.Assets.Input */
 
 import PasswordItem from './password'
 

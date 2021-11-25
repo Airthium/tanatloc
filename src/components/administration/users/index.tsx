@@ -1,4 +1,4 @@
-/** @namespace Components.Administration.Users */
+/** @module Components.Administration.Users */
 
 import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'

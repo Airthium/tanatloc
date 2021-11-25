@@ -1,4 +1,4 @@
-/** @namespace Lib.Result */
+/** @module Lib.Result */
 
 import path from 'path'
 import archiver from 'archiver'

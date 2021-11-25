@@ -1,4 +1,4 @@
-/** @namespace Components.Assets.Group */
+/** @module Components.Assets.Group */
 
 import PropTypes from 'prop-types'
 import { useState } from 'react'

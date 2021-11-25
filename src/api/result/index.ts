@@ -1,4 +1,4 @@
-/** @namespace API.Result */
+/** @module API.Result */
 
 import { load } from './load'
 import { download } from './download'

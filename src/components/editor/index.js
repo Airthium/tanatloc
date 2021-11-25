@@ -1,4 +1,4 @@
-/** @namespace Components.Editor */
+/** @module Components.Editor */
 
 import { useState, useEffect } from 'react'
 import { Button, Layout, Steps } from 'antd'

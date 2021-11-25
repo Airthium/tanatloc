@@ -1,4 +1,4 @@
-/** @namespace API.Organization */
+/** @module API.Organization */
 
 import { useOrganizations } from './useOrganizations'
 import { add } from './add'

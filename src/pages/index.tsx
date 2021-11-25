@@ -1,4 +1,4 @@
-/** @namespace Pages */
+/** @module Pages */
 
 import IndexPage from '@/components/indexpage'
 

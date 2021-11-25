@@ -1,4 +1,4 @@
-/** @namespace Route.Link */
+/** @module Route.Link */
 
 import { IRequest, IResponse } from '..'
 import { error } from '../error'

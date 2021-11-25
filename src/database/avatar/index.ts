@@ -1,4 +1,4 @@
-/** @namespace Database.Avatar */
+/** @module Database.Avatar */
 
 import { add } from './add'
 import { get } from './get'

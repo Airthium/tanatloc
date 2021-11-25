@@ -1,4 +1,4 @@
-/** @namespace Store */
+/** @module Store */
 
 import { useMemo } from 'react'
 import {

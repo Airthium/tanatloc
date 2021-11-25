@@ -1,4 +1,4 @@
-/** @namespace API.Workspace */
+/** @module API.Workspace */
 
 import { useWorkspaces } from './useWorkspaces'
 import { add } from './add'

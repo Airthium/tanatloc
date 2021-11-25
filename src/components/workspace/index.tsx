@@ -1,4 +1,4 @@
-/** @namespace Components.Workspace */
+/** @module Components.Workspace */
 
 import PropTypes from 'prop-types'
 import React, { useState, useEffect } from 'react'

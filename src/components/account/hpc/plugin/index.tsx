@@ -1,4 +1,4 @@
-/** @namespace Components.Account.HPC.Plugin */
+/** @module Components.Account.HPC.Plugin */
 
 import { useEffect } from 'react'
 import PropTypes from 'prop-types'

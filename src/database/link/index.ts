@@ -1,4 +1,4 @@
-/** @namespace Database.Link */
+/** @module Database.Link */
 
 import { add } from './add'
 import { get } from './get'

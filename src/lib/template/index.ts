@@ -1,4 +1,4 @@
-/** @namespace Lib.Template */
+/** @module Lib.Template */
 
 import path from 'path'
 import ejs from 'ejs'

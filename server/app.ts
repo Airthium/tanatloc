@@ -1,4 +1,4 @@
-/** @namespace Server */
+/** @module Server */
 
 import createError from 'http-errors'
 import express, { json, urlencoded } from 'express'

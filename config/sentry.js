@@ -1,4 +1,4 @@
-/** @namespace Config.Sentry */
+/** @module Config.Sentry */
 
 /**
  * Sentry DNS

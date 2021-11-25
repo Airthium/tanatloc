@@ -1,4 +1,4 @@
-/** @namespace Lib.Organization */
+/** @module Lib.Organization */
 
 import Crypto from 'crypto'
 

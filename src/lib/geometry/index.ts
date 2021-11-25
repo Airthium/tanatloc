@@ -1,4 +1,4 @@
-/** @namespace Lib.Geometry */
+/** @module Lib.Geometry */
 
 import path from 'path'
 

@@ -1,4 +1,4 @@
-/** @namespace Components.Loading */
+/** @module Components.Loading */
 
 import { Card, Layout, Space, Spin } from 'antd'
 

@@ -20,13 +20,15 @@ module.exports = {
   tags: {
     allowUnknownTags: true
   },
-  plugins: ['plugins/markdown', 'node_modules/better-docs/typescript'],
+  plugins: ['plugins/markdown'],
+  typescript: {
+    moduleRoot: '.'
+  },
   opts: {
     destination: './doc',
     recurse: true,
     readme: 'README.md',
-    // template: './node_modules/@airthium/air-jsdoc-template'
-    template: 'node_modules/better-docs'
+    template: './node_modules/@airthium/air-jsdoc-template'
   },
   templateOptions: {
     icon: './public/images/icon.png',

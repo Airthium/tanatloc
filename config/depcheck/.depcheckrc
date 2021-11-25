@@ -5,7 +5,6 @@ ignores: [
     "@swc/core",
     "@swc/jest",
     "@types/*",
-    "better-docs",
     "ignore-loader",
     "node-fetch",
     "set-interval-async",

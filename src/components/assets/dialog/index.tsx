@@ -1,4 +1,4 @@
-/** @namespace Components.Assets.Dialog */
+/** @module Components.Assets.Dialog */
 
 import PropTypes from 'prop-types'
 import { ReactChild, useEffect } from 'react'

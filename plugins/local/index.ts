@@ -1,4 +1,4 @@
-/** @namespace Plugins.Local */
+/** @module Plugins.Local */
 
 import { IPlugin } from '@/database/index.d'
 

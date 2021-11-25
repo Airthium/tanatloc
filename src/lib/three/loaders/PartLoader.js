@@ -1,4 +1,4 @@
-/** @namespace Lib.Three.Loaders */
+/** @module Lib.Three.Loaders */
 
 import { Box3, Color, Raycaster, Vector2, Vector3 } from 'three'
 

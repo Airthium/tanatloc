@@ -1,3 +1,5 @@
+/** @module API.Interface */
+
 import { ISimulation } from '@/database/index.d'
 import { IGeometry, IClientPlugin, ISystem } from '@/database/index.d'
 import {

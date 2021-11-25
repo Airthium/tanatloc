@@ -1,4 +1,4 @@
-/** @namespace Lib.Project */
+/** @module Lib.Project */
 
 import path from 'path'
 import { ReadStream } from 'fs'

@@ -1,4 +1,4 @@
-/** @namespace Components.Project.Data */
+/** @module Components.Project.Data */
 
 import { useState, useEffect } from 'react'
 import {

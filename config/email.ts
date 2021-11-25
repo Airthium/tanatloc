@@ -1,4 +1,4 @@
-/** @namespace Config.Email */
+/** @module Config.Email */
 
 /**
  * Email token

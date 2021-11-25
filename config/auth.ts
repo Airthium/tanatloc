@@ -1,4 +1,4 @@
-/** @namespace Config.Auth */
+/** @module Config.Auth */
 
 /**
  * Authentication secret

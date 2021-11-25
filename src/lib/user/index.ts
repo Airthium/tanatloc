@@ -1,4 +1,4 @@
-/** @namespace Lib.User */
+/** @module Lib.User */
 
 import UserDB from '@/database/user'
 import { IDataBaseEntry, INewUser, IUser, IUserCheck } from '@/database/index.d'

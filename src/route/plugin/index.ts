@@ -1,4 +1,4 @@
-/** @namespace Route.Plugin */
+/** @module Route.Plugin */
 
 import { IRequest, IResponse } from '..'
 import { session } from '../session'

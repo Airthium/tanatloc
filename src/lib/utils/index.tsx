@@ -1,4 +1,4 @@
-/** @namespace Lib.Utils */
+/** @module Lib.Utils */
 
 import { Avatar, Spin, Tooltip } from 'antd'
 

@@ -1,1 +1,1 @@
-/** @namespace Lib.Three.Helpers */
+/** @module Lib.Three.Helpers */

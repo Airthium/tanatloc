@@ -1,4 +1,4 @@
-/** @namespace Services */
+/** @module Services */
 
 import toThree from './toThree'
 import gmsh from './gmsh'

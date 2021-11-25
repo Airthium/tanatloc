@@ -15,6 +15,25 @@
     "**/.next/**",
     "**/public/**"
   ],
+  "tsconfig": "../../tsconfig.json",
+  "entryPoints": [
+    "../../config",
+    "../../electron",
+    "../../install",
+    "../../models",
+    "../../server",
+    "../../src/api",
+    "../../src/auth",
+    "../../src/components",
+    "../../src/database",
+    "../../src/lib",
+    "../../src/pages",
+    "../../src/route",
+    "../../src/services",
+    "../../src/store",
+    "../../templates"
+  ],
   "entryPointStrategy": "expand",
-  "out": "../../doc"
+  "out": "../../doc",
+  "readme": "../../README.md"
 }

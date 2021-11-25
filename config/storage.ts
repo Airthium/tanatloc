@@ -1,4 +1,4 @@
-/** @namespace Config.Storage */
+/** @module Config.Storage */
 
 import path from 'path'
 import os from 'os'

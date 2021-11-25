@@ -1,4 +1,4 @@
-/** @namespace Components.Password */
+/** @module Components.Password */
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'

@@ -1,4 +1,4 @@
-/** @namespace Auth.Iron */
+/** @module Auth.Iron */
 
 import Iron from '@hapi/iron'
 import { getTokenCookie } from './auth-cookies'

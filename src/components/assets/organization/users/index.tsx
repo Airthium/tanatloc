@@ -1,4 +1,4 @@
-/** @namespace Components.Assets.Organization.Users */
+/** @module Components.Assets.Organization.Users */
 
 import PropTypes from 'prop-types'
 import { Card, Space, Table } from 'antd'

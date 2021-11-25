@@ -1,4 +1,4 @@
-/** @namespace API.Avatar */
+/** @module API.Avatar */
 
 import { add } from './add'
 

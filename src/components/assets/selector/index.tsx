@@ -1,4 +1,4 @@
-/** @namespace Components.Assets.Selector */
+/** @module Components.Assets.Selector */
 
 import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'

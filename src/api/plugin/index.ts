@@ -1,4 +1,4 @@
-/** @namespace API.Plugin */
+/** @module API.Plugin */
 
 import { add } from './add'
 import { update } from './update'

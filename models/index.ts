@@ -1,4 +1,4 @@
-/** @namespace Models */
+/** @module Models */
 
 import Poisson from './poisson'
 import LinearElasticity from './linearElasticity'

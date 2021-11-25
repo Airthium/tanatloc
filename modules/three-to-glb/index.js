@@ -1,4 +1,4 @@
-/** @namespace Modules.ThreeToGLB */
+/** @module Modules.ThreeToGLB */
 
 const { convert } = require('./src')
 

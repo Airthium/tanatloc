@@ -1,4 +1,4 @@
-/** @namespace API.User */
+/** @module API.User */
 
 import { useUser } from './useUser'
 import { useUsers } from './useUsers'

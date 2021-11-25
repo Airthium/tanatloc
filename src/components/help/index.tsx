@@ -1,4 +1,4 @@
-/** @namespace Components.Help */
+/** @module Components.Help */
 
 import { Card, Layout, Space } from 'antd'
 

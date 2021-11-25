@@ -1,4 +1,4 @@
-/** @namespace Components.Account */
+/** @module Components.Account */
 
 import PropTypes from 'prop-types'
 import { useRouter } from 'next/router'

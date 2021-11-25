@@ -1,4 +1,4 @@
-/** @namespace Database.User */
+/** @module Database.User */
 
 import { add } from './add'
 import { get } from './get'

@@ -1,4 +1,4 @@
-/** @namespace Route.Result */
+/** @module Route.Result */
 
 import { IRequest, IResponse } from '..'
 import { session } from '../session'

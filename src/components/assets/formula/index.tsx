@@ -1,4 +1,4 @@
-/** @namespace Components.Assets.Formula */
+/** @module Components.Assets.Formula */
 
 import { ChangeEvent, useState } from 'react'
 import { Checkbox, Input, Space } from 'antd'

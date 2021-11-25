@@ -1,4 +1,4 @@
-/** @namespace Lib.Plugin */
+/** @module Lib.Plugin */
 
 import merge from 'lodash.merge'
 import { v4 as uuid } from 'uuid'

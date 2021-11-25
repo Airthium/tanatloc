@@ -1,4 +1,4 @@
-/** @namespace Config.Domain */
+/** @module Config.Domain */
 
 /**
  * Domain

@@ -1,4 +1,4 @@
-/** @namespace Components.Notfound */
+/** @module Components.Notfound */
 
 import { useRouter } from 'next/router'
 import { Layout, Typography } from 'antd'

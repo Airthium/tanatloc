@@ -1,4 +1,4 @@
-/** @namespace Components.Project.Simulation.Materials */
+/** @module Components.Project.Simulation.Materials */
 
 import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'

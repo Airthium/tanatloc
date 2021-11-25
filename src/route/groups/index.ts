@@ -1,4 +1,4 @@
-/** @namespace Route.Groups */
+/** @module Route.Groups */
 
 import { IRequest, IResponse } from '..'
 

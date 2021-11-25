@@ -32,7 +32,7 @@ const errors = {
 /**
  * Cloud server
  * @memberof Components.Project.Simulation
- * @param props Props `{ disabled, cloudServer, onOk }`
+ * @param props Props
  */
 const CloudServer = ({ disabled, cloudServer, onOk }: IProps): JSX.Element => {
   // State

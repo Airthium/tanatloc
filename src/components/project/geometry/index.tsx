@@ -1,4 +1,4 @@
-/** @namespace Components.Project.Geometry */
+/** @module Components.Project.Geometry */
 
 import PropTypes from 'prop-types'
 import { useState } from 'react'

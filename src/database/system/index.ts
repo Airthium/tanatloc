@@ -1,4 +1,4 @@
-/** @namespace Database.System */
+/** @module Database.System */
 
 import { get } from './get'
 import { update } from './update'

@@ -1,4 +1,4 @@
-/** @namespace Components.Assets.Share */
+/** @module Components.Assets.Share */
 
 import PropTypes from 'prop-types'
 import { useState, useEffect, CSSProperties } from 'react'

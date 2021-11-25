@@ -1,4 +1,4 @@
-/** @namespace API.System */
+/** @module API.System */
 
 import { useSystem } from './useSystem'
 import { update } from './update'

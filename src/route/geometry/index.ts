@@ -1,4 +1,4 @@
-/** @namespace Route.Geometry */
+/** @module Route.Geometry */
 
 import { IRequest, IResponse } from '..'
 import { session } from '../session'

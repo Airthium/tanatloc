@@ -1,4 +1,4 @@
-/** @namespace Lib.Simulation */
+/** @module Lib.Simulation */
 
 import path from 'path'
 

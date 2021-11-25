@@ -1,4 +1,4 @@
-/** @namespace Lib.Plugins */
+/** @module Lib.Plugins */
 
 import isElectron from 'is-electron'
 

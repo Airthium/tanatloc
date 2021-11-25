@@ -1,4 +1,4 @@
-/** @namespace Components.Project.Simulation.BoundaryConditions */
+/** @module Components.Project.Simulation.BoundaryConditions */
 
 import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'

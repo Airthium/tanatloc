@@ -1,4 +1,4 @@
-/** @namespace Auth.PasswordLocal */
+/** @module Auth.PasswordLocal */
 
 import Local from 'passport-local'
 import UserDB from '@/database/user'

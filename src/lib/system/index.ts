@@ -1,4 +1,4 @@
-/** @namespace Lib.System */
+/** @module Lib.System */
 
 import SystemDB from '@/database/system'
 import { IDataBaseEntry, ISystem } from '@/database/index.d'

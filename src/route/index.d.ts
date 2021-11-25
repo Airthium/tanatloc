@@ -1,4 +1,4 @@
-/** @namespace Route */
+/** @module Route */
 
 export interface IRequest<Tbody = {}> {
   method?: string

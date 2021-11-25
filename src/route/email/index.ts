@@ -1,4 +1,4 @@
-/** @namespace Route.Email */
+/** @module Route.Email */
 
 import { IRequest, IResponse } from '..'
 import { error } from '../error'

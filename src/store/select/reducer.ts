@@ -1,4 +1,4 @@
-/** @namespace Store.Select */
+/** @module Store.Select */
 
 import { selectActionTypes } from './action'
 

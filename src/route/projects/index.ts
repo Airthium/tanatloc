@@ -1,4 +1,4 @@
-/** @namespace Route.Projects */
+/** @module Route.Projects */
 
 import { IRequest, IResponse } from '..'
 import { session } from '../session'

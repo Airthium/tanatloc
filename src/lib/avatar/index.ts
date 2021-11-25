@@ -1,4 +1,4 @@
-/** @namespace Lib.Avatar */
+/** @module Lib.Avatar */
 
 import path from 'path'
 

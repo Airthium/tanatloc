@@ -1,4 +1,4 @@
-/** @namespace Components.Error */
+/** @module Components.Error */
 
 import { useRouter } from 'next/router'
 import { Layout, Typography } from 'antd'

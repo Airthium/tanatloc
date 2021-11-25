@@ -1,4 +1,4 @@
-/** @namespace Lib.Tools */
+/** @module Lib.Tools */
 
 import path from 'path'
 import {

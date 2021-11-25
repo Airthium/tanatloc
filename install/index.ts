@@ -1,4 +1,4 @@
-/** @namespace Install */
+/** @module Install */
 
 import isElectron from 'is-electron'
 

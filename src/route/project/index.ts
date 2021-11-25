@@ -1,4 +1,4 @@
-/** @namespace Route.Project */
+/** @module Route.Project */
 
 import { session } from '../session'
 import { checkWorkspaceAuth } from '../auth'

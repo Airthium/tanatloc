@@ -1,3 +1,3 @@
-/** @namespace Components */
+/** @module Components */
 
 export {}

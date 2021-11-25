@@ -1,4 +1,4 @@
-/** @namespace Route.System */
+/** @module Route.System */
 
 import { session } from '../session'
 import { error } from '../error'

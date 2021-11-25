@@ -1,4 +1,4 @@
-/** @namespace API.Plugins */
+/** @module API.Plugins */
 
 import { list } from './list'
 import { completeList } from './completeList'

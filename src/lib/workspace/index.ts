@@ -1,4 +1,4 @@
-/** @namespace Lib.Workspace */
+/** @module Lib.Workspace */
 
 import WorkspaceDB from '@/database/workspace'
 import { IDataBaseEntry, INewWorkspace, IWorkspace } from '@/database/index.d'

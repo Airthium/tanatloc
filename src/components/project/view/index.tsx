@@ -1,4 +1,4 @@
-/** @namespace Components.Project.View */
+/** @module Components.Project.View */
 
 import { useRef, useState, useEffect, MutableRefObject } from 'react'
 import {

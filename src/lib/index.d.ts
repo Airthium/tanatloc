@@ -1,4 +1,4 @@
-/** @namespace Lib */
+/** @module Lib */
 
 import {
   IGroup,

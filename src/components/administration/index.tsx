@@ -1,4 +1,4 @@
-/** @namespace Components.Administration */
+/** @module Components.Administration */
 
 import { useEffect } from 'react'
 import { useRouter } from 'next/router'

@@ -1,4 +1,4 @@
-/** @namespace Components.Project.Simulation */
+/** @module Components.Project.Simulation */
 
 import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'

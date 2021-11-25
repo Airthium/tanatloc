@@ -1,4 +1,4 @@
-/** @namespace Components.Assets.Organization */
+/** @module Components.Assets.Organization */
 
 import PropTypes from 'prop-types'
 import { Button, Tabs, Typography } from 'antd'

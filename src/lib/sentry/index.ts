@@ -1,4 +1,4 @@
-/** @namespace Lib.Sentry */
+/** @module Lib.Sentry */
 
 import * as Sentry from '@sentry/node'
 

@@ -1,4 +1,4 @@
-/** @namespace Route.Avatar */
+/** @module Route.Avatar */
 
 import { IRequest, IResponse } from '..'
 import { session } from '../session'

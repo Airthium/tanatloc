@@ -1,4 +1,4 @@
-/** @namespace Lib.Group */
+/** @module Lib.Group */
 
 import GroupDB from '@/database/group'
 import { INewGroup, IGroup, IDataBaseEntry } from '@/database/index.d'

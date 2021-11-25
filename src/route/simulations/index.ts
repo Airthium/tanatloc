@@ -1,4 +1,4 @@
-/** @namespace Route.Simulations */
+/** @module Route.Simulations */
 
 import { IRequest, IResponse } from '..'
 import { session } from '../session'

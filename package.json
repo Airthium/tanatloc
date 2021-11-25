@@ -1,7 +1,7 @@
 {
   "name": "tanatloc",
   "description": "Tanatloc",
-  "version": "1.0.0-alpha.3",
+  "version": "1.0.0-alpha.4",
   "repository": "git@github.com:Airthium/tanatloc-ssr.git",
   "license": "UNLICENSED",
   "private": true,
@@ -21,7 +21,7 @@
     "dev": "NODE_OPTIONS=\"--max_old_space_size=8192\" NEXT_PUBLIC_SOURCE_BRANCH=`git rev-parse --abbrev-ref HEAD` NEXT_PUBLIC_SOURCE_COMMIT=`git rev-parse --short HEAD` next",
     "doc": "jsdoc -c config/jsdoc/conf.js",
     "tsdoc": "typedoc --options config/typedoc/config.json .",
-    "docker": "docker build . -t tanatloc/tanatloc:latest",
+    "docker": "docker build . -t tanatloc/tanatloc:test",
     "electron-build": "yarn postinstall && yarn server-build && nextron build && electron-builder install-app-deps",
     "electron-dev": "yarn postinstall && yarn server-build && nextron",
     "export": "yarn build && next export",

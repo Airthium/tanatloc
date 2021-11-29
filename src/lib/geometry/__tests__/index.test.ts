@@ -5,7 +5,9 @@ jest.mock('path', () => ({
   join: (_: string, path: string) => mockPath(path)
 }))
 
-jest.mock('@/config/storage', () => ({}))
+jest.mock('@/config/storage', () => ({
+  GEOMETRY: 'geometry'
+}))
 
 const mockAdd = jest.fn()
 const mockGet = jest.fn()
@@ -23,19 +25,23 @@ jest.mock('../../project', () => ({
   update: async () => mockProjectUpdate()
 }))
 
-const mockReadFile = jest.fn()
-const mockReadJSONFile = jest.fn()
-const mockWriteFile = jest.fn()
-const mockConvert = jest.fn()
-const mockRemoveFile = jest.fn()
-const mockRemoveDirectory = jest.fn()
+const mockToolsCopyFile = jest.fn()
+const mockToolsCopyDirectory = jest.fn()
+const mockToolsReadFile = jest.fn()
+const mockToolsReadJSONFile = jest.fn()
+const mockToolsWriteFile = jest.fn()
+const mockToolsConvert = jest.fn()
+const mockToolsRemoveFile = jest.fn()
+const mockToolsRemoveDirectory = jest.fn()
 jest.mock('../../tools', () => ({
-  readFile: async (path: string) => mockReadFile(path),
-  readJSONFile: async (path: string) => mockReadJSONFile(path),
-  writeFile: async () => mockWriteFile(),
-  convert: async () => mockConvert(),
-  removeFile: async () => mockRemoveFile(),
-  removeDirectory: async () => mockRemoveDirectory()
+  copyFile: async (path: string) => mockToolsCopyFile(path),
+  copyDirectory: async (path: string) => mockToolsCopyDirectory(path),
+  readFile: async (path: string) => mockToolsReadFile(path),
+  readJSONFile: async (path: string) => mockToolsReadJSONFile(path),
+  writeFile: async () => mockToolsWriteFile(),
+  convert: async () => mockToolsConvert(),
+  removeFile: async () => mockToolsRemoveFile(),
+  removeDirectory: async () => mockToolsRemoveDirectory()
 }))
 
 describe('lib/geometry', () => {
@@ -49,12 +55,14 @@ describe('lib/geometry', () => {
 
     mockProjectUpdate.mockReset()
 
-    mockReadFile.mockReset()
-    mockReadJSONFile.mockReset()
-    mockWriteFile.mockReset()
-    mockConvert.mockReset()
-    mockRemoveFile.mockReset()
-    mockRemoveDirectory.mockReset()
+    mockToolsCopyFile.mockReset()
+    mockToolsCopyDirectory.mockReset()
+    mockToolsReadFile.mockReset()
+    mockToolsReadJSONFile.mockReset()
+    mockToolsWriteFile.mockReset()
+    mockToolsConvert.mockReset()
+    mockToolsRemoveFile.mockReset()
+    mockToolsRemoveDirectory.mockReset()
   })
 
   test('add', async () => {
@@ -62,7 +70,7 @@ describe('lib/geometry', () => {
       id: 'id'
     }))
     mockGet.mockImplementation(() => ({}))
-    mockConvert.mockImplementation(() => ({
+    mockToolsConvert.mockImplementation(() => ({
       json: 'json',
       glb: 'glb'
     }))
@@ -71,7 +79,38 @@ describe('lib/geometry', () => {
       faces: [{}, {}],
       edges: [{}, {}]
     }
-    mockReadJSONFile.mockImplementation(() => summary)
+    const solid = {}
+    const solidColor = {
+      data: {
+        attributes: {
+          color: { itemSize: 3, array: [0, 0.5, 1] }
+        }
+      }
+    }
+    const face = {}
+    const faceColor = {
+      data: {
+        attributes: {
+          color: { itemSize: 3, array: [0, 0.5, 1] }
+        }
+      }
+    }
+    const edge = {}
+    const edgeColor = {
+      data: {
+        attributes: {
+          color: { itemSize: 3, array: [0, 0.5, 1] }
+        }
+      }
+    }
+    mockToolsReadJSONFile
+      .mockImplementationOnce(() => summary)
+      .mockImplementationOnce(() => solid)
+      .mockImplementationOnce(() => solidColor)
+      .mockImplementationOnce(() => face)
+      .mockImplementationOnce(() => faceColor)
+      .mockImplementationOnce(() => edge)
+      .mockImplementationOnce(() => edgeColor)
 
     // Normal
     const geometry = await Geometry.add(
@@ -79,10 +118,10 @@ describe('lib/geometry', () => {
       { name: 'name.step', uid: 'test', buffer: Buffer.from('buffer') }
     )
     expect(mockAdd).toHaveBeenCalledTimes(1)
-    expect(mockWriteFile).toHaveBeenCalledTimes(1)
+    expect(mockToolsWriteFile).toHaveBeenCalledTimes(1)
     expect(mockProjectUpdate).toHaveBeenCalledTimes(1)
-    expect(mockConvert).toHaveBeenCalledTimes(1)
-    expect(mockReadJSONFile).toHaveBeenCalledTimes(7)
+    expect(mockToolsConvert).toHaveBeenCalledTimes(1)
+    expect(mockToolsReadJSONFile).toHaveBeenCalledTimes(7)
     expect(geometry).toEqual({
       id: 'id',
       json: 'json',
@@ -92,7 +131,7 @@ describe('lib/geometry', () => {
 
     // Error
     mockGet.mockImplementation(() => ({}))
-    mockWriteFile.mockImplementation(() => {
+    mockToolsWriteFile.mockImplementation(() => {
       throw new Error()
     })
     try {
@@ -102,10 +141,10 @@ describe('lib/geometry', () => {
       )
     } catch (err) {}
     expect(mockAdd).toHaveBeenCalledTimes(2)
-    expect(mockWriteFile).toHaveBeenCalledTimes(2)
+    expect(mockToolsWriteFile).toHaveBeenCalledTimes(2)
     expect(mockProjectUpdate).toHaveBeenCalledTimes(2)
-    expect(mockConvert).toHaveBeenCalledTimes(1)
-    expect(mockReadJSONFile).toHaveBeenCalledTimes(7)
+    expect(mockToolsConvert).toHaveBeenCalledTimes(1)
+    expect(mockToolsReadJSONFile).toHaveBeenCalledTimes(7)
     expect(mockGet).toHaveBeenCalledTimes(1)
   })
 
@@ -139,15 +178,15 @@ describe('lib/geometry', () => {
     expect(mockGet).toHaveBeenCalledTimes(2)
     expect(mockProjectUpdate).toHaveBeenCalledTimes(2)
     expect(mockPath).toHaveBeenCalledTimes(3)
-    expect(mockRemoveFile).toHaveBeenCalledTimes(2)
-    expect(mockRemoveDirectory).toHaveBeenCalledTimes(1)
+    expect(mockToolsRemoveFile).toHaveBeenCalledTimes(2)
+    expect(mockToolsRemoveDirectory).toHaveBeenCalledTimes(1)
     expect(mockDelete).toHaveBeenCalledTimes(2)
 
     // With errors
-    mockRemoveFile.mockImplementation(() => {
+    mockToolsRemoveFile.mockImplementation(() => {
       throw new Error()
     })
-    mockRemoveDirectory.mockImplementation(() => {
+    mockToolsRemoveDirectory.mockImplementation(() => {
       throw new Error()
     })
     await Geometry.del({
@@ -158,8 +197,8 @@ describe('lib/geometry', () => {
     expect(mockGet).toHaveBeenCalledTimes(3)
     expect(mockProjectUpdate).toHaveBeenCalledTimes(3)
     expect(mockPath).toHaveBeenCalledTimes(8)
-    expect(mockRemoveFile).toHaveBeenCalledTimes(5)
-    expect(mockRemoveDirectory).toHaveBeenCalledTimes(3)
+    expect(mockToolsRemoveFile).toHaveBeenCalledTimes(5)
+    expect(mockToolsRemoveDirectory).toHaveBeenCalledTimes(3)
     expect(mockDelete).toHaveBeenCalledTimes(3)
   })
 
@@ -168,10 +207,10 @@ describe('lib/geometry', () => {
       extension: 'extension',
       uploadfilename: 'uploadfilename'
     }))
-    mockReadFile.mockImplementation(() => Buffer.from('buffer'))
+    mockToolsReadFile.mockImplementation(() => Buffer.from('buffer'))
 
     const read = await Geometry.read({ id: 'id' })
-    expect(mockReadFile).toHaveBeenCalledTimes(1)
+    expect(mockToolsReadFile).toHaveBeenCalledTimes(1)
     expect(mockPath).toHaveBeenCalledTimes(1)
     expect(read).toEqual({
       buffer: Buffer.from('buffer'),
@@ -196,12 +235,12 @@ describe('lib/geometry', () => {
       glb: 'glb',
       json: 'json'
     }))
-    mockReadFile.mockImplementation(() => Buffer.from('buffer'))
-    mockReadJSONFile.mockImplementation(() => ({ uuid: 'uuid' }))
+    mockToolsReadFile.mockImplementation(() => Buffer.from('buffer'))
+    mockToolsReadJSONFile.mockImplementation(() => ({ uuid: 'uuid' }))
 
     const part = await Geometry.readPart({ id: 'id' })
-    expect(mockReadFile).toHaveBeenCalledTimes(1)
-    expect(mockReadJSONFile).toHaveBeenCalledTimes(1)
+    expect(mockToolsReadFile).toHaveBeenCalledTimes(1)
+    expect(mockToolsReadJSONFile).toHaveBeenCalledTimes(1)
     expect(mockPath).toHaveBeenCalledTimes(2)
     expect(part).toEqual({
       uuid: 'uuid',
@@ -218,5 +257,25 @@ describe('lib/geometry', () => {
     } catch (err) {
       expect(err.message).toBe('Geometry does not exist.')
     }
+  })
+
+  test('archive', async () => {
+    // Empty
+    mockGet.mockImplementation(() => ({}))
+    await Geometry.archive({ id: 'id' }, 'to')
+    expect(mockGet).toHaveBeenCalledTimes(1)
+
+    // Full
+    mockGet.mockImplementation(() => ({
+      uploadfilename: 'uploadfilename',
+      glb: 'glb',
+      json: 'json'
+    }))
+    await Geometry.archive({ id: 'id' }, 'to')
+    expect(mockGet).toHaveBeenCalledTimes(2)
+    expect(mockToolsCopyFile).toHaveBeenCalledTimes(2)
+    expect(mockToolsCopyDirectory).toHaveBeenCalledTimes(1)
+    expect(mockToolsRemoveFile).toHaveBeenCalledTimes(2)
+    expect(mockToolsRemoveDirectory).toHaveBeenCalledTimes(1)
   })
 })

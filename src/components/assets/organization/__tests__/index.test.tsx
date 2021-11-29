@@ -39,6 +39,17 @@ describe('components/assets/organization', () => {
     unmount()
   })
 
+  test('onClose', () => {
+    const { unmount } = render(
+      <Organization organization={organization} swr={swr} onClose={onClose} />
+    )
+
+    const button = screen.getByRole('button', { name: 'arrow-left' })
+    fireEvent.click(button)
+
+    unmount()
+  })
+
   test('onName', async () => {
     const { unmount } = render(
       <Organization organization={organization} swr={swr} onClose={onClose} />

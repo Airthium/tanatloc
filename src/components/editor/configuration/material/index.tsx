@@ -2,10 +2,23 @@ import PropTypes from 'prop-types'
 import { Form, Input, Select } from 'antd'
 
 import Dialog from '@/components/assets/dialog'
+import { IConfiguration } from '../..'
+
+export interface IProps {
+  visible?: boolean
+  material?: IConfiguration['materials']['children'][0]
+  onOk: Function
+  onClose: Function
+}
 
 const existingMaterialSymbols = ['Rho', 'Mu'] // must match the material database
 
-const Material = ({ visible, material, onOk, onClose }) => {
+const Material = ({
+  visible,
+  material,
+  onOk,
+  onClose
+}: IProps): JSX.Element => {
   /**
    * Render
    */
@@ -15,7 +28,7 @@ const Material = ({ visible, material, onOk, onClose }) => {
       title="Material"
       initialValues={material}
       onCancel={onClose}
-      onOk={(values) => {
+      onOk={(values: Omit<IProps['material'], 'index'>) => {
         onOk({
           index: material?.index,
           ...values
@@ -33,7 +46,9 @@ const Material = ({ visible, material, onOk, onClose }) => {
       <Form.Item label="Symbol" name="symbol" rules={[{ required: true }]}>
         <Select>
           {existingMaterialSymbols.map((m) => (
-            <Select.Option key={m}>{m}</Select.Option>
+            <Select.Option key={m} value={m}>
+              {m}
+            </Select.Option>
           ))}
         </Select>
       </Form.Item>

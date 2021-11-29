@@ -3,6 +3,17 @@ import { useState } from 'react'
 import { Button, Divider, Form, Input, Select } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
 
+import { IConfiguration } from '../'
+
+export interface IProps {
+  configuration: IConfiguration
+  onNext: (values: {
+    name: string
+    category: string
+    description: string
+  }) => void
+}
+
 // TODO get real data
 const existingCategories = ['Academic', 'Fluid', 'Mechanics']
 
@@ -10,9 +21,9 @@ const existingCategories = ['Academic', 'Fluid', 'Mechanics']
  * Information
  * @memberof Components.Editor
  */
-const Information = ({ configuration, onNext }) => {
+const Information = ({ configuration, onNext }: IProps): JSX.Element => {
   // State
-  const [category, setCategory] = useState()
+  const [category, setCategory]: [string, Function] = useState()
 
   /**
    * Render
@@ -66,7 +77,9 @@ const Information = ({ configuration, onNext }) => {
           )}
         >
           {existingCategories.map((c) => (
-            <Select.Option key={c}>{c}</Select.Option>
+            <Select.Option key={c} value={c}>
+              {c}
+            </Select.Option>
           ))}
         </Select>
       </Form.Item>

@@ -144,6 +144,7 @@ describe('components/project/simulation/materials/material', () => {
         visible={true}
         geometry={geometry}
         materials={materials}
+        material={{ uuid: 'uuid', selected: [{ uuid: 'uuid', label: 1 }] }}
         swr={swr}
         close={close}
       />

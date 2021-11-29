@@ -4,7 +4,7 @@ import { highlight, languages } from 'prismjs/components/prism-core'
 import '../prism/prism-freefem.js'
 import 'prism-themes/themes/prism-vs.css'
 
-const Script = () => {
+const Script = (): JSX.Element => {
   const [code, setCode] = useState('')
 
   return (

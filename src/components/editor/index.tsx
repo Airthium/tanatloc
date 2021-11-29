@@ -7,15 +7,53 @@ import Information from './information'
 import Configuration from './configuration'
 import Script from './script'
 
+export interface IConfiguration {
+  name?: string
+  category?: string
+  description?: string
+  geometry?: {
+    meshable: boolean
+    name: string
+  }
+  materials?: {
+    children: {
+      index: number
+      label: string
+      symbol: string
+      default: string
+      unit: string
+    }[]
+  }
+  parameters?: {
+    [key: string]: {
+      key?: string
+      label: string
+      children: {
+        label: string
+        default: string
+        unit: string
+        htmlEntity?: string
+      }[]
+    }
+  }
+  initialization?: {}
+  boundaryConditions?: {}
+  results?: {}
+}
+
 /**
  * Editor
  * @memberof Components.Editor
  */
-const Editor = () => {
+const Editor = (): JSX.Element => {
   // State
-  const [step, setStep] = useState(0)
-  const [informationStatus, setInformationStatus] = useState('wait')
-  const [configuration, setConfiguration] = useState({})
+  const [step, setStep]: [number, Function] = useState(0)
+  const [informationStatus, setInformationStatus]: [
+    'finish' | 'wait',
+    Function
+  ] = useState('wait')
+  const [configuration, setConfiguration]: [IConfiguration, Function] =
+    useState({})
 
   useEffect(() => {
     if (step === 0) setInformationStatus('process')
@@ -30,13 +68,21 @@ const Editor = () => {
 
   /**
    * On steps change
-   * @param {number} current Current step
+   * @param current Current step
    */
-  const onStepsChange = (current) => {
+  const onStepsChange = (current: number): void => {
     setStep(current)
   }
 
-  const onInformation = (values) => {
+  /**
+   * On inforimation
+   * @param values Values
+   */
+  const onInformation = (values: {
+    name: string
+    category: string
+    description: string
+  }): void => {
     setConfiguration({
       ...configuration,
       ...values
@@ -44,7 +90,11 @@ const Editor = () => {
     setStep(step + 1)
   }
 
-  const onConfiguration = (values) => {
+  /**
+   * On configuration
+   * @param values Values
+   */
+  const onConfiguration = (values): void => {
     setConfiguration({
       ...configuration,
       ...values
@@ -74,12 +124,12 @@ const Editor = () => {
             description="Title, description, category, ..."
           />
           <Steps.Step
-            status={step !== 1 && 'wait'}
+            status={step !== 1 ? 'wait' : undefined}
             title="Configuration"
             description="Geometry, parameters, ..."
           />
           <Steps.Step
-            status={step !== 2 && 'wait'}
+            status={step !== 2 ? 'wait' : undefined}
             title="Script"
             description="FreeFEM template"
           />

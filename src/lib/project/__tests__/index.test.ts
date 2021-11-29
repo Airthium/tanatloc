@@ -1,5 +1,9 @@
 import Project from '../'
 
+jest.mock('@/config/storage', () => ({
+  STORAGE: 'storage'
+}))
+
 const mockAdd = jest.fn()
 const mockGet = jest.fn()
 const mockUpdate = jest.fn()
@@ -11,9 +15,11 @@ jest.mock('@/database/project', () => ({
   del: async () => mockDelete()
 }))
 
-const mockAvatar = jest.fn()
+const mockAvatarRead = jest.fn()
+const mockAvatarArchive = jest.fn()
 jest.mock('../../avatar', () => ({
-  read: async (val) => mockAvatar(val)
+  read: async (val) => mockAvatarRead(val),
+  archive: async () => mockAvatarArchive()
 }))
 
 const mockUserGet = jest.fn()
@@ -32,14 +38,32 @@ jest.mock('../../group', () => ({
   update: async () => mockGroupUpdate()
 }))
 
-const mockUpdateWorkspace = jest.fn()
+const mockWorkspaceUpdate = jest.fn()
 jest.mock('../../workspace', () => ({
-  update: async () => mockUpdateWorkspace()
+  update: async () => mockWorkspaceUpdate()
 }))
 
-const mockDelSimulation = jest.fn()
+const mockGeometryArchive = jest.fn()
+jest.mock('../../geometry', () => ({
+  archive: async () => mockGeometryArchive()
+}))
+
+const mockSimulationDel = jest.fn()
+const mockSimulationArchive = jest.fn()
 jest.mock('../../simulation', () => ({
-  del: async () => mockDelSimulation()
+  del: async () => mockSimulationDel(),
+  archive: async () => mockSimulationArchive()
+}))
+
+const mockToolsCreatePath = jest.fn()
+const mockToolsWriteFile = jest.fn()
+const mockToolsArchive = jest.fn()
+const mockToolsReadStream = jest.fn()
+jest.mock('../../tools', () => ({
+  createPath: async () => mockToolsCreatePath(),
+  writeFile: async () => mockToolsWriteFile(),
+  archive: () => mockToolsArchive(),
+  readStream: async () => mockToolsReadStream()
 }))
 
 describe('lib/project', () => {
@@ -49,7 +73,8 @@ describe('lib/project', () => {
     mockUpdate.mockReset()
     mockDelete.mockReset()
 
-    mockAvatar.mockReset()
+    mockAvatarRead.mockReset()
+    mockAvatarArchive.mockReset()
 
     mockUserGet.mockReset()
     mockUserGetWithData.mockReset()
@@ -58,9 +83,17 @@ describe('lib/project', () => {
     mockGroupGetWithData.mockReset()
     mockGroupUpdate.mockReset()
 
-    mockUpdateWorkspace.mockReset()
+    mockWorkspaceUpdate.mockReset()
 
-    mockDelSimulation.mockReset()
+    mockGeometryArchive.mockReset()
+
+    mockSimulationDel.mockReset()
+    mockSimulationArchive.mockReset()
+
+    mockToolsCreatePath.mockReset()
+    mockToolsWriteFile.mockReset()
+    mockToolsArchive.mockReset()
+    mockToolsReadStream.mockReset()
   })
 
   test('add', async () => {
@@ -71,7 +104,7 @@ describe('lib/project', () => {
       { title: 'title', description: 'description' }
     )
     expect(mockAdd).toHaveBeenCalledTimes(1)
-    expect(mockUpdateWorkspace).toHaveBeenCalledTimes(1)
+    expect(mockWorkspaceUpdate).toHaveBeenCalledTimes(1)
     expect(project).toEqual({ id: 'id' })
   })
 
@@ -91,10 +124,10 @@ describe('lib/project', () => {
       users: ['user'],
       groups: ['group']
     }))
-    mockAvatar.mockImplementation((val) => val)
+    mockAvatarRead.mockImplementation((val) => val)
     project = await Project.getWithData('id', ['name'])
     expect(mockGet).toHaveBeenCalledTimes(2)
-    expect(mockAvatar).toHaveBeenCalledTimes(1)
+    expect(mockAvatarRead).toHaveBeenCalledTimes(1)
     expect(mockUserGetWithData).toHaveBeenCalledTimes(2)
     expect(project).toEqual({
       avatar: 'avatar',
@@ -104,14 +137,14 @@ describe('lib/project', () => {
     })
 
     // With avatar error
-    mockAvatar.mockImplementation(() => {
+    mockAvatarRead.mockImplementation(() => {
       throw new Error()
     })
     project = await Project.getWithData('id', ['name'])
     expect(mockGet).toHaveBeenCalledTimes(3)
-    expect(mockAvatar).toHaveBeenCalledTimes(2)
+    expect(mockAvatarRead).toHaveBeenCalledTimes(2)
     expect(mockUserGetWithData).toHaveBeenCalledTimes(4)
-    expect(mockUpdateWorkspace).toHaveBeenCalledTimes(0)
+    expect(mockWorkspaceUpdate).toHaveBeenCalledTimes(0)
     expect(project).toEqual({
       avatar: undefined,
       owners: [{ id: 'owner' }],
@@ -156,14 +189,43 @@ describe('lib/project', () => {
     await Project.del({ id: 'id' }, { id: 'id' })
     expect(mockGet).toHaveBeenCalledTimes(1)
     expect(mockDelete).toHaveBeenCalledTimes(1)
-    expect(mockUpdateWorkspace).toHaveBeenCalledTimes(1)
+    expect(mockWorkspaceUpdate).toHaveBeenCalledTimes(1)
 
     // With simulations & groups
     mockGet.mockImplementation(() => ({ groups: ['id'], simulations: ['id'] }))
     await Project.del({ id: 'id' }, { id: 'id' })
     expect(mockGet).toHaveBeenCalledTimes(2)
     expect(mockDelete).toHaveBeenCalledTimes(2)
-    expect(mockUpdateWorkspace).toHaveBeenCalledTimes(2)
-    expect(mockDelSimulation).toHaveBeenCalledTimes(1)
+    expect(mockWorkspaceUpdate).toHaveBeenCalledTimes(2)
+    expect(mockSimulationDel).toHaveBeenCalledTimes(1)
+  })
+
+  test('archive', async () => {
+    // Without avatar, geometries & simulations
+    mockGet.mockImplementationOnce(() => ({}))
+    await Project.archive({ id: 'id' })
+    expect(mockGet).toHaveBeenCalledTimes(1)
+    expect(mockToolsCreatePath).toHaveBeenCalledTimes(1)
+    expect(mockToolsWriteFile).toHaveBeenCalledTimes(1)
+    expect(mockToolsArchive).toHaveBeenCalledTimes(1)
+    expect(mockUpdate).toHaveBeenCalledTimes(1)
+    expect(mockToolsReadStream).toHaveBeenCalledTimes(1)
+
+    // With avatar, geometries & simulations
+    mockGet.mockImplementationOnce(() => ({
+      avatar: 'avatar',
+      geometries: ['id'],
+      simulations: ['id']
+    }))
+    await Project.archive({ id: 'id' })
+    expect(mockGet).toHaveBeenCalledTimes(2)
+    expect(mockToolsCreatePath).toHaveBeenCalledTimes(2)
+    expect(mockToolsWriteFile).toHaveBeenCalledTimes(2)
+    expect(mockAvatarArchive).toHaveBeenCalledTimes(1)
+    expect(mockGeometryArchive).toHaveBeenCalledTimes(1)
+    expect(mockSimulationArchive).toHaveBeenCalledTimes(1)
+    expect(mockToolsArchive).toHaveBeenCalledTimes(2)
+    expect(mockUpdate).toHaveBeenCalledTimes(2)
+    expect(mockToolsReadStream).toHaveBeenCalledTimes(2)
   })
 })

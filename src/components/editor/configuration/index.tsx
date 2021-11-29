@@ -5,6 +5,8 @@ import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons'
 
 import { Error as ErrorNotification } from '@/components/assets/notification'
 
+import { IConfiguration } from '..'
+
 import Geometry from './geometry'
 import Material from './material'
 import Parameters from './parameters'
@@ -12,44 +14,71 @@ import BoundaryCondition from './boundaryCondition'
 import Initialization from './initialization'
 import Results from './results'
 
+export interface IProps {
+  configuration: IConfiguration
+  onNext: Function
+}
+
 /**
  * Configuration
  * @memberof Components.Editor
  * @param {Object} props Props { configuration, onNext }
  */
-const Configuration = (props) => {
-  const [configuration, setConfiguration] = useState(props.configuration)
+const Configuration = (props: IProps): JSX.Element => {
+  const [configuration, setConfiguration]: [IConfiguration, Function] =
+    useState(props.configuration)
 
-  const [geometryVisible, setGeometryVisible] = useState(false)
-  const [geometry, setGeometry] = useState()
-
-  const [materialVisible, setMaterialVisible] = useState(false)
-  const [material, setMaterial] = useState()
-
-  const [parametersVisible, setParametersVisible] = useState(false)
-  const [parameters, setParameters] = useState()
-
-  const [initializationVisible, setInitializationVisible] = useState(false)
-  const [initialization, setInitialization] = useState()
-
-  const [boundaryConditionVisible, setBoundaryConditionVisible] =
+  const [geometryVisible, setGeometryVisible]: [boolean, Function] =
     useState(false)
-  const [boundaryCondition, setBoundaryCondition] = useState()
+  const [geometry, setGeometry]: [IConfiguration['geometry'], Function] =
+    useState()
 
-  const [resultsVisible, setResultsVisible] = useState(false)
-  const [results, setResults] = useState()
+  const [materialVisible, setMaterialVisible]: [boolean, Function] =
+    useState(false)
+  const [material, setMaterial]: [
+    IConfiguration['materials']['children'][0],
+    Function
+  ] = useState()
+
+  const [parametersVisible, setParametersVisible]: [boolean, Function] =
+    useState(false)
+  const [parameters, setParameters]: [
+    IConfiguration['parameters']['key'],
+    Function
+  ] = useState()
+
+  const [initializationVisible, setInitializationVisible]: [boolean, Function] =
+    useState(false)
+  const [initialization, setInitialization]: [
+    IConfiguration['initialization'],
+    Function
+  ] = useState()
+
+  const [boundaryConditionVisible, setBoundaryConditionVisible]: [
+    boolean,
+    Function
+  ] = useState(false)
+  const [boundaryCondition, setBoundaryCondition]: [
+    IConfiguration['boundaryConditions'],
+    Function
+  ] = useState()
+
+  const [resultsVisible, setResultsVisible]: [boolean, Function] =
+    useState(false)
+  const [results, setResults]: [IConfiguration['results'], Function] =
+    useState()
 
   /**
    * On geometry open
    */
-  const onGeometryOpen = () => {
+  const onGeometryOpen = (): void => {
     setGeometryVisible(true)
   }
 
   /**
    * On geometry close
    */
-  const onGeometryClose = () => {
+  const onGeometryClose = (): void => {
     setGeometryVisible(false)
     setGeometry()
   }
@@ -58,7 +87,7 @@ const Configuration = (props) => {
    * On geometry
    * @param {Object} values Values
    */
-  const onGeometry = (values) => {
+  const onGeometry = (values: IConfiguration['geometry']): void => {
     setConfiguration({
       ...configuration,
       geometry: {
@@ -71,7 +100,7 @@ const Configuration = (props) => {
   /**
    * On geometry edit
    */
-  const onGeometryEdit = () => {
+  const onGeometryEdit = (): void => {
     setGeometry(configuration.geometry)
     onGeometryOpen()
   }
@@ -79,7 +108,7 @@ const Configuration = (props) => {
   /**
    * On geometry delete
    */
-  const onGeometryDelete = () => {
+  const onGeometryDelete = (): void => {
     setConfiguration({
       ...configuration,
       geometry: null
@@ -89,14 +118,14 @@ const Configuration = (props) => {
   /**
    * On material open
    */
-  const onMaterialOpen = () => {
+  const onMaterialOpen = (): void => {
     setMaterialVisible(true)
   }
 
   /**
    * On material close
    */
-  const onMaterialClose = () => {
+  const onMaterialClose = (): void => {
     setMaterialVisible(false)
     setMaterial()
   }
@@ -105,7 +134,9 @@ const Configuration = (props) => {
    * On material
    * @param {Object} values Values
    */
-  const onMaterial = (values) => {
+  const onMaterial = (
+    values: IConfiguration['materials']['children'][0]
+  ): void => {
     if (values.index !== undefined) {
       // Replace
       setConfiguration({
@@ -142,9 +173,9 @@ const Configuration = (props) => {
 
   /**
    * On material edit
-   * @param {number} index Index
+   * @param index Index
    */
-  const onMaterialEdit = (index) => {
+  const onMaterialEdit = (index: number): void => {
     const m = configuration.materials.children[index]
     m.index = index
     setMaterial(m)
@@ -153,9 +184,9 @@ const Configuration = (props) => {
 
   /**
    * On material delete
-   * @param {number} index Index
+   * @param index Index
    */
-  const onMaterialDelete = (index) => {
+  const onMaterialDelete = (index: number): void => {
     setConfiguration({
       ...configuration,
       materials: {
@@ -171,23 +202,27 @@ const Configuration = (props) => {
   /**
    * On parameters open
    */
-  const onParametersOpen = () => {
+  const onParametersOpen = (): void => {
     setParametersVisible(true)
   }
 
   /**
    * On parameters close
    */
-  const onParametersClose = () => {
+  const onParametersClose = (): void => {
     setParametersVisible(false)
     setParameters()
   }
 
   /**
    * On parameters
-   * @param {Object} values Values
+   * @param values Values
    */
-  const onParameters = (values) => {
+  const onParameters = (values: {
+    key?: string
+    label: string
+    parameters: IConfiguration['parameters']['key']['children']
+  }): void => {
     if (!values.key && configuration.parameters?.[values.label]) {
       ErrorNotification('Parameters group already exists')
       throw new Error('Parameters group already exists')
@@ -211,9 +246,9 @@ const Configuration = (props) => {
 
   /**
    * On parameters edit
-   * @param {string} key Key
+   * @param key Key
    */
-  const onParametersEdit = (key) => {
+  const onParametersEdit = (key: string): void => {
     const p = configuration.parameters[key]
     p.key = key
     setParameters(p)
@@ -222,9 +257,9 @@ const Configuration = (props) => {
 
   /**
    * On parameters delete
-   * @param {string} key Key
+   * @param key Key
    */
-  const onParametersDelete = (key) => {
+  const onParametersDelete = (key: string): void => {
     const c = configuration
     delete c.parameters[key]
     setConfiguration(c)
@@ -233,14 +268,14 @@ const Configuration = (props) => {
   /**
    * On initialization open
    */
-  const onInitializationOpen = () => {
+  const onInitializationOpen = (): void => {
     setInitializationVisible(true)
   }
 
   /**
    * On initialization close
    */
-  const onInitializationClose = () => {
+  const onInitializationClose = (): void => {
     setInitializationVisible(false)
     setInitialization()
   }
@@ -249,7 +284,7 @@ const Configuration = (props) => {
    * On intialization
    * @param {Object} values Values
    */
-  const onInitialization = (values) => {
+  const onInitialization = (values): void => {
     //TODO
     onInitializationClose()
   }
@@ -258,25 +293,25 @@ const Configuration = (props) => {
    * On initialization edit
    * @param {string} key Key
    */
-  const onInitializationEdit = (key) => {}
+  const onInitializationEdit = (key): void => {}
 
   /**
    * On initialization delete
    * @param {string} key Key
    */
-  const onInitializationDelete = (key) => {}
+  const onInitializationDelete = (key): void => {}
 
   /**
    * On boundary condition open
    */
-  const onBoundaryConditionOpen = () => {
+  const onBoundaryConditionOpen = (): void => {
     setBoundaryConditionVisible(true)
   }
 
   /**
    * On boundary condition close
    */
-  const onBoundaryConditionClose = () => {
+  const onBoundaryConditionClose = (): void => {
     setBoundaryConditionVisible(false)
     setBoundaryCondition()
   }
@@ -285,7 +320,7 @@ const Configuration = (props) => {
    * On boundary condition
    * @param {Object} values Values
    */
-  const onBoundaryCondition = (values) => {
+  const onBoundaryCondition = (values): void => {
     //TODO
     onBoundaryConditionClose()
   }
@@ -294,25 +329,25 @@ const Configuration = (props) => {
    * On boundary condition edit
    * @param {string} key Key
    */
-  const onBoundaryConditionEdit = (key) => {}
+  const onBoundaryConditionEdit = (key): void => {}
 
   /**
    * On boundary condition delete
    * @param {string} key Key
    */
-  const onBoundaryConditionDelete = (key) => {}
+  const onBoundaryConditionDelete = (key): void => {}
 
   /**
    * On results open
    */
-  const onResultsOpen = () => {
+  const onResultsOpen = (): void => {
     setResultsVisible(true)
   }
 
   /**
    * On results close
    */
-  const onResultsClose = () => {
+  const onResultsClose = (): void => {
     setResultsVisible(false)
     setResults()
   }
@@ -321,7 +356,7 @@ const Configuration = (props) => {
    * On results
    * @param {Object} values Values
    */
-  const onResults = (values) => {
+  const onResults = (values): void => {
     //TODO
     onResultsClose()
   }
@@ -329,14 +364,14 @@ const Configuration = (props) => {
   /**
    * On results edit
    */
-  const onResultsEdit = () => {}
+  const onResultsEdit = (): void => {}
 
   /**
    * On results delete
    */
-  const onResultsDelete = () => {}
+  const onResultsDelete = (): void => {}
 
-  const listRender = (items) => {
+  const listRender = (items: string): JSX.Element => {
     const item = items.split(':')
     return (
       <List.Item>
@@ -405,7 +440,7 @@ const Configuration = (props) => {
           style={{ marginBottom: 10 }}
         >
           <Button
-            disabled={configuration.geometry}
+            disabled={!!configuration.geometry}
             icon={<PlusOutlined />}
             onClick={onGeometryOpen}
           />
@@ -425,7 +460,7 @@ const Configuration = (props) => {
               <Button.Group>
                 <Button icon={<EditOutlined />} onClick={onGeometryEdit} />
                 <Button
-                  type="danger"
+                  danger
                   icon={<DeleteOutlined />}
                   onClick={onGeometryDelete}
                 />
@@ -460,7 +495,7 @@ const Configuration = (props) => {
                   onClick={() => onMaterialEdit(index)}
                 />
                 <Button
-                  type="danger"
+                  danger
                   icon={<DeleteOutlined />}
                   onClick={() => onMaterialDelete(index)}
                 />
@@ -503,7 +538,7 @@ const Configuration = (props) => {
                         onClick={() => onParametersEdit(key)}
                       />
                       <Button
-                        type="danger"
+                        danger
                         icon={<DeleteOutlined />}
                         onClick={() => onParametersDelete(key)}
                       />

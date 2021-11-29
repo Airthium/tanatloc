@@ -25,9 +25,9 @@ jest.mock('../../user', () => ({
   get: async () => mockUserGet()
 }))
 
-const mockUpdateProject = jest.fn()
+const mockProjectUpdate = jest.fn()
 jest.mock('../../project', () => ({
-  update: async () => mockUpdateProject()
+  update: async () => mockProjectUpdate()
 }))
 
 const mockGeometryGet = jest.fn()
@@ -35,33 +35,33 @@ jest.mock('../../geometry', () => ({
   get: async () => mockGeometryGet()
 }))
 
-const mockCompute = jest.fn()
-const mockStop = jest.fn()
+const mockPluginCompute = jest.fn()
+const mockPluginStop = jest.fn()
 jest.mock('../../plugins', () => ({
   serverList: () => [
     {
       key: 'key',
       lib: {
-        computeSimulation: async () => mockCompute(),
-        stop: async () => mockStop()
+        computeSimulation: async () => mockPluginCompute(),
+        stop: async () => mockPluginStop()
       }
     }
   ]
 }))
 
-const mockReadFile = jest.fn()
-const mockWriteFile = jest.fn()
-const mockCopyFile = jest.fn()
-const mockConvert = jest.fn()
-const mockRemoveFile = jest.fn()
-const mockRemoveDirectory = jest.fn()
+const mockToolsReadFile = jest.fn()
+const mockToolsCopyFile = jest.fn()
+const mockToolsCopyDirectory = jest.fn()
+const mockToolsConvert = jest.fn()
+const mockToolsRemoveFile = jest.fn()
+const mockToolsRemoveDirectory = jest.fn()
 jest.mock('../../tools', () => ({
-  readFile: async () => mockReadFile(),
-  writeFile: async () => mockWriteFile(),
-  copyFile: async () => mockCopyFile(),
-  convert: async () => mockConvert(),
-  removeFile: async () => mockRemoveFile(),
-  removeDirectory: async () => mockRemoveDirectory()
+  readFile: async () => mockToolsReadFile(),
+  copyFile: async () => mockToolsCopyFile(),
+  copyDirectory: async () => mockToolsCopyDirectory(),
+  convert: async () => mockToolsConvert(),
+  removeFile: async () => mockToolsRemoveFile(),
+  removeDirectory: async () => mockToolsRemoveDirectory()
 }))
 
 describe('lib/simulation', () => {
@@ -77,19 +77,19 @@ describe('lib/simulation', () => {
     mockUserGet.mockReset()
     mockUserGet.mockImplementation(() => ({}))
 
-    mockUpdateProject.mockReset()
+    mockProjectUpdate.mockReset()
 
     mockGeometryGet.mockReset()
 
-    mockReadFile.mockReset()
-    mockWriteFile.mockReset()
-    mockCopyFile.mockReset()
-    mockConvert.mockReset()
-    mockRemoveFile.mockReset()
-    mockRemoveDirectory.mockReset()
+    mockToolsReadFile.mockReset()
+    mockToolsCopyFile.mockReset()
+    mockToolsCopyDirectory.mockReset()
+    mockToolsConvert.mockReset()
+    mockToolsRemoveFile.mockReset()
+    mockToolsRemoveDirectory.mockReset()
 
-    mockCompute.mockReset()
-    mockStop.mockReset()
+    mockPluginCompute.mockReset()
+    mockPluginStop.mockReset()
   })
 
   test('add', async () => {
@@ -111,32 +111,15 @@ describe('lib/simulation', () => {
         }
       }
     )
-    expect(mockPath).toHaveBeenCalledTimes(0)
     expect(mockAdd).toHaveBeenCalledTimes(1)
-    expect(mockGet).toHaveBeenCalledTimes(0)
-    expect(mockUpdate).toHaveBeenCalledTimes(0)
-    expect(mockDelete).toHaveBeenCalledTimes(0)
-    expect(mockUpdateProject).toHaveBeenCalledTimes(1)
-    expect(mockWriteFile).toHaveBeenCalledTimes(0)
-    expect(mockConvert).toHaveBeenCalledTimes(0)
-    expect(mockRemoveFile).toHaveBeenCalledTimes(0)
-    expect(mockRemoveDirectory).toHaveBeenCalledTimes(0)
+    expect(mockProjectUpdate).toHaveBeenCalledTimes(1)
     expect(simulation).toEqual({ id: 'id' })
   })
 
   test('get', async () => {
     mockGet.mockImplementation(() => ({}))
     const simulation = await Simulation.get('id', [])
-    expect(mockPath).toHaveBeenCalledTimes(0)
-    expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockGet).toHaveBeenCalledTimes(1)
-    expect(mockUpdate).toHaveBeenCalledTimes(0)
-    expect(mockDelete).toHaveBeenCalledTimes(0)
-    expect(mockUpdateProject).toHaveBeenCalledTimes(0)
-    expect(mockWriteFile).toHaveBeenCalledTimes(0)
-    expect(mockConvert).toHaveBeenCalledTimes(0)
-    expect(mockRemoveFile).toHaveBeenCalledTimes(0)
-    expect(mockRemoveDirectory).toHaveBeenCalledTimes(0)
     expect(simulation).toEqual({})
   })
 
@@ -157,47 +140,28 @@ describe('lib/simulation', () => {
     }))
 
     await Simulation.update({ id: 'id' }, [{ key: 'key', value: 'value' }])
-    expect(mockPath).toHaveBeenCalledTimes(0)
-    expect(mockAdd).toHaveBeenCalledTimes(0)
-    expect(mockGet).toHaveBeenCalledTimes(0)
     expect(mockUpdate).toHaveBeenCalledTimes(1)
-    expect(mockDelete).toHaveBeenCalledTimes(0)
-    expect(mockUpdateProject).toHaveBeenCalledTimes(0)
-    expect(mockWriteFile).toHaveBeenCalledTimes(0)
-    expect(mockConvert).toHaveBeenCalledTimes(0)
-    expect(mockRemoveFile).toHaveBeenCalledTimes(0)
-    expect(mockRemoveDirectory).toHaveBeenCalledTimes(0)
   })
 
   test('delete', async () => {
     mockGet.mockImplementation(() => ({}))
     await Simulation.del({ id: 'id' })
     expect(mockPath).toHaveBeenCalledTimes(1)
-    expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockGet).toHaveBeenCalledTimes(1)
-    expect(mockUpdate).toHaveBeenCalledTimes(0)
     expect(mockDelete).toHaveBeenCalledTimes(1)
-    expect(mockUpdateProject).toHaveBeenCalledTimes(1)
-    expect(mockWriteFile).toHaveBeenCalledTimes(0)
-    expect(mockConvert).toHaveBeenCalledTimes(0)
-    expect(mockRemoveFile).toHaveBeenCalledTimes(0)
-    expect(mockRemoveDirectory).toHaveBeenCalledTimes(1)
+    expect(mockProjectUpdate).toHaveBeenCalledTimes(1)
+    expect(mockToolsRemoveDirectory).toHaveBeenCalledTimes(1)
 
     // Remove directory error
-    mockRemoveDirectory.mockImplementation(() => {
+    mockToolsRemoveDirectory.mockImplementation(() => {
       throw new Error()
     })
     await Simulation.del({ id: 'id' })
     expect(mockPath).toHaveBeenCalledTimes(2)
-    expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockGet).toHaveBeenCalledTimes(2)
-    expect(mockUpdate).toHaveBeenCalledTimes(0)
     expect(mockDelete).toHaveBeenCalledTimes(2)
-    expect(mockUpdateProject).toHaveBeenCalledTimes(2)
-    expect(mockWriteFile).toHaveBeenCalledTimes(0)
-    expect(mockConvert).toHaveBeenCalledTimes(0)
-    expect(mockRemoveFile).toHaveBeenCalledTimes(0)
-    expect(mockRemoveDirectory).toHaveBeenCalledTimes(2)
+    expect(mockProjectUpdate).toHaveBeenCalledTimes(2)
+    expect(mockToolsRemoveDirectory).toHaveBeenCalledTimes(2)
   })
 
   test('run', async () => {
@@ -224,16 +188,10 @@ describe('lib/simulation', () => {
 
     await Simulation.run({ id: 'id' }, { id: 'id' })
     expect(mockPath).toHaveBeenCalledTimes(1)
-    expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockGet).toHaveBeenCalledTimes(1)
     expect(mockUpdate).toHaveBeenCalledTimes(2)
-    expect(mockDelete).toHaveBeenCalledTimes(0)
-    expect(mockUpdateProject).toHaveBeenCalledTimes(0)
-    expect(mockWriteFile).toHaveBeenCalledTimes(0)
-    expect(mockConvert).toHaveBeenCalledTimes(0)
-    expect(mockRemoveFile).toHaveBeenCalledTimes(0)
-    expect(mockRemoveDirectory).toHaveBeenCalledTimes(0)
-    expect(mockCompute).toHaveBeenCalledTimes(1)
+    expect(mockToolsCopyFile).toHaveBeenCalledTimes(1)
+    expect(mockPluginCompute).toHaveBeenCalledTimes(1)
 
     // With initialization coupling, wrong config
     mockGet.mockImplementation(() => ({
@@ -255,17 +213,10 @@ describe('lib/simulation', () => {
     }))
     await Simulation.run({ id: 'id' }, { id: 'id' })
     expect(mockPath).toHaveBeenCalledTimes(2)
-    expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockGet).toHaveBeenCalledTimes(2)
     expect(mockUpdate).toHaveBeenCalledTimes(4)
-    expect(mockDelete).toHaveBeenCalledTimes(0)
-    expect(mockUpdateProject).toHaveBeenCalledTimes(0)
-    expect(mockWriteFile).toHaveBeenCalledTimes(0)
-    expect(mockConvert).toHaveBeenCalledTimes(0)
-    expect(mockCopyFile).toHaveBeenCalledTimes(2)
-    expect(mockRemoveFile).toHaveBeenCalledTimes(0)
-    expect(mockRemoveDirectory).toHaveBeenCalledTimes(0)
-    expect(mockCompute).toHaveBeenCalledTimes(2)
+    expect(mockToolsCopyFile).toHaveBeenCalledTimes(2)
+    expect(mockPluginCompute).toHaveBeenCalledTimes(2)
 
     // With initialization coupling
     mockGet.mockImplementation(() => ({
@@ -289,17 +240,10 @@ describe('lib/simulation', () => {
     }))
     await Simulation.run({ id: 'id' }, { id: 'id' })
     expect(mockPath).toHaveBeenCalledTimes(8)
-    expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockGet).toHaveBeenCalledTimes(3)
     expect(mockUpdate).toHaveBeenCalledTimes(6)
-    expect(mockDelete).toHaveBeenCalledTimes(0)
-    expect(mockUpdateProject).toHaveBeenCalledTimes(0)
-    expect(mockWriteFile).toHaveBeenCalledTimes(0)
-    expect(mockConvert).toHaveBeenCalledTimes(0)
-    expect(mockCopyFile).toHaveBeenCalledTimes(5)
-    expect(mockRemoveFile).toHaveBeenCalledTimes(0)
-    expect(mockRemoveDirectory).toHaveBeenCalledTimes(0)
-    expect(mockCompute).toHaveBeenCalledTimes(3)
+    expect(mockToolsCopyFile).toHaveBeenCalledTimes(5)
+    expect(mockPluginCompute).toHaveBeenCalledTimes(3)
 
     // With initialization default
     mockGet.mockImplementation(() => ({
@@ -321,35 +265,23 @@ describe('lib/simulation', () => {
     }))
     await Simulation.run({ id: 'id' }, { id: 'id' })
     expect(mockPath).toHaveBeenCalledTimes(9)
-    expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockGet).toHaveBeenCalledTimes(4)
     expect(mockUpdate).toHaveBeenCalledTimes(8)
     expect(mockDelete).toHaveBeenCalledTimes(0)
-    expect(mockUpdateProject).toHaveBeenCalledTimes(0)
-    expect(mockWriteFile).toHaveBeenCalledTimes(0)
-    expect(mockConvert).toHaveBeenCalledTimes(0)
-    expect(mockCopyFile).toHaveBeenCalledTimes(6)
-    expect(mockRemoveFile).toHaveBeenCalledTimes(0)
-    expect(mockRemoveDirectory).toHaveBeenCalledTimes(0)
-    expect(mockCompute).toHaveBeenCalledTimes(4)
+    expect(mockToolsCopyFile).toHaveBeenCalledTimes(6)
+    expect(mockPluginCompute).toHaveBeenCalledTimes(4)
 
     // Error
     mockUpdate.mockReset()
-    mockCompute.mockImplementation(() => {
+    mockPluginCompute.mockImplementation(() => {
       throw new Error()
     })
     await Simulation.run({ id: 'id' }, { id: 'id' })
     expect(mockPath).toHaveBeenCalledTimes(10)
-    expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockGet).toHaveBeenCalledTimes(5)
     expect(mockUpdate).toHaveBeenCalledTimes(1)
-    expect(mockDelete).toHaveBeenCalledTimes(0)
-    expect(mockUpdateProject).toHaveBeenCalledTimes(0)
-    expect(mockWriteFile).toHaveBeenCalledTimes(0)
-    expect(mockConvert).toHaveBeenCalledTimes(0)
-    expect(mockRemoveFile).toHaveBeenCalledTimes(0)
-    expect(mockRemoveDirectory).toHaveBeenCalledTimes(0)
-    expect(mockCompute).toHaveBeenCalledTimes(5)
+    expect(mockToolsCopyFile).toHaveBeenCalledTimes(7)
+    expect(mockPluginCompute).toHaveBeenCalledTimes(5)
 
     // Unauthorized
     mockUserGet.mockImplementation(() => ({
@@ -357,16 +289,10 @@ describe('lib/simulation', () => {
     }))
     await Simulation.run({ id: 'id' }, { id: 'id' })
     expect(mockPath).toHaveBeenCalledTimes(10)
-    expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockGet).toHaveBeenCalledTimes(6)
     expect(mockUpdate).toHaveBeenCalledTimes(4)
-    expect(mockDelete).toHaveBeenCalledTimes(0)
-    expect(mockUpdateProject).toHaveBeenCalledTimes(0)
-    expect(mockWriteFile).toHaveBeenCalledTimes(0)
-    expect(mockConvert).toHaveBeenCalledTimes(0)
-    expect(mockRemoveFile).toHaveBeenCalledTimes(0)
-    expect(mockRemoveDirectory).toHaveBeenCalledTimes(0)
-    expect(mockCompute).toHaveBeenCalledTimes(5)
+    expect(mockToolsCopyFile).toHaveBeenCalledTimes(7)
+    expect(mockPluginCompute).toHaveBeenCalledTimes(5)
   })
 
   test('stop', async () => {
@@ -386,14 +312,20 @@ describe('lib/simulation', () => {
 
     await Simulation.stop({ id: 'id' })
     expect(mockGet).toHaveBeenCalledTimes(1)
-    expect(mockStop).toHaveBeenCalledTimes(1)
+    expect(mockPluginStop).toHaveBeenCalledTimes(1)
     expect(mockUpdate).toHaveBeenCalledTimes(1)
   })
 
   test('getLog', async () => {
-    mockReadFile.mockImplementation(() => 'log')
+    mockToolsReadFile.mockImplementation(() => 'log')
     const log = await Simulation.getLog({ id: 'id' }, 'log')
-    expect(mockReadFile).toHaveBeenCalledTimes(1)
+    expect(mockToolsReadFile).toHaveBeenCalledTimes(1)
     expect(log).toBe('log')
+  })
+
+  test('archive', async () => {
+    await Simulation.archive({ id: 'id' }, 'to')
+    expect(mockToolsCopyDirectory).toHaveBeenCalledTimes(1)
+    expect(mockToolsRemoveDirectory).toHaveBeenCalledTimes(1)
   })
 })

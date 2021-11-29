@@ -111,6 +111,26 @@ describe('components/project/simulation.Selector', () => {
     unmount()
   })
 
+  test('onCancel', async () => {
+    const { unmount } = render(
+      <MathJaxContext>
+        <Simulation.Selector
+          user={user}
+          visible={visible}
+          onOk={onOk}
+          onCancel={onCancel}
+        />
+      </MathJaxContext>
+    )
+
+    await waitFor(() => screen.getByText('Name2'))
+
+    const button = screen.getByRole('button', { name: 'Close' })
+    fireEvent.click(button)
+
+    unmount()
+  })
+
   test('no user', async () => {
     const { unmount } = render(
       <MathJaxContext>

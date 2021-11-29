@@ -280,7 +280,7 @@ const convert = async (location, name) => {
 
   // GLTF
   const exporter = new THREE.GLTFExporter()
-  return new Promise((resolve) =>
+  return new Promise((resolve, reject) =>
     exporter.parse(
       mesh,
       (content) => {

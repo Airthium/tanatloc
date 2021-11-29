@@ -28,9 +28,7 @@ jest.mock('../results', () => (props) => mockResults(props))
 
 describe('components/editor/configuration', () => {
   const configuration = {
-    parameters: {
-      title: 'Parameters'
-    }
+    parameters: {}
   }
   const onNext = jest.fn()
 

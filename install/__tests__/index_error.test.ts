@@ -11,9 +11,6 @@ jest.mock('../copyAssets', () => ({
     throw new Error()
   })
 }))
-jest.mock('../copyAssets', () => ({
-  copyAssets: jest.fn
-}))
 jest.mock('../createDatabase', () => ({
   createDatabase: jest.fn
 }))

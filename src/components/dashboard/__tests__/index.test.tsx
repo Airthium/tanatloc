@@ -90,7 +90,9 @@ jest.mock('@/api/workspace', () => ({
 }))
 
 const mockLogout = jest.fn()
-jest.mock('@/api/logout', () => () => mockLogout())
+jest.mock('@/api/logout', () => ({
+  logout: () => mockLogout()
+}))
 
 describe('components/dashboard', () => {
   beforeEach(() => {

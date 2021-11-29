@@ -4,7 +4,7 @@
   "main": "index.js",
   "license": "UNLICENSED",
   "dependencies": {
-    "three": "0.134.0",
+    "three": "0.135.0",
     "vblob": "1.0.2"
   }
 }

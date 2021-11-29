@@ -100,6 +100,11 @@ describe('lib/organization', () => {
         name: 'name',
         owners: ['id1'],
         users: ['id2']
+      },
+      {
+        name: 'name2',
+        owners: ['id'],
+        users: ['id']
       }
     ])
     organizations = await Organization.getByUser({ id: 'id1' }, ['name'])

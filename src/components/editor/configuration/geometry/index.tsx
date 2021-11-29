@@ -2,8 +2,21 @@ import PropTypes from 'prop-types'
 import { Checkbox, Form, Input } from 'antd'
 
 import Dialog from '@/components/assets/dialog'
+import { IConfiguration } from '../..'
 
-const Geometry = ({ visible, geometry, onOk, onClose }) => {
+export interface IProps {
+  visible?: boolean
+  geometry?: IConfiguration['geometry']
+  onOk: Function
+  onClose: Function
+}
+
+const Geometry = ({
+  visible,
+  geometry,
+  onOk,
+  onClose
+}: IProps): JSX.Element => {
   /**
    * Render
    */
@@ -18,9 +31,7 @@ const Geometry = ({ visible, geometry, onOk, onClose }) => {
         }
       }
       onCancel={onClose}
-      onOk={(values) => {
-        onOk(values)
-      }}
+      onOk={onOk}
     >
       <Form.Item
         name="meshable"

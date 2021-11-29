@@ -18,27 +18,29 @@ jest.mock('@/database/avatar', () => ({
   del: async () => mockDel()
 }))
 
-const mockGetUser = jest.fn()
-const mockUpdateUser = jest.fn()
+const mockUserGet = jest.fn()
+const mockUserUpdate = jest.fn()
 jest.mock('../../user', () => ({
-  get: async () => mockGetUser(),
-  update: async () => mockUpdateUser()
+  get: async () => mockUserGet(),
+  update: async () => mockUserUpdate()
 }))
 
-const mockGetProject = jest.fn()
-const mockUpdateProject = jest.fn()
+const mockProjectGet = jest.fn()
+const mockProjectUpdate = jest.fn()
 jest.mock('../../project', () => ({
-  get: async () => mockGetProject(),
-  update: async () => mockUpdateProject()
+  get: async () => mockProjectGet(),
+  update: async () => mockProjectUpdate()
 }))
 
-const mockReadFile = jest.fn()
-const mockWriteFile = jest.fn()
-const mockRemoveFile = jest.fn()
+const mockToolsCopyFile = jest.fn()
+const mockToolsReadFile = jest.fn()
+const mockToolsWriteFile = jest.fn()
+const mockToolsRemoveFile = jest.fn()
 jest.mock('../../tools', () => ({
-  readFile: async () => mockReadFile(),
-  writeFile: async () => mockWriteFile(),
-  removeFile: async () => mockRemoveFile()
+  copyFile: async () => mockToolsCopyFile(),
+  readFile: async () => mockToolsReadFile(),
+  writeFile: async () => mockToolsWriteFile(),
+  removeFile: async () => mockToolsRemoveFile()
 }))
 
 describe('lib/avatar', () => {
@@ -55,18 +57,19 @@ describe('lib/avatar', () => {
     }))
     mockDel.mockReset()
 
-    mockGetUser.mockReset()
-    mockGetUser.mockImplementation(() => ({}))
-    mockUpdateUser.mockReset()
+    mockUserGet.mockReset()
+    mockUserGet.mockImplementation(() => ({}))
+    mockUserUpdate.mockReset()
 
-    mockGetProject.mockReset()
-    mockGetProject.mockImplementation(() => ({}))
-    mockUpdateProject.mockReset()
+    mockProjectGet.mockReset()
+    mockProjectGet.mockImplementation(() => ({}))
+    mockProjectUpdate.mockReset()
 
-    mockReadFile.mockReset()
-    mockReadFile.mockImplementation(() => 'avatar')
-    mockWriteFile.mockReset()
-    mockRemoveFile.mockReset()
+    mockToolsCopyFile.mockReset()
+    mockToolsReadFile.mockReset()
+    mockToolsReadFile.mockImplementation(() => 'avatar')
+    mockToolsWriteFile.mockReset()
+    mockToolsRemoveFile.mockReset()
   })
 
   test('add', async () => {
@@ -81,17 +84,17 @@ describe('lib/avatar', () => {
     expect(mockAdd).toHaveBeenCalledTimes(1)
     expect(mockGet).toHaveBeenCalledTimes(0)
     expect(mockDel).toHaveBeenCalledTimes(0)
-    expect(mockGetUser).toHaveBeenCalledTimes(1)
-    expect(mockUpdateUser).toHaveBeenCalledTimes(1)
-    expect(mockGetProject).toHaveBeenCalledTimes(0)
-    expect(mockUpdateProject).toHaveBeenCalledTimes(0)
-    expect(mockReadFile).toHaveBeenCalledTimes(0)
-    expect(mockWriteFile).toHaveBeenCalledTimes(1)
-    expect(mockRemoveFile).toHaveBeenCalledTimes(0)
+    expect(mockUserGet).toHaveBeenCalledTimes(1)
+    expect(mockUserUpdate).toHaveBeenCalledTimes(1)
+    expect(mockProjectGet).toHaveBeenCalledTimes(0)
+    expect(mockProjectUpdate).toHaveBeenCalledTimes(0)
+    expect(mockToolsReadFile).toHaveBeenCalledTimes(0)
+    expect(mockToolsWriteFile).toHaveBeenCalledTimes(1)
+    expect(mockToolsRemoveFile).toHaveBeenCalledTimes(0)
     expect(avatar).toEqual({ id: 'id' })
 
     // With user avatar
-    mockGetUser.mockImplementation(() => ({
+    mockUserGet.mockImplementation(() => ({
       avatar: 'avatar'
     }))
     avatar = await Avatar.add({ id: 'id' }, 'user', {
@@ -103,13 +106,13 @@ describe('lib/avatar', () => {
     expect(mockAdd).toHaveBeenCalledTimes(2)
     expect(mockGet).toHaveBeenCalledTimes(1)
     expect(mockDel).toHaveBeenCalledTimes(1)
-    expect(mockGetUser).toHaveBeenCalledTimes(2)
-    expect(mockUpdateUser).toHaveBeenCalledTimes(3)
-    expect(mockGetProject).toHaveBeenCalledTimes(0)
-    expect(mockUpdateProject).toHaveBeenCalledTimes(0)
-    expect(mockReadFile).toHaveBeenCalledTimes(0)
-    expect(mockWriteFile).toHaveBeenCalledTimes(2)
-    expect(mockRemoveFile).toHaveBeenCalledTimes(1)
+    expect(mockUserGet).toHaveBeenCalledTimes(2)
+    expect(mockUserUpdate).toHaveBeenCalledTimes(3)
+    expect(mockProjectGet).toHaveBeenCalledTimes(0)
+    expect(mockProjectUpdate).toHaveBeenCalledTimes(0)
+    expect(mockToolsReadFile).toHaveBeenCalledTimes(0)
+    expect(mockToolsWriteFile).toHaveBeenCalledTimes(2)
+    expect(mockToolsRemoveFile).toHaveBeenCalledTimes(1)
     expect(avatar).toEqual({ id: 'id' })
 
     // Project
@@ -122,17 +125,17 @@ describe('lib/avatar', () => {
     expect(mockAdd).toHaveBeenCalledTimes(3)
     expect(mockGet).toHaveBeenCalledTimes(1)
     expect(mockDel).toHaveBeenCalledTimes(1)
-    expect(mockGetUser).toHaveBeenCalledTimes(2)
-    expect(mockUpdateUser).toHaveBeenCalledTimes(3)
-    expect(mockGetProject).toHaveBeenCalledTimes(1)
-    expect(mockUpdateProject).toHaveBeenCalledTimes(1)
-    expect(mockReadFile).toHaveBeenCalledTimes(0)
-    expect(mockWriteFile).toHaveBeenCalledTimes(3)
-    expect(mockRemoveFile).toHaveBeenCalledTimes(1)
+    expect(mockUserGet).toHaveBeenCalledTimes(2)
+    expect(mockUserUpdate).toHaveBeenCalledTimes(3)
+    expect(mockProjectGet).toHaveBeenCalledTimes(1)
+    expect(mockProjectUpdate).toHaveBeenCalledTimes(1)
+    expect(mockToolsReadFile).toHaveBeenCalledTimes(0)
+    expect(mockToolsWriteFile).toHaveBeenCalledTimes(3)
+    expect(mockToolsRemoveFile).toHaveBeenCalledTimes(1)
     expect(avatar).toEqual({ id: 'id' })
 
     // With project avatar
-    mockGetProject.mockImplementation(() => ({
+    mockProjectGet.mockImplementation(() => ({
       avatar: 'avatar'
     }))
     avatar = await Avatar.add({ id: 'id' }, 'project', {
@@ -144,13 +147,13 @@ describe('lib/avatar', () => {
     expect(mockAdd).toHaveBeenCalledTimes(4)
     expect(mockGet).toHaveBeenCalledTimes(2)
     expect(mockDel).toHaveBeenCalledTimes(2)
-    expect(mockGetUser).toHaveBeenCalledTimes(2)
-    expect(mockUpdateUser).toHaveBeenCalledTimes(3)
-    expect(mockGetProject).toHaveBeenCalledTimes(2)
-    expect(mockUpdateProject).toHaveBeenCalledTimes(3)
-    expect(mockReadFile).toHaveBeenCalledTimes(0)
-    expect(mockWriteFile).toHaveBeenCalledTimes(4)
-    expect(mockRemoveFile).toHaveBeenCalledTimes(2)
+    expect(mockUserGet).toHaveBeenCalledTimes(2)
+    expect(mockUserUpdate).toHaveBeenCalledTimes(3)
+    expect(mockProjectGet).toHaveBeenCalledTimes(2)
+    expect(mockProjectUpdate).toHaveBeenCalledTimes(3)
+    expect(mockToolsReadFile).toHaveBeenCalledTimes(0)
+    expect(mockToolsWriteFile).toHaveBeenCalledTimes(4)
+    expect(mockToolsRemoveFile).toHaveBeenCalledTimes(2)
     expect(avatar).toEqual({ id: 'id' })
   })
 
@@ -160,13 +163,11 @@ describe('lib/avatar', () => {
     expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockGet).toHaveBeenCalledTimes(1)
     expect(mockDel).toHaveBeenCalledTimes(0)
-    expect(mockGetUser).toHaveBeenCalledTimes(0)
-    expect(mockUpdateUser).toHaveBeenCalledTimes(0)
-    expect(mockGetProject).toHaveBeenCalledTimes(0)
-    expect(mockUpdateProject).toHaveBeenCalledTimes(0)
-    expect(mockReadFile).toHaveBeenCalledTimes(1)
-    expect(mockWriteFile).toHaveBeenCalledTimes(0)
-    expect(mockRemoveFile).toHaveBeenCalledTimes(0)
+    expect(mockUserGet).toHaveBeenCalledTimes(0)
+    expect(mockUserUpdate).toHaveBeenCalledTimes(0)
+    expect(mockProjectGet).toHaveBeenCalledTimes(0)
+    expect(mockProjectUpdate).toHaveBeenCalledTimes(0)
+    expect(mockToolsReadFile).toHaveBeenCalledTimes(1)
     expect(avatar).toBe('avatar')
 
     // Without avatar
@@ -183,28 +184,17 @@ describe('lib/avatar', () => {
     expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockGet).toHaveBeenCalledTimes(2)
     expect(mockDel).toHaveBeenCalledTimes(0)
-    expect(mockGetUser).toHaveBeenCalledTimes(0)
-    expect(mockUpdateUser).toHaveBeenCalledTimes(0)
-    expect(mockGetProject).toHaveBeenCalledTimes(0)
-    expect(mockUpdateProject).toHaveBeenCalledTimes(0)
-    expect(mockReadFile).toHaveBeenCalledTimes(1)
-    expect(mockWriteFile).toHaveBeenCalledTimes(0)
-    expect(mockRemoveFile).toHaveBeenCalledTimes(0)
+    expect(mockUserGet).toHaveBeenCalledTimes(0)
+    expect(mockUserUpdate).toHaveBeenCalledTimes(0)
+    expect(mockProjectGet).toHaveBeenCalledTimes(0)
+    expect(mockProjectUpdate).toHaveBeenCalledTimes(0)
+    expect(mockToolsReadFile).toHaveBeenCalledTimes(1)
   })
 
   test('get', async () => {
     const avatar = await Avatar.get('id', ['data'])
     expect(mockPath).toHaveBeenCalledTimes(0)
-    expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockGet).toHaveBeenCalledTimes(1)
-    expect(mockDel).toHaveBeenCalledTimes(0)
-    expect(mockGetUser).toHaveBeenCalledTimes(0)
-    expect(mockUpdateUser).toHaveBeenCalledTimes(0)
-    expect(mockGetProject).toHaveBeenCalledTimes(0)
-    expect(mockUpdateProject).toHaveBeenCalledTimes(0)
-    expect(mockReadFile).toHaveBeenCalledTimes(0)
-    expect(mockWriteFile).toHaveBeenCalledTimes(0)
-    expect(mockRemoveFile).toHaveBeenCalledTimes(0)
     expect(avatar).toEqual({
       path: 'path'
     })
@@ -214,47 +204,48 @@ describe('lib/avatar', () => {
     // With path
     await Avatar.del({ id: 'id' }, 'user', 'id')
     expect(mockPath).toHaveBeenCalledTimes(1)
-    expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockGet).toHaveBeenCalledTimes(1)
     expect(mockDel).toHaveBeenCalledTimes(1)
-    expect(mockGetUser).toHaveBeenCalledTimes(0)
-    expect(mockUpdateUser).toHaveBeenCalledTimes(1)
-    expect(mockGetProject).toHaveBeenCalledTimes(0)
-    expect(mockUpdateProject).toHaveBeenCalledTimes(0)
-    expect(mockReadFile).toHaveBeenCalledTimes(0)
-    expect(mockWriteFile).toHaveBeenCalledTimes(0)
-    expect(mockRemoveFile).toHaveBeenCalledTimes(1)
+    expect(mockUserUpdate).toHaveBeenCalledTimes(1)
+    expect(mockProjectUpdate).toHaveBeenCalledTimes(0)
+    expect(mockToolsRemoveFile).toHaveBeenCalledTimes(1)
 
     // removeFile error & project
-    mockRemoveFile.mockImplementation(() => {
+    mockToolsRemoveFile.mockImplementation(() => {
       throw new Error()
     })
     await Avatar.del({ id: 'id' }, 'project', 'id')
     expect(mockPath).toHaveBeenCalledTimes(2)
-    expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockGet).toHaveBeenCalledTimes(2)
     expect(mockDel).toHaveBeenCalledTimes(2)
-    expect(mockGetUser).toHaveBeenCalledTimes(0)
-    expect(mockUpdateUser).toHaveBeenCalledTimes(1)
-    expect(mockGetProject).toHaveBeenCalledTimes(0)
-    expect(mockUpdateProject).toHaveBeenCalledTimes(1)
-    expect(mockReadFile).toHaveBeenCalledTimes(0)
-    expect(mockWriteFile).toHaveBeenCalledTimes(0)
-    expect(mockRemoveFile).toHaveBeenCalledTimes(2)
+    expect(mockUserUpdate).toHaveBeenCalledTimes(1)
+    expect(mockProjectUpdate).toHaveBeenCalledTimes(1)
+    expect(mockToolsRemoveFile).toHaveBeenCalledTimes(2)
 
     // Without path
     mockGet.mockImplementation(() => ({}))
     await Avatar.del({ id: 'id' }, 'user', 'id')
     expect(mockPath).toHaveBeenCalledTimes(2)
-    expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockGet).toHaveBeenCalledTimes(3)
     expect(mockDel).toHaveBeenCalledTimes(3)
-    expect(mockGetUser).toHaveBeenCalledTimes(0)
-    expect(mockUpdateUser).toHaveBeenCalledTimes(2)
-    expect(mockGetProject).toHaveBeenCalledTimes(0)
-    expect(mockUpdateProject).toHaveBeenCalledTimes(1)
-    expect(mockReadFile).toHaveBeenCalledTimes(0)
-    expect(mockWriteFile).toHaveBeenCalledTimes(0)
-    expect(mockRemoveFile).toHaveBeenCalledTimes(2)
+    expect(mockUserUpdate).toHaveBeenCalledTimes(2)
+    expect(mockProjectUpdate).toHaveBeenCalledTimes(1)
+    expect(mockToolsRemoveFile).toHaveBeenCalledTimes(2)
+  })
+
+  test('archive', async () => {
+    // Empty
+    mockGet.mockImplementationOnce(() => ({}))
+    await Avatar.archive({ id: 'id' }, 'to')
+    expect(mockGet).toHaveBeenCalledTimes(1)
+    expect(mockToolsCopyFile).toHaveBeenCalledTimes(0)
+    expect(mockToolsRemoveFile).toHaveBeenCalledTimes(0)
+
+    // With path
+    mockGet.mockImplementationOnce(() => ({ path: 'path' }))
+    await Avatar.archive({ id: 'id' }, 'to')
+    expect(mockGet).toHaveBeenCalledTimes(2)
+    expect(mockToolsCopyFile).toHaveBeenCalledTimes(1)
+    expect(mockToolsRemoveFile).toHaveBeenCalledTimes(1)
   })
 })

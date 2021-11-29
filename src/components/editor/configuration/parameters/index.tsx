@@ -3,8 +3,25 @@ import { Button, Form, Input, Space } from 'antd'
 import { DeleteOutlined } from '@ant-design/icons'
 
 import Dialog from '@/components/assets/dialog'
+import { IConfiguration } from '../..'
 
-const Parameters = ({ visible, parameters, onOk, onClose }) => {
+export interface IProps {
+  visible?: boolean
+  parameters?: IConfiguration['parameters']['key']
+  onOk: Function
+  onClose: Function
+}
+
+/**
+ * Parameters
+ * @param props Props
+ */
+const Parameters = ({
+  visible,
+  parameters,
+  onOk,
+  onClose
+}: IProps): JSX.Element => {
   /**
    * Render
    */
@@ -14,7 +31,12 @@ const Parameters = ({ visible, parameters, onOk, onClose }) => {
       title="Parameters"
       initialValues={parameters}
       onCancel={onClose}
-      onOk={(values) => {
+      onOk={(values: {
+        key?: string
+        label: string
+        parameters: IConfiguration['parameters']['key']['children']
+      }) => {
+        console.log(values)
         try {
           onOk(values)
         } catch (err) {}
@@ -35,7 +57,7 @@ const Parameters = ({ visible, parameters, onOk, onClose }) => {
                 <Space>
                   Parameters {name + 1}
                   <Button
-                    type="danger"
+                    danger
                     icon={<DeleteOutlined />}
                     onClick={() => remove(name)}
                   />

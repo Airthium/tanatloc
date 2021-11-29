@@ -8,7 +8,7 @@ jest.mock('@/components/assets/dialog', () => (props) => mockDialog(props))
 
 describe('components/editor/configuration/initialization', () => {
   const visible = true
-  const initialization = null
+  const initialization = {}
   const onOk = jest.fn()
   const onClose = jest.fn()
 

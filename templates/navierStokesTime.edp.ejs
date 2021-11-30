@@ -24,8 +24,8 @@ try {
 
 	// Variables
 	real t = 0.;
-	real T = <%= parameters.time.children[0].value || parameters.time.children[0].default -%>;
-	real dt = <%= parameters.time.children[1].value || parameters.time.children[1].default -%>;
+	real T = <%= parameters.time.children[0].value ?? parameters.time.children[0].default -%>;
+	real dt = <%= parameters.time.children[1].value ?? parameters.time.children[1].default -%>;
 
 	<%# Materials -%>
 	<%- include('/blobs/materials.edp.ejs', {
@@ -83,9 +83,9 @@ try {
 	const dirichlet = boundaryConditions.dirichlet.values || []
 	const neumann = boundaryConditions.neumann.values || []
 	const rhs = parameters.rightHandSide.children
-	const rhs1 = rhs[0].value || rhs[0].default
-	const rhs2 = rhs[1].value || rhs[1].default
-	const rhs3 = rhs[2].value || rhs[2].default
+	const rhs1 = rhs[0].value ?? rhs[0].default
+	const rhs2 = rhs[1].value ?? rhs[1].default
+	const rhs3 = rhs[2].value ?? rhs[2].default
 
 	const N = '[N.x, N.y, N.z]'
 	-%> 
@@ -119,14 +119,14 @@ try {
 		)
 	<% for (const n of neumann) { -%>
 		- intN1(Mesh, <%= p.selected.map(s => s.label).filter(s => s).join() -%>)(
-			(<%- n.values[0].value -%>) * <%= N -%>' * <%= testFunction -%>
+			(<%- n.values[0].value ?? n.values[0].default -%>) * <%= N -%>' * <%= testFunction -%>
 		)
 	<% } -%>
 	<% for (const d of dirichlet) { -%>
 		+ on(<%= d.selected.map(s => s.label).filter(s => s).join() -%>
-		<% if (d.values[0].checked) { -%>, mUx=<%- d.values[0].value -%><% } -%>
-		<% if (d.values[1].checked) { -%>, mUy=<%- d.values[1].value -%><% } -%>
-		<% if (d.values[2].checked) { -%>, mUz=<%- d.values[2].value -%><% } -%>)
+		<% if (d.values[0].checked) { -%>, mUx=<%- d.values[0].value ?? d.values[0].default -%><% } -%>
+		<% if (d.values[1].checked) { -%>, mUy=<%- d.values[1].value ?? d.values[1].default -%><% } -%>
+		<% if (d.values[2].checked) { -%>, mUz=<%- d.values[2].value ?? d.values[2].default -%><% } -%>)
 	<% } -%>
 	<% for (const w of wall) { -%>
 		+ on(<%= w.selected.map(s => s.label).filter(s => s).join() -%>, mUx=0, mUy=0, mUz=0)
@@ -134,7 +134,7 @@ try {
 		;
 
 	<%# Solver -%>
-	<% const solver = parameters.solver.children[0].value || parameters.solver.children[0].default -%>
+	<% const solver = parameters.solver.children[0].value ?? parameters.solver.children[0].default -%>
 	<%- include('/blobs/solver.edp.ejs', {
 		solver
 	}); -%>
@@ -149,9 +149,9 @@ try {
 	}
 	<% } else if (initialization.value.type === 'direct' && initialization.value.values ) { -%>
 	[<%= feFunction -%>] = [
-		<%= initialization.value.values[0] !== undefined ? initialization.value.values[0] : initialization.direct.children[0].default -%>,
-		<%= initialization.value.values[1] !== undefined ? initialization.value.values[1] : initialization.direct.children[1].default -%>,
-		<%= initialization.value.values[2] !== undefined ? initialization.value.values[2] : initialization.direct.children[2].default -%>,
+		<%= nitialization.value.values[0] ?? initialization.direct.children[0].default -%>,
+		<%= initialization.value.values[1] ?? initialization.direct.children[1].default -%>,
+		<%= initialization.value.values[2] ?? initialization.direct.children[2].default -%>,
 		0];
 	<% } else { -%>
 	[<%= feFunction -%>] = [

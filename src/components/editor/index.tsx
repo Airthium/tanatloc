@@ -1,7 +1,7 @@
 /** @module Components.Editor */
 
 import { useState, useEffect } from 'react'
-import { Button, Layout, Steps } from 'antd'
+import { Alert, Button, Divider, Layout, List, Steps, Space } from 'antd'
 
 import Information from './information'
 import Configuration from './configuration'
@@ -36,9 +36,54 @@ export interface IConfiguration {
       }[]
     }
   }
-  initialization?: {}
-  boundaryConditions?: {}
-  results?: {}
+  initialization?: {
+    [key: string]: {
+      type?: string
+      key?: string
+      label: string
+      children?: {
+        label: string
+        default: string
+        unit: string
+        htmlEntity?: string
+      }[]
+      compatibility?: {
+        algorithm: string
+        filter: {
+          name: string
+          prefixPattern?: string
+          suffixPattern?: string
+          pattern?: string
+          multiplicator: string[]
+        }
+      }[]
+    }
+  }
+  boundaryConditions?: {
+    [key: string]: {
+      key?: string
+      label: string
+      refineFactor?: string
+      children: {
+        label: string
+        default: string
+        unit: string
+        htmlEntity?: string
+      }[]
+    }
+  }
+  results?: {
+    fields?: {
+      name: string
+    }[]
+    filter?: {
+      name: string
+      prefixPattern?: string
+      suffixPattern?: string
+      pattern?: string
+      multiplicator?: string[]
+    }
+  }
 }
 
 /**
@@ -137,20 +182,50 @@ const Editor = (): JSX.Element => {
         <Button disabled={true} type="primary">
           Submit
         </Button>
-        {/* <Divider />
-        <Typography.Text>Summary</Typography.Text>
-        <Menu mode="inline">
-          <Menu.SubMenu title="Geometry">
-            {configuration.geometry && (
-              <Menu.Item>
-                Mesh variable:{' '}
-                <Typography.Text code>
-                  {configuration.geometry.name}
-                </Typography.Text>
-              </Menu.Item>
-            )}
-          </Menu.SubMenu>
-        </Menu> */}
+        <Divider />
+        <Alert
+          type="success"
+          message={
+            <>
+              To correctly use the editor, you must know:
+              <List>
+                <List.Item>
+                  <Space direction="vertical">
+                    <Button
+                      type="primary"
+                      href="https://freefem.org/"
+                      target="_blank"
+                    >
+                      FreeFEM
+                    </Button>
+                    to write the finite element problem
+                  </Space>
+                </List.Item>
+                <List.Item>
+                  <Space direction="vertical">
+                    <Button
+                      type="primary"
+                      href="https://ejs.co/"
+                      target="_blank"
+                    >
+                      EJS
+                    </Button>
+                    to use the template system of Tanatloc
+                  </Space>
+                </List.Item>
+                <List.Item>
+                  <Space direction="vertical">
+                    And read the
+                    <Button type="primary" href="#">
+                      Editor documentation
+                    </Button>
+                    TODO
+                  </Space>
+                </List.Item>
+              </List>
+            </>
+          }
+        />
       </Layout.Sider>
 
       <Layout.Content style={{ overflow: 'auto', padding: '10px' }}>
@@ -177,7 +252,7 @@ const Editor = (): JSX.Element => {
             onNext={onConfiguration}
           />
         )}
-        {step === 2 && <Script />}
+        {step === 2 && <Script configuration={configuration} />}
       </Layout.Content>
     </Layout>
   )

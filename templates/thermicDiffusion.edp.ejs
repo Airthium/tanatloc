@@ -74,7 +74,7 @@ try {
         )
     <% for (const t of temperature) { -%>
         + on(<%= t.selected.map(s => s.label).filter(s => s).join() -%>,
-        Td=<%= t.values[0].value -%>
+        Td=<%= t.values[0].value ?? t.values[0].default -%>
         )
     <% } -%>
         ;

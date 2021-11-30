@@ -50,7 +50,7 @@ const Configuration = (props: IProps): JSX.Element => {
   const [initializationVisible, setInitializationVisible]: [boolean, Function] =
     useState(false)
   const [initialization, setInitialization]: [
-    IConfiguration['initialization'],
+    IConfiguration['initialization']['key'],
     Function
   ] = useState()
 
@@ -59,7 +59,7 @@ const Configuration = (props: IProps): JSX.Element => {
     Function
   ] = useState(false)
   const [boundaryCondition, setBoundaryCondition]: [
-    IConfiguration['boundaryConditions'],
+    IConfiguration['boundaryConditions']['key'],
     Function
   ] = useState()
 
@@ -284,8 +284,37 @@ const Configuration = (props: IProps): JSX.Element => {
    * On intialization
    * @param {Object} values Values
    */
-  const onInitialization = (values): void => {
-    //TODO
+  const onInitialization = (
+    values: IConfiguration['initialization']['key'] & { type: string }
+  ): void => {
+    if (!values.key && configuration.initialization?.[values.label]) {
+      ErrorNotification('Initialization already exists')
+      throw new Error('Initialization already exists')
+    }
+
+    setConfiguration({
+      ...configuration,
+      initialization: {
+        ...configuration.initialization,
+        [values.type]: {
+          label: values.label,
+          children: values.children?.map((i) => ({
+            ...i,
+            htmlEntity: 'formula'
+          })),
+          compatibility: values.compatibility?.map((compat) => ({
+            algorithm: compat.algorithm,
+            filter: {
+              name: compat['filter.name'],
+              prefixPattern: compat['filter.prefixPattern'],
+              suffixPattern: compat['suffixPattern'],
+              pattern: compat['pattern'],
+              multiplicator: compat['multiplicator']
+            }
+          }))
+        }
+      }
+    })
     onInitializationClose()
   }
 
@@ -293,13 +322,22 @@ const Configuration = (props: IProps): JSX.Element => {
    * On initialization edit
    * @param {string} key Key
    */
-  const onInitializationEdit = (key): void => {}
+  const onInitializationEdit = (key: string): void => {
+    const i = configuration.initialization[key]
+    i.key = key
+    setInitialization(i)
+    onInitializationOpen()
+  }
 
   /**
    * On initialization delete
    * @param {string} key Key
    */
-  const onInitializationDelete = (key): void => {}
+  const onInitializationDelete = (key: string): void => {
+    const c = configuration
+    delete c.initialization[key]
+    setConfiguration(c)
+  }
 
   /**
    * On boundary condition open
@@ -320,8 +358,32 @@ const Configuration = (props: IProps): JSX.Element => {
    * On boundary condition
    * @param {Object} values Values
    */
-  const onBoundaryCondition = (values): void => {
-    //TODO
+  const onBoundaryCondition = (values: {
+    key?: string
+    label: string
+    refineFactor?: string
+    inputs?: IConfiguration['boundaryConditions']['key']['children']
+  }): void => {
+    if (!values.key && configuration.boundaryConditions?.[values.label]) {
+      ErrorNotification('Boundary condition already exists')
+      throw new Error('Boundary condition already exists')
+    }
+
+    setConfiguration({
+      ...configuration,
+      boundaryConditions: {
+        ...configuration.boundaryConditions,
+        [values.label]: {
+          label: values.label,
+          refineFactor: values.refineFactor,
+          children: values.inputs?.map((i) => ({
+            ...i,
+            htmlEntity: 'formula'
+          }))
+        }
+      }
+    })
+
     onBoundaryConditionClose()
   }
 
@@ -329,13 +391,22 @@ const Configuration = (props: IProps): JSX.Element => {
    * On boundary condition edit
    * @param {string} key Key
    */
-  const onBoundaryConditionEdit = (key): void => {}
+  const onBoundaryConditionEdit = (key: string): void => {
+    const b = configuration.boundaryConditions[key]
+    b.key = key
+    setBoundaryCondition(b)
+    onBoundaryConditionOpen()
+  }
 
   /**
    * On boundary condition delete
    * @param {string} key Key
    */
-  const onBoundaryConditionDelete = (key): void => {}
+  const onBoundaryConditionDelete = (key: string): void => {
+    const c = configuration
+    delete c.boundaryConditions[key]
+    setConfiguration(c)
+  }
 
   /**
    * On results open
@@ -356,21 +427,49 @@ const Configuration = (props: IProps): JSX.Element => {
    * On results
    * @param {Object} values Values
    */
-  const onResults = (values): void => {
-    //TODO
+  const onResults = (values: {
+    fields: { name: string }[]
+    filter: {
+      name: string
+      prefixPattern?: string
+      suffixPattern?: string
+      pattern?: string
+      multiplicator?: string[]
+    }[]
+  }): void => {
+    setConfiguration({
+      ...configuration,
+      results: {
+        fields: values.fields,
+        filter: values.filter?.[0]
+      }
+    })
     onResultsClose()
   }
 
   /**
    * On results edit
    */
-  const onResultsEdit = (): void => {}
+  const onResultsEdit = (): void => {
+    setResults(configuration.results)
+    onResultsOpen()
+  }
 
   /**
    * On results delete
    */
-  const onResultsDelete = (): void => {}
+  const onResultsDelete = (): void => {
+    setConfiguration({
+      ...configuration,
+      results: null
+    })
+  }
 
+  /**
+   * List render
+   * @param items Items
+   * @returns List
+   */
   const listRender = (items: string): JSX.Element => {
     const item = items.split(':')
     return (
@@ -447,7 +546,21 @@ const Configuration = (props: IProps): JSX.Element => {
         </Form.Item>
         <Form.Item wrapperCol={{ offset: 4, span: 16 }}>
           {configuration?.geometry && (
-            <Card>
+            <Card
+              actions={[
+                <Button
+                  key="edit"
+                  icon={<EditOutlined />}
+                  onClick={onGeometryEdit}
+                />,
+                <Button
+                  key="delete"
+                  danger
+                  icon={<DeleteOutlined />}
+                  onClick={onGeometryDelete}
+                />
+              ]}
+            >
               <strong>Geometry</strong>
               <List
                 dataSource={[
@@ -457,14 +570,6 @@ const Configuration = (props: IProps): JSX.Element => {
                 bordered
                 renderItem={listRender}
               />
-              <Button.Group>
-                <Button icon={<EditOutlined />} onClick={onGeometryEdit} />
-                <Button
-                  danger
-                  icon={<DeleteOutlined />}
-                  onClick={onGeometryDelete}
-                />
-              </Button.Group>
             </Card>
           )}
         </Form.Item>
@@ -477,7 +582,22 @@ const Configuration = (props: IProps): JSX.Element => {
         </Form.Item>
         <Form.Item wrapperCol={{ offset: 4, span: 16 }}>
           {configuration?.materials?.children?.map((m, index) => (
-            <Card key={index}>
+            <Card
+              key={index}
+              actions={[
+                <Button
+                  key="edit"
+                  icon={<EditOutlined />}
+                  onClick={() => onMaterialEdit(index)}
+                />,
+                <Button
+                  key="delete"
+                  danger
+                  icon={<DeleteOutlined />}
+                  onClick={() => onMaterialDelete(index)}
+                />
+              ]}
+            >
               <strong>Material {index + 1}</strong>
               <List
                 dataSource={[
@@ -489,17 +609,6 @@ const Configuration = (props: IProps): JSX.Element => {
                 bordered
                 renderItem={listRender}
               />
-              <Button.Group>
-                <Button
-                  icon={<EditOutlined />}
-                  onClick={() => onMaterialEdit(index)}
-                />
-                <Button
-                  danger
-                  icon={<DeleteOutlined />}
-                  onClick={() => onMaterialDelete(index)}
-                />
-              </Button.Group>
             </Card>
           ))}
         </Form.Item>
@@ -517,32 +626,35 @@ const Configuration = (props: IProps): JSX.Element => {
                 if (!key || key === 'index' || key === 'title') return
                 const p = configuration.parameters[key]
                 return (
-                  <Card key={key}>
-                    <strong>Parameters group «{key}»</strong>
-                    {p.children.map((child) => (
-                      <div key={child.label}>
-                        <List
-                          dataSource={[
-                            `Label: ${child.label}`,
-                            `Default value: ${child.default}`,
-                            `Unit: ${child.unit}`
-                          ]}
-                          bordered
-                          renderItem={listRender}
-                        />
-                      </div>
-                    ))}
-                    <Button.Group>
+                  <Card
+                    key={key}
+                    actions={[
                       <Button
+                        key="edit"
                         icon={<EditOutlined />}
                         onClick={() => onParametersEdit(key)}
-                      />
+                      />,
                       <Button
+                        key="delete"
                         danger
                         icon={<DeleteOutlined />}
                         onClick={() => onParametersDelete(key)}
                       />
-                    </Button.Group>
+                    ]}
+                  >
+                    <strong>Parameters group «{key}»</strong>
+                    {p.children.map((child) => (
+                      <List
+                        key={child.label}
+                        dataSource={[
+                          `Label: ${child.label}`,
+                          `Default value: ${child.default}`,
+                          `Unit: ${child.unit}`
+                        ]}
+                        bordered
+                        renderItem={listRender}
+                      />
+                    ))}
                   </Card>
                 )
               })
@@ -555,7 +667,64 @@ const Configuration = (props: IProps): JSX.Element => {
         >
           <Button icon={<PlusOutlined />} onClick={onInitializationOpen} />
         </Form.Item>
-        <Form.Item wrapperCol={{ offset: 4, span: 16 }}></Form.Item>
+        <Form.Item wrapperCol={{ offset: 4, span: 16 }}>
+          {configuration?.initialization &&
+            Object.keys(configuration.initialization)
+              .map((key) => {
+                if (!key || key === 'index' || key === 'title') return
+                const i = configuration.initialization[key]
+                return (
+                  <Card
+                    key={key}
+                    actions={[
+                      <Button
+                        key="edit"
+                        icon={<EditOutlined />}
+                        onClick={() => onInitializationEdit(key)}
+                      />,
+                      <Button
+                        key="delete"
+                        danger
+                        icon={<DeleteOutlined />}
+                        onClick={() => onInitializationDelete(key)}
+                      />
+                    ]}
+                  >
+                    <strong>
+                      Initialization «{key}» ({i.type})
+                    </strong>
+                    {i.children?.map((child) => (
+                      <div key={child.label}>
+                        <List
+                          dataSource={[
+                            `Label: ${child.label}`,
+                            `Default value: ${child.default}`,
+                            `Unit: ${child.unit}`
+                          ]}
+                          bordered
+                          renderItem={listRender}
+                        />
+                      </div>
+                    ))}
+                    {i.compatibility?.map((compat) => (
+                      <List
+                        dataSource={[
+                          `Algorithm: ${compat.algorithm}`,
+                          `Filter name: ${compat.filter.name}`,
+                          `Filter prefix pattern: ${compat.filter.prefixPattern}`,
+                          `Suffix pattern: ${compat.filter.suffixPattern}`,
+                          `Pattern: ${compat.filter.pattern}`,
+                          `Multiplicator: ${compat.filter.multiplicator}`
+                        ]}
+                        bordered
+                        renderItem={listRender}
+                      />
+                    ))}
+                  </Card>
+                )
+              })
+              .filter((k) => k)}
+        </Form.Item>
         <Form.Item
           name="boundaryConditions"
           label="Boundary conditions"
@@ -563,11 +732,88 @@ const Configuration = (props: IProps): JSX.Element => {
         >
           <Button icon={<PlusOutlined />} onClick={onBoundaryConditionOpen} />
         </Form.Item>
-        <Form.Item wrapperCol={{ offset: 4, span: 16 }}></Form.Item>
-        <Form.Item name="results" label="Results" style={{ marginBottom: 10 }}>
-          <Button icon={<PlusOutlined />} onClick={onResultsOpen} />
+        <Form.Item wrapperCol={{ offset: 4, span: 16 }}>
+          {configuration?.boundaryConditions &&
+            Object.keys(configuration.boundaryConditions)
+              .map((key) => {
+                if (!key || key === 'index' || key === 'title') return
+                const b = configuration.boundaryConditions[key]
+                return (
+                  <Card
+                    key={key}
+                    actions={[
+                      <Button
+                        key="edit"
+                        icon={<EditOutlined />}
+                        onClick={() => onBoundaryConditionEdit(key)}
+                      />,
+                      <Button
+                        key="delete"
+                        danger
+                        icon={<DeleteOutlined />}
+                        onClick={() => onBoundaryConditionDelete(key)}
+                      />
+                    ]}
+                  >
+                    <strong>Boundary condition «{key}»</strong>
+                    {b.children?.map((child) => (
+                      <div key={child.label}>
+                        <List
+                          dataSource={[
+                            `Label: ${child.label}`,
+                            `Default value: ${child.default}`,
+                            `Unit: ${child.unit}`
+                          ]}
+                          bordered
+                          renderItem={listRender}
+                        />
+                      </div>
+                    ))}
+                  </Card>
+                )
+              })
+              .filter((k) => k)}
         </Form.Item>
-        <Form.Item wrapperCol={{ offset: 4, span: 16 }}></Form.Item>
+        <Form.Item name="results" label="Results" style={{ marginBottom: 10 }}>
+          <Button
+            disabled={!!configuration.results}
+            icon={<PlusOutlined />}
+            onClick={onResultsOpen}
+          />
+        </Form.Item>
+        <Form.Item wrapperCol={{ offset: 4, span: 16 }}>
+          {configuration?.results && (
+            <Card
+              actions={[
+                <Button
+                  key="edit"
+                  icon={<EditOutlined />}
+                  onClick={onResultsEdit}
+                />,
+                <Button
+                  key="delete"
+                  danger
+                  icon={<DeleteOutlined />}
+                  onClick={onResultsDelete}
+                />
+              ]}
+            >
+              <strong>Results</strong>
+              <List
+                dataSource={[
+                  ...configuration?.results?.fields?.map(
+                    (field, index) => `Field ${index + 1}: ${field.name}`
+                  ),
+                  configuration?.results?.filter
+                    ? `Filter: ${configuration.results.filter.name}`
+                    : null
+                ].filter((f) => f)}
+                bordered
+                renderItem={listRender}
+              />
+            </Card>
+          )}
+        </Form.Item>
         <Form.Item wrapperCol={{ offset: 4 }}>
           <Button type="primary" htmlType="submit">
             Next

@@ -35,12 +35,7 @@ const Parameters = ({
         key?: string
         label: string
         parameters: IConfiguration['parameters']['key']['children']
-      }) => {
-        console.log(values)
-        try {
-          onOk(values)
-        } catch (err) {}
-      }}
+      }) => onOk(values)}
     >
       <Form.Item
         label="Parameters group name"
@@ -92,7 +87,7 @@ const Parameters = ({
                 </Form.Item>
               </div>
             ))}
-            <Button onClick={() => add()}>Add</Button>
+            <Button onClick={() => add()}>Add parameter</Button>
           </>
         )}
       </Form.List>

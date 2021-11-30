@@ -44,7 +44,7 @@ try {
 	const dirichlet = boundaryConditions.dirichlet.values || []
 	const neumann = boundaryConditions.neumann.values || []
 	const rhs = parameters.rightHandSide.children[0]
-	const rhsValue = rhs.value || rhs.default
+	const rhsValue = rhs.value ?? rhs.default
 	-%>
 	// Problem
 	appendLog("Define the problem...");
@@ -64,16 +64,16 @@ try {
 		)
 	<% for (const n of neumann) { -%>
 		- intN1(Mesh, <%= n.selected.map(s => s.label).filter(s => s).join() %>) {
-			(<%- n.values[0].value %>) * uh
+			(<%- n.values[0].value ?? n.values[0].default %>) * uh
 		}
 	<% } -%>
 	<% for (const d of dirichlet) { -%>
-		+ on(<%= d.selected.map(s => s.label).filter(s => s).join() -%>, u=<%- d.values[0].value -%>)
+		+ on(<%= d.selected.map(s => s.label).filter(s => s).join() -%>, u=<%- d.values[0].value ?? d.values[0].default -%>)
 	<% } -%>
 		;
 
 	<%# Solver -%>
-	<% const solver = parameters.solver.children[0].value || parameters.solver.children[0].default -%>
+	<% const solver = parameters.solver.children[0].value ?? parameters.solver.children[0].default -%>
 	<%- include('/blobs/solver.edp.ejs', {
 		solver
 	}) -%>

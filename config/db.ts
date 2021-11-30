@@ -73,7 +73,6 @@ export interface Tables {
   SIMULATIONS: string
   AVATARS: string
   LINKS: string
-  WAIT: string
 }
 
 /**
@@ -90,8 +89,7 @@ export const tables: Tables = {
   GEOMETRIES: 'tanatloc_geometries',
   SIMULATIONS: 'tanatloc_simulations',
   AVATARS: 'tanatloc_avatars',
-  LINKS: 'tanatloc_links',
-  WAIT: 'tanatloc_wait'
+  LINKS: 'tanatloc_links'
 }
 
 export interface Scheme {
@@ -453,12 +451,6 @@ export const schemas: Scheme = {
     },
     {
       name: 'userid',
-      type: 'TEXT'
-    }
-  ],
-  [tables.WAIT]: [
-    {
-      name: 'email',
       type: 'TEXT'
     }
   ]

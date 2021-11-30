@@ -35,15 +35,45 @@ describe('store/store', () => {
   test('initializeStore', () => {
     let res
 
-    res = initializeStore({})
+    res = initializeStore()
     expect(res.id).toBe('store')
 
-    res = initializeStore({})
+    res = initializeStore({
+      select: {
+        enabled: true,
+        selected: []
+      },
+      _persist: {
+        version: 1,
+        rehydrated: true
+      }
+    })
+    expect(res.id).toBe('store')
+
+    res = initializeStore({
+      select: {
+        enabled: true,
+        selected: []
+      },
+      _persist: {
+        version: 1,
+        rehydrated: true
+      }
+    })
     expect(res.id).toBe('store')
   })
 
   test('useStore', () => {
-    const res = useStore({})
+    const res = useStore({
+      select: {
+        enabled: true,
+        selected: []
+      },
+      _persist: {
+        version: 1,
+        rehydrated: true
+      }
+    })
     expect(res).toBe('memo')
   })
 })

@@ -6,7 +6,6 @@ import { Button, Divider, Layout, Typography } from 'antd'
 import { DashboardOutlined, LoginOutlined } from '@ant-design/icons'
 
 import Background from '@/components/background'
-import Wait from './wait'
 
 import { Error as ErrorNotification } from '@/components/assets/notification'
 
@@ -117,11 +116,6 @@ const Index = (): JSX.Element => {
             <Typography.Title>
               See the world the way it really is!
             </Typography.Title>
-          </Layout.Content>
-        </Layout>
-        <Layout style={{ width: '50%', margin: 'auto' }}>
-          <Layout.Content>
-            <Wait />
           </Layout.Content>
         </Layout>
         <p className="version">

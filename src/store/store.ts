@@ -94,7 +94,10 @@ const makeStore = (initialState: {
  * @memberof Store
  * @param preloadedState Preloaded store
  */
-const initializeStore = (preloadedState) => {
+const initializeStore = (preloadedState?: {
+  select: SelectState
+  _persist: { version: number; rehydrated: boolean }
+}) => {
   let _store = store ?? makeStore(preloadedState)
 
   // After navigating to a page with an initial Redux state, merge that state
@@ -121,7 +124,10 @@ const initializeStore = (preloadedState) => {
  * @memberof Store
  * @param initialState Initial store
  */
-const useStore = (initialState) => {
+const useStore = (initialState: {
+  select: SelectState
+  _persist: { version: number; rehydrated: boolean }
+}) => {
   return useMemo(() => initializeStore(initialState), [initialState])
 }
 

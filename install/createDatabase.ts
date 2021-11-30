@@ -134,10 +134,6 @@ const createTables = async (): Promise<void> => {
     console.info(' + Link table')
     await createLinkTable()
 
-    // Wait
-    console.info(' + Wait table')
-    await createWaitTable()
-
     // Administrator
     await createAdmin()
 
@@ -518,14 +514,6 @@ const createSimulationTable = async (): Promise<void> => {
  */
 const createLinkTable = async (): Promise<void> => {
   await createTable(tables.LINKS)
-}
-
-/**
- * Create wait table
- * @memberof Install
- */
-const createWaitTable = async (): Promise<void> => {
-  await createTable(tables.WAIT)
 }
 
 /**

@@ -74,12 +74,6 @@ module.exports = {
     '<rootDir>/config/jsdoc/',
     '<rootDir>/public/',
     '<rootDir>/tests/',
-    '<rootDir>/src/api/wait',
-    '<rootDir>/src/database/wait',
-    '<rootDir>/src/lib/wait',
-    '<rootDir>/src/pages/api/wait',
-    '<rootDir>/src/components/index/wait',
-    '<rootDir>/src/route/wait',
     '<rootDir>/src/components/editor/prism/'
   ]
 }

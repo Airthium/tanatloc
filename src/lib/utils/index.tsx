@@ -112,7 +112,7 @@ const userToAvatar = (user: {
  * @param {Object} group Group
  * @returns {jsx} Avatar
  */
-const groupToAvatar = (group: { id: string; name?: string }): JSX.Element => {
+const groupToAvatar = (group: { id?: string; name?: string }): JSX.Element => {
   let name = group.name
   let abbrev = ''
   if (name) abbrev = name[0]

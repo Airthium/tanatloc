@@ -219,7 +219,9 @@ describe('components/editor/configuration', () => {
                 }
               ]
             })
-          } catch (err) {}
+          } catch (err) {
+            console.error(err)
+          }
         }}
       />
     ))
@@ -248,37 +250,29 @@ describe('components/editor/configuration', () => {
     unmount()
   })
 
-  test('boundaryCondition', () => {
-    mockBoundaryCondition.mockImplementation((props) => (
-      <div role="BoundaryCondition" onClick={() => props.onOk({})} />
-    ))
-
-    const { unmount } = render(
-      <Configuration configuration={configuration} onNext={onNext} />
-    )
-
-    // Open
-    const button = screen.getByRole('button', { name: 'Boundary conditions' })
-    fireEvent.click(button)
-
-    // On ok
-    const boundaryCondition = screen.getByRole('BoundaryCondition')
-    fireEvent.click(boundaryCondition)
-
-    // // Edit
-    // const edit = screen.getByRole('button', { name: 'edit' })
-    // fireEvent.click(edit)
-
-    // // Delete
-    // const del = screen.getByRole('button', { name: 'delete' })
-    // fireEvent.click(del)
-
-    unmount()
-  })
-
   test('initialization', () => {
     mockInitialization.mockImplementation((props) => (
-      <div role="Initialization" onClick={() => props.onOk({})} />
+      <div
+        role="Initialization"
+        onClick={() => {
+          try {
+            props.onOk({
+              children: [
+                {
+                  label: 'label'
+                }
+              ],
+              compatibility: [
+                {
+                  algorithm: 'algorithm'
+                }
+              ]
+            })
+          } catch (err) {
+            console.error(err)
+          }
+        }}
+      />
     ))
 
     const { unmount } = render(
@@ -292,21 +286,70 @@ describe('components/editor/configuration', () => {
     // On ok
     const initialization = screen.getByRole('Initialization')
     fireEvent.click(initialization)
+    fireEvent.click(initialization)
 
-    // // Edit
-    // const edit = screen.getByRole('button', { name: 'edit' })
-    // fireEvent.click(edit)
+    // Edit
+    const edit = screen.getByRole('button', { name: 'edit' })
+    fireEvent.click(edit)
 
-    // // Delete
-    // const del = screen.getByRole('button', { name: 'delete' })
-    // fireEvent.click(del)
+    // Delete
+    const del = screen.getByRole('button', { name: 'delete' })
+    fireEvent.click(del)
+
+    unmount()
+  })
+
+  test('boundaryCondition', () => {
+    mockBoundaryCondition.mockImplementation((props) => (
+      <div
+        role="BoundaryCondition"
+        onClick={() => {
+          try {
+            props.onOk({
+              inputs: [{}]
+            })
+          } catch (err) {
+            console.error(err)
+          }
+        }}
+      />
+    ))
+
+    const { unmount } = render(
+      <Configuration configuration={configuration} onNext={onNext} />
+    )
+
+    // Open
+    const button = screen.getByRole('button', { name: 'Boundary conditions' })
+    fireEvent.click(button)
+
+    // On ok
+    const boundaryCondition = screen.getByRole('BoundaryCondition')
+    fireEvent.click(boundaryCondition)
+    fireEvent.click(boundaryCondition)
+
+    // Edit
+    const edit = screen.getByRole('button', { name: 'edit' })
+    fireEvent.click(edit)
+
+    // Delete
+    const del = screen.getByRole('button', { name: 'delete' })
+    fireEvent.click(del)
 
     unmount()
   })
 
   test('results', () => {
     mockResults.mockImplementation((props) => (
-      <div role="Results" onClick={() => props.onOk({})} />
+      <div
+        role="Results"
+        onClick={() =>
+          props.onOk({
+            fields: [{ name: 'field' }],
+            filter: [{ name: 'name' }]
+          })
+        }
+      />
     ))
 
     const { unmount } = render(
@@ -321,13 +364,40 @@ describe('components/editor/configuration', () => {
     const results = screen.getByRole('Results')
     fireEvent.click(results)
 
-    // // Edit
-    // const edit = screen.getByRole('button', { name: 'edit' })
-    // fireEvent.click(edit)
+    // Edit
+    const edit = screen.getByRole('button', { name: 'edit' })
+    fireEvent.click(edit)
 
-    // // Delete
-    // const del = screen.getByRole('button', { name: 'delete' })
-    // fireEvent.click(del)
+    // Delete
+    const del = screen.getByRole('button', { name: 'delete' })
+    fireEvent.click(del)
+
+    unmount()
+  })
+
+  test('results, without filter', () => {
+    mockResults.mockImplementation((props) => (
+      <div
+        role="Results"
+        onClick={() =>
+          props.onOk({
+            fields: [{ name: 'field' }]
+          })
+        }
+      />
+    ))
+
+    const { unmount } = render(
+      <Configuration configuration={configuration} onNext={onNext} />
+    )
+
+    // Open
+    const button = screen.getByRole('button', { name: 'Results' })
+    fireEvent.click(button)
+
+    // On ok
+    const results = screen.getByRole('Results')
+    fireEvent.click(results)
 
     unmount()
   })

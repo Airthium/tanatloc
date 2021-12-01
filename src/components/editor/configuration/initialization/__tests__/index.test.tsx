@@ -1,5 +1,6 @@
 import React from 'react'
 import { fireEvent, render, screen } from '@testing-library/react'
+import { Form } from 'antd'
 
 import Initialization from '..'
 
@@ -8,7 +9,7 @@ jest.mock('@/components/assets/dialog', () => (props) => mockDialog(props))
 
 describe('components/editor/configuration/initialization', () => {
   const visible = true
-  const initialization = {}
+  const initialization = null
   const onOk = jest.fn()
   const onClose = jest.fn()
 
@@ -29,6 +30,71 @@ describe('components/editor/configuration/initialization', () => {
         onClose={onClose}
       />
     )
+
+    unmount()
+  })
+
+  test('direct, add/remove form', () => {
+    mockDialog.mockImplementation((props) => <Form>{props.children}</Form>)
+    const { unmount } = render(
+      <Initialization
+        visible={visible}
+        initialization={initialization}
+        onOk={onOk}
+        onClose={onClose}
+      />
+    )
+
+    const radio = screen.getAllByRole('radio')
+    fireEvent.click(radio[0])
+
+    const add = screen.getByRole('button')
+    fireEvent.click(add)
+
+    const del = screen.getByRole('button', { name: 'delete' })
+    fireEvent.click(del)
+
+    unmount()
+  })
+
+  test('coupling, add/remove form', () => {
+    mockDialog.mockImplementation((props) => <Form>{props.children}</Form>)
+    const { unmount } = render(
+      <Initialization
+        visible={visible}
+        initialization={initialization}
+        onOk={onOk}
+        onClose={onClose}
+      />
+    )
+
+    const radio = screen.getAllByRole('radio')
+    fireEvent.click(radio[1])
+
+    const add = screen.getByRole('button')
+    fireEvent.click(add)
+
+    const del = screen.getByRole('button', { name: 'delete' })
+    fireEvent.click(del)
+
+    unmount()
+  })
+
+  test('onOk', () => {
+    mockDialog.mockImplementation((props) => (
+      <div role="Dialog" onClick={props.onOk} />
+    ))
+    const { unmount } = render(
+      <Initialization
+        visible={visible}
+        initialization={initialization}
+        onOk={onOk}
+        onClose={onClose}
+      />
+    )
+
+    const dialog = screen.getByRole('Dialog')
+    fireEvent.click(dialog)
 
     unmount()
   })

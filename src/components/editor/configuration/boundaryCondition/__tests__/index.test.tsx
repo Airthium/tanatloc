@@ -1,5 +1,6 @@
 import React from 'react'
 import { fireEvent, render, screen } from '@testing-library/react'
+import { Form } from 'antd'
 
 import BoundaryCondition from '..'
 
@@ -29,6 +30,45 @@ describe('components/editor/configuration/boundaryCondition', () => {
         onClose={onClose}
       />
     )
+
+    unmount()
+  })
+
+  test('add/remove form', () => {
+    mockDialog.mockImplementation((props) => <Form>{props.children}</Form>)
+    const { unmount } = render(
+      <BoundaryCondition
+        visible={visible}
+        boundaryCondition={boundaryCondition}
+        onOk={onOk}
+        onClose={onClose}
+      />
+    )
+
+    const add = screen.getByRole('button')
+    fireEvent.click(add)
+
+    const del = screen.getByRole('button', { name: 'delete' })
+    fireEvent.click(del)
+
+    unmount()
+  })
+
+  test('onOk', () => {
+    mockDialog.mockImplementation((props) => (
+      <div role="Dialog" onClick={props.onOk} />
+    ))
+    const { unmount } = render(
+      <BoundaryCondition
+        visible={visible}
+        boundaryCondition={boundaryCondition}
+        onOk={onOk}
+        onClose={onClose}
+      />
+    )
+
+    const dialog = screen.getByRole('Dialog')
+    fireEvent.click(dialog)
 
     unmount()
   })

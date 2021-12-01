@@ -76,7 +76,7 @@ const Administration = (): JSX.Element => {
         }
         footer={
           <div>
-            <Divider className="Tanatloc-divider" />
+            <Divider />
           </div>
         }
       />

@@ -1,5 +1,6 @@
 import React from 'react'
 import { fireEvent, render, screen } from '@testing-library/react'
+import { Form } from 'antd'
 
 import Results from '..'
 
@@ -25,6 +26,62 @@ describe('components/editor/configuration/results', () => {
       <Results
         visible={visible}
         results={results}
+        onOk={onOk}
+        onClose={onClose}
+      />
+    )
+
+    unmount()
+  })
+
+  test('add/remove form', () => {
+    mockDialog.mockImplementation((props) => <Form>{props.children}</Form>)
+    const { unmount } = render(
+      <Results
+        visible={visible}
+        results={results}
+        onOk={onOk}
+        onClose={onClose}
+      />
+    )
+
+    const add = screen.getAllByRole('button')
+    fireEvent.click(add[0])
+    fireEvent.click(add[1])
+
+    const del = screen.getAllByRole('button', { name: 'delete' })
+    fireEvent.click(del[0])
+    fireEvent.click(del[1])
+
+    unmount()
+  })
+
+  test('onOk', () => {
+    mockDialog.mockImplementation((props) => (
+      <div role="Dialog" onClick={props.onOk} />
+    ))
+    const { unmount } = render(
+      <Results
+        visible={visible}
+        results={results}
+        onOk={onOk}
+        onClose={onClose}
+      />
+    )
+
+    const dialog = screen.getByRole('Dialog')
+    fireEvent.click(dialog)
+
+    unmount()
+  })
+
+  test('with results', () => {
+    const { unmount } = render(
+      <Results
+        visible={visible}
+        results={{
+          filter: { name: 'filter' }
+        }}
         onOk={onOk}
         onClose={onClose}
       />

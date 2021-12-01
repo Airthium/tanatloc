@@ -33,7 +33,7 @@ const Welcome = ({ swr }: IProps): JSX.Element => {
               Welcome on board
             </Typography.Title>
           }
-          footer={<Divider className="Tanatloc-divider" />}
+          footer={<Divider />}
         />
         <Typography.Text>
           Select a workspace to start, or{' '}

@@ -2,8 +2,14 @@
 
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
-import { Button, Divider, Layout, Typography } from 'antd'
-import { DashboardOutlined, LoginOutlined } from '@ant-design/icons'
+import { Button, Card, Divider, Layout, Space, Typography } from 'antd'
+import {
+  DashboardOutlined,
+  LoginOutlined,
+  TeamOutlined
+} from '@ant-design/icons'
+
+import packageJson from '../../../package.json'
 
 import Background from '@/components/background'
 
@@ -78,6 +84,7 @@ const Index = (): JSX.Element => {
                 icon={<DashboardOutlined />}
                 onClick={handleDashboard}
                 size="large"
+                style={{ border: 'none' }}
               >
                 Dashboard
               </Button>
@@ -103,26 +110,142 @@ const Index = (): JSX.Element => {
           </Button.Group>
         )}
       </Layout.Header>
-      <Divider className="Tanatloc-divider" />
-      <Layout.Content>
-        <Layout style={{ margin: '20px' }}>
-          <Layout.Content
-            style={{
-              backgroundColor: 'white',
-              opacity: 0.5,
-              padding: '20px'
-            }}
+      <Divider
+        style={{
+          margin: '24px 10px',
+          borderColor: 'grey',
+          borderWidth: '2px',
+          width: 'unset',
+          minWidth: 'unset'
+        }}
+      />
+      <Layout.Content
+        style={{
+          margin: '0 10px',
+          padding: '20px',
+          backgroundColor: 'white',
+          overflow: 'auto'
+        }}
+      >
+        <Typography.Title>See the world the way it really is!</Typography.Title>
+
+        <Divider />
+
+        <Space wrap>
+          <Card
+            className="Index-card"
+            hoverable
+            cover={<img alt="Tanatloc" src="/images/Tanatloc.png" />}
           >
-            <Typography.Title>
-              See the world the way it really is!
-            </Typography.Title>
-          </Layout.Content>
-        </Layout>
+            <Card.Meta
+              title={
+                <Typography.Text>Easy simulation playground!</Typography.Text>
+              }
+              description={
+                <Typography.Text>
+                  Complete configuration using graphic interface
+                </Typography.Text>
+              }
+            />
+          </Card>
+          <Card
+            className="Index-card"
+            hoverable
+            cover={<TeamOutlined style={{ fontSize: '50px' }} />}
+          >
+            <Card.Meta
+              title={
+                <Typography.Text>User, group, organization!</Typography.Text>
+              }
+              description={
+                <Typography.Text>Manage your team easily</Typography.Text>
+              }
+            />
+          </Card>
+          <Card
+            className="Index-card"
+            hoverable
+            cover="$$\int_{\Omega}\nabla u\nabla v$$"
+          >
+            <Card.Meta
+              title={
+                <Typography.Text>Already available models!</Typography.Text>
+              }
+              description={
+                <Typography.Text>
+                  Fluid mechanics, solid mechanics, thermic, ...
+                </Typography.Text>
+              }
+            />
+          </Card>
+          <Card
+            className="Index-card coming-soon"
+            hoverable
+            cover="$$\int_{\Omega}\nabla u\nabla v$$"
+          >
+            <Card.Meta
+              title={<Typography.Text>Custom model editor!</Typography.Text>}
+              description={<Typography.Text>Coming soon</Typography.Text>}
+            />
+          </Card>
+          <Card
+            className="Index-card"
+            hoverable
+            cover={
+              <img
+                alt="FreeFEM"
+                src="/images/FreeFEM.svg"
+                style={{ paddingRight: '20px' }}
+              />
+            }
+          >
+            <Card.Meta
+              title={
+                <Typography.Text>
+                  Powered by{' '}
+                  <Button
+                    type="link"
+                    href="https://freefem.org/"
+                    target="_blank"
+                  >
+                    FreeFEM
+                  </Button>
+                  !
+                </Typography.Text>
+              }
+              description="Finite element engine"
+            />
+          </Card>
+          <Card
+            className="Index-card"
+            hoverable
+            cover={
+              <Typography.Title style={{ textAlign: 'center' }}>
+                &lt;%= %&gt;
+              </Typography.Title>
+            }
+          >
+            <Card.Meta
+              title={<Typography.Text>Script template ready!</Typography.Text>}
+            />
+          </Card>
+        </Space>
         <p className="version">
           version: git-{process.env.NEXT_PUBLIC_SOURCE_BRANCH}-
           {process.env.NEXT_PUBLIC_SOURCE_COMMIT}
         </p>
       </Layout.Content>
+      <Layout.Footer style={{ background: 'none' }}>
+        <Space
+          split={<Divider type="vertical" style={{ borderColor: 'grey' }} />}
+        >
+          <div>
+            Tanatloc<sup>&copy;</sup> {new Date().getFullYear()} all rights
+            reserved
+          </div>
+          <div>version {packageJson.version}</div>
+        </Space>
+      </Layout.Footer>
     </Layout>
   )
 }

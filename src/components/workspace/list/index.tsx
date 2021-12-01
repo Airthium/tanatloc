@@ -60,7 +60,7 @@ const WorkspacesList = ({
             Workspaces
           </Typography.Title>
         }
-        footer={<Divider className="Tanatloc-divider" />}
+        footer={<Divider />}
       />
       <Layout.Content>
         <Add

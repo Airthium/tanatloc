@@ -107,15 +107,9 @@ describe('components/assets/dialog', () => {
     await waitFor(() => expect(mockResetFields).toHaveBeenCalledTimes(1))
 
     // Error
-    antd.Form.useForm = () => [
-      {
-        //@ts-ignore
-        validateFields: async () => ({}),
-        resetFields: () => {
-          throw new Error()
-        }
-      }
-    ]
+    mockOnOk.mockImplementation(() => {
+      throw new Error('error')
+    })
     fireEvent.click(ok)
     await waitFor(() => expect(mockOnOk).toHaveBeenCalledTimes(2))
 

@@ -20,8 +20,8 @@ export interface IConfiguration {
       index: number
       label: string
       symbol: string
-      default: string
-      unit: string
+      default: boolean | number | string
+      unit?: string
     }[]
   }
   parameters?: {
@@ -30,8 +30,8 @@ export interface IConfiguration {
       label: string
       children: {
         label: string
-        default: string
-        unit: string
+        default: boolean | number | string
+        unit?: string
         htmlEntity?: string
       }[]
     }
@@ -43,8 +43,8 @@ export interface IConfiguration {
       label: string
       children?: {
         label: string
-        default: string
-        unit: string
+        default: boolean | number | string
+        unit?: string
         htmlEntity?: string
       }[]
       compatibility?: {
@@ -66,8 +66,8 @@ export interface IConfiguration {
       refineFactor?: string
       children: {
         label: string
-        default: string
-        unit: string
+        default: boolean | number | string
+        unit?: string
         htmlEntity?: string
       }[]
     }

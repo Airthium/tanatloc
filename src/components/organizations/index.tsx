@@ -56,7 +56,7 @@ const Organizations = ({ user, organizations, swr }: IProps): JSX.Element => {
         }
         footer={
           <div>
-            <Divider className="Tanatloc-divider" />
+            <Divider />
           </div>
         }
       />

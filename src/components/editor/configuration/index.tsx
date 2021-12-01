@@ -623,7 +623,6 @@ const Configuration = (props: IProps): JSX.Element => {
           {configuration?.parameters &&
             Object.keys(configuration.parameters)
               .map((key) => {
-                if (!key || key === 'index' || key === 'title') return
                 const p = configuration.parameters[key]
                 return (
                   <Card
@@ -671,7 +670,6 @@ const Configuration = (props: IProps): JSX.Element => {
           {configuration?.initialization &&
             Object.keys(configuration.initialization)
               .map((key) => {
-                if (!key || key === 'index' || key === 'title') return
                 const i = configuration.initialization[key]
                 return (
                   <Card
@@ -736,7 +734,6 @@ const Configuration = (props: IProps): JSX.Element => {
           {configuration?.boundaryConditions &&
             Object.keys(configuration.boundaryConditions)
               .map((key) => {
-                if (!key || key === 'index' || key === 'title') return
                 const b = configuration.boundaryConditions[key]
                 return (
                   <Card
@@ -801,10 +798,10 @@ const Configuration = (props: IProps): JSX.Element => {
               <strong>Results</strong>
               <List
                 dataSource={[
-                  ...configuration?.results?.fields?.map(
+                  ...configuration.results.fields?.map(
                     (field, index) => `Field ${index + 1}: ${field.name}`
                   ),
-                  configuration?.results?.filter
+                  configuration.results.filter
                     ? `Filter: ${configuration.results.filter.name}`
                     : null
                 ].filter((f) => f)}

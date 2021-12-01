@@ -266,7 +266,9 @@ describe('components/project', () => {
   })
 
   test('Unauthorized', () => {
-    mockProject.mockImplementation(() => 'Unauthorized')
+    mockProject.mockImplementation(() => ({
+      id: '0'
+    }))
     const { unmount } = render(<Project />)
 
     unmount()

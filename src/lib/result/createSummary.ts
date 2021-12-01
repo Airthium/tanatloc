@@ -31,21 +31,22 @@ const createSummary = (simulation: {
   summary.write('algorithm: ' + simulation.scheme?.algorithm + '\n\n')
 
   // Keys
-  Object.keys(simulation.scheme?.configuration || {}).forEach((key) => {
-    const config = simulation.scheme.configuration[key]
+  simulation.scheme?.configuration &&
+    Object.keys(simulation.scheme?.configuration).forEach((key) => {
+      const config = simulation.scheme.configuration[key]
 
-    if (key === 'geometry') {
-      geometrySummary(summary, config)
-    } else if (key === 'materials') {
-      materialsSummary(summary, config)
-    } else if (key === 'parameters') {
-      parametersSummary(summary, config)
-    } else if (key === 'boundaryConditions') {
-      boundaryConditionsSummary(summary, config)
-    } else if (key === 'run') {
-      runSummary(summary, config)
-    }
-  })
+      if (key === 'geometry') {
+        geometrySummary(summary, config)
+      } else if (key === 'materials') {
+        materialsSummary(summary, config)
+      } else if (key === 'parameters') {
+        parametersSummary(summary, config)
+      } else if (key === 'boundaryConditions') {
+        boundaryConditionsSummary(summary, config)
+      } else if (key === 'run') {
+        runSummary(summary, config)
+      }
+    })
   summary.end()
 
   return {

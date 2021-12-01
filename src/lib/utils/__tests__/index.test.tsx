@@ -66,7 +66,7 @@ describe('lib/utils', () => {
     let res
 
     // Empty
-    res = Utils.groupToAvatar({ id: 'id' })
+    res = Utils.groupToAvatar({})
     {
       const { unmount } = render(res)
       unmount()

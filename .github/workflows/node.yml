@@ -27,7 +27,7 @@ jobs:
       - name: Build
         run: yarn build
       - name: Server build
-        run: yarn server-build
+        run: yarn serverbuild
       - name: SonarCloud scan
         uses: sonarsource/sonarcloud-github-action@master
         env:

@@ -108,7 +108,7 @@ const About = ({ project, simulation, swr }: IProps): JSX.Element => {
               />
             ]}
           >
-            <Space direction="vertical">
+            <Space direction="vertical" style={{ maxWidth: '100%' }}>
               <Typography.Text>
                 <b>Category:</b> {simulation.scheme?.category}
               </Typography.Text>
@@ -124,6 +124,7 @@ const About = ({ project, simulation, swr }: IProps): JSX.Element => {
 
               <MathJax dynamic>
                 <div
+                  style={{ maxWidth: '100%', overflow: 'auto' }}
                   dangerouslySetInnerHTML={{
                     __html: simulation.scheme?.description
                   }}

@@ -1,8 +1,7 @@
-ignores: [
+{
+  "ignores": [
     "@airthium/air-jsdoc-template",
     "@sentry/browser",
-    "@swc/cli",
-    "@swc/core",
     "@swc/jest",
     "@types/*",
     "ignore-loader",
@@ -10,5 +9,6 @@ ignores: [
     "set-interval-async",
     "typedoc",
     "url-join"
-    ]
-skip-missing: true
+  ],
+  "skip-missing": true
+}

@@ -201,6 +201,7 @@ const Geometry = ({ project, geometry, swr, close }: IProps): JSX.Element => {
 
 Geometry.propTypes = {
   project: PropTypes.exact({
+    id: PropTypes.string,
     geometries: PropTypes.array
   }),
   geometry: PropTypes.exact({

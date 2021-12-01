@@ -32,8 +32,7 @@ module.exports = {
     '<rootDir>/src/components/editor/prism/'
   ],
   transform: {
-    '^.+\\.(js|jsx|ts|tsx)$': '<rootDir>/node_modules/babel-jest',
-    // '^.+\\.(js|jsx|ts|tsx)$': '<rootDir>/node_modules/@swc/jest',
+    '^.+\\.(js|jsx|ts|tsx)$': '<rootDir>/node_modules/@swc/jest',
     '^.+\\.(css)$': '<rootDir>/config/jest/cssTransform.js'
   },
   transformIgnorePatterns: [

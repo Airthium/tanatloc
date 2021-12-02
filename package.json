@@ -10,7 +10,6 @@
     "name": "Airthium",
     "url": "https://github.com/orgs/Airthium/people"
   },
-  "main": "app/background.js",
   "browser": {
     "fs": false,
     "path": false

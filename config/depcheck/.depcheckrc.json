@@ -1,6 +1,5 @@
 {
   "ignores": [
-    "@airthium/air-jsdoc-template",
     "@sentry/browser",
     "@swc/jest",
     "@types/*",

@@ -13,25 +13,7 @@ module.exports = {
     '!**/node_modules/**'
   ],
   testEnvironment: 'jsdom',
-  testPathIgnorePatterns: [
-    '<rootDir>/node_modules/',
-    '<rootDir>/.next/',
-    '<rootDir>/out/',
-    '<rootDir>/next.config.js',
-    '<rootDir>/nextron.config.js',
-    '<rootDir>/electron/',
-    '<rootDir>/app/',
-    '<rootDir>/dist/',
-    '<rootDir>/dist-server/',
-    '<rootDir>/dist-install/',
-    '<rootDir>/doc/',
-    '<rootDir>/coverage/',
-    '<rootDir>/config/jest/',
-    '<rootDir>/config/jsdoc/',
-    '<rootDir>/public/',
-    '<rootDir>/tests/',
-    '<rootDir>/src/components/editor/prism/'
-  ],
+  testMatch: ['<rootDir>/**/*.test.ts', '<rootDir>/**/*.test.tsx'],
   transform: {
     '^.+\\.(t|j)sx?$': ['@swc/jest'],
     '^.+\\.(css)$': '<rootDir>/config/jest/cssTransform.js'
@@ -72,6 +54,7 @@ module.exports = {
     '<rootDir>/coverage/',
     '<rootDir>/config/jest/',
     '<rootDir>/config/jsdoc/',
+    '<rootDir>/config/typedoc/',
     '<rootDir>/public/',
     '<rootDir>/tests/',
     '<rootDir>/modules/three-to-glb/lib/three/',

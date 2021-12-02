@@ -57,7 +57,10 @@ module.exports = {
     '<rootDir>/coverage/',
     '<rootDir>/config/jest/',
     '<rootDir>/config/jsdoc/',
+    '<rootDir>/config/typedoc/',
     '<rootDir>/public/',
-    '<rootDir>/tests/'
+    '<rootDir>/tests/',
+    '<rootDir>/modules/three-to-glb/lib/three/',
+    '<rootDir>/src/components/editor/prism/'
   ]
 }

@@ -15,16 +15,8 @@ yarn prettier
 yarn doc
 
 # Test
-rm -Rf dist/
 yarn test | true
-
-# NextJS lint
-yarn next lint
 
 # Build
 rm -Rf .next
 yarn build
-
-# Electron build
-rm -Rf .next
-yarn electronbuild

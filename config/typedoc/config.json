@@ -5,7 +5,6 @@
     "**/__tests__/**",
     "**/app/**",
     "**/config/jest/**",
-    "**/config/jsdoc/**",
     "**/coverage/**",
     "**/dist/**",
     "**/dist-server/**",

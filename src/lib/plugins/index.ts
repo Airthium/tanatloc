@@ -16,6 +16,7 @@ const plugins = []
 const load = async (): Promise<void> => {
   // Available directories
   const availables = await Tools.listDirectories(
+    //@ts-ignore
     isElectron() ? `${process.resourcesPath}/plugins` : './plugins'
   )
 

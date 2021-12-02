@@ -9,9 +9,6 @@
 /out
 
 # Dist
-/app/
-/dist/
-/dist-server/
 /dist-install/
 
 # Public

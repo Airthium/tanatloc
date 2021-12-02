@@ -27,4 +27,4 @@ yarn build
 
 # Electron build
 rm -Rf .next
-yarn electron-build
+yarn electronbuild

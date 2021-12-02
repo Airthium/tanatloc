@@ -1,12 +1,9 @@
 import React from 'react'
-import { fireEvent, render, screen } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import List from '..'
 
-jest.mock('../../delete', () => {
-  const Delete = () => <div />
-  return Delete
-})
+jest.mock('../../delete', () => () => <div />)
 
 const mockUserToAvatar = jest.fn()
 const mockGroupToAvatar = jest.fn()
@@ -46,7 +43,7 @@ describe('components/organizations/list', () => {
     swr.delOneOrganization.mockReset()
   })
 
-  test('render', () => {
+  test('render', async () => {
     const { unmount } = render(
       <List
         user={user}
@@ -55,6 +52,9 @@ describe('components/organizations/list', () => {
         setOrganization={setOrganization}
       />
     )
+
+    await waitFor(() => expect(mockUserToAvatar).toHaveBeenCalled())
+    await waitFor(() => expect(mockGroupToAvatar).toHaveBeenCalled())
 
     unmount()
   })

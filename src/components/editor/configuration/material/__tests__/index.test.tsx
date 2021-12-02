@@ -51,4 +51,28 @@ describe('components/editor/configuration/material', () => {
 
     unmount()
   })
+
+  test('with initialValues', () => {
+    mockDialog.mockImplementation((props) => (
+      <div role="Dialog" onClick={props.onOk} />
+    ))
+    const { unmount } = render(
+      <Material
+        visible={visible}
+        material={{
+          index: 1,
+          label: 'label',
+          symbol: 'symbol',
+          default: 0
+        }}
+        onOk={onOk}
+        onClose={onClose}
+      />
+    )
+
+    const dialog = screen.getByRole('Dialog')
+    fireEvent.click(dialog)
+
+    unmount()
+  })
 })

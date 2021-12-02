@@ -72,4 +72,25 @@ describe('components/editor/configuration/boundaryCondition', () => {
 
     unmount()
   })
+
+  test('with initialValues', () => {
+    const { unmount } = render(
+      <BoundaryCondition
+        visible={visible}
+        boundaryCondition={{
+          label: 'boundaryCondition',
+          children: [
+            {
+              label: 'label',
+              default: 0
+            }
+          ]
+        }}
+        onOk={onOk}
+        onClose={onClose}
+      />
+    )
+
+    unmount()
+  })
 })

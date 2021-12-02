@@ -54,7 +54,7 @@ export interface IConfiguration {
           prefixPattern?: string
           suffixPattern?: string
           pattern?: string
-          multiplicator: string[]
+          multiplicator?: string[]
         }
       }[]
     }

@@ -1,43 +1,20 @@
 import React from 'react'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
-import Dialog from '@/components/assets/dialog'
+import Dialog, { DeleteDialog } from '@/components/assets/dialog'
 
-jest.mock('../delete')
+jest.mock('../delete', () => () => <div />)
 
-import antd from 'antd'
-
-const mockSetFieldsValue = jest.fn()
-const mockResetFields = jest.fn()
 const mockOnOk = jest.fn()
 const mockOnCancel = jest.fn()
 describe('components/assets/dialog', () => {
   beforeEach(() => {
-    mockResetFields.mockReset()
     mockOnCancel.mockReset()
     mockOnOk.mockReset()
-    antd.Form.useForm = () => [
-      {
-        name: 'name',
-        getInternalHooks: () => ({
-          dispatch: jest.fn(),
-          registerField: jest.fn(),
-          useSubscribe: jest.fn(),
-          setInitialValues: jest.fn(),
-          setCallbacks: jest.fn(),
-          setValidateMessages: jest.fn(),
-          getFields: jest.fn(),
-          setPreserve: jest.fn()
-        }),
-        resetFields: () => mockResetFields(),
-        setFieldsValue: () => mockSetFieldsValue(),
-        //@ts-ignore
-        validateFields: async () => ({}),
-        __INTERNAL__: {
-          itemRef: jest.fn()
-        }
-      }
-    ]
+  })
+
+  test('export', () => {
+    expect(DeleteDialog).toBeDefined()
   })
 
   test('render', () => {
@@ -104,7 +81,6 @@ describe('components/assets/dialog', () => {
     // Normal
     fireEvent.click(ok)
     await waitFor(() => expect(mockOnOk).toHaveBeenCalledTimes(1))
-    await waitFor(() => expect(mockResetFields).toHaveBeenCalledTimes(1))
 
     // Error
     mockOnOk.mockImplementation(() => {
@@ -130,7 +106,7 @@ describe('components/assets/dialog', () => {
       </Dialog>
     )
 
-    expect(mockSetFieldsValue).toHaveBeenCalledTimes(1)
+    // expect(mockSetFieldsValue).toHaveBeenCalledTimes(1)
 
     unmount()
   })

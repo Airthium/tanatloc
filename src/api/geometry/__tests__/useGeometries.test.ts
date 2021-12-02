@@ -1,17 +1,34 @@
 import { useGeometries } from '../useGeometries'
 
-const mockGeometries = jest.fn()
-jest.mock('swr', () => () => ({
-  data: { geometries: mockGeometries() },
-  mutate: jest.fn()
-}))
+const mockData = jest.fn()
+jest.mock('swr', () => () => mockData())
 
 describe('api/geometry/useGeometries', () => {
   beforeEach(() => {
-    mockGeometries.mockImplementation(() => [{ id: 'id' }, {}])
+    mockData.mockImplementation(() => ({
+      data: { geometries: [{ id: 'id' }, {}] },
+      mutate: jest.fn
+    }))
   })
 
-  test('without ids', () => {
+  test('withoud data', () => {
+    mockData.mockImplementation(() => ({
+      mutate: jest.fn
+    }))
+    const [geometries] = useGeometries(['id1', 'id2'])
+    expect(geometries).toEqual([])
+  })
+
+  test('without geometries', () => {
+    mockData.mockImplementation(() => ({
+      data: { geometries: undefined },
+      mutate: jest.fn
+    }))
+    const [geometries] = useGeometries(['id1', 'id2'])
+    expect(geometries).toEqual([])
+  })
+
+  test('with geometries', () => {
     const [
       geometries,
       {
@@ -34,16 +51,5 @@ describe('api/geometry/useGeometries', () => {
     addOneGeometry({ id: 'id' })
     delOneGeometry({ id: 'id' })
     mutateOneGeometry({ id: 'id' })
-  })
-
-  test('with ids', () => {
-    const [geometries] = useGeometries(['id1', 'id2'])
-    expect(geometries).toEqual([{ id: 'id' }, {}])
-  })
-
-  test('withtout geometries', () => {
-    mockGeometries.mockImplementation(() => {})
-    const [geometries] = useGeometries(['id1', 'id2'])
-    expect(geometries).toEqual([])
   })
 })

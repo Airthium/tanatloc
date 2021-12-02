@@ -1,7 +1,7 @@
 import React from 'react'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
-import Group from '..'
+import Group, { Delete } from '..'
 
 const mockDialog = jest.fn()
 jest.mock('@/components/assets/dialog', () => (props) => mockDialog(props))
@@ -10,6 +10,8 @@ const mockError = jest.fn()
 jest.mock('@/components/assets/notification', () => ({
   Error: () => mockError()
 }))
+
+jest.mock('../delete', () => () => <div />)
 
 const mockAdd = jest.fn()
 const mockUpdate = jest.fn()
@@ -41,6 +43,10 @@ describe('components/assets/groups', () => {
 
     mockAdd.mockReset()
     mockUpdate.mockReset()
+  })
+
+  test('export', () => {
+    expect(Delete).toBeDefined()
   })
 
   test('render', () => {

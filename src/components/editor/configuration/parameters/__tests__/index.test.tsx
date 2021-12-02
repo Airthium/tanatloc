@@ -72,4 +72,25 @@ describe('components/editor/configuration/parameters', () => {
 
     unmount()
   })
+
+  test('with initialValues', () => {
+    const { unmount } = render(
+      <Parameters
+        visible={visible}
+        parameters={{
+          label: 'label',
+          children: [
+            {
+              label: 'label',
+              default: 0
+            }
+          ]
+        }}
+        onOk={onOk}
+        onClose={onClose}
+      />
+    )
+
+    unmount()
+  })
 })

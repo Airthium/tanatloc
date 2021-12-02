@@ -1,5 +1,5 @@
 import React from 'react'
-import { fireEvent, render, screen } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { Form } from 'antd'
 
 import Initialization from '..'
@@ -95,6 +95,28 @@ describe('components/editor/configuration/initialization', () => {
 
     const dialog = screen.getByRole('Dialog')
     fireEvent.click(dialog)
+
+    unmount()
+  })
+
+  test('With initialValues', async () => {
+    const { unmount } = render(
+      <Initialization
+        visible={visible}
+        initialization={{
+          key: 'direct',
+          label: 'label',
+          children: [
+            {
+              label: 'label',
+              default: 0
+            }
+          ]
+        }}
+        onOk={onOk}
+        onClose={onClose}
+      />
+    )
 
     unmount()
   })

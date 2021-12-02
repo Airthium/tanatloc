@@ -6,6 +6,7 @@ module.exports = {
     '<rootDir>/config/jest/mockMatchMedia.js',
     '<rootDir>/config/jest/mockResizeObserver.js'
   ],
+  extensionsToTreatAsEsm: ['.ts', '.tsx'],
   collectCoverageFrom: [
     '**/*.{js,jsx,ts,tsx}',
     '!**/*.d.ts',
@@ -32,7 +33,7 @@ module.exports = {
     '<rootDir>/src/components/editor/prism/'
   ],
   transform: {
-    '^.+\\.(js|jsx|ts|tsx)$': '<rootDir>/node_modules/@swc/jest',
+    '^.+\\.(t|j)sx?$': ['@swc/jest'],
     '^.+\\.(css)$': '<rootDir>/config/jest/cssTransform.js'
   },
   transformIgnorePatterns: [

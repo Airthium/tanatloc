@@ -16,11 +16,9 @@
   "tsconfig": "../../tsconfig.json",
   "entryPoints": [
     "../../config",
-    "../../electron",
     "../../install",
     "../../models",
     "../../plugins",
-    "../../server",
     "../../src/api",
     "../../src/auth",
     "../../src/components",

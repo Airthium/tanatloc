@@ -706,6 +706,7 @@ const Configuration = (props: IProps): JSX.Element => {
                     ))}
                     {i.compatibility?.map((compat) => (
                       <List
+                        key={compat.algorithm}
                         dataSource={[
                           `Algorithm: ${compat.algorithm}`,
                           `Filter name: ${compat.filter.name}`,

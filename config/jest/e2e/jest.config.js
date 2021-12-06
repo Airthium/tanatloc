@@ -47,7 +47,6 @@ module.exports = {
     '<rootDir>/.next/',
     '<rootDir>/out/',
     '<rootDir>/next.config.js',
-    '<rootDir>/electron/',
     '<rootDir>/app/',
     '<rootDir>/dist/',
     '<rootDir>/dist-server/',

@@ -6,7 +6,7 @@ import Dialog from '@/components/assets/dialog'
 import { IConfiguration } from '../..'
 import { DeleteOutlined } from '@ant-design/icons'
 
-interface IProps {
+export interface IProps {
   visible?: boolean
   boundaryCondition?: IConfiguration['boundaryConditions']['key']
   onOk: Function

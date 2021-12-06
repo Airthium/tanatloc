@@ -20,7 +20,6 @@ const loadTemplates = async () => {
     Object.keys(Templates).map(async (key) => {
       const content = await Tools.readFile(
         path.join(
-          //@ts-ignore
           isElectron() ? process.resourcesPath : './',
           'templates',
           Templates[key]
@@ -28,7 +27,6 @@ const loadTemplates = async () => {
       )
       const func = await ejs.compile(content.toString(), {
         root: path.join(
-          //@ts-ignore
           isElectron() ? process.resourcesPath : './',
           'templates'
         )
@@ -46,7 +44,6 @@ const loadTemplates = async () => {
           plugin.templates.map(async (template) => {
             const content = await Tools.readFile(
               path.join(
-                //@ts-ignore
                 isElectron() ? process.resourcesPath : './',
                 'plugins',
                 plugin.key,
@@ -55,7 +52,6 @@ const loadTemplates = async () => {
             )
             const func = await ejs.compile(content.toString(), {
               root: path.join(
-                //@ts-ignore
                 isElectron() ? process.resourcesPath : './',
                 'templates'
               )

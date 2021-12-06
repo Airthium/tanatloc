@@ -5,7 +5,7 @@ import { DeleteOutlined } from '@ant-design/icons'
 import Dialog from '@/components/assets/dialog'
 import { IConfiguration } from '../..'
 
-interface IProps {
+export interface IProps {
   visible?: boolean
   results: IConfiguration['results']
   onOk: Function

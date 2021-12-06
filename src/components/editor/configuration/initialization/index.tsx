@@ -18,7 +18,7 @@ import Dialog from '@/components/assets/dialog'
 const existingAlgorithms = ['algo1', 'algo2']
 // TODO real algorihtms list
 
-interface IProps {
+export interface IProps {
   visible?: boolean
   initialization: IConfiguration['initialization']['key']
   onOk: Function

@@ -57,7 +57,6 @@ COPY models ${INSTALL_PATH}/models
 COPY modules ${INSTALL_PATH}/modules
 COPY plugins ${INSTALL_PATH}/plugins
 COPY public ${INSTALL_PATH}/public
-COPY resources ${INSTALL_PATH}/resources
 COPY src ${INSTALL_PATH}/src
 COPY templates ${INSTALL_PATH}/templates
 COPY .babelrc ${INSTALL_PATH}/.babelrc

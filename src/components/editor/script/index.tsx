@@ -6,7 +6,7 @@ import 'prism-themes/themes/prism-vs.css'
 
 import { IConfiguration } from '..'
 
-interface IProps {
+export interface IProps {
   configuration: IConfiguration
 }
 

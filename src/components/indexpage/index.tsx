@@ -230,10 +230,6 @@ const Index = (): JSX.Element => {
             />
           </Card>
         </Space>
-        <p className="version">
-          version: git-{process.env.NEXT_PUBLIC_SOURCE_BRANCH}-
-          {process.env.NEXT_PUBLIC_SOURCE_COMMIT}
-        </p>
       </Layout.Content>
       <Layout.Footer style={{ background: 'none' }}>
         <Space
@@ -243,7 +239,11 @@ const Index = (): JSX.Element => {
             Tanatloc<sup>&copy;</sup> {new Date().getFullYear()} all rights
             reserved
           </div>
-          <div>version {packageJson.version}</div>
+          <div>
+            version {packageJson.version} (git-
+            {process.env.NEXT_PUBLIC_SOURCE_BRANCH}-
+            {process.env.NEXT_PUBLIC_SOURCE_COMMIT})
+          </div>
         </Space>
       </Layout.Footer>
     </Layout>

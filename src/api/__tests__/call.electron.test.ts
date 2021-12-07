@@ -11,7 +11,9 @@ Object.defineProperty(global, 'fetch', {
       ok: mockOk(),
       json: jest.fn(),
       headers: {
-        get: () => {}
+        get: () => {
+          // Empty
+        }
       }
     }
   }

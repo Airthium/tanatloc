@@ -9,7 +9,10 @@ Object.defineProperty(global, 'fetch', {
     mockRoute = route
     return {
       ok: mockOk(),
-      json: jest.fn()
+      json: jest.fn(),
+      headers: {
+        get: () => {}
+      }
     }
   }
 })

@@ -22,7 +22,7 @@ export const fetcher = async (
   url: string,
   payload?: string
 ): Promise<IFetchResponse> => {
-  const res = await fetch(base + url, {
+  const response = await fetch(base + url, {
     method: payload ? 'POST' : 'GET',
     headers: {
       accept: 'application/json',
@@ -31,15 +31,18 @@ export const fetcher = async (
     ...(payload && { body: payload })
   })
 
-  if (!res.ok) {
+  const contentType = response.headers.get('Content-Type')
+
+  if (!response.ok) {
     const error: ICallError = new Error('An error occured while fetching data.')
-    error.info = await res.json()
-    error.status = res.status
+    error.info =
+      contentType?.includes('application/json') && (await response.json())
+    error.status = response.status
 
     throw error
   }
 
-  return res.json()
+  return response.json()
 }
 
 /**

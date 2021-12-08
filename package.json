@@ -22,6 +22,7 @@
     "docker": "docker build . -t tanatloc/tanatloc:test",
     "export": "yarn build && next export",
     "prestart": "yarn prestartconfig && yarn prestartinstall && yarn prestartdatabase && yarn prestartrun",
+    "prestartwithoutrun": "yarn prestartconfig && yarn prestartinstall && yarn prestartdatabase",
     "prestartconfig": "swc config --out-dir dist-install/config",
     "prestartinstall": "swc install --out-dir dist-install/install",
     "prestartdatabase": "swc src/database --out-dir dist-install/src",

@@ -1,4 +1,4 @@
-![Node](https://github.com/Airthium/tanatloc-ssr/workflows/Node/badge.svg)
+![Node](https://github.com/Airthium/tanatloc/workflows/Node/badge.svg)
 
 # Tanatloc
 
@@ -72,4 +72,4 @@ Start:
 
 ### Docker
 
-The best way to deploy Tanatloc on a server is to use the [Tanatloc deployment script](https://github.com/Airthium/tanatloc-ssr-deploy)
+The best way to deploy Tanatloc on a server is to use the [Tanatloc deployment script](https://github.com/Airthium/tanatloc-deploy)

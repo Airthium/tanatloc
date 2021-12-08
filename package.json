@@ -2,7 +2,7 @@
   "name": "tanatloc",
   "description": "Tanatloc",
   "version": "1.0.0-alpha.4",
-  "repository": "git@github.com:Airthium/tanatloc-ssr.git",
+  "repository": "git@github.com:Airthium/tanatloc.git",
   "license": "UNLICENSED",
   "private": true,
   "homepage": "./",

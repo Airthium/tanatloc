@@ -1,9 +1,9 @@
 [submodule "plugins/denso"]
 	path = plugins/denso
-	url = git@github.com:Airthium/tanatloc-ssr-plugin-denso.git
+	url = git@github.com:Airthium/tanatloc-plugin-denso.git
 [submodule "plugins/rescale"]
 	path = plugins/rescale
-	url = git@github.com:Airthium/tanatloc-ssr-plugin-rescale.git
+	url = git@github.com:Airthium/tanatloc-plugin-rescale.git
 [submodule "plugins/sharetask"]
 	path = plugins/sharetask
-	url = git@github.com:Airthium/tanatloc-ssr-plugin-sharetask.git
+	url = git@github.com:Airthium/tanatloc-plugin-sharetask.git

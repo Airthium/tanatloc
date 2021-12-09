@@ -11,7 +11,7 @@ branch=`git rev-parse --symbolic-full-name --abbrev-ref HEAD`
 if [ $branch = "dev" ]
 then
     git add .
-    git commit -m"$1"
+    git commit -m"$1" --allow-empty
     git push
 
     git checkout hotfix

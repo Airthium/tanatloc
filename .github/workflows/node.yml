@@ -9,21 +9,29 @@ jobs:
       - uses: actions/checkout@main
         with:
           fetch-depth: 0
+
       - uses: actions/setup-node@master
         with:
           node-version: '16.3.0'
+
       - name: Install
         run: yarn install
+
       - name: Depcheck
         run: yarn depcheck
+
       - name: Lint
         run: yarn prettier
+
       - name: Tests
         run: yarn test || true
+
       - name: Unsubscribe
         run: yarn next telemetry disable
+
       - name: Build
         run: yarn build
+
       - name: SonarCloud scan
         uses: sonarsource/sonarcloud-github-action@master
         env:

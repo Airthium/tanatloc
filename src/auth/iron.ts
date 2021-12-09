@@ -1,6 +1,7 @@
 /** @module Auth.Iron */
 
 import Iron from '@hapi/iron'
+
 import { getTokenCookie } from './auth-cookies'
 
 import { SECRET } from '@/config/auth'

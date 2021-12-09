@@ -63,11 +63,12 @@ depcheck.special.customJest = async (fileName, deps) => {
 
 const options = {
   ignoreMatches: [
-    'electron-serve',
-    'form-data',
-    'node-fetch',
-    'set-interval-async',
-    'url-join'
+    'electron', // Mandatory for electron-store
+    'electron-serve', // Mandatory for electron-store
+    'form-data', // For plugins
+    'node-fetch', // For plugins
+    'set-interval-async', // For plugins
+    'url-join' // For plugins
   ],
   specials: [
     depcheck.special.bin,
@@ -97,7 +98,7 @@ depcheck(process.cwd(), options, (unused) => {
     error++
   }
 
-  if (unused.missing) {
+  if (Object.keys(unused.missing).length) {
     console.warn('Missing dependencies:')
     console.warn(unused.missing)
     console.warn()

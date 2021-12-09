@@ -5,7 +5,7 @@ import { serialize, parse } from 'cookie'
 import isElectron from 'is-electron'
 import ElectronStore from 'electron-store'
 
-import { IRequest, IResponse } from '@/route'
+import { IRequest, IResponse } from '@/route/index.d'
 
 let storage: ElectronStore
 if (isElectron()) storage = new ElectronStore()

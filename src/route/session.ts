@@ -1,6 +1,7 @@
 import { getSession } from '@/auth/iron'
 
-import { IRequest } from '.'
+import { IRequest } from './index.d'
+
 import { error } from './error'
 
 /**

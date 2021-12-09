@@ -5,7 +5,7 @@ import { getTokenCookie } from './auth-cookies'
 
 import { SECRET } from '@/config/auth'
 
-import { IRequest } from '@/route'
+import { IRequest } from '@/route/index.d'
 
 /**
  * Token secret

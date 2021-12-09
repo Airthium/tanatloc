@@ -16,7 +16,7 @@
   },
   "scripts": {
     "build": "NEXT_PUBLIC_SOURCE_BRANCH=`git rev-parse --abbrev-ref HEAD` NEXT_PUBLIC_SOURCE_COMMIT=`git rev-parse --short HEAD` next build",
-    "depcheck": "depcheck --config=config/depcheck/.depcheckrc.json",
+    "depcheck": "node config/depcheck/depcheckrc.js",
     "dev": "NODE_OPTIONS=\"--max_old_space_size=8192\" NEXT_PUBLIC_SOURCE_BRANCH=`git rev-parse --abbrev-ref HEAD` NEXT_PUBLIC_SOURCE_COMMIT=`git rev-parse --short HEAD` next",
     "doc": "typedoc --options config/typedoc/config.json",
     "export": "yarn build && next export",
@@ -37,6 +37,7 @@
     "workflow": ".github/workflows/node.local.sh"
   },
   "dependencies": {
+    "electron-serve": "1.1.0",
     "electron-store": "8.0.1"
   },
   "devDependencies": {
@@ -60,6 +61,7 @@
     "eslint": "8.4.1",
     "eslint-config-next": "12.0.7",
     "express": "4.17.1",
+    "form-data": "4.0.0",
     "ignore-loader": "0.1.2",
     "is-docker": "3.0.0",
     "is-electron": "2.2.1",

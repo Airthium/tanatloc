@@ -18,7 +18,7 @@ module.exports = {
   },
   testMatch: ['<rootDir>/tests/**/*.test.js'],
   transform: {
-    '^.+\\.(js|jsx|ts|tsx)$': '<rootDir>/node_modules/@swc/jest',
+    '^.+\\.(js|jsx|ts|tsx)$': '@swc/jest',
     '^.+\\.css$': '<rootDir>/config/jest/cssTransform.js'
   },
   transformIgnorePatterns: [

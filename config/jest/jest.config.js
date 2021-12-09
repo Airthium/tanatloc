@@ -15,7 +15,7 @@ module.exports = {
   testEnvironment: 'jsdom',
   testMatch: ['<rootDir>/**/*.test.ts', '<rootDir>/**/*.test.tsx'],
   transform: {
-    '^.+\\.(t|j)sx?$': ['@swc/jest'],
+    '^.+\\.(t|j)sx?$': '@swc/jest',
     '^.+\\.(css)$': '<rootDir>/config/jest/cssTransform.js'
   },
   transformIgnorePatterns: [

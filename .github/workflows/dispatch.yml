@@ -6,6 +6,35 @@ on:
       - master
 
 jobs:
+  create-release:
+    name: Create release
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@main
+
+      - name: Version
+        id: package_version
+        run: |
+          VERSION=`cat package.json | grep version | head -1 | awk -F: '{ print $2 }' | sed 's/[",]//g' | tr -d '[[:space:]]'`
+          echo "::set-output name=version::$VERSION"
+
+      - name: Create release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ steps.package_version.outputs.version }}
+          release_name: v${{ steps.package_version.outputs.version }}
+          body: |
+            Tanatloc release
+            - [Docker build](https://github.com/Airthium/tanatloc-electron/releases/tag/${{ steps.package_version.outputs.version }})
+            - [Electron build](https://github.com/Airthium/tanatloc-docker/releases/tag/${{ steps.package_version.outputs.version }})
+          draft: false
+          prerelease: false
+
   electron:
     name: Dispatch to tanatloc-electron
     runs-on: ubuntu-latest
@@ -22,4 +51,4 @@ jobs:
     steps:
       - name: Dispatch for docker
         run: |
-          curl -X POST -H "Authorization: token ${{ secrets.DISPATCH_TOKEN }}" -H "Accept: application/vnd.github.v3+json" https://api.github.com/repos/Airthium/tanatloc-docker/actions/workflows/docker.yml/dispatches -d '{"ref": "master"}'
+          curl -X POST -H "Authorization: token ${{ secrets.DISPATCH_TOKEN }}" -H "Accept: application/vnd.github.v3+json" https://api.github.com/repos/Airthium/tanatloc-docker/actions/workflows/docker.yml/dispatches -d '{"ref": "main"}'

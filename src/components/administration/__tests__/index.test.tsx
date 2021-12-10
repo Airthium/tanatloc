@@ -60,13 +60,14 @@ describe('components/administration', () => {
 
   test('onChange', () => {
     const { unmount } = render(<Administration />)
-    // Users
-    const users = screen.getByRole('tab', { name: 'Users' })
-    fireEvent.click(users)
-    expect(mockReplace).toHaveBeenCalledTimes(1)
     // Registration
     const registration = screen.getByRole('tab', { name: 'Registration' })
     fireEvent.click(registration)
+    expect(mockReplace).toHaveBeenCalledTimes(1)
+
+    // Users
+    const users = screen.getByRole('tab', { name: 'Users' })
+    fireEvent.click(users)
     expect(mockReplace).toHaveBeenCalledTimes(2)
 
     unmount()

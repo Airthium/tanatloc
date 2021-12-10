@@ -37,8 +37,8 @@
     "workflow": ".github/workflows/node.local.sh"
   },
   "dependencies": {
-    "electron": "^16.0.4",
-    "electron-serve": "^1.1.0",
+    "electron": "16.0.4",
+    "electron-serve": "1.1.0",
     "electron-store": "8.0.1"
   },
   "devDependencies": {

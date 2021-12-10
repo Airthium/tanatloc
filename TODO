@@ -8,4 +8,5 @@ FIGMA: https://www.figma.com/file/zA0A5rq8U5zqBoTdqJwYzh/Cleaning_Tanatloc?node-
 Linearelasticitty -> sortie gamma1-6
 Linearelasticitty en cylindrique
 
-use submodule recursive in node.yml action
+in tanatloc-electron(docker), update submodule before build
+https://stackoverflow.com/questions/64407333/using-github-actions-to-automatically-update-the-repos-submodules

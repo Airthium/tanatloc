@@ -8,7 +8,7 @@ jobs:
     steps:
       - uses: actions/checkout@main
         with:
-          token: ${{ secrets.TANATLOC_SSR_AS_SUBMODULE }}
+          token: ${{ secrets.SUBMODULES_TOKEN }}
           submodules: recursive
 
       - uses: actions/setup-node@master

@@ -124,7 +124,7 @@ const PasswordItem = ({
         ? system?.password?.requireNumber
         : REQUIRE_NUMBER
     )
-      return checkRegex(value, /[0-9]/)
+      return checkRegex(value, /\d/)
     return true
   }
 

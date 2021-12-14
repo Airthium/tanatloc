@@ -1,5 +1,3 @@
-import { IUserCheck } from '@/database/index.d'
-
 import { call } from '@/api/call'
 
 /**

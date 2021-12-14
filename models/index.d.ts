@@ -1,5 +1,7 @@
 import { IClientPlugin } from '@/database/index.d'
 
+type TValue = boolean | number | string
+
 export interface IModelMaterialValue {
   uuid: string
   material?: {
@@ -24,10 +26,10 @@ export interface IModelMaterial {
 export interface IModelParameter {
   label: string
   htmlEntity: string
-  default: boolean | number | string
+  default: TValue
   options?: { label: string; value: string }[]
   unit?: string
-  value?: boolean | number | string
+  value?: TValue
 }
 
 export interface IModelBoundaryConditionValue {
@@ -41,14 +43,14 @@ export interface IModelBoundaryConditionValue {
   selected: { uuid: string; label: number }[]
   values?: {
     checked?: boolean
-    value?: boolean | number | string
+    value?: TValue
   }[]
 }
 
 export interface IModelBoundaryCondition {
   label: string
   htmlEntity: string
-  default: boolean | number | string
+  default: TValue
   unit?: string
 }
 
@@ -56,9 +58,9 @@ export interface IModelInitialization {
   label: string
   htmlEntity: string
   options?: { label: string; value: string }[]
-  default: boolean | number | string
+  default: TValue
   unit?: string
-  value?: boolean | number | string
+  value?: TValue
 }
 
 export interface IModelInitializationCoupling {

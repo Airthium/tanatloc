@@ -65,7 +65,7 @@ export default async (
 
       //Download
       try {
-        const fileStream = await ResultLib.download(simulation, result)
+        const fileStream = ResultLib.download(simulation, result)
         fileStream.pipe(res)
       } catch (err) {
         throw error(500, err.message)

@@ -25,7 +25,7 @@ export default async (req: IRequest, res: IResponse) => {
         const user = await UserLib.get(sessionId, ['authorizedplugins'])
 
         // Get list
-        const list = await PluginsLib.clientList(user)
+        const list = PluginsLib.clientList(user)
         res.status(200).json(list)
       } catch (err) {
         throw error(500, err.message)
@@ -34,7 +34,7 @@ export default async (req: IRequest, res: IResponse) => {
       // Get complete
       try {
         // Get complete list
-        const list = await PluginsLib.clientList(null, true)
+        const list = PluginsLib.clientList(null, true)
         res.status(200).json(list)
       } catch (err) {
         throw error(500, err.message)

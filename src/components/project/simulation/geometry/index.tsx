@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
-import { Card, Collapse, Space, Typography } from 'antd'
+import { Collapse, Space, Typography } from 'antd'
 import { SelectOutlined } from '@ant-design/icons'
 import { MathJax } from 'better-react-mathjax'
 

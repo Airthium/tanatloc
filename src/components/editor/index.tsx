@@ -7,6 +7,8 @@ import Information from './information'
 import Configuration from './configuration'
 import Script from './script'
 
+type TValue = boolean | number | string
+
 export interface IConfiguration {
   name?: string
   category?: string
@@ -20,7 +22,7 @@ export interface IConfiguration {
       index: number
       label: string
       symbol: string
-      default: boolean | number | string
+      default: TValue
       unit?: string
     }[]
   }
@@ -30,7 +32,7 @@ export interface IConfiguration {
       label: string
       children: {
         label: string
-        default: boolean | number | string
+        default: TValue
         unit?: string
         htmlEntity?: string
       }[]
@@ -43,7 +45,7 @@ export interface IConfiguration {
       label: string
       children?: {
         label: string
-        default: boolean | number | string
+        default: TValue
         unit?: string
         htmlEntity?: string
       }[]
@@ -66,7 +68,7 @@ export interface IConfiguration {
       refineFactor?: string
       children: {
         label: string
-        default: boolean | number | string
+        default: TValue
         unit?: string
         htmlEntity?: string
       }[]

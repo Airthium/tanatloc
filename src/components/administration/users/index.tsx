@@ -78,24 +78,27 @@ const Users = ({ users, swr }: IProps): JSX.Element => {
             dataIndex: 'authorizedplugins',
             key: 'authorizedplugins',
             // eslint-disable-next-line react/display-name
-            render: (authorizedplugins: string[]) => (
-              <Space wrap={true}>
-                {authorizedplugins?.sort().map((authorizedplugin) => {
-                  if (!list) return <Spin />
-                  const plugin = list.find((p) => p.key === authorizedplugin)
-                  return (
-                    <Badge
-                      key={authorizedplugin}
-                      size="small"
-                      count={plugin?.category}
-                      offset={[5, -5]}
-                    >
-                      {plugin?.name}
-                    </Badge>
-                  )
-                })}
-              </Space>
-            )
+            render: (authorizedplugins: string[]) => {
+              authorizedplugins.sort()
+              return (
+                <Space wrap={true}>
+                  {authorizedplugins?.map((authorizedplugin) => {
+                    if (!list) return <Spin />
+                    const plugin = list.find((p) => p.key === authorizedplugin)
+                    return (
+                      <Badge
+                        key={authorizedplugin}
+                        size="small"
+                        count={plugin?.category}
+                        offset={[5, -5]}
+                      >
+                        {plugin?.name}
+                      </Badge>
+                    )
+                  })}
+                </Space>
+              )
+            }
           },
           {
             title: 'Administrator',

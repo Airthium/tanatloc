@@ -59,8 +59,8 @@ const getWithData = async (
   // Get avatar
   if (user?.avatar) {
     try {
-      const avatar = await Avatar.read(user.avatar)
-      userWithData.avatar = avatar
+      const avatarData = await Avatar.read(user.avatar)
+      userWithData.avatar = avatarData
     } catch (err) {
       console.warn(err)
       user.avatar = undefined

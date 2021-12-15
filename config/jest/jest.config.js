@@ -13,7 +13,12 @@ module.exports = {
     '!**/node_modules/**'
   ],
   testEnvironment: 'jsdom',
-  testMatch: ['<rootDir>/**/*.test.ts', '<rootDir>/**/*.test.tsx'],
+  testMatch: [
+    '<rootDir>/**/*.test.js',
+    '<rootDir>/**/*.test.ts',
+    '<rootDir>/**/*.test.tsx'
+  ],
+  modulePathIgnorePatterns: ['<rootDir>/tests'],
   transform: {
     '^.+\\.(t|j)sx?$': '@swc/jest',
     '^.+\\.(css)$': '<rootDir>/config/jest/cssTransform.js'
@@ -50,6 +55,7 @@ module.exports = {
     '<rootDir>/dist-install/',
     '<rootDir>/doc/',
     '<rootDir>/coverage/',
+    '<rootDir>/config/depcheck/',
     '<rootDir>/config/jest/',
     '<rootDir>/config/typedoc/',
     '<rootDir>/public/',

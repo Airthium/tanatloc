@@ -79,11 +79,11 @@ const Users = ({ users, swr }: IProps): JSX.Element => {
             key: 'authorizedplugins',
             // eslint-disable-next-line react/display-name
             render: (authorizedplugins: string[]) => {
-              authorizedplugins.sort()
+              authorizedplugins?.sort()
               return (
                 <Space wrap={true}>
                   {authorizedplugins?.map((authorizedplugin) => {
-                    if (!list) return <Spin />
+                    if (!list) return <Spin key={authorizedplugin} />
                     const plugin = list.find((p) => p.key === authorizedplugin)
                     return (
                       <Badge

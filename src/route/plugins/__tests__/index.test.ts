@@ -18,7 +18,7 @@ jest.mock('@/lib/user', () => ({
 
 const mockClientList = jest.fn()
 jest.mock('@/lib/plugins', () => ({
-  clientList: async () => mockClientList()
+  clientList: () => mockClientList()
 }))
 
 describe('route/plugins', () => {

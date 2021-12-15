@@ -19,7 +19,7 @@ jest.mock('../../error', () => ({
 
 const mockDownload = jest.fn()
 jest.mock('@/lib/result', () => ({
-  download: async () => mockDownload()
+  download: () => mockDownload()
 }))
 
 describe('route/result/download', () => {

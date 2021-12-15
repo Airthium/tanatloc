@@ -71,6 +71,8 @@ export default async (req: IRequest<IGetBody>, res: IResponse) => {
         })
       )
 
+      console.log(projectsTmp)
+
       try {
         const projects = projectsTmp.filter((p) => p)
         res.status(200).json({ projects })

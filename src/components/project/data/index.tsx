@@ -26,6 +26,7 @@ import {
   XAxis,
   YAxis
 } from 'recharts'
+import { camelCase } from 'lodash'
 
 import { ISimulation } from '@/database/index.d'
 
@@ -35,18 +36,6 @@ import SimulationAPI from '@/api/simulation'
 
 export interface IProps {
   simulation: ISimulation
-}
-
-/**
- * Camelize
- * @memberof Components.Project.Data
- * @param str String
- * @returns Camelized string
- */
-const camelize = (str: string): string => {
-  return str.replace(/\W+(.)/g, (_, chr) => {
-    return chr.toUpperCase()
-  })
 }
 
 /**
@@ -97,7 +86,7 @@ const Data = ({ simulation }: IProps): JSX.Element => {
         )
         .map((d) => d.name)
 
-      const camelNames = names.map((n) => camelize(n))
+      const camelNames = names.map((n) => camelCase(n))
 
       const tableColumns: {
         align?: string
@@ -133,12 +122,12 @@ const Data = ({ simulation }: IProps): JSX.Element => {
           tableData.push({
             key: index,
             x: d.x,
-            [camelize(d.name)]: d.y
+            [camelCase(d.name)]: d.y
           })
         else {
           tableData[existingIndex] = {
             ...tableData[existingIndex],
-            [camelize(d.name)]: d.y
+            [camelCase(d.name)]: d.y
           }
         }
       })

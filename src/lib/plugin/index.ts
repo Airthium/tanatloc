@@ -1,6 +1,6 @@
 /** @module Lib.Plugin */
 
-import merge from 'lodash.merge'
+import { merge } from 'lodash'
 import { v4 as uuid } from 'uuid'
 
 import { IClientPlugin } from '@/database/index.d'

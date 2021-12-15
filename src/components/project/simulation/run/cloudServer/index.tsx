@@ -4,7 +4,7 @@ import { useState, useEffect, ComponentType } from 'react'
 import { useRouter } from 'next/router'
 import { Button, Card, Modal, Space, Typography } from 'antd'
 import { CloudServerOutlined } from '@ant-design/icons'
-import merge from 'lodash.merge'
+import { merge } from 'lodash'
 
 import { IClientPlugin } from '@/database/index.d'
 import { IModel } from '@/models/index.d'

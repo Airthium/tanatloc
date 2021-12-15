@@ -79,25 +79,29 @@ const Users = ({ users, swr }: IProps): JSX.Element => {
             key: 'authorizedplugins',
             // eslint-disable-next-line react/display-name
             render: (authorizedplugins: string[]) => {
-              authorizedplugins?.sort()
-              return (
-                <Space wrap={true}>
-                  {authorizedplugins?.map((authorizedplugin) => {
-                    if (!list) return <Spin key={authorizedplugin} />
-                    const plugin = list.find((p) => p.key === authorizedplugin)
-                    return (
-                      <Badge
-                        key={authorizedplugin}
-                        size="small"
-                        count={plugin?.category}
-                        offset={[5, -5]}
-                      >
-                        {plugin?.name}
-                      </Badge>
-                    )
-                  })}
-                </Space>
-              )
+              if (authorizedplugins) {
+                authorizedplugins.sort()
+                return (
+                  <Space wrap={true}>
+                    {authorizedplugins.map((authorizedplugin) => {
+                      if (!list) return <Spin key={authorizedplugin} />
+                      const plugin = list.find(
+                        (p) => p.key === authorizedplugin
+                      )
+                      return (
+                        <Badge
+                          key={authorizedplugin}
+                          size="small"
+                          count={plugin?.category}
+                          offset={[5, -5]}
+                        >
+                          {plugin?.name}
+                        </Badge>
+                      )
+                    })}
+                  </Space>
+                )
+              }
             }
           },
           {

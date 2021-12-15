@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react'
 import { Layout, Menu, Modal, Select, Space, Typography } from 'antd'
 import { WarningOutlined } from '@ant-design/icons'
 import { addedDiff, updatedDiff } from 'deep-object-diff'
-import merge from 'lodash.merge'
+import { merge } from 'lodash'
 import { MathJax } from 'better-react-mathjax'
 
 import { IUserWithData } from '@/lib/index.d'

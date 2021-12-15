@@ -1,4 +1,5 @@
 import { Pool } from 'pg'
+import format from 'pg-format'
 
 import {
   ADMIN,
@@ -38,25 +39,40 @@ export const createDatabase = async (): Promise<void> => {
     // Database
     console.info(' + Create database')
     const checkDatabase = await client.query(
-      "SELECT FROM pg_database WHERE datname = '" + DATABASE + "'"
+      'SELECT FROM pg_database WHERE datname = $1',
+      [DATABASE]
     )
-    if (checkDatabase.rowCount === 0)
-      await client.query('CREATE DATABASE ' + DATABASE)
+    if (checkDatabase.rowCount === 0) {
+      const createDatabaseQuery = format('CREATE DATABASE %s', DATABASE)
+      await client.query(createDatabaseQuery)
+    } else {
+      console.info('   -- Database already exists')
+    }
 
     // User
     console.info(' + Create user')
     const checkUser = await client.query(
-      "SELECT FROM pg_user WHERE usename = '" + USER + "'"
+      'SELECT FROM pg_user WHERE usename = $1',
+      [USER]
     )
-    if (checkUser.rowCount === 0)
-      await client.query(
-        'CREATE USER ' + USER + " WITH ENCRYPTED PASSWORD '" + PASSWORD + "'"
+    if (checkUser.rowCount === 0) {
+      const createUserQuery = format(
+        'CREATE USER %s WITH ENCRYPTED PASSWORD %s',
+        USER,
+        PASSWORD
       )
+      await client.query(createUserQuery)
+    } else {
+      console.info('   -- User already exists')
+    }
 
     // Privileges
-    await client.query(
-      'GRANT ALL PRIVILEGES ON DATABASE ' + DATABASE + ' TO ' + USER
+    const privilegesQuery = format(
+      'GRANT ALL PRIVILEGES ON DATABASE %s TO %s',
+      DATABASE,
+      USER
     )
+    await client.query(privilegesQuery)
 
     // Close
     client.release()
@@ -75,6 +91,7 @@ export const createDatabase = async (): Promise<void> => {
     // Crypto
     console.info(' + Install pgcrypto extension')
     await client.query('CREATE EXTENSION IF NOT EXISTS pgcrypto')
+    console.info('   -- Done')
 
     // Close
     client.release()

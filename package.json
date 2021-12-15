@@ -77,6 +77,7 @@
     "passport": "0.5.0",
     "passport-local": "1.0.0",
     "pg": "8.7.1",
+    "pg-format": "1.0.4",
     "pg-native": "./modules/pg-native",
     "prettier": "2.5.1",
     "prism-themes": "1.9.0",

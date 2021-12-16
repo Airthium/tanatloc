@@ -77,8 +77,7 @@ const options = {
     depcheck.special.customTypedoc,
     depcheck.special.customNext,
     depcheck.special.customJest
-  ],
-  'skip-missing': true
+  ]
 }
 
 depcheck(process.cwd(), options, (unused) => {

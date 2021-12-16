@@ -2,8 +2,11 @@
 
 import { useRef, useEffect } from 'react'
 import {
+  BufferGeometry,
+  Material,
   Mesh,
   MeshBasicMaterial,
+  Object3D,
   PerspectiveCamera,
   Scene,
   TetrahedronGeometry,
@@ -159,10 +162,7 @@ const Background = (): JSX.Element => {
 
       // Clear scene
       scene.children.forEach(
-        (child: {
-          geometry: { dispose: Function }
-          material: { dispose: Function }
-        }) => {
+        (child: Mesh<TetrahedronGeometry, MeshBasicMaterial>) => {
           child.geometry.dispose()
           child.material.dispose()
           scene.remove(child)

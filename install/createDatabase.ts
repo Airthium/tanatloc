@@ -1,4 +1,4 @@
-import { Pool } from 'pg'
+import { Pool, PoolClient } from 'pg'
 import format from 'pg-format'
 
 import {
@@ -24,7 +24,7 @@ export const createDatabase = async (): Promise<void> => {
   console.info(' == Create dB == ')
   try {
     let pool: Pool
-    let client: Pool
+    let client: PoolClient
 
     // Pool
     pool = new Pool({

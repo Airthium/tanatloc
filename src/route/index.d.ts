@@ -8,7 +8,9 @@ export interface IRequest<Tbody = {}> {
   params?: {
     id?: string
   }
-  cookies?: string
+  cookies?: {
+    [key: string]: string
+  }
   headers?: {
     cookie: string
   }

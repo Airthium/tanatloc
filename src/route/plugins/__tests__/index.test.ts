@@ -1,4 +1,6 @@
-import { IRequest, IResponse, IRouteError } from '@/route'
+import { Request, Response } from 'express'
+
+import { IRouteError } from '@/route'
 import plugins from '../'
 
 const mockSession = jest.fn()
@@ -22,23 +24,21 @@ jest.mock('@/lib/plugins', () => ({
 }))
 
 describe('route/plugins', () => {
-  const req: IRequest = {}
+  const req = {} as Request
   let resStatus: number
-  let resJson: any
-  const res: IResponse = {
-    setHeader: jest.fn,
-    status: (status: number) => {
-      resStatus = status
-      return res
-    },
-    end: () => {
-      resJson = 'end'
-      return res
-    },
-    json: (value: object) => {
-      resJson = value
-      return res
-    }
+  let resJson: string | object
+  const res = {} as Response
+  res.status = (status: number) => {
+    resStatus = status
+    return res
+  }
+  res.end = () => {
+    resJson = 'end'
+    return res
+  }
+  res.json = (value: object) => {
+    resJson = value
+    return res
   }
 
   beforeEach(() => {
@@ -77,10 +77,8 @@ describe('route/plugins', () => {
   })
 
   test('GET', async () => {
-    req.method = 'GET'
-
     // Normal
-    await plugins(req, res)
+    await plugins({ ...req, method: 'GET' } as Request, res)
     expect(mockSession).toHaveBeenCalledTimes(1)
     expect(mockUserGet).toHaveBeenCalledTimes(1)
     expect(mockClientList).toHaveBeenCalledTimes(1)
@@ -92,7 +90,7 @@ describe('route/plugins', () => {
     mockClientList.mockImplementation(() => {
       throw new Error('clientList error')
     })
-    await plugins(req, res)
+    await plugins({ ...req, method: 'GET' } as Request, res)
     expect(mockSession).toHaveBeenCalledTimes(2)
     expect(mockUserGet).toHaveBeenCalledTimes(2)
     expect(mockClientList).toHaveBeenCalledTimes(2)
@@ -105,10 +103,8 @@ describe('route/plugins', () => {
   })
 
   test('POST', async () => {
-    req.method = 'POST'
-
     // Normal
-    await plugins(req, res)
+    await plugins({ ...req, method: 'POST' } as Request, res)
     expect(mockSession).toHaveBeenCalledTimes(1)
     expect(mockUserGet).toHaveBeenCalledTimes(0)
     expect(mockClientList).toHaveBeenCalledTimes(1)
@@ -120,7 +116,7 @@ describe('route/plugins', () => {
     mockClientList.mockImplementation(() => {
       throw new Error('clientList error')
     })
-    await plugins(req, res)
+    await plugins({ ...req, method: 'POST' } as Request, res)
     expect(mockSession).toHaveBeenCalledTimes(2)
     expect(mockUserGet).toHaveBeenCalledTimes(0)
     expect(mockClientList).toHaveBeenCalledTimes(2)
@@ -133,9 +129,7 @@ describe('route/plugins', () => {
   })
 
   test('wrong method', async () => {
-    req.method = 'method'
-
-    await plugins(req, res)
+    await plugins({ ...req, method: 'method' } as Request, res)
     expect(mockSession).toHaveBeenCalledTimes(1)
     expect(mockUserGet).toHaveBeenCalledTimes(0)
     expect(mockClientList).toHaveBeenCalledTimes(0)

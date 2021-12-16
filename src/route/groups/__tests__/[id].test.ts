@@ -1,4 +1,6 @@
-import { IRequest, IResponse, IRouteError } from '@/route'
+import { Request, Response } from 'express'
+
+import { IRouteError } from '@/route'
 import groups from '../[id]'
 
 const mockSession = jest.fn()
@@ -22,23 +24,21 @@ jest.mock('@/lib/group', () => ({
 }))
 
 describe('route/groups/[id]', () => {
-  const req: IRequest = {}
+  const req = {} as Request
   let resStatus: number
-  let resJson: any
-  const res: IResponse = {
-    setHeader: jest.fn,
-    status: (status: number) => {
-      resStatus = status
-      return res
-    },
-    end: () => {
-      resJson = 'end'
-      return res
-    },
-    json: (value: object) => {
-      resJson = value
-      return res
-    }
+  let resJson: string | object
+  const res = {} as Response
+  res.status = (status: number) => {
+    resStatus = status
+    return res
+  }
+  res.end = () => {
+    resJson = 'end'
+    return res
+  }
+  res.json = (value: object) => {
+    resJson = value
+    return res
   }
 
   beforeEach(() => {
@@ -74,11 +74,15 @@ describe('route/groups/[id]', () => {
   })
 
   test('no id', async () => {
-    req.method = 'GET'
-    req.query = {}
-    req.params = {}
-
-    await groups(req, res)
+    await groups(
+      {
+        ...req,
+        method: 'GET',
+        query: {},
+        params: {}
+      } as Request,
+      res
+    )
     expect(mockSession).toHaveBeenCalledTimes(1)
     expect(mockCheckOrganizationAuth).toHaveBeenCalledTimes(0)
     expect(mockGetByOrganization).toHaveBeenCalledTimes(0)
@@ -91,17 +95,21 @@ describe('route/groups/[id]', () => {
   })
 
   test('GET', async () => {
-    req.method = 'GET'
-    req.query = {}
-    req.params = { id: 'id' }
-
     // Access denied
     mockCheckOrganizationAuth.mockImplementation(() => {
       const error: IRouteError = new Error('Access denied')
       error.status = 403
       throw error
     })
-    await groups(req, res)
+    await groups(
+      {
+        ...req,
+        method: 'GET',
+        query: {},
+        params: { id: 'id' } as Request['params']
+      } as Request,
+      res
+    )
     expect(mockSession).toHaveBeenCalledTimes(1)
     expect(mockCheckOrganizationAuth).toHaveBeenCalledTimes(1)
     expect(mockGetByOrganization).toHaveBeenCalledTimes(0)
@@ -117,7 +125,15 @@ describe('route/groups/[id]', () => {
       // Empty
     })
     mockGetByOrganization.mockImplementation(() => [])
-    await groups(req, res)
+    await groups(
+      {
+        ...req,
+        method: 'GET',
+        query: {},
+        params: { id: 'id' } as Request['params']
+      } as Request,
+      res
+    )
     expect(mockSession).toHaveBeenCalledTimes(2)
     expect(mockCheckOrganizationAuth).toHaveBeenCalledTimes(2)
     expect(mockGetByOrganization).toHaveBeenCalledTimes(1)
@@ -131,7 +147,15 @@ describe('route/groups/[id]', () => {
     mockGetByOrganization.mockImplementation(() => {
       throw new Error('Get error')
     })
-    await groups(req, res)
+    await groups(
+      {
+        ...req,
+        method: 'GET',
+        query: {},
+        params: { id: 'id' } as Request['params']
+      } as Request,
+      res
+    )
     expect(mockSession).toHaveBeenCalledTimes(3)
     expect(mockCheckOrganizationAuth).toHaveBeenCalledTimes(3)
     expect(mockGetByOrganization).toHaveBeenCalledTimes(2)
@@ -144,11 +168,14 @@ describe('route/groups/[id]', () => {
   })
 
   test('wrong method', async () => {
-    req.method = 'method'
-    req.query = { id: 'id' }
-    req.params = {}
-
-    await groups(req, res)
+    await groups(
+      {
+        ...req,
+        method: 'method',
+        query: { id: 'id' } as Request['query']
+      } as Request,
+      res
+    )
     expect(mockSession).toHaveBeenCalledTimes(1)
     expect(mockCheckOrganizationAuth).toHaveBeenCalledTimes(0)
     expect(mockGetByOrganization).toHaveBeenCalledTimes(0)

@@ -1,4 +1,4 @@
-import { IRequest, IResponse } from '@/route'
+import { Request, Response } from 'express'
 import email from '..'
 import { PASSWORD_RECOVERY } from '@/config/email'
 
@@ -18,23 +18,21 @@ jest.mock('@/lib/user', () => ({
 }))
 
 describe('route/email', () => {
-  const req: IRequest = {}
+  const req = {} as Request
   let resStatus: number
-  let resJson: any
-  const res: IResponse = {
-    setHeader: jest.fn,
-    status: (status: number) => {
-      resStatus = status
-      return res
-    },
-    end: () => {
-      resJson = 'end'
-      return res
-    },
-    json: (value: object) => {
-      resJson = value
-      return res
-    }
+  let resJson: string | object
+  const res = {} as Response
+  res.status = (status: number) => {
+    resStatus = status
+    return res
+  }
+  res.end = () => {
+    resJson = 'end'
+    return res
+  }
+  res.json = (value: object) => {
+    resJson = value
+    return res
   }
 
   beforeEach(() => {
@@ -50,15 +48,13 @@ describe('route/email', () => {
   })
 
   test('PUT', async () => {
-    req.method = 'PUT'
-
     // Wrong body
     await email(
       {
         ...req,
-        //@ts-ignore
+        method: 'PUT',
         body: {}
-      },
+      } as Request,
       res
     )
     expect(mockUserGetBy).toHaveBeenCalledTimes(0)
@@ -72,7 +68,14 @@ describe('route/email', () => {
     })
 
     // Wrong type
-    await email({ ...req, body: { type: 'wrong type', email: 'email' } }, res)
+    await email(
+      {
+        ...req,
+        method: 'PUT',
+        body: { type: 'wrong type', email: 'email' }
+      } as Request,
+      res
+    )
     expect(mockUserGetBy).toHaveBeenCalledTimes(0)
     expect(mockEmailRecover).toHaveBeenCalledTimes(0)
     expect(mockError).toHaveBeenCalledTimes(2)
@@ -84,7 +87,11 @@ describe('route/email', () => {
 
     // Good type, no user
     await email(
-      { ...req, body: { type: PASSWORD_RECOVERY, email: 'email' } },
+      {
+        ...req,
+        method: 'PUT',
+        body: { type: PASSWORD_RECOVERY, email: 'email' }
+      } as Request,
       res
     )
     expect(mockUserGetBy).toHaveBeenCalledTimes(1)
@@ -96,7 +103,11 @@ describe('route/email', () => {
     // Good type, user
     mockUserGetBy.mockImplementation(() => ({}))
     await email(
-      { ...req, body: { type: PASSWORD_RECOVERY, email: 'email' } },
+      {
+        ...req,
+        method: 'PUT',
+        body: { type: PASSWORD_RECOVERY, email: 'email' }
+      } as Request,
       res
     )
     expect(mockUserGetBy).toHaveBeenCalledTimes(2)
@@ -110,7 +121,11 @@ describe('route/email', () => {
       throw new Error('User error')
     })
     await email(
-      { ...req, body: { type: PASSWORD_RECOVERY, email: 'email' } },
+      {
+        ...req,
+        method: 'PUT',
+        body: { type: PASSWORD_RECOVERY, email: 'email' }
+      } as Request,
       res
     )
     expect(mockUserGetBy).toHaveBeenCalledTimes(3)
@@ -121,10 +136,12 @@ describe('route/email', () => {
   })
 
   test('wrong method', async () => {
-    req.method = 'method'
-
     await email(
-      { ...req, body: { type: PASSWORD_RECOVERY, email: 'email' } },
+      {
+        ...req,
+        method: 'method',
+        body: { type: PASSWORD_RECOVERY, email: 'email' }
+      } as Request,
       res
     )
     expect(mockUserGetBy).toHaveBeenCalledTimes(0)

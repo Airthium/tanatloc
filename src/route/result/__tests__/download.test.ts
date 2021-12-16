@@ -1,5 +1,6 @@
-import { IRequest, IResponse, IRouteError } from '@/route'
-import { WriteStream } from 'fs'
+import { Request, Response } from 'express'
+
+import { IRouteError } from '@/route'
 import download from '../download'
 
 const mockSession = jest.fn()
@@ -23,24 +24,21 @@ jest.mock('@/lib/result', () => ({
 }))
 
 describe('route/result/download', () => {
-  const req: IRequest = {}
+  const req = {} as Request
   let resStatus: number
-  let resJson: any
-  const res: IResponse & WriteStream = {
-    ...WriteStream.constructor(),
-    setHeader: jest.fn,
-    status: (status: number) => {
-      resStatus = status
-      return res
-    },
-    end: () => {
-      resJson = 'end'
-      return res
-    },
-    json: (value: object) => {
-      resJson = value
-      return res
-    }
+  let resJson: string | object
+  const res = {} as Response
+  res.status = (status: number) => {
+    resStatus = status
+    return res
+  }
+  res.end = () => {
+    resJson = 'end'
+    return res
+  }
+  res.json = (value: object) => {
+    resJson = value
+    return res
   }
 
   beforeEach(() => {
@@ -79,7 +77,7 @@ describe('route/result/download', () => {
             fileName: 'fileName'
           }
         }
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(1)
@@ -94,15 +92,13 @@ describe('route/result/download', () => {
   })
 
   test('POST', async () => {
-    req.method = 'POST'
-
     // Wrong body
     await download(
       {
         ...req,
-        //@ts-ignore
+        method: 'POST',
         body: {}
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(1)
@@ -125,6 +121,7 @@ describe('route/result/download', () => {
     await download(
       {
         ...req,
+        method: 'POST',
         body: {
           simulation: { id: 'id' },
           result: {
@@ -132,7 +129,7 @@ describe('route/result/download', () => {
             fileName: 'fileName'
           }
         }
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(2)
@@ -152,6 +149,7 @@ describe('route/result/download', () => {
     await download(
       {
         ...req,
+        method: 'POST',
         body: {
           simulation: { id: 'id' },
           result: {
@@ -159,7 +157,7 @@ describe('route/result/download', () => {
             fileName: 'fileName'
           }
         }
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(3)
@@ -176,6 +174,7 @@ describe('route/result/download', () => {
     await download(
       {
         ...req,
+        method: 'POST',
         body: {
           simulation: { id: 'id' },
           result: {
@@ -183,7 +182,7 @@ describe('route/result/download', () => {
             fileName: 'fileName'
           }
         }
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(4)
@@ -198,11 +197,10 @@ describe('route/result/download', () => {
   })
 
   test('wrong method', async () => {
-    req.method = 'method'
-
     await download(
       {
         ...req,
+        method: 'method',
         body: {
           simulation: { id: 'id' },
           result: {
@@ -210,7 +208,7 @@ describe('route/result/download', () => {
             fileName: 'fileName'
           }
         }
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(1)

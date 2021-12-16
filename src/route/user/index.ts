@@ -1,6 +1,7 @@
 /** @module Route.User */
 
-import { IRequest, IResponse } from '..'
+import { Request, Response } from 'express'
+
 import { session } from '../session'
 import { error } from '../error'
 
@@ -50,10 +51,7 @@ const checkUpdateBody = (body: IUpdateBody): void => {
  * @param req Request
  * @param res Response
  */
-export default async (
-  req: IRequest<IAddBody & IUpdateBody>,
-  res: IResponse
-): Promise<void> => {
+export default async (req: Request, res: Response): Promise<void> => {
   let sessionId
 
   try {

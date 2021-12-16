@@ -1,4 +1,6 @@
-import { IRequest, IResponse, IRouteError } from '@/route'
+import { Request, Response } from 'express'
+
+import { IRouteError } from '@/route'
 import ids from '..'
 
 const mockSession = jest.fn()
@@ -22,23 +24,21 @@ jest.mock('@/lib/simulation', () => ({
 }))
 
 describe('route/simulations/ids', () => {
-  const req: IRequest = {}
+  const req = {} as Request
   let resStatus: number
-  let resJson: any
-  const res: IResponse = {
-    setHeader: jest.fn,
-    status: (status: number) => {
-      resStatus = status
-      return res
-    },
-    end: () => {
-      resJson = 'end'
-      return res
-    },
-    json: (value: object) => {
-      resJson = value
-      return res
-    }
+  let resJson: string | object
+  const res = {} as Response
+  res.status = (status: number) => {
+    resStatus = status
+    return res
+  }
+  res.end = () => {
+    resJson = 'end'
+    return res
+  }
+  res.json = (value: object) => {
+    resJson = value
+    return res
   }
 
   beforeEach(() => {
@@ -71,7 +71,7 @@ describe('route/simulations/ids', () => {
         body: {
           ids: ['id1']
         }
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(1)
@@ -86,15 +86,13 @@ describe('route/simulations/ids', () => {
   })
 
   test('POST', async () => {
-    req.method = 'POST'
-
     // Wrong body
     await ids(
       {
         ...req,
-        //@ts-ignore
+        method: 'POST',
         body: undefined
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(1)
@@ -111,9 +109,9 @@ describe('route/simulations/ids', () => {
     await ids(
       {
         ...req,
-        //@ts-ignore
+        method: 'POST',
         body: {}
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(2)
@@ -124,7 +122,6 @@ describe('route/simulations/ids', () => {
     expect(resJson).toEqual({ simulations: [] })
 
     // Normal
-
     mockGet.mockImplementationOnce(() => {
       // Empty mock
     })
@@ -136,10 +133,11 @@ describe('route/simulations/ids', () => {
     await ids(
       {
         ...req,
+        method: 'POST',
         body: {
           ids: ['id1', 'id2', 'id3']
         }
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(3)
@@ -153,15 +151,14 @@ describe('route/simulations/ids', () => {
   })
 
   test('wrong method', async () => {
-    req.method = 'method'
-
     await ids(
       {
         ...req,
+        method: 'method',
         body: {
           ids: ['id1']
         }
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(1)

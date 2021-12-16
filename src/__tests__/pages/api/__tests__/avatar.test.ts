@@ -1,16 +1,12 @@
-import { IRequest, IResponse } from '@/route'
+import { Request, Response } from 'express'
+
 import avatar from '@/pages/api/avatar'
 
 jest.mock('@/route/avatar', () => jest.fn())
 
 describe('pages/api/avatar', () => {
-  const req: IRequest = {}
-  const res: IResponse = {
-    setHeader: jest.fn,
-    status: () => res,
-    end: () => res,
-    json: () => res
-  }
+  const req = {} as Request
+  const res = {} as Response
 
   test('call', async () => {
     await avatar(

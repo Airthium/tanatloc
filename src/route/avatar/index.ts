@@ -1,6 +1,7 @@
 /** @module Route.Avatar */
 
-import { IRequest, IResponse } from '..'
+import { Request, Response } from 'express'
+
 import { session } from '../session'
 import { checkProjectAuth } from '../auth'
 import { error } from '../error'
@@ -47,10 +48,7 @@ const checkAddBody = (body: IAddBody): void => {
  * @param req Request
  * @param res Result
  */
-export default async (
-  req: IRequest<IAddBody>,
-  res: IResponse
-): Promise<void> => {
+export default async (req: Request, res: Response): Promise<void> => {
   try {
     // Check session
     const sessionId = await session(req)

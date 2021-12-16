@@ -1,16 +1,12 @@
-import { IRequest, IResponse } from '@/route'
+import { Request, Response } from 'express'
+
 import id from '@/pages/api/groups/[id]'
 
 jest.mock('@/route/groups/[id]', () => jest.fn())
 
 describe('pages/api/groups/[id]', () => {
-  const req: IRequest = {}
-  const res: IResponse = {
-    setHeader: jest.fn,
-    status: () => res,
-    end: () => res,
-    json: () => res
-  }
+  const req = {} as Request
+  const res = {} as Response
 
   test('call', async () => {
     await id(req, res)

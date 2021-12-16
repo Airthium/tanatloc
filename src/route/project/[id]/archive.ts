@@ -1,6 +1,6 @@
 import { WriteStream } from 'fs'
+import { Request, Response } from 'express'
 
-import { IRequest, IResponse } from '@/route'
 import { session } from '@/route/session'
 import { checkProjectAuth } from '@/route/auth'
 import { error } from '@/route/error'
@@ -13,7 +13,7 @@ import ProjectLib from '@/lib/project'
  * @param req Request
  * @param res Response
  */
-export default async (req: IRequest, res: IResponse & WriteStream) => {
+export default async (req: Request, res: Response) => {
   try {
     // Check session
     const sessionId = await session(req)

@@ -1,5 +1,7 @@
 /** @module Route.System */
 
+import { Request, Response } from 'express'
+
 import { session } from '../session'
 import { error } from '../error'
 
@@ -7,7 +9,6 @@ import { IDataBaseEntry } from '@/database/index.d'
 
 import UserLib from '@/lib/user'
 import SystemLib from '@/lib/system'
-import { IRequest, IResponse } from '..'
 
 export type IUpdateBody = IDataBaseEntry[]
 
@@ -27,10 +28,7 @@ const checkUpdateBody = (body: IUpdateBody): void => {
  * @param req Request
  * @param res Response
  */
-export default async (
-  req: IRequest<IUpdateBody>,
-  res: IResponse
-): Promise<void> => {
+export default async (req: Request, res: Response): Promise<void> => {
   try {
     switch (req.method) {
       case 'GET':

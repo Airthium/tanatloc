@@ -1,4 +1,7 @@
-import { IRequest, IResponse, IRouteError } from '@/route'
+import { Request, Response } from 'express'
+
+import { IRouteError } from '@/route'
+
 import geometries from '..'
 
 const mockSession = jest.fn()
@@ -22,23 +25,21 @@ jest.mock('@/lib/geometry', () => ({
 }))
 
 describe('route/geometries/geometries', () => {
-  const req: IRequest = {}
+  const req = {} as Request
   let resStatus: number
-  let resJson: any
-  const res: IResponse = {
-    setHeader: jest.fn,
-    status: (status: number) => {
-      resStatus = status
-      return res
-    },
-    end: () => {
-      resJson = 'end'
-      return res
-    },
-    json: (value: object) => {
-      resJson = value
-      return res
-    }
+  let resJson: string | object
+  const res = {} as Response
+  res.status = (status: number) => {
+    resStatus = status
+    return res
+  }
+  res.end = () => {
+    resJson = 'end'
+    return res
+  }
+  res.json = (value: object) => {
+    resJson = value
+    return res
   }
 
   beforeEach(() => {
@@ -61,7 +62,7 @@ describe('route/geometries/geometries', () => {
       error.status = 401
       throw error
     })
-    await geometries({ ...req, body: { ids: ['id'] } }, res)
+    await geometries({ ...req, body: { ids: ['id'] } } as Request, res)
     expect(mockSession).toHaveBeenCalledTimes(1)
     expect(mockCheckProjectAuth).toHaveBeenCalledTimes(0)
     expect(mockGet).toHaveBeenCalledTimes(0)
@@ -71,12 +72,12 @@ describe('route/geometries/geometries', () => {
   })
 
   test('POST', async () => {
-    req.method = 'POST'
-
     // Wrong body
     await geometries(
-      //@ts-ignore
-      req,
+      {
+        ...req,
+        method: 'POST'
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(1)
@@ -93,9 +94,9 @@ describe('route/geometries/geometries', () => {
     await geometries(
       {
         ...req,
-        //@ts-ignore
+        method: 'POST',
         body: {}
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(2)
@@ -121,10 +122,11 @@ describe('route/geometries/geometries', () => {
     await geometries(
       {
         ...req,
+        method: 'POST',
         body: {
           ids: ['id1', 'id2', 'id3']
         }
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(3)
@@ -138,9 +140,10 @@ describe('route/geometries/geometries', () => {
   })
 
   test('wrong method', async () => {
-    req.method = 'method'
-
-    await geometries({ ...req, body: { ids: ['id1'] } }, res)
+    await geometries(
+      { ...req, method: 'method', body: { ids: ['id1'] } } as Request,
+      res
+    )
     expect(mockSession).toHaveBeenCalledTimes(1)
     expect(mockCheckProjectAuth).toHaveBeenCalledTimes(0)
     expect(mockGet).toHaveBeenCalledTimes(0)

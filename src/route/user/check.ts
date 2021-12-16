@@ -1,4 +1,5 @@
-import { IRequest, IResponse } from '..'
+import { Request, Response } from 'express'
+
 import { session } from '../session'
 import { error } from '../error'
 
@@ -34,10 +35,7 @@ const checkLoginBody = (body: ILoginBody): void => {
  * @param req Request
  * @param res Response
  */
-export default async (
-  req: IRequest<ILoginBody>,
-  res: IResponse
-): Promise<void> => {
+export default async (req: Request, res: Response): Promise<void> => {
   try {
     // Check session
     await session(req)

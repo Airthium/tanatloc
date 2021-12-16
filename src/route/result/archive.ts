@@ -1,6 +1,6 @@
 import { WriteStream } from 'fs'
+import { Request, Response } from 'express'
 
-import { IRequest, IResponse } from '..'
 import { session } from '../session'
 import { checkSimulationAuth } from '../auth'
 import { error } from '../error'
@@ -37,10 +37,7 @@ const checkArchiveBody = (body: IArchiveBody): void => {
  * @param req Request
  * @param res Response
  */
-export default async (
-  req: IRequest<IArchiveBody>,
-  res: IResponse & WriteStream
-): Promise<void> => {
+export default async (req: Request, res: Response): Promise<void> => {
   try {
     // Check session
     const sessionId = await session(req)

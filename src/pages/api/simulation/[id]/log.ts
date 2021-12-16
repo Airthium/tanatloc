@@ -1,6 +1,6 @@
-import { IRequest, IResponse } from '@/route/index.d'
+import { Request, Response } from 'express'
 
-import route, { ILogBody } from '@/route/simulation/[id]/log'
+import route from '@/route/simulation/[id]/log'
 
 /**
  * Simulation API from [id]/log
@@ -8,7 +8,7 @@ import route, { ILogBody } from '@/route/simulation/[id]/log'
  * @param req Request
  * @param res Response
  */
-const log = async (req: IRequest<ILogBody>, res: IResponse): Promise<void> => {
+const log = async (req: Request, res: Response): Promise<void> => {
   await route(req, res)
 }
 

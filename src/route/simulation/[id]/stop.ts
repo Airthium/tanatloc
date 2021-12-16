@@ -1,4 +1,5 @@
-import { IRequest, IResponse } from '@/route'
+import { Request, Response } from 'express'
+
 import { session } from '@/route/session'
 import { checkSimulationAuth } from '@/route/auth'
 import { error } from '@/route/error'
@@ -11,7 +12,7 @@ import SimulationLib from '@/lib/simulation'
  * @param req Request
  * @param res Response
  */
-export default async (req: IRequest, res: IResponse): Promise<void> => {
+export default async (req: Request, res: Response): Promise<void> => {
   try {
     // Check session
     const sessionId = await session(req)

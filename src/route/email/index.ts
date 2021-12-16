@@ -1,6 +1,7 @@
 /** @module Route.Email */
 
-import { IRequest, IResponse } from '..'
+import { Request, Response } from 'express'
+
 import { error } from '../error'
 
 import { PASSWORD_RECOVERY } from '@/config/email'
@@ -38,10 +39,7 @@ const checkSendBody = (body: ICheckBody): void => {
  * @param req Request
  * @param res Result
  */
-export default async (
-  req: IRequest<ICheckBody>,
-  res: IResponse
-): Promise<void> => {
+export default async (req: Request, res: Response): Promise<void> => {
   try {
     if (req.method === 'PUT') {
       // Check

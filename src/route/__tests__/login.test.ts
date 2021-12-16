@@ -1,16 +1,17 @@
+import { Request, Response } from 'express'
+
 import login from '../login'
 
 jest.mock('express', () => () => ({
   disable: jest.fn,
   use: jest.fn,
-  post: (_, func) => {
-    const req = {}
-    const res = {
-      status: () => ({
-        send: jest.fn,
-        json: jest.fn
-      })
-    }
+  post: (_: any, func: Function) => {
+    const req = {} as Request
+    req.body = { email: 'email' }
+    const res = {} as Response
+    res.status = () => res
+    res.json = () => res
+
     func(req, res)
     func(req, res)
     func(req, res)

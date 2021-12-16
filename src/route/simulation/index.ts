@@ -1,5 +1,7 @@
 /** @namspace Route.Simulation */
 
+import { Request, Response } from 'express'
+
 import { session } from '../session'
 import { checkProjectAuth } from '../auth'
 import { error } from '../error'
@@ -7,7 +9,6 @@ import { error } from '../error'
 import { IModel } from '@/models/index.d'
 
 import SimulationLib from '@/lib/simulation'
-import { IRequest, IResponse } from '..'
 
 export interface IAddBody {
   project: {
@@ -48,10 +49,7 @@ const checkAddBody = (body: IAddBody): void => {
  * @param req Request
  * @param res Response
  */
-export default async (
-  req: IRequest<IAddBody>,
-  res: IResponse
-): Promise<void> => {
+export default async (req: Request, res: Response): Promise<void> => {
   try {
     // Check session
     const sessionId = await session(req)

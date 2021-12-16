@@ -1,7 +1,6 @@
-import { WriteStream } from 'fs'
-import { IRequest, IResponse } from '@/route/index.d'
+import { Request, Response } from 'express'
 
-import route, { IDownloadBody } from '@/route/result/download'
+import route from '@/route/result/download'
 
 /**
  * Result download API
@@ -9,10 +8,7 @@ import route, { IDownloadBody } from '@/route/result/download'
  * @param req Request
  * @param res Response
  */
-const download = async (
-  req: IRequest<IDownloadBody>,
-  res: IResponse & WriteStream
-): Promise<void> => {
+const download = async (req: Request, res: Response): Promise<void> => {
   await route(req, res)
 }
 

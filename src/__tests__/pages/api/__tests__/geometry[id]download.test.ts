@@ -1,16 +1,12 @@
-import { IRequest, IResponse } from '@/route'
+import { Request, Response } from 'express'
+
 import download from '@/pages/api/geometry/[id]/download'
 
 jest.mock('@/route/geometry/[id]/download', () => jest.fn())
 
 describe('pages/api/geometry/[id]/download', () => {
-  const req: IRequest = {}
-  const res: IResponse = {
-    setHeader: jest.fn,
-    status: () => res,
-    end: () => res,
-    json: () => res
-  }
+  const req = {} as Request
+  const res = {} as Response
 
   test('call', async () => {
     await download(req, res)

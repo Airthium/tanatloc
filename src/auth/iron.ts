@@ -1,12 +1,11 @@
 /** @module Auth.Iron */
 
 import Iron from '@hapi/iron'
+import { Request } from 'express'
 
 import { getTokenCookie } from './auth-cookies'
 
 import { SECRET } from '@/config/auth'
-
-import { IRequest } from '@/route/index.d'
 
 /**
  * Token secret
@@ -34,7 +33,7 @@ const encryptSession = (session: Token): Promise<string> => {
  * @param req Request
  * @returns Token
  */
-const getSession = async (req: IRequest): Promise<Token> => {
+const getSession = async (req: Request): Promise<Token> => {
   const token = getTokenCookie(req)
   return token && Iron.unseal(token, TOKEN_SECRET, Iron.defaults)
 }

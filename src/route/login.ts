@@ -1,12 +1,10 @@
-import express from 'express'
+import express, { Request, Response } from 'express'
 import passport from 'passport'
 import { localStrategy } from '@/auth/password-local'
 import { encryptSession } from '@/auth/iron'
 import { setTokenCookie } from '@/auth/auth-cookies'
 
 import Sentry from '@/lib/sentry'
-
-import { IRequest, IResponse } from '.'
 
 /**
  * Authenticate
@@ -17,8 +15,8 @@ import { IRequest, IResponse } from '.'
  */
 const authenticate = (
   method: string,
-  req: IRequest,
-  res: IResponse
+  req: Request,
+  res: Response
 ): Promise<{ id: string }> =>
   new Promise((resolve, reject) => {
     passport.authenticate(
@@ -42,7 +40,7 @@ passport.use(localStrategy)
  * @param req Request
  * @param res Response
  */
-export const loginRoute = async (req: IRequest, res: IResponse) => {
+export const loginRoute = async (req: Request, res: Response) => {
   try {
     const user = await authenticate('local', req, res)
     if (!user) {
@@ -59,7 +57,7 @@ export const loginRoute = async (req: IRequest, res: IResponse) => {
     res.status(401).json({ error: true, message: err.message })
     Sentry.configureScope((scope) => {
       scope.setUser({
-        email: req.email
+        email: req.body.email
       })
     })
     Sentry.captureException(err)

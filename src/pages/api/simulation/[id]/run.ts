@@ -1,4 +1,4 @@
-import { IRequest, IResponse } from '@/route/index.d'
+import { Request, Response } from 'express'
 
 import route from '@/route/simulation/[id]/run'
 
@@ -8,7 +8,7 @@ import route from '@/route/simulation/[id]/run'
  * @param req Request
  * @param res Response
  */
-const run = async (req: IRequest, res: IResponse): Promise<void> => {
+const run = async (req: Request, res: Response): Promise<void> => {
   await route(req, res)
 }
 

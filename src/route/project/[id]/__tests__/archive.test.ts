@@ -1,4 +1,6 @@
-import { IRequest, IResponse, IRouteError } from '@/route'
+import { Request, Response } from 'express'
+
+import { IRouteError } from '@/route'
 import { WriteStream } from 'fs'
 import archive from '../archive'
 
@@ -23,24 +25,22 @@ jest.mock('@/lib/project', () => ({
 }))
 
 describe('route/project/[id]', () => {
-  const req: IRequest = {}
+  const req = {} as Request
   let resStatus: number
-  let resJson: any
-  const res: IResponse & WriteStream = {
-    ...WriteStream.constructor(),
-    setHeader: jest.fn,
-    status: (status: number) => {
-      resStatus = status
-      return res
-    },
-    end: () => {
-      resJson = 'end'
-      return res
-    },
-    json: (value: object) => {
-      resJson = value
-      return res
-    }
+  let resJson: string | object
+  const res = {} as Response
+  res.setHeader = jest.fn()
+  res.status = (status: number) => {
+    resStatus = status
+    return res
+  }
+  res.end = () => {
+    resJson = 'end'
+    return res
+  }
+  res.json = (value: object) => {
+    resJson = value
+    return res
   }
 
   beforeEach(() => {
@@ -79,10 +79,14 @@ describe('route/project/[id]', () => {
   })
 
   test('no id', async () => {
-    req.query = {}
-    req.params = {}
-
-    await archive(req, res)
+    await archive(
+      {
+        ...req,
+        query: {},
+        params: {}
+      } as Request,
+      res
+    )
     expect(mockSession).toHaveBeenCalledTimes(1)
     expect(mockCheckProjectAuth).toHaveBeenCalledTimes(0)
     expect(mockArchive).toHaveBeenCalledTimes(0)
@@ -95,16 +99,20 @@ describe('route/project/[id]', () => {
   })
 
   test('Access denied', async () => {
-    req.query = {}
-    req.params = { id: 'id' }
-
     mockCheckProjectAuth.mockImplementation(() => {
       const error: IRouteError = new Error('Access denied')
       error.status = 403
       throw error
     })
 
-    await archive(req, res)
+    await archive(
+      {
+        ...req,
+        query: {},
+        params: { id: 'id' } as Request['params']
+      } as Request,
+      res
+    )
     expect(mockSession).toHaveBeenCalledTimes(1)
     expect(mockCheckProjectAuth).toHaveBeenCalledTimes(1)
     expect(mockArchive).toHaveBeenCalledTimes(0)
@@ -117,12 +125,16 @@ describe('route/project/[id]', () => {
   })
 
   test('GET', async () => {
-    req.method = 'GET'
-    req.query = { id: 'id' }
-    req.params = {}
-
     // Normal
-    await archive(req, res)
+    await archive(
+      {
+        ...req,
+        method: 'GET',
+        query: { id: 'id' } as Request['query'],
+        params: {}
+      } as Request,
+      res
+    )
     expect(mockSession).toHaveBeenCalledTimes(1)
     expect(mockCheckProjectAuth).toHaveBeenCalledTimes(1)
     expect(mockArchive).toHaveBeenCalledTimes(1)
@@ -132,7 +144,15 @@ describe('route/project/[id]', () => {
     mockArchive.mockImplementation(() => {
       throw new Error('Get error')
     })
-    await archive(req, res)
+    await archive(
+      {
+        ...req,
+        method: 'GET',
+        query: { id: 'id' } as Request['query'],
+        params: {}
+      } as Request,
+      res
+    )
     expect(mockSession).toHaveBeenCalledTimes(2)
     expect(mockCheckProjectAuth).toHaveBeenCalledTimes(2)
     expect(mockArchive).toHaveBeenCalledTimes(2)
@@ -145,10 +165,14 @@ describe('route/project/[id]', () => {
   })
 
   test('wrong method', async () => {
-    req.method = 'method'
-    req.query = { id: 'id' }
-
-    await archive(req, res)
+    await archive(
+      {
+        ...req,
+        method: 'method',
+        query: { id: 'id' } as Request['query']
+      } as Request,
+      res
+    )
     expect(mockSession).toHaveBeenCalledTimes(1)
     expect(mockCheckProjectAuth).toHaveBeenCalledTimes(1)
     expect(mockArchive).toHaveBeenCalledTimes(0)

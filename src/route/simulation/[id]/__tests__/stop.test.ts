@@ -1,4 +1,6 @@
-import { IRequest, IResponse, IRouteError } from '@/route'
+import { Request, Response } from 'express'
+
+import { IRouteError } from '@/route'
 import stop from '../stop'
 
 const mockSession = jest.fn()
@@ -22,23 +24,21 @@ jest.mock('@/lib/simulation', () => ({
 }))
 
 describe('route/simulation/[id]/stop', () => {
-  const req: IRequest = {}
+  const req = {} as Request
   let resStatus: number
-  let resJson: any
-  const res: IResponse = {
-    setHeader: jest.fn,
-    status: (status: number) => {
-      resStatus = status
-      return res
-    },
-    end: () => {
-      resJson = 'end'
-      return res
-    },
-    json: (value: object) => {
-      resJson = value
-      return res
-    }
+  let resJson: string | object
+  const res = {} as Response
+  res.status = (status: number) => {
+    resStatus = status
+    return res
+  }
+  res.end = () => {
+    resJson = 'end'
+    return res
+  }
+  res.json = (value: object) => {
+    resJson = value
+    return res
   }
 
   beforeEach(() => {
@@ -74,10 +74,14 @@ describe('route/simulation/[id]/stop', () => {
   })
 
   test('no id', async () => {
-    req.query = {}
-    req.params = {}
-
-    await stop(req, res)
+    await stop(
+      {
+        ...req,
+        query: {},
+        params: {}
+      } as Request,
+      res
+    )
     expect(mockSession).toHaveBeenCalledTimes(1)
     expect(mockCheckSimulationAuth).toHaveBeenCalledTimes(0)
     expect(mockStop).toHaveBeenCalledTimes(0)
@@ -90,16 +94,20 @@ describe('route/simulation/[id]/stop', () => {
   })
 
   test('Access denied', async () => {
-    req.query = { id: 'id' }
-    req.params = {}
-
     mockCheckSimulationAuth.mockImplementation(() => {
       const error: IRouteError = new Error('Access denied')
       error.status = 403
       throw error
     })
 
-    await stop(req, res)
+    await stop(
+      {
+        ...req,
+        query: { id: 'id' } as Request['query'],
+        params: {}
+      } as Request,
+      res
+    )
     expect(mockSession).toHaveBeenCalledTimes(1)
     expect(mockCheckSimulationAuth).toHaveBeenCalledTimes(1)
     expect(mockStop).toHaveBeenCalledTimes(0)
@@ -112,12 +120,16 @@ describe('route/simulation/[id]/stop', () => {
   })
 
   test('GET', async () => {
-    req.method = 'GET'
-    req.query = {}
-    req.params = { id: 'id' }
-
     // Normal
-    await stop(req, res)
+    await stop(
+      {
+        ...req,
+        method: 'GET',
+        query: {},
+        params: { id: 'id' } as Request['params']
+      } as Request,
+      res
+    )
     expect(mockSession).toHaveBeenCalledTimes(1)
     expect(mockCheckSimulationAuth).toHaveBeenCalledTimes(1)
     expect(mockStop).toHaveBeenCalledTimes(1)
@@ -129,7 +141,15 @@ describe('route/simulation/[id]/stop', () => {
     mockStop.mockImplementation(() => {
       throw new Error('Run error')
     })
-    await stop(req, res)
+    await stop(
+      {
+        ...req,
+        method: 'GET',
+        query: {},
+        params: { id: 'id' } as Request['params']
+      } as Request,
+      res
+    )
     expect(mockSession).toHaveBeenCalledTimes(2)
     expect(mockCheckSimulationAuth).toHaveBeenCalledTimes(2)
     expect(mockStop).toHaveBeenCalledTimes(2)
@@ -142,10 +162,14 @@ describe('route/simulation/[id]/stop', () => {
   })
 
   test('wrong method', async () => {
-    req.method = 'method'
-    req.query = { id: 'id' }
-
-    await stop(req, res)
+    await stop(
+      {
+        ...req,
+        method: 'method',
+        query: { id: 'id' } as Request['query']
+      } as Request,
+      res
+    )
     expect(mockSession).toHaveBeenCalledTimes(1)
     expect(mockCheckSimulationAuth).toHaveBeenCalledTimes(1)
     expect(mockStop).toHaveBeenCalledTimes(0)

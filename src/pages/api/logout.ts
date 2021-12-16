@@ -1,4 +1,5 @@
-import { IRequest, IResponse } from '@/route'
+import { Request, Response } from 'express'
+
 import { logout as route } from '@/route/logout'
 
 /**
@@ -7,7 +8,7 @@ import { logout as route } from '@/route/logout'
  * @param req Request
  * @param res Response
  */
-const logout = async (req: IRequest, res: IResponse): Promise<void> => {
+const logout = async (req: Request, res: Response): Promise<void> => {
   await route(req, res)
 }
 

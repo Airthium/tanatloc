@@ -1,4 +1,6 @@
-import { IRequest, IResponse, IRouteError } from '@/route'
+import { Request, Response } from 'express'
+
+import { IRouteError } from '@/route'
 import id from '../[id]'
 
 const mockSession = jest.fn()
@@ -22,23 +24,21 @@ jest.mock('@/lib/user', () => ({
 }))
 
 describe('route/user/[id]', () => {
-  const req: IRequest = {}
+  const req = {} as Request
   let resStatus: number
-  let resJson: any
-  const res: IResponse = {
-    setHeader: jest.fn,
-    status: (status: number) => {
-      resStatus = status
-      return res
-    },
-    end: () => {
-      resJson = 'end'
-      return res
-    },
-    json: (value: object) => {
-      resJson = value
-      return res
-    }
+  let resJson: string | object
+  const res = {} as Response
+  res.status = (status: number) => {
+    resStatus = status
+    return res
+  }
+  res.end = () => {
+    resJson = 'end'
+    return res
+  }
+  res.json = (value: object) => {
+    resJson = value
+    return res
   }
 
   beforeEach(() => {
@@ -69,7 +69,7 @@ describe('route/user/[id]', () => {
       {
         ...req,
         body: [{ key: 'key', value: 'value' }]
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(1)
@@ -89,7 +89,7 @@ describe('route/user/[id]', () => {
       {
         ...req,
         body: [{ key: 'key', value: 'value' }]
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(1)
@@ -105,16 +105,15 @@ describe('route/user/[id]', () => {
   })
 
   test('no id', async () => {
-    req.query = {}
-    req.params = {}
-
     mockGet.mockImplementation(() => ({ superuser: true }))
 
     await id(
       {
         ...req,
+        query: {},
+        params: {},
         body: [{ key: 'key', value: 'value' }]
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(1)
@@ -130,17 +129,16 @@ describe('route/user/[id]', () => {
   })
 
   test('GET', async () => {
-    req.method = 'GET'
-    req.query = {}
-    req.params = { id: 'id' }
-
     mockGet.mockImplementation(() => ({ superuser: true, id: 'id' }))
 
     await id(
       {
         ...req,
+        method: 'GET',
+        query: {},
+        params: { id: 'id' } as Request['params'],
         body: [{ key: 'key', value: 'value' }]
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(1)
@@ -164,8 +162,11 @@ describe('route/user/[id]', () => {
     await id(
       {
         ...req,
+        method: 'GET',
+        query: {},
+        params: { id: 'id' } as Request['params'],
         body: [{ key: 'key', value: 'value' }]
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(2)
@@ -178,17 +179,17 @@ describe('route/user/[id]', () => {
   })
 
   test('PUT', async () => {
-    req.method = 'PUT'
-
     mockGet.mockImplementation(() => ({ superuser: true }))
 
     // Wrong body
     await id(
       {
         ...req,
-        //@ts-ignore
+        method: 'PUT',
+        query: { id: 'id' } as Request['query'],
+        params: {},
         body: {}
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(1)
@@ -206,8 +207,11 @@ describe('route/user/[id]', () => {
     await id(
       {
         ...req,
+        method: 'PUT',
+        query: { id: 'id' } as Request['query'],
+        params: {},
         body: [{ key: 'key', value: 'value' }]
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(2)
@@ -225,8 +229,11 @@ describe('route/user/[id]', () => {
     await id(
       {
         ...req,
+        method: 'PUT',
+        query: { id: 'id' } as Request['query'],
+        params: {},
         body: [{ key: 'key', value: 'value' }]
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(3)
@@ -239,16 +246,16 @@ describe('route/user/[id]', () => {
   })
 
   test('DELETE', async () => {
-    req.method = 'DELETE'
-
     mockGet.mockImplementation(() => ({ superuser: true }))
 
     // Normal
     await id(
       {
         ...req,
+        method: 'DELETE',
+        query: { id: 'id' } as Request['query'],
         body: [{ key: 'key', value: 'value' }]
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(1)
@@ -266,8 +273,10 @@ describe('route/user/[id]', () => {
     await id(
       {
         ...req,
+        method: 'DELETE',
+        query: { id: 'id' } as Request['query'],
         body: [{ key: 'key', value: 'value' }]
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(2)
@@ -280,17 +289,16 @@ describe('route/user/[id]', () => {
   })
 
   test('wrong method', async () => {
-    req.method = 'method'
-    req.query = { id: 'id' }
-    req.params = {}
-
     mockGet.mockImplementation(() => ({ superuser: true }))
 
     await id(
       {
         ...req,
+        method: 'method',
+        query: { id: 'id' } as Request['query'],
+        params: {},
         body: [{ key: 'key', value: 'value' }]
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(1)

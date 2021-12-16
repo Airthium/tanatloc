@@ -1,6 +1,7 @@
 /** @module Route.Group */
 
-import { IRequest, IResponse } from '..'
+import { Request, Response } from 'express'
+
 import { session } from '../session'
 import { error } from '../error'
 
@@ -129,10 +130,7 @@ const checkGroupAuth = async (
  * @param req Request
  * @param res Result
  */
-export default async (
-  req: IRequest<IAddBody & IUpdateBody & IDeleteBody>,
-  res: IResponse
-) => {
+export default async (req: Request, res: Response) => {
   try {
     // Check session
     const sessionId = await session(req)

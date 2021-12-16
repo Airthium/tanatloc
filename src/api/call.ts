@@ -1,12 +1,13 @@
 /** @module API */
 
+import { Request, Response } from 'express'
 import isElectron from 'is-electron'
 
 import {
-  ICallError,
-  ICallHeaders,
+  IFetchResponse,
   ICallResponse,
-  IFetchResponse
+  ICallError,
+  ICallHeaders
 } from './index.d'
 
 const port: number = parseInt(process.env.PORT) || 3000

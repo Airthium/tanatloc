@@ -1,4 +1,6 @@
-import { IRequest, IResponse, IRouteError } from '@/route'
+import { Request, Response } from 'express'
+
+import { IRouteError } from '@/route'
 import simulation from '../'
 
 const mockSession = jest.fn()
@@ -22,23 +24,21 @@ jest.mock('@/lib/simulation', () => ({
 }))
 
 describe('route/simulation', () => {
-  const req: IRequest = {}
+  const req = {} as Request
   let resStatus: number
-  let resJson: any
-  const res: IResponse = {
-    setHeader: jest.fn,
-    status: (status: number) => {
-      resStatus = status
-      return res
-    },
-    end: () => {
-      resJson = 'end'
-      return res
-    },
-    json: (value: object) => {
-      resJson = value
-      return res
-    }
+  let resJson: string | object
+  const res = {} as Response
+  res.status = (status: number) => {
+    resStatus = status
+    return res
+  }
+  res.end = () => {
+    resJson = 'end'
+    return res
+  }
+  res.json = (value: object) => {
+    resJson = value
+    return res
   }
 
   beforeEach(() => {
@@ -83,7 +83,7 @@ describe('route/simulation', () => {
             }
           }
         }
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(1)
@@ -98,11 +98,10 @@ describe('route/simulation', () => {
   })
 
   test('GET', async () => {
-    req.method = 'GET'
-
     await simulation(
       {
         ...req,
+        method: 'GET',
         body: {
           project: { id: 'id' },
           simulation: {
@@ -118,7 +117,7 @@ describe('route/simulation', () => {
             }
           }
         }
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(1)
@@ -130,15 +129,13 @@ describe('route/simulation', () => {
   })
 
   test('POST', async () => {
-    req.method = 'POST'
-
     // Wrong body
     await simulation(
       {
         ...req,
-        //@ts-ignore
+        method: 'POST',
         body: {}
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(1)
@@ -161,6 +158,7 @@ describe('route/simulation', () => {
     await simulation(
       {
         ...req,
+        method: 'POST',
         body: {
           project: { id: 'id' },
           simulation: {
@@ -176,7 +174,7 @@ describe('route/simulation', () => {
             }
           }
         }
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(2)
@@ -196,6 +194,7 @@ describe('route/simulation', () => {
     await simulation(
       {
         ...req,
+        method: 'POST',
         body: {
           project: { id: 'id' },
           simulation: {
@@ -211,7 +210,7 @@ describe('route/simulation', () => {
             }
           }
         }
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(3)
@@ -231,6 +230,7 @@ describe('route/simulation', () => {
     await simulation(
       {
         ...req,
+        method: 'POST',
         body: {
           project: { id: 'id' },
           simulation: {
@@ -246,7 +246,7 @@ describe('route/simulation', () => {
             }
           }
         }
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(4)
@@ -261,11 +261,10 @@ describe('route/simulation', () => {
   })
 
   test('wrong method', async () => {
-    req.method = 'method'
-
     await simulation(
       {
         ...req,
+        method: 'method',
         body: {
           project: { id: 'id' },
           simulation: {
@@ -281,7 +280,7 @@ describe('route/simulation', () => {
             }
           }
         }
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(1)

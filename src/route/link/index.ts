@@ -1,6 +1,7 @@
 /** @module Route.Link */
 
-import { IRequest, IResponse } from '..'
+import { Request, Response } from 'express'
+
 import { error } from '../error'
 
 import LinkLib from '@/lib/link'
@@ -56,10 +57,7 @@ const checkProcessBody = (body: IProcessBody): void => {
  * @param req Request
  * @param res Response
  */
-export default async (
-  req: IRequest<IGetBody & IProcessBody>,
-  res: IResponse
-): Promise<void> => {
+export default async (req: Request, res: Response): Promise<void> => {
   try {
     switch (req.method) {
       case 'POST':

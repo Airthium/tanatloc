@@ -1,4 +1,6 @@
-import { IRequest, IResponse, IRouteError } from '@/route'
+import { Request, Response } from 'express'
+
+import { IRouteError } from '@/route'
 import group from '..'
 
 const mockSession = jest.fn()
@@ -28,23 +30,21 @@ jest.mock('@/lib/group', () => ({
 }))
 
 describe('route/group', () => {
-  const req: IRequest = {}
+  const req = {} as Request
   let resStatus: number
-  let resJson: any
-  const res: IResponse = {
-    setHeader: jest.fn,
-    status: (status: number) => {
-      resStatus = status
-      return res
-    },
-    end: () => {
-      resJson = 'end'
-      return res
-    },
-    json: (value: object) => {
-      resJson = value
-      return res
-    }
+  let resJson: string | object
+  const res = {} as Response
+  res.status = (status: number) => {
+    resStatus = status
+    return res
+  }
+  res.end = () => {
+    resJson = 'end'
+    return res
+  }
+  res.json = (value: object) => {
+    resJson = value
+    return res
   }
 
   beforeEach(() => {
@@ -79,9 +79,8 @@ describe('route/group', () => {
     await group(
       {
         ...req,
-        //@ts-ignore
         body: {}
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(1)
@@ -96,15 +95,13 @@ describe('route/group', () => {
   })
 
   test('Add', async () => {
-    req.method = 'POST'
-
     // Wrong body
     await group(
       {
         ...req,
-        //@ts-ignore
+        method: 'POST',
         body: {}
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(1)
@@ -125,12 +122,12 @@ describe('route/group', () => {
     await group(
       {
         ...req,
+        method: 'POST',
         body: {
           organization: { id: 'id' },
-          //@ts-ignore
           group: { name: 'Test group', users: [] }
         }
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(2)
@@ -153,12 +150,12 @@ describe('route/group', () => {
     await group(
       {
         ...req,
+        method: 'POST',
         body: {
           organization: { id: 'id' },
-          //@ts-ignore
           group: { name: 'Test group', users: [] }
         }
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(3)
@@ -181,12 +178,12 @@ describe('route/group', () => {
     await group(
       {
         ...req,
+        method: 'POST',
         body: {
           organization: { id: 'id' },
-          //@ts-ignore
           group: { name: 'Test group', users: [] }
         }
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(4)
@@ -208,12 +205,12 @@ describe('route/group', () => {
     await group(
       {
         ...req,
+        method: 'POST',
         body: {
           organization: { id: 'id' },
-          //@ts-ignore
           group: { name: 'Test group', users: [] }
         }
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(5)
@@ -231,15 +228,13 @@ describe('route/group', () => {
   })
 
   test('Update', async () => {
-    req.method = 'PUT'
-
     // Wrong body
     await group(
       {
         ...req,
-        //@ts-ignore
+        method: 'PUT',
         body: {}
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(1)
@@ -263,12 +258,12 @@ describe('route/group', () => {
     await group(
       {
         ...req,
+        method: 'PUT',
         body: {
-          //@ts-ignore
           group: { id: 'id' },
           data: []
         }
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(2)
@@ -289,12 +284,12 @@ describe('route/group', () => {
     await group(
       {
         ...req,
+        method: 'PUT',
         body: {
-          //@ts-ignore
           group: { id: 'id' },
           data: []
         }
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(3)
@@ -315,12 +310,12 @@ describe('route/group', () => {
     await group(
       {
         ...req,
+        method: 'PUT',
         body: {
-          //@ts-ignore
           group: { id: 'id' },
           data: []
         }
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(4)
@@ -340,12 +335,12 @@ describe('route/group', () => {
     await group(
       {
         ...req,
+        method: 'PUT',
         body: {
-          //@ts-ignore
           group: { id: 'id' },
           data: []
         }
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(5)
@@ -363,14 +358,12 @@ describe('route/group', () => {
   })
 
   test('DELETE', async () => {
-    req.method = 'DELETE'
-
     // Wrong body
     await group(
-      //@ts-ignore
       {
-        ...req
-      },
+        ...req,
+        method: 'DELETE'
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(1)
@@ -391,9 +384,9 @@ describe('route/group', () => {
     await group(
       {
         ...req,
-        //@ts-ignore
+        method: 'DELETE',
         body: { id: 'id' }
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(2)
@@ -413,9 +406,9 @@ describe('route/group', () => {
     await group(
       {
         ...req,
-        //@ts-ignore
+        method: 'DELETE',
         body: { id: 'id' }
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(3)
@@ -430,14 +423,12 @@ describe('route/group', () => {
   })
 
   test('wrong method', async () => {
-    req.method = 'method'
-
     await group(
       {
         ...req,
-        //@ts-ignore
+        method: 'method',
         body: { id: 'id' }
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(1)

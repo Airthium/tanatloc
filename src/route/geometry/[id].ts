@@ -1,4 +1,5 @@
-import { IRequest, IResponse } from '..'
+import { Request, Response } from 'express'
+
 import { session } from '../session'
 import { checkGeometryAuth } from '../auth'
 import { error } from '../error'
@@ -25,10 +26,7 @@ const checkUpdateBody = (body: IUpdateBody): void => {
  * @param req Request
  * @param res Response
  */
-export default async (
-  req: IRequest<IUpdateBody>,
-  res: IResponse
-): Promise<void> => {
+export default async (req: Request, res: Response): Promise<void> => {
   try {
     // Check session
     const sessionId = await session(req)

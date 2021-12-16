@@ -1,16 +1,12 @@
-import { IRequest, IResponse } from '@/route'
+import { Request, Response } from 'express'
+
 import result from '@/pages/api/result/archive'
 
 jest.mock('@/route/result/archive', () => jest.fn())
 
 describe('pages/api/result/archive', () => {
-  const req: IRequest = {}
-  const res: IResponse = {
-    setHeader: jest.fn,
-    status: () => res,
-    end: () => res,
-    json: () => res
-  }
+  const req = {} as Request
+  const res = {} as Response
 
   test('call', async () => {
     await result(

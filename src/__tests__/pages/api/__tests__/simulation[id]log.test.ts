@@ -1,16 +1,12 @@
-import { IRequest, IResponse } from '@/route'
+import { Request, Response } from 'express'
+
 import log from '@/pages/api/simulation/[id]/log'
 
 jest.mock('@/route/simulation/[id]/log', () => () => {})
 
 describe('pages/api/simulation/[id]/log', () => {
-  const req: IRequest = {}
-  const res: IResponse = {
-    setHeader: jest.fn,
-    status: () => res,
-    end: () => res,
-    json: () => res
-  }
+  const req = {} as Request
+  const res = {} as Response
 
   test('call', async () => {
     await log(

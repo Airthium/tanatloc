@@ -1,6 +1,6 @@
-import { getSession } from '@/auth/iron'
+import { Request } from 'express'
 
-import { IRequest } from './index.d'
+import { getSession } from '@/auth/iron'
 
 import { error } from './error'
 
@@ -10,7 +10,7 @@ import { error } from './error'
  * @param req Request
  * @param res Response
  */
-export const session = async (req: IRequest): Promise<string> => {
+export const session = async (req: Request): Promise<string> => {
   try {
     const s = await getSession(req)
     if (!s || !s.id) {

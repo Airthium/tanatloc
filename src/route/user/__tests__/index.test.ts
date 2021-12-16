@@ -1,4 +1,6 @@
-import { IRequest, IResponse, IRouteError } from '@/route'
+import { Request, Response } from 'express'
+
+import { IRouteError } from '@/route'
 import user from '..'
 
 const mockSession = jest.fn()
@@ -23,23 +25,21 @@ jest.mock('@/lib/user', () => ({
 }))
 
 describe('route/user', () => {
-  const req: IRequest = {}
+  const req = {} as Request
   let resStatus: number
-  let resJson: any
-  const res: IResponse = {
-    setHeader: jest.fn,
-    status: (status: number) => {
-      resStatus = status
-      return res
-    },
-    end: () => {
-      resJson = 'end'
-      return res
-    },
-    json: (value: object) => {
-      resJson = value
-      return res
-    }
+  let resJson: string | object
+  const res = {} as Response
+  res.status = (status: number) => {
+    resStatus = status
+    return res
+  }
+  res.end = () => {
+    resJson = 'end'
+    return res
+  }
+  res.json = (value: object) => {
+    resJson = value
+    return res
   }
 
   beforeEach(() => {
@@ -64,8 +64,6 @@ describe('route/user', () => {
   })
 
   test('GET', async () => {
-    req.method = 'GET'
-
     // No session
     mockSession.mockImplementation(() => {
       const error: IRouteError = new Error('Unauthorized')
@@ -73,8 +71,10 @@ describe('route/user', () => {
       throw error
     })
     await user(
-      //@ts-ignore
-      req,
+      {
+        ...req,
+        method: 'GET'
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(1)
@@ -92,8 +92,10 @@ describe('route/user', () => {
     // Normal
     mockSession.mockReset()
     await user(
-      //@ts-ignore
-      req,
+      {
+        ...req,
+        method: 'GET'
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(1)
@@ -112,8 +114,10 @@ describe('route/user', () => {
       throw new Error('Get error')
     })
     await user(
-      //@ts-ignore
-      req,
+      {
+        ...req,
+        method: 'GET'
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(2)
@@ -130,15 +134,13 @@ describe('route/user', () => {
   })
 
   test('POST', async () => {
-    req.method = 'POST'
-
     // Wrong body
     await user(
       {
         ...req,
-        //@ts-ignore
+        method: 'POST',
         body: {}
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(0)
@@ -158,12 +160,12 @@ describe('route/user', () => {
     await user(
       {
         ...req,
-        //@ts-ignore
+        method: 'POST',
         body: {
           email: 'email',
           password: 'password'
         }
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(0)
@@ -184,12 +186,12 @@ describe('route/user', () => {
     await user(
       {
         ...req,
-        //@ts-ignore
+        method: 'POST',
         body: {
           email: 'email',
           password: 'password'
         }
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(0)
@@ -206,8 +208,6 @@ describe('route/user', () => {
   })
 
   test('PUT', async () => {
-    req.method = 'PUT'
-
     // No session
     mockSession.mockImplementation(() => {
       const error: IRouteError = new Error('Unauthorized')
@@ -217,9 +217,9 @@ describe('route/user', () => {
     await user(
       {
         ...req,
-        //@ts-ignore
+        method: 'PUT',
         body: [{ key: 'key', value: 'value' }]
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(1)
@@ -239,9 +239,9 @@ describe('route/user', () => {
     await user(
       {
         ...req,
-        //@ts-ignore
+        method: 'PUT',
         body: {}
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(1)
@@ -260,9 +260,9 @@ describe('route/user', () => {
     await user(
       {
         ...req,
-        //@ts-ignore
+        method: 'PUT',
         body: [{ key: 'key', value: 'value' }]
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(2)
@@ -281,9 +281,9 @@ describe('route/user', () => {
     await user(
       {
         ...req,
-        //@ts-ignore
+        method: 'PUT',
         body: [{ key: 'key', value: 'value' }]
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(3)
@@ -300,8 +300,6 @@ describe('route/user', () => {
   })
 
   test('DELETE', async () => {
-    req.method = 'DELETE'
-
     // No session
     mockSession.mockImplementation(() => {
       const error: IRouteError = new Error('Unauthorized')
@@ -309,8 +307,10 @@ describe('route/user', () => {
       throw error
     })
     await user(
-      //@ts-ignore
-      req,
+      {
+        ...req,
+        method: 'DELETE'
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(1)
@@ -328,8 +328,10 @@ describe('route/user', () => {
     // Normal
     mockSession.mockReset()
     await user(
-      //@ts-ignore
-      req,
+      {
+        ...req,
+        method: 'DELETE'
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(1)
@@ -346,8 +348,10 @@ describe('route/user', () => {
       throw new Error('Delete error')
     })
     await user(
-      //@ts-ignore
-      req,
+      {
+        ...req,
+        method: 'DELETE'
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(2)
@@ -364,11 +368,11 @@ describe('route/user', () => {
   })
 
   test('wrong method', async () => {
-    req.method = 'method'
-
     await user(
-      //@ts-ignore
-      req,
+      {
+        ...req,
+        method: 'method'
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(0)

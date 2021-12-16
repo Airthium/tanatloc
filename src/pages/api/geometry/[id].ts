@@ -1,6 +1,6 @@
-import { IRequest, IResponse } from '@/route/index.d'
+import { Request, Response } from 'express'
 
-import route, { IUpdateBody } from '@/route/geometry/[id]'
+import route from '@/route/geometry/[id]'
 
 /**
  * Geometry API from [id]
@@ -8,10 +8,7 @@ import route, { IUpdateBody } from '@/route/geometry/[id]'
  * @param req Request
  * @param res Response
  */
-const id = async (
-  req: IRequest<IUpdateBody>,
-  res: IResponse
-): Promise<void> => {
+const id = async (req: Request, res: Response): Promise<void> => {
   await route(req, res)
 }
 

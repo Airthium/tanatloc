@@ -1,3 +1,5 @@
+import { Request } from 'express'
+
 import { session } from '../session'
 
 const mockError = jest.fn()
@@ -11,7 +13,7 @@ jest.mock('@/auth/iron', () => ({
 }))
 
 describe('route/session', () => {
-  const req = {}
+  const req = {} as Request
 
   beforeEach(() => {
     mockSession.mockReset()

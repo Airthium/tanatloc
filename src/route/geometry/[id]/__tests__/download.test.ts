@@ -1,4 +1,6 @@
-import { IRequest, IResponse, IRouteError } from '@/route'
+import { Request, Response } from 'express'
+
+import { IRouteError } from '@/route'
 import download from '../download'
 
 const mockSession = jest.fn()
@@ -22,23 +24,21 @@ jest.mock('@/lib/geometry', () => ({
 }))
 
 describe('route/geometry/[id]/download', () => {
-  const req: IRequest = {}
+  const req = {} as Request
   let resStatus: number
-  let resJson: any
-  const res: IResponse = {
-    setHeader: jest.fn,
-    status: (status: number) => {
-      resStatus = status
-      return res
-    },
-    end: () => {
-      resJson = 'end'
-      return res
-    },
-    json: (value: object) => {
-      resJson = value
-      return res
-    }
+  let resJson: string | object
+  const res = {} as Response
+  res.status = (status: number) => {
+    resStatus = status
+    return res
+  }
+  res.end = () => {
+    resJson = 'end'
+    return res
+  }
+  res.json = (value: object) => {
+    resJson = value
+    return res
   }
 
   beforeEach(() => {
@@ -72,11 +72,15 @@ describe('route/geometry/[id]/download', () => {
   })
 
   test('no id', async () => {
-    req.method = 'GET'
-    req.query = {}
-    req.params = {}
-
-    await download(req, res)
+    await download(
+      {
+        ...req,
+        method: 'GET',
+        query: {},
+        params: {}
+      } as Request,
+      res
+    )
     expect(mockSession).toHaveBeenCalledTimes(1)
     expect(mockCheckGeometryAuth).toHaveBeenCalledTimes(0)
     expect(mockRead).toHaveBeenCalledTimes(0)
@@ -89,16 +93,20 @@ describe('route/geometry/[id]/download', () => {
   })
 
   test('access denied', async () => {
-    req.query = { id: 'id' }
-    req.params = {}
-
     mockCheckGeometryAuth.mockImplementation(() => {
       const error: IRouteError = new Error('Access denied')
       error.status = 403
       throw error
     })
 
-    await download(req, res)
+    await download(
+      {
+        ...req,
+        query: { id: 'id' } as Request['query'],
+        params: {}
+      } as Request,
+      res
+    )
     expect(mockSession).toHaveBeenCalledTimes(1)
     expect(mockCheckGeometryAuth).toHaveBeenCalledTimes(1)
     expect(mockRead).toHaveBeenCalledTimes(0)
@@ -111,12 +119,16 @@ describe('route/geometry/[id]/download', () => {
   })
 
   test('read', async () => {
-    req.method = 'GET'
-    req.query = {}
-    req.params = { id: 'id' }
-
     // Normal
-    await download(req, res)
+    await download(
+      {
+        ...req,
+        method: 'GET',
+        query: {},
+        params: { id: 'id' } as Request['params']
+      } as Request,
+      res
+    )
     expect(mockSession).toHaveBeenCalledTimes(1)
     expect(mockCheckGeometryAuth).toHaveBeenCalledTimes(1)
     expect(mockRead).toHaveBeenCalledTimes(1)
@@ -128,7 +140,15 @@ describe('route/geometry/[id]/download', () => {
     mockRead.mockImplementation(() => {
       throw new Error('Read error')
     })
-    await download(req, res)
+    await download(
+      {
+        ...req,
+        method: 'GET',
+        query: {},
+        params: { id: 'id' } as Request['params']
+      } as Request,
+      res
+    )
     expect(mockSession).toHaveBeenCalledTimes(2)
     expect(mockCheckGeometryAuth).toHaveBeenCalledTimes(2)
     expect(mockRead).toHaveBeenCalledTimes(2)
@@ -138,11 +158,15 @@ describe('route/geometry/[id]/download', () => {
   })
 
   test('wrong method', async () => {
-    req.method = 'method'
-    req.query = { id: 'id' }
-    req.params = {}
-
-    await download(req, res)
+    await download(
+      {
+        ...req,
+        method: 'method',
+        query: { id: 'id' } as Request['query'],
+        params: {}
+      } as Request,
+      res
+    )
     expect(mockSession).toHaveBeenCalledTimes(1)
     expect(mockCheckGeometryAuth).toHaveBeenCalledTimes(1)
     expect(mockRead).toHaveBeenCalledTimes(0)

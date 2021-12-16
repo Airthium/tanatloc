@@ -1,4 +1,6 @@
-import { IRequest, IResponse, IRouteError } from '@/route'
+import { Request, Response } from 'express'
+
+import { IRouteError } from '@/route'
 import system from '../'
 
 const mockSession = jest.fn()
@@ -24,23 +26,21 @@ jest.mock('@/lib/system', () => ({
 }))
 
 describe('route/system', () => {
-  const req: IRequest = {}
+  const req = {} as Request
   let resStatus: number
-  let resJson: any
-  const res: IResponse = {
-    setHeader: jest.fn,
-    status: (status: number) => {
-      resStatus = status
-      return res
-    },
-    end: () => {
-      resJson = 'end'
-      return res
-    },
-    json: (value: object) => {
-      resJson = value
-      return res
-    }
+  let resJson: string | object
+  const res = {} as Response
+  res.status = (status: number) => {
+    resStatus = status
+    return res
+  }
+  res.end = () => {
+    resJson = 'end'
+    return res
+  }
+  res.json = (value: object) => {
+    resJson = value
+    return res
   }
 
   beforeEach(() => {
@@ -60,15 +60,14 @@ describe('route/system', () => {
   })
 
   test('GET', async () => {
-    req.method = 'GET'
-
     // Normal
     mockGet.mockImplementation(() => ({ item: 'item' }))
     await system(
       {
         ...req,
+        method: 'GET',
         body: [{ key: 'key', value: 'value' }]
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(0)
@@ -86,8 +85,9 @@ describe('route/system', () => {
     await system(
       {
         ...req,
+        method: 'GET',
         body: [{ key: 'key', value: 'value' }]
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(0)
@@ -100,8 +100,6 @@ describe('route/system', () => {
   })
 
   test('PUT', async () => {
-    req.method = 'PUT'
-
     // No session
     mockSession.mockImplementation(() => {
       const error: IRouteError = new Error('Unauthorized')
@@ -111,8 +109,9 @@ describe('route/system', () => {
     await system(
       {
         ...req,
+        method: 'PUT',
         body: [{ key: 'key', value: 'value' }]
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(1)
@@ -129,8 +128,9 @@ describe('route/system', () => {
     await system(
       {
         ...req,
+        method: 'PUT',
         body: [{ key: 'key', value: 'value' }]
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(1)
@@ -146,9 +146,9 @@ describe('route/system', () => {
     await system(
       {
         ...req,
-        //@ts-ignore
+        method: 'PUT',
         body: {}
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(2)
@@ -166,8 +166,9 @@ describe('route/system', () => {
     await system(
       {
         ...req,
+        method: 'PUT',
         body: [{ key: 'key', value: 'value' }]
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(3)
@@ -185,8 +186,9 @@ describe('route/system', () => {
     await system(
       {
         ...req,
+        method: 'PUT',
         body: [{ key: 'key', value: 'value' }]
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(4)
@@ -199,13 +201,12 @@ describe('route/system', () => {
   })
 
   test('wrong method', async () => {
-    req.method = 'method'
-
     await system(
       {
         ...req,
+        method: 'method',
         body: [{ key: 'key', value: 'value' }]
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(0)

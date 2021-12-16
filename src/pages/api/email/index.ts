@@ -1,6 +1,6 @@
-import { IRequest, IResponse } from '@/route/index.d'
+import { Request, Response } from 'express'
 
-import route, { ICheckBody } from '@/route/email'
+import route from '@/route/email'
 
 /**
  * Email API
@@ -8,10 +8,7 @@ import route, { ICheckBody } from '@/route/email'
  * @param req Request
  * @param res Response
  */
-const api = async (
-  req: IRequest<ICheckBody>,
-  res: IResponse
-): Promise<void> => {
+const api = async (req: Request, res: Response): Promise<void> => {
   await route(req, res)
 }
 

@@ -1,6 +1,6 @@
-import { IRequest, IResponse } from '@/route/index.d'
+import { Request, Response } from 'express'
 
-import route, { IGetBody, IProcessBody } from '@/route/link'
+import route from '@/route/link'
 
 /**
  * Link API
@@ -8,10 +8,7 @@ import route, { IGetBody, IProcessBody } from '@/route/link'
  * @param req Request
  * @param res Response
  */
-const api = async (
-  req: IRequest<IGetBody & IProcessBody>,
-  res: IResponse
-): Promise<void> => {
+const api = async (req: Request, res: Response): Promise<void> => {
   await route(req, res)
 }
 

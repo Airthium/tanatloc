@@ -1,4 +1,6 @@
-import { IRequest, IResponse, IRouteError } from '@/route'
+import { Request, Response } from 'express'
+
+import { IRouteError } from '@/route'
 import organization from '..'
 
 const mockSession = jest.fn()
@@ -23,23 +25,21 @@ jest.mock('@/lib/organization', () => ({
 }))
 
 describe('route/organization', () => {
-  const req: IRequest = {}
+  const req = {} as Request
   let resStatus: number
-  let resJson: any
-  const res: IResponse = {
-    setHeader: jest.fn,
-    status: (status: number) => {
-      resStatus = status
-      return res
-    },
-    end: () => {
-      resJson = 'end'
-      return res
-    },
-    json: (value: object) => {
-      resJson = value
-      return res
-    }
+  let resJson: string | object
+  const res = {} as Response
+  res.status = (status: number) => {
+    resStatus = status
+    return res
+  }
+  res.end = () => {
+    resJson = 'end'
+    return res
+  }
+  res.json = (value: object) => {
+    resJson = value
+    return res
   }
 
   beforeEach(() => {
@@ -68,10 +68,9 @@ describe('route/organization', () => {
       throw error
     })
     await organization(
-      //@ts-ignore
       {
         ...req
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(1)
@@ -88,15 +87,13 @@ describe('route/organization', () => {
   })
 
   test('POST', async () => {
-    req.method = 'POST'
-
     // Wrong body
     await organization(
       {
         ...req,
-        //@ts-ignore
+        method: 'POST',
         body: {}
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(1)
@@ -112,17 +109,14 @@ describe('route/organization', () => {
     })
 
     // Normal
-    req.body = {
-      name: 'Test organization'
-    }
     await organization(
       {
         ...req,
-        //@ts-ignore
+        method: 'POST',
         body: {
           name: 'organization'
         }
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(2)
@@ -143,11 +137,11 @@ describe('route/organization', () => {
     await organization(
       {
         ...req,
-        //@ts-ignore
+        method: 'POST',
         body: {
           name: 'organization'
         }
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(3)
@@ -164,15 +158,13 @@ describe('route/organization', () => {
   })
 
   test('PUT', async () => {
-    req.method = 'PUT'
-
     // Wrong body
     await organization(
       {
         ...req,
-        //@ts-ignore
+        method: 'PUT',
         body: {}
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(1)
@@ -194,12 +186,12 @@ describe('route/organization', () => {
     await organization(
       {
         ...req,
-        //@ts-ignore
+        method: 'PUT',
         body: {
           organization: { id: 'id' },
           data: [{ key: 'key', value: 'value' }]
         }
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(2)
@@ -219,12 +211,12 @@ describe('route/organization', () => {
     await organization(
       {
         ...req,
-        //@ts-ignore
+        method: 'PUT',
         body: {
           organization: { id: 'id' },
           data: [{ key: 'key', value: 'value' }]
         }
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(3)
@@ -244,12 +236,12 @@ describe('route/organization', () => {
     await organization(
       {
         ...req,
-        //@ts-ignore
+        method: 'PUT',
         body: {
           organization: { id: 'id' },
           data: [{ key: 'key', value: 'value' }]
         }
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(4)
@@ -268,12 +260,12 @@ describe('route/organization', () => {
     await organization(
       {
         ...req,
-        //@ts-ignore
+        method: 'PUT',
         body: {
           organization: { id: 'id' },
           data: [{ key: 'key', value: 'value' }]
         }
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(5)
@@ -290,15 +282,13 @@ describe('route/organization', () => {
   })
 
   test('DELETE', async () => {
-    req.method = 'DELETE'
-
     // Wrong body
     await organization(
       {
         ...req,
-        //@ts-ignore
+        method: 'DELETE',
         body: {}
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(1)
@@ -318,11 +308,11 @@ describe('route/organization', () => {
     await organization(
       {
         ...req,
-        //@ts-ignore
+        method: 'DELETE',
         body: {
           id: 'id'
         }
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(2)
@@ -342,11 +332,11 @@ describe('route/organization', () => {
     await organization(
       {
         ...req,
-        //@ts-ignore
+        method: 'DELETE',
         body: {
           id: 'id'
         }
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(3)
@@ -365,11 +355,11 @@ describe('route/organization', () => {
     await organization(
       {
         ...req,
-        //@ts-ignore
+        method: 'DELETE',
         body: {
           id: 'id'
         }
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(4)
@@ -383,14 +373,12 @@ describe('route/organization', () => {
   })
 
   test('wrong method', async () => {
-    req.method = 'method'
-
     await organization(
       {
         ...req,
-        //@ts-ignore
+        method: 'method',
         body: {}
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(1)

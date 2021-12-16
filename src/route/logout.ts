@@ -1,8 +1,8 @@
+import { Request, Response } from 'express'
+
 import { removeTokenCookie } from '@/auth/auth-cookies'
 
 import Sentry from '@/lib/sentry'
-
-import { IRequest, IResponse } from '.'
 
 /**
  * Logout API
@@ -10,7 +10,7 @@ import { IRequest, IResponse } from '.'
  * @param req Request
  * @param res Response
  */
-export const logout = async (_: IRequest, res: IResponse): Promise<void> => {
+export const logout = async (_: Request, res: Response): Promise<void> => {
   try {
     removeTokenCookie(res)
     res.status(200).end()

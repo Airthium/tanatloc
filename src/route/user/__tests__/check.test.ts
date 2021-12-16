@@ -1,4 +1,6 @@
-import { IRequest, IResponse, IRouteError } from '@/route'
+import { Request, Response } from 'express'
+
+import { IRouteError } from '@/route'
 import check from '../check'
 
 const mockSession = jest.fn()
@@ -17,23 +19,21 @@ jest.mock('@/lib/user', () => ({
 }))
 
 describe('route/user/check', () => {
-  const req: IRequest = {}
+  const req = {} as Request
   let resStatus: number
-  let resJson: any
-  const res: IResponse = {
-    setHeader: jest.fn,
-    status: (status: number) => {
-      resStatus = status
-      return res
-    },
-    end: () => {
-      resJson = 'end'
-      return res
-    },
-    json: (value: object) => {
-      resJson = value
-      return res
-    }
+  let resJson: string | object
+  const res = {} as Response
+  res.status = (status: number) => {
+    resStatus = status
+    return res
+  }
+  res.end = () => {
+    resJson = 'end'
+    return res
+  }
+  res.json = (value: object) => {
+    resJson = value
+    return res
   }
 
   beforeEach(() => {
@@ -61,7 +61,7 @@ describe('route/user/check', () => {
           email: 'email',
           password: 'password'
         }
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(1)
@@ -75,15 +75,13 @@ describe('route/user/check', () => {
   })
 
   test('POST', async () => {
-    req.method = 'POST'
-
     // Wrong body
     await check(
       {
         ...req,
-        //@ts-ignore
+        method: 'POST',
         body: {}
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(1)
@@ -100,11 +98,12 @@ describe('route/user/check', () => {
     await check(
       {
         ...req,
+        method: 'POST',
         body: {
           email: 'email',
           password: 'password'
         }
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(2)
@@ -120,11 +119,12 @@ describe('route/user/check', () => {
     await check(
       {
         ...req,
+        method: 'POST',
         body: {
           email: 'email',
           password: 'password'
         }
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(3)
@@ -142,11 +142,12 @@ describe('route/user/check', () => {
     await check(
       {
         ...req,
+        method: 'POST',
         body: {
           email: 'email',
           password: 'password'
         }
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(4)
@@ -160,16 +161,15 @@ describe('route/user/check', () => {
   })
 
   test('wrong method', async () => {
-    req.method = 'method'
-
     await check(
       {
         ...req,
+        method: 'method',
         body: {
           email: 'email',
           password: 'password'
         }
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(1)

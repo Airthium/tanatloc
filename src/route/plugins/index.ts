@@ -1,6 +1,7 @@
 /** @module Route.Plugins */
 
-import { IRequest, IResponse } from '..'
+import { Request, Response } from 'express'
+
 import { session } from '../session'
 import { error } from '../error'
 
@@ -13,7 +14,7 @@ import PluginsLib from '@/lib/plugins'
  * @param req Request
  * @param res Response
  */
-export default async (req: IRequest, res: IResponse) => {
+export default async (req: Request, res: Response) => {
   try {
     // Check session
     const sessionId = await session(req)

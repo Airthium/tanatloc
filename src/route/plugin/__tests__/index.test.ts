@@ -1,4 +1,6 @@
-import { IRequest, IResponse, IRouteError } from '@/route'
+import { Request, Response } from 'express'
+
+import { IRouteError } from '@/route'
 import plugin from '../'
 
 const mockSession = jest.fn()
@@ -28,23 +30,21 @@ jest.mock('@/lib/plugin', () => ({
 }))
 
 describe('route/plugin', () => {
-  const req: IRequest = {}
+  const req = {} as Request
   let resStatus: number
-  let resJson: any
-  const res: IResponse = {
-    setHeader: jest.fn,
-    status: (status: number) => {
-      resStatus = status
-      return res
-    },
-    end: () => {
-      resJson = 'end'
-      return res
-    },
-    json: (value: object) => {
-      resJson = value
-      return res
-    }
+  let resJson: string | object
+  const res = {} as Response
+  res.status = (status: number) => {
+    resStatus = status
+    return res
+  }
+  res.end = () => {
+    resJson = 'end'
+    return res
+  }
+  res.json = (value: object) => {
+    resJson = value
+    return res
   }
 
   beforeEach(() => {
@@ -76,9 +76,8 @@ describe('route/plugin', () => {
     await plugin(
       {
         ...req,
-        //@ts-ignore
         body: {}
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(1)
@@ -96,15 +95,13 @@ describe('route/plugin', () => {
   })
 
   test('POST', async () => {
-    req.method = 'POST'
-
     // Wrong body
     await plugin(
       {
         ...req,
-        //@ts-ignore
+        method: 'POST',
         body: {}
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(1)
@@ -122,19 +119,15 @@ describe('route/plugin', () => {
     })
 
     // Access denied
-    req.body = {
-      key: 'key',
-      configuration: {}
-    }
     await plugin(
       {
         ...req,
-        //@ts-ignore
+        method: 'POST',
         body: {
           key: 'key',
           configuration: {}
         }
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(2)
@@ -155,12 +148,12 @@ describe('route/plugin', () => {
     await plugin(
       {
         ...req,
-        //@ts-ignore
+        method: 'POST',
         body: {
           key: 'key',
           configuration: {}
         }
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(3)
@@ -180,12 +173,12 @@ describe('route/plugin', () => {
     await plugin(
       {
         ...req,
-        //@ts-ignore
+        method: 'POST',
         body: {
           key: 'key',
           configuration: {}
         }
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(4)
@@ -200,12 +193,12 @@ describe('route/plugin', () => {
   })
 
   test('GET', async () => {
-    req.method = 'GET'
-
     // Normal
     await plugin(
-      //@ts-ignore
-      req,
+      {
+        ...req,
+        method: 'GET'
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(1)
@@ -225,10 +218,10 @@ describe('route/plugin', () => {
       throw new Error('Get error')
     })
     await plugin(
-      //@ts-ignore
       {
-        ...req
-      },
+        ...req,
+        method: 'GET'
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(2)
@@ -246,15 +239,13 @@ describe('route/plugin', () => {
   })
 
   test('PUT', async () => {
-    req.method = 'PUT'
-
     // Wrong body
     await plugin(
       {
         ...req,
-        //@ts-ignore
+        method: 'PUT',
         body: undefined
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(1)
@@ -274,9 +265,9 @@ describe('route/plugin', () => {
     await plugin(
       {
         ...req,
-        //@ts-ignore
+        method: 'PUT',
         body: [{ key: 'key', value: 'value' }]
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(2)
@@ -296,9 +287,9 @@ describe('route/plugin', () => {
     await plugin(
       {
         ...req,
-        //@ts-ignore
+        method: 'PUT',
         body: [{ key: 'key', value: 'value' }]
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(3)
@@ -313,15 +304,13 @@ describe('route/plugin', () => {
   })
 
   test('DELETE', async () => {
-    req.method = 'DELETE'
-
     // Wrong body
     await plugin(
       {
         ...req,
-        //@ts-ignore
+        method: 'DELETE',
         body: {}
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(1)
@@ -341,11 +330,11 @@ describe('route/plugin', () => {
     await plugin(
       {
         ...req,
-        //@ts-ignore
+        method: 'DELETE',
         body: {
           uuid: 'uuid'
         }
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(2)
@@ -365,11 +354,11 @@ describe('route/plugin', () => {
     await plugin(
       {
         ...req,
-        //@ts-ignore
+        method: 'DELETE',
         body: {
           uuid: 'uuid'
         }
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(3)
@@ -384,13 +373,7 @@ describe('route/plugin', () => {
   })
 
   test('wrong method', async () => {
-    req.method = 'method'
-
-    await plugin(
-      //@ts-ignore
-      req,
-      res
-    )
+    await plugin({ ...req, method: 'method' } as Request, res)
     expect(mockSession).toHaveBeenCalledTimes(1)
     expect(mockUserGet).toHaveBeenCalledTimes(0)
     expect(mockAdd).toHaveBeenCalledTimes(0)

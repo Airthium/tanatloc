@@ -1,4 +1,4 @@
-import { IRequest, IResponse } from '@/route/index.d'
+import { Request, Response } from 'express'
 
 import route from '@/route/geometry/[id]/download'
 
@@ -8,7 +8,7 @@ import route from '@/route/geometry/[id]/download'
  * @param req Request
  * @param res Response
  */
-const download = async (req: IRequest, res: IResponse): Promise<void> => {
+const download = async (req: Request, res: Response): Promise<void> => {
   await route(req, res)
 }
 

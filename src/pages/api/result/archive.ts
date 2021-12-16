@@ -1,7 +1,6 @@
-import { WriteStream } from 'fs'
-import { IRequest, IResponse } from '@/route/index.d'
+import { Request, Response } from 'express'
 
-import route, { IArchiveBody } from '@/route/result/archive'
+import route from '@/route/result/archive'
 
 /**
  * Result archive API
@@ -9,10 +8,7 @@ import route, { IArchiveBody } from '@/route/result/archive'
  * @param req Request
  * @param res Response
  */
-const archive = async (
-  req: IRequest<IArchiveBody>,
-  res: IResponse & WriteStream
-): Promise<void> => {
+const archive = async (req: Request, res: Response): Promise<void> => {
   await route(req, res)
 }
 

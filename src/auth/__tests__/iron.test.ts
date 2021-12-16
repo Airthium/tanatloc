@@ -1,3 +1,5 @@
+import { Request } from 'express'
+
 import * as iron from '../iron'
 
 jest.mock('@hapi/iron', () => ({
@@ -20,7 +22,7 @@ describe('auth/iron', () => {
   })
 
   test('getSession', async () => {
-    const res = await iron.getSession({})
+    const res = await iron.getSession({} as Request)
     expect(res).toBe('unseal')
   })
 })

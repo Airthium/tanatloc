@@ -1,10 +1,13 @@
-import { IResponse } from '@/route/index.d'
+import { Request, Response } from 'express'
 
 import * as auth from '../auth-cookies'
 
 jest.mock('cookie', () => ({
   serialize: () => 'cookie',
-  parse: (cookie) => cookie
+  parse: (cookie: string): object => {
+    if (cookie) return JSON.parse(cookie)
+    return {}
+  }
 }))
 
 jest.mock('is-electron', () => () => true)
@@ -30,37 +33,31 @@ jest.mock(
 )
 
 describe('auth/auth-cookies', () => {
+  const req = {} as Request
+  const res = {} as Response
+
   test('setTokenCookie', () => {
-    const res: IResponse = {
-      setHeader: jest.fn,
-      status: (_: number) => res,
-      end: () => res,
-      json: () => res
-    }
     auth.setTokenCookie(res, 'token')
     expect(mockSet).toBe('cookie')
   })
 
   test('removeTokenCookie', () => {
-    const res: IResponse = {
-      setHeader: jest.fn,
-      status: (_: number) => res,
-      end: () => res,
-      json: () => res
-    }
     auth.removeTokenCookie(res)
     expect(mockDelete).toBe('auth-token')
   })
 
   test('parseCookies', () => {
-    let res: string
-    const req = {}
+    let cookie
 
-    res = auth.parseCookies(req)
-    expect(res).toBe('')
+    cookie = auth.parseCookies(req)
+    expect(cookie).toEqual({})
 
-    mockGet.mockImplementation(() => 'cookie')
-    res = auth.parseCookies(req)
-    expect(res).toBe('cookie')
+    mockGet.mockImplementation(() =>
+      JSON.stringify({
+        token: 'cookie'
+      })
+    )
+    cookie = auth.parseCookies(req)
+    expect(cookie).toEqual({ token: 'cookie' })
   })
 })

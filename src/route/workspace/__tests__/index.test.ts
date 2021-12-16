@@ -1,4 +1,6 @@
-import { IRequest, IResponse, IRouteError } from '@/route'
+import { Request, Response } from 'express'
+
+import { IRouteError } from '@/route'
 import workspace from '..'
 
 const mockSession = jest.fn()
@@ -28,23 +30,21 @@ jest.mock('@/lib/workspace', () => ({
 }))
 
 describe('route/workspace', () => {
-  const req: IRequest = {}
+  const req = {} as Request
   let resStatus: number
-  let resJson: any
-  const res: IResponse = {
-    setHeader: jest.fn,
-    status: (status: number) => {
-      resStatus = status
-      return res
-    },
-    end: () => {
-      resJson = 'end'
-      return res
-    },
-    json: (value: object) => {
-      resJson = value
-      return res
-    }
+  let resJson: string | object
+  const res = {} as Response
+  res.status = (status: number) => {
+    resStatus = status
+    return res
+  }
+  res.end = () => {
+    resJson = 'end'
+    return res
+  }
+  res.json = (value: object) => {
+    resJson = value
+    return res
   }
 
   beforeEach(() => {
@@ -75,11 +75,7 @@ describe('route/workspace', () => {
       error.status = 401
       throw error
     })
-    await workspace(
-      //@ts-ignore
-      req,
-      res
-    )
+    await workspace(req, res)
     expect(mockSession).toHaveBeenCalledTimes(1)
     expect(mockCheckWorkspaceAuth).toHaveBeenCalledTimes(0)
     expect(mockGetByUser).toHaveBeenCalledTimes(0)
@@ -92,12 +88,12 @@ describe('route/workspace', () => {
   })
 
   test('GET', async () => {
-    req.method = 'GET'
-
     // Normal
     await workspace(
-      //@ts-ignore
-      req,
+      {
+        ...req,
+        method: 'GET'
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(1)
@@ -122,8 +118,10 @@ describe('route/workspace', () => {
       throw new Error('Get error')
     })
     await workspace(
-      //@ts-ignore
-      req,
+      {
+        ...req,
+        method: 'GET'
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(2)
@@ -138,15 +136,13 @@ describe('route/workspace', () => {
   })
 
   test('POST', async () => {
-    req.method = 'POST'
-
     // Wrong body
     await workspace(
       {
         ...req,
-        //@ts-ignore
+        method: 'POST',
         body: {}
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(1)
@@ -166,11 +162,11 @@ describe('route/workspace', () => {
     await workspace(
       {
         ...req,
-        //@ts-ignore
+        method: 'POST',
         body: {
           name: 'name'
         }
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(2)
@@ -190,11 +186,11 @@ describe('route/workspace', () => {
     await workspace(
       {
         ...req,
-        //@ts-ignore
+        method: 'POST',
         body: {
           name: 'name'
         }
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(3)
@@ -209,15 +205,13 @@ describe('route/workspace', () => {
   })
 
   test('PUT', async () => {
-    req.method = 'PUT'
-
     // Wrong body
     await workspace(
       {
         ...req,
-        //@ts-ignore
+        method: 'PUT',
         body: {}
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(1)
@@ -243,14 +237,14 @@ describe('route/workspace', () => {
     await workspace(
       {
         ...req,
-        //@ts-ignore
+        method: 'PUT',
         body: {
           workspace: {
             id: 'id'
           },
           data: [{ key: 'key', value: 'value' }]
         }
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(2)
@@ -271,14 +265,14 @@ describe('route/workspace', () => {
     await workspace(
       {
         ...req,
-        //@ts-ignore
+        method: 'PUT',
         body: {
           workspace: {
             id: 'id'
           },
           data: [{ key: 'key', value: 'value' }]
         }
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(3)
@@ -298,14 +292,14 @@ describe('route/workspace', () => {
     await workspace(
       {
         ...req,
-        //@ts-ignore
+        method: 'PUT',
         body: {
           workspace: {
             id: 'id'
           },
           data: [{ key: 'key', value: 'value' }]
         }
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(4)
@@ -323,15 +317,13 @@ describe('route/workspace', () => {
   })
 
   test('DELETE', async () => {
-    req.method = 'DELETE'
-
     // Wrong body
     await workspace(
       {
         ...req,
-        //@ts-ignore
+        method: 'DELETE',
         body: {}
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(1)
@@ -356,9 +348,9 @@ describe('route/workspace', () => {
     await workspace(
       {
         ...req,
-        //@ts-ignore
+        method: 'DELETE',
         body: { id: 'id' }
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(2)
@@ -379,9 +371,9 @@ describe('route/workspace', () => {
     await workspace(
       {
         ...req,
-        //@ts-ignore
+        method: 'DELETE',
         body: { id: 'id' }
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(3)
@@ -401,9 +393,9 @@ describe('route/workspace', () => {
     await workspace(
       {
         ...req,
-        //@ts-ignore
+        method: 'DELETE',
         body: { id: 'id' }
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(4)
@@ -418,11 +410,11 @@ describe('route/workspace', () => {
   })
 
   test('wrong method', async () => {
-    req.method = 'method'
-
     await workspace(
-      //@ts-ignore
-      req,
+      {
+        ...req,
+        method: 'method'
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(1)

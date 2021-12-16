@@ -1,6 +1,6 @@
 /** @module Route.Groups */
 
-import { IRequest, IResponse } from '..'
+import { Request, Response } from 'express'
 
 /**
  * Empty groups list route
@@ -8,7 +8,7 @@ import { IRequest, IResponse } from '..'
  * @param req Request
  * @param res Response
  */
-export default async (req: IRequest, res: IResponse) => {
+export default async (req: Request, res: Response) => {
   // Empty route
   res.status(200).json({ groups: [] })
 }

@@ -1,4 +1,6 @@
-import { IRequest, IResponse, IRouteError } from '@/route'
+import { Request, Response } from 'express'
+
+import { IRouteError } from '@/route'
 import users from '../'
 
 const mockSession = jest.fn()
@@ -19,23 +21,21 @@ jest.mock('@/lib/user', () => ({
 }))
 
 describe('route/users', () => {
-  const req: IRequest = {}
+  const req = {} as Request
   let resStatus: number
-  let resJson: any
-  const res: IResponse = {
-    setHeader: jest.fn,
-    status: (status: number) => {
-      resStatus = status
-      return res
-    },
-    end: () => {
-      resJson = 'end'
-      return res
-    },
-    json: (value: object) => {
-      resJson = value
-      return res
-    }
+  let resJson: string | object
+  const res = {} as Response
+  res.status = (status: number) => {
+    resStatus = status
+    return res
+  }
+  res.end = () => {
+    resJson = 'end'
+    return res
+  }
+  res.json = (value: object) => {
+    resJson = value
+    return res
   }
 
   beforeEach(() => {
@@ -81,8 +81,6 @@ describe('route/users', () => {
   })
 
   test('GET', async () => {
-    req.method = 'GET'
-
     mockGet.mockImplementation(() => ({
       superuser: true
     }))
@@ -93,7 +91,13 @@ describe('route/users', () => {
     ])
 
     // Normal
-    await users(req, res)
+    await users(
+      {
+        ...req,
+        method: 'GET'
+      } as Request,
+      res
+    )
     expect(mockSession).toHaveBeenCalledTimes(1)
     expect(mockGet).toHaveBeenCalledTimes(1)
     expect(mockGetAll).toHaveBeenCalledTimes(1)
@@ -105,7 +109,13 @@ describe('route/users', () => {
     mockGetAll.mockImplementation(() => {
       throw new Error('Get error')
     })
-    await users(req, res)
+    await users(
+      {
+        ...req,
+        method: 'GET'
+      } as Request,
+      res
+    )
     expect(mockSession).toHaveBeenCalledTimes(2)
     expect(mockGet).toHaveBeenCalledTimes(2)
     expect(mockGetAll).toHaveBeenCalledTimes(2)
@@ -115,13 +125,17 @@ describe('route/users', () => {
   })
 
   test('wrong method', async () => {
-    req.method = 'method'
-
     mockGet.mockImplementation(() => ({
       superuser: true
     }))
 
-    await users(req, res)
+    await users(
+      {
+        ...req,
+        method: 'method'
+      } as Request,
+      res
+    )
     expect(mockSession).toHaveBeenCalledTimes(1)
     expect(mockGet).toHaveBeenCalledTimes(1)
     expect(mockGetAll).toHaveBeenCalledTimes(0)

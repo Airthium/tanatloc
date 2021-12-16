@@ -1,5 +1,4 @@
-import { WriteStream } from 'fs'
-import { IRequest, IResponse } from '@/route/index.d'
+import { Request, Response } from 'express'
 
 import route from '@/route/project/[id]/archive'
 
@@ -9,10 +8,7 @@ import route from '@/route/project/[id]/archive'
  * @param req Request
  * @param res Response
  */
-const archive = async (
-  req: IRequest,
-  res: IResponse & WriteStream
-): Promise<void> => {
+const archive = async (req: Request, res: Response): Promise<void> => {
   await route(req, res)
 }
 

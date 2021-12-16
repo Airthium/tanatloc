@@ -1,3 +1,5 @@
+import { Request, Response } from 'express'
+
 import { logout } from '../logout'
 
 const mockRemove = jest.fn()
@@ -11,13 +13,11 @@ jest.mock('@/lib/sentry', () => ({
 }))
 
 describe('route/api', () => {
-  const req = {}
-  const res = {
-    setHeader: jest.fn,
-    status: () => res,
-    end: () => res,
-    json: () => res
-  }
+  const req = {} as Request
+  const res = {} as Response
+  res.status = () => res
+  res.json = () => res
+  res.end = () => res
 
   test('logout', () => {
     logout(req, res)

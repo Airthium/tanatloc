@@ -1,4 +1,6 @@
-import { IRequest, IResponse, IRouteError } from '@/route'
+import { Request, Response } from 'express'
+
+import { IRouteError } from '@/route'
 import id from '../[id]'
 
 const mockSession = jest.fn()
@@ -26,23 +28,21 @@ jest.mock('@/lib/project', () => ({
 }))
 
 describe('route/project/[id]', () => {
-  const req: IRequest = {}
+  const req = {} as Request
   let resStatus: number
-  let resJson: any
-  const res: IResponse = {
-    setHeader: jest.fn,
-    status: (status: number) => {
-      resStatus = status
-      return res
-    },
-    end: () => {
-      resJson = 'end'
-      return res
-    },
-    json: (value: object) => {
-      resJson = value
-      return res
-    }
+  let resJson: string | object
+  const res = {} as Response
+  res.status = (status: number) => {
+    resStatus = status
+    return res
+  }
+  res.end = () => {
+    resJson = 'end'
+    return res
+  }
+  res.json = (value: object) => {
+    resJson = value
+    return res
   }
 
   beforeEach(() => {
@@ -71,11 +71,7 @@ describe('route/project/[id]', () => {
       error.status = 401
       throw error
     })
-    await id(
-      //@ts-ignore
-      req,
-      res
-    )
+    await id(req, res)
     expect(mockSession).toHaveBeenCalledTimes(1)
     expect(mockCheckProjectAuth).toHaveBeenCalledTimes(0)
     expect(mockGet).toHaveBeenCalledTimes(0)
@@ -90,12 +86,12 @@ describe('route/project/[id]', () => {
   })
 
   test('no id', async () => {
-    req.query = {}
-    req.params = {}
-
     await id(
-      //@ts-ignore
-      req,
+      {
+        ...req,
+        query: {},
+        params: {}
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(1)
@@ -112,9 +108,6 @@ describe('route/project/[id]', () => {
   })
 
   test('Access denied', async () => {
-    req.query = {}
-    req.params = { id: 'id' }
-
     mockCheckProjectAuth.mockImplementation(() => {
       const error: IRouteError = new Error('Access denied')
       error.status = 403
@@ -122,8 +115,11 @@ describe('route/project/[id]', () => {
     })
 
     await id(
-      //@ts-ignore
-      req,
+      {
+        ...req,
+        query: {},
+        params: { id: 'id' } as Request['params']
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(1)
@@ -140,14 +136,14 @@ describe('route/project/[id]', () => {
   })
 
   test('GET', async () => {
-    req.method = 'GET'
-    req.query = { id: 'id' }
-    req.params = {}
-
     // Normal
     await id(
-      //@ts-ignore
-      req,
+      {
+        ...req,
+        method: 'GET',
+        query: { id: 'id' } as Request['query'],
+        params: {}
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(1)
@@ -169,8 +165,12 @@ describe('route/project/[id]', () => {
       throw new Error('Get error')
     })
     await id(
-      //@ts-ignore
-      req,
+      {
+        ...req,
+        method: 'GET',
+        query: { id: 'id' } as Request['query'],
+        params: {}
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(2)
@@ -187,18 +187,15 @@ describe('route/project/[id]', () => {
   })
 
   test('PUT', async () => {
-    req.method = 'PUT'
-    req.query = { id: 'id' }
-    req.params = {}
-
     // Wrong body
-    req.body = {}
     await id(
       {
         ...req,
-        //@ts-ignore
+        method: 'PUT',
+        query: { id: 'id' } as Request['query'],
+        params: {},
         body: {}
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(1)
@@ -217,9 +214,11 @@ describe('route/project/[id]', () => {
     await id(
       {
         ...req,
-        //@ts-ignore
+        method: 'PUT',
+        query: { id: 'id' } as Request['query'],
+        params: {},
         body: [{ key: 'key', value: 'value' }]
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(2)
@@ -238,9 +237,11 @@ describe('route/project/[id]', () => {
     await id(
       {
         ...req,
-        //@ts-ignore
+        method: 'PUT',
+        query: { id: 'id' } as Request['query'],
+        params: {},
         body: [{ key: 'key', value: 'value' }]
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(3)
@@ -257,17 +258,15 @@ describe('route/project/[id]', () => {
   })
 
   test('DELETE', async () => {
-    req.method = 'DELETE'
-    req.query = { id: 'id' }
-    req.params = {}
-
     // Wrong body
     await id(
       {
         ...req,
-        //@ts-ignore
+        method: 'DELETE',
+        query: { id: 'id' } as Request['query'],
+        params: {},
         body: {}
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(1)
@@ -283,15 +282,16 @@ describe('route/project/[id]', () => {
     })
 
     // Normal
-    req.body = { id: 'id' }
     await id(
       {
         ...req,
-        //@ts-ignore
+        method: 'DELETE',
+        query: { id: 'id' } as Request['query'],
+        params: {},
         body: {
           id: 'id'
         }
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(2)
@@ -310,11 +310,13 @@ describe('route/project/[id]', () => {
     await id(
       {
         ...req,
-        //@ts-ignore
+        method: 'DELETE',
+        query: { id: 'id' } as Request['query'],
+        params: {},
         body: {
           id: 'id'
         }
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(3)
@@ -328,12 +330,12 @@ describe('route/project/[id]', () => {
   })
 
   test('wrong method', async () => {
-    req.method = 'method'
-    req.query = { id: 'id' }
-
     await id(
-      //@ts-ignore
-      req,
+      {
+        ...req,
+        method: 'method',
+        query: { id: 'id' } as Request['query']
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(1)

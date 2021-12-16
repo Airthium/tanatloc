@@ -1,11 +1,12 @@
 /** @module Route.Project */
 
+import { Request, Response } from 'express'
+
 import { session } from '../session'
 import { checkWorkspaceAuth } from '../auth'
 import { error } from '../error'
 
 import ProjectLib from '@/lib/project'
-import { IRequest, IResponse } from '..'
 
 export interface IAddBody {
   workspace: { id: string }
@@ -39,10 +40,7 @@ const checkAddBody = (body: IAddBody): void => {
  * @param req Request
  * @param res Response
  */
-export default async (
-  req: IRequest<IAddBody>,
-  res: IResponse
-): Promise<void> => {
+export default async (req: Request, res: Response): Promise<void> => {
   try {
     // Check session
     const sessionId = await session(req)

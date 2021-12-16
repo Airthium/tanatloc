@@ -1,4 +1,5 @@
-import { IRequest, IResponse, IRouteError } from '@/route'
+import { Request, Response } from 'express'
+import { IRouteError } from '@/route'
 import log from '../log'
 
 const mockSession = jest.fn()
@@ -22,23 +23,21 @@ jest.mock('@/lib/simulation', () => ({
 }))
 
 describe('route/simulation/[id]/log', () => {
-  const req: IRequest = {}
+  const req = {} as Request
   let resStatus: number
-  let resJson: any
-  const res: IResponse = {
-    setHeader: jest.fn,
-    status: (status: number) => {
-      resStatus = status
-      return res
-    },
-    end: () => {
-      resJson = 'end'
-      return res
-    },
-    json: (value: object) => {
-      resJson = value
-      return res
-    }
+  let resJson: string | object
+  const res = {} as Response
+  res.status = (status: number) => {
+    resStatus = status
+    return res
+  }
+  res.end = () => {
+    resJson = 'end'
+    return res
+  }
+  res.json = (value: object) => {
+    resJson = value
+    return res
   }
 
   beforeEach(() => {
@@ -68,7 +67,7 @@ describe('route/simulation/[id]/log', () => {
         body: {
           file: 'file'
         }
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(1)
@@ -83,16 +82,15 @@ describe('route/simulation/[id]/log', () => {
   })
 
   test('no id', async () => {
-    req.query = {}
-    req.params = {}
-
     await log(
       {
         ...req,
+        query: {},
+        params: {},
         body: {
           file: 'file'
         }
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(1)
@@ -107,9 +105,6 @@ describe('route/simulation/[id]/log', () => {
   })
 
   test('Access denied', async () => {
-    req.query = { id: 'id' }
-    req.params = {}
-
     mockCheckSimulationAuth.mockImplementation(() => {
       const error: IRouteError = new Error('Access denied')
       error.status = 403
@@ -119,10 +114,12 @@ describe('route/simulation/[id]/log', () => {
     await log(
       {
         ...req,
+        query: { id: 'id' } as Request['query'],
+        params: {},
         body: {
           file: 'file'
         }
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(1)
@@ -137,17 +134,15 @@ describe('route/simulation/[id]/log', () => {
   })
 
   test('POST', async () => {
-    req.method = 'POST'
-    req.query = {}
-    req.params = { id: 'id' }
-
     // Wrong body
     await log(
       {
         ...req,
-        //@ts-ignore
+        method: 'POST',
+        query: {},
+        params: { id: 'id' } as Request['params'],
         body: {}
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(1)
@@ -164,10 +159,13 @@ describe('route/simulation/[id]/log', () => {
     await log(
       {
         ...req,
+        method: 'POST',
+        query: {},
+        params: { id: 'id' } as Request['params'],
         body: {
           file: 'file'
         }
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(2)
@@ -186,10 +184,13 @@ describe('route/simulation/[id]/log', () => {
     await log(
       {
         ...req,
+        method: 'POST',
+        query: {},
+        params: { id: 'id' } as Request['params'],
         body: {
           file: 'file'
         }
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(3)
@@ -204,16 +205,15 @@ describe('route/simulation/[id]/log', () => {
   })
 
   test('wrong method', async () => {
-    req.method = 'method'
-    req.query = { id: 'id' }
-
     await log(
       {
         ...req,
+        method: 'method',
+        query: { id: 'id' } as Request['query'],
         body: {
           file: 'file'
         }
-      },
+      } as Request,
       res
     )
     expect(mockSession).toHaveBeenCalledTimes(1)

@@ -1,4 +1,5 @@
-import { IRequest, IResponse } from '@/route'
+import { Request, Response } from 'express'
+
 import link from '..'
 
 const mockError = jest.fn()
@@ -14,23 +15,21 @@ jest.mock('@/lib/link', () => ({
 }))
 
 describe('route/link', () => {
-  const req: IRequest = {}
+  const req = {} as Request
   let resStatus: number
-  let resJson: any
-  const res: IResponse = {
-    setHeader: jest.fn,
-    status: (status: number) => {
-      resStatus = status
-      return res
-    },
-    end: () => {
-      resJson = 'end'
-      return res
-    },
-    json: (value: object) => {
-      resJson = value
-      return res
-    }
+  let resJson: string | object
+  const res = {} as Response
+  res.status = (status: number) => {
+    resStatus = status
+    return res
+  }
+  res.end = () => {
+    resJson = 'end'
+    return res
+  }
+  res.json = (value: object) => {
+    resJson = value
+    return res
   }
 
   beforeEach(() => {
@@ -45,15 +44,13 @@ describe('route/link', () => {
   })
 
   test('POST', async () => {
-    req.method = 'POST'
-
     // Wrong body
     await link(
       {
         ...req,
-        //@ts-ignore
+        method: 'POST',
         body: {}
-      },
+      } as Request,
       res
     )
     expect(mockGet).toHaveBeenCalledTimes(0)
@@ -70,12 +67,12 @@ describe('route/link', () => {
     await link(
       {
         ...req,
+        method: 'POST',
         body: {
           id: 'id',
-          //@ts-ignore
           data: ['name']
         }
-      },
+      } as Request,
       res
     )
     expect(mockGet).toHaveBeenCalledTimes(1)
@@ -91,12 +88,12 @@ describe('route/link', () => {
     await link(
       {
         ...req,
+        method: 'POST',
         body: {
           id: 'id',
-          //@ts-ignore
           data: ['name']
         }
-      },
+      } as Request,
       res
     )
     expect(mockGet).toHaveBeenCalledTimes(2)
@@ -110,15 +107,13 @@ describe('route/link', () => {
   })
 
   test('PUT', async () => {
-    req.method = 'PUT'
-
     // Wrong body
     await link(
       {
         ...req,
-        //@ts-ignore
+        method: 'PUT',
         body: {}
-      },
+      } as Request,
       res
     )
     expect(mockGet).toHaveBeenCalledTimes(0)
@@ -135,9 +130,9 @@ describe('route/link', () => {
     await link(
       {
         ...req,
-        //@ts-ignore
+        method: 'PUT',
         body: { id: 'id' }
-      },
+      } as Request,
       res
     )
     expect(mockGet).toHaveBeenCalledTimes(0)
@@ -153,9 +148,9 @@ describe('route/link', () => {
     await link(
       {
         ...req,
-        //@ts-ignore
+        method: 'PUT',
         body: { id: 'id' }
-      },
+      } as Request,
       res
     )
     expect(mockGet).toHaveBeenCalledTimes(0)
@@ -169,14 +164,12 @@ describe('route/link', () => {
   })
 
   test('wrong method', async () => {
-    req.method = 'method'
-
     await link(
       {
         ...req,
-        //@ts-ignore
+        method: 'method',
         body: { id: 'id' }
-      },
+      } as Request,
       res
     )
     expect(mockGet).toHaveBeenCalledTimes(0)

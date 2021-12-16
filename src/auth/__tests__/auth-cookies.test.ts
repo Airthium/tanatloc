@@ -1,11 +1,13 @@
-import { IRequest, IResponse } from '@/route/index.d'
+import { Request, Response } from 'express'
 
 import * as auth from '../auth-cookies'
 
-const mockParse = jest.fn()
 jest.mock('cookie', () => ({
   serialize: () => 'cookie',
-  parse: (cookie: string): string => mockParse(cookie)
+  parse: (cookie: string): object => {
+    if (cookie) return JSON.parse(cookie)
+    return {}
+  }
 }))
 
 jest.mock('is-electron', () => () => false)
@@ -15,66 +17,75 @@ jest.mock('electron-store', () => {
 })
 
 describe('auth/auth-cookies', () => {
-  beforeEach(() => {
-    mockParse.mockReset()
-    mockParse.mockImplementation((cookie) => cookie)
-  })
+  const req = {} as Request
+  let header: string
+  let resStatus: number
+  let resJson: string | object
+  const res = {} as Response
+  res.setHeader = (_: string, value: string) => {
+    header = value
+    return res
+  }
+  res.status = (status: number) => {
+    resStatus = status
+    return res
+  }
+  res.end = () => {
+    resJson = 'end'
+    return res
+  }
+  res.json = (value: object) => {
+    resJson = value
+    return res
+  }
 
   test('setTokenCookie', () => {
-    let header: string
-    const res: IResponse = {
-      setHeader: (_: string, value: string) => (header = value),
-      status: (_: number) => res,
-      end: () => res,
-      json: () => res
-    }
     auth.setTokenCookie(res, 'token')
     expect(header).toBe('cookie')
   })
 
   test('removeTokenCookie', () => {
-    let header: string
-    const res: IResponse = {
-      setHeader: (_: string, value: string) => (header = value),
-      status: (_: number) => res,
-      end: () => res,
-      json: () => res
-    }
     auth.removeTokenCookie(res)
     expect(header).toBe('cookie')
   })
 
   test('parseCookies', () => {
-    let res: string
+    let cookie
 
     // Empty
-    const req: IRequest = {}
-    res = auth.parseCookies(req)
-    expect(res).toBe('')
+    cookie = auth.parseCookies({
+      ...req,
+      cookies: {}
+    } as Request)
+    expect(cookie).toEqual({})
 
     // Cookies
-    req.cookies = 'cookies'
-    res = auth.parseCookies(req)
-    expect(res).toBe('cookies')
+    cookie = auth.parseCookies({
+      ...req,
+      cookies: { token: 'cookie' }
+    } as Request)
+    expect(cookie).toEqual({ token: 'cookie' })
+
+    // Header empty cookies
+    cookie = auth.parseCookies({
+      ...req,
+      headers: {}
+    } as Request)
+    expect(cookie).toEqual({})
 
     // Header cookies
-    req.cookies = undefined
-    req.headers = {
-      cookie: 'cookie'
-    }
-    res = auth.parseCookies(req)
-    expect(res).toEqual('cookie')
+    cookie = auth.parseCookies({
+      ...req,
+      headers: { cookie: JSON.stringify({ token: 'cookie' }) }
+    } as Request)
+    expect(cookie).toEqual({ token: 'cookie' })
   })
 
   test('getTokenCookie', () => {
-    mockParse.mockImplementation((cookie) => JSON.parse(cookie))
-
-    const req: IRequest = {
-      headers: {
-        cookie: JSON.stringify({ token: 'cookie' })
-      }
-    }
-    const res = auth.getTokenCookie(req)
+    const res = auth.getTokenCookie({
+      ...req,
+      headers: { cookie: JSON.stringify({ token: 'cookie' }) }
+    } as Request)
     expect(res).toBe('cookie')
   })
 })

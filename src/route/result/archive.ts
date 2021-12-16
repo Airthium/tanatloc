@@ -1,4 +1,3 @@
-import { WriteStream } from 'fs'
 import { Request, Response } from 'express'
 
 import { session } from '../session'

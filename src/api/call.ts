@@ -1,6 +1,5 @@
 /** @module API */
 
-import { Request, Response } from 'express'
 import isElectron from 'is-electron'
 
 import {

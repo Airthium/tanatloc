@@ -2,11 +2,8 @@
 
 import { useRef, useEffect } from 'react'
 import {
-  BufferGeometry,
-  Material,
   Mesh,
   MeshBasicMaterial,
-  Object3D,
   PerspectiveCamera,
   Scene,
   TetrahedronGeometry,

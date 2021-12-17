@@ -96,17 +96,17 @@ const archive = async (simulation: { id: string }): Promise<ReadStream> => {
       files.map(async (file) => {
         const extension = file.split('.').pop()
         if (extension === 'vtu')
-          await zip.append(Tools.readStream(path.join(resultPath, file)), {
+          zip.append(Tools.readStream(path.join(resultPath, file)), {
             name: path.join('result', file)
           })
       })
     )
 
-    await zip.append(Tools.readStream(summary.path), { name: summary.name })
+    zip.append(Tools.readStream(summary.path), { name: summary.name })
 
     await Promise.all(
       pvdFiles.map(async (file) => {
-        await zip.append(Tools.readStream(file.path), { name: file.name })
+        zip.append(Tools.readStream(file.path), { name: file.name })
       })
     )
 

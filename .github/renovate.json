@@ -11,7 +11,7 @@
       "groupSlug": "all"
     }
   ],
-  "ignoreDeps": ["depcheck/@babel/parser"],
+  "ignoreDeps": ["@babel/parser"],
   "lockFileMaintenance": {
     "enabled": false
   }

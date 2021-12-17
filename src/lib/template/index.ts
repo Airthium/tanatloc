@@ -25,7 +25,8 @@ const loadTemplates = async () => {
           Templates[key]
         )
       )
-      const func = ejs.compile(content.toString(), {
+      const func = await ejs.compile(content.toString(), {
+        async: true,
         root: path.join(
           isElectron() ? process.resourcesPath : './',
           'templates'
@@ -50,7 +51,8 @@ const loadTemplates = async () => {
                 template.file
               )
             )
-            const func = ejs.compile(content.toString(), {
+            const func = await ejs.compile(content.toString(), {
+              async: true,
               root: path.join(
                 isElectron() ? process.resourcesPath : './',
                 'templates'
@@ -86,7 +88,7 @@ const render = async (
   // Compile
   const template = templates[key]
   if (!template) throw new Error('Unable to find the model!')
-  const script = await templates[key](parameters)
+  const script = await template(parameters)
 
   // Save
   if (save) await Tools.writeFile(save.location, save.name, script)

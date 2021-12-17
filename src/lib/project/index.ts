@@ -141,7 +141,7 @@ const getWithData = async (
   // Check archived
   if (project?.archived) project.avatar = null
 
-  const { avatar, owners, users, groups, ...projectData } = project
+  const { avatar, owners, users, groups, ...projectData } = { ...project }
   const projectWithData: IProjectWithData = { ...projectData }
 
   // Get avatar

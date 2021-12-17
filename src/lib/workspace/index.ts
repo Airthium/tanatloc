@@ -61,7 +61,7 @@ const getWithData = async (
 ): Promise<IWorkspaceWithData> => {
   const workspace = await get(id, data)
 
-  const { owners, users, groups, ...workspaceData } = workspace
+  const { owners, users, groups, ...workspaceData } = { ...workspace }
   const workspaceWithData: IWorkspaceWithData = { ...workspaceData }
   // Get owners
   if (workspace?.owners) {

@@ -142,7 +142,7 @@ const getWithData = async (
 ): Promise<IOrganizationWithData> => {
   const organization = await get(id, data)
 
-  const { owners, users, groups, ...organizationData } = organization
+  const { owners, users, groups, ...organizationData } = { ...organization }
   const organizationWithData: IOrganizationWithData = { ...organizationData }
 
   // Owners
@@ -190,7 +190,7 @@ const getByUser = async (
       )
         return
 
-      const { owners, users, groups, ...organizationData } = organization
+      const { owners, users, groups, ...organizationData } = { ...organization }
 
       const organizationWithData: IOrganizationWithData = {
         ...organizationData

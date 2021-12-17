@@ -7,6 +7,7 @@ import {
 } from 'three'
 
 import Label from './LabelHelper'
+import NumberHelper from './NumberHelper'
 
 /**
  * Colorbar helper
@@ -68,18 +69,8 @@ const ColorbarHelper = (renderer, scene) => {
    * @param {Object} lut LUT
    */
   const setLabels = (lut) => {
-    const min =
-      Math.abs(lut.minV) > 1e-12
-        ? Math.abs(lut.minV) > 1000 || Math.abs(lut.minV) < 0.001
-          ? lut.minV.toExponential(2)
-          : lut.minV.toFixed(3)
-        : 0
-    const max =
-      Math.abs(lut.maxV) > 1e-12
-        ? Math.abs(lut.maxV) > 1000 || Math.abs(lut.maxV) < 0.001
-          ? lut.maxV.toExponential(2)
-          : lut.maxV.toFixed(3)
-        : 0
+    let min = NumberHelper(lut.minV)
+    let max = NumberHelper(lut.maxV)
 
     const minLabel = Label(min, 768, 'gray', 128)
     minLabel.scale.x = 1

@@ -85,7 +85,7 @@ describe('lib/utils', () => {
     let res = Utils.validateEmail('email')
     expect(res).toBe(false)
 
-    res = Utils.validateEmail('email@email.email')
+    res = Utils.validateEmail('email@email.com')
     expect(res).toBe(true)
   })
 })

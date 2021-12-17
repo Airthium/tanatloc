@@ -199,6 +199,28 @@ const Selector = ({
   }
 
   /**
+   * Display?
+   * @param element Element
+   * @returns True/false
+   */
+  const display = (element: {
+    uuid: string
+    number?: number
+    name?: string
+    color?: { r: number; g: number; b: number }
+  }) => {
+    if (
+      !filter ||
+      (filter &&
+        filter.r === element.color?.r &&
+        filter.g === element.color?.g &&
+        filter.b === element.color?.b)
+    )
+      return true
+    return false
+  }
+
+  /**
    * Render
    */
   return (
@@ -250,66 +272,74 @@ const Selector = ({
         }}
       >
         {geometry?.[type]
-          ? geometry[type].map((element, index) => {
-              if (
-                !filter ||
-                (filter &&
-                  filter.r === element.color?.r &&
-                  filter.g === element.color?.g &&
-                  filter.b === element.color?.b)
-              )
-                return (
-                  <Card
-                    key={index}
-                    style={{
-                      marginBottom: '7px'
-                    }}
-                    bodyStyle={{
-                      position: 'relative',
-                      padding: '10px 10px 10px 40px',
-                      borderWidth: '2px',
-                      borderStyle: 'solid',
-                      borderColor: selected.includes(element.uuid)
-                        ? '#c73100'
-                        : highlighted === element.uuid
-                        ? '#FAD114'
-                        : 'transparent',
-                      backgroundColor:
-                        highlighted === element.uuid ? '#FFFBE6' : 'transparent'
-                    }}
-                    onMouseEnter={() => onHighlight(element.uuid)}
-                    onMouseLeave={onUnhighlight}
-                    onClick={() => onSelect(element.uuid)}
-                  >
-                    <Space direction="vertical">
-                      <div>
-                        <div
-                          style={{
-                            position: 'absolute',
-                            left: '-2px',
-                            top: '-2px',
-                            bottom: '-2px',
-                            width: '30px',
-                            backgroundColor: Utils.rgbToRgba(element.color, 1)
-                          }}
-                        />
-                        {element.name}
-                      </div>
-                      {alreadySelected?.map((a) => {
-                        if (a.selected.find((s) => s.uuid === element.uuid))
-                          return (
-                            <Tag
-                              key={element.uuid}
-                              color={Utils.stringToColor(a.label)}
-                            >
-                              {a.label}
-                            </Tag>
-                          )
-                      })}
-                    </Space>
-                  </Card>
-                )
-            })
+          ? geometry[type].map(
+              (
+                element: {
+                  uuid: string
+                  number?: number
+                  name?: string
+                  color?: { r: number; g: number; b: number }
+                },
+                index: number
+              ) => {
+                if (display(element)) {
+                  let borderColor: string
+                  if (selected.includes(element.uuid)) borderColor = '#c73100'
+                  else if (highlighted === element.uuid) borderColor = '#FAD114'
+                  else borderColor = 'transparent'
+
+                  return (
+                    <Card
+                      key={index}
+                      style={{
+                        marginBottom: '7px'
+                      }}
+                      bodyStyle={{
+                        position: 'relative',
+                        padding: '10px 10px 10px 40px',
+                        borderWidth: '2px',
+                        borderStyle: 'solid',
+                        borderColor: borderColor,
+                        backgroundColor:
+                          highlighted === element.uuid
+                            ? '#FFFBE6'
+                            : 'transparent'
+                      }}
+                      onMouseEnter={() => onHighlight(element.uuid)}
+                      onMouseLeave={onUnhighlight}
+                      onClick={() => onSelect(element.uuid)}
+                    >
+                      <Space direction="vertical">
+                        <div>
+                          <div
+                            style={{
+                              position: 'absolute',
+                              left: '-2px',
+                              top: '-2px',
+                              bottom: '-2px',
+                              width: '30px',
+                              backgroundColor: Utils.rgbToRgba(element.color, 1)
+                            }}
+                          />
+                          {element.name}
+                        </div>
+                        {alreadySelected?.map((a) => {
+                          if (a.selected.find((s) => s.uuid === element.uuid))
+                            return (
+                              <Tag
+                                key={element.uuid}
+                                color={Utils.stringToColor(a.label)}
+                              >
+                                {a.label}
+                              </Tag>
+                            )
+                        })}
+                      </Space>
+                    </Card>
+                  )
+                }
+              }
+            )
           : []}
       </div>
     </Card>

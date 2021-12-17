@@ -52,12 +52,12 @@ const getWithData = async (
 ): Promise<IUserWithData> => {
   const user = await get(id, data)
 
-  const { avatar, ...userData } = user
+  const { avatar, ...userData } = { ...user }
   const userWithData: IUserWithData = {
     ...userData
   }
   // Get avatar
-  if (user?.avatar) {
+  if (user.avatar) {
     try {
       const avatarData = await Avatar.read(user.avatar)
       userWithData.avatar = avatarData

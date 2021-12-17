@@ -8,6 +8,7 @@ import {
 } from 'three'
 
 import Label from './LabelHelper'
+import NumberHelper from './NumberHelper'
 
 /**
  * GridHelper
@@ -82,29 +83,11 @@ const GridHelper = (scene) => {
       const fontSize = 64
       const scale = maxSize / 5
 
-      const label1 = Label(
-        Math.abs(offsetWidth) > 1e-12
-          ? Math.abs(offsetWidth) > 1000 || Math.abs(offsetWidth) < 0.001
-            ? offsetWidth.toExponential(2)
-            : offsetWidth.toFixed(3)
-          : 0,
-        size,
-        'grey',
-        fontSize
-      )
+      const label1 = Label(NumberHelper(offsetWidth), size, 'grey', fontSize)
       label1.translateX(-width / 2)
       label1.translateY(height / 2 + overflowGrid * maxSize)
       label1.scale.setScalar(scale)
-      const label2 = Label(
-        Math.abs(width) > 1e-12
-          ? Math.abs(width) > 1000 || Math.abs(width) < 0.001
-            ? width.toExponential(2)
-            : width.toFixed(3)
-          : 0,
-        size,
-        'grey',
-        fontSize
-      )
+      const label2 = Label(NumberHelper(width), size, 'grey', fontSize)
       label2.translateX(width / 2)
       label2.translateY(height / 2 + overflowGrid * maxSize)
       label2.scale.setScalar(scale)

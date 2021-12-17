@@ -10,7 +10,6 @@ describe('api/simulation/useSimulation', () => {
   test('with simulation', () => {
     mockSimulation.mockImplementation(() => ({}))
     const [simulation, { mutateSimulation, loadingSimulation }] =
-      //@ts-ignore
       useSimulation()
     expect(simulation).toEqual({})
     expect(mutateSimulation).toBeDefined()
@@ -24,7 +23,6 @@ describe('api/simulation/useSimulation', () => {
       // Empty
     })
     const [simulation, { mutateSimulation, loadingSimulation }] =
-      //@ts-ignore
       useSimulation()
     expect(simulation).toEqual({
       id: '0'

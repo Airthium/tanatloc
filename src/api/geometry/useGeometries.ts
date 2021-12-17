@@ -11,7 +11,7 @@ import { IGeometry } from '@/database/index.d'
  * @returns Geometries
  */
 export const useGeometries = (
-  ids: Array<string>
+  ids?: Array<string>
 ): [
   IGeometry[],
   {

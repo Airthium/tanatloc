@@ -9,10 +9,6 @@ describe('pages/api/organization', () => {
   const res = {} as Response
 
   test('call', async () => {
-    await route(
-      //@ts-ignore
-      req,
-      res
-    )
+    await route(req, res)
   })
 })

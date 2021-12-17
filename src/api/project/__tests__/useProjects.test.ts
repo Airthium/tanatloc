@@ -18,9 +18,7 @@ describe('api/project/useProjects', () => {
         mutateOneProject,
         loadingProjects
       }
-    ] =
-      //@ts-ignore
-      useProjects()
+    ] = useProjects()
     expect(projects).toEqual([{ id: 'id' }, {}])
     expect(mutateProjects).toBeDefined()
     expect(addOneProject).toBeDefined()

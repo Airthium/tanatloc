@@ -18,8 +18,7 @@ describe('install/storage', () => {
 
   test('exists', async () => {
     mockMkdir.mockImplementation(() => {
-      const error = new Error()
-      //@ts-ignore
+      const error: Error & { code?: string } = new Error()
       error.code = 'EEXIST'
       throw error
     })

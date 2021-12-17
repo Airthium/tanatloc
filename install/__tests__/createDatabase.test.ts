@@ -11,14 +11,10 @@ jest.mock('@/database', () => ({
 
 const mockClient = jest.fn()
 jest.mock('pg', () => ({
-  Pool: class {
-    constructor() {
-      //@ts-ignore
-      this.connect = () => mockClient()
-      //@ts-ignore
-      this.end = jest.fn()
-    }
-  }
+  Pool: jest.fn().mockImplementation(() => ({
+    connect: () => mockClient(),
+    end: jest.fn()
+  }))
 }))
 
 describe('install/dB', () => {

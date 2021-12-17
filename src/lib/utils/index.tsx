@@ -1,6 +1,7 @@
 /** @module Lib.Utils */
 
 import { Avatar, Spin, Tooltip } from 'antd'
+import { parseOneAddress } from 'email-addresses'
 
 /**
  * String to color
@@ -132,8 +133,7 @@ const groupToAvatar = (group: { id?: string; name?: string }): JSX.Element => {
  * @returns {bool} Valid
  */
 const validateEmail = (email: string): boolean => {
-  const re = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
-  return re.test(email.toLowerCase())
+  return !!parseOneAddress(email)
 }
 
 const Utils = {

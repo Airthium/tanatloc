@@ -3,7 +3,10 @@ import { useState } from 'react'
 import { Button } from 'antd'
 
 import { ISimulation } from '@/database/index.d'
-import { IModelBoundaryConditionValue } from '@/models/index.d'
+import {
+  IModelBoundaryCondition,
+  IModelBoundaryConditionValue
+} from '@/models/index.d'
 
 import { Error } from '@/components/assets/notification'
 
@@ -71,16 +74,18 @@ const Edit = ({
       const oldType = oldBoundaryCondition.type.key
 
       if (oldType !== type) {
-        //@ts-ignore
-        const index = boundaryConditions[oldType].values.findIndex(
+        const oldtypedBoundaryCondition = boundaryConditions[oldType] as {
+          label: string
+          refineFactor?: number
+          children?: IModelBoundaryCondition[]
+          values?: IModelBoundaryConditionValue[]
+        }
+        const index = oldtypedBoundaryCondition.values.findIndex(
           (b: { uuid: string }) => b.uuid === oldBoundaryCondition.uuid
         )
-        //@ts-ignore
-        boundaryConditions[oldType].values = [
-          //@ts-ignore
-          ...boundaryConditions[oldType].values.slice(0, index),
-          //@ts-ignore
-          ...boundaryConditions[oldType].values.slice(index + 1)
+        oldtypedBoundaryCondition.values = [
+          ...oldtypedBoundaryCondition.values.slice(0, index),
+          ...oldtypedBoundaryCondition.values.slice(index + 1)
         ]
       }
 
@@ -98,24 +103,30 @@ const Edit = ({
 
       // Update local
       if (oldType !== type) {
-        //@ts-ignore
-        boundaryConditions[type].values = [
-          //@ts-ignore
-          ...boundaryConditions[type].values,
+        const typedBoundaryCondition = boundaryConditions[type] as {
+          label: string
+          refineFactor?: number
+          children?: IModelBoundaryCondition[]
+          values?: IModelBoundaryConditionValue[]
+        }
+        typedBoundaryCondition.values = [
+          ...typedBoundaryCondition.values,
           boundaryCondition
         ]
       } else {
-        //@ts-ignore
-        const index = boundaryConditions[type].values.findIndex(
+        const typedBoundaryCondition = boundaryConditions[type] as {
+          label: string
+          refineFactor?: number
+          children?: IModelBoundaryCondition[]
+          values?: IModelBoundaryConditionValue[]
+        }
+        const index = typedBoundaryCondition.values.findIndex(
           (b: { uuid: string }) => b.uuid === boundaryCondition.uuid
         )
-        //@ts-ignore
-        boundaryConditions[type].values = [
-          //@ts-ignore
-          ...boundaryConditions[type].values.slice(0, index),
+        typedBoundaryCondition.values = [
+          ...typedBoundaryCondition.values.slice(0, index),
           boundaryCondition,
-          //@ts-ignore
-          ...boundaryConditions[type].values.slice(index + 1)
+          ...typedBoundaryCondition.values.slice(index + 1)
         ]
       }
 

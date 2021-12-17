@@ -11,6 +11,7 @@ import {
 } from 'antd'
 
 import { ISimulation } from '@/database/index.d'
+import { IModelParameter } from '@/models/index.d'
 
 import Formula from '@/components/assets/formula'
 import { Error as ErrorNotification } from '@/components/assets/notification'
@@ -55,11 +56,16 @@ const Parameters = ({ simulation, swr }: IProps): JSX.Element => {
     Object.keys(values).forEach((key) => {
       const deepValues = values[key]
       deepValues.forEach((value: string | boolean, index: number) => {
-        if (value !== undefined)
-          //@ts-ignore
-          newSimulation.scheme.configuration.parameters[key].children[
-            index
-          ].value = value
+        if (value !== undefined) {
+          const parameter = newSimulation.scheme.configuration.parameters[
+            key
+          ] as {
+            label: string
+            advanced?: boolean
+            children: IModelParameter[]
+          }
+          parameter.children[index].value = value
+        }
       })
     })
 
@@ -115,9 +121,12 @@ const Parameters = ({ simulation, swr }: IProps): JSX.Element => {
   Object.keys(subScheme).forEach((key) => {
     if (key === 'index' || key === 'title' || key == 'done') return
 
-    const parameter = subScheme[key]
+    const parameter = subScheme[key] as {
+      label: string
+      advanced?: boolean
+      children: IModelParameter[]
+    }
 
-    //@ts-ignore
     const components = parameter?.children.map((child, index) => {
       if (child.htmlEntity === 'formula') {
         return (
@@ -125,7 +134,9 @@ const Parameters = ({ simulation, swr }: IProps): JSX.Element => {
             {child.label}:<br />
             <Formula
               defaultValue={
-                child.value === undefined ? child.default : child.value
+                child.value === undefined
+                  ? (child.default as string)
+                  : (child.value as string)
               }
               onValueChange={(value: string) => onChange(key, index, value)}
               unit={child.unit}
@@ -138,7 +149,9 @@ const Parameters = ({ simulation, swr }: IProps): JSX.Element => {
             {child.label}:<br />
             <Select
               options={child.options}
-              defaultValue={child.value || child.default}
+              defaultValue={
+                (child.value as string) || (child.default as string)
+              }
               onChange={(value: string) => onChange(key, index, value)}
             />
           </Typography.Text>
@@ -148,7 +161,7 @@ const Parameters = ({ simulation, swr }: IProps): JSX.Element => {
           <Typography.Text key={key + '&' + index}>
             {child.label}:<br />
             <Checkbox
-              defaultChecked={child.value}
+              defaultChecked={child.value as boolean}
               onChange={(e) => onChange(key, index, e.target.checked)}
             />
           </Typography.Text>
@@ -156,17 +169,14 @@ const Parameters = ({ simulation, swr }: IProps): JSX.Element => {
       }
     })
 
-    //@ts-ignore
     if (parameter?.advanced) {
       advanced.push(
-        //@ts-ignore
         <Card key={key} title={parameter?.label}>
           <Space direction="vertical">{components}</Space>
         </Card>
       )
     } else {
       parameters.push(
-        //@ts-ignore
         <Card key={key} title={parameter?.label}>
           <Space direction="vertical">{components}</Space>
         </Card>

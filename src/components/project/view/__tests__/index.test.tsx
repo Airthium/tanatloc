@@ -19,55 +19,42 @@ jest.mock('three/examples/jsm/postprocessing/RenderPass', () => ({
 }))
 
 jest.mock('three/examples/jsm/postprocessing/OutlinePass', () => ({
-  OutlinePass: class MockRenderPass {
-    constructor() {
-      //@ts-ignore
-      this.visibleEdgeColor = {
-        set: jest.fn()
-      }
-      //@ts-ignore
-      this.hiddenEdgeColor = {
-        set: jest.fn()
-      }
+  OutlinePass: jest.fn().mockImplementation(() => ({
+    visibleEdgeColor: {
+      set: jest.fn()
+    },
+    hiddenEdgeColor: {
+      set: jest.fn()
     }
-  }
+  }))
 }))
 
 jest.mock('three/examples/jsm/postprocessing/EffectComposer', () => ({
-  EffectComposer: class MockEffectComposer {
-    constructor() {
-      //@ts-ignore
-      this.addPass = jest.fn()
-      //@ts-ignore
-      this.render = jest.fn()
-    }
-  }
+  EffectComposer: jest.fn().mockImplementation(() => ({
+    addPass: jest.fn(),
+    render: jest.fn()
+  }))
 }))
 
 jest.mock('three/examples/jsm/controls/TrackballControls', () => ({
-  TrackballControls: class MockTrackballControls {
-    constructor() {
-      //@ts-ignore
-      this.target = {
-        copy: jest.fn(),
-        clone: () => ({
-          sub: () => ({
-            normalize: () => ({
-              multiplyScalar: jest.fn()
-            })
+  TrackballControls: jest.fn().mockImplementation(() => ({
+    target: {
+      copy: jest.fn(),
+      clone: () => ({
+        sub: () => ({
+          normalize: () => ({
+            multiplyScalar: jest.fn()
           })
         })
-      }
-      //@ts-ignore
-      this.update = jest.fn()
-      //@ts-ignore
-      this.object = {
-        position: {
-          distanceTo: jest.fn()
-        }
+      })
+    },
+    update: jest.fn(),
+    object: {
+      position: {
+        distanceTo: jest.fn()
       }
     }
-  }
+  }))
 }))
 
 jest.mock('@/lib/three/helpers/AxisHelper', () => ({

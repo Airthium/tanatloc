@@ -9,10 +9,6 @@ describe('pages/api/avatar', () => {
   const res = {} as Response
 
   test('call', async () => {
-    await avatar(
-      //@ts-ignore
-      req,
-      res
-    )
+    await avatar(req, res)
   })
 })

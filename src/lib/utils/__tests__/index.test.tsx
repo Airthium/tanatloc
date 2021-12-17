@@ -2,7 +2,16 @@ import { render, screen } from '@testing-library/react'
 
 import Utils from '../'
 
+const mockEmail = jest.fn()
+jest.mock('email-addresses', () => ({
+  parseOneAddress: () => mockEmail()
+}))
+
 describe('lib/utils', () => {
+  beforeEach(() => {
+    mockEmail.mockReset()
+  })
+
   test('stringToColor', () => {
     let color
 
@@ -82,9 +91,11 @@ describe('lib/utils', () => {
   })
 
   test('vaidateEmail', () => {
+    mockEmail.mockImplementation(() => null)
     let res = Utils.validateEmail('email')
     expect(res).toBe(false)
 
+    mockEmail.mockImplementation(() => ({}))
     res = Utils.validateEmail('email@email.com')
     expect(res).toBe(true)
   })

@@ -77,14 +77,17 @@ const BoundaryCondition = ({
     const currentTypes = Object.keys(boundaryConditions)
       .map((type) => {
         if (type === 'index' || type === 'title' || type === 'done') return
+        const boundaryConditionType = boundaryConditions[type] as {
+          label: string
+          refineFactor?: number
+          children?: IModelBoundaryCondition[]
+          values?: IModelBoundaryConditionValue[]
+        }
         return {
           key: type,
-          //@ts-ignore
-          label: boundaryConditions[type].label,
-          //@ts-ignore
-          children: boundaryConditions[type].children,
-          //@ts-ignore
-          values: boundaryConditions[type].values
+          label: boundaryConditionType.label,
+          children: boundaryConditionType.children,
+          values: boundaryConditionType.values
         }
       })
       .filter((t) => t)
@@ -93,8 +96,13 @@ const BoundaryCondition = ({
     const currentAlreadySelected = Object.keys(boundaryConditions)
       .map((type) => {
         if (type === 'index' || type === 'title' || type === 'done') return
-        //@ts-ignore
-        return boundaryConditions[type]?.values?.map(
+        const boundaryConditionType = boundaryConditions[type] as {
+          label: string
+          refineFactor?: number
+          children?: IModelBoundaryCondition[]
+          values?: IModelBoundaryConditionValue[]
+        }
+        return boundaryConditionType?.values?.map(
           (b: { name: string; selected: {}[] }) => ({
             label: b.name,
             selected: b.selected
@@ -162,10 +170,15 @@ const BoundaryCondition = ({
   const onType = (event: RadioChangeEvent): void => {
     const key = event.target.value
     const type = types.find((t) => t.key === key)
-    //@ts-ignore
-    const values = boundaryConditions[key].children
-      ? //@ts-ignore
-        boundaryConditions[key].children.map(
+    const boundaryConditionType = boundaryConditions[key] as {
+      label: string
+      refineFactor?: number
+      children?: IModelBoundaryCondition[]
+      values?: IModelBoundaryConditionValue[]
+    }
+
+    const values = boundaryConditionType.children
+      ? boundaryConditionType.children.map(
           (child: IModelBoundaryCondition) => ({
             checked: true,
             value: child.default

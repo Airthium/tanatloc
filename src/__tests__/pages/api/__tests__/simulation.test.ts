@@ -9,10 +9,6 @@ describe('pages/api/simulation', () => {
   const res = {} as Response
 
   test('call', async () => {
-    await simulation(
-      //@ts-ignore
-      req,
-      res
-    )
+    await simulation(req, res)
   })
 })

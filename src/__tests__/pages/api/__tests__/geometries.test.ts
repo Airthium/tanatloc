@@ -9,10 +9,6 @@ describe('pages/api/geometries', () => {
   const res = {} as Response
 
   test('call', async () => {
-    await geometries(
-      //@ts-ignore
-      req,
-      res
-    )
+    await geometries(req, res)
   })
 })

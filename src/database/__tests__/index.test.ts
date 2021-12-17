@@ -3,19 +3,14 @@ import { query, getter, updater, deleter } from '..'
 const mockQuery = jest.fn(() => 'query')
 jest.mock('pg', () => {
   return {
-    Pool: class PoolMock {
-      constructor() {
-        //@ts-ignore
-        this.connect = async () => ({
-          query: async () => mockQuery(),
-          release: jest.fn()
-        })
-        //@ts-ignore
-        this.query = async () => 'query'
-        //@ts-ignore
-        this.end = jest.fn()
-      }
-    }
+    Pool: jest.fn().mockImplementation(() => ({
+      connect: async () => ({
+        query: async () => mockQuery(),
+        release: jest.fn()
+      }),
+      query: async () => 'query',
+      end: jest.fn()
+    }))
   }
 })
 

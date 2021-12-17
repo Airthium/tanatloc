@@ -9,10 +9,6 @@ describe('pages/api/project/[id]', () => {
   const res = {} as Response
 
   test('call', async () => {
-    await id(
-      //@ts-ignore
-      req,
-      res
-    )
+    await id(req, res)
   })
 })

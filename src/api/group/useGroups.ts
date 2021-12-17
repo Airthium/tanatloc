@@ -11,7 +11,7 @@ import { IGroupWithData } from '@/lib'
  * @returns Groups
  */
 export const useGroups = (
-  id: string
+  id?: string
 ): [
   IGroupWithData[],
   {

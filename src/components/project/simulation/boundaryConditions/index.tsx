@@ -5,7 +5,10 @@ import { useState, useEffect } from 'react'
 import { Card, Layout, Space, Typography } from 'antd'
 
 import { IGeometry, ISimulation } from '@/database/index.d'
-import { IModelBoundaryConditionValue } from '@/models/index.d'
+import {
+  IModelBoundaryCondition,
+  IModelBoundaryConditionValue
+} from '@/models/index.d'
 
 import { AddButton } from '@/components/assets/button'
 import List from './list'
@@ -74,8 +77,13 @@ const BoundaryConditions = ({
    * @param index Index
    */
   const onEdit = (type: string, index: number): void => {
-    //@ts-ignore
-    const boundaryConditionToEdit = boundaryConditions[type].values[index]
+    const boundaryConditionType = boundaryConditions[type] as {
+      label: string
+      refineFactor?: number
+      children?: IModelBoundaryCondition[]
+      values?: IModelBoundaryConditionValue[]
+    }
+    const boundaryConditionToEdit = boundaryConditionType.values[index]
     setBoundaryCondition(boundaryConditionToEdit)
 
     setBoundaryConditionVisible(true)

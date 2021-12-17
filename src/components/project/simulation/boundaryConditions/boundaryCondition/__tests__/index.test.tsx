@@ -100,11 +100,11 @@ describe('components/project/simulation/boundaryConditions/boundaryCondition', (
 
   test('without boundaryConditions', () => {
     const { unmount } = render(
-      //@ts-ignore
       <BoundaryCondition
         visible={true}
         simulation={simulation}
         geometry={geometry}
+        boundaryConditions={undefined}
         swr={swr}
         close={close}
       />

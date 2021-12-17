@@ -9,10 +9,6 @@ describe('pages/api/system', () => {
   const res = {} as Response
 
   test('call', async () => {
-    await system(
-      //@ts-ignore
-      req,
-      res
-    )
+    await system(req, res)
   })
 })

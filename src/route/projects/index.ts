@@ -72,8 +72,6 @@ export default async (req: Request, res: Response) => {
         })
       )
 
-      console.log(projectsTmp)
-
       try {
         const projects = projectsTmp.filter((p) => p)
         res.status(200).json({ projects })

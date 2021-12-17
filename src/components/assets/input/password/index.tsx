@@ -179,7 +179,6 @@ const PasswordItem = ({
         { required: true, message: errors.password },
         () => ({
           validator(_, value) {
-            console.log(value)
             const err = []
             if (edit && value === '******') return Promise.resolve()
             /* istanbul ignore next */

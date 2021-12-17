@@ -2,6 +2,8 @@
  * @jest-environment node
  */
 
+import { Store } from 'redux'
+
 import { initializeStore } from '@/store/store'
 
 jest.mock('redux', () => ({
@@ -30,7 +32,7 @@ jest.mock('redux-persist/lib/storage/createWebStorage', () => () => {})
 
 describe('store/store (server)', () => {
   test('null window', () => {
-    const res = initializeStore({
+    const res: Store & { id?: string } = initializeStore({
       select: {
         enabled: true,
         selected: []
@@ -40,7 +42,6 @@ describe('store/store (server)', () => {
         rehydrated: true
       }
     })
-    //@ts-ignore
     expect(res.id).toBe('store')
   })
 })

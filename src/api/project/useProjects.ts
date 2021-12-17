@@ -9,7 +9,7 @@ import { IProjectWithData } from '@/lib/index.d'
  * @returns Projects
  */
 export const useProjects = (
-  ids: string[]
+  ids?: string[]
 ): [
   IProjectWithData[],
   {

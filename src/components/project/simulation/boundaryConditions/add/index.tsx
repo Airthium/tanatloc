@@ -4,7 +4,10 @@ import { v4 as uuid } from 'uuid'
 import { Button } from 'antd'
 
 import { IGeometry, ISimulation } from '@/database/index.d'
-import { IModelBoundaryConditionValue } from '@/models/index.d'
+import {
+  IModelBoundaryCondition,
+  IModelBoundaryConditionValue
+} from '@/models/index.d'
 
 import { Error } from '@/components/assets/notification'
 
@@ -78,10 +81,14 @@ const Add = ({
       // Update local
       const boundaryConditions =
         newSimulation.scheme.configuration.boundaryConditions
-      //@ts-ignore
-      boundaryConditions[type].values = [
-        //@ts-ignore
-        ...(boundaryConditions[type].values || []),
+      const boundaryConditionType = boundaryConditions[type] as {
+        label: string
+        refineFactor?: number
+        children?: IModelBoundaryCondition[]
+        values?: IModelBoundaryConditionValue[]
+      }
+      boundaryConditionType.values = [
+        ...(boundaryConditionType.values || []),
         boundaryCondition
       ]
 

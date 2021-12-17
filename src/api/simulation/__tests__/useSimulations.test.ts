@@ -21,9 +21,7 @@ describe('api/simulation/useSimulations', () => {
         mutateOneSimulation,
         loadingSimulations
       }
-    ] =
-      //@ts-ignore
-      useSimulations()
+    ] = useSimulations()
     expect(simulations).toEqual([{ id: 'id' }, {}])
     expect(mutateSimulations).toBeDefined()
     expect(addOneSimulation).toBeDefined()

@@ -9,10 +9,6 @@ describe('pages/api/result/download', () => {
   const res = {} as Response
 
   test('call', async () => {
-    await result(
-      //@ts-ignore
-      req,
-      res
-    )
+    await result(req, res)
   })
 })

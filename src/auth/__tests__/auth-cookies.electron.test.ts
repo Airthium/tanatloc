@@ -15,21 +15,15 @@ jest.mock('is-electron', () => () => true)
 let mockSet: string
 let mockDelete: string
 const mockGet = jest.fn()
-jest.mock(
-  'electron-store',
-  () =>
-    class MockStore {
-      constructor() {
-        //@ts-ignore
-        this.set = (_: string, value: string) => (mockSet = value)
-        //@ts-ignore
-        this.get = () => mockGet()
-        //@ts-ignore
-        this.delete = (name: string) => {
-          mockDelete = name
-        }
-      }
+jest.mock('electron-store', () =>
+  jest.fn().mockImplementation(() => ({
+    set: (_: string, value: string) => (mockSet = value),
+
+    get: () => mockGet(),
+    delete: (name: string) => {
+      mockDelete = name
     }
+  }))
 )
 
 describe('auth/auth-cookies', () => {

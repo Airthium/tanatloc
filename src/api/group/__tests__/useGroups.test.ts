@@ -12,9 +12,7 @@ describe('api/groups', () => {
     const [
       groups,
       { addOneGroup, mutateOneGroup, delOneGroup, loadingGroups }
-    ] =
-      //@ts-ignore
-      useGroups()
+    ] = useGroups()
     expect(groups).toEqual([{ id: 'id' }])
     expect(addOneGroup).toBeDefined()
     addOneGroup({ id: 'id' })
@@ -31,9 +29,7 @@ describe('api/groups', () => {
     mockGroups.mockImplementation(() => {
       // empty
     })
-    const [groups] =
-      //@ts-ignore
-      useGroups()
+    const [groups] = useGroups()
     expect(groups).toEqual([])
   })
 

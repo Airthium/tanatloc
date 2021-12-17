@@ -38,9 +38,7 @@ describe('api/geometry/useGeometries', () => {
         mutateOneGeometry,
         loadingGeometries
       }
-    ] =
-      //@ts-ignore
-      useGeometries()
+    ] = useGeometries()
     expect(geometries).toEqual([{ id: 'id' }, {}])
     expect(mutateGeometries).toBeDefined()
     expect(addOneGeometry).toBeDefined()

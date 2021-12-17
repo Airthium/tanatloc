@@ -9,10 +9,6 @@ describe('pages/api/group', () => {
   const res = {} as Response
 
   test('call', async () => {
-    await group(
-      //@ts-ignore
-      req,
-      res
-    )
+    await group(req, res)
   })
 })

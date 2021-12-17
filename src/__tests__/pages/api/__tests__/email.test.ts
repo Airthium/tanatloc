@@ -9,10 +9,6 @@ describe('pages/api/email', () => {
   const res = {} as Response
 
   test('call', async () => {
-    await email(
-      //@ts-ignore
-      req,
-      res
-    )
+    await email(req, res)
   })
 })

@@ -9,7 +9,7 @@ import { ISimulation } from '@/database/index.d'
  * @returns Simulation
  */
 export const useSimulation = (
-  id: string,
+  id?: string,
   refresh?: number
 ): [
   ISimulation,

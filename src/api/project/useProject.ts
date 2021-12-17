@@ -9,7 +9,7 @@ import { IProjectWithData } from '@/lib/index.d'
  * @returns Project
  */
 export const useProject = (
-  id: string
+  id?: string
 ): [
   IProjectWithData,
   { mutateProject: Function; errorProject: Error; loadingProject: boolean }

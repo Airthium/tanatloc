@@ -9,10 +9,6 @@ describe('pages/api/plugin', () => {
   const res = {} as Response
 
   test('call', async () => {
-    await plugin(
-      //@ts-ignore
-      req,
-      res
-    )
+    await plugin(req, res)
   })
 })

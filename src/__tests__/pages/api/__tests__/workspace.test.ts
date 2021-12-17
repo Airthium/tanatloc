@@ -9,10 +9,6 @@ describe('pages/api/workspace', () => {
   const res = {} as Response
 
   test('call', async () => {
-    await workspace(
-      //@ts-ignore
-      req,
-      res
-    )
+    await workspace(req, res)
   })
 })

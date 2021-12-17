@@ -2,6 +2,10 @@ import PropTypes from 'prop-types'
 import { useState } from 'react'
 
 import { ISimulation } from '@/database/index.d'
+import {
+  IModelBoundaryCondition,
+  IModelBoundaryConditionValue
+} from '@/models/index.d'
 
 import { DeleteButton } from '@/components/assets/button'
 import { Error } from '@/components/assets/notification'
@@ -53,20 +57,21 @@ const Delete = ({ simulation, type, index, swr }: IProps): JSX.Element => {
       // Update local
       const boundaryConditions =
         newSimulation.scheme.configuration.boundaryConditions
-      const typedBoundaryCondition = boundaryConditions[type]
+      const typedBoundaryCondition = boundaryConditions[type] as {
+        label: string
+        refineFactor?: number
+        children?: IModelBoundaryCondition[]
+        values?: IModelBoundaryConditionValue[]
+      }
 
       // (unselect)
-      //@ts-ignore
       const boundaryCondition = typedBoundaryCondition.values[index]
       boundaryCondition.selected.forEach((s: { uuid: string }) => {
         dispatch(unselect(s.uuid))
       })
 
-      //@ts-ignore
       typedBoundaryCondition.values = [
-        //@ts-ignore
         ...typedBoundaryCondition.values.slice(0, index),
-        //@ts-ignore
         ...typedBoundaryCondition.values.slice(index + 1)
       ]
 
@@ -74,8 +79,13 @@ const Delete = ({ simulation, type, index, swr }: IProps): JSX.Element => {
       let done = false
       Object.keys(boundaryConditions).forEach((t) => {
         if (t === 'index' || t === 'title' || t === 'done') return
-        //@ts-ignore
-        if (boundaryConditions[t].values?.length) done = true
+        const typedBoundaryCondition = boundaryConditions[t] as {
+          label: string
+          refineFactor?: number
+          children?: IModelBoundaryCondition[]
+          values?: IModelBoundaryConditionValue[]
+        }
+        if (typedBoundaryCondition.values?.length) done = true
       })
       const diff = {
         ...boundaryConditions,

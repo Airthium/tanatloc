@@ -19,13 +19,14 @@ const mailerSend = new MailerSend({
  * @returns Valid
  */
 const send = async (email: string): Promise<boolean> => {
-  const res = await mailerSend.send(email)
-  if (res.status === 401) {
+  if (TOKEN) {
+    const res = await mailerSend.send(email)
+    if (res.status !== 202) throw new Error('Mail error: ' + res.statusText)
+    return true
+  } else {
     console.warn('No email token: email skip!')
     return false
   }
-  if (res.status !== 202) throw new Error('Mail error: ' + res.statusText)
-  return true
 }
 
 /**

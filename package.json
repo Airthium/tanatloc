@@ -15,22 +15,22 @@
     "path": false
   },
   "scripts": {
-    "build": "NEXT_PUBLIC_SOURCE_BRANCH=`git rev-parse --abbrev-ref HEAD` NEXT_PUBLIC_SOURCE_COMMIT=`git rev-parse --short HEAD` next build",
+    "build": "NEXT_PUBLIC_SOURCE_BRANCH=$(git rev-parse --abbrev-ref HEAD) NEXT_PUBLIC_SOURCE_COMMIT=$(git rev-parse --short HEAD) next build",
     "depcheck": "node config/depcheck/depcheckrc.js",
-    "dev": "NODE_OPTIONS=\"--max_old_space_size=8192\" NEXT_PUBLIC_SOURCE_BRANCH=`git rev-parse --abbrev-ref HEAD` NEXT_PUBLIC_SOURCE_COMMIT=`git rev-parse --short HEAD` next",
+    "dev": "NODE_OPTIONS=\"--max_old_space_size=8192\" NEXT_PUBLIC_SOURCE_BRANCH=$(git rev-parse --abbrev-ref HEAD) NEXT_PUBLIC_SOURCE_COMMIT=$(git rev-parse --short HEAD) next",
     "doc": "typedoc --options config/typedoc/config.json",
-    "export": "yarn build && next export",
+    "export": "yarn run build && next export",
     "prestartconfig": "swc config --out-dir dist-install/config",
     "prestartdatabase": "swc src/database --out-dir dist-install/src",
     "prestartinstall": "swc install --out-dir dist-install/install",
     "prestartrun": "node dist-install/install",
-    "prestartwithoutrun": "yarn prestartconfig && yarn prestartinstall && yarn prestartdatabase",
+    "prestartwithoutrun": "yarn run prestartconfig && yarn run prestartinstall && yarn run prestartdatabase",
     "prettier": "prettier -l '**/*.{js,jsx,ts,tsx,json,md,css}'",
     "prettier:write": "prettier --write '**/*.{js,jsx,ts,tsx,json,md,css}'",
-    "prestart": "yarn prestartconfig && yarn prestartinstall && yarn prestartdatabase && yarn prestartrun",
+    "prestart": "yarn run prestartconfig && yarn run prestartinstall && yarn run prestartdatabase && yarn run prestartrun",
     "start": "NODE_OPTIONS=\"--max_old_space_size=8192\" next start",
     "test": "jest --config config/jest/jest.config.js --coverage --silent",
-    "preteste2e": "DB_DATABASE=tanatloc_test STORAGE_PATH=/tmp/tanatloc_test yarn prestart",
+    "preteste2e": "DB_DATABASE=tanatloc_test STORAGE_PATH=/tmp/tanatloc_test yarn run prestart",
     "teste2e": "jest --config config/jest/e2e/jest.config.js --coverage --silent --runInBand",
     "teste2ewatch": "jest --config config/jest/e2e/jest.config.js --watch --runInBand",
     "testwatch": "jest --config config/jest/jest.config.js --watch",
@@ -118,5 +118,6 @@
     "typescript": "4.5.4",
     "url-join": "4.0.1",
     "uuid": "8.3.2"
-  }
+  },
+  "packageManager": "yarn@3.1.1"
 }

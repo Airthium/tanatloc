@@ -1,5 +1,12 @@
 import Email from '../'
 
+jest.mock('@/config/email', () => ({
+  TOKEN: 'TOKEN',
+  SUBSCRIBE: 'SUBSCRIBE',
+  PASSWORD_RECOVERY: 'PASSWORD_RECOVERY',
+  REVALIDATE: 'REVALIDATE'
+}))
+
 const mockSend = jest.fn()
 jest.mock('mailersend', () => ({
   __esModule: true,
@@ -77,16 +84,6 @@ describe('lib/email', () => {
       expect(mockLinkDel).toHaveBeenCalledTimes(1)
       expect(err.message).toBe('Mail error: Unprocessable Entity')
     }
-
-    // Unauthorized
-    mockSend.mockImplementation(() => ({
-      status: 401,
-      statusText: 'Unauthorized'
-    }))
-    await Email.subscribe('email', 'id')
-    expect(mockLinkAdd).toHaveBeenCalledTimes(3)
-    expect(mockSend).toHaveBeenCalledTimes(3)
-    expect(mockUserUpdate).toHaveBeenCalledTimes(1)
   })
 
   test('recover', async () => {

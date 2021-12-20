@@ -3,20 +3,20 @@
 set -e
 
 # Install
-yarn
+yarn install
 
 # Depcheck
-yarn depcheck
+yarn run depcheck
 
 # Lint
-yarn prettier
+yarn run prettier
 
 # Doc
-yarn doc
+yarn run doc
 
 # Test
-yarn test | true
+yarn run test | true
 
 # Build
 rm -Rf .next
-yarn build
+yarn run build

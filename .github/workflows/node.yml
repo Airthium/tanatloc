@@ -21,19 +21,19 @@ jobs:
         run: yarn install
 
       - name: Depcheck
-        run: yarn depcheck
+        run: yarn run depcheck
 
       - name: Lint
-        run: yarn prettier
+        run: yarn run prettier
 
       - name: Tests
-        run: yarn test || true
+        run: yarn run test || true
 
       - name: Unsubscribe
-        run: yarn next telemetry disable
+        run: yarn run next telemetry disable
 
       - name: Build
-        run: yarn build
+        run: yarn run build
 
       - name: SonarCloud scan
         uses: sonarsource/sonarcloud-github-action@master

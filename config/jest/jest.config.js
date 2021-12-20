@@ -18,7 +18,7 @@ module.exports = {
     '<rootDir>/**/*.test.ts',
     '<rootDir>/**/*.test.tsx'
   ],
-  modulePathIgnorePatterns: ['<rootDir>/tests'],
+  modulePathIgnorePatterns: ['<rootDir>/.yarn', '<rootDir>/tests'],
   transform: {
     '^.+\\.(t|j)sx?$': '@swc/jest',
     '^.+\\.(css)$': '<rootDir>/config/jest/cssTransform.js'

@@ -4,11 +4,11 @@ import ProjectPage from '@/components/project'
  * Project
  * @memberof Pages
  */
-const _id_ = (): JSX.Element => {
+const Project = (): JSX.Element => {
   /**
    * Render
    */
   return <ProjectPage />
 }
 
-export default _id_
+export default Project //NOSONAR

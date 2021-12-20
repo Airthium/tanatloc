@@ -12,4 +12,4 @@ const id = async (req: Request, res: Response): Promise<void> => {
   await route(req, res)
 }
 
-export default id
+export default id //NOSONAR

@@ -5,8 +5,6 @@ import { Box3, Color, Raycaster, Vector2, Vector3 } from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader'
 
-// TODO edges not supported for now
-
 /**
  * PartLoader
  * @memberof Lib.Three.Loaders
@@ -272,9 +270,6 @@ const PartLoader = (mouseMoveEvent, mouseDownEvent) => {
     for (const face of faces.children) {
       if (face.userData.uuid === uuid) return face
     }
-
-    // Search in edges
-    // TODO
   }
 
   /**

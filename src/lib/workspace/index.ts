@@ -226,6 +226,25 @@ const getByUser = async ({
 }
 
 /**
+ * Delete from group
+ * @param group Group
+ * @param workspace Workspace
+ */
+const deleteFromGroup = async (
+  group: { id: string },
+  workspace: { id: string }
+) => {
+  await Group.update({ id: group.id }, [
+    {
+      key: 'workspaces',
+      type: 'array',
+      method: 'remove',
+      value: workspace.id
+    }
+  ])
+}
+
+/**
  * Update
  * @memberof Lib.Workspace
  * @param workspace Workspace
@@ -249,23 +268,16 @@ const update = async (
 
     await Promise.all(
       deleted.map(async (group) => {
-        await Group.update({ id: group.id }, [
-          {
-            key: 'workspaces',
-            type: 'array',
-            method: 'remove',
-            value: workspace.id
-          }
-        ])
+        await deleteFromGroup(group, workspace)
       })
     )
 
     // Added groups
     const added = groupsUpdate.value.filter(
-      (g) => !workspaceData.groups.find((gg) => gg.id === g)
+      (group: string) => !workspaceData.groups.find((g) => g.id === group)
     )
     await Promise.all(
-      added.map(async (group) => {
+      added.map(async (group: { id: string }) => {
         await Group.update({ id: group.id }, [
           {
             key: 'workspaces',
@@ -299,14 +311,7 @@ const del = async (
   if (data.groups) {
     await Promise.all(
       data.groups.map(async (group) => {
-        await Group.update({ id: group.id }, [
-          {
-            key: 'workspaces',
-            type: 'array',
-            method: 'remove',
-            value: workspace.id
-          }
-        ])
+        await deleteFromGroup(group, workspace)
       })
     )
   }

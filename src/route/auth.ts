@@ -10,6 +10,29 @@ import SimulationLib from '@/lib/simulation'
 import { IProject, IWorkspace, IOrganization } from '@/database/index.d'
 
 /**
+ * Check authorization from group
+ * @param user User
+ * @param object Object
+ * @returns True / false
+ */
+const authGroup = async (
+  user: { id: string },
+  object: IProject | IWorkspace | IOrganization
+) => {
+  for (let group of object.groups) {
+    const groupData = await GroupLib.get(group, ['organization'])
+    const organizationData = await OrganizationLib.get(groupData.organization, [
+      'owners',
+      'users'
+    ])
+
+    if (await auth(user, organizationData)) return true
+  }
+
+  return false
+}
+
+/**
  * Check authorization
  * @memberof Route
  * @param user User
@@ -33,28 +56,10 @@ const auth = async (
     return true
 
   // Objects groups
-  if (object?.groups)
-    for (let group of object.groups) {
-      const groupData = await GroupLib.get(group, ['organization'])
-      const organizationData = await OrganizationLib.get(
-        groupData.organization,
-        ['owners', 'users']
-      )
-
-      if (await auth(user, organizationData)) return true
-    }
+  if (object?.groups) if (await authGroup(user, object)) return true
 
   // Parent objects groups
-  if (parentObject?.groups)
-    for (let group of parentObject.groups) {
-      const groupData = await GroupLib.get(group, ['organization'])
-      const organizationData = await OrganizationLib.get(
-        groupData.organization,
-        ['owners', 'users']
-      )
-
-      if (await auth(user, organizationData)) return true
-    }
+  if (parentObject?.groups) if (await authGroup(user, parentObject)) return true
 
   return false
 }

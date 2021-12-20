@@ -160,6 +160,25 @@ const getWithData = async (
 }
 
 /**
+ * Delete from group
+ * @param group Group
+ * @param project Project
+ */
+const deleteFromGroup = async (
+  group: { id: string },
+  project: { id: string }
+) => {
+  await Group.update({ id: group.id }, [
+    {
+      key: 'projects',
+      type: 'array',
+      method: 'remove',
+      value: project.id
+    }
+  ])
+}
+
+/**
  * Update
  * @memberof Lib.Project
  * @param Project Project
@@ -190,14 +209,7 @@ const update = async (
 
     await Promise.all(
       deleted.map(async (group) => {
-        await Group.update({ id: group }, [
-          {
-            key: 'projects',
-            type: 'array',
-            method: 'remove',
-            value: project.id
-          }
-        ])
+        await deleteFromGroup({ id: group }, project)
       })
     )
 
@@ -239,14 +251,7 @@ const del = async (
   if (data.groups) {
     await Promise.all(
       data.groups.map(async (group) => {
-        await Group.update({ id: group }, [
-          {
-            key: 'projects',
-            type: 'array',
-            method: 'remove',
-            value: project.id
-          }
-        ])
+        await deleteFromGroup({ id: group }, project)
       })
     )
   }

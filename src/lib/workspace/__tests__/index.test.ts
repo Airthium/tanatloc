@@ -141,20 +141,51 @@ describe('lib/workspace', () => {
       projects: ['id']
     }))
     mockGet.mockImplementation(() => ({
-      name: 'name'
+      name: 'name',
+      owners: ['id']
     }))
     const workspaces = await Workspace.getByUser({ id: 'id' })
     expect(mockAdd).toHaveBeenCalledTimes(0)
     expect(mockGet).toHaveBeenCalledTimes(3)
     expect(mockUpdate).toHaveBeenCalledTimes(0)
     expect(mockDelete).toHaveBeenCalledTimes(0)
-    expect(mockUserGet).toHaveBeenCalledTimes(1)
+    expect(mockUserGet).toHaveBeenCalledTimes(4)
     expect(mockUserUpdate).toHaveBeenCalledTimes(0)
     expect(mockDelProject).toHaveBeenCalledTimes(0)
     expect(workspaces).toEqual([
-      { id: 'id', name: 'name' },
-      { id: 'id', name: 'name' },
-      { id: 'id', name: 'name', owners: [] },
+      {
+        id: 'id',
+        name: 'name',
+        owners: [
+          {
+            id: 'id',
+            workspaces: ['id', 'id'],
+            organizations: ['id']
+          }
+        ]
+      },
+      {
+        id: 'id',
+        name: 'name',
+        owners: [
+          {
+            id: 'id',
+            workspaces: ['id', 'id'],
+            organizations: ['id']
+          }
+        ]
+      },
+      {
+        id: 'id',
+        name: 'name',
+        owners: [
+          {
+            id: 'id',
+            workspaces: ['id', 'id'],
+            organizations: ['id']
+          }
+        ]
+      },
       {
         id: '0',
         groups: [{ id: 'id', name: 'name' }],
@@ -174,7 +205,7 @@ describe('lib/workspace', () => {
     expect(mockGet).toHaveBeenCalledTimes(6)
     expect(mockUpdate).toHaveBeenCalledTimes(0)
     expect(mockDelete).toHaveBeenCalledTimes(0)
-    expect(mockUserGet).toHaveBeenCalledTimes(5)
+    expect(mockUserGet).toHaveBeenCalledTimes(8)
     expect(mockUserUpdate).toHaveBeenCalledTimes(0)
     expect(mockDelProject).toHaveBeenCalledTimes(0)
 
@@ -185,7 +216,7 @@ describe('lib/workspace', () => {
     expect(mockGet).toHaveBeenCalledTimes(8)
     expect(mockUpdate).toHaveBeenCalledTimes(0)
     expect(mockDelete).toHaveBeenCalledTimes(0)
-    expect(mockUserGet).toHaveBeenCalledTimes(8)
+    expect(mockUserGet).toHaveBeenCalledTimes(11)
     expect(mockUserUpdate).toHaveBeenCalledTimes(0)
     expect(mockDelProject).toHaveBeenCalledTimes(0)
 
@@ -197,7 +228,7 @@ describe('lib/workspace', () => {
     expect(mockGet).toHaveBeenCalledTimes(10)
     expect(mockUpdate).toHaveBeenCalledTimes(0)
     expect(mockDelete).toHaveBeenCalledTimes(0)
-    expect(mockUserGet).toHaveBeenCalledTimes(11)
+    expect(mockUserGet).toHaveBeenCalledTimes(14)
     expect(mockUserUpdate).toHaveBeenCalledTimes(0)
     expect(mockDelProject).toHaveBeenCalledTimes(0)
 
@@ -209,7 +240,7 @@ describe('lib/workspace', () => {
     expect(mockGet).toHaveBeenCalledTimes(10)
     expect(mockUpdate).toHaveBeenCalledTimes(0)
     expect(mockDelete).toHaveBeenCalledTimes(0)
-    expect(mockUserGet).toHaveBeenCalledTimes(12)
+    expect(mockUserGet).toHaveBeenCalledTimes(15)
     expect(mockUserUpdate).toHaveBeenCalledTimes(0)
     expect(mockDelProject).toHaveBeenCalledTimes(0)
   })

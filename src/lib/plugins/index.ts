@@ -41,7 +41,7 @@ load()
       console.error('Restart jobs failed!')
     })
   })
-  .catch(() => {
+  .catch((err) => {
     console.error('Plugins load failed!')
   })
 

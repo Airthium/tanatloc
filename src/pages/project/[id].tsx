@@ -11,4 +11,4 @@ const Project = (): JSX.Element => {
   return <ProjectPage />
 }
 
-export default Project //NOSONAR
+export default Project

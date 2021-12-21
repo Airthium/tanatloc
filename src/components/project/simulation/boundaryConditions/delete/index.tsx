@@ -79,13 +79,13 @@ const Delete = ({ simulation, type, index, swr }: IProps): JSX.Element => {
       let done = false
       Object.keys(boundaryConditions).forEach((t) => {
         if (t === 'index' || t === 'title' || t === 'done') return
-        const typedBoundaryCondition = boundaryConditions[t] as {
+        const ttypedBoundaryCondition = boundaryConditions[t] as {
           label: string
           refineFactor?: number
           children?: IModelBoundaryCondition[]
           values?: IModelBoundaryConditionValue[]
         }
-        if (typedBoundaryCondition.values?.length) done = true
+        if (ttypedBoundaryCondition.values?.length) done = true
       })
       const diff = {
         ...boundaryConditions,

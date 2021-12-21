@@ -528,9 +528,7 @@ const ThreeView = ({ loading, project, part }: IThreeProps): JSX.Element => {
       part,
       transparent,
       sectionViewHelper.current.getClippingPlane()
-      // outlinePass.current
     )
-    //TODO outlinepass
 
     // Scene
     scene.current.add(mesh)

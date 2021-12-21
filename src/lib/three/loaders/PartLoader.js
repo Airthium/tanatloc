@@ -24,7 +24,6 @@ const PartLoader = (mouseMoveEvent, mouseDownEvent) => {
    * @param {Object} clippingPlane Clipping plane
    */
   const load = async (part, transparent, clippingPlane) => {
-    // TODO bug with GLB format: JSON content not found
     const blob = new Blob([Buffer.from(part.buffer)])
     const url = URL.createObjectURL(blob)
 

@@ -15,10 +15,12 @@ jobs:
 
       - uses: actions/setup-node@master
         with:
-          node-version: '16.3.0'
+          node-version: '16.13.1'
 
       - name: Install
         run: yarn install
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.SUBMODULES_TOKEN }}
 
       - name: Depcheck
         run: yarn run depcheck

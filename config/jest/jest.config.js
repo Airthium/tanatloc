@@ -60,7 +60,6 @@ module.exports = {
     '<rootDir>/config/typedoc/',
     '<rootDir>/public/',
     '<rootDir>/tests/',
-    '<rootDir>/modules/three-to-glb/lib/three/',
     '<rootDir>/src/components/editor/prism/'
   ]
 }

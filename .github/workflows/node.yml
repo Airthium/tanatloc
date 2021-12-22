@@ -22,7 +22,7 @@ jobs:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
       - name: Install
-        run: yarn install
+        run: YARN_CHECKSUM_BEHAVIOR=update yarn install
 
       - name: Depcheck
         run: yarn run depcheck

@@ -17,10 +17,12 @@ jobs:
         with:
           node-version: '16.13.1'
 
+      - uses: webfactory/ssh-agent@master
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
       - name: Install
         run: yarn install
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.SUBMODULES_TOKEN }}
 
       - name: Depcheck
         run: yarn run depcheck

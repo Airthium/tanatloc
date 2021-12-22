@@ -37,7 +37,7 @@ jest.mock('tar', () => ({
 
 const mockThreeToGLB = jest.fn()
 jest.mock('three-to-glb', () => ({
-  convert: () => mockThreeToGLB()
+  threeToGlb: () => mockThreeToGLB()
 }))
 
 const mockToThree = jest.fn()

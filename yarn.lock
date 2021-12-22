@@ -8229,7 +8229,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pg-native@git+ssh://git@github.com:Airthium/pg-native.git":
+"pg-native@git+ssh://git@github.com:Airthium/pg-native.git#main":
   version: 1.0.0
   resolution: "pg-native@git+ssh://git@github.com:Airthium/pg-native.git#commit=e0712b8762646d2c8933a8adb7dd908a7469b678"
   checksum: 3aabbc940eead3e5f835c0cc7ab4c858eb5b94d7cfa76e1dbb26257a2c558f55f9f0e640afef9b01ef245c3e59cd3d1938337bbaaf9d9a748051306d2504e6cd
@@ -10449,7 +10449,7 @@ __metadata:
     passport-local: 1.0.0
     pg: 8.7.1
     pg-format: 1.0.4
-    pg-native: "git+ssh://git@github.com:Airthium/pg-native.git"
+    pg-native: "git+ssh://git@github.com:Airthium/pg-native.git#main"
     prettier: 2.5.1
     prism-themes: 1.9.0
     prismjs: 1.25.0
@@ -10466,7 +10466,7 @@ __metadata:
     swr: 1.1.1
     tar: 6.1.11
     three: 0.135.0
-    three-to-glb: "git+ssh://git@github.com:Airthium/three-to-glb.git"
+    three-to-glb: "git+ssh://git@github.com:Airthium/three-to-glb.git#master"
     typedoc: 0.22.10
     typescript: 4.5.4
     url-join: 4.0.1
@@ -10529,7 +10529,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"three-to-glb@git+ssh://git@github.com:Airthium/three-to-glb.git":
+"three-to-glb@git+ssh://git@github.com:Airthium/three-to-glb.git#master":
   version: 1.0.1
   resolution: "three-to-glb@git+ssh://git@github.com:Airthium/three-to-glb.git#commit=f42ec04e52461f86c701b443e86462ec99c7897c"
   dependencies:

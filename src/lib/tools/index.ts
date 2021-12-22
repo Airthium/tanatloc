@@ -10,7 +10,7 @@ import {
   promises as fs
 } from 'fs'
 import tar from 'tar'
-import ThreeToGLB from 'three-to-glb'
+import { threeToGlb } from 'three-to-glb'
 
 import Services from '@/services'
 
@@ -199,7 +199,7 @@ const convert = async (
 
     await Promise.all(
       results.map(async (result: { path: string }) => {
-        const glb = await ThreeToGLB.convert(
+        const glb = await threeToGlb(
           path.join(location, result.path),
           'part.json'
         )
@@ -207,10 +207,7 @@ const convert = async (
       })
     )
   } else {
-    const glb = await ThreeToGLB.convert(
-      path.join(location, jsonTarget),
-      'part.json'
-    )
+    const glb = await threeToGlb(path.join(location, jsonTarget), 'part.json')
     await writeFile(location, glbTarget, JSON.stringify(glb))
   }
 

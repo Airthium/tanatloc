@@ -66,6 +66,7 @@ Pre-requirements:
 Start:
 
 - `yarn`
+- `yarn prestart`
 - `yarn dev`
 
 ## Deployment

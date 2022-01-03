@@ -93,7 +93,7 @@
     "passport": "0.5.2",
     "passport-local": "1.0.0",
     "pg": "8.7.1",
-    "pg-format": "1.0.4",
+    "pg-format": "ssh://git@github.com:Airthium/node-pg-format.git",
     "pg-native": "ssh://git@github.com:Airthium/pg-native.git#main",
     "prettier": "2.5.1",
     "prism-themes": "1.9.0",

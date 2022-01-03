@@ -7,7 +7,7 @@ import Information from './information'
 import Configuration from './configuration'
 import Script from './script'
 
-type TValue = boolean | number | string
+export type TValue = boolean | number | string
 
 export interface IConfiguration {
   name?: string

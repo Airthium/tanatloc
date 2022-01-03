@@ -40,7 +40,7 @@ const Results = ({ visible, results, onOk, onClose }: IProps): JSX.Element => {
       <Form.List name="fields" initialValue={results?.fields}>
         {(fields, { add, remove }) => (
           <>
-            {fields.map(({ key, name, fieldKey, ...restField }) => (
+            {fields.map(({ key, name, ...restField }) => (
               <div key={key}>
                 <Space>
                   Result field {name + 1}
@@ -55,7 +55,6 @@ const Results = ({ visible, results, onOk, onClose }: IProps): JSX.Element => {
                   {...restField}
                   label="Name"
                   name={[name, 'name']}
-                  fieldKey={[fieldKey, 'name']}
                   rules={[{ required: true }]}
                 >
                   <Input />
@@ -73,7 +72,7 @@ const Results = ({ visible, results, onOk, onClose }: IProps): JSX.Element => {
       >
         {(fields, { add, remove }) => (
           <>
-            {fields.map(({ key, name, fieldKey, ...restField }) => (
+            {fields.map(({ key, name, ...restField }) => (
               <div key={key}>
                 <Space>
                   Filter
@@ -88,7 +87,6 @@ const Results = ({ visible, results, onOk, onClose }: IProps): JSX.Element => {
                   {...restField}
                   label="Name"
                   name={[name, 'name']}
-                  fieldKey={[fieldKey, 'name']}
                   rules={[{ required: true }]}
                 >
                   <Input />
@@ -96,29 +94,19 @@ const Results = ({ visible, results, onOk, onClose }: IProps): JSX.Element => {
                 <Form.Item
                   label="Prefix pattern"
                   name={[name, 'prefixPattern']}
-                  fieldKey={[fieldKey, 'prefixPattern']}
                 >
                   <Input />
                 </Form.Item>
                 <Form.Item
                   label="Suffix pattern"
                   name={[name, 'suffixPattern']}
-                  fieldKey={[fieldKey, 'suffixPattern']}
                 >
                   <Input />
                 </Form.Item>
-                <Form.Item
-                  label="Pattern"
-                  name={[name, 'pattern']}
-                  fieldKey={[fieldKey, 'pattern']}
-                >
+                <Form.Item label="Pattern" name={[name, 'pattern']}>
                   <Input />
                 </Form.Item>
-                <Form.Item
-                  label="Multiplicator"
-                  name={[name, 'multiplicator']}
-                  fieldKey={[fieldKey, 'multiplicator']}
-                >
+                <Form.Item label="Multiplicator" name={[name, 'multiplicator']}>
                   TODO
                 </Form.Item>
               </div>

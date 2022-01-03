@@ -47,7 +47,7 @@ const Parameters = ({
       <Form.List name="parameters" initialValue={parameters?.children}>
         {(fields, { add, remove }) => (
           <>
-            {fields.map(({ key, name, fieldKey, ...restField }) => (
+            {fields.map(({ key, name, ...restField }) => (
               <div key={key}>
                 <Space>
                   Parameters {name + 1}
@@ -62,7 +62,6 @@ const Parameters = ({
                   {...restField}
                   label="Label"
                   name={[name, 'label']}
-                  fieldKey={[fieldKey, 'label']}
                   rules={[{ required: true }]}
                 >
                   <Input />
@@ -71,7 +70,6 @@ const Parameters = ({
                   {...restField}
                   label="Default value"
                   name={[name, 'default']}
-                  fieldKey={[fieldKey, 'default']}
                   rules={[{ required: true }]}
                 >
                   <Input />
@@ -80,7 +78,6 @@ const Parameters = ({
                   {...restField}
                   label="Unit"
                   name={[name, 'unit']}
-                  fieldKey={[fieldKey, 'unit']}
                   rules={[{ required: true }]}
                 >
                   <Input />

@@ -54,7 +54,7 @@ const Initialization = ({
       <Form.List name="inputs" initialValue={initialization?.children}>
         {(fields, { add, remove }) => (
           <>
-            {fields.map(({ key, name, fieldKey, ...restField }) => (
+            {fields.map(({ key, name, ...restField }) => (
               <div key={key}>
                 <Space>
                   Input {name + 1}
@@ -69,7 +69,6 @@ const Initialization = ({
                   {...restField}
                   label="Label"
                   name={[name, 'label']}
-                  fieldKey={[fieldKey, 'label']}
                   rules={[{ required: true }]}
                 >
                   <Input />
@@ -78,7 +77,6 @@ const Initialization = ({
                   {...restField}
                   label="Default value"
                   name={[name, 'default']}
-                  fieldKey={[fieldKey, 'default']}
                   rules={[{ required: true }]}
                 >
                   <Input />
@@ -87,7 +85,6 @@ const Initialization = ({
                   {...restField}
                   label="Unit"
                   name={[name, 'unit']}
-                  fieldKey={[fieldKey, 'unit']}
                   rules={[{ required: true }]}
                 >
                   <Input />
@@ -115,7 +112,7 @@ const Initialization = ({
       >
         {(fields, { add, remove }) => (
           <>
-            {fields.map(({ key, name, fieldKey, ...restField }) => (
+            {fields.map(({ key, name, ...restField }) => (
               <div key={key}>
                 <Space>
                   Compatibility {name + 1}
@@ -130,7 +127,6 @@ const Initialization = ({
                   {...restField}
                   label="Algorithm"
                   name={[name, 'algorithm']}
-                  fieldKey={[fieldKey, 'algorithm']}
                   rules={[{ required: true }]}
                 >
                   <Select>
@@ -145,7 +141,6 @@ const Initialization = ({
                   {...restField}
                   label="Filter name"
                   name={[name, 'filter.name']}
-                  fieldKey={[fieldKey, 'filter.name']}
                   rules={[{ required: true }]}
                 >
                   <Input />
@@ -154,7 +149,6 @@ const Initialization = ({
                   {...restField}
                   label="Filter prefix pattern"
                   name={[name, 'filter.prefixPattern']}
-                  fieldKey={[fieldKey, 'filter.prefixPattern']}
                 >
                   <Input />
                 </Form.Item>
@@ -162,7 +156,6 @@ const Initialization = ({
                   {...restField}
                   label="Filter suffix pattern"
                   name={[name, 'filter.suffixPattern']}
-                  fieldKey={[fieldKey, 'filter.suffixPattern']}
                 >
                   <Input />
                 </Form.Item>
@@ -170,7 +163,6 @@ const Initialization = ({
                   {...restField}
                   label="Filter pattern"
                   name={[name, 'filter.pattern']}
-                  fieldKey={[fieldKey, 'filter.pattern']}
                 >
                   <Input />
                 </Form.Item>
@@ -178,7 +170,6 @@ const Initialization = ({
                   {...restField}
                   label="Filter multiplicator"
                   name={[name, 'filter.multiplicator']}
-                  fieldKey={[fieldKey, 'filter.multiplicator']}
                 >
                   TODO
                 </Form.Item>

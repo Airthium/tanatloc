@@ -36,7 +36,7 @@
     "depcheck/@babel/parser": "7.16.4"
   },
   "dependencies": {
-    "electron": "16.0.5",
+    "electron": "16.0.6",
     "electron-serve": "1.1.0",
     "electron-store": "8.0.1"
   },
@@ -64,7 +64,7 @@
     "@types/react": "17.0.38",
     "@types/set-interval-async": "1.0.0",
     "@types/tar": "6.1.1",
-    "@types/three": "0.135.0",
+    "@types/three": "0.136.0",
     "@types/url-join": "4.0.1",
     "@types/uuid": "8.3.3",
     "antd": "4.18.2",

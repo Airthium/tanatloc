@@ -1924,10 +1924,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/three@npm:0.135.0":
-  version: 0.135.0
-  resolution: "@types/three@npm:0.135.0"
-  checksum: 85977e55cc3d7a14be88816a50bcec4eb0f141876d3cdc6dd7870f72122605af87462d7583e950cd0ee6ab21949b8c1b8304a88174d536648deb8ef97968fa1b
+"@types/three@npm:0.136.0":
+  version: 0.136.0
+  resolution: "@types/three@npm:0.136.0"
+  checksum: eb2f8074a9f1bc2fe8a0f7bd890028d910d258a1a94d8c64fa6d576b2888f94a3b97ef5098a3db72854cb2c74d31a7d46ab4706faf812ac85d9821a75f57cff4
   languageName: node
   linkType: hard
 
@@ -4131,16 +4131,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"electron@npm:16.0.5":
-  version: 16.0.5
-  resolution: "electron@npm:16.0.5"
+"electron@npm:16.0.6":
+  version: 16.0.6
+  resolution: "electron@npm:16.0.6"
   dependencies:
     "@electron/get": ^1.13.0
     "@types/node": ^14.6.2
     extract-zip: ^1.0.3
   bin:
     electron: cli.js
-  checksum: 5b24d00e165d74d8039ac85646fb5953e3755bd503e0ffb27fe3a72c7f8acf8449fc661f51a1a8b42387e311aa44f161105796e13ed45ace4a3d8e0e586ece38
+  checksum: 0b0c7e109c871ced64493bdf7a39b334b732909228375d4bdb268f97de5a487f5e34fe763f72b9ab5be4ba35de861b3bd76efb1417207729b6146877f644fc81
   languageName: node
   linkType: hard
 
@@ -10486,7 +10486,7 @@ __metadata:
     "@types/react": 17.0.38
     "@types/set-interval-async": 1.0.0
     "@types/tar": 6.1.1
-    "@types/three": 0.135.0
+    "@types/three": 0.136.0
     "@types/url-join": 4.0.1
     "@types/uuid": 8.3.3
     antd: 4.18.2
@@ -10496,7 +10496,7 @@ __metadata:
     deep-object-diff: 1.1.0
     depcheck: 1.4.2
     ejs: 3.1.6
-    electron: 16.0.5
+    electron: 16.0.6
     electron-serve: 1.1.0
     electron-store: 8.0.1
     email-addresses: 5.0.0

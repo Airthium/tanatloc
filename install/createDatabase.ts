@@ -57,7 +57,7 @@ export const createDatabase = async (): Promise<void> => {
     )
     if (checkUser.rowCount === 0) {
       const createUserQuery = format(
-        'CREATE USER %s WITH ENCRYPTED PASSWORD %s',
+        "CREATE USER %s WITH ENCRYPTED PASSWORD '%s'",
         USER,
         PASSWORD
       )

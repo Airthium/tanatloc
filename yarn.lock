@@ -1780,13 +1780,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/pg-format@npm:1.0.2":
-  version: 1.0.2
-  resolution: "@types/pg-format@npm:1.0.2"
-  checksum: 1638dc13fef4aa947a959188d5d539039dd772254f83b7299823839fc761e6fee089129c0f2b3c3a9bdd631eee4cc443663698c35bafd101de3658b0511a13d8
-  languageName: node
-  linkType: hard
-
 "@types/pg@npm:8.6.3":
   version: 8.6.3
   resolution: "@types/pg@npm:8.6.3"
@@ -8256,10 +8249,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pg-format@ssh://git@github.com:Airthium/pg-format.git#v1.0.5":
-  version: 1.0.5
-  resolution: "pg-format@ssh://git@github.com:Airthium/pg-format.git#commit=c2816c9857365df8bf9e41b0a4a4ffe77985a2f4"
-  checksum: 3ec7b2f275188f86dcef265d9fcdc3f913190228eb4b2228957183e22bad63173585f8f233c5e33d59144522c49fefc93e827950981cf74e0b877290e6c18171
+"pg-format@ssh://git@github.com:Airthium/pg-format.git#1.0.6":
+  version: 1.0.6
+  resolution: "pg-format@ssh://git@github.com:Airthium/pg-format.git#commit=06c8ed8668ce440573ab6a9ac1f7ef195eb50495"
+  checksum: c42bea72c16dd61a4a5c48a258862026831307be6c103df135b73c2789443fd37c10c6f1a6724424bd2396383a833da61a8eaf473e30b2e8042ce90d93ac86f0
   languageName: node
   linkType: hard
 
@@ -10481,7 +10474,6 @@ __metadata:
     "@types/passport": 1.0.7
     "@types/passport-local": 1.0.34
     "@types/pg": 8.6.3
-    "@types/pg-format": 1.0.2
     "@types/prismjs": 1.16.6
     "@types/react": 17.0.38
     "@types/set-interval-async": 1.0.0
@@ -10518,7 +10510,7 @@ __metadata:
     passport: 0.5.2
     passport-local: 1.0.0
     pg: 8.7.1
-    pg-format: "ssh://git@github.com:Airthium/pg-format.git#v1.0.5"
+    pg-format: "ssh://git@github.com:Airthium/pg-format.git#1.0.6"
     pg-native: "ssh://git@github.com:Airthium/pg-native.git#main"
     prettier: 2.5.1
     prism-themes: 1.9.0

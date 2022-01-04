@@ -21,8 +21,14 @@ const freefem = async (
         cwd: path
       })
     } else {
-      const user = execSync('id -u').toString().trim()
-      const group = execSync('id -g').toString().trim()
+      const user =
+        process.platform === 'win32'
+          ? 1000
+          : execSync('id -u').toString().trim()
+      const group =
+        process.platform === 'win32'
+          ? 1000
+          : execSync('id -g').toString().trim()
       run = spawn('docker', [
         'run',
         '--rm',

@@ -26,7 +26,6 @@ const loadTemplates = async () => {
         )
       )
       const func = await ejs.compile(content.toString(), {
-        async: true,
         root: path.join(
           isElectron() ? process.resourcesPath : './',
           'templates'
@@ -52,7 +51,6 @@ const loadTemplates = async () => {
               )
             )
             const func = await ejs.compile(content.toString(), {
-              async: true,
               root: path.join(
                 isElectron() ? process.resourcesPath : './',
                 'templates'

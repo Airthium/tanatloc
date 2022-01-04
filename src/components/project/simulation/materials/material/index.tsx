@@ -73,10 +73,12 @@ const Material = ({
    * On select
    * @param {Object} selected Selected
    */
-  const onSelected = (selected) => {
+  const onSelected = (selected: string[]) => {
     setCurrent({
       ...current,
-      selected
+      selected: selected.map((s) => ({
+        uuid: s
+      }))
     })
   }
 

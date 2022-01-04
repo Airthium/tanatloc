@@ -239,10 +239,12 @@ const BoundaryCondition = ({
    * On selected
    * @param selected Selected
    */
-  const onSelected = (selected: {}[]): void => {
+  const onSelected = (selected: string[]): void => {
     setCurrent({
       ...current,
-      selected: selected
+      selected: selected.map((s) => ({
+        uuid: s
+      }))
     })
   }
 

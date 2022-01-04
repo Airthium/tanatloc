@@ -8256,10 +8256,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pg-format@ssh://git@github.com:Airthium/node-pg-format.git#master":
-  version: 1.0.4
-  resolution: "pg-format@ssh://git@github.com:Airthium/node-pg-format.git#commit=c103ba8fc9133cd3b72e60e00a97bfccc20a132b"
-  checksum: 858dba4286e5ea28c89696d689d2022102342bf96cf518f3162322dbf11a8aa4fd161c07b7306061a39649f60d5eaba5b0c0e43e4c183567eaf5cf4a2a68e744
+"pg-format@ssh://git@github.com:Airthium/pg-format.git#v1.0.5":
+  version: 1.0.5
+  resolution: "pg-format@ssh://git@github.com:Airthium/pg-format.git#commit=c2816c9857365df8bf9e41b0a4a4ffe77985a2f4"
+  checksum: 3ec7b2f275188f86dcef265d9fcdc3f913190228eb4b2228957183e22bad63173585f8f233c5e33d59144522c49fefc93e827950981cf74e0b877290e6c18171
   languageName: node
   linkType: hard
 
@@ -10518,7 +10518,7 @@ __metadata:
     passport: 0.5.2
     passport-local: 1.0.0
     pg: 8.7.1
-    pg-format: "ssh://git@github.com:Airthium/node-pg-format.git#master"
+    pg-format: "ssh://git@github.com:Airthium/pg-format.git#v1.0.5"
     pg-native: "ssh://git@github.com:Airthium/pg-native.git#main"
     prettier: 2.5.1
     prism-themes: 1.9.0

@@ -78,6 +78,7 @@ const Add = ({ visible, project, swr, setVisible }: IProps): JSX.Element => {
         })
 
         // Close
+        setLoading(false)
         setVisible(false)
       } catch (err) {
         ErrorNotification(errors.addError, err)

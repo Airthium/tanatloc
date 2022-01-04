@@ -203,12 +203,12 @@ const convert = async (
           path.join(location, result.path),
           'part.json'
         )
-        await writeFile(location, result.path + '.glb', JSON.stringify(glb))
+        await writeFile(location, result.path + '.glb', glb)
       })
     )
   } else {
     const glb = await threeToGlb(path.join(location, jsonTarget), 'part.json')
-    await writeFile(location, glbTarget, JSON.stringify(glb))
+    await writeFile(location, glbTarget, glb)
   }
 
   return {

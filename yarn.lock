@@ -8263,10 +8263,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pg-native@ssh://git@github.com:Airthium/pg-native.git#main":
-  version: 1.0.0
-  resolution: "pg-native@ssh://git@github.com:Airthium/pg-native.git#commit=e0712b8762646d2c8933a8adb7dd908a7469b678"
-  checksum: 3aabbc940eead3e5f835c0cc7ab4c858eb5b94d7cfa76e1dbb26257a2c558f55f9f0e640afef9b01ef245c3e59cd3d1938337bbaaf9d9a748051306d2504e6cd
+"pg-native@ssh://git@github.com:Airthium/pg-native.git#3.0.0":
+  version: 3.0.0
+  resolution: "pg-native@ssh://git@github.com:Airthium/pg-native.git#commit=c2ca4ef1b6b56ebe4ce406cf8b664e8169a82a94"
+  checksum: 3dec24e6e42bfb42eecdf79c5c44cfadae6adc78a5de50073a8b044c7420ee81a511e14a8553f845f82e3c932929db91506cceaf82c20cbc266cef5f698a214b
   languageName: node
   linkType: hard
 
@@ -10511,7 +10511,7 @@ __metadata:
     passport-local: 1.0.0
     pg: 8.7.1
     pg-format: "ssh://git@github.com:Airthium/pg-format.git#1.0.6"
-    pg-native: "ssh://git@github.com:Airthium/pg-native.git#main"
+    pg-native: "ssh://git@github.com:Airthium/pg-native.git#3.0.0"
     prettier: 2.5.1
     prism-themes: 1.9.0
     prismjs: 1.25.0

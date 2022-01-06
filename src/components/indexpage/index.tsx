@@ -69,6 +69,16 @@ const Index = (): JSX.Element => {
     router.push('/login')
   }
 
+  let gitVersion = ''
+  if (
+    process.env.NEXT_PUBLIC_SOURCE_BRANCH &&
+    process.env.NEXT_PUBLIC_SOURCE_COMMIT
+  )
+    gitVersion =
+      process.env.NEXT_PUBLIC_SOURCE_BRANCH +
+      ' - ' +
+      process.env.NEXT_PUBLIC_SOURCE_COMMIT
+
   /**
    * Render
    */
@@ -240,9 +250,8 @@ const Index = (): JSX.Element => {
             reserved
           </div>
           <div>
-            version {packageJson.version} (git-
-            {process.env.NEXT_PUBLIC_SOURCE_BRANCH}-
-            {process.env.NEXT_PUBLIC_SOURCE_COMMIT})
+            version {packageJson.version}{' '}
+            {gitVersion && <>git - {gitVersion}</>}
           </div>
         </Space>
       </Layout.Footer>

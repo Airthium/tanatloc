@@ -1,24 +1,28 @@
 import { execSync, spawn } from 'child_process'
+import path from 'path'
 import isDocker from 'is-docker'
 
 /**
  * FreeFEM service
  * @memberof Services
  * @param  path Path
- * @param script Script
+ * @param script Script (POSIX path)
  * @param callback Callback
  */
 const freefem = async (
-  path: string,
+  bindPath: string,
   script: string,
   callback: Function
 ): Promise<number> => {
+  // Enfore POSIX
+  script = script.split(path.sep).join(path.posix.sep)
+
   return new Promise((resolve, reject) => {
     let run: any
 
     if (isDocker()) {
       run = spawn('ff-mpirun', [' -np', '1', script, '-ns'], {
-        cwd: path
+        cwd: bindPath
       })
     } else {
       const user =
@@ -32,7 +36,7 @@ const freefem = async (
       run = spawn('docker', [
         'run',
         '--rm',
-        '--volume=' + path + ':/run',
+        '--volume=' + bindPath + ':/run',
         '--user=' + user + ':' + group,
         '-w=/run',
         'tanatloc/worker:latest',

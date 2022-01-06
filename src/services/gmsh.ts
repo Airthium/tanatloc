@@ -1,20 +1,25 @@
 import { execSync, spawn } from 'child_process'
+import path from 'path'
 import isDocker from 'is-docker'
 
 /**
  * Gmsh service
  * @memberof Services
  * @param path Path
- * @param fileIn In file
- * @param fileOut Out file
+ * @param fileIn In file (POSIX path)
+ * @param fileOut Out file (POSIX path)
  * @param callback Callback
  */
 const gmsh = async (
-  path: string,
+  bindPath: string,
   fileIn: string,
   fileOut: string,
   callback: Function
 ): Promise<number> => {
+  // Enfore POSIX
+  fileIn = fileIn.split(path.sep).join(path.posix.sep)
+  fileOut = fileOut.split(path.sep).join(path.posix.sep)
+
   return new Promise((resolve, reject) => {
     let run: any
 
@@ -23,7 +28,7 @@ const gmsh = async (
         'gmsh',
         ['-3', fileIn, '-o', fileOut, '-format', 'msh2', '-clcurv', '10'],
         {
-          cwd: path
+          cwd: bindPath
         }
       )
     } else {
@@ -37,7 +42,7 @@ const gmsh = async (
           : execSync('id -g').toString().trim()
       run = spawn('docker', [
         'run',
-        '--volume=' + path + ':/mesh',
+        '--volume=' + bindPath + ':/mesh',
         '--user=' + user + ':' + group,
         '-w=/mesh',
         'tanatloc/worker:latest',

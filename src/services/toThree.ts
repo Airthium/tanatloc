@@ -1,4 +1,5 @@
 import { execSync, spawn } from 'child_process'
+import path from 'path'
 import isDocker from 'is-docker'
 
 /**
@@ -6,15 +7,19 @@ import isDocker from 'is-docker'
  * Convert mesh to threeJS
  * @memberof Services
  * @param path Path
- * @param fileIn In file
- * @param pathOut Out path
+ * @param fileIn In file (POSIX path)
+ * @param pathOut Out path (POSIX path)
  */
 const toThree = async (
-  path: string,
+  bindPath: string,
   fileIn: string,
   pathOut: string
 ): Promise<{ code: number; data: string; error: string }> => {
   let conversionCode = ''
+
+  // Enfore POSIX
+  fileIn = fileIn.split(path.sep).join(path.posix.sep)
+  pathOut = pathOut.split(path.sep).join(path.posix.sep)
 
   // Check extension
   const extension = fileIn.split('.').pop()
@@ -46,7 +51,7 @@ const toThree = async (
 
     if (isDocker()) {
       run = spawn(conversionCode, [fileIn, pathOut], {
-        cwd: path
+        cwd: bindPath
       })
     } else {
       const user =
@@ -59,7 +64,7 @@ const toThree = async (
           : execSync('id -g').toString().trim()
       run = spawn('docker', [
         'run',
-        '--volume=' + path + ':/three',
+        '--volume=' + bindPath + ':/three',
         '--user=' + user + ':' + group,
         '-w=/three',
         'tanatloc/worker:latest',

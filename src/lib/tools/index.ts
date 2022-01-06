@@ -178,6 +178,7 @@ const convert = async (
   param?: { isResult: boolean }
 ): Promise<{ json: string; glb: string }> => {
   const origin = file.name
+
   const jsonTarget = file.target
   const glbTarget = file.target + '.glb'
 

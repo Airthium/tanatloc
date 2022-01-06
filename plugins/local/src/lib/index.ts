@@ -101,8 +101,6 @@ const computeMesh = async (
   const mshFile = geometry.name + '.msh'
   const partPath = geometry.name
 
-  console.log(geometry)
-
   // Render template
   await Template.render(
     'gmsh3D',

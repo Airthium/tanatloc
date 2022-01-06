@@ -47,7 +47,7 @@
     "@sentry/browser": "6.16.1",
     "@sentry/node": "6.16.1",
     "@swc/cli": "0.1.55",
-    "@swc/core": "1.2.126",
+    "@swc/core": "1.2.127",
     "@swc/jest": "0.2.15",
     "@testing-library/react": "12.1.2",
     "@types/archiver": "5.1.1",

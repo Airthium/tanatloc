@@ -101,12 +101,14 @@ const computeMesh = async (
   const mshFile = geometry.name + '.msh'
   const partPath = geometry.name
 
+  console.log(geometry)
+
   // Render template
   await Template.render(
     'gmsh3D',
     {
       ...mesh.parameters,
-      geometry: path.join('..', geometry.path, geometry.file)
+      geometry: Tools.toPosix(path.join('..', geometry.path, geometry.file))
     },
     {
       location: path.join(simulationPath, mesh.path),
@@ -326,9 +328,9 @@ const computeSimulation = async (
         dimension: 3,
         run: {
           ...configuration.run,
-          couplingPath: path.join(runPath, couplingPath),
-          resultPath: path.join(runPath, resultPath),
-          dataPath: path.join(runPath, dataPath)
+          couplingPath: Tools.toPosix(path.join(runPath, couplingPath)),
+          resultPath: Tools.toPosix(path.join(runPath, resultPath)),
+          dataPath: Tools.toPosix(path.join(runPath, dataPath))
         }
       },
       {

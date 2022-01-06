@@ -15,6 +15,15 @@ import { threeToGlb } from 'three-to-glb'
 import Services from '@/services'
 
 /**
+ * Path to posix
+ * @param str Path
+ * @returns POSIX path
+ */
+const toPosix = (str: string): string => {
+  return str.split(path.sep).join(path.posix.sep)
+}
+
+/**
  * Create path (recursive)
  * @memberof Lib.Tools
  * @param location Location path
@@ -266,6 +275,7 @@ const loadPart = async (location: string, name: string): Promise<JSON> => {
 }
 
 const Tools = {
+  toPosix,
   createPath,
   listFiles,
   listDirectories,

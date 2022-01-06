@@ -15,13 +15,13 @@ const freefem = async (
   callback: Function
 ): Promise<number> => {
   // Enfore POSIX
-  script = script.split(path.sep).join(path.posix.sep)
+  const scriptPOSIX = script.split(path.sep).join(path.posix.sep)
 
   return new Promise((resolve, reject) => {
     let run: any
 
     if (isDocker()) {
-      run = spawn('ff-mpirun', [' -np', '1', script, '-ns'], {
+      run = spawn('ff-mpirun', [' -np', '1', scriptPOSIX, '-ns'], {
         cwd: bindPath
       })
     } else {
@@ -43,7 +43,7 @@ const freefem = async (
         'ff-mpirun',
         '-np',
         '1',
-        script,
+        scriptPOSIX,
         '-ns',
         '> log'
       ])

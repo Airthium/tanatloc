@@ -17,8 +17,8 @@ const gmsh = async (
   callback: Function
 ): Promise<number> => {
   // Enfore POSIX
-  fileIn = fileIn.split(path.sep).join(path.posix.sep)
-  fileOut = fileOut.split(path.sep).join(path.posix.sep)
+  const fileInPOSIX = fileIn.split(path.sep).join(path.posix.sep)
+  const fileOutPOSIX = fileOut.split(path.sep).join(path.posix.sep)
 
   return new Promise((resolve, reject) => {
     let run: any
@@ -26,7 +26,16 @@ const gmsh = async (
     if (isDocker()) {
       run = spawn(
         'gmsh',
-        ['-3', fileIn, '-o', fileOut, '-format', 'msh2', '-clcurv', '10'],
+        [
+          '-3',
+          fileInPOSIX,
+          '-o',
+          fileOutPOSIX,
+          '-format',
+          'msh2',
+          '-clcurv',
+          '10'
+        ],
         {
           cwd: bindPath
         }
@@ -48,9 +57,9 @@ const gmsh = async (
         'tanatloc/worker:latest',
         'gmsh',
         '-3',
-        fileIn,
+        fileInPOSIX,
         '-o',
-        fileOut,
+        fileOutPOSIX,
         '-format',
         'msh2',
         '-clcurv',

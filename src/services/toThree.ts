@@ -18,11 +18,11 @@ const toThree = async (
   let conversionCode = ''
 
   // Enfore POSIX
-  fileIn = fileIn.split(path.sep).join(path.posix.sep)
-  pathOut = pathOut.split(path.sep).join(path.posix.sep)
+  const fileInPOSIX = fileIn.split(path.sep).join(path.posix.sep)
+  const pathOutPOSIX = pathOut.split(path.sep).join(path.posix.sep)
 
   // Check extension
-  const extension = fileIn.split('.').pop()
+  const extension = fileInPOSIX.split('.').pop()
   switch (extension.toLowerCase()) {
     case 'step':
       conversionCode = 'StepToThreeJS'
@@ -50,7 +50,7 @@ const toThree = async (
     let error = ''
 
     if (isDocker()) {
-      run = spawn(conversionCode, [fileIn, pathOut], {
+      run = spawn(conversionCode, [fileInPOSIX, pathOutPOSIX], {
         cwd: bindPath
       })
     } else {
@@ -69,8 +69,8 @@ const toThree = async (
         '-w=/three',
         'tanatloc/worker:latest',
         conversionCode,
-        fileIn,
-        pathOut
+        fileInPOSIX,
+        pathOutPOSIX
       ])
     }
 

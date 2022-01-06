@@ -37,6 +37,7 @@ const mockConvert = jest.fn()
 const mockRemoveFile = jest.fn()
 const mockRemoveDirectory = jest.fn()
 jest.mock('@/lib/tools', () => ({
+  toPosix: (path: string) => path,
   createPath: async () => mockCreatePath(),
   readFile: async () => mockReadFile(),
   convert: async (path, file, callback, param) =>

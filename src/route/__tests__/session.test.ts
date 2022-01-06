@@ -12,19 +12,27 @@ jest.mock('@/auth/iron', () => ({
   getSession: () => mockSession()
 }))
 
+const mockUserGet = jest.fn()
+jest.mock('@/lib/user', () => ({
+  get: async () => mockUserGet()
+}))
+
 describe('route/session', () => {
   const req = {} as Request
 
   beforeEach(() => {
+    mockError.mockReset()
+    mockError.mockImplementation((status, message) => ({ status, message }))
+
     mockSession.mockReset()
     mockSession.mockImplementation(() => false)
 
-    mockError.mockReset()
-    mockError.mockImplementation((status, message) => ({ status, message }))
+    mockUserGet.mockReset()
   })
 
   test('ok', async () => {
     mockSession.mockImplementation(() => ({ id: 'id' }))
+    mockUserGet.mockImplementation(() => ({}))
 
     const id = await session(req)
     expect(mockSession).toHaveBeenCalledTimes(1)
@@ -52,6 +60,17 @@ describe('route/session', () => {
       expect(true).toBe(false)
     } catch (err) {
       expect(mockSession).toHaveBeenCalledTimes(2)
+      expect(err.status).toBe(401)
+      expect(err.message).toBe('Unauthorized')
+    }
+
+    // No existing user
+    mockSession.mockImplementation(() => ({ id: 'id' }))
+    try {
+      await session(req)
+      expect(true).toBe(false)
+    } catch (err) {
+      expect(mockSession).toHaveBeenCalledTimes(3)
       expect(err.status).toBe(401)
       expect(err.message).toBe('Unauthorized')
     }

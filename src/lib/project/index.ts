@@ -145,16 +145,16 @@ const getWithData = async (
   const projectWithData: IProjectWithData = { ...projectData }
 
   // Get avatar
-  if (project?.avatar) projectWithData.avatar = await getAvatar(project)
+  if (avatar) projectWithData.avatar = await getAvatar(project)
 
   // Get owners
-  if (project?.owners) projectWithData.owners = await getOwners(project)
+  if (owners) projectWithData.owners = await getOwners(project)
 
   // Get users
-  if (project?.users) projectWithData.users = await getUsers(project)
+  if (users) projectWithData.users = await getUsers(project)
 
   // Get groups
-  if (project?.groups) projectWithData.groups = await getGroups(project)
+  if (groups) projectWithData.groups = await getGroups(project)
 
   return projectWithData
 }

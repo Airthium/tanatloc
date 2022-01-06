@@ -70,9 +70,9 @@ const getWithData = async (
   const { owners, users, groups, ...workspaceData } = { ...workspace }
   const workspaceWithData: IWorkspaceWithData = { ...workspaceData }
   // Get owners
-  if (workspace?.owners) {
+  if (owners) {
     const ownersData = await Promise.all(
-      workspace.owners.map(async (owner) => {
+      owners.map(async (owner) => {
         const ownerData = await User.getWithData(owner, [
           'lastname',
           'firstname',
@@ -89,9 +89,9 @@ const getWithData = async (
   }
 
   // Get users
-  if (workspace?.users) {
+  if (users) {
     const usersData = await Promise.all(
-      workspace.users.map(async (user) => {
+      users.map(async (user) => {
         const userData = await User.getWithData(user, [
           'lastname',
           'firstname',
@@ -108,9 +108,9 @@ const getWithData = async (
   }
 
   // Get groups
-  if (workspace?.groups) {
+  if (groups) {
     const groupsData = await Promise.all(
-      workspace.groups.map(async (group) => {
+      groups.map(async (group) => {
         const groupData = await Group.getWithData(group, ['name'])
         return {
           id: group,

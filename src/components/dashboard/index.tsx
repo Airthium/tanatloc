@@ -12,6 +12,8 @@ import {
   TeamOutlined
 } from '@ant-design/icons'
 
+import packageJson from '../../../package.json'
+
 import { Error as ErrorNotification } from '@/components/assets/notification'
 
 import Loading from '@/components/loading'
@@ -161,6 +163,16 @@ const Dashboard = () => {
     }
   }
 
+  let gitVersion = ''
+  if (
+    process.env.NEXT_PUBLIC_SOURCE_BRANCH &&
+    process.env.NEXT_PUBLIC_SOURCE_COMMIT
+  )
+    gitVersion =
+      process.env.NEXT_PUBLIC_SOURCE_BRANCH +
+      '-' +
+      process.env.NEXT_PUBLIC_SOURCE_COMMIT
+
   /**
    * Render
    */
@@ -218,8 +230,8 @@ const Dashboard = () => {
               {menuItems.logout.label}
             </Menu.Item>
             <p className="version">
-              version: git-{process.env.NEXT_PUBLIC_SOURCE_BRANCH}-
-              {process.env.NEXT_PUBLIC_SOURCE_COMMIT}
+              version {packageJson.version}{' '}
+              {gitVersion && <>(git-{gitVersion})</>}
             </p>
           </Menu>
         </Layout.Sider>

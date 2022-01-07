@@ -8747,10 +8747,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prismjs@npm:1.25.0":
-  version: 1.25.0
-  resolution: "prismjs@npm:1.25.0"
-  checksum: 04d8eae9d1b26b76c350bc65621584c8f8cab80ace7da3953f8aef2f9a8dd4b4f71c1d15bc5c67f126ddc90cd5af613919dc1340589a6c57355bed86fa3ac010
+"prismjs@npm:1.26.0":
+  version: 1.26.0
+  resolution: "prismjs@npm:1.26.0"
+  checksum: 6de058930ce767d44d60322e625bbc255f5107c7bf82c441ade19a289358e01e35040cea0c17adf8f7b829f17aa48e2d84b40866b5b3f8c75a12c6b3f0ead231
   languageName: node
   linkType: hard
 
@@ -10738,7 +10738,7 @@ __metadata:
     pg-native: "ssh://git@github.com:Airthium/pg-native.git#3.0.0"
     prettier: 2.5.1
     prism-themes: 1.9.0
-    prismjs: 1.25.0
+    prismjs: 1.26.0
     prop-types: 15.8.1
     react: 17.0.2
     react-dom: 17.0.2
@@ -10752,7 +10752,7 @@ __metadata:
     swr: 1.1.2
     tar: 6.1.11
     three: 0.136.0
-    three-to-glb: "ssh://git@github.com:Airthium/three-to-glb.git#1.0.5"
+    three-to-glb: "ssh://git@github.com:Airthium/three-to-glb.git#1.0.6"
     typedoc: 0.22.10
     typescript: 4.5.4
     url-join: 4.0.1
@@ -10815,13 +10815,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"three-to-glb@ssh://git@github.com:Airthium/three-to-glb.git#1.0.5":
+"three-to-glb@ssh://git@github.com:Airthium/three-to-glb.git#1.0.6":
   version: 1.0.4
-  resolution: "three-to-glb@ssh://git@github.com:Airthium/three-to-glb.git#commit=b67c7dd6031db580be9d8f6f17ba75c673961913"
+  resolution: "three-to-glb@ssh://git@github.com:Airthium/three-to-glb.git#commit=980c302b845fd14a2a7fd0a4ff254c3c45572980"
   dependencies:
     three: 0.136.0
     vblob: 1.0.2
-  checksum: 2bf5dfc9669d6a571f9f8c82ad20af9090e50353a9ef484e7363b0fd38ddbafacd93d6a541f439dcddb60c09462e85d5d63b3a160a710e484a625a5bf71bd269
+  checksum: 3c3a260dc827b96a41b2ef3280cabc31f03b8e64c397fb85bf81449b7530b8223100f2182e184baf848a84157c1c6086e0d6d352247d866cb479b6c824b34ea8
   languageName: node
   linkType: hard
 

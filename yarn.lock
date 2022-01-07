@@ -1673,12 +1673,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/archiver@npm:5.1.1":
-  version: 5.1.1
-  resolution: "@types/archiver@npm:5.1.1"
+"@types/archiver@npm:5.3.1":
+  version: 5.3.1
+  resolution: "@types/archiver@npm:5.3.1"
   dependencies:
     "@types/glob": "*"
-  checksum: e3f1cb17ebcc5ff6be0c711305d3ed5e5248d514cc85e8440c3ae4bde04f761dcb772f549e2299c8ae325d88045e62ae34c0b3dd850eec6b39864c055d7aa634
+  checksum: 1c6babc7f50acf5bf7fa3d5fa76bb68702e4463e6a412d259cdddff611dbbb9832ea4b2f41d675fd95ac1aa8b087daa882423073e41db9e296f14d41f2ea88e6
   languageName: node
   linkType: hard
 
@@ -10689,7 +10689,7 @@ __metadata:
     "@swc/core": 1.2.127
     "@swc/jest": 0.2.15
     "@testing-library/react": 12.1.2
-    "@types/archiver": 5.1.1
+    "@types/archiver": 5.3.1
     "@types/cookie": 0.4.1
     "@types/ejs": 3.1.0
     "@types/express": 4.17.13

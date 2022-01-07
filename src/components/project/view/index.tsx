@@ -850,7 +850,15 @@ const View = ({
    * Load part
    * @param {Object} file File
    */
-  const loadPart = async (file, type) => {
+  const loadPart = async (
+    file: {
+      needCleanup?: boolean
+      id?: string
+      originPath?: string
+      glb?: string
+    },
+    type: string
+  ) => {
     setLoading(true)
     try {
       if (file.needCleanup) {

@@ -4126,11 +4126,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"depcheck@npm:1.4.2":
-  version: 1.4.2
-  resolution: "depcheck@npm:1.4.2"
+"depcheck@npm:1.4.3":
+  version: 1.4.3
+  resolution: "depcheck@npm:1.4.3"
   dependencies:
-    "@babel/parser": ^7.12.5
+    "@babel/parser": 7.16.4
     "@babel/traverse": ^7.12.5
     "@vue/compiler-sfc": ^3.0.5
     camelcase: ^6.2.0
@@ -4155,7 +4155,7 @@ __metadata:
     yargs: ^16.1.0
   bin:
     depcheck: bin/depcheck.js
-  checksum: a4fce9a0e35fa09cfb4b46f8aadde4e4f808e42bc5a9523cf70d9f52195702a2608cfa759fd96d9077f11c3bd78f77be4a4ca3f1ee0356ff3e71667bd00e6afa
+  checksum: 122631cab325707a55e26a8b530eb72c893bd481194100b1853ac2bc944b61320eb0e1ea0ff7e71724009cdfbd4057381d7bf868b9c5aad0c4207ac0bdca5e48
   languageName: node
   linkType: hard
 
@@ -7760,16 +7760,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"next-plugin-antd-less@npm:1.7.0":
-  version: 1.7.0
-  resolution: "next-plugin-antd-less@npm:1.7.0"
+"next-plugin-antd-less@npm:1.8.0":
+  version: 1.8.0
+  resolution: "next-plugin-antd-less@npm:1.8.0"
   dependencies:
     clone: ^2.1.2
     less: ^4.1.2
     less-loader: ^7
     loader-utils: ^3.2.0
     null-loader: ^4.0.1
-  checksum: 1300476223cb0a9b81c04b2ad44f7d54d3c957402a74736d718ce902c26d96ab306b359705ec9887c76c34382e11f9aa7164aa60a52efbcb28ce75facc901652
+  checksum: 696c88fdf96b10daea40d0b294533d8089ecc32f2ab147772161c599fca82c763eff2d57b3072f2ffed3c60eaddd260e3ac3807e940dea2c53c3e9270be0f466
   languageName: node
   linkType: hard
 
@@ -8478,8 +8478,8 @@ __metadata:
 
 "pg-native@ssh://git@github.com:Airthium/pg-native.git#3.0.0":
   version: 3.0.0
-  resolution: "pg-native@ssh://git@github.com:Airthium/pg-native.git#commit=c2ca4ef1b6b56ebe4ce406cf8b664e8169a82a94"
-  checksum: 3dec24e6e42bfb42eecdf79c5c44cfadae6adc78a5de50073a8b044c7420ee81a511e14a8553f845f82e3c932929db91506cceaf82c20cbc266cef5f698a214b
+  resolution: "pg-native@ssh://git@github.com:Airthium/pg-native.git#commit=adc64bfa3c1500c55045a00690663d3418898b1d"
+  checksum: b385587cb78b21d4b90f73e68ddbef5b0792878f0dd565772e127a5b9b9ddb5c283f501e7de33fd445cefae862190bbac84b9a1e0dba7f2c828e5195b1eee515
   languageName: node
   linkType: hard
 
@@ -10710,7 +10710,7 @@ __metadata:
     better-react-mathjax: 1.0.3
     cookie: 0.4.1
     deep-object-diff: 1.1.0
-    depcheck: 1.4.2
+    depcheck: 1.4.3
     ejs: 3.1.6
     electron: 16.0.6
     electron-serve: 1.1.0
@@ -10729,7 +10729,7 @@ __metadata:
     mailersend: 1.3.1
     next: 12.0.7
     next-compose-plugins: 2.2.1
-    next-plugin-antd-less: 1.7.0
+    next-plugin-antd-less: 1.8.0
     node-fetch: 3.1.0
     passport: 0.5.2
     passport-local: 1.0.0

@@ -19,11 +19,27 @@
   max-height: 80%;
 }
 
+.Index-content {
+  z-index: 1;
+}
+
+.Index-cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.Index-row {
+  display: grid;
+  grid-auto-rows: auto;
+  row-gap: 10px;
+  justify-items: center;
+}
+
 .Index-card {
-  width: 500px;
-  max-width: 100%;
+  width: 90%;
   background-color: white;
   opacity: 0.9;
+  cursor: default;
 }
 
 .Index-card.coming-soon {

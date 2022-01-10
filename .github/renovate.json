@@ -1,6 +1,7 @@
 {
+  "extends": ["config:base"],
+  "schedule": ["before 9am on Monday"],
   "baseBranches": ["hotfix"],
-  "extends": ["config:base", "schedule:earlyMondays"],
   "groupName": "all dependencies",
   "separateMajorMinor": false,
   "groupSlug": "all",

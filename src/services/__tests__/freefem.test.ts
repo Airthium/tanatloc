@@ -79,13 +79,13 @@ describe('services/freefem', () => {
 
     mockSpawn.mockImplementation(() => ({
       stdout: {
-        on: (_: any, callback: Function) => {
-          callback('stdout')
+        on: () => {
+          // Empty
         }
       },
       stderr: {
-        on: (_: any, callback: Function) => {
-          callback('stderr')
+        on: () => {
+          // Empty
         }
       },
       on: (arg: string, callback: Function) => {

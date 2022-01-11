@@ -24,26 +24,25 @@ describe('services/gmsh', () => {
   })
 
   test('gmsh', async () => {
-    let code
-
     // Normal
     mockSpawn.mockImplementation(() => ({
       stdout: {
-        on: (data, callback) => {
+        on: (_: any, callback: Function) => {
           callback('stdout')
         }
       },
       stderr: {
-        on: (data, callback) => {
+        on: (_: any, callback: Function) => {
           callback('stderr')
         }
       },
-      on: (arg, callback) => {
+      on: (arg: string, callback: Function) => {
         if (arg === 'close') callback(0)
       }
     }))
-    code = await gmsh('path', 'fileIn', 'fileOut', mockCallback)
-    expect(mockExecSync).toHaveBeenCalledTimes(2)
+    const code = await gmsh('path', 'fileIn', 'fileOut', mockCallback)
+    if (process.platform !== 'win32')
+      expect(mockExecSync).toHaveBeenCalledTimes(2)
     expect(mockSpawn).toHaveBeenCalledTimes(1)
     expect(code).toBe(0)
 
@@ -51,21 +50,26 @@ describe('services/gmsh', () => {
     try {
       mockSpawn.mockImplementation(() => ({
         stdout: {
-          on: () => {}
+          on: () => {
+            // Empty
+          }
         },
         stderr: {
-          on: () => {}
+          on: () => {
+            // Empty
+          }
         },
-        on: (arg, callback) => {
+        on: (arg: string, callback: Function) => {
           if (arg === 'error') callback('error')
         }
       }))
-      code = await gmsh('path', 'fileIn', 'fileOut', mockCallback)
+      await gmsh('path', 'fileIn', 'fileOut', mockCallback)
       expect(true).toBe(false)
     } catch (err) {
       expect(true).toBe(true)
     } finally {
-      expect(mockExecSync).toHaveBeenCalledTimes(4)
+      if (process.platform !== 'win32')
+        expect(mockExecSync).toHaveBeenCalledTimes(4)
       expect(mockSpawn).toHaveBeenCalledTimes(2)
     }
   })
@@ -75,16 +79,16 @@ describe('services/gmsh', () => {
 
     mockSpawn.mockImplementation(() => ({
       stdout: {
-        on: (data, callback) => {
+        on: (_: any, callback: Function) => {
           callback('stdout')
         }
       },
       stderr: {
-        on: (data, callback) => {
+        on: (_: any, callback: Function) => {
           callback('stderr')
         }
       },
-      on: (arg, callback) => {
+      on: (arg: string, callback: Function) => {
         if (arg === 'close') callback(0)
       }
     }))

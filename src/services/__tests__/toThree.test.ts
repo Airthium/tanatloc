@@ -20,51 +20,56 @@ describe('services/toThree', () => {
   })
 
   test('toThree', async () => {
-    let res
+    let res: { code: number }
 
     // Normal
     mockSpawn.mockImplementation(() => ({
       stdout: {
-        on: (data, callback) => {
+        on: (_: any, callback: Function) => {
           callback('stdout')
         }
       },
       stderr: {
-        on: (data, callback) => {
+        on: (_: any, callback: Function) => {
           callback('stderr')
         }
       },
-      on: (arg, callback) => {
+      on: (arg: string, callback: Function) => {
         if (arg === 'close') callback(0)
       }
     }))
 
     // Step
     res = await toThree('path', 'file.step', 'pathout')
-    expect(mockExecSync).toHaveBeenCalledTimes(2)
+    if (process.platform !== 'win32')
+      expect(mockExecSync).toHaveBeenCalledTimes(2)
     expect(mockSpawn).toHaveBeenCalledTimes(1)
     expect(res.code).toBe(0)
 
     res = await toThree('path', 'file.stp', 'pathout')
-    expect(mockExecSync).toHaveBeenCalledTimes(4)
+    if (process.platform !== 'win32')
+      expect(mockExecSync).toHaveBeenCalledTimes(4)
     expect(mockSpawn).toHaveBeenCalledTimes(2)
     expect(res.code).toBe(0)
 
     // Dxf
     res = await toThree('path', 'file.dxf', 'pathout')
-    expect(mockExecSync).toHaveBeenCalledTimes(6)
+    if (process.platform !== 'win32')
+      expect(mockExecSync).toHaveBeenCalledTimes(6)
     expect(mockSpawn).toHaveBeenCalledTimes(3)
     expect(res.code).toBe(0)
 
     // Msh
     res = await toThree('path', 'file.msh', 'pathout')
-    expect(mockExecSync).toHaveBeenCalledTimes(8)
+    if (process.platform !== 'win32')
+      expect(mockExecSync).toHaveBeenCalledTimes(8)
     expect(mockSpawn).toHaveBeenCalledTimes(4)
     expect(res.code).toBe(0)
 
     // VTU
     res = await toThree('path', 'file.vtu', 'pathout')
-    expect(mockExecSync).toHaveBeenCalledTimes(10)
+    if (process.platform !== 'win32')
+      expect(mockExecSync).toHaveBeenCalledTimes(10)
     expect(mockSpawn).toHaveBeenCalledTimes(5)
     expect(res.code).toBe(0)
 
@@ -75,7 +80,8 @@ describe('services/toThree', () => {
     } catch (err) {
       expect(true).toBe(true)
     } finally {
-      expect(mockExecSync).toHaveBeenCalledTimes(10)
+      if (process.platform !== 'win32')
+        expect(mockExecSync).toHaveBeenCalledTimes(10)
       expect(mockSpawn).toHaveBeenCalledTimes(5)
     }
 
@@ -88,7 +94,7 @@ describe('services/toThree', () => {
         stderr: {
           on: () => {}
         },
-        on: (arg, callback) => {
+        on: (arg: string, callback: Function) => {
           if (arg === 'error') callback('error')
         }
       }))
@@ -97,7 +103,8 @@ describe('services/toThree', () => {
     } catch (err) {
       expect(true).toBe(true)
     } finally {
-      expect(mockExecSync).toHaveBeenCalledTimes(12)
+      if (process.platform !== 'win32')
+        expect(mockExecSync).toHaveBeenCalledTimes(12)
       expect(mockSpawn).toHaveBeenCalledTimes(6)
     }
   })
@@ -107,16 +114,16 @@ describe('services/toThree', () => {
 
     mockSpawn.mockImplementation(() => ({
       stdout: {
-        on: (data, callback) => {
+        on: (_: any, callback: Function) => {
           callback('stdout')
         }
       },
       stderr: {
-        on: (data, callback) => {
+        on: (_: any, callback: Function) => {
           callback('stderr')
         }
       },
-      on: (arg, callback) => {
+      on: (arg: string, callback: Function) => {
         if (arg === 'close') callback(0)
       }
     }))

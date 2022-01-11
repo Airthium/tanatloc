@@ -8,8 +8,14 @@ describe('config/storage', () => {
   test('global', async () => {
     const config = await import('../storage')
     expect(config.STORAGE).toBe('storage')
-    expect(config.AVATAR).toBe('storage/avatar')
-    expect(config.SIMULATION).toBe('storage/simulation')
+
+    if (process.platform === 'win32') {
+      expect(config.AVATAR).toBe('storage\\avatar')
+      expect(config.SIMULATION).toBe('storage\\simulation')
+    } else {
+      expect(config.AVATAR).toBe('storage/avatar')
+      expect(config.SIMULATION).toBe('storage/simulation')
+    }
   })
 })
 

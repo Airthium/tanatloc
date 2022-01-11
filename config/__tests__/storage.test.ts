@@ -10,8 +10,14 @@ jest.mock('os', () => ({
 
 describe('config/storage', () => {
   test('global', () => {
-    expect(config.STORAGE).toBe('/homedir/tanatloc')
-    expect(config.AVATAR).toBe('/homedir/tanatloc/avatar')
-    expect(config.SIMULATION).toBe('/homedir/tanatloc/simulation')
+    if (process.platform === 'win32') {
+      expect(config.STORAGE).toBe('\\homedir\\tanatloc')
+      expect(config.AVATAR).toBe('\\homedir\\tanatloc\\avatar')
+      expect(config.SIMULATION).toBe('\\homedir\\tanatloc\\simulation')
+    } else {
+      expect(config.STORAGE).toBe('/homedir/tanatloc')
+      expect(config.AVATAR).toBe('/homedir/tanatloc/avatar')
+      expect(config.SIMULATION).toBe('/homedir/tanatloc/simulation')
+    }
   })
 })

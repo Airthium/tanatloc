@@ -28,8 +28,10 @@ export interface IProps {
  */
 const errors = {
   password: 'Please enter a password',
-  passwordTooSmall: 'Your password is too small',
-  passwordTooLong: 'Your password is too long',
+  passwordTooSmall: (min: number) =>
+    'Your password is too small (minimum ' + min + ' characters)',
+  passwordTooLong: (max: number) =>
+    'Your password is too long (maximum ' + max + ' characters)',
   passwordRequireLetter: 'Your password must contain a letter',
   passwordRequireNumber: 'Your password must contain a number',
   passwordRequireSymbol: 'Your password must contain a symbol'
@@ -69,11 +71,7 @@ const PasswordItem = ({
    * @param value Value
    */
   const checkMin = (value: string): boolean => {
-    if (
-      value.length <
-      (system?.password?.min !== undefined ? system?.password?.min : MIN_SIZE)
-    )
-      return false
+    if (value.length < (system?.password?.min ?? MIN_SIZE)) return false
     return true
   }
 
@@ -82,11 +80,7 @@ const PasswordItem = ({
    * @param value Value
    */
   const checkMax = (value: string): boolean => {
-    if (
-      value.length >
-      (system?.password?.max !== undefined ? system?.password?.max : MAX_SIZE)
-    )
-      return false
+    if (value.length > (system?.password?.max ?? MAX_SIZE)) return false
     return true
   }
 
@@ -148,9 +142,11 @@ const PasswordItem = ({
    * @param err Errors
    */
   const checkSize = (value: string, err: string[]): void => {
-    if (!checkMin(value)) err.push(errors.passwordTooSmall)
+    if (!checkMin(value))
+      err.push(errors.passwordTooSmall(system?.password?.min ?? MIN_SIZE))
 
-    if (!checkMax(value)) err.push(errors.passwordTooLong)
+    if (!checkMax(value))
+      err.push(errors.passwordTooLong(system?.password?.max ?? MAX_SIZE))
   }
 
   /**

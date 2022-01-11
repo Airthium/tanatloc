@@ -177,13 +177,13 @@ const PasswordItem = ({
           validator(_, value) {
             const err = []
             if (edit && value === '******') return Promise.resolve()
-            /* istanbul ignore next */
+
             if (!value) return Promise.resolve()
 
             checkSize(value, err)
             checkFormat(value, err)
 
-            if (err.length) return Promise.reject(err.join(' - '))
+            if (err.length) return Promise.reject(err)
             else return Promise.resolve()
           }
         })

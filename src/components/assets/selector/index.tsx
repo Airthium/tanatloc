@@ -283,7 +283,7 @@ const Selector = ({
                 index: number
               ) => {
                 if (display(element)) {
-                  let borderColor: string
+                  let borderColor = 'transparent'
                   let backgroundColor = 'transparent'
                   let cursor = 'default'
                   if (

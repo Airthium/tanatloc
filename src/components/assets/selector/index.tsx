@@ -283,9 +283,9 @@ const Selector = ({
                 index: number
               ) => {
                 if (display(element)) {
-                  let borderColor: string
-                  let backgroundColor: string
-                  let cursorDisplay: string
+                  let borderColor = ''
+                  let backgroundColor = ''
+                  let cursor = ''
                   if (
                     selected.includes(element.uuid) &&
                     highlighted !== element.uuid
@@ -295,7 +295,7 @@ const Selector = ({
                   } else if (highlighted === element.uuid) {
                     borderColor = '#FAD114'
                     backgroundColor = '#FFFBE6'
-                    cursorDisplay = 'pointer'
+                    cursor = 'pointer'
                   } else borderColor = 'transparent'
 
                   return (
@@ -303,15 +303,15 @@ const Selector = ({
                       key={index}
                       style={{
                         marginBottom: '7px',
-                        cursor: cursorDisplay
+                        cursor
                       }}
                       bodyStyle={{
                         position: 'relative',
                         padding: '10px 10px 10px 40px',
                         borderWidth: '2px',
                         borderStyle: 'solid',
-                        borderColor: borderColor,
-                        backgroundColor: backgroundColor
+                        borderColor,
+                        backgroundColor
                       }}
                       onMouseEnter={() => onHighlight(element.uuid)}
                       onMouseLeave={onUnhighlight}

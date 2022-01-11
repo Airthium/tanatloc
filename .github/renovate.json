@@ -12,7 +12,7 @@
       "groupSlug": "all"
     }
   ],
-  "ignoreDeps": ["@babel/parser"],
+  "ignoreDeps": [],
   "lockFileMaintenance": {
     "enabled": false
   }

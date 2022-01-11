@@ -655,7 +655,7 @@ const ThreeView = ({ loading, project, part }: IThreeProps): JSX.Element => {
             />
           </Tooltip>
 
-          <Divider className="no-amrgin" />
+          <Divider className="no-margin" />
 
           <Tooltip title="Display grid">
             <Switch
@@ -675,7 +675,7 @@ const ThreeView = ({ loading, project, part }: IThreeProps): JSX.Element => {
             />
           </Tooltip>
 
-          <Divider className="no-amrgin" />
+          <Divider className="no-margin" />
 
           <Tooltip title="Zoom out">
             <Button
@@ -707,7 +707,7 @@ const ThreeView = ({ loading, project, part }: IThreeProps): JSX.Element => {
             />
           </Tooltip>
 
-          <Divider className="no-amrgin" />
+          <Divider className="no-margin" />
 
           {sectionView ? (
             <Space>

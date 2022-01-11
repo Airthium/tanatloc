@@ -40,7 +40,7 @@ const errors = {
  */
 const Users = ({ users, swr }: IProps): JSX.Element => {
   const [plugins, setPlugins]: [IClientPlugin[], Function] = useState([])
-  const [columns, setColumns]: [TableColumnsType, Function] = useState([])
+  const [columns, setColumns]: [TableColumnsType, Function] = useState()
 
   useEffect(() => {
     PluginsAPI.completeList()
@@ -52,21 +52,31 @@ const Users = ({ users, swr }: IProps): JSX.Element => {
             title: 'First name',
             dataIndex: 'firstname',
             key: 'firstname',
-            sorter: (a: { firstname: any }, b: { firstname: any }) =>
-              a.firstname - b.firstname
+            sorter: (a: { firstname?: any }, b: { firstname?: any }) => {
+              const fa = a.firstname || ''
+              const fb = b.firstname || ''
+              return fa.localeCompare(fb)
+            }
           },
           {
             title: 'Last name',
             dataIndex: 'lastname',
             key: 'lastname',
-            sorter: (a: { lastname: any }, b: { lastname: any }) =>
-              a.lastname - b.lastname
+            sorter: (a: { lastname?: any }, b: { lastname?: any }) => {
+              const la = a.lastname || ''
+              const lb = b.lastname || ''
+              return la.localeCompare(lb)
+            }
           },
           {
             title: 'Email',
             dataIndex: 'email',
             key: 'email',
-            sorter: (a: { email: any }, b: { email: any }) => a.email - b.email
+            sorter: (a: { email: any }, b: { email: any }) => {
+              const ea = a.email || ''
+              const eb = b.email || ''
+              return ea.localeCompare(eb)
+            }
           },
           {
             title: 'Password',

@@ -39,8 +39,11 @@ const List = ({
       title: 'Name',
       dataIndex: 'name',
       key: 'name',
-      sorter: (a: { name: string }, b: { name: string }) =>
-        parseInt(a.name) - parseInt(b.name)
+      sorter: (a: { name: string }, b: { name: string }) => {
+        const na = a.name || ''
+        const nb = b.name || ''
+        return na.localeCompare(nb)
+      }
     },
     {
       title: 'Administrators',

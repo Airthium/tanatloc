@@ -1,18 +1,26 @@
 import '../'
 
 jest.mock('ejs', () => ({
-  compile: async () => () => 'ejs'
+  compile: () => () => 'ejs'
 }))
 
 jest.mock('../../tools', () => ({
   readFile: async () => 'readFile',
-  writeFile: async () => {}
+  writeFile: async () => {
+    // Empty
+  }
 }))
 
-jest.mock('../../plugins', () => {})
+jest.mock('../../plugins', () => {
+  // Empty
+})
 
-jest.mock('@/templates', () => {})
+jest.mock('@/templates', () => {
+  // Empty
+})
 
 describe('lib/template', () => {
-  test('nothingToDo', async () => {})
+  test('nothingToDo', async () => {
+    // Empty
+  })
 })

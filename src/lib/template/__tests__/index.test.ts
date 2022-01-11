@@ -1,7 +1,7 @@
 import Template from '../'
 
 jest.mock('ejs', () => ({
-  compile: async () => () => 'ejs'
+  compile: () => () => 'ejs'
 }))
 
 jest.mock('is-electron', () => () => false)
@@ -36,11 +36,13 @@ describe('lib/template', () => {
   })
 
   test('render', async () => {
-    let script
+    let script: string
+
     // Without save
     script = await Template.render('key', {})
     expect(script).toBe('ejs')
     expect(mockWriteFile).toHaveBeenCalledTimes(0)
+
     // With save
     script = await Template.render(
       'key',
@@ -51,12 +53,12 @@ describe('lib/template', () => {
     expect(mockWriteFile).toHaveBeenCalledTimes(1)
   })
 
-  // test('render non existing', async () => {
-  //   try {
-  //     await Template.render('unknown key', {})
-  //     expect(true).toBe(false)
-  //   } catch (err) {
-  //     expect(err.message).toBe('Unable to find the model!')
-  //   }
-  // })
+  test('render - no file', async () => {
+    try {
+      await Template.render('unknown key', {})
+      expect(true).toBe(false)
+    } catch (err) {
+      expect(err.message).toBe('Unable to find the model!')
+    }
+  })
 })

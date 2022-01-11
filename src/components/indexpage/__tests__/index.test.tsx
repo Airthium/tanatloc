@@ -89,4 +89,19 @@ describe('components/index', () => {
 
     unmount()
   })
+
+  test('with git version', () => {
+    Object.defineProperty(process.env, 'NEXT_PUBLIC_SOURCE_BRANCH', {
+      value: 'dev'
+    })
+    Object.defineProperty(process.env, 'NEXT_PUBLIC_SOURCE_COMMIT', {
+      value: 'hash'
+    })
+
+    const { unmount } = render(<Index />)
+
+    screen.getByText(/git-dev-hash/)
+
+    unmount()
+  })
 })

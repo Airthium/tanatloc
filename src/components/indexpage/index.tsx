@@ -75,9 +75,12 @@ const Index = (): JSX.Element => {
     process.env.NEXT_PUBLIC_SOURCE_COMMIT
   )
     gitVersion =
+      'git-' +
       process.env.NEXT_PUBLIC_SOURCE_BRANCH +
       '-' +
       process.env.NEXT_PUBLIC_SOURCE_COMMIT
+
+  console.log(gitVersion)
 
   /**
    * Render
@@ -260,8 +263,7 @@ const Index = (): JSX.Element => {
             reserved
           </div>
           <div>
-            version {packageJson.version}{' '}
-            {gitVersion && <>(git-{gitVersion})</>}
+            version {packageJson.version} {gitVersion && <>({gitVersion})</>}
           </div>
         </Space>
       </Layout.Footer>

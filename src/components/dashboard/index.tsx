@@ -169,6 +169,7 @@ const Dashboard = () => {
     process.env.NEXT_PUBLIC_SOURCE_COMMIT
   )
     gitVersion =
+      'git-' +
       process.env.NEXT_PUBLIC_SOURCE_BRANCH +
       '-' +
       process.env.NEXT_PUBLIC_SOURCE_COMMIT
@@ -230,8 +231,7 @@ const Dashboard = () => {
               {menuItems.logout.label}
             </Menu.Item>
             <p className="version">
-              version {packageJson.version}{' '}
-              {gitVersion && <>(git-{gitVersion})</>}
+              version {packageJson.version} {gitVersion && <>({gitVersion})</>}
             </p>
           </Menu>
         </Layout.Sider>

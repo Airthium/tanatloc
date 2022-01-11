@@ -2,7 +2,11 @@ import Tools from '../'
 
 const mockPath = jest.fn()
 jest.mock('path', () => ({
-  join: () => mockPath()
+  join: () => mockPath(),
+  sep: '\\',
+  posix: {
+    sep: '/'
+  }
 }))
 
 const mockCreateReadStream = jest.fn()
@@ -42,7 +46,8 @@ jest.mock('three-to-glb', () => ({
 
 const mockToThree = jest.fn()
 jest.mock('@/services', () => ({
-  toThree: async (path, fileIn, pathOut) => mockToThree(path, fileIn, pathOut)
+  toThree: async (path: string, fileIn: string, pathOut: string) =>
+    mockToThree(path, fileIn, pathOut)
 }))
 
 describe('lib/tools', () => {
@@ -66,6 +71,11 @@ describe('lib/tools', () => {
     mockThreeToGLB.mockImplementation(() => ({}))
 
     mockToThree.mockReset()
+  })
+
+  test('toPosix', () => {
+    const posixPath = Tools.toPosix('windows\\path')
+    expect(posixPath).toBe('windows/path')
   })
 
   test('createPath', async () => {
@@ -160,11 +170,9 @@ describe('lib/tools', () => {
   test('convert', async () => {
     // Normal
     mockToThree.mockImplementation(() => ({ code: 0 }))
-    await Tools.convert(
-      'location',
-      { name: 'name', target: 'target' },
-      () => {}
-    )
+    await Tools.convert('location', { name: 'name', target: 'target' }, () => {
+      // Empty
+    })
     expect(mockWriteFile).toHaveBeenCalledTimes(1)
 
     // Result
@@ -175,7 +183,9 @@ describe('lib/tools', () => {
     await Tools.convert(
       'location',
       { name: 'name', target: 'target' },
-      () => {},
+      () => {
+        // Empty
+      },
       {
         isResult: true
       }
@@ -188,7 +198,9 @@ describe('lib/tools', () => {
       await Tools.convert(
         'location',
         { name: 'name', target: 'target' },
-        () => {}
+        () => {
+          // Empty
+        }
       )
       expect(true).toBe(false)
     } catch (err) {

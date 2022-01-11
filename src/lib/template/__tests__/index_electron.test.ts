@@ -8,7 +8,7 @@ Object.defineProperty(process, 'resourcesPath', {
 export {}
 
 jest.mock('ejs', () => ({
-  compile: async () => () => 'ejs'
+  compile: () => () => 'ejs'
 }))
 
 jest.mock('is-electron', () => () => true)

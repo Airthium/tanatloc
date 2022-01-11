@@ -283,9 +283,9 @@ const Selector = ({
                 index: number
               ) => {
                 if (display(element)) {
-                  let borderColor = ''
-                  let backgroundColor = ''
-                  let cursor = ''
+                  let borderColor: string
+                  let backgroundColor = 'transparent'
+                  let cursor = 'default'
                   if (
                     selected.includes(element.uuid) &&
                     highlighted !== element.uuid
@@ -296,7 +296,7 @@ const Selector = ({
                     borderColor = '#FAD114'
                     backgroundColor = '#FFFBE6'
                     cursor = 'pointer'
-                  } else borderColor = 'transparent'
+                  }
 
                   return (
                     <Card

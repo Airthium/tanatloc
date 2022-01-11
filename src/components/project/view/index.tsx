@@ -188,7 +188,7 @@ const ThreeView = ({ loading, project, part }: IThreeProps): JSX.Element => {
     // Axis
     const axisHelper = AxisHelper(renderer.current, camera.current, {
       offsetWidth: width - 150,
-      offsetHeight: height - 150 - 64,
+      offsetHeight: height - 150,
       width: 150,
       height: 150
     })
@@ -201,7 +201,7 @@ const ThreeView = ({ loading, project, part }: IThreeProps): JSX.Element => {
       controls.current,
       {
         offsetWidth: width - 150,
-        offsetHeight: height - 150 - 64,
+        offsetHeight: height - 150,
         width: 150,
         height: 150
       }
@@ -260,14 +260,14 @@ const ThreeView = ({ loading, project, part }: IThreeProps): JSX.Element => {
 
       axisHelper.resize({
         newOffsetWidth: width - 150,
-        newOffsetHeight: height - 150 - 64,
+        newOffsetHeight: height - 150,
         newWidth: 150,
         newHeight: 150
       })
 
       navigationHelper.resize({
         newOffsetWidth: width - 150,
-        newOffsetHeight: height - 150 - 64,
+        newOffsetHeight: height - 150,
         newWidth: 150,
         newHeight: 150
       })
@@ -645,22 +645,8 @@ const ThreeView = ({ loading, project, part }: IThreeProps): JSX.Element => {
    */
   return (
     <Layout className="View no-scroll">
-      <Layout.Header
-        style={{
-          position: 'absolute',
-          top: '0',
-          right: '0',
-          backgroundColor: 'rgba(255, 255, 255, 0.5)',
-          zIndex: 10
-        }}
-      >
-        <Space
-          direction="horizontal"
-          style={{
-            width: '100%',
-            justifyContent: 'flex-end'
-          }}
-        >
+      <Layout.Header className="View-header">
+        <div className="View-controls">
           <Tooltip title="Take snasphot">
             <Button
               loading={screenshot}
@@ -668,6 +654,9 @@ const ThreeView = ({ loading, project, part }: IThreeProps): JSX.Element => {
               onClick={takeScreenshot}
             />
           </Tooltip>
+
+          <Divider className="no-amrgin" />
+
           <Tooltip title="Display grid">
             <Switch
               defaultChecked
@@ -686,7 +675,7 @@ const ThreeView = ({ loading, project, part }: IThreeProps): JSX.Element => {
             />
           </Tooltip>
 
-          <Divider type="vertical" />
+          <Divider className="no-amrgin" />
 
           <Tooltip title="Zoom out">
             <Button
@@ -718,21 +707,18 @@ const ThreeView = ({ loading, project, part }: IThreeProps): JSX.Element => {
             />
           </Tooltip>
 
-          <Divider type="vertical" />
+          <Divider className="no-amrgin" />
 
           {sectionView ? (
             <Space>
-              <Space direction="horizontal">
+              <div className="View-controls">
                 <Tooltip title="Stop">
                   <Button icon={<StopOutlined />} onClick={toggleSectionView} />
                 </Tooltip>
                 <Radio.Group
                   onChange={handleTransform}
                   value={transform}
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'column'
-                  }}
+                  className="View-controls-radio"
                 >
                   <Tooltip title="Translate">
                     <Radio value="translate">
@@ -745,8 +731,8 @@ const ThreeView = ({ loading, project, part }: IThreeProps): JSX.Element => {
                     </Radio>
                   </Tooltip>
                 </Radio.Group>
-              </Space>
-              <Space direction="horizontal">
+              </div>
+              <div className="View-controls">
                 <Tooltip title="Hide plane">
                   <Button
                     icon={<EyeInvisibleOutlined />}
@@ -789,28 +775,21 @@ const ThreeView = ({ loading, project, part }: IThreeProps): JSX.Element => {
                     icon={<RetweetOutlined />}
                   />
                 </Tooltip>
-              </Space>
+              </div>
             </Space>
           ) : (
             <Tooltip title="Section view">
               <Button icon={<ScissorOutlined />} onClick={toggleSectionView} />
             </Tooltip>
           )}
-        </Space>
+        </div>
       </Layout.Header>
       <Layout.Content className="View-content no-scroll">
         <div
           style={{ display: loading ? 'flex' : 'none' }}
           className="View-loading"
         >
-          <Spin
-            indicator={
-              <LoadingOutlined
-                style={{ fontSize: 60, color: '#fad114' }}
-                spin
-              />
-            }
-          />
+          <Spin indicator={<LoadingOutlined className="View-loading" spin />} />
         </div>
         <div ref={mount} className="View-canvas" />
       </Layout.Content>

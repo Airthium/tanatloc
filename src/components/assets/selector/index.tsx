@@ -284,15 +284,19 @@ const Selector = ({
               ) => {
                 if (display(element)) {
                   let borderColor: string
-                  if (selected.includes(element.uuid)) borderColor = '#c73100'
-                  else if (highlighted === element.uuid) borderColor = '#FAD114'
+                  let backgroundColor: string
+                  let cursorDisplay: string
+                  if (selected.includes(element.uuid) && highlighted !== element.uuid) {borderColor = '#FAD114'; backgroundColor = "rgba(255, 251, 230, 0.3)"}
+                  else if (highlighted === element.uuid) {borderColor = '#FAD114'; backgroundColor = "#FFFBE6"; cursorDisplay = "pointer"}
                   else borderColor = 'transparent'
+
 
                   return (
                     <Card
                       key={index}
                       style={{
-                        marginBottom: '7px'
+                        marginBottom: '7px',
+                        cursor: cursorDisplay
                       }}
                       bodyStyle={{
                         position: 'relative',
@@ -300,10 +304,7 @@ const Selector = ({
                         borderWidth: '2px',
                         borderStyle: 'solid',
                         borderColor: borderColor,
-                        backgroundColor:
-                          highlighted === element.uuid
-                            ? '#FFFBE6'
-                            : 'transparent'
+                        backgroundColor:backgroundColor
                       }}
                       onMouseEnter={() => onHighlight(element.uuid)}
                       onMouseLeave={onUnhighlight}

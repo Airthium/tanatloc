@@ -10,6 +10,7 @@ import {
 } from '@/models/index.d'
 
 import { Error } from '@/components/assets/notification'
+import { AddButton } from '@/components/assets/button'
 
 import SimulationAPI from '@/api/simulation'
 
@@ -127,9 +128,9 @@ const Add = ({
    * Render
    */
   return (
-    <Button disabled={disabled} loading={loading} onClick={onAdd}>
+    <AddButton disabled={disabled} loading={loading} onAdd={onAdd}>
       Add
-    </Button>
+    </AddButton>
   )
 }
 

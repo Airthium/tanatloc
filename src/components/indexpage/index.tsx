@@ -89,10 +89,10 @@ const Index = (): JSX.Element => {
     if (user)
       buttons = (
         <Button
+          className="no-border"
           icon={<DashboardOutlined />}
           onClick={handleDashboard}
           size="large"
-          style={{ border: 'none' }}
         >
           Dashboard
         </Button>
@@ -100,18 +100,14 @@ const Index = (): JSX.Element => {
     else
       buttons = (
         <>
-          <Button
-            onClick={handleSignup}
-            size="large"
-            style={{ border: 'none' }}
-          >
+          <Button className="no-border" onClick={handleSignup} size="large">
             Signup
           </Button>
           <Button
+            className="no-border"
             icon={<LoginOutlined />}
             onClick={handleLogin}
             size="large"
-            style={{ border: 'none' }}
           >
             Login
           </Button>

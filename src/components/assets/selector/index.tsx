@@ -236,7 +236,7 @@ const Selector = ({
    * Render
    */
   return (
-    <Card>
+    <Card size="small">
       <Space direction="vertical">
         Filters
         <Space direction="horizontal" wrap={true}>
@@ -279,9 +279,7 @@ const Selector = ({
 
       <div
         style={{
-          width: '100%',
-          maxHeight: '30vh',
-          overflowY: 'auto'
+          width: '100%'
         }}
       >
         {geometry?.[type]

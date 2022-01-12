@@ -271,13 +271,40 @@ const BoundaryCondition = ({
       mask={false}
       maskClosable={false}
       width={300}
+      footer={
+        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+          <Button danger onClick={onClose}>
+            Cancel
+          </Button>
+          {boundaryCondition ? (
+            <Edit
+              disabled={disabled}
+              simulation={simulation}
+              boundaryCondition={current}
+              oldBoundaryCondition={boundaryCondition}
+              geometry={geometry}
+              swr={{ mutateOneSimulation: swr.mutateOneSimulation }}
+              close={onClose}
+            />
+          ) : (
+            <Add
+              disabled={disabled}
+              simulation={simulation}
+              boundaryCondition={current}
+              geometry={geometry}
+              swr={{ mutateOneSimulation: swr.mutateOneSimulation }}
+              close={onClose}
+            />
+          )}
+        </div>
+      }
     >
       <Space direction="vertical" style={{ width: '100%' }}>
         <GoBack onClick={onClose} />
-        <Card title="Boundary condition name">
+        <Card title="Boundary condition name" size="small">
           <Input value={current?.name || ''} onChange={onName} />
         </Card>
-        <Card title="Boundary condition type">
+        <Card title="Boundary condition type" size="small">
           <Radio.Group
             buttonStyle="solid"
             value={current?.type?.key}
@@ -321,34 +348,6 @@ const BoundaryCondition = ({
           alreadySelected={alreadySelected}
           updateSelected={onSelected}
         />
-        <Space
-          direction="horizontal"
-          style={{ width: '100%', justifyContent: 'flex-end' }}
-        >
-          <Button danger onClick={onClose}>
-            Cancel
-          </Button>
-          {boundaryCondition ? (
-            <Edit
-              disabled={disabled}
-              simulation={simulation}
-              boundaryCondition={current}
-              oldBoundaryCondition={boundaryCondition}
-              geometry={geometry}
-              swr={{ mutateOneSimulation: swr.mutateOneSimulation }}
-              close={onClose}
-            />
-          ) : (
-            <Add
-              disabled={disabled}
-              simulation={simulation}
-              boundaryCondition={current}
-              geometry={geometry}
-              swr={{ mutateOneSimulation: swr.mutateOneSimulation }}
-              close={onClose}
-            />
-          )}
-        </Space>
       </Space>
     </Drawer>
   )

@@ -99,36 +99,8 @@ const Material = ({
       mask={false}
       maskClosable={false}
       width={300}
-    >
-      <Space direction="vertical" style={{ width: '100%' }}>
-        <GoBack onClick={onClose} />
-        <Card>
-          <Space direction="vertical" style={{ width: '100%' }}>
-            <DataBase onSelect={onMaterialSelect} />
-            <Typography.Text>{current?.material?.label}</Typography.Text>
-            {materials?.children?.map((child) => {
-              const m = current?.material?.children?.find(
-                (c) => c.symbol === child.name
-              )
-              if (m)
-                return (
-                  <Formula
-                    key={m.symbol}
-                    defaultValue={m.value}
-                    unit={child.unit}
-                    onValueChange={(val) => {
-                      m.value = val
-                    }}
-                  />
-                )
-            })}
-          </Space>
-        </Card>
-        <Selector geometry={geometry} updateSelected={onSelected} />
-        <Space
-          direction="horizontal"
-          style={{ width: '100%', justifyContent: 'flex-end' }}
-        >
+      footer={
+        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
           <Button danger onClick={onClose}>
             Cancel
           </Button>
@@ -151,7 +123,34 @@ const Material = ({
               close={onClose}
             />
           )}
-        </Space>
+        </div>
+      }
+    >
+      <Space direction="vertical" style={{ width: '100%' }}>
+        <GoBack onClick={onClose} />
+        <Card size="small">
+          <Space direction="vertical" style={{ width: '100%' }}>
+            <DataBase onSelect={onMaterialSelect} />
+            <Typography.Text>{current?.material?.label}</Typography.Text>
+            {materials?.children?.map((child) => {
+              const m = current?.material?.children?.find(
+                (c) => c.symbol === child.name
+              )
+              if (m)
+                return (
+                  <Formula
+                    key={m.symbol}
+                    defaultValue={m.value}
+                    unit={child.unit}
+                    onValueChange={(val) => {
+                      m.value = val
+                    }}
+                  />
+                )
+            })}
+          </Space>
+        </Card>
+        <Selector geometry={geometry} updateSelected={onSelected} />
       </Space>
     </Drawer>
   )

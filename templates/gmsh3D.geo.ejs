@@ -61,16 +61,16 @@ veryFine = max - 1. * (max - min);
 globalSize = <%= value %>;
 <% } else { -%>
 // Automatic size
-<% if (fineness === 'verycoarse') { -%>
+<% if (value === 'verycoarse') { -%>
 // Very coarse size
 globalSize = veryCoarse;
-<% } else if (fineness === 'coarse') { -%>
+<% } else if (value === 'coarse') { -%>
 // Coarse size
 globalSize = coarse;
-<% } else if (fineness === 'fine') { -%>
+<% } else if (value === 'fine') { -%>
 // Fine size
 globalSize = fine;
-<% } else if (fineness === 'veryfine') { -%>
+<% } else if (value === 'veryfine') { -%>
 // Very fine size
 globalSize = veryFine;
 <% } else { -%>

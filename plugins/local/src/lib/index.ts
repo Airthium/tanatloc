@@ -224,8 +224,8 @@ const computeMeshes = async (
 
         // Mesh parameters
         const parameters = {
-          size: 'auto',
-          fineness: 'normal',
+          size: geometry.meshParameters?.size || 'auto',
+          value: geometry.meshParameters?.value || 'normal',
           refinements: refinements
         }
 

@@ -9,8 +9,8 @@ import { MathJax } from 'better-react-mathjax'
 export interface IProps {
   defaultValue?: string
   defaultChecked?: boolean
-  onValueChange: Function
-  onCheckedChange?: Function
+  onValueChange: (value: string) => void
+  onCheckedChange?: (value: boolean) => void
   unit?: string
 }
 

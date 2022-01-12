@@ -1,12 +1,13 @@
 import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
-import { Collapse, Space, Typography } from 'antd'
+import { Card, Collapse, Select, Space, Typography } from 'antd'
 import { SelectOutlined } from '@ant-design/icons'
 import { MathJax } from 'better-react-mathjax'
 
 import { IGeometry, ISimulation } from '@/database/index.d'
 
 import { Error as ErrorNotification } from '@/components/assets/notification'
+import Formula from '@/components/assets/formula'
 
 import SimulationAPI from '@/api/simulation'
 
@@ -44,6 +45,9 @@ const Geometry = ({
   const [geometriesList, setGeometryList]: [IGeometry[], Function] = useState(
     []
   )
+  const [meshGlobalType, setMeshGlobalType]: [string, Function] =
+    useState('auto')
+  const [meshGlobalSize, setMeshGlobalSize]: [string, Function] = useState()
 
   useEffect(() => {
     const simulationGeometryId = simulation.scheme.configuration.geometry.value
@@ -115,6 +119,10 @@ const Geometry = ({
 
       // Update
       newSimulation.scheme.configuration.geometry.value = id
+      newSimulation.scheme.configuration.geometry.meshParameters = {
+        size: meshGlobalType,
+        value: meshGlobalSize ?? meshGlobalType === 'auto' ? 'normal' : '1'
+      }
 
       const diff = {
         ...newSimulation.scheme.configuration.geometry,
@@ -149,9 +157,46 @@ const Geometry = ({
   return geometries.length ? (
     <>
       {geometriesList}
-      {/* {simulation.scheme.configuration.geometry.meshable && (
-        <Card title="Mesh refinement">TODO</Card>
-      )} */}
+      {simulation.scheme.configuration.geometry.meshable && (
+        <Card title="Mesh refinement" size="small">
+          <Space direction="vertical">
+            <Typography.Text>
+              Type:
+              <br />
+              <Select
+                value={meshGlobalType}
+                onChange={(value) => setMeshGlobalType(value)}
+              >
+                <Select.Option value="auto">Automatic</Select.Option>
+                <Select.Option value="manual">Manual</Select.Option>
+              </Select>
+            </Typography.Text>
+            {meshGlobalType === 'auto' && (
+              <Typography.Text>
+                Size:
+                <br />
+                <Select defaultValue="normal">
+                  <Select.Option value="verycoarse">Very coarse</Select.Option>
+                  <Select.Option value="coarse">Coarse</Select.Option>
+                  <Select.Option value="normal">Normal</Select.Option>
+                  <Select.Option value="fine">Fine</Select.Option>
+                  <Select.Option value="veryfine">Very fine</Select.Option>
+                </Select>
+              </Typography.Text>
+            )}
+            {meshGlobalType === 'manual' && (
+              <Typography.Text>
+                Size:
+                <br />
+                <Formula
+                  defaultValue={meshGlobalSize}
+                  onValueChange={(value) => setMeshGlobalSize(value)}
+                />
+              </Typography.Text>
+            )}
+          </Space>
+        </Card>
+      )}
     </>
   ) : (
     <Typography.Text>Please upload a geometry first</Typography.Text>

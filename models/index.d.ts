@@ -103,6 +103,10 @@ export interface IModel {
       file?: string
       name?: string
       path?: string
+      meshParameters: {
+        size: string
+        value: string
+      }
     }
     materials?: {
       index: number

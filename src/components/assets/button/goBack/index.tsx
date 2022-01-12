@@ -21,7 +21,6 @@ const GoBack = ({ children, onClick }: IProps): JSX.Element => {
     <Button
       icon={<ArrowLeftOutlined className="goback-button-icon" />}
       className="goback-button"
-      size="large"
       onClick={onClick}
     >
       {children || 'Go back'}

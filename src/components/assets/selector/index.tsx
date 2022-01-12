@@ -1,8 +1,8 @@
 /** @module Components.Assets.Selector */
 
 import PropTypes from 'prop-types'
-import { useState, useEffect } from 'react'
-import { Button, Card, Divider, Space, Tag, Tooltip } from 'antd'
+import { ChangeEvent, useState, useEffect } from 'react'
+import { Button, Card, Divider, Input, Space, Tag, Tooltip } from 'antd'
 import {
   CloseOutlined,
   CloseSquareOutlined,
@@ -63,6 +63,7 @@ const Selector = ({
     useState([])
   const [filter, setFilter]: [{ r: number; g: number; b: number }, Function] =
     useState()
+  const [search, setSearch]: [string, Function] = useState()
 
   // Store
   const { type, highlighted, selected } = useSelector(
@@ -199,6 +200,15 @@ const Selector = ({
   }
 
   /**
+   * On search
+   * @param e Event
+   */
+  const onSearch = (e: ChangeEvent<HTMLInputElement>): void => {
+    const value = e.target.value
+    setSearch(value)
+  }
+
+  /**
    * Display?
    * @param element Element
    * @returns True/false
@@ -209,15 +219,17 @@ const Selector = ({
     name?: string
     color?: { r: number; g: number; b: number }
   }) => {
+    // Color filter
     if (
-      !filter ||
-      (filter &&
-        filter.r === element.color?.r &&
-        filter.g === element.color?.g &&
-        filter.b === element.color?.b)
+      filter &&
+      (filter.r !== element.color?.r ||
+        filter.g !== element.color?.g ||
+        filter.b !== element.color?.b)
     )
-      return true
-    return false
+      return false
+    // Search
+    if (search && element.name && !element.name.includes(search)) return false
+    return true
   }
 
   /**
@@ -260,6 +272,7 @@ const Selector = ({
             <Button icon={<SwapOutlined />} onClick={selectSwap} />
           </Tooltip>
         </Space>
+        <Input.Search placeholder="Search" value={search} onChange={onSearch} />
       </Space>
 
       <Divider style={{ borderColor: '#f0f0f0' }} />

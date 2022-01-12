@@ -69,6 +69,7 @@ const Index = (): JSX.Element => {
     router.push('/login')
   }
 
+  // Git version
   let gitVersion = ''
   if (
     process.env.NEXT_PUBLIC_SOURCE_BRANCH &&
@@ -80,7 +81,42 @@ const Index = (): JSX.Element => {
       '-' +
       process.env.NEXT_PUBLIC_SOURCE_COMMIT
 
-  console.log(gitVersion)
+  // Buttons
+  let buttons = (
+    <Button loading={true} size="large" style={{ border: 'none' }} />
+  )
+  if (!loadingUser)
+    if (user)
+      buttons = (
+        <Button
+          icon={<DashboardOutlined />}
+          onClick={handleDashboard}
+          size="large"
+          style={{ border: 'none' }}
+        >
+          Dashboard
+        </Button>
+      )
+    else
+      buttons = (
+        <>
+          <Button
+            onClick={handleSignup}
+            size="large"
+            style={{ border: 'none' }}
+          >
+            Signup
+          </Button>
+          <Button
+            icon={<LoginOutlined />}
+            onClick={handleLogin}
+            size="large"
+            style={{ border: 'none' }}
+          >
+            Login
+          </Button>
+        </>
+      )
 
   /**
    * Render
@@ -90,38 +126,7 @@ const Index = (): JSX.Element => {
       <Background />
       <Layout.Header className="Index-header">
         <img src="/images/logo.svg" alt="Tanatloc" />
-        {!loadingUser && (
-          <Button.Group>
-            {user ? (
-              <Button
-                icon={<DashboardOutlined />}
-                onClick={handleDashboard}
-                size="large"
-                style={{ border: 'none' }}
-              >
-                Dashboard
-              </Button>
-            ) : (
-              <>
-                <Button
-                  onClick={handleSignup}
-                  size="large"
-                  style={{ border: 'none' }}
-                >
-                  Signup
-                </Button>
-                <Button
-                  icon={<LoginOutlined />}
-                  onClick={handleLogin}
-                  size="large"
-                  style={{ border: 'none' }}
-                >
-                  Login
-                </Button>
-              </>
-            )}
-          </Button.Group>
-        )}
+        <div>{buttons}</div>
       </Layout.Header>
       <Divider
         style={{

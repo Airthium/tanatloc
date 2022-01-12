@@ -20,6 +20,9 @@ yarn run doc
 # Test
 yarn run test | true
 
+# Prestart
+yarn run prestart
+
 # Build
 rm -Rf .next
 yarn run build

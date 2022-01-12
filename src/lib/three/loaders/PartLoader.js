@@ -15,7 +15,7 @@ const PartLoader = (mouseMoveEvent, mouseDownEvent) => {
   // Highlight color
   const highlightColor = new Color('#FAD114')
   // Select colo
-  const selectColor = new Color('#c73100')
+  const selectColor = new Color('#EE9817')
 
   /**
    * Load

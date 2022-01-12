@@ -13,7 +13,7 @@ import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader'
  */
 const PartLoader = (mouseMoveEvent, mouseDownEvent) => {
   // Highlight color
-  const highlightColor = new Color('#0096C7')
+  const highlightColor = new Color('#FAD114')
   // Select colo
   const selectColor = new Color('#c73100')
 

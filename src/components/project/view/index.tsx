@@ -172,8 +172,8 @@ const ThreeView = ({ loading, project, part }: IThreeProps): JSX.Element => {
       scene.current,
       camera.current
     )
-    outlinePass.current.visibleEdgeColor.set('#0096C7')
-    outlinePass.current.hiddenEdgeColor.set('#0096C7')
+    outlinePass.current.visibleEdgeColor.set('#FAD114')
+    outlinePass.current.hiddenEdgeColor.set('#FAD114')
 
     // Effect composer
     effectComposer.current = new EffectComposer(renderer.current)

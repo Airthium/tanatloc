@@ -18,9 +18,10 @@ module.exports = {
     '<rootDir>/**/*.test.ts',
     '<rootDir>/**/*.test.tsx'
   ],
+  testPathIgnorePatterns: ['<rootDir>/dist-install/'],
   modulePathIgnorePatterns: ['<rootDir>/.yarn', '<rootDir>/tests'],
   transform: {
-    '^.+\\.(t|j)sx?$': '@swc/jest',
+    '^.+\\.(t|j)sx?$': ['babel-jest', { presets: ['next/babel'] }],
     '^.+\\.(css)$': '<rootDir>/config/jest/cssTransform.js'
   },
   transformIgnorePatterns: [

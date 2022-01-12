@@ -192,6 +192,21 @@ describe('components/assets/selector', () => {
     unmount()
   })
 
+  test('search', () => {
+    const { unmount } = render(
+      <Selector
+        geometry={geometry}
+        alreadySelected={alreadySelected}
+        updateSelected={updateSelected}
+      />
+    )
+
+    const input = screen.getByRole('textbox')
+    fireEvent.change(input, { target: { value: 'search' } })
+
+    unmount()
+  })
+
   test('already highlighted', () => {
     mockHighlighted.mockImplementation(() => 'uuid')
     const { unmount } = render(

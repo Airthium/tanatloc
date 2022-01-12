@@ -789,7 +789,15 @@ const ThreeView = ({ loading, project, part }: IThreeProps): JSX.Element => {
           style={{ display: loading ? 'flex' : 'none' }}
           className="View-loading"
         >
-          <Spin indicator={<LoadingOutlined className="View-loading" spin />} />
+          <Spin
+            indicator={
+              <LoadingOutlined
+                className="View-loading-spin"
+                style={{ fontSize: 80 }}
+                spin
+              />
+            }
+          />
         </div>
         <div ref={mount} className="View-canvas" />
       </Layout.Content>

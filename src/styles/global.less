@@ -92,11 +92,16 @@
 @menu-highlight-color: @text-color;
 
 @menu-item-active-bg: #cecece26;
+@menu-item-active-border-width: 4px;
 @menu-item-vertical-margin: 0px;
 @menu-item-boundary-margin: 0px;
 
 @menu-icon-margin-right: 10px;
 @menu-icon-size: @menu-item-font-size + 2px;
+
+.ant-menu-item::after {
+  border-color: @tanatloc-primary-color !important;
+}
 
 // Buttons
 @btn-primary-color: #1f1f1f;

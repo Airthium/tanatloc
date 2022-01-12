@@ -3,10 +3,10 @@ import { call, fetcher } from '../call'
 jest.mock('is-electron', () => () => false)
 
 let mockRoute: string, mockParam: any
-const mockOk = jest.fn(() => true)
-const mockStatus = jest.fn(() => 200)
-const mockJSON = jest.fn(async () => ({}))
-const mockGet = jest.fn(() => '')
+const mockOk = jest.fn()
+const mockStatus = jest.fn()
+const mockJSON = jest.fn()
+const mockGet = jest.fn()
 Object.defineProperty(global, 'fetch', {
   value: async (route: string, param: any) => {
     mockRoute = route
@@ -23,6 +23,20 @@ Object.defineProperty(global, 'fetch', {
 })
 
 describe('api/call', () => {
+  beforeEach(() => {
+    mockOk.mockReset()
+    mockOk.mockImplementation(() => true)
+
+    mockStatus.mockReset()
+    mockStatus.mockImplementation(() => 20)
+
+    mockJSON.mockReset()
+    mockJSON.mockImplementation(async () => ({}))
+
+    mockGet.mockReset()
+    mockGet.mockImplementation(() => '')
+  })
+
   test('fetcher', async () => {
     // Normal
     await fetcher('/route')
@@ -31,13 +45,30 @@ describe('api/call', () => {
     // With payload
     await fetcher('/route', JSON.stringify({ payload: '' }))
 
-    // Error
+    // Non ok
     mockOk.mockImplementation(() => false)
     try {
       await fetcher('/route')
       expect(true).toBe(false)
     } catch (err) {
       expect(err.message).toBe('An error occured while fetching data.')
+    }
+
+    // Non ok, json
+    mockGet.mockImplementation(() => 'application/json')
+    mockJSON.mockImplementation(async () => ({
+      error: true,
+      message: 'message'
+    }))
+    try {
+      await fetcher('/route')
+      expect(true).toBe(false)
+    } catch (err) {
+      expect(err.message).toBe('An error occured while fetching data.')
+      expect(err.info).toEqual({
+        error: true,
+        message: 'message'
+      })
     }
   })
 

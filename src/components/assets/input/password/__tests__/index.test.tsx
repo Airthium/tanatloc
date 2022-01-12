@@ -52,12 +52,15 @@ describe('components/assets/input/password', () => {
 
     // Empty
     fireEvent.change(input, { taget: { value: '' } })
+    fireEvent.click(button)
 
     // Small
     fireEvent.change(input, { target: { value: 'small' } })
+    fireEvent.click(button)
 
     // Long
     fireEvent.change(input, { target: { value: 'longlonglonglonglonglong' } })
+    fireEvent.click(button)
 
     // Numbers only
     fireEvent.change(input, { target: { value: '12345678' } })
@@ -103,21 +106,27 @@ describe('components/assets/input/password', () => {
 
     // Empty
     fireEvent.change(input, { taget: { value: undefined } })
+    fireEvent.click(button)
 
     // Small
     fireEvent.change(input, { target: { value: 'small' } })
+    fireEvent.click(button)
 
     // Long
     fireEvent.change(input, { target: { value: 'longlonglonglonglonglong' } })
+    fireEvent.click(button)
 
     // Numbers only
     fireEvent.change(input, { target: { value: '12345678' } })
+    fireEvent.click(button)
 
     // Letters only
     fireEvent.change(input, { target: { value: 'abcdefgh' } })
+    fireEvent.click(button)
 
     // Letters and numbers
     fireEvent.change(input, { target: { value: 'abcd1234' } })
+    fireEvent.click(button)
 
     // Ok
     fireEvent.change(input, { target: { value: 'abcd1234&' } })
@@ -146,12 +155,15 @@ describe('components/assets/input/password', () => {
 
     // Empty
     fireEvent.change(input, { taget: { value: '' } })
+    fireEvent.click(button)
 
     // Small
     fireEvent.change(input, { target: { value: 'small' } })
+    fireEvent.click(button)
 
     // Long
     fireEvent.change(input, { target: { value: 'longlonglonglonglonglong' } })
+    fireEvent.click(button)
 
     // Numbers only
     fireEvent.change(input, { target: { value: '12345678' } })
@@ -199,12 +211,15 @@ describe('components/assets/input/password', () => {
 
     // Empty
     fireEvent.change(input, { taget: { value: '' } })
+    fireEvent.click(button)
 
     // Small
     fireEvent.change(input, { target: { value: 'small' } })
+    fireEvent.click(button)
 
     // Long
     fireEvent.change(input, { target: { value: 'longlonglonglonglonglong' } })
+    fireEvent.click(button)
 
     // Numbers only
     fireEvent.change(input, { target: { value: '12345678' } })

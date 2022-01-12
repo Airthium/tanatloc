@@ -66,12 +66,15 @@ const PasswordItem = ({
   // Data
   const [system] = SystemAPI.useSystem()
 
+  const passwordMinSize = system?.password?.min ?? MIN_SIZE
+  const passwordMaxSize = system?.password?.max ?? MAX_SIZE
+
   /**
    * Check min
    * @param value Value
    */
   const checkMin = (value: string): boolean => {
-    if (value.length < (system?.password?.min ?? MIN_SIZE)) return false
+    if (value.length < passwordMinSize) return false
     return true
   }
 
@@ -80,7 +83,7 @@ const PasswordItem = ({
    * @param value Value
    */
   const checkMax = (value: string): boolean => {
-    if (value.length > (system?.password?.max ?? MAX_SIZE)) return false
+    if (value.length > passwordMaxSize) return false
     return true
   }
 
@@ -99,11 +102,7 @@ const PasswordItem = ({
    * @param value Value
    */
   const requireLetter = (value: string): boolean => {
-    if (
-      system?.password?.requireLetter !== undefined
-        ? system?.password?.requireLetter
-        : REQUIRE_LETTER
-    )
+    if (system?.password?.requireLetter ?? REQUIRE_LETTER)
       return checkRegex(value, /[a-zA-Z]/)
     return true
   }
@@ -113,11 +112,7 @@ const PasswordItem = ({
    * @param value Value
    */
   const requireNumber = (value: string): boolean => {
-    if (
-      system?.password?.requireNumber !== undefined
-        ? system?.password?.requireNumber
-        : REQUIRE_NUMBER
-    )
+    if (system?.password?.requireNumber ?? REQUIRE_NUMBER)
       return checkRegex(value, /\d/)
     return true
   }
@@ -127,11 +122,7 @@ const PasswordItem = ({
    * @param value Value
    */
   const requireSymbol = (value: string): boolean => {
-    if (
-      system?.password?.requireSymbol !== undefined
-        ? system?.password?.requireSymbol
-        : REQUIRE_SYMBOL
-    )
+    if (system?.password?.requireSymbol ?? REQUIRE_SYMBOL)
       return checkRegex(value, /[!@#$%^&*(){}[\]<>?/|.:;_-]/)
     return true
   }
@@ -142,11 +133,9 @@ const PasswordItem = ({
    * @param err Errors
    */
   const checkSize = (value: string, err: string[]): void => {
-    if (!checkMin(value))
-      err.push(errors.passwordTooSmall(system?.password?.min ?? MIN_SIZE))
+    if (!checkMin(value)) err.push(errors.passwordTooSmall(passwordMinSize))
 
-    if (!checkMax(value))
-      err.push(errors.passwordTooLong(system?.password?.max ?? MAX_SIZE))
+    if (!checkMax(value)) err.push(errors.passwordTooLong(passwordMaxSize))
   }
 
   /**
@@ -172,13 +161,12 @@ const PasswordItem = ({
       name={name || 'password'}
       label={label || 'Password'}
       rules={[
-        { required: true, message: errors.password },
         () => ({
           validator(_, value) {
             const err = []
             if (edit && value === '******') return Promise.resolve()
 
-            if (!value) return Promise.resolve()
+            if (!value) return Promise.reject(errors.password)
 
             checkSize(value, err)
             checkFormat(value, err)

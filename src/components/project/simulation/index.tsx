@@ -152,7 +152,7 @@ const Selector = ({
           </Menu>
         </Layout.Sider>
         <Layout.Content
-          style={{ padding: '10px' }}
+          style={{ padding: '10px', height: '60vh', overflow: 'auto' }}
           className="simulation-selector"
         >
           <MathJax dynamic>

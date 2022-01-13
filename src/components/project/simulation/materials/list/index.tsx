@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
 import { useState } from 'react'
-import { Card, Space, Typography } from 'antd'
+import { Card, Typography } from 'antd'
 
 import { ISimulation } from '@/database/index.d'
 import { IModelMaterialValue } from '@/models/index.d'
@@ -64,26 +64,18 @@ const List = ({ simulation, swr, onEdit }: IProps): JSX.Element => {
           onMouseLeave={() => {
             enabled && unhighlight()
           }}
+          actions={[
+            <EditButton
+              onEdit={() => {
+                setEnabled(false)
+                onEdit(index)
+                setTimeout(() => setEnabled(true), 500)
+              }}
+            />,
+            <Delete simulation={simulation} index={index} swr={swr} />
+          ]}
         >
-          <Space
-            style={{
-              width: '100%',
-              justifyContent: 'space-between',
-              alignItems: 'center'
-            }}
-          >
-            <Typography.Text>{material.material.label}</Typography.Text>
-            <Space>
-              <EditButton
-                onEdit={() => {
-                  setEnabled(false)
-                  onEdit(index)
-                  setTimeout(() => setEnabled(true), 500)
-                }}
-              />
-              <Delete simulation={simulation} index={index} swr={swr} />
-            </Space>
-          </Space>
+          <Typography.Text>{material.material.label}</Typography.Text>
         </Card>
       )
     })

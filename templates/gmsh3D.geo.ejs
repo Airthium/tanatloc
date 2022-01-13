@@ -56,27 +56,27 @@ fine = max - 0.75 * (max - min);
 veryFine = max - 1. * (max - min);
 
 // Global size
-<% if (size === 'manual') { -%>
+<% if (type === 'manual') { -%>
 // Manual size
 globalSize = <%= value %>;
 <% } else { -%>
 // Automatic size
-<% if (value === 'verycoarse') { -%>
+	<% if (value === 'verycoarse') { -%>
 // Very coarse size
 globalSize = veryCoarse;
-<% } else if (value === 'coarse') { -%>
+	<% } else if (value === 'coarse') { -%>
 // Coarse size
 globalSize = coarse;
-<% } else if (value === 'fine') { -%>
+	<% } else if (value === 'fine') { -%>
 // Fine size
 globalSize = fine;
-<% } else if (value === 'veryfine') { -%>
+	<% } else if (value === 'veryfine') { -%>
 // Very fine size
 globalSize = veryFine;
-<% } else { -%>
+	<% } else { -%>
 // Normal size
 globalSize = normal;
-<% } -%>
+	<% } -%>
 <% } -%>
 globalMinSize = globalSize;
 globalMaxSize = globalSize;
@@ -111,11 +111,11 @@ P() = PointsOf { Volume{<%= selected.join('') %>}; };
 <% } else { -%>
 P() = PointsOf { Surface{<%= selected.join(',') %>}; };
 <% } -%>
-<% if (refinement.size === 'manual') { -%>
-// Manual refinement size
+<% if (refinement.type === 'manual') { -%>
+// Manual refinement
 localSize = <%= refinement.value %>;
-<% } else if (refinement.size === 'auto') { -%>
-// Automatic refinement size
+<% } else if (refinement.type === 'auto') { -%>
+// Automatic refinement
 <% if (refinement.fineness === 'verycoarse') { -%>
 // Very coarse
 localSize = veryCoarse;
@@ -132,8 +132,8 @@ localSize = veryFine;
 // Normal
 localSize = normal;
 <% } -%>
-<% } else if (refinement.size === 'factor') {-%>
-// Factor refinement size
+<% } else if (refinement.type === 'factor') {-%>
+// Factor refinement
 localSize = globalSize / <%= refinement.factor -%>;
 <% } -%>
 Characteristic Length { P[] } = localSize;

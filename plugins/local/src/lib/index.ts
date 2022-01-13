@@ -163,7 +163,7 @@ const getRefinements = (configuration: any): any[] => {
       const boundaryCondition = configuration.boundaryConditions[boundaryKey]
       if (boundaryCondition.values && boundaryCondition.refineFactor) {
         refinements.push({
-          size: 'factor',
+          type: 'factor',
           factor: boundaryCondition.refineFactor,
           selected: boundaryCondition.values.flatMap((v) => v.selected)
         })
@@ -223,9 +223,14 @@ const computeMeshes = async (
         const refinements = getRefinements(configuration)
 
         // Mesh parameters
+        if (!geometry.meshParameters)
+          geometry.meshParameters = {
+            type: 'auto',
+            value: 'normal'
+          }
+
         const parameters = {
-          size: geometry.meshParameters?.size || 'auto',
-          value: geometry.meshParameters?.value || 'normal',
+          ...geometry.meshParameters,
           refinements: refinements
         }
 

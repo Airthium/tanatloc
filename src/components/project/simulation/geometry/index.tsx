@@ -45,9 +45,10 @@ const Geometry = ({
   const [geometriesList, setGeometryList]: [IGeometry[], Function] = useState(
     []
   )
-  const [meshGlobalType, setMeshGlobalType]: [string, Function] =
-    useState('auto')
-  const [meshGlobalSize, setMeshGlobalSize]: [string, Function] = useState()
+  const [meshGlobal, setMeshGlobal]: [
+    { type: string; value: string },
+    Function
+  ] = useState({ type: 'auto', value: 'normal' })
 
   useEffect(() => {
     const simulationGeometryId = simulation.scheme.configuration.geometry.value
@@ -119,10 +120,7 @@ const Geometry = ({
 
       // Update
       newSimulation.scheme.configuration.geometry.value = id
-      newSimulation.scheme.configuration.geometry.meshParameters = {
-        size: meshGlobalType,
-        value: meshGlobalSize ?? meshGlobalType === 'auto' ? 'normal' : '1'
-      }
+      newSimulation.scheme.configuration.geometry.meshParameters = meshGlobal
 
       const diff = {
         ...newSimulation.scheme.configuration.geometry,
@@ -151,6 +149,8 @@ const Geometry = ({
     }
   }
 
+  console.log(meshGlobal)
+
   /**
    * Render
    */
@@ -164,18 +164,28 @@ const Geometry = ({
               Type:
               <br />
               <Select
-                value={meshGlobalType}
-                onChange={(value) => setMeshGlobalType(value)}
+                value={meshGlobal.type}
+                onChange={(type) =>
+                  setMeshGlobal({
+                    type,
+                    value: type === 'auto' ? 'normal' : '1'
+                  })
+                }
               >
                 <Select.Option value="auto">Automatic</Select.Option>
                 <Select.Option value="manual">Manual</Select.Option>
               </Select>
             </Typography.Text>
-            {meshGlobalType === 'auto' && (
+            {meshGlobal.type === 'auto' && (
               <Typography.Text>
                 Size:
                 <br />
-                <Select defaultValue="normal">
+                <Select
+                  defaultValue="normal"
+                  onChange={(value) =>
+                    setMeshGlobal({ type: meshGlobal.type, value })
+                  }
+                >
                   <Select.Option value="verycoarse">Very coarse</Select.Option>
                   <Select.Option value="coarse">Coarse</Select.Option>
                   <Select.Option value="normal">Normal</Select.Option>
@@ -184,13 +194,16 @@ const Geometry = ({
                 </Select>
               </Typography.Text>
             )}
-            {meshGlobalType === 'manual' && (
+            {meshGlobal.type === 'manual' && (
               <Typography.Text>
                 Size:
                 <br />
                 <Formula
-                  defaultValue={meshGlobalSize}
-                  onValueChange={(value) => setMeshGlobalSize(value)}
+                  defaultValue={meshGlobal.value}
+                  onValueChange={(value) =>
+                    setMeshGlobal({ type: meshGlobal.type, value })
+                  }
+                  unit="$m$"
                 />
               </Typography.Text>
             )}

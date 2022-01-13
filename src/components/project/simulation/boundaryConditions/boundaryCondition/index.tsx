@@ -348,6 +348,13 @@ const BoundaryCondition = ({
           alreadySelected={alreadySelected}
           updateSelected={onSelected}
         />
+        {current?.selected?.length < 1 ? (
+          <div style={{ textAlign: 'center' }}>
+            {'\uD83D\uDD34'} You need to select a face
+          </div>
+        ) : (
+          <></>
+        )}
       </Space>
     </Drawer>
   )

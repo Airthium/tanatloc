@@ -6,8 +6,10 @@ import {
   Input,
   Radio,
   RadioChangeEvent,
-  Space
+  Space,
+  Typography
 } from 'antd'
+import { ExclamationCircleOutlined } from '@ant-design/icons'
 
 import { IGeometry, ISimulation } from '@/database/index.d'
 import {
@@ -68,7 +70,7 @@ const BoundaryCondition = ({
   const [totalNumber, setTotalNumber]: [number, Function] = useState(0)
   const [current, setCurrent]: [IModelBoundaryConditionValue, Function] =
     useState(boundaryCondition)
-  const [disabled, setDisabled]: [boolean, Function] = useState(true)
+  const [error, setError]: [string, Function] = useState()
 
   // Types & already selected
   useEffect(() => {
@@ -139,17 +141,17 @@ const BoundaryCondition = ({
       })
   }, [boundaryCondition])
 
-  // Disabled
-  useEffect(() => {
-    if (
-      !current ||
-      !current.name ||
-      !current.selected?.length ||
-      !current.values?.length
-    )
-      setDisabled(true)
-    else setDisabled(false)
-  }, [current])
+  // // Disabled
+  // useEffect(() => {
+  //   if (
+  //     !current ||
+  //     !current.name ||
+  //     !current.selected?.length ||
+  //     !current.values?.length
+  //   )
+  //     setDisabled(true)
+  //   else setDisabled(false)
+  // }, [current])
 
   /**
    * On name
@@ -249,6 +251,14 @@ const BoundaryCondition = ({
   }
 
   /**
+   * On error
+   * @param desc Description
+   */
+  const onError = (desc: string): void => {
+    setError(desc)
+  }
+
+  /**
    * On close
    */
   const onClose = (): void => {
@@ -278,7 +288,6 @@ const BoundaryCondition = ({
           </Button>
           {boundaryCondition ? (
             <Edit
-              disabled={disabled}
               simulation={simulation}
               boundaryCondition={current}
               oldBoundaryCondition={boundaryCondition}
@@ -288,12 +297,12 @@ const BoundaryCondition = ({
             />
           ) : (
             <Add
-              disabled={disabled}
               simulation={simulation}
               boundaryCondition={current}
               geometry={geometry}
               swr={{ mutateOneSimulation: swr.mutateOneSimulation }}
-              close={onClose}
+              onError={onError}
+              onClose={onClose}
             />
           )}
         </div>
@@ -348,12 +357,11 @@ const BoundaryCondition = ({
           alreadySelected={alreadySelected}
           updateSelected={onSelected}
         />
-        {current?.selected?.length < 1 ? (
-          <div style={{ textAlign: 'center' }}>
-            {'\uD83D\uDD34'} You need to select a face
-          </div>
-        ) : (
-          <></>
+
+        {error && (
+          <Typography.Text>
+            <ExclamationCircleOutlined style={{ color: 'red' }} /> {error}
+          </Typography.Text>
         )}
       </Space>
     </Drawer>

@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types'
 import { useState } from 'react'
 import { v4 as uuid } from 'uuid'
-import { Button } from 'antd'
 
 import { IGeometry, ISimulation } from '@/database/index.d'
 import {
@@ -24,7 +23,8 @@ export interface IProps {
   swr: {
     mutateOneSimulation: Function
   }
-  close: Function
+  onError: (desc: string) => void
+  onClose: () => void
 }
 
 /**
@@ -46,7 +46,8 @@ const Add = ({
   boundaryCondition,
   geometry,
   swr,
-  close
+  onError,
+  onClose
 }: IProps): JSX.Element => {
   // State
   const [loading, setLoading]: [boolean, Function] = useState(false)
@@ -58,6 +59,16 @@ const Add = ({
     setLoading(true)
 
     try {
+      if (!boundaryCondition.type?.key) {
+        onError('You need to select a type')
+        return
+      }
+
+      if (!boundaryCondition.selected?.length) {
+        onError('You need to select a face')
+        return
+      }
+
       // Get type key
       const type = boundaryCondition.type.key
 
@@ -117,7 +128,7 @@ const Add = ({
       setLoading(false)
 
       // Close
-      close()
+      onClose()
     } catch (err) {
       Error(errors.updateError, err)
       setLoading(false)
@@ -152,7 +163,8 @@ Add.propTypes = {
   swr: PropTypes.shape({
     mutateOneSimulation: PropTypes.func.isRequired
   }).isRequired,
-  close: PropTypes.func.isRequired
+  onError: PropTypes.func.isRequired,
+  onClose: PropTypes.func.isRequired
 }
 
 export default Add

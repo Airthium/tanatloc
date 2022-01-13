@@ -165,9 +165,11 @@ const Geometry = ({ project, geometry, swr, close }: IProps): JSX.Element => {
             ]}
           >
             <Space direction="vertical" style={{ width: '100%' }}>
-              <Typography.Text>File: {geometry.name} </Typography.Text>
               <Typography.Text>
-                Unit:{' '}
+                <span className="text-light">File:</span> {geometry.name}{' '}
+              </Typography.Text>
+              <Typography.Text>
+                <span className="text-light">Unit:</span>{' '}
                 <MathJax inline dynamic>
                   $m$
                 </MathJax>
@@ -176,17 +178,20 @@ const Geometry = ({ project, geometry, swr, close }: IProps): JSX.Element => {
                 <>
                   {geometry.summary.solids && (
                     <Typography.Text>
-                      Number of solids: {geometry.summary.solids.length}
+                      <span className="text-light">Number of solids:</span>{' '}
+                      {geometry.summary.solids.length}
                     </Typography.Text>
                   )}
                   {geometry.summary.faces && (
                     <Typography.Text>
-                      Number of faces: {geometry.summary.faces.length}
+                      <span className="text-light">Number of faces:</span>{' '}
+                      {geometry.summary.faces.length}
                     </Typography.Text>
                   )}
                   {geometry.summary.edges && (
                     <Typography.Text>
-                      Number of edges: {geometry.summary.edges.length}
+                      <span className="text-light">Number of edges:</span>{' '}
+                      {geometry.summary.edges.length}
                     </Typography.Text>
                   )}
                 </>

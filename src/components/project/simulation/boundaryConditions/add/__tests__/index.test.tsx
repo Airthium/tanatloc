@@ -54,7 +54,8 @@ describe('components/project/simulation/boundaryConditions/add', () => {
     ]
   }
   const swr = { mutateOneSimulation: jest.fn() }
-  const close = jest.fn()
+  const onClose = jest.fn()
+  const onError = jest.fn()
 
   beforeEach(() => {
     mockError.mockReset()
@@ -62,18 +63,18 @@ describe('components/project/simulation/boundaryConditions/add', () => {
     mockUpdate.mockReset()
 
     swr.mutateOneSimulation.mockReset()
-    close.mockReset()
+    onClose.mockReset()
   })
 
   test('render', () => {
     const { unmount } = render(
       <Add
-        disabled={false}
         simulation={simulation}
         boundaryCondition={boundaryCondition}
         geometry={geometry}
         swr={swr}
-        close={close}
+        onClose={onClose}
+        onError={onError}
       />
     )
 
@@ -83,12 +84,12 @@ describe('components/project/simulation/boundaryConditions/add', () => {
   test('onAdd', async () => {
     const { unmount } = render(
       <Add
-        disabled={false}
         simulation={simulation}
         boundaryCondition={boundaryCondition}
         geometry={geometry}
         swr={swr}
-        close={close}
+        onClose={onClose}
+        onError={onError}
       />
     )
 
@@ -115,7 +116,6 @@ describe('components/project/simulation/boundaryConditions/add', () => {
   test('onAdd without values', async () => {
     const { unmount } = render(
       <Add
-        disabled={false}
         simulation={{
           id: 'id',
           scheme: {
@@ -139,7 +139,8 @@ describe('components/project/simulation/boundaryConditions/add', () => {
         boundaryCondition={boundaryCondition}
         geometry={geometry}
         swr={swr}
-        close={close}
+        onClose={onClose}
+        onError={onError}
       />
     )
 

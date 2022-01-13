@@ -90,14 +90,15 @@ describe('components/project/simulation/boundaryConditions/edit', () => {
     ]
   }
   const swr = { mutateOneSimulation: jest.fn() }
-  const close = jest.fn()
+  const onClose = jest.fn()
+  const onError = jest.fn()
 
   beforeEach(() => {
     mockError.mockReset()
 
     mockUpdate.mockReset()
 
-    close.mockReset()
+    onClose.mockReset()
 
     swr.mutateOneSimulation.mockReset()
   })
@@ -105,13 +106,13 @@ describe('components/project/simulation/boundaryConditions/edit', () => {
   test('render', () => {
     const { unmount } = render(
       <Edit
-        disabled={false}
         simulation={simulation}
         boundaryCondition={boundaryCondition}
         oldBoundaryCondition={oldBoundaryCondition}
         geometry={geometry}
         swr={swr}
-        close={close}
+        onClose={onClose}
+        onError={onError}
       />
     )
 
@@ -121,13 +122,13 @@ describe('components/project/simulation/boundaryConditions/edit', () => {
   test('onEdit', async () => {
     const { unmount } = render(
       <Edit
-        disabled={false}
         simulation={simulation}
         boundaryCondition={boundaryCondition}
         oldBoundaryCondition={oldBoundaryCondition}
         geometry={geometry}
         swr={swr}
-        close={close}
+        onClose={onClose}
+        onError={onError}
       />
     )
 
@@ -139,7 +140,7 @@ describe('components/project/simulation/boundaryConditions/edit', () => {
     await waitFor(() =>
       expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(1)
     )
-    await waitFor(() => expect(close).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(onClose).toHaveBeenCalledTimes(1))
 
     // Error
     mockUpdate.mockImplementation(() => {
@@ -156,13 +157,13 @@ describe('components/project/simulation/boundaryConditions/edit', () => {
     oldBoundaryCondition.type.key = 'otherKey'
     const { unmount } = render(
       <Edit
-        disabled={false}
         simulation={simulation}
         boundaryCondition={boundaryCondition}
         oldBoundaryCondition={oldBoundaryCondition}
         geometry={geometry}
         swr={swr}
-        close={close}
+        onClose={onClose}
+        onError={onError}
       />
     )
 
@@ -172,7 +173,7 @@ describe('components/project/simulation/boundaryConditions/edit', () => {
     await waitFor(() =>
       expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(1)
     )
-    await waitFor(() => expect(close).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(onClose).toHaveBeenCalledTimes(1))
 
     unmount()
   })

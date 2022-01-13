@@ -70,7 +70,7 @@ const BoundaryCondition = ({
   const [totalNumber, setTotalNumber]: [number, Function] = useState(0)
   const [current, setCurrent]: [IModelBoundaryConditionValue, Function] =
     useState(boundaryCondition)
-  const [error, setError]: [string, Function] = useState()
+  const [error, setError]: [string, Function] = useState('')
 
   // Types & already selected
   useEffect(() => {
@@ -140,18 +140,6 @@ const BoundaryCondition = ({
         )
       })
   }, [boundaryCondition])
-
-  // // Disabled
-  // useEffect(() => {
-  //   if (
-  //     !current ||
-  //     !current.name ||
-  //     !current.selected?.length ||
-  //     !current.values?.length
-  //   )
-  //     setDisabled(true)
-  //   else setDisabled(false)
-  // }, [current])
 
   /**
    * On name
@@ -265,6 +253,7 @@ const BoundaryCondition = ({
     setCurrent({
       name: 'Boundary condition ' + (totalNumber + 1)
     })
+    setError('')
     close()
   }
 
@@ -293,7 +282,8 @@ const BoundaryCondition = ({
               oldBoundaryCondition={boundaryCondition}
               geometry={geometry}
               swr={{ mutateOneSimulation: swr.mutateOneSimulation }}
-              close={onClose}
+              onError={onError}
+              onClose={onClose}
             />
           ) : (
             <Add

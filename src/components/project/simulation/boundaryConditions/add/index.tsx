@@ -14,7 +14,6 @@ import { AddButton } from '@/components/assets/button'
 import SimulationAPI from '@/api/simulation'
 
 export interface IProps {
-  disabled?: boolean
   simulation: ISimulation
   boundaryCondition: IModelBoundaryConditionValue
   geometry: {
@@ -41,7 +40,6 @@ const errors = {
  * @param props Props
  */
 const Add = ({
-  disabled,
   simulation,
   boundaryCondition,
   geometry,
@@ -141,14 +139,13 @@ const Add = ({
    * Render
    */
   return (
-    <AddButton disabled={disabled} loading={loading} onAdd={onAdd}>
+    <AddButton loading={loading} onAdd={onAdd}>
       Add
     </AddButton>
   )
 }
 
 Add.propTypes = {
-  disabled: PropTypes.bool,
   simulation: PropTypes.shape({
     scheme: PropTypes.shape({
       configuration: PropTypes.shape({

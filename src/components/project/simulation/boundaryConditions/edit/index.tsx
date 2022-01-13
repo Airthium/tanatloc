@@ -13,7 +13,6 @@ import { Error } from '@/components/assets/notification'
 import SimulationAPI from '@/api/simulation'
 
 export interface IProps {
-  disabled?: boolean
   simulation: ISimulation
   boundaryCondition: IModelBoundaryConditionValue
   oldBoundaryCondition: IModelBoundaryConditionValue
@@ -27,7 +26,8 @@ export interface IProps {
     mutateOneSimulation: Function
   }
 
-  close: Function
+  onError: (desc: string) => void
+  onClose: () => void
 }
 
 /**
@@ -44,13 +44,13 @@ const errors = {
  * @param props Props
  */
 const Edit = ({
-  disabled,
   simulation,
   boundaryCondition,
   oldBoundaryCondition,
   geometry,
   swr,
-  close
+  onError,
+  onClose
 }: IProps): JSX.Element => {
   // State
   const [loading, setLoading]: [boolean, Function] = useState(false)
@@ -62,6 +62,17 @@ const Edit = ({
     setLoading(true)
 
     try {
+      if (!boundaryCondition.type?.key) {
+        onError('You need to select a type')
+        setLoading(false)
+        return
+      }
+
+      if (!boundaryCondition.selected?.length) {
+        onError('You need to select a face')
+        setLoading(false)
+        return
+      }
       // New simulation
       const newSimulation = { ...simulation }
       const boundaryConditions =
@@ -150,7 +161,7 @@ const Edit = ({
       swr.mutateOneSimulation(newSimulation)
 
       // Close
-      close()
+      onClose()
     } catch (err) {
       Error(errors.updateError, err)
     } finally {
@@ -161,14 +172,13 @@ const Edit = ({
    * Render
    */
   return (
-    <Button disabled={disabled} loading={loading} onClick={onEdit}>
+    <Button loading={loading} onClick={onEdit}>
       Edit
     </Button>
   )
 }
 
 Edit.propTypes = {
-  disabled: PropTypes.bool,
   simulation: PropTypes.shape({
     id: PropTypes.string.isRequired,
     scheme: PropTypes.shape({
@@ -196,7 +206,7 @@ Edit.propTypes = {
   swr: PropTypes.shape({
     mutateOneSimulation: PropTypes.func.isRequired
   }).isRequired,
-  close: PropTypes.func.isRequired
+  onClose: PropTypes.func.isRequired
 }
 
 export default Edit

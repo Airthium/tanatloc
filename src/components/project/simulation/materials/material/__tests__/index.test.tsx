@@ -50,7 +50,7 @@ describe('components/project/simulation/materials/material', () => {
     ]
   }
   const swr = { mutateOneSimulation: jest.fn() }
-  const close = jest.fn()
+  const onClose = jest.fn()
 
   beforeEach(() => {
     mockGoBack.mockReset()
@@ -65,7 +65,7 @@ describe('components/project/simulation/materials/material', () => {
     mockDatabase.mockReset()
     mockDatabase.mockImplementation(() => <div />)
 
-    close.mockReset()
+    onClose.mockReset()
   })
 
   test('render', () => {
@@ -74,9 +74,8 @@ describe('components/project/simulation/materials/material', () => {
         simulation={simulation}
         visible={true}
         geometry={geometry}
-        materials={materials}
         swr={swr}
-        close={close}
+        onClose={onClose}
       />
     )
 
@@ -112,9 +111,8 @@ describe('components/project/simulation/materials/material', () => {
         simulation={simulation}
         visible={true}
         geometry={geometry}
-        materials={materials}
         swr={swr}
-        close={close}
+        onClose={onClose}
       />
     )
 
@@ -143,10 +141,9 @@ describe('components/project/simulation/materials/material', () => {
         simulation={simulation}
         visible={true}
         geometry={geometry}
-        materials={materials}
         material={{ uuid: 'uuid', selected: [{ uuid: 'uuid', label: 1 }] }}
         swr={swr}
-        close={close}
+        onClose={onClose}
       />
     )
 

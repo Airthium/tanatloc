@@ -11,7 +11,6 @@ import { AddButton } from '@/components/assets/button'
 import SimulationAPI from '@/api/simulation'
 
 export interface IProps {
-  disabled?: boolean
   material: Omit<IModelMaterialValue, 'uuid'>
   simulation: ISimulation
   geometry: {

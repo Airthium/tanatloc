@@ -47,7 +47,8 @@ describe('components/project/simulation/materials/add', () => {
   const swr = {
     mutateOneSimulation: jest.fn()
   }
-  const close = jest.fn()
+  const onClose = jest.fn()
+  const onError = jest.fn()
 
   beforeEach(() => {
     mockError.mockReset()
@@ -55,18 +56,19 @@ describe('components/project/simulation/materials/add', () => {
     mockUpdate.mockReset()
 
     swr.mutateOneSimulation.mockReset()
-    close.mockReset()
+    onClose.mockReset()
+    onError.mockReset()
   })
 
   test('render', () => {
     const { unmount } = render(
       <Add
-        disabled={false}
         material={material}
         simulation={simulation}
         geometry={geometry}
         swr={swr}
-        close={close}
+        onError={onError}
+        onClose={onClose}
       />
     )
 
@@ -76,12 +78,12 @@ describe('components/project/simulation/materials/add', () => {
   test('onAdd', async () => {
     const { unmount } = render(
       <Add
-        disabled={false}
         material={material}
         simulation={simulation}
         geometry={geometry}
         swr={swr}
-        close={close}
+        onError={onError}
+        onClose={onClose}
       />
     )
 
@@ -91,7 +93,7 @@ describe('components/project/simulation/materials/add', () => {
     await waitFor(() =>
       expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(1)
     )
-    await waitFor(() => expect(close).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(onClose).toHaveBeenCalledTimes(1))
 
     // Error
     mockUpdate.mockImplementation(() => {
@@ -107,7 +109,6 @@ describe('components/project/simulation/materials/add', () => {
   test('onAdd without values', async () => {
     const { unmount } = render(
       <Add
-        disabled={false}
         material={material}
         simulation={{
           id: 'id',
@@ -128,7 +129,8 @@ describe('components/project/simulation/materials/add', () => {
         }}
         geometry={geometry}
         swr={swr}
-        close={close}
+        onError={onError}
+        onClose={onClose}
       />
     )
 
@@ -138,7 +140,7 @@ describe('components/project/simulation/materials/add', () => {
     await waitFor(() =>
       expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(1)
     )
-    await waitFor(() => expect(close).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(onClose).toHaveBeenCalledTimes(1))
 
     unmount()
   })

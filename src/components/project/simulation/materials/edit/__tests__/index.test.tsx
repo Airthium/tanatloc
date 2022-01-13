@@ -51,25 +51,27 @@ describe('components/project/simulation/materials/edit', () => {
     ]
   }
   const swr = { mutateOneSimulation: jest.fn() }
-  const close = jest.fn()
+  const onClose = jest.fn()
+  const onError = jest.fn()
 
   beforeEach(() => {
     mockError.mockReset()
 
     mockUpdate.mockReset()
 
-    close.mockReset()
+    onClose.mockReset()
+    onError.mockReset()
   })
 
   test('render', () => {
     const { unmount } = render(
       <Edit
-        disabled={false}
         material={material}
         simulation={simulation}
         geometry={geometry}
         swr={swr}
-        close={close}
+        onError={onError}
+        onClose={onClose}
       />
     )
 
@@ -79,12 +81,12 @@ describe('components/project/simulation/materials/edit', () => {
   test('onEdit', async () => {
     const { unmount } = render(
       <Edit
-        disabled={false}
         material={material}
         simulation={simulation}
         geometry={geometry}
         swr={swr}
-        close={close}
+        onError={onError}
+        onClose={onClose}
       />
     )
 
@@ -96,7 +98,7 @@ describe('components/project/simulation/materials/edit', () => {
     await waitFor(() =>
       expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(1)
     )
-    await waitFor(() => expect(close).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(onClose).toHaveBeenCalledTimes(1))
 
     // Error
     mockUpdate.mockImplementation(() => {

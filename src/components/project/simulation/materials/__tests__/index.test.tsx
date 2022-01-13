@@ -109,14 +109,6 @@ describe('components/project/simulation/materials', () => {
     unmount()
   })
 
-  test('without geometry', () => {
-    const { unmount } = render(
-      <Materials simulation={simulation} swr={swr} setVisible={setVisible} />
-    )
-
-    unmount()
-  })
-
   test('onAdd', () => {
     mockAddButton.mockImplementation((props) => (
       <div role="AddButton" onClick={props.onAdd} />

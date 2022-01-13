@@ -48,6 +48,8 @@ const Edit = ({
   // State
   const [loading, setLoading]: [boolean, Function] = useState(false)
 
+  console.log(material)
+
   /**
    * On edit
    */

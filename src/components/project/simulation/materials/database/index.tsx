@@ -1,29 +1,37 @@
+import PropTypes from 'prop-types'
 import { useState } from 'react'
-import {
-  Button,
-  Collapse,
-  Layout,
-  List,
-  Menu,
-  Modal,
-  Space,
-  Typography
-} from 'antd'
-import { DatabaseOutlined, SelectOutlined } from '@ant-design/icons'
+import { Button, Layout, List, Menu, Modal, Space } from 'antd'
+import { DatabaseOutlined } from '@ant-design/icons'
 
 export interface IProps {
   onSelect: Function
 }
 
+export interface IMaterialDatabase {
+  [key: string]: {
+    label: string
+    children: {
+      key: string
+      label: string
+      children: {
+        label: string
+        symbol: string
+        value: number
+      }[]
+    }[]
+  }
+}
+
 /**
- * Database
+ * Material database
  * @memberof Components.Project.Simulation.Materials
  */
-const dataBase = {
+const materialDatabase: IMaterialDatabase = {
   metal: {
     label: 'Metal',
     children: [
       {
+        key: 'steel',
         label: 'Steel',
         children: [
           {
@@ -59,6 +67,7 @@ const dataBase = {
     label: 'Fluid',
     children: [
       {
+        key: 'water',
         label: 'Water',
         children: [
           {
@@ -83,64 +92,62 @@ const dataBase = {
  * @param props Props
  */
 const DataBase = ({ onSelect }: IProps): JSX.Element => {
+  // State
   const [visible, setVisible]: [boolean, Function] = useState()
-  const [current, setCurrent]: [JSX.Element, Function] = useState()
 
-  const onMenuClick = ({ key }) => {
-    const materials = dataBase[key].children.map(
-      (material: {
-        label: string
-        children: {
-          label: string
-          symbol: string
-          value: number
-        }[]
-      }) => {
-        return (
-          <List.Item key={material.label}>
-            <Collapse>
-              <Collapse.Panel
-                key=""
-                header={material.label}
-                extra={
-                  <Button
-                    size="small"
-                    icon={<SelectOutlined />}
-                    onClick={() => onMaterialSelect(material)}
-                  />
-                }
-              >
-                <Space direction="vertical">
-                  {material.children.map((value) => {
-                    return (
-                      <Typography.Text key={value.label}>
-                        {value.label}: {value.symbol} = {value.value}
-                      </Typography.Text>
-                    )
-                  })}
-                </Space>
-              </Collapse.Panel>
-            </Collapse>
-          </List.Item>
-        )
-      }
-    )
+  const [secondLevel, setSecondLevel]: [
+    { key: string; children: IMaterialDatabase['key']['children'] },
+    Function
+  ] = useState()
 
-    setCurrent(<List itemLayout="vertical">{materials}</List>)
+  const [current, setCurrent]: [
+    IMaterialDatabase['key']['children'][0],
+    Function
+  ] = useState()
+
+  // Data
+  const keys = Object.keys(materialDatabase)
+
+  /**
+   * On first level menu
+   * @param param { key }
+   */
+  const onFirstLevel = ({ key }) => {
+    const subDatabase =
+      materialDatabase[key] || ({} as IMaterialDatabase['key'])
+
+    setSecondLevel({
+      key,
+      children: subDatabase.children
+    })
+    setCurrent()
   }
 
-  const onMaterialSelect = (material: {
-    label: string
-    children: {
-      label: string
-      symbol: string
-      value: number
-    }[]
-  }) => {
+  /**
+   * On second level menu
+   * @param param { key }
+   */
+  const onSecondLevel = ({ key }) => {
+    const subDatabase = materialDatabase[secondLevel.key]
+    const child = subDatabase.children.find((c) => c.key === key)
+
+    setCurrent(child)
+  }
+
+  /**
+   * On material select
+   * @param material Material
+   */
+  const onMaterialSelect = (
+    material: IMaterialDatabase['key']['children'][0]
+  ) => {
     onSelect(material)
     setVisible(false)
   }
 
+  /**
+   * Render
+   */
   return (
     <>
       <Button icon={<DatabaseOutlined />} onClick={() => setVisible(true)}>
@@ -150,21 +157,46 @@ const DataBase = ({ onSelect }: IProps): JSX.Element => {
         visible={visible}
         title="Material database"
         onCancel={() => setVisible(false)}
-        okButtonProps={{ style: { display: 'none' } }}
+        onOk={() => onMaterialSelect(current)}
+        okText="Choose"
+        okButtonProps={{ disabled: !current }}
       >
         <Layout>
-          <Layout.Sider theme="light">
-            <Menu mode="inline" onClick={onMenuClick}>
-              {Object.keys(dataBase).map((key) => {
-                return <Menu.Item key={key}>{dataBase[key].label}</Menu.Item>
-              })}
-            </Menu>
-          </Layout.Sider>
-          <Layout.Content>{current}</Layout.Content>
+          <Layout.Content>
+            <Space style={{ alignItems: 'stretch' }}>
+              <Menu mode="inline" onClick={onFirstLevel}>
+                {keys.map((key) => {
+                  return (
+                    <Menu.Item key={key}>
+                      {materialDatabase[key].label}
+                    </Menu.Item>
+                  )
+                })}
+              </Menu>
+              <Menu mode="inline" onClick={onSecondLevel}>
+                {secondLevel?.children.map((child) => {
+                  return <Menu.Item key={child.key}>{child.label}</Menu.Item>
+                })}
+              </Menu>
+              {current && (
+                <List itemLayout="vertical">
+                  {current.children.map((child) => (
+                    <List.Item key={child.label}>
+                      {child.label}: {child.symbol} = {child.value}
+                    </List.Item>
+                  ))}
+                </List>
+              )}
+            </Space>
+          </Layout.Content>
         </Layout>
       </Modal>
     </>
   )
+}
+
+DataBase.propTypes = {
+  onSelect: PropTypes.func.isRequired
 }
 
 export default DataBase

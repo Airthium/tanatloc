@@ -41,8 +41,7 @@ const Material = ({
   onClose
 }: IProps): JSX.Element => {
   // State
-  const [current, setCurrent]: [IModelMaterialValue, Function] =
-    useState(material)
+  const [current, setCurrent]: [IModelMaterialValue, Function] = useState()
   const [error, setError]: [string, Function] = useState()
 
   // Data
@@ -98,9 +97,9 @@ const Material = ({
           {material ? (
             <Edit
               material={{
-                uuid: current.uuid,
-                material: current.material,
-                selected: current.selected
+                uuid: current?.uuid ?? material.uuid,
+                material: current?.material ?? material.material,
+                selected: current?.selected ?? material.selected
               }}
               simulation={{
                 id: simulation.id,

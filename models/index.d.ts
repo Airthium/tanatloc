@@ -103,7 +103,7 @@ export interface IModel {
       file?: string
       name?: string
       path?: string
-      meshParameters: {
+      meshParameters?: {
         size: string
         value: string
       }

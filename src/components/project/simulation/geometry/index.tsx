@@ -158,7 +158,7 @@ const Geometry = ({
     <>
       {geometriesList}
       {simulation.scheme.configuration.geometry.meshable && (
-        <Card title="Mesh refinement" size="small">
+        <Card size="small" title="Mesh refinement">
           <Space direction="vertical">
             <Typography.Text>
               Type:

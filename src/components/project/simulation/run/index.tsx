@@ -487,10 +487,12 @@ const Run = ({ simulation, result, setResult, swr }: IProps): JSX.Element => {
   // Results render
   let resultsRender
   if (!results) resultsRender = <Spin />
-  else if (!results.length) resultsRender = <Card>No results yet</Card>
+  else if (!results.length)
+    resultsRender = <Card size="small">No results yet</Card>
   else
     resultsRender = (
       <Card
+        size="small"
         title="Results"
         extra={
           <Tooltip title="Download archive">
@@ -571,7 +573,7 @@ const Run = ({ simulation, result, setResult, swr }: IProps): JSX.Element => {
             cloudServer={currentConfiguration?.run?.cloudServer}
             onOk={onCloudServer}
           />
-          <Card title="Run">
+          <Card size="small" title="Run">
             <Space direction="vertical">
               <Space>
                 <Button

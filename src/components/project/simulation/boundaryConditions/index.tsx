@@ -108,7 +108,7 @@ const BoundaryConditions = ({
   return (
     <Layout>
       <Layout.Content>
-        <Card>
+        <Card size="small">
           <AddButton disabled={!geometry} onAdd={onAdd}>
             Add boundary condition
           </AddButton>

@@ -89,7 +89,7 @@ const Materials = ({
   return (
     <Layout>
       <Layout.Content>
-        <Card>
+        <Card size="small">
           <AddButton disabled={!geometry} onAdd={onAdd}>
             Add material
           </AddButton>

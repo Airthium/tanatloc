@@ -171,13 +171,13 @@ const Parameters = ({ simulation, swr }: IProps): JSX.Element => {
 
     if (parameter?.advanced) {
       advanced.push(
-        <Card key={key} title={parameter?.label}>
+        <Card size="small" key={key} title={parameter?.label}>
           <Space direction="vertical">{components}</Space>
         </Card>
       )
     } else {
       parameters.push(
-        <Card key={key} title={parameter?.label}>
+        <Card size="small" key={key} title={parameter?.label}>
           <Space direction="vertical">{components}</Space>
         </Card>
       )

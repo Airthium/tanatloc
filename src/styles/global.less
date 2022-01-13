@@ -76,7 +76,7 @@
 @tanatloc-primary-color: rgb(250, 209, 20);
 @tanatloc-light-grey: rgb(217, 217, 217);
 @tanatloc-text-dark: rgb(0, 0, 0, 0.65);
-@tanatloc-text-light: rgb(0, 0, 0, 0.45);
+@tanatloc-text-light: #555; //rgb(0, 0, 0, 0.45);
 @tanatloc-links: rgb(238, 152, 23);
 
 @primary-color: @tanatloc-primary-color;
@@ -172,6 +172,10 @@ body {
 
 .relative {
   position: relative;
+}
+
+.text-light {
+  color: @tanatloc-text-light;
 }
 
 .logo {

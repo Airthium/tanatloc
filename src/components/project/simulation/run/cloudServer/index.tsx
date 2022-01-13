@@ -86,7 +86,7 @@ const CloudServer = ({ disabled, cloudServer, onOk }: IProps): JSX.Element => {
    * Render
    */
   return (
-    <Card title="Cloud server">
+    <Card size="small" title="Cloud server">
       <Modal
         visible={visible}
         title="Cloud server"

@@ -72,6 +72,7 @@ const About = ({ project, simulation, swr }: IProps): JSX.Element => {
       <Layout>
         <Layout.Content>
           <Card
+            size="small"
             title={
               <Typography.Title
                 level={5}
@@ -110,16 +111,20 @@ const About = ({ project, simulation, swr }: IProps): JSX.Element => {
           >
             <Space direction="vertical" style={{ maxWidth: '100%' }}>
               <Typography.Text>
-                <b>Category:</b> {simulation.scheme?.category}
+                <span className="text-light">Category:</span>{' '}
+                {simulation.scheme?.category}
               </Typography.Text>
               <Typography.Text>
-                <b>Algorithm:</b> {simulation.scheme?.algorithm}
+                <span className="text-light">Algorithm:</span>{' '}
+                {simulation.scheme?.algorithm}
               </Typography.Text>
               <Typography.Text>
-                <b>Code:</b> {simulation.scheme?.code}
+                <span className="text-light">Code:</span>{' '}
+                {simulation.scheme?.code}
               </Typography.Text>
               <Typography.Text>
-                <b>Version:</b> {simulation.scheme?.version}
+                <span className="text-light">Version:</span>{' '}
+                {simulation.scheme?.version}
               </Typography.Text>
 
               <MathJax dynamic>

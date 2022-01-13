@@ -136,6 +136,7 @@ const Geometry = ({ project, geometry, swr, close }: IProps): JSX.Element => {
       <Layout>
         <Layout.Content>
           <Card
+            size="small"
             title="Informations"
             actions={[
               <DownloadButton

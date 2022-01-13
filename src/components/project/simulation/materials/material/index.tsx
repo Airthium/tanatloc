@@ -1,9 +1,10 @@
 import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
 import { Button, Card, Drawer, Space, Typography } from 'antd'
+import { ExclamationCircleOutlined } from '@ant-design/icons'
 
 import { IGeometry, ISimulation } from '@/database/index.d'
-import { IModel, IModelMaterialValue } from '@/models/index.d'
+import { IModelMaterialValue } from '@/models/index.d'
 
 import { GoBack } from '@/components/assets/button'
 import Formula from '@/components/assets/formula'
@@ -19,47 +20,41 @@ export interface IProps {
   geometry: {
     solids: IGeometry['summary']['solids']
   }
-  materials: IModel['configuration']['materials']
   material?: IModelMaterialValue
   swr: {
     mutateOneSimulation: Function
   }
-  close: Function
+  onClose: () => void
 }
 
 /**
  * Material
  * @memberof Components.Project.Simulation.Materials
- * @param {Object} props Props `{ visible, simulation, geometry, materials, material, swr, close }`
+ * @param {Object} props Props
  */
 const Material = ({
   visible,
   simulation,
   geometry,
-  materials,
   material,
   swr,
-  close
+  onClose
 }: IProps): JSX.Element => {
   // State
   const [current, setCurrent]: [IModelMaterialValue, Function] =
     useState(material)
-  const [disabled, setDisabled]: [boolean, Function] = useState(true)
+  const [error, setError]: [string, Function] = useState()
+
+  // Data
+  const materials = simulation.scheme.configuration.materials
 
   // Edit
   useEffect(() => {
     if (material) setCurrent(material)
   }, [material])
 
-  // Disabled
-  useEffect(() => {
-    if (!current || !current.material || !current.selected?.length)
-      setDisabled(true)
-    else setDisabled(false)
-  }, [current])
-
   /**
-   *
+   * On material select
    * @param {Object} currentMaterial Current material
    */
   const onMaterialSelect = (currentMaterial) => {
@@ -83,12 +78,8 @@ const Material = ({
   }
 
   /**
-   * On close
+   * Render
    */
-  const onClose = () => {
-    close()
-  }
-
   return (
     <Drawer
       className="material"
@@ -106,21 +97,38 @@ const Material = ({
           </Button>
           {material ? (
             <Edit
-              disabled={disabled}
-              material={current}
-              simulation={simulation}
-              geometry={geometry}
+              material={{
+                uuid: current.uuid,
+                material: current.material,
+                selected: current.selected
+              }}
+              simulation={{
+                id: simulation.id,
+                scheme: simulation.scheme
+              }}
+              geometry={{
+                solids: geometry.solids
+              }}
               swr={{ mutateOneSimulation: swr.mutateOneSimulation }}
-              close={onClose}
+              onError={(desc) => setError(desc)}
+              onClose={onClose}
             />
           ) : (
             <Add
-              disabled={disabled}
-              material={current}
-              simulation={simulation}
-              geometry={geometry}
+              material={{
+                material: current?.material,
+                selected: current?.selected
+              }}
+              simulation={{
+                id: simulation.id,
+                scheme: simulation.scheme
+              }}
+              geometry={{
+                solids: geometry.solids
+              }}
               swr={{ mutateOneSimulation: swr.mutateOneSimulation }}
-              close={onClose}
+              onError={(desc) => setError(desc)}
+              onClose={onClose}
             />
           )}
         </div>
@@ -132,7 +140,7 @@ const Material = ({
           <Space direction="vertical" style={{ width: '100%' }}>
             <DataBase onSelect={onMaterialSelect} />
             <Typography.Text>{current?.material?.label}</Typography.Text>
-            {materials?.children?.map((child) => {
+            {materials.children?.map((child) => {
               const m = current?.material?.children?.find(
                 (c) => c.symbol === child.name
               )
@@ -150,7 +158,19 @@ const Material = ({
             })}
           </Space>
         </Card>
-        <Selector geometry={geometry} updateSelected={onSelected} />
+
+        <Selector
+          geometry={{
+            solids: geometry.solids
+          }}
+          updateSelected={onSelected}
+        />
+
+        {error && (
+          <Typography.Text>
+            <ExclamationCircleOutlined style={{ color: 'red' }} /> {error}
+          </Typography.Text>
+        )}
       </Space>
     </Drawer>
   )
@@ -158,14 +178,29 @@ const Material = ({
 
 Material.propTypes = {
   visible: PropTypes.bool,
-  simulation: PropTypes.object.isRequired,
-  geometry: PropTypes.object.isRequired,
-  materials: PropTypes.object.isRequired,
-  material: PropTypes.object,
-  swr: PropTypes.shape({
+  simulation: PropTypes.exact({
+    id: PropTypes.string.isRequired,
+    scheme: PropTypes.shape({
+      configuration: PropTypes.shape({
+        materials: PropTypes.shape({
+          children: PropTypes.array,
+          values: PropTypes.array
+        }).isRequired
+      }).isRequired
+    }).isRequired
+  }).isRequired,
+  geometry: PropTypes.exact({
+    solids: PropTypes.array.isRequired
+  }).isRequired,
+  material: PropTypes.exact({
+    uuid: PropTypes.string.isRequired,
+    material: PropTypes.object.isRequired,
+    selected: PropTypes.array.isRequired
+  }),
+  swr: PropTypes.exact({
     mutateOneSimulation: PropTypes.func.isRequired
   }).isRequired,
-  close: PropTypes.func.isRequired
+  onClose: PropTypes.func.isRequired
 }
 
 export default Material

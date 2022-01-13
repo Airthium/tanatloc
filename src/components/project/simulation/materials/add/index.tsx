@@ -1,18 +1,18 @@
 import PropTypes from 'prop-types'
 import { useState } from 'react'
 import { v4 as uuid } from 'uuid'
-import { Button } from 'antd'
 
 import { IGeometry, ISimulation } from '@/database/index.d'
 import { IModelMaterialValue } from '@/models/index.d'
 
-import { Error } from '@/components/assets/notification'
+import { Error as ErrorNotification } from '@/components/assets/notification'
+import { AddButton } from '@/components/assets/button'
 
 import SimulationAPI from '@/api/simulation'
 
 export interface IProps {
   disabled?: boolean
-  material: IModelMaterialValue
+  material: Omit<IModelMaterialValue, 'uuid'>
   simulation: ISimulation
   geometry: {
     solids: IGeometry['summary']['solids']
@@ -20,7 +20,8 @@ export interface IProps {
   swr: {
     mutateOneSimulation: Function
   }
-  close: Function
+  onError: (desc?: string) => void
+  onClose: () => void
 }
 
 /**
@@ -28,6 +29,8 @@ export interface IProps {
  * @memberof Components.Project.Simulation.Materials
  */
 const errors = {
+  material: 'You need to define a material',
+  selected: 'You need to select a solid',
   updateError: 'Unable to add the material'
 }
 
@@ -37,12 +40,12 @@ const errors = {
  * @param props Props
  */
 const Add = ({
-  disabled,
   material,
   simulation,
   geometry,
   swr,
-  close
+  onError,
+  onClose
 }: IProps): JSX.Element => {
   // State
   const [loading, setLoading]: [boolean, Function] = useState(false)
@@ -54,6 +57,27 @@ const Add = ({
     setLoading(true)
 
     try {
+      // Check
+      if (!material.material) {
+        onError(errors.material)
+        setLoading(false)
+        return
+      }
+
+      if (!material.selected?.length) {
+        onError(errors.selected)
+        setLoading(false)
+        return
+      }
+
+      onError()
+
+      // New material
+      const newMaterial = material as IModelMaterialValue
+
+      // Set uuid
+      newMaterial.uuid = uuid()
+
       // Modify selection
       const selection = geometry.solids
         .map((s) => {
@@ -64,17 +88,14 @@ const Add = ({
             }
         })
         .filter((s) => s)
-      material.selected = selection
-
-      // Set uuid
-      material.uuid = uuid()
+      newMaterial.selected = selection
 
       // New simulation
       const newSimulation = { ...simulation }
 
       // Update local
       const materials = newSimulation.scheme.configuration.materials
-      materials.values = [...(materials.values || []), material]
+      materials.values = [...(materials.values || []), newMaterial]
 
       // Diff
       const diff = {
@@ -99,9 +120,9 @@ const Add = ({
       setLoading(false)
 
       // Close
-      close()
+      onClose()
     } catch (err) {
-      Error(errors.updateError, err)
+      ErrorNotification(errors.updateError, err)
       setLoading(false)
     }
   }
@@ -110,18 +131,18 @@ const Add = ({
    * Render
    */
   return (
-    <Button disabled={disabled} loading={loading} onClick={onAdd}>
+    <AddButton loading={loading} onAdd={onAdd}>
       Add
-    </Button>
+    </AddButton>
   )
 }
 
 Add.propTypes = {
-  disabled: PropTypes.bool,
-  material: PropTypes.shape({
-    selected: PropTypes.array.isRequired
-  }),
-  simulation: PropTypes.shape({
+  material: PropTypes.exact({
+    material: PropTypes.object,
+    selected: PropTypes.array
+  }).isRequired,
+  simulation: PropTypes.exact({
     id: PropTypes.string.isRequired,
     scheme: PropTypes.shape({
       configuration: PropTypes.shape({
@@ -130,14 +151,15 @@ Add.propTypes = {
         }).isRequired
       }).isRequired
     }).isRequired
-  }),
-  geometry: PropTypes.shape({
+  }).isRequired,
+  geometry: PropTypes.exact({
     solids: PropTypes.array.isRequired
   }).isRequired,
-  swr: PropTypes.shape({
+  swr: PropTypes.exact({
     mutateOneSimulation: PropTypes.func.isRequired
   }).isRequired,
-  close: PropTypes.func.isRequired
+  onError: PropTypes.func.isRequired,
+  onClose: PropTypes.func.isRequired
 }
 
 export default Add

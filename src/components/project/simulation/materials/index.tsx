@@ -2,7 +2,7 @@
 
 import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
-import { Card, Layout, Space, Typography } from 'antd'
+import { Card, Layout } from 'antd'
 
 import { IGeometry, ISimulation } from '@/database/index.d'
 import { IModelMaterialValue } from '@/models/index.d'
@@ -15,12 +15,12 @@ import { useDispatch } from 'react-redux'
 import { enable, disable, setType, setPart } from '@/store/select/action'
 
 export interface IProps {
-  geometry?: IGeometry
+  geometry: IGeometry
   simulation: ISimulation
   swr: {
-    mutateOneSimulation: Function
+    mutateOneSimulation: (simulation: ISimulation) => void
   }
-  setVisible: Function
+  setVisible: (visible: boolean) => void
 }
 
 /**
@@ -43,12 +43,12 @@ const Materials = ({
   const dispatch = useDispatch()
 
   // Data
-  const materials = simulation?.scheme.configuration.materials
+  const materials = simulation.scheme.configuration.materials
 
   // Part
   useEffect(() => {
     dispatch(setType('solids'))
-    dispatch(setPart(geometry?.summary.uuid))
+    dispatch(setPart(geometry.summary.uuid))
   }, [geometry])
 
   /**
@@ -63,6 +63,7 @@ const Materials = ({
 
   /**
    * On edit
+   * @param index Index
    */
   const onEdit = (index: number): void => {
     const materialToEdit = materials.values[index]
@@ -90,29 +91,36 @@ const Materials = ({
     <Layout>
       <Layout.Content>
         <Card size="small">
-          <AddButton disabled={!geometry} onAdd={onAdd}>
-            Add material
-          </AddButton>
-          {geometry ? (
-            <>
-              <List simulation={simulation} swr={swr} onEdit={onEdit} />
-              <Material
-                visible={materialVisible}
-                simulation={simulation}
-                geometry={{
-                  solids: geometry.summary.solids
-                }}
-                materials={materials}
-                material={material}
-                swr={swr}
-                close={onClose}
-              />
-            </>
-          ) : (
-            <Space>
-              <Typography.Text>Please upload a geometry first</Typography.Text>
-            </Space>
-          )}
+          <AddButton onAdd={onAdd}>Add material</AddButton>
+          <List
+            simulation={{
+              id: simulation.id,
+              scheme: simulation.scheme
+            }}
+            swr={swr}
+            onEdit={onEdit}
+          />
+          <Material
+            visible={materialVisible}
+            simulation={{
+              id: simulation.id,
+              scheme: simulation.scheme
+            }}
+            geometry={{
+              solids: geometry.summary.solids
+            }}
+            material={
+              material && {
+                uuid: material.uuid,
+                material: material.material,
+                selected: material.selected
+              }
+            }
+            swr={{
+              mutateOneSimulation: swr.mutateOneSimulation
+            }}
+            onClose={onClose}
+          />
         </Card>
       </Layout.Content>
     </Layout>
@@ -120,18 +128,25 @@ const Materials = ({
 }
 
 Materials.propTypes = {
-  geometry: PropTypes.object,
+  geometry: PropTypes.exact({
+    id: PropTypes.string.isRequired,
+    summary: PropTypes.shape({
+      uuid: PropTypes.string.isRequired,
+      solids: PropTypes.array.isRequired
+    })
+  }).isRequired,
   simulation: PropTypes.exact({
     id: PropTypes.string.isRequired,
     scheme: PropTypes.shape({
       configuration: PropTypes.shape({
         materials: PropTypes.shape({
+          children: PropTypes.array,
           values: PropTypes.array
-        })
-      })
-    })
+        }).isRequired
+      }).isRequired
+    }).isRequired
   }).isRequired,
-  swr: PropTypes.shape({
+  swr: PropTypes.exact({
     mutateOneSimulation: PropTypes.func.isRequired
   }).isRequired,
   setVisible: PropTypes.func.isRequired

@@ -507,7 +507,13 @@ const Project = (): JSX.Element => {
             )}
             {currentSimulation && currentSimulationType === 'materials' && (
               <Simulation.Materials
-                geometry={currentGeometry}
+                geometry={{
+                  id: currentGeometry.id,
+                  summary: {
+                    uuid: currentGeometry.summary.uuid,
+                    solids: currentGeometry.summary.solids
+                  }
+                }}
                 simulation={{
                   id: currentSimulation.id,
                   scheme: currentSimulation.scheme
@@ -515,7 +521,7 @@ const Project = (): JSX.Element => {
                 swr={{
                   mutateOneSimulation
                 }}
-                setVisible={setPanelVisible}
+                setVisible={(visible) => setPanelVisible(visible)}
               />
             )}
             {currentSimulation &&

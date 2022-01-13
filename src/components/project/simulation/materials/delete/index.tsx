@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { ISimulation } from '@/database/index.d'
 
 import { DeleteButton } from '@/components/assets/button'
-import { Error } from '@/components/assets/notification'
+import { Error as ErrorNotification } from '@/components/assets/notification'
 
 import { useDispatch } from 'react-redux'
 import { unselect } from '@/store/select/action'
@@ -12,11 +12,11 @@ import { unselect } from '@/store/select/action'
 import SimulationAPI from '@/api/simulation'
 
 export interface IProps {
+  index: number
   simulation: ISimulation
   swr: {
     mutateOneSimulation: Function
   }
-  index: number
 }
 
 /**
@@ -32,7 +32,7 @@ const errors = {
  * @memberof Components.Project.Simulation.Materials
  * @param props Props
  */
-const Delete = ({ simulation, swr, index }: IProps): JSX.Element => {
+const Delete = ({ index, simulation, swr }: IProps): JSX.Element => {
   // State
   const [loading, setLoading]: [boolean, Function] = useState(false)
 
@@ -50,7 +50,7 @@ const Delete = ({ simulation, swr, index }: IProps): JSX.Element => {
       const newSimulation = { ...simulation }
 
       // Update local
-      const materials = newSimulation?.scheme?.configuration?.materials
+      const materials = newSimulation.scheme.configuration.materials
       const material = materials.values[index]
 
       // (unselect)
@@ -58,6 +58,7 @@ const Delete = ({ simulation, swr, index }: IProps): JSX.Element => {
         dispatch(unselect(s.uuid))
       })
 
+      // Remove value
       materials.values = [
         ...materials.values.slice(0, index),
         ...materials.values.slice(index + 1)
@@ -83,7 +84,7 @@ const Delete = ({ simulation, swr, index }: IProps): JSX.Element => {
       // Local
       swr.mutateOneSimulation(newSimulation)
     } catch (err) {
-      Error(errors.updateError, err)
+      ErrorNotification(errors.updateError, err)
       setLoading(false)
       throw err
     }
@@ -96,19 +97,20 @@ const Delete = ({ simulation, swr, index }: IProps): JSX.Element => {
 }
 
 Delete.propTypes = {
-  simulation: PropTypes.shape({
+  index: PropTypes.number.isRequired,
+  simulation: PropTypes.exact({
     id: PropTypes.string.isRequired,
     scheme: PropTypes.shape({
       configuration: PropTypes.shape({
         materials: PropTypes.shape({
           values: PropTypes.array.isRequired
-        })
-      })
-    })
+        }).isRequired
+      }).isRequired
+    }).isRequired
   }).isRequired,
-  swr: PropTypes.shape({
+  swr: PropTypes.exact({
     mutateOneSimulation: PropTypes.func.isRequired
-  })
+  }).isRequired
 }
 
 export default Delete

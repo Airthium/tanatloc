@@ -34,6 +34,7 @@ const AddButton = ({
       <Button
         disabled={disabled}
         loading={loading}
+        type="primary"
         icon={<PlusCircleOutlined />}
         onClick={() => onAdd()}
       >

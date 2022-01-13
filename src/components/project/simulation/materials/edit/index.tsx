@@ -1,16 +1,15 @@
 import PropTypes from 'prop-types'
 import { useState } from 'react'
-import { Button } from 'antd'
 
 import { IGeometry, ISimulation } from '@/database/index.d'
 import { IModelMaterialValue } from '@/models/index.d'
 
-import { Error } from '@/components/assets/notification'
+import { Error as ErrorNotification } from '@/components/assets/notification'
+import { EditButton } from '@/components/assets/button'
 
 import SimulationAPI from '@/api/simulation'
 
 export interface IProps {
-  disabled?: boolean
   material: IModelMaterialValue
   simulation: ISimulation
   geometry: {
@@ -19,7 +18,8 @@ export interface IProps {
   swr: {
     mutateOneSimulation: Function
   }
-  close: Function
+  onError: (desc?: string) => void
+  onClose: () => void
 }
 
 /**
@@ -27,6 +27,8 @@ export interface IProps {
  * @memberof Components.Project.Simulation.Materials
  */
 const errors = {
+  material: 'You need to define a material',
+  selected: 'You need to select a solid',
   updateError: 'Unable to edit the material'
 }
 
@@ -36,12 +38,12 @@ const errors = {
  * @param props Props
  */
 const Edit = ({
-  disabled,
   material,
   simulation,
   geometry,
   swr,
-  close
+  onError,
+  onClose
 }: IProps): JSX.Element => {
   // State
   const [loading, setLoading]: [boolean, Function] = useState(false)
@@ -53,6 +55,19 @@ const Edit = ({
     setLoading(true)
 
     try {
+      // Check
+      if (!material.material) {
+        onError(errors.material)
+        setLoading(false)
+        return
+      }
+
+      if (!material.selected?.length) {
+        onError(errors.selected)
+        setLoading(false)
+        return
+      }
+
       // New simulation
       const newSimulation = { ...simulation }
       const materials = newSimulation.scheme.configuration.materials
@@ -102,9 +117,9 @@ const Edit = ({
       setLoading(false)
 
       // Close
-      close()
+      onClose()
     } catch (err) {
-      Error(errors.updateError, err)
+      ErrorNotification(errors.updateError, err)
       setLoading(false)
     }
   }
@@ -113,19 +128,20 @@ const Edit = ({
    * Render
    */
   return (
-    <Button disabled={disabled} loading={loading} onClick={onEdit}>
+    <EditButton loading={loading} onEdit={onEdit}>
       Edit
-    </Button>
+    </EditButton>
   )
 }
 
 Edit.propTypes = {
-  disabled: PropTypes.bool,
-  material: PropTypes.shape({
-    selected: PropTypes.array.isRequired,
-    uuid: PropTypes.string.isRequired
+  material: PropTypes.exact({
+    uuid: PropTypes.string.isRequired,
+    material: PropTypes.object.isRequired,
+    selected: PropTypes.array.isRequired
   }).isRequired,
-  simulation: PropTypes.shape({
+  simulation: PropTypes.exact({
+    id: PropTypes.string.isRequired,
     scheme: PropTypes.shape({
       configuration: PropTypes.shape({
         materials: PropTypes.shape({
@@ -134,13 +150,14 @@ Edit.propTypes = {
       }).isRequired
     }).isRequired
   }).isRequired,
-  geometry: PropTypes.shape({
+  geometry: PropTypes.exact({
     solids: PropTypes.array.isRequired
   }).isRequired,
-  swr: PropTypes.shape({
+  swr: PropTypes.exact({
     mutateOneSimulation: PropTypes.func.isRequired
   }).isRequired,
-  close: PropTypes.func.isRequired
+  onError: PropTypes.func.isRequired,
+  onClose: PropTypes.func.isRequired
 }
 
 export default Edit

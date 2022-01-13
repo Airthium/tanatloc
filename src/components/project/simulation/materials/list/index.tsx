@@ -69,6 +69,7 @@ const List = ({ simulation, swr, onEdit }: IProps): JSX.Element => {
               }}
               actions={[
                 <EditButton
+                  key="edit"
                   onEdit={() => {
                     setEnabled(false)
                     onEdit(index)
@@ -76,6 +77,7 @@ const List = ({ simulation, swr, onEdit }: IProps): JSX.Element => {
                   }}
                 />,
                 <Delete
+                  key="delete"
                   index={index}
                   simulation={{
                     id: simulation.id,

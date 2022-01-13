@@ -61,11 +61,13 @@ const Add = ({
     try {
       if (!boundaryCondition.type?.key) {
         onError('You need to select a type')
+        setLoading(false)
         return
       }
 
       if (!boundaryCondition.selected?.length) {
         onError('You need to select a face')
+        setLoading(false)
         return
       }
 

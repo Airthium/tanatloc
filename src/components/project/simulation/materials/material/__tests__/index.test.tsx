@@ -6,11 +6,6 @@ import Material from '@/components/project/simulation/materials/material'
 import { ISimulation } from '@/database/index.d'
 import { IModelMaterialValue } from '@/models/index.d'
 
-const mockGoBack = jest.fn()
-jest.mock('@/components/assets/button', () => ({
-  GoBack: (props: {}) => mockGoBack(props)
-}))
-
 const mockFormula = jest.fn()
 jest.mock(
   '@/components/assets/formula',
@@ -22,6 +17,11 @@ jest.mock(
   '@/components/assets/selector',
   () => (props: {}) => mockSelector(props)
 )
+
+const mockCancelButton = jest.fn()
+jest.mock('@/components/assets/button', () => ({
+  CancelButton: (props: {}) => mockCancelButton(props)
+}))
 
 const mockDatabase = jest.fn()
 jest.mock(
@@ -74,8 +74,8 @@ describe('components/project/simulation/materials/material', () => {
   const onClose = jest.fn()
 
   beforeEach(() => {
-    mockGoBack.mockReset()
-    mockGoBack.mockImplementation(() => <div />)
+    mockCancelButton.mockReset()
+    mockCancelButton.mockImplementation(() => <div />)
 
     mockFormula.mockReset()
     mockFormula.mockImplementation(() => <div />)
@@ -136,6 +136,9 @@ describe('components/project/simulation/materials/material', () => {
     mockAdd.mockImplementation((props) => (
       <div role="Add" onClick={() => props.onError('error')}></div>
     ))
+    mockCancelButton.mockImplementation((props) => (
+      <div role="Cancel" onClick={props.onCancel} />
+    ))
     const { unmount } = render(
       <Material
         visible={true}
@@ -163,7 +166,7 @@ describe('components/project/simulation/materials/material', () => {
     fireEvent.click(add)
 
     // Close
-    const button = screen.getByRole('button', { name: 'Cancel' })
+    const button = screen.getByRole('Cancel')
     fireEvent.click(button)
 
     unmount()

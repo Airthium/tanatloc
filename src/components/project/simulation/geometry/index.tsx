@@ -149,8 +149,6 @@ const Geometry = ({
     }
   }
 
-  console.log(meshGlobal)
-
   /**
    * Render
    */

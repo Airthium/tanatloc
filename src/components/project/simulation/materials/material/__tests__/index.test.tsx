@@ -3,49 +3,70 @@ import { fireEvent, render, screen } from '@testing-library/react'
 
 import Material from '@/components/project/simulation/materials/material'
 
+import { ISimulation } from '@/database/index.d'
+import { IModelMaterialValue } from '@/models/index.d'
+
 const mockGoBack = jest.fn()
 jest.mock('@/components/assets/button', () => ({
-  GoBack: (props) => mockGoBack(props)
+  GoBack: (props: {}) => mockGoBack(props)
 }))
 
 const mockFormula = jest.fn()
-jest.mock('@/components/assets/formula', () => (props) => mockFormula(props))
+jest.mock(
+  '@/components/assets/formula',
+  () => (props: {}) => mockFormula(props)
+)
 
 const mockSelector = jest.fn()
-jest.mock('@/components/assets/selector', () => (props) => mockSelector(props))
+jest.mock(
+  '@/components/assets/selector',
+  () => (props: {}) => mockSelector(props)
+)
 
 const mockDatabase = jest.fn()
 jest.mock(
   '@/components/project/simulation/materials/database',
-  () => (props) => mockDatabase(props)
+  () => (props: {}) => mockDatabase(props)
 )
 
-jest.mock('@/components/project/simulation/materials/add', () => () => <div />)
+const mockAdd = jest.fn()
+jest.mock(
+  '@/components/project/simulation/materials/add',
+  () => (props: {}) => mockAdd(props)
+)
 
-jest.mock('@/components/project/simulation/materials/edit', () => () => <div />)
+const mockEdit = jest.fn()
+jest.mock(
+  '@/components/project/simulation/materials/edit',
+  () => (props: {}) => mockEdit(props)
+)
 
 describe('components/project/simulation/materials/material', () => {
   const simulation = {
-    id: 'id'
-  }
+    id: 'id',
+    scheme: {
+      configuration: {
+        materials: {
+          index: 1,
+          title: 'Material',
+          children: [
+            {
+              label: 'Test',
+              name: 'Test',
+              htmlEntity: 'entity',
+              unit: 'unit',
+              default: 0
+            }
+          ]
+        }
+      }
+    }
+  } as ISimulation
   const geometry = {
     solids: [
       {
         uuid: 'uuid',
         number: 1
-      }
-    ]
-  }
-  const materials = {
-    index: 1,
-    title: 'Material',
-    children: [
-      {
-        label: 'Test',
-        name: 'Test',
-        htmlEntity: 'entity',
-        unit: 'unit',
-        default: 0
       }
     ]
   }
@@ -65,14 +86,20 @@ describe('components/project/simulation/materials/material', () => {
     mockDatabase.mockReset()
     mockDatabase.mockImplementation(() => <div />)
 
+    mockAdd.mockReset()
+    mockAdd.mockImplementation(() => <div />)
+
+    mockEdit.mockReset()
+    mockEdit.mockImplementation(() => <div />)
+
     onClose.mockReset()
   })
 
   test('render', () => {
     const { unmount } = render(
       <Material
-        simulation={simulation}
         visible={true}
+        simulation={simulation}
         geometry={geometry}
         swr={swr}
         onClose={onClose}
@@ -106,10 +133,13 @@ describe('components/project/simulation/materials/material', () => {
         }
       />
     ))
+    mockAdd.mockImplementation((props) => (
+      <div role="Add" onClick={() => props.onError('error')}></div>
+    ))
     const { unmount } = render(
       <Material
-        simulation={simulation}
         visible={true}
+        simulation={simulation}
         geometry={geometry}
         swr={swr}
         onClose={onClose}
@@ -128,6 +158,10 @@ describe('components/project/simulation/materials/material', () => {
     const selector = screen.getByRole('Selector')
     fireEvent.click(selector)
 
+    // Add
+    const add = screen.getByRole('Add')
+    fireEvent.click(add)
+
     // Close
     const button = screen.getByRole('button')
     fireEvent.click(button)
@@ -136,16 +170,29 @@ describe('components/project/simulation/materials/material', () => {
   })
 
   test('edit', () => {
+    mockEdit.mockImplementation((props) => (
+      <div role="Edit" onClick={() => props.onError('error')} />
+    ))
     const { unmount } = render(
       <Material
-        simulation={simulation}
         visible={true}
+        simulation={simulation}
         geometry={geometry}
-        material={{ uuid: 'uuid', selected: [{ uuid: 'uuid', label: 1 }] }}
+        material={
+          {
+            uuid: 'uuid',
+            material: {},
+            selected: [{ uuid: 'uuid', label: 1 }]
+          } as IModelMaterialValue
+        }
         swr={swr}
         onClose={onClose}
       />
     )
+
+    // Edit
+    const edit = screen.getByRole('Edit')
+    fireEvent.click(edit)
 
     unmount()
   })

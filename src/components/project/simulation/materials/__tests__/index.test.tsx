@@ -3,9 +3,11 @@ import { fireEvent, render, screen } from '@testing-library/react'
 
 import Materials from '@/components/project/simulation/materials'
 
+import { ISimulation } from '@/database/index.d'
+
 const mockAddButton = jest.fn()
 jest.mock('@/components/assets/button', () => ({
-  AddButton: (props) => mockAddButton(props)
+  AddButton: (props: {}) => mockAddButton(props)
 }))
 
 const mockList = jest.fn()
@@ -17,7 +19,7 @@ jest.mock(
 const mockMaterial = jest.fn()
 jest.mock(
   '@/components/project/simulation/materials/material',
-  () => (props) => mockMaterial(props)
+  () => (props: {}) => mockMaterial(props)
 )
 
 jest.mock('react-redux', () => ({
@@ -39,6 +41,7 @@ describe('components/project/simulation/materials', () => {
   const geometry = {
     id: 'id',
     summary: {
+      uuid: 'uuid',
       solids: [
         {
           uuid: 'uuid',
@@ -50,12 +53,6 @@ describe('components/project/simulation/materials', () => {
   const simulation = {
     id: 'id',
     scheme: {
-      category: 'category',
-      name: 'name',
-      algorithm: 'algorithm',
-      code: 'code',
-      version: 'version',
-      description: 'description',
       configuration: {
         materials: {
           index: 1,
@@ -69,7 +66,7 @@ describe('components/project/simulation/materials', () => {
         }
       }
     }
-  }
+  } as ISimulation
   const swr = {
     mutateOneSimulation: jest.fn()
   }
@@ -131,7 +128,10 @@ describe('components/project/simulation/materials', () => {
 
   test('onEdit', () => {
     mockList.mockImplementation((props) => (
-      <div role="List" onClick={props.onEdit} />
+      <div role="List" onClick={() => props.onEdit(0)} />
+    ))
+    mockMaterial.mockImplementation((props) => (
+      <div>{JSON.stringify(props.material)}</div>
     ))
     const { unmount } = render(
       <Materials
@@ -146,12 +146,14 @@ describe('components/project/simulation/materials', () => {
     fireEvent.click(list)
     expect(mockEnable).toHaveBeenCalledTimes(1)
 
+    screen.getByText(JSON.stringify({ uuid: 'uuid', selected: [] }))
+
     unmount()
   })
 
   test('onClose', () => {
     mockMaterial.mockImplementation((props) => (
-      <div role="Material" onClick={props.close} />
+      <div role="Material" onClick={props.onClose} />
     ))
     const { unmount } = render(
       <Materials

@@ -112,9 +112,8 @@ const DataBase = ({ onSelect }: IProps): JSX.Element => {
    * On first level menu
    * @param param { key }
    */
-  const onFirstLevel = ({ key }) => {
-    const subDatabase =
-      materialDatabase[key] || ({} as IMaterialDatabase['key'])
+  const onFirstLevel = ({ key }: { key: string }) => {
+    const subDatabase = materialDatabase[key]
 
     setSecondLevel({
       key,
@@ -127,7 +126,7 @@ const DataBase = ({ onSelect }: IProps): JSX.Element => {
    * On second level menu
    * @param param { key }
    */
-  const onSecondLevel = ({ key }) => {
+  const onSecondLevel = ({ key }: { key: string }) => {
     const subDatabase = materialDatabase[secondLevel.key]
     const child = subDatabase.children.find((c) => c.key === key)
 

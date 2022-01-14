@@ -3,9 +3,11 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import Delete from '@/components/project/simulation/materials/delete'
 
+import { ISimulation } from '@/database/index.d'
+
 const mockDeleteButton = jest.fn()
 jest.mock('@/components/assets/button', () => ({
-  DeleteButton: (props) => mockDeleteButton(props)
+  DeleteButton: (props: {}) => mockDeleteButton(props)
 }))
 
 const mockError = jest.fn()
@@ -33,12 +35,6 @@ describe('components/project/simulation/materials/delete', () => {
   const simulation = {
     id: 'id',
     scheme: {
-      category: 'category',
-      name: 'name',
-      algorithm: 'algorithm',
-      code: 'code',
-      version: 'version',
-      description: 'description',
       configuration: {
         materials: {
           index: 1,
@@ -52,7 +48,7 @@ describe('components/project/simulation/materials/delete', () => {
         }
       }
     }
-  }
+  } as ISimulation
   const swr = { mutateOneSimulation: jest.fn() }
   const index = 0
 

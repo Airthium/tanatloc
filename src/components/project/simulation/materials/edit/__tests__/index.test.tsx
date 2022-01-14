@@ -3,9 +3,17 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import Edit from '@/components/project/simulation/materials/edit'
 
+import { ISimulation } from '@/database/index.d'
+import { IModelMaterialValue } from '@/models/index.d'
+
 const mockError = jest.fn()
 jest.mock('@/components/assets/notification', () => ({
   Error: () => mockError()
+}))
+
+const mockEditButton = jest.fn()
+jest.mock('@/components/assets/button', () => ({
+  EditButton: (props: {}) => mockEditButton(props)
 }))
 
 const mockUpdate = jest.fn()
@@ -16,20 +24,15 @@ jest.mock('@/api/simulation', () => ({
 describe('components/project/simulation/materials/edit', () => {
   const material = {
     uuid: 'uuid',
+    material: {},
     selected: [
       { uuid: 'uuid1', label: 1 },
       { uuid: 'uuid3', label: 3 }
     ]
-  }
+  } as IModelMaterialValue
   const simulation = {
     id: 'id',
     scheme: {
-      category: 'category',
-      name: 'name',
-      algorithm: 'algorithm',
-      code: 'code',
-      version: 'version',
-      description: 'description',
       configuration: {
         materials: {
           index: 3,
@@ -43,7 +46,7 @@ describe('components/project/simulation/materials/edit', () => {
         }
       }
     }
-  }
+  } as ISimulation
   const geometry = {
     solids: [
       { uuid: 'uuid1', number: 1 },
@@ -56,6 +59,9 @@ describe('components/project/simulation/materials/edit', () => {
 
   beforeEach(() => {
     mockError.mockReset()
+
+    mockEditButton.mockReset()
+    mockEditButton.mockImplementation(() => <div />)
 
     mockUpdate.mockReset()
 
@@ -78,7 +84,78 @@ describe('components/project/simulation/materials/edit', () => {
     unmount()
   })
 
+  test('onEdit - without material.material', async () => {
+    mockEditButton.mockImplementation((props) => (
+      <div role="EditButton" onClick={props.onEdit} />
+    ))
+    const { unmount } = render(
+      <Edit
+        material={{
+          uuid: 'uuid',
+          selected: [
+            { uuid: 'uuid1', label: 1 },
+            { uuid: 'uuid3', label: 3 }
+          ]
+        }}
+        simulation={simulation}
+        geometry={geometry}
+        swr={swr}
+        onError={onError}
+        onClose={onClose}
+      />
+    )
+
+    const button = screen.getByRole('EditButton')
+
+    fireEvent.click(button)
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(0))
+    await waitFor(() =>
+      expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(0)
+    )
+    await waitFor(() => expect(onError).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(onClose).toHaveBeenCalledTimes(0))
+
+    unmount()
+  })
+
+  test('onEdit - without material.selected', async () => {
+    mockEditButton.mockImplementation((props) => (
+      <div role="EditButton" onClick={props.onEdit} />
+    ))
+    const { unmount } = render(
+      <Edit
+        material={
+          {
+            uuid: 'uuid',
+            material: {},
+            selected: []
+          } as IModelMaterialValue
+        }
+        simulation={simulation}
+        geometry={geometry}
+        swr={swr}
+        onError={onError}
+        onClose={onClose}
+      />
+    )
+
+    const button = screen.getByRole('EditButton')
+
+    fireEvent.click(button)
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(0))
+    await waitFor(() =>
+      expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(0)
+    )
+    await waitFor(() => expect(onError).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(onClose).toHaveBeenCalledTimes(0))
+
+    unmount()
+  })
+
   test('onEdit', async () => {
+    mockEditButton.mockImplementation((props) => (
+      <div role="EditButton" onClick={props.onEdit} />
+    ))
     const { unmount } = render(
       <Edit
         material={material}
@@ -90,7 +167,7 @@ describe('components/project/simulation/materials/edit', () => {
       />
     )
 
-    const button = screen.getByRole('button')
+    const button = screen.getByRole('EditButton')
 
     // Normal
     fireEvent.click(button)
@@ -98,6 +175,7 @@ describe('components/project/simulation/materials/edit', () => {
     await waitFor(() =>
       expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(1)
     )
+    await waitFor(() => expect(onError).toHaveBeenCalledTimes(1))
     await waitFor(() => expect(onClose).toHaveBeenCalledTimes(1))
 
     // Error

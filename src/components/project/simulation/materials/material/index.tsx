@@ -10,7 +10,7 @@ import { GoBack } from '@/components/assets/button'
 import Formula from '@/components/assets/formula'
 import Selector from '@/components/assets/selector'
 
-import DataBase from '../database'
+import DataBase, { IMaterialDatabase } from '../database'
 import Add from '../add'
 import Edit from '../edit'
 
@@ -56,7 +56,9 @@ const Material = ({
    * On material select
    * @param {Object} currentMaterial Current material
    */
-  const onMaterialSelect = (currentMaterial) => {
+  const onMaterialSelect = (
+    currentMaterial: IMaterialDatabase['key']['children'][0]
+  ) => {
     setCurrent({
       ...current,
       material: currentMaterial

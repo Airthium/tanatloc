@@ -68,11 +68,10 @@ const Add = ({
         setLoading(false)
         return
       }
-
       onError()
 
       // New material
-      const newMaterial = material as IModelMaterialValue
+      const newMaterial = { ...material } as IModelMaterialValue
 
       // Set uuid
       newMaterial.uuid = uuid()

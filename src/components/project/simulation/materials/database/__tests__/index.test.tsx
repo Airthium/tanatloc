@@ -31,14 +31,23 @@ describe('components/project/simulation/materials/database', () => {
   test('menu', () => {
     const { unmount } = render(<DataBase onSelect={mockOnSelect} />)
 
+    // Set visible
     const button = screen.getByRole('button')
     fireEvent.click(button)
 
+    // First menu
     const metal = screen.getByRole('menuitem', { name: 'Metal' })
     fireEvent.click(metal)
 
-    const open = screen.getByRole('button', { name: 'select' })
+    // Second menu
+    const open = screen.getByRole('menuitem', { name: 'Steel' })
     fireEvent.click(open)
+
+    // Choose
+    const choose = screen.getByRole('button', { name: 'Choose' })
+    fireEvent.click(choose)
+
+    expect(mockOnSelect).toHaveBeenCalledTimes(1)
 
     unmount()
   })

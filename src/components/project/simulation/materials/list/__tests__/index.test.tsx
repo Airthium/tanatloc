@@ -3,6 +3,8 @@ import { fireEvent, render, screen } from '@testing-library/react'
 
 import List from '@/components/project/simulation/materials/list'
 
+import { ISimulation } from '@/database/index.d'
+
 const mockEditButton = jest.fn()
 jest.mock('@/components/assets/button', () => ({
   EditButton: (props: {}) => mockEditButton(props)
@@ -27,12 +29,6 @@ describe('components/project/simulation/materials/list', () => {
   const simulation = {
     id: 'id',
     scheme: {
-      category: 'category',
-      name: 'name',
-      algorithm: 'algorithm',
-      code: 'code',
-      version: 'version',
-      description: 'description',
       configuration: {
         materials: {
           index: 2,
@@ -47,7 +43,7 @@ describe('components/project/simulation/materials/list', () => {
         }
       }
     }
-  }
+  } as ISimulation
   const swr = {
     mutateOneSimulation: jest.fn()
   }

@@ -48,8 +48,6 @@ const Edit = ({
   // State
   const [loading, setLoading]: [boolean, Function] = useState(false)
 
-  console.log(material)
-
   /**
    * On edit
    */
@@ -69,6 +67,7 @@ const Edit = ({
         setLoading(false)
         return
       }
+      onError()
 
       // New simulation
       const newSimulation = { ...simulation }
@@ -139,8 +138,8 @@ const Edit = ({
 Edit.propTypes = {
   material: PropTypes.exact({
     uuid: PropTypes.string.isRequired,
-    material: PropTypes.object.isRequired,
-    selected: PropTypes.array.isRequired
+    material: PropTypes.object,
+    selected: PropTypes.array
   }).isRequired,
   simulation: PropTypes.exact({
     id: PropTypes.string.isRequired,

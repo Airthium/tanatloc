@@ -51,7 +51,7 @@ const DeleteButton = ({
       >
         {text || 'Are you sure?'}
       </DeleteDialog>
-      <Tooltip title={children || 'Delete'}>
+      <Tooltip title={'Delete'}>
         <Button
           danger
           disabled={disabled}

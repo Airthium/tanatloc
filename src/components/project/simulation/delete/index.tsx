@@ -1,13 +1,11 @@
 import PropTypes from 'prop-types'
 import { useState } from 'react'
-import { Button } from 'antd'
-import { DeleteOutlined } from '@ant-design/icons'
 
 import { ISimulation } from '@/database/index.d'
 import { IProjectWithData } from '@/lib/index.d'
 
-import { DeleteDialog } from '@/components/assets/dialog'
 import { Error } from '@/components/assets/notification'
+import { DeleteButton } from '@/components/assets/button'
 
 import SimulationAPI from '@/api/simulation'
 
@@ -15,8 +13,8 @@ export interface IProps {
   project: IProjectWithData
   simulation: ISimulation
   swr: {
-    mutateProject: Function
-    delOneSimulation: Function
+    mutateProject: (project: IProjectWithData) => void
+    delOneSimulation: (simulation: ISimulation) => void
   }
 }
 
@@ -35,7 +33,6 @@ const errors = {
  */
 const Delete = ({ project, simulation, swr }: IProps): JSX.Element => {
   // State
-  const [visible, setVisible]: [boolean, Function] = useState(false)
   const [loading, setLoading]: [boolean, Function] = useState(false)
 
   /**
@@ -52,6 +49,7 @@ const Delete = ({ project, simulation, swr }: IProps): JSX.Element => {
         (s) => s !== simulation.id
       )
       swr.mutateProject({
+        id: project.id,
         simulations: filteredSimulations
       })
 
@@ -59,6 +57,7 @@ const Delete = ({ project, simulation, swr }: IProps): JSX.Element => {
       swr.delOneSimulation({ id: simulation.id })
     } catch (err) {
       Error(errors.delError, err)
+    } finally {
       setLoading(false)
     }
   }
@@ -67,20 +66,11 @@ const Delete = ({ project, simulation, swr }: IProps): JSX.Element => {
    * Render
    */
   return (
-    <>
-      <Button danger icon={<DeleteOutlined />} onClick={() => setVisible(true)}>
-        Delete
-      </Button>
-      <DeleteDialog
-        title="Delete the simulation"
-        visible={visible}
-        onCancel={() => setVisible(false)}
-        onOk={onDelete}
-        loading={loading}
-      >
-        Delete {simulation.name}
-      </DeleteDialog>
-    </>
+    <DeleteButton
+      loading={loading}
+      text={'Delete ' + simulation.name + '?'}
+      onDelete={onDelete}
+    />
   )
 }
 

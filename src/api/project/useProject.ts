@@ -12,7 +12,11 @@ export const useProject = (
   id?: string
 ): [
   IProjectWithData,
-  { mutateProject: Function; errorProject: Error; loadingProject: boolean }
+  {
+    mutateProject: (project: IProjectWithData) => void
+    errorProject: Error
+    loadingProject: boolean
+  }
 ] => {
   const { data, error, mutate } = useSWR(
     '/api/project' + (id ? '/' + id : ''),
@@ -21,7 +25,7 @@ export const useProject = (
   const loading = !data
   const project = data?.project || { id: '0' }
 
-  const myMutate = (update: IProjectWithData) => {
+  const myMutate = (update: IProjectWithData): void => {
     const mutatedProject = {
       ...project,
       ...update

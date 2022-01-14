@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
 import { useState } from 'react'
-import { Button } from 'antd'
+import { Button, Tooltip } from 'antd'
 import { CopyOutlined } from '@ant-design/icons'
 
 import { ISimulation } from '@/database/index.d'
@@ -14,8 +14,8 @@ export interface IProps {
   project: IProjectWithData
   simulation: ISimulation
   swr: {
-    mutateProject: Function
-    addOneSimulation: Function
+    mutateProject: (project: IProjectWithData) => void
+    addOneSimulation: (simulation: ISimulation) => void
   }
 }
 
@@ -44,7 +44,7 @@ const Copy = ({ project, simulation, swr }: IProps): JSX.Element => {
     try {
       // Clear results
       const newScheme = { ...simulation.scheme }
-      if (newScheme?.configuration?.run) {
+      if (newScheme.configuration?.run) {
         newScheme.configuration.run.done = false
         newScheme.configuration.run.error = null
       }
@@ -60,11 +60,13 @@ const Copy = ({ project, simulation, swr }: IProps): JSX.Element => {
 
       // Mutate project
       swr.mutateProject({
+        id: project.id,
         simulations: [...(project.simulations || []), newSimulation.id]
       })
     } catch (err) {
       ErrorNotification(errors.copy, err)
     } finally {
+      // Loading
       setLoading(false)
     }
   }
@@ -73,9 +75,14 @@ const Copy = ({ project, simulation, swr }: IProps): JSX.Element => {
    * Render
    */
   return (
-    <Button loading={loading} icon={<CopyOutlined />} onClick={onCopy}>
-      Copy
-    </Button>
+    <Tooltip title="Copy">
+      <Button
+        loading={loading}
+        icon={<CopyOutlined />}
+        onClick={onCopy}
+        style={{ border: 'none' }}
+      />
+    </Tooltip>
   )
 }
 

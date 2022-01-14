@@ -226,6 +226,7 @@ const Project = (): JSX.Element => {
       // Mutate
       addOneSimulation(simulation)
       mutateProject({
+        id: project.id,
         simulations: [...(project.simulations || []), simulation.id]
       })
 

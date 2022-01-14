@@ -5,30 +5,19 @@ import { MathJax } from 'better-react-mathjax'
 import { ISimulation } from '@/database/index.d'
 import { IProjectWithData } from '@/lib/index.d'
 
-import { Error as ErrorNotification } from '@/components/assets/notification'
-
 import Copy from '../copy'
+import Edit from './edit'
 import Delete from '../delete'
-
-import SimulationAPI from '@/api/simulation'
 
 export interface IProps {
   project?: IProjectWithData
   simulation?: ISimulation
   swr: {
-    mutateProject: Function
-    addOneSimulation: Function
-    delOneSimulation: Function
-    mutateOneSimulation: Function
+    mutateProject: (project: IProjectWithData) => void
+    addOneSimulation: (simulation: ISimulation) => void
+    delOneSimulation: (simulation: ISimulation) => void
+    mutateOneSimulation: (simulation: ISimulation) => void
   }
-}
-
-/**
- * Errors (about)
- * @memberof Components.Project.Simulation
- */
-const errors = {
-  update: 'Unable to update the simulation'
 }
 
 /**
@@ -37,27 +26,6 @@ const errors = {
  * @param props Props
  */
 const About = ({ project, simulation, swr }: IProps): JSX.Element => {
-  /**
-   * Handle name
-   * @param name Name
-   */
-  const handleName = async (name: string): Promise<void> => {
-    try {
-      // API
-      await SimulationAPI.update({ id: simulation.id }, [
-        { key: 'name', value: name }
-      ])
-
-      // Local
-      swr.mutateOneSimulation({
-        id: simulation.id,
-        name: name
-      })
-    } catch (err) {
-      ErrorNotification(errors.update, err)
-    }
-  }
-
   /**
    * Render
    */
@@ -74,14 +42,7 @@ const About = ({ project, simulation, swr }: IProps): JSX.Element => {
           <Card
             size="small"
             title={
-              <Typography.Title
-                level={5}
-                ellipsis={true}
-                editable={{
-                  onChange: handleName,
-                  maxLength: 50
-                }}
-              >
+              <Typography.Title level={5} ellipsis={true}>
                 {simulation.name}
               </Typography.Title>
             }
@@ -98,6 +59,11 @@ const About = ({ project, simulation, swr }: IProps): JSX.Element => {
                   addOneSimulation: swr.addOneSimulation
                 }}
               />,
+              <Edit
+                key="edit"
+                simulation={{ id: simulation.id, name: simulation.name }}
+                swr={{ mutateOneSimulation: swr.mutateOneSimulation }}
+              />,
               <Delete
                 key="delete"
                 project={{ id: project.id, simulations: project.simulations }}
@@ -112,26 +78,26 @@ const About = ({ project, simulation, swr }: IProps): JSX.Element => {
             <Space direction="vertical" style={{ maxWidth: '100%' }}>
               <Typography.Text>
                 <span className="text-light">Category:</span>{' '}
-                {simulation.scheme?.category}
+                {simulation.scheme.category}
               </Typography.Text>
               <Typography.Text>
                 <span className="text-light">Algorithm:</span>{' '}
-                {simulation.scheme?.algorithm}
+                {simulation.scheme.algorithm}
               </Typography.Text>
               <Typography.Text>
                 <span className="text-light">Code:</span>{' '}
-                {simulation.scheme?.code}
+                {simulation.scheme.code}
               </Typography.Text>
               <Typography.Text>
                 <span className="text-light">Version:</span>{' '}
-                {simulation.scheme?.version}
+                {simulation.scheme.version}
               </Typography.Text>
 
               <MathJax dynamic>
                 <div
                   style={{ maxWidth: '100%', overflow: 'auto' }}
                   dangerouslySetInnerHTML={{
-                    __html: simulation.scheme?.description
+                    __html: simulation.scheme.description
                   }}
                 />
               </MathJax>
@@ -150,7 +116,13 @@ About.propTypes = {
   simulation: PropTypes.exact({
     id: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
-    scheme: PropTypes.object
+    scheme: PropTypes.shape({
+      category: PropTypes.string,
+      algorithm: PropTypes.string,
+      code: PropTypes.string,
+      version: PropTypes.string,
+      description: PropTypes.string
+    }).isRequired
   }),
   swr: PropTypes.exact({
     mutateProject: PropTypes.func.isRequired,

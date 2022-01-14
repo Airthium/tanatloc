@@ -14,7 +14,7 @@ describe('api/project/useProject', () => {
     expect(mutateProject).toBeDefined()
     expect(loadingProject).toBe(false)
 
-    mutateProject({})
+    mutateProject({ id: 'id' })
   })
 
   test('without project', () => {

@@ -99,12 +99,4 @@ describe('components/project/simulation/materials/list', () => {
 
     unmount()
   })
-
-  test('empty simulation', () => {
-    const { unmount } = render(
-      <List simulation={{ id: 'id' }} swr={swr} onEdit={onEdit} />
-    )
-
-    unmount()
-  })
 })

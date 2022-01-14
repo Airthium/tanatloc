@@ -1,14 +1,14 @@
 import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
 import { Button, Card, Drawer, Space, Typography } from 'antd'
-import { ExclamationCircleOutlined } from '@ant-design/icons'
+import { CloseOutlined, ExclamationCircleOutlined } from '@ant-design/icons'
 
 import { IGeometry, ISimulation } from '@/database/index.d'
 import { IModelMaterialValue } from '@/models/index.d'
 
-import { GoBack } from '@/components/assets/button'
 import Formula from '@/components/assets/formula'
 import Selector from '@/components/assets/selector'
+import { CancelButton } from '@/components/assets/button'
 
 import DataBase, { IMaterialDatabase } from '../database'
 import Add from '../add'
@@ -91,11 +91,10 @@ const Material = ({
       mask={false}
       maskClosable={false}
       width={300}
+      extra={<Button type="text" icon={<CloseOutlined />} onClick={onClose} />}
       footer={
         <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <Button danger onClick={onClose}>
-            Cancel
-          </Button>
+          <CancelButton onCancel={onClose}>Cancel</CancelButton>
           {material ? (
             <Edit
               material={{
@@ -136,7 +135,6 @@ const Material = ({
       }
     >
       <Space direction="vertical" style={{ width: '100%' }}>
-        <GoBack onClick={onClose} />
         <Card size="small">
           <Space direction="vertical" style={{ width: '100%' }}>
             <DataBase onSelect={onMaterialSelect} />

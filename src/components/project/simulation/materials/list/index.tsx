@@ -75,7 +75,9 @@ const List = ({ simulation, swr, onEdit }: IProps): JSX.Element => {
                     onEdit(index)
                     setTimeout(() => setEnabled(true), 500)
                   }}
-                />,
+                >
+                  Edit
+                </EditButton>,
                 <Delete
                   key="delete"
                   index={index}

@@ -163,7 +163,7 @@ describe('components/project/simulation/materials/material', () => {
     fireEvent.click(add)
 
     // Close
-    const button = screen.getByRole('button')
+    const button = screen.getByRole('button', { name: 'Cancel' })
     fireEvent.click(button)
 
     unmount()

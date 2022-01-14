@@ -53,9 +53,10 @@ const DeleteButton = ({
       </DeleteDialog>
       <Tooltip title={children || 'Delete'}>
         <Button
+          danger
           disabled={disabled}
           loading={loading}
-          icon={<DeleteOutlined style={{ color: '#ff4d4f' }} />}
+          icon={<DeleteOutlined />}
           style={{ backgroundColor: 'none', border: 'none' }}
           onClick={() => setVisible(true)}
         >

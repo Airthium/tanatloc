@@ -228,7 +228,9 @@ describe('components/project', () => {
     mockLoadingSimulations.mockReset()
 
     mockGeometries.mockReset()
-    mockGeometries.mockImplementation(() => [{ id: 'idg', name: 'Geometry' }])
+    mockGeometries.mockImplementation(() => [
+      { id: 'idg', name: 'Geometry', summary: {} }
+    ])
     mockErrorGeometries.mockReset()
     mockLoadingGeometries.mockReset()
   })

@@ -119,9 +119,7 @@ Delete.propTypes = {
     id: PropTypes.string.isRequired,
     scheme: PropTypes.shape({
       configuration: PropTypes.shape({
-        boundaryConditions: PropTypes.shape({
-          //TODO
-        }).isRequired
+        boundaryConditions: PropTypes.object.isRequired
       }).isRequired
     }).isRequired
   }).isRequired,

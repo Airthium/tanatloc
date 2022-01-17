@@ -43,8 +43,8 @@ const errors = {
  * @param props Props
  */
 const Add = ({
-  simulation,
   boundaryCondition,
+  simulation,
   geometry,
   swr,
   onError,

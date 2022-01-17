@@ -105,17 +105,25 @@ const BoundaryConditions = ({
         <Card size="small">
           <AddButton onAdd={onAdd}>Add boundary condition</AddButton>
           <List
-            simulation={simulation}
+            simulation={{
+              id: simulation.id,
+              scheme: simulation.scheme
+            }}
             swr={{ mutateOneSimulation: swr.mutateOneSimulation }}
             onEdit={onEdit}
           />
           <BoundaryCondition
             visible={boundaryConditionVisible}
-            simulation={simulation}
+            simulation={{
+              id: simulation.id,
+              scheme: simulation.scheme
+            }}
             geometry={{
               faces: geometry.summary.faces
             }}
-            boundaryCondition={boundaryCondition}
+            boundaryCondition={{
+              uuid: boundaryCondition.uuid
+            }}
             swr={{
               mutateOneSimulation: swr.mutateOneSimulation
             }}
@@ -139,9 +147,7 @@ BoundaryConditions.propTypes = {
     id: PropTypes.string.isRequired,
     scheme: PropTypes.shape({
       configuration: PropTypes.shape({
-        boundaryConditions: PropTypes.shape({
-          //TODO
-        }).isRequired
+        boundaryConditions: PropTypes.object.isRequired
       }).isRequired
     }).isRequired
   }).isRequired,

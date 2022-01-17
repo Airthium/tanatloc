@@ -1,29 +1,26 @@
 import PropTypes from 'prop-types'
 import { useState } from 'react'
-import { Button } from 'antd'
 
-import { ISimulation } from '@/database/index.d'
+import { IGeometry, ISimulation } from '@/database/index.d'
 import {
-  IModelBoundaryCondition,
-  IModelBoundaryConditionValue
+  IModelBoundaryConditionValue,
+  IModelTypedBoundaryCondition
 } from '@/models/index.d'
 
 import { Error } from '@/components/assets/notification'
+import { EditButton } from '@/components/assets/button'
 
 import SimulationAPI from '@/api/simulation'
 
 export interface IProps {
-  simulation: ISimulation
   boundaryCondition: IModelBoundaryConditionValue
   oldBoundaryCondition: IModelBoundaryConditionValue
+  simulation: ISimulation
   geometry: {
-    faces: {
-      uuid: string
-      number: number
-    }[]
+    faces: IGeometry['summary']['faces']
   }
   swr: {
-    mutateOneSimulation: Function
+    mutateOneSimulation: (simulation: ISimulation) => void
   }
 
   onError: (desc: string) => void
@@ -35,6 +32,9 @@ export interface IProps {
  * @memberof Components.Project.Simulation.BoundaryConditions
  */
 const errors = {
+  name: 'You need to define a name',
+  type: 'You need to select a type',
+  selected: 'You need to select a face',
   updateError: 'Unable to edit the boundary condition'
 }
 
@@ -44,9 +44,9 @@ const errors = {
  * @param props Props
  */
 const Edit = ({
-  simulation,
   boundaryCondition,
   oldBoundaryCondition,
+  simulation,
   geometry,
   swr,
   onError,
@@ -62,17 +62,24 @@ const Edit = ({
     setLoading(true)
 
     try {
+      if (!boundaryCondition.name) {
+        onError(errors.name)
+        setLoading(false)
+        return
+      }
+
       if (!boundaryCondition.type?.key) {
-        onError('You need to select a type')
+        onError(errors.type)
         setLoading(false)
         return
       }
 
       if (!boundaryCondition.selected?.length) {
-        onError('You need to select a face')
+        onError(errors.selected)
         setLoading(false)
         return
       }
+
       // New simulation
       const newSimulation = { ...simulation }
       const boundaryConditions =
@@ -84,15 +91,13 @@ const Edit = ({
       // Get old type
       const oldType = oldBoundaryCondition.type.key
 
+      // Remove old boundary condition if type if different
       if (oldType !== type) {
-        const oldtypedBoundaryCondition = boundaryConditions[oldType] as {
-          label: string
-          refineFactor?: number
-          children?: IModelBoundaryCondition[]
-          values?: IModelBoundaryConditionValue[]
-        }
+        const oldtypedBoundaryCondition = boundaryConditions[
+          oldType
+        ] as IModelTypedBoundaryCondition
         const index = oldtypedBoundaryCondition.values.findIndex(
-          (b: { uuid: string }) => b.uuid === oldBoundaryCondition.uuid
+          (b) => b.uuid === oldBoundaryCondition.uuid
         )
         oldtypedBoundaryCondition.values = [
           ...oldtypedBoundaryCondition.values.slice(0, index),
@@ -114,25 +119,21 @@ const Edit = ({
 
       // Update local
       if (oldType !== type) {
-        const typedBoundaryCondition = boundaryConditions[type] as {
-          label: string
-          refineFactor?: number
-          children?: IModelBoundaryCondition[]
-          values?: IModelBoundaryConditionValue[]
-        }
+        // Add if different type
+        const typedBoundaryCondition = boundaryConditions[
+          type
+        ] as IModelTypedBoundaryCondition
         typedBoundaryCondition.values = [
           ...typedBoundaryCondition.values,
           boundaryCondition
         ]
       } else {
-        const typedBoundaryCondition = boundaryConditions[type] as {
-          label: string
-          refineFactor?: number
-          children?: IModelBoundaryCondition[]
-          values?: IModelBoundaryConditionValue[]
-        }
+        // Replace if same type
+        const typedBoundaryCondition = boundaryConditions[
+          type
+        ] as IModelTypedBoundaryCondition
         const index = typedBoundaryCondition.values.findIndex(
-          (b: { uuid: string }) => b.uuid === boundaryCondition.uuid
+          (b) => b.uuid === boundaryCondition.uuid
         )
         typedBoundaryCondition.values = [
           ...typedBoundaryCondition.values.slice(0, index),
@@ -160,25 +161,50 @@ const Edit = ({
       // Local
       swr.mutateOneSimulation(newSimulation)
 
+      // Stop loading
+      setLoading(false)
+
       // Close
       onClose()
     } catch (err) {
       Error(errors.updateError, err)
-    } finally {
       setLoading(false)
     }
   }
+
   /**
    * Render
    */
   return (
-    <Button loading={loading} onClick={onEdit}>
+    <EditButton loading={loading} onEdit={onEdit}>
       Edit
-    </Button>
+    </EditButton>
   )
 }
 
 Edit.propTypes = {
+  boundaryCondition: PropTypes.shape({
+    uuid: PropTypes.string.isRequired,
+    name: PropTypes.string,
+    type: PropTypes.exact({
+      key: PropTypes.string.isRequired,
+      label: PropTypes.string.isRequired,
+      children: PropTypes.array
+    }),
+    selected: PropTypes.array,
+    values: PropTypes.array
+  }).isRequired,
+  oldBoundaryCondition: PropTypes.shape({
+    uuid: PropTypes.string.isRequired,
+    name: PropTypes.string,
+    type: PropTypes.exact({
+      key: PropTypes.string.isRequired,
+      label: PropTypes.string.isRequired,
+      children: PropTypes.array
+    }),
+    selected: PropTypes.array,
+    values: PropTypes.array
+  }).isRequired,
   simulation: PropTypes.shape({
     id: PropTypes.string.isRequired,
     scheme: PropTypes.shape({
@@ -187,25 +213,13 @@ Edit.propTypes = {
       }).isRequired
     }).isRequired
   }).isRequired,
-  boundaryCondition: PropTypes.shape({
-    uuid: PropTypes.string.isRequired,
-    type: PropTypes.shape({
-      key: PropTypes.string.isRequired
-    }).isRequired,
-    selected: PropTypes.array.isRequired
-  }).isRequired,
-  oldBoundaryCondition: PropTypes.shape({
-    uuid: PropTypes.string.isRequired,
-    type: PropTypes.shape({
-      key: PropTypes.string.isRequired
-    }).isRequired
-  }).isRequired,
   geometry: PropTypes.shape({
     faces: PropTypes.array.isRequired
   }).isRequired,
   swr: PropTypes.shape({
     mutateOneSimulation: PropTypes.func.isRequired
   }).isRequired,
+  onError: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired
 }
 

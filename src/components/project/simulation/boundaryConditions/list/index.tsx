@@ -44,7 +44,7 @@ const List = ({ simulation, swr, onEdit }: IProps): JSX.Element => {
       key
     ] as IModelTypedBoundaryCondition
     const currentSelected = typedBoundaryCondition.values[index].selected
-    currentSelected?.forEach((s: { uuid: string }) => {
+    currentSelected?.forEach((s) => {
       dispatch(select(s.uuid))
     })
   }
@@ -67,46 +67,44 @@ const List = ({ simulation, swr, onEdit }: IProps): JSX.Element => {
           const typedBoundaryCondition = boundaryConditions[
             type
           ] as IModelTypedBoundaryCondition
-          return typedBoundaryCondition.values?.map(
-            (child: { name: string }, index: number) => {
-              return (
-                <Card
-                  className="boundaryCondition-item"
-                  key={index}
-                  hoverable
-                  onMouseEnter={() => highlight(type, index)}
-                  onMouseLeave={() => {
-                    enabled && unhighlight()
-                  }}
-                  actions={[
-                    <EditButton
-                      key="edit"
-                      onEdit={() => {
-                        setEnabled(false)
-                        onEdit(type, index)
-                        setTimeout(() => setEnabled(true), 500)
-                      }}
-                    />,
-                    <Delete
-                      key="delete"
-                      simulation={{
-                        id: simulation.id,
-                        scheme: simulation.scheme
-                      }}
-                      type={type}
-                      index={index}
-                      swr={{ mutateOneSimulation: swr.mutateOneSimulation }}
-                    />
-                  ]}
-                >
-                  <Typography.Text strong>{child.name}</Typography.Text>{' '}
-                  <Typography.Text>
-                    ({typedBoundaryCondition.label})
-                  </Typography.Text>
-                </Card>
-              )
-            }
-          )
+          return typedBoundaryCondition.values?.map((child, index: number) => {
+            return (
+              <Card
+                className="boundaryCondition-item"
+                key={index}
+                hoverable
+                onMouseEnter={() => highlight(type, index)}
+                onMouseLeave={() => {
+                  enabled && unhighlight()
+                }}
+                actions={[
+                  <EditButton
+                    key="edit"
+                    onEdit={() => {
+                      setEnabled(false)
+                      onEdit(type, index)
+                      setTimeout(() => setEnabled(true), 500)
+                    }}
+                  />,
+                  <Delete
+                    key="delete"
+                    simulation={{
+                      id: simulation.id,
+                      scheme: simulation.scheme
+                    }}
+                    type={type}
+                    index={index}
+                    swr={{ mutateOneSimulation: swr.mutateOneSimulation }}
+                  />
+                ]}
+              >
+                <Typography.Text strong>{child.name}</Typography.Text>{' '}
+                <Typography.Text>
+                  ({typedBoundaryCondition.label})
+                </Typography.Text>
+              </Card>
+            )
+          })
         })
         .filter((l) => l)}
     </>
@@ -118,9 +116,7 @@ List.propTypes = {
     id: PropTypes.string.isRequired,
     scheme: PropTypes.shape({
       configuration: PropTypes.shape({
-        boundaryConditions: PropTypes.shape({
-          //TODO
-        }).isRequired
+        boundaryConditions: PropTypes.object.isRequired
       }).isRequired
     }).isRequired
   }).isRequired,

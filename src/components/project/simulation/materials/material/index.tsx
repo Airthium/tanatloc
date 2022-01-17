@@ -61,7 +61,6 @@ const Material = ({
     const currentAlreadySelected = materials.values
       ?.map((m) => {
         if (m.uuid === material?.uuid) return
-        console.log(m)
         return {
           label: m.material.label,
           selected: m.selected

@@ -37,10 +37,10 @@ export interface IProps {
       color?: { r: number; g: number; b: number }
     }[]
   }
-  alreadySelected?: Array<{
+  alreadySelected?: {
     label: string
-    selected: Array<{ uuid: string }>
-  }>
+    selected: { uuid: string }[]
+  }[]
   updateSelected: Function
 }
 

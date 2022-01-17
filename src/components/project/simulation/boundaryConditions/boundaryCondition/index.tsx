@@ -9,18 +9,17 @@ import {
   Space,
   Typography
 } from 'antd'
-import { ExclamationCircleOutlined } from '@ant-design/icons'
+import { CloseOutlined, ExclamationCircleOutlined } from '@ant-design/icons'
 
 import { IGeometry, ISimulation } from '@/database/index.d'
 import {
-  IModel,
   IModelBoundaryCondition,
   IModelBoundaryConditionValue
 } from '@/models/index.d'
 
-import { GoBack } from '@/components/assets/button'
 import Formula from '@/components/assets/formula'
 import Selector from '@/components/assets/selector'
+import { CancelButton } from '@/components/assets/button'
 
 import Add from '../add'
 import Edit from '../edit'
@@ -31,12 +30,11 @@ export interface IProps {
   geometry: {
     faces: IGeometry['summary']['faces']
   }
-  boundaryConditions: IModel['configuration']['boundaryConditions']
   boundaryCondition?: IModelBoundaryConditionValue
   swr: {
-    mutateOneSimulation: Function
+    mutateOneSimulation: (simulation: ISimulation) => void
   }
-  close: Function
+  onClose: () => void
 }
 
 /**
@@ -48,12 +46,15 @@ const BoundaryCondition = ({
   visible,
   simulation,
   geometry,
-  boundaryConditions,
   boundaryCondition,
   swr,
-  close
+  onClose
 }: IProps): JSX.Element => {
   // State
+  const [alreadySelected, setAlreadySelected]: [
+    { label: string; selected: { uuid: string }[] }[],
+    Function
+  ] = useState([])
   const [types, setTypes]: [
     {
       key: string
@@ -63,14 +64,13 @@ const BoundaryCondition = ({
     }[],
     Function
   ] = useState([])
-  const [alreadySelected, setAlreadySelected]: [
-    { label: string; selected: { uuid: string }[] }[],
-    Function
-  ] = useState([])
   const [totalNumber, setTotalNumber]: [number, Function] = useState(0)
   const [current, setCurrent]: [IModelBoundaryConditionValue, Function] =
-    useState(boundaryCondition)
+    useState()
   const [error, setError]: [string, Function] = useState('')
+
+  // Data
+  const boundaryConditions = simulation.scheme.configuration.boundaryConditions
 
   // Types & already selected
   useEffect(() => {
@@ -239,25 +239,6 @@ const BoundaryCondition = ({
   }
 
   /**
-   * On error
-   * @param desc Description
-   */
-  const onError = (desc: string): void => {
-    setError(desc)
-  }
-
-  /**
-   * On close
-   */
-  const onClose = (): void => {
-    setCurrent({
-      name: 'Boundary condition ' + (totalNumber + 1)
-    })
-    setError('')
-    close()
-  }
-
-  /**
    * Render
    */
   return (
@@ -270,28 +251,39 @@ const BoundaryCondition = ({
       mask={false}
       maskClosable={false}
       width={300}
+      extra={<Button type="text" icon={<CloseOutlined />} onClick={onClose} />}
       footer={
         <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <Button danger onClick={onClose}>
-            Cancel
-          </Button>
+          <CancelButton onCancel={onClose}>Cancel</CancelButton>
           {boundaryCondition ? (
             <Edit
-              simulation={simulation}
+              simulation={{
+                id: simulation.id,
+                scheme: simulation.scheme
+              }}
               boundaryCondition={current}
               oldBoundaryCondition={boundaryCondition}
               geometry={geometry}
               swr={{ mutateOneSimulation: swr.mutateOneSimulation }}
-              onError={onError}
+              onError={(desc) => setError(desc)}
               onClose={onClose}
             />
           ) : (
             <Add
-              simulation={simulation}
-              boundaryCondition={current}
-              geometry={geometry}
+              boundaryCondition={{
+                name: current?.name,
+                type: current?.type,
+                selected: current?.selected
+              }}
+              simulation={{
+                id: simulation.id,
+                scheme: simulation.scheme
+              }}
+              geometry={{
+                faces: geometry.faces
+              }}
               swr={{ mutateOneSimulation: swr.mutateOneSimulation }}
-              onError={onError}
+              onError={(desc) => setError(desc)}
               onClose={onClose}
             />
           )}
@@ -299,7 +291,6 @@ const BoundaryCondition = ({
       }
     >
       <Space direction="vertical" style={{ width: '100%' }}>
-        <GoBack onClick={onClose} />
         <Card title="Boundary condition name" size="small">
           <Input value={current?.name || ''} onChange={onName} />
         </Card>
@@ -343,7 +334,9 @@ const BoundaryCondition = ({
           </Card>
         )}
         <Selector
-          geometry={geometry}
+          geometry={{
+            faces: geometry.faces
+          }}
           alreadySelected={alreadySelected}
           updateSelected={onSelected}
         />

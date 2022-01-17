@@ -3,20 +3,21 @@ import { useState } from 'react'
 import { Card, Typography } from 'antd'
 
 import { ISimulation } from '@/database/index.d'
+import { IModelTypedBoundaryCondition } from '@/models/index.d'
 
 import { EditButton } from '@/components/assets/button'
+
+import Delete from '../delete'
 
 import { useDispatch } from 'react-redux'
 import { enable, disable, select } from '@/store/select/action'
 
-import Delete from '../delete'
-
 export interface IProps {
   simulation: ISimulation
   swr: {
-    mutateOneSimulation: Function
+    mutateOneSimulation: (simulation: ISimulation) => void
   }
-  onEdit: Function
+  onEdit: (type: string, index: number) => void
 }
 
 /**
@@ -29,8 +30,7 @@ const List = ({ simulation, swr, onEdit }: IProps): JSX.Element => {
   const [enabled, setEnabled]: [boolean, Function] = useState(true)
 
   // Data
-  const boundaryConditions =
-    simulation?.scheme?.configuration?.boundaryConditions || {}
+  const boundaryConditions = simulation.scheme.configuration.boundaryConditions
   const dispatch = useDispatch()
 
   /**
@@ -40,7 +40,10 @@ const List = ({ simulation, swr, onEdit }: IProps): JSX.Element => {
    */
   const highlight = (key: string, index: number): void => {
     dispatch(enable())
-    const currentSelected = boundaryConditions[key]?.values[index]?.selected
+    const typedBoundaryCondition = boundaryConditions[
+      key
+    ] as IModelTypedBoundaryCondition
+    const currentSelected = typedBoundaryCondition.values[index].selected
     currentSelected?.forEach((s: { uuid: string }) => {
       dispatch(select(s.uuid))
     })
@@ -61,7 +64,10 @@ const List = ({ simulation, swr, onEdit }: IProps): JSX.Element => {
       {Object.keys(boundaryConditions)
         .map((type) => {
           if (type === 'index' || type === 'title' || type === 'done') return
-          return boundaryConditions[type].values?.map(
+          const typedBoundaryCondition = boundaryConditions[
+            type
+          ] as IModelTypedBoundaryCondition
+          return typedBoundaryCondition.values?.map(
             (child: { name: string }, index: number) => {
               return (
                 <Card
@@ -83,14 +89,20 @@ const List = ({ simulation, swr, onEdit }: IProps): JSX.Element => {
                     />,
                     <Delete
                       key="delete"
-                      simulation={simulation}
+                      simulation={{
+                        id: simulation.id,
+                        scheme: simulation.scheme
+                      }}
                       type={type}
                       index={index}
                       swr={{ mutateOneSimulation: swr.mutateOneSimulation }}
                     />
                   ]}
                 >
-                  <Typography.Text>{child.name}</Typography.Text>
+                  <Typography.Text strong>{child.name}</Typography.Text>{' '}
+                  <Typography.Text>
+                    ({typedBoundaryCondition.label})
+                  </Typography.Text>
                 </Card>
               )
             }
@@ -102,14 +114,17 @@ const List = ({ simulation, swr, onEdit }: IProps): JSX.Element => {
 }
 
 List.propTypes = {
-  simulation: PropTypes.shape({
+  simulation: PropTypes.exact({
+    id: PropTypes.string.isRequired,
     scheme: PropTypes.shape({
       configuration: PropTypes.shape({
-        boundaryConditions: PropTypes.object
-      })
-    })
-  }),
-  swr: PropTypes.shape({
+        boundaryConditions: PropTypes.shape({
+          //TODO
+        }).isRequired
+      }).isRequired
+    }).isRequired
+  }).isRequired,
+  swr: PropTypes.exact({
     mutateOneSimulation: PropTypes.func.isRequired
   }).isRequired,
   onEdit: PropTypes.func.isRequired

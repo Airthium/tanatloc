@@ -2,12 +2,12 @@
 
 import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
-import { Card, Layout, Space, Typography } from 'antd'
+import { Card, Layout } from 'antd'
 
 import { IGeometry, ISimulation } from '@/database/index.d'
 import {
-  IModelBoundaryCondition,
-  IModelBoundaryConditionValue
+  IModelBoundaryConditionValue,
+  IModelTypedBoundaryCondition
 } from '@/models/index.d'
 
 import { AddButton } from '@/components/assets/button'
@@ -18,12 +18,12 @@ import { useDispatch } from 'react-redux'
 import { enable, disable, setType, setPart } from '@/store/select/action'
 
 export interface IProps {
-  geometry?: IGeometry
+  geometry: IGeometry
   simulation: ISimulation
   swr: {
-    mutateOneSimulation: Function
+    mutateOneSimulation: (simulation: ISimulation) => void
   }
-  setVisible: Function
+  setVisible: (visible: boolean) => void
 }
 
 /**
@@ -51,13 +51,12 @@ const BoundaryConditions = ({
   const dispatch = useDispatch()
 
   // Data
-  const boundaryConditions =
-    simulation?.scheme?.configuration?.boundaryConditions
+  const boundaryConditions = simulation.scheme.configuration.boundaryConditions
 
   // Part
   useEffect(() => {
     dispatch(setType('faces'))
-    dispatch(setPart(geometry?.summary.uuid))
+    dispatch(setPart(geometry.summary.uuid))
   }, [geometry])
 
   /**
@@ -65,7 +64,6 @@ const BoundaryConditions = ({
    */
   const onAdd = (): void => {
     setBoundaryCondition()
-
     setBoundaryConditionVisible(true)
     setVisible(false)
     dispatch(enable())
@@ -77,12 +75,9 @@ const BoundaryConditions = ({
    * @param index Index
    */
   const onEdit = (type: string, index: number): void => {
-    const boundaryConditionType = boundaryConditions[type] as {
-      label: string
-      refineFactor?: number
-      children?: IModelBoundaryCondition[]
-      values?: IModelBoundaryConditionValue[]
-    }
+    const boundaryConditionType = boundaryConditions[
+      type
+    ] as IModelTypedBoundaryCondition
     const boundaryConditionToEdit = boundaryConditionType.values[index]
     setBoundaryCondition(boundaryConditionToEdit)
 
@@ -96,7 +91,6 @@ const BoundaryConditions = ({
    */
   const onClose = (): void => {
     setBoundaryConditionVisible(false)
-
     setVisible(true)
     setBoundaryCondition()
     dispatch(disable())
@@ -109,35 +103,24 @@ const BoundaryConditions = ({
     <Layout>
       <Layout.Content>
         <Card size="small">
-          <AddButton disabled={!geometry} onAdd={onAdd}>
-            Add boundary condition
-          </AddButton>
-          {geometry ? (
-            <>
-              <List
-                simulation={simulation}
-                swr={{ mutateOneSimulation: swr.mutateOneSimulation }}
-                onEdit={onEdit}
-              />
-              <BoundaryCondition
-                visible={boundaryConditionVisible}
-                simulation={simulation}
-                geometry={{
-                  faces: geometry.summary.faces
-                }}
-                boundaryConditions={boundaryConditions}
-                boundaryCondition={boundaryCondition}
-                swr={{
-                  mutateOneSimulation: swr.mutateOneSimulation
-                }}
-                close={onClose}
-              />
-            </>
-          ) : (
-            <Space>
-              <Typography.Text>Please upload a geometry first.</Typography.Text>
-            </Space>
-          )}
+          <AddButton onAdd={onAdd}>Add boundary condition</AddButton>
+          <List
+            simulation={simulation}
+            swr={{ mutateOneSimulation: swr.mutateOneSimulation }}
+            onEdit={onEdit}
+          />
+          <BoundaryCondition
+            visible={boundaryConditionVisible}
+            simulation={simulation}
+            geometry={{
+              faces: geometry.summary.faces
+            }}
+            boundaryCondition={boundaryCondition}
+            swr={{
+              mutateOneSimulation: swr.mutateOneSimulation
+            }}
+            onClose={onClose}
+          />
         </Card>
       </Layout.Content>
     </Layout>
@@ -145,15 +128,24 @@ const BoundaryConditions = ({
 }
 
 BoundaryConditions.propTypes = {
-  geometry: PropTypes.object,
-  simulation: PropTypes.shape({
+  geometry: PropTypes.exact({
+    id: PropTypes.string.isRequired,
+    sumamry: PropTypes.exact({
+      uuid: PropTypes.string.isRequired,
+      faces: PropTypes.array.isRequired
+    }).isRequired
+  }).isRequired,
+  simulation: PropTypes.exact({
+    id: PropTypes.string.isRequired,
     scheme: PropTypes.shape({
       configuration: PropTypes.shape({
-        boundaryConditions: PropTypes.object
-      })
-    })
+        boundaryConditions: PropTypes.shape({
+          //TODO
+        }).isRequired
+      }).isRequired
+    }).isRequired
   }).isRequired,
-  swr: PropTypes.shape({
+  swr: PropTypes.exact({
     mutateOneSimulation: PropTypes.func.isRequired
   }).isRequired,
   setVisible: PropTypes.func.isRequired

@@ -536,12 +536,21 @@ const Project = (): JSX.Element => {
             {currentSimulation &&
               currentSimulationType === 'boundaryConditions' && (
                 <Simulation.BoundaryConditions
-                  geometry={currentGeometry}
-                  simulation={currentSimulation}
+                  geometry={{
+                    id: currentGeometry.id,
+                    summary: {
+                      uuid: currentGeometry.summary.uuid,
+                      faces: currentGeometry.summary.faces
+                    }
+                  }}
+                  simulation={{
+                    id: currentSimulation.id,
+                    scheme: currentSimulation.scheme
+                  }}
                   swr={{
                     mutateOneSimulation
                   }}
-                  setVisible={setPanelVisible}
+                  setVisible={(visible) => setPanelVisible(visible)}
                 />
               )}
             {currentSimulation && currentSimulationType === 'run' && (

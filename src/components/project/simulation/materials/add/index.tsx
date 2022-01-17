@@ -17,7 +17,7 @@ export interface IProps {
     solids: IGeometry['summary']['solids']
   }
   swr: {
-    mutateOneSimulation: Function
+    mutateOneSimulation: (simulation: ISimulation) => void
   }
   onError: (desc?: string) => void
   onClose: () => void
@@ -115,6 +115,7 @@ const Add = ({
       // Local
       swr.mutateOneSimulation(newSimulation)
 
+      // Stop loading
       setLoading(false)
 
       // Close

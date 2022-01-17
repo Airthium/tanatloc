@@ -3,9 +3,17 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import Add from '@/components/project/simulation/boundaryConditions/add'
 
+import { ISimulation } from '@/database/index.d'
+import { IModelBoundaryConditionValue } from '@/models/index.d'
+
 const mockError = jest.fn()
 jest.mock('@/components/assets/notification', () => ({
   Error: () => mockError()
+}))
+
+const mockAddButton = jest.fn()
+jest.mock('@/components/assets/button', () => ({
+  AddButton: (props: {}) => mockAddButton(props)
 }))
 
 const mockUpdate = jest.fn()
@@ -34,7 +42,7 @@ describe('components/project/simulation/boundaryConditions/add', () => {
         }
       }
     }
-  }
+  } as ISimulation
   const boundaryCondition = {
     uuid: 'uuid',
     name: 'name',
@@ -60,10 +68,14 @@ describe('components/project/simulation/boundaryConditions/add', () => {
   beforeEach(() => {
     mockError.mockReset()
 
+    mockAddButton.mockReset()
+    mockAddButton.mockImplementation(() => <div />)
+
     mockUpdate.mockReset()
 
     swr.mutateOneSimulation.mockReset()
     onClose.mockReset()
+    onError.mockReset()
   })
 
   test('render', () => {
@@ -82,6 +94,9 @@ describe('components/project/simulation/boundaryConditions/add', () => {
   })
 
   test('onAdd', async () => {
+    mockAddButton.mockImplementation((props) => (
+      <div role="AddButton" onClick={props.onAdd} />
+    ))
     const { unmount } = render(
       <Add
         simulation={simulation}
@@ -93,7 +108,7 @@ describe('components/project/simulation/boundaryConditions/add', () => {
       />
     )
 
-    const button = screen.getByRole('button')
+    const button = screen.getByRole('AddButton')
 
     // Normal
     fireEvent.click(button)
@@ -101,6 +116,8 @@ describe('components/project/simulation/boundaryConditions/add', () => {
     await waitFor(() =>
       expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(1)
     )
+    await waitFor(() => expect(onError).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(onClose).toHaveBeenCalledTimes(1))
 
     // Error
     mockUpdate.mockImplementation(() => {
@@ -113,7 +130,124 @@ describe('components/project/simulation/boundaryConditions/add', () => {
     unmount()
   })
 
+  test('onAdd - without name', async () => {
+    mockAddButton.mockImplementation((props) => (
+      <div role="AddButton" onClick={props.onAdd} />
+    ))
+    const { unmount } = render(
+      <Add
+        simulation={simulation}
+        boundaryCondition={
+          {
+            uuid: 'uuid',
+            type: {
+              key: 'key',
+              label: 'type'
+            },
+            selected: [
+              { uuid: 'uuid1', label: 1 },
+              { uuid: 'uuid3', label: 1 }
+            ]
+          } as IModelBoundaryConditionValue
+        }
+        geometry={geometry}
+        swr={swr}
+        onClose={onClose}
+        onError={onError}
+      />
+    )
+
+    const button = screen.getByRole('AddButton')
+
+    fireEvent.click(button)
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(0))
+    await waitFor(() =>
+      expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(0)
+    )
+    await waitFor(() => expect(onError).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(onClose).toHaveBeenCalledTimes(0))
+
+    unmount()
+  })
+
+  test('onAdd - without type', async () => {
+    mockAddButton.mockImplementation((props) => (
+      <div role="AddButton" onClick={props.onAdd} />
+    ))
+    const { unmount } = render(
+      <Add
+        simulation={simulation}
+        boundaryCondition={
+          {
+            uuid: 'uuid',
+            name: 'name',
+            selected: [
+              { uuid: 'uuid1', label: 1 },
+              { uuid: 'uuid3', label: 1 }
+            ]
+          } as IModelBoundaryConditionValue
+        }
+        geometry={geometry}
+        swr={swr}
+        onClose={onClose}
+        onError={onError}
+      />
+    )
+
+    const button = screen.getByRole('AddButton')
+
+    fireEvent.click(button)
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(0))
+    await waitFor(() =>
+      expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(0)
+    )
+    await waitFor(() => expect(onError).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(onClose).toHaveBeenCalledTimes(0))
+
+    unmount()
+  })
+
+  test('onAdd - without selected', async () => {
+    mockAddButton.mockImplementation((props) => (
+      <div role="AddButton" onClick={props.onAdd} />
+    ))
+    const { unmount } = render(
+      <Add
+        simulation={simulation}
+        boundaryCondition={
+          {
+            uuid: 'uuid',
+            name: 'name',
+            type: {
+              key: 'key',
+              label: 'type'
+            }
+          } as IModelBoundaryConditionValue
+        }
+        geometry={geometry}
+        swr={swr}
+        onClose={onClose}
+        onError={onError}
+      />
+    )
+
+    const button = screen.getByRole('AddButton')
+
+    fireEvent.click(button)
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(0))
+    await waitFor(() =>
+      expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(0)
+    )
+    await waitFor(() => expect(onError).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(onClose).toHaveBeenCalledTimes(0))
+
+    unmount()
+  })
+
   test('onAdd without values', async () => {
+    mockAddButton.mockImplementation((props) => (
+      <div role="AddButton" onClick={props.onAdd} />
+    ))
     const { unmount } = render(
       <Add
         simulation={{
@@ -144,7 +278,8 @@ describe('components/project/simulation/boundaryConditions/add', () => {
       />
     )
 
-    const button = screen.getByRole('button')
+    const button = screen.getByRole('AddButton')
+
     fireEvent.click(button)
     await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
     await waitFor(() =>

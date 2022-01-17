@@ -7,6 +7,18 @@ jest.mock('../LabelHelper', () => () => ({
   }
 }))
 
+jest.mock('three/examples/jsm/math/Lut', () => ({
+  Lut: class {
+    constructor() {
+      this.setMin = jest.fn
+      this.setMax = jest.fn
+      this.minV = 0
+      this.maxV = 1
+      this.createCanvas = jest.fn
+    }
+  }
+}))
+
 describe('lib/three/helpers/ColorbarHelper', () => {
   const renderer = {
     domElement: {

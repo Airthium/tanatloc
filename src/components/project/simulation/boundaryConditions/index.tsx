@@ -121,13 +121,15 @@ const BoundaryConditions = ({
             geometry={{
               faces: geometry.summary.faces
             }}
-            boundaryCondition={{
-              uuid: boundaryCondition.uuid,
-              name: boundaryCondition.name,
-              type: boundaryCondition.type,
-              selected: boundaryCondition.selected,
-              values: boundaryCondition.values
-            }}
+            boundaryCondition={
+              boundaryCondition && {
+                uuid: boundaryCondition.uuid,
+                name: boundaryCondition.name,
+                type: boundaryCondition.type,
+                selected: boundaryCondition.selected,
+                values: boundaryCondition.values
+              }
+            }
             swr={{
               mutateOneSimulation: swr.mutateOneSimulation
             }}

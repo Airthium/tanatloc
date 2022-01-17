@@ -1,22 +1,14 @@
 import React from 'react'
 import { MathJaxContext } from 'better-react-mathjax'
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { render } from '@testing-library/react'
 
 import About from '@/components/project/simulation/about'
 
-const mockError = jest.fn()
-jest.mock('@/components/assets/notification', () => ({
-  Error: () => mockError()
-}))
-
 jest.mock('../../copy', () => () => <div />)
 
-jest.mock('../../delete', () => () => <div />)
+jest.mock('../edit', () => () => <div />)
 
-const mockUpdate = jest.fn()
-jest.mock('@/api/simulation', () => ({
-  update: async () => mockUpdate()
-}))
+jest.mock('../../delete', () => () => <div />)
 
 describe('components/project/simulation/about', () => {
   const project = {
@@ -25,7 +17,16 @@ describe('components/project/simulation/about', () => {
   }
   const simulation = {
     id: 'id',
-    name: 'name'
+    name: 'name',
+    scheme: {
+      category: 'category',
+      name: 'name',
+      algorithm: 'algorithm',
+      code: 'code',
+      version: 'version',
+      description: 'description',
+      configuration: {}
+    }
   }
   const swr = {
     mutateProject: jest.fn(),
@@ -33,10 +34,6 @@ describe('components/project/simulation/about', () => {
     delOneSimulation: jest.fn(),
     mutateOneSimulation: jest.fn()
   }
-
-  beforeEach(() => {
-    mockUpdate.mockReset()
-  })
 
   test('render', () => {
     const { unmount } = render(
@@ -54,57 +51,6 @@ describe('components/project/simulation/about', () => {
         <About project={project} swr={swr} />
       </MathJaxContext>
     )
-
-    unmount()
-  })
-
-  test('handleName', async () => {
-    const { unmount } = render(
-      <MathJaxContext>
-        <About project={project} simulation={simulation} swr={swr} />
-      </MathJaxContext>
-    )
-
-    // Normal
-    {
-      const button = screen.getByRole('button', { name: 'Edit' })
-      fireEvent.click(button)
-
-      const input = screen.getByText('name')
-      fireEvent.change(input, { target: { value: 'rename' } })
-      fireEvent.keyDown(input, {
-        keyCode: 13
-      })
-      fireEvent.keyUp(input, {
-        keyCode: 13
-      })
-
-      await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
-      await waitFor(() =>
-        expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(1)
-      )
-    }
-
-    // Error
-    {
-      mockUpdate.mockImplementation(() => {
-        throw new Error()
-      })
-      const button = screen.getByRole('button', { name: 'Edit' })
-      fireEvent.click(button)
-
-      const input = screen.getByText('name')
-      fireEvent.change(input, { target: { value: 'rename' } })
-      fireEvent.keyDown(input, {
-        keyCode: 13
-      })
-      fireEvent.keyUp(input, {
-        keyCode: 13
-      })
-
-      await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
-      await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
-    }
 
     unmount()
   })

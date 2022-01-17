@@ -3,10 +3,7 @@ import { fireEvent, render, screen } from '@testing-library/react'
 
 import BoundaryCondition from '@/components/project/simulation/boundaryConditions/boundaryCondition'
 
-const mockGoBack = jest.fn()
-jest.mock('@/components/assets/button', () => ({
-  GoBack: (props: {}) => mockGoBack(props)
-}))
+import { ISimulation } from '@/database/index.d'
 
 const mockFormula = jest.fn()
 jest.mock('@/components/assets/formula', () => (props) => mockFormula(props))
@@ -14,65 +11,82 @@ jest.mock('@/components/assets/formula', () => (props) => mockFormula(props))
 const mockSelector = jest.fn()
 jest.mock('@/components/assets/selector', () => (props) => mockSelector(props))
 
+const mockCancelButton = jest.fn()
+jest.mock('@/components/assets/button', () => ({
+  CancelButton: (props: {}) => mockCancelButton(props)
+}))
+
+const mockAdd = jest.fn()
 jest.mock(
   '@/components/project/simulation/boundaryConditions/add',
-  () => () => <div />
+  () => (props: {}) => mockAdd(props)
 )
 
+const mockEdit = jest.fn()
 jest.mock(
   '@/components/project/simulation/boundaryConditions/edit',
-  () => () => <div />
+  () => (props: {}) => mockEdit(props)
 )
 
 describe('components/project/simulation/boundaryConditions/boundaryCondition', () => {
   const simulation = {
-    id: 'id'
+    id: 'id',
+    scheme: {
+      category: 'category',
+      name: 'name',
+      algorithm: 'algorithm',
+      code: 'code',
+      version: 'version',
+      description: 'description',
+      configuration: {
+        boundaryConditions: {
+          index: 1,
+          title: 'title',
+          key: {
+            label: 'label',
+            children: [
+              {
+                label: 'label',
+                htmlEntity: 'entity',
+                default: 0
+              }
+            ],
+            values: [
+              {
+                uuid: 'uuid',
+                name: 'name',
+                type: {
+                  key: 'key',
+                  label: 'key'
+                },
+                selected: []
+              }
+            ]
+          },
+          otherKey: {
+            label: 'other'
+          },
+          otherOtherKey: {
+            label: 'otherOther',
+            children: [
+              { label: 'label', htmlEntity: 'entity', default: 1 },
+              { label: 'label', htmlEntity: 'entity', default: 2 },
+              { label: 'label', htmlEntity: 'entity', default: 3 }
+            ]
+          }
+        }
+      }
+    }
   }
   const geometry = {
     faces: []
   }
-  const boundaryConditions = {
-    index: 1,
-    title: 'title',
-    key: {
-      label: 'label',
-      children: [
-        {
-          label: 'label',
-          htmlEntity: 'entity',
-          default: 0
-        }
-      ],
-      values: [
-        {
-          uuid: 'uuid',
-          name: 'name',
-          type: {
-            key: 'key',
-            label: 'key'
-          },
-          selected: []
-        }
-      ]
-    },
-    otherKey: {
-      label: 'other'
-    },
-    otherOtherKey: {
-      label: 'otherOther',
-      children: [
-        { label: 'label', htmlEntity: 'entity', default: 1 },
-        { label: 'label', htmlEntity: 'entity', default: 2 },
-        { label: 'label', htmlEntity: 'entity', default: 3 }
-      ]
-    }
-  }
   const swr = { mutateOneSimulation: jest.fn() }
-  const close = jest.fn()
+  const onClose = jest.fn()
 
   beforeEach(() => {
-    mockGoBack.mockReset()
-    mockGoBack.mockImplementation(() => <div />)
+    mockCancelButton.mockReset()
+    mockCancelButton.mockImplementation(() => <div />)
 
     mockFormula.mockReset()
     mockFormula.mockImplementation(() => <div />)
@@ -80,7 +94,13 @@ describe('components/project/simulation/boundaryConditions/boundaryCondition', (
     mockSelector.mockReset()
     mockSelector.mockImplementation(() => <div />)
 
-    close.mockReset()
+    mockAdd.mockReset()
+    mockAdd.mockImplementation(() => <div />)
+
+    mockEdit.mockReset()
+    mockEdit.mockImplementation(() => <div />)
+
+    onClose.mockReset()
   })
 
   test('render', () => {
@@ -89,24 +109,8 @@ describe('components/project/simulation/boundaryConditions/boundaryCondition', (
         visible={true}
         simulation={simulation}
         geometry={geometry}
-        boundaryConditions={boundaryConditions}
         swr={swr}
-        close={close}
-      />
-    )
-
-    unmount()
-  })
-
-  test('without boundaryConditions', () => {
-    const { unmount } = render(
-      <BoundaryCondition
-        visible={true}
-        simulation={simulation}
-        geometry={geometry}
-        boundaryConditions={undefined}
-        swr={swr}
-        close={close}
+        onClose={onClose}
       />
     )
 
@@ -114,17 +118,16 @@ describe('components/project/simulation/boundaryConditions/boundaryCondition', (
   })
 
   test('close', () => {
-    mockGoBack.mockImplementation((props) => (
-      <div role="GoBack" onClick={props.onClick} />
+    mockCancelButton.mockImplementation((props) => (
+      <div role="GoBack" onClick={props.onCancel} />
     ))
     const { unmount } = render(
       <BoundaryCondition
         visible={true}
         simulation={simulation}
         geometry={geometry}
-        boundaryConditions={boundaryConditions}
         swr={swr}
-        close={close}
+        onClose={onClose}
       />
     )
 
@@ -150,14 +153,16 @@ describe('components/project/simulation/boundaryConditions/boundaryCondition', (
         onClick={() => props.updateSelected([{ uuid: 'uuid' }])}
       />
     ))
+    mockAdd.mockImplementation((props) => (
+      <div role="Add" onClick={() => props.onError('error')}></div>
+    ))
     const { unmount } = render(
       <BoundaryCondition
         visible={true}
         simulation={simulation}
         geometry={geometry}
-        boundaryConditions={boundaryConditions}
         swr={swr}
-        close={close}
+        onClose={onClose}
       />
     )
 
@@ -188,12 +193,14 @@ describe('components/project/simulation/boundaryConditions/boundaryCondition', (
   })
 
   test('edit', () => {
+    mockEdit.mockImplementation((props) => (
+      <div role="Edit" onClick={() => props.onError('error')} />
+    ))
     const { unmount } = render(
       <BoundaryCondition
         visible={true}
         simulation={simulation}
         geometry={geometry}
-        boundaryConditions={boundaryConditions}
         boundaryCondition={{
           uuid: 'uuid',
           name: 'name',
@@ -204,7 +211,7 @@ describe('components/project/simulation/boundaryConditions/boundaryCondition', (
           selected: [{ uuid: 'uuid', label: 1 }]
         }}
         swr={swr}
-        close={close}
+        onClose={onClose}
       />
     )
 

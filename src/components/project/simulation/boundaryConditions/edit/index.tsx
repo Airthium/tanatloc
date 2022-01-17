@@ -23,7 +23,7 @@ export interface IProps {
     mutateOneSimulation: (simulation: ISimulation) => void
   }
 
-  onError: (desc: string) => void
+  onError: (desc?: string) => void
   onClose: () => void
 }
 
@@ -79,6 +79,7 @@ const Edit = ({
         setLoading(false)
         return
       }
+      onError()
 
       // New simulation
       const newSimulation = { ...simulation }

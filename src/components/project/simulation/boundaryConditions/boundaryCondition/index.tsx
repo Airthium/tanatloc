@@ -243,7 +243,7 @@ const BoundaryCondition = ({
                 uuid: current?.uuid || boundaryCondition.uuid,
                 name: current?.name || boundaryCondition.name,
                 type: current?.type || boundaryCondition.type,
-                selected: current.selected || boundaryCondition.selected,
+                selected: current?.selected || boundaryCondition.selected,
                 values: current?.values || boundaryCondition.values
               }}
               oldBoundaryCondition={{
@@ -371,7 +371,7 @@ BoundaryCondition.propTypes = {
     }).isRequired,
     selected: PropTypes.array.isRequired,
     values: PropTypes.array
-  }).isRequired,
+  }),
   swr: PropTypes.exact({
     mutateOneSimulation: PropTypes.func.isRequired
   }).isRequired,

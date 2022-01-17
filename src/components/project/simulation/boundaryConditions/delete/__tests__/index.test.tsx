@@ -11,7 +11,7 @@ jest.mock('react-redux', () => ({
 
 const mockDeleteButton = jest.fn()
 jest.mock('@/components/assets/button', () => ({
-  DeleteButton: (props) => mockDeleteButton(props)
+  DeleteButton: (props: {}) => mockDeleteButton(props)
 }))
 
 const mockError = jest.fn()

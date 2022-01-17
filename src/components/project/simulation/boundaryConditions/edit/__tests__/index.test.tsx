@@ -3,9 +3,16 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import Edit from '@/components/project/simulation/boundaryConditions/edit'
 
+import { IModelBoundaryConditionValue } from '@/models/index.d'
+
 const mockError = jest.fn()
 jest.mock('@/components/assets/notification', () => ({
   Error: () => mockError()
+}))
+
+const mockEditButton = jest.fn()
+jest.mock('@/components/assets/button', () => ({
+  EditButton: (props: {}) => mockEditButton(props)
 }))
 
 const mockUpdate = jest.fn()
@@ -96,9 +103,13 @@ describe('components/project/simulation/boundaryConditions/edit', () => {
   beforeEach(() => {
     mockError.mockReset()
 
+    mockEditButton.mockReset()
+    mockEditButton.mockImplementation(() => <div />)
+
     mockUpdate.mockReset()
 
     onClose.mockReset()
+    onError.mockReset()
 
     swr.mutateOneSimulation.mockReset()
   })
@@ -120,6 +131,9 @@ describe('components/project/simulation/boundaryConditions/edit', () => {
   })
 
   test('onEdit', async () => {
+    mockEditButton.mockImplementation((props) => (
+      <div role="EditButton" onClick={props.onEdit} />
+    ))
     const { unmount } = render(
       <Edit
         simulation={simulation}
@@ -132,7 +146,7 @@ describe('components/project/simulation/boundaryConditions/edit', () => {
       />
     )
 
-    const button = screen.getByRole('button')
+    const button = screen.getByRole('EditButton')
 
     // Normal
     fireEvent.click(button)
@@ -140,6 +154,7 @@ describe('components/project/simulation/boundaryConditions/edit', () => {
     await waitFor(() =>
       expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(1)
     )
+    await waitFor(() => expect(onError).toHaveBeenCalledTimes(1))
     await waitFor(() => expect(onClose).toHaveBeenCalledTimes(1))
 
     // Error
@@ -153,7 +168,127 @@ describe('components/project/simulation/boundaryConditions/edit', () => {
     unmount()
   })
 
+  test('onEdit - without name', async () => {
+    mockEditButton.mockImplementation((props) => (
+      <div role="EditButton" onClick={props.onEdit} />
+    ))
+    const { unmount } = render(
+      <Edit
+        simulation={simulation}
+        boundaryCondition={
+          {
+            uuid: 'uuid',
+            type: {
+              key: 'key',
+              label: 'key'
+            },
+            selected: [
+              { uuid: 'uuid1', label: 1 },
+              { uuid: 'uuid3', label: 3 }
+            ]
+          } as IModelBoundaryConditionValue
+        }
+        oldBoundaryCondition={oldBoundaryCondition}
+        geometry={geometry}
+        swr={swr}
+        onClose={onClose}
+        onError={onError}
+      />
+    )
+
+    const button = screen.getByRole('EditButton')
+
+    fireEvent.click(button)
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(0))
+    await waitFor(() =>
+      expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(0)
+    )
+    await waitFor(() => expect(onError).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(onClose).toHaveBeenCalledTimes(0))
+
+    unmount()
+  })
+
+  test('onEdit - without type', async () => {
+    mockEditButton.mockImplementation((props) => (
+      <div role="EditButton" onClick={props.onEdit} />
+    ))
+    const { unmount } = render(
+      <Edit
+        simulation={simulation}
+        boundaryCondition={
+          {
+            uuid: 'uuid',
+            name: 'name',
+            selected: [
+              { uuid: 'uuid1', label: 1 },
+              { uuid: 'uuid3', label: 3 }
+            ]
+          } as IModelBoundaryConditionValue
+        }
+        oldBoundaryCondition={oldBoundaryCondition}
+        geometry={geometry}
+        swr={swr}
+        onClose={onClose}
+        onError={onError}
+      />
+    )
+
+    const button = screen.getByRole('EditButton')
+
+    fireEvent.click(button)
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(0))
+    await waitFor(() =>
+      expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(0)
+    )
+    await waitFor(() => expect(onError).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(onClose).toHaveBeenCalledTimes(0))
+
+    unmount()
+  })
+
+  test('onEdit - without selected', async () => {
+    mockEditButton.mockImplementation((props) => (
+      <div role="EditButton" onClick={props.onEdit} />
+    ))
+    const { unmount } = render(
+      <Edit
+        simulation={simulation}
+        boundaryCondition={
+          {
+            uuid: 'uuid',
+            name: 'name',
+            type: {
+              key: 'key',
+              label: 'key'
+            }
+          } as IModelBoundaryConditionValue
+        }
+        oldBoundaryCondition={oldBoundaryCondition}
+        geometry={geometry}
+        swr={swr}
+        onClose={onClose}
+        onError={onError}
+      />
+    )
+
+    const button = screen.getByRole('EditButton')
+
+    fireEvent.click(button)
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(0))
+    await waitFor(() =>
+      expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(0)
+    )
+    await waitFor(() => expect(onError).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(onClose).toHaveBeenCalledTimes(0))
+
+    unmount()
+  })
+
   test('onEdit (different old type)', async () => {
+    mockEditButton.mockImplementation((props) => (
+      <div role="EditButton" onClick={props.onEdit} />
+    ))
     oldBoundaryCondition.type.key = 'otherKey'
     const { unmount } = render(
       <Edit
@@ -167,12 +302,13 @@ describe('components/project/simulation/boundaryConditions/edit', () => {
       />
     )
 
-    const button = screen.getByRole('button')
+    const button = screen.getByRole('EditButton')
     fireEvent.click(button)
     await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
     await waitFor(() =>
       expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(1)
     )
+    await waitFor(() => expect(onError).toHaveBeenCalledTimes(1))
     await waitFor(() => expect(onClose).toHaveBeenCalledTimes(1))
 
     unmount()

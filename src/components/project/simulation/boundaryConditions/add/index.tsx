@@ -22,7 +22,7 @@ export interface IProps {
   swr: {
     mutateOneSimulation: (simulation: ISimulation) => void
   }
-  onError: (desc: string) => void
+  onError: (desc?: string) => void
   onClose: () => void
 }
 
@@ -77,6 +77,7 @@ const Add = ({
         setLoading(false)
         return
       }
+      onError()
 
       // New boundary condition
       const newBoundaryCondition = {

@@ -1,9 +1,9 @@
 import React from 'react'
 import { fireEvent, render, screen } from '@testing-library/react'
 
-import { ISimulation } from '@/database/index.d'
-
 import BoundaryConditions from '@/components/project/simulation/boundaryConditions'
+
+import { ISimulation } from '@/database/index.d'
 
 jest.mock('react-redux', () => ({
   useDispatch: () => jest.fn()
@@ -40,23 +40,31 @@ jest.mock('@/store/select/action', () => ({
 describe('components/project/simulation/boundaryConditions', () => {
   const geometry = {
     id: 'id',
-    summary: {}
+    summary: {
+      uuid: 'uuid',
+      faces: [
+        {
+          uuid: 'uuid',
+          number: 1
+        }
+      ]
+    }
   }
-  const simulation: ISimulation = {
+  const simulation = {
     id: 'id',
     scheme: {
       category: 'category',
       name: 'name',
-      description: '',
       algorithm: 'algorithm',
       code: 'code',
       version: 'version',
+      description: 'description',
       configuration: {
         boundaryConditions: {
           index: 1,
           title: 'boundary conditions',
           dirichlet: {
-            label: 'label',
+            label: 'Dirichlet',
             values: [
               {
                 uuid: 'uuid',
@@ -72,7 +80,7 @@ describe('components/project/simulation/boundaryConditions', () => {
         }
       }
     }
-  }
+  } as ISimulation
   const swr = { mutateOneSimulation: jest.fn() }
   const setVisible = jest.fn()
 
@@ -106,18 +114,6 @@ describe('components/project/simulation/boundaryConditions', () => {
 
     expect(mockSetPart).toHaveBeenCalledTimes(1)
     expect(mockSetType).toHaveBeenCalledTimes(1)
-
-    unmount()
-  })
-
-  test('without geometry', () => {
-    const { unmount } = render(
-      <BoundaryConditions
-        simulation={simulation}
-        swr={swr}
-        setVisible={setVisible}
-      />
-    )
 
     unmount()
   })
@@ -166,7 +162,7 @@ describe('components/project/simulation/boundaryConditions', () => {
 
   test('onClose', () => {
     mockBoundaryCondition.mockImplementation((props) => (
-      <div role="BoundaryCondition" onClick={props.close} />
+      <div role="BoundaryCondition" onClick={props.onClose} />
     ))
     const { unmount } = render(
       <BoundaryConditions
@@ -184,28 +180,4 @@ describe('components/project/simulation/boundaryConditions', () => {
 
     unmount()
   })
-
-  // // test('effect', () => {
-  // //   wrapper.unmount()
-  // //   wrapper = mount(
-  // //     <BoundaryConditions
-  // //       simulation={simulation}
-  // //       part={part}
-  // //       swr={swr}
-  // //       setVisible={setVisible}
-  // //     />
-  // //   )
-  // //   expect(mockSetType).toHaveBeenCalledTimes(1)
-  // //   expect(mockSetPart).toHaveBeenCalledTimes(1)
-
-  // //   // Without part
-  // //   wrapper.unmount()
-  // //   wrapper = mount(
-  // //     <BoundaryConditions
-  // //       simulation={simulation}
-  // //       swr={swr}
-  // //       setVisible={setVisible}
-  // //     />
-  // //   )
-  // // })
 })

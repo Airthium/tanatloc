@@ -18,7 +18,7 @@ jest.mock('@/store/select/action', () => ({
 
 const mockEditButton = jest.fn()
 jest.mock('@/components/assets/button', () => ({
-  EditButton: (props) => mockEditButton(props)
+  EditButton: (props: {}) => mockEditButton(props)
 }))
 
 jest.mock('../../delete', () => () => <div />)
@@ -106,15 +106,6 @@ describe('components/project/simulation/boundaryConditions/list', () => {
 
     const edit = screen.getByRole('EditButton')
     fireEvent.click(edit)
-
-    unmount()
-  })
-
-  test('empty simulation', () => {
-    const { unmount } = render(
-      //@ts-ignore
-      <List simulation={{}} swr={swr} onEdit={onEdit} />
-    )
 
     unmount()
   })

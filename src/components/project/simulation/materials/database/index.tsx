@@ -60,6 +60,27 @@ const materialDatabase: IMaterialDatabase = {
             value: 502
           }
         ]
+      },
+      {
+        key: 'S235JR+AR',
+        label: 'Steel (S235JR+AR)',
+        children: [
+          {
+            label: 'Density',
+            symbol: 'Rho',
+            value: 7850
+          },
+          {
+            label: "Young's modulus",
+            symbol: 'E',
+            value: 2.1e9
+          },
+          {
+            label: "Poisson's ratio",
+            symbol: 'Nu',
+            value: 0.27
+          }
+        ]
       }
     ]
   },

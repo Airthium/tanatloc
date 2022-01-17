@@ -1,7 +1,24 @@
 // Materials
 appendLog("Define materials...");
 
-<% materials.children.map(child => { -%>
-<% const value = child.value || child.default -%>
-real <%= child.name %> = <%- value -%>;
+<% materials.children.forEach(material => { -%>
+<% let firstValue = 0 -%>
+// <%- material.label %> 
+func <%= material.name -%> = 
+<% materials.values.forEach((value, index) => { -%>
+<% value.material.children.forEach(child => { -%>
+<% if (child.symbol === material.name) { -%>
+<% if (index === 0) { -%>
+<% firstValue = child.value -%>
+    <%= child.value %>
+<% } else { -%>
+    (<%= child.value -%> - <%= firstValue -%>)
+<% value.selected.forEach(select => { -%>
+            * (region == <%= select.label -%>)
+<% }) -%>
+<% } -%>
+<% } -%>
+<% }) -%>
+<% }) -%>
+    ;
 <% }) -%>

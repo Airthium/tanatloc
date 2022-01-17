@@ -1,4 +1,5 @@
 import { useState, useEffect, ChangeEvent } from 'react'
+import PropTypes from 'prop-types'
 import {
   Button,
   Card,
@@ -331,6 +332,35 @@ const BoundaryCondition = ({
       </Space>
     </Drawer>
   )
+}
+
+BoundaryCondition.propTypes = {
+  visible: PropTypes.bool,
+  simulation: PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    scheme: PropTypes.shape({
+      configuration: PropTypes.shape({
+        boundaryConditions: PropTypes.object.isRequired
+      }).isRequired
+    }).isRequired
+  }).isRequired,
+  geometry: PropTypes.shape({
+    faces: PropTypes.array.isRequired
+  }).isRequired,
+  boundaryCondition: PropTypes.shape({
+    name: PropTypes.string,
+    type: PropTypes.exact({
+      key: PropTypes.string.isRequired,
+      label: PropTypes.string.isRequired,
+      children: PropTypes.array
+    }),
+    selected: PropTypes.array,
+    values: PropTypes.array
+  }).isRequired,
+  swr: PropTypes.shape({
+    mutateOneSimulation: PropTypes.func.isRequired
+  }).isRequired,
+  onClose: PropTypes.func.isRequired
 }
 
 export default BoundaryCondition

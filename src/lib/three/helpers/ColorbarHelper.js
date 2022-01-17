@@ -61,7 +61,7 @@ const ColorbarHelper = (renderer, scene) => {
     const map = new CanvasTexture(lut.createCanvas())
     const material = new SpriteMaterial({ map: map })
     sprite = new Sprite(material)
-    sprite.material.rotation = Math.PI / 2
+    sprite.material.rotation = -Math.PI / 2
     sprite.scale.x = 0.2
     sprite.scale.y = 1.8
     sprite.dispose = sprite.material.dispose

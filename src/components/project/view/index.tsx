@@ -541,8 +541,8 @@ const ThreeView = ({ loading, project, part }: IThreeProps): JSX.Element => {
     zoomToFit()
 
     // Colorbar
-    if (mesh?.children[1]?.children[0]?.lut) {
-      colorbarHelper.current.setLUT(mesh.children[1].children[0].lut)
+    if (mesh?.children[1]?.children[0]?.userData.lut) {
+      colorbarHelper.current.setLUT(mesh.children[1].children[0].userData.lut)
       colorbarHelper.current.setVisible(true)
     } else {
       colorbarHelper.current.setVisible(false)

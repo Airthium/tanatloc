@@ -6,6 +6,8 @@ import {
   Sprite
 } from 'three'
 
+import { Lut } from 'three/examples/jsm/math/Lut'
+
 import Label from './LabelHelper'
 import NumberHelper from './NumberHelper'
 
@@ -16,12 +18,12 @@ import NumberHelper from './NumberHelper'
  * @param {Object} scene Scene
  */
 const ColorbarHelper = (renderer, scene) => {
-  const width = 50
-  const height = 500
+  const width = 500
+  const height = 50
 
   const colorScene = new Scene()
-  const colorCamera = new OrthographicCamera(-1, 1, 1, -1, 1, 2)
-  colorCamera.position.set(-0.5, 0, 1)
+  const colorCamera = new OrthographicCamera(-1, 1, 1, -1, 2, 1)
+  colorCamera.position.set(0, 0, 1)
 
   let sprite
 
@@ -49,15 +51,19 @@ const ColorbarHelper = (renderer, scene) => {
    * Set LUT
    * @param {Object} lut LUT
    */
-  const setLUT = (lut) => {
+  const setLUT = (lutData) => {
     clearScene()
+
+    const lut = new Lut('rainbow', lutData.n)
+    lut.setMin(lutData.minV)
+    lut.setMax(lutData.maxV)
 
     const map = new CanvasTexture(lut.createCanvas())
     const material = new SpriteMaterial({ map: map })
     sprite = new Sprite(material)
+    sprite.material.rotation = Math.PI / 2
     sprite.scale.x = 0.2
-    sprite.scale.y = 2
-    sprite.position.set(-1, 0, 0)
+    sprite.scale.y = 1.8
     sprite.dispose = sprite.material.dispose
     colorScene.add(sprite)
 
@@ -73,13 +79,13 @@ const ColorbarHelper = (renderer, scene) => {
     let max = NumberHelper(lut.maxV)
 
     const minLabel = Label(min, 768, 'gray', 128)
-    minLabel.scale.x = 1
-    minLabel.scale.y = 0.3
-    minLabel.position.set(-0.45, -0.95, 0)
+    minLabel.scale.x = 0.5
+    minLabel.scale.y = 4.5
+    minLabel.position.set(-0.9, 0.45, 0)
     const maxLabel = Label(max, 768, 'gray', 128)
-    maxLabel.scale.x = 1
-    maxLabel.scale.y = 0.3
-    maxLabel.position.set(-0.45, 0.95, 0)
+    maxLabel.scale.x = 0.5
+    maxLabel.scale.y = 4.5
+    maxLabel.position.set(0.8, 0.45, 0)
 
     colorScene.add(minLabel)
     colorScene.add(maxLabel)
@@ -91,9 +97,9 @@ const ColorbarHelper = (renderer, scene) => {
   const render = () => {
     const rect = renderer.domElement.getBoundingClientRect()
     renderer.setViewport(
-      rect.width - width - 100,
-      rect.height / 2 - height / 2,
-      width + 100,
+      rect.width / 2 - width / 2,
+      rect.height - height,
+      width,
       height
     )
     renderer.render(colorScene, colorCamera)

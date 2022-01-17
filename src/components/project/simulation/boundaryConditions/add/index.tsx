@@ -164,7 +164,8 @@ Add.propTypes = {
       label: PropTypes.string.isRequired,
       children: PropTypes.array
     }),
-    selected: PropTypes.array
+    selected: PropTypes.array,
+    values: PropTypes.array
   }).isRequired,
   simulation: PropTypes.shape({
     id: PropTypes.string.isRequired,

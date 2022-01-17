@@ -130,7 +130,7 @@ const BoundaryConditions = ({
 BoundaryConditions.propTypes = {
   geometry: PropTypes.exact({
     id: PropTypes.string.isRequired,
-    sumamry: PropTypes.exact({
+    summary: PropTypes.exact({
       uuid: PropTypes.string.isRequired,
       faces: PropTypes.array.isRequired
     }).isRequired

@@ -13,7 +13,6 @@ import { CloseOutlined, ExclamationCircleOutlined } from '@ant-design/icons'
 
 import { IGeometry, ISimulation } from '@/database/index.d'
 import {
-  IModelBoundaryCondition,
   IModelBoundaryConditionValue,
   IModelTypedBoundaryCondition
 } from '@/models/index.d'
@@ -153,26 +152,15 @@ const BoundaryCondition = ({
   const onType = (event: RadioChangeEvent): void => {
     const key = event.target.value
     const type = types.find((t) => t.key === key)
-    const boundaryConditionType = boundaryConditions[key] as {
-      label: string
-      refineFactor?: number
-      children?: IModelBoundaryCondition[]
-      values?: IModelBoundaryConditionValue[]
-    }
+    const typedBoundaryCondition = boundaryConditions[
+      key
+    ] as IModelTypedBoundaryCondition
 
-    const values = boundaryConditionType.children
-      ? boundaryConditionType.children.map(
-          (child: IModelBoundaryCondition) => ({
-            checked: true,
-            value: child.default
-          })
-        )
-      : [
-          {
-            checked: true,
-            value: 0
-          }
-        ]
+    const values = typedBoundaryCondition.children?.map((child) => ({
+      checked: true,
+      value: child.default
+    }))
+
     setCurrent({
       ...current,
       type: type,
@@ -266,7 +254,8 @@ const BoundaryCondition = ({
               boundaryCondition={{
                 name: current?.name,
                 type: current?.type,
-                selected: current?.selected
+                selected: current?.selected,
+                values: current?.values
               }}
               simulation={{
                 id: simulation.id,
@@ -302,9 +291,9 @@ const BoundaryCondition = ({
             })}
           </Radio.Group>
         </Card>
-        {current?.type && current?.type?.children && (
+        {current?.type && current.type?.children && (
           <Card>
-            {current?.type?.children?.map((child, index) => {
+            {current.type.children.map((child, index) => {
               return (
                 <div key={index}>
                   {child.label}

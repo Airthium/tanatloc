@@ -45,7 +45,6 @@ const List = ({ simulation, swr, onEdit }: IProps): JSX.Element => {
     ] as IModelTypedBoundaryCondition
     const currentSelected = typedBoundaryCondition.values[index].selected
     currentSelected?.forEach((s: { uuid: string }) => {
-      console.log(s.uuid)
       dispatch(select(s.uuid))
     })
   }

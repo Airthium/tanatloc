@@ -239,13 +239,27 @@ const BoundaryCondition = ({
           <CancelButton onCancel={onClose}>Cancel</CancelButton>
           {boundaryCondition ? (
             <Edit
+              boundaryCondition={{
+                uuid: current?.uuid || boundaryCondition.uuid,
+                name: current?.name || boundaryCondition.name,
+                type: current?.type || boundaryCondition.type,
+                selected: current.selected || boundaryCondition.selected,
+                values: current?.values || boundaryCondition.values
+              }}
+              oldBoundaryCondition={{
+                uuid: boundaryCondition.uuid,
+                name: boundaryCondition.name,
+                type: boundaryCondition.type,
+                selected: boundaryCondition.selected,
+                values: boundaryCondition.values
+              }}
               simulation={{
                 id: simulation.id,
                 scheme: simulation.scheme
               }}
-              boundaryCondition={current}
-              oldBoundaryCondition={boundaryCondition}
-              geometry={geometry}
+              geometry={{
+                faces: geometry.faces
+              }}
               swr={{ mutateOneSimulation: swr.mutateOneSimulation }}
               onError={(desc) => setError(desc)}
               onClose={onClose}
@@ -336,7 +350,7 @@ const BoundaryCondition = ({
 
 BoundaryCondition.propTypes = {
   visible: PropTypes.bool,
-  simulation: PropTypes.shape({
+  simulation: PropTypes.exact({
     id: PropTypes.string.isRequired,
     scheme: PropTypes.shape({
       configuration: PropTypes.shape({
@@ -344,20 +358,21 @@ BoundaryCondition.propTypes = {
       }).isRequired
     }).isRequired
   }).isRequired,
-  geometry: PropTypes.shape({
+  geometry: PropTypes.exact({
     faces: PropTypes.array.isRequired
   }).isRequired,
-  boundaryCondition: PropTypes.shape({
-    name: PropTypes.string,
+  boundaryCondition: PropTypes.exact({
+    uuid: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
     type: PropTypes.exact({
       key: PropTypes.string.isRequired,
       label: PropTypes.string.isRequired,
       children: PropTypes.array
-    }),
-    selected: PropTypes.array,
+    }).isRequired,
+    selected: PropTypes.array.isRequired,
     values: PropTypes.array
   }).isRequired,
-  swr: PropTypes.shape({
+  swr: PropTypes.exact({
     mutateOneSimulation: PropTypes.func.isRequired
   }).isRequired,
   onClose: PropTypes.func.isRequired

@@ -14,7 +14,8 @@ import { CloseOutlined, ExclamationCircleOutlined } from '@ant-design/icons'
 import { IGeometry, ISimulation } from '@/database/index.d'
 import {
   IModelBoundaryCondition,
-  IModelBoundaryConditionValue
+  IModelBoundaryConditionValue,
+  IModelTypedBoundaryCondition
 } from '@/models/index.d'
 
 import Formula from '@/components/assets/formula'
@@ -56,12 +57,7 @@ const BoundaryCondition = ({
     Function
   ] = useState([])
   const [types, setTypes]: [
-    {
-      key: string
-      label: string
-      children: {}[]
-      values: {}[]
-    }[],
+    (IModelTypedBoundaryCondition & { key: string })[],
     Function
   ] = useState([])
   const [totalNumber, setTotalNumber]: [number, Function] = useState(0)
@@ -72,74 +68,71 @@ const BoundaryCondition = ({
   // Data
   const boundaryConditions = simulation.scheme.configuration.boundaryConditions
 
-  // Types & already selected
+  // Edit
   useEffect(() => {
-    if (!boundaryConditions) return
+    if (boundaryCondition) setCurrent(boundaryCondition)
+  }, [boundaryCondition])
 
+  // Already selected
+  useEffect(() => {
+    const currentAlreadySelected = Object.keys(boundaryConditions)
+      .map((type) => {
+        if (type === 'index' || type === 'title' || type === 'done') return
+        const typedBoundaryCondition = boundaryConditions[
+          type
+        ] as IModelTypedBoundaryCondition
+
+        return typedBoundaryCondition?.values
+          ?.map((b) => {
+            if (b.uuid === boundaryCondition?.uuid) return
+            return {
+              label: b.name,
+              selected: b.selected
+            }
+          })
+          .filter((s) => s)
+      })
+      .flat()
+      .filter((s) => s)
+    setAlreadySelected(currentAlreadySelected)
+  }, [boundaryConditions, boundaryCondition])
+
+  // Types
+  useEffect(() => {
     const currentTypes = Object.keys(boundaryConditions)
       .map((type) => {
         if (type === 'index' || type === 'title' || type === 'done') return
-        const boundaryConditionType = boundaryConditions[type] as {
-          label: string
-          refineFactor?: number
-          children?: IModelBoundaryCondition[]
-          values?: IModelBoundaryConditionValue[]
-        }
+        const typedBoundaryCondition = boundaryConditions[
+          type
+        ] as IModelTypedBoundaryCondition
         return {
           key: type,
-          label: boundaryConditionType.label,
-          children: boundaryConditionType.children,
-          values: boundaryConditionType.values
+          label: typedBoundaryCondition.label,
+          children: typedBoundaryCondition.children,
+          values: typedBoundaryCondition.values
         }
       })
       .filter((t) => t)
     setTypes(currentTypes)
+  }, [boundaryConditions])
 
-    const currentAlreadySelected = Object.keys(boundaryConditions)
-      .map((type) => {
-        if (type === 'index' || type === 'title' || type === 'done') return
-        const boundaryConditionType = boundaryConditions[type] as {
-          label: string
-          refineFactor?: number
-          children?: IModelBoundaryCondition[]
-          values?: IModelBoundaryConditionValue[]
-        }
-        return boundaryConditionType?.values?.map(
-          (b: { name: string; selected: {}[] }) => ({
-            label: b.name,
-            selected: b.selected
-          })
-        )
-      })
-      .filter((a) => a)
-      .flat()
-    setAlreadySelected(currentAlreadySelected)
-
-    const numberOfBoundaryConditions = currentTypes
-      .map((t) => t.values?.length)
+  // Total number
+  useEffect(() => {
+    const numberOfBoundaryConditions = types
+      ?.map((t) => t.values?.length)
       .filter((n) => n)
       .reduce((a, b) => a + b, 0)
 
     setTotalNumber(numberOfBoundaryConditions)
-  }, [boundaryConditions])
+  }, [types])
 
+  // Name
   useEffect(() => {
     setCurrent({
       ...current,
       name: 'Boundary condition ' + (totalNumber + 1)
     })
   }, [totalNumber])
-
-  // Edit
-  useEffect(() => {
-    if (boundaryCondition)
-      setCurrent({
-        ...boundaryCondition,
-        selected: boundaryCondition.selected.map(
-          (s: { uuid: string }) => s.uuid
-        )
-      })
-  }, [boundaryCondition])
 
   /**
    * On name

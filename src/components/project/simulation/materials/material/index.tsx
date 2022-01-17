@@ -58,7 +58,7 @@ const Material = ({
 
   // Already selected
   useEffect(() => {
-    const currentAlreadySelected = materials.values
+    const currentAlreadySelected = materials?.values
       ?.map((m) => {
         if (m.uuid === material?.uuid) return
         return {

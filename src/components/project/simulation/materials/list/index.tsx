@@ -6,6 +6,7 @@ import { ISimulation } from '@/database/index.d'
 import { IModelMaterialValue } from '@/models/index.d'
 
 import { EditButton } from '@/components/assets/button'
+
 import Delete from '../delete'
 
 import { useDispatch } from 'react-redux'
@@ -14,7 +15,7 @@ import { enable, disable, select } from '@/store/select/action'
 export interface IProps {
   simulation: ISimulation
   swr: {
-    mutateOneSimulation: Function
+    mutateOneSimulation: (simulation: ISimulation) => void
   }
   onEdit: (index: number) => void
 }
@@ -75,9 +76,7 @@ const List = ({ simulation, swr, onEdit }: IProps): JSX.Element => {
                     onEdit(index)
                     setTimeout(() => setEnabled(true), 500)
                   }}
-                >
-                  Edit
-                </EditButton>,
+                />,
                 <Delete
                   key="delete"
                   index={index}
@@ -113,7 +112,7 @@ List.propTypes = {
       }).isRequired
     }).isRequired
   }).isRequired,
-  swr: PropTypes.shape({
+  swr: PropTypes.exact({
     mutateOneSimulation: PropTypes.func.isRequired
   }).isRequired,
   onEdit: PropTypes.func.isRequired

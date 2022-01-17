@@ -32,6 +32,13 @@ export interface IModelParameter {
   value?: TValue
 }
 
+export interface IModelTypedBoundaryCondition {
+  label: string
+  refineFactor?: number
+  children?: IModelBoundaryCondition[]
+  values?: IModelBoundaryConditionValue[]
+}
+
 export interface IModelBoundaryConditionValue {
   uuid: string
   name: string
@@ -149,16 +156,7 @@ export interface IModel {
       index: number
       title: string
       done?: boolean
-      [key: string]:
-        | boolean
-        | number
-        | string
-        | {
-            label: string
-            refineFactor?: number
-            children?: IModelBoundaryCondition[]
-            values?: IModelBoundaryConditionValue[]
-          }
+      [type: string]: boolean | number | string | IModelTypedBoundaryCondition
     }
     run?: {
       index: number

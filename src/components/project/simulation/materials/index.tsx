@@ -130,10 +130,10 @@ const Materials = ({
 Materials.propTypes = {
   geometry: PropTypes.exact({
     id: PropTypes.string.isRequired,
-    summary: PropTypes.shape({
+    summary: PropTypes.exact({
       uuid: PropTypes.string.isRequired,
       solids: PropTypes.array.isRequired
-    })
+    }).isRequired
   }).isRequired,
   simulation: PropTypes.exact({
     id: PropTypes.string.isRequired,

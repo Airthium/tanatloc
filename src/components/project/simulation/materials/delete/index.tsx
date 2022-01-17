@@ -15,7 +15,7 @@ export interface IProps {
   index: number
   simulation: ISimulation
   swr: {
-    mutateOneSimulation: Function
+    mutateOneSimulation: (simulation: ISimulation) => void
   }
 }
 
@@ -81,6 +81,9 @@ const Delete = ({ index, simulation, swr }: IProps): JSX.Element => {
         }
       ])
 
+      // Stop loading
+      setLoading(false)
+
       // Local
       swr.mutateOneSimulation(newSimulation)
     } catch (err) {
@@ -93,11 +96,7 @@ const Delete = ({ index, simulation, swr }: IProps): JSX.Element => {
   /**
    * Render
    */
-  return (
-    <DeleteButton loading={loading} onDelete={onDelete}>
-      Delete
-    </DeleteButton>
-  )
+  return <DeleteButton loading={loading} onDelete={onDelete} />
 }
 
 Delete.propTypes = {

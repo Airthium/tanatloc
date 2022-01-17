@@ -22,7 +22,7 @@ export interface IProps {
   }
   material?: IModelMaterialValue
   swr: {
-    mutateOneSimulation: Function
+    mutateOneSimulation: (simulation: ISimulation) => void
   }
   onClose: () => void
 }
@@ -41,6 +41,10 @@ const Material = ({
   onClose
 }: IProps): JSX.Element => {
   // State
+  const [alreadySelected, setAlreadySelected]: [
+    { label: string; selected: { uuid: string }[] }[],
+    Function
+  ] = useState()
   const [current, setCurrent]: [IModelMaterialValue, Function] = useState()
   const [error, setError]: [string, Function] = useState()
 
@@ -51,6 +55,21 @@ const Material = ({
   useEffect(() => {
     if (material) setCurrent(material)
   }, [material])
+
+  // Already selected
+  useEffect(() => {
+    const currentAlreadySelected = materials.values
+      ?.map((m) => {
+        if (m.uuid === material?.uuid) return
+        console.log(m)
+        return {
+          label: m.material.label,
+          selected: m.selected
+        }
+      })
+      .filter((s) => s)
+    setAlreadySelected(currentAlreadySelected)
+  }, [simulation, material])
 
   /**
    * On material select
@@ -162,6 +181,7 @@ const Material = ({
           geometry={{
             solids: geometry.solids
           }}
+          alreadySelected={alreadySelected}
           updateSelected={onSelected}
         />
 

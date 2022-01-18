@@ -202,6 +202,7 @@ const PartLoader = (mouseMoveEvent, mouseDownEvent) => {
     selectionRenderer = renderer
     selectionCamera = camera
     selectionOutlinePass = outlinePass
+    selectionOutlinePass.selectedObjects = []
     highlighted = null
     selected.length = 0
 
@@ -305,6 +306,55 @@ const PartLoader = (mouseMoveEvent, mouseDownEvent) => {
   }
 
   /**
+   * Add outline pass
+   * @param {Object} mesh Mesh
+   * @param {boolean} selection Selection
+   */
+  const addOutlineOn = (mesh, selection) => {
+    if (selection) {
+      selected.push(mesh.uuid)
+      selectionOutlinePass.selectedObjects.push(mesh)
+    } else {
+      const selectedMesh = selected.find((uuid) => uuid === mesh.uuid)
+      if (!selectedMesh) selectionOutlinePass.selectedObjects.push(mesh)
+    }
+  }
+
+  /**
+   * Remove outline pass
+   * @param {Object} mesh Mesh
+   * @param {boolean} selection Selection
+   */
+  const removeOutlineOn = (mesh, selection) => {
+    if (selection) {
+      const selectedIndex = selected.findIndex((uuid) => uuid === mesh.uuid)
+      selected = [
+        ...selected.slice(0, selectedIndex),
+        ...selected.slice(selectedIndex + 1)
+      ]
+
+      const index = selectionOutlinePass.selectedObjects.findIndex(
+        (s) => s.uuid === mesh.uuid
+      )
+      selectionOutlinePass.selectedObjects = [
+        ...selectionOutlinePass.selectedObjects.slice(0, index),
+        ...selectionOutlinePass.selectedObjects.slice(index + 1)
+      ]
+    } else {
+      const selectedMesh = selected.find((uuid) => uuid === mesh.uuid)
+      if (!selectedMesh) {
+        const index = selectionOutlinePass.selectedObjects.findIndex(
+          (s) => s.uuid === mesh.uuid
+        )
+        selectionOutlinePass.selectedObjects = [
+          ...selectionOutlinePass.selectedObjects.slice(0, index),
+          ...selectionOutlinePass.selectedObjects.slice(index + 1)
+        ]
+      }
+    }
+  }
+
+  /**
    * Highlight
    * @param {Object} uuid Mesh uuid
    */
@@ -315,7 +365,7 @@ const PartLoader = (mouseMoveEvent, mouseDownEvent) => {
     const mesh = findObject(selectionPart, uuid)
     if (mesh && mesh.material) {
       highlighted = mesh.userData.uuid
-      selectionOutlinePass.selectedObjects = [mesh]
+      addOutlineOn(mesh)
       mesh.material.color = highlightColor
     }
   }
@@ -327,7 +377,7 @@ const PartLoader = (mouseMoveEvent, mouseDownEvent) => {
     const mesh = findObject(selectionPart, highlighted)
 
     if (mesh && mesh.material) {
-      selectionOutlinePass.selectedObjects = []
+      removeOutlineOn(mesh)
       // Check selection
       const index = selected.findIndex((m) => m === mesh.userData.uuid)
       // Unhighlight
@@ -353,6 +403,7 @@ const PartLoader = (mouseMoveEvent, mouseDownEvent) => {
     const mesh = findObject(selectionPart, uuid)
     if (mesh && mesh.material) {
       selected.push(uuid)
+      addOutlineOn(mesh, true)
       mesh.material.color = selectColor
     }
   }
@@ -365,6 +416,7 @@ const PartLoader = (mouseMoveEvent, mouseDownEvent) => {
     const mesh = findObject(selectionPart, uuid)
 
     if (mesh && mesh.material) {
+      removeOutlineOn(mesh, true)
       mesh.material.color = mesh.material.originalColor
     }
 

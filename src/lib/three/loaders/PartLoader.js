@@ -312,11 +312,13 @@ const PartLoader = (mouseMoveEvent, mouseDownEvent) => {
    */
   const addOutlineOn = (mesh, selection) => {
     if (selection) {
-      selected.push(mesh.uuid)
-      selectionOutlinePass.selectedObjects.push(mesh)
+      const alreadyOutlined = selectionOutlinePass.selectedObjects.find(
+        (s) => s.uuid === mesh.uuid
+      )
+      if (!alreadyOutlined) selectionOutlinePass.selectedObjects.push(mesh)
     } else {
-      const selectedMesh = selected.find((uuid) => uuid === mesh.uuid)
-      if (!selectedMesh) selectionOutlinePass.selectedObjects.push(mesh)
+      const alreadySelected = selected.find((uuid) => uuid === mesh.uuid)
+      if (!alreadySelected) selectionOutlinePass.selectedObjects.push(mesh)
     }
   }
 
@@ -327,28 +329,22 @@ const PartLoader = (mouseMoveEvent, mouseDownEvent) => {
    */
   const removeOutlineOn = (mesh, selection) => {
     if (selection) {
-      const selectedIndex = selected.findIndex((uuid) => uuid === mesh.uuid)
-      selected = [
-        ...selected.slice(0, selectedIndex),
-        ...selected.slice(selectedIndex + 1)
-      ]
-
-      const index = selectionOutlinePass.selectedObjects.findIndex(
+      const outlinedIndex = selectionOutlinePass.selectedObjects.findIndex(
         (s) => s.uuid === mesh.uuid
       )
       selectionOutlinePass.selectedObjects = [
-        ...selectionOutlinePass.selectedObjects.slice(0, index),
-        ...selectionOutlinePass.selectedObjects.slice(index + 1)
+        ...selectionOutlinePass.selectedObjects.slice(0, outlinedIndex),
+        ...selectionOutlinePass.selectedObjects.slice(outlinedIndex + 1)
       ]
     } else {
       const selectedMesh = selected.find((uuid) => uuid === mesh.uuid)
       if (!selectedMesh) {
-        const index = selectionOutlinePass.selectedObjects.findIndex(
+        const outlinedIndex = selectionOutlinePass.selectedObjects.findIndex(
           (s) => s.uuid === mesh.uuid
         )
         selectionOutlinePass.selectedObjects = [
-          ...selectionOutlinePass.selectedObjects.slice(0, index),
-          ...selectionOutlinePass.selectedObjects.slice(index + 1)
+          ...selectionOutlinePass.selectedObjects.slice(0, outlinedIndex),
+          ...selectionOutlinePass.selectedObjects.slice(outlinedIndex + 1)
         ]
       }
     }
@@ -415,14 +411,14 @@ const PartLoader = (mouseMoveEvent, mouseDownEvent) => {
   const unselect = (uuid) => {
     const mesh = findObject(selectionPart, uuid)
 
+    const index = selected.findIndex((s) => s === uuid)
+    if (index !== -1)
+      selected = [...selected.slice(0, index), ...selected.slice(index + 1)]
+
     if (mesh && mesh.material) {
       removeOutlineOn(mesh, true)
       mesh.material.color = mesh.material.originalColor
     }
-
-    const index = selected.findIndex((s) => s === uuid)
-    if (index !== -1)
-      selected = [...selected.slice(0, index), ...selected.slice(index + 1)]
   }
 
   return { load }

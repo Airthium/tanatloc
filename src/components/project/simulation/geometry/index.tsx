@@ -1,15 +1,16 @@
 import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
-import { Card, Collapse, Select, Space, Typography } from 'antd'
+import { Collapse, Space, Typography } from 'antd'
 import { SelectOutlined } from '@ant-design/icons'
 import { MathJax } from 'better-react-mathjax'
 
 import { IGeometry, ISimulation } from '@/database/index.d'
 
 import { Error as ErrorNotification } from '@/components/assets/notification'
-import Formula from '@/components/assets/formula'
 
 import SimulationAPI from '@/api/simulation'
+
+import Mesh from './mesh'
 
 export interface IProps {
   geometries: IGeometry[]
@@ -17,7 +18,7 @@ export interface IProps {
   simulation: ISimulation
   setGeometry: Function
   swr: {
-    mutateOneSimulation: Function
+    mutateOneSimulation: (simulation: ISimulation) => void
   }
 }
 
@@ -45,10 +46,6 @@ const Geometry = ({
   const [geometriesList, setGeometryList]: [IGeometry[], Function] = useState(
     []
   )
-  const [meshGlobal, setMeshGlobal]: [
-    { type: string; value: string },
-    Function
-  ] = useState({ type: 'auto', value: 'normal' })
 
   useEffect(() => {
     const simulationGeometryId = simulation.scheme.configuration.geometry.value
@@ -120,7 +117,6 @@ const Geometry = ({
 
       // Update
       newSimulation.scheme.configuration.geometry.value = id
-      newSimulation.scheme.configuration.geometry.meshParameters = meshGlobal
 
       const diff = {
         ...newSimulation.scheme.configuration.geometry,
@@ -156,57 +152,10 @@ const Geometry = ({
     <>
       {geometriesList}
       {simulation.scheme.configuration.geometry.meshable && (
-        <Card size="small" title="Mesh refinement">
-          <Space direction="vertical">
-            <Typography.Text>
-              Type:
-              <br />
-              <Select
-                value={meshGlobal.type}
-                onChange={(type) =>
-                  setMeshGlobal({
-                    type,
-                    value: type === 'auto' ? 'normal' : '1'
-                  })
-                }
-              >
-                <Select.Option value="auto">Automatic</Select.Option>
-                <Select.Option value="manual">Manual</Select.Option>
-              </Select>
-            </Typography.Text>
-            {meshGlobal.type === 'auto' && (
-              <Typography.Text>
-                Size:
-                <br />
-                <Select
-                  defaultValue="normal"
-                  onChange={(value) =>
-                    setMeshGlobal({ type: meshGlobal.type, value })
-                  }
-                >
-                  <Select.Option value="verycoarse">Very coarse</Select.Option>
-                  <Select.Option value="coarse">Coarse</Select.Option>
-                  <Select.Option value="normal">Normal</Select.Option>
-                  <Select.Option value="fine">Fine</Select.Option>
-                  <Select.Option value="veryfine">Very fine</Select.Option>
-                </Select>
-              </Typography.Text>
-            )}
-            {meshGlobal.type === 'manual' && (
-              <Typography.Text>
-                Size:
-                <br />
-                <Formula
-                  defaultValue={meshGlobal.value}
-                  onValueChange={(value) =>
-                    setMeshGlobal({ type: meshGlobal.type, value })
-                  }
-                  unit="$m$"
-                />
-              </Typography.Text>
-            )}
-          </Space>
-        </Card>
+        <Mesh
+          simulation={{ id: simulation.id, scheme: simulation.scheme }}
+          swr={{ mutateOneSimulation: swr.mutateOneSimulation }}
+        />
       )}
     </>
   ) : (

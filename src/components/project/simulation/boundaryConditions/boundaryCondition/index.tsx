@@ -108,8 +108,7 @@ const BoundaryCondition = ({
         return {
           key: type,
           label: typedBoundaryCondition.label,
-          children: typedBoundaryCondition.children,
-          values: typedBoundaryCondition.values
+          children: typedBoundaryCondition.children
         }
       })
       .filter((t) => t)
@@ -367,8 +366,7 @@ BoundaryCondition.propTypes = {
     type: PropTypes.exact({
       key: PropTypes.string.isRequired,
       label: PropTypes.string.isRequired,
-      children: PropTypes.array,
-      values: PropTypes.array
+      children: PropTypes.array
     }).isRequired,
     selected: PropTypes.array.isRequired,
     values: PropTypes.array

@@ -163,8 +163,7 @@ Add.propTypes = {
     type: PropTypes.exact({
       key: PropTypes.string.isRequired,
       label: PropTypes.string.isRequired,
-      children: PropTypes.array,
-      values: PropTypes.array
+      children: PropTypes.array
     }),
     selected: PropTypes.array,
     values: PropTypes.array

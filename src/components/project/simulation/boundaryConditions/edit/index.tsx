@@ -190,7 +190,8 @@ Edit.propTypes = {
     type: PropTypes.exact({
       key: PropTypes.string.isRequired,
       label: PropTypes.string.isRequired,
-      children: PropTypes.array
+      children: PropTypes.array,
+      values: PropTypes.array
     }),
     selected: PropTypes.array,
     values: PropTypes.array
@@ -201,10 +202,11 @@ Edit.propTypes = {
     type: PropTypes.exact({
       key: PropTypes.string.isRequired,
       label: PropTypes.string.isRequired,
-      children: PropTypes.array
+      children: PropTypes.array,
+      values: PropTypes.array
     }),
     selected: PropTypes.array,
-    values: PropTypes.array
+    values: PropTypes.array,
   }).isRequired,
   simulation: PropTypes.shape({
     id: PropTypes.string.isRequired,

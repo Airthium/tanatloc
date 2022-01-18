@@ -367,7 +367,8 @@ BoundaryCondition.propTypes = {
     type: PropTypes.exact({
       key: PropTypes.string.isRequired,
       label: PropTypes.string.isRequired,
-      children: PropTypes.array
+      children: PropTypes.array,
+      values: PropTypes.array
     }).isRequired,
     selected: PropTypes.array.isRequired,
     values: PropTypes.array

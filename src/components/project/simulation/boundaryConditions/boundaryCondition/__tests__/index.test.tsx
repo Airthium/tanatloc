@@ -189,6 +189,10 @@ describe('components/project/simulation/boundaryConditions/boundaryCondition', (
     const selector = screen.getByRole('Selector')
     fireEvent.click(selector)
 
+    // Add
+    const add = screen.getByRole('Add')
+    fireEvent.click(add)
+
     unmount()
   })
 
@@ -214,6 +218,10 @@ describe('components/project/simulation/boundaryConditions/boundaryCondition', (
         onClose={onClose}
       />
     )
+
+    // Edit
+    const edit = screen.getByRole('Edit')
+    fireEvent.click(edit)
 
     unmount()
   })

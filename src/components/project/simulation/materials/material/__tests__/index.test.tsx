@@ -199,4 +199,57 @@ describe('components/project/simulation/materials/material', () => {
 
     unmount()
   })
+
+  test('with values', () => {
+    const { unmount } = render(
+      <Material
+        visible={true}
+        simulation={
+          {
+            id: 'id',
+            scheme: {
+              configuration: {
+                materials: {
+                  index: 1,
+                  title: 'Material',
+                  children: [
+                    {
+                      label: 'Test',
+                      name: 'Test',
+                      htmlEntity: 'entity',
+                      unit: 'unit',
+                      default: 0
+                    }
+                  ],
+                  values: [
+                    {
+                      uuid: 'uuid'
+                    },
+                    {
+                      uuid: 'uuid2',
+                      material: {
+                        label: 'Label'
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          } as ISimulation
+        }
+        geometry={geometry}
+        material={
+          {
+            uuid: 'uuid',
+            material: {},
+            selected: [{ uuid: 'uuid', label: 1 }]
+          } as IModelMaterialValue
+        }
+        swr={swr}
+        onClose={onClose}
+      />
+    )
+
+    unmount()
+  })
 })

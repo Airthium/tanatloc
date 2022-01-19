@@ -1,7 +1,7 @@
 /** @module Components.Project.Geometry */
 
 import PropTypes from 'prop-types'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { Card, Layout, Space, Typography } from 'antd'
 
 import { IGeometry } from '@/database/index.d'
@@ -14,8 +14,7 @@ import {
   EditButton
 } from '@/components/assets/button'
 import { Error as ErrorNotification } from '@/components/assets/notification'
-
-import { mathjaxRefresh } from '@/lib/mathjax'
+import MathJax from '@/components/assets/mathjax'
 
 import GeometryAPI from '@/api/geometry'
 
@@ -53,11 +52,6 @@ const Geometry = ({ project, geometry, swr, close }: IProps): JSX.Element => {
   const [downloading, setDownloading]: [boolean, Function] = useState(false)
   const [editVisible, setEditVisible]: [boolean, Function] = useState(false)
   const [deleting, setDeleting]: [boolean, Function] = useState(false)
-
-  // MathJax
-  useEffect(() => {
-    mathjaxRefresh()
-  }, [geometry])
 
   /**
    * On download
@@ -175,7 +169,8 @@ const Geometry = ({ project, geometry, swr, close }: IProps): JSX.Element => {
                 <span className="text-light">File:</span> {geometry.name}{' '}
               </Typography.Text>
               <Typography.Text>
-                <span className="text-light">Unit:</span> \(m\)
+                <span className="text-light">Unit:</span>{' '}
+                <MathJax.Inline text={'m'} />
               </Typography.Text>
               {geometry.summary ? (
                 <>

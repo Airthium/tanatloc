@@ -30,8 +30,8 @@ jobs:
           release_name: v${{ steps.package_version.outputs.version }}
           body: |
             Tanatloc release
-            - [Docker build](https://github.com/Airthium/tanatloc-electron/releases/tag/${{ steps.package_version.outputs.version }})
-            - [Electron build](https://github.com/Airthium/tanatloc-docker/releases/tag/${{ steps.package_version.outputs.version }})
+            - [Docker build](https://github.com/Airthium/tanatloc-docker/releases/tag/v${{ steps.package_version.outputs.version }})
+            - [Electron build](https://github.com/Airthium/tanatloc-electron/releases/tag/v${{ steps.package_version.outputs.version }})
           draft: false
           prerelease: false
 

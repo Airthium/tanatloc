@@ -3,6 +3,10 @@ import { render } from '@testing-library/react'
 
 import App from '@/pages/_app'
 
+jest.mock('@/components/assets/mathjax', () => ({
+  Head: () => <></>
+}))
+
 jest.mock('@/store/store', () => ({
   useStore: jest.fn()
 }))

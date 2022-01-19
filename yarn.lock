@@ -5154,7 +5154,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"html-react-parser@npm:^1.4.5":
+"html-react-parser@npm:1.4.5":
   version: 1.4.5
   resolution: "html-react-parser@npm:1.4.5"
   dependencies:
@@ -9808,7 +9808,7 @@ __metadata:
     eslint-config-next: 12.0.8
     express: 4.17.2
     form-data: 4.0.0
-    html-react-parser: ^1.4.5
+    html-react-parser: 1.4.5
     ignore-loader: 0.1.2
     is-docker: 3.0.0
     is-electron: 2.2.1

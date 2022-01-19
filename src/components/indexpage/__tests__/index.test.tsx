@@ -3,6 +3,12 @@ import { render, screen, fireEvent } from '@testing-library/react'
 
 import Index from '..'
 
+jest.mock('@/components/assets/mathjax', () => ({
+  Inline: () => <div />,
+  Formula: () => <div />,
+  Html: () => <div />
+}))
+
 const mockPrefetch = jest.fn()
 const mockPush = jest.fn()
 jest.mock('next/router', () => ({

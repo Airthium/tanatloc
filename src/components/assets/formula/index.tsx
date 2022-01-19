@@ -1,11 +1,11 @@
 /** @module Components.Assets.Formula */
 
-import { ChangeEvent, useState, useEffect } from 'react'
+import { ChangeEvent, useState } from 'react'
 import { Checkbox, Input, Space } from 'antd'
 import { CheckboxChangeEvent } from 'antd/lib/checkbox'
 import { CheckCircleOutlined, LoadingOutlined } from '@ant-design/icons'
 
-import { mathjaxRefresh } from '@/lib/mathjax'
+import MathJax from '@/components/assets/mathjax'
 
 export interface IProps {
   defaultValue?: string
@@ -44,11 +44,6 @@ const Formula = ({
   )
   const [autoSave, setAutoSave]: [number, Function] = useState(0)
   const [saving, setSaving]: [boolean, Function] = useState(false)
-
-  // MathJax
-  useEffect(() => {
-    mathjaxRefresh()
-  }, [unit])
 
   /**
    * On check change
@@ -103,7 +98,7 @@ const Formula = ({
         onChange={onInputChange}
         addonAfter={
           <Space>
-            {unit}
+            <MathJax.Inline text={unit} />
             {saving ? (
               <LoadingOutlined spin style={{ color: 'orange' }} />
             ) : (

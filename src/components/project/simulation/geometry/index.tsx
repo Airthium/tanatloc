@@ -6,8 +6,7 @@ import { SelectOutlined } from '@ant-design/icons'
 import { IGeometry, ISimulation } from '@/database/index.d'
 
 import { Error as ErrorNotification } from '@/components/assets/notification'
-
-import { mathjaxRefresh } from '@/lib/mathjax'
+import MathJax from '@/components/assets/mathjax'
 
 import SimulationAPI from '@/api/simulation'
 
@@ -48,11 +47,6 @@ const Geometry = ({
     []
   )
 
-  // MathJax
-  useEffect(() => {
-    mathjaxRefresh()
-  }, [geometries])
-
   useEffect(() => {
     const simulationGeometryId = simulation.scheme.configuration.geometry.value
     if (!simulationGeometryId) onSelect(geometry?.id)
@@ -80,7 +74,9 @@ const Geometry = ({
           <Space direction="vertical">
             <Typography.Title level={5}>Informations</Typography.Title>
             <Typography.Text>File: {g.name} </Typography.Text>
-            <Typography.Text>Unit: \(m\)</Typography.Text>
+            <Typography.Text>
+              Unit: <MathJax.Inline text={'m'} />
+            </Typography.Text>
             {g.summary ? (
               <>
                 {g.summary.solids && (

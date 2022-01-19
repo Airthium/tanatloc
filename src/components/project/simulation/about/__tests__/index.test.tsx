@@ -4,8 +4,10 @@ import { render } from '@testing-library/react'
 
 import About from '@/components/project/simulation/about'
 
-jest.mock('@/lib/mathjax', () => ({
-  mathjaxRefresh: jest.fn
+jest.mock('@/components/assets/mathjax', () => ({
+  Inline: () => <div />,
+  Formula: () => <div />,
+  Html: () => <div />
 }))
 
 jest.mock('../../copy', () => () => <div />)

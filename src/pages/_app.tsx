@@ -5,7 +5,8 @@ import { persistStore } from 'redux-persist'
 import { PersistGate } from 'redux-persist/integration/react'
 
 import { useStore } from '@/store/store'
-import React from 'react'
+
+import MathJax from '@/components/assets/mathjax'
 
 require('@/styles/global.less')
 
@@ -31,11 +32,8 @@ const App = ({ Component, pageProps }: AppProps): JSX.Element => {
             name="viewport"
             content="width=device-width, initial-scale=1.0"
           ></meta>
-          <script
-            async
-            src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
-          ></script>
         </Head>
+        <MathJax.Head />
         <Component {...pageProps} />
       </PersistGate>
     </Provider>

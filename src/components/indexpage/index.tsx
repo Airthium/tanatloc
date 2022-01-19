@@ -14,6 +14,7 @@ import packageJson from '../../../package.json'
 import Background from '@/components/background'
 
 import { Error as ErrorNotification } from '@/components/assets/notification'
+import MathJax from '@/components/assets/mathjax'
 
 import UserAPI from '@/api/user'
 
@@ -184,7 +185,9 @@ const Index = (): JSX.Element => {
             <Card
               className="Index-card"
               hoverable
-              cover="$$\int_{\Omega}\nabla u\nabla v$$"
+              cover={
+                <MathJax.Formula text={'\\int_{\\Omega}\\nabla u\\nabla v'} />
+              }
             >
               <Card.Meta
                 title={
@@ -202,7 +205,9 @@ const Index = (): JSX.Element => {
             <Card
               className="Index-card coming-soon"
               hoverable
-              cover="$$\int_{\Omega}\nabla u\nabla v$$"
+              cover={
+                <MathJax.Formula text={'\\int_{\\Omega}\\nabla u\\nabla v'} />
+              }
             >
               <Card.Meta
                 title={<Typography.Text>Custom model editor!</Typography.Text>}

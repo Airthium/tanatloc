@@ -1,30 +1,43 @@
-import { mathjaxRefresh } from '..'
+import { mathjaxInit, mathjaxRefresh } from '..'
 
 describe('lib/mathjax', () => {
+  test('mathjaxInit', () => {
+    // Normal
+    window.MathJax = undefined
+    mathjaxInit()
+
+    // Already exists
+    window.MathJax = undefined
+    mathjaxInit()
+
+    // Already loaded
+    window.MathJax = {
+      typesetPromise: async () => {
+        // Ok
+      }
+    }
+    mathjaxInit()
+  })
+
   test('mathjaxRefresh', () => {
     // No mathjax
+    window.MathJax = undefined
     mathjaxRefresh()
 
     // typesetPromise failed
-    Object.defineProperty(window, 'MathJax', {
-      value: {
-        typesetPromise: async () => {
-          throw new Error('typesetPromise error')
-        }
-      },
-      configurable: true
-    })
+    window.MathJax = {
+      typesetPromise: async () => {
+        throw new Error('typesetPromise error')
+      }
+    }
     mathjaxRefresh()
 
     // Normal
-    Object.defineProperty(window, 'MathJax', {
-      value: {
-        typesetPromise: async () => {
-          // Ok
-        }
-      },
-      configurable: true
-    })
+    window.MathJax = {
+      typesetPromise: async () => {
+        // Ok
+      }
+    }
     mathjaxRefresh()
 
     // Max retry

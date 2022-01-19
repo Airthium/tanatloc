@@ -5,8 +5,10 @@ import { ISimulation } from '@/database/index.d'
 
 import Geometry from '..'
 
-jest.mock('@/lib/mathjax', () => ({
-  mathjaxRefresh: jest.fn
+jest.mock('@/components/assets/mathjax', () => ({
+  Inline: () => <div />,
+  Formula: () => <div />,
+  Html: () => <div />
 }))
 
 jest.mock('@/components/assets/dialog', () => ({

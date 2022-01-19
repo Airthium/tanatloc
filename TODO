@@ -6,3 +6,8 @@ Linearelasticitty -> sortie gamma1-6
 Linearelasticitty en cylindrique
 
 Replace deep-object-diff by ?lodash function?
+
+For electron:
+- use docker postgres
+- check docker at startup
+- Apple sign

@@ -41,6 +41,11 @@ describe('lib/mathjax', () => {
     mathjaxRefresh()
 
     // Max retry
+    window.MathJax = {
+      typesetPromise: async () => {
+        throw new Error('typesetPromise error')
+      }
+    }
     for (let i = 0; i < 1000; ++i) mathjaxRefresh()
   })
 })

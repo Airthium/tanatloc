@@ -15,11 +15,11 @@ const NavierStokesTime: IModel = {
     Navier-Stokes
   </h3>
   <p>
-    Let $\\Omega$ be a domain of $\\mathbb{R}^{d}$, with $d\\in\\{2,3\\}$.<br/>
+    Let \\(\\Omega\\) be a domain of \\(\\mathbb{R}^{d}\\), with \\(d\\in\\{2,3\\}\\).<br/>
 
-    The domain $\\Omega$ is bounded by $\\Gamma = \\Gamma_D \\cup \\Gamma_N$.<br/>
+    The domain \\(\\Omega\\) is bounded by \\(\\Gamma = \\Gamma_D \\cup \\Gamma_N\\).<br/>
 
-    $u$ is the velocity and $p$ the pressure.<br/>
+    \\(u\\) is the velocity and \\(p\\) the pressure.<br/>
 
     The Navier-Stokes equations reads as follow:
 
@@ -31,7 +31,7 @@ const NavierStokesTime: IModel = {
     \\end{align}
     $$
 
-    With $\\mu$ the viscosity and $\\rho$ the density.
+    With \\(\\mu\\) the viscosity and \\(\\rho\\) the density.
   </p>
   <figure>
     <img src="/images/Stokes.png" alt="Stokes" />
@@ -101,13 +101,13 @@ const NavierStokesTime: IModel = {
             label: 'Total time',
             htmlEntity: 'formula',
             default: 1,
-            unit: 's'
+            unit: '\\(s\\)'
           },
           {
             label: 'Time step',
             htmlEntity: 'formula',
             default: 1e-3,
-            unit: 's'
+            unit: '\\(s\\)'
           }
         ]
       },

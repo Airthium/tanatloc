@@ -15,11 +15,11 @@ const LinearElasticityTime: IModel = {
     Linear elasticity (time dependent)
   </h3>
   <p>
-  Let $\\Omega$ be a domain of $\\mathbb{R}^{d}$, with $d\\in\\{2,3\\}$.<br/>
+  Let \\(\\Omega\\) be a domain of \\(\\mathbb{R}^{d}\\), with \\(d\\in\\{2,3\\}\\).<br/>
 
-  The domain $\\Omega$ is bounded by $\\Gamma = \\Gamma_D \\cup \\Gamma_N$.<br/>
+  The domain \\(\\Omega\\) is bounded by \\(\\Gamma = \\Gamma_D \\cup \\Gamma_N\\).<br/>
 
-  $u$ is the displacement.<br/>
+    \\(u\\) is the displacement.<br/>
 
   The linear elasticity equation reads as follow:
 
@@ -31,9 +31,9 @@ const LinearElasticityTime: IModel = {
   \\end{align}
   $$
 
-  With $\\sigma_{ij}(u) = \\lambda\\delta_{ij}\\nabla\\cdot u + 2\\mu\\epsilon_{ij}(u)$.<br>
+  With \\(\\sigma_{ij}(u) = \\lambda\\delta_{ij}\\nabla\\cdot u + 2\\mu\\epsilon_{ij}(u)\\).<br>
 
-  $\\lambda$ and $\\mu$ are the Lamé coefficients.
+  \\(\\lambda\\) and \\(\\mu\\) are the Lamé coefficients.
   </p>
   <figure>
     <img src="/images/LinearElasticity.png" alt="Linear Elasticity" />
@@ -58,21 +58,21 @@ const LinearElasticityTime: IModel = {
           name: 'Rho',
           htmlEntity: 'formula',
           default: 8050,
-          unit: '$kg.m^{-3}'
+          unit: '\\(kg.m^{-3}\\)'
         },
         {
           label: "Young's modulus",
           name: 'E',
           htmlEntity: 'formula',
           default: 1e9,
-          unit: '$Pa$'
+          unit: '\\(Pa\\)'
         },
         {
           label: "Poisson's ratio",
           name: 'Nu',
           htmlEntity: 'formula',
           default: 0.4,
-          unit: '$1$'
+          unit: '\\(1\\)'
         }
       ]
     },
@@ -86,7 +86,7 @@ const LinearElasticityTime: IModel = {
             label: 'External force (x)',
             htmlEntity: 'formula',
             default: 0,
-            unit: '$N.m^{-3}$'
+            unit: '\\(N.m^{-3}\\)'
           },
           {
             label: 'External force (y)',
@@ -109,13 +109,13 @@ const LinearElasticityTime: IModel = {
             label: 'Total time',
             htmlEntity: 'formula',
             default: 1,
-            unit: '$s$'
+            unit: '\\(s\\)'
           },
           {
             label: 'Time step',
             htmlEntity: 'formula',
             default: 0.1,
-            unit: '$s$'
+            unit: '\\(s\\)'
           }
         ]
       },

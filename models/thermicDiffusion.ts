@@ -15,11 +15,11 @@ const ThermicDiffusion: IModel = {
     Thremal diffusion
   </h3>
   <p>
-    Let $\\Omega$ be a domain of $\\mathbb{R}^{d}$, with $d\\in\\{2,3\\}$.<br/>
+    Let \\(\\Omega\\) be a domain of \\(\\mathbb{R}^{d}\\), with \\(d\\in\\{2,3\\}\\).<br/>
 
-    The domain $\\Omega$ is bounded by $\\Gamma = \\Gamma_D \\cup \\Gamma_N$.<br/>
+    The domain \\(\\Omega\\) is bounded by \\(\\Gamma = \\Gamma_D \\cup \\Gamma_N\\).<br/>
 
-    $T$ is the temperature.<br/>
+      \\(T\\) is the temperature.<br/>
 
     The heat equation reads as follow:
 
@@ -31,7 +31,7 @@ const ThermicDiffusion: IModel = {
     \\end{align}
     $$
 
-    With $\\rho$ the density, $C_p$ the heat capacity and $\\lambda$ the thermal conductivity.
+    With \\(\\rho\\) the density, \\(C_p\\) the heat capacity and \\(\\lambda\\) the thermal conductivity.
   </p>
 
   <figure>
@@ -59,21 +59,21 @@ const ThermicDiffusion: IModel = {
           name: 'Rho',
           htmlEntity: 'formula',
           default: 7960,
-          unit: '$kg.m^{-3}$'
+          unit: '\\(kg.m^{-3}\\)'
         },
         {
           label: 'Thermal conductivity',
           name: 'Lambda',
           htmlEntity: 'formula',
           default: 15,
-          unit: '$W.m^{-1}.K^{-1}$'
+          unit: '\\(W.m^{-1}.K^{-1}\\)'
         },
         {
           label: 'Heat capacity',
           name: 'Cp',
           htmlEntity: 'formula',
           default: 502,
-          unit: '$J.K^{-1}.kg^{-1}$'
+          unit: '\\(J.K^{-1}.kg^{-1}\\)'
         }
       ]
     },
@@ -87,13 +87,13 @@ const ThermicDiffusion: IModel = {
             label: 'Total time',
             htmlEntity: 'formula',
             default: 1,
-            unit: '$s$'
+            unit: '\\(s\\)'
           },
           {
             label: 'Time step',
             htmlEntity: 'formula',
             default: 0.1,
-            unit: '$s$'
+            unit: '\\(s\\)'
           }
         ]
       },

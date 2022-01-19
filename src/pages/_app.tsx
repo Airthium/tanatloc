@@ -4,8 +4,6 @@ import { Provider } from 'react-redux'
 import { persistStore } from 'redux-persist'
 import { PersistGate } from 'redux-persist/integration/react'
 
-import { MathJaxContext } from 'better-react-mathjax'
-
 import { useStore } from '@/store/store'
 import React from 'react'
 
@@ -33,24 +31,12 @@ const App = ({ Component, pageProps }: AppProps): JSX.Element => {
             name="viewport"
             content="width=device-width, initial-scale=1.0"
           ></meta>
+          <script
+            async
+            src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+          ></script>
         </Head>
-        <MathJaxContext
-          version={3}
-          config={{
-            tex: {
-              inlineMath: [
-                ['$', '$'],
-                ['\\(', '\\)']
-              ],
-              displayMath: [
-                ['$$', '$$'],
-                ['\\[', '\\]']
-              ]
-            }
-          }}
-        >
-          <Component {...pageProps} />
-        </MathJaxContext>
+        <Component {...pageProps} />
       </PersistGate>
     </Provider>
   )

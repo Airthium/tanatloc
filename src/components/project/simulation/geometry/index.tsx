@@ -2,11 +2,12 @@ import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
 import { Collapse, Space, Typography } from 'antd'
 import { SelectOutlined } from '@ant-design/icons'
-import { MathJax } from 'better-react-mathjax'
 
 import { IGeometry, ISimulation } from '@/database/index.d'
 
 import { Error as ErrorNotification } from '@/components/assets/notification'
+
+import { mathjaxRefresh } from '@/lib/mathjax'
 
 import SimulationAPI from '@/api/simulation'
 
@@ -47,6 +48,11 @@ const Geometry = ({
     []
   )
 
+  // MathJax
+  useEffect(() => {
+    mathjaxRefresh()
+  }, [geometries])
+
   useEffect(() => {
     const simulationGeometryId = simulation.scheme.configuration.geometry.value
     if (!simulationGeometryId) onSelect(geometry?.id)
@@ -56,6 +62,7 @@ const Geometry = ({
     const list = geometries.map((g) => (
       <Collapse key={g.id} expandIconPosition="right">
         <Collapse.Panel
+          forceRender
           key={g.id}
           header={g.name}
           extra={
@@ -73,12 +80,7 @@ const Geometry = ({
           <Space direction="vertical">
             <Typography.Title level={5}>Informations</Typography.Title>
             <Typography.Text>File: {g.name} </Typography.Text>
-            <Typography.Text>
-              Unit:{' '}
-              <MathJax inline dynamic>
-                $m$
-              </MathJax>
-            </Typography.Text>
+            <Typography.Text>Unit: \(m\)</Typography.Text>
             {g.summary ? (
               <>
                 {g.summary.solids && (

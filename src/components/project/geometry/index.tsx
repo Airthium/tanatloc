@@ -1,9 +1,8 @@
 /** @module Components.Project.Geometry */
 
 import PropTypes from 'prop-types'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Card, Layout, Space, Typography } from 'antd'
-import { MathJax } from 'better-react-mathjax'
 
 import { IGeometry } from '@/database/index.d'
 import { IProjectWithData } from '@/lib/index.d'
@@ -16,10 +15,12 @@ import {
 } from '@/components/assets/button'
 import { Error as ErrorNotification } from '@/components/assets/notification'
 
-import Add from './add'
-import Edit from './edit'
+import { mathjaxRefresh } from '@/lib/mathjax'
 
 import GeometryAPI from '@/api/geometry'
+
+import Add from './add'
+import Edit from './edit'
 
 export interface IProps {
   project: IProjectWithData
@@ -52,6 +53,11 @@ const Geometry = ({ project, geometry, swr, close }: IProps): JSX.Element => {
   const [downloading, setDownloading]: [boolean, Function] = useState(false)
   const [editVisible, setEditVisible]: [boolean, Function] = useState(false)
   const [deleting, setDeleting]: [boolean, Function] = useState(false)
+
+  // MathJax
+  useEffect(() => {
+    mathjaxRefresh()
+  }, [geometry])
 
   /**
    * On download
@@ -169,10 +175,7 @@ const Geometry = ({ project, geometry, swr, close }: IProps): JSX.Element => {
                 <span className="text-light">File:</span> {geometry.name}{' '}
               </Typography.Text>
               <Typography.Text>
-                <span className="text-light">Unit:</span>{' '}
-                <MathJax inline dynamic>
-                  $m$
-                </MathJax>
+                <span className="text-light">Unit:</span> \(m\)
               </Typography.Text>
               {geometry.summary ? (
                 <>

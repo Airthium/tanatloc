@@ -15,11 +15,11 @@ const Stokes: IModel = {
     Stokes
   </h3>
   <p>
-    Let $\\Omega$ be a domain of $\\mathbb{R}^{d}$, with $d\\in\\{2,3\\}$.<br/>
+    Let \\(\\Omega\\) be a domain of \\(\\mathbb{R}^{d}\\), with \\(d\\in\\{2,3\\}\\).<br/>
 
-    The domain $\\Omega$ is bounded by $\\Gamma = \\Gamma_D \\cup \\Gamma_N$.<br/>
+    The domain \\(\\Omega\\) is bounded by \\(\\Gamma = \\Gamma_D \\cup \\Gamma_N\\).<br/>
 
-    $u$ is the velocity and $p$ the pressure.<br/>
+    \\(u\\) is the velocity and \\(p\\) the pressure.<br/>
 
     The Stokes equations reads as follow:
 
@@ -31,7 +31,7 @@ const Stokes: IModel = {
     \\end{align}
     $$
 
-    With $\\mu$ the viscosity.
+    With \\(\\mu\\) the viscosity.
   </p>
   <figure>
     <img src="/images/Stokes.png" alt="Stokes" />

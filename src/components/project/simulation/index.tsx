@@ -6,7 +6,7 @@ import { Layout, Menu, Modal, Select, Space, Typography } from 'antd'
 import { WarningOutlined } from '@ant-design/icons'
 import { addedDiff, updatedDiff } from 'deep-object-diff'
 import { merge } from 'lodash'
-import { MathJax } from 'better-react-mathjax'
+import parse from 'html-react-parser'
 
 import { IUserWithData } from '@/lib/index.d'
 import { IClientPlugin, ISimulation } from '@/database/index.d'
@@ -155,9 +155,7 @@ const Selector = ({
           style={{ padding: '10px', height: '60vh', overflow: 'auto' }}
           className="simulation-selector"
         >
-          <MathJax dynamic>
-            <div dangerouslySetInnerHTML={{ __html: current?.description }} />
-          </MathJax>
+          {parse(current?.description || '')}
         </Layout.Content>
       </Layout>
     </Modal>

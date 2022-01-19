@@ -22,6 +22,7 @@ import {
   RocketOutlined,
   StopOutlined
 } from '@ant-design/icons'
+import parse from 'html-react-parser'
 
 import { ISimulation, ISimulationTask } from '@/database/index.d'
 
@@ -366,25 +367,15 @@ const Run = ({ simulation, result, setResult, swr }: IProps): JSX.Element => {
             Complete log
           </Button>
         )}
-        <div
-          dangerouslySetInnerHTML={{
-            __html: task?.log?.replace(/\n\n/g, '\n').replace(/\n/g, '<br />')
-          }}
-        />
-        <div
-          dangerouslySetInnerHTML={{
-            __html: task?.warning
-              ?.replace(/\n\n/g, '\n')
-              .replace(/\n/g, '<br />')
-          }}
-          style={{ color: 'orange' }}
-        />
-        <div
-          dangerouslySetInnerHTML={{
-            __html: task?.error?.replace(/\n\n/g, '\n').replace(/\n/g, '<br />')
-          }}
-          style={{ color: 'red' }}
-        />
+        {parse(
+          task?.log?.replace(/\n\n/g, '\n').replace(/\n/g, '<br />') || ''
+        )}
+        {parse(
+          task?.warning?.replace(/\n\n/g, '\n').replace(/\n/g, '<br />') || ''
+        )}
+        {parse(
+          task?.error?.replace(/\n\n/g, '\n').replace(/\n/g, '<br />') || ''
+        )}
       </Tabs.TabPane>
     )
     setLogContent(<Tabs>{content}</Tabs>)
@@ -405,11 +396,7 @@ const Run = ({ simulation, result, setResult, swr }: IProps): JSX.Element => {
         width: 'unset',
         content: (
           <Typography.Paragraph code copyable>
-            <span
-              dangerouslySetInnerHTML={{
-                __html: log.replace(/\n\n/g, '\n').replace(/\n/g, '<br />')
-              }}
-            ></span>
+            {parse(log.replace(/\n\n/g, '\n').replace(/\n/g, '<br />'))}
           </Typography.Paragraph>
         )
       })

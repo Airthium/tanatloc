@@ -1,9 +1,12 @@
 import PropTypes from 'prop-types'
+import { useEffect } from 'react'
+import parse from 'html-react-parser'
 import { Card, Layout, Space, Spin, Typography } from 'antd'
-import { MathJax } from 'better-react-mathjax'
 
 import { ISimulation } from '@/database/index.d'
 import { IProjectWithData } from '@/lib/index.d'
+
+import { mathjaxRefresh } from '@/lib/mathjax'
 
 import Copy from '../copy'
 import Edit from './edit'
@@ -26,6 +29,11 @@ export interface IProps {
  * @param props Props
  */
 const About = ({ project, simulation, swr }: IProps): JSX.Element => {
+  // MathJax
+  useEffect(() => {
+    mathjaxRefresh()
+  }, [simulation])
+
   /**
    * Render
    */
@@ -93,14 +101,9 @@ const About = ({ project, simulation, swr }: IProps): JSX.Element => {
                 {simulation.scheme.version}
               </Typography.Text>
 
-              <MathJax dynamic>
-                <div
-                  style={{ maxWidth: '100%', overflow: 'auto' }}
-                  dangerouslySetInnerHTML={{
-                    __html: simulation.scheme.description
-                  }}
-                />
-              </MathJax>
+              <div style={{ maxWidth: '100%', overflow: 'auto' }}>
+                {parse(simulation.scheme.description)}
+              </div>
             </Space>
           </Card>
         </Layout.Content>

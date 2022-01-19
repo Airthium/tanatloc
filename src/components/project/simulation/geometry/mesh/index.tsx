@@ -2,12 +2,14 @@ import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
 import { Card, Select, Space, Typography } from 'antd'
 
+import { ISimulation } from '@/database/index.d'
+
 import { Error as ErrorNotification } from '@/components/assets/notification'
 import Formula from '@/components/assets/formula'
 
-import SimulationAPI from '@/api/simulation'
+import { mathjaxRefresh } from '@/lib/mathjax'
 
-import { ISimulation } from '@/database/index.d'
+import SimulationAPI from '@/api/simulation'
 
 export interface IProps {
   simulation: ISimulation
@@ -32,6 +34,11 @@ const Mesh = ({ simulation, swr }: IProps): JSX.Element => {
   // State
   const [meshGlobalType, setMeshGlobalType]: [string, Function] = useState()
   const [meshGlobalValue, setMeshGlobalValue]: [string, Function] = useState()
+
+  // MathJax
+  useEffect(() => {
+    mathjaxRefresh()
+  })
 
   // Global
   useEffect(() => {
@@ -160,7 +167,7 @@ const Mesh = ({ simulation, swr }: IProps): JSX.Element => {
             <Formula
               defaultValue={meshGlobalValue}
               onValueChange={onMeshGlobalSize}
-              unit="$m$"
+              unit="\(m\)"
             />
           </Typography.Text>
         )}

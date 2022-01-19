@@ -3,8 +3,8 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import Geometry from '..'
 
-jest.mock('better-react-mathjax', () => ({
-  MathJax: () => <div />
+jest.mock('@/lib/mathjax', () => ({
+  mathjaxRefresh: jest.fn
 }))
 
 const mockDeleteButton = (props) => (

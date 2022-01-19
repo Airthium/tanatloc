@@ -1,8 +1,12 @@
 import React from 'react'
-import { MathJaxContext } from 'better-react-mathjax'
+
 import { render } from '@testing-library/react'
 
 import About from '@/components/project/simulation/about'
+
+jest.mock('@/lib/mathjax', () => ({
+  mathjaxRefresh: jest.fn
+}))
 
 jest.mock('../../copy', () => () => <div />)
 
@@ -37,20 +41,14 @@ describe('components/project/simulation/about', () => {
 
   test('render', () => {
     const { unmount } = render(
-      <MathJaxContext>
-        <About project={project} simulation={simulation} swr={swr} />
-      </MathJaxContext>
+      <About project={project} simulation={simulation} swr={swr} />
     )
 
     unmount()
   })
 
   test('without simulation', () => {
-    const { unmount } = render(
-      <MathJaxContext>
-        <About project={project} swr={swr} />
-      </MathJaxContext>
-    )
+    const { unmount } = render(<About project={project} swr={swr} />)
 
     unmount()
   })

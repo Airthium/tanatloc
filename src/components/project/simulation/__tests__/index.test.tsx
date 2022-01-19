@@ -1,5 +1,4 @@
 import React from 'react'
-import { MathJaxContext } from 'better-react-mathjax'
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import Simulation from '@/components/project/simulation'
@@ -96,14 +95,12 @@ describe('components/project/simulation.Selector', () => {
 
   test('render', async () => {
     const { unmount } = render(
-      <MathJaxContext>
-        <Simulation.Selector
-          user={user}
-          visible={visible}
-          onOk={onOk}
-          onCancel={onCancel}
-        />
-      </MathJaxContext>
+      <Simulation.Selector
+        user={user}
+        visible={visible}
+        onOk={onOk}
+        onCancel={onCancel}
+      />
     )
 
     await waitFor(() => screen.getByText('Name2'))
@@ -113,14 +110,12 @@ describe('components/project/simulation.Selector', () => {
 
   test('onCancel', async () => {
     const { unmount } = render(
-      <MathJaxContext>
-        <Simulation.Selector
-          user={user}
-          visible={visible}
-          onOk={onOk}
-          onCancel={onCancel}
-        />
-      </MathJaxContext>
+      <Simulation.Selector
+        user={user}
+        visible={visible}
+        onOk={onOk}
+        onCancel={onCancel}
+      />
     )
 
     await waitFor(() => screen.getByText('Name2'))
@@ -133,13 +128,7 @@ describe('components/project/simulation.Selector', () => {
 
   test('no user', async () => {
     const { unmount } = render(
-      <MathJaxContext>
-        <Simulation.Selector
-          visible={visible}
-          onOk={onOk}
-          onCancel={onCancel}
-        />
-      </MathJaxContext>
+      <Simulation.Selector visible={visible} onOk={onOk} onCancel={onCancel} />
     )
 
     unmount()
@@ -151,14 +140,12 @@ describe('components/project/simulation.Selector', () => {
     })
 
     const { unmount } = render(
-      <MathJaxContext>
-        <Simulation.Selector
-          user={user}
-          visible={visible}
-          onOk={onOk}
-          onCancel={onCancel}
-        />
-      </MathJaxContext>
+      <Simulation.Selector
+        user={user}
+        visible={visible}
+        onOk={onOk}
+        onCancel={onCancel}
+      />
     )
 
     await waitFor(() => expect(mockList).toHaveBeenCalledTimes(1))
@@ -168,14 +155,12 @@ describe('components/project/simulation.Selector', () => {
 
   test('onSelect', async () => {
     const { unmount } = render(
-      <MathJaxContext>
-        <Simulation.Selector
-          user={user}
-          visible={visible}
-          onOk={onOk}
-          onCancel={onCancel}
-        />
-      </MathJaxContext>
+      <Simulation.Selector
+        user={user}
+        visible={visible}
+        onOk={onOk}
+        onCancel={onCancel}
+      />
     )
 
     await waitFor(() => screen.getByText('Name2'))
@@ -188,14 +173,12 @@ describe('components/project/simulation.Selector', () => {
 
   test('category', async () => {
     const { unmount } = render(
-      <MathJaxContext>
-        <Simulation.Selector
-          user={user}
-          visible={visible}
-          onOk={onOk}
-          onCancel={onCancel}
-        />
-      </MathJaxContext>
+      <Simulation.Selector
+        user={user}
+        visible={visible}
+        onOk={onOk}
+        onCancel={onCancel}
+      />
     )
 
     await waitFor(() => screen.getByText('Name2'))
@@ -211,14 +194,12 @@ describe('components/project/simulation.Selector', () => {
 
   test('onCreate', async () => {
     const { unmount } = render(
-      <MathJaxContext>
-        <Simulation.Selector
-          user={user}
-          visible={visible}
-          onOk={onOk}
-          onCancel={onCancel}
-        />
-      </MathJaxContext>
+      <Simulation.Selector
+        user={user}
+        visible={visible}
+        onOk={onOk}
+        onCancel={onCancel}
+      />
     )
 
     await waitFor(() => screen.getByText('Name2'))
@@ -240,14 +221,12 @@ describe('components/project/simulation.Selector', () => {
 
   test('authorized plugins', async () => {
     const { unmount } = render(
-      <MathJaxContext>
-        <Simulation.Selector
-          user={{ ...user, authorizedplugins: ['model'] }}
-          visible={visible}
-          onOk={onOk}
-          onCancel={onCancel}
-        />
-      </MathJaxContext>
+      <Simulation.Selector
+        user={{ ...user, authorizedplugins: ['model'] }}
+        visible={visible}
+        onOk={onOk}
+        onCancel={onCancel}
+      />
     )
 
     await waitFor(() => screen.getByText('NamePlugin'))

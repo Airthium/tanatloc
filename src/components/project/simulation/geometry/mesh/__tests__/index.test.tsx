@@ -5,6 +5,10 @@ import Mesh from '..'
 
 import { ISimulation } from '@/database/index.d'
 
+jest.mock('@/lib/mathjax', () => ({
+  mathjaxRefresh: jest.fn
+}))
+
 const mockError = jest.fn()
 jest.mock('@/components/assets/notification', () => ({
   Error: () => mockError()

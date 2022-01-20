@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types'
 import { useState } from 'react'
-import { Form, Input } from 'antd'
+import { Button, Form, Input } from 'antd'
+import { PlusCircleOutlined } from '@ant-design/icons'
 
 import Dialog from '@/components/assets/dialog'
 import { Error } from '@/components/assets/notification'
@@ -59,21 +60,26 @@ const Add = ({ visible, swr, setVisible }: IProps): JSX.Element => {
    * Render
    */
   return (
-    <Dialog
-      visible={visible}
-      loading={loading}
-      title="Create a new workspace"
-      onCancel={() => setVisible(false)}
-      onOk={onOk}
-    >
-      <Form.Item
-        label="Name"
-        name="name"
-        rules={[{ required: true, message: "Please enter a workspace's name" }]}
+    <>
+      <Button onClick={() => setVisible(true)} icon={<PlusCircleOutlined />}>
+        Create a new workspace
+      </Button>
+      <Dialog
+        visible={visible}
+        loading={loading}
+        title="Create a new workspace"
+        onCancel={() => setVisible(false)}
+        onOk={onOk}
       >
-        <Input placeholder="Workspace's name" />
-      </Form.Item>
-    </Dialog>
+        <Form.Item
+          label="Name"
+          name="name"
+          rules={[{ required: true, message: 'A Workspace name is required' }]}
+        >
+          <Input placeholder="Workspace's name" />
+        </Form.Item>
+      </Dialog>
+    </>
   )
 }
 

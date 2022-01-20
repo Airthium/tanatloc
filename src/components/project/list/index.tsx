@@ -161,7 +161,16 @@ const ProjectList = ({
    */
   if (loading || swr.loadingProjects) return <Loading.Simple />
   else if (!list.length)
-    return <Empty image="images/empty.svg" description={'No project found.'} />
+    return (
+      <Empty
+        image="images/empty.svg"
+        description={
+          filter
+            ? 'No project found... We’re sorry !'
+            : 'No project for now... Get started !'
+        }
+      />
+    )
   else
     return (
       <Space wrap={true} align="start">

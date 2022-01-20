@@ -83,7 +83,7 @@ const Edit = ({ workspace, swr }: IProps): JSX.Element => {
           label="Name"
           name="name"
           rules={[
-            { required: true, message: "Please enter a workspace's name" }
+            { required: true, message: "A Workspace name is required" }
           ]}
         >
           <Input placeholder="Workspace's name" />

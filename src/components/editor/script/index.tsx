@@ -25,7 +25,7 @@ const Script = ({ configuration }: IProps): JSX.Element => {
     if (configuration.category)
       header += `// Category: ${configuration.category}\n`
 
-    header += '\n// DEFAULT VARIABLES\n'
+    header += '\n// GLOBAL VARIABLES\n'
     header += '// - appendLog(string) (func)\n'
     header += '// - appendError(string) (func)\n'
     header += '// - meshN (mesh or mesh3)\n'

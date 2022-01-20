@@ -9,6 +9,7 @@ Replace deep-object-diff by ?lodash function?
 
 For electron:
 
-- use docker postgres
+- README
+- use docker postgres ?
 - check docker at startup https://github.com/electron-userland/electron-builder/issues/1271
 - Apple sign

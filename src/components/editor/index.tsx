@@ -1,7 +1,7 @@
 /** @module Components.Editor */
 
 import { useState, useEffect } from 'react'
-import { Alert, Button, Divider, Layout, List, Steps, Space } from 'antd'
+import { Alert, Button, Layout, List, Steps, Space } from 'antd'
 
 import Information from './information'
 import Configuration from './configuration'
@@ -184,7 +184,36 @@ const Editor = (): JSX.Element => {
         <Button disabled={true} type="primary">
           Submit
         </Button>
-        <Divider />
+      </Layout.Sider>
+
+      <Layout.Content style={{ overflow: 'auto', padding: '10px' }}>
+        {step === 0 && (
+          <Information
+            configuration={{
+              name: configuration.name,
+              category: configuration.category,
+              description: configuration.description
+            }}
+            onNext={onInformation}
+          />
+        )}
+        {step === 1 && (
+          <Configuration
+            configuration={{
+              geometry: configuration.geometry,
+              materials: configuration.materials,
+              parameters: configuration.parameters,
+              initialization: configuration.initialization,
+              boundaryConditions: configuration.boundaryConditions,
+              results: configuration.results
+            }}
+            onNext={onConfiguration}
+          />
+        )}
+        {step === 2 && <Script configuration={configuration} />}
+      </Layout.Content>
+
+      <Layout.Sider theme="light">
         <Alert
           type="success"
           message={
@@ -229,33 +258,6 @@ const Editor = (): JSX.Element => {
           }
         />
       </Layout.Sider>
-
-      <Layout.Content style={{ overflow: 'auto', padding: '10px' }}>
-        {step === 0 && (
-          <Information
-            configuration={{
-              name: configuration.name,
-              category: configuration.category,
-              description: configuration.description
-            }}
-            onNext={onInformation}
-          />
-        )}
-        {step === 1 && (
-          <Configuration
-            configuration={{
-              geometry: configuration.geometry,
-              materials: configuration.materials,
-              parameters: configuration.parameters,
-              initialization: configuration.initialization,
-              boundaryConditions: configuration.boundaryConditions,
-              results: configuration.results
-            }}
-            onNext={onConfiguration}
-          />
-        )}
-        {step === 2 && <Script configuration={configuration} />}
-      </Layout.Content>
     </Layout>
   )
 }

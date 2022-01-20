@@ -18,6 +18,12 @@ jest.mock('@/components/assets/notification', () => ({
   Error: () => mockError()
 }))
 
+jest.mock('@/components/assets/mathjax', () => ({
+  Inline: () => <div />,
+  Formula: () => <div />,
+  Html: () => <div />
+}))
+
 jest.mock('@/components/project/simulation/about', () => () => <div />)
 
 jest.mock('@/components/project/simulation/geometry', () => () => <div />)

@@ -6,13 +6,13 @@ import { Layout, Menu, Modal, Select, Space, Typography } from 'antd'
 import { WarningOutlined } from '@ant-design/icons'
 import { addedDiff, updatedDiff } from 'deep-object-diff'
 import { merge } from 'lodash'
-import parse from 'html-react-parser'
 
 import { IUserWithData } from '@/lib/index.d'
 import { IClientPlugin, ISimulation } from '@/database/index.d'
 import { IModel } from '@/models/index.d'
 
 import { Error as ErrorNotification } from '@/components/assets/notification'
+import MathJax from '@/components/assets/mathjax'
 
 import About from './about'
 import Geometry from './geometry'
@@ -155,7 +155,7 @@ const Selector = ({
           style={{ padding: '10px', height: '60vh', overflow: 'auto' }}
           className="simulation-selector"
         >
-          {parse(current?.description || '')}
+          <MathJax.Html html={current?.description} />
         </Layout.Content>
       </Layout>
     </Modal>

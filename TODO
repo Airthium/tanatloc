@@ -8,6 +8,7 @@ Linearelasticitty en cylindrique
 Replace deep-object-diff by ?lodash function?
 
 For electron:
+
 - use docker postgres
-- check docker at startup
+- check docker at startup https://github.com/electron-userland/electron-builder/issues/1271
 - Apple sign

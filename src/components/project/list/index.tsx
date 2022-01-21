@@ -154,8 +154,8 @@ const ProjectList = ({
       case 'modifiedDesc':
         currentList.sort(
           (a, b) =>
-            new Date(a.lastaccess).getTime() -
-            new Date(b.lastaccess).getTime() * -1
+            new Date(b.lastaccess).getTime() -
+            new Date(a.lastaccess).getTime()
         )
         break
       default:

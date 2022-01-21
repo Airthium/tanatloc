@@ -92,7 +92,7 @@ const Workspace = ({
 
   /**
    * On switch
-   * @param e Event
+   * @param key String
    */
   const onSwitch = (key: string): void => {
     setSorter(key)
@@ -164,7 +164,12 @@ const Workspace = ({
             </div>
           ) : null}
         </PageHeader>
-        <Tabs defaultActiveKey="alphaAsc" onChange={onSwitch}>
+        <Tabs
+          defaultActiveKey="default"
+          onChange={onSwitch}
+          style={{ marginTop: '20px' }}
+          id="workspaceSorter"
+        >
           <TabPane tab="Name (A-Z)" key="alphaAsc" />
           <TabPane tab="Name (Z-A)" key="alphaDesc" />
           <TabPane tab="Last modified" key="modifiedDesc" />

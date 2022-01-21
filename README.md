@@ -12,8 +12,12 @@ You can run Tanatloc locally using the Electron app, follow the [tanatloc-electr
 
 If you want to run Tanatloc on a local server, you can use the [Tanatloc Docker](https://github.com/Airthium/tanatloc-docker#readme).
 
-Have a look on [environment variables](https://github.com/Airthium/tanatloc/blob/master/ENV.md).
+Have a look on [environment variables](https://github.com/Airthium/tanatloc/blob/master/.github/ENV.md).
 
 ## Server deployment
 
 For an easy server deployment, you can use the [tanatloc-deploy script](https://github.com/Airthium/tanatloc-deploy#readme).
+
+## Development
+
+See [CONTRIBUTING.md](https://github.com/Airthium/tanatloc/blob/master/.github/CONTRIBUTING.md).

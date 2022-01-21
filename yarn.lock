@@ -1952,13 +1952,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/prismjs@npm:1.16.6":
-  version: 1.16.6
-  resolution: "@types/prismjs@npm:1.16.6"
-  checksum: fcb489d19d21292ceffc661fd9c9aa8ba36bcd2835388fa85812aa60cdf14d4720ceb22be7a088aa753c48462e75bcd8191d178a085e4a8b0d3f34471d30d86a
-  languageName: node
-  linkType: hard
-
 "@types/prop-types@npm:*":
   version: 15.7.4
   resolution: "@types/prop-types@npm:15.7.4"
@@ -2271,7 +2264,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ace-builds@npm:^1.4.13":
+"ace-builds@npm:1.4.13, ace-builds@npm:^1.4.13":
   version: 1.4.13
   resolution: "ace-builds@npm:1.4.13"
   checksum: 512cc19c367a21d86f6b7c78ac59b44b01304d7cf345ce0ae767db9b14fc65653aec2f9dabde27e7d9c459000f4cef74656804f54fb7cb7867b8b810ea66878d
@@ -8010,20 +8003,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prism-themes@npm:1.9.0":
-  version: 1.9.0
-  resolution: "prism-themes@npm:1.9.0"
-  checksum: ddbadb8d83fc23e428409d7dd1d62dde6033a3afabd721d292e2d251f5693e3eccb7f9641704374f3df3dde59c0e2c8a3c069a7aa72990c4a00acb57f2af81f8
-  languageName: node
-  linkType: hard
-
-"prismjs@npm:1.26.0":
-  version: 1.26.0
-  resolution: "prismjs@npm:1.26.0"
-  checksum: 6de058930ce767d44d60322e625bbc255f5107c7bf82c441ade19a289358e01e35040cea0c17adf8f7b829f17aa48e2d84b40866b5b3f8c75a12c6b3f0ead231
-  languageName: node
-  linkType: hard
-
 "process-nextick-args@npm:~2.0.0":
   version: 2.0.1
   resolution: "process-nextick-args@npm:2.0.1"
@@ -9820,13 +9799,13 @@ __metadata:
     "@types/passport": 1.0.7
     "@types/passport-local": 1.0.34
     "@types/pg": 8.6.4
-    "@types/prismjs": 1.16.6
     "@types/react": 17.0.38
     "@types/set-interval-async": 1.0.0
     "@types/tar": 6.1.1
     "@types/three": 0.136.1
     "@types/url-join": 4.0.1
     "@types/uuid": 8.3.4
+    ace-builds: 1.4.13
     antd: 4.18.3
     archiver: 5.3.0
     babel-jest: 27.4.6
@@ -9860,8 +9839,6 @@ __metadata:
     pg-format: "ssh://git@github.com:Airthium/pg-format.git#1.0.6"
     pg-native: "ssh://git@github.com:Airthium/pg-native.git#3.0.0"
     prettier: 2.5.1
-    prism-themes: 1.9.0
-    prismjs: 1.26.0
     prop-types: 15.8.1
     react: 17.0.2
     react-ace: 9.5.0

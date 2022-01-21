@@ -2,75 +2,22 @@
 
 # Tanatloc
 
-## See the world the way it really is!
+**See the world the way it really is!**
 
-Using server-side rendering (SSR).
+## Local app - Electron
 
-## Env
+You can run Tanatloc locally using the Electron app, follow the [tanatloc-electron README](https://github.com/Airthium/tanatloc-electron#readme).
 
-### Domain
+## Local server - Docker
 
-| Variable | Default              | Comment       |
-| -------- | -------------------- | ------------- |
-| DOMAIN   | https://tanatloc.com | Server domain |
+If you want to run Tanatloc on a local server, you can use the [Tanatloc Docker](https://github.com/Airthium/tanatloc-docker#readme).
 
-### Database
+Have a look on [environment variables](https://github.com/Airthium/tanatloc/blob/master/.github/ENV.md).
 
-| Variable          | Default             | Comment           |
-| ----------------- | ------------------- | ----------------- |
-| DB_ADMIN          | `$USER` or postgres | Admin user        |
-| DB_ADMIN_DATABASE | postgres            | Admin database    |
-| DB_ADMIN_PASSWORD |                     | Admin password    |
-| DB_USER           | tanatlocuser        | Database user     |
-| DB_HOST           | localhost           | Database host     |
-| DB_PORT           | 5432                | Database port     |
-| DB_DATABASE       | tanatloc            | Database name     |
-| DB_PASSWORD       | tanatloc            | Database password |
+## Server deployment
 
-### Sentry
+For an easy server deployment, you can use the [tanatloc-deploy script](https://github.com/Airthium/tanatloc-deploy#readme).
 
-| Variable   | Default | Comment    |
-| ---------- | ------- | ---------- |
-| SENTRY_DSN |         | Sentry DSN |
+## Development
 
-### Auth
-
-| Variable    | Default   | Comment               |
-| ----------- | --------- | --------------------- |
-| AUTH_SECRET | `aaaa...` | Authentication secret |
-
-### Storage
-
-| Variable                 | Default         | Comment                                 |
-| ------------------------ | --------------- | --------------------------------------- |
-| STORAGE_PATH             | `/tmp/tanatloc` | Absolute storage path                   |
-| AVATAR_RELATIVE_PATH     | `avatar`        | Relative avatar path (from STORAGE)     |
-| GEOMETRY_RELATIVE_PATH   | `geometry`      | Relative simulation path (from STORAGE) |
-| SIMULATION_RELATIVE_PATH | `simulation`    | Relative geometry path (from STORAGE)   |
-
-### Email
-
-| Variable    | Default | Comment            |
-| ----------- | ------- | ------------------ |
-| EMAIL_TOKEN |         | MailerSend API key |
-
-## Dev
-
-Pre-requirements:
-
-- `node`
-- `yarn`
-- `postgresql`
-- docker `tanatloc/worker`
-
-Start:
-
-- `yarn`
-- `yarn prestart`
-- `yarn dev`
-
-## Deployment
-
-### Docker
-
-The best way to deploy Tanatloc on a server is to use the [Tanatloc deployment script](https://github.com/Airthium/tanatloc-deploy)
+See [CONTRIBUTING.md](https://github.com/Airthium/tanatloc/blob/master/.github/CONTRIBUTING.md).

@@ -1,7 +1,20 @@
 /** @module Components.Editor */
 
+import { useRouter } from 'next/router'
+import dynamic from 'next/dynamic'
 import { useState, useEffect } from 'react'
-import { Alert, Button, Divider, Layout, List, Steps, Space } from 'antd'
+import {
+  Alert,
+  Button,
+  Layout,
+  List,
+  Steps,
+  Space,
+  Divider,
+  Typography
+} from 'antd'
+
+import { GoBack } from '@/components/assets/button'
 
 import Information from './information'
 import Configuration from './configuration'
@@ -88,6 +101,8 @@ export interface IConfiguration {
   }
 }
 
+const DynamicCodeEditor = dynamic(() => import('./code'), { ssr: false })
+
 /**
  * Editor
  * @memberof Components.Editor
@@ -102,6 +117,9 @@ const Editor = (): JSX.Element => {
   const [configuration, setConfiguration]: [IConfiguration, Function] =
     useState({})
 
+  // Data
+  const router = useRouter()
+
   useEffect(() => {
     if (step === 0) setInformationStatus('process')
     else if (
@@ -112,6 +130,15 @@ const Editor = (): JSX.Element => {
       setInformationStatus('finish')
     } else setInformationStatus('wait')
   }, [step, configuration])
+
+  /**
+   * Handle dashboard
+   */
+  const handleDashboard = () => {
+    router.push({
+      pathname: '/dashboard'
+    })
+  }
 
   /**
    * On steps change
@@ -158,9 +185,14 @@ const Editor = (): JSX.Element => {
         <div className="logo">
           <img src="/images/logo.svg" alt="Tanatloc" />
         </div>
+        <GoBack onClick={handleDashboard}>Return to dashboard</GoBack>
+
+        <Divider
+          style={{ width: '250px', minWidth: 'unset', margin: '10px 25px' }}
+        />
+
         <Steps
           className="editor-steps"
-          type="navigation"
           direction="vertical"
           current={step}
           onChange={onStepsChange}
@@ -170,68 +202,23 @@ const Editor = (): JSX.Element => {
             title="Information"
             description="Title, description, category, ..."
           />
-          <Steps.Step
-            status={step !== 1 ? 'wait' : undefined}
-            title="Configuration"
-            description="Geometry, parameters, ..."
-          />
-          <Steps.Step
-            status={step !== 2 ? 'wait' : undefined}
-            title="Script"
-            description="FreeFEM template"
-          />
+          <Steps.Step title="Geometry" />
+          <Steps.Step title="Material" />
+          <Steps.Step title="Material" />
+          <Steps.Step title="Physic" />
+          <Steps.Step title="Initialization" />
+          <Steps.Step title="Boundary conditions" />
+          <Steps.Step title="Results" />
         </Steps>
+
         <Button disabled={true} type="primary">
           Submit
         </Button>
-        <Divider />
-        <Alert
-          type="success"
-          message={
-            <>
-              To correctly use the editor, you must know:
-              <List>
-                <List.Item>
-                  <Space direction="vertical">
-                    <Button
-                      type="primary"
-                      href="https://freefem.org/"
-                      target="_blank"
-                    >
-                      FreeFEM
-                    </Button>
-                    to write the finite element problem
-                  </Space>
-                </List.Item>
-                <List.Item>
-                  <Space direction="vertical">
-                    <Button
-                      type="primary"
-                      href="https://ejs.co/"
-                      target="_blank"
-                    >
-                      EJS
-                    </Button>
-                    to use the template system of Tanatloc
-                  </Space>
-                </List.Item>
-                <List.Item>
-                  <Space direction="vertical">
-                    And read the
-                    <Button type="primary" href="#">
-                      Editor documentation
-                    </Button>
-                    TODO
-                  </Space>
-                </List.Item>
-              </List>
-            </>
-          }
-        />
       </Layout.Sider>
 
       <Layout.Content style={{ overflow: 'auto', padding: '10px' }}>
-        {step === 0 && (
+        <DynamicCodeEditor />
+        {/* {step === 0 && (
           <Information
             configuration={{
               name: configuration.name,
@@ -254,8 +241,33 @@ const Editor = (): JSX.Element => {
             onNext={onConfiguration}
           />
         )}
-        {step === 2 && <Script configuration={configuration} />}
+        {step === 2 && <Script configuration={configuration} />} */}
       </Layout.Content>
+
+      <Layout.Sider theme="light">
+        <Alert
+          type="success"
+          message={
+            <>
+              To correctly use the editor, you must know:
+              <Space direction="vertical">
+                <Button
+                  type="primary"
+                  href="https://freefem.org/"
+                  target="_blank"
+                >
+                  FreeFEM
+                </Button>
+                to write the finite element problem
+              </Space>
+            </>
+          }
+        />
+        <List header={<Typography.Text strong>Variables list</Typography.Text>}>
+          <List.Item>Variable 1</List.Item>
+          <List.Item>Variable 2</List.Item>
+        </List>
+      </Layout.Sider>
     </Layout>
   )
 }

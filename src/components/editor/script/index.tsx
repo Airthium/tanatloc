@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
-import SimpleEditor from 'react-simple-code-editor'
-import { highlight, languages } from 'prismjs/components/prism-core'
-import '../prism/prism-freefem.js'
-import 'prism-themes/themes/prism-vs.css'
+// import SimpleEditor from 'react-ace'
+// import { highlight, languages } from 'prismjs/components/prism-core'
+// import '../prism/prism-freefem.js'
+// import 'prism-themes/themes/prism-vs.css'
 
 import { IConfiguration } from '..'
 
@@ -25,7 +25,7 @@ const Script = ({ configuration }: IProps): JSX.Element => {
     if (configuration.category)
       header += `// Category: ${configuration.category}\n`
 
-    header += '\n// DEFAULT VARIABLES\n'
+    header += '\n// GLOBAL VARIABLES\n'
     header += '// - appendLog(string) (func)\n'
     header += '// - appendError(string) (func)\n'
     header += '// - meshN (mesh or mesh3)\n'
@@ -94,7 +94,7 @@ const Script = ({ configuration }: IProps): JSX.Element => {
         border: '1px solid gray'
       }}
     >
-      <SimpleEditor
+      {/* <SimpleEditor
         value={code}
         onValueChange={(c) => setCode(c)}
         highlight={(c) => highlight(c, languages.freefem)}
@@ -104,7 +104,7 @@ const Script = ({ configuration }: IProps): JSX.Element => {
           fontSize: 12,
           height: '100%'
         }}
-      />
+      /> */}
     </div>
   )
 }

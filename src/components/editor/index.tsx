@@ -165,7 +165,7 @@ const Editor = (): JSX.Element => {
   // State
   const [current, setCurrent]: [number, Function] = useState(-1)
   const [panel, setPanel]: [
-    { title: string; description: string; component: JSX.Element },
+    { title: string; description: string; component: ReactElement },
     Function
   ] = useState()
   const [configuration, setConfiguration]: [IConfiguration, Function] =
@@ -252,7 +252,12 @@ const Editor = (): JSX.Element => {
           title={panel?.title}
           onClose={() => setPanel()}
         >
-          {/* {panel?.component && <panel.component configuration={configuration} onNext={onConfiguration} />} */}
+          {panel?.component && (
+            <panel.component
+              configuration={configuration}
+              onNext={onConfiguration}
+            />
+          )}
 
           {/* <Information
             configuration={{

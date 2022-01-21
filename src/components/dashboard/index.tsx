@@ -230,9 +230,9 @@ const Dashboard = () => {
             >
               {menuItems.logout.label}
             </Menu.Item>
-            <p className="version">
+            <Menu.Item key="version" className="version">
               version {packageJson.version} {gitVersion && <>({gitVersion})</>}
-            </p>
+            </Menu.Item>
           </Menu>
         </Layout.Sider>
 

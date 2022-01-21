@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/router'
 import dynamic from 'next/dynamic'
-import { useState, useEffect } from 'react'
+import { ReactComponentElement, useState, useEffect } from 'react'
 import {
   Alert,
   Button,
@@ -16,9 +16,14 @@ import {
 
 import { GoBack } from '@/components/assets/button'
 
+import Panel from './panel'
+
 import Information from './information'
 import Configuration from './configuration'
 import Script from './script'
+import { ReactElement } from 'hoist-non-react-statics/node_modules/@types/react'
+
+const DynamicCodeEditor = dynamic(() => import('./code'), { ssr: false })
 
 export type TValue = boolean | number | string
 
@@ -101,7 +106,57 @@ export interface IConfiguration {
   }
 }
 
-const DynamicCodeEditor = dynamic(() => import('./code'), { ssr: false })
+export interface IStep {
+  title: string
+  description: string
+  component: any // TODO better type
+  status: 'wait' | 'process' | 'finish' | 'error'
+}
+
+const steps: IStep[] = [
+  {
+    title: 'Informations',
+    description: 'Title, description, category, ...',
+    component: Information,
+    status: 'wait'
+  },
+  {
+    title: 'Geometries',
+    description: 'todo',
+    component: undefined,
+    status: 'wait'
+  },
+  {
+    title: 'Materials',
+    description: 'todo',
+    component: undefined,
+    status: 'wait'
+  },
+  {
+    title: 'Physical parameters',
+    description: 'todo',
+    component: undefined,
+    status: 'wait'
+  },
+  {
+    title: 'Initialization',
+    description: 'todo',
+    component: undefined,
+    status: 'wait'
+  },
+  {
+    title: 'Boundary conditions',
+    description: 'todo',
+    component: undefined,
+    status: 'wait'
+  },
+  {
+    title: 'Results',
+    description: 'todo',
+    component: undefined,
+    status: 'wait'
+  }
+]
 
 /**
  * Editor
@@ -109,27 +164,21 @@ const DynamicCodeEditor = dynamic(() => import('./code'), { ssr: false })
  */
 const Editor = (): JSX.Element => {
   // State
-  const [step, setStep]: [number, Function] = useState(0)
-  const [informationStatus, setInformationStatus]: [
-    'finish' | 'wait',
+  const [current, setCurrent]: [number, Function] = useState(-1)
+  const [panel, setPanel]: [
+    { title: string; description: string; component: ReactElement },
     Function
-  ] = useState('wait')
+  ] = useState()
   const [configuration, setConfiguration]: [IConfiguration, Function] =
     useState({})
 
   // Data
   const router = useRouter()
 
+  // Step
   useEffect(() => {
-    if (step === 0) setInformationStatus('process')
-    else if (
-      configuration.name &&
-      configuration.category &&
-      configuration.description
-    ) {
-      setInformationStatus('finish')
-    } else setInformationStatus('wait')
-  }, [step, configuration])
+    if (current >= 0) setPanel(steps[current])
+  }, [current])
 
   /**
    * Handle dashboard
@@ -144,24 +193,8 @@ const Editor = (): JSX.Element => {
    * On steps change
    * @param current Current step
    */
-  const onStepsChange = (current: number): void => {
-    setStep(current)
-  }
-
-  /**
-   * On inforimation
-   * @param values Values
-   */
-  const onInformation = (values: {
-    name: string
-    category: string
-    description: string
-  }): void => {
-    setConfiguration({
-      ...configuration,
-      ...values
-    })
-    setStep(step + 1)
+  const onStepsChange = (number: number): void => {
+    setCurrent(number)
   }
 
   /**
@@ -173,7 +206,7 @@ const Editor = (): JSX.Element => {
       ...configuration,
       ...values
     })
-    setStep(step + 1)
+    setCurrent(current + 1)
   }
 
   /**
@@ -194,21 +227,17 @@ const Editor = (): JSX.Element => {
         <Steps
           className="editor-steps"
           direction="vertical"
-          current={step}
+          current={current}
           onChange={onStepsChange}
         >
-          <Steps.Step
-            status={informationStatus}
-            title="Information"
-            description="Title, description, category, ..."
-          />
-          <Steps.Step title="Geometry" />
-          <Steps.Step title="Material" />
-          <Steps.Step title="Material" />
-          <Steps.Step title="Physic" />
-          <Steps.Step title="Initialization" />
-          <Steps.Step title="Boundary conditions" />
-          <Steps.Step title="Results" />
+          {steps.map((step) => (
+            <Steps.Step
+              key={step.title}
+              title={step.title}
+              description={step.description}
+              status={step.status}
+            />
+          ))}
         </Steps>
 
         <Button disabled={true} type="primary">
@@ -216,7 +245,31 @@ const Editor = (): JSX.Element => {
         </Button>
       </Layout.Sider>
 
-      <Layout.Content style={{ overflow: 'auto', padding: '10px' }}>
+      <Layout.Content
+        style={{ position: 'relative', overflow: 'auto', padding: '10px' }}
+      >
+        <Panel
+          visible={!!panel}
+          title={panel?.title}
+          onClose={() => setPanel()}
+        >
+          {panel?.component && (
+            <panel.component
+              configuration={configuration}
+              onNext={onConfiguration}
+            />
+          )}
+
+          {/* <Information
+            configuration={{
+              name: configuration.name,
+              category: configuration.category,
+              description: configuration.description
+            }}
+            onNext={onConfiguration}
+          /> */}
+        </Panel>
+        {/* )} */}
         <DynamicCodeEditor />
         {/* {step === 0 && (
           <Information
@@ -227,21 +280,19 @@ const Editor = (): JSX.Element => {
             }}
             onNext={onInformation}
           />
-        )}
-        {step === 1 && (
-          <Configuration
-            configuration={{
-              geometry: configuration.geometry,
-              materials: configuration.materials,
-              parameters: configuration.parameters,
-              initialization: configuration.initialization,
-              boundaryConditions: configuration.boundaryConditions,
-              results: configuration.results
-            }}
-            onNext={onConfiguration}
-          />
-        )}
-        {step === 2 && <Script configuration={configuration} />} */}
+          )}*/}
+
+        {/* <Configuration
+          configuration={{
+            geometry: configuration.geometry,
+            materials: configuration.materials,
+            parameters: configuration.parameters,
+            initialization: configuration.initialization,
+            boundaryConditions: configuration.boundaryConditions,
+            results: configuration.results
+          }}
+          onNext={onConfiguration}
+        /> */}
       </Layout.Content>
 
       <Layout.Sider theme="light">

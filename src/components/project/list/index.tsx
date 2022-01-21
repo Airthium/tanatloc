@@ -35,6 +35,7 @@ export interface IProps {
   projects: IProjectWithData[]
   organizations: IOrganizationWithData[]
   filter?: string
+  sorter?: string
   swr: {
     mutateOneWorkspace: Function
     delOneProject: Function
@@ -55,6 +56,7 @@ const ProjectList = ({
   projects,
   organizations,
   filter,
+  sorter,
   swr
 }: IProps): JSX.Element => {
   // State
@@ -75,7 +77,6 @@ const ProjectList = ({
 
   // Router
   const router = useRouter()
-
   useEffect(() => {
     const currentList = projects
       .map((project) => {
@@ -143,10 +144,26 @@ const ProjectList = ({
         }
       })
       .filter((p) => p)
-
+    switch (sorter) {
+      case 'alphaAsc':
+        currentList.sort((a, b) => a.title.localeCompare(b.title))
+        break
+      case 'alphaDesc':
+        currentList.sort((a, b) => -1 * a.title.localeCompare(b.title))
+        break
+      case 'modifiedDesc':
+        currentList.sort(
+          (a, b) =>
+            new Date(a.lastaccess).getTime() -
+            new Date(b.lastaccess).getTime() * -1
+        )
+        break
+      default:
+        break
+    }
     setList(currentList)
     setLoading(false)
-  }, [projects, filter])
+  }, [projects, filter, sorter])
 
   // Open project
   const openProject = (project: { id: string }): void => {

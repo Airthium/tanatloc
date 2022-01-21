@@ -47,7 +47,6 @@ const WorkspacesList = ({
     /* istanbul ignore next */
     if (action === 'add') setAdd(true)
   }
-  console.log(workspaces)
   /**
    * Render
    */

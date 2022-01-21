@@ -2,7 +2,7 @@
 
 import PropTypes from 'prop-types'
 import React, { useState, useEffect } from 'react'
-import { Avatar, Input, Layout, PageHeader, Space } from 'antd'
+import { Avatar, Input, Layout, PageHeader, Space, Tabs } from 'antd'
 
 import {
   IOrganizationWithData,
@@ -36,6 +36,9 @@ export interface IProps {
   }
 }
 
+// Menu's tabs
+const { TabPane } = Tabs
+
 /**
  * Errors
  * @memberof Components.Workspace
@@ -60,6 +63,7 @@ const Workspace = ({
 }: IProps): JSX.Element => {
   // State
   const [filter, setFilter]: [string, Function] = useState()
+  const [sorter, setSorter]: [string, Function] = useState()
 
   // Data
   const [
@@ -84,6 +88,14 @@ const Workspace = ({
    */
   const onSearch = (e: React.ChangeEvent<HTMLInputElement>): void => {
     setFilter(e.target.value)
+  }
+
+  /**
+   * On switch
+   * @param e Event
+   */
+  const onSwitch = (key: string): void => {
+    setSorter(key)
   }
 
   /**
@@ -152,6 +164,11 @@ const Workspace = ({
             </div>
           ) : null}
         </PageHeader>
+        <Tabs defaultActiveKey="alphaAsc" onChange={onSwitch}>
+          <TabPane tab="Name (A-Z)" key="alphaAsc" />
+          <TabPane tab="Name (Z-A)" key="alphaDesc" />
+          <TabPane tab="Last modified" key="modifiedDesc" />
+        </Tabs>
         <Layout.Content className="scroll">
           <ProjectList
             user={user}
@@ -160,6 +177,7 @@ const Workspace = ({
             projects={projects}
             organizations={organizations}
             filter={filter}
+            sorter={sorter}
             swr={{
               mutateOneWorkspace: swr.mutateOneWorkspace,
               delOneProject,

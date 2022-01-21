@@ -86,7 +86,7 @@ const Add = ({ workspace, swr }: IProps): JSX.Element => {
         <Form.Item
           label="Name"
           name="title"
-          rules={[{ required: true, message: "Please enter a project name" }]}
+          rules={[{ required: true, message: 'Please enter a project name' }]}
         >
           <Input placeholder="Project's name" />
         </Form.Item>

@@ -58,7 +58,11 @@ const Account = ({ user, swr }: IProps): JSX.Element => {
         }
       />
       <Layout.Content>
-        <Tabs defaultActiveKey={tab || 'personal'} onChange={onChange}>
+        <Tabs
+          defaultActiveKey={tab || 'personal'}
+          onChange={onChange}
+          id="account"
+        >
           <Tabs.TabPane tab="Personal Information" key="personal">
             <Space direction="vertical" style={{ width: '100%' }}>
               <Information

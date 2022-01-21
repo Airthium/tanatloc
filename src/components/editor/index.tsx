@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/router'
 import dynamic from 'next/dynamic'
-import { ReactComponentElement, useState, useEffect } from 'react'
+import { ReactElement, useState, useEffect } from 'react'
 import {
   Alert,
   Button,
@@ -21,7 +21,6 @@ import Panel from './panel'
 import Information from './information'
 import Configuration from './configuration'
 import Script from './script'
-import { ReactElement } from 'hoist-non-react-statics/node_modules/@types/react'
 
 const DynamicCodeEditor = dynamic(() => import('./code'), { ssr: false })
 
@@ -109,7 +108,10 @@ export interface IConfiguration {
 export interface IStep {
   title: string
   description: string
-  component: any // TODO better type
+  component: ({
+    configuration: IConfiguration,
+    onNext: Function
+  }) => ReactElement
   status: 'wait' | 'process' | 'finish' | 'error'
 }
 
@@ -165,10 +167,7 @@ const steps: IStep[] = [
 const Editor = (): JSX.Element => {
   // State
   const [current, setCurrent]: [number, Function] = useState(-1)
-  const [panel, setPanel]: [
-    { title: string; description: string; component: ReactElement },
-    Function
-  ] = useState()
+  const [panel, setPanel]: [IStep, Function] = useState()
   const [configuration, setConfiguration]: [IConfiguration, Function] =
     useState({})
 

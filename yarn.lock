@@ -7714,7 +7714,7 @@ __metadata:
 "pg-format@ssh://git@github.com:Airthium/pg-format.git#1.0.6":
   version: 1.0.6
   resolution: "pg-format@ssh://git@github.com:Airthium/pg-format.git#commit=06c8ed8668ce440573ab6a9ac1f7ef195eb50495"
-  checksum: c42bea72c16dd61a4a5c48a258862026831307be6c103df135b73c2789443fd37c10c6f1a6724424bd2396383a833da61a8eaf473e30b2e8042ce90d93ac86f0
+  checksum: 53bd44d8346d523ae3a3b9fa6d0571aa9531a7eff51fbb9a2dce051710c89d9326d1b15b18903b0e049648abaf9c9756c7fe967704eb75da830d166346d5e16a
   languageName: node
   linkType: hard
 

@@ -21,6 +21,7 @@ import Panel from './panel'
 import Information from './information'
 import Configuration from './configuration'
 import Script from './script'
+import { ReactElement } from 'hoist-non-react-statics/node_modules/@types/react'
 
 const DynamicCodeEditor = dynamic(() => import('./code'), { ssr: false })
 

@@ -1,19 +1,17 @@
 import PropTypes from 'prop-types'
 import { useState } from 'react'
-import { Button, Form, Input } from 'antd'
-import { PlusCircleOutlined } from '@ant-design/icons'
+import { Form, Input } from 'antd'
 
 import Dialog from '@/components/assets/dialog'
 import { Error } from '@/components/assets/notification'
+import { AddButton } from '@/components/assets/button'
 
 import WorkspaceAPI from '@/api/workspace'
 
 export interface IProps {
-  visible: boolean
   swr: {
     addOneWorkspace: Function
   }
-  setVisible: Function
 }
 
 /**
@@ -29,9 +27,10 @@ const errors = {
  * @memberof Components.Workspace
  * @param props Props
  */
-const Add = ({ visible, swr, setVisible }: IProps): JSX.Element => {
+const Add = ({ swr }: IProps): JSX.Element => {
   // Sate
   const [loading, setLoading]: [boolean, Function] = useState(false)
+  const [visible, setVisible]: [boolean, Function] = useState(false)
 
   /**
    * On confirm
@@ -61,9 +60,9 @@ const Add = ({ visible, swr, setVisible }: IProps): JSX.Element => {
    */
   return (
     <>
-      <Button onClick={() => setVisible(true)} icon={<PlusCircleOutlined />}>
+      <AddButton onAdd={() => setVisible(true)}>
         Create a new workspace
-      </Button>
+      </AddButton>
       <Dialog
         visible={visible}
         loading={loading}
@@ -84,11 +83,9 @@ const Add = ({ visible, swr, setVisible }: IProps): JSX.Element => {
 }
 
 Add.propTypes = {
-  visible: PropTypes.bool.isRequired,
   swr: PropTypes.shape({
     addOneWorkspace: PropTypes.func.isRequired
-  }).isRequired,
-  setVisible: PropTypes.func.isRequired
+  }).isRequired
 }
 
 export default Add

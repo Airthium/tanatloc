@@ -48,18 +48,21 @@ jest.mock('../data', () => () => <div />)
 
 const mockSelector = jest.fn()
 jest.mock('../simulation', () => {
-  const Simulation = {
+  return {
     Selector: (props: {}) => mockSelector(props),
     Updater: () => <div />,
     About: () => <div />,
     Geometry: () => <div />,
-    Materials: () => <div />,
+    Materials: (props: any) => (
+      <div role="Simulation.Materials" onClick={props.setVisible} />
+    ),
     Parameters: () => <div />,
     Initialization: () => <div />,
-    BoundaryConditions: () => <div />,
+    BoundaryConditions: (props: any) => (
+      <div role="Simulation.BoundaryCondition" onClick={props.setVisible} />
+    ),
     Run: () => <div />
   }
-  return Simulation
 })
 
 const mockUser = jest.fn()
@@ -313,6 +316,7 @@ describe('components/project', () => {
     mockSelector.mockImplementation((props) => (
       <div role="Selector" onClick={props.onCancel} />
     ))
+    mockPanel.mockImplementation((props) => <div>{props.children}</div>)
     const { unmount } = render(<Project />)
 
     // Open submenus
@@ -372,6 +376,8 @@ describe('components/project', () => {
       name: 'exclamation-circle Simulation 1 Materials'
     })
     fireEvent.click(simulationItem)
+    const materials = screen.getByRole('Simulation.Materials')
+    fireEvent.click(materials)
 
     simulationItem = screen.getByRole('menuitem', {
       name: 'exclamation-circle Simulation 1 Initialization'
@@ -382,6 +388,8 @@ describe('components/project', () => {
       name: 'exclamation-circle Simulation 1 BC'
     })
     fireEvent.click(simulationItem)
+    const boundaryCondition = screen.getByRole('Simulation.BoundaryCondition')
+    fireEvent.click(boundaryCondition)
 
     simulationItem = screen.getByRole('menuitem', {
       name: 'exclamation-circle Simulation 1 Run'

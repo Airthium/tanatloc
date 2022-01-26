@@ -56,6 +56,7 @@ const mockToolsConvert = jest.fn()
 const mockToolsRemoveFile = jest.fn()
 const mockToolsRemoveDirectory = jest.fn()
 jest.mock('../../tools', () => ({
+  createPath: async () => {},
   readFile: async () => mockToolsReadFile(),
   copyFile: async () => mockToolsCopyFile(),
   copyDirectory: async () => mockToolsCopyDirectory(),
@@ -187,7 +188,7 @@ describe('lib/simulation', () => {
     }))
 
     await Simulation.run({ id: 'id' }, { id: 'id' })
-    expect(mockPath).toHaveBeenCalledTimes(1)
+    expect(mockPath).toHaveBeenCalledTimes(2)
     expect(mockGet).toHaveBeenCalledTimes(1)
     expect(mockUpdate).toHaveBeenCalledTimes(2)
     expect(mockToolsCopyFile).toHaveBeenCalledTimes(1)
@@ -212,7 +213,7 @@ describe('lib/simulation', () => {
       }
     }))
     await Simulation.run({ id: 'id' }, { id: 'id' })
-    expect(mockPath).toHaveBeenCalledTimes(2)
+    expect(mockPath).toHaveBeenCalledTimes(4)
     expect(mockGet).toHaveBeenCalledTimes(2)
     expect(mockUpdate).toHaveBeenCalledTimes(4)
     expect(mockToolsCopyFile).toHaveBeenCalledTimes(2)
@@ -239,7 +240,7 @@ describe('lib/simulation', () => {
       }
     }))
     await Simulation.run({ id: 'id' }, { id: 'id' })
-    expect(mockPath).toHaveBeenCalledTimes(8)
+    expect(mockPath).toHaveBeenCalledTimes(11)
     expect(mockGet).toHaveBeenCalledTimes(3)
     expect(mockUpdate).toHaveBeenCalledTimes(6)
     expect(mockToolsCopyFile).toHaveBeenCalledTimes(5)
@@ -264,7 +265,7 @@ describe('lib/simulation', () => {
       }
     }))
     await Simulation.run({ id: 'id' }, { id: 'id' })
-    expect(mockPath).toHaveBeenCalledTimes(9)
+    expect(mockPath).toHaveBeenCalledTimes(13)
     expect(mockGet).toHaveBeenCalledTimes(4)
     expect(mockUpdate).toHaveBeenCalledTimes(8)
     expect(mockDelete).toHaveBeenCalledTimes(0)
@@ -277,7 +278,7 @@ describe('lib/simulation', () => {
       throw new Error()
     })
     await Simulation.run({ id: 'id' }, { id: 'id' })
-    expect(mockPath).toHaveBeenCalledTimes(10)
+    expect(mockPath).toHaveBeenCalledTimes(15)
     expect(mockGet).toHaveBeenCalledTimes(5)
     expect(mockUpdate).toHaveBeenCalledTimes(1)
     expect(mockToolsCopyFile).toHaveBeenCalledTimes(7)
@@ -288,7 +289,7 @@ describe('lib/simulation', () => {
       authorizedplugins: []
     }))
     await Simulation.run({ id: 'id' }, { id: 'id' })
-    expect(mockPath).toHaveBeenCalledTimes(10)
+    expect(mockPath).toHaveBeenCalledTimes(15)
     expect(mockGet).toHaveBeenCalledTimes(6)
     expect(mockUpdate).toHaveBeenCalledTimes(4)
     expect(mockToolsCopyFile).toHaveBeenCalledTimes(7)

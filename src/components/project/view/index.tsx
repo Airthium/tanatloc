@@ -813,7 +813,7 @@ export interface IViewProps {
     glb: string
     json: string
     name: string
-    type: 'result'
+    type: string
     fileName: string
   }
 }

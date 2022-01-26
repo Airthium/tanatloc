@@ -108,7 +108,8 @@ const BoundaryCondition = ({
         return {
           key: type,
           label: typedBoundaryCondition.label,
-          children: typedBoundaryCondition.children
+          children: typedBoundaryCondition.children,
+          values: typedBoundaryCondition.values
         }
       })
       .filter((t) => t)
@@ -163,7 +164,11 @@ const BoundaryCondition = ({
 
     setCurrent({
       ...current,
-      type: type,
+      type: {
+        key: type.key,
+        label: type.label,
+        children: type.children
+      },
       values: values
     })
   }

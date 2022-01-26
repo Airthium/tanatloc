@@ -316,19 +316,19 @@ describe('components/project/simulation/initialization', () => {
 
     // Click select
     const selects = screen.getAllByRole('combobox')
-    await act(async () => fireEvent.mouseDown(selects[0]))
+    fireEvent.mouseDown(selects[0])
 
     {
       const options1 = screen.getAllByText('select_option1')
-      const option1 = options1[0]
+      const option1 = options1[1]
       await act(async () => fireEvent.click(option1))
 
       const options2 = screen.getAllByText('select_option2')
-      const option2 = options2[0]
+      const option2 = options2[1]
       await act(async () => fireEvent.click(option2))
     }
 
-    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(4))
 
     // Error
     mockUpdate.mockImplementation(() => {

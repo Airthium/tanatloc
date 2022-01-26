@@ -180,6 +180,9 @@ const run = async (
     return
   }
 
+  // Create run path
+  await Tools.createPath(path.join(SIMULATION, simulation.id, 'run'))
+
   // Copy geometry
   const geometryId = configuration.geometry.value
   const geometry = await Geometry.get(geometryId, [

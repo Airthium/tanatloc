@@ -61,6 +61,6 @@ module.exports = {
     '<rootDir>/config/typedoc/',
     '<rootDir>/public/',
     '<rootDir>/tests/',
-    '<rootDir>/src/components/editor/prism/'
+    '<rootDir>/src/components/editor/'
   ]
 }

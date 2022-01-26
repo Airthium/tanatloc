@@ -809,7 +809,13 @@ export interface IViewProps {
   project: IProjectWithData
   simulation?: ISimulation
   geometry?: IGeometry & { needCleanup?: boolean }
-  result?: {}
+  result?: {
+    glb: string
+    json: string
+    name: string
+    type: 'result'
+    fileName: string
+  }
 }
 
 /**
@@ -824,13 +830,24 @@ const View = ({
   result
 }: IViewProps): JSX.Element => {
   // State
-  const [part, setPart]: [{ buffer: Buffer }, Function] = useState()
+  const [part, setPart]: [{ uuid?: string; buffer: Buffer }, Function] =
+    useState()
+  const [previous, setPrevious]: [any, Function] = useState()
   const [loading, setLoading]: [boolean, Function] = useState(false)
 
   // Part
   useEffect(() => {
-    if (simulation && result) loadPart(result, 'result')
-    else if (geometry) loadPart(geometry, 'geometry')
+    if (simulation && result) {
+      if (result.glb !== previous?.glb) {
+        setPrevious(result)
+        loadPart(result, 'result')
+      }
+    } else if (geometry) {
+      if (geometry.id !== previous?.id) {
+        setPrevious(geometry)
+        loadPart(geometry, 'geometry')
+      }
+    }
   }, [simulation, geometry, result])
 
   /**

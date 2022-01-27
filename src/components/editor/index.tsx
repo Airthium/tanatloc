@@ -3,41 +3,48 @@
 import { useRouter } from 'next/router'
 import dynamic from 'next/dynamic'
 import { ReactElement, useState, useEffect } from 'react'
-import {
-  Alert,
-  Button,
-  Layout,
-  List,
-  Steps,
-  Space,
-  Divider,
-  Typography
-} from 'antd'
+import { Alert, Button, Layout, Steps, Space, Divider } from 'antd'
 
 import { GoBack } from '@/components/assets/button'
 
 import Panel from './panel'
 
 import Information from './information'
-import Configuration from './configuration'
-import Script from './script'
+import Geometry from './geometry'
+import NumericalParameters from './numericalParameters'
+import Materials from './materials'
+
+import Variables from './variables'
 
 const DynamicCodeEditor = dynamic(() => import('./code'), { ssr: false })
 
 export type TValue = boolean | number | string
 
 export interface IConfiguration {
-  name?: string
-  category?: string
-  description?: string
+  information?: {
+    name: string
+    category: string
+    description: string
+  }
   geometry?: {
     meshable: boolean
     name: string
   }
+  numericalParameters?: {
+    finiteElementSpace: {
+      name: string
+      options: string[]
+      default: string
+    }
+    solver: {
+      options: string[]
+      default: string
+    }
+  }
   materials?: {
     children: {
-      index: number
-      label: string
+      // index: number
+      name: string
       symbol: string
       default: TValue
       unit?: string
@@ -123,15 +130,21 @@ const steps: IStep[] = [
     status: 'wait'
   },
   {
-    title: 'Geometries',
-    description: 'todo',
-    component: undefined,
+    title: 'Geometry',
+    description: 'Name, meshable, ...',
+    component: Geometry,
+    status: 'wait'
+  },
+  {
+    title: 'Numerical parameters',
+    description: 'finite element space, ...',
+    component: NumericalParameters,
     status: 'wait'
   },
   {
     title: 'Materials',
-    description: 'todo',
-    component: undefined,
+    description: 'Name, symbol, default, ...',
+    component: Materials,
     status: 'wait'
   },
   {
@@ -160,6 +173,40 @@ const steps: IStep[] = [
   }
 ]
 
+// Test configuration
+const initialConfiguration: IConfiguration = {
+  information: {
+    name: 'name',
+    category: 'Academic',
+    description: 'description'
+  },
+  geometry: {
+    meshable: true,
+    name: 'Mesh'
+  },
+  numericalParameters: {
+    finiteElementSpace: {
+      name: 'Uh',
+      options: ['[P2, P2, P1]', '[P1b, P1b, P1]'],
+      default: '[P2, P2, P1]'
+    },
+    solver: {
+      options: ['MUMPS', 'SuperLU', 'SuperLU_DIST'],
+      default: 'MUMPS'
+    }
+  },
+  materials: {
+    children: [
+      {
+        name: 'label',
+        symbol: 'Rho',
+        default: '1e3',
+        unit: 'kg.m^{-3}'
+      }
+    ]
+  }
+}
+
 /**
  * Editor
  * @memberof Components.Editor
@@ -169,15 +216,55 @@ const Editor = (): JSX.Element => {
   const [current, setCurrent]: [number, Function] = useState(-1)
   const [panel, setPanel]: [IStep, Function] = useState()
   const [configuration, setConfiguration]: [IConfiguration, Function] =
-    useState({})
+    useState(initialConfiguration)
 
   // Data
   const router = useRouter()
 
   // Step
   useEffect(() => {
-    if (current >= 0) setPanel(steps[current])
+    if (current >= 0) {
+      steps[current].status = 'process'
+      setPanel(steps[current])
+    }
   }, [current])
+
+  // Step status
+  useEffect(() => {
+    // Cleanup
+    steps.forEach((step) => (step.status = 'wait'))
+
+    // Information
+    if (
+      configuration?.information?.name &&
+      configuration?.information?.category &&
+      configuration?.information?.description
+    )
+      steps[0].status = 'finish'
+    else steps[0].status = 'wait'
+
+    // Geometry
+    if (
+      configuration?.geometry?.meshable !== undefined &&
+      configuration?.geometry?.name
+    )
+      steps[1].status = 'finish'
+    else steps[1].status = 'wait'
+
+    // Numerical parameters
+    if (
+      configuration?.numericalParameters?.finiteElementSpace?.options?.length &&
+      configuration?.numericalParameters?.finiteElementSpace?.default &&
+      configuration?.numericalParameters?.solver?.options &&
+      configuration?.numericalParameters?.solver?.default
+    ) {
+      steps[2].status = 'finish'
+    } else steps[2].status = 'wait'
+
+    // Materials
+    if (configuration?.materials) steps[3].status = 'finish'
+    else steps[3].status = 'wait'
+  }, [panel, configuration])
 
   /**
    * Handle dashboard
@@ -207,6 +294,8 @@ const Editor = (): JSX.Element => {
     })
     setCurrent(current + 1)
   }
+
+  console.log(configuration)
 
   /**
    * Render
@@ -250,7 +339,10 @@ const Editor = (): JSX.Element => {
         <Panel
           visible={!!panel}
           title={panel?.title}
-          onClose={() => setPanel()}
+          onClose={() => {
+            setPanel()
+            setCurrent(-1)
+          }}
         >
           {panel?.component && (
             <panel.component
@@ -258,40 +350,8 @@ const Editor = (): JSX.Element => {
               onNext={onConfiguration}
             />
           )}
-
-          {/* <Information
-            configuration={{
-              name: configuration.name,
-              category: configuration.category,
-              description: configuration.description
-            }}
-            onNext={onConfiguration}
-          /> */}
         </Panel>
-        {/* )} */}
-        <DynamicCodeEditor />
-        {/* {step === 0 && (
-          <Information
-            configuration={{
-              name: configuration.name,
-              category: configuration.category,
-              description: configuration.description
-            }}
-            onNext={onInformation}
-          />
-          )}*/}
-
-        {/* <Configuration
-          configuration={{
-            geometry: configuration.geometry,
-            materials: configuration.materials,
-            parameters: configuration.parameters,
-            initialization: configuration.initialization,
-            boundaryConditions: configuration.boundaryConditions,
-            results: configuration.results
-          }}
-          onNext={onConfiguration}
-        /> */}
+        <DynamicCodeEditor configuration={configuration} />
       </Layout.Content>
 
       <Layout.Sider theme="light">
@@ -313,10 +373,7 @@ const Editor = (): JSX.Element => {
             </>
           }
         />
-        <List header={<Typography.Text strong>Variables list</Typography.Text>}>
-          <List.Item>Variable 1</List.Item>
-          <List.Item>Variable 2</List.Item>
-        </List>
+        <Variables configuration={configuration} />
       </Layout.Sider>
     </Layout>
   )

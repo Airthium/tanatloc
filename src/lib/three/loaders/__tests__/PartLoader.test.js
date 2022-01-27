@@ -86,7 +86,7 @@ describe('lib/three/loaders/PartLoader', () => {
     {
       children: [
         {
-          userData: {uuid: 'solid_uuid'},
+          userData: { uuid: 'solid_uuid' },
           geometry: {
             dispose: () => {},
             boundingBox: {
@@ -103,7 +103,7 @@ describe('lib/three/loaders/PartLoader', () => {
     {
       children: [
         {
-          userData: {uuid: 'face_uuid'},
+          userData: { uuid: 'face_uuid' },
           geometry: {
             dispose: () => {},
             boundingBox: {

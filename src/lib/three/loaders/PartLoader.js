@@ -317,7 +317,9 @@ const PartLoader = (mouseMoveEvent, mouseDownEvent) => {
       )
       if (!alreadyOutlined) selectionOutlinePass.selectedObjects.push(mesh)
     } else {
-      const alreadySelected = selected.find((uuid) => uuid === mesh.userData.uuid)
+      const alreadySelected = selected.find(
+        (uuid) => uuid === mesh.userData.uuid
+      )
       if (!alreadySelected) selectionOutlinePass.selectedObjects.push(mesh)
     }
   }

@@ -2,22 +2,7 @@
  * @jest-environment node
  */
 
-import { Store } from 'redux'
-
-import { initializeStore } from '@/store/store'
-
-jest.mock('redux', () => ({
-  createStore: jest.fn(() => ({
-    id: 'store',
-    getState: jest.fn()
-  })),
-  applyMiddleware: jest.fn(),
-  combineReducers: jest.fn(() => () => 'combined')
-}))
-
-jest.mock('redux-devtools-extension', () => ({
-  composeWithDevTools: jest.fn()
-}))
+import '../store'
 
 jest.mock('redux-persist', () => ({
   persistReducer: (params) => {
@@ -31,17 +16,5 @@ jest.mock('redux-persist', () => ({
 jest.mock('redux-persist/lib/storage/createWebStorage', () => () => {})
 
 describe('store/store (server)', () => {
-  test('null window', () => {
-    const res: Store & { id?: string } = initializeStore({
-      select: {
-        enabled: true,
-        selected: []
-      },
-      _persist: {
-        version: 1,
-        rehydrated: true
-      }
-    })
-    expect(res.id).toBe('store')
-  })
+  test('null window', () => {})
 })

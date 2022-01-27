@@ -348,7 +348,7 @@ const computeSimulation = async (
     await Tools.createPath(path.join(simulationPath, runPath, dataPath))
 
     // Compute simulation
-    startProcess(id, simulationPath, simulationTask, () =>
+    Local.startProcess(id, simulationPath, simulationTask, () =>
       updateTasks(id, tasks)
     )
     const code = await Services.freefem(
@@ -646,7 +646,7 @@ const stop = async (id: string, tasks: ISimulationTask[]): Promise<void> => {
   })
 }
 
-export default {
+const Local = {
   // Must be exported for each plugin
   key,
   computeMesh,
@@ -670,3 +670,4 @@ export default {
     data: dataPath
   }
 }
+export default Local

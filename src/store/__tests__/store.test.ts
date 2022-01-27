@@ -1,4 +1,4 @@
-import { useStore, reducer, initializeStore } from '@/store/store'
+import { useStore, reducer } from '@/store/store'
 
 jest.mock('react', () => ({
   useMemo: jest.fn((callback) => {
@@ -30,37 +30,6 @@ describe('store/store', () => {
   test('reducer', () => {
     const res = reducer()
     expect(res).toBe('combined')
-  })
-
-  test('initializeStore', () => {
-    let res
-
-    res = initializeStore()
-    expect(res.id).toBe('store')
-
-    res = initializeStore({
-      select: {
-        enabled: true,
-        selected: []
-      },
-      _persist: {
-        version: 1,
-        rehydrated: true
-      }
-    })
-    expect(res.id).toBe('store')
-
-    res = initializeStore({
-      select: {
-        enabled: true,
-        selected: []
-      },
-      _persist: {
-        version: 1,
-        rehydrated: true
-      }
-    })
-    expect(res.id).toBe('store')
   })
 
   test('useStore', () => {

@@ -8,7 +8,7 @@ jest.mock('swr', () => () => ({
 
 describe('api/organization/useOrganizations', () => {
   test('with organizations', () => {
-    mockOrganizations.mockImplementation(() => [{ id: 'id' }])
+    mockOrganizations.mockImplementation(() => [{ id: 'id' }, { id: 'id1' }])
     const [
       organizations,
       {
@@ -18,7 +18,7 @@ describe('api/organization/useOrganizations', () => {
         loadingOrganizations
       }
     ] = useOrganizations()
-    expect(organizations).toEqual([{ id: 'id' }])
+    expect(organizations).toEqual([{ id: 'id' }, { id: 'id1' }])
     expect(addOneOrganization).toBeDefined()
     addOneOrganization({ id: 'id' })
     expect(mutateOneOrganization).toBeDefined()
@@ -31,7 +31,9 @@ describe('api/organization/useOrganizations', () => {
   })
 
   test('without organizations', () => {
-    mockOrganizations.mockImplementation(() => {})
+    mockOrganizations.mockImplementation(() => {
+      // Empty
+    })
     const [organizations] = useOrganizations()
     expect(organizations).toEqual([])
   })

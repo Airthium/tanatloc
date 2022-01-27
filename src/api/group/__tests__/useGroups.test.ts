@@ -8,12 +8,12 @@ jest.mock('swr', () => () => ({
 
 describe('api/groups', () => {
   test('with groups', () => {
-    mockGroups.mockImplementation(() => [{ id: 'id' }])
+    mockGroups.mockImplementation(() => [{ id: 'id' }, { id: 'id1' }])
     const [
       groups,
       { addOneGroup, mutateOneGroup, delOneGroup, loadingGroups }
     ] = useGroups()
-    expect(groups).toEqual([{ id: 'id' }])
+    expect(groups).toEqual([{ id: 'id' }, { id: 'id1' }])
     expect(addOneGroup).toBeDefined()
     addOneGroup({ id: 'id' })
     expect(mutateOneGroup).toBeDefined()

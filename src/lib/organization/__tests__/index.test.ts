@@ -82,13 +82,19 @@ describe('lib/organization', () => {
     mockGroupGetWithData.mockImplementation(() => ({
       id: 'id'
     }))
-    const organization = await Organization.getWithData('id', ['data'])
+    let organization = await Organization.getWithData('id', ['data'])
     expect(mockGet).toHaveBeenCalledTimes(1)
     expect(organization).toEqual({
       owners: [{ id: 'id' }],
       users: [{ id: 'id' }],
       groups: [{ id: 'id' }]
     })
+
+    // Without users, owners and groups
+    mockGet.mockImplementation(() => ({}))
+    organization = await Organization.getWithData('id', ['data'])
+    expect(mockGet).toHaveBeenCalledTimes(2)
+    expect(organization).toEqual({})
   })
 
   test('getByUsers', async () => {
@@ -167,6 +173,14 @@ describe('lib/organization', () => {
     await Organization.update({ id: 'id' }, [{ key: 'key', value: 'value' }])
     expect(mockUpdate).toHaveBeenCalledTimes(1)
 
+    // Minimal with ownerId
+    await Organization.update(
+      { id: 'id' },
+      [{ key: 'key', value: 'value' }],
+      'id'
+    )
+    expect(mockUpdate).toHaveBeenCalledTimes(2)
+
     // With existing users
     mockUserGetBy.mockImplementation(() => ({}))
     await Organization.update(
@@ -177,7 +191,7 @@ describe('lib/organization', () => {
       ],
       'id'
     )
-    expect(mockUpdate).toHaveBeenCalledTimes(2)
+    expect(mockUpdate).toHaveBeenCalledTimes(3)
     expect(mockUserUpdate).toHaveBeenCalledTimes(2)
 
     // With non-existing users
@@ -193,7 +207,7 @@ describe('lib/organization', () => {
       ],
       'id'
     )
-    expect(mockUpdate).toHaveBeenCalledTimes(3)
+    expect(mockUpdate).toHaveBeenCalledTimes(4)
     expect(mockUserAdd).toHaveBeenCalledTimes(2)
     expect(mockUserUpdate).toHaveBeenCalledTimes(4)
   })

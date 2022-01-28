@@ -58,7 +58,9 @@ const Variables = ({ configuration }: IProps): JSX.Element => {
           <Typography.Text strong>Materials</Typography.Text>
           <br />
           {configuration.materials.children?.map((child) => (
-            <Typography.Text code>func {child.name}</Typography.Text>
+            <Typography.Text key={child.name} code>
+              func {child.name}
+            </Typography.Text>
           ))}
         </List.Item>
       )}

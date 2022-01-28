@@ -89,7 +89,7 @@ const Materials = ({
    */
   return (
     <Layout>
-      <Layout.Content>
+      <Layout.Content style={{margin:"auto"}}>
         <Card size="small">
           <AddButton onAdd={onAdd}>Add material</AddButton>
           <List

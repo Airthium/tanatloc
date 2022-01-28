@@ -9866,7 +9866,7 @@ __metadata:
     set-interval-async: 2.0.3
     swr: 1.1.2
     tar: 6.1.11
-    three: 0.136.0
+    three: 0.137.0
     three-to-glb: "ssh://git@github.com:Airthium/three-to-glb.git#1.0.8"
     typedoc: 0.22.11
     typescript: 4.5.5
@@ -9944,6 +9944,13 @@ __metadata:
   version: 0.136.0
   resolution: "three@npm:0.136.0"
   checksum: 9183f83a75901edb85034fe8f6d52bf6daaece554e40d42f8eef5dead13a09e5f67548ee7cccd6c34bde42a91c5e8fa2ccb4a1b80783d7986bda4ec9f58bfe7f
+  languageName: node
+  linkType: hard
+
+"three@npm:0.137.0":
+  version: 0.137.0
+  resolution: "three@npm:0.137.0"
+  checksum: c3d005a73818a8023d014af4803c12e34ab5b095f50ac58c994173d6f433a480ad4547543b106f95ee240c827272b1de2eca48dcafd2b65cdcd0a0f3e5bf128b
   languageName: node
   linkType: hard
 

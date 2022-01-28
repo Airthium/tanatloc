@@ -109,7 +109,7 @@ describe('route/user/check', () => {
     expect(mockSession).toHaveBeenCalledTimes(2)
     expect(mockLogin).toHaveBeenCalledTimes(1)
     expect(mockError).toHaveBeenCalledTimes(1)
-    expect(resStatus).toBe(401)
+    expect(resStatus).toBe(200)
     expect(resJson).toEqual({
       valid: false
     })

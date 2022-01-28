@@ -13,6 +13,7 @@ import Information from './information'
 import Geometry from './geometry'
 import NumericalParameters from './numericalParameters'
 import Materials from './materials'
+import PhysicalParameters from './physicalParameters'
 
 import Variables from './variables'
 
@@ -150,7 +151,7 @@ const steps: IStep[] = [
   {
     title: 'Physical parameters',
     description: 'todo',
-    component: undefined,
+    component: PhysicalParameters,
     status: 'wait'
   },
   {
@@ -198,7 +199,7 @@ const initialConfiguration: IConfiguration = {
   materials: {
     children: [
       {
-        name: 'label',
+        name: 'density',
         symbol: 'Rho',
         default: '1e3',
         unit: 'kg.m^{-3}'

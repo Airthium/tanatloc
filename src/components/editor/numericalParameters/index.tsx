@@ -43,7 +43,10 @@ const NumericalParameters = ({
               </Form.Item>
             </div>
           ))}
-          <Button className="required" onClick={() => add()}>
+          <Button
+            className={!fields.length && 'required'}
+            onClick={() => add()}
+          >
             Add options
           </Button>
           <Form.ErrorList errors={errors} />
@@ -66,7 +69,11 @@ const NumericalParameters = ({
           >
             <Typography.Text strong>Finite element space</Typography.Text>
             <br />
-            <Form.Item name="name" label="Name" rules={[{ required: true }]}>
+            <Form.Item
+              name={['finiteElementSpace', 'name']}
+              label="Name"
+              rules={[{ required: true }]}
+            >
               <Input />
             </Form.Item>
             {options('finiteElementSpace')}
@@ -105,6 +112,7 @@ NumericalParameters.propTypes = {
   configuration: PropTypes.shape({
     numericalParameters: PropTypes.exact({
       finiteElementSpace: PropTypes.exact({
+        name: PropTypes.string,
         options: PropTypes.array,
         default: PropTypes.string
       }).isRequired,

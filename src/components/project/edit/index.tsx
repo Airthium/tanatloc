@@ -98,7 +98,13 @@ const Edit = ({ disabled, project, swr }: IProps): JSX.Element => {
         <Form.Item
           label="Name"
           name="title"
-          rules={[{ required: true, message: 'Please enter a project name' }]}
+          rules={[
+            { required: true, message: 'Please enter a project name' },
+            {
+              max: 50,
+              message: 'A project name must not exceed 50 characters'
+            }
+          ]}
         >
           <Input placeholder="Project's name" />
         </Form.Item>

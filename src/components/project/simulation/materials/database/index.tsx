@@ -170,7 +170,11 @@ const DataBase = ({ onSelect }: IProps): JSX.Element => {
    */
   return (
     <>
-      <Button icon={<DatabaseOutlined />} onClick={() => setVisible(true)} style={{width:"100%"}}>
+      <Button
+        icon={<DatabaseOutlined />}
+        onClick={() => setVisible(true)}
+        style={{ width: '100%' }}
+      >
         Pick a material
       </Button>
       <Modal

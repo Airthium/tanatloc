@@ -105,13 +105,13 @@ const Password = ({ user }: IProps): JSX.Element => {
             }
           ]}
         >
-          <Input.Password placeholder="Current password"/>
+          <Input.Password placeholder="Current password" />
         </Form.Item>
         <PasswordItem
           {...inputLayout}
           name="newPassword"
           label="New password"
-          inputPlaceholder='Enter a new password'
+          inputPlaceholder="Enter a new password"
         />
         <Form.Item
           {...inputLayout}
@@ -133,7 +133,7 @@ const Password = ({ user }: IProps): JSX.Element => {
             })
           ]}
         >
-          <Input.Password placeholder="Confirm your new password"/>
+          <Input.Password placeholder="Confirm your new password" />
         </Form.Item>
         <Form.Item {...buttonLayout}>
           <Space>

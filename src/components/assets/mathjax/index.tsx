@@ -27,7 +27,7 @@ export interface IPropsInline {
 const Inline = ({ text }: IPropsInline): JSX.Element => {
   useEffect(() => {
     mathjaxRefresh()
-  }, [text, window?.MathJax])
+  }, [text])
 
   if (!text) return <></>
   else if (text.includes('\\(') && text.includes('\\)')) return <>{text}</>
@@ -45,7 +45,7 @@ export interface IPropsFormula {
 const Formula = ({ text }) => {
   useEffect(() => {
     mathjaxRefresh()
-  }, [text, window?.MathJax])
+  }, [text])
 
   if (!text) return <></>
   else if (text.includes('$$')) return <>{text}</>
@@ -63,7 +63,7 @@ export interface IPropsHtml {
 const Html = ({ html }: IPropsHtml): JSX.Element => {
   useEffect(() => {
     mathjaxRefresh()
-  }, [html, window?.MathJax])
+  }, [html])
 
   if (!html) return <></>
   else return <>{parse(html)}</>

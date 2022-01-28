@@ -1,4 +1,5 @@
-import { Button, Card, Space, Typography } from 'antd'
+import PropTypes from 'prop-types'
+import { Card, Space, Typography } from 'antd'
 
 import { IConfiguration } from '../..'
 
@@ -7,13 +8,18 @@ import { EditButton, DeleteButton } from '@/components/assets/button'
 
 export interface IProps {
   materials: IConfiguration['materials']['children']
+  onEdit: (index: number) => void
+  onDelete: (index: number) => void
 }
 
-const List = ({ materials }: IProps): JSX.Element => {
-  const onEdit = (material, index) => {}
-
-  const onDelete = async (index) => {}
-
+/**
+ * List
+ * @param props Props
+ */
+const List = ({ materials, onEdit, onDelete }: IProps): JSX.Element => {
+  /**
+   * Render
+   */
   return (
     <>
       {materials?.map((material, index) => (
@@ -22,8 +28,8 @@ const List = ({ materials }: IProps): JSX.Element => {
           size="small"
           title={material.name}
           actions={[
-            <EditButton key="edit" onEdit={() => onEdit(material, index)} />,
-            <DeleteButton key="delete" onDelete={() => onDelete(index)} />
+            <EditButton key="edit" onEdit={() => onEdit(index)} />,
+            <DeleteButton key="delete" onDelete={async () => onDelete(index)} />
           ]}
         >
           <Space direction="vertical" style={{ maxWidth: '100%' }}>
@@ -43,6 +49,12 @@ const List = ({ materials }: IProps): JSX.Element => {
       ))}
     </>
   )
+}
+
+List.propTypes = {
+  materials: PropTypes.array,
+  onEdit: PropTypes.func.isRequired,
+  onDelete: PropTypes.func.isRequired
 }
 
 export default List

@@ -5,7 +5,13 @@ import 'ace-builds/src-noconflict/mode-c_cpp'
 import 'ace-builds/src-noconflict/theme-chrome'
 import 'ace-builds/src-noconflict/ext-language_tools'
 
-const Code = ({ configuration }) => {
+import { IConfiguration } from '..'
+
+export interface IProps {
+  configuration: IConfiguration
+}
+
+const Code = ({ configuration }: IProps): JSX.Element => {
   const [code, setCode] = useState('')
 
   useEffect(() => {
@@ -48,6 +54,28 @@ const Code = ({ configuration }) => {
           configuration.numericalParameters.finiteElementSpace.default +
           '); \n'
       }
+
+      if (configuration.numericalParameters.solver) {
+        header += '\n// SOLVER\n'
+        header +=
+          '/*** TANATLOC SOLVER ***/ func solver = ' +
+          configuration.numericalParameters.solver.default +
+          ';\n'
+      }
+    }
+
+    if (configuration.materials) {
+      header += '\n// MATERIALS\n'
+      configuration.materials.children?.map((child) => {
+        header +=
+          '/*** TANATLOC MATERIAL ***/ func ' +
+          child.name +
+          ' = ' +
+          child.default +
+          '; // ' +
+          child.unit +
+          '\n'
+      })
     }
 
     setCode(header)

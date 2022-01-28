@@ -108,10 +108,6 @@ const Add = ({ visible, project, swr, setVisible }: IProps): JSX.Element => {
       onCancel={() => setVisible(false)}
     >
       <Space direction="vertical" style={{ width: '100%' }}>
-        <Typography.Title level={5}>
-          <b>Upload a geometry</b>
-        </Typography.Title>
-        <Typography.Text>STEP (3D) of DXF (2D) file</Typography.Text>
         <Upload
           className="upload"
           accept=".stp,.step,.dxf"
@@ -138,6 +134,11 @@ const Add = ({ visible, project, swr, setVisible }: IProps): JSX.Element => {
             )}
           </div>
         </Upload>
+        <Typography.Text>
+          <p style={{ color: 'rgba(0, 0, 0, 0.45)', textAlign: 'center' }}>
+            Native file format preferred: STEP (3D) or DXF (2D) file
+          </p>
+        </Typography.Text>
       </Space>
     </Dialog>
   )

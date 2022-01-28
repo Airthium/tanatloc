@@ -50,7 +50,7 @@ export default async (req: Request, res: Response): Promise<void> => {
         if (user) {
           res.status(200).json({ valid: true })
         } else {
-          res.status(401).json({ valid: false })
+          res.status(200).json({ valid: false })
         }
       } catch (err) {
         throw error(500, err.message)

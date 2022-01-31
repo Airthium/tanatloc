@@ -24,7 +24,7 @@ const List = ({ materials, onEdit, onDelete }: IProps): JSX.Element => {
     <>
       {materials?.map((material, index) => (
         <Card
-          key={material.name}
+          key={index}
           size="small"
           title={material.name}
           actions={[

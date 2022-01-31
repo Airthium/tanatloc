@@ -1,11 +1,11 @@
 import PropTypes from 'prop-types'
+import { useEffect, useState } from 'react'
 import { Button, Card, Layout } from 'antd'
 
 import { IConfiguration } from '..'
 
 import Material from './material'
 import List from './list'
-import { useEffect, useState } from 'react'
 
 export interface IProps {
   configuration: IConfiguration
@@ -18,6 +18,7 @@ export interface IProps {
  * @returns
  */
 const Materials = ({ configuration, onNext }: IProps): JSX.Element => {
+  // State
   const [materials, setMaterials]: [
     IConfiguration['materials']['children'],
     Function

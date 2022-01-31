@@ -44,7 +44,6 @@ export interface IConfiguration {
   }
   materials?: {
     children: {
-      // index: number
       name: string
       symbol: string
       default: TValue
@@ -53,10 +52,9 @@ export interface IConfiguration {
   }
   parameters?: {
     [key: string]: {
-      key?: string
-      label: string
+      name: string
       children: {
-        label: string
+        name: string
         default: TValue
         unit?: string
         htmlEntity?: string
@@ -67,9 +65,9 @@ export interface IConfiguration {
     [key: string]: {
       type?: string
       key?: string
-      label: string
+      name: string
       children?: {
-        label: string
+        name: string
         default: TValue
         unit?: string
         htmlEntity?: string
@@ -205,6 +203,23 @@ const initialConfiguration: IConfiguration = {
         unit: 'kg.m^{-3}'
       }
     ]
+  },
+  parameters: {
+    test: {
+      name: 'Test',
+      children: [
+        {
+          name: 'Test1',
+          default: 1,
+          unit: 's'
+        },
+        {
+          name: 'Test2',
+          default: 1,
+          unit: 's'
+        }
+      ]
+    }
   }
 }
 

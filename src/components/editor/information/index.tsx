@@ -98,7 +98,7 @@ const Information = ({ configuration, onNext }: IProps): JSX.Element => {
             >
               <Input.TextArea />
             </Form.Item>
-            <Form.Item>
+            <Form.Item style={{ marginBottom: 0 }}>
               <Button type="primary" htmlType="submit">
                 Next
               </Button>

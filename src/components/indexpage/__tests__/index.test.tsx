@@ -27,8 +27,12 @@ jest.mock('@/components/assets/notification', () => ({
 
 const mockUser = jest.fn()
 const mockErrorUser = jest.fn()
+const mockLoadingUser = jest.fn()
 jest.mock('@/api/user', () => ({
-  useUser: () => [mockUser(), { errorUser: mockErrorUser() }]
+  useUser: () => [
+    mockUser(),
+    { errorUser: mockErrorUser(), loadingUser: mockLoadingUser() }
+  ]
 }))
 
 describe('components/index', () => {
@@ -40,6 +44,8 @@ describe('components/index', () => {
 
     mockUser.mockReset()
     mockErrorUser.mockReset()
+    mockLoadingUser.mockReset()
+    mockLoadingUser.mockImplementation(() => false)
   })
 
   test('render', () => {
@@ -92,6 +98,14 @@ describe('components/index', () => {
 
     const { unmount } = render(<Index />)
     expect(mockError).toHaveBeenCalledTimes(1)
+
+    unmount()
+  })
+
+  test('loadingUser', () => {
+    mockLoadingUser.mockImplementation(() => true)
+
+    const { unmount } = render(<Index />)
 
     unmount()
   })

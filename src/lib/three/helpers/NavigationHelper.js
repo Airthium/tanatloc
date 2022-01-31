@@ -44,7 +44,7 @@ const NavigationHelper = (
   // Text color
   const textColor = '#000000'
   // Highlight color
-  const highlightColor = '#0096C7'
+  const highlightColor = '#FAD114'
   // Cube size
   const size = 100
   // Cube corner

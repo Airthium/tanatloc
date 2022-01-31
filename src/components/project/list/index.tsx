@@ -144,6 +144,7 @@ const ProjectList = ({
         }
       })
       .filter((p) => p)
+
     switch (sorter) {
       case 'alphaAsc':
         currentList.sort((a, b) => a.title.localeCompare(b.title))
@@ -327,6 +328,7 @@ ProjectList.propTypes = {
   projects: PropTypes.array.isRequired,
   organizations: PropTypes.array.isRequired,
   filter: PropTypes.string,
+  sorter: PropTypes.string,
   swr: PropTypes.shape({
     mutateOneWorkspace: PropTypes.func.isRequired,
     delOneProject: PropTypes.func.isRequired,

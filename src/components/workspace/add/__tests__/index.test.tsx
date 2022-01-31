@@ -11,15 +11,18 @@ jest.mock('@/components/assets/notification', () => ({
   Error: () => mockError()
 }))
 
+const mockAddButton = jest.fn()
+jest.mock('@/components/assets/button', () => ({
+  AddButton: (props) => mockAddButton(props)
+}))
+
 const mockAdd = jest.fn()
 jest.mock('@/api/workspace', () => ({
   add: async () => mockAdd()
 }))
 
 describe('components/workspace/add', () => {
-  const visible = true
   const swr = { addOneWorkspace: jest.fn() }
-  const setVisible = jest.fn
 
   beforeEach(() => {
     mockDialog.mockReset()
@@ -27,13 +30,14 @@ describe('components/workspace/add', () => {
 
     mockError.mockReset()
 
+    mockAddButton.mockReset()
+    mockAddButton.mockImplementation(() => <div />)
+
     mockAdd.mockReset()
   })
 
   test('render', () => {
-    const { unmount } = render(
-      <Add visible={visible} swr={swr} setVisible={setVisible} />
-    )
+    const { unmount } = render(<Add swr={swr} />)
 
     unmount()
   })
@@ -42,10 +46,16 @@ describe('components/workspace/add', () => {
     mockDialog.mockImplementation((props) => (
       <div role="Dialog" onClick={props.onCancel} />
     ))
-    const { unmount } = render(
-      <Add visible={visible} swr={swr} setVisible={setVisible} />
-    )
+    mockAddButton.mockImplementation((props) => (
+      <div role="AddButton" onClick={props.onAdd} />
+    ))
+    const { unmount } = render(<Add swr={swr} />)
 
+    // visible
+    const addButton = screen.getByRole('AddButton')
+    fireEvent.click(addButton)
+
+    // cancel
     const dialog = screen.getByRole('Dialog')
     fireEvent.click(dialog)
 
@@ -63,9 +73,7 @@ describe('components/workspace/add', () => {
         }}
       />
     ))
-    const { unmount } = render(
-      <Add visible={visible} swr={swr} setVisible={setVisible} />
-    )
+    const { unmount } = render(<Add swr={swr} />)
 
     const dialog = screen.getByRole('Dialog')
 

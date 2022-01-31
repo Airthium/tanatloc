@@ -82,7 +82,13 @@ const Edit = ({ workspace, swr }: IProps): JSX.Element => {
         <Form.Item
           label="Name"
           name="name"
-          rules={[{ required: true, message: 'A Workspace name is required' }]}
+          rules={[
+            { required: true, message: 'A Workspace name is required' },
+            {
+              max: 50,
+              message: 'A workspace name must not exceed 50 characters'
+            }
+          ]}
         >
           <Input placeholder="Workspace's name" />
         </Form.Item>

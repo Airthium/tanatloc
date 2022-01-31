@@ -20,6 +20,8 @@ jest.mock('@/components/assets/notification', () => ({
   Error: () => mockError()
 }))
 
+jest.mock('../mesh', () => () => <div />)
+
 const mockUpdate = jest.fn()
 jest.mock('@/api/simulation', () => ({
   update: async () => mockUpdate()
@@ -121,6 +123,37 @@ describe('components/project/simulation/geometry', () => {
     fireEvent.click(button)
     await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
     await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
+
+    unmount()
+  })
+
+  test('meshable', () => {
+    const { unmount } = render(
+      <Geometry
+        geometries={geometries}
+        geometry={geometry}
+        simulation={{
+          id: 'id',
+          scheme: {
+            category: 'category',
+            name: 'name',
+            algorithm: 'algorithm',
+            code: 'code',
+            version: 'version',
+            description: 'description',
+            configuration: {
+              geometry: {
+                index: 1,
+                title: 'Geometry',
+                meshable: true
+              }
+            }
+          }
+        }}
+        setGeometry={setGeometry}
+        swr={swr}
+      />
+    )
 
     unmount()
   })

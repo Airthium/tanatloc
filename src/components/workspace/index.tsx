@@ -91,10 +91,10 @@ const Workspace = ({
   }
 
   /**
-   * On switch
-   * @param key String
+   * On sort
+   * @param key Key
    */
-  const onSwitch = (key: string): void => {
+  const onSort = (key: string): void => {
     setSorter(key)
   }
 
@@ -166,7 +166,7 @@ const Workspace = ({
         </PageHeader>
         <Tabs
           defaultActiveKey="default"
-          onChange={onSwitch}
+          onChange={onSort}
           style={{ marginTop: '20px' }}
           id="workspaceSorter"
         >

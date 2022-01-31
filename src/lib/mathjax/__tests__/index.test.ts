@@ -4,10 +4,26 @@ describe('lib/mathjax', () => {
   test('mathjaxInit', () => {
     // Normal
     window.MathJax = undefined
+    document.getElementsByTagName = () => [
+      //@ts-ignore
+      {
+        children: [],
+        appendChild: jest.fn
+      }
+    ]
     mathjaxInit()
 
     // Already exists
     window.MathJax = undefined
+    document.getElementsByTagName = () => [
+      //@ts-ignore
+      {
+        children: [
+          undefined,
+          { src: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js' }
+        ]
+      }
+    ]
     mathjaxInit()
 
     // Already loaded

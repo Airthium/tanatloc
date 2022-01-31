@@ -71,7 +71,7 @@ const Password = ({ user }: IProps): JSX.Element => {
           }
         ])
 
-        SuccessNotification('Your password has been changed successefully')
+        SuccessNotification('Your password has been changed successfully')
       } else {
         notification.error({ message: errors.invalid })
       }
@@ -91,11 +91,6 @@ const Password = ({ user }: IProps): JSX.Element => {
         layout="vertical"
         labelCol={{ span: 4 }}
         wrapperCol={{ span: 16 }}
-        initialValues={{
-          password: '******',
-          newPassword: '******',
-          passwordConfirm: '******'
-        }}
         onFinish={onFinish}
         name="passwordForm"
       >
@@ -110,12 +105,13 @@ const Password = ({ user }: IProps): JSX.Element => {
             }
           ]}
         >
-          <Input.Password />
+          <Input.Password placeholder="Current password" />
         </Form.Item>
         <PasswordItem
           {...inputLayout}
           name="newPassword"
           label="New password"
+          inputPlaceholder="Enter a new password"
         />
         <Form.Item
           {...inputLayout}
@@ -137,7 +133,7 @@ const Password = ({ user }: IProps): JSX.Element => {
             })
           ]}
         >
-          <Input.Password />
+          <Input.Password placeholder="Confirm your new password" />
         </Form.Item>
         <Form.Item {...buttonLayout}>
           <Space>

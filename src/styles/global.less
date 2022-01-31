@@ -86,6 +86,8 @@
 @font-family: Saira;
 @text-color: #1f1f1f;
 
+@border-radius-base: 0;
+
 // Menu
 @menu-bg: @component-background;
 @menu-item-color: @text-color;
@@ -209,4 +211,18 @@ body {
 
 .goback-button-icon {
   color: @tanatloc-primary-color;
+}
+
+.required ::before {
+  display: inline-block;
+  margin-right: 4px;
+  color: #ff4d4f;
+  font-size: 14px;
+  font-family: SimSun, sans-serif;
+  line-height: 1;
+  content: '*';
+}
+
+.ant-drawer-body {
+  padding: 0 24px
 }

@@ -144,6 +144,29 @@ describe('components/workspace', () => {
     unmount()
   })
 
+  test('onSort', () => {
+    const { unmount } = render(
+      <Workspace
+        loading={loading}
+        user={user}
+        page="page"
+        workspace={workspace}
+        organizations={organizations}
+        swr={swr}
+      />
+    )
+
+    const tab1 = screen.getByRole('tab', { name: 'Name (A-Z)' })
+    const tab2 = screen.getByRole('tab', { name: 'Name (Z-A)' })
+    const tab3 = screen.getByRole('tab', { name: 'Last modified' })
+
+    fireEvent.click(tab1)
+    fireEvent.click(tab2)
+    fireEvent.click(tab3)
+
+    unmount()
+  })
+
   test('owner, users & groups', () => {
     const { unmount } = render(
       <Workspace

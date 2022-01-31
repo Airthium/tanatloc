@@ -150,9 +150,10 @@ jest.mock('@/lib/three/loaders/PartLoader', () => {
             {
               children: [
                 {
-                  userData: {},
-                  material: {},
-                  lut: count++ === 1 ? null : {}
+                  userData: {
+                    lut: count++ === 1 ? null : {}
+                  },
+                  material: {}
                 }
               ]
             },
@@ -261,7 +262,13 @@ describe('components/project/view', () => {
   const geometry = {
     id: 'id'
   }
-  const result = {}
+  const result = {
+    glb: 'test.glb',
+    json: 'test.json',
+    name: 'name',
+    type: 'result',
+    fileName: 'test.vtu'
+  }
 
   beforeEach(() => {
     mockError.mockReset()
@@ -302,19 +309,6 @@ describe('components/project/view', () => {
 
     unmount()
   })
-
-  // test('with geometry error 2', async () => {
-  //   mockGet.mockImplementation(() => ({
-  //     error: true,
-  //     message: 'message'
-  //   }))
-  //   const { unmount } = render(<View project={project} geometry={geometry} />)
-
-  //   await waitFor(() => expect(mockGet).toHaveBeenCalledTimes(1))
-  //   await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
-
-  //   unmount()
-  // })
 
   test('with geometry', async () => {
     const { unmount } = render(<View project={project} geometry={geometry} />)

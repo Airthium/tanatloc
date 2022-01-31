@@ -86,7 +86,7 @@ describe('lib/three/loaders/PartLoader', () => {
     {
       children: [
         {
-          uuid: 'solid_uuid',
+          userData: { uuid: 'solid_uuid' },
           geometry: {
             dispose: () => {},
             boundingBox: {
@@ -103,7 +103,7 @@ describe('lib/three/loaders/PartLoader', () => {
     {
       children: [
         {
-          uuid: 'face_uuid',
+          userData: { uuid: 'face_uuid' },
           geometry: {
             dispose: () => {},
             boundingBox: {
@@ -302,9 +302,10 @@ describe('lib/three/loaders/PartLoader', () => {
     mesh.startSelection(renderer, camera, outlinePass, 'faces')
 
     mesh.select('face_uuid')
+    mesh.select('face_uuid')
     mesh.select('uuid')
 
-    expect(mesh.getSelected()).toEqual(['face_uuid'])
+    expect(mesh.getSelected()).toEqual(['face_uuid', 'face_uuid'])
   })
 
   test('unselect', async () => {

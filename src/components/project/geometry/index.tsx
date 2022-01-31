@@ -159,7 +159,7 @@ const Geometry = ({ project, geometry, swr, close }: IProps): JSX.Element => {
               <DeleteButton
                 key="delete"
                 loading={deleting}
-                text="Are you sure to delete this geometry?"
+                text="Are you sure you want to delete this geometry?"
                 onDelete={onDelete}
               />
             ]}

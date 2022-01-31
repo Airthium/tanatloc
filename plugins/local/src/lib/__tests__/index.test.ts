@@ -417,6 +417,18 @@ describe('plugins/local/src/lib', () => {
     }
   })
 
+  test('computeSimulation (with startProcess mock)', async () => {
+    mockFreefem.mockImplementation(() => {
+      return 0
+    })
+
+    jest
+      .spyOn(Local, 'startProcess')
+      .mockImplementationOnce((_, __, ___, callback) => callback())
+
+    await Local.computeSimulation({ id: 'id' }, 'algorithm', {})
+  })
+
   test('monitoring', async () => {
     mockReadFile.mockImplementation(() => 'PROCESS DATA FILE Result.dat')
     Local.monitoring('id', '_', [{ label: 'label', status: 'wait' }], [])

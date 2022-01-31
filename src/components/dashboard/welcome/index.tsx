@@ -1,7 +1,5 @@
 import PropTypes from 'prop-types'
-import { useState } from 'react'
-import { Button, Divider, Layout, PageHeader, Typography } from 'antd'
-import { PlusOutlined } from '@ant-design/icons'
+import { Divider, Layout, PageHeader, Typography } from 'antd'
 
 import Add from '@/components/workspace/add'
 
@@ -17,9 +15,6 @@ export interface IProps {
  * @param props Props
  */
 const Welcome = ({ swr }: IProps): JSX.Element => {
-  // State
-  const [add, setAdd]: [boolean, Function] = useState(false)
-
   /**
    * Render
    */
@@ -35,21 +30,8 @@ const Welcome = ({ swr }: IProps): JSX.Element => {
           }
           footer={<Divider />}
         />
-        <Typography.Text>
-          Select a workspace to start, or{' '}
-          <Button
-            type="primary"
-            icon={<PlusOutlined />}
-            onClick={() => setAdd(true)}
-          >
-            add one
-          </Button>
-        </Typography.Text>
-        <Add
-          visible={add}
-          swr={{ addOneWorkspace: swr.addOneWorkspace }}
-          setVisible={setAdd}
-        />
+        <Typography.Text>Select a workspace to start, or </Typography.Text>
+        <Add swr={{ addOneWorkspace: swr.addOneWorkspace }} />
       </Layout.Content>
     </Layout>
   )

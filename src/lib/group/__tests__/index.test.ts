@@ -97,7 +97,8 @@ describe('lib/group', () => {
     mockGetAll.mockImplementation(() => [
       {
         users: ['id']
-      }
+      },
+      {}
     ])
     mockUserGetWithData.mockImplementation(() => ({
       firstname: 'firstname'
@@ -105,7 +106,10 @@ describe('lib/group', () => {
     groups = await Group.getAll(['users'])
     expect(mockGetAll).toHaveBeenCalledTimes(1)
     expect(mockUserGetWithData).toHaveBeenCalledTimes(1)
-    expect(groups).toEqual([{ users: [{ id: 'id', firstname: 'firstname' }] }])
+    expect(groups).toEqual([
+      { users: [{ id: 'id', firstname: 'firstname' }] },
+      {}
+    ])
 
     // With data
     mockGetAll.mockImplementation(() => [

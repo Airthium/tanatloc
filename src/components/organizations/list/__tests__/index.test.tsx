@@ -41,6 +41,7 @@ describe('components/organizations/list', () => {
     mockGroupToAvatar.mockReset()
 
     swr.delOneOrganization.mockReset()
+    setOrganization.mockReset()
   })
 
   test('render', async () => {
@@ -64,6 +65,43 @@ describe('components/organizations/list', () => {
       <List
         user={user}
         organizations={organizations}
+        swr={swr}
+        setOrganization={setOrganization}
+      />
+    )
+
+    // Set organization
+    const button = screen.getByRole('button')
+    fireEvent.click(button)
+    expect(setOrganization).toHaveBeenCalledTimes(1)
+
+    // Sorter
+    const sorter = screen.getByText('Name')
+    fireEvent.click(sorter)
+
+    unmount()
+  })
+
+  test('without name', () => {
+    const { unmount } = render(
+      <List
+        user={user}
+        organizations={[
+          {
+            id: 'id1',
+            name: undefined,
+            owners: [{ id: 'id1' }],
+            users: [{ id: 'id1' }],
+            groups: [{ id: 'id1' }]
+          },
+          {
+            id: 'id2',
+            name: undefined,
+            owners: [{ id: 'id2' }],
+            users: [{ id: 'id2' }],
+            groups: [{ id: 'id2' }]
+          }
+        ]}
         swr={swr}
         setOrganization={setOrganization}
       />

@@ -313,11 +313,13 @@ const PartLoader = (mouseMoveEvent, mouseDownEvent) => {
   const addOutlineOn = (mesh, selection) => {
     if (selection) {
       const alreadyOutlined = selectionOutlinePass.selectedObjects.find(
-        (s) => s.uuid === mesh.uuid
+        (s) => s.userData.uuid === mesh.userData.uuid
       )
       if (!alreadyOutlined) selectionOutlinePass.selectedObjects.push(mesh)
     } else {
-      const alreadySelected = selected.find((uuid) => uuid === mesh.uuid)
+      const alreadySelected = selected.find(
+        (uuid) => uuid === mesh.userData.uuid
+      )
       if (!alreadySelected) selectionOutlinePass.selectedObjects.push(mesh)
     }
   }
@@ -330,17 +332,17 @@ const PartLoader = (mouseMoveEvent, mouseDownEvent) => {
   const removeOutlineOn = (mesh, selection) => {
     if (selection) {
       const outlinedIndex = selectionOutlinePass.selectedObjects.findIndex(
-        (s) => s.uuid === mesh.uuid
+        (s) => s.userData.uuid === mesh.userData.uuid
       )
       selectionOutlinePass.selectedObjects = [
         ...selectionOutlinePass.selectedObjects.slice(0, outlinedIndex),
         ...selectionOutlinePass.selectedObjects.slice(outlinedIndex + 1)
       ]
     } else {
-      const selectedMesh = selected.find((uuid) => uuid === mesh.uuid)
+      const selectedMesh = selected.find((uuid) => uuid === mesh.userData.uuid)
       if (!selectedMesh) {
         const outlinedIndex = selectionOutlinePass.selectedObjects.findIndex(
-          (s) => s.uuid === mesh.uuid
+          (s) => s.userData.uuid === mesh.userData.uuid
         )
         selectionOutlinePass.selectedObjects = [
           ...selectionOutlinePass.selectedObjects.slice(0, outlinedIndex),

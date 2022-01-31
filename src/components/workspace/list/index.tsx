@@ -95,11 +95,9 @@ const WorkspacesList = ({
               description={'No workspace for now. Get started !'}
             >
               <Add
-                visible={add}
                 swr={{
                   addOneWorkspace: swr.addOneWorkspace
                 }}
-                setVisible={setAdd}
               />
             </Empty>
           </>

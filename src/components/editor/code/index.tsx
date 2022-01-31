@@ -84,7 +84,7 @@ const Code = ({ configuration }: IProps): JSX.Element => {
         const parameter = configuration.parameters[key]
         parameter.children.forEach((child) => {
           header +=
-            '/*** TANATLOC PARAMETER ***/ ' +
+            '/*** TANATLOC PARAMETER ***/ real ' +
             parameter.name +
             child.name +
             ' = ' +

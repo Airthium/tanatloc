@@ -84,7 +84,14 @@ const Project = (): JSX.Element => {
     useState()
 
   const [currentResult, setCurrentResult]: [
-    { fileName: string; name: string; number: number },
+    {
+      fileName: string
+      name: string
+      number: number
+      type: string
+      glb: string
+      json: string
+    },
     Function
   ] = useState()
 

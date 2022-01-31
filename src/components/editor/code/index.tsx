@@ -52,7 +52,7 @@ const Code = ({ configuration }: IProps): JSX.Element => {
           (configuration.geometry?.name || 'Mesh') +
           ', ' +
           configuration.numericalParameters.finiteElementSpace.default +
-          '); \n'
+          ');\n'
       }
 
       if (configuration.numericalParameters.solver) {

@@ -1,8 +1,22 @@
 import PropTypes from 'prop-types'
-import { Button, Card, Form, Input, Layout, Space, Typography } from 'antd'
-import { DeleteOutlined } from '@ant-design/icons'
+import { useState } from 'react'
+import {
+  Button,
+  Card,
+  Divider,
+  Form,
+  Input,
+  Layout,
+  Select,
+  Space,
+  Table,
+  Typography
+} from 'antd'
+import { DeleteOutlined, PlusOutlined } from '@ant-design/icons'
 
 import { IConfiguration } from '..'
+import { AddButton } from '@/components/assets/button'
+import Dialog from '@/components/assets/dialog'
 
 export interface IProps {
   configuration: IConfiguration
@@ -17,70 +31,114 @@ const NumericalParameters = ({
   configuration,
   onNext
 }: IProps): JSX.Element => {
-  /**
-   * Validator
-   * @param _ Unused
-   * @param value Value
-   * @returns Promise
-   */
-  const validator = (_, value) => {
-    if (!value?.length) return Promise.reject(new Error('Options are required'))
-    return Promise.resolve()
-  }
+  const [dialog, setDialog]: [{ title: string; content: any }, Function] =
+    useState()
+  const [finiteElementSpaceOptions, setFiniteElementSpaceOptions]: [
+    { label: string; '2d': string; '3d': string }[],
+    Function
+  ] = useState([
+    { label: 'P2/P1', '2d': '[P2, P2, P1]', '3d': '[P2, P2, P2, P1]' }
+  ])
+  const [solverOptions, setSolverOptions] = useState([])
 
-  /**
-   * Build options
-   * @param identifier Identifier
-   * @returns Options
-   */
-  const options = (identifier: string) => (
-    <Form.List name={[identifier, 'options']} rules={[{ validator }]}>
-      {(fields, { add, remove }, { errors }) => (
-        <>
-          {fields.map(({ key, name, ...restField }) => (
-            <div key={key}>
-              <Form.Item
-                {...restField}
-                label={
-                  <Space>
-                    Input {name + 1}
-                    <Button
-                      danger
-                      icon={<DeleteOutlined />}
-                      onClick={() => remove(name)}
-                    />
-                  </Space>
-                }
-                name={[name]}
-                rules={[{ required: true }]}
-              >
-                <Input />
-              </Form.Item>
-            </div>
-          ))}
-          <Button
-            className={!fields.length && 'required'}
-            onClick={() => add()}
-          >
-            Add options
-          </Button>
-          <Form.ErrorList errors={errors} />
-        </>
-      )}
-    </Form.List>
+  const [add, setAdd] = useState(false)
+
+  const dropdownRender = (menu, onClick) => (
+    <>
+      {menu}
+      <Divider style={{ margin: '4px 0' }} />
+      <div
+        style={{
+          display: 'flex',
+          flexWrap: 'nowrap',
+          justifyContent: 'flex-end',
+          paddingRight: '4px'
+        }}
+      >
+        <Button onClick={onClick}>
+          <PlusOutlined style={{ color: '#fad114' }} /> /{' '}
+          <DeleteOutlined style={{ color: 'red' }} />
+        </Button>
+      </div>
+    </>
   )
+
+  // const setFiniteElementDialog = () => {
+  //   setDialog({
+  //     title: 'Manage finite element space',
+  //     content: (
+  //       <>
+  //         {/* <Button
+  //           type="primary"
+  //           icon={<PlusOutlined />}
+  //           onClick={() => setAdd(true)}
+  //         >
+  //           Add finite element space
+  //         </Button> */}
+  //         <Form>
+  //           <Form.Item label="Label" name="label" rules={[{ required: true }]}>
+  //             <Input />
+  //           </Form.Item>
+  //           <Form.Item label="2D" name="2d" rules={[{ required: true }]}>
+  //             <Input />
+  //           </Form.Item>
+  //           <Form.Item label="3D" name="3d" rules={[{ required: true }]}>
+  //             <Input />
+  //           </Form.Item>
+  //           <Form.Item>
+  //             <Button htmlType="submit" type="primary">
+  //               Add
+  //             </Button>
+  //           </Form.Item>
+  //         </Form>
+  //         <Table
+  //           pagination={false}
+  //           columns={[
+  //             { title: 'Label', dataIndex: 'label' },
+  //             { title: '2D', dataIndex: '2d' },
+  //             { title: '3D', dataIndex: '3d' },
+  //             {
+  //               title: 'Action',
+  //               dataIndex: 'action',
+  //               render: (_, record) => (
+  //                 <Button
+  //                   icon={<DeleteOutlined />}
+  //                   onClick={() => console.log(record)}
+  //                 />
+  //               )
+  //             }
+  //           ]}
+  //           dataSource={finiteElementSpaceOptions}
+  //         />
+  //       </>
+  //     )
+  //   })
+  // }
 
   /**
    * Render
    */
   return (
     <Layout>
+      {dialog && (
+        <Dialog
+          visible={true}
+          title={dialog.title}
+          onCancel={() => setDialog()}
+          cancelButtonText="Close"
+        >
+          {dialog.content}
+        </Dialog>
+      )}
       <Layout.Content>
         <Card size="small">
           <Form
             layout="vertical"
             initialValues={configuration.numericalParameters}
-            onFinish={(values) => onNext({ numericalParameters: values })}
+            onFinish={
+              (values) =>
+                console.log(values) /*onNext({ numericalParameters: values })*/
+            }
           >
             <Typography.Text strong>Finite element space</Typography.Text>
             <br />
@@ -91,25 +149,42 @@ const NumericalParameters = ({
             >
               <Input />
             </Form.Item>
-            {options('finiteElementSpace')}
             <Form.Item
-              name={['finiteElementSpace', 'default']}
-              label="Default"
-              tooltip=""
+              label="Options"
+              name={['finiteElementSpace', 'options']}
               rules={[{ required: true }]}
             >
-              <Input />
+              <Select
+                dropdownRender={(menu) => dropdownRender(menu, () => {})}
+                optionLabelProp="label"
+              >
+                {finiteElementSpaceOptions.map((option) => (
+                  <Select.Option
+                    key={option.label}
+                    value={option.label}
+                    label={option.label}
+                  >
+                    <div>
+                      {option.label} <Button danger icon={<DeleteOutlined />} />
+                    </div>
+                  </Select.Option>
+                ))}
+              </Select>
             </Form.Item>
             <Typography.Text strong>Solver</Typography.Text>
             <br />
-            {options('solver')}
             <Form.Item
-              name={['solver', 'default']}
-              label="Default"
-              tooltip=""
+              label="Options"
+              name={['solver', 'options']}
               rules={[{ required: true }]}
             >
-              <Input />
+              <Select
+                dropdownRender={(menu) => dropdownRender(menu, () => {})}
+                options={solverOptions.map((option) => ({
+                  label: option,
+                  value: option
+                }))}
+              />
             </Form.Item>
             <Form.Item style={{ marginBottom: 0 }}>
               <Button type="primary" htmlType="submit">

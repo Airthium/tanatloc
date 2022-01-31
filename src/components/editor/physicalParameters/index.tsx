@@ -12,6 +12,10 @@ export interface IProps {
   onNext: ({ parameters }) => void
 }
 
+/**
+ * Physical parameters
+ * @param props Props
+ */
 const PhysicalParameters = ({ configuration, onNext }: IProps): JSX.Element => {
   // State
   const [parameters, setParameters]: [

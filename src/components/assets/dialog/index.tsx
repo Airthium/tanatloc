@@ -14,6 +14,7 @@ export interface IProps {
   loading?: boolean
   title: string
   initialValues?: object
+  cancelButtonText?: string
   okButtonProps?: BaseButtonProps
   okButtonText?: string
   children: ReactChild | ReactChild[]
@@ -38,6 +39,7 @@ const errors = {
  * - loading (boolean) Form loading
  * - title (string) Dialog title
  * - initialValues (Object) Form initial values
+ * - cancelButtonText (string) Cancel button text
  * - okButtonProps (Object) Ok button props
  * - okButtonText (string) Ok button text
  * - children (React node) Form children
@@ -50,6 +52,7 @@ const Dialog = ({
   loading,
   title,
   initialValues,
+  cancelButtonText,
   okButtonProps,
   okButtonText,
   children,
@@ -84,6 +87,7 @@ const Dialog = ({
       cancelButtonProps={{
         style: { display: onCancel ? 'inline-block' : 'none' }
       }}
+      cancelText={cancelButtonText}
       onOk={
         onOk &&
         (async () => {

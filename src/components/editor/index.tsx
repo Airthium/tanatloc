@@ -14,6 +14,7 @@ import Geometry from './geometry'
 import NumericalParameters from './numericalParameters'
 import Materials from './materials'
 import PhysicalParameters from './physicalParameters'
+import Initializations from './initializations'
 
 import Variables from './variables'
 
@@ -34,7 +35,11 @@ export interface IConfiguration {
   numericalParameters?: {
     finiteElementSpace: {
       name: string
-      options: string[]
+      options: {
+        label: string
+        '2d': string
+        '3d': string
+      }[]
       default: string
     }
     solver: {
@@ -61,7 +66,7 @@ export interface IConfiguration {
       }[]
     }
   }
-  initialization?: {
+  initializations?: {
     [key: string]: {
       type?: string
       key?: string
@@ -148,19 +153,19 @@ const steps: IStep[] = [
   },
   {
     title: 'Physical parameters',
-    description: 'todo',
+    description: 'Name, default, unit, ...',
     component: PhysicalParameters,
     status: 'wait'
   },
   {
-    title: 'Initialization',
-    description: 'todo',
-    component: undefined,
+    title: 'Initializations',
+    description: 'Direct, coupling, ...',
+    component: Initializations,
     status: 'wait'
   },
   {
     title: 'Boundary conditions',
-    description: 'todo',
+    description: 'Dirichlet, Neumann, ...',
     component: undefined,
     status: 'wait'
   },
@@ -186,8 +191,19 @@ const initialConfiguration: IConfiguration = {
   numericalParameters: {
     finiteElementSpace: {
       name: 'Uh',
-      options: ['[P2, P2, P1]', '[P1b, P1b, P1]'],
-      default: '[P2, P2, P1]'
+      options: [
+        {
+          label: 'P2/P1',
+          '2d': '[P2, P2, P1]',
+          '3d': '[P2, P2, P2, P1]'
+        },
+        {
+          label: 'P1b/P1',
+          '2d': '[P1b, P1b, P1]',
+          '3d': '[P1b, P1b, P1b, P1]'
+        }
+      ],
+      default: 'P2/P1'
     },
     solver: {
       options: ['MUMPS', 'SuperLU', 'SuperLU_DIST'],
@@ -284,6 +300,10 @@ const Editor = (): JSX.Element => {
     // Parameters
     if (configuration?.parameters) steps[4].status = 'finish'
     else steps[4].status = 'wait'
+
+    // Initializations
+    if (configuration?.initializations) steps[5].status = 'finish'
+    else steps[5].status = 'wait'
   }, [panel, configuration])
 
   /**

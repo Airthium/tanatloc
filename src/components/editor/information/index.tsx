@@ -77,7 +77,7 @@ const Information = ({ configuration, onNext }: IProps): JSX.Element => {
                           setCategory()
                         }}
                       >
-                        <PlusOutlined /> Add item
+                        <PlusOutlined /> Add category
                       </a>
                     </div>
                   </div>

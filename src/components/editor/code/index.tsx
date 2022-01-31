@@ -78,6 +78,24 @@ const Code = ({ configuration }: IProps): JSX.Element => {
       })
     }
 
+    if (configuration.parameters) {
+      header += '\n// PARAMETERS\n'
+      Object.keys(configuration.parameters).forEach((key) => {
+        const parameter = configuration.parameters[key]
+        parameter.children.forEach((child) => {
+          header +=
+            '/*** TANATLOC PARAMETER ***/ ' +
+            parameter.name +
+            child.name +
+            ' = ' +
+            child.default +
+            '; // ' +
+            child.unit +
+            '\n'
+        })
+      })
+    }
+
     setCode(header)
   }, [configuration])
 

@@ -64,6 +64,25 @@ const Variables = ({ configuration }: IProps): JSX.Element => {
           ))}
         </List.Item>
       )}
+
+      {configuration.parameters && (
+        <List.Item>
+          <Typography.Text strong>Parameters</Typography.Text>
+          <br />
+          {Object.keys(configuration.parameters)?.map((key) => {
+            const parameter = configuration.parameters[key]
+            return parameter.children.map((child) => (
+              <div key={child.name}>
+                <Typography.Text code>
+                  real {parameter.name}
+                  {child.name}
+                </Typography.Text>
+                <br />
+              </div>
+            ))
+          })}
+        </List.Item>
+      )}
     </List>
   )
 }

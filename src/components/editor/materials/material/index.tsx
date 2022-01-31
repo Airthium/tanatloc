@@ -20,7 +20,7 @@ export interface IProps {
  */
 const Material = ({ material, onAdd, onEdit }: IProps): JSX.Element => {
   // State
-  const [visible, setVisible] = useState(false)
+  const [visible, setVisible]: [boolean, Function] = useState(false)
 
   useEffect(() => {
     setVisible(!!material)
@@ -47,56 +47,56 @@ const Material = ({ material, onAdd, onEdit }: IProps): JSX.Element => {
   /**
    * Render
    */
-  return visible ? (
-    <Form layout="vertical" initialValues={material} onFinish={onFinish}>
-      <Form.Item
-        label="Name"
-        name="name"
-        tooltip="Example: «Density»"
-        rules={[{ required: true }]}
-      >
-        <Input />
-      </Form.Item>
-      <Form.Item
-        label="Symbol"
-        name="symbol"
-        tooltip="The symbol must match the material database definition"
-        rules={[{ required: true }]}
-      >
-        <Select>
-          {existingMaterialSymbols.map((m) => (
-            <Select.Option key={m} value={m}>
-              {m}
-            </Select.Option>
-          ))}
-        </Select>
-      </Form.Item>
-      <Form.Item
-        label="Default value"
-        name="default"
-        tooltip="Example: 1e3"
-        rules={[{ required: true }]}
-      >
-        <Input />
-      </Form.Item>
-      <Form.Item
-        label="Unit"
-        name="unit"
-        tooltip="LaTeX friendly, example: kg.m^{-3}"
-        rules={[{ required: true }]}
-      >
-        <Input />
-      </Form.Item>
-      <Form.Item>
-        <Button type="primary" htmlType="submit">
-          {material ? 'Edit' : 'Add'}
-        </Button>
-        <Button onClick={onCancel}>Cancel</Button>
-      </Form.Item>
-    </Form>
-  ) : (
-    <AddButton onAdd={() => setVisible(true)}>Add material</AddButton>
-  )
+  if (visible)
+    return (
+      <Form layout="vertical" initialValues={material} onFinish={onFinish}>
+        <Form.Item
+          label="Name"
+          name="name"
+          tooltip="Example: «Density»"
+          rules={[{ required: true }]}
+        >
+          <Input />
+        </Form.Item>
+        <Form.Item
+          label="Symbol"
+          name="symbol"
+          tooltip="The symbol must match the material database definition"
+          rules={[{ required: true }]}
+        >
+          <Select>
+            {existingMaterialSymbols.map((m) => (
+              <Select.Option key={m} value={m}>
+                {m}
+              </Select.Option>
+            ))}
+          </Select>
+        </Form.Item>
+        <Form.Item
+          label="Default value"
+          name="default"
+          tooltip="Example: 1e3"
+          rules={[{ required: true }]}
+        >
+          <Input />
+        </Form.Item>
+        <Form.Item
+          label="Unit"
+          name="unit"
+          tooltip="LaTeX friendly, example: kg.m^{-3}"
+          rules={[{ required: true }]}
+        >
+          <Input />
+        </Form.Item>
+        <Form.Item>
+          <Button type="primary" htmlType="submit">
+            {material ? 'Edit' : 'Add'}
+          </Button>
+          <Button onClick={onCancel}>Cancel</Button>
+        </Form.Item>
+      </Form>
+    )
+  else return <AddButton onAdd={() => setVisible(true)}>Add material</AddButton>
 }
 
 Material.propTypes = {

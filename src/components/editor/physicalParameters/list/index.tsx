@@ -8,8 +8,8 @@ import { EditButton, DeleteButton } from '@/components/assets/button'
 
 export interface IProps {
   parameters: IConfiguration['parameters']['key']
-  onEdit: (index: number) => void
-  onDelete: (index: number) => void
+  onEdit: (key: string) => void
+  onDelete: (key: string) => void
 }
 
 /**
@@ -27,24 +27,24 @@ const ParametersList = ({
   return (
     <>
       {parameters &&
-        Object.keys(parameters).map((key, index) => {
+        Object.keys(parameters).map((key) => {
           const parameter: IConfiguration['parameters']['key'] = parameters[key]
           return (
             <Card
-              key={index}
+              key={key}
               size="small"
               title={parameter.name}
               actions={[
-                <EditButton key="edit" onEdit={() => onEdit(index)} />,
+                <EditButton key="edit" onEdit={() => onEdit(key)} />,
                 <DeleteButton
                   key="delete"
-                  onDelete={async () => onDelete(index)}
+                  onDelete={async () => onDelete(key)}
                 />
               ]}
             >
               <List>
                 {parameter.children.map((child) => (
-                  <List.Item>
+                  <List.Item key={child.name}>
                     <Space direction="vertical" style={{ maxWidth: '100%' }}>
                       <Typography.Text>
                         <span className="text-light">Name:</span> {child.name}

@@ -61,7 +61,6 @@ const Materials = ({ configuration, onNext }: IProps): JSX.Element => {
    */
   const onEdit = (material: IConfiguration['materials']['children'][0]) => {
     const index = toEdit.index
-    console.log(index)
 
     const newMaterials = [
       ...materials.slice(0, index),

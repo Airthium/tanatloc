@@ -280,6 +280,10 @@ const Editor = (): JSX.Element => {
     // Materials
     if (configuration?.materials) steps[3].status = 'finish'
     else steps[3].status = 'wait'
+
+    // Parameters
+    if (configuration?.parameters) steps[4].status = 'finish'
+    else steps[4].status = 'wait'
   }, [panel, configuration])
 
   /**

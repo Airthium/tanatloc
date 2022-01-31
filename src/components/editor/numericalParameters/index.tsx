@@ -9,15 +9,30 @@ export interface IProps {
   onNext: ({ numericalParameters: { finiteElementSpace, solver } }) => void
 }
 
+/**
+ * Numerical parameters
+ * @param props Props
+ */
 const NumericalParameters = ({
   configuration,
   onNext
 }: IProps): JSX.Element => {
+  /**
+   * Validator
+   * @param _ Unused
+   * @param value Value
+   * @returns Promise
+   */
   const validator = (_, value) => {
     if (!value?.length) return Promise.reject(new Error('Options are required'))
     return Promise.resolve()
   }
 
+  /**
+   * Build options
+   * @param identifier Identifier
+   * @returns Options
+   */
   const options = (identifier: string) => (
     <Form.List name={[identifier, 'options']} rules={[{ validator }]}>
       {(fields, { add, remove }, { errors }) => (

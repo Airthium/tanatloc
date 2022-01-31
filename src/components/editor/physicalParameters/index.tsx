@@ -9,7 +9,7 @@ import List from './list'
 
 export interface IProps {
   configuration: IConfiguration
-  onNext: ({ numericalParameters }) => void
+  onNext: ({ parameters }) => void
 }
 
 const PhysicalParameters = ({ configuration, onNext }: IProps): JSX.Element => {
@@ -18,26 +18,80 @@ const PhysicalParameters = ({ configuration, onNext }: IProps): JSX.Element => {
     IConfiguration['parameters']['key'],
     Function
   ] = useState()
-  const [toEdit, setToEdit]: [IConfiguration['parameters']['key'], Function] =
-    useState()
+  const [toEdit, setToEdit]: [
+    IConfiguration['parameters']['key'] & { key: string },
+    Function
+  ] = useState()
 
   useEffect(() => {
     setParameters(configuration.parameters)
   }, [configuration])
 
-  const onAdd = () => {}
+  /**
+   * On add
+   * @param parameter Parameter
+   */
+  const onAdd = (parameter: IConfiguration['parameters']['key']): void => {
+    const newParameters = {
+      ...(parameters || {}),
+      [parameter.name]: parameter
+    }
 
-  const setEdit = () => {}
+    setParameters(newParameters)
+  }
 
-  const onDelete = () => {}
+  /**
+   * Set edit
+   * @param key Key
+   */
+  const setEdit = (key: string): void => {
+    const parameter = parameters[key]
+    setToEdit({
+      key,
+      ...parameter
+    })
+  }
 
-  const onClick = () => {}
+  /**
+   * On edit
+   * @param parameter Parameter
+   */
+  const onEdit = (parameter: IConfiguration['parameters']['key']): void => {
+    const key = toEdit.key
+
+    const newParameters = {
+      ...parameters,
+      [key]: parameter
+    }
+
+    setToEdit()
+    setParameters(newParameters)
+  }
+
+  /**
+   * On delete
+   * @param key Key
+   */
+  const onDelete = (key: string) => {
+    delete parameters[key]
+  }
+
+  /**
+   * On next click
+   */
+  const onClick = () => {
+    onNext({ parameters })
+  }
 
   return (
     <Layout>
       <Layout.Content>
         <Card size="small">
-          <Parameter onAdd={onAdd} />
+          {toEdit ? (
+            <Parameter parameter={toEdit} onEdit={onEdit} />
+          ) : (
+            <Parameter onAdd={onAdd} />
+          )}
           <List parameters={parameters} onEdit={setEdit} onDelete={onDelete} />
           <Button type="primary" onClick={onClick}>
             Next

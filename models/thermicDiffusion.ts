@@ -12,7 +12,7 @@ const ThermicDiffusion: IModel = {
   version: '1.0.0',
   description: `
   <h3>
-    Thremal diffusion
+    Thermal diffusion
   </h3>
   <p>
     Let \\(\\Omega\\) be a domain of \\(\\mathbb{R}^{d}\\), with \\(d\\in\\{2,3\\}\\).<br/>

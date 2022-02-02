@@ -7,7 +7,7 @@ import MathJax from '@/components/assets/mathjax'
 import { EditButton, DeleteButton } from '@/components/assets/button'
 
 export interface IProps {
-  parameters: IConfiguration['parameters']['key']
+  parameters: IConfiguration['parameters']
   onEdit: (key: string) => void
   onDelete: (key: string) => void
 }
@@ -28,7 +28,7 @@ const ParametersList = ({
     <>
       {parameters &&
         Object.keys(parameters).map((key) => {
-          const parameter: IConfiguration['parameters']['key'] = parameters[key]
+          const parameter = parameters[key]
           return (
             <Card
               key={key}

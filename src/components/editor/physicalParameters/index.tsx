@@ -18,10 +18,8 @@ export interface IProps {
  */
 const PhysicalParameters = ({ configuration, onNext }: IProps): JSX.Element => {
   // State
-  const [parameters, setParameters]: [
-    IConfiguration['parameters']['key'],
-    Function
-  ] = useState()
+  const [parameters, setParameters]: [IConfiguration['parameters'], Function] =
+    useState()
   const [toEdit, setToEdit]: [
     IConfiguration['parameters']['key'] & { key: string },
     Function

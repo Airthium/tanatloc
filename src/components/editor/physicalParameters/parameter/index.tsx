@@ -106,13 +106,15 @@ const Parameter = ({ parameter, onAdd, onEdit }: IProps): JSX.Element => {
                   </Form.Item>
                 </div>
               ))}
-              <Button
-                className={!fields.length && 'required'}
-                onClick={() => add()}
-              >
-                Add parameter
-              </Button>
-              <Form.ErrorList errors={errors} />
+              <Form.Item>
+                <Button
+                  className={!fields.length && 'required'}
+                  onClick={() => add()}
+                >
+                  Add parameter
+                </Button>
+                <Form.ErrorList errors={errors} />
+              </Form.Item>
             </>
           )}
         </Form.List>

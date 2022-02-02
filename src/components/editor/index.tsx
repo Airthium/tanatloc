@@ -62,20 +62,17 @@ export interface IConfiguration {
         name: string
         default: TValue
         unit?: string
-        htmlEntity?: string
       }[]
     }
   }
   initializations?: {
     [key: string]: {
-      type?: string
-      key?: string
+      type: string
       name: string
       children?: {
         name: string
         default: TValue
         unit?: string
-        htmlEntity?: string
       }[]
       compatibility?: {
         algorithm: string
@@ -94,11 +91,10 @@ export interface IConfiguration {
       key?: string
       label: string
       refineFactor?: string
-      children: {
+      children?: {
         label: string
         default: TValue
         unit?: string
-        htmlEntity?: string
       }[]
     }
   }
@@ -233,6 +229,35 @@ const initialConfiguration: IConfiguration = {
           name: 'Test2',
           default: 1,
           unit: 's'
+        }
+      ]
+    }
+  },
+  initializations: {
+    direct: {
+      type: 'direct',
+      name: 'Direct',
+      children: [
+        {
+          name: 'Ux',
+          default: 0,
+          unit: 's'
+        }
+      ]
+    },
+    coupling: {
+      type: 'coupling',
+      name: 'Coupling',
+      compatibility: [
+        {
+          algorithm: 'test',
+          filter: {
+            name: 'Result',
+            prefixPattern: 'Result_',
+            suffixPattern: '.vtu',
+            pattern: 'Result_/d.vtu',
+            multiplicator: ['Test', 'Test1']
+          }
         }
       ]
     }

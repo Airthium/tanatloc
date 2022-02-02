@@ -11,6 +11,8 @@ export interface IProps {
   configuration: IConfiguration
 }
 
+const safeCode = (str) => str?.replace(/[^A-Z0-9]+/gi, '')
+
 const Code = ({ configuration }: IProps): JSX.Element => {
   const [code, setCode] = useState('')
 
@@ -38,7 +40,7 @@ const Code = ({ configuration }: IProps): JSX.Element => {
       header += '\n// GEOMETRY\n'
       header +=
         '/*** TANATLOC GEOMETRY ***/ meshN ' +
-        configuration.geometry.name +
+        safeCode(configuration.geometry.name) +
         ' = /* ... */;\n'
     }
 
@@ -47,20 +49,20 @@ const Code = ({ configuration }: IProps): JSX.Element => {
         header += '\n// FINITE ELEMENT SPACE\n'
         header +=
           '/*** TANATLOC FESPACE ***/ fespace ' +
-          configuration.numericalParameters.finiteElementSpace.name +
+          safeCode(configuration.numericalParameters.finiteElementSpace.name) +
           '(' +
-          (configuration.geometry?.name || 'Mesh') +
-          ', ' +
+          (safeCode(configuration.geometry?.name) || 'Mesh') +
+          ', "' +
           configuration.numericalParameters.finiteElementSpace.default +
-          ');\n'
+          '");\n'
       }
 
       if (configuration.numericalParameters.solver) {
         header += '\n// SOLVER\n'
         header +=
-          '/*** TANATLOC SOLVER ***/ func solver = ' +
+          '/*** TANATLOC SOLVER ***/ func solver = "' +
           configuration.numericalParameters.solver.default +
-          ';\n'
+          '";\n'
       }
     }
 
@@ -69,7 +71,7 @@ const Code = ({ configuration }: IProps): JSX.Element => {
       configuration.materials.children?.map((child) => {
         header +=
           '/*** TANATLOC MATERIAL ***/ func ' +
-          child.name +
+          safeCode(child.name) +
           ' = ' +
           child.default +
           '; // ' +
@@ -85,8 +87,8 @@ const Code = ({ configuration }: IProps): JSX.Element => {
         parameter.children.forEach((child) => {
           header +=
             '/*** TANATLOC PARAMETER ***/ real ' +
-            parameter.name +
-            child.name +
+            safeCode(parameter.name) +
+            safeCode(child.name) +
             ' = ' +
             child.default +
             '; // ' +

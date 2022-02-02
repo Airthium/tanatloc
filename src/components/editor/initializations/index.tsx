@@ -31,13 +31,58 @@ const Initializations = ({ configuration, onNext }: IProps): JSX.Element => {
     setInitializations(configuration.initializations)
   }, [configuration])
 
-  const onAdd = () => {}
+  /**
+   * On add
+   * @param initialization Initialization
+   */
+  const onAdd = (
+    initialization: IConfiguration['initializations']['key']
+  ): void => {
+    const newInitializations = {
+      ...(initializations || {}),
+      [initialization.name]: initialization
+    }
 
-  const setEdit = () => {}
+    setInitializations(newInitializations)
+  }
 
-  const onEdit = () => {}
+  /**
+   * Set edit
+   * @param key Key
+   */
+  const setEdit = (key: string): void => {
+    const initialization = initializations[key]
+    setToEdit({
+      key,
+      ...initialization
+    })
+  }
 
-  const onDelete = () => {}
+  /**
+   * On edit
+   * @param initialization Initialization
+   */
+  const onEdit = (
+    initialization: IConfiguration['initializations']['key']
+  ): void => {
+    const key = toEdit.key
+
+    const newInitializations = {
+      ...initializations,
+      [key]: initialization
+    }
+
+    setToEdit()
+    setInitializations(newInitializations)
+  }
+
+  /**
+   * On delete
+   * @param key Key
+   */
+  const onDelete = (key: string): void => {
+    delete initializations[key]
+  }
 
   /**
    * On next click
@@ -57,7 +102,7 @@ const Initializations = ({ configuration, onNext }: IProps): JSX.Element => {
           )}
           <List
             initializations={initializations}
-            onEdit={onEdit}
+            onEdit={setEdit}
             onDelete={onDelete}
           />
           <Button type="primary" onClick={onClick}>

@@ -118,7 +118,7 @@ const Initialization = ({
                 className={!fields.length && 'required'}
                 onClick={() => add()}
               >
-                Add compatibility
+                Add input
               </Button>
               <Form.ErrorList errors={errors} />
             </Form.Item>

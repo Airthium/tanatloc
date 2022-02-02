@@ -15,6 +15,7 @@ import NumericalParameters from './numericalParameters'
 import Materials from './materials'
 import PhysicalParameters from './physicalParameters'
 import Initializations from './initializations'
+import BoundaryConditions from './boundaryConditions'
 
 import Variables from './variables'
 
@@ -88,11 +89,10 @@ export interface IConfiguration {
   }
   boundaryConditions?: {
     [key: string]: {
-      key?: string
-      label: string
+      name: string
       refineFactor?: string
       children?: {
-        label: string
+        name: string
         default: TValue
         unit?: string
       }[]
@@ -162,7 +162,7 @@ const steps: IStep[] = [
   {
     title: 'Boundary conditions',
     description: 'Dirichlet, Neumann, ...',
-    component: undefined,
+    component: BoundaryConditions,
     status: 'wait'
   },
   {
@@ -209,7 +209,7 @@ const initialConfiguration: IConfiguration = {
   materials: {
     children: [
       {
-        name: 'density',
+        name: 'rho',
         symbol: 'Rho',
         default: '1e3',
         unit: 'kg.m^{-3}'
@@ -218,48 +218,46 @@ const initialConfiguration: IConfiguration = {
   },
   parameters: {
     test: {
-      name: 'Test',
+      name: 'Time',
       children: [
         {
-          name: 'Test1',
+          name: 'T',
           default: 1,
           unit: 's'
         },
         {
-          name: 'Test2',
-          default: 1,
+          name: 'dt',
+          default: 0.01,
           unit: 's'
         }
       ]
     }
   },
-  initializations: {
-    direct: {
-      type: 'direct',
-      name: 'Direct',
+  initializations: {},
+  boundaryConditions: {
+    dirichlet: {
+      name: 'Dirichlet',
+      refineFactor: '1',
       children: [
         {
-          name: 'Ux',
+          name: 'UDx',
           default: 0,
-          unit: 's'
+          unit: ''
         }
       ]
     },
-    coupling: {
-      type: 'coupling',
-      name: 'Coupling',
-      compatibility: [
+    neumann: {
+      name: 'Neumann',
+      children: [
         {
-          algorithm: 'test',
-          filter: {
-            name: 'Result',
-            prefixPattern: 'Result_',
-            suffixPattern: '.vtu',
-            pattern: 'Result_/d.vtu',
-            multiplicator: ['Test', 'Test1']
-          }
+          name: 'UN',
+          default: 0,
+          unit: ''
         }
       ]
+    },
+    empty: {
+      name: 'Empty'
     }
   }
 }
@@ -329,6 +327,11 @@ const Editor = (): JSX.Element => {
     // Initializations
     if (configuration?.initializations) steps[5].status = 'finish'
     else steps[5].status = 'wait'
+
+    // Boundary conditions
+    if (Object.keys(configuration?.boundaryConditions || {}).length)
+      steps[6].status = 'finish'
+    else steps[6].status = 'wait'
   }, [panel, configuration])
 
   /**

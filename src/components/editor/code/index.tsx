@@ -19,6 +19,7 @@ const Code = ({ configuration }: IProps): JSX.Element => {
   useEffect(() => {
     let header = ''
 
+    // Informations
     if (configuration.information?.name)
       header += `// Name: ${configuration.information.name}\n`
     if (configuration.information?.category)
@@ -36,6 +37,7 @@ const Code = ({ configuration }: IProps): JSX.Element => {
     header += '// - intN1 (2D:int1d, 3d:int2d)\n'
     header += '//   Intergation function for 2D and 3D usage.\n'
 
+    // Geometry
     if (configuration.geometry && configuration.geometry.meshable) {
       header += '\n// GEOMETRY\n'
       header +=
@@ -44,6 +46,7 @@ const Code = ({ configuration }: IProps): JSX.Element => {
         ' = /* ... */;\n'
     }
 
+    // Numerical parameters
     if (configuration.numericalParameters) {
       if (configuration.numericalParameters.finiteElementSpace) {
         header += '\n// FINITE ELEMENT SPACE\n'
@@ -66,6 +69,7 @@ const Code = ({ configuration }: IProps): JSX.Element => {
       }
     }
 
+    // Materials
     if (configuration.materials) {
       header += '\n// MATERIALS\n'
       configuration.materials.children?.map((child) => {
@@ -80,6 +84,7 @@ const Code = ({ configuration }: IProps): JSX.Element => {
       })
     }
 
+    // Physical parameters
     if (configuration.parameters) {
       header += '\n// PARAMETERS\n'
       Object.keys(configuration.parameters).forEach((key) => {
@@ -93,6 +98,25 @@ const Code = ({ configuration }: IProps): JSX.Element => {
             child.default +
             '; // ' +
             child.unit +
+            '\n'
+        })
+      })
+    }
+
+    // Initialization TODO
+
+    // Boundary conditions
+    if (configuration.boundaryConditions) {
+      header += '\n// BOUNDARY CONDITIONS\n'
+      Object.keys(configuration.boundaryConditions).forEach((key) => {
+        const boundaryCondition = configuration.boundaryConditions[key]
+        boundaryCondition.children?.forEach((child, index) => {
+          header +=
+            '/*** TANATLOC BOUNDARY CONDITION ***/ ' +
+            boundaryCondition.name +
+            index +
+            ' = ' +
+            child.default +
             '\n'
         })
       })

@@ -28,15 +28,17 @@ const NumericalParameters = ({
   onNext
 }: IProps): JSX.Element => {
   const [finiteElementSpaceOptions, setFiniteElementSpaceOptions]: [
-    { label: string; '2d': string; '3d': string }[],
+    { label: string; value: string }[],
     Function
   ] = useState([])
   const [FELabel, setFELabel]: [string, Function] = useState()
-  const [FE2d, setFE2d]: [string, Function] = useState()
-  const [FE3d, setFE3d]: [string, Function] = useState()
+  const [FEValue, setFEValue]: [string, Function] = useState()
 
-  const [solverOptions, setSolverOptions] = useState([])
-  const [solver, setSolver]: [string, Function] = useState()
+  const [solverOptions, setSolverOptions]: [
+    { label: string; value: string }[],
+    Function
+  ] = useState([])
+  const [solverValue, setSolverValue]: [string, Function] = useState()
 
   // Options
   useEffect(() => {
@@ -54,23 +56,18 @@ const NumericalParameters = ({
   const onFEOptionAdd = (): void => {
     setFiniteElementSpaceOptions([
       ...finiteElementSpaceOptions,
-      { label: FELabel, '2d': FE2d, '3d': FE3d }
+      { label: FELabel, value: FEValue }
     ])
 
     setFELabel()
-    setFE2d()
-    setFE3d()
+    setFEValue()
   }
 
   /**
    * On finite element space option remove
    * @param option Option
    */
-  const onFEOptionDelete = (option: {
-    label: string
-    '2d': string
-    '3d': string
-  }): void => {
+  const onFEOptionDelete = (option: { label: string; value: string }): void => {
     const index = finiteElementSpaceOptions.findIndex(
       (o) => o.label === option.label
     )
@@ -84,16 +81,19 @@ const NumericalParameters = ({
    * On solver option add
    */
   const onSolverOptionAdd = (): void => {
-    setSolverOptions([...solverOptions, solver])
+    setSolverOptions([
+      ...solverOptions,
+      { label: solverValue, value: solverValue }
+    ])
 
-    setSolver()
+    setSolverValue()
   }
 
   /**
    * On solver option remove
    * @param option Option
    */
-  const onSolverOptionDelete = (option: string) => {
+  const onSolverOptionDelete = (option: { label: string; value: string }) => {
     const index = solverOptions.findIndex((s) => s === option)
     setSolverOptions([
       ...solverOptions.slice(0, index),
@@ -167,14 +167,9 @@ const NumericalParameters = ({
                           onChange={(e) => setFELabel(e.target.value)}
                         />
                         <Input
-                          value={FE2d}
-                          placeholder="2D"
-                          onChange={(e) => setFE2d(e.target.value)}
-                        />
-                        <Input
-                          value={FE3d}
-                          placeholder="3D"
-                          onChange={(e) => setFE3d(e.target.value)}
+                          value={FEValue}
+                          placeholder="Value"
+                          onChange={(e) => setFEValue(e.target.value)}
                         />
                       </div>
                       <Button
@@ -190,7 +185,7 @@ const NumericalParameters = ({
                 {finiteElementSpaceOptions.map((option) => (
                   <Select.Option
                     key={option.label}
-                    value={option.label}
+                    value={option.value}
                     label={option.label}
                   >
                     <div>
@@ -205,6 +200,16 @@ const NumericalParameters = ({
                   </Select.Option>
                 ))}
               </Select>
+            </Form.Item>
+            <Form.Item
+              name="unknownFunction"
+              label="Unknown function"
+              rules={[{ required: true }]}
+            >
+              <Input />
+            </Form.Item>
+            <Form.Item name="testFunction" label="Test function">
+              <Input />
             </Form.Item>
             <Typography.Text strong>Solver</Typography.Text>
             <br />
@@ -229,9 +234,9 @@ const NumericalParameters = ({
                     >
                       <div style={{ display: 'flex', flexDirection: 'column' }}>
                         <Input
-                          value={solver}
+                          value={solverValue}
                           placeholder="Solver"
-                          onChange={(e) => setSolver(e.target.value)}
+                          onChange={(e) => setSolverValue(e.target.value)}
                         />
                       </div>
                       <Button
@@ -245,9 +250,13 @@ const NumericalParameters = ({
                 optionLabelProp="label"
               >
                 {solverOptions.map((option) => (
-                  <Select.Option key={option} value={option} label={option}>
+                  <Select.Option
+                    key={option.label}
+                    value={option.value}
+                    label={option.label}
+                  >
                     <div>
-                      {option}{' '}
+                      {option.label}{' '}
                       <Button
                         danger
                         size="small"

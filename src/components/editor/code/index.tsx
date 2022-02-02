@@ -9,12 +9,14 @@ import { IConfiguration } from '..'
 
 export interface IProps {
   configuration: IConfiguration
+  code: string
+  setCode: (code: string) => void
 }
 
 const safeCode = (str) => str?.replace(/[^A-Z0-9]+/gi, '')
 
-const Code = ({ configuration }: IProps): JSX.Element => {
-  const [code, setCode] = useState('')
+const Code = ({ configuration, code, setCode }: IProps): JSX.Element => {
+  const [header, setHeader] = useState('')
 
   useEffect(() => {
     let header = ''
@@ -58,6 +60,25 @@ const Code = ({ configuration }: IProps): JSX.Element => {
           ', "' +
           configuration.numericalParameters.finiteElementSpace.default +
           '");\n'
+        header +=
+          '/*** TANATLOC FE FUNCTIONS ***/ ' +
+          safeCode(configuration.numericalParameters.finiteElementSpace.name) +
+          ' ' +
+          safeCode(
+            configuration.numericalParameters.finiteElementSpace.unknownFunction
+          ) +
+          ';\n'
+        configuration.numericalParameters.finiteElementSpace.testFunction &&
+          (header +=
+            '/*** TANATLOC FE FUNCTIONS ***/ ' +
+            safeCode(
+              configuration.numericalParameters.finiteElementSpace.name
+            ) +
+            ' ' +
+            safeCode(
+              configuration.numericalParameters.finiteElementSpace.testFunction
+            ) +
+            ';\n')
       }
 
       if (configuration.numericalParameters.solver) {
@@ -105,28 +126,31 @@ const Code = ({ configuration }: IProps): JSX.Element => {
 
     // Initialization TODO
 
-    // Boundary conditions
-    if (configuration.boundaryConditions) {
-      header += '\n// BOUNDARY CONDITIONS\n'
-      Object.keys(configuration.boundaryConditions).forEach((key) => {
-        const boundaryCondition = configuration.boundaryConditions[key]
-        boundaryCondition.children?.forEach((child, index) => {
-          header +=
-            '/*** TANATLOC BOUNDARY CONDITION ***/ ' +
-            boundaryCondition.name +
-            index +
-            ' = ' +
-            child.default +
-            '\n'
-        })
-      })
-    }
+    // // Boundary conditions
+    // if (configuration.boundaryConditions) {
+    //   header += '\n// BOUNDARY CONDITIONS\n'
+    //   Object.keys(configuration.boundaryConditions).forEach((key) => {
+    //     const boundaryCondition = configuration.boundaryConditions[key]
+    //     boundaryCondition.children?.forEach((child, index) => {
+    //       header +=
+    //         '/*** TANATLOC BOUNDARY CONDITION ***/ ' +
+    //         boundaryCondition.name +
+    //         index +
+    //         ' = ' +
+    //         child.default +
+    //         '\n'
+    //     })
+    //   })
+    // }
 
-    setCode(header)
+    // End
+    header += '\n/*** /!\\ WRITE YOUR CODE BELLOW THIS LINE /!\\ ***/\n'
+
+    setHeader(header)
   }, [configuration])
 
-  const onChange = (code: string): void => {
-    console.log(code)
+  const onChange = (newCode: string): void => {
+    setCode(newCode.replace(header, ''))
   }
 
   /**
@@ -144,7 +168,7 @@ const Code = ({ configuration }: IProps): JSX.Element => {
         enableSnippets: true
       }}
       fontSize={14}
-      value={code}
+      value={header + code}
       onChange={onChange}
     />
   )

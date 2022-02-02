@@ -38,13 +38,17 @@ export interface IConfiguration {
       name: string
       options: {
         label: string
-        '2d': string
-        '3d': string
+        value: string
       }[]
       default: string
+      unknownFunction: string
+      testFunction?: string
     }
     solver: {
-      options: string[]
+      options: {
+        label: string
+        value: string
+      }[]
       default: string
     }
   }
@@ -90,6 +94,7 @@ export interface IConfiguration {
   boundaryConditions?: {
     [key: string]: {
       name: string
+      type: string
       refineFactor?: string
       children?: {
         name: string
@@ -189,20 +194,24 @@ const initialConfiguration: IConfiguration = {
       name: 'Uh',
       options: [
         {
-          label: 'P2/P1',
-          '2d': '[P2, P2, P1]',
-          '3d': '[P2, P2, P2, P1]'
+          label: 'P1',
+          value: 'P1'
         },
         {
-          label: 'P1b/P1',
-          '2d': '[P1b, P1b, P1]',
-          '3d': '[P1b, P1b, P1b, P1]'
+          label: 'P2',
+          value: 'P2'
         }
       ],
-      default: 'P2/P1'
+      default: 'P1',
+      unknownFunction: 'u',
+      testFunction: 'uh'
     },
     solver: {
-      options: ['MUMPS', 'SuperLU', 'SuperLU_DIST'],
+      options: [
+        { label: 'MUMPS', value: 'MUMPS' },
+        { label: 'SuperLU', value: 'SuperLU' },
+        { label: 'SuperLU_DIST', value: 'SuperLU_DIST' }
+      ],
       default: 'MUMPS'
     }
   },
@@ -217,18 +226,13 @@ const initialConfiguration: IConfiguration = {
     ]
   },
   parameters: {
-    test: {
-      name: 'Time',
+    rightHandSide: {
+      name: 'Right hand side',
       children: [
         {
-          name: 'T',
-          default: 1,
-          unit: 's'
-        },
-        {
-          name: 'dt',
-          default: 0.01,
-          unit: 's'
+          name: 'F',
+          default: '0',
+          unit: 'N'
         }
       ]
     }
@@ -237,6 +241,7 @@ const initialConfiguration: IConfiguration = {
   boundaryConditions: {
     dirichlet: {
       name: 'Dirichlet',
+      type: 'dirichlet',
       refineFactor: '1',
       children: [
         {
@@ -248,6 +253,7 @@ const initialConfiguration: IConfiguration = {
     },
     neumann: {
       name: 'Neumann',
+      type: 'neumann',
       children: [
         {
           name: 'UN',
@@ -255,9 +261,6 @@ const initialConfiguration: IConfiguration = {
           unit: ''
         }
       ]
-    },
-    empty: {
-      name: 'Empty'
     }
   }
 }
@@ -272,6 +275,8 @@ const Editor = (): JSX.Element => {
   const [panel, setPanel]: [IStep, Function] = useState()
   const [configuration, setConfiguration]: [IConfiguration, Function] =
     useState(initialConfiguration)
+
+  const [code, setCode] = useState('')
 
   // Data
   const router = useRouter()
@@ -363,7 +368,9 @@ const Editor = (): JSX.Element => {
     setCurrent(current + 1)
   }
 
-  console.log(configuration)
+  const addCode = (newCode) => {
+    setCode(code + '\n' + newCode)
+  }
 
   /**
    * Render
@@ -419,10 +426,14 @@ const Editor = (): JSX.Element => {
             />
           )}
         </Panel>
-        <DynamicCodeEditor configuration={configuration} />
+        <DynamicCodeEditor
+          configuration={configuration}
+          code={code}
+          setCode={setCode}
+        />
       </Layout.Content>
 
-      <Layout.Sider theme="light">
+      <Layout.Sider theme="light" width={250}>
         <Alert
           type="success"
           message={
@@ -441,7 +452,7 @@ const Editor = (): JSX.Element => {
             </>
           }
         />
-        <Variables configuration={configuration} />
+        <Variables configuration={configuration} addCode={addCode} />
       </Layout.Sider>
     </Layout>
   )

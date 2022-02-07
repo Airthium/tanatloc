@@ -6,7 +6,6 @@ import {
   Drawer,
   Layout,
   Modal,
-  Select,
   Space,
   Spin,
   Steps,
@@ -32,6 +31,18 @@ import CloudServer from './cloudServer'
 
 import SimulationAPI from '@/api/simulation'
 import ResultAPI from '@/api/result'
+
+import {
+  checkInProgressTasks,
+  getUniqueNumbers,
+  setMultiplicator
+} from './runServices/services'
+import { setupSelector, resultManager } from './runServices/selector'
+import { onLogSetup } from './runServices/logManager'
+import {
+  onArchiveDownloadSetup,
+  onDownloadSetup
+} from './runServices/downloadManager'
 
 export interface IProps {
   simulation: ISimulation
@@ -115,37 +126,18 @@ const Run = ({ simulation, result, setResult, swr }: IProps): JSX.Element => {
 
   // Running
   useEffect(() => {
-    if (!currentSimulation?.tasks) {
-      setRunning(false)
-      return
-    }
-
-    const erroredTasks = currentSimulation.tasks.filter(
-      (t) => t?.status === 'error'
-    )
-    if (erroredTasks.length) {
-      setRunning(false)
-      return
-    }
-
-    const runningTasks = currentSimulation.tasks.filter(
-      (t) => t?.status !== 'finish'
-    )
-    if (runningTasks.length) setRunning(true)
-    else setRunning(false)
+    checkInProgressTasks(currentSimulation, setRunning)
   }, [currentSimulation?.tasks])
 
   // Steps & Results
   useEffect(() => {
-    if (!currentSimulation?.tasks) {
-      setResults([])
-      return
-    }
-
     const newSteps = []
     const newResults = []
     const newSelectors = []
-    currentSimulation.tasks.forEach((task) => {
+
+    !currentSimulation?.tasks && setResults([])
+
+    currentSimulation?.tasks?.forEach((task) => {
       if (!task) return
       // Steps
       newSteps[task.index] = {
@@ -162,88 +154,45 @@ const Run = ({ simulation, result, setResult, swr }: IProps): JSX.Element => {
       if (task.files) {
         // Filters
         const resultsFilters = configuration?.run?.resultsFilters
+        !resultsFilters && newResults.push(...task.files)
+        //Sort by filters
+        resultsFilters?.forEach((filter, filterIndex) => {
+          const pattern = new RegExp(filter.pattern)
+          const filteredFiles = task.files.filter((file) =>
+            pattern.test(file.fileName)
+          )
 
-        if (resultsFilters) {
-          //Sort by filters
-          resultsFilters.forEach((filter, filterIndex) => {
-            const pattern = new RegExp(filter.pattern)
-            const filteredFiles = task.files.filter((file) =>
-              pattern.test(file.fileName)
-            )
+          let fileData = getUniqueNumbers(filteredFiles, filter)
+          let files = fileData?.files
+          let numbers = fileData?.numbers
+          let multiplicator = setMultiplicator(filter, configuration)
 
-            if (filteredFiles.length) {
-              // Set iteration numbers
-              const files = filteredFiles.map((file) => {
-                const number = file.fileName
-                  .replace(new RegExp(filter.prefixPattern), '')
-                  .replace(new RegExp(filter.suffixPattern), '')
-                return {
-                  ...file,
-                  number: +number
-                }
-              })
+          // Set selector
+          const resultIndex = newResults.length
+          const selector = setupSelector(
+            filter,
+            numbers,
+            multiplicator,
+            filterIndex,
+            resultIndex,
+            onSelectorChange,
+            selectorsCurrent
+          )
 
-              // Sort
-              files.sort((a, b) => a.number - b.number)
-
-              // Get unique numbers
-              const numbers = files
-                .map((file) => file.number)
-                .filter((value, i, self) => self.indexOf(value) === i)
-
-              // Multiplicator
-              let multiplicator
-
-              const multiplicatorPath = filter.multiplicator
-              if (multiplicatorPath) {
-                const multiplicatorObject = multiplicatorPath.reduce(
-                  (a, v) => a[v],
-                  configuration
-                )
-                multiplicator =
-                  multiplicatorObject.value || multiplicatorObject.default
-              }
-
-              // Set selector
-              const resultIndex = newResults.length
-              const selector = (
-                <div key={filter.name}>
-                  {filter.name}:{' '}
-                  <Select
-                    defaultValue={numbers[0]}
-                    options={numbers.map((n, i) => ({
-                      label: multiplicator ? n * multiplicator : i,
-                      value: n
-                    }))}
-                    style={{ width: '100%' }}
-                    value={
-                      selectorsCurrent[filterIndex] &&
-                      selectorsCurrent[filterIndex] * (multiplicator || 1)
-                    }
-                    onChange={(value) =>
-                      onSelectorChange(value, resultIndex, filterIndex)
-                    }
-                  />
-                </div>
-              )
-              newSelectors.push(selector)
-
-              // Set result & current iteration
-              if (selectorsCurrent[filterIndex] === undefined) {
-                const newSelectorsCurrent = [...selectorsCurrent]
-                newSelectorsCurrent[filterIndex] = numbers[0]
-                setSelectorsCurrent(newSelectorsCurrent)
-              }
-              newResults.push({
-                filtered: true,
-                files,
-                current: selectorsCurrent[filterIndex]
-              })
-            }
+          newSelectors.push(selector)
+          // Set result & current iteration
+          !selectorsCurrent[filterIndex] &&
+            setSelectorsCurrent([
+              ...selectorsCurrent.slice(0, selectorsCurrent[filterIndex]),
+              numbers[0],
+              ...selectorsCurrent.slice(selectorsCurrent[filterIndex] + 1)
+            ])
+          newResults.push({
+            filtered: true,
+            files,
+            current: selectorsCurrent[filterIndex]
           })
-        } else {
-          newResults.push(...task.files)
-        }
+        })
       }
     })
 
@@ -267,32 +216,17 @@ const Run = ({ simulation, result, setResult, swr }: IProps): JSX.Element => {
     index: number,
     filterIndex: number
   ) => {
-    // Selectors
-    const newSelectorsCurrent = [...selectorsCurrent]
-    newSelectorsCurrent[filterIndex] = value
-    setSelectorsCurrent(newSelectorsCurrent)
-
-    // Results
-    const currentResult: {
-      name: string
-      number: number
-      current?: number
-      files?: { name: string; number: number }[]
-    } = results[index]
-    currentResult.current = value
-    setResults([
-      ...results.slice(0, index),
-      currentResult,
-      ...results.slice(index + 1)
-    ])
-
-    // Update visualization
-    if (result) {
-      const currentFile = currentResult.files.find(
-        (file) => file.name === result.name && file.number === value
-      )
-      if (currentFile) setResult(currentFile)
-    }
+    const resultData = resultManager(
+      value,
+      index,
+      filterIndex,
+      results,
+      result,
+      selectorsCurrent
+    )
+    setResults(resultData?.results)
+    setResult(resultData?.result)
+    setSelectorsCurrent(resultData?.selectorsCurrent)
   }
 
   /**
@@ -358,53 +292,19 @@ const Run = ({ simulation, result, setResult, swr }: IProps): JSX.Element => {
    * @param {Object} task Task
    * @param {string} title Tab title
    */
-  const onLog = (task, title) => {
+  const onLog = (task: object, title: string) => {
     // Content
-    const content = (
-      <Tabs.TabPane tab={title}>
-        {task?.systemLog && (
-          <Button loading={logLoading} onClick={() => getLog(task.systemLog)}>
-            Complete log
-          </Button>
-        )}
-        {parse(
-          task?.log?.replace(/\n\n/g, '\n').replace(/\n/g, '<br />') || ''
-        )}
-        {parse(
-          task?.warning?.replace(/\n\n/g, '\n').replace(/\n/g, '<br />') || ''
-        )}
-        {parse(
-          task?.error?.replace(/\n\n/g, '\n').replace(/\n/g, '<br />') || ''
-        )}
-      </Tabs.TabPane>
+    const content = onLogSetup(
+      task,
+      title,
+      logLoading,
+      simulation,
+      setLogLoading
     )
-    setLogContent(<Tabs>{content}</Tabs>)
+    content && setLogContent(<Tabs>{content}</Tabs>)
 
     // Open
     toggleLog()
-  }
-
-  const getLog = async (link) => {
-    setLogLoading(true)
-
-    try {
-      const res = await SimulationAPI.log({ id: simulation.id }, link)
-      const log = Buffer.from(res.log).toString()
-
-      Modal.info({
-        title: 'System log',
-        width: 'unset',
-        content: (
-          <Typography.Paragraph code copyable>
-            {parse(log.replace(/\n\n/g, '\n').replace(/\n/g, '<br />'))}
-          </Typography.Paragraph>
-        )
-      })
-    } catch (err) {
-      ErrorNotification(errors.logError, err)
-    } finally {
-      setLogLoading(false)
-    }
   }
 
   /**
@@ -418,25 +318,7 @@ const Run = ({ simulation, result, setResult, swr }: IProps): JSX.Element => {
    * On archive download
    */
   const onArchiveDownload = async () => {
-    setDownloading([...downloading, 'archive'])
-
-    try {
-      const archive = await ResultAPI.archive({ id: simulation.id })
-      const content = await archive.blob()
-
-      const url = window.URL.createObjectURL(new Blob([content]))
-      const link = document.createElement('a')
-      link.href = url
-      link.setAttribute('download', simulation.scheme.name + '.zip')
-      link.click()
-    } catch (err) {
-      ErrorNotification(errors.downloadError, err)
-    } finally {
-      setDownloading((d) => {
-        const index = d.indexOf('archive')
-        return [...d.slice(0, index), ...d.slice(index + 1)]
-      })
-    }
+    await onArchiveDownloadSetup(downloading, setDownloading, simulation)
   }
 
   /**
@@ -444,31 +326,7 @@ const Run = ({ simulation, result, setResult, swr }: IProps): JSX.Element => {
    * @param {Object} file Result file
    */
   const onDownload = async (file) => {
-    setDownloading([...downloading, file.glb])
-
-    try {
-      const content = await ResultAPI.download(
-        { id: simulation.id },
-        { originPath: file.originPath, fileName: file.fileName }
-      )
-      const blob = await content.blob()
-
-      const url = window.URL.createObjectURL(new Blob([blob]))
-      const link = document.createElement('a')
-      link.href = url
-      link.setAttribute(
-        'download',
-        file.name + '.' + file.fileName.split('.').pop()
-      )
-      link.click()
-    } catch (err) {
-      ErrorNotification(errors.downloadError, err)
-    } finally {
-      setDownloading((d) => {
-        const index = d.indexOf(file.glb)
-        return [...d.slice(0, index), ...d.slice(index + 1)]
-      })
-    }
+    await onDownloadSetup(file, downloading, setDownloading, simulation)
   }
 
   // Results render

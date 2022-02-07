@@ -79,6 +79,16 @@ const materialDatabase: IMaterialDatabase = {
             label: "Poisson's ratio",
             symbol: 'Nu',
             value: 0.27
+          },
+          {
+            label: 'Thermal conductivity',
+            symbol: 'Lambda',
+            value: 15
+          },
+          {
+            label: 'Heat capacity',
+            symbol: 'Cp',
+            value: 502
           }
         ]
       }
@@ -100,6 +110,16 @@ const materialDatabase: IMaterialDatabase = {
             label: 'Dynamic viscosity',
             symbol: 'Mu',
             value: 1e-3
+          },
+          {
+            label: 'Thermal conductivity',
+            symbol: 'Lambda',
+            value: 0.6
+          },
+          {
+            label: 'Heat capacity',
+            symbol: 'Cp',
+            value: 4185
           }
         ]
       }

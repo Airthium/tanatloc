@@ -130,6 +130,7 @@ export interface ISimulationTask {
   status: 'wait' | 'process' | 'finish' | 'error'
   pid?: string | number
   log?: string
+  pluginLog?: string
   warning?: string
   error?: string
   systemLog?: string

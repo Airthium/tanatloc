@@ -179,7 +179,7 @@ const Share = ({
         />
       </Tooltip>
       <Dialog
-        title={'Share' + (workspace ? 'workspace' : 'project')}
+        title={'Share ' + (workspace ? 'workspace' : 'project')}
         visible={visible}
         onCancel={() => setVisible(false)}
         onOk={onShare}

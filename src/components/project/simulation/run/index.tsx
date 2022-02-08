@@ -140,6 +140,7 @@ const Run = ({ simulation, result, setResult, swr }: IProps): JSX.Element => {
         label: task.label,
         status: task.status,
         log: task.log,
+        pluginLog: task.pluginLog,
         warning: task.warning,
         error: task.error,
         systemLog: task.systemLog

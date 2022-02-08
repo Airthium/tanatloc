@@ -5,6 +5,8 @@ import { PlusCircleOutlined } from '@ant-design/icons'
 
 export interface IProps {
   disabled?: boolean
+  primary?: boolean
+  light?: boolean
   loading?: boolean
   children?: ReactChild | ReactChild[]
   onAdd: Function
@@ -22,6 +24,8 @@ export interface IProps {
  */
 const AddButton = ({
   disabled,
+  primary = true,
+  light = false,
   loading,
   children,
   onAdd
@@ -32,9 +36,10 @@ const AddButton = ({
   return (
     <Tooltip title={children || 'Add'}>
       <Button
+        className={light && 'text-light'}
         disabled={disabled}
         loading={loading}
-        type="primary"
+        type={primary ? 'primary' : 'default'}
         icon={<PlusCircleOutlined />}
         onClick={() => onAdd()}
       >

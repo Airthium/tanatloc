@@ -1,10 +1,10 @@
 import PropTypes from 'prop-types'
 import { useState } from 'react'
-import { Button, Form, Input } from 'antd'
-import { EditOutlined } from '@ant-design/icons'
+import { Form, Input } from 'antd'
 
 import Dialog from '@/components/assets/dialog'
 import { Error as ErrorNotification } from '@/components/assets/notification'
+import { EditButton } from '@/components/assets/button'
 
 import WorkspaceAPI from '@/api/workspace'
 
@@ -70,7 +70,7 @@ const Edit = ({ workspace, swr }: IProps): JSX.Element => {
    */
   return (
     <>
-      <Button onClick={() => setVisible(true)} icon={<EditOutlined />} />
+      <EditButton bordered onEdit={() => setVisible(true)} />
       <Dialog
         visible={visible}
         loading={loading}

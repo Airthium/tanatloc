@@ -55,6 +55,8 @@ const Delete = ({ workspace, swr }: IProps): JSX.Element => {
     }
   }
 
+  // TODO DeleteButton
+
   /**
    * Render
    */

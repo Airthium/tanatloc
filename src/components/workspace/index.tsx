@@ -2,7 +2,8 @@
 
 import PropTypes from 'prop-types'
 import React, { useState, useEffect } from 'react'
-import { Avatar, Input, Layout, PageHeader, Space, Tabs } from 'antd'
+import { Avatar, Button, Input, Layout, PageHeader, Space, Tabs } from 'antd'
+import { SearchOutlined } from '@ant-design/icons'
 
 import {
   IOrganizationWithData,
@@ -118,6 +119,9 @@ const Workspace = ({
                 value={filter}
                 onChange={onSearch}
                 style={{ width: 500 }}
+                enterButton={
+                  <Button type="primary" icon={<SearchOutlined />} />
+                }
               />
               {workspace?.owners?.find((o) => o.id === user.id) && (
                 <>
@@ -128,23 +132,25 @@ const Workspace = ({
                       addOneProject
                     }}
                   />
-                  <Edit
-                    workspace={{
-                      id: workspace.id,
-                      name: workspace.name
-                    }}
-                    swr={{ mutateOneWorkspace: swr.mutateOneWorkspace }}
-                  />
-                  <Share
-                    workspace={workspace}
-                    organizations={organizations}
-                    swr={{ mutateOneWorkspace: swr.mutateOneWorkspace }}
-                    style={{ buttonType: 'default' }}
-                  />
-                  <Delete
-                    workspace={workspace}
-                    swr={{ delOneWorkspace: swr.delOneWorkspace }}
-                  />
+                  <Space size={8}>
+                    <Edit
+                      workspace={{
+                        id: workspace.id,
+                        name: workspace.name
+                      }}
+                      swr={{ mutateOneWorkspace: swr.mutateOneWorkspace }}
+                    />
+                    <Share
+                      workspace={workspace}
+                      organizations={organizations}
+                      swr={{ mutateOneWorkspace: swr.mutateOneWorkspace }}
+                      style={{ buttonType: 'default' }}
+                    />
+                    <Delete
+                      workspace={workspace}
+                      swr={{ delOneWorkspace: swr.delOneWorkspace }}
+                    />
+                  </Space>
                 </>
               )}
             </Space>

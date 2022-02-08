@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { Form, Input } from 'antd'
 
 import Dialog from '@/components/assets/dialog'
-import { Error } from '@/components/assets/notification'
+import { Error as ErrorNotification } from '@/components/assets/notification'
 import { AddButton } from '@/components/assets/button'
 
 import WorkspaceAPI from '@/api/workspace'
@@ -49,7 +49,7 @@ const Add = ({ swr }: IProps): JSX.Element => {
       setLoading(false)
       setVisible(false)
     } catch (err) {
-      Error(errors.add, err)
+      ErrorNotification(errors.add, err)
       setLoading(false)
       throw err
     }

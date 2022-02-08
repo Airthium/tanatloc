@@ -5,13 +5,11 @@ import {
   Card,
   Drawer,
   Layout,
-  Modal,
   Space,
   Spin,
   Steps,
   Tabs,
-  Tooltip,
-  Typography
+  Tooltip
 } from 'antd'
 import {
   DownloadOutlined,
@@ -21,7 +19,6 @@ import {
   RocketOutlined,
   StopOutlined
 } from '@ant-design/icons'
-import parse from 'html-react-parser'
 
 import { ISimulation, ISimulationTask } from '@/database/index.d'
 
@@ -30,7 +27,6 @@ import { Error as ErrorNotification } from '@/components/assets/notification'
 import CloudServer from './cloudServer'
 
 import SimulationAPI from '@/api/simulation'
-import ResultAPI from '@/api/result'
 
 import {
   checkInProgressTasks,

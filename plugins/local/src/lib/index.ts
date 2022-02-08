@@ -377,8 +377,6 @@ const computeSimulation = async (
     updateTasks(id, tasks)
   } catch (err) {
     // Task
-    console.log("aaa")
-    console.log(err)
     simulationTask.status = 'error'
     simulationTask.error += 'Fatal error: ' + err.message
     stopProcess(id, simulationPath, simulationTask, () =>

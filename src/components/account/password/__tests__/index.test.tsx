@@ -83,6 +83,7 @@ describe('components/account/information', () => {
       throw new Error()
     })
     fireEvent.click(button)
+    await waitFor(() => expect(mockCheck).toHaveBeenCalledTimes(1))
     await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
 
     // Wrong password
@@ -94,6 +95,7 @@ describe('components/account/information', () => {
       .spyOn(notification, 'error')
       .mockImplementation(() => mockErrorNotification())
     fireEvent.click(button)
+    await waitFor(() => expect(mockCheck).toHaveBeenCalledTimes(2))
     await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
 
     // Valid
@@ -101,6 +103,7 @@ describe('components/account/information', () => {
       valid: true
     }))
     fireEvent.click(button)
+    await waitFor(() => expect(mockCheck).toHaveBeenCalledTimes(3))
     await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
 
     unmount()

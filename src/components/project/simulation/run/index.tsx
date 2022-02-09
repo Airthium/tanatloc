@@ -17,8 +17,6 @@ import Results from './results'
 
 import SimulationAPI from '@/api/simulation'
 
-import { onLogSetup } from './runServices/logManager'
-
 export interface IProps {
   simulation: ISimulation
   result: {
@@ -53,10 +51,6 @@ const Run = ({ simulation, result, setResult, swr }: IProps): JSX.Element => {
   // State
   const [disabled, setDisabled]: [boolean, Function] = useState(false)
   const [running, setRunning]: [boolean, Function] = useState(false)
-
-  const [logVisible, setLogVisible]: [boolean, Function] = useState(false)
-  const [logContent, setLogContent]: [string, Function] = useState()
-  const [logLoading, setLogLoading]: [boolean, Function] = useState(false)
 
   const [steps, setSteps]: [ISimulationTask[], Function] = useState([])
 
@@ -177,33 +171,6 @@ const Run = ({ simulation, result, setResult, swr }: IProps): JSX.Element => {
   }
 
   /**
-   * On log
-   * @param {Object} task Task
-   * @param {string} title Tab title
-   */
-  const onLog = (task: object, title: string): void => {
-    // Content
-    const content = onLogSetup(
-      task,
-      title,
-      logLoading,
-      simulation,
-      setLogLoading
-    )
-    content && setLogContent(<Tabs>{content}</Tabs>)
-
-    // Open
-    toggleLog()
-  }
-
-  /**
-   * Toogle log visibility
-   */
-  const toggleLog = (): void => {
-    setLogVisible(!logVisible)
-  }
-
-  /**
    * Render
    */
   if (!simulation || !currentSimulation) return <Spin />
@@ -211,21 +178,13 @@ const Run = ({ simulation, result, setResult, swr }: IProps): JSX.Element => {
     return (
       <Layout>
         <Layout.Content>
-          <Drawer
-            title="Log"
-            visible={logVisible}
-            onClose={toggleLog}
-            width={512}
-          >
-            {logContent}
-          </Drawer>
           <Space direction="vertical">
             <CloudServer
               disabled={running}
               cloudServer={currentConfiguration?.run?.cloudServer}
               onOk={onCloudServer}
             />
-            <Card size="small" title="Run" extra={<Log steps={steps} />}>
+            <Card size="small" title="Run">
               <Space direction="vertical">
                 <Space>
                   <Button
@@ -244,6 +203,7 @@ const Run = ({ simulation, result, setResult, swr }: IProps): JSX.Element => {
                     shape="circle"
                     onClick={onStop}
                   />
+                  <Log steps={steps} />
                 </Space>
                 <Steps direction="vertical">
                   {steps.map((step, index) => (
@@ -251,13 +211,6 @@ const Run = ({ simulation, result, setResult, swr }: IProps): JSX.Element => {
                       key={step.label}
                       title={step.label}
                       description={'(' + (index + 1) + '/' + steps.length + ')'}
-                      subTitle={
-                        <Button
-                          icon={<FileTextOutlined />}
-                          onClick={() => onLog(step, step.label)}
-                          size="small"
-                        />
-                      }
                       status={step.status}
                     />
                   ))}

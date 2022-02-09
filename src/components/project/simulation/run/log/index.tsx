@@ -114,7 +114,6 @@ const Log = ({ simulation, steps }: IProps): JSX.Element => {
           disabled={!steps || !steps.length}
           icon={<FileTextOutlined />}
           onClick={() => onLog()}
-          size="small"
         />
       </Tooltip>
     </>

@@ -124,6 +124,16 @@ export interface IProject {
   workspace?: string
 }
 
+export interface ISimulationTaskFile {
+  fileName: string
+  name: string
+  originPath: string
+  type: string
+  renderPath?: string
+  glb?: string
+  json?: string
+}
+
 export interface ISimulationTask {
   index?: number
   label: string
@@ -134,10 +144,8 @@ export interface ISimulationTask {
   warning?: string
   error?: string
   systemLog?: string
-  file?: {}
-  files?: {
-    fileName: string
-  }[]
+  file?: ISimulationTaskFile
+  files?: ISimulationTaskFile[]
   plugin?: string
   datas?: Array<{ x: number; y: number }>
 }

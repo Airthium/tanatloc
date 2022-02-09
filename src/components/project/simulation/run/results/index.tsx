@@ -1,24 +1,37 @@
 import { useEffect, useState } from 'react'
 import { Button, Card, Space, Spin, Tooltip } from 'antd'
-import {
-  EyeOutlined,
-  EyeInvisibleOutlined,
-  DownloadOutlined
-} from '@ant-design/icons'
+import { EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons'
 
-import {
-  onArchiveDownloadSetup,
-  onDownloadSetup
-} from '../runServices/downloadManager'
+import Download from './download'
+import Archive from './archive'
 
-import {
-  getUniqueNumbers,
-  setMultiplicator
-} from '../runServices/services'
+import { getUniqueNumbers, setMultiplicator } from '../runServices/services'
 
 import { setupSelector, resultManager } from '../runServices/selector'
 
-const Results = ({ simulation, currentSimulation, result, setResult }) => {
+import { ISimulation } from '@/database/index.d'
+
+export interface IProps {
+  simulation: ISimulation
+  currentSimulation: ISimulation
+  result: {
+    fileName: string
+    name: string
+  }
+  setResult: Function
+}
+
+/**
+ * Results
+ * @param props Props
+ * @returns
+ */
+const Results = ({
+  simulation,
+  currentSimulation,
+  result,
+  setResult
+}: IProps): JSX.Element => {
   //State
   const [results, setResults]: [
     {
@@ -92,7 +105,7 @@ const Results = ({ simulation, currentSimulation, result, setResult }) => {
 
     setResults(newResults)
     setSelectors(newSelectors)
-  }, [configuration?.run?.resultsFilter, currentSimulation?.tasks])
+  }, [configuration?.run?.resultsFilters, currentSimulation?.tasks])
 
   /**
    * On selector change
@@ -118,38 +131,15 @@ const Results = ({ simulation, currentSimulation, result, setResult }) => {
     setSelectorsCurrent(resultData?.selectorsCurrent)
   }
 
-  /**
-   * On archive download
-   */
-  const onArchiveDownload = async () => {
-    await onArchiveDownloadSetup(downloading, setDownloading, simulation)
-  }
-
-  /**
-   * On download
-   * @param {Object} file Result file
-   */
-  const onDownload = async (file) => {
-    await onDownloadSetup(file, downloading, setDownloading, simulation)
-  }
-
   // Results render
-  if (!results) return <Spin />
+  if (!results || !currentSimulation) return <Spin />
   else if (!results.length) return <Card size="small">No results yet</Card>
   else
     return (
       <Card
         size="small"
         title="Results"
-        extra={
-          <Tooltip title="Download archive">
-            <Button
-              loading={!!downloading.find((d) => d === 'archive')}
-              icon={<DownloadOutlined />}
-              onClick={onArchiveDownload}
-            />
-          </Tooltip>
-        }
+        extra={<Archive simulation={simulation} />}
       >
         <Space direction="vertical" style={{ width: '100%' }}>
           {selectors}
@@ -168,6 +158,7 @@ const Results = ({ simulation, currentSimulation, result, setResult }) => {
               return (
                 <Space key={file.name} style={{ alignItems: 'center' }}>
                   <Button
+                    size="small"
                     icon={
                       result?.fileName === file?.fileName &&
                       result?.name === file?.name ? (
@@ -185,12 +176,7 @@ const Results = ({ simulation, currentSimulation, result, setResult }) => {
                       )
                     }
                   />
-                  <Button
-                    loading={!!downloading.find((d) => d === file.glb)}
-                    icon={<DownloadOutlined />}
-                    size="small"
-                    onClick={() => onDownload(file)}
-                  />
+                  <Download simulation={simulation} file={file} />
                   {file.name}
                 </Space>
               )

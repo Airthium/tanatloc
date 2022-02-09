@@ -54,11 +54,12 @@ const Account = ({ user, swr }: IProps): JSX.Element => {
         }
         footer={<Divider />}
       />
-      <Layout.Content>
+      <Layout.Content className="scroll">
         <Tabs
+          className="inDashboard-Tabs"
+          type="card"
           defaultActiveKey={tab || 'personal'}
           onChange={onChange}
-          id="account"
         >
           <Tabs.TabPane tab="Personal Information" key="personal">
             <Space direction="vertical" style={{ width: '100%' }}>

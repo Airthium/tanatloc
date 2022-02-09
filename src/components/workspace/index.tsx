@@ -158,7 +158,7 @@ const Workspace = ({
           }
         >
           {workspace.users?.length || workspace.groups?.length ? (
-            <div className="Workspace-share">
+            <div className="inWorkspace-shared">
               <span style={{ marginRight: '10px' }}>
                 This workspace is shared with:
               </span>

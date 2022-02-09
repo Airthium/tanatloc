@@ -112,6 +112,7 @@ const Password = ({ user }: IProps): JSX.Element => {
           name="newPassword"
           label="New password"
           inputPlaceholder="Enter a new password"
+          required={true}
         />
         <Form.Item
           {...inputLayout}

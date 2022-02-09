@@ -98,12 +98,12 @@ const WorkspacesList = ({
    * Render
    */
   return (
-    <Layout className="Workspace">
+    <Layout className="inDashboard Workspace">
       <PageHeader
-        className="Workspace-PageHeader"
+        className="inDashboard-PageHeader"
         backIcon={false}
         title={
-          <Typography.Title level={2} className="pageheader-name">
+          <Typography.Title level={2} className="inDashboard-PageHeader-title">
             Workspaces
           </Typography.Title>
         }
@@ -135,7 +135,7 @@ const WorkspacesList = ({
             </Dialog>
             <Tabs
               type="editable-card"
-              className="Workspace-tabs"
+              className="inDashboard-Tabs"
               defaultActiveKey={workspaceId || '1'}
               onEdit={onEdit}
             >

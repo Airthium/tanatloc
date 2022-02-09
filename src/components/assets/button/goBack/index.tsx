@@ -19,9 +19,9 @@ export interface IProps {
 const GoBack = ({ children, onClick }: IProps): JSX.Element => {
   return (
     <Button
-      icon={<ArrowLeftOutlined className="goback-button-icon" />}
-      className="goback-button"
+      icon={<ArrowLeftOutlined style={{ color: 'rgb(250, 209, 20)' }} />}
       onClick={onClick}
+      style={{ border: 'none' }}
     >
       {children || 'Go back'}
     </Button>

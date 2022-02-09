@@ -73,7 +73,7 @@ const Add = ({ workspace, swr }: IProps): JSX.Element => {
    */
   return (
     <>
-      <AddButton primary={false} light onAdd={() => setVisible(true)}>
+      <AddButton primary={false} dark onAdd={() => setVisible(true)}>
         Create a new project
       </AddButton>
       <Dialog

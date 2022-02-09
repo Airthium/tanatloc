@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types'
 import { useState } from 'react'
-import { Button, Form, Input, Tooltip } from 'antd'
-import { EditOutlined } from '@ant-design/icons'
+import { Form, Input } from 'antd'
 
 import { IProjectWithData } from '@/lib'
 
@@ -9,6 +8,7 @@ import Dialog from '@/components/assets/dialog'
 import { Error } from '@/components/assets/notification'
 
 import ProjectAPI from '@/api/project'
+import { EditButton } from '@/components/assets/button'
 
 export interface IProps {
   disabled?: boolean
@@ -76,14 +76,7 @@ const Edit = ({ disabled, project, swr }: IProps): JSX.Element => {
    */
   return (
     <>
-      <Tooltip title="Edit">
-        <Button
-          type="text"
-          disabled={disabled}
-          onClick={() => setVisible(true)}
-          icon={<EditOutlined />}
-        />
-      </Tooltip>
+      <EditButton disabled={disabled} dark onEdit={() => setVisible(true)} />
       <Dialog
         title={'Edit "' + project.title + '" project'}
         visible={visible}

@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import { Divider, Layout, PageHeader, Typography } from 'antd'
+import { Divider, Empty, Layout, PageHeader, Typography } from 'antd'
 
 import Add from '@/components/workspace/add'
 
@@ -30,8 +30,16 @@ const Welcome = ({ swr }: IProps): JSX.Element => {
           }
           footer={<Divider />}
         />
-        <Typography.Text>Select a workspace to start, or </Typography.Text>
-        <Add swr={{ addOneWorkspace: swr.addOneWorkspace }} />
+        <Empty
+          image="images/empty.svg"
+          description={'Select a workspace to start, or get started !'}
+        >
+          <Add
+            swr={{
+              addOneWorkspace: swr.addOneWorkspace
+            }}
+          />
+        </Empty>
       </Layout.Content>
     </Layout>
   )

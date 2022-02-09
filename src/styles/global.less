@@ -11,7 +11,6 @@
 @import './project.less';
 @import './view.less';
 @import './panel.less';
-@import './help.less';
 @import './editor.less';
 
 // Fonts
@@ -86,6 +85,7 @@
 @font-family: Saira;
 @text-color: #1f1f1f;
 
+// Border radius
 @border-radius-base: 0;
 
 // Menu
@@ -120,6 +120,7 @@
 // Badge
 @badge-color: @tanatloc-primary-color;
 
+// Main
 html,
 body {
   width: 100%;
@@ -133,6 +134,7 @@ body {
   overflow: hidden;
 }
 
+// Scrollbar
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
@@ -150,12 +152,7 @@ body {
   background: rgba(85, 85, 85, 0.75);
 }
 
-.ant-btn:hover:not(.ant-btn-primary),
-.ant-btn:focus:not(.ant-btn-primary) {
-  color: #000;
-  border-color: #000;
-}
-
+// Global
 .no-border {
   border: none;
 }
@@ -177,8 +174,11 @@ body {
 }
 
 .text-light {
-  font-weight: 500;
   color: @tanatloc-text-light;
+}
+
+.text-dark {
+  color: @tanatloc-text-dark;
 }
 
 .logo {
@@ -202,14 +202,6 @@ body {
   color: gray;
   cursor: default;
   line-height: 1em;
-}
-
-.goback-button {
-  border: none;
-}
-
-.goback-button-icon {
-  color: @tanatloc-primary-color;
 }
 
 .required ::before {

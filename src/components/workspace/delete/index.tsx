@@ -1,10 +1,8 @@
 import PropTypes from 'prop-types'
 import { useState } from 'react'
-import { Button } from 'antd'
-import { DeleteOutlined } from '@ant-design/icons'
 
-import { DeleteDialog } from '@/components/assets/dialog'
-import { Error } from '@/components/assets/notification'
+import { Error as ErrorNotification } from '@/components/assets/notification'
+import { DeleteButton } from '@/components/assets/button'
 
 import WorkspaceAPI from '@/api/workspace'
 
@@ -50,33 +48,21 @@ const Delete = ({ workspace, swr }: IProps): JSX.Element => {
       // Close
       setVisible(false)
     } catch (err) {
-      Error(errors.delError, err)
+      ErrorNotification(errors.delError, err)
       setLoading(false)
     }
   }
-
-  // TODO DeleteButton
 
   /**
    * Render
    */
   return (
-    <>
-      <Button
-        danger
-        onClick={() => setVisible(true)}
-        icon={<DeleteOutlined />}
-      />
-      <DeleteDialog
-        title="Delete the workspace"
-        visible={visible}
-        onCancel={() => setVisible(false)}
-        onOk={onDelete}
-        loading={loading}
-      >
-        The projects contained in this workspace will be lost.
-      </DeleteDialog>
-    </>
+    <DeleteButton
+      bordered
+      loading={loading}
+      text="The projects contained in this workspace will be lost."
+      onDelete={onDelete}
+    />
   )
 }
 

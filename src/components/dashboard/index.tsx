@@ -23,8 +23,6 @@ import Organizations from '@/components/organizations'
 import Administration from '@/components/administration'
 import Help from '@/components/help'
 
-import Welcome from './welcome'
-
 import UserAPI from '@/api/user'
 import OrganizationAPI from '@/api/organization'
 import WorkspaceAPI from '@/api/workspace'
@@ -46,9 +44,6 @@ const errors = {
  * @memberof Components.Dashboard
  */
 const menuItems = {
-  welcome: {
-    key: 'welcome'
-  },
   workspaces: {
     label: 'Workspaces',
     key: 'workspaces'
@@ -116,7 +111,7 @@ const Dashboard = () => {
     const page = params.get('page')
 
     if (page) setCurrentKey(page)
-    else setCurrentKey(menuItems.welcome.key)
+    else setCurrentKey(menuItems.workspaces.key)
   }, [])
 
   // Error
@@ -182,13 +177,13 @@ const Dashboard = () => {
   else
     return (
       <Layout>
-        <Layout.Sider theme="light" width="256" className="dashboard-sider">
+        <Layout.Sider theme="light" width="256" className="Dashboard-Sider">
           <div className="logo">
             <img src="/images/logo.svg" alt="Tanatloc" />
           </div>
 
           <Menu
-            className="dashboard-menu"
+            className="Dashboard-Menu"
             theme="light"
             onClick={onSelect}
             mode="inline"
@@ -222,7 +217,7 @@ const Dashboard = () => {
             >
               {menuItems.help.label}
             </Menu.Item>
-            <Menu.Divider className="dashboard-menu-divider" />
+            <Menu.Divider className="Dashboard-Menu-Divider" />
             <Menu.Item
               key={menuItems.logout.key}
               danger={true}
@@ -271,9 +266,6 @@ const Dashboard = () => {
           )}
           {currentKey === menuItems.administration.key && <Administration />}
           {currentKey === menuItems.help.key && <Help />}
-          {currentKey === menuItems.welcome.key && (
-            <Welcome swr={{ addOneWorkspace }} />
-          )}
         </Layout.Content>
       </Layout>
     )

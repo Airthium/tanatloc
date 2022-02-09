@@ -276,6 +276,9 @@ const ProjectList = ({
                   }}
                   organizations={organizations}
                   swr={{ mutateOneProject: swr.mutateOneProject }}
+                  style={{
+                    buttonDark: true
+                  }}
                 />,
                 <Edit
                   key="edit"

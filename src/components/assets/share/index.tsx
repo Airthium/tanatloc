@@ -2,7 +2,7 @@
 
 import PropTypes from 'prop-types'
 import { useState, useEffect, CSSProperties } from 'react'
-import { Button, Tooltip, TreeDataNode, TreeSelect } from 'antd'
+import { Button, Tooltip, TreeDataNode, TreeSelect, Typography } from 'antd'
 import { ShareAltOutlined } from '@ant-design/icons'
 
 import {
@@ -27,7 +27,9 @@ export interface IProps {
     mutateOneProject?: Function
   }
   style?: CSSProperties & {
-    buttonType: 'link' | 'text' | 'ghost' | 'default' | 'primary' | 'dashed'
+    buttonLight?: boolean
+    buttonDark?: boolean
+    buttonBordered?: boolean
   }
 }
 
@@ -171,11 +173,18 @@ const Share = ({
     <>
       <Tooltip title="Share">
         <Button
-          type={style?.buttonType || 'text'}
+          className={
+            (style?.buttonLight ? 'text-light' : '') +
+            (style?.buttonDark ? ' text-dark' : '')
+          }
           key="share"
           disabled={disabled}
           icon={<ShareAltOutlined />}
           onClick={() => setVisible(true)}
+          style={{
+            backgroundColor: 'none',
+            border: !style?.buttonBordered && 'none'
+          }}
         />
       </Tooltip>
       <Dialog
@@ -185,6 +194,15 @@ const Share = ({
         onOk={onShare}
         loading={loading}
       >
+        <Typography.Text strong>
+          {workspace ? 'Workspace: ' : 'Project: '}
+          {workspace?.name || project?.title}
+        </Typography.Text>
+        <br />
+        <Typography.Text>
+          Share this {workspace ? 'workspace' : 'project'} with organization
+          groups or users
+        </Typography.Text>
         <TreeSelect
           multiple
           placeholder="Select groups or users"

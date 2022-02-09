@@ -107,6 +107,7 @@ const Workspace = ({
     return (
       <Layout>
         <PageHeader
+          className="inWorkspace-PageHeader"
           backIcon={false}
           footer={
             <Space
@@ -144,7 +145,7 @@ const Workspace = ({
                       workspace={workspace}
                       organizations={organizations}
                       swr={{ mutateOneWorkspace: swr.mutateOneWorkspace }}
-                      style={{ buttonType: 'default' }}
+                      style={{ buttonDark: true, buttonBordered: true }}
                     />
                     <Delete
                       workspace={workspace}
@@ -171,14 +172,13 @@ const Workspace = ({
           ) : null}
         </PageHeader>
         <Tabs
-          defaultActiveKey="default"
+          className="inWorkspace-Tabs"
+          defaultActiveKey="modifiedDesc"
           onChange={onSort}
-          style={{ marginTop: '20px' }}
-          id="workspaceSorter"
         >
+          <TabPane tab="Last modified" key="modifiedDesc" />
           <TabPane tab="Name (A-Z)" key="alphaAsc" />
           <TabPane tab="Name (Z-A)" key="alphaDesc" />
-          <TabPane tab="Last modified" key="modifiedDesc" />
         </Tabs>
         <Layout.Content className="scroll">
           <ProjectList

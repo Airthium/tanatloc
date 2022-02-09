@@ -66,22 +66,24 @@ const Administration = (): JSX.Element => {
    * Render
    */
   return (
-    <Layout className="Workspace">
+    <Layout className="inDashboard Administration">
       <PageHeader
+        className="inDashboard-PageHeader"
         backIcon={false}
         title={
-          <Typography.Title level={2} className="pageheader-name">
+          <Typography.Title level={2} className="inDashboard-PageHeader-title">
             Administration
           </Typography.Title>
         }
-        footer={
-          <div>
-            <Divider />
-          </div>
-        }
+        footer={<Divider />}
       />
       <Layout.Content>
-        <Tabs defaultActiveKey={tab || 'default'} onChange={onChange}>
+        <Tabs
+          className="inDashboard-Tabs"
+          type="card"
+          defaultActiveKey={tab || 'default'}
+          onChange={onChange}
+        >
           <Tabs.TabPane tab={tabItems.users.label} key={tabItems.users.key}>
             <Users
               users={users}

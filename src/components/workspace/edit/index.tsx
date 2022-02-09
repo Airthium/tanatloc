@@ -70,7 +70,7 @@ const Edit = ({ workspace, swr }: IProps): JSX.Element => {
    */
   return (
     <>
-      <EditButton bordered onEdit={() => setVisible(true)} />
+      <EditButton bordered dark onEdit={() => setVisible(true)} />
       <Dialog
         visible={visible}
         loading={loading}

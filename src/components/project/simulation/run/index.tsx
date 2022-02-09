@@ -1,11 +1,7 @@
 import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
-import { Button, Card, Drawer, Layout, Space, Spin, Steps, Tabs } from 'antd'
-import {
-  FileTextOutlined,
-  RocketOutlined,
-  StopOutlined
-} from '@ant-design/icons'
+import { Button, Card, Layout, Space, Spin, Steps } from 'antd'
+import { RocketOutlined, StopOutlined } from '@ant-design/icons'
 
 import { IClientPlugin, ISimulation, ISimulationTask } from '@/database/index.d'
 
@@ -178,33 +174,42 @@ const Run = ({ simulation, result, setResult, swr }: IProps): JSX.Element => {
     return (
       <Layout>
         <Layout.Content>
-          <Space direction="vertical">
+          <Space direction="vertical" style={{ width: '100%' }}>
             <CloudServer
               disabled={running}
               cloudServer={currentConfiguration?.run?.cloudServer}
               onOk={onCloudServer}
             />
             <Card size="small" title="Run">
-              <Space direction="vertical">
-                <Space>
-                  <Button
-                    disabled={disabled}
-                    type="primary"
-                    icon={<RocketOutlined />}
-                    loading={running}
-                    onClick={onRun}
-                  >
-                    Run
-                  </Button>
-                  <Button
-                    disabled={!running}
-                    danger
-                    icon={<StopOutlined />}
-                    shape="circle"
-                    onClick={onStop}
-                  />
-                  <Log steps={steps} />
-                </Space>
+              <Space direction="vertical" style={{ width: '100%' }}>
+                <div
+                  style={{
+                    width: '100%',
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center'
+                  }}
+                >
+                  <Space>
+                    <Button
+                      disabled={disabled}
+                      type="primary"
+                      icon={<RocketOutlined />}
+                      loading={running}
+                      onClick={onRun}
+                    >
+                      Run
+                    </Button>
+                    <Button
+                      disabled={!running}
+                      danger
+                      icon={<StopOutlined />}
+                      shape="circle"
+                      onClick={onStop}
+                    />
+                  </Space>
+                  <Log simulation={{ id: simulation.id }} steps={steps} />
+                </div>
                 <Steps direction="vertical">
                   {steps.map((step, index) => (
                     <Steps.Step

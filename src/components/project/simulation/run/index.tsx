@@ -16,7 +16,6 @@ import Results from './results'
 
 import SimulationAPI from '@/api/simulation'
 
-import { checkInProgressTasks } from './runServices/services'
 import { onLogSetup } from './runServices/logManager'
 
 export interface IProps {
@@ -86,7 +85,15 @@ const Run = ({ simulation, result, setResult, swr }: IProps): JSX.Element => {
 
   // Running
   useEffect(() => {
-    checkInProgressTasks(currentSimulation, setRunning)
+    try {
+      if (currentSimulation.tasks.find((t) => t?.status === 'error')) {
+        setRunning(false)
+      } else if (currentSimulation.tasks.find((t) => t?.status !== 'finish')) {
+        setRunning(true)
+      } else setRunning(false)
+    } catch (error) {
+      setRunning(false)
+    }
   }, [currentSimulation?.tasks])
 
   // Steps

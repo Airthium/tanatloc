@@ -1,5 +1,4 @@
-import { ISimulation } from '@/database/index.d'
-import { IModel } from "@/models/index.d"
+import { IModel } from '@/models/index.d'
 
 type FilteredFileType = { fileName: string }[]
 type FilterType = {
@@ -8,21 +7,6 @@ type FilterType = {
   suffixPattern: string | RegExp
   pattern: string | RegExp
   multiplicator?: string[]
-}
-
-function checkInProgressTasks(
-  currentSimulation: ISimulation,
-  setRunning: Function
-) {
-  try {
-    if (currentSimulation.tasks.find((t) => t?.status === 'error')) {
-      setRunning(false)
-    } else if (currentSimulation.tasks.find((t) => t?.status !== 'finish')) {
-      setRunning(true)
-    } else setRunning(false)
-  } catch (error) {
-    setRunning(false)
-  }
 }
 
 function getUniqueNumbers(filteredFiles: FilteredFileType, filter: FilterType) {
@@ -46,7 +30,10 @@ function getUniqueNumbers(filteredFiles: FilteredFileType, filter: FilterType) {
   }
 }
 
-function setMultiplicator(filter: FilterType, configuration: IModel["configuration"]) {
+function setMultiplicator(
+  filter: FilterType,
+  configuration: IModel['configuration']
+) {
   // Multiplicator
 
   const multiplicatorPath = filter.multiplicator
@@ -59,4 +46,4 @@ function setMultiplicator(filter: FilterType, configuration: IModel["configurati
   }
 }
 
-export { checkInProgressTasks, getUniqueNumbers, setMultiplicator }
+export { getUniqueNumbers, setMultiplicator }

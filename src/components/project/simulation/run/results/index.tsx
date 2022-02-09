@@ -12,7 +12,6 @@ import {
 } from '../runServices/downloadManager'
 
 import {
-  checkInProgressTasks,
   getUniqueNumbers,
   setMultiplicator
 } from '../runServices/services'

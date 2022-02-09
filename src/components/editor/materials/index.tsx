@@ -15,7 +15,6 @@ export interface IProps {
 /**
  * Materials
  * @param props Props
- * @returns
  */
 const Materials = ({ configuration, onNext }: IProps): JSX.Element => {
   // State

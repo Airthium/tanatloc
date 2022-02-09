@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Button, Card, Space, Spin, Tooltip } from 'antd'
+import { Button, Card, Space, Spin } from 'antd'
 import { EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons'
 
 import Download from './download'
@@ -9,22 +9,18 @@ import { getUniqueNumbers, setMultiplicator } from '../runServices/services'
 
 import { setupSelector, resultManager } from '../runServices/selector'
 
-import { ISimulation } from '@/database/index.d'
+import { ISimulation, ISimulationTaskFile } from '@/database/index.d'
 
 export interface IProps {
   simulation: ISimulation
   currentSimulation: ISimulation
-  result: {
-    fileName: string
-    name: string
-  }
+  result: ISimulationTaskFile
   setResult: Function
 }
 
 /**
  * Results
  * @param props Props
- * @returns
  */
 const Results = ({
   simulation,
@@ -45,8 +41,6 @@ const Results = ({
   ] = useState()
   const [selectors, setSelectors]: [JSX.Element[], Function] = useState([])
   const [selectorsCurrent, setSelectorsCurrent] = useState([])
-
-  const [downloading, setDownloading]: [string[], Function] = useState([])
 
   // Data
   const configuration = simulation?.scheme?.configuration

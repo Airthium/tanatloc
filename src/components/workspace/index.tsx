@@ -2,7 +2,8 @@
 
 import PropTypes from 'prop-types'
 import React, { useState, useEffect } from 'react'
-import { Avatar, Input, Layout, PageHeader, Space, Tabs } from 'antd'
+import { Avatar, Button, Input, Layout, PageHeader, Space, Tabs } from 'antd'
+import { SearchOutlined } from '@ant-design/icons'
 
 import {
   IOrganizationWithData,
@@ -106,6 +107,7 @@ const Workspace = ({
     return (
       <Layout>
         <PageHeader
+          className="inWorkspace-PageHeader"
           backIcon={false}
           footer={
             <Space
@@ -118,6 +120,9 @@ const Workspace = ({
                 value={filter}
                 onChange={onSearch}
                 style={{ width: 500 }}
+                enterButton={
+                  <Button type="primary" icon={<SearchOutlined />} />
+                }
               />
               {workspace?.owners?.find((o) => o.id === user.id) && (
                 <>
@@ -128,30 +133,32 @@ const Workspace = ({
                       addOneProject
                     }}
                   />
-                  <Edit
-                    workspace={{
-                      id: workspace.id,
-                      name: workspace.name
-                    }}
-                    swr={{ mutateOneWorkspace: swr.mutateOneWorkspace }}
-                  />
-                  <Share
-                    workspace={workspace}
-                    organizations={organizations}
-                    swr={{ mutateOneWorkspace: swr.mutateOneWorkspace }}
-                    style={{ buttonType: 'default' }}
-                  />
-                  <Delete
-                    workspace={workspace}
-                    swr={{ delOneWorkspace: swr.delOneWorkspace }}
-                  />
+                  <Space size={8}>
+                    <Edit
+                      workspace={{
+                        id: workspace.id,
+                        name: workspace.name
+                      }}
+                      swr={{ mutateOneWorkspace: swr.mutateOneWorkspace }}
+                    />
+                    <Share
+                      workspace={workspace}
+                      organizations={organizations}
+                      swr={{ mutateOneWorkspace: swr.mutateOneWorkspace }}
+                      style={{ buttonDark: true, buttonBordered: true }}
+                    />
+                    <Delete
+                      workspace={workspace}
+                      swr={{ delOneWorkspace: swr.delOneWorkspace }}
+                    />
+                  </Space>
                 </>
               )}
             </Space>
           }
         >
           {workspace.users?.length || workspace.groups?.length ? (
-            <div className="Workspace-share">
+            <div className="inWorkspace-shared">
               <span style={{ marginRight: '10px' }}>
                 This workspace is shared with:
               </span>
@@ -165,14 +172,13 @@ const Workspace = ({
           ) : null}
         </PageHeader>
         <Tabs
-          defaultActiveKey="default"
+          className="inWorkspace-Tabs"
+          defaultActiveKey="modifiedDesc"
           onChange={onSort}
-          style={{ marginTop: '20px' }}
-          id="workspaceSorter"
         >
+          <TabPane tab="Last modified" key="modifiedDesc" />
           <TabPane tab="Name (A-Z)" key="alphaAsc" />
           <TabPane tab="Name (Z-A)" key="alphaDesc" />
-          <TabPane tab="Last modified" key="modifiedDesc" />
         </Tabs>
         <Layout.Content className="scroll">
           <ProjectList

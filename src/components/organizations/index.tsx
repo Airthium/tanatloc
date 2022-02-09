@@ -46,19 +46,16 @@ const Organizations = ({ user, organizations, swr }: IProps): JSX.Element => {
    * Render
    */
   return (
-    <Layout className="Workspace">
+    <Layout className="inDashboard Organization">
       <PageHeader
+        className="inDashboard-PageHeader"
         backIcon={false}
         title={
-          <Typography.Title level={2} className="pageheader-name">
+          <Typography.Title level={2} className="inDashboard-PageHeader-title">
             Organizations
           </Typography.Title>
         }
-        footer={
-          <div>
-            <Divider />
-          </div>
-        }
+        footer={<Divider />}
       />
       <Layout.Content>
         <Space direction="vertical" style={{ width: '100%' }}>

@@ -2,8 +2,6 @@
 
 import { Card, Layout, Space, Spin } from 'antd'
 
-import Background from '@/components/background'
-
 /**
  * Simple
  * @memberof Components.Loading
@@ -41,7 +39,6 @@ const Loading = (): JSX.Element => {
    */
   return (
     <Layout className="tanatloc-gradient">
-      <Background />
       <div className="logo">
         <img src="/images/logo.svg" alt="Tanatloc" />
       </div>

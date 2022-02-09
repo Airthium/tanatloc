@@ -29,6 +29,9 @@ const onLogSetup = (
           Complete log
         </Button>
       )}
+      {parse(
+        task?.pluginLog?.replace(/\n\n/g, '\n').replace(/\n/g, '<br />') || ''
+      )}
       {parse(task?.log?.replace(/\n\n/g, '\n').replace(/\n/g, '<br />') || '')}
       {parse(
         task?.warning?.replace(/\n\n/g, '\n').replace(/\n/g, '<br />') || ''

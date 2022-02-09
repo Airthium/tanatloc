@@ -1,51 +1,20 @@
-.Workspace {
-  padding: 0 64px;
-  max-height: 100%;
-  min-height: 100vh;
+.inWorkspace-PageHeader {
+  padding: 0;
 }
 
-.Workspace-share {
+.inWorkspace-shared {
   display: flex;
   align-items: center;
 }
 
-.pageheader-name {
-  margin-bottom: 0 !important;
-  line-height: 2 !important;
+.inWorkspace-Tabs {
+  margin-top: 20px;
+  color: @tanatloc-text-light;
+}
+.inWorkspace-Tabs .ant-tabs-nav {
+  border-bottom: none;
 }
 
-.pageheader-name:first-letter {
-  text-transform: uppercase;
-}
-
-.pageheader-name .ant-typography-edit {
-  font-size: 0.9em !important;
-}
-
-.pageheader-name.ant-typography-edit-content {
-  left: 0 !important;
-  margin-top: 0 !important;
-}
-
-.Workspace .ant-page-header-heading-left {
-  flex: 1 1 auto;
-}
-
-.Workspace .ant-page-header-heading-title {
-  width: 100%;
-  white-space: unset;
-}
-
-.WorkspaceDelete-confirm .ant-modal-body {
-  display: flex;
-  align-items: center;
-}
-
-.ant-tabs-content-holder {
-  height: calc(100vh - 197px);
-  overflow: auto;
-}
-
-#workspaceSorter .ant-tabs-content-holder {
-  height:0;
+.inWorkspace-Tabs .ant-tabs-tab-active .ant-tabs-tab-btn {
+  color: @tanatloc-primary-color;
 }

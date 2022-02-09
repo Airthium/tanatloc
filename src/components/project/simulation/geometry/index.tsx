@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
-import { Collapse, Space, Typography } from 'antd'
+import { Button, Card, Collapse, Space, Typography } from 'antd'
 import { SelectOutlined } from '@ant-design/icons'
 
 import { IGeometry, ISimulation } from '@/database/index.d'
@@ -54,53 +54,62 @@ const Geometry = ({
 
   useEffect(() => {
     const list = geometries.map((g) => (
-      <Collapse key={g.id} expandIconPosition="right">
-        <Collapse.Panel
-          forceRender
-          key={g.id}
-          header={g.name}
-          extra={
-            <SelectOutlined
-              onClick={(event) => {
-                event.stopPropagation()
-                onSelect(g.id)
-              }}
-            />
-          }
-          style={{
-            backgroundColor: g.id === geometry?.id && 'rgba(254, 226, 61, 0.5)'
-          }}
-        >
-          <Space direction="vertical">
-            <Typography.Title level={5}>Informations</Typography.Title>
-            <Typography.Text>File: {g.name} </Typography.Text>
-            <Typography.Text>
-              Unit: <MathJax.Inline text={'m'} />
-            </Typography.Text>
-            {g.summary ? (
-              <>
-                {g.summary.solids && (
-                  <Typography.Text>
-                    Number of solids: {g.summary.solids.length}
-                  </Typography.Text>
-                )}
-                {g.summary.faces && (
-                  <Typography.Text>
-                    Number of faces: {g.summary.faces.length}
-                  </Typography.Text>
-                )}
-                {g.summary.edges && (
-                  <Typography.Text>
-                    Number of edges: {g.summary.edges.length}
-                  </Typography.Text>
-                )}
-              </>
-            ) : (
-              <Typography.Text>No summary available</Typography.Text>
-            )}
-          </Space>
-        </Collapse.Panel>
-      </Collapse>
+      <div
+        style={{
+          padding: '20px',
+          borderTop: '1px solid #BFBFBF',
+          borderBottom: '1px solid #BFBFBF',
+          backgroundColor: g.id === geometry?.id ? '#FFFBE6' : '#FAFAFA'
+        }}
+        onClick={() => onSelect(g.id)}
+      >
+        <Typography.Text strong>{g.name}</Typography.Text>
+      </div>
+
+      // <Collapse
+      //   accordion={true}
+      //   key={g.id}
+      //   expandIcon={() => <></>}
+      //   onChange={(key) => console.log(key)}
+      // >
+      //   <Collapse.Panel
+      //     // forceRender
+      //     key={g.id}
+      //     header={g.name}
+      //     style={{
+      //       backgroundColor: g.id === geometry?.id && 'rgba(254, 226, 61, 0.5)'
+      //     }}
+      //   >
+      //     <Space direction="vertical">
+      //       <Typography.Title level={5}>Informations</Typography.Title>
+      //       <Typography.Text>File: {g.name} </Typography.Text>
+      //       <Typography.Text>
+      //         Unit: <MathJax.Inline text={'m'} />
+      //       </Typography.Text>
+      //       {g.summary ? (
+      //         <>
+      //           {g.summary.solids && (
+      //             <Typography.Text>
+      //               Number of solids: {g.summary.solids.length}
+      //             </Typography.Text>
+      //           )}
+      //           {g.summary.faces && (
+      //             <Typography.Text>
+      //               Number of faces: {g.summary.faces.length}
+      //             </Typography.Text>
+      //           )}
+      //           {g.summary.edges && (
+      //             <Typography.Text>
+      //               Number of edges: {g.summary.edges.length}
+      //             </Typography.Text>
+      //           )}
+      //         </>
+      //       ) : (
+      //         <Typography.Text>No summary available</Typography.Text>
+      //       )}
+      //     </Space>
+      //   </Collapse.Panel>
+      // </Collapse>
     ))
     setGeometryList(list)
   }, [geometry, geometries])
@@ -110,6 +119,7 @@ const Geometry = ({
    * @param {number} index Index
    */
   const onSelect = async (id: string): Promise<void> => {
+    console.log(id)
     try {
       const newSimulation = { ...simulation }
 
@@ -148,6 +158,15 @@ const Geometry = ({
    */
   return geometries.length ? (
     <>
+      <Card>
+        <Typography.Text>
+          When changing the simulation domain, you might lose your topological
+          entity assignments
+        </Typography.Text>
+      </Card>
+      <Card>
+        <Typography.Text strong>Select a simulation domain</Typography.Text>
+      </Card>
       {geometriesList}
       {simulation.scheme.configuration.geometry.meshable && (
         <Mesh

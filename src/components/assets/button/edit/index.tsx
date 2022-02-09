@@ -4,6 +4,9 @@ import { EditOutlined } from '@ant-design/icons'
 
 export interface IProps {
   disabled?: boolean
+  bordered?: boolean
+  light?: boolean
+  dark?: boolean
   loading?: boolean
   children?: string
   onEdit: () => void
@@ -21,6 +24,9 @@ export interface IProps {
  */
 const EditButton = ({
   disabled,
+  bordered,
+  light,
+  dark,
   loading,
   children,
   onEdit
@@ -31,10 +37,11 @@ const EditButton = ({
   return (
     <Tooltip title={children || 'Edit'}>
       <Button
+        className={(light ? 'text-light' : '') + (dark ? ' text-dark' : '')}
         disabled={disabled}
         loading={loading}
         icon={<EditOutlined />}
-        style={{ backgroundColor: 'none', border: 'none' }}
+        style={{ backgroundColor: 'none', border: !bordered && 'none' }}
         onClick={onEdit}
       >
         {children}

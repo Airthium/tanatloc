@@ -35,16 +35,30 @@ const List = ({ plugin, plugins, swr }: IProps): JSX.Element => {
       const children = Object.keys(configuration)
         .map((key) => {
           if (key === 'name') return
+          let content = <></>
+          if (configuration[key].type === 'textarea') {
+            const code = configuration[key].value
+            content = (
+              <Typography.Paragraph>
+                <pre>
+                  <code>{code}</code>
+                </pre>
+              </Typography.Paragraph>
+            )
+          } else if (configuration[key].type === 'password') {
+            content = <Typography.Text>******</Typography.Text>
+          } else {
+            content = (
+              <Typography.Text>{configuration[key].value}</Typography.Text>
+            )
+          }
+
           return (
             <Typography.Paragraph key={key}>
               <Typography.Text strong={true}>
                 {configuration[key].label}:
               </Typography.Text>{' '}
-              <Typography.Text>
-                {configuration[key].type === 'password'
-                  ? '******'
-                  : configuration[key].value}
-              </Typography.Text>
+              {content}
             </Typography.Paragraph>
           )
         })

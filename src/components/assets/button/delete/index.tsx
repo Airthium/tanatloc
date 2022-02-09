@@ -7,6 +7,7 @@ import { DeleteDialog } from '@/components/assets/dialog'
 
 export interface IProps {
   disabled?: boolean
+  bordered?: boolean
   loading?: boolean
   text?: string
   children?: ReactChild | ReactChild[]
@@ -26,6 +27,7 @@ export interface IProps {
  */
 const DeleteButton = ({
   disabled,
+  bordered,
   loading,
   text,
   children,
@@ -57,7 +59,7 @@ const DeleteButton = ({
           disabled={disabled}
           loading={loading}
           icon={<DeleteOutlined />}
-          style={{ backgroundColor: 'none', border: 'none' }}
+          style={{ backgroundColor: 'none', border: !bordered && 'none' }}
           onClick={() => setVisible(true)}
         >
           {children}

@@ -20,6 +20,7 @@ export interface IProps {
   inputAutoComplete?: string
   edit?: boolean
   style?: {}
+  required?: boolean
 }
 
 /**
@@ -61,7 +62,8 @@ const PasswordItem = ({
   inputPlaceholder,
   inputAutoComplete,
   edit,
-  style
+  style,
+  required
 }: IProps): JSX.Element => {
   // Data
   const [system] = SystemAPI.useSystem()
@@ -174,7 +176,11 @@ const PasswordItem = ({
             if (err.length) return Promise.reject(err)
             else return Promise.resolve()
           }
-        })
+        }),
+        {
+          required: !!required,
+          message: ''
+        }
       ]}
       style={style}
     >

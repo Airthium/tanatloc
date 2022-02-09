@@ -1,32 +1,43 @@
-.dashboard-sider > div {
+.Dashboard-Sider > div {
   position: relative;
 }
 
-.dashboard-menu {
+.Dashboard-Menu {
   height: 100%;
   overflow-x: hidden;
   border-right: 0px !important;
 }
 
-.dashboard-menu-divider {
+.Dashboard-Menu-Divider {
   margin: 10px 20px !important;
 }
 
-//TODO
-//deprecated
-.Welcome {
+.inDashboard {
   padding: 0 64px;
   max-height: 100%;
+  min-height: 100vh;
 }
 
-//TODO
-//deprecated
-#Add-workspace-button {
-  text-align: center;
+.inDashboard-PageHeader {
+  padding-left: 0;
+  padding-right: 0;
 }
 
-//TODO
-//deprecated
-#Add-workspace-button button {
-  margin: 20px 0;
+.inDashboard-PageHeader-title {
+  margin-bottom: 0 !important;
+  font-size: 20px !important;
+  font-weight: 700 !important;
+  line-height: 28px !important;
+}
+
+.inDashboard-PageHeader-title:first-letter {
+  text-transform: uppercase;
+}
+
+.inDashboard-Tabs {
+  color: @tanatloc-text-light;
+}
+
+.inDashboard-Tabs .ant-tabs-tab-active .ant-tabs-tab-btn {
+  color: @tanatloc-text-dark;
 }

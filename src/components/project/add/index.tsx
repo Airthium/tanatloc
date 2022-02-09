@@ -1,10 +1,10 @@
 import PropTypes from 'prop-types'
 import { useState } from 'react'
-import { Button, Form, Input } from 'antd'
-import { PlusCircleOutlined } from '@ant-design/icons'
+import { Form, Input } from 'antd'
 
 import Dialog from '@/components/assets/dialog'
-import { Error } from '@/components/assets/notification'
+import { Error as ErrorNotification } from '@/components/assets/notification'
+import { AddButton } from '@/components/assets/button'
 
 import ProjectAPI from '@/api/project'
 
@@ -62,7 +62,7 @@ const Add = ({ workspace, swr }: IProps): JSX.Element => {
       setLoading(false)
       setVisible(false)
     } catch (err) {
-      Error(errors.addError, err)
+      ErrorNotification(errors.addError, err)
       setLoading(false)
       throw err
     }
@@ -73,9 +73,9 @@ const Add = ({ workspace, swr }: IProps): JSX.Element => {
    */
   return (
     <>
-      <Button onClick={() => setVisible(true)} icon={<PlusCircleOutlined />}>
+      <AddButton primary={false} dark onAdd={() => setVisible(true)}>
         Create a new project
-      </Button>
+      </AddButton>
       <Dialog
         title="Create a new project"
         visible={visible}

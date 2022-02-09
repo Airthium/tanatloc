@@ -197,7 +197,7 @@ const Information = ({ user, swr }: IProps): JSX.Element => {
    */
   return (
     <Card title="Contact Details">
-      <Space direction="horizontal" className="Account">
+      <Space direction="horizontal" className="Account-Information">
         <Space direction="vertical">
           <Avatar
             size={128}

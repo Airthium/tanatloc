@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
-import { Button, Card, Drawer, Layout, Space, Steps, Tabs } from 'antd'
+import { Button, Card, Drawer, Layout, Space, Spin, Steps, Tabs } from 'antd'
 import {
   FileTextOutlined,
   RocketOutlined,
@@ -198,73 +198,75 @@ const Run = ({ simulation, result, setResult, swr }: IProps): JSX.Element => {
   /**
    * Render
    */
-  return (
-    <Layout>
-      <Layout.Content>
-        <Drawer
-          title="Log"
-          visible={logVisible}
-          onClose={toggleLog}
-          width={512}
-        >
-          {logContent}
-        </Drawer>
-        <Space direction="vertical">
-          <CloudServer
-            disabled={running}
-            cloudServer={currentConfiguration?.run?.cloudServer}
-            onOk={onCloudServer}
-          />
-          <Card size="small" title="Run">
-            <Space direction="vertical">
-              <Space>
-                <Button
-                  disabled={disabled}
-                  type="primary"
-                  icon={<RocketOutlined />}
-                  loading={running}
-                  onClick={onRun}
-                >
-                  Run
-                </Button>
-                <Button
-                  disabled={!running}
-                  danger
-                  icon={<StopOutlined />}
-                  shape="circle"
-                  onClick={onStop}
-                />
-              </Space>
-              <Steps direction="vertical">
-                {steps.map((step, index) => (
-                  <Steps.Step
-                    key={step.label}
-                    title={step.label}
-                    description={'(' + (index + 1) + '/' + steps.length + ')'}
-                    subTitle={
-                      <Button
-                        icon={<FileTextOutlined />}
-                        onClick={() => onLog(step, step.label)}
-                        size="small"
-                      />
-                    }
-                    status={step.status}
+  if (!simulation || !currentSimulation) return <Spin />
+  else
+    return (
+      <Layout>
+        <Layout.Content>
+          <Drawer
+            title="Log"
+            visible={logVisible}
+            onClose={toggleLog}
+            width={512}
+          >
+            {logContent}
+          </Drawer>
+          <Space direction="vertical">
+            <CloudServer
+              disabled={running}
+              cloudServer={currentConfiguration?.run?.cloudServer}
+              onOk={onCloudServer}
+            />
+            <Card size="small" title="Run">
+              <Space direction="vertical">
+                <Space>
+                  <Button
+                    disabled={disabled}
+                    type="primary"
+                    icon={<RocketOutlined />}
+                    loading={running}
+                    onClick={onRun}
+                  >
+                    Run
+                  </Button>
+                  <Button
+                    disabled={!running}
+                    danger
+                    icon={<StopOutlined />}
+                    shape="circle"
+                    onClick={onStop}
                   />
-                ))}
-              </Steps>
-            </Space>
-          </Card>
+                </Space>
+                <Steps direction="vertical">
+                  {steps.map((step, index) => (
+                    <Steps.Step
+                      key={step.label}
+                      title={step.label}
+                      description={'(' + (index + 1) + '/' + steps.length + ')'}
+                      subTitle={
+                        <Button
+                          icon={<FileTextOutlined />}
+                          onClick={() => onLog(step, step.label)}
+                          size="small"
+                        />
+                      }
+                      status={step.status}
+                    />
+                  ))}
+                </Steps>
+              </Space>
+            </Card>
 
-          <Results
-            simulation={simulation}
-            currentSimulation={currentSimulation}
-            result={result}
-            setResult={setResult}
-          />
-        </Space>
-      </Layout.Content>
-    </Layout>
-  )
+            <Results
+              simulation={simulation}
+              currentSimulation={currentSimulation}
+              result={result}
+              setResult={setResult}
+            />
+          </Space>
+        </Layout.Content>
+      </Layout>
+    )
 }
 
 Run.propTypes = {

@@ -12,6 +12,7 @@ import { IClientPlugin, ISimulation, ISimulationTask } from '@/database/index.d'
 import { Error as ErrorNotification } from '@/components/assets/notification'
 
 import CloudServer from './cloudServer'
+import Log from './log'
 import Results from './results'
 
 import SimulationAPI from '@/api/simulation'
@@ -224,7 +225,7 @@ const Run = ({ simulation, result, setResult, swr }: IProps): JSX.Element => {
               cloudServer={currentConfiguration?.run?.cloudServer}
               onOk={onCloudServer}
             />
-            <Card size="small" title="Run">
+            <Card size="small" title="Run" extra={<Log steps={steps} />}>
               <Space direction="vertical">
                 <Space>
                   <Button

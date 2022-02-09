@@ -3,16 +3,16 @@
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { Button, Layout, Menu, Typography } from 'antd'
-import Icon, {
-  CalculatorOutlined,
+import {
+  CodeSandboxOutlined,
+  PieChartOutlined,
   CheckCircleOutlined,
   CloseCircleOutlined,
   ExclamationCircleOutlined,
   LoadingOutlined,
-  PlusOutlined
+  UploadOutlined,
+  PlusCircleOutlined
 } from '@ant-design/icons'
-//@ts-ignore
-import Geometries from '/public/icons/geometries'
 
 import { IGeometry, ISimulation } from '@/database/index.d'
 import { IModel } from '@/models/index.d'
@@ -328,7 +328,7 @@ const Project = (): JSX.Element => {
         icon = <ExclamationCircleOutlined style={{ color: 'orange' }} />
       categories[child.index] = (
         <Menu.Item
-          className="menu-item-with-line"
+          className="Project-Menu-SubMenu-Simulations-SubMenu-MenuItem"
           key={s.id + '&' + key}
           icon={icon}
         >
@@ -338,12 +338,13 @@ const Project = (): JSX.Element => {
     })
     return (
       <Menu.SubMenu
-        className="submenu-simulation-name"
+        className="Project-Menu-SubMenu-Simulations-SubMenu"
         key={s.id}
+        icon={<CodeSandboxOutlined />}
         title={s.name}
       >
         <Menu.Item
-          className="menu-item-with-line"
+          className="Project-Menu-SubMenu-Simulations-SubMenu-MenuItem"
           key={s.id + '&about'}
           icon={<CheckCircleOutlined style={{ color: 'green' }} />}
         >
@@ -362,15 +363,13 @@ const Project = (): JSX.Element => {
   else
     return (
       <Layout hasSider={true}>
-        <Layout.Sider theme="light" className="project-sider" width={256}>
+        <Layout.Sider theme="light" className="Project-Sider" width={256}>
+          <div className="logo">
+            <img src="/images/logo.svg" alt="Tanatloc" />
+          </div>
           <Menu mode="inline">
-            <Menu.Item className="menu-logo" key="logo" disabled={true}>
-              <div className="logo">
-                <img src="/images/logo.svg" alt="Tanatloc" />
-              </div>
-            </Menu.Item>
             <Menu.Item
-              className="menu-goback"
+              className="Project-Menu-GoBack"
               key={'menu-go-back'}
               disabled={true}
               style={{ cursor: 'unset', margin: '10px 0', paddingLeft: 10 }}
@@ -378,63 +377,78 @@ const Project = (): JSX.Element => {
               <GoBack onClick={handleDashboard}>Return to dashboard</GoBack>
             </Menu.Item>
 
-            <Menu.Divider className="menu-divider" />
+            <Menu.Divider className="Project-Menu-Divider" />
 
-            <Menu.Item className="menu-title" key={'title'} disabled={true}>
+            <Menu.Item
+              className="Project-Menu-Title"
+              key={'title'}
+              disabled={true}
+            >
               <Typography.Paragraph ellipsis={{ tooltip: true, rows: 2 }}>
                 {project.title}
               </Typography.Paragraph>
             </Menu.Item>
           </Menu>
-          <Menu className="menu" mode="inline" onClick={onMenuClick}>
-            <Menu.SubMenu
-              key={menuKeys.geometries}
-              className="menu-submenu menu-geometries"
-              icon={
-                loadingGeometries ? (
-                  <LoadingOutlined />
-                ) : (
-                  <Icon component={Geometries} style={{ maxWidth: '14px' }} />
-                )
-              }
-              title={'Geometries (' + geometries.length + ')'}
+          <div className="Project-Menu-scroll">
+            <Menu
+              className="Project-Menu"
+              mode="inline"
+              defaultOpenKeys={[menuKeys.geometries, menuKeys.simulations]}
+              onClick={onMenuClick}
             >
-              <Menu.Item
-                className="item-new"
-                key="new_geometry"
-                disabled={true}
+              <Menu.SubMenu
+                key={menuKeys.geometries}
+                className="Project-Menu-SubMenu-Geometries"
+                icon={
+                  loadingGeometries ? <LoadingOutlined /> : <PieChartOutlined />
+                }
+                title={
+                  <Typography.Text strong>
+                    GEOMETRIES ({geometries.length})
+                  </Typography.Text>
+                }
               >
-                <Button icon={<PlusOutlined />} onClick={addGeometry}>
-                  New Geometry
-                </Button>
-              </Menu.Item>
-              {geometriesRender}
-            </Menu.SubMenu>
-            <Menu.SubMenu
-              key={menuKeys.simulations}
-              className="menu-submenu menu-simulations"
-              icon={
-                loadingSimulations ? (
-                  <LoadingOutlined />
-                ) : (
-                  <CalculatorOutlined />
-                )
-              }
-              title={'Simulations (' + simulations.length + ')'}
-              disabled={!geometries.length}
-            >
-              <Menu.Item
-                className="item-new"
-                key={'new_simulation'}
-                disabled={true}
+                <Menu.Item
+                  className="Project-Menu-SubMenu-Geometries-New"
+                  key="new_geometry"
+                  disabled={true}
+                >
+                  <Button icon={<UploadOutlined />} onClick={addGeometry}>
+                    New Geometry
+                  </Button>
+                </Menu.Item>
+                {geometriesRender}
+              </Menu.SubMenu>
+              <Menu.SubMenu
+                key={menuKeys.simulations}
+                className="Project-Menu-SubMenu-Simulations"
+                icon={
+                  loadingSimulations ? (
+                    <LoadingOutlined />
+                  ) : (
+                    <CodeSandboxOutlined />
+                  )
+                }
+                title={
+                  <Typography.Text strong>
+                    SIMULATIONS ({simulations.length})
+                  </Typography.Text>
+                }
+                disabled={!geometries.length}
               >
-                <Button icon={<PlusOutlined />} onClick={addSimulation}>
-                  New Simulation
-                </Button>
-              </Menu.Item>
-              {simulationsRender}
-            </Menu.SubMenu>
-          </Menu>
+                <Menu.Item
+                  className="Project-Menu-SubMenu-Simulations-New"
+                  key={'new_simulation'}
+                  disabled={true}
+                >
+                  <Button icon={<PlusCircleOutlined />} onClick={addSimulation}>
+                    New Simulation
+                  </Button>
+                </Menu.Item>
+                {simulationsRender}
+              </Menu.SubMenu>
+            </Menu>
+          </div>
         </Layout.Sider>
         <Layout.Content className="no-scroll relative">
           <Geometry.Add

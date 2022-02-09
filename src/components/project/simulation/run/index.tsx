@@ -1,26 +1,13 @@
 import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
+import { Button, Card, Drawer, Layout, Space, Steps, Tabs } from 'antd'
 import {
-  Button,
-  Card,
-  Drawer,
-  Layout,
-  Space,
-  Spin,
-  Steps,
-  Tabs,
-  Tooltip
-} from 'antd'
-import {
-  DownloadOutlined,
-  EyeOutlined,
-  EyeInvisibleOutlined,
   FileTextOutlined,
   RocketOutlined,
   StopOutlined
 } from '@ant-design/icons'
 
-import { ISimulation, ISimulationTask } from '@/database/index.d'
+import { IClientPlugin, ISimulation, ISimulationTask } from '@/database/index.d'
 
 import { Error as ErrorNotification } from '@/components/assets/notification'
 
@@ -29,12 +16,7 @@ import Results from './results'
 
 import SimulationAPI from '@/api/simulation'
 
-import {
-  checkInProgressTasks,
-  getUniqueNumbers,
-  setMultiplicator
-} from './runServices/services'
-import { setupSelector, resultManager } from './runServices/selector'
+import { checkInProgressTasks } from './runServices/services'
 import { onLogSetup } from './runServices/logManager'
 
 export interface IProps {
@@ -65,7 +47,7 @@ const errors = {
 /**
  * Run
  * @memberof Components.Project.Simulation
- * @param {Object} props Props `{ simulation, result, setResult, swr }`
+ * @param {Object} props Props
  */
 const Run = ({ simulation, result, setResult, swr }: IProps): JSX.Element => {
   // State
@@ -75,8 +57,6 @@ const Run = ({ simulation, result, setResult, swr }: IProps): JSX.Element => {
   const [logVisible, setLogVisible]: [boolean, Function] = useState(false)
   const [logContent, setLogContent]: [string, Function] = useState()
   const [logLoading, setLogLoading]: [boolean, Function] = useState(false)
-
-  const [selectorsCurrent, setSelectorsCurrent] = useState([])
 
   const [steps, setSteps]: [ISimulationTask[], Function] = useState([])
 
@@ -134,7 +114,7 @@ const Run = ({ simulation, result, setResult, swr }: IProps): JSX.Element => {
    * On cloud server
    * @param {Object} cloudServer Cloud server
    */
-  const onCloudServer = async (cloudServer) => {
+  const onCloudServer = async (cloudServer: IClientPlugin): Promise<void> => {
     try {
       // New simulation
       const newSimulation = { ...currentSimulation }
@@ -165,7 +145,7 @@ const Run = ({ simulation, result, setResult, swr }: IProps): JSX.Element => {
   /**
    * On run
    */
-  const onRun = async () => {
+  const onRun = async (): Promise<void> => {
     setRunning(true)
 
     try {
@@ -178,7 +158,7 @@ const Run = ({ simulation, result, setResult, swr }: IProps): JSX.Element => {
   /**
    * On stop
    */
-  const onStop = async () => {
+  const onStop = async (): Promise<void> => {
     try {
       await SimulationAPI.stop({ id: simulation.id })
 
@@ -193,7 +173,7 @@ const Run = ({ simulation, result, setResult, swr }: IProps): JSX.Element => {
    * @param {Object} task Task
    * @param {string} title Tab title
    */
-  const onLog = (task: object, title: string) => {
+  const onLog = (task: object, title: string): void => {
     // Content
     const content = onLogSetup(
       task,
@@ -211,7 +191,7 @@ const Run = ({ simulation, result, setResult, swr }: IProps): JSX.Element => {
   /**
    * Toogle log visibility
    */
-  const toggleLog = () => {
+  const toggleLog = (): void => {
     setLogVisible(!logVisible)
   }
 
@@ -240,6 +220,7 @@ const Run = ({ simulation, result, setResult, swr }: IProps): JSX.Element => {
               <Space>
                 <Button
                   disabled={disabled}
+                  type="primary"
                   icon={<RocketOutlined />}
                   loading={running}
                   onClick={onRun}
@@ -257,16 +238,16 @@ const Run = ({ simulation, result, setResult, swr }: IProps): JSX.Element => {
               <Steps direction="vertical">
                 {steps.map((step, index) => (
                   <Steps.Step
-                    key={JSON.stringify(step)}
+                    key={step.label}
                     title={step.label}
-                    description={
+                    description={'(' + (index + 1) + '/' + steps.length + ')'}
+                    subTitle={
                       <Button
                         icon={<FileTextOutlined />}
                         onClick={() => onLog(step, step.label)}
                         size="small"
                       />
                     }
-                    subTitle={'(' + (index + 1) + '/' + steps.length + ')'}
                     status={step.status}
                   />
                 ))}

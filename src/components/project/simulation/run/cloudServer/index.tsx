@@ -17,7 +17,7 @@ import PluginsAPI from '@/api/plugins'
 export interface IProps {
   disabled?: boolean
   cloudServer: IModel['configuration']['run']['cloudServer']
-  onOk: Function
+  onOk: (plugin: IClientPlugin) => Promise<void>
 }
 
 /**
@@ -136,7 +136,9 @@ const CloudServer = ({ disabled, cloudServer, onOk }: IProps): JSX.Element => {
           disabled={disabled}
           icon={<CloudServerOutlined />}
           onClick={() => setVisible(true)}
-        />
+        >
+          Select a Cloud server
+        </Button>
         {cloudServer && (
           <>
             <Typography.Text strong={true}>

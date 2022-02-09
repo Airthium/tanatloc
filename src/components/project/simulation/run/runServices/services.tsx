@@ -1,4 +1,14 @@
 import { ISimulation } from '@/database/index.d'
+import { IModel } from "@/models/index.d"
+
+type FilteredFileType = { fileName: string }[]
+type FilterType = {
+  name: string
+  prefixPattern: string | RegExp
+  suffixPattern: string | RegExp
+  pattern: string | RegExp
+  multiplicator?: string[]
+}
 
 function checkInProgressTasks(
   currentSimulation: ISimulation,
@@ -15,7 +25,7 @@ function checkInProgressTasks(
   }
 }
 
-function getUniqueNumbers(filteredFiles, filter) {
+function getUniqueNumbers(filteredFiles: FilteredFileType, filter: FilterType) {
   const files = filteredFiles.map((file) => {
     const number = file.fileName
       .replace(new RegExp(filter.prefixPattern), '')
@@ -29,14 +39,14 @@ function getUniqueNumbers(filteredFiles, filter) {
   // Get unique numbers
   return {
     files: files,
-    numbers: files
+    numbers: [...files]
       .sort((a, b) => a.number - b.number)
       .map((file) => file.number)
       .filter((value, i, self) => self.indexOf(value) === i)
   }
 }
 
-function setMultiplicator(filter, configuration) {
+function setMultiplicator(filter: FilterType, configuration: IModel["configuration"]) {
   // Multiplicator
 
   const multiplicatorPath = filter.multiplicator

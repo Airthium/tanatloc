@@ -1,14 +1,22 @@
 import { Select } from 'antd'
 import React from 'react'
 
+type FilterType = {
+  name: string
+  prefixPattern: string | RegExp
+  suffixPattern: string | RegExp
+  pattern: string | RegExp
+  multiplicator?: string[]
+}
+
 function setupSelector(
-  filter,
-  numbers,
-  multiplicator,
-  filterIndex,
-  resultIndex,
-  onSelectorChange,
-  selectorsCurrent
+  filter: FilterType,
+  numbers: number[],
+  multiplicator: number,
+  filterIndex: number,
+  resultIndex: number,
+  onSelectorChange: Function,
+  selectorsCurrent: any
 ) {
   return (
     <div key={filter.name}>

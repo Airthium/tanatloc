@@ -132,29 +132,36 @@ const CloudServer = ({ disabled, cloudServer, onOk }: IProps): JSX.Element => {
         </Space>
       </Modal>
       <Space direction="vertical">
-        <Button
-          disabled={disabled}
-          icon={<CloudServerOutlined />}
-          onClick={() => setVisible(true)}
-        >
-          Select a Cloud server
-        </Button>
         {cloudServer && (
           <>
-            <Typography.Text strong={true}>
+            <Typography.Text>
+              <span className="text-light">Plugin:</span> {cloudServer.name}
+            </Typography.Text>
+
+            <Typography.Text>
+              <span className="text-light">Name:</span>{' '}
               {cloudServer.configuration.name.value}
             </Typography.Text>
+
             {Object.keys(cloudServer.inUseConfiguration).map((key) => {
               const item = cloudServer.inUseConfiguration[key]
               return (
-                <Space key={key}>
-                  <Typography.Text strong={true}>{item.label}:</Typography.Text>
-                  <Typography.Text>{String(item.value)}</Typography.Text>
-                </Space>
+                <Typography.Text key={key}>
+                  <span className="text-light">{item.label}:</span>{' '}
+                  {item.value ?? ''}
+                </Typography.Text>
               )
             })}
           </>
         )}
+        <Button
+          disabled={disabled}
+          type={cloudServer ? 'link' : 'primary'}
+          icon={<CloudServerOutlined />}
+          onClick={() => setVisible(true)}
+        >
+          {cloudServer ? 'Modify the cloud server' : 'Select a Cloud server'}
+        </Button>
       </Space>
     </Card>
   )
@@ -164,6 +171,11 @@ CloudServer.propTypes = {
   disabled: PropTypes.bool,
   cloudServer: PropTypes.shape({
     name: PropTypes.string,
+    configuration: PropTypes.shape({
+      name: PropTypes.shape({
+        value: PropTypes.string
+      })
+    }),
     inUseConfiguration: PropTypes.object.isRequired
   }),
   onOk: PropTypes.func.isRequired

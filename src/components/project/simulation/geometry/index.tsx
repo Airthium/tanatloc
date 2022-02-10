@@ -55,61 +55,15 @@ const Geometry = ({
   useEffect(() => {
     const list = geometries.map((g) => (
       <div
+        className="Geometry-list"
+        key={g.id}
         style={{
-          padding: '20px',
-          borderTop: '1px solid #BFBFBF',
-          borderBottom: '1px solid #BFBFBF',
           backgroundColor: g.id === geometry?.id ? '#FFFBE6' : '#FAFAFA'
         }}
         onClick={() => onSelect(g.id)}
       >
         <Typography.Text strong>{g.name}</Typography.Text>
       </div>
-
-      // <Collapse
-      //   accordion={true}
-      //   key={g.id}
-      //   expandIcon={() => <></>}
-      //   onChange={(key) => console.log(key)}
-      // >
-      //   <Collapse.Panel
-      //     // forceRender
-      //     key={g.id}
-      //     header={g.name}
-      //     style={{
-      //       backgroundColor: g.id === geometry?.id && 'rgba(254, 226, 61, 0.5)'
-      //     }}
-      //   >
-      //     <Space direction="vertical">
-      //       <Typography.Title level={5}>Informations</Typography.Title>
-      //       <Typography.Text>File: {g.name} </Typography.Text>
-      //       <Typography.Text>
-      //         Unit: <MathJax.Inline text={'m'} />
-      //       </Typography.Text>
-      //       {g.summary ? (
-      //         <>
-      //           {g.summary.solids && (
-      //             <Typography.Text>
-      //               Number of solids: {g.summary.solids.length}
-      //             </Typography.Text>
-      //           )}
-      //           {g.summary.faces && (
-      //             <Typography.Text>
-      //               Number of faces: {g.summary.faces.length}
-      //             </Typography.Text>
-      //           )}
-      //           {g.summary.edges && (
-      //             <Typography.Text>
-      //               Number of edges: {g.summary.edges.length}
-      //             </Typography.Text>
-      //           )}
-      //         </>
-      //       ) : (
-      //         <Typography.Text>No summary available</Typography.Text>
-      //       )}
-      //     </Space>
-      //   </Collapse.Panel>
-      // </Collapse>
     ))
     setGeometryList(list)
   }, [geometry, geometries])
@@ -119,7 +73,6 @@ const Geometry = ({
    * @param {number} index Index
    */
   const onSelect = async (id: string): Promise<void> => {
-    console.log(id)
     try {
       const newSimulation = { ...simulation }
 

@@ -3,6 +3,8 @@ import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import Run from '..'
 
+import { ISimulationTaskFile } from '@/database/index.d'
+
 const mockCloudServer = jest.fn()
 jest.mock(
   '@/components/project/simulation/run/cloudServer',
@@ -69,8 +71,10 @@ describe('components/project/simulation/run', () => {
   const result = {
     fileName: 'fileName',
     name: 'name',
-    number: 1
-  }
+    number: 1,
+    type: 'type',
+    originPath: 'originPath'
+  } as ISimulationTaskFile
   const setResult = jest.fn()
   const swr = { mutateOneSimulation: jest.fn() }
 
@@ -298,7 +302,9 @@ describe('components/project/simulation/run', () => {
         result={{
           name: 'name',
           fileName: 'Result_777.vtu',
-          number: 1
+          number: 1,
+          originPath: 'originPath',
+          type: 'type'
         }}
         setResult={setResult}
         swr={swr}

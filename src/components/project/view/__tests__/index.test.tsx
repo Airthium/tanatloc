@@ -267,7 +267,8 @@ describe('components/project/view', () => {
     json: 'test.json',
     name: 'name',
     type: 'result',
-    fileName: 'test.vtu'
+    fileName: 'test.vtu',
+    originPath: 'originPath'
   }
 
   beforeEach(() => {

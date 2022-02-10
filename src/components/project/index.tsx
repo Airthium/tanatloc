@@ -14,7 +14,7 @@ import {
   PlusCircleOutlined
 } from '@ant-design/icons'
 
-import { IGeometry, ISimulation } from '@/database/index.d'
+import { IGeometry, ISimulation, ISimulationTaskFile } from '@/database/index.d'
 import { IModel } from '@/models/index.d'
 
 import { GoBack } from '@/components/assets/button'
@@ -83,17 +83,8 @@ const Project = (): JSX.Element => {
   const [currentSimulationType, setCurrentSimulationType]: [string, Function] =
     useState()
 
-  const [currentResult, setCurrentResult]: [
-    {
-      fileName: string
-      name: string
-      number: number
-      type: string
-      glb: string
-      json: string
-    },
-    Function
-  ] = useState()
+  const [currentResult, setCurrentResult]: [ISimulationTaskFile, Function] =
+    useState()
 
   const [panelVisible, setPanelVisible]: [boolean, Function] = useState(false)
   const [panelTitle, setPanelTitle]: [string, Function] = useState()

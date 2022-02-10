@@ -126,12 +126,13 @@ export interface IProject {
 
 export interface ISimulationTaskFile {
   fileName: string
-  name: string
   originPath: string
   type: string
+  name?: string
   renderPath?: string
   glb?: string
   json?: string
+  number?: number
 }
 
 export interface ISimulationTask {

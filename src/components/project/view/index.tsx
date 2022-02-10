@@ -40,7 +40,7 @@ import {
 } from 'three'
 import { v4 } from 'uuid'
 
-import { IGeometry, ISimulation } from '@/database/index.d'
+import { IGeometry, ISimulation, ISimulationTaskFile } from '@/database/index.d'
 import { IProjectWithData } from '@/lib/index.d'
 
 import { Error as ErrorNotification } from '@/components/assets/notification'
@@ -809,13 +809,7 @@ export interface IViewProps {
   project: IProjectWithData
   simulation?: ISimulation
   geometry?: IGeometry & { needCleanup?: boolean }
-  result?: {
-    glb: string
-    json: string
-    name: string
-    type: string
-    fileName: string
-  }
+  result?: ISimulationTaskFile
 }
 
 /**

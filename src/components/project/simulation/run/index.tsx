@@ -3,7 +3,12 @@ import { useState, useEffect } from 'react'
 import { Button, Card, Layout, Space, Spin, Steps } from 'antd'
 import { RocketOutlined, StopOutlined } from '@ant-design/icons'
 
-import { IClientPlugin, ISimulation, ISimulationTask } from '@/database/index.d'
+import {
+  IClientPlugin,
+  ISimulation,
+  ISimulationTask,
+  ISimulationTaskFile
+} from '@/database/index.d'
 
 import { Error as ErrorNotification } from '@/components/assets/notification'
 
@@ -15,11 +20,7 @@ import SimulationAPI from '@/api/simulation'
 
 export interface IProps {
   simulation: ISimulation
-  result: {
-    fileName: string
-    name: string
-    number: number
-  }
+  result: ISimulationTaskFile
   setResult: Function
   swr: {
     mutateOneSimulation: Function

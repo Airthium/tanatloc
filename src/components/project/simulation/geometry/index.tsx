@@ -56,6 +56,7 @@ const Geometry = ({
     const list = geometries.map((g) => (
       <div
         className="Geometry-list"
+        key={g.id}
         style={{
           backgroundColor: g.id === geometry?.id ? '#FFFBE6' : '#FAFAFA'
         }}

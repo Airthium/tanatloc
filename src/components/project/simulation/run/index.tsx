@@ -90,7 +90,6 @@ const Run = ({ simulation, result, setResult, swr }: IProps): JSX.Element => {
   // Steps
   useEffect(() => {
     const newSteps = []
-
     currentSimulation?.tasks?.forEach((task) => {
       if (!task) return
       // Steps

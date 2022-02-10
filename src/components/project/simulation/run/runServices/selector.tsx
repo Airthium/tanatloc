@@ -63,8 +63,7 @@ const resultManager = (
     number: number
     current?: number
     files?: { name: string; number: number }[]
-  } = results[index]
-  currentResult.current = value
+  } = { ...results[index], current: value }
   results = [
     ...results.slice(0, index),
     currentResult,

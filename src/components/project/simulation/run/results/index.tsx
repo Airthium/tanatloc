@@ -46,8 +46,6 @@ const Results = ({
   const [selectors, setSelectors]: [JSX.Element[], Function] = useState([])
   const [selectorsCurrent, setSelectorsCurrent] = useState([])
 
-  const [downloading, setDownloading]: [string[], Function] = useState([])
-
   // Data
   const configuration = simulation?.scheme?.configuration
 
@@ -88,7 +86,7 @@ const Results = ({
 
           newSelectors.push(selector)
           // Set result & current iteration
-          !selectorsCurrent[filterIndex] &&
+          selectorsCurrent[filterIndex] === undefined &&
             setSelectorsCurrent([
               ...selectorsCurrent.slice(0, selectorsCurrent[filterIndex]),
               numbers[0],
@@ -105,7 +103,11 @@ const Results = ({
 
     setResults(newResults)
     setSelectors(newSelectors)
-  }, [configuration?.run?.resultsFilters, currentSimulation?.tasks])
+  }, [
+    configuration?.run?.resultsFilters,
+    currentSimulation?.tasks,
+    selectorsCurrent
+  ])
 
   /**
    * On selector change

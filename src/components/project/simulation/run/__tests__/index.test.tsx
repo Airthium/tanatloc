@@ -194,7 +194,7 @@ describe('components/project/simulation/run', () => {
   })
 
   test('running', async () => {
-    mockSimulation.mockImplementationOnce(() => ({
+    const runningData = {
       scheme: { configuration: { run: { cloudServer: {} } } },
       tasks: [
         null,
@@ -218,7 +218,8 @@ describe('components/project/simulation/run', () => {
           systemLog: 'system'
         }
       ]
-    }))
+    }
+    mockSimulation.mockImplementation(() => runningData)
     const { unmount } = render(
       <Run
         simulation={simulation}
@@ -232,31 +233,34 @@ describe('components/project/simulation/run', () => {
   })
 
   test('not running', async () => {
-    mockSimulation.mockImplementationOnce(() => ({
-      scheme: { configuration: { run: {} } },
-      tasks: [
-        null,
-        {
-          label: 'Mesh',
-          index: 1,
-          status: 'finish',
-          file: { name: 'name', fileName: 'resultFileName' }
-        },
-        {
-          label: 'Simulation',
-          index: -1,
-          files: [{ name: 'name', fileName: 'resultFileName' }],
-          status: 'finish',
-          systemLog: 'system'
-        },
-        {
-          label: 'Mesh2',
-          index: 2,
-          status: 'finish',
-          systemLog: 'system'
-        }
-      ]
-    }))
+    const notRunningData = {
+      data: {
+        scheme: { configuration: { run: {} } },
+        tasks: [
+          null,
+          {
+            label: 'Mesh',
+            index: 1,
+            status: 'finish',
+            file: { name: 'name', fileName: 'resultFileName' }
+          },
+          {
+            label: 'Simulation',
+            index: -1,
+            files: [{ name: 'name', fileName: 'resultFileName' }],
+            status: 'finish',
+            systemLog: 'system'
+          },
+          {
+            label: 'Mesh2',
+            index: 2,
+            status: 'finish',
+            systemLog: 'system'
+          }
+        ]
+      }
+    }
+    mockSimulation.mockImplementationOnce(() => notRunningData)
     const { unmount } = render(
       <Run
         simulation={simulation}

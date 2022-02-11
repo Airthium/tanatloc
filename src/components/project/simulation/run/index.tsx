@@ -34,9 +34,7 @@ export interface IProps {
 const errors = {
   runError: 'Unable to run the simulation',
   stopError: 'Unable to stop the simulation',
-  updateError: 'Unable to update the simulation',
-  downloadError: 'Unable to download the file',
-  logError: 'Unable to get system log'
+  updateError: 'Unable to update the simulation'
 }
 
 /**

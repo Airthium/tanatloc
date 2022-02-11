@@ -28,7 +28,7 @@ jest.mock('@/api/simulation', () => ({
 }))
 
 describe('components/project/simulation/geometry', () => {
-  const geometries = [{ id: 'id' }]
+  const geometries = [{ id: 'id', name: 'geometry' }]
   const geometry = { id: 'id' }
   const simulation: ISimulation = {
     id: 'id',
@@ -88,7 +88,10 @@ describe('components/project/simulation/geometry', () => {
     const { unmount } = render(
       <Geometry
         geometries={[
-          { id: 'id', summary: { solids: [], faces: [], edges: [] } }
+          {
+            id: 'id',
+            name: 'geometry'
+          }
         ]}
         geometry={geometry}
         simulation={{
@@ -116,7 +119,7 @@ describe('components/project/simulation/geometry', () => {
     )
 
     // Select error
-    const button = screen.getByRole('img', { name: 'select' })
+    const button = screen.getByText('geometry')
     mockUpdate.mockImplementation(() => {
       throw new Error()
     })

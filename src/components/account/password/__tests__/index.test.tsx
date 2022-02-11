@@ -24,7 +24,7 @@ jest.mock('@/api/user', () => ({
   check: () => mockCheck()
 }))
 
-describe('components/account/information', () => {
+describe('components/account/password', () => {
   const user = { email: 'email' }
 
   beforeEach(() => {

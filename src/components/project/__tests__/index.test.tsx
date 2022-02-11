@@ -320,11 +320,13 @@ describe('components/project', () => {
     const { unmount } = render(<Project />)
 
     // Open submenus
-    const geometries = screen.getByRole('menuitem', { name: 'Geometries (1)' })
+    const geometries = screen.getByRole('menuitem', {
+      name: 'pie-chart GEOMETRIES (1)'
+    })
     fireEvent.click(geometries)
 
     const simulations = screen.getByRole('menuitem', {
-      name: 'calculator Simulations (3)'
+      name: 'code-sandbox SIMULATIONS (3)'
     })
     fireEvent.click(simulations)
 
@@ -334,13 +336,13 @@ describe('components/project', () => {
 
     // Click new geometry
     const newGeometry = screen.getByRole('button', {
-      name: 'plus New Geometry'
+      name: 'upload New Geometry'
     })
     fireEvent.click(newGeometry)
 
     // Click new simulation
     const newSimulation = screen.getByRole('button', {
-      name: 'plus New Simulation'
+      name: 'plus-circle New Simulation'
     })
     fireEvent.click(newSimulation)
 
@@ -349,11 +351,15 @@ describe('components/project', () => {
     fireEvent.click(selector)
 
     // Open simulation 2
-    const simulation2 = screen.getByRole('menuitem', { name: 'Simulation 2' })
+    const simulation2 = screen.getByRole('menuitem', {
+      name: 'code-sandbox Simulation 2'
+    })
     fireEvent.click(simulation2)
 
     // Open simulation 1
-    const simulation1 = screen.getByRole('menuitem', { name: 'Simulation 1' })
+    const simulation1 = screen.getByRole('menuitem', {
+      name: 'code-sandbox Simulation 1'
+    })
     fireEvent.click(simulation1)
 
     // Click simulation items
@@ -402,7 +408,9 @@ describe('components/project', () => {
     fireEvent.click(simulationItem)
 
     // Open simulation 3
-    const simulation3 = screen.getByRole('menuitem', { name: 'Simulation 3' })
+    const simulation3 = screen.getByRole('menuitem', {
+      name: 'code-sandbox Simulation 3'
+    })
     fireEvent.click(simulation3)
 
     simulationItem = screen.getByRole('menuitem', {
@@ -461,13 +469,17 @@ describe('components/project', () => {
     const { unmount } = render(<Project />)
 
     // Select geometry
-    const geometries = screen.getByRole('menuitem', { name: 'Geometries (1)' })
+    const geometries = screen.getByRole('menuitem', {
+      name: 'pie-chart GEOMETRIES (1)'
+    })
     fireEvent.click(geometries)
     const simulations = screen.getByRole('menuitem', {
-      name: 'calculator Simulations (3)'
+      name: 'code-sandbox SIMULATIONS (3)'
     })
     fireEvent.click(simulations)
-    const simulation1 = screen.getByRole('menuitem', { name: 'Simulation 1' })
+    const simulation1 = screen.getByRole('menuitem', {
+      name: 'code-sandbox Simulation 1'
+    })
     fireEvent.click(simulation1)
     const simulationItem = screen.getByRole('menuitem', {
       name: 'check-circle About'
@@ -511,10 +523,12 @@ describe('components/project', () => {
 
     // Select simulation
     const simulations = screen.getByRole('menuitem', {
-      name: 'calculator Simulations (1)'
+      name: 'code-sandbox SIMULATIONS (1)'
     })
     fireEvent.click(simulations)
-    const simulation1 = screen.getByRole('menuitem', { name: 'Simulation 1' })
+    const simulation1 = screen.getByRole('menuitem', {
+      name: 'code-sandbox Simulation 1'
+    })
     fireEvent.click(simulation1)
     const simulationItem = screen.getByRole('menuitem', {
       name: 'check-circle About'

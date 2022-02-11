@@ -134,7 +134,12 @@ const Geometry = ({
 }
 
 Geometry.propTypes = {
-  geometries: PropTypes.array.isRequired,
+  geometries: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      name: PropTypes.string.isRequired
+    })
+  ).isRequired,
   geometry: PropTypes.object,
   simulation: PropTypes.exact({
     id: PropTypes.string.isRequired,

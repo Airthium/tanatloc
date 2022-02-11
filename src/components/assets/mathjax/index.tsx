@@ -69,9 +69,5 @@ const Html = ({ html }: IPropsHtml): JSX.Element => {
   else return <>{parse(html)}</>
 }
 
-export default {
-  Head,
-  Inline,
-  Formula,
-  Html
-}
+const MathJax = { Head, Inline, Formula, Html }
+export default MathJax

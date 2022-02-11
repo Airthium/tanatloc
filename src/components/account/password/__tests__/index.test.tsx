@@ -1,7 +1,7 @@
 import React from 'react'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
-import { notification } from 'antd'
+import { Form, Input, notification } from 'antd'
 
 import Password from '..'
 
@@ -30,12 +30,9 @@ describe('components/account/password', () => {
   beforeEach(() => {
     mockPasswordItem.mockReset()
     mockPasswordItem.mockImplementation((props) => (
-      <div>
-        <label htmlFor={'passwordForm_' + props.label} title={props.label}>
-          {props.label}
-        </label>
-        <input id={'passwordForm_' + props.label} />
-      </div>
+      <Form.Item label={props.label} name={props.name}>
+        <Input />
+      </Form.Item>
     ))
 
     mockError.mockReset()
@@ -76,11 +73,20 @@ describe('components/account/password', () => {
   test('onFinish', async () => {
     const { unmount } = render(<Password user={user} />)
 
+    // Fill
+    const currentPassword = screen.getByLabelText('Current password')
+    const newPassword = screen.getByLabelText('New password')
+    const passwordConfirmation = screen.getByLabelText('Password confirmation')
+    fireEvent.change(currentPassword, { target: { value: 'password' } })
+    fireEvent.change(newPassword, { target: { value: 'password' } })
+    fireEvent.change(passwordConfirmation, { target: { value: 'password' } })
+
+    // Button
     const button = screen.getByRole('button')
 
     // Error
     mockCheck.mockImplementation(() => {
-      throw new Error()
+      throw new Error('check error')
     })
     fireEvent.click(button)
     await waitFor(() => expect(mockCheck).toHaveBeenCalledTimes(1))

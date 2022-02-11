@@ -10,6 +10,19 @@ jest.mock('next/router', () => ({
   })
 }))
 
+const mockDialog = jest.fn()
+jest.mock('@/components/assets/dialog', () => (props) => mockDialog(props))
+
+const mockError = jest.fn()
+jest.mock('@/components/assets/notification', () => ({
+  Error: () => mockError()
+}))
+
+const mockWorkspaceAdd = jest.fn()
+jest.mock('@/api/workspace', () => ({
+  add: async () => mockWorkspaceAdd()
+}))
+
 jest.mock('../..', () => () => <div />)
 jest.mock('../../add', () => () => <div />)
 
@@ -26,6 +39,13 @@ describe('components/workspace/list', () => {
   beforeEach(() => {
     mockQuery.mockReset()
     mockQuery.mockImplementation(() => ({}))
+
+    mockDialog.mockReset()
+    mockDialog.mockImplementation(() => <div />)
+
+    mockError.mockReset()
+
+    mockWorkspaceAdd.mockReset()
 
     swr.addOneWorkspace.mockReset()
     swr.mutateOneWorkspace.mockReset()
@@ -45,7 +65,17 @@ describe('components/workspace/list', () => {
     unmount()
   })
 
-  test('edit', async () => {
+  test('onAdd', async () => {
+    mockDialog.mockImplementation((props) => (
+      <div
+        role="Dialog"
+        onClick={async () => {
+          try {
+            await props.onOk()
+          } catch (err) {}
+        }}
+      />
+    ))
     const { unmount } = render(
       <List
         user={user}
@@ -57,6 +87,44 @@ describe('components/workspace/list', () => {
 
     const add = screen.getAllByRole('button', { name: 'Add tab' })
     fireEvent.click(add[0])
+
+    const dialog = screen.getByRole('Dialog')
+
+    // Error
+    mockWorkspaceAdd.mockImplementation(() => {
+      throw new Error('add error')
+    })
+    fireEvent.click(dialog)
+    await waitFor(() => expect(mockWorkspaceAdd).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
+
+    // Normal
+    mockWorkspaceAdd.mockImplementation(() => ({}))
+    fireEvent.click(dialog)
+    await waitFor(() => expect(mockWorkspaceAdd).toHaveBeenCalledTimes(2))
+    await waitFor(() => expect(swr.addOneWorkspace).toHaveBeenCalledTimes(1))
+
+    unmount()
+  })
+
+  test('onCancel', async () => {
+    mockDialog.mockImplementation((props) => (
+      <div role="Dialog" onClick={props.onCancel} />
+    ))
+    const { unmount } = render(
+      <List
+        user={user}
+        workspaces={workspaces}
+        organizations={organizations}
+        swr={swr}
+      />
+    )
+
+    const add = screen.getAllByRole('button', { name: 'Add tab' })
+    fireEvent.click(add[0])
+
+    const dialog = screen.getByRole('Dialog')
+    fireEvent.click(dialog)
 
     unmount()
   })

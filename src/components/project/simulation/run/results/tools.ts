@@ -28,7 +28,7 @@ export const getFilesNumbers = (
  * @param filter Filter
  * @returns Multiplicator
  */
-export const getMulitplicator = (
+export const getMultiplicator = (
   configuration: IModel['configuration'],
   filter: IModel['configuration']['run']['resultsFilters'][0]
 ) => {

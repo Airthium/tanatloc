@@ -40,6 +40,7 @@ const Archive = ({ simulation }: IProps): JSX.Element => {
       link.setAttribute('download', simulation.scheme.name + '.zip')
       link.click()
     } catch (err) {
+      console.log(err)
       ErrorNotification(errors.archive, err)
     } finally {
       setLoading(false)

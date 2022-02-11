@@ -5,14 +5,14 @@ import { EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons'
 import Download from './download'
 import Archive from './archive'
 
-import { getFilesNumbers, getMulitplicator } from './tools'
+import { getFilesNumbers, getMultiplicator } from './tools'
 
 import { ISimulation, ISimulationTaskFile } from '@/database/index.d'
 
 export interface IProps {
   simulation: ISimulation
   currentSimulation: ISimulation
-  result: ISimulationTaskFile
+  result?: ISimulationTaskFile
   setResult: Function
 }
 
@@ -72,7 +72,7 @@ const Results = ({
               .sort()
 
             // Multiplicator
-            const multiplicator = getMulitplicator(configuration, filter)
+            const multiplicator = getMultiplicator(configuration, filter)
 
             // Set selector
             const resultIndex = newResults.length

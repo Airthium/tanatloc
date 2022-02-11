@@ -43,6 +43,11 @@ describe('components/account/hpc/list', () => {
                 type: 'password',
                 value: 'password'
               },
+              textarea: {
+                label: 'Textarea',
+                type: 'textarea',
+                value: 'code'
+              },
               //@ts-ignore
               item: { value: 'item' }
             }

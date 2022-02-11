@@ -24,7 +24,6 @@ export interface IProps {
 const List = ({ plugin, plugins, swr }: IProps): JSX.Element => {
   // State
   const [list, setList]: [JSX.Element[], Function] = useState([])
-  const [content, setContent]: [JSX.Element, Function] = useState(<></>)
 
   // List
   useEffect(() => {
@@ -36,9 +35,11 @@ const List = ({ plugin, plugins, swr }: IProps): JSX.Element => {
       const children = Object.keys(configuration)
         .map((key) => {
           if (key === 'name') return
+
+          let content: JSX.Element
           if (configuration[key].type === 'textarea') {
             const code = configuration[key].value
-            setContent(
+            content = (
               <Typography.Paragraph>
                 <pre>
                   <code>{code}</code>
@@ -46,9 +47,9 @@ const List = ({ plugin, plugins, swr }: IProps): JSX.Element => {
               </Typography.Paragraph>
             )
           } else if (configuration[key].type === 'password') {
-            setContent(<Typography.Text>******</Typography.Text>)
+            content = <Typography.Text>******</Typography.Text>
           } else {
-            setContent(
+            content = (
               <Typography.Text>{configuration[key].value}</Typography.Text>
             )
           }

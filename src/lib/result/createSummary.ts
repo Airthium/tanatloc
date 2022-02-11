@@ -153,16 +153,16 @@ const boundaryConditionsSummary = (stream: WriteStream, configuration: {}) => {
         }) => {
           stream.write(' - ' + value.name + ' (' + value.type.label + '):\n')
 
-            value?.values?.forEach((subValue) => {
-              stream.write('  - ' + subValue.value)
+          value.values?.forEach((subValue) => {
+            stream.write('  - ' + subValue.value)
 
-              if (subValue.checked !== undefined)
-                stream.write(
-                  ' (' + (subValue.checked ? 'active' : 'unactive') + ')'
-                )
+            if (subValue.checked !== undefined)
+              stream.write(
+                ' (' + (subValue.checked ? 'active' : 'unactive') + ')'
+              )
 
-              stream.write('\n')
-            })
+            stream.write('\n')
+          })
 
           stream.write('  - Selected: [')
           stream.write(value.selected.map((select) => select.label).join(', '))

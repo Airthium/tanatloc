@@ -69,7 +69,7 @@ const Results = ({
             const numbers = filesWithNumbers
               .map((file) => file.number)
               .filter((n, i, s) => s.indexOf(n) === i)
-              .sort((a, b) => (a - b))
+              .sort((a, b) => a - b)
 
             // Multiplicator
             const multiplicator = getMultiplicator(configuration, filter)

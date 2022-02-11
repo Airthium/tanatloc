@@ -268,4 +268,34 @@ describe('components/project/simulation/run', () => {
 
     unmount()
   })
+
+  test('onCloudServer', async () => {
+    mockCloudServer.mockImplementation((props) => (
+      <div role="CloudServer" onClick={() => props.onOk({})} />
+    ))
+    const { unmount } = render(
+      <Run
+        simulation={simulation}
+        result={result}
+        setResult={setResult}
+        swr={swr}
+      />
+    )
+
+    const cloudServer = screen.getByRole('CloudServer')
+
+    // Error
+    mockUpdate.mockImplementation(() => {
+      throw new Error('update error')
+    })
+    fireEvent.click(cloudServer)
+
+    // Normal
+    mockUpdate.mockImplementation(() => {
+      // mock
+    })
+    fireEvent.click(cloudServer)
+
+    unmount()
+  })
 })

@@ -1,23 +1,17 @@
-import { Select } from 'antd'
 import React from 'react'
+import { Select } from 'antd'
 
-type FilterType = {
-  name: string
-  prefixPattern: string | RegExp
-  suffixPattern: string | RegExp
-  pattern: string | RegExp
-  multiplicator?: string[]
-}
+import { IModel } from '@/models/index.d'
 
-function setupSelector(
-  filter: FilterType,
+const setupSelector = (
+  filter: IModel['configuration']['run']['resultsFilters'][0],
   numbers: number[],
   multiplicator: number,
   filterIndex: number,
   resultIndex: number,
   onSelectorChange: Function,
   selectorsCurrent: any
-) {
+) => {
   return (
     <div key={filter.name}>
       {filter.name}:{' '}

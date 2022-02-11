@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types'
 import { useEffect, useState } from 'react'
 import {
   Button,
@@ -14,7 +13,6 @@ import { DeleteOutlined } from '@ant-design/icons'
 import { AddButton } from '@/components/assets/button'
 
 import { IConfiguration } from '../..'
-import { setType } from '@/store/select/action'
 
 export interface IProps {
   initialization?: IConfiguration['initializations']['key'] & { key: string }

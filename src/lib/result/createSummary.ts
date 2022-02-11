@@ -153,8 +153,7 @@ const boundaryConditionsSummary = (stream: WriteStream, configuration: {}) => {
         }) => {
           stream.write(' - ' + value.name + ' (' + value.type.label + '):\n')
 
-          if (value.values)
-            value.values.forEach((subValue) => {
+            value?.values?.forEach((subValue) => {
               stream.write('  - ' + subValue.value)
 
               if (subValue.checked !== undefined)

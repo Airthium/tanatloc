@@ -1,12 +1,10 @@
 import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
-import { Button, Card, Collapse, Space, Typography } from 'antd'
-import { SelectOutlined } from '@ant-design/icons'
+import { Card, Typography } from 'antd'
 
 import { IGeometry, ISimulation } from '@/database/index.d'
 
 import { Error as ErrorNotification } from '@/components/assets/notification'
-import MathJax from '@/components/assets/mathjax'
 
 import SimulationAPI from '@/api/simulation'
 

@@ -1,7 +1,5 @@
-import PropTypes from 'prop-types'
 import { useEffect, useState } from 'react'
 import { Button, Card, Layout } from 'antd'
-import { DeleteOutlined, PlusOutlined } from '@ant-design/icons'
 
 import List from './list'
 import BoundaryCondition from './boundaryCondition'

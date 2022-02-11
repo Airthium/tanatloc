@@ -29,8 +29,7 @@ const errors = {
  * @param props Props
  */
 const Delete = ({ workspace, swr }: IProps): JSX.Element => {
-  // Sate
-  const [visible, setVisible]: [boolean, Function] = useState(false)
+  // State
   const [loading, setLoading]: [boolean, Function] = useState(false)
 
   /**
@@ -44,9 +43,6 @@ const Delete = ({ workspace, swr }: IProps): JSX.Element => {
 
       // Mutate
       swr.delOneWorkspace({ id: workspace.id })
-
-      // Close
-      setVisible(false)
     } catch (err) {
       ErrorNotification(errors.delError, err)
       setLoading(false)

@@ -19,30 +19,30 @@ const Code = ({ configuration, code, setCode }: IProps): JSX.Element => {
   const [header, setHeader] = useState('')
 
   useEffect(() => {
-    let header = ''
+    let newHeader = ''
 
     // Informations
     if (configuration.information?.name)
-      header += `// Name: ${configuration.information.name}\n`
+      newHeader += `// Name: ${configuration.information.name}\n`
     if (configuration.information?.category)
-      header += `// Category: ${configuration.information.category}\n`
+      newHeader += `// Category: ${configuration.information.category}\n`
 
-    header += '\n// GLOBAL VARIABLES\n'
-    header += '// - func int appendLog(string log)\n'
-    header += '//   This function append log to the log report.\n'
-    header += '// - func int appendError(string err)\n'
-    header += '//   This function append error to the log report.\n'
-    header += '// - meshN (2D: mesh, 3D:mesh3)\n'
-    header += '//   Mesh variable for 2D and 3D usage.\n'
-    header += '// - intN (2D:int2d, 3D:int3d)\n'
-    header += '//   Intergation function for 2D and 3D usage.\n'
-    header += '// - intN1 (2D:int1d, 3d:int2d)\n'
-    header += '//   Intergation function for 2D and 3D usage.\n'
+    newHeader += '\n// GLOBAL VARIABLES\n'
+    newHeader += '// - func int appendLog(string log)\n'
+    newHeader += '//   This function append log to the log report.\n'
+    newHeader += '// - func int appendError(string err)\n'
+    newHeader += '//   This function append error to the log report.\n'
+    newHeader += '// - meshN (2D: mesh, 3D:mesh3)\n'
+    newHeader += '//   Mesh variable for 2D and 3D usage.\n'
+    newHeader += '// - intN (2D:int2d, 3D:int3d)\n'
+    newHeader += '//   Intergation function for 2D and 3D usage.\n'
+    newHeader += '// - intN1 (2D:int1d, 3d:int2d)\n'
+    newHeader += '//   Intergation function for 2D and 3D usage.\n'
 
     // Geometry
     if (configuration.geometry && configuration.geometry.meshable) {
-      header += '\n// GEOMETRY\n'
-      header +=
+      newHeader += '\n// GEOMETRY\n'
+      newHeader +=
         '/*** TANATLOC GEOMETRY ***/ meshN ' +
         safeCode(configuration.geometry.name) +
         ' = /* ... */;\n'
@@ -51,8 +51,8 @@ const Code = ({ configuration, code, setCode }: IProps): JSX.Element => {
     // Numerical parameters
     if (configuration.numericalParameters) {
       if (configuration.numericalParameters.finiteElementSpace) {
-        header += '\n// FINITE ELEMENT SPACE\n'
-        header +=
+        newHeader += '\n// FINITE ELEMENT SPACE\n'
+        newHeader +=
           '/*** TANATLOC FESPACE ***/ fespace ' +
           safeCode(configuration.numericalParameters.finiteElementSpace.name) +
           '(' +
@@ -60,7 +60,7 @@ const Code = ({ configuration, code, setCode }: IProps): JSX.Element => {
           ', "' +
           configuration.numericalParameters.finiteElementSpace.default +
           '");\n'
-        header +=
+        newHeader +=
           '/*** TANATLOC FE FUNCTIONS ***/ ' +
           safeCode(configuration.numericalParameters.finiteElementSpace.name) +
           ' ' +
@@ -69,7 +69,7 @@ const Code = ({ configuration, code, setCode }: IProps): JSX.Element => {
           ) +
           ';\n'
         configuration.numericalParameters.finiteElementSpace.testFunction &&
-          (header +=
+          (newHeader +=
             '/*** TANATLOC FE FUNCTIONS ***/ ' +
             safeCode(
               configuration.numericalParameters.finiteElementSpace.name
@@ -82,8 +82,8 @@ const Code = ({ configuration, code, setCode }: IProps): JSX.Element => {
       }
 
       if (configuration.numericalParameters.solver) {
-        header += '\n// SOLVER\n'
-        header +=
+        newHeader += '\n// SOLVER\n'
+        newHeader +=
           '/*** TANATLOC SOLVER ***/ func solver = "' +
           configuration.numericalParameters.solver.default +
           '";\n'
@@ -92,9 +92,9 @@ const Code = ({ configuration, code, setCode }: IProps): JSX.Element => {
 
     // Materials
     if (configuration.materials) {
-      header += '\n// MATERIALS\n'
+      newHeader += '\n// MATERIALS\n'
       configuration.materials.children?.map((child) => {
-        header +=
+        newHeader +=
           '/*** TANATLOC MATERIAL ***/ func ' +
           safeCode(child.name) +
           ' = ' +
@@ -107,11 +107,11 @@ const Code = ({ configuration, code, setCode }: IProps): JSX.Element => {
 
     // Physical parameters
     if (configuration.parameters) {
-      header += '\n// PARAMETERS\n'
+      newHeader += '\n// PARAMETERS\n'
       Object.keys(configuration.parameters).forEach((key) => {
         const parameter = configuration.parameters[key]
         parameter.children.forEach((child) => {
-          header +=
+          newHeader +=
             '/*** TANATLOC PARAMETER ***/ real ' +
             safeCode(parameter.name) +
             safeCode(child.name) +
@@ -128,11 +128,11 @@ const Code = ({ configuration, code, setCode }: IProps): JSX.Element => {
 
     // // Boundary conditions
     // if (configuration.boundaryConditions) {
-    //   header += '\n// BOUNDARY CONDITIONS\n'
+    //   newHeader += '\n// BOUNDARY CONDITIONS\n'
     //   Object.keys(configuration.boundaryConditions).forEach((key) => {
     //     const boundaryCondition = configuration.boundaryConditions[key]
     //     boundaryCondition.children?.forEach((child, index) => {
-    //       header +=
+    //       newHeader +=
     //         '/*** TANATLOC BOUNDARY CONDITION ***/ ' +
     //         boundaryCondition.name +
     //         index +
@@ -144,9 +144,9 @@ const Code = ({ configuration, code, setCode }: IProps): JSX.Element => {
     // }
 
     // End
-    header += '\n/*** /!\\ WRITE YOUR CODE BELLOW THIS LINE /!\\ ***/\n'
+    newHeader += '\n/*** /!\\ WRITE YOUR CODE BELLOW THIS LINE /!\\ ***/\n'
 
-    setHeader(header)
+    setHeader(newHeader)
   }, [configuration])
 
   const onChange = (newCode: string): void => {

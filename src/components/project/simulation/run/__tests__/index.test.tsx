@@ -3,7 +3,7 @@ import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import Run from '..'
 
-import { ISimulationTaskFile } from '@/database/index.d'
+import { ISimulation, ISimulationTaskFile } from '@/database/index.d'
 
 const mockError = jest.fn()
 jest.mock('@/components/assets/notification', () => ({
@@ -129,6 +129,44 @@ describe('components/project/simulation/run', () => {
     const { unmount } = render(
       <Run
         simulation={simulation}
+        result={result}
+        setResult={setResult}
+        swr={swr}
+      />
+    )
+
+    unmount()
+  })
+
+  test('without configuration', () => {
+    const { unmount } = render(
+      <Run
+        simulation={{ id: 'id' }}
+        result={result}
+        setResult={setResult}
+        swr={swr}
+      />
+    )
+
+    unmount()
+  })
+
+  test('not done', () => {
+    const { unmount } = render(
+      <Run
+        simulation={
+          {
+            id: 'id',
+            scheme: {
+              configuration: {
+                parameters: {
+                  done: false
+                },
+                run: {}
+              }
+            }
+          } as ISimulation
+        }
         result={result}
         setResult={setResult}
         swr={swr}

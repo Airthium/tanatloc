@@ -138,6 +138,23 @@ describe('components/project/simulation/run', () => {
     unmount()
   })
 
+  test('loading', () => {
+    mockSimulation.mockImplementation(() => null)
+    const { container, unmount } = render(
+      <Run
+        simulation={simulation}
+        result={result}
+        setResult={setResult}
+        swr={swr}
+      />
+    )
+
+    const i = container.querySelector('i')
+    expect(i.className).toBe('ant-spin-dot-item')
+
+    unmount()
+  })
+
   test('without configuration', () => {
     const { unmount } = render(
       <Run

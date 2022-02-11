@@ -1,13 +1,11 @@
 import { useEffect, useState } from 'react'
-import { Button, Card, Space, Spin } from 'antd'
+import { Button, Card, Select, Space, Spin } from 'antd'
 import { EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons'
 
 import Download from './download'
 import Archive from './archive'
 
-import { getUniqueNumbers, setMultiplicator } from '../runServices/services'
-
-import { setupSelector, resultManager } from '../runServices/selector'
+import { getFilesNumbers, getMulitplicator } from './tools'
 
 import { ISimulation, ISimulationTaskFile } from '@/database/index.d'
 
@@ -16,6 +14,12 @@ export interface IProps {
   currentSimulation: ISimulation
   result: ISimulationTaskFile
   setResult: Function
+}
+
+export interface IFilteredFiles {
+  filtered: true
+  files: ISimulationTaskFile[]
+  current: number
 }
 
 /**
@@ -30,13 +34,7 @@ const Results = ({
 }: IProps): JSX.Element => {
   //State
   const [results, setResults]: [
-    {
-      name: string
-      number: number
-      filtered?: boolean
-      files?: { name: string; number: number }[]
-      current?: number
-    }[],
+    (ISimulationTaskFile | IFilteredFiles)[],
     Function
   ] = useState()
   const [selectors, setSelectors]: [JSX.Element[], Function] = useState([])
@@ -51,49 +49,75 @@ const Results = ({
 
     // Results
     currentSimulation?.tasks?.forEach((task) => {
+      // Check file
       if (task.file) newResults.push(task.file)
+      // Check files
       if (task.files) {
         // Filters
         const resultsFilters = configuration?.run?.resultsFilters
-        !resultsFilters && newResults.push(...task.files)
-        //Sort by filters
-        resultsFilters?.forEach((filter, filterIndex) => {
-          const pattern = new RegExp(filter.pattern)
-          const filteredFiles = task.files.filter((file) =>
-            pattern.test(file.fileName)
-          )
+        if (resultsFilters) {
+          // With filters
+          resultsFilters?.forEach((filter, filterIndex) => {
+            // Pattern filter
+            const pattern = new RegExp(filter.pattern)
+            const filteredFiles = task.files.filter((file) =>
+              pattern.test(file.fileName)
+            )
 
-          let fileData = getUniqueNumbers(filteredFiles, filter)
-          let files = fileData?.files
-          let numbers = fileData?.numbers
-          let multiplicator = setMultiplicator(filter, configuration)
+            // Numbering
+            const filesWithNumbers = getFilesNumbers(filteredFiles, filter)
+            const numbers = filesWithNumbers
+              .map((file) => file.number)
+              .filter((n, i, s) => s.indexOf(n) === i)
+              .sort()
 
-          // Set selector
-          const resultIndex = newResults.length
-          const selector = setupSelector(
-            filter,
-            numbers,
-            multiplicator,
-            filterIndex,
-            resultIndex,
-            onSelectorChange,
-            selectorsCurrent
-          )
+            // Multiplicator
+            const multiplicator = getMulitplicator(configuration, filter)
 
-          newSelectors.push(selector)
-          // Set result & current iteration
-          selectorsCurrent[filterIndex] === undefined &&
-            setSelectorsCurrent([
-              ...selectorsCurrent.slice(0, selectorsCurrent[filterIndex]),
-              numbers[0],
-              ...selectorsCurrent.slice(selectorsCurrent[filterIndex] + 1)
-            ])
-          newResults.push({
-            filtered: true,
-            files,
-            current: selectorsCurrent[filterIndex]
+            // Set selector
+            const resultIndex = newResults.length
+            const selector = (
+              <div key={filter.name}>
+                {filter.name}:{' '}
+                <Select
+                  defaultValue={numbers[0]}
+                  options={numbers.map((n, i) => {
+                    const value = multiplicator ? n * multiplicator : i
+                    const floatingPointFix = Math.round(value * 1e15) / 1e15
+                    return {
+                      label: floatingPointFix,
+                      value: n
+                    }
+                  })}
+                  value={selectorsCurrent[filterIndex]}
+                  onChange={(value) =>
+                    onSelectorChange(value, resultIndex, filterIndex)
+                  }
+                  style={{ width: '100%' }}
+                />
+              </div>
+            )
+            newSelectors.push(selector)
+
+            // Set result & current iteration
+            if (selectorsCurrent[filterIndex] === undefined)
+              setSelectorsCurrent([
+                ...selectorsCurrent.slice(0, selectorsCurrent[filterIndex]),
+                numbers[0],
+                ...selectorsCurrent.slice(selectorsCurrent[filterIndex] + 1)
+              ])
+
+            // Add files
+            newResults.push({
+              filtered: true,
+              files: filesWithNumbers,
+              current: selectorsCurrent[filterIndex]
+            })
           })
-        })
+        } else {
+          // No filters
+          newResults.push(...task.files)
+        }
       }
     })
 
@@ -116,21 +140,35 @@ const Results = ({
     index: number,
     filterIndex: number
   ) => {
-    const resultData = resultManager(
-      value,
-      index,
-      filterIndex,
-      results,
-      result,
-      selectorsCurrent
-    )
-    setResults(resultData?.results)
-    setResult(resultData?.result)
-    setSelectorsCurrent(resultData?.selectorsCurrent)
+    // Selector
+    const newSelectorsCurrent = [...selectorsCurrent]
+    newSelectorsCurrent[filterIndex] = value
+
+    // Results
+    const newResults = [
+      ...results.slice(0, index),
+      {
+        ...results[index],
+        current: value
+      },
+      ...results.slice(index + 1)
+    ]
+
+    setResults(newResults)
+    setSelectorsCurrent(newSelectorsCurrent)
+
+    // Update visualization
+    if (result) {
+      const currentFilteredResults = results[index] as IFilteredFiles
+      const currentFile = currentFilteredResults.files.find(
+        (file) => file.name === result.name && file.number === value
+      )
+      if (currentFile) setResult(currentFile)
+    }
   }
 
   // Results render
-  if (!results || !currentSimulation) return <Spin />
+  if (!results) return <Spin />
   else if (!results.length) return <Card size="small">No results yet</Card>
   else
     return (
@@ -141,7 +179,7 @@ const Results = ({
       >
         <Space direction="vertical" style={{ width: '100%' }}>
           {selectors}
-          {results.map((r) => {
+          {results.map((r: IFilteredFiles) => {
             // Check if filtered
             let toRender = []
             if (r.filtered) {
@@ -151,6 +189,7 @@ const Results = ({
             } else {
               toRender = [r]
             }
+
             // Render
             return toRender.map((file) => {
               return (

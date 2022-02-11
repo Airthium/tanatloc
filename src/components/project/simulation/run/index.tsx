@@ -169,7 +169,16 @@ const Run = ({ simulation, result, setResult, swr }: IProps): JSX.Element => {
   /**
    * Render
    */
-  if (!simulation || !currentSimulation) return <Spin />
+  if (!simulation || !currentSimulation || currentSimulation?.id === '0')
+    return (
+      <Layout>
+        <Layout.Content>
+          <Card size="small">
+            <Spin />
+          </Card>
+        </Layout.Content>
+      </Layout>
+    )
   else
     return (
       <Layout>

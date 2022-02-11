@@ -1,5 +1,5 @@
 import React from 'react'
-import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import Run from '..'
 
@@ -336,35 +336,37 @@ describe('components/project/simulation/run', () => {
     unmount()
   })
 
-  // test('onStop', async () => {
-  //   const { unmount } = render(
-  //     <Run
-  //       simulation={simulation}
-  //       result={result}
-  //       setResult={setResult}
-  //       swr={swr}
-  //     />
-  //   )
+  test('onStop', async () => {
+    const { unmount } = render(
+      <Run
+        simulation={simulation}
+        result={result}
+        setResult={setResult}
+        swr={swr}
+      />
+    )
 
-  // TODO Should run to use stop
+    const run = screen.getByRole('button', { name: 'rocket Run' })
+    const stop = screen.getByRole('button', { name: 'stop' })
 
-  //   const stop = screen.getByRole('button', { name: 'stop' })
+    // Running
+    fireEvent.click(run)
 
-  //   // Error
-  //   mockStop.mockImplementation(() => {
-  //     throw new Error('stop error')
-  //   })
-  //   fireEvent.click(stop)
-  //   await waitFor(() => expect(mockStop).toHaveBeenCalledTimes(1))
-  //   await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
+    // Error
+    mockStop.mockImplementation(() => {
+      throw new Error('stop error')
+    })
+    fireEvent.click(stop)
+    await waitFor(() => expect(mockStop).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
 
-  //   // Normal
-  //   mockStop.mockImplementation(() => {
-  //     // Empty
-  //   })
-  //   fireEvent.click(stop)
-  //   await waitFor(() => expect(mockStop).toHaveBeenCalledTimes(2))
+    // Normal
+    mockStop.mockImplementation(() => {
+      // Empty
+    })
+    fireEvent.click(stop)
+    await waitFor(() => expect(mockStop).toHaveBeenCalledTimes(2))
 
-  //   unmount()
-  // })
+    unmount()
+  })
 })

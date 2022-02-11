@@ -75,15 +75,11 @@ const Run = ({ simulation, result, setResult, swr }: IProps): JSX.Element => {
 
   // Running
   useEffect(() => {
-    try {
-      if (currentSimulation.tasks.find((t) => t?.status === 'error')) {
-        setRunning(false)
-      } else if (currentSimulation.tasks.find((t) => t?.status !== 'finish')) {
-        setRunning(true)
-      } else setRunning(false)
-    } catch (error) {
+    if (currentSimulation?.tasks?.find((t) => t?.status === 'error')) {
       setRunning(false)
-    }
+    } else if (currentSimulation?.tasks?.find((t) => t?.status !== 'finish')) {
+      setRunning(true)
+    } else setRunning(false)
   }, [currentSimulation?.tasks])
 
   // Steps

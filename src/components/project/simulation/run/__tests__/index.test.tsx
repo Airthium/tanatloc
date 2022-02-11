@@ -175,4 +175,80 @@ describe('components/project/simulation/run', () => {
 
     unmount()
   })
+
+  test('running', async () => {
+    mockSimulation.mockImplementationOnce(() => ({
+      scheme: { configuration: { run: { cloudServer: {} } } },
+      tasks: [
+        null,
+        {
+          label: 'Mesh',
+          index: 1,
+          status: 'finish',
+          file: { name: 'name', fileName: 'resultFileName' }
+        },
+        {
+          label: 'Simulation',
+          index: -1,
+          files: [{ name: 'name', fileName: 'resultFileName' }],
+          status: 'finish',
+          systemLog: 'system'
+        },
+        {
+          label: 'Mesh2',
+          index: 2,
+          status: 'process',
+          systemLog: 'system'
+        }
+      ]
+    }))
+    const { unmount } = render(
+      <Run
+        simulation={simulation}
+        result={result}
+        setResult={setResult}
+        swr={swr}
+      />
+    )
+
+    unmount()
+  })
+
+  test('not running', async () => {
+    mockSimulation.mockImplementationOnce(() => ({
+      scheme: { configuration: { run: {} } },
+      tasks: [
+        null,
+        {
+          label: 'Mesh',
+          index: 1,
+          status: 'finish',
+          file: { name: 'name', fileName: 'resultFileName' }
+        },
+        {
+          label: 'Simulation',
+          index: -1,
+          files: [{ name: 'name', fileName: 'resultFileName' }],
+          status: 'finish',
+          systemLog: 'system'
+        },
+        {
+          label: 'Mesh2',
+          index: 2,
+          status: 'finish',
+          systemLog: 'system'
+        }
+      ]
+    }))
+    const { unmount } = render(
+      <Run
+        simulation={simulation}
+        result={result}
+        setResult={setResult}
+        swr={swr}
+      />
+    )
+
+    unmount()
+  })
 })

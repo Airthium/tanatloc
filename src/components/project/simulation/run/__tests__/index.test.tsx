@@ -289,13 +289,82 @@ describe('components/project/simulation/run', () => {
       throw new Error('update error')
     })
     fireEvent.click(cloudServer)
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
 
     // Normal
     mockUpdate.mockImplementation(() => {
       // mock
     })
     fireEvent.click(cloudServer)
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
+    await waitFor(() =>
+      expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(1)
+    )
+    await waitFor(() => expect(mockMutateSimulation).toHaveBeenCalledTimes(1))
 
     unmount()
   })
+
+  test('onRun', async () => {
+    const { unmount } = render(
+      <Run
+        simulation={simulation}
+        result={result}
+        setResult={setResult}
+        swr={swr}
+      />
+    )
+
+    const run = screen.getByRole('button', { name: 'rocket Run' })
+
+    // Error
+    mockRun.mockImplementation(() => {
+      throw new Error('run error')
+    })
+    fireEvent.click(run)
+    await waitFor(() => expect(mockRun).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
+
+    // Normal
+    mockRun.mockImplementation(() => {
+      // mock
+    })
+    fireEvent.click(run)
+    await waitFor(() => expect(mockRun).toHaveBeenCalledTimes(2))
+
+    unmount()
+  })
+
+  // test('onStop', async () => {
+  //   const { unmount } = render(
+  //     <Run
+  //       simulation={simulation}
+  //       result={result}
+  //       setResult={setResult}
+  //       swr={swr}
+  //     />
+  //   )
+
+  // TODO Should run to use stop
+
+  //   const stop = screen.getByRole('button', { name: 'stop' })
+
+  //   // Error
+  //   mockStop.mockImplementation(() => {
+  //     throw new Error('stop error')
+  //   })
+  //   fireEvent.click(stop)
+  //   await waitFor(() => expect(mockStop).toHaveBeenCalledTimes(1))
+  //   await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
+
+  //   // Normal
+  //   mockStop.mockImplementation(() => {
+  //     // Empty
+  //   })
+  //   fireEvent.click(stop)
+  //   await waitFor(() => expect(mockStop).toHaveBeenCalledTimes(2))
+
+  //   unmount()
+  // })
 })

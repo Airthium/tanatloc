@@ -144,6 +144,7 @@ const Run = ({ simulation, result, setResult, swr }: IProps): JSX.Element => {
       await SimulationAPI.run({ id: simulation.id })
     } catch (err) {
       ErrorNotification(errors.runError, err)
+      setRunning(false)
     }
   }
 

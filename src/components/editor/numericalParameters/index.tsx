@@ -102,8 +102,6 @@ const NumericalParameters = ({
   }
 
   const onFinish = (values) => {
-    console.log(values)
-
     const numericalParameters = {
       finiteElementSpace: {
         name: values.finiteElementSpace.name,

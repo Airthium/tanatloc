@@ -58,7 +58,6 @@ const Initialization = ({
       | IConfiguration['initializations']['key']['children']
       | IConfiguration['initializations']['key']['compatibility']
   ) => {
-    console.log(value)
     if (!value?.length) return Promise.reject(new Error('Options are required'))
     return Promise.resolve()
   }

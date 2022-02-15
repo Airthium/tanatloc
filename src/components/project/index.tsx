@@ -346,8 +346,6 @@ const Project = (): JSX.Element => {
     )
   })
 
-  console.log(currentSimulation?.scheme?.configuration)
-
   /**
    * Render
    */

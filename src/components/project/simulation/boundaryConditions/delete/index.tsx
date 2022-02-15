@@ -109,7 +109,13 @@ const Delete = ({ type, index, simulation, swr }: IProps): JSX.Element => {
   /**
    * Render
    */
-  return <DeleteButton loading={loading} onDelete={onDelete} />
+  return (
+    <DeleteButton
+      loading={loading}
+      onDelete={onDelete}
+      text={'Are you sure you want to delete this condition ?'}
+    />
+  )
 }
 
 Delete.propTypes = {

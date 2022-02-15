@@ -2,7 +2,7 @@
 
 import PropTypes from 'prop-types'
 import { ChangeEvent, useState, useEffect } from 'react'
-import { Button, Card, Divider, Input, Space, Tag, Tooltip } from 'antd'
+import { Button, Card, Divider, Input, Space, Tag, Tooltip, Typography } from 'antd'
 import {
   CloseOutlined,
   CloseSquareOutlined,
@@ -238,7 +238,7 @@ const Selector = ({
   return (
     <Card size="small">
       <Space direction="vertical">
-        Filters
+        <Typography.Text strong>Filters</Typography.Text>
         <Space direction="horizontal" wrap={true}>
           {colors.length > 1 && (
             <>

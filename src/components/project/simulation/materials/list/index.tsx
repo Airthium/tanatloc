@@ -90,7 +90,7 @@ const List = ({ simulation, swr, onEdit }: IProps): JSX.Element => {
                 />
               ]}
             >
-              <Typography.Text strong>
+              <Typography.Text strong style={{textAlign:'center'}}>
                 {material.material.label}
               </Typography.Text>
             </Card>

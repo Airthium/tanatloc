@@ -87,7 +87,7 @@ const Delete = ({ disabled, workspace, project, swr }: IProps): JSX.Element => {
         onOk={onDelete}
         loading={loading}
       >
-        Delete {project.title}
+        Are you sure you want to delete {project.title} ?
       </DeleteDialog>
     </>
   )

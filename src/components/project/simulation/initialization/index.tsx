@@ -152,7 +152,7 @@ const Initialization = ({
                   ? Math.round(file.number * multiplicator * 1e15) / 1e15
                   : i
                 ).toString(),
-                value: i,
+                value: file.number,
                 file: file.fileName.replace(
                   new RegExp(filter.suffixPattern),
                   ''

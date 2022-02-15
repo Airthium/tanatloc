@@ -150,7 +150,7 @@ const Initialization = ({
               ...steps.map((file, i) => ({
                 label: (multiplicator
                   ? Math.round(file.number * multiplicator * 1e15) / 1e15
-                  : i
+                  : file.number
                 ).toString(),
                 value: file.number,
                 file: file.fileName.replace(

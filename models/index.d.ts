@@ -88,6 +88,7 @@ export interface IModelInitializationCoupling {
 export interface IModelInitializationValue {
   type: string
   simulation?: string
+  number?: number
   result?: string
   dat?: string
   mesh?: string

@@ -149,13 +149,16 @@ const Initialization = ({
             results.push(
               ...steps.map((file, i) => ({
                 label: (multiplicator
-                  ? file.number * multiplicator
+                  ? Math.round(file.number * multiplicator * 1e15) / 1e15
                   : i
                 ).toString(),
-                value: file.fileName.replace(
+                value: i,
+                file: file.fileName.replace(
                   new RegExp(filter.suffixPattern),
                   ''
                 )
+
+                // value:
               }))
             )
           }
@@ -165,7 +168,8 @@ const Initialization = ({
         if (task.file.type === 'result')
           results.push({
             label: task.file.fileName,
-            value: task.file.fileName
+            value: task.file.fileName,
+            file: task.file.fileName
           })
       }
     })
@@ -199,7 +203,7 @@ const Initialization = ({
       initialization.value = {
         ...initialization.value,
         simulation: value,
-        result: results[0].value
+        result: results?.[0]?.value
       }
 
       await SimulationAPI.update({ id: simulation.id }, [
@@ -221,7 +225,7 @@ const Initialization = ({
     setLoading(false)
   }
 
-  const onCouplingResultChange = async (value) => {
+  const onCouplingResultChange = async (value, option) => {
     // Update simulation
     try {
       // New simulation
@@ -231,7 +235,8 @@ const Initialization = ({
       const initialization = newSimulation.scheme.configuration.initialization
       initialization.value = {
         ...initialization.value,
-        result: value
+        number: value,
+        result: option.file
       }
 
       await SimulationAPI.update({ id: simulation.id }, [
@@ -374,7 +379,7 @@ const Initialization = ({
                   defaultValue={
                     //@ts-ignore
                     initializationValue?.values?.[index] ||
-                    (child.value === undefined ? child.default : child.value)
+                    (child?.value ?? child.default)
                   }
                   onValueChange={(value) => onChange(index, value)}
                   unit={child.unit}
@@ -388,9 +393,7 @@ const Initialization = ({
                 <Select
                   options={child.options}
                   //@ts-ignore
-                  defaultValue={
-                    child.value === undefined ? child.default : child.value
-                  }
+                  defaultValue={child?.value ?? child.default}
                   onChange={(value) => onChange(index, value)}
                 />
               </Typography.Text>

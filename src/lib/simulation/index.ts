@@ -248,6 +248,7 @@ const run = async (
 
         configuration.initialization.value = {
           type: 'coupling',
+          number: configuration.initialization.value.number,
           dat: path.join('run', 'coupling', 'initialization.dat'),
           mesh: path.join('run', 'coupling', 'initialization.mesh')
         }

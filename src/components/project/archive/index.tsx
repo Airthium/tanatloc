@@ -83,7 +83,6 @@ const Archive = ({
     <>
       <Dialog
         visible={visible}
-        closable={false}
         loading={loading}
         title="Archive"
         onCancel={() => setVisible(false)}

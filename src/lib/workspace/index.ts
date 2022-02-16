@@ -213,12 +213,18 @@ const getByUser = async ({
               // Workspaces
               if (groupData.workspaces) {
                 const groupWorkspaces = await getGroupWorkspaces(groupData)
-                groupsWorkspaces.push(...groupWorkspaces)
+
+                groupsWorkspaces.push(
+                  ...groupWorkspaces.filter(
+                    (w) => !w.owners.find((o) => o.id === id)
+                  )
+                )
               }
 
+              // projects
               if (groupData.projects) {
                 groupsProjects.push({
-                  id: '0',
+                  id: groupData.id,
                   name: 'Projects from ' + groupData.name,
                   owners: [],
                   groups: [

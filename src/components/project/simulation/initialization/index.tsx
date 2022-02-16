@@ -339,7 +339,7 @@ const Initialization = ({
             If you use coupling, the selected simulation mesh will be used, at
             least for the first iteration.
           </Typography.Text>
-          <Space direction="vertical" style={{ width: '100%' }}>
+          <Space direction="vertical" className="full-width">
             <Select
               options={simulationsOptions}
               placeholder="Select a simulation"
@@ -405,7 +405,7 @@ const Initialization = ({
       initializations.push(
         //@ts-ignore
         <Collapse.Panel key={key} header={initialization?.label}>
-          <Space direction="vertical" style={{ width: '100%' }}>
+          <Space direction="vertical" className="full-width">
             {components}
           </Space>
         </Collapse.Panel>

@@ -27,7 +27,7 @@ const Help = (): JSX.Element => {
         footer={<Divider />}
       />
       <Layout.Content className="scroll">
-        <Space direction="vertical" style={{ width: '100%' }}>
+        <Space direction="vertical" className="full-width">
           <HPC />
           <Organizations />
           <Administration />

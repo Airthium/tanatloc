@@ -107,7 +107,7 @@ const Add = ({ visible, project, swr, setVisible }: IProps): JSX.Element => {
       visible={visible}
       onCancel={() => setVisible(false)}
     >
-      <Space direction="vertical" style={{ width: '100%' }}>
+      <Space direction="vertical" className="full-width">
         <Upload
           className="upload"
           accept=".stp,.step,.dxf"

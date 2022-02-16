@@ -110,11 +110,7 @@ const Workspace = ({
           className="inWorkspace-PageHeader"
           backIcon={false}
           footer={
-            <Space
-              direction="horizontal"
-              size="large"
-              style={{ width: '100%' }}
-            >
+            <Space direction="horizontal" size="large" className="full-width">
               <Input.Search
                 placeholder="Enter a project name (case sensitive)"
                 value={filter}

@@ -158,7 +158,7 @@ const Users = ({ users, swr }: IProps): JSX.Element => {
    * Render
    */
   return (
-    <Space direction="vertical" style={{ width: '100%' }}>
+    <Space direction="vertical" className="full-width">
       <Add
         plugins={plugins || []}
         swr={{

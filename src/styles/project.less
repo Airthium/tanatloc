@@ -1,3 +1,4 @@
+// Sider
 .Project-Sider {
   height: 100vh;
   overflow: hidden;
@@ -25,6 +26,7 @@
   overflow-x: hidden;
 }
 
+// Menu
 .Project-Menu-GoBack {
   background-color: white;
 }
@@ -96,90 +98,59 @@
   z-index: 100;
 }
 
-// .Project-Sider .menu-submenu {
-//   background-color: #f0f0f0;
-// }
-
-// .Project-Sider .menu-submenu .item-new {
-//   cursor: unset;
-//   margin-top: 10px;
-// }
-
-// .Project-Sider .menu-submenu .submenu-simulation-name .ant-menu-submenu-title {
-//   padding-left: 24px !important;
-// }
-
-// .Project-Sider .menu-submenu .submenu-simulation-name .menu-item-with-line {
-//   padding-left: 24px !important;
-//   position: relative !important;
-//   overflow: visible !important;
-// }
-
-// .Project-Sider
-//   .menu-submenu
-//   .submenu-simulation-name
-//   .menu-item-with-line:not(:last-child)::before {
-//   position: absolute;
-//   content: '';
-//   border: 1px solid #c0c0c0;
-//   height: 20px;
-//   width: 2px;
-//   top: 30px;
-//   left: 31px;
-//   z-index: 100;
-// }
-
-// .Project-Sider
-//   .menu-submenu
-//   .submenu-simulation-name
-//   .menu-item-with-line
-//   span:first-child {
-//   float: left;
-//   height: 40px;
-//   line-height: 45px;
-// }
-
-// .Project-Sider
-//   .menu-submenu
-//   .submenu-simulation-name
-//   .menu-item-with-line
-//   span:last-child {
-//   float: left;
-//   max-width: calc(100% - 24px) !important;
-//   overflow: hidden;
-//   text-overflow: ellipsis;
-// }
-
-.project-card {
+// Card
+.Project-Card {
   display: flex;
   flex-direction: column;
   width: 260px;
   height: 412px;
 }
 
-.project-card .ant-card-head {
+.Project-Card .ant-card-head {
   height: 80px;
   padding: 0 24px;
+  display: flex;
+  align-items: center;
 }
 
-.project-card .ant-card-cover {
+.Project-Card .ant-card-head-title {
+  white-space: unset !important;
+}
+
+.Project-Card .ant-card-cover {
   flex: 1 0 auto;
   display: flex;
   align-items: center;
 }
 
-.project-carousel {
+.Project-Card .ant-card-body {
+  height: 70px;
+  border-top: 1px solid #f0f0f0;
+  padding: 0 24px;
+}
+
+.Project-Card .ant-card-actions > li {
+  margin: 8px 0;
+  flex: 0 1 auto;
+}
+
+.project-Card.archive {
+  background-color: #fafafa;
+}
+
+// Carousel
+.Project-Carousel {
   margin: auto !important;
   text-align: center;
 }
 
-.project-carousel img {
+.Project-Carousel img {
   margin: auto !important;
 }
 
-.project-carousel-snapshot {
+.Project-Carousel-snapshot {
   width: 260px;
-  height: 156px;
+  height: 190px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -187,42 +158,32 @@
   cursor: pointer;
 }
 
-.project-carousel-snapshot.archive {
+.Project-Carousel-snapshot.archive {
   cursor: not-allowed;
 }
 
-.project-carousel-snapshot img {
+.Project-Carousel-snapshot img {
   max-width: 98%;
   max-height: 98%;
 }
 
-.project-carousel-description {
-  padding: 5px;
-  cursor: pointer;
-}
-
-.project-carousel-description.archive {
-  cursor: not-allowed;
-}
-
-.project-snapshot {
+.Project-Carousel-description {
   width: 260px;
-  height: 156px;
+  height: 190px;
+  padding: 5px 10px;
   cursor: pointer;
 }
 
-.project-snapshot.archive {
-  cursor: not-allowed;
+.Project-Carousel-description .ant-typography {
+  margin-bottom: 0;
 }
 
-.project-snapshot img {
-  max-width: 100%;
-  max-height: 100%;
-  margin: auto !important;
+.Project-Carousel-description.archive {
+  cursor: not-allowed;
 }
 
 .Project-Carousel-dots {
-  bottom: -10px !important;
+  bottom: 10px !important;
   left: unset !important;
   right: calc(50% - 30px) !important;
   padding: 1px;
@@ -240,6 +201,7 @@
   background: @tanatloc-primary-color !important;
 }
 
+// Empty
 .Project-Empty {
   margin-top: min(10%, 20px);
 }
@@ -254,29 +216,7 @@
   color: @tanatloc-text-dark;
 }
 
-.project-card .ant-card-body {
-  height: 70px;
-  border-top: 1px solid #f0f0f0;
-  padding: 0 24px;
-}
-
-.project-card .ant-card-actions > li {
-  margin: 8px 0;
-  flex: 0 1 auto;
-}
-
-.project-card .ant-card-head-title {
-  white-space: unset !important;
-}
-
-.project-card.archive {
-  background-color: #fafafa;
-}
-
-.carousel-dots > li > button {
-  background-color: @tanatloc-primary-color !important;
-}
-
+// To review
 .upload > .ant-upload-select-picture-card {
   width: 100%;
   height: 100px;

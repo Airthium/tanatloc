@@ -193,7 +193,7 @@ const DataBase = ({ onSelect }: IProps): JSX.Element => {
       <Button
         icon={<DatabaseOutlined />}
         onClick={() => setVisible(true)}
-        style={{ width: '100%' }}
+        className="full-width"
       >
         Pick a material
       </Button>

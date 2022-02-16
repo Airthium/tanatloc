@@ -80,7 +80,7 @@ const Copy = ({ project, simulation, swr }: IProps): JSX.Element => {
         loading={loading}
         icon={<CopyOutlined />}
         onClick={onCopy}
-        style={{ border: 'none' }}
+        className="no-border"
       />
     </Tooltip>
   )

@@ -164,7 +164,7 @@ const Geometry = ({ project, geometry, swr, close }: IProps): JSX.Element => {
               />
             ]}
           >
-            <Space direction="vertical" style={{ width: '100%' }}>
+            <Space direction="vertical" className="full-width">
               <Typography.Text>
                 <span className="text-light">File:</span> {geometry.name}{' '}
               </Typography.Text>

@@ -110,7 +110,7 @@ const Login = (): JSX.Element => {
     return (
       <Layout>
         <Card bordered={false} className="Login">
-          <Space direction="vertical" size="large" style={{ width: '100%' }}>
+          <Space direction="vertical" size="large" className="full-width">
             <div>
               <Typography.Title
                 level={1}

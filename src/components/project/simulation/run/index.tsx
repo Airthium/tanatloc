@@ -180,17 +180,17 @@ const Run = ({ simulation, result, setResult, swr }: IProps): JSX.Element => {
     return (
       <Layout>
         <Layout.Content>
-          <Space direction="vertical" style={{ width: '100%' }}>
+          <Space direction="vertical" className="full-width">
             <CloudServer
               disabled={running}
               cloudServer={currentConfiguration?.run?.cloudServer}
               onOk={onCloudServer}
             />
             <Card size="small" title="Run">
-              <Space direction="vertical" style={{ width: '100%' }}>
+              <Space direction="vertical" className="full-width">
                 <div
+                  className="full-width"
                   style={{
-                    width: '100%',
                     display: 'flex',
                     justifyContent: 'space-between',
                     alignItems: 'center'

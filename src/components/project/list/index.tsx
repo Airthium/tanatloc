@@ -107,7 +107,7 @@ const ProjectList = ({
         const title = <Typography.Text>{project.title}</Typography.Text>
 
         const description = (
-          <Space direction="vertical" style={{ textAlign: 'left' }}>
+          <Space direction="vertical" className="full-width text-left">
             <Typography.Text>
               <b>Created:</b>{' '}
               {new Date(project.createddate).toLocaleDateString()}
@@ -209,15 +209,15 @@ const ProjectList = ({
                   {project.archived && <Tag>Archived</Tag>}
                 </>
               }
-              className={'project-card' + (project.archived ? ' archive' : '')}
+              className={'Project-Card' + (project.archived ? ' archive' : '')}
               cover={
                 <Carousel
-                  className="project-carousel"
+                  className="Project-Carousel"
                   dots={{ className: 'Project-Carousel-dots' }}
                 >
                   <div
                     className={
-                      'project-carousel-snapshot' +
+                      'Project-Carousel-snapshot' +
                       (project.archived ? ' archive' : '')
                     }
                     onClick={() =>
@@ -228,7 +228,7 @@ const ProjectList = ({
                   </div>
                   <div
                     className={
-                      'project-carousel-description' +
+                      'Project-Carousel-description' +
                       (project.archived ? ' archive' : '')
                     }
                     onClick={() =>

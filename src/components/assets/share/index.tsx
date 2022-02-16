@@ -207,7 +207,7 @@ const Share = ({
           multiple
           placeholder="Select groups or users"
           dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
-          style={{ width: '100%' }}
+          className="full-width"
           treeData={treeData}
           treeDefaultExpandAll
           treeCheckable

@@ -58,7 +58,7 @@ const Organizations = ({ user, organizations, swr }: IProps): JSX.Element => {
         footer={<Divider />}
       />
       <Layout.Content>
-        <Space direction="vertical" style={{ width: '100%' }}>
+        <Space direction="vertical" className="full-width">
           {organization ? (
             <Organization
               organization={{

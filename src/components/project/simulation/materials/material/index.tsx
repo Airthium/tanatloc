@@ -152,12 +152,9 @@ const Material = ({
         </div>
       }
     >
-      <Space direction="vertical" style={{ width: '100%' }}>
+      <Space direction="vertical" className="full-width">
         <Card size="small">
-          <Space
-            direction="vertical"
-            style={{ width: '100%', textAlign: 'center' }}
-          >
+          <Space direction="vertical" className="full-width text-center">
             <DataBase onSelect={onMaterialSelect} />
             <Typography.Text>{current?.material?.label}</Typography.Text>
             {materials.children?.map((child) => {

@@ -291,7 +291,7 @@ const BoundaryCondition = ({
         </div>
       }
     >
-      <Space direction="vertical" style={{ width: '100%' }}>
+      <Space direction="vertical" className="full-width">
         <Card title="Boundary condition name" size="small">
           <Input value={current?.name || ''} onChange={onName} />
         </Card>

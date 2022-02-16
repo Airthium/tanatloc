@@ -50,7 +50,7 @@ const Validation = (): JSX.Element => {
   return (
     <Layout>
       <Card bordered={false} className="Signup">
-        <Space direction="vertical" style={{ width: '100%' }}>
+        <Space direction="vertical" className="full-width">
           <Typography.Text>
             <Spin /> Validating...
           </Typography.Text>

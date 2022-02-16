@@ -18,7 +18,7 @@ const Local = ({ onSelect }: IProps): JSX.Element => {
   }
 
   return (
-    <Space style={{ width: '100%' }}>
+    <Space className="full-width">
       <Typography.Text>Local computing</Typography.Text>
       <Button
         type="primary"

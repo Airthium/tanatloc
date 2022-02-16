@@ -93,7 +93,7 @@ const Results = ({
                   onChange={(value) =>
                     onSelectorChange(value, resultIndex, filterIndex)
                   }
-                  style={{ width: '100%' }}
+                  className="full-width"
                 />
               </div>
             )
@@ -177,7 +177,7 @@ const Results = ({
         title="Results"
         extra={<Archive simulation={simulation} />}
       >
-        <Space direction="vertical" style={{ width: '100%' }}>
+        <Space direction="vertical" className="full-width">
           {selectors}
           {results.map((r: IFilteredFiles) => {
             // Check if filtered

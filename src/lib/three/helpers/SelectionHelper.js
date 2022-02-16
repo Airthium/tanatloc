@@ -159,25 +159,15 @@ const SelectionHelper = (renderer, scene, camera, controls) => {
     )
 
     // Intersection
+    const object = scene.children.find((child) => child.type === 'Part')
+    if (!object) return
+
     raycaster.setFromCamera(raycasterCenter, camera)
-    const intersects = raycaster.intersectObjects(scene.children, true)
+    const intersects = raycaster.intersectObject(object)
 
     // Set center
-    if (intersects.length) {
-      controls.target.copy(intersects[0].point)
-    } else {
-      // Distance
-      const tmpDistance = camera.position.distanceTo(controls.target)
-
-      // Focus point
-      const focusPoint = new Vector3()
-      focusPoint.set(raycasterCenter.x, raycasterCenter.y, 0)
-      focusPoint.unproject(camera)
-      focusPoint.sub(camera.position).normalize()
-      focusPoint.multiplyScalar(tmpDistance)
-
-      controls.target.copy(camera.position).add(focusPoint)
-    }
+    if (!intersects.length) return
+    controls.target.copy(intersects[0].point)
 
     // Zoom
     const size = new Vector2(rect.max.x - rect.min.x, rect.max.y - rect.min.y)

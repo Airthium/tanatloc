@@ -15,7 +15,7 @@ import Delete from './delete'
 import GroupAPI from '@/api/group'
 
 export interface IProps {
-  userOptions: string[]
+  userOptions: { label: string; value: string }[]
   organization: IOrganizationWithData
   group?: IGroupWithData
   swr: {
@@ -119,7 +119,7 @@ const Group = ({
         })
 
       // API
-      await GroupAPI.update(group, toUpdate)
+      await GroupAPI.update({ id: group.id }, toUpdate)
 
       // Local
       swr.mutateOneGroup({
@@ -167,9 +167,11 @@ const Group = ({
           label="Users"
           rules={[{ required: true, message: 'Please enter users' }]}
         >
-          <Select mode="multiple" placeholder="Select users">
-            {userOptions}
-          </Select>
+          <Select
+            mode="multiple"
+            placeholder="Select users"
+            options={userOptions}
+          />
         </Form.Item>
       </Dialog>
 
@@ -184,7 +186,12 @@ const Group = ({
 }
 
 Group.propTypes = {
-  userOptions: PropTypes.array.isRequired,
+  userOptions: PropTypes.arrayOf(
+    PropTypes.exact({
+      label: PropTypes.string.isRequired,
+      value: PropTypes.string.isRequired
+    })
+  ).isRequired,
   organization: PropTypes.exact({
     id: PropTypes.string.isRequired
   }).isRequired,

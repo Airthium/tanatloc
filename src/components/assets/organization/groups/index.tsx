@@ -36,7 +36,10 @@ const errors = {
  */
 const Groups = ({ organization }: IProps): JSX.Element => {
   // State
-  const [userOptions, setUserOptions]: [string[], Function] = useState([])
+  const [userOptions, setUserOptions]: [
+    { label: string; value: string }[],
+    Function
+  ] = useState([])
 
   // Data
   const [
@@ -51,16 +54,15 @@ const Groups = ({ organization }: IProps): JSX.Element => {
 
     const allUsers = [...owners, ...(users || [])]
 
-    const options = allUsers.map((user, index) => {
+    const options = allUsers.map((user) => {
       let name = ''
       if (user.firstname || user.lastname)
         name = user.firstname + ' ' + user.lastname
       else name = user.email
-      return (
-        <Select.Option key={user.id || index} value={name}>
-          {name}
-        </Select.Option>
-      )
+      return {
+        label: name,
+        value: user.id
+      }
     })
     setUserOptions(options)
   }, [organization])
@@ -138,7 +140,7 @@ const Groups = ({ organization }: IProps): JSX.Element => {
         size="small"
         scroll={{ y: 'calc(100vh - 312px)' }}
         columns={columns}
-        dataSource={groups.map((g) => ({ ...g, key: g.id }))}
+        dataSource={groups.map((g) => ({ key: g.id, ...g }))}
       />
     </Space>
   )

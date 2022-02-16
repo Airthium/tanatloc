@@ -114,6 +114,7 @@ const List = ({
       columns={columns}
       dataSource={organizations?.map((organization) => ({
         key: organization.id,
+        id: organization.id,
         name: organization.name,
         owners: organization.owners,
         users: organization.users,

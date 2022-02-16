@@ -432,7 +432,11 @@ const Project = (): JSX.Element => {
                   key={'new_simulation'}
                   disabled={true}
                 >
-                  <Button disabled={!geometries.length} icon={<PlusCircleOutlined />} onClick={addSimulation}>
+                  <Button
+                    disabled={!geometries.length}
+                    icon={<PlusCircleOutlined />}
+                    onClick={addSimulation}
+                  >
                     New Simulation
                   </Button>
                 </Menu.Item>

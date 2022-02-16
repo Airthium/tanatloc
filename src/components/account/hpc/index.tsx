@@ -67,7 +67,12 @@ const HPC = ({ user }: IProps): JSX.Element => {
    * Render
    */
   return (
-    <Space direction="vertical" className="full-width" size={20}>
+    <Space
+      direction="vertical"
+      className="full-width scroll"
+      style={{ maxHeight: '100%' }}
+      size={20}
+    >
       {list}
     </Space>
   )

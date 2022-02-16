@@ -105,7 +105,7 @@ const Workspace = ({
   if (loading) return <Loading.Simple />
   else
     return (
-      <Layout>
+      <Layout className="no-scroll">
         <PageHeader
           className="inWorkspace-PageHeader"
           backIcon={false}

@@ -98,7 +98,7 @@ const WorkspacesList = ({
    * Render
    */
   return (
-    <Layout className="inDashboard Workspace">
+    <Layout className="inDashboard Workspace no-scroll">
       <PageHeader
         className="inDashboard-PageHeader"
         backIcon={false}
@@ -109,7 +109,7 @@ const WorkspacesList = ({
         }
         footer={<Divider />}
       />
-      <Layout.Content>
+      <Layout.Content className="no-scroll">
         {workspaces.length ? (
           <>
             <Dialog
@@ -135,12 +135,13 @@ const WorkspacesList = ({
             </Dialog>
             <Tabs
               type="editable-card"
-              className="inDashboard-Tabs"
+              className="inDashboard-Tabs no-scroll"
               defaultActiveKey={workspaceId || '1'}
               onEdit={onEdit}
             >
               {workspaces.map((workspace) => (
                 <Tabs.TabPane
+                  className="no-scroll"
                   tab={workspace.name}
                   key={workspace.id}
                   closable={false}

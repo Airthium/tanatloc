@@ -43,7 +43,7 @@ const Account = ({ user, swr }: IProps): JSX.Element => {
    * Render
    */
   return (
-    <Layout className="inDashboard Account">
+    <Layout className="inDashboard Account no-scroll">
       <PageHeader
         className="inDashboard-PageHeader"
         backIcon={false}
@@ -54,9 +54,9 @@ const Account = ({ user, swr }: IProps): JSX.Element => {
         }
         footer={<Divider />}
       />
-      <Layout.Content className="scroll">
+      <Layout.Content className="no-scroll">
         <Tabs
-          className="inDashboard-Tabs"
+          className="inDashboard-Tabs no-scroll"
           type="card"
           defaultActiveKey={tab || 'personal'}
           onChange={onChange}
@@ -84,7 +84,7 @@ const Account = ({ user, swr }: IProps): JSX.Element => {
               />
             </Space>
           </Tabs.TabPane>
-          <Tabs.TabPane tab="HPC Providers" key="hpc">
+          <Tabs.TabPane className="no-scroll" tab="HPC Providers" key="hpc">
             <HPC
               user={{
                 authorizedplugins: user.authorizedplugins

@@ -176,7 +176,7 @@ const Dashboard = () => {
     return <Loading />
   else
     return (
-      <Layout>
+      <Layout className="Dashboard">
         <Layout.Sider theme="light" width="256" className="Dashboard-Sider">
           <div className="logo">
             <img src="/images/logo.svg" alt="Tanatloc" />

@@ -375,7 +375,7 @@ const Project = (): JSX.Element => {
               key={'title'}
               disabled={true}
             >
-              <Typography.Paragraph ellipsis={{ tooltip: true, rows: 2 }}>
+              <Typography.Paragraph ellipsis={{ tooltip: true, rows: 1 }}>
                 {project.title}
               </Typography.Paragraph>
             </Menu.Item>

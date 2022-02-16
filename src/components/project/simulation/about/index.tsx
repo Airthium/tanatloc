@@ -76,7 +76,7 @@ const About = ({ project, simulation, swr }: IProps): JSX.Element => {
               />
             ]}
           >
-            <Space direction="vertical" style={{ maxWidth: '100%' }}>
+            <Space direction="vertical" className="full-width">
               <Typography.Text>
                 <span className="text-light">Category:</span>{' '}
                 {simulation.scheme.category}
@@ -94,7 +94,7 @@ const About = ({ project, simulation, swr }: IProps): JSX.Element => {
                 {simulation.scheme.version}
               </Typography.Text>
 
-              <div style={{ maxWidth: '100%', overflow: 'auto' }}>
+              <div className="full-wdith scroll">
                 <MathJax.Html html={simulation.scheme.description} />
               </div>
             </Space>

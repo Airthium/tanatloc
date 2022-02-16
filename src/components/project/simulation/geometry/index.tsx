@@ -109,13 +109,13 @@ const Geometry = ({
    */
   return geometries.length ? (
     <>
-      <Card>
+      <Card size="small">
         <Typography.Text>
           When changing the simulation domain, you might lose your topological
           entity assignments
         </Typography.Text>
       </Card>
-      <Card>
+      <Card size="small">
         <Typography.Text strong>Select a simulation domain</Typography.Text>
       </Card>
       {geometriesList}

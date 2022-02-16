@@ -56,7 +56,7 @@ const Information = ({ user, swr }: IProps): JSX.Element => {
     const goodFormat = file.type === 'image/jpeg' || file.type === 'image/png'
     if (!goodFormat) ErrorNotification(errors.badFormat)
 
-    const goodSize = file.size / 1024 / 1024 < 5
+    const goodSize = file.size / 1024 / 1024 < 4
     if (!goodSize) ErrorNotification(errors.badSize)
 
     return goodFormat && goodSize
@@ -80,7 +80,7 @@ const Information = ({ user, swr }: IProps): JSX.Element => {
         await AvatarAPI.add({
           name: info.file.name,
           uid: info.file.uid,
-          data: Buffer.from(img)
+          data: img
         })
 
         // Mutate user
@@ -88,6 +88,8 @@ const Information = ({ user, swr }: IProps): JSX.Element => {
           ...user,
           avatar: Buffer.from(img)
         })
+
+        setUploading(false)
       } catch (err) {
         ErrorNotification(err.message, err)
       } finally {
@@ -116,6 +118,9 @@ const Information = ({ user, swr }: IProps): JSX.Element => {
    */
   const onFirstName = async (value: string): Promise<void> => {
     try {
+      // Check diff
+      if (user.firstname === value) return
+
       // API
       await UserAPI.update([
         {
@@ -141,6 +146,9 @@ const Information = ({ user, swr }: IProps): JSX.Element => {
    */
   const onLastName = async (value: string): Promise<void> => {
     try {
+      // Check diff
+      if (user.lastname === value) return
+
       // API
       await UserAPI.update([
         {
@@ -166,6 +174,9 @@ const Information = ({ user, swr }: IProps): JSX.Element => {
    */
   const onEmail = async (value: string): Promise<void> => {
     try {
+      // Check diff
+      if (user.email === value) return
+
       // Check email
       if (!Utils.validateEmail(value))
         throw new Error('Email address wrong format.')
@@ -198,7 +209,7 @@ const Information = ({ user, swr }: IProps): JSX.Element => {
   return (
     <Card title="Contact Details">
       <Space direction="horizontal" className="Account-Information">
-        <Space direction="vertical">
+        <div>
           <Avatar
             size={128}
             src={user.avatar && Buffer.from(user.avatar).toString()}
@@ -210,12 +221,12 @@ const Information = ({ user, swr }: IProps): JSX.Element => {
             beforeUpload={beforeUpload}
             onChange={onChange}
           >
-            <Button size="small" icon={<UploadOutlined />} loading={uploading}>
+            <Button icon={<UploadOutlined />} loading={uploading}>
               Upload new
             </Button>
           </Upload>
-        </Space>
-        <Space direction="vertical" style={{ width: '100%' }}>
+        </div>
+        <div>
           <Form {...layout}>
             <Form.Item label="Email">
               <Typography.Text
@@ -240,7 +251,7 @@ const Information = ({ user, swr }: IProps): JSX.Element => {
               </Typography.Text>
             </Form.Item>
           </Form>
-        </Space>
+        </div>
       </Space>
     </Card>
   )

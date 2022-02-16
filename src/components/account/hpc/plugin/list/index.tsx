@@ -109,7 +109,7 @@ const List = ({ plugin, plugins, swr }: IProps): JSX.Element => {
    * Render
    */
   return (
-    <Space direction="horizontal" wrap={true}>
+    <Space direction="horizontal" wrap={true} size={20}>
       {list}
     </Space>
   )

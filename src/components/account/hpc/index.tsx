@@ -52,7 +52,7 @@ const HPC = ({ user }: IProps): JSX.Element => {
           setList(pluginsList)
         } else {
           setList([
-            <Card key="0">
+            <Card key="no-access" title="No access">
               You do not have access to any HPC plugin. Request it.
             </Card>
           ])
@@ -67,7 +67,7 @@ const HPC = ({ user }: IProps): JSX.Element => {
    * Render
    */
   return (
-    <Space direction="vertical" style={{ width: '100%' }}>
+    <Space direction="vertical" className="full-width" size={20}>
       {list}
     </Space>
   )

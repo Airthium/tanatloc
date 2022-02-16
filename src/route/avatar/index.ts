@@ -33,7 +33,8 @@ const checkAddBody = (body: IAddBody): void => {
     !body.file.uid ||
     typeof body.file.uid !== 'string' ||
     !body.file.data ||
-    typeof body.file.data !== 'object' ||
+    (typeof body.file.data !== 'object' &&
+      typeof body.file.data !== 'string') ||
     (body.project && (!body.project.id || typeof body.project.id !== 'string'))
   )
     throw error(

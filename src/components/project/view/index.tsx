@@ -187,8 +187,8 @@ const ThreeView = ({ loading, project, part }: IThreeProps): JSX.Element => {
 
     // Axis
     const axisHelper = AxisHelper(renderer.current, camera.current, {
-      offsetWidth: width - 150,
-      offsetHeight: height - 150,
+      offsetWidth: width - 155,
+      offsetHeight: height - 155,
       width: 150,
       height: 150
     })
@@ -200,8 +200,8 @@ const ThreeView = ({ loading, project, part }: IThreeProps): JSX.Element => {
       camera.current,
       controls.current,
       {
-        offsetWidth: width - 150,
-        offsetHeight: height - 150,
+        offsetWidth: width - 155,
+        offsetHeight: height - 155,
         width: 150,
         height: 150
       }
@@ -259,15 +259,15 @@ const ThreeView = ({ loading, project, part }: IThreeProps): JSX.Element => {
       camera.current.updateProjectionMatrix()
 
       axisHelper.resize({
-        newOffsetWidth: width - 150,
-        newOffsetHeight: height - 150,
+        newOffsetWidth: width - 155,
+        newOffsetHeight: height - 155,
         newWidth: 150,
         newHeight: 150
       })
 
       navigationHelper.resize({
-        newOffsetWidth: width - 150,
-        newOffsetHeight: height - 150,
+        newOffsetWidth: width - 155,
+        newOffsetHeight: height - 155,
         newWidth: 150,
         newHeight: 150
       })
@@ -646,73 +646,84 @@ const ThreeView = ({ loading, project, part }: IThreeProps): JSX.Element => {
   return (
     <Layout className="View no-scroll">
       <Layout.Header className="View-header">
-        <div className="View-controls">
-          <Tooltip title="Take snasphot">
-            <Button
-              loading={screenshot}
-              icon={<FundProjectionScreenOutlined />}
-              onClick={takeScreenshot}
-            />
-          </Tooltip>
+        <div className="View-controls-main">
+          <div className="View-controls-first">
+            <Tooltip title="Take snasphot" placement="right">
+              <Button
+                loading={screenshot}
+                icon={<FundProjectionScreenOutlined />}
+                onClick={takeScreenshot}
+              />
+            </Tooltip>
 
-          <Divider className="no-margin" />
+            <Divider className="no-margin" />
 
-          <Tooltip title="Display grid">
-            <Switch
-              defaultChecked
-              checkedChildren={<BorderlessTableOutlined />}
-              unCheckedChildren={<BorderlessTableOutlined />}
-              onChange={toggleGrid}
-            />
-          </Tooltip>
-          <Tooltip title="Set transparency">
-            <Switch
-              className="transparent"
-              checked={transparent}
-              checkedChildren={<RadiusUprightOutlined />}
-              unCheckedChildren={<RadiusUprightOutlined />}
-              onChange={toggleTransparent}
-            />
-          </Tooltip>
+            <Tooltip title="Display grid" placement="right">
+              <Switch
+                defaultChecked
+                checkedChildren={<BorderlessTableOutlined />}
+                unCheckedChildren={<BorderlessTableOutlined />}
+                onChange={toggleGrid}
+              />
+            </Tooltip>
+            <Tooltip title="Set transparency" placement="right">
+              <Switch
+                className="transparent"
+                checked={transparent}
+                checkedChildren={<RadiusUprightOutlined />}
+                unCheckedChildren={<RadiusUprightOutlined />}
+                onChange={toggleTransparent}
+              />
+            </Tooltip>
 
-          <Divider className="no-margin" />
+            <Divider className="no-margin" />
 
-          <Tooltip title="Zoom out">
-            <Button
-              icon={<ZoomOutOutlined />}
-              onMouseDown={zoomOut}
-              onMouseUp={zoomStop}
-              onMouseOut={zoomStop}
-            />
-          </Tooltip>
-          <Tooltip title="Zoom to fit">
-            <Button icon={<CompressOutlined />} onClick={zoomToFit} />
-          </Tooltip>
-          <Tooltip title="Zoom in">
-            <Button
-              icon={<ZoomInOutlined />}
-              onMouseDown={zoomIn}
-              onMouseUp={zoomStop}
-              onMouseOut={zoomStop}
-            />
-          </Tooltip>
-          <Tooltip title="Zoom to selection">
-            <Button
-              icon={<SelectOutlined />}
-              onClick={() =>
-                selectionHelper.current.isEnabled()
-                  ? selectionHelper.current.end()
-                  : selectionHelper.current.start()
-              }
-            />
-          </Tooltip>
+            <Tooltip title="Zoom out" placement="right">
+              <Button
+                icon={<ZoomOutOutlined />}
+                onMouseDown={zoomOut}
+                onMouseUp={zoomStop}
+                onMouseOut={zoomStop}
+              />
+            </Tooltip>
+            <Tooltip title="Zoom to fit" placement="right">
+              <Button icon={<CompressOutlined />} onClick={zoomToFit} />
+            </Tooltip>
+            <Tooltip title="Zoom in" placement="right">
+              <Button
+                icon={<ZoomInOutlined />}
+                onMouseDown={zoomIn}
+                onMouseUp={zoomStop}
+                onMouseOut={zoomStop}
+              />
+            </Tooltip>
+            <Tooltip title="Zoom to selection" placement="right">
+              <Button
+                icon={<SelectOutlined />}
+                onClick={() =>
+                  selectionHelper.current.isEnabled()
+                    ? selectionHelper.current.end()
+                    : selectionHelper.current.start()
+                }
+              />
+            </Tooltip>
 
-          <Divider className="no-margin" />
+            <Divider className="no-margin" />
 
-          {sectionView ? (
-            <Space>
-              <div className="View-controls">
-                <Tooltip title="Stop">
+            {!sectionView && (
+              <Tooltip title="Section view" placement="right">
+                <Button
+                  icon={<ScissorOutlined />}
+                  onClick={toggleSectionView}
+                />
+              </Tooltip>
+            )}
+          </div>
+
+          {sectionView && (
+            <div className="View-controls-second">
+              <div className="View-controls-second-left">
+                <Tooltip title="Stop" placement="left">
                   <Button icon={<StopOutlined />} onClick={toggleSectionView} />
                 </Tooltip>
                 <Radio.Group
@@ -720,26 +731,26 @@ const ThreeView = ({ loading, project, part }: IThreeProps): JSX.Element => {
                   value={transform}
                   className="View-controls-radio"
                 >
-                  <Tooltip title="Translate">
+                  <Tooltip title="Translate" placement="left">
                     <Radio value="translate">
                       <DragOutlined />
                     </Radio>
                   </Tooltip>
-                  <Tooltip title="Rotate">
+                  <Tooltip title="Rotate" placement="left">
                     <Radio value="rotate">
                       <SyncOutlined />
                     </Radio>
                   </Tooltip>
                 </Radio.Group>
               </div>
-              <div className="View-controls">
-                <Tooltip title="Hide plane">
+              <div className="View-controls-second-right">
+                <Tooltip title="Hide plane" placement="left">
                   <Button
                     icon={<EyeInvisibleOutlined />}
                     onClick={() => sectionViewHelper.current.toggleVisible()}
                   />
                 </Tooltip>
-                <Tooltip title="Snap to X">
+                <Tooltip title="Snap to X" placement="left">
                   <Button
                     className="ant-btn-icon-only"
                     onClick={() =>
@@ -749,7 +760,7 @@ const ThreeView = ({ loading, project, part }: IThreeProps): JSX.Element => {
                     X
                   </Button>
                 </Tooltip>
-                <Tooltip title="Snap to Y">
+                <Tooltip title="Snap to Y" placement="left">
                   <Button
                     className="ant-btn-icon-only"
                     onClick={() =>
@@ -759,7 +770,7 @@ const ThreeView = ({ loading, project, part }: IThreeProps): JSX.Element => {
                     Y
                   </Button>
                 </Tooltip>
-                <Tooltip title="Snap to Z">
+                <Tooltip title="Snap to Z" placement="left">
                   <Button
                     className="ant-btn-icon-only"
                     onClick={() =>
@@ -769,18 +780,14 @@ const ThreeView = ({ loading, project, part }: IThreeProps): JSX.Element => {
                     Z
                   </Button>
                 </Tooltip>
-                <Tooltip title="Flip">
+                <Tooltip title="Flip" placement="left">
                   <Button
                     onClick={() => sectionViewHelper.current.flip()}
                     icon={<RetweetOutlined />}
                   />
                 </Tooltip>
               </div>
-            </Space>
-          ) : (
-            <Tooltip title="Section view">
-              <Button icon={<ScissorOutlined />} onClick={toggleSectionView} />
-            </Tooltip>
+            </div>
           )}
         </div>
       </Layout.Header>

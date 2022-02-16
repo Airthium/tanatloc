@@ -181,16 +181,22 @@ const ProjectList = ({
     return (
       <Empty
         image="images/empty.svg"
+        className="Project-Empty"
         description={
-          filter
-            ? 'No project found... We’re sorry !'
-            : 'No project for now... Get started !'
+          filter ? (
+            <>
+              No project found with the current search{' '}
+              <span className="Project-Empty-search-value">{filter}</span>...
+            </>
+          ) : (
+            <>No project for now... Get started!</>
+          )
         }
       />
     )
   else
     return (
-      <Space wrap={true} align="start">
+      <Space wrap={true} align="start" size={20}>
         {list.map((project) => {
           return (
             <Card
@@ -207,8 +213,7 @@ const ProjectList = ({
               cover={
                 <Carousel
                   className="project-carousel"
-                  autoplay
-                  dots={{ className: 'project-dots' }}
+                  dots={{ className: 'Project-Carousel-dots' }}
                 >
                   <div
                     className={

@@ -62,7 +62,7 @@ const Account = ({ user, swr }: IProps): JSX.Element => {
           onChange={onChange}
         >
           <Tabs.TabPane tab="Personal Information" key="personal">
-            <Space direction="vertical" style={{ width: '100%' }}>
+            <Space direction="vertical" className="full-width" size={20}>
               <Information
                 user={{
                   email: user.email,
@@ -76,7 +76,7 @@ const Account = ({ user, swr }: IProps): JSX.Element => {
             </Space>
           </Tabs.TabPane>
           <Tabs.TabPane tab="Security" key="security">
-            <Space direction="vertical" style={{ width: '100%' }}>
+            <Space direction="vertical" className="full-width">
               <Password
                 user={{
                   email: user.email

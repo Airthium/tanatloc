@@ -54,7 +54,7 @@ const Plugin = ({ plugin }: IProps): JSX.Element => {
   if (loadingPlugins) return <Spin />
   else
     return (
-      <Space direction="vertical" style={{ width: '100%' }}>
+      <Space direction="vertical" className="full-width">
         <PluginDialog
           plugin={{
             uuid: plugin.uuid,

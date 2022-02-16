@@ -13,3 +13,10 @@ const api = async (req: Request, res: Response): Promise<void> => {
 }
 
 export default api
+export const config = {
+  api: {
+    bodyParser: {
+      sizeLimit: '4mb'
+    }
+  }
+}

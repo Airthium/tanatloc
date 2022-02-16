@@ -41,7 +41,7 @@ const Error = (
           )}
         </>
       ),
-      duration: 10
+      duration: 0
     })
   err && console.error(err)
   err && Sentry.captureException(err)

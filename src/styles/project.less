@@ -221,18 +221,37 @@
   margin: auto !important;
 }
 
-.project-dots {
+.Project-Carousel-dots {
   bottom: -10px !important;
   left: unset !important;
   right: calc(50% - 30px) !important;
-  padding: 5px;
+  padding: 1px;
   padding-left: unset !important;
   margin: unset !important;
   background-color: rgba(217, 217, 217, 0.5);
 }
 
-.project-dots li button {
+.Project-Carousel-dots li {
+  height: 7px !important;
+}
+
+.Project-Carousel-dots li button {
+  height: 7px !important;
   background: @tanatloc-primary-color !important;
+}
+
+.Project-Empty {
+  margin-top: min(10%, 20px);
+}
+
+.Project-Empty .ant-empty-description {
+  font-size: 1.25em;
+  color: @tanatloc-text-light;
+}
+
+.Project-Empty-search-value {
+  font-style: italic;
+  color: @tanatloc-text-dark;
 }
 
 .project-card .ant-card-body {

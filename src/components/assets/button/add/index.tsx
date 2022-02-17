@@ -8,6 +8,7 @@ export interface IProps {
   primary?: boolean
   light?: boolean
   dark?: boolean
+  fullWidth?: boolean
   loading?: boolean
   children?: ReactChild | ReactChild[]
   onAdd: Function
@@ -28,6 +29,7 @@ const AddButton = ({
   primary = true,
   light,
   dark,
+  fullWidth,
   loading,
   children,
   onAdd
@@ -38,7 +40,11 @@ const AddButton = ({
   return (
     <Tooltip title={children || 'Add'}>
       <Button
-        className={(light ? 'text-light' : '') + (dark ? ' text-dark' : '')}
+        className={
+          (fullWidth ? 'full-width' : '') +
+          (light ? 'text-light' : '') +
+          (dark ? ' text-dark' : '')
+        }
         disabled={disabled}
         loading={loading}
         type={primary ? 'primary' : 'default'}

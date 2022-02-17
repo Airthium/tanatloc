@@ -61,7 +61,7 @@ const List = ({ simulation, swr, onEdit }: IProps): JSX.Element => {
         ?.map((material: IModelMaterialValue, index: number) => {
           return (
             <Card
-              className="material-item"
+              className="material-item text-center"
               key={index}
               hoverable
               onMouseEnter={() => highlight(index)}

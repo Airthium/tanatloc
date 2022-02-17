@@ -103,7 +103,9 @@ const BoundaryConditions = ({
     <Layout>
       <Layout.Content>
         <Card size="small">
-          <AddButton onAdd={onAdd}>Add boundary condition</AddButton>
+          <AddButton onAdd={onAdd} fullWidth={true} primary={false}>
+            Add boundary condition
+          </AddButton>
           <List
             simulation={{
               id: simulation.id,

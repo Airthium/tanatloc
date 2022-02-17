@@ -91,7 +91,9 @@ const Materials = ({
     <Layout>
       <Layout.Content>
         <Card size="small">
-          <AddButton onAdd={onAdd}>Add material</AddButton>
+          <AddButton onAdd={onAdd} fullWidth={true} primary={false}>
+            Add material
+          </AddButton>
           <List
             simulation={{
               id: simulation.id,

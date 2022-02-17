@@ -322,6 +322,7 @@ const Project = (): JSX.Element => {
           className="Project-Menu-SubMenu-Simulations-SubMenu-MenuItem"
           key={s.id + '&' + key}
           icon={icon}
+          disabled={!geometries.length}
         >
           {child.title}
         </Menu.Item>
@@ -338,6 +339,7 @@ const Project = (): JSX.Element => {
           className="Project-Menu-SubMenu-Simulations-SubMenu-MenuItem"
           key={s.id + '&about'}
           icon={<CheckCircleOutlined style={{ color: 'green' }} />}
+          disabled={!geometries.length}
         >
           About
         </Menu.Item>
@@ -408,6 +410,16 @@ const Project = (): JSX.Element => {
                     New Geometry
                   </Button>
                 </Menu.Item>
+                {!geometries.length ? (
+                  <Menu.Item
+                    style={{ textAlign: 'center', pointerEvents: 'none' }}
+                  >
+                    <Typography.Text>
+                      <ExclamationCircleOutlined style={{ color: 'red' }} />
+                      {' A Geometry is needed.'}
+                    </Typography.Text>
+                  </Menu.Item>
+                ) : null}
                 {geometriesRender}
               </Menu.SubMenu>
               <Menu.SubMenu
@@ -425,7 +437,6 @@ const Project = (): JSX.Element => {
                     SIMULATIONS ({simulations.length})
                   </Typography.Text>
                 }
-                disabled={!geometries.length}
               >
                 <Menu.Item
                   className="Project-Menu-SubMenu-Simulations-New"

@@ -12,12 +12,13 @@ import { INewAvatar } from '../index.d'
 export const add = async (avatar: {
   name: string
   path: string
+  type: string
 }): Promise<INewAvatar> => {
   const response = await query(
     'INSERT INTO ' +
       tables.AVATARS +
-      ' (name, path) VALUES ($1, $2) RETURNING id',
-    [avatar.name, avatar.path]
+      ' (name, path, type) VALUES ($1, $2, $3) RETURNING id',
+    [avatar.name, avatar.path, avatar.type]
   )
 
   const newAvatar = response.rows[0]

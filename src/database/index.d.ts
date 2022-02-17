@@ -21,6 +21,7 @@ export interface IAvatar {
   id: string
   name?: string
   path?: string
+  type?: string
 }
 
 export interface INewGeometry {

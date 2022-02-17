@@ -133,6 +133,11 @@ export const schemas: Scheme = {
       name: 'path',
       type: 'TEXT',
       constraint: 'NOT NULL'
+    },
+    {
+      name: 'type',
+      type: 'TEXT',
+      constraint: 'NOT NULL'
     }
   ],
   [tables.USERS]: [

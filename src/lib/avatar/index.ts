@@ -80,6 +80,7 @@ const read = async (id: string): Promise<Buffer> => {
   // Read file
   const avatarFile = path.join(AVATAR, avatar.path)
   const content = await fs.readFile(avatarFile, { encoding: 'base64' })
+  // TODO use Tools.readFile ?
 
   return Buffer.from(avatar.type + content)
 }

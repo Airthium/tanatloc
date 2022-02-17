@@ -78,7 +78,7 @@ describe('lib/avatar', () => {
     avatar = await Avatar.add({ id: 'id' }, 'user', {
       name: 'name',
       uid: 'uid',
-      data: Buffer.from('data')
+      data: 'data'
     })
     expect(mockPath).toHaveBeenCalledTimes(0)
     expect(mockAdd).toHaveBeenCalledTimes(1)
@@ -100,7 +100,7 @@ describe('lib/avatar', () => {
     avatar = await Avatar.add({ id: 'id' }, 'user', {
       name: 'name',
       uid: 'uid',
-      data: Buffer.from('data')
+      data: 'data'
     })
     expect(mockPath).toHaveBeenCalledTimes(1)
     expect(mockAdd).toHaveBeenCalledTimes(2)
@@ -119,7 +119,7 @@ describe('lib/avatar', () => {
     avatar = await Avatar.add({ id: 'id' }, 'project', {
       name: 'name',
       uid: 'uid',
-      data: Buffer.from('data')
+      data: 'data'
     })
     expect(mockPath).toHaveBeenCalledTimes(1)
     expect(mockAdd).toHaveBeenCalledTimes(3)
@@ -141,7 +141,7 @@ describe('lib/avatar', () => {
     avatar = await Avatar.add({ id: 'id' }, 'project', {
       name: 'name',
       uid: 'uid',
-      data: Buffer.from('data')
+      data: 'data'
     })
     expect(mockPath).toHaveBeenCalledTimes(2)
     expect(mockAdd).toHaveBeenCalledTimes(4)

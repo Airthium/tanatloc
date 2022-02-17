@@ -10,7 +10,7 @@ import { call } from '@/api/call'
  * @returns Avatar
  */
 export const add = async (
-  file: { name: string; uid: string; data: Buffer },
+  file: { name: string; uid: string; data: string },
   project?: { id: string }
 ): Promise<INewAvatar> => {
   const response = await call('/api/avatar', {

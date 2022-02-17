@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
-import { Avatar, Space, Select, Table } from 'antd'
+import { Avatar, Space, Table } from 'antd'
 
 import {
   IGroupWithData,

@@ -1,4 +1,4 @@
-import { Box2, Raycaster, Vector2, Vector3 } from 'three'
+import { Box2, Raycaster, Vector2 } from 'three'
 
 /**
  * Selection helper

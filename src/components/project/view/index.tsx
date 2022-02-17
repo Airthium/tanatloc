@@ -1,16 +1,7 @@
 /** @module Components.Project.View */
 
 import { useRef, useState, useEffect, MutableRefObject } from 'react'
-import {
-  Button,
-  Divider,
-  Layout,
-  Radio,
-  Space,
-  Spin,
-  Switch,
-  Tooltip
-} from 'antd'
+import { Button, Divider, Layout, Radio, Spin, Switch, Tooltip } from 'antd'
 import {
   BorderlessTableOutlined,
   CompressOutlined,

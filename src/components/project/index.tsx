@@ -317,6 +317,15 @@ const Project = (): JSX.Element => {
       if (child.error) icon = <CloseCircleOutlined style={{ color: 'red' }} />
       if (!child.done)
         icon = <ExclamationCircleOutlined style={{ color: 'orange' }} />
+      if (
+        child.title === 'Geometry' &&
+        !geometries.filter(
+          (singleGeometry) => singleGeometry.id === child.value
+        ).length
+      ) {
+        icon = <ExclamationCircleOutlined style={{ color: 'orange' }} />
+        child.done = null
+      }
       categories[child.index] = (
         <Menu.Item
           className="Project-Menu-SubMenu-Simulations-SubMenu-MenuItem"

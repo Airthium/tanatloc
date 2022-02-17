@@ -51,12 +51,14 @@ const PartLoader = (mouseMoveEvent, mouseDownEvent) => {
     const solids = object.children[0]
     for (const solid of solids.children) {
       solid.material.originalColor = solid.material.color
+      solid.material.roughness = 0.5
       solid.material.clippingPlanes = [clippingPlane]
       solid.visible = false
     }
     const faces = object.children[1]
     for (const face of faces.children) {
       face.material.originalColor = face.material.color
+      face.material.roughness = 0.5
       face.material.clippingPlanes = [clippingPlane]
     }
 

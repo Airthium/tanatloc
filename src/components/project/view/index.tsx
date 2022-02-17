@@ -1,16 +1,7 @@
 /** @module Components.Project.View */
 
 import { useRef, useState, useEffect, MutableRefObject } from 'react'
-import {
-  Button,
-  Divider,
-  Layout,
-  Radio,
-  Space,
-  Spin,
-  Switch,
-  Tooltip
-} from 'antd'
+import { Button, Divider, Layout, Radio, Spin, Switch, Tooltip } from 'antd'
 import {
   BorderlessTableOutlined,
   CompressOutlined,
@@ -141,14 +132,15 @@ const ThreeView = ({ loading, project, part }: IThreeProps): JSX.Element => {
     camera.current.position.z = 10
 
     // Light
-    const ambientLight = new AmbientLight('#999999')
-    const pointLight1 = new PointLight('#ffffff')
-    pointLight1.decay = 5
-    pointLight1.position.set(5, 5, 5)
-    const pointLight2 = new PointLight('#ffffff')
-    pointLight2.decay = 5
-    pointLight2.position.set(-5, -5, -5)
+    const ambientLight = new AmbientLight('#ffffff', 0.75)
     scene.current.add(ambientLight)
+
+    const pointLight1 = new PointLight('#ffffff', 0.5)
+    pointLight1.decay = 2
+    pointLight1.position.set(5, 5, 5)
+    const pointLight2 = new PointLight('#ffffff', 0.5)
+    pointLight2.decay = 2
+    pointLight2.position.set(-5, 5, -5)
     scene.current.add(pointLight1)
     scene.current.add(pointLight2)
 

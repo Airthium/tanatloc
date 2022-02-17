@@ -1,6 +1,8 @@
 /** @module Lib.Avatar */
 
 import path from 'path'
+import sharp from 'sharp'
+import { promises as fs } from 'fs'
 
 import { AVATAR } from '@/config/storage'
 
@@ -22,13 +24,27 @@ import Tools from '../tools'
 const add = async (
   parent: { id: string },
   type: string,
-  file: { name: string; uid: string; data: Buffer }
+  file: { name: string; uid: string; data: string }
 ): Promise<INewAvatar> => {
+  // Get image type
+  const imageType = file.data.split(';base64,').shift() + ';base64,'
+
+  let img = Buffer.from(file.data.replace(imageType, ''), 'base64')
+
+  // Resize
+  if (type === 'user') {
+    img = await sharp(img).resize(128, 128).toBuffer()
+  }
+
   // Write file
-  await Tools.writeFile(AVATAR, file.uid, file.data)
+  await Tools.writeFile(AVATAR, file.uid, img)
 
   // Add in dB
-  const avatar = await AvatarDB.add({ name: file.name, path: file.uid })
+  const avatar = await AvatarDB.add({
+    name: file.name,
+    path: file.uid,
+    type: imageType
+  })
 
   if (type === 'user') {
     // Check existing avatar in user, if exists: delete
@@ -58,12 +74,15 @@ const add = async (
  */
 const read = async (id: string): Promise<Buffer> => {
   // Get path
-  const avatar = await get(id, ['path'])
+  const avatar = await get(id, ['path', 'type'])
   if (!avatar) throw new Error('Avatar does not exist.')
 
   // Read file
   const avatarFile = path.join(AVATAR, avatar.path)
-  return Tools.readFile(avatarFile)
+  const content = await fs.readFile(avatarFile, { encoding: 'base64' })
+  // TODO use Tools.readFile ?
+
+  return Buffer.from(avatar.type + content)
 }
 
 /**

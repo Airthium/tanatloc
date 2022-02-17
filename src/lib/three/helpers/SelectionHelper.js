@@ -1,4 +1,4 @@
-import { Box2, Raycaster, Vector2, Vector3 } from 'three'
+import { Box2, Raycaster, Vector2 } from 'three'
 
 /**
  * Selection helper
@@ -143,6 +143,11 @@ const SelectionHelper = (renderer, scene, camera, controls) => {
    * @param {Object} rect Rectangle
    */
   const zoomToRect = (rect) => {
+    // Check size
+    const size = new Vector2()
+    rect.getSize(size)
+    if (size.x < 5 || size.y < 5) return
+
     // Center
     const center = new Vector2(
       (rect.max.x + rect.min.x) / 2,
@@ -170,7 +175,6 @@ const SelectionHelper = (renderer, scene, camera, controls) => {
     controls.target.copy(intersects[0].point)
 
     // Zoom
-    const size = new Vector2(rect.max.x - rect.min.x, rect.max.y - rect.min.y)
     const ratio = new Vector2(
       size.x / parentRect.width,
       size.y / parentRect.height

@@ -9,6 +9,7 @@ export interface IProps {
   light?: boolean
   dark?: boolean
   fullWidth?: boolean
+  needMargin?: boolean
   loading?: boolean
   children?: ReactChild | ReactChild[]
   onAdd: Function
@@ -30,6 +31,7 @@ const AddButton = ({
   light,
   dark,
   fullWidth,
+  needMargin,
   loading,
   children,
   onAdd
@@ -42,6 +44,7 @@ const AddButton = ({
       <Button
         className={
           (fullWidth ? 'full-width' : '') +
+          (needMargin ? ' marginLeft-buttonGroup' : '') +
           (light ? 'text-light' : '') +
           (dark ? ' text-dark' : '')
         }

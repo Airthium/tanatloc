@@ -243,6 +243,8 @@ const BoundaryCondition = ({
           <CancelButton onCancel={onClose}>Cancel</CancelButton>
           {boundaryCondition ? (
             <Edit
+              primary={true}
+              needMargin={true}
               boundaryCondition={{
                 uuid: current?.uuid || boundaryCondition.uuid,
                 name: current?.name || boundaryCondition.name,

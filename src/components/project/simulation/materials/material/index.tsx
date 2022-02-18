@@ -115,6 +115,8 @@ const Material = ({
           <CancelButton onCancel={onClose}>Cancel</CancelButton>
           {material ? (
             <Edit
+              primary={true}
+              needMargin={true}
               material={{
                 uuid: current?.uuid ?? material.uuid,
                 material: current?.material ?? material.material,

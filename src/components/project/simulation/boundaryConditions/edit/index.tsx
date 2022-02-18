@@ -13,6 +13,8 @@ import { EditButton } from '@/components/assets/button'
 import SimulationAPI from '@/api/simulation'
 
 export interface IProps {
+  primary?: boolean
+  needMargin?: boolean
   boundaryCondition: IModelBoundaryConditionValue
   oldBoundaryCondition: IModelBoundaryConditionValue
   simulation: ISimulation
@@ -44,6 +46,8 @@ const errors = {
  * @param props Props
  */
 const Edit = ({
+  primary = false,
+  needMargin = false,
   boundaryCondition,
   oldBoundaryCondition,
   simulation,
@@ -177,7 +181,12 @@ const Edit = ({
    * Render
    */
   return (
-    <EditButton loading={loading} onEdit={onEdit}>
+    <EditButton
+      loading={loading}
+      onEdit={onEdit}
+      primary={primary}
+      needMargin={needMargin}
+    >
       Edit
     </EditButton>
   )

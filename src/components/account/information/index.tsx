@@ -231,8 +231,7 @@ const Information = ({ user, swr }: IProps): JSX.Element => {
             <Form.Item label="Email">
               <Typography.Text
                 editable={{
-                  onChange: onEmail,
-                  icon: 'Modify your email'
+                  onChange: onEmail
                 }}
               >
                 {user.email}

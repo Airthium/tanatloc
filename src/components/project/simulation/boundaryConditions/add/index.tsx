@@ -151,7 +151,7 @@ const Add = ({
    * Render
    */
   return (
-    <AddButton loading={loading} onAdd={onAdd}>
+    <AddButton loading={loading} onAdd={onAdd} needMargin={true}>
       Add
     </AddButton>
   )

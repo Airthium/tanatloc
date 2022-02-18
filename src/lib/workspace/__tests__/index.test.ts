@@ -100,9 +100,9 @@ describe('lib/workspace', () => {
     // With owners and users
     mockGet.mockImplementation(() => ({
       name: 'name',
-      owners: ['id'],
-      users: ['id'],
-      groups: ['id']
+      owners: ['ownerid'],
+      users: ['userid'],
+      groups: ['groupid']
     }))
     mockUserGet.mockImplementation(() => ({
       email: 'email'
@@ -120,9 +120,9 @@ describe('lib/workspace', () => {
     expect(mockDelProject).toHaveBeenCalledTimes(0)
     expect(workspace).toEqual({
       name: 'name',
-      owners: [{ id: 'id', email: 'email' }],
-      users: [{ id: 'id', email: 'email' }],
-      groups: [{ id: 'id', name: 'name' }]
+      owners: [{ id: 'ownerid', email: 'email' }],
+      users: [{ id: 'userid', email: 'email' }],
+      groups: [{ id: 'groupid', name: 'name' }]
     })
   })
 
@@ -130,19 +130,20 @@ describe('lib/workspace', () => {
     // With workspaces, organizations & groups
     mockUserGet.mockImplementation(() => ({
       workspaces: ['id', 'id'],
-      organizations: ['id']
+      organizations: ['organizationid']
     }))
     mockOrganizationGet.mockImplementation(() => ({
-      groups: ['id']
+      groups: ['groupid']
     }))
     mockGroupGet.mockImplementation(() => ({
+      id: 'groupid',
       name: 'name',
       workspaces: ['id'],
-      projects: ['id']
+      projects: ['projectid']
     }))
     mockGet.mockImplementation(() => ({
       name: 'name',
-      owners: ['id']
+      owners: ['ownerid']
     }))
     const workspaces = await Workspace.getByUser({ id: 'id' })
     expect(mockAdd).toHaveBeenCalledTimes(0)
@@ -158,9 +159,9 @@ describe('lib/workspace', () => {
         name: 'name',
         owners: [
           {
-            id: 'id',
+            id: 'ownerid',
             workspaces: ['id', 'id'],
-            organizations: ['id']
+            organizations: ['organizationid']
           }
         ]
       },
@@ -169,9 +170,9 @@ describe('lib/workspace', () => {
         name: 'name',
         owners: [
           {
-            id: 'id',
+            id: 'ownerid',
             workspaces: ['id', 'id'],
-            organizations: ['id']
+            organizations: ['organizationid']
           }
         ]
       },
@@ -180,25 +181,25 @@ describe('lib/workspace', () => {
         name: 'name',
         owners: [
           {
-            id: 'id',
+            id: 'ownerid',
             workspaces: ['id', 'id'],
-            organizations: ['id']
+            organizations: ['organizationid']
           }
         ]
       },
       {
-        id: '0',
-        groups: [{ id: 'id', name: 'name' }],
+        id: 'groupid',
+        groups: [{ id: 'groupid', name: 'name' }],
         name: 'Projects from name',
         owners: [],
-        projects: ['id']
+        projects: ['projectid']
       }
     ])
 
     // With owners
     mockGet.mockImplementation(() => ({
       name: 'name',
-      owners: ['id']
+      owners: ['ownerid']
     }))
     await Workspace.getByUser({ id: 'id' })
     expect(mockAdd).toHaveBeenCalledTimes(0)
@@ -258,7 +259,7 @@ describe('lib/workspace', () => {
 
     // With groups
     mockGet.mockImplementation(() => ({
-      groups: ['id']
+      groups: ['groupid']
     }))
     await Workspace.update({ id: 'id' }, [{ key: 'groups', value: ['id1'] }])
   })

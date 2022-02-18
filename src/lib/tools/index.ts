@@ -76,10 +76,14 @@ const writeFile = async (
  * Read file
  * @memberof Lib.Tools
  * @param file File name
+ * @param options Options
  * @returns File content
  */
-const readFile = async (file: string): Promise<Buffer> => {
-  return fs.readFile(file)
+const readFile = async (
+  file: string,
+  options?: any
+): Promise<Buffer | string> => {
+  return fs.readFile(file, options)
 }
 
 const readJSONFile = async (file: string): Promise<any> => {

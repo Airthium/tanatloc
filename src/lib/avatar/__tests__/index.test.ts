@@ -5,6 +5,9 @@ jest.mock('path', () => ({
   join: () => mockPath()
 }))
 
+const mockSharp = jest.fn()
+jest.mock('sharp', () => () => mockSharp())
+
 jest.mock('@/config/storage', () => ({
   AVATAR: 'avatar'
 }))
@@ -47,6 +50,13 @@ describe('lib/avatar', () => {
   beforeEach(() => {
     mockPath.mockReset()
 
+    mockSharp.mockReset()
+    mockSharp.mockImplementation(() => ({
+      resize: () => ({
+        toBuffer: jest.fn
+      })
+    }))
+
     mockAdd.mockReset()
     mockAdd.mockImplementation(() => ({
       id: 'id'
@@ -81,6 +91,7 @@ describe('lib/avatar', () => {
       data: 'data'
     })
     expect(mockPath).toHaveBeenCalledTimes(0)
+    expect(mockSharp).toHaveBeenCalledTimes(1)
     expect(mockAdd).toHaveBeenCalledTimes(1)
     expect(mockGet).toHaveBeenCalledTimes(0)
     expect(mockDel).toHaveBeenCalledTimes(0)
@@ -103,6 +114,7 @@ describe('lib/avatar', () => {
       data: 'data'
     })
     expect(mockPath).toHaveBeenCalledTimes(1)
+    expect(mockSharp).toHaveBeenCalledTimes(2)
     expect(mockAdd).toHaveBeenCalledTimes(2)
     expect(mockGet).toHaveBeenCalledTimes(1)
     expect(mockDel).toHaveBeenCalledTimes(1)
@@ -122,6 +134,7 @@ describe('lib/avatar', () => {
       data: 'data'
     })
     expect(mockPath).toHaveBeenCalledTimes(1)
+    expect(mockSharp).toHaveBeenCalledTimes(2)
     expect(mockAdd).toHaveBeenCalledTimes(3)
     expect(mockGet).toHaveBeenCalledTimes(1)
     expect(mockDel).toHaveBeenCalledTimes(1)
@@ -144,6 +157,7 @@ describe('lib/avatar', () => {
       data: 'data'
     })
     expect(mockPath).toHaveBeenCalledTimes(2)
+    expect(mockSharp).toHaveBeenCalledTimes(2)
     expect(mockAdd).toHaveBeenCalledTimes(4)
     expect(mockGet).toHaveBeenCalledTimes(2)
     expect(mockDel).toHaveBeenCalledTimes(2)
@@ -158,6 +172,10 @@ describe('lib/avatar', () => {
   })
 
   test('read', async () => {
+    mockGet.mockImplementation(() => ({
+      path: 'path',
+      type: 'type'
+    }))
     const avatar = await Avatar.read('id')
     expect(mockPath).toHaveBeenCalledTimes(1)
     expect(mockAdd).toHaveBeenCalledTimes(0)
@@ -168,7 +186,7 @@ describe('lib/avatar', () => {
     expect(mockProjectGet).toHaveBeenCalledTimes(0)
     expect(mockProjectUpdate).toHaveBeenCalledTimes(0)
     expect(mockToolsReadFile).toHaveBeenCalledTimes(1)
-    expect(avatar).toBe('avatar')
+    expect(avatar).toEqual(Buffer.from('typeavatar'))
 
     // Without avatar
     mockGet.mockImplementation(() => {

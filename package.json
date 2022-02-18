@@ -59,6 +59,7 @@
     "@types/pg": "8.6.4",
     "@types/react": "17.0.39",
     "@types/set-interval-async": "1.0.0",
+    "@types/sharp": "0.29.5",
     "@types/tar": "6.1.1",
     "@types/three": "0.137.0",
     "@types/url-join": "4.0.1",

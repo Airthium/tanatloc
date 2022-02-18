@@ -16,9 +16,9 @@ describe('lib/three/helpers/SelectionHelper', () => {
         else if (type === 'pointermove') mouseMove = callback
         else if (type === 'pointerup') mouseUp = callback
       },
-      removeEventListener: () => {},
+      removeEventListener: jest.fn,
       parentElement: {
-        appendChild: () => {}
+        appendChild: jest.fn
       }
     },
     getSize: (vector) => {
@@ -28,25 +28,25 @@ describe('lib/three/helpers/SelectionHelper', () => {
   }
   const camera = {
     position: {
-      add: () => {},
-      distanceTo: () => {}
+      add: jest.fn,
+      distanceTo: jest.fn
     }
   }
   const scene = {}
   const controls = {
     target: {
       copy: () => ({
-        add: () => {}
+        add: jest.fn
       }),
       clone: () => ({
         sub: () => ({
           normalize: () => ({
-            multiplyScalar: () => {}
+            multiplyScalar: jest.fn
           })
         })
       })
     },
-    stop: () => {}
+    stop: jest.fn
   }
 
   test('call', () => {
@@ -72,7 +72,7 @@ describe('lib/three/helpers/SelectionHelper', () => {
     document.createElement = () => ({
       style: {},
       parentElement: {
-        removeChild: () => {}
+        removeChild: jest.fn
       }
     })
     const selection = SelectionHelper(renderer, scene, camera, controls)

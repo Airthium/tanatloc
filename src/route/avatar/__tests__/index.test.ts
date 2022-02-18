@@ -68,7 +68,7 @@ describe('route/avatar', () => {
       {
         ...req,
         body: {
-          file: { name: 'name', uid: 'uid', data: Buffer.from('buffer') }
+          file: { name: 'name', uid: 'uid', data: 'data' }
         }
       } as Request,
       res
@@ -108,7 +108,7 @@ describe('route/avatar', () => {
         ...req,
         method: 'POST',
         body: {
-          file: { name: 'name', uid: 'uid', data: Buffer.from('buffer') }
+          file: { name: 'name', uid: 'uid', data: 'data' }
         }
       } as Request,
       res
@@ -126,7 +126,7 @@ describe('route/avatar', () => {
         ...req,
         method: 'POST',
         body: {
-          file: { name: 'name', uid: 'uid', data: Buffer.from('buffer') },
+          file: { name: 'name', uid: 'uid', data: 'data' },
           project: { id: 'id' }
         }
       } as Request,
@@ -150,7 +150,7 @@ describe('route/avatar', () => {
         ...req,
         method: 'POST',
         body: {
-          file: { name: 'name', uid: 'uid', data: Buffer.from('buffer') },
+          file: { name: 'name', uid: 'uid', data: 'data' },
           project: { id: 'id' }
         }
       } as Request,
@@ -173,7 +173,7 @@ describe('route/avatar', () => {
         ...req,
         method: 'POST',
         body: {
-          file: { name: 'name', uid: 'uid', data: Buffer.from('buffer') },
+          file: { name: 'name', uid: 'uid', data: 'data' },
           project: { id: 'id' }
         }
       } as Request,
@@ -193,7 +193,7 @@ describe('route/avatar', () => {
         ...req,
         method: 'method',
         body: {
-          file: { name: 'name', uid: 'uid', data: Buffer.from('buffer') }
+          file: { name: 'name', uid: 'uid', data: 'data' }
         }
       } as Request,
       res

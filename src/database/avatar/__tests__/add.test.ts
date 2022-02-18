@@ -6,7 +6,7 @@ jest.mock('../..', () => ({
 
 describe('database/avatar/add', () => {
   test('call', async () => {
-    const res = await add({ name: 'name', path: 'path' })
+    const res = await add({ name: 'name', path: 'path', type: 'type' })
     expect(res).toEqual({
       id: 'id',
       name: 'name'

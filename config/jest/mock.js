@@ -54,6 +54,7 @@ class MockBox2 {
   constructor() {
     this.min = new MockVector2()
     this.max = new MockVector2()
+    this.getSize = () => new MockVector2()
   }
 }
 

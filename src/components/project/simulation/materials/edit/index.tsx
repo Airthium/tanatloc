@@ -145,6 +145,8 @@ const Edit = ({
 }
 
 Edit.propTypes = {
+  primary: PropTypes.bool,
+  needMargin: PropTypes.bool,
   material: PropTypes.exact({
     uuid: PropTypes.string.isRequired,
     material: PropTypes.object,

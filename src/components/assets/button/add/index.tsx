@@ -21,6 +21,11 @@ export interface IProps {
  * @param props Props
  * @description Props list:
  * - disabled (boolean) Set disabled state
+ * - primary (boolean) Set Button type
+ * - light (boolean) Set Button text to light
+ * - dark (boolean) Set Button text to dark
+ * - fullWidth (boolean) Set Button width to 100%
+ * - needMargin (boolean) Set Button left margin to 5px
  * - loading (boolean) Set loading state
  * - children (React child) Button children
  * - onAdd (Function) Button click
@@ -45,7 +50,7 @@ const AddButton = ({
         className={
           (fullWidth ? 'full-width' : '') +
           (needMargin ? ' marginLeft-5' : '') +
-          (light ? 'text-light' : '') +
+          (light ? ' text-light' : '') +
           (dark ? ' text-dark' : '')
         }
         disabled={disabled}
@@ -62,6 +67,11 @@ const AddButton = ({
 
 AddButton.propTypes = {
   disabled: PropTypes.bool,
+  primary: PropTypes.bool,
+  light: PropTypes.bool,
+  dark: PropTypes.bool,
+  fullWidth: PropTypes.bool,
+  needMargin: PropTypes.bool,
   loading: PropTypes.bool,
   children: PropTypes.node,
   onAdd: PropTypes.func.isRequired

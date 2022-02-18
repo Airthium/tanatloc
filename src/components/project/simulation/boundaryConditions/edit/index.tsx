@@ -193,6 +193,8 @@ const Edit = ({
 }
 
 Edit.propTypes = {
+  primary: PropTypes.bool,
+  needMargin: PropTypes.bool,
   boundaryCondition: PropTypes.shape({
     uuid: PropTypes.string.isRequired,
     name: PropTypes.string,

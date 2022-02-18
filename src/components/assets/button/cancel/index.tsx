@@ -33,7 +33,7 @@ const CancelButton = ({
       <Button
         disabled={disabled}
         loading={loading}
-        type="primary"
+        type="default"
         onClick={onCancel}
       >
         {children}

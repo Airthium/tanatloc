@@ -20,6 +20,10 @@ export interface IProps {
  * @param props Props
  * @description Props list:
  * - disabled (boolean) Set disabled state
+ * - primary (boolean) Set Button type
+ * - light (boolean) Set Button text to light
+ * - dark (boolean) Set Button text to dark
+ * - needMargin (boolean) Set Button left margin to 5px
  * - loading (boolean) Set loading state
  * - children (React node) Button children
  * - onEdit (Function) Button click
@@ -61,6 +65,10 @@ const EditButton = ({
 
 EditButton.propTypes = {
   disabled: PropTypes.bool,
+  primary: PropTypes.bool,
+  light: PropTypes.bool,
+  dark: PropTypes.bool,
+  needMargin: PropTypes.bool,
   loading: PropTypes.bool,
   children: PropTypes.node,
   onEdit: PropTypes.func.isRequired

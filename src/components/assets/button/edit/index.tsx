@@ -42,7 +42,7 @@ const EditButton = ({
     <Tooltip title={children || 'Edit'}>
       <Button
         className={
-          (needMargin ? 'marginLeft-buttonGroup' : '') +
+          (needMargin ? 'marginLeft-5' : '') +
           (light ? ' text-light' : '') +
           (dark ? ' text-dark' : '')
         }

@@ -44,7 +44,7 @@ const AddButton = ({
       <Button
         className={
           (fullWidth ? 'full-width' : '') +
-          (needMargin ? ' marginLeft-buttonGroup' : '') +
+          (needMargin ? ' marginLeft-5' : '') +
           (light ? 'text-light' : '') +
           (dark ? ' text-dark' : '')
         }

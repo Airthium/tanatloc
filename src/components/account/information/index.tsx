@@ -1,3 +1,5 @@
+/** @module Components.Account.Information */
+
 import PropTypes from 'prop-types'
 import { useState } from 'react'
 import { Avatar, Button, Card, Form, Space, Typography, Upload } from 'antd'
@@ -19,13 +21,12 @@ import AvatarAPI from '@/api/avatar'
 export interface IProps {
   user: IUserWithData
   swr: {
-    mutateUser: Function
+    mutateUser: (user: IUserWithData) => void
   }
 }
 
 /**
- * Errors (information)
- * @memberof Components.Account
+ * Errors
  */
 const errors = {
   update: 'Unable to update informations',
@@ -35,8 +36,9 @@ const errors = {
 
 /**
  * Information
- * @memberof Components.Account
  * @param props Props
+ *
+ * @category Components.Account
  */
 const Information = ({ user, swr }: IProps): JSX.Element => {
   // State
@@ -257,13 +259,13 @@ const Information = ({ user, swr }: IProps): JSX.Element => {
 }
 
 Information.propTypes = {
-  user: PropTypes.shape({
+  user: PropTypes.exact({
+    email: PropTypes.string.isRequired,
     firstname: PropTypes.string,
     lastname: PropTypes.string,
-    email: PropTypes.string.isRequired,
     avatar: PropTypes.object
   }).isRequired,
-  swr: PropTypes.shape({
+  swr: PropTypes.exact({
     mutateUser: PropTypes.func.isRequired
   }).isRequired
 }

@@ -1,3 +1,5 @@
+/** @module Components.Account.HPC.Plugin.List */
+
 import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
 import { Card, Space, Typography } from 'antd'
@@ -11,14 +13,13 @@ export interface IProps {
   plugin: IClientPlugin
   plugins: IClientPlugin[]
   swr: {
-    delOnePlugin: Function
-    mutateOnePlugin: Function
+    delOnePlugin: (plugin: IClientPlugin) => void
+    mutateOnePlugin: (plugin: IClientPlugin) => void
   }
 }
 
 /**
  * Plugins list
- * @memberof Components.Account.HPC.Plugin
  * @param props Props
  */
 const List = ({ plugin, plugins, swr }: IProps): JSX.Element => {

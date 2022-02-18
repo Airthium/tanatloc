@@ -19,7 +19,6 @@ export interface IProps {
 
 /**
  * Errors
- * @memberof Components.Account.HPC.Plugin
  */
 const errors = {
   plugins: 'Plugins error'
@@ -27,7 +26,6 @@ const errors = {
 
 /**
  * Plugin
- * @memberof Components.Account.HPC.Plugin
  * @param props Props
  */
 const Plugin = ({ plugin }: IProps): JSX.Element => {

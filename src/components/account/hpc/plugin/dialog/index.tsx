@@ -1,3 +1,5 @@
+/** @module Components.Account.HPC.Plugin.Dialog */
+
 import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
 import { Form, Input, Select } from 'antd'
@@ -13,15 +15,14 @@ import PluginAPI from '@/api/plugin'
 export interface IProps {
   plugin: IClientPlugin
   swr: {
-    addOnePlugin?: Function
-    mutateOnePlugin?: Function
+    addOnePlugin?: (plugin: IClientPlugin) => void
+    mutateOnePlugin?: (plugin: IClientPlugin) => void
   }
   edit?: boolean
 }
 
 /**
- * Errors (dialog)
- * @memberof Components.Account.HPC.Plugin
+ * Errors
  */
 const errors = {
   update: 'Unable to update plugins'
@@ -29,7 +30,6 @@ const errors = {
 
 /**
  * Plugin dialog
- * @memberof Components.Account.HPC.Plugin
  * @param props Props
  */
 const PluginDialog = ({ plugin, swr, edit }: IProps): JSX.Element => {

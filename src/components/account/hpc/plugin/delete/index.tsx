@@ -1,3 +1,5 @@
+/** @module Components.Account.HPC.Plugin.Delete */
+
 import PropTypes from 'prop-types'
 import { useState } from 'react'
 
@@ -11,13 +13,12 @@ import PluginAPI from '@/api/plugin'
 export interface IProps {
   plugin: IClientPlugin
   swr: {
-    delOnePlugin: Function
+    delOnePlugin: (plugin: IClientPlugin) => void
   }
 }
 
 /**
- * Errors (delete)
- * @memberof Components.Account.HPC.Plugin
+ * Errors
  */
 const errors = {
   updateError: 'Unable to delete plugin'
@@ -25,7 +26,6 @@ const errors = {
 
 /**
  * Delete plugin
- * @memberof Components.Account.HPC.Plugin
  * @param props Props
  */
 const Delete = ({ plugin, swr }: IProps): JSX.Element => {

@@ -349,8 +349,8 @@ const getLog = async (
   // Path
   const filePath = path.join(SIMULATION, simulation.id, file)
 
-  // Write file
-  return Tools.readFile(filePath)
+  // Read file
+  return Tools.readFile(filePath) as Promise<Buffer>
 }
 
 /**

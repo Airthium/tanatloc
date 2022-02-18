@@ -1,3 +1,5 @@
+/** @module Components.Account.HPC */
+
 import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
 import { Card, Space } from 'antd'
@@ -14,13 +16,15 @@ export interface IProps {
   user: IUserWithData
 }
 
+/**
+ * Errors
+ */
 const errors = {
   plugins: 'Unable to load plugins'
 }
 
 /**
  * HPC plugins
- * @memberof Components.Account
  * @param props Props
  */
 const HPC = ({ user }: IProps): JSX.Element => {
@@ -67,12 +71,7 @@ const HPC = ({ user }: IProps): JSX.Element => {
    * Render
    */
   return (
-    <Space
-      direction="vertical"
-      className="full-width scroll"
-      style={{ maxHeight: '100%' }}
-      size={20}
-    >
+    <Space direction="vertical" className="full-width scroll" size={20}>
       {list}
     </Space>
   )
@@ -80,7 +79,7 @@ const HPC = ({ user }: IProps): JSX.Element => {
 
 HPC.propTypes = {
   user: PropTypes.exact({
-    authorizedplugins: PropTypes.array.isRequired
+    authorizedplugins: PropTypes.arrayOf(PropTypes.string).isRequired
   }).isRequired
 }
 

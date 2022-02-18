@@ -14,14 +14,15 @@ import HPC from './hpc'
 export interface IProps {
   user: IUserWithData
   swr: {
-    mutateUser: Function
+    mutateUser: (user: IUserWithData) => void
   }
 }
 
 /**
  * Account
- * @memberof Components.Account
  * @param props Props
+ *
+ * @category Components.Account
  */
 const Account = ({ user, swr }: IProps): JSX.Element => {
   // Data
@@ -76,7 +77,7 @@ const Account = ({ user, swr }: IProps): JSX.Element => {
             </Space>
           </Tabs.TabPane>
           <Tabs.TabPane tab="Security" key="security">
-            <Space direction="vertical" className="full-width">
+            <Space direction="vertical" className="full-width" size={20}>
               <Password
                 user={{
                   email: user.email
@@ -103,7 +104,7 @@ Account.propTypes = {
     firstname: PropTypes.string,
     lastname: PropTypes.string,
     avatar: PropTypes.object,
-    authorizedplugins: PropTypes.array.isRequired
+    authorizedplugins: PropTypes.arrayOf(PropTypes.string).isRequired
   }).isRequired,
   swr: PropTypes.exact({
     mutateUser: PropTypes.func.isRequired

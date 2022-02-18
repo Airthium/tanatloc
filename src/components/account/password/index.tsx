@@ -1,3 +1,5 @@
+/** @module Components.Account.Password */
+
 import PropTypes from 'prop-types'
 import { useState } from 'react'
 import { notification, Button, Card, Form, Input, Space } from 'antd'
@@ -17,8 +19,7 @@ export interface IProps {
 }
 
 /**
- * Errors (password)
- * @memberof Components.Account
+ * Errors
  */
 const errors = {
   update: 'Unable to update the password',
@@ -28,7 +29,6 @@ const errors = {
 
 /**
  * Password
- * @memberof Components.Account
  * @param props Props
  */
 const Password = ({ user }: IProps): JSX.Element => {
@@ -37,11 +37,11 @@ const Password = ({ user }: IProps): JSX.Element => {
 
   // Layout
   const inputLayout = {
-    labelCol: { offset: 4 },
-    wrapperCol: { offset: 4, span: 16 }
+    labelCol: { offset: 2 },
+    wrapperCol: { offset: 2, span: 12 }
   }
   const buttonLayout = {
-    wrapperCol: { offset: 4 }
+    wrapperCol: { offset: 2 }
   }
 
   /**
@@ -87,13 +87,7 @@ const Password = ({ user }: IProps): JSX.Element => {
    */
   return (
     <Card title="Your Password">
-      <Form
-        layout="vertical"
-        labelCol={{ span: 4 }}
-        wrapperCol={{ span: 16 }}
-        onFinish={onFinish}
-        name="passwordForm"
-      >
+      <Form layout="vertical" onFinish={onFinish} name="passwordForm">
         <Form.Item
           {...inputLayout}
           label="Current password"

@@ -1,7 +1,11 @@
+/** @module Components.Account.Delete */
+
 import PropTypes from 'prop-types'
 import { useState } from 'react'
 import { Button, Card } from 'antd'
 import { DeleteOutlined } from '@ant-design/icons'
+
+import { IUserWithData } from '@/lib/index.d'
 
 import { Error as ErrorNotification } from '@/components/assets/notification'
 import { DeleteDialog } from '@/components/assets/dialog'
@@ -11,13 +15,12 @@ import { logout } from '@/api/logout'
 
 export interface IProps {
   swr: {
-    mutateUser: Function
+    mutateUser: (user: IUserWithData) => void
   }
 }
 
 /**
- * Errors (delete)
- * @memberof Components.Account
+ * Errors
  */
 const errors = {
   del: 'Unable to delete the user'
@@ -25,8 +28,9 @@ const errors = {
 
 /**
  * Delete account
- * @memberof Components.Account
  * @param props Props
+ *
+ * @category Components.Account
  */
 const Delete = ({ swr }: IProps): JSX.Element => {
   // State

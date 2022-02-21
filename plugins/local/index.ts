@@ -17,7 +17,8 @@ const Local: IPlugin = {
     configuration: {
       name: {
         label: 'Name',
-        type: 'input'
+        type: 'input',
+        rules: [{ required: true, message: 'Name is required' }, { max: 50 }]
       }
     },
     inUseConfiguration: {}

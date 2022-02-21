@@ -321,11 +321,15 @@ describe('components/project/simulation/initialization', () => {
     {
       const options1 = screen.getAllByText('select_option1')
       const option1 = options1[1]
-      await act(async () => fireEvent.click(option1))
+      await act(async () => {
+        fireEvent.click(option1)
+      })
 
       const options2 = screen.getAllByText('select_option2')
       const option2 = options2[1]
-      await act(async () => fireEvent.click(option2))
+      await act(async () => {
+        fireEvent.click(option2)
+      })
     }
 
     await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(4))
@@ -387,7 +391,9 @@ describe('components/project/simulation/initialization', () => {
     // Click select
     const selects = screen.getAllByRole('combobox')
     const select = selects[2]
-    await act(async () => fireEvent.mouseDown(select))
+    await act(async () => {
+      fireEvent.mouseDown(select)
+    })
 
     const options1 = screen.getAllByText('Simulation 1')
     const option1 = options1[0]
@@ -396,12 +402,16 @@ describe('components/project/simulation/initialization', () => {
     const option3 = options3[0]
 
     // Error
-    await act(async () => fireEvent.click(option3))
+    await act(async () => {
+      fireEvent.click(option3)
+    })
     await waitFor(() => expect(mockTasks).toHaveBeenCalledTimes(1))
     await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
 
     // Normal
-    await act(async () => fireEvent.click(option1))
+    await act(async () => {
+      fireEvent.click(option1)
+    })
     await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
     await waitFor(() =>
       expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(2)
@@ -411,7 +421,9 @@ describe('components/project/simulation/initialization', () => {
     // Results
     const newSelects = screen.getAllByRole('combobox')
     const resultSelect = newSelects[3]
-    await act(async () => fireEvent.mouseDown(resultSelect))
+    await act(async () => {
+      fireEvent.mouseDown(resultSelect)
+    })
 
     const resultOptions0 = screen.getAllByText('result.vtu')
     const resultOption0 = resultOptions0[0]
@@ -422,7 +434,9 @@ describe('components/project/simulation/initialization', () => {
     mockUpdate.mockImplementation(() => {
       throw new Error('Update error')
     })
-    await act(async () => fireEvent.click(resultOption0))
+    await act(async () => {
+      fireEvent.click(resultOption0)
+    })
     await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(3))
     await waitFor(() => expect(mockError).toHaveBeenCalledTimes(2))
 

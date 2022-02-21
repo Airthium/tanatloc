@@ -422,12 +422,14 @@ const Project = (): JSX.Element => {
                 </Menu.Item>
                 {!geometries.length ? (
                   <Menu.Item
-                    style={{ textAlign: 'center', pointerEvents: 'none' }}
-                  >
-                    <Typography.Text>
+                    className="text-dark"
+                    key="geometry-needed"
+                    disabled={true}
+                    icon={
                       <ExclamationCircleOutlined style={{ color: 'red' }} />
-                      {' A Geometry is needed.'}
-                    </Typography.Text>
+                    }
+                  >
+                    A Geometry is needed
                   </Menu.Item>
                 ) : null}
                 {geometriesRender}

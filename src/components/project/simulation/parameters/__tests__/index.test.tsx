@@ -128,11 +128,15 @@ describe('components/project/simulation/parameters', () => {
 
     // Select
     const select = screen.getByRole('combobox')
-    await act(async () => fireEvent.mouseDown(select))
+    await act(async () => {
+      fireEvent.mouseDown(select)
+    })
 
     const options2 = screen.getAllByText('option2')
     const option2 = options2[1]
-    await act(async () => fireEvent.click(option2))
+    await act(async () => {
+      fireEvent.click(option2)
+    })
 
     await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(4))
 

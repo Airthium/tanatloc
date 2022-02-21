@@ -52,13 +52,6 @@ const errors = {
 const Information = ({ user, swr }: IProps): JSX.Element => {
   // State
   const [uploading, setUploading]: [boolean, Function] = useState(false)
-  const [localEmail, setLocalEmail]: [string, Function] = useState(user.email)
-  const [localFirstname, setLocalFirstname]: [string, Function] = useState(
-    user.firstname || ''
-  )
-  const [localLastname, setLocalLastname]: [string, Function] = useState(
-    user.lastname || ''
-  )
 
   // Layout
   const layout = {
@@ -132,15 +125,30 @@ const Information = ({ user, swr }: IProps): JSX.Element => {
     })
   }
 
+  const onFinish = async (values: {
+    email: string
+    firstname: string
+    lastname: string
+  }): Promise<void> => {
+    try {
+      // Check email
+      if (user.email !== values.email) await onEmail(values.email)
+
+      // Check firstname
+      if (user.firstname !== values.firstname)
+        await onFirstName(values.firstname)
+
+      // Check lastname
+      if (user.lastname !== values.lastname) await onLastName(values.lastname)
+    } catch (err) {}
+  }
+
   /**
    * On firstname
    * @param value Value
    */
   const onFirstName = async (value: string): Promise<void> => {
     try {
-      // Check diff
-      if (user.firstname === value) return
-
       // API
       await UserAPI.update([
         {
@@ -166,9 +174,6 @@ const Information = ({ user, swr }: IProps): JSX.Element => {
    */
   const onLastName = async (value: string): Promise<void> => {
     try {
-      // Check diff
-      if (user.lastname === value) return
-
       // API
       await UserAPI.update([
         {
@@ -194,9 +199,6 @@ const Information = ({ user, swr }: IProps): JSX.Element => {
    */
   const onEmail = async (value: string): Promise<void> => {
     try {
-      // Check diff
-      if (user.email === value) return
-
       // Check email
       if (!Utils.validateEmail(value))
         throw new Error('Email address wrong format.')
@@ -221,13 +223,6 @@ const Information = ({ user, swr }: IProps): JSX.Element => {
     } catch (err) {
       ErrorNotification(errors.update, err)
     }
-  }
-
-  const onSubmit = (e) => {
-    e.preventDefault()
-    onEmail(localEmail)
-    onFirstName(localFirstname)
-    onLastName(localLastname)
   }
 
   /**
@@ -261,37 +256,39 @@ const Information = ({ user, swr }: IProps): JSX.Element => {
               firstname: user.firstname || '',
               lastname: user.lastname || ''
             }}
+            onFinish={onFinish}
           >
             <Form.Item
-              label="Email"
-              rules={[{ type: 'email' }]}
               className="max-width-500"
+              label="Email"
+              name="email"
+              rules={[
+                { type: 'email', message: 'This is not a valid email' },
+                { max: 50, message: 'Max 50 characters' }
+              ]}
             >
-              <Input
-                maxLength={50}
-                onChange={(e) => setLocalEmail(e.target.value)}
-              />
+              <Input />
             </Form.Item>
 
-            <Form.Item label="First name" className="max-width-500">
-              <Input
-                maxLength={50}
-                onChange={(e) => setLocalFirstname(e.target.value)}
-              />
+            <Form.Item
+              className="max-width-500"
+              label="First name"
+              name="firstname"
+              rules={[{ max: 50, message: 'Max 50 characters' }]}
+            >
+              <Input />
             </Form.Item>
 
-            <Form.Item label="Last name" className="max-width-500">
-              <Input
-                maxLength={50}
-                onChange={(e) => setLocalLastname(e.target.value)}
-              />
+            <Form.Item
+              className="max-width-500"
+              label="Last name"
+              name="lastname"
+              rules={[{ max: 50, message: 'Max 50 characters' }]}
+            >
+              <Input />
             </Form.Item>
             <Form.Item {...buttonLayout} className="max-width-500">
-              <Button
-                type="primary"
-                htmlType="submit"
-                onClick={(e) => onSubmit(e)}
-              >
+              <Button type="primary" htmlType="submit">
                 Save changes
               </Button>
             </Form.Item>

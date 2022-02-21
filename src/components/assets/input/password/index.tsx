@@ -203,7 +203,8 @@ PasswordItem.propTypes = {
   inputPlaceholder: PropTypes.string,
   inputAutoComplete: PropTypes.string,
   edit: PropTypes.bool,
-  style: PropTypes.object
+  style: PropTypes.object,
+  className: PropTypes.string
 }
 
 export default PasswordItem

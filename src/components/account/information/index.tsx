@@ -64,6 +64,9 @@ const Information = ({ user, swr }: IProps): JSX.Element => {
   const layout = {
     labelCol: { span: 4 }
   }
+  const buttonLayout = {
+    wrapperCol: { offset: 4 }
+  }
 
   /**
    * Before upload
@@ -262,7 +265,7 @@ const Information = ({ user, swr }: IProps): JSX.Element => {
             <Form.Item
               label="Email"
               rules={[{ type: 'email' }]}
-              style={{ maxWidth: '500px' }}
+              className="max-width-500"
             >
               <Input
                 maxLength={50}
@@ -270,20 +273,20 @@ const Information = ({ user, swr }: IProps): JSX.Element => {
               />
             </Form.Item>
 
-            <Form.Item label="First name" style={{ maxWidth: '500px' }}>
+            <Form.Item label="First name" className="max-width-500">
               <Input
                 maxLength={50}
                 onChange={(e) => setLocalFirstname(e.target.value)}
               />
             </Form.Item>
 
-            <Form.Item label="Last name" style={{ maxWidth: '500px' }}>
+            <Form.Item label="Last name" className="max-width-500">
               <Input
                 maxLength={50}
                 onChange={(e) => setLocalLastname(e.target.value)}
               />
             </Form.Item>
-            <Form.Item wrapperCol={{ offset: 4 }}>
+            <Form.Item {...buttonLayout} className="max-width-500">
               <Button
                 type="primary"
                 htmlType="submit"

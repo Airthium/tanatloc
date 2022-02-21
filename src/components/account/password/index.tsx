@@ -36,11 +36,8 @@ const Password = ({ user }: IProps): JSX.Element => {
   const [loading, setLoading]: [boolean, Function] = useState(false)
 
   // Layout
-  const inputLayout = {
+  const layout = {
     labelCol: { offset: 2 },
-    wrapperCol: { offset: 2, span: 12 }
-  }
-  const buttonLayout = {
     wrapperCol: { offset: 2 }
   }
 
@@ -87,34 +84,35 @@ const Password = ({ user }: IProps): JSX.Element => {
    */
   return (
     <Card title="Your Password">
-      <Form layout="vertical" onFinish={onFinish} name="passwordForm">
+      <Form
+        {...layout}
+        layout="vertical"
+        onFinish={onFinish}
+        name="passwordForm"
+      >
         <Form.Item
-          {...inputLayout}
           label="Current password"
           name="password"
-          wrapperCol={{ offset: 2, span: 6 }}
           rules={[
             {
               required: true,
               message: 'Please enter your current password'
             }
           ]}
+          className="max-width-500"
         >
           <Input.Password placeholder="Current password" />
         </Form.Item>
         <PasswordItem
-          {...inputLayout}
+          className="max-width-500"
           name="newPassword"
           label="New password"
-          wrapperCol={{ offset: 2, span: 6 }}
           inputPlaceholder="Enter a new password"
           required={true}
         />
         <Form.Item
-          {...inputLayout}
           label="Password confirmation"
           name="passwordConfirm"
-          wrapperCol={{ offset: 2, span: 6 }}
           rules={[
             {
               required: true,
@@ -130,10 +128,11 @@ const Password = ({ user }: IProps): JSX.Element => {
               }
             })
           ]}
+          className="max-width-500"
         >
           <Input.Password placeholder="Confirm your new password" />
         </Form.Item>
-        <Form.Item {...buttonLayout}>
+        <Form.Item className="max-width-500">
           <Space>
             <Button type="primary" htmlType="submit" loading={loading}>
               Modify password

@@ -253,7 +253,11 @@ const Information = ({ user, swr }: IProps): JSX.Element => {
         </div>
         <div>
           <Form {...layout}>
-            <Form.Item label="Email" initialValue={user.email} wrapperCol={{span: 6}}>
+            <Form.Item
+              label="Email"
+              initialValue={user.email}
+              wrapperCol={{ span: 6 }}
+            >
               <Input
                 defaultValue={user.email}
                 maxLength={50}
@@ -261,7 +265,11 @@ const Information = ({ user, swr }: IProps): JSX.Element => {
               />
             </Form.Item>
 
-            <Form.Item label="First name" initialValue={user.firstname || ''} wrapperCol={{span: 6}}>
+            <Form.Item
+              label="First name"
+              initialValue={user.firstname || ''}
+              wrapperCol={{ span: 6 }}
+            >
               <Input
                 defaultValue={user.firstname || ''}
                 maxLength={50}
@@ -269,7 +277,11 @@ const Information = ({ user, swr }: IProps): JSX.Element => {
               />
             </Form.Item>
 
-            <Form.Item label="Last name" initialValue={user.lastname || ''} wrapperCol={{span: 6}}>
+            <Form.Item
+              label="Last name"
+              initialValue={user.lastname || ''}
+              wrapperCol={{ span: 6 }}
+            >
               <Input
                 defaultValue={user.lastname || ''}
                 maxLength={50}

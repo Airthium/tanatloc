@@ -137,12 +137,10 @@ const ThreeView = ({ loading, project, part }: IThreeProps): JSX.Element => {
 
     const pointLight1 = new PointLight('#ffffff', 0.5)
     pointLight1.decay = 2
-    pointLight1.position.set(5, 5, 5)
-    const pointLight2 = new PointLight('#ffffff', 0.5)
-    pointLight2.decay = 2
-    pointLight2.position.set(-5, 5, -5)
-    scene.current.add(pointLight1)
-    scene.current.add(pointLight2)
+
+    camera.current.add(pointLight1)
+
+    scene.current.add(camera.current)
 
     // Renderer
     renderer.current = new WebGLRenderer({
@@ -480,18 +478,6 @@ const ThreeView = ({ loading, project, part }: IThreeProps): JSX.Element => {
     camera.current.near = distance / 100
     camera.current.far = distance * 100
     camera.current.updateProjectionMatrix()
-
-    // Lights
-    scene.current.children.forEach((child) => {
-      if (child.type === 'PointLight') {
-        const position = child.position
-        const max = Math.max(
-          Math.max(Math.abs(position.x), Math.abs(position.y)),
-          Math.abs(position.z)
-        )
-        child.position.multiplyScalar((1.5 * distance) / max)
-      }
-    })
   }
 
   /**

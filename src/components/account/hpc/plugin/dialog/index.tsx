@@ -56,7 +56,7 @@ const PluginDialog = ({ plugin, swr, edit }: IProps): JSX.Element => {
    * @param key Key
    */
   const inputItem = (
-    item: { required?: boolean; label: string; props?: object },
+    item: IClientPlugin['configuration']['key'],
     key: string
   ): JSX.Element => {
     return (
@@ -65,12 +65,7 @@ const PluginDialog = ({ plugin, swr, edit }: IProps): JSX.Element => {
         name={key}
         label={item.label}
         htmlFor={'input-' + key}
-        rules={[
-          {
-            required: item.required,
-            message: "'" + item.label + "' is required"
-          }
-        ]}
+        rules={item.rules}
       >
         <Input id={'input-' + key} autoComplete="off" {...(item.props || {})} />
       </Form.Item>
@@ -83,7 +78,7 @@ const PluginDialog = ({ plugin, swr, edit }: IProps): JSX.Element => {
    * @param key Key
    */
   const textareaItem = (
-    item: { required?: boolean; label: string; props?: object },
+    item: IClientPlugin['configuration']['key'],
     key: string
   ): JSX.Element => {
     return (
@@ -92,12 +87,7 @@ const PluginDialog = ({ plugin, swr, edit }: IProps): JSX.Element => {
         name={key}
         label={item.label}
         htmlFor={'input-' + key}
-        rules={[
-          {
-            required: item.required,
-            message: "'" + item.label + "' is required"
-          }
-        ]}
+        rules={item.rules}
       >
         <Input.TextArea
           id={'input-' + key}
@@ -114,7 +104,7 @@ const PluginDialog = ({ plugin, swr, edit }: IProps): JSX.Element => {
    * @param key Key
    */
   const passwordItem = (
-    item: { required?: boolean; label: string; props?: object },
+    item: IClientPlugin['configuration']['key'],
     key: string
   ): JSX.Element => {
     return (
@@ -123,12 +113,7 @@ const PluginDialog = ({ plugin, swr, edit }: IProps): JSX.Element => {
         name={key}
         label={item.label}
         htmlFor={'input-' + key}
-        rules={[
-          {
-            required: item.required,
-            message: "'" + item.label + "' is required"
-          }
-        ]}
+        rules={item.rules}
       >
         <Input
           id={'input-' + key}
@@ -146,12 +131,7 @@ const PluginDialog = ({ plugin, swr, edit }: IProps): JSX.Element => {
    * @param key Key
    */
   const selectItem = (
-    item: {
-      required?: boolean
-      label: string
-      options?: string[]
-      props?: object
-    },
+    item: IClientPlugin['configuration']['key'],
     key: string
   ): JSX.Element => {
     return (
@@ -160,12 +140,7 @@ const PluginDialog = ({ plugin, swr, edit }: IProps): JSX.Element => {
         name={key}
         label={item.label}
         htmlFor={'select-' + key}
-        rules={[
-          {
-            required: item.required,
-            message: "'" + item.label + "' is required"
-          }
-        ]}
+        rules={item.rules}
       >
         <Select id={'select-' + key}>
           {item.options.map((option) => {

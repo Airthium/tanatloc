@@ -198,7 +198,11 @@ export interface IPlugin {
       [key: string]: {
         label: string
         type: string
-        required?: boolean
+        rules?: {
+          required?: boolean
+          message?: string
+          max?: number
+        }[]
         options?: string[]
         default?: boolean | number | value
         value?: bollean | number | string

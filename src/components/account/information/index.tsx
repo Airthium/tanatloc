@@ -125,101 +125,55 @@ const Information = ({ user, swr }: IProps): JSX.Element => {
     })
   }
 
+  /**
+   * On finish
+   * @param values Values
+   */
   const onFinish = async (values: {
     email: string
     firstname: string
     lastname: string
   }): Promise<void> => {
     try {
+      const toUpdate = []
+
       // Check email
-      if (user.email !== values.email) await onEmail(values.email)
+      if (user.email !== values.email)
+        toUpdate.push({
+          key: 'email',
+          value: values.email
+        })
 
       // Check firstname
       if (user.firstname !== values.firstname)
-        await onFirstName(values.firstname)
+        toUpdate.push({
+          key: 'fisrtname',
+          value: values.firstname
+        })
 
       // Check lastname
-      if (user.lastname !== values.lastname) await onLastName(values.lastname)
-    } catch (err) {}
-  }
-
-  /**
-   * On firstname
-   * @param value Value
-   */
-  const onFirstName = async (value: string): Promise<void> => {
-    try {
-      // API
-      await UserAPI.update([
-        {
-          key: 'firstname',
-          value
-        }
-      ])
-
-      // Local
-      swr.mutateUser({
-        firstname: value
-      })
-
-      SuccessNotification('New firstname saved')
-    } catch (err) {
-      ErrorNotification(errors.update, err)
-    }
-  }
-
-  /**
-   * On lastname
-   * @param value Value
-   */
-  const onLastName = async (value: string): Promise<void> => {
-    try {
-      // API
-      await UserAPI.update([
-        {
+      if (user.lastname !== values.lastname)
+        toUpdate.push({
           key: 'lastname',
-          value
-        }
-      ])
+          value: values.lastname
+        })
+
+      if (!toUpdate.length) return
+
+      await UserAPI.update(toUpdate)
 
       // Local
       swr.mutateUser({
-        lastname: value
+        email: values.email,
+        firstname: values.firstname,
+        lastname: values.lastname
       })
 
-      SuccessNotification('New lastname saved')
-    } catch (err) {
-      ErrorNotification(errors.update, err)
-    }
-  }
-
-  /**
-   * On email
-   * @param value Value
-   */
-  const onEmail = async (value: string): Promise<void> => {
-    try {
-      // Check email
-      if (!Utils.validateEmail(value))
-        throw new Error('Email address wrong format.')
-
-      // API
-      await UserAPI.update([
-        {
-          key: 'email',
-          value
-        }
-      ])
-
-      // Local
-      swr.mutateUser({
-        email: value
-      })
-
-      SuccessNotification(
-        'Changes saved',
-        'A validation email has been send to ' + value
-      )
+      if (toUpdate.find((u) => u.key === 'email'))
+        SuccessNotification(
+          'Changes saved',
+          'A validation email has been send to ' + values.email
+        )
     } catch (err) {
       ErrorNotification(errors.update, err)
     }

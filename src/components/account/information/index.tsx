@@ -2,7 +2,16 @@
 
 import PropTypes from 'prop-types'
 import { useState } from 'react'
-import { Avatar, Button, Card, Form, Space, Typography, Upload } from 'antd'
+import {
+  Avatar,
+  Button,
+  Card,
+  Form,
+  Input,
+  Space,
+  Typography,
+  Upload
+} from 'antd'
 import { UploadChangeParam } from 'antd/lib/upload'
 import { UploadOutlined, UserOutlined } from '@ant-design/icons'
 
@@ -43,6 +52,13 @@ const errors = {
 const Information = ({ user, swr }: IProps): JSX.Element => {
   // State
   const [uploading, setUploading]: [boolean, Function] = useState(false)
+  const [localEmail, setLocalEmail]: [string, Function] = useState(user.email)
+  const [localFirstname, setLocalFirstname]: [string, Function] = useState(
+    user.firstname || ''
+  )
+  const [localLastname, setLocalLastname]: [string, Function] = useState(
+    user.lastname || ''
+  )
 
   // Layout
   const layout = {
@@ -136,7 +152,7 @@ const Information = ({ user, swr }: IProps): JSX.Element => {
         firstname: value
       })
 
-      SuccessNotification('Change saved')
+      SuccessNotification('New firstname saved')
     } catch (err) {
       ErrorNotification(errors.update, err)
     }
@@ -164,7 +180,7 @@ const Information = ({ user, swr }: IProps): JSX.Element => {
         lastname: value
       })
 
-      SuccessNotification('Change saved')
+      SuccessNotification('New lastname saved')
     } catch (err) {
       ErrorNotification(errors.update, err)
     }
@@ -205,6 +221,13 @@ const Information = ({ user, swr }: IProps): JSX.Element => {
     }
   }
 
+  const onSubmit = (e) => {
+    e.preventDefault()
+    onEmail(localEmail)
+    onFirstName(localFirstname)
+    onLastName(localLastname)
+  }
+
   /**
    * Render
    */
@@ -230,26 +253,37 @@ const Information = ({ user, swr }: IProps): JSX.Element => {
         </div>
         <div>
           <Form {...layout}>
-            <Form.Item label="Email">
-              <Typography.Text
-                editable={{
-                  onChange: onEmail
-                }}
+            <Form.Item label="Email" initialValue={user.email} wrapperCol={{span: 6}}>
+              <Input
+                defaultValue={user.email}
+                maxLength={50}
+                onChange={(e) => setLocalEmail(e.target.value)}
+              />
+            </Form.Item>
+
+            <Form.Item label="First name" initialValue={user.firstname || ''} wrapperCol={{span: 6}}>
+              <Input
+                defaultValue={user.firstname || ''}
+                maxLength={50}
+                onChange={(e) => setLocalFirstname(e.target.value)}
+              />
+            </Form.Item>
+
+            <Form.Item label="Last name" initialValue={user.lastname || ''} wrapperCol={{span: 6}}>
+              <Input
+                defaultValue={user.lastname || ''}
+                maxLength={50}
+                onChange={(e) => setLocalLastname(e.target.value)}
+              />
+            </Form.Item>
+            <Form.Item wrapperCol={{ offset: 4, span: 16 }}>
+              <Button
+                type="primary"
+                htmlType="submit"
+                onClick={(e) => onSubmit(e)}
               >
-                {user.email}
-              </Typography.Text>
-            </Form.Item>
-
-            <Form.Item label="First name">
-              <Typography.Text editable={{ onChange: onFirstName }}>
-                {user.firstname || ''}
-              </Typography.Text>
-            </Form.Item>
-
-            <Form.Item label="Last name">
-              <Typography.Text editable={{ onChange: onLastName }}>
-                {user.lastname || ''}
-              </Typography.Text>
+                Save changes
+              </Button>
             </Form.Item>
           </Form>
         </div>

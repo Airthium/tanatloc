@@ -92,6 +92,7 @@ const Password = ({ user }: IProps): JSX.Element => {
           {...inputLayout}
           label="Current password"
           name="password"
+          wrapperCol={{offset: 2, span: 6}}
           rules={[
             {
               required: true,
@@ -105,6 +106,7 @@ const Password = ({ user }: IProps): JSX.Element => {
           {...inputLayout}
           name="newPassword"
           label="New password"
+          wrapperCol={{offset: 2, span: 6}}
           inputPlaceholder="Enter a new password"
           required={true}
         />
@@ -112,6 +114,7 @@ const Password = ({ user }: IProps): JSX.Element => {
           {...inputLayout}
           label="Password confirmation"
           name="passwordConfirm"
+          wrapperCol={{offset: 2, span: 6}}
           rules={[
             {
               required: true,

@@ -29,7 +29,7 @@ const Geometry = ({ configuration, onNext }: IProps): JSX.Element => {
               label="Meshable"
               tooltip="Enable automatic geometry meshing before FreeFEM script launch"
               valuePropName="checked"
-              rules={[{ required: true }]}
+              rules={[{ required: true, message: 'Meshable is required' }]}
             >
               <Switch checkedChildren="ON" unCheckedChildren="OFF" />
             </Form.Item>
@@ -37,7 +37,7 @@ const Geometry = ({ configuration, onNext }: IProps): JSX.Element => {
               name="name"
               label="Mesh name"
               tooltip="Geometry variable name"
-              rules={[{ required: true }]}
+              rules={[{ required: true, message: 'Mesh name is required' }]}
             >
               <Input />
             </Form.Item>

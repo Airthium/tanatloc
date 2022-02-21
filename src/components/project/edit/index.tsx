@@ -92,10 +92,10 @@ const Edit = ({ disabled, project, swr }: IProps): JSX.Element => {
           label="Name"
           name="title"
           rules={[
-            { required: true, message: 'Please enter a project name' },
+            { required: true, message: 'Name is required' },
             {
               max: 50,
-              message: 'A project name must not exceed 50 characters'
+              message: 'Max 50 characters'
             }
           ]}
         >

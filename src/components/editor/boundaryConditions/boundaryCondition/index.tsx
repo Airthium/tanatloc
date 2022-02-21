@@ -58,7 +58,9 @@ const BoundaryCondition = ({
         <Form.Item
           label="Boundary condition name"
           name="label"
-          rules={[{ required: true }]}
+          rules={[
+            { required: true, message: 'Boundary condition name is required' }
+          ]}
         >
           <Input />
         </Form.Item>
@@ -83,7 +85,7 @@ const BoundaryCondition = ({
                     {...restField}
                     label="Label"
                     name={[name, 'label']}
-                    rules={[{ required: true }]}
+                    rules={[{ required: true, message: 'Label is required' }]}
                   >
                     <Input />
                   </Form.Item>
@@ -91,7 +93,9 @@ const BoundaryCondition = ({
                     {...restField}
                     label="Default value"
                     name={[name, 'default']}
-                    rules={[{ required: true }]}
+                    rules={[
+                      { required: true, message: 'Default value is required' }
+                    ]}
                   >
                     <Input />
                   </Form.Item>
@@ -99,7 +103,7 @@ const BoundaryCondition = ({
                     {...restField}
                     label="Unit"
                     name={[name, 'unit']}
-                    rules={[{ required: true }]}
+                    rules={[{ required: true, message: 'Unit is required' }]}
                   >
                     <Input />
                   </Form.Item>

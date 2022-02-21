@@ -120,7 +120,7 @@ const Edit = ({ plugins, user, swr }: IProps): JSX.Element => {
         <Form.Item
           name="email"
           label="Email"
-          rules={[{ required: true, message: 'Please enter an email' }]}
+          rules={[{ required: true, message: 'Email is required' }]}
         >
           <Input />
         </Form.Item>

@@ -135,7 +135,7 @@ const NumericalParameters = ({
               name={['finiteElementSpace', 'name']}
               label="Name"
               tooltip="Finite element space name"
-              rules={[{ required: true }]}
+              rules={[{ required: true, message: 'Name is required' }]}
             >
               <Input />
             </Form.Item>
@@ -143,7 +143,7 @@ const NumericalParameters = ({
               label="Options"
               name={['finiteElementSpace', 'options']}
               tooltip="Finite element space options. The default finite element space will be the selected option"
-              rules={[{ required: true }]}
+              rules={[{ required: true, message: 'Options are required' }]}
             >
               <Select
                 dropdownRender={(menu) => (
@@ -202,7 +202,9 @@ const NumericalParameters = ({
             <Form.Item
               name="unknownFunction"
               label="Unknown function"
-              rules={[{ required: true }]}
+              rules={[
+                { required: true, message: 'Unknown function is required' }
+              ]}
             >
               <Input />
             </Form.Item>
@@ -215,7 +217,7 @@ const NumericalParameters = ({
               label="Options"
               name={['solver', 'options']}
               tooltip="Solver options. The default solver will be the selected option"
-              rules={[{ required: true }]}
+              rules={[{ required: true, message: 'Options are required' }]}
             >
               <Select
                 dropdownRender={(menu) => (

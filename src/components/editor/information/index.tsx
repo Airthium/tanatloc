@@ -37,7 +37,7 @@ const Information = ({ configuration, onNext }: IProps): JSX.Element => {
               name="name"
               label="Name"
               tooltip="The name will be displayed in the algorithm list"
-              rules={[{ required: true }]}
+              rules={[{ required: true, message: 'Name is required' }]}
             >
               <Input />
             </Form.Item>
@@ -45,7 +45,7 @@ const Information = ({ configuration, onNext }: IProps): JSX.Element => {
               name="category"
               label="Category"
               tooltip="The category is used for category filtering in the algorithm list"
-              rules={[{ required: true }]}
+              rules={[{ required: true, message: 'Category is required' }]}
             >
               <Select
                 placeholder={'Select or add a category'}
@@ -94,7 +94,7 @@ const Information = ({ configuration, onNext }: IProps): JSX.Element => {
               name="description"
               label="Description"
               tooltip="The description will be displayed at algorithm selection"
-              rules={[{ required: true }]}
+              rules={[{ required: true, message: 'Description is required' }]}
             >
               <Input.TextArea />
             </Form.Item>

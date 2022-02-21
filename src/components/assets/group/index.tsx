@@ -158,14 +158,14 @@ const Group = ({
         <Form.Item
           name="name"
           label="Name"
-          rules={[{ required: true, message: 'Please enter a name' }]}
+          rules={[{ required: true, message: 'Name is requried' }]}
         >
           <Input />
         </Form.Item>
         <Form.Item
           name="users"
           label="Users"
-          rules={[{ required: true, message: 'Please enter users' }]}
+          rules={[{ required: true, message: 'Users selection is required' }]}
         >
           <Select
             mode="multiple"

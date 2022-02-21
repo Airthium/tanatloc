@@ -114,7 +114,7 @@ const PasswordRecovery = (): JSX.Element => {
             <Form.Item
               name="email"
               label="Enter your email address"
-              rules={[{ required: true, message: 'Please enter your email' }]}
+              rules={[{ required: true, message: 'Email is required' }]}
             >
               <Input placeholder="Email address" autoComplete="email" />
             </Form.Item>
@@ -128,7 +128,10 @@ const PasswordRecovery = (): JSX.Element => {
               name="passwordConfirmation"
               label="Confirm your password"
               rules={[
-                { required: true, message: 'Please enter your Password' },
+                {
+                  required: true,
+                  message: 'Password confirmation is required'
+                },
                 ({ getFieldValue }) => ({
                   validator(_, value) {
                     if (!value || getFieldValue('password') === value) {

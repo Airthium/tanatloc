@@ -18,7 +18,10 @@ const Local: IPlugin = {
       name: {
         label: 'Name',
         type: 'input',
-        rules: [{ required: true, message: 'Name is required' }, { max: 50 }]
+        rules: [
+          { required: true, message: 'Name is required' },
+          { max: 50, message: 'Max 50 characters' }
+        ]
       }
     },
     inUseConfiguration: {}

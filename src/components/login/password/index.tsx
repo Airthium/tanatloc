@@ -65,7 +65,7 @@ const PasswordRecover = (): JSX.Element => {
         <Form.Item
           name="email"
           label="Your email address"
-          rules={[{ required: true, message: 'Please enter your email' }]}
+          rules={[{ required: true, message: 'Email is required' }]}
         >
           <Input placeholder="Email address" autoComplete="email" />
         </Form.Item>

@@ -139,16 +139,14 @@ const Login = (): JSX.Element => {
               <Form.Item
                 name="email"
                 label="Your email address"
-                rules={[{ required: true, message: 'Please enter your email' }]}
+                rules={[{ required: true, message: 'Email is required' }]}
               >
                 <Input placeholder="Email address" autoComplete="email" />
               </Form.Item>
               <Form.Item
                 name="password"
                 label="Your password"
-                rules={[
-                  { required: true, message: 'Please enter your password' }
-                ]}
+                rules={[{ required: true, message: 'Password is required' }]}
                 style={{ marginBottom: '14px' }}
               >
                 <Input.Password

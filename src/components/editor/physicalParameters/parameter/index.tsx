@@ -62,7 +62,7 @@ const Parameter = ({ parameter, onAdd, onEdit }: IProps): JSX.Element => {
         <Form.Item
           label="Parameter name"
           name="name"
-          rules={[{ required: true }]}
+          rules={[{ required: true, message: 'Parameter name is required' }]}
         >
           <Input />
         </Form.Item>
@@ -84,7 +84,7 @@ const Parameter = ({ parameter, onAdd, onEdit }: IProps): JSX.Element => {
                     {...restField}
                     label="Name"
                     name={[name, 'name']}
-                    rules={[{ required: true }]}
+                    rules={[{ required: true, message: 'Name is required' }]}
                   >
                     <Input />
                   </Form.Item>
@@ -92,7 +92,9 @@ const Parameter = ({ parameter, onAdd, onEdit }: IProps): JSX.Element => {
                     {...restField}
                     label="Default value"
                     name={[name, 'default']}
-                    rules={[{ required: true }]}
+                    rules={[
+                      { required: true, message: 'Default value is required' }
+                    ]}
                   >
                     <Input />
                   </Form.Item>
@@ -100,7 +102,7 @@ const Parameter = ({ parameter, onAdd, onEdit }: IProps): JSX.Element => {
                     {...restField}
                     label="Unit"
                     name={[name, 'unit']}
-                    rules={[{ required: true }]}
+                    rules={[{ required: true, message: 'Unit is required' }]}
                   >
                     <Input />
                   </Form.Item>

@@ -74,10 +74,10 @@ const Add = ({ swr }: IProps): JSX.Element => {
           label="Name"
           name="name"
           rules={[
-            { required: true, message: 'A Workspace name is required' },
+            { required: true, message: 'Name is required' },
             {
               max: 50,
-              message: 'A workspace name must not exceed 50 characters'
+              message: 'Max 50 characters'
             }
           ]}
         >

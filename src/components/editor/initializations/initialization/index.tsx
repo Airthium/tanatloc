@@ -67,7 +67,11 @@ const Initialization = ({
    */
   const directForm = () => (
     <>
-      <Form.Item name="name" label="Name" rules={[{ required: true }]}>
+      <Form.Item
+        name="name"
+        label="Name"
+        rules={[{ required: true, message: 'Name is required' }]}
+      >
         <Input />
       </Form.Item>
       <Form.List name="children" rules={[{ validator }]}>
@@ -88,7 +92,7 @@ const Initialization = ({
                   {...restField}
                   label="Label"
                   name={[name, 'name']}
-                  rules={[{ required: true }]}
+                  rules={[{ required: true, message: 'Label is required' }]}
                 >
                   <Input />
                 </Form.Item>
@@ -96,7 +100,9 @@ const Initialization = ({
                   {...restField}
                   label="Default value"
                   name={[name, 'default']}
-                  rules={[{ required: true }]}
+                  rules={[
+                    { required: true, message: 'Default value is required' }
+                  ]}
                 >
                   <Input />
                 </Form.Item>
@@ -104,7 +110,7 @@ const Initialization = ({
                   {...restField}
                   label="Unit"
                   name={[name, 'unit']}
-                  rules={[{ required: true }]}
+                  rules={[{ required: true, message: 'Unit is required' }]}
                 >
                   <Input />
                 </Form.Item>
@@ -130,7 +136,11 @@ const Initialization = ({
    */
   const couplingForm = () => (
     <>
-      <Form.Item name="name" label="Name" rules={[{ required: true }]}>
+      <Form.Item
+        name="name"
+        label="Name"
+        rules={[{ required: true, message: 'Name is required' }]}
+      >
         <Input />
       </Form.Item>
       <Form.List name="compatibility" rules={[{ validator }]}>
@@ -151,7 +161,7 @@ const Initialization = ({
                   {...restField}
                   label="Algorithm"
                   name={[name, 'algorithm']}
-                  rules={[{ required: true }]}
+                  rules={[{ required: true, message: 'Algorithm is required' }]}
                 >
                   <Select>
                     {existingAlgorithms.map((a) => (
@@ -165,7 +175,9 @@ const Initialization = ({
                   {...restField}
                   label="Filter name"
                   name={[name, 'filter', 'name']}
-                  rules={[{ required: true }]}
+                  rules={[
+                    { required: true, message: 'Filter name is required' }
+                  ]}
                 >
                   <Input />
                 </Form.Item>

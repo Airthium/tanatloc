@@ -93,7 +93,7 @@ const Add = ({ title, organization, dBkey, swr }: IProps): JSX.Element => {
         <Form.Item
           name="email"
           label="Email"
-          rules={[{ required: true, message: '"Email" is required' }]}
+          rules={[{ required: true, message: 'Email is required' }]}
         >
           <Input />
         </Form.Item>

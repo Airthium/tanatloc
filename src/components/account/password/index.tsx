@@ -96,7 +96,7 @@ const Password = ({ user }: IProps): JSX.Element => {
           rules={[
             {
               required: true,
-              message: 'Please enter your current password'
+              message: 'Current password is required'
             }
           ]}
           className="max-width-500"
@@ -116,7 +116,7 @@ const Password = ({ user }: IProps): JSX.Element => {
           rules={[
             {
               required: true,
-              message: 'Please enter your new password confirmation'
+              message: 'Password confirmation is required'
             },
             ({ getFieldValue }) => ({
               validator(_, value) {

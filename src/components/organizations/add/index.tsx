@@ -73,9 +73,7 @@ const Add = ({ swr }: IProps): JSX.Element => {
         <Form.Item
           name="name"
           label="Name"
-          rules={[
-            { required: true, message: 'Please enter an organization name' }
-          ]}
+          rules={[{ required: true, message: 'Name is required' }]}
         >
           <Input />
         </Form.Item>

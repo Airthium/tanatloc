@@ -54,7 +54,7 @@ const Material = ({ material, onAdd, onEdit }: IProps): JSX.Element => {
           label="Name"
           name="name"
           tooltip="Example: «Density»"
-          rules={[{ required: true }]}
+          rules={[{ required: true, message: 'Name is required' }]}
         >
           <Input />
         </Form.Item>
@@ -62,7 +62,7 @@ const Material = ({ material, onAdd, onEdit }: IProps): JSX.Element => {
           label="Symbol"
           name="symbol"
           tooltip="The symbol must match the material database definition"
-          rules={[{ required: true }]}
+          rules={[{ required: true, message: 'Symbol is required' }]}
         >
           <Select>
             {existingMaterialSymbols.map((m) => (
@@ -76,7 +76,7 @@ const Material = ({ material, onAdd, onEdit }: IProps): JSX.Element => {
           label="Default value"
           name="default"
           tooltip="Example: 1e3"
-          rules={[{ required: true }]}
+          rules={[{ required: true, message: 'Default value is required' }]}
         >
           <Input />
         </Form.Item>
@@ -84,7 +84,7 @@ const Material = ({ material, onAdd, onEdit }: IProps): JSX.Element => {
           label="Unit"
           name="unit"
           tooltip="LaTeX friendly, example: kg.m^{-3}"
-          rules={[{ required: true }]}
+          rules={[{ required: true, message: 'Unit is required' }]}
         >
           <Input />
         </Form.Item>

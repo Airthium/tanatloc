@@ -120,14 +120,24 @@ const Registration = (): JSX.Element => {
             <Form.Item
               label="Minimum number of characters"
               name="min"
-              rules={[{ required: true, message: 'Please enter a value' }]}
+              rules={[
+                {
+                  required: true,
+                  message: 'Minimum number of characters is required'
+                }
+              ]}
             >
               <InputNumber min={0} max={64} />
             </Form.Item>
             <Form.Item
               label="Maximum number of characters"
               name="max"
-              rules={[{ required: true, message: 'Please enter a value' }]}
+              rules={[
+                {
+                  required: true,
+                  message: 'Maximum number of characters is required'
+                }
+              ]}
             >
               <InputNumber min={0} max={64} />
             </Form.Item>

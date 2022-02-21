@@ -422,7 +422,7 @@ const Project = (): JSX.Element => {
                 </Menu.Item>
                 {!geometries.length ? (
                   <Menu.Item
-                  className='text-dark'
+                    className="text-dark"
                     key="geometry-needed"
                     disabled={true}
                     icon={

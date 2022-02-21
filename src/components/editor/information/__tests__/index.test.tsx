@@ -26,13 +26,17 @@ describe('components/editor/information', () => {
 
     // Open select
     const select = screen.getByRole('combobox')
-    await act(async () => fireEvent.mouseDown(select))
+    await act(async () => {
+      fireEvent.mouseDown(select)
+    })
 
     const input = screen.getAllByRole('textbox')[2]
     fireEvent.change(input, { target: { value: 'New category' } })
 
     const button = screen.getByRole('img')
-    await act(async () => fireEvent.click(button))
+    await act(async () => {
+      fireEvent.click(button)
+    })
 
     unmount()
   })

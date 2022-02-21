@@ -190,10 +190,14 @@ describe('components/project/simulation.Selector', () => {
     await waitFor(() => screen.getByText('Name2'))
 
     const select = screen.getByRole('combobox')
-    await act(async () => fireEvent.mouseDown(select))
+    await act(async () => {
+      fireEvent.mouseDown(select)
+    })
 
     const option = screen.getAllByText('category2')
-    await act(async () => fireEvent.click(option[1]))
+    await act(async () => {
+      fireEvent.click(option[1])
+    })
 
     unmount()
   })

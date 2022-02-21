@@ -14,6 +14,9 @@ yarn run depcheck
 # Lint
 yarn run prettier
 
+# Next lint
+yarn run next lint
+
 # Doc
 yarn run doc
 

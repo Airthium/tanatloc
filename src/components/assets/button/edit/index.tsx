@@ -46,15 +46,16 @@ const EditButton = ({
     <Tooltip title={children || 'Edit'}>
       <Button
         className={
-          (needMargin ? 'marginLeft-5' : '') +
-          (light ? ' text-light' : '') +
-          (dark ? ' text-dark' : '')
+          'no-background ' +
+          (needMargin ? 'marginLeft-5 ' : '') +
+          (light ? 'text-light ' : '') +
+          (dark ? 'text-dark ' : '') +
+          (!bordered ? 'no-border ' : '')
         }
         disabled={disabled}
         loading={loading}
         type={primary ? 'primary' : 'default'}
         icon={<EditOutlined />}
-        style={{ backgroundColor: 'none', border: !bordered && 'none' }}
         onClick={onEdit}
       >
         {children}

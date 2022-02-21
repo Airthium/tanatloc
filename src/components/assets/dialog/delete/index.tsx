@@ -50,10 +50,7 @@ const DeleteDialog = ({
       confirmLoading={loading}
     >
       <Space>
-        <ExclamationCircleTwoTone
-          twoToneColor="#ff4d4f"
-          style={{ fontSize: '1.5em' }}
-        />
+        <ExclamationCircleTwoTone twoToneColor="#ff4d4f" />
         <span>{children}</span>
       </Space>
     </Modal>

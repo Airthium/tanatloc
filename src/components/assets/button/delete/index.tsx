@@ -7,8 +7,8 @@ import { DeleteDialog } from '@/components/assets/dialog'
 
 export interface IProps {
   disabled?: boolean
-  bordered?: boolean
   loading?: boolean
+  bordered?: boolean
   text?: string
   children?: ReactChild | ReactChild[]
   onDelete: () => Promise<void>
@@ -21,14 +21,15 @@ export interface IProps {
  * @description Props list:
  * - disabled (boolean) Set disabled state
  * - loading (boolean) Set loading state
+ * - bordered (boolean) Set border
  * - text (string) DeleteDialog text
  * - children (React child) Button children
  * - onDelete (async Function) DeleteDialog click (this function can throw an error)
  */
 const DeleteButton = ({
   disabled,
-  bordered,
   loading,
+  bordered,
   text,
   children,
   onDelete
@@ -55,11 +56,11 @@ const DeleteButton = ({
       </DeleteDialog>
       <Tooltip title={'Delete'}>
         <Button
+          className={'no-background ' + !bordered ? 'no-border' : ''}
           danger
           disabled={disabled}
           loading={loading}
           icon={<DeleteOutlined />}
-          style={{ backgroundColor: 'none', border: !bordered && 'none' }}
           onClick={() => setVisible(true)}
         >
           {children}
@@ -72,6 +73,7 @@ const DeleteButton = ({
 DeleteButton.propTypes = {
   disabled: PropTypes.bool,
   loading: PropTypes.bool,
+  bordered: PropTypes.bool,
   children: PropTypes.node,
   onDelete: PropTypes.func.isRequired
 }

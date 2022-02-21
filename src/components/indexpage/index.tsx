@@ -83,9 +83,7 @@ const Index = (): JSX.Element => {
       process.env.NEXT_PUBLIC_SOURCE_COMMIT
 
   // Buttons
-  let buttons = (
-    <Button loading={true} size="large" style={{ border: 'none' }} />
-  )
+  let buttons = <Button className="no-border" loading={true} size="large" />
   if (!loadingUser)
     if (user)
       buttons = (

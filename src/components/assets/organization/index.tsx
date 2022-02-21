@@ -70,11 +70,11 @@ const Organization = ({ organization, swr, onClose }: IProps): JSX.Element => {
    */
   return (
     <>
-      <div style={{ display: 'flex' }}>
+      <div className="display-flex">
         <Button
+          className="marginRight-20"
           icon={<ArrowLeftOutlined />}
           onClick={() => onClose()}
-          style={{ marginRight: '20px' }}
         />
         <Typography.Title level={3} editable={{ onChange: onName }}>
           {organization.name}

@@ -45,7 +45,7 @@ const BoundaryConditionsList = ({
                 <List>
                   {boundaryCondition.children.map((child) => (
                     <List.Item key={child.name}>
-                      <Space direction="vertical" style={{ maxWidth: '100%' }}>
+                      <Space direction="vertical" className="full-width">
                         <Typography.Text>
                           <span className="text-light">Name:</span> {child.name}
                         </Typography.Text>

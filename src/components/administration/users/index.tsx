@@ -120,7 +120,7 @@ const Users = ({ users, swr }: IProps): JSX.Element => {
             key: 'superuser',
             // eslint-disable-next-line react/display-name
             render: (superuser: boolean) =>
-              superuser && <CheckOutlined style={{ color: 'green' }} />
+              superuser && <CheckOutlined className="color-green" />
           },
           {
             title: 'Actions',

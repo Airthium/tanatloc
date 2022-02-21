@@ -6,8 +6,9 @@ import { ReactChild } from 'react'
 export interface IProps {
   disabled?: boolean
   loading?: boolean
+  bordered?: boolean
   children?: ReactChild | ReactChild[]
-  onDownload: Function
+  onDownload: () => void
 }
 
 /**
@@ -17,12 +18,14 @@ export interface IProps {
  * @description Props list:
  * - disabled (boolean) Set disabled state
  * - loading (boolean) Set loading state
+ * - bordered (boolean) Set border
  * - children (React child) Button children
  * - onDownload (Function) Button click
  */
 const DownloadButton = ({
   disabled,
   loading,
+  bordered,
   children,
   onDownload
 }: IProps): JSX.Element => {
@@ -32,10 +35,10 @@ const DownloadButton = ({
   return (
     <Tooltip title="Download">
       <Button
+        className={'no-background ' + !bordered ? 'no-border' : ''}
         disabled={disabled}
         loading={loading}
         icon={<DownloadOutlined />}
-        style={{ backgroundColor: 'none', border: 'none' }}
         onClick={() => onDownload()}
       >
         {children}
@@ -47,6 +50,7 @@ const DownloadButton = ({
 DownloadButton.propTypes = {
   disabled: PropTypes.bool,
   loading: PropTypes.bool,
+  bordered: PropTypes.bool,
   children: PropTypes.node,
   onDownload: PropTypes.func.isRequired
 }

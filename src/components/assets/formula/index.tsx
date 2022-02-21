@@ -100,9 +100,9 @@ const Formula = ({
           <Space>
             <MathJax.Inline text={unit} />
             {saving ? (
-              <LoadingOutlined spin style={{ color: 'orange' }} />
+              <LoadingOutlined spin className="color-orange" />
             ) : (
-              <CheckCircleOutlined style={{ color: 'green' }} />
+              <CheckCircleOutlined className="color-green" />
             )}
           </Space>
         }

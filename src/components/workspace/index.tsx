@@ -155,7 +155,7 @@ const Workspace = ({
         >
           {workspace.users?.length || workspace.groups?.length ? (
             <div className="inWorkspace-shared">
-              <span style={{ marginRight: '10px' }}>
+              <span className="marginRight-10">
                 This workspace is shared with:
               </span>
               <Avatar.Group maxCount={5}>

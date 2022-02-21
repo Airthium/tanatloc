@@ -1,5 +1,4 @@
 @import '~antd/dist/antd.less';
-@import './assets.less';
 @import './notfound.less';
 @import './background.less';
 @import './index.less';
@@ -170,6 +169,10 @@ body {
 }
 
 // Global
+.no-background {
+  background-color: none !important;
+}
+
 .no-border {
   border: none !important;
 }
@@ -191,6 +194,10 @@ body {
   position: relative !important;
 }
 
+.display-flex {
+  display: flex !important;
+}
+
 .full-width {
   width: 100% !important;
 }
@@ -199,12 +206,60 @@ body {
   max-width: 500px !important;
 }
 
+.marginLeft-5 {
+  margin-left: 5px !important;
+}
+
+.marginRight-10 {
+  margin-right: 10px !important;
+}
+
+.marginRight-20 {
+  margin-right: 20px !important;
+}
+
+.marginBottom-10 {
+  margin-bottom: 10px !important;
+}
+
 .text-left {
   text-align: left !important;
 }
 
 .text-center {
   text-align: center !important;
+}
+
+.text-light {
+  color: @tanatloc-text-light !important;
+}
+
+.text-dark {
+  color: @tanatloc-text-dark !important;
+}
+
+.border-dark {
+  border-color: @tanatloc-text-dark !important;
+}
+
+.border-light {
+  border-color: @tanatloc-text-light !important;
+}
+
+.color-green {
+  color: green !important;
+}
+
+.color-orange {
+  color: orange !important;
+}
+
+.color-primary {
+  color: @tanatloc-primary-color !important;
+}
+
+.cursor-pointer {
+  cursor: pointer !important;
 }
 
 .logo {

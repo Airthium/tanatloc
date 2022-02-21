@@ -181,17 +181,15 @@ const Share = ({
       <Tooltip title="Share">
         <Button
           className={
-            (style?.buttonLight ? 'text-light' : '') +
-            (style?.buttonDark ? ' text-dark' : '')
+            'no-background ' +
+            (style?.buttonLight ? 'text-light ' : '') +
+            (style?.buttonDark ? ' text-dark ' : '') +
+            (!style?.buttonBordered ? ' no-border ' : '')
           }
           key="share"
           disabled={disabled}
           icon={<ShareAltOutlined />}
           onClick={() => setVisible(true)}
-          style={{
-            backgroundColor: 'none',
-            border: !style?.buttonBordered && 'none'
-          }}
         />
       </Tooltip>
       <Dialog

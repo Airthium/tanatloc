@@ -284,13 +284,9 @@ const Selector = ({
         <Input.Search placeholder="Search" value={search} onChange={onSearch} />
       </Space>
 
-      <Divider style={{ borderColor: '#f0f0f0' }} />
+      <Divider className="border-light" />
 
-      <div
-        style={{
-          width: '100%'
-        }}
-      >
+      <div className="full-width">
         {geometry?.[type]
           ? geometry[type].map(
               (
@@ -320,11 +316,8 @@ const Selector = ({
 
                   return (
                     <Card
+                      className="marginBottom-10"
                       key={index}
-                      style={{
-                        marginBottom: '7px',
-                        cursor
-                      }}
                       bodyStyle={{
                         position: 'relative',
                         padding: '10px 10px 10px 40px',

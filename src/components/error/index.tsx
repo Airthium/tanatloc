@@ -29,10 +29,10 @@ function Error({ statusCode }: IProps): JSX.Element {
           {statusCode ? 'An error occurred on server' : 'An error occurred'}
         </Typography.Title>
         <Typography.Title
+          className="cursor-pointer"
           level={2}
           underline={true}
           onClick={router.reload}
-          style={{ cursor: 'pointer' }}
         >
           Please, refresh the page
         </Typography.Title>

@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import { Modal, Space } from 'antd'
+import { Modal, Space, Typography } from 'antd'
 import { ExclamationCircleTwoTone } from '@ant-design/icons'
 import { ReactChild } from 'react'
 
@@ -38,7 +38,9 @@ const DeleteDialog = ({
   return (
     <Modal
       className="Dialog"
-      title={title}
+      title={
+        <Typography.Text ellipsis={{ tooltip: true }}>{title}</Typography.Text>
+      }
       okText="Delete"
       closable={true}
       visible={visible}

@@ -2,7 +2,7 @@
 
 import PropTypes from 'prop-types'
 import { ReactChild, useEffect } from 'react'
-import { Form, Modal } from 'antd'
+import { Form, Modal, Typography } from 'antd'
 import { BaseButtonProps } from 'antd/lib/button/button'
 
 import { Error as ErrorNotification } from '@/components/assets/notification'
@@ -73,7 +73,9 @@ const Dialog = ({
   return (
     <Modal
       className="Dialog"
-      title={title}
+      title={
+        <Typography.Text ellipsis={{ tooltip: true }}>{title}</Typography.Text>
+      }
       visible={visible}
       closable={closable === undefined ? true : closable}
       maskClosable={closable === undefined ? true : closable}

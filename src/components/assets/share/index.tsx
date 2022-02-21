@@ -2,7 +2,14 @@
 
 import PropTypes from 'prop-types'
 import { useState, useEffect, CSSProperties } from 'react'
-import { Button, Tooltip, TreeDataNode, TreeSelect, Typography } from 'antd'
+import {
+  Button,
+  Form,
+  Tooltip,
+  TreeDataNode,
+  TreeSelect,
+  Typography
+} from 'antd'
 import { ShareAltOutlined } from '@ant-design/icons'
 
 import {
@@ -198,23 +205,40 @@ const Share = ({
           {workspace ? 'Workspace: ' : 'Project: '}
           {workspace?.name || project?.title}
         </Typography.Text>
-        <br />
-        <Typography.Text>
-          Share this {workspace ? 'workspace' : 'project'} with organization
-          groups or users
-        </Typography.Text>
-        <TreeSelect
-          multiple
-          placeholder="Select groups or users"
-          dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
-          className="full-width"
-          treeData={treeData}
-          treeDefaultExpandAll
-          treeCheckable
-          showCheckedStrategy={TreeSelect.SHOW_ALL}
-          value={selected}
-          onChange={onSelectChange}
-        />
+        {treeData.length ? (
+          <Form.Item
+            label={
+              <>
+                Share this {workspace ? 'workspace' : 'project'} with
+                organization groups or users
+              </>
+            }
+          >
+            <TreeSelect
+              multiple
+              placeholder="Select groups or users"
+              dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
+              className="full-width"
+              treeData={treeData}
+              treeDefaultExpandAll
+              treeCheckable
+              showCheckedStrategy={TreeSelect.SHOW_ALL}
+              value={selected}
+              onChange={onSelectChange}
+            />
+          </Form.Item>
+        ) : (
+          <>
+            <br />
+            <Typography.Text strong>
+              There is no organization for now
+            </Typography.Text>
+            <br />
+            <Typography.Text>
+              You can create organizations and groups in the Organization menu.
+            </Typography.Text>
+          </>
+        )}
       </Dialog>
     </>
   )

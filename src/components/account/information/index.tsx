@@ -62,8 +62,7 @@ const Information = ({ user, swr }: IProps): JSX.Element => {
 
   // Layout
   const layout = {
-    labelCol: { span: 4 },
-    wrapperCol: { span: 16 }
+    labelCol: { span: 4 }
   }
 
   /**
@@ -252,43 +251,39 @@ const Information = ({ user, swr }: IProps): JSX.Element => {
           </Upload>
         </div>
         <div>
-          <Form {...layout}>
+          <Form
+            {...layout}
+            initialValues={{
+              email: user.email,
+              firstname: user.firstname || '',
+              lastname: user.lastname || ''
+            }}
+          >
             <Form.Item
               label="Email"
-              initialValue={user.email}
-              wrapperCol={{ span: 6 }}
+              rules={[{ type: 'email' }]}
+              style={{ maxWidth: '500px' }}
             >
               <Input
-                defaultValue={user.email}
                 maxLength={50}
                 onChange={(e) => setLocalEmail(e.target.value)}
               />
             </Form.Item>
 
-            <Form.Item
-              label="First name"
-              initialValue={user.firstname || ''}
-              wrapperCol={{ span: 6 }}
-            >
+            <Form.Item label="First name" style={{ maxWidth: '500px' }}>
               <Input
-                defaultValue={user.firstname || ''}
                 maxLength={50}
                 onChange={(e) => setLocalFirstname(e.target.value)}
               />
             </Form.Item>
 
-            <Form.Item
-              label="Last name"
-              initialValue={user.lastname || ''}
-              wrapperCol={{ span: 6 }}
-            >
+            <Form.Item label="Last name" style={{ maxWidth: '500px' }}>
               <Input
-                defaultValue={user.lastname || ''}
                 maxLength={50}
                 onChange={(e) => setLocalLastname(e.target.value)}
               />
             </Form.Item>
-            <Form.Item wrapperCol={{ offset: 4, span: 16 }}>
+            <Form.Item wrapperCol={{ offset: 4 }}>
               <Button
                 type="primary"
                 htmlType="submit"

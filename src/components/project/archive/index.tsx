@@ -90,7 +90,7 @@ const Archive = ({
         okButtonText="Archive"
       >
         <Typography.Text>
-          An archive will be downloaded and the project won't be editable
+          An archive will be downloaded and the project will not be editable
           anymore, archive the project «{project.title}»?
         </Typography.Text>
       </Dialog>

@@ -246,7 +246,7 @@ const Selector = ({
    */
   return (
     <Card size="small">
-      <Space direction="vertical">
+      <Space direction="vertical" className="full-width">
         <Typography.Text strong>Filters</Typography.Text>
         <Space direction="horizontal" wrap={true}>
           {colors.length > 1 && (

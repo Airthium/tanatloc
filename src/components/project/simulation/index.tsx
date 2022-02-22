@@ -2,7 +2,7 @@
 
 import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
-import { Layout, Menu, Modal, Select, Space, Typography } from 'antd'
+import { Divider, Layout, Menu, Modal, Select, Space, Typography } from 'antd'
 import { WarningOutlined } from '@ant-design/icons'
 import { addedDiff, updatedDiff } from 'deep-object-diff'
 import { merge } from 'lodash'
@@ -140,11 +140,13 @@ const Selector = ({
         <Layout.Sider theme="light">
           <Menu mode="inline" onSelect={onSelect}>
             <Select
+              className="full-width"
               options={categories}
               allowClear
               placeholder="Category filter"
               onChange={(value) => setCategory(value)}
             />
+            <Divider className="border-light" />
             {models.map((model) => {
               if (!category || model.category === category)
                 return <Menu.Item key={model.algorithm}>{model.name}</Menu.Item>
@@ -152,7 +154,7 @@ const Selector = ({
           </Menu>
         </Layout.Sider>
         <Layout.Content
-          style={{ padding: '10px', height: '60vh', overflow: 'auto' }}
+          style={{ padding: '20px', height: '60vh', overflow: 'auto' }}
           className="simulation-selector"
         >
           <MathJax.Html html={current?.description} />

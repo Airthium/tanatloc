@@ -43,6 +43,14 @@ describe('components/project/simulation/run/cloudServer', () => {
       item: {
         label: 'item',
         value: 'value'
+      },
+      otheritem: {
+        label: 'bool',
+        value: true
+      },
+      otherotheritem: {
+        label: 'bool again',
+        value: false
       }
     }
   }
@@ -85,6 +93,12 @@ describe('components/project/simulation/run/cloudServer', () => {
     const { unmount } = render(
       <CloudServer cloudServer={cloudServer} onOk={onOk} />
     )
+
+    unmount()
+  })
+
+  test('without cloud server', async () => {
+    const { unmount } = render(<CloudServer onOk={onOk} />)
 
     unmount()
   })

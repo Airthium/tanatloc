@@ -24,4 +24,17 @@ describe('components/assets/button/download', () => {
 
     unmount()
   })
+
+  test('bordered', () => {
+    const { unmount } = render(
+      <DownloadButton
+        disabled={mockDisabled()}
+        loading={mockLoading()}
+        bordered
+        onDownload={mockOnDownload}
+      />
+    )
+
+    unmount()
+  })
 })

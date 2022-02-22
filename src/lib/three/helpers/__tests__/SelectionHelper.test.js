@@ -80,7 +80,7 @@ describe('lib/three/helpers/SelectionHelper', () => {
     mouseMove({ button: 0 })
     mouseUp({})
 
-    // 10x 10y size, no intersect
+    // 10x 10y size, no part
     global.MockBox2.getSize = (vector) => {
       vector.x = 10
       vector.y = 10
@@ -98,7 +98,12 @@ describe('lib/three/helpers/SelectionHelper', () => {
         removeChild: jest.fn
       }
     })
-    const selection = SelectionHelper(renderer, scene, camera, controls)
+    const selection = SelectionHelper(
+      renderer,
+      { children: [{ type: 'Part' }] },
+      camera,
+      controls
+    )
     selection.start()
     mouseDown({ button: 0 })
     mouseUp({})
@@ -109,8 +114,16 @@ describe('lib/three/helpers/SelectionHelper', () => {
       vector.x = 10
       vector.y = 10
     }
-    global.MockRaycaster.intersectObjects = [{}]
     const selection = SelectionHelper(renderer, scene, camera, controls)
+
+    // No intersect
+    global.MockRaycaster.intersectObject = []
+    selection.start()
+    mouseDown({ button: 0 })
+    mouseUp({})
+
+    // Intersect
+    global.MockRaycaster.intersectObject = [{}]
     selection.start()
     mouseDown({ button: 0 })
     mouseUp({})

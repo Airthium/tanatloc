@@ -25,6 +25,14 @@ describe('components/assets/button/delete', () => {
     unmount()
   })
 
+  test('bordered', () => {
+    const { unmount } = render(
+      <DeleteButton loading={mockLoading()} bordered onDelete={mockOnDelete} />
+    )
+
+    unmount()
+  })
+
   test('setVisible', () => {
     mockDeleteDialog.mockImplementation((props) => (
       <div role="DeleteDialog" onClick={props.onCancel} />

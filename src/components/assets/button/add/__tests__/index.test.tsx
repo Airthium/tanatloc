@@ -20,6 +20,23 @@ describe('components/assets/button/add', () => {
     unmount()
   })
 
+  test('style', () => {
+    const { unmount } = render(
+      <AddButton
+        disabled={mockDisabled()}
+        primary
+        light
+        dark
+        fullWidth
+        needMargin
+        loading={mockLoading()}
+        onAdd={mockOnAdd}
+      />
+    )
+
+    unmount()
+  })
+
   test('onAdd', () => {
     const { unmount } = render(
       <AddButton

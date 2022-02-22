@@ -102,9 +102,7 @@ const ProjectList = ({
             <Empty image="images/empty.svg" description={'No preview yet.'} />
           )
 
-        // Title
-        const title = <Typography.Text>{project.title}</Typography.Text>
-
+        // Description
         const description = (
           <Space direction="vertical" className="full-width text-left">
             <Typography.Text>

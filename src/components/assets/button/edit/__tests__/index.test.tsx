@@ -19,4 +19,21 @@ describe('components/assets/button/add', () => {
 
     unmount()
   })
+
+  test('style', () => {
+    const { unmount } = render(
+      <EditButton
+        disabled={mockDisabled()}
+        loading={mockLoading()}
+        needMargin
+        light
+        dark
+        bordered
+        primary
+        onEdit={mockOnEdit}
+      />
+    )
+
+    unmount()
+  })
 })

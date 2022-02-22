@@ -90,7 +90,7 @@ const Archive = ({
         okButtonText="Archive"
       >
         <Typography.Text>
-          Archive the project «{project.title}»?
+          The archive will be downloaded and won't be editable anymore, archive the project «{project.title}»?
         </Typography.Text>
       </Dialog>
       <Tooltip title={project.archived ? 'Restore' : 'Archive'}>

@@ -102,7 +102,11 @@ const Edit = ({ disabled, project, swr }: IProps): JSX.Element => {
           <Input placeholder="Project's name" />
         </Form.Item>
         <Form.Item label="Description" name="description">
-          <Input.TextArea placeholder="Project's description" />
+          <Input.TextArea
+            placeholder="Project's description"
+            showCount
+            maxLength={120}
+          />
         </Form.Item>
       </Dialog>
     </>

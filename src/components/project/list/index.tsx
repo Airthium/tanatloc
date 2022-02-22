@@ -65,7 +65,6 @@ const ProjectList = ({
     Array<
       IProjectWithData & {
         snapshotRender: JSX.Element
-        titleRender: JSX.Element
         descriptionRender: JSX.Element
         ownersRender: JSX.Element
         usersRender: JSX.Element
@@ -136,7 +135,6 @@ const ProjectList = ({
         return {
           ...project,
           snapshotRender: snapshot,
-          titleRender: title,
           descriptionRender: description,
           ownersRender: owners,
           usersRender: users,
@@ -172,7 +170,6 @@ const ProjectList = ({
       query: { page: page, workspaceId: workspace.id, projectId: project.id }
     })
   }
-
   /**
    * Render
    */
@@ -203,8 +200,8 @@ const ProjectList = ({
               key={project.id}
               title={
                 <>
-                  <Typography.Paragraph ellipsis={{ rows: 2 }}>
-                    {project.titleRender}
+                  <Typography.Paragraph ellipsis={{ rows: 2, tooltip: true }}>
+                    {project.title}
                   </Typography.Paragraph>
                   {project.archived && <Tag>Archived</Tag>}
                 </>

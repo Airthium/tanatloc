@@ -145,10 +145,13 @@ const CloudServer = ({ disabled, cloudServer, onOk }: IProps): JSX.Element => {
 
             {Object.keys(cloudServer.inUseConfiguration).map((key) => {
               const item = cloudServer.inUseConfiguration[key]
+
+              let value = item.value
+              if (typeof value === 'boolean') value = value ? 'yes' : 'no'
+
               return (
                 <Typography.Text key={key}>
-                  <span className="text-light">{item.label}:</span>{' '}
-                  {item.value ?? ''}
+                  <span className="text-light">{item.label}:</span> {value}
                 </Typography.Text>
               )
             })}

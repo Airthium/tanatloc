@@ -4,7 +4,7 @@ import { Button, Card, Drawer, Space, Typography } from 'antd'
 import { CloseOutlined, ExclamationCircleOutlined } from '@ant-design/icons'
 
 import { IGeometry, ISimulation } from '@/database/index.d'
-import { IModelMaterialValue } from '@/models/index.d'
+import { IModelMaterial, IModelMaterialValue } from '@/models/index.d'
 
 import Formula from '@/components/assets/formula'
 import Selector from '@/components/assets/selector'
@@ -97,6 +97,34 @@ const Material = ({
   }
 
   /**
+   * On material change
+   * @param child Children
+   * @param index Index
+   * @param val Value
+   */
+  const onMaterialChange = (
+    child: IModelMaterial,
+    index: number,
+    val: string
+  ) => {
+    setCurrent({
+      ...current,
+      material: {
+        label: 'custom',
+        children: [
+          ...(current?.material?.children?.slice(0, index) || []),
+          {
+            label: child.label,
+            symbol: child.name,
+            value: val
+          },
+          ...(current?.material?.children?.slice(index + 1) || [])
+        ]
+      }
+    })
+  }
+
+  /**
    * Render
    */
   return (
@@ -156,24 +184,27 @@ const Material = ({
     >
       <Space direction="vertical" className="full-width">
         <Card size="small">
-          <Space direction="vertical" className="full-width text-center">
+          <Space direction="vertical" className="full-width">
             <DataBase onSelect={onMaterialSelect} />
-            <Typography.Text>{current?.material?.label}</Typography.Text>
-            {materials.children?.map((child) => {
+            <Typography.Text>
+              Material: {current?.material?.label ?? 'default'}
+            </Typography.Text>
+            {materials.children?.map((child, index) => {
               const m = current?.material?.children?.find(
                 (c) => c.symbol === child.name
               )
-              if (m)
-                return (
-                  <Formula
-                    key={m.symbol}
-                    defaultValue={m.value}
-                    unit={child.unit}
-                    onValueChange={(val) => {
-                      m.value = val
-                    }}
-                  />
-                )
+
+              return (
+                <Formula
+                  key={child.name}
+                  label={child.name}
+                  defaultValue={m ? m.value : String(child.default)}
+                  unit={child.unit}
+                  onValueChange={(val) => {
+                    onMaterialChange(child, index, val)
+                  }}
+                />
+              )
             })}
           </Space>
         </Card>

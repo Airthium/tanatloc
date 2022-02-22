@@ -50,11 +50,17 @@ class MockFloat32BufferAttribute {}
 
 class MockAmbientLight {}
 
+global.MockBox2 = {
+  getSize: (vector) => {
+    vector.x = 0
+    vector.y = 0
+  }
+}
 class MockBox2 {
   constructor() {
     this.min = new MockVector2()
     this.max = new MockVector2()
-    this.getSize = () => new MockVector2()
+    this.getSize = global.MockBox2.getSize
   }
 }
 
@@ -152,6 +158,7 @@ class MockOrthographicCamera {
 
 class MockPerspectiveCamera {
   constructor() {
+    this.add = jest.fn
     this.position = new MockVector3()
     this.updateProjectionMatrix = jest.fn()
   }

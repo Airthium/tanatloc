@@ -16,7 +16,7 @@ import PluginsAPI from '@/api/plugins'
 
 export interface IProps {
   disabled?: boolean
-  cloudServer: IModel['configuration']['run']['cloudServer']
+  cloudServer?: IModel['configuration']['run']['cloudServer']
   onOk: (plugin: IClientPlugin) => Promise<void>
 }
 

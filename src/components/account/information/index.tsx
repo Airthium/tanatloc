@@ -2,16 +2,7 @@
 
 import PropTypes from 'prop-types'
 import { useState } from 'react'
-import {
-  Avatar,
-  Button,
-  Card,
-  Form,
-  Input,
-  Space,
-  Typography,
-  Upload
-} from 'antd'
+import { Avatar, Button, Card, Form, Input, Space, Upload } from 'antd'
 import { UploadChangeParam } from 'antd/lib/upload'
 import { UploadOutlined, UserOutlined } from '@ant-design/icons'
 
@@ -21,8 +12,6 @@ import {
   Success as SuccessNotification,
   Error as ErrorNotification
 } from '@/components/assets/notification'
-
-import Utils from '@/lib/utils'
 
 import UserAPI from '@/api/user'
 import AvatarAPI from '@/api/avatar'

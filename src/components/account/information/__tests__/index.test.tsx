@@ -13,11 +13,6 @@ jest.mock('@/components/assets/notification', () => ({
   Error: () => mockError()
 }))
 
-const mockValidate = jest.fn()
-jest.mock('@/lib/utils', () => ({
-  validateEmail: () => mockValidate()
-}))
-
 const mockUpdate = jest.fn()
 jest.mock('@/api/user', () => ({
   update: async () => mockUpdate()
@@ -41,7 +36,11 @@ Object.defineProperty(global, 'FileReader', {
 })
 
 describe('components/account/information', () => {
-  const user = { email: 'email' }
+  const user = {
+    email: 'test@tanatloc.com',
+    firstname: 'firstname',
+    lastname: 'lastname'
+  }
   const swr = {
     mutateUser: jest.fn()
   }
@@ -52,8 +51,6 @@ describe('components/account/information', () => {
 
     mockSuccess.mockReset()
     mockError.mockReset()
-
-    mockValidate.mockReset()
 
     mockUpdate.mockReset()
 
@@ -80,101 +77,63 @@ describe('components/account/information', () => {
   })
 
   test('onEmail', async () => {
-    let textbox
-    let buttons
-
     const { unmount } = render(<Information user={user} swr={swr} />)
 
-    // Invalid email
-    buttons = screen.getAllByRole('button', { name: 'Edit' })
-    fireEvent.click(buttons[0])
-    textbox = screen.getByRole('textbox')
-    fireEvent.change(textbox, { target: { value: 'newemail' } })
-    fireEvent.keyDown(textbox, { keyCode: 13 })
-    fireEvent.keyUp(textbox, { keyCode: 13 })
-    await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
+    const submit = screen.getByRole('button', { name: 'Save changes' })
+    const email = screen.getByRole('textbox', { name: 'Email' })
 
-    // Normal
-    mockValidate.mockImplementation(() => true)
-    buttons = screen.getAllByRole('button', { name: 'Edit' })
-    fireEvent.click(buttons[0])
-    textbox = screen.getByRole('textbox')
-    fireEvent.change(textbox, { target: { value: 'newemail' } })
-    fireEvent.keyDown(textbox, { keyCode: 13 })
-    fireEvent.keyUp(textbox, { keyCode: 13 })
+    // Not changed
+    fireEvent.click(submit)
+    await waitFor(() => expect(mockUpdate).not.toHaveBeenCalled())
+
+    // Diff
+    fireEvent.change(email, { target: { value: 'test1@tanatloc.com' } })
+    fireEvent.click(submit)
     await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
 
     // Error
     mockUpdate.mockImplementation(() => {
-      throw new Error('Update error')
+      throw new Error('update error')
     })
-    buttons = screen.getAllByRole('button', { name: 'Edit' })
-    fireEvent.click(buttons[0])
-    textbox = screen.getByRole('textbox')
-    fireEvent.change(textbox, { target: { value: 'newemail' } })
-    fireEvent.keyDown(textbox, { keyCode: 13 })
-    fireEvent.keyUp(textbox, { keyCode: 13 })
-    await waitFor(() => expect(mockError).toHaveBeenCalledTimes(2))
+    fireEvent.click(submit)
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
+    await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
 
     unmount()
   })
 
   test('onFirstName', async () => {
-    let textbox
-    let buttons
-
     const { unmount } = render(<Information user={user} swr={swr} />)
 
-    // Normal
-    buttons = screen.getAllByRole('button', { name: 'Edit' })
-    fireEvent.click(buttons[1])
-    textbox = screen.getByRole('textbox')
-    fireEvent.change(textbox, { target: { value: 'firstname' } })
-    fireEvent.keyDown(textbox, { keyCode: 13 })
-    fireEvent.keyUp(textbox, { keyCode: 13 })
-    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
+    const submit = screen.getByRole('button', { name: 'Save changes' })
+    const firstname = screen.getByRole('textbox', { name: 'First name' })
 
-    // Error
-    mockUpdate.mockImplementation(() => {
-      throw new Error('Update error')
-    })
-    buttons = screen.getAllByRole('button', { name: 'Edit' })
-    fireEvent.click(buttons[1])
-    textbox = screen.getByRole('textbox')
-    fireEvent.change(textbox, { target: { value: 'firstname' } })
-    fireEvent.keyDown(textbox, { keyCode: 13 })
-    fireEvent.keyUp(textbox, { keyCode: 13 })
-    await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
+    // Not changed
+    fireEvent.click(submit)
+    await waitFor(() => expect(mockUpdate).not.toHaveBeenCalled())
+
+    // Diff
+    fireEvent.change(firstname, { target: { value: 'other' } })
+    fireEvent.click(submit)
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
 
     unmount()
   })
 
   test('onLastName', async () => {
-    let textbox
-    let buttons
-
     const { unmount } = render(<Information user={user} swr={swr} />)
 
-    // Normal
-    buttons = screen.getAllByRole('button', { name: 'Edit' })
-    fireEvent.click(buttons[2])
-    textbox = screen.getByRole('textbox')
-    fireEvent.change(textbox, { target: { value: 'lastname' } })
-    fireEvent.keyDown(textbox, { keyCode: 13 })
-    fireEvent.keyUp(textbox, { keyCode: 13 })
-    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
+    const submit = screen.getByRole('button', { name: 'Save changes' })
+    const lastname = screen.getByRole('textbox', { name: 'Last name' })
 
-    // Error
-    mockUpdate.mockImplementation(() => {
-      throw new Error('Update error')
-    })
-    buttons = screen.getAllByRole('button', { name: 'Edit' })
-    fireEvent.click(buttons[2])
-    textbox = screen.getByRole('textbox')
-    fireEvent.change(textbox, { target: { value: 'lastname' } })
-    fireEvent.keyDown(textbox, { keyCode: 13 })
-    fireEvent.keyUp(textbox, { keyCode: 13 })
-    await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
+    // Not changed
+    fireEvent.click(submit)
+    await waitFor(() => expect(mockUpdate).not.toHaveBeenCalled())
+
+    // Diff
+    fireEvent.change(lastname, { target: { value: 'other' } })
+    fireEvent.click(submit)
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
 
     unmount()
   })

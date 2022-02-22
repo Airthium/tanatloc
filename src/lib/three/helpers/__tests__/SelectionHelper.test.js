@@ -32,7 +32,9 @@ describe('lib/three/helpers/SelectionHelper', () => {
       distanceTo: jest.fn
     }
   }
-  const scene = {}
+  const scene = {
+    children: []
+  }
   const controls = {
     target: {
       copy: () => ({
@@ -60,9 +62,30 @@ describe('lib/three/helpers/SelectionHelper', () => {
     mouseMove()
     mouseUp()
 
+    // 0 size
     selection.start()
     mouseMove({ button: 0 })
 
+    mouseDown({ button: 0 })
+    mouseMove({ button: 0 })
+    mouseUp({})
+
+    // 10x size
+    global.MockBox2.getSize = (vector) => {
+      vector.x = 10
+      vector.y = 0
+    }
+    selection.start()
+    mouseDown({ button: 0 })
+    mouseMove({ button: 0 })
+    mouseUp({})
+
+    // 10x 10y size, no intersect
+    global.MockBox2.getSize = (vector) => {
+      vector.x = 10
+      vector.y = 10
+    }
+    selection.start()
     mouseDown({ button: 0 })
     mouseMove({ button: 0 })
     mouseUp({})
@@ -82,6 +105,10 @@ describe('lib/three/helpers/SelectionHelper', () => {
   })
 
   test('raycaster', () => {
+    global.MockBox2.getSize = (vector) => {
+      vector.x = 10
+      vector.y = 10
+    }
     global.MockRaycaster.intersectObjects = [{}]
     const selection = SelectionHelper(renderer, scene, camera, controls)
     selection.start()

@@ -13,7 +13,11 @@ describe('plugins/local', () => {
         configuration: {
           name: {
             label: 'Name',
-            type: 'input'
+            type: 'input',
+            rules: [
+              { required: true, message: 'Name is required' },
+              { max: 50, message: 'Max 50 characters' }
+            ]
           }
         },
         inUseConfiguration: {}

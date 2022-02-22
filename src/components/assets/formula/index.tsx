@@ -8,6 +8,7 @@ import { CheckCircleOutlined, LoadingOutlined } from '@ant-design/icons'
 import MathJax from '@/components/assets/mathjax'
 
 export interface IProps {
+  label?: string
   defaultValue?: string
   defaultChecked?: boolean
   onValueChange: (value: string) => void
@@ -22,12 +23,14 @@ const saveDelay = 1000
  * @memberof Components.Assets.Formula
  * @param props Props
  * @description Props list:
+ * - label (string) Label
  * - defaultValue (string) Default value
  * - defaultChecked (boolean) Default checked
  * - onValueChange (Function) On value change
  * - onCheckedChange (Function) On checked change
  */
 const Formula = ({
+  label,
   defaultValue,
   defaultChecked,
   onValueChange,
@@ -92,6 +95,7 @@ const Formula = ({
       {defaultChecked !== undefined && (
         <Checkbox checked={internalChecked} onChange={onCheckboxChange} />
       )}
+      {label && <label>{label}:</label>}
       <Input
         disabled={disabled}
         value={internalValue}

@@ -152,6 +152,7 @@ class MockOrthographicCamera {
 
 class MockPerspectiveCamera {
   constructor() {
+    this.add = jest.fn
     this.position = new MockVector3()
     this.updateProjectionMatrix = jest.fn()
   }

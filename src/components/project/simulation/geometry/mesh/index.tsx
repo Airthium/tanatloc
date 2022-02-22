@@ -100,6 +100,7 @@ const Mesh = ({ simulation, swr }: IProps): JSX.Element => {
       // Update
       newSimulation.scheme.configuration.geometry.meshParameters = {
         ...newSimulation.scheme.configuration.geometry.meshParameters,
+        type: meshGlobalType,
         value: value
       }
 

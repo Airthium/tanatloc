@@ -110,6 +110,7 @@ const Add = ({ visible, project, swr, setVisible }: IProps): JSX.Element => {
       <Space direction="vertical" className="full-width">
         <Upload
           className="upload"
+          action={'/api/noop'}
           accept=".stp,.step,.dxf"
           showUploadList={false}
           listType="picture-card"

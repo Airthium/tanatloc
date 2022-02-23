@@ -181,6 +181,7 @@ const Information = ({ user, swr }: IProps): JSX.Element => {
             icon={<UserOutlined />}
           />
           <Upload
+            action={'/api/noop'}
             accept={'.jpg,.png'}
             showUploadList={false}
             beforeUpload={beforeUpload}

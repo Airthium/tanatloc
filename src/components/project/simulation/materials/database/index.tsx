@@ -32,7 +32,7 @@ const materialDatabase: IMaterialDatabase = {
     children: [
       {
         key: 'steel',
-        label: 'Steel',
+        label: 'Generic Steel',
         children: [
           {
             label: 'Density',
@@ -91,8 +91,114 @@ const materialDatabase: IMaterialDatabase = {
             value: 502
           }
         ]
+      },
+      {
+        key: '304',
+        label: 'Stainless Steel 304',
+        children: [
+          {
+            label: 'Density',
+            symbol: 'Rho',
+            value: 8000
+          },
+          {
+            label: "Young's modulus",
+            symbol: 'E',
+            value: 193e9
+          },
+          {
+            label: "Poisson's ratio",
+            symbol: 'Nu',
+            value: 0.29
+          }
+        ]
+      },
+      {
+        key: '316L',
+        label: 'Stainless Steel 316L',
+        children: [
+          {
+            label: 'Density',
+            symbol: 'Rho',
+            value: 7990
+          },
+          {
+            label: "Young's modulus",
+            symbol: 'E',
+            value: 193e9
+          },
+          {
+            label: "Poisson's ratio",
+            symbol: 'Nu',
+            value: 0.25
+          }
+        ]
+      },
+      {
+        key: '6082-O',
+        label: 'Aluminium 6082-O',
+        children: [
+          {
+            label: 'Density',
+            symbol: 'Rho',
+            value: 2700
+          },
+          {
+            label: "Young's modulus",
+            symbol: 'E',
+            value: 69e9
+          },
+          {
+            label: "Poisson's ratio",
+            symbol: 'Nu',
+            value: 0.33
+          }
+        ]
+      },
+      {
+        key: '7075-O',
+        label: 'Aluminium 7075-O',
+        children: [
+          {
+            label: 'Density',
+            symbol: 'Rho',
+            value: 2810
+          },
+          {
+            label: "Young's modulus",
+            symbol: 'E',
+            value: 71.7e9
+          },
+          {
+            label: "Poisson's ratio",
+            symbol: 'Nu',
+            value: 0.33
+          }
+        ]
       }
     ]
+  },
+  polymer: {
+    label: 'Polymer',
+    children:[{
+      key: 'PMMA',
+      label: 'PMMA',
+      children:[{
+        label: 'Density',
+            symbol: 'Rho',
+            value: 1180
+          },
+          {
+            label: "Young's modulus",
+            symbol: 'E',
+            value: 2.9e9
+          },
+          {
+            label: "Poisson's ratio",
+            symbol: 'Nu',
+            value: 0.36
+      }]
+    }]
   },
   fluid: {
     label: 'Fluid',

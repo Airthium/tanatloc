@@ -5,6 +5,9 @@ import { Card, Collapse, Typography } from 'antd'
  * @memberof Components.Help
  */
 const HPC = (): JSX.Element => {
+  /**
+   * Render
+   */
   return (
     <Card title="Account / HPC plugins">
       <Collapse>

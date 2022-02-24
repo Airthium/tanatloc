@@ -51,7 +51,7 @@ const Registration = (): JSX.Element => {
     if (errorSystem) ErrorNotification(errors.system, errorSystem)
   }, [errorSystem])
 
-  // Effect
+  // Update field value
   useEffect(() => {
     if (!loadingSystem)
       form.setFieldsValue(

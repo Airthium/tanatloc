@@ -17,6 +17,9 @@ export interface IProps {
  * - onClick (Function) Button click
  */
 const GoBack = ({ children, onClick }: IProps): JSX.Element => {
+  /**
+   * Render
+   */
   return (
     <Button
       className="no-border"

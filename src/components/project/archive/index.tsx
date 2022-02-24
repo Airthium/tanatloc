@@ -52,6 +52,7 @@ const Archive = ({
       const archive = await ProjectAPI.archive({ id: project.id })
       const content = await archive.blob()
 
+      // Download Folder
       const url = window.URL.createObjectURL(new Blob([content]))
       const link = document.createElement('a')
       link.href = url

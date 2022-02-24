@@ -13,7 +13,8 @@ export interface IProps {
   setCode: (code: string) => void
 }
 
-const safeCode = (str) => str?.replace(/[^A-Z0-9]+/gi, '')
+//Prevent non wanted code issues
+const safeCode = (str: string) => str?.replace(/[^A-Z0-9]+/gi, '')
 
 const Code = ({ configuration, code, setCode }: IProps): JSX.Element => {
   const [header, setHeader] = useState('')

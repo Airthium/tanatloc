@@ -30,10 +30,9 @@
     "../../src/store",
     "../../templates"
   ],
+  "plugin": "typedoc-plugin-airthium",
+  "theme": "airthium",
   "entryPointStrategy": "expand",
-  "categorizeByGroup": true,
-  "categoryOrder": "*",
-  "defaultCategory": "TO SORT BY CATEGORY",
   "out": "../../doc",
   "readme": "../../README.md"
 }

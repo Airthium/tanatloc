@@ -112,6 +112,7 @@
     "three": "0.137.5",
     "three-to-glb": "ssh://git@github.com:Airthium/three-to-glb.git#1.1.2",
     "typedoc": "0.22.12",
+    "typedoc-plugin-airthium": "ssh://git@github.com:Airthium/typedoc-plugin-airthium.git",
     "typescript": "4.5.5",
     "url-join": "4.0.1",
     "uuid": "8.3.2"

@@ -1,4 +1,5 @@
-import { ICallResponse } from '..'
+import { ICallResponse } from '../index.d'
+
 import { call } from '@/api/call'
 
 /**

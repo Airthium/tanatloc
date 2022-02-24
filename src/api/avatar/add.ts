@@ -1,10 +1,11 @@
+/** @module API.Avatar.Add */
+
 import { INewAvatar } from '@/database/index.d'
 
 import { call } from '@/api/call'
 
 /**
  * Add
- * @memberof API.Avatar
  * @param file File
  * @param project Project
  * @returns Avatar

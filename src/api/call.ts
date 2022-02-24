@@ -14,14 +14,15 @@ const base: string = isElectron() ? 'http://localhost:' + port : ''
 
 /**
  * Fetcher (for SWR)
- * @memberof API
  * @param url URL
  * @param payload Payload
+ * @returns Response
  */
 export const fetcher = async (
   url: string,
   payload?: string
 ): Promise<IFetchResponse> => {
+  // Fetch
   const response = await fetch(base + url, {
     method: payload ? 'POST' : 'GET',
     headers: {
@@ -31,8 +32,10 @@ export const fetcher = async (
     ...(payload && { body: payload })
   })
 
+  // Check content type
   const contentType = response.headers.get('Content-Type')
 
+  // Check response status
   if (!response.ok) {
     const error: ICallError = new Error('An error occured while fetching data.')
     error.info =
@@ -42,12 +45,12 @@ export const fetcher = async (
     throw error
   }
 
+  // Return response json
   return response.json()
 }
 
 /**
  * API call
- * @memberof API
  * @param route Route
  * @param param Parameters
  * @returns Response
@@ -56,6 +59,7 @@ export const call = async (
   route: string,
   param?: { method?: string; headers?: ICallHeaders; body?: string }
 ): Promise<ICallResponse> => {
+  // Fetch
   const response = await fetch(base + route, {
     ...param,
     method: (param && param.method) || 'GET',
@@ -65,8 +69,10 @@ export const call = async (
     }
   })
 
+  // Check content type
   const contentType = response.headers.get('Content-Type')
 
+  // Check response status
   if (!response.ok) {
     const error: ICallError = new Error('An error occured while fetching data.')
     error.info =
@@ -76,5 +82,6 @@ export const call = async (
     throw error
   }
 
+  // Return response
   return response
 }

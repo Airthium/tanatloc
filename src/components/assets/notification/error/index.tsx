@@ -1,9 +1,9 @@
 import PropTypes from 'prop-types'
 import { Collapse, notification, Space, Typography } from 'antd'
 
-import Sentry from '@/lib/sentry'
+import { ICallError } from '@/api/index.d'
 
-import { ICallError } from '@/api'
+import Sentry from '@/lib/sentry'
 
 /**
  * Error notification

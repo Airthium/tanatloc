@@ -110,6 +110,21 @@ const materialDatabase: IMaterialDatabase = {
             label: "Poisson's ratio",
             symbol: 'Nu',
             value: 0.29
+          },
+          {
+            label: 'Thermal conductivity',
+            symbol: 'Lambda',
+            value: 16.2
+          },
+          {
+            label: 'Heat capacity',
+            symbol: 'Cp',
+            value: 500
+          },
+          {
+            label: 'Yield sthreng',
+            symbol: 'SigmaY',
+            value: 215e6
           }
         ]
       },
@@ -131,6 +146,21 @@ const materialDatabase: IMaterialDatabase = {
             label: "Poisson's ratio",
             symbol: 'Nu',
             value: 0.25
+          },
+          {
+            label: 'Thermal conductivity',
+            symbol: 'Lambda',
+            value: 16.2
+          },
+          {
+            label: 'Heat capacity',
+            symbol: 'Cp',
+            value: 500
+          },
+          {
+            label: 'Yield sthreng',
+            symbol: 'SigmaY',
+            value: 290e6
           }
         ]
       },
@@ -152,6 +182,21 @@ const materialDatabase: IMaterialDatabase = {
             label: "Poisson's ratio",
             symbol: 'Nu',
             value: 0.33
+          },
+          {
+            label: 'Thermal conductivity',
+            symbol: 'Lambda',
+            value: 170
+          },
+          {
+            label: 'Heat capacity',
+            symbol: 'Cp',
+            value: 960
+          },
+          {
+            label: 'Yield sthreng',
+            symbol: 'SigmaY',
+            value: 60e6
           }
         ]
       },
@@ -173,6 +218,57 @@ const materialDatabase: IMaterialDatabase = {
             label: "Poisson's ratio",
             symbol: 'Nu',
             value: 0.33
+          },
+          {
+            label: 'Thermal conductivity',
+            symbol: 'Lambda',
+            value: 173
+          },
+          {
+            label: 'Heat capacity',
+            symbol: 'Cp',
+            value: 960
+          },
+          {
+            label: 'Yield sthreng',
+            symbol: 'SigmaY',
+            value: 110e6
+          }
+        ]
+      },
+      {
+        key: '2017A',
+        label: 'Aluminium 2017A',
+        children: [
+          {
+            label: 'Density',
+            symbol: 'Rho',
+            value: 2790
+          },
+          {
+            label: "Young's modulus",
+            symbol: 'E',
+            value: 72.5e9
+          },
+          {
+            label: "Poisson's ratio",
+            symbol: 'Nu',
+            value: 0.33
+          },
+          {
+            label: 'Thermal conductivity',
+            symbol: 'Lambda',
+            value: 134
+          },
+          {
+            label: 'Heat capacity',
+            symbol: 'Cp',
+            value: 873
+          },
+          {
+            label: 'Yield sthreng',
+            symbol: 'SigmaY',
+            value: 275e6
           }
         ]
       }
@@ -180,11 +276,13 @@ const materialDatabase: IMaterialDatabase = {
   },
   polymer: {
     label: 'Polymer',
-    children:[{
-      key: 'PMMA',
-      label: 'PMMA',
-      children:[{
-        label: 'Density',
+    children: [
+      {
+        key: 'PMMA',
+        label: 'PMMA',
+        children: [
+          {
+            label: 'Density',
             symbol: 'Rho',
             value: 1180
           },
@@ -197,8 +295,25 @@ const materialDatabase: IMaterialDatabase = {
             label: "Poisson's ratio",
             symbol: 'Nu',
             value: 0.36
-      }]
-    }]
+          },
+          {
+            label: 'Thermal conductivity',
+            symbol: 'Lambda',
+            value: 0.193
+          },
+          {
+            label: 'Heat capacity',
+            symbol: 'Cp',
+            value: 1480
+          },
+          {
+            label: 'Yield sthreng',
+            symbol: 'SigmaY',
+            value: 69e6
+          }
+        ]
+      }
+    ]
   },
   fluid: {
     label: 'Fluid',

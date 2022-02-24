@@ -74,6 +74,7 @@ DeleteButton.propTypes = {
   disabled: PropTypes.bool,
   loading: PropTypes.bool,
   bordered: PropTypes.bool,
+  text: PropTypes.string,
   children: PropTypes.node,
   onDelete: PropTypes.func.isRequired
 }

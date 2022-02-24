@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Button, Card, Layout } from 'antd'
+import PropTypes from 'prop-types'
 
 import List from './list'
 import BoundaryCondition from './boundaryCondition'
@@ -111,4 +112,20 @@ const BoundaryConditions = ({ configuration, onNext }: IProps): JSX.Element => {
   )
 }
 
+BoundaryConditions.propTypes = {
+  configuration: PropTypes.shape({
+    numericalParameters: PropTypes.exact({
+      finiteElementSpace: PropTypes.exact({
+        name: PropTypes.string,
+        options: PropTypes.array,
+        default: PropTypes.string
+      }).isRequired,
+      solver: PropTypes.exact({
+        options: PropTypes.array,
+        default: PropTypes.string
+      }).isRequired
+    })
+  }).isRequired,
+  onNext: PropTypes.func.isRequired
+}
 export default BoundaryConditions

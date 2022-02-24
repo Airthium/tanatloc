@@ -21,6 +21,7 @@ export interface IProps {
  * @description Props list:
  * - disabled (boolean) Set disabled state
  * - primary (boolean) Set Button type
+ * - bordered (boolean) Set border
  * - light (boolean) Set Button text to light
  * - dark (boolean) Set Button text to dark
  * - needMargin (boolean) Set Button left margin to 5px
@@ -67,6 +68,7 @@ const EditButton = ({
 EditButton.propTypes = {
   disabled: PropTypes.bool,
   primary: PropTypes.bool,
+  bordered: PropTypes.bool,
   light: PropTypes.bool,
   dark: PropTypes.bool,
   needMargin: PropTypes.bool,

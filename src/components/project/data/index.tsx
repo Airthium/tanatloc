@@ -11,6 +11,7 @@ import {
   TableColumnsType,
   Tooltip
 } from 'antd'
+import { CheckboxChangeEvent } from 'antd/lib/checkbox'
 import {
   FileTextOutlined,
   LineChartOutlined,
@@ -50,8 +51,10 @@ const Data = ({ simulation }: IProps): JSX.Element => {
     { names: string[]; camelNames: string[] },
     Function
   ] = useState()
-  const [table, setTable]: [{ columns: TableColumnsType; data }, Function] =
-    useState()
+  const [table, setTable]: [
+    { columns: TableColumnsType; data: Array<any> },
+    Function
+  ] = useState()
   const [columnSelection, setColumnSelection]: [
     { checked: boolean }[],
     Function
@@ -194,7 +197,7 @@ const Data = ({ simulation }: IProps): JSX.Element => {
    * @param {string} name Name
    * @param {string} key Key
    */
-  const onCheck = (event, index) => {
+  const onCheck = (event: CheckboxChangeEvent, index: number) => {
     const checked = event.target.checked
 
     const newSelection = [...columnSelection]

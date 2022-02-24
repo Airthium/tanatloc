@@ -12,11 +12,20 @@ export interface IProps {
   onDelete: (key: string) => void
 }
 
+/**
+ * Boundary Conditions
+ * @param props Props
+ *
+ * @category Editor.BoundaryConditions
+ */
 const BoundaryConditionsList = ({
   boundaryConditions,
   onEdit,
   onDelete
 }: IProps): JSX.Element => {
+  /**
+   * Render
+   */
   return (
     <>
       {boundaryConditions &&

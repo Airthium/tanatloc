@@ -5,6 +5,9 @@ import { Card, Collapse, Typography } from 'antd'
  * @memberof Components.Help
  */
 const Organizations = (): JSX.Element => {
+  /**
+   * Render
+   */
   return (
     <Card title="Organization">
       <Typography.Text>

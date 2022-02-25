@@ -1,10 +1,11 @@
+/** @module API.Organization.Add */
+
 import { INewOrganization } from '@/database/index.d'
 
 import { call } from '@/api/call'
 
 /**
- * Add organization
- * @memberof API.Organization
+ * Add
  * @param organization Organization
  * @returns New organization
  */

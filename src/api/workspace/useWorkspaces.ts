@@ -1,10 +1,13 @@
+/** @module API.Workspace.UseWorkspaces */
+
 import useSWR from 'swr'
+
+import { IWorkspaceWithData } from '@/lib/index.d'
+
 import { fetcher } from '@/api/call'
-import { IWorkspaceWithData } from '@/lib'
 
 /**
  * Use workspace (SWR)
- * @memberof API.Workspace
  * @returns Workspaces
  */
 export const useWorkspaces = (): [

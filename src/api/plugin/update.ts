@@ -1,10 +1,11 @@
+/** @module API.Plugin.Update */
+
 import { IPlugin } from '@/database/index.d'
 
 import { call } from '@/api/call'
 
 /**
  * Update
- * @memberof API.Plugin
  * @param plugin Plugin
  */
 export const update = async (plugin: IPlugin): Promise<void> => {

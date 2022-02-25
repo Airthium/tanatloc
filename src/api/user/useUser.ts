@@ -1,12 +1,13 @@
-import useSWR from 'swr'
+/** @module API.User.UseUser */
 
-import { fetcher } from '@/api/call'
+import useSWR from 'swr'
 
 import { IUserWithData } from '@/lib/index.d'
 
+import { fetcher } from '@/api/call'
+
 /**
  * Use user
- * @memberof API.User
  * @returns User
  */
 export const useUser = (): [

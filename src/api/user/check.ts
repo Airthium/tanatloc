@@ -1,8 +1,9 @@
+/** @module API.User.Check */
+
 import { call } from '@/api/call'
 
 /**
  * Check
- * @memberof API.User
  * @param user User
  * @returns User
  */

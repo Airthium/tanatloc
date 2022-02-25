@@ -1,3 +1,5 @@
+/** @module API.Group.UseGroups */
+
 import useSWR from 'swr'
 
 import { fetcher } from '@/api/call'
@@ -6,7 +8,6 @@ import { IGroupWithData } from '@/lib'
 
 /**
  * Use groups
- * @memberof API.Group
  * @param id Id
  * @returns Groups
  */

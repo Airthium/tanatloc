@@ -1,10 +1,11 @@
+/** @module API.Organization.Update */
+
 import { IDataBaseEntry } from '@/database/index.d'
 
 import { call } from '@/api/call'
 
 /**
  * Update
- * @memberof API.Organization
  * @param Organization Organization
  * @param data Data
  */

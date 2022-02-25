@@ -1,10 +1,11 @@
+/** @module API.Group.Add */
+
 import { INewGroup } from '@/database/index.d'
 
 import { call } from '@/api/call'
 
 /**
- * Add group
- * @memberof API.Group
+ * Add
  * @param organization Organization
  * @param group Group
  * @returns New group

@@ -1,10 +1,11 @@
+/** @module API.System.Update */
+
 import { IDataBaseEntry } from '@/database/index.d'
 
 import { call } from '@/api/call'
 
 /**
  * Update items
- * @memberof API.System
  * @param data Data
  */
 export const update = async (data: IDataBaseEntry[]): Promise<void> => {

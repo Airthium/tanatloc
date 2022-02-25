@@ -1,8 +1,9 @@
+/** @module API.Simulation.Tasks */
+
 import { call } from '@/api/call'
 
 /**
  * Tasks
- * @memberof API.Simulation
  * @param simulation Simulation
  * @returns Tasks
  */

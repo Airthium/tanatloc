@@ -1,12 +1,13 @@
-import useSWR from 'swr'
+/** @module API.System.UseSystem */
 
-import { fetcher } from '@/api/call'
+import useSWR from 'swr'
 
 import { ISystem } from '@/database/index.d'
 
+import { fetcher } from '@/api/call'
+
 /**
  * Use system
- * @memberof API.System
  * @returns System
  */
 export const useSystem = (): [

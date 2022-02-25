@@ -1,10 +1,11 @@
+/** @module API.Workspace.Add */
+
 import { INewWorkspace } from '@/database/index.d'
 
 import { call } from '@/api/call'
 
 /**
  * Add
- * @memberof API.Workspace
  * @param workspace Workspace
  * @returns Workspace
  */

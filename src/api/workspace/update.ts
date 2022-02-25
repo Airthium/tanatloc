@@ -1,10 +1,11 @@
+/** @module API.Workspace.Update */
+
 import { IDataBaseEntry } from '@/database/index.d'
 
 import { call } from '@/api/call'
 
 /**
  * Update
- * @memberof API.Workspace
  * @param workspace Workspace
  * @param data Data
  */

@@ -1,8 +1,9 @@
+/** @module API.Group.Del */
+
 import { call } from '@/api/call'
 
 /**
- * Delete group
- * @memberof API.Group
+ * Delete
  * @param group Group
  */
 export const del = async (group: { id: string }): Promise<void> => {

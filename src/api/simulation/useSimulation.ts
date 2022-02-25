@@ -1,10 +1,13 @@
+/** @module API.Simulation.UseSimulation */
+
 import useSWR from 'swr'
-import { fetcher } from '@/api/call'
+
 import { ISimulation } from '@/database/index.d'
+
+import { fetcher } from '@/api/call'
 
 /**
  * Use simulation
- * @memberof API.Simulation
  * @param id Simulation id
  * @returns Simulation
  */

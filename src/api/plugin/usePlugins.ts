@@ -1,3 +1,5 @@
+/** @module API.Plugin.UsePlugins */
+
 import useSWR from 'swr'
 
 import { fetcher } from '@/api/call'
@@ -6,7 +8,6 @@ import { IClientPlugin } from '@/database/index.d'
 
 /**
  * Uses plugins
- * @memberof API.Plugin
  * @returns Plugins
  */
 export const usePlugins = (): [

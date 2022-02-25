@@ -1,10 +1,11 @@
+/** @module API.User.UpdateById */
+
 import { IDataBaseEntry } from '@/database/index.d'
 
 import { call } from '@/api/call'
 
 /**
  * Update by id
- * @memberof API.User
  * @param id User id
  * @param data Data
  */

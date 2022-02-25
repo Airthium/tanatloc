@@ -1,8 +1,9 @@
+/** @module API.Geometry.Update */
+
 import { call } from '@/api/call'
 
 /**
  * Update
- * @memberof API.Geometry
  * @param geometry Geometry
  * @param data Data
  */

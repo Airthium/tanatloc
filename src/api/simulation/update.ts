@@ -1,10 +1,11 @@
+/** @module API.Simulation.Update */
+
 import { IDataBaseEntry } from '@/database/index.d'
 
 import { call } from '@/api/call'
 
 /**
  * Update
- * @memberof API.Simulation
  * @param simulation Simulation
  * @param data Data
  */

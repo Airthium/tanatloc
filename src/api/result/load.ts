@@ -1,8 +1,9 @@
+/** @module API.Result.Load */
+
 import { call } from '@/api/call'
 
 /**
  * Load
- * @memberof API.Result
  * @param simulation Simulation
  * @param result Result
  * @returns Result

@@ -1,10 +1,11 @@
+/** @module API.User.Add */
+
 import { INewUser } from '@/database/index.d'
 
 import { call } from '@/api/call'
 
 /**
  * Add
- * @memberof API.User
  * @param user User
  * @returns User
  */

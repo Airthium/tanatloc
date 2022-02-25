@@ -1,10 +1,11 @@
+/** @module API.Login */
+
 import isElectron from 'is-electron'
 
 const base: string = isElectron() ? 'http://localhost:3000' : ''
 
 /**
  * Login
- * @memberof API
  * @param user User
  */
 export const login = async (user: {

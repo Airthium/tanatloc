@@ -1,10 +1,11 @@
+/** @module API.Email.Recovery */
+
 import { call } from '@/api/call'
 
 import { PASSWORD_RECOVERY } from '@/config/email'
 
 /**
  * Recover
- * @memberof API.Email
  * @param email email
  */
 export const recover = async (email: string): Promise<void> => {

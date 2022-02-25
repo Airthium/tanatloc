@@ -1,12 +1,13 @@
-import useSWR from 'swr'
+/** @module API.Geometry.UseGeometries */
 
-import { fetcher } from '@/api/call'
+import useSWR from 'swr'
 
 import { IGeometry } from '@/database/index.d'
 
+import { fetcher } from '@/api/call'
+
 /**
  * Use geometries
- * @memberof API.Geometry
  * @param ids Ids
  * @returns Geometries
  */

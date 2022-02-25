@@ -1,3 +1,5 @@
+/** @module API.Project.Update */
+
 import { IDataBaseEntry } from '@/database/index.d'
 
 import { call } from '@/api/call'

@@ -1,8 +1,9 @@
+/** @module API.Simulation.Del */
+
 import { call } from '@/api/call'
 
 /**
  * Delete
- * @memberof API.Simulation
  * @param simulation Simulation
  */
 export const del = async (simulation: { id: string }): Promise<void> => {

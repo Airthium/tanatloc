@@ -1,10 +1,11 @@
+/** @module API.Project.Add */
+
 import { INewProject } from '@/database/index.d'
 
 import { call } from '@/api/call'
 
 /**
  * Add
- * @memberof API.Project
  * @param workspace Workspace
  * @param project Project
  * @returns New project

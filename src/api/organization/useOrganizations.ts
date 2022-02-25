@@ -1,10 +1,11 @@
+/** @module API.Organization.UseOrganizations */
+
 import useSWR from 'swr'
 import { fetcher } from '@/api/call'
 import { IOrganizationWithData } from '@/lib'
 
 /**
  * Use organizations
- * @memberof API.Organization
  * @returns Organization
  */
 export const useOrganizations = (): [

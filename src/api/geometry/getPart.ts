@@ -1,10 +1,11 @@
-import { IGeometryPart } from '@/lib'
+/** @module API.Geometry.GetPart */
+
+import { IGeometryPart } from '@/lib/index.d'
 
 import { call } from '@/api/call'
 
 /**
  * Get part
- * @memberof API.Geometry
  * @param geometry Geometry
  * @returns Part
  */

@@ -1,10 +1,11 @@
+/** @module API.Simulation.Add */
+
 import { INewSimulation } from '@/database/index.d'
 
 import { call } from '@/api/call'
 
 /**
  * Add
- * @memberof API.Simulation
  * @param project Project
  * @param simulation Simulation
  * @returns Simulation

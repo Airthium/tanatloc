@@ -1,10 +1,11 @@
+/** @module API.Group.Update */
+
 import { IDataBaseEntry } from '@/database/index.d'
 
 import { call } from '@/api/call'
 
 /**
- * Update group
- * @memberof API.Group
+ * Update
  * @param group Group
  * @param data Data
  */

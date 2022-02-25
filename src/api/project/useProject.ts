@@ -1,10 +1,13 @@
+/** @module API.Project.UseProject */
+
 import useSWR from 'swr'
-import { fetcher } from '@/api/call'
+
 import { IProjectWithData } from '@/lib/index.d'
+
+import { fetcher } from '@/api/call'
 
 /**
  * Use project
- * @memberof API.Project
  * @param id Project id
  * @returns Project
  */

@@ -1,8 +1,9 @@
+/** @module API.User.DelById */
+
 import { call } from '@/api/call'
 
 /**
  * Delete by id
- * @memberof API.User
  * @param id User id
  */
 export const delById = async (id: string): Promise<void> => {

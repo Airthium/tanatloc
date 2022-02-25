@@ -1,10 +1,11 @@
+/** @module API.Result.Archive */
+
 import { ICallResponse } from '../index.d'
 
 import { call } from '@/api/call'
 
 /**
  * Archive
- * @memberof API.Result
  * @param simulation  Simulation
  * @returns Archive read stream
  */

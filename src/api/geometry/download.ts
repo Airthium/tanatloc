@@ -1,10 +1,11 @@
-import { IGeometryFile } from '@/lib'
+/** @module API.Geometry.Download */
+
+import { IGeometryFile } from '@/lib/index.d'
 
 import { call } from '@/api/call'
 
 /**
  * Download
- * @memberof API.Geometry
  * @param geometry Geometry
  * @returns Geometry
  */

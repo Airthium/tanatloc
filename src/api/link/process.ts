@@ -1,8 +1,9 @@
+/** @module API.Link.Process */
+
 import { call } from '@/api/call'
 
 /**
  * Process
- * @memberof API.Link
  * @param id Id
  * @param data Data
  *

@@ -1,8 +1,9 @@
+/** @module API.Workspace.Del */
+
 import { call } from '@/api/call'
 
 /**
  * Delete
- * @memberof API.Workspace
  * @param workspace Workspace
  */
 export const del = async (workspace: { id: string }): Promise<void> => {

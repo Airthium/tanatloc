@@ -1,10 +1,11 @@
+/** @module API.Result.Download */
+
 import { ICallResponse } from '../index.d'
 
 import { call } from '@/api/call'
 
 /**
  * Download
- * @memberof API.Result
  * @param simulation Simulation
  * @param result Result
  * @returns Download read stream

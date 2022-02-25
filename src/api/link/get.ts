@@ -1,10 +1,11 @@
+/** @module API.Link.Get */
+
 import { ILink } from '@/database/index.d'
 
 import { call } from '@/api/call'
 
 /**
  * Get
- * @memberof API.Link
  * @param id Id
  * @param data Data
  * @returns Link

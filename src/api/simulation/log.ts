@@ -1,8 +1,9 @@
+/** @module API.Simulation.Log */
+
 import { call } from '@/api/call'
 
 /**
  * Log
- * @memberof API.Simulation
  * @param simulation Simulation
  * @param file File
  * @returns Log

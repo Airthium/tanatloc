@@ -1,10 +1,11 @@
+/** @module API.Geometry.Add */
+
 import { INewGeometry } from '@/database/index.d'
 
 import { call } from '@/api/call'
 
 /**
  * Add
- * @memberof API.Geometry
  * @param project Project
  * @param geometry Geometry
  * @returns Geometry

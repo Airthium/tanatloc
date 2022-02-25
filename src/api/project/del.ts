@@ -1,8 +1,9 @@
+/** @module API.Project.Del */
+
 import { call } from '@/api/call'
 
 /**
  * Delete
- * @memberof API.Project
  * @param workspace Workspace
  * @param project Project
  */

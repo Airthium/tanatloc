@@ -1,10 +1,11 @@
+/** @module API.Plugins.List */
+
 import { IClientPlugin } from '@/database/index.d'
 
 import { call } from '@/api/call'
 
 /**
  * List
- * @memberof API.Plugins
  * @returns List
  */
 export const list = async (): Promise<IClientPlugin[]> => {

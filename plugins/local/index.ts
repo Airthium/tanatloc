@@ -6,7 +6,6 @@ import Lib from './src/lib'
 
 /**
  * Local plugin definition
- * @memberof Plugins.Local
  */
 const Local: IPlugin = {
   category: 'HPC',

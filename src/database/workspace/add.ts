@@ -1,11 +1,13 @@
+/** @module Database.Workspace.Add */
+
+import { INewWorkspace } from '../index.d'
+
 import { tables } from '@/config/db'
 
 import { query } from '..'
-import { INewWorkspace } from '../index.d'
 
 /**
  * Add
- * @memberof Database.Workspace
  * @param user User
  * @param workspace Workspace
  * @returns New workspace

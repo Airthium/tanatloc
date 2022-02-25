@@ -1,11 +1,13 @@
+/** @module Database.Geometry.Update */
+
+import { IDataBaseEntry } from '../index.d'
+
 import { tables } from '@/config/db'
 
 import { updater } from '..'
-import { IDataBaseEntry } from '../index.d'
 
 /**
  * Update
- * @memberof Database.Geometry
  * @param geometry Geometry
  * @param data Data
  */

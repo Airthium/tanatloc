@@ -1,11 +1,13 @@
+/** @module Database.User.Get */
+
+import { IUser } from '../index.d'
+
 import { tables } from '@/config/db'
 
 import { getter } from '..'
-import { IUser } from '../index.d'
 
 /**
  * Get
- * @memberof Database.User
  * @param id User id (or key)
  * @param data Data
  * @param key Key (override id selector)

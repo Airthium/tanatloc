@@ -1,11 +1,13 @@
+/** @module Database.Group.Add */
+
+import { INewGroup } from '../index.d'
+
 import { tables } from '@/config/db'
 
 import { query } from '..'
-import { INewGroup } from '../index.d'
 
 /**
  * Add
- * @memberof Database.Group
  * @param organization Organization
  * @param group Group
  * @returns New group

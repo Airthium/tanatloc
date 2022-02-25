@@ -1,11 +1,13 @@
+/** @module Database.Geometry.Add */
+
+import { INewGeometry } from '../index.d'
+
 import { tables } from '@/config/db'
 
 import { query } from '..'
-import { INewGeometry } from '../index.d'
 
 /**
  * Add
- * @memberof Database.Geometry
  * @param project Project
  * @param geometry Geometry
  * @returns Geometry

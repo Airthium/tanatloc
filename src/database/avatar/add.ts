@@ -1,11 +1,13 @@
+/** @module Database.Avatar.Add */
+
+import { INewAvatar } from '../index.d'
+
 import { tables } from '@/config/db'
 
 import { query } from '..'
-import { INewAvatar } from '../index.d'
 
 /**
  * Add
- * @memberof Database.Avatar
  * @param data Data
  * @returns Avatar
  */

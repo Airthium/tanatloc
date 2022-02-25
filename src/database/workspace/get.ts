@@ -1,11 +1,13 @@
+/** @module Database.Workspace.Get */
+
+import { IWorkspace } from '../index.d'
+
 import { tables } from '@/config/db'
 
 import { getter } from '..'
-import { IWorkspace } from '../index.d'
 
 /**
  * Get
- * @memberof Database.Workspace
  * @param id Id
  * @param data Data
  * @returns Workspace

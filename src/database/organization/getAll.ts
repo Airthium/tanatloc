@@ -1,11 +1,13 @@
+/** @module Database.Organization.GetAll */
+
+import { IOrganization } from '../index.d'
+
 import { tables } from '@/config/db'
 
 import { query } from '..'
-import { IOrganization } from '../index.d'
 
 /**
  * Get all
- * @memberof Database.Organization
  * @param data Data
  * @returns Organizations
  */

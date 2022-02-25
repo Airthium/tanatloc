@@ -1,3 +1,5 @@
+/** @module Database.Project.Update */
+
 import { tables } from '@/config/db'
 
 import { updater } from '..'
@@ -5,7 +7,6 @@ import { IDataBaseEntry } from '../index.d'
 
 /**
  * Update
- * @memberof Database.Project
  * @param project Project
  * @param data Data
  */

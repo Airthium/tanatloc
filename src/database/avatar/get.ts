@@ -1,11 +1,13 @@
+/** @module Database.Avatar.Get */
+
+import { IAvatar } from '../index.d'
+
 import { tables } from '@/config/db'
 
 import { getter } from '..'
-import { IAvatar } from '../index.d'
 
 /**
  * Get
- * @memberof Database.Avatar
  * @param id Avatar id
  * @param data Data
  * @returns Avatar

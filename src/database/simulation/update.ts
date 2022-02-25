@@ -1,11 +1,13 @@
+/** @module Database.Simulation.Add */
+
+import { IDataBaseEntry } from '../index.d'
+
 import { tables } from '@/config/db'
 
 import { updater } from '..'
-import { IDataBaseEntry } from '../index.d'
 
 /**
  * Update
- * @memberof Database.Simulation
  * @param simulation Simulation
  * @param data Data
  */

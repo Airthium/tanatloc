@@ -1,11 +1,13 @@
+/** @module Database.User.GetAll */
+
+import { IUser } from '../index.d'
+
 import { tables } from '@/config/db'
 
 import { query } from '..'
-import { IUser } from '../index.d'
 
 /**
  * Get all
- * @memberof Database.User
  * @param data Data
  * @returns Users
  */

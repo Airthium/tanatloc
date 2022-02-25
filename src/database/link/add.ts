@@ -1,11 +1,13 @@
+/** @module Database.Link.Add */
+
+import { INewLink } from '../index.d'
+
 import { tables } from '@/config/db'
 
 import { query } from '..'
-import { INewLink } from '../index.d'
 
 /**
  * Add
- * @memberof Database.Link
  * @param link Link
  * @returns New link
  */

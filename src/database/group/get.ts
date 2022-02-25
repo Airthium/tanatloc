@@ -1,11 +1,13 @@
+/** @module Database.Group.Get */
+
+import { IGroup } from '../index.d'
+
 import { tables } from '@/config/db'
 
 import { getter } from '..'
-import { IGroup } from '../index.d'
 
 /**
  * Get
- * @memberof Database.Group
  * @param id Group id
  * @param data Data
  * @returns Group

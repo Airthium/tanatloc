@@ -2,13 +2,12 @@
 
 import { Pool } from 'pg'
 
-import { USER, HOST, DATABASE, PASSWORD, PORT } from '@/config/db'
-
 import { IDataBaseEntry, IDataBaseResponse } from './index.d'
+
+import { USER, HOST, DATABASE, PASSWORD, PORT } from '@/config/db'
 
 /**
  * Start database
- * @memberof Database
  * @returns Pool
  */
 const startdB = (): Pool => {
@@ -25,7 +24,6 @@ const pool = startdB()
 
 /**
  * PostgreSQL query
- * @memberof Database
  * @param command Command
  * @param args Arguments
  * @returns PostgreSQL query response
@@ -42,7 +40,6 @@ export const query = async (
 
 /**
  * Get
- * @memberof Database
  * @param db Database
  * @param id Id, or key
  * @param data Data
@@ -63,7 +60,6 @@ export const getter = async (
 
 /**
  * Update
- * @memberof Database
  * @param db Database
  * @param id Id
  * @param data Data
@@ -112,7 +108,6 @@ export const updater = async (
 
 /**
  * Update (crypt)
- * @memberof Database
  * @param data Data
  * @param args Args
  * @param queryText Query text
@@ -128,7 +123,6 @@ const cryptUpdater = (
 
 /**
  * Update (date)
- * @memberof Database
  * @param data Data
  * @param args Args
  * @param queryText Query text
@@ -144,7 +138,6 @@ const dateUpdater = (
 
 /**
  * Update (array)
- * @memberof Database
  * @param data Data
  * @param args Args
  * @param queryText Query text
@@ -176,7 +169,6 @@ const arrayUpdater = (
 
 /**
  * Update (json)
- * @memberof Database
  * @param data Data
  * @param args Args
  * @param queryText Query text
@@ -220,7 +212,6 @@ const jsonUpdater = (
 
 /**
  * Delete
- * @memberof Database
  * @param db Database
  * @param id Id
  */

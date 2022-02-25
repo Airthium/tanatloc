@@ -1,13 +1,15 @@
+/** @module Database.User.Add */
+
 import isElectron from 'is-electron'
+
+import { INewUser } from '../index.d'
 
 import { tables } from '@/config/db'
 
 import { query } from '..'
-import { INewUser } from '../index.d'
 
 /**
  * Add
- * @memberof Database.User
  * @param user User
  * @returns New user
  */

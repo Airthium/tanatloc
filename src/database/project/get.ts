@@ -1,3 +1,5 @@
+/** @module Database.Project.Get */
+
 import { tables } from '@/config/db'
 
 import { getter } from '..'
@@ -5,7 +7,6 @@ import { IProject } from '../index.d'
 
 /**
  * Get
- * @memberof Database.Project
  * @param id Id
  * @param data Data
  * @returns Project

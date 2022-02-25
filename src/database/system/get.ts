@@ -1,11 +1,13 @@
+/** @module Database.System.Get */
+
+import { ISystem } from '../index.d'
+
 import { tables } from '@/config/db'
 
 import { query } from '..'
-import { ISystem } from '../index.d'
 
 /**
  * Get items
- * @memberof Database.System
  * @param data Data
  * @returns System
  */

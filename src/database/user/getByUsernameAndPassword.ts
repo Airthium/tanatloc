@@ -1,11 +1,13 @@
+/** @module Database.User.GetByUsernameAndPassword */
+
+import { IUserCheck } from '../index.d'
+
 import { tables } from '@/config/db'
 
 import { query } from '..'
-import { IUserCheck } from '../index.d'
 
 /**
  * Get by email and password
- * @memberof Database.User
  * @param user User
  * @returns User
  */

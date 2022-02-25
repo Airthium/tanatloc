@@ -22,7 +22,6 @@ export interface IProps {
 
 /**
  * Errors (edit)
- * @memberof Components.Project
  */
 const errors = {
   editError: 'Unable to edit a project'
@@ -30,7 +29,6 @@ const errors = {
 
 /**
  * Edit project
- * @memberof Components.Project
  * @param props Props
  */
 const Edit = ({ disabled, project, swr }: IProps): JSX.Element => {

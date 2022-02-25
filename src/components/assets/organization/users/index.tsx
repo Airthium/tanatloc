@@ -19,7 +19,6 @@ export interface IProps {
 
 /**
  * Organization users
- * @memberof Components.Assets.Organization.Users
  * @param props Props
  * @description
  * Props list:

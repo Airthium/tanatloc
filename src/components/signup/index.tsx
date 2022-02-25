@@ -23,7 +23,6 @@ import SystemAPI from '@/api/system'
 
 /**
  * Errors
- * @memberof Components.Signup
  */
 const errors = {
   user: 'User error',
@@ -36,7 +35,6 @@ const errors = {
 
 /**
  * Signup
- * @memberof Components.Signup
  */
 const Signup = (): JSX.Element => {
   // State

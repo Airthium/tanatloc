@@ -1,3 +1,5 @@
+/** @module Components.Assets.Organization.User.Add */
+
 import PropTypes from 'prop-types'
 import { useState } from 'react'
 import { Button, Form, Input } from 'antd'
@@ -21,7 +23,6 @@ export interface IProps {
 
 /**
  * Errors (add)
- * @memberof Components.Assets.Organization.Users
  */
 const errors = {
   addError: 'Unable to add user'
@@ -29,7 +30,6 @@ const errors = {
 
 /**
  * Add user
- * @memberof Components.Assets.Organization.Users
  * @param props Props
  * @description
  * Props:

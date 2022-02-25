@@ -4,7 +4,6 @@ import { Card, Layout } from 'antd'
 
 /**
  * Signup send
- * @memberof Components.Signup
  */
 const Send = (): JSX.Element => {
   /**

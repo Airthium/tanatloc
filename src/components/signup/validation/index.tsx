@@ -12,7 +12,6 @@ import LinkAPI from '@/api/link'
 
 /**
  * Errors (validation)
- * @memberof Components.Signup
  */
 const errors = {
   internal: 'Internal error'

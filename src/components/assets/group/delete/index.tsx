@@ -21,7 +21,6 @@ export interface IProps {
 
 /**
  * Errors (delete)
- * @memberof Components.Assets.Group
  */
 const errors = {
   del: 'Unable to delete group'

@@ -14,7 +14,10 @@ depcheck.special.customTypedoc = async (fileName) => {
     const packageJson = await require(fileName)
 
     Object.values(packageJson.scripts).forEach((script) => {
-      if (script.includes('typedoc')) newDeps.push('typedoc')
+      if (script.includes('typedoc')) {
+        newDeps.push('typedoc')
+        newDeps.push('typedoc-plugin-airthium')
+      }
     })
   }
 

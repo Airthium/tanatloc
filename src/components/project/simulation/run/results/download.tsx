@@ -1,3 +1,6 @@
+/** @module Components.Project.Simulation.Run.Results.Download */
+
+import PropTypes from 'prop-types'
 import { useState } from 'react'
 import { Button, Tooltip } from 'antd'
 import { DownloadOutlined } from '@ant-design/icons'
@@ -66,6 +69,17 @@ const Download = ({ simulation, file }: IProps): JSX.Element => {
       />
     </Tooltip>
   )
+}
+
+Download.propTypes = {
+  file: PropTypes.exact({
+    originPath: PropTypes.string.isRequired,
+    name: PropTypes.string,
+    filename: PropTypes.string.isRequired
+  }),
+  simulation: PropTypes.exact({
+    id: PropTypes.string.isRequired
+  })
 }
 
 export default Download

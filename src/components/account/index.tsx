@@ -22,7 +22,6 @@ export interface IProps {
  * Account
  * @param props Props
  *
- * @category Components.Account
  */
 const Account = ({ user, swr }: IProps): JSX.Element => {
   // Data

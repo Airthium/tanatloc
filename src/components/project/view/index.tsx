@@ -1,5 +1,6 @@
 /** @module Components.Project.View */
 
+import PropTypes from 'prop-types'
 import { useRef, useState, useEffect, MutableRefObject } from 'react'
 import { Button, Divider, Layout, Radio, Spin, Switch, Tooltip } from 'antd'
 import {
@@ -74,7 +75,6 @@ const errors = {
 
 /**
  * ThreeView
- * @memberof Components.Project.View
  * @param {Object} props Props `{ loading, project, part }`
  */
 const ThreeView = ({ loading, project, part }: IThreeProps): JSX.Element => {
@@ -799,7 +799,6 @@ export interface IViewProps {
 
 /**
  * View
- * @memberof Components.Project.View
  * @param props Props
  */
 const View = ({

@@ -36,7 +36,6 @@ export interface ISelectorProps {
 
 /**
  * Errors
- * @memberof Components.Project.Simulation
  */
 const errors = {
   plugins: 'Unable to load plugins',
@@ -45,7 +44,6 @@ const errors = {
 
 /**
  * Load models
- * @memberof Components.Project.Simulation
  * @param {Object} user User
  * @param {Object} models Models
  * @param {Object} plugins Plugins
@@ -70,7 +68,6 @@ const loadModels = (
 
 /**
  * Simulation Selector
- * @memberof Components.Project.Simulation
  * @param {Object} props Props `{ user, visible, onOk, onCancel }`
  */
 const Selector = ({

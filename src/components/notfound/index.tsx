@@ -5,7 +5,6 @@ import { Layout, Typography } from 'antd'
 
 /**
  * 404
- * @memberof Components.Notfound
  */
 const NotFound = (): JSX.Element => {
   // Router

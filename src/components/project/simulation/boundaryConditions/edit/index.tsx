@@ -1,3 +1,5 @@
+/** @module Components.Project.Simulation.BoundaryConditions.Edit */
+
 import PropTypes from 'prop-types'
 import { useState } from 'react'
 
@@ -31,7 +33,6 @@ export interface IProps {
 
 /**
  * Errors (edit)
- * @memberof Components.Project.Simulation.BoundaryConditions
  */
 const errors = {
   name: 'You need to define a name',
@@ -42,7 +43,6 @@ const errors = {
 
 /**
  * Edit boundary condition
- * @memberof Components.Project.Simulation.BoundaryConditions
  * @param props Props
  */
 const Edit = ({

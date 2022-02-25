@@ -26,7 +26,6 @@ export interface IProps {
 
 /**
  * Errors
- * @memberof Components.Assets.Group
  */
 const errors = {
   addError: 'Unable to add group',
@@ -35,7 +34,6 @@ const errors = {
 
 /**
  * Group
- * @memberof Components.Assets.Group
  * @param props Props
  * @description
  * - userOptions (array) List of users

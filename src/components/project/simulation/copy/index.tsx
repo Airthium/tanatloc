@@ -1,3 +1,5 @@
+/** @module Components.Project.Simulation.Copy */
+
 import PropTypes from 'prop-types'
 import { useState } from 'react'
 import { Button, Tooltip } from 'antd'
@@ -21,7 +23,6 @@ export interface IProps {
 
 /**
  * Errors (copy)
- * @memberof Components.Project.Simulation
  */
 const errors = {
   copy: 'Unable to copy simulation'
@@ -29,7 +30,6 @@ const errors = {
 
 /**
  * Copy simulation
- * @memberof Components.Project.Simulation
  * @param props Props
  */
 const Copy = ({ project, simulation, swr }: IProps): JSX.Element => {

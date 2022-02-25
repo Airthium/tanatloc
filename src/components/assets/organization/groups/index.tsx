@@ -1,3 +1,5 @@
+/** @module Components.Assets.Organization.Groups */
+
 import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
 import { Avatar, Space, Table } from 'antd'
@@ -20,7 +22,6 @@ export interface IProps {
 
 /**
  * Errors (groups)
- * @memberof Components.Assets.Organization
  */
 const errors = {
   groups: 'Groups error'
@@ -28,7 +29,6 @@ const errors = {
 
 /**
  * Groups
- * @memberof Components.Assets.Organization
  * @param props Props
  * @description
  * Props:

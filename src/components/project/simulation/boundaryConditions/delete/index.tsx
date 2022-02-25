@@ -1,3 +1,5 @@
+/** @module Components.Project.Simulation.BoundaryConditions.Delete */
+
 import PropTypes from 'prop-types'
 import { useState } from 'react'
 
@@ -23,7 +25,6 @@ export interface IProps {
 
 /**
  * Errors (delete)
- * @memberof Components.Project.Simulation.BoundaryConditions
  */
 const errors = {
   updateError: 'Unable to delete the boundary condition'
@@ -31,7 +32,6 @@ const errors = {
 
 /**
  * Delete boundary condition
- * @memberof Components.Project.Simulation.BoundaryConditions
  * @param props Props
  */
 const Delete = ({ type, index, simulation, swr }: IProps): JSX.Element => {

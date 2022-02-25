@@ -1,3 +1,5 @@
+/** @module Components.Project.Simulation.Materials.Material */
+
 import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
 import { Button, Card, Drawer, Space, Typography } from 'antd'
@@ -29,7 +31,6 @@ export interface IProps {
 
 /**
  * Material
- * @memberof Components.Project.Simulation.Materials
  * @param {Object} props Props
  */
 const Material = ({

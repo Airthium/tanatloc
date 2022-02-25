@@ -1,3 +1,5 @@
+/** @module Components.Workspace.Delete */
+
 import PropTypes from 'prop-types'
 import { useState } from 'react'
 
@@ -17,7 +19,6 @@ export interface IProps {
 
 /**
  * Errors (delete)
- * @memberof Components.Workspace
  */
 const errors = {
   delError: 'Unable to delete the workspace'
@@ -25,7 +26,6 @@ const errors = {
 
 /**
  * Delete workspace
- * @memberof Components.Workspace
  * @param props Props
  */
 const Delete = ({ workspace, swr }: IProps): JSX.Element => {

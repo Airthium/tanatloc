@@ -1,3 +1,6 @@
+/** @module Components.Project.Simulation.Run.Results */
+
+import PropTypes from 'prop-types'
 import { useEffect, useState } from 'react'
 import { Button, Card, Select, Space, Spin } from 'antd'
 import { EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons'
@@ -222,6 +225,17 @@ const Results = ({
         </Space>
       </Card>
     )
+}
+
+Results.propTypes = {
+  file: PropTypes.exact({
+    originPath: PropTypes.string.isRequired,
+    name: PropTypes.string,
+    filename: PropTypes.string.isRequired
+  }),
+  simulation: PropTypes.exact({
+    id: PropTypes.string.isRequired
+  })
 }
 
 export default Results

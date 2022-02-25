@@ -25,7 +25,6 @@ export interface IProps {
 
 /**
  * Materials
- * @memberof Components.Project.Simulation.Materials
  * @param props Props
  */
 const Materials = ({

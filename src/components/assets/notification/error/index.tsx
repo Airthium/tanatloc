@@ -1,3 +1,5 @@
+/** @module Components.Assets.Notification.Error */
+
 import PropTypes from 'prop-types'
 import { Collapse, notification, Space, Typography } from 'antd'
 
@@ -7,7 +9,6 @@ import Sentry from '@/lib/sentry'
 
 /**
  * Error notification
- * @memberof Components.Assets.Notification
  * @param title Title
  * @param err Error
  * @param display Display notification

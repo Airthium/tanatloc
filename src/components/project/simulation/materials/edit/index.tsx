@@ -1,3 +1,5 @@
+/** @module Components.Project.Simulation.Materials.Edit */
+
 import PropTypes from 'prop-types'
 import { useState } from 'react'
 
@@ -26,7 +28,6 @@ export interface IProps {
 
 /**
  * Errors (edit)
- * @memberof Components.Project.Simulation.Materials
  */
 const errors = {
   material: 'You need to define a material',
@@ -36,7 +37,6 @@ const errors = {
 
 /**
  * Edit material
- * @memberof Components.Project.Simulation.Materials
  * @param props Props
  */
 const Edit = ({

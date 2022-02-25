@@ -1,3 +1,5 @@
+/** @module Components.Assets.Button.GoBack */
+
 import PropTypes from 'prop-types'
 import { ReactChild } from 'react'
 import { Button } from 'antd'
@@ -10,7 +12,6 @@ export interface IProps {
 
 /**
  * Go back
- * @memberof Components.Assets.Button
  * @param props Props
  * @description Props list:
  * - children (React node) Button children (default to 'Go back')

@@ -36,7 +36,6 @@ const errors = {
  * Information
  * @param props Props
  *
- * @category Components.Account
  */
 const Information = ({ user, swr }: IProps): JSX.Element => {
   // State

@@ -8,7 +8,6 @@ import Organizations from './doc/organizations'
 
 /**
  * Help
- * @memberof Components.Help
  */
 const Help = (): JSX.Element => {
   /**

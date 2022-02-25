@@ -1,3 +1,5 @@
+/** @module Components.Project.Panel*/
+
 import PropTypes from 'prop-types'
 import { ReactChild } from 'react'
 import { Button, Card } from 'antd'
@@ -12,7 +14,6 @@ export interface IProps {
 
 /**
  * Panel
- * @memberof Components.Project
  * @param props Props
  */
 const Panel = ({ visible, title, children, onClose }: IProps): JSX.Element => {

@@ -1,3 +1,5 @@
+/** @module Components.Project.Delete */
+
 import PropTypes from 'prop-types'
 import { useState } from 'react'
 import { Button, Tooltip } from 'antd'
@@ -22,7 +24,6 @@ export interface IProps {
 
 /**
  * Errors (delete)
- * @memberof Components.Project
  */
 const errors = {
   delError: 'Unable to delete the project'
@@ -30,7 +31,6 @@ const errors = {
 
 /**
  * Delete project
- * @memberof Components.Project
  * @param props Props
  */
 const Delete = ({ disabled, workspace, project, swr }: IProps): JSX.Element => {

@@ -42,7 +42,6 @@ const { TabPane } = Tabs
 
 /**
  * Errors
- * @memberof Components.Workspace
  */
 const errors = {
   projects: 'Projects error',
@@ -51,7 +50,6 @@ const errors = {
 
 /**
  * Workspace
- * @memberof Components.Workspace
  * @param props Props
  */
 const Workspace = ({

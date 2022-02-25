@@ -15,7 +15,6 @@ const errors = {
 
 /**
  * Not authorized
- * @memberof Components.Notauthorized
  */
 const NotAuthorized = (): JSX.Element => {
   // Data

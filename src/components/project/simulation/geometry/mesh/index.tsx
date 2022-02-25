@@ -1,3 +1,5 @@
+/** @module Components.Project.Simulation.Geometry.Mesh */
+
 import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
 import { Card, Select, Space, Typography } from 'antd'
@@ -18,7 +20,6 @@ export interface IProps {
 
 /**
  * Errors (geometry/mesh)
- * @memberof Components.Project.Simulation
  */
 const errors = {
   update: 'Unable to update the simulation'

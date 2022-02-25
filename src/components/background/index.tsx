@@ -13,7 +13,6 @@ import {
 
 /**
  * Background
- * @memberof Components.Background
  */
 const Background = (): JSX.Element => {
   // Parameters

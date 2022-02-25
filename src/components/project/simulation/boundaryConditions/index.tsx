@@ -28,7 +28,6 @@ export interface IProps {
 
 /**
  * Boundary condition
- * @memberof Components.Project.Simulation.BoundaryConditions
  * @param props Props
  */
 const BoundaryConditions = ({

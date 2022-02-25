@@ -1,3 +1,5 @@
+/** @module Components.Project.Geometry.Edit */
+
 import PropTypes from 'prop-types'
 import { useState } from 'react'
 import { Form, Input } from 'antd'
@@ -15,7 +17,6 @@ export interface IProps {
 
 /**
  * Edit
- * @memberof Components.Project.Geometry
  * @param props Props
  */
 const Edit = ({

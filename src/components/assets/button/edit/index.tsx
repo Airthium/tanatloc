@@ -1,3 +1,5 @@
+/** @module Components.Assets.Button.Edit */
+
 import PropTypes from 'prop-types'
 import { Button, Tooltip } from 'antd'
 import { EditOutlined } from '@ant-design/icons'
@@ -16,7 +18,6 @@ export interface IProps {
 
 /**
  * Edit button
- * @memberof Components.Assets.Button
  * @param props Props
  * @description Props list:
  * - disabled (boolean) Set disabled state

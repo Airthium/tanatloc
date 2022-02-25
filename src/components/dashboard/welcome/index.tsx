@@ -1,3 +1,5 @@
+/** @module Components.Dashboard.Welcome */
+
 import PropTypes from 'prop-types'
 import { Divider, Empty, Layout, PageHeader, Typography } from 'antd'
 
@@ -11,7 +13,6 @@ export interface IProps {
 
 /**
  * Welcome
- * @memberof Components.Dashboard
  * @param props Props
  */
 const Welcome = ({ swr }: IProps): JSX.Element => {

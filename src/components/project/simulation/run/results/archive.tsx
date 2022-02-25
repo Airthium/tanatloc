@@ -1,3 +1,6 @@
+/** @module Components.Project.Simulation.Run.Results.Archive */
+
+import PropTypes from 'prop-types'
 import { useState } from 'react'
 import { Button, Tooltip } from 'antd'
 import { DownloadOutlined } from '@ant-design/icons'
@@ -58,6 +61,15 @@ const Archive = ({ simulation }: IProps): JSX.Element => {
       />
     </Tooltip>
   )
+}
+
+Archive.propTypes = {
+  simulation: PropTypes.exact({
+    id: PropTypes.string.isRequired,
+    scheme: PropTypes.shape({
+      name: PropTypes.string.isRequired
+    }).isRequired
+  })
 }
 
 export default Archive

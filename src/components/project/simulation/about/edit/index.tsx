@@ -1,3 +1,5 @@
+/** @module Components.Project.Simulation.About.Edit */
+
 import PropTypes from 'prop-types'
 import { useState } from 'react'
 import { Form, Input } from 'antd'
@@ -19,7 +21,6 @@ export interface IProps {
 
 /**
  * Errors (about/edit)
- * @memberof Components.Project.Simulation
  */
 const errors = {
   update: 'Unable to update the simulation'
@@ -27,7 +28,6 @@ const errors = {
 
 /**
  * Edit
- * @memberof Components.Project.Geometry
  * @param props Props
  */
 const Edit = ({ simulation, swr }: IProps): JSX.Element => {

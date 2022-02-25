@@ -1,3 +1,5 @@
+/** @module Components.Assets.Dialog.Delete */
+
 import PropTypes from 'prop-types'
 import { Modal, Space, Typography } from 'antd'
 import { ExclamationCircleTwoTone } from '@ant-design/icons'
@@ -14,7 +16,6 @@ export interface IProps {
 
 /**
  * DeleteDialog
- * @memberof Components.Assets.Dialog
  * @param props Props
  * @description Props list:
  * - visible (boolean) Dialog visible

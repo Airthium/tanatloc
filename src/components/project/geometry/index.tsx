@@ -34,7 +34,6 @@ export interface IProps {
 
 /**
  * Errors
- * @memberof Components.Project.Geometry
  */
 const errors = {
   downloadError: 'Unable to download geometry',
@@ -44,7 +43,6 @@ const errors = {
 
 /**
  * Geometry
- * @memberof Components.Project.Geometry
  * @param props Props
  */
 const Geometry = ({ project, geometry, swr, close }: IProps): JSX.Element => {

@@ -23,7 +23,6 @@ export interface IProps {
 
 /**
  * Organizations
- * @memberof Components.Organizations
  * @param props Props
  */
 const Organizations = ({ user, organizations, swr }: IProps): JSX.Element => {

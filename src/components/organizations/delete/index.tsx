@@ -1,3 +1,5 @@
+/** @module Components.Organizations.Edit */
+
 import PropTypes from 'prop-types'
 import { useState } from 'react'
 import { Button } from 'antd'
@@ -19,7 +21,6 @@ export interface IProps {
 
 /**
  * Errors (delete)
- * @memberof Components.Organizations
  */
 const errors = {
   delError: 'Unable to delete the organization'
@@ -27,7 +28,6 @@ const errors = {
 
 /**
  * Delete
- * @memberof Components.Organizations
  * @param props Props
  */
 const Delete = ({ organization, swr }: IProps): JSX.Element => {

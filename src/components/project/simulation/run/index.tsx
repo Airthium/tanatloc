@@ -1,3 +1,5 @@
+/** @module Components.Project.Simulation.Run */
+
 import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
 import { Button, Card, Layout, Space, Spin, Steps } from 'antd'
@@ -245,7 +247,9 @@ Run.propTypes = {
   simulation: PropTypes.object.isRequired,
   swr: PropTypes.shape({
     mutateOneSimulation: PropTypes.func.isRequired
-  }).isRequired
+  }).isRequired,
+  result: PropTypes.object.isRequired,
+  setResult: PropTypes.func.isRequired
 }
 
 export default Run

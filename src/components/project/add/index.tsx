@@ -1,3 +1,5 @@
+/** @module Components.Project.Add */
+
 import PropTypes from 'prop-types'
 import { useState } from 'react'
 import { Form, Input } from 'antd'
@@ -20,7 +22,6 @@ export interface IProps {
 
 /**
  * Errors (add)
- * @memberof Components.Project
  */
 const errors = {
   addError: 'Unable to add a project'
@@ -28,7 +29,6 @@ const errors = {
 
 /**
  * Add project
- * @memberof Components.Project
  * @param props Props
  */
 const Add = ({ workspace, swr }: IProps): JSX.Element => {

@@ -1,3 +1,5 @@
+/** @module Components.Project.Simulation.Materials.Add */
+
 import PropTypes from 'prop-types'
 import { useState } from 'react'
 import { v4 as uuid } from 'uuid'
@@ -25,7 +27,6 @@ export interface IProps {
 
 /**
  * Errors (add)
- * @memberof Components.Project.Simulation.Materials
  */
 const errors = {
   material: 'You need to define a material',
@@ -35,7 +36,6 @@ const errors = {
 
 /**
  * Add material
- * @memberof Components.Project.Simulation.Materials
  * @param props Props
  */
 const Add = ({

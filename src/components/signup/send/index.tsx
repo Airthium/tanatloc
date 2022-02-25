@@ -1,3 +1,5 @@
+/** @module Components.Signup.Send */
+
 import { Card, Layout } from 'antd'
 
 /**

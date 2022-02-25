@@ -1,3 +1,5 @@
+/** @module Components.Workspace.List */
+
 import PropTypes from 'prop-types'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
@@ -35,7 +37,6 @@ export interface IProps {
 
 /**
  * Errors (add)
- * @memberof Components.Workspace
  */
 const errors = {
   add: 'Unable to add the workspace'
@@ -43,7 +44,6 @@ const errors = {
 
 /**
  * Workspace list
- * @memberof Components.Workspace
  * @param props Props
  */
 const WorkspacesList = ({

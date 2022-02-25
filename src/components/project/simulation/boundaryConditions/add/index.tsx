@@ -1,3 +1,5 @@
+/** @module Components.Project.Simulation.BoundaryConditions.Add */
+
 import PropTypes from 'prop-types'
 import { useState } from 'react'
 import { v4 as uuid } from 'uuid'
@@ -28,7 +30,6 @@ export interface IProps {
 
 /**
  * Errors (add)
- * @memberof Components.Project.Simulation.BoundaryConditions
  */
 const errors = {
   name: 'You need to define a name',
@@ -39,7 +40,6 @@ const errors = {
 
 /**
  * Add boundary condition
- * @memberof Components.Project.Simulation.BoundaryConditions
  * @param props Props
  */
 const Add = ({

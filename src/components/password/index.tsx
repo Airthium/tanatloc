@@ -22,7 +22,6 @@ import LinkAPI from '@/api/link'
 
 /**
  * Errors
- * @memberof Components.Password
  */
 const errors = {
   internal: 'Internal error, please try again later',
@@ -31,7 +30,6 @@ const errors = {
 
 /**
  * Password recovery
- * @memberof Components.Password
  */
 const PasswordRecovery = (): JSX.Element => {
   // State

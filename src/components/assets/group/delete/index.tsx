@@ -1,3 +1,5 @@
+/** @module Components.Assets.Group.Delete */
+
 import PropTypes from 'prop-types'
 import { useState } from 'react'
 import { Button } from 'antd'
@@ -27,7 +29,6 @@ const errors = {
 
 /**
  * Delete group
- * @memberof Components.Assets.Group
  * @param props Props
  * @description
  * Props:

@@ -30,7 +30,6 @@ import { logout } from '@/api/logout'
 
 /**
  * Errors
- * @memberof Components.Dashboard
  */
 const errors = {
   user: 'User error',
@@ -41,7 +40,6 @@ const errors = {
 
 /**
  * Dashboard menu items
- * @memberof Components.Dashboard
  */
 const menuItems = {
   workspaces: {
@@ -72,7 +70,6 @@ const menuItems = {
 
 /**
  * Dashboard
- * @memberof Components.Dashboard
  */
 const Dashboard = () => {
   // State

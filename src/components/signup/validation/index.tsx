@@ -1,3 +1,5 @@
+/** @module Components.Signup.Validation */
+
 import { useEffect } from 'react'
 import { useRouter } from 'next/router'
 import { Card, Layout, Space, Spin, Typography } from 'antd'
@@ -18,7 +20,6 @@ const errors = {
 
 /**
  * Validation
- * @memberof Components.Signup
  * @returns {jxs} Render
  */
 const Validation = (): JSX.Element => {

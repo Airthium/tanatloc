@@ -1,3 +1,5 @@
+/** @module Components.Project.Simulation.Geometry */
+
 import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
 import { Card, Typography } from 'antd'
@@ -22,7 +24,6 @@ export interface IProps {
 
 /**
  * Errors (geometry)
- * @memberof Components.Project.Simulation
  */
 const errors = {
   update: 'Unable to update the simulation'
@@ -30,7 +31,6 @@ const errors = {
 
 /**
  * Geometry
- * @memberof Components.Project.Simulation
  * @param props Props
  */
 const Geometry = ({

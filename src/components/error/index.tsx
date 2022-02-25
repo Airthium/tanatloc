@@ -1,4 +1,5 @@
 /** @module Components.Error */
+
 import PropTypes from 'prop-types'
 import { useRouter } from 'next/router'
 import { Layout, Typography } from 'antd'
@@ -9,7 +10,6 @@ export interface IProps {
 
 /**
  * Error page
- * @memberof Components.Error
  * @param {Object} props Props `{ statusCode }`
  */
 function Error({ statusCode }: IProps): JSX.Element {
@@ -48,7 +48,7 @@ Error.getInitialProps = ({ res, err }) => {
 }
 
 Error.propTypes = {
-  statusCode: PropTypes.number,
+  statusCode: PropTypes.number
 }
 
 export default Error

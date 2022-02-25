@@ -1,3 +1,5 @@
+/** @module Components.Administration.User.Delete */
+
 import PropTypes from 'prop-types'
 import { useState } from 'react'
 import { Button, Checkbox, Form, Input, Select } from 'antd'
@@ -28,7 +30,6 @@ export interface IProps {
 
 /**
  * Errors (edit)
- * @memberof Components.Administration.Users
  */
 const errors = {
   update: 'Unable to update user'
@@ -36,7 +37,6 @@ const errors = {
 
 /**
  * Edit
- * @memberof Components.Administration.Users
  * @param props Props
  */
 const Edit = ({ plugins, user, swr }: IProps): JSX.Element => {

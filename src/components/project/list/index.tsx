@@ -1,3 +1,5 @@
+/** @module Components.Project.List */
+
 import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
@@ -46,7 +48,6 @@ export interface IProps {
 
 /**
  * Projects' list
- * @memberof Components.Project
  * @param props Props
  */
 const ProjectList = ({
@@ -324,6 +325,7 @@ ProjectList.propTypes = {
   user: PropTypes.shape({
     id: PropTypes.string
   }).isRequired,
+  page: PropTypes.string.isRequired,
   workspace: PropTypes.shape({
     id: PropTypes.string.isRequired,
     projects: PropTypes.array

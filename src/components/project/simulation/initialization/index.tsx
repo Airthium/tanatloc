@@ -1,3 +1,6 @@
+/** @module Components.Project.Simulation.Initialization */
+
+import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
 import { Collapse, Layout, Select, Space, Spin, Typography } from 'antd'
 
@@ -19,7 +22,6 @@ export interface IProps {
 
 /**
  * Errors (initialization)
- * @memberof Components.Project.Simulation
  */
 const errors = {
   update: 'Unable to update simulation'
@@ -27,7 +29,6 @@ const errors = {
 
 /**
  * Initialization
- * @memberof Components.Project.Simulation
  * @param props Props
  */
 const Initialization = ({
@@ -425,6 +426,21 @@ const Initialization = ({
       </Layout.Content>
     </Layout>
   )
+}
+
+Initialization.propTypes = {
+  simulations: PropTypes.array,
+  simulation: PropTypes.exact({
+    id: PropTypes.string.isRequired,
+    scheme: PropTypes.shape({
+      configuration: PropTypes.shape({
+        geometry: PropTypes.object.isRequired
+      }).isRequired
+    }).isRequired
+  }).isRequired,
+  swr: PropTypes.exact({
+    mutateOneSimulation: PropTypes.func.isRequired
+  }).isRequired
 }
 
 export default Initialization

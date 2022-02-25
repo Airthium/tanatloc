@@ -1,3 +1,5 @@
+/** @module Components.Login.Password */
+
 import { useState } from 'react'
 import { Button, Form, Input, Typography } from 'antd'
 
@@ -11,7 +13,6 @@ import EmailAPI from '@/api/email'
 
 /**
  * Errors (password)
- * @memberof Components.Login
  */
 const errors = {
   recover: 'Unable to recover password'
@@ -19,7 +20,6 @@ const errors = {
 
 /**
  * Password recover
- * @memberof Components.Login
  */
 const PasswordRecover = (): JSX.Element => {
   // State

@@ -1,3 +1,5 @@
+/** @module Components.Project.Simulation.Parameters */
+
 import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
 import {
@@ -27,7 +29,6 @@ export interface IProps {
 
 /**
  * Errors (parameters)
- * @memberof Components.Project.Simulation
  */
 const errors = {
   update: 'Unable to update the simulation'
@@ -35,7 +36,6 @@ const errors = {
 
 /**
  * Parameters
- * @memberof Components.Project.Simulation
  * @param props Props
  */
 const Parameters = ({ simulation, swr }: IProps): JSX.Element => {

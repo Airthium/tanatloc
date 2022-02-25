@@ -1,3 +1,5 @@
+/** @module Components.Project.Simulation.Run.CloudServer */
+
 import PropTypes from 'prop-types'
 import dynamic from 'next/dynamic'
 import { useState, useEffect, ComponentType } from 'react'
@@ -22,7 +24,6 @@ export interface IProps {
 
 /**
  * Errors (run/cloudServer)
- * @memberof Components.Project.Simulation
  */
 const errors = {
   plugins: 'Plugins error',
@@ -31,7 +32,6 @@ const errors = {
 
 /**
  * Cloud server
- * @memberof Components.Project.Simulation
  * @param props Props
  */
 const CloudServer = ({ disabled, cloudServer, onOk }: IProps): JSX.Element => {

@@ -1,3 +1,5 @@
+/** @module Components.Assets.Button.Cancel */
+
 import PropTypes from 'prop-types'
 import { ReactChild } from 'react'
 import { Button, Tooltip } from 'antd'
@@ -11,7 +13,6 @@ export interface IProps {
 
 /**
  * Cancel button
- * @memberof Components.Assets.Button
  * @param props Props
  * @description Props list:
  * - disabled (boolean) Set disabled state

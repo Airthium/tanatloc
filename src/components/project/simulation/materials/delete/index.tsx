@@ -1,3 +1,5 @@
+/** @module Components.Project.Simulation.Materials.Delete */
+
 import PropTypes from 'prop-types'
 import { useState } from 'react'
 
@@ -21,7 +23,6 @@ export interface IProps {
 
 /**
  * Error (delete)
- * @memberof Components.Project.Simulation.Materials
  */
 const errors = {
   updateError: 'Unable to delete the material'
@@ -29,7 +30,6 @@ const errors = {
 
 /**
  * Delete material
- * @memberof Components.Project.Simulation.Materials
  * @param props Props
  */
 const Delete = ({ index, simulation, swr }: IProps): JSX.Element => {

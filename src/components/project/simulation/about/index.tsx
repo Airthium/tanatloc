@@ -1,3 +1,5 @@
+/** @module Components.Project.Simulation.About*/
+
 import PropTypes from 'prop-types'
 import { Card, Layout, Space, Spin, Typography } from 'antd'
 
@@ -23,7 +25,6 @@ export interface IProps {
 
 /**
  * About
- * @memberof Components.Project.Simulation
  * @param props Props
  */
 const About = ({ project, simulation, swr }: IProps): JSX.Element => {

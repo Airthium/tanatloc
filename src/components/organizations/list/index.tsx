@@ -1,3 +1,5 @@
+/** @module Components.Organizations.List */
+
 import PropTypes from 'prop-types'
 import { Avatar, Button, Space, Table } from 'antd'
 import { ControlOutlined } from '@ant-design/icons'
@@ -24,7 +26,6 @@ export interface IProps {
 
 /**
  * List
- * @memberof Components.Organizations
  * @param props Props
  */
 const List = ({

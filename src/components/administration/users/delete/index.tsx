@@ -1,3 +1,5 @@
+/** @module Components.Administration.User.Delete */
+
 import PropTypes from 'prop-types'
 import { useState } from 'react'
 import { Button } from 'antd'
@@ -20,7 +22,6 @@ export interface IProps {
 
 /**
  * Errors (delete)
- * @memberof Components.Administration.Users
  */
 const errors = {
   delError: 'Unable to delete user'
@@ -28,7 +29,6 @@ const errors = {
 
 /**
  * Delete
- * @memberof Components.Administration.Users
  * @param props Props
  */
 const Delete = ({ user, swr }: IProps): JSX.Element => {

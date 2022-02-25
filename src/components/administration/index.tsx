@@ -13,7 +13,6 @@ import UserAPI from '@/api/user'
 
 /**
  * Tab items
- * @memberof Components.Administration
  */
 const tabItems = {
   users: {
@@ -28,7 +27,6 @@ const tabItems = {
 
 /**
  * Errors
- * @memberof Components.Administration
  */
 const errors = {
   users: 'Users error'
@@ -36,7 +34,6 @@ const errors = {
 
 /**
  * Administration
- * @memberof Components.Administration
  */
 const Administration = (): JSX.Element => {
   // Data

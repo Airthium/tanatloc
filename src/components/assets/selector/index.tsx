@@ -55,7 +55,6 @@ export interface IProps {
 
 /**
  * Selector
- * @memberof Components.Assets.Selector
  * @param props Props
  * @description Props list:
  * - geometry (Object) Geometry

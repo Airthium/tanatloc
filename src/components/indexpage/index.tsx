@@ -20,7 +20,6 @@ import UserAPI from '@/api/user'
 
 /**
  * Errors
- * @memberof Components.Index
  */
 const errors = {
   user: 'User error'
@@ -28,7 +27,6 @@ const errors = {
 
 /**
  * Index
- * @memberof Components.Index
  */
 const Index = (): JSX.Element => {
   // Router

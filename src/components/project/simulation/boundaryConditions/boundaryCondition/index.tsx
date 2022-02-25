@@ -1,3 +1,5 @@
+/** @module Components.Project.Simulation.BoundaryConditions.BoundaryCondition */
+
 import { useState, useEffect, ChangeEvent } from 'react'
 import PropTypes from 'prop-types'
 import {
@@ -40,7 +42,6 @@ export interface IProps {
 
 /**
  * Boundary condition
- * @memberof Components.Project.Simulation.BoundaryConditions
  * @param props Props
  */
 const BoundaryCondition = ({

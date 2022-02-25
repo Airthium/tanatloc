@@ -1,3 +1,5 @@
+/** @module Components.Project.Geometry.Add */
+
 import PropTypes from 'prop-types'
 import { useState } from 'react'
 import { Space, Typography, Upload } from 'antd'
@@ -23,7 +25,6 @@ export interface IProps {
 
 /**
  * Errors (add)
- * @memberof Components.Project.Geometry
  */
 const errors = {
   addError: 'Unable to add geometry'
@@ -31,7 +32,6 @@ const errors = {
 
 /**
  * Add
- * @memberof Components.Project.Geometry
  * @param props Props
  */
 const Add = ({ visible, project, swr, setVisible }: IProps): JSX.Element => {

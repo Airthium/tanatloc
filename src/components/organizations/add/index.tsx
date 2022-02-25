@@ -1,3 +1,5 @@
+/** @module Components.Organizations.Add */
+
 import PropTypes from 'prop-types'
 import { useState } from 'react'
 import { Button, Form, Input } from 'antd'
@@ -16,7 +18,6 @@ export interface IProps {
 
 /**
  * Errors (add)
- * @memberof Components.Organizations
  */
 const errors = {
   addError: 'Unable to add organization'
@@ -24,7 +25,6 @@ const errors = {
 
 /**
  * Add
- * @memberof Components.Organizations
  * @param props Props
  */
 const Add = ({ swr }: IProps): JSX.Element => {

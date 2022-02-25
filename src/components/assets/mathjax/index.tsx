@@ -1,3 +1,5 @@
+/** @module Components.Assets.Mathjax */
+
 import { useEffect } from 'react'
 import parse from 'html-react-parser'
 

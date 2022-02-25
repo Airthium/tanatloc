@@ -1,3 +1,5 @@
+/** @module Components.Project.Simulation.Run.Log */
+
 import PropTypes from 'prop-types'
 import { useState } from 'react'
 import { Button, Drawer, Modal, Tabs, Tooltip } from 'antd'

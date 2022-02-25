@@ -1,3 +1,5 @@
+/** @module Components.Administration.Registration */
+
 import { useEffect } from 'react'
 import { Button, Card, Checkbox, Form, InputNumber, Space } from 'antd'
 import { CheckOutlined } from '@ant-design/icons'
@@ -22,7 +24,6 @@ import SystemAPI from '@/api/system'
 
 /**
  * Errors (registration)
- * @memberof Components.Administration
  */
 const errors = {
   system: 'System error',
@@ -31,7 +32,6 @@ const errors = {
 
 /**
  * Registration
- * @memberof Components.Administration
  */
 const Registration = (): JSX.Element => {
   // Data

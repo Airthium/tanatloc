@@ -1,8 +1,9 @@
+/** @module Components.Help.Doc.Administration */
+
 import { Card, Collapse, Typography } from 'antd'
 
 /**
  * Administration documentation
- * @memberof Components.Help
  */
 const Administration = (): JSX.Element => {
   /**

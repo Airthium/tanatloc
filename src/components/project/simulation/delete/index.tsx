@@ -1,3 +1,5 @@
+/** @module Components.Project.Simulation.Delete */
+
 import PropTypes from 'prop-types'
 import { useState } from 'react'
 
@@ -20,7 +22,6 @@ export interface IProps {
 
 /**
  * Errors (delete)
- * @memberof Components.Project.Simulation
  */
 const errors = {
   delError: 'Unable to delete the simulation'
@@ -28,7 +29,6 @@ const errors = {
 
 /**
  * Delete
- * @memberof Components.Project.Simulation
  * @param props Props
  */
 const Delete = ({ project, simulation, swr }: IProps): JSX.Element => {

@@ -1,3 +1,5 @@
+/** @module Components.Assets.Button.Download */
+
 import PropTypes from 'prop-types'
 import { Button, Tooltip } from 'antd'
 import { DownloadOutlined } from '@ant-design/icons'
@@ -13,7 +15,6 @@ export interface IProps {
 
 /**
  * Download button
- * @memberof Components.Assets.Button
  * @param props Props
  * @description Props list:
  * - disabled (boolean) Set disabled state

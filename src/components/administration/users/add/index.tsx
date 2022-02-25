@@ -1,3 +1,5 @@
+/** @module Components.Administration.User.Add */
+
 import PropTypes from 'prop-types'
 import { useState } from 'react'
 import { Button, Checkbox, Form, Input, Select } from 'antd'
@@ -20,7 +22,6 @@ export interface IProps {
 
 /**
  * Errors (add)
- * @memberof Components.Administration.Users
  */
 const errors = {
   add: 'Unable to add user'
@@ -28,7 +29,6 @@ const errors = {
 
 /**
  * Add
- * @memberof Components.Administration.Users
  * @param props Props
  */
 const Add = ({ plugins, swr }: IProps): JSX.Element => {

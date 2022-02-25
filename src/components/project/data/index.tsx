@@ -1,5 +1,6 @@
 /** @module Components.Project.Data */
 
+import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
 import {
   Button,
@@ -41,7 +42,6 @@ export interface IProps {
 
 /**
  * Data visualization
- * @memberof Components.Project.Data
  * @param props Props
  */
 const Data = ({ simulation }: IProps): JSX.Element => {
@@ -325,6 +325,13 @@ const Data = ({ simulation }: IProps): JSX.Element => {
       </Layout.Content>
     </Layout>
   )
+}
+
+Data.propTypes = {
+  simulation: PropTypes.exact({
+    id: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired
+  })
 }
 
 export default Data

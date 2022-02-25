@@ -1,9 +1,10 @@
+/** @module Components.Assets.Notification.Success */
+
 import PropTypes from 'prop-types'
 import { notification } from 'antd'
 
 /**
  * Success notification
- * @memberof Components.Assets.Notification
  * @param title Title
  * @param subTitle Sub title
  */

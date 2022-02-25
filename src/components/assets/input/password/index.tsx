@@ -1,3 +1,5 @@
+/** @module Components.Assets.Input.Password */
+
 import PropTypes from 'prop-types'
 import { Form, Input } from 'antd'
 
@@ -26,7 +28,6 @@ export interface IProps {
 
 /**
  * Errors (password)
- * @memberof Components.Assets.Input
  */
 const errors = {
   password: 'Please enter a password',
@@ -41,7 +42,6 @@ const errors = {
 
 /**
  * Password item
- * @memberof Components.Assets.Input
  * @param props Props
  *
  * @description

@@ -31,7 +31,6 @@ const errors = {
 
 /**
  * Dialog
- * @memberof Components.Assets.Dialog
  * @param props Props
  * @description Props list:
  * - visible (boolean) Dialog visible

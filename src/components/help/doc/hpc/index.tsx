@@ -1,8 +1,9 @@
+/** @module Components.Help.Doc.Hpc */
+
 import { Card, Collapse, Typography } from 'antd'
 
 /**
  * HPC plugins documentation
- * @memberof Components.Help
  */
 const HPC = (): JSX.Element => {
   /**

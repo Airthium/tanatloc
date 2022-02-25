@@ -27,7 +27,6 @@ export interface IProps {
 
 /**
  * Errors
- * @memberof Components.Administration.Users
  */
 const errors = {
   plugins: 'Unable to load plugins'
@@ -35,7 +34,6 @@ const errors = {
 
 /**
  * Users
- * @memberof Components.Administration.Users
  * @param props Props
  */
 const Users = ({ users, swr }: IProps): JSX.Element => {

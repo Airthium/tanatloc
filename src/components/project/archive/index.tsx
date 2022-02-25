@@ -1,3 +1,5 @@
+/** @module Components.Project.Archive */
+
 import PropTypes from 'prop-types'
 import { useState } from 'react'
 import { Button, Tooltip, Typography } from 'antd'
@@ -29,7 +31,6 @@ const errors = {
 
 /**
  * Archive
- * @memberof Components.Project
  * @param props Props
  */
 const Archive = ({

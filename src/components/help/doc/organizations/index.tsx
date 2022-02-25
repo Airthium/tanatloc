@@ -1,8 +1,9 @@
+/** @module Components.Help.Doc.Organization */
+
 import { Card, Collapse, Typography } from 'antd'
 
 /**
  * Organizations documentation
- * @memberof Components.Help
  */
 const Organizations = (): JSX.Element => {
   /**

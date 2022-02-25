@@ -42,7 +42,6 @@ export interface IProps {
 
 /**
  * Errors
- * @memberof Components.Assets.Share
  */
 const errors = {
   shareError: 'Unable to share'
@@ -50,7 +49,6 @@ const errors = {
 
 /**
  * Share
- * @memberof Components.Assets.Share
  * @param props Props
  * @description Props list:
  * - disabled (boolean) Set disabled state

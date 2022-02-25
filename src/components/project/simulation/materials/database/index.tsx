@@ -1,3 +1,5 @@
+/** @module Components.Project.Simulation.MAterials.Database */
+
 import PropTypes from 'prop-types'
 import { useState } from 'react'
 import { Button, Layout, List, Menu, Modal, Space } from 'antd'
@@ -24,7 +26,6 @@ export interface IMaterialDatabase {
 
 /**
  * Material database
- * @memberof Components.Project.Simulation.Materials
  */
 const materialDatabase: IMaterialDatabase = {
   metal: {
@@ -350,7 +351,6 @@ const materialDatabase: IMaterialDatabase = {
 
 /**
  * Material database
- * @memberof Components.Project.Simulation.Materials
  * @param props Props
  */
 const DataBase = ({ onSelect }: IProps): JSX.Element => {

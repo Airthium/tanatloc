@@ -30,7 +30,6 @@ const errors = {
  * Delete account
  * @param props Props
  *
- * @category Components.Account
  */
 const Delete = ({ swr }: IProps): JSX.Element => {
   // State

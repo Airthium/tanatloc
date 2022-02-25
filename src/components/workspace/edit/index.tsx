@@ -1,3 +1,5 @@
+/** @module Components.Workspace.Edit */
+
 import PropTypes from 'prop-types'
 import { useState } from 'react'
 import { Form, Input } from 'antd'
@@ -20,7 +22,6 @@ export interface IProps {
 
 /**
  * Errors (edit)
- * @memberof Components.Workspace
  */
 const errors = {
   update: 'Unable to update the workspace'
@@ -28,7 +29,6 @@ const errors = {
 
 /**
  * Edit workspace
- * @memberof Components.Workspace
  * @param props Props
  */
 const Edit = ({ workspace, swr }: IProps): JSX.Element => {

@@ -1,3 +1,5 @@
+/** @module Components.Assets.Button.Delete */
+
 import PropTypes from 'prop-types'
 import { ReactChild, useState } from 'react'
 import { Button, Tooltip } from 'antd'
@@ -16,7 +18,6 @@ export interface IProps {
 
 /**
  * Delete button
- * @memberof Components.Assets.Button
  * @param props Props
  * @description Props list:
  * - disabled (boolean) Set disabled state

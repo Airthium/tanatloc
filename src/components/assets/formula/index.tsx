@@ -20,7 +20,6 @@ const saveDelay = 1000
 
 /**
  * Formula
- * @memberof Components.Assets.Formula
  * @param props Props
  * @description Props list:
  * - label (string) Label

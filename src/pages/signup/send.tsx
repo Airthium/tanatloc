@@ -1,8 +1,9 @@
+/** @module Pages.Signup.Send */
+
 import SendPage from '@/components/signup/send'
 
 /**
  * Signup send
- * @memberof Pages
  */
 const Send = (): JSX.Element => {
   /**

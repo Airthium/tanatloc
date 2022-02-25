@@ -1,8 +1,9 @@
+/** @module Pages.404 */
+
 import NotFoundPage from '@/components/notfound'
 
 /**
  * 404 page
- * @memberof Pages
  */
 const _404 = (): JSX.Element => {
   /**

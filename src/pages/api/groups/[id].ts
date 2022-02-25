@@ -1,10 +1,11 @@
+/** @module Pages.API.Groups.[id] */
+
 import { Request, Response } from 'express'
 
 import route from '@/route/groups/[id]'
 
 /**
  * Groups API from [id]
- * @memberof Pages.API
  * @param req Request
  * @param res Response
  */

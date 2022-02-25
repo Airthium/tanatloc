@@ -1,10 +1,11 @@
+/** @module Pages.API.Geometry.[id].Part */
+
 import { Request, Response } from 'express'
 
 import route from '@/route/geometry/[id]/part'
 
 /**
  * Geometry API for [id]/part
- * @memberof Pages.API
  * @param req Request
  * @param res Response
  */

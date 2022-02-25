@@ -1,8 +1,9 @@
+/** @module Pages.Password */
+
 import PasswordPage from '@/components/password'
 
 /**
  * Password recovery
- * @memberof Pages
  */
 const Password = (): JSX.Element => {
   /**

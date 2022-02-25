@@ -1,10 +1,11 @@
+/** @module Pages.API.Logout */
+
 import { Request, Response } from 'express'
 
 import { logout as route } from '@/route/logout'
 
 /**
  * Logout API
- * @memberof Pages.API
  * @param req Request
  * @param res Response
  */

@@ -1,10 +1,11 @@
+/** @module Pages.API.Group */
+
 import { Request, Response } from 'express'
 
 import route from '@/route/group'
 
 /**
  * Group API
- * @memberof Pages.API
  * @param req Request
  * @param res Response
  */

@@ -4,7 +4,6 @@ import IndexPage from '@/components/indexpage'
 
 /**
  * Index
- * @memberof Pages
  */
 const Index = (): JSX.Element => {
   /**

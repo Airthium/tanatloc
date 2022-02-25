@@ -1,8 +1,9 @@
+/** @module Pages.Login */
+
 import LoginPage from '@/components/login'
 
 /**
  * Login
- * @memberof Pages
  */
 const Login = (): JSX.Element => {
   /**

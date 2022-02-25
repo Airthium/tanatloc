@@ -1,10 +1,11 @@
+/** @module Pages.API.Download */
+
 import { Request, Response } from 'express'
 
 import route from '@/route/result/download'
 
 /**
  * Result download API
- * @memberof Pages.API
  * @param req Request
  * @param res Response
  */

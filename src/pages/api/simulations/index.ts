@@ -1,10 +1,11 @@
+/** @module Pages.API.Simulations */
+
 import { Request, Response } from 'express'
 
 import route from '@/route/simulations'
 
 /**
  * Simulations API from [ids]
- * @memberof Pages.API
  * @param req Request
  * @param res Response
  */

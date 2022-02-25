@@ -1,10 +1,11 @@
+/** @module Pages.API.User.Check */
+
 import { Request, Response } from 'express'
 
 import route from '@/route/user/check'
 
 /**
  * User check API
- * @memberof Pages.API
  * @param req Request
  * @param res Response
  */

@@ -1,8 +1,9 @@
+/** @module Pages.Signup.Validation */
+
 import ValidationPage from '@/components/signup/validation'
 
 /**
  * Signup validation
- * @memberof Pages
  */
 const Validation = (): JSX.Element => {
   /**

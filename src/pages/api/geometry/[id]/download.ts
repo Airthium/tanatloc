@@ -1,10 +1,11 @@
+/** @module Pages.API.Geometry.[id].Download */
+
 import { Request, Response } from 'express'
 
 import route from '@/route/geometry/[id]/download'
 
 /**
  * Geometry API for [id]/download
- * @memberof Pages.API
  * @param req Request
  * @param res Response
  */

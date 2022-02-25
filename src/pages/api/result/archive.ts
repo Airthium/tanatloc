@@ -1,10 +1,11 @@
+/** @module Pages.API.Archive */
+
 import { Request, Response } from 'express'
 
 import route from '@/route/result/archive'
 
 /**
  * Result archive API
- * @memberof Pages.API
  * @param req Request
  * @param res Response
  */

@@ -1,10 +1,11 @@
+/** @module Pages.API.Workspace */
+
 import { Request, Response } from 'express'
 
 import route from '@/route/workspace'
 
 /**
  * Workspace API
- * @memberof Pages.API
  * @param req Request
  * @param res Response
  */

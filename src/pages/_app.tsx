@@ -1,3 +1,5 @@
+/** @module Pages.App */
+
 import Head from 'next/head'
 import { AppProps } from 'next/app'
 import { Provider } from 'react-redux'
@@ -12,8 +14,7 @@ require('@/styles/global.less')
 
 /**
  * Global App component
- * @memberof Pages
- * @param {Object} param0 {Component, pageProps}
+ * @param props Props
  */
 const App = ({ Component, pageProps }: AppProps): JSX.Element => {
   // Redux

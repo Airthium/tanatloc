@@ -1,10 +1,11 @@
+/** @module Pages.API.Avatar */
+
 import { Request, Response } from 'express'
 
 import route from '@/route/avatar'
 
 /**
  * Avatar API
- * @memberof Pages.API
  * @param req Request
  * @param res Response
  */

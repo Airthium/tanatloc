@@ -1,10 +1,11 @@
+/** @module Pages.API.Plugin */
+
 import { Request, Response } from 'express'
 
 import route from '@/route/plugin'
 
 /**
  * Plugin API
- * @memberof Pages.API
  * @param req Request
  * @param res Response
  */

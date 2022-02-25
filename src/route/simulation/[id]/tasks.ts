@@ -1,3 +1,5 @@
+/** @module Route.Simulation.[id].Tasks */
+
 import { Request, Response } from 'express'
 
 import { session } from '@/route/session'
@@ -7,8 +9,7 @@ import { error } from '@/route/error'
 import SimulationLib from '@/lib/simulation'
 
 /**
- * Simulation API stop
- * @memberof Route.Simulation
+ * Simulation API tasks
  * @param req Request
  * @param res Response
  */

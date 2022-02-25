@@ -1,10 +1,12 @@
+/** @module Route.Simulation.[id] */
+
 import { Request, Response } from 'express'
+
+import { IDataBaseEntry } from '@/database/index.d'
 
 import { session } from '../session'
 import { checkSimulationAuth } from '../auth'
 import { error } from '../error'
-
-import { IDataBaseEntry } from '@/database/index.d'
 
 import SimulationLib from '@/lib/simulation'
 
@@ -12,7 +14,6 @@ export type IUpdateBody = IDataBaseEntry[]
 
 /**
  * Check update body
- * @memberof Route.Simulation
  * @param body Body
  */
 const checkUpdateBody = (body: IUpdateBody): void => {
@@ -22,7 +23,6 @@ const checkUpdateBody = (body: IUpdateBody): void => {
 
 /**
  * Simulation API by [id]
- * @memberof Route.Simulation
  * @param req Request
  * @param res Response
  */

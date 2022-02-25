@@ -10,7 +10,6 @@ import PluginsLib from '@/lib/plugins'
 
 /**
  * Plugins API
- * @memberof Route.Plugins
  * @param req Request
  * @param res Response
  */

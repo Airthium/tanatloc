@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 
-import { IRouteError } from '@/route'
+import { IRouteError } from '@/route/index.d'
 
 import geometries from '..'
 

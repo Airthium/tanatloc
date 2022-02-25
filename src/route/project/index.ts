@@ -15,7 +15,6 @@ export interface IAddBody {
 
 /**
  * Check add body
- * @memberof Route.Project
  * @param body Body
  */
 const checkAddBody = (body: IAddBody): void => {
@@ -36,7 +35,6 @@ const checkAddBody = (body: IAddBody): void => {
 
 /**
  * Project API
- * @memberof Route.Project
  * @param req Request
  * @param res Response
  */

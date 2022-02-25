@@ -9,7 +9,6 @@ import OrganizationLib from '@/lib/organization'
 
 /**
  * Organizations API
- * @memberof Route.Organizations
  * @param req Request
  * @param res Response
  */

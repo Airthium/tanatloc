@@ -1,3 +1,5 @@
+/** @module Route.Session */
+
 import { Request } from 'express'
 
 import { getSession } from '@/auth/iron'
@@ -8,7 +10,6 @@ import { error } from './error'
 
 /**
  * Session
- * @memberof Route
  * @param req Request
  * @param res Response
  */

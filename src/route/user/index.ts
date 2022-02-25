@@ -2,10 +2,10 @@
 
 import { Request, Response } from 'express'
 
+import { IDataBaseEntry } from '@/database/index.d'
+
 import { session } from '../session'
 import { error } from '../error'
-
-import { IDataBaseEntry } from '@/database/index.d'
 
 import UserLib from '@/lib/user'
 
@@ -18,7 +18,6 @@ export type IUpdateBody = IDataBaseEntry[]
 
 /**
  * Check add body
- * @memberof Route.User
  * @param body Body
  */
 const checkAddBody = (body: IAddBody): void => {
@@ -37,7 +36,6 @@ const checkAddBody = (body: IAddBody): void => {
 
 /**
  * Check update body
- * @memberof Route.User
  * @param body Body
  */
 const checkUpdateBody = (body: IUpdateBody): void => {
@@ -47,7 +45,6 @@ const checkUpdateBody = (body: IUpdateBody): void => {
 
 /**
  * User API
- * @memberof Route.User
  * @param req Request
  * @param res Response
  */

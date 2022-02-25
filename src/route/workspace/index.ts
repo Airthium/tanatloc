@@ -2,11 +2,11 @@
 
 import { Request, Response } from 'express'
 
+import { IDataBaseEntry } from '@/database/index.d'
+
 import { session } from '../session'
 import { checkWorkspaceAuth } from '../auth'
 import { error } from '../error'
-
-import { IDataBaseEntry } from '@/database/index.d'
 
 import WorkspaceLib from '@/lib/workspace'
 
@@ -27,7 +27,6 @@ export interface IDeleteBody {
 
 /**
  * Check add body
- * @memberof Route.Workspace
  * @param body Body
  */
 const checkAddBody = (body: IAddBody): void => {
@@ -37,7 +36,6 @@ const checkAddBody = (body: IAddBody): void => {
 
 /**
  * Check update body
- * @memberof Route.Workspace
  * @param body Body
  */
 const checkUpdateBody = (body: IUpdateBody): void => {
@@ -57,7 +55,6 @@ const checkUpdateBody = (body: IUpdateBody): void => {
 
 /**
  * Check delete body
- * @memberof Route.Workspace
  * @param body Body
  */
 const checkDeleteBody = (body: IDeleteBody): void => {
@@ -67,7 +64,6 @@ const checkDeleteBody = (body: IDeleteBody): void => {
 
 /**
  * Workspace API
- * @memberof Route.Workspace
  * @param req Request
  * @param res Response
  */

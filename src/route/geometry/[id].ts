@@ -1,10 +1,12 @@
+/** @module Route.Geometry.[id] */
+
 import { Request, Response } from 'express'
+
+import { IDataBaseEntry } from '@/database/index.d'
 
 import { session } from '../session'
 import { checkGeometryAuth } from '../auth'
 import { error } from '../error'
-
-import { IDataBaseEntry } from '@/database/index.d'
 
 import GeometryLib from '@/lib/geometry'
 
@@ -12,7 +14,6 @@ export type IUpdateBody = IDataBaseEntry[]
 
 /**
  * Check update body
- * @memberof Route.Geometry
  * @param body Body
  */
 const checkUpdateBody = (body: IUpdateBody): void => {
@@ -22,7 +23,6 @@ const checkUpdateBody = (body: IUpdateBody): void => {
 
 /**
  * Geometry API by [id]
- * @memberof Route.Geometry
  * @param req Request
  * @param res Response
  */

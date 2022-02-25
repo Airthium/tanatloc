@@ -1,6 +1,7 @@
 import { Request, Response } from 'express'
 
-import { IRouteError } from '@/route'
+import { IRouteError } from '@/route/index.d'
+
 import simulation from '../'
 
 const mockSession = jest.fn()

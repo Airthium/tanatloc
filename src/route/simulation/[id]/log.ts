@@ -1,3 +1,5 @@
+/** @module Route.Simulation.[id].Log */
+
 import { Request, Response } from 'express'
 
 import { session } from '@/route/session'
@@ -12,7 +14,6 @@ export interface ILogBody {
 
 /**
  * Check log body
- * @memberof Route.Simulation
  * @param body Body
  */
 const checkLogBody = (body: ILogBody): void => {
@@ -22,7 +23,6 @@ const checkLogBody = (body: ILogBody): void => {
 
 /**
  * Simulation API log
- * @memberof Route.Simulation
  * @param req Request
  * @param res Response
  */

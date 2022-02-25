@@ -1,3 +1,5 @@
+/** @module Route.User.Check */
+
 import { Request, Response } from 'express'
 
 import { session } from '../session'
@@ -12,7 +14,6 @@ export interface ILoginBody {
 
 /**
  * Check login body
- * @memberof Route.User
  * @param body Body
  */
 const checkLoginBody = (body: ILoginBody): void => {
@@ -31,7 +32,6 @@ const checkLoginBody = (body: ILoginBody): void => {
 
 /**
  * User check API
- * @memberof Route.User
  * @param req Request
  * @param res Response
  */

@@ -1,12 +1,12 @@
-/** @namspace Route.Simulation */
+/** @module Route.Simulation */
 
 import { Request, Response } from 'express'
+
+import { IModel } from '@/models/index.d'
 
 import { session } from '../session'
 import { checkProjectAuth } from '../auth'
 import { error } from '../error'
-
-import { IModel } from '@/models/index.d'
 
 import SimulationLib from '@/lib/simulation'
 
@@ -22,7 +22,6 @@ export interface IAddBody {
 
 /**
  * Check add body
- * @memberof Route.Simulation
  * @param body Body
  */
 const checkAddBody = (body: IAddBody): void => {
@@ -45,7 +44,6 @@ const checkAddBody = (body: IAddBody): void => {
 
 /**
  * Simulation API
- * @memberof Route.Simulation
  * @param req Request
  * @param res Response
  */

@@ -21,7 +21,6 @@ export interface IProcessBody {
 
 /**
  * Check get body
- * @memberof Route.Link
  * @param body Body
  */
 const checkGetBody = (body: IGetBody): void => {
@@ -40,7 +39,6 @@ const checkGetBody = (body: IGetBody): void => {
 
 /**
  * Check process body
- * @memberof Route.Link
  * @param body Body
  */
 const checkProcessBody = (body: IProcessBody): void => {
@@ -53,7 +51,6 @@ const checkProcessBody = (body: IProcessBody): void => {
 
 /**
  * Link API
- * @memberof Route.Link
  * @param req Request
  * @param res Response
  */

@@ -1,3 +1,5 @@
+/** @module Route.Result.Archive */
+
 import { Request, Response } from 'express'
 
 import { session } from '../session'
@@ -14,7 +16,6 @@ export interface IArchiveBody {
 
 /**
  * Check archive body
- * @memberof Route.Result
  * @param body Body
  */
 const checkArchiveBody = (body: IArchiveBody): void => {
@@ -32,7 +33,6 @@ const checkArchiveBody = (body: IArchiveBody): void => {
 
 /**
  * Result archive API
- * @memberof Route.Result
  * @param req Request
  * @param res Response
  */

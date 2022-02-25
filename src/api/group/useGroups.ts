@@ -32,7 +32,7 @@ export const useGroups = (
    * Add one
    * @param group Group
    */
-  const addOne = (group: IGroupWithData) => {
+  const addOne = (group: IGroupWithData): void => {
     const newGroups = [...groups, group]
     mutate({ groups: newGroups })
   }
@@ -41,7 +41,7 @@ export const useGroups = (
    * Del one
    * @param group Group
    */
-  const delOne = (group: IGroupWithData) => {
+  const delOne = (group: IGroupWithData): void => {
     const filteredGroups = groups.filter((g) => g.id !== group.id)
     mutate({ groups: filteredGroups })
   }
@@ -50,7 +50,7 @@ export const useGroups = (
    * Mutate one
    * @param groups Group
    */
-  const mutateOne = (group: IGroupWithData) => {
+  const mutateOne = (group: IGroupWithData): void => {
     const mutatedGroups = groups.map((g) => {
       if (g.id === group.id) g = { ...g, ...group }
       return g

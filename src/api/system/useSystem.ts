@@ -22,7 +22,11 @@ export const useSystem = (): [
   const loading = !data
   const system = data?.system
 
-  const myMutate = (update: ISystem) => {
+  /**
+   * Mutate
+   * @param update System
+   */
+  const localMutate = (update: ISystem): void => {
     mutate({
       system: {
         ...system,
@@ -33,6 +37,6 @@ export const useSystem = (): [
 
   return [
     system,
-    { mutateSystem: myMutate, errorSystem: error, loadingSystem: loading }
+    { mutateSystem: localMutate, errorSystem: error, loadingSystem: loading }
   ]
 }

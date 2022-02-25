@@ -23,7 +23,11 @@ export const useUser = (): [
   const loading = !data
   const user = data?.user
 
-  const myMutate = (update: IUserWithData) => {
+  /**
+   * Mutate
+   * @param update User
+   */
+  const localMutate = (update: IUserWithData): void => {
     mutate({
       user: {
         ...user,
@@ -39,7 +43,7 @@ export const useUser = (): [
   return [
     user,
     {
-      mutateUser: myMutate,
+      mutateUser: localMutate,
       clearUser: clear,
       errorUser: error?.status === 401 ? undefined : error,
       loadingUser: error?.status === 401 ? false : loading

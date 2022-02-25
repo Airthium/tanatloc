@@ -6,7 +6,6 @@ import { call } from '@/api/call'
 
 /**
  * Archive
- * @memberof API.Project
  * @param project Project
  * @returns Response
  */

@@ -1,8 +1,9 @@
+/** @module Install.CopyAssets */
+
 import { promises as fs } from 'fs'
 
 /**
  * Copy threejs assets
- * @memberof Install
  * @description Copy threejs assets in `public/three/libs`:
  * - `draco` libraries
  */
@@ -24,7 +25,6 @@ const copyThreeAssets = async (): Promise<void> => {
 
 /**
  * Copy assets
- * @memberof Install
  * @description Copy assets
  */
 export const copyAssets = async (): Promise<void> => {

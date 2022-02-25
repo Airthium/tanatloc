@@ -30,7 +30,11 @@ export const useSimulation = (
   const loading = !data
   const simulation = data?.simulation || { id: '0' }
 
-  const myMutate = (update: ISimulation) => {
+  /**
+   * Mutate
+   * @param update Simulation
+   */
+  const localMutate = (update: ISimulation): void => {
     mutate({
       simulation: {
         ...simulation,
@@ -42,7 +46,7 @@ export const useSimulation = (
   return [
     simulation,
     {
-      mutateSimulation: myMutate,
+      mutateSimulation: localMutate,
       errorSimulation: error,
       loadingSimulation: loading
     }

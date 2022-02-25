@@ -29,7 +29,7 @@ export const useOrganizations = (): [
    * Add one
    * @param organization Organization
    */
-  const addOne = (organization: IOrganizationWithData) => {
+  const addOne = (organization: IOrganizationWithData): void => {
     const newOrganizations = [...organizations, organization]
     mutate({ organizations: newOrganizations })
   }
@@ -38,7 +38,7 @@ export const useOrganizations = (): [
    * Delete one
    * @param organization Organization
    */
-  const delOne = (organization: IOrganizationWithData) => {
+  const delOne = (organization: IOrganizationWithData): void => {
     const filteredOrganizations = organizations.filter(
       (o) => o.id !== organization.id
     )
@@ -49,7 +49,7 @@ export const useOrganizations = (): [
    * Mutate one
    * @param organization Organization
    */
-  const mutateOne = (organization: IOrganizationWithData) => {
+  const mutateOne = (organization: IOrganizationWithData): void => {
     const mutatedOrganizations = organizations.map((o) => {
       if (o.id === organization.id) o = { ...o, ...organization }
       return o

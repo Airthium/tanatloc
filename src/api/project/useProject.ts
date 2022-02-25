@@ -28,7 +28,11 @@ export const useProject = (
   const loading = !data
   const project = data?.project || { id: '0' }
 
-  const myMutate = (update: IProjectWithData): void => {
+  /**
+   * Mutate
+   * @param update Project
+   */
+  const localMutate = (update: IProjectWithData): void => {
     const mutatedProject = {
       ...project,
       ...update
@@ -39,7 +43,7 @@ export const useProject = (
   return [
     project,
     {
-      mutateProject: myMutate,
+      mutateProject: localMutate,
       errorProject: error,
       loadingProject: loading
     }

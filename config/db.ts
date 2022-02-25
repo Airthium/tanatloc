@@ -3,7 +3,6 @@
 // Database configuration
 /**
  * Admin
- * @memberof Config.Database
  * @description Set by `DB_ADMIN` environment variable or:
  * - `darwin` on MacOS
  * - `postrges` on Unix-like systems and Windows
@@ -14,7 +13,6 @@ export const ADMIN: string =
 
 /**
  * Admin database
- * @memberof Config.Database
  * @description Set by `DB_ADMIN_DATABASE` environment variable or `postgres`
  */
 export const ADMIN_DATABASE: string =
@@ -22,42 +20,36 @@ export const ADMIN_DATABASE: string =
 
 /**
  * Admin password
- * @memberof Config.Database
  * @description Set by `DB_ADMIN_PASSWORD` or empty string
  */
 export const ADMIN_PASSWORD: string = process.env.DB_ADMIN_PASSWORD || ''
 
 /**
  * User
- * @memberof Config.Database
  * @description Set by `DB_USER` environment variable or `tanatlocuser`
  */
 export const USER: string = process.env.DB_USER || 'tanatlocuser'
 
 /**
  * Host
- * @memberof Config.Database
  * @description Set by `DB_HOST` environment variable or `localhost`
  */
 export const HOST: string = process.env.DB_HOST || 'localhost'
 
 /**
  * Port
- * @memberof Config.Database
  * @description Set by `DB_PORT` environment variable or `5432`
  */
 export const PORT: number = parseInt(process.env.DB_PORT) || 5432
 
 /**
  * Database
- * @memberof Config.Database
  * @description Set by `DB_DATABASE` environment variable or `tanatloc2`
  */
 export const DATABASE: string = process.env.DB_DATABASE || 'tanatloc2'
 
 /**
  * Password
- * @memberof Config.Database
  * @description Set by `DB_PASSWORD` environment variable or `tanatloc`
  */
 export const PASSWORD: string = process.env.DB_PASSWORD || 'tanatloc'
@@ -77,7 +69,6 @@ export interface Tables {
 
 /**
  * Tables names
- * @memberof Config.Database
  */
 export const tables: Tables = {
   SYSTEM: 'tanatloc_system',
@@ -103,7 +94,6 @@ export interface Scheme {
 
 /**
  * Tables schemes
- * @memberof Config.Database
  */
 export const schemas: Scheme = {
   [tables.SYSTEM]: [

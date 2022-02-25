@@ -1,11 +1,13 @@
+/** @module Database.Organization.Add */
+
+import { INewOrganization } from '../index.d'
+
 import { tables } from '@/config/db'
 
 import { query } from '..'
-import { INewOrganization } from '../index.d'
 
 /**
  * Add
- * @memberof Database.Organization
  * @param organization Organization
  * @returns New organization
  */

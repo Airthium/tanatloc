@@ -1,10 +1,11 @@
+/** @module Database.User.Del */
+
 import { tables } from '@/config/db'
 
 import { deleter } from '..'
 
 /**
  * Delete
- * @memberof Database.User
  * @param user User
  */
 export const del = async (user: { id: string }): Promise<void> => {

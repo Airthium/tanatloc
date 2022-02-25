@@ -1,3 +1,5 @@
+/** @module Plugins.Local.Lib */
+
 import path from 'path'
 import { setIntervalAsync } from 'set-interval-async/fixed'
 import { clearIntervalAsync } from 'set-interval-async'
@@ -35,7 +37,6 @@ const updateDelay = 1000 // ms
 
 /**
  * Update tasks
- * @memberof Plugins.Local
  * @param id Id
  * @param tasks Tasks
  */
@@ -50,7 +51,6 @@ const updateTasks = (id: string, tasks: ISimulationTask[]): void => {
 
 /**
  * Clean previous simulaton
- * @memberof Plugins.Local
  * @param simulationPath Simulation path
  */
 const clean = async (simulationPath: string): Promise<void> => {
@@ -77,7 +77,6 @@ const clean = async (simulationPath: string): Promise<void> => {
 
 /**
  * Compute mesh
- * @memberof Plugins.Local
  * @param simulationPath Simulation path
  * @param geometry Geometry
  * @param mesh Mesh
@@ -146,7 +145,6 @@ const computeMesh = async (
 
 /**
  * Get refinements
- * @memberof Plugins.Local
  * @param configuration Configuration
  * @returns Refinements
  */
@@ -175,7 +173,6 @@ const getRefinements = (configuration: any): any[] => {
 
 /**
  * Compute meshes
- * @memberof Plugins.Local
  * @param id Simulation id
  * @param simulationPath Simulation path
  * @param configuration Configuration
@@ -283,7 +280,6 @@ const computeMeshes = async (
 
 /**
  * Compute simulation
- * @memberof Plugins.Local
  * @param simulation Simulation
  * @param algorithm Algorithm
  * @param configuration Configuration
@@ -390,7 +386,6 @@ const computeSimulation = async (
 
 /**
  * Monitoring
- * @memberof Plugins.Local
  * @param id Simulation id
  * @param _ Unused
  * @param tasks Tasks
@@ -414,7 +409,6 @@ const datas = {}
 
 /**
  * Start process results & datas
- * @memberof Plugins.Local
  * @param id Simulation id
  * @param simulationPath Simulation path
  * @param task Simulation task
@@ -441,7 +435,6 @@ const startProcess = (
 
 /**
  * Stop process results and datas
- * @memberof Plugins.Local
  * @param id Simulation id
  * @param simulationPath Simulation path
  * @param task Simulation task
@@ -460,7 +453,6 @@ const stopProcess = async (
 
 /**
  * Process results & datas
- * @memberof Plugins.Local
  * @param id Simulation id
  * @param simulationPath Simulation path
  * @param task Simulation task
@@ -498,7 +490,6 @@ const processOutput = async (
 
 /**
  * Process results
- * @memberof Plugins.Local
  * @param id Simulation id
  * @param resultLines Result lines
  * @param simulationPath Simulation path
@@ -586,7 +577,6 @@ const processResults = async (
 
 /**
  * Process data
- * @memberof Plugins.Local
  * @param id Simulation id
  * @param dataLines Data lines
  * @param simulationPath Simulation path
@@ -633,7 +623,6 @@ const processData = async (
 
 /**
  * Stop tasks
- * @memberof Plugins.Local
  * @param id Simulation id
  * @param tasks Tasks
  */

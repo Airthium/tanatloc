@@ -33,20 +33,18 @@ export const useSimulations = (
 
   /**
    * Add one (useSimulations)
-   * @memberof API.Simulation
    * @param simulation Simulation
    */
-  const addOne = (simulation: ISimulation) => {
+  const addOne = (simulation: ISimulation): void => {
     const newSimulations = [...simulations, simulation]
     mutate({ simulations: newSimulations })
   }
 
   /**
    * Delete one (useSimulations)
-   * @memberof API.Simulation
    * @param simulation Simulation
    */
-  const delOne = (simulation: ISimulation) => {
+  const delOne = (simulation: ISimulation): void => {
     const filteredSimulations = simulations.filter(
       (s) => s.id !== simulation.id
     )
@@ -55,10 +53,9 @@ export const useSimulations = (
 
   /**
    * Mutate one (useSimulations)
-   * @memberof API.Simulation
    * @param simulation Simulation
    */
-  const mutateOne = (simulation: ISimulation, revalidate?: boolean) => {
+  const mutateOne = (simulation: ISimulation, revalidate?: boolean): void => {
     const mutatedSimulations = simulations.map((s) => {
       if (s.id === simulation.id) s = { ...s, ...simulation }
       return s

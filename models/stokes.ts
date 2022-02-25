@@ -1,8 +1,9 @@
+/** @module Models.Stokes */
+
 import { IModel } from './index.d'
 
 /**
  * Stokes
- * @memberof Models
  */
 const Stokes: IModel = {
   category: 'Fluid',

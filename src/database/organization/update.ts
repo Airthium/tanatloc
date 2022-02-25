@@ -1,11 +1,13 @@
+/** @module Database.Organization.Update */
+
+import { IDataBaseEntry } from '../index.d'
+
 import { tables } from '@/config/db'
 
 import { updater } from '..'
-import { IDataBaseEntry } from '../index.d'
 
 /**
  * Update
- * @memberof Database.Organization
  * @param organization Organization
  * @param data Data
  */

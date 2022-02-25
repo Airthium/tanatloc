@@ -1,6 +1,7 @@
+/** @module Store.Select.Action */
+
 /**
  * Select action types
- * @memberof Store.Select
  */
 export const selectActionTypes = {
   ENABLE: 'ENABLE',
@@ -16,7 +17,6 @@ export const selectActionTypes = {
 
 /**
  * Enable select
- * @memberof Store.Select
  */
 export const enable = (): { type: string } => ({
   type: selectActionTypes.ENABLE
@@ -24,7 +24,6 @@ export const enable = (): { type: string } => ({
 
 /**
  * Disable select
- * @memberof Store.Select
  */
 export const disable = (): { type: string } => ({
   type: selectActionTypes.DISABLE
@@ -32,7 +31,6 @@ export const disable = (): { type: string } => ({
 
 /**
  * Clear selection
- * @memberof Store.Select
  */
 export const clear = (): { type: string } => ({
   type: selectActionTypes.CLEAR
@@ -40,7 +38,6 @@ export const clear = (): { type: string } => ({
 
 /**
  * Set type (solid, face, edge)
- * @memberof Store.Select
  * @param object Type
  */
 export const setType = (object: string): { type: string; object: string } => ({
@@ -50,7 +47,6 @@ export const setType = (object: string): { type: string; object: string } => ({
 
 /**
  * Set part
- * @memberof Store.Select
  * @param uuid Part uuid
  */
 export const setPart = (uuid: string): { type: string; uuid: string } => ({
@@ -60,7 +56,6 @@ export const setPart = (uuid: string): { type: string; uuid: string } => ({
 
 /**
  * Highlight
- * @memberof Store.Select
  * @param uuid uuid
  */
 export const highlight = (uuid: string): { type: string; uuid: string } => ({
@@ -70,7 +65,6 @@ export const highlight = (uuid: string): { type: string; uuid: string } => ({
 
 /**
  * Unhighlight
- * @memberof Store.Select
  */
 export const unhighlight = (): { type: string } => ({
   type: selectActionTypes.UNHIGHLIGHT
@@ -78,7 +72,6 @@ export const unhighlight = (): { type: string } => ({
 
 /**
  * Select
- * @memberof Store.Select
  * @param uuid uuid
  */
 export const select = (uuid: string): { type: string; uuid: string } => ({
@@ -88,7 +81,6 @@ export const select = (uuid: string): { type: string; uuid: string } => ({
 
 /**
  * Unselect
- * @memberof Store.Select
  * @param uuid uuit
  */
 export const unselect = (uuid: string): { type: string; uuid: string } => ({

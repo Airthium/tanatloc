@@ -1,11 +1,13 @@
+/** @module Database.Simulation.Add */
+
+import { INewSimulation } from '../index.d'
+
 import { tables } from '@/config/db'
 
 import { query } from '..'
-import { INewSimulation } from '../index.d'
 
 /**
  * Add
- * @memberof Database.Simulation
  * @param simulation Simulation
  * @returns New simulation
  */

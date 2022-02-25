@@ -1,10 +1,11 @@
+/** @module Install.CreatePaths */
+
 import { promises as fs } from 'fs'
 
 import { STORAGE, AVATAR, GEOMETRY, SIMULATION } from '@/config/storage'
 
 /**
  * Create paths from config
- * @memberof Install
  */
 export const createPaths = async (): Promise<void> => {
   console.info(' == Create paths == ')
@@ -24,7 +25,6 @@ export const createPaths = async (): Promise<void> => {
 
 /**
  * Create a path
- * @memberof Install
  * @param path Path
  */
 const createPath = async (path: string): Promise<void> => {

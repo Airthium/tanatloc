@@ -10,19 +10,16 @@ if (isElectron()) storage = new ElectronStore()
 
 /**
  * Token name
- * @memberof Auth.AuthCookies
  */
 const TOKEN_NAME: string = 'token'
 
 /**
  * Max age
- * @memberof Auth.AuthCookies
  */
 const MAX_AGE: number = 60 * 60 * 8 // 8 hours
 
 /**
  * Set token cookie
- * @memberof Auth.AuthCookies
  * @param res Response
  * @param token Token
  */
@@ -42,7 +39,6 @@ const setTokenCookie = (res: Response, token: string): void => {
 
 /**
  * Remove token cookie
- * @memberof Auth.AuthCookies
  * @param res Reponse
  */
 const removeTokenCookie = (res: Response): void => {
@@ -57,7 +53,6 @@ const removeTokenCookie = (res: Response): void => {
 
 /**
  * Parse cookie
- * @memberof Auth.AuthCookies
  * @param req Request
  * @returns Cookie
  */
@@ -77,7 +72,6 @@ const parseCookies = (req: Request): { [key: string]: string } => {
 
 /**
  * Get token cookie
- * @memberof Auth.AuthCookies
  * @param req Request
  * @returns Cookie
  */

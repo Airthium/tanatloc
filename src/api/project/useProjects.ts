@@ -32,30 +32,27 @@ export const useProjects = (
 
   /**
    * Add one (useProjects)
-   * @memberof API.Project
    * @param project Project
    */
-  const addOne = (project: IProjectWithData) => {
+  const addOne = (project: IProjectWithData): void => {
     const newProjects = [...projects, project]
     mutate({ projects: newProjects })
   }
 
   /**
    * Delete one (useProjects)
-   * @memberof API.Project
    * @param project project
    */
-  const delOne = (project: IProjectWithData) => {
+  const delOne = (project: IProjectWithData): void => {
     const filteredProjects = projects.filter((p) => p.id !== project.id)
     mutate({ projects: filteredProjects })
   }
 
   /**
    * Mutate one (useProjects)
-   * @memberof API.Project
    * @param project Project
    */
-  const mutateOne = (project: IProjectWithData) => {
+  const mutateOne = (project: IProjectWithData): void => {
     const mutatedProjects = projects.map((p) => {
       if (p.id === project.id) p = { ...p, ...project }
       return p

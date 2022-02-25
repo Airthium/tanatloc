@@ -1,11 +1,13 @@
+/** @module Database.User.Update */
+
+import { IDataBaseEntry } from '../index.d'
+
 import { tables } from '@/config/db'
 
 import { updater } from '..'
-import { IDataBaseEntry } from '../index.d'
 
 /**
  * Update
- * @memberof Database.User
  * @param user User
  * @param data Data
  */

@@ -27,30 +27,27 @@ export const useWorkspaces = (): [
 
   /**
    * Add one (useWorkspaces)
-   * @memberof API.Workspace
    * @param workspace Workspace
    */
-  const addOne = (workspace: IWorkspaceWithData) => {
+  const addOne = (workspace: IWorkspaceWithData): void => {
     const newWorkspaces = [...workspaces, workspace]
     mutate({ workspaces: newWorkspaces })
   }
 
   /**
    * Delete one (useWorkspaces)
-   * @memberof API.Workspace
    * @param workspace Workspace
    */
-  const delOne = (workspace: IWorkspaceWithData) => {
+  const delOne = (workspace: IWorkspaceWithData): void => {
     const filteredWorkspaces = workspaces.filter((w) => w.id !== workspace.id)
     mutate({ workspaces: filteredWorkspaces })
   }
 
   /**
    * Mutate one (useWorkspace)
-   * @memberof API.Workspace
    * @param workspace Workspace
    */
-  const mutateOne = (workspace: IWorkspaceWithData) => {
+  const mutateOne = (workspace: IWorkspaceWithData): void => {
     const mutatedWorkspaces = workspaces.map((w) => {
       if (w.id === workspace.id) w = { ...w, ...workspace }
       return w

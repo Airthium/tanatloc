@@ -1,11 +1,13 @@
+/** @module Database.Project.Add */
+
+import { INewProject } from '../index.d'
+
 import { tables } from '@/config/db'
 
 import { query } from '..'
-import { INewProject } from '../index.d'
 
 /**
  * Add
- * @memberof Database.Project
  * @param user User
  * @param workspace Workspace
  * @param project Project

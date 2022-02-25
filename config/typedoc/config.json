@@ -1,18 +1,4 @@
 {
-  "exclude": [
-    "**/node_modules/**",
-    "**/tests/**",
-    "**/__tests__/**",
-    "**/app/**",
-    "**/config/jest/**",
-    "**/coverage/**",
-    "**/dist/**",
-    "**/dist-server/**",
-    "**/dist-install/**",
-    "**/doc/**",
-    "**/.next/**",
-    "**/public/**"
-  ],
   "tsconfig": "../../tsconfig.json",
   "entryPoints": [
     "../../config",
@@ -29,6 +15,23 @@
     "../../src/services",
     "../../src/store",
     "../../templates"
+  ],
+  "exclude": [
+    "**/node_modules/**",
+    "**/tests/**",
+    "**/__tests__/**",
+    "**/app/**",
+    "**/config/jest/**",
+    "**/coverage/**",
+    "**/dist/**",
+    "**/dist-server/**",
+    "**/dist-install/**",
+    "**/doc/**",
+    "**/.next/**",
+    "**/public/**",
+    "**/config/depcheck/**",
+    "**/config/jest/**",
+    "**/src/lib/three/**/*"
   ],
   "plugin": "typedoc-plugin-airthium",
   "theme": "airthium",

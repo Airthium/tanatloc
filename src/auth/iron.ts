@@ -9,7 +9,6 @@ import { SECRET } from '@/config/auth'
 
 /**
  * Token secret
- * @memberof Auth.Iron
  */
 const TOKEN_SECRET: string = SECRET
 
@@ -19,7 +18,6 @@ export type Token = {
 
 /**
  * Encrypt session
- * @memberof Auth.Iron
  * @param session Session
  * @returns Encrypted token
  */
@@ -29,7 +27,6 @@ const encryptSession = (session: Token): Promise<string> => {
 
 /**
  * Get session
- * @memberof Auth.Iron
  * @param req Request
  * @returns Token
  */

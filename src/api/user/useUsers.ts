@@ -29,7 +29,7 @@ export const useUsers = (): [
    * Add one
    * @param user User
    */
-  const addOne = (user: IUserWithData) => {
+  const addOne = (user: IUserWithData): void => {
     const newUsers = [...users, user]
     mutate({ users: newUsers })
   }
@@ -38,7 +38,7 @@ export const useUsers = (): [
    * Del one
    * @param user User
    */
-  const delOne = (user: IUserWithData) => {
+  const delOne = (user: IUserWithData): void => {
     const filteredUsers = users.filter((u) => u.id !== user.id)
     mutate({ users: filteredUsers })
   }
@@ -47,7 +47,7 @@ export const useUsers = (): [
    * Mutate one
    * @param user User
    */
-  const mutateOne = (user: IUserWithData) => {
+  const mutateOne = (user: IUserWithData): void => {
     const mutatedUsers = users.map((u) => {
       if (u.id === user.id) u = { ...u, ...user }
       return u

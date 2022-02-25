@@ -1,11 +1,13 @@
+/** @module Database.Simulation.Get */
+
+import { ISimulation } from '../index.d'
+
 import { tables } from '@/config/db'
 
 import { getter } from '..'
-import { ISimulation } from '../index.d'
 
 /**
  * Get
- * @memberof Database.Simulation
  * @param id Id
  * @param data Data
  * @returns Simulation

@@ -25,17 +25,17 @@ export const usePlugins = (): [
   const loading = !data
   const plugins = data?.plugins || []
 
-  const addOne = (plugin: IClientPlugin) => {
+  const addOne = (plugin: IClientPlugin): void => {
     const newPlugins = [...plugins, plugin]
     mutate({ plugins: newPlugins })
   }
 
-  const delOne = (plugin: IClientPlugin) => {
+  const delOne = (plugin: IClientPlugin): void => {
     const filteredPlugins = plugins.filter((p) => p.key !== plugin.key)
     mutate({ plugins: filteredPlugins })
   }
 
-  const mutateOne = (plugin: IClientPlugin) => {
+  const mutateOne = (plugin: IClientPlugin): void => {
     const mutatedPlugin = plugins.map((p) => {
       if (p.key === plugin.key) p = { ...p, ...plugin }
       return p

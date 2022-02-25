@@ -1,3 +1,5 @@
+/** @module Database.Interface */
+
 import { IModel } from '@/models/index.d'
 
 export interface IDataBaseEntry {

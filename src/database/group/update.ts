@@ -1,11 +1,13 @@
+/** @module Database.Group.Update */
+
+import { IDataBaseEntry } from '../index.d'
+
 import { tables } from '@/config/db'
 
 import { updater } from '..'
-import { IDataBaseEntry } from '../index.d'
 
 /**
  * Update
- * @memberof Database.Group
  * @param group Group
  * @param data Data
  */

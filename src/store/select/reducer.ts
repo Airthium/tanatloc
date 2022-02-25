@@ -1,4 +1,4 @@
-/** @module Store.Select */
+/** @module Store.Select.Reducer */
 
 import { selectActionTypes } from './action'
 
@@ -12,7 +12,6 @@ export interface SelectState {
 
 /**
  * Select initial state
- * @memberof Store.Select
  */
 export const selectInitialState: SelectState = {
   enabled: false,
@@ -24,7 +23,6 @@ export const selectInitialState: SelectState = {
 
 /**
  * Select reducer
- * @memberof Store.Select
  * @param state Redux state
  * @param action Action
  */

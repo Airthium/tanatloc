@@ -1,11 +1,13 @@
+/** @module Database.Geometry.Get */
+
+import { IGeometry } from '../index.d'
+
 import { tables } from '@/config/db'
 
 import { getter } from '..'
-import { IGeometry } from '../index.d'
 
 /**
  * Get
- * @memberof Database.Geometry
  * @param id Id
  * @param data Data
  */

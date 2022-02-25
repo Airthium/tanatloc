@@ -1,11 +1,13 @@
+/** @module Database.Link.Get */
+
+import { ILink } from '../index.d'
+
 import { tables } from '@/config/db'
 
 import { getter } from '..'
-import { ILink } from '../index.d'
 
 /**
  * Get
- * @memberof Database.Link
  * @param id Link id
  * @param data Data
  * @returns Link

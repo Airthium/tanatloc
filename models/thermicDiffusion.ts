@@ -1,8 +1,9 @@
+/** @module Models.ThermicDiffusion */
+
 import { IModel } from './index.d'
 
 /**
  * Thermic diffusion
- * @memberof Models
  */
 const ThermicDiffusion: IModel = {
   category: 'Thermic',

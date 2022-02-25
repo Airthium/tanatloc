@@ -1,8 +1,9 @@
+/** @module Models.NavierStokesTime */
+
 import { IModel } from './index.d'
 
 /**
  * Navier-Stokes Time-dependant
- * @memberof Models
  */
 const NavierStokesTime: IModel = {
   category: 'Fluid',

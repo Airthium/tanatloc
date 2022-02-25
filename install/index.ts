@@ -8,7 +8,6 @@ import { copyAssets } from './copyAssets'
 
 /**
  * Main
- * @memberof Install
  */
 const main = async (): Promise<void> => {
   console.info('/__   \\__ _ _ __   __ _| |_| | ___   ___ ')

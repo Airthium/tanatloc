@@ -9,7 +9,6 @@ import ThermicDiffusion from './thermicDiffusion'
 
 /**
  * Models
- * @memberof Models
  */
 const models = [
   Poisson,

@@ -1,8 +1,9 @@
+/** @module Models.LinearElasticityTime */
+
 import { IModel } from './index.d'
 
 /**
  * Linear elasticity (time dependent)
- * @memberof Models
  */
 const LinearElasticityTime: IModel = {
   category: 'Mechanics',

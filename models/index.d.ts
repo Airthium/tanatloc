@@ -1,3 +1,5 @@
+/** @module Models.Interface */
+
 import { IClientPlugin } from '@/database/index.d'
 
 type TValue = boolean | number | string

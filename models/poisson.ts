@@ -1,8 +1,9 @@
+/** @module Models.Poisson */
+
 import { IModel } from './index.d'
 
 /**
  * Poisson's equation
- * @memberof Models
  */
 const Poisson: IModel = {
   category: 'Academic',

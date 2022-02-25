@@ -2,7 +2,6 @@
 
 /**
  * Sentry DNS
- * @memberof Config.Sentry
  * @description Set to Tanatloc Sentry DSN for production build only
  */
 let DSN = ''

@@ -1,8 +1,9 @@
+/** @module Models.LinearElasticity */
+
 import { IModel } from './index.d'
 
 /**
  * Linear elasticity
- * @memberof Models
  */
 const LinearElasticity: IModel = {
   category: 'Mechanics',

@@ -1,3 +1,5 @@
+/** @module Install.CreateDatabase */
+
 import { Pool, PoolClient } from 'pg'
 import format from 'pg-format'
 
@@ -17,7 +19,6 @@ import { query } from '@/database'
 
 /**
  * Create database
- * @memberof Install
  * @description Create the Tanatloc database with `pgcrypto` extension
  */
 export const createDatabase = async (): Promise<void> => {
@@ -106,7 +107,6 @@ export const createDatabase = async (): Promise<void> => {
 
 /**
  * Create tables from config
- * @memberof Install
  */
 const createTables = async (): Promise<void> => {
   console.info(' == Create dB tables == ')
@@ -163,7 +163,6 @@ const createTables = async (): Promise<void> => {
 
 /**
  * Check if table exists
- * @memberof Install
  * @param table Table
  * @returns Exists
  */
@@ -198,7 +197,6 @@ type ColumnConfig = {
 
 /**
  * Check schema
- * @memberof Install
  * @param table Table
  */
 const checkSchema = async (table: string): Promise<void> => {
@@ -244,7 +242,6 @@ const checkSchema = async (table: string): Promise<void> => {
 
 /**
  * Check missing
- * @memberof Install
  * @param table Table
  * @param configColumn Configuration column
  */
@@ -258,7 +255,6 @@ const checkMissing = async (
 
 /**
  * Try to fix missing column
- * @memberof Install
  * @param table Table
  * @param column Column
  */
@@ -291,7 +287,6 @@ const fixMissingColumn = async (
 
 /**
  * Check type
- * @memberof Install
  * @param table Table
  * @param column Column
  * @param configColumn Configuration column
@@ -315,7 +310,6 @@ const checkType = async (
 
 /**
  * Try to fix column type
- * @memberof Install
  * @param table Table
  * @param column Column
  */
@@ -344,7 +338,6 @@ const fixColumnType = async (
 
 /**
  * Check constraint
- * @memberof Install
  * @param table Table
  * @param column Column
  * @param configColumn Configuration column
@@ -374,7 +367,6 @@ const checkConstraint = async (
 
 /**
  * Try to fix column constraint
- * @memberof Install
  * @param table Table
  * @param column Column
  */
@@ -398,7 +390,6 @@ const fixColumnConstraint = async (
 
 /**
  * Try to fix not used column
- * @memberof Install
  * @param table Table
  * @param column Column
  */
@@ -421,7 +412,6 @@ const fixNotUsedColumn = async (
 
 /**
  * Create table
- * @memberof Install
  * @param table Table
  * @param extra Extra function
  */
@@ -453,7 +443,6 @@ const createTable = async (table: string, extra?: Function): Promise<void> => {
 
 /**
  * Create system table
- * @memberof Install
  */
 const createSystemTable = async (): Promise<void> => {
   await createTable(tables.SYSTEM, async () =>
@@ -463,7 +452,6 @@ const createSystemTable = async (): Promise<void> => {
 
 /**
  * Create avatar table
- * @memberof Install
  */
 const createAvatarTable = async (): Promise<void> => {
   await createTable(tables.AVATARS)
@@ -471,7 +459,6 @@ const createAvatarTable = async (): Promise<void> => {
 
 /**
  * Create user table
- * @memberof Install
  */
 const createUsersTable = async (): Promise<void> => {
   await createTable(tables.USERS)
@@ -479,7 +466,6 @@ const createUsersTable = async (): Promise<void> => {
 
 /**
  * Create organization table
- * @memberof Install
  */
 const createOrganizationTable = async (): Promise<void> => {
   await createTable(tables.ORGANIZATIONS)
@@ -487,7 +473,6 @@ const createOrganizationTable = async (): Promise<void> => {
 
 /**
  * Create group table
- * @memberof Install
  */
 const createGroupsTable = async (): Promise<void> => {
   await createTable(tables.GROUPS)
@@ -495,7 +480,6 @@ const createGroupsTable = async (): Promise<void> => {
 
 /**
  * Create workspace table
- * @memberof Install
  */
 const createWorkspaceTable = async (): Promise<void> => {
   await createTable(tables.WORKSPACES)
@@ -503,7 +487,6 @@ const createWorkspaceTable = async (): Promise<void> => {
 
 /**
  * Create project table
- * @memberof Install
  */
 const createProjectTable = async (): Promise<void> => {
   await createTable(tables.PROJECTS)
@@ -511,7 +494,6 @@ const createProjectTable = async (): Promise<void> => {
 
 /**
  * Create geometry table
- * @memberof Install
  */
 const createGeometryTable = async (): Promise<void> => {
   await createTable(tables.GEOMETRIES)
@@ -519,7 +501,6 @@ const createGeometryTable = async (): Promise<void> => {
 
 /**
  * Create simulation table
- * @memberof Install
  */
 const createSimulationTable = async (): Promise<void> => {
   await createTable(tables.SIMULATIONS)
@@ -527,7 +508,6 @@ const createSimulationTable = async (): Promise<void> => {
 
 /**
  * Create link table
- * @memberof Install
  */
 const createLinkTable = async (): Promise<void> => {
   await createTable(tables.LINKS)
@@ -535,7 +515,6 @@ const createLinkTable = async (): Promise<void> => {
 
 /**
  * Create administrator
- * @memberof Install
  */
 const createAdmin = async (): Promise<void> => {
   const { rows } = await query('SELECT id FROM ' + tables.USERS, [])

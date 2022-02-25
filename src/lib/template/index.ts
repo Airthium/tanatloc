@@ -11,7 +11,6 @@ import Templates from '@/templates'
 
 /**
  * Load templates
- * @memberof Lib.Template
  */
 const loadTemplates = async () => {
   const templatesList = {}
@@ -72,7 +71,6 @@ loadTemplates()
 
 /**
  * Render
- * @memberof Lib.Template
  * @param key Key
  * @param parameters Parameters
  * @param save Save

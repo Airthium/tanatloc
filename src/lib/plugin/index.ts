@@ -10,7 +10,6 @@ import Plugins from '../plugins'
 
 /**
  * Add
- * @memberof Lib.Plugin
  * @param user User
  * @param plugin Plugin
  */
@@ -43,7 +42,6 @@ const add = async (
 
 /**
  * Get by user
- * @memberof Lib.Plugin
  * @param user User
  * @returns Plugins
  */
@@ -56,7 +54,6 @@ const getByUser = async (user: { id: string }): Promise<IClientPlugin[]> => {
 
 /**
  * Update
- * @memberof Lib.Plugin
  * @param user User
  * @param plugin Plugin
  */
@@ -95,7 +92,6 @@ const update = async (
 
 /**
  * Delete
- * @memberof Lib.Plugin
  * @param user User
  * @param plugin Plugin
  */

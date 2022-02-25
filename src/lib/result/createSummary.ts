@@ -1,3 +1,5 @@
+/** @module Lib.Result.CreateSummary */
+
 import path from 'path'
 import { WriteStream } from 'fs'
 
@@ -9,7 +11,6 @@ import Tools from '../tools'
 
 /**
  * Create summary
- * @memberof Lib.Result
  * @param simulation Simulation
  * @returns Summary
  */
@@ -57,7 +58,6 @@ const createSummary = (simulation: {
 
 /**
  * Geometry summary
- * @memberof Lib.Result
  * @param stream Write stream
  * @param configuration Configuration
  */
@@ -71,7 +71,6 @@ const geometrySummary = (
 
 /**
  * Materials summary
- * @memberof Lib.Result
  * @param stream Write stream
  * @param configuration Configuration
  */
@@ -104,7 +103,6 @@ const materialsSummary = (
 
 /**
  * Parameters summary
- * @memberof Lib.Result
  * @param stream Write stream
  * @param configuration Configuration
  */
@@ -129,7 +127,6 @@ const parametersSummary = (stream: WriteStream, configuration: {}) => {
 
 /**
  * Boundary conditions summary
- * @memberof Lib.Result
  * @param stream Write stream
  * @param configuration Configuration
  */
@@ -176,7 +173,6 @@ const boundaryConditionsSummary = (stream: WriteStream, configuration: {}) => {
 
 /**
  * Run
- * @memberof Lib.Result
  * @param stream Write stream
  * @param configuration Configuration
  */

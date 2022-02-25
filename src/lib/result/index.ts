@@ -16,7 +16,6 @@ const archiveFileName = 'resultsArchive.zip'
 
 /**
  * Load
- * @memberof Lib.Result
  * @param simulation Simulation
  * @param result Result
  * @returns New result
@@ -36,7 +35,6 @@ const load = async (
 
 /**
  * Download
- * @memberof Lib.Result
  * @param simulation Simulation
  * @param result Result
  * @return Read stream
@@ -52,7 +50,6 @@ const download = (
 
 /**
  * Archive
- * @memberof Lib.Result
  * @param simulation Simulation
  * @returns Read stream
  */

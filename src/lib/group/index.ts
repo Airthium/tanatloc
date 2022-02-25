@@ -2,16 +2,15 @@
 
 import GroupDB from '@/database/group'
 import { INewGroup, IGroup, IDataBaseEntry } from '@/database/index.d'
+import { IGroupWithData, IUserWithData } from '../index.d'
 
 import User from '../user'
 import Workspace from '../workspace'
 import Project from '../project'
 import Organization from '../organization'
-import { IGroupWithData, IUserWithData } from '..'
 
 /**
  * Add
- * @memberof Lib.Group
  * @param organization Organization
  * @param group Group
  * @returns New group
@@ -38,7 +37,6 @@ const add = async (
 
 /**
  * Get
- * @memberof Lib.Group
  * @param id Id
  * @param data Data
  * @returns Group
@@ -93,7 +91,6 @@ const getWithData = async (
 
 /**
  * Get all
- * @memberof Lib.Group
  * @param data Data
  * @return Groups
  */
@@ -122,7 +119,6 @@ const getAll = async (data: Array<string>): Promise<Array<IGroupWithData>> => {
 
 /**
  * Get by organization
- * @memberof Lib.Group
  * @param id Organization id
  * @param data Data
  * @returns Groups
@@ -152,7 +148,6 @@ const getByOrganization = async (
 
 /**
  * Update
- * @memberof Lib.Group
  * @param group Group
  * @param data Data
  */
@@ -165,7 +160,6 @@ const update = async (
 
 /**
  * Delete
- * @memberof Lib.Group
  * @param group Group
  */
 const del = async (group: { id: string }): Promise<void> => {

@@ -1,3 +1,5 @@
+/** @module Lib.Result.CreatePVD */
+
 import path from 'path'
 
 import { SIMULATION } from '@/config/storage'
@@ -8,7 +10,6 @@ import Tools from '../tools'
 
 /**
  * Create PVD files
- * @memberof Lib.Result
  * @param simulation Simulation
  * @param files Files
  * @returns PVDs

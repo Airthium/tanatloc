@@ -1,11 +1,11 @@
 /** @module Lib.System */
 
-import SystemDB from '@/database/system'
 import { IDataBaseEntry, ISystem } from '@/database/index.d'
+
+import SystemDB from '@/database/system'
 
 /**
  * Get items
- * @memberof Lib.System
  * @params items Items
  * @returns System
  */
@@ -15,7 +15,6 @@ const get = async (items: string[]): Promise<ISystem> => {
 
 /**
  * Update items
- * @memberof Lib.System
  * @params items Items
  */
 const update = async (items: IDataBaseEntry[]): Promise<void> => {

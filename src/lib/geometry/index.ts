@@ -2,19 +2,18 @@
 
 import path from 'path'
 
+import { IDataBaseEntry, IGeometry } from '@/database/index.d'
+import { IGeometryPart, IGeometryFile, INewGeometryWithData } from '../index.d'
+
 import { GEOMETRY } from '@/config/storage'
 
 import GeometryDB from '@/database/geometry'
-import { IDataBaseEntry, IGeometry } from '@/database/index.d'
-
-import { IGeometryPart, IGeometryFile, INewGeometryWithData } from '../index.d'
 
 import Project from '../project'
 import Tools from '../tools'
 
 /**
  * Add
- * @memberof Lib.Geometry
  * @param project Project
  * @param geometry Geometry
  * @returns New geometry
@@ -167,7 +166,6 @@ const add = async (
 
 /**
  * Get
- * @memberof Lib.Geometry
  * @param id Id
  * @param data Data
  * @returns Geometry
@@ -178,7 +176,6 @@ const get = async (id: string, data: Array<string>): Promise<IGeometry> => {
 
 /**
  * Update geometry
- * @memberof Lib.Geometry
  * @param geometry Geometry
  * @param data Data
  */
@@ -192,7 +189,6 @@ const update = async (
 
 /**
  * Delete
- * @memberof Lib.Geometry
  * @param geometry Geometry
  */
 const del = async (geometry: {
@@ -261,7 +257,6 @@ const del = async (geometry: {
 
 /**
  * Read
- * @memberof Lib.Geometry
  * @param geometry Geometry
  * @returns Geometry file
  */
@@ -283,7 +278,6 @@ const read = async (geometry: { id: string }): Promise<IGeometryFile> => {
 
 /**
  * Read part
- * @memberof Lib.Geometry
  * @param geometry Geometry
  * @returns Geometry part
  */

@@ -1,6 +1,5 @@
 /** @module Lib.Workspace */
 
-import WorkspaceDB from '@/database/workspace'
 import {
   IDataBaseEntry,
   IGroup,
@@ -8,8 +7,9 @@ import {
   IUser,
   IWorkspace
 } from '@/database/index.d'
-
 import { IWorkspaceWithData } from '../index.d'
+
+import WorkspaceDB from '@/database/workspace'
 
 import User from '../user'
 import Group from '../group'
@@ -18,7 +18,6 @@ import Project from '../project'
 
 /**
  * Add
- * @memberof Lib.Workspace
  * @param user User
  * @param workspace Workspace
  * @returns Workspace
@@ -56,7 +55,6 @@ const get = async (id: string, data: string[]): Promise<IWorkspace> => {
 
 /**
  * Get with data
- * @memberof Lib.Workspace
  * @param id Id
  * @param data Data
  * @returns Workspace
@@ -172,7 +170,6 @@ const getGroupWorkspaces = async (group: IGroup) => {
 
 /**
  * Get by user
- * @memberof Lib.Workspace
  * @param user User
  * @returns Workspaces
  */
@@ -270,7 +267,6 @@ const deleteFromGroup = async (
 
 /**
  * Update
- * @memberof Lib.Workspace
  * @param workspace Workspace
  * @param data Data
  */
@@ -320,7 +316,6 @@ const update = async (
 
 /**
  * Delete
- * @memberof Lib.Workspace
  * @param user User
  * @param workspace Workspace
  */

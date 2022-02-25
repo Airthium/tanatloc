@@ -2,10 +2,10 @@
 
 import path from 'path'
 
-import { GEOMETRY, SIMULATION } from '@/config/storage'
-
 import { IDataBaseEntry, INewSimulation, ISimulation } from '@/database/index.d'
 import { IModel } from '@/models/index.d'
+
+import { GEOMETRY, SIMULATION } from '@/config/storage'
 
 import SimulationDB from '@/database/simulation'
 
@@ -17,7 +17,6 @@ import Plugins from '../plugins'
 
 /**
  * Add
- * @memberof Lib.Simulation
  * @param project Project
  * @param simulation Simulation
  * @returns Simulation
@@ -48,7 +47,6 @@ const add = async (
 
 /**
  * Get
- * @memberof Lib.Simulation
  * @param id Simulation id
  * @param data Data
  * @returns Simulation
@@ -59,7 +57,6 @@ const get = async (id: string, data: string[]): Promise<ISimulation> => {
 
 /**
  * Get all
- * @memberof Lib.Simulation
  * @param data Data
  * @returns Simulations
  */
@@ -69,7 +66,6 @@ const getAll = async (data: string[]): Promise<ISimulation[]> => {
 
 /**
  * Update
- * @memberof Lib.Simulation
  * @param simulation Simulation
  * @param data Data
  */
@@ -83,7 +79,6 @@ const update = async (
 
 /**
  * Delete
- * @memberof Lib.Simulation
  * @param simulation Simulation
  */
 const del = async (simulation: { id: string }): Promise<void> => {
@@ -114,7 +109,6 @@ const del = async (simulation: { id: string }): Promise<void> => {
 
 /**
  * Run
- * @memberof Lib.Simulation
  * @param user User
  * @param simulation Simulation
  */
@@ -301,7 +295,6 @@ const run = async (
 
 /**
  * Stop
- * @memberof Lib.Simulation
  * @param simulation Simulation
  */
 const stop = async (simulation: { id: string }): Promise<void> => {
@@ -337,7 +330,6 @@ const stop = async (simulation: { id: string }): Promise<void> => {
 
 /**
  * Get log
- * @memberof Lib.Simulation
  * @param simulation Simulation
  * @param file File
  * @returns Log

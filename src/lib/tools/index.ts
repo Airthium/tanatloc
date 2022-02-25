@@ -25,7 +25,6 @@ const toPosix = (str: string): string => {
 
 /**
  * Create path (recursive)
- * @memberof Lib.Tools
  * @param location Location path
  */
 const createPath = async (location: string): Promise<void> => {
@@ -34,7 +33,6 @@ const createPath = async (location: string): Promise<void> => {
 
 /**
  * List files
- * @memberof Lib.Tools
  * @param location Location
  * @returns Files list (with types)
  */
@@ -58,7 +56,6 @@ const listDirectories = async (location: string): Promise<Array<string>> => {
 
 /**
  * Write file
- * @memberof Lib.Tools
  * @param location Location
  * @param name File name
  * @param content Content
@@ -74,7 +71,6 @@ const writeFile = async (
 
 /**
  * Read file
- * @memberof Lib.Tools
  * @param file File name
  * @param options Options
  * @returns File content
@@ -93,7 +89,6 @@ const readJSONFile = async (file: string): Promise<any> => {
 
 /**
  * Copy file
- * @memberof Lib.Tools
  * @param origin Origin path
  * @param destination Destination
  */
@@ -122,7 +117,6 @@ const copyDirectory = async (
 
 /**
  * Remove file
- * @memberof Lib.Tools
  * @param file File name
  */
 const removeFile = async (file: string): Promise<void> => {
@@ -131,7 +125,6 @@ const removeFile = async (file: string): Promise<void> => {
 
 /**
  * Remove directory
- * @memberof Lib.Tools
  * @param dir Directory
  */
 const removeDirectory = async (dir: string): Promise<void> => {
@@ -177,7 +170,6 @@ const writeStream = (file: string): WriteStream => {
 
 /**
  * Convert file
- * @memberof Lib.Tools
  * @param location Location
  * @param file File
  * @param callback Callback
@@ -233,7 +225,6 @@ const convert = async (
 
 /**
  * Load part
- * @memberof Lib.Tools
  * @param location Location
  * @param name File name
  * @returns Part

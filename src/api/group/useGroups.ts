@@ -2,9 +2,9 @@
 
 import useSWR from 'swr'
 
-import { fetcher } from '@/api/call'
+import { IGroupWithData } from '@/lib/index.d'
 
-import { IGroupWithData } from '@/lib'
+import { fetcher } from '@/api/call'
 
 /**
  * Use groups

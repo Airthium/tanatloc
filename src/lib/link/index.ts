@@ -1,15 +1,15 @@
 /** @module Lib.Link */
 
+import { ILink, INewLink } from '@/database/index.d'
+
 import { SUBSCRIBE, PASSWORD_RECOVERY, REVALIDATE } from '@/config/email'
 
 import LinkDB from '@/database/link'
-import { ILink, INewLink } from '@/database/index.d'
 
 import UserLib from '../user'
 
 /**
  * Add
- * @memberof Lib.Link
  * @param link Link
  * @returns New link
  */
@@ -23,7 +23,6 @@ const add = async (link: {
 
 /**
  * Get
- * @memberof Lib.Link
  * @param id Id
  * @param data Data
  * @returns Link
@@ -34,7 +33,6 @@ const get = async (id: string, data: Array<string>): Promise<ILink> => {
 
 /**
  * Process
- * @memberof Lib.Link
  * @param id Id
  * @param data Data
  */
@@ -79,7 +77,6 @@ const process = async (
 
 /**
  * Delete
- * @memberof Lib.Link
  * @param link Link
  */
 const del = async (link: { id: string }): Promise<void> => {

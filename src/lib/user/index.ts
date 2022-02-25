@@ -1,9 +1,9 @@
 /** @module Lib.User */
 
-import UserDB from '@/database/user'
 import { IDataBaseEntry, INewUser, IUser, IUserCheck } from '@/database/index.d'
-
 import { IUserWithData } from '../index.d'
+
+import UserDB from '@/database/user'
 
 import Avatar from '../avatar'
 import Organization from '../organization'
@@ -12,7 +12,6 @@ import Email from '../email'
 
 /**
  * Add
- * @memberof Lib.User
  * @param user User
  * @returns New user
  */
@@ -31,7 +30,6 @@ const add = async (user: {
 
 /**
  * Get
- * @memberof Lib.User
  * @param id User id
  * @param data Data
  * @returns User
@@ -73,7 +71,6 @@ const getWithData = async (
 
 /**
  * Get by key
- * @memberof Lib.User
  * @param key key
  * @param data Data
  * @param keyName Key name
@@ -89,7 +86,6 @@ const getBy = async (
 
 /**
  * Get all
- * @memberof Lib.User
  * @param data Data
  * @returns Users
  */
@@ -99,7 +95,6 @@ const getAll = async (data: string[]): Promise<IUser[]> => {
 
 /**
  * Login
- * @memberof Lib.User
  * @param user User
  * @returns Logged user
  */
@@ -121,7 +116,6 @@ const login = async (user: {
 
 /**
  * Update
- * @memberof Lib.User
  * @param user User
  * @param data Data
  */
@@ -146,7 +140,6 @@ const update = async (
 
 /**
  * Delete user
- * @memberof Lib.User
  * @param user User
  */
 const del = async (user: { id: string }): Promise<void> => {

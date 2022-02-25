@@ -11,7 +11,6 @@ const plugins = []
 
 /**
  * Load
- * @memberof Lib.Plugins
  */
 const load = async (): Promise<void> => {
   // Available directories
@@ -47,7 +46,6 @@ load()
 
 /**
  * Restart jobs
- * @memberof Lib.Plugins
  */
 const restartJobs = async (): Promise<void> => {
   const simulations = await Simulation.getAll(['id', 'scheme', 'tasks'])
@@ -81,7 +79,6 @@ const restartJobs = async (): Promise<void> => {
 
 /**
  * Server list
- * @memberof Lib.Plugins
  * @returns List
  */
 const serverList = (): IServerPlugin[] => {
@@ -96,7 +93,6 @@ const serverList = (): IServerPlugin[] => {
 
 /**
  * Client list
- * @memberof Lib.Plugins
  * @param user User
  * @param complete Complete or filtered by user.authorizedplugins
  * @returns List

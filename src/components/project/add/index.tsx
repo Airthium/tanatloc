@@ -4,13 +4,13 @@ import PropTypes from 'prop-types'
 import { useState } from 'react'
 import { Form, Input } from 'antd'
 
+import { IWorkspaceWithData } from '@/lib/index.d'
+
 import Dialog from '@/components/assets/dialog'
 import { Error as ErrorNotification } from '@/components/assets/notification'
 import { AddButton } from '@/components/assets/button'
 
 import ProjectAPI from '@/api/project'
-
-import { IWorkspaceWithData } from '@/lib'
 
 export interface IProps {
   workspace: IWorkspaceWithData

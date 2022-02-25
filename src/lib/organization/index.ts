@@ -2,26 +2,25 @@
 
 import Crypto from 'crypto'
 
-import OrganizationDB from '@/database/organization'
 import {
   IDataBaseEntry,
   INewOrganization,
   IOrganization
 } from '@/database/index.d'
-
-import User from '../user'
-import Group from '../group'
-import Email from '../email'
-
 import {
   IGroupWithData,
   IOrganizationWithData,
   IUserWithData
 } from '../index.d'
 
+import OrganizationDB from '@/database/organization'
+
+import User from '../user'
+import Group from '../group'
+import Email from '../email'
+
 /**
  * Add
- * @memberof Lib.Organization
  * @param user User
  * @param organization Organization
  * @returns New organization
@@ -51,7 +50,6 @@ const add = async (
 
 /**
  * Get
- * @memberof Lib.Organization
  * @param id Id
  * @param data Data
  * @returns Organization
@@ -165,7 +163,6 @@ const getWithData = async (
 
 /**
  * Get by user
- * @memberof Lib.Organization
  * @param user User
  * @param data Data
  * @returns Organizations
@@ -214,7 +211,6 @@ const getByUser = async (
 
 /**
  * Update
- * @memberof Lib.Organization
  * @param organization Organization
  * @param data Data
  * @param ownerId Owner id
@@ -273,7 +269,6 @@ const update = async (
 
 /**
  * Delete
- * @memberof Lib.Organization
  * @param organization Organization
  */
 const del = async (organization: { id: string }): Promise<void> => {

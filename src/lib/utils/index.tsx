@@ -5,7 +5,6 @@ import { parseOneAddress } from 'email-addresses'
 
 /**
  * String to color
- * @memberof Lib.Utils
  * @param {string} str String
  * @returns {string} Color
  */
@@ -24,7 +23,6 @@ const stringToColor = (str?: string): string => {
 
 /**
  * Component to Hex
- * @memberof Lib.Utils
  * @param {number} c Color
  * @returns {string} Hex
  */
@@ -35,7 +33,6 @@ const componentToHex = (c: number): string => {
 
 /**
  * RGB to Hex
- * @memberof Lib.Utils
  * @param {Object} color Color `{r, g, b}`
  * @returns {string} Hex
  */
@@ -50,7 +47,6 @@ const rgbToHex = (color: { r: number; g: number; b: number }): string => {
 
 /**
  * rgb to CSS rgba
- * @memberof Lib.Utils
  * @param {Object} color Color `{r, g, b}`
  * @param {number} alpha Alpha
  * @returns {string} rgba
@@ -75,7 +71,6 @@ const rgbToRgba = (
 
 /**
  * User to avatar
- * @memberof Lib.Utils
  * @param {Object} user User
  * @returns {jsx} Avatar
  */
@@ -109,7 +104,6 @@ const userToAvatar = (user: {
 
 /**
  * Group to avatar
- * @memberof Lib.Utils
  * @param {Object} group Group
  * @returns {jsx} Avatar
  */
@@ -128,7 +122,6 @@ const groupToAvatar = (group: { id?: string; name?: string }): JSX.Element => {
 
 /**
  * Validate email
- * @memberof Lib.Utils
  * @param {string} email Email
  * @returns {bool} Valid
  */

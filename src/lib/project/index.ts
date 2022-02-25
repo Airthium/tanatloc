@@ -3,12 +3,13 @@
 import path from 'path'
 import { ReadStream } from 'fs'
 
+import { IDataBaseEntry, IProject } from '@/database/index.d'
+import { IGroupWithData, IProjectWithData, IUserWithData } from '../index.d'
+
 import { STORAGE } from '@/config/storage'
 
 import ProjectDB from '@/database/project'
-import { IDataBaseEntry, IProject } from '@/database/index.d'
 
-import { IGroupWithData, IProjectWithData, IUserWithData } from '../index.d'
 import Avatar from '../avatar'
 import User from '../user'
 import Group from '../group'
@@ -19,7 +20,6 @@ import Tools from '../tools'
 
 /**
  * Add
- * @memberof Lib.Project
  * @param user User
  * @param workspace Workspace
  * @param project Project
@@ -42,7 +42,6 @@ const add = async (
 
 /**
  * Get
- * @memberof Lib.Project
  * @param id Id
  * @param data Data
  * @returns Project
@@ -127,7 +126,6 @@ const getGroups = async (project: IProject): Promise<IGroupWithData[]> => {
 
 /**
  * Get with data
- * @memberof Lib.Project
  * @param id Id
  * @param data Data
  * @returns Project
@@ -180,7 +178,6 @@ const deleteFromGroup = async (
 
 /**
  * Update
- * @memberof Lib.Project
  * @param Project Project
  * @param data Data
  */
@@ -236,7 +233,6 @@ const update = async (
 
 /**
  * Delete
- * @memberof Lib.Project
  * @param workspace Workspace
  * @param project Project
  */

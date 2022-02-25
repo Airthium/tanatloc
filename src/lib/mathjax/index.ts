@@ -1,3 +1,5 @@
+/** @module Lib.Mathjax */
+
 const maxRretry = 1000
 let nRetry = 0
 

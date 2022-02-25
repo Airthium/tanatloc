@@ -1,4 +1,5 @@
 {
+  "name": "Tanatloc documentation",
   "tsconfig": "../../tsconfig.json",
   "entryPoints": [
     "../../config",

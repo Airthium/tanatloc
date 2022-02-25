@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import { useState } from 'react'
 import { Form, Input } from 'antd'
 
-import { IProjectWithData } from '@/lib'
+import { IProjectWithData } from '@/lib/index.d'
 
 import Dialog from '@/components/assets/dialog'
 import { Error } from '@/components/assets/notification'

@@ -5,7 +5,7 @@ import { useState } from 'react'
 import { Button, Tooltip, Typography } from 'antd'
 import { HddOutlined, ImportOutlined } from '@ant-design/icons'
 
-import { IProjectWithData, IWorkspaceWithData } from '@/lib'
+import { IProjectWithData, IWorkspaceWithData } from '@/lib/index.d'
 
 import Dialog from '@/components/assets/dialog'
 import { Error as ErrorNotification } from '@/components/assets/notification'

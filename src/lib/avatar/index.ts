@@ -2,12 +2,12 @@
 
 import path from 'path'
 import sharp from 'sharp'
-import { promises as fs } from 'fs'
+
+import type { IAvatar, INewAvatar } from '@/database/index.d'
 
 import { AVATAR } from '@/config/storage'
 
 import AvatarDB from '@/database/avatar'
-import type { IAvatar, INewAvatar } from '@/database/index.d'
 
 import User from '../user'
 import Project from '../project'
@@ -15,7 +15,6 @@ import Tools from '../tools'
 
 /**
  * Add
- * @memberof Lib.Avatar
  * @param parent Parent
  * @param type Type
  * @param file File
@@ -68,7 +67,6 @@ const add = async (
 
 /**
  * Read
- * @memberof Lib.Avatar
  * @param id Avatar id
  * @returns Content
  */
@@ -86,7 +84,6 @@ const read = async (id: string): Promise<Buffer> => {
 
 /**
  * Get
- * @memberof Lib.Avatar
  * @param id Id
  * @param data Data
  * @returns Avatar
@@ -97,7 +94,6 @@ const get = async (id: string, data: Array<string>): Promise<IAvatar> => {
 
 /**
  * Delete
- * @memberof Lib.Avatar
  * @param parent Parent
  * @param type Type (project or user)
  * @param id Avatar id

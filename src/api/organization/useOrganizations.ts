@@ -1,8 +1,10 @@
 /** @module API.Organization.UseOrganizations */
 
 import useSWR from 'swr'
+
+import { IOrganizationWithData } from '@/lib/index.d'
+
 import { fetcher } from '@/api/call'
-import { IOrganizationWithData } from '@/lib'
 
 /**
  * Use organizations

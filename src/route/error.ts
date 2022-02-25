@@ -1,10 +1,11 @@
+/** @module Route.Error */
+
 import Sentry from '@/lib/sentry'
 
-import { IRouteError } from '.'
+import { IRouteError } from './index.d'
 
 /**
  * Route error
- * @memberof Route
  * @param status Status code
  * @param message Message
  * @param display Display

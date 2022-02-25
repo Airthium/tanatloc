@@ -14,7 +14,6 @@ export interface IGetBody {
 
 /**
  * Check get body
- * @memberof Route.Projects
  * @param body Body
  */
 const checkGetBody = (body: IGetBody): void => {
@@ -24,7 +23,6 @@ const checkGetBody = (body: IGetBody): void => {
 
 /**
  * Projects API
- * @memberof Route.Projects
  * @param req Request
  * @param res Response
  */

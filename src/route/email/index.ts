@@ -16,7 +16,6 @@ export interface ICheckBody {
 
 /**
  * Check send body
- * @memberof Route.Email
  * @param body Body
  */
 const checkSendBody = (body: ICheckBody): void => {
@@ -35,7 +34,6 @@ const checkSendBody = (body: ICheckBody): void => {
 
 /**
  * Email API
- * @memberof Route.Email
  * @param req Request
  * @param res Result
  */

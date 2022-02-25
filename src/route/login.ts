@@ -1,3 +1,5 @@
+/** @module Route.Login */
+
 import express, { Request, Response } from 'express'
 import passport from 'passport'
 import { localStrategy } from '@/auth/password-local'
@@ -8,7 +10,6 @@ import Sentry from '@/lib/sentry'
 
 /**
  * Authenticate
- * @memberof Route
  * @param method Method
  * @param req Request
  * @param res Response
@@ -36,7 +37,6 @@ passport.use(localStrategy)
 
 /**
  * Login API
- * @memberof Route
  * @param req Request
  * @param res Response
  */

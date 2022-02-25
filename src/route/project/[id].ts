@@ -1,10 +1,12 @@
+/** @module Route.Project.[id] */
+
 import { Request, Response } from 'express'
+
+import { IDataBaseEntry } from '@/database/index.d'
 
 import { session } from '../session'
 import { checkProjectAuth } from '../auth'
 import { error } from '../error'
-
-import { IDataBaseEntry } from '@/database/index.d'
 
 import ProjectLib from '@/lib/project'
 
@@ -16,7 +18,6 @@ export interface IDeleteBody {
 
 /**
  * Check update body
- * @memberof Route.Project
  * @param body Body
  */
 const checkUpdateBody = (body: IUpdateBody): void => {
@@ -26,7 +27,6 @@ const checkUpdateBody = (body: IUpdateBody): void => {
 
 /**
  * Check delete body
- * @memberof Route.Project
  * @param body Body
  */
 const checkDeleteBody = (body: IDeleteBody): void => {
@@ -36,7 +36,6 @@ const checkDeleteBody = (body: IDeleteBody): void => {
 
 /**
  * Project API by [id]
- * @memberof Route.Project
  * @param req Request
  * @param res Response
  */

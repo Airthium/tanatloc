@@ -1,3 +1,7 @@
+/** @module Route.Auth */
+
+import { IProject, IWorkspace, IOrganization } from '@/database/index.d'
+
 import { error } from './error'
 
 import ProjectLib from '@/lib/project'
@@ -6,8 +10,6 @@ import GroupLib from '@/lib/group'
 import OrganizationLib from '@/lib/organization'
 import GeometryLib from '@/lib/geometry'
 import SimulationLib from '@/lib/simulation'
-
-import { IProject, IWorkspace, IOrganization } from '@/database/index.d'
 
 /**
  * Check authorization from group
@@ -34,7 +36,6 @@ const authGroup = async (
 
 /**
  * Check authorization
- * @memberof Route
  * @param user User
  * @param object Object (Project || Workspace || Organization)
  * @param parentObject Parent object (Workspace)
@@ -66,7 +67,6 @@ const auth = async (
 
 /**
  * Check workspace auth
- * @memberof Route
  * @param user User
  * @param workspace Workspace
  * @param status Override workspace error status
@@ -88,7 +88,6 @@ const checkWorkspaceAuth = async (
 
 /**
  * Check project auth
- * @memberof Route
  * @param user User
  * @param project Project
  * @param status Override project error status
@@ -119,7 +118,6 @@ const checkProjectAuth = async (
 
 /**
  * Check geometry auth
- * @memberof Route
  * @param user User
  * @param geometry Geometry
  * @param status Override simulation error status
@@ -153,7 +151,6 @@ const checkGeometryAuth = async (
 
 /**
  * Check simulation auth
- * @memberof Route
  * @param user User
  * @param simulation Simulation
  * @param status Override simulation error status
@@ -188,7 +185,6 @@ const checkSimulationAuth = async (
 
 /**
  * Check organization auth
- * @memberof Route
  * @param user User
  * @param organization Organization
  * @param status Override project error status

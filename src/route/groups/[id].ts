@@ -1,3 +1,5 @@
+/** @module Route.Groups.[id] */
+
 import { Request, Response } from 'express'
 
 import { session } from '../session'
@@ -8,7 +10,6 @@ import GroupLib from '@/lib/group'
 
 /**
  * Groups API [id]
- * @memberof Route.Groups
  * @param req Request
  * @param res Response
  */

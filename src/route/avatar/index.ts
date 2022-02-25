@@ -21,7 +21,6 @@ export interface IAddBody {
 
 /**
  * Check add body
- * @memberof Route.Avatar
  * @param body Body
  */
 const checkAddBody = (body: IAddBody): void => {
@@ -44,7 +43,6 @@ const checkAddBody = (body: IAddBody): void => {
 
 /**
  * Avatar API
- * @memberof Route.Avatar
  * @param req Request
  * @param res Result
  */

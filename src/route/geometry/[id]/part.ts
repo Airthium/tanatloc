@@ -1,3 +1,5 @@
+/** @module Route.Geometry.[id].Part */
+
 import { Request, Response } from 'express'
 
 import { session } from '@/route/session'
@@ -8,7 +10,6 @@ import GeometryLib from '@/lib/geometry'
 
 /**
  * Geometry API part
- * @memberof Route.Geometry
  * @param req Request
  * @param res Response
  */

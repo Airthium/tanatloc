@@ -21,7 +21,6 @@ export interface IAddBody {
 
 /**
  * Check add body
- * @memberof Route.Geometry
  * @param body Body
  */
 const checkAddBody = (body: IAddBody): void => {
@@ -46,7 +45,6 @@ const checkAddBody = (body: IAddBody): void => {
 
 /**
  * Geometry API
- * @memberof Route.Geometry
  * @param req Request
  * @param res Response
  */

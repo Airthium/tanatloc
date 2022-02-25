@@ -9,7 +9,6 @@ import UserLib from '@/lib/user'
 
 /**
  * Users API
- * @memberof Route.Users
  * @param req Request
  * @param res Response
  */

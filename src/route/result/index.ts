@@ -20,7 +20,6 @@ export interface ILoadBody {
 
 /**
  * Check load body
- * @memberof Route.Result
  * @param body Body
  */
 const checkLoadBody = (body: ILoadBody): void => {
@@ -43,7 +42,6 @@ const checkLoadBody = (body: ILoadBody): void => {
 
 /**
  * Result API
- * @memberof Route.Result
  * @param req Request
  * @param res Response
  */

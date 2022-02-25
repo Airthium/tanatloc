@@ -2,10 +2,10 @@
 
 import { Request, Response } from 'express'
 
+import { IClientPlugin } from '@/database/index.d'
+
 import { session } from '../session'
 import { error } from '../error'
-
-import { IClientPlugin } from '@/database/index.d'
 
 import UserLib from '@/lib/user'
 import PluginLib from '@/lib/plugin'
@@ -20,7 +20,6 @@ export interface IDeleteBody {
 
 /**
  * Check add body
- * @memberof Route.Plugin
  * @param body Body
  */
 const checkAddBody = (body: IAddBody): void => {
@@ -39,7 +38,6 @@ const checkAddBody = (body: IAddBody): void => {
 
 /**
  * Check update body
- * @memberof Route.Plugin
  * @param body Body
  */
 const checkUpdateBody = (body: IUpdateBody): void => {
@@ -49,7 +47,6 @@ const checkUpdateBody = (body: IUpdateBody): void => {
 
 /**
  * Check delete body
- * @memberof Route.Plugin
  * @param body Body
  */
 const checkDeleteBody = (body: IDeleteBody): void => {
@@ -59,7 +56,6 @@ const checkDeleteBody = (body: IDeleteBody): void => {
 
 /**
  * Plugin API
- * @memberof Route.Plugin
  * @param req Request
  * @param res Response
  */

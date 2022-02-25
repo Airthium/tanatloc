@@ -1,3 +1,5 @@
+/** @module Route.Result.Download */
+
 import { Request, Response } from 'express'
 
 import { session } from '../session'
@@ -18,7 +20,6 @@ export interface IDownloadBody {
 
 /**
  * Check download body
- * @memberof Route.Result
  * @param body Body
  */
 const checkDownloadBody = (body: IDownloadBody): void => {
@@ -41,7 +42,6 @@ const checkDownloadBody = (body: IDownloadBody): void => {
 
 /**
  * Result download API
- * @memberof Route.Result
  * @param req Request
  * @param res Response
  */

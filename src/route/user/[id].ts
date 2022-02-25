@@ -1,9 +1,11 @@
+/** @module Route.User.[id] */
+
 import { Request, Response } from 'express'
+
+import { IDataBaseEntry } from '@/database/index.d'
 
 import { session } from '../session'
 import { error } from '../error'
-
-import { IDataBaseEntry } from '@/database/index.d'
 
 import UserLib from '@/lib/user'
 
@@ -11,17 +13,15 @@ export type IUpdateBody = IDataBaseEntry[]
 
 /**
  * Check update body
- * @memberof Route.User
  * @param body Body
  */
-const checkUpdateBody = (body) => {
+const checkUpdateBody = (body: IUpdateBody): void => {
   if (!body || !Array.isArray(body))
     throw error(400, 'Missing data in your request (body(array))')
 }
 
 /**
  * User API by [id]
- * @memberof Route.User
  * @param req Request
  * @param res Response
  */

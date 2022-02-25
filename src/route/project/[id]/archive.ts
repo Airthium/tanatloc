@@ -1,3 +1,5 @@
+/** @module Route.Project.[id].Archive */
+
 import { Request, Response } from 'express'
 
 import { session } from '@/route/session'
@@ -8,7 +10,6 @@ import ProjectLib from '@/lib/project'
 
 /**
  * Project archive API
- * @memberof Route.Project
  * @param req Request
  * @param res Response
  */

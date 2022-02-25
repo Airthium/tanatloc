@@ -2,10 +2,10 @@
 
 import { Request, Response } from 'express'
 
+import { IDataBaseEntry } from '@/database/index.d'
+
 import { session } from '../session'
 import { error } from '../error'
-
-import { IDataBaseEntry } from '@/database/index.d'
 
 import OrganizationLib from '@/lib/organization'
 import GroupLib from '@/lib/group'
@@ -33,7 +33,6 @@ export interface IDeleteBody {
 
 /**
  * Check add body
- * @memberof Route.Group
  * @param body Body
  */
 const checkAddBody = (body: IAddBody): void => {
@@ -56,7 +55,6 @@ const checkAddBody = (body: IAddBody): void => {
 
 /**
  * Check update body
- * @memberof Route.Group
  * @param body Body
  */
 const checkUpdateBody = (body: IUpdateBody): void => {
@@ -76,7 +74,6 @@ const checkUpdateBody = (body: IUpdateBody): void => {
 
 /**
  * Check delete body
- * @memberof Route.Group
  * @param body Body
  */
 const checkDeleteBody = (body: IDeleteBody): void => {
@@ -86,7 +83,6 @@ const checkDeleteBody = (body: IDeleteBody): void => {
 
 /**
  * Check auth
- * @memberof Route.Group
  * @param organization Organization { id }
  * @param user User { id }
  */
@@ -105,7 +101,6 @@ const checkOrganizationAuth = async (
 
 /**
  * Check auth
- * @memberof Route.Group
  * @param group Group { id }
  * @param user User { id }
  */
@@ -126,7 +121,6 @@ const checkGroupAuth = async (
 
 /**
  * Group API
- * @memberof Route.Group
  * @param req Request
  * @param res Result
  */

@@ -4,7 +4,6 @@ import { Request, Response } from 'express'
 
 /**
  * Empty groups list route
- * @memberof Route.Groups
  * @param req Request
  * @param res Response
  */

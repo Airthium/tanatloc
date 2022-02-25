@@ -1,3 +1,5 @@
+/** @module Route.Logout */
+
 import { Request, Response } from 'express'
 
 import { removeTokenCookie } from '@/auth/auth-cookies'
@@ -6,7 +8,6 @@ import Sentry from '@/lib/sentry'
 
 /**
  * Logout API
- * @memberof Route
  * @param req Request
  * @param res Response
  */

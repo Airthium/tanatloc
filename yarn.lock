@@ -10546,10 +10546,10 @@ __metadata:
 
 "typedoc-plugin-airthium@ssh://git@github.com:Airthium/typedoc-plugin-airthium.git":
   version: 0.1.0
-  resolution: "typedoc-plugin-airthium@ssh://git@github.com:Airthium/typedoc-plugin-airthium.git#commit=1b5b52d814a37e8d6492d1b71a1118c1eace65dd"
+  resolution: "typedoc-plugin-airthium@ssh://git@github.com:Airthium/typedoc-plugin-airthium.git#commit=0d1bb68bc7c847abf5209adcf2a1b3d6e92d45cb"
   peerDependencies:
     typedoc: 0.22.12
-  checksum: eeb28d643d3ac0ca24bc09b93f41657298dff85381a5f128d33b0f18e971c8ba52572ee862f15285796d858e5028e0dfe88729aaf62091443ecfd8aecf68d886
+  checksum: c3ed46927a3ed2b7875bf351d8e744fbda9f9be0bb5fa34b95d6ad82efe7ef15d88f69491e26ce6c34ca22b52eda22e42a10c97ece95b2bef9797405c5c01f23
   languageName: node
   linkType: hard
 

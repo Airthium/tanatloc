@@ -67,7 +67,6 @@ export interface IThreeProps {
 
 /**
  * Errors
- * @memberof Components.Project.View
  */
 const errors = {
   partError: 'Unable to load part'

@@ -7,7 +7,6 @@ import { AlertOutlined } from '@ant-design/icons'
 
 /**
  * Errors
- * @memberof Components.Notauthorized
  */
 const errors = {
   notAllowed: 'You are not authorized to be there.'

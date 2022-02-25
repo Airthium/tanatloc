@@ -1,3 +1,5 @@
+/** @module Components.Simulation.BoundaryConditions.List */
+
 import PropTypes from 'prop-types'
 import { useState } from 'react'
 import { Card, Typography } from 'antd'
@@ -22,7 +24,6 @@ export interface IProps {
 
 /**
  * List
- * @memberof Components.Project.Simulation.BoundaryConditions
  * @param props Props
  */
 const List = ({ simulation, swr, onEdit }: IProps): JSX.Element => {

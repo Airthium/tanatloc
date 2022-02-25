@@ -15,7 +15,6 @@ const existingCategories = ['Academic', 'Fluid', 'Mechanics']
 
 /**
  * Information
- * @memberof Components.Editor
  */
 const Information = ({ configuration, onNext }: IProps): JSX.Element => {
   // State

@@ -267,7 +267,6 @@ const initialConfiguration: IConfiguration = {
 
 /**
  * Editor
- * @memberof Components.Editor
  */
 const Editor = (): JSX.Element => {
   // State

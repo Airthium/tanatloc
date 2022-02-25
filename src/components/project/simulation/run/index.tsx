@@ -31,7 +31,6 @@ export interface IProps {
 
 /**
  * Errors (run)
- * @memberof Components.Project.Simulation
  */
 const errors = {
   runError: 'Unable to run the simulation',
@@ -41,8 +40,7 @@ const errors = {
 
 /**
  * Run
- * @memberof Components.Project.Simulation
- * @param {Object} props Props
+ * @param props Props
  */
 const Run = ({ simulation, result, setResult, swr }: IProps): JSX.Element => {
   // State

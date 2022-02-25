@@ -24,7 +24,6 @@ export interface IProps {
 
 /**
  * Errors
- * @memberof Components.Assets.Organization
  */
 const errors = {
   name: "Unable to update organization's name"
@@ -32,7 +31,6 @@ const errors = {
 
 /**
  * Organization
- * @memberof Components.Assets.Organization
  * @param props Props
  * @description
  * Props list:

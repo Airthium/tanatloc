@@ -180,8 +180,7 @@ export interface IUpdaterProps {
 
 /**
  * Simulation Updater
- * @memberof Components.Project.Simulation
- * @param {Object} props Props `{ user, simulation, swr }`
+ * @param props Props `{ user, simulation, swr }`
  */
 const Updater = ({ user, simulation, swr }: IUpdaterProps): JSX.Element => {
   // State

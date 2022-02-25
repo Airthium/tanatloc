@@ -19,25 +19,14 @@ jest.mock('electron-store', () => {
 describe('auth/auth-cookies', () => {
   const req = {} as Request
   let header: string
-  let resStatus: number
-  let resJson: string | object
   const res = {} as Response
   res.setHeader = (_: string, value: string) => {
     header = value
     return res
   }
-  res.status = (status: number) => {
-    resStatus = status
-    return res
-  }
-  res.end = () => {
-    resJson = 'end'
-    return res
-  }
-  res.json = (value: object) => {
-    resJson = value
-    return res
-  }
+  res.status = () => res
+  res.end = () => res
+  res.json = () => res
 
   test('setTokenCookie', () => {
     auth.setTokenCookie(res, 'token')
@@ -50,7 +39,7 @@ describe('auth/auth-cookies', () => {
   })
 
   test('parseCookies', () => {
-    let cookie
+    let cookie: { [key: string]: string }
 
     // Empty
     cookie = auth.parseCookies({
@@ -82,10 +71,10 @@ describe('auth/auth-cookies', () => {
   })
 
   test('getTokenCookie', () => {
-    const res = auth.getTokenCookie({
+    const response = auth.getTokenCookie({
       ...req,
       headers: { cookie: JSON.stringify({ token: 'cookie' }) }
     } as Request)
-    expect(res).toBe('cookie')
+    expect(response).toBe('cookie')
   })
 })

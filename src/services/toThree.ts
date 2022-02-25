@@ -1,10 +1,12 @@
+/** @module Services.ToThree */
+
 import { execSync, spawn } from 'child_process'
 import path from 'path'
 import isDocker from 'is-docker'
 
 /**
  * toThree service
- * Convert mesh to threeJS
+ * @description Convert step, dxf, mesh, vtu to threeJS
  * @memberof Services
  * @param path Path
  * @param fileIn In file (POSIX path)

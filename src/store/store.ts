@@ -16,7 +16,6 @@ import select, { selectInitialState, SelectState } from './select/reducer'
 
 /**
  * Global initial store
- * @memberof Store
  */
 const globalInitialState = {
   select: selectInitialState
@@ -24,7 +23,6 @@ const globalInitialState = {
 
 /**
  * Combine reducers
- * @memberof Store
  */
 const combinedReducers = combineReducers({
   select
@@ -32,7 +30,6 @@ const combinedReducers = combineReducers({
 
 /**
  * Global reducer
- * @memberof Store
  * @param state Redux state
  * @param action Redux action
  */
@@ -70,7 +67,6 @@ const persistedReducer = persistReducer(persistConfig, reducer)
 
 /**
  * Make store
- * @memberof Store
  * @param initialState Initial store
  */
 const makeStore = (initialState: {
@@ -86,7 +82,6 @@ const makeStore = (initialState: {
 
 /**
  * Use store
- * @memberof Store
  * @param initialState Initial store
  */
 const useStore = (initialState: {

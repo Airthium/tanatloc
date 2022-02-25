@@ -1,10 +1,11 @@
+/** @module Services.Gmsh */
+
 import { execSync, spawn } from 'child_process'
 import path from 'path'
 import isDocker from 'is-docker'
 
 /**
  * Gmsh service
- * @memberof Services
  * @param path Path
  * @param fileIn In file (POSIX path)
  * @param fileOut Out file (POSIX path)

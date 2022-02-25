@@ -24,7 +24,7 @@ jest.mock('redux-persist', () => ({
   persistReducer: jest.fn()
 }))
 
-jest.mock('redux-persist/lib/storage/createWebStorage', () => () => {})
+jest.mock('redux-persist/lib/storage/createWebStorage', () => jest.fn)
 
 describe('store/store', () => {
   test('reducer', () => {

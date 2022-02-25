@@ -1,10 +1,11 @@
+/** @module Services.Freefem */
+
 import { execSync, spawn } from 'child_process'
 import path from 'path'
 import isDocker from 'is-docker'
 
 /**
  * FreeFEM service
- * @memberof Services
  * @param  path Path
  * @param script Script (POSIX path)
  * @param callback Callback

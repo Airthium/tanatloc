@@ -1,26 +1,48 @@
+/** @module Lib.Three.Helpers.SectionViewHelper */
+
 import {
+  Box3,
   Color,
   DoubleSide,
   Mesh,
   MeshBasicMaterial,
+  PerspectiveCamera,
   Plane,
   PlaneGeometry,
   Raycaster,
+  Scene,
   Vector2,
-  Vector3
+  Vector3,
+  WebGLRenderer
 } from 'three'
-
+import { TrackballControls } from 'three/examples/jsm/controls/TrackballControls'
 import { TransformControls } from 'three/examples/jsm/controls/TransformControls'
+
+export interface ISectionViewHelper {
+  getClippingPlane: () => Plane
+  start: () => void
+  toggleVisible: () => void
+  toAxis: (normal: Vector3) => void
+  flip: () => void
+  setMode: (mode: 'translate' | 'rotate' | 'scale') => void
+  stop: () => void
+  dispose: () => void
+}
 
 /**
  * SectionViewHelper
  * @memberof Lib.Three.Helpers
- * @param {Object} renderer Renderer
- * @param {Object} scene Scene
- * @param {Object} camera Camera
- * @param {Object} controls Controls
+ * @param renderer Renderer
+ * @param scene Scene
+ * @param camera Camera
+ * @param controls Controls
  */
-const SectionViewHelper = (renderer, scene, camera, controls) => {
+const SectionViewHelper = (
+  renderer: WebGLRenderer,
+  scene: Scene & { boundingBox: Box3 },
+  camera: PerspectiveCamera,
+  controls: TrackballControls
+): ISectionViewHelper => {
   // Base color
   const baseColor = new Color('orange')
   // Ray caster
@@ -38,7 +60,9 @@ const SectionViewHelper = (renderer, scene, camera, controls) => {
   /**
    * Build plane
    */
-  const buildPlane = () => {
+  const buildPlane = (): Mesh<PlaneGeometry, MeshBasicMaterial> & {
+    clippingPlane: Plane
+  } => {
     const geometry = new PlaneGeometry()
     const material = new MeshBasicMaterial({
       color: baseColor,
@@ -46,7 +70,10 @@ const SectionViewHelper = (renderer, scene, camera, controls) => {
       transparent: true,
       opacity: 0.5
     })
-    const mesh = new Mesh(geometry, material)
+    const mesh = new Mesh(geometry, material) as Mesh<
+      PlaneGeometry,
+      MeshBasicMaterial
+    > & { clippingPlane: Plane }
     mesh.clippingPlane = clippingPlane
 
     return mesh
@@ -61,14 +88,14 @@ const SectionViewHelper = (renderer, scene, camera, controls) => {
   /**
    * Get clipping plane
    */
-  const getClippingPlane = () => {
+  const getClippingPlane = (): Plane => {
     return clippingPlane
   }
 
   /**
    * Start
    */
-  const start = () => {
+  const start = (): void => {
     controller.visible = true
     renderer.localClippingEnabled = true
 
@@ -97,7 +124,7 @@ const SectionViewHelper = (renderer, scene, camera, controls) => {
   /**
    * Stop
    */
-  const stop = () => {
+  const stop = (): void => {
     controller.visible = false
     renderer.localClippingEnabled = false
 
@@ -107,7 +134,7 @@ const SectionViewHelper = (renderer, scene, camera, controls) => {
   /**
    * Toogle visible
    */
-  const toggleVisible = () => {
+  const toggleVisible = (): void => {
     const visible = controller.visible
     controller.visible = !visible
 
@@ -118,9 +145,9 @@ const SectionViewHelper = (renderer, scene, camera, controls) => {
 
   /**
    * To axis
-   * @param {Object} normal Normal
+   * @param normal Normal
    */
-  const toAxis = (normal) => {
+  const toAxis = (normal: Vector3): void => {
     // Set center
     const center = new Vector3()
     scene.boundingBox.getCenter(center)
@@ -138,7 +165,7 @@ const SectionViewHelper = (renderer, scene, camera, controls) => {
   /**
    * Flip
    */
-  const flip = () => {
+  const flip = (): void => {
     // Controllers
     controller.rotateX(Math.PI)
 
@@ -147,16 +174,21 @@ const SectionViewHelper = (renderer, scene, camera, controls) => {
     clippingPlane.setFromNormalAndCoplanarPoint(normal, controller.position)
   }
 
-  const setMode = (mode) => {
+  /**
+   * Set mode
+   * @param mode Mode
+   */
+  const setMode = (mode: 'translate' | 'rotate' | 'scale'): void => {
     transformControls.setMode(mode)
   }
 
   /**
    *  Global coordinates to local [-1, 1]^2
-   * @param {Object} event Event
+   * @param event Event
    */
-  const globalToLocal = (event) => {
-    const rect = event.target.getBoundingClientRect()
+  const globalToLocal = (event: MouseEvent) => {
+    const node = event.target as HTMLElement
+    const rect = node.getBoundingClientRect()
 
     const X = event.clientX - rect.left
     const Y = event.clientY - rect.top
@@ -170,9 +202,8 @@ const SectionViewHelper = (renderer, scene, camera, controls) => {
 
   /**
    * Mouse down
-   * @param {Object} event Event
    */
-  const onMouseDown = (event) => {
+  const onMouseDown = (): void => {
     if (!controller.visible) return
 
     isDown = true
@@ -180,9 +211,9 @@ const SectionViewHelper = (renderer, scene, camera, controls) => {
 
   /**
    * Mouse move
-   * @param {Object} event Event
+   * @param event Event
    */
-  const onMouseMove = (event) => {
+  const onMouseMove = (event: MouseEvent): void => {
     if (!controller.visible) return
     if (isDown) return
 
@@ -199,7 +230,7 @@ const SectionViewHelper = (renderer, scene, camera, controls) => {
   /**
    * Start transform (stop controls)
    */
-  const transformStart = () => {
+  const transformStart = (): void => {
     controls.enabled = false
 
     transformControls.enabled = true
@@ -209,7 +240,7 @@ const SectionViewHelper = (renderer, scene, camera, controls) => {
   /**
    * Stop transform (start controls)
    */
-  const transformStop = () => {
+  const transformStop = (): void => {
     controls.enabled = true
 
     transformControls.enabled = false
@@ -219,7 +250,7 @@ const SectionViewHelper = (renderer, scene, camera, controls) => {
   /**
    * Mouse up
    */
-  const onMouseUp = () => {
+  const onMouseUp = (): void => {
     if (!controller.visible) return
     isDown = false
 
@@ -239,7 +270,7 @@ const SectionViewHelper = (renderer, scene, camera, controls) => {
   /**
    * Dispose
    */
-  const dispose = () => {
+  const dispose = (): void => {
     // Event listener
     renderer.domElement.removeEventListener('mousedown', onMouseDown)
     renderer.domElement.removeEventListener('mousemove', onMouseMove)

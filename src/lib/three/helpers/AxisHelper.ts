@@ -1,13 +1,42 @@
+/** @module Lib.Three.Helpers.AxisHelper */
+
 import {
   Group,
   Mesh,
   MeshBasicMaterial,
   OrthographicCamera,
+  PerspectiveCamera,
   Scene,
-  SphereGeometry
+  SphereGeometry,
+  WebGLRenderer
 } from 'three'
-import Arrow from './ArrowHelper'
-import Label from './LabelHelper'
+
+import Arrow, { IArrowHelper } from './ArrowHelper'
+import Label, { ILabelHelper } from './LabelHelper'
+
+export interface IAxisHelper {
+  dispose: () => void
+  render: () => void
+  resize: (pos: IAxisHelperNewPos) => void
+}
+
+export interface IAxisHelperGroup extends Omit<Group, 'type'> {
+  type: Group['type'] | 'AxisHelper'
+}
+
+export interface IAxisHelperPos {
+  offsetWidth: number
+  offsetHeight: number
+  width: number
+  height: number
+}
+
+export interface IAxisHelperNewPos {
+  newOffsetWidth: number
+  newOffsetHeight: number
+  newWidth: number
+  newHeight: number
+}
 
 // Default width in viewport
 const defaultWidth = 150
@@ -16,21 +45,20 @@ const defaultHeight = 150
 
 /**
  * Axis helper
- * @memberof Lib.Three.Helpers
- * @param {Object} renderer Renderer
- * @param {Object} camera Camera
- * @param {Object} dimensions Dimensions
+ * @param renderer Renderer
+ * @param camera Camera
+ * @param dimensions Dimensions
  */
 const AxisHelper = (
-  renderer,
-  camera,
+  renderer: WebGLRenderer,
+  camera: PerspectiveCamera,
   { offsetWidth, offsetHeight, width, height } = {
     offsetWidth: 0,
     offsetHeight: 0,
     width: defaultWidth,
     height: defaultHeight
   }
-) => {
+): IAxisHelper => {
   // X-axis color
   const xColor = 'red'
   // Y-axis color
@@ -72,7 +100,7 @@ const AxisHelper = (
   const sphere = new Mesh(sphereGeometry, sphereMaterial)
 
   // Axis helper
-  const mesh = new Group()
+  const mesh = new Group() as IAxisHelperGroup
   mesh.type = 'AxisHelper'
   mesh.add(x)
   mesh.add(xLabel)
@@ -91,9 +119,14 @@ const AxisHelper = (
 
   /**
    * Resize
-   * @param {Object} dimensions Dimensions
+   * @param dimensions Dimensions
    */
-  const resize = ({ newOffsetWidth, newOffsetHeight, newWidth, newHeight }) => {
+  const resize = ({
+    newOffsetWidth,
+    newOffsetHeight,
+    newWidth,
+    newHeight
+  }: IAxisHelperNewPos): void => {
     currentOffsetWidth = newOffsetWidth
     currentOffsetHeight = newOffsetHeight
     currentWidth = newWidth
@@ -103,7 +136,7 @@ const AxisHelper = (
   /**
    * Render
    */
-  const render = () => {
+  const render = (): void => {
     renderer.setViewport(
       currentOffsetWidth,
       currentOffsetHeight,
@@ -117,11 +150,11 @@ const AxisHelper = (
   /**
    * Dispose
    */
-  const dispose = () => {
+  const dispose = (): void => {
     sphereGeometry.dispose()
     sphereMaterial.dispose()
 
-    mesh.children.forEach((child) => {
+    mesh.children.forEach((child: IArrowHelper | ILabelHelper) => {
       if (child.type === 'ArrowHelper' || child.type === 'LabelHelper')
         child.dispose()
     })
@@ -129,7 +162,7 @@ const AxisHelper = (
     localScene.remove(mesh)
   }
 
-  return { resize, render, dispose }
+  return { dispose, render, resize }
 }
 
 export { AxisHelper }

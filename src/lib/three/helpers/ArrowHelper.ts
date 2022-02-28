@@ -1,3 +1,5 @@
+/** @module Lib.Three.Helpers.ArrowHelper */
+
 import {
   ConeGeometry,
   CylinderGeometry,
@@ -6,12 +8,17 @@ import {
   MeshBasicMaterial
 } from 'three'
 
+export interface IArrowHelper extends Omit<Group, 'type'> {
+  type: Group['type'] | 'ArrowHelper'
+  dispose: () => void
+}
+
 /**
  * ArrowHelper
  * @memberof Lib.Three.Helpers
- * @param {string} color Color
+ * @param color Color
  */
-const ArrowHelper = (color) => {
+const ArrowHelper = (color: string): IArrowHelper => {
   // Cylinder
   const cylinderGeometry = new CylinderGeometry(0.025, 0.025, 0.8, 50)
   cylinderGeometry.translate(0, 0.4, 0)
@@ -25,7 +32,7 @@ const ArrowHelper = (color) => {
   const cone = new Mesh(coneGeometry, coneMaterial)
 
   // Arrow
-  const arrow = new Group()
+  const arrow = new Group() as IArrowHelper
   arrow.type = 'ArrowHelper'
   arrow.add(cylinder)
   arrow.add(cone)
@@ -33,7 +40,7 @@ const ArrowHelper = (color) => {
   /**
    * Dispose
    */
-  const dispose = () => {
+  const dispose = (): void => {
     cylinderGeometry.dispose()
     cylinderMaterial.dispose()
 

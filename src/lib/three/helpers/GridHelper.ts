@@ -1,21 +1,39 @@
+/** @module Lib.Three.Helpers.GridHelper */
+
 import {
+  Box3,
   BufferGeometry,
   Group,
   Line,
   LineBasicMaterial,
+  Material,
+  Scene,
+  Sphere,
   Vector2,
   Vector3
 } from 'three'
 
-import Label from './LabelHelper'
+import Label, { ILabelHelper } from './LabelHelper'
 import NumberHelper from './NumberHelper'
+
+export interface IGridHelper {
+  dispose: () => void
+  setVisible: (visible: boolean) => void
+  update: () => void
+}
+
+export interface IGridHelperGroup extends Omit<Group, 'type'> {
+  type: Group['type'] | 'GridHelper'
+  dispose: () => void
+}
 
 /**
  * GridHelper
- * @memberof Lib.Three.Helpers
- * @param {Object} scene Scene
+ * @param scene Scene
  */
-const GridHelper = (scene) => {
+const GridHelper = (
+  scene: Scene & { boundingBox: Box3; boundingSphere: Sphere }
+): IGridHelper => {
   // Grid color
   const gridColor = '#888888'
   // Min divisions
@@ -28,14 +46,14 @@ const GridHelper = (scene) => {
   const overspaceGrid = 0.15
 
   // Variable
-  let maxSize
-  let gridHelper
+  let maxSize: number
+  let gridHelper: IGridHelperGroup
 
   /**
    * Get number of division for each axis
-   * @param {Object} size Size
+   * @param size Size
    */
-  const getDivisions = (size) => {
+  const getDivisions = (size: { x: number; y: number; z: number }): Vector3 => {
     const xDiv = Math.max(
       Math.ceil((size.x / maxSize) * maxDivisions),
       minDivisions
@@ -54,7 +72,7 @@ const GridHelper = (scene) => {
 
   /**
    * Create grid
-   * @param {Object} dimensions Dimensions
+   * @param dimensions Dimensions
    */
   const createGrid = ({
     offsetWidth,
@@ -64,8 +82,8 @@ const GridHelper = (scene) => {
     hDiv,
     rotate,
     translation
-  }) => {
-    const grid = new Group()
+  }): IGridHelperGroup => {
+    const grid = new Group() as IGridHelperGroup
     const material = new LineBasicMaterial({ color: gridColor })
 
     const origin = new Vector2(-width / 2, -height / 2)
@@ -120,7 +138,7 @@ const GridHelper = (scene) => {
   /**
    * Build grid
    */
-  const build = () => {
+  const build = (): IGridHelperGroup => {
     const boundingBox = scene.boundingBox
     const center = scene.boundingSphere.center
 
@@ -134,7 +152,7 @@ const GridHelper = (scene) => {
 
     const divisions = getDivisions(size)
 
-    const grid = new Group()
+    const grid = new Group() as IGridHelperGroup
 
     const gridXY = createGrid({
       offsetWidth: boundingBox.min.x,
@@ -189,8 +207,8 @@ const GridHelper = (scene) => {
   /**
    * Update
    */
-  const update = () => {
-    scene.children.forEach((child) => {
+  const update = (): void => {
+    scene.children.forEach((child: IGridHelperGroup) => {
       if (child.type === 'GridHelper') {
         scene.remove(child)
         child.dispose()
@@ -203,26 +221,33 @@ const GridHelper = (scene) => {
 
   /**
    * Set visible
-   * @param {boolean} visible Visible
+   * @param visible Visible
    */
-  const setVisible = (visible) => {
+  const setVisible = (visible: boolean): void => {
     gridHelper.visible = visible
   }
 
   /**
    * Dispose
    */
-  const dispose = () => {
-    gridHelper &&
-      gridHelper.children.forEach((group) => {
-        group.children.forEach((child) => {
-          child.geometry.dispose()
-          child.material.dispose()
-        })
+  const dispose = (): void => {
+    gridHelper?.children.forEach((group) => {
+      group.children.forEach((child) => {
+        if (child.type === 'Line') {
+          const line = child as Line
+          const geometry = line.geometry
+          geometry.dispose()
+          const material = line.material as Material
+          material.dispose()
+        } else if (child.type === 'LabelHelper') {
+          const label = child as ILabelHelper
+          label.dispose()
+        }
       })
+    })
   }
 
-  return { update, setVisible, dispose }
+  return { dispose, setVisible, update }
 }
 
 export { GridHelper }

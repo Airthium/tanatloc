@@ -10234,7 +10234,7 @@ __metadata:
     three: 0.138.0
     three-to-glb: "ssh://git@github.com:Airthium/three-to-glb.git#1.1.2"
     typedoc: 0.22.12
-    typedoc-plugin-airthium: "ssh://git@github.com:Airthium/typedoc-plugin-airthium.git#1.0.0"
+    typedoc-plugin-airthium: "ssh://git@github.com:Airthium/typedoc-plugin-airthium.git#1.0.1"
     typescript: 4.5.5
     url-join: 4.0.1
     uuid: 8.3.2
@@ -10551,12 +10551,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typedoc-plugin-airthium@ssh://git@github.com:Airthium/typedoc-plugin-airthium.git#1.0.0":
+"typedoc-plugin-airthium@ssh://git@github.com:Airthium/typedoc-plugin-airthium.git#1.0.1":
   version: 1.0.0
-  resolution: "typedoc-plugin-airthium@ssh://git@github.com:Airthium/typedoc-plugin-airthium.git#commit=473093869520c1d98ccee782e591e3bfed8cc954"
+  resolution: "typedoc-plugin-airthium@ssh://git@github.com:Airthium/typedoc-plugin-airthium.git#commit=01758889d54e5d712b5b8483afdd0fc37f0b81e2"
   peerDependencies:
     typedoc: 0.22.12
-  checksum: 1bee797e95b26d4d868846c2f2c0c7cebc872f464a03282d419e200bdf1472c72491fa189b27fa230a55282d13e1b9631a106a23dc1a5c37d2eb38e81a7835b0
+  checksum: c747fba669a26bd1425e7780d100dd8796445265180fe608954804ef5a2cad889e145405710065703df578a6738122d6c724e7c2537e4a6aecb3eadb1082f33d
   languageName: node
   linkType: hard
 

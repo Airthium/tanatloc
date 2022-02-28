@@ -1,4 +1,7 @@
+/** @module Lib.Three.Helpers.NavigationHelper */
+
 import {
+  Box3,
   Color,
   EdgesGeometry,
   Group,
@@ -13,30 +16,49 @@ import {
   LineSegments,
   SphereGeometry,
   Vector2,
-  Raycaster
+  Raycaster,
+  WebGLRenderer,
+  PerspectiveCamera,
+  Object3D,
+  BufferGeometry,
+  MeshStandardMaterial
 } from 'three'
+import { TrackballControls } from 'three/examples/jsm/controls/TrackballControls'
+
+export interface INavigationHelper {
+  dispose: () => void
+  render: () => void
+  resize: (size: INavigationHelperNewSize) => void
+}
+
+export interface INavigationHelperNewSize {
+  newOffsetWidth: number
+  newOffsetHeight: number
+  newWidth: number
+  newHeight: number
+}
 
 /**
  * Navigation helper
  * @memberof Lib.Three.Helpers
- * @param {Object} renderer Renderer
- * @param {Object} scene Scene
- * @param {Object} camera Camera
- * @param {Object} controls Controls
- * @param {Object} dimensions Dimensions
+ * @param renderer Renderer
+ * @param scene Scene
+ * @param camera Camera
+ * @param controls Controls
+ * @param dimensions Dimensions
  */
 const NavigationHelper = (
-  renderer,
-  scene,
-  camera,
-  controls,
+  renderer: WebGLRenderer,
+  scene: Scene & { boundingBox: Box3 },
+  camera: PerspectiveCamera,
+  controls: TrackballControls,
   { offsetWidth, offsetHeight, width, height } = {
     offsetWidth: 0,
     offsetHeight: 0,
     width: 150,
     height: 150
   }
-) => {
+): INavigationHelper => {
   // Cube color
   const cubeColor = '#d3d3d3'
   // Edge color
@@ -50,9 +72,9 @@ const NavigationHelper = (
   // Cube corner
   const corner = 0.25
   // Highlight variable
-  let currentlyHighlighted = 0
+  let currentlyHighlighted = null
   // Unhighlight variable
-  let previouslyHighlighted = 0
+  let previouslyHighlighted = null
 
   // Faces
   const faces = [
@@ -100,7 +122,7 @@ const NavigationHelper = (
 
     // Mesh
     const texture = new CanvasTexture(canvas)
-    texture.needUpdate = true
+    texture.needsUpdate = true
 
     // Material
     const frontMaterial = new MeshBasicMaterial({ map: texture })
@@ -126,7 +148,7 @@ const NavigationHelper = (
     const hemisphereMesh = new Mesh(hemisphereGeometry, hemisphereMaterial)
 
     // Group
-    const faceGroup = new Group()
+    const faceGroup = new Group() as Group & { normal: Vector3 }
     faceGroup.add(frontMesh, backMesh, edgeMesh, hemisphereMesh)
 
     // Orientation
@@ -159,9 +181,9 @@ const NavigationHelper = (
 
   /**
    * On mouse move
-   * @param {Object} event Event
+   * @param event Event
    */
-  const onMouseMove = (event) => {
+  const onMouseMove = (event: MouseEvent): void => {
     const mouse = globalToLocal(event)
     if (isIn(mouse)) {
       currentlyHighlighted = intersect(mouse)
@@ -178,10 +200,11 @@ const NavigationHelper = (
 
   /**
    *  Global coordinates to local [-1, 1]^2
-   * @param {Object} event Event
+   * @param event Event
    */
-  const globalToLocal = (event) => {
-    const rect = event.target.getBoundingClientRect()
+  const globalToLocal = (event: MouseEvent): Vector2 => {
+    const node = event.target as HTMLElement
+    const rect = node.getBoundingClientRect()
 
     const X = event.clientX - rect.left
     const Y = event.clientY - rect.top
@@ -195,18 +218,18 @@ const NavigationHelper = (
 
   /**
    * Check if mouse is in the viewport
-   * @param {Object} mouse Mouse
+   * @param mouse Mouse
    */
-  const isIn = (mouse) => {
+  const isIn = (mouse: Vector2): boolean => {
     if (mouse.x > -1 && mouse.x < 1 && mouse.y > -1 && mouse.y < 1) return true
     return false
   }
 
   /**
    * Intersect
-   * @param {Object} mouse Mouse
+   * @param mouse Mouse
    */
-  const intersect = (mouse) => {
+  const intersect = (mouse: Vector2): Object3D => {
     const mouseCoords = new Vector3(mouse.x, mouse.y, -1)
     mouseCoords.unproject(localCamera)
 
@@ -223,35 +246,44 @@ const NavigationHelper = (
   /**
    * Highlight
    */
-  const highlight = () => {
+  const highlight = (): void => {
     currentlyHighlighted &&
       currentlyHighlighted.children &&
-      currentlyHighlighted.children.forEach((object) => {
-        if (object.material && object.material.color) {
-          object.material.previousColor = object.material.color
-          object.material.color = new Color(highlightColor)
+      currentlyHighlighted.children.forEach(
+        (
+          object: Mesh<
+            BufferGeometry,
+            MeshStandardMaterial & { previousColor: Color }
+          >
+        ) => {
+          if (object.material && object.material.color) {
+            object.material.previousColor = object.material.color
+            object.material.color = new Color(highlightColor)
+          }
         }
-      })
+      )
   }
 
   /**
    * Unhighlight
    */
-  const unhighlight = () => {
+  const unhighlight = (): void => {
     previouslyHighlighted &&
       previouslyHighlighted.children &&
-      previouslyHighlighted.children.forEach((object) => {
-        if (object.material && object.material.color) {
-          object.material.color = new Color(cubeColor)
+      previouslyHighlighted.children.forEach(
+        (object: Mesh<BufferGeometry, MeshStandardMaterial>) => {
+          if (object.material && object.material.color) {
+            object.material.color = new Color(cubeColor)
+          }
         }
-      })
+      )
   }
 
   /**
    * On mouse down
-   * @param {Object} event Event
+   * @param event Event
    */
-  const onMouseDown = (event) => {
+  const onMouseDown = (event: MouseEvent): void => {
     if (currentlyHighlighted) {
       const normal = currentlyHighlighted.normal
       const up = currentlyHighlighted.up
@@ -284,9 +316,14 @@ const NavigationHelper = (
 
   /**
    * Resize
-   * @param {Object} dimensions Dimensions
+   * @param dimensions Dimensions
    */
-  const resize = ({ newOffsetWidth, newOffsetHeight, newWidth, newHeight }) => {
+  const resize = ({
+    newOffsetWidth,
+    newOffsetHeight,
+    newWidth,
+    newHeight
+  }: INavigationHelperNewSize): void => {
     offsetWidth = newOffsetWidth
     offsetHeight = newOffsetHeight
     width = newWidth
@@ -296,7 +333,7 @@ const NavigationHelper = (
   /**
    * Render
    */
-  const render = () => {
+  const render = (): void => {
     renderer.setViewport(offsetWidth, offsetHeight, width, height)
     localCamera.rotation.copy(camera.rotation)
     renderer.render(localScene, localCamera)
@@ -305,17 +342,19 @@ const NavigationHelper = (
   /**
    * Dispose
    */
-  const dispose = () => {
+  const dispose = (): void => {
     // Event listeners
     renderer.domElement.removeEventListener('pointermove', onMouseMove)
     renderer.domElement.removeEventListener('pointerdown', onMouseDown)
 
     // Cube
     cube.children.forEach((group) => {
-      group.children.forEach((child) => {
-        child.geometry.dispose()
-        child.material.dispose()
-      })
+      group.children.forEach(
+        (child: Mesh<BufferGeometry, MeshStandardMaterial>) => {
+          child.geometry.dispose()
+          child.material.dispose()
+        }
+      )
     })
 
     // Scene

@@ -1,14 +1,35 @@
-import { Box2, Raycaster, Vector2 } from 'three'
+/** @module Lib.Three.Helpers.SelectionHelper */
+
+import {
+  Box2,
+  PerspectiveCamera,
+  Raycaster,
+  Scene,
+  Vector2,
+  WebGLRenderer
+} from 'three'
+import { TrackballControls } from 'three/examples/jsm/controls/TrackballControls'
+
+export interface ISelectionHelper {
+  dispose: () => void
+  end: () => void
+  isEnabled: () => boolean
+  start: () => void
+}
 
 /**
  * Selection helper
- * @memberof Lib.Three.Helpers
- * @param {Object} renderer Renderer
- * @param {Object} scene Scene
- * @param {Object} camera Camera
- * @param {Object} controls Controls
+ * @param renderer Renderer
+ * @param scene Scene
+ * @param camera Camera
+ * @param controls Controls
  */
-const SelectionHelper = (renderer, scene, camera, controls) => {
+const SelectionHelper = (
+  renderer: WebGLRenderer,
+  scene: Scene,
+  camera: PerspectiveCamera,
+  controls: TrackballControls
+): ISelectionHelper => {
   // Selector element
   const element = document.createElement('div')
   element.style.pointerEvents = 'none'
@@ -36,26 +57,26 @@ const SelectionHelper = (renderer, scene, camera, controls) => {
   /**
    * Start selection
    */
-  const start = () => {
+  const start = (): void => {
     enabled = true
   }
 
   /**
    * End selection
    */
-  const end = () => {
+  const end = (): void => {
     enabled = false
   }
 
-  const isEnabled = () => {
+  const isEnabled = (): boolean => {
     return enabled
   }
 
   /**
    * Mouse down
-   * @param {Object} event Event
+   * @param event Event
    */
-  const onMouseDown = (event) => {
+  const onMouseDown = (event: MouseEvent): void => {
     if (!enabled || event.button !== 0) return
     down = true
     onSelectStart(event)
@@ -63,18 +84,18 @@ const SelectionHelper = (renderer, scene, camera, controls) => {
 
   /**
    * Mouse move
-   * @param {Object} event Event
+   * @param event Event
    */
-  const onMouseMove = (event) => {
+  const onMouseMove = (event: MouseEvent): void => {
     if (!enabled) return
     if (down) onSelectMove(event)
   }
 
   /**
    * Mouse up
-   * @param {Object} event Event
+   * @param event Event
    */
-  const onMouseUp = (event) => {
+  const onMouseUp = (event: MouseEvent): void => {
     down = false
     if (!enabled) return
     onSelectEnd(event)
@@ -87,9 +108,9 @@ const SelectionHelper = (renderer, scene, camera, controls) => {
 
   /**
    * Selection start
-   * @param {Object} event Event
+   * @param event Event
    */
-  const onSelectStart = (event) => {
+  const onSelectStart = (event: MouseEvent): void => {
     controls.enabled = false
 
     renderer.domElement.parentElement.appendChild(element)
@@ -105,9 +126,9 @@ const SelectionHelper = (renderer, scene, camera, controls) => {
 
   /**
    * Selection move
-   * @param {Object} event Event
+   * @param event Event
    */
-  const onSelectMove = (event) => {
+  const onSelectMove = (event: MouseEvent): void => {
     pointBottomRight.x = Math.max(startPoint.x, event.clientX)
     pointBottomRight.y = Math.max(startPoint.y, event.clientY)
 
@@ -122,9 +143,9 @@ const SelectionHelper = (renderer, scene, camera, controls) => {
 
   /**
    * Selection end
-   * @param {Object} event Event
+   * @param event Event
    */
-  const onSelectEnd = (event) => {
+  const onSelectEnd = (event: MouseEvent): void => {
     controls.enabled = true
 
     if (element.parentElement) element.parentElement.removeChild(element)
@@ -140,9 +161,9 @@ const SelectionHelper = (renderer, scene, camera, controls) => {
 
   /**
    * Zoom to rectangle
-   * @param {Object} rect Rectangle
+   * @param rect Rectangle
    */
-  const zoomToRect = (rect) => {
+  const zoomToRect = (rect: Box2): void => {
     // Check size
     const size = new Vector2()
     rect.getSize(size)
@@ -196,14 +217,14 @@ const SelectionHelper = (renderer, scene, camera, controls) => {
   /**
    * Dispose
    */
-  const dispose = () => {
+  const dispose = (): void => {
     // Event listeners
     renderer.domElement.removeEventListener('pointerdown', onMouseDown)
     renderer.domElement.removeEventListener('pointermove', onMouseMove)
     renderer.domElement.removeEventListener('pointerup', onMouseUp)
   }
 
-  return { start, isEnabled, end, dispose }
+  return { dispose, end, isEnabled, start }
 }
 
 export { SelectionHelper }

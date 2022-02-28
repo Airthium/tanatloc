@@ -49,7 +49,7 @@ import { SelectionHelper } from '@/lib/three/helpers/SelectionHelper'
 import { SectionViewHelper } from '@/lib/three/helpers/SectionViewHelper'
 import { ColorbarHelper } from '@/lib/three/helpers/ColorbarHelper'
 
-import { PartLoader } from '@/lib/three/loaders/PartLoader'
+import { IPart, PartLoader } from '@/lib/three/loaders/PartLoader'
 
 import AvatarAPI from '@/api/avatar'
 import GeometryAPI from '@/api/geometry'
@@ -62,7 +62,7 @@ import { SelectState } from '@/store/select/reducer'
 export interface IThreeProps {
   loading: boolean
   project: IProjectWithData
-  part: {}
+  part: { uuid: string; buffer: Buffer }
 }
 
 /**
@@ -74,7 +74,7 @@ const errors = {
 
 /**
  * ThreeView
- * @param {Object} props Props `{ loading, project, part }`
+ * @param props Props
  */
 const ThreeView = ({ loading, project, part }: IThreeProps): JSX.Element => {
   // Ref
@@ -216,7 +216,7 @@ const ThreeView = ({ loading, project, part }: IThreeProps): JSX.Element => {
     )
 
     // ColorbarHelper
-    colorbarHelper.current = ColorbarHelper(renderer.current, scene.current)
+    colorbarHelper.current = ColorbarHelper(renderer.current)
     colorbarHelper.current.setVisible(false)
 
     /**
@@ -484,7 +484,7 @@ const ThreeView = ({ loading, project, part }: IThreeProps): JSX.Element => {
    */
   const loadPart = async () => {
     // Events
-    const mouseMoveEvent = (child, uuid) => {
+    const mouseMoveEvent = (child: IPart, uuid?: string): void => {
       child.highlight(uuid)
       setTimeout(() => dispatch(highlight(uuid)), 1)
     }
@@ -524,6 +524,10 @@ const ThreeView = ({ loading, project, part }: IThreeProps): JSX.Element => {
     } else {
       colorbarHelper.current.setVisible(false)
     }
+
+    gridHelper.current.update()
+    gridHelper.current.setVisible(true)
+    gridHelper.current.dispose()
   }
 
   /**
@@ -807,7 +811,7 @@ const View = ({
   result
 }: IViewProps): JSX.Element => {
   // State
-  const [part, setPart]: [{ uuid?: string; buffer: Buffer }, Function] =
+  const [part, setPart]: [{ uuid: string; buffer: Buffer }, Function] =
     useState()
   const [previous, setPrevious]: [any, Function] = useState()
   const [loading, setLoading]: [boolean, Function] = useState(false)

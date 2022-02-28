@@ -1,17 +1,72 @@
-/** @module Lib.Three.Loaders */
+/** @module Lib.Three.Loaders.PartLoader */
 
-import { Box3, Color, Raycaster, Vector2, Vector3 } from 'three'
-
+import {
+  Box3,
+  BufferGeometry,
+  Color,
+  MeshStandardMaterial,
+  PerspectiveCamera,
+  Plane,
+  Raycaster,
+  Vector2,
+  Vector3,
+  WebGLRenderer
+} from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader'
+import { OutlinePass } from 'three/examples/jsm/postprocessing/OutlinePass'
+import { Lut } from 'three/examples/jsm/math/Lut'
+
+export interface IPartLoader {
+  load: (
+    part: { uuid: string; buffer: Buffer },
+    transparent: boolean,
+    clippingPlane: Plane
+  ) => Promise<IPart>
+}
+
+export interface IPart {
+  type: 'Part'
+  uuid: string
+  boundingBox: Box3
+  children: {
+    children: {
+      geometry: BufferGeometry
+      material: MeshStandardMaterial & { originalColor: Color }
+      userData: {
+        uuid: string
+        lut?: Lut
+      }
+      visible: boolean
+    }[]
+  }[]
+  dispose: () => void
+  setTransparent: (transparent: boolean) => void
+  startSelection: (
+    renderer: WebGLRenderer,
+    camera: PerspectiveCamera,
+    outlinePass: OutlinePass,
+    type: string
+  ) => void
+  stopSelection: () => void
+  getHighlighted: () => void
+  getSelected: () => string[]
+  highlight: (uuid: string) => void
+  unhighlight: () => void
+  select: (uuid: string) => void
+  unselect: (uuid: string) => void
+}
 
 /**
  * PartLoader
  * @memberof Lib.Three.Loaders
- * @param {Function} mouseMoveEvent Mouse move event
- * @param {Function} mouseDownEvent Mouse down event
+ * @param mouseMoveEvent Mouse move event
+ * @param mouseDownEvent Mouse down event
  */
-const PartLoader = (mouseMoveEvent, mouseDownEvent) => {
+const PartLoader = (
+  mouseMoveEvent: (part: IPart, uuid?: string) => void,
+  mouseDownEvent: (part: IPart, uuid: string) => void
+): IPartLoader => {
   // Highlight color
   const highlightColor = new Color('#FAD114')
   // Select colo
@@ -19,11 +74,15 @@ const PartLoader = (mouseMoveEvent, mouseDownEvent) => {
 
   /**
    * Load
-   * @param {Object} part Part
-   * @param {boolean} transparent Transparent
-   * @param {Object} clippingPlane Clipping plane
+   * @param part Part
+   * @param transparent Transparent
+   * @param clippingPlane Clipping plane
    */
-  const load = async (part, transparent, clippingPlane) => {
+  const load = async (
+    part: { uuid: string; buffer: Buffer },
+    transparent: boolean,
+    clippingPlane: Plane
+  ): Promise<IPart> => {
     const blob = new Blob([Buffer.from(part.buffer)])
     const url = URL.createObjectURL(blob)
 
@@ -33,16 +92,16 @@ const PartLoader = (mouseMoveEvent, mouseDownEvent) => {
     dracoLoader.preload()
     loader.setDRACOLoader(dracoLoader)
 
-    const gltf = await new Promise((resolve, reject) => {
+    const gltf = (await new Promise((resolve, reject) => {
       loader.load(
         url,
         (glb) => resolve(glb),
         (progress) => console.info(progress),
-        (err) => console.error(err)
+        (err) => reject(err)
       )
-    })
+    })) as any
 
-    const object = gltf.scene.children[0]
+    const object = gltf.scene.children[0] as IPart
     object.type = 'Part'
 
     object.uuid = part.uuid
@@ -68,10 +127,14 @@ const PartLoader = (mouseMoveEvent, mouseDownEvent) => {
     object.boundingBox = computeBoundingBox(object)
     object.dispose = () => dispose(object)
 
-    object.setTransparent = (transp) => setTransparent(object, transp)
+    object.setTransparent = (transp: boolean) => setTransparent(object, transp)
 
-    object.startSelection = (renderer, camera, outlinePass, type) =>
-      startSelection(object, renderer, camera, outlinePass, type)
+    object.startSelection = (
+      renderer: WebGLRenderer,
+      camera: PerspectiveCamera,
+      outlinePass: OutlinePass,
+      type: string
+    ) => startSelection(object, renderer, camera, outlinePass, type)
     object.stopSelection = () => stopSelection(object)
     object.getHighlighted = () => highlighted
     object.getSelected = () => selected
@@ -85,28 +148,24 @@ const PartLoader = (mouseMoveEvent, mouseDownEvent) => {
 
   /**
    * Compute bounding box
-   * @param {Object} part Part
+   * @param part Part
    */
-  const computeBoundingBox = (part) => {
+  const computeBoundingBox = (part: IPart): Box3 => {
     const box = new Box3()
 
     // Solids
     const solids = part.children[0]
-    solids.children &&
-      solids.children.forEach((solid) => {
-        const childBox = solid.geometry.boundingBox
-        mergeBox(box, childBox)
-      })
+    solids.children?.forEach((solid) => {
+      const childBox = solid.geometry.boundingBox
+      mergeBox(box, childBox)
+    })
 
     if (box.isEmpty()) {
       // Try faces
       const faces = part.children[1]
-      faces.children &&
-        faces.children.forEach((face) => {
-          let childBox
-          childBox = face.geometry.boundingBox
-          mergeBox(box, childBox)
-        })
+      faces.children?.forEach((face) => {
+        mergeBox(box, face.geometry.boundingBox)
+      })
     }
 
     return box
@@ -114,10 +173,10 @@ const PartLoader = (mouseMoveEvent, mouseDownEvent) => {
 
   /**
    * Merge boxes
-   * @param {Object} box1 Box
-   * @param {Object} box2 Box
+   * @param box1 Box
+   * @param box2 Box
    */
-  const mergeBox = (box1, box2) => {
+  const mergeBox = (box1: Box3, box2: Box3): void => {
     const min = new Vector3(
       Math.min(box1.min.x, box2.min.x),
       Math.min(box1.min.y, box2.min.y),
@@ -133,9 +192,9 @@ const PartLoader = (mouseMoveEvent, mouseDownEvent) => {
 
   /**
    * Dispose
-   * @param {Object} part Part
+   * @param part Part
    */
-  const dispose = (part) => {
+  const dispose = (part: IPart): void => {
     part.children.forEach((group) => {
       group.children.forEach((child) => {
         child.geometry.dispose()
@@ -146,10 +205,10 @@ const PartLoader = (mouseMoveEvent, mouseDownEvent) => {
 
   /**
    * Set transparent
-   * @param {Object} part Part
-   * @param {boolean} transparent Transparent
+   * @param part Part
+   * @param transparent Transparent
    */
-  const setTransparent = (part, transparent) => {
+  const setTransparent = (part: IPart, transparent: boolean): void => {
     part.children.forEach((group) => {
       group.children &&
         group.children.forEach((child) => {
@@ -162,10 +221,10 @@ const PartLoader = (mouseMoveEvent, mouseDownEvent) => {
 
   /**
    * Set solids visible
-   * @param {Object} part Part
-   * @param {boolean} visible Visible
+   * @param part Part
+   * @param visible Visible
    */
-  const setSolidsVisible = (part, visible) => {
+  const setSolidsVisible = (part: IPart, visible: boolean): void => {
     part.children[0].children.forEach((solid) => {
       solid.visible = visible
     })
@@ -173,10 +232,10 @@ const PartLoader = (mouseMoveEvent, mouseDownEvent) => {
 
   /**
    * Set faces visible
-   * @param {Object} part Part
-   * @param {boolean} visible Visible
+   * @param part Part
+   * @param visible Visible
    */
-  const setFacesVisible = (part, visible) => {
+  const setFacesVisible = (part: IPart, visible: boolean): void => {
     part.children[1].children.forEach((face) => {
       face.visible = visible
     })
@@ -194,13 +253,19 @@ const PartLoader = (mouseMoveEvent, mouseDownEvent) => {
 
   /**
    *
-   * @param {Object} part Part
-   * @param {Object} renderer Renderer
-   * @param {Object} camera Camera
-   * @param {Object} outlinePass OutlinePass
-   * @param {string} type Type (solid, face)
+   * @param part Part
+   * @param renderer Renderer
+   * @param camera Camera
+   * @param outlinePass OutlinePass
+   * @param type Type (solid, face)
    */
-  const startSelection = (part, renderer, camera, outlinePass, type) => {
+  const startSelection = (
+    part: IPart,
+    renderer: WebGLRenderer,
+    camera: PerspectiveCamera,
+    outlinePass: OutlinePass,
+    type: string
+  ): void => {
     selectionPart = part
     selectionRenderer = renderer
     selectionCamera = camera
@@ -227,9 +292,9 @@ const PartLoader = (mouseMoveEvent, mouseDownEvent) => {
 
   /**
    * Stop selection
-   * @param {Object} part Part
+   * @param part Part
    */
-  const stopSelection = (part) => {
+  const stopSelection = (part: IPart): void => {
     selectionRenderer &&
       selectionRenderer.domElement.removeEventListener('pointermove', mouseMove)
     selectionRenderer &&
@@ -256,10 +321,13 @@ const PartLoader = (mouseMoveEvent, mouseDownEvent) => {
 
   /**
    * Find object in part
-   * @param {Object} part Part
-   * @param {string} uuid UUID
+   * @param part Part
+   * @param uuid UUID
    */
-  const findObject = (part, uuid) => {
+  const findObject = (
+    part: IPart,
+    uuid: string
+  ): IPart['children'][0]['children'][0] => {
     if (!part) return
 
     // Search in solids
@@ -277,10 +345,11 @@ const PartLoader = (mouseMoveEvent, mouseDownEvent) => {
 
   /**
    *  Global coordinates to local [-1, 1]^2
-   * @param {Object} event Event
+   * @param event Event
    */
-  const globalToLocal = (event) => {
-    const rect = event.target.getBoundingClientRect()
+  const globalToLocal = (event: MouseEvent): Vector2 => {
+    const node = event.target as HTMLElement
+    const rect = node.getBoundingClientRect()
 
     const X = event.clientX - rect.left
     const Y = event.clientY - rect.top
@@ -294,9 +363,9 @@ const PartLoader = (mouseMoveEvent, mouseDownEvent) => {
 
   /**
    * Mouse move
-   * @param {Object} event Event
+   * @param event Event
    */
-  const mouseMove = (event) => {
+  const mouseMove = (event: MouseEvent): void => {
     const mouse = globalToLocal(event)
     raycaster.setFromCamera(mouse, selectionCamera)
     const intersects = raycaster.intersectObjects(
@@ -310,13 +379,17 @@ const PartLoader = (mouseMoveEvent, mouseDownEvent) => {
 
   /**
    * Add outline pass
-   * @param {Object} mesh Mesh
-   * @param {boolean} selection Selection
+   * @param mesh Mesh
+   * @param selection Selection
    */
-  const addOutlineOn = (mesh, selection) => {
+  const addOutlineOn = (
+    mesh: IPart['children'][0]['children'][0],
+    selection?: boolean
+  ): void => {
     if (selection) {
       const alreadyOutlined = selectionOutlinePass.selectedObjects.find(
-        (s) => s.userData.uuid === mesh.userData.uuid
+        (s: IPart['children'][0]['children'][0]) =>
+          s.userData.uuid === mesh.userData.uuid
       )
       if (!alreadyOutlined) selectionOutlinePass.selectedObjects.push(mesh)
     } else {
@@ -329,13 +402,17 @@ const PartLoader = (mouseMoveEvent, mouseDownEvent) => {
 
   /**
    * Remove outline pass
-   * @param {Object} mesh Mesh
-   * @param {boolean} selection Selection
+   * @param mesh Mesh
+   * @param selection Selection
    */
-  const removeOutlineOn = (mesh, selection) => {
+  const removeOutlineOn = (
+    mesh: IPart['children'][0]['children'][0],
+    selection?: boolean
+  ): void => {
     if (selection) {
       const outlinedIndex = selectionOutlinePass.selectedObjects.findIndex(
-        (s) => s.userData.uuid === mesh.userData.uuid
+        (s: IPart['children'][0]['children'][0]) =>
+          s.userData.uuid === mesh.userData.uuid
       )
       selectionOutlinePass.selectedObjects = [
         ...selectionOutlinePass.selectedObjects.slice(0, outlinedIndex),
@@ -345,7 +422,8 @@ const PartLoader = (mouseMoveEvent, mouseDownEvent) => {
       const selectedMesh = selected.find((uuid) => uuid === mesh.userData.uuid)
       if (!selectedMesh) {
         const outlinedIndex = selectionOutlinePass.selectedObjects.findIndex(
-          (s) => s.userData.uuid === mesh.userData.uuid
+          (s: IPart['children'][0]['children'][0]) =>
+            s.userData.uuid === mesh.userData.uuid
         )
         selectionOutlinePass.selectedObjects = [
           ...selectionOutlinePass.selectedObjects.slice(0, outlinedIndex),
@@ -357,9 +435,9 @@ const PartLoader = (mouseMoveEvent, mouseDownEvent) => {
 
   /**
    * Highlight
-   * @param {Object} uuid Mesh uuid
+   * @param uuid Mesh uuid
    */
-  const highlight = (uuid) => {
+  const highlight = (uuid: string): void => {
     if (uuid === highlighted) return
     else unhighlight()
 
@@ -374,7 +452,7 @@ const PartLoader = (mouseMoveEvent, mouseDownEvent) => {
   /**
    * Unhighlight
    */
-  const unhighlight = () => {
+  const unhighlight = (): void => {
     const mesh = findObject(selectionPart, highlighted)
 
     if (mesh && mesh.material) {
@@ -392,15 +470,15 @@ const PartLoader = (mouseMoveEvent, mouseDownEvent) => {
   /**
    * Mouse down
    */
-  const mouseDown = () => {
+  const mouseDown = (): void => {
     if (highlighted) mouseDownEvent(selectionPart, highlighted)
   }
 
   /**
    * Select
-   * @param {Object} uuid Mesh uuid
+   * @param uuid Mesh uuid
    */
-  const select = (uuid) => {
+  const select = (uuid: string): void => {
     const mesh = findObject(selectionPart, uuid)
     if (mesh && mesh.material) {
       selected.push(uuid)
@@ -411,9 +489,9 @@ const PartLoader = (mouseMoveEvent, mouseDownEvent) => {
 
   /**
    * Unselect
-   * @param {Object} uuid Mesh uuid
+   * @param uuid Mesh uuid
    */
-  const unselect = (uuid) => {
+  const unselect = (uuid: string): void => {
     const mesh = findObject(selectionPart, uuid)
 
     const index = selected.findIndex((s) => s === uuid)

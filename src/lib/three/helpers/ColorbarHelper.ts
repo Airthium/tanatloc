@@ -1,23 +1,33 @@
+/** @module Lib.Three.Helpers.ColorbarHelper */
+
 import {
   CanvasTexture,
   OrthographicCamera,
   Scene,
   SpriteMaterial,
-  Sprite
+  Sprite,
+  WebGLRenderer
 } from 'three'
-
 import { Lut } from 'three/examples/jsm/math/Lut'
 
 import Label from './LabelHelper'
 import NumberHelper from './NumberHelper'
 
+export interface IColorbarHelper {
+  render: () => void
+  setLUT: (lut: Lut) => void
+  setVisible: (visible: boolean) => void
+}
+
+export interface IColorbarHelperSprite extends Sprite {
+  dispose: () => void
+}
+
 /**
  * Colorbar helper
- * @memberof Lib.Three.Helpers
- * @param {Object} renderer Renderer
- * @param {Object} scene Scene
+ * @param renderer Renderer
  */
-const ColorbarHelper = (renderer, scene) => {
+const ColorbarHelper = (renderer: WebGLRenderer): IColorbarHelper => {
   const width = 500
   const height = 50
 
@@ -25,13 +35,13 @@ const ColorbarHelper = (renderer, scene) => {
   const colorCamera = new OrthographicCamera(-1, 1, 1, -1, 2, 1)
   colorCamera.position.set(0, 0, 1)
 
-  let sprite
+  let sprite: IColorbarHelperSprite
 
   /**
    * Set visible
-   * @param {bool} visible Visible
+   * @param visible Visible
    */
-  const setVisible = (visible) => {
+  const setVisible = (visible: boolean): void => {
     colorScene.children.forEach((child) => {
       child.visible = visible
     })
@@ -40,8 +50,8 @@ const ColorbarHelper = (renderer, scene) => {
   /**
    * Clean scene (local)
    */
-  const clearScene = () => {
-    colorScene.children.forEach((child) => {
+  const clearScene = (): void => {
+    colorScene.children.forEach((child: IColorbarHelperSprite) => {
       child.dispose()
     })
     colorScene.clear()
@@ -49,9 +59,9 @@ const ColorbarHelper = (renderer, scene) => {
 
   /**
    * Set LUT
-   * @param {Object} lut LUT
+   * @param lut LUT
    */
-  const setLUT = (lutData) => {
+  const setLUT = (lutData: Lut): void => {
     clearScene()
 
     const lut = new Lut('rainbow', lutData.n)
@@ -60,7 +70,7 @@ const ColorbarHelper = (renderer, scene) => {
 
     const map = new CanvasTexture(lut.createCanvas())
     const material = new SpriteMaterial({ map: map })
-    sprite = new Sprite(material)
+    sprite = new Sprite(material) as IColorbarHelperSprite
     sprite.material.rotation = -Math.PI / 2
     sprite.scale.x = 0.2
     sprite.scale.y = 1.8
@@ -72,17 +82,17 @@ const ColorbarHelper = (renderer, scene) => {
 
   /**
    * Set labels
-   * @param {Object} lut LUT
+   * @param lut LUT
    */
-  const setLabels = (lut) => {
+  const setLabels = (lut: Lut): void => {
     let min = NumberHelper(lut.minV)
     let max = NumberHelper(lut.maxV)
 
-    const minLabel = Label(min, 768, 'gray', 128)
+    const minLabel = Label(String(min), 768, 'gray', 128)
     minLabel.scale.x = 0.5
     minLabel.scale.y = 4.5
     minLabel.position.set(-0.9, 0.45, 0)
-    const maxLabel = Label(max, 768, 'gray', 128)
+    const maxLabel = Label(String(max), 768, 'gray', 128)
     maxLabel.scale.x = 0.5
     maxLabel.scale.y = 4.5
     maxLabel.position.set(0.8, 0.45, 0)
@@ -94,7 +104,7 @@ const ColorbarHelper = (renderer, scene) => {
   /**
    * Render
    */
-  const render = () => {
+  const render = (): void => {
     const rect = renderer.domElement.getBoundingClientRect()
     renderer.setViewport(
       rect.width / 2 - width / 2,
@@ -105,7 +115,7 @@ const ColorbarHelper = (renderer, scene) => {
     renderer.render(colorScene, colorCamera)
   }
 
-  return { setVisible, setLUT, render }
+  return { render, setLUT, setVisible }
 }
 
 export { ColorbarHelper }

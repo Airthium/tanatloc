@@ -1,14 +1,25 @@
+/** @module Lib.Three.Helpers.LabelHelper */
+
 import { Sprite, SpriteMaterial, Texture } from 'three'
+
+export interface ILabelHelper extends Omit<Sprite, 'type'> {
+  type: Sprite['type'] | 'LabelHelper'
+  dispose: () => void
+}
 
 /**
  * LabelHelper
- * @memberof Lib.Three.Helpers
- * @param {string} text Text
- * @param {number} size Size
- * @param {string} fontColor Font color
- * @param {number} fontSize Font size
+ * @param text Text
+ * @param size Size
+ * @param fontColor Font color
+ * @param fontSize Font size
  */
-const LabelHelper = (text, size = 512, fontColor = 'black', fontSize = 512) => {
+const LabelHelper = (
+  text: string,
+  size = 512,
+  fontColor = 'black',
+  fontSize = 512
+): ILabelHelper => {
   // Canvas
   const canvas = document.createElement('canvas')
   canvas.width = size
@@ -30,7 +41,7 @@ const LabelHelper = (text, size = 512, fontColor = 'black', fontSize = 512) => {
     transparent: true,
     depthWrite: false
   })
-  const label = new Sprite(material)
+  const label = new Sprite(material) as ILabelHelper
   label.type = 'LabelHelper'
 
   /**

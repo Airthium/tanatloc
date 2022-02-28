@@ -32,7 +32,6 @@
     "**/public/**",
     "**/config/depcheck/**",
     "**/config/jest/**",
-    "**/src/lib/three/**/*",
     "**/src/components/editor/**/*"
   ],
   "plugin": "typedoc-plugin-airthium",

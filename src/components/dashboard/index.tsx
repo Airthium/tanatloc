@@ -243,8 +243,7 @@ const Dashboard = () => {
                 email: user?.email,
                 firstname: user?.firstname,
                 lastname: user?.lastname,
-                avatar: user?.avatar,
-                authorizedplugins: user?.authorizedplugins
+                avatar: user?.avatar
               }}
               swr={{ mutateUser }}
             />

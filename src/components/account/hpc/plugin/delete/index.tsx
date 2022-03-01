@@ -58,9 +58,7 @@ const Delete = ({ plugin, swr }: IProps): JSX.Element => {
   return (
     <DeleteButton
       loading={loading}
-      text={
-        'Delete "' + (plugin?.configuration?.name?.value || 'plugin') + '"?'
-      }
+      text={'Delete "' + (plugin.configuration.name?.value || 'plugin') + '"?'}
       onDelete={onDelete}
     >
       Delete
@@ -71,7 +69,7 @@ const Delete = ({ plugin, swr }: IProps): JSX.Element => {
 Delete.propTypes = {
   plugin: PropTypes.exact({
     uuid: PropTypes.string.isRequired,
-    configuration: PropTypes.object
+    configuration: PropTypes.object.isRequired
   }).isRequired,
   swr: PropTypes.exact({
     delOnePlugin: PropTypes.func.isRequired

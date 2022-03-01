@@ -120,7 +120,16 @@ List.propTypes = {
   plugin: PropTypes.exact({
     key: PropTypes.string.isRequired
   }).isRequired,
-  plugins: PropTypes.array.isRequired,
+  plugins: PropTypes.arrayOf(
+    PropTypes.exact({
+      key: PropTypes.string.isRequired,
+      uuid: PropTypes.string.isRequired,
+      name: PropTypes.string.isRequired,
+      configuration: PropTypes.object.isRequired,
+      inUseConfiguration: PropTypes.object.isRequired,
+      needInit: PropTypes.bool
+    }).isRequired
+  ).isRequired,
   swr: PropTypes.exact({
     delOnePlugin: PropTypes.func.isRequired,
     mutateOnePlugin: PropTypes.func.isRequired

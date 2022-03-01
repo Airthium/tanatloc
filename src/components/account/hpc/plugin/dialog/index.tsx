@@ -246,7 +246,7 @@ PluginDialog.propTypes = {
     name: PropTypes.string.isRequired,
     needInit: PropTypes.bool,
     configuration: PropTypes.object.isRequired,
-    inUseConfiguration: PropTypes.object
+    inUseConfiguration: PropTypes.object.isRequired
   }).isRequired,
   swr: PropTypes.exact({
     addOnePlugin: PropTypes.func,

@@ -1,7 +1,7 @@
 /** @module Components.Account */
 
 import PropTypes from 'prop-types'
-import { useRouter } from 'next/router'
+import { NextRouter, useRouter } from 'next/router'
 import { Layout, PageHeader, Typography, Divider, Tabs, Space } from 'antd'
 
 import { IUserWithData } from '@/lib/index.d'
@@ -19,25 +19,26 @@ export interface IProps {
 }
 
 /**
+ * On change
+ * @param router Router
+ * @param key Key
+ */
+export const onChange = (router: NextRouter, key: string): void => {
+  router.replace({
+    pathname: '/dashboard',
+    query: { page: 'account', tab: key }
+  })
+}
+
+/**
  * Account
  * @param props Props
- *
+ * @returns Account
  */
 const Account = ({ user, swr }: IProps): JSX.Element => {
   // Data
   const router = useRouter()
   const { tab }: { tab?: string } = router.query
-
-  /**
-   * On change
-   * @param key Key
-   */
-  const onChange = (key: string): void => {
-    router.replace({
-      pathname: '/dashboard',
-      query: { page: 'account', tab: key }
-    })
-  }
 
   /**
    * Render
@@ -59,7 +60,7 @@ const Account = ({ user, swr }: IProps): JSX.Element => {
           className="inDashboard-Tabs no-scroll"
           type="card"
           defaultActiveKey={tab || 'personal'}
-          onChange={onChange}
+          onChange={(key) => onChange(router, key)}
         >
           <Tabs.TabPane tab="Personal Information" key="personal">
             <Space direction="vertical" className="full-width" size={20}>

@@ -10,7 +10,7 @@ import MathJax from '@/components/assets/mathjax'
 
 export interface IProps {
   label?: string
-  defaultValue?: string
+  defaultValue?: string | number
   defaultChecked?: boolean
   onValueChange: (value: string) => void
   onCheckedChange?: (value: boolean) => void
@@ -38,8 +38,9 @@ const Formula = ({
   unit
 }: IProps): JSX.Element => {
   // State
-  const [internalValue, setInternalValue]: [string, Function] =
-    useState(defaultValue)
+  const [internalValue, setInternalValue]: [string, Function] = useState(
+    String(defaultValue)
+  )
   const [internalChecked, setInternalChecked]: [boolean, Function] =
     useState(defaultChecked)
   const [disabled, setDisabled]: [boolean, Function] = useState(
@@ -47,6 +48,14 @@ const Formula = ({
   )
   const [autoSave, setAutoSave]: [number, Function] = useState(0)
   const [saving, setSaving]: [boolean, Function] = useState(false)
+
+  // Effect
+  useEffect(() => {
+    setInternalValue(defaultValue)
+  }, [defaultValue])
+  useEffect(() => {
+    setInternalChecked(defaultChecked)
+  }, [defaultChecked])
 
   /**
    * On check change
@@ -117,7 +126,7 @@ const Formula = ({
 
 Formula.propTypes = {
   label: PropTypes.string,
-  defaultValue: PropTypes.string,
+  defaultValue: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   defaultChecked: PropTypes.bool,
   onValueChange: PropTypes.func.isRequired,
   onCheckedChange: PropTypes.func,

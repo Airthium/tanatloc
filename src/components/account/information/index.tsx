@@ -33,9 +33,143 @@ const errors = {
 }
 
 /**
+ * Before upload
+ * @param file File
+ */
+export const beforeUpload = (file: { type: string; size: number }): boolean => {
+  const goodFormat = file.type === 'image/jpeg' || file.type === 'image/png'
+  if (!goodFormat) ErrorNotification(errors.badFormat)
+
+  const goodSize = file.size / 1024 / 1024 < 4
+  if (!goodSize) ErrorNotification(errors.badSize)
+
+  return goodFormat && goodSize
+}
+
+/**
+ * Read base64 image
+ * @param file File
+ */
+export const getBase64 = async (file: Blob): Promise<any> => {
+  const reader = new FileReader()
+  return new Promise((resolve) => {
+    reader.addEventListener('load', () => {
+      resolve(reader.result)
+    })
+    reader.readAsDataURL(file)
+  })
+}
+
+/**
+ * On avatar change
+ * @param user User
+ * @param info Info
+ * @param setUploading Set uploading
+ * @param swr SWR
+ */
+export const onChange = async (
+  user: IUserWithData,
+  info: UploadChangeParam<any>,
+  setUploading: Function,
+  swr: {
+    mutateUser: (user: IUserWithData) => void
+  }
+) => {
+  if (info.file.status === 'uploading') {
+    setUploading(true)
+  }
+
+  if (info.file.status === 'done') {
+    try {
+      // Read image
+      const img = await getBase64(info.file.originFileObj)
+
+      // Add avatar
+      await AvatarAPI.add({
+        name: info.file.name,
+        uid: info.file.uid,
+        data: img
+      })
+
+      // Mutate user
+      swr.mutateUser({
+        ...user,
+        avatar: Buffer.from(img)
+      })
+
+      setUploading(false)
+    } catch (err) {
+      ErrorNotification(err.message, err)
+    } finally {
+      setUploading(false)
+    }
+  }
+}
+
+/**
+ * On finish
+ * @param user User
+ * @param values Values
+ * @param swr SWR
+ */
+export const onFinish = async (
+  user: IUserWithData,
+  values: {
+    email: string
+    firstname: string
+    lastname: string
+  },
+  swr: { mutateUser: (user: IUserWithData) => void }
+): Promise<void> => {
+  try {
+    const toUpdate = []
+
+    // Check email
+    if (user.email !== values.email)
+      toUpdate.push({
+        key: 'email',
+        value: values.email
+      })
+
+    // Check firstname
+    if (user.firstname !== values.firstname)
+      toUpdate.push({
+        key: 'fisrtname',
+        value: values.firstname
+      })
+
+    // Check lastname
+    if (user.lastname !== values.lastname)
+      toUpdate.push({
+        key: 'lastname',
+        value: values.lastname
+      })
+
+    if (!toUpdate.length) return
+
+    await UserAPI.update(toUpdate)
+
+    // Local
+    swr.mutateUser({
+      email: values.email,
+      firstname: values.firstname,
+      lastname: values.lastname
+    })
+
+    if (toUpdate.find((u) => u.key === 'email'))
+      SuccessNotification(
+        'Changes saved',
+        'A validation email has been send to ' + values.email
+      )
+  } catch (err) {
+    ErrorNotification(errors.update, err)
+  }
+}
+
+/**
  * Information
  * @param props Props
- *
+ * @returns Information
  */
 const Information = ({ user, swr }: IProps): JSX.Element => {
   // State
@@ -47,124 +181,6 @@ const Information = ({ user, swr }: IProps): JSX.Element => {
   }
   const buttonLayout = {
     wrapperCol: { offset: 4 }
-  }
-
-  /**
-   * Before upload
-   * @param file File
-   */
-  const beforeUpload = (file: { type: string; size: number }): boolean => {
-    const goodFormat = file.type === 'image/jpeg' || file.type === 'image/png'
-    if (!goodFormat) ErrorNotification(errors.badFormat)
-
-    const goodSize = file.size / 1024 / 1024 < 4
-    if (!goodSize) ErrorNotification(errors.badSize)
-
-    return goodFormat && goodSize
-  }
-
-  /**
-   * On avatar change
-   * @param info Info
-   */
-  const onChange = async (info: UploadChangeParam<any>) => {
-    if (info.file.status === 'uploading') {
-      setUploading(true)
-    }
-
-    if (info.file.status === 'done') {
-      try {
-        // Read image
-        const img = await getBase64(info.file.originFileObj)
-
-        // Add avatar
-        await AvatarAPI.add({
-          name: info.file.name,
-          uid: info.file.uid,
-          data: img
-        })
-
-        // Mutate user
-        swr.mutateUser({
-          ...user,
-          avatar: Buffer.from(img)
-        })
-
-        setUploading(false)
-      } catch (err) {
-        ErrorNotification(err.message, err)
-      } finally {
-        setUploading(false)
-      }
-    }
-  }
-
-  /**
-   * Read base64 image
-   * @param file File
-   */
-  const getBase64 = async (file: Blob): Promise<any> => {
-    const reader = new FileReader()
-    return new Promise((resolve) => {
-      reader.addEventListener('load', () => {
-        resolve(reader.result)
-      })
-      reader.readAsDataURL(file)
-    })
-  }
-
-  /**
-   * On finish
-   * @param values Values
-   */
-  const onFinish = async (values: {
-    email: string
-    firstname: string
-    lastname: string
-  }): Promise<void> => {
-    try {
-      const toUpdate = []
-
-      // Check email
-      if (user.email !== values.email)
-        toUpdate.push({
-          key: 'email',
-          value: values.email
-        })
-
-      // Check firstname
-      if (user.firstname !== values.firstname)
-        toUpdate.push({
-          key: 'fisrtname',
-          value: values.firstname
-        })
-
-      // Check lastname
-      if (user.lastname !== values.lastname)
-        toUpdate.push({
-          key: 'lastname',
-          value: values.lastname
-        })
-
-      if (!toUpdate.length) return
-
-      await UserAPI.update(toUpdate)
-
-      // Local
-      swr.mutateUser({
-        email: values.email,
-        firstname: values.firstname,
-        lastname: values.lastname
-      })
-
-      if (toUpdate.find((u) => u.key === 'email'))
-        SuccessNotification(
-          'Changes saved',
-          'A validation email has been send to ' + values.email
-        )
-    } catch (err) {
-      ErrorNotification(errors.update, err)
-    }
   }
 
   /**
@@ -184,7 +200,9 @@ const Information = ({ user, swr }: IProps): JSX.Element => {
             accept={'.jpg,.png'}
             showUploadList={false}
             beforeUpload={beforeUpload}
-            onChange={onChange}
+            onChange={async (info) =>
+              await onChange(user, info, setUploading, swr)
+            }
           >
             <Button icon={<UploadOutlined />} loading={uploading}>
               Upload new
@@ -199,7 +217,7 @@ const Information = ({ user, swr }: IProps): JSX.Element => {
               firstname: user.firstname || '',
               lastname: user.lastname || ''
             }}
-            onFinish={onFinish}
+            onFinish={async (values) => await onFinish(user, values, swr)}
           >
             <Form.Item
               className="max-width-500"

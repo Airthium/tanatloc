@@ -28,6 +28,51 @@ const errors = {
 }
 
 /**
+ * On finish
+ * @param user User
+ * @param data Data
+ * @param setLoading Set loading
+ * @returns Password
+ */
+export const onFinish = async (
+  user: IUserWithData,
+  values: {
+    password: string
+    newPassword: string
+  },
+  setLoading: Function
+): Promise<void> => {
+  setLoading(true)
+
+  try {
+    // Check current password
+    const current = await UserAPI.check({
+      email: user.email,
+      password: values.password
+    })
+
+    if (current.valid) {
+      // Change password
+      await UserAPI.update([
+        {
+          type: 'crypt',
+          key: 'password',
+          value: values.newPassword
+        }
+      ])
+
+      SuccessNotification('Your password has been changed successfully')
+    } else {
+      notification.error({ message: errors.invalid })
+    }
+  } catch (err) {
+    ErrorNotification(errors.update, err)
+  } finally {
+    setLoading(false)
+  }
+}
+
+/**
  * Password
  * @param props Props
  */
@@ -42,44 +87,6 @@ const Password = ({ user }: IProps): JSX.Element => {
   }
 
   /**
-   * On finish
-   * @param data Data
-   */
-  const onFinish = async (data: {
-    password: string
-    newPassword: string
-  }): Promise<void> => {
-    setLoading(true)
-
-    try {
-      // Check current password
-      const current = await UserAPI.check({
-        email: user.email,
-        password: data.password
-      })
-
-      if (current.valid) {
-        // Change password
-        await UserAPI.update([
-          {
-            type: 'crypt',
-            key: 'password',
-            value: data.newPassword
-          }
-        ])
-
-        SuccessNotification('Your password has been changed successfully')
-      } else {
-        notification.error({ message: errors.invalid })
-      }
-    } catch (err) {
-      ErrorNotification(errors.update, err)
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  /**
    * Render
    */
   return (
@@ -87,7 +94,9 @@ const Password = ({ user }: IProps): JSX.Element => {
       <Form
         {...layout}
         layout="vertical"
-        onFinish={onFinish}
+        onFinish={async (values) => {
+          await onFinish(user, values, setLoading)
+        }}
         name="passwordForm"
       >
         <Form.Item

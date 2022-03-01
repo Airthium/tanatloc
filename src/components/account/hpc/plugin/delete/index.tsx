@@ -1,7 +1,7 @@
 /** @module Components.Account.HPC.Plugin.Delete */
 
 import PropTypes from 'prop-types'
-import { useState } from 'react'
+import { Dispatch, SetStateAction, useState } from 'react'
 
 import { IClientPlugin } from '@/database/index.d'
 
@@ -25,32 +25,40 @@ const errors = {
 }
 
 /**
+ * On delete
+ * @param plugin Plugin
+ * @param setLoading Set loading
+ * @param swr SWR
+ */
+export const onDelete = async (
+  plugin: IClientPlugin,
+  setLoading: Dispatch<SetStateAction<boolean>>,
+  swr: { delOnePlugin: (plugin: IClientPlugin) => void }
+): Promise<void> => {
+  setLoading(true)
+
+  try {
+    // API
+    await PluginAPI.del(plugin)
+
+    // Mutate
+    swr.delOnePlugin(plugin)
+  } catch (err) {
+    ErrorNotification(errors.updateError, err)
+    throw err
+  } finally {
+    setLoading(false)
+  }
+}
+
+/**
  * Delete plugin
  * @param props Props
  */
 const Delete = ({ plugin, swr }: IProps): JSX.Element => {
   // State
-  const [loading, setLoading]: [boolean, Function] = useState(false)
-
-  /**
-   * On delete
-   */
-  const onDelete = async (): Promise<void> => {
-    setLoading(true)
-
-    try {
-      // API
-      await PluginAPI.del(plugin)
-
-      // Mutate
-      swr.delOnePlugin(plugin)
-    } catch (err) {
-      ErrorNotification(errors.updateError, err)
-      throw err
-    } finally {
-      setLoading(false)
-    }
-  }
+  const [loading, setLoading]: [boolean, Dispatch<SetStateAction<boolean>>] =
+    useState(false)
 
   /**
    * Render
@@ -59,7 +67,7 @@ const Delete = ({ plugin, swr }: IProps): JSX.Element => {
     <DeleteButton
       loading={loading}
       text={'Delete "' + (plugin.configuration.name?.value || 'plugin') + '"?'}
-      onDelete={onDelete}
+      onDelete={() => onDelete(plugin, setLoading, swr)}
     >
       Delete
     </DeleteButton>

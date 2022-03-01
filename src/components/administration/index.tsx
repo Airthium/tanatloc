@@ -1,7 +1,7 @@
 /** @module Components.Administration */
 
 import { useEffect } from 'react'
-import { useRouter } from 'next/router'
+import { NextRouter, useRouter } from 'next/router'
 import { Divider, Layout, PageHeader, Tabs, Typography } from 'antd'
 
 import { Error } from '@/components/assets/notification'
@@ -33,6 +33,18 @@ const errors = {
 }
 
 /**
+ * On change
+ * @param router Router
+ * @param key Key
+ */
+const onChange = (router: NextRouter, key: string) => {
+  router.replace({
+    pathname: '/dashboard',
+    query: { page: 'administration', tab: key }
+  })
+}
+
+/**
  * Administration
  */
 const Administration = (): JSX.Element => {
@@ -47,17 +59,6 @@ const Administration = (): JSX.Element => {
   useEffect(() => {
     if (errorUsers) Error(errors.users, errorUsers)
   }, [errorUsers])
-
-  /**
-   * On change
-   * @param key Key
-   */
-  const onChange = (key: string) => {
-    router.replace({
-      pathname: '/dashboard',
-      query: { page: 'administration', tab: key }
-    })
-  }
 
   /**
    * Render
@@ -79,7 +80,7 @@ const Administration = (): JSX.Element => {
           className="inDashboard-Tabs"
           type="card"
           defaultActiveKey={tab || 'default'}
-          onChange={onChange}
+          onChange={(key) => onChange(router, key)}
         >
           <Tabs.TabPane tab={tabItems.users.label} key={tabItems.users.key}>
             <Users

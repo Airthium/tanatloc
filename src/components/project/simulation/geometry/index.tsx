@@ -1,7 +1,6 @@
 /** @module Components.Project.Simulation.Geometry */
 
 import PropTypes from 'prop-types'
-import { useState, useEffect } from 'react'
 import { Card, Typography } from 'antd'
 
 import { IGeometry, ISimulation } from '@/database/index.d'
@@ -30,6 +29,51 @@ const errors = {
 }
 
 /**
+ * On select
+ * @param {number} index Index
+ */
+const onSelect = async (
+  simulation: ISimulation,
+  geometries: IGeometry[],
+  id: string,
+  setGeometry: Function,
+  swr: { mutateOneSimulation: (simulation: ISimulation) => void }
+): Promise<void> => {
+  try {
+    console.log(simulation.id)
+    const newSimulation = { ...simulation }
+
+    // Update
+    newSimulation.scheme.configuration.geometry.value = id
+
+    const diff = {
+      ...newSimulation.scheme.configuration.geometry,
+      done: true
+    }
+
+    // API
+    await SimulationAPI.update({ id: simulation.id }, [
+      {
+        key: 'scheme',
+        type: 'json',
+        method: 'set',
+        path: ['configuration', 'geometry'],
+        value: diff
+      }
+    ])
+
+    // Local
+    swr.mutateOneSimulation(newSimulation)
+
+    // Display
+    const newGeometry = geometries.find((g) => g.id === id)
+    setGeometry(newGeometry)
+  } catch (err) {
+    ErrorNotification(errors.update, err)
+  }
+}
+
+/**
  * Geometry
  * @param props Props
  */
@@ -40,69 +84,23 @@ const Geometry = ({
   setGeometry,
   swr
 }: IProps): JSX.Element => {
-  // State
-  const [geometriesList, setGeometryList]: [IGeometry[], Function] = useState(
-    []
-  )
+  // Data
+  const geometryId = simulation.scheme.configuration.geometry.value
+  if (!geometryId)
+    onSelect(simulation, geometries, geometry?.id, setGeometry, swr)
 
-  useEffect(() => {
-    const simulationGeometryId = simulation.scheme.configuration.geometry.value
-    if (!simulationGeometryId) onSelect(geometry?.id)
-  }, [simulation])
-
-  useEffect(() => {
-    const list = geometries.map((g) => (
-      <div
-        className="Geometry-list"
-        key={g.id}
-        style={{
-          backgroundColor: g.id === geometry?.id ? '#FFFBE6' : '#FAFAFA'
-        }}
-        onClick={() => onSelect(g.id)}
-      >
-        <Typography.Text strong>{g.name}</Typography.Text>
-      </div>
-    ))
-    setGeometryList(list)
-  }, [geometry, geometries])
-
-  /**
-   * On select
-   * @param {number} index Index
-   */
-  const onSelect = async (id: string): Promise<void> => {
-    try {
-      const newSimulation = { ...simulation }
-
-      // Update
-      newSimulation.scheme.configuration.geometry.value = id
-
-      const diff = {
-        ...newSimulation.scheme.configuration.geometry,
-        done: true
-      }
-
-      // API
-      await SimulationAPI.update({ id: simulation.id }, [
-        {
-          key: 'scheme',
-          type: 'json',
-          method: 'set',
-          path: ['configuration', 'geometry'],
-          value: diff
-        }
-      ])
-
-      // Local
-      swr.mutateOneSimulation(newSimulation)
-
-      // Display
-      const newGeometry = geometries.find((g) => g.id === id)
-      setGeometry(newGeometry)
-    } catch (err) {
-      ErrorNotification(errors.update, err)
-    }
-  }
+  const list = geometries.map((g) => (
+    <div
+      className="Geometry-list"
+      key={g.id}
+      style={{
+        backgroundColor: g.id === geometry?.id ? '#FFFBE6' : '#FAFAFA'
+      }}
+      onClick={() => onSelect(simulation, geometries, g.id, setGeometry, swr)}
+    >
+      <Typography.Text strong>{g.name}</Typography.Text>
+    </div>
+  ))
 
   /**
    * Render
@@ -118,7 +116,7 @@ const Geometry = ({
       <Card size="small">
         <Typography.Text strong>Select a simulation domain</Typography.Text>
       </Card>
-      {geometriesList}
+      {list}
       {simulation.scheme.configuration.geometry.meshable && (
         <Mesh
           simulation={{ id: simulation.id, scheme: simulation.scheme }}

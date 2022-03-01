@@ -31,6 +31,48 @@ const errors = {
 }
 
 /**
+ * On allow signup
+ * @param system System
+ * @param mutateSystem Mutate system
+ */
+const onAllowSignup = async (
+  system: ISystem,
+  mutateSystem: (system: ISystem) => void
+): Promise<void> => {
+  try {
+    // Update
+    await SystemAPI.update([{ key: 'allowsignup', value: !system.allowsignup }])
+
+    // Mutate
+    mutateSystem({ allowsignup: !system.allowsignup })
+  } catch (err) {
+    ErrorNotification(errors.update, err)
+  }
+}
+
+/**
+ * On password
+ * @param values Values
+ * @param mutateSystem Mutate system
+ */
+const onPasswordFinish = async (
+  values: ISystem['password'],
+  mutateSystem: (system: ISystem) => void
+): Promise<void> => {
+  try {
+    // Update
+    await SystemAPI.update([{ key: 'password', value: values }])
+
+    // Mutate
+    mutateSystem({ password: values })
+
+    SuccessNotification('Changes saved')
+  } catch (err) {
+    ErrorNotification(errors.update, err)
+  }
+}
+
+/**
  * Registration
  */
 const Registration = (): JSX.Element => {
@@ -66,43 +108,6 @@ const Registration = (): JSX.Element => {
   }, [loadingSystem, system?.password])
 
   /**
-   * On allow signup
-   */
-  const onAllowSignup = async (): Promise<void> => {
-    try {
-      // Update
-      await SystemAPI.update([
-        { key: 'allowsignup', value: !system.allowsignup }
-      ])
-
-      // Mutate
-      mutateSystem({ allowsignup: !system.allowsignup })
-    } catch (err) {
-      ErrorNotification(errors.update, err)
-    }
-  }
-
-  /**
-   * On password
-   * @param values Values
-   */
-  const onPasswordFinish = async (
-    values: ISystem['password']
-  ): Promise<void> => {
-    try {
-      // Update
-      await SystemAPI.update([{ key: 'password', value: values }])
-
-      // Mutate
-      mutateSystem({ password: values })
-
-      SuccessNotification('Changes saved')
-    } catch (err) {
-      ErrorNotification(errors.update, err)
-    }
-  }
-
-  /**
    * Render
    */
   if (loadingSystem) return <Loading.Simple />
@@ -110,13 +115,23 @@ const Registration = (): JSX.Element => {
     return (
       <Space direction="vertical" className="full-width">
         <Card title="Signup">
-          <Checkbox checked={system?.allowsignup} onChange={onAllowSignup}>
+          <Checkbox
+            checked={system?.allowsignup}
+            onChange={() => onAllowSignup(system, mutateSystem)}
+          >
             Allow signup
           </Checkbox>
         </Card>
 
         <Card title="Password">
-          <Form {...layout} form={form} name="form" onFinish={onPasswordFinish}>
+          <Form
+            {...layout}
+            form={form}
+            name="form"
+            onFinish={async (values) =>
+              await onPasswordFinish(values, mutateSystem)
+            }
+          >
             <Form.Item
               label="Minimum number of characters"
               name="min"

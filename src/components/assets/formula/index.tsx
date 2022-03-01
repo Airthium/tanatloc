@@ -1,7 +1,7 @@
 /** @module Components.Assets.Formula */
 
 import PropTypes from 'prop-types'
-import { ChangeEvent, useState } from 'react'
+import { ChangeEvent, useEffect, useState } from 'react'
 import { Checkbox, Input, Space } from 'antd'
 import { CheckboxChangeEvent } from 'antd/lib/checkbox'
 import { CheckCircleOutlined, LoadingOutlined } from '@ant-design/icons'
@@ -47,6 +47,14 @@ const Formula = ({
   )
   const [autoSave, setAutoSave]: [number, Function] = useState(0)
   const [saving, setSaving]: [boolean, Function] = useState(false)
+
+  useEffect(() => {
+    setInternalValue(defaultValue)
+  }, [defaultValue])
+
+  useEffect(() => {
+    setInternalChecked(defaultChecked)
+  }, [defaultChecked])
 
   /**
    * On check change

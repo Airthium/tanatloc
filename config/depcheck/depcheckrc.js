@@ -66,6 +66,7 @@ depcheck.special.customJest = async (fileName, deps) => {
 
 const options = {
   ignoreMatches: [
+    'mathjax', // MathJax
     'electron', // Mandatory for electron-store
     'electron-serve', // Mandatory for electron-store
     'form-data', // For plugins

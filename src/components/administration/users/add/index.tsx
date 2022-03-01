@@ -6,6 +6,7 @@ import { Button, Checkbox, Form, Input, Select } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
 
 import { IClientPlugin } from '@/database/index.d'
+import { IUserWithData } from '@/lib/index.d'
 
 import Dialog from '@/components/assets/dialog'
 import { PasswordItem } from '@/components/assets/input'
@@ -16,7 +17,7 @@ import UserAPI from '@/api/user'
 export interface IProps {
   plugins: IClientPlugin[]
   swr: {
-    addOneUser: Function
+    addOneUser: (user: IUserWithData) => void
   }
 }
 
@@ -150,7 +151,12 @@ const Add = ({ plugins, swr }: IProps): JSX.Element => {
 }
 
 Add.propTypes = {
-  plugins: PropTypes.array.isRequired,
+  plugins: PropTypes.arrayOf(
+    PropTypes.exact({
+      key: PropTypes.string.isRequired,
+      name: PropTypes.string.isRequired
+    })
+  ).isRequired,
   swr: PropTypes.exact({
     addOneUser: PropTypes.func.isRequired
   }).isRequired

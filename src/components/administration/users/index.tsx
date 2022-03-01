@@ -2,7 +2,7 @@
 
 import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
-import { Badge, Table, Space, Spin, TableColumnsType } from 'antd'
+import { Badge, Table, Space, TableColumnsType } from 'antd'
 import { CheckOutlined } from '@ant-design/icons'
 
 import { IClientPlugin } from '@/database/index.d'
@@ -17,11 +17,11 @@ import Edit from './edit'
 import Delete from './delete'
 
 export interface IProps {
-  users: Array<IUserWithData>
+  users: IUserWithData[]
   swr: {
-    addOneUser: Function
-    delOneUser: Function
-    mutateOneUser: Function
+    addOneUser: (user: IUserWithData) => void
+    delOneUser: (user: IUserWithData) => void
+    mutateOneUser: (user: IUserWithData) => void
   }
 }
 
@@ -37,120 +37,128 @@ const errors = {
  * @param props Props
  */
 const Users = ({ users, swr }: IProps): JSX.Element => {
-  const [plugins, setPlugins]: [IClientPlugin[], Function] = useState([])
-  const [columns, setColumns]: [TableColumnsType, Function] = useState()
+  // State
+  const [plugins, setPlugins]: [IClientPlugin[], Function] = useState()
 
+  // Data
+  const columns: TableColumnsType = [
+    {
+      title: 'First name',
+      dataIndex: 'firstname',
+      key: 'firstname',
+      sorter: (a: { firstname?: string }, b: { firstname?: string }) => {
+        const fa = a.firstname || ''
+        const fb = b.firstname || ''
+        return fa.localeCompare(fb)
+      }
+    },
+    {
+      title: 'Last name',
+      dataIndex: 'lastname',
+      key: 'lastname',
+      sorter: (a: { lastname?: string }, b: { lastname?: string }) => {
+        const la = a.lastname || ''
+        const lb = b.lastname || ''
+        return la.localeCompare(lb)
+      }
+    },
+    {
+      title: 'Email',
+      dataIndex: 'email',
+      key: 'email',
+      sorter: (a: { email: string }, b: { email: string }) => {
+        const ea = a.email || ''
+        const eb = b.email || ''
+        return ea.localeCompare(eb)
+      }
+    },
+    {
+      title: 'Password',
+      key: 'password',
+      render: () => '******'
+    },
+    {
+      title: 'Plugins',
+      dataIndex: 'authorizedplugins',
+      key: 'authorizedplugins',
+      // eslint-disable-next-line react/display-name
+      render: (authorizedplugins: string[]) => {
+        if (authorizedplugins) {
+          authorizedplugins.sort()
+          return (
+            <Space wrap={true}>
+              {authorizedplugins.map((authorizedplugin) => {
+                const plugin = plugins?.find((p) => p.key === authorizedplugin)
+                if (!plugin) return
+                else
+                  return (
+                    <Badge
+                      key={authorizedplugin}
+                      size="small"
+                      count={plugin.category}
+                      offset={[5, -5]}
+                    >
+                      {plugin.name}
+                    </Badge>
+                  )
+              })}
+            </Space>
+          )
+        }
+      }
+    },
+    {
+      title: 'Administrator',
+      dataIndex: 'superuser',
+      key: 'superuser',
+      // eslint-disable-next-line react/display-name
+      render: (superuser: boolean) =>
+        superuser && <CheckOutlined className="color-green" />
+    },
+    {
+      title: 'Actions',
+      key: 'actions',
+      // eslint-disable-next-line react/display-name
+      render: (_: any, record: IUserWithData) => (
+        <Space>
+          <Edit
+            plugins={
+              plugins?.map((plugin) => ({
+                key: plugin.key,
+                name: plugin.name
+              })) || []
+            }
+            user={{
+              id: record.id,
+              firstname: record.firstname,
+              lastname: record.lastname,
+              email: record.email,
+              authorizedplugins: record.authorizedplugins,
+              superuser: record.superuser
+            }}
+            swr={{ mutateOneUser: swr.mutateOneUser }}
+          />
+          <Delete
+            user={{ id: record.id, email: record.email }}
+            swr={{ delOneUser: swr.delOneUser }}
+          />
+        </Space>
+      )
+    }
+  ]
+
+  // Plugins list
   useEffect(() => {
     PluginsAPI.completeList()
       .then((list) => {
         setPlugins(list)
-
-        setColumns([
-          {
-            title: 'First name',
-            dataIndex: 'firstname',
-            key: 'firstname',
-            sorter: (a: { firstname?: any }, b: { firstname?: any }) => {
-              const fa = a.firstname || ''
-              const fb = b.firstname || ''
-              return fa.localeCompare(fb)
-            }
-          },
-          {
-            title: 'Last name',
-            dataIndex: 'lastname',
-            key: 'lastname',
-            sorter: (a: { lastname?: any }, b: { lastname?: any }) => {
-              const la = a.lastname || ''
-              const lb = b.lastname || ''
-              return la.localeCompare(lb)
-            }
-          },
-          {
-            title: 'Email',
-            dataIndex: 'email',
-            key: 'email',
-            sorter: (a: { email: any }, b: { email: any }) => {
-              const ea = a.email || ''
-              const eb = b.email || ''
-              return ea.localeCompare(eb)
-            }
-          },
-          {
-            title: 'Password',
-            key: 'password',
-            render: () => '******'
-          },
-          {
-            title: 'Plugins',
-            dataIndex: 'authorizedplugins',
-            key: 'authorizedplugins',
-            // eslint-disable-next-line react/display-name
-            render: (authorizedplugins: string[]) => {
-              if (authorizedplugins) {
-                authorizedplugins.sort()
-                return (
-                  <Space wrap={true}>
-                    {authorizedplugins.map((authorizedplugin) => {
-                      if (!list) return <Spin key={authorizedplugin} />
-                      const plugin = list.find(
-                        (p) => p.key === authorizedplugin
-                      )
-                      return (
-                        <Badge
-                          key={authorizedplugin}
-                          size="small"
-                          count={plugin?.category}
-                          offset={[5, -5]}
-                        >
-                          {plugin?.name}
-                        </Badge>
-                      )
-                    })}
-                  </Space>
-                )
-              }
-            }
-          },
-          {
-            title: 'Administrator',
-            dataIndex: 'superuser',
-            key: 'superuser',
-            // eslint-disable-next-line react/display-name
-            render: (superuser: boolean) =>
-              superuser && <CheckOutlined className="color-green" />
-          },
-          {
-            title: 'Actions',
-            key: 'actions',
-            // eslint-disable-next-line react/display-name
-            render: (_: any, record: IUserWithData) => (
-              <Space>
-                <Edit
-                  plugins={list || []}
-                  user={{
-                    id: record.id,
-                    firstname: record.firstname,
-                    lastname: record.lastname,
-                    email: record.email,
-                    authorizedplugins: record.authorizedplugins,
-                    superuser: record.superuser
-                  }}
-                  swr={{ mutateOneUser: swr.mutateOneUser }}
-                />
-                <Delete
-                  user={{ id: record.id, email: record.email }}
-                  swr={{ delOneUser: swr.delOneUser }}
-                />
-              </Space>
-            )
-          }
-        ])
       })
       .catch((err) => {
         ErrorNotification(errors.plugins, err)
       })
   }, [])
+
+  console.log(plugins)
 
   /**
    * Render
@@ -158,13 +166,18 @@ const Users = ({ users, swr }: IProps): JSX.Element => {
   return (
     <Space direction="vertical" className="full-width">
       <Add
-        plugins={plugins || []}
+        plugins={
+          plugins?.map((plugin) => ({
+            key: plugin.key,
+            name: plugin.name
+          })) || []
+        }
         swr={{
           addOneUser: swr.addOneUser
         }}
       />
       <Table
-        loading={!columns}
+        loading={!plugins}
         pagination={false}
         size="small"
         scroll={{ y: 'calc(100vh - 312px)' }}
@@ -176,7 +189,16 @@ const Users = ({ users, swr }: IProps): JSX.Element => {
 }
 
 Users.propTypes = {
-  users: PropTypes.array.isRequired,
+  users: PropTypes.arrayOf(
+    PropTypes.exact({
+      id: PropTypes.string.isRequired,
+      email: PropTypes.string.isRequired,
+      firstname: PropTypes.string,
+      lastname: PropTypes.string,
+      authorizedplugins: PropTypes.arrayOf(PropTypes.string).isRequired,
+      superuser: PropTypes.bool.isRequired
+    }).isRequired
+  ).isRequired,
   swr: PropTypes.exact({
     addOneUser: PropTypes.func.isRequired,
     delOneUser: PropTypes.func.isRequired,

@@ -151,14 +151,19 @@ const Edit = ({ plugins, user, swr }: IProps): JSX.Element => {
 }
 
 Edit.propTypes = {
-  plugins: PropTypes.array.isRequired,
+  plugins: PropTypes.arrayOf(
+    PropTypes.exact({
+      key: PropTypes.string.isRequired,
+      name: PropTypes.string.isRequired
+    })
+  ).isRequired,
   user: PropTypes.exact({
     id: PropTypes.string.isRequired,
+    email: PropTypes.string.isRequired,
     firstname: PropTypes.string,
     lastname: PropTypes.string,
-    email: PropTypes.string.isRequired,
-    authorizedplugins: PropTypes.array,
-    superuser: PropTypes.bool
+    authorizedplugins: PropTypes.array.isRequired,
+    superuser: PropTypes.bool.isRequired
   }).isRequired,
   swr: PropTypes.exact({
     mutateOneUser: PropTypes.func.isRequired

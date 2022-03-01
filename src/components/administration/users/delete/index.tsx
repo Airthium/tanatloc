@@ -5,6 +5,8 @@ import { useState } from 'react'
 import { Button } from 'antd'
 import { DeleteOutlined } from '@ant-design/icons'
 
+import { IUserWithData } from '@/lib/index.d'
+
 import { DeleteDialog } from '@/components/assets/dialog'
 import { Error } from '@/components/assets/notification'
 
@@ -16,7 +18,7 @@ export interface IProps {
     email: string
   }
   swr: {
-    delOneUser: Function
+    delOneUser: (user: IUserWithData) => void
   }
 }
 

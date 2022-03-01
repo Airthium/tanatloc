@@ -16,10 +16,6 @@ jest.mock('@/api/plugins', () => ({
 jest.mock('../plugin', () => () => <div role="Plugin" />)
 
 describe('components/account/hpc', () => {
-  const user = {
-    authorizedplugins: []
-  }
-
   beforeEach(() => {
     mockError.mockReset()
 
@@ -28,7 +24,7 @@ describe('components/account/hpc', () => {
   })
 
   test('render', async () => {
-    const { unmount } = render(<HPC user={user} />)
+    const { unmount } = render(<HPC />)
 
     await waitFor(() =>
       screen.getByText('You do not have access to any HPC plugin. Request it.')
@@ -41,7 +37,7 @@ describe('components/account/hpc', () => {
     mockList.mockImplementation(() => {
       throw new Error()
     })
-    const { unmount } = render(<HPC user={user} />)
+    const { unmount } = render(<HPC />)
 
     await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
 
@@ -57,9 +53,7 @@ describe('components/account/hpc', () => {
         configuration: {}
       }
     ])
-    const { unmount } = render(
-      <HPC user={{ ...user, authorizedplugins: ['plugin'] }} />
-    )
+    const { unmount } = render(<HPC />)
 
     await waitFor(() => screen.getByRole('Plugin'))
 

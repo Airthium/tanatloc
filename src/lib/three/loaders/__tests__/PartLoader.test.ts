@@ -1,23 +1,25 @@
+import { PerspectiveCamera, Plane, WebGLRenderer } from 'three'
+import { OutlinePass } from 'three/examples/jsm/postprocessing/OutlinePass'
 import { PartLoader } from '../PartLoader'
 
 jest.mock('three/examples/jsm/math/Lut', () => ({
-  Lut: class {
-    setMin = () => {}
-    setMax = () => {}
-    getColor = () => ({
+  Lut: jest.fn().mockImplementation(() => ({
+    setMin: jest.fn,
+    setMax: jest.fn,
+    getColor: () => ({
       r: 0,
       g: 0,
       b: 0
     })
-  }
+  }))
 }))
 
 jest.mock('three/examples/jsm/loaders/GLTFLoader', () => ({
   GLTFLoader: class {
     setDRACOLoader = jest.fn()
-    load = (url, finish, progress, error) => {
+    load = (_, finish, progress, error) => {
       progress('progress')
-      error('error')
+      // error('error')
       finish({
         scene: {
           children: [
@@ -88,14 +90,14 @@ describe('lib/three/loaders/PartLoader', () => {
         {
           userData: { uuid: 'solid_uuid' },
           geometry: {
-            dispose: () => {},
+            dispose: jest.fn,
             boundingBox: {
               min: { x: 0, y: 0, z: 0 },
               max: { x: 1, y: 1, z: 1 }
             }
           },
           material: {
-            dispose: () => {}
+            dispose: jest.fn
           }
         }
       ]
@@ -105,22 +107,24 @@ describe('lib/three/loaders/PartLoader', () => {
         {
           userData: { uuid: 'face_uuid' },
           geometry: {
-            dispose: () => {},
+            dispose: jest.fn,
             boundingBox: {
               min: { x: 0, y: 0, z: 0 },
               max: { x: 1, y: 1, z: 1 }
             }
           },
           material: {
-            dispose: () => {}
+            dispose: jest.fn
           }
         }
       ]
     }
   ]
   const part = {
+    uuid: 'uuid',
     buffer: Buffer.from([])
   }
+  const clippingPlane = new Plane()
   let mouseMove
   let mouseDown
   const renderer = {
@@ -129,82 +133,69 @@ describe('lib/three/loaders/PartLoader', () => {
         if (type === 'pointermove') mouseMove = callback
         else if (type === 'pointerdown') mouseDown = callback
       },
-      removeEventListener: () => {}
-    },
-    getSize: () => {}
-  }
-  const camera = {}
-  const outlinePass = {}
+      removeEventListener:
+        jest.fn as WebGLRenderer['domElement']['removeEventListener']
+    } as WebGLRenderer['domElement'],
+    getSize: (vector) => vector
+  } as WebGLRenderer
+  const camera = {} as PerspectiveCamera
+  const outlinePass = {} as OutlinePass
   const mouseMoveEvent = jest.fn()
   const mouseDownEvent = jest.fn()
 
   test('call', () => {
-    const partLoader = PartLoader()
+    const partLoader = PartLoader(mouseMoveEvent, mouseDownEvent)
     expect(partLoader).toBeDefined()
   })
 
   test('load', async () => {
-    const partLoader = PartLoader()
-    await partLoader.load(part)
+    const partLoader = PartLoader(mouseMoveEvent, mouseDownEvent)
+    await partLoader.load(part, true, clippingPlane)
 
-    await partLoader.load(part, true)
+    await partLoader.load(part, true, clippingPlane)
 
     // With color
     global.MockGeometry.getAttribute = () => ({
       count: 3,
       array: [0.1, 0.2, 0.3]
     })
-    await partLoader.load(part)
+    await partLoader.load(part, true, clippingPlane)
 
-    // No type
-    part.type = 'other'
-    await partLoader.load(part)
-    await partLoader.load(part, true)
-
-    // Mesh
-    part.type = 'mesh'
-    await partLoader.load(part)
-    await partLoader.load(part, true)
-
-    // Result
-    part.type = 'result'
-    await partLoader.load(part)
-
-    global.MockGeometry.getAttribute = () => {}
-    await partLoader.load(part, true)
+    global.MockGeometry.getAttribute = jest.fn
+    await partLoader.load(part, true, clippingPlane)
 
     global.MockGeometry.getAttribute = () => ({
       count: 3,
       array: [0, 0, 0]
     })
-    await partLoader.load(part)
+    await partLoader.load(part, true, clippingPlane)
 
     global.MockGeometry.getAttribute = () => ({
       count: 3,
       array: [1, 1, 1]
     })
-    await partLoader.load(part)
+    await partLoader.load(part, true, clippingPlane)
 
     global.MockBox3.isEmpty = true
-    await partLoader.load(part, true)
+    await partLoader.load(part, true, clippingPlane)
   })
 
   test('dispose', async () => {
-    const partLoader = PartLoader()
-    const mesh = await partLoader.load(part)
+    const partLoader = PartLoader(mouseMoveEvent, mouseDownEvent)
+    const mesh = await partLoader.load(part, true, clippingPlane)
     mesh.dispose()
   })
 
   test('setTransparent', async () => {
-    const partLoader = PartLoader()
-    let mesh = await partLoader.load(part)
+    const partLoader = PartLoader(mouseMoveEvent, mouseDownEvent)
+    let mesh = await partLoader.load(part, true, clippingPlane)
     mesh.setTransparent(true)
     mesh.setTransparent(false)
   })
 
   test('startSelection', async () => {
     const partLoader = PartLoader(mouseMoveEvent, mouseDownEvent)
-    const mesh = await partLoader.load(part)
+    const mesh = await partLoader.load(part, true, clippingPlane)
     mesh.startSelection(renderer, camera, outlinePass, 'faces')
 
     mesh.startSelection(renderer, camera, outlinePass, 'solids')
@@ -213,8 +204,8 @@ describe('lib/three/loaders/PartLoader', () => {
   })
 
   test('stopSelection', async () => {
-    const partLoader = PartLoader()
-    const mesh = await partLoader.load(part)
+    const partLoader = PartLoader(mouseMoveEvent, mouseDownEvent)
+    const mesh = await partLoader.load(part, true, clippingPlane)
     mesh.stopSelection()
 
     // Add selection
@@ -229,14 +220,14 @@ describe('lib/three/loaders/PartLoader', () => {
 
   test('getHighlighted', async () => {
     const partLoader = PartLoader(mouseMoveEvent, mouseDownEvent)
-    const mesh = await partLoader.load(part)
+    const mesh = await partLoader.load(part, false, clippingPlane)
     const highlighted = mesh.getHighlighted()
     expect(highlighted).toBe(null)
   })
 
   test('getSelected', async () => {
     const partLoader = PartLoader(mouseMoveEvent, mouseDownEvent)
-    const mesh = await partLoader.load(part)
+    const mesh = await partLoader.load(part, true, clippingPlane)
     const selected = mesh.getSelected()
     expect(selected).toEqual([])
   })
@@ -245,7 +236,7 @@ describe('lib/three/loaders/PartLoader', () => {
     let current
     mouseMoveEvent.mockImplementation((p, uuid) => (current = uuid))
     const partLoader = PartLoader(mouseMoveEvent, mouseDownEvent)
-    const mesh = await partLoader.load(part)
+    const mesh = await partLoader.load(part, true, clippingPlane)
     mesh.startSelection(renderer, camera, outlinePass, 'faces')
 
     mouseMove({ target: { getBoundingClientRect: () => ({}) } })
@@ -258,8 +249,8 @@ describe('lib/three/loaders/PartLoader', () => {
   })
 
   test('highlight', async () => {
-    const partLoader = PartLoader()
-    const mesh = await partLoader.load(part)
+    const partLoader = PartLoader(mouseMoveEvent, mouseDownEvent)
+    const mesh = await partLoader.load(part, true, clippingPlane)
     mesh.startSelection(renderer, camera, outlinePass, 'faces')
 
     mesh.highlight('face_uuid')
@@ -268,8 +259,8 @@ describe('lib/three/loaders/PartLoader', () => {
   })
 
   test('unhighlight', async () => {
-    const partLoader = PartLoader()
-    const mesh = await partLoader.load(part)
+    const partLoader = PartLoader(mouseMoveEvent, mouseDownEvent)
+    const mesh = await partLoader.load(part, true, clippingPlane)
     mesh.startSelection(renderer, camera, outlinePass, 'faces')
 
     mesh.unhighlight()
@@ -284,7 +275,7 @@ describe('lib/three/loaders/PartLoader', () => {
     let current
     mouseDownEvent.mockImplementation((p, uuid) => (current = uuid))
     const partLoader = PartLoader(mouseMoveEvent, mouseDownEvent)
-    const mesh = await partLoader.load(part)
+    const mesh = await partLoader.load(part, true, clippingPlane)
     mesh.startSelection(renderer, camera, outlinePass, 'faces')
 
     mouseDown()
@@ -297,8 +288,8 @@ describe('lib/three/loaders/PartLoader', () => {
   })
 
   test('select', async () => {
-    const partLoader = PartLoader()
-    const mesh = await partLoader.load(part)
+    const partLoader = PartLoader(mouseMoveEvent, mouseDownEvent)
+    const mesh = await partLoader.load(part, true, clippingPlane)
     mesh.startSelection(renderer, camera, outlinePass, 'faces')
 
     mesh.select('face_uuid')
@@ -309,52 +300,12 @@ describe('lib/three/loaders/PartLoader', () => {
   })
 
   test('unselect', async () => {
-    const partLoader = PartLoader()
-    const mesh = await partLoader.load(part)
+    const partLoader = PartLoader(mouseMoveEvent, mouseDownEvent)
+    const mesh = await partLoader.load(part, true, clippingPlane)
     mesh.startSelection(renderer, camera, outlinePass, 'faces')
 
     mesh.select('face_uuid')
     mesh.unselect('uuid')
     mesh.unselect('face_uuid')
-  })
-
-  test('result specific', async () => {
-    part.type = 'result'
-    part.solids = []
-
-    global.MockGroup.children = [
-      { children: [] },
-      {
-        children: [
-          {
-            type: 'Group',
-            boundingBox: {
-              min: { x: 0, y: 0, z: 0 },
-              max: { x: 1, y: 1, z: 1 }
-            },
-            children: [
-              {
-                uuid: 'face_uuid',
-                geometry: {
-                  dispose: () => {}
-                },
-                material: {
-                  dispose: () => {}
-                }
-              },
-              {}
-            ]
-          }
-        ]
-      }
-    ]
-
-    const partLoader = PartLoader()
-    const mesh = await partLoader.load(part)
-
-    mesh.setTransparent(true)
-    mesh.setTransparent(false)
-
-    mesh.dispose()
   })
 })

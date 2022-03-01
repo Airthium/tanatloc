@@ -1,15 +1,18 @@
+import { PerspectiveCamera, Scene, Vector3, WebGLRenderer } from 'three'
+import { TrackballControls } from 'three/examples/jsm/controls/TrackballControls'
 import { SelectionHelper } from '../SelectionHelper'
 
-document.createElement = () => ({
+document.createElement = jest.fn().mockImplementation(() => ({
   style: {}
-})
+}))
 
 describe('lib/three/helpers/SelectionHelper', () => {
   let mouseDown
   let mouseMove
   let mouseUp
-  const renderer = {
+  const renderer: WebGLRenderer = {
     domElement: {
+      //@ts-ignore
       getBoundingClientRect: () => ({}),
       addEventListener: (type, callback) => {
         if (type === 'pointerdown') mouseDown = callback
@@ -17,6 +20,7 @@ describe('lib/three/helpers/SelectionHelper', () => {
         else if (type === 'pointerup') mouseUp = callback
       },
       removeEventListener: jest.fn,
+      //@ts-ignore
       parentElement: {
         appendChild: jest.fn
       }
@@ -24,25 +28,20 @@ describe('lib/three/helpers/SelectionHelper', () => {
     getSize: (vector) => {
       vector.x = 150
       vector.y = 150
+      return vector
     }
   }
-  const camera = {
-    position: {
-      add: jest.fn,
-      distanceTo: jest.fn
-    }
-  }
+  const camera = {} as PerspectiveCamera
   const scene = {
     children: []
-  }
-  const controls = {
+  } as Scene
+  const controls: TrackballControls = {
     target: {
-      copy: () => ({
-        add: jest.fn
-      }),
+      copy: () => new Vector3(),
       clone: () => ({
         sub: () => ({
           normalize: () => ({
+            //@ts-ignore
             multiplyScalar: jest.fn
           })
         })
@@ -92,15 +91,15 @@ describe('lib/three/helpers/SelectionHelper', () => {
   })
 
   test('element parentElement', () => {
-    document.createElement = () => ({
+    document.createElement = jest.fn().mockImplementation(() => ({
       style: {},
       parentElement: {
         removeChild: jest.fn
       }
-    })
+    }))
     const selection = SelectionHelper(
       renderer,
-      { children: [{ type: 'Part' }] },
+      { children: [{ type: 'Part' }] } as Scene,
       camera,
       controls
     )

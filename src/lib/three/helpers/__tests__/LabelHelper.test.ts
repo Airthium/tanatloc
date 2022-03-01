@@ -1,10 +1,10 @@
 import LabelHelper from '../LabelHelper'
 
-document.createElement = () => ({
+document.createElement = jest.fn().mockImplementation(() => ({
   getContext: () => ({
-    fillText: () => {}
+    fillText: jest.fn
   })
-})
+}))
 
 describe('lib/three/helpers/LabelHelper', () => {
   test('call', () => {

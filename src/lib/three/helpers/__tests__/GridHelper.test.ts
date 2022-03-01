@@ -1,42 +1,35 @@
+import { Box3, Object3D, Scene, Sphere, Vector3 } from 'three'
 import { GridHelper } from '../GridHelper'
 
 jest.mock('../LabelHelper', () => () => ({
-  translateX: () => {},
-  translateY: () => {},
+  translateX: jest.fn,
+  translateY: jest.fn,
   scale: {
-    setScalar: () => {}
+    setScalar: jest.fn
   }
 }))
 
 global.MockVector3 = { x: 1e5, y: 3, z: 1e-13 }
 
 describe('lib/three/helpers/GridHelper', () => {
-  const scene = {
-    children: [
-      {
-        type: 'Mesh'
-      },
-      {
-        type: 'GridHelper',
-        dispose: () => {}
-      }
-    ],
-    boundingBox: {
-      min: {
-        x: -1e-5,
-        y: -3,
-        z: -1e-13
-      },
-      max: {
-        x: 1,
-        y: 1,
-        z: 1
-      }
-    },
-    boundingSphere: { center: {} },
-    add: () => {},
-    remove: () => {}
+  const scene = new Scene() as Scene & {
+    boundingBox: Box3
+    boundingSphere: Sphere
   }
+  scene.boundingBox = new Box3(
+    new Vector3(-1e-5, -3, -1e-13),
+    new Vector3(1, 1, 1)
+  )
+  scene.boundingSphere = new Sphere(new Vector3(0, 0, 0), 1)
+  scene.children.push({
+    type: 'Mesh'
+  } as Object3D)
+  scene.children.push({
+    type: 'GridHelper',
+    dispose: jest.fn
+  } as Object3D & { dispose: any })
+  scene.add = jest.fn()
+  scene.remove = jest.fn()
 
   test('call', () => {
     const grid = GridHelper(scene)
@@ -60,10 +53,10 @@ describe('lib/three/helpers/GridHelper', () => {
         children: [
           {
             geometry: {
-              dispose: () => {}
+              dispose: jest.fn
             },
             material: {
-              dispose: () => {}
+              dispose: jest.fn
             }
           }
         ]

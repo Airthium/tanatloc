@@ -1,14 +1,13 @@
 /** @module Lib.Mathjax */
 
-const maxRretry = 1000
+const maxRretry = 100
 let nRetry = 0
 
 /**
  * Mathjax init
  */
 export const mathjaxInit = (): void => {
-  const MathJaxSource =
-    'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js'
+  const MathJaxSource = '/mathjax/tex-mml-chtml.js'
 
   if (!window.MathJax) {
     console.info('MathJax::init')
@@ -31,7 +30,6 @@ export const mathjaxInit = (): void => {
  */
 export const mathjaxRefresh = (): void => {
   if (!window.MathJax) {
-    console.warn('MathJax::MathJax is not loaded yet')
     mathjaxRetry(mathjaxRefresh)
     return
   }
@@ -46,7 +44,6 @@ const mathjaxRetry = (func: Function): void => {
   nRetry++
   if (nRetry <= maxRretry) {
     // Retry if error
-    console.warn('MathJax::retry number ' + nRetry)
     setTimeout(func, 50)
   } else {
     console.warn('MathJax::Max retry number reached. No retry')

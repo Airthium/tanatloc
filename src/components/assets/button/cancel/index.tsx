@@ -30,7 +30,7 @@ const CancelButton = ({
    * Render
    */
   return (
-    <Tooltip title={children || 'Add'}>
+    <Tooltip title={children || 'Cancel'}>
       <Button
         disabled={disabled}
         loading={loading}

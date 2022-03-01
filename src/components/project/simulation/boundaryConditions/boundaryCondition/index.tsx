@@ -241,7 +241,7 @@ const BoundaryCondition = ({
       extra={<Button type="text" icon={<CloseOutlined />} onClick={onClose} />}
       footer={
         <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <CancelButton onCancel={onClose}>Cancel</CancelButton>
+          <CancelButton onCancel={onClose} />
           {boundaryCondition ? (
             <Edit
               primary={true}

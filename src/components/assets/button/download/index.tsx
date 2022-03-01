@@ -36,7 +36,7 @@ const DownloadButton = ({
   return (
     <Tooltip title="Download">
       <Button
-        className={'no-background ' + !bordered ? 'no-border' : ''}
+        className={'no-background ' + (bordered ? '' : 'no-border')}
         disabled={disabled}
         loading={loading}
         icon={<DownloadOutlined />}

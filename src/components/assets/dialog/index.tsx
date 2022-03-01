@@ -97,7 +97,7 @@ const Dialog = ({
             await onOk(values)
             form.resetFields()
           } catch (err) {
-            err.message && ErrorNotification(errors.onOk, err)
+            err.message && ErrorNotification(errors.onOk, err, false)
           }
         })
       }

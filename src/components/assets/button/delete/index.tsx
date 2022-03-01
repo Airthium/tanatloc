@@ -57,7 +57,7 @@ const DeleteButton = ({
       </DeleteDialog>
       <Tooltip title={'Delete'}>
         <Button
-          className={'no-background ' + !bordered ? 'no-border' : ''}
+          className={'no-background ' + (bordered ? '' : 'no-border')}
           danger
           disabled={disabled}
           loading={loading}

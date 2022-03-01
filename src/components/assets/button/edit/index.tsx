@@ -52,7 +52,7 @@ const EditButton = ({
           (needMargin ? 'marginLeft-5 ' : '') +
           (light ? 'text-light ' : '') +
           (dark ? 'text-dark ' : '') +
-          (!bordered ? 'no-border ' : '')
+          (bordered ? '' : 'no-border ')
         }
         disabled={disabled}
         loading={loading}

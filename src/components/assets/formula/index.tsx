@@ -1,5 +1,6 @@
 /** @module Components.Assets.Formula */
 
+import PropTypes from 'prop-types'
 import { ChangeEvent, useState } from 'react'
 import { Checkbox, Input, Space } from 'antd'
 import { CheckboxChangeEvent } from 'antd/lib/checkbox'
@@ -112,6 +113,15 @@ const Formula = ({
       />
     </Space>
   )
+}
+
+Formula.propTypes = {
+  label: PropTypes.string,
+  defaultValue: PropTypes.string,
+  defaultChecked: PropTypes.bool,
+  onValueChange: PropTypes.func.isRequired,
+  onCheckedChange: PropTypes.func,
+  unit: PropTypes.string
 }
 
 export default Formula

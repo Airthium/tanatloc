@@ -141,7 +141,7 @@ const Material = ({
       extra={<Button type="text" icon={<CloseOutlined />} onClick={onClose} />}
       footer={
         <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <CancelButton onCancel={onClose}>Cancel</CancelButton>
+          <CancelButton onCancel={onClose} />
           {material ? (
             <Edit
               primary={true}

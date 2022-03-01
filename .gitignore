@@ -23,6 +23,7 @@ dist-install
 
 # public
 /public/three
+/public/mathjax
 
 # production
 /build

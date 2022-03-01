@@ -37,7 +37,7 @@ const errors = {
  * @param router Router
  * @param key Key
  */
-const onChange = (router: NextRouter, key: string) => {
+export const onChange = (router: NextRouter, key: string) => {
   router.replace({
     pathname: '/dashboard',
     query: { page: 'administration', tab: key }
@@ -46,6 +46,7 @@ const onChange = (router: NextRouter, key: string) => {
 
 /**
  * Administration
+ * @returns Administration
  */
 const Administration = (): JSX.Element => {
   // Data

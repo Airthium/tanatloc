@@ -1,7 +1,7 @@
 /** @module Components.Account.Password */
 
 import PropTypes from 'prop-types'
-import { useState } from 'react'
+import { Dispatch, SetStateAction, useState } from 'react'
 import { notification, Button, Card, Form, Input, Space } from 'antd'
 
 import { IUserWithData } from '@/lib/index.d'
@@ -14,6 +14,9 @@ import {
 
 import UserAPI from '@/api/user'
 
+/**
+ * Props
+ */
 export interface IProps {
   user: IUserWithData
 }
@@ -30,9 +33,8 @@ const errors = {
 /**
  * On finish
  * @param user User
- * @param data Data
+ * @param values Values
  * @param setLoading Set loading
- * @returns Password
  */
 export const onFinish = async (
   user: IUserWithData,
@@ -40,7 +42,7 @@ export const onFinish = async (
     password: string
     newPassword: string
   },
-  setLoading: Function
+  setLoading: Dispatch<SetStateAction<boolean>>
 ): Promise<void> => {
   setLoading(true)
 
@@ -75,10 +77,12 @@ export const onFinish = async (
 /**
  * Password
  * @param props Props
+ * @returns Ppassword
  */
 const Password = ({ user }: IProps): JSX.Element => {
   // State
-  const [loading, setLoading]: [boolean, Function] = useState(false)
+  const [loading, setLoading]: [boolean, Dispatch<SetStateAction<boolean>>] =
+    useState(false)
 
   // Layout
   const layout = {
@@ -94,9 +98,7 @@ const Password = ({ user }: IProps): JSX.Element => {
       <Form
         {...layout}
         layout="vertical"
-        onFinish={async (values) => {
-          await onFinish(user, values, setLoading)
-        }}
+        onFinish={async (values) => onFinish(user, values, setLoading)}
         name="passwordForm"
       >
         <Form.Item

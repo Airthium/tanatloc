@@ -4,6 +4,9 @@ import PropTypes from 'prop-types'
 import { ReactChild } from 'react'
 import { Button, Tooltip } from 'antd'
 
+/**
+ * Props
+ */
 export interface IProps {
   disabled?: boolean
   loading?: boolean
@@ -19,6 +22,7 @@ export interface IProps {
  * - loading (boolean) Set loading state
  * - children (React child) Button children
  * - onCancel (Function) Button click
+ * @returns CancelButton
  */
 const CancelButton = ({
   disabled,

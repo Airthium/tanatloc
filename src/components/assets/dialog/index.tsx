@@ -6,8 +6,12 @@ import { Form, Modal, Typography } from 'antd'
 import { BaseButtonProps } from 'antd/lib/button/button'
 
 import { Error as ErrorNotification } from '@/components/assets/notification'
+
 import DeleteDialog from './delete'
 
+/**
+ * Props
+ */
 export interface IProps {
   visible: boolean
   closable?: boolean
@@ -18,8 +22,8 @@ export interface IProps {
   okButtonProps?: BaseButtonProps
   okButtonText?: string
   children: ReactChild | ReactChild[]
-  onCancel?: Function
-  onOk?: Function
+  onCancel?: () => void
+  onOk?: (values: any) => Promise<void>
 }
 
 /**
@@ -44,6 +48,7 @@ const errors = {
  * - children (React node) Form children
  * - onCancel (Function) Dialog cancel
  * - onOk (Function) Dialog ok
+ * @returns Dialog
  */
 const Dialog = ({
   visible,

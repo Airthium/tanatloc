@@ -12,6 +12,9 @@ import { Error as ErrorNotification } from '@/components/assets/notification'
 
 import PluginAPI from '@/api/plugin'
 
+/**
+ * Props
+ */
 export interface IProps {
   plugin: IClientPlugin
   swr: {

@@ -57,6 +57,7 @@ export const pluginsList = async (): Promise<JSX.Element[]> => {
 /**
  * HPC plugins
  * @param props Props
+ * @returns HPC
  */
 const HPC = (): JSX.Element => {
   // State

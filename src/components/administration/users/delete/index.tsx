@@ -1,17 +1,18 @@
 /** @module Components.Administration.User.Delete */
 
 import PropTypes from 'prop-types'
-import { useState } from 'react'
-import { Button } from 'antd'
-import { DeleteOutlined } from '@ant-design/icons'
+import { Dispatch, SetStateAction, useState } from 'react'
 
 import { IUserWithData } from '@/lib/index.d'
 
-import { DeleteDialog } from '@/components/assets/dialog'
+import { DeleteButton } from '@/components/assets/button'
 import { Error } from '@/components/assets/notification'
 
 import UserAPI from '@/api/user'
 
+/**
+ * Props
+ */
 export interface IProps {
   user: {
     id: string
@@ -30,55 +31,54 @@ const errors = {
 }
 
 /**
+ * On delete
+ * @param user User
+ * @param setLoading Set loading
+ * @param setVisible Set visible
+ * @param swr Swr
+ */
+export const onDelete = async (
+  user: IUserWithData,
+  setLoading: Dispatch<SetStateAction<boolean>>,
+  swr: { delOneUser: (user: IUserWithData) => void }
+): Promise<void> => {
+  setLoading(true)
+
+  try {
+    // Delete
+    await UserAPI.delById(user.id)
+
+    // Mutate
+    swr.delOneUser({ id: user.id })
+  } catch (err) {
+    Error(errors.delError, err)
+    throw err
+  } finally {
+    setLoading(false)
+  }
+}
+
+/**
  * Delete
  * @param props Props
+ * @returns Delete
  */
 const Delete = ({ user, swr }: IProps): JSX.Element => {
   // State
-  const [visible, setVisible]: [boolean, Function] = useState(false)
-  const [loading, setLoading]: [boolean, Function] = useState(false)
-
-  /**
-   * On delete
-   */
-  const onDelete = async (): Promise<void> => {
-    setLoading(true)
-
-    try {
-      // Delete
-      await UserAPI.delById(user.id)
-
-      // Mutate
-      swr.delOneUser({ id: user.id })
-
-      // Close
-      setVisible(false)
-    } catch (err) {
-      Error(errors.delError, err)
-    } finally {
-      setLoading(false)
-    }
-  }
+  const [loading, setLoading]: [boolean, Dispatch<SetStateAction<boolean>>] =
+    useState(false)
 
   /**
    * Render
    */
   return (
     <>
-      <Button
-        icon={<DeleteOutlined />}
-        danger
-        onClick={() => setVisible(true)}
-      />
-      <DeleteDialog
-        title="Delete user"
-        visible={visible}
-        onCancel={() => setVisible(false)}
-        onOk={onDelete}
+      <DeleteButton
         loading={loading}
-      >
-        Delete {user.email}?
-      </DeleteDialog>
+        text={'Delete ' + user.email + '?'}
+        title="Delete user"
+        onDelete={async () => onDelete(user, setLoading, swr)}
+      />
     </>
   )
 }

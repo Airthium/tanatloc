@@ -1,7 +1,7 @@
 /** @module Components.Account.Information */
 
 import PropTypes from 'prop-types'
-import { useState } from 'react'
+import { Dispatch, SetStateAction, useState } from 'react'
 import { Avatar, Button, Card, Form, Input, Space, Upload } from 'antd'
 import { UploadChangeParam } from 'antd/lib/upload'
 import { UploadOutlined, UserOutlined } from '@ant-design/icons'
@@ -16,6 +16,9 @@ import {
 import UserAPI from '@/api/user'
 import AvatarAPI from '@/api/avatar'
 
+/**
+ * Props
+ */
 export interface IProps {
   user: IUserWithData
   swr: {
@@ -70,7 +73,7 @@ export const getBase64 = async (file: Blob): Promise<any> => {
 export const onChange = async (
   user: IUserWithData,
   info: UploadChangeParam<any>,
-  setUploading: Function,
+  setUploading: Dispatch<SetStateAction<boolean>>,
   swr: {
     mutateUser: (user: IUserWithData) => void
   }
@@ -173,7 +176,10 @@ export const onFinish = async (
  */
 const Information = ({ user, swr }: IProps): JSX.Element => {
   // State
-  const [uploading, setUploading]: [boolean, Function] = useState(false)
+  const [uploading, setUploading]: [
+    boolean,
+    Dispatch<SetStateAction<boolean>>
+  ] = useState(false)
 
   // Layout
   const layout = {
@@ -200,9 +206,7 @@ const Information = ({ user, swr }: IProps): JSX.Element => {
             accept={'.jpg,.png'}
             showUploadList={false}
             beforeUpload={beforeUpload}
-            onChange={async (info) =>
-              await onChange(user, info, setUploading, swr)
-            }
+            onChange={async (info) => onChange(user, info, setUploading, swr)}
           >
             <Button icon={<UploadOutlined />} loading={uploading}>
               Upload new
@@ -217,7 +221,7 @@ const Information = ({ user, swr }: IProps): JSX.Element => {
               firstname: user.firstname || '',
               lastname: user.lastname || ''
             }}
-            onFinish={async (values) => await onFinish(user, values, swr)}
+            onFinish={async (values) => onFinish(user, values, swr)}
           >
             <Form.Item
               className="max-width-500"

@@ -10,6 +10,9 @@ import { Error as ErrorNotification } from '@/components/assets/notification'
 
 import PluginAPI from '@/api/plugin'
 
+/**
+ * Props
+ */
 export interface IProps {
   plugin: IClientPlugin
   swr: {
@@ -52,8 +55,9 @@ export const onDelete = async (
 }
 
 /**
- * Delete plugin
+ * Delete
  * @param props Props
+ * @returns Delete
  */
 const Delete = ({ plugin, swr }: IProps): JSX.Element => {
   // State

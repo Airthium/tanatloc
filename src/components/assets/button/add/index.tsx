@@ -5,6 +5,9 @@ import { ReactChild } from 'react'
 import { Button, Tooltip } from 'antd'
 import { PlusCircleOutlined } from '@ant-design/icons'
 
+/**
+ * Props
+ */
 export interface IProps {
   disabled?: boolean
   primary?: boolean
@@ -30,6 +33,7 @@ export interface IProps {
  * - loading (boolean) Set loading state
  * - children (React child) Button children
  * - onAdd (Function) Button click
+ * @returns AddButton
  */
 const AddButton = ({
   disabled,

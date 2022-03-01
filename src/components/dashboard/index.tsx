@@ -1,7 +1,7 @@
 /** @module Components.Dashboard */
 
-import { useRouter } from 'next/router'
-import { useState, useEffect } from 'react'
+import { NextRouter, useRouter } from 'next/router'
+import { useState, useEffect, Dispatch, SetStateAction } from 'react'
 import { Layout, Menu, Typography } from 'antd'
 import {
   AppstoreOutlined,
@@ -69,11 +69,58 @@ const menuItems = {
 }
 
 /**
+ * Menu selection
+ * @param router Route
+ * @param data
+ * @param setCurrentKey Set current key
+ * @param clearUser Clear user
+ */
+export const onSelect = (
+  router: NextRouter,
+  { keyPath }: { keyPath: string[] },
+  setCurrentKey: Dispatch<SetStateAction<string>>,
+  clearUser: () => void
+): void => {
+  let key = keyPath.pop()
+
+  if (key === menuItems.logout.key) onLogout(router, clearUser)
+  else {
+    setCurrentKey(key)
+    router.replace({
+      pathname: '/dashboard',
+      query: { page: key }
+    })
+  }
+}
+
+/**
+ * Logout
+ * @param router Route
+ * @param clearUser Clear user
+ */
+export const onLogout = async (
+  router: NextRouter,
+  clearUser: () => void
+): Promise<void> => {
+  try {
+    await logout()
+    clearUser()
+
+    router.push('/')
+  } catch (err) {
+    ErrorNotification(errors.logout, err)
+  }
+}
+
+/**
  * Dashboard
  */
 const Dashboard = () => {
   // State
-  const [currentKey, setCurrentKey]: [string, Function] = useState()
+  const [currentKey, setCurrentKey]: [
+    string,
+    Dispatch<SetStateAction<string>>
+  ] = useState()
 
   // Data
   const [user, { mutateUser, clearUser, errorUser, loadingUser }] =
@@ -124,37 +171,6 @@ const Dashboard = () => {
     if (!loadingUser && !user) router.replace('/login')
   }, [user, loadingUser])
 
-  /**
-   * Menu selection
-   * @param data
-   */
-  const onSelect = ({ keyPath }: { keyPath: string[] }): void => {
-    let key = keyPath.pop()
-
-    if (key === menuItems.logout.key) onLogout()
-    else {
-      setCurrentKey(key)
-      router.replace({
-        pathname: '/dashboard',
-        query: { page: key }
-      })
-    }
-  }
-
-  /**
-   * Logout
-   */
-  const onLogout = async (): Promise<void> => {
-    try {
-      await logout()
-      clearUser()
-
-      router.push('/')
-    } catch (err) {
-      ErrorNotification(errors.logout, err)
-    }
-  }
-
   let gitVersion = ''
   if (
     process.env.NEXT_PUBLIC_SOURCE_BRANCH &&
@@ -182,7 +198,9 @@ const Dashboard = () => {
           <Menu
             className="Dashboard-Menu"
             theme="light"
-            onClick={onSelect}
+            onClick={({ keyPath }) =>
+              onSelect(router, { keyPath }, setCurrentKey, clearUser)
+            }
             mode="inline"
           >
             <Menu.Item
@@ -272,5 +290,7 @@ const Dashboard = () => {
       </Layout>
     )
 }
+
+Dashboard.propTypes = {}
 
 export default Dashboard

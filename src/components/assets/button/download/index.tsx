@@ -5,6 +5,9 @@ import { Button, Tooltip } from 'antd'
 import { DownloadOutlined } from '@ant-design/icons'
 import { ReactChild } from 'react'
 
+/**
+ * Props
+ */
 export interface IProps {
   disabled?: boolean
   loading?: boolean
@@ -22,6 +25,7 @@ export interface IProps {
  * - bordered (boolean) Set border
  * - children (React child) Button children
  * - onDownload (Function) Button click
+ * @returns DownloadButton
  */
 const DownloadButton = ({
   disabled,
@@ -34,7 +38,7 @@ const DownloadButton = ({
    * Render
    */
   return (
-    <Tooltip title="Download">
+    <Tooltip title={children || 'Download'}>
       <Button
         className={'no-background ' + (bordered ? '' : 'no-border')}
         disabled={disabled}

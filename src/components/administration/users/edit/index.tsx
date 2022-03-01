@@ -1,18 +1,22 @@
 /** @module Components.Administration.User.Delete */
 
 import PropTypes from 'prop-types'
-import { useState } from 'react'
-import { Button, Checkbox, Form, Input, Select } from 'antd'
-import { EditOutlined } from '@ant-design/icons'
+import { Dispatch, SetStateAction, useState } from 'react'
+import { Checkbox, Form, Input, Select } from 'antd'
 
 import { IClientPlugin } from '@/database/index.d'
+import { IUserWithData } from '@/lib/index.d'
 
+import { EditButton } from '@/components/assets/button'
 import Dialog from '@/components/assets/dialog'
 import { PasswordItem } from '@/components/assets/input'
 import { Error } from '@/components/assets/notification'
 
 import UserAPI from '@/api/user'
 
+/**
+ * Props
+ */
 export interface IProps {
   plugins: IClientPlugin[]
   user: {
@@ -24,75 +28,93 @@ export interface IProps {
     superuser?: boolean
   }
   swr: {
-    mutateOneUser: Function
+    mutateOneUser: (user: IUserWithData) => void
   }
 }
 
 /**
- * Errors (edit)
+ * Edit values
+ */
+export interface IEditValues {
+  firstname: string
+  lastname: string
+  email: string
+  password: string
+  authorizedplugins: string[]
+  superuser: boolean
+}
+
+/**
+ * Errors
  */
 const errors = {
   update: 'Unable to update user'
 }
 
 /**
- * Edit
- * @param props Props
+ * On update
+ * @param user User
+ * @param values Values
+ * @param setLoading Set loading
+ * @param setVisible Set visible
+ * @param swr Swr
  */
-const Edit = ({ plugins, user, swr }: IProps): JSX.Element => {
-  // State
-  const [visible, setVisible]: [boolean, Function] = useState(false)
-  const [loading, setLoading]: [boolean, Function] = useState(false)
+export const onUpdate = async (
+  user: IUserWithData,
+  values: IEditValues,
+  setLoading: Dispatch<SetStateAction<boolean>>,
+  setVisible: Dispatch<SetStateAction<boolean>>,
+  swr: { mutateOneUser: (user: IUserWithData) => void }
+): Promise<void> => {
+  setLoading(true)
+  try {
+    // Update
+    const toUpdate = Object.keys(values)
+      .map((key) => {
+        const value = values[key]
+        if (value !== undefined && value !== '******' && value !== user[key])
+          return { key, value, type: key === 'password' && 'crypt' }
+      })
+      .filter((u) => u)
 
-  /**
-   * On update
-   * @param values Values
-   */
-  const onUpdate = async (values: {
-    firstname: string
-    lastname: string
-    email: string
-    password: string
-    authorizedplugins: string[]
-    superuser: boolean
-  }): Promise<void> => {
-    setLoading(true)
-    try {
-      // Update
-      const toUpdate = Object.keys(values)
-        .map((key) => {
-          const value = values[key]
-          if (value !== undefined && value !== '******' && value !== user[key])
-            return { key, value, type: key === 'password' && 'crypt' }
-        })
-        .filter((u) => u)
-
-      if (!toUpdate.length) {
-        // Close
-        setLoading(false)
-        setVisible(false)
-        return
-      }
-
-      await UserAPI.updateById(user.id, toUpdate)
-
-      // Mutate
-      const newUser = {
-        ...user,
-        ...values
-      }
-      delete newUser.password
-      swr.mutateOneUser(newUser)
-
+    if (!toUpdate.length) {
       // Close
       setLoading(false)
       setVisible(false)
-    } catch (err) {
-      Error(errors.update, err)
-      setLoading(false)
-      throw err
+      return
     }
+
+    await UserAPI.updateById(user.id, toUpdate)
+
+    // Mutate
+    const newUser = {
+      ...user,
+      ...values
+    }
+    delete newUser.password
+    swr.mutateOneUser(newUser)
+
+    // Close
+    setLoading(false)
+    setVisible(false)
+  } catch (err) {
+    Error(errors.update, err)
+    setLoading(false)
+    throw err
   }
+}
+
+/**
+ * Edit
+ * @param props Props
+ * @returns Edit
+ */
+const Edit = ({ plugins, user, swr }: IProps): JSX.Element => {
+  // State
+  const [visible, setVisible]: [boolean, Dispatch<SetStateAction<boolean>>] =
+    useState(false)
+  const [loading, setLoading]: [boolean, Dispatch<SetStateAction<boolean>>] =
+    useState(false)
 
   /**
    * Render
@@ -108,7 +130,9 @@ const Edit = ({ plugins, user, swr }: IProps): JSX.Element => {
           authorizedplugins: user.authorizedplugins || []
         }}
         onCancel={() => setVisible(false)}
-        onOk={onUpdate}
+        onOk={async (values: IEditValues) =>
+          onUpdate(user, values, setLoading, setVisible, swr)
+        }
         loading={loading}
       >
         <Form.Item name="firstname" label="First name">
@@ -143,9 +167,7 @@ const Edit = ({ plugins, user, swr }: IProps): JSX.Element => {
         </Form.Item>
       </Dialog>
 
-      <Button icon={<EditOutlined />} onClick={() => setVisible(true)}>
-        Edit
-      </Button>
+      <EditButton onEdit={() => setVisible(true)}>Edit</EditButton>
     </>
   )
 }

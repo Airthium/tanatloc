@@ -5,6 +5,9 @@ import { ReactChild } from 'react'
 import { Button } from 'antd'
 import { ArrowLeftOutlined } from '@ant-design/icons'
 
+/**
+ * Props
+ */
 export interface IProps {
   children?: ReactChild | ReactChild[]
   onClick: () => void
@@ -16,6 +19,7 @@ export interface IProps {
  * @description Props list:
  * - children (React node) Button children (default to 'Go back')
  * - onClick (Function) Button click
+ * @returns GoBack
  */
 const GoBack = ({ children, onClick }: IProps): JSX.Element => {
   /**

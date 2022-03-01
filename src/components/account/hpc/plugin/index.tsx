@@ -13,6 +13,9 @@ import List from './list'
 
 import PluginAPI from '@/api/plugin'
 
+/**
+ * Props
+ */
 export interface IProps {
   plugin: IClientPlugin
 }
@@ -27,6 +30,7 @@ const errors = {
 /**
  * Plugin
  * @param props Props
+ * @returns Plugin
  */
 const Plugin = ({ plugin }: IProps): JSX.Element => {
   // Data

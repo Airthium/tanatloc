@@ -3,6 +3,8 @@
 import PropTypes from 'prop-types'
 import { Form, Input } from 'antd'
 
+import { ISystem } from '@/database/index.d'
+
 import {
   MIN_SIZE,
   MAX_SIZE,
@@ -13,6 +15,9 @@ import {
 
 import SystemAPI from '@/api/system'
 
+/**
+ * Props
+ */
 export interface IProps {
   labelCol?: {}
   wrapperCol?: {}
@@ -27,7 +32,7 @@ export interface IProps {
 }
 
 /**
- * Errors (password)
+ * Errors
  */
 const errors = {
   password: 'Please enter a password',
@@ -38,6 +43,105 @@ const errors = {
   passwordRequireLetter: 'Your password must contain a letter',
   passwordRequireNumber: 'Your password must contain a number',
   passwordRequireSymbol: 'Your password must contain a symbol'
+}
+
+/**
+ * Check min
+ * @param passwordMinSize Password min size
+ * @param value Value
+ */
+export const checkMin = (passwordMinSize: number, value: string): boolean => {
+  if (value.length < passwordMinSize) return false
+  return true
+}
+
+/**
+ * Check max
+ * @param passwordMaxSize Password max size
+ * @param value Value
+ */
+export const checkMax = (passwordMaxSize: number, value: string): boolean => {
+  if (value.length > passwordMaxSize) return false
+  return true
+}
+
+/**
+ * Check regex
+ * @param value Value
+ * @param regex Regex
+ */
+export const checkRegex = (value: string, regex: RegExp): boolean => {
+  if (value.search(regex) === -1) return false
+  return true
+}
+
+/**
+ * Require letter
+ * @param system System
+ * @param value Value
+ */
+export const requireLetter = (system: ISystem, value: string): boolean => {
+  if (system?.password?.requireLetter ?? REQUIRE_LETTER)
+    return checkRegex(value, /[a-zA-Z]/)
+  return true
+}
+
+/**
+ * Require number
+ * @param system System
+ * @param value Value
+ */
+export const requireNumber = (system: ISystem, value: string): boolean => {
+  if (system?.password?.requireNumber ?? REQUIRE_NUMBER)
+    return checkRegex(value, /\d/)
+  return true
+}
+
+/**
+ * Require symbol
+ * @param system System
+ * @param value Value
+ */
+export const requireSymbol = (system: ISystem, value: string): boolean => {
+  if (system?.password?.requireSymbol ?? REQUIRE_SYMBOL)
+    return checkRegex(value, /[!@#$%^&*(){}[\]<>?/|.:;_-]/)
+  return true
+}
+
+/**
+ * Check size
+ * @param value Value
+ * @param err Errors
+ */
+export const checkSize = (
+  passwordMinSize: number,
+  passwordMaxSize: number,
+  value: string,
+  err: string[]
+): void => {
+  if (!checkMin(passwordMinSize, value))
+    err.push(errors.passwordTooSmall(passwordMinSize))
+
+  if (!checkMax(passwordMaxSize, value))
+    err.push(errors.passwordTooLong(passwordMaxSize))
+}
+
+/**
+ * Check format
+ * @param system System
+ * @param value Value
+ * @param err Errors
+ */
+export const checkFormat = (
+  system: ISystem,
+  value: string,
+  err: string[]
+): void => {
+  if (!requireLetter(system, value)) err.push(errors.passwordRequireLetter)
+
+  if (!requireNumber(system, value)) err.push(errors.passwordRequireNumber)
+
+  if (!requireSymbol(system, value)) err.push(errors.passwordRequireSymbol)
 }
 
 /**
@@ -54,6 +158,7 @@ const errors = {
  * - inputAutoComplete (string) Input autocomplete (default: none)
  * - edit (boolean) Allow `******` as a valid password for editing purpose (default: `false`)
  * - style (Object) Style of the form item (default: none)
+ * @returns PasswordItem
  */
 const PasswordItem = ({
   labelCol,
@@ -74,88 +179,6 @@ const PasswordItem = ({
   const passwordMaxSize = system?.password?.max ?? MAX_SIZE
 
   /**
-   * Check min
-   * @param value Value
-   */
-  const checkMin = (value: string): boolean => {
-    if (value.length < passwordMinSize) return false
-    return true
-  }
-
-  /**
-   * Check max
-   * @param value Value
-   */
-  const checkMax = (value: string): boolean => {
-    if (value.length > passwordMaxSize) return false
-    return true
-  }
-
-  /**
-   * Check regex
-   * @param value Value
-   * @param regex Regex
-   */
-  const checkRegex = (value: string, regex: RegExp): boolean => {
-    if (value.search(regex) === -1) return false
-    return true
-  }
-
-  /**
-   * Require letter
-   * @param value Value
-   */
-  const requireLetter = (value: string): boolean => {
-    if (system?.password?.requireLetter ?? REQUIRE_LETTER)
-      return checkRegex(value, /[a-zA-Z]/)
-    return true
-  }
-
-  /**
-   * Require number
-   * @param value Value
-   */
-  const requireNumber = (value: string): boolean => {
-    if (system?.password?.requireNumber ?? REQUIRE_NUMBER)
-      return checkRegex(value, /\d/)
-    return true
-  }
-
-  /**
-   * Require symbol
-   * @param value Value
-   */
-  const requireSymbol = (value: string): boolean => {
-    if (system?.password?.requireSymbol ?? REQUIRE_SYMBOL)
-      return checkRegex(value, /[!@#$%^&*(){}[\]<>?/|.:;_-]/)
-    return true
-  }
-
-  /**
-   * Check size
-   * @param value Value
-   * @param err Errors
-   */
-  const checkSize = (value: string, err: string[]): void => {
-    if (!checkMin(value)) err.push(errors.passwordTooSmall(passwordMinSize))
-
-    if (!checkMax(value)) err.push(errors.passwordTooLong(passwordMaxSize))
-  }
-
-  /**
-   * Check format
-   * @param value Value
-   * @param err Errors
-   */
-  const checkFormat = (value: string, err: string[]): void => {
-    if (!requireLetter(value)) err.push(errors.passwordRequireLetter)
-
-    if (!requireNumber(value)) err.push(errors.passwordRequireNumber)
-
-    if (!requireSymbol(value)) err.push(errors.passwordRequireSymbol)
-  }
-
-  /**
    * Render
    */
   return (
@@ -173,8 +196,8 @@ const PasswordItem = ({
 
             if (!value) return Promise.reject(errors.password)
 
-            checkSize(value, err)
-            checkFormat(value, err)
+            checkSize(passwordMinSize, passwordMaxSize, value, err)
+            checkFormat(system, value, err)
 
             if (err.length) return Promise.reject(err)
             else return Promise.resolve()

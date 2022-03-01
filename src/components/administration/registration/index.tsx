@@ -35,7 +35,7 @@ const errors = {
  * @param system System
  * @param mutateSystem Mutate system
  */
-const onAllowSignup = async (
+export const onAllowSignup = async (
   system: ISystem,
   mutateSystem: (system: ISystem) => void
 ): Promise<void> => {
@@ -55,7 +55,7 @@ const onAllowSignup = async (
  * @param values Values
  * @param mutateSystem Mutate system
  */
-const onPasswordFinish = async (
+export const onPasswordFinish = async (
   values: ISystem['password'],
   mutateSystem: (system: ISystem) => void
 ): Promise<void> => {
@@ -74,12 +74,15 @@ const onPasswordFinish = async (
 
 /**
  * Registration
+ * @returns Registration
  */
 const Registration = (): JSX.Element => {
   // Data
   const [form] = Form.useForm()
   const [system, { mutateSystem, errorSystem, loadingSystem }] =
     SystemAPI.useSystem()
+
+  // Layout
   const layout = {
     labelCol: { span: 8 },
     wrapperCol: { span: 16 }
@@ -128,9 +131,7 @@ const Registration = (): JSX.Element => {
             {...layout}
             form={form}
             name="form"
-            onFinish={async (values) =>
-              await onPasswordFinish(values, mutateSystem)
-            }
+            onFinish={async (values) => onPasswordFinish(values, mutateSystem)}
           >
             <Form.Item
               label="Minimum number of characters"

@@ -4,6 +4,9 @@ import PropTypes from 'prop-types'
 import { Button, Tooltip } from 'antd'
 import { EditOutlined } from '@ant-design/icons'
 
+/**
+ * Props
+ */
 export interface IProps {
   disabled?: boolean
   primary?: boolean
@@ -29,6 +32,7 @@ export interface IProps {
  * - loading (boolean) Set loading state
  * - children (React node) Button children
  * - onEdit (Function) Button click
+ * @returns EditButton
  */
 const EditButton = ({
   disabled,

@@ -5,6 +5,9 @@ import { Divider, Empty, Layout, PageHeader, Typography } from 'antd'
 
 import Add from '@/components/workspace/add'
 
+/**
+ * Props
+ */
 export interface IProps {
   swr: {
     addOneWorkspace: Function
@@ -14,6 +17,7 @@ export interface IProps {
 /**
  * Welcome
  * @param props Props
+ * @returns Welcome
  */
 const Welcome = ({ swr }: IProps): JSX.Element => {
   /**

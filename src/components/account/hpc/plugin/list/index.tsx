@@ -9,6 +9,9 @@ import { IClientPlugin } from '@/database/index.d'
 import PluginDialog from '../dialog'
 import Delete from '../delete'
 
+/**
+ * Props
+ */
 export interface IProps {
   plugin: IClientPlugin
   plugins: IClientPlugin[]
@@ -21,6 +24,7 @@ export interface IProps {
 /**
  * Plugins list
  * @param props Props
+ * @returns List
  */
 const List = ({ plugin, plugins, swr }: IProps): JSX.Element => {
   // State

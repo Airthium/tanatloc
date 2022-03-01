@@ -1,17 +1,21 @@
 /** @module Components.Assets.Button.Delete */
 
 import PropTypes from 'prop-types'
-import { ReactChild, useState } from 'react'
+import { Dispatch, ReactChild, SetStateAction, useState } from 'react'
 import { Button, Tooltip } from 'antd'
 import { DeleteOutlined } from '@ant-design/icons'
 
 import { DeleteDialog } from '@/components/assets/dialog'
 
+/**
+ * Props
+ */
 export interface IProps {
   disabled?: boolean
   loading?: boolean
   bordered?: boolean
   text?: string
+  title?: string
   children?: ReactChild | ReactChild[]
   onDelete: () => Promise<void>
 }
@@ -24,19 +28,23 @@ export interface IProps {
  * - loading (boolean) Set loading state
  * - bordered (boolean) Set border
  * - text (string) DeleteDialog text
+ * - title (string) DeleteDialog title
  * - children (React child) Button children
  * - onDelete (async Function) DeleteDialog click (this function can throw an error)
+ * @returns DeleteButton
  */
 const DeleteButton = ({
   disabled,
   loading,
   bordered,
   text,
+  title,
   children,
   onDelete
 }: IProps): JSX.Element => {
   // State
-  const [visible, setVisible]: [boolean, Function] = useState(false)
+  const [visible, setVisible]: [boolean, Dispatch<SetStateAction<boolean>>] =
+    useState(false)
 
   /**
    * Render
@@ -46,7 +54,7 @@ const DeleteButton = ({
       <DeleteDialog
         visible={visible}
         loading={loading}
-        title="Delete"
+        title={title || 'Delete'}
         onCancel={() => setVisible(false)}
         onOk={async () => {
           await onDelete()
@@ -55,7 +63,7 @@ const DeleteButton = ({
       >
         {text || 'Are you sure?'}
       </DeleteDialog>
-      <Tooltip title={'Delete'}>
+      <Tooltip title={children || 'Delete'}>
         <Button
           className={'no-background ' + (bordered ? '' : 'no-border')}
           danger
@@ -76,6 +84,7 @@ DeleteButton.propTypes = {
   loading: PropTypes.bool,
   bordered: PropTypes.bool,
   text: PropTypes.string,
+  title: PropTypes.string,
   children: PropTypes.node,
   onDelete: PropTypes.func.isRequired
 }

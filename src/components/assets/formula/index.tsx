@@ -1,13 +1,22 @@
 /** @module Components.Assets.Formula */
 
 import PropTypes from 'prop-types'
-import { ChangeEvent, useEffect, useState } from 'react'
+import {
+  ChangeEvent,
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useState
+} from 'react'
 import { Checkbox, Input, Space } from 'antd'
 import { CheckboxChangeEvent } from 'antd/lib/checkbox'
 import { CheckCircleOutlined, LoadingOutlined } from '@ant-design/icons'
 
 import MathJax from '@/components/assets/mathjax'
 
+/**
+ * Props
+ */
 export interface IProps {
   label?: string
   defaultValue?: string | number
@@ -17,7 +26,10 @@ export interface IProps {
   unit?: string
 }
 
-const saveDelay = 1000
+/**
+ * Save delay
+ */
+const saveDelay = 500
 
 /**
  * Formula
@@ -28,6 +40,7 @@ const saveDelay = 1000
  * - defaultChecked (boolean) Default checked
  * - onValueChange (Function) On value change
  * - onCheckedChange (Function) On checked change
+ * @returns Formula
  */
 const Formula = ({
   label,
@@ -38,21 +51,25 @@ const Formula = ({
   unit
 }: IProps): JSX.Element => {
   // State
-  const [internalValue, setInternalValue]: [string, Function] = useState(
-    String(defaultValue)
-  )
-  const [internalChecked, setInternalChecked]: [boolean, Function] =
-    useState(defaultChecked)
-  const [disabled, setDisabled]: [boolean, Function] = useState(
-    defaultChecked !== undefined ? !defaultChecked : false
-  )
+  const [internalValue, setInternalValue]: [
+    string,
+    Dispatch<SetStateAction<string>>
+  ] = useState(String(defaultValue))
+  const [internalChecked, setInternalChecked]: [
+    boolean,
+    Dispatch<SetStateAction<boolean>>
+  ] = useState(defaultChecked)
+  const [disabled, setDisabled]: [boolean, Dispatch<SetStateAction<boolean>>] =
+    useState(defaultChecked !== undefined ? !defaultChecked : false)
   const [autoSave, setAutoSave]: [number, Function] = useState(0)
   const [saving, setSaving]: [boolean, Function] = useState(false)
 
-  // Effect
+  // Default value
   useEffect(() => {
-    setInternalValue(defaultValue)
+    setInternalValue(String(defaultValue))
   }, [defaultValue])
+
+  // Default checked
   useEffect(() => {
     setInternalChecked(defaultChecked)
   }, [defaultChecked])

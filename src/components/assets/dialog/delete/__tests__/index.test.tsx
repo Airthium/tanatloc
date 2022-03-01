@@ -10,7 +10,9 @@ describe('components/assets/dialog', () => {
         title="title"
         visible={false}
         onCancel={jest.fn}
-        onOk={jest.fn}
+        onOk={async () => {
+          // Empty
+        }}
         loading={false}
       >
         Are you sure ?
@@ -26,7 +28,9 @@ describe('components/assets/dialog', () => {
         title="title"
         visible={true}
         onCancel={jest.fn}
-        onOk={jest.fn}
+        onOk={async () => {
+          // Empty
+        }}
         loading={false}
       >
         Are you sure ?
@@ -45,7 +49,9 @@ describe('components/assets/dialog', () => {
         title="title"
         visible={true}
         onCancel={jest.fn}
-        onOk={jest.fn}
+        onOk={async () => {
+          // Empty
+        }}
         loading={false}
       >
         Are you sure ?

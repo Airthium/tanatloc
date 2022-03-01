@@ -5,13 +5,25 @@ import { Modal, Space, Typography } from 'antd'
 import { ExclamationCircleTwoTone } from '@ant-design/icons'
 import { ReactChild } from 'react'
 
+import { Error as ErrorNotification } from '@/components/assets/notification'
+
+/**
+ * Props
+ */
 export interface IProps {
   visible: boolean
   loading?: boolean
   title: string
   children: ReactChild | ReactChild[]
-  onCancel: Function
-  onOk: Function
+  onCancel: () => void
+  onOk: () => Promise<void>
+}
+
+/**
+ * Errors
+ */
+const errors = {
+  onOk: 'Dialog validation error'
 }
 
 /**
@@ -24,6 +36,7 @@ export interface IProps {
  * - children (React node) Dialog children
  * - onCancel (Function) Dialog cancel
  * - onOk (Function) Dialog ok
+ * @returns DeleteDialog
  */
 const DeleteDialog = ({
   visible,
@@ -46,7 +59,13 @@ const DeleteDialog = ({
       closable={true}
       visible={visible}
       onCancel={() => onCancel()}
-      onOk={() => onOk()}
+      onOk={async () => {
+        try {
+          await onOk()
+        } catch (err) {
+          err.message && ErrorNotification(errors.onOk, err, false)
+        }
+      }}
       okButtonProps={{ danger: true }}
       confirmLoading={loading}
     >

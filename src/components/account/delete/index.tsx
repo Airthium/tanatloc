@@ -1,7 +1,7 @@
 /** @module Components.Account.Delete */
 
 import PropTypes from 'prop-types'
-import { useState } from 'react'
+import { Dispatch, SetStateAction, useState } from 'react'
 import { Button, Card } from 'antd'
 import { DeleteOutlined } from '@ant-design/icons'
 
@@ -13,6 +13,9 @@ import { DeleteDialog } from '@/components/assets/dialog'
 import UserAPI from '@/api/user'
 import { logout } from '@/api/logout'
 
+/**
+ * Props
+ */
 export interface IProps {
   swr: {
     mutateUser: (user: IUserWithData) => void
@@ -32,7 +35,7 @@ const errors = {
  * @param swr SWR
  */
 export const onDelete = async (
-  setLoading: Function,
+  setLoading: Dispatch<SetStateAction<boolean>>,
   swr: { mutateUser: (user: IUserWithData) => void }
 ): Promise<void> => {
   setLoading(true)
@@ -59,8 +62,10 @@ export const onDelete = async (
  */
 const Delete = ({ swr }: IProps): JSX.Element => {
   // State
-  const [visible, setVisible]: [boolean, Function] = useState(false)
-  const [loading, setLoading]: [boolean, Function] = useState(false)
+  const [visible, setVisible]: [boolean, Dispatch<SetStateAction<boolean>>] =
+    useState(false)
+  const [loading, setLoading]: [boolean, Dispatch<SetStateAction<boolean>>] =
+    useState(false)
 
   /**
    * Render

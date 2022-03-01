@@ -1,7 +1,7 @@
 /** @module Components.Administration.Users */
 
 import PropTypes from 'prop-types'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Dispatch, SetStateAction } from 'react'
 import { Badge, Table, Space, TableColumnsType } from 'antd'
 import { CheckOutlined } from '@ant-design/icons'
 
@@ -16,6 +16,9 @@ import Add from './add'
 import Edit from './edit'
 import Delete from './delete'
 
+/**
+ * Props
+ */
 export interface IProps {
   users: IUserWithData[]
   swr: {
@@ -35,10 +38,14 @@ const errors = {
 /**
  * Users
  * @param props Props
+ * @returns Users
  */
 const Users = ({ users, swr }: IProps): JSX.Element => {
   // State
-  const [plugins, setPlugins]: [IClientPlugin[], Function] = useState()
+  const [plugins, setPlugins]: [
+    IClientPlugin[],
+    Dispatch<SetStateAction<IClientPlugin[]>>
+  ] = useState()
 
   // Data
   const columns: TableColumnsType = [

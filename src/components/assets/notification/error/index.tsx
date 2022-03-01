@@ -12,6 +12,7 @@ import Sentry from '@/lib/sentry'
  * @param title Title
  * @param err Error
  * @param display Display notification
+ * @return ErrorNotification
  */
 const Error = (
   title: string,

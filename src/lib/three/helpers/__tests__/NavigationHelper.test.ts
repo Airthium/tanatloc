@@ -1,13 +1,15 @@
+import { Box3, PerspectiveCamera, Scene, Vector3, WebGLRenderer } from 'three'
+import { TrackballControls } from 'three/examples/jsm/controls/TrackballControls'
 import { NavigationHelper } from '../NavigationHelper'
 
-document.createElement = () => ({
+document.createElement = jest.fn().mockImplementation(() => ({
   getContext: () => ({
-    fillRect: () => {},
-    fillText: () => {}
+    fillRect: jest.fn,
+    fillText: jest.fn
   })
-})
+}))
 
-document.addEventListener = (type, callback) => {
+document.addEventListener = (_, callback) => {
   callback({})
 }
 
@@ -18,7 +20,7 @@ global.MockRaycaster.intersectObjects = [
         uuid: 'id',
         normal: {
           clone: () => ({
-            multiplyScalar: () => {}
+            multiplyScalar: jest.fn
           })
         },
         children: [
@@ -33,85 +35,64 @@ global.MockRaycaster.intersectObjects = [
 ]
 
 describe('lib/three/helpers/NavigationHelper', () => {
-  const renderer = {
+  const getRect = () => ({
+    width: 100,
+    height: 100,
+    top: 0,
+    left: 0
+  })
+  const renderer: WebGLRenderer = {
+    //@ts-ignore
     domElement: {
-      addEventListener: (type, callback) => {
+      addEventListener: (_, callback) => {
         callback({ target: { getBoundingClientRect: () => ({}) } })
         callback({
           clientX: 500,
           clientY: 500,
           target: {
-            getBoundingClientRect: () => ({
-              width: 150,
-              height: 150,
-              top: 0,
-              left: 0
-            })
+            getBoundingClientRect: getRect
           }
         })
         callback({
           clientX: 75,
           clientY: 75,
           target: {
-            getBoundingClientRect: () => ({
-              width: 150,
-              height: 150,
-              top: 0,
-              left: 0
-            })
+            getBoundingClientRect: getRect
           }
         })
         callback({
           clientX: 50,
           clientY: 50,
           target: {
-            getBoundingClientRect: () => ({
-              width: 150,
-              height: 150,
-              top: 0,
-              left: 0
-            })
+            getBoundingClientRect: getRect
           }
         })
         callback({
           clientX: 25,
           clientY: 25,
           target: {
-            getBoundingClientRect: () => ({
-              width: 150,
-              height: 150,
-              top: 0,
-              left: 0
-            })
+            getBoundingClientRect: getRect
           }
         })
       },
-      removeEventListener: () => {}
+      removeEventListener: jest.fn
     },
     getSize: (vector) => {
       vector.x = 150
       vector.y = 150
+      return vector
     },
-    setViewport: () => {},
-    render: () => {}
+    setViewport: jest.fn,
+    render: jest.fn
   }
   const scene = {
-    boundingBox: {
-      getCenter: () => {}
-    }
-  }
+    boundingBox: new Box3()
+  } as Scene & { boundingBox: Box3 }
   const camera = {
-    position: {
-      copy: () => ({
-        multiplyScalar: () => {}
-      }),
-      distanceTo: () => {}
-    },
-    up: {
-      copy: () => {}
-    }
-  }
-  const controls = {}
+    position: new Vector3(),
+    up: new Vector3()
+  } as PerspectiveCamera
+  const controls = {} as TrackballControls
 
   test('call', () => {
     const navigation = NavigationHelper(renderer, scene, camera, controls)
@@ -144,10 +125,10 @@ describe('lib/three/helpers/NavigationHelper', () => {
         children: [
           {
             geometry: {
-              dispose: () => {}
+              dispose: jest.fn
             },
             material: {
-              dispose: () => {}
+              dispose: jest.fn
             }
           }
         ]

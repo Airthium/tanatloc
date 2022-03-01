@@ -96,7 +96,9 @@ const PartLoader = (
       loader.load(
         url,
         (glb) => resolve(glb),
-        (progress) => console.info(progress),
+        () => {
+          /* nothing to do here */
+        },
         (err) => reject(err)
       )
     })) as any

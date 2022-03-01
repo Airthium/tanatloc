@@ -1,12 +1,13 @@
-import { Vector3 } from 'three'
+import { Box3, PerspectiveCamera, Scene, Vector3, WebGLRenderer } from 'three'
+import { TrackballControls } from 'three/examples/jsm/controls/TrackballControls'
 import { SectionViewHelper } from '../SectionViewHelper'
 
 jest.mock('three/examples/jsm/controls/TransformControls', () => ({
-  TransformControls: class {
-    attach() {}
-    detach() {}
-    setMode() {}
-  }
+  TransformControls: jest.fn().mockImplementation(() => ({
+    attach: jest.fn,
+    detach: jest.fn,
+    setMode: jest.fn
+  }))
 }))
 
 describe('lib/three/helpers/SectionViewHelper', () => {
@@ -14,28 +15,22 @@ describe('lib/three/helpers/SectionViewHelper', () => {
   let mouseMove
   let mouseUp
 
-  const renderer = {
+  const renderer: WebGLRenderer = {
+    //@ts-ignore
     domElement: {
       addEventListener: (type, callback) => {
         if (type === 'mousedown') mouseDown = callback
         else if (type === 'mousemove') mouseMove = callback
         else if (type === 'mouseup') mouseUp = callback
       },
-      removeEventListener: () => {}
+      removeEventListener: jest.fn
     },
-    getSize: () => {}
+    getSize: (vector) => vector
   }
-  const scene = {
-    add: () => {},
-    boundingBox: {
-      getCenter: () => {},
-      getSize: () => {}
-    }
-  }
-  const camera = {}
-  const controls = {
-    stop: () => {}
-  }
+  const scene = new Scene() as Scene & { boundingBox: Box3 }
+  scene.boundingBox = new Box3()
+  const camera = {} as PerspectiveCamera
+  const controls = {} as TrackballControls
   test('call', () => {
     const sectionView = SectionViewHelper(renderer, scene, camera, controls)
     expect(sectionView).toBeDefined()
@@ -69,7 +64,7 @@ describe('lib/three/helpers/SectionViewHelper', () => {
 
   test('setMode', () => {
     const sectionView = SectionViewHelper(renderer, scene, camera, controls)
-    sectionView.setMode('mode')
+    sectionView.setMode('rotate')
   })
 
   test('mouse', () => {
@@ -103,10 +98,10 @@ describe('lib/three/helpers/SectionViewHelper', () => {
     global.MockGroup.children = [
       {
         geometry: {
-          dispose: () => {}
+          dispose: jest.fn
         },
         material: {
-          dispose: () => {}
+          dispose: jest.fn
         }
       }
     ]

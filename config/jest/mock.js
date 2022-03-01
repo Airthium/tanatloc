@@ -72,6 +72,8 @@ class MockBox3 {
     this.getBoundingSphere = () => new MockSphere()
     this.set = jest.fn()
     this.isEmpty = () => global.MockBox3.isEmpty
+    this.getCenter = jest.fn()
+    this.getSize = jest.fn()
 
     this.min = new MockVector3()
     this.max = new MockVector3()
@@ -239,6 +241,7 @@ class MockVector3 {
     this.x = global.MockVector3.x
     this.y = global.MockVector3.y
     this.z = global.MockVector3.z
+    this.distanceTo = jest.fn()
     this.applyQuaternion = () => new MockVector3()
     this.unproject = () => new MockVector3()
     this.set = () => new MockVector3()

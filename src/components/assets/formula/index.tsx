@@ -48,14 +48,6 @@ const Formula = ({
   const [autoSave, setAutoSave]: [number, Function] = useState(0)
   const [saving, setSaving]: [boolean, Function] = useState(false)
 
-  useEffect(() => {
-    setInternalValue(defaultValue)
-  }, [defaultValue])
-
-  useEffect(() => {
-    setInternalChecked(defaultChecked)
-  }, [defaultChecked])
-
   /**
    * On check change
    * @param event

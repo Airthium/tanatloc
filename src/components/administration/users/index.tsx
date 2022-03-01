@@ -158,8 +158,6 @@ const Users = ({ users, swr }: IProps): JSX.Element => {
       })
   }, [])
 
-  console.log(plugins)
-
   /**
    * Render
    */

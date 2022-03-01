@@ -318,7 +318,8 @@ const Project = (): JSX.Element => {
       // Deleted simulation's geometry
       if (
         key === 'geometry' &&
-        !geometries.filter((geometry) => geometry.id === child.value).length
+        !geometries.filter((geometry) => geometry.id === child.value).length &&
+        !loadingGeometries
       ) {
         icon = <ExclamationCircleOutlined style={{ color: 'orange' }} />
         child.done = null

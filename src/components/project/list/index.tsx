@@ -192,7 +192,7 @@ const ProjectList = ({
     )
   else
     return (
-      <Space wrap={true} align="start" size={20}>
+      <Space className="marginBottom-20" wrap={true} align="start" size={20}>
         {list.map((project) => {
           return (
             <Card

@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/router'
 import { useState, useEffect } from 'react'
-import { Layout, Menu } from 'antd'
+import { Layout, Menu, Tooltip } from 'antd'
 import {
   AppstoreOutlined,
   ControlOutlined,
@@ -223,7 +223,10 @@ const Dashboard = () => {
               {menuItems.logout.label}
             </Menu.Item>
             <Menu.Item key="version" disabled className="version">
-              version {packageJson.version} {gitVersion && <>({gitVersion})</>}
+              <Tooltip title={"version" + packageJson.version + gitVersion} placement="topLeft">
+                  version {packageJson.version} {gitVersion && <>({gitVersion})</>}
+              </Tooltip>
+              
             </Menu.Item>
           </Menu>
         </Layout.Sider>

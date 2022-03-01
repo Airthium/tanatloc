@@ -85,11 +85,7 @@ const Account = ({ user, swr }: IProps): JSX.Element => {
             </Space>
           </Tabs.TabPane>
           <Tabs.TabPane className="no-scroll" tab="HPC Providers" key="hpc">
-            <HPC
-              user={{
-                authorizedplugins: user.authorizedplugins
-              }}
-            />
+            <HPC />
           </Tabs.TabPane>
         </Tabs>
       </Layout.Content>
@@ -102,8 +98,7 @@ Account.propTypes = {
     email: PropTypes.string.isRequired,
     firstname: PropTypes.string,
     lastname: PropTypes.string,
-    avatar: PropTypes.object,
-    authorizedplugins: PropTypes.arrayOf(PropTypes.string).isRequired
+    avatar: PropTypes.object
   }).isRequired,
   swr: PropTypes.exact({
     mutateUser: PropTypes.func.isRequired

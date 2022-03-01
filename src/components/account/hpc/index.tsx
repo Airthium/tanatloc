@@ -1,20 +1,13 @@
 /** @module Components.Account.HPC */
 
-import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
-import { Card, Space } from 'antd'
-
-import { IUserWithData } from '@/lib/index.d'
+import { Card, Space, Spin } from 'antd'
 
 import { Error as ErrorNotification } from '@/components/assets/notification'
 
 import PluginsAPI from '@/api/plugins'
 
 import Plugin from './plugin'
-
-export interface IProps {
-  user: IUserWithData
-}
 
 /**
  * Errors
@@ -27,9 +20,13 @@ const errors = {
  * HPC plugins
  * @param props Props
  */
-const HPC = ({ user }: IProps): JSX.Element => {
+const HPC = (): JSX.Element => {
   // State
-  const [list, setList]: [JSX.Element[], Function] = useState([])
+  const [list, setList]: [JSX.Element[], Function] = useState([
+    <Card key="loading" title="Loading">
+      <Spin />
+    </Card>
+  ])
 
   // Plugins list
   useEffect(() => {
@@ -65,7 +62,7 @@ const HPC = ({ user }: IProps): JSX.Element => {
       .catch((err) => {
         ErrorNotification(errors.plugins, err)
       })
-  }, [user])
+  }, [])
 
   /**
    * Render
@@ -77,10 +74,6 @@ const HPC = ({ user }: IProps): JSX.Element => {
   )
 }
 
-HPC.propTypes = {
-  user: PropTypes.exact({
-    authorizedplugins: PropTypes.arrayOf(PropTypes.string).isRequired
-  }).isRequired
-}
+HPC.propTypes = {}
 
 export default HPC

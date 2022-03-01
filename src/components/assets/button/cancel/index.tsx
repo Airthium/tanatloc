@@ -37,7 +37,7 @@ const CancelButton = ({
         type="default"
         onClick={onCancel}
       >
-        {children}
+        {children || 'Cancel'}
       </Button>
     </Tooltip>
   )

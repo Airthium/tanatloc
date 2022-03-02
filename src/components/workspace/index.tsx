@@ -1,7 +1,7 @@
 /** @module Components.Workspace */
 
 import PropTypes from 'prop-types'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, Dispatch, SetStateAction } from 'react'
 import { Avatar, Button, Input, Layout, PageHeader, Space, Tabs } from 'antd'
 import { SearchOutlined } from '@ant-design/icons'
 
@@ -25,6 +25,9 @@ import Utils from '@/lib/utils'
 
 import ProjectAPI from '@/api/project'
 
+/**
+ * Props
+ */
 export interface IProps {
   loading: boolean
   user: IUserWithData
@@ -37,9 +40,6 @@ export interface IProps {
   }
 }
 
-// Menu's tabs
-const { TabPane } = Tabs
-
 /**
  * Errors
  */
@@ -51,6 +51,7 @@ const errors = {
 /**
  * Workspace
  * @param props Props
+ * @returns Workspace
  */
 const Workspace = ({
   loading,
@@ -61,8 +62,10 @@ const Workspace = ({
   swr
 }: IProps): JSX.Element => {
   // State
-  const [filter, setFilter]: [string, Function] = useState()
-  const [sorter, setSorter]: [string, Function] = useState()
+  const [filter, setFilter]: [string, Dispatch<SetStateAction<string>>] =
+    useState()
+  const [sorter, setSorter]: [string, Dispatch<SetStateAction<string>>] =
+    useState()
 
   // Data
   const [
@@ -82,22 +85,6 @@ const Workspace = ({
   }, [errorProjects])
 
   /**
-   * On search
-   * @param e Event
-   */
-  const onSearch = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    setFilter(e.target.value)
-  }
-
-  /**
-   * On sort
-   * @param key Key
-   */
-  const onSort = (key: string): void => {
-    setSorter(key)
-  }
-
-  /**
    * Render
    */
   if (loading) return <Loading.Simple />
@@ -112,7 +99,7 @@ const Workspace = ({
               <Input.Search
                 placeholder="Enter a project name (case sensitive)"
                 value={filter}
-                onChange={onSearch}
+                onChange={(event) => setFilter(event.target.value)}
                 style={{ width: 500 }}
                 enterButton={
                   <Button type="primary" icon={<SearchOutlined />} />
@@ -168,11 +155,11 @@ const Workspace = ({
         <Tabs
           className="inWorkspace-Tabs"
           defaultActiveKey="modifiedDesc"
-          onChange={onSort}
+          onChange={(key) => setSorter(key)}
         >
-          <TabPane tab="Last modified" key="modifiedDesc" />
-          <TabPane tab="Name (A-Z)" key="alphaAsc" />
-          <TabPane tab="Name (Z-A)" key="alphaDesc" />
+          <Tabs.TabPane tab="Last modified" key="modifiedDesc" />
+          <Tabs.TabPane tab="Name (A-Z)" key="alphaAsc" />
+          <Tabs.TabPane tab="Name (Z-A)" key="alphaDesc" />
         </Tabs>
         <Layout.Content className="scroll">
           <ProjectList

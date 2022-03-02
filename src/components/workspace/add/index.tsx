@@ -1,8 +1,10 @@
 /** @module Components.Workspace.Add */
 
 import PropTypes from 'prop-types'
-import { useState } from 'react'
+import { Dispatch, SetStateAction, useState } from 'react'
 import { Form, Input } from 'antd'
+
+import { INewWorkspace } from '@/database/index.d'
 
 import Dialog from '@/components/assets/dialog'
 import { ErrorNotification } from '@/components/assets/notification'
@@ -10,50 +12,55 @@ import { AddButton } from '@/components/assets/button'
 
 import WorkspaceAPI from '@/api/workspace'
 
+/**
+ * Props
+ */
 export interface IProps {
   swr: {
-    addOneWorkspace: Function
+    addOneWorkspace: (workspace: INewWorkspace) => void
   }
 }
 
 /**
- * Errors (add)
+ * Errors
  */
 const errors = {
   add: 'Unable to add the workspace'
 }
 
 /**
- * Add workspace
+ * On confirm
+ * @param values Values
+ * @param swr SWR
+ */
+const onOk = async (
+  values: { name: string },
+  swr: { addOneWorkspace: (workspace: INewWorkspace) => void }
+): Promise<void> => {
+  try {
+    // Add
+    const workspace = await WorkspaceAPI.add(values)
+
+    // Mutate
+    swr.addOneWorkspace(workspace)
+  } catch (err) {
+    ErrorNotification(errors.add, err)
+
+    throw err
+  }
+}
+
+/**
+ * Add
  * @param props Props
+ * @returns Add
  */
 const Add = ({ swr }: IProps): JSX.Element => {
   // Sate
-  const [loading, setLoading]: [boolean, Function] = useState(false)
-  const [visible, setVisible]: [boolean, Function] = useState(false)
-
-  /**
-   * On confirm
-   * @param values Values
-   */
-  const onOk = async (values: { name: string }): Promise<void> => {
-    setLoading(true)
-    try {
-      // Add
-      const workspace = await WorkspaceAPI.add(values)
-
-      // Mutate
-      swr.addOneWorkspace(workspace)
-
-      // Close
-      setLoading(false)
-      setVisible(false)
-    } catch (err) {
-      ErrorNotification(errors.add, err)
-      setLoading(false)
-      throw err
-    }
-  }
+  const [loading, setLoading]: [boolean, Dispatch<SetStateAction<boolean>>] =
+    useState(false)
+  const [visible, setVisible]: [boolean, Dispatch<SetStateAction<boolean>>] =
+    useState(false)
 
   /**
    * Render
@@ -68,7 +75,19 @@ const Add = ({ swr }: IProps): JSX.Element => {
         loading={loading}
         title="Create a new workspace"
         onCancel={() => setVisible(false)}
-        onOk={onOk}
+        onOk={async (values) => {
+          setLoading(true)
+          try {
+            await onOk(values, swr)
+
+            // Close
+            setLoading(false)
+            setVisible(false)
+          } catch (err) {
+            setLoading(false)
+            throw err
+          }
+        }}
       >
         <Form.Item
           label="Name"
@@ -89,7 +108,7 @@ const Add = ({ swr }: IProps): JSX.Element => {
 }
 
 Add.propTypes = {
-  swr: PropTypes.shape({
+  swr: PropTypes.exact({
     addOneWorkspace: PropTypes.func.isRequired
   }).isRequired
 }

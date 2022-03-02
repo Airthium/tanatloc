@@ -3,6 +3,8 @@
 import PropTypes from 'prop-types'
 import { Divider, Empty, Layout, PageHeader, Typography } from 'antd'
 
+import { INewWorkspace } from '@/database/index.d'
+
 import Add from '@/components/workspace/add'
 
 /**
@@ -10,7 +12,7 @@ import Add from '@/components/workspace/add'
  */
 export interface IProps {
   swr: {
-    addOneWorkspace: Function
+    addOneWorkspace: (workspace: INewWorkspace) => void
   }
 }
 

@@ -1,53 +1,62 @@
 /** @module Components.Workspace.Delete */
 
 import PropTypes from 'prop-types'
-import { useState } from 'react'
+import { Dispatch, SetStateAction, useState } from 'react'
+
+import { IWorkspaceWithData } from '@/lib/index.d'
 
 import { ErrorNotification } from '@/components/assets/notification'
 import { DeleteButton } from '@/components/assets/button'
 
 import WorkspaceAPI from '@/api/workspace'
 
+/**
+ * Props
+ */
 export interface IProps {
-  workspace: {
-    id: string
-  }
+  workspace: IWorkspaceWithData
   swr: {
-    delOneWorkspace: Function
+    delOneWorkspace: (workspace: IWorkspaceWithData) => void
   }
 }
 
 /**
- * Errors (delete)
+ * Errors
  */
 const errors = {
   delError: 'Unable to delete the workspace'
 }
 
 /**
+ * On delete
+ * @param workspace Workspace
+ * @param swr SWR
+ */
+const onDelete = async (
+  workspace: IWorkspaceWithData,
+  swr: { delOneWorkspace: (workspace: IWorkspaceWithData) => void }
+): Promise<void> => {
+  try {
+    // Delete
+    await WorkspaceAPI.del({ id: workspace.id })
+
+    // Mutate
+    swr.delOneWorkspace({ id: workspace.id })
+  } catch (err) {
+    ErrorNotification(errors.delError, err)
+    throw err
+  }
+}
+
+/**
  * Delete workspace
  * @param props Props
+ * @returns Delete
  */
 const Delete = ({ workspace, swr }: IProps): JSX.Element => {
   // State
-  const [loading, setLoading]: [boolean, Function] = useState(false)
-
-  /**
-   * On delete
-   */
-  const onDelete = async (): Promise<void> => {
-    setLoading(true)
-    try {
-      // Delete
-      await WorkspaceAPI.del({ id: workspace.id })
-
-      // Mutate
-      swr.delOneWorkspace({ id: workspace.id })
-    } catch (err) {
-      ErrorNotification(errors.delError, err)
-      setLoading(false)
-    }
-  }
+  const [loading, setLoading]: [boolean, Dispatch<SetStateAction<boolean>>] =
+    useState(false)
 
   /**
    * Render
@@ -57,16 +66,23 @@ const Delete = ({ workspace, swr }: IProps): JSX.Element => {
       bordered
       loading={loading}
       text="The projects contained in this workspace will be lost."
-      onDelete={onDelete}
+      onDelete={async () => {
+        setLoading(true)
+        try {
+          await onDelete(workspace, swr)
+        } catch (err) {
+          setLoading(false)
+        }
+      }}
     />
   )
 }
 
 Delete.propTypes = {
-  workspace: PropTypes.shape({
+  workspace: PropTypes.exact({
     id: PropTypes.string.isRequired
   }).isRequired,
-  swr: PropTypes.shape({
+  swr: PropTypes.exact({
     delOneWorkspace: PropTypes.func.isRequired
   }).isRequired
 }

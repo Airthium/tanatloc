@@ -2,7 +2,7 @@
 
 import PropTypes from 'prop-types'
 import { useRouter } from 'next/router'
-import { useState } from 'react'
+import { Dispatch, SetStateAction, useState } from 'react'
 import {
   Divider,
   Empty,
@@ -14,7 +14,11 @@ import {
   Typography
 } from 'antd'
 
-import { IOrganizationWithData, IWorkspaceWithData } from '@/lib/index.d'
+import {
+  IOrganizationWithData,
+  IUserWithData,
+  IWorkspaceWithData
+} from '@/lib/index.d'
 import { INewWorkspace } from '@/database/index.d'
 
 import Dialog from '@/components/assets/dialog'
@@ -26,7 +30,7 @@ import Workspace from '..'
 import Add from '../add'
 
 export interface IProps {
-  user: {}
+  user: IUserWithData
   workspaces: IWorkspaceWithData[]
   organizations: IOrganizationWithData[]
   swr: {
@@ -37,15 +41,37 @@ export interface IProps {
 }
 
 /**
- * Errors (add)
+ * Errors
  */
 const errors = {
   add: 'Unable to add the workspace'
 }
 
 /**
+ * On confirm
+ * @param values Values
+ * @param swr SWR
+ */
+const onOk = async (
+  values: { name: string },
+  swr: { addOneWorkspace: (workspace: INewWorkspace) => void }
+): Promise<void> => {
+  try {
+    // Add
+    const workspace = await WorkspaceAPI.add(values)
+
+    // Mutate
+    swr.addOneWorkspace(workspace)
+  } catch (err) {
+    ErrorNotification(errors.add, err)
+    throw err
+  }
+}
+
+/**
  * Workspace list
  * @param props Props
+ * @returns WorkspaceList
  */
 const WorkspacesList = ({
   user,
@@ -54,46 +80,15 @@ const WorkspacesList = ({
   swr
 }: IProps): JSX.Element => {
   // State
-  const [visible, setVisible]: [boolean, Function] = useState(false)
-  const [loading, setLoading]: [boolean, Function] = useState(false)
+  const [visible, setVisible]: [boolean, Dispatch<SetStateAction<boolean>>] =
+    useState(false)
+  const [loading, setLoading]: [boolean, Dispatch<SetStateAction<boolean>>] =
+    useState(false)
 
   // Router
   const router = useRouter()
   const { page, workspaceId }: { page?: string; workspaceId?: string } =
     router.query
-
-  /**
-   * On tab edit
-   * @param _ Unused
-   * @param action Action
-   */
-  const onEdit = (_: {}, action: string): void => {
-    /* istanbul ignore next */
-    if (action === 'add') setVisible(true)
-  }
-
-  /**
-   * On confirm
-   * @param values Values
-   */
-  const onOk = async (values: { name: string }): Promise<void> => {
-    setLoading(true)
-    try {
-      // Add
-      const workspace = await WorkspaceAPI.add(values)
-
-      // Mutate
-      swr.addOneWorkspace(workspace)
-
-      // Close
-      setLoading(false)
-      setVisible(false)
-    } catch (err) {
-      ErrorNotification(errors.add, err)
-      setLoading(false)
-      throw err
-    }
-  }
 
   /**
    * Render
@@ -118,7 +113,19 @@ const WorkspacesList = ({
               loading={loading}
               title="Create a new workspace"
               onCancel={() => setVisible(false)}
-              onOk={onOk}
+              onOk={async (values) => {
+                setLoading(true)
+                try {
+                  await onOk(values, swr)
+
+                  // Close
+                  setLoading(false)
+                  setVisible(false)
+                } catch (err) {
+                  setLoading(false)
+                  throw err
+                }
+              }}
             >
               <Form.Item
                 label="Name"
@@ -138,7 +145,7 @@ const WorkspacesList = ({
               type="editable-card"
               className="inDashboard-Tabs no-scroll"
               defaultActiveKey={workspaceId || '1'}
-              onEdit={onEdit}
+              onEdit={() => setVisible(true)}
             >
               {workspaces.map((workspace) => (
                 <Tabs.TabPane
@@ -181,6 +188,7 @@ const WorkspacesList = ({
   )
 }
 
+//TODO proptypes
 WorkspacesList.propTypes = {
   user: PropTypes.exact({
     id: PropTypes.string.isRequired

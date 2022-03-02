@@ -1,8 +1,10 @@
 /** @module Components.Workspace.Edit */
 
 import PropTypes from 'prop-types'
-import { useState } from 'react'
+import { Dispatch, SetStateAction, useState } from 'react'
 import { Form, Input } from 'antd'
+
+import { IWorkspaceWithData } from '@/lib/index.d'
 
 import Dialog from '@/components/assets/dialog'
 import { ErrorNotification } from '@/components/assets/notification'
@@ -10,60 +12,64 @@ import { EditButton } from '@/components/assets/button'
 
 import WorkspaceAPI from '@/api/workspace'
 
+/**
+ * Props
+ */
 export interface IProps {
-  workspace: {
-    id: string
-    name?: string
-  }
+  workspace: IWorkspaceWithData
   swr: {
-    mutateOneWorkspace: Function
+    mutateOneWorkspace: (workspace: IWorkspaceWithData) => void
   }
 }
 
 /**
- * Errors (edit)
+ * Errors
  */
 const errors = {
   update: 'Unable to update the workspace'
 }
 
 /**
- * Edit workspace
+ * On edit
+ * @param workspace Workspace
+ * @param values Values
+ * @param swr SWR
+ */
+const onEdit = async (
+  workspace: IWorkspaceWithData,
+  values: { name: string },
+  swr: { mutateOneWorkspace: (workspace: IWorkspaceWithData) => void }
+): Promise<void> => {
+  try {
+    // New workspace
+    const newWorkspace = { ...workspace }
+    workspace.name = values.name
+
+    // Edit
+    await WorkspaceAPI.update({ id: workspace.id }, [
+      { key: 'name', value: values.name }
+    ])
+
+    // Mutate
+    swr.mutateOneWorkspace(newWorkspace)
+  } catch (err) {
+    ErrorNotification(errors.update, err)
+
+    throw err
+  }
+}
+
+/**
+ * Edit
  * @param props Props
+ * @returns Edit
  */
 const Edit = ({ workspace, swr }: IProps): JSX.Element => {
   // Sate
-  const [visible, setVisible]: [boolean, Function] = useState(false)
-  const [loading, setLoading]: [boolean, Function] = useState(false)
-
-  /**
-   * On edit
-   * @param values Values
-   */
-  const onEdit = async (values: { name: string }): Promise<void> => {
-    setLoading(true)
-    try {
-      // New workspace
-      const newWorkspace = { ...workspace }
-      workspace.name = values.name
-
-      // Edit
-      await WorkspaceAPI.update({ id: workspace.id }, [
-        { key: 'name', value: values.name }
-      ])
-
-      // Mutate
-      swr.mutateOneWorkspace(newWorkspace)
-
-      // Close
-      setLoading(false)
-      setVisible(false)
-    } catch (err) {
-      ErrorNotification(errors.update, err)
-      setLoading(false)
-      throw err
-    }
-  }
+  const [visible, setVisible]: [boolean, Dispatch<SetStateAction<boolean>>] =
+    useState(false)
+  const [loading, setLoading]: [boolean, Dispatch<SetStateAction<boolean>>] =
+    useState(false)
 
   /**
    * Render
@@ -77,7 +83,19 @@ const Edit = ({ workspace, swr }: IProps): JSX.Element => {
         title="Edit a workspace"
         initialValues={{ name: workspace.name }}
         onCancel={() => setVisible(false)}
-        onOk={onEdit}
+        onOk={async (values) => {
+          setLoading(true)
+          try {
+            await onEdit(workspace, values, swr)
+
+            // Close
+            setLoading(false)
+            setVisible(false)
+          } catch (err) {
+            setLoading(false)
+            throw err
+          }
+        }}
       >
         <Form.Item
           label="Name"
@@ -102,7 +120,7 @@ Edit.propTypes = {
     id: PropTypes.string.isRequired,
     name: PropTypes.string
   }).isRequired,
-  swr: PropTypes.shape({
+  swr: PropTypes.exact({
     mutateOneWorkspace: PropTypes.func.isRequired
   }).isRequired
 }

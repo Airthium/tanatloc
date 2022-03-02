@@ -3,6 +3,7 @@
 import useSWR from 'swr'
 
 import { IProjectWithData } from '@/lib/index.d'
+import { INewProject } from '@/database/index.d'
 
 import { fetcher } from '@/api/call'
 /**
@@ -16,7 +17,7 @@ export const useProjects = (
   IProjectWithData[],
   {
     mutateProjects: (data: { projects: IProjectWithData[] }) => void
-    addOneProject: (project: IProjectWithData) => void
+    addOneProject: (project: INewProject) => void
     delOneProject: (project: IProjectWithData) => void
     mutateOneProject: (project: IProjectWithData) => void
     errorProjects: Error
@@ -34,8 +35,9 @@ export const useProjects = (
    * Add one (useProjects)
    * @param project Project
    */
-  const addOne = (project: IProjectWithData): void => {
+  const addOne = (project: INewProject): void => {
     const newProjects = [...projects, project]
+    //@ts-ignore
     mutate({ projects: newProjects })
   }
 

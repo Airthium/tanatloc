@@ -8,7 +8,7 @@ import { DeleteOutlined } from '@ant-design/icons'
 import { IOrganizationWithData, IUserWithData } from '@/lib/index.d'
 
 import { DeleteDialog } from '@/components/assets/dialog'
-import { Error as ErrorNotification } from '@/components/assets/notification'
+import { ErrorNotification } from '@/components/assets/notification'
 
 import OrganizationAPI from '@/api/organization'
 

@@ -6,7 +6,7 @@ import { useState } from 'react'
 import { ISimulation } from '@/database/index.d'
 import { IProjectWithData } from '@/lib/index.d'
 
-import { Error } from '@/components/assets/notification'
+import { ErrorNotification } from '@/components/assets/notification'
 import { DeleteButton } from '@/components/assets/button'
 
 import SimulationAPI from '@/api/simulation'
@@ -56,7 +56,7 @@ const Delete = ({ project, simulation, swr }: IProps): JSX.Element => {
       // Mutate simulations
       swr.delOneSimulation({ id: simulation.id })
     } catch (err) {
-      Error(errors.delError, err)
+      ErrorNotification(errors.delError, err)
     } finally {
       setLoading(false)
     }

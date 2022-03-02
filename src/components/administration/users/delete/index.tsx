@@ -6,7 +6,7 @@ import { Dispatch, SetStateAction, useState } from 'react'
 import { IUserWithData } from '@/lib/index.d'
 
 import { DeleteButton } from '@/components/assets/button'
-import { Error } from '@/components/assets/notification'
+import { ErrorNotification } from '@/components/assets/notification'
 
 import UserAPI from '@/api/user'
 
@@ -51,7 +51,7 @@ export const onDelete = async (
     // Mutate
     swr.delOneUser({ id: user.id })
   } catch (err) {
-    Error(errors.delError, err)
+    ErrorNotification(errors.delError, err)
     throw err
   } finally {
     setLoading(false)

@@ -12,7 +12,7 @@ import {
   ISimulationTaskFile
 } from '@/database/index.d'
 
-import { Error as ErrorNotification } from '@/components/assets/notification'
+import { ErrorNotification } from '@/components/assets/notification'
 
 import CloudServer from './cloudServer'
 import Log from './log'

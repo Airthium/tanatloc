@@ -6,7 +6,7 @@ import { useState } from 'react'
 import { IGeometry, ISimulation } from '@/database/index.d'
 import { IModelMaterialValue } from '@/models/index.d'
 
-import { Error as ErrorNotification } from '@/components/assets/notification'
+import { ErrorNotification } from '@/components/assets/notification'
 import { EditButton } from '@/components/assets/button'
 
 import SimulationAPI from '@/api/simulation'

@@ -1,6 +1,7 @@
 /** @module Components.Assets.Notification */
 
-import Success from './success'
-import Error from './error'
+import SuccessNotification from './success'
+import ErrorNotification from './error'
+import { FormError } from './form'
 
-export { Success, Error }
+export { SuccessNotification, ErrorNotification, FormError }

@@ -5,8 +5,8 @@ import { Button, Form, Input, Typography } from 'antd'
 
 import Dialog from '@/components/assets/dialog'
 import {
-  Success as SuccessNotification,
-  Error as ErrorNotification
+  SuccessNotification,
+  ErrorNotification
 } from '@/components/assets/notification'
 
 import EmailAPI from '@/api/email'

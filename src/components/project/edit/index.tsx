@@ -7,7 +7,7 @@ import { Form, Input } from 'antd'
 import { IProjectWithData } from '@/lib/index.d'
 
 import Dialog from '@/components/assets/dialog'
-import { Error } from '@/components/assets/notification'
+import { ErrorNotification } from '@/components/assets/notification'
 
 import ProjectAPI from '@/api/project'
 import { EditButton } from '@/components/assets/button'
@@ -65,7 +65,7 @@ const Edit = ({ disabled, project, swr }: IProps): JSX.Element => {
       setLoading(false)
       setVisible(false)
     } catch (err) {
-      Error(errors.editError, err)
+      ErrorNotification(errors.editError, err)
       setLoading(false)
       throw err
     }

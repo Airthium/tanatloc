@@ -6,7 +6,7 @@ import { Space, Spin } from 'antd'
 
 import { IClientPlugin } from '@/database/index.d'
 
-import { Error as ErrorNotification } from '@/components/assets/notification'
+import { ErrorNotification } from '@/components/assets/notification'
 
 import PluginDialog from './dialog'
 import List from './list'

@@ -3,6 +3,7 @@
 import useSWR from 'swr'
 
 import { IWorkspaceWithData } from '@/lib/index.d'
+import { INewWorkspace } from '@/database/index.d'
 
 import { fetcher } from '@/api/call'
 
@@ -14,7 +15,7 @@ export const useWorkspaces = (): [
   IWorkspaceWithData[],
   {
     mutateWorkspaces: (data: { workspaces: IWorkspaceWithData[] }) => void
-    addOneWorkspace: (workspace: IWorkspaceWithData) => void
+    addOneWorkspace: (workspace: INewWorkspace) => void
     delOneWorkspace: (workspace: IWorkspaceWithData) => void
     mutateOneWorkspace: (workspace: IWorkspaceWithData) => void
     errorWorkspaces: Error
@@ -29,8 +30,9 @@ export const useWorkspaces = (): [
    * Add one (useWorkspaces)
    * @param workspace Workspace
    */
-  const addOne = (workspace: IWorkspaceWithData): void => {
+  const addOne = (workspace: INewWorkspace): void => {
     const newWorkspaces = [...workspaces, workspace]
+    //@ts-ignore
     mutate({ workspaces: newWorkspaces })
   }
 

@@ -26,7 +26,7 @@ describe('api/project/useProjects', () => {
     expect(mutateOneProject).toBeDefined()
     expect(loadingProjects).toBe(false)
 
-    addOneProject({ id: 'id' })
+    addOneProject({ id: 'id', title: 'title', owners: ['id'], workspace: 'id' })
     delOneProject({ id: 'id' })
     mutateOneProject({ id: 'id' })
   })

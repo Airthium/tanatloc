@@ -39,9 +39,9 @@ export interface IProps {
   filter?: string
   sorter?: string
   swr: {
-    mutateOneWorkspace: Function
-    delOneProject: Function
-    mutateOneProject: Function
+    mutateOneWorkspace: (workspace: IWorkspaceWithData) => void
+    delOneProject: (project: IProjectWithData) => void
+    mutateOneProject: (project: IProjectWithData) => void
     loadingProjects: boolean
   }
 }

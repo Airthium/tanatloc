@@ -6,7 +6,7 @@ import { Button, Form, Input } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
 
 import Dialog from '@/components/assets/dialog'
-import { Error } from '@/components/assets/notification'
+import { ErrorNotification } from '@/components/assets/notification'
 
 import OrganizationAPI from '@/api/organization'
 
@@ -52,7 +52,7 @@ const Add = ({ swr }: IProps): JSX.Element => {
       setLoading(false)
       setVisible(false)
     } catch (err) {
-      Error(errors.addError, err)
+      ErrorNotification(errors.addError, err)
       setLoading(false)
       throw err
     }

@@ -35,7 +35,7 @@ import { v4 } from 'uuid'
 import { IGeometry, ISimulation, ISimulationTaskFile } from '@/database/index.d'
 import { IProjectWithData } from '@/lib/index.d'
 
-import { Error as ErrorNotification } from '@/components/assets/notification'
+import { ErrorNotification } from '@/components/assets/notification'
 
 import { TrackballControls } from 'three/examples/jsm/controls/TrackballControls'
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass'

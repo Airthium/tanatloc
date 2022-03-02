@@ -6,7 +6,7 @@ import { Card, Layout, Space, Spin, Typography } from 'antd'
 
 import { SUBSCRIBE, REVALIDATE } from '@/config/email'
 
-import { Error as ErrorNotification } from '@/components/assets/notification'
+import { ErrorNotification } from '@/components/assets/notification'
 
 import LinkAPI from '@/api/link'
 

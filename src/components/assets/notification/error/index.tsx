@@ -14,7 +14,7 @@ import Sentry from '@/lib/sentry'
  * @param display Display notification
  * @return ErrorNotification
  */
-const Error = (
+const ErrorNotification = (
   title: string,
   err?: ICallError,
   display: boolean = true
@@ -32,7 +32,7 @@ const Error = (
                   {err.status && (
                     <Typography.Text>Status: {err.status}</Typography.Text>
                   )}
-                  {err.info && (
+                  {err.info?.message && (
                     <Typography.Text>
                       Description: {err.info?.message}
                     </Typography.Text>
@@ -43,20 +43,16 @@ const Error = (
           )}
         </>
       ),
-      duration: 0,
-      style: {
-        boxShadow:
-          '0 3px 6px -4px rgb(255 0 0 / 12%), 0 6px 16px 0 rgb(255 0 0 / 8%), 0 9px 28px 8px rgb(255 0 0 / 5%)'
-      }
+      duration: 0
     })
   err && console.error(err)
   err && Sentry.captureException(err)
 }
 
-Error.propTypes = {
+ErrorNotification.propTypes = {
   title: PropTypes.string.isRequired,
   err: PropTypes.object,
   display: PropTypes.bool
 }
 
-export default Error
+export default ErrorNotification

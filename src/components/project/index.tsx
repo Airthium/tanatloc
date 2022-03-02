@@ -18,7 +18,7 @@ import { IGeometry, ISimulation, ISimulationTaskFile } from '@/database/index.d'
 import { IModel } from '@/models/index.d'
 
 import { GoBack } from '@/components/assets/button'
-import { Error as ErrorNotification } from '@/components/assets/notification'
+import { ErrorNotification } from '@/components/assets/notification'
 
 import Loading from '@/components/loading'
 import NotAuthorized from '@/components/notauthorized'

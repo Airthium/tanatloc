@@ -6,7 +6,7 @@ import { useState } from 'react'
 import { ISimulation } from '@/database/index.d'
 
 import { DeleteButton } from '@/components/assets/button'
-import { Error as ErrorNotification } from '@/components/assets/notification'
+import { ErrorNotification } from '@/components/assets/notification'
 
 import { useDispatch } from 'react-redux'
 import { unselect } from '@/store/select/action'

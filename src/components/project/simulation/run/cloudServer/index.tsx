@@ -11,7 +11,7 @@ import { merge } from 'lodash'
 import { IClientPlugin } from '@/database/index.d'
 import { IModel } from '@/models/index.d'
 
-import { Error as ErrorNotification } from '@/components/assets/notification'
+import { ErrorNotification } from '@/components/assets/notification'
 
 import PluginAPI from '@/api/plugin'
 import PluginsAPI from '@/api/plugins'

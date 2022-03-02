@@ -5,7 +5,7 @@ import { ReactChild, useEffect } from 'react'
 import { Form, Modal, Typography } from 'antd'
 import { BaseButtonProps } from 'antd/lib/button/button'
 
-import { Error as ErrorNotification } from '@/components/assets/notification'
+import { ErrorNotification } from '@/components/assets/notification'
 
 import DeleteDialog from './delete'
 

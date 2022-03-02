@@ -8,7 +8,7 @@ import { CheckOutlined } from '@ant-design/icons'
 import { IClientPlugin } from '@/database/index.d'
 import { IUserWithData } from '@/lib/index.d'
 
-import { Error as ErrorNotification } from '@/components/assets/notification'
+import { ErrorNotification } from '@/components/assets/notification'
 
 import PluginsAPI from '@/api/plugins'
 

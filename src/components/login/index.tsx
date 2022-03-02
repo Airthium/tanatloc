@@ -1,7 +1,7 @@
 /** @module Components.Login */
 
 import { useRouter } from 'next/router'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Dispatch, SetStateAction } from 'react'
 import {
   Button,
   Card,
@@ -14,7 +14,7 @@ import {
 } from 'antd'
 
 import Loading from '@/components/loading'
-import { Error } from '@/components/assets/notification'
+import { ErrorNotification } from '@/components/assets/notification'
 
 import PasswordRecover from './password'
 
@@ -32,12 +32,18 @@ const errors = {
 
 /**
  * Login
+ * @returns Login
  */
 const Login = (): JSX.Element => {
   // State
-  const [checking, setChecking]: [boolean, Function] = useState(false)
-  const [loginErr, setLoginErr]: [boolean, Function] = useState(false)
-  const [internalErr, setInternalErr]: [boolean, Function] = useState(false)
+  const [checking, setChecking]: [boolean, Dispatch<SetStateAction<boolean>>] =
+    useState(false)
+  const [loginErr, setLoginErr]: [boolean, Dispatch<SetStateAction<boolean>>] =
+    useState(false)
+  const [internalErr, setInternalErr]: [
+    boolean,
+    Dispatch<SetStateAction<boolean>>
+  ] = useState(false)
 
   // Data
   const [user, { mutateUser, errorUser, loadingUser }] = UserAPI.useUser()
@@ -47,7 +53,7 @@ const Login = (): JSX.Element => {
 
   // Error
   useEffect(() => {
-    if (errorUser) Error(errors.user, errorUser)
+    if (errorUser) ErrorNotification(errors.user, errorUser)
   }, [errorUser])
 
   // Already connected
@@ -89,7 +95,7 @@ const Login = (): JSX.Element => {
     } catch (err) {
       setInternalErr(true)
       setChecking(false)
-      Error(errors.internal, err, false)
+      ErrorNotification(errors.internal, err, false)
     }
   }
 

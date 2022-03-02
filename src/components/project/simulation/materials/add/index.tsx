@@ -7,7 +7,7 @@ import { v4 as uuid } from 'uuid'
 import { IGeometry, ISimulation } from '@/database/index.d'
 import { IModelMaterialValue } from '@/models/index.d'
 
-import { Error as ErrorNotification } from '@/components/assets/notification'
+import { ErrorNotification } from '@/components/assets/notification'
 import { AddButton } from '@/components/assets/button'
 
 import SimulationAPI from '@/api/simulation'

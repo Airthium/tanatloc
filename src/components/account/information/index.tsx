@@ -9,8 +9,8 @@ import { UploadOutlined, UserOutlined } from '@ant-design/icons'
 import { IUserWithData } from '@/lib/index.d'
 
 import {
-  Success as SuccessNotification,
-  Error as ErrorNotification
+  SuccessNotification,
+  ErrorNotification
 } from '@/components/assets/notification'
 
 import UserAPI from '@/api/user'

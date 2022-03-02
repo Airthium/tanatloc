@@ -10,7 +10,7 @@ import { IUserWithData } from '@/lib/index.d'
 import { AddButton } from '@/components/assets/button'
 import Dialog from '@/components/assets/dialog'
 import { PasswordItem } from '@/components/assets/input'
-import { Error as ErrorNotification } from '@/components/assets/notification'
+import { ErrorNotification } from '@/components/assets/notification'
 
 import UserAPI from '@/api/user'
 

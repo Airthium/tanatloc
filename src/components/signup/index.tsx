@@ -14,7 +14,7 @@ import {
 } from 'antd'
 
 import { PasswordItem } from '@/components/assets/input'
-import { Error as ErrorNotification } from '@/components/assets/notification'
+import { ErrorNotification } from '@/components/assets/notification'
 
 import Loading from '@/components/loading'
 

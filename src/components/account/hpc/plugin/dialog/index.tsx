@@ -8,7 +8,7 @@ import { IClientPlugin } from '@/database/index.d'
 
 import { AddButton, EditButton } from '@/components/assets/button'
 import Dialog from '@/components/assets/dialog'
-import { Error as ErrorNotification } from '@/components/assets/notification'
+import { ErrorNotification } from '@/components/assets/notification'
 
 import PluginAPI from '@/api/plugin'
 

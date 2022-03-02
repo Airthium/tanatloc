@@ -8,7 +8,7 @@ import { CopyOutlined } from '@ant-design/icons'
 import { ISimulation } from '@/database/index.d'
 import { IProjectWithData } from '@/lib/index.d'
 
-import { Error as ErrorNotification } from '@/components/assets/notification'
+import { ErrorNotification } from '@/components/assets/notification'
 
 import SimulationAPI from '@/api/simulation'
 

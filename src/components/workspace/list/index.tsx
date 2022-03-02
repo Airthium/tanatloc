@@ -15,9 +15,10 @@ import {
 } from 'antd'
 
 import { IOrganizationWithData, IWorkspaceWithData } from '@/lib/index.d'
+import { INewWorkspace } from '@/database/index.d'
 
 import Dialog from '@/components/assets/dialog'
-import { Error as ErrorNotification } from '@/components/assets/notification'
+import { ErrorNotification } from '@/components/assets/notification'
 
 import WorkspaceAPI from '@/api/workspace'
 
@@ -29,9 +30,9 @@ export interface IProps {
   workspaces: IWorkspaceWithData[]
   organizations: IOrganizationWithData[]
   swr: {
-    addOneWorkspace: Function
-    mutateOneWorkspace: Function
-    delOneWorkspace: Function
+    addOneWorkspace: (workspace: INewWorkspace) => void
+    mutateOneWorkspace: (workspace: IWorkspaceWithData) => void
+    delOneWorkspace: (workspace: IWorkspaceWithData) => void
   }
 }
 

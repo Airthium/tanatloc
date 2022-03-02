@@ -16,8 +16,8 @@ import {
 
 import Loading from '@/components/loading'
 import {
-  Success as SuccessNotification,
-  Error as ErrorNotification
+  SuccessNotification,
+  ErrorNotification
 } from '@/components/assets/notification'
 
 import SystemAPI from '@/api/system'

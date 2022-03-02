@@ -16,7 +16,7 @@ import {
 import { PASSWORD_RECOVERY } from '@/config/email'
 
 import { PasswordItem } from '@/components/assets/input'
-import { Error as ErrorNotification } from '@/components/assets/notification'
+import { ErrorNotification } from '@/components/assets/notification'
 
 import LinkAPI from '@/api/link'
 

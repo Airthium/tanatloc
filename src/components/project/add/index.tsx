@@ -1,72 +1,92 @@
 /** @module Components.Project.Add */
 
 import PropTypes from 'prop-types'
-import { useState } from 'react'
+import { Dispatch, SetStateAction, useState } from 'react'
 import { Form, Input } from 'antd'
 
 import { IWorkspaceWithData } from '@/lib/index.d'
+import { INewProject } from '@/database/index.d'
 
-import Dialog from '@/components/assets/dialog'
-import { Error as ErrorNotification } from '@/components/assets/notification'
 import { AddButton } from '@/components/assets/button'
+import Dialog from '@/components/assets/dialog'
+import { ErrorNotification } from '@/components/assets/notification'
 
 import ProjectAPI from '@/api/project'
 
+/**
+ * Props
+ */
 export interface IProps {
   workspace: IWorkspaceWithData
   swr: {
-    mutateOneWorkspace: Function
-    addOneProject: Function
+    mutateOneWorkspace: (workspace: IWorkspaceWithData) => void
+    addOneProject: (project: INewProject) => void
   }
 }
 
 /**
- * Errors (add)
+ * Errors
  */
 const errors = {
   addError: 'Unable to add a project'
 }
 
 /**
- * Add project
+ * On add
+ * @param workspace Workspace
+ * @param values Values
+ * @param setLoading Set loading
+ * @param setVisible Set visible
+ * @param swr SWR
+ */
+const onAdd = async (
+  workspace: IWorkspaceWithData,
+  values: {
+    title: string
+    description: string
+  },
+  setLoading: Dispatch<SetStateAction<boolean>>,
+  setVisible: Dispatch<SetStateAction<boolean>>,
+  swr: {
+    addOneProject: (project: INewProject) => void
+    mutateOneWorkspace: (workspace: IWorkspaceWithData) => void
+  }
+): Promise<void> => {
+  setLoading(true)
+  try {
+    // Add
+    const project = await ProjectAPI.add({ id: workspace.id }, values)
+
+    // Mutate projects
+    swr.addOneProject(project)
+
+    // Mutate workspaces
+    swr.mutateOneWorkspace({
+      ...workspace,
+      projects: [...(workspace.projects || []), project.id]
+    })
+
+    // Close
+    setLoading(false)
+    setVisible(false)
+  } catch (err) {
+    ErrorNotification(errors.addError, err)
+    setLoading(false)
+    throw err
+  }
+}
+
+/**
+ * Add
  * @param props Props
+ * @returns Add
  */
 const Add = ({ workspace, swr }: IProps): JSX.Element => {
   // State
-  const [visible, setVisible]: [boolean, Function] = useState(false)
-  const [loading, setLoading]: [boolean, Function] = useState(false)
-
-  /**
-   * On add
-   * @param values Values
-   */
-  const onAdd = async (values: {
-    title: string
-    description: string
-  }): Promise<void> => {
-    setLoading(true)
-    try {
-      // Add
-      const project = await ProjectAPI.add({ id: workspace.id }, values)
-
-      // Mutate projects
-      swr.addOneProject(project)
-
-      // Mutate workspaces
-      swr.mutateOneWorkspace({
-        ...workspace,
-        projects: [...(workspace.projects || []), project.id]
-      })
-
-      // Close
-      setLoading(false)
-      setVisible(false)
-    } catch (err) {
-      ErrorNotification(errors.addError, err)
-      setLoading(false)
-      throw err
-    }
-  }
+  const [visible, setVisible]: [boolean, Dispatch<SetStateAction<boolean>>] =
+    useState(false)
+  const [loading, setLoading]: [boolean, Dispatch<SetStateAction<boolean>>] =
+    useState(false)
 
   /**
    * Render
@@ -80,7 +100,9 @@ const Add = ({ workspace, swr }: IProps): JSX.Element => {
         title="Create a new project"
         visible={visible}
         onCancel={() => setVisible(false)}
-        onOk={onAdd}
+        onOk={async (values) =>
+          onAdd(workspace, values, setLoading, setVisible, swr)
+        }
         loading={loading}
       >
         <Form.Item
@@ -109,11 +131,11 @@ const Add = ({ workspace, swr }: IProps): JSX.Element => {
 }
 
 Add.propTypes = {
-  workspace: PropTypes.shape({
+  workspace: PropTypes.exact({
     id: PropTypes.string.isRequired,
     projects: PropTypes.array
   }).isRequired,
-  swr: PropTypes.shape({
+  swr: PropTypes.exact({
     mutateOneWorkspace: PropTypes.func.isRequired,
     addOneProject: PropTypes.func.isRequired
   }).isRequired

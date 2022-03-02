@@ -26,7 +26,7 @@ describe('api/workspace/useWorkspaces', () => {
     expect(mutateOneWorkspace).toBeDefined()
     expect(loadingWorkspaces).toBe(false)
 
-    addOneWorkspace({ id: 'id' })
+    addOneWorkspace({ id: 'id', name: 'name', owners: ['id'] })
     delOneWorkspace({ id: 'id' })
     mutateOneWorkspace({ id: 'id' })
   })

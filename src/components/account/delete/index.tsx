@@ -7,7 +7,7 @@ import { DeleteOutlined } from '@ant-design/icons'
 
 import { IUserWithData } from '@/lib/index.d'
 
-import { Error as ErrorNotification } from '@/components/assets/notification'
+import { ErrorNotification } from '@/components/assets/notification'
 import { DeleteDialog } from '@/components/assets/dialog'
 
 import UserAPI from '@/api/user'

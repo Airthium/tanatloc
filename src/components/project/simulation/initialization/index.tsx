@@ -8,7 +8,7 @@ import { ISimulation } from '@/database/index.d'
 import { IModelInitialization } from '@/models/index.d'
 
 import Formula from '@/components/assets/formula'
-import { Error as ErrorNotification } from '@/components/assets/notification'
+import { ErrorNotification } from '@/components/assets/notification'
 
 import SimulationAPI from '@/api/simulation'
 

@@ -2,17 +2,18 @@
 
 import PropTypes from 'prop-types'
 import { Dispatch, SetStateAction, useState } from 'react'
-import { notification, Button, Card, Form, Input, Space } from 'antd'
+import { Button, Card, Form, Input, Space } from 'antd'
 
 import { IUserWithData } from '@/lib/index.d'
 
 import { PasswordItem } from '@/components/assets/input'
 import {
-  Success as SuccessNotification,
-  Error as ErrorNotification
+  SuccessNotification,
+  FormError
 } from '@/components/assets/notification'
 
 import UserAPI from '@/api/user'
+import { ICallError } from '@/api'
 
 /**
  * Props
@@ -42,7 +43,8 @@ export const onFinish = async (
     password: string
     newPassword: string
   },
-  setLoading: Dispatch<SetStateAction<boolean>>
+  setLoading: Dispatch<SetStateAction<boolean>>,
+  setFormError: Dispatch<SetStateAction<{ title: string; err?: ICallError }>>
 ): Promise<void> => {
   setLoading(true)
 
@@ -63,12 +65,15 @@ export const onFinish = async (
         }
       ])
 
+      setFormError(null)
       SuccessNotification('Your password has been changed successfully')
     } else {
-      notification.error({ message: errors.invalid })
+      setFormError({
+        title: errors.invalid
+      })
     }
   } catch (err) {
-    ErrorNotification(errors.update, err)
+    setFormError({ title: errors.update, err })
   } finally {
     setLoading(false)
   }
@@ -83,6 +88,10 @@ const Password = ({ user }: IProps): JSX.Element => {
   // State
   const [loading, setLoading]: [boolean, Dispatch<SetStateAction<boolean>>] =
     useState(false)
+  const [formError, setFormError]: [
+    { title: string; err?: ICallError },
+    Dispatch<SetStateAction<{ title: string; err?: ICallError }>>
+  ] = useState()
 
   // Layout
   const layout = {
@@ -98,7 +107,9 @@ const Password = ({ user }: IProps): JSX.Element => {
       <Form
         {...layout}
         layout="vertical"
-        onFinish={async (values) => onFinish(user, values, setLoading)}
+        onFinish={async (values) =>
+          onFinish(user, values, setLoading, setFormError)
+        }
         name="passwordForm"
       >
         <Form.Item
@@ -150,6 +161,7 @@ const Password = ({ user }: IProps): JSX.Element => {
             </Button>
           </Space>
         </Form.Item>
+        <FormError className="max-width-500" error={formError} />
       </Form>
     </Card>
   )

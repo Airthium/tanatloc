@@ -10,7 +10,7 @@ import { IUserWithData } from '@/lib/index.d'
 import { EditButton } from '@/components/assets/button'
 import Dialog from '@/components/assets/dialog'
 import { PasswordItem } from '@/components/assets/input'
-import { Error } from '@/components/assets/notification'
+import { ErrorNotification } from '@/components/assets/notification'
 
 import UserAPI from '@/api/user'
 
@@ -98,7 +98,7 @@ export const onUpdate = async (
     setLoading(false)
     setVisible(false)
   } catch (err) {
-    Error(errors.update, err)
+    ErrorNotification(errors.update, err)
     setLoading(false)
     throw err
   }

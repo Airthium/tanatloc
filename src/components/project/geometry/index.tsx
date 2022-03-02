@@ -13,7 +13,7 @@ import {
   DownloadButton,
   EditButton
 } from '@/components/assets/button'
-import { Error as ErrorNotification } from '@/components/assets/notification'
+import { ErrorNotification } from '@/components/assets/notification'
 import MathJax from '@/components/assets/mathjax'
 
 import GeometryAPI from '@/api/geometry'

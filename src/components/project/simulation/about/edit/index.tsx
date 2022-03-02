@@ -6,7 +6,7 @@ import { Form, Input } from 'antd'
 
 import { ISimulation } from '@/database/index.d'
 
-import { Error as ErrorNotification } from '@/components/assets/notification'
+import { ErrorNotification } from '@/components/assets/notification'
 import Dialog from '@/components/assets/dialog'
 import { EditButton } from '@/components/assets/button'
 

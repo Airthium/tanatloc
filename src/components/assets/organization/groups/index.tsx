@@ -12,7 +12,7 @@ import {
 import Utils from '@/lib/utils'
 
 import Group, { Delete } from '@/components/assets/group'
-import { Error as ErrorNotification } from '@/components/assets/notification'
+import { ErrorNotification } from '@/components/assets/notification'
 
 import GroupAPI from '@/api/group'
 

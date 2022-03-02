@@ -4,7 +4,7 @@ import { useEffect } from 'react'
 import { NextRouter, useRouter } from 'next/router'
 import { Divider, Layout, PageHeader, Tabs, Typography } from 'antd'
 
-import { Error } from '@/components/assets/notification'
+import { ErrorNotification } from '@/components/assets/notification'
 
 import Users from './users'
 import Registration from './registration'
@@ -58,7 +58,7 @@ const Administration = (): JSX.Element => {
 
   // Users error
   useEffect(() => {
-    if (errorUsers) Error(errors.users, errorUsers)
+    if (errorUsers) ErrorNotification(errors.users, errorUsers)
   }, [errorUsers])
 
   /**

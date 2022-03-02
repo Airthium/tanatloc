@@ -9,7 +9,7 @@ import {
   IModelTypedBoundaryCondition
 } from '@/models/index.d'
 
-import { Error } from '@/components/assets/notification'
+import { ErrorNotification } from '@/components/assets/notification'
 import { EditButton } from '@/components/assets/button'
 
 import SimulationAPI from '@/api/simulation'
@@ -172,7 +172,7 @@ const Edit = ({
       // Close
       onClose()
     } catch (err) {
-      Error(errors.updateError, err)
+      ErrorNotification(errors.updateError, err)
       setLoading(false)
     }
   }

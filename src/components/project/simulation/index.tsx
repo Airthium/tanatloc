@@ -11,7 +11,7 @@ import { IUserWithData } from '@/lib/index.d'
 import { IClientPlugin, ISimulation } from '@/database/index.d'
 import { IModel } from '@/models/index.d'
 
-import { Error as ErrorNotification } from '@/components/assets/notification'
+import { ErrorNotification } from '@/components/assets/notification'
 import MathJax from '@/components/assets/mathjax'
 
 import About from './about'

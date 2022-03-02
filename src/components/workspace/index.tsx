@@ -12,7 +12,7 @@ import {
 } from '@/lib/index.d'
 
 import Share from '@/components/assets/share'
-import { Error as ErrorNotification } from '@/components/assets/notification'
+import { ErrorNotification } from '@/components/assets/notification'
 
 import Edit from './edit'
 import Delete from './delete'
@@ -32,8 +32,8 @@ export interface IProps {
   workspace: IWorkspaceWithData
   organizations: IOrganizationWithData[]
   swr: {
-    delOneWorkspace: Function
-    mutateOneWorkspace: Function
+    delOneWorkspace: (workspace: IWorkspaceWithData) => void
+    mutateOneWorkspace: (workspace: IWorkspaceWithData) => void
   }
 }
 

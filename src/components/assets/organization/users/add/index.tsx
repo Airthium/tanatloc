@@ -8,7 +8,7 @@ import { PlusOutlined } from '@ant-design/icons'
 import { IOrganizationWithData } from '@/lib/index.d'
 
 import Dialog from '@/components/assets/dialog'
-import { Error as ErrorNotification } from '@/components/assets/notification'
+import { ErrorNotification } from '@/components/assets/notification'
 
 import OrganizationAPI from '@/api/organization'
 

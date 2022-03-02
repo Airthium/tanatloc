@@ -6,7 +6,7 @@ import { ArrowLeftOutlined } from '@ant-design/icons'
 
 import { IOrganizationWithData } from '@/lib/index.d'
 
-import { Error as ErrorNotification } from '@/components/assets/notification'
+import { ErrorNotification } from '@/components/assets/notification'
 
 import Users from './users'
 import Groups from './groups'

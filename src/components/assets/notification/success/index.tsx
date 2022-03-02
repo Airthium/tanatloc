@@ -9,21 +9,17 @@ import { notification } from 'antd'
  * @param subTitle Sub title
  * @returns SuccessNotification
  */
-const Success = (title: string, subTitle?: string): void => {
+const SuccessNotification = (title: string, subTitle?: string): void => {
   notification.success({
     message: title,
     description: subTitle,
-    duration: 10,
-    style: {
-      boxShadow:
-        '0 3px 6px -4px rgb(0 255 0 / 12%), 0 6px 16px 0 rgb(0 255 0 / 8%), 0 9px 28px 8px rgb(0 255 0 / 5%)'
-    }
+    duration: 10
   })
 }
 
-Success.propTypes = {
+SuccessNotification.propTypes = {
   title: PropTypes.string.isRequired,
   subTitle: PropTypes.string
 }
 
-export default Success
+export default SuccessNotification

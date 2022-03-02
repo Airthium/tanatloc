@@ -3,7 +3,7 @@
 import { useState, useEffect, Dispatch, SetStateAction } from 'react'
 import { Card, Space, Spin } from 'antd'
 
-import { Error as ErrorNotification } from '@/components/assets/notification'
+import { ErrorNotification } from '@/components/assets/notification'
 
 import PluginsAPI from '@/api/plugins'
 

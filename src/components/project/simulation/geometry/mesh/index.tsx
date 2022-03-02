@@ -6,7 +6,7 @@ import { Card, Select, Space, Typography } from 'antd'
 
 import { ISimulation } from '@/database/index.d'
 
-import { Error as ErrorNotification } from '@/components/assets/notification'
+import { ErrorNotification } from '@/components/assets/notification'
 import Formula from '@/components/assets/formula'
 
 import SimulationAPI from '@/api/simulation'

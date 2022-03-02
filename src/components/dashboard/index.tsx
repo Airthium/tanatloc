@@ -14,7 +14,7 @@ import {
 
 import packageJson from '../../../package.json'
 
-import { Error as ErrorNotification } from '@/components/assets/notification'
+import { ErrorNotification } from '@/components/assets/notification'
 
 import Loading from '@/components/loading'
 import WorkspacesList from '@/components/workspace/list'

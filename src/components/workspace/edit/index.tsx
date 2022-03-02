@@ -5,7 +5,7 @@ import { useState } from 'react'
 import { Form, Input } from 'antd'
 
 import Dialog from '@/components/assets/dialog'
-import { Error as ErrorNotification } from '@/components/assets/notification'
+import { ErrorNotification } from '@/components/assets/notification'
 import { EditButton } from '@/components/assets/button'
 
 import WorkspaceAPI from '@/api/workspace'

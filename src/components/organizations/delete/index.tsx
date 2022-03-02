@@ -8,7 +8,7 @@ import { DeleteOutlined } from '@ant-design/icons'
 import { IOrganizationWithData } from '@/lib/index.d'
 
 import { DeleteDialog } from '@/components/assets/dialog'
-import { Error } from '@/components/assets/notification'
+import { ErrorNotification } from '@/components/assets/notification'
 
 import OrganizationAPI from '@/api/organization'
 
@@ -51,7 +51,7 @@ const Delete = ({ organization, swr }: IProps): JSX.Element => {
       // Close
       setVisible(false)
     } catch (err) {
-      Error(errors.delError, err)
+      ErrorNotification(errors.delError, err)
     } finally {
       setLoading(false)
     }

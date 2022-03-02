@@ -1,37 +1,91 @@
 /** @module Components.Project.Archive */
 
 import PropTypes from 'prop-types'
-import { useState } from 'react'
+import { Dispatch, SetStateAction, useState } from 'react'
 import { Button, Tooltip, Typography } from 'antd'
 import { HddOutlined, ImportOutlined } from '@ant-design/icons'
 
 import { IProjectWithData, IWorkspaceWithData } from '@/lib/index.d'
 
 import Dialog from '@/components/assets/dialog'
-import { Error as ErrorNotification } from '@/components/assets/notification'
+import { ErrorNotification } from '@/components/assets/notification'
 
 import ProjectAPI from '@/api/project'
 
+/**
+ * Props
+ */
 export interface IProps {
   disabled?: boolean
   workspace: IWorkspaceWithData
   project: IProjectWithData
   swr: {
-    mutateOneWorkspace: Function
-    mutateOneProject: Function
+    mutateOneWorkspace: (workspace: IWorkspaceWithData) => void
+    mutateOneProject: (project: IProjectWithData) => void
   }
 }
 
 /**
- * Errors (archive)
+ * Errors
  */
 const errors = {
   archive: 'Unable to archive project'
 }
 
 /**
+ * On archive
+ * @param workspace Workspace
+ * @param project Project
+ * @param setLoading Set loading
+ * @param setVisible Set visible
+ * @pram swr SWR
+ */
+const onArchive = async (
+  workspace: IWorkspaceWithData,
+  project: IProjectWithData,
+  setLoading: Dispatch<SetStateAction<boolean>>,
+  setVisible: Dispatch<SetStateAction<boolean>>,
+  swr: {
+    mutateOneProject: (project: IProjectWithData) => void
+    mutateOneWorkspace: (workspace: IWorkspaceWithData) => void
+  }
+): Promise<void> => {
+  setLoading(true)
+  try {
+    // API
+    const archive = await ProjectAPI.archive({ id: project.id })
+    const content = await archive.blob()
+
+    // Download Folder
+    const url = window.URL.createObjectURL(new Blob([content]))
+    const link = document.createElement('a')
+    link.href = url
+    link.setAttribute('download', project.id + '.tanatlocarchive')
+    link.click()
+
+    // Mutate project
+    swr.mutateOneProject({
+      ...project,
+      archived: true
+    })
+
+    // Mutate workspace
+    swr.mutateOneWorkspace(workspace)
+
+    // Close
+    setLoading(false)
+    setVisible(false)
+  } catch (err) {
+    ErrorNotification(errors.archive, err)
+    setLoading(false)
+    throw err
+  }
+}
+
+/**
  * Archive
  * @param props Props
+ * @returns Archive
  */
 const Archive = ({
   disabled,
@@ -40,43 +94,10 @@ const Archive = ({
   swr
 }: IProps): JSX.Element => {
   // State
-  const [visible, setVisible]: [boolean, Function] = useState(false)
-  const [loading, setLoading]: [boolean, Function] = useState(false)
-
-  /**
-   * On archive
-   */
-  const onArchive = async (): Promise<void> => {
-    setLoading(true)
-    try {
-      // API
-      const archive = await ProjectAPI.archive({ id: project.id })
-      const content = await archive.blob()
-
-      // Download Folder
-      const url = window.URL.createObjectURL(new Blob([content]))
-      const link = document.createElement('a')
-      link.href = url
-      link.setAttribute('download', project.id + '.tanatlocarchive')
-      link.click()
-
-      // Mutate project
-      swr.mutateOneProject({
-        ...project,
-        archived: true
-      })
-
-      // Mutate workspace
-      swr.mutateOneWorkspace(workspace)
-
-      // Close
-      setLoading(false)
-      setVisible(false)
-    } catch (err) {
-      ErrorNotification(errors.archive, err)
-      setLoading(false)
-    }
-  }
+  const [visible, setVisible]: [boolean, Dispatch<SetStateAction<boolean>>] =
+    useState(false)
+  const [loading, setLoading]: [boolean, Dispatch<SetStateAction<boolean>>] =
+    useState(false)
 
   /**
    * Render
@@ -88,7 +109,9 @@ const Archive = ({
         loading={loading}
         title="Archive"
         onCancel={() => setVisible(false)}
-        onOk={onArchive}
+        onOk={async () =>
+          onArchive(workspace, project, setLoading, setVisible, swr)
+        }
         okButtonText="Archive"
       >
         <Typography.Text>

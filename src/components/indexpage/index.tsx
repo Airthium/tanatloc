@@ -13,7 +13,7 @@ import packageJson from '../../../package.json'
 
 import Background from '@/components/background'
 
-import { Error as ErrorNotification } from '@/components/assets/notification'
+import { ErrorNotification } from '@/components/assets/notification'
 import MathJax from '@/components/assets/mathjax'
 
 import UserAPI from '@/api/user'

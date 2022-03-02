@@ -6,7 +6,7 @@ import { Dispatch, SetStateAction, useState } from 'react'
 import { IClientPlugin } from '@/database/index.d'
 
 import { DeleteButton } from '@/components/assets/button'
-import { Error as ErrorNotification } from '@/components/assets/notification'
+import { ErrorNotification } from '@/components/assets/notification'
 
 import PluginAPI from '@/api/plugin'
 

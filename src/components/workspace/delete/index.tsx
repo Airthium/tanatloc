@@ -3,7 +3,7 @@
 import PropTypes from 'prop-types'
 import { useState } from 'react'
 
-import { Error as ErrorNotification } from '@/components/assets/notification'
+import { ErrorNotification } from '@/components/assets/notification'
 import { DeleteButton } from '@/components/assets/button'
 
 import WorkspaceAPI from '@/api/workspace'

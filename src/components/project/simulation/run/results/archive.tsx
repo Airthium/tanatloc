@@ -5,7 +5,7 @@ import { useState } from 'react'
 import { Button, Tooltip } from 'antd'
 import { DownloadOutlined } from '@ant-design/icons'
 
-import { Error as ErrorNotification } from '@/components/assets/notification'
+import { ErrorNotification } from '@/components/assets/notification'
 
 import ResultAPI from '@/api/result'
 

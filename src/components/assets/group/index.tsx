@@ -8,7 +8,7 @@ import { EditOutlined, PlusOutlined } from '@ant-design/icons'
 import { IGroupWithData, IOrganizationWithData } from '@/lib/index.d'
 
 import Dialog from '@/components/assets/dialog'
-import { Error as ErrorNotification } from '@/components/assets/notification'
+import { ErrorNotification } from '@/components/assets/notification'
 
 import Delete from './delete'
 

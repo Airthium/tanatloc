@@ -6,7 +6,7 @@ import { Button, Drawer, Modal, Tabs, Tooltip } from 'antd'
 import { FileTextOutlined } from '@ant-design/icons'
 import parse from 'html-react-parser'
 
-import { Error as ErrorNotification } from '@/components/assets/notification'
+import { ErrorNotification } from '@/components/assets/notification'
 
 import SimulationAPI from '@/api/simulation'
 

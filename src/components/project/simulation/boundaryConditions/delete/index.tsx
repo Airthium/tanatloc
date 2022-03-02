@@ -7,7 +7,7 @@ import { ISimulation } from '@/database/index.d'
 import { IModelTypedBoundaryCondition } from '@/models/index.d'
 
 import { DeleteButton } from '@/components/assets/button'
-import { Error } from '@/components/assets/notification'
+import { ErrorNotification } from '@/components/assets/notification'
 
 import { useDispatch } from 'react-redux'
 import { unselect } from '@/store/select/action'
@@ -100,7 +100,7 @@ const Delete = ({ type, index, simulation, swr }: IProps): JSX.Element => {
       // Local
       swr.mutateOneSimulation(newSimulation)
     } catch (err) {
-      Error(errors.updateError, err)
+      ErrorNotification(errors.updateError, err)
       setLoading(false)
       throw err
     }

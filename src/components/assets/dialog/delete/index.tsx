@@ -5,7 +5,7 @@ import { Modal, Space, Typography } from 'antd'
 import { ExclamationCircleTwoTone } from '@ant-design/icons'
 import { ReactChild } from 'react'
 
-import { Error as ErrorNotification } from '@/components/assets/notification'
+import { ErrorNotification } from '@/components/assets/notification'
 
 /**
  * Props

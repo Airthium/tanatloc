@@ -1,7 +1,7 @@
 /** @module Components.Notauthorized */
 
 import { useEffect } from 'react'
-import { useRouter } from 'next/router'
+import { NextRouter, useRouter } from 'next/router'
 import { Button, Card, Layout, Space, Typography } from 'antd'
 import { AlertOutlined } from '@ant-design/icons'
 
@@ -13,7 +13,16 @@ const errors = {
 }
 
 /**
+ * Go home
+ * @param router Router
+ */
+const home = (router: NextRouter): void => {
+  router.push('/')
+}
+
+/**
  * Not authorized
+ * @returns NotAuthorized
  */
 const NotAuthorized = (): JSX.Element => {
   // Data
@@ -23,13 +32,6 @@ const NotAuthorized = (): JSX.Element => {
   useEffect(() => {
     router.prefetch('/')
   }, [])
-
-  /**
-   * Go home
-   */
-  const home = (): void => {
-    router.push('/')
-  }
 
   /**
    * Render
@@ -44,7 +46,7 @@ const NotAuthorized = (): JSX.Element => {
             </Typography.Text>
             <Typography.Text>
               Go back{' '}
-              <Button type="link" onClick={home}>
+              <Button type="link" onClick={() => home(router)}>
                 home
               </Button>
             </Typography.Text>

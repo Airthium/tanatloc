@@ -9,7 +9,7 @@ import { LoadingOutlined, UploadOutlined } from '@ant-design/icons'
 import { IProjectWithData } from '@/lib/index.d'
 
 import Dialog from '@/components/assets/dialog'
-import { Error as ErrorNotification } from '@/components/assets/notification'
+import { ErrorNotification } from '@/components/assets/notification'
 
 import GeometryAPI from '@/api/geometry'
 

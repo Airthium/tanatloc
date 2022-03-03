@@ -131,6 +131,7 @@ List.propTypes = {
       name: PropTypes.string.isRequired,
       configuration: PropTypes.object.isRequired,
       inUseConfiguration: PropTypes.object.isRequired,
+      data: PropTypes.object,
       needInit: PropTypes.bool
     }).isRequired
   ).isRequired,

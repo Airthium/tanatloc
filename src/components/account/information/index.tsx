@@ -232,6 +232,7 @@ const Information = ({ user, swr }: IProps): JSX.Element => {
               setLoading(true)
               try {
                 await onFinish(user, values, swr)
+                setFormError(null)
               } catch (err) {
                 setFormError(err)
               } finally {

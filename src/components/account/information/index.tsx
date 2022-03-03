@@ -223,6 +223,7 @@ const Information = ({ user, swr }: IProps): JSX.Element => {
         <div>
           <Form
             {...layout}
+            className="max-width-500"
             initialValues={{
               email: user.email,
               firstname: user.firstname || '',
@@ -241,7 +242,6 @@ const Information = ({ user, swr }: IProps): JSX.Element => {
             }}
           >
             <Form.Item
-              className="max-width-500"
               label="Email"
               name="email"
               rules={[
@@ -253,7 +253,6 @@ const Information = ({ user, swr }: IProps): JSX.Element => {
             </Form.Item>
 
             <Form.Item
-              className="max-width-500"
               label="First name"
               name="firstname"
               rules={[{ max: 50, message: 'Max 50 characters' }]}
@@ -262,19 +261,18 @@ const Information = ({ user, swr }: IProps): JSX.Element => {
             </Form.Item>
 
             <Form.Item
-              className="max-width-500"
               label="Last name"
               name="lastname"
               rules={[{ max: 50, message: 'Max 50 characters' }]}
             >
               <Input />
             </Form.Item>
-            <Form.Item {...buttonLayout} className="max-width-500">
+            <FormError error={formError} />
+            <Form.Item {...buttonLayout}>
               <Button loading={loading} type="primary" htmlType="submit">
                 Save changes
               </Button>
             </Form.Item>
-            <FormError className="max-width-500" error={formError} />
           </Form>
         </div>
       </Space>

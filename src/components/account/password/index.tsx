@@ -100,6 +100,7 @@ const Password = ({ user }: IProps): JSX.Element => {
     <Card title="Your Password">
       <Form
         {...layout}
+        className="max-width-500"
         layout="vertical"
         onFinish={async (values) => {
           setLoading(true)
@@ -123,12 +124,10 @@ const Password = ({ user }: IProps): JSX.Element => {
               message: 'Current password is required'
             }
           ]}
-          className="max-width-500"
         >
           <Input.Password placeholder="Current password" />
         </Form.Item>
         <PasswordItem
-          className="max-width-500"
           name="newPassword"
           label="New password"
           inputPlaceholder="Enter a new password"
@@ -152,18 +151,17 @@ const Password = ({ user }: IProps): JSX.Element => {
               }
             })
           ]}
-          className="max-width-500"
         >
           <Input.Password placeholder="Confirm your new password" />
         </Form.Item>
-        <Form.Item className="max-width-500">
+        <FormError error={formError} />
+        <Form.Item>
           <Space>
             <Button type="primary" htmlType="submit" loading={loading}>
               Modify password
             </Button>
           </Space>
         </Form.Item>
-        <FormError className="max-width-500" error={formError} />
       </Form>
     </Card>
   )

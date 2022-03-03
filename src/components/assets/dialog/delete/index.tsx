@@ -63,7 +63,7 @@ const DeleteDialog = ({
         try {
           await onOk()
         } catch (err) {
-          err.message && ErrorNotification(errors.onOk, err, false)
+          ErrorNotification(errors.onOk, err, false)
         }
       }}
       okButtonProps={{ danger: true }}

@@ -11,6 +11,9 @@ import Password from './password'
 import Delete from './delete'
 import HPC from './hpc'
 
+/**
+ * Props
+ */
 export interface IProps {
   user: IUserWithData
   swr: {

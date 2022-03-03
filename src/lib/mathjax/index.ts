@@ -21,6 +21,7 @@ export const mathjaxInit = (): void => {
     script.type = 'text/javascript'
     script.src = MathJaxSource
     script.async = true
+    script.defer = true
     document.getElementsByTagName('head')[0].appendChild(script)
   }
 }

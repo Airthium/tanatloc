@@ -23,7 +23,7 @@ import {
 import SystemAPI from '@/api/system'
 
 /**
- * Errors (registration)
+ * Errors
  */
 const errors = {
   system: 'System error',

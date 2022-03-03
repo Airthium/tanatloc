@@ -46,18 +46,12 @@ const errors = {
 /**
  * On add
  * @param values Values
- * @param setLoading Set loading
- * @param setVisible Set visible
  * @param swr Swr
  */
 export const onAdd = async (
   values: IAddValues,
-  setLoading: Dispatch<SetStateAction<boolean>>,
-  setVisible: Dispatch<SetStateAction<boolean>>,
   swr: { addOneUser: (user: IUserWithData) => void }
 ): Promise<void> => {
-  setLoading(true)
-
   try {
     // API
     const newUser = await UserAPI.add({
@@ -95,13 +89,8 @@ export const onAdd = async (
       superuser: values.superuser
     }
     swr.addOneUser(newUserWithData)
-
-    // Close
-    setLoading(false)
-    setVisible(false)
   } catch (err) {
     ErrorNotification(errors.add, err)
-    setLoading(false)
     throw err
   }
 }
@@ -127,9 +116,19 @@ const Add = ({ plugins, swr }: IProps): JSX.Element => {
         title="New user"
         visible={visible}
         onCancel={() => setVisible(false)}
-        onOk={async (values: IAddValues) =>
-          onAdd(values, setLoading, setVisible, swr)
-        }
+        onOk={async (values: IAddValues) => {
+          setLoading(true)
+          try {
+            await onAdd(values, swr)
+
+            // Close
+            setLoading(false)
+            setVisible(false)
+          } catch (err) {
+            setLoading(false)
+            throw err
+          }
+        }}
         loading={loading}
       >
         <Form.Item name="firstname" label="First name">

@@ -28,8 +28,8 @@ const FormError = ({ error }: IProps): JSX.Element => {
           error.err && (
             <>
               {error.err.message && (
-                <Typography.Text type="danger" code={true}>
-                  Message: {error.err.message}
+                <Typography.Text type="danger">
+                  Message: <code>{error.err.message}</code>
                 </Typography.Text>
               )}
 
@@ -37,7 +37,7 @@ const FormError = ({ error }: IProps): JSX.Element => {
                 <>
                   <br />
                   <Typography.Text type="danger">
-                    Status: {error.err.status}
+                    Status: <code>{error.err.status}</code>
                   </Typography.Text>
                 </>
               )}
@@ -45,7 +45,7 @@ const FormError = ({ error }: IProps): JSX.Element => {
                 <>
                   <br />
                   <Typography.Text type="danger">
-                    Information: {error.err.info?.message}
+                    Information: <code>{error.err.info?.message}</code>
                   </Typography.Text>
                 </>
               )}

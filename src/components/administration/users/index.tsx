@@ -48,6 +48,60 @@ const Users = ({ users, swr }: IProps): JSX.Element => {
   ] = useState()
 
   // Data
+  const authorizedpluginsRender = (authorizedplugins: string[]) => {
+    if (authorizedplugins) {
+      authorizedplugins.sort()
+      return (
+        <Space wrap={true}>
+          {authorizedplugins.map((authorizedplugin) => {
+            const plugin = plugins?.find((p) => p.key === authorizedplugin)
+            if (!plugin) return
+            else
+              return (
+                <Badge
+                  key={authorizedplugin}
+                  size="small"
+                  count={plugin.category}
+                  offset={[5, -5]}
+                >
+                  {plugin.name}
+                </Badge>
+              )
+          })}
+        </Space>
+      )
+    }
+  }
+
+  const superuserRender = (superuser: boolean) =>
+    superuser && <CheckOutlined className="color-green" />
+
+  const actionsRender = (_: any, record: IUserWithData) => (
+    <Space>
+      <Edit
+        plugins={
+          plugins?.map((plugin) => ({
+            key: plugin.key,
+            name: plugin.name
+          })) || []
+        }
+        user={{
+          id: record.id,
+          firstname: record.firstname,
+          lastname: record.lastname,
+          email: record.email,
+          authorizedplugins: record.authorizedplugins,
+          superuser: record.superuser
+        }}
+        swr={{ mutateOneUser: swr.mutateOneUser }}
+      />
+      <Delete
+        user={{ id: record.id, email: record.email }}
+        swr={{ delOneUser: swr.delOneUser }}
+      />
+    </Space>
+  )
+
   const columns: TableColumnsType = [
     {
       title: 'First name',
@@ -88,69 +142,19 @@ const Users = ({ users, swr }: IProps): JSX.Element => {
       title: 'Plugins',
       dataIndex: 'authorizedplugins',
       key: 'authorizedplugins',
-      // eslint-disable-next-line react/display-name
-      render: (authorizedplugins: string[]) => {
-        if (authorizedplugins) {
-          authorizedplugins.sort()
-          return (
-            <Space wrap={true}>
-              {authorizedplugins.map((authorizedplugin) => {
-                const plugin = plugins?.find((p) => p.key === authorizedplugin)
-                if (!plugin) return
-                else
-                  return (
-                    <Badge
-                      key={authorizedplugin}
-                      size="small"
-                      count={plugin.category}
-                      offset={[5, -5]}
-                    >
-                      {plugin.name}
-                    </Badge>
-                  )
-              })}
-            </Space>
-          )
-        }
-      }
+
+      render: authorizedpluginsRender
     },
     {
       title: 'Administrator',
       dataIndex: 'superuser',
       key: 'superuser',
-      // eslint-disable-next-line react/display-name
-      render: (superuser: boolean) =>
-        superuser && <CheckOutlined className="color-green" />
+      render: superuserRender
     },
     {
       title: 'Actions',
       key: 'actions',
-      // eslint-disable-next-line react/display-name
-      render: (_: any, record: IUserWithData) => (
-        <Space>
-          <Edit
-            plugins={
-              plugins?.map((plugin) => ({
-                key: plugin.key,
-                name: plugin.name
-              })) || []
-            }
-            user={{
-              id: record.id,
-              firstname: record.firstname,
-              lastname: record.lastname,
-              email: record.email,
-              authorizedplugins: record.authorizedplugins,
-              superuser: record.superuser
-            }}
-            swr={{ mutateOneUser: swr.mutateOneUser }}
-          />
-          <Delete
-            user={{ id: record.id, email: record.email }}
-            swr={{ delOneUser: swr.delOneUser }}
-          />
-        </Space>
-      )
+      render: actionsRender
     }
   ]
 
@@ -185,7 +189,6 @@ const Users = ({ users, swr }: IProps): JSX.Element => {
         loading={!plugins}
         pagination={false}
         size="small"
-        scroll={{ y: 'calc(100vh - 312px)' }}
         columns={columns}
         dataSource={users.map((u) => ({ ...u, key: u.id }))}
       />

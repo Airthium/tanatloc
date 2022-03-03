@@ -1,6 +1,6 @@
 /** @module Components.Index */
 
-import { useRouter } from 'next/router'
+import { NextRouter, useRouter } from 'next/router'
 import { useEffect } from 'react'
 import { Button, Card, Divider, Layout, Space, Typography } from 'antd'
 import {
@@ -26,6 +26,30 @@ const errors = {
 }
 
 /**
+ * Handle dashboard
+ * @param router Router
+ */
+const handleDashboard = (router: NextRouter): void => {
+  router.push('/dashboard')
+}
+
+/**
+ * Handle signup
+ * @param router Router
+ */
+const handleSignup = (router: NextRouter): void => {
+  router.push('/signup')
+}
+
+/**
+ * Handle login
+ * @param router Router
+ */
+const handleLogin = (router: NextRouter): void => {
+  router.push('/login')
+}
+
+/**
  * Index
  */
 const Index = (): JSX.Element => {
@@ -45,28 +69,7 @@ const Index = (): JSX.Element => {
     router.prefetch('/dashboard')
     router.prefetch('/signup')
     router.prefetch('/login')
-  }, [])
-
-  /**
-   * Handle dashboard
-   */
-  const handleDashboard = (): void => {
-    router.push('/dashboard')
-  }
-
-  /**
-   * Handle signup
-   */
-  const handleSignup = (): void => {
-    router.push('/signup')
-  }
-
-  /**
-   * Handle login
-   */
-  const handleLogin = (): void => {
-    router.push('/login')
-  }
+  }, [router])
 
   // Git version
   let gitVersion = ''
@@ -88,7 +91,7 @@ const Index = (): JSX.Element => {
         <Button
           className="no-border"
           icon={<DashboardOutlined />}
-          onClick={handleDashboard}
+          onClick={() => handleDashboard(router)}
           size="large"
         >
           Dashboard
@@ -97,13 +100,17 @@ const Index = (): JSX.Element => {
     else
       buttons = (
         <>
-          <Button className="no-border" onClick={handleSignup} size="large">
+          <Button
+            className="no-border"
+            onClick={() => handleSignup(router)}
+            size="large"
+          >
             Signup
           </Button>
           <Button
             className="no-border"
             icon={<LoginOutlined />}
-            onClick={handleLogin}
+            onClick={() => handleLogin(router)}
             size="large"
           >
             Login

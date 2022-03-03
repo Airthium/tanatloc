@@ -24,7 +24,7 @@ export interface IProps {
 }
 
 /**
- * Errors (delete)
+ * Errors
  */
 const errors = {
   delError: 'Unable to delete user'
@@ -33,17 +33,12 @@ const errors = {
 /**
  * On delete
  * @param user User
- * @param setLoading Set loading
- * @param setVisible Set visible
  * @param swr Swr
  */
 export const onDelete = async (
   user: IUserWithData,
-  setLoading: Dispatch<SetStateAction<boolean>>,
   swr: { delOneUser: (user: IUserWithData) => void }
 ): Promise<void> => {
-  setLoading(true)
-
   try {
     // Delete
     await UserAPI.delById(user.id)
@@ -52,9 +47,6 @@ export const onDelete = async (
     swr.delOneUser({ id: user.id })
   } catch (err) {
     ErrorNotification(errors.delError, err)
-    throw err
-  } finally {
-    setLoading(false)
   }
 }
 
@@ -77,7 +69,11 @@ const Delete = ({ user, swr }: IProps): JSX.Element => {
         loading={loading}
         text={'Delete ' + user.email + '?'}
         title="Delete user"
-        onDelete={async () => onDelete(user, setLoading, swr)}
+        onDelete={async () => {
+          setLoading(true)
+          await onDelete(user, swr)
+          setLoading(false)
+        }}
       />
     </>
   )

@@ -4,6 +4,7 @@ import { Card, Layout } from 'antd'
 
 /**
  * Signup send
+ * @return Send
  */
 const Send = (): JSX.Element => {
   /**

@@ -1,25 +1,19 @@
 /** @module Components.Login */
 
-import { useRouter } from 'next/router'
+import { NextRouter, useRouter } from 'next/router'
 import { useState, useEffect, Dispatch, SetStateAction } from 'react'
-import {
-  Button,
-  Card,
-  Form,
-  Input,
-  Layout,
-  Space,
-  Typography,
-  Alert
-} from 'antd'
+import { Button, Card, Form, Input, Layout, Space, Typography } from 'antd'
+
+import { IUserWithData } from '@/lib/index.d'
 
 import Loading from '@/components/loading'
-import { ErrorNotification } from '@/components/assets/notification'
+import { ErrorNotification, FormError } from '@/components/assets/notification'
 
 import PasswordRecover from './password'
 
 import { login } from '@/api/login'
 import UserAPI from '@/api/user'
+import { APIError } from '@/api/error'
 
 /**
  * Errors
@@ -31,19 +25,57 @@ const errors = {
 }
 
 /**
+ * Handle login
+ * @param router Router
+ * @param values
+ * @param mutateUser Mutate user
+ */
+const onLogin = async (
+  router: NextRouter,
+  values: {
+    email: string
+    password: string
+  },
+  mutateUser: (user: IUserWithData) => void
+): Promise<void> => {
+  // Check
+  let loggedUser: { ok: boolean; id?: string; isvalidated?: boolean }
+  try {
+    loggedUser = await login(values)
+  } catch (err) {
+    throw new APIError({ title: errors.internal, err })
+  }
+
+  if (loggedUser.ok) {
+    // Logged
+    mutateUser(loggedUser)
+    router.push('/dashboard')
+  } else {
+    // Bad
+    throw new APIError({ title: errors.credentials, type: 'warning' })
+  }
+}
+
+/**
+ * Go to signup
+ * @param router Router
+ */
+const signUp = (router: NextRouter): void => {
+  router.push('/signup')
+}
+
+/**
  * Login
  * @returns Login
  */
 const Login = (): JSX.Element => {
   // State
-  const [checking, setChecking]: [boolean, Dispatch<SetStateAction<boolean>>] =
+  const [loading, setLoading]: [boolean, Dispatch<SetStateAction<boolean>>] =
     useState(false)
-  const [loginErr, setLoginErr]: [boolean, Dispatch<SetStateAction<boolean>>] =
-    useState(false)
-  const [internalErr, setInternalErr]: [
-    boolean,
-    Dispatch<SetStateAction<boolean>>
-  ] = useState(false)
+  const [formError, setFormError]: [
+    APIError,
+    Dispatch<SetStateAction<APIError>>
+  ] = useState()
 
   // Data
   const [user, { mutateUser, errorUser, loadingUser }] = UserAPI.useUser()
@@ -59,52 +91,13 @@ const Login = (): JSX.Element => {
   // Already connected
   useEffect(() => {
     if (user) router.push('/dashboard')
-  }, [user])
+  }, [user, router])
 
   // Prefetch
   useEffect(() => {
     router.prefetch('/signup')
     router.prefetch('/dashboard')
-  }, [])
-
-  /**
-   * Handle login
-   * @param values
-   */
-  const onLogin = async (values: {
-    email: string
-    password: string
-  }): Promise<void> => {
-    // State
-    setChecking(true)
-    setLoginErr(false)
-    setInternalErr(false)
-
-    // Check
-    try {
-      const loggedUser = await login(values)
-      if (loggedUser.ok) {
-        // Logged
-        mutateUser(loggedUser)
-        router.push('/dashboard')
-      } else {
-        // Bad
-        setLoginErr(true)
-        setChecking(false)
-      }
-    } catch (err) {
-      setInternalErr(true)
-      setChecking(false)
-      ErrorNotification(errors.internal, err, false)
-    }
-  }
-
-  /**
-   * Go to signup
-   */
-  const signUp = (): void => {
-    router.push('/signup')
-  }
+  }, [router])
 
   /**
    * Render
@@ -124,22 +117,24 @@ const Login = (): JSX.Element => {
               </Typography.Title>
               <Typography.Text>
                 Your first time ?{' '}
-                <Button type="link" onClick={signUp}>
+                <Button type="link" onClick={() => signUp(router)}>
                   Sign up
                 </Button>
               </Typography.Text>
             </div>
-            <Form requiredMark="optional" onFinish={onLogin} layout="vertical">
-              {(loginErr || internalErr) && (
-                <Alert
-                  message={internalErr ? errors.internal : errors.credentials}
-                  type="error"
-                  showIcon
-                  style={{
-                    marginBottom: '16px'
-                  }}
-                />
-              )}
+            <Form
+              requiredMark="optional"
+              onFinish={async (values) => {
+                setLoading(true)
+                try {
+                  await onLogin(router, values, mutateUser)
+                } catch (err) {
+                  setFormError(err)
+                  setLoading(false)
+                }
+              }}
+              layout="vertical"
+            >
               <Form.Item
                 name="email"
                 label="Your email address"
@@ -159,8 +154,9 @@ const Login = (): JSX.Element => {
                 />
               </Form.Item>
               <PasswordRecover />
+              <FormError error={formError} />
               <Form.Item className="Login-submit">
-                <Button type="primary" loading={checking} htmlType="submit">
+                <Button type="primary" loading={loading} htmlType="submit">
                   Log in
                 </Button>
               </Form.Item>
@@ -170,5 +166,7 @@ const Login = (): JSX.Element => {
       </Layout>
     )
 }
+
+Login.propTypes = {}
 
 export default Login

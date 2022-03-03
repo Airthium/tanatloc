@@ -1,15 +1,14 @@
 /** @module Components.Assets.Notification.Error */
 
-import { Card, Typography } from 'antd'
+import { Alert, Form, Typography } from 'antd'
 
-import { ICallError } from '@/api/index.d'
+import { APIError } from '@/api/error'
 
 /**
  * Props
  */
 export interface IProps {
-  error: { title: string; err?: ICallError }
-  className?: string
+  error: APIError
 }
 
 /**
@@ -18,41 +17,43 @@ export interface IProps {
  * @param err Error
  * @returns FormError
  */
-const FormError = ({ error, className }: IProps): JSX.Element => {
+const FormError = ({ error }: IProps): JSX.Element => {
   return error ? (
-    <Card
-      size="small"
-      className={className}
-      style={{ backgroundColor: 'rgba(255, 0, 0, 0.15)', borderColor: 'red' }}
-    >
-      <Typography.Text strong type="danger">
-        {error.title}
-      </Typography.Text>
-      {error.err && (
-        <Card size="small">
-          <Typography.Text type="danger" code={true}>
-            Error message: {error.err.message}
-          </Typography.Text>
+    <Form.Item>
+      <Alert
+        message={error.render || error.title}
+        type={error.type}
+        showIcon
+        description={
+          error.err && (
+            <>
+              {error.err.message && (
+                <Typography.Text type="danger">
+                  Message: <code>{error.err.message}</code>
+                </Typography.Text>
+              )}
 
-          {error.err.status && (
-            <>
-              <br />
-              <Typography.Text type="danger">
-                Status: {error.err.status}
-              </Typography.Text>
+              {error.err.status && (
+                <>
+                  <br />
+                  <Typography.Text type="danger">
+                    Status: <code>{error.err.status}</code>
+                  </Typography.Text>
+                </>
+              )}
+              {error.err.info?.message && (
+                <>
+                  <br />
+                  <Typography.Text type="danger">
+                    Information: <code>{error.err.info?.message}</code>
+                  </Typography.Text>
+                </>
+              )}
             </>
-          )}
-          {error.err.info?.message && (
-            <>
-              <br />
-              <Typography.Text type="danger">
-                Description: {error.err.info?.message}
-              </Typography.Text>
-            </>
-          )}
-        </Card>
-      )}
-    </Card>
+          )
+        }
+      />
+    </Form.Item>
   ) : null
 }
 

@@ -1,23 +1,17 @@
 /** @module Components.Signup */
 
-import { useRouter } from 'next/router'
-import { Dispatch, SetStateAction, useState, useEffect } from 'react'
-import {
-  Alert,
-  Button,
-  Card,
-  Form,
-  Input,
-  Layout,
-  Space,
-  Typography
-} from 'antd'
+import { NextRouter, useRouter } from 'next/router'
+import { useState, useEffect, Dispatch, SetStateAction } from 'react'
+import { Button, Card, Form, Input, Layout, Space, Typography } from 'antd'
+
+import { INewUser } from '@/database/index.d'
 
 import { PasswordItem } from '@/components/assets/input'
-import { ErrorNotification } from '@/components/assets/notification'
+import { ErrorNotification, FormError } from '@/components/assets/notification'
 
 import Loading from '@/components/loading'
 
+import { APIError } from '@/api/error'
 import UserAPI from '@/api/user'
 import SystemAPI from '@/api/system'
 
@@ -27,37 +21,68 @@ import SystemAPI from '@/api/system'
 const errors = {
   user: 'User error',
   system: 'System error',
-  INTERNAL_ERROR: 'Server issue : try again shortly.',
-  ALREADY_EXISTS: 'This email is already registered',
-  passwordMismatch: 'Passwords mismatch',
-  systemError: 'Unable to get system'
+  internal: 'Server issue : try again shortly.',
+  alreadyExists: 'This email is already registered',
+  passwordMismatch: 'Passwords mismatch'
+}
+
+/**
+ * Handle signup
+ * @param router Router
+ * @param values
+ */
+export const onSignup = async (
+  router: NextRouter,
+  values: {
+    email: string
+    password: string
+  }
+): Promise<void> => {
+  // Signup
+  let newUser: INewUser
+  try {
+    newUser = await UserAPI.add(values)
+  } catch (err) {
+    throw new APIError({ title: errors.internal, err })
+  }
+
+  if (newUser.alreadyExists)
+    throw new APIError({
+      title: errors.alreadyExists,
+      render: (
+        <>
+          We know you! <a onClick={() => onLogin(router)}>Log in ?</a>
+        </>
+      ),
+      type: 'warning'
+    })
+
+  router.push('/signup/send')
+}
+
+/**
+ * Go to login
+ * @param router Router
+ */
+export const onLogin = (router: NextRouter): void => {
+  router.push('/login')
 }
 
 // Router
 const router = useRouter()
 
 /**
- * Go to login
- */
-const onLogin = (): void => {
-  router.push('/login')
-}
-
-/**
  * Signup
+ * @returns Signup
  */
 const Signup = (): JSX.Element => {
   // State
-  const [checking, setChecking]: [boolean, Dispatch<SetStateAction<boolean>>] =
+  const [loading, setLoading]: [boolean, Dispatch<SetStateAction<boolean>>] =
     useState(false)
-  const [signupErr, setSignupErr]: [
-    boolean,
-    Dispatch<SetStateAction<boolean>>
-  ] = useState(false)
-  const [internalErr, setInternalError]: [
-    boolean,
-    Dispatch<SetStateAction<boolean>>
-  ] = useState(false)
+  const [formError, setFormError]: [
+    APIError,
+    Dispatch<SetStateAction<APIError>>
+  ] = useState()
 
   // Data
   const [user, { errorUser, loadingUser }] = UserAPI.useUser()
@@ -72,44 +97,13 @@ const Signup = (): JSX.Element => {
   // Already connected
   useEffect(() => {
     if (user) router.push('/dashboard')
-  }, [user])
+  }, [user, router])
 
   // Prefetch
   useEffect(() => {
     router.prefetch('/dashboard')
     router.prefetch('/login')
-  }, [])
-
-  //Todo
-  /**
-   * Handle signup
-   * @param values
-   */
-  const onSignup = async (values: {
-    email: string
-    password: string
-  }): Promise<void> => {
-    // State
-    setChecking(true)
-    setSignupErr(false)
-    setInternalError(false)
-
-    // Signup
-    try {
-      const newUser = await UserAPI.add(values)
-      if (newUser.alreadyExists) {
-        setSignupErr(true)
-        setChecking(false)
-        return
-      }
-
-      router.push('/signup/send')
-    } catch (err) {
-      setInternalError(true)
-      setChecking(false)
-      ErrorNotification(errors.INTERNAL_ERROR, err, false)
-    }
-  }
+  }, [router])
 
   /**
    * Render
@@ -134,30 +128,20 @@ const Signup = (): JSX.Element => {
                 Sign Up
               </Typography.Title>
             </div>
-            <Form requiredMark="optional" onFinish={onSignup} layout="vertical">
-              {(signupErr || internalErr) && (
-                <Alert
-                  message={
-                    internalErr ? (
-                      errors.INTERNAL_ERROR
-                    ) : (
-                      <>
-                        <b>{errors.ALREADY_EXISTS}</b>
-                        <br />
-                        We know you!{' '}
-                        <Button type="link" onClick={onLogin}>
-                          Log in ?
-                        </Button>
-                      </>
-                    )
-                  }
-                  type={internalErr ? 'error' : 'warning'}
-                  showIcon
-                  style={{
-                    marginBottom: '16px'
-                  }}
-                />
-              )}
+            <Form
+              requiredMark="optional"
+              onFinish={async (values) => {
+                setLoading(true)
+                try {
+                  await onSignup(router, values)
+                } catch (err) {
+                  setFormError(err)
+                } finally {
+                  setLoading(false)
+                }
+              }}
+              layout="vertical"
+            >
               <Form.Item
                 name="email"
                 label="Enter your email address"
@@ -196,8 +180,9 @@ const Signup = (): JSX.Element => {
                   autoComplete="current-password"
                 />
               </Form.Item>
+              <FormError error={formError} />
               <Form.Item className="Signup-submit">
-                <Button type="primary" loading={checking} htmlType="submit">
+                <Button type="primary" loading={loading} htmlType="submit">
                   Finish
                 </Button>
               </Form.Item>

@@ -23,7 +23,7 @@ import {
 import SystemAPI from '@/api/system'
 
 /**
- * Errors (registration)
+ * Errors
  */
 const errors = {
   system: 'System error',
@@ -108,7 +108,7 @@ const Registration = (): JSX.Element => {
           requireSymbol: REQUIRE_SYMBOL
         }
       )
-  }, [loadingSystem, system?.password])
+  }, [loadingSystem, form, system?.password])
 
   /**
    * Render

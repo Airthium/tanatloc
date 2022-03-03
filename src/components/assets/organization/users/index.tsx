@@ -9,10 +9,13 @@ import Utils from '@/lib/utils'
 import Add from './add'
 import Delete from './delete'
 
+/**
+ * Props
+ */
 export interface IProps {
   organization: IOrganizationWithData
   swr: {
-    mutateOneOrganization: Function
+    mutateOneOrganization: (organization: IOrganizationWithData) => void
     loadingOrganizations: boolean
   }
 }
@@ -24,15 +27,51 @@ export interface IProps {
  * Props list:
  * - organization (Object) Organization `{ id, owners, [users] }`
  * - swr (Object) SWR functions `{ mutateOneOrganization }`
+ * @returns Users
  */
 const Users = ({ organization, swr }: IProps): JSX.Element => {
   // Columns
+  const avatarRender = (_: any, user: IUserWithData) => Utils.userToAvatar(user)
+  const ownerActionsRender = (owner: IUserWithData) => (
+    <Delete
+      disabled={organization.owners.length < 2}
+      user={{
+        id: owner.id,
+        email: owner.email
+      }}
+      organization={{
+        id: organization.id,
+        owners: organization.owners
+      }}
+      dBkey="owners"
+      swr={{
+        mutateOneOrganization: swr.mutateOneOrganization
+      }}
+    />
+  )
+  const userActionsRender = (user: IUserWithData) => (
+    <Delete
+      user={{
+        id: user.id,
+        email: user.email,
+        firstname: user.firstname,
+        lastname: user.lastname
+      }}
+      organization={{
+        id: organization.id,
+        users: organization.users
+      }}
+      dBkey="users"
+      swr={{
+        mutateOneOrganization: swr.mutateOneOrganization
+      }}
+    />
+  )
   const columns = [
     {
       key: 'avatar',
       dataIndex: 'avatar',
-      // eslint-disable-next-line react/display-name
-      render: (_: any, user: IUserWithData) => Utils.userToAvatar(user)
+      render: avatarRender
     },
     {
       key: 'lastname',
@@ -56,24 +95,7 @@ const Users = ({ organization, swr }: IProps): JSX.Element => {
     {
       key: 'actions',
       title: 'Actions',
-      // eslint-disable-next-line react/display-name
-      render: (owner: IUserWithData) => (
-        <Delete
-          disabled={organization.owners.length < 2}
-          user={{
-            id: owner.id,
-            email: owner.email
-          }}
-          organization={{
-            id: organization.id,
-            owners: organization.owners
-          }}
-          dBkey="owners"
-          swr={{
-            mutateOneOrganization: swr.mutateOneOrganization
-          }}
-        />
-      )
+      render: ownerActionsRender
     }
   ]
 
@@ -82,25 +104,7 @@ const Users = ({ organization, swr }: IProps): JSX.Element => {
     {
       key: 'actions',
       title: 'Actions',
-      // eslint-disable-next-line react/display-name
-      render: (user: IUserWithData) => (
-        <Delete
-          user={{
-            id: user.id,
-            email: user.email,
-            firstname: user.firstname,
-            lastname: user.lastname
-          }}
-          organization={{
-            id: organization.id,
-            users: organization.users
-          }}
-          dBkey="users"
-          swr={{
-            mutateOneOrganization: swr.mutateOneOrganization
-          }}
-        />
-      )
+      render: userActionsRender
     }
   ]
 
@@ -126,7 +130,6 @@ const Users = ({ organization, swr }: IProps): JSX.Element => {
             loading={swr.loadingOrganizations}
             pagination={false}
             size="small"
-            scroll={{ y: 200 }}
             columns={ownersColumns}
             dataSource={organization.owners.map((o, index) => ({
               ...o,
@@ -152,7 +155,6 @@ const Users = ({ organization, swr }: IProps): JSX.Element => {
             loading={swr?.loadingOrganizations}
             pagination={false}
             size="small"
-            scroll={{ y: 200 }}
             columns={usersColumns}
             dataSource={organization.users?.map((u, index) => ({
               ...u,

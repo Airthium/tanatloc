@@ -1,7 +1,13 @@
 /** @module Components.Assets.Share */
 
 import PropTypes from 'prop-types'
-import { useState, useEffect, CSSProperties } from 'react'
+import {
+  useState,
+  useEffect,
+  CSSProperties,
+  Dispatch,
+  SetStateAction
+} from 'react'
 import {
   Button,
   Form,
@@ -30,8 +36,8 @@ export interface IProps {
   project?: IProjectWithData
   organizations: IOrganizationWithData[]
   swr: {
-    mutateOneWorkspace?: Function
-    mutateOneProject?: Function
+    mutateOneWorkspace?: (workspace: IWorkspaceWithData) => void
+    mutateOneProject?: (project: IProjectWithData) => void
   }
   style?: CSSProperties & {
     buttonLight?: boolean
@@ -48,6 +54,57 @@ const errors = {
 }
 
 /**
+ * On share
+ * @param workspace Workspace
+ * @param project Project
+ * @param selected Selected
+ * @param swr SWR
+ */
+export const onShare = async (
+  workspace: IWorkspaceWithData | undefined,
+  project: IProjectWithData | undefined,
+  selected: string[],
+  swr: {
+    mutateOneWorkspace?: (workspace: IWorkspaceWithData) => void
+    mutateOneProject?: (project: IProjectWithData) => void
+  }
+): Promise<void> => {
+  try {
+    if (workspace) {
+      // API
+      await WorkspaceAPI.update({ id: workspace.id }, [
+        {
+          key: 'groups',
+          value: selected
+        }
+      ])
+
+      // Mutate
+      const newWorkspace = { ...workspace }
+      newWorkspace.groups = selected.map((s) => ({ id: s }))
+      swr.mutateOneWorkspace(newWorkspace)
+    } else {
+      // API
+      await ProjectAPI.update({ id: project.id }, [
+        {
+          key: 'groups',
+          value: selected
+        }
+      ])
+
+      // Mutate
+      const newProject = { ...project }
+      newProject.groups = selected.map((s) => ({ id: s }))
+      swr.mutateOneProject(newProject)
+    }
+  } catch (err) {
+    ErrorNotification(errors.shareError, err)
+
+    throw err
+  }
+}
+
+/**
  * Share
  * @param props Props
  * @description Props list:
@@ -57,6 +114,7 @@ const errors = {
  * - organizations (Array) Organizations
  * - swr (Object) SWR functions `{ mutateOneWorkspace, mutateOneProject }`
  * - style (Object) Button style
+ * @returns Share
  */
 const Share = ({
   disabled,
@@ -67,10 +125,18 @@ const Share = ({
   style
 }: IProps): JSX.Element => {
   // State
-  const [visible, setVisible]: [boolean, Function] = useState(false)
-  const [loading, setLoading]: [boolean, Function] = useState(false)
-  const [treeData, setTreeData]: [TreeDataNode[], Function] = useState([])
-  const [selected, setSelected]: [string[], Function] = useState([])
+  const [visible, setVisible]: [boolean, Dispatch<SetStateAction<boolean>>] =
+    useState(false)
+  const [loading, setLoading]: [boolean, Dispatch<SetStateAction<boolean>>] =
+    useState(false)
+  const [treeData, setTreeData]: [
+    TreeDataNode[],
+    Dispatch<SetStateAction<TreeDataNode[]>>
+  ] = useState([])
+  const [selected, setSelected]: [
+    string[],
+    Dispatch<SetStateAction<string[]>>
+  ] = useState([])
 
   // Effect
   useEffect(() => {
@@ -92,6 +158,7 @@ const Share = ({
               ? user.lastname + ' ' + user.firstname
               : user.email
           return {
+            key: group.id + '&' + user.id,
             title,
             disabled: true,
             checkable: false,
@@ -100,6 +167,7 @@ const Share = ({
         })
 
         return {
+          key: group.id,
           title: group.name,
           value: group.id,
           children: users
@@ -107,6 +175,7 @@ const Share = ({
       })
 
       return {
+        key: organization.id,
         title: organization.name,
         value: organization.id,
         disabled: true,
@@ -117,59 +186,6 @@ const Share = ({
 
     setTreeData(data)
   }, [organizations])
-
-  /**
-   * On change
-   * @param value Value
-   */
-  const onSelectChange = (value: string[]): void => {
-    setSelected(value)
-  }
-
-  /**
-   * On share
-   */
-  const onShare = async (): Promise<void> => {
-    setLoading(true)
-
-    try {
-      if (workspace) {
-        // API
-        await WorkspaceAPI.update({ id: workspace.id }, [
-          {
-            key: 'groups',
-            value: selected
-          }
-        ])
-
-        // Mutate
-        const newWorkspace = { ...workspace }
-        newWorkspace.groups = selected.map((s) => ({ id: s }))
-        swr.mutateOneWorkspace(newWorkspace)
-      } else {
-        // API
-        await ProjectAPI.update({ id: project.id }, [
-          {
-            key: 'groups',
-            value: selected
-          }
-        ])
-
-        // Mutate
-        const newProject = { ...project }
-        newProject.groups = selected.map((s) => ({ id: s }))
-        swr.mutateOneProject(newProject)
-      }
-
-      // Close
-      setLoading(false)
-      setVisible(false)
-    } catch (err) {
-      ErrorNotification(errors.shareError, err)
-      setLoading(false)
-      throw err
-    }
-  }
 
   /**
    * Render
@@ -194,7 +210,19 @@ const Share = ({
         title={'Share ' + (workspace ? 'workspace' : 'project')}
         visible={visible}
         onCancel={() => setVisible(false)}
-        onOk={onShare}
+        onOk={async (values) => {
+          setLoading(true)
+          try {
+            await onShare(workspace, project, values, swr)
+
+            // Close
+            setLoading(false)
+            setVisible(false)
+          } catch (err) {
+            setLoading(false)
+            throw err
+          }
+        }}
         loading={loading}
       >
         <Typography.Text strong>
@@ -220,7 +248,7 @@ const Share = ({
               treeCheckable
               showCheckedStrategy={TreeSelect.SHOW_ALL}
               value={selected}
-              onChange={onSelectChange}
+              onChange={(value) => setSelected(value)}
             />
           </Form.Item>
         ) : (
@@ -240,6 +268,7 @@ const Share = ({
   )
 }
 
+// TODO proptypes
 Share.propTypes = {
   disabled: PropTypes.bool,
   project: (props, propName, componentName) => {

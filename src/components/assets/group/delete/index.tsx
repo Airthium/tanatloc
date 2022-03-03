@@ -1,86 +1,80 @@
 /** @module Components.Assets.Group.Delete */
 
 import PropTypes from 'prop-types'
-import { useState } from 'react'
-import { Button } from 'antd'
-import { DeleteOutlined } from '@ant-design/icons'
+import { Dispatch, SetStateAction, useState } from 'react'
 
 import { IGroupWithData } from '@/lib/index.d'
 
-import { DeleteDialog } from '@/components/assets/dialog'
+import { DeleteButton } from '@/components/assets/button'
 import { ErrorNotification } from '@/components/assets/notification'
 
 import GroupAPI from '@/api/group'
 
+/**
+ * Props
+ */
 export interface IProps {
   group: IGroupWithData
   swr: {
-    delOneGroup: Function
+    delOneGroup: (group: IGroupWithData) => void
   }
 }
 
 /**
- * Errors (delete)
+ * Errors
  */
 const errors = {
   del: 'Unable to delete group'
 }
 
 /**
- * Delete group
+ * On delete
+ * @param group Group
+ * @param swr SWR
+ */
+export const onDelete = async (
+  group: IGroupWithData,
+  swr: { delOneGroup: (group: IGroupWithData) => void }
+): Promise<void> => {
+  try {
+    // Delete
+    await GroupAPI.del({ id: group.id })
+
+    // Mutate
+    swr.delOneGroup({ id: group.id })
+  } catch (err) {
+    ErrorNotification(errors.del, err)
+  }
+}
+
+/**
+ * Delete
  * @param props Props
  * @description
  * Props:
  * - group (Object) Group `{ id, name }`
  * - swr (Object) SWR function `{ delOneGroup }`
+ * @returns Delete
  */
 const Delete = ({ group, swr }: IProps): JSX.Element => {
   // State
-  const [visible, setVisible]: [boolean, Function] = useState(false)
-  const [loading, setLoading]: [boolean, Function] = useState(false)
-
-  /**
-   * On delete
-   */
-  const onDelete = async (): Promise<void> => {
-    setLoading(true)
-
-    try {
-      // Delete
-      await GroupAPI.del({ id: group.id })
-
-      // Mutate
-      swr.delOneGroup({ id: group.id })
-
-      // Close
-      setLoading(false)
-      setVisible(false)
-    } catch (err) {
-      ErrorNotification(errors.del, err)
-      setLoading(false)
-    }
-  }
+  const [loading, setLoading]: [boolean, Dispatch<SetStateAction<boolean>>] =
+    useState(false)
 
   /**
    * Render
    */
   return (
-    <>
-      <Button
-        icon={<DeleteOutlined />}
-        danger
-        onClick={() => setVisible(true)}
-      />
-      <DeleteDialog
-        visible={visible}
-        loading={loading}
-        title="Delete group"
-        onCancel={() => setVisible(false)}
-        onOk={onDelete}
-      >
-        Delete {group.name}?
-      </DeleteDialog>
-    </>
+    <DeleteButton
+      title="Delete group"
+      text={'Delete ' + group.name + '?'}
+      loading={loading}
+      onDelete={async () => {
+        setLoading(true)
+        await onDelete(group, swr)
+        setLoading(false)
+      }}
+    />
   )
 }
 

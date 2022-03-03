@@ -55,18 +55,13 @@ const errors = {
  * On update
  * @param user User
  * @param values Values
- * @param setLoading Set loading
- * @param setVisible Set visible
  * @param swr Swr
  */
 export const onUpdate = async (
   user: IUserWithData,
   values: IEditValues,
-  setLoading: Dispatch<SetStateAction<boolean>>,
-  setVisible: Dispatch<SetStateAction<boolean>>,
   swr: { mutateOneUser: (user: IUserWithData) => void }
 ): Promise<void> => {
-  setLoading(true)
   try {
     // Update
     const toUpdate = Object.keys(values)
@@ -77,12 +72,7 @@ export const onUpdate = async (
       })
       .filter((u) => u)
 
-    if (!toUpdate.length) {
-      // Close
-      setLoading(false)
-      setVisible(false)
-      return
-    }
+    if (!toUpdate.length) return
 
     await UserAPI.updateById(user.id, toUpdate)
 
@@ -93,13 +83,8 @@ export const onUpdate = async (
     }
     delete newUser.password
     swr.mutateOneUser(newUser)
-
-    // Close
-    setLoading(false)
-    setVisible(false)
   } catch (err) {
     ErrorNotification(errors.update, err)
-    setLoading(false)
     throw err
   }
 }
@@ -130,9 +115,19 @@ const Edit = ({ plugins, user, swr }: IProps): JSX.Element => {
           authorizedplugins: user.authorizedplugins || []
         }}
         onCancel={() => setVisible(false)}
-        onOk={async (values: IEditValues) =>
-          onUpdate(user, values, setLoading, setVisible, swr)
-        }
+        onOk={async (values: IEditValues) => {
+          setLoading(true)
+          try {
+            await onUpdate(user, values, swr)
+
+            // Close
+            setLoading(false)
+            setVisible(false)
+          } catch (err) {
+            setLoading(false)
+            throw err
+          }
+        }}
         loading={loading}
       >
         <Form.Item name="firstname" label="First name">

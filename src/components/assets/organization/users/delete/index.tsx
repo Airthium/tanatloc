@@ -2,35 +2,71 @@
 
 import PropTypes from 'prop-types'
 import { useState } from 'react'
-import { Button } from 'antd'
-import { DeleteOutlined } from '@ant-design/icons'
 
 import { IOrganizationWithData, IUserWithData } from '@/lib/index.d'
 
-import { DeleteDialog } from '@/components/assets/dialog'
 import { ErrorNotification } from '@/components/assets/notification'
 
+import { DeleteButton } from '@/components/assets/button'
 import OrganizationAPI from '@/api/organization'
 
+/**
+ * Props
+ */
 export interface IProps {
   disabled?: boolean
   user: IUserWithData
   organization: IOrganizationWithData
   dBkey: 'owners' | 'users'
   swr: {
-    mutateOneOrganization: Function
+    mutateOneOrganization: (organization: IOrganizationWithData) => void
   }
 }
 
 /**
- * Errors (delete)
+ * Errors
  */
 const errors = {
   delError: 'Unable to delete user'
 }
 
 /**
- * Delete user
+ * On delete
+ * @param organization Organization
+ * @param user User
+ * @param dBkey Database key
+ * @param swr SWR
+ */
+export const onDelete = async (
+  organization: IOrganizationWithData,
+  user: IUserWithData,
+  dBkey: 'owners' | 'users',
+  swr: { mutateOneOrganization: (organization: IOrganizationWithData) => void }
+): Promise<void> => {
+  try {
+    // API
+    await OrganizationAPI.update(organization, [
+      {
+        key: dBkey,
+        type: 'array',
+        method: 'remove',
+        value: user.id
+      }
+    ])
+
+    // Local
+    const newOrganization = { ...organization }
+    newOrganization[dBkey] = newOrganization[dBkey].filter(
+      (u) => u.id !== user.id
+    )
+    swr.mutateOneOrganization(newOrganization)
+  } catch (err) {
+    ErrorNotification(errors.delError, err)
+  }
+}
+
+/**
+ * Delete
  * @param props Props
  * @description
  * Props list:
@@ -39,6 +75,7 @@ const errors = {
  * - organization (Object) Organization `{ id, [dBkey] }`
  * - dbKey (string) Database key, must be `owners` or `users`
  * - swr (Object) SWR functions `{ mutateOneOrganization }`
+ * @returns Delete
  */
 const Delete = ({
   disabled,
@@ -48,65 +85,27 @@ const Delete = ({
   swr
 }: IProps): JSX.Element => {
   // State
-  const [visible, setVisible]: [boolean, Function] = useState(false)
   const [loading, setLoading]: [boolean, Function] = useState(false)
-
-  /**
-   * On delete
-   */
-  const onDelete = async (): Promise<void> => {
-    setLoading(true)
-    try {
-      // API
-      await OrganizationAPI.update(organization, [
-        {
-          key: dBkey,
-          type: 'array',
-          method: 'remove',
-          value: user.id
-        }
-      ])
-
-      // Local
-      const newOrganization = { ...organization }
-      newOrganization[dBkey] = newOrganization[dBkey].filter(
-        (u) => u.id !== user.id
-      )
-      swr.mutateOneOrganization(newOrganization)
-
-      // Close
-      setVisible(false)
-    } catch (err) {
-      ErrorNotification(errors.delError, err)
-      setLoading(false)
-    }
-  }
 
   /**
    * Render
    */
   return (
-    <>
-      <Button
-        disabled={disabled || !user.id}
-        icon={<DeleteOutlined />}
-        danger
-        onClick={() => setVisible(true)}
-      />
-      <DeleteDialog
-        visible={visible}
-        loading={loading}
-        title="Delete organization"
-        onCancel={() => setVisible(false)}
-        onOk={onDelete}
-      >
-        Delete{' '}
-        {user.firstname || user.lastname
+    <DeleteButton
+      disabled={disabled}
+      title="Delete organization"
+      text={
+        'Delete ' + user.firstname || user.lastname
           ? user.firstname + ' ' + user.lastname
-          : user.email}
-        ?
-      </DeleteDialog>
-    </>
+          : user.email + '?'
+      }
+      loading={loading}
+      onDelete={async () => {
+        setLoading(true)
+        await onDelete(organization, user, dBkey, swr)
+        setLoading(false)
+      }}
+    />
   )
 }
 
@@ -118,51 +117,11 @@ Delete.propTypes = {
     firstname: PropTypes.string,
     lastname: PropTypes.string
   }).isRequired,
-  organization: (props, propName, componentName) => {
-    // Missing organization
-    if (!props[propName])
-      return new Error(
-        'Invalid prop ' +
-          propName +
-          ' supplied to ' +
-          componentName +
-          '. organization missing'
-      )
-
-    // Missing or invalid id
-    if (!props[propName].id || typeof props[propName].id !== 'string')
-      return new Error(
-        'Invalid prop ' +
-          propName +
-          ' supplied to ' +
-          componentName +
-          '. id missing or invalid'
-      )
-
-    // Missing of invalid owners
-    if (props['dBkey'] === 'owners') {
-      if (!props[propName].owners || !Array.isArray(props[propName].owners))
-        return new Error(
-          'Invalid prop ' +
-            propName +
-            ' supplied to ' +
-            componentName +
-            '. owners missing or invalid'
-        )
-    }
-
-    // Missing of invalid users
-    if (props['dBkey'] === 'users') {
-      if (!props[propName].users || !Array.isArray(props[propName].users))
-        return new Error(
-          'Invalid prop ' +
-            propName +
-            ' supplied to ' +
-            componentName +
-            '. users missing or invalid'
-        )
-    }
-  },
+  organization: PropTypes.exact({
+    id: PropTypes.string.isRequired,
+    owners: PropTypes.array,
+    users: PropTypes.array
+  }),
   dBkey: PropTypes.oneOf(['owners', 'users']),
   swr: PropTypes.exact({
     mutateOneOrganization: PropTypes.func.isRequired

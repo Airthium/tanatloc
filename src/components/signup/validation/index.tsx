@@ -11,7 +11,7 @@ import { ErrorNotification } from '@/components/assets/notification'
 import LinkAPI from '@/api/link'
 
 /**
- * Errors (validation)
+ * Errors
  */
 const errors = {
   internal: 'Internal error'
@@ -24,7 +24,7 @@ const router = useRouter()
 
 /**
  * Validation
- * @returns {jxs} Render
+ * @returns Validation
  */
 const Validation = (): JSX.Element => {
   const { id }: { id?: string } = router.query
@@ -45,7 +45,7 @@ const Validation = (): JSX.Element => {
         })
         .catch((err) => ErrorNotification(errors.internal, err))
     }
-  }, [id])
+  }, [id, router])
 
   /**
    * Render

@@ -31,7 +31,7 @@ const NotAuthorized = (): JSX.Element => {
   // Prefetech
   useEffect(() => {
     router.prefetch('/')
-  }, [])
+  }, [router])
 
   /**
    * Render

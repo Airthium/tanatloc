@@ -12,8 +12,8 @@ import {
   FormError
 } from '@/components/assets/notification'
 
+import { APIError } from '@/api/error'
 import UserAPI from '@/api/user'
-import { ICallError } from '@/api'
 
 /**
  * Props
@@ -26,6 +26,7 @@ export interface IProps {
  * Errors
  */
 const errors = {
+  check: 'Unable to check the password',
   update: 'Unable to update the password',
   passwordMismatch: 'Password and confirmation mismatch',
   invalid: 'Current password not valid'
@@ -35,62 +36,55 @@ const errors = {
  * On finish
  * @param user User
  * @param values Values
- * @param setLoading Set loading
  */
 export const onFinish = async (
   user: IUserWithData,
   values: {
     password: string
     newPassword: string
-  },
-  setLoading: Dispatch<SetStateAction<boolean>>,
-  setFormError: Dispatch<SetStateAction<{ title: string; err?: ICallError }>>
+  }
 ): Promise<void> => {
-  setLoading(true)
-
+  let current: { valid: boolean }
   try {
     // Check current password
-    const current = await UserAPI.check({
+    current = await UserAPI.check({
       email: user.email,
       password: values.password
     })
-
-    if (current.valid) {
-      // Change password
-      await UserAPI.update([
-        {
-          type: 'crypt',
-          key: 'password',
-          value: values.newPassword
-        }
-      ])
-
-      setFormError(null)
-      SuccessNotification('Your password has been changed successfully')
-    } else {
-      setFormError({
-        title: errors.invalid
-      })
-    }
   } catch (err) {
-    setFormError({ title: errors.update, err })
-  } finally {
-    setLoading(false)
+    throw new APIError(errors.check, err)
+  }
+
+  if (!current.valid) throw new APIError(errors.invalid)
+
+  try {
+    // Change password
+    await UserAPI.update([
+      {
+        type: 'crypt',
+        key: 'password',
+        value: values.newPassword
+      }
+    ])
+
+    SuccessNotification('Your password has been changed successfully')
+  } catch (err) {
+    throw new APIError(errors.update, err)
   }
 }
 
 /**
  * Password
  * @param props Props
- * @returns Ppassword
+ * @returns Password
  */
 const Password = ({ user }: IProps): JSX.Element => {
   // State
   const [loading, setLoading]: [boolean, Dispatch<SetStateAction<boolean>>] =
     useState(false)
   const [formError, setFormError]: [
-    { title: string; err?: ICallError },
-    Dispatch<SetStateAction<{ title: string; err?: ICallError }>>
+    APIError,
+    Dispatch<SetStateAction<APIError>>
   ] = useState()
 
   // Layout
@@ -107,9 +101,17 @@ const Password = ({ user }: IProps): JSX.Element => {
       <Form
         {...layout}
         layout="vertical"
-        onFinish={async (values) =>
-          onFinish(user, values, setLoading, setFormError)
-        }
+        onFinish={async (values) => {
+          setLoading(true)
+          try {
+            await onFinish(user, values)
+            setFormError(null)
+          } catch (err) {
+            setFormError(err)
+          } finally {
+            setLoading(false)
+          }
+        }}
         name="passwordForm"
       >
         <Form.Item

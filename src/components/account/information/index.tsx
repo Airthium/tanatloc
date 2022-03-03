@@ -10,9 +10,11 @@ import { IUserWithData } from '@/lib/index.d'
 
 import {
   SuccessNotification,
-  ErrorNotification
+  ErrorNotification,
+  FormError
 } from '@/components/assets/notification'
 
+import { APIError } from '@/api/error'
 import UserAPI from '@/api/user'
 import AvatarAPI from '@/api/avatar'
 
@@ -67,19 +69,17 @@ export const getBase64 = async (file: Blob): Promise<any> => {
  * On avatar change
  * @param user User
  * @param info Info
- * @param setUploading Set uploading
  * @param swr SWR
  */
 export const onChange = async (
   user: IUserWithData,
   info: UploadChangeParam<any>,
-  setUploading: Dispatch<SetStateAction<boolean>>,
   swr: {
     mutateUser: (user: IUserWithData) => void
   }
-) => {
+): Promise<boolean> => {
   if (info.file.status === 'uploading') {
-    setUploading(true)
+    return true
   }
 
   if (info.file.status === 'done') {
@@ -99,13 +99,11 @@ export const onChange = async (
         ...user,
         avatar: Buffer.from(img)
       })
-
-      setUploading(false)
     } catch (err) {
       ErrorNotification(err.message, err)
-    } finally {
-      setUploading(false)
     }
+
+    return false
   }
 }
 
@@ -165,7 +163,7 @@ export const onFinish = async (
         'A validation email has been send to ' + values.email
       )
   } catch (err) {
-    ErrorNotification(errors.update, err)
+    throw new APIError(errors.update, err)
   }
 }
 
@@ -180,6 +178,12 @@ const Information = ({ user, swr }: IProps): JSX.Element => {
     boolean,
     Dispatch<SetStateAction<boolean>>
   ] = useState(false)
+  const [loading, setLoading]: [boolean, Dispatch<SetStateAction<boolean>>] =
+    useState(false)
+  const [formError, setFormError]: [
+    APIError,
+    Dispatch<SetStateAction<APIError>>
+  ] = useState()
 
   // Layout
   const layout = {
@@ -206,9 +210,12 @@ const Information = ({ user, swr }: IProps): JSX.Element => {
             accept={'.jpg,.png'}
             showUploadList={false}
             beforeUpload={beforeUpload}
-            onChange={async (info) => onChange(user, info, setUploading, swr)}
+            onChange={async (info) => {
+              const upload = await onChange(user, info, swr)
+              setUploading(upload)
+            }}
           >
-            <Button icon={<UploadOutlined />} loading={uploading}>
+            <Button loading={uploading} icon={<UploadOutlined />}>
               Upload new
             </Button>
           </Upload>
@@ -221,7 +228,16 @@ const Information = ({ user, swr }: IProps): JSX.Element => {
               firstname: user.firstname || '',
               lastname: user.lastname || ''
             }}
-            onFinish={async (values) => onFinish(user, values, swr)}
+            onFinish={async (values) => {
+              setLoading(true)
+              try {
+                await onFinish(user, values, swr)
+              } catch (err) {
+                setFormError(err)
+              } finally {
+                setLoading(false)
+              }
+            }}
           >
             <Form.Item
               className="max-width-500"
@@ -253,10 +269,11 @@ const Information = ({ user, swr }: IProps): JSX.Element => {
               <Input />
             </Form.Item>
             <Form.Item {...buttonLayout} className="max-width-500">
-              <Button type="primary" htmlType="submit">
+              <Button loading={loading} type="primary" htmlType="submit">
                 Save changes
               </Button>
             </Form.Item>
+            <FormError className="max-width-500" error={formError} />
           </Form>
         </div>
       </Space>

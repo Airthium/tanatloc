@@ -30,16 +30,12 @@ const errors = {
 /**
  * On delete
  * @param plugin Plugin
- * @param setLoading Set loading
  * @param swr SWR
  */
 export const onDelete = async (
   plugin: IClientPlugin,
-  setLoading: Dispatch<SetStateAction<boolean>>,
   swr: { delOnePlugin: (plugin: IClientPlugin) => void }
 ): Promise<void> => {
-  setLoading(true)
-
   try {
     // API
     await PluginAPI.del(plugin)
@@ -48,9 +44,6 @@ export const onDelete = async (
     swr.delOnePlugin(plugin)
   } catch (err) {
     ErrorNotification(errors.updateError, err)
-    throw err
-  } finally {
-    setLoading(false)
   }
 }
 
@@ -71,7 +64,11 @@ const Delete = ({ plugin, swr }: IProps): JSX.Element => {
     <DeleteButton
       loading={loading}
       text={'Delete "' + (plugin.configuration.name?.value || 'plugin') + '"?'}
-      onDelete={() => onDelete(plugin, setLoading, swr)}
+      onDelete={async () => {
+        setLoading(true)
+        await onDelete(plugin, swr)
+        setLoading(false)
+      }}
     >
       Delete
     </DeleteButton>

@@ -141,22 +141,17 @@ export const selectItem = (
  * @param plugin Plugin
  * @param edit Edit
  * @param values Values
- * @param setLoading Set loading
- * @param setVisible Set visible
  * @param swr SWR
  */
 export const onFinish = async (
   plugin: IClientPlugin,
   edit: boolean,
   values: object,
-  setLoading: Dispatch<SetStateAction<boolean>>,
-  setVisible: Dispatch<SetStateAction<boolean>>,
   swr: {
     addOnePlugin?: (plugin: IClientPlugin) => void
     mutateOnePlugin?: (plugin: IClientPlugin) => void
   }
 ): Promise<void> => {
-  setLoading(true)
   try {
     if (edit) {
       const initialPlugin = { ...plugin }
@@ -188,13 +183,8 @@ export const onFinish = async (
       // Local
       swr.addOnePlugin(newPlugin)
     }
-
-    // Finish
-    setLoading(false)
-    setVisible(false)
   } catch (err) {
     ErrorNotification(errors.update, err)
-    setLoading(false)
     throw err
   }
 }
@@ -237,9 +227,19 @@ const PluginDialog = ({ plugin, swr, edit }: IProps): JSX.Element => {
         visible={visible}
         initialValues={initialValues}
         onCancel={() => setVisible(false)}
-        onOk={async (values) =>
-          onFinish(plugin, edit, values, setLoading, setVisible, swr)
-        }
+        onOk={async (values) => {
+          setLoading(true)
+          try {
+            await onFinish(plugin, edit, values, swr)
+
+            // Close
+            setLoading(false)
+            setVisible(false)
+          } catch (err) {
+            setLoading(false)
+            throw err
+          }
+        }}
         loading={loading}
       >
         {Object.keys(plugin.configuration).map((key) => {

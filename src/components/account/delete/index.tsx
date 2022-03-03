@@ -2,13 +2,12 @@
 
 import PropTypes from 'prop-types'
 import { Dispatch, SetStateAction, useState } from 'react'
-import { Button, Card } from 'antd'
-import { DeleteOutlined } from '@ant-design/icons'
+import { Card } from 'antd'
 
 import { IUserWithData } from '@/lib/index.d'
 
+import { DeleteButton } from '@/components/assets/button'
 import { ErrorNotification } from '@/components/assets/notification'
-import { DeleteDialog } from '@/components/assets/dialog'
 
 import UserAPI from '@/api/user'
 import { logout } from '@/api/logout'
@@ -31,14 +30,11 @@ const errors = {
 
 /**
  * Handle delete
- * @param setLoading Set loading
  * @param swr SWR
  */
-export const onDelete = async (
-  setLoading: Dispatch<SetStateAction<boolean>>,
-  swr: { mutateUser: (user: IUserWithData) => void }
-): Promise<void> => {
-  setLoading(true)
+export const onDelete = async (swr: {
+  mutateUser: (user: IUserWithData) => void
+}): Promise<void> => {
   try {
     // Delete
     await UserAPI.del()
@@ -50,8 +46,6 @@ export const onDelete = async (
     swr.mutateUser({})
   } catch (err) {
     ErrorNotification(errors.del, err)
-  } finally {
-    setLoading(false)
   }
 }
 
@@ -62,8 +56,6 @@ export const onDelete = async (
  */
 const Delete = ({ swr }: IProps): JSX.Element => {
   // State
-  const [visible, setVisible]: [boolean, Dispatch<SetStateAction<boolean>>] =
-    useState(false)
   const [loading, setLoading]: [boolean, Dispatch<SetStateAction<boolean>>] =
     useState(false)
 
@@ -72,24 +64,20 @@ const Delete = ({ swr }: IProps): JSX.Element => {
    */
   return (
     <>
-      <DeleteDialog
-        title="Delete your account"
-        visible={visible}
-        onCancel={() => setVisible(false)}
-        onOk={() => onDelete(setLoading, swr)}
-        loading={loading}
-      >
-        This action cannot be undone. If you delete your account, you will
-        permanently lose your workspaces and projects.
-      </DeleteDialog>
       <Card title="Delete your account">
-        <Button
-          icon={<DeleteOutlined />}
-          danger
-          onClick={() => setVisible(true)}
+        <DeleteButton
+          title="Delete your account"
+          text="This action cannot be undone. If you delete your account, you will permanently lose your workspaces and projects."
+          bordered
+          loading={loading}
+          onDelete={async () => {
+            setLoading(true)
+            await onDelete(swr)
+            setLoading(false)
+          }}
         >
           Delete your account
-        </Button>
+        </DeleteButton>
       </Card>
     </>
   )

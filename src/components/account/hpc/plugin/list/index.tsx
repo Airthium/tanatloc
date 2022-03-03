@@ -108,7 +108,7 @@ const List = ({ plugin, plugins, swr }: IProps): JSX.Element => {
     })
 
     setList(pluginsList)
-  }, [plugin, plugins])
+  }, [plugin, plugins, swr])
 
   /**
    * Render

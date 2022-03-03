@@ -1,7 +1,13 @@
 /** @module Components.Assets.Selector */
 
 import PropTypes from 'prop-types'
-import { ChangeEvent, useState, useEffect } from 'react'
+import {
+  ChangeEvent,
+  useState,
+  useEffect,
+  Dispatch,
+  SetStateAction
+} from 'react'
 import {
   Button,
   Card,
@@ -25,25 +31,37 @@ import { SelectState } from '@/store/select/reducer'
 
 import Utils from '@/lib/utils'
 
+/**
+ * Color
+ */
+export interface IColor {
+  r: number
+  g: number
+  b: number
+}
+
+/**
+ * Props
+ */
 export interface IProps {
   geometry: {
     faces?: {
       uuid: string
       number?: number
       name?: string
-      color?: { r: number; g: number; b: number }
+      color?: IColor
     }[]
     solids?: {
       uuid: string
       number?: number
       name?: string
-      color?: { r: number; g: number; b: number }
+      color?: IColor
     }[]
     edges?: {
       uuid: string
       number?: number
       name?: string
-      color?: { r: number; g: number; b: number }
+      color?: IColor
     }[]
   }
   alreadySelected?: {
@@ -60,6 +78,7 @@ export interface IProps {
  * - geometry (Object) Geometry
  * - alreadySelected (Array) Already selected
  * - updateSelected (Function) Update selected
+ * @returns Selector
  */
 const Selector = ({
   geometry,
@@ -67,11 +86,12 @@ const Selector = ({
   updateSelected
 }: IProps): JSX.Element => {
   // State
-  const [colors, setColors]: [{ r: number; g: number; b: number }[], Function] =
+  const [colors, setColors]: [IColor[], Dispatch<SetStateAction<IColor[]>>] =
     useState([])
-  const [filter, setFilter]: [{ r: number; g: number; b: number }, Function] =
+  const [filter, setFilter]: [IColor, Dispatch<SetStateAction<IColor>>] =
     useState()
-  const [search, setSearch]: [string, Function] = useState()
+  const [search, setSearch]: [string, Dispatch<SetStateAction<string>>] =
+    useState()
 
   // Store
   const { type, highlighted, selected } = useSelector(
@@ -86,26 +106,24 @@ const Selector = ({
   // Selected
   useEffect(() => {
     updateSelected(selected)
-  }, [selected])
+  }, [updateSelected, selected])
 
   // Colors
   useEffect(() => {
     const colorsList = []
-    geometry?.[type]?.forEach(
-      (element: { color?: { r: number; g: number; b: number } }) => {
-        if (element.color) {
-          const existingColor = colorsList.find(
-            (c) =>
-              c.r === element.color.r &&
-              c.g === element.color.g &&
-              c.b === element.color.b
-          )
-          if (!existingColor) {
-            colorsList.push(element.color)
-          }
+    geometry?.[type]?.forEach((element: { color?: IColor }) => {
+      if (element.color) {
+        const existingColor = colorsList.find(
+          (c) =>
+            c.r === element.color.r &&
+            c.g === element.color.g &&
+            c.b === element.color.b
+        )
+        if (!existingColor) {
+          colorsList.push(element.color)
         }
       }
-    )
+    })
 
     setColors(colorsList)
   }, [geometry, type])
@@ -138,7 +156,7 @@ const Selector = ({
    * On color fitler
    * @param color Color
    */
-  const onColorFilter = (color?: { r: number; g: number; b: number }): void => {
+  const onColorFilter = (color?: IColor): void => {
     setFilter(color)
   }
 
@@ -146,65 +164,50 @@ const Selector = ({
    * Select all
    */
   const selectAll = (): void => {
-    geometry?.[type]?.forEach(
-      (element: {
-        uuid: string
-        color?: { r: number; g: number; b: number }
-      }) => {
-        if (
-          !filter ||
-          (filter &&
-            filter.r === element.color?.r &&
-            filter.g === element.color?.g &&
-            filter.b === element.color?.b)
-        )
-          dispatch(select(element.uuid))
-      }
-    )
+    geometry?.[type]?.forEach((element: { uuid: string; color?: IColor }) => {
+      if (
+        !filter ||
+        (filter &&
+          filter.r === element.color?.r &&
+          filter.g === element.color?.g &&
+          filter.b === element.color?.b)
+      )
+        dispatch(select(element.uuid))
+    })
   }
 
   /**
    * Unselect all
    */
   const unselectAll = () => {
-    geometry?.[type]?.forEach(
-      (element: {
-        uuid: string
-        color?: { r: number; g: number; b: number }
-      }) => {
-        if (
-          !filter ||
-          (filter &&
-            filter.r === element.color?.r &&
-            filter.g === element.color?.g &&
-            filter.b === element.color?.b)
-        )
-          dispatch(unselect(element.uuid))
-      }
-    )
+    geometry?.[type]?.forEach((element: { uuid: string; color?: IColor }) => {
+      if (
+        !filter ||
+        (filter &&
+          filter.r === element.color?.r &&
+          filter.g === element.color?.g &&
+          filter.b === element.color?.b)
+      )
+        dispatch(unselect(element.uuid))
+    })
   }
 
   /**
    * Swap selection
    */
   const selectSwap = () => {
-    geometry?.[type]?.forEach(
-      (element: {
-        uuid: string
-        color?: { r: number; g: number; b: number }
-      }) => {
-        if (
-          !filter ||
-          (filter &&
-            filter.r === element.color?.r &&
-            filter.g === element.color?.g &&
-            filter.b === element.color?.b)
-        ) {
-          if (selected.includes(element.uuid)) dispatch(unselect(element.uuid))
-          else dispatch(select(element.uuid))
-        }
+    geometry?.[type]?.forEach((element: { uuid: string; color?: IColor }) => {
+      if (
+        !filter ||
+        (filter &&
+          filter.r === element.color?.r &&
+          filter.g === element.color?.g &&
+          filter.b === element.color?.b)
+      ) {
+        if (selected.includes(element.uuid)) dispatch(unselect(element.uuid))
+        else dispatch(select(element.uuid))
       }
-    )
+    })
   }
 
   /**
@@ -225,7 +228,7 @@ const Selector = ({
     uuid: string
     number?: number
     name?: string
-    color?: { r: number; g: number; b: number }
+    color?: IColor
   }) => {
     // Color filter
     if (
@@ -293,14 +296,13 @@ const Selector = ({
                   uuid: string
                   number?: number
                   name?: string
-                  color?: { r: number; g: number; b: number }
+                  color?: IColor
                 },
                 index: number
               ) => {
                 if (display(element)) {
                   let borderColor = 'transparent'
                   let backgroundColor = 'transparent'
-                  let cursor = 'default'
                   if (
                     selected.includes(element.uuid) &&
                     highlighted !== element.uuid
@@ -310,7 +312,6 @@ const Selector = ({
                   } else if (highlighted === element.uuid) {
                     borderColor = '#FAD114'
                     backgroundColor = '#FFFBE6'
-                    cursor = 'pointer'
                   }
 
                   return (
@@ -366,6 +367,7 @@ const Selector = ({
   )
 }
 
+// TODO proptypes
 Selector.propTypes = {
   geometry: PropTypes.object.isRequired,
   alreadySelected: PropTypes.array,

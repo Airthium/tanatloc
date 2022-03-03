@@ -1,7 +1,7 @@
 /** @module Components.Assets.Organization.Groups */
 
 import PropTypes from 'prop-types'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Dispatch, SetStateAction } from 'react'
 import { Avatar, Space, Table } from 'antd'
 
 import {
@@ -9,19 +9,23 @@ import {
   IOrganizationWithData,
   IUserWithData
 } from '@/lib/index.d'
-import Utils from '@/lib/utils'
 
 import Group, { Delete } from '@/components/assets/group'
 import { ErrorNotification } from '@/components/assets/notification'
 
+import Utils from '@/lib/utils'
+
 import GroupAPI from '@/api/group'
 
+/**
+ * Props
+ */
 export interface IProps {
   organization: IOrganizationWithData
 }
 
 /**
- * Errors (groups)
+ * Errors
  */
 const errors = {
   groups: 'Groups error'
@@ -33,12 +37,13 @@ const errors = {
  * @description
  * Props:
  * - organization (Object) Organization `{ id, owners, [users] }`
+ * @returns Groups
  */
 const Groups = ({ organization }: IProps): JSX.Element => {
   // State
   const [userOptions, setUserOptions]: [
     { label: string; value: string }[],
-    Function
+    Dispatch<SetStateAction<{ label: string; value: string }[]>>
   ] = useState([])
 
   // Data
@@ -73,6 +78,36 @@ const Groups = ({ organization }: IProps): JSX.Element => {
   }, [errorGroups])
 
   // Columns
+  const usersRender = (u: IUserWithData[]) => (
+    <Avatar.Group maxCount={5}>
+      {u.map((user) => Utils.userToAvatar(user))}
+    </Avatar.Group>
+  )
+  const actionsRender = (_: any, group: IGroupWithData) => (
+    <Space>
+      <Group
+        userOptions={userOptions}
+        organization={{
+          id: organization.id
+        }}
+        group={{
+          id: group.id,
+          name: group.name,
+          users: group.users
+        }}
+        swr={{
+          mutateOneGroup
+        }}
+      />
+      <Delete
+        group={{
+          id: group.id,
+          name: group.name
+        }}
+        swr={{ delOneGroup }}
+      />
+    </Space>
+  )
   const columns = [
     {
       title: 'Group name',
@@ -83,42 +118,12 @@ const Groups = ({ organization }: IProps): JSX.Element => {
       title: 'Users',
       dataIndex: 'users',
       key: 'users',
-      // eslint-disable-next-line react/display-name
-      render: (u: IUserWithData[]) => (
-        <Avatar.Group maxCount={5}>
-          {u.map((user) => Utils.userToAvatar(user))}
-        </Avatar.Group>
-      )
+      render: usersRender
     },
     {
       title: 'Actions',
       key: 'actions',
-      // eslint-disable-next-line react/display-name
-      render: (_: any, group: IGroupWithData) => (
-        <Space>
-          <Group
-            userOptions={userOptions}
-            organization={{
-              id: organization.id
-            }}
-            group={{
-              id: group.id,
-              name: group.name,
-              users: group.users
-            }}
-            swr={{
-              mutateOneGroup
-            }}
-          />
-          <Delete
-            group={{
-              id: group.id,
-              name: group.name
-            }}
-            swr={{ delOneGroup }}
-          />
-        </Space>
-      )
+      render: actionsRender
     }
   ]
 
@@ -138,7 +143,6 @@ const Groups = ({ organization }: IProps): JSX.Element => {
         loading={loadingGroups}
         pagination={false}
         size="small"
-        scroll={{ y: 'calc(100vh - 312px)' }}
         columns={columns}
         dataSource={groups.map((g) => ({ key: g.id, ...g }))}
       />

@@ -5,6 +5,7 @@ import {
   ChangeEvent,
   Dispatch,
   SetStateAction,
+  useCallback,
   useEffect,
   useState
 } from 'react'
@@ -78,40 +79,49 @@ const Formula = ({
    * On check change
    * @param event
    */
-  const onCheckboxChange = (event: CheckboxChangeEvent): void => {
-    const currentChecked = event.target.checked
-    setInternalChecked(currentChecked)
-    setSaving(true)
+  const onCheckboxChange = useCallback(
+    (event: CheckboxChangeEvent): void => {
+      const currentChecked = event.target.checked
+      setInternalChecked(currentChecked)
+      setSaving(true)
 
-    onCheckedChange(currentChecked)
+      onCheckedChange(currentChecked)
 
-    setDisabled(!currentChecked)
-  }
-
-  /**
-   * On input change
-   * @param event Event
-   */
-  const onInputChange = (event: ChangeEvent<HTMLInputElement>): void => {
-    const currentValue = event.target.value
-    setInternalValue(currentValue)
-    setSaving(true)
-
-    onValueChangeDelayed(currentValue)
-  }
+      setDisabled(!currentChecked)
+    },
+    [onCheckedChange]
+  )
 
   /**
    * On value change (delayed)
    * @param value Value
    */
-  const onValueChangeDelayed = (value: string): void => {
-    if (autoSave) clearTimeout(autoSave)
-    const id = setTimeout(() => {
-      onValueChange(value)
-      setSaving(false)
-    }, saveDelay)
-    setAutoSave(id)
-  }
+  const onValueChangeDelayed = useCallback(
+    (value: string): void => {
+      if (autoSave) clearTimeout(autoSave)
+      const id = setTimeout(() => {
+        onValueChange(value)
+        setSaving(false)
+      }, saveDelay)
+      setAutoSave(id)
+    },
+    [autoSave, onValueChange]
+  )
+
+  /**
+   * On input change
+   * @param event Event
+   */
+  const onInputChange = useCallback(
+    (event: ChangeEvent<HTMLInputElement>): void => {
+      const currentValue = event.target.value
+      setInternalValue(currentValue)
+      setSaving(true)
+
+      onValueChangeDelayed(currentValue)
+    },
+    [onValueChangeDelayed]
+  )
 
   /**
    * Render

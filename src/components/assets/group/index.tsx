@@ -1,26 +1,30 @@
 /** @module Components.Assets.Group */
 
 import PropTypes from 'prop-types'
-import { useState } from 'react'
+import { Dispatch, SetStateAction, useState } from 'react'
 import { Button, Form, Input, Select } from 'antd'
 import { EditOutlined, PlusOutlined } from '@ant-design/icons'
 
 import { IGroupWithData, IOrganizationWithData } from '@/lib/index.d'
+import { INewGroup } from '@/database/index.d'
 
 import Dialog from '@/components/assets/dialog'
 import { ErrorNotification } from '@/components/assets/notification'
 
-import Delete from './delete'
-
 import GroupAPI from '@/api/group'
 
+import Delete from './delete'
+
+/**
+ * Props
+ */
 export interface IProps {
   userOptions: { label: string; value: string }[]
   organization: IOrganizationWithData
   group?: IGroupWithData
   swr: {
-    addOneGroup?: Function
-    mutateOneGroup?: Function
+    addOneGroup?: (group: INewGroup) => void
+    mutateOneGroup?: (group: IGroupWithData) => void
   }
 }
 
@@ -28,8 +32,92 @@ export interface IProps {
  * Errors
  */
 const errors = {
-  addError: 'Unable to add group',
-  updateError: 'Unable to update group'
+  add: 'Unable to add group',
+  update: 'Unable to update group'
+}
+
+/**
+ * On add
+ * @param organization Organization
+ * @param values Values
+ * @param swr SWR
+ */
+export const onAdd = async (
+  organization: IOrganizationWithData,
+  values: {
+    name: string
+    users: string[]
+  },
+  swr: { addOneGroup: (group: INewGroup) => void }
+): Promise<void> => {
+  try {
+    // API
+    const newGroup = await GroupAPI.add(
+      { id: organization.id },
+      { name: values.name, users: values.users }
+    )
+
+    // Local
+    swr.addOneGroup({
+      ...newGroup,
+      name: values.name,
+      users: values.users
+    })
+  } catch (err) {
+    ErrorNotification(errors.add, err)
+    throw err
+  }
+}
+
+/**
+ * On update
+ * @param group Group
+ * @param values Values
+ * @param swr SWR
+ */
+export const onUpdate = async (
+  group: IGroupWithData,
+  values: {
+    name: string
+    users: string[]
+  },
+  swr: {
+    mutateOneGroup: (group: IGroupWithData) => void
+  }
+): Promise<void> => {
+  try {
+    // Check update
+    const toUpdate = []
+
+    // Name
+    if (group.name !== values.name)
+      toUpdate.push({
+        key: 'name',
+        value: values.name
+      })
+
+    // Users
+    if (group.users.map((u) => u.id).toString() !== values.users.toString())
+      toUpdate.push({
+        key: 'users',
+        value: values.users
+      })
+
+    // API
+    await GroupAPI.update({ id: group.id }, toUpdate)
+
+    // Local
+    swr.mutateOneGroup(
+      //@ts-ignore
+      {
+        ...group,
+        ...values
+      }
+    )
+  } catch (err) {
+    ErrorNotification(errors.update, err)
+    throw err
+  }
 }
 
 /**
@@ -40,6 +128,7 @@ const errors = {
  * - organization (Object) Organization `{ id }`
  * - group (Object) Group in case of edit `{ id, name, users }`
  * - swr (Object) SWR functions `{ addOneGroup, mutateOneGroup }`
+ * @returns Group
  */
 const Group = ({
   userOptions,
@@ -48,92 +137,10 @@ const Group = ({
   swr
 }: IProps): JSX.Element => {
   // State
-  const [visible, setVisible]: [boolean, Function] = useState(false)
-  const [loading, setLoading]: [boolean, Function] = useState(false)
-
-  /**
-   * On add
-   * @param values Values
-   */
-  const onAdd = async (values: {
-    name: string
-    users: string[]
-  }): Promise<void> => {
-    setLoading(true)
-
-    try {
-      // API
-      const newGroup = await GroupAPI.add(
-        { id: organization.id },
-        { name: values.name, users: values.users }
-      )
-
-      // Local
-      swr.addOneGroup({
-        ...newGroup,
-        name: values.name,
-        users: values.users
-      })
-
-      // Loading
-      setLoading(false)
-
-      // Close
-      setLoading(false)
-      setVisible(false)
-    } catch (err) {
-      ErrorNotification(errors.addError, err)
-      setLoading(false)
-      throw err
-    }
-  }
-
-  /**
-   * On update
-   * @param values Values
-   */
-  const onUpdate = async (values: {
-    name: string
-    users: string[]
-  }): Promise<void> => {
-    setLoading(true)
-
-    try {
-      // Check update
-      const toUpdate = []
-
-      // Name
-      if (group.name !== values.name)
-        toUpdate.push({
-          key: 'name',
-          value: values.name
-        })
-
-      // Users
-      if (group.users.map((u) => u.id).toString() !== values.users.toString())
-        toUpdate.push({
-          key: 'users',
-          value: values.users
-        })
-
-      // API
-      await GroupAPI.update({ id: group.id }, toUpdate)
-
-      // Local
-      swr.mutateOneGroup({
-        ...group,
-        ...values
-      })
-
-      // Close
-      setLoading(false)
-      setVisible(false)
-    } catch (err) {
-      ErrorNotification(errors.updateError, err)
-      setLoading(false)
-      throw err
-    }
-  }
+  const [visible, setVisible]: [boolean, Dispatch<SetStateAction<boolean>>] =
+    useState(false)
+  const [loading, setLoading]: [boolean, Dispatch<SetStateAction<boolean>>] =
+    useState(false)
 
   /**
    * Render
@@ -150,7 +157,31 @@ const Group = ({
           }
         }
         onCancel={() => setVisible(false)}
-        onOk={group ? onUpdate : onAdd}
+        onOk={async (values) => {
+          setLoading(true)
+          try {
+            if (group) {
+              await onUpdate(
+                group,
+                values,
+                swr as { mutateOneGroup: (group: IGroupWithData) => void }
+              )
+            } else {
+              await onAdd(
+                organization,
+                values,
+                swr as { addOneGroup: (group: INewGroup) => void }
+              )
+            }
+
+            // Close
+            setLoading(false)
+            setVisible(false)
+          } catch (err) {
+            setLoading(false)
+            throw err
+          }
+        }}
         loading={loading}
       >
         <Form.Item
@@ -198,45 +229,10 @@ Group.propTypes = {
     name: PropTypes.string.isRequired,
     users: PropTypes.array.isRequired
   }),
-  swr: (props, propName, componentName) => {
-    // Missing swr
-    if (!props[propName])
-      return new Error(
-        'Invalid prop ' +
-          propName +
-          ' supplied to ' +
-          componentName +
-          '. swr missing'
-      )
-
-    if (props['group']) {
-      // Missing or invalid swr.mutateOneGroup
-      if (
-        !props[propName].mutateOneGroup ||
-        typeof props[propName].mutateOneGroup !== 'function'
-      )
-        return new Error(
-          'Invalid prop ' +
-            propName +
-            ' supplied to ' +
-            componentName +
-            '. mutateOneGroup missing or invalid'
-        )
-    } else {
-      // Missing or invalid swr.addOneGroup
-      if (
-        !props[propName].addOneGroup ||
-        typeof props[propName].addOneGroup !== 'function'
-      )
-        return new Error(
-          'Invalid prop ' +
-            propName +
-            ' supplied to ' +
-            componentName +
-            '. addOneGroup missing or invalid'
-        )
-    }
-  }
+  swr: PropTypes.exact({
+    addOneGroup: PropTypes.func,
+    mutateOneGroup: PropTypes.func
+  }).isRequired
 }
 
 export { Delete }

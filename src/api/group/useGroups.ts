@@ -3,6 +3,7 @@
 import useSWR from 'swr'
 
 import { IGroupWithData } from '@/lib/index.d'
+import { INewGroup } from '@/database/index.d'
 
 import { fetcher } from '@/api/call'
 
@@ -17,7 +18,7 @@ export const useGroups = (
   IGroupWithData[],
   {
     mutateGroups: (data: { groups: IGroupWithData[] }) => void
-    addOneGroup: (group: IGroupWithData) => void
+    addOneGroup: (group: INewGroup) => void
     delOneGroup: (group: IGroupWithData) => void
     mutateOneGroup: (group: IGroupWithData) => void
     errorGroups: Error
@@ -32,8 +33,9 @@ export const useGroups = (
    * Add one
    * @param group Group
    */
-  const addOne = (group: IGroupWithData): void => {
+  const addOne = (group: INewGroup): void => {
     const newGroups = [...groups, group]
+    //@ts-ignore
     mutate({ groups: newGroups })
   }
 

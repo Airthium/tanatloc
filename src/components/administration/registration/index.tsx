@@ -108,7 +108,7 @@ const Registration = (): JSX.Element => {
           requireSymbol: REQUIRE_SYMBOL
         }
       )
-  }, [loadingSystem, system?.password])
+  }, [loadingSystem, form, system?.password])
 
   /**
    * Render

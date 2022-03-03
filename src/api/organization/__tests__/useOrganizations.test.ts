@@ -20,7 +20,7 @@ describe('api/organization/useOrganizations', () => {
     ] = useOrganizations()
     expect(organizations).toEqual([{ id: 'id' }, { id: 'id1' }])
     expect(addOneOrganization).toBeDefined()
-    addOneOrganization({ id: 'id' })
+    addOneOrganization({ id: 'id', name: 'name', owners: ['id'] })
     expect(mutateOneOrganization).toBeDefined()
     mutateOneOrganization({ id: 'id' })
     mutateOneOrganization({ id: 'id' })

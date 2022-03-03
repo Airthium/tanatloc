@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react'
 import { Divider, Layout, PageHeader, Space, Typography } from 'antd'
 
 import { IOrganizationWithData, IUserWithData } from '@/lib/index.d'
+import { INewOrganization } from '@/database/index.d'
 
 import Add from './add'
 import List from './list'
@@ -14,9 +15,9 @@ export interface IProps {
   user: IUserWithData
   organizations: IOrganizationWithData[]
   swr: {
-    addOneOrganization: Function
-    delOneOrganization: Function
-    mutateOneOrganization: Function
+    addOneOrganization: (organization: INewOrganization) => void
+    delOneOrganization: (organization: IOrganizationWithData) => void
+    mutateOneOrganization: (organization: IOrganizationWithData) => void
     loadingOrganizations: boolean
   }
 }

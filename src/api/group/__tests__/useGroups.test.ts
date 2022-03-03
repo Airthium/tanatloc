@@ -15,7 +15,7 @@ describe('api/groups', () => {
     ] = useGroups()
     expect(groups).toEqual([{ id: 'id' }, { id: 'id1' }])
     expect(addOneGroup).toBeDefined()
-    addOneGroup({ id: 'id' })
+    addOneGroup({ id: 'id', name: 'name', users: ['id'], organization: 'id' })
     expect(mutateOneGroup).toBeDefined()
     mutateOneGroup({ id: 'id' })
     mutateOneGroup({ id: 'id' })

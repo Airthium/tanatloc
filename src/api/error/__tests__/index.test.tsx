@@ -6,13 +6,13 @@ describe('api/error', () => {
       title: 'title',
       render: <div />,
       err: new Error('error'),
-      type: 'type'
+      type: 'warning'
     })
 
     expect(err.message).toBe('title')
     expect(err.title).toBe('title')
     expect(err.render).toEqual(<div />)
     expect(err.err).toBeInstanceOf(Error)
-    expect(err.type).toBe('type')
+    expect(err.type).toBe('warning')
   })
 })

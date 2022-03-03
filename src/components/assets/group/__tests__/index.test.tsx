@@ -203,45 +203,4 @@ describe('components/assets/groups', () => {
 
     unmount()
   })
-
-  test('propTypes', () => {
-    let res
-    const swrProp = Group.propTypes.swr
-
-    res = swrProp({}, 'swr', 'Group')
-    expect(res.message).toBe('Invalid prop swr supplied to Group. swr missing')
-
-    res = swrProp({ swr: {} }, 'swr', 'Group')
-    expect(res.message).toBe(
-      'Invalid prop swr supplied to Group. addOneGroup missing or invalid'
-    )
-
-    res = swrProp({ swr: { addOneGroup: {} } }, 'swr', 'Group')
-    expect(res.message).toBe(
-      'Invalid prop swr supplied to Group. addOneGroup missing or invalid'
-    )
-
-    res = swrProp({ swr: { addOneGroup: jest.fn } }, 'swr', 'Group')
-    expect(res).toBe(undefined)
-
-    res = swrProp({ swr: {}, group: {} }, 'swr', 'Group')
-    expect(res.message).toBe(
-      'Invalid prop swr supplied to Group. mutateOneGroup missing or invalid'
-    )
-
-    res = swrProp({ swr: { mutateOneGroup: {} }, group: {} }, 'swr', 'Group')
-    expect(res.message).toBe(
-      'Invalid prop swr supplied to Group. mutateOneGroup missing or invalid'
-    )
-
-    res = swrProp(
-      {
-        swr: { mutateOneGroup: jest.fn },
-        group: {}
-      },
-      'swr',
-      'Group'
-    )
-    expect(res).toBe(undefined)
-  })
 })

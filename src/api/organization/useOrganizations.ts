@@ -3,6 +3,7 @@
 import useSWR from 'swr'
 
 import { IOrganizationWithData } from '@/lib/index.d'
+import { INewOrganization } from '@/database/index.d'
 
 import { fetcher } from '@/api/call'
 
@@ -16,7 +17,7 @@ export const useOrganizations = (): [
     mutateOrganizations: (data: {
       organizations: IOrganizationWithData[]
     }) => void
-    addOneOrganization: (organization: IOrganizationWithData) => void
+    addOneOrganization: (organization: INewOrganization) => void
     delOneOrganization: (organization: IOrganizationWithData) => void
     mutateOneOrganization: (organization: IOrganizationWithData) => void
     errorOrganizations: Error
@@ -31,8 +32,9 @@ export const useOrganizations = (): [
    * Add one
    * @param organization Organization
    */
-  const addOne = (organization: IOrganizationWithData): void => {
+  const addOne = (organization: INewOrganization): void => {
     const newOrganizations = [...organizations, organization]
+    //@ts-ignore
     mutate({ organizations: newOrganizations })
   }
 

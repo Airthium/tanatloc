@@ -22,7 +22,7 @@ const FormError = ({ error }: IProps): JSX.Element => {
     <Form.Item>
       <Alert
         message={error.render || error.title}
-        type="error"
+        type={error.type}
         showIcon
         description={
           error.err && (

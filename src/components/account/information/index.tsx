@@ -163,7 +163,7 @@ export const onFinish = async (
         'A validation email has been send to ' + values.email
       )
   } catch (err) {
-    throw new APIError(errors.update, err)
+    throw new APIError({ title: errors.update, err })
   }
 }
 

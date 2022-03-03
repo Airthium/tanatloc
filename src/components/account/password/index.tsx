@@ -52,10 +52,10 @@ export const onFinish = async (
       password: values.password
     })
   } catch (err) {
-    throw new APIError(errors.check, err)
+    throw new APIError({ title: errors.check, err })
   }
 
-  if (!current.valid) throw new APIError(errors.invalid)
+  if (!current.valid) throw new APIError({ title: errors.invalid })
 
   try {
     // Change password
@@ -69,7 +69,7 @@ export const onFinish = async (
 
     SuccessNotification('Your password has been changed successfully')
   } catch (err) {
-    throw new APIError(errors.update, err)
+    throw new APIError({ title: errors.update, err })
   }
 }
 

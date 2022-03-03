@@ -11,7 +11,7 @@ import { ErrorNotification } from '@/components/assets/notification'
 import LinkAPI from '@/api/link'
 
 /**
- * Errors (validation)
+ * Errors
  */
 const errors = {
   internal: 'Internal error'
@@ -19,7 +19,7 @@ const errors = {
 
 /**
  * Validation
- * @returns {jxs} Render
+ * @returns Validation
  */
 const Validation = (): JSX.Element => {
   const router = useRouter()

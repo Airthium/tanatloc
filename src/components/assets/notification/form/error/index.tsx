@@ -2,13 +2,13 @@
 
 import { Alert, Form, Typography } from 'antd'
 
-import { ICallError } from '@/api/index.d'
+import { APIError } from '@/api/error'
 
 /**
  * Props
  */
 export interface IProps {
-  error: { title: string; err?: ICallError }
+  error: APIError
 }
 
 /**
@@ -21,7 +21,7 @@ const FormError = ({ error }: IProps): JSX.Element => {
   return error ? (
     <Form.Item>
       <Alert
-        message={error.title}
+        message={error.render || error.title}
         type="error"
         showIcon
         description={

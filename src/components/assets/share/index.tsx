@@ -60,7 +60,7 @@ const errors = {
  * @param selected Selected
  * @param swr SWR
  */
-const onShare = async (
+export const onShare = async (
   workspace: IWorkspaceWithData | undefined,
   project: IProjectWithData | undefined,
   selected: string[],

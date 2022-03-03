@@ -37,7 +37,7 @@ const errors = {
  * @param dBkey Database key
  * @param swr SWR
  */
-const onDelete = async (
+export const onDelete = async (
   organization: IOrganizationWithData,
   user: IUserWithData,
   dBkey: 'owners' | 'users',

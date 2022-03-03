@@ -71,21 +71,16 @@ const menuItems = {
 /**
  * Menu selection
  * @param router Route
- * @param data
- * @param setCurrentKey Set current key
+ * @param key Key
  * @param clearUser Clear user
  */
 export const onSelect = (
   router: NextRouter,
-  { keyPath }: { keyPath: string[] },
-  setCurrentKey: Dispatch<SetStateAction<string>>,
+  key: string,
   clearUser: () => void
 ): void => {
-  let key = keyPath.pop()
-
   if (key === menuItems.logout.key) onLogout(router, clearUser)
   else {
-    setCurrentKey(key)
     router.replace({
       pathname: '/dashboard',
       query: { page: key }
@@ -169,7 +164,7 @@ const Dashboard = () => {
   // Not logged -> go to login page
   useEffect(() => {
     if (!loadingUser && !user) router.replace('/login')
-  }, [user, loadingUser])
+  }, [user, loadingUser, router])
 
   let gitVersion = ''
   if (
@@ -198,9 +193,11 @@ const Dashboard = () => {
           <Menu
             className="Dashboard-Menu"
             theme="light"
-            onClick={({ keyPath }) =>
-              onSelect(router, { keyPath }, setCurrentKey, clearUser)
-            }
+            onClick={({ keyPath }) => {
+              const key = keyPath.pop()
+              setCurrentKey(key)
+              onSelect(router, key, clearUser)
+            }}
             mode="inline"
           >
             <Menu.Item

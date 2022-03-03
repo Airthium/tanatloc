@@ -38,7 +38,7 @@ const errors = {
  * @param values Values
  * @param swr SWR
  */
-const onFinish = async (
+export const onFinish = async (
   organization: IOrganizationWithData,
   dBkey: 'owners' | 'users',
   values: { email: string },

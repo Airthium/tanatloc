@@ -42,7 +42,7 @@ const Validation = (): JSX.Element => {
         })
         .catch((err) => ErrorNotification(errors.internal, err))
     }
-  }, [id])
+  }, [id, router])
 
   /**
    * Render

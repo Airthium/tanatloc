@@ -59,13 +59,13 @@ const Login = (): JSX.Element => {
   // Already connected
   useEffect(() => {
     if (user) router.push('/dashboard')
-  }, [user])
+  }, [user, router])
 
   // Prefetch
   useEffect(() => {
     router.prefetch('/signup')
     router.prefetch('/dashboard')
-  }, [])
+  }, [router])
 
   /**
    * Handle login

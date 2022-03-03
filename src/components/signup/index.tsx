@@ -68,6 +68,9 @@ export const onLogin = (router: NextRouter): void => {
   router.push('/login')
 }
 
+// Router
+const router = useRouter()
+
 /**
  * Signup
  * @returns Signup
@@ -84,9 +87,6 @@ const Signup = (): JSX.Element => {
   // Data
   const [user, { errorUser, loadingUser }] = UserAPI.useUser()
   const [system, { errorSystem, loadingSystem }] = SystemAPI.useSystem()
-
-  // Router
-  const router = useRouter()
 
   // Errors
   useEffect(() => {

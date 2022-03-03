@@ -18,12 +18,15 @@ const errors = {
 }
 
 /**
+ * Router
+ */
+const router = useRouter()
+
+/**
  * Validation
  * @returns Validation
  */
 const Validation = (): JSX.Element => {
-  const router = useRouter()
-
   const { id }: { id?: string } = router.query
 
   useEffect(() => {

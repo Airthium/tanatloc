@@ -43,14 +43,11 @@ const errors = {
 const onArchive = async (
   workspace: IWorkspaceWithData,
   project: IProjectWithData,
-  setLoading: Dispatch<SetStateAction<boolean>>,
-  setVisible: Dispatch<SetStateAction<boolean>>,
   swr: {
     mutateOneProject: (project: IProjectWithData) => void
     mutateOneWorkspace: (workspace: IWorkspaceWithData) => void
   }
 ): Promise<void> => {
-  setLoading(true)
   try {
     // API
     const archive = await ProjectAPI.archive({ id: project.id })
@@ -71,13 +68,8 @@ const onArchive = async (
 
     // Mutate workspace
     swr.mutateOneWorkspace(workspace)
-
-    // Close
-    setLoading(false)
-    setVisible(false)
   } catch (err) {
     ErrorNotification(errors.archive, err)
-    setLoading(false)
     throw err
   }
 }
@@ -109,9 +101,18 @@ const Archive = ({
         loading={loading}
         title="Archive"
         onCancel={() => setVisible(false)}
-        onOk={async () =>
-          onArchive(workspace, project, setLoading, setVisible, swr)
-        }
+        onOk={async () => {
+          setLoading(true)
+          try {
+            onArchive(workspace, project, swr)
+            // Close
+            setLoading(false)
+            setVisible(false)
+          } catch (err) {
+            setLoading(false)
+            throw err
+          }
+        }}
         okButtonText="Archive"
       >
         <Typography.Text>

@@ -42,6 +42,53 @@ const errors = {
 }
 
 /**
+ * On download
+ */
+const onDownload = async (geometry: IGeometry): Promise<void> => {
+  try {
+    const file = await GeometryAPI.download({ id: geometry.id })
+    const data = new File(
+      [Buffer.from(file.buffer).toString()],
+      geometry.name + '.' + file.extension
+    )
+    const url = window.URL.createObjectURL(data)
+    const link = document.createElement('a')
+    link.href = url
+    link.setAttribute('download', geometry.name + '.' + file.extension)
+    link.click()
+    link.remove()
+  } catch (err) {
+    ErrorNotification(errors.updateError, err)
+  }
+}
+
+/**
+ * On edit
+ */
+const onEdit = async (
+  value: { name: string },
+  geometry: IGeometry,
+  swr: IProps['swr']
+): Promise<void> => {
+  try {
+    // API
+    await GeometryAPI.update({ id: geometry.id }, [
+      {
+        key: 'name',
+        value: value.name
+      }
+    ])
+
+    // Local
+    geometry.name = value.name
+    swr.mutateOneGeometry(geometry)
+  } catch (err) {
+    ErrorNotification(errors.updateError, err)
+    throw err
+  }
+}
+
+/**
  * Geometry
  * @param props Props
  */
@@ -50,53 +97,6 @@ const Geometry = ({ project, geometry, swr, close }: IProps): JSX.Element => {
   const [downloading, setDownloading]: [boolean, Function] = useState(false)
   const [editVisible, setEditVisible]: [boolean, Function] = useState(false)
   const [deleting, setDeleting]: [boolean, Function] = useState(false)
-
-  /**
-   * On download
-   */
-  const onDownload = async (): Promise<void> => {
-    setDownloading(true)
-
-    try {
-      const file = await GeometryAPI.download({ id: geometry.id })
-      const data = new File(
-        [Buffer.from(file.buffer).toString()],
-        geometry.name + '.' + file.extension
-      )
-      const url = window.URL.createObjectURL(data)
-      const link = document.createElement('a')
-      link.href = url
-      link.setAttribute('download', geometry.name + '.' + file.extension)
-      link.click()
-      link.remove()
-    } catch (err) {
-      ErrorNotification(errors.downloadError, err)
-    } finally {
-      setDownloading(false)
-    }
-  }
-
-  /**
-   * On edit
-   */
-  const onEdit = async (value: { name: string }): Promise<void> => {
-    try {
-      // API
-      await GeometryAPI.update({ id: geometry.id }, [
-        {
-          key: 'name',
-          value: value.name
-        }
-      ])
-
-      // Local
-      geometry.name = value.name
-      swr.mutateOneGeometry(geometry)
-    } catch (err) {
-      ErrorNotification(errors.updateError, err)
-      throw err
-    }
-  }
 
   /**
    * On delete
@@ -140,7 +140,15 @@ const Geometry = ({ project, geometry, swr, close }: IProps): JSX.Element => {
               <DownloadButton
                 key="download"
                 loading={downloading}
-                onDownload={onDownload}
+                onDownload={() => {
+                  setDownloading(true)
+                  try {
+                    onDownload(geometry)
+                  } catch (err) {
+                  } finally {
+                    setDownloading(false)
+                  }
+                }}
               />,
               <div key="edit">
                 <Edit
@@ -150,7 +158,11 @@ const Geometry = ({ project, geometry, swr, close }: IProps): JSX.Element => {
                     name: geometry?.name
                   }}
                   setVisible={setEditVisible}
-                  onEdit={onEdit}
+                  onEdit={(value: { name: string }) => {
+                    try {
+                      onEdit(value, geometry, swr)
+                    } catch (err) {}
+                  }}
                 />
                 <EditButton onEdit={() => setEditVisible(true)} />
               </div>,

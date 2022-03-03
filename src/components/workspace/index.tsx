@@ -181,7 +181,7 @@ const Workspace = ({
       </Layout>
     )
 }
-
+// TODO
 Workspace.propTypes = {
   loading: PropTypes.bool.isRequired,
   user: (props, propName, componentName) => {

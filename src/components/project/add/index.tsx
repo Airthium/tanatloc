@@ -45,14 +45,11 @@ const onAdd = async (
     title: string
     description: string
   },
-  setLoading: Dispatch<SetStateAction<boolean>>,
-  setVisible: Dispatch<SetStateAction<boolean>>,
   swr: {
     addOneProject: (project: INewProject) => void
     mutateOneWorkspace: (workspace: IWorkspaceWithData) => void
   }
 ): Promise<void> => {
-  setLoading(true)
   try {
     // Add
     const project = await ProjectAPI.add({ id: workspace.id }, values)
@@ -65,13 +62,8 @@ const onAdd = async (
       ...workspace,
       projects: [...(workspace.projects || []), project.id]
     })
-
-    // Close
-    setLoading(false)
-    setVisible(false)
   } catch (err) {
     ErrorNotification(errors.addError, err)
-    setLoading(false)
     throw err
   }
 }
@@ -100,9 +92,18 @@ const Add = ({ workspace, swr }: IProps): JSX.Element => {
         title="Create a new project"
         visible={visible}
         onCancel={() => setVisible(false)}
-        onOk={async (values) =>
-          onAdd(workspace, values, setLoading, setVisible, swr)
-        }
+        onOk={async (values) => {
+          setLoading(true)
+          try {
+            await onAdd(workspace, values, swr)
+            // Close
+            setLoading(false)
+            setVisible(false)
+          } catch (err) {
+            setLoading(false)
+            throw err
+          }
+        }}
         loading={loading}
       >
         <Form.Item

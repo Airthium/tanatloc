@@ -38,14 +38,11 @@ const errors = {
 const onDelete = async (
   workspace: IWorkspaceWithData,
   project: IProjectWithData,
-  setLoading: Dispatch<SetStateAction<boolean>>,
-  setVisible: Dispatch<SetStateAction<boolean>>,
   swr: {
     mutateOneWorkspace: (workspace: IWorkspaceWithData) => void
     delOneProject: (project: IProjectWithData) => void
   }
 ): Promise<void> => {
-  setLoading(true)
   try {
     // Delete
     await ProjectAPI.del(workspace, project)
@@ -60,12 +57,8 @@ const onDelete = async (
 
     // Mutate projects
     swr.delOneProject({ id: project.id })
-
-    // Close
-    setVisible(false)
   } catch (err) {
     ErrorNotification(errors.delError, err)
-    setLoading(false)
     throw err
   }
 }
@@ -100,9 +93,18 @@ const Delete = ({ disabled, workspace, project, swr }: IProps): JSX.Element => {
         title="Delete the project"
         visible={visible}
         onCancel={() => setVisible(false)}
-        onOk={async () =>
-          onDelete(workspace, project, setLoading, setVisible, swr)
-        }
+        onOk={async () => {
+          setLoading(true)
+          try {
+            onDelete(workspace, project, swr)
+            // Close
+            setLoading(false)
+            setVisible(false)
+          } catch (err) {
+            setLoading(false)
+            throw err
+          }
+        }}
         loading={loading}
       >
         Are you sure you want to delete {project.title} ?

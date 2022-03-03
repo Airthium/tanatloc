@@ -1,7 +1,7 @@
 /** @module Components.Project.Data */
 
 import PropTypes from 'prop-types'
-import { useState, useEffect } from 'react'
+import { Dispatch, SetStateAction, useState, useEffect } from 'react'
 import {
   Button,
   Checkbox,
@@ -35,9 +35,70 @@ import { ISimulation } from '@/database/index.d'
 import Utils from '@/lib/utils'
 
 import SimulationAPI from '@/api/simulation'
+import { ErrorNotification } from '@/components/assets/notification'
 
 export interface IProps {
   simulation: ISimulation
+}
+
+/**
+ * On check
+ * @param {Object} event Event
+ * @param {number} index Index
+ * @param {string} name Name
+ * @param {string} key Key
+ */
+const onCheck = (
+  event: CheckboxChangeEvent,
+  index: number,
+  columnSelection: { checked: boolean }[]
+) => {
+  const checked = event.target.checked
+
+  const newSelection = [...columnSelection]
+  newSelection[index] = {
+    checked
+  }
+  return newSelection
+}
+
+/**
+ * Export CSV
+ */
+const exportCSV = (
+  table?: { columns: TableColumnsType; data: Array<any> },
+  infos?: {
+    names: string[]
+    camelNames: string[]
+  },
+  simulation?: ISimulation
+) => {
+  const separator = ','
+  let CSV = ''
+
+  const tableData = table?.data
+
+  // Header
+  CSV = 'x' + separator + infos.names.join(separator) + '\n'
+
+  // Data
+  tableData.forEach((data) => {
+    CSV += data.x
+    infos?.camelNames?.forEach((name) => {
+      data[name] !== undefined && (CSV += separator + data[name])
+    })
+    CSV += '\n'
+  })
+
+  // Download
+  const fileName = (simulation?.name || 'data') + '.csv'
+  const file = new File([CSV], fileName, { type: 'text/csv' })
+  const url = window.URL.createObjectURL(file)
+  const link = document.createElement('a')
+  link.href = url
+  link.setAttribute('download', fileName)
+  link.click()
+  link.remove()
 }
 
 /**
@@ -46,24 +107,35 @@ export interface IProps {
  */
 const Data = ({ simulation }: IProps): JSX.Element => {
   // State
-  const [visible, setVisible]: [boolean, Function] = useState(false)
+  const [visible, setVisible]: [boolean, Dispatch<SetStateAction<boolean>>] =
+    useState(false)
   const [infos, setInfos]: [
     { names: string[]; camelNames: string[] },
-    Function
+    Dispatch<SetStateAction<{ names: string[]; camelNames: string[] }>>
   ] = useState()
   const [table, setTable]: [
     { columns: TableColumnsType; data: Array<any> },
-    Function
+    Dispatch<SetStateAction<{ columns: TableColumnsType; data: Array<any> }>>
   ] = useState()
   const [columnSelection, setColumnSelection]: [
     { checked: boolean }[],
-    Function
+    Dispatch<SetStateAction<{ checked: boolean }[]>>
   ] = useState([])
   const [plot, setPlot]: [
     { data: { x: number }[]; min: number; max: number; lines: JSX.Element[] },
-    Function
+    Dispatch<
+      SetStateAction<{
+        data: { x: number }[]
+        min: number
+        max: number
+        lines: JSX.Element[]
+      }>
+    >
   ] = useState()
-  const [downloading, setDownloading]: [boolean, Function] = useState(false)
+  const [downloading, setDownloading]: [
+    boolean,
+    Dispatch<SetStateAction<boolean>>
+  ] = useState(false)
 
   // Data
   const [currentSimulation] = SimulationAPI.useSimulation(simulation?.id)
@@ -91,19 +163,16 @@ const Data = ({ simulation }: IProps): JSX.Element => {
 
       const camelNames = names.map((n) => camelCase(n))
 
-      const tableColumns: {
-        align?: string
-        title: string | JSX.Element
-        dataIndex: string
-        key: string
-      }[] = names.map((n, index) => ({
+      const tableColumns: TableColumnsType = names.map((n, index) => ({
         align: 'center',
         title: (
           <Space>
             {n}
             <Checkbox
               checked={columnSelection[index]?.checked}
-              onChange={(event) => onCheck(event, index)}
+              onChange={(event) =>
+                setColumnSelection(onCheck(event, index, columnSelection))
+              }
             >
               <LineChartOutlined />
             </Checkbox>
@@ -191,60 +260,6 @@ const Data = ({ simulation }: IProps): JSX.Element => {
   }, [table?.data, columnSelection, infos])
 
   /**
-   * On check
-   * @param {Object} event Event
-   * @param {number} index Index
-   * @param {string} name Name
-   * @param {string} key Key
-   */
-  const onCheck = (event: CheckboxChangeEvent, index: number) => {
-    const checked = event.target.checked
-
-    const newSelection = [...columnSelection]
-    newSelection[index] = {
-      checked
-    }
-
-    setColumnSelection(newSelection)
-  }
-
-  /**
-   * Export CSV
-   */
-  const exportCSV = () => {
-    setDownloading(true)
-
-    const separator = ','
-    let CSV = ''
-
-    const tableData = table?.data
-
-    // Header
-    CSV = 'x' + separator + infos.names.join(separator) + '\n'
-
-    // Data
-    tableData.forEach((data) => {
-      CSV += data.x
-      infos?.camelNames?.forEach((name) => {
-        data[name] !== undefined && (CSV += separator + data[name])
-      })
-      CSV += '\n'
-    })
-
-    // Download
-    const fileName = (simulation?.name || 'data') + '.csv'
-    const file = new File([CSV], fileName, { type: 'text/csv' })
-    const url = window.URL.createObjectURL(file)
-    const link = document.createElement('a')
-    link.href = url
-    link.setAttribute('download', fileName)
-    link.click()
-    link.remove()
-
-    setDownloading(false)
-  }
-
-  /**
    * Render
    */
   return (
@@ -294,7 +309,16 @@ const Data = ({ simulation }: IProps): JSX.Element => {
                 loading={downloading}
                 disabled={!table?.data}
                 icon={<FileTextOutlined />}
-                onClick={exportCSV}
+                onClick={() => {
+                  setDownloading(true)
+                  try {
+                    exportCSV()
+                  } catch (err) {
+                    ErrorNotification(err)
+                  } finally {
+                    setDownloading(false)
+                  }
+                }}
               >
                 Export CSV
               </Button>

@@ -37,9 +37,9 @@ const errors = {
 const router = useRouter()
 
 /**
-   * Go to login
-   */
- const onLogin = (): void => {
+ * Go to login
+ */
+const onLogin = (): void => {
   router.push('/login')
 }
 
@@ -80,6 +80,7 @@ const Signup = (): JSX.Element => {
     router.prefetch('/login')
   }, [])
 
+  //Todo
   /**
    * Handle signup
    * @param values

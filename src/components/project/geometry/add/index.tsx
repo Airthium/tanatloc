@@ -1,12 +1,13 @@
 /** @module Components.Project.Geometry.Add */
 
 import PropTypes from 'prop-types'
-import { useState } from 'react'
+import { Dispatch, SetStateAction, useState } from 'react'
 import { Space, Typography, Upload } from 'antd'
 import { UploadChangeParam } from 'antd/lib/upload'
 import { LoadingOutlined, UploadOutlined } from '@ant-design/icons'
 
 import { IProjectWithData } from '@/lib/index.d'
+import { IGeometry } from '@/database/index.d'
 
 import Dialog from '@/components/assets/dialog'
 import { ErrorNotification } from '@/components/assets/notification'
@@ -17,10 +18,10 @@ export interface IProps {
   visible: boolean
   project: IProjectWithData
   swr: {
-    mutateProject: Function
-    addOneGeometry: Function
+    mutateProject: (project: IProjectWithData) => void
+    addOneGeometry: (geometry: IGeometry) => void
   }
-  setVisible: Function
+  setVisible: Dispatch<SetStateAction<boolean>>
 }
 
 /**
@@ -31,75 +32,75 @@ const errors = {
 }
 
 /**
+ * Upload check
+ * @param file File
+ */
+const beforeUpload = (file: { name: string }): boolean => {
+  return (
+    file.name.toLowerCase().includes('.stp') ||
+    file.name.toLowerCase().includes('.step') ||
+    file.name.toLowerCase().includes('.dxf')
+  )
+}
+
+/**
+ * Get file
+ * @param file File
+ */
+const getFile = async (file: Blob): Promise<any> => {
+  const reader = new FileReader()
+  return new Promise((resolve) => {
+    reader.addEventListener('load', () => {
+      resolve(reader.result)
+    })
+    reader.readAsArrayBuffer(file)
+  })
+}
+
+/**
+ * On upload
+ * @param info Info
+ */
+const onUpload = async (
+  info: UploadChangeParam<any>,
+  project: IProps['project'],
+  swr: IProps['swr']
+): Promise<void> => {
+  if (info.file.status === 'done') {
+    const buffer = await getFile(info.file.originFileObj)
+
+    try {
+      // API
+      const geometry = await GeometryAPI.add(
+        { id: project.id },
+        {
+          name: info.file.name,
+          uid: info.file.uid,
+          buffer: Buffer.from(buffer)
+        }
+      )
+
+      // Local
+      swr.addOneGeometry(geometry)
+      swr.mutateProject({
+        id: project.id,
+        geometries: [...(project.geometries || []), geometry.id]
+      })
+    } catch (err) {
+      ErrorNotification(errors.addError, err)
+      throw err
+    }
+  }
+}
+
+/**
  * Add
  * @param props Props
  */
 const Add = ({ visible, project, swr, setVisible }: IProps): JSX.Element => {
   // State
-  const [loading, setLoading]: [boolean, Function] = useState(false)
-
-  /**
-   * Upload check
-   * @param file File
-   */
-  const beforeUpload = (file: { name: string }): boolean => {
-    return (
-      file.name.toLowerCase().includes('.stp') ||
-      file.name.toLowerCase().includes('.step') ||
-      file.name.toLowerCase().includes('.dxf')
-    )
-  }
-
-  /**
-   * On upload
-   * @param info Info
-   */
-  const onUpload = async (info: UploadChangeParam<any>): Promise<void> => {
-    if (info.file.status === 'uploading') setLoading(true)
-
-    if (info.file.status === 'done') {
-      const buffer = await getFile(info.file.originFileObj)
-
-      try {
-        // API
-        const geometry = await GeometryAPI.add(
-          { id: project.id },
-          {
-            name: info.file.name,
-            uid: info.file.uid,
-            buffer: Buffer.from(buffer)
-          }
-        )
-
-        // Local
-        swr.addOneGeometry(geometry)
-        swr.mutateProject({
-          geometries: [...(project.geometries || []), geometry.id]
-        })
-
-        // Close
-        setLoading(false)
-        setVisible(false)
-      } catch (err) {
-        ErrorNotification(errors.addError, err)
-        setLoading(false)
-      }
-    }
-  }
-
-  /**
-   * Get file
-   * @param file File
-   */
-  const getFile = async (file: Blob): Promise<any> => {
-    const reader = new FileReader()
-    return new Promise((resolve) => {
-      reader.addEventListener('load', () => {
-        resolve(reader.result)
-      })
-      reader.readAsArrayBuffer(file)
-    })
-  }
+  const [loading, setLoading]: [boolean, Dispatch<SetStateAction<boolean>>] =
+    useState(false)
 
   return (
     <Dialog
@@ -115,7 +116,18 @@ const Add = ({ visible, project, swr, setVisible }: IProps): JSX.Element => {
           showUploadList={false}
           listType="picture-card"
           beforeUpload={beforeUpload}
-          onChange={onUpload}
+          onChange={(info) => {
+            if (info.file.status === 'uploading') setLoading(true)
+            try {
+              onUpload(info, project, swr)
+              // Close
+              setLoading(false)
+              setVisible(false)
+            } catch (err) {
+              setLoading(false)
+              throw err
+            }
+          }}
         >
           <div>
             {loading ? (

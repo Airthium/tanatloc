@@ -1,7 +1,7 @@
 /** @module Components.Signup */
 
 import { useRouter } from 'next/router'
-import { useState, useEffect } from 'react'
+import { Dispatch, SetStateAction, useState, useEffect } from 'react'
 import {
   Alert,
   Button,
@@ -33,21 +33,35 @@ const errors = {
   systemError: 'Unable to get system'
 }
 
+// Router
+const router = useRouter()
+
+/**
+   * Go to login
+   */
+ const onLogin = (): void => {
+  router.push('/login')
+}
+
 /**
  * Signup
  */
 const Signup = (): JSX.Element => {
   // State
-  const [checking, setChecking]: [boolean, Function] = useState(false)
-  const [signupErr, setSignupErr]: [boolean, Function] = useState(false)
-  const [internalErr, setInternalError]: [boolean, Function] = useState(false)
+  const [checking, setChecking]: [boolean, Dispatch<SetStateAction<boolean>>] =
+    useState(false)
+  const [signupErr, setSignupErr]: [
+    boolean,
+    Dispatch<SetStateAction<boolean>>
+  ] = useState(false)
+  const [internalErr, setInternalError]: [
+    boolean,
+    Dispatch<SetStateAction<boolean>>
+  ] = useState(false)
 
   // Data
   const [user, { errorUser, loadingUser }] = UserAPI.useUser()
   const [system, { errorSystem, loadingSystem }] = SystemAPI.useSystem()
-
-  // Router
-  const router = useRouter()
 
   // Errors
   useEffect(() => {
@@ -94,13 +108,6 @@ const Signup = (): JSX.Element => {
       setChecking(false)
       ErrorNotification(errors.INTERNAL_ERROR, err, false)
     }
-  }
-
-  /**
-   * Go to login
-   */
-  const onLogin = (): void => {
-    router.push('/login')
   }
 
   /**

@@ -1,13 +1,7 @@
 import React from 'react'
 import { render, screen, fireEvent } from '@testing-library/react'
 
-import Index from '..'
-
-jest.mock('@/components/assets/mathjax', () => ({
-  Inline: () => <div />,
-  Formula: () => <div />,
-  Html: () => <div />
-}))
+import Index, { errors } from '..'
 
 const mockPrefetch = jest.fn()
 const mockPush = jest.fn()
@@ -20,18 +14,25 @@ jest.mock('next/router', () => ({
 
 jest.mock('@/components/background', () => () => <div />)
 
-const mockError = jest.fn()
+const mockErrorNotification = jest.fn()
 jest.mock('@/components/assets/notification', () => ({
-  Error: () => mockError()
+  ErrorNotification: (title: string, err: Error) =>
+    mockErrorNotification(title, err)
+}))
+
+jest.mock('@/components/assets/mathjax', () => ({
+  Inline: () => <div />,
+  Formula: () => <div />,
+  Html: () => <div />
 }))
 
 const mockUser = jest.fn()
-const mockErrorUser = jest.fn()
+const mockErrorNotificationUser = jest.fn()
 const mockLoadingUser = jest.fn()
 jest.mock('@/api/user', () => ({
   useUser: () => [
     mockUser(),
-    { errorUser: mockErrorUser(), loadingUser: mockLoadingUser() }
+    { errorUser: mockErrorNotificationUser(), loadingUser: mockLoadingUser() }
   ]
 }))
 
@@ -40,10 +41,10 @@ describe('components/index', () => {
     mockPrefetch.mockReset()
     mockPush.mockReset()
 
-    mockError.mockReset()
+    mockErrorNotification.mockReset()
 
     mockUser.mockReset()
-    mockErrorUser.mockReset()
+    mockErrorNotificationUser.mockReset()
     mockLoadingUser.mockReset()
     mockLoadingUser.mockImplementation(() => false)
   })
@@ -94,10 +95,14 @@ describe('components/index', () => {
   })
 
   test('errorUser', () => {
-    mockErrorUser.mockImplementation(() => 'error')
+    mockErrorNotificationUser.mockImplementation(() => new Error('user error'))
 
     const { unmount } = render(<Index />)
-    expect(mockError).toHaveBeenCalledTimes(1)
+    expect(mockErrorNotification).toHaveBeenCalledTimes(1)
+    expect(mockErrorNotification).toHaveBeenCalledWith(
+      errors.user,
+      new Error('user error')
+    )
 
     unmount()
   })

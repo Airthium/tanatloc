@@ -271,80 +271,21 @@ const Share = ({
 // TODO proptypes
 Share.propTypes = {
   disabled: PropTypes.bool,
-  project: (props, propName, componentName) => {
-    // Missing or invalid project
-    if (
-      !props['workspace'] &&
-      (!props[propName] ||
-        typeof props[propName] !== 'object' ||
-        typeof props[propName].id !== 'string' ||
-        (props[propName].groups && !Array.isArray(props[propName].groups)))
-    )
-      return new Error(
-        'Missing or invalid prop ' +
-          propName +
-          ' supplied to ' +
-          componentName +
-          '.'
-      )
-  },
-  workspace: (props, propName, componentName) => {
-    // Missing or invalid workspace
-    if (
-      !props['project'] &&
-      (!props[propName] ||
-        typeof props[propName] !== 'object' ||
-        typeof props[propName].id !== 'string' ||
-        (props[propName].groups && !Array.isArray(props[propName].groups)))
-    )
-      return new Error(
-        'Missing or invalid prop ' +
-          propName +
-          ' supplied to ' +
-          componentName +
-          '.'
-      )
-  },
+  project: PropTypes.exact({
+    id: PropTypes.string.isRequired,
+    title: PropTypes.string.isRequired,
+    groups: PropTypes.array
+  }),
+  workspace: PropTypes.exact({
+    id: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
+    groups: PropTypes.array
+  }),
   organizations: PropTypes.array.isRequired,
-  swr: (props, propName, componentName) => {
-    // Missing swr
-    if (!props[propName])
-      return new Error(
-        'Invalid prop ' +
-          propName +
-          ' supplied to ' +
-          componentName +
-          '. swr missing'
-      )
-
-    if (props['workspace']) {
-      // Missing or invalid swr.mutateOneWorkspace
-      if (
-        !props[propName].mutateOneWorkspace ||
-        typeof props[propName].mutateOneWorkspace !== 'function'
-      )
-        return new Error(
-          'Invalid prop ' +
-            propName +
-            ' supplied to ' +
-            componentName +
-            '. mutateOneWorkspace missing or invalid'
-        )
-    } else {
-      // Missing or invalid swr.mutateOneProject
-      if (
-        !props[propName].mutateOneProject ||
-        typeof props[propName].mutateOneProject !== 'function'
-      )
-        return new Error(
-          'Invalid prop ' +
-            propName +
-            ' supplied to ' +
-            componentName +
-            '. mutateOneProject missing or invalid'
-        )
-    }
-  }
+  swr: PropTypes.exact({
+    mutateOneProject: PropTypes.func,
+    mutateOneWorkspace: PropTypes.func
+  }).isRequired
 }
 
 export default Share

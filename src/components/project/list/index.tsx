@@ -30,6 +30,9 @@ import Archive from '../archive'
 
 import Utils from '@/lib/utils'
 
+/**
+ * Props
+ */
 export interface IProps {
   user: IUserWithData
   page?: string

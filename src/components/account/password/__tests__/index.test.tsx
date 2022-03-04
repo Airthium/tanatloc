@@ -1,7 +1,7 @@
 import React from 'react'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
-import { Form, Input, notification } from 'antd'
+import { Form, Input } from 'antd'
 
 import Password, { errors } from '..'
 

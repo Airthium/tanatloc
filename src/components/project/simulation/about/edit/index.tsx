@@ -1,7 +1,7 @@
 /** @module Components.Project.Simulation.About.Edit */
 
 import PropTypes from 'prop-types'
-import { useState } from 'react'
+import { Dispatch, SetStateAction, useState } from 'react'
 import { Form, Input } from 'antd'
 
 import { ISimulation } from '@/database/index.d'
@@ -27,43 +27,41 @@ const errors = {
 }
 
 /**
+ * On edit
+ * @param values Values
+ */
+const onEdit = async (
+  values: { name: string },
+  simulation: ISimulation,
+  swr: IProps['swr']
+): Promise<void> => {
+  try {
+    // API
+    await SimulationAPI.update({ id: simulation.id }, [
+      { key: 'name', value: values.name }
+    ])
+
+    // Local
+    swr.mutateOneSimulation({
+      id: simulation.id,
+      name: values.name
+    })
+  } catch (err) {
+    ErrorNotification(errors.update, err)
+    throw err
+  }
+}
+
+/**
  * Edit
  * @param props Props
  */
 const Edit = ({ simulation, swr }: IProps): JSX.Element => {
   // State
-  const [visible, setVisible]: [boolean, Function] = useState(false)
-  const [loading, setLoading]: [boolean, Function] = useState(false)
-
-  /**
-   * On edit
-   * @param values Values
-   */
-  const onEdit = async (values: { name: string }): Promise<void> => {
-    setLoading(true)
-
-    try {
-      // API
-      await SimulationAPI.update({ id: simulation.id }, [
-        { key: 'name', value: values.name }
-      ])
-
-      // Local
-      swr.mutateOneSimulation({
-        id: simulation.id,
-        name: values.name
-      })
-
-      // Loading
-      setLoading(false)
-
-      // Close
-      setVisible(false)
-    } catch (err) {
-      ErrorNotification(errors.update, err)
-      setLoading(false)
-    }
-  }
+  const [visible, setVisible]: [boolean, Dispatch<SetStateAction<boolean>>] =
+    useState(false)
+  const [loading, setLoading]: [boolean, Dispatch<SetStateAction<boolean>>] =
+    useState(false)
 
   /**
    * Render
@@ -76,7 +74,20 @@ const Edit = ({ simulation, swr }: IProps): JSX.Element => {
         visible={visible}
         initialValues={{ name: simulation.name }}
         onCancel={() => setVisible(false)}
-        onOk={onEdit}
+        onOk={async (values) => {
+          setLoading(true)
+          try {
+            await onEdit(values, simulation, swr)
+          } catch (err) {
+            setLoading(false)
+          } finally {
+            // Loading
+            setLoading(false)
+
+            // Close
+            setVisible(false)
+          }
+        }}
         loading={loading}
       >
         <Form.Item

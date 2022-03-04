@@ -1,7 +1,7 @@
 /** @module Components.Project.Geometry */
 
 import PropTypes from 'prop-types'
-import { useState } from 'react'
+import { Dispatch, SetStateAction, useState } from 'react'
 import { Card, Layout, Space, Typography } from 'antd'
 
 import { IGeometry } from '@/database/index.d'
@@ -25,9 +25,9 @@ export interface IProps {
   project: IProjectWithData
   geometry: IGeometry
   swr: {
-    mutateProject: Function
-    mutateOneGeometry: Function
-    delOneGeometry: Function
+    mutateProject: (project: IProjectWithData) => void
+    mutateOneGeometry: (geometry: IGeometry) => void
+    delOneGeometry: (geometry: IGeometry) => void
   }
   close: Function
 }
@@ -89,41 +89,51 @@ const onEdit = async (
 }
 
 /**
+ * On delete
+ */
+const onDelete = async (
+  geometry: IGeometry,
+  project: IProjectWithData,
+  swr: IProps['swr'],
+  close: Function
+): Promise<void> => {
+  try {
+    // API
+    await GeometryAPI.del({ id: geometry.id })
+
+    // Local
+    const filteredGeometries = project.geometries.filter(
+      (g) => g !== geometry.id
+    )
+    swr.mutateProject({
+      id: project.id,
+      geometries: filteredGeometries
+    })
+    swr.delOneGeometry(geometry)
+
+    // Close
+    close()
+  } catch (err) {
+    ErrorNotification(errors.delError, err)
+  }
+}
+
+/**
  * Geometry
  * @param props Props
  */
 const Geometry = ({ project, geometry, swr, close }: IProps): JSX.Element => {
   // State
-  const [downloading, setDownloading]: [boolean, Function] = useState(false)
-  const [editVisible, setEditVisible]: [boolean, Function] = useState(false)
-  const [deleting, setDeleting]: [boolean, Function] = useState(false)
-
-  /**
-   * On delete
-   */
-  const onDelete = async (): Promise<void> => {
-    setDeleting(true)
-
-    try {
-      // API
-      await GeometryAPI.del({ id: geometry.id })
-
-      // Local
-      const filteredGeometries = project.geometries.filter(
-        (g) => g !== geometry.id
-      )
-      swr.mutateProject({
-        geometries: filteredGeometries
-      })
-      swr.delOneGeometry(geometry)
-
-      // Close
-      close()
-    } catch (err) {
-      ErrorNotification(errors.delError, err)
-      setDeleting(false)
-    }
-  }
+  const [downloading, setDownloading]: [
+    boolean,
+    Dispatch<SetStateAction<boolean>>
+  ] = useState(false)
+  const [editVisible, setEditVisible]: [
+    boolean,
+    Dispatch<SetStateAction<boolean>>
+  ] = useState(false)
+  const [deleting, setDeleting]: [boolean, Dispatch<SetStateAction<boolean>>] =
+    useState(false)
 
   /**
    * Render
@@ -140,10 +150,10 @@ const Geometry = ({ project, geometry, swr, close }: IProps): JSX.Element => {
               <DownloadButton
                 key="download"
                 loading={downloading}
-                onDownload={() => {
+                onDownload={async () => {
                   setDownloading(true)
                   try {
-                    onDownload(geometry)
+                    await onDownload(geometry)
                   } catch (err) {
                   } finally {
                     setDownloading(false)
@@ -158,9 +168,9 @@ const Geometry = ({ project, geometry, swr, close }: IProps): JSX.Element => {
                     name: geometry?.name
                   }}
                   setVisible={setEditVisible}
-                  onEdit={(value: { name: string }) => {
+                  onEdit={async (value: { name: string }) => {
                     try {
-                      onEdit(value, geometry, swr)
+                      await onEdit(value, geometry, swr)
                     } catch (err) {}
                   }}
                 />
@@ -170,7 +180,15 @@ const Geometry = ({ project, geometry, swr, close }: IProps): JSX.Element => {
                 key="delete"
                 loading={deleting}
                 text="Are you sure you want to delete this geometry?"
-                onDelete={onDelete}
+                onDelete={async () => {
+                  setDeleting(true)
+                  try {
+                    await onDelete(geometry, project, swr, close)
+                  } catch (err) {
+                  } finally {
+                    setDeleting(false)
+                  }
+                }}
               />
             ]}
           >

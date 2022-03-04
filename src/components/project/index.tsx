@@ -1,7 +1,7 @@
 /** @module Components.Project */
 
 import { useRouter } from 'next/router'
-import { useEffect, useState } from 'react'
+import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { Button, Layout, Menu, Typography } from 'antd'
 import {
   CodeSandboxOutlined,
@@ -67,24 +67,45 @@ const Project = (): JSX.Element => {
   }: { page?: string; workspaceId?: string; projectId?: string } = router.query
 
   // State
-  const [geometryAdd, setGeometryAdd]: [boolean, Function] = useState(false)
-  const [currentGeometry, setCurrentGeometry]: [IGeometry, Function] =
-    useState()
-  const [geometryVisible, setGeometryVisible]: [boolean, Function] =
-    useState(false)
+  const [geometryAdd, setGeometryAdd]: [
+    boolean,
+    Dispatch<SetStateAction<boolean>>
+  ] = useState(false)
+  const [currentGeometry, setCurrentGeometry]: [
+    IGeometry,
+    Dispatch<SetStateAction<IGeometry>>
+  ] = useState()
+  const [geometryVisible, setGeometryVisible]: [
+    boolean,
+    Dispatch<SetStateAction<boolean>>
+  ] = useState(false)
 
-  const [simulationSelector, setSimulationSelector]: [boolean, Function] =
-    useState(false)
-  const [currentSimulation, setCurrentSimulation]: [ISimulation, Function] =
-    useState()
-  const [currentSimulationType, setCurrentSimulationType]: [string, Function] =
-    useState()
+  const [simulationSelector, setSimulationSelector]: [
+    boolean,
+    Dispatch<SetStateAction<boolean>>
+  ] = useState(false)
+  const [currentSimulation, setCurrentSimulation]: [
+    ISimulation,
+    Dispatch<SetStateAction<ISimulation>>
+  ] = useState()
+  const [currentSimulationType, setCurrentSimulationType]: [
+    string,
+    Dispatch<SetStateAction<string>>
+  ] = useState()
 
-  const [currentResult, setCurrentResult]: [ISimulationTaskFile, Function] =
-    useState()
+  const [currentResult, setCurrentResult]: [
+    ISimulationTaskFile,
+    Dispatch<SetStateAction<ISimulationTaskFile>>
+  ] = useState()
 
-  const [panelVisible, setPanelVisible]: [boolean, Function] = useState(false)
-  const [panelTitle, setPanelTitle]: [string, Function] = useState()
+  const [panelVisible, setPanelVisible]: [
+    boolean,
+    Dispatch<SetStateAction<boolean>>
+  ] = useState(false)
+  const [panelTitle, setPanelTitle]: [
+    string,
+    Dispatch<SetStateAction<string>>
+  ] = useState()
 
   // Data
   const [user, { errorUser, loadingUser }] = UserAPI.useUser()
@@ -144,7 +165,7 @@ const Project = (): JSX.Element => {
           if (geometryVisible) selectGeometry(geometry.id)
           else setCurrentGeometry(geometry)
       } else {
-        setCurrentGeometry()
+        setCurrentGeometry(null)
       }
     }
   }, [currentGeometry, geometries])
@@ -244,12 +265,12 @@ const Project = (): JSX.Element => {
    */
   const onPanelClose = (): void => {
     setPanelVisible(false)
-    setPanelTitle()
+    setPanelTitle(null)
 
     setGeometryVisible(false)
 
-    setCurrentSimulation()
-    setCurrentSimulationType()
+    setCurrentSimulation(null)
+    setCurrentSimulationType(null)
   }
 
   /**
@@ -258,7 +279,7 @@ const Project = (): JSX.Element => {
    */
   const selectGeometry = (id: string): void => {
     onPanelClose()
-    setCurrentResult()
+    setCurrentResult(null)
 
     const geometry = geometries.find((g) => g.id === id)
 
@@ -277,10 +298,10 @@ const Project = (): JSX.Element => {
   const selectSimulation = (id: string, type: string): void => {
     onPanelClose()
 
-    if (currentSimulation && currentSimulation.id !== id) setCurrentResult()
+    if (currentSimulation && currentSimulation.id !== id) setCurrentResult(null)
 
     if (type === 'materials' || type === 'boundaryConditions')
-      setCurrentResult()
+      setCurrentResult(null)
 
     const simulation = simulations.find((s) => s.id === id)
     if (!simulation) return

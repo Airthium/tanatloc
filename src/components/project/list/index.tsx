@@ -1,7 +1,7 @@
 /** @module Components.Project.List */
 
 import PropTypes from 'prop-types'
-import { useState, useEffect } from 'react'
+import { Dispatch, SetStateAction, useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import {
   Avatar,
@@ -61,18 +61,27 @@ const ProjectList = ({
   swr
 }: IProps): JSX.Element => {
   // State
-  const [loading, setLoading]: [boolean, Function] = useState(true)
+  const [loading, setLoading]: [boolean, Dispatch<SetStateAction<boolean>>] =
+    useState(true)
   const [list, setList]: [
-    Array<
-      IProjectWithData & {
-        snapshotRender: JSX.Element
-        descriptionRender: JSX.Element
-        ownersRender: JSX.Element
-        usersRender: JSX.Element
-        groupsRender: JSX.Element
-      }
-    >,
-    Function
+    (IProjectWithData & {
+      snapshotRender: JSX.Element
+      descriptionRender: JSX.Element
+      ownersRender: JSX.Element[]
+      usersRender: JSX.Element[]
+      groupsRender: JSX.Element[]
+    })[],
+    Dispatch<
+      SetStateAction<
+        (IProjectWithData & {
+          snapshotRender: JSX.Element
+          descriptionRender: JSX.Element
+          ownersRender: JSX.Element[]
+          usersRender: JSX.Element[]
+          groupsRender: JSX.Element[]
+        })[]
+      >
+    >
   ] = useState([])
 
   // Router

@@ -18,7 +18,7 @@ import SystemAPI from '@/api/system'
 /**
  * Errors
  */
-const errors = {
+export const errors = {
   user: 'User error',
   system: 'System error',
   internal: 'Server issue : try again shortly.',

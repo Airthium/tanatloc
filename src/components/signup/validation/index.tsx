@@ -13,7 +13,8 @@ import LinkAPI from '@/api/link'
 /**
  * Errors
  */
-const errors = {
+export const errors = {
+  wrongLink: 'Wrong link',
   internal: 'Internal error'
 }
 
@@ -38,7 +39,7 @@ const Validation = (): JSX.Element => {
               })
               .catch((err) => ErrorNotification(errors.internal, err))
           } else {
-            ErrorNotification('Wrong link')
+            ErrorNotification(errors.wrongLink)
           }
         })
         .catch((err) => ErrorNotification(errors.internal, err))

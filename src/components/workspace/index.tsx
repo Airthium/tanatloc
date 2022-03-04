@@ -192,6 +192,7 @@ Workspace.propTypes = {
   user: PropTypes.exact({
     id: PropTypes.string.isRequired
   }).isRequired,
+  page: PropTypes.string.isRequired,
   workspace: PropTypes.exact({
     id: PropTypes.string.isRequired,
     name: PropTypes.string,

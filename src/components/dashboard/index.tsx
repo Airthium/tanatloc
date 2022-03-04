@@ -155,8 +155,11 @@ const Dashboard = () => {
     const page = params.get('page')
 
     if (page) setCurrentKey(page)
-    else setCurrentKey(menuItems.workspaces.key)
-  }, [])
+    else {
+      setCurrentKey(menuItems.workspaces.key)
+      onSelect(router, menuItems.workspaces.key, clearUser)
+    }
+  }, [router, clearUser])
 
   // Error
   useEffect(() => {

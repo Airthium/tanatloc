@@ -474,7 +474,7 @@ const Project = (): JSX.Element => {
               geometries: project.geometries
             }}
             swr={{ mutateProject, addOneGeometry }}
-            setVisible={setGeometryAdd}
+            setVisible={(visible) => setGeometryAdd(visible)}
           />
 
           <Simulation.Selector

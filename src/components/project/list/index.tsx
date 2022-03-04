@@ -35,7 +35,7 @@ import Utils from '@/lib/utils'
  */
 export interface IProps {
   user: IUserWithData
-  page?: string
+  page: string
   workspace: IWorkspaceWithData
   projects: IProjectWithData[]
   organizations: IOrganizationWithData[]
@@ -327,12 +327,12 @@ const ProjectList = ({
 
 ProjectList.propTypes = {
   user: PropTypes.shape({
-    id: PropTypes.string
+    id: PropTypes.string.isRequired
   }).isRequired,
-  page: PropTypes.string,
+  page: PropTypes.string.isRequired,
   workspace: PropTypes.shape({
     id: PropTypes.string.isRequired,
-    projects: PropTypes.array
+    projects: PropTypes.arrayOf(PropTypes.string).isRequired
   }).isRequired,
   projects: PropTypes.array.isRequired,
   organizations: PropTypes.array.isRequired,

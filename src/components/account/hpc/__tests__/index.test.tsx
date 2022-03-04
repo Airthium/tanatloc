@@ -1,11 +1,12 @@
 import React from 'react'
 import { render, screen, waitFor } from '@testing-library/react'
 
-import HPC from '..'
+import HPC, { errors } from '..'
 
-const mockError = jest.fn()
+const mockErrorNotification = jest.fn()
 jest.mock('@/components/assets/notification', () => ({
-  Error: () => mockError()
+  ErrorNotification: (title: string, err: Error) =>
+    mockErrorNotification(title, err)
 }))
 
 const mockList = jest.fn()
@@ -17,7 +18,7 @@ jest.mock('../plugin', () => () => <div role="Plugin" />)
 
 describe('components/account/hpc', () => {
   beforeEach(() => {
-    mockError.mockReset()
+    mockErrorNotification.mockReset()
 
     mockList.mockReset()
     mockList.mockImplementation(() => [])
@@ -35,11 +36,17 @@ describe('components/account/hpc', () => {
 
   test('plugins error', async () => {
     mockList.mockImplementation(() => {
-      throw new Error()
+      throw new Error('list error')
     })
     const { unmount } = render(<HPC />)
 
-    await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
+      expect(mockErrorNotification).toHaveBeenLastCalledWith(
+        errors.plugins,
+        new Error('list error')
+      )
+    )
 
     unmount()
   })

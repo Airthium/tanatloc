@@ -12,7 +12,7 @@ import Plugin from './plugin'
 /**
  * Errors
  */
-const errors = {
+export const errors = {
   plugins: 'Unable to load plugins'
 }
 

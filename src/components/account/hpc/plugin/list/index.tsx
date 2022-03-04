@@ -130,7 +130,7 @@ List.propTypes = {
       uuid: PropTypes.string.isRequired,
       name: PropTypes.string.isRequired,
       configuration: PropTypes.object.isRequired,
-      inUseConfiguration: PropTypes.object.isRequired,
+      inUseConfiguration: PropTypes.object,
       data: PropTypes.object,
       needInit: PropTypes.bool
     }).isRequired

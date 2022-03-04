@@ -23,7 +23,7 @@ export interface IProps {
 /**
  * Errors
  */
-const errors = {
+export const errors = {
   plugins: 'Plugins error'
 }
 

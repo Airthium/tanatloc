@@ -31,8 +31,9 @@ export interface IProps {
 /**
  * Errors
  */
-const errors = {
+export const errors = {
   update: 'Unable to update informations',
+  upload: 'Unable to upload image',
   badFormat: 'Supported format: jpg, png',
   badSize: 'Image must be smaller than 5MB'
 }
@@ -45,7 +46,7 @@ export const beforeUpload = (file: { type: string; size: number }): boolean => {
   const goodFormat = file.type === 'image/jpeg' || file.type === 'image/png'
   if (!goodFormat) ErrorNotification(errors.badFormat)
 
-  const goodSize = file.size / 1024 / 1024 < 4
+  const goodSize = file.size / 1024 / 1024 < 1
   if (!goodSize) ErrorNotification(errors.badSize)
 
   return goodFormat && goodSize
@@ -100,7 +101,7 @@ export const onChange = async (
         avatar: Buffer.from(img)
       })
     } catch (err) {
-      ErrorNotification(err.message, err)
+      ErrorNotification(errors.upload, err)
     }
 
     return false
@@ -135,7 +136,7 @@ export const onFinish = async (
     // Check firstname
     if (user.firstname !== values.firstname)
       toUpdate.push({
-        key: 'fisrtname',
+        key: 'firstname',
         value: values.firstname
       })
 

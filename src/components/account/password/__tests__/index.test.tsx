@@ -3,25 +3,30 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import { Form, Input, notification } from 'antd'
 
-import Password from '..'
+import Password, { errors } from '..'
 
 const mockPasswordItem = jest.fn()
-jest.mock('@/components/assets/input', () => {
-  const PasswordItem = (props) => mockPasswordItem(props)
-  return { PasswordItem }
-})
+jest.mock('@/components/assets/input', () => ({
+  PasswordItem: (props: any) => mockPasswordItem(props)
+}))
 
-const mockError = jest.fn()
+const mockSuccessNotification = jest.fn()
+const mockFormError = jest.fn()
 jest.mock('@/components/assets/notification', () => ({
-  Success: () => {},
-  Error: () => mockError()
+  SuccessNotification: () => mockSuccessNotification(),
+  FormError: () => mockFormError()
+}))
+
+const mockAPIError = jest.fn()
+jest.mock('@/api/error', () => ({
+  APIError: jest.fn().mockImplementation((apiError) => mockAPIError(apiError))
 }))
 
 const mockUpdate = jest.fn()
 const mockCheck = jest.fn()
 jest.mock('@/api/user', () => ({
-  update: () => mockUpdate(),
-  check: () => mockCheck()
+  update: (update: any) => mockUpdate(update),
+  check: (check: any) => mockCheck(check)
 }))
 
 describe('components/account/password', () => {
@@ -35,7 +40,11 @@ describe('components/account/password', () => {
       </Form.Item>
     ))
 
-    mockError.mockReset()
+    mockSuccessNotification.mockReset()
+    mockFormError.mockReset()
+    mockFormError.mockImplementation(() => <div />)
+
+    mockAPIError.mockReset()
 
     mockUpdate.mockReset()
     mockCheck.mockReset()
@@ -84,25 +93,42 @@ describe('components/account/password', () => {
     // Button
     const button = screen.getByRole('button')
 
-    // Error
+    // Check error
     mockCheck.mockImplementation(() => {
       throw new Error('check error')
     })
     fireEvent.click(button)
     await waitFor(() => expect(mockCheck).toHaveBeenCalledTimes(1))
-    await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
+      expect(mockCheck).toHaveBeenLastCalledWith({
+        email: 'email',
+        password: 'password'
+      })
+    )
+    await waitFor(() => expect(mockAPIError).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
+      expect(mockAPIError).toHaveBeenLastCalledWith({
+        title: errors.check,
+        err: new Error('check error')
+      })
+    )
 
     // Wrong password
     mockCheck.mockImplementation(() => ({
       valid: false
     }))
-    const mockErrorNotification = jest.fn()
-    jest
-      .spyOn(notification, 'error')
-      .mockImplementation(() => mockErrorNotification())
     fireEvent.click(button)
     await waitFor(() => expect(mockCheck).toHaveBeenCalledTimes(2))
-    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
+      expect(mockCheck).toHaveBeenLastCalledWith({
+        email: 'email',
+        password: 'password'
+      })
+    )
+    await waitFor(() => expect(mockAPIError).toHaveBeenCalledTimes(2))
+    await waitFor(() =>
+      expect(mockAPIError).toHaveBeenLastCalledWith({ title: errors.invalid })
+    )
 
     // Valid
     mockCheck.mockImplementation(() => ({
@@ -110,7 +136,55 @@ describe('components/account/password', () => {
     }))
     fireEvent.click(button)
     await waitFor(() => expect(mockCheck).toHaveBeenCalledTimes(3))
+    await waitFor(() =>
+      expect(mockCheck).toHaveBeenLastCalledWith({
+        email: 'email',
+        password: 'password'
+      })
+    )
     await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
+      expect(mockUpdate).toHaveBeenLastCalledWith([
+        {
+          type: 'crypt',
+          key: 'password',
+          value: 'password'
+        }
+      ])
+    )
+    await waitFor(() =>
+      expect(mockSuccessNotification).toHaveBeenCalledTimes(1)
+    )
+
+    // Update error
+    mockUpdate.mockImplementation(() => {
+      throw new Error('update error')
+    })
+    fireEvent.click(button)
+    await waitFor(() => expect(mockCheck).toHaveBeenCalledTimes(4))
+    await waitFor(() =>
+      expect(mockCheck).toHaveBeenLastCalledWith({
+        email: 'email',
+        password: 'password'
+      })
+    )
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
+    await waitFor(() =>
+      expect(mockUpdate).toHaveBeenLastCalledWith([
+        {
+          type: 'crypt',
+          key: 'password',
+          value: 'password'
+        }
+      ])
+    )
+    await waitFor(() => expect(mockAPIError).toHaveBeenCalledTimes(3))
+    await waitFor(() =>
+      expect(mockAPIError).toHaveBeenLastCalledWith({
+        title: errors.update,
+        err: new Error('update error')
+      })
+    )
 
     unmount()
   })

@@ -23,8 +23,8 @@ export interface IProps {
 /**
  * Errors
  */
-const errors = {
-  updateError: 'Unable to delete plugin'
+export const errors = {
+  del: 'Unable to delete plugin'
 }
 
 /**
@@ -38,12 +38,12 @@ export const onDelete = async (
 ): Promise<void> => {
   try {
     // API
-    await PluginAPI.del(plugin)
+    await PluginAPI.del({ uuid: plugin.uuid })
 
     // Mutate
     swr.delOnePlugin(plugin)
   } catch (err) {
-    ErrorNotification(errors.updateError, err)
+    ErrorNotification(errors.del, err)
   }
 }
 

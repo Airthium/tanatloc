@@ -25,7 +25,7 @@ export interface IProps {
 /**
  * Errors
  */
-const errors = {
+export const errors = {
   check: 'Unable to check the password',
   update: 'Unable to update the password',
   passwordMismatch: 'Password and confirmation mismatch',

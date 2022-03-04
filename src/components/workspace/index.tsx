@@ -112,7 +112,10 @@ const Workspace = ({
               {workspace?.owners?.find((o) => o.id === user.id) && (
                 <>
                   <ProjectAdd
-                    workspace={workspace}
+                    workspace={{
+                      id: workspace.id,
+                      projects: workspace.projects
+                    }}
                     swr={{
                       mutateOneWorkspace: swr.mutateOneWorkspace,
                       addOneProject
@@ -133,7 +136,9 @@ const Workspace = ({
                       style={{ buttonDark: true, buttonBordered: true }}
                     />
                     <Delete
-                      workspace={workspace}
+                      workspace={{
+                        id: workspace.id
+                      }}
                       swr={{ delOneWorkspace: swr.delOneWorkspace }}
                     />
                   </Space>

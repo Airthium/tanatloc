@@ -2,7 +2,7 @@ import React from 'react'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { Form, Input } from 'antd'
 
-import Password from '..'
+import Password, { errors } from '..'
 
 const mockRouter = jest.fn()
 jest.mock('next/router', () => ({
@@ -11,12 +11,20 @@ jest.mock('next/router', () => ({
 
 const mockPasswordItem = jest.fn()
 jest.mock('@/components/assets/input', () => ({
-  PasswordItem: (props) => mockPasswordItem(props)
+  PasswordItem: (props: any) => mockPasswordItem(props)
 }))
 
-const mockError = jest.fn()
+const mockErrorNotification = jest.fn()
+const mockFormError = jest.fn()
 jest.mock('@/components/assets/notification', () => ({
-  Error: (title: string, description: string) => mockError(title, description)
+  ErrorNotification: (title: string, description: string) =>
+    mockErrorNotification(title, description),
+  FormError: () => mockFormError()
+}))
+
+const mockAPIError = jest.fn()
+jest.mock('@/api/error', () => ({
+  APIError: jest.fn().mockImplementation((apiError) => mockAPIError(apiError))
 }))
 
 const mockLinkGet = jest.fn()
@@ -36,7 +44,11 @@ describe('components/password', () => {
     mockPasswordItem.mockReset()
     mockPasswordItem.mockImplementation(() => <div />)
 
-    mockError.mockReset()
+    mockErrorNotification.mockReset()
+    mockFormError.mockReset()
+    mockFormError.mockImplementation(() => <div />)
+
+    mockAPIError.mockReset()
 
     mockLinkGet.mockReset()
     mockLinkGet.mockImplementation(() => ({}))
@@ -45,6 +57,8 @@ describe('components/password', () => {
 
   test('render', () => {
     const { unmount } = render(<Password />)
+
+    screen.getByText('Loading...')
 
     unmount()
   })
@@ -55,7 +69,13 @@ describe('components/password', () => {
     }))
     const { unmount } = render(<Password />)
 
-    await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
+      expect(mockErrorNotification).toHaveBeenLastCalledWith(
+        errors.wrongLink,
+        undefined
+      )
+    )
 
     unmount()
   })
@@ -80,11 +100,17 @@ describe('components/password', () => {
       query: { id: 'id' }
     }))
     mockLinkGet.mockImplementation(() => {
-      throw new Error()
+      throw new Error('get error')
     })
     const { unmount } = render(<Password />)
 
-    await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
+      expect(mockErrorNotification).toHaveBeenLastCalledWith(
+        errors.internal,
+        new Error('get error')
+      )
+    )
 
     unmount()
   })
@@ -107,6 +133,7 @@ describe('components/password', () => {
 
     await waitFor(() => screen.getByRole('PasswordItem'))
 
+    // Fill
     const email = screen.getByLabelText('Enter your email address')
     const password = screen.getByRole('PasswordItem')
     const confirm = screen.getByLabelText('Confirm your password')
@@ -121,16 +148,29 @@ describe('components/password', () => {
     fireEvent.change(confirm, { target: { value: 'password' } })
     fireEvent.click(button)
 
-    await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
+    // Incorrect
+    await waitFor(() => expect(mockAPIError).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
+      expect(mockAPIError).toHaveBeenLastCalledWith({ title: errors.incorrect })
+    )
 
+    // Error
     fireEvent.change(email, { target: { value: 'test@email.com' } })
-    fireEvent.click(button)
-    await waitFor(() => expect(mockLinkProcess).toHaveBeenCalledTimes(1))
-
     mockLinkProcess.mockImplementation(() => {
-      throw new Error()
+      throw new Error('process error')
     })
     fireEvent.click(button)
+    await waitFor(() => expect(mockAPIError).toHaveBeenCalledTimes(2))
+    await waitFor(() =>
+      expect(mockAPIError).toHaveBeenLastCalledWith({
+        title: errors.internal,
+        err: new Error('process error')
+      })
+    )
+
+    // Normal
+    fireEvent.click(button)
+    await waitFor(() => expect(mockLinkProcess).toHaveBeenCalledTimes(1))
 
     unmount()
   })

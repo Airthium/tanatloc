@@ -133,11 +133,15 @@ const Mesh = ({ simulation, swr }: IProps): JSX.Element => {
    */
   return (
     <Card size="small" title="Mesh refinement">
-      <Space direction="vertical">
+      <Space direction="vertical" className="full-width">
         <Typography.Text>
           Type:
           <br />
-          <Select value={meshGlobalType} onChange={onMeshGlobalType}>
+          <Select
+            className="full-width"
+            value={meshGlobalType}
+            onChange={onMeshGlobalType}
+          >
             <Select.Option value="auto">Automatic</Select.Option>
             <Select.Option value="manual">Manual</Select.Option>
           </Select>
@@ -146,7 +150,11 @@ const Mesh = ({ simulation, swr }: IProps): JSX.Element => {
           <Typography.Text>
             Size:
             <br />
-            <Select value={meshGlobalValue} onChange={onMeshGlobalSize}>
+            <Select
+              className="full-width"
+              value={meshGlobalValue}
+              onChange={onMeshGlobalSize}
+            >
               <Select.Option value="veryfine">Very fine</Select.Option>
               <Select.Option value="fine">Fine</Select.Option>
               <Select.Option value="normal">Normal</Select.Option>

@@ -276,6 +276,7 @@ const ProjectList = ({
                   disabled={!project?.owners?.find((o) => o.id === user?.id)}
                   project={{
                     id: project.id,
+                    title: project.title,
                     groups: project.groups
                   }}
                   organizations={organizations}

@@ -194,7 +194,8 @@ Workspace.propTypes = {
   }).isRequired,
   workspace: PropTypes.exact({
     id: PropTypes.string.isRequired,
-    projects: PropTypes.array.isRequired,
+    name: PropTypes.string,
+    projects: PropTypes.arrayOf(PropTypes.string).isRequired,
     owners: PropTypes.array,
     users: PropTypes.array,
     groups: PropTypes.array

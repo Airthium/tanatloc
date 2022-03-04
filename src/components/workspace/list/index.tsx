@@ -204,6 +204,8 @@ WorkspacesList.propTypes = {
       id: PropTypes.string.isRequired,
       name: PropTypes.string.isRequired,
       projects: PropTypes.arrayOf(PropTypes.string).isRequired,
+      owners: PropTypes.array,
+      users: PropTypes.array,
       groups: PropTypes.array
     }).isRequired
   ).isRequired,

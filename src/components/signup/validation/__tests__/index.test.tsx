@@ -1,16 +1,17 @@
 import React from 'react'
 import { render, waitFor } from '@testing-library/react'
 
-import Validation from '..'
+import Validation, { errors } from '..'
 
 const mockRouter = jest.fn()
 jest.mock('next/router', () => ({
   useRouter: () => mockRouter()
 }))
 
-const mockError = jest.fn()
+const mockErrorNotification = jest.fn()
 jest.mock('@/components/assets/notification', () => ({
-  Error: () => mockError()
+  ErrorNotification: (title: string, err: Error) =>
+    mockErrorNotification(title, err)
 }))
 
 const mockLinkGet = jest.fn()
@@ -27,7 +28,7 @@ describe('components/signup/validation', () => {
       query: {}
     }))
 
-    mockError.mockReset()
+    mockErrorNotification.mockReset()
 
     mockLinkGet.mockReset()
     mockLinkGet.mockImplementation(() => ({}))
@@ -45,7 +46,13 @@ describe('components/signup/validation', () => {
     }))
     const { unmount } = render(<Validation />)
 
-    await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
+      expect(mockErrorNotification).toHaveBeenLastCalledWith(
+        errors.wrongLink,
+        undefined
+      )
+    )
 
     unmount()
   })
@@ -71,11 +78,17 @@ describe('components/signup/validation', () => {
       query: { id: 'id' }
     }))
     mockLinkGet.mockImplementation(() => {
-      throw new Error()
+      throw new Error('get error')
     })
     const { unmount } = render(<Validation />)
 
-    await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
+      expect(mockErrorNotification).toHaveBeenLastCalledWith(
+        errors.internal,
+        new Error('get error')
+      )
+    )
 
     unmount()
   })
@@ -90,11 +103,17 @@ describe('components/signup/validation', () => {
       type: 'subscribe'
     }))
     mockLinkProcess.mockImplementation(() => {
-      throw new Error()
+      throw new Error('process error')
     })
     const { unmount } = render(<Validation />)
 
-    await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
+      expect(mockErrorNotification).toHaveBeenLastCalledWith(
+        errors.internal,
+        new Error('process error')
+      )
+    )
 
     unmount()
   })

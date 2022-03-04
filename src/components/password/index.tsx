@@ -24,7 +24,8 @@ import LinkAPI from '@/api/link'
 /**
  * Errors
  */
-const errors = {
+export const errors = {
+  wrongLink: 'Wrong link',
   incorrect: 'Incorrect data',
   internal: 'Internal error, please try again later',
   passwordMismatch: 'Passwords mismatch'
@@ -37,7 +38,7 @@ const errors = {
  * @param id Link id
  * @param values Values
  */
-const onFinish = async (
+export const onFinish = async (
   router: NextRouter,
   linkEmail: string,
   id: string,
@@ -63,6 +64,7 @@ const onFinish = async (
 
 /**
  * Password recovery
+ * @returns PasswordRecovery
  */
 const PasswordRecovery = (): JSX.Element => {
   // State
@@ -92,7 +94,7 @@ const PasswordRecovery = (): JSX.Element => {
             setLinkEmail(res.email)
             setChecking(false)
           } else {
-            ErrorNotification('Wrong link')
+            ErrorNotification(errors.wrongLink)
           }
         })
         .catch((err) => ErrorNotification(errors.internal, err))

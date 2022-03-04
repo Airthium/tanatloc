@@ -2,7 +2,7 @@ import React from 'react'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { Form, Input } from 'antd'
 
-import Signup from '@/components/signup'
+import Signup, { errors } from '@/components/signup'
 
 const mockPrefetch = jest.fn()
 const mockPush = jest.fn()
@@ -15,15 +15,22 @@ jest.mock('next/router', () => ({
 
 const mockPasswordItem = jest.fn()
 jest.mock('@/components/assets/input', () => ({
-  PasswordItem: (props) => mockPasswordItem(props)
+  PasswordItem: (props: any) => mockPasswordItem(props)
 }))
 
-const mockError = jest.fn()
+const mockErrorNotification = jest.fn()
+const mockFormError = jest.fn()
 jest.mock('@/components/assets/notification', () => ({
-  Error: () => mockError()
+  ErrorNotification: () => mockErrorNotification(),
+  FormError: (props) => mockFormError(props)
 }))
 
 jest.mock('@/components/loading', () => () => <div />)
+
+const mockAPIError = jest.fn()
+jest.mock('@/api/error', () => ({
+  APIError: jest.fn().mockImplementation((apiError) => mockAPIError(apiError))
+}))
 
 const mockUser = jest.fn()
 const mockLoading = jest.fn()
@@ -37,7 +44,7 @@ jest.mock('@/api/user', () => ({
       errorUser: mockErrorUser()
     }
   ],
-  add: async () => mockAdd()
+  add: async (add: any) => mockAdd(add)
 }))
 
 const mockSystem = jest.fn()
@@ -57,7 +64,12 @@ describe('components/signup', () => {
     mockPasswordItem.mockReset()
     mockPasswordItem.mockImplementation(() => <div />)
 
-    mockError.mockReset()
+    mockErrorNotification.mockReset()
+    mockFormError.mockReset()
+    mockFormError.mockImplementation(() => <div />)
+
+    mockAPIError.mockReset()
+    mockAPIError.mockImplementation((apiError) => apiError)
 
     mockUser.mockReset()
     mockLoading.mockReset()
@@ -89,7 +101,7 @@ describe('components/signup', () => {
     mockErrorUser.mockImplementation(() => true)
     mockErrorSystem.mockImplementation(() => true)
     const { unmount } = render(<Signup />)
-    expect(mockError).toHaveBeenCalledTimes(2)
+    expect(mockErrorNotification).toHaveBeenCalledTimes(2)
 
     unmount()
   })
@@ -99,6 +111,9 @@ describe('components/signup', () => {
       <Form.Item name={props.name} label={props.label}>
         <Input role="PasswordItem" />
       </Form.Item>
+    ))
+    mockFormError.mockImplementation((props) => (
+      <div>{props.error?.render || null}</div>
     ))
     const { unmount } = render(<Signup />)
 
@@ -113,22 +128,44 @@ describe('components/signup', () => {
     fireEvent.change(password, { target: { value: 'password' } })
     fireEvent.change(confirm, { target: { value: 'password' } })
 
+    // Error
+    mockAdd.mockImplementation(() => {
+      throw new Error('add error')
+    })
+    fireEvent.click(button)
+    await waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(mockAPIError).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
+      expect(mockAPIError).toHaveBeenCalledWith({
+        title: errors.internal,
+        err: new Error('add error')
+      })
+    )
+
     // Already exists
     mockAdd.mockImplementation(() => ({ alreadyExists: true }))
     fireEvent.click(button)
-    await waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(1))
-
-    const login = screen.getByRole('button', { name: 'Log in ?' })
-    fireEvent.click(login)
-    expect(mockPush).toHaveBeenCalledTimes(1)
-
-    // Error
-    mockAdd.mockImplementation(() => {
-      throw new Error()
-    })
-    fireEvent.click(button)
     await waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(2))
-    await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
+      expect(mockAdd).toHaveBeenLastCalledWith({
+        email: 'email@email.email',
+        password: 'password',
+        passwordConfirmation: 'password'
+      })
+    )
+    await waitFor(() => expect(mockAPIError).toHaveBeenCalledTimes(2))
+    await waitFor(() =>
+      expect(mockAPIError).toHaveBeenLastCalledWith({
+        title: errors.alreadyExists,
+        render: expect.anything(),
+        type: 'warning'
+      })
+    )
+
+    // Log in
+    const logIn = screen.getByText('Log in ?')
+    fireEvent.click(logIn)
+    await waitFor(() => expect(mockPush).toHaveBeenCalledTimes(1))
 
     // Normal
     mockAdd.mockImplementation(() => ({ alreadyExists: false }))

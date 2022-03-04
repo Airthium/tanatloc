@@ -9,7 +9,7 @@ jest.mock('../../delete', () => () => <div />)
 
 describe('components/account/hpc/list', () => {
   const plugin = { key: 'key' }
-  const plugins = [{}]
+  const plugins = []
   const swr = {
     delOnePlugin: jest.fn(),
     mutateOnePlugin: jest.fn()
@@ -28,10 +28,16 @@ describe('components/account/hpc/list', () => {
       <List
         plugin={plugin}
         plugins={[
-          {},
+          {
+            uuid: '0',
+            key: '0',
+            name: '0',
+            configuration: {}
+          },
           {
             uuid: 'uuid',
             key: 'key',
+            name: 'name',
             configuration: {
               name: {
                 label: 'Name',
@@ -51,25 +57,6 @@ describe('components/account/hpc/list', () => {
               //@ts-ignore
               item: { value: 'item' }
             }
-          }
-        ]}
-        swr={swr}
-      />
-    )
-
-    unmount()
-  })
-
-  test('plugins, without configuration', () => {
-    const { unmount } = render(
-      <List
-        plugin={plugin}
-        plugins={[
-          {},
-          {
-            uuid: 'uuid',
-            key: 'key',
-            configuration: {}
           }
         ]}
         swr={swr}

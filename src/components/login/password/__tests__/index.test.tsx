@@ -1,16 +1,17 @@
 import React from 'react'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
-import Password from '..'
+import Password, { errors } from '..'
 
 const mockDialog = jest.fn()
-jest.mock('@/components/assets/dialog', () => (props) => mockDialog(props))
+jest.mock('@/components/assets/dialog', () => (props: any) => mockDialog(props))
 
-const mockSuccess = jest.fn()
-const mockError = jest.fn()
+const mockSuccessNotification = jest.fn()
+const mockErrorNotification = jest.fn()
 jest.mock('@/components/assets/notification', () => ({
-  Success: () => mockSuccess(),
-  Error: () => mockError()
+  SuccessNotification: () => mockSuccessNotification(),
+  ErrorNotification: (title: string, err: Error) =>
+    mockErrorNotification(title, err)
 }))
 
 const mockEmailRecover = jest.fn()
@@ -23,8 +24,8 @@ describe('components/login/password', () => {
     mockDialog.mockReset()
     mockDialog.mockImplementation(() => <div />)
 
-    mockSuccess.mockReset()
-    mockError.mockReset()
+    mockSuccessNotification.mockReset()
+    mockErrorNotification.mockReset()
 
     mockEmailRecover.mockReset()
   })
@@ -74,14 +75,22 @@ describe('components/login/password', () => {
 
     // Normal
     await waitFor(() => expect(mockEmailRecover).toHaveBeenCalledTimes(1))
-    await waitFor(() => expect(mockSuccess).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
+      expect(mockSuccessNotification).toHaveBeenCalledTimes(1)
+    )
 
     // Error
     mockEmailRecover.mockImplementation(() => {
-      throw new Error()
+      throw new Error('recover error')
     })
     fireEvent.click(dialog)
-    await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
+      expect(mockErrorNotification).toHaveBeenCalledWith(
+        errors.recover,
+        new Error('recover error')
+      )
+    )
 
     unmount()
   })

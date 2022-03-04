@@ -1,11 +1,12 @@
 import React from 'react'
 import { render } from '@testing-library/react'
 
-import Plugin from '..'
+import Plugin, { errors } from '..'
 
-const mockError = jest.fn()
+const mockErrorNotification = jest.fn()
 jest.mock('@/components/assets/notification', () => ({
-  Error: () => mockError()
+  ErrorNotification: (title: string, err: Error) =>
+    mockErrorNotification(title, err)
 }))
 
 jest.mock('../dialog', () => () => <div role="PluginDialog" />)
@@ -35,7 +36,7 @@ describe('component/account/hpc/plugin', () => {
   const plugin = { key: 'key', name: 'Plugin', configuration: {} }
 
   beforeEach(() => {
-    mockError.mockReset()
+    mockErrorNotification.mockReset()
 
     mockPlugins.mockReset()
     mockAddOnePlugin.mockReset()
@@ -61,7 +62,8 @@ describe('component/account/hpc/plugin', () => {
   test('error', () => {
     mockErrorPlugins.mockImplementation(() => true)
     const { unmount } = render(<Plugin plugin={plugin} />)
-    expect(mockError).toHaveBeenCalledTimes(1)
+    expect(mockErrorNotification).toHaveBeenCalledTimes(1)
+    expect(mockErrorNotification).toHaveBeenLastCalledWith(errors.plugins, true)
 
     unmount()
   })

@@ -1,7 +1,7 @@
 /** @module Components.Project.Simulation.Materials.Material */
 
 import PropTypes from 'prop-types'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { Button, Card, Drawer, Space, Typography } from 'antd'
 import { CloseOutlined, ExclamationCircleOutlined } from '@ant-design/icons'
 
@@ -84,18 +84,19 @@ const Material = ({
     })
   }
 
+  // TODO useCallback quick fix to avoid infinite loop
   /**
    * On select
    * @param {Object} selected Selected
    */
-  const onSelected = (selected: string[]) => {
+  const onSelected = useCallback((selected: string[]) => {
     setCurrent({
       ...current,
       selected: selected.map((s) => ({
         uuid: s
       }))
     })
-  }
+  }, [])
 
   /**
    * On material change

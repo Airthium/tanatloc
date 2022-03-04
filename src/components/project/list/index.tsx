@@ -30,6 +30,9 @@ import Archive from '../archive'
 
 import Utils from '@/lib/utils'
 
+/**
+ * Props
+ */
 export interface IProps {
   user: IUserWithData
   page: string
@@ -282,6 +285,7 @@ const ProjectList = ({
                   disabled={!project?.owners?.find((o) => o.id === user?.id)}
                   project={{
                     id: project.id,
+                    title: project.title,
                     groups: project.groups
                   }}
                   organizations={organizations}
@@ -332,12 +336,12 @@ const ProjectList = ({
 
 ProjectList.propTypes = {
   user: PropTypes.shape({
-    id: PropTypes.string
+    id: PropTypes.string.isRequired
   }).isRequired,
   page: PropTypes.string.isRequired,
   workspace: PropTypes.shape({
     id: PropTypes.string.isRequired,
-    projects: PropTypes.array
+    projects: PropTypes.arrayOf(PropTypes.string).isRequired
   }).isRequired,
   projects: PropTypes.array.isRequired,
   organizations: PropTypes.array.isRequired,

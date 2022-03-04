@@ -1,6 +1,6 @@
 /** @module Components.Project.Simulation.BoundaryConditions.BoundaryCondition */
 
-import { useState, useEffect, ChangeEvent } from 'react'
+import { useState, useEffect, ChangeEvent, useCallback } from 'react'
 import PropTypes from 'prop-types'
 import {
   Button,
@@ -212,18 +212,19 @@ const BoundaryCondition = ({
     })
   }
 
+  // TODO useCallback quick fix to avoid infinite loop
   /**
    * On selected
    * @param selected Selected
    */
-  const onSelected = (selected: string[]): void => {
+  const onSelected = useCallback((selected: string[]): void => {
     setCurrent({
       ...current,
       selected: selected.map((s) => ({
         uuid: s
       }))
     })
-  }
+  }, [])
 
   /**
    * Render

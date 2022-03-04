@@ -27,7 +27,7 @@ export interface IProps {
 /**
  * Errors
  */
-const errors = {
+export const errors = {
   update: 'Unable to update plugins'
 }
 
@@ -268,7 +268,7 @@ PluginDialog.propTypes = {
     name: PropTypes.string.isRequired,
     needInit: PropTypes.bool,
     configuration: PropTypes.object.isRequired,
-    inUseConfiguration: PropTypes.object.isRequired
+    inUseConfiguration: PropTypes.object
   }).isRequired,
   swr: PropTypes.exact({
     addOnePlugin: PropTypes.func,

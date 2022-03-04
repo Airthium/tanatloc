@@ -3,21 +3,17 @@ import { fireEvent, render, screen } from '@testing-library/react'
 
 import Workspace from '..'
 
-jest.mock('@/components/assets/share', () => () => <div />)
-
-const mockError = jest.fn()
+const mockErrorNotification = jest.fn()
 jest.mock('@/components/assets/notification', () => ({
-  Error: () => mockError()
+  ErrorNotification: () => mockErrorNotification()
 }))
 
-jest.mock('../delete', () => () => <div />)
+jest.mock('@/components/assets/share', () => () => <div />)
 
 jest.mock('@/components/loading', () => ({
   Simple: () => <div />
 }))
-
 jest.mock('@/components/project/add', () => () => <div />)
-
 jest.mock('@/components/project/list', () => () => <div />)
 
 const mockUserToAvatar = jest.fn()
@@ -36,7 +32,7 @@ const mockProjects = jest.fn()
 const mockAddOneProject = jest.fn()
 const mockDelOneProject = jest.fn()
 const mockMutateOneProject = jest.fn()
-const mockErrorProjects = jest.fn()
+const mockErrorNotificationProjects = jest.fn()
 const mockLoadingProjects = jest.fn()
 jest.mock('@/api/project', () => ({
   useProjects: () => [
@@ -45,11 +41,14 @@ jest.mock('@/api/project', () => ({
       addOneProject: mockAddOneProject,
       delOneProject: mockDelOneProject,
       mutateOneProject: mockMutateOneProject,
-      errorProjects: mockErrorProjects(),
+      errorProjects: mockErrorNotificationProjects(),
       loadingProjects: mockLoadingProjects()
     }
   ]
 }))
+
+jest.mock('../edit', () => () => <div />)
+jest.mock('../delete', () => () => <div />)
 
 describe('components/workspace', () => {
   const loading = false
@@ -64,7 +63,7 @@ describe('components/workspace', () => {
   const swr = { delOneWorkspace: jest.fn(), mutateOneWorkspace: jest.fn() }
 
   beforeEach(() => {
-    mockError.mockReset()
+    mockErrorNotification.mockReset()
 
     mockUserToAvatar.mockReset()
     mockGroupToAvatar.mockReset()
@@ -76,7 +75,7 @@ describe('components/workspace', () => {
     mockAddOneProject.mockReset()
     mockDelOneProject.mockReset()
     mockMutateOneProject.mockReset()
-    mockErrorProjects.mockReset()
+    mockErrorNotificationProjects.mockReset()
     mockLoadingProjects.mockReset()
   })
 
@@ -111,7 +110,7 @@ describe('components/workspace', () => {
   })
 
   test('error', () => {
-    mockErrorProjects.mockImplementation(() => true)
+    mockErrorNotificationProjects.mockImplementation(() => true)
     const { unmount } = render(
       <Workspace
         loading={true}
@@ -188,82 +187,5 @@ describe('components/workspace', () => {
     fireEvent.change(input, { target: { value: 'project' } })
 
     unmount()
-  })
-
-  test('propTypes', () => {
-    let res
-    const propTypes = Workspace.propTypes
-
-    // User
-    const userProps = propTypes.user
-    res = userProps({ loading: true }, 'user', 'Workspace')
-    expect(res).toBe(undefined)
-
-    res = userProps({ loading: false }, 'user', 'Workspace')
-    expect(res.message).toBe('Missing prop user supplied to Workspace.')
-
-    res = userProps({ loading: false, user: {} }, 'user', 'Workspace')
-    expect(res.message).toBe(
-      'Invalid prop user supplied to Workspace. Missing id'
-    )
-
-    res = userProps({ loading: false, user: { id: {} } }, 'user', 'Workspace')
-    expect(res.message).toBe(
-      'Invalid prop user supplied to Workspace. Invalid id'
-    )
-
-    res = userProps({ loading: false, user: { id: 'id' } }, 'user', 'Workspace')
-    expect(res).toBe(undefined)
-
-    // Workspace
-    const workspaceProps = propTypes.workspace
-    res = workspaceProps({ loading: true }, 'workspace', 'Workspace')
-    expect(res).toBe(undefined)
-
-    res = workspaceProps({ loading: false }, 'workspace', 'Workspace')
-    expect(res.message).toBe('Missing prop workspace supplied to Workspace.')
-
-    res = workspaceProps(
-      { loading: false, workspace: {} },
-      'workspace',
-      'Workspace'
-    )
-    expect(res.message).toBe(
-      'Invalid prop workspace supplied to Workspace. Missing id'
-    )
-
-    res = workspaceProps(
-      { loading: false, workspace: { id: {} } },
-      'workspace',
-      'Workspace'
-    )
-    expect(res.message).toBe(
-      'Invalid prop workspace supplied to Workspace. Invalid id'
-    )
-
-    res = workspaceProps(
-      { loading: false, workspace: { id: 'id' } },
-      'workspace',
-      'Workspace'
-    )
-    expect(res.message).toBe(
-      'Invalid prop workspace supplied to Workspace. Missing projects'
-    )
-
-    res = workspaceProps(
-      { loading: false, workspace: { id: 'id', projects: 'projects' } },
-      'workspace',
-      'Workspace'
-    )
-    expect(res.message).toBe(
-      'Invalid prop workspace supplied to Workspace. Invalid projects'
-    )
-
-    res = workspaceProps(
-      { loading: false, workspace: { id: 'id', projects: [] } },
-      'workspace',
-      'Workspace'
-    )
-    expect(res).toBe(undefined)
   })
 })

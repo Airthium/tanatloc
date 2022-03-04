@@ -155,10 +155,16 @@ const WorkspacesList = ({
                   closable={false}
                 >
                   <Workspace
-                    loading={!workspace}
                     user={user}
                     page={page}
-                    workspace={workspace}
+                    workspace={{
+                      id: workspace.id,
+                      name: workspace.name,
+                      projects: workspace.projects,
+                      owners: workspace.owners,
+                      users: workspace.users,
+                      groups: workspace.groups
+                    }}
                     organizations={organizations}
                     swr={{
                       delOneWorkspace: swr.delOneWorkspace,
@@ -188,12 +194,21 @@ const WorkspacesList = ({
   )
 }
 
-//TODO proptypes
+// TODO
 WorkspacesList.propTypes = {
   user: PropTypes.exact({
     id: PropTypes.string.isRequired
   }).isRequired,
-  workspaces: PropTypes.array.isRequired,
+  workspaces: PropTypes.arrayOf(
+    PropTypes.exact({
+      id: PropTypes.string.isRequired,
+      name: PropTypes.string.isRequired,
+      projects: PropTypes.arrayOf(PropTypes.string).isRequired,
+      owners: PropTypes.array,
+      users: PropTypes.array,
+      groups: PropTypes.array
+    }).isRequired
+  ).isRequired,
   organizations: PropTypes.array.isRequired,
   swr: PropTypes.exact({
     addOneWorkspace: PropTypes.func.isRequired,

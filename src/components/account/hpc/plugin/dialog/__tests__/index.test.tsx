@@ -1,28 +1,35 @@
 import React from 'react'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
-import PluginDialog from '..'
+import PluginDialog, { errors } from '..'
+
+const mockAddButton = jest.fn()
+const mockEditButton = jest.fn()
+jest.mock('@/components/assets/button', () => ({
+  AddButton: (props: any) => mockAddButton(props),
+  EditButton: (props: any) => mockEditButton(props)
+}))
 
 const mockDialog = jest.fn()
-jest.mock('@/components/assets/dialog', () => (props) => mockDialog(props))
+jest.mock('@/components/assets/dialog', () => (props: any) => mockDialog(props))
 
-const mockError = jest.fn()
+const mockErrorNotification = jest.fn()
 jest.mock('@/components/assets/notification', () => ({
-  Error: () => mockError()
+  ErrorNotification: (title: string, err: Error) =>
+    mockErrorNotification(title, err)
 }))
 
 const mockAdd = jest.fn()
 const mockUpdate = jest.fn()
 jest.mock('@/api/plugin', () => ({
-  add: async () => mockAdd(),
-  update: async () => mockUpdate()
+  add: async (add: any) => mockAdd(add),
+  update: async (update: any) => mockUpdate(update)
 }))
 
 describe('components/account/hpc/dialog', () => {
   const plugin = {
     key: 'key',
     name: 'name',
-    logo: 'logo',
     configuration: {
       input: {
         label: 'Input',
@@ -54,10 +61,16 @@ describe('components/account/hpc/dialog', () => {
   }
 
   beforeEach(() => {
-    mockDialog.mockReset()
-    mockDialog.mockImplementation(() => <div role="Dialog" />)
+    mockAddButton.mockReset()
+    mockAddButton.mockImplementation(() => <div />)
 
-    mockError.mockReset()
+    mockEditButton.mockReset()
+    mockEditButton.mockImplementation(() => <div />)
+
+    mockDialog.mockReset()
+    mockDialog.mockImplementation(() => <div />)
+
+    mockErrorNotification.mockReset()
 
     mockAdd.mockReset()
     mockUpdate.mockReset()
@@ -69,13 +82,16 @@ describe('components/account/hpc/dialog', () => {
     unmount()
   })
 
-  test('setVisible', () => {
+  test('setVisible and cancel', () => {
+    mockAddButton.mockImplementation(({ onAdd }) => (
+      <div role="AddButton" onClick={onAdd} />
+    ))
     mockDialog.mockImplementation(({ onCancel }) => (
       <div onClick={onCancel} role="Dialog" />
     ))
-
     const { unmount } = render(<PluginDialog plugin={plugin} swr={swr} />)
-    const button = screen.getByRole('button')
+
+    const button = screen.getByRole('AddButton')
     fireEvent.click(button)
 
     const dialog = screen.getByRole('Dialog')
@@ -101,18 +117,23 @@ describe('components/account/hpc/dialog', () => {
     ))
 
     const { unmount } = render(<PluginDialog plugin={plugin} swr={swr} />)
-    const button = screen.getByRole('button')
-    fireEvent.click(button)
 
     const dialog = screen.getByRole('Dialog')
 
     // Error
     mockAdd.mockImplementation(() => {
-      throw new Error()
+      throw new Error('add error')
     })
     fireEvent.click(dialog)
     await waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(1))
-    await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(mockAdd).toHaveBeenLastCalledWith(plugin))
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
+      expect(mockErrorNotification).toHaveBeenLastCalledWith(
+        errors.update,
+        new Error('add error')
+      )
+    )
 
     // Normal
     mockAdd.mockImplementation(() => {
@@ -126,6 +147,9 @@ describe('components/account/hpc/dialog', () => {
   })
 
   test('edit', async () => {
+    mockEditButton.mockImplementation(({ onEdit }) => (
+      <div role="EditButton" onClick={onEdit} />
+    ))
     mockDialog.mockImplementation(({ onOk }) => (
       <div
         onClick={async () => {
@@ -143,13 +167,20 @@ describe('components/account/hpc/dialog', () => {
     const { unmount } = render(
       <PluginDialog plugin={plugin} swr={swr} edit={true} />
     )
-    const button = screen.getByRole('button')
-    fireEvent.click(button)
+
+    const editButton = screen.getByRole('EditButton')
+    fireEvent.click(editButton)
 
     const dialog = screen.getByRole('Dialog')
     fireEvent.click(dialog)
 
     await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
+      expect(mockUpdate).toHaveBeenLastCalledWith({
+        ...plugin,
+        needReInit: true
+      })
+    )
     await waitFor(() => expect(swr.mutateOnePlugin).toHaveBeenCalledTimes(1))
 
     unmount()

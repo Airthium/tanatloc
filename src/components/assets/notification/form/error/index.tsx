@@ -13,8 +13,7 @@ export interface IProps {
 
 /**
  * Form error
- * @param title Title
- * @param err Error
+ * @param props Props
  * @returns FormError
  */
 const FormError = ({ error }: IProps): JSX.Element => {

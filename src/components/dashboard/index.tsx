@@ -31,7 +31,7 @@ import { logout } from '@/api/logout'
 /**
  * Errors
  */
-const errors = {
+export const errors = {
   user: 'User error',
   organizations: 'Organizations error',
   workspaces: 'Workspaces error',
@@ -41,7 +41,7 @@ const errors = {
 /**
  * Dashboard menu items
  */
-const menuItems = {
+export const menuItems = {
   workspaces: {
     label: 'Workspaces',
     key: 'workspaces'
@@ -144,14 +144,22 @@ const Dashboard = () => {
   // Router
   const router = useRouter()
 
+  // Not logged -> go to login page
+  useEffect(() => {
+    if (!loadingUser && !user) router.replace('/login')
+  }, [user, loadingUser, router])
+
   // Page effect, only on mount
   useEffect(() => {
     const params = new URLSearchParams(window.location.search)
     const page = params.get('page')
 
     if (page) setCurrentKey(page)
-    else setCurrentKey(menuItems.workspaces.key)
-  }, [])
+    else {
+      setCurrentKey(menuItems.workspaces.key)
+      onSelect(router, menuItems.workspaces.key, clearUser)
+    }
+  }, [router, clearUser])
 
   // Error
   useEffect(() => {
@@ -160,11 +168,6 @@ const Dashboard = () => {
       ErrorNotification(errors.organizations, errorOrganizations)
     if (errorWorkspaces) ErrorNotification(errors.workspaces, errorWorkspaces)
   }, [errorUser, errorOrganizations, errorWorkspaces])
-
-  // Not logged -> go to login page
-  useEffect(() => {
-    if (!loadingUser && !user) router.replace('/login')
-  }, [user, loadingUser, router])
 
   let gitVersion = ''
   if (
@@ -180,7 +183,7 @@ const Dashboard = () => {
   /**
    * Render
    */
-  if (loadingUser || loadingOrganizations || loadingWorkspaces || !user)
+  if (!user || loadingUser || loadingOrganizations || loadingWorkspaces)
     return <Loading />
   else
     return (
@@ -252,7 +255,7 @@ const Dashboard = () => {
         <Layout.Content className="no-scroll">
           {currentKey === menuItems.workspaces.key && (
             <WorkspacesList
-              user={{ id: user?.id }}
+              user={{ id: user.id }}
               workspaces={workspaces}
               organizations={organizations}
               swr={{ addOneWorkspace, delOneWorkspace, mutateOneWorkspace }}
@@ -261,17 +264,17 @@ const Dashboard = () => {
           {currentKey === menuItems.account.key && (
             <Account
               user={{
-                email: user?.email,
-                firstname: user?.firstname,
-                lastname: user?.lastname,
-                avatar: user?.avatar
+                email: user.email,
+                firstname: user.firstname,
+                lastname: user.lastname,
+                avatar: user.avatar
               }}
               swr={{ mutateUser }}
             />
           )}
           {currentKey === menuItems.organizations.key && (
             <Organizations
-              user={{ id: user?.id }}
+              user={{ id: user.id }}
               organizations={organizations}
               swr={{
                 addOneOrganization,

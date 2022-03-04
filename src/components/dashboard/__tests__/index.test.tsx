@@ -14,9 +14,9 @@ jest.mock('next/router', () => ({
   })
 }))
 
-const mockError = jest.fn()
+const mockErrorNotification = jest.fn()
 jest.mock('@/components/assets/notification', () => ({
-  Error: () => mockError()
+  ErrorNotification: () => mockErrorNotification()
 }))
 
 jest.mock('@/components/loading', () => () => <div />)
@@ -38,7 +38,7 @@ jest.mock('@/components/dashboard/welcome', () => () => <div />)
 const mockUser = jest.fn()
 const mockMutateUser = jest.fn()
 const mockClearUser = jest.fn()
-const mockErrorUser = jest.fn()
+const mockErrorNotificationUser = jest.fn()
 const mockLoadingUser = jest.fn()
 jest.mock('@/api/user', () => ({
   useUser: () => [
@@ -46,7 +46,7 @@ jest.mock('@/api/user', () => ({
     {
       mutateUser: mockMutateUser,
       clearUser: mockClearUser,
-      errorUser: mockErrorUser(),
+      errorUser: mockErrorNotificationUser(),
       loadingUser: mockLoadingUser()
     }
   ]
@@ -57,7 +57,7 @@ const mockReloadOrganizations = jest.fn()
 const mockAddOneOrganization = jest.fn()
 const mockDelOneOrganization = jest.fn()
 const mockMutateOneOrganization = jest.fn()
-const mockErrorOrganizations = jest.fn()
+const mockErrorNotificationOrganizations = jest.fn()
 const mockLoadingOrganizations = jest.fn()
 jest.mock('@/api/organization', () => ({
   useOrganizations: () => [
@@ -66,7 +66,7 @@ jest.mock('@/api/organization', () => ({
       addOneOrganization: mockAddOneOrganization,
       delOneOrganization: mockDelOneOrganization,
       mutateOnOrganization: mockMutateOneOrganization,
-      errorOrganizations: mockErrorOrganizations(),
+      errorOrganizations: mockErrorNotificationOrganizations(),
       loadingOrganizations: mockLoadingOrganizations()
     }
   ]
@@ -76,7 +76,7 @@ const mockWorkspaces = jest.fn()
 const mockAddOneWorkspace = jest.fn()
 const mockDelOneWorkspace = jest.fn()
 const mockMutateOneWorkspace = jest.fn()
-const mockErrorWorkspaces = jest.fn()
+const mockErrorNotificationWorkspaces = jest.fn()
 jest.mock('@/api/workspace', () => ({
   useWorkspaces: () => [
     mockWorkspaces(),
@@ -84,7 +84,7 @@ jest.mock('@/api/workspace', () => ({
       addOneWorkspace: mockAddOneWorkspace,
       delOneWorkspace: mockDelOneWorkspace,
       mutateOneWorkspace: mockMutateOneWorkspace,
-      errorWorkspaces: mockErrorWorkspaces()
+      errorWorkspaces: mockErrorNotificationWorkspaces()
     }
   ]
 }))
@@ -101,13 +101,13 @@ describe('components/dashboard', () => {
     mockQuery.mockReset()
     mockQuery.mockImplementation(() => ({}))
 
-    mockError.mockReset()
+    mockErrorNotification.mockReset()
 
     mockUser.mockReset()
     mockUser.mockImplementation(() => ({ id: 'id', superuser: true }))
     mockMutateUser.mockReset()
     mockClearUser.mockReset()
-    mockErrorUser.mockReset()
+    mockErrorNotificationUser.mockReset()
     mockLoadingUser.mockReset()
 
     mockOrganizations.mockReset()
@@ -116,7 +116,7 @@ describe('components/dashboard', () => {
     mockAddOneOrganization.mockReset()
     mockDelOneOrganization.mockReset()
     mockMutateOneOrganization.mockReset()
-    mockErrorOrganizations.mockReset()
+    mockErrorNotificationOrganizations.mockReset()
     mockLoadingOrganizations.mockReset()
 
     mockWorkspaces.mockReset()
@@ -124,7 +124,7 @@ describe('components/dashboard', () => {
     mockAddOneWorkspace.mockReset()
     mockDelOneWorkspace.mockReset()
     mockMutateOneWorkspace.mockReset()
-    mockErrorWorkspaces.mockReset()
+    mockErrorNotificationWorkspaces.mockReset()
 
     mockLogout.mockReset()
   })
@@ -144,12 +144,11 @@ describe('components/dashboard', () => {
 
   test('page query - page === my_workspaces', () => {
     Object.defineProperty(global, 'URLSearchParams', {
-      value: class {
-        constructor() {}
-        get(param) {
+      value: jest.fn().mockImplementation(() => ({
+        get: (param: string) => {
           if (param === 'page') return 'my_workspaces'
         }
-      },
+      })),
       configurable: true
     })
     const { unmount } = render(<Dashboard />)
@@ -159,13 +158,12 @@ describe('components/dashboard', () => {
 
   test('page query - page === my_workspace && workspaceId', () => {
     Object.defineProperty(global, 'URLSearchParams', {
-      value: class {
-        constructor() {}
-        get(param) {
+      value: jest.fn().mockImplementation(() => ({
+        get: (param: string) => {
           if (param === 'workspaceId') return 'id'
           if (param === 'page') return 'account'
         }
-      },
+      })),
       configurable: true
     })
     const { unmount } = render(<Dashboard />)
@@ -175,12 +173,11 @@ describe('components/dashboard', () => {
 
   test('page query - page === account', () => {
     Object.defineProperty(global, 'URLSearchParams', {
-      value: class {
-        constructor() {}
-        get(param) {
+      value: jest.fn().mockImplementation(() => ({
+        get: (param: string) => {
           if (param === 'page') return 'account'
         }
-      },
+      })),
       configurable: true
     })
     const { unmount } = render(<Dashboard />)
@@ -189,21 +186,23 @@ describe('components/dashboard', () => {
   })
 
   test('errors', () => {
-    mockErrorUser.mockImplementation(() => true)
-    mockErrorOrganizations.mockImplementation(() => true)
-    mockErrorWorkspaces.mockImplementation(() => true)
+    mockErrorNotificationUser.mockImplementation(() => true)
+    mockErrorNotificationOrganizations.mockImplementation(() => true)
+    mockErrorNotificationWorkspaces.mockImplementation(() => true)
     const { unmount } = render(<Dashboard />)
 
-    expect(mockError).toHaveBeenCalledTimes(3)
+    expect(mockErrorNotification).toHaveBeenCalledTimes(3)
 
     unmount()
   })
 
   test('user', () => {
-    mockUser.mockImplementation(() => {})
+    mockUser.mockImplementation(() => {
+      // Empty user
+    })
     const { unmount } = render(<Dashboard />)
 
-    expect(mockReplace).toHaveBeenCalledTimes(1)
+    expect(mockReplace).toHaveBeenCalledTimes(2)
 
     unmount()
   })

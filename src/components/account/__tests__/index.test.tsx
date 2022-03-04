@@ -21,7 +21,7 @@ jest.mock('../delete', () => () => <div />)
 jest.mock('../hpc', () => () => <div />)
 
 describe('components/account', () => {
-  const user = { email: 'email', authorizedplugins: [] }
+  const user = { email: 'email' }
   const swr = {
     mutateUser: jest.fn()
   }

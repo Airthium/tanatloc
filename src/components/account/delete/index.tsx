@@ -24,7 +24,7 @@ export interface IProps {
 /**
  * Errors
  */
-const errors = {
+export const errors = {
   del: 'Unable to delete the user'
 }
 

@@ -35,8 +35,6 @@ const errors = {
  * On add
  * @param workspace Workspace
  * @param values Values
- * @param setLoading Set loading
- * @param setVisible Set visible
  * @param swr SWR
  */
 const onAdd = async (

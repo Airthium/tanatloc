@@ -1,18 +1,18 @@
 import React from 'react'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
-import Delete from '..'
+import Delete, { errors } from '..'
 
-const mockError = jest.fn()
-jest.mock('@/components/assets/notification', () => ({
-  Error: () => mockError()
+const mockDeleteButton = jest.fn()
+jest.mock('@/components/assets/button', () => ({
+  DeleteButton: (props: any) => mockDeleteButton(props)
 }))
 
-const mockDeleteDialog = jest.fn()
-jest.mock('@/components/assets/dialog', () => {
-  const DeleteDialog = (props: {}) => mockDeleteDialog(props)
-  return { DeleteDialog }
-})
+const mockErrorNotification = jest.fn()
+jest.mock('@/components/assets/notification', () => ({
+  ErrorNotification: (title: string, err: Error) =>
+    mockErrorNotification(title, err)
+}))
 
 const mockDel = jest.fn()
 jest.mock('@/api/user', () => ({
@@ -30,10 +30,10 @@ describe('components/account/delete', () => {
   }
 
   beforeEach(() => {
-    mockError.mockReset()
+    mockErrorNotification.mockReset()
 
-    mockDeleteDialog.mockReset()
-    mockDeleteDialog.mockImplementation(() => <div role="DeleteDialog" />)
+    mockDeleteButton.mockReset()
+    mockDeleteButton.mockImplementation(() => <div role="DeleteButton" />)
 
     mockDel.mockReset()
 
@@ -46,45 +46,34 @@ describe('components/account/delete', () => {
     unmount()
   })
 
-  test('setVisible', () => {
-    mockDeleteDialog.mockImplementation(({ onCancel }) => (
-      <div onClick={onCancel} role="DeleteDialog" />
-    ))
-
-    const { unmount } = render(<Delete swr={swr} />)
-    const button = screen.getByRole('button')
-    fireEvent.click(button)
-
-    const deleteDialog = screen.getByRole('DeleteDialog')
-    fireEvent.click(deleteDialog)
-
-    unmount()
-  })
-
   test('onDelete', async () => {
-    mockDeleteDialog.mockImplementation(({ onOk }) => (
-      <div onClick={onOk} role="DeleteDialog" />
+    mockDeleteButton.mockImplementation(({ onDelete }) => (
+      <div onClick={onDelete} role="DeleteButton" />
     ))
 
     const { unmount } = render(<Delete swr={swr} />)
-    const button = screen.getByRole('button')
-    fireEvent.click(button)
 
-    const deleteDialog = screen.getByRole('DeleteDialog')
+    const button = screen.getByRole('DeleteButton')
 
     // Error
     mockDel.mockImplementation(() => {
-      throw new Error()
+      throw new Error('del error')
     })
-    fireEvent.click(deleteDialog)
+    fireEvent.click(button)
     await waitFor(() => expect(mockDel).toHaveBeenCalledTimes(1))
-    await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
+      expect(mockErrorNotification).toHaveBeenLastCalledWith(
+        errors.del,
+        new Error('del error')
+      )
+    )
 
     // Normal
     mockDel.mockImplementation(() => {
       // mock function
     })
-    fireEvent.click(deleteDialog)
+    fireEvent.click(button)
     await waitFor(() => expect(mockDel).toHaveBeenCalledTimes(2))
     await waitFor(() => expect(swr.mutateUser).toHaveBeenCalledTimes(1))
 

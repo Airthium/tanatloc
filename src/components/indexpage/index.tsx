@@ -21,7 +21,7 @@ import UserAPI from '@/api/user'
 /**
  * Errors
  */
-const errors = {
+export const errors = {
   user: 'User error'
 }
 
@@ -61,7 +61,7 @@ const Index = (): JSX.Element => {
 
   // Error
   useEffect(() => {
-    if (errorUser) ErrorNotification(errors.user, errorUser)
+    if (errorUser) ErrorNotification(errors.user, errorUser, false)
   }, [errorUser])
 
   // Prefetch

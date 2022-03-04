@@ -1,7 +1,7 @@
 import React from 'react'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
-import Login from '@/components/login'
+import Login, { errors } from '@/components/login'
 
 const mockPrefetch = jest.fn()
 const mockPush = jest.fn()
@@ -14,37 +14,51 @@ jest.mock('next/router', () => ({
 
 jest.mock('@/components/loading', () => () => <div />)
 
-const mockError = jest.fn()
+const mockErrorNotification = jest.fn()
+const mockFormError = jest.fn()
 jest.mock('@/components/assets/notification', () => ({
-  Error: () => mockError()
+  ErrorNotification: (title: string, err: Error) =>
+    mockErrorNotification(title, err),
+  FormError: () => mockFormError()
+}))
+
+const mockAPIError = jest.fn()
+jest.mock('@/api/error', () => ({
+  APIError: jest.fn().mockImplementation((apiError) => mockAPIError(apiError))
 }))
 
 const mockLogin = jest.fn()
 jest.mock('@/api/login', () => ({
-  login: async () => mockLogin()
+  login: async (login: any) => mockLogin(login)
 }))
 
 const mockUser = jest.fn()
 const mockMutateUser = jest.fn()
 const mockUserLoading = jest.fn()
-const mockErrorUser = jest.fn()
+const mockErrorNotificationUser = jest.fn()
 jest.mock('@/api/user', () => ({
   useUser: () => [
     mockUser(),
     {
       mutateUser: mockMutateUser,
-      errorUser: mockErrorUser(),
+      errorUser: mockErrorNotificationUser(),
       loadingUser: mockUserLoading()
     }
   ]
 }))
+
+jest.mock('../password', () => () => <div />)
 
 describe('components/login', () => {
   beforeEach(() => {
     mockPrefetch.mockReset()
     mockPush.mockReset()
 
-    mockError.mockReset()
+    mockErrorNotification.mockReset()
+    mockFormError.mockReset()
+    mockFormError.mockImplementation(() => <div />)
+
+    mockAPIError.mockReset()
 
     mockLogin.mockReset()
 
@@ -52,7 +66,7 @@ describe('components/login', () => {
     mockMutateUser.mockReset()
     mockUserLoading.mockReset()
     mockUserLoading.mockImplementation(() => false)
-    mockErrorUser.mockReset()
+    mockErrorNotificationUser.mockReset()
   })
 
   test('render', () => {
@@ -69,10 +83,11 @@ describe('components/login', () => {
   })
 
   test('error', () => {
-    mockErrorUser.mockImplementation(() => true)
+    mockErrorNotificationUser.mockImplementation(() => true)
     const { unmount } = render(<Login />)
 
-    expect(mockError).toHaveBeenCalledTimes(1)
+    expect(mockErrorNotification).toHaveBeenCalledTimes(1)
+    expect(mockErrorNotification).toHaveBeenCalledWith(errors.user, true)
 
     unmount()
   })
@@ -97,18 +112,37 @@ describe('components/login', () => {
 
     const button = screen.getByRole('button', { name: 'Log in' })
 
-    // Not ok
-    mockLogin.mockImplementation(() => ({}))
-    fireEvent.click(button)
-    await waitFor(() => expect(mockLogin).toHaveBeenCalledTimes(1))
-
     // Error
     mockLogin.mockImplementation(() => {
-      throw new Error()
+      throw new Error('login error')
     })
     fireEvent.click(button)
+    await waitFor(() => expect(mockLogin).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
+      expect(mockLogin).toHaveBeenCalledWith({
+        email: 'email',
+        password: 'password'
+      })
+    )
+    await waitFor(() => expect(mockAPIError).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
+      expect(mockAPIError).toHaveBeenCalledWith({
+        title: errors.internal,
+        err: new Error('login error')
+      })
+    )
+
+    // Not ok
+    mockLogin.mockImplementation(() => ({ ok: false }))
+    fireEvent.click(button)
     await waitFor(() => expect(mockLogin).toHaveBeenCalledTimes(2))
-    await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(mockAPIError).toHaveBeenCalledTimes(2))
+    await waitFor(() =>
+      expect(mockAPIError).toHaveBeenCalledWith({
+        title: errors.credentials,
+        type: 'warning'
+      })
+    )
 
     // Ok
     mockLogin.mockImplementation(() => ({ ok: true }))

@@ -9,16 +9,16 @@ import { IUserWithData } from '@/lib/index.d'
 import Loading from '@/components/loading'
 import { ErrorNotification, FormError } from '@/components/assets/notification'
 
-import PasswordRecover from './password'
-
+import { APIError } from '@/api/error'
 import { login } from '@/api/login'
 import UserAPI from '@/api/user'
-import { APIError } from '@/api/error'
+
+import PasswordRecover from './password'
 
 /**
  * Errors
  */
-const errors = {
+export const errors = {
   user: 'User error',
   internal: 'Server issue : try again shortly.',
   credentials: 'Incorrect credentials.'
@@ -30,7 +30,7 @@ const errors = {
  * @param values
  * @param mutateUser Mutate user
  */
-const onLogin = async (
+export const onLogin = async (
   router: NextRouter,
   values: {
     email: string
@@ -60,7 +60,7 @@ const onLogin = async (
  * Go to signup
  * @param router Router
  */
-const signUp = (router: NextRouter): void => {
+export const signUp = (router: NextRouter): void => {
   router.push('/signup')
 }
 

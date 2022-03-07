@@ -301,6 +301,8 @@ const BoundaryCondition = ({
         </Card>
         <Card title="Boundary condition type" size="small">
           <Radio.Group
+            className="BoundaryCondition-types"
+            optionType="button"
             buttonStyle="solid"
             value={current?.type?.key}
             onChange={onType}

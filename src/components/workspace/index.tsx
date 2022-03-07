@@ -95,12 +95,12 @@ const Workspace = ({
             size="large"
             className="full-width lastchild-marginLeft-auto"
           >
-            <Input.Search
+            <Input
               placeholder="Enter a project name (case sensitive)"
               value={filter}
               onChange={(event) => setFilter(event.target.value)}
               style={{ width: 500 }}
-              enterButton={<Button type="primary" icon={<SearchOutlined />} />}
+              suffix={<SearchOutlined className="text-light" />}
             />
             {workspace?.owners?.find((o) => o.id === user.id) && (
               <>

@@ -22,6 +22,7 @@ import {
   CloseOutlined,
   CloseSquareOutlined,
   PlusSquareOutlined,
+  SearchOutlined,
   SwapOutlined
 } from '@ant-design/icons'
 
@@ -283,7 +284,12 @@ const Selector = ({
             <Button icon={<SwapOutlined />} onClick={selectSwap} />
           </Tooltip>
         </Space>
-        <Input.Search placeholder="Search" value={search} onChange={onSearch} />
+        <Input
+          placeholder="Search"
+          value={search}
+          onChange={onSearch}
+          suffix={<SearchOutlined className="text-light" />}
+        />
       </Space>
 
       <Divider className="border-light" />

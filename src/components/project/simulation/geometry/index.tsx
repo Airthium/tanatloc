@@ -40,7 +40,6 @@ const onSelect = async (
   swr: { mutateOneSimulation: (simulation: ISimulation) => void }
 ): Promise<void> => {
   try {
-    console.log(simulation.id)
     const newSimulation = { ...simulation }
 
     // Update

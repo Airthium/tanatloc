@@ -6,13 +6,10 @@ import { Layout, PageHeader, Typography, Divider, Tabs, Space } from 'antd'
 
 import { IUserWithData } from '@/lib/index.d'
 
-import { DashboardContext } from '@/components/context'
-
 import Information from './information'
 import Password from './password'
 import Delete from './delete'
 import HPC from './hpc'
-import { useContext } from 'react'
 
 /**
  * Props
@@ -45,10 +42,6 @@ const Account = ({ user, swr }: IProps): JSX.Element => {
   // Data
   const router = useRouter()
   const { tab }: { tab?: string } = router.query
-
-  const dashboardContext = useContext(DashboardContext)
-
-  console.log(dashboardContext)
 
   /**
    * Render

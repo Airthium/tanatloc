@@ -28,8 +28,6 @@ import OrganizationAPI from '@/api/organization'
 import WorkspaceAPI from '@/api/workspace'
 import { logout } from '@/api/logout'
 
-import { DashboardContext } from '@/components/context'
-
 /**
  * Errors
  */
@@ -189,131 +187,107 @@ const Dashboard = () => {
     return <Loading />
   else
     return (
-      <DashboardContext.Provider
-        value={{
-          user,
-          organizations,
-          workspaces,
-          swr: {
-            mutateUser,
-            clearUser,
-            errorUser,
-            loadingUser,
-            addOneOrganization,
-            delOneOrganization,
-            mutateOneOrganization,
-            errorOrganizations,
-            loadingOrganizations,
-            addOneWorkspace,
-            delOneWorkspace,
-            mutateOneWorkspace,
-            errorWorkspaces,
-            loadingWorkspaces
-          }
-        }}
-      >
-        <Layout className="Dashboard">
-          <Layout.Sider theme="light" width="256" className="Dashboard-Sider">
-            <div className="logo">
-              <img src="/images/logo.svg" alt="Tanatloc" />
-            </div>
+      <Layout className="Dashboard">
+        <Layout.Sider theme="light" width="256" className="Dashboard-Sider">
+          <div className="logo">
+            <img src="/images/logo.svg" alt="Tanatloc" />
+          </div>
 
-            <Menu
-              className="Dashboard-Menu"
-              theme="light"
-              onClick={({ keyPath }) => {
-                const key = keyPath.pop()
-                setCurrentKey(key)
-                onSelect(router, key, clearUser)
-              }}
-              mode="inline"
+          <Menu
+            className="Dashboard-Menu"
+            theme="light"
+            onClick={({ keyPath }) => {
+              const key = keyPath.pop()
+              setCurrentKey(key)
+              onSelect(router, key, clearUser)
+            }}
+            mode="inline"
+          >
+            <Menu.Item
+              key={menuItems.workspaces.key}
+              icon={<AppstoreOutlined />}
             >
+              {menuItems.workspaces.label}
+            </Menu.Item>
+            <Menu.Item key={menuItems.account.key} icon={<SettingOutlined />}>
+              {menuItems.account.label}
+            </Menu.Item>
+            <Menu.Item
+              key={menuItems.organizations.key}
+              icon={<TeamOutlined />}
+            >
+              {menuItems.organizations.label}
+            </Menu.Item>
+            {user.superuser && (
               <Menu.Item
-                key={menuItems.workspaces.key}
-                icon={<AppstoreOutlined />}
+                key={menuItems.administration.key}
+                icon={<ControlOutlined />}
               >
-                {menuItems.workspaces.label}
+                {menuItems.administration.label}
               </Menu.Item>
-              <Menu.Item key={menuItems.account.key} icon={<SettingOutlined />}>
-                {menuItems.account.label}
-              </Menu.Item>
-              <Menu.Item
-                key={menuItems.organizations.key}
-                icon={<TeamOutlined />}
+            )}
+            <Menu.Item
+              key={menuItems.help.key}
+              icon={<QuestionCircleOutlined />}
+            >
+              {menuItems.help.label}
+            </Menu.Item>
+            <Menu.Divider className="Dashboard-Menu-Divider" />
+            <Menu.Item
+              key={menuItems.logout.key}
+              danger={true}
+              icon={<LogoutOutlined />}
+            >
+              {menuItems.logout.label}
+            </Menu.Item>
+            <Menu.Item key="version" disabled className="version">
+              <Typography.Text
+                className="text-light"
+                ellipsis={{ tooltip: true }}
               >
-                {menuItems.organizations.label}
-              </Menu.Item>
-              {user.superuser && (
-                <Menu.Item
-                  key={menuItems.administration.key}
-                  icon={<ControlOutlined />}
-                >
-                  {menuItems.administration.label}
-                </Menu.Item>
-              )}
-              <Menu.Item
-                key={menuItems.help.key}
-                icon={<QuestionCircleOutlined />}
-              >
-                {menuItems.help.label}
-              </Menu.Item>
-              <Menu.Divider className="Dashboard-Menu-Divider" />
-              <Menu.Item
-                key={menuItems.logout.key}
-                danger={true}
-                icon={<LogoutOutlined />}
-              >
-                {menuItems.logout.label}
-              </Menu.Item>
-              <Menu.Item key="version" disabled className="version">
-                <Typography.Text
-                  className="text-light"
-                  ellipsis={{ tooltip: true }}
-                >
-                  version {packageJson.version}{' '}
-                  {gitVersion && <>({gitVersion})</>}
-                </Typography.Text>
-              </Menu.Item>
-            </Menu>
-          </Layout.Sider>
+                version {packageJson.version}{' '}
+                {gitVersion && <>({gitVersion})</>}
+              </Typography.Text>
+            </Menu.Item>
+          </Menu>
+        </Layout.Sider>
 
-          <Layout.Content className="no-scroll">
-            {currentKey === menuItems.workspaces.key && (
-              <WorkspacesList
-                user={{ id: user.id }}
-                workspaces={workspaces}
-                organizations={organizations}
-                swr={{ addOneWorkspace, delOneWorkspace, mutateOneWorkspace }}
-              />
-            )}
-            {currentKey === menuItems.account.key && (
-              <Account
-                user={{
-                  email: user.email,
-                  firstname: user.firstname,
-                  lastname: user.lastname,
-                  avatar: user.avatar
-                }}
-                swr={{ mutateUser }}
-              />
-            )}
-            {currentKey === menuItems.organizations.key && (
-              <Organizations
-                user={{ id: user.id }}
-                organizations={organizations}
-                swr={{
-                  addOneOrganization,
-                  delOneOrganization,
-                  mutateOneOrganization,
-                  loadingOrganizations
-                }}
-              />
-            )}
-            {currentKey === menuItems.administration.key && <Administration />}
-            {currentKey === menuItems.help.key && <Help />}
-          </Layout.Content>
-        </Layout>
-      </DashboardContext.Provider>
+        <Layout.Content className="no-scroll">
+          {currentKey === menuItems.workspaces.key && (
+            <WorkspacesList
+              user={{ id: user.id }}
+              workspaces={workspaces}
+              organizations={organizations}
+              swr={{ addOneWorkspace, delOneWorkspace, mutateOneWorkspace }}
+            />
+          )}
+          {currentKey === menuItems.account.key && (
+            <Account
+              user={{
+                email: user.email,
+                firstname: user.firstname,
+                lastname: user.lastname,
+                avatar: user.avatar
+              }}
+              swr={{ mutateUser }}
+            />
+          )}
+          {currentKey === menuItems.organizations.key && (
+            <Organizations
+              user={{ id: user.id }}
+              organizations={organizations}
+              swr={{
+                addOneOrganization,
+                delOneOrganization,
+                mutateOneOrganization,
+                loadingOrganizations
+              }}
+            />
+          )}
+          {currentKey === menuItems.administration.key && <Administration />}
+          {currentKey === menuItems.help.key && <Help />}
+        </Layout.Content>
+      </Layout>
     )
 }
 

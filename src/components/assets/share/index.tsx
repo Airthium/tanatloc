@@ -210,10 +210,10 @@ const Share = ({
         title={'Share ' + (workspace ? 'workspace' : 'project')}
         visible={visible}
         onCancel={() => setVisible(false)}
-        onOk={async (values) => {
+        onOk={async () => {
           setLoading(true)
           try {
-            await onShare(workspace, project, values, swr)
+            await onShare(workspace, project, selected, swr)
 
             // Close
             setLoading(false)

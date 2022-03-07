@@ -178,7 +178,7 @@ const deleteFromGroup = async (
 
 /**
  * Update
- * @param Project Project
+ * @param project Project
  * @param data Data
  */
 const update = async (

@@ -1,21 +1,23 @@
 import React from 'react'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
-import Registration from '..'
+import Registration, { errors } from '..'
 
 jest.mock('@/components/loading', () => ({
   Simple: () => <div />
 }))
 
-const mockError = jest.fn()
+const mockSuccessNotification = jest.fn()
+const mockErrorNotification = jest.fn()
 jest.mock('@/components/assets/notification', () => ({
-  Success: () => {},
-  Error: () => mockError()
+  SuccessNotification: () => mockSuccessNotification(),
+  ErrorNotification: (title: string, err: Error) =>
+    mockErrorNotification(title, err)
 }))
 
 const mockSystem = jest.fn()
 const mockMutateSystem = jest.fn()
-const mockErrorSystem = jest.fn()
+const mockErrorNotificationSystem = jest.fn()
 const mockLoadingSystem = jest.fn()
 const mockUpdate = jest.fn()
 jest.mock('@/api/system', () => ({
@@ -23,7 +25,7 @@ jest.mock('@/api/system', () => ({
     mockSystem(),
     {
       mutateSystem: mockMutateSystem,
-      errorSystem: mockErrorSystem(),
+      errorSystem: mockErrorNotificationSystem(),
       loadingSystem: mockLoadingSystem()
     }
   ],
@@ -32,13 +34,14 @@ jest.mock('@/api/system', () => ({
 
 describe('components/administration/registration', () => {
   beforeEach(() => {
-    mockError.mockReset()
+    mockSuccessNotification.mockReset()
+    mockErrorNotification.mockReset()
 
     mockSystem.mockReset()
     mockSystem.mockImplementation(() => ({}))
     mockMutateSystem.mockReset()
     mockLoadingSystem.mockReset()
-    mockErrorSystem.mockReset()
+    mockErrorNotificationSystem.mockReset()
     mockUpdate.mockReset()
   })
 
@@ -56,10 +59,11 @@ describe('components/administration/registration', () => {
   })
 
   test('error', () => {
-    mockErrorSystem.mockImplementation(() => true)
+    mockErrorNotificationSystem.mockImplementation(() => true)
     const { unmount } = render(<Registration />)
 
-    expect(mockError).toHaveBeenCalledTimes(1)
+    expect(mockErrorNotification).toHaveBeenCalledTimes(1)
+    expect(mockErrorNotification).toHaveBeenLastCalledWith(errors.system, true)
 
     unmount()
   })
@@ -73,14 +77,23 @@ describe('components/administration/registration', () => {
     fireEvent.click(checkboxes[0])
     await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
     await waitFor(() => expect(mockMutateSystem).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
+      expect(mockSuccessNotification).toHaveBeenCalledTimes(1)
+    )
 
     // Error
     mockUpdate.mockImplementation(() => {
-      throw new Error()
+      throw new Error('update error')
     })
     fireEvent.click(checkboxes[0])
     await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
-    await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
+      expect(mockErrorNotification).toHaveBeenLastCalledWith(
+        errors.update,
+        new Error('update error')
+      )
+    )
 
     unmount()
   })
@@ -105,14 +118,23 @@ describe('components/administration/registration', () => {
     fireEvent.click(button)
     await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
     await waitFor(() => expect(mockMutateSystem).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
+      expect(mockSuccessNotification).toHaveBeenCalledTimes(1)
+    )
 
     // Error
     mockUpdate.mockImplementation(() => {
-      throw new Error()
+      throw new Error('update error')
     })
     fireEvent.click(button)
     await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
-    await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
+      expect(mockErrorNotification).toHaveBeenLastCalledWith(
+        errors.update,
+        new Error('update error')
+      )
+    )
 
     unmount()
   })

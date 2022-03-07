@@ -31,7 +31,7 @@ export interface IProps {
 /**
  * Errors
  */
-const errors = {
+export const errors = {
   plugins: 'Unable to load plugins'
 }
 
@@ -128,8 +128,8 @@ const Users = ({ users, swr }: IProps): JSX.Element => {
       dataIndex: 'email',
       key: 'email',
       sorter: (a: { email: string }, b: { email: string }) => {
-        const ea = a.email || ''
-        const eb = b.email || ''
+        const ea = a.email
+        const eb = b.email
         return ea.localeCompare(eb)
       }
     },

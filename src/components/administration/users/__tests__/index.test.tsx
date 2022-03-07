@@ -1,11 +1,12 @@
 import React from 'react'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
-import Users from '..'
+import Users, { errors } from '..'
 
-const mockError = jest.fn()
+const mockErrorNotification = jest.fn()
 jest.mock('@/components/assets/notification', () => ({
-  Error: () => mockError()
+  ErrorNotification: (title: string, err: Error) =>
+    mockErrorNotification(title, err)
 }))
 
 const mockList = jest.fn()
@@ -21,8 +22,8 @@ jest.mock('../delete', () => () => <div />)
 
 describe('components/administration/users', () => {
   const users = [
-    { id: 'id1', authorizedplugins: ['key'], superuser: true },
-    { id: 'id2' }
+    { id: 'id1', email: 'email1', authorizedplugins: ['key'], superuser: true },
+    { id: 'id2', email: 'email2', authorizedplugins: [], superuser: false }
   ]
   const swr = {
     addOneUser: jest.fn(),
@@ -31,7 +32,7 @@ describe('components/administration/users', () => {
   }
 
   beforeEach(() => {
-    mockError.mockReset()
+    mockErrorNotification.mockReset()
 
     mockList.mockReset()
     mockList.mockImplementation(() => [
@@ -53,11 +54,17 @@ describe('components/administration/users', () => {
 
   test('plugins error', async () => {
     mockList.mockImplementation(() => {
-      throw new Error()
+      throw new Error('plugins error')
     })
     const { unmount } = render(<Users users={users} swr={swr} />)
 
-    await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
+      expect(mockErrorNotification).toHaveBeenLastCalledWith(
+        errors.plugins,
+        new Error('plugins error')
+      )
+    )
 
     unmount()
   })

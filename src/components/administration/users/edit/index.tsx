@@ -24,7 +24,7 @@ export interface IProps {
     firstname?: string
     lastname?: string
     email: string
-    authorizedplugins?: string[]
+    authorizedplugins: string[]
     superuser?: boolean
   }
   swr: {
@@ -47,7 +47,7 @@ export interface IEditValues {
 /**
  * Errors
  */
-const errors = {
+export const errors = {
   update: 'Unable to update user'
 }
 
@@ -112,7 +112,7 @@ const Edit = ({ plugins, user, swr }: IProps): JSX.Element => {
         initialValues={{
           ...user,
           password: '******',
-          authorizedplugins: user.authorizedplugins || []
+          authorizedplugins: user.authorizedplugins
         }}
         onCancel={() => setVisible(false)}
         onOk={async (values: IEditValues) => {
@@ -179,7 +179,7 @@ Edit.propTypes = {
     email: PropTypes.string.isRequired,
     firstname: PropTypes.string,
     lastname: PropTypes.string,
-    authorizedplugins: PropTypes.array.isRequired,
+    authorizedplugins: PropTypes.arrayOf(PropTypes.string).isRequired,
     superuser: PropTypes.bool.isRequired
   }).isRequired,
   swr: PropTypes.exact({

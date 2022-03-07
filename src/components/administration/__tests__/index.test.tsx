@@ -1,7 +1,7 @@
 import React from 'react'
 import { fireEvent, render, screen } from '@testing-library/react'
 
-import Administration from '..'
+import Administration, { errors } from '..'
 
 const mockReplace = jest.fn()
 const mockQuery = jest.fn()
@@ -12,9 +12,10 @@ jest.mock('next/router', () => ({
   })
 }))
 
-const mockError = jest.fn()
+const mockErrorNotification = jest.fn()
 jest.mock('@/components/assets/notification', () => ({
-  Error: () => mockError()
+  ErrorNotification: (title: string, err: Error) =>
+    mockErrorNotification(title, err)
 }))
 
 jest.mock('../users', () => () => <div />)
@@ -24,7 +25,7 @@ const mockUsers = jest.fn()
 const mockAddOneUser = jest.fn()
 const mockMutateOneUser = jest.fn()
 const mockdDelOneUser = jest.fn()
-const mockErrorUser = jest.fn()
+const mockErrorNotificationUser = jest.fn()
 jest.mock('@/api/user', () => ({
   useUsers: () => [
     mockUsers(),
@@ -32,7 +33,7 @@ jest.mock('@/api/user', () => ({
       addOneUser: mockAddOneUser,
       mutateOneUser: mockMutateOneUser,
       delOneUser: mockdDelOneUser,
-      errorUsers: mockErrorUser()
+      errorUsers: mockErrorNotificationUser()
     }
   ]
 }))
@@ -43,13 +44,13 @@ describe('components/administration', () => {
     mockQuery.mockReset()
     mockQuery.mockImplementation(() => ({ tab: 'tab' }))
 
-    mockError.mockReset()
+    mockErrorNotification.mockReset()
 
     mockUsers.mockReset()
     mockAddOneUser.mockReset()
     mockMutateOneUser.mockReset()
     mockdDelOneUser.mockReset()
-    mockErrorUser.mockReset()
+    mockErrorNotificationUser.mockReset()
   })
 
   test('render', () => {
@@ -81,9 +82,10 @@ describe('components/administration', () => {
   })
 
   test('error', () => {
-    mockErrorUser.mockImplementation(() => true)
+    mockErrorNotificationUser.mockImplementation(() => true)
     const { unmount } = render(<Administration />)
-    expect(mockError).toHaveBeenCalledTimes(1)
+    expect(mockErrorNotification).toHaveBeenCalledTimes(1)
+    expect(mockErrorNotification).toHaveBeenLastCalledWith(errors.users, true)
 
     unmount()
   })

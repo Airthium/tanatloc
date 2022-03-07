@@ -127,12 +127,13 @@ const update = async (
   const emailData = data.find((d) => d.key === 'email')
   if (emailData) {
     // Revalidate email
-    await Email.revalidate(emailData.value, user.id)
+    const valid = await Email.revalidate(emailData.value, user.id)
 
-    data.push({
-      key: 'isvalidated',
-      value: false
-    })
+    if (valid)
+      data.push({
+        key: 'isvalidated',
+        value: false
+      })
   }
 
   await UserDB.update(user, data)

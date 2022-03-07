@@ -112,8 +112,9 @@ const recover = async (email: string): Promise<void> => {
  * Revalidate
  * @param email Email
  * @param userid User id
+ * @returns Valid
  */
-const revalidate = async (email: string, userid: string): Promise<void> => {
+const revalidate = async (email: string, userid: string): Promise<boolean> => {
   // Create link
   const link = await Link.add({ type: REVALIDATE, email, userid })
 
@@ -138,7 +139,7 @@ const revalidate = async (email: string, userid: string): Promise<void> => {
     .setPersonalization(personalization)
 
   try {
-    await send(emailParams)
+    return await send(emailParams)
   } catch (err) {
     await Link.del(link)
     throw err

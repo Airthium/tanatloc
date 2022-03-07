@@ -20,6 +20,7 @@ import MathJax from '@/components/assets/mathjax'
  */
 export interface IProps {
   label?: string
+  className?: string
   defaultValue?: string | number
   defaultChecked?: boolean
   onValueChange: (value: string) => void
@@ -37,6 +38,7 @@ const saveDelay = 500
  * @param props Props
  * @description Props list:
  * - label (string) Label
+ * - className (string) Class name
  * - defaultValue (string) Default value
  * - defaultChecked (boolean) Default checked
  * - onValueChange (Function) On value change
@@ -45,6 +47,7 @@ const saveDelay = 500
  */
 const Formula = ({
   label,
+  className,
   defaultValue,
   defaultChecked,
   onValueChange,
@@ -127,7 +130,7 @@ const Formula = ({
    * Render
    */
   return (
-    <Space>
+    <Space className={className}>
       {defaultChecked !== undefined && (
         <Checkbox checked={internalChecked} onChange={onCheckboxChange} />
       )}
@@ -153,6 +156,7 @@ const Formula = ({
 
 Formula.propTypes = {
   label: PropTypes.string,
+  className: PropTypes.string,
   defaultValue: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   defaultChecked: PropTypes.bool,
   onValueChange: PropTypes.func.isRequired,

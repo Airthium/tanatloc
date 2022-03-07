@@ -320,22 +320,20 @@ const BoundaryCondition = ({
           <Card>
             {current.type.children.map((child, index) => {
               return (
-                <div key={index}>
-                  {child.label}
-                  <Formula
-                    defaultValue={String(current.values[index].value)}
-                    defaultChecked={
-                      current.type.children.length > 1
-                        ? current.values[index].checked
-                        : undefined
-                    }
-                    onValueChange={(value) => onValueChange(index, value)}
-                    onCheckedChange={(checked) =>
-                      onCheckedChange(index, checked)
-                    }
-                    unit={child.unit}
-                  />
-                </div>
+                <Formula
+                  className="marginBottom-10"
+                  key={index}
+                  label={child.label}
+                  defaultValue={String(current.values[index].value)}
+                  defaultChecked={
+                    current.type.children.length > 1
+                      ? current.values[index].checked
+                      : undefined
+                  }
+                  onValueChange={(value) => onValueChange(index, value)}
+                  onCheckedChange={(checked) => onCheckedChange(index, checked)}
+                  unit={child.unit}
+                />
               )
             })}
           </Card>

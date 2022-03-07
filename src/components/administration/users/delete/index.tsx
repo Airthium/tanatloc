@@ -26,8 +26,8 @@ export interface IProps {
 /**
  * Errors
  */
-const errors = {
-  delError: 'Unable to delete user'
+export const errors = {
+  del: 'Unable to delete user'
 }
 
 /**
@@ -46,7 +46,7 @@ export const onDelete = async (
     // Mutate
     swr.delOneUser({ id: user.id })
   } catch (err) {
-    ErrorNotification(errors.delError, err)
+    ErrorNotification(errors.del, err)
   }
 }
 

@@ -1,7 +1,7 @@
 import React from 'react'
-import { fireEvent, render, screen } from '@testing-library/react'
+import { render } from '@testing-library/react'
 
-import Groups from '..'
+import Groups, { errors } from '..'
 
 jest.mock('@/components/assets/group', () => {
   const Group = () => <div />
@@ -11,9 +11,10 @@ jest.mock('@/components/assets/group', () => {
   return Group
 })
 
-const mockError = jest.fn()
+const mockErrorNotification = jest.fn()
 jest.mock('@/components/assets/notification', () => ({
-  Error: () => mockError()
+  ErrorNotification: (title: string, err: Error) =>
+    mockErrorNotification(title, err)
 }))
 
 const mockUserToAvatar = jest.fn()
@@ -25,7 +26,7 @@ const mockGroups = jest.fn()
 const mockAddOneGroup = jest.fn()
 const mockMutateOneGroup = jest.fn()
 const mockDelOneGroup = jest.fn()
-const mockErrorGroups = jest.fn()
+const mockErrorNotificationGroups = jest.fn()
 const mockLoadingGroups = false
 jest.mock('@/api/group', () => ({
   useGroups: () => [
@@ -34,7 +35,7 @@ jest.mock('@/api/group', () => ({
       addOneGroup: mockAddOneGroup,
       mutateOneGroup: mockMutateOneGroup,
       delOneGroup: mockDelOneGroup,
-      errorGroups: mockErrorGroups(),
+      errorGroups: mockErrorNotificationGroups(),
       loadingGroups: mockLoadingGroups
     }
   ]
@@ -47,7 +48,7 @@ describe('components/assets/organization/groups', () => {
   }
 
   beforeEach(() => {
-    mockError.mockReset()
+    mockErrorNotification.mockReset()
 
     mockUserToAvatar.mockReset()
 
@@ -68,10 +69,11 @@ describe('components/assets/organization/groups', () => {
   })
 
   test('error', () => {
-    mockErrorGroups.mockImplementation(() => true)
+    mockErrorNotificationGroups.mockImplementation(() => true)
     const { unmount } = render(<Groups organization={organization} />)
 
-    expect(mockError).toHaveBeenCalledTimes(1)
+    expect(mockErrorNotification).toHaveBeenCalledTimes(1)
+    expect(mockErrorNotification).toHaveBeenLastCalledWith(errors.groups, true)
 
     unmount()
   })

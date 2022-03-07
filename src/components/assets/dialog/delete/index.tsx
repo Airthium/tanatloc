@@ -22,7 +22,7 @@ export interface IProps {
 /**
  * Errors
  */
-const errors = {
+export const errors = {
   onOk: 'Dialog validation error'
 }
 

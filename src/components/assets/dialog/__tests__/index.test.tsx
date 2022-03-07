@@ -1,14 +1,23 @@
 import React from 'react'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
-import Dialog, { DeleteDialog } from '@/components/assets/dialog'
+import Dialog, { DeleteDialog, errors } from '@/components/assets/dialog'
+
+const mockErrorNotification = jest.fn()
+jest.mock('@/components/assets/notification', () => ({
+  ErrorNotification: (title: string, err: Error) =>
+    mockErrorNotification(title, err)
+}))
 
 jest.mock('../delete', () => () => <div />)
 
-const mockOnOk = jest.fn()
-const mockOnCancel = jest.fn()
 describe('components/assets/dialog', () => {
+  const mockOnOk = jest.fn()
+  const mockOnCancel = jest.fn()
+
   beforeEach(() => {
+    mockErrorNotification.mockReset()
+
     mockOnCancel.mockReset()
     mockOnOk.mockReset()
   })
@@ -84,10 +93,17 @@ describe('components/assets/dialog', () => {
 
     // Error
     mockOnOk.mockImplementation(() => {
-      throw new Error('error')
+      throw new Error('onOk error')
     })
     fireEvent.click(ok)
     await waitFor(() => expect(mockOnOk).toHaveBeenCalledTimes(2))
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
+      expect(mockErrorNotification).toHaveBeenLastCalledWith(
+        errors.onOk,
+        new Error('onOk error')
+      )
+    )
 
     unmount()
   })
@@ -105,8 +121,6 @@ describe('components/assets/dialog', () => {
         Test
       </Dialog>
     )
-
-    // expect(mockSetFieldsValue).toHaveBeenCalledTimes(1)
 
     unmount()
   })

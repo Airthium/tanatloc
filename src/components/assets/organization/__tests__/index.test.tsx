@@ -1,11 +1,12 @@
 import React from 'react'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
-import Organization from '..'
+import Organization, { errors } from '..'
 
-const mockError = jest.fn()
+const mockErrorNotification = jest.fn()
 jest.mock('@/components/assets/notification', () => ({
-  Error: () => mockError()
+  ErrorNotification: (title: string, err: Error) =>
+    mockErrorNotification(title, err)
 }))
 
 jest.mock('../users', () => () => <div />)
@@ -26,7 +27,7 @@ describe('components/assets/organization', () => {
   const onClose = jest.fn()
 
   beforeEach(() => {
-    mockError.mockReset()
+    mockErrorNotification.mockReset()
 
     mockUpdate.mockReset()
   })
@@ -78,7 +79,7 @@ describe('components/assets/organization', () => {
     // Error
     {
       mockUpdate.mockImplementation(() => {
-        throw new Error()
+        throw new Error('update error')
       })
       const edit = screen.getByRole('button', { name: 'Edit' })
       fireEvent.click(edit)
@@ -93,7 +94,15 @@ describe('components/assets/organization', () => {
       })
 
       await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
-      await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
+      await waitFor(() =>
+        expect(mockErrorNotification).toHaveBeenCalledTimes(1)
+      )
+      await waitFor(() =>
+        expect(mockErrorNotification).toHaveBeenLastCalledWith(
+          errors.name,
+          new Error('update error')
+        )
+      )
     }
 
     unmount()

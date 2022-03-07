@@ -14,7 +14,7 @@ import UserAPI from '@/api/user'
 /**
  * Tab items
  */
-const tabItems = {
+export const tabItems = {
   users: {
     label: 'Users',
     key: 'users'
@@ -28,7 +28,7 @@ const tabItems = {
 /**
  * Errors
  */
-const errors = {
+export const errors = {
   users: 'Users error'
 }
 

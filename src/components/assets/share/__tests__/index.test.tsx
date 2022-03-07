@@ -1,14 +1,15 @@
 import React from 'react'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
-import Share from '..'
+import Share, { errors } from '..'
 
 const mockDialog = jest.fn()
-jest.mock('@/components/assets/dialog', () => (props) => mockDialog(props))
+jest.mock('@/components/assets/dialog', () => (props: any) => mockDialog(props))
 
-const mockError = jest.fn()
+const mockErrorNotification = jest.fn()
 jest.mock('@/components/assets/notification', () => ({
-  Error: () => mockError()
+  ErrorNotification: (title: string, err: Error) =>
+    mockErrorNotification(title, err)
 }))
 
 const mockProjectUpdate = jest.fn()
@@ -22,8 +23,8 @@ jest.mock('@/api/workspace', () => ({
 }))
 
 describe('components/assets/share', () => {
-  const project = { id: 'id', groups: [{ id: 'id' }] }
-  const workspace = { id: 'id', groups: [{ id: 'id' }] }
+  const project = { id: 'id', title: 'title', groups: [{ id: 'id' }] }
+  const workspace = { id: 'id', name: 'name', groups: [{ id: 'id' }] }
   const organizations = [
     {
       id: 'id0',
@@ -46,7 +47,7 @@ describe('components/assets/share', () => {
     mockDialog.mockReset()
     mockDialog.mockImplementation(() => <div />)
 
-    mockError.mockReset()
+    mockErrorNotification.mockReset()
 
     mockProjectUpdate.mockReset()
 
@@ -56,6 +57,19 @@ describe('components/assets/share', () => {
   test('render', () => {
     const { unmount } = render(
       <Share project={project} organizations={organizations} swr={projectSwr} />
+    )
+
+    unmount()
+  })
+
+  test('render - light, dark, bordered', () => {
+    const { unmount } = render(
+      <Share
+        project={project}
+        organizations={organizations}
+        swr={projectSwr}
+        style={{ buttonLight: true, buttonDark: true, buttonBordered: true }}
+      />
     )
 
     unmount()
@@ -128,11 +142,17 @@ describe('components/assets/share', () => {
 
     // Error
     mockProjectUpdate.mockImplementation(() => {
-      throw new Error()
+      throw new Error('project error')
     })
     fireEvent.click(dialog)
     await waitFor(() => expect(mockProjectUpdate).toHaveBeenCalledTimes(2))
-    await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
+      expect(mockErrorNotification).toHaveBeenLastCalledWith(
+        errors.share,
+        new Error('project error')
+      )
+    )
 
     unmount()
   })
@@ -167,75 +187,18 @@ describe('components/assets/share', () => {
 
     // Error
     mockWorkspaceUpdate.mockImplementation(() => {
-      throw new Error()
+      throw new Error('workspace error')
     })
     fireEvent.click(dialog)
     await waitFor(() => expect(mockWorkspaceUpdate).toHaveBeenCalledTimes(2))
-    await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
+      expect(mockErrorNotification).toHaveBeenLastCalledWith(
+        errors.share,
+        new Error('workspace error')
+      )
+    )
 
     unmount()
-  })
-
-  test('propTypes', () => {
-    let res
-
-    // Project
-    const projectProps = Share.propTypes.project
-    res = projectProps({}, 'project', 'Share')
-    expect(res.message).toBe(
-      'Missing or invalid prop project supplied to Share.'
-    )
-
-    res = projectProps({ project: {} }, 'project', 'Share')
-    expect(res.message).toBe(
-      'Missing or invalid prop project supplied to Share.'
-    )
-
-    res = projectProps({ project: { id: 'id' } }, 'project', 'Share')
-    expect(res).toBe(undefined)
-
-    // Workspace
-    const workspaceProps = Share.propTypes.workspace
-    res = workspaceProps({}, 'workspace', 'Share')
-    expect(res.message).toBe(
-      'Missing or invalid prop workspace supplied to Share.'
-    )
-
-    res = workspaceProps({ workspace: {} }, 'workspace', 'Share')
-    expect(res.message).toBe(
-      'Missing or invalid prop workspace supplied to Share.'
-    )
-
-    res = workspaceProps({ workspace: { id: 'id' } }, 'workspace', 'Share')
-    expect(res).toBe(undefined)
-
-    // SWR
-    const swrProps = Share.propTypes.swr
-    res = swrProps({}, 'swr', 'Share')
-    expect(res.message).toBe('Invalid prop swr supplied to Share. swr missing')
-
-    res = swrProps({ project: {}, swr: {} }, 'swr', 'Share')
-    expect(res.message).toBe(
-      'Invalid prop swr supplied to Share. mutateOneProject missing or invalid'
-    )
-
-    res = swrProps(
-      { project: {}, swr: { mutateOneProject: jest.fn() } },
-      'swr',
-      'Share'
-    )
-    expect(res).toBe(undefined)
-
-    res = swrProps({ workspace: {}, swr: {} }, 'swr', 'Share')
-    expect(res.message).toBe(
-      'Invalid prop swr supplied to Share. mutateOneWorkspace missing or invalid'
-    )
-
-    res = swrProps(
-      { workspace: {}, swr: { mutateOneWorkspace: jest.fn() } },
-      'swr',
-      'Share'
-    )
-    expect(res).toBe(undefined)
   })
 })

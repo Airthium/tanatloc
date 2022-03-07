@@ -39,7 +39,7 @@ export interface IAddValues {
 /**
  * Errors
  */
-const errors = {
+export const errors = {
   add: 'Unable to add user'
 }
 

@@ -25,7 +25,7 @@ import SystemAPI from '@/api/system'
 /**
  * Errors
  */
-const errors = {
+export const errors = {
   system: 'System error',
   update: 'Unable to update system'
 }
@@ -45,6 +45,8 @@ export const onAllowSignup = async (
 
     // Mutate
     mutateSystem({ allowsignup: !system.allowsignup })
+
+    SuccessNotification('Changes saved')
   } catch (err) {
     ErrorNotification(errors.update, err)
   }

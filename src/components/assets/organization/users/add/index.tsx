@@ -27,8 +27,8 @@ export interface IProps {
 /**
  * Errors
  */
-const errors = {
-  addError: 'Unable to add user'
+export const errors = {
+  add: 'Unable to add user'
 }
 
 /**
@@ -63,7 +63,7 @@ export const onFinish = async (
     ]
     swr.mutateOneOrganization(newOrganization)
   } catch (err) {
-    ErrorNotification(errors.addError, err)
+    ErrorNotification(errors.add, err)
     throw err
   }
 }

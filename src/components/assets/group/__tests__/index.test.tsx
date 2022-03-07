@@ -1,14 +1,22 @@
 import React from 'react'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
-import Group, { Delete } from '..'
+import Group, { Delete, errors } from '..'
+
+const mockAddButton = jest.fn()
+const mockEditButton = jest.fn()
+jest.mock('@/components/assets/button', () => ({
+  AddButton: (props: any) => mockAddButton(props),
+  EditButton: (props: any) => mockEditButton(props)
+}))
 
 const mockDialog = jest.fn()
-jest.mock('@/components/assets/dialog', () => (props) => mockDialog(props))
+jest.mock('@/components/assets/dialog', () => (props: any) => mockDialog(props))
 
-const mockError = jest.fn()
+const mockErrorNotification = jest.fn()
 jest.mock('@/components/assets/notification', () => ({
-  Error: () => mockError()
+  ErrorNotification: (title: string, err: Error) =>
+    mockErrorNotification(title, err)
 }))
 
 jest.mock('../delete', () => () => <div />)
@@ -36,10 +44,16 @@ describe('components/assets/groups', () => {
   }
 
   beforeEach(() => {
+    mockAddButton.mockReset()
+    mockAddButton.mockImplementation(() => <div />)
+
+    mockEditButton.mockReset()
+    mockEditButton.mockImplementation(() => <div />)
+
     mockDialog.mockReset()
     mockDialog.mockImplementation(() => <div />)
 
-    mockError.mockReset()
+    mockErrorNotification.mockReset()
 
     mockAdd.mockReset()
     mockUpdate.mockReset()
@@ -58,6 +72,9 @@ describe('components/assets/groups', () => {
   })
 
   test('setVisible', () => {
+    mockAddButton.mockImplementation((props) => (
+      <div role="AddButton" onClick={props.onAdd} />
+    ))
     mockDialog.mockImplementation((props) => (
       <div role="Dialog" onClick={props.onCancel} />
     ))
@@ -65,7 +82,7 @@ describe('components/assets/groups', () => {
       <Group userOptions={userOptions} organization={organization} swr={swr} />
     )
 
-    const button = screen.getByRole('button')
+    const button = screen.getByRole('AddButton')
     fireEvent.click(button)
 
     const dialog = screen.getByRole('Dialog')
@@ -98,11 +115,17 @@ describe('components/assets/groups', () => {
 
     // Error
     mockAdd.mockImplementation(() => {
-      throw new Error()
+      throw new Error('add error')
     })
     fireEvent.click(dialog)
     await waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(2))
-    await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
+      expect(mockErrorNotification).toHaveBeenLastCalledWith(
+        errors.add,
+        new Error('add error')
+      )
+    )
 
     unmount()
   })
@@ -136,11 +159,17 @@ describe('components/assets/groups', () => {
 
     // Error
     mockUpdate.mockImplementation(() => {
-      throw new Error()
+      throw new Error('update error')
     })
     fireEvent.click(dialog)
     await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
-    await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
+      expect(mockErrorNotification).toHaveBeenLastCalledWith(
+        errors.update,
+        new Error('update error')
+      )
+    )
 
     unmount()
   })

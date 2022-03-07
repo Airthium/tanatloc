@@ -26,6 +26,19 @@ describe('components/assets/formula', () => {
     unmount()
   })
 
+  test('render with label', () => {
+    const { unmount } = render(
+      <Formula
+        label="test"
+        defaultValue="value"
+        onValueChange={onValueChange}
+        unit="unit"
+      />
+    )
+
+    unmount()
+  })
+
   test('with checkbox', () => {
     const { unmount } = render(
       <Formula

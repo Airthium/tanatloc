@@ -5,9 +5,9 @@ import { useState } from 'react'
 
 import { IOrganizationWithData, IUserWithData } from '@/lib/index.d'
 
+import { DeleteButton } from '@/components/assets/button'
 import { ErrorNotification } from '@/components/assets/notification'
 
-import { DeleteButton } from '@/components/assets/button'
 import OrganizationAPI from '@/api/organization'
 
 /**
@@ -26,8 +26,8 @@ export interface IProps {
 /**
  * Errors
  */
-const errors = {
-  delError: 'Unable to delete user'
+export const errors = {
+  del: 'Unable to delete user'
 }
 
 /**
@@ -61,7 +61,7 @@ export const onDelete = async (
     )
     swr.mutateOneOrganization(newOrganization)
   } catch (err) {
-    ErrorNotification(errors.delError, err)
+    ErrorNotification(errors.del, err)
   }
 }
 

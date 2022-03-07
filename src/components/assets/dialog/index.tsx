@@ -29,7 +29,7 @@ export interface IProps {
 /**
  * Errors
  */
-const errors = {
+export const errors = {
   onOk: 'Dialog validation error'
 }
 
@@ -52,7 +52,7 @@ const errors = {
  */
 const Dialog = ({
   visible,
-  closable,
+  closable = true,
   loading,
   title,
   initialValues,
@@ -81,8 +81,8 @@ const Dialog = ({
         <Typography.Text ellipsis={{ tooltip: true }}>{title}</Typography.Text>
       }
       visible={visible}
-      closable={closable === undefined ? true : closable}
-      maskClosable={closable === undefined ? true : closable}
+      closable={closable}
+      maskClosable={closable}
       onCancel={
         onCancel &&
         (() => {

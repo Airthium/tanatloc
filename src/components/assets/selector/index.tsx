@@ -6,7 +6,8 @@ import {
   useState,
   useEffect,
   Dispatch,
-  SetStateAction
+  SetStateAction,
+  useCallback
 } from 'react'
 import {
   Button,
@@ -157,9 +158,9 @@ const Selector = ({
    * On color fitler
    * @param color Color
    */
-  const onColorFilter = (color?: IColor): void => {
+  const onColorFilter = useCallback((color?: IColor): void => {
     setFilter(color)
-  }
+  }, [])
 
   /**
    * Select all
@@ -215,34 +216,37 @@ const Selector = ({
    * On search
    * @param e Event
    */
-  const onSearch = (e: ChangeEvent<HTMLInputElement>): void => {
+  const onSearch = useCallback((e: ChangeEvent<HTMLInputElement>): void => {
     const value = e.target.value
     setSearch(value)
-  }
+  }, [])
 
   /**
    * Display?
    * @param element Element
    * @returns True/false
    */
-  const display = (element: {
-    uuid: string
-    number?: number
-    name?: string
-    color?: IColor
-  }) => {
-    // Color filter
-    if (
-      filter &&
-      (filter.r !== element.color?.r ||
-        filter.g !== element.color?.g ||
-        filter.b !== element.color?.b)
-    )
-      return false
-    // Search
-    if (search && element.name && !element.name.includes(search)) return false
-    return true
-  }
+  const display = useCallback(
+    (element: {
+      uuid: string
+      number?: number
+      name?: string
+      color?: IColor
+    }) => {
+      // Color filter
+      if (
+        filter &&
+        (filter.r !== element.color?.r ||
+          filter.g !== element.color?.g ||
+          filter.b !== element.color?.b)
+      )
+        return false
+      // Search
+      if (search && element.name && !element.name.includes(search)) return false
+      return true
+    },
+    [filter, search]
+  )
 
   /**
    * Render
@@ -373,10 +377,43 @@ const Selector = ({
   )
 }
 
-// TODO proptypes
 Selector.propTypes = {
-  geometry: PropTypes.object.isRequired,
-  alreadySelected: PropTypes.array,
+  geometry: PropTypes.exact({
+    faces: PropTypes.arrayOf(
+      PropTypes.exact({
+        uuid: PropTypes.string.isRequired,
+        number: PropTypes.number,
+        name: PropTypes.string,
+        color: PropTypes.object
+      })
+    ),
+    solids: PropTypes.arrayOf(
+      PropTypes.exact({
+        uuid: PropTypes.string.isRequired,
+        number: PropTypes.number,
+        name: PropTypes.string,
+        color: PropTypes.object
+      })
+    ),
+    edges: PropTypes.arrayOf(
+      PropTypes.exact({
+        uuid: PropTypes.string.isRequired,
+        number: PropTypes.number,
+        name: PropTypes.string,
+        color: PropTypes.object
+      })
+    )
+  }).isRequired,
+  alreadySelected: PropTypes.arrayOf(
+    PropTypes.exact({
+      label: PropTypes.string,
+      selected: PropTypes.arrayOf(
+        PropTypes.exact({
+          uuid: PropTypes.string
+        })
+      )
+    })
+  ),
   updateSelected: PropTypes.func.isRequired
 }
 

@@ -2,12 +2,12 @@
 
 import PropTypes from 'prop-types'
 import { Dispatch, SetStateAction, useState } from 'react'
-import { Button, Form, Input, Select } from 'antd'
-import { EditOutlined, PlusOutlined } from '@ant-design/icons'
+import { Form, Input, Select } from 'antd'
 
 import { IGroupWithData, IOrganizationWithData } from '@/lib/index.d'
 import { INewGroup } from '@/database/index.d'
 
+import { AddButton, EditButton } from '@/components/assets/button'
 import Dialog from '@/components/assets/dialog'
 import { ErrorNotification } from '@/components/assets/notification'
 
@@ -31,7 +31,7 @@ export interface IProps {
 /**
  * Errors
  */
-const errors = {
+export const errors = {
   add: 'Unable to add group',
   update: 'Unable to update group'
 }
@@ -204,12 +204,11 @@ const Group = ({
         </Form.Item>
       </Dialog>
 
-      <Button
-        icon={group ? <EditOutlined /> : <PlusOutlined />}
-        onClick={() => setVisible(true)}
-      >
-        {group ? 'Edit' : 'New group'}
-      </Button>
+      {group ? (
+        <EditButton onEdit={() => setVisible(true)}>Edit</EditButton>
+      ) : (
+        <AddButton onAdd={() => setVisible(true)}>New group</AddButton>
+      )}
     </>
   )
 }

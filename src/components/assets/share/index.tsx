@@ -49,8 +49,8 @@ export interface IProps {
 /**
  * Errors
  */
-const errors = {
-  shareError: 'Unable to share'
+export const errors = {
+  share: 'Unable to share'
 }
 
 /**
@@ -98,8 +98,7 @@ export const onShare = async (
       swr.mutateOneProject(newProject)
     }
   } catch (err) {
-    ErrorNotification(errors.shareError, err)
-
+    ErrorNotification(errors.share, err)
     throw err
   }
 }
@@ -198,7 +197,7 @@ const Share = ({
             'no-background ' +
             (style?.buttonLight ? 'text-light ' : '') +
             (style?.buttonDark ? ' text-dark ' : '') +
-            (!style?.buttonBordered ? ' no-border ' : '')
+            (style?.buttonBordered ? ' ' : 'no-border ')
           }
           key="share"
           disabled={disabled}
@@ -268,7 +267,6 @@ const Share = ({
   )
 }
 
-// TODO proptypes
 Share.propTypes = {
   disabled: PropTypes.bool,
   project: PropTypes.exact({

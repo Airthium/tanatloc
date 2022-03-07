@@ -28,7 +28,7 @@ export interface IProps {
 /**
  * Errors
  */
-const errors = {
+export const errors = {
   name: "Unable to update organization's name"
 }
 
@@ -38,7 +38,7 @@ const errors = {
  * @param name Name
  * @param swr SWR
  */
-const onName = async (
+export const onName = async (
   organization: IOrganizationWithData,
   name: string,
   swr: { mutateOneOrganization: (organization: IOrganizationWithData) => void }

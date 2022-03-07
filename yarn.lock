@@ -10234,9 +10234,9 @@ __metadata:
     swr: 1.2.2
     tar: 6.1.11
     three: 0.138.3
-    three-to-glb: "ssh://git@github.com:Airthium/three-to-glb.git#1.1.2"
+    three-to-glb: "ssh://git@github.com:Airthium/three-to-glb.git#1.1.4"
     typedoc: 0.22.13
-    typedoc-plugin-airthium: "ssh://git@github.com:Airthium/typedoc-plugin-airthium.git#1.0.1"
+    typedoc-plugin-airthium: "ssh://git@github.com:Airthium/typedoc-plugin-airthium.git#1.0.2"
     typescript: 4.6.2
     url-join: 4.0.1
     uuid: 8.3.2
@@ -10310,20 +10310,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"three-to-glb@ssh://git@github.com:Airthium/three-to-glb.git#1.1.2":
-  version: 1.0.4
-  resolution: "three-to-glb@ssh://git@github.com:Airthium/three-to-glb.git#commit=aec78ea97b3f258766a47e2fa7851da8b0745945"
+"three-to-glb@ssh://git@github.com:Airthium/three-to-glb.git#1.1.4":
+  version: 1.1.3
+  resolution: "three-to-glb@ssh://git@github.com:Airthium/three-to-glb.git#commit=df4867b0bd8343e36d00b7c880b92ca5280a5900"
   dependencies:
-    three: 0.137.5
+    three: 0.138.3
     vblob: 1.0.2
-  checksum: 3f1c45017576ffd2ae5fa713a4ffb6e79be15d5e7726627211582a86d4233ce13973f13db3a99beda2ccfaf8d33e24ce90e2c1d7494bdd740bf68cde96edaed9
-  languageName: node
-  linkType: hard
-
-"three@npm:0.137.5":
-  version: 0.137.5
-  resolution: "three@npm:0.137.5"
-  checksum: e9fa478f54b50dae2ea745fd97fdec46cea9770292053a80c937ce9549670f4a3dfe238943bd42e535e2d57a10dacb531a51ae12aef42347303270f7f66da8c8
+  checksum: cc4a0ccc3291729688ed36ad2694405d60a76374eb43875e6054416b8165860dbe88291a86e4755d5f15b735c25a2f04117178313205f9575a6a9e5ecd382fd8
   languageName: node
   linkType: hard
 
@@ -10553,12 +10546,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typedoc-plugin-airthium@ssh://git@github.com:Airthium/typedoc-plugin-airthium.git#1.0.1":
+"typedoc-plugin-airthium@ssh://git@github.com:Airthium/typedoc-plugin-airthium.git#1.0.2":
   version: 1.0.0
-  resolution: "typedoc-plugin-airthium@ssh://git@github.com:Airthium/typedoc-plugin-airthium.git#commit=01758889d54e5d712b5b8483afdd0fc37f0b81e2"
+  resolution: "typedoc-plugin-airthium@ssh://git@github.com:Airthium/typedoc-plugin-airthium.git#commit=88de0cbe43c60d48d0b809c9dcace95b4b3c2c3d"
   peerDependencies:
-    typedoc: 0.22.12
-  checksum: c747fba669a26bd1425e7780d100dd8796445265180fe608954804ef5a2cad889e145405710065703df578a6738122d6c724e7c2537e4a6aecb3eadb1082f33d
+    typedoc: 0.22.13
+  checksum: 7cc199b6224953464c0ff84cd7c8e6a6afb1eb796724afc832f2bd3eccee75f2e29b6a9ed7f9c56ce9a44d5ff6874370585ff43d3697802f0d9879ffc9193bf5
   languageName: node
   linkType: hard
 

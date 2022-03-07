@@ -69,7 +69,7 @@ const Material = ({
       })
       .filter((s) => s)
     setAlreadySelected(currentAlreadySelected)
-  }, [simulation, material])
+  }, [simulation, material, materials])
 
   /**
    * On material select
@@ -78,24 +78,23 @@ const Material = ({
   const onMaterialSelect = (
     currentMaterial: IMaterialDatabase['key']['children'][0]
   ) => {
-    setCurrent({
-      ...current,
+    setCurrent((prevCurrent) => ({
+      ...prevCurrent,
       material: currentMaterial
-    })
+    }))
   }
 
-  // TODO useCallback quick fix to avoid infinite loop
   /**
    * On select
    * @param {Object} selected Selected
    */
   const onSelected = useCallback((selected: string[]) => {
-    setCurrent({
-      ...current,
+    setCurrent((prevCurrent) => ({
+      ...prevCurrent,
       selected: selected.map((s) => ({
         uuid: s
       }))
-    })
+    }))
   }, [])
 
   /**
@@ -109,8 +108,8 @@ const Material = ({
     index: number,
     val: string
   ) => {
-    setCurrent({
-      ...current,
+    setCurrent((prevCurrent) => ({
+      ...prevCurrent,
       material: {
         label: 'custom',
         children: [
@@ -123,7 +122,7 @@ const Material = ({
           ...(current?.material?.children?.slice(index + 1) || [])
         ]
       }
-    })
+    }))
   }
 
   /**

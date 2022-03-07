@@ -27,7 +27,7 @@ export interface IProps {
 /**
  * Errors
  */
-const errors = {
+export const errors = {
   addError: 'Unable to add a project'
 }
 
@@ -37,7 +37,7 @@ const errors = {
  * @param values Values
  * @param swr SWR
  */
-const onAdd = async (
+export const onAdd = async (
   workspace: IWorkspaceWithData,
   values: {
     title: string

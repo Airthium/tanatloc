@@ -136,14 +136,16 @@ const Selector = ({
       <Layout>
         <Layout.Sider theme="light">
           <Menu mode="inline" onSelect={onSelect}>
-            <Select
-              className="full-width"
-              options={categories}
-              allowClear
-              placeholder="Category filter"
-              onChange={(value) => setCategory(value)}
-            />
-            <Divider className="border-light" />
+            <Menu.Item disabled>
+              <Select
+                className="full-width"
+                options={categories}
+                allowClear
+                showArrow={false}
+                placeholder="Category filter"
+                onChange={(value) => setCategory(value)}
+              />
+            </Menu.Item>
             {models.map((model) => {
               if (!category || model.category === category)
                 return <Menu.Item key={model.algorithm}>{model.name}</Menu.Item>

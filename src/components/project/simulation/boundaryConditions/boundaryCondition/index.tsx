@@ -129,10 +129,10 @@ const BoundaryCondition = ({
 
   // Name
   useEffect(() => {
-    setCurrent({
-      ...current,
+    setCurrent((prevCurrent) => ({
+      ...prevCurrent,
       name: 'Boundary condition ' + (totalNumber + 1)
-    })
+    }))
   }, [totalNumber])
 
   /**
@@ -141,10 +141,10 @@ const BoundaryCondition = ({
    */
   const onName = (event: ChangeEvent<HTMLInputElement>): void => {
     const name = event.target.value
-    setCurrent({
-      ...current,
+    setCurrent((prevCurrent) => ({
+      ...prevCurrent,
       name: name
-    })
+    }))
   }
 
   /**
@@ -163,15 +163,15 @@ const BoundaryCondition = ({
       value: child.default
     }))
 
-    setCurrent({
-      ...current,
+    setCurrent((prevCurrent) => ({
+      ...prevCurrent,
       type: {
         key: type.key,
         label: type.label,
         children: type.children
       },
       values: values
-    })
+    }))
   }
 
   /**
@@ -180,8 +180,8 @@ const BoundaryCondition = ({
    * @param value Value
    */
   const onValueChange = (index: number, value: string): void => {
-    setCurrent({
-      ...current,
+    setCurrent((prevCurrent) => ({
+      ...prevCurrent,
       values: [
         ...current.values.slice(0, index),
         {
@@ -190,7 +190,7 @@ const BoundaryCondition = ({
         },
         ...current.values.slice(index + 1)
       ]
-    })
+    }))
   }
 
   /**
@@ -199,8 +199,8 @@ const BoundaryCondition = ({
    * @param checked Checked
    */
   const onCheckedChange = (index: number, checked: boolean): void => {
-    setCurrent({
-      ...current,
+    setCurrent((prevCurrent) => ({
+      ...prevCurrent,
       values: [
         ...current.values.slice(0, index),
         {
@@ -209,21 +209,20 @@ const BoundaryCondition = ({
         },
         ...current.values.slice(index + 1)
       ]
-    })
+    }))
   }
 
-  // TODO useCallback quick fix to avoid infinite loop
   /**
    * On selected
    * @param selected Selected
    */
   const onSelected = useCallback((selected: string[]): void => {
-    setCurrent({
-      ...current,
+    setCurrent((prevCurrent) => ({
+      ...prevCurrent,
       selected: selected.map((s) => ({
         uuid: s
       }))
-    })
+    }))
   }, [])
 
   /**

@@ -20,34 +20,30 @@ const errors = {
 }
 
 /**
+ * On archive
+ */
+const onArchive = async (simulation: ISimulation) => {
+  try {
+    const archive = await ResultAPI.archive({ id: simulation.id })
+    const content = await archive.blob()
+
+    const url = window.URL.createObjectURL(new Blob([content]))
+    const link = document.createElement('a')
+    link.href = url
+    link.setAttribute('download', simulation.scheme.name + '.zip')
+    link.click()
+  } catch (err) {
+    ErrorNotification(errors.archive, err)
+  }
+}
+
+/**
  * Archive
  * @param props Props
  */
 const Archive = ({ simulation }: IProps): JSX.Element => {
   // State
   const [loading, setLoading]: [boolean, Function] = useState(false)
-
-  /**
-   * On archive
-   */
-  const onArchive = async () => {
-    setLoading(true)
-
-    try {
-      const archive = await ResultAPI.archive({ id: simulation.id })
-      const content = await archive.blob()
-
-      const url = window.URL.createObjectURL(new Blob([content]))
-      const link = document.createElement('a')
-      link.href = url
-      link.setAttribute('download', simulation.scheme.name + '.zip')
-      link.click()
-    } catch (err) {
-      ErrorNotification(errors.archive, err)
-    } finally {
-      setLoading(false)
-    }
-  }
 
   /**
    * Render
@@ -57,7 +53,15 @@ const Archive = ({ simulation }: IProps): JSX.Element => {
       <Button
         loading={loading}
         icon={<DownloadOutlined />}
-        onClick={onArchive}
+        onClick={async () => {
+          setLoading(true)
+          try {
+            await onArchive(simulation)
+          } catch (err) {
+          } finally {
+            setLoading(false)
+          }
+        }}
       />
     </Tooltip>
   )

@@ -21,40 +21,39 @@ const errors = {
 }
 
 /**
+ * On download
+ */
+const onDownload = async (
+  simulation: ISimulation,
+  file: ISimulationTaskFile
+): Promise<void> => {
+  try {
+    const content = await ResultAPI.download(
+      { id: simulation.id },
+      { originPath: file.originPath, fileName: file.fileName }
+    )
+    const blob = await content.blob()
+
+    const url = window.URL.createObjectURL(new Blob([blob]))
+    const link = document.createElement('a')
+    link.href = url
+    link.setAttribute(
+      'download',
+      file.name + '.' + file.fileName.split('.').pop()
+    )
+    link.click()
+  } catch (err) {
+    ErrorNotification(errors.download, err)
+  }
+}
+
+/**
  * Download
  * @param props Props
  */
 const Download = ({ simulation, file }: IProps): JSX.Element => {
   // State
   const [loading, setLoading]: [boolean, Function] = useState(false)
-
-  /**
-   * On download
-   */
-  const onDownload = async (): Promise<void> => {
-    setLoading(true)
-
-    try {
-      const content = await ResultAPI.download(
-        { id: simulation.id },
-        { originPath: file.originPath, fileName: file.fileName }
-      )
-      const blob = await content.blob()
-
-      const url = window.URL.createObjectURL(new Blob([blob]))
-      const link = document.createElement('a')
-      link.href = url
-      link.setAttribute(
-        'download',
-        file.name + '.' + file.fileName.split('.').pop()
-      )
-      link.click()
-    } catch (err) {
-      ErrorNotification(errors.download, err)
-    } finally {
-      setLoading(false)
-    }
-  }
 
   /**
    * Render
@@ -65,7 +64,15 @@ const Download = ({ simulation, file }: IProps): JSX.Element => {
         loading={loading}
         icon={<DownloadOutlined />}
         size="small"
-        onClick={onDownload}
+        onClick={async () => {
+          setLoading(true)
+          try {
+            await onDownload(simulation, file)
+          } catch (err) {
+          } finally {
+            setLoading(false)
+          }
+        }}
       />
     </Tooltip>
   )

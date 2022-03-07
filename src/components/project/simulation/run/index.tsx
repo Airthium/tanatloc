@@ -11,6 +11,7 @@ import {
   ISimulationTask,
   ISimulationTaskFile
 } from '@/database/index.d'
+import { IModel } from '@/models/index.d'
 
 import { ErrorNotification } from '@/components/assets/notification'
 
@@ -36,6 +37,68 @@ const errors = {
   runError: 'Unable to run the simulation',
   stopError: 'Unable to stop the simulation',
   updateError: 'Unable to update the simulation'
+}
+
+/**
+ * On cloud server
+ * @param {Object} cloudServer Cloud server
+ */
+const onCloudServer = async (
+  cloudServer: IClientPlugin,
+  currentSimulation: ISimulation,
+  configuration: IModel["configuration"],
+  simulation: ISimulation,
+  swr: IProps['swr'],
+  mutateSimulation: Function
+): Promise<void> => {
+  try {
+    // New simulation
+    const newSimulation = { ...currentSimulation }
+
+    // Update local
+    configuration.run.cloudServer = cloudServer
+    newSimulation.scheme.configuration = configuration
+
+    // API
+    await SimulationAPI.update({ id: simulation.id }, [
+      {
+        key: 'scheme',
+        type: 'json',
+        method: 'set',
+        path: ['configuration', 'run'],
+        value: configuration.run
+      }
+    ])
+
+    // Local
+    swr.mutateOneSimulation(newSimulation)
+    mutateSimulation(newSimulation)
+  } catch (err) {
+    ErrorNotification(errors.updateError, err)
+  }
+}
+
+/**
+ * On run
+ */
+const onRun = async (simulation: ISimulation): Promise<void> => {
+  try {
+    await SimulationAPI.run({ id: simulation.id })
+  } catch (err) {
+    ErrorNotification(errors.runError, err)
+    throw err
+  }
+}
+
+/**
+ * On stop
+ */
+const onStop = async (simulation: ISimulation): Promise<void> => {
+  try {
+    await SimulationAPI.stop({ id: simulation.id })
+  } catch (err) {
+    ErrorNotification(errors.stopError, err)
+  }
 }
 
 /**
@@ -105,65 +168,6 @@ const Run = ({ simulation, result, setResult, swr }: IProps): JSX.Element => {
   }, [currentSimulation?.tasks])
 
   /**
-   * On cloud server
-   * @param {Object} cloudServer Cloud server
-   */
-  const onCloudServer = async (cloudServer: IClientPlugin): Promise<void> => {
-    try {
-      // New simulation
-      const newSimulation = { ...currentSimulation }
-
-      // Update local
-      configuration.run.cloudServer = cloudServer
-      newSimulation.scheme.configuration = configuration
-
-      // API
-      await SimulationAPI.update({ id: simulation.id }, [
-        {
-          key: 'scheme',
-          type: 'json',
-          method: 'set',
-          path: ['configuration', 'run'],
-          value: configuration.run
-        }
-      ])
-
-      // Local
-      swr.mutateOneSimulation(newSimulation)
-      mutateSimulation(newSimulation)
-    } catch (err) {
-      ErrorNotification(errors.updateError, err)
-    }
-  }
-
-  /**
-   * On run
-   */
-  const onRun = async (): Promise<void> => {
-    setRunning(true)
-
-    try {
-      await SimulationAPI.run({ id: simulation.id })
-    } catch (err) {
-      ErrorNotification(errors.runError, err)
-      setRunning(false)
-    }
-  }
-
-  /**
-   * On stop
-   */
-  const onStop = async (): Promise<void> => {
-    try {
-      await SimulationAPI.stop({ id: simulation.id })
-
-      setRunning(false)
-    } catch (err) {
-      ErrorNotification(errors.stopError, err)
-    }
-  }
-
-  /**
    * Render
    */
   if (!simulation || !currentSimulation || currentSimulation?.id === '0')
@@ -184,7 +188,18 @@ const Run = ({ simulation, result, setResult, swr }: IProps): JSX.Element => {
             <CloudServer
               disabled={running}
               cloudServer={currentConfiguration?.run?.cloudServer}
-              onOk={onCloudServer}
+              onOk={async (cloudServer) => {
+                try {
+                  await onCloudServer(
+                    cloudServer,
+                    currentSimulation,
+                    configuration,
+                    simulation,
+                    swr,
+                    mutateSimulation
+                  )
+                } catch (err) {}
+              }}
             />
             <Card size="small" title="Run">
               <Space direction="vertical" className="full-width">
@@ -202,7 +217,14 @@ const Run = ({ simulation, result, setResult, swr }: IProps): JSX.Element => {
                       type="primary"
                       icon={<RocketOutlined />}
                       loading={running}
-                      onClick={onRun}
+                      onClick={async () => {
+                        setRunning(true)
+                        try {
+                          await onRun(simulation)
+                        } catch (err) {
+                          setRunning(false)
+                        }
+                      }}
                     >
                       Run
                     </Button>
@@ -211,7 +233,12 @@ const Run = ({ simulation, result, setResult, swr }: IProps): JSX.Element => {
                       danger
                       icon={<StopOutlined />}
                       shape="circle"
-                      onClick={onStop}
+                      onClick={async () => {
+                        try {
+                          await onStop(simulation)
+                          setRunning(false)
+                        } catch (err) {}
+                      }}
                     />
                   </Space>
                   <Log simulation={{ id: simulation.id }} steps={steps} />

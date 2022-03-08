@@ -1,7 +1,7 @@
 /** @module Components.Project.Simulation.Run.Log */
 
 import PropTypes from 'prop-types'
-import { useState } from 'react'
+import { Dispatch, SetStateAction, useState } from 'react'
 import { Button, Drawer, Modal, Tabs, Tooltip } from 'antd'
 import { FileTextOutlined } from '@ant-design/icons'
 import parse from 'html-react-parser'
@@ -22,49 +22,43 @@ const errors = {
 }
 
 /**
+ * Get complete log
+ * @param step Step
+ */
+const getCompleteLog = async (
+  step: ISimulationTask,
+  simulation: ISimulation
+) => {
+  try {
+    const res = await SimulationAPI.log({ id: simulation.id }, step.systemLog)
+    const log = Buffer.from(res.log).toString()
+
+    Modal.info({
+      title: 'System log',
+      width: 'unset',
+      content: (
+        <pre>
+          <code>
+            {parse(log.replace(/\n\n/g, '\n').replace(/\n/g, '<br />'))}
+          </code>
+        </pre>
+      )
+    })
+  } catch (err) {
+    ErrorNotification(errors.logError, err)
+  }
+}
+
+/**
  * Log
  * @param props Props
  */
 const Log = ({ simulation, steps }: IProps): JSX.Element => {
   // State
-  const [visible, setVisible]: [boolean, Function] = useState(false)
-  const [loading, setLoading]: [boolean, Function] = useState(false)
-
-  /**
-   * On log
-   */
-  const onLog = () => {
-    setVisible(true)
-  }
-
-  /**
-   * Get complete log
-   * @param step Step
-   */
-  const getCompleteLog = async (step: ISimulationTask) => {
-    setLoading(true)
-
-    try {
-      const res = await SimulationAPI.log({ id: simulation.id }, step.systemLog)
-      const log = Buffer.from(res.log).toString()
-
-      Modal.info({
-        title: 'System log',
-        width: 'unset',
-        content: (
-          <pre>
-            <code>
-              {parse(log.replace(/\n\n/g, '\n').replace(/\n/g, '<br />'))}
-            </code>
-          </pre>
-        )
-      })
-    } catch (err) {
-      ErrorNotification(errors.logError, err)
-    } finally {
-      setLoading(false)
-    }
-  }
+  const [visible, setVisible]: [boolean, Dispatch<SetStateAction<boolean>>] =
+    useState(false)
+  const [loading, setLoading]: [boolean, Dispatch<SetStateAction<boolean>>] =
+    useState(false)
 
   /**
    * Render
@@ -84,7 +78,15 @@ const Log = ({ simulation, steps }: IProps): JSX.Element => {
                 <>
                   <Button
                     loading={loading}
-                    onClick={() => getCompleteLog(step)}
+                    onClick={async () => {
+                      setLoading(true)
+                      try {
+                        await getCompleteLog(step, simulation)
+                      } catch (err) {
+                      } finally {
+                        setLoading(false)
+                      }
+                    }}
                   >
                     Complete log
                   </Button>
@@ -115,7 +117,7 @@ const Log = ({ simulation, steps }: IProps): JSX.Element => {
         <Button
           disabled={!steps || !steps.length}
           icon={<FileTextOutlined />}
-          onClick={() => onLog()}
+          onClick={() => setVisible(true)}
         />
       </Tooltip>
     </>

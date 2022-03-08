@@ -55,7 +55,7 @@ export const errors = {
  * @param values Values
  * @param swr SWR
  */
-const onOk = async (
+export const onOk = async (
   values: { name: string },
   swr: { addOneWorkspace: (workspace: INewWorkspace) => void }
 ): Promise<void> => {

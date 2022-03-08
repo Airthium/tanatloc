@@ -1,7 +1,7 @@
 /** @module Components.Project.Simulation.Run.Results */
 
 import PropTypes from 'prop-types'
-import { useEffect, useState } from 'react'
+import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { Button, Card, Select, Space, Spin } from 'antd'
 import { EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons'
 
@@ -38,9 +38,12 @@ const Results = ({
   //State
   const [results, setResults]: [
     (ISimulationTaskFile | IFilteredFiles)[],
-    Function
+    Dispatch<SetStateAction<(ISimulationTaskFile | IFilteredFiles)[]>>
   ] = useState()
-  const [selectors, setSelectors]: [JSX.Element[], Function] = useState([])
+  const [selectors, setSelectors]: [
+    JSX.Element[],
+    Dispatch<SetStateAction<JSX.Element[]>>
+  ] = useState([])
   const [selectorsCurrent, setSelectorsCurrent] = useState([])
 
   // Data

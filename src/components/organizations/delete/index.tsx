@@ -67,8 +67,11 @@ const Delete = ({ organization, swr }: IProps): JSX.Element => {
       text={'Delete ' + organization?.name + '?'}
       onDelete={async () => {
         setLoading(true)
-        await onDelete(organization, swr)
-        setLoading(false)
+        try {
+          await onDelete(organization, swr)
+        } finally {
+          setLoading(false)
+        }
       }}
       loading={loading}
     />

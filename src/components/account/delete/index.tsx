@@ -63,23 +63,24 @@ const Delete = ({ swr }: IProps): JSX.Element => {
    * Render
    */
   return (
-    <>
-      <Card title="Delete your account">
-        <DeleteButton
-          title="Delete your account"
-          text="This action cannot be undone. If you delete your account, you will permanently lose your workspaces and projects."
-          bordered
-          loading={loading}
-          onDelete={async () => {
-            setLoading(true)
+    <Card title="Delete your account">
+      <DeleteButton
+        title="Delete your account"
+        text="This action cannot be undone. If you delete your account, you will permanently lose your workspaces and projects."
+        bordered
+        loading={loading}
+        onDelete={async () => {
+          setLoading(true)
+          try {
             await onDelete(swr)
+          } finally {
             setLoading(false)
-          }}
-        >
-          Delete your account
-        </DeleteButton>
-      </Card>
-    </>
+          }
+        }}
+      >
+        Delete your account
+      </DeleteButton>
+    </Card>
   )
 }
 

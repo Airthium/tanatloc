@@ -71,8 +71,11 @@ const Delete = ({ group, swr }: IProps): JSX.Element => {
       loading={loading}
       onDelete={async () => {
         setLoading(true)
-        await onDelete(group, swr)
-        setLoading(false)
+        try {
+          await onDelete(group, swr)
+        } finally {
+          setLoading(false)
+        }
       }}
     />
   )

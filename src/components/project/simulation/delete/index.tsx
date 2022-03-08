@@ -69,7 +69,14 @@ const Delete = ({ project, simulation, swr }: IProps): JSX.Element => {
     <DeleteButton
       loading={loading}
       text={'Are you sure you want to delete ' + simulation.name + '?'}
-      onDelete={onDelete}
+      onDelete={async () => {
+        setLoading(true)
+        try {
+          await onDelete()
+        } finally {
+          setLoading(false)
+        }
+      }}
     />
   )
 }

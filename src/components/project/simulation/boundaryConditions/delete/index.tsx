@@ -112,7 +112,14 @@ const Delete = ({ type, index, simulation, swr }: IProps): JSX.Element => {
   return (
     <DeleteButton
       loading={loading}
-      onDelete={onDelete}
+      onDelete={async () => {
+        setLoading(true)
+        try {
+          await onDelete()
+        } finally {
+          setLoading(false)
+        }
+      }}
       text={'Are you sure you want to delete this condition ?'}
     />
   )

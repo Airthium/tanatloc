@@ -28,7 +28,7 @@ export interface IProps {
  * Errors
  */
 export const errors = {
-  addError: 'Unable to add a project'
+  add: 'Unable to add a project'
 }
 
 /**
@@ -61,7 +61,7 @@ export const onAdd = async (
       projects: [...(workspace.projects || []), project.id]
     })
   } catch (err) {
-    ErrorNotification(errors.addError, err)
+    ErrorNotification(errors.add, err)
     throw err
   }
 }
@@ -94,6 +94,7 @@ const Add = ({ workspace, swr }: IProps): JSX.Element => {
           setLoading(true)
           try {
             await onAdd(workspace, values, swr)
+
             // Close
             setLoading(false)
             setVisible(false)

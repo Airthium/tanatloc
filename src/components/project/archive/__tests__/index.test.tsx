@@ -1,14 +1,15 @@
 import React from 'react'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
-import Archive from '..'
+import Archive, { errors } from '..'
 
 const mockDialog = jest.fn()
-jest.mock('@/components/assets/dialog', () => (props) => mockDialog(props))
+jest.mock('@/components/assets/dialog', () => (props: any) => mockDialog(props))
 
-const mockError = jest.fn()
+const mockErrorNotification = jest.fn()
 jest.mock('@/components/assets/notification', () => ({
-  Error: () => mockError()
+  ErrorNotification: (title: string, err: Error) =>
+    mockErrorNotification(title, err)
 }))
 
 const mockProjectArchive = jest.fn()
@@ -34,7 +35,7 @@ describe('components/project/archive', () => {
     mockDialog.mockReset()
     mockDialog.mockImplementation(() => <div />)
 
-    mockError.mockReset()
+    mockErrorNotification.mockReset()
 
     mockProjectArchive.mockReset()
 
@@ -74,7 +75,14 @@ describe('components/project/archive', () => {
       blob: async () => 'blob'
     }))
     mockDialog.mockImplementation((props) => (
-      <div role="Dialog" onClick={props.onOk} />
+      <div
+        role="Dialog"
+        onClick={async () => {
+          try {
+            await props.onOk()
+          } catch (err) {}
+        }}
+      />
     ))
 
     const { unmount } = render(
@@ -91,11 +99,17 @@ describe('components/project/archive', () => {
 
     // Error
     mockProjectArchive.mockImplementation(() => {
-      throw new Error('error')
+      throw new Error('archive error')
     })
     fireEvent.click(dialog)
     await waitFor(() => expect(mockProjectArchive).toHaveBeenCalledTimes(2))
-    await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
+      expect(mockErrorNotification).toHaveBeenLastCalledWith(
+        errors.archive,
+        new Error('archive error')
+      )
+    )
 
     unmount()
   })

@@ -6,11 +6,14 @@ import { Dispatch, SetStateAction, useState } from 'react'
 import { ISimulation } from '@/database/index.d'
 import { IProjectWithData } from '@/lib/index.d'
 
-import { ErrorNotification } from '@/components/assets/notification'
 import { DeleteButton } from '@/components/assets/button'
+import { ErrorNotification } from '@/components/assets/notification'
 
 import SimulationAPI from '@/api/simulation'
 
+/**
+ * Props
+ */
 export interface IProps {
   project: IProjectWithData
   simulation: ISimulation
@@ -21,47 +24,53 @@ export interface IProps {
 }
 
 /**
- * Errors (delete)
+ * Errors
  */
-const errors = {
-  delError: 'Unable to delete the simulation'
+export const errors = {
+  del: 'Unable to delete the simulation'
+}
+
+/**
+ * On delete
+ * @param project Project
+ * @param simulation Simulation
+ * @param swr SWR
+ */
+export const onDelete = async (
+  project: IProps['project'],
+  simulation: IProps['simulation'],
+  swr: IProps['swr']
+): Promise<void> => {
+  try {
+    // API
+    await SimulationAPI.del(simulation)
+
+    // Mutate project
+    const filteredSimulations = project.simulations.filter(
+      (s: string) => s !== simulation.id
+    )
+    swr.mutateProject({
+      id: project.id,
+      simulations: filteredSimulations
+    })
+
+    // Mutate simulations
+    swr.delOneSimulation({ id: simulation.id })
+  } catch (err) {
+    ErrorNotification(errors.del, err)
+    throw err
+  }
 }
 
 /**
  * Delete
  * @param props Props
+ * @returns Delete
  */
 const Delete = ({ project, simulation, swr }: IProps): JSX.Element => {
   // State
   const [loading, setLoading]: [boolean, Dispatch<SetStateAction<boolean>>] =
     useState(false)
-
-  /**
-   * On delete
-   */
-  const onDelete = async (): Promise<void> => {
-    setLoading(true)
-    try {
-      // API
-      await SimulationAPI.del(simulation)
-
-      // Mutate project
-      const filteredSimulations = project.simulations.filter(
-        (s) => s !== simulation.id
-      )
-      swr.mutateProject({
-        id: project.id,
-        simulations: filteredSimulations
-      })
-
-      // Mutate simulations
-      swr.delOneSimulation({ id: simulation.id })
-    } catch (err) {
-      ErrorNotification(errors.delError, err)
-    } finally {
-      setLoading(false)
-    }
-  }
 
   /**
    * Render
@@ -73,7 +82,7 @@ const Delete = ({ project, simulation, swr }: IProps): JSX.Element => {
       onDelete={async () => {
         setLoading(true)
         try {
-          await onDelete()
+          await onDelete(project, simulation, swr)
         } finally {
           setLoading(false)
         }

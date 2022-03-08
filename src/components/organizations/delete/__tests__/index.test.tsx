@@ -42,7 +42,14 @@ describe('components/organizations/delete', () => {
 
   test('onDelete', async () => {
     mockDeleteButton.mockImplementation((props: any) => (
-      <div role="DeleteButton" onClick={props.onDelete} />
+      <div
+        role="DeleteButton"
+        onClick={async () => {
+          try {
+            await props.onDelete()
+          } catch (err) {}
+        }}
+      />
     ))
     const { unmount } = render(<Delete organization={organization} swr={swr} />)
 

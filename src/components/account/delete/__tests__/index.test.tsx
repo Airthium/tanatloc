@@ -47,8 +47,15 @@ describe('components/account/delete', () => {
   })
 
   test('onDelete', async () => {
-    mockDeleteButton.mockImplementation(({ onDelete }) => (
-      <div onClick={onDelete} role="DeleteButton" />
+    mockDeleteButton.mockImplementation((props) => (
+      <div
+        onClick={async () => {
+          try {
+            await props.onDelete()
+          } catch (err) {}
+        }}
+        role="DeleteButton"
+      />
     ))
 
     const { unmount } = render(<Delete swr={swr} />)

@@ -41,8 +41,15 @@ describe('components/account/hpc/delete', () => {
   })
 
   test('onDelete', async () => {
-    mockDeleteButton.mockImplementation(({ onDelete }) => (
-      <div role="DeleteButton" onClick={onDelete} />
+    mockDeleteButton.mockImplementation((props) => (
+      <div
+        role="DeleteButton"
+        onClick={async () => {
+          try {
+            await props.onDelete()
+          } catch (err) {}
+        }}
+      />
     ))
 
     const { unmount } = render(<Delete plugin={plugin} swr={swr} />)

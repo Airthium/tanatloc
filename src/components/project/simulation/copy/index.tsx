@@ -12,6 +12,9 @@ import { ErrorNotification } from '@/components/assets/notification'
 
 import SimulationAPI from '@/api/simulation'
 
+/**
+ * Props
+ */
 export interface IProps {
   project: IProjectWithData
   simulation: ISimulation
@@ -22,15 +25,54 @@ export interface IProps {
 }
 
 /**
- * Errors (copy)
+ * Errors
  */
-const errors = {
+export const errors = {
   copy: 'Unable to copy simulation'
+}
+
+/**
+ * On copy
+ * @param project Project
+ * @param simulation Simulation
+ * @param swr SWR
+ */
+export const onCopy = async (
+  project: IProps['project'],
+  simulation: IProps['simulation'],
+  swr: IProps['swr']
+): Promise<void> => {
+  try {
+    // Clear results
+    const newScheme = { ...simulation.scheme }
+    if (newScheme.configuration?.run) {
+      newScheme.configuration.run.done = false
+      newScheme.configuration.run.error = null
+    }
+
+    // API
+    const newSimulation = await SimulationAPI.add(
+      { id: project.id },
+      { name: simulation.name + ' (copy)', scheme: newScheme }
+    )
+
+    // Mutate simulations
+    swr.addOneSimulation(newSimulation)
+
+    // Mutate project
+    swr.mutateProject({
+      id: project.id,
+      simulations: [...(project.simulations || []), newSimulation.id]
+    })
+  } catch (err) {
+    ErrorNotification(errors.copy, err)
+  }
 }
 
 /**
  * Copy simulation
  * @param props Props
+ * @returns Copy
  */
 const Copy = ({ project, simulation, swr }: IProps): JSX.Element => {
   // State
@@ -38,50 +80,22 @@ const Copy = ({ project, simulation, swr }: IProps): JSX.Element => {
     useState(false)
 
   /**
-   * On copy
-   */
-  const onCopy = async (): Promise<void> => {
-    setLoading(true)
-    try {
-      // Clear results
-      const newScheme = { ...simulation.scheme }
-      if (newScheme.configuration?.run) {
-        newScheme.configuration.run.done = false
-        newScheme.configuration.run.error = null
-      }
-
-      // API
-      const newSimulation = await SimulationAPI.add(
-        { id: project.id },
-        { name: simulation.name + ' (copy)', scheme: newScheme }
-      )
-
-      // Mutate simulations
-      swr.addOneSimulation(newSimulation)
-
-      // Mutate project
-      swr.mutateProject({
-        id: project.id,
-        simulations: [...(project.simulations || []), newSimulation.id]
-      })
-    } catch (err) {
-      ErrorNotification(errors.copy, err)
-    } finally {
-      // Loading
-      setLoading(false)
-    }
-  }
-
-  /**
    * Render
    */
   return (
     <Tooltip title="Copy">
       <Button
+        className="no-border"
         loading={loading}
         icon={<CopyOutlined />}
-        onClick={onCopy}
-        className="no-border"
+        onClick={async () => {
+          setLoading(true)
+          try {
+            await onCopy(project, simulation, swr)
+          } finally {
+            setLoading(false)
+          }
+        }}
       />
     </Tooltip>
   )

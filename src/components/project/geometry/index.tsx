@@ -126,6 +126,7 @@ export const onDelete = async (
     close()
   } catch (err) {
     ErrorNotification(errors.del, err)
+    throw err
   }
 }
 

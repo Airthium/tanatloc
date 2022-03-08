@@ -3,11 +3,12 @@ import { fireEvent, screen, render, waitFor } from '@testing-library/react'
 
 import { ISimulation } from '@/database/index.d'
 
-import Copy from '..'
+import Copy, { errors } from '..'
 
-const mockError = jest.fn()
+const mockErrorNotification = jest.fn()
 jest.mock('@/components/assets/notification', () => ({
-  Error: () => mockError()
+  ErrorNotification: (title: string, err: Error) =>
+    mockErrorNotification(title, err)
 }))
 
 const mockAdd = jest.fn()
@@ -74,11 +75,17 @@ describe('components/project/simulation/copy', () => {
 
     // Error
     mockAdd.mockImplementation(() => {
-      throw new Error()
+      throw new Error('add error')
     })
     fireEvent.click(button)
     await waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(2))
-    await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
+      expect(mockErrorNotification).toHaveBeenLastCalledWith(
+        errors.copy,
+        new Error('add error')
+      )
+    )
 
     unmount()
   })

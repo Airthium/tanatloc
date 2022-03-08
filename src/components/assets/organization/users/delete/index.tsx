@@ -62,6 +62,7 @@ export const onDelete = async (
     swr.mutateOneOrganization(newOrganization)
   } catch (err) {
     ErrorNotification(errors.del, err)
+    throw err
   }
 }
 

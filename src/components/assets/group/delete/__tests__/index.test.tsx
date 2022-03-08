@@ -41,7 +41,14 @@ describe('components/administration/groups/delete', () => {
 
   test('onDelete', async () => {
     mockDeleteButton.mockImplementation((props) => (
-      <div role="DeleteButton" onClick={props.onDelete} />
+      <div
+        role="DeleteButton"
+        onClick={async () => {
+          try {
+            await props.onDelete()
+          } catch (err) {}
+        }}
+      />
     ))
     const { unmount } = render(<Delete group={group} swr={swr} />)
 

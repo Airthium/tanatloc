@@ -44,6 +44,7 @@ export const onDelete = async (
     swr.delOnePlugin(plugin)
   } catch (err) {
     ErrorNotification(errors.del, err)
+    throw err
   }
 }
 

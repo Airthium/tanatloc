@@ -1,16 +1,17 @@
 import React from 'react'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
-import Delete from '@/components/project/simulation/delete'
+import Delete, { errors } from '@/components/project/simulation/delete'
 
-const mockDeleteDialog = jest.fn()
-jest.mock('@/components/assets/dialog', () => ({
-  DeleteDialog: (props) => mockDeleteDialog(props)
+const mockDeleteButton = jest.fn()
+jest.mock('@/components/assets/button', () => ({
+  DeleteButton: (props: any) => mockDeleteButton(props)
 }))
 
-const mockError = jest.fn()
+const mockErrorNotification = jest.fn()
 jest.mock('@/components/assets/notification', () => ({
-  Error: () => mockError()
+  ErrorNotification: (title: string, err: Error) =>
+    mockErrorNotification(title, err)
 }))
 
 const mockDel = jest.fn()
@@ -26,10 +27,10 @@ describe('components/project/simulation/delete', () => {
     delOneSimulation: jest.fn()
   }
   beforeEach(() => {
-    mockDeleteDialog.mockReset()
-    mockDeleteDialog.mockImplementation(() => <div />)
+    mockDeleteButton.mockReset()
+    mockDeleteButton.mockImplementation(() => <div />)
 
-    mockError.mockReset()
+    mockErrorNotification.mockReset()
 
     mockDel.mockReset()
   })
@@ -42,26 +43,16 @@ describe('components/project/simulation/delete', () => {
     unmount()
   })
 
-  test('setVisible', () => {
-    mockDeleteDialog.mockImplementation((props) => (
-      <div role="DeleteDialog" onClick={props.onCancel} />
-    ))
-    const { unmount } = render(
-      <Delete project={project} simulation={simulation} swr={swr} />
-    )
-
-    const button = screen.getByRole('button')
-    fireEvent.click(button)
-
-    const dialog = screen.getByRole('DeleteDialog')
-    fireEvent.click(dialog)
-
-    unmount()
-  })
-
   test('onDelete', async () => {
-    mockDeleteDialog.mockImplementation((props) => (
-      <div role="DeleteDialog" onClick={props.onOk} />
+    mockDeleteButton.mockImplementation((props) => (
+      <div
+        role="DeleteDialog"
+        onClick={async () => {
+          try {
+            await props.onDelete()
+          } catch (err) {}
+        }}
+      />
     ))
     const { unmount } = render(
       <Delete project={project} simulation={simulation} swr={swr} />
@@ -77,11 +68,17 @@ describe('components/project/simulation/delete', () => {
 
     // Error
     mockDel.mockImplementation(() => {
-      throw new Error()
+      throw new Error('del error')
     })
     fireEvent.click(dialog)
     await waitFor(() => expect(mockDel).toHaveBeenCalledTimes(2))
-    await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
+      expect(mockErrorNotification).toHaveBeenLastCalledWith(
+        errors.del,
+        new Error('del error')
+      )
+    )
 
     unmount()
   })

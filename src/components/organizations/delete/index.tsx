@@ -44,6 +44,7 @@ export const onDelete = async (
     swr.delOneOrganization({ id: organization.id })
   } catch (err) {
     ErrorNotification(errors.del, err)
+    throw err
   }
 }
 

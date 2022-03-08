@@ -1,7 +1,7 @@
 /** @module Components.Assets.Organization.User.Add */
 
 import PropTypes from 'prop-types'
-import { useState } from 'react'
+import { Dispatch, SetStateAction, useState } from 'react'
 import { Form, Input } from 'antd'
 
 import { IOrganizationWithData } from '@/lib/index.d'
@@ -81,8 +81,10 @@ export const onFinish = async (
  */
 const Add = ({ title, organization, dBkey, swr }: IProps): JSX.Element => {
   // State
-  const [visible, setVisible]: [boolean, Function] = useState(false)
-  const [loading, setLoading]: [boolean, Function] = useState(false)
+  const [visible, setVisible]: [boolean, Dispatch<SetStateAction<boolean>>] =
+    useState(false)
+  const [loading, setLoading]: [boolean, Dispatch<SetStateAction<boolean>>] =
+    useState(false)
 
   /**
    * Render

@@ -66,7 +66,8 @@ const Formula = ({
   const [disabled, setDisabled]: [boolean, Dispatch<SetStateAction<boolean>>] =
     useState(defaultChecked !== undefined ? !defaultChecked : false)
   const [autoSave, setAutoSave]: [number, Function] = useState(0)
-  const [saving, setSaving]: [boolean, Function] = useState(false)
+  const [saving, setSaving]: [boolean, Dispatch<SetStateAction<boolean>>] =
+    useState(false)
 
   // Default value
   useEffect(() => {

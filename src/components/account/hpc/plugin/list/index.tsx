@@ -1,7 +1,7 @@
 /** @module Components.Account.HPC.Plugin.List */
 
 import PropTypes from 'prop-types'
-import { useState, useEffect } from 'react'
+import { Dispatch, SetStateAction, useState, useEffect } from 'react'
 import { Card, Space, Typography } from 'antd'
 
 import { IClientPlugin } from '@/database/index.d'
@@ -28,7 +28,10 @@ export interface IProps {
  */
 const List = ({ plugin, plugins, swr }: IProps): JSX.Element => {
   // State
-  const [list, setList]: [JSX.Element[], Function] = useState([])
+  const [list, setList]: [
+    JSX.Element[],
+    Dispatch<SetStateAction<JSX.Element[]>>
+  ] = useState([])
 
   // List
   useEffect(() => {

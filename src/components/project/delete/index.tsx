@@ -2,8 +2,6 @@
 
 import PropTypes from 'prop-types'
 import { Dispatch, SetStateAction, useState } from 'react'
-import { Button, Tooltip } from 'antd'
-import { DeleteOutlined } from '@ant-design/icons'
 
 import { IProjectWithData, IWorkspaceWithData } from '@/lib/index.d'
 
@@ -29,7 +27,7 @@ export interface IProps {
  * Errors
  */
 export const errors = {
-  delError: 'Unable to delete the project'
+  del: 'Unable to delete the project'
 }
 
 /**
@@ -61,7 +59,7 @@ export const onDelete = async (
     // Mutate projects
     swr.delOneProject({ id: project.id })
   } catch (err) {
-    ErrorNotification(errors.delError, err)
+    ErrorNotification(errors.del, err)
     throw err
   }
 }

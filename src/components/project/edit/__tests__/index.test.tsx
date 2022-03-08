@@ -1,14 +1,20 @@
 import React from 'react'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
-import Edit from '..'
+import Edit, { errors } from '..'
+
+const mockEditButton = jest.fn()
+jest.mock('@/components/assets/button', () => ({
+  EditButton: (props: any) => mockEditButton(props)
+}))
 
 const mockDialog = jest.fn()
-jest.mock('@/components/assets/dialog', () => (props) => mockDialog(props))
+jest.mock('@/components/assets/dialog', () => (props: any) => mockDialog(props))
 
-const mockError = jest.fn()
+const mockErrorNotification = jest.fn()
 jest.mock('@/components/assets/notification', () => ({
-  Error: () => mockError()
+  ErrorNotification: (title: string, err: Error) =>
+    mockErrorNotification(title, err)
 }))
 
 const mockUpdate = jest.fn()
@@ -23,10 +29,13 @@ describe('components/project/edit', () => {
   }
 
   beforeEach(() => {
+    mockEditButton.mockReset()
+    mockEditButton.mockImplementation(() => <div />)
+
     mockDialog.mockReset()
     mockDialog.mockImplementation(() => <div />)
 
-    mockError.mockReset()
+    mockErrorNotification.mockReset()
 
     mockUpdate.mockReset()
   })
@@ -38,12 +47,15 @@ describe('components/project/edit', () => {
   })
 
   test('setVisible', () => {
+    mockEditButton.mockImplementation((props) => (
+      <div role="EditButton" onClick={props.onEdit} />
+    ))
     mockDialog.mockImplementation((props) => (
       <div role="Dialog" onClick={props.onCancel} />
     ))
     const { unmount } = render(<Edit project={project} swr={swr} />)
 
-    const button = screen.getByRole('button')
+    const button = screen.getByRole('EditButton')
     fireEvent.click(button)
 
     const dialog = screen.getByRole('Dialog')
@@ -74,11 +86,17 @@ describe('components/project/edit', () => {
 
     // Error
     mockUpdate.mockImplementation(() => {
-      throw new Error()
+      throw new Error('update error')
     })
     fireEvent.click(dialog)
     await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
-    await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
+      expect(mockErrorNotification).toHaveBeenLastCalledWith(
+        errors.edit,
+        new Error('update error')
+      )
+    )
 
     unmount()
   })

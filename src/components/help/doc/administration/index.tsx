@@ -4,6 +4,7 @@ import { Card, Collapse, Typography } from 'antd'
 
 /**
  * Administration documentation
+ * @returns Administration
  */
 const Administration = (): JSX.Element => {
   /**
@@ -30,5 +31,7 @@ const Administration = (): JSX.Element => {
     </Card>
   )
 }
+
+Administration.propTypes = {}
 
 export default Administration

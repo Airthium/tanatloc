@@ -24,7 +24,7 @@ describe('components/error', () => {
   })
 
   test('getInitialProps', () => {
-    let code
+    let code: { statusCode?: number }
 
     const res: { statusCode?: number } = {}
     const err: { statusCode?: number } = {}

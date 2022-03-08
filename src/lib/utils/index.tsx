@@ -129,12 +129,32 @@ const validateEmail = (email: string): boolean => {
   return !!parseOneAddress(email)
 }
 
+/**
+ * Get git version
+ * @returns Git version
+ */
+const getGitVersion = (): string => {
+  let gitVersion = ''
+  if (
+    process.env.NEXT_PUBLIC_SOURCE_BRANCH &&
+    process.env.NEXT_PUBLIC_SOURCE_COMMIT
+  )
+    gitVersion =
+      'git-' +
+      process.env.NEXT_PUBLIC_SOURCE_BRANCH +
+      '-' +
+      process.env.NEXT_PUBLIC_SOURCE_COMMIT
+
+  return gitVersion
+}
+
 const Utils = {
   stringToColor,
   rgbToHex,
   rgbToRgba,
   userToAvatar,
   groupToAvatar,
-  validateEmail
+  validateEmail,
+  getGitVersion
 }
 export default Utils

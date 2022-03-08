@@ -4,6 +4,7 @@ import { Card, Layout, Space, Spin } from 'antd'
 
 /**
  * Simple
+ * @returns Loading.Simple
  */
 const Simple = (): JSX.Element => {
   /**
@@ -30,6 +31,7 @@ const Simple = (): JSX.Element => {
 
 /**
  * Loading
+ * @returns Loading
  */
 const Loading = (): JSX.Element => {
   /**

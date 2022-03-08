@@ -4,6 +4,7 @@ import { Card, Collapse, Typography } from 'antd'
 
 /**
  * HPC plugins documentation
+ * @returns HPC
  */
 const HPC = (): JSX.Element => {
   /**
@@ -57,5 +58,7 @@ const HPC = (): JSX.Element => {
     </Card>
   )
 }
+
+HPC.propTypes = {}
 
 export default HPC

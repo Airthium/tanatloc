@@ -16,6 +16,8 @@ import Background from '@/components/background'
 import { ErrorNotification } from '@/components/assets/notification'
 import MathJax from '@/components/assets/mathjax'
 
+import Utils from '@/lib/utils'
+
 import UserAPI from '@/api/user'
 
 /**
@@ -29,7 +31,7 @@ export const errors = {
  * Handle dashboard
  * @param router Router
  */
-const handleDashboard = (router: NextRouter): void => {
+export const handleDashboard = (router: NextRouter): void => {
   router.push('/dashboard')
 }
 
@@ -37,7 +39,7 @@ const handleDashboard = (router: NextRouter): void => {
  * Handle signup
  * @param router Router
  */
-const handleSignup = (router: NextRouter): void => {
+export const handleSignup = (router: NextRouter): void => {
   router.push('/signup')
 }
 
@@ -45,12 +47,13 @@ const handleSignup = (router: NextRouter): void => {
  * Handle login
  * @param router Router
  */
-const handleLogin = (router: NextRouter): void => {
+export const handleLogin = (router: NextRouter): void => {
   router.push('/login')
 }
 
 /**
  * Index
+ * @returns Index
  */
 const Index = (): JSX.Element => {
   // Router
@@ -72,16 +75,7 @@ const Index = (): JSX.Element => {
   }, [router])
 
   // Git version
-  let gitVersion = ''
-  if (
-    process.env.NEXT_PUBLIC_SOURCE_BRANCH &&
-    process.env.NEXT_PUBLIC_SOURCE_COMMIT
-  )
-    gitVersion =
-      'git-' +
-      process.env.NEXT_PUBLIC_SOURCE_BRANCH +
-      '-' +
-      process.env.NEXT_PUBLIC_SOURCE_COMMIT
+  const gitVersion = Utils.getGitVersion()
 
   // Buttons
   let buttons = <Button className="no-border" loading={true} size="large" />
@@ -279,5 +273,7 @@ const Index = (): JSX.Element => {
     </Layout>
   )
 }
+
+Index.propTypes = {}
 
 export default Index

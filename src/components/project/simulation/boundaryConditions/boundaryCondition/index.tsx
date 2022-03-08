@@ -1,6 +1,13 @@
 /** @module Components.Project.Simulation.BoundaryConditions.BoundaryCondition */
 
-import { Dispatch, SetStateAction, useState, useEffect, ChangeEvent, useCallback } from 'react'
+import {
+  Dispatch,
+  SetStateAction,
+  useState,
+  useEffect,
+  ChangeEvent,
+  useCallback
+} from 'react'
 import PropTypes from 'prop-types'
 import {
   Button,
@@ -61,10 +68,14 @@ const BoundaryCondition = ({
     (IModelTypedBoundaryCondition & { key: string })[],
     Function
   ] = useState([])
-  const [totalNumber, setTotalNumber]: [number, Dispatch<SetStateAction<number>>] = useState(0)
+  const [totalNumber, setTotalNumber]: [
+    number,
+    Dispatch<SetStateAction<number>>
+  ] = useState(0)
   const [current, setCurrent]: [IModelBoundaryConditionValue, Function] =
     useState()
-  const [error, setError]: [string, Dispatch<SetStateAction<string>>] = useState('')
+  const [error, setError]: [string, Dispatch<SetStateAction<string>>] =
+    useState('')
 
   // Data
   const boundaryConditions = simulation.scheme.configuration.boundaryConditions

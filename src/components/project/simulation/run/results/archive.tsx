@@ -1,7 +1,7 @@
 /** @module Components.Project.Simulation.Run.Results.Archive */
 
 import PropTypes from 'prop-types'
-import { useState } from 'react'
+import { Dispatch, SetStateAction, useState } from 'react'
 import { Button, Tooltip } from 'antd'
 import { DownloadOutlined } from '@ant-design/icons'
 
@@ -22,7 +22,7 @@ const errors = {
 /**
  * On archive
  */
-const onArchive = async (simulation: ISimulation) => {
+export const onArchive = async (simulation: ISimulation) => {
   try {
     const archive = await ResultAPI.archive({ id: simulation.id })
     const content = await archive.blob()
@@ -43,7 +43,8 @@ const onArchive = async (simulation: ISimulation) => {
  */
 const Archive = ({ simulation }: IProps): JSX.Element => {
   // State
-  const [loading, setLoading]: [boolean, Function] = useState(false)
+  const [loading, setLoading]: [boolean, Dispatch<SetStateAction<boolean>>] =
+    useState(false)
 
   /**
    * Render

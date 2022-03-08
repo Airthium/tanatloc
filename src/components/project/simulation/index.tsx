@@ -1,7 +1,7 @@
 /** @module Components.Project.Simulation */
 
 import PropTypes from 'prop-types'
-import { useState, useEffect } from 'react'
+import { Dispatch, SetStateAction, useState, useEffect } from 'react'
 import { Divider, Layout, Menu, Modal, Select, Space, Typography } from 'antd'
 import { WarningOutlined } from '@ant-design/icons'
 import { addedDiff, updatedDiff } from 'deep-object-diff'
@@ -77,10 +77,14 @@ const Selector = ({
   onCancel
 }: ISelectorProps): JSX.Element => {
   // State
-  const [current, setCurrent]: [IModel, Function] = useState()
-  const [loading, setLoading]: [boolean, Function] = useState(false)
-  const [models, setModels]: [IModel[], Function] = useState([])
-  const [category, setCategory]: [string, Function] = useState()
+  const [current, setCurrent]: [IModel, Dispatch<SetStateAction<IModel>>] =
+    useState()
+  const [loading, setLoading]: [boolean, Dispatch<SetStateAction<boolean>>] =
+    useState(false)
+  const [models, setModels]: [IModel[], Dispatch<SetStateAction<IModel[]>>] =
+    useState([])
+  const [category, setCategory]: [string, Dispatch<SetStateAction<string>>] =
+    useState()
 
   // Models
   useEffect(() => {

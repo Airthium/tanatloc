@@ -1,7 +1,7 @@
 /** @module Components.Project.Simulation.Parameters */
 
 import PropTypes from 'prop-types'
-import { useState, useEffect } from 'react'
+import { Dispatch, SetStateAction, useState, useEffect } from 'react'
 import {
   Card,
   Checkbox,
@@ -35,6 +35,26 @@ const errors = {
 }
 
 /**
+ * On parameter change
+ * @param key Parameter key
+ * @param index Children index
+ * @param value Value
+ */
+export const onChange = (
+  key: string,
+  index: number,
+  value: boolean | string,
+  values: { [key: string]: string[] | boolean[] }
+): { [key: string]: string[] | boolean[] } => {
+  const deepValues = values[key] || []
+  deepValues[index] = value
+  return {
+    ...values,
+    [key]: deepValues
+  }
+}
+
+/**
  * Parameters
  * @param props Props
  */
@@ -42,7 +62,7 @@ const Parameters = ({ simulation, swr }: IProps): JSX.Element => {
   // State
   const [values, setValues]: [
     { [key: string]: string[] | boolean[] },
-    Function
+    Dispatch<SetStateAction<{ [key: string]: string[] | boolean[] }>>
   ] = useState({})
 
   // Data
@@ -94,27 +114,6 @@ const Parameters = ({ simulation, swr }: IProps): JSX.Element => {
       })
   }, [values])
 
-  /**
-   * On parameter change
-   * @param key Parameter key
-   * @param index Children index
-   * @param value Value
-   */
-  const onChange = (
-    key: string,
-    index: number,
-    value: boolean | string
-  ): void => {
-    const deepValues = values[key] || []
-    deepValues[index] = value
-    const newValues = {
-      ...values,
-      [key]: deepValues
-    }
-
-    setValues(newValues)
-  }
-
   // Build parameters
   const parameters = []
   const advanced = []
@@ -138,7 +137,10 @@ const Parameters = ({ simulation, swr }: IProps): JSX.Element => {
                   ? (child.default as string)
                   : (child.value as string)
               }
-              onValueChange={(value: string) => onChange(key, index, value)}
+              onValueChange={(value: string) => {
+                let newValues = onChange(key, index, value, values)
+                setValues(newValues)
+              }}
               unit={child.unit}
             />
           </Typography.Text>
@@ -152,7 +154,10 @@ const Parameters = ({ simulation, swr }: IProps): JSX.Element => {
               defaultValue={
                 (child.value as string) || (child.default as string)
               }
-              onChange={(value: string) => onChange(key, index, value)}
+              onChange={(value: string) => {
+                let newValues = onChange(key, index, value, values)
+                setValues(newValues)
+              }}
             />
           </Typography.Text>
         )
@@ -162,7 +167,10 @@ const Parameters = ({ simulation, swr }: IProps): JSX.Element => {
             {child.label}:<br />
             <Checkbox
               defaultChecked={child.value as boolean}
-              onChange={(e) => onChange(key, index, e.target.checked)}
+              onChange={(e) => {
+                let newValues = onChange(key, index, e.target.checked, values)
+                setValues(newValues)
+              }}
             />
           </Typography.Text>
         )

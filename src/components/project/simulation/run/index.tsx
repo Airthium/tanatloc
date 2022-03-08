@@ -1,7 +1,7 @@
 /** @module Components.Project.Simulation.Run */
 
 import PropTypes from 'prop-types'
-import { useState, useEffect } from 'react'
+import { Dispatch, SetStateAction, useState, useEffect } from 'react'
 import { Button, Card, Layout, Space, Spin, Steps } from 'antd'
 import { RocketOutlined, StopOutlined } from '@ant-design/icons'
 
@@ -26,7 +26,7 @@ export interface IProps {
   result: ISimulationTaskFile
   setResult: Function
   swr: {
-    mutateOneSimulation: Function
+    mutateOneSimulation: (simulation: ISimulation) => void
   }
 }
 
@@ -46,10 +46,10 @@ const errors = {
 const onCloudServer = async (
   cloudServer: IClientPlugin,
   currentSimulation: ISimulation,
-  configuration: IModel["configuration"],
+  configuration: IModel['configuration'],
   simulation: ISimulation,
   swr: IProps['swr'],
-  mutateSimulation: Function
+  mutateSimulation: (simulation: ISimulation) => void
 ): Promise<void> => {
   try {
     // New simulation
@@ -107,10 +107,15 @@ const onStop = async (simulation: ISimulation): Promise<void> => {
  */
 const Run = ({ simulation, result, setResult, swr }: IProps): JSX.Element => {
   // State
-  const [disabled, setDisabled]: [boolean, Function] = useState(false)
-  const [running, setRunning]: [boolean, Function] = useState(false)
+  const [disabled, setDisabled]: [boolean, Dispatch<SetStateAction<boolean>>] =
+    useState(false)
+  const [running, setRunning]: [boolean, Dispatch<SetStateAction<boolean>>] =
+    useState(false)
 
-  const [steps, setSteps]: [ISimulationTask[], Function] = useState([])
+  const [steps, setSteps]: [
+    ISimulationTask[],
+    Dispatch<SetStateAction<ISimulationTask[]>>
+  ] = useState([])
 
   // Data
   const [currentSimulation, { mutateSimulation }] = SimulationAPI.useSimulation(

@@ -32,7 +32,7 @@ const errors = {
  * @param workspace Workspace
  * @param swr SWR
  */
-const onDelete = async (
+export const onDelete = async (
   workspace: IWorkspaceWithData,
   swr: { delOneWorkspace: (workspace: IWorkspaceWithData) => void }
 ): Promise<void> => {

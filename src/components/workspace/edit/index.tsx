@@ -35,7 +35,7 @@ const errors = {
  * @param values Values
  * @param swr SWR
  */
-const onEdit = async (
+export const onEdit = async (
   workspace: IWorkspaceWithData,
   values: { name: string },
   swr: { mutateOneWorkspace: (workspace: IWorkspaceWithData) => void }

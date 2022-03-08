@@ -2,7 +2,13 @@
 
 import PropTypes from 'prop-types'
 import dynamic from 'next/dynamic'
-import { useState, useEffect, ComponentType } from 'react'
+import {
+  Dispatch,
+  SetStateAction,
+  useState,
+  useEffect,
+  ComponentType
+} from 'react'
 import { useRouter } from 'next/router'
 import { Button, Card, Modal, Space, Typography } from 'antd'
 import { CloudServerOutlined } from '@ant-design/icons'
@@ -36,8 +42,12 @@ const errors = {
  */
 const CloudServer = ({ disabled, cloudServer, onOk }: IProps): JSX.Element => {
   // State
-  const [visible, setVisible]: [boolean, Function] = useState(false)
-  const [Plugins, setPlugins]: [IClientPlugin[], Function] = useState([])
+  const [visible, setVisible]: [boolean, Dispatch<SetStateAction<boolean>>] =
+    useState(false)
+  const [Plugins, setPlugins]: [
+    IClientPlugin[],
+    Dispatch<SetStateAction<IClientPlugin[]>>
+  ] = useState([])
 
   // Data
   const router = useRouter()
@@ -60,29 +70,6 @@ const CloudServer = ({ disabled, cloudServer, onOk }: IProps): JSX.Element => {
   }, [])
 
   /**
-   * Close
-   */
-  const close = (): void => {
-    setVisible(false)
-  }
-
-  /**
-   * On merge
-   * @param plugin Plugin
-   * @param diff Diff
-   */
-  const onMerge = (plugin: IClientPlugin, diff: IClientPlugin): void => {
-    // Merge
-    merge(plugin, diff)
-
-    // Ok
-    onOk(plugin)
-
-    // Close
-    close()
-  }
-
-  /**
    * Render
    */
   return (
@@ -94,7 +81,7 @@ const CloudServer = ({ disabled, cloudServer, onOk }: IProps): JSX.Element => {
           disabled: true,
           style: { display: 'none' }
         }}
-        onCancel={close}
+        onCancel={() => setVisible(false)}
         style={{ width: 'unset' }}
       >
         <Space direction="vertical">
@@ -123,7 +110,14 @@ const CloudServer = ({ disabled, cloudServer, onOk }: IProps): JSX.Element => {
                 <Card key={plugin.uuid} title={plugin.configuration.name.value}>
                   <Renderer
                     data={plugin.data}
-                    onSelect={(diff: IClientPlugin) => onMerge(plugin, diff)}
+                    onSelect={(diff: IClientPlugin) => {
+                      // Merge
+                      merge(plugin, diff)
+                      // Ok
+                      onOk(plugin)
+                      // Close
+                      setVisible(false)
+                    }}
                   />
                 </Card>
               )

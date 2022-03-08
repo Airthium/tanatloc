@@ -23,5 +23,8 @@
 - check docker at startup https://github.com/electron-userland/electron-builder/issues/1271
 - Apple sign
 
-Table scroll
-workspace.users ne sert à rien ?
+## Misc
+
+- Table scroll
+- workspace.users ne sert à rien ?
+- select context, return {uuid, label}

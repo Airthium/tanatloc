@@ -1,7 +1,7 @@
 /** @module Components.Project.Simulation.MAterials.Database */
 
 import PropTypes from 'prop-types'
-import { useState } from 'react'
+import { Dispatch, SetStateAction, useState } from 'react'
 import { Button, Layout, List, Menu, Modal, Space } from 'antd'
 import { DatabaseOutlined } from '@ant-design/icons'
 
@@ -355,16 +355,22 @@ const materialDatabase: IMaterialDatabase = {
  */
 const DataBase = ({ onSelect }: IProps): JSX.Element => {
   // State
-  const [visible, setVisible]: [boolean, Function] = useState()
+  const [visible, setVisible]: [boolean, Dispatch<SetStateAction<boolean>>] =
+    useState()
 
   const [secondLevel, setSecondLevel]: [
     { key: string; children: IMaterialDatabase['key']['children'] },
-    Function
+    Dispatch<
+      SetStateAction<{
+        key: string
+        children: IMaterialDatabase['key']['children']
+      }>
+    >
   ] = useState()
 
   const [current, setCurrent]: [
     IMaterialDatabase['key']['children'][0],
-    Function
+    Dispatch<SetStateAction<IMaterialDatabase['key']['children'][0]>>
   ] = useState()
 
   // Data
@@ -381,7 +387,7 @@ const DataBase = ({ onSelect }: IProps): JSX.Element => {
       key,
       children: subDatabase.children
     })
-    setCurrent()
+    setCurrent(null)
   }
 
   /**

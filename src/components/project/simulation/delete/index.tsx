@@ -1,7 +1,7 @@
 /** @module Components.Project.Simulation.Delete */
 
 import PropTypes from 'prop-types'
-import { useState } from 'react'
+import { Dispatch, SetStateAction, useState } from 'react'
 
 import { ISimulation } from '@/database/index.d'
 import { IProjectWithData } from '@/lib/index.d'
@@ -33,7 +33,8 @@ const errors = {
  */
 const Delete = ({ project, simulation, swr }: IProps): JSX.Element => {
   // State
-  const [loading, setLoading]: [boolean, Function] = useState(false)
+  const [loading, setLoading]: [boolean, Dispatch<SetStateAction<boolean>>] =
+    useState(false)
 
   /**
    * On delete

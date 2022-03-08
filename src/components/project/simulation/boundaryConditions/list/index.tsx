@@ -1,7 +1,7 @@
 /** @module Components.Simulation.BoundaryConditions.List */
 
 import PropTypes from 'prop-types'
-import { useState } from 'react'
+import { Dispatch, SetStateAction, useState } from 'react'
 import { Card, Typography } from 'antd'
 
 import { ISimulation } from '@/database/index.d'
@@ -28,7 +28,8 @@ export interface IProps {
  */
 const List = ({ simulation, swr, onEdit }: IProps): JSX.Element => {
   // State
-  const [enabled, setEnabled]: [boolean, Function] = useState(true)
+  const [enabled, setEnabled]: [boolean, Dispatch<SetStateAction<boolean>>] =
+    useState(true)
 
   // Data
   const boundaryConditions = simulation.scheme.configuration.boundaryConditions

@@ -1,7 +1,7 @@
 /** @module Components.Project.Simulation.BoundaryConditions.Add */
 
 import PropTypes from 'prop-types'
-import { useState } from 'react'
+import { Dispatch, SetStateAction, useState } from 'react'
 import { v4 as uuid } from 'uuid'
 
 import { IGeometry, ISimulation } from '@/database/index.d'
@@ -51,7 +51,8 @@ const Add = ({
   onClose
 }: IProps): JSX.Element => {
   // State
-  const [loading, setLoading]: [boolean, Function] = useState(false)
+  const [loading, setLoading]: [boolean, Dispatch<SetStateAction<boolean>>] =
+    useState(false)
 
   /**
    * on Add

@@ -1,7 +1,7 @@
 /** @module Components.Project.Simulation.Materials.Material */
 
 import PropTypes from 'prop-types'
-import { useState, useEffect, useCallback } from 'react'
+import { Dispatch, SetStateAction, useState, useEffect, useCallback } from 'react'
 import { Button, Card, Drawer, Space, Typography } from 'antd'
 import { CloseOutlined, ExclamationCircleOutlined } from '@ant-design/icons'
 

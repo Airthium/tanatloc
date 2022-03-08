@@ -1,7 +1,7 @@
 /** @module Components.Project.Simulation.Initialization */
 
 import PropTypes from 'prop-types'
-import { useState, useEffect } from 'react'
+import { Dispatch, SetStateAction, useState, useEffect } from 'react'
 import { Collapse, Layout, Select, Space, Spin, Typography } from 'antd'
 
 import { ISimulation } from '@/database/index.d'
@@ -37,11 +37,18 @@ const Initialization = ({
   swr
 }: IProps): JSX.Element => {
   // State
-  const [loading, setLoading]: [boolean, Function] = useState(false)
-  const [currentKey, setCurrentKey]: [string, Function] = useState()
-  const [values, setValues]: [string[], Function] = useState([])
-  const [couplingSimulation, setCouplingSimulation]: [ISimulation, Function] =
-    useState()
+  const [loading, setLoading]: [boolean, Dispatch<SetStateAction<boolean>>] =
+    useState(false)
+  const [currentKey, setCurrentKey]: [
+    string,
+    Dispatch<SetStateAction<string>>
+  ] = useState()
+  const [values, setValues]: [string[], Dispatch<SetStateAction<string[]>>] =
+    useState([])
+  const [couplingSimulation, setCouplingSimulation]: [
+    ISimulation,
+    Dispatch<SetStateAction<ISimulation>>
+  ] = useState()
   const [couplingResults, setCouplingResults]: [
     { label: string; value: string }[],
     Function

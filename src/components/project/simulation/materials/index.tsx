@@ -1,7 +1,7 @@
 /** @module Components.Project.Simulation.Materials */
 
 import PropTypes from 'prop-types'
-import { useState, useEffect } from 'react'
+import { Dispatch, SetStateAction, useState, useEffect } from 'react'
 import { Card, Layout } from 'antd'
 
 import { IGeometry, ISimulation } from '@/database/index.d'
@@ -34,9 +34,14 @@ const Materials = ({
   setVisible
 }: IProps): JSX.Element => {
   // State
-  const [material, setMaterial]: [IModelMaterialValue, Function] = useState()
-  const [materialVisible, setMaterialVisible]: [boolean, Function] =
-    useState(false)
+  const [material, setMaterial]: [
+    IModelMaterialValue,
+    Dispatch<SetStateAction<IModelMaterialValue>>
+  ] = useState()
+  const [materialVisible, setMaterialVisible]: [
+    boolean,
+    Dispatch<SetStateAction<boolean>>
+  ] = useState(false)
 
   // Store
   const dispatch = useDispatch()
@@ -54,7 +59,7 @@ const Materials = ({
    * On add
    */
   const onAdd = (): void => {
-    setMaterial()
+    setMaterial(null)
     setMaterialVisible(true)
     setVisible(false)
     dispatch(enable())
@@ -79,7 +84,7 @@ const Materials = ({
   const onClose = (): void => {
     setMaterialVisible(false)
     setVisible(true)
-    setMaterial()
+    setMaterial(null)
     dispatch(disable())
   }
 

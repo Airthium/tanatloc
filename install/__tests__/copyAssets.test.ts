@@ -21,11 +21,42 @@ describe('install/copyAssets', () => {
 
   test('normal', async () => {
     await copyAssets()
-    expect(mockMkdir).toHaveBeenCalledTimes(1)
-    expect(mockCp).toHaveBeenCalledTimes(1)
+    expect(mockMkdir).toHaveBeenCalledTimes(2)
+    expect(mockCp).toHaveBeenCalledTimes(4)
   })
 
   test('error', async () => {
+    mockMkdir.mockImplementation(() => {
+      const error: Error & { code?: string } = new Error()
+      error.code = 'EEXIST'
+      throw error
+    })
+    await copyAssets()
+
+    mockMkdir.mockImplementationOnce(() => {
+      throw new Error('mkdir error')
+    })
+    try {
+      await copyAssets()
+      expect(true).toBe(false)
+    } catch (err) {
+      expect(err.message).toBe('mkdir error')
+    }
+
+    mockMkdir
+      .mockImplementationOnce(() => {
+        // No error
+      })
+      .mockImplementationOnce(() => {
+        throw new Error('mkdir error')
+      })
+    try {
+      await copyAssets()
+      expect(true).toBe(false)
+    } catch (err) {
+      expect(err.message).toBe('mkdir error')
+    }
+
     mockCp.mockImplementation(() => {
       throw new Error('cp error')
     })
@@ -34,28 +65,6 @@ describe('install/copyAssets', () => {
       expect(true).toBe(false)
     } catch (err) {
       expect(err.message).toBe('cp error')
-    }
-
-    mockMkdir.mockImplementation(() => {
-      const error: Error & { code?: string } = new Error()
-      error.code = 'EEXIST'
-      throw error
-    })
-    try {
-      await copyAssets()
-      expect(true).toBe(false)
-    } catch (err) {
-      expect(err.message).toBe('cp error')
-    }
-
-    mockMkdir.mockImplementation(() => {
-      throw new Error('mkdir error')
-    })
-    try {
-      await copyAssets()
-      expect(true).toBe(false)
-    } catch (err) {
-      expect(err.message).toBe('mkdir error')
     }
   })
 })

@@ -187,12 +187,24 @@ describe('lib/user', () => {
     expect(mockReadAvatar).toHaveBeenCalledTimes(0)
     expect(mockDelWorkspace).toHaveBeenCalledTimes(0)
 
-    // With email
+    // With email, with emailer
+    mockEmailRevalidate.mockImplementation(() => true)
     await User.update({ id: 'id' }, [{ key: 'email', value: 'email' }])
     expect(mockGet).toHaveBeenCalledTimes(0)
     expect(mockGetByUsernameAndPassword).toHaveBeenCalledTimes(0)
     expect(mockUpdate).toHaveBeenCalledTimes(2)
     expect(mockEmailRevalidate).toHaveBeenCalledTimes(1)
+    expect(mockDel).toHaveBeenCalledTimes(0)
+    expect(mockReadAvatar).toHaveBeenCalledTimes(0)
+    expect(mockDelWorkspace).toHaveBeenCalledTimes(0)
+
+    // With email, without emailer
+    mockEmailRevalidate.mockImplementation(() => false)
+    await User.update({ id: 'id' }, [{ key: 'email', value: 'email' }])
+    expect(mockGet).toHaveBeenCalledTimes(0)
+    expect(mockGetByUsernameAndPassword).toHaveBeenCalledTimes(0)
+    expect(mockUpdate).toHaveBeenCalledTimes(3)
+    expect(mockEmailRevalidate).toHaveBeenCalledTimes(2)
     expect(mockDel).toHaveBeenCalledTimes(0)
     expect(mockReadAvatar).toHaveBeenCalledTimes(0)
     expect(mockDelWorkspace).toHaveBeenCalledTimes(0)

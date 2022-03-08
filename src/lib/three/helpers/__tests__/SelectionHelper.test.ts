@@ -31,7 +31,9 @@ describe('lib/three/helpers/SelectionHelper', () => {
       return vector
     }
   }
-  const camera = {} as PerspectiveCamera
+  const camera = {
+    position: new Vector3(0, 0, 0)
+  } as PerspectiveCamera
   const scene = {
     children: []
   } as Scene
@@ -111,9 +113,14 @@ describe('lib/three/helpers/SelectionHelper', () => {
   test('raycaster', () => {
     global.MockBox2.getSize = (vector) => {
       vector.x = 10
-      vector.y = 10
+      vector.y = 100
     }
-    const selection = SelectionHelper(renderer, scene, camera, controls)
+    const selection = SelectionHelper(
+      renderer,
+      { children: [{ type: 'Part' }] } as Scene,
+      camera,
+      controls
+    )
 
     // No intersect
     global.MockRaycaster.intersectObject = []

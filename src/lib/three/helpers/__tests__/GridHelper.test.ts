@@ -52,12 +52,20 @@ describe('lib/three/helpers/GridHelper', () => {
       {
         children: [
           {
+            type: 'other'
+          },
+          {
+            type: 'Line',
             geometry: {
               dispose: jest.fn
             },
             material: {
               dispose: jest.fn
             }
+          },
+          {
+            type: 'LabelHelper',
+            dispose: jest.fn
           }
         ]
       }

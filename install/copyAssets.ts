@@ -23,6 +23,10 @@ const copyThreeAssets = async (): Promise<void> => {
   )
 }
 
+/**
+ * Copy MathJax assets
+ * @description Copy MathJax assets in `public/mathjax`:
+ */
 const copyMathjaxAssets = async (): Promise<void> => {
   // Create path
   try {

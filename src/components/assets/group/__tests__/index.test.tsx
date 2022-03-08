@@ -131,6 +131,9 @@ describe('components/assets/groups', () => {
   })
 
   test('onUpdate', async () => {
+    mockEditButton.mockImplementation((props) => (
+      <div role="EditButton" onClick={props.onEdit} />
+    ))
     mockDialog.mockImplementation((props) => (
       <div
         role="Dialog"
@@ -149,6 +152,9 @@ describe('components/assets/groups', () => {
         swr={swr}
       />
     )
+
+    const button = screen.getByRole('EditButton')
+    fireEvent.click(button)
 
     const dialog = screen.getByRole('Dialog')
 

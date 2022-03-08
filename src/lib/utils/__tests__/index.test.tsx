@@ -99,4 +99,22 @@ describe('lib/utils', () => {
     res = Utils.validateEmail('email@email.com')
     expect(res).toBe(true)
   })
+
+  test('getGitVersion', () => {
+    let res: string
+
+    // Empty
+    res = Utils.getGitVersion()
+    expect(res).toBe('')
+
+    // branch + hash
+    Object.defineProperty(process.env, 'NEXT_PUBLIC_SOURCE_BRANCH', {
+      value: 'dev'
+    })
+    Object.defineProperty(process.env, 'NEXT_PUBLIC_SOURCE_COMMIT', {
+      value: 'hash'
+    })
+    res = Utils.getGitVersion()
+    expect(res).toBe('git-dev-hash')
+  })
 })

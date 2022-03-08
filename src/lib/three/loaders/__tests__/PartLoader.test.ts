@@ -14,12 +14,13 @@ jest.mock('three/examples/jsm/math/Lut', () => ({
   }))
 }))
 
+const mockGLTFError = jest.fn()
 jest.mock('three/examples/jsm/loaders/GLTFLoader', () => ({
   GLTFLoader: class {
     setDRACOLoader = jest.fn()
     load = (_, finish, progress, error) => {
       progress('progress')
-      // error('error')
+      mockGLTFError(error)
       finish({
         scene: {
           children: [
@@ -143,6 +144,12 @@ describe('lib/three/loaders/PartLoader', () => {
   const mouseMoveEvent = jest.fn()
   const mouseDownEvent = jest.fn()
 
+  beforeEach(() => {
+    mockGLTFError.mockImplementation(() => {
+      // No callback
+    })
+  })
+
   test('call', () => {
     const partLoader = PartLoader(mouseMoveEvent, mouseDownEvent)
     expect(partLoader).toBeDefined()
@@ -178,6 +185,17 @@ describe('lib/three/loaders/PartLoader', () => {
 
     global.MockBox3.isEmpty = true
     await partLoader.load(part, true, clippingPlane)
+
+    // GLTF error
+    mockGLTFError.mockImplementation((callback) =>
+      callback(new Error('gltf error'))
+    )
+    try {
+      await partLoader.load(part, true, clippingPlane)
+      expect(true).toBe(false)
+    } catch (err) {
+      expect(err.message).toBe('gltf error')
+    }
   })
 
   test('dispose', async () => {

@@ -65,7 +65,8 @@ const Formula = ({
   ] = useState(defaultChecked)
   const [disabled, setDisabled]: [boolean, Dispatch<SetStateAction<boolean>>] =
     useState(defaultChecked !== undefined ? !defaultChecked : false)
-  const [autoSave, setAutoSave]: [number, Function] = useState(0)
+  const [autoSave, setAutoSave]: [number, Dispatch<SetStateAction<number>>] =
+    useState(0)
   const [saving, setSaving]: [boolean, Dispatch<SetStateAction<boolean>>] =
     useState(false)
 
@@ -107,7 +108,7 @@ const Formula = ({
         onValueChange(value)
         setSaving(false)
       }, saveDelay)
-      setAutoSave(id)
+      setAutoSave(+id)
     },
     [autoSave, onValueChange]
   )

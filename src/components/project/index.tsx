@@ -135,7 +135,7 @@ const Project = (): JSX.Element => {
   // Not logged -> go to login page
   useEffect(() => {
     if (!loadingUser && !user) router.replace('/login')
-  }, [user, loadingUser])
+  }, [user, loadingUser, router])
 
   // Errors
   useEffect(() => {
@@ -144,7 +144,7 @@ const Project = (): JSX.Element => {
     if (errorSimulations)
       ErrorNotification(errors.simulations, errorSimulations)
     if (errorGeometries) ErrorNotification(errors.geometries, errorGeometries)
-  }, [])
+  }, [errorUser, errorProject, errorSimulations, errorGeometries])
 
   // Auto open geometry add
   useEffect(() => {

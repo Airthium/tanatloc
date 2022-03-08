@@ -1,20 +1,21 @@
 import React from 'react'
 import { fireEvent, screen, render, waitFor } from '@testing-library/react'
 
-import Edit from '..'
-
-const mockError = jest.fn()
-jest.mock('@/components/assets/notification', () => ({
-  Error: () => mockError()
-}))
-
-const mockDialog = jest.fn()
-jest.mock('@/components/assets/dialog', () => (props) => mockDialog(props))
+import Edit, { errors } from '..'
 
 const mockEditButton = jest.fn()
 jest.mock('@/components/assets/button', () => ({
-  EditButton: (props) => mockEditButton(props)
+  EditButton: (props: any) => mockEditButton(props)
 }))
+
+const mockErrorNotification = jest.fn()
+jest.mock('@/components/assets/notification', () => ({
+  ErrorNotification: (title: string, err: Error) =>
+    mockErrorNotification(title, err)
+}))
+
+const mockDialog = jest.fn()
+jest.mock('@/components/assets/dialog', () => (props: any) => mockDialog(props))
 
 const mockUpdate = jest.fn()
 jest.mock('@/api/simulation', () => ({
@@ -31,7 +32,7 @@ describe('components/project/simulation/about/edit', () => {
   }
 
   beforeEach(() => {
-    mockError.mockReset()
+    mockErrorNotification.mockReset()
 
     mockDialog.mockReset()
     mockDialog.mockImplementation(() => <div />)
@@ -55,7 +56,14 @@ describe('components/project/simulation/about/edit', () => {
       <div role="EditButton" onClick={props.onEdit} />
     ))
     mockDialog.mockImplementation((props) => (
-      <div role="Dialog" onClick={props.onOk} />
+      <div
+        role="Dialog"
+        onClick={async () => {
+          try {
+            await props.onOk({})
+          } catch (err) {}
+        }}
+      />
     ))
     const { unmount } = render(<Edit simulation={simulation} swr={swr} />)
 
@@ -81,7 +89,13 @@ describe('components/project/simulation/about/edit', () => {
     await waitFor(() =>
       expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(1)
     )
-    await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
+      expect(mockErrorNotification).toHaveBeenLastCalledWith(
+        errors.update,
+        new Error('update error')
+      )
+    )
 
     unmount()
   })

@@ -12,6 +12,9 @@ import Copy from '../copy'
 import Edit from './edit'
 import Delete from '../delete'
 
+/**
+ * Props
+ */
 export interface IProps {
   project?: IProjectWithData
   simulation?: ISimulation
@@ -26,6 +29,7 @@ export interface IProps {
 /**
  * About
  * @param props Props
+ * @returns About
  */
 const About = ({ project, simulation, swr }: IProps): JSX.Element => {
   /**

@@ -6,12 +6,15 @@ import { Form, Input } from 'antd'
 
 import { ISimulation } from '@/database/index.d'
 
+import { EditButton } from '@/components/assets/button'
 import { ErrorNotification } from '@/components/assets/notification'
 import Dialog from '@/components/assets/dialog'
-import { EditButton } from '@/components/assets/button'
 
 import SimulationAPI from '@/api/simulation'
 
+/**
+ * Props
+ */
 export interface IProps {
   simulation: ISimulation
   swr: {
@@ -20,19 +23,21 @@ export interface IProps {
 }
 
 /**
- * Errors (about/edit)
+ * Errors
  */
-const errors = {
+export const errors = {
   update: 'Unable to update the simulation'
 }
 
 /**
  * On edit
+ * @param simulation Simulation
  * @param values Values
+ * @param swr SWR
  */
-const onEdit = async (
-  values: { name: string },
+export const onEdit = async (
   simulation: ISimulation,
+  values: { name: string },
   swr: IProps['swr']
 ): Promise<void> => {
   try {
@@ -55,6 +60,7 @@ const onEdit = async (
 /**
  * Edit
  * @param props Props
+ * @çeturns Edit
  */
 const Edit = ({ simulation, swr }: IProps): JSX.Element => {
   // State
@@ -77,15 +83,14 @@ const Edit = ({ simulation, swr }: IProps): JSX.Element => {
         onOk={async (values) => {
           setLoading(true)
           try {
-            await onEdit(values, simulation, swr)
-          } catch (err) {
-            setLoading(false)
-          } finally {
-            // Loading
-            setLoading(false)
+            await onEdit(simulation, values, swr)
 
             // Close
+            setLoading(false)
             setVisible(false)
+          } catch (err) {
+            setLoading(false)
+            throw err
           }
         }}
         loading={loading}

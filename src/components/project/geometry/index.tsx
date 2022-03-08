@@ -184,7 +184,6 @@ const Geometry = ({ project, geometry, swr, close }: IProps): JSX.Element => {
                   setDeleting(true)
                   try {
                     await onDelete(geometry, project, swr, close)
-                  } catch (err) {
                   } finally {
                     setDeleting(false)
                   }

@@ -7,7 +7,7 @@ import { DeleteOutlined } from '@ant-design/icons'
 
 import { IProjectWithData, IWorkspaceWithData } from '@/lib/index.d'
 
-import { DeleteDialog } from '@/components/assets/dialog'
+import { DeleteButton } from '@/components/assets/button'
 import { ErrorNotification } from '@/components/assets/notification'
 
 import ProjectAPI from '@/api/project'
@@ -28,14 +28,17 @@ export interface IProps {
 /**
  * Errors
  */
-const errors = {
+export const errors = {
   delError: 'Unable to delete the project'
 }
 
 /**
  * On delete
+ * @param workspace Workspace
+ * @param project Project
+ * @param swr SWR
  */
-const onDelete = async (
+export const onDelete = async (
   workspace: IWorkspaceWithData,
   project: IProjectWithData,
   swr: {
@@ -70,8 +73,6 @@ const onDelete = async (
  */
 const Delete = ({ disabled, workspace, project, swr }: IProps): JSX.Element => {
   // Sate
-  const [visible, setVisible]: [boolean, Dispatch<SetStateAction<boolean>>] =
-    useState(false)
   const [loading, setLoading]: [boolean, Dispatch<SetStateAction<boolean>>] =
     useState(false)
 
@@ -79,37 +80,20 @@ const Delete = ({ disabled, workspace, project, swr }: IProps): JSX.Element => {
    * Render
    */
   return (
-    <>
-      <Tooltip title="Delete">
-        <Button
-          disabled={disabled}
-          type="link"
-          danger
-          onClick={() => setVisible(true)}
-          icon={<DeleteOutlined />}
-        />
-      </Tooltip>
-      <DeleteDialog
-        title="Delete the project"
-        visible={visible}
-        onCancel={() => setVisible(false)}
-        onOk={async () => {
-          setLoading(true)
-          try {
-            onDelete(workspace, project, swr)
-            // Close
-            setLoading(false)
-            setVisible(false)
-          } catch (err) {
-            setLoading(false)
-            throw err
-          }
-        }}
-        loading={loading}
-      >
-        Are you sure you want to delete {project.title} ?
-      </DeleteDialog>
-    </>
+    <DeleteButton
+      disabled={disabled}
+      loading={loading}
+      title="Delete the project"
+      text={'Are you sure you want to delete ' + project.title + '?'}
+      onDelete={async () => {
+        setLoading(true)
+        try {
+          await onDelete(workspace, project, swr)
+        } finally {
+          setLoading(false)
+        }
+      }}
+    />
   )
 }
 

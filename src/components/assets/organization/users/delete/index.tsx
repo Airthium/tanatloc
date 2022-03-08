@@ -102,8 +102,11 @@ const Delete = ({
       loading={loading}
       onDelete={async () => {
         setLoading(true)
-        await onDelete(organization, user, dBkey, swr)
-        setLoading(false)
+        try {
+          await onDelete(organization, user, dBkey, swr)
+        } finally {
+          setLoading(false)
+        }
       }}
     />
   )

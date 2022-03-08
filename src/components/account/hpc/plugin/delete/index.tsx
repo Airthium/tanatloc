@@ -63,11 +63,15 @@ const Delete = ({ plugin, swr }: IProps): JSX.Element => {
   return (
     <DeleteButton
       loading={loading}
+      title="Delete plugin"
       text={'Delete "' + (plugin.configuration.name?.value || 'plugin') + '"?'}
       onDelete={async () => {
         setLoading(true)
-        await onDelete(plugin, swr)
-        setLoading(false)
+        try {
+          await onDelete(plugin, swr)
+        } finally {
+          setLoading(false)
+        }
       }}
     >
       Delete

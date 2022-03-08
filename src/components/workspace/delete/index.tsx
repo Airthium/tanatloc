@@ -68,8 +68,11 @@ const Delete = ({ workspace, swr }: IProps): JSX.Element => {
       text="The projects contained in this workspace will be lost."
       onDelete={async () => {
         setLoading(true)
-        await onDelete(workspace, swr)
-        setLoading(false)
+        try {
+          await onDelete(workspace, swr)
+        } finally {
+          setLoading(false)
+        }
       }}
     />
   )

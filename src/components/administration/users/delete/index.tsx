@@ -64,18 +64,19 @@ const Delete = ({ user, swr }: IProps): JSX.Element => {
    * Render
    */
   return (
-    <>
-      <DeleteButton
-        loading={loading}
-        text={'Delete ' + user.email + '?'}
-        title="Delete user"
-        onDelete={async () => {
-          setLoading(true)
+    <DeleteButton
+      loading={loading}
+      text={'Delete ' + user.email + '?'}
+      title="Delete user"
+      onDelete={async () => {
+        setLoading(true)
+        try {
           await onDelete(user, swr)
+        } finally {
           setLoading(false)
-        }}
-      />
-    </>
+        }
+      }}
+    />
   )
 }
 

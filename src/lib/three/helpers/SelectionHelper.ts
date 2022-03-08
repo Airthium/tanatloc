@@ -191,8 +191,6 @@ const SelectionHelper = (
     raycaster.setFromCamera(raycasterCenter, camera)
     const intersects = raycaster.intersectObject(object)
 
-    console.log(intersects)
-
     // Set center
     if (!intersects.length) return
     controls.target.copy(intersects[0].point)

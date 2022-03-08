@@ -28,7 +28,7 @@ export interface IProps {
 /**
  * Errors
  */
-const errors = {
+export const errors = {
   archive: 'Unable to archive project'
 }
 
@@ -36,11 +36,9 @@ const errors = {
  * On archive
  * @param workspace Workspace
  * @param project Project
- * @param setLoading Set loading
- * @param setVisible Set visible
  * @pram swr SWR
  */
-const onArchive = async (
+export const onArchive = async (
   workspace: IWorkspaceWithData,
   project: IProjectWithData,
   swr: {
@@ -104,7 +102,7 @@ const Archive = ({
         onOk={async () => {
           setLoading(true)
           try {
-            onArchive(workspace, project, swr)
+            await onArchive(workspace, project, swr)
             // Close
             setLoading(false)
             setVisible(false)

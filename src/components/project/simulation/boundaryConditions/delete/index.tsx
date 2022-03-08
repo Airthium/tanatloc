@@ -36,7 +36,8 @@ const errors = {
  */
 const Delete = ({ type, index, simulation, swr }: IProps): JSX.Element => {
   // State
-  const [loading, setLoading]: [boolean, Dispatch<SetStateAction<boolean>>] = useState(false)
+  const [loading, setLoading]: [boolean, Dispatch<SetStateAction<boolean>>] =
+    useState(false)
 
   // Data
   const dispatch = useDispatch()

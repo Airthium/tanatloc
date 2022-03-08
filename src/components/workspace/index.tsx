@@ -171,7 +171,10 @@ const Workspace = ({
         <ProjectList
           user={user}
           page={page}
-          workspace={workspace}
+          workspace={{
+            id: workspace.id,
+            projects: workspace.projects
+          }}
           projects={projects}
           organizations={organizations}
           filter={filter}

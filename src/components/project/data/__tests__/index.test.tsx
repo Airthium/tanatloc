@@ -3,6 +3,17 @@ import { fireEvent, render, screen } from '@testing-library/react'
 
 import Data from '..'
 
+const mockDownloadButton = jest.fn()
+jest.mock('@/components/assets/button', () => ({
+  DownloadButton: (props: any) => mockDownloadButton(props)
+}))
+
+const mockErrorNotification = jest.fn()
+jest.mock('@/components/assets/notification', () => ({
+  ErrorNotification: (title: string, err: Error) =>
+    mockErrorNotification(title, err)
+}))
+
 jest.mock('@/lib/utils', () => ({
   stringToColor: () => jest.fn()
 }))
@@ -13,9 +24,14 @@ jest.mock('@/api/simulation', () => ({
 }))
 
 describe('components/project/data', () => {
-  const simulation = { id: 'id' }
+  const simulation = { id: 'id', name: 'name' }
 
   beforeEach(() => {
+    mockDownloadButton.mockReset()
+    mockDownloadButton.mockImplementation(() => <div />)
+
+    mockErrorNotification.mockReset()
+
     mockSimulation.mockReset()
     mockSimulation.mockImplementation(() => ({}))
   })
@@ -86,6 +102,9 @@ describe('components/project/data', () => {
   })
 
   test('exportCSV', () => {
+    mockDownloadButton.mockImplementation((props) => (
+      <div role="DownloadButton" onClick={props.onDownload} />
+    ))
     const data = {
       tasks: [
         {
@@ -119,10 +138,8 @@ describe('components/project/data', () => {
     const button = screen.getByRole('button')
     fireEvent.click(button)
 
-    // Checkbox
-    const exportCSV = screen.getByRole('button', {
-      name: 'file-text Export CSV'
-    })
+    // Download
+    const exportCSV = screen.getByRole('DownloadButton')
     fireEvent.click(exportCSV)
 
     unmount()

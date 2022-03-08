@@ -13,11 +13,7 @@ import {
   Tooltip
 } from 'antd'
 import { CheckboxChangeEvent } from 'antd/lib/checkbox'
-import {
-  FileTextOutlined,
-  LineChartOutlined,
-  UpOutlined
-} from '@ant-design/icons'
+import { LineChartOutlined, UpOutlined } from '@ant-design/icons'
 import {
   CartesianGrid,
   Legend,
@@ -32,27 +28,38 @@ import { camelCase } from 'lodash'
 
 import { ISimulation } from '@/database/index.d'
 
+import { DownloadButton } from '@/components/assets/button'
+import { ErrorNotification } from '@/components/assets/notification'
+
 import Utils from '@/lib/utils'
 
 import SimulationAPI from '@/api/simulation'
-import { ErrorNotification } from '@/components/assets/notification'
 
+/**
+ * Props
+ */
 export interface IProps {
   simulation: ISimulation
 }
 
 /**
- * On check
- * @param {Object} event Event
- * @param {number} index Index
- * @param {string} name Name
- * @param {string} key Key
+ * Error
  */
-const onCheck = (
+export const errors = {
+  download: 'Unable to download CSV'
+}
+
+/**
+ * On check
+ * @param event Event
+ * @param index Index
+ * @param columnSelection Column selection
+ */
+export const onCheck = (
   event: CheckboxChangeEvent,
   index: number,
   columnSelection: { checked: boolean }[]
-) => {
+): { checked: boolean }[] => {
   const checked = event.target.checked
 
   const newSelection = [...columnSelection]
@@ -64,15 +71,18 @@ const onCheck = (
 
 /**
  * Export CSV
+ * @param simulation Simulation
+ * @param table Table
+ * @param infos Infos
  */
-const exportCSV = (
+export const exportCSV = (
+  simulation?: ISimulation,
   table?: { columns: TableColumnsType; data: Array<any> },
   infos?: {
     names: string[]
     camelNames: string[]
-  },
-  simulation?: ISimulation
-) => {
+  }
+): void => {
   const separator = ','
   let CSV = ''
 
@@ -104,6 +114,7 @@ const exportCSV = (
 /**
  * Data visualization
  * @param props Props
+ * @returns Data
  */
 const Data = ({ simulation }: IProps): JSX.Element => {
   // State
@@ -305,23 +316,22 @@ const Data = ({ simulation }: IProps): JSX.Element => {
         >
           <div style={{ display: 'flex', height: '100%' }}>
             <div style={{ height: '100%', width: '50%' }}>
-              <Button
+              <DownloadButton
                 loading={downloading}
                 disabled={!table?.data}
-                icon={<FileTextOutlined />}
-                onClick={() => {
+                onDownload={() => {
                   setDownloading(true)
                   try {
-                    exportCSV()
+                    exportCSV(simulation, table, infos)
                   } catch (err) {
-                    ErrorNotification(err)
+                    ErrorNotification(errors.download, err)
                   } finally {
                     setDownloading(false)
                   }
                 }}
               >
                 Export CSV
-              </Button>
+              </DownloadButton>
               <div style={{ height: '100%', width: '100%', overflow: 'auto' }}>
                 <Table
                   size="small"

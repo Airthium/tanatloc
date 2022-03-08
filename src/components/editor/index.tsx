@@ -2,7 +2,13 @@
 
 import { useRouter } from 'next/router'
 import dynamic from 'next/dynamic'
-import { ReactElement, useState, useEffect } from 'react'
+import {
+  Dispatch,
+  SetStateAction,
+  ReactElement,
+  useState,
+  useEffect
+} from 'react'
 import { Alert, Button, Layout, Steps, Space, Divider } from 'antd'
 
 import { GoBack } from '@/components/assets/button'
@@ -270,10 +276,13 @@ const initialConfiguration: IConfiguration = {
  */
 const Editor = (): JSX.Element => {
   // State
-  const [current, setCurrent]: [number, Function] = useState(-1)
-  const [panel, setPanel]: [IStep, Function] = useState()
-  const [configuration, setConfiguration]: [IConfiguration, Function] =
-    useState(initialConfiguration)
+  const [current, setCurrent]: [number, Dispatch<SetStateAction<number>>] =
+    useState(-1)
+  const [panel, setPanel]: [IStep, Dispatch<SetStateAction<IStep>>] = useState()
+  const [configuration, setConfiguration]: [
+    IConfiguration,
+    Dispatch<SetStateAction<IConfiguration>>
+  ] = useState(initialConfiguration)
 
   const [code, setCode] = useState('')
 
@@ -414,7 +423,7 @@ const Editor = (): JSX.Element => {
           visible={!!panel}
           title={panel?.title}
           onClose={() => {
-            setPanel()
+            setPanel(null)
             setCurrent(-1)
           }}
         >

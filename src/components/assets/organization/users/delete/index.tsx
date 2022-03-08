@@ -1,7 +1,7 @@
 /** @module Components.Assets.Organization.User.Delete */
 
 import PropTypes from 'prop-types'
-import { useState } from 'react'
+import { Dispatch, SetStateAction, useState } from 'react'
 
 import { IOrganizationWithData, IUserWithData } from '@/lib/index.d'
 
@@ -85,7 +85,8 @@ const Delete = ({
   swr
 }: IProps): JSX.Element => {
   // State
-  const [loading, setLoading]: [boolean, Function] = useState(false)
+  const [loading, setLoading]: [boolean, Dispatch<SetStateAction<boolean>>] =
+    useState(false)
 
   /**
    * Render

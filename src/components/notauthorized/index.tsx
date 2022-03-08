@@ -16,7 +16,7 @@ export const errors = {
  * Go home
  * @param router Router
  */
-const home = (router: NextRouter): void => {
+export const home = (router: NextRouter): void => {
   router.push('/')
 }
 

@@ -190,9 +190,14 @@ export interface IUpdaterProps {
  */
 const Updater = ({ user, simulation, swr }: IUpdaterProps): JSX.Element => {
   // State
-  const [needUpdate, setNeedUpdate]: [boolean, Function] = useState(false)
-  const [loading, setLoading]: [boolean, Function] = useState(false)
-  const [models, setModels]: [IModel[], Function] = useState([])
+  const [needUpdate, setNeedUpdate]: [
+    boolean,
+    Dispatch<SetStateAction<boolean>>
+  ] = useState(false)
+  const [loading, setLoading]: [boolean, Dispatch<SetStateAction<boolean>>] =
+    useState(false)
+  const [models, setModels]: [IModel[], Dispatch<SetStateAction<IModel[]>>] =
+    useState([])
 
   // Models
   useEffect(() => {

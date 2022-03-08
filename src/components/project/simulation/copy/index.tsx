@@ -1,7 +1,7 @@
 /** @module Components.Project.Simulation.Copy */
 
 import PropTypes from 'prop-types'
-import { useState } from 'react'
+import { Dispatch, SetStateAction, useState } from 'react'
 import { Button, Tooltip } from 'antd'
 import { CopyOutlined } from '@ant-design/icons'
 
@@ -34,7 +34,8 @@ const errors = {
  */
 const Copy = ({ project, simulation, swr }: IProps): JSX.Element => {
   // State
-  const [loading, setLoading]: [boolean, Function] = useState(false)
+  const [loading, setLoading]: [boolean, Dispatch<SetStateAction<boolean>>] =
+    useState(false)
 
   /**
    * On copy

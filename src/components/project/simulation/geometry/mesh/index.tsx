@@ -1,7 +1,7 @@
 /** @module Components.Project.Simulation.Geometry.Mesh */
 
 import PropTypes from 'prop-types'
-import { useState, useEffect } from 'react'
+import { Dispatch, SetStateAction, useState, useEffect } from 'react'
 import { Card, Select, Space, Typography } from 'antd'
 
 import { ISimulation } from '@/database/index.d'
@@ -31,8 +31,14 @@ const errors = {
  */
 const Mesh = ({ simulation, swr }: IProps): JSX.Element => {
   // State
-  const [meshGlobalType, setMeshGlobalType]: [string, Function] = useState()
-  const [meshGlobalValue, setMeshGlobalValue]: [string, Function] = useState()
+  const [meshGlobalType, setMeshGlobalType]: [
+    string,
+    Dispatch<SetStateAction<string>>
+  ] = useState()
+  const [meshGlobalValue, setMeshGlobalValue]: [
+    string,
+    Dispatch<SetStateAction<string>>
+  ] = useState()
 
   // Global
   useEffect(() => {

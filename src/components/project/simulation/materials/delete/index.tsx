@@ -1,7 +1,7 @@
 /** @module Components.Project.Simulation.Materials.Delete */
 
 import PropTypes from 'prop-types'
-import { useState } from 'react'
+import { Dispatch, SetStateAction, useState } from 'react'
 
 import { ISimulation } from '@/database/index.d'
 
@@ -34,7 +34,8 @@ const errors = {
  */
 const Delete = ({ index, simulation, swr }: IProps): JSX.Element => {
   // State
-  const [loading, setLoading]: [boolean, Function] = useState(false)
+  const [loading, setLoading]: [boolean, Dispatch<SetStateAction<boolean>>] =
+    useState(false)
 
   // Data
   const dispatch = useDispatch()

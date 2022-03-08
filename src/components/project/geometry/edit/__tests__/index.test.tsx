@@ -4,7 +4,7 @@ import { fireEvent, screen, render, waitFor } from '@testing-library/react'
 import Edit from '..'
 
 const mockDialog = jest.fn()
-jest.mock('@/components/assets/dialog', () => (props) => mockDialog(props))
+jest.mock('@/components/assets/dialog', () => (props: any) => mockDialog(props))
 
 describe('components/project/geometry/edit', () => {
   const visible = true

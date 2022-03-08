@@ -1,7 +1,7 @@
 import React from 'react'
 import { fireEvent, screen, render, waitFor } from '@testing-library/react'
 
-import Add from '..'
+import Add, { errors } from '..'
 
 const mockUpload = jest.fn()
 jest.mock('antd/lib/upload', () => (props) => mockUpload(props))
@@ -9,9 +9,10 @@ jest.mock('antd/lib/upload', () => (props) => mockUpload(props))
 const mockDialog = jest.fn()
 jest.mock('@/components/assets/dialog', () => (props) => mockDialog(props))
 
-const mockError = jest.fn()
+const mockErrorNotification = jest.fn()
 jest.mock('@/components/assets/notification', () => ({
-  Error: () => mockError()
+  ErrorNotification: (title: string, err: Error) =>
+    mockErrorNotification(title, err)
 }))
 
 const mockAdd = jest.fn()
@@ -44,7 +45,7 @@ describe('components/project/geometry/add', () => {
     mockDialog.mockReset()
     mockDialog.mockImplementation(() => <div />)
 
-    mockError.mockReset()
+    mockErrorNotification.mockReset()
 
     mockAdd.mockReset()
     mockAdd.mockImplementation(() => ({}))
@@ -156,7 +157,13 @@ describe('components/project/geometry/add', () => {
     })
     fireEvent.click(upload, { target: { value: JSON.stringify(info) } })
     await waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(2))
-    await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
+      expect(mockErrorNotification).toHaveBeenLastCalledWith(
+        errors.add,
+        new Error('add error')
+      )
+    )
 
     unmount()
   })

@@ -1,47 +1,28 @@
 import React from 'react'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
-import Geometry from '..'
+import Geometry, { errors } from '..'
+
+const mockDeleteButton = jest.fn()
+const mockDownloadButton = jest.fn()
+const mockEditButton = jest.fn()
+jest.mock('@/components/assets/button', () => ({
+  DeleteButton: (props: any) => mockDeleteButton(props),
+  DownloadButton: (props: any) => mockDownloadButton(props),
+  EditButton: (props: any) => mockEditButton(props)
+}))
+
+const mockErrorNotification = jest.fn()
+jest.mock('@/components/assets/notification', () => ({
+  ErrorNotification: (title: string, err: Error) =>
+    mockErrorNotification(title, err)
+}))
 
 jest.mock('@/components/assets/mathjax', () => ({
   Inline: () => <div />,
   Formula: () => <div />,
   Html: () => <div />
 }))
-
-const mockDeleteButton = (props) => (
-  <div role="DeleteButton" onClick={props.onDelete} />
-)
-const mockDownloadButton = (props) => (
-  <div role="DownloadButton" onClick={props.onDownload} />
-)
-const mockEditButton = (props) => (
-  <div role="EditButton" onClick={props.onEdit} />
-)
-jest.mock('@/components/assets/button', () => ({
-  DeleteButton: (props) => mockDeleteButton(props),
-  DownloadButton: (props) => mockDownloadButton(props),
-  EditButton: (props) => mockEditButton(props)
-}))
-
-const mockError = jest.fn()
-jest.mock('@/components/assets/notification', () => ({
-  Error: () => mockError()
-}))
-
-jest.mock('../add', () => () => <div />)
-
-const mockEdit = (props) => (
-  <div
-    role="Edit"
-    onClick={async () => {
-      try {
-        await props.onEdit({ name: 'name' })
-      } catch (err) {}
-    }}
-  />
-)
-jest.mock('../edit', () => (props) => mockEdit(props))
 
 const mockDel = jest.fn()
 const mockDownload = jest.fn()
@@ -51,6 +32,10 @@ jest.mock('@/api/geometry', () => ({
   download: async () => mockDownload(),
   update: async () => mockUpdate()
 }))
+
+jest.mock('../add', () => () => <div />)
+const mockEdit = jest.fn()
+jest.mock('../edit', () => (props: any) => mockEdit(props))
 
 describe('components/project/geometry', () => {
   const project = {
@@ -69,11 +54,23 @@ describe('components/project/geometry', () => {
   const close = jest.fn()
 
   beforeEach(() => {
-    mockError.mockReset()
+    mockDeleteButton.mockReset()
+    mockDeleteButton.mockImplementation(() => <div />)
+
+    mockDownloadButton.mockReset()
+    mockDownloadButton.mockImplementation(() => <div />)
+
+    mockEditButton.mockReset()
+    mockEditButton.mockImplementation(() => <div />)
+
+    mockErrorNotification.mockReset()
 
     mockDel.mockReset()
     mockDownload.mockReset()
     mockUpdate.mockReset()
+
+    mockEdit.mockReset()
+    mockEdit.mockImplementation(() => <div />)
   })
 
   test('render', () => {
@@ -115,6 +112,9 @@ describe('components/project/geometry', () => {
 
   test('download', async () => {
     window.URL.createObjectURL = jest.fn()
+    mockDownloadButton.mockImplementation((props) => (
+      <div role="DownloadButton" onClick={props.onDownload} />
+    ))
     mockDownload.mockImplementation(() => ({ buffer: 'buffer' }))
     const { unmount } = render(
       <Geometry project={project} geometry={geometry} swr={swr} close={close} />
@@ -128,16 +128,35 @@ describe('components/project/geometry', () => {
 
     // Error
     mockDownload.mockImplementation(() => {
-      throw new Error()
+      throw new Error('download error')
     })
     fireEvent.click(button)
     await waitFor(() => expect(mockDownload).toHaveBeenCalledTimes(2))
-    await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
+      expect(mockErrorNotification).toHaveBeenLastCalledWith(
+        errors.download,
+        new Error('download error')
+      )
+    )
 
     unmount()
   })
 
   test('onEdit', async () => {
+    mockEditButton.mockImplementation((props) => (
+      <div role="EditButton" onClick={props.onEdit} />
+    ))
+    mockEdit.mockImplementation((props) => (
+      <div
+        role="Edit"
+        onClick={async () => {
+          try {
+            await props.onEdit({ name: 'name' })
+          } catch (err) {}
+        }}
+      />
+    ))
     const { unmount } = render(
       <Geometry project={project} geometry={geometry} swr={swr} close={close} />
     )
@@ -155,16 +174,32 @@ describe('components/project/geometry', () => {
 
     // Error
     mockUpdate.mockImplementation(() => {
-      throw new Error()
+      throw new Error('update error')
     })
     fireEvent.click(button)
     await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
-    await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
+      expect(mockErrorNotification).toHaveBeenLastCalledWith(
+        errors.update,
+        new Error('update error')
+      )
+    )
 
     unmount()
   })
 
   test('onDelete', async () => {
+    mockDeleteButton.mockImplementation((props) => (
+      <div
+        role="DeleteButton"
+        onClick={async () => {
+          try {
+            await props.onDelete()
+          } catch (err) {}
+        }}
+      />
+    ))
     const { unmount } = render(
       <Geometry
         project={{ id: 'id', geometries: ['id'] }}
@@ -184,11 +219,17 @@ describe('components/project/geometry', () => {
 
     // Error
     mockDel.mockImplementation(() => {
-      throw new Error()
+      throw new Error('del error')
     })
     fireEvent.click(button)
     await waitFor(() => expect(mockDel).toHaveBeenCalledTimes(2))
-    await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
+      expect(mockErrorNotification).toHaveBeenLastCalledWith(
+        errors.del,
+        new Error('del error')
+      )
+    )
 
     unmount()
   })

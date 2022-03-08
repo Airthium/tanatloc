@@ -14,6 +14,9 @@ import { ErrorNotification } from '@/components/assets/notification'
 
 import GeometryAPI from '@/api/geometry'
 
+/**
+ * Props
+ */
 export interface IProps {
   visible: boolean
   project: IProjectWithData
@@ -25,17 +28,17 @@ export interface IProps {
 }
 
 /**
- * Errors (add)
+ * Errors
  */
-const errors = {
-  addError: 'Unable to add geometry'
+export const errors = {
+  add: 'Unable to add geometry'
 }
 
 /**
  * Upload check
  * @param file File
  */
-const beforeUpload = (file: { name: string }): boolean => {
+export const beforeUpload = (file: { name: string }): boolean => {
   return (
     file.name.toLowerCase().includes('.stp') ||
     file.name.toLowerCase().includes('.step') ||
@@ -47,7 +50,7 @@ const beforeUpload = (file: { name: string }): boolean => {
  * Get file
  * @param file File
  */
-const getFile = async (file: Blob): Promise<any> => {
+export const getFile = async (file: Blob): Promise<any> => {
   const reader = new FileReader()
   return new Promise((resolve) => {
     reader.addEventListener('load', () => {
@@ -59,11 +62,13 @@ const getFile = async (file: Blob): Promise<any> => {
 
 /**
  * On upload
+ * @param project Project
  * @param info Info
+ * @param swr SWR
  */
-const onUpload = async (
-  info: UploadChangeParam<any>,
+export const onUpload = async (
   project: IProps['project'],
+  info: UploadChangeParam<any>,
   swr: IProps['swr']
 ): Promise<void> => {
   if (info.file.status === 'done') {
@@ -87,7 +92,7 @@ const onUpload = async (
         geometries: [...(project.geometries || []), geometry.id]
       })
     } catch (err) {
-      ErrorNotification(errors.addError, err)
+      ErrorNotification(errors.add, err)
       throw err
     }
   }
@@ -116,16 +121,15 @@ const Add = ({ visible, project, swr, setVisible }: IProps): JSX.Element => {
           showUploadList={false}
           listType="picture-card"
           beforeUpload={beforeUpload}
-          onChange={(info) => {
+          onChange={async (info) => {
             if (info.file.status === 'uploading') setLoading(true)
             try {
-              onUpload(info, project, swr)
+              await onUpload(project, info, swr)
               // Close
               setLoading(false)
               setVisible(false)
             } catch (err) {
               setLoading(false)
-              throw err
             }
           }}
         >

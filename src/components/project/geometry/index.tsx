@@ -21,6 +21,9 @@ import GeometryAPI from '@/api/geometry'
 import Add from './add'
 import Edit from './edit'
 
+/**
+ * Props
+ */
 export interface IProps {
   project: IProjectWithData
   geometry: IGeometry
@@ -29,22 +32,23 @@ export interface IProps {
     mutateOneGeometry: (geometry: IGeometry) => void
     delOneGeometry: (geometry: IGeometry) => void
   }
-  close: Function
+  close: () => void
 }
 
 /**
  * Errors
  */
-const errors = {
-  downloadError: 'Unable to download geometry',
-  updateError: 'Unable to update geometry',
-  delError: 'Unable to delete geometry'
+export const errors = {
+  download: 'Unable to download geometry',
+  update: 'Unable to update geometry',
+  del: 'Unable to delete geometry'
 }
 
 /**
  * On download
+ * @param geometry Geometry
  */
-const onDownload = async (geometry: IGeometry): Promise<void> => {
+export const onDownload = async (geometry: IGeometry): Promise<void> => {
   try {
     const file = await GeometryAPI.download({ id: geometry.id })
     const data = new File(
@@ -58,16 +62,19 @@ const onDownload = async (geometry: IGeometry): Promise<void> => {
     link.click()
     link.remove()
   } catch (err) {
-    ErrorNotification(errors.updateError, err)
+    ErrorNotification(errors.download, err)
   }
 }
 
 /**
  * On edit
+ * @param geometry Geometry
+ * @param values Values
+ * @param swr SWR
  */
-const onEdit = async (
-  value: { name: string },
+export const onEdit = async (
   geometry: IGeometry,
+  values: { name: string },
   swr: IProps['swr']
 ): Promise<void> => {
   try {
@@ -75,27 +82,31 @@ const onEdit = async (
     await GeometryAPI.update({ id: geometry.id }, [
       {
         key: 'name',
-        value: value.name
+        value: values.name
       }
     ])
 
     // Local
-    geometry.name = value.name
+    geometry.name = values.name
     swr.mutateOneGeometry(geometry)
   } catch (err) {
-    ErrorNotification(errors.updateError, err)
+    ErrorNotification(errors.update, err)
     throw err
   }
 }
 
 /**
  * On delete
+ * @param geometry Geometry
+ * @param project Project
+ * @param close Close
+ * @param swr SWR
  */
-const onDelete = async (
+export const onDelete = async (
   geometry: IGeometry,
   project: IProjectWithData,
-  swr: IProps['swr'],
-  close: Function
+  close: () => void,
+  swr: IProps['swr']
 ): Promise<void> => {
   try {
     // API
@@ -114,13 +125,14 @@ const onDelete = async (
     // Close
     close()
   } catch (err) {
-    ErrorNotification(errors.delError, err)
+    ErrorNotification(errors.del, err)
   }
 }
 
 /**
  * Geometry
  * @param props Props
+ * @returns Geometry
  */
 const Geometry = ({ project, geometry, swr, close }: IProps): JSX.Element => {
   // State
@@ -168,11 +180,9 @@ const Geometry = ({ project, geometry, swr, close }: IProps): JSX.Element => {
                     name: geometry?.name
                   }}
                   setVisible={setEditVisible}
-                  onEdit={async (value: { name: string }) => {
-                    try {
-                      await onEdit(value, geometry, swr)
-                    } catch (err) {}
-                  }}
+                  onEdit={async (value: { name: string }) =>
+                    onEdit(geometry, value, swr)
+                  }
                 />
                 <EditButton onEdit={() => setEditVisible(true)} />
               </div>,
@@ -183,7 +193,7 @@ const Geometry = ({ project, geometry, swr, close }: IProps): JSX.Element => {
                 onDelete={async () => {
                   setDeleting(true)
                   try {
-                    await onDelete(geometry, project, swr, close)
+                    await onDelete(geometry, project, close, swr)
                   } finally {
                     setDeleting(false)
                   }

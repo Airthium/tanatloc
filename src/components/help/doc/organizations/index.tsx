@@ -4,6 +4,7 @@ import { Card, Collapse, Typography } from 'antd'
 
 /**
  * Organizations documentation
+ * @returns Organizations
  */
 const Organizations = (): JSX.Element => {
   /**
@@ -25,5 +26,7 @@ const Organizations = (): JSX.Element => {
     </Card>
   )
 }
+
+Organizations.propTypes = {}
 
 export default Organizations

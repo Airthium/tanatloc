@@ -10,9 +10,6 @@ jest.mock('@/components/assets/notification', () => ({
 
 jest.mock('@/components/assets/share', () => () => <div />)
 
-jest.mock('@/components/loading', () => ({
-  Simple: () => <div />
-}))
 jest.mock('@/components/project/add', () => () => <div />)
 jest.mock('@/components/project/list', () => () => <div />)
 
@@ -82,22 +79,6 @@ describe('components/workspace', () => {
   test('render', () => {
     const { unmount } = render(
       <Workspace
-        loading={loading}
-        user={user}
-        page="page"
-        workspace={workspace}
-        organizations={organizations}
-        swr={swr}
-      />
-    )
-
-    unmount()
-  })
-
-  test('loading', () => {
-    const { unmount } = render(
-      <Workspace
-        loading={true}
         user={user}
         page="page"
         workspace={workspace}
@@ -113,7 +94,6 @@ describe('components/workspace', () => {
     mockErrorNotificationProjects.mockImplementation(() => true)
     const { unmount } = render(
       <Workspace
-        loading={true}
         user={user}
         page="page"
         workspace={workspace}
@@ -128,7 +108,6 @@ describe('components/workspace', () => {
   test('onSearch', () => {
     const { unmount } = render(
       <Workspace
-        loading={loading}
         user={user}
         page="page"
         workspace={workspace}
@@ -146,7 +125,6 @@ describe('components/workspace', () => {
   test('onSort', () => {
     const { unmount } = render(
       <Workspace
-        loading={loading}
         user={user}
         page="page"
         workspace={workspace}
@@ -169,7 +147,6 @@ describe('components/workspace', () => {
   test('owner, users & groups', () => {
     const { unmount } = render(
       <Workspace
-        loading={loading}
         user={{ id: 'id' }}
         page="page"
         workspace={{

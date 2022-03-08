@@ -16,14 +16,13 @@ jest.mock('next/router', () => ({
 
 const mockErrorNotification = jest.fn()
 jest.mock('@/components/assets/notification', () => ({
-  ErrorNotification: () => mockErrorNotification()
+  ErrorNotification: (title: string, err: Error) =>
+    mockErrorNotification(title, err)
 }))
 
 jest.mock('@/components/loading', () => () => <div />)
 
-jest.mock('@/components/workspace', () => () => <div />)
-
-jest.mock('@/components/workspace/add', () => () => <div />)
+jest.mock('@/components/workspace/list', () => () => <div />)
 
 jest.mock('@/components/account', () => () => <div />)
 
@@ -33,12 +32,10 @@ jest.mock('@/components/administration', () => () => <div />)
 
 jest.mock('@/components/help', () => () => <div />)
 
-jest.mock('@/components/dashboard/welcome', () => () => <div />)
-
 const mockUser = jest.fn()
 const mockMutateUser = jest.fn()
 const mockClearUser = jest.fn()
-const mockErrorNotificationUser = jest.fn()
+const mockErrorUser = jest.fn()
 const mockLoadingUser = jest.fn()
 jest.mock('@/api/user', () => ({
   useUser: () => [
@@ -46,7 +43,7 @@ jest.mock('@/api/user', () => ({
     {
       mutateUser: mockMutateUser,
       clearUser: mockClearUser,
-      errorUser: mockErrorNotificationUser(),
+      errorUser: mockErrorUser(),
       loadingUser: mockLoadingUser()
     }
   ]
@@ -57,7 +54,7 @@ const mockReloadOrganizations = jest.fn()
 const mockAddOneOrganization = jest.fn()
 const mockDelOneOrganization = jest.fn()
 const mockMutateOneOrganization = jest.fn()
-const mockErrorNotificationOrganizations = jest.fn()
+const mockErrorOrganizations = jest.fn()
 const mockLoadingOrganizations = jest.fn()
 jest.mock('@/api/organization', () => ({
   useOrganizations: () => [
@@ -66,7 +63,7 @@ jest.mock('@/api/organization', () => ({
       addOneOrganization: mockAddOneOrganization,
       delOneOrganization: mockDelOneOrganization,
       mutateOnOrganization: mockMutateOneOrganization,
-      errorOrganizations: mockErrorNotificationOrganizations(),
+      errorOrganizations: mockErrorOrganizations(),
       loadingOrganizations: mockLoadingOrganizations()
     }
   ]
@@ -76,7 +73,7 @@ const mockWorkspaces = jest.fn()
 const mockAddOneWorkspace = jest.fn()
 const mockDelOneWorkspace = jest.fn()
 const mockMutateOneWorkspace = jest.fn()
-const mockErrorNotificationWorkspaces = jest.fn()
+const mockErrorWorkspaces = jest.fn()
 jest.mock('@/api/workspace', () => ({
   useWorkspaces: () => [
     mockWorkspaces(),
@@ -84,7 +81,7 @@ jest.mock('@/api/workspace', () => ({
       addOneWorkspace: mockAddOneWorkspace,
       delOneWorkspace: mockDelOneWorkspace,
       mutateOneWorkspace: mockMutateOneWorkspace,
-      errorWorkspaces: mockErrorNotificationWorkspaces()
+      errorWorkspaces: mockErrorWorkspaces()
     }
   ]
 }))
@@ -107,7 +104,7 @@ describe('components/dashboard', () => {
     mockUser.mockImplementation(() => ({ id: 'id', superuser: true }))
     mockMutateUser.mockReset()
     mockClearUser.mockReset()
-    mockErrorNotificationUser.mockReset()
+    mockErrorUser.mockReset()
     mockLoadingUser.mockReset()
 
     mockOrganizations.mockReset()
@@ -116,7 +113,7 @@ describe('components/dashboard', () => {
     mockAddOneOrganization.mockReset()
     mockDelOneOrganization.mockReset()
     mockMutateOneOrganization.mockReset()
-    mockErrorNotificationOrganizations.mockReset()
+    mockErrorOrganizations.mockReset()
     mockLoadingOrganizations.mockReset()
 
     mockWorkspaces.mockReset()
@@ -124,7 +121,7 @@ describe('components/dashboard', () => {
     mockAddOneWorkspace.mockReset()
     mockDelOneWorkspace.mockReset()
     mockMutateOneWorkspace.mockReset()
-    mockErrorNotificationWorkspaces.mockReset()
+    mockErrorWorkspaces.mockReset()
 
     mockLogout.mockReset()
   })
@@ -186,9 +183,9 @@ describe('components/dashboard', () => {
   })
 
   test('errors', () => {
-    mockErrorNotificationUser.mockImplementation(() => true)
-    mockErrorNotificationOrganizations.mockImplementation(() => true)
-    mockErrorNotificationWorkspaces.mockImplementation(() => true)
+    mockErrorUser.mockImplementation(() => true)
+    mockErrorOrganizations.mockImplementation(() => true)
+    mockErrorWorkspaces.mockImplementation(() => true)
     const { unmount } = render(<Dashboard />)
 
     expect(mockErrorNotification).toHaveBeenCalledTimes(3)

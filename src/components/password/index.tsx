@@ -184,4 +184,6 @@ const PasswordRecovery = (): JSX.Element => {
   )
 }
 
+PasswordRecovery.propTypes = {}
+
 export default PasswordRecovery

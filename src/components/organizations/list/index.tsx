@@ -10,15 +10,18 @@ import {
   IUserWithData
 } from '@/lib/index.d'
 
-import Delete from '../delete'
-
 import Utils from '@/lib/utils'
 
+import Delete from '../delete'
+
+/**
+ * Props
+ */
 export interface IProps {
   user: IUserWithData
   organizations: IOrganizationWithData[]
   swr: {
-    delOneOrganization: Function
+    delOneOrganization: (organization: IOrganizationWithData) => void
     loadingOrganizations: boolean
   }
   setOrganization: Function
@@ -27,6 +30,7 @@ export interface IProps {
 /**
  * List
  * @param props Props
+ * @returns List
  */
 const List = ({
   user,
@@ -35,6 +39,40 @@ const List = ({
   setOrganization
 }: IProps): JSX.Element => {
   // Data
+  const ownersRender = (owners: IUserWithData[]) => (
+    <Avatar.Group maxCount={5}>
+      {owners?.map((o) => Utils.userToAvatar(o))}
+    </Avatar.Group>
+  )
+  const usersRender = (users: IUserWithData[]) => (
+    <Avatar.Group maxCount={5}>
+      {users?.map((u) => Utils.userToAvatar(u))}
+    </Avatar.Group>
+  )
+  const groupsRender = (groups: IGroupWithData[]) => (
+    <Avatar.Group maxCount={5}>
+      {groups?.map((g) => Utils.groupToAvatar(g))}
+    </Avatar.Group>
+  )
+  const actionsRender = (org: IOrganizationWithData) => {
+    if (org.owners.find((o) => o.id === user.id))
+      return (
+        <Space wrap={true}>
+          <Button
+            icon={<ControlOutlined />}
+            onClick={() => setOrganization(org)}
+          >
+            Manage
+          </Button>
+          <Delete
+            organization={{
+              id: org.id
+            }}
+            swr={{ delOneOrganization: swr.delOneOrganization }}
+          />
+        </Space>
+      )
+  }
   const columns = [
     {
       title: 'Name',
@@ -50,56 +88,25 @@ const List = ({
       title: 'Administrators',
       dataIndex: 'owners',
       key: 'owners',
-      // eslint-disable-next-line react/display-name
-      render: (owners: IUserWithData[]) => (
-        <Avatar.Group maxCount={5}>
-          {owners?.map((o) => Utils.userToAvatar(o))}
-        </Avatar.Group>
-      )
+      render: ownersRender
     },
     {
       title: 'Users',
       dataIndex: 'users',
       key: 'users',
-      // eslint-disable-next-line react/display-name
-      render: (users: IUserWithData[]) => (
-        <Avatar.Group maxCount={5}>
-          {users?.map((u) => Utils.userToAvatar(u))}
-        </Avatar.Group>
-      )
+      render: usersRender
     },
     {
       title: 'Groups',
       dataIndex: 'groups',
       key: 'groups',
-      // eslint-disable-next-line react/display-name
-      render: (groups: IGroupWithData[]) => (
-        <Avatar.Group maxCount={5}>
-          {groups?.map((g) => Utils.groupToAvatar(g))}
-        </Avatar.Group>
-      )
+
+      render: groupsRender
     },
     {
       title: 'Actions',
       key: 'actions',
-      // eslint-disable-next-line react/display-name
-      render: (org: IOrganizationWithData) => {
-        if (org.owners.find((o) => o.id === user.id))
-          return (
-            <Space wrap={true}>
-              <Button
-                icon={<ControlOutlined />}
-                onClick={() => setOrganization(org)}
-              >
-                Manage
-              </Button>
-              <Delete
-                organization={org}
-                swr={{ delOneOrganization: swr.delOneOrganization }}
-              />
-            </Space>
-          )
-      }
+      render: actionsRender
     }
   ]
 
@@ -111,7 +118,6 @@ const List = ({
       loading={swr.loadingOrganizations}
       pagination={false}
       size="small"
-      scroll={{ y: 'calc(100vh - 206px)' }}
       columns={columns}
       dataSource={organizations?.map((organization) => ({
         key: organization.id,
@@ -129,7 +135,15 @@ List.propTypes = {
   user: PropTypes.exact({
     id: PropTypes.string.isRequired
   }).isRequired,
-  organizations: PropTypes.array.isRequired,
+  organizations: PropTypes.arrayOf(
+    PropTypes.exact({
+      id: PropTypes.string.isRequired,
+      name: PropTypes.string,
+      owners: PropTypes.array.isRequired,
+      users: PropTypes.array,
+      groups: PropTypes.array
+    })
+  ).isRequired,
   swr: PropTypes.exact({
     delOneOrganization: PropTypes.func.isRequired,
     loadingOrganizations: PropTypes.bool.isRequired

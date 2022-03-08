@@ -5,8 +5,8 @@ import { Dispatch, SetStateAction, useState } from 'react'
 
 import { IWorkspaceWithData } from '@/lib/index.d'
 
-import { ErrorNotification } from '@/components/assets/notification'
 import { DeleteButton } from '@/components/assets/button'
+import { ErrorNotification } from '@/components/assets/notification'
 
 import WorkspaceAPI from '@/api/workspace'
 
@@ -23,8 +23,8 @@ export interface IProps {
 /**
  * Errors
  */
-const errors = {
-  delError: 'Unable to delete the workspace'
+export const errors = {
+  del: 'Unable to delete the workspace'
 }
 
 /**
@@ -43,7 +43,7 @@ export const onDelete = async (
     // Mutate
     swr.delOneWorkspace({ id: workspace.id })
   } catch (err) {
-    ErrorNotification(errors.delError, err)
+    ErrorNotification(errors.del, err)
     throw err
   }
 }

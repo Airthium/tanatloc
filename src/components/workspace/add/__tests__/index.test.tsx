@@ -1,19 +1,20 @@
 import React from 'react'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
-import Add from '@/components/workspace/add'
-
-const mockDialog = jest.fn()
-jest.mock('@/components/assets/dialog', () => (props) => mockDialog(props))
-
-const mockError = jest.fn()
-jest.mock('@/components/assets/notification', () => ({
-  Error: () => mockError()
-}))
+import Add, { errors } from '@/components/workspace/add'
 
 const mockAddButton = jest.fn()
 jest.mock('@/components/assets/button', () => ({
-  AddButton: (props) => mockAddButton(props)
+  AddButton: (props: any) => mockAddButton(props)
+}))
+
+const mockDialog = jest.fn()
+jest.mock('@/components/assets/dialog', () => (props: any) => mockDialog(props))
+
+const mockErrorNotification = jest.fn()
+jest.mock('@/components/assets/notification', () => ({
+  ErrorNotification: (title: string, err: Error) =>
+    mockErrorNotification(title, err)
 }))
 
 const mockAdd = jest.fn()
@@ -28,7 +29,7 @@ describe('components/workspace/add', () => {
     mockDialog.mockReset()
     mockDialog.mockImplementation(() => <div />)
 
-    mockError.mockReset()
+    mockErrorNotification.mockReset()
 
     mockAddButton.mockReset()
     mockAddButton.mockImplementation(() => <div />)
@@ -43,11 +44,11 @@ describe('components/workspace/add', () => {
   })
 
   test('onCancel', () => {
-    mockDialog.mockImplementation((props) => (
-      <div role="Dialog" onClick={props.onCancel} />
-    ))
     mockAddButton.mockImplementation((props) => (
       <div role="AddButton" onClick={props.onAdd} />
+    ))
+    mockDialog.mockImplementation((props) => (
+      <div role="Dialog" onClick={props.onCancel} />
     ))
     const { unmount } = render(<Add swr={swr} />)
 
@@ -84,11 +85,17 @@ describe('components/workspace/add', () => {
 
     // Error
     mockAdd.mockImplementation(() => {
-      throw new Error()
+      throw new Error('add error')
     })
     fireEvent.click(dialog)
     await waitFor(() => expect(mockAdd).toHaveBeenCalledTimes(2))
-    await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
+      expect(mockErrorNotification).toHaveBeenLastCalledWith(
+        errors.add,
+        new Error('add error')
+      )
+    )
 
     unmount()
   })

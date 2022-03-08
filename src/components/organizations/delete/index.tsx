@@ -1,90 +1,85 @@
-/** @module Components.Organizations.Edit */
+/** @module Components.Organizations.Delete */
 
 import PropTypes from 'prop-types'
-import { useState } from 'react'
-import { Button } from 'antd'
-import { DeleteOutlined } from '@ant-design/icons'
+import { Dispatch, SetStateAction, useState } from 'react'
 
 import { IOrganizationWithData } from '@/lib/index.d'
 
-import { DeleteDialog } from '@/components/assets/dialog'
+import { DeleteButton } from '@/components/assets/button'
 import { ErrorNotification } from '@/components/assets/notification'
 
 import OrganizationAPI from '@/api/organization'
 
+/**
+ * Props
+ */
 export interface IProps {
   organization: IOrganizationWithData
   swr: {
-    delOneOrganization: Function
+    delOneOrganization: (organization: IOrganizationWithData) => void
   }
 }
 
 /**
- * Errors (delete)
+ * Errors
  */
-const errors = {
-  delError: 'Unable to delete the organization'
+export const errors = {
+  del: 'Unable to delete the organization'
+}
+
+/**
+ * On delete
+ * @param organization Organization
+ * @param swr SWR
+ */
+export const onDelete = async (
+  organization: IOrganizationWithData,
+  swr: { delOneOrganization: (organization: IOrganizationWithData) => void }
+): Promise<void> => {
+  try {
+    // API
+    await OrganizationAPI.del({ id: organization.id })
+
+    // Local
+    swr.delOneOrganization({ id: organization.id })
+  } catch (err) {
+    ErrorNotification(errors.del, err)
+  }
 }
 
 /**
  * Delete
  * @param props Props
+ * @returns Delete
  */
 const Delete = ({ organization, swr }: IProps): JSX.Element => {
   // State
-  const [visible, setVisible]: [boolean, Function] = useState(false)
-  const [loading, setLoading]: [boolean, Function] = useState(false)
-
-  /**
-   * On delete
-   */
-  const onDelete = async (): Promise<void> => {
-    setLoading(true)
-
-    try {
-      // API
-      await OrganizationAPI.del({ id: organization.id })
-
-      // Local
-      swr.delOneOrganization({ id: organization.id })
-
-      // Close
-      setVisible(false)
-    } catch (err) {
-      ErrorNotification(errors.delError, err)
-    } finally {
-      setLoading(false)
-    }
-  }
+  const [loading, setLoading]: [boolean, Dispatch<SetStateAction<boolean>>] =
+    useState(false)
 
   /**
    * Render
    */
   return (
-    <>
-      <Button
-        icon={<DeleteOutlined />}
-        danger
-        onClick={() => setVisible(true)}
-      />
-      <DeleteDialog
-        title="Delete organization"
-        visible={visible}
-        onCancel={() => setVisible(false)}
-        onOk={onDelete}
-        loading={loading}
-      >
-        Delete {organization?.name}?
-      </DeleteDialog>
-    </>
+    <DeleteButton
+      bordered
+      title="Delete organization"
+      text={'Delete ' + organization?.name + '?'}
+      onDelete={async () => {
+        setLoading(true)
+        await onDelete(organization, swr)
+        setLoading(false)
+      }}
+      loading={loading}
+    />
   )
 }
 
 Delete.propTypes = {
-  organization: PropTypes.shape({
+  organization: PropTypes.exact({
     id: PropTypes.string.isRequired
   }).isRequired,
-  swr: PropTypes.shape({
+  swr: PropTypes.exact({
     delOneOrganization: PropTypes.func.isRequired
   }).isRequired
 }

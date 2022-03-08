@@ -26,6 +26,11 @@ jest.mock('@/components/assets/mathjax', () => ({
   Html: () => <div />
 }))
 
+const mockGetGitVersion = jest.fn()
+jest.mock('@/lib/utils', () => ({
+  getGitVersion: () => mockGetGitVersion()
+}))
+
 const mockUser = jest.fn()
 const mockErrorNotificationUser = jest.fn()
 const mockLoadingUser = jest.fn()
@@ -42,6 +47,8 @@ describe('components/index', () => {
     mockPush.mockReset()
 
     mockErrorNotification.mockReset()
+
+    mockGetGitVersion.mockReset()
 
     mockUser.mockReset()
     mockErrorNotificationUser.mockReset()
@@ -116,12 +123,7 @@ describe('components/index', () => {
   })
 
   test('with git version', () => {
-    Object.defineProperty(process.env, 'NEXT_PUBLIC_SOURCE_BRANCH', {
-      value: 'dev'
-    })
-    Object.defineProperty(process.env, 'NEXT_PUBLIC_SOURCE_COMMIT', {
-      value: 'hash'
-    })
+    mockGetGitVersion.mockImplementation(() => 'git-dev-hash')
 
     const { unmount } = render(<Index />)
 

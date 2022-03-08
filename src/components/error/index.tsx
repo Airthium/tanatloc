@@ -4,13 +4,17 @@ import PropTypes from 'prop-types'
 import { useRouter } from 'next/router'
 import { Layout, Typography } from 'antd'
 
+/**
+ * Props
+ */
 export interface IProps {
   statusCode?: number
 }
 
 /**
  * Error page
- * @param {Object} props Props `{ statusCode }`
+ * @param props Props
+ * @return Error
  */
 function Error({ statusCode }: IProps): JSX.Element {
   // Router
@@ -29,10 +33,10 @@ function Error({ statusCode }: IProps): JSX.Element {
           {statusCode ? 'An error occurred on server' : 'An error occurred'}
         </Typography.Title>
         <Typography.Title
-          className="cursor-pointer"
           level={2}
           underline={true}
-          onClick={router.reload}
+          onClick={() => router.reload()}
+          style={{ cursor: 'pointer' }}
         >
           Please, refresh the page
         </Typography.Title>

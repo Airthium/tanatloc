@@ -1,7 +1,7 @@
 import React from 'react'
 import { fireEvent, render, screen } from '@testing-library/react'
 
-import NotAuthorized from '@/components/notauthorized'
+import NotAuthorized, { errors } from '@/components/notauthorized'
 
 const mockPrefetch = jest.fn()
 const mockPush = jest.fn()
@@ -21,6 +21,8 @@ describe('components/notfound', () => {
   test('render', () => {
     const { unmount } = render(<NotAuthorized />)
     expect(mockPrefetch).toHaveBeenCalledTimes(1)
+
+    screen.getByText(errors.notAllowed)
 
     unmount()
   })

@@ -8,6 +8,7 @@ import Organizations from './doc/organizations'
 
 /**
  * Help
+ * @returns Help
  */
 const Help = (): JSX.Element => {
   /**
@@ -35,5 +36,7 @@ const Help = (): JSX.Element => {
     </Layout>
   )
 }
+
+Help.propTypes = {}
 
 export default Help

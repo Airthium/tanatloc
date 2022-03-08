@@ -6,9 +6,9 @@ import { Form, Input } from 'antd'
 
 import { IWorkspaceWithData } from '@/lib/index.d'
 
+import { EditButton } from '@/components/assets/button'
 import Dialog from '@/components/assets/dialog'
 import { ErrorNotification } from '@/components/assets/notification'
-import { EditButton } from '@/components/assets/button'
 
 import WorkspaceAPI from '@/api/workspace'
 
@@ -25,7 +25,7 @@ export interface IProps {
 /**
  * Errors
  */
-const errors = {
+export const errors = {
   update: 'Unable to update the workspace'
 }
 

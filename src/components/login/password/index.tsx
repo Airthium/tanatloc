@@ -90,4 +90,6 @@ const PasswordRecover = (): JSX.Element => {
   )
 }
 
+PasswordRecover.propTypes = {}
+
 export default PasswordRecover

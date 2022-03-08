@@ -1,62 +1,67 @@
 /** @module Components.Organizations.Add */
 
 import PropTypes from 'prop-types'
-import { useState } from 'react'
-import { Button, Form, Input } from 'antd'
-import { PlusOutlined } from '@ant-design/icons'
+import { Dispatch, SetStateAction, useState } from 'react'
+import { Form, Input } from 'antd'
 
+import { INewOrganization } from '@/database/index.d'
+
+import { AddButton } from '@/components/assets/button'
 import Dialog from '@/components/assets/dialog'
 import { ErrorNotification } from '@/components/assets/notification'
 
 import OrganizationAPI from '@/api/organization'
 
+/**
+ * Props
+ */
 export interface IProps {
   swr: {
-    addOneOrganization: Function
+    addOneOrganization: (organization: INewOrganization) => void
   }
 }
 
 /**
- * Errors (add)
+ * Errors
  */
-const errors = {
-  addError: 'Unable to add organization'
+export const errors = {
+  add: 'Unable to add organization'
+}
+
+/**
+ * On add
+ * @param values Values
+ * @param swr SWR
+ */
+export const onAdd = async (
+  values: { name: string },
+  swr: { addOneOrganization: (origanization: INewOrganization) => void }
+): Promise<void> => {
+  try {
+    // API
+    const organization = await OrganizationAPI.add({ name: values.name })
+
+    // Local
+    organization.name = values.name
+    organization.owners = []
+    swr.addOneOrganization(organization)
+  } catch (err) {
+    ErrorNotification(errors.add, err)
+    throw err
+  }
 }
 
 /**
  * Add
  * @param props Props
+ * @returns Add
  */
 const Add = ({ swr }: IProps): JSX.Element => {
   // State
-  const [visible, setVisible]: [boolean, Function] = useState(false)
-  const [loading, setLoading]: [boolean, Function] = useState(false)
-
-  /**
-   * On add
-   * @param values Values
-   */
-  const onAdd = async (values: { name: string }): Promise<void> => {
-    setLoading(true)
-
-    try {
-      // API
-      const organization = await OrganizationAPI.add({ name: values.name })
-
-      // Local
-      organization.name = values.name
-      organization.owners = []
-      swr.addOneOrganization(organization)
-
-      // Close
-      setLoading(false)
-      setVisible(false)
-    } catch (err) {
-      ErrorNotification(errors.addError, err)
-      setLoading(false)
-      throw err
-    }
-  }
+  const [visible, setVisible]: [boolean, Dispatch<SetStateAction<boolean>>] =
+    useState(false)
+  const [loading, setLoading]: [boolean, Dispatch<SetStateAction<boolean>>] =
+    useState(false)
 
   /**
    * Render
@@ -67,7 +72,19 @@ const Add = ({ swr }: IProps): JSX.Element => {
         title="New organization"
         visible={visible}
         onCancel={() => setVisible(false)}
-        onOk={onAdd}
+        onOk={async (values) => {
+          setLoading(true)
+          try {
+            await onAdd(values, swr)
+
+            // Close
+            setLoading(false)
+            setVisible(false)
+          } catch (err) {
+            setLoading(false)
+            throw err
+          }
+        }}
         loading={loading}
       >
         <Form.Item
@@ -79,15 +96,13 @@ const Add = ({ swr }: IProps): JSX.Element => {
         </Form.Item>
       </Dialog>
 
-      <Button icon={<PlusOutlined />} onClick={() => setVisible(true)}>
-        New organization
-      </Button>
+      <AddButton onAdd={() => setVisible(true)}>New organization</AddButton>
     </>
   )
 }
 
 Add.propTypes = {
-  swr: PropTypes.shape({
+  swr: PropTypes.exact({
     addOneOrganization: PropTypes.func.isRequired
   }).isRequired
 }

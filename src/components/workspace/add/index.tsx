@@ -6,9 +6,9 @@ import { Form, Input } from 'antd'
 
 import { INewWorkspace } from '@/database/index.d'
 
+import { AddButton } from '@/components/assets/button'
 import Dialog from '@/components/assets/dialog'
 import { ErrorNotification } from '@/components/assets/notification'
-import { AddButton } from '@/components/assets/button'
 
 import WorkspaceAPI from '@/api/workspace'
 
@@ -24,7 +24,7 @@ export interface IProps {
 /**
  * Errors
  */
-const errors = {
+export const errors = {
   add: 'Unable to add the workspace'
 }
 
@@ -33,7 +33,7 @@ const errors = {
  * @param values Values
  * @param swr SWR
  */
-const onOk = async (
+export const onOk = async (
   values: { name: string },
   swr: { addOneWorkspace: (workspace: INewWorkspace) => void }
 ): Promise<void> => {
@@ -45,7 +45,6 @@ const onOk = async (
     swr.addOneWorkspace(workspace)
   } catch (err) {
     ErrorNotification(errors.add, err)
-
     throw err
   }
 }

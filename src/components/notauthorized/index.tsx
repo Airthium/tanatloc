@@ -8,7 +8,7 @@ import { AlertOutlined } from '@ant-design/icons'
 /**
  * Errors
  */
-const errors = {
+export const errors = {
   notAllowed: 'You are not authorized to be there.'
 }
 
@@ -56,5 +56,7 @@ const NotAuthorized = (): JSX.Element => {
     </Layout>
   )
 }
+
+NotAuthorized.propTypes = {}
 
 export default NotAuthorized

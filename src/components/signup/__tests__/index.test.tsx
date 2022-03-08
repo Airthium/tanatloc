@@ -21,8 +21,9 @@ jest.mock('@/components/assets/input', () => ({
 const mockErrorNotification = jest.fn()
 const mockFormError = jest.fn()
 jest.mock('@/components/assets/notification', () => ({
-  ErrorNotification: () => mockErrorNotification(),
-  FormError: (props) => mockFormError(props)
+  ErrorNotification: (title: string, err: Error) =>
+    mockErrorNotification(title, err),
+  FormError: (props: any) => mockFormError(props)
 }))
 
 jest.mock('@/components/loading', () => () => <div />)

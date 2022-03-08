@@ -29,6 +29,9 @@ import WorkspaceAPI from '@/api/workspace'
 import Workspace from '..'
 import Add from '../add'
 
+/**
+ * Props
+ */
 export interface IProps {
   user: IUserWithData
   workspaces: IWorkspaceWithData[]
@@ -43,7 +46,7 @@ export interface IProps {
 /**
  * Errors
  */
-const errors = {
+export const errors = {
   add: 'Unable to add the workspace'
 }
 
@@ -194,7 +197,7 @@ const WorkspacesList = ({
   )
 }
 
-// TODO
+// TODO propTypes
 WorkspacesList.propTypes = {
   user: PropTypes.exact({
     id: PropTypes.string.isRequired
@@ -204,7 +207,7 @@ WorkspacesList.propTypes = {
       id: PropTypes.string.isRequired,
       name: PropTypes.string.isRequired,
       projects: PropTypes.arrayOf(PropTypes.string).isRequired,
-      owners: PropTypes.array,
+      owners: PropTypes.array.isRequired,
       users: PropTypes.array,
       groups: PropTypes.array
     }).isRequired

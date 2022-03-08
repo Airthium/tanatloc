@@ -51,7 +51,7 @@ describe('components/organizations', () => {
     const { unmount } = render(
       <Organizations
         user={user}
-        organizations={[...organizations, { id: 'id' }]}
+        organizations={[...organizations, { id: 'id', owners: [] }]}
         swr={swr}
       />
     )
@@ -72,7 +72,7 @@ describe('components/organizations', () => {
     const { unmount } = render(
       <Organizations
         user={user}
-        organizations={[...organizations, { id: 'id' }]}
+        organizations={[...organizations, { id: 'id', owners: [] }]}
         swr={swr}
       />
     )

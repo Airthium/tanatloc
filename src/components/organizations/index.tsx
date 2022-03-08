@@ -1,16 +1,20 @@
 /** @module Components.Organizations */
 
 import PropTypes from 'prop-types'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Dispatch, SetStateAction } from 'react'
 import { Divider, Layout, PageHeader, Space, Typography } from 'antd'
 
 import { IOrganizationWithData, IUserWithData } from '@/lib/index.d'
 import { INewOrganization } from '@/database/index.d'
 
-import Add from './add'
-import List from './list'
 import Organization from '@/components/assets/organization'
 
+import Add from './add'
+import List from './list'
+
+/**
+ * Props
+ */
 export interface IProps {
   user: IUserWithData
   organizations: IOrganizationWithData[]
@@ -25,11 +29,14 @@ export interface IProps {
 /**
  * Organizations
  * @param props Props
+ * @returns Organizations
  */
 const Organizations = ({ user, organizations, swr }: IProps): JSX.Element => {
   // State
-  const [organization, setOrganization]: [IOrganizationWithData, Function] =
-    useState()
+  const [organization, setOrganization]: [
+    IOrganizationWithData,
+    Dispatch<SetStateAction<IOrganizationWithData>>
+  ] = useState()
 
   // Organization update
   useEffect(() => {
@@ -71,7 +78,7 @@ const Organizations = ({ user, organizations, swr }: IProps): JSX.Element => {
                 mutateOneOrganization: swr.mutateOneOrganization,
                 loadingOrganizations: swr.loadingOrganizations
               }}
-              onClose={() => setOrganization()}
+              onClose={() => setOrganization(null)}
             />
           ) : (
             <>
@@ -99,7 +106,15 @@ Organizations.propTypes = {
   user: PropTypes.exact({
     id: PropTypes.string.isRequired
   }).isRequired,
-  organizations: PropTypes.array.isRequired,
+  organizations: PropTypes.arrayOf(
+    PropTypes.exact({
+      id: PropTypes.string.isRequired,
+      name: PropTypes.string,
+      owners: PropTypes.array.isRequired,
+      users: PropTypes.array,
+      groups: PropTypes.array
+    })
+  ).isRequired,
   swr: PropTypes.exact({
     addOneOrganization: PropTypes.func.isRequired,
     delOneOrganization: PropTypes.func.isRequired,

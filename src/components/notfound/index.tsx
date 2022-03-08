@@ -5,6 +5,7 @@ import { Layout, Typography } from 'antd'
 
 /**
  * 404
+ * @returns NotFound
  */
 const NotFound = (): JSX.Element => {
   // Router
@@ -30,5 +31,7 @@ const NotFound = (): JSX.Element => {
     </Layout>
   )
 }
+
+NotFound.propTypes = {}
 
 export default NotFound

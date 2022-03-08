@@ -35,10 +35,10 @@ function Error({ statusCode }: IProps): JSX.Element {
         <Typography.Title
           level={2}
           underline={true}
-          onClick={() => router.reload}
+          onClick={() => router.reload()}
           style={{ cursor: 'pointer' }}
         >
-          Please refresh the page
+          Please, refresh the page
         </Typography.Title>
       </Layout.Content>
     </Layout>

@@ -169,6 +169,9 @@ describe('components/password', () => {
     )
 
     // Normal
+    mockLinkProcess.mockImplementation(() => {
+      // Empty
+    })
     fireEvent.click(button)
     await waitFor(() => expect(mockLinkProcess).toHaveBeenCalledTimes(1))
 

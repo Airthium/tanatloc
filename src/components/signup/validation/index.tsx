@@ -67,4 +67,6 @@ const Validation = (): JSX.Element => {
   )
 }
 
+Validation.propTypes = {}
+
 export default Validation

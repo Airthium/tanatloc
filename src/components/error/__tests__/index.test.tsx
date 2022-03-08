@@ -1,11 +1,11 @@
 import React from 'react'
-import { render } from '@testing-library/react'
+import { fireEvent, render, screen } from '@testing-library/react'
 
 import Error from '..'
 
 const mockReload = jest.fn()
 jest.mock('next/router', () => ({
-  useRouter: () => () => ({
+  useRouter: () => ({
     reload: () => mockReload()
   })
 }))
@@ -19,6 +19,19 @@ describe('components/error', () => {
 
   test('with statusCode', () => {
     const { unmount } = render(<Error statusCode={200} />)
+
+    unmount()
+  })
+
+  test('refresh', () => {
+    const { unmount } = render(<Error />)
+
+    const text = screen.getByRole('heading', {
+      name: 'Please, refresh the page'
+    })
+    fireEvent.click(text)
+
+    expect(mockReload).toHaveBeenCalledTimes(1)
 
     unmount()
   })

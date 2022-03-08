@@ -2,7 +2,7 @@
 
 import PropTypes from 'prop-types'
 import React, { useState, useEffect, Dispatch, SetStateAction } from 'react'
-import { Avatar, Button, Input, Layout, PageHeader, Space, Tabs } from 'antd'
+import { Avatar, Input, Layout, PageHeader, Space, Tabs } from 'antd'
 import { SearchOutlined } from '@ant-design/icons'
 
 import {

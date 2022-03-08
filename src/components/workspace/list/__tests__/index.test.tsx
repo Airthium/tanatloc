@@ -1,7 +1,7 @@
 import React from 'react'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
-import List from '..'
+import List, { errors } from '..'
 
 const mockQuery = jest.fn()
 jest.mock('next/router', () => ({
@@ -11,11 +11,12 @@ jest.mock('next/router', () => ({
 }))
 
 const mockDialog = jest.fn()
-jest.mock('@/components/assets/dialog', () => (props) => mockDialog(props))
+jest.mock('@/components/assets/dialog', () => (props: any) => mockDialog(props))
 
-const mockError = jest.fn()
+const mockErrorNotification = jest.fn()
 jest.mock('@/components/assets/notification', () => ({
-  Error: () => mockError()
+  ErrorNotification: (title: string, err: Error) =>
+    mockErrorNotification(title, err)
 }))
 
 const mockWorkspaceAdd = jest.fn()
@@ -28,7 +29,7 @@ jest.mock('../../add', () => () => <div />)
 
 describe('components/workspace/list', () => {
   const user = { id: 'id' }
-  const workspaces = [{ id: 'id' }]
+  const workspaces = [{ id: 'id', name: 'name', projects: [], owners: [] }]
   const organizations = [{ id: 'id' }]
   const swr = {
     addOneWorkspace: jest.fn(),
@@ -43,7 +44,7 @@ describe('components/workspace/list', () => {
     mockDialog.mockReset()
     mockDialog.mockImplementation(() => <div />)
 
-    mockError.mockReset()
+    mockErrorNotification.mockReset()
 
     mockWorkspaceAdd.mockReset()
 
@@ -96,7 +97,13 @@ describe('components/workspace/list', () => {
     })
     fireEvent.click(dialog)
     await waitFor(() => expect(mockWorkspaceAdd).toHaveBeenCalledTimes(1))
-    await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
+      expect(mockErrorNotification).toHaveBeenLastCalledWith(
+        errors.add,
+        new Error('add error')
+      )
+    )
 
     // Normal
     mockWorkspaceAdd.mockImplementation(() => ({}))

@@ -1,75 +1,82 @@
 /** @module Components.Project.Edit */
 
 import PropTypes from 'prop-types'
-import { useState } from 'react'
+import { Dispatch, SetStateAction, useState } from 'react'
 import { Form, Input } from 'antd'
 
 import { IProjectWithData } from '@/lib/index.d'
 
+import { EditButton } from '@/components/assets/button'
 import Dialog from '@/components/assets/dialog'
 import { ErrorNotification } from '@/components/assets/notification'
 
 import ProjectAPI from '@/api/project'
-import { EditButton } from '@/components/assets/button'
 
+/**
+ * Props
+ */
 export interface IProps {
   disabled?: boolean
   project: IProjectWithData
   swr: {
-    mutateOneProject: Function
+    mutateOneProject: (project: IProjectWithData) => void
   }
 }
 
 /**
- * Errors (edit)
+ * Errors
  */
-const errors = {
-  editError: 'Unable to edit a project'
+export const errors = {
+  edit: 'Unable to edit a project'
+}
+
+/**
+ * On edit
+ * @param project Project
+ * @param values Values
+ * @param swr SWR
+ */
+export const onEdit = async (
+  project: IProjectWithData,
+  values: {
+    title: string
+    description?: string
+  },
+  swr: { mutateOneProject: (project: IProjectWithData) => void }
+): Promise<void> => {
+  try {
+    // Edit
+    await ProjectAPI.update({ id: project.id }, [
+      {
+        key: 'title',
+        value: values.title
+      },
+      {
+        key: 'description',
+        value: values.description
+      }
+    ])
+
+    // Mutate projects
+    swr.mutateOneProject(project)
+  } catch (err) {
+    ErrorNotification(errors.edit, err)
+
+    throw err
+  }
 }
 
 /**
  * Edit project
  * @param props Props
+ * @returns Edit
  */
 const Edit = ({ disabled, project, swr }: IProps): JSX.Element => {
   // State
-  const [visible, setVisible]: [boolean, Function] = useState(false)
-  const [loading, setLoading]: [boolean, Function] = useState(false)
-
-  /**
-   * On edit
-   * @param values Values
-   */
-  const onEdit = async (values: {
-    title: string
-    description?: string
-  }): Promise<void> => {
-    setLoading(true)
-    try {
-      // Edit
-      await ProjectAPI.update({ id: project.id }, [
-        {
-          key: 'title',
-          value: values.title
-        },
-        {
-          key: 'description',
-          value: values.description
-        }
-      ])
-
-      // Mutate projects
-      swr.mutateOneProject(project)
-
-      // Close
-      setLoading(false)
-      setVisible(false)
-    } catch (err) {
-      ErrorNotification(errors.editError, err)
-      setLoading(false)
-      throw err
-    }
-  }
+  const [visible, setVisible]: [boolean, Dispatch<SetStateAction<boolean>>] =
+    useState(false)
+  const [loading, setLoading]: [boolean, Dispatch<SetStateAction<boolean>>] =
+    useState(false)
 
   /**
    * Render
@@ -81,7 +88,19 @@ const Edit = ({ disabled, project, swr }: IProps): JSX.Element => {
         title={'Edit "' + project.title + '" project'}
         visible={visible}
         onCancel={() => setVisible(false)}
-        onOk={onEdit}
+        onOk={async (values) => {
+          setLoading(true)
+          try {
+            await onEdit(project, values, swr)
+
+            // Close
+            setLoading(false)
+            setVisible(false)
+          } catch (err) {
+            setLoading(false)
+            throw err
+          }
+        }}
         loading={loading}
         initialValues={{
           title: project.title,

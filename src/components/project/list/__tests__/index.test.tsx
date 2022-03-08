@@ -27,7 +27,7 @@ jest.mock('@/lib/utils', () => ({
 
 describe('component/project/list', () => {
   const user = { id: 'id' }
-  const workspace = { id: 'id' }
+  const workspace = { id: 'id', projects: [] }
   const filter = 'filter'
   const sorter = 'sorter'
   const projects = [{ id: 'id' }, { id: 'id' }]

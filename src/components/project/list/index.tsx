@@ -52,6 +52,7 @@ export interface IProps {
 /**
  * Projects' list
  * @param props Props
+ * @returns ProjectList
  */
 const ProjectList = ({
   user,
@@ -89,6 +90,8 @@ const ProjectList = ({
 
   // Router
   const router = useRouter()
+
+  // List
   useEffect(() => {
     const currentList = projects
       .map((project) => {
@@ -174,13 +177,17 @@ const ProjectList = ({
     setLoading(false)
   }, [projects, filter, sorter])
 
-  // Open project
+  /**
+   * Open project
+   * @param project Project
+   */
   const openProject = (project: { id: string }): void => {
     router.push({
       pathname: '/project',
       query: { page: page, workspaceId: workspace.id, projectId: project.id }
     })
   }
+
   /**
    * Render
    */
@@ -335,11 +342,11 @@ const ProjectList = ({
 }
 
 ProjectList.propTypes = {
-  user: PropTypes.shape({
+  user: PropTypes.exact({
     id: PropTypes.string.isRequired
   }).isRequired,
   page: PropTypes.string.isRequired,
-  workspace: PropTypes.shape({
+  workspace: PropTypes.exact({
     id: PropTypes.string.isRequired,
     projects: PropTypes.arrayOf(PropTypes.string).isRequired
   }).isRequired,
@@ -347,7 +354,7 @@ ProjectList.propTypes = {
   organizations: PropTypes.array.isRequired,
   filter: PropTypes.string,
   sorter: PropTypes.string,
-  swr: PropTypes.shape({
+  swr: PropTypes.exact({
     mutateOneWorkspace: PropTypes.func.isRequired,
     delOneProject: PropTypes.func.isRequired,
     mutateOneProject: PropTypes.func.isRequired,

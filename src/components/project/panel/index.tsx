@@ -5,6 +5,9 @@ import { ReactChild } from 'react'
 import { Button, Card } from 'antd'
 import { CloseOutlined } from '@ant-design/icons'
 
+/**
+ * Props
+ */
 export interface IProps {
   visible: boolean
   title: string
@@ -15,8 +18,12 @@ export interface IProps {
 /**
  * Panel
  * @param props Props
+ * @returns Panel
  */
 const Panel = ({ visible, title, children, onClose }: IProps): JSX.Element => {
+  /**
+   * Render
+   */
   return (
     <Card
       className="panel"

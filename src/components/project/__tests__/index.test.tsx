@@ -1,7 +1,7 @@
 import React from 'react'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
-import Project from '@/components/project'
+import Project, { errors } from '@/components/project'
 
 const mockPush = jest.fn()
 const mockReplace = jest.fn()
@@ -308,54 +308,61 @@ describe('components/project', () => {
     unmount()
   })
 
-  // test('Update geometry', () => {
-  //   mockPanel.mockImplementation((props) => (
-  //     <div role="Panel" onClick={props.onClose} />
-  //   ))
+  test('Update geometry', () => {
+    mockPanel.mockImplementation((props) => (
+      <div role="Panel" onClick={props.onClose} />
+    ))
 
-  //   let geometryName = 'Geometry'
-  //   mockGeometries.mockImplementation(() => [{ id: 'idg', name: geometryName }])
+    let geometryName = 'Geometry'
+    const geometry = { id: 'idg', name: geometryName }
+    const geometries = [geometry]
+    mockGeometries.mockImplementation(() => geometries)
 
-  //   const { unmount } = render(<Project />)
+    const { unmount } = render(<Project />)
 
-  //   // Select geometry
-  //   const geometries = screen.getByRole('menuitem', {
-  //     name: 'pie-chart GEOMETRIES (1)'
-  //   })
-  //   fireEvent.click(geometries)
-  //   const simulations = screen.getByRole('menuitem', {
-  //     name: 'code-sandbox SIMULATIONS (3)'
-  //   })
-  //   fireEvent.click(simulations)
-  //   const simulation1 = screen.getByRole('menuitem', {
-  //     name: 'code-sandbox Simulation 1'
-  //   })
-  //   fireEvent.click(simulation1)
-  //   const simulationItem = screen.getByRole('menuitem', {
-  //     name: 'check-circle About'
-  //   })
+    // Select geometry
+    const geometriesItem = screen.getByRole('menuitem', {
+      name: 'pie-chart GEOMETRIES (1)'
+    })
+    fireEvent.click(geometriesItem)
 
-  //   const geometry = screen.getByRole('menuitem', { name: 'Geometry' })
-  //   fireEvent.click(geometry)
+    const simulations = screen.getByRole('menuitem', {
+      name: 'code-sandbox SIMULATIONS (3)'
+    })
+    fireEvent.click(simulations)
 
-  //   // Rename
-  //   geometryName = 'Geometry rename'
-  //   fireEvent.click(geometry)
+    const simulation1 = screen.getByRole('menuitem', {
+      name: 'code-sandbox Simulation 1'
+    })
+    fireEvent.click(simulation1)
 
-  //   // Close panel -> not visible
-  //   const panel = screen.getByRole('Panel')
-  //   fireEvent.click(panel)
+    const simulationItem = screen.getByRole('menuitem', {
+      name: 'check-circle About'
+    })
 
-  //   // Rename
-  //   geometryName = 'Geometry'
-  //   fireEvent.click(simulationItem)
+    const geometryItem = screen.getByRole('menuitem', {
+      name: 'pie-chart Geometry'
+    })
+    fireEvent.click(geometryItem)
 
-  //   // Delete geometry
-  //   mockGeometries.mockImplementation(() => [])
-  //   fireEvent.click(geometry)
+    // Rename
+    geometryName = 'Geometry rename'
+    fireEvent.click(geometryItem)
 
-  //   unmount()
-  // })
+    // Close panel -> not visible
+    const panel = screen.getByRole('Panel')
+    fireEvent.click(panel)
+
+    // Rename
+    geometryName = 'Geometry'
+    fireEvent.click(simulationItem)
+
+    // Delete geometry
+    mockGeometries.mockImplementation(() => [])
+    fireEvent.click(geometryItem)
+
+    unmount()
+  })
 
   test('Update simulation', () => {
     let simulationName = 'Simulation 1'
@@ -398,149 +405,167 @@ describe('components/project', () => {
     unmount()
   })
 
-  // test('menu', async () => {
-  //   mockSelector.mockImplementation((props) => (
-  //     <div role="Selector" onClick={props.onCancel} />
-  //   ))
-  //   mockPanel.mockImplementation((props) => <div>{props.children}</div>)
-  //   const { unmount } = render(<Project />)
+  test('menu', async () => {
+    mockSelector.mockImplementation((props) => (
+      <div role="Selector" onClick={props.onCancel} />
+    ))
+    mockPanel.mockImplementation((props) => <div>{props.children}</div>)
+    const { unmount } = render(<Project />)
 
-  //   // Open submenus
-  //   const geometries = screen.getByRole('menuitem', {
-  //     name: 'pie-chart GEOMETRIES (1)'
-  //   })
-  //   fireEvent.click(geometries)
+    // Open submenus
+    const geometries = screen.getByRole('menuitem', {
+      name: 'pie-chart GEOMETRIES (1)'
+    })
+    fireEvent.click(geometries)
 
-  //   const simulations = screen.getByRole('menuitem', {
-  //     name: 'code-sandbox SIMULATIONS (3)'
-  //   })
-  //   fireEvent.click(simulations)
+    const simulations = screen.getByRole('menuitem', {
+      name: 'code-sandbox SIMULATIONS (3)'
+    })
+    fireEvent.click(simulations)
 
-  //   // Click geometry
-  //   const geometry = screen.getByRole('menuitem', { name: 'Geometry' })
-  //   fireEvent.click(geometry)
+    // Click geometry
+    const geometry = screen.getByRole('menuitem', {
+      name: 'pie-chart Geometry'
+    })
+    fireEvent.click(geometry)
 
-  //   // Click new geometry
-  //   const newGeometry = screen.getByRole('button', {
-  //     name: 'upload New Geometry'
-  //   })
-  //   fireEvent.click(newGeometry)
+    // Click new geometry
+    const newGeometry = screen.getByRole('button', {
+      name: 'upload New Geometry'
+    })
+    fireEvent.click(newGeometry)
 
-  //   // Click new simulation
-  //   const newSimulation = screen.getByRole('button', {
-  //     name: 'plus-circle New Simulation'
-  //   })
-  //   fireEvent.click(newSimulation)
+    // Click new simulation
+    const newSimulation = screen.getByRole('button', {
+      name: 'plus-circle New Simulation'
+    })
+    fireEvent.click(newSimulation)
 
-  //   // Close selector
-  //   const selector = screen.getByRole('Selector')
-  //   fireEvent.click(selector)
+    // Close selector
+    const selector = screen.getByRole('Selector')
+    fireEvent.click(selector)
 
-  //   // Open simulation 2
-  //   const simulation2 = screen.getByRole('menuitem', {
-  //     name: 'code-sandbox Simulation 2'
-  //   })
-  //   fireEvent.click(simulation2)
+    // Open simulation 2
+    const simulation2 = screen.getByRole('menuitem', {
+      name: 'code-sandbox Simulation 2'
+    })
+    fireEvent.click(simulation2)
 
-  //   // Open simulation 1
-  //   const simulation1 = screen.getByRole('menuitem', {
-  //     name: 'code-sandbox Simulation 1'
-  //   })
-  //   fireEvent.click(simulation1)
+    // Open simulation 1
+    const simulation1 = screen.getByRole('menuitem', {
+      name: 'code-sandbox Simulation 1'
+    })
+    fireEvent.click(simulation1)
 
-  //   // Click simulation items
-  //   let simulationItems = screen.getAllByRole('menuitem', {
-  //     name: 'check-circle About'
-  //   })
-  //   fireEvent.click(simulationItems[1])
+    // Click simulation items
+    let simulationItems = screen.getAllByRole('menuitem', {
+      name: 'check-circle About'
+    })
+    fireEvent.click(simulationItems[1])
 
-  //   let simulationItem = screen.getByRole('menuitem', {
-  //     name: 'exclamation-circle Simulation 1 Geometry'
-  //   })
-  //   fireEvent.click(simulationItem)
+    let simulationItem = screen.getByRole('menuitem', {
+      name: 'exclamation-circle Simulation 1 Geometry'
+    })
+    fireEvent.click(simulationItem)
 
-  //   simulationItem = screen.getByRole('menuitem', {
-  //     name: 'check-circle Simulation 1 Parameters'
-  //   })
-  //   fireEvent.click(simulationItem)
+    simulationItem = screen.getByRole('menuitem', {
+      name: 'check-circle Simulation 1 Parameters'
+    })
+    fireEvent.click(simulationItem)
 
-  //   simulationItem = screen.getByRole('menuitem', {
-  //     name: 'exclamation-circle Simulation 1 Materials'
-  //   })
-  //   fireEvent.click(simulationItem)
-  //   const materials = screen.getByRole('Simulation.Materials')
-  //   fireEvent.click(materials)
+    simulationItem = screen.getByRole('menuitem', {
+      name: 'exclamation-circle Simulation 1 Materials'
+    })
+    fireEvent.click(simulationItem)
+    const materials = screen.getByRole('Simulation.Materials')
+    fireEvent.click(materials)
 
-  //   simulationItem = screen.getByRole('menuitem', {
-  //     name: 'exclamation-circle Simulation 1 Initialization'
-  //   })
-  //   fireEvent.click(simulationItem)
+    simulationItem = screen.getByRole('menuitem', {
+      name: 'exclamation-circle Simulation 1 Initialization'
+    })
+    fireEvent.click(simulationItem)
 
-  //   simulationItem = screen.getByRole('menuitem', {
-  //     name: 'exclamation-circle Simulation 1 BC'
-  //   })
-  //   fireEvent.click(simulationItem)
-  //   const boundaryCondition = screen.getByRole('Simulation.BoundaryCondition')
-  //   fireEvent.click(boundaryCondition)
+    simulationItem = screen.getByRole('menuitem', {
+      name: 'exclamation-circle Simulation 1 BC'
+    })
+    fireEvent.click(simulationItem)
+    const boundaryCondition = screen.getByRole('Simulation.BoundaryCondition')
+    fireEvent.click(boundaryCondition)
 
-  //   simulationItem = screen.getByRole('menuitem', {
-  //     name: 'exclamation-circle Simulation 1 Run'
-  //   })
-  //   fireEvent.click(simulationItem)
+    simulationItem = screen.getByRole('menuitem', {
+      name: 'exclamation-circle Simulation 1 Run'
+    })
+    fireEvent.click(simulationItem)
 
-  //   simulationItem = screen.getByRole('menuitem', {
-  //     name: 'exclamation-circle Simulation 1 Unknown'
-  //   })
-  //   fireEvent.click(simulationItem)
+    simulationItem = screen.getByRole('menuitem', {
+      name: 'exclamation-circle Simulation 1 Unknown'
+    })
+    fireEvent.click(simulationItem)
 
-  //   // Open simulation 3
-  //   const simulation3 = screen.getByRole('menuitem', {
-  //     name: 'code-sandbox Simulation 3'
-  //   })
-  //   fireEvent.click(simulation3)
+    // Open simulation 3
+    const simulation3 = screen.getByRole('menuitem', {
+      name: 'code-sandbox Simulation 3'
+    })
+    fireEvent.click(simulation3)
 
-  //   simulationItem = screen.getByRole('menuitem', {
-  //     name: 'exclamation-circle Simulation 3 Geometry'
-  //   })
-  //   fireEvent.click(simulationItem)
+    simulationItem = screen.getByRole('menuitem', {
+      name: 'exclamation-circle Simulation 3 Geometry'
+    })
+    fireEvent.click(simulationItem)
 
-  //   unmount()
-  // })
+    unmount()
+  })
 
-  // test('Selector', async () => {
-  //   mockProject.mockImplementation(() => ({}))
-  //   mockSelector.mockImplementation((props) => (
-  //     <div role="Selector" onClick={() => props.onOk({})} />
-  //   ))
-  //   const { unmount } = render(<Project />)
+  test('Selector', async () => {
+    mockProject.mockImplementation(() => ({}))
+    mockSelector.mockImplementation((props) => (
+      <div role="Selector" onClick={() => props.onOk({})} />
+    ))
+    const { unmount } = render(<Project />)
 
-  //   const selector = screen.getByRole('Selector')
+    const selector = screen.getByRole('Selector')
 
-  //   // Normal
-  //   mockSimulationAdd.mockImplementation(() => ({ id: 'id' }))
-  //   fireEvent.click(selector)
-  //   await waitFor(() => expect(mockSimulationAdd).toHaveBeenCalledTimes(1))
+    // Normal
+    mockSimulationAdd.mockImplementation(() => ({ id: 'id' }))
+    fireEvent.click(selector)
+    await waitFor(() => expect(mockSimulationAdd).toHaveBeenCalledTimes(1))
 
-  //   // Error
-  //   mockSimulationAdd.mockImplementation(() => {
-  //     throw new Error()
-  //   })
-  //   fireEvent.click(selector)
-  //   await waitFor(() => expect(mockSimulationAdd).toHaveBeenCalledTimes(2))
-  //   await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
+    // Error
+    mockSimulationAdd.mockImplementation(() => {
+      throw new Error('add error')
+    })
+    fireEvent.click(selector)
+    await waitFor(() => expect(mockSimulationAdd).toHaveBeenCalledTimes(2))
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
+      expect(mockErrorNotification).toHaveBeenLastCalledWith(
+        errors.add,
+        new Error('add error')
+      )
+    )
 
-  //   unmount()
-  // })
+    unmount()
+  })
 
-  // test('panel', () => {
-  //   mockPanel.mockImplementation((props) => (
-  //     <div role="Panel" onClick={props.onClose} />
-  //   ))
-  //   const { unmount } = render(<Project />)
+  test('panel', () => {
+    mockPanel.mockImplementation((props) => (
+      <div role="Panel" onClick={props.onClose} />
+    ))
+    const { unmount } = render(<Project />)
 
-  //   const panel = screen.getByRole('Panel')
-  //   fireEvent.click(panel)
+    const geometries = screen.getByRole('menuitem', {
+      name: 'pie-chart GEOMETRIES (1)'
+    })
+    fireEvent.click(geometries)
 
-  //   unmount()
-  // })
+    const geometryItem = screen.getByRole('menuitem', {
+      name: 'pie-chart Geometry'
+    })
+    fireEvent.click(geometryItem)
+
+    const panel = screen.getByRole('Panel')
+    fireEvent.click(panel)
+
+    unmount()
+  })
 })

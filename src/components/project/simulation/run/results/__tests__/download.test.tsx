@@ -1,11 +1,12 @@
 import React from 'react'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
-import Download from '../download'
+import Download, { errors } from '../download'
 
-const mockError = jest.fn()
+const mockErrorNotification = jest.fn()
 jest.mock('@/components/assets/notification', () => ({
-  Error: () => mockError()
+  ErrorNotification: (title: string, err: Error) =>
+    mockErrorNotification(title, err)
 }))
 
 const mockResultDownload = jest.fn()
@@ -18,12 +19,11 @@ describe('components/project/simulation/run/results/archive', () => {
   const file = {
     name: 'name',
     fileName: 'fileName',
-    originPath: 'originPath',
-    type: 'result'
+    originPath: 'originPath'
   }
 
   beforeEach(() => {
-    mockError.mockReset()
+    mockErrorNotification.mockReset()
 
     mockResultDownload.mockReset()
   })
@@ -45,7 +45,13 @@ describe('components/project/simulation/run/results/archive', () => {
     })
     fireEvent.click(button)
     await waitFor(() => expect(mockResultDownload).toHaveBeenCalledTimes(1))
-    await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
+      expect(mockErrorNotification).toHaveBeenLastCalledWith(
+        errors.download,
+        new Error('download error')
+      )
+    )
 
     // Normal
     window.URL.createObjectURL = jest.fn()

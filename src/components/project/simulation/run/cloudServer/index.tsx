@@ -22,6 +22,9 @@ import { ErrorNotification } from '@/components/assets/notification'
 import PluginAPI from '@/api/plugin'
 import PluginsAPI from '@/api/plugins'
 
+/**
+ * Props
+ */
 export interface IProps {
   disabled?: boolean
   cloudServer?: IModel['configuration']['run']['cloudServer']
@@ -29,9 +32,9 @@ export interface IProps {
 }
 
 /**
- * Errors (run/cloudServer)
+ * Errors
  */
-const errors = {
+export const errors = {
   plugins: 'Plugins error',
   pluginsLoad: 'Unable to load plugins'
 }
@@ -39,6 +42,7 @@ const errors = {
 /**
  * Cloud server
  * @param props Props
+ * @returns CloudServer
  */
 const CloudServer = ({ disabled, cloudServer, onOk }: IProps): JSX.Element => {
   // State

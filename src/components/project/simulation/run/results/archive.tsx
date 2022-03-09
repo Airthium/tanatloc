@@ -2,20 +2,25 @@
 
 import PropTypes from 'prop-types'
 import { Dispatch, SetStateAction, useState } from 'react'
-import { Button, Tooltip } from 'antd'
-import { DownloadOutlined } from '@ant-design/icons'
 
+import { DownloadButton } from '@/components/assets/button'
 import { ErrorNotification } from '@/components/assets/notification'
 
 import ResultAPI from '@/api/result'
 
 import { ISimulation } from '@/database/index.d'
 
+/**
+ * Props
+ */
 export interface IProps {
   simulation: ISimulation
 }
 
-const errors = {
+/**
+ * Errors
+ */
+export const errors = {
   archive: 'Unable to download the archive'
 }
 
@@ -40,6 +45,7 @@ export const onArchive = async (simulation: ISimulation) => {
 /**
  * Archive
  * @param props Props
+ * @returns Archive
  */
 const Archive = ({ simulation }: IProps): JSX.Element => {
   // State
@@ -50,21 +56,18 @@ const Archive = ({ simulation }: IProps): JSX.Element => {
    * Render
    */
   return (
-    <Tooltip title="Download archive">
-      <Button
-        loading={loading}
-        icon={<DownloadOutlined />}
-        onClick={async () => {
-          setLoading(true)
-          try {
-            await onArchive(simulation)
-          } catch (err) {
-          } finally {
-            setLoading(false)
-          }
-        }}
-      />
-    </Tooltip>
+    <DownloadButton
+      loading={loading}
+      onDownload={async () => {
+        setLoading(true)
+        try {
+          await onArchive(simulation)
+        } catch (err) {
+        } finally {
+          setLoading(false)
+        }
+      }}
+    />
   )
 }
 

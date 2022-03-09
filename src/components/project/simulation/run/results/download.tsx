@@ -11,21 +11,29 @@ import ResultAPI from '@/api/result'
 
 import { ISimulation, ISimulationTaskFile } from '@/database/index.d'
 
+/**
+ * Props
+ */
 export interface IProps {
   simulation: ISimulation
-  file: ISimulationTaskFile
+  file: Omit<ISimulationTaskFile, 'type'>
 }
 
-const errors = {
+/**
+ * Errors
+ */
+export const errors = {
   download: 'Unable to download the file'
 }
 
 /**
  * On download
+ * @param simulation Simulation
+ * @param file File
  */
 const onDownload = async (
   simulation: ISimulation,
-  file: ISimulationTaskFile
+  file: Omit<ISimulationTaskFile, 'type'>
 ): Promise<void> => {
   try {
     const content = await ResultAPI.download(
@@ -50,6 +58,7 @@ const onDownload = async (
 /**
  * Download
  * @param props Props
+ * @returns Download
  */
 const Download = ({ simulation, file }: IProps): JSX.Element => {
   // State

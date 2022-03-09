@@ -5,12 +5,6 @@ import Results from '..'
 
 import { ISimulation, ISimulationTask } from '@/database/index.d'
 
-const mockDownload = jest.fn()
-jest.mock('../download', () => (props) => mockDownload(props))
-
-const mockArchive = jest.fn()
-jest.mock('../archive', () => (props) => mockArchive(props))
-
 const mockGetFilesNumbers = jest.fn()
 const mockGetMultiplicator = jest.fn()
 jest.mock('../tools', () => ({
@@ -18,8 +12,14 @@ jest.mock('../tools', () => ({
   getMultiplicator: () => mockGetMultiplicator()
 }))
 
+const mockDownload = jest.fn()
+jest.mock('../download', () => (props: any) => mockDownload(props))
+
+const mockArchive = jest.fn()
+jest.mock('../archive', () => (props: any) => mockArchive(props))
+
 describe('components/project/simulation/run/results', () => {
-  const simulation: ISimulation = {
+  const currentSimulation: ISimulation = {
     id: 'id',
     scheme: {
       category: 'category',
@@ -29,10 +29,7 @@ describe('components/project/simulation/run/results', () => {
       code: 'code',
       version: 'version',
       configuration: {}
-    }
-  }
-  const currentSimulation: ISimulation = {
-    id: 'id',
+    },
     tasks: [
       {
         label: 'label',
@@ -82,8 +79,7 @@ describe('components/project/simulation/run/results', () => {
   test('render', () => {
     const { unmount } = render(
       <Results
-        simulation={simulation}
-        currentSimulation={currentSimulation}
+        simulation={currentSimulation}
         result={result}
         setResult={setResult}
       />
@@ -95,8 +91,7 @@ describe('components/project/simulation/run/results', () => {
   test('no results', () => {
     const { unmount } = render(
       <Results
-        simulation={simulation}
-        currentSimulation={{ id: 'id', tasks: [] }}
+        simulation={{ id: 'id', tasks: [] }}
         result={result}
         setResult={setResult}
       />
@@ -110,8 +105,7 @@ describe('components/project/simulation/run/results', () => {
   test('setResult', () => {
     const { unmount } = render(
       <Results
-        simulation={simulation}
-        currentSimulation={currentSimulation}
+        simulation={currentSimulation}
         result={result}
         setResult={setResult}
       />
@@ -147,7 +141,7 @@ describe('components/project/simulation/run/results', () => {
     const { unmount } = render(
       <Results
         simulation={{
-          id: 'id',
+          ...currentSimulation,
           scheme: {
             category: 'category',
             name: 'name',
@@ -171,7 +165,6 @@ describe('components/project/simulation/run/results', () => {
             }
           }
         }}
-        currentSimulation={currentSimulation}
         result={result}
         setResult={setResult}
       />
@@ -216,7 +209,7 @@ describe('components/project/simulation/run/results', () => {
     const { unmount } = render(
       <Results
         simulation={{
-          id: 'id',
+          ...currentSimulation,
           scheme: {
             category: 'category',
             name: 'name',
@@ -241,7 +234,6 @@ describe('components/project/simulation/run/results', () => {
             }
           }
         }}
-        currentSimulation={currentSimulation}
         setResult={setResult}
       />
     )

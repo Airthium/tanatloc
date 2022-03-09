@@ -3,11 +3,12 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import { ISimulation } from '@/database/index.d'
 
-import Archive from '../archive'
+import Archive, { errors } from '../archive'
 
-const mockError = jest.fn()
+const mockErrorNotification = jest.fn()
 jest.mock('@/components/assets/notification', () => ({
-  Error: () => mockError()
+  ErrorNotification: (title: string, err: Error) =>
+    mockErrorNotification(title, err)
 }))
 
 const mockResultArchive = jest.fn()
@@ -19,7 +20,7 @@ describe('components/project/simulation/run/results/archive', () => {
   const simulation = { id: 'id', scheme: { name: 'name' } }
 
   beforeEach(() => {
-    mockError.mockReset()
+    mockErrorNotification.mockReset()
 
     mockResultArchive.mockReset()
   })
@@ -45,7 +46,13 @@ describe('components/project/simulation/run/results/archive', () => {
     })
     fireEvent.click(button)
     await waitFor(() => expect(mockResultArchive).toHaveBeenCalledTimes(1))
-    await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
+      expect(mockErrorNotification).toHaveBeenLastCalledWith(
+        errors.archive,
+        new Error('archive error')
+      )
+    )
 
     // Normal
     window.URL.createObjectURL = jest.fn()

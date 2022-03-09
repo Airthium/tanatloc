@@ -12,22 +12,29 @@ import SimulationAPI from '@/api/simulation'
 
 import { ISimulation, ISimulationTask } from '@/database/index.d'
 
+/**
+ * Props
+ */
 export interface IProps {
   simulation: ISimulation
   steps: ISimulationTask[]
 }
 
-const errors = {
-  logError: 'Unable to get system log'
+/**
+ * Errors
+ */
+export const errors = {
+  log: 'Unable to get system log'
 }
 
 /**
  * Get complete log
+ * @param simulation Simulation
  * @param step Step
  */
-const getCompleteLog = async (
-  step: ISimulationTask,
-  simulation: ISimulation
+export const getCompleteLog = async (
+  simulation: ISimulation,
+  step: ISimulationTask
 ) => {
   try {
     const res = await SimulationAPI.log({ id: simulation.id }, step.systemLog)
@@ -45,13 +52,14 @@ const getCompleteLog = async (
       )
     })
   } catch (err) {
-    ErrorNotification(errors.logError, err)
+    ErrorNotification(errors.log, err)
   }
 }
 
 /**
  * Log
  * @param props Props
+ * @returns Log
  */
 const Log = ({ simulation, steps }: IProps): JSX.Element => {
   // State
@@ -81,7 +89,7 @@ const Log = ({ simulation, steps }: IProps): JSX.Element => {
                     onClick={async () => {
                       setLoading(true)
                       try {
-                        await getCompleteLog(step, simulation)
+                        await getCompleteLog(simulation, step)
                       } catch (err) {
                       } finally {
                         setLoading(false)
@@ -125,7 +133,7 @@ const Log = ({ simulation, steps }: IProps): JSX.Element => {
 }
 
 Log.propTypes = {
-  simulation: PropTypes.shape({
+  simulation: PropTypes.exact({
     id: PropTypes.string.isRequired
   }).isRequired,
   steps: PropTypes.array

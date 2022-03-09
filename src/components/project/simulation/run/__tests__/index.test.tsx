@@ -1,31 +1,32 @@
 import React from 'react'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
-import Run from '..'
+import Run, { errors } from '..'
 
 import { ISimulation, ISimulationTaskFile } from '@/database/index.d'
 
-const mockError = jest.fn()
+const mockErrorNotification = jest.fn()
 jest.mock('@/components/assets/notification', () => ({
-  Error: () => mockError()
+  ErrorNotification: (title: string, err: Error) =>
+    mockErrorNotification(title, err)
 }))
 
 const mockCloudServer = jest.fn()
 jest.mock(
   '@/components/project/simulation/run/cloudServer',
-  () => (props: {}) => mockCloudServer(props)
+  () => (props: any) => mockCloudServer(props)
 )
 
 const mockLog = jest.fn()
 jest.mock(
   '@/components/project/simulation/run/log',
-  () => (props: {}) => mockLog(props)
+  () => (props: any) => mockLog(props)
 )
 
 const mockResults = jest.fn()
 jest.mock(
   '@/components/project/simulation/run/results',
-  () => (props: {}) => mockResults(props)
+  () => (props: any) => mockResults(props)
 )
 
 const mockRun = jest.fn()
@@ -82,7 +83,7 @@ describe('components/project/simulation/run', () => {
   const swr = { mutateOneSimulation: jest.fn() }
 
   beforeEach(() => {
-    mockError.mockReset()
+    mockErrorNotification.mockReset()
 
     mockCloudServer.mockReset()
     mockCloudServer.mockImplementation(() => <div />)
@@ -155,19 +156,6 @@ describe('components/project/simulation/run', () => {
     unmount()
   })
 
-  test('without configuration', () => {
-    const { unmount } = render(
-      <Run
-        simulation={{ id: 'id' }}
-        result={result}
-        setResult={setResult}
-        swr={swr}
-      />
-    )
-
-    unmount()
-  })
-
   test('not done', () => {
     const { unmount } = render(
       <Run
@@ -179,7 +167,9 @@ describe('components/project/simulation/run', () => {
                 parameters: {
                   done: false
                 },
-                run: {}
+                run: {
+                  cloudServer: {}
+                }
               }
             }
           } as ISimulation
@@ -294,7 +284,13 @@ describe('components/project/simulation/run', () => {
     })
     fireEvent.click(cloudServer)
     await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
-    await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
+      expect(mockErrorNotification).toHaveBeenLastCalledWith(
+        errors.update,
+        new Error('update error')
+      )
+    )
 
     // Normal
     mockUpdate.mockImplementation(() => {
@@ -328,7 +324,13 @@ describe('components/project/simulation/run', () => {
     })
     fireEvent.click(run)
     await waitFor(() => expect(mockRun).toHaveBeenCalledTimes(1))
-    await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
+      expect(mockErrorNotification).toHaveBeenLastCalledWith(
+        errors.run,
+        new Error('run error')
+      )
+    )
 
     // Normal
     mockRun.mockImplementation(() => {
@@ -362,7 +364,13 @@ describe('components/project/simulation/run', () => {
     })
     fireEvent.click(stop)
     await waitFor(() => expect(mockStop).toHaveBeenCalledTimes(1))
-    await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
+      expect(mockErrorNotification).toHaveBeenLastCalledWith(
+        errors.stop,
+        new Error('stop error')
+      )
+    )
 
     // Normal
     mockStop.mockImplementation(() => {

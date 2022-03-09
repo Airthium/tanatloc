@@ -11,7 +11,6 @@ import {
   ISimulationTask,
   ISimulationTaskFile
 } from '@/database/index.d'
-import { IModel } from '@/models/index.d'
 
 import { ErrorNotification } from '@/components/assets/notification'
 
@@ -21,41 +20,45 @@ import Results from './results'
 
 import SimulationAPI from '@/api/simulation'
 
+/**
+ * Props
+ */
 export interface IProps {
   simulation: ISimulation
   result: ISimulationTaskFile
-  setResult: Function
+  setResult: (result: ISimulationTaskFile) => void
   swr: {
     mutateOneSimulation: (simulation: ISimulation) => void
   }
 }
 
 /**
- * Errors (run)
+ * Errors
  */
-const errors = {
-  runError: 'Unable to run the simulation',
-  stopError: 'Unable to stop the simulation',
-  updateError: 'Unable to update the simulation'
+export const errors = {
+  run: 'Unable to run the simulation',
+  stop: 'Unable to stop the simulation',
+  update: 'Unable to update the simulation'
 }
 
 /**
  * On cloud server
- * @param {Object} cloudServer Cloud server
+ * @param cloudServer Cloud server
  */
-const onCloudServer = async (
-  cloudServer: IClientPlugin,
-  currentSimulation: ISimulation,
-  configuration: IModel['configuration'],
+export const onCloudServer = async (
   simulation: ISimulation,
-  swr: IProps['swr'],
-  mutateSimulation: (simulation: ISimulation) => void
+  cloudServer: IClientPlugin,
+  swr: {
+    mutateSimulation: (simulation: ISimulation) => void
+    mutateOneSimulation: (simulation: ISimulation) => void
+  }
 ): Promise<void> => {
   try {
     // New simulation
-    const newSimulation = { ...currentSimulation }
+    const newSimulation = { ...simulation }
 
     // Update local
+    const configuration = simulation.scheme.configuration
     configuration.run.cloudServer = cloudServer
     newSimulation.scheme.configuration = configuration
 
@@ -72,20 +75,20 @@ const onCloudServer = async (
 
     // Local
     swr.mutateOneSimulation(newSimulation)
-    mutateSimulation(newSimulation)
+    swr.mutateSimulation(newSimulation)
   } catch (err) {
-    ErrorNotification(errors.updateError, err)
+    ErrorNotification(errors.update, err)
   }
 }
 
 /**
  * On run
  */
-const onRun = async (simulation: ISimulation): Promise<void> => {
+export const onRun = async (simulation: ISimulation): Promise<void> => {
   try {
     await SimulationAPI.run({ id: simulation.id })
   } catch (err) {
-    ErrorNotification(errors.runError, err)
+    ErrorNotification(errors.run, err)
     throw err
   }
 }
@@ -93,11 +96,12 @@ const onRun = async (simulation: ISimulation): Promise<void> => {
 /**
  * On stop
  */
-const onStop = async (simulation: ISimulation): Promise<void> => {
+export const onStop = async (simulation: ISimulation): Promise<void> => {
   try {
     await SimulationAPI.stop({ id: simulation.id })
   } catch (err) {
-    ErrorNotification(errors.stopError, err)
+    ErrorNotification(errors.stop, err)
+    throw err
   }
 }
 
@@ -119,11 +123,11 @@ const Run = ({ simulation, result, setResult, swr }: IProps): JSX.Element => {
 
   // Data
   const [currentSimulation, { mutateSimulation }] = SimulationAPI.useSimulation(
-    simulation?.id,
+    simulation.id,
     2000
   )
 
-  const configuration = simulation?.scheme?.configuration
+  const configuration = simulation.scheme.configuration
   const currentConfiguration = currentSimulation?.scheme?.configuration
 
   // Check tasks
@@ -193,18 +197,12 @@ const Run = ({ simulation, result, setResult, swr }: IProps): JSX.Element => {
             <CloudServer
               disabled={running}
               cloudServer={currentConfiguration?.run?.cloudServer}
-              onOk={async (cloudServer) => {
-                try {
-                  await onCloudServer(
-                    cloudServer,
-                    currentSimulation,
-                    configuration,
-                    simulation,
-                    swr,
-                    mutateSimulation
-                  )
-                } catch (err) {}
-              }}
+              onOk={async (cloudServer) =>
+                onCloudServer(simulation, cloudServer, {
+                  ...swr,
+                  mutateSimulation
+                })
+              }
             />
             <Card size="small" title="Run">
               <Space direction="vertical" className="full-width">
@@ -262,8 +260,7 @@ const Run = ({ simulation, result, setResult, swr }: IProps): JSX.Element => {
             </Card>
 
             <Results
-              simulation={simulation}
-              currentSimulation={currentSimulation}
+              simulation={currentSimulation}
               result={result}
               setResult={setResult}
             />
@@ -274,8 +271,17 @@ const Run = ({ simulation, result, setResult, swr }: IProps): JSX.Element => {
 }
 
 Run.propTypes = {
-  simulation: PropTypes.object.isRequired,
-  swr: PropTypes.shape({
+  simulation: PropTypes.exact({
+    id: PropTypes.string.isRequired,
+    scheme: PropTypes.shape({
+      configuration: PropTypes.shape({
+        run: PropTypes.shape({
+          cloudServer: PropTypes.object.isRequired
+        }).isRequired
+      }).isRequired
+    }).isRequired
+  }).isRequired,
+  swr: PropTypes.exact({
     mutateOneSimulation: PropTypes.func.isRequired
   }).isRequired,
   result: PropTypes.object.isRequired,

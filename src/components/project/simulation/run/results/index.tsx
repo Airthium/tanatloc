@@ -1,20 +1,28 @@
 /** @module Components.Project.Simulation.Run.Results */
 
 import PropTypes from 'prop-types'
-import { Dispatch, SetStateAction, useEffect, useState } from 'react'
+import {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useState
+} from 'react'
 import { Button, Card, Select, Space, Spin } from 'antd'
 import { EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons'
+
+import { ISimulation, ISimulationTaskFile } from '@/database/index.d'
+
+import { getFilesNumbers, getMultiplicator } from './tools'
 
 import Download from './download'
 import Archive from './archive'
 
-import { getFilesNumbers, getMultiplicator } from './tools'
-
-import { ISimulation, ISimulationTaskFile } from '@/database/index.d'
-
+/**
+ * Props
+ */
 export interface IProps {
   simulation: ISimulation
-  currentSimulation: ISimulation
   result?: ISimulationTaskFile
   setResult: Function
 }
@@ -28,13 +36,9 @@ export interface IFilteredFiles {
 /**
  * Results
  * @param props Props
+ * @returns Results
  */
-const Results = ({
-  simulation,
-  currentSimulation,
-  result,
-  setResult
-}: IProps): JSX.Element => {
+const Results = ({ simulation, result, setResult }: IProps): JSX.Element => {
   //State
   const [results, setResults]: [
     (ISimulationTaskFile | IFilteredFiles)[],
@@ -49,12 +53,49 @@ const Results = ({
   // Data
   const configuration = simulation?.scheme?.configuration
 
+  /**
+   * On selector change
+   * @param {number} value Value
+   * @param {number} index Index
+   * @param {number} filterIndex Filter index
+   */
+  const onSelectorChange = useCallback(
+    (value: number, index: number, filterIndex: number) => {
+      // Selector
+      const newSelectorsCurrent = [...selectorsCurrent]
+      newSelectorsCurrent[filterIndex] = value
+
+      // Results
+      setResults((prevResults) => [
+        ...prevResults.slice(0, index),
+        {
+          ...prevResults[index],
+          current: value
+        },
+        ...prevResults.slice(index + 1)
+      ])
+      setSelectorsCurrent(newSelectorsCurrent)
+
+      // Update visualization
+      // TODO that does not work properly
+      if (result) {
+        const currentFilteredResults = results[index] as IFilteredFiles
+        const currentFile = currentFilteredResults.files.find(
+          (file) => file.name === result.name && file.number === value
+        )
+        if (currentFile) setResult(currentFile)
+      }
+    },
+    [result, selectorsCurrent, setResult]
+  )
+
+  // Results
   useEffect(() => {
     const newResults = []
     const newSelectors = []
 
     // Results
-    currentSimulation?.tasks?.forEach((task) => {
+    simulation?.tasks?.forEach((task) => {
       // Check file
       if (task.file) newResults.push(task.file)
       // Check files
@@ -129,49 +170,7 @@ const Results = ({
 
     setResults(newResults)
     setSelectors(newSelectors)
-  }, [
-    configuration?.run?.resultsFilters,
-    currentSimulation?.tasks,
-    selectorsCurrent
-  ])
-
-  /**
-   * On selector change
-   * @param {number} value Value
-   * @param {number} index Index
-   * @param {number} filterIndex Filter index
-   */
-  const onSelectorChange = (
-    value: number,
-    index: number,
-    filterIndex: number
-  ) => {
-    // Selector
-    const newSelectorsCurrent = [...selectorsCurrent]
-    newSelectorsCurrent[filterIndex] = value
-
-    // Results
-    const newResults = [
-      ...results.slice(0, index),
-      {
-        ...results[index],
-        current: value
-      },
-      ...results.slice(index + 1)
-    ]
-
-    setResults(newResults)
-    setSelectorsCurrent(newSelectorsCurrent)
-
-    // Update visualization
-    if (result) {
-      const currentFilteredResults = results[index] as IFilteredFiles
-      const currentFile = currentFilteredResults.files.find(
-        (file) => file.name === result.name && file.number === value
-      )
-      if (currentFile) setResult(currentFile)
-    }
-  }
+  }, [simulation?.tasks, configuration, selectorsCurrent, onSelectorChange])
 
   // Results render
   if (!results) return <Spin />
@@ -230,15 +229,19 @@ const Results = ({
     )
 }
 
+// TODO
 Results.propTypes = {
+  simulation: PropTypes.exact({
+    id: PropTypes.string.isRequired,
+    scheme: PropTypes.object,
+    tasks: PropTypes.array
+  }),
   file: PropTypes.exact({
     originPath: PropTypes.string.isRequired,
     name: PropTypes.string,
     filename: PropTypes.string.isRequired
   }),
-  simulation: PropTypes.exact({
-    id: PropTypes.string.isRequired
-  })
+  setResult: PropTypes.func.isRequired
 }
 
 export default Results

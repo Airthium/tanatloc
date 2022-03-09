@@ -1,13 +1,14 @@
 import React from 'react'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
-import Log from '..'
+import Log, { errors } from '..'
 
 import { ISimulation, ISimulationTask } from '@/database/index.d'
 
-const mockError = jest.fn()
+const mockErrorNotification = jest.fn()
 jest.mock('@/components/assets/notification', () => ({
-  Error: () => mockError()
+  ErrorNotification: (title: string, err: Error) =>
+    mockErrorNotification(title, err)
 }))
 
 const mockSimulationLog = jest.fn()
@@ -17,16 +18,7 @@ jest.mock('@/api/simulation', () => ({
 
 describe('components/project/simulation/run/log', () => {
   const simulation: ISimulation = {
-    id: 'id',
-    scheme: {
-      category: 'category',
-      name: 'name',
-      description: 'description',
-      algorithm: 'algorithm',
-      code: 'code',
-      version: 'version',
-      configuration: {}
-    }
+    id: 'id'
   }
   const steps: ISimulationTask[] = [
     {
@@ -41,7 +33,7 @@ describe('components/project/simulation/run/log', () => {
   ]
 
   beforeEach(() => {
-    mockError.mockReset()
+    mockErrorNotification.mockReset()
 
     mockSimulationLog.mockReset()
   })
@@ -89,6 +81,13 @@ describe('components/project/simulation/run/log', () => {
     })
     fireEvent.click(logButton)
     await waitFor(() => expect(mockSimulationLog).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
+      expect(mockErrorNotification).toHaveBeenLastCalledWith(
+        errors.log,
+        new Error('log error')
+      )
+    )
 
     // Normal
     mockSimulationLog.mockImplementationOnce(() => ({ log: 'log' }))

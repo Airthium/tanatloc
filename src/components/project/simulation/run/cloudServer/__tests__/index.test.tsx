@@ -18,9 +18,10 @@ jest.mock('next/router', () => ({
   })
 }))
 
-const mockError = jest.fn()
+const mockErrorNotification = jest.fn()
 jest.mock('@/components/assets/notification', () => ({
-  Error: () => mockError()
+  ErrorNotification: (title: string, err: Error) =>
+    mockErrorNotification(title, err)
 }))
 
 const mockPlugins = jest.fn()
@@ -62,7 +63,7 @@ describe('components/project/simulation/run/cloudServer', () => {
 
     mockPush.mockReset()
 
-    mockError.mockReset()
+    mockErrorNotification.mockReset()
 
     mockPlugins.mockReset()
     mockPlugins.mockImplementation(() => [
@@ -108,7 +109,7 @@ describe('components/project/simulation/run/cloudServer', () => {
     const { unmount } = render(
       <CloudServer cloudServer={cloudServer} onOk={onOk} />
     )
-    expect(mockError).toHaveBeenCalledTimes(1)
+    expect(mockErrorNotification).toHaveBeenCalledTimes(1)
 
     unmount()
   })
@@ -121,7 +122,7 @@ describe('components/project/simulation/run/cloudServer', () => {
       <CloudServer cloudServer={cloudServer} onOk={onOk} />
     )
 
-    await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
 
     unmount()
   })

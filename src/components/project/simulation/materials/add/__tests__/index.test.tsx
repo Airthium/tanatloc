@@ -1,14 +1,15 @@
 import React from 'react'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
-import Add from '@/components/project/simulation/materials/add'
+import Add, { errors } from '@/components/project/simulation/materials/add'
 
 import { ISimulation } from '@/database/index.d'
 import { IModelMaterialValue } from '@/models/index.d'
 
-const mockError = jest.fn()
+const mockErrorNotification = jest.fn()
 jest.mock('@/components/assets/notification', () => ({
-  Error: () => mockError()
+  ErrorNotification: (title: string, err: Error) =>
+    mockErrorNotification(title, err)
 }))
 
 const mockAddButton = jest.fn()
@@ -53,7 +54,7 @@ describe('components/project/simulation/materials/add', () => {
   const onError = jest.fn()
 
   beforeEach(() => {
-    mockError.mockReset()
+    mockErrorNotification.mockReset()
 
     mockAddButton.mockReset()
     mockAddButton.mockImplementation(() => <div />)
@@ -102,15 +103,22 @@ describe('components/project/simulation/materials/add', () => {
       expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(1)
     )
     await waitFor(() => expect(onError).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(onError).toHaveBeenLastCalledWith())
     await waitFor(() => expect(onClose).toHaveBeenCalledTimes(1))
 
     // Error
     mockUpdate.mockImplementation(() => {
-      throw new Error()
+      throw new Error('update error')
     })
     fireEvent.click(button)
     await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
-    await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
+      expect(mockErrorNotification).toHaveBeenLastCalledWith(
+        errors.update,
+        new Error('update error')
+      )
+    )
 
     unmount()
   })
@@ -142,6 +150,9 @@ describe('components/project/simulation/materials/add', () => {
       expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(0)
     )
     await waitFor(() => expect(onError).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
+      expect(onError).toHaveBeenLastCalledWith(errors.material)
+    )
     await waitFor(() => expect(onClose).toHaveBeenCalledTimes(0))
 
     unmount()
@@ -173,6 +184,9 @@ describe('components/project/simulation/materials/add', () => {
       expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(0)
     )
     await waitFor(() => expect(onError).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
+      expect(onError).toHaveBeenLastCalledWith(errors.selected)
+    )
     await waitFor(() => expect(onClose).toHaveBeenCalledTimes(0))
 
     unmount()

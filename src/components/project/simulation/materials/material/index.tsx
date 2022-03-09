@@ -22,6 +22,9 @@ import DataBase, { IMaterialDatabase } from '../database'
 import Add from '../add'
 import Edit from '../edit'
 
+/**
+ * Props
+ */
 export interface IProps {
   visible: boolean
   simulation: ISimulation
@@ -37,7 +40,8 @@ export interface IProps {
 
 /**
  * Material
- * @param {Object} props Props
+ * @param props Props
+ * @returns Material
  */
 const Material = ({
   visible,
@@ -50,10 +54,14 @@ const Material = ({
   // State
   const [alreadySelected, setAlreadySelected]: [
     { label: string; selected: { uuid: string }[] }[],
-    Function
+    Dispatch<SetStateAction<{ label: string; selected: { uuid: string }[] }[]>>
   ] = useState()
-  const [current, setCurrent]: [IModelMaterialValue, Function] = useState()
-  const [error, setError]: [string, Function] = useState()
+  const [current, setCurrent]: [
+    IModelMaterialValue,
+    Dispatch<SetStateAction<IModelMaterialValue>>
+  ] = useState()
+  const [error, setError]: [string, Dispatch<SetStateAction<string>>] =
+    useState()
 
   // Data
   const materials = simulation.scheme.configuration.materials
@@ -81,14 +89,15 @@ const Material = ({
    * On material select
    * @param {Object} currentMaterial Current material
    */
-  const onMaterialSelect = (
-    currentMaterial: IMaterialDatabase['key']['children'][0]
-  ) => {
-    setCurrent((prevCurrent) => ({
-      ...prevCurrent,
-      material: currentMaterial
-    }))
-  }
+  const onMaterialSelect = useCallback(
+    (currentMaterial: IMaterialDatabase['key']['children'][0]) => {
+      setCurrent((prevCurrent) => ({
+        ...prevCurrent,
+        material: currentMaterial
+      }))
+    },
+    []
+  )
 
   /**
    * On select
@@ -98,7 +107,8 @@ const Material = ({
     setCurrent((prevCurrent) => ({
       ...prevCurrent,
       selected: selected.map((s) => ({
-        uuid: s
+        uuid: s,
+        label: 0 // TODO
       }))
     }))
   }, [])
@@ -109,27 +119,26 @@ const Material = ({
    * @param index Index
    * @param val Value
    */
-  const onMaterialChange = (
-    child: IModelMaterial,
-    index: number,
-    val: string
-  ) => {
-    setCurrent((prevCurrent) => ({
-      ...prevCurrent,
-      material: {
-        label: 'custom',
-        children: [
-          ...(current?.material?.children?.slice(0, index) || []),
-          {
-            label: child.label,
-            symbol: child.name,
-            value: val
-          },
-          ...(current?.material?.children?.slice(index + 1) || [])
-        ]
-      }
-    }))
-  }
+  const onMaterialChange = useCallback(
+    (child: IModelMaterial, index: number, val: string) => {
+      setCurrent((prevCurrent) => ({
+        ...prevCurrent,
+        material: {
+          label: 'custom',
+          children: [
+            ...(prevCurrent?.material?.children?.slice(0, index) || []),
+            {
+              label: child.label,
+              symbol: child.name,
+              value: val
+            },
+            ...(prevCurrent?.material?.children?.slice(index + 1) || [])
+          ]
+        }
+      }))
+    },
+    []
+  )
 
   /**
    * Render
@@ -150,8 +159,6 @@ const Material = ({
           <CancelButton onCancel={onClose} />
           {material ? (
             <Edit
-              primary={true}
-              needMargin={true}
               material={{
                 uuid: current?.uuid ?? material.uuid,
                 material: current?.material ?? material.material,

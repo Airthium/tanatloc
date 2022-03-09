@@ -7,7 +7,7 @@ import { ISimulation } from '@/database/index.d'
 
 const mockEditButton = jest.fn()
 jest.mock('@/components/assets/button', () => ({
-  EditButton: (props: {}) => mockEditButton(props)
+  EditButton: (props: any) => mockEditButton(props)
 }))
 
 jest.mock('../../delete', () => () => <div />)

@@ -1,12 +1,15 @@
 /** @module Components.Project.Simulation.MAterials.Database */
 
 import PropTypes from 'prop-types'
-import { Dispatch, SetStateAction, useState } from 'react'
+import { Dispatch, SetStateAction, useCallback, useState } from 'react'
 import { Button, Layout, List, Menu, Modal, Space } from 'antd'
 import { DatabaseOutlined } from '@ant-design/icons'
 
+/**
+ * Props
+ */
 export interface IProps {
-  onSelect: Function
+  onSelect: (material: IMaterialDatabase['key']['children'][0]) => void
 }
 
 export interface IMaterialDatabase {
@@ -18,7 +21,7 @@ export interface IMaterialDatabase {
       children: {
         label: string
         symbol: string
-        value: number
+        value: number | string
       }[]
     }[]
   }
@@ -352,6 +355,7 @@ const materialDatabase: IMaterialDatabase = {
 /**
  * Material database
  * @param props Props
+ * @return Database
  */
 const DataBase = ({ onSelect }: IProps): JSX.Element => {
   // State
@@ -380,7 +384,7 @@ const DataBase = ({ onSelect }: IProps): JSX.Element => {
    * On first level menu
    * @param param { key }
    */
-  const onFirstLevel = ({ key }: { key: string }) => {
+  const onFirstLevel = useCallback(({ key }: { key: string }) => {
     const subDatabase = materialDatabase[key]
 
     setSecondLevel({
@@ -388,29 +392,33 @@ const DataBase = ({ onSelect }: IProps): JSX.Element => {
       children: subDatabase.children
     })
     setCurrent(null)
-  }
+  }, [])
 
   /**
    * On second level menu
    * @param param { key }
    */
-  const onSecondLevel = ({ key }: { key: string }) => {
-    const subDatabase = materialDatabase[secondLevel.key]
-    const child = subDatabase.children.find((c) => c.key === key)
+  const onSecondLevel = useCallback(
+    ({ key }: { key: string }) => {
+      const subDatabase = materialDatabase[secondLevel.key]
+      const child = subDatabase.children.find((c) => c.key === key)
 
-    setCurrent(child)
-  }
+      setCurrent(child)
+    },
+    [secondLevel]
+  )
 
   /**
    * On material select
    * @param material Material
    */
-  const onMaterialSelect = (
-    material: IMaterialDatabase['key']['children'][0]
-  ) => {
-    onSelect(material)
-    setVisible(false)
-  }
+  const onMaterialSelect = useCallback(
+    (material: IMaterialDatabase['key']['children'][0]) => {
+      onSelect(material)
+      setVisible(false)
+    },
+    [onSelect]
+  )
 
   /**
    * Render

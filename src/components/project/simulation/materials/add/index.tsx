@@ -1,7 +1,7 @@
 /** @module Components.Project.Simulation.Materials.Add */
 
 import PropTypes from 'prop-types'
-import { useState } from 'react'
+import { Dispatch, SetStateAction, useState } from 'react'
 import { v4 as uuid } from 'uuid'
 
 import { IGeometry, ISimulation } from '@/database/index.d'
@@ -12,12 +12,15 @@ import { AddButton } from '@/components/assets/button'
 
 import SimulationAPI from '@/api/simulation'
 
+/**
+ * Props
+ */
 export interface IProps {
-  material: Omit<IModelMaterialValue, 'uuid'>
   simulation: ISimulation
   geometry: {
     solids: IGeometry['summary']['solids']
   }
+  material: Omit<IModelMaterialValue, 'uuid'>
   swr: {
     mutateOneSimulation: (simulation: ISimulation) => void
   }
@@ -26,121 +29,134 @@ export interface IProps {
 }
 
 /**
- * Errors (add)
+ * Errors
  */
-const errors = {
+export const errors = {
   material: 'You need to define a material',
   selected: 'You need to select a solid',
-  updateError: 'Unable to add the material'
+  update: 'Unable to add the material'
 }
 
 /**
- * Add material
+ * On add
+ * @param simulation Simulation
+ * @param geometry Geometry
+ * @param material Material
+ * @param swr SWR
+ */
+export const onAdd = async (
+  simulation: IProps['simulation'],
+  geometry: IProps['geometry'],
+  material: IProps['material'],
+  swr: IProps['swr']
+): Promise<void> => {
+  try {
+    // New material
+    const newMaterial = { ...material } as IModelMaterialValue
+
+    // Set uuid
+    newMaterial.uuid = uuid()
+
+    // Modify selection
+    const selection = geometry.solids
+      .map((s) => {
+        if (material.selected.find((m) => m.uuid === s.uuid))
+          return {
+            uuid: s.uuid,
+            label: s.number
+          }
+      })
+      .filter((s) => s)
+    newMaterial.selected = selection
+
+    // New simulation
+    const newSimulation = { ...simulation }
+
+    // Update local
+    const materials = newSimulation.scheme.configuration.materials
+    materials.values = [...(materials.values || []), newMaterial]
+
+    // Diff
+    const diff = {
+      ...materials,
+      done: true
+    }
+
+    // API
+    await SimulationAPI.update({ id: simulation.id }, [
+      {
+        key: 'scheme',
+        type: 'json',
+        method: 'set',
+        path: ['configuration', 'materials'],
+        value: diff
+      }
+    ])
+
+    // Local
+    swr.mutateOneSimulation(newSimulation)
+  } catch (err) {
+    ErrorNotification(errors.update, err)
+    throw err
+  }
+}
+
+/**
+ * Add
  * @param props Props
+ * @returns Add
  */
 const Add = ({
-  material,
   simulation,
   geometry,
+  material,
   swr,
   onError,
   onClose
 }: IProps): JSX.Element => {
   // State
-  const [loading, setLoading]: [boolean, Function] = useState(false)
-
-  /**
-   * On add
-   */
-  const onAdd = async (): Promise<void> => {
-    setLoading(true)
-
-    try {
-      // Check
-      if (!material.material) {
-        onError(errors.material)
-        setLoading(false)
-        return
-      }
-
-      if (!material.selected?.length) {
-        onError(errors.selected)
-        setLoading(false)
-        return
-      }
-      onError()
-
-      // New material
-      const newMaterial = { ...material } as IModelMaterialValue
-
-      // Set uuid
-      newMaterial.uuid = uuid()
-
-      // Modify selection
-      const selection = geometry.solids
-        .map((s) => {
-          if (material.selected.find((m) => m.uuid === s.uuid))
-            return {
-              uuid: s.uuid,
-              label: s.number
-            }
-        })
-        .filter((s) => s)
-      newMaterial.selected = selection
-
-      // New simulation
-      const newSimulation = { ...simulation }
-
-      // Update local
-      const materials = newSimulation.scheme.configuration.materials
-      materials.values = [...(materials.values || []), newMaterial]
-
-      // Diff
-      const diff = {
-        ...materials,
-        done: true
-      }
-
-      // API
-      await SimulationAPI.update({ id: simulation.id }, [
-        {
-          key: 'scheme',
-          type: 'json',
-          method: 'set',
-          path: ['configuration', 'materials'],
-          value: diff
-        }
-      ])
-
-      // Local
-      swr.mutateOneSimulation(newSimulation)
-
-      // Stop loading
-      setLoading(false)
-
-      // Close
-      onClose()
-    } catch (err) {
-      ErrorNotification(errors.updateError, err)
-      setLoading(false)
-    }
-  }
+  const [loading, setLoading]: [boolean, Dispatch<SetStateAction<boolean>>] =
+    useState(false)
 
   /**
    * Render
    */
   return (
-    <AddButton loading={loading} onAdd={onAdd} needMargin={true}>
+    <AddButton
+      loading={loading}
+      onAdd={async () => {
+        setLoading(true)
+        try {
+          // Check
+          if (!material.material) {
+            onError(errors.material)
+            setLoading(false)
+            return
+          }
+
+          if (!material.selected?.length) {
+            onError(errors.selected)
+            setLoading(false)
+            return
+          }
+          onError()
+
+          await onAdd(simulation, geometry, material, swr)
+
+          setLoading(false)
+          onClose()
+        } catch (err) {
+          setLoading(false)
+        }
+      }}
+      needMargin={true}
+    >
       Add
     </AddButton>
   )
 }
 
 Add.propTypes = {
-  material: PropTypes.exact({
-    material: PropTypes.object,
-    selected: PropTypes.array
-  }).isRequired,
   simulation: PropTypes.exact({
     id: PropTypes.string.isRequired,
     scheme: PropTypes.shape({
@@ -153,6 +169,10 @@ Add.propTypes = {
   }).isRequired,
   geometry: PropTypes.exact({
     solids: PropTypes.array.isRequired
+  }).isRequired,
+  material: PropTypes.exact({
+    material: PropTypes.object,
+    selected: PropTypes.array
   }).isRequired,
   swr: PropTypes.exact({
     mutateOneSimulation: PropTypes.func.isRequired

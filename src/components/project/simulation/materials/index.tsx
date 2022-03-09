@@ -1,7 +1,13 @@
 /** @module Components.Project.Simulation.Materials */
 
 import PropTypes from 'prop-types'
-import { Dispatch, SetStateAction, useState, useEffect } from 'react'
+import {
+  Dispatch,
+  SetStateAction,
+  useState,
+  useEffect,
+  useCallback
+} from 'react'
 import { Card, Layout } from 'antd'
 
 import { IGeometry, ISimulation } from '@/database/index.d'
@@ -14,6 +20,9 @@ import Material from './material'
 import { useDispatch } from 'react-redux'
 import { enable, disable, setType, setPart } from '@/store/select/action'
 
+/**
+ * Props
+ */
 export interface IProps {
   geometry: IGeometry
   simulation: ISimulation
@@ -26,6 +35,7 @@ export interface IProps {
 /**
  * Materials
  * @param props Props
+ * @returns Materials
  */
 const Materials = ({
   geometry,
@@ -53,40 +63,43 @@ const Materials = ({
   useEffect(() => {
     dispatch(setType('solids'))
     dispatch(setPart(geometry.summary.uuid))
-  }, [geometry])
+  }, [geometry, dispatch])
 
   /**
    * On add
    */
-  const onAdd = (): void => {
+  const onAdd = useCallback((): void => {
     setMaterial(null)
     setMaterialVisible(true)
     setVisible(false)
     dispatch(enable())
-  }
+  }, [dispatch, setVisible])
 
   /**
    * On edit
    * @param index Index
    */
-  const onEdit = (index: number): void => {
-    const materialToEdit = materials.values[index]
-    setMaterial(materialToEdit)
+  const onEdit = useCallback(
+    (index: number): void => {
+      const materialToEdit = materials.values[index]
+      setMaterial(materialToEdit)
 
-    setMaterialVisible(true)
-    setVisible(false)
-    dispatch(enable())
-  }
+      setMaterialVisible(true)
+      setVisible(false)
+      dispatch(enable())
+    },
+    [materials, dispatch, setVisible]
+  )
 
   /**
    * On close
    */
-  const onClose = (): void => {
+  const onClose = useCallback((): void => {
     setMaterialVisible(false)
     setVisible(true)
     setMaterial(null)
     dispatch(disable())
-  }
+  }, [dispatch, setVisible])
 
   /**
    * Render

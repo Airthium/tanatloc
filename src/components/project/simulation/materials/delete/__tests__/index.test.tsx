@@ -1,7 +1,9 @@
 import React from 'react'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
-import Delete from '@/components/project/simulation/materials/delete'
+import Delete, {
+  errors
+} from '@/components/project/simulation/materials/delete'
 
 import { ISimulation } from '@/database/index.d'
 
@@ -10,9 +12,10 @@ jest.mock('@/components/assets/button', () => ({
   DeleteButton: (props: {}) => mockDeleteButton(props)
 }))
 
-const mockError = jest.fn()
+const mockErrorNotification = jest.fn()
 jest.mock('@/components/assets/notification', () => ({
-  Error: () => mockError()
+  ErrorNotification: (title: string, err: Error) =>
+    mockErrorNotification(title, err)
 }))
 
 jest.mock('react-redux', () => ({
@@ -56,7 +59,7 @@ describe('components/project/simulation/materials/delete', () => {
     mockDeleteButton.mockReset()
     mockDeleteButton.mockImplementation(() => <div />)
 
-    mockError.mockReset()
+    mockErrorNotification.mockReset()
 
     mockUnselect.mockReset()
 
@@ -88,21 +91,36 @@ describe('components/project/simulation/materials/delete', () => {
 
     const button = screen.getByRole('button')
 
-    // Normal
-    fireEvent.click(button)
-    await waitFor(() => expect(mockUnselect).toHaveBeenCalledTimes(1))
-    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
-    await waitFor(() =>
-      expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(1)
-    )
-
     // Error
     mockUpdate.mockImplementation(() => {
-      throw new Error()
+      throw new Error('update error')
     })
     fireEvent.click(button)
     await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
-    await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
+      expect(mockErrorNotification).toHaveBeenLastCalledWith(
+        errors.update,
+        new Error('update error')
+      )
+    )
+
+    // Normal
+    mockUpdate.mockImplementation(() => {
+      // Empty
+    })
+    simulation.scheme.configuration.materials.values = [
+      {
+        uuid: 'uuid',
+        selected: [{ uuid: 'uuid', label: 1 }]
+      }
+    ]
+    fireEvent.click(button)
+    await waitFor(() => expect(mockUnselect).toHaveBeenCalledTimes(2))
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
+    await waitFor(() =>
+      expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(1)
+    )
 
     unmount()
   })

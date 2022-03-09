@@ -13,86 +13,89 @@ import { unselect } from '@/store/select/action'
 
 import SimulationAPI from '@/api/simulation'
 
+/**
+ * Props
+ */
 export interface IProps {
-  index: number
   simulation: ISimulation
+  index: number
   swr: {
     mutateOneSimulation: (simulation: ISimulation) => void
   }
 }
 
 /**
- * Error (delete)
+ * Error
  */
-const errors = {
-  updateError: 'Unable to delete the material'
+export const errors = {
+  update: 'Unable to delete the material'
 }
 
 /**
- * Delete material
- * @param props Props
+ * On delete
  */
-const Delete = ({ index, simulation, swr }: IProps): JSX.Element => {
+const onDelete = async (
+  simulation: ISimulation,
+  index: number,
+  dispatch: Dispatch<any>,
+  swr: IProps['swr']
+): Promise<void> => {
+  try {
+    // New simulation
+    const newSimulation = { ...simulation }
+
+    // Update local
+    const materials = newSimulation.scheme.configuration.materials
+    const material = materials.values[index]
+
+    // (unselect)
+    material.selected.forEach((s: { uuid: string }) => {
+      dispatch(unselect(s.uuid))
+    })
+
+    // Remove value
+    materials.values = [
+      ...materials.values.slice(0, index),
+      ...materials.values.slice(index + 1)
+    ]
+
+    // Diff
+    const diff = {
+      ...materials,
+      done: !!materials.values.length
+    }
+
+    // API
+    await SimulationAPI.update({ id: simulation.id }, [
+      {
+        key: 'scheme',
+        type: 'json',
+        method: 'set',
+        path: ['configuration', 'materials'],
+        value: diff
+      }
+    ])
+
+    // Local
+    swr.mutateOneSimulation(newSimulation)
+  } catch (err) {
+    ErrorNotification(errors.update, err)
+    throw err
+  }
+}
+
+/**
+ * Delete
+ * @param props Props
+ * @returns Delete
+ */
+const Delete = ({ simulation, index, swr }: IProps): JSX.Element => {
   // State
   const [loading, setLoading]: [boolean, Dispatch<SetStateAction<boolean>>] =
     useState(false)
 
   // Data
   const dispatch = useDispatch()
-
-  /**
-   * On delete
-   */
-  const onDelete = async (): Promise<void> => {
-    setLoading(true)
-
-    try {
-      // New simulation
-      const newSimulation = { ...simulation }
-
-      // Update local
-      const materials = newSimulation.scheme.configuration.materials
-      const material = materials.values[index]
-
-      // (unselect)
-      material.selected.forEach((s: { uuid: string }) => {
-        dispatch(unselect(s.uuid))
-      })
-
-      // Remove value
-      materials.values = [
-        ...materials.values.slice(0, index),
-        ...materials.values.slice(index + 1)
-      ]
-
-      // Diff
-      const diff = {
-        ...materials,
-        done: !!materials.values.length
-      }
-
-      // API
-      await SimulationAPI.update({ id: simulation.id }, [
-        {
-          key: 'scheme',
-          type: 'json',
-          method: 'set',
-          path: ['configuration', 'materials'],
-          value: diff
-        }
-      ])
-
-      // Stop loading
-      setLoading(false)
-
-      // Local
-      swr.mutateOneSimulation(newSimulation)
-    } catch (err) {
-      ErrorNotification(errors.updateError, err)
-      setLoading(false)
-      throw err
-    }
-  }
 
   /**
    * Render
@@ -103,7 +106,7 @@ const Delete = ({ index, simulation, swr }: IProps): JSX.Element => {
       onDelete={async () => {
         setLoading(true)
         try {
-          await onDelete()
+          await onDelete(simulation, index, dispatch, swr)
         } finally {
           setLoading(false)
         }
@@ -113,7 +116,6 @@ const Delete = ({ index, simulation, swr }: IProps): JSX.Element => {
 }
 
 Delete.propTypes = {
-  index: PropTypes.number.isRequired,
   simulation: PropTypes.exact({
     id: PropTypes.string.isRequired,
     scheme: PropTypes.shape({
@@ -124,6 +126,7 @@ Delete.propTypes = {
       }).isRequired
     }).isRequired
   }).isRequired,
+  index: PropTypes.number.isRequired,
   swr: PropTypes.exact({
     mutateOneSimulation: PropTypes.func.isRequired
   }).isRequired

@@ -40,7 +40,7 @@ describe('components/project/simulation/materials/database', () => {
     fireEvent.click(metal)
 
     // Second menu
-    const open = screen.getByRole('menuitem', { name: 'Steel' })
+    const open = screen.getByRole('menuitem', { name: 'Generic Steel' })
     fireEvent.click(open)
 
     // Choose

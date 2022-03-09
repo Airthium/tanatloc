@@ -11,7 +11,7 @@ export interface IModelMaterialValue {
     children: {
       label: string
       symbol: string
-      value: string
+      value: number | string
     }[]
   }
   selected: { uuid: string; label: number }[]

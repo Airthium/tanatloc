@@ -11,28 +11,93 @@ import { EditButton } from '@/components/assets/button'
 
 import SimulationAPI from '@/api/simulation'
 
+/**
+ * Props
+ */
 export interface IProps {
-  primary?: boolean
-  needMargin?: boolean
-  material: IModelMaterialValue
   simulation: ISimulation
   geometry: {
     solids: IGeometry['summary']['solids']
   }
+  material: IModelMaterialValue
   swr: {
-    mutateOneSimulation: Function
+    mutateOneSimulation: (simulation: ISimulation) => void
   }
   onError: (desc?: string) => void
   onClose: () => void
 }
 
 /**
- * Errors (edit)
+ * Errors
  */
-const errors = {
+export const errors = {
   material: 'You need to define a material',
   selected: 'You need to select a solid',
-  updateError: 'Unable to edit the material'
+  update: 'Unable to edit the material'
+}
+
+/**
+ * On edit
+ * @param simulation Simulation
+ * @param geometry Geometry
+ * @param material Material
+ * @param swr SWR
+ */
+export const onEdit = async (
+  simulation: IProps['simulation'],
+  geometry: IProps['geometry'],
+  material: IProps['material'],
+  swr: IProps['swr']
+): Promise<void> => {
+  try {
+    // New simulation
+    const newSimulation = { ...simulation }
+    const materials = newSimulation.scheme.configuration.materials
+
+    // Modify selection
+    const selection = geometry.solids
+      .map((s) => {
+        if (material.selected.find((m) => m.uuid === s.uuid))
+          return {
+            uuid: s.uuid,
+            label: s.number
+          }
+      })
+      .filter((s) => s)
+    material.selected = selection
+
+    // Update local
+    const index = materials.values.findIndex(
+      (m: { uuid: string }) => m.uuid === material.uuid
+    )
+    materials.values = [
+      ...materials.values.slice(0, index),
+      material,
+      ...materials.values.slice(index + 1)
+    ]
+
+    // Diff
+    const diff = {
+      ...materials
+    }
+
+    // API
+    await SimulationAPI.update({ id: simulation.id }, [
+      {
+        key: 'scheme',
+        type: 'json',
+        method: 'set',
+        path: ['configuration', 'materials'],
+        value: diff
+      }
+    ])
+
+    // Local
+    swr.mutateOneSimulation(newSimulation)
+  } catch (err) {
+    ErrorNotification(errors.update, err)
+    throw err
+  }
 }
 
 /**
@@ -40,11 +105,9 @@ const errors = {
  * @param props Props
  */
 const Edit = ({
-  primary = false,
-  needMargin = false,
-  material,
   simulation,
   geometry,
+  material,
   swr,
   onError,
   onClose
@@ -54,91 +117,39 @@ const Edit = ({
     useState(false)
 
   /**
-   * On edit
-   */
-  const onEdit = async (): Promise<void> => {
-    setLoading(true)
-
-    try {
-      // Check
-      if (!material.material) {
-        onError(errors.material)
-        setLoading(false)
-        return
-      }
-
-      if (!material.selected?.length) {
-        onError(errors.selected)
-        setLoading(false)
-        return
-      }
-      onError()
-
-      // New simulation
-      const newSimulation = { ...simulation }
-      const materials = newSimulation.scheme.configuration.materials
-
-      // Modify selection
-      const selection = geometry.solids
-        .map((s) => {
-          if (material.selected.find((m) => m.uuid === s.uuid))
-            return {
-              uuid: s.uuid,
-              label: s.number
-            }
-        })
-        .filter((s) => s)
-      material.selected = selection
-
-      // Update local
-      const index = materials.values.findIndex(
-        (m: { uuid: string }) => m.uuid === material.uuid
-      )
-      materials.values = [
-        ...materials.values.slice(0, index),
-        material,
-        ...materials.values.slice(index + 1)
-      ]
-
-      // Diff
-      const diff = {
-        ...materials
-      }
-
-      // API
-      await SimulationAPI.update({ id: simulation.id }, [
-        {
-          key: 'scheme',
-          type: 'json',
-          method: 'set',
-          path: ['configuration', 'materials'],
-          value: diff
-        }
-      ])
-
-      // Local
-      swr.mutateOneSimulation(newSimulation)
-
-      // Loading
-      setLoading(false)
-
-      // Close
-      onClose()
-    } catch (err) {
-      ErrorNotification(errors.updateError, err)
-      setLoading(false)
-    }
-  }
-
-  /**
    * Render
    */
   return (
     <EditButton
       loading={loading}
-      onEdit={onEdit}
-      primary={primary}
-      needMargin={needMargin}
+      primary
+      needMargin
+      onEdit={async () => {
+        setLoading(true)
+        try {
+          // Check
+          if (!material.material) {
+            onError(errors.material)
+            setLoading(false)
+            return
+          }
+
+          if (!material.selected?.length) {
+            onError(errors.selected)
+            setLoading(false)
+            return
+          }
+          onError()
+
+          await onEdit(simulation, geometry, material, swr)
+
+          // Close
+          setLoading(false)
+          onClose()
+        } catch (err) {
+          setLoading(true)
+        }
+      }}
     >
       Edit
     </EditButton>
@@ -146,13 +157,6 @@ const Edit = ({
 }
 
 Edit.propTypes = {
-  primary: PropTypes.bool,
-  needMargin: PropTypes.bool,
-  material: PropTypes.exact({
-    uuid: PropTypes.string.isRequired,
-    material: PropTypes.object,
-    selected: PropTypes.array
-  }).isRequired,
   simulation: PropTypes.exact({
     id: PropTypes.string.isRequired,
     scheme: PropTypes.shape({
@@ -165,6 +169,11 @@ Edit.propTypes = {
   }).isRequired,
   geometry: PropTypes.exact({
     solids: PropTypes.array.isRequired
+  }).isRequired,
+  material: PropTypes.exact({
+    uuid: PropTypes.string.isRequired,
+    material: PropTypes.object,
+    selected: PropTypes.array
   }).isRequired,
   swr: PropTypes.exact({
     mutateOneSimulation: PropTypes.func.isRequired

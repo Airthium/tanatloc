@@ -1,7 +1,7 @@
 /** @module Components.Project.Simulation.Materials.List */
 
 import PropTypes from 'prop-types'
-import { useState } from 'react'
+import { Dispatch, SetStateAction, useCallback, useState } from 'react'
 import { Card, Typography } from 'antd'
 
 import { ISimulation } from '@/database/index.d'
@@ -14,6 +14,9 @@ import Delete from '../delete'
 import { useDispatch } from 'react-redux'
 import { enable, disable, select } from '@/store/select/action'
 
+/**
+ * Props
+ */
 export interface IProps {
   simulation: ISimulation
   swr: {
@@ -25,10 +28,12 @@ export interface IProps {
 /**
  * List materials
  * @param props Props
+ * @returns List
  */
 const List = ({ simulation, swr, onEdit }: IProps): JSX.Element => {
   // State
-  const [enabled, setEnabled]: [boolean, Function] = useState(true)
+  const [enabled, setEnabled]: [boolean, Dispatch<SetStateAction<boolean>>] =
+    useState(true)
 
   // Data
   const materials = simulation.scheme.configuration.materials
@@ -38,20 +43,23 @@ const List = ({ simulation, swr, onEdit }: IProps): JSX.Element => {
    * Highlight current
    * @param {number} index Index
    */
-  const highlight = (index: number): void => {
-    dispatch(enable())
-    const currentSelected = materials.values[index].selected
-    currentSelected?.forEach((s: { uuid: string }) => {
-      dispatch(select(s.uuid))
-    })
-  }
+  const highlight = useCallback(
+    (index: number): void => {
+      dispatch(enable())
+      const currentSelected = materials.values[index].selected
+      currentSelected?.forEach((s: { uuid: string }) => {
+        dispatch(select(s.uuid))
+      })
+    },
+    [materials, dispatch]
+  )
 
   /**
    * Unhighlight current
    */
-  const unhighlight = (): void => {
+  const unhighlight = useCallback((): void => {
     dispatch(disable())
-  }
+  }, [dispatch])
 
   /**
    * Render

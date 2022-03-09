@@ -9,36 +9,36 @@ import { IModelMaterialValue } from '@/models/index.d'
 const mockFormula = jest.fn()
 jest.mock(
   '@/components/assets/formula',
-  () => (props: {}) => mockFormula(props)
+  () => (props: any) => mockFormula(props)
 )
 
 const mockSelector = jest.fn()
 jest.mock(
   '@/components/assets/selector',
-  () => (props: {}) => mockSelector(props)
+  () => (props: any) => mockSelector(props)
 )
 
 const mockCancelButton = jest.fn()
 jest.mock('@/components/assets/button', () => ({
-  CancelButton: (props: {}) => mockCancelButton(props)
+  CancelButton: (props: any) => mockCancelButton(props)
 }))
 
 const mockDatabase = jest.fn()
 jest.mock(
   '@/components/project/simulation/materials/database',
-  () => (props: {}) => mockDatabase(props)
+  () => (props: any) => mockDatabase(props)
 )
 
 const mockAdd = jest.fn()
 jest.mock(
   '@/components/project/simulation/materials/add',
-  () => (props: {}) => mockAdd(props)
+  () => (props: any) => mockAdd(props)
 )
 
 const mockEdit = jest.fn()
 jest.mock(
   '@/components/project/simulation/materials/edit',
-  () => (props: {}) => mockEdit(props)
+  () => (props: any) => mockEdit(props)
 )
 
 describe('components/project/simulation/materials/material', () => {

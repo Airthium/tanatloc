@@ -7,6 +7,8 @@ import { ICallError } from '@/api/index.d'
 
 import Sentry from '@/lib/sentry'
 
+let serverError = false
+
 /**
  * Error notification
  * @param title Title
@@ -19,6 +21,22 @@ const ErrorNotification = (
   err?: ICallError,
   display: boolean = true
 ): void => {
+  if (err?.message === 'Failed to fetch') {
+    if (!serverError) {
+      notification.error({
+        message: 'Server error',
+        description:
+          'Server is disconnected, please check your internet connection.',
+        duration: 0,
+        onClose: () => {
+          serverError = false
+        }
+      })
+      serverError = true
+    }
+    return
+  }
+
   display &&
     notification.error({
       message: title,

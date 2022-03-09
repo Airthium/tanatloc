@@ -1,6 +1,7 @@
 /** @module API.Organization.UseOrganizations */
 
 import useSWR from 'swr'
+import { useCallback } from 'react'
 
 import { IOrganizationWithData } from '@/lib/index.d'
 import { INewOrganization } from '@/database/index.d'
@@ -32,34 +33,34 @@ export const useOrganizations = (): [
    * Add one
    * @param organization Organization
    */
-  const addOne = (organization: INewOrganization): void => {
+  const addOne = useCallback((organization: INewOrganization): void => {
     const newOrganizations = [...organizations, organization]
     //@ts-ignore
     mutate({ organizations: newOrganizations })
-  }
+  }, [])
 
   /**
    * Delete one
    * @param organization Organization
    */
-  const delOne = (organization: IOrganizationWithData): void => {
+  const delOne = useCallback((organization: IOrganizationWithData): void => {
     const filteredOrganizations = organizations.filter(
       (o) => o.id !== organization.id
     )
     mutate({ organizations: filteredOrganizations })
-  }
+  }, [])
 
   /**
    * Mutate one
    * @param organization Organization
    */
-  const mutateOne = (organization: IOrganizationWithData): void => {
+  const mutateOne = useCallback((organization: IOrganizationWithData): void => {
     const mutatedOrganizations = organizations.map((o) => {
       if (o.id === organization.id) o = { ...o, ...organization }
       return o
     })
     mutate({ organizations: mutatedOrganizations })
-  }
+  }, [])
 
   return [
     organizations,

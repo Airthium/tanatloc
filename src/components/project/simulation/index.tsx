@@ -30,7 +30,7 @@ import Models from '@/models'
 export interface ISelectorProps {
   visible: boolean
   user?: IUserWithData
-  onOk: Function
+  onOk: (model: IModel) => Promise<void>
   onCancel: Function
 }
 
@@ -115,7 +115,7 @@ const Selector = ({
    */
   const onCreate = async (): Promise<void> => {
     setLoading(true)
-    if (current) onOk(current)
+    if (current) await onOk(current)
     setLoading(false)
   }
 

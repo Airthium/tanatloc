@@ -1,6 +1,7 @@
 /** @module API.Group.UseGroups */
 
 import useSWR from 'swr'
+import { useCallback } from 'react'
 
 import { IGroupWithData } from '@/lib/index.d'
 import { INewGroup } from '@/database/index.d'
@@ -33,32 +34,32 @@ export const useGroups = (
    * Add one
    * @param group Group
    */
-  const addOne = (group: INewGroup): void => {
+  const addOne = useCallback((group: INewGroup): void => {
     const newGroups = [...groups, group]
     //@ts-ignore
     mutate({ groups: newGroups })
-  }
+  }, [])
 
   /**
    * Del one
    * @param group Group
    */
-  const delOne = (group: IGroupWithData): void => {
+  const delOne = useCallback((group: IGroupWithData): void => {
     const filteredGroups = groups.filter((g) => g.id !== group.id)
     mutate({ groups: filteredGroups })
-  }
+  }, [])
 
   /**
    * Mutate one
    * @param groups Group
    */
-  const mutateOne = (group: IGroupWithData): void => {
+  const mutateOne = useCallback((group: IGroupWithData): void => {
     const mutatedGroups = groups.map((g) => {
       if (g.id === group.id) g = { ...g, ...group }
       return g
     })
     mutate({ groups: mutatedGroups })
-  }
+  }, [])
 
   return [
     groups,

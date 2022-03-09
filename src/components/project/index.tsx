@@ -1,7 +1,13 @@
 /** @module Components.Project */
 
-import { useRouter } from 'next/router'
-import { Dispatch, SetStateAction, useEffect, useState } from 'react'
+import { NextRouter, useRouter } from 'next/router'
+import {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useState
+} from 'react'
 import { Button, Layout, Menu, Typography } from 'antd'
 import {
   CodeSandboxOutlined,
@@ -14,7 +20,13 @@ import {
   PlusCircleOutlined
 } from '@ant-design/icons'
 
-import { IGeometry, ISimulation, ISimulationTaskFile } from '@/database/index.d'
+import {
+  IGeometry,
+  INewSimulation,
+  ISimulation,
+  ISimulationTaskFile
+} from '@/database/index.d'
+import { IProjectWithData } from '@/lib/index.d'
 import { IModel } from '@/models/index.d'
 
 import { GoBack } from '@/components/assets/button'
@@ -35,18 +47,26 @@ import SimulationAPI from '@/api/simulation'
 import GeometryAPI from '@/api/geometry'
 
 /**
- * Menu keys
+ * Menu items
  */
-const menuKeys = {
-  dashboard: 'dashboard',
-  geometries: 'geometries',
-  simulations: 'simulations'
+export const menuItems = {
+  dashboard: {
+    key: 'dashboard'
+  },
+  geometries: {
+    label: 'GEOMETRIES',
+    key: 'geometries'
+  },
+  simulations: {
+    label: 'SIMULATIONS',
+    key: 'simulations'
+  }
 }
 
 /**
  * Errors
  */
-const errors = {
+export const errors = {
   user: 'Unable to get user',
   project: 'Unable to get project',
   simulations: 'Unable to get simulations',
@@ -55,7 +75,58 @@ const errors = {
 }
 
 /**
+ * Handle dashboard
+ * @param router Router
+ * @param page Page
+ * @param workspaceId Workspace id
+ */
+export const handleDashboard = (
+  router: NextRouter,
+  page: string,
+  workspaceId: string
+): void => {
+  router.push({
+    pathname: '/dashboard',
+    query: { page, workspaceId }
+  })
+}
+
+/**
+ * On selector
+ * @param project Project
+ * @param scheme Simulation scheme
+ * @param swr SWR
+ */
+export const onSelector = async (
+  project: IProjectWithData,
+  scheme: IModel,
+  swr: {
+    addOneSimulation: (simulation: INewSimulation) => void
+    mutateProject: (project: IProjectWithData) => void
+  }
+): Promise<void> => {
+  try {
+    // Add
+    const simulation = await SimulationAPI.add(
+      { id: project.id },
+      { name: scheme.name, scheme }
+    )
+
+    // Mutate
+    swr.addOneSimulation(simulation)
+    swr.mutateProject({
+      id: project.id,
+      simulations: [...(project.simulations || []), simulation.id]
+    })
+  } catch (err) {
+    ErrorNotification(errors.add, err)
+    throw err
+  }
+}
+
+/**
  * Project
+ * @returns Project
  */
 const Project = (): JSX.Element => {
   // Router
@@ -67,45 +138,42 @@ const Project = (): JSX.Element => {
   }: { page?: string; workspaceId?: string; projectId?: string } = router.query
 
   // State
-  const [geometryAdd, setGeometryAdd]: [
+  const [geometryAddVisible, setGeometryAddVisible]: [
     boolean,
     Dispatch<SetStateAction<boolean>>
   ] = useState(false)
-  const [currentGeometry, setCurrentGeometry]: [
+  const [geometry, setGeometry]: [
     IGeometry,
     Dispatch<SetStateAction<IGeometry>>
   ] = useState()
-  const [geometryVisible, setGeometryVisible]: [
-    boolean,
-    Dispatch<SetStateAction<boolean>>
-  ] = useState(false)
 
-  const [simulationSelector, setSimulationSelector]: [
+  const [simulationSelectorVisible, setSimulationSelectorVisible]: [
     boolean,
     Dispatch<SetStateAction<boolean>>
   ] = useState(false)
-  const [currentSimulation, setCurrentSimulation]: [
+  const [simulation, setSimulation]: [
     ISimulation,
     Dispatch<SetStateAction<ISimulation>>
   ] = useState()
-  const [currentSimulationType, setCurrentSimulationType]: [
-    string,
-    Dispatch<SetStateAction<string>>
-  ] = useState()
 
-  const [currentResult, setCurrentResult]: [
+  const [result, setResult]: [
     ISimulationTaskFile,
     Dispatch<SetStateAction<ISimulationTaskFile>>
   ] = useState()
 
+  const [menuKey, setMenuKey]: [
+    { key: string; id: string; item?: string },
+    Dispatch<SetStateAction<{ key: string; id: string; item?: string }>>
+  ] = useState()
+
+  const [panel, setPanel]: [
+    JSX.Element,
+    Dispatch<SetStateAction<JSX.Element>>
+  ] = useState()
   const [panelVisible, setPanelVisible]: [
     boolean,
     Dispatch<SetStateAction<boolean>>
-  ] = useState(false)
-  const [panelTitle, setPanelTitle]: [
-    string,
-    Dispatch<SetStateAction<string>>
-  ] = useState()
+  ] = useState(true)
 
   // Data
   const [user, { errorUser, loadingUser }] = UserAPI.useUser()
@@ -149,180 +217,372 @@ const Project = (): JSX.Element => {
   // Auto open geometry add
   useEffect(() => {
     if (!loadingProject && !loadingGeometries) {
-      if (!geometries.length) setGeometryAdd(true)
-      else setGeometryAdd(false)
+      if (!geometries.length) setGeometryAddVisible(true)
+      else setGeometryAddVisible(false)
     } else {
-      setGeometryAdd(false)
+      setGeometryAddVisible(false)
     }
   }, [loadingProject, loadingGeometries, geometries])
 
   // Update geometry
   useEffect(() => {
-    if (currentGeometry) {
-      const geometry = geometries.find((g) => g.id === currentGeometry?.id)
-      if (geometry) {
-        if (JSON.stringify(geometry) !== JSON.stringify(currentGeometry))
-          if (geometryVisible) selectGeometry(geometry.id)
-          else setCurrentGeometry(geometry)
+    if (geometry) {
+      const current = geometries.find((g) => g.id === geometry?.id)
+      if (current) {
+        if (JSON.stringify(current) !== JSON.stringify(geometry))
+          setGeometry(current)
       } else {
-        setCurrentGeometry(null)
+        setGeometry(null)
       }
+    } else {
+      setGeometry(geometries[0])
     }
-  }, [currentGeometry, geometries])
+  }, [geometries, geometry, setGeometry])
 
   // Update simulation
   useEffect(() => {
-    if (currentSimulation) {
-      const simulation = simulations.find((s) => s.id === currentSimulation?.id)
-      if (JSON.stringify(simulation) !== JSON.stringify(currentSimulation))
-        selectSimulation(simulation?.id, currentSimulationType)
+    if (simulation) {
+      const current = simulations.find((s) => s.id === simulation?.id)
+      if (current) {
+        if (JSON.stringify(current) !== JSON.stringify(simulation))
+          setSimulation(current)
+      } else {
+        setSimulation(null)
+      }
     }
-  }, [currentSimulation, simulations])
-
-  // Manage geometry
-  useEffect(() => {
-    if (!currentGeometry) {
-      setCurrentGeometry(geometries[0])
-    }
-  }, [currentGeometry, geometries])
+  }, [simulations, simulation, setSimulation])
 
   /**
-   * Handle dashboard
+   * On panel close
    */
-  const handleDashboard = () => {
-    router.push({
-      pathname: '/dashboard',
-      query: { page, workspaceId }
-    })
-  }
+  const onPanelClose = useCallback((): void => {
+    setPanel(null)
+    setMenuKey(null)
+  }, [])
+
+  /**
+   * Set geometry panel
+   * @param id Geometry id
+   */
+  const setGeometryPanel = useCallback(
+    (id: string): void => {
+      const current = geometries.find((g) => g.id === id)
+      if (!current) return
+
+      setGeometry(current)
+      setPanel(
+        <Panel visible={true} title={'Geometry'} onClose={onPanelClose}>
+          <Geometry
+            project={{
+              id: project.id,
+              geometries: project.geometries
+            }}
+            geometry={{
+              id: current.id,
+              name: current.name,
+              summary: current.summary
+            }}
+            swr={{ mutateProject, mutateOneGeometry, delOneGeometry }}
+            close={onPanelClose}
+          />
+        </Panel>
+      )
+    },
+    [
+      project,
+      geometries,
+      mutateProject,
+      mutateOneGeometry,
+      delOneGeometry,
+      onPanelClose
+    ]
+  )
+
+  /**
+   * Set simulation panel About
+   * @param current Current simulation
+   */
+  const setSimulationPanelAbout = useCallback(
+    (current: ISimulation): void => {
+      setPanel(
+        <Panel visible={true} title={'About'} onClose={onPanelClose}>
+          <Simulation.About
+            project={{
+              id: project.id,
+              simulations: project.simulations
+            }}
+            simulation={{
+              id: current.id,
+              name: current.name,
+              scheme: current.scheme
+            }}
+            swr={{
+              mutateProject,
+              addOneSimulation,
+              delOneSimulation,
+              mutateOneSimulation
+            }}
+          />
+        </Panel>
+      )
+    },
+    [
+      project,
+      mutateProject,
+      addOneSimulation,
+      delOneSimulation,
+      mutateOneSimulation,
+      onPanelClose
+    ]
+  )
+
+  /**
+   * Set simulation panel Geometry
+   * @param current Current simulation
+   */
+  const setSimulationPanelGeometry = useCallback(
+    (current: ISimulation): void => {
+      setPanel(
+        <Panel visible={true} title={'Geometry'} onClose={onPanelClose}>
+          <Simulation.Geometry
+            geometries={geometries}
+            geometry={geometry}
+            simulation={{
+              id: current.id,
+              scheme: current.scheme
+            }}
+            setGeometry={setGeometry}
+            swr={{ mutateOneSimulation }}
+          />
+        </Panel>
+      )
+    },
+    [geometries, geometry, mutateOneSimulation, onPanelClose]
+  )
+
+  /**
+   * Set simulation panel Parameters
+   * @param current Current simulation
+   */
+  const setSimulationPanelParameters = useCallback(
+    (current: ISimulation): void => {
+      setPanel(
+        <Panel visible={true} title={'Parameters'} onClose={onPanelClose}>
+          <Simulation.Parameters
+            simulation={{
+              id: current.id,
+              scheme: current.scheme
+            }}
+            swr={{ mutateOneSimulation }}
+          />
+        </Panel>
+      )
+    },
+    [mutateOneSimulation, onPanelClose]
+  )
+
+  /**
+   * Set simulation panel Materials
+   * @param current Current simulation
+   */
+  const setSimulationPanelMaterials = useCallback(
+    (current: ISimulation): void => {
+      setPanel(
+        <Panel
+          visible={panelVisible}
+          title={'Materials'}
+          onClose={onPanelClose}
+        >
+          <Simulation.Materials
+            geometry={{
+              id: geometry.id,
+              summary: {
+                uuid: geometry.summary.uuid,
+                solids: geometry.summary.solids
+              }
+            }}
+            simulation={{
+              id: current.id,
+              scheme: current.scheme
+            }}
+            swr={{
+              mutateOneSimulation
+            }}
+            setVisible={(visible) => setPanelVisible(visible)}
+          />
+        </Panel>
+      )
+    },
+    [geometry, panelVisible, mutateOneSimulation, onPanelClose]
+  )
+
+  /**
+   * Set simulation panel Initialization
+   * @param current Current simulation
+   */
+  const setSimulationPanelInitialization = useCallback(
+    (current: ISimulation): void => {
+      setPanel(
+        <Panel visible={true} title={'Initialization'} onClose={onPanelClose}>
+          <Simulation.Initialization
+            simulations={simulations}
+            simulation={current}
+            swr={{ mutateOneSimulation }}
+          />
+        </Panel>
+      )
+    },
+    [simulations, mutateOneSimulation, onPanelClose]
+  )
+
+  /**
+   * Set simulation panel Boundary conditions
+   * @param current Current simulation
+   */
+  const setSimulationPanelBoundaryConditions = useCallback(
+    (current: ISimulation): void => {
+      setPanel(
+        <Panel
+          visible={panelVisible}
+          title={'Boundary conditions'}
+          onClose={onPanelClose}
+        >
+          <Simulation.BoundaryConditions
+            geometry={{
+              id: geometry.id,
+              summary: {
+                uuid: geometry.summary.uuid,
+                faces: geometry.summary.faces
+              }
+            }}
+            simulation={{
+              id: current.id,
+              scheme: current.scheme
+            }}
+            swr={{
+              mutateOneSimulation
+            }}
+            setVisible={(visible) => setPanelVisible(visible)}
+          />
+        </Panel>
+      )
+    },
+    [geometry, panelVisible, mutateOneSimulation, onPanelClose]
+  )
+
+  /**
+   * Set simulation panel Run
+   * @param current Current simulation
+   */
+  const setSimulationPanelRun = useCallback(
+    (current: ISimulation): void => {
+      setPanel(
+        <Panel visible={true} title={'Run'} onClose={onPanelClose}>
+          <Simulation.Run
+            simulation={current}
+            result={result}
+            setResult={setResult}
+            swr={{ mutateOneSimulation }}
+          />
+        </Panel>
+      )
+    },
+    [result, mutateOneSimulation, onPanelClose]
+  )
+
+  /**
+   * Set simulation panel
+   * @param id Simulation id
+   * @param item Item
+   */
+  const setSimulationPanel = useCallback(
+    (id: string, item: string) => {
+      const current = simulations.find((s) => s.id === id)
+      if (!current) return
+
+      setSimulation(current)
+
+      switch (item) {
+        case 'about':
+          setSimulationPanelAbout(current)
+          break
+        case 'geometry':
+          setSimulationPanelGeometry(current)
+          break
+        case 'parameters':
+          setSimulationPanelParameters(current)
+          break
+        case 'materials':
+          setSimulationPanelMaterials(current)
+          break
+        case 'initialization':
+          setSimulationPanelInitialization(current)
+          break
+        case 'boundaryConditions':
+          setSimulationPanelBoundaryConditions(current)
+          break
+        case 'run':
+          setSimulationPanelRun(current)
+          break
+        default:
+          setPanel(null)
+      }
+    },
+    [
+      simulations,
+      setSimulationPanelAbout,
+      setSimulationPanelGeometry,
+      setSimulationPanelParameters,
+      setSimulationPanelMaterials,
+      setSimulationPanelInitialization,
+      setSimulationPanelBoundaryConditions,
+      setSimulationPanelRun
+    ]
+  )
+
+  // Panel
+  useEffect(() => {
+    if (!menuKey) return
+
+    if (menuKey.key === menuItems.geometries.key) {
+      setGeometryPanel(menuKey.id)
+    } else if (menuKey.key === menuItems.simulations.key) {
+      setSimulationPanel(menuKey.id, menuKey.item)
+    } else {
+      onPanelClose()
+    }
+    // Geometry
+  }, [menuKey, setGeometryPanel, setSimulationPanel, onPanelClose])
 
   /**
    * On menu click
    * @param data Data
    */
-  const onMenuClick = ({ keyPath }: { keyPath: string[] }): void => {
-    const key = keyPath.pop()
-    const subKey = keyPath.pop()
+  const onMenuClick = useCallback(
+    ({ keyPath }: { keyPath: string[] }): void => {
+      const key = keyPath.pop()
+      const subKey = keyPath.pop()
+      const subSubKey = keyPath.pop()
 
-    if (key === menuKeys.geometries) {
-      selectGeometry(subKey)
-    } else {
-      // key === menuKeys.simulations
-      const type = keyPath.pop().split('&').pop()
-      selectSimulation(subKey, type)
-    }
-  }
+      let item: string | undefined
+      if (subSubKey) {
+        item = subSubKey.split('&').pop()
+      }
 
-  /**
-   * Add geometry
-   */
-  const addGeometry = (): void => {
-    setGeometryAdd(true)
-  }
-
-  /**
-   * Add simulation
-   */
-  const addSimulation = (): void => {
-    setSimulationSelector(true)
-  }
-
-  /**
-   * On selector ok
-   * @param {Object} scheme Simulation scheme
-   */
-  const onSelectorOk = async (scheme: IModel): Promise<void> => {
-    try {
-      // Add
-      const simulation = await SimulationAPI.add(
-        { id: project.id },
-        { name: scheme.name, scheme }
-      )
-
-      // Mutate
-      addOneSimulation(simulation)
-      mutateProject({
-        id: project.id,
-        simulations: [...(project.simulations || []), simulation.id]
+      setMenuKey({
+        key,
+        id: subKey,
+        item
       })
-
-      // Close selector
-      setSimulationSelector(false)
-    } catch (err) {
-      ErrorNotification(errors.add, err)
-    }
-  }
-
-  /**
-   * On selector cancel
-   */
-  const onSelectorCancel = (): void => {
-    setSimulationSelector(false)
-  }
-
-  /**
-   * On panel close
-   */
-  const onPanelClose = (): void => {
-    setPanelVisible(false)
-    setPanelTitle(null)
-
-    setGeometryVisible(false)
-
-    setCurrentSimulation(null)
-    setCurrentSimulationType(null)
-  }
-
-  /**
-   * Select geometry
-   * @param id Id
-   */
-  const selectGeometry = (id: string): void => {
-    onPanelClose()
-    setCurrentResult(null)
-
-    const geometry = geometries.find((g) => g.id === id)
-
-    setCurrentGeometry(geometry)
-    setGeometryVisible(true)
-
-    setPanelVisible(true)
-    setPanelTitle(geometry.name)
-  }
-
-  /**
-   * Select simulation
-   * @param id Id
-   * @param type Type
-   */
-  const selectSimulation = (id: string, type: string): void => {
-    onPanelClose()
-
-    if (currentSimulation && currentSimulation.id !== id) setCurrentResult(null)
-
-    if (type === 'materials' || type === 'boundaryConditions')
-      setCurrentResult(null)
-
-    const simulation = simulations.find((s) => s.id === id)
-    if (!simulation) return
-
-    const configuration = simulation?.scheme?.configuration || {}
-    const item = configuration[type]
-
-    setCurrentSimulation(simulation)
-    setCurrentSimulationType(type)
-
-    setPanelVisible(true)
-    setPanelTitle(item ? item.title : 'About')
-
-    const geometryId = configuration.geometry?.value
-    const geometry = geometries.find((g) => g.id === geometryId)
-    if (geometry) setCurrentGeometry(geometry)
-  }
+    },
+    []
+  )
 
   // Geometries render build
   const geometriesRender = geometries.map((g) => (
-    <Menu.Item key={g.id}>{g.name}</Menu.Item>
+    <Menu.Item icon={<PieChartOutlined />} key={g.id}>
+      {g.name}
+    </Menu.Item>
   ))
 
   // Simulations render build
@@ -339,7 +599,7 @@ const Project = (): JSX.Element => {
       // Deleted simulation's geometry
       if (
         key === 'geometry' &&
-        !geometries.filter((geometry) => geometry.id === child.value).length &&
+        !geometries.filter((g) => g.id === child.value).length &&
         !loadingGeometries
       ) {
         icon = <ExclamationCircleOutlined style={{ color: 'orange' }} />
@@ -396,7 +656,11 @@ const Project = (): JSX.Element => {
               disabled={true}
               style={{ cursor: 'unset', margin: '10px 0', paddingLeft: 10 }}
             >
-              <GoBack onClick={handleDashboard}>Return to dashboard</GoBack>
+              <GoBack
+                onClick={() => handleDashboard(router, page, workspaceId)}
+              >
+                Return to dashboard
+              </GoBack>
             </Menu.Item>
 
             <Menu.Divider className="Project-Menu-Divider" />
@@ -415,18 +679,21 @@ const Project = (): JSX.Element => {
             <Menu
               className="Project-Menu"
               mode="inline"
-              defaultOpenKeys={[menuKeys.geometries, menuKeys.simulations]}
+              defaultOpenKeys={[
+                menuItems.geometries.key,
+                menuItems.simulations.key
+              ]}
               onClick={onMenuClick}
             >
               <Menu.SubMenu
-                key={menuKeys.geometries}
+                key={menuItems.geometries.key}
                 className="Project-Menu-SubMenu-Geometries"
                 icon={
                   loadingGeometries ? <LoadingOutlined /> : <PieChartOutlined />
                 }
                 title={
                   <Typography.Text strong>
-                    GEOMETRIES ({geometries.length})
+                    {menuItems.geometries.label} ({geometries.length})
                   </Typography.Text>
                 }
               >
@@ -435,7 +702,10 @@ const Project = (): JSX.Element => {
                   key="new_geometry"
                   disabled={true}
                 >
-                  <Button icon={<UploadOutlined />} onClick={addGeometry}>
+                  <Button
+                    icon={<UploadOutlined />}
+                    onClick={() => setGeometryAddVisible(true)}
+                  >
                     New Geometry
                   </Button>
                 </Menu.Item>
@@ -454,7 +724,7 @@ const Project = (): JSX.Element => {
                 {geometriesRender}
               </Menu.SubMenu>
               <Menu.SubMenu
-                key={menuKeys.simulations}
+                key={menuItems.simulations.key}
                 className="Project-Menu-SubMenu-Simulations"
                 icon={
                   loadingSimulations ? (
@@ -465,7 +735,7 @@ const Project = (): JSX.Element => {
                 }
                 title={
                   <Typography.Text strong>
-                    SIMULATIONS ({simulations.length})
+                    {menuItems.simulations.label} ({simulations.length})
                   </Typography.Text>
                 }
               >
@@ -477,7 +747,7 @@ const Project = (): JSX.Element => {
                   <Button
                     disabled={!geometries.length}
                     icon={<PlusCircleOutlined />}
-                    onClick={addSimulation}
+                    onClick={() => setSimulationSelectorVisible(true)}
                   >
                     New Simulation
                   </Button>
@@ -489,163 +759,63 @@ const Project = (): JSX.Element => {
         </Layout.Sider>
         <Layout.Content className="no-scroll relative">
           <Geometry.Add
-            visible={geometryAdd}
+            visible={geometryAddVisible}
             project={{
               id: project.id,
               geometries: project.geometries
             }}
             swr={{ mutateProject, addOneGeometry }}
-            setVisible={(visible) => setGeometryAdd(visible)}
+            setVisible={(visible) => setGeometryAddVisible(visible)}
           />
 
           <Simulation.Selector
             user={user}
-            visible={simulationSelector}
-            onOk={onSelectorOk}
-            onCancel={onSelectorCancel}
-          />
-          <Panel
-            visible={panelVisible}
-            title={panelTitle}
-            onClose={onPanelClose}
-          >
-            {geometryVisible && currentGeometry ? (
-              <Geometry
-                project={{
-                  id: project.id,
-                  geometries: project.geometries
-                }}
-                geometry={{
-                  id: currentGeometry.id,
-                  name: currentGeometry.name,
-                  summary: currentGeometry.summary
-                }}
-                swr={{ mutateProject, mutateOneGeometry, delOneGeometry }}
-                close={onPanelClose}
-              />
-            ) : null}
-            {currentSimulation && currentSimulationType === 'about' && (
-              <Simulation.About
-                project={{
-                  id: project.id,
-                  simulations: project.simulations
-                }}
-                simulation={{
-                  id: currentSimulation.id,
-                  name: currentSimulation.name,
-                  scheme: currentSimulation.scheme
-                }}
-                swr={{
-                  mutateProject,
+            visible={simulationSelectorVisible}
+            onOk={async (scheme) => {
+              try {
+                await onSelector(project, scheme, {
                   addOneSimulation,
-                  delOneSimulation,
-                  mutateOneSimulation
-                }}
-              />
-            )}
-            {currentSimulation && currentSimulationType === 'geometry' && (
-              <Simulation.Geometry
-                geometries={geometries}
-                geometry={currentGeometry}
-                simulation={{
-                  id: currentSimulation.id,
-                  scheme: currentSimulation.scheme
-                }}
-                setGeometry={setCurrentGeometry}
-                swr={{ mutateOneSimulation }}
-              />
-            )}
-            {currentSimulation && currentSimulationType === 'parameters' && (
-              <Simulation.Parameters
-                simulation={{
-                  id: currentSimulation.id,
-                  scheme: currentSimulation.scheme
-                }}
-                swr={{ mutateOneSimulation }}
-              />
-            )}
-            {currentSimulation && currentSimulationType === 'materials' && (
-              <Simulation.Materials
-                geometry={{
-                  id: currentGeometry.id,
-                  summary: {
-                    uuid: currentGeometry.summary.uuid,
-                    solids: currentGeometry.summary.solids
-                  }
-                }}
-                simulation={{
-                  id: currentSimulation.id,
-                  scheme: currentSimulation.scheme
-                }}
-                swr={{
-                  mutateOneSimulation
-                }}
-                setVisible={(visible) => setPanelVisible(visible)}
-              />
-            )}
-            {currentSimulation &&
-              currentSimulationType === 'initialization' && (
-                <Simulation.Initialization
-                  simulations={simulations}
-                  simulation={currentSimulation}
-                  swr={{ mutateOneSimulation }}
-                />
-              )}
-            {currentSimulation &&
-              currentSimulationType === 'boundaryConditions' && (
-                <Simulation.BoundaryConditions
-                  geometry={{
-                    id: currentGeometry.id,
-                    summary: {
-                      uuid: currentGeometry.summary.uuid,
-                      faces: currentGeometry.summary.faces
-                    }
-                  }}
-                  simulation={{
-                    id: currentSimulation.id,
-                    scheme: currentSimulation.scheme
-                  }}
-                  swr={{
-                    mutateOneSimulation
-                  }}
-                  setVisible={(visible) => setPanelVisible(visible)}
-                />
-              )}
-            {currentSimulation && currentSimulationType === 'run' && (
-              <Simulation.Run
-                simulation={currentSimulation}
-                result={currentResult}
-                setResult={setCurrentResult}
-                swr={{ mutateOneSimulation }}
-              />
-            )}
-          </Panel>
+                  mutateProject
+                })
+
+                // Close selector
+                setSimulationSelectorVisible(false)
+              } catch (err) {}
+            }}
+            onCancel={() => setSimulationSelectorVisible(false)}
+          />
+
           <Simulation.Updater
             user={{
               authorizedplugins: user.authorizedplugins
             }}
-            simulation={currentSimulation}
+            simulation={simulation}
             swr={{
               mutateOneSimulation
             }}
           />
+
+          {panel}
+
           <View
             project={{
               id: project.id
             }}
-            simulation={currentSimulation}
-            geometry={currentGeometry}
-            result={currentResult}
+            simulation={simulation}
+            geometry={geometry}
+            result={result}
           />
           <Data
             simulation={{
-              id: currentSimulation?.id,
-              name: currentSimulation?.name
+              id: simulation?.id,
+              name: simulation?.name
             }}
           />
         </Layout.Content>
       </Layout>
     )
 }
+
+Project.propTypes = {}
 
 export default Project

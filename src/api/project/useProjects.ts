@@ -1,6 +1,7 @@
 /** @module API.Project.UseProjects */
 
 import useSWR from 'swr'
+import { useCallback } from 'react'
 
 import { IProjectWithData } from '@/lib/index.d'
 import { INewProject } from '@/database/index.d'
@@ -35,32 +36,32 @@ export const useProjects = (
    * Add one (useProjects)
    * @param project Project
    */
-  const addOne = (project: INewProject): void => {
+  const addOne = useCallback((project: INewProject): void => {
     const newProjects = [...projects, project]
     //@ts-ignore
     mutate({ projects: newProjects })
-  }
+  }, [])
 
   /**
    * Delete one (useProjects)
    * @param project project
    */
-  const delOne = (project: IProjectWithData): void => {
+  const delOne = useCallback((project: IProjectWithData): void => {
     const filteredProjects = projects.filter((p) => p.id !== project.id)
     mutate({ projects: filteredProjects })
-  }
+  }, [])
 
   /**
    * Mutate one (useProjects)
    * @param project Project
    */
-  const mutateOne = (project: IProjectWithData): void => {
+  const mutateOne = useCallback((project: IProjectWithData): void => {
     const mutatedProjects = projects.map((p) => {
       if (p.id === project.id) p = { ...p, ...project }
       return p
     })
     mutate({ projects: mutatedProjects })
-  }
+  }, [])
 
   return [
     projects,

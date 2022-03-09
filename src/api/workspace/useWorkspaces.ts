@@ -6,6 +6,7 @@ import { IWorkspaceWithData } from '@/lib/index.d'
 import { INewWorkspace } from '@/database/index.d'
 
 import { fetcher } from '@/api/call'
+import { useCallback } from 'react'
 
 /**
  * Use workspace (SWR)
@@ -30,32 +31,32 @@ export const useWorkspaces = (): [
    * Add one (useWorkspaces)
    * @param workspace Workspace
    */
-  const addOne = (workspace: INewWorkspace): void => {
+  const addOne = useCallback((workspace: INewWorkspace): void => {
     const newWorkspaces = [...workspaces, workspace]
     //@ts-ignore
     mutate({ workspaces: newWorkspaces })
-  }
+  }, [])
 
   /**
    * Delete one (useWorkspaces)
    * @param workspace Workspace
    */
-  const delOne = (workspace: IWorkspaceWithData): void => {
+  const delOne = useCallback((workspace: IWorkspaceWithData): void => {
     const filteredWorkspaces = workspaces.filter((w) => w.id !== workspace.id)
     mutate({ workspaces: filteredWorkspaces })
-  }
+  }, [])
 
   /**
    * Mutate one (useWorkspace)
    * @param workspace Workspace
    */
-  const mutateOne = (workspace: IWorkspaceWithData): void => {
+  const mutateOne = useCallback((workspace: IWorkspaceWithData): void => {
     const mutatedWorkspaces = workspaces.map((w) => {
       if (w.id === workspace.id) w = { ...w, ...workspace }
       return w
     })
     mutate({ workspaces: mutatedWorkspaces })
-  }
+  }, [])
 
   return [
     workspaces,

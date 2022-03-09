@@ -1,6 +1,7 @@
 /** @module API.User.UseUsers */
 
 import useSWR from 'swr'
+import { useCallback } from 'react'
 
 import { IUserWithData } from '@/lib/index.d'
 
@@ -29,31 +30,31 @@ export const useUsers = (): [
    * Add one
    * @param user User
    */
-  const addOne = (user: IUserWithData): void => {
+  const addOne = useCallback((user: IUserWithData): void => {
     const newUsers = [...users, user]
     mutate({ users: newUsers })
-  }
+  }, [])
 
   /**
    * Del one
    * @param user User
    */
-  const delOne = (user: IUserWithData): void => {
+  const delOne = useCallback((user: IUserWithData): void => {
     const filteredUsers = users.filter((u) => u.id !== user.id)
     mutate({ users: filteredUsers })
-  }
+  }, [])
 
   /**
    * Mutate one
    * @param user User
    */
-  const mutateOne = (user: IUserWithData): void => {
+  const mutateOne = useCallback((user: IUserWithData): void => {
     const mutatedUsers = users.map((u) => {
       if (u.id === user.id) u = { ...u, ...user }
       return u
     })
     mutate({ users: mutatedUsers })
-  }
+  }, [])
 
   return [
     users,

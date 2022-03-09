@@ -1,6 +1,7 @@
 /** @module API.Simulation.UseSimulation */
 
 import useSWR from 'swr'
+import { useCallback } from 'react'
 
 import { ISimulation } from '@/database/index.d'
 
@@ -34,14 +35,14 @@ export const useSimulation = (
    * Mutate
    * @param update Simulation
    */
-  const localMutate = (update: ISimulation): void => {
+  const localMutate = useCallback((update: ISimulation): void => {
     mutate({
       simulation: {
         ...simulation,
         ...update
       }
     })
-  }
+  }, [])
 
   return [
     simulation,

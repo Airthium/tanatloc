@@ -1,6 +1,7 @@
 /** @module API.Project.UseProject */
 
 import useSWR from 'swr'
+import { useCallback } from 'react'
 
 import { IProjectWithData } from '@/lib/index.d'
 
@@ -32,13 +33,13 @@ export const useProject = (
    * Mutate
    * @param update Project
    */
-  const localMutate = (update: IProjectWithData): void => {
+  const localMutate = useCallback((update: IProjectWithData): void => {
     const mutatedProject = {
       ...project,
       ...update
     }
     mutate({ project: mutatedProject })
-  }
+  }, [])
 
   return [
     project,

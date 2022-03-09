@@ -1,6 +1,7 @@
 /** @module API.System.UseSystem */
 
 import useSWR from 'swr'
+import { useCallback } from 'react'
 
 import { ISystem } from '@/database/index.d'
 
@@ -26,14 +27,14 @@ export const useSystem = (): [
    * Mutate
    * @param update System
    */
-  const localMutate = (update: ISystem): void => {
+  const localMutate = useCallback((update: ISystem): void => {
     mutate({
       system: {
         ...system,
         ...update
       }
     })
-  }
+  }, [])
 
   return [
     system,

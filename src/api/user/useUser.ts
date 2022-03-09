@@ -1,6 +1,7 @@
 /** @module API.User.UseUser */
 
 import useSWR from 'swr'
+import { useCallback } from 'react'
 
 import { IUserWithData } from '@/lib/index.d'
 
@@ -27,18 +28,18 @@ export const useUser = (): [
    * Mutate
    * @param update User
    */
-  const localMutate = (update: IUserWithData): void => {
+  const localMutate = useCallback((update: IUserWithData): void => {
     mutate({
       user: {
         ...user,
         ...update
       }
     })
-  }
+  }, [])
 
-  const clear = () => {
+  const clear = useCallback(() => {
     mutate({ user: null })
-  }
+  }, [])
 
   return [
     user,

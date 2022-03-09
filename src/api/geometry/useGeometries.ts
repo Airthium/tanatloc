@@ -1,6 +1,7 @@
 /** @module API.Geometry.UseGeometries */
 
 import useSWR from 'swr'
+import { useCallback } from 'react'
 
 import { IGeometry } from '@/database/index.d'
 
@@ -35,31 +36,31 @@ export const useGeometries = (
    * Add one (useGeometries)
    * @param geometry Geometry
    */
-  const addOne = (geometry: IGeometry): void => {
+  const addOne = useCallback((geometry: IGeometry): void => {
     const newGeometries = [...geometries, geometry]
     mutate({ geometries: newGeometries })
-  }
+  }, [])
 
   /**
    * Delete one (useGeometries)
    * @param geometry Geometry
    */
-  const delOne = (geometry: IGeometry): void => {
+  const delOne = useCallback((geometry: IGeometry): void => {
     const filteredGeometries = geometries.filter((s) => s.id !== geometry.id)
     mutate({ geometries: filteredGeometries })
-  }
+  }, [])
 
   /**
    * Mutate one (useGeometries)
    * @param geometry Geometry
    */
-  const mutateOne = (geometry: IGeometry): void => {
+  const mutateOne = useCallback((geometry: IGeometry): void => {
     const mutatedGeometries = geometries.map((g) => {
       if (g.id === geometry.id) g = { ...g, ...geometry }
       return g
     })
     mutate({ geometries: mutatedGeometries })
-  }
+  }, [])
 
   return [
     geometries,

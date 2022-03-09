@@ -76,7 +76,7 @@ export const onCheck = (
  * @param infos Infos
  */
 export const exportCSV = (
-  simulation?: ISimulation,
+  simulation: ISimulation,
   table?: { columns: TableColumnsType; data: Array<any> },
   infos?: {
     names: string[]
@@ -101,7 +101,7 @@ export const exportCSV = (
   })
 
   // Download
-  const fileName = (simulation?.name || 'data') + '.csv'
+  const fileName = simulation.name + '.csv'
   const file = new File([CSV], fileName, { type: 'text/csv' })
   const url = window.URL.createObjectURL(file)
   const link = document.createElement('a')
@@ -149,7 +149,7 @@ const Data = ({ simulation }: IProps): JSX.Element => {
   ] = useState(false)
 
   // Data
-  const [currentSimulation] = SimulationAPI.useSimulation(simulation?.id)
+  const [currentSimulation] = SimulationAPI.useSimulation(simulation.id)
 
   // Data effect
   useEffect(() => {
@@ -365,7 +365,7 @@ Data.propTypes = {
   simulation: PropTypes.exact({
     id: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired
-  })
+  }).isRequired
 }
 
 export default Data

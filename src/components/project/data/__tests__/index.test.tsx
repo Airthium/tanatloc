@@ -1,7 +1,7 @@
 import React from 'react'
 import { fireEvent, render, screen } from '@testing-library/react'
 
-import Data from '..'
+import Data, { errors } from '..'
 
 const mockDownloadButton = jest.fn()
 jest.mock('@/components/assets/button', () => ({
@@ -131,7 +131,8 @@ describe('components/project/data', () => {
     Object.defineProperty(window, 'URL', {
       value: {
         createObjectURL: jest.fn()
-      }
+      },
+      configurable: true
     })
 
     // Visible
@@ -141,6 +142,22 @@ describe('components/project/data', () => {
     // Download
     const exportCSV = screen.getByRole('DownloadButton')
     fireEvent.click(exportCSV)
+
+    // Error
+    Object.defineProperty(window, 'URL', {
+      value: {
+        createObjectURL: () => {
+          throw new Error('createObjectURL error')
+        }
+      },
+      configurable: true
+    })
+    fireEvent.click(exportCSV)
+    expect(mockErrorNotification).toHaveBeenCalledTimes(1)
+    expect(mockErrorNotification).toHaveBeenLastCalledWith(
+      errors.download,
+      new Error('createObjectURL error')
+    )
 
     unmount()
   })

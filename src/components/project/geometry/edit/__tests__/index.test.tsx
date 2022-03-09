@@ -32,7 +32,14 @@ describe('components/project/geometry/edit', () => {
 
   test('onEdit', async () => {
     mockDialog.mockImplementation((props) => (
-      <div role="Dialog" onClick={props.onOk} />
+      <div
+        role="Dialog"
+        onClick={async () => {
+          try {
+            await props.onOk()
+          } catch (err) {}
+        }}
+      />
     ))
     const { unmount } = render(
       <Edit
@@ -44,9 +51,17 @@ describe('components/project/geometry/edit', () => {
     )
 
     const dialog = screen.getByRole('Dialog')
-    fireEvent.click(dialog)
 
+    // Error
+    onEdit.mockImplementationOnce(() => {
+      throw new Error('edit error')
+    })
+    fireEvent.click(dialog)
     await waitFor(() => expect(onEdit).toHaveBeenCalledTimes(1))
+
+    // Normal
+    fireEvent.click(dialog)
+    await waitFor(() => expect(onEdit).toHaveBeenCalledTimes(2))
 
     unmount()
   })

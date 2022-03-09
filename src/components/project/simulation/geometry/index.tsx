@@ -11,32 +11,39 @@ import SimulationAPI from '@/api/simulation'
 
 import Mesh from './mesh'
 
+/**
+ * Props
+ */
 export interface IProps {
   geometries: IGeometry[]
   geometry?: IGeometry
   simulation: ISimulation
-  setGeometry: Function
+  setGeometry: (geometry: IGeometry) => void
   swr: {
     mutateOneSimulation: (simulation: ISimulation) => void
   }
 }
 
 /**
- * Errors (geometry)
+ * Errors
  */
-const errors = {
+export const errors = {
   update: 'Unable to update the simulation'
 }
 
 /**
  * On select
- * @param {number} index Index
+ * @param simulation Simulation
+ * @param geometries Geometries
+ * @param id Id
+ * @param setGeometry Set geometry
+ * @param swr Swr
  */
-const onSelect = async (
+export const onSelect = async (
   simulation: ISimulation,
   geometries: IGeometry[],
   id: string,
-  setGeometry: Function,
+  setGeometry: (geometry: IGeometry) => void,
   swr: { mutateOneSimulation: (simulation: ISimulation) => void }
 ): Promise<void> => {
   try {
@@ -75,6 +82,7 @@ const onSelect = async (
 /**
  * Geometry
  * @param props Props
+ * @returns Geometry
  */
 const Geometry = ({
   geometries,
@@ -86,14 +94,15 @@ const Geometry = ({
   // Data
   const geometryId = simulation.scheme.configuration.geometry.value
   if (!geometryId)
-    onSelect(simulation, geometries, geometry?.id, setGeometry, swr)
+    onSelect(simulation, geometries, geometry.id, setGeometry, swr)
 
+  // List
   const list = geometries.map((g) => (
     <div
       className="Geometry-list"
       key={g.id}
       style={{
-        backgroundColor: g.id === geometry?.id ? '#FFFBE6' : '#FAFAFA'
+        backgroundColor: g.id === geometry.id ? '#FFFBE6' : '#FAFAFA'
       }}
       onClick={() => onSelect(simulation, geometries, g.id, setGeometry, swr)}
     >
@@ -104,7 +113,7 @@ const Geometry = ({
   /**
    * Render
    */
-  return geometries.length ? (
+  return (
     <>
       <Card size="small">
         <Typography.Text>
@@ -123,8 +132,6 @@ const Geometry = ({
         />
       )}
     </>
-  ) : (
-    <Typography.Text>Please upload a geometry first</Typography.Text>
   )
 }
 
@@ -135,7 +142,9 @@ Geometry.propTypes = {
       name: PropTypes.string.isRequired
     })
   ).isRequired,
-  geometry: PropTypes.object,
+  geometry: PropTypes.exact({
+    id: PropTypes.string.isRequired
+  }).isRequired,
   simulation: PropTypes.exact({
     id: PropTypes.string.isRequired,
     scheme: PropTypes.shape({

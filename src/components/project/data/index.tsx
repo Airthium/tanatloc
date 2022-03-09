@@ -149,7 +149,7 @@ const Data = ({ simulation }: IProps): JSX.Element => {
   ] = useState(false)
 
   // Data
-  const [currentSimulation] = SimulationAPI.useSimulation(simulation.id)
+  const [currentSimulation] = SimulationAPI.useSimulation(simulation?.id)
 
   // Data effect
   useEffect(() => {
@@ -363,8 +363,8 @@ const Data = ({ simulation }: IProps): JSX.Element => {
 
 Data.propTypes = {
   simulation: PropTypes.exact({
-    id: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired
+    id: PropTypes.string,
+    name: PropTypes.string
   }).isRequired
 }
 

@@ -1,8 +1,14 @@
 /** @module Components.Project.Simulation */
 
 import PropTypes from 'prop-types'
-import { Dispatch, SetStateAction, useState, useEffect } from 'react'
-import { Divider, Layout, Menu, Modal, Select, Space, Typography } from 'antd'
+import {
+  Dispatch,
+  SetStateAction,
+  useState,
+  useEffect,
+  useCallback
+} from 'react'
+import { Layout, Menu, Modal, Select, Space, Typography } from 'antd'
 import { WarningOutlined } from '@ant-design/icons'
 import { addedDiff, updatedDiff } from 'deep-object-diff'
 import { merge } from 'lodash'
@@ -27,28 +33,31 @@ import PluginsAPI from '@/api/plugins'
 
 import Models from '@/models'
 
+/**
+ * Selector props
+ */
 export interface ISelectorProps {
   visible: boolean
   user?: IUserWithData
   onOk: (model: IModel) => Promise<void>
-  onCancel: Function
+  onCancel: () => void
 }
 
 /**
  * Errors
  */
-const errors = {
+export const errors = {
   plugins: 'Unable to load plugins',
   update: 'Unable to update the simulation'
 }
 
 /**
  * Load models
- * @param {Object} user User
- * @param {Object} models Models
- * @param {Object} plugins Plugins
+ * @param user User
+ * @param models Models
+ * @param plugins Plugins
  */
-const loadModels = (
+export const loadModels = (
   user: IUserWithData,
   models: IModel[],
   plugins: IClientPlugin[]
@@ -68,7 +77,8 @@ const loadModels = (
 
 /**
  * Simulation Selector
- * @param {Object} props Props `{ user, visible, onOk, onCancel }`
+ * @param props Props
+ * @returns Simulation.Selector
  */
 const Selector = ({
   visible,
@@ -83,6 +93,10 @@ const Selector = ({
     useState(false)
   const [models, setModels]: [IModel[], Dispatch<SetStateAction<IModel[]>>] =
     useState([])
+  const [categories, setCategories]: [
+    { key: string; value: string }[],
+    Dispatch<SetStateAction<{ key: string; value: string }[]>>
+  ] = useState()
   const [category, setCategory]: [string, Dispatch<SetStateAction<string>>] =
     useState()
 
@@ -101,28 +115,28 @@ const Selector = ({
       })
   }, [user])
 
+  // Categories
+  useEffect(() => {
+    // Categories
+    const newCategories = models
+      .map((m) => m.category)
+      .filter((value, index, self) => self.indexOf(value) === index)
+      .map((c) => ({ key: c, value: c }))
+
+    setCategories(newCategories)
+  }, [models])
+
   /**
    * On select
    * @param data Data
    */
-  const onSelect = ({ key }: { key: string }): void => {
-    const model = models.find((m) => m.algorithm === key)
-    setCurrent({ ...model })
-  }
-
-  /**
-   * On create
-   */
-  const onCreate = async (): Promise<void> => {
-    setLoading(true)
-    if (current) await onOk(current)
-    setLoading(false)
-  }
-
-  const categories = models
-    .map((m) => m.category)
-    .filter((value, index, self) => self.indexOf(value) === index)
-    .map((c) => ({ key: c, value: c }))
+  const onSelect = useCallback(
+    ({ key }: { key: string }): void => {
+      const model = models.find((m) => m.algorithm === key)
+      setCurrent({ ...model })
+    },
+    [models]
+  )
 
   /**
    * Render
@@ -133,7 +147,14 @@ const Selector = ({
       title="Create simulation"
       okText="Create"
       okButtonProps={{ loading: loading }}
-      onOk={onCreate}
+      onOk={async () => {
+        setLoading(true)
+        if (current)
+          try {
+            onOk(current)
+          } catch (err) {}
+        setLoading(false)
+      }}
       onCancel={() => onCancel()}
       width="80%"
     >
@@ -168,7 +189,7 @@ const Selector = ({
 }
 
 Selector.propTypes = {
-  user: PropTypes.shape({
+  user: PropTypes.exact({
     authorizedplugins: PropTypes.array
   }),
   visible: PropTypes.bool,
@@ -176,17 +197,59 @@ Selector.propTypes = {
   onCancel: PropTypes.func.isRequired
 }
 
+/**
+ * Updater props
+ */
 export interface IUpdaterProps {
   user?: IUserWithData
   simulation?: ISimulation
   swr: {
-    mutateOneSimulation: Function
+    mutateOneSimulation: (simulation: ISimulation) => void
+  }
+}
+
+/**
+ * On update
+ * @param simulation Simulation
+ * @param models Models
+ * @param swr SWR
+ */
+export const onUpdate = async (
+  simulation: ISimulation,
+  models: IModel[],
+  swr: { mutateOneSimulation: (simulation: ISimulation) => void }
+): Promise<void> => {
+  try {
+    // Current model
+    const currentModel = models.find(
+      (m) => m.algorithm === simulation?.scheme?.algorithm
+    )
+
+    // New simulation
+    const newSimulation = { ...simulation }
+
+    // Merge
+    merge(newSimulation.scheme, currentModel)
+
+    // Update simulation
+    await SimulationAPI.update({ id: simulation.id }, [
+      {
+        key: 'scheme',
+        value: newSimulation.scheme
+      }
+    ])
+
+    // Mutate
+    swr.mutateOneSimulation(newSimulation)
+  } catch (err) {
+    ErrorNotification(errors.update, err)
   }
 }
 
 /**
  * Simulation Updater
- * @param props Props `{ user, simulation, swr }`
+ * @param props Props
+ * @return Simulation.Updater
  */
 const Updater = ({ user, simulation, swr }: IUpdaterProps): JSX.Element => {
   // State
@@ -229,42 +292,6 @@ const Updater = ({ user, simulation, swr }: IUpdaterProps): JSX.Element => {
   }, [simulation, models])
 
   /**
-   * On update
-   */
-  const onUpdate = async (): Promise<void> => {
-    setLoading(true)
-
-    try {
-      // Current model
-      const currentModel = models.find(
-        (m) => m.algorithm === simulation?.scheme?.algorithm
-      )
-
-      // New simulation
-      const newSimulation = { ...simulation }
-
-      // Merge
-      merge(newSimulation.scheme, currentModel)
-
-      // Update simulation
-      await SimulationAPI.update({ id: simulation.id }, [
-        {
-          key: 'scheme',
-          value: newSimulation.scheme
-        }
-      ])
-
-      // Mutate
-      swr.mutateOneSimulation(newSimulation)
-    } catch (err) {
-      ErrorNotification(errors.update, err)
-    } finally {
-      setLoading(false)
-      setNeedUpdate(false)
-    }
-  }
-
-  /**
    * Render
    */
   if (!simulation) return null
@@ -278,7 +305,15 @@ const Updater = ({ user, simulation, swr }: IUpdaterProps): JSX.Element => {
           </>
         }
         visible={needUpdate}
-        onOk={onUpdate}
+        onOk={async () => {
+          setLoading(true)
+          try {
+            await onUpdate(simulation, models, swr)
+          } finally {
+            setLoading(false)
+            setNeedUpdate(false)
+          }
+        }}
         okText="OK"
         confirmLoading={loading}
         onCancel={() => setNeedUpdate(false)}
@@ -297,9 +332,10 @@ Updater.propTypes = {
   user: PropTypes.exact({
     authorizedplugins: PropTypes.array
   }),
-  simulation: PropTypes.shape({
-    id: PropTypes.string.isRequired
-  }),
+  simulation: PropTypes.exact({
+    id: PropTypes.string,
+    scheme: PropTypes.object
+  }).isRequired,
   swr: PropTypes.exact({
     mutateOneSimulation: PropTypes.func.isRequired
   }).isRequired

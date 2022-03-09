@@ -1,14 +1,15 @@
 import React from 'react'
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 
-import Parameters from '@/components/project/simulation/parameters'
+import Parameters, { errors } from '@/components/project/simulation/parameters'
 
 const mockFormula = jest.fn()
 jest.mock('@/components/assets/formula', () => (props) => mockFormula(props))
 
-const mockError = jest.fn()
+const mockErrorNotification = jest.fn()
 jest.mock('@/components/assets/notification', () => ({
-  Error: () => mockError()
+  ErrorNotification: (title: string, err: Error) =>
+    mockErrorNotification(title, err)
 }))
 
 const mockUpdate = jest.fn()
@@ -80,7 +81,7 @@ describe('components/project/simulation/parameters', () => {
     mockFormula.mockReset()
     mockFormula.mockImplementation(() => <div />)
 
-    mockError.mockReset()
+    mockErrorNotification.mockReset()
 
     mockUpdate.mockReset()
   })
@@ -114,12 +115,18 @@ describe('components/project/simulation/parameters', () => {
 
     // Update error
     mockUpdate.mockImplementation(() => {
-      throw new Error()
+      throw new Error('update error')
     })
     value = undefined
     fireEvent.click(formula)
     await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(3))
-    await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
+      expect(mockErrorNotification).toHaveBeenLastCalledWith(
+        errors.update,
+        new Error('update error')
+      )
+    )
     mockUpdate.mockImplementation(() => {})
 
     // Open advanced

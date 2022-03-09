@@ -3,21 +3,12 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import { ISimulation } from '@/database/index.d'
 
-import Geometry from '..'
+import Geometry, { errors } from '..'
 
-jest.mock('@/components/assets/mathjax', () => ({
-  Inline: () => <div />,
-  Formula: () => <div />,
-  Html: () => <div />
-}))
-
-jest.mock('@/components/assets/dialog', () => ({
-  DeleteDialog: () => <div />
-}))
-
-const mockError = jest.fn()
+const mockErrorNotification = jest.fn()
 jest.mock('@/components/assets/notification', () => ({
-  Error: () => mockError()
+  ErrorNotification: (title: string, err: Error) =>
+    mockErrorNotification(title, err)
 }))
 
 jest.mock('../mesh', () => () => <div />)
@@ -52,7 +43,7 @@ describe('components/project/simulation/geometry', () => {
   const swr = { mutateOneSimulation: jest.fn() }
 
   beforeEach(() => {
-    mockError.mockReset()
+    mockErrorNotification.mockReset()
 
     mockUpdate.mockReset()
   })
@@ -75,6 +66,7 @@ describe('components/project/simulation/geometry', () => {
     const { unmount } = render(
       <Geometry
         geometries={[]}
+        geometry={geometry}
         simulation={simulation}
         setGeometry={setGeometry}
         swr={swr}
@@ -121,11 +113,17 @@ describe('components/project/simulation/geometry', () => {
     // Select error
     const button = screen.getByText('geometry')
     mockUpdate.mockImplementation(() => {
-      throw new Error()
+      throw new Error('update error')
     })
     fireEvent.click(button)
     await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
-    await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
+      expect(mockErrorNotification).toHaveBeenLastCalledWith(
+        errors.update,
+        new Error('update error')
+      )
+    )
 
     unmount()
   })

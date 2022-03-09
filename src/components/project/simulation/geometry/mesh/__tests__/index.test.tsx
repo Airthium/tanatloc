@@ -1,19 +1,20 @@
 import React from 'react'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
-import Mesh from '..'
+import Mesh, { errors } from '..'
 
 import { ISimulation } from '@/database/index.d'
 
-const mockError = jest.fn()
+const mockErrorNotification = jest.fn()
 jest.mock('@/components/assets/notification', () => ({
-  Error: () => mockError()
+  ErrorNotification: (title: string, err: Error) =>
+    mockErrorNotification(title, err)
 }))
 
 const mockFormula = jest.fn()
 jest.mock(
   '@/components/assets/formula',
-  () => (props: {}) => mockFormula(props)
+  () => (props: any) => mockFormula(props)
 )
 
 const mockUpdate = jest.fn()
@@ -35,7 +36,7 @@ describe('components/project/simulation/geometry/mesh', () => {
   }
 
   beforeEach(() => {
-    mockError.mockReset()
+    mockErrorNotification.mockReset()
 
     mockFormula.mockReset()
     mockFormula.mockImplementation(() => <div />)
@@ -115,7 +116,7 @@ describe('components/project/simulation/geometry/mesh', () => {
       expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(3)
     )
 
-    expect(mockError).toHaveBeenCalledTimes(0)
+    expect(mockErrorNotification).toHaveBeenCalledTimes(0)
 
     delete simulation.scheme.configuration.geometry.meshParameters
 
@@ -124,11 +125,8 @@ describe('components/project/simulation/geometry/mesh', () => {
 
   test('fill - error', async () => {
     mockFormula.mockImplementation((props) => (
-      <div role="Formula" onClick={props.onValueChange} />
+      <div role="Formula" onClick={() => props.onValueChange(1.1)} />
     ))
-    mockUpdate.mockImplementation(() => {
-      throw new Error('update error')
-    })
     const { unmount } = render(<Mesh simulation={simulation} swr={swr} />)
 
     const selects = screen.getAllByRole('combobox')
@@ -138,34 +136,59 @@ describe('components/project/simulation/geometry/mesh', () => {
     fireEvent.mouseDown(select)
 
     // Auto
-    const secondSelect = selects[1]
+    const auto = selects[1]
+    fireEvent.mouseDown(auto)
+    // No event trigger (already in auto)
 
-    fireEvent.mouseDown(secondSelect)
+    // Fine
     const fine = screen.getByText('Fine')
-
     fireEvent.click(fine)
     await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
     await waitFor(() =>
-      expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(0)
+      expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(1)
     )
-    await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
 
     // Manual
     const manual = screen.getByText('Manual')
     fireEvent.click(manual)
     await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
     await waitFor(() =>
-      expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(0)
+      expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(2)
     )
-    await waitFor(() => expect(mockError).toHaveBeenCalledTimes(2))
 
+    // Formula
     const formula = screen.getByRole('Formula')
     fireEvent.click(formula)
     await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(3))
     await waitFor(() =>
-      expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(0)
+      expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(3)
     )
-    await waitFor(() => expect(mockError).toHaveBeenCalledTimes(3))
+
+    // Formula error
+    mockUpdate.mockImplementation(() => {
+      throw new Error('update error')
+    })
+    fireEvent.click(formula)
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(4))
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
+      expect(mockErrorNotification).toHaveBeenLastCalledWith(
+        errors.update,
+        new Error('update error')
+      )
+    )
+
+    // Auto error
+    const newAuto = screen.getByText('Automatic')
+    fireEvent.click(newAuto)
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(5))
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(2))
+    await waitFor(() =>
+      expect(mockErrorNotification).toHaveBeenLastCalledWith(
+        errors.update,
+        new Error('update error')
+      )
+    )
 
     delete simulation.scheme.configuration.geometry.meshParameters
 

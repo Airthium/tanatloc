@@ -346,7 +346,9 @@ const Project = (): JSX.Element => {
         <Panel visible={true} title={'Geometry'} onClose={onPanelClose}>
           <Simulation.Geometry
             geometries={geometries}
-            geometry={geometry}
+            geometry={{
+              id: geometry.id
+            }}
             simulation={{
               id: current.id,
               scheme: current.scheme

@@ -1,7 +1,7 @@
 import React from 'react'
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 
-import Simulation from '@/components/project/simulation'
+import Simulation, { errors } from '@/components/project/simulation'
 
 const mockAddedDiff = jest.fn()
 const mockUpdatedDiff = jest.fn()
@@ -13,14 +13,13 @@ jest.mock('deep-object-diff', () => ({
 const mockMerge = jest.fn()
 jest.mock('lodash.merge', () => () => mockMerge())
 
-const mockError = jest.fn()
+const mockErrorNotification = jest.fn()
 jest.mock('@/components/assets/notification', () => ({
-  Error: () => mockError()
+  ErrorNotification: (title: string, err: Error) =>
+    mockErrorNotification(title, err)
 }))
 
 jest.mock('@/components/assets/mathjax', () => ({
-  Inline: () => <div />,
-  Formula: () => <div />,
   Html: () => <div />
 }))
 
@@ -294,7 +293,7 @@ describe('components/project/simulation.Updater', () => {
 
     mockUpdate.mockReset()
 
-    mockError.mockReset()
+    mockErrorNotification.mockReset()
   })
 
   test('render', async () => {
@@ -323,12 +322,18 @@ describe('components/project/simulation.Updater', () => {
 
   test('plugins error', async () => {
     mockList.mockImplementation(() => {
-      throw new Error()
+      throw new Error('list error')
     })
 
     const { unmount } = render(<Simulation.Updater user={user} swr={swr} />)
 
-    await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
+      expect(mockErrorNotification).toHaveBeenLastCalledWith(
+        errors.plugins,
+        new Error('list error')
+      )
+    )
 
     unmount()
   })
@@ -350,11 +355,17 @@ describe('components/project/simulation.Updater', () => {
 
     // Error
     mockUpdate.mockImplementation(() => {
-      throw new Error()
+      throw new Error('update error')
     })
     fireEvent.click(yes)
     await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
-    await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
+      expect(mockErrorNotification).toHaveBeenLastCalledWith(
+        errors.update,
+        new Error('update error')
+      )
+    )
 
     unmount()
   })

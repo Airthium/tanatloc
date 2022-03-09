@@ -1,7 +1,13 @@
 /** @module Components.Project.Simulation.Parameters */
 
 import PropTypes from 'prop-types'
-import { Dispatch, SetStateAction, useState, useEffect } from 'react'
+import {
+  Dispatch,
+  SetStateAction,
+  useState,
+  useEffect,
+  useCallback
+} from 'react'
 import {
   Card,
   Checkbox,
@@ -20,43 +26,27 @@ import { ErrorNotification } from '@/components/assets/notification'
 
 import SimulationAPI from '@/api/simulation'
 
+/**
+ * Props
+ */
 export interface IProps {
   simulation: ISimulation
   swr: {
-    mutateOneSimulation: Function
+    mutateOneSimulation: (simulation: ISimulation) => void
   }
 }
 
 /**
- * Errors (parameters)
+ * Errors
  */
-const errors = {
+export const errors = {
   update: 'Unable to update the simulation'
-}
-
-/**
- * On parameter change
- * @param key Parameter key
- * @param index Children index
- * @param value Value
- */
-export const onChange = (
-  key: string,
-  index: number,
-  value: boolean | string,
-  values: { [key: string]: string[] | boolean[] }
-): { [key: string]: string[] | boolean[] } => {
-  const deepValues = values[key] || []
-  deepValues[index] = value
-  return {
-    ...values,
-    [key]: deepValues
-  }
 }
 
 /**
  * Parameters
  * @param props Props
+ * @returns Parameters
  */
 const Parameters = ({ simulation, swr }: IProps): JSX.Element => {
   // State
@@ -112,7 +102,26 @@ const Parameters = ({ simulation, swr }: IProps): JSX.Element => {
       .catch((err) => {
         ErrorNotification(errors.update, err)
       })
-  }, [values])
+  }, [simulation, values, swr])
+
+  /**
+   * On parameter change
+   * @param key Parameter key
+   * @param index Children index
+   * @param value Value
+   */
+  const onChange = useCallback(
+    (key: string, index: number, value: boolean | string): void => {
+      const deepValues = values[key] || []
+      deepValues[index] = value
+
+      setValues((prevValues) => ({
+        ...prevValues,
+        [key]: deepValues
+      }))
+    },
+    [values]
+  )
 
   // Build parameters
   const parameters = []
@@ -137,10 +146,7 @@ const Parameters = ({ simulation, swr }: IProps): JSX.Element => {
                   ? (child.default as string)
                   : (child.value as string)
               }
-              onValueChange={(value: string) => {
-                let newValues = onChange(key, index, value, values)
-                setValues(newValues)
-              }}
+              onValueChange={(value: string) => onChange(key, index, value)}
               unit={child.unit}
             />
           </Typography.Text>
@@ -154,10 +160,7 @@ const Parameters = ({ simulation, swr }: IProps): JSX.Element => {
               defaultValue={
                 (child.value as string) || (child.default as string)
               }
-              onChange={(value: string) => {
-                let newValues = onChange(key, index, value, values)
-                setValues(newValues)
-              }}
+              onChange={(value: string) => onChange(key, index, value)}
             />
           </Typography.Text>
         )
@@ -167,10 +170,7 @@ const Parameters = ({ simulation, swr }: IProps): JSX.Element => {
             {child.label}:<br />
             <Checkbox
               defaultChecked={child.value as boolean}
-              onChange={(e) => {
-                let newValues = onChange(key, index, e.target.checked, values)
-                setValues(newValues)
-              }}
+              onChange={(e) => onChange(key, index, e.target.checked)}
             />
           </Typography.Text>
         )

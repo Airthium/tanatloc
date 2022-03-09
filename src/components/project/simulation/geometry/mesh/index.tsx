@@ -11,6 +11,9 @@ import Formula from '@/components/assets/formula'
 
 import SimulationAPI from '@/api/simulation'
 
+/**
+ * Props
+ */
 export interface IProps {
   simulation: ISimulation
   swr: {
@@ -19,15 +22,107 @@ export interface IProps {
 }
 
 /**
- * Errors (geometry/mesh)
+ * Errors
  */
-const errors = {
+export const errors = {
   update: 'Unable to update the simulation'
+}
+
+/**
+ * On mesh global type
+ * @param simulation Simulation
+ * @param type Type
+ * @param swr SWR
+ */
+export const onMeshGlobalType = async (
+  simulation: ISimulation,
+  type: string,
+  swr: { mutateOneSimulation: (simulation: ISimulation) => void }
+): Promise<void> => {
+  try {
+    const newSimulation = { ...simulation }
+
+    // Update
+    newSimulation.scheme.configuration.geometry.meshParameters = {
+      type,
+      value: type === 'auto' ? 'normal' : '1'
+    }
+
+    const diff = {
+      ...newSimulation.scheme.configuration.geometry,
+      done: true
+    }
+
+    // API
+    await SimulationAPI.update({ id: simulation.id }, [
+      {
+        key: 'scheme',
+        type: 'json',
+        method: 'set',
+        path: ['configuration', 'geometry'],
+        value: diff
+      }
+    ])
+
+    // Local
+    swr.mutateOneSimulation(newSimulation)
+  } catch (err) {
+    ErrorNotification(errors.update, err)
+    throw err
+  }
+}
+
+/**
+ * On mesh global size
+ * @param simulation Simulation
+ * @param type Type
+ * @param value Value
+ * @param swr SWR
+ */
+export const onMeshGlobalSize = async (
+  simulation: ISimulation,
+  type: string,
+  value: string,
+  swr: { mutateOneSimulation: (simulation: ISimulation) => void }
+): Promise<void> => {
+  try {
+    const newSimulation = { ...simulation }
+
+    // Update
+    newSimulation.scheme.configuration.geometry.meshParameters = {
+      ...newSimulation.scheme.configuration.geometry.meshParameters,
+      type,
+      value: value
+    }
+
+    const diff = {
+      ...newSimulation.scheme.configuration.geometry,
+      done: true
+    }
+
+    // API
+    await SimulationAPI.update({ id: simulation.id }, [
+      {
+        key: 'scheme',
+        type: 'json',
+        method: 'set',
+        path: ['configuration', 'geometry'],
+        value: diff
+      }
+    ])
+
+    // Local
+    swr.mutateOneSimulation(newSimulation)
+  } catch (err) {
+    ErrorNotification(errors.update, err)
+    throw err
+  }
 }
 
 /**
  * Mesh
  * @param props Props
+ * @returns Mesh
  */
 const Mesh = ({ simulation, swr }: IProps): JSX.Element => {
   // State
@@ -54,87 +149,6 @@ const Mesh = ({ simulation, swr }: IProps): JSX.Element => {
   }, [simulation])
 
   /**
-   * On mesh global type
-   * @param type Type
-   */
-  const onMeshGlobalType = async (type: string): Promise<void> => {
-    try {
-      setMeshGlobalType(type)
-      if (type === 'auto') setMeshGlobalValue('normal')
-      else setMeshGlobalValue('1')
-
-      const newSimulation = { ...simulation }
-
-      // Update
-      newSimulation.scheme.configuration.geometry.meshParameters = {
-        type,
-        value: type === 'auto' ? 'normal' : '1'
-      }
-
-      const diff = {
-        ...newSimulation.scheme.configuration.geometry,
-        done: true
-      }
-
-      // API
-      await SimulationAPI.update({ id: simulation.id }, [
-        {
-          key: 'scheme',
-          type: 'json',
-          method: 'set',
-          path: ['configuration', 'geometry'],
-          value: diff
-        }
-      ])
-
-      // Local
-      swr.mutateOneSimulation(newSimulation)
-    } catch (err) {
-      ErrorNotification(errors.update, err)
-    }
-  }
-
-  /**
-   * On mehs global size
-   * @param value Value
-   */
-  const onMeshGlobalSize = async (value: string): Promise<void> => {
-    try {
-      setMeshGlobalValue(value)
-
-      const newSimulation = { ...simulation }
-
-      // Update
-      newSimulation.scheme.configuration.geometry.meshParameters = {
-        ...newSimulation.scheme.configuration.geometry.meshParameters,
-        type: meshGlobalType,
-        value: value
-      }
-
-      const diff = {
-        ...newSimulation.scheme.configuration.geometry,
-        done: true
-      }
-
-      // API
-      await SimulationAPI.update({ id: simulation.id }, [
-        {
-          key: 'scheme',
-          type: 'json',
-          method: 'set',
-          path: ['configuration', 'geometry'],
-          value: diff
-        }
-      ])
-
-      // Local
-      swr.mutateOneSimulation(newSimulation)
-    } catch (err) {
-      ErrorNotification(errors.update, err)
-    }
-  }
-
-  /**
    * Render
    */
   return (
@@ -146,7 +160,15 @@ const Mesh = ({ simulation, swr }: IProps): JSX.Element => {
           <Select
             className="full-width"
             value={meshGlobalType}
-            onChange={onMeshGlobalType}
+            onChange={async (type) => {
+              try {
+                await onMeshGlobalType(simulation, type, swr)
+
+                setMeshGlobalType(type)
+                if (type === 'auto') setMeshGlobalValue('normal')
+                else setMeshGlobalValue('1')
+              } catch (err) {}
+            }}
           >
             <Select.Option value="auto">Automatic</Select.Option>
             <Select.Option value="manual">Manual</Select.Option>
@@ -159,7 +181,12 @@ const Mesh = ({ simulation, swr }: IProps): JSX.Element => {
             <Select
               className="full-width"
               value={meshGlobalValue}
-              onChange={onMeshGlobalSize}
+              onChange={async (value) => {
+                try {
+                  await onMeshGlobalSize(simulation, meshGlobalType, value, swr)
+                  setMeshGlobalValue(value)
+                } catch (err) {}
+              }}
             >
               <Select.Option value="veryfine">Very fine</Select.Option>
               <Select.Option value="fine">Fine</Select.Option>
@@ -175,7 +202,12 @@ const Mesh = ({ simulation, swr }: IProps): JSX.Element => {
             <br />
             <Formula
               defaultValue={meshGlobalValue}
-              onValueChange={onMeshGlobalSize}
+              onValueChange={async (value) => {
+                try {
+                  await onMeshGlobalSize(simulation, meshGlobalType, value, swr)
+                  setMeshGlobalValue(value)
+                } catch (err) {}
+              }}
               unit="m"
             />
           </Typography.Text>

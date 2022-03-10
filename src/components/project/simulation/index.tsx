@@ -151,7 +151,7 @@ const Selector = ({
         setLoading(true)
         if (current)
           try {
-            onOk(current)
+            await onOk(current)
           } catch (err) {}
         setLoading(false)
       }}

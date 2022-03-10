@@ -604,6 +604,12 @@ const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
   }, [])
 
   useEffect(() => {
+    // Check part update
+    const currentPart = scene.current.children.find(
+      (child: IPart) => child.uuid === part.uuid
+    )
+    if (currentPart) return
+
     // Clean scene
     scene.current.children.forEach((child: IPart) => {
       if (child.type === 'Part') {
@@ -611,8 +617,6 @@ const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
         child.dispose()
       }
     })
-
-    // TODO transparent should not rerun load, but it must be in deps
 
     if (part)
       loadPart(
@@ -633,7 +637,7 @@ const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
       // Grid
       gridHelper.current.update()
     }
-  }, [part, dispatch])
+  }, [part, transparent, dispatch])
 
   // Enable / disable selection
   useEffect(() => {

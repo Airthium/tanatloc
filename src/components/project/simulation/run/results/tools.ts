@@ -11,7 +11,7 @@ import { IModel } from '@/models/index.d'
  */
 export const getFilesNumbers = (
   files: ISimulationTaskFile[],
-  filter: IModel['configuration']['run']['resultsFilters'][0]
+  filter: IModel['configuration']['run']['resultsFilter']
 ): (ISimulationTaskFile & { number: number })[] => {
   return files.map((file) => {
     const number = file.fileName
@@ -32,7 +32,7 @@ export const getFilesNumbers = (
  */
 export const getMultiplicator = (
   configuration: IModel['configuration'],
-  filter: IModel['configuration']['run']['resultsFilters'][0]
+  filter: IModel['configuration']['run']['resultsFilter']
 ) => {
   const multiplicatorPath = filter.multiplicator
   if (multiplicatorPath) {

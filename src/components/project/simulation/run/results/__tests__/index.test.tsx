@@ -59,9 +59,7 @@ describe('components/project/simulation/run/results', () => {
   }
   const result = {
     fileName: 'file.vtu',
-    name: 'file',
-    type: 'result',
-    originPath: 'originPath'
+    name: 'file'
   }
   const setResult = jest.fn()
 
@@ -153,14 +151,12 @@ describe('components/project/simulation/run/results', () => {
               run: {
                 index: 1,
                 title: 'Run',
-                resultsFilters: [
-                  {
-                    name: 'name',
-                    pattern: 'file_\\d+.vtu',
-                    prefixPattern: 'file_',
-                    suffixPattern: '.vtu'
-                  }
-                ]
+                resultsFilter: {
+                  name: 'name',
+                  pattern: 'file_\\d+.vtu',
+                  prefixPattern: 'file_',
+                  suffixPattern: '.vtu'
+                }
               }
             }
           }
@@ -221,15 +217,13 @@ describe('components/project/simulation/run/results', () => {
               run: {
                 index: 1,
                 title: 'Run',
-                resultsFilters: [
-                  {
-                    name: 'name',
-                    pattern: 'file_\\d+.vtu',
-                    prefixPattern: 'file_',
-                    suffixPattern: '.vtu',
-                    multiplicator: ['parameters', 'time', 'children', '1']
-                  }
-                ]
+                resultsFilter: {
+                  name: 'name',
+                  pattern: 'file_\\d+.vtu',
+                  prefixPattern: 'file_',
+                  suffixPattern: '.vtu',
+                  multiplicator: ['parameters', 'time', 'children', '1']
+                }
               }
             }
           }

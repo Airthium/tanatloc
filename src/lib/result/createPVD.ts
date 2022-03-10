@@ -18,7 +18,8 @@ const createPVD = (simulation: ISimulation, files: string[]) => {
   const PVDs = []
 
   // Results filters
-  const resultsFilters = simulation.scheme.configuration.run.resultsFilters
+  // TODO review after run/results modification
+  const resultsFilters = [simulation.scheme.configuration.run.resultsFilter]
   resultsFilters?.forEach((filter) => {
     const pattern = new RegExp(filter.pattern)
     const filteredFiles = files.filter((file) => pattern.test(file))

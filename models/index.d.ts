@@ -168,13 +168,13 @@ export interface IModel {
       done?: boolean
       error?: string | Error
       results?: { name: string }[]
-      resultsFilters?: {
+      resultsFilter?: {
         name: string
         prefixPattern: string | RegExp
         suffixPattern: string | RegExp
         pattern: string | RegExp
         multiplicator?: string[]
-      }[]
+      }
       cloudServer?: IClientPlugin
     }
   }

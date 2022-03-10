@@ -57,15 +57,13 @@ describe('lib/download/pvd', () => {
       run: {
         index: 2,
         title: 'Run',
-        resultsFilters: [
-          {
-            name: 'Name',
-            prefixPattern: 'result_',
-            suffixPattern: '.vtu',
-            pattern: 'result_\\d+.vtu',
-            multiplicator: ['parameters', 'time', 'children', '1']
-          }
-        ]
+        resultsFilter: {
+          name: 'Name',
+          prefixPattern: 'result_',
+          suffixPattern: '.vtu',
+          pattern: 'result_\\d+.vtu',
+          multiplicator: ['parameters', 'time', 'children', '1']
+        }
       },
       parameters: {
         index: 1,
@@ -87,7 +85,7 @@ describe('lib/download/pvd', () => {
     expect(pvds).toEqual([{ name: 'Name.pvd', path: 'path' }])
 
     // Without multiplicator
-    delete simulation.scheme.configuration.run.resultsFilters[0].multiplicator
+    delete simulation.scheme.configuration.run.resultsFilter.multiplicator
     pvds = createPVD(simulation, files)
     expect(pvds).toEqual([{ name: 'Name.pvd', path: 'path' }])
   })
@@ -97,15 +95,13 @@ describe('lib/download/pvd', () => {
       run: {
         index: 2,
         title: 'Run',
-        resultsFilters: [
-          {
-            name: 'Name',
-            prefixPattern: 'Result_',
-            suffixPattern: '.vtu',
-            pattern: 'Result_\\d+.vtu',
-            multiplicator: ['parameters', 'time', 'children', '1']
-          }
-        ]
+        resultsFilter: {
+          name: 'Name',
+          prefixPattern: 'Result_',
+          suffixPattern: '.vtu',
+          pattern: 'Result_\\d+.vtu',
+          multiplicator: ['parameters', 'time', 'children', '1']
+        }
       },
       parameters: {
         index: 1,

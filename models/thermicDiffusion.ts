@@ -160,15 +160,13 @@ const ThermicDiffusion: IModel = {
           name: 'T'
         }
       ],
-      resultsFilters: [
-        {
-          name: 'Time',
-          prefixPattern: 'Result_',
-          suffixPattern: '.vtu',
-          pattern: 'Result_\\d+.vtu',
-          multiplicator: ['parameters', 'time', 'children', '1']
-        }
-      ]
+      resultsFilter: {
+        name: 'Time',
+        prefixPattern: 'Result_',
+        suffixPattern: '.vtu',
+        pattern: 'Result_\\d+.vtu',
+        multiplicator: ['parameters', 'time', 'children', '1']
+      }
     }
   }
 }

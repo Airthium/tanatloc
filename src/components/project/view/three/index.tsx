@@ -606,7 +606,7 @@ const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
   useEffect(() => {
     // Check part update
     const currentPart = scene.current.children.find(
-      (child: IPart) => child.uuid === part.uuid
+      (child: IPart) => child.uuid === part?.uuid
     )
     if (currentPart) return
 

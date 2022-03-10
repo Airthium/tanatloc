@@ -228,8 +228,10 @@ const loadResults = async (
     if (task.files) {
       // Filter
       const currentSimulation = simulations.find((s) => s.id === id)
-      const resultsFilters =
-        currentSimulation.scheme.configuration.run.resultsFilters
+      // TODO review after run/results modification
+      const resultsFilters = [
+        currentSimulation.scheme.configuration.run.resultsFilter
+      ]
 
       //Sort by filters
       // Check if no results filters

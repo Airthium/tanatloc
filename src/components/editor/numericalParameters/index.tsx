@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import { useEffect, useState } from 'react'
+import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import {
   Button,
   Card,
@@ -29,16 +29,21 @@ const NumericalParameters = ({
 }: IProps): JSX.Element => {
   const [finiteElementSpaceOptions, setFiniteElementSpaceOptions]: [
     { label: string; value: string }[],
-    Function
+    Dispatch<SetStateAction<{ label: string; value: string }[]>>
   ] = useState([])
-  const [FELabel, setFELabel]: [string, Function] = useState()
-  const [FEValue, setFEValue]: [string, Function] = useState()
+  const [FELabel, setFELabel]: [string, Dispatch<SetStateAction<string>>] =
+    useState()
+  const [FEValue, setFEValue]: [string, Dispatch<SetStateAction<string>>] =
+    useState()
 
   const [solverOptions, setSolverOptions]: [
     { label: string; value: string }[],
-    Function
+    Dispatch<SetStateAction<{ label: string; value: string }[]>>
   ] = useState([])
-  const [solverValue, setSolverValue]: [string, Function] = useState()
+  const [solverValue, setSolverValue]: [
+    string,
+    Dispatch<SetStateAction<string>>
+  ] = useState()
 
   // Options
   useEffect(() => {
@@ -59,8 +64,8 @@ const NumericalParameters = ({
       { label: FELabel, value: FEValue }
     ])
 
-    setFELabel()
-    setFEValue()
+    setFELabel(null)
+    setFEValue(null)
   }
 
   /**
@@ -86,7 +91,7 @@ const NumericalParameters = ({
       { label: solverValue, value: solverValue }
     ])
 
-    setSolverValue()
+    setSolverValue(null)
   }
 
   /**

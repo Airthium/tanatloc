@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { Button, Card, Layout } from 'antd'
 import PropTypes from 'prop-types'
 
@@ -15,11 +15,15 @@ export interface IProps {
 const BoundaryConditions = ({ configuration, onNext }: IProps): JSX.Element => {
   const [boundaryConditions, setBoundaryConditions]: [
     IConfiguration['boundaryConditions'],
-    Function
+    Dispatch<SetStateAction<IConfiguration['boundaryConditions']>>
   ] = useState()
   const [toEdit, setToEdit]: [
     IConfiguration['boundaryConditions']['key'] & { key: string },
-    Function
+    Dispatch<
+      SetStateAction<
+        IConfiguration['boundaryConditions']['key'] & { key: string }
+      >
+    >
   ] = useState()
 
   useEffect(() => {
@@ -67,7 +71,7 @@ const BoundaryConditions = ({ configuration, onNext }: IProps): JSX.Element => {
       [key]: boundaryCondition
     }
 
-    setToEdit()
+    setToEdit(null)
     setBoundaryConditions(newBoundaryConditions)
   }
 

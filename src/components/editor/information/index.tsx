@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import { useState } from 'react'
+import { Dispatch, SetStateAction, useState } from 'react'
 import { Button, Card, Divider, Form, Input, Layout, Select } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
 
@@ -18,7 +18,8 @@ const existingCategories = ['Academic', 'Fluid', 'Mechanics']
  */
 const Information = ({ configuration, onNext }: IProps): JSX.Element => {
   // State
-  const [category, setCategory]: [string, Function] = useState()
+  const [category, setCategory]: [string, Dispatch<SetStateAction<string>>] =
+    useState()
 
   /**
    * Render
@@ -73,7 +74,7 @@ const Information = ({ configuration, onNext }: IProps): JSX.Element => {
                         }}
                         onClick={() => {
                           existingCategories.push(category)
-                          setCategory()
+                          setCategory(null)
                         }}
                       >
                         <PlusOutlined /> Add category

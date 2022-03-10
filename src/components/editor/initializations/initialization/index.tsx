@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import {
   Button,
   Form,
@@ -33,8 +33,9 @@ const Initialization = ({
   onEdit
 }: IProps): JSX.Element => {
   // State
-  const [visible, setVisible]: [boolean, Function] = useState(false)
-  const [type, setType]: [string, Function] = useState()
+  const [visible, setVisible]: [boolean, Dispatch<SetStateAction<boolean>>] =
+    useState(false)
+  const [type, setType]: [string, Dispatch<SetStateAction<string>>] = useState()
 
   useEffect(() => {
     setVisible(!!initialization)

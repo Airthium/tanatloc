@@ -24,7 +24,7 @@ import Archive from './archive'
 export interface IProps {
   simulation: ISimulation
   result?: ISimulationTaskFile
-  setResult: Function
+  setResult: Dispatch<SetStateAction<ISimulationTaskFile>>
 }
 
 export interface IFilteredFiles {

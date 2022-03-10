@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import { useEffect, useState } from 'react'
+import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { Button, Card, Layout } from 'antd'
 
 import { IConfiguration } from '..'
@@ -20,11 +20,13 @@ const Initializations = ({ configuration, onNext }: IProps): JSX.Element => {
   // State
   const [initializations, setInitializations]: [
     IConfiguration['initializations'],
-    Function
+    Dispatch<SetStateAction<IConfiguration['initializations']>>
   ] = useState()
   const [toEdit, setToEdit]: [
     IConfiguration['initializations']['key'] & { key: string },
-    Function
+    Dispatch<
+      SetStateAction<IConfiguration['initializations']['key'] & { key: string }>
+    >
   ] = useState()
 
   useEffect(() => {
@@ -72,7 +74,7 @@ const Initializations = ({ configuration, onNext }: IProps): JSX.Element => {
       [key]: initialization
     }
 
-    setToEdit()
+    setToEdit(null)
     setInitializations(newInitializations)
   }
 

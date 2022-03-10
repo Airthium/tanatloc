@@ -62,18 +62,20 @@ const BoundaryCondition = ({
   // State
   const [alreadySelected, setAlreadySelected]: [
     { label: string; selected: { uuid: string }[] }[],
-    Function
+    Dispatch<SetStateAction<{ label: string; selected: { uuid: string }[] }[]>>
   ] = useState([])
   const [types, setTypes]: [
     (IModelTypedBoundaryCondition & { key: string })[],
-    Function
+    Dispatch<SetStateAction<(IModelTypedBoundaryCondition & { key: string })[]>>
   ] = useState([])
   const [totalNumber, setTotalNumber]: [
     number,
     Dispatch<SetStateAction<number>>
   ] = useState(0)
-  const [current, setCurrent]: [IModelBoundaryConditionValue, Function] =
-    useState()
+  const [current, setCurrent]: [
+    IModelBoundaryConditionValue,
+    Dispatch<SetStateAction<IModelBoundaryConditionValue>>
+  ] = useState()
   const [error, setError]: [string, Dispatch<SetStateAction<string>>] =
     useState('')
 
@@ -231,7 +233,8 @@ const BoundaryCondition = ({
     setCurrent((prevCurrent) => ({
       ...prevCurrent,
       selected: selected.map((s) => ({
-        uuid: s
+        uuid: s,
+        label: 0 //TODO
       }))
     }))
   }, [])

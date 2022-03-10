@@ -1,7 +1,13 @@
 /** @module Components.Project.Simulation.BoundaryConditions */
 
 import PropTypes from 'prop-types'
-import { useState, useEffect, useCallback } from 'react'
+import {
+  Dispatch,
+  SetStateAction,
+  useState,
+  useEffect,
+  useCallback
+} from 'react'
 import { Card, Layout } from 'antd'
 
 import { IGeometry, ISimulation } from '@/database/index.d'
@@ -44,11 +50,11 @@ const BoundaryConditions = ({
   // State
   const [boundaryCondition, setBoundaryCondition]: [
     IModelBoundaryConditionValue,
-    Function
+    Dispatch<SetStateAction<IModelBoundaryConditionValue>>
   ] = useState()
   const [boundaryConditionVisible, setBoundaryConditionVisible]: [
     boolean,
-    Function
+    Dispatch<SetStateAction<boolean>>
   ] = useState(false)
 
   // Store
@@ -67,7 +73,7 @@ const BoundaryConditions = ({
    * On add
    */
   const onAdd = useCallback((): void => {
-    setBoundaryCondition()
+    setBoundaryCondition(null)
     setBoundaryConditionVisible(true)
     setVisible(false)
     dispatch(enable())
@@ -99,7 +105,7 @@ const BoundaryConditions = ({
   const onClose = useCallback((): void => {
     setBoundaryConditionVisible(false)
     setVisible(true)
-    setBoundaryCondition()
+    setBoundaryCondition(null)
     dispatch(disable())
   }, [dispatch, setVisible])
 

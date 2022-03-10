@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import { useEffect, useState } from 'react'
+import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { Button, Card, Layout } from 'antd'
 
 import { IConfiguration } from '..'
@@ -20,11 +20,15 @@ const Materials = ({ configuration, onNext }: IProps): JSX.Element => {
   // State
   const [materials, setMaterials]: [
     IConfiguration['materials']['children'],
-    Function
+    Dispatch<SetStateAction<IConfiguration['materials']['children']>>
   ] = useState()
   const [toEdit, setToEdit]: [
     IConfiguration['materials']['children'][0] & { index: number },
-    Function
+    Dispatch<
+      SetStateAction<
+        IConfiguration['materials']['children'][0] & { index: number }
+      >
+    >
   ] = useState()
 
   useEffect(() => {
@@ -67,7 +71,7 @@ const Materials = ({ configuration, onNext }: IProps): JSX.Element => {
       ...materials.slice(index + 1)
     ]
 
-    setToEdit()
+    setToEdit(null)
     setMaterials(newMaterials)
   }
 

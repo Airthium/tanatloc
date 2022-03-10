@@ -50,6 +50,7 @@ export interface IProps {
 /**
  * Boundary condition
  * @param props Props
+ * @returns BoundaryCondition
  */
 const BoundaryCondition = ({
   visible,
@@ -61,8 +62,12 @@ const BoundaryCondition = ({
 }: IProps): JSX.Element => {
   // State
   const [alreadySelected, setAlreadySelected]: [
-    { label: string; selected: { uuid: string }[] }[],
-    Dispatch<SetStateAction<{ label: string; selected: { uuid: string }[] }[]>>
+    { label: string; selected: { uuid: string; label: number }[] }[],
+    Dispatch<
+      SetStateAction<
+        { label: string; selected: { uuid: string; label: number }[] }[]
+      >
+    >
   ] = useState([])
   const [types, setTypes]: [
     (IModelTypedBoundaryCondition & { key: string })[],

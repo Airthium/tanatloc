@@ -335,7 +335,7 @@ Updater.propTypes = {
   simulation: PropTypes.exact({
     id: PropTypes.string,
     scheme: PropTypes.object
-  }).isRequired,
+  }),
   swr: PropTypes.exact({
     mutateOneSimulation: PropTypes.func.isRequired
   }).isRequired

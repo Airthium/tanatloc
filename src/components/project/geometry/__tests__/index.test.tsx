@@ -52,6 +52,7 @@ describe('components/project/geometry', () => {
     delOneGeometry: jest.fn()
   }
   const close = jest.fn()
+  const onCleanup = jest.fn()
 
   beforeEach(() => {
     mockDeleteButton.mockReset()
@@ -75,7 +76,13 @@ describe('components/project/geometry', () => {
 
   test('render', () => {
     const { unmount } = render(
-      <Geometry project={project} geometry={geometry} swr={swr} close={close} />
+      <Geometry
+        project={project}
+        geometry={geometry}
+        swr={swr}
+        close={close}
+        onCleanup={onCleanup}
+      />
     )
 
     unmount()
@@ -88,6 +95,7 @@ describe('components/project/geometry', () => {
         geometry={undefined}
         swr={swr}
         close={close}
+        onCleanup={onCleanup}
       />
     )
 
@@ -104,6 +112,7 @@ describe('components/project/geometry', () => {
         }}
         swr={swr}
         close={close}
+        onCleanup={onCleanup}
       />
     )
 
@@ -117,7 +126,13 @@ describe('components/project/geometry', () => {
     ))
     mockDownload.mockImplementation(() => ({ buffer: 'buffer' }))
     const { unmount } = render(
-      <Geometry project={project} geometry={geometry} swr={swr} close={close} />
+      <Geometry
+        project={project}
+        geometry={geometry}
+        swr={swr}
+        close={close}
+        onCleanup={onCleanup}
+      />
     )
 
     const button = screen.getByRole('DownloadButton')
@@ -158,7 +173,13 @@ describe('components/project/geometry', () => {
       />
     ))
     const { unmount } = render(
-      <Geometry project={project} geometry={geometry} swr={swr} close={close} />
+      <Geometry
+        project={project}
+        geometry={geometry}
+        swr={swr}
+        close={close}
+        onCleanup={onCleanup}
+      />
     )
 
     // Visible
@@ -206,6 +227,7 @@ describe('components/project/geometry', () => {
         geometry={geometry}
         swr={swr}
         close={close}
+        onCleanup={onCleanup}
       />
     )
 

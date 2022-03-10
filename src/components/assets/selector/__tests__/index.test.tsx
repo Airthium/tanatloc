@@ -62,7 +62,7 @@ describe('components/assets/selector', () => {
   const alreadySelected = [
     {
       label: 'label',
-      selected: [{ uuid: 'uuid' }]
+      selected: [{ uuid: 'uuid', label: 1 }]
     }
   ]
   const updateSelected = jest.fn()

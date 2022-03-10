@@ -33,6 +33,7 @@ export interface IProps {
     delOneGeometry: (geometry: IGeometry) => void
   }
   close: () => void
+  onCleanup: () => void
 }
 
 /**
@@ -135,7 +136,13 @@ export const onDelete = async (
  * @param props Props
  * @returns Geometry
  */
-const Geometry = ({ project, geometry, swr, close }: IProps): JSX.Element => {
+const Geometry = ({
+  project,
+  geometry,
+  swr,
+  close,
+  onCleanup
+}: IProps): JSX.Element => {
   // State
   const [downloading, setDownloading]: [
     boolean,
@@ -195,6 +202,7 @@ const Geometry = ({ project, geometry, swr, close }: IProps): JSX.Element => {
                   setDeleting(true)
                   try {
                     await onDelete(geometry, project, close, swr)
+                    onCleanup()
                   } finally {
                     setDeleting(false)
                   }
@@ -256,7 +264,8 @@ Geometry.propTypes = {
     mutateOneGeometry: PropTypes.func.isRequired,
     delOneGeometry: PropTypes.func.isRequired
   }).isRequired,
-  close: PropTypes.func.isRequired
+  close: PropTypes.func.isRequired,
+  onCleanup: PropTypes.func.isRequired
 }
 
 Geometry.Add = Add

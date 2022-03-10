@@ -143,8 +143,8 @@ const Project = (): JSX.Element => {
     Dispatch<SetStateAction<boolean>>
   ] = useState(false)
   const [geometry, setGeometry]: [
-    IGeometry,
-    Dispatch<SetStateAction<IGeometry>>
+    IGeometry & { needCleanup?: boolean },
+    Dispatch<SetStateAction<IGeometry & { needCleanup?: boolean }>>
   ] = useState()
 
   const [simulationSelectorVisible, setSimulationSelectorVisible]: [
@@ -261,6 +261,13 @@ const Project = (): JSX.Element => {
   }, [])
 
   /**
+   * On geometry cleanup
+   */
+  const onGeometryCleanup = useCallback((): void => {
+    setGeometry({ id: '0', needCleanup: true })
+  }, [])
+
+  /**
    * Set geometry panel
    * @param id Geometry id
    */
@@ -284,6 +291,7 @@ const Project = (): JSX.Element => {
             }}
             swr={{ mutateProject, mutateOneGeometry, delOneGeometry }}
             close={onPanelClose}
+            onCleanup={onGeometryCleanup}
           />
         </Panel>
       )
@@ -294,6 +302,7 @@ const Project = (): JSX.Element => {
       mutateProject,
       mutateOneGeometry,
       delOneGeometry,
+      onGeometryCleanup,
       onPanelClose
     ]
   )
@@ -791,7 +800,12 @@ const Project = (): JSX.Element => {
             user={{
               authorizedplugins: user.authorizedplugins
             }}
-            simulation={simulation}
+            simulation={
+              simulation && {
+                id: simulation.id,
+                scheme: simulation.scheme
+              }
+            }
             swr={{
               mutateOneSimulation
             }}
@@ -803,9 +817,23 @@ const Project = (): JSX.Element => {
             project={{
               id: project.id
             }}
-            simulation={simulation}
-            geometry={geometry}
-            result={result}
+            simulation={
+              simulation && {
+                id: simulation.id
+              }
+            }
+            geometry={
+              geometry && {
+                id: geometry.id,
+                needCleanup: geometry.needCleanup
+              }
+            }
+            result={
+              result && {
+                glb: result.glb,
+                originPath: result.originPath
+              }
+            }
           />
           <Data
             simulation={{

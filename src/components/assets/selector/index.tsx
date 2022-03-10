@@ -68,7 +68,7 @@ export interface IProps {
   }
   alreadySelected?: {
     label: string
-    selected: { uuid: string }[]
+    selected: { uuid: string; label: number }[]
   }[]
   updateSelected: (selected: string[]) => void
 }

@@ -20,7 +20,7 @@ export interface IProps {
   project: IProjectWithData
   simulation?: ISimulation
   geometry?: IGeometry & { needCleanup?: boolean }
-  result?: ISimulationTaskFile
+  result?: Omit<Omit<ISimulationTaskFile, 'fileName'>, 'type'>
 }
 
 /**
@@ -76,8 +76,8 @@ const View = ({
     Dispatch<SetStateAction<{ uuid?: string; buffer: Buffer }>>
   ] = useState()
   const [previous, setPrevious]: [
-    IGeometry | ISimulationTaskFile,
-    Dispatch<SetStateAction<IGeometry | ISimulationTaskFile>>
+    IProps['geometry'] | IProps['result'],
+    Dispatch<SetStateAction<IGeometry | IProps['geometry'] | IProps['result']>>
   ] = useState()
   const [loading, setLoading]: [boolean, Dispatch<SetStateAction<boolean>>] =
     useState(false)
@@ -85,7 +85,7 @@ const View = ({
   // Part
   useEffect(() => {
     if (simulation && result) {
-      if (result.glb !== (previous as ISimulationTaskFile)?.glb) {
+      if (result.glb !== (previous as IProps['result'])?.glb) {
         setPrevious(result)
 
         setLoading(true)
@@ -94,7 +94,7 @@ const View = ({
           .finally(() => setLoading(false))
       }
     } else if (geometry) {
-      if (geometry.id !== (previous as IGeometry)?.id) {
+      if (geometry.id !== (previous as IProps['geometry'])?.id) {
         setPrevious(geometry)
 
         setLoading(true)

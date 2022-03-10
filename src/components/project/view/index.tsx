@@ -45,7 +45,7 @@ const loadPart = async (
     glb?: string
   },
   type: string
-): Promise<{ buffer: Buffer }> => {
+): Promise<{ uuid?: string; buffer: Buffer }> => {
   try {
     if (type === 'geometry') return await GeometryAPI.getPart({ id: file.id })
     else
@@ -54,6 +54,7 @@ const loadPart = async (
         { originPath: file.originPath, glb: file.glb }
       )
   } catch (err) {
+    // console.log(err)
     ErrorNotification(errors.part, err)
   }
 }

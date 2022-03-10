@@ -76,7 +76,7 @@ import { SelectState } from '@/store/select/reducer'
 export interface IProps {
   loading: boolean
   project: IProjectWithData
-  part: { uuid?: string; buffer: Buffer }
+  part?: { uuid?: string; buffer: Buffer }
 }
 
 /**
@@ -605,12 +605,14 @@ const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
 
   useEffect(() => {
     // Clean scene
-    scene.current.children.forEach((child) => {
+    scene.current.children.forEach((child: IPart) => {
       if (child.type === 'Part') {
         scene.current.remove(child)
         child.dispose()
       }
     })
+
+    // TODO transparent should not rerun load, but it must be in deps
 
     if (part)
       loadPart(

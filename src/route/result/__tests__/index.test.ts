@@ -110,7 +110,7 @@ describe('route/result', () => {
     expect(resJson).toEqual({
       error: true,
       message:
-        'Missing data in your request (body: { simulation: { id(uuid) }, result: { originPath(string), glb(string) } }'
+        'Missing data in your request (body: { simulation: { id(uuid) }, result: { originPath(string), glb(string), json(string) } }'
     })
 
     // Access denied
@@ -129,7 +129,8 @@ describe('route/result', () => {
           },
           result: {
             originPath: 'originPath',
-            glb: 'glb'
+            glb: 'glb',
+            json: 'json'
           }
         }
       } as Request,
@@ -159,7 +160,8 @@ describe('route/result', () => {
           },
           result: {
             originPath: 'originPath',
-            glb: 'glb'
+            glb: 'glb',
+            json: 'json'
           }
         }
       } as Request,
@@ -188,7 +190,8 @@ describe('route/result', () => {
           },
           result: {
             originPath: 'originPath',
-            glb: 'glb'
+            glb: 'glb',
+            json: 'json'
           }
         }
       } as Request,

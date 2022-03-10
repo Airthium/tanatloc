@@ -18,9 +18,11 @@ jest.mock('../../simulation', () => ({
 const mockReadFile = jest.fn()
 const mockListFiles = jest.fn()
 const mockReadStream = jest.fn()
+const mockReadJSONFile = jest.fn()
 const mockWriteStream = jest.fn()
 jest.mock('../../tools', () => ({
   readFile: async () => mockReadFile(),
+  readJSONFile: async () => mockReadJSONFile(),
   listFiles: async () => mockListFiles(),
   readStream: () => mockReadStream(),
   writeStream: () => mockWriteStream()
@@ -66,12 +68,15 @@ describe('lib/result', () => {
   })
 
   test('load', async () => {
+    mockReadJSONFile.mockImplementation(() => ({
+      uuid: 'uuid'
+    }))
     const load = await Geometry.load(
       { id: 'id' },
       { originPath: 'originPath', glb: 'glb', json: 'json' }
     )
     expect(mockReadFile).toHaveBeenCalledTimes(1)
-    expect(load).toEqual({ buffer: Buffer.from('readFile') })
+    expect(load).toEqual({ uuid: 'uuid', buffer: Buffer.from('readFile') })
   })
 
   test('download', () => {

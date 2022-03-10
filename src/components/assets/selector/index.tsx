@@ -70,7 +70,7 @@ export interface IProps {
     label: string
     selected: { uuid: string }[]
   }[]
-  updateSelected: Function
+  updateSelected: (selected: string[]) => void
 }
 
 /**

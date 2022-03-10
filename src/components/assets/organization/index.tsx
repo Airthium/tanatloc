@@ -22,7 +22,7 @@ export interface IProps {
     mutateOneOrganization: (organization: IOrganizationWithData) => void
     loadingOrganizations: boolean
   }
-  onClose: Function
+  onClose: () => void
 }
 
 /**

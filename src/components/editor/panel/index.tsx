@@ -7,7 +7,7 @@ export interface IProps {
   visible: boolean
   title: string
   children?: ReactChild | ReactChild[]
-  onClose: Function
+  onClose: () => void
 }
 
 /**

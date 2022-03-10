@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import { useEffect, useState } from 'react'
+import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { Button, Form, Input, Space } from 'antd'
 import { DeleteOutlined } from '@ant-design/icons'
 
@@ -21,7 +21,8 @@ const BoundaryCondition = ({
   onEdit
 }: IProps): JSX.Element => {
   // State
-  const [visible, setVisible]: [boolean, Function] = useState(false)
+  const [visible, setVisible]: [boolean, Dispatch<SetStateAction<boolean>>] =
+    useState(false)
 
   useEffect(() => {
     setVisible(!!boundaryCondition)

@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import { useEffect, useState } from 'react'
+import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { Button, Card, Layout } from 'antd'
 
 import { IConfiguration } from '..'
@@ -18,11 +18,15 @@ export interface IProps {
  */
 const PhysicalParameters = ({ configuration, onNext }: IProps): JSX.Element => {
   // State
-  const [parameters, setParameters]: [IConfiguration['parameters'], Function] =
-    useState()
+  const [parameters, setParameters]: [
+    IConfiguration['parameters'],
+    Dispatch<SetStateAction<IConfiguration['parameters']>>
+  ] = useState()
   const [toEdit, setToEdit]: [
     IConfiguration['parameters']['key'] & { key: string },
-    Function
+    Dispatch<
+      SetStateAction<IConfiguration['parameters']['key'] & { key: string }>
+    >
   ] = useState()
 
   useEffect(() => {
@@ -66,7 +70,7 @@ const PhysicalParameters = ({ configuration, onNext }: IProps): JSX.Element => {
       [key]: parameter
     }
 
-    setToEdit()
+    setToEdit(null)
     setParameters(newParameters)
   }
 

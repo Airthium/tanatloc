@@ -107,8 +107,12 @@ const CloudServer = ({ disabled, cloudServer, onOk }: IProps): JSX.Element => {
               const Plugin = Plugins.find((p) => p.key === plugin.key)
               if (!Plugin) return
 
-              const Renderer: ComponentType<{ data: any; onSelect: Function }> =
-                dynamic(() => import(`/plugins/${Plugin.key}/src/components`))
+              const Renderer: ComponentType<{
+                data: any
+                onSelect: (diff: IClientPlugin) => void
+              }> = dynamic(
+                () => import(`/plugins/${Plugin.key}/src/components`)
+              )
 
               return (
                 <Card key={plugin.uuid} title={plugin.configuration.name.value}>

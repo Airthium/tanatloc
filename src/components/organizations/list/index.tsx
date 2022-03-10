@@ -1,6 +1,7 @@
 /** @module Components.Organizations.List */
 
 import PropTypes from 'prop-types'
+import { Dispatch, SetStateAction } from 'react'
 import { Avatar, Button, Space, Table } from 'antd'
 import { ControlOutlined } from '@ant-design/icons'
 
@@ -24,7 +25,7 @@ export interface IProps {
     delOneOrganization: (organization: IOrganizationWithData) => void
     loadingOrganizations: boolean
   }
-  setOrganization: Function
+  setOrganization: Dispatch<SetStateAction<IOrganizationWithData>>
 }
 
 /**

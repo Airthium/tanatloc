@@ -17,7 +17,7 @@ export interface IProps {
   needMargin?: boolean
   loading?: boolean
   children?: ReactChild | ReactChild[]
-  onAdd: Function
+  onAdd: () => void
 }
 
 /**

@@ -35,6 +35,9 @@ jobs:
       - name: Next lint
         run: yarn run next lint
 
+      - name: Doc
+        run: yarn run doc
+
       - name: Tests
         run: yarn run test || true
 

@@ -43,6 +43,7 @@ const loadPart = async (
     id?: string
     originPath?: string
     glb?: string
+    json?: string
   },
   type: string
 ): Promise<{ uuid?: string; buffer: Buffer }> => {
@@ -51,7 +52,7 @@ const loadPart = async (
     else
       return await ResultAPI.load(
         { id: simulation.id },
-        { originPath: file.originPath, glb: file.glb }
+        { originPath: file.originPath, glb: file.glb, json: file.json }
       )
   } catch (err) {
     // console.log(err)

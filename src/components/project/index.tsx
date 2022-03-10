@@ -835,7 +835,8 @@ const Project = (): JSX.Element => {
             result={
               result && {
                 glb: result.glb,
-                originPath: result.originPath
+                originPath: result.originPath,
+                json: result.json
               }
             }
           />

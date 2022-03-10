@@ -14,6 +14,7 @@ export interface ILoadBody {
   }
   result: {
     originPath: string
+    json: string
     glb: string
   }
 }
@@ -32,11 +33,13 @@ const checkLoadBody = (body: ILoadBody): void => {
     !body.result.originPath ||
     typeof body.result.originPath !== 'string' ||
     !body.result.glb ||
-    typeof body.result.glb !== 'string'
+    typeof body.result.glb !== 'string' ||
+    !body.result.json ||
+    typeof body.result.json !== 'string'
   )
     throw error(
       400,
-      'Missing data in your request (body: { simulation: { id(uuid) }, result: { originPath(string), glb(string) } }'
+      'Missing data in your request (body: { simulation: { id(uuid) }, result: { originPath(string), glb(string), json(string) } }'
     )
 }
 

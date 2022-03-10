@@ -22,13 +22,26 @@ const archiveFileName = 'resultsArchive.zip'
  */
 const load = async (
   simulation: { id: string },
-  result: { originPath: string; glb: string }
-): Promise<{ buffer: Buffer }> => {
+  result: { originPath: string; json: string; glb: string }
+): Promise<{ uuid: string; buffer: Buffer }> => {
+  // Read GLB
   const buffer = await Tools.readFile(
     path.join(SIMULATION, simulation.id, result.originPath, result.glb)
   )
 
+  // Read part file
+  const part = await Tools.readJSONFile(
+    path.join(
+      SIMULATION,
+      simulation.id,
+      result.originPath,
+      result.json,
+      'part.json'
+    )
+  )
+
   return {
+    uuid: part.uuid,
     buffer: Buffer.from(buffer)
   }
 }

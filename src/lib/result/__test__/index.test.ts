@@ -68,7 +68,7 @@ describe('lib/result', () => {
   test('load', async () => {
     const load = await Geometry.load(
       { id: 'id' },
-      { originPath: 'originPath', glb: 'glb' }
+      { originPath: 'originPath', glb: 'glb', json: 'json' }
     )
     expect(mockReadFile).toHaveBeenCalledTimes(1)
     expect(load).toEqual({ buffer: Buffer.from('readFile') })

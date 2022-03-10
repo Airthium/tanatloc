@@ -782,7 +782,9 @@ const Project = (): JSX.Element => {
           />
 
           <Simulation.Selector
-            user={user}
+            user={{
+              authorizedplugins: user.authorizedplugins
+            }}
             visible={simulationSelectorVisible}
             onOk={async (scheme) => {
               try {

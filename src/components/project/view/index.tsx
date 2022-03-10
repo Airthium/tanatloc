@@ -98,10 +98,14 @@ const View = ({
         setPrevious(geometry)
 
         setLoading(true)
-        if (geometry.needCleanup) setPart(null)
-        loadPart(simulation, geometry, 'geometry')
-          .then(setPart)
-          .finally(() => setLoading(false))
+        if (geometry.needCleanup) {
+          setPart(null)
+          setLoading(false)
+        } else {
+          loadPart(simulation, geometry, 'geometry')
+            .then(setPart)
+            .finally(() => setLoading(false))
+        }
       }
     }
   }, [simulation, geometry, result, previous])

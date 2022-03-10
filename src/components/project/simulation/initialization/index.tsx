@@ -18,6 +18,10 @@ import {
 
 import Formula from '@/components/assets/formula'
 import { ErrorNotification } from '@/components/assets/notification'
+import {
+  getFilesNumbers,
+  getMultiplicator
+} from '@/components/project/simulation/run/results/tools'
 
 import SimulationAPI from '@/api/simulation'
 
@@ -220,75 +224,80 @@ const onChange = async (
 const loadResults = async (
   simulations: ISimulation[],
   id: string
-): Promise<{ label: string; value: string }[]> => {
+): Promise<{ label: string; value: string; file: string }[]> => {
   const tasks = await SimulationAPI.tasks({ id })
+
+  const currentSimulation = simulations.find((s) => s.id === id)
+  const configuration = currentSimulation.scheme.configuration
+  const filter = configuration?.run?.resultsFilter
 
   const results = []
   tasks.forEach((task) => {
     if (task.files) {
-      // Filter
-      const currentSimulation = simulations.find((s) => s.id === id)
-      // TODO review after run/results modification
-      const resultsFilters = [
-        currentSimulation.scheme.configuration.run.resultsFilter
-      ]
-
-      //Sort by filters
-      // Check if no results filters
-      //TODO
-      resultsFilters?.forEach((filter, filterIndex) => {
+      if (!filter) {
+        task.files.forEach((file) => {
+          if (file.type === 'result')
+            results.push({
+              label: file.fileName,
+              value: file.fileName,
+              file: file.fileName
+            })
+        })
+      } else {
+        // Pattern filter
         const pattern = new RegExp(filter.pattern)
+        const notFilteredFiles = task.files.filter(
+          (file) => !pattern.test(file.fileName)
+        )
         const filteredFiles = task.files.filter((file) =>
           pattern.test(file.fileName)
         )
 
-        if (filteredFiles.length) {
-          // Set iteration numbers
-          const files = filteredFiles.map((file) => {
-            const number = file.fileName
-              .replace(new RegExp(filter.prefixPattern), '')
-              .replace(new RegExp(filter.suffixPattern), '')
+        // Numbering
+        const filesWithNumbers = getFilesNumbers(filteredFiles, filter)
+        const numbers = filesWithNumbers
+          .map((file) => file.number)
+          .filter((n, i, s) => s.indexOf(n) === i)
+          .sort((a, b) => a - b)
+
+        // Multiplicator
+        const multiplicator = getMultiplicator(configuration, filter)
+
+        // Options
+        const options = numbers.map((n, i) => {
+          const value = multiplicator ? n * multiplicator : i
+          const floatingPointFix = Math.round(value * 1e15) / 1e15
+          return {
+            label: floatingPointFix,
+            value: n,
+            file: filesWithNumbers[i].fileName.replace(
+              new RegExp(filter.suffixPattern),
+              ''
+            )
+          }
+        })
+
+        // Add to results
+        results.push(
+          ...notFilteredFiles.map((file) => {
+            if (file.type === 'result')
+              results.push({
+                label: file.fileName,
+                value: file.fileName,
+                file: file.fileName
+              })
+          })
+        )
+        results.push(
+          ...options.map((option) => {
             return {
-              ...file,
-              number: +number
+              label: option.label,
+              value: option.value,
+              file: option.file
             }
           })
-
-          // Sort
-          files.sort((a, b) => a.number - b.number)
-
-          // Get unique numbers
-          const steps = files.filter((file, i) => {
-            return files.findIndex((s) => s.number === file.number) === i
-          })
-
-          // Multiplicator
-          let multiplicator
-
-          const multiplicatorPath = filter.multiplicator
-          if (multiplicatorPath) {
-            const multiplicatorObject = multiplicatorPath.reduce(
-              (a, v) => a[v],
-              currentSimulation.scheme.configuration
-            )
-            multiplicator =
-              multiplicatorObject.value || multiplicatorObject.default
-          }
-
-          results.push(
-            ...steps.map((file, i) => ({
-              label: (multiplicator
-                ? Math.round(file.number * multiplicator * 1e15) / 1e15
-                : file.number
-              ).toString(),
-              value: file.number,
-              file: file.fileName.replace(new RegExp(filter.suffixPattern), '')
-
-              // value:
-            }))
-          )
-        }
-      })
+        )
+      }
     }
     if (task.file) {
       if (task.file.type === 'result')

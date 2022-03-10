@@ -12,4 +12,12 @@ describe('components/assets/notification/error', () => {
       info: { message: 'API error' }
     })
   })
+
+  test('API error', () => {
+    ErrorNotification('error', {
+      ...new Error('Filaed to fetch'),
+      status: 500,
+      info: { message: 'API error' }
+    })
+  })
 })

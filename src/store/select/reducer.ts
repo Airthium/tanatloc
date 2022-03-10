@@ -30,6 +30,7 @@ const reducer = (
   state: SelectState,
   action: { type: string; uuid?: string; object?: string }
 ): SelectState => {
+  let index
   if (!state) state = selectInitialState
   switch (action.type) {
     case selectActionTypes.ENABLE:
@@ -67,12 +68,15 @@ const reducer = (
         highlighted: null
       }
     case selectActionTypes.SELECT:
-      return {
-        ...state,
-        selected: [...state.selected, action.uuid]
-      }
+      index = state.selected.findIndex((s) => s === action.uuid)
+      if (index === -1)
+        return {
+          ...state,
+          selected: [...state.selected, action.uuid]
+        }
+      else return state
     case selectActionTypes.UNSELECT:
-      const index = state.selected.findIndex((s) => s === action.uuid)
+      index = state.selected.findIndex((s) => s === action.uuid)
       if (index !== -1) {
         return {
           ...state,

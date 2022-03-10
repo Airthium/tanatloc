@@ -17,10 +17,9 @@ import Tools from '../tools'
 const createPVD = (simulation: ISimulation, files: string[]) => {
   const PVDs = []
 
-  // Results filters
-  // TODO review after run/results modification
-  const resultsFilters = [simulation.scheme.configuration.run.resultsFilter]
-  resultsFilters?.forEach((filter) => {
+  // Results filter
+  const filter = simulation.scheme.configuration.run.resultsFilter
+  if (filter) {
     const pattern = new RegExp(filter.pattern)
     const filteredFiles = files.filter((file) => pattern.test(file))
 
@@ -85,7 +84,7 @@ const createPVD = (simulation: ISimulation, files: string[]) => {
         path: pvdPath
       })
     }
-  })
+  }
 
   return PVDs
 }

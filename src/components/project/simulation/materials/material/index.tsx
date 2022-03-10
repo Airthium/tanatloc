@@ -53,10 +53,13 @@ const Material = ({
 }: IProps): JSX.Element => {
   // State
   const [alreadySelected, setAlreadySelected]: [
-    { label: string; selected: { uuid: string; label: number }[] }[],
+    { label: string; selected: { uuid: string; label: number | string }[] }[],
     Dispatch<
       SetStateAction<
-        { label: string; selected: { uuid: string; label: number }[] }[]
+        {
+          label: string
+          selected: { uuid: string; label: number | string }[]
+        }[]
       >
     >
   ] = useState()

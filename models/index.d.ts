@@ -14,7 +14,7 @@ export interface IModelMaterialValue {
       value: number | string
     }[]
   }
-  selected: { uuid: string; label: number }[]
+  selected: { uuid: string; label: number | string }[]
 }
 
 export interface IModelMaterial {
@@ -49,7 +49,7 @@ export interface IModelBoundaryConditionValue {
     label: string
     children?: IModelBoundaryCondition[]
   }
-  selected: { uuid: string; label: number }[]
+  selected: { uuid: string; label: number | string }[]
   values?: {
     checked?: boolean
     value?: TValue

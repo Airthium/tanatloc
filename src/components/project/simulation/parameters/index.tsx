@@ -102,7 +102,7 @@ const Parameters = ({ simulation, swr }: IProps): JSX.Element => {
       .catch((err) => {
         ErrorNotification(errors.update, err)
       })
-  }, [simulation, values, swr])
+  }, [, /*simulation*/ values, swr])
 
   /**
    * On parameter change

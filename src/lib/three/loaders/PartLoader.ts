@@ -5,6 +5,7 @@ import {
   BufferGeometry,
   Color,
   MeshStandardMaterial,
+  Object3D,
   PerspectiveCamera,
   Plane,
   Raycaster,
@@ -19,27 +20,31 @@ import { Lut } from 'three/examples/jsm/math/Lut'
 
 export interface IPartLoader {
   load: (
-    part: { uuid: string; buffer: Buffer },
+    part: { uuid?: string; buffer: Buffer },
     transparent: boolean,
     clippingPlane: Plane
   ) => Promise<IPart>
 }
 
-export interface IPart {
+export interface IPartChildChild extends Object3D {
+  geometry: BufferGeometry
+  material: MeshStandardMaterial & { originalColor: Color }
+  userData: {
+    uuid: string
+    lut?: Lut
+  }
+  visible: boolean
+}
+
+export interface IPartChild extends Object3D {
+  children: IPartChildChild[]
+}
+
+export interface IPart extends Object3D {
   type: 'Part'
   uuid: string
   boundingBox: Box3
-  children: {
-    children: {
-      geometry: BufferGeometry
-      material: MeshStandardMaterial & { originalColor: Color }
-      userData: {
-        uuid: string
-        lut?: Lut
-      }
-      visible: boolean
-    }[]
-  }[]
+  children: IPartChild[]
   dispose: () => void
   setTransparent: (transparent: boolean) => void
   startSelection: (

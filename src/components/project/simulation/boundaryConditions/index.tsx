@@ -1,7 +1,7 @@
 /** @module Components.Project.Simulation.BoundaryConditions */
 
 import PropTypes from 'prop-types'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { Card, Layout } from 'antd'
 
 import { IGeometry, ISimulation } from '@/database/index.d'
@@ -11,15 +11,19 @@ import {
 } from '@/models/index.d'
 
 import { AddButton } from '@/components/assets/button'
+
 import List from './list'
 import BoundaryCondition from './boundaryCondition'
 
 import { useDispatch } from 'react-redux'
 import { enable, disable, setType, setPart } from '@/store/select/action'
 
+/**
+ * Props
+ */
 export interface IProps {
-  geometry: IGeometry
   simulation: ISimulation
+  geometry: IGeometry
   swr: {
     mutateOneSimulation: (simulation: ISimulation) => void
   }
@@ -27,12 +31,13 @@ export interface IProps {
 }
 
 /**
- * Boundary condition
+ * Boundary conditions
  * @param props Props
+ * @returns BoundaryConditions
  */
 const BoundaryConditions = ({
-  geometry,
   simulation,
+  geometry,
   swr,
   setVisible
 }: IProps): JSX.Element => {
@@ -56,44 +61,47 @@ const BoundaryConditions = ({
   useEffect(() => {
     dispatch(setType('faces'))
     dispatch(setPart(geometry.summary.uuid))
-  }, [geometry])
+  }, [geometry, dispatch])
 
   /**
    * On add
    */
-  const onAdd = (): void => {
+  const onAdd = useCallback((): void => {
     setBoundaryCondition()
     setBoundaryConditionVisible(true)
     setVisible(false)
     dispatch(enable())
-  }
+  }, [dispatch, setVisible])
 
   /**
    * On edit
    * @param type Type
    * @param index Index
    */
-  const onEdit = (type: string, index: number): void => {
-    const boundaryConditionType = boundaryConditions[
-      type
-    ] as IModelTypedBoundaryCondition
-    const boundaryConditionToEdit = boundaryConditionType.values[index]
-    setBoundaryCondition(boundaryConditionToEdit)
+  const onEdit = useCallback(
+    (type: string, index: number): void => {
+      const boundaryConditionType = boundaryConditions[
+        type
+      ] as IModelTypedBoundaryCondition
+      const boundaryConditionToEdit = boundaryConditionType.values[index]
+      setBoundaryCondition(boundaryConditionToEdit)
 
-    setBoundaryConditionVisible(true)
-    setVisible(false)
-    dispatch(enable())
-  }
+      setBoundaryConditionVisible(true)
+      setVisible(false)
+      dispatch(enable())
+    },
+    [boundaryConditions, dispatch, setVisible]
+  )
 
   /**
    * On close
    */
-  const onClose = (): void => {
+  const onClose = useCallback((): void => {
     setBoundaryConditionVisible(false)
     setVisible(true)
     setBoundaryCondition()
     dispatch(disable())
-  }
+  }, [dispatch, setVisible])
 
   /**
    * Render
@@ -143,19 +151,19 @@ const BoundaryConditions = ({
 }
 
 BoundaryConditions.propTypes = {
-  geometry: PropTypes.exact({
-    id: PropTypes.string.isRequired,
-    summary: PropTypes.exact({
-      uuid: PropTypes.string.isRequired,
-      faces: PropTypes.array.isRequired
-    }).isRequired
-  }).isRequired,
   simulation: PropTypes.exact({
     id: PropTypes.string.isRequired,
     scheme: PropTypes.shape({
       configuration: PropTypes.shape({
         boundaryConditions: PropTypes.object.isRequired
       }).isRequired
+    }).isRequired
+  }).isRequired,
+  geometry: PropTypes.exact({
+    id: PropTypes.string.isRequired,
+    summary: PropTypes.exact({
+      uuid: PropTypes.string.isRequired,
+      faces: PropTypes.array.isRequired
     }).isRequired
   }).isRequired,
   swr: PropTypes.exact({

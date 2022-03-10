@@ -14,25 +14,99 @@ import { unselect } from '@/store/select/action'
 
 import SimulationAPI from '@/api/simulation'
 
+/**
+ * Props
+ */
 export interface IProps {
+  simulation: ISimulation
   type: string
   index: number
-  simulation: ISimulation
   swr: {
     mutateOneSimulation: (simulation: ISimulation) => void
   }
 }
 
 /**
- * Errors (delete)
+ * Errors
  */
-const errors = {
-  updateError: 'Unable to delete the boundary condition'
+export const errors = {
+  update: 'Unable to delete the boundary condition'
 }
 
 /**
- * Delete boundary condition
+ * On delete
+ * @param simulation Simulation
+ * @param type Type
+ * @param index Index
+ * @param dispatch Dispatch
+ * @param swr SWR
+ */
+export const onDelete = async (
+  simulation: IProps['simulation'],
+  type: IProps['type'],
+  index: IProps['index'],
+  dispatch: Dispatch<any>,
+  swr: IProps['swr']
+): Promise<void> => {
+  try {
+    // New simulation
+    const newSimulation = { ...simulation }
+
+    // Update local
+    const boundaryConditions =
+      newSimulation.scheme.configuration.boundaryConditions
+    const typedBoundaryCondition = boundaryConditions[
+      type
+    ] as IModelTypedBoundaryCondition
+    const boundaryCondition = typedBoundaryCondition.values[index]
+
+    // (unselect)
+    boundaryCondition.selected.forEach((s: { uuid: string }) => {
+      dispatch(unselect(s.uuid))
+    })
+
+    typedBoundaryCondition.values = [
+      ...typedBoundaryCondition.values.slice(0, index),
+      ...typedBoundaryCondition.values.slice(index + 1)
+    ]
+
+    // Diff
+    let done = false
+    Object.keys(boundaryConditions).forEach((t) => {
+      if (t === 'index' || t === 'title' || t === 'done') return
+      const ttypedBoundaryCondition = boundaryConditions[
+        t
+      ] as IModelTypedBoundaryCondition
+      if (ttypedBoundaryCondition.values?.length) done = true
+    })
+    const diff = {
+      ...boundaryConditions,
+      done: done
+    }
+
+    // API
+    await SimulationAPI.update({ id: simulation.id }, [
+      {
+        key: 'scheme',
+        type: 'json',
+        method: 'set',
+        path: ['configuration', 'boundaryConditions'],
+        value: diff
+      }
+    ])
+
+    // Local
+    swr.mutateOneSimulation(newSimulation)
+  } catch (err) {
+    ErrorNotification(errors.update, err)
+    throw err
+  }
+}
+
+/**
+ * Delete
  * @param props Props
+ * @return Delete
  */
 const Delete = ({ type, index, simulation, swr }: IProps): JSX.Element => {
   // State
@@ -43,71 +117,6 @@ const Delete = ({ type, index, simulation, swr }: IProps): JSX.Element => {
   const dispatch = useDispatch()
 
   /**
-   * On delete
-   */
-  const onDelete = async (): Promise<void> => {
-    setLoading(true)
-
-    try {
-      // New simulation
-      const newSimulation = { ...simulation }
-
-      // Update local
-      const boundaryConditions =
-        newSimulation.scheme.configuration.boundaryConditions
-      const typedBoundaryCondition = boundaryConditions[
-        type
-      ] as IModelTypedBoundaryCondition
-      const boundaryCondition = typedBoundaryCondition.values[index]
-
-      // (unselect)
-      boundaryCondition.selected.forEach((s: { uuid: string }) => {
-        dispatch(unselect(s.uuid))
-      })
-
-      typedBoundaryCondition.values = [
-        ...typedBoundaryCondition.values.slice(0, index),
-        ...typedBoundaryCondition.values.slice(index + 1)
-      ]
-
-      // Diff
-      let done = false
-      Object.keys(boundaryConditions).forEach((t) => {
-        if (t === 'index' || t === 'title' || t === 'done') return
-        const ttypedBoundaryCondition = boundaryConditions[
-          t
-        ] as IModelTypedBoundaryCondition
-        if (ttypedBoundaryCondition.values?.length) done = true
-      })
-      const diff = {
-        ...boundaryConditions,
-        done: done
-      }
-
-      // API
-      await SimulationAPI.update({ id: simulation.id }, [
-        {
-          key: 'scheme',
-          type: 'json',
-          method: 'set',
-          path: ['configuration', 'boundaryConditions'],
-          value: diff
-        }
-      ])
-
-      // Stop loading
-      setLoading(false)
-
-      // Local
-      swr.mutateOneSimulation(newSimulation)
-    } catch (err) {
-      ErrorNotification(errors.updateError, err)
-      setLoading(false)
-      throw err
-    }
-  }
-
-  /**
    * Render
    */
   return (
@@ -116,7 +125,7 @@ const Delete = ({ type, index, simulation, swr }: IProps): JSX.Element => {
       onDelete={async () => {
         setLoading(true)
         try {
-          await onDelete()
+          await onDelete(simulation, type, index, dispatch, swr)
         } finally {
           setLoading(false)
         }

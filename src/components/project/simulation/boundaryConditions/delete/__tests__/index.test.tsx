@@ -1,7 +1,9 @@
 import React from 'react'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
-import Delete from '@/components/project/simulation/boundaryConditions/delete'
+import Delete, {
+  errors
+} from '@/components/project/simulation/boundaryConditions/delete'
 
 jest.mock('react-redux', () => ({
   useDispatch: () => () => {
@@ -11,12 +13,13 @@ jest.mock('react-redux', () => ({
 
 const mockDeleteButton = jest.fn()
 jest.mock('@/components/assets/button', () => ({
-  DeleteButton: (props: {}) => mockDeleteButton(props)
+  DeleteButton: (props: any) => mockDeleteButton(props)
 }))
 
-const mockError = jest.fn()
+const mockErrorNotification = jest.fn()
 jest.mock('@/components/assets/notification', () => ({
-  Error: () => mockError()
+  ErrorNotification: (title: string, err: Error) =>
+    mockErrorNotification(title, err)
 }))
 
 const mockUnselect = jest.fn()
@@ -84,7 +87,7 @@ describe('components/project/simulation/boundaryConditions/delete', () => {
     mockDeleteButton.mockReset()
     mockDeleteButton.mockImplementation(() => <div role="DeleteButton" />)
 
-    mockError.mockReset()
+    mockErrorNotification.mockReset()
 
     mockUnselect.mockReset()
 
@@ -125,11 +128,17 @@ describe('components/project/simulation/boundaryConditions/delete', () => {
 
     // Error
     mockUpdate.mockImplementation(() => {
-      throw new Error()
+      throw new Error('update error')
     })
     fireEvent.click(button)
     await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
-    await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
+      expect(mockErrorNotification).toHaveBeenLastCalledWith(
+        errors.update,
+        new Error('update error')
+      )
+    )
 
     unmount()
   })

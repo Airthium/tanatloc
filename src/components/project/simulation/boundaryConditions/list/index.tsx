@@ -1,7 +1,7 @@
 /** @module Components.Simulation.BoundaryConditions.List */
 
 import PropTypes from 'prop-types'
-import { Dispatch, SetStateAction, useState } from 'react'
+import { Dispatch, SetStateAction, useCallback, useState } from 'react'
 import { Card, Typography } from 'antd'
 
 import { ISimulation } from '@/database/index.d'
@@ -14,6 +14,9 @@ import Delete from '../delete'
 import { useDispatch } from 'react-redux'
 import { enable, disable, select } from '@/store/select/action'
 
+/**
+ * Props
+ */
 export interface IProps {
   simulation: ISimulation
   swr: {
@@ -25,6 +28,7 @@ export interface IProps {
 /**
  * List
  * @param props Props
+ * @returns List
  */
 const List = ({ simulation, swr, onEdit }: IProps): JSX.Element => {
   // State
@@ -40,23 +44,26 @@ const List = ({ simulation, swr, onEdit }: IProps): JSX.Element => {
    * @param key Key
    * @param index Index
    */
-  const highlight = (key: string, index: number): void => {
-    dispatch(enable())
-    const typedBoundaryCondition = boundaryConditions[
-      key
-    ] as IModelTypedBoundaryCondition
-    const currentSelected = typedBoundaryCondition.values[index].selected
-    currentSelected?.forEach((s) => {
-      dispatch(select(s.uuid))
-    })
-  }
+  const highlight = useCallback(
+    (key: string, index: number): void => {
+      dispatch(enable())
+      const typedBoundaryCondition = boundaryConditions[
+        key
+      ] as IModelTypedBoundaryCondition
+      const currentSelected = typedBoundaryCondition.values[index].selected
+      currentSelected?.forEach((s) => {
+        dispatch(select(s.uuid))
+      })
+    },
+    [boundaryConditions, dispatch]
+  )
 
   /**
    * Unhighlight current
    */
-  const unhighlight = () => {
+  const unhighlight = useCallback(() => {
     dispatch(disable())
-  }
+  }, [dispatch])
 
   /**
    * Render

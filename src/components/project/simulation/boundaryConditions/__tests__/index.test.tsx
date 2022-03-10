@@ -11,19 +11,19 @@ jest.mock('react-redux', () => ({
 
 const mockAddButton = jest.fn()
 jest.mock('@/components/assets/button', () => ({
-  AddButton: (props: {}) => mockAddButton(props)
+  AddButton: (props: any) => mockAddButton(props)
 }))
 
 const mockList = jest.fn()
 jest.mock(
   '@/components/project/simulation/boundaryConditions/list',
-  () => (props: {}) => mockList(props)
+  () => (props: any) => mockList(props)
 )
 
 const mockBoundaryCondition = jest.fn()
 jest.mock(
   '@/components/project/simulation/boundaryConditions/boundaryCondition',
-  () => (props: {}) => mockBoundaryCondition(props)
+  () => (props: any) => mockBoundaryCondition(props)
 )
 
 const mockEnable = jest.fn()

@@ -1,30 +1,304 @@
 /** @module Components.Project.Simulation.Initialization */
 
 import PropTypes from 'prop-types'
-import { Dispatch, SetStateAction, useState, useEffect } from 'react'
+import {
+  Dispatch,
+  SetStateAction,
+  useState,
+  useEffect,
+  useCallback
+} from 'react'
 import { Collapse, Layout, Select, Space, Spin, Typography } from 'antd'
 
 import { ISimulation } from '@/database/index.d'
-import { IModelInitialization } from '@/models/index.d'
+import {
+  IModelInitialization,
+  IModelInitializationCoupling
+} from '@/models/index.d'
 
 import Formula from '@/components/assets/formula'
 import { ErrorNotification } from '@/components/assets/notification'
 
 import SimulationAPI from '@/api/simulation'
 
+/**
+ * Props
+ */
 export interface IProps {
   simulations: ISimulation[]
   simulation?: ISimulation
   swr: {
-    mutateOneSimulation: Function
+    mutateOneSimulation: (simulation: ISimulation) => void
   }
 }
 
 /**
- * Errors (initialization)
+ * Errors
  */
-const errors = {
+export const errors = {
   update: 'Unable to update simulation'
+}
+
+/**
+ * On panel change
+ * @param simulation Simulation
+ * @param key Key
+ * @param swr SWR
+ */
+const onPanelChange = async (
+  simulation: ISimulation,
+  key: string,
+  swr: IProps['swr']
+): Promise<void> => {
+  try {
+    // New simulation
+    const newSimulation = { ...simulation }
+
+    // Update local
+    const initialization = newSimulation.scheme.configuration.initialization
+    initialization.value = {
+      ...initialization.value,
+      type: key
+    }
+
+    await SimulationAPI.update({ id: simulation.id }, [
+      {
+        key: 'scheme',
+        type: 'json',
+        method: 'set',
+        path: ['configuration', 'initialization'],
+        value: initialization
+      }
+    ])
+
+    // Local
+    swr.mutateOneSimulation(newSimulation)
+  } catch (err) {
+    ErrorNotification(errors.update, err)
+    throw err
+  }
+}
+
+/**
+ * On coupling change
+ * @param simulation Simulation
+ * @param value Value
+ * @param swr SWR
+ */
+const onCouplingChange = async (
+  simulations: ISimulation[],
+  simulation: ISimulation,
+  value: string,
+  swr: IProps['swr']
+): Promise<void> => {
+  try {
+    // Check results
+    const results = await loadResults(simulations, value)
+
+    // Update simulation
+    // New simulation
+    const newSimulation = { ...simulation }
+
+    // Update local
+    const initialization = newSimulation.scheme.configuration.initialization
+    initialization.value = {
+      ...initialization.value,
+      simulation: value,
+      result: results?.[0]?.value
+    }
+
+    await SimulationAPI.update({ id: simulation.id }, [
+      {
+        key: 'scheme',
+        type: 'json',
+        method: 'set',
+        path: ['configuration', 'initialization'],
+        value: initialization
+      }
+    ])
+
+    // Local
+    swr.mutateOneSimulation(newSimulation)
+  } catch (err) {
+    ErrorNotification(errors.update, err)
+    throw err
+  }
+}
+
+/**
+ * On coupling result change
+ * @param simulation Simulation
+ * @param value Value
+ * @param option Option
+ * @param swr SWR
+ */
+const onCouplingResultChange = async (
+  simulation: ISimulation,
+  value: string,
+  option: { file: string },
+  swr: IProps['swr']
+): Promise<void> => {
+  // Update simulation
+  try {
+    // New simulation
+    const newSimulation = { ...simulation }
+
+    // Update local
+    const initialization = newSimulation.scheme.configuration.initialization
+    initialization.value = {
+      ...initialization.value,
+      number: +value,
+      result: option.file
+    }
+
+    await SimulationAPI.update({ id: simulation.id }, [
+      {
+        key: 'scheme',
+        type: 'json',
+        method: 'set',
+        path: ['configuration', 'initialization'],
+        value: initialization
+      }
+    ])
+
+    // Local
+    swr.mutateOneSimulation(newSimulation)
+  } catch (err) {
+    ErrorNotification(errors.update, err)
+  }
+}
+
+/**
+ * On parameter change
+ * @param {number} index Children index
+ * @param {string} value Value
+ */
+const onChange = async (
+  simulation: ISimulation,
+  index: number,
+  value: string,
+  swr: IProps['swr']
+): Promise<void> => {
+  try {
+    // New simulation
+    const newSimulation = { ...simulation }
+
+    // Update local
+    const initialization = newSimulation.scheme.configuration.initialization
+    initialization.value = {
+      ...initialization.value,
+      values: [
+        ...(initialization.value.values?.slice(0, index) || []),
+        value,
+        ...(initialization.value.values?.slice(index + 1) || [])
+      ]
+    }
+
+    // API
+    await SimulationAPI.update({ id: simulation.id }, [
+      {
+        key: 'scheme',
+        type: 'json',
+        method: 'set',
+        path: ['configuration', 'initialization'],
+        value: initialization
+      }
+    ])
+
+    // Local
+    swr.mutateOneSimulation(newSimulation)
+  } catch (err) {
+    ErrorNotification(errors.update, err)
+  }
+}
+
+/**
+ * Load results
+ * @param simulations Simulations
+ * @param id Simulation id
+ */
+const loadResults = async (
+  simulations: ISimulation[],
+  id: string
+): Promise<{ label: string; value: string }[]> => {
+  const tasks = await SimulationAPI.tasks({ id })
+
+  const results = []
+  tasks.forEach((task) => {
+    if (task.files) {
+      // Filter
+      const currentSimulation = simulations.find((s) => s.id === id)
+      const resultsFilters =
+        currentSimulation.scheme.configuration.run.resultsFilters
+
+      //Sort by filters
+      // Check if no results filters
+      //TODO
+      resultsFilters?.forEach((filter, filterIndex) => {
+        const pattern = new RegExp(filter.pattern)
+        const filteredFiles = task.files.filter((file) =>
+          pattern.test(file.fileName)
+        )
+
+        if (filteredFiles.length) {
+          // Set iteration numbers
+          const files = filteredFiles.map((file) => {
+            const number = file.fileName
+              .replace(new RegExp(filter.prefixPattern), '')
+              .replace(new RegExp(filter.suffixPattern), '')
+            return {
+              ...file,
+              number: +number
+            }
+          })
+
+          // Sort
+          files.sort((a, b) => a.number - b.number)
+
+          // Get unique numbers
+          const steps = files.filter((file, i) => {
+            return files.findIndex((s) => s.number === file.number) === i
+          })
+
+          // Multiplicator
+          let multiplicator
+
+          const multiplicatorPath = filter.multiplicator
+          if (multiplicatorPath) {
+            const multiplicatorObject = multiplicatorPath.reduce(
+              (a, v) => a[v],
+              currentSimulation.scheme.configuration
+            )
+            multiplicator =
+              multiplicatorObject.value || multiplicatorObject.default
+          }
+
+          results.push(
+            ...steps.map((file, i) => ({
+              label: (multiplicator
+                ? Math.round(file.number * multiplicator * 1e15) / 1e15
+                : file.number
+              ).toString(),
+              value: file.number,
+              file: file.fileName.replace(new RegExp(filter.suffixPattern), '')
+
+              // value:
+            }))
+          )
+        }
+      })
+    }
+    if (task.file) {
+      if (task.file.type === 'result')
+        results.push({
+          label: task.file.fileName,
+          value: task.file.fileName,
+          file: task.file.fileName
+        })
+    }
+  })
+
+  return results
 }
 
 /**
@@ -43,279 +317,49 @@ const Initialization = ({
     string,
     Dispatch<SetStateAction<string>>
   ] = useState()
-  const [values, setValues]: [string[], Dispatch<SetStateAction<string[]>>] =
-    useState([])
   const [couplingSimulation, setCouplingSimulation]: [
     ISimulation,
     Dispatch<SetStateAction<ISimulation>>
   ] = useState()
   const [couplingResults, setCouplingResults]: [
     { label: string; value: string }[],
-    Function
+    Dispatch<SetStateAction<{ label: string; value: string }[]>>
   ] = useState()
 
   // Data
   const subScheme = simulation?.scheme.configuration.initialization
 
+  /**
+   * Set simulation
+   * @param id Simulation id
+   */
+  const setSimulation = useCallback(
+    (id: string): void => {
+      const simulationToCouple = simulations.find((s) => s.id === id)
+      setCouplingSimulation(simulationToCouple)
+    },
+    [simulations]
+  )
+
+  // Key
   useEffect(() => {
-    if (subScheme?.value) setCurrentKey(subScheme.value.type)
-  }, [])
+    if (!currentKey && subScheme?.value) setCurrentKey(subScheme.value.type)
 
-  /**
-   * On panel change
-   * @param key Key
-   */
-  const onPanelChange = async (key: string): Promise<void> => {
-    setCurrentKey(key)
-    try {
-      // New simulation
-      const newSimulation = { ...simulation }
+    if (!couplingSimulation && subScheme?.value?.simulation)
+      setSimulation(subScheme?.value?.simulation)
+  }, [subScheme, currentKey, couplingSimulation, setSimulation])
 
-      // Update local
-      const initialization = newSimulation.scheme.configuration.initialization
-      initialization.value = {
-        ...initialization.value,
-        type: key
-      }
-
-      await SimulationAPI.update({ id: simulation.id }, [
-        {
-          key: 'scheme',
-          type: 'json',
-          method: 'set',
-          path: ['configuration', 'initialization'],
-          value: initialization
-        }
-      ])
-
-      // Local
-      swr.mutateOneSimulation(newSimulation)
-    } catch (err) {
-      ErrorNotification(errors.update, err)
-    }
-  }
-
-  /**
-   * Load results
-   * @param {string} id Simulation id
-   */
-  const loadResults = async (
-    id: string
-  ): Promise<{ label: string; value: string }[]> => {
-    const tasks = await SimulationAPI.tasks({ id })
-
-    const results = []
-    tasks.forEach((task) => {
-      if (task.files) {
-        // Filter
-        const currentSimulation = simulations.find((s) => s.id === id)
-        const resultsFilters =
-          currentSimulation.scheme.configuration.run.resultsFilters
-
-        //Sort by filters
-        // Check if no results filters
-        //TODO
-        resultsFilters?.forEach((filter, filterIndex) => {
-          const pattern = new RegExp(filter.pattern)
-          const filteredFiles = task.files.filter((file) =>
-            pattern.test(file.fileName)
-          )
-
-          if (filteredFiles.length) {
-            // Set iteration numbers
-            const files = filteredFiles.map((file) => {
-              const number = file.fileName
-                .replace(new RegExp(filter.prefixPattern), '')
-                .replace(new RegExp(filter.suffixPattern), '')
-              return {
-                ...file,
-                number: +number
-              }
-            })
-
-            // Sort
-            files.sort((a, b) => a.number - b.number)
-
-            // Get unique numbers
-            const steps = files.filter((file, i) => {
-              return files.findIndex((s) => s.number === file.number) === i
-            })
-
-            // Multiplicator
-            let multiplicator
-
-            const multiplicatorPath = filter.multiplicator
-            if (multiplicatorPath) {
-              const multiplicatorObject = multiplicatorPath.reduce(
-                (a, v) => a[v],
-                currentSimulation.scheme.configuration
-              )
-              multiplicator =
-                multiplicatorObject.value || multiplicatorObject.default
-            }
-
-            results.push(
-              ...steps.map((file, i) => ({
-                label: (multiplicator
-                  ? Math.round(file.number * multiplicator * 1e15) / 1e15
-                  : file.number
-                ).toString(),
-                value: file.number,
-                file: file.fileName.replace(
-                  new RegExp(filter.suffixPattern),
-                  ''
-                )
-
-                // value:
-              }))
-            )
-          }
-        })
-      }
-      if (task.file) {
-        if (task.file.type === 'result')
-          results.push({
-            label: task.file.fileName,
-            value: task.file.fileName,
-            file: task.file.fileName
-          })
-      }
-    })
-
-    setCouplingResults(results)
-
-    return results
-  }
-
-  const setSimulation = (id: string): void => {
-    const simulationToCouple = simulations.find((s) => s.id === id)
-    setCouplingSimulation(simulationToCouple)
-  }
-
-  const onCouplingChange = async (value) => {
-    setLoading(true)
-
-    // Simulation
-    setSimulation(value)
-
-    try {
-      // Check results
-      const results = await loadResults(value)
-
-      // Update simulation
-      // New simulation
-      const newSimulation = { ...simulation }
-
-      // Update local
-      const initialization = newSimulation.scheme.configuration.initialization
-      initialization.value = {
-        ...initialization.value,
-        simulation: value,
-        result: results?.[0]?.value
-      }
-
-      await SimulationAPI.update({ id: simulation.id }, [
-        {
-          key: 'scheme',
-          type: 'json',
-          method: 'set',
-          path: ['configuration', 'initialization'],
-          value: initialization
-        }
-      ])
-
-      // Local
-      swr.mutateOneSimulation(newSimulation)
-    } catch (err) {
-      ErrorNotification(errors.update, err)
-    }
-
-    setLoading(false)
-  }
-
-  const onCouplingResultChange = async (value, option) => {
-    // Update simulation
-    try {
-      // New simulation
-      const newSimulation = { ...simulation }
-
-      // Update local
-      const initialization = newSimulation.scheme.configuration.initialization
-      initialization.value = {
-        ...initialization.value,
-        number: value,
-        result: option.file
-      }
-
-      await SimulationAPI.update({ id: simulation.id }, [
-        {
-          key: 'scheme',
-          type: 'json',
-          method: 'set',
-          path: ['configuration', 'initialization'],
-          value: initialization
-        }
-      ])
-
-      // Local
-      swr.mutateOneSimulation(newSimulation)
-    } catch (err) {
-      ErrorNotification(errors.update, err)
-    }
-  }
-
-  /**
-   * On parameter change
-   * @param {number} index Children index
-   * @param {string} value Value
-   */
-  const onChange = async (index, value) => {
-    const newValues = [...values]
-    newValues[index] = value
-
-    try {
-      // New simulation
-      const newSimulation = { ...simulation }
-
-      // Update local
-      const initialization = newSimulation.scheme.configuration.initialization
-      initialization.value = {
-        ...initialization.value,
-        //@ts-ignore
-        values: newValues
-      }
-
-      await SimulationAPI.update({ id: simulation.id }, [
-        {
-          key: 'scheme',
-          type: 'json',
-          method: 'set',
-          path: ['configuration', 'initialization'],
-          value: initialization
-        }
-      ])
-
-      // Local
-      swr.mutateOneSimulation(newSimulation)
-    } catch (err) {
-      ErrorNotification(errors.update, err)
-    }
-
-    setValues(newValues)
-  }
+  // Results
+  useEffect(() => {
+    if (couplingSimulation)
+      loadResults(simulations, couplingSimulation.id).then((results) =>
+        setCouplingResults(results)
+      )
+  }, [simulations, couplingSimulation])
 
   // Build initialization
   const initializations = []
   const initializationValue = subScheme.value
-  if (
-    !couplingSimulation &&
-    !couplingResults &&
-    initializationValue?.simulation
-  ) {
-    setSimulation(initializationValue.simulation)
-    loadResults(initializationValue.simulation)
-  }
-
   Object.keys(subScheme).forEach((key) => {
     if (key === 'index' || key === 'title' || key === 'done' || key === 'value')
       return
@@ -323,26 +367,29 @@ const Initialization = ({
     const initialization = subScheme[key]
 
     if (key === 'coupling') {
+      const couplingInitialization =
+        initialization as IModelInitializationCoupling
+
       const simulationsOptions = simulations.map((s) => {
         let disabled = false
         if (s.id === simulation.id) disabled = true
         if (
-          //@ts-ignore
-          !initialization.compatibility.find(
+          !couplingInitialization.compatibility.find(
             (c) => c.algorithm === s.scheme.algorithm
           )
         )
           disabled = true
         return { label: s.name, value: s.id, disabled }
       })
-      //@ts-ignore
-      const compatibility = initialization.compatibility.find(
+
+      const compatibility = couplingInitialization.compatibility.find(
         (c) => c.algorithm === couplingSimulation?.scheme?.algorithm
       )
+
       const filter = compatibility?.filter
+
       initializations.push(
-        //@ts-ignore
-        <Collapse.Panel key={key} header={initialization?.label}>
+        <Collapse.Panel key={key} header={couplingInitialization?.label}>
           <Typography.Text>
             If you use coupling, the selected simulation mesh will be used, at
             least for the first iteration.
@@ -352,7 +399,16 @@ const Initialization = ({
               options={simulationsOptions}
               placeholder="Select a simulation"
               defaultValue={initializationValue?.simulation}
-              onChange={onCouplingChange}
+              onChange={async (value: string) => {
+                setLoading(true)
+                try {
+                  await onCouplingChange(simulations, simulation, value, swr)
+                  setSimulation(value)
+                } catch (err) {
+                } finally {
+                  setLoading(false)
+                }
+              }}
             />
             {loading && <Spin />}
             {couplingResults?.length ? (
@@ -364,7 +420,10 @@ const Initialization = ({
                   options={couplingResults}
                   placeholder={'Select a ' + filter.name}
                   defaultValue={initializationValue?.result}
-                  onChange={onCouplingResultChange}
+                  onChange={async (
+                    value: string,
+                    option: { label: string; value: string; file: string }
+                  ) => onCouplingResultChange(simulation, value, option, swr)}
                 />
               </>
             ) : (
@@ -376,8 +435,12 @@ const Initialization = ({
         </Collapse.Panel>
       )
     } else {
-      //@ts-ignore
-      const components = initialization?.children.map(
+      const valueInitialization = initialization as {
+        label: string
+        children: IModelInitialization[]
+      }
+
+      const components = valueInitialization?.children.map(
         (child: IModelInitialization, index: number) => {
           if (child.htmlEntity === 'formula') {
             return (
@@ -385,11 +448,14 @@ const Initialization = ({
                 {child.label}:<br />
                 <Formula
                   defaultValue={
-                    //@ts-ignore
                     initializationValue?.values?.[index] ||
-                    (child?.value ?? child.default)
+                    ((child?.value as string) ?? (child.default as string))
                   }
-                  onValueChange={(value) => onChange(index, value)}
+                  onValueChange={async (value) => {
+                    try {
+                      await onChange(simulation, index, value, swr)
+                    } catch (err) {}
+                  }}
                   unit={child.unit}
                 />
               </Typography.Text>
@@ -400,9 +466,12 @@ const Initialization = ({
                 {child.label}:<br />
                 <Select
                   options={child.options}
-                  //@ts-ignore
                   defaultValue={child?.value ?? child.default}
-                  onChange={(value) => onChange(index, value)}
+                  onChange={async (value: string) => {
+                    try {
+                      await onChange(simulation, index, value, swr)
+                    } catch (err) {}
+                  }}
                 />
               </Typography.Text>
             )
@@ -411,8 +480,7 @@ const Initialization = ({
       )
 
       initializations.push(
-        //@ts-ignore
-        <Collapse.Panel key={key} header={initialization?.label}>
+        <Collapse.Panel key={key} header={valueInitialization?.label}>
           <Space direction="vertical" className="full-width">
             {components}
           </Space>
@@ -427,7 +495,16 @@ const Initialization = ({
   return (
     <Layout>
       <Layout.Content>
-        <Collapse accordion onChange={onPanelChange} activeKey={currentKey}>
+        <Collapse
+          accordion
+          onChange={async (key: string) => {
+            try {
+              await onPanelChange(simulation, key, swr)
+              setCurrentKey(key)
+            } catch (err) {}
+          }}
+          activeKey={currentKey}
+        >
           {initializations}
         </Collapse>
       </Layout.Content>

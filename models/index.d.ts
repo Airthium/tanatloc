@@ -94,6 +94,7 @@ export interface IModelInitializationValue {
   result?: string
   dat?: string
   mesh?: string
+  values?: string[]
 }
 
 export interface IModel {

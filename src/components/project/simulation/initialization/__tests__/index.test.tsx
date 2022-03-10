@@ -3,15 +3,19 @@ import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import { ISimulation } from '@/database/index.d'
 
-import Initialization from '..'
+import Initialization, { errors } from '..'
 
-const mockError = jest.fn()
+const mockErrorNotification = jest.fn()
 jest.mock('@/components/assets/notification', () => ({
-  Error: () => mockError()
+  ErrorNotification: (title: string, err: Error) =>
+    mockErrorNotification(title, err)
 }))
 
 const mockFormula = jest.fn()
-jest.mock('@/components/assets/formula', () => (props) => mockFormula(props))
+jest.mock(
+  '@/components/assets/formula',
+  () => (props: any) => mockFormula(props)
+)
 
 const mockUpdate = jest.fn()
 const mockTasks = jest.fn()
@@ -114,6 +118,11 @@ describe('components/project/simulation/initialization', () => {
       version: 'version',
       description: 'description',
       configuration: {
+        geometry: {
+          title: 'Geometry',
+          index: 0,
+          meshable: false
+        },
         parameters: {
           index: 1,
           title: 'Parameters',
@@ -206,7 +215,7 @@ describe('components/project/simulation/initialization', () => {
   }
 
   beforeEach(() => {
-    mockError.mockReset()
+    mockErrorNotification.mockReset()
 
     mockFormula.mockReset()
     mockFormula.mockImplementation(() => <div />)
@@ -287,7 +296,7 @@ describe('components/project/simulation/initialization', () => {
     })
     fireEvent.click(tabs[1])
     await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
-    await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
 
     unmount()
   })
@@ -336,10 +345,16 @@ describe('components/project/simulation/initialization', () => {
 
     // Error
     mockUpdate.mockImplementation(() => {
-      throw new Error()
+      throw new Error('update error')
     })
     fireEvent.click(formulas[0])
-    await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
+      expect(mockErrorNotification).toHaveBeenLastCalledWith(
+        errors.update,
+        new Error('update error')
+      )
+    )
 
     unmount()
   })
@@ -406,7 +421,13 @@ describe('components/project/simulation/initialization', () => {
       fireEvent.click(option3)
     })
     await waitFor(() => expect(mockTasks).toHaveBeenCalledTimes(1))
-    await waitFor(() => expect(mockError).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
+      expect(mockErrorNotification).toHaveBeenLastCalledWith(
+        errors.update,
+        expect.any(Error)
+      )
+    )
 
     // Normal
     await act(async () => {
@@ -416,7 +437,7 @@ describe('components/project/simulation/initialization', () => {
     await waitFor(() =>
       expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(2)
     )
-    await waitFor(() => expect(mockTasks).toHaveBeenCalledTimes(2))
+    await waitFor(() => expect(mockTasks).toHaveBeenCalledTimes(3))
 
     // Results
     const newSelects = screen.getAllByRole('combobox')
@@ -438,7 +459,7 @@ describe('components/project/simulation/initialization', () => {
       fireEvent.click(resultOption0)
     })
     await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(3))
-    await waitFor(() => expect(mockError).toHaveBeenCalledTimes(2))
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(2))
 
     // // Normal
     // mockUpdate.mockReset()

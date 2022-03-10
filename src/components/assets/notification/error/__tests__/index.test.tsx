@@ -1,3 +1,5 @@
+import { ICallError } from '@/api/index.d'
+
 import ErrorNotification from '..'
 
 describe('components/assets/notification/error', () => {
@@ -7,17 +9,23 @@ describe('components/assets/notification/error', () => {
 
   test('with status & info', () => {
     ErrorNotification('error', {
-      ...new Error('error'),
+      message: 'error',
       status: 500,
       info: { message: 'API error' }
-    })
+    } as ICallError)
   })
 
   test('API error', () => {
     ErrorNotification('error', {
-      ...new Error('Failed to fetch'),
+      message: 'Failed to fetch',
       status: 500,
-      info: { message: 'API error' }
-    })
+      info: { message: 'API error 1' }
+    } as ICallError)
+
+    ErrorNotification('error', {
+      message: 'Failed to fetch',
+      status: 500,
+      info: { message: 'API error 2' }
+    } as ICallError)
   })
 })

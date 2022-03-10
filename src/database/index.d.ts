@@ -46,11 +46,11 @@ export interface IGeometry {
     uuid?: string
     solids?: {
       uuid: string
-      number: number
+      number: number | string
     }[]
     faces?: {
       uuid: string
-      number: number
+      number: number | string
     }[]
     edges?: {}[]
   }

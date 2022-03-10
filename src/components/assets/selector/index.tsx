@@ -49,19 +49,19 @@ export interface IProps {
   geometry: {
     faces?: {
       uuid: string
-      number?: number
+      number?: number | string
       name?: string
       color?: IColor
     }[]
     solids?: {
       uuid: string
-      number?: number
+      number?: number | string
       name?: string
       color?: IColor
     }[]
     edges?: {
       uuid: string
-      number?: number
+      number?: number | string
       name?: string
       color?: IColor
     }[]
@@ -229,7 +229,7 @@ const Selector = ({
   const display = useCallback(
     (element: {
       uuid: string
-      number?: number
+      number?: number | string
       name?: string
       color?: IColor
     }) => {
@@ -382,7 +382,7 @@ Selector.propTypes = {
     faces: PropTypes.arrayOf(
       PropTypes.exact({
         uuid: PropTypes.string.isRequired,
-        number: PropTypes.number,
+        number: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
         name: PropTypes.string,
         color: PropTypes.object
       })
@@ -390,7 +390,7 @@ Selector.propTypes = {
     solids: PropTypes.arrayOf(
       PropTypes.exact({
         uuid: PropTypes.string.isRequired,
-        number: PropTypes.number,
+        number: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
         name: PropTypes.string,
         color: PropTypes.object
       })
@@ -398,7 +398,7 @@ Selector.propTypes = {
     edges: PropTypes.arrayOf(
       PropTypes.exact({
         uuid: PropTypes.string.isRequired,
-        number: PropTypes.number,
+        number: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
         name: PropTypes.string,
         color: PropTypes.object
       })
@@ -409,7 +409,8 @@ Selector.propTypes = {
       label: PropTypes.string,
       selected: PropTypes.arrayOf(
         PropTypes.exact({
-          uuid: PropTypes.string
+          uuid: PropTypes.string,
+          label: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
         })
       )
     })

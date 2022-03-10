@@ -1,13 +1,7 @@
 /** @module Components.Project.Simulation.Parameters */
 
 import PropTypes from 'prop-types'
-import {
-  Dispatch,
-  SetStateAction,
-  useState,
-  useEffect,
-  useCallback
-} from 'react'
+import { useEffect } from 'react'
 import {
   Card,
   Checkbox,
@@ -44,49 +38,28 @@ export const errors = {
 }
 
 /**
- * Parameters
- * @param props Props
- * @returns Parameters
+ * On done
+ * @param simulation Simulation
+ * @param swr SWR
  */
-const Parameters = ({ simulation, swr }: IProps): JSX.Element => {
-  // State
-  const [values, setValues]: [
-    { [key: string]: string[] | boolean[] },
-    Dispatch<SetStateAction<{ [key: string]: string[] | boolean[] }>>
-  ] = useState({})
-
-  // Data
-  const subScheme = simulation?.scheme.configuration.parameters
-
-  // Effect
-  useEffect(() => {
+export const onDone = async (
+  simulation: ISimulation,
+  swr: IProps['swr']
+): Promise<void> => {
+  try {
     const newSimulation = { ...simulation }
 
     // Update local
-    Object.keys(values).forEach((key) => {
-      const deepValues = values[key]
-      deepValues.forEach((value: string | boolean, index: number) => {
-        if (value !== undefined) {
-          const parameter = newSimulation.scheme.configuration.parameters[
-            key
-          ] as {
-            label: string
-            advanced?: boolean
-            children: IModelParameter[]
-          }
-          parameter.children[index].value = value
-        }
-      })
-    })
+    const parameters = newSimulation.scheme.configuration.parameters
 
     // Diff
     const diff = {
-      ...newSimulation.scheme.configuration.parameters,
+      ...parameters,
       done: true
     }
 
     // API
-    SimulationAPI.update({ id: simulation.id }, [
+    await SimulationAPI.update({ id: simulation.id }, [
       {
         key: 'scheme',
         type: 'json',
@@ -95,33 +68,78 @@ const Parameters = ({ simulation, swr }: IProps): JSX.Element => {
         value: diff
       }
     ])
-      .then(() => {
-        // Local
-        swr.mutateOneSimulation(newSimulation)
-      })
-      .catch((err) => {
-        ErrorNotification(errors.update, err)
-      })
-  }, [, /*simulation*/ values, swr])
 
-  /**
-   * On parameter change
-   * @param key Parameter key
-   * @param index Children index
-   * @param value Value
-   */
-  const onChange = useCallback(
-    (key: string, index: number, value: boolean | string): void => {
-      const deepValues = values[key] || []
-      deepValues[index] = value
+    swr.mutateOneSimulation(newSimulation)
+  } catch (err) {
+    ErrorNotification(errors.update, err)
+  }
+}
 
-      setValues((prevValues) => ({
-        ...prevValues,
-        [key]: deepValues
-      }))
-    },
-    [values]
-  )
+/**
+ * On change
+ * @param simulation Simulation
+ * @param key Key
+ * @param index Index
+ * @param value Value
+ * @param swr SWR
+ */
+export const onChange = async (
+  simulation: ISimulation,
+  key: string,
+  index: number,
+  value: boolean | string,
+  swr: IProps['swr']
+): Promise<void> => {
+  try {
+    const newSimulation = { ...simulation }
+
+    // Update local
+    const parameters = newSimulation.scheme.configuration.parameters
+    const parameter = parameters[key] as {
+      label: string
+      advanced?: boolean
+      children: IModelParameter[]
+    }
+    parameter.children[index].value = value
+
+    // Diff
+    const diff = {
+      ...parameters,
+      done: true
+    }
+
+    // API
+    await SimulationAPI.update({ id: simulation.id }, [
+      {
+        key: 'scheme',
+        type: 'json',
+        method: 'set',
+        path: ['configuration', 'parameters'],
+        value: diff
+      }
+    ])
+
+    swr.mutateOneSimulation(newSimulation)
+  } catch (err) {
+    ErrorNotification(errors.update, err)
+  }
+}
+
+/**
+ * Parameters
+ * @param props Props
+ * @returns Parameters
+ */
+const Parameters = ({ simulation, swr }: IProps): JSX.Element => {
+  // Data
+  const subScheme = simulation?.scheme.configuration.parameters
+
+  // Initial
+  useEffect(() => {
+    if (!subScheme?.done) {
+      onDone(simulation, swr)
+    }
+  }, [simulation, subScheme, swr])
 
   // Build parameters
   const parameters = []
@@ -146,7 +164,9 @@ const Parameters = ({ simulation, swr }: IProps): JSX.Element => {
                   ? (child.default as string)
                   : (child.value as string)
               }
-              onValueChange={(value: string) => onChange(key, index, value)}
+              onValueChange={(value: string) =>
+                onChange(simulation, key, index, value, swr)
+              }
               unit={child.unit}
             />
           </Typography.Text>
@@ -160,7 +180,9 @@ const Parameters = ({ simulation, swr }: IProps): JSX.Element => {
               defaultValue={
                 (child.value as string) || (child.default as string)
               }
-              onChange={(value: string) => onChange(key, index, value)}
+              onChange={(value: string) =>
+                onChange(simulation, key, index, value, swr)
+              }
             />
           </Typography.Text>
         )
@@ -170,7 +192,9 @@ const Parameters = ({ simulation, swr }: IProps): JSX.Element => {
             {child.label}:<br />
             <Checkbox
               defaultChecked={child.value as boolean}
-              onChange={(e) => onChange(key, index, e.target.checked)}
+              onChange={(e) =>
+                onChange(simulation, key, index, e.target.checked, swr)
+              }
             />
           </Typography.Text>
         )

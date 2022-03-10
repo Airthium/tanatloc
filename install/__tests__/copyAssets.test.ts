@@ -22,7 +22,7 @@ describe('install/copyAssets', () => {
   test('normal', async () => {
     await copyAssets()
     expect(mockMkdir).toHaveBeenCalledTimes(2)
-    expect(mockCp).toHaveBeenCalledTimes(4)
+    expect(mockCp).toHaveBeenCalledTimes(2)
   })
 
   test('error', async () => {

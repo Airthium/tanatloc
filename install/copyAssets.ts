@@ -30,7 +30,7 @@ const copyThreeAssets = async (): Promise<void> => {
 const copyMathjaxAssets = async (): Promise<void> => {
   // Create path
   try {
-    await fs.mkdir('public/mathjax/output/chtml/fonts/woff-v2', {
+    await fs.mkdir('public/mathjax', {
       recursive: true
     })
   } catch (err) {
@@ -38,21 +38,7 @@ const copyMathjaxAssets = async (): Promise<void> => {
   }
 
   // Copy
-  await fs.cp(
-    'node_modules/mathjax/es5/tex-mml-chtml.js',
-    'public/mathjax/tex-mml-chtml.js'
-  )
-
-  await fs.cp(
-    'node_modules/mathjax/es5/output/chtml.js',
-    'public/mathjax/output/chtml.js'
-  )
-
-  await fs.cp(
-    'node_modules/mathjax/es5/output/chtml',
-    'public/mathjax/output/chtml',
-    { recursive: true }
-  )
+  await fs.cp('node_modules/mathjax/es5', 'public/mathjax', { recursive: true })
 }
 
 /**

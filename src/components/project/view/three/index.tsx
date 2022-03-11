@@ -99,9 +99,9 @@ export const computeSceneBoundingSphere = (
   scene: Scene & { boundingBox?: Box3; boundingSphere?: Sphere }
 ): void => {
   const box = new Box3()
-  scene.children.forEach((child) => {
+  scene.children.forEach((child: IPart) => {
     if (child.visible && child.type === 'Part') {
-      const childBox: Box3 = (child as IPart).boundingBox
+      const childBox: Box3 = child.boundingBox
       const min = new Vector3(
         Math.min(box.min.x, childBox.min.x),
         Math.min(box.min.y, childBox.min.y),
@@ -257,7 +257,7 @@ export const loadPart = async (
     number: number | string
   ) => {
     const selected = child.getSelected()
-    if (selected.includes(uuid)) {
+    if (selected.find((s) => s.uuid === uuid)) {
       child.unselect(uuid)
       setTimeout(() => dispatch(unselect({ uuid, label: number })), 1)
     } else {
@@ -648,7 +648,7 @@ const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
 
   // Enable / disable selection
   useEffect(() => {
-    scene.current.children.forEach((child) => {
+    scene.current.children.forEach((child: IPart) => {
       if (child.type === 'Part' && child.uuid === selectPart) {
         if (selectEnabled)
           child.startSelection(
@@ -665,24 +665,28 @@ const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
   }, [selectEnabled, selectPart, selectType])
 
   useEffect(() => {
-    scene.current.children.forEach((child) => {
+    scene.current.children.forEach((child: IPart) => {
       if (child.type === 'Part' && child.uuid === selectPart) {
         // Highlight
-        child.highlight(selectHighlighted)
+        child.highlight(selectHighlighted?.uuid)
 
         // Selection
         const selected = child.getSelected()
 
         // Unselect
-        const minus = selected.filter((s) => !selectSelected.includes(s))
+        const minus = selectSelected.filter(
+          (s) => !selected.find((ss) => ss.uuid === s.uuid)
+        )
         minus.forEach((m) => {
-          child.unselect(m)
+          child.unselect(m.uuid)
         })
 
         // Select
-        const plus = selectSelected.filter((s) => !selected.includes(s))
+        const plus = selectSelected.filter(
+          (s) => !selected.find((ss) => ss.uuid === s.uuid)
+        )
         plus.forEach((p) => {
-          child.select(p)
+          child.select(p.uuid)
         })
       }
     })

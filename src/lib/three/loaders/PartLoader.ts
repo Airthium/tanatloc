@@ -55,8 +55,8 @@ export interface IPart extends Object3D {
     type: string
   ) => void
   stopSelection: () => void
-  getHighlighted: () => void
-  getSelected: () => string[]
+  getHighlighted: () => { uuid: string; number: number | string }
+  getSelected: () => { uuid: string; number: number | string }[]
   highlight: (uuid: string) => void
   unhighlight: () => void
   select: (uuid: string) => void

@@ -7,7 +7,8 @@ import {
   useEffect,
   Dispatch,
   SetStateAction,
-  useCallback
+  useCallback,
+  useContext
 } from 'react'
 import {
   Button,
@@ -32,6 +33,7 @@ import { highlight, unhighlight, select, unselect } from '@/store/select/action'
 import { SelectState } from '@/store/select/reducer'
 
 import Utils from '@/lib/utils'
+import { SelectContext } from '@/context/select'
 
 /**
  * Color
@@ -94,6 +96,11 @@ const Selector = ({
     useState()
   const [search, setSearch]: [string, Dispatch<SetStateAction<string>>] =
     useState()
+
+  // TODO TEST context
+  // Context
+  const selectContext = useContext(SelectContext)
+  console.log(selectContext)
 
   // Store
   const { type, highlighted, selected } = useSelector(

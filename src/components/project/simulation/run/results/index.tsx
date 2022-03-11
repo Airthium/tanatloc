@@ -25,7 +25,7 @@ export interface IFilteredFiles {
   filtered: true
   name: string
   files: ISimulationTaskFile[]
-  options: { label: string; value: number }[]
+  options: { label: number; value: number }[]
 }
 
 /**
@@ -35,9 +35,13 @@ export interface IFilteredFiles {
  */
 const Results = ({ simulation, result, setResult }: IProps): JSX.Element => {
   //State
-  const [files, setFiles]: [
-    (ISimulationTaskFile | IFilteredFiles)[],
-    Dispatch<SetStateAction<(ISimulationTaskFile | IFilteredFiles)[]>>
+  const [singleFiles, setSingleFiles]: [
+    ISimulationTaskFile[],
+    Dispatch<SetStateAction<ISimulationTaskFile[]>>
+  ] = useState()
+  const [filteredFiles, setFilteredFiles]: [
+    IFilteredFiles,
+    Dispatch<SetStateAction<IFilteredFiles>>
   ] = useState()
   const [currentNumber, setCurrentNumber]: [
     number,
@@ -50,12 +54,13 @@ const Results = ({ simulation, result, setResult }: IProps): JSX.Element => {
   // Get files
   useEffect(() => {
     if (!simulation?.tasks) {
-      setFiles([])
+      setSingleFiles([])
+      setFilteredFiles(null)
       return
     }
 
     // New files
-    const newFiles = []
+    const newSingleFiles = []
 
     // Filter
     const filter = configuration?.run?.resultsFilter
@@ -63,24 +68,22 @@ const Results = ({ simulation, result, setResult }: IProps): JSX.Element => {
     // Loop tasks
     simulation.tasks.forEach((task) => {
       // Check file
-      if (task.file) newFiles.push(task.file)
+      if (task.file) newSingleFiles.push(task.file)
 
       // Check files
       if (task.files) {
         if (!filter) {
-          newFiles.push(...task.files)
+          newSingleFiles.push(...task.files)
         } else {
           // Pattern filter
           const pattern = new RegExp(filter.pattern)
           const notFilteredFiles = task.files.filter(
             (file) => !pattern.test(file.fileName)
           )
-          const filteredFiles = task.files.filter((file) =>
-            pattern.test(file.fileName)
-          )
+          const files = task.files.filter((file) => pattern.test(file.fileName))
 
           // Numbering
-          const filesWithNumbers = getFilesNumbers(filteredFiles, filter)
+          const filesWithNumbers = getFilesNumbers(files, filter)
           const numbers = filesWithNumbers
             .map((file) => file.number)
             .filter((n, i, s) => s.indexOf(n) === i)
@@ -99,9 +102,11 @@ const Results = ({ simulation, result, setResult }: IProps): JSX.Element => {
             }
           })
 
-          // Add to results
-          newFiles.push(...notFilteredFiles)
-          newFiles.push({
+          // Add to single files
+          newSingleFiles.push(...notFilteredFiles)
+
+          // Add to filtered
+          setFilteredFiles({
             filtered: true,
             name: filter.name,
             files: filesWithNumbers,
@@ -111,20 +116,20 @@ const Results = ({ simulation, result, setResult }: IProps): JSX.Element => {
       }
     })
 
-    setFiles(newFiles)
+    setSingleFiles(newSingleFiles)
   }, [simulation, configuration])
 
   // Initial number
   useEffect(() => {
-    if (!currentNumber && files) {
-      const filtered = files.find((file) => (file as IFilteredFiles).filtered)
-      setCurrentNumber((filtered as IFilteredFiles)?.options[0].value)
+    if (!currentNumber && filteredFiles) {
+      setCurrentNumber(filteredFiles?.options[0].value)
     }
-  }, [files, currentNumber])
+  }, [filteredFiles, currentNumber])
 
   // Results render
-  if (!files) return <Spin />
-  else if (!files.length) return <Card size="small">No results yet</Card>
+  if (!singleFiles && !filteredFiles) return <Spin />
+  else if (!singleFiles?.length && !filteredFiles)
+    return <Card size="small">No results yet</Card>
   else
     return (
       <Card
@@ -142,108 +147,100 @@ const Results = ({ simulation, result, setResult }: IProps): JSX.Element => {
         }
       >
         <Space direction="vertical" className="full-width">
-          {files.map((file) => {
-            if ((file as IFilteredFiles).filtered) {
-              const filtered = file as IFilteredFiles
-
-              return (
-                <>
-                  {filtered.name}
-                  <Select
-                    className="full-width"
-                    options={filtered.options}
-                    value={currentNumber}
-                    onChange={(value) => setCurrentNumber(value)}
-                  />
-                  {filtered.files.map((filteredFile) => {
-                    if (filteredFile.number === currentNumber) {
-                      return (
-                        <Space
-                          key={filteredFile.fileName}
-                          style={{ alignItems: 'center' }}
-                        >
-                          <Button
-                            size="small"
-                            icon={
-                              result?.fileName === filteredFile?.fileName &&
-                              result?.name === filteredFile?.name ? (
-                                <EyeOutlined />
-                              ) : (
-                                <EyeInvisibleOutlined />
-                              )
-                            }
-                            onClick={() =>
-                              setResult(
-                                result?.fileName === filteredFile?.fileName &&
-                                  result?.name === filteredFile?.name
-                                  ? null
-                                  : filteredFile
-                              )
-                            }
-                          />
-                          <Download
-                            simulation={
-                              simulation && {
-                                id: simulation.id
-                              }
-                            }
-                            file={
-                              filteredFile && {
-                                name: filtered.name,
-                                fileName: filteredFile.fileName,
-                                originPath: filteredFile.originPath
-                              }
-                            }
-                          />
-                          {filteredFile.name}
-                        </Space>
-                      )
-                    }
-                  })}
-                </>
-              )
-            } else {
-              const singleFile = file as ISimulationTaskFile
-              return (
-                <Space key={singleFile.name} style={{ alignItems: 'center' }}>
-                  <Button
-                    size="small"
-                    icon={
-                      result?.fileName === singleFile?.fileName &&
-                      result?.name === singleFile?.name ? (
-                        <EyeOutlined />
-                      ) : (
-                        <EyeInvisibleOutlined />
-                      )
-                    }
-                    onClick={() =>
-                      setResult(
-                        result?.fileName === singleFile?.fileName &&
-                          result?.name === singleFile?.name
-                          ? null
-                          : singleFile
-                      )
-                    }
-                  />
-                  <Download
-                    simulation={
-                      simulation && {
-                        id: simulation.id
-                      }
-                    }
-                    file={
-                      singleFile && {
-                        name: singleFile.name,
-                        fileName: singleFile.fileName,
-                        originPath: singleFile.originPath
-                      }
-                    }
-                  />
-                  {singleFile.name}
-                </Space>
-              )
-            }
-          })}
+          {singleFiles?.map((file) => (
+            <Space key={file.name} style={{ alignItems: 'center' }}>
+              <Button
+                size="small"
+                icon={
+                  result?.fileName === file?.fileName &&
+                  result?.name === file?.name ? (
+                    <EyeOutlined />
+                  ) : (
+                    <EyeInvisibleOutlined />
+                  )
+                }
+                onClick={() =>
+                  setResult(
+                    result?.fileName === file?.fileName &&
+                      result?.name === file?.name
+                      ? null
+                      : file
+                  )
+                }
+              />
+              <Download
+                simulation={
+                  simulation && {
+                    id: simulation.id
+                  }
+                }
+                file={
+                  file && {
+                    name: file.name,
+                    fileName: file.fileName,
+                    originPath: file.originPath
+                  }
+                }
+              />
+              {file.name}
+            </Space>
+          ))}
+          {filteredFiles && (
+            <>
+              {filteredFiles.name}
+              <Select
+                className="full-width"
+                options={filteredFiles.options}
+                value={currentNumber}
+                onChange={(value) => setCurrentNumber(value)}
+              />
+              {filteredFiles.files.map((filteredFile) => {
+                if (filteredFile.number === currentNumber) {
+                  return (
+                    <Space
+                      key={filteredFile.fileName}
+                      style={{ alignItems: 'center' }}
+                    >
+                      <Button
+                        size="small"
+                        icon={
+                          result?.fileName === filteredFile?.fileName &&
+                          result?.name === filteredFile?.name ? (
+                            <EyeOutlined />
+                          ) : (
+                            <EyeInvisibleOutlined />
+                          )
+                        }
+                        onClick={() =>
+                          setResult(
+                            result?.fileName === filteredFile?.fileName &&
+                              result?.name === filteredFile?.name
+                              ? null
+                              : filteredFile
+                          )
+                        }
+                      />
+                      <Download
+                        simulation={
+                          simulation && {
+                            id: simulation.id
+                          }
+                        }
+                        file={
+                          filteredFile && {
+                            name: filteredFile.name,
+                            fileName: filteredFile.fileName,
+                            originPath: filteredFile.originPath
+                          }
+                        }
+                      />
+                      {filteredFile.name}
+                    </Space>
+                  )
+                }
+              })}
+            </>
+          )}
         </Space>
       </Card>
     )

@@ -1,4 +1,4 @@
-import { createContext, ReactNode } from 'react'
+import { createContext, Dispatch, ReactNode, useReducer } from 'react'
 
 /**
  * Select interface
@@ -17,6 +17,7 @@ export interface ISelectState {
   part?: string
   highlighted?: ISelect
   selected: ISelect[]
+  dispatch: Dispatch<ISelectAction>
 }
 
 /**
@@ -35,7 +36,8 @@ export const initialState: ISelectState = {
   type: null,
   part: null,
   highlighted: null,
-  selected: []
+  selected: [],
+  dispatch: null
 }
 
 /**
@@ -116,78 +118,78 @@ export const selectReducer = (
 /**
  * Enable
  */
-export const enable = () => {
-  selectReducer(initialState, { type: actionTypes.ENABLE })
+export const enable = (): ISelectAction => {
+  return { type: actionTypes.ENABLE }
 }
 
 /**
  * Disable
  */
-export const disable = () => {
-  selectReducer(initialState, { type: actionTypes.DISABLE })
+export const disable = (): ISelectAction => {
+  return { type: actionTypes.DISABLE }
 }
 
 /**
  * Clear
  */
-export const clear = () => {
-  selectReducer(initialState, { type: actionTypes.CLEAR })
+export const clear = (): ISelectAction => {
+  return { type: actionTypes.CLEAR }
 }
 
 /**
  * Set type
  * @param type Type
  */
-export const setType = (type: string) => {
-  selectReducer(initialState, { type: actionTypes.SETTYPE, value: type })
+export const setType = (type: string): ISelectAction => {
+  return { type: actionTypes.SETTYPE, value: type }
 }
 
 /**
  * Set part
  * @param part Part
  */
-export const setPart = (part: string) => {
-  selectReducer(initialState, { type: actionTypes.SETPART, value: part })
+export const setPart = (part: string): ISelectAction => {
+  return { type: actionTypes.SETPART, value: part }
 }
 
 /**
  * Highlight
  * @param value { uuid, label }
  */
-export const highlight = ({ uuid, label }: ISelect) => {
-  selectReducer(initialState, {
+export const highlight = ({ uuid, label }: ISelect): ISelectAction => {
+  return {
     type: actionTypes.HIGHLIGHT,
     value: { uuid, label: label }
-  })
+  }
 }
 
 /**
  * Unhighlight
  */
-export const unhighlight = () => {
-  selectReducer(initialState, { type: actionTypes.UNHIGHLIGHT })
+export const unhighlight = (): ISelectAction => {
+  return { type: actionTypes.UNHIGHLIGHT }
 }
 
 /**
  * Select
  * @param value { uuid, label }
  */
-export const select = ({ uuid, label }: ISelect) => {
-  selectReducer(initialState, {
+export const select = ({ uuid, label }: ISelect): ISelectAction => {
+  return {
     type: actionTypes.SELECT,
     value: { uuid, label: label }
-  })
+  }
 }
 
 /**
  * Unselect
  * @param value { uuid, label }
  */
-export const unselect = ({ uuid, label }: ISelect) => {
-  selectReducer(initialState, {
+export const unselect = ({ uuid, label }: ISelect): ISelectAction => {
+  return {
     type: actionTypes.UNSELECT,
     value: { uuid, label: label }
-  })
+  }
 }
 
 /**
@@ -203,11 +205,16 @@ export interface IProps {
  * @returns SelectProvider
  */
 const SelectProvider = ({ children }) => {
+  // Reducer
+  const [selectState, selectDispatch] = useReducer(selectReducer, initialState)
+
   /**
    * Render
    */
   return (
-    <SelectContext.Provider value={initialState}>
+    <SelectContext.Provider
+      value={{ ...selectState, dispatch: selectDispatch }}
+    >
       {children}
     </SelectContext.Provider>
   )

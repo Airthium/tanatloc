@@ -6,7 +6,8 @@ import {
   SetStateAction,
   useState,
   useEffect,
-  useCallback
+  useCallback,
+  useContext
 } from 'react'
 import { Card, Layout } from 'antd'
 
@@ -23,6 +24,7 @@ import BoundaryCondition from './boundaryCondition'
 
 import { useDispatch } from 'react-redux'
 import { enable, disable, setType, setPart } from '@/store/select/action'
+import { SelectContext } from '@/context/select'
 
 /**
  * Props
@@ -57,6 +59,10 @@ const BoundaryConditions = ({
     Dispatch<SetStateAction<boolean>>
   ] = useState(false)
 
+  // TODO TEST context
+  // Context
+  const selectContext = useContext(SelectContext)
+
   // Store
   const dispatch = useDispatch()
 
@@ -77,6 +83,8 @@ const BoundaryConditions = ({
     setBoundaryConditionVisible(true)
     setVisible(false)
     dispatch(enable())
+    // TODO TEST context
+    selectContext.dispatch({ type: 'ENABLE' })
   }, [dispatch, setVisible])
 
   /**

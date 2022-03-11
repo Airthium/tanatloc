@@ -74,10 +74,7 @@ describe('components/project/simulation/run', () => {
   }
   const result = {
     fileName: 'fileName',
-    name: 'name',
-    number: 1,
-    type: 'type',
-    originPath: 'originPath'
+    name: 'name'
   } as ISimulationTaskFile
   const setResult = jest.fn()
   const swr = { mutateOneSimulation: jest.fn() }
@@ -156,6 +153,24 @@ describe('components/project/simulation/run', () => {
     unmount()
   })
 
+  test('no configuration', () => {
+    const { unmount } = render(
+      <Run
+        simulation={
+          {
+            id: 'id',
+            scheme: {}
+          } as ISimulation
+        }
+        result={result}
+        setResult={setResult}
+        swr={swr}
+      />
+    )
+
+    unmount()
+  })
+
   test('not done', () => {
     const { unmount } = render(
       <Run
@@ -167,9 +182,7 @@ describe('components/project/simulation/run', () => {
                 parameters: {
                   done: false
                 },
-                run: {
-                  cloudServer: {}
-                }
+                run: {}
               }
             }
           } as ISimulation

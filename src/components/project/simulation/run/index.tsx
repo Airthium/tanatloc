@@ -287,9 +287,9 @@ Run.propTypes = {
     scheme: PropTypes.shape({
       configuration: PropTypes.shape({
         run: PropTypes.shape({
-          cloudServer: PropTypes.object.isRequired
+          cloudServer: PropTypes.object
         }).isRequired
-      }).isRequired
+      })
     }).isRequired
   }).isRequired,
   swr: PropTypes.exact({

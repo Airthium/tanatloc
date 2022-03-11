@@ -89,7 +89,7 @@ describe('components/project/simulation/run/results', () => {
   test('no results', () => {
     const { unmount } = render(
       <Results
-        simulation={{ id: 'id', tasks: [] }}
+        simulation={{ id: 'id' }}
         result={result}
         setResult={setResult}
       />
@@ -180,6 +180,77 @@ describe('components/project/simulation/run/results', () => {
         type: 'result'
       })
     )
+
+    const eyeClose = screen.getByRole('button', { name: 'eye-invisible' })
+    fireEvent.click(eyeClose)
+
+    unmount()
+  })
+
+  test('with filter - result', async () => {
+    mockGetFilesNumbers.mockImplementation(() => [
+      {
+        fileName: 'file_0.vtu',
+        name: 'file',
+        type: 'result',
+        originPath: 'originPath',
+        number: 0
+      },
+      {
+        fileName: 'file_1.vtu',
+        name: 'file',
+        type: 'result',
+        originPath: 'originPath',
+        number: 1
+      }
+    ])
+    const { unmount } = render(
+      <Results
+        simulation={{
+          ...currentSimulation,
+          scheme: {
+            category: 'category',
+            name: 'name',
+            description: 'description',
+            algorithm: 'algorithm',
+            code: 'code',
+            version: 'version',
+            configuration: {
+              run: {
+                index: 1,
+                title: 'Run',
+                resultsFilter: {
+                  name: 'name',
+                  pattern: 'file_\\d+.vtu',
+                  prefixPattern: 'file_',
+                  suffixPattern: '.vtu'
+                }
+              }
+            }
+          }
+        }}
+        result={{ fileName: 'file_1.vtu', name: 'file' }}
+        setResult={setResult}
+      />
+    )
+
+    // Selector
+    const selector = screen.getByRole('combobox')
+    fireEvent.mouseDown(selector)
+
+    const options = screen.getAllByText('1')
+    fireEvent.click(options[1])
+    await waitFor(() =>
+      expect(setResult).toHaveBeenCalledWith({
+        fileName: 'file_0.vtu',
+        name: 'file',
+        originPath: 'originPath',
+        type: 'result'
+      })
+    )
+
+    const eyeOpen = screen.getByRole('button', { name: 'eye' })
+    fireEvent.click(eyeOpen)
 
     unmount()
   })

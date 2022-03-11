@@ -36,7 +36,9 @@ jest.mock('../panel', () => (props: any) => mockPanel(props))
 const mockGeometry = jest.fn()
 jest.mock('../geometry', () => {
   const Geometry = (props: any) => mockGeometry(props)
-  const Add = () => <div />
+  const Add = (props: any) => (
+    <div role="GeometryAdd" onClick={props.setVisible} />
+  )
   Geometry.Add = Add
   return Geometry
 })
@@ -313,8 +315,7 @@ describe('components/project', () => {
       <div role="Panel" onClick={props.onClose} />
     ))
 
-    let geometryName = 'Geometry'
-    const geometry = { id: 'idg', name: geometryName }
+    const geometry = { id: 'idg', name: 'Geometry' }
     const geometries = [geometry]
     mockGeometries.mockImplementation(() => geometries)
 
@@ -346,7 +347,10 @@ describe('components/project', () => {
     fireEvent.click(geometryItem)
 
     // Rename
-    geometryName = 'Geometry rename'
+    const newGeometry = { id: 'idg', name: 'Geometry rename' }
+    const newGeometries = [newGeometry]
+    mockGeometries.mockImplementation(() => newGeometries)
+
     fireEvent.click(geometryItem)
 
     // Close panel -> not visible
@@ -354,7 +358,9 @@ describe('components/project', () => {
     fireEvent.click(panel)
 
     // Rename
-    geometryName = 'Geometry'
+    const newNewGeometry = { id: 'idg', name: 'Geometry' }
+    const newNewGeometries = [newNewGeometry]
+    mockGeometries.mockImplementation(() => newNewGeometries)
     fireEvent.click(simulationItem)
 
     // Delete geometry
@@ -365,10 +371,9 @@ describe('components/project', () => {
   })
 
   test('Update simulation', () => {
-    let simulationName = 'Simulation 1'
     const simulation = {
       id: 'ids1',
-      name: simulationName,
+      name: 'Simulation 1',
       scheme: {
         configuration: {}
       }
@@ -395,7 +400,15 @@ describe('components/project', () => {
     fireEvent.click(simulationItem)
 
     // Rename
-    simulationName = 'Simulation 1 rename'
+    const newSimulation = {
+      id: 'ids1',
+      name: 'Simulation 1 rename',
+      scheme: {
+        configuration: {}
+      }
+    }
+    const newSimulations = [newSimulation]
+    mockSimulations.mockImplementation(() => newSimulations)
     fireEvent.click(simulationItem)
 
     // Delete
@@ -512,6 +525,39 @@ describe('components/project', () => {
       name: 'exclamation-circle Simulation 3 Geometry'
     })
     fireEvent.click(simulationItem)
+
+    unmount()
+  })
+
+  test('Geometry add visible', () => {
+    const { unmount } = render(<Project />)
+
+    const geometryAdd = screen.getByRole('GeometryAdd')
+    fireEvent.click(geometryAdd)
+
+    unmount()
+  })
+
+  test('Geometry cleanup', async () => {
+    mockPanel.mockImplementation((props) => <div>{props.children}</div>)
+    mockGeometry.mockImplementation((props) => (
+      <div role="Geometry" onClick={props.onCleanup} />
+    ))
+    const { unmount } = render(<Project />)
+
+    // Open submenus
+    const geometries = screen.getByRole('menuitem', {
+      name: 'pie-chart GEOMETRIES (1)'
+    })
+    fireEvent.click(geometries)
+
+    const geometry = screen.getByRole('menuitem', {
+      name: 'pie-chart Geometry'
+    })
+    fireEvent.click(geometry)
+
+    const geometryPanel = screen.getByRole('Geometry')
+    fireEvent.click(geometryPanel)
 
     unmount()
   })

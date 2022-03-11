@@ -424,11 +424,11 @@ describe('components/project/simulation/initialization', () => {
     const options3 = screen.getAllByText('Simulation 3')
     const option3 = options3[0]
 
-    // await act(async () => {
-    //   fireEvent.click(option3)
-    // })
-    // await waitFor(() => expect(mockTasks).toHaveBeenCalledTimes(2))
-    // await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(0))
+    await act(async () => {
+      fireEvent.click(option3)
+    })
+    await waitFor(() => expect(mockTasks).toHaveBeenCalledTimes(2))
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(0))
     // await waitFor(() =>
     //   expect(mockErrorNotification).toHaveBeenLastCalledWith(
     //     errors.update,
@@ -436,37 +436,37 @@ describe('components/project/simulation/initialization', () => {
     //   )
     // )
 
-    // // Normal
-    // await act(async () => {
-    //   fireEvent.click(option1)
-    // })
-    // await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(3))
-    // await waitFor(() =>
-    //   expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(3)
-    // )
-    // await waitFor(() => expect(mockTasks).toHaveBeenCalledTimes(4))
+    // Normal
+    await act(async () => {
+      fireEvent.click(option1)
+    })
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
+    await waitFor(() =>
+      expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(2)
+    )
+    await waitFor(() => expect(mockTasks).toHaveBeenCalledTimes(3))
 
-    // // Results
-    // const newSelects = screen.getAllByRole('combobox')
-    // const resultSelect = newSelects[3]
-    // await act(async () => {
-    //   fireEvent.mouseDown(resultSelect)
-    // })
+    // Results
+    const newSelects = screen.getAllByRole('combobox')
+    const resultSelect = newSelects[3]
+    await act(async () => {
+      fireEvent.mouseDown(resultSelect)
+    })
 
-    // const resultOptions0 = screen.getAllByText('result.vtu')
-    // const resultOption0 = resultOptions0[0]
-    // const resultOptions1 = screen.getAllByText('1')
-    // // const resultOption1 = resultOptions1[0]
+    const resultOptions0 = screen.getAllByText('result.vtu')
+    const resultOption0 = resultOptions0[0]
+    const resultOptions1 = screen.getAllByText('0')
+    // const resultOption1 = resultOptions1[0]
 
-    // // Error
-    // mockUpdate.mockImplementation(() => {
-    //   throw new Error('Update error')
-    // })
-    // await act(async () => {
-    //   fireEvent.click(resultOption0)
-    // })
-    // await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(3))
-    // await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(2))
+    // Error
+    mockUpdate.mockImplementation(() => {
+      throw new Error('Update error')
+    })
+    await act(async () => {
+      fireEvent.click(resultOption0)
+    })
+    await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(3))
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(2))
 
     // // Normal
     // mockUpdate.mockReset()

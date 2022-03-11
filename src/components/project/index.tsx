@@ -45,6 +45,7 @@ import UserAPI from '@/api/user'
 import ProjectAPI from '@/api/project'
 import SimulationAPI from '@/api/simulation'
 import GeometryAPI from '@/api/geometry'
+import SelectProvider from '@/context/select'
 
 /**
  * Menu items
@@ -665,197 +666,203 @@ const Project = (): JSX.Element => {
   if (project.id === '0') return <NotAuthorized />
   else
     return (
-      <Layout hasSider={true}>
-        <Layout.Sider theme="light" className="Project-Sider" width={256}>
-          <div className="logo">
-            <img src="/images/logo.svg" alt="Tanatloc" />
-          </div>
-          <Menu mode="inline">
-            <Menu.Item
-              className="Project-Menu-GoBack"
-              key={'menu-go-back'}
-              disabled={true}
-              style={{ cursor: 'unset', margin: '10px 0', paddingLeft: 10 }}
-            >
-              <GoBack
-                onClick={() => handleDashboard(router, page, workspaceId)}
+      <SelectProvider>
+        <Layout hasSider={true}>
+          <Layout.Sider theme="light" className="Project-Sider" width={256}>
+            <div className="logo">
+              <img src="/images/logo.svg" alt="Tanatloc" />
+            </div>
+            <Menu mode="inline">
+              <Menu.Item
+                className="Project-Menu-GoBack"
+                key={'menu-go-back'}
+                disabled={true}
+                style={{ cursor: 'unset', margin: '10px 0', paddingLeft: 10 }}
               >
-                Return to dashboard
-              </GoBack>
-            </Menu.Item>
-
-            <Menu.Divider className="Project-Menu-Divider" />
-
-            <Menu.Item
-              className="Project-Menu-Title"
-              key={'title'}
-              disabled={true}
-            >
-              <Typography.Paragraph ellipsis={{ tooltip: true, rows: 1 }}>
-                {project.title}
-              </Typography.Paragraph>
-            </Menu.Item>
-          </Menu>
-          <div className="Project-Menu-scroll">
-            <Menu
-              className="Project-Menu"
-              mode="inline"
-              defaultOpenKeys={[
-                menuItems.geometries.key,
-                menuItems.simulations.key
-              ]}
-              onClick={onMenuClick}
-            >
-              <Menu.SubMenu
-                key={menuItems.geometries.key}
-                className="Project-Menu-SubMenu-Geometries"
-                icon={
-                  loadingGeometries ? <LoadingOutlined /> : <PieChartOutlined />
-                }
-                title={
-                  <Typography.Text strong>
-                    {menuItems.geometries.label} ({geometries.length})
-                  </Typography.Text>
-                }
-              >
-                <Menu.Item
-                  className="Project-Menu-SubMenu-Geometries-New"
-                  key="new_geometry"
-                  disabled={true}
+                <GoBack
+                  onClick={() => handleDashboard(router, page, workspaceId)}
                 >
-                  <Button
-                    icon={<UploadOutlined />}
-                    onClick={() => setGeometryAddVisible(true)}
-                  >
-                    New Geometry
-                  </Button>
-                </Menu.Item>
-                {!geometries.length ? (
-                  <Menu.Item
-                    className="text-dark"
-                    key="geometry-needed"
-                    disabled={true}
-                    icon={
-                      <ExclamationCircleOutlined style={{ color: 'red' }} />
-                    }
-                  >
-                    A Geometry is needed
-                  </Menu.Item>
-                ) : null}
-                {geometriesRender}
-              </Menu.SubMenu>
-              <Menu.SubMenu
-                key={menuItems.simulations.key}
-                className="Project-Menu-SubMenu-Simulations"
-                icon={
-                  loadingSimulations ? (
-                    <LoadingOutlined />
-                  ) : (
-                    <CodeSandboxOutlined />
-                  )
-                }
-                title={
-                  <Typography.Text strong>
-                    {menuItems.simulations.label} ({simulations.length})
-                  </Typography.Text>
-                }
+                  Return to dashboard
+                </GoBack>
+              </Menu.Item>
+
+              <Menu.Divider className="Project-Menu-Divider" />
+
+              <Menu.Item
+                className="Project-Menu-Title"
+                key={'title'}
+                disabled={true}
               >
-                <Menu.Item
-                  className="Project-Menu-SubMenu-Simulations-New"
-                  key={'new_simulation'}
-                  disabled={true}
-                >
-                  <Button
-                    disabled={!geometries.length}
-                    icon={<PlusCircleOutlined />}
-                    onClick={() => setSimulationSelectorVisible(true)}
-                  >
-                    New Simulation
-                  </Button>
-                </Menu.Item>
-                {simulationsRender}
-              </Menu.SubMenu>
+                <Typography.Paragraph ellipsis={{ tooltip: true, rows: 1 }}>
+                  {project.title}
+                </Typography.Paragraph>
+              </Menu.Item>
             </Menu>
-          </div>
-        </Layout.Sider>
-        <Layout.Content className="no-scroll relative">
-          <Geometry.Add
-            visible={geometryAddVisible}
-            project={{
-              id: project.id,
-              geometries: project.geometries
-            }}
-            swr={{ mutateProject, addOneGeometry }}
-            setVisible={(visible) => setGeometryAddVisible(visible)}
-          />
+            <div className="Project-Menu-scroll">
+              <Menu
+                className="Project-Menu"
+                mode="inline"
+                defaultOpenKeys={[
+                  menuItems.geometries.key,
+                  menuItems.simulations.key
+                ]}
+                onClick={onMenuClick}
+              >
+                <Menu.SubMenu
+                  key={menuItems.geometries.key}
+                  className="Project-Menu-SubMenu-Geometries"
+                  icon={
+                    loadingGeometries ? (
+                      <LoadingOutlined />
+                    ) : (
+                      <PieChartOutlined />
+                    )
+                  }
+                  title={
+                    <Typography.Text strong>
+                      {menuItems.geometries.label} ({geometries.length})
+                    </Typography.Text>
+                  }
+                >
+                  <Menu.Item
+                    className="Project-Menu-SubMenu-Geometries-New"
+                    key="new_geometry"
+                    disabled={true}
+                  >
+                    <Button
+                      icon={<UploadOutlined />}
+                      onClick={() => setGeometryAddVisible(true)}
+                    >
+                      New Geometry
+                    </Button>
+                  </Menu.Item>
+                  {!geometries.length ? (
+                    <Menu.Item
+                      className="text-dark"
+                      key="geometry-needed"
+                      disabled={true}
+                      icon={
+                        <ExclamationCircleOutlined style={{ color: 'red' }} />
+                      }
+                    >
+                      A Geometry is needed
+                    </Menu.Item>
+                  ) : null}
+                  {geometriesRender}
+                </Menu.SubMenu>
+                <Menu.SubMenu
+                  key={menuItems.simulations.key}
+                  className="Project-Menu-SubMenu-Simulations"
+                  icon={
+                    loadingSimulations ? (
+                      <LoadingOutlined />
+                    ) : (
+                      <CodeSandboxOutlined />
+                    )
+                  }
+                  title={
+                    <Typography.Text strong>
+                      {menuItems.simulations.label} ({simulations.length})
+                    </Typography.Text>
+                  }
+                >
+                  <Menu.Item
+                    className="Project-Menu-SubMenu-Simulations-New"
+                    key={'new_simulation'}
+                    disabled={true}
+                  >
+                    <Button
+                      disabled={!geometries.length}
+                      icon={<PlusCircleOutlined />}
+                      onClick={() => setSimulationSelectorVisible(true)}
+                    >
+                      New Simulation
+                    </Button>
+                  </Menu.Item>
+                  {simulationsRender}
+                </Menu.SubMenu>
+              </Menu>
+            </div>
+          </Layout.Sider>
+          <Layout.Content className="no-scroll relative">
+            <Geometry.Add
+              visible={geometryAddVisible}
+              project={{
+                id: project.id,
+                geometries: project.geometries
+              }}
+              swr={{ mutateProject, addOneGeometry }}
+              setVisible={(visible) => setGeometryAddVisible(visible)}
+            />
 
-          <Simulation.Selector
-            user={{
-              authorizedplugins: user.authorizedplugins
-            }}
-            visible={simulationSelectorVisible}
-            onOk={async (scheme) => {
-              try {
-                await onSelector(project, scheme, {
-                  addOneSimulation,
-                  mutateProject
-                })
+            <Simulation.Selector
+              user={{
+                authorizedplugins: user.authorizedplugins
+              }}
+              visible={simulationSelectorVisible}
+              onOk={async (scheme) => {
+                try {
+                  await onSelector(project, scheme, {
+                    addOneSimulation,
+                    mutateProject
+                  })
 
-                // Close selector
-                setSimulationSelectorVisible(false)
-              } catch (err) {}
-            }}
-            onCancel={() => setSimulationSelectorVisible(false)}
-          />
+                  // Close selector
+                  setSimulationSelectorVisible(false)
+                } catch (err) {}
+              }}
+              onCancel={() => setSimulationSelectorVisible(false)}
+            />
 
-          <Simulation.Updater
-            user={{
-              authorizedplugins: user.authorizedplugins
-            }}
-            simulation={
-              simulation && {
-                id: simulation.id,
-                scheme: simulation.scheme
+            <Simulation.Updater
+              user={{
+                authorizedplugins: user.authorizedplugins
+              }}
+              simulation={
+                simulation && {
+                  id: simulation.id,
+                  scheme: simulation.scheme
+                }
               }
-            }
-            swr={{
-              mutateOneSimulation
-            }}
-          />
+              swr={{
+                mutateOneSimulation
+              }}
+            />
 
-          {panel}
+            {panel}
 
-          <View
-            project={{
-              id: project.id
-            }}
-            simulation={
-              simulation && {
-                id: simulation.id
+            <View
+              project={{
+                id: project.id
+              }}
+              simulation={
+                simulation && {
+                  id: simulation.id
+                }
               }
-            }
-            geometry={
-              geometry && {
-                id: geometry.id,
-                needCleanup: geometry.needCleanup
+              geometry={
+                geometry && {
+                  id: geometry.id,
+                  needCleanup: geometry.needCleanup
+                }
               }
-            }
-            result={
-              result && {
-                glb: result.glb,
-                originPath: result.originPath,
-                json: result.json
+              result={
+                result && {
+                  glb: result.glb,
+                  originPath: result.originPath,
+                  json: result.json
+                }
               }
-            }
-          />
-          <Data
-            simulation={{
-              id: simulation?.id,
-              name: simulation?.name
-            }}
-          />
-        </Layout.Content>
-      </Layout>
+            />
+            <Data
+              simulation={{
+                id: simulation?.id,
+                name: simulation?.name
+              }}
+            />
+          </Layout.Content>
+        </Layout>
+      </SelectProvider>
     )
 }
 

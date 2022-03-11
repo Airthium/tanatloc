@@ -34,6 +34,7 @@ module.exports = {
     '^@/api(.*)$': '<rootDir>/src/api$1',
     '^@/auth(.*)$': '<rootDir>/src/auth$1',
     '^@/components(.*)$': '<rootDir>/src/components$1',
+    '^@/context(.*)$': '<rootDir>/src/context$1',
     '^@/database(.*)$': '<rootDir>/src/database$1',
     '^@/lib(.*)$': '<rootDir>/src/lib$1',
     '^@/pages(.*)$': '<rootDir>/src/pages$1',

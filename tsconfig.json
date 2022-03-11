@@ -30,6 +30,8 @@
       "@/auth/*": ["src/auth/*"],
       "@/components": ["src/components"],
       "@/components/*": ["src/components/*"],
+      "@/context": ["src/context"],
+      "@/context/*": ["src/context/*"],
       "@/database": ["src/database"],
       "@/database/*": ["src/database/*"],
       "@/lib": ["src/lib"],

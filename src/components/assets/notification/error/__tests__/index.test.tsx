@@ -1,3 +1,5 @@
+import { notification } from 'antd'
+
 import { ICallError } from '@/api/index.d'
 
 import ErrorNotification from '..'
@@ -16,6 +18,11 @@ describe('components/assets/notification/error', () => {
   })
 
   test('API error', () => {
+    let onClose
+    jest.spyOn(notification, 'error').mockImplementation((props) => {
+      onClose = props.onClose
+    })
+
     ErrorNotification('error', {
       message: 'Failed to fetch',
       status: 500,
@@ -27,5 +34,7 @@ describe('components/assets/notification/error', () => {
       status: 500,
       info: { message: 'API error 2' }
     } as ICallError)
+
+    onClose()
   })
 })

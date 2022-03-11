@@ -160,9 +160,7 @@ const Parameters = ({ simulation, swr }: IProps): JSX.Element => {
             {child.label}:<br />
             <Formula
               defaultValue={
-                child.value === undefined
-                  ? (child.default as string)
-                  : (child.value as string)
+                (child.value as string) ?? (child.default as string)
               }
               onValueChange={(value: string) =>
                 onChange(simulation, key, index, value, swr)

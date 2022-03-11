@@ -38,6 +38,12 @@ describe('components/project/simulation/parameters', () => {
                 label: 'Formula',
                 htmlEntity: 'formula',
                 default: 0
+              },
+              {
+                label: 'Formula',
+                htmlEntity: 'formula',
+                value: 1,
+                default: 0
               }
             ]
           },
@@ -92,6 +98,18 @@ describe('components/project/simulation/parameters', () => {
     unmount()
   })
 
+  test('onDone error', async () => {
+    mockUpdate.mockImplementation(() => {
+      throw new Error()
+    })
+
+    const { unmount } = render(<Parameters simulation={simulation} swr={swr} />)
+
+    await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
+
+    unmount()
+  })
+
   test('with value', () => {
     //@ts-ignore
     simulation.scheme.configuration.parameters.param2.children[0].value = 0
@@ -109,8 +127,8 @@ describe('components/project/simulation/parameters', () => {
     await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(1))
 
     // Formula
-    const formula = screen.getByRole('Formula')
-    fireEvent.click(formula)
+    const formulas = screen.getAllByRole('Formula')
+    fireEvent.click(formulas[0])
     await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
 
     // Update error
@@ -118,7 +136,7 @@ describe('components/project/simulation/parameters', () => {
       throw new Error('update error')
     })
     value = undefined
-    fireEvent.click(formula)
+    fireEvent.click(formulas[1])
     await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(3))
     await waitFor(() => expect(mockErrorNotification).toHaveBeenCalledTimes(1))
     await waitFor(() =>

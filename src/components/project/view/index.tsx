@@ -55,7 +55,6 @@ const loadPart = async (
         { originPath: file.originPath, glb: file.glb, json: file.json }
       )
   } catch (err) {
-    // console.log(err)
     ErrorNotification(errors.part, err)
   }
 }

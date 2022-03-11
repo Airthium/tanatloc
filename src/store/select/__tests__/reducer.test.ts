@@ -90,7 +90,16 @@ describe('store/select/reducer', () => {
   })
 
   test('select', () => {
-    const res = reducer(selectInitialState, {
+    let res = reducer(selectInitialState, {
+      type: 'SELECT',
+      uuid: 'uuid'
+    })
+    expect(res).toEqual({
+      ...selectInitialState,
+      selected: ['uuid']
+    })
+
+    res = reducer(res, {
       type: 'SELECT',
       uuid: 'uuid'
     })

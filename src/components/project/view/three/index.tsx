@@ -83,6 +83,7 @@ export interface IProps {
  * Errors
  */
 export const errors = {
+  load: 'Load part error',
   snapshot: 'Snapshot error'
 }
 
@@ -156,7 +157,8 @@ export const zoomIn = (
   controls: TrackballControls
 ): void => {
   zoom(camera, controls, 1)
-  zoomInProgress = requestAnimationFrame(() => zoomIn(camera, controls))
+  const zoomInAnimationFrame = () => zoomIn(camera, controls)
+  zoomInProgress = requestAnimationFrame(zoomInAnimationFrame)
 }
 
 /**
@@ -169,7 +171,8 @@ export const zoomOut = (
   controls: TrackballControls
 ): void => {
   zoom(camera, controls, -1)
-  zoomInProgress = requestAnimationFrame(() => zoomOut(camera, controls))
+  const zoomOutAnimationFrame = () => zoomOut(camera, controls)
+  zoomInProgress = requestAnimationFrame(zoomOutAnimationFrame)
 }
 
 /**
@@ -606,7 +609,7 @@ const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
   useEffect(() => {
     // Check part update
     const currentPart = scene.current.children.find(
-      (child: IPart) => child.uuid === part?.uuid
+      (child: IPart) => child.type === 'Part' && child.uuid === part?.uuid
     )
     if (currentPart) return
 
@@ -629,7 +632,10 @@ const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
         sectionViewHelper.current,
         colorbarHelper.current,
         dispatch
-      )
+      ).catch((err) => {
+        ErrorNotification(errors.load, err)
+        computeSceneBoundingSphere(scene.current)
+      })
     else {
       // Scene
       computeSceneBoundingSphere(scene.current)

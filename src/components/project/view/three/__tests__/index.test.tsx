@@ -107,10 +107,71 @@ jest.mock('@/lib/three/helpers/ColorbarHelper', () => ({
   })
 }))
 
+const mockPartLoader = jest.fn()
 jest.mock('@/lib/three/loaders/PartLoader', () => {
   let count = 0
   return {
-    PartLoader: (mouseMove, mouseDown) => {
+    PartLoader: (mouseMove, mouseDown) =>
+      mockPartLoader(mouseMove, mouseDown, count++)
+  }
+})
+
+const mockAvatarAdd = jest.fn()
+jest.mock('@/api/avatar', () => ({
+  add: async () => mockAvatarAdd()
+}))
+
+const mockEnabled = jest.fn(() => false)
+jest.mock('react-redux', () => ({
+  useSelector: (callback) =>
+    callback({
+      select: { enabled: mockEnabled(), highlighted: {}, selected: [{}] }
+    }),
+  useDispatch: () => jest.fn()
+}))
+
+jest.mock('@/store/select/action', () => ({
+  highlight: jest.fn(),
+  select: jest.fn(),
+  unselect: jest.fn()
+}))
+
+let mockAnimationCount = 0
+let mockZoomInCount = 0
+let mockZoomOutCount = 0
+Object.defineProperty(window, 'requestAnimationFrame', {
+  value: (callback: Function) => {
+    if (callback.name === 'animate') {
+      mockAnimationCount++
+      if (mockAnimationCount < 10) callback()
+    } else if (callback.name === 'zoomInAnimationFrame') {
+      mockZoomInCount++
+      if (mockZoomInCount < 10) callback()
+    } else if (callback.name === 'zoomOutAnimationFrame') {
+      mockZoomOutCount++
+      if (mockZoomOutCount < 10) callback()
+    }
+  }
+})
+
+describe('components/project/view/three', () => {
+  const loading = false
+  const project = {
+    id: 'id'
+  }
+  const part = {
+    uuid: 'uuid',
+    buffer: Buffer.from('buffer')
+  }
+
+  beforeEach(() => {
+    mockErroNotification.mockReset()
+
+    mockAvatarAdd.mockReset()
+
+    mockEnabled.mockReset()
+
+    mockPartLoader.mockImplementation((mouseMove, mouseDown, count) => {
       mouseMove(
         {
           highlight: jest.fn()
@@ -146,7 +207,7 @@ jest.mock('@/lib/three/loaders/PartLoader', () => {
               children: [
                 {
                   userData: {
-                    lut: count++ === 1 ? null : {}
+                    lut: count === 1 ? null : {}
                   },
                   material: {}
                 }
@@ -157,102 +218,51 @@ jest.mock('@/lib/three/loaders/PartLoader', () => {
         }),
         dispose: jest.fn()
       }
-    }
-  }
-})
+    })
 
-const mockAvatarAdd = jest.fn()
-jest.mock('@/api/avatar', () => ({
-  add: async () => mockAvatarAdd()
-}))
-
-const mockEnabled = jest.fn(() => false)
-jest.mock('react-redux', () => ({
-  useSelector: (callback) =>
-    callback({
-      select: { enabled: mockEnabled(), highlighted: {}, selected: [{}] }
-    }),
-  useDispatch: () => jest.fn()
-}))
-
-jest.mock('@/store/select/action', () => ({
-  highlight: jest.fn(),
-  select: jest.fn(),
-  unselect: jest.fn()
-}))
-
-let mockAnimationCount = 0
-Object.defineProperty(window, 'requestAnimationFrame', {
-  value: (callback: Function) => {
-    mockAnimationCount++
-    if (mockAnimationCount < 10) callback()
-  }
-})
-
-global.MockScene.children = [
-  { type: 'AmbientLight' },
-  {
-    type: 'PointLight',
-    position: {
-      multiplyScalar: jest.fn()
-    }
-  },
-  { type: 'AxisHelper' },
-  {
-    type: 'Part',
-    boundingBox: {
-      min: { x: 0, y: 0, z: 0 },
-      max: { x: 1, y: 1, z: 1 }
-    },
-    material: {},
-    dispose: jest.fn(),
-    setTransparent: jest.fn(),
-    startSelection: jest.fn(),
-    stopSelection: jest.fn(),
-    getSelected: () => [{}],
-    highlight: jest.fn(),
-    select: jest.fn(),
-    unselect: jest.fn()
-  },
-  {
-    visible: true,
-    type: 'Part',
-    boundingBox: {
-      min: { x: 0, y: 0, z: 0 },
-      max: { x: 1, y: 1, z: 1 }
-    },
-    material: {},
-    dispose: jest.fn(),
-    setTransparent: jest.fn(),
-    startSelection: jest.fn(),
-    stopSelection: jest.fn(),
-    getSelected: () => [{}],
-    highlight: jest.fn(),
-    select: jest.fn(),
-    unselect: jest.fn()
-  }
-]
-
-// // window.setTimeout = (callback) => {
-// //   if (callback.name !== '_flushCallback') callback()
-// // }
-
-describe('components/project/view/three', () => {
-  const loading = false
-  const project = {
-    id: 'id'
-  }
-  const part = {
-    uuid: 'uuid',
-    buffer: Buffer.from('buffer')
-  }
-
-  beforeEach(() => {
-    mockErroNotification.mockReset()
-
-    mockAvatarAdd.mockReset()
-
-    mockEnabled.mockReset()
+    global.MockScene.children = [
+      { type: 'AmbientLight' },
+      {
+        type: 'PointLight',
+        position: {
+          multiplyScalar: jest.fn()
+        }
+      },
+      { type: 'AxisHelper' },
+      {
+        type: 'Part',
+        boundingBox: {
+          min: { x: 0, y: 0, z: 0 },
+          max: { x: 1, y: 1, z: 1 }
+        },
+        material: {},
+        dispose: jest.fn(),
+        setTransparent: jest.fn(),
+        startSelection: jest.fn(),
+        stopSelection: jest.fn(),
+        getSelected: () => [{}],
+        highlight: jest.fn(),
+        select: jest.fn(),
+        unselect: jest.fn()
+      },
+      {
+        visible: true,
+        type: 'Part',
+        boundingBox: {
+          min: { x: 0, y: 0, z: 0 },
+          max: { x: 1, y: 1, z: 1 }
+        },
+        material: {},
+        dispose: jest.fn(),
+        setTransparent: jest.fn(),
+        startSelection: jest.fn(),
+        stopSelection: jest.fn(),
+        getSelected: () => [{}],
+        highlight: jest.fn(),
+        select: jest.fn(),
+        unselect: jest.fn()
+      }
+    ]
   })
 
   test('render', () => {
@@ -266,6 +276,46 @@ describe('components/project/view/three', () => {
   test('loading', () => {
     const { unmount } = render(
       <ThreeView loading={true} project={project} part={part} />
+    )
+
+    unmount()
+  })
+
+  test('without part', () => {
+    global.MockScene.children = []
+    const { unmount } = render(<ThreeView loading={true} project={project} />)
+
+    unmount()
+  })
+
+  test('already loaded part', () => {
+    global.MockScene.children = [
+      {
+        type: 'Part',
+        uuid: 'uuid'
+      }
+    ]
+    const { unmount } = render(
+      <ThreeView loading={true} project={project} part={part} />
+    )
+
+    unmount()
+  })
+
+  test('loaded', async () => {
+    mockPartLoader.mockImplementation(() => {
+      throw new Error('load error')
+    })
+    const { unmount } = render(
+      <ThreeView loading={true} project={project} part={part} />
+    )
+
+    await waitFor(() => expect(mockErroNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
+      expect(mockErroNotification).toHaveBeenLastCalledWith(
+        errors.load,
+        new Error('load error')
+      )
     )
 
     unmount()
@@ -309,12 +359,18 @@ describe('components/project/view/three', () => {
 
     // Avatar error
     mockAvatarAdd.mockImplementation(() => {
-      throw new Error()
+      throw new Error('avatar add error')
     })
     const add = screen.getByRole('button', { name: 'fund-projection-screen' })
     fireEvent.click(add)
     await waitFor(() => expect(mockAvatarAdd).toHaveBeenCalledTimes(2))
     await waitFor(() => expect(mockErroNotification).toHaveBeenCalledTimes(1))
+    await waitFor(() =>
+      expect(mockErroNotification).toHaveBeenLastCalledWith(
+        errors.snapshot,
+        new Error('avatar add error')
+      )
+    )
 
     // Zoom
     const zoomIn = screen.getByRole('button', { name: 'zoom-in' })

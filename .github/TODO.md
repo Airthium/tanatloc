@@ -19,7 +19,6 @@
 
 ## Electron
 
-- use docker postgres ?
 - check docker at startup https://github.com/electron-userland/electron-builder/issues/1271
 - Apple sign
 

@@ -14,13 +14,19 @@ Start:
 If you use postgres docker:
 
 ```bash
-mkdir ${HOME}/pgdata
-docker run -d \
-    --name tanatloc-postgres \
-    -e POSTGRES_PASSWORD=password \
-    -e PGDATA=/var/lib/postgresql/data/pgdata \
-    -v ${HOME}/pgdata:/var/lib/postgresql/data \
-    postgres
+id=$(docker container ls -a --filter "name=tanatloc-postgres" -q)
+if [ -z ${id+x} ]
+then
+    mkdir ${HOME}/pgdata
+    docker run -d \
+        --name tanatloc-postgres \
+        -e POSTGRES_PASSWORD=password \
+        -e PGDATA=/var/lib/postgresql/data/pgdata \
+        -v ${HOME}/pgdata:/var/lib/postgresql/data \
+        postgres
+else
+    docker restart ${id}
+fi
 export DB_ADMIN_PASSWORD=password
 export DB_HOST=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $(docker ps --filter "name=tanatloc-postgres" --format "{{.ID}}"))
 export DB_PASSWORD=userpassword

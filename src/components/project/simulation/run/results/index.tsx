@@ -130,7 +130,16 @@ const Results = ({ simulation, result, setResult }: IProps): JSX.Element => {
       <Card
         size="small"
         title="Results"
-        extra={<Archive simulation={simulation} />}
+        extra={
+          <Archive
+            simulation={
+              simulation && {
+                id: simulation.id,
+                scheme: simulation.scheme
+              }
+            }
+          />
+        }
       >
         <Space direction="vertical" className="full-width">
           {files.map((file) => {
@@ -173,8 +182,18 @@ const Results = ({ simulation, result, setResult }: IProps): JSX.Element => {
                             }
                           />
                           <Download
-                            simulation={simulation}
-                            file={filteredFile}
+                            simulation={
+                              simulation && {
+                                id: simulation.id
+                              }
+                            }
+                            file={
+                              filteredFile && {
+                                name: filtered.name,
+                                fileName: filteredFile.fileName,
+                                originPath: filteredFile.originPath
+                              }
+                            }
                           />
                           {filteredFile.name}
                         </Space>
@@ -206,7 +225,20 @@ const Results = ({ simulation, result, setResult }: IProps): JSX.Element => {
                       )
                     }
                   />
-                  <Download simulation={simulation} file={singleFile} />
+                  <Download
+                    simulation={
+                      simulation && {
+                        id: simulation.id
+                      }
+                    }
+                    file={
+                      singleFile && {
+                        name: singleFile.name,
+                        fileName: singleFile.fileName,
+                        originPath: singleFile.originPath
+                      }
+                    }
+                  />
                   {singleFile.name}
                 </Space>
               )

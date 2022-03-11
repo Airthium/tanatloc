@@ -25,7 +25,7 @@ import SimulationAPI from '@/api/simulation'
  */
 export interface IProps {
   simulation: ISimulation
-  result: ISimulationTaskFile
+  result: Omit<Omit<ISimulationTaskFile, 'originPath'>, 'type'>
   setResult: (result: ISimulationTaskFile) => void
   swr: {
     mutateOneSimulation: (simulation: ISimulation) => void
@@ -260,8 +260,19 @@ const Run = ({ simulation, result, setResult, swr }: IProps): JSX.Element => {
             </Card>
 
             <Results
-              simulation={currentSimulation}
-              result={result}
+              simulation={
+                currentSimulation && {
+                  id: currentSimulation.id,
+                  scheme: currentSimulation.scheme,
+                  tasks: currentSimulation.tasks
+                }
+              }
+              result={
+                result && {
+                  name: result.name,
+                  fileName: result.fileName
+                }
+              }
               setResult={setResult}
             />
           </Space>
@@ -284,7 +295,10 @@ Run.propTypes = {
   swr: PropTypes.exact({
     mutateOneSimulation: PropTypes.func.isRequired
   }).isRequired,
-  result: PropTypes.object.isRequired,
+  result: PropTypes.exact({
+    name: PropTypes.string.isRequired,
+    fileName: PropTypes.string.isRequired
+  }),
   setResult: PropTypes.func.isRequired
 }
 

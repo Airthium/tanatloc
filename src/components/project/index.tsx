@@ -490,8 +490,16 @@ const Project = (): JSX.Element => {
       setPanel(
         <Panel visible={true} title={'Run'} onClose={onPanelClose}>
           <Simulation.Run
-            simulation={current}
-            result={result}
+            simulation={{
+              id: current.id,
+              scheme: current.scheme
+            }}
+            result={
+              result && {
+                name: result.name,
+                fileName: result.fileName
+              }
+            }
             setResult={setResult}
             swr={{ mutateOneSimulation }}
           />

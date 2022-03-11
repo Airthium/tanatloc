@@ -162,7 +162,9 @@ const Edit = ({ plugins, user, swr }: IProps): JSX.Element => {
         </Form.Item>
       </Dialog>
 
-      <EditButton onEdit={() => setVisible(true)}>Edit</EditButton>
+      <EditButton bordered onEdit={() => setVisible(true)}>
+        Edit
+      </EditButton>
     </>
   )
 }

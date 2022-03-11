@@ -92,7 +92,7 @@ Download.propTypes = {
   file: PropTypes.exact({
     originPath: PropTypes.string.isRequired,
     name: PropTypes.string,
-    filename: PropTypes.string.isRequired
+    fileName: PropTypes.string.isRequired
   }),
   simulation: PropTypes.exact({
     id: PropTypes.string.isRequired

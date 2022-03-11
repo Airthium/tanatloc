@@ -138,7 +138,8 @@ View.propTypes = {
   }),
   result: PropTypes.exact({
     glb: PropTypes.string.isRequired,
-    originPath: PropTypes.string.isRequired
+    originPath: PropTypes.string.isRequired,
+    json: PropTypes.string.isRequired
   })
 }
 

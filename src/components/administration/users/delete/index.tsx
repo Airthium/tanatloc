@@ -67,6 +67,7 @@ const Delete = ({ user, swr }: IProps): JSX.Element => {
   return (
     <DeleteButton
       loading={loading}
+      bordered
       text={'Delete ' + user.email + '?'}
       title="Delete user"
       onDelete={async () => {

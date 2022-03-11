@@ -15,7 +15,7 @@ const gmsh = async (
   bindPath: string,
   fileIn: string,
   fileOut: string,
-  callback: Function
+  callback: (data: { pid?: number; data?: string; error?: string }) => void
 ): Promise<number> => {
   // Enfore POSIX
   const fileInPOSIX = fileIn.split(path.sep).join(path.posix.sep)

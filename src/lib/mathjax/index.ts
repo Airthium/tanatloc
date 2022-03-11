@@ -43,7 +43,7 @@ export const mathjaxRefresh = (): void => {
   })
 }
 
-const mathjaxRetry = (func: Function): void => {
+const mathjaxRetry = (func: () => void): void => {
   nRetry++
   if (nRetry <= maxRretry) {
     // Retry if error

@@ -87,7 +87,7 @@ const computeMesh = async (
   simulationPath: string,
   geometry: { path: string; file: string; name: string },
   mesh: { path: string; parameters: any },
-  callback: Function
+  callback: (data: { pid?: number; data?: string; error?: string }) => void
 ): Promise<{
   type: string
   fileName: string
@@ -419,7 +419,7 @@ const startProcess = (
   id: string,
   simulationPath: string,
   task: ISimulationTask,
-  update: Function
+  update: () => void
 ): string => {
   if (!interval[id]) {
     results[id] = []
@@ -444,7 +444,7 @@ const stopProcess = async (
   id: string,
   simulationPath: string,
   task: ISimulationTask,
-  update: Function
+  update: () => void
 ): Promise<void> => {
   interval[id] && clearIntervalAsync(interval[id])
 
@@ -462,7 +462,7 @@ const processOutput = async (
   id: string,
   simulationPath: string,
   task: ISimulationTask,
-  update: Function
+  update: () => void
 ): Promise<void> => {
   // Log
   try {
@@ -501,7 +501,7 @@ const processResults = async (
   resultLines: string[],
   simulationPath: string,
   task: ISimulationTask,
-  update: Function
+  update: () => void
 ): Promise<void> => {
   // Get result
   await Promise.all(
@@ -588,7 +588,7 @@ const processData = async (
   dataLines: string[],
   simulationPath: string,
   task: ISimulationTask,
-  update: Function
+  update: () => void
 ): Promise<void> => {
   // Get data
   await Promise.all(

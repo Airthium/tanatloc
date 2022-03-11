@@ -179,7 +179,7 @@ const writeStream = (file: string): WriteStream => {
 const convert = async (
   location: string,
   file: { name: string; target: string },
-  callback?: Function,
+  callback?: (data: { data?: string; error?: string }) => void,
   param?: { isResult: boolean }
 ): Promise<{ json: string; glb: string }> => {
   const origin = file.name

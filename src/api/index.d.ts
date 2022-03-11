@@ -31,8 +31,8 @@ export interface ICallHeaders {
 
 export interface ICallResponse {
   status?: number
-  blob?: Function
-  json?: Function
+  blob?: () => Promise<Blob>
+  json?: () => Promise<any>
 }
 
 export interface ICallError extends Error {

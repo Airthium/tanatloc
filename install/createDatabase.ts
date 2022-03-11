@@ -3,6 +3,8 @@
 import { Pool, PoolClient } from 'pg'
 import format from 'pg-format'
 
+import { IDataBaseResponse } from '@/database/index.d'
+
 import {
   ADMIN,
   ADMIN_DATABASE,
@@ -415,7 +417,10 @@ const fixNotUsedColumn = async (
  * @param table Table
  * @param extra Extra function
  */
-const createTable = async (table: string, extra?: Function): Promise<void> => {
+const createTable = async (
+  table: string,
+  extra?: () => Promise<IDataBaseResponse>
+): Promise<void> => {
   if (await checkTable(table)) await checkSchema(table)
   else {
     await query(

@@ -1,5 +1,7 @@
 /** @module Auth.PasswordLocal */
 
+import { IUserCheck } from '@/database/index.d'
+
 import Local from 'passport-local'
 import UserDB from '@/database/user'
 
@@ -8,7 +10,11 @@ import UserDB from '@/database/user'
  */
 const localStrategy = new Local.Strategy(
   { usernameField: 'email', passwordField: 'password' },
-  (email: string, password: string, done: Function) => {
+  (
+    email: string,
+    password: string,
+    done: (err?: Error, user?: IUserCheck) => void
+  ) => {
     UserDB.getByUsernameAndPassword({ email, password })
       .then((user) => {
         if (!user) done(new Error('Bad credentials!'))

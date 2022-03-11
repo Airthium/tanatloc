@@ -223,9 +223,19 @@ export interface IPlugin {
   }
   server?: {
     lib?: {
-      init?: Function
-      computeSimulation: Function
-      stop: Function
+      init?: (
+        configuration: IClientPlugin['configuration']
+      ) => Promise<{ data: IClientPlugin['data'] }>
+      computeSimulation: (
+        { id }: { id: string },
+        algorithm: string,
+        configuration: IModel['configuration']
+      ) => Promise<void>
+      stop: (
+        id: string,
+        tasks: ISimulationTask[],
+        configuration?: IModel['configuration']
+      ) => Promise<void>
     }
     templates?: Array<{ key: string; file: string }>
   }

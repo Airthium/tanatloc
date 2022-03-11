@@ -13,7 +13,7 @@ import isDocker from 'is-docker'
 const freefem = async (
   bindPath: string,
   script: string,
-  callback: Function
+  callback: (data: { pid?: number; data?: string; error?: string }) => void
 ): Promise<number> => {
   // Enfore POSIX
   const scriptPOSIX = script.split(path.sep).join(path.posix.sep)

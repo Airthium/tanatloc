@@ -424,7 +424,10 @@ describe('plugins/local/src/lib', () => {
 
     jest
       .spyOn(Local, 'startProcess')
-      .mockImplementationOnce((_, __, ___, callback) => callback())
+      .mockImplementationOnce((_, __, ___, callback) => {
+        callback()
+        return 'id'
+      })
 
     await Local.computeSimulation({ id: 'id' }, 'algorithm', {})
   })

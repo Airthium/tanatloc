@@ -42,8 +42,6 @@
       "@/route/*": ["src/route/*"],
       "@/services": ["src/services"],
       "@/services/*": ["src/services/*"],
-      "@/store": ["src/store"],
-      "@/store/*": ["src/store/*"],
       "@/styles": ["src/styles"],
       "@/styles/*": ["src/styles/*"]
     }

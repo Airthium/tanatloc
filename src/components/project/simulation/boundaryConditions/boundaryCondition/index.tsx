@@ -31,6 +31,8 @@ import Formula from '@/components/assets/formula'
 import Selector from '@/components/assets/selector'
 import { CancelButton } from '@/components/assets/button'
 
+import { ISelect } from '@/context/select'
+
 import Add from '../add'
 import Edit from '../edit'
 
@@ -237,13 +239,10 @@ const BoundaryCondition = ({
    * On selected
    * @param selected Selected
    */
-  const onSelected = useCallback((selected: string[]): void => {
+  const onSelected = useCallback((selected: ISelect[]): void => {
     setCurrent((prevCurrent) => ({
       ...prevCurrent,
-      selected: selected.map((s) => ({
-        uuid: s,
-        label: 0 //TODO
-      }))
+      selected: selected
     }))
   }, [])
 
@@ -284,9 +283,6 @@ const BoundaryCondition = ({
                 id: simulation.id,
                 scheme: simulation.scheme
               }}
-              geometry={{
-                faces: geometry.faces
-              }}
               swr={{ mutateOneSimulation: swr.mutateOneSimulation }}
               onError={(desc) => setError(desc)}
               onClose={onClose}
@@ -302,9 +298,6 @@ const BoundaryCondition = ({
               simulation={{
                 id: simulation.id,
                 scheme: simulation.scheme
-              }}
-              geometry={{
-                faces: geometry.faces
               }}
               swr={{ mutateOneSimulation: swr.mutateOneSimulation }}
               onError={(desc) => setError(desc)}

@@ -1,7 +1,13 @@
 /** @module Components.Project.Simulation.Materials.List */
 
 import PropTypes from 'prop-types'
-import { Dispatch, SetStateAction, useCallback, useState } from 'react'
+import {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useContext,
+  useState
+} from 'react'
 import { Card, Typography } from 'antd'
 
 import { ISimulation } from '@/database/index.d'
@@ -11,8 +17,7 @@ import { EditButton } from '@/components/assets/button'
 
 import Delete from '../delete'
 
-import { useDispatch } from 'react-redux'
-import { enable, disable, select } from '@/store/select/action'
+import { SelectContext, enable, disable, select } from '@/context/select'
 
 /**
  * Props
@@ -37,7 +42,7 @@ const List = ({ simulation, swr, onEdit }: IProps): JSX.Element => {
 
   // Data
   const materials = simulation.scheme.configuration.materials
-  const dispatch = useDispatch()
+  const { dispatch } = useContext(SelectContext)
 
   /**
    * Highlight current
@@ -47,8 +52,8 @@ const List = ({ simulation, swr, onEdit }: IProps): JSX.Element => {
     (index: number): void => {
       dispatch(enable())
       const currentSelected = materials.values[index].selected
-      currentSelected?.forEach((s: { uuid: string }) => {
-        dispatch(select(s.uuid))
+      currentSelected?.forEach((s) => {
+        dispatch(select(s))
       })
     },
     [materials, dispatch]

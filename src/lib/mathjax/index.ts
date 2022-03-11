@@ -11,21 +11,21 @@ export const mathjaxInit = (): void => {
   const MathJaxSource =
     'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js'
 
-  if (!window.MathJax) {
-    console.info('MathJax::init')
-    const head = document.getElementsByTagName('head')[0]
-    //@ts-ignore
-    for (const child of head.children) {
-      if (child?.src === MathJaxSource) return
-    }
+  // if (!window.MathJax) {
+  //   console.info('MathJax::init')
+  //   const head = document.getElementsByTagName('head')[0]
+  //   //@ts-ignore
+  //   for (const child of head.children) {
+  //     if (child?.src === MathJaxSource) return
+  //   }
 
-    const script = document.createElement('script')
-    script.type = 'text/javascript'
-    script.src = MathJaxSource
-    script.async = true
-    script.defer = true
-    document.getElementsByTagName('head')[0].appendChild(script)
-  }
+  //   const script = document.createElement('script')
+  //   script.type = 'text/javascript'
+  //   script.src = MathJaxSource
+  //   script.async = true
+  //   script.defer = true
+  //   document.getElementsByTagName('head')[0].appendChild(script)
+  // }
 }
 
 /**

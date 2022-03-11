@@ -6,7 +6,8 @@ import {
   SetStateAction,
   useState,
   useEffect,
-  useCallback
+  useCallback,
+  useContext
 } from 'react'
 import { Card, Layout } from 'antd'
 
@@ -17,8 +18,13 @@ import { AddButton } from '@/components/assets/button'
 import List from './list'
 import Material from './material'
 
-import { useDispatch } from 'react-redux'
-import { enable, disable, setType, setPart } from '@/store/select/action'
+import {
+  SelectContext,
+  enable,
+  disable,
+  setType,
+  setPart
+} from '@/context/select'
 
 /**
  * Props
@@ -53,8 +59,8 @@ const Materials = ({
     Dispatch<SetStateAction<boolean>>
   ] = useState(false)
 
-  // Store
-  const dispatch = useDispatch()
+  // Context
+  const { dispatch } = useContext(SelectContext)
 
   // Data
   const materials = simulation.scheme.configuration.materials

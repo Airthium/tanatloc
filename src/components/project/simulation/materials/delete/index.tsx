@@ -1,15 +1,14 @@
 /** @module Components.Project.Simulation.Materials.Delete */
 
 import PropTypes from 'prop-types'
-import { Dispatch, SetStateAction, useState } from 'react'
+import { Dispatch, SetStateAction, useContext, useState } from 'react'
 
 import { ISimulation } from '@/database/index.d'
 
 import { DeleteButton } from '@/components/assets/button'
 import { ErrorNotification } from '@/components/assets/notification'
 
-import { useDispatch } from 'react-redux'
-import { unselect } from '@/store/select/action'
+import { SelectContext, unselect } from '@/context/select'
 
 import SimulationAPI from '@/api/simulation'
 
@@ -49,8 +48,8 @@ const onDelete = async (
     const material = materials.values[index]
 
     // (unselect)
-    material.selected.forEach((s: { uuid: string }) => {
-      dispatch(unselect(s.uuid))
+    material.selected.forEach((s) => {
+      dispatch(unselect(s))
     })
 
     // Remove value
@@ -95,7 +94,7 @@ const Delete = ({ simulation, index, swr }: IProps): JSX.Element => {
     useState(false)
 
   // Data
-  const dispatch = useDispatch()
+  const { dispatch } = useContext(SelectContext)
 
   /**
    * Render

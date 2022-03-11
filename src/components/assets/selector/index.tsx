@@ -28,12 +28,16 @@ import {
   SwapOutlined
 } from '@ant-design/icons'
 
-import { useSelector, useDispatch } from 'react-redux'
-import { highlight, unhighlight, select, unselect } from '@/store/select/action'
-import { SelectState } from '@/store/select/reducer'
+import {
+  SelectContext,
+  highlight,
+  unhighlight,
+  select,
+  unselect,
+  ISelect
+} from '@/context/select'
 
 import Utils from '@/lib/utils'
-import { SelectContext } from '@/context/select'
 
 /**
  * Color
@@ -72,7 +76,7 @@ export interface IProps {
     label: string
     selected: { uuid: string; label: number | string }[]
   }[]
-  updateSelected: (selected: string[]) => void
+  updateSelected: (selected: ISelect[]) => void
 }
 
 /**
@@ -97,20 +101,8 @@ const Selector = ({
   const [search, setSearch]: [string, Dispatch<SetStateAction<string>>] =
     useState()
 
-  // TODO TEST context
   // Context
-  const selectContext = useContext(SelectContext)
-  console.log(selectContext)
-
-  // Store
-  const { type, highlighted, selected } = useSelector(
-    (state: { select: SelectState }) => ({
-      type: state.select.type,
-      highlighted: state.select.highlighted,
-      selected: state.select.selected
-    })
-  )
-  const dispatch = useDispatch()
+  const { type, highlighted, selected, dispatch } = useContext(SelectContext)
 
   // Selected
   useEffect(() => {
@@ -139,10 +131,10 @@ const Selector = ({
 
   /**
    * On highglight
-   * @param uuid UUID
+   * @param selection Selection
    */
-  const onHighlight = (uuid: string): void => {
-    dispatch(highlight(uuid))
+  const onHighlight = (selection: ISelect): void => {
+    dispatch(highlight(selection))
   }
 
   /**
@@ -154,11 +146,12 @@ const Selector = ({
 
   /**
    * On select
-   * @param uuid UUID
+   * @param selection Selection
    */
-  const onSelect = (uuid: string): void => {
-    if (selected.includes(uuid)) dispatch(unselect(uuid))
-    else dispatch(select(uuid))
+  const onSelect = (selection: ISelect): void => {
+    if (selected.find((s) => s.uuid === selection.uuid))
+      dispatch(unselect(selection))
+    else dispatch(select(selection))
   }
 
   /**
@@ -173,50 +166,59 @@ const Selector = ({
    * Select all
    */
   const selectAll = (): void => {
-    geometry?.[type]?.forEach((element: { uuid: string; color?: IColor }) => {
-      if (
-        !filter ||
-        (filter &&
-          filter.r === element.color?.r &&
-          filter.g === element.color?.g &&
-          filter.b === element.color?.b)
-      )
-        dispatch(select(element.uuid))
-    })
+    geometry?.[type]?.forEach(
+      (element: { uuid: string; number: number | string; color?: IColor }) => {
+        if (
+          !filter ||
+          (filter &&
+            filter.r === element.color?.r &&
+            filter.g === element.color?.g &&
+            filter.b === element.color?.b)
+        )
+          dispatch(select({ uuid: element.uuid, label: element.number }))
+      }
+    )
   }
 
   /**
    * Unselect all
    */
   const unselectAll = () => {
-    geometry?.[type]?.forEach((element: { uuid: string; color?: IColor }) => {
-      if (
-        !filter ||
-        (filter &&
-          filter.r === element.color?.r &&
-          filter.g === element.color?.g &&
-          filter.b === element.color?.b)
-      )
-        dispatch(unselect(element.uuid))
-    })
+    geometry?.[type]?.forEach(
+      (element: { uuid: string; number: number | string; color?: IColor }) => {
+        if (
+          !filter ||
+          (filter &&
+            filter.r === element.color?.r &&
+            filter.g === element.color?.g &&
+            filter.b === element.color?.b)
+        )
+          dispatch(unselect({ uuid: element.uuid, label: element.number }))
+      }
+    )
   }
 
   /**
    * Swap selection
    */
   const selectSwap = () => {
-    geometry?.[type]?.forEach((element: { uuid: string; color?: IColor }) => {
-      if (
-        !filter ||
-        (filter &&
-          filter.r === element.color?.r &&
-          filter.g === element.color?.g &&
-          filter.b === element.color?.b)
-      ) {
-        if (selected.includes(element.uuid)) dispatch(unselect(element.uuid))
-        else dispatch(select(element.uuid))
+    geometry?.[type]?.forEach(
+      (element: { uuid: string; number: number | string; color?: IColor }) => {
+        if (
+          !filter ||
+          (filter &&
+            filter.r === element.color?.r &&
+            filter.g === element.color?.g &&
+            filter.b === element.color?.b)
+        ) {
+          if (selected.find((s) => s.uuid === element.uuid))
+            dispatch(unselect({ uuid: element.uuid, label: element.number }))
+          else dispatch(select({ uuid: element.uuid, label: element.number }))
+        } else {
+          dispatch(select({ uuid: element.uuid, label: element.number }))
+        }
       }
-    })
+    )
   }
 
   /**
@@ -321,12 +323,12 @@ const Selector = ({
                   let borderColor = 'transparent'
                   let backgroundColor = 'transparent'
                   if (
-                    selected.includes(element.uuid) &&
-                    highlighted !== element.uuid
+                    selected.find((s) => s.uuid === element.uuid) &&
+                    highlighted?.uuid !== element.uuid
                   ) {
                     borderColor = '#FAD114'
                     backgroundColor = 'rgba(255, 251, 230, 0.3)'
-                  } else if (highlighted === element.uuid) {
+                  } else if (highlighted?.uuid === element.uuid) {
                     borderColor = '#FAD114'
                     backgroundColor = '#FFFBE6'
                   }
@@ -343,9 +345,16 @@ const Selector = ({
                         borderColor,
                         backgroundColor
                       }}
-                      onMouseEnter={() => onHighlight(element.uuid)}
+                      onMouseEnter={() =>
+                        onHighlight({
+                          uuid: element.uuid,
+                          label: element.number
+                        })
+                      }
                       onMouseLeave={onUnhighlight}
-                      onClick={() => onSelect(element.uuid)}
+                      onClick={() =>
+                        onSelect({ uuid: element.uuid, label: element.number })
+                      }
                     >
                       <Space direction="vertical">
                         <div>

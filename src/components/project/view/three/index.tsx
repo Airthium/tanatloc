@@ -8,7 +8,8 @@ import {
   MutableRefObject,
   Dispatch,
   SetStateAction,
-  useCallback
+  useCallback,
+  useContext
 } from 'react'
 import { Button, Divider, Layout, Radio, Spin, Switch, Tooltip } from 'antd'
 import {
@@ -66,9 +67,7 @@ import { IPart, PartLoader } from '@/lib/three/loaders/PartLoader'
 
 import AvatarAPI from '@/api/avatar'
 
-import { useSelector, useDispatch } from 'react-redux'
-import { highlight, select, unselect } from '@/store/select/action'
-import { SelectState } from '@/store/select/reducer'
+import { SelectContext, highlight, select, unselect } from '@/context/select'
 
 /**
  * Props
@@ -244,18 +243,26 @@ export const loadPart = async (
   dispatch: Dispatch<any>
 ): Promise<void> => {
   // Events
-  const mouseMoveEvent = (child: IPart, uuid?: string): void => {
+  const mouseMoveEvent = (
+    child: IPart,
+    uuid?: string,
+    number?: number | string
+  ): void => {
     child.highlight(uuid)
-    setTimeout(() => dispatch(highlight(uuid)), 1)
+    setTimeout(() => dispatch(highlight({ uuid, label: number })), 1)
   }
-  const mouseDownEvent = (child: IPart, uuid: string) => {
+  const mouseDownEvent = (
+    child: IPart,
+    uuid: string,
+    number: number | string
+  ) => {
     const selected = child.getSelected()
     if (selected.includes(uuid)) {
       child.unselect(uuid)
-      setTimeout(() => dispatch(unselect(uuid)), 1)
+      setTimeout(() => dispatch(unselect({ uuid, label: number })), 1)
     } else {
       child.select(uuid)
-      setTimeout(() => dispatch(select(uuid)), 1)
+      setTimeout(() => dispatch(select({ uuid, label: number })), 1)
     }
   }
 
@@ -390,21 +397,15 @@ const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
     Dispatch<SetStateAction<boolean>>
   ] = useState(false)
 
-  // Store
+  // Context
   const {
-    selectEnabled,
-    selectType,
-    selectPart,
-    selectHighlighted,
-    selectSelected
-  } = useSelector((state: { select: SelectState }) => ({
-    selectEnabled: state.select.enabled,
-    selectType: state.select.type,
-    selectPart: state.select.part,
-    selectHighlighted: state.select.highlighted,
-    selectSelected: state.select.selected
-  }))
-  const dispatch = useDispatch()
+    enabled: selectEnabled,
+    type: selectType,
+    part: selectPart,
+    highlighted: selectHighlighted,
+    selected: selectSelected,
+    dispatch
+  } = useContext(SelectContext)
 
   // Mount
   useEffect(() => {

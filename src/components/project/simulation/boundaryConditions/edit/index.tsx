@@ -3,7 +3,7 @@
 import PropTypes from 'prop-types'
 import { Dispatch, SetStateAction, useState } from 'react'
 
-import { IGeometry, ISimulation } from '@/database/index.d'
+import { ISimulation } from '@/database/index.d'
 import {
   IModelBoundaryConditionValue,
   IModelTypedBoundaryCondition
@@ -19,9 +19,7 @@ import SimulationAPI from '@/api/simulation'
  */
 export interface IProps {
   simulation: ISimulation
-  geometry: {
-    faces: IGeometry['summary']['faces']
-  }
+
   boundaryCondition: IModelBoundaryConditionValue
   oldBoundaryCondition: IModelBoundaryConditionValue
   swr: {
@@ -47,7 +45,6 @@ export const errors = {
  */
 const onEdit = async (
   simulation: IProps['simulation'],
-  geometry: IProps['geometry'],
   boundaryCondition: IProps['boundaryCondition'],
   oldBoundaryCondition: IProps['oldBoundaryCondition'],
   swr: IProps['swr']
@@ -77,18 +74,6 @@ const onEdit = async (
         ...oldtypedBoundaryCondition.values.slice(index + 1)
       ]
     }
-
-    // Modify selection
-    const selection = geometry.faces
-      .map((f) => {
-        if (boundaryCondition.selected.find((b) => b.uuid === f.uuid))
-          return {
-            uuid: f.uuid,
-            label: f.number
-          }
-      })
-      .filter((s) => s)
-    boundaryCondition.selected = selection
 
     // Update local
     if (oldType !== type) {
@@ -146,7 +131,7 @@ const onEdit = async (
  */
 const Edit = ({
   simulation,
-  geometry,
+
   boundaryCondition,
   oldBoundaryCondition,
   swr,
@@ -186,13 +171,7 @@ const Edit = ({
           }
           onError()
 
-          await onEdit(
-            simulation,
-            geometry,
-            boundaryCondition,
-            oldBoundaryCondition,
-            swr
-          )
+          await onEdit(simulation, boundaryCondition, oldBoundaryCondition, swr)
 
           // Close
           setLoading(false)
@@ -239,9 +218,6 @@ Edit.propTypes = {
         boundaryConditions: PropTypes.object.isRequired
       }).isRequired
     }).isRequired
-  }).isRequired,
-  geometry: PropTypes.shape({
-    faces: PropTypes.array.isRequired
   }).isRequired,
   swr: PropTypes.shape({
     mutateOneSimulation: PropTypes.func.isRequired

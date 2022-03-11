@@ -18,6 +18,8 @@ import Formula from '@/components/assets/formula'
 import Selector from '@/components/assets/selector'
 import { CancelButton } from '@/components/assets/button'
 
+import { ISelect } from '@/context/select'
+
 import DataBase, { IMaterialDatabase } from '../database'
 import Add from '../add'
 import Edit from '../edit'
@@ -110,13 +112,10 @@ const Material = ({
    * On select
    * @param {Object} selected Selected
    */
-  const onSelected = useCallback((selected: string[]) => {
+  const onSelected = useCallback((selected: ISelect[]) => {
     setCurrent((prevCurrent) => ({
       ...prevCurrent,
-      selected: selected.map((s) => ({
-        uuid: s,
-        label: 0 // TODO
-      }))
+      selected: selected
     }))
   }, [])
 
@@ -175,9 +174,6 @@ const Material = ({
                 id: simulation.id,
                 scheme: simulation.scheme
               }}
-              geometry={{
-                solids: geometry.solids
-              }}
               swr={{ mutateOneSimulation: swr.mutateOneSimulation }}
               onError={(desc) => setError(desc)}
               onClose={onClose}
@@ -191,9 +187,6 @@ const Material = ({
               simulation={{
                 id: simulation.id,
                 scheme: simulation.scheme
-              }}
-              geometry={{
-                solids: geometry.solids
               }}
               swr={{ mutateOneSimulation: swr.mutateOneSimulation }}
               onError={(desc) => setError(desc)}

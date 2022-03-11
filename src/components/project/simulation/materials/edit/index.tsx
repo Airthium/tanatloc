@@ -3,7 +3,7 @@
 import PropTypes from 'prop-types'
 import { Dispatch, SetStateAction, useState } from 'react'
 
-import { IGeometry, ISimulation } from '@/database/index.d'
+import { ISimulation } from '@/database/index.d'
 import { IModelMaterialValue } from '@/models/index.d'
 
 import { ErrorNotification } from '@/components/assets/notification'
@@ -16,9 +16,6 @@ import SimulationAPI from '@/api/simulation'
  */
 export interface IProps {
   simulation: ISimulation
-  geometry: {
-    solids: IGeometry['summary']['solids']
-  }
   material: IModelMaterialValue
   swr: {
     mutateOneSimulation: (simulation: ISimulation) => void
@@ -45,7 +42,6 @@ export const errors = {
  */
 export const onEdit = async (
   simulation: IProps['simulation'],
-  geometry: IProps['geometry'],
   material: IProps['material'],
   swr: IProps['swr']
 ): Promise<void> => {
@@ -53,18 +49,6 @@ export const onEdit = async (
     // New simulation
     const newSimulation = { ...simulation }
     const materials = newSimulation.scheme.configuration.materials
-
-    // Modify selection
-    const selection = geometry.solids
-      .map((s) => {
-        if (material.selected.find((m) => m.uuid === s.uuid))
-          return {
-            uuid: s.uuid,
-            label: s.number
-          }
-      })
-      .filter((s) => s)
-    material.selected = selection
 
     // Update local
     const index = materials.values.findIndex(
@@ -106,7 +90,6 @@ export const onEdit = async (
  */
 const Edit = ({
   simulation,
-  geometry,
   material,
   swr,
   onError,
@@ -141,7 +124,7 @@ const Edit = ({
           }
           onError()
 
-          await onEdit(simulation, geometry, material, swr)
+          await onEdit(simulation, material, swr)
 
           // Close
           setLoading(false)
@@ -166,9 +149,6 @@ Edit.propTypes = {
         }).isRequired
       }).isRequired
     }).isRequired
-  }).isRequired,
-  geometry: PropTypes.exact({
-    solids: PropTypes.array.isRequired
   }).isRequired,
   material: PropTypes.exact({
     uuid: PropTypes.string.isRequired,

@@ -71,7 +71,7 @@ const DeleteDialog = ({
     >
       <Space>
         <ExclamationCircleTwoTone twoToneColor="#ff4d4f" />
-        <span>{children}</span>
+        <span style={{ wordBreak: 'break-word' }}>{children}</span>
       </Space>
     </Modal>
   )

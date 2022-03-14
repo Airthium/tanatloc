@@ -2,27 +2,13 @@ import React from 'react'
 import { fireEvent, render, screen } from '@testing-library/react'
 
 import Selector from '@/components/assets/selector'
-
-const mockType = jest.fn()
-const mockHighlighted = jest.fn()
-const mockSelected = jest.fn()
-jest.mock('react-redux', () => ({
-  useSelector: (callback) =>
-    callback({
-      select: {
-        type: mockType(),
-        highlighted: mockHighlighted(),
-        selected: mockSelected()
-      }
-    }),
-  useDispatch: () => jest.fn()
-}))
+import { SelectContext } from '@/context/select'
 
 const mockHighlight = jest.fn()
 const mockUnhighlight = jest.fn()
 const mockSelect = jest.fn()
 const mockUnselect = jest.fn()
-jest.mock('@/store/select/action', () => ({
+jest.mock('@/context/select/actions', () => ({
   highlight: () => mockHighlight(),
   unhighlight: () => mockUnhighlight(),
   select: () => mockSelect(),
@@ -68,12 +54,6 @@ describe('components/assets/selector', () => {
   const updateSelected = jest.fn()
 
   beforeEach(() => {
-    mockType.mockReset()
-    mockType.mockImplementation(() => 'faces')
-    mockHighlighted.mockReset()
-    mockSelected.mockReset()
-    mockSelected.mockImplementation(() => [])
-
     mockHighlight.mockReset()
     mockUnhighlight.mockReset()
     mockSelect.mockReset()
@@ -84,11 +64,20 @@ describe('components/assets/selector', () => {
 
   test('render', () => {
     const { unmount } = render(
-      <Selector
-        geometry={geometry}
-        alreadySelected={alreadySelected}
-        updateSelected={updateSelected}
-      />
+      <SelectContext.Provider
+        value={{
+          enabled: true,
+          type: 'faces',
+          selected: [],
+          dispatch: jest.fn()
+        }}
+      >
+        <Selector
+          geometry={geometry}
+          alreadySelected={alreadySelected}
+          updateSelected={updateSelected}
+        />
+      </SelectContext.Provider>
     )
 
     unmount()
@@ -96,11 +85,20 @@ describe('components/assets/selector', () => {
 
   test('empty render', () => {
     const { unmount } = render(
-      <Selector
-        geometry={{}}
-        alreadySelected={alreadySelected}
-        updateSelected={updateSelected}
-      />
+      <SelectContext.Provider
+        value={{
+          enabled: true,
+          type: 'faces',
+          selected: [],
+          dispatch: jest.fn()
+        }}
+      >
+        <Selector
+          geometry={{}}
+          alreadySelected={alreadySelected}
+          updateSelected={updateSelected}
+        />
+      </SelectContext.Provider>
     )
 
     unmount()
@@ -108,11 +106,20 @@ describe('components/assets/selector', () => {
 
   test('on highlight unhighlight', () => {
     const { unmount } = render(
-      <Selector
-        geometry={geometry}
-        alreadySelected={alreadySelected}
-        updateSelected={updateSelected}
-      />
+      <SelectContext.Provider
+        value={{
+          enabled: true,
+          type: 'faces',
+          selected: [],
+          dispatch: jest.fn()
+        }}
+      >
+        <Selector
+          geometry={geometry}
+          alreadySelected={alreadySelected}
+          updateSelected={updateSelected}
+        />
+      </SelectContext.Provider>
     )
 
     const card = screen.getByText('name')
@@ -128,11 +135,20 @@ describe('components/assets/selector', () => {
 
   test('select', () => {
     const { unmount } = render(
-      <Selector
-        geometry={geometry}
-        alreadySelected={alreadySelected}
-        updateSelected={updateSelected}
-      />
+      <SelectContext.Provider
+        value={{
+          enabled: true,
+          type: 'faces',
+          selected: [],
+          dispatch: jest.fn()
+        }}
+      >
+        <Selector
+          geometry={geometry}
+          alreadySelected={alreadySelected}
+          updateSelected={updateSelected}
+        />
+      </SelectContext.Provider>
     )
 
     // Select
@@ -144,13 +160,21 @@ describe('components/assets/selector', () => {
   })
 
   test('unselect', () => {
-    mockSelected.mockImplementation(() => ['uuid'])
     const { unmount } = render(
-      <Selector
-        geometry={geometry}
-        alreadySelected={alreadySelected}
-        updateSelected={updateSelected}
-      />
+      <SelectContext.Provider
+        value={{
+          enabled: true,
+          type: 'faces',
+          selected: [{ uuid: 'uuid', label: 'number' }],
+          dispatch: jest.fn()
+        }}
+      >
+        <Selector
+          geometry={geometry}
+          alreadySelected={alreadySelected}
+          updateSelected={updateSelected}
+        />
+      </SelectContext.Provider>
     )
 
     // Unselect
@@ -163,11 +187,20 @@ describe('components/assets/selector', () => {
 
   test('color filter', () => {
     const { unmount } = render(
-      <Selector
-        geometry={geometry}
-        alreadySelected={alreadySelected}
-        updateSelected={updateSelected}
-      />
+      <SelectContext.Provider
+        value={{
+          enabled: true,
+          type: 'faces',
+          selected: [],
+          dispatch: jest.fn()
+        }}
+      >
+        <Selector
+          geometry={geometry}
+          alreadySelected={alreadySelected}
+          updateSelected={updateSelected}
+        />
+      </SelectContext.Provider>
     )
 
     const buttons = screen.getAllByRole('button')
@@ -177,13 +210,21 @@ describe('components/assets/selector', () => {
   })
 
   test('color filter (selected)', () => {
-    mockSelected.mockImplementation(() => ['uuid4'])
     const { unmount } = render(
-      <Selector
-        geometry={geometry}
-        alreadySelected={alreadySelected}
-        updateSelected={updateSelected}
-      />
+      <SelectContext.Provider
+        value={{
+          enabled: true,
+          type: 'faces',
+          selected: [{ uuid: 'uuid4', label: 4 }],
+          dispatch: jest.fn()
+        }}
+      >
+        <Selector
+          geometry={geometry}
+          alreadySelected={alreadySelected}
+          updateSelected={updateSelected}
+        />
+      </SelectContext.Provider>
     )
 
     const buttons = screen.getAllByRole('button')
@@ -194,11 +235,20 @@ describe('components/assets/selector', () => {
 
   test('search', () => {
     const { unmount } = render(
-      <Selector
-        geometry={geometry}
-        alreadySelected={alreadySelected}
-        updateSelected={updateSelected}
-      />
+      <SelectContext.Provider
+        value={{
+          enabled: true,
+          type: 'faces',
+          selected: [],
+          dispatch: jest.fn()
+        }}
+      >
+        <Selector
+          geometry={geometry}
+          alreadySelected={alreadySelected}
+          updateSelected={updateSelected}
+        />
+      </SelectContext.Provider>
     )
 
     const input = screen.getByRole('textbox')
@@ -208,13 +258,22 @@ describe('components/assets/selector', () => {
   })
 
   test('already highlighted', () => {
-    mockHighlighted.mockImplementation(() => 'uuid')
     const { unmount } = render(
-      <Selector
-        geometry={geometry}
-        alreadySelected={alreadySelected}
-        updateSelected={updateSelected}
-      />
+      <SelectContext.Provider
+        value={{
+          enabled: true,
+          type: 'faces',
+          highlighted: { uuid: 'uuid', label: 1 },
+          selected: [],
+          dispatch: jest.fn()
+        }}
+      >
+        <Selector
+          geometry={geometry}
+          alreadySelected={alreadySelected}
+          updateSelected={updateSelected}
+        />
+      </SelectContext.Provider>
     )
 
     unmount()

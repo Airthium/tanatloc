@@ -83,7 +83,7 @@ describe('plugins/local/src/lib', () => {
     // Normal
     await Local.clean('path')
     expect(mockRemoveFile).toHaveBeenCalledTimes(3)
-    expect(mockRemoveDirectory).toHaveBeenCalledTimes(1)
+    expect(mockRemoveDirectory).toHaveBeenCalledTimes(2)
 
     // Error
     mockRemoveFile.mockImplementation(() => {
@@ -94,7 +94,7 @@ describe('plugins/local/src/lib', () => {
     })
     await Local.clean('path')
     expect(mockRemoveFile).toHaveBeenCalledTimes(6)
-    expect(mockRemoveDirectory).toHaveBeenCalledTimes(2)
+    expect(mockRemoveDirectory).toHaveBeenCalledTimes(4)
   })
 
   test('startProcess', () => {

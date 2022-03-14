@@ -121,15 +121,6 @@ jest.mock('@/api/avatar', () => ({
   add: async () => mockAvatarAdd()
 }))
 
-const mockEnabled = jest.fn(() => false)
-jest.mock('react-redux', () => ({
-  useSelector: (callback) =>
-    callback({
-      select: { enabled: mockEnabled(), highlighted: {}, selected: [{}] }
-    }),
-  useDispatch: () => jest.fn()
-}))
-
 jest.mock('@/store/select/action', () => ({
   highlight: jest.fn(),
   select: jest.fn(),
@@ -168,8 +159,6 @@ describe('components/project/view/three', () => {
     mockErroNotification.mockReset()
 
     mockAvatarAdd.mockReset()
-
-    mockEnabled.mockReset()
 
     mockPartLoader.mockImplementation((mouseMove, mouseDown, count) => {
       mouseMove(
@@ -403,14 +392,14 @@ describe('components/project/view/three', () => {
     unmount()
   })
 
-  test('selection enabled', async () => {
-    mockEnabled.mockImplementation(() => true)
-    const { unmount } = render(
-      <ThreeView loading={loading} project={project} part={part} />
-    )
+  // test('selection enabled', async () => {
+  //   mockEnabled.mockImplementation(() => true)
+  //   const { unmount } = render(
+  //     <ThreeView loading={loading} project={project} part={part} />
+  //   )
 
-    unmount()
-  })
+  //   unmount()
+  // })
 
   test('sectionView', () => {
     const { unmount } = render(

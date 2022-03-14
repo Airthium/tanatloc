@@ -59,7 +59,8 @@ jest.mock('three/examples/jsm/loaders/GLTFLoader', () => ({
                         dispose: jest.fn()
                       },
                       userData: {
-                        uuid: 'face_uuid'
+                        uuid: 'face_uuid',
+                        number: 'number'
                       }
                     }
                   ]
@@ -89,7 +90,7 @@ describe('lib/three/loaders/PartLoader', () => {
     {
       children: [
         {
-          userData: { uuid: 'solid_uuid' },
+          userData: { uuid: 'solid_uuid', number: 'solid_number' },
           geometry: {
             dispose: jest.fn,
             boundingBox: {
@@ -106,7 +107,7 @@ describe('lib/three/loaders/PartLoader', () => {
     {
       children: [
         {
-          userData: { uuid: 'face_uuid' },
+          userData: { uuid: 'face_uuid', number: 'face_number' },
           geometry: {
             dispose: jest.fn,
             boundingBox: {

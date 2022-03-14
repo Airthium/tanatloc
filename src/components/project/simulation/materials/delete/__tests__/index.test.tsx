@@ -6,6 +6,7 @@ import Delete, {
 } from '@/components/project/simulation/materials/delete'
 
 import { ISimulation } from '@/database/index.d'
+import { ISelectState, SelectContext } from '@/context/select'
 
 const mockDeleteButton = jest.fn()
 jest.mock('@/components/assets/button', () => ({
@@ -18,14 +19,8 @@ jest.mock('@/components/assets/notification', () => ({
     mockErrorNotification(title, err)
 }))
 
-jest.mock('react-redux', () => ({
-  useDispatch: () => () => {
-    // Empty
-  }
-}))
-
 const mockUnselect = jest.fn()
-jest.mock('@/store/select/action', () => ({
+jest.mock('@/context/select/actions', () => ({
   unselect: () => mockUnselect()
 }))
 
@@ -68,7 +63,13 @@ describe('components/project/simulation/materials/delete', () => {
 
   test('render', () => {
     const { unmount } = render(
-      <Delete simulation={simulation} swr={swr} index={index} />
+      <SelectContext.Provider
+        value={
+          { enabled: true, selected: [], dispatch: jest.fn() } as ISelectState
+        }
+      >
+        <Delete simulation={simulation} swr={swr} index={index} />
+      </SelectContext.Provider>
     )
 
     unmount()
@@ -86,7 +87,13 @@ describe('components/project/simulation/materials/delete', () => {
       />
     ))
     const { unmount } = render(
-      <Delete simulation={simulation} swr={swr} index={index} />
+      <SelectContext.Provider
+        value={
+          { enabled: true, selected: [], dispatch: jest.fn() } as ISelectState
+        }
+      >
+        <Delete simulation={simulation} swr={swr} index={index} />
+      </SelectContext.Provider>
     )
 
     const button = screen.getByRole('button')
@@ -116,8 +123,8 @@ describe('components/project/simulation/materials/delete', () => {
       }
     ]
     fireEvent.click(button)
-    await waitFor(() => expect(mockUnselect).toHaveBeenCalledTimes(2))
     await waitFor(() => expect(mockUpdate).toHaveBeenCalledTimes(2))
+    await waitFor(() => expect(mockUnselect).toHaveBeenCalledTimes(2))
     await waitFor(() =>
       expect(swr.mutateOneSimulation).toHaveBeenCalledTimes(1)
     )

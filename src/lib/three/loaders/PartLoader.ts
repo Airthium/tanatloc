@@ -255,13 +255,13 @@ const PartLoader = (
 
   // highlight / selection Variables
   let raycaster = new Raycaster()
-  let selectionPart = null
-  let selectionRenderer = null
-  let selectionCamera = null
-  let selectionOutlinePass = null
-  let selectionType = null
-  let highlighted = null
-  let selected = []
+  let selectionPart: IPart = null
+  let selectionRenderer: WebGLRenderer = null
+  let selectionCamera: PerspectiveCamera = null
+  let selectionOutlinePass: OutlinePass = null
+  let selectionType: number = null
+  let highlighted: { uuid: string; number: number | string } = null
+  let selected: { uuid: string; number: number | string }[] = []
 
   /**
    *
@@ -321,7 +321,7 @@ const PartLoader = (
     highlighted = null
 
     selected.forEach((s) => {
-      unselect(s)
+      unselect(s.uuid)
     })
     selected.length = 0
 

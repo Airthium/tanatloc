@@ -197,7 +197,7 @@ const Background = (): JSX.Element => {
         }
       )
     }
-  }, [])
+  }, [router])
 
   /**
    * Render

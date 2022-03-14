@@ -9,12 +9,12 @@
     "../../src/api",
     "../../src/auth",
     "../../src/components",
+    "../../src/context",
     "../../src/database",
     "../../src/lib",
     "../../src/pages",
     "../../src/route",
     "../../src/services",
-    "../../src/store",
     "../../templates"
   ],
   "exclude": [

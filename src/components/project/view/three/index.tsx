@@ -673,20 +673,20 @@ const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
         // Selection
         const selected = child.getSelected()
 
-        // Unselect
-        const minus = selectSelected.filter(
-          (s) => !selected.find((ss) => ss.uuid === s.uuid)
-        )
-        minus.forEach((m) => {
-          child.unselect(m.uuid)
-        })
-
         // Select
         const plus = selectSelected.filter(
           (s) => !selected.find((ss) => ss.uuid === s.uuid)
         )
         plus.forEach((p) => {
           child.select(p.uuid)
+        })
+
+        // Unselect
+        const minus = selected.filter(
+          (s) => !selectSelected.find((ss) => ss.uuid === s.uuid)
+        )
+        minus.forEach((m) => {
+          child.unselect(m.uuid)
         })
       }
     })

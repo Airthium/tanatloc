@@ -93,12 +93,6 @@ describe('components/project/simulation/boundaryConditions/edit', () => {
       { uuid: 'uuid2', label: 2 }
     ]
   }
-  const geometry = {
-    faces: [
-      { uuid: 'uuid1', number: 1 },
-      { uuid: 'uuid2', number: 2 }
-    ]
-  }
   const swr = { mutateOneSimulation: jest.fn() }
   const onClose = jest.fn()
   const onError = jest.fn()
@@ -123,7 +117,6 @@ describe('components/project/simulation/boundaryConditions/edit', () => {
         simulation={simulation}
         boundaryCondition={boundaryCondition}
         oldBoundaryCondition={oldBoundaryCondition}
-        geometry={geometry}
         swr={swr}
         onClose={onClose}
         onError={onError}
@@ -142,7 +135,6 @@ describe('components/project/simulation/boundaryConditions/edit', () => {
         simulation={simulation}
         boundaryCondition={boundaryCondition}
         oldBoundaryCondition={oldBoundaryCondition}
-        geometry={geometry}
         swr={swr}
         onClose={onClose}
         onError={onError}
@@ -199,7 +191,6 @@ describe('components/project/simulation/boundaryConditions/edit', () => {
           } as IModelBoundaryConditionValue
         }
         oldBoundaryCondition={oldBoundaryCondition}
-        geometry={geometry}
         swr={swr}
         onClose={onClose}
         onError={onError}
@@ -238,7 +229,6 @@ describe('components/project/simulation/boundaryConditions/edit', () => {
           } as IModelBoundaryConditionValue
         }
         oldBoundaryCondition={oldBoundaryCondition}
-        geometry={geometry}
         swr={swr}
         onClose={onClose}
         onError={onError}
@@ -277,7 +267,6 @@ describe('components/project/simulation/boundaryConditions/edit', () => {
           } as IModelBoundaryConditionValue
         }
         oldBoundaryCondition={oldBoundaryCondition}
-        geometry={geometry}
         swr={swr}
         onClose={onClose}
         onError={onError}
@@ -310,7 +299,6 @@ describe('components/project/simulation/boundaryConditions/edit', () => {
         simulation={simulation}
         boundaryCondition={boundaryCondition}
         oldBoundaryCondition={oldBoundaryCondition}
-        geometry={geometry}
         swr={swr}
         onClose={onClose}
         onError={onError}

@@ -69,9 +69,14 @@ const clean = async (simulationPath: string): Promise<void> => {
     await Tools.removeFile(path.join(simulationPath, endFileName))
   } catch (err) {}
 
-  // Run path
+  // Run data path
   try {
-    await Tools.removeDirectory(path.join(simulationPath, runPath))
+    await Tools.removeDirectory(path.join(simulationPath, runPath, dataPath))
+  } catch (err) {}
+
+  // Run result path
+  try {
+    await Tools.removeDirectory(path.join(simulationPath, runPath, resultPath))
   } catch (err) {}
 }
 

@@ -58,12 +58,6 @@ describe('components/project/simulation/boundaryConditions/add', () => {
       { uuid: 'uuid3', label: 1 }
     ]
   }
-  const geometry = {
-    faces: [
-      { uuid: 'uuid1', number: 1 },
-      { uuid: 'uuid2', number: 2 }
-    ]
-  }
   const swr = { mutateOneSimulation: jest.fn() }
   const onClose = jest.fn()
   const onError = jest.fn()
@@ -86,7 +80,6 @@ describe('components/project/simulation/boundaryConditions/add', () => {
       <Add
         simulation={simulation}
         boundaryCondition={boundaryCondition}
-        geometry={geometry}
         swr={swr}
         onClose={onClose}
         onError={onError}
@@ -104,7 +97,6 @@ describe('components/project/simulation/boundaryConditions/add', () => {
       <Add
         simulation={simulation}
         boundaryCondition={boundaryCondition}
-        geometry={geometry}
         swr={swr}
         onClose={onClose}
         onError={onError}
@@ -160,7 +152,6 @@ describe('components/project/simulation/boundaryConditions/add', () => {
             ]
           } as IModelBoundaryConditionValue
         }
-        geometry={geometry}
         swr={swr}
         onClose={onClose}
         onError={onError}
@@ -198,7 +189,6 @@ describe('components/project/simulation/boundaryConditions/add', () => {
             ]
           } as IModelBoundaryConditionValue
         }
-        geometry={geometry}
         swr={swr}
         onClose={onClose}
         onError={onError}
@@ -236,7 +226,6 @@ describe('components/project/simulation/boundaryConditions/add', () => {
             }
           } as IModelBoundaryConditionValue
         }
-        geometry={geometry}
         swr={swr}
         onClose={onClose}
         onError={onError}
@@ -286,7 +275,6 @@ describe('components/project/simulation/boundaryConditions/add', () => {
           }
         }}
         boundaryCondition={boundaryCondition}
-        geometry={geometry}
         swr={swr}
         onClose={onClose}
         onError={onError}

@@ -30,7 +30,7 @@ const checkWebGL = (router: NextRouter) => {
       return false
     }
   } catch (e) {
-    console.log('WEBGL non disponible ' + e)
+    console.error('WEBGL non disponible ' + e)
     return false
   }
 }
@@ -197,7 +197,7 @@ const Background = (): JSX.Element => {
         }
       )
     }
-  }, [])
+  }, [router])
 
   /**
    * Render

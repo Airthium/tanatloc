@@ -48,12 +48,6 @@ describe('components/project/simulation/materials/edit', () => {
       }
     }
   } as ISimulation
-  const geometry = {
-    solids: [
-      { uuid: 'uuid1', number: 1 },
-      { uuid: 'uuid2', number: 2 }
-    ]
-  }
   const swr = { mutateOneSimulation: jest.fn() }
   const onClose = jest.fn()
   const onError = jest.fn()
@@ -75,7 +69,6 @@ describe('components/project/simulation/materials/edit', () => {
       <Edit
         material={material}
         simulation={simulation}
-        geometry={geometry}
         swr={swr}
         onError={onError}
         onClose={onClose}
@@ -99,7 +92,6 @@ describe('components/project/simulation/materials/edit', () => {
           ]
         }}
         simulation={simulation}
-        geometry={geometry}
         swr={swr}
         onError={onError}
         onClose={onClose}
@@ -136,7 +128,6 @@ describe('components/project/simulation/materials/edit', () => {
           } as IModelMaterialValue
         }
         simulation={simulation}
-        geometry={geometry}
         swr={swr}
         onError={onError}
         onClose={onClose}
@@ -167,7 +158,6 @@ describe('components/project/simulation/materials/edit', () => {
       <Edit
         material={material}
         simulation={simulation}
-        geometry={geometry}
         swr={swr}
         onError={onError}
         onClose={onClose}

@@ -17,7 +17,8 @@ import { EditButton } from '@/components/assets/button'
 
 import Delete from '../delete'
 
-import { SelectContext, enable, disable, select } from '@/context/select'
+import { SelectContext } from '@/context/select'
+import { enable, disable, select } from '@/context/select/actions'
 
 /**
  * Props

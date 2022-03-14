@@ -28,14 +28,13 @@ import {
   SwapOutlined
 } from '@ant-design/icons'
 
+import { SelectContext, ISelect } from '@/context/select'
 import {
-  SelectContext,
   highlight,
   unhighlight,
   select,
-  unselect,
-  ISelect
-} from '@/context/select'
+  unselect
+} from '@/context/select/actions'
 
 import Utils from '@/lib/utils'
 

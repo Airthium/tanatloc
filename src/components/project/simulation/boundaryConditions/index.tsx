@@ -22,13 +22,8 @@ import { AddButton } from '@/components/assets/button'
 import List from './list'
 import BoundaryCondition from './boundaryCondition'
 
-import {
-  SelectContext,
-  enable,
-  disable,
-  setType,
-  setPart
-} from '@/context/select'
+import { SelectContext } from '@/context/select'
+import { enable, disable, setType, setPart } from '@/context/select/actions'
 
 /**
  * Props

@@ -9,7 +9,8 @@ import { IModelTypedBoundaryCondition } from '@/models/index.d'
 import { DeleteButton } from '@/components/assets/button'
 import { ErrorNotification } from '@/components/assets/notification'
 
-import { SelectContext, unselect } from '@/context/select'
+import { SelectContext } from '@/context/select'
+import { unselect } from '@/context/select/actions'
 
 import SimulationAPI from '@/api/simulation'
 

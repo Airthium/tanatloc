@@ -4,6 +4,7 @@ import { fireEvent, render, screen } from '@testing-library/react'
 import Materials from '@/components/project/simulation/materials'
 
 import { ISimulation } from '@/database/index.d'
+import { SelectContext } from '@/context/select'
 
 const mockAddButton = jest.fn()
 jest.mock('@/components/assets/button', () => ({
@@ -22,15 +23,11 @@ jest.mock(
   () => (props: {}) => mockMaterial(props)
 )
 
-jest.mock('react-redux', () => ({
-  useDispatch: () => jest.fn()
-}))
-
 const mockEnable = jest.fn()
 const mockDisable = jest.fn()
 const mockSetType = jest.fn()
 const mockSetPart = jest.fn()
-jest.mock('@/store/select/action', () => ({
+jest.mock('@/context/select/actions', () => ({
   enable: () => mockEnable(),
   disable: () => mockDisable(),
   setType: () => mockSetType(),
@@ -92,12 +89,16 @@ describe('components/project/simulation/materials', () => {
 
   test('render', () => {
     const { unmount } = render(
-      <Materials
-        geometry={geometry}
-        simulation={simulation}
-        swr={swr}
-        setVisible={setVisible}
-      />
+      <SelectContext.Provider
+        value={{ enabled: true, selected: [], dispatch: jest.fn }}
+      >
+        <Materials
+          geometry={geometry}
+          simulation={simulation}
+          swr={swr}
+          setVisible={setVisible}
+        />
+      </SelectContext.Provider>
     )
 
     expect(mockSetPart).toHaveBeenCalledTimes(1)
@@ -111,12 +112,16 @@ describe('components/project/simulation/materials', () => {
       <div role="AddButton" onClick={props.onAdd} />
     ))
     const { unmount } = render(
-      <Materials
-        geometry={geometry}
-        simulation={simulation}
-        swr={swr}
-        setVisible={setVisible}
-      />
+      <SelectContext.Provider
+        value={{ enabled: true, selected: [], dispatch: jest.fn }}
+      >
+        <Materials
+          geometry={geometry}
+          simulation={simulation}
+          swr={swr}
+          setVisible={setVisible}
+        />
+      </SelectContext.Provider>
     )
 
     const add = screen.getByRole('AddButton')
@@ -134,12 +139,16 @@ describe('components/project/simulation/materials', () => {
       <div>{JSON.stringify(props.material)}</div>
     ))
     const { unmount } = render(
-      <Materials
-        geometry={geometry}
-        simulation={simulation}
-        swr={swr}
-        setVisible={setVisible}
-      />
+      <SelectContext.Provider
+        value={{ enabled: true, selected: [], dispatch: jest.fn }}
+      >
+        <Materials
+          geometry={geometry}
+          simulation={simulation}
+          swr={swr}
+          setVisible={setVisible}
+        />
+      </SelectContext.Provider>
     )
 
     const list = screen.getByRole('List')
@@ -156,12 +165,16 @@ describe('components/project/simulation/materials', () => {
       <div role="Material" onClick={props.onClose} />
     ))
     const { unmount } = render(
-      <Materials
-        geometry={geometry}
-        simulation={simulation}
-        swr={swr}
-        setVisible={setVisible}
-      />
+      <SelectContext.Provider
+        value={{ enabled: true, selected: [], dispatch: jest.fn }}
+      >
+        <Materials
+          geometry={geometry}
+          simulation={simulation}
+          swr={swr}
+          setVisible={setVisible}
+        />
+      </SelectContext.Provider>
     )
 
     const material = screen.getByRole('Material')

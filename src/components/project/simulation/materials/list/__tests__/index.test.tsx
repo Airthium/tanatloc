@@ -4,6 +4,7 @@ import { fireEvent, render, screen } from '@testing-library/react'
 import List from '@/components/project/simulation/materials/list'
 
 import { ISimulation } from '@/database/index.d'
+import { SelectContext } from '@/context/select'
 
 const mockEditButton = jest.fn()
 jest.mock('@/components/assets/button', () => ({
@@ -12,14 +13,10 @@ jest.mock('@/components/assets/button', () => ({
 
 jest.mock('../../delete', () => () => <div />)
 
-jest.mock('react-redux', () => ({
-  useDispatch: () => jest.fn()
-}))
-
 const mockEnable = jest.fn()
 const mockDisable = jest.fn()
 const mockSelect = jest.fn()
-jest.mock('@/store/select/action', () => ({
+jest.mock('@/context/select/actions', () => ({
   enable: () => mockEnable(),
   disable: () => mockDisable(),
   select: () => mockSelect()
@@ -62,7 +59,11 @@ describe('components/project/simulation/materials/list', () => {
 
   test('render', () => {
     const { unmount } = render(
-      <List simulation={simulation} swr={swr} onEdit={onEdit} />
+      <SelectContext.Provider
+        value={{ enabled: true, selected: [], dispatch: jest.fn }}
+      >
+        <List simulation={simulation} swr={swr} onEdit={onEdit} />
+      </SelectContext.Provider>
     )
 
     unmount()
@@ -70,7 +71,11 @@ describe('components/project/simulation/materials/list', () => {
 
   test('highlight', () => {
     const { unmount } = render(
-      <List simulation={simulation} swr={swr} onEdit={onEdit} />
+      <SelectContext.Provider
+        value={{ enabled: true, selected: [], dispatch: jest.fn }}
+      >
+        <List simulation={simulation} swr={swr} onEdit={onEdit} />
+      </SelectContext.Provider>
     )
 
     const item = screen.getByText('name')
@@ -91,7 +96,11 @@ describe('components/project/simulation/materials/list', () => {
       <div role="EditButton" onClick={props.onEdit} />
     ))
     const { unmount } = render(
-      <List simulation={simulation} swr={swr} onEdit={onEdit} />
+      <SelectContext.Provider
+        value={{ enabled: true, selected: [], dispatch: jest.fn }}
+      >
+        <List simulation={simulation} swr={swr} onEdit={onEdit} />
+      </SelectContext.Provider>
     )
 
     const edit = screen.getByRole('EditButton')

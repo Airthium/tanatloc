@@ -4,10 +4,7 @@ import { fireEvent, render, screen } from '@testing-library/react'
 import BoundaryConditions from '@/components/project/simulation/boundaryConditions'
 
 import { ISimulation } from '@/database/index.d'
-
-jest.mock('react-redux', () => ({
-  useDispatch: () => jest.fn()
-}))
+import { SelectContext } from '@/context/select'
 
 const mockAddButton = jest.fn()
 jest.mock('@/components/assets/button', () => ({
@@ -30,7 +27,7 @@ const mockEnable = jest.fn()
 const mockDisable = jest.fn()
 const mockSetType = jest.fn()
 const mockSetPart = jest.fn()
-jest.mock('@/store/select/action', () => ({
+jest.mock('@/context/select/actions', () => ({
   enable: () => mockEnable(),
   disable: () => mockDisable(),
   setType: () => mockSetType(),
@@ -104,12 +101,16 @@ describe('components/project/simulation/boundaryConditions', () => {
 
   test('render', () => {
     const { unmount } = render(
-      <BoundaryConditions
-        geometry={geometry}
-        simulation={simulation}
-        swr={swr}
-        setVisible={setVisible}
-      />
+      <SelectContext.Provider
+        value={{ enabled: true, selected: [], dispatch: jest.fn }}
+      >
+        <BoundaryConditions
+          geometry={geometry}
+          simulation={simulation}
+          swr={swr}
+          setVisible={setVisible}
+        />
+      </SelectContext.Provider>
     )
 
     expect(mockSetPart).toHaveBeenCalledTimes(1)
@@ -123,12 +124,16 @@ describe('components/project/simulation/boundaryConditions', () => {
       <div role="AddButton" onClick={props.onAdd} />
     ))
     const { unmount } = render(
-      <BoundaryConditions
-        geometry={geometry}
-        simulation={simulation}
-        swr={swr}
-        setVisible={setVisible}
-      />
+      <SelectContext.Provider
+        value={{ enabled: true, selected: [], dispatch: jest.fn }}
+      >
+        <BoundaryConditions
+          geometry={geometry}
+          simulation={simulation}
+          swr={swr}
+          setVisible={setVisible}
+        />
+      </SelectContext.Provider>
     )
 
     const add = screen.getByRole('AddButton')
@@ -144,12 +149,16 @@ describe('components/project/simulation/boundaryConditions', () => {
       <div role="List" onClick={() => props.onEdit('dirichlet', 0)} />
     ))
     const { unmount } = render(
-      <BoundaryConditions
-        geometry={geometry}
-        simulation={simulation}
-        swr={swr}
-        setVisible={setVisible}
-      />
+      <SelectContext.Provider
+        value={{ enabled: true, selected: [], dispatch: jest.fn }}
+      >
+        <BoundaryConditions
+          geometry={geometry}
+          simulation={simulation}
+          swr={swr}
+          setVisible={setVisible}
+        />
+      </SelectContext.Provider>
     )
 
     const list = screen.getByRole('List')
@@ -165,12 +174,16 @@ describe('components/project/simulation/boundaryConditions', () => {
       <div role="BoundaryCondition" onClick={props.onClose} />
     ))
     const { unmount } = render(
-      <BoundaryConditions
-        geometry={geometry}
-        simulation={simulation}
-        swr={swr}
-        setVisible={setVisible}
-      />
+      <SelectContext.Provider
+        value={{ enabled: true, selected: [], dispatch: jest.fn }}
+      >
+        <BoundaryConditions
+          geometry={geometry}
+          simulation={simulation}
+          swr={swr}
+          setVisible={setVisible}
+        />
+      </SelectContext.Provider>
     )
 
     const boundaryCondition = screen.getByRole('BoundaryCondition')

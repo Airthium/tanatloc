@@ -4,12 +4,7 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import Delete, {
   errors
 } from '@/components/project/simulation/boundaryConditions/delete'
-
-jest.mock('react-redux', () => ({
-  useDispatch: () => () => {
-    // Empty
-  }
-}))
+import { SelectContext } from '@/context/select'
 
 const mockDeleteButton = jest.fn()
 jest.mock('@/components/assets/button', () => ({
@@ -23,7 +18,7 @@ jest.mock('@/components/assets/notification', () => ({
 }))
 
 const mockUnselect = jest.fn()
-jest.mock('@/store/select/action', () => ({
+jest.mock('@/context/select/actions', () => ({
   unselect: () => mockUnselect()
 }))
 
@@ -96,7 +91,11 @@ describe('components/project/simulation/boundaryConditions/delete', () => {
 
   test('render', () => {
     const { unmount } = render(
-      <Delete simulation={simulation} type={type} index={index} swr={swr} />
+      <SelectContext.Provider
+        value={{ enabled: true, selected: [], dispatch: jest.fn }}
+      >
+        <Delete simulation={simulation} type={type} index={index} swr={swr} />
+      </SelectContext.Provider>
     )
 
     unmount()
@@ -114,7 +113,11 @@ describe('components/project/simulation/boundaryConditions/delete', () => {
       />
     ))
     const { unmount } = render(
-      <Delete simulation={simulation} type={type} index={index} swr={swr} />
+      <SelectContext.Provider
+        value={{ enabled: true, selected: [], dispatch: jest.fn }}
+      >
+        <Delete simulation={simulation} type={type} index={index} swr={swr} />
+      </SelectContext.Provider>
     )
 
     const button = screen.getByRole('DeleteButton')

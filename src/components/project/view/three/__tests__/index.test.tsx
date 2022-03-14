@@ -2,6 +2,7 @@ import React from 'react'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import ThreeView, { errors } from '@/components/project/view/three'
+import { SelectContext } from '@/context/select'
 
 const mockErroNotification = jest.fn()
 jest.mock('@/components/assets/notification', () => ({
@@ -121,7 +122,7 @@ jest.mock('@/api/avatar', () => ({
   add: async () => mockAvatarAdd()
 }))
 
-jest.mock('@/store/select/action', () => ({
+jest.mock('@/context/select/actions', () => ({
   highlight: jest.fn(),
   select: jest.fn(),
   unselect: jest.fn()
@@ -170,6 +171,7 @@ describe('components/project/view/three', () => {
       mouseDown(
         {
           getSelected: () => ['uuid'],
+          select: jest.fn(),
           unselect: jest.fn()
         },
         'uuid'
@@ -256,7 +258,11 @@ describe('components/project/view/three', () => {
 
   test('render', () => {
     const { unmount } = render(
-      <ThreeView loading={loading} project={project} part={part} />
+      <SelectContext.Provider
+        value={{ enabled: false, selected: [], dispatch: jest.fn }}
+      >
+        <ThreeView loading={loading} project={project} part={part} />
+      </SelectContext.Provider>
     )
 
     unmount()
@@ -264,7 +270,11 @@ describe('components/project/view/three', () => {
 
   test('loading', () => {
     const { unmount } = render(
-      <ThreeView loading={true} project={project} part={part} />
+      <SelectContext.Provider
+        value={{ enabled: false, selected: [], dispatch: jest.fn }}
+      >
+        <ThreeView loading={true} project={project} part={part} />
+      </SelectContext.Provider>
     )
 
     unmount()
@@ -272,7 +282,13 @@ describe('components/project/view/three', () => {
 
   test('without part', () => {
     global.MockScene.children = []
-    const { unmount } = render(<ThreeView loading={true} project={project} />)
+    const { unmount } = render(
+      <SelectContext.Provider
+        value={{ enabled: false, selected: [], dispatch: jest.fn }}
+      >
+        <ThreeView loading={true} project={project} />
+      </SelectContext.Provider>
+    )
 
     unmount()
   })
@@ -285,7 +301,11 @@ describe('components/project/view/three', () => {
       }
     ]
     const { unmount } = render(
-      <ThreeView loading={true} project={project} part={part} />
+      <SelectContext.Provider
+        value={{ enabled: false, selected: [], dispatch: jest.fn }}
+      >
+        <ThreeView loading={true} project={project} part={part} />
+      </SelectContext.Provider>
     )
 
     unmount()
@@ -296,7 +316,11 @@ describe('components/project/view/three', () => {
       throw new Error('load error')
     })
     const { unmount } = render(
-      <ThreeView loading={true} project={project} part={part} />
+      <SelectContext.Provider
+        value={{ enabled: false, selected: [], dispatch: jest.fn }}
+      >
+        <ThreeView loading={true} project={project} part={part} />
+      </SelectContext.Provider>
     )
 
     await waitFor(() => expect(mockErroNotification).toHaveBeenCalledTimes(1))
@@ -313,7 +337,11 @@ describe('components/project/view/three', () => {
   test('window pixelRatio', () => {
     Object.defineProperty(window, 'devicePixelRatio', { value: null })
     const { unmount } = render(
-      <ThreeView loading={loading} project={project} part={part} />
+      <SelectContext.Provider
+        value={{ enabled: false, selected: [], dispatch: jest.fn }}
+      >
+        <ThreeView loading={loading} project={project} part={part} />
+      </SelectContext.Provider>
     )
 
     unmount()
@@ -321,7 +349,11 @@ describe('components/project/view/three', () => {
 
   test('resize', () => {
     const { unmount } = render(
-      <ThreeView loading={loading} project={project} part={part} />
+      <SelectContext.Provider
+        value={{ enabled: false, selected: [], dispatch: jest.fn }}
+      >
+        <ThreeView loading={loading} project={project} part={part} />
+      </SelectContext.Provider>
     )
     window.dispatchEvent(new Event('resize'))
 
@@ -330,7 +362,11 @@ describe('components/project/view/three', () => {
 
   test('switches & buttons', async () => {
     const { unmount } = render(
-      <ThreeView loading={loading} project={project} part={part} />
+      <SelectContext.Provider
+        value={{ enabled: false, selected: [], dispatch: jest.fn }}
+      >
+        <ThreeView loading={loading} project={project} part={part} />
+      </SelectContext.Provider>
     )
 
     // Wait scene loading
@@ -392,18 +428,25 @@ describe('components/project/view/three', () => {
     unmount()
   })
 
-  // test('selection enabled', async () => {
-  //   mockEnabled.mockImplementation(() => true)
-  //   const { unmount } = render(
-  //     <ThreeView loading={loading} project={project} part={part} />
-  //   )
+  test('selection enabled', async () => {
+    const { unmount } = render(
+      <SelectContext.Provider
+        value={{ enabled: true, selected: [], dispatch: jest.fn }}
+      >
+        <ThreeView loading={loading} project={project} part={part} />
+      </SelectContext.Provider>
+    )
 
-  //   unmount()
-  // })
+    unmount()
+  })
 
   test('sectionView', () => {
     const { unmount } = render(
-      <ThreeView loading={loading} project={project} part={part} />
+      <SelectContext.Provider
+        value={{ enabled: false, selected: [], dispatch: jest.fn }}
+      >
+        <ThreeView loading={loading} project={project} part={part} />
+      </SelectContext.Provider>
     )
 
     // Activate
@@ -419,7 +462,11 @@ describe('components/project/view/three', () => {
   test('selectionHelper', () => {
     mockSelectionEnabled.mockImplementation(() => true)
     const { unmount } = render(
-      <ThreeView loading={loading} project={project} part={part} />
+      <SelectContext.Provider
+        value={{ enabled: false, selected: [], dispatch: jest.fn }}
+      >
+        <ThreeView loading={loading} project={project} part={part} />
+      </SelectContext.Provider>
     )
 
     const selection = screen.getByRole('button', { name: 'select' })

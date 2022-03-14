@@ -2,15 +2,12 @@ import React from 'react'
 import { fireEvent, render, screen } from '@testing-library/react'
 
 import List from '@/components/project/simulation/boundaryConditions/list'
-
-jest.mock('react-redux', () => ({
-  useDispatch: () => jest.fn()
-}))
+import { SelectContext } from '@/context/select'
 
 const mockEnable = jest.fn()
 const mockDisable = jest.fn()
 const mockSelect = jest.fn()
-jest.mock('@/store/select/action', () => ({
+jest.mock('@/context/select/actions', () => ({
   enable: () => mockEnable(),
   disable: () => mockDisable(),
   select: () => mockSelect()
@@ -71,7 +68,11 @@ describe('components/project/simulation/boundaryConditions/list', () => {
 
   test('render', () => {
     const { unmount } = render(
-      <List simulation={simulation} swr={swr} onEdit={onEdit} />
+      <SelectContext.Provider
+        value={{ enabled: true, selected: [], dispatch: jest.fn }}
+      >
+        <List simulation={simulation} swr={swr} onEdit={onEdit} />
+      </SelectContext.Provider>
     )
 
     unmount()
@@ -79,7 +80,11 @@ describe('components/project/simulation/boundaryConditions/list', () => {
 
   test('highlight', () => {
     const { unmount } = render(
-      <List simulation={simulation} swr={swr} onEdit={onEdit} />
+      <SelectContext.Provider
+        value={{ enabled: true, selected: [], dispatch: jest.fn }}
+      >
+        <List simulation={simulation} swr={swr} onEdit={onEdit} />
+      </SelectContext.Provider>
     )
 
     const item = screen.getByText('name')
@@ -101,7 +106,11 @@ describe('components/project/simulation/boundaryConditions/list', () => {
       <div role="EditButton" onClick={props.onEdit} />
     ))
     const { unmount } = render(
-      <List simulation={simulation} swr={swr} onEdit={onEdit} />
+      <SelectContext.Provider
+        value={{ enabled: true, selected: [], dispatch: jest.fn }}
+      >
+        <List simulation={simulation} swr={swr} onEdit={onEdit} />
+      </SelectContext.Provider>
     )
 
     const edit = screen.getByRole('EditButton')

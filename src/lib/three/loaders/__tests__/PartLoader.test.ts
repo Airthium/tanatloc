@@ -261,7 +261,7 @@ describe('lib/three/loaders/PartLoader', () => {
     mouseMove({ target: { getBoundingClientRect: () => ({}) } })
 
     global.MockRaycaster.intersectObjects = [
-      { object: { userData: { uuid: 'uuid' } } }
+      { object: { userData: { uuid: 'uuid', number: 'number' } } }
     ]
     mouseMove({ target: { getBoundingClientRect: () => ({}) } })
     expect(current).toBe('uuid')
@@ -315,7 +315,10 @@ describe('lib/three/loaders/PartLoader', () => {
     mesh.select('face_uuid')
     mesh.select('uuid')
 
-    expect(mesh.getSelected()).toEqual(['face_uuid', 'face_uuid'])
+    expect(mesh.getSelected()).toEqual([
+      { uuid: 'face_uuid', number: 'number' },
+      { uuid: 'face_uuid', number: 'number' }
+    ])
   })
 
   test('unselect', async () => {

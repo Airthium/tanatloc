@@ -67,7 +67,8 @@ import { IPart, PartLoader } from '@/lib/three/loaders/PartLoader'
 
 import AvatarAPI from '@/api/avatar'
 
-import { SelectContext, highlight, select, unselect } from '@/context/select'
+import { SelectContext } from '@/context/select'
+import { highlight, select, unselect } from '@/context/select/actions'
 
 /**
  * Props

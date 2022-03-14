@@ -1,4 +1,4 @@
-import WebGLError from '@/components/webgl/webglError'
+import WebGLError from '@/components/webgl'
 
 const WebGL = (): JSX.Element => {
   return <WebGLError />

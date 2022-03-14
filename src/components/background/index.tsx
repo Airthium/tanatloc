@@ -15,9 +15,10 @@ import {
 /**
  * Check WebGL
  */
-const checkWebGL = (router: NextRouter) => {
+export const checkWebGL = (router: NextRouter) => {
   try {
     const canvas = document.createElement('canvas')
+    console.log(canvas)
     if (
       !!(
         window.WebGLRenderingContext &&
@@ -30,7 +31,7 @@ const checkWebGL = (router: NextRouter) => {
       return false
     }
   } catch (e) {
-    console.error('WEBGL non disponible ' + e)
+    console.error('WEBGL not available ' + e)
     return false
   }
 }

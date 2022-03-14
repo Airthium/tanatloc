@@ -33,7 +33,14 @@ global.MockScene.children = [
 ]
 
 describe('components/background', () => {
-  test('render', () => {
+  test('render - no WebGL', () => {
+    const { unmount } = render(<Background />)
+
+    unmount()
+  })
+
+  test('render - no WebGL', () => {
+    // Object.defineProperty(window, 'WebGLRenderingContext', { value: {} })
     const { unmount } = render(<Background />)
 
     unmount()

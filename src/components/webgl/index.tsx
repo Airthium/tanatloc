@@ -1,13 +1,13 @@
-/** @module Components.Notauthorized */
+/** @module Components.WebGL */
 
-import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import { Button, Card, Modal, Layout, Space, Typography } from 'antd'
 import { AlertOutlined } from '@ant-design/icons'
-import NoManipBrowser from './FixInfos/noManipBrowser'
-import FirefoxWindows from './FixInfos/firefoxWindows'
-import FirefoxMac from './FixInfos/firefoxMac'
-import SafariMac from './FixInfos/safariMac'
+
+import NoManipBrowser from './fixInfos/noManipBrowser'
+import FirefoxWindows from './fixInfos/firefoxWindows'
+import FirefoxMac from './fixInfos/firefoxMac'
+import SafariMac from './fixInfos/safariMac'
 
 /**
  * Errors
@@ -16,19 +16,13 @@ export const errors = {
   webGL: 'WebGL is not enabled on your device. Please enable it.'
 }
 
+/**
+ * WebGL error
+ * @returns WebGLError
+ */
 const WebGLError = (): JSX.Element => {
   // Data
   const router = useRouter()
-
-  // State
-  const [visible, setVisible] = useState(false)
-  const [title, setTitle] = useState('')
-  const [content, setContent] = useState(null)
-
-  // Prefetech
-  useEffect(() => {
-    router.prefetch('/')
-  }, [router])
 
   /**
    * Render
@@ -46,7 +40,7 @@ const WebGLError = (): JSX.Element => {
             </Typography.Text>
             <Typography.Text>
               <Button type="link" onClick={() => router.back()}>
-                Return to previous page
+                Return to the previous page
               </Button>
             </Typography.Text>
           </Space>
@@ -58,11 +52,12 @@ const WebGLError = (): JSX.Element => {
                 <li>
                   <Button
                     type="text"
-                    onClick={() => {
-                      setContent(NoManipBrowser)
-                      setVisible(true)
-                      setTitle('Chrome windows')
-                    }}
+                    onClick={() =>
+                      Modal.info({
+                        title: 'Chrome Windows',
+                        content: <NoManipBrowser />
+                      })
+                    }
                   >
                     Google Chrome
                   </Button>
@@ -70,11 +65,12 @@ const WebGLError = (): JSX.Element => {
                 <li>
                   <Button
                     type="text"
-                    onClick={() => {
-                      setContent(FirefoxWindows)
-                      setVisible(true)
-                      setTitle('Firefox windows')
-                    }}
+                    onClick={() =>
+                      Modal.info({
+                        title: 'Firefox Windows',
+                        content: <FirefoxWindows />
+                      })
+                    }
                   >
                     Mozilla Firefox
                   </Button>
@@ -82,11 +78,12 @@ const WebGLError = (): JSX.Element => {
                 <li>
                   <Button
                     type="text"
-                    onClick={() => {
-                      setContent(NoManipBrowser)
-                      setVisible(true)
-                      setTitle('Microsoft Edge windows')
-                    }}
+                    onClick={() =>
+                      Modal.info({
+                        title: 'Microsoft Edge Windows',
+                        content: <NoManipBrowser />
+                      })
+                    }
                   >
                     Microsoft Edge
                   </Button>
@@ -98,11 +95,12 @@ const WebGLError = (): JSX.Element => {
                 <li>
                   <Button
                     type="text"
-                    onClick={() => {
-                      setContent(NoManipBrowser)
-                      setVisible(true)
-                      setTitle('Google Chrome MacOS / Linux')
-                    }}
+                    onClick={() =>
+                      Modal.info({
+                        title: 'Google Chrome MacOS / Linux',
+                        content: <NoManipBrowser />
+                      })
+                    }
                   >
                     Google Chrome
                   </Button>
@@ -110,11 +108,12 @@ const WebGLError = (): JSX.Element => {
                 <li>
                   <Button
                     type="text"
-                    onClick={() => {
-                      setContent(FirefoxMac)
-                      setVisible(true)
-                      setTitle('Firefox MacOS')
-                    }}
+                    onClick={() =>
+                      Modal.info({
+                        title: 'Firefox MacOS',
+                        content: <FirefoxMac />
+                      })
+                    }
                   >
                     Mozilla Firefox
                   </Button>
@@ -122,11 +121,12 @@ const WebGLError = (): JSX.Element => {
                 <li>
                   <Button
                     type="text"
-                    onClick={() => {
-                      setContent(SafariMac)
-                      setVisible(true)
-                      setTitle('Safari MacOS')
-                    }}
+                    onClick={() =>
+                      Modal.info({
+                        title: 'Safarai MacOS',
+                        content: <SafariMac />
+                      })
+                    }
                   >
                     Safari
                   </Button>
@@ -148,16 +148,6 @@ const WebGLError = (): JSX.Element => {
           </Space>
         </Card>
       </Layout.Content>
-      <Modal
-        title={title}
-        visible={visible}
-        onOk={() => setVisible(false)}
-        onCancel={() => setVisible(false)}
-        style={{ height: 'calc(100vh - 200px)' }}
-        bodyStyle={{ overflowY: 'auto', height: 'calc(100vh - 400px)' }}
-      >
-        {content}
-      </Modal>
     </Layout>
   )
 }

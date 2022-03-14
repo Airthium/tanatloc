@@ -8,7 +8,8 @@ import {
   MutableRefObject,
   Dispatch,
   SetStateAction,
-  useCallback
+  useCallback,
+  useContext
 } from 'react'
 import { Button, Divider, Layout, Radio, Spin, Switch, Tooltip } from 'antd'
 import {
@@ -66,9 +67,7 @@ import { IPart, PartLoader } from '@/lib/three/loaders/PartLoader'
 
 import AvatarAPI from '@/api/avatar'
 
-import { useSelector, useDispatch } from 'react-redux'
-import { highlight, select, unselect } from '@/store/select/action'
-import { SelectState } from '@/store/select/reducer'
+import { SelectContext, highlight, select, unselect } from '@/context/select'
 
 /**
  * Props
@@ -100,9 +99,9 @@ export const computeSceneBoundingSphere = (
   scene: Scene & { boundingBox?: Box3; boundingSphere?: Sphere }
 ): void => {
   const box = new Box3()
-  scene.children.forEach((child) => {
+  scene.children.forEach((child: IPart) => {
     if (child.visible && child.type === 'Part') {
-      const childBox: Box3 = (child as IPart).boundingBox
+      const childBox: Box3 = child.boundingBox
       const min = new Vector3(
         Math.min(box.min.x, childBox.min.x),
         Math.min(box.min.y, childBox.min.y),
@@ -244,18 +243,26 @@ export const loadPart = async (
   dispatch: Dispatch<any>
 ): Promise<void> => {
   // Events
-  const mouseMoveEvent = (child: IPart, uuid?: string): void => {
+  const mouseMoveEvent = (
+    child: IPart,
+    uuid?: string,
+    number?: number | string
+  ): void => {
     child.highlight(uuid)
-    setTimeout(() => dispatch(highlight(uuid)), 1)
+    setTimeout(() => dispatch(highlight({ uuid, label: number })), 1)
   }
-  const mouseDownEvent = (child: IPart, uuid: string) => {
+  const mouseDownEvent = (
+    child: IPart,
+    uuid: string,
+    number: number | string
+  ) => {
     const selected = child.getSelected()
-    if (selected.includes(uuid)) {
+    if (selected.find((s) => s.uuid === uuid)) {
       child.unselect(uuid)
-      setTimeout(() => dispatch(unselect(uuid)), 1)
+      setTimeout(() => dispatch(unselect({ uuid, label: number })), 1)
     } else {
       child.select(uuid)
-      setTimeout(() => dispatch(select(uuid)), 1)
+      setTimeout(() => dispatch(select({ uuid, label: number })), 1)
     }
   }
 
@@ -390,21 +397,15 @@ const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
     Dispatch<SetStateAction<boolean>>
   ] = useState(false)
 
-  // Store
+  // Context
   const {
-    selectEnabled,
-    selectType,
-    selectPart,
-    selectHighlighted,
-    selectSelected
-  } = useSelector((state: { select: SelectState }) => ({
-    selectEnabled: state.select.enabled,
-    selectType: state.select.type,
-    selectPart: state.select.part,
-    selectHighlighted: state.select.highlighted,
-    selectSelected: state.select.selected
-  }))
-  const dispatch = useDispatch()
+    enabled: selectEnabled,
+    type: selectType,
+    part: selectPart,
+    highlighted: selectHighlighted,
+    selected: selectSelected,
+    dispatch
+  } = useContext(SelectContext)
 
   // Mount
   useEffect(() => {
@@ -647,7 +648,7 @@ const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
 
   // Enable / disable selection
   useEffect(() => {
-    scene.current.children.forEach((child) => {
+    scene.current.children.forEach((child: IPart) => {
       if (child.type === 'Part' && child.uuid === selectPart) {
         if (selectEnabled)
           child.startSelection(
@@ -664,24 +665,28 @@ const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
   }, [selectEnabled, selectPart, selectType])
 
   useEffect(() => {
-    scene.current.children.forEach((child) => {
+    scene.current.children.forEach((child: IPart) => {
       if (child.type === 'Part' && child.uuid === selectPart) {
         // Highlight
-        child.highlight(selectHighlighted)
+        child.highlight(selectHighlighted?.uuid)
 
         // Selection
         const selected = child.getSelected()
 
         // Unselect
-        const minus = selected.filter((s) => !selectSelected.includes(s))
+        const minus = selectSelected.filter(
+          (s) => !selected.find((ss) => ss.uuid === s.uuid)
+        )
         minus.forEach((m) => {
-          child.unselect(m)
+          child.unselect(m.uuid)
         })
 
         // Select
-        const plus = selectSelected.filter((s) => !selected.includes(s))
+        const plus = selectSelected.filter(
+          (s) => !selected.find((ss) => ss.uuid === s.uuid)
+        )
         plus.forEach((p) => {
-          child.select(p)
+          child.select(p.uuid)
         })
       }
     })

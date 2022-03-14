@@ -31,6 +31,7 @@ export interface IPartChildChild extends Object3D {
   material: MeshStandardMaterial & { originalColor: Color }
   userData: {
     uuid: string
+    number: string | number
     lut?: Lut
   }
   visible: boolean
@@ -54,8 +55,8 @@ export interface IPart extends Object3D {
     type: string
   ) => void
   stopSelection: () => void
-  getHighlighted: () => void
-  getSelected: () => string[]
+  getHighlighted: () => { uuid: string; number: number | string }
+  getSelected: () => { uuid: string; number: number | string }[]
   highlight: (uuid: string) => void
   unhighlight: () => void
   select: (uuid: string) => void
@@ -69,8 +70,12 @@ export interface IPart extends Object3D {
  * @param mouseDownEvent Mouse down event
  */
 const PartLoader = (
-  mouseMoveEvent: (part: IPart, uuid?: string) => void,
-  mouseDownEvent: (part: IPart, uuid: string) => void
+  mouseMoveEvent: (
+    part: IPart,
+    uuid?: string,
+    number?: number | string
+  ) => void,
+  mouseDownEvent: (part: IPart, uuid: string, number: number | string) => void
 ): IPartLoader => {
   // Highlight color
   const highlightColor = new Color('#FAD114')
@@ -380,7 +385,11 @@ const PartLoader = (
     )
 
     if (intersects.length)
-      mouseMoveEvent(selectionPart, intersects[0].object.userData.uuid)
+      mouseMoveEvent(
+        selectionPart,
+        intersects[0].object.userData.uuid,
+        intersects[0].object.userData.number
+      )
     else mouseMoveEvent(selectionPart)
   }
 
@@ -401,7 +410,7 @@ const PartLoader = (
       if (!alreadyOutlined) selectionOutlinePass.selectedObjects.push(mesh)
     } else {
       const alreadySelected = selected.find(
-        (uuid) => uuid === mesh.userData.uuid
+        (s) => s.uuid === mesh.userData.uuid
       )
       if (!alreadySelected) selectionOutlinePass.selectedObjects.push(mesh)
     }
@@ -426,7 +435,7 @@ const PartLoader = (
         ...selectionOutlinePass.selectedObjects.slice(outlinedIndex + 1)
       ]
     } else {
-      const selectedMesh = selected.find((uuid) => uuid === mesh.userData.uuid)
+      const selectedMesh = selected.find((s) => s.uuid === mesh.userData.uuid)
       if (!selectedMesh) {
         const outlinedIndex = selectionOutlinePass.selectedObjects.findIndex(
           (s: IPart['children'][0]['children'][0]) =>
@@ -445,12 +454,12 @@ const PartLoader = (
    * @param uuid Mesh uuid
    */
   const highlight = (uuid: string): void => {
-    if (uuid === highlighted) return
+    if (uuid === highlighted?.uuid) return
     else unhighlight()
 
     const mesh = findObject(selectionPart, uuid)
     if (mesh && mesh.material) {
-      highlighted = mesh.userData.uuid
+      highlighted = { uuid: mesh.userData.uuid, number: mesh.userData.number }
       addOutlineOn(mesh)
       mesh.material.color = highlightColor
     }
@@ -460,12 +469,12 @@ const PartLoader = (
    * Unhighlight
    */
   const unhighlight = (): void => {
-    const mesh = findObject(selectionPart, highlighted)
+    const mesh = findObject(selectionPart, highlighted?.uuid)
 
     if (mesh && mesh.material) {
       removeOutlineOn(mesh)
       // Check selection
-      const index = selected.findIndex((m) => m === mesh.userData.uuid)
+      const index = selected.findIndex((s) => s.uuid === mesh.userData.uuid)
       // Unhighlight
       mesh.material.color =
         index === -1 ? mesh.material.originalColor : selectColor
@@ -478,7 +487,8 @@ const PartLoader = (
    * Mouse down
    */
   const mouseDown = (): void => {
-    if (highlighted) mouseDownEvent(selectionPart, highlighted)
+    if (highlighted)
+      mouseDownEvent(selectionPart, highlighted.uuid, highlighted.number)
   }
 
   /**
@@ -488,7 +498,7 @@ const PartLoader = (
   const select = (uuid: string): void => {
     const mesh = findObject(selectionPart, uuid)
     if (mesh && mesh.material) {
-      selected.push(uuid)
+      selected.push({ uuid, number: mesh.userData.number })
       addOutlineOn(mesh, true)
       mesh.material.color = selectColor
     }
@@ -501,7 +511,7 @@ const PartLoader = (
   const unselect = (uuid: string): void => {
     const mesh = findObject(selectionPart, uuid)
 
-    const index = selected.findIndex((s) => s === uuid)
+    const index = selected.findIndex((s) => s.uuid === uuid)
     if (index !== -1)
       selected = [...selected.slice(0, index), ...selected.slice(index + 1)]
 

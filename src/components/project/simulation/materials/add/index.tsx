@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import { Dispatch, SetStateAction, useState } from 'react'
 import { v4 as uuid } from 'uuid'
 
-import { IGeometry, ISimulation } from '@/database/index.d'
+import { ISimulation } from '@/database/index.d'
 import { IModelMaterialValue } from '@/models/index.d'
 
 import { ErrorNotification } from '@/components/assets/notification'
@@ -17,9 +17,6 @@ import SimulationAPI from '@/api/simulation'
  */
 export interface IProps {
   simulation: ISimulation
-  geometry: {
-    solids: IGeometry['summary']['solids']
-  }
   material: Omit<IModelMaterialValue, 'uuid'>
   swr: {
     mutateOneSimulation: (simulation: ISimulation) => void
@@ -46,7 +43,6 @@ export const errors = {
  */
 export const onAdd = async (
   simulation: IProps['simulation'],
-  geometry: IProps['geometry'],
   material: IProps['material'],
   swr: IProps['swr']
 ): Promise<void> => {
@@ -56,18 +52,6 @@ export const onAdd = async (
 
     // Set uuid
     newMaterial.uuid = uuid()
-
-    // Modify selection
-    const selection = geometry.solids
-      .map((s) => {
-        if (material.selected.find((m) => m.uuid === s.uuid))
-          return {
-            uuid: s.uuid,
-            label: s.number
-          }
-      })
-      .filter((s) => s)
-    newMaterial.selected = selection
 
     // New simulation
     const newSimulation = { ...simulation }
@@ -108,7 +92,6 @@ export const onAdd = async (
  */
 const Add = ({
   simulation,
-  geometry,
   material,
   swr,
   onError,
@@ -141,7 +124,7 @@ const Add = ({
           }
           onError()
 
-          await onAdd(simulation, geometry, material, swr)
+          await onAdd(simulation, material, swr)
 
           setLoading(false)
           onClose()
@@ -166,9 +149,6 @@ Add.propTypes = {
         }).isRequired
       }).isRequired
     }).isRequired
-  }).isRequired,
-  geometry: PropTypes.exact({
-    solids: PropTypes.array.isRequired
   }).isRequired,
   material: PropTypes.exact({
     material: PropTypes.object,

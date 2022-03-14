@@ -40,7 +40,6 @@ module.exports = {
     '^@/pages(.*)$': '<rootDir>/src/pages$1',
     '^@/route(.*)$': '<rootDir>/src/route$1',
     '^@/services(.*)$': '<rootDir>/src/services$1',
-    '^@/store(.*)$': '<rootDir>/src/store$1',
     '^@/styles(.*)$': '<rootDir>/src/styles$1'
   },
   coveragePathIgnorePatterns: [

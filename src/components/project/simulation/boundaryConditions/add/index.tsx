@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import { Dispatch, SetStateAction, useState } from 'react'
 import { v4 as uuid } from 'uuid'
 
-import { IGeometry, ISimulation } from '@/database/index.d'
+import { ISimulation } from '@/database/index.d'
 import {
   IModelBoundaryConditionValue,
   IModelTypedBoundaryCondition
@@ -20,9 +20,6 @@ import SimulationAPI from '@/api/simulation'
  */
 export interface IProps {
   simulation: ISimulation
-  geometry: {
-    faces: IGeometry['summary']['faces']
-  }
   boundaryCondition: Omit<IModelBoundaryConditionValue, 'uuid'>
   swr: {
     mutateOneSimulation: (simulation: ISimulation) => void
@@ -50,7 +47,6 @@ export const errors = {
  */
 const onAdd = async (
   simulation: IProps['simulation'],
-  geometry: IProps['geometry'],
   boundaryCondition: IProps['boundaryCondition'],
   swr: IProps['swr']
 ): Promise<void> => {
@@ -62,18 +58,6 @@ const onAdd = async (
 
     // Get type key
     const type = newBoundaryCondition.type.key
-
-    // Modify selection
-    const selection = geometry.faces
-      .map((f) => {
-        if (boundaryCondition.selected.find((b) => b.uuid === f.uuid))
-          return {
-            uuid: f.uuid,
-            label: f.number
-          }
-      })
-      .filter((s) => s)
-    newBoundaryCondition.selected = selection
 
     // Set uuid
     newBoundaryCondition.uuid = uuid()
@@ -124,7 +108,6 @@ const onAdd = async (
  */
 const Add = ({
   simulation,
-  geometry,
   boundaryCondition,
   swr,
   onError,
@@ -163,7 +146,7 @@ const Add = ({
           }
           onError()
 
-          await onAdd(simulation, geometry, boundaryCondition, swr)
+          await onAdd(simulation, boundaryCondition, swr)
 
           // Close
           setLoading(false)
@@ -187,9 +170,6 @@ Add.propTypes = {
         boundaryConditions: PropTypes.object.isRequired
       }).isRequired
     }).isRequired
-  }).isRequired,
-  geometry: PropTypes.shape({
-    faces: PropTypes.array.isRequired
   }).isRequired,
   boundaryCondition: PropTypes.shape({
     name: PropTypes.string,

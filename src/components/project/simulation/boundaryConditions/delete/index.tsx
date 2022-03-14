@@ -1,7 +1,7 @@
 /** @module Components.Project.Simulation.BoundaryConditions.Delete */
 
 import PropTypes from 'prop-types'
-import { Dispatch, SetStateAction, useState } from 'react'
+import { Dispatch, SetStateAction, useContext, useState } from 'react'
 
 import { ISimulation } from '@/database/index.d'
 import { IModelTypedBoundaryCondition } from '@/models/index.d'
@@ -9,8 +9,7 @@ import { IModelTypedBoundaryCondition } from '@/models/index.d'
 import { DeleteButton } from '@/components/assets/button'
 import { ErrorNotification } from '@/components/assets/notification'
 
-import { useDispatch } from 'react-redux'
-import { unselect } from '@/store/select/action'
+import { SelectContext, unselect } from '@/context/select'
 
 import SimulationAPI from '@/api/simulation'
 
@@ -61,8 +60,8 @@ export const onDelete = async (
     const boundaryCondition = typedBoundaryCondition.values[index]
 
     // (unselect)
-    boundaryCondition.selected.forEach((s: { uuid: string }) => {
-      dispatch(unselect(s.uuid))
+    boundaryCondition.selected.forEach((s) => {
+      dispatch(unselect(s))
     })
 
     typedBoundaryCondition.values = [
@@ -114,7 +113,7 @@ const Delete = ({ type, index, simulation, swr }: IProps): JSX.Element => {
     useState(false)
 
   // Data
-  const dispatch = useDispatch()
+  const { dispatch } = useContext(SelectContext)
 
   /**
    * Render

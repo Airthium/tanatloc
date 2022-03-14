@@ -13,9 +13,9 @@ import {
 } from 'three'
 
 /**
- * Precheck WEBGL
+ * Check WebGL
  */
-const WebGLPrecheck = (router: NextRouter) => {
+const checkWebGL = (router: NextRouter) => {
   try {
     const canvas = document.createElement('canvas')
     if (
@@ -52,148 +52,150 @@ const Background = (): JSX.Element => {
 
   // Mount
   useEffect(() => {
-    if (WebGLPrecheck(router)) {
-      const div = mount.current
+    if (!checkWebGL(router)) {
+      return
+    }
 
-      let frameId: number
+    const div = mount.current
 
-      let width = div.clientWidth
-      let height = div.clientHeight
+    let frameId: number
 
-      // Scene
-      const scene = new Scene()
+    let width = div.clientWidth
+    let height = div.clientHeight
 
-      // Camera
-      const camera = new PerspectiveCamera(10, width / height, 0.1, 1000)
-      camera.position.z = 10
+    // Scene
+    const scene = new Scene()
 
-      // Renderer
-      const renderer = new WebGLRenderer({
-        antialias: true,
-        alpha: true,
-        powerPreference: 'low-power'
+    // Camera
+    const camera = new PerspectiveCamera(10, width / height, 0.1, 1000)
+    camera.position.z = 10
+
+    // Renderer
+    const renderer = new WebGLRenderer({
+      antialias: true,
+      alpha: true,
+      powerPreference: 'low-power'
+    })
+    renderer.setClearColor('#ffffff', 0)
+    renderer.setSize(width, height)
+    renderer.setPixelRatio(window.devicePixelRatio || 1)
+
+    // Mount
+    div.appendChild(renderer.domElement)
+
+    // Tetrahedra
+    const rotationX = []
+    const rotationY = []
+    const rotationZ = []
+    // Visible height & width
+    const offset = camera.position.z
+    const hFOV = (camera.fov * Math.PI) / 180
+    const h = 2 * Math.tan(hFOV / 2) * offset
+    const w = h * camera.aspect
+    // Build tetra
+    for (let i = 0; i < numberOfTetrahedra; ++i) {
+      const rand = Math.random()
+      const material = new MeshBasicMaterial({
+        color: rand * 0x0096c7 + (1 - rand) * 0xffffff,
+        wireframe: true,
+        transparent: Math.random() > 0.5,
+        opacity: Math.random()
       })
-      renderer.setClearColor('#ffffff', 0)
+
+      const geometry = new TetrahedronGeometry(
+        0.1 + 0.075 * (0.5 - Math.random())
+      )
+
+      geometry.translate(
+        -0.5 + 1 * w * Math.random(),
+        -0.5 * h + 1 * h * Math.random(),
+        0
+      )
+
+      geometry.lookAt(
+        new Vector3(
+          -1 + 2 * Math.random(),
+          -1 + 2 * Math.random(),
+          -1 + 2 * Math.random()
+        )
+      )
+      rotationX.push(-rotationSpeed / 2 + rotationSpeed * Math.random())
+      rotationY.push(-rotationSpeed / 2 + rotationSpeed * Math.random())
+      rotationZ.push(-rotationSpeed / 2 + rotationSpeed * Math.random())
+
+      const mesh = new Mesh(geometry, material)
+      scene.add(mesh)
+    }
+
+    /**
+     * Resize
+     */
+    const resize = (): void => {
+      width = div.clientWidth
+      height = div.clientHeight
       renderer.setSize(width, height)
-      renderer.setPixelRatio(window.devicePixelRatio || 1)
+      camera.aspect = width / height
+      camera.updateProjectionMatrix()
+    }
 
-      // Mount
-      div.appendChild(renderer.domElement)
+    /**
+     * Render scene
+     */
+    const renderScene = (): void => {
+      scene.children.forEach(
+        (
+          child: { rotation: { x: number; y: number; z: number } },
+          index: number
+        ) => {
+          child.rotation.x += rotationY[index]
+          child.rotation.y += rotationX[index]
+          child.rotation.z += rotationZ[index]
+        }
+      )
 
-      // Tetrahedra
-      const rotationX = []
-      const rotationY = []
-      const rotationZ = []
-      // Visible height & width
-      const offset = camera.position.z
-      const hFOV = (camera.fov * Math.PI) / 180
-      const h = 2 * Math.tan(hFOV / 2) * offset
-      const w = h * camera.aspect
-      // Build tetra
-      for (let i = 0; i < numberOfTetrahedra; ++i) {
-        const rand = Math.random()
-        const material = new MeshBasicMaterial({
-          color: rand * 0x0096c7 + (1 - rand) * 0xffffff,
-          wireframe: true,
-          transparent: Math.random() > 0.5,
-          opacity: Math.random()
-        })
+      renderer.render(scene, camera)
+    }
 
-        const geometry = new TetrahedronGeometry(
-          0.1 + 0.075 * (0.5 - Math.random())
-        )
+    /**
+     * Animate
+     */
+    const animate = (): void => {
+      renderScene()
+      frameId = requestAnimationFrame(animate)
+    }
 
-        geometry.translate(
-          -0.5 + 1 * w * Math.random(),
-          -0.5 * h + 1 * h * Math.random(),
-          0
-        )
+    /**
+     * Stop
+     */
+    const stop = (): void => {
+      cancelAnimationFrame(frameId)
+    }
 
-        geometry.lookAt(
-          new Vector3(
-            -1 + 2 * Math.random(),
-            -1 + 2 * Math.random(),
-            -1 + 2 * Math.random()
-          )
-        )
-        rotationX.push(-rotationSpeed / 2 + rotationSpeed * Math.random())
-        rotationY.push(-rotationSpeed / 2 + rotationSpeed * Math.random())
-        rotationZ.push(-rotationSpeed / 2 + rotationSpeed * Math.random())
+    // Start
+    animate()
 
-        const mesh = new Mesh(geometry, material)
-        scene.add(mesh)
-      }
+    // Event listener
+    window.addEventListener('resize', resize)
 
-      /**
-       * Resize
-       */
-      const resize = (): void => {
-        width = div.clientWidth
-        height = div.clientHeight
-        renderer.setSize(width, height)
-        camera.aspect = width / height
-        camera.updateProjectionMatrix()
-      }
+    // Unmount
+    return () => {
+      // Stop
+      stop()
 
-      /**
-       * Render scene
-       */
-      const renderScene = (): void => {
-        scene.children.forEach(
-          (
-            child: { rotation: { x: number; y: number; z: number } },
-            index: number
-          ) => {
-            child.rotation.x += rotationY[index]
-            child.rotation.y += rotationX[index]
-            child.rotation.z += rotationZ[index]
-          }
-        )
+      // Remove event listener
+      window.removeEventListener('resize', resize)
 
-        renderer.render(scene, camera)
-      }
+      // Unmount renderer
+      div.removeChild(renderer.domElement)
 
-      /**
-       * Animate
-       */
-      const animate = (): void => {
-        renderScene()
-        frameId = requestAnimationFrame(animate)
-      }
-
-      /**
-       * Stop
-       */
-      const stop = (): void => {
-        cancelAnimationFrame(frameId)
-      }
-
-      // Start
-      animate()
-
-      // Event listener
-      window.addEventListener('resize', resize)
-
-      // Unmount
-      return () => {
-        // Stop
-        stop()
-
-        // Remove event listener
-        window.removeEventListener('resize', resize)
-
-        // Unmount renderer
-        div.removeChild(renderer.domElement)
-
-        // Clear scene
-        scene.children.forEach(
-          (child: Mesh<TetrahedronGeometry, MeshBasicMaterial>) => {
-            child.geometry.dispose()
-            child.material.dispose()
-            scene.remove(child)
-          }
-        )
-      }
+      // Clear scene
+      scene.children.forEach(
+        (child: Mesh<TetrahedronGeometry, MeshBasicMaterial>) => {
+          child.geometry.dispose()
+          child.material.dispose()
+          scene.remove(child)
+        }
+      )
     }
   }, [])
 

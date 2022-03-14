@@ -1,15 +1,12 @@
 /** @module Components.Notauthorized */
 
 import { useEffect, useState } from 'react'
-import { NextRouter, useRouter } from 'next/router'
+import { useRouter } from 'next/router'
 import { Button, Card, Modal, Layout, Space, Typography } from 'antd'
 import { AlertOutlined } from '@ant-design/icons'
-import ChromeWindows from './FixInfos/chromeWindows'
+import NoManipBrowser from './FixInfos/noManipBrowser'
 import FirefoxWindows from './FixInfos/firefoxWindows'
-import ChromeAndroid from './FixInfos/chromeAndroid'
-import EdgeWindows from './FixInfos/edgeWindows'
 import FirefoxMac from './FixInfos/firefoxMac'
-import SafariIos from './FixInfos/safariIos'
 import SafariMac from './FixInfos/safariMac'
 
 /**
@@ -19,18 +16,6 @@ export const errors = {
   webGL: 'WebGL is not enabled on your device. Please enable it.'
 }
 
-/**
- * Go home
- * @param router Router
- */
-export const home = (router: NextRouter): void => {
-  router.push('/')
-}
-
-/**
- * Not authorized
- * @returns NotAuthorized
- */
 const WebGLError = (): JSX.Element => {
   // Data
   const router = useRouter()
@@ -60,8 +45,8 @@ const WebGLError = (): JSX.Element => {
               <AlertOutlined style={{ color: 'red' }} /> {errors.webGL}
             </Typography.Text>
             <Typography.Text>
-              <Button type="link" onClick={() => home(router)}>
-                Go back home
+              <Button type="link" onClick={() => router.back()}>
+                Return to previous page
               </Button>
             </Typography.Text>
           </Space>
@@ -74,7 +59,7 @@ const WebGLError = (): JSX.Element => {
                   <Button
                     type="text"
                     onClick={() => {
-                      setContent(ChromeWindows)
+                      setContent(NoManipBrowser)
                       setVisible(true)
                       setTitle('Chrome windows')
                     }}
@@ -98,7 +83,7 @@ const WebGLError = (): JSX.Element => {
                   <Button
                     type="text"
                     onClick={() => {
-                      setContent(EdgeWindows)
+                      setContent(NoManipBrowser)
                       setVisible(true)
                       setTitle('Microsoft Edge windows')
                     }}
@@ -108,15 +93,15 @@ const WebGLError = (): JSX.Element => {
                 </li>
               </ul>
             </Card>
-            <Card title="MacOS">
+            <Card title="MacOS / Linux">
               <ul>
                 <li>
                   <Button
                     type="text"
                     onClick={() => {
-                      setContent(ChromeWindows)
+                      setContent(NoManipBrowser)
                       setVisible(true)
-                      setTitle('Google Chrome MacOS')
+                      setTitle('Google Chrome MacOS / Linux')
                     }}
                   >
                     Google Chrome
@@ -148,34 +133,6 @@ const WebGLError = (): JSX.Element => {
                 </li>
               </ul>
             </Card>
-            <Card title="Mobile">
-              <ul>
-                <li>
-                  <Button
-                    type="text"
-                    onClick={() => {
-                      setContent(ChromeAndroid)
-                      setVisible(true)
-                      setTitle('Google Chrome Android')
-                    }}
-                  >
-                    Google Chrome
-                  </Button>
-                </li>
-                <li>
-                  <Button
-                    type="text"
-                    onClick={() => {
-                      setContent(SafariIos)
-                      setVisible(true)
-                      setTitle('Safari iOS')
-                    }}
-                  >
-                    Safari
-                  </Button>
-                </li>
-              </ul>
-            </Card>
           </Space>
         </Card>
         <Card title="WebGL Check">
@@ -197,7 +154,7 @@ const WebGLError = (): JSX.Element => {
         onOk={() => setVisible(false)}
         onCancel={() => setVisible(false)}
         style={{ height: 'calc(100vh - 200px)' }}
-        bodyStyle={{ overflowY: 'scroll', height: 'calc(100vh - 400px)' }}
+        bodyStyle={{ overflowY: 'auto', height: 'calc(100vh - 400px)' }}
       >
         {content}
       </Modal>

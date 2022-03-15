@@ -1,7 +1,13 @@
 /** @module Components.Project.Simulation.Geometry.Mesh */
 
 import PropTypes from 'prop-types'
-import { Dispatch, SetStateAction, useState, useEffect } from 'react'
+import {
+  Dispatch,
+  SetStateAction,
+  useState,
+  useEffect,
+  useCallback
+} from 'react'
 import { Card, Select, Space, Typography } from 'antd'
 
 import { ISimulation } from '@/database/index.d'
@@ -149,6 +155,20 @@ const Mesh = ({ simulation, swr }: IProps): JSX.Element => {
   }, [simulation])
 
   /**
+   * On size
+   * @param value Value
+   */
+  const onSize = useCallback(
+    async (value) => {
+      try {
+        await onMeshGlobalSize(simulation, meshGlobalType, value, swr)
+        setMeshGlobalValue(value)
+      } catch (err) {}
+    },
+    [simulation, meshGlobalType, swr]
+  )
+
+  /**
    * Render
    */
   return (
@@ -181,12 +201,7 @@ const Mesh = ({ simulation, swr }: IProps): JSX.Element => {
             <Select
               className="full-width"
               value={meshGlobalValue}
-              onChange={async (value) => {
-                try {
-                  await onMeshGlobalSize(simulation, meshGlobalType, value, swr)
-                  setMeshGlobalValue(value)
-                } catch (err) {}
-              }}
+              onChange={onSize}
             >
               <Select.Option value="veryfine">Very fine</Select.Option>
               <Select.Option value="fine">Fine</Select.Option>
@@ -202,12 +217,7 @@ const Mesh = ({ simulation, swr }: IProps): JSX.Element => {
             <br />
             <Formula
               defaultValue={meshGlobalValue}
-              onValueChange={async (value) => {
-                try {
-                  await onMeshGlobalSize(simulation, meshGlobalType, value, swr)
-                  setMeshGlobalValue(value)
-                } catch (err) {}
-              }}
+              onValueChange={onSize}
               unit="m"
             />
           </Typography.Text>

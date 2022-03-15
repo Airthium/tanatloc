@@ -29,7 +29,15 @@
 
 - add topics in help, what archive does, ...
 
-- organization admin delete undefined undefined ou null null
+- bug dans edit material, le material se remet par défaut tout le temps
+
+- Formula, label au dessus
+
+- Utils stringToRGB couleur foncé (HSV ?)
+
+- Parameters -> advanced marge
+
+- Initialization, marge + Select 100% + revoir message erreur, + remplacer collapse arcodion par select
 
 ## Share
 

@@ -442,6 +442,7 @@ const ThreeView = ({ loading, project, part }: IProps): JSX.Element => {
     renderer.current.setClearColor('#ffffff')
     renderer.current.setSize(width, height)
     renderer.current.setPixelRatio(window.devicePixelRatio || 1)
+    renderer.current.shadowMap.enabled = true
     renderer.current.autoClear = false
     currentMount.appendChild(renderer.current.domElement)
 

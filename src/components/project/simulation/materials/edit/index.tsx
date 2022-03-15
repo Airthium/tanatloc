@@ -36,7 +36,6 @@ export const errors = {
 /**
  * On edit
  * @param simulation Simulation
- * @param geometry Geometry
  * @param material Material
  * @param swr SWR
  */

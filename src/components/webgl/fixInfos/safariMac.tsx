@@ -1,5 +1,9 @@
 import { Layout, Typography } from 'antd'
 
+/**
+ * Safari Mac
+ * @returns SafariMac
+ */
 const SafariMac = (): JSX.Element => {
   /**
    * Render

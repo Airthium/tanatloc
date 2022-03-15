@@ -1,5 +1,11 @@
+/** @module Components.WebGL.FirefoxMac */
+
 import { Layout, Typography } from 'antd'
 
+/**
+ * Firefox Mac
+ * @returns FirefoxMac
+ */
 const FirefoxMac = (): JSX.Element => {
   /**
    * Render

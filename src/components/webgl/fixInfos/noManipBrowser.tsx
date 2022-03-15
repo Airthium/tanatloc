@@ -1,5 +1,9 @@
 import { Layout, Typography } from 'antd'
 
+/**
+ * No manipulation browser
+ * @returns NoManipBrowser
+ */
 const NoManipBrowser = (): JSX.Element => {
   /**
    * Render

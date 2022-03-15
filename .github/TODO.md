@@ -17,6 +17,7 @@
 
 - check docker at startup https://github.com/electron-userland/electron-builder/issues/1271
 - Apple sign
+- Local freefem (only for electron) plugin
 
 ## Misc
 
@@ -25,8 +26,6 @@
 - workspace.users ne sert à rien ? (voir avec Share)
 
 - denso solderFilling, remove data/phi\*.mesh data/phi\*.data
-
-- Local freefem (only for electron) plugin
 
 - add topics in help, what archive does, ...
 

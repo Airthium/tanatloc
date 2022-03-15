@@ -32,7 +32,24 @@ global.MockScene.children = [
   }
 ]
 
+const mockPush = jest.fn()
+jest.mock('next/router', () => ({
+  useRouter: () => ({
+    push: mockPush
+  })
+}))
+
+const mockWebGLAvailable = jest.fn()
+jest.mock('three/examples/jsm/capabilities/WebGL', () => ({
+  isWebGLAvailable: () => mockWebGLAvailable()
+}))
+
 describe('components/background', () => {
+  beforeEach(() => {
+    mockWebGLAvailable.mockReset()
+    mockWebGLAvailable.mockImplementation(() => true)
+  })
+
   test('render - no WebGL', () => {
     const { unmount } = render(<Background />)
 
@@ -40,8 +57,10 @@ describe('components/background', () => {
   })
 
   test('render - no WebGL', () => {
-    // Object.defineProperty(window, 'WebGLRenderingContext', { value: {} })
+    mockWebGLAvailable.mockImplementation(() => false)
     const { unmount } = render(<Background />)
+
+    expect(mockPush).toHaveBeenCalledTimes(1)
 
     unmount()
   })

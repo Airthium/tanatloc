@@ -13,7 +13,7 @@ export interface ISelect {
  */
 export interface ISelectState {
   enabled: boolean
-  type?: string
+  type?: 'solids' | 'faces' | 'edges'
   part?: string
   highlighted?: ISelect
   selected: ISelect[]
@@ -80,7 +80,7 @@ export const selectReducer = (
     case actionTypes.CLEAR:
       return { ...initialState }
     case actionTypes.SETTYPE:
-      return { ...state, type: action.value as string }
+      return { ...state, type: action.value as 'solids' | 'faces' | 'edges' }
     case actionTypes.SETPART:
       return { ...state, part: action.value as string }
     case actionTypes.HIGHLIGHT:

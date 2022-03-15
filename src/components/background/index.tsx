@@ -1,7 +1,7 @@
 /** @module Components.Background */
 
 import { useRef, useEffect } from 'react'
-import { NextRouter, useRouter } from 'next/router'
+import { useRouter } from 'next/router'
 import {
   Mesh,
   MeshBasicMaterial,
@@ -11,30 +11,7 @@ import {
   Vector3,
   WebGLRenderer
 } from 'three'
-
-/**
- * Check WebGL
- */
-export const checkWebGL = (router: NextRouter) => {
-  try {
-    const canvas = document.createElement('canvas')
-    console.log(canvas)
-    if (
-      !!(
-        window.WebGLRenderingContext &&
-        (canvas.getContext('webgl') || canvas.getContext('experimental-webgl'))
-      )
-    ) {
-      return true
-    } else {
-      router.replace('/webgl')
-      return false
-    }
-  } catch (e) {
-    console.error('WEBGL not available ' + e)
-    return false
-  }
-}
+import WebGL from 'three/examples/jsm/capabilities/WebGL'
 
 /**
  * Background
@@ -53,7 +30,8 @@ const Background = (): JSX.Element => {
 
   // Mount
   useEffect(() => {
-    if (!checkWebGL(router)) {
+    if (!WebGL.isWebGLAvailable()) {
+      router.push('/webgl')
       return
     }
 

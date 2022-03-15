@@ -25,7 +25,7 @@ export const clear = (): ISelectAction => {
  * Set type
  * @param type Type
  */
-export const setType = (type: string): ISelectAction => {
+export const setType = (type: 'solids' | 'faces' | 'edges'): ISelectAction => {
   return { type: actionTypes.SETTYPE, value: type }
 }
 

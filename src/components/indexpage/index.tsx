@@ -11,8 +11,6 @@ import {
 
 import packageJson from '../../../package.json'
 
-import Background from '@/components/background'
-
 import { ErrorNotification } from '@/components/assets/notification'
 import MathJax from '@/components/assets/mathjax'
 
@@ -117,7 +115,6 @@ const Index = (): JSX.Element => {
    */
   return (
     <Layout className="Index">
-      <Background />
       <Layout.Header className="Index-header">
         <img src="/images/logo.svg" alt="Tanatloc" />
         <div>{buttons}</div>

@@ -60,8 +60,6 @@
 
 - colorbar smaller font, gauche droite
 
-- debug mathjax
-
 ## Share
 
 - share for user (just group for now) (and whole organization ?)

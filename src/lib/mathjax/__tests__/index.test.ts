@@ -2,6 +2,10 @@ import { mathjaxInit, mathjaxRefresh } from '..'
 
 describe('lib/mathjax', () => {
   test('mathjaxInit', () => {
+    // No window
+    window = undefined
+    mathjaxInit()
+
     // Normal
     window.MathJax = undefined
     document.getElementsByTagName = () => [

@@ -126,7 +126,7 @@ const materialDatabase: IMaterialDatabase = {
             value: 500
           },
           {
-            label: 'Yield sthreng',
+            label: 'Yield strength',
             symbol: 'SigmaY',
             value: 215e6
           }
@@ -162,7 +162,7 @@ const materialDatabase: IMaterialDatabase = {
             value: 500
           },
           {
-            label: 'Yield sthreng',
+            label: 'Yield strength',
             symbol: 'SigmaY',
             value: 290e6
           }
@@ -198,7 +198,7 @@ const materialDatabase: IMaterialDatabase = {
             value: 960
           },
           {
-            label: 'Yield sthreng',
+            label: 'Yield strength',
             symbol: 'SigmaY',
             value: 60e6
           }
@@ -234,7 +234,7 @@ const materialDatabase: IMaterialDatabase = {
             value: 960
           },
           {
-            label: 'Yield sthreng',
+            label: 'Yield strength',
             symbol: 'SigmaY',
             value: 110e6
           }
@@ -270,7 +270,7 @@ const materialDatabase: IMaterialDatabase = {
             value: 873
           },
           {
-            label: 'Yield sthreng',
+            label: 'Yield strength',
             symbol: 'SigmaY',
             value: 275e6
           }
@@ -311,7 +311,7 @@ const materialDatabase: IMaterialDatabase = {
             value: 1480
           },
           {
-            label: 'Yield sthreng',
+            label: 'Yield strength',
             symbol: 'SigmaY',
             value: 69e6
           }
@@ -439,6 +439,7 @@ const DataBase = ({ onSelect }: IProps): JSX.Element => {
         onOk={() => onMaterialSelect(current)}
         okText="Choose"
         okButtonProps={{ disabled: !current }}
+        width="auto"
       >
         <Layout>
           <Layout.Content>

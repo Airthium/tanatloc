@@ -18,7 +18,7 @@ const FirefoxMac = (): JSX.Element => {
         </Typography.Title>
         <Typography>
           Firefox on MacOS supports and enables WebGL for all versions from Snow
-          Leopard 10.6. If WebGL still doesn't work, tru to update to the last
+          Leopard 10.6. If WebGL still does not work, tru to update to the last
           version of MacOS.
         </Typography>
         <Typography.Title level={3}>Enable webGL (Linux)</Typography.Title>

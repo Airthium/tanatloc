@@ -59,7 +59,7 @@ const ColorbarHelper = (renderer: WebGLRenderer): IColorbarHelper => {
 
   /**
    * Set LUT
-   * @param lut LUT
+   * @param lutData LUT
    */
   const setLUT = (lutData: Lut): void => {
     clearScene()
@@ -73,7 +73,7 @@ const ColorbarHelper = (renderer: WebGLRenderer): IColorbarHelper => {
     sprite = new Sprite(material) as IColorbarHelperSprite
     sprite.material.rotation = -Math.PI / 2
     sprite.scale.x = 0.2
-    sprite.scale.y = 1.8
+    sprite.scale.y = 1.4
     sprite.dispose = sprite.material.dispose
     colorScene.add(sprite)
 
@@ -88,14 +88,14 @@ const ColorbarHelper = (renderer: WebGLRenderer): IColorbarHelper => {
     let min = NumberHelper(lut.minV)
     let max = NumberHelper(lut.maxV)
 
-    const minLabel = Label(String(min), 768, 'gray', 128)
+    const minLabel = Label(String(min), 768, 'gray', 96, 'right')
     minLabel.scale.x = 0.5
     minLabel.scale.y = 4.5
-    minLabel.position.set(-0.9, 0.45, 0)
-    const maxLabel = Label(String(max), 768, 'gray', 128)
+    minLabel.position.set(-0.72, 0, 0)
+    const maxLabel = Label(String(max), 768, 'gray', 96, 'left')
     maxLabel.scale.x = 0.5
     maxLabel.scale.y = 4.5
-    maxLabel.position.set(0.8, 0.45, 0)
+    maxLabel.position.set(0.72, 0, 0)
 
     colorScene.add(minLabel)
     colorScene.add(maxLabel)

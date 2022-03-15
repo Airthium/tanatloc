@@ -13,12 +13,14 @@ export interface ILabelHelper extends Omit<Sprite, 'type'> {
  * @param size Size
  * @param fontColor Font color
  * @param fontSize Font size
+ * @param align Align
  */
 const LabelHelper = (
   text: string,
-  size = 512,
-  fontColor = 'black',
-  fontSize = 512
+  size: number = 512,
+  fontColor: string = 'black',
+  fontSize: number = 512,
+  align: CanvasTextAlign = 'center'
 ): ILabelHelper => {
   // Canvas
   const canvas = document.createElement('canvas')
@@ -27,7 +29,7 @@ const LabelHelper = (
   const context = canvas.getContext('2d')
   context.fillStyle = fontColor
   context.font = fontSize + 'px sans-serif'
-  context.textAlign = 'center'
+  context.textAlign = align
   context.textBaseline = 'middle'
   context.fillText(text, canvas.width / 2, canvas.height / 2)
 

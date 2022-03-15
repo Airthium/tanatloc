@@ -58,8 +58,6 @@
 
 - complete log error
 
-- colorbar smaller font, gauche droite
-
 ## Share
 
 - share for user (just group for now) (and whole organization ?)

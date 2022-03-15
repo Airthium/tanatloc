@@ -18,7 +18,7 @@ const FirefoxMac = (): JSX.Element => {
         </Typography.Title>
         <Typography>
           Firefox on MacOS supports and enables WebGL for all versions from Snow
-          Leopard 10.6. If WebGL still does not work, tru to update to the last
+          Leopard 10.6. If WebGL still does not work, try to update to the last
           version of MacOS.
         </Typography>
         <Typography.Title level={4}>Enable webGL (Linux)</Typography.Title>
@@ -35,14 +35,16 @@ const FirefoxMac = (): JSX.Element => {
         </Typography.Title>
         <Typography>
           Search for <Typography.Text code>webgl.force-enabled</Typography.Text>{' '}
-          and switch value to 'true' (double click on the value)
+          and switch value to <Typography.Text code>true</Typography.Text>{' '}
+          (double click on the value)
         </Typography>
         <Typography.Title level={5} mark={true}>
           3- Check if force disabled
         </Typography.Title>
         <Typography>
           Search for <Typography.Text code>webgl.disabled</Typography.Text> and
-          switch value to false (double click on the value)
+          switch value to <Typography.Text code>false</Typography.Text> (double
+          click on the value)
         </Typography>
         <Typography.Title level={5} mark={true}>
           4- Still not working

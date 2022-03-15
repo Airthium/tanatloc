@@ -139,7 +139,7 @@ const WebGLError = (): JSX.Element => {
           <Space direction="vertical">
             <Typography.Text>
               Visit{' '}
-              <a href="https://get.webgl.org" target="_blank">
+              <a href="https://get.webgl.org" target="_blank" rel="noreferrer">
                 {' '}
                 this website
               </a>{' '}

@@ -13,10 +13,6 @@
 - Linearelasticity: output gamma1-6
 - Linearelasticity: cylindrical coordinates
 
-## Dependencies
-
-- Replace deep-object-diff (out-dated)
-
 ## Electron
 
 - check docker at startup https://github.com/electron-userland/electron-builder/issues/1271
@@ -25,8 +21,9 @@
 ## Misc
 
 - Table scroll
-- workspace.users ne sert à rien ?
-- delete tanatloc_postgres docker ?
+
+- workspace.users ne sert à rien ? (voir avec Share)
+
 - denso solderFilling, remove data/phi\*.mesh data/phi\*.data
 
 - Local freefem (only for electron) plugin

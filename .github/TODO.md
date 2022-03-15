@@ -31,6 +31,8 @@
 
 - Local freefem (only for electron) plugin
 
+- add topics in help, what archive does, ...
+
 ## Share
 
 - share for user (just group for now) (and whole organization ?)

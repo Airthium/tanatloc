@@ -30,6 +30,9 @@ import { ErrorNotification } from '@/components/assets/notification'
 import WorkspaceAPI from '@/api/workspace'
 import ProjectAPI from '@/api/project'
 
+/**
+ * Props
+ */
 export interface IProps {
   disabled?: boolean
   workspace?: IWorkspaceWithData
@@ -61,13 +64,10 @@ export const errors = {
  * @param swr SWR
  */
 export const onShare = async (
-  workspace: IWorkspaceWithData | undefined,
-  project: IProjectWithData | undefined,
+  workspace: IProps['workspace'],
+  project: IProps['project'],
   selected: string[],
-  swr: {
-    mutateOneWorkspace?: (workspace: IWorkspaceWithData) => void
-    mutateOneProject?: (project: IProjectWithData) => void
-  }
+  swr: IProps['swr']
 ): Promise<void> => {
   try {
     if (workspace) {
@@ -108,10 +108,10 @@ export const onShare = async (
  * @param props Props
  * @description Props list:
  * - disabled (boolean) Set disabled state
- * - workspace (Object) Workspace `{ id, groups }`
- * - project (Object) Project `{ id, groups }`
+ * - workspace (Object) Workspace
+ * - project (Object) Project
  * - organizations (Array) Organizations
- * - swr (Object) SWR functions `{ mutateOneWorkspace, mutateOneProject }`
+ * - swr (Object) SWR functions
  * - style (Object) Button style
  * @returns Share
  */
@@ -186,6 +186,45 @@ const Share = ({
     setTreeData(data)
   }, [organizations])
 
+  let selector = null
+  if (treeData?.length)
+    selector = (
+      <Form.Item
+        label={
+          <>
+            Share this {workspace ? 'workspace' : 'project'} with organization
+            groups or users
+          </>
+        }
+      >
+        <TreeSelect
+          multiple
+          placeholder="Select groups or users"
+          dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
+          className="full-width"
+          treeData={treeData}
+          treeDefaultExpandAll
+          treeCheckable
+          showCheckedStrategy={TreeSelect.SHOW_ALL}
+          value={selected}
+          onChange={(value) => setSelected(value)}
+        />
+      </Form.Item>
+    )
+  else
+    selector = (
+      <>
+        <br />
+        <Typography.Text strong>
+          There is no organization for now
+        </Typography.Text>
+        <br />
+        <Typography.Text>
+          You can create organizations and groups in the Organization menu.
+        </Typography.Text>
+      </>
+    )
+
   /**
    * Render
    */
@@ -228,40 +267,7 @@ const Share = ({
           {workspace ? 'Workspace: ' : 'Project: '}
           {workspace?.name || project?.title}
         </Typography.Text>
-        {treeData.length ? (
-          <Form.Item
-            label={
-              <>
-                Share this {workspace ? 'workspace' : 'project'} with
-                organization groups or users
-              </>
-            }
-          >
-            <TreeSelect
-              multiple
-              placeholder="Select groups or users"
-              dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
-              className="full-width"
-              treeData={treeData}
-              treeDefaultExpandAll
-              treeCheckable
-              showCheckedStrategy={TreeSelect.SHOW_ALL}
-              value={selected}
-              onChange={(value) => setSelected(value)}
-            />
-          </Form.Item>
-        ) : (
-          <>
-            <br />
-            <Typography.Text strong>
-              There is no organization for now
-            </Typography.Text>
-            <br />
-            <Typography.Text>
-              You can create organizations and groups in the Organization menu.
-            </Typography.Text>
-          </>
-        )}
+        {selector}
       </Dialog>
     </>
   )
@@ -279,7 +285,17 @@ Share.propTypes = {
     name: PropTypes.string.isRequired,
     groups: PropTypes.array
   }),
-  organizations: PropTypes.array.isRequired,
+  organizations: PropTypes.arrayOf(
+    PropTypes.shape({
+      groups: PropTypes.arrayOf(
+        PropTypes.shape({
+          id: PropTypes.string.isRequired,
+          name: PropTypes.string.isRequired,
+          users: PropTypes.array
+        })
+      )
+    })
+  ).isRequired,
   swr: PropTypes.exact({
     mutateOneProject: PropTypes.func,
     mutateOneWorkspace: PropTypes.func

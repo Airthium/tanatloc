@@ -27,3 +27,10 @@
 - Table scroll
 - workspace.users ne sert à rien ?
 - delete tanatloc_postgres docker ?
+- denso solderFilling, remove data/phi\*.mesh data/phi\*.data
+
+- Local freefem (only for electron) plugin
+
+## Share
+
+- share for user (just group for now) (and whole organization ?)

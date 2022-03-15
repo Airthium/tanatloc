@@ -29,6 +29,8 @@
 
 - add topics in help, what archive does, ...
 
+- organization admin delete undefined undefined ou null null
+
 ## Share
 
 - share for user (just group for now) (and whole organization ?)

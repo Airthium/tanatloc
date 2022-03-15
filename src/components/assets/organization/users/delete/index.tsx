@@ -1,7 +1,7 @@
 /** @module Components.Assets.Organization.User.Delete */
 
 import PropTypes from 'prop-types'
-import { Dispatch, SetStateAction, useState } from 'react'
+import { Dispatch, SetStateAction, useCallback, useState } from 'react'
 
 import { IOrganizationWithData, IUserWithData } from '@/lib/index.d'
 
@@ -90,17 +90,22 @@ const Delete = ({
     useState(false)
 
   /**
+   * Set name
+   * @param u User
+   */
+  const setName = useCallback((u: IUserWithData) => {
+    if (u.firstname || u.lastname) return u.firstname + ' ' + u.lastname
+    else return u.email
+  }, [])
+
+  /**
    * Render
    */
   return (
     <DeleteButton
       disabled={disabled}
       title="Delete organization"
-      text={
-        'Delete ' + user.firstname || user.lastname
-          ? user.firstname + ' ' + user.lastname
-          : user.email + '?'
-      }
+      text={'Delete ' + setName(user) + '?'}
       loading={loading}
       onDelete={async () => {
         setLoading(true)

@@ -76,7 +76,7 @@ const Edit = ({ simulation, swr }: IProps): JSX.Element => {
     <>
       <EditButton onEdit={() => setVisible(true)} />
       <Dialog
-        title="Edit the geometry's name"
+        title="Edit the simulation's name"
         visible={visible}
         initialValues={{ name: simulation.name }}
         onCancel={() => setVisible(false)}

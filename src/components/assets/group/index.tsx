@@ -103,6 +103,8 @@ export const onUpdate = async (
         value: values.users
       })
 
+    if (!toUpdate.length) return
+
     // API
     await GroupAPI.update({ id: group.id }, toUpdate)
 
